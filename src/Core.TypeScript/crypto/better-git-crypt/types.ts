@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/types.ts
  *
- * B-0883 v1 — better-git-crypt PoC scaffold (TS-side per
+ * 081KSNY2Z0008QG0R002JKH50A v1 — better-git-crypt PoC scaffold (TS-side per
  * zeta-ships-with-skills-immediate-value.md)
  *
  * Declarative type substrate per the v1 design memo
@@ -11,12 +11,12 @@
  *   - Noble + XWing (ML-KEM-768 + X25519 hybrid) for KEM
  *   - ML-DSA-65 for signatures
  *   - CBOR envelope adapting RFC 9629 CMS+KEM pattern
- *   - Multi-cipher hedge (B-0883.2) — Saber / NTRU-Prime / FrodoKEM
+ *   - Multi-cipher hedge (081KSNY2Z0008QG0R002ZAVMEK) — Saber / NTRU-Prime / FrodoKEM
  *     as alternates when TS-native impls mature
- *   - Content-only encryption v1 (B-0883.5); metadata deferred
- *   - Bounded to git-at-rest threat model (B-0883.4)
- *   - Forward-only revocation (B-0883.3 future)
- *   - Adinkras-ECC seed source parameterized (B-0623 composes)
+ *   - Content-only encryption v1 (081KSNY2Z0008QG0R0020KXAPS); metadata deferred
+ *   - Bounded to git-at-rest threat model (081KSNY2Z0008QG0R001FN4DDB)
+ *   - Forward-only revocation (081KSNY2Z0008QG0R0008EJDW1 future)
+ *   - Adinkras-ECC seed source parameterized (081KRW63S0008QG0R000QJR08H composes)
  *
  * PoC scope: declarative type substrate + invariant validation. Real
  * Noble integration + KEM operations + CBOR encoding = Phase 2
@@ -25,21 +25,21 @@
  * --dry-run for envelope structure inspection.
  *
  * Composes with:
- *   - B-0883 row (canonical v1 design)
- *   - B-0883.1 library landscape audit (Noble recommendation)
- *   - B-0883.2 multi-cipher hedge
- *   - B-0883.3 content-addressed-store (future revocation)
- *   - B-0883.4 side-channel scope boundary
- *   - B-0883.5 metadata encryption follow-up
- *   - B-0883.16 glass-halo open-by-default (encryption-as-earned)
- *   - B-0883.17 plaintext-readable ciphertext format research
- *   - B-0885 agent private encrypted state (Otto + Addison ASAP consumer)
- *   - B-0623 Adinkras-ECC (seed source future)
- *   - B-0906 encryption-thermal-cost two-axis classification
- *   - B-0892 three-lanes-concurrent (this advances the encryption lane)
+ *   - 081KSNY2Z0008QG0R002JKH50A row (canonical v1 design)
+ *   - 081KSNY2Z0008QG0R0037X4DP4 library landscape audit (Noble recommendation)
+ *   - 081KSNY2Z0008QG0R002ZAVMEK multi-cipher hedge
+ *   - 081KSNY2Z0008QG0R0008EJDW1 content-addressed-store (future revocation)
+ *   - 081KSNY2Z0008QG0R001FN4DDB side-channel scope boundary
+ *   - 081KSNY2Z0008QG0R0020KXAPS metadata encryption follow-up
+ *   - 081KSNY2Z0008QG0R000459FRH glass-halo open-by-default (encryption-as-earned)
+ *   - 081KSNY2Z0008QG0R0034JR61Z plaintext-readable ciphertext format research
+ *   - 081KSNY2Z0008QG0R0030V5ZVS agent private encrypted state (Otto + Addison ASAP consumer)
+ *   - 081KRW63S0008QG0R000QJR08H Adinkras-ECC (seed source future)
+ *   - 081KSNY2Z0008QG0R001A431CN encryption-thermal-cost two-axis classification
+ *   - 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent (this advances the encryption lane)
  *   - rule asymmetric-authorship (TFeedback per cipher operation)
  *   - rule monad-propagation-pattern-cross-language-substrate-shape
- *   - rule ople-primitives-surface-t-and-tfeedback (Persist-as-bridge per B-0897)
+ *   - rule ople-primitives-surface-t-and-tfeedback (Persist-as-bridge per 081KSNY2Z0008QG0R002SZZ5Y0)
  *   - rule forgetting-costs-energy-remembering-is-cheap (axiom-preservation)
  *   - rule rule-0-no-sh-files (TS-first)
  */
@@ -62,7 +62,7 @@ export type CipherClass = "kem" | "signature" | "kdf" | "aead";
  */
 export type CipherStatus =
   | "ships-v1" // Noble-native; ready for Phase 2 impl
-  | "deferred-alternate" // multi-cipher hedge per B-0883.2
+  | "deferred-alternate" // multi-cipher hedge per 081KSNY2Z0008QG0R002ZAVMEK
   | "future-substrate"; // requires substrate that doesn't yet exist
 
 /**
@@ -78,11 +78,11 @@ export interface AlgSpec {
 }
 
 /**
- * Seed source — parameterized per B-0623 (Adinkras-derived seeds swap in later).
+ * Seed source — parameterized per 081KRW63S0008QG0R000QJR08H (Adinkras-derived seeds swap in later).
  */
 export type SeedSource =
   | "random-bytes" // v1 default; CSPRNG
-  | "adinkra-derived" // B-0623 future; SUSY-ECC private state
+  | "adinkra-derived" // 081KRW63S0008QG0R000QJR08H future; SUSY-ECC private state
   | "hsm-derived"; // future; HSM-backed seed source
 
 /**
@@ -150,7 +150,7 @@ export interface EncryptionContext {
  * + .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  *
  * Per .claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md
- * + B-0897 (Persist-as-bridge): encryption is one specific Persist-as-bridge
+ * + 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge): encryption is one specific Persist-as-bridge
  * instance — encrypted output flows to substrate (filesystem / git) for
  * future Observe (decrypt). The TFeedback variants below are the
  * Persist-bridge's authorial feedback channel.
@@ -189,28 +189,28 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
     status: "ships-v1",
     description: "XWing — ML-KEM-768 (post-quantum) + X25519 (classical) hybrid; primary v1 KEM",
     nobleModule: "@noble/post-quantum/ml-kem",
-    composesWith: ["B-0883", "B-0883.1"],
+    composesWith: ["081KSNY2Z0008QG0R002JKH50A", "081KSNY2Z0008QG0R0037X4DP4"],
   },
   {
     id: "Saber",
     class: "kem",
     status: "deferred-alternate",
     description: "lattice-based KEM alternate; deferred until TS-native impl",
-    composesWith: ["B-0883.2"],
+    composesWith: ["081KSNY2Z0008QG0R002ZAVMEK"],
   },
   {
     id: "NTRU-Prime",
     class: "kem",
     status: "deferred-alternate",
     description: "lattice-based KEM alternate; deferred until TS-native impl",
-    composesWith: ["B-0883.2"],
+    composesWith: ["081KSNY2Z0008QG0R002ZAVMEK"],
   },
   {
     id: "FrodoKEM",
     class: "kem",
     status: "deferred-alternate",
     description: "LWE-based KEM alternate (most conservative); deferred until TS-native impl",
-    composesWith: ["B-0883.2"],
+    composesWith: ["081KSNY2Z0008QG0R002ZAVMEK"],
   },
   // Signature
   {
@@ -219,7 +219,7 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
     status: "ships-v1",
     description: "Dilithium-65 — post-quantum signature primary v1",
     nobleModule: "@noble/post-quantum/ml-dsa",
-    composesWith: ["B-0883", "B-0883.1"],
+    composesWith: ["081KSNY2Z0008QG0R002JKH50A", "081KSNY2Z0008QG0R0037X4DP4"],
   },
   {
     id: "SLH-DSA",
@@ -232,7 +232,7 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
     status: "deferred-alternate",
     description: "SPHINCS+ — hash-based signature alternate; Noble-native; deferred until crypto.ts dispatch added",
     nobleModule: "@noble/post-quantum/slh-dsa",
-    composesWith: ["B-0883.1"],
+    composesWith: ["081KSNY2Z0008QG0R0037X4DP4"],
   },
   // KDF
   {
@@ -241,7 +241,7 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
     status: "ships-v1",
     description: "HMAC-based KDF with SHA-256",
     nobleModule: "@noble/hashes/hkdf",
-    composesWith: ["B-0883"],
+    composesWith: ["081KSNY2Z0008QG0R002JKH50A"],
   },
   // AEAD
   {
@@ -250,7 +250,7 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
     status: "ships-v1",
     description: "ChaCha20 stream cipher with Poly1305 MAC; AEAD",
     nobleModule: "@noble/ciphers/chacha",
-    composesWith: ["B-0883"],
+    composesWith: ["081KSNY2Z0008QG0R002JKH50A"],
   },
   {
     id: "ChaCha20-Poly1305",
@@ -258,7 +258,7 @@ export const ALG_REGISTRY: readonly AlgSpec[] = [
     status: "ships-v1",
     description: "ChaCha20-Poly1305 for content encryption",
     nobleModule: "@noble/ciphers/chacha",
-    composesWith: ["B-0883"],
+    composesWith: ["081KSNY2Z0008QG0R002JKH50A"],
   },
 ];
 
@@ -270,7 +270,7 @@ export function findAlg(id: string): AlgSpec | undefined {
 }
 
 /**
- * B-0883 — determineEncryptionPath: substantive lane work per
+ * 081KSNY2Z0008QG0R002JKH50A — determineEncryptionPath: substantive lane work per
  * Aaron's 3-lane substrate-check (Amara ferry §33.2 PR #5757).
  *
  * Structurally parallel to workflow-engine's determineReviewLevel
@@ -283,13 +283,13 @@ export function findAlg(id: string): AlgSpec | undefined {
  * Per asymmetric-authorship rule (PR #5516): the function authors
  * its own TFeedback channel via existing EncryptionFeedback variants.
  * Per monad-propagation rule (PR #5511): Result<T, TFeedback> shape.
- * Per OPLE primitive rule (B-0897 Persist-as-bridge): encryption IS
+ * Per OPLE primitive rule (081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge): encryption IS
  * Persist-as-bridge instantiated at file-substrate scope.
  *
  * Composes with:
- *   - B-0867.20 determineReviewLevel discriminator (PR #5758) — same
+ *   - 081KSNY2Z0008QG0R003WFDCJ9 determineReviewLevel discriminator (PR #5758) — same
  *     shape at different substrate scope
- *   - B-0883 v1 design memo (algorithm selection per v1)
+ *   - 081KSNY2Z0008QG0R002JKH50A v1 design memo (algorithm selection per v1)
  *   - validateEncryptionContext (called as precondition)
  *
  * PoC scope: pure-function selection of algorithms from ALG_REGISTRY
@@ -427,7 +427,7 @@ export function determineEncryptionPath(context: EncryptionContext): PlanResult 
       algSig: sigAlgId,
       recipientCount: context.recipients.length,
       senderIdentity: context.sender.identity,
-      composesWith: ["B-0883", "B-0883.1", "B-0867.20"],
+      composesWith: ["081KSNY2Z0008QG0R002JKH50A", "081KSNY2Z0008QG0R0037X4DP4", "081KSNY2Z0008QG0R003WFDCJ9"],
     },
   };
 }

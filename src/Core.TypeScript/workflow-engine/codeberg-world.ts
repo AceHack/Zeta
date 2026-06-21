@@ -1,6 +1,6 @@
 // src/Core.TypeScript/workflow-engine/codeberg-world.ts
 //
-// B-0867.15 — CodebergWorld per-host adapter.
+// 081KSNY2Z0008QG0R002A785QR — CodebergWorld per-host adapter.
 //
 // Codeberg.org is community-hosted Gitea instance (German non-profit:
 // "Codeberg e.V."). Substrate-wise IDENTICAL to GiteaWorld at the API

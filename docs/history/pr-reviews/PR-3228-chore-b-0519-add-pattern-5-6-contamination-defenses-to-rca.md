@@ -29,7 +29,7 @@
 
 ## Summary
 
-Additive update to [B-0519 RCA](docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md) adding two contamination patterns surfaced today via field-test, plus the new cheap defenses that worked.
+Additive update to [081KRHWGX0008QG0R001HMWM1W RCA](docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md) adding two contamination patterns surfaced today via field-test, plus the new cheap defenses that worked.
 
 ## Patterns added
 

@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-10  
 **Stage:** 1 — Read-only reflection competence  
-**Backlog row:** B-0050 (P2)  
+**Backlog row:** 081KQ3HBZ0008QG0R000H8K8CC (P2)  
 **Teaching discipline:** additive-layering, Mr-Khan-pedagogy posture — free to read, prior understanding preserved
 
 ---
@@ -15,7 +15,7 @@ and explain what each piece does. Navigate Mathlib tactic code with comprehensio
 Diagnose elaboration errors by tracing the `Syntax → Expr` pipeline.
 
 This note covers what we need to know at Stage 1. It is the teachable artifact
-per the teaching-discipline commitment in B-0050 — the next learner (human or
+per the teaching-discipline commitment in 081KQ3HBZ0008QG0R000H8K8CC — the next learner (human or
 agent) picks up from here.
 
 ---
@@ -402,7 +402,7 @@ with a proof term. All of that is now in this note.
 **Composes with:**
 
 - `tools/lean4/Lean4/DbspChainRule.lean` — the proof that benefits from Stage 2+
-- B-0051 — isomorphism catalog, IF4 filter
-- B-0048 — 3-colorability (Stage 4 decision procedure target)
+- 081KQ3HBZ0008QG0R002SM3G49 — isomorphism catalog, IF4 filter
+- 081KQ3HBZ0008QG0R003JCR6P8 — 3-colorability (Stage 4 decision procedure target)
 - `.claude/skills/lean4-expert/SKILL.md` — the complementary build/proof skill
 - `.claude/skills/lean-reflection-expert/SKILL.md` — the Stage 1 capability skill (this PR)

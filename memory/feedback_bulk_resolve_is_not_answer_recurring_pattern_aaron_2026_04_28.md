@@ -84,7 +84,7 @@ review threads bulk-resolved:
 - ~5 were form 3 PR-metadata fixes (PR body refresh)
 - ~15 were form 4 (deferral with note, NO tracking) until
   Aaron's pushback prompted the structural fix:
-  `docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-
+  `docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-
   punch-list-from-pr-72-deferrals.md` aggregating all 15
   into a 21-item concrete punch list.
 

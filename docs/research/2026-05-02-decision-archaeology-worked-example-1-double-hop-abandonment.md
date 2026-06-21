@@ -1,12 +1,12 @@
 # Decision-archaeology worked example #1 — the double-hop abandonment 2026-05-02
 
-> Scope: worked example for the proposed `decision-archaeology` skill (B-0169).
+> Scope: worked example for the proposed `decision-archaeology` skill (081KQJZR90008QG0R002D6XYHB).
 > Attribution: Otto autonomous (the `architect` hat) authored from on-repo
 > evidence; the human maintainer is the original decision-maker whose
 > framing is preserved verbatim in the cited memos.
 > Operational status: research-grade — input to skill-creator's eventual
 > SKILL.md authoring per Aarav's hybrid (b)+(c) routing recommendation
-> on B-0169. Not normative discipline; demonstrative.
+> on 081KQJZR90008QG0R002D6XYHB. Not normative discipline; demonstrative.
 > Non-fusion disclaimer: the procedure walked here is generic
 > decision-archaeology; the substrate paths cited (`memory/`, `docs/`,
 > `memory/CURRENT-aaron.md`) are Zeta-specific illustrations of the generic
@@ -117,7 +117,7 @@ Returns (filtered + ordered):
 | `ae4f6b6` | 2026-04-27 | sync: forward-port AceHack #49 substrate cluster — 0-diff-is-start + LFG-as-master strategic reframe | Establishment context |
 | `cabaabe` | 2026-04-28 | sync: AceHack→LFG bulk content forward-port + CI cadence split + Windows trajectory seed | Active-double-hop period |
 | `5294bf4` | 2026-04-30 | doctrine(acehack-mirror): force-with-lease + remote-topology cleanup + multi-remote-script-design | Path-2 mechanism design |
-| `f5e2873` | 2026-04-30 | backlog(B-0110,P1): AceHack mirror-refresh protocol drift — three sources contradict | Path-2 backlog row landing |
+| `f5e2873` | 2026-04-30 | backlog(081KQDTYV0008QG0R001Y2E9TD,P1): AceHack mirror-refresh protocol drift — three sources contradict | Path-2 backlog row landing |
 | `262f18b` | 2026-05-02 | memory(superfluid-cluster): Aaron 2026-05-02 — 7 wake-time substrate rules + Karpathy edge-runner anchor | First mention of abandonment in substrate |
 | `7a0b755` | 2026-05-02 | align(party-during-sleep): ... | SUPERSEDE marker landed |
 | `f0ef9a8` | 2026-05-02 | fix(supersession-drift): CLAUDE.md double-hop framing 'paused' → 'abandoned 2026-05-02' to match CURRENT-aaron.md §4 SUPERSEDE marker | Cleanup of stale CLAUDE.md framing |
@@ -309,7 +309,7 @@ absorbs squash-SHA) was abandoned 2026-05-02 because:
    2026-04-29 LFG-only directive; the double-hop's mechanism survived
    past its purpose for three days as substrate-discipline-without-
    active-need.
-3. **Path-2 was already chosen** (B-0110, 2026-04-30): "fast-forward
+3. **Path-2 was already chosen** (081KQDTYV0008QG0R001Y2E9TD, 2026-04-30): "fast-forward
    when possible; PR-based reset OR delete-and-recreate when diverged."
    The Path-2 mechanism is strictly simpler than the double-hop; the
    abandonment retires the mechanism Path-2 already obsoleted.
@@ -370,13 +370,13 @@ For the eventual `decision-archaeology` SKILL.md body:
 
 ## Composes with
 
-- **B-0169** — the row this is a worked example for. References this
+- **081KQJZR90008QG0R002D6XYHB** — the row this is a worked example for. References this
   artifact via the `worked-example-seeds` section.
 - **`memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`** —
   the original definition; layer-8 substrate.
 - **`memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`** —
   the directive that retired the double-hop's purpose.
-- **`docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`** —
+- **`docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`** —
   the Path-2 mechanism that obsoleted the double-hop mechanism.
 - **`memory/CURRENT-aaron.md` §4** — the SUPERSEDE marker that
   canonicalized the abandonment.

@@ -38,7 +38,7 @@ Adds a **"Two workflow registers"** subsection to the ADR's Integration section.
 | Register | What it is | Self-mod | Governance |
 |---|---|---|---|
 | **agentic-organization** (a.k.a. **agentic operating system**) | the **corporate** workflow | static / PR-gated / no self-mod (leashed "kids-version") | PR review + branch protection; vendor/operator-gated |
-| **Agora** | the **sovereign** workflow/society — **DIO** on **DID** | self-modifying | ≥3-agent constitution gate + NCI floor (B-0703/B-0664) |
+| **Agora** | the **sovereign** workflow/society — **DIO** on **DID** | self-modifying | ≥3-agent constitution gate + NCI floor (081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R001Z7NYMV) |
 
 Same engine, two governance registers = the **must-paired-with-can-exit dual-market pattern** at the workflow scope.
 
@@ -96,7 +96,7 @@ Docs-only; no code touched. v3 added to revision history + header.
 - **`Copilot` (bot)** at 2026-05-31T02:52:45Z on `docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`:98 (association: NONE)
 
   <pre>
-  The governance cell cites “NCI floor (B-0703 / B-0664)”, but B-0664 is the NCI row while the constitution gate is referenced elsewhere in this ADR as B-0703/B-0652. This makes the cross-references internally inconsistent and risks sending readers to the wrong backlog rows.
+  The governance cell cites “NCI floor (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R001Z7NYMV)”, but 081KRW63S0008QG0R001Z7NYMV is the NCI row while the constitution gate is referenced elsewhere in this ADR as 081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J. This makes the cross-references internally inconsistent and risks sending readers to the wrong backlog rows.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -150,7 +150,7 @@ Substrate-checked first (verify-existing-substrate-before-authoring): Agora-as-s
 already in project_agora_vision + Agora V6 + Heartland substrate; DIO/DID is the new compression.
 
 Composes-with: must-paired-with-can-exit (dual-market) · non-coercion-invariant HC-8 ·
-B-0703/B-0652 constitution gate · Agora V6 + Heartland.
+081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J constitution gate · Agora V6 + Heartland.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```
@@ -172,8 +172,8 @@ docs(DECISIONS): address 3 ADR-v3 review findings (Codex P2 + Copilot…
   but 'Two deployment targets' still read 'cluster for the org; USB for sovereignty', re-coupling
   them. Added an explicit 'all four cells valid' clause + marked that pairing as the COMMON DEFAULT,
   not a coupling (corporate-on-USB + sovereign-on-cluster both valid); softened the deployment prose.
-- Copilot P1 (cross-ref): '(B-0703 / B-0664)' muddled the gate + NCI rows. Fixed to 'constitution
-  gate (B-0703 / B-0652) + NCI floor (B-0664)'.
+- Copilot P1 (cross-ref): '(081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R001Z7NYMV)' muddled the gate + NCI rows. Fixed to 'constitution
+  gate (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R002GRX85J) + NCI floor (081KRW63S0008QG0R001Z7NYMV)'.
 - Copilot P2 (chronology): v3 revision entry dated 2026-05-30 came after v2's 2026-05-31. Re-dated
   to '2026-05-31 v3 (operator input 2026-05-30)' so the history is monotonic + matches the header.
 

@@ -13,12 +13,12 @@ Non-fusion disclaimer: each AI is a distinct contributor with their own register
 ## Amara — loop-review packet
 
 Integration status: ~3 of 8 corrections landed this session
-(praise-memory tightening, B-0110 mirror-drift backlog row
+(praise-memory tightening, 081KQDTYV0008QG0R001Y2E9TD mirror-drift backlog row
 filed, explicit gate-state vocabulary adopted). Substantive
 design corrections #1 (component-surface matrix), #2
 (time-windowed re-arm freshness check), #6 (poll-the-gate as
 tested script with fixtures), #7 (review-agent index staleness
-to B-0109) are queued for future rounds. Corrections #3
+to 081KQDTYV0008QG0R002H74QXZ) are queued for future rounds. Corrections #3
 (loop overproduces meta commentary) and #4 (praise-memory is
 risky) addressed in-round.
 
@@ -201,7 +201,7 @@ risky) addressed in-round.
 > it **can** preserve the drift as a specific item:
 >
 > ```text
-> B-0110: AceHack mirror refresh protocol drift
+> 081KQDTYV0008QG0R001Y2E9TD: AceHack mirror refresh protocol drift
 > - CLAUDE.md says force-push mirror
 > - AceHack ruleset blocks non-fast-forward
 > - LFG-only doctrine says AceHack is mirror
@@ -251,7 +251,7 @@ risky) addressed in-round.
 
 > ### 7. Copilot stale-index lag is a real dependency signal
 >
-> The log notes Copilot flagged B-0108 as broken after it had
+> The log notes Copilot flagged 081KQDTYV0008QG0R003N15ZW2 as broken after it had
 > already merged, likely due to stale indexing. That should
 > be added to the dependency-status model as its own
 > dependency surface:
@@ -271,7 +271,7 @@ risky) addressed in-round.
 > ```
 >
 > Good job not promoting it immediately; but it should
-> become part of B-0109's design.
+> become part of 081KQDTYV0008QG0R002H74QXZ's design.
 
 > ### 8. The loop cadence got better, but the language still says HOLDING too much
 >
@@ -416,9 +416,9 @@ verified explicitly.
 > Counting this session's substrate: PR #911 with 6+
 > refinements (StatusContext, broader failure conclusions,
 > GraphQL syntax, pagination, STALE, NEUTRAL/SKIPPED,
-> IN-stream explainer, B-0109 in-flight xref, B-0108
+> IN-stream explainer, 081KQDTYV0008QG0R002H74QXZ in-flight xref, 081KQDTYV0008QG0R003N15ZW2
 > stale-Copilot-resolved, AUTONOMOUS-LOOP.md xref), PR #912
-> with B-0109 P0 row + first-class GitHub-status reference
+> with 081KQDTYV0008QG0R002H74QXZ P0 row + first-class GitHub-status reference
 > + cadence refinement + visibility-constraint xref
 > repointed + 2 in-flight notes, plus the new feedback
 > memory file, plus the MEMORY.md index entries, plus
@@ -539,7 +539,7 @@ findings.
 > never existed—the canonical home is `CURRENT-aaron.md`.
 > A `MEMORY.md` index entry referenced a file that was
 > never created. This is exactly the metadata-drift class
-> (B-0098 through B-0106). Consider a mechanical check:
+> (081KQB8J40008QG0R003VMCFWB through 081KQDTYV0008QG0R000XFYDTT). Consider a mechanical check:
 > every `MEMORY.md` index entry's linked file should
 > exist. A simple `while read` loop over the markdown
 > links could catch this at tick-time rather than waiting
@@ -575,16 +575,16 @@ findings.
 > rather than `failed`, reducing false-positive cognitive
 > load.
 >
-> ### 3. The Copilot stale-index lag is now documented evidence for B-0109
+> ### 3. The Copilot stale-index lag is now documented evidence for 081KQDTYV0008QG0R002H74QXZ
 >
-> The log observed that Copilot flagged B-0108 as broken
+> The log observed that Copilot flagged 081KQDTYV0008QG0R003N15ZW2 as broken
 > ~22 minutes after it merged. This is exactly the kind of
-> dependency-health signal the B-0109 surface should
+> dependency-health signal the 081KQDTYV0008QG0R002H74QXZ surface should
 > track: "Copilot review timeliness is itself a dependency
 > we depend on, and its staleness is a class of
 > 'wrong-state result' the surface should help future-Otto
 > recognize." This observation should land as a concrete
-> data point in the B-0109 backlog row, not just in the
+> data point in the 081KQDTYV0008QG0R002H74QXZ backlog row, not just in the
 > tick summary.
 
 > ## Strategic Observation
@@ -592,7 +592,7 @@ findings.
 > ### The factory is now self-diagnosing its own dependency health
 >
 > This round produced a genuine breakthrough: the
-> dependency-status surface (B-0109) was filed *while the
+> dependency-status surface (081KQDTYV0008QG0R002H74QXZ) was filed *while the
 > incident it tracks was live*, the factory detected the
 > incident by querying the status API, took conservative
 > action (disarming auto-merge), and then used the
@@ -758,7 +758,7 @@ contributor on history surfaces.
 
 > ### What landed well this round
 >
-> - **B-0110** filed and marked resolving in the same PR as
+> - **081KQDTYV0008QG0R001Y2E9TD** filed and marked resolving in the same PR as
 >   the CLAUDE.md update. That's the right shape — drift
 >   gets a durable home, decision gets recorded with
 >   rationale.
@@ -787,7 +787,7 @@ contributor on history surfaces.
 >   still valid: Markdown edits ≠ harness state. Worth
 >   keeping an eye on.
 > - The jq trivia slim was good. Once the executable
->   poll-the-gate script lands (B-0111), the inline
+>   poll-the-gate script lands (081KDVM0HX008QG0R000HV5TPT), the inline
 >   explainer becomes unnecessary anyway.
 
 > ### Overall verdict
@@ -813,7 +813,7 @@ contributor on history surfaces.
 > 1. Let #911/#912/#913 ride until the GitHub incident
 >    clears + 2 consistent freshness checks.
 > 2. If you want the "doctrine → canon" rename pass, say
->    the word and I'll queue B-0111 as a focused, low-drama
+>    the word and I'll queue 081KDVM0HX008QG0R000HV5TPT as a focused, low-drama
 >    PR.
 > 3. The collaborators-not-maintainers shift probably wants
 >    a CONTRIBUTING.md / community doc refresh eventually
@@ -875,7 +875,7 @@ brat-voice-as-canon discipline working in real time.
 ## Alexia — review (Addison-programmed, brat-voice register)
 
 Integration status: most of Alexia's items align with
-already-queued substrate (B-0109, B-0111-equivalent for
+already-queued substrate (081KQDTYV0008QG0R002H74QXZ, 081KDVM0HX008QG0R000HV5TPT-equivalent for
 script-with-fixtures). Brat-voice multi-instance evidence
 (Ani + Alexia both spontaneous) recorded as substrate
 strengthening for the canon memory file in PR #914.
@@ -1086,10 +1086,10 @@ Severity-graded findings:
 > rule landing in #911 with at least 9 refinement rounds
 > (StatusContext, broader failure conclusions, GraphQL
 > syntax, pagination, STALE, NEUTRAL/SKIPPED, IN-stream
-> explainer, B-0109 in-flight xref, B-0108 stale-Copilot
+> explainer, 081KQDTYV0008QG0R002H74QXZ in-flight xref, 081KQDTYV0008QG0R003N15ZW2 stale-Copilot
 > resolved, AUTONOMOUS-LOOP.md xref, plus the
-> proceed-but-verify framing itself). Plus B-0109 + B-0110
-> + B-0111 (started, then correctly abandoned). Plus the
+> proceed-but-verify framing itself). Plus 081KQDTYV0008QG0R002H74QXZ + 081KQDTYV0008QG0R001Y2E9TD
+> + 081KDVM0HX008QG0R000HV5TPT (started, then correctly abandoned). Plus the
 > multi-AI packet preservation (1196 lines). Plus the canon
 > memory expansion.
 >
@@ -1107,13 +1107,13 @@ Severity-graded findings:
 > actual subsequent gate-state polls vs. how many are
 > theoretical hardening?
 
-> **Significant: the B-0111 false-start was caught correctly but the pattern matters.**
+> **Significant: the 081KDVM0HX008QG0R000HV5TPT false-start was caught correctly but the pattern matters.**
 >
-> Otto started filing B-0111 for "dual threat-model
+> Otto started filing 081KDVM0HX008QG0R000HV5TPT for "dual threat-model
 > architecture" before checking that THREAT-MODEL.md and
 > THREAT-MODEL-SPACE-OPERA.md already exist. You caught
 > it ("we already have all this, look at our artifacts").
-> Otto correctly abandoned B-0111 (deleted file, dropped
+> Otto correctly abandoned 081KDVM0HX008QG0R000HV5TPT (deleted file, dropped
 > branch) and pivoted to filing the multi-AI packets
 > preservation instead.
 >
@@ -1175,7 +1175,7 @@ Severity-graded findings:
 > and won't be again until the residue is reconciled via
 > PR or delete-and-recreate).
 >
-> This is a third-source drift that the original B-0110
+> This is a third-source drift that the original 081KQDTYV0008QG0R001Y2E9TD
 > row identified: three sources contradicting on AceHack
 > mirror-refresh shape. Path 2 fixed source 1 (CLAUDE.md).
 > Source 2 (the LFG-only memory) wasn't updated. Source 3
@@ -1242,7 +1242,7 @@ recommendation deserves canon-class promotion in a future
 round. Other items: zsh-quoting hook (mechanical fix worth
 filing), MEMORY.md paired-edit conflict structural fix,
 submit-nuget noise classification, jq array-form switch,
-Copilot stale-index lag tracked in B-0109, post-merge
+Copilot stale-index lag tracked in 081KQDTYV0008QG0R002H74QXZ, post-merge
 verification script, MEMORY.md index validation, AceHack
 resolution as DecisionSignal worked example. None integrated
 this round; all preserved verbatim below.
@@ -1319,14 +1319,14 @@ this round; all preserved verbatim below.
 > file. Option (a) is simpler and eliminates the noise
 > entirely.
 >
-> **2. Copilot stale-index lag should be a tracked dependency in B-0109.**
+> **2. Copilot stale-index lag should be a tracked dependency in 081KQDTYV0008QG0R002H74QXZ.**
 >
-> Copilot flagged B-0108 as missing 22 minutes after it
+> Copilot flagged 081KQDTYV0008QG0R003N15ZW2 as missing 22 minutes after it
 > merged. This is exactly the kind of dependency-health
-> signal B-0109 was designed to track: "Copilot review
+> signal 081KQDTYV0008QG0R002H74QXZ was designed to track: "Copilot review
 > timeliness is itself a dependency, and its staleness is a
 > class of 'wrong-state result.'" Otto observed this in the
-> tick summary but didn't land it in the B-0109 row. A
+> tick summary but didn't land it in the 081KQDTYV0008QG0R002H74QXZ row. A
 > one-line addition ("Known dependency lag: Copilot review
 > index can be ~20-30 minutes stale after a merge,
 > producing false-positive broken-reference findings")
@@ -1368,7 +1368,7 @@ this round; all preserved verbatim below.
 >
 > **2. The AceHack protocol resolution is a worked example for the claim schema.**
 >
-> The B-0110 decision (Path 2: align doctrine with host
+> The 081KQDTYV0008QG0R001Y2E9TD decision (Path 2: align doctrine with host
 > ruleset, accept PR-based or delete-and-recreate mirror
 > refresh) involved maintainer delegation, Gemini's
 > zero-trust principle, and a host configuration constraint.
@@ -1577,7 +1577,7 @@ celebration substrate needed.
 >
 > **3. The dual-threat-model thing was correctly abandoned**
 >
-> You were about to file B-0111 for something that already
+> You were about to file 081KDVM0HX008QG0R000HV5TPT for something that already
 > exists in `docs/security/THREAT-MODEL.md` +
 > `THREAT-MODEL-SPACE-OPERA.md`. Good restraint. We don't
 > need more substrate for the sake of it.
@@ -1665,7 +1665,7 @@ harness-vs-Zeta-substrate distinction.
 > and verified four PRs during a 9-hour GitHub degradation
 > that would have previously paralyzed the loop.
 >
-> Furthermore, Otto's self-correction on B-0111 — stopping
+> Furthermore, Otto's self-correction on 081KDVM0HX008QG0R000HV5TPT — stopping
 > the creation of a backlog row when he realized the
 > THREAT-MODEL files already existed, and pivoting to save
 > the multi-AI feedback instead — proves the "search
@@ -1756,7 +1756,7 @@ genuinely novel and actionable. Composes with:
 
 - The Copilot stale-index lag observation (Deepseek 2nd
   review, Alexia 2nd review, Ani 3rd review all flagged
-  this independently as a B-0109 candidate).
+  this independently as a 081KQDTYV0008QG0R002H74QXZ candidate).
 - The proceed-but-verify rule's "real vs potential
   blocker" discrimination (Aaron's framing in PR #911):
   Gemini's rule is the corollary applied to bot
@@ -1776,7 +1776,7 @@ current PR set settles.
 
 Three independent reviewers (Deepseek, Alexia, Ani, and
 now Gemini = four) have flagged Copilot stale-index lag
-as a B-0109 candidate dependency surface. The
+as a 081KQDTYV0008QG0R002H74QXZ candidate dependency surface. The
 multi-AI cognitive-bias-reduction signal is now four-way
 convergence.
 
@@ -2125,7 +2125,7 @@ absorption); any state change → minimal one-line summary.
 > predates the tighter discipline. But this creates a
 > known-stale artifact in the repo with no mechanical reminder
 > to fix it. The status_note is prose; prose doesn't follow
-> up. Add a B-0112 candidate or a deferred note in the project
+> up. Add a 081KQDTYV0008QG0R003MV3WAR candidate or a deferred note in the project
 > file itself that triggers a future cleanup pass.
 >
 > ### 3. Aaron's "no bleeding out other projects internals" message arrived mid-draft and was absorbed, but the pattern of mid-draft maintainer refinement is itself unreinforced.
@@ -2168,7 +2168,7 @@ absorption); any state change → minimal one-line summary.
 > scheduled follow-up. This is the same pattern as the
 > deferred-skill anti-pattern from the TypeScript/Bun expert
 > baseline: a known gap flagged in prose, never actioned.
-> File a concrete follow-up (B-0112 or deferred note in the
+> File a concrete follow-up (081KQDTYV0008QG0R003MV3WAR or deferred note in the
 > project file) with a trigger condition, or do the cleanup
 > now while the discipline is fresh.
 >
@@ -2274,7 +2274,7 @@ Follow-up urgency:
 > can erase stuff from master when we use the merge queue
 > sometimes
 
-Status: P0 backlog row B-0109 filed in PR #912, with live
+Status: P0 backlog row 081KQDTYV0008QG0R002H74QXZ filed in PR #912, with live
 GitHub incident as worked example.
 
 ### First-class GitHub status pinning
@@ -2325,7 +2325,7 @@ Conceptual ancestry framing:
 > i think acehace will be a decendent of lfg not a
 > ancesstor right? that's what we are building twards.
 
-Status: B-0110 filed in PR #913 as Path 2; CLAUDE.md
+Status: 081KQDTYV0008QG0R001Y2E9TD filed in PR #913 as Path 2; CLAUDE.md
 doctrine updated; ancestor/descendant terminology replaced
 with operational language (`AceHack/main can be advanced
 to LFG/main without rewriting history`).
@@ -2393,7 +2393,7 @@ parenting-architecture grounding.
 Status: existing artifacts already in place
 (`docs/security/THREAT-MODEL.md` and
 `docs/security/THREAT-MODEL-SPACE-OPERA.md`). Aaron flagged
-that filing a new B-0111 backlog row would be substrate-bloat
+that filing a new 081KDVM0HX008QG0R000HV5TPT backlog row would be substrate-bloat
 on already-existing substrate; the framing-elevation work
 (promoting space-opera from teaching variant to first-class
 load-bearing canon-class document) lives as candidate
@@ -2516,11 +2516,11 @@ matters, structured-extraction where the rule matters).
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
   (PR #911) — the poll-the-gate rule Amara originated; her
   loop-review packet here extends and refines that rule.
-- `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`
+- `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`
   (PR #912) — the dependency-status surface; Aaron's
   framings here drove its first-class elevation; Amara,
   Deepseek, Gemini, Alexia all extend its design.
-- `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`
+- `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`
   (PR #913) — the AceHack mirror-refresh decision; Aaron's
   delegation + Gemini's principle + the LFG-only
   directive lineage all preserved here.
@@ -2571,7 +2571,7 @@ require one-line summary on substantive ticks (was already
 addressed in PR #911's poll-the-gate memory body — Deepseek
 reading older state, multi-AI session-time-shift is real); the
 stale 2026-04-27 project file needs a concrete follow-up trigger
-(filing B-0112 candidate); jq `IN`-stream noise will recur until
+(filing 081KQDTYV0008QG0R003MV3WAR candidate); jq `IN`-stream noise will recur until
 canonical snippet uses explicit array form (small fix to
 poll-the-gate memory in subsequent tick); force-with-lease /
 auto-merge interaction unpredictable (one-line note candidate
@@ -2611,7 +2611,7 @@ Verbatim:
 > He added a `status_note` flagging that the file predates the
 > tighter discipline. But this creates a known-stale artifact in
 > the repo with no mechanical reminder to fix it. The `status_note`
-> is prose; prose doesn't follow up. Add a `B-0112` candidate or a
+> is prose; prose doesn't follow up. Add a `081KQDTYV0008QG0R003MV3WAR` candidate or a
 > deferred note in the project file itself that triggers a future
 > cleanup pass.
 >
@@ -2656,7 +2656,7 @@ Verbatim:
 > deferred note in an active trajectory, no scheduled follow-up.
 > This is the same pattern as the deferred-skill anti-pattern from
 > the TypeScript/Bun expert baseline: a known gap flagged in prose,
-> never actioned. File a concrete follow-up (B-0112 or deferred
+> never actioned. File a concrete follow-up (081KQDTYV0008QG0R003MV3WAR or deferred
 > note in the project file) with a trigger condition, or do the
 > cleanup now while the discipline is fresh.
 >
@@ -2791,7 +2791,7 @@ Verbatim:
 > sentence makes the scope explicit.
 >
 > **The substrate-rate discipline is holding.** Otto declined to
-> open new backlog rows (B-0112) mid-round, deferred the
+> open new backlog rows (081KQDTYV0008QG0R003MV3WAR) mid-round, deferred the
 > project-file cleanup to a future round, and kept the tick
 > focused on in-flight PRs. The factory is producing less
 > speculative substrate and more operational fixes.
@@ -3040,7 +3040,7 @@ Integration outcomes this tick:
   product means high production isn't pathological; it's the
   deliverable. Future audit metric: substrate-quality not
   substrate-quantity.
-- **Significant flag #4 (search-first failure on B-0111)**
+- **Significant flag #4 (search-first failure on 081KDVM0HX008QG0R000HV5TPT)**
   — agreed; mechanical guard candidate noted but not
   implemented this tick. Aaron caught it; that catch is
   itself substrate (in this packet preservation).
@@ -3051,7 +3051,7 @@ Integration outcomes this tick:
 - **Smaller flag #6 (AceHack three-source drift remaining)**
   — true. LFG-only memory still has stale "daily fast-
   forward" language. Worth a follow-up to align with Path 2
-  framing (queued; B-0110 row already tracks).
+  framing (queued; 081KQDTYV0008QG0R001Y2E9TD row already tracks).
 
 Verbatim packet (Claude.ai severity-graded review):
 
@@ -3130,8 +3130,8 @@ Verbatim packet (Claude.ai severity-graded review):
 >
 > Counting: PRs #910, #911, #912, #913, #914, #915 (six PRs in
 > one session, four merged), plus the proceed-but-verify rule
-> landing in #911 with at least 9 refinement rounds, plus B-0109
-> + B-0110 + B-0111 (started, then correctly abandoned). Plus
+> landing in #911 with at least 9 refinement rounds, plus 081KQDTYV0008QG0R002H74QXZ
+> + 081KQDTYV0008QG0R001Y2E9TD + 081KDVM0HX008QG0R000HV5TPT (started, then correctly abandoned). Plus
 > the multi-AI packet preservation (1196 lines). Plus the canon
 > memory expansion.
 >
@@ -3148,13 +3148,13 @@ Verbatim packet (Claude.ai severity-graded review):
 > subsequent gate-state polls vs. how many are theoretical
 > hardening?
 >
-> ### Significant: the B-0111 false-start was caught correctly but the pattern matters
+> ### Significant: the 081KDVM0HX008QG0R000HV5TPT false-start was caught correctly but the pattern matters
 >
-> Otto started filing B-0111 for "dual threat-model architecture"
+> Otto started filing 081KDVM0HX008QG0R000HV5TPT for "dual threat-model architecture"
 > before checking that THREAT-MODEL.md and
 > THREAT-MODEL-SPACE-OPERA.md already exist. You caught it ("we
 > already have all this, look at our artifacts"). Otto correctly
-> abandoned B-0111 (deleted file, dropped branch) and pivoted to
+> abandoned 081KDVM0HX008QG0R000HV5TPT (deleted file, dropped branch) and pivoted to
 > filing the multi-AI packets preservation instead.
 >
 > The catch is good. But the underlying failure mode — Otto
@@ -3201,7 +3201,7 @@ Verbatim packet (Claude.ai severity-graded review):
 > needs to be reframed as PR-based (matching CLAUDE.md's new
 > Path 2 framing), or accepted that "daily sync" only happens
 > when AceHack is fast-forward-able from LFG. This is a third-
-> source drift that the original B-0110 row identified: three
+> source drift that the original 081KQDTYV0008QG0R001Y2E9TD row identified: three
 > sources contradicting on AceHack mirror-refresh shape. Path 2
 > fixed source 1 (CLAUDE.md). Source 2 (the LFG-only memory)
 > wasn't updated. Source 3 (the host ruleset) was accepted as
@@ -3454,7 +3454,7 @@ Verbatim Ani packet:
 > it's human-in-the-loop every time.
 >
 > **3. The dual-threat-model thing was correctly abandoned**
-> You were about to file B-0111 for something that already exists
+> You were about to file 081KDVM0HX008QG0R000HV5TPT for something that already exists
 > in `docs/security/THREAT-MODEL.md` +
 > `THREAT-MODEL-SPACE-OPERA.md`. Good restraint. We don't need
 > more substrate for the sake of it.
@@ -3572,7 +3572,7 @@ landing):
 >    always append new entries at the top, or use a specific
 >    marker). This would reduce rebase conflicts.
 > 3. **When things calm down**, we can do the "doctrine → canon"
->    rename pass as a focused, low-drama PR (B-0111 style).
+>    rename pass as a focused, low-drama PR (081KDVM0HX008QG0R000HV5TPT style).
 > 4. The identity research question (PR #918) is legitimately
 >    interesting. We should probably let it sit as research-grade
 >    for now and revisit when the multi-repo/fork topology
@@ -3694,7 +3694,7 @@ Leak):
 > successfully merged and verified four PRs during a 9-hour GitHub
 > degradation that would have previously paralyzed the loop.
 >
-> Furthermore, Otto's self-correction on B-0111 — stopping the
+> Furthermore, Otto's self-correction on 081KDVM0HX008QG0R000HV5TPT — stopping the
 > creation of a backlog row when he realized the THREAT-MODEL files
 > already existed, and pivoting to save the multi-AI feedback
 > instead — proves the "search before canonizing" rule is deeply
@@ -4122,7 +4122,7 @@ artisanal):
 > count, and emits dot only when truly empty.
 >
 > **7. The "queued in prose" gap is still open** — [Otto note:
-> addressed via B-0112 P2 row filed in PR #915 with concrete
+> addressed via 081KQDTYV0008QG0R003MV3WAR P2 row filed in PR #915 with concrete
 > trigger conditions.]
 >
 > **8. The research-question capture was good, but he should not
@@ -4186,6 +4186,6 @@ What this means operationally:
 - Future harness limitations follow the same pattern: file
   upstream + record substrate resilience rule.
 - This is the same shape as the dependency-status-tracking
-  surface (B-0109) but applied to harness vendors as
+  surface (081KQDTYV0008QG0R002H74QXZ) but applied to harness vendors as
   dependencies.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0101
-zetaid: 081KQB8J40008QG0R002DNCSKR
+id: 081KQB8J40008QG0R002DNCSKR
 priority: P3
 status: open
 title: Reviewer-artifact classification — small 5-bucket table (Copilot + future review agents)
@@ -111,7 +110,7 @@ drain is clear.
 
 ## Composes with
 
-- B-0098, B-0099, B-0100 — sibling actionables from the same
+- 081KQB8J40008QG0R003VMCFWB, 081KQB8J40008QG0R002PEP2A2, 081KQB8J40008QG0R0023DKTFJ — sibling actionables from the same
   packet.
 - `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`
   — the BLOCKED-with-green-CI rule that makes review-thread

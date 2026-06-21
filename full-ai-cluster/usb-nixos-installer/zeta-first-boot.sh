@@ -13,7 +13,7 @@
 #   3. Once internet is up, exec `zeta-install $HOST` non-interactively
 #      (HOST read from /etc/zeta-firstboot.conf; defaults to control-plane)
 #
-# Why this exists: per B-0754, node-side typing was the second half of
+# Why this exists: per 081KSGS9H0008QG0R002T3BJ2R, node-side typing was the second half of
 # the cluster-install bandwidth wall (zflash one-touch on Mac, then ~8
 # commands of bandwidth-bad console typing on the node). This script
 # reduces node-side typing to:
@@ -25,7 +25,7 @@
 
 set -uo pipefail
 
-# B-0891: mirror first-boot + zeta-install progress to the serial UART.
+# 081KSNY2Z0008QG0R0008PN7RQ: mirror first-boot + zeta-install progress to the serial UART.
 # zeta-first-boot.service binds stdout to tty1 for the operator; QEMU/CI
 # harnesses poll ttyS0 (x86) or ttyAMA0 (aarch64). Kernel cmdline lists
 # console=tty1 last, so /dev/console is tty1 — tee there is a no-op for
@@ -48,12 +48,12 @@ HOST="${HOST:-control-plane}"
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 ETHERNET_WAIT_SECS="${ETHERNET_WAIT_SECS:-30}"
 ROLE_PROMPT_SECS="${ROLE_PROMPT_SECS:-10}"
-# B-0832 nmtui retry-prompt timeout — operator window to press 's' for
+# 081KSGS9H0008QG0R001Q2DH2H nmtui retry-prompt timeout — operator window to press 's' for
 # shell-drop OR any other key (or wait) for nmtui re-launch. Mirrors
 # the ROLE_PROMPT_SECS env-override pattern so the timeout is tunable
 # without source edits.
 NMTUI_RETRY_PROMPT_SECS="${NMTUI_RETRY_PROMPT_SECS:-10}"
-# B-0891: QEMU/ethernet-only hosts have no wl* iface — nmtui cannot help on serial.
+# 081KSNY2Z0008QG0R0008PN7RQ: QEMU/ethernet-only hosts have no wl* iface — nmtui cannot help on serial.
 NO_WIFI_EXTRA_WAIT_SECS="${NO_WIFI_EXTRA_WAIT_SECS:-90}"
 
 # ── Role pick: 10-sec single-keystroke prompt ─────────────────────────
@@ -62,7 +62,7 @@ NO_WIFI_EXTRA_WAIT_SECS="${NO_WIFI_EXTRA_WAIT_SECS:-90}"
 # to choose; any other key (or timeout) keeps the default.
 # ANSI 'reset terminal' escape — no external `clear` dependency,
 # works on bare tty without requiring `ncurses` + a TERM that
-# tput recognises. Fixes B-0754 iteration-1 'clear: command not
+# tput recognises. Fixes 081KSGS9H0008QG0R002T3BJ2R iteration-1 'clear: command not
 # found' from the systemd unit's minimal PATH.
 printf '\033c' || true
 cat <<EOF
@@ -115,7 +115,7 @@ has_wifi_hardware() {
 
 # ANSI 'reset terminal' escape — no external `clear` dependency,
 # works on bare tty without requiring `ncurses` + a TERM that
-# tput recognises. Fixes B-0754 iteration-1 'clear: command not
+# tput recognises. Fixes 081KSGS9H0008QG0R002T3BJ2R iteration-1 'clear: command not
 # found' from the systemd unit's minimal PATH.
 printf '\033c' || true
 cat <<EOF
@@ -144,7 +144,7 @@ if has_internet; then
 else
   if ! has_wifi_hardware; then
     echo
-    echo "[2/3] No wifi hardware — waiting up to ${NO_WIFI_EXTRA_WAIT_SECS}s for ethernet (B-0891 headless/QEMU)."
+    echo "[2/3] No wifi hardware — waiting up to ${NO_WIFI_EXTRA_WAIT_SECS}s for ethernet (081KSNY2Z0008QG0R0008PN7RQ headless/QEMU)."
     WAITED=0
     while ! has_internet; do
       if [[ "$WAITED" -ge "$NO_WIFI_EXTRA_WAIT_SECS" ]]; then
@@ -168,11 +168,11 @@ else
   read -n 1 -s -t 5 -p "  Press any key to launch nmtui (or wait 5s) ..." || true
   echo
   echo
-  # B-0832 nmtui auto-relaunch-on-no-internet loop (operator 2026-05-26):
+  # 081KSGS9H0008QG0R001Q2DH2H nmtui auto-relaunch-on-no-internet loop (operator 2026-05-26):
   #
   # Old behavior: launch nmtui once; if no internet on exit → drop_to_shell.
   # That broke the install flow when operator hit Esc to refresh the wifi
-  # scan (empirical 2026-05-26 1st USB physical-test session — see B-0832).
+  # scan (empirical 2026-05-26 1st USB physical-test session — see 081KSGS9H0008QG0R001Q2DH2H).
   #
   # New behavior: loop nmtui until either (a) has_internet succeeds OR
   # (b) operator explicitly requests shell-drop via 's' keystroke. Esc
@@ -186,7 +186,7 @@ else
   # Absolute path: defense-in-depth alongside the systemd unit's
   # environment.PATH override (set in configuration.nix on
   # systemd.services.zeta-first-boot.environment.PATH via lib.mkForce).
-  # Both defenses together fix B-0754 iteration-1 'nmtui: command not
+  # Both defenses together fix 081KSGS9H0008QG0R002T3BJ2R iteration-1 'nmtui: command not
   # found' (nmtui IS installed in the ISO via networkmanager in
   # systemPackages; the issue was PATH inheritance into the unit).
   NMTUI_ATTEMPTS=0

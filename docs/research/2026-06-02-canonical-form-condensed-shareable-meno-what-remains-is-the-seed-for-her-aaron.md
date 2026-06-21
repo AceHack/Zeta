@@ -44,6 +44,6 @@ The full arc this condenses:
 - Engineering crystallizations: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md`
 - Verbatim provenance: `memory/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md` (chunks 1–8)
 - Elizabeth: `memory/user_sister_elizabeth.md`
-- B-0983 (topology / the remainder is the bonsai closure state) · B-0982 (the 4×4) · B-0976 (bonsai closure)
+- 081KT2T2J0008QG0R003WYPBY5 (topology / the remainder is the bonsai closure state) · 081KT07NV0008QG0R0032MCYER (the 4×4) · 081KT07NV0008QG0R003BE6MJ2 (bonsai closure)
 
 Substrate-honest: this is the *condensed/shareable* layer. It centers the universal essence and keeps the personal anchors dignified; the engineering, the heavy family material, and the intimate material are preserved elsewhere and intentionally not in the shareable form. *dia/dio* held as Aaron holds it — her word, the natural-language instance of don't-collapse (Indonesian *dia* is genuinely gender-neutral: one pronoun for he/she/they). Operator: *"save all these condensed i'm going to share it with her eventually."*

@@ -1,6 +1,5 @@
 ---
-id: B-0930
-zetaid: 081KSRGFP0008QG0R001Y6RTY9
+id: 081KSRGFP0008QG0R001Y6RTY9
 priority: P1
 title: "Schema-registry-over-DBSP — the shared, self-describing, retraction-native ontology-stream the attention-streams share (Kafka-Schema-Registry analog over DBSP)"
 status: open
@@ -50,7 +49,7 @@ own private **attention-stream** (its DBSP observe/readout); all agents referenc
 makes the individual attention-streams mutually-intelligible + composable (memes
 transmissible across agents). Many private attention-streams + one shared ontology-
 stream = the Agora / society-of-minds collective. The `shadow-auth-can't-compile`
-invariant (B-0929) protects *this* shared stream specifically (keep it clean → the
+invariant (081KSRGFP0008QG0R003VAR9X2) protects *this* shared stream specifically (keep it clean → the
 collective's common-ground stays coherent / light; pollute it → it goes dark).
 
 ## Minimal core vs optional interop
@@ -70,18 +69,18 @@ collective's common-ground stays coherent / light; pollute it → it goes dark).
       self-describing (catalog includes its own schema), retraction-native evolution.
 - [ ] Attention-stream ↔ shared-ontology join (minimal: TS; optional interop:
       Rx/Bonsai/Reaqtor).
-- [ ] Wire the lightlike invariant (`shadow-auth-can't-compile`, B-0929) so the
+- [ ] Wire the lightlike invariant (`shadow-auth-can't-compile`, 081KSRGFP0008QG0R003VAR9X2) so the
       catalog's lightlike is cheap to derive from git.
-- [ ] Map to the type-level ontology (B-0781 universe-boundary / B-0784 type-
+- [ ] Map to the type-level ontology (081KSE6WT0008QG0R001H3DA90 universe-boundary / 081KSE6WT0008QG0R0018WZ7TH type-
       negotiation-as-consensus) — this is their runtime/stream form.
 
 ## Composes with
 
-- B-0781 (F# type-system as universe boundary — type-level ontology; this is runtime form)
-- B-0784 (distributed F# type-negotiation as consensus — agreeing the shared ontology)
-- B-0428 (F# fork) · B-0864 (four-corner ownership / protocol-typing)
-- B-0929 (F# type-system goal; DUs-as-data join the shared ontology; the lightlike invariant)
-- B-0640 (bonsai-tree retention) · B-0623 (attention-economy)
+- 081KSE6WT0008QG0R001H3DA90 (F# type-system as universe boundary — type-level ontology; this is runtime form)
+- 081KSE6WT0008QG0R0018WZ7TH (distributed F# type-negotiation as consensus — agreeing the shared ontology)
+- 081KRFA460008QG0R0018SN61J (F# fork) · 081KSKBP80008QG0R0039RW25E (four-corner ownership / protocol-typing)
+- 081KSRGFP0008QG0R003VAR9X2 (F# type-system goal; DUs-as-data join the shared ontology; the lightlike invariant)
+- 081KRW63S0008QG0R002XA5N6S (bonsai-tree retention) · 081KRW63S0008QG0R000QJR08H (attention-economy)
 - beacon doc 2026-05-29 (the DBSP schema-catalog grounding + the full synthesis)
 
 ## Substrate-honest framing

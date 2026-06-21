@@ -1,13 +1,12 @@
 ---
-id: B-0049.2
-zetaid: 081KR7JY10008QG0R003JSEMX7
+id: 081KR7JY10008QG0R003JSEMX7
 priority: P2
 status: closed
 title: Mystery schools Stage 1 — Mithraic mysteries bibliographic scaffold
 parent: 081KQ3HBZ0008QG0R0007CAGSP
 tier: gentle-catalog-research-no-claims
 effort: S
-ask: B-0049 Stage 1 second family; CATALOG-ONLY register — no filters, no claim-staking, no operational-resonance promotion
+ask: 081KQ3HBZ0008QG0R0007CAGSP Stage 1 second family; CATALOG-ONLY register — no filters, no claim-staking, no operational-resonance promotion
 created: 2026-05-10
 last_updated: 2026-05-16
 depends_on: []
@@ -16,14 +15,14 @@ tags: [mystery-schools, mithraic, mithras, roman-empire, initiation, tauroctony,
 type: friction-reducer
 ---
 
-# B-0049.2 — Mystery schools Stage 1: Mithraic mysteries bibliographic scaffold
+# 081KR7JY10008QG0R003JSEMX7 — Mystery schools Stage 1: Mithraic mysteries bibliographic scaffold
 
 ## Scope
 
-Stage 1 of the mystery-schools track from B-0049, second tradition family (Mithraic).
+Stage 1 of the mystery-schools track from 081KQ3HBZ0008QG0R0007CAGSP, second tradition family (Mithraic).
 
 **Stage 1 deliverable:** `docs/substrate-shelves/mystery-schools-mithraic.md` — bibliographic
-catalog for the Mithraic tradition. Filters F1/F2/F3 intentionally OFF per B-0049 register
+catalog for the Mithraic tradition. Filters F1/F2/F3 intentionally OFF per 081KQ3HBZ0008QG0R0007CAGSP register
 discipline. No structural-resonance promotion without Aaron's per-instance confirm. Tone: gentle
 survey of shared human inheritance. Effort: S (one family).
 
@@ -37,21 +36,21 @@ Searched:
   in PR #2408 (in-flight). No Mithraic shelf exists.
 - `docs/research/` — no Mithraic or mystery-schools research docs committed.
 - Skill router — no Mithraic or mystery-schools specific skill. No prior skill coverage.
-- `docs/backlog/P2/B-0049*.md` — parent row + B-0049.1 (Eleusinian, filed in PR #2408).
-  B-0049.2 (this row) is the next independent Stage-1 family.
+- `docs/backlog/P2/081KQ3HBZ0008QG0R0007CAGSP*.md` — parent row + 081KR50HA0008QG0R00257PHRR (Eleusinian, filed in PR #2408).
+  081KR7JY10008QG0R003JSEMX7 (this row) is the next independent Stage-1 family.
 - `git log --diff-filter=D` for mystery-schools or Mithraic substrate — none found.
-- B-0049 body names Mithraic as one of the five Stage-1 families
+- 081KQ3HBZ0008QG0R0007CAGSP body names Mithraic as one of the five Stage-1 families
   (Roman Empire, 1st–4th c CE, seven grades).
 
 **Verdict:** no prior Mithraic shelf exists; this is genuinely inaugural.
 
 ### Dependency restructure
 
-- `depends_on: []` — Stage 1 Mithraic family is independent of B-0049.1 Eleusinian.
-- Parent B-0049 updated with `children:` list in PR #2408; B-0049.2 is pre-named there.
-- Composes-with pointer backfilled: B-0049.1 ↔ B-0049.2 (sibling Stage-1 families).
-- Stage 2 comparative-religion framework map (B-0049.6) will depend on this row and
-  B-0049.1, B-0049.3, B-0049.4, B-0049.5.
+- `depends_on: []` — Stage 1 Mithraic family is independent of 081KR50HA0008QG0R00257PHRR Eleusinian.
+- Parent 081KQ3HBZ0008QG0R0007CAGSP updated with `children:` list in PR #2408; 081KR7JY10008QG0R003JSEMX7 is pre-named there.
+- Composes-with pointer backfilled: 081KR50HA0008QG0R00257PHRR ↔ 081KR7JY10008QG0R003JSEMX7 (sibling Stage-1 families).
+- Stage 2 comparative-religion framework map (081KQ3HBZ0008QG0R0007CAGSP.6) will depend on this row and
+  081KR50HA0008QG0R00257PHRR, 081KQ3HBZ0008QG0R0007CAGSP.3, 081KQ3HBZ0008QG0R0007CAGSP.4, 081KQ3HBZ0008QG0R0007CAGSP.5.
 
 ## Deliverable
 
@@ -61,14 +60,14 @@ Searched:
 
 | Stage | Row | Scope | Status |
 |-------|-----|-------|--------|
-| Stage 1 — Eleusinian scaffold | B-0049.1 | `docs/substrate-shelves/mystery-schools-eleusinian.md` | in-flight (PR #2408) |
-| Stage 1 — Mithraic scaffold | B-0049.2 (this row) | `docs/substrate-shelves/mystery-schools-mithraic.md` | open → done on PR merge |
-| Stage 1 — Hermetic scaffold | B-0049.3 (to be filed) | `docs/substrate-shelves/mystery-schools-hermetic.md` | independent |
-| Stage 1 — Pythagorean/Neoplatonic scaffold | B-0049.4 (to be filed) | `docs/substrate-shelves/mystery-schools-pythagorean.md` | independent |
-| Stage 1 — Dionysian/Orphic scaffold | B-0049.5 (to be filed) | `docs/substrate-shelves/mystery-schools-dionysian-orphic.md` | independent |
-| Stage 2 — comparative-religion framework map | B-0049.6 (to be filed) | `docs/substrate-shelves/comparative-religion-methods.md` | blocked on B-0049.1–5 |
-| Stage 3 — history-of-religion lineage diagram | B-0049.7 (to be filed) | `docs/substrate-shelves/history-of-religion-lineage.md` | blocked on B-0049.6 |
-| Stage 4 — structural-resonance notings (conditional) | B-0049.8+ (on Aaron request only) | per-noting entries | requires explicit Aaron per-noting confirm |
+| Stage 1 — Eleusinian scaffold | 081KR50HA0008QG0R00257PHRR | `docs/substrate-shelves/mystery-schools-eleusinian.md` | in-flight (PR #2408) |
+| Stage 1 — Mithraic scaffold | 081KR7JY10008QG0R003JSEMX7 (this row) | `docs/substrate-shelves/mystery-schools-mithraic.md` | open → done on PR merge |
+| Stage 1 — Hermetic scaffold | 081KQ3HBZ0008QG0R0007CAGSP.3 (to be filed) | `docs/substrate-shelves/mystery-schools-hermetic.md` | independent |
+| Stage 1 — Pythagorean/Neoplatonic scaffold | 081KQ3HBZ0008QG0R0007CAGSP.4 (to be filed) | `docs/substrate-shelves/mystery-schools-pythagorean.md` | independent |
+| Stage 1 — Dionysian/Orphic scaffold | 081KQ3HBZ0008QG0R0007CAGSP.5 (to be filed) | `docs/substrate-shelves/mystery-schools-dionysian-orphic.md` | independent |
+| Stage 2 — comparative-religion framework map | 081KQ3HBZ0008QG0R0007CAGSP.6 (to be filed) | `docs/substrate-shelves/comparative-religion-methods.md` | blocked on 081KR50HA0008QG0R00257PHRR–5 |
+| Stage 3 — history-of-religion lineage diagram | 081KQ3HBZ0008QG0R0007CAGSP.7 (to be filed) | `docs/substrate-shelves/history-of-religion-lineage.md` | blocked on 081KQ3HBZ0008QG0R0007CAGSP.6 |
+| Stage 4 — structural-resonance notings (conditional) | 081KQ3HBZ0008QG0R0007CAGSP.8+ (on Aaron request only) | per-noting entries | requires explicit Aaron per-noting confirm |
 
 ## Resolution
 
@@ -81,11 +80,11 @@ Closed 2026-05-16 via audit-triage discovery of substrate drift:
   matches row's filed date), but the row's `status: open` was never updated.
 - **Surfaced by**: `tools/hygiene/audit-backlog-status-drift.ts` candidate
   list + manual existence + content-coverage check.
-- **Composes with**: sibling B-0049.1 (Eleusinian) Stage-1 scaffold shipped
-  via PR #2408; B-0049.2 follows the same pattern.
+- **Composes with**: sibling 081KR50HA0008QG0R00257PHRR (Eleusinian) Stage-1 scaffold shipped
+  via PR #2408; 081KR7JY10008QG0R003JSEMX7 follows the same pattern.
 
-Stage 1 catalog complete for the Mithraic family. Stage 2+ work (B-0049.6
-comparative-religion framework, B-0049.7 lineage diagram, B-0049.8+
+Stage 1 catalog complete for the Mithraic family. Stage 2+ work (081KQ3HBZ0008QG0R0007CAGSP.6
+comparative-religion framework, 081KQ3HBZ0008QG0R0007CAGSP.7 lineage diagram, 081KQ3HBZ0008QG0R0007CAGSP.8+
 structural-resonance notings) is downstream of all five Stage-1 families
 shipping (see Staging context table above) and remains open.
 

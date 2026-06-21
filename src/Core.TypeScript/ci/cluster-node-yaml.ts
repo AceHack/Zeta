@@ -1,6 +1,6 @@
 /**
- * B-0831 slice 2 — ClusterNode registration YAML shape checks.
- * Mirrors zeta-install.sh Step 6.9 / B-0813 schema fields.
+ * 081KSGS9H0008QG0R0011BC7T2 slice 2 — ClusterNode registration YAML shape checks.
+ * Mirrors zeta-install.sh Step 6.9 / 081KSGS9H0008QG0R002K93MWX schema fields.
  */
 
 export interface ClusterNodeYamlCheck {

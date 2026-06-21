@@ -6,27 +6,27 @@ name: razor-cadence
 # cold-start check. The trigger ages and stays visible until explicitly
 # resolved.
 #
-# Per docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md:
+# Per docs/backlog/P1/081KQR4HQ0008QG0R001GAD29A-github-actions-razor-cadence-trigger-aaron-2026-05-04.md:
 # the operationalization of the razor-cadence rule. Without an external
 # trigger, the cadence depends on agent-remembering-to-check, which
 # empirically does not happen reliably. This workflow IS the mechanization.
 #
-# Carved sentence (from B-0192):
+# Carved sentence (from 081KQR4HQ0008QG0R001GAD29A):
 #   "Encoding rules without mechanizing them produces a memory of failures,
 #   not prevention. GitHub Actions on schedule fires whether or not any
 #   AI exists; the next wake-time agent picks up the artifact. The trigger
 #   ages and stays visible; the discipline does not."
 #
 # Composes with:
-#  - B-0190 (memory substrate-engineering trajectory) -- trajectory-review
+#  - 081KQR4HQ0008QG0R001909FPT (memory substrate-engineering trajectory) -- trajectory-review
 #    action will live alongside this one, scheduled separately.
-#  - B-0191 (orchestrator branch-verify mechanization) -- pre-commit hooks
+#  - 081KQR4HQ0008QG0R002YNV361 (orchestrator branch-verify mechanization) -- pre-commit hooks
 #    are the per-commit half; this is the cadence half.
 #  - feedback_dialectical_unfalsifiability_detection_razor_extension_*.md
 #    -- Test 2 of the razor (what observation would falsify) is one of
 #    the cadence-checklist items.
 #
-# Out of scope (per B-0192): razor-content authoring (what the razor
+# Out of scope (per 081KQR4HQ0008QG0R001GAD29A): razor-content authoring (what the razor
 # reviews actually check) is per-rule and not part of this trigger
 # mechanization. The workflow surfaces a visible artifact; the agent
 # picking it up runs the actual razor pass.

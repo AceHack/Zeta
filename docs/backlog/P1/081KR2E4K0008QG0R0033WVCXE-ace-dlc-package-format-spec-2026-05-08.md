@@ -1,6 +1,5 @@
 ---
-id: B-0287
-zetaid: 081KR2E4K0008QG0R0033WVCXE
+id: 081KR2E4K0008QG0R0033WVCXE
 priority: P1
 status: closed
 closed: 2026-05-08
@@ -15,7 +14,7 @@ decomposition: atomic
 owners: [architect, public-api-designer]
 ---
 
-# B-0287 — DLC package format
+# 081KR2E4K0008QG0R0033WVCXE — DLC package format
 
 Define the package format for distributable kernel extensions.
 Content: model weights, policy files, guardian config.

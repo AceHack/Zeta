@@ -1,11 +1,10 @@
 ---
-id: B-0750
-zetaid: 081KSE6WT0008QG0R003YYC9PV
+id: 081KSE6WT0008QG0R003YYC9PV
 priority: P2
 status: open
 created: 2026-05-25
 last_updated: 2026-05-26
-title: Agent worktree hygiene — rule-landing + substrate-engineering mechanization target — periodic cleanup tooling + worktree-pool handoff to B-0558 plus PR #5019 clone-architecture sibling; operator's 'we need to fix this mess yall always stepping on each other and me constantly' anchor 2026-05-25 (37 worktrees mass-cleaned + rule landed simultaneously)
+title: Agent worktree hygiene — rule-landing + substrate-engineering mechanization target — periodic cleanup tooling + worktree-pool handoff to 081KRQ1AB0008QG0R001KQ9S4B plus PR #5019 clone-architecture sibling; operator's 'we need to fix this mess yall always stepping on each other and me constantly' anchor 2026-05-25 (37 worktrees mass-cleaned + rule landed simultaneously)
 domain: ops-tooling
 ferried_by: aaron
 owners: [aaron]
@@ -18,11 +17,11 @@ related_substrate:
 tags: [agent-worktree-hygiene, multi-agent-worktree-contention, operator-unblocking, cleanup-tooling, worktree-pool-handoff, b0530-compose, never-hold-main, substrate-engineering-mechanization-target]
 ---
 
-# B-0750 — Agent worktree hygiene mechanization target
+# 081KSE6WT0008QG0R003YYC9PV — Agent worktree hygiene mechanization target
 
 ## Carved blade
 
-> Operator 2026-05-25: *"i'm stuck (max) ➜ Zeta git:(lior-archive-prs-2026-05-26) ✗ git checkout main → fatal: 'main' is already used by worktree at '/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess yall always stepping on each other and me constantly."* The proximate cause was 37 agent worktrees from one substrate-cascade day, including one peer-agent worktree holding `[main]` at stale SHA. Mass-cleanup unblocked + the agent-worktree-hygiene rule landed simultaneously, but the substrate-engineering target is mechanization: periodic cleanup tooling (auto-prune post-PR-merge) plus an ownership architecture handoff. The older worktree-pool primitive remains in B-0558; the per-agent isolated-clones architecture in PR #5019 supersedes the pool as the preferred architecture for future agent isolation, but is not listed in `composes_with` until its backlog row is main-visible. Until mechanization lands, agent-side compliance with the rule operates the discipline.
+> Operator 2026-05-25: *"i'm stuck (max) ➜ Zeta git:(lior-archive-prs-2026-05-26) ✗ git checkout main → fatal: 'main' is already used by worktree at '/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess yall always stepping on each other and me constantly."* The proximate cause was 37 agent worktrees from one substrate-cascade day, including one peer-agent worktree holding `[main]` at stale SHA. Mass-cleanup unblocked + the agent-worktree-hygiene rule landed simultaneously, but the substrate-engineering target is mechanization: periodic cleanup tooling (auto-prune post-PR-merge) plus an ownership architecture handoff. The older worktree-pool primitive remains in 081KRQ1AB0008QG0R001KQ9S4B; the per-agent isolated-clones architecture in PR #5019 supersedes the pool as the preferred architecture for future agent isolation, but is not listed in `composes_with` until its backlog row is main-visible. Until mechanization lands, agent-side compliance with the rule operates the discipline.
 
 ## Origin
 
@@ -54,24 +53,24 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 - TS script at `tools/worktree/cleanup-stale-agent-worktrees.ts` (or similar)
 - Audits all worktrees; classifies per-worktree (SAFE: no uncommitted, branch PR merged or stale > N days; DIRTY: has uncommitted; ACTIVE: PR open + recent commits)
 - Runs periodically (via cron or harness hook) — agents inherit clean state automatically
-- Reports cleanup actions to provenance chain (B-0732 Layer 1) for audit
-- Composes with B-0530 cron-sentinel mutex semantics
+- Reports cleanup actions to provenance chain (081KSE6WT0008QG0R002YBWBB1 Layer 1) for audit
+- Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel mutex semantics
 - Acceptance: tool exists; runs successfully; at least one cycle of auto-cleanup demonstrated
 
-### Scope item 2 — Worktree-pool primitive handoff (B-0558 + PR #5019)
+### Scope item 2 — Worktree-pool primitive handoff (081KRQ1AB0008QG0R001KQ9S4B + PR #5019)
 
-- B-0558 already owns the original worktree-pool primitive
+- 081KRQ1AB0008QG0R001KQ9S4B already owns the original worktree-pool primitive
   (pre-allocated sideticks per Otto identity; PR #3894 archive:
   `docs/pr-discussions/PR-3894-backlog-b-0558-worktree-pool-primitive-re-land-of-3817-backl.md`)
 - PR #5019 (per-agent isolated clones architecture) supersedes a
   shared worktree pool as the preferred architecture for per-agent
   isolation. It is referenced by PR URL/number here, not frontmatter
   `composes_with`, because its backlog row is not yet main-visible.
-- This B-0750 row therefore tracks only the hygiene delta: agents must
+- This 081KSE6WT0008QG0R003YYC9PV row therefore tracks only the hygiene delta: agents must
   not hold `main`, must not use operator paths, and must clean up owned
   worktrees after merge/abandon
-- Any future pool work should compose through B-0558 or be explicitly
-  deferred under the PR #5019 clone architecture; B-0750 should not
+- Any future pool work should compose through 081KRQ1AB0008QG0R001KQ9S4B or be explicitly
+  deferred under the PR #5019 clone architecture; 081KSE6WT0008QG0R003YYC9PV should not
   grow a second pool implementation track
 
 ### Scope item 3 — Post-PR-merge auto-cleanup hook
@@ -79,7 +78,7 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 - GitHub Action that fires on PR merge
 - Identifies the branch + finds any local worktree pointing to that branch (across all agent machines via shared state mechanism)
 - Triggers cleanup (via bus envelope OR direct webhook) per-machine
-- Composes with B-0732 Layer 1 provenance + B-0746 (GitHub PR mechanics lessons)
+- Composes with 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance + 081KSE6WT0008QG0R0025QPP05 (GitHub PR mechanics lessons)
 - Acceptance: PR merge → corresponding worktrees cleaned automatically within N hours
 
 ### Scope item 4 — Operator-checkout-path protection
@@ -99,11 +98,11 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 ## What's NOT in scope (deferred)
 
 - **Cross-machine agent worktree coordination** — if agents run on different machines + share git via push/pull, the worktrees are per-machine; cross-machine cleanup is future scope
-- **New worktree-pool implementation** — B-0558 owns the historical
+- **New worktree-pool implementation** — 081KRQ1AB0008QG0R001KQ9S4B owns the historical
   pool primitive; PR #5019 per-agent clones supersede the shared-pool
   approach for new architecture work
 - **Operator's own worktree creation** — operator can always create worktrees anywhere; rule applies to agents only
-- **Automated branch deletion** — separate scope; depends on PR-mergedness + downstream dependencies (per B-0741 fork interop)
+- **Automated branch deletion** — separate scope; depends on PR-mergedness + downstream dependencies (per 081KSE6WT0008QG0R002CC6314 fork interop)
 - **Repo-level git config for worktree-pool defaults** — future scope; would require operator-side config buy-in
 
 ## Composes with .claude/rules/
@@ -116,15 +115,15 @@ Plus specific cleanup commands (audit / per-worktree clean check / mass-remove s
 
 ## Composes with backlog substrate
 
-- **B-0530** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope; this row's cleanup discipline composes
-- **B-0558** (worktree-pool primitive per Otto identity) — owns the
-  historical pool design; B-0750 narrows to hygiene + cleanup delta
+- **081KRMEXM0008QG0R000X1PPGC** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope; this row's cleanup discipline composes
+- **081KRQ1AB0008QG0R001KQ9S4B** (worktree-pool primitive per Otto identity) — owns the
+  historical pool design; 081KSE6WT0008QG0R003YYC9PV narrows to hygiene + cleanup delta
 - **PR #5019** (per-agent isolated clones) — supersedes shared pool
   direction as the preferred isolation architecture; intentionally not
   in `composes_with` until its B-row exists on main
-- **B-0732** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events
-- **B-0737** (zflash empirical anchor) — operator was trying to use zflash when the worktree mess blocked them; concrete pain
-- **B-0746** (GitHub force-push lesson) — related sibling failure mode at GitHub-state scope
+- **081KSE6WT0008QG0R002YBWBB1** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events
+- **081KSE6WT0008QG0R003WZAQKV** (zflash empirical anchor) — operator was trying to use zflash when the worktree mess blocked them; concrete pain
+- **081KSE6WT0008QG0R0025QPP05** (GitHub force-push lesson) — related sibling failure mode at GitHub-state scope
 
 ## Empirical anchor — 2026-05-25 session
 

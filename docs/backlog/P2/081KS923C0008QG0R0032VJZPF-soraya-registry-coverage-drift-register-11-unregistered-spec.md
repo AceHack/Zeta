@@ -1,6 +1,5 @@
 ---
-id: B-0709
-zetaid: 081KS923C0008QG0R0032VJZPF
+id: 081KS923C0008QG0R0032VJZPF
 priority: P2
 status: open
 title: "Soraya round-42 hand-off — register 11 unregistered formal-verification specs in verification-registry.md (Class 0 drift)"
@@ -18,7 +17,7 @@ composes_with:
   - docs/research/proof-tool-coverage.md
 ---
 
-# B-0709 — Register 11 unregistered formal-verification specs (Soraya round-42 hand-off)
+# 081KS923C0008QG0R0032VJZPF — Register 11 unregistered formal-verification specs (Soraya round-42 hand-off)
 
 ## Origin
 

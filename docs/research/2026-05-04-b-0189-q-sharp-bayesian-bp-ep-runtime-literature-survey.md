@@ -1,6 +1,6 @@
-# B-0189 Literature Survey — Q# Runtime Bayesian Belief Propagation / Expectation Propagation
+# 081KQR4HQ0008QG0R002933PRR Literature Survey — Q# Runtime Bayesian Belief Propagation / Expectation Propagation
 
-Scope: Acceptance-criterion #1 of B-0189 — literature survey across (a) BP/EP variants in QEC decoding, (b) probabilistic-programming + quantum intersections, (c) quantum-inspired classical algorithms, (d) tensor-network methods (BP-adjacent), and (e) gap-identification for Aaron's claim.
+Scope: Acceptance-criterion #1 of 081KQR4HQ0008QG0R002933PRR — literature survey across (a) BP/EP variants in QEC decoding, (b) probabilistic-programming + quantum intersections, (c) quantum-inspired classical algorithms, (d) tensor-network methods (BP-adjacent), and (e) gap-identification for Aaron's claim.
 Attribution: Otto (Zeta factory Claude instance) drafting; Aaron originated the claim being surveyed; sources cited inline with WebSearch dates.
 Operational status: research-grade
 Non-fusion disclaimer: This document surveys external literature and identifies a research gap. It is not a fusion with any third-party project, framework, or roadmap. All cited works belong to their respective authors and projects. Zeta's relationship to Q#, QIR, and the surveyed literature is consumer-of-public-substrate; no implementation, integration, or partnership is asserted.
@@ -9,7 +9,7 @@ Non-fusion disclaimer: This document surveys external literature and identifies 
 
 ## 1. The claim under audit
 
-Aaron's claim, recorded in the B-0189 backlog row:
+Aaron's claim, recorded in the 081KQR4HQ0008QG0R002933PRR backlog row:
 
 > "Bayesian belief propagation + expectation propagation has not been integrated into Q# or quantum physics by humans yet — substantial research opportunity."
 
@@ -201,11 +201,11 @@ Aaron's claim, charitably read, is the third row. That is a genuine gap.
 
 ---
 
-## 10. Next-step research directions (for B-0189 acceptance criteria #2-N)
+## 10. Next-step research directions (for 081KQR4HQ0008QG0R002933PRR acceptance criteria #2-N)
 
 Out of scope for criterion #1 (this survey), but flagged for the next acceptance-criterion ticks:
 
-- **Acceptance criterion #2 (whatever follows in the B-0189 row)** — likely a feasibility / mathematical-formulation pass on EP for qubit-drift estimation specifically; cite Minka 2001 + α-BP 2020 + Expectation Particle BP 2015 for the Gaussian-approximation regime; sanity-check against the ICALP 2025 conditioning-in-quantum-programs semantics.
+- **Acceptance criterion #2 (whatever follows in the 081KQR4HQ0008QG0R002933PRR row)** — likely a feasibility / mathematical-formulation pass on EP for qubit-drift estimation specifically; cite Minka 2001 + α-BP 2020 + Expectation Particle BP 2015 for the Gaussian-approximation regime; sanity-check against the ICALP 2025 conditioning-in-quantum-programs semantics.
 - **Cross-check against five-AI peer review** — the claim's narrowed form is publishable / ferry-able. A claims-tester pass on the "no public Q#-runtime BP/EP primitive" sub-claim before it lands in any paper-grade artifact.
 - **Implementation prototype** — separate ticket; would target the QIR/LLVM extensibility surface, not Q# the language directly.
 - **Composition with Zeta substrate** — Zeta's retraction-native paraconsistent-set-theory + quantum-belief-propagation framing (per `memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`) is the *Zeta-side* lens on this work. Not a fusion claim — a noting that Zeta's research surface has independent reasons to care about BP-on-quantum-substrates.

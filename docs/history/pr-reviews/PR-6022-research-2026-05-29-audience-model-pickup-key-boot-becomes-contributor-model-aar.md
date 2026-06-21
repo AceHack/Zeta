@@ -32,7 +32,7 @@ Records the audience model as the pickup-key (operator-authorized), plus the boo
 - **Three audiences:** git-monster (hardest — noobs, free, leave-running) · usb/iso (devops → ServiceTitan full persona-spectrum, dual-face: tech-CLI + c-suite-from-above, generic-roles-not-internals) · encryption (everyone, base layer).
 - **Hardness inverts the technical floor** — hardest audience assumes the least of the user = the accessibility forcing-function. Reconciles with easy-first (easy-first serves the easier/technical audiences; hardest is expand-polish).
 - **Pickup-key:** tag-by-audience, weight by reach × hardness × readiness.
-- **Boot-becomes-contributor:** permissionless (boot→contributor, no-fork, anyone-even-non-Zeta) **GATED on security-hardening** — can't-assume-good-actor once open; the protection-architecture cluster (#6010 / #6012 / #6014 / B-0883) IS the hardening; harden-first, open-after.
+- **Boot-becomes-contributor:** permissionless (boot→contributor, no-fork, anyone-even-non-Zeta) **GATED on security-hardening** — can't-assume-good-actor once open; the protection-architecture cluster (#6010 / #6012 / #6014 / 081KSNY2Z0008QG0R002JKH50A) IS the hardening; harden-first, open-after.
 
 Docs-only.
 

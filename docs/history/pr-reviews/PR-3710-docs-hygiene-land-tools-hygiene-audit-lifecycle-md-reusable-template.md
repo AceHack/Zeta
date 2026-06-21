@@ -90,7 +90,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-16T03:36:25Z on `tools/hygiene/AUDIT-LIFECYCLE.md`:44 (association: NONE)
 
   <pre>
-  This lifecycle row conflicts with the existing gate documentation: `.github/workflows/gate.yml` records the §33 scanner gate as B-0533 Slice B.3/B.4, and the tick history says PR #3555 added `--enforce` plus the CI job. PR #3552 was the cleanup-to-zero PR, so this row should separate cleanup/baseline from the later CI-enforce PR instead of saying #3552 wired the gate.
+  This lifecycle row conflicts with the existing gate documentation: `.github/workflows/gate.yml` records the §33 scanner gate as 081KRMEXM0008QG0R000K25MXS Slice B.3/B.4, and the tick history says PR #3555 added `--enforce` plus the CI job. PR #3552 was the cleanup-to-zero PR, so this row should separate cleanup/baseline from the later CI-enforce PR instead of saying #3552 wired the gate.
 
   </pre>
 

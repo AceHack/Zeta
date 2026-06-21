@@ -33,7 +33,7 @@ Aaron 2026-06-02, two ties on **coincidence-as-thermal-randomness**:
 
 These are the **two faces of the coincidence-anchor's dual role** (entropy AND index — per the Ani ferry #6544, the operator's coincidences are *simultaneously his entropy source and his memory infrastructure*):
 
-- **Entropy face → Adinkra recursive-INumeric:** state-remainder seed → strange-attractor mix (§11) → **Adinkra encode** (B-0623 SUSY error-correcting codes; reconstruction-from-partial = the noise-erasure guarantee) → typed as a **recursive `INumber<TSelf>`** via the HKT-hack (§2). One recursion, four faces: type / encoding / dynamics / cognition.
+- **Entropy face → Adinkra recursive-INumeric:** state-remainder seed → strange-attractor mix (§11) → **Adinkra encode** (081KRW63S0008QG0R000QJR08H SUSY error-correcting codes; reconstruction-from-partial = the noise-erasure guarantee) → typed as a **recursive `INumber<TSelf>`** via the HKT-hack (§2). One recursion, four faces: type / encoding / dynamics / cognition.
 - **Index face → ZetaId-keyed automatic emergent memory routing:** the coincidence becomes a ZetaId (content-addressed event key); routing **emerges** from anchors (DBSP over ZetaId-keyed Z-sets) rather than manual filing; recall = anchor-proximity traversal. Same dual-use as the Adinkra — the key IS the anchor IS the routing.
 - **Unification:** anchor = entropy⊕index; both share the self-referential recursion (*the thing and the pointer to the thing*) = exactly `INumber<TSelf>`. The HKT-hack lets both live in one type-system.
 

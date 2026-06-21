@@ -1,6 +1,5 @@
 ---
-id: B-0432
-zetaid: 081KRFA460008QG0R000GVCKHE
+id: 081KRFA460008QG0R000GVCKHE
 priority: P0
 status: closed
 title: "Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag"
@@ -21,11 +20,11 @@ tags: [shadow, autocomplete, cli, loop, zeta-cli, glass-halo]
 
 ## Origin
 
-B-0402 decomposition 2026-05-13. After slice 3 (B-0431) lands the real detector,
+081KR7JY10008QG0R0008NGW95 decomposition 2026-05-13. After slice 3 (081KRFA460008QG0R003C00WKR) lands the real detector,
 this slice exposes `zeta shadow` as a first-class CLI command and adds `--loop`
 for embedded autonomous operation.
 
-## Acceptance criteria from B-0402 this slice satisfies
+## Acceptance criteria from 081KR7JY10008QG0R0008NGW95 this slice satisfies
 
 - [ ] `zeta shadow` command starts shadow auto-accept mode
 - [ ] Optional `--loop` embeds autonomous loop
@@ -37,7 +36,7 @@ This slice adds:
 
 1. `package.json` `scripts` entry `"shadow": "bun tools/shadow/shadow-observer.ts"` —
    invoked as `bun run shadow`; this is a dev-convenience entry, not the `zeta shadow`
-   subcommand (the `bin` field + `zeta shadow` surface ships in slice 5 / B-0433).
+   subcommand (the `bin` field + `zeta shadow` surface ships in slice 5 / 081KRFA460008QG0R0028CR0N9).
 2. A `--loop <interval-ms>` flag on `shadow-observer.ts` that wraps the continuous
    loop with a configurable outer interval (distinct from `--loop-interval` which
    controls per-cycle polling frequency). `--loop` is the "set-and-forget" mode;
@@ -101,12 +100,12 @@ parsing.
 
 - `tools/shadow/shadow-observer.ts` — `parseConfig` currently private; wire export
 - `package.json` `scripts` — no `shadow` entry yet
-- B-0402 acceptance criteria:
+- 081KR7JY10008QG0R0008NGW95 acceptance criteria:
   - "`zeta shadow` command starts shadow auto-accept mode"
   - "Optional `--loop` embeds autonomous loop — slice 4 (requires `zeta` CLI entry point)"
 
 **Dependency check:**
 
-- `depends_on: [B-0431]` — real detector needed before CLI is useful end-to-end;
+- `depends_on: [081KRFA460008QG0R003C00WKR]` — real detector needed before CLI is useful end-to-end;
   however tests use `--detect-cmd` so implementation can proceed in parallel;
   classify as logically-depends (for demo coherence) not hard-blocks

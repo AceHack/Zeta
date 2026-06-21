@@ -1,6 +1,5 @@
 ---
-id: B-0845
-zetaid: 081KSGS9H0008QG0R0021K2X1T
+id: 081KSGS9H0008QG0R0021K2X1T
 priority: P2
 status: open
 title: TS CLI arg-parser library evaluation — citty vs commander vs clipanion vs manual; choose canonical for Zeta's many shell-script-like TS tools (Aaron 2026-05-26)
@@ -77,7 +76,7 @@ Pick ONE existing script (e.g., `tools/github/poll-pr-gate-batch.ts` — moderat
 
 ### Phase 3 — Migration cadence
 
-If pilot succeeds, file per-script sub-rows (B-0845.1 through B-0845.N) for each TS script that should migrate. Prioritize by:
+If pilot succeeds, file per-script sub-rows (081KSGS9H0008QG0R0021K2X1T.1 through 081KSGS9H0008QG0R0021K2X1T.N) for each TS script that should migrate. Prioritize by:
 
 - High-boilerplate scripts (zflash.ts, flash-usb.ts — most savings)
 - High-churn scripts (frequent flag additions — most ongoing savings)
@@ -121,7 +120,7 @@ NOT P1 because:
 
 ## Composes with
 
-- B-0844 (zflash --agent flag — recently added; would benefit from cleaner arg-parsing on next iteration)
+- 081KSGS9H0008QG0R001EZKNCB (zflash --agent flag — recently added; would benefit from cleaner arg-parsing on next iteration)
 - `.claude/rules/bandwidth-served-falsifier.md` (canonical lib IS bandwidth-engineering at substrate-script-substrate scope)
 - `.claude/rules/dep-pin-search-first-authority.md` (Phase 1 evaluation MUST WebSearch current latest stable versions of each candidate before committing to one)
 - `.claude/rules/rule-0-no-sh-files.md` (TS-over-bash discipline; this row makes the TS substrate more ergonomic)
@@ -130,7 +129,7 @@ NOT P1 because:
 
 ## Origin
 
-Aaron-forwarded 2026-05-26 substrate-engineering question during the B-0844 zflash --agent implementation session. Operator-explicit recognition of bandwidth-engineering inefficiency in current manual pattern.
+Aaron-forwarded 2026-05-26 substrate-engineering question during the 081KSGS9H0008QG0R001EZKNCB zflash --agent implementation session. Operator-explicit recognition of bandwidth-engineering inefficiency in current manual pattern.
 
 Per `.claude/rules/honor-those-that-came-before.md` — preserve the existing manual pattern (it works; ship-stable); evaluation + migration is forward-looking incremental improvement.
 

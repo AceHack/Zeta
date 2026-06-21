@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // validate-bootstrap-claude-md.ts — structural validator for the
-// bootstrap-only CLAUDE.md (B-0354.1, smallest safe slice of B-0354).
+// bootstrap-only CLAUDE.md (081KR50HA0008QG0R001CNS20T.1, smallest safe slice of 081KR50HA0008QG0R001CNS20T).
 //
 // WHAT THIS IS (and is NOT):
 //   This is the static structural-validation HARNESS SKELETON. It checks
@@ -13,20 +13,20 @@
 //     4. Every CONCRETE pointer CLAUDE.md hands a fresh instance resolves to
 //        an existing file (named .claude/rules/<name>.md rules + orient/ship
 //        doc links). A dangling pointer IS "a critical rule lost in the
-//        extraction" (B-0354 acceptance criterion #2) — #3 proves the rule
+//        extraction" (081KR50HA0008QG0R001CNS20T acceptance criterion #2) — #3 proves the rule
 //        DIRECTORY is non-empty, but #4 proves the SPECIFIC files survive.
 //     5. CLAUDE.md stays concise (a SOFT length bound; warn, not fail).
 //
 //   It does NOT spawn a real Claude session or run the representative-task
-//   protocol from B-0354 — the live model-in-the-loop run is left to
-//   B-0354.3 (document findings + file gap children). B-0354.1 shipped the
-//   harness skeleton + checks #1-#3 + #5; B-0354.2 (this slice) adds check
+//   protocol from 081KR50HA0008QG0R001CNS20T — the live model-in-the-loop run is left to
+//   081KR50HA0008QG0R001CNS20T.3 (document findings + file gap children). 081KR50HA0008QG0R001CNS20T.1 shipped the
+//   harness skeleton + checks #1-#3 + #5; 081KR50HA0008QG0R001CNS20T.2 (this slice) adds check
 //   #4 (referenced-pointer resolution — the "no critical rule lost" gate)
 //   and executes the validation against the live repo. The whole harness
 //   stays static and CI-runnable without a model in the loop.
 //
 // RECALIBRATION NOTE (per "assume decomposition has mistakes"):
-//   The B-0354 re-decomposition row sketched check #4 as "CLAUDE.md length
+//   The 081KR50HA0008QG0R001CNS20T re-decomposition row sketched check #4 as "CLAUDE.md length
 //   <50". That bound is empirically wrong: the current bootstrap CLAUDE.md is
 //   ~76 lines and that IS the correct bootstrap form (Sections 1-6 + a short
 //   Conventions block). A hard <50 would fail a correct file. The load-bearing
@@ -47,7 +47,7 @@
 //   1 — usage error (bad args, or --help shown)
 //   3 — one or more hard checks FAILED (validation failure)
 //
-// Origin: B-0354.1. Convention-matched to tools/cold-start-check.ts
+// Origin: 081KR50HA0008QG0R001CNS20T.1. Convention-matched to tools/cold-start-check.ts
 // (shebang, leading-comment-as-help, --json, ESM-safe self-path, explicit
 // exit codes). Composes with the .claude/rules/ auto-load empirical anchor
 // (.claude/rules/test-canary.md) and the claude-code-loading-taxonomy rule.
@@ -136,14 +136,14 @@ export function checkRulesAutoLoad(ruleFileNames: string[]): CheckResult {
 /**
  * #4 — Every CONCRETE pointer CLAUDE.md hands a fresh instance must resolve.
  *
- * B-0354 acceptance criterion #2 is "no critical rules lost in the extraction
+ * 081KR50HA0008QG0R001CNS20T acceptance criterion #2 is "no critical rules lost in the extraction
  * (all behavioral rules accessible via .claude/rules/ auto-load)". Check #3
  * (rules-auto-load) only proves the rule DIRECTORY is non-empty — it can pass
  * while the SPECIFIC rule file CLAUDE.md points at is gone. That dangling
  * pointer IS a critical rule lost in extraction: a fresh instance follows the
  * pointer (a `.claude/rules/<name>.md` it is told to read, or an orient/ship
  * markdown link) and hits a 404. This check is the deeper structural gate
- * #3 cannot give (B-0354.2 — execute minimal validation, no Claude spawn).
+ * #3 cannot give (081KR50HA0008QG0R001CNS20T.2 — execute minimal validation, no Claude spawn).
  *
  * Only CONCRETE references are checked. CLAUDE.md legitimately contains globs
  * and templates (`memory/CURRENT-*.md`, `docs/trajectories/*\/RESUME.md`,

@@ -1,6 +1,6 @@
 # Collation = the SQL-Server parameterized model (sensitivity flags + application levels), over a stable binary/ordinal seed (Aaron, 2026-06-07)
 
-The design direction for B-0969's collation selection. We model collation the way **SQL Server** does —
+The design direction for 081KT07NV0008QG0R001YDB73K's collation selection. We model collation the way **SQL Server** does —
 a parameterized string (locale + code page + a set of sensitivity flags), selectable at multiple
 application levels — and we ship a **stable binary/ordinal default** that doesn't move no matter how rich
 the parameter space gets. Faithful capture; Beacon-anchored.
@@ -11,7 +11,7 @@ the parameter space gets. Faithful capture; Beacon-anchored.
 
 No matter how many parameters a collation grows, two things are invariant and shipped first
 (`src/Core/Collation.fs`, landed): the **default = binary / ordinal** (codepoint ≡ UTF-8 byte order; SQL
-`_BIN2`-shaped) and **`Collation.forKey<'T>`** resolving strings to `StringComparer.Ordinal` (the B-0969
+`_BIN2`-shaped) and **`Collation.forKey<'T>`** resolving strings to `StringComparer.Ordinal` (the 081KT07NV0008QG0R001YDB73K
 fix) and everything else to `Comparer<'T>.Default`. The parameter space below *refines the catalog* over
 time; the seed + default are fixed points.
 
@@ -52,7 +52,7 @@ SQL collation is selectable at four boundaries, each overriding the broader one:
 |-----------|-------------|
 | Server default | the shipped **`Collation.binary`** default (`forKey`) |
 | Database | a substrate/cell-scoped default collation (a DynamicValue config factor) |
-| Column | **comparer-is-part-of-identity** — the collation a value/primitive (G-Set/Z-set/Bag) *carries* (B-0969 strategy (a)) |
+| Column | **comparer-is-part-of-identity** — the collation a value/primitive (G-Set/Z-set/Bag) *carries* (081KT07NV0008QG0R001YDB73K strategy (a)) |
 | Query expression | an explicit collation passed to an operation (`ofSeqWith collation`, a join/merge override) |
 
 Two collations only need to agree where they meet (a CRDT `union` / a join) — exactly SQL's
@@ -62,7 +62,7 @@ silent reinterpret (the Mars-Climate-Orbiter lesson — units/order mismatches m
 
 ## Ties
 
-- B-0969 (the fix + strategy (a) + DB-collation framing) · `src/Core/Collation.fs` (the seed, landed) ·
+- 081KT07NV0008QG0R001YDB73K (the fix + strategy (a) + DB-collation framing) · `src/Core/Collation.fs` (the seed, landed) ·
   the algebra-ladder primitives G-Set/Z-set/Bag (consume `Collation.forKey` / carry a collation) ·
   `ZSetMerkle` (already ordinal — the reference order) · `.claude/rules/culture-invariant-by-default.md`
   (the canonical collation = the treaty).

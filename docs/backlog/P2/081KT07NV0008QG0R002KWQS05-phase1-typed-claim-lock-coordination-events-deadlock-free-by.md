@@ -1,6 +1,5 @@
 ---
-id: B-0962
-zetaid: 081KT07NV0008QG0R002KWQS05
+id: 081KT07NV0008QG0R002KWQS05
 title: Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
 status: open
 priority: P2
@@ -14,9 +13,9 @@ composes_with:
   - 081KSXN940008QG0R003FCQ7WT # sovereign-DB lane master (CALM boundary + lock-free/wait-free disciplines)
 ---
 
-# B-0962 — Phase 1: typed Claim/Lock coordination events
+# 081KT07NV0008QG0R002KWQS05 — Phase 1: typed Claim/Lock coordination events
 
-> **Why this row exists (not dogma):** B-0961 chose Phase 1 = model Claim/Lock as
+> **Why this row exists (not dogma):** 081KSXN940008QG0R000JZVFXX chose Phase 1 = model Claim/Lock as
 > typed events under existing categories. Aaron asked _"do we risk deadlocks? can
 > we never deadlock and stay simple?"_ — and, separately, _"is there a livelock
 > guarantee on the observe 4×4 menu too?"_ A **multi-round** review (Grok +
@@ -92,13 +91,13 @@ one per-row CP: the per-row git CAS is the **authoritative backstop**, sitting u
 (a) the **bus claim** (`tools/bus/claim.ts` — first-to-claim + TTL, multi-agent
 visibility, advisory/optimistic; bus partition ⇒ two agents can both acquire then race
 on git), (b) **ID allocation** (sequential `B-NNNN` needs a consistent `origin/main` +
-in-flight view ⇒ stale view ⇒ collision; **content-addressed ZetaIds per B-0961 avoid
+in-flight view ⇒ stale view ⇒ collision; **content-addressed ZetaIds per 081KSXN940008QG0R000JZVFXX avoid
 this**), and (c) per-shared-repo **`origin/main`** serialization (per-ref CAS,
 AP-with-retry; GitHub is the availability dependency). Correctness is in how those layers
 **compose under partial connectivity**. Also: per-agent state is **CA-local** —
 **PACELC is undefined intra-process** (no network boundary), NOT "PC/EC." Cross-row work
 (decomposition / cascades) needs the §1.3 single-resource + release-before-acquire rule;
-hot-row contention needs §3 backoff + the (unproven) B-0963 bounded-wait-freedom.
+hot-row contention needs §3 backoff + the (unproven) 081KT07NV0008QG0R001N9GJWX bounded-wait-freedom.
 
 **Round-3 resolution (Aaron, 2026-06-01) — Claim is best-effort AP, not CP; this row's
 two primitives ARE the AP/CP split.** Round 2's pessimism resolves:
@@ -111,15 +110,15 @@ two primitives ARE the AP/CP split.** Round 2's pessimism resolves:
   So **Claim** (§4: cooperative, monotone, G-Set, try-or-pick-different) is **best-effort
   AP** — redundancy-as-verification, not a CP island.
 - **Lock** (§4: hard CAS + fencing) is the **CP** primitive, reserved for the gated
-  **non-idempotent** class (money / provisioning / external charges — B-0918 banker-bot
+  **non-idempotent** class (money / provisioning / external charges — 081KSNY2Z0008QG0R0036SJ3T1 banker-bot
   territory) where double-work IS unsafe. So this row's Claim-vs-Lock split = the AP/CP
   split: Claim = AP default; Lock = CP escape.
 - **PACELC correction-of-the-correction:** per-agent state is geo-replicated for safety
   (F# deterministic DB / CockroachDB — a single copy would be unsafe), so PACELC DOES
   apply: per-agent = **PC/EC** (single-writer; replication chooses C). Round-2's
   "undefined intra-process" assumed a single copy.
-- **ID surface being removed:** B-NNNN is a stopgap; ZetaId 128-bit (B-0858 v1 /
-  B-0893 v2, already implemented; content/structure-addressed) needs no global allocator.
+- **ID surface being removed:** B-NNNN is a stopgap; ZetaId 128-bit (081KSKBP80008QG0R001KK9WV6 v1 /
+  081KSNY2Z0008QG0R000V24M7E v2, already implemented; content/structure-addressed) needs no global allocator.
 
 Full three-round analysis (Gemini + Grok verbatim, both huddle rounds + Aaron's
 resolutions):
@@ -214,7 +213,7 @@ observed state)`, re-derived each tick. A CAS loser, **once the winner's
 **Net (honest):** the menu **breaks lockstep livelock** (symmetry-breaking via
 state-fold) and gives **lock-free selection under fair-retry + fresh-state +
 visible-reservation**; it does **not** prove completion-lock-freedom or per-agent
-wait-freedom — those are **deferred to [B-0963](B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)
+wait-freedom — those are **deferred to [081KT07NV0008QG0R001N9GJWX](081KT07NV0008QG0R001N9GJWX-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)
 for formal proof** (open follow-up; F# model first, then extended to git — not yet
 proven here).
 That's still a real win — much of "easy-as-fuck" survives — but it's
@@ -259,7 +258,7 @@ the participants are **dumb code** that can't introspect — a spinning process
 can't tell it's livelocked. Here the participants are **intelligent agents** who
 can _observe their own coordination history_ and adapt. That gives a **second,
 complementary defense layer** exactly where construction is weakest — the soft
-properties (livelock, starvation, fairness) that §3 / B-0963 cannot guarantee by
+properties (livelock, starvation, fairness) that §3 / 081KT07NV0008QG0R001N9GJWX cannot guarantee by
 construction:
 
 - **Detection is cheap — it's already in the observe loop.** The agent's
@@ -272,9 +271,9 @@ construction:
   peer** holding the resource, or propose a redesign. That IS the anti-starvation /
   per-agent-progress mechanism pure CAS lacks — supplied by intelligence, not by a
   ticket queue (build the queue only if intelligence proves insufficient).
-- **It's a natural fit for wait-freedom-in-practice (B-0963).** Formal wait-freedom
+- **It's a natural fit for wait-freedom-in-practice (081KT07NV0008QG0R001N9GJWX).** Formal wait-freedom
   needs an explicit fairness term; intelligent supervision provides one without
-  hard-coding it — the agent that notices it's starved self-corrects. B-0963 proves
+  hard-coding it — the agent that notices it's starved self-corrects. 081KT07NV0008QG0R001N9GJWX proves
   the construction bound; this layer covers the residual operationally.
 
 **Honest boundaries (defense-in-depth, not a replacement):**
@@ -293,7 +292,7 @@ construction:
 
 ## §4 The typed event shapes (Phase 1 — payloads under existing `Bus(6)`)
 
-Both ride `Bus(6)` (no root-`Category` change — Phase 2 is gated per B-0961).
+Both ride `Bus(6)` (no root-`Category` change — Phase 2 is gated per 081KSXN940008QG0R000JZVFXX).
 `kind` is the subtype discriminator (Grok's "one Coordination + subtype" at
 payload scope).
 
@@ -364,7 +363,7 @@ lands + a second consumer exists.
 
 ## §7 Master-checklist linkage
 
-Phase-1 slice of B-0961, under the sovereign-DB lane (B-0959), reachable from
-`docs/ACTIVE-WORKSTREAMS.md`. Unblocks B-0954.1 (Lock = single-row CAS + fencing)
+Phase-1 slice of 081KSXN940008QG0R000JZVFXX, under the sovereign-DB lane (081KSXN940008QG0R003FCQ7WT), reachable from
+`docs/ACTIVE-WORKSTREAMS.md`. Unblocks 081KT07NV0008QG0R000QWEKTE (Lock = single-row CAS + fencing)
 with no root-`Category` change. The menu symmetry-breaking / selection-lock-freedom
 (§3) composes with the observe.ts 4×4 move-next construction.

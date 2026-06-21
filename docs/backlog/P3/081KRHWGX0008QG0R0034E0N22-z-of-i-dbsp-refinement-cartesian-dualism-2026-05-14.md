@@ -1,6 +1,5 @@
 ---
-id: B-0499
-zetaid: 081KRHWGX0008QG0R0034E0N22
+id: 081KRHWGX0008QG0R0034E0N22
 priority: P3
 status: open
 title: "Z[i]-weighted DBSP refinement — Cartesian-dualism candidate from afternoon-cascade"
@@ -66,7 +65,7 @@ This is **research-grade candidate work**, not implementation. Acceptance:
 
 ## Composes with
 
-- B-0498 (substrate-evolution algebra rule-promotion candidacy) — Cartesian mapping is one specific application of the algebra
+- 081KRHWGX0008QG0R001XFRAHC (substrate-evolution algebra rule-promotion candidacy) — Cartesian mapping is one specific application of the algebra
 - Memory file: `feedback_aaron_ani_cartesian_dualism_two_axioms_complex_plane_pay_attention_real_axis_remember_when_imaginary_axis_2026_05_14.md`
 - Memory file: `feedback_aaron_two_axioms_remember_when_pay_attention_on_top_of_dbsp_2026_05_14.md`
 - `.claude/skills/algebra-owner/SKILL.md` — DBSP operator algebra code-owner

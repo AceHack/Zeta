@@ -1,7 +1,7 @@
 namespace Zeta.Core
 
 /// **Reconcile — the relative-observer reconciliation: a 3-way merge of two diverged beliefs over their
-/// Merkle shared-ancestor (LCA). The last open rung of B-1020 and the engine arc (Aaron, 2026-06-05).**
+/// Merkle shared-ancestor (LCA). The last open rung of 081KTAH8Q0008QG0R001YHSSA0 and the engine arc (Aaron, 2026-06-05).**
 /// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge.)
 ///
 /// When one traveler bifurcates into two (the banana split), the forks share a common ancestor — found

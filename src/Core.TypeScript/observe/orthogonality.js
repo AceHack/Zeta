@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
 // orthogonality.ts — the no-base-vector-overlap proof for context surfaces
-// (B-1016, tier after minimization). Minimal-per-file (byte-cost) is necessary;
+// (081KT7YW00008QG0R002T1XNWT, tier after minimization). Minimal-per-file (byte-cost) is necessary;
 // orthogonal-across-files is the stronger claim that kills duplication fleet-wide.
 //
 // A surface is a VECTOR in shingle-space (its set of k-word shingles). Two
 // surfaces "overlap" (share a base vector) when their content similarity exceeds
 // a threshold. The corpus is an ORTHOGONAL BASIS when every pair is below
 // threshold — no two surfaces carry redundant content. Rodney's-Razor-after-drift
-// keeps it there (B-1016): drift → razor → re-converge to orthogonal.
+// keeps it there (081KT7YW00008QG0R002T1XNWT): drift → razor → re-converge to orthogonal.
 //
 //   --check exits non-zero if any pair overlaps (the gate, no PR needed).
 //   default prints the pairwise overlap report (top offenders first).
@@ -93,7 +93,7 @@ if (import.meta.main) {
         console.log(`orthogonal basis: no pair overlaps — the corpus carries no redundant base vector.`);
     }
     else {
-        console.log(`${offenders.length} overlapping pair(s) — razor the shared content (B-1016).`);
+        console.log(`${offenders.length} overlapping pair(s) — razor the shared content (081KT7YW00008QG0R002T1XNWT).`);
     }
     if (args.has("--check") && offenders.length > 0)
         process.exit(1);

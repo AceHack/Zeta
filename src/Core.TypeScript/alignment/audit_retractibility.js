@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // audit_retractibility.ts — retractibility-and-log check for factory surfaces.
 //
-// B-0058 responsibility #1: verify that each factory surface (skill, agent,
+// 081KQ3HBZ0008QG0R002S674CG responsibility #1: verify that each factory surface (skill, agent,
 // backlog item) preserves retractibility — git-tracked and one-commit-removable.
 // Reports inbound reference counts so entangled surfaces are visible.
 //

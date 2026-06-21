@@ -3,7 +3,7 @@ name: memory-index-drift
 # Enforces that memory/MEMORY.md stays in sync with the memory heap
 # (memory/*.md frontmatter) after changes land in a PR or on main.
 #
-# Architecture (B-0259 + B-0423):
+# Architecture (081KR2E4K0008QG0R000XCS9FT + 081KRCQQF0008QG0R0037YYP1A):
 #   - memory/*.md files are heap-state-acceptable — they MAY commit
 #     without a same-commit MEMORY.md update when the harness hook
 #     (post-write-memory-reindex.ts) is active, since the hook auto-
@@ -29,8 +29,8 @@ name: memory-index-drift
 #   - runs-on: ubuntu-24.04 pinned.
 #
 # See:
-#   - docs/backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md
-#   - docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
+#   - docs/backlog/P1/081KR2E4K0008QG0R000XCS9FT-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md
+#   - docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md
 #   - src/Core.TypeScript/memory/reindex-memory-md.ts  (the generator; --check flag)
 #   - .claude/hooks/post-write-memory-reindex.ts  (the harness hook)
 

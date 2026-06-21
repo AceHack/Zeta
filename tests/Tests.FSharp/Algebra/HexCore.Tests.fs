@@ -5,14 +5,14 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
 
-// The seed core's most-inevitable-first slice (B-0998): the six reservoir
-// walls (B-0985) + the atomic Vector noun, built on the existing
+// The seed core's most-inevitable-first slice (081KT2T2J0008QG0R003VK5GRX): the six reservoir
+// walls (081KT2T2J0008QG0R0026MS6PV) + the atomic Vector noun, built on the existing
 // Cayley–Dickson ℂ (Complex). These tests anchor the canonical wall set
 // (the cube-of-space's six faces) and prove the Vector ↔ ℂ bijection plus
 // that Vector.add *composes* the existing complex algebra rather than
 // re-deriving it. "The compilers don't lie."
 
-// ─── The six reservoir walls (B-0985) ───
+// ─── The six reservoir walls (081KT2T2J0008QG0R0026MS6PV) ───
 
 [<Fact>]
 let ``the six reservoir walls are present, in canonical order`` () =
@@ -30,7 +30,7 @@ let ``the six reservoir walls are present, in canonical order`` () =
 let ``there are exactly six walls (the hexahedron's six faces)`` () =
     Wall.all |> List.length |> should equal 6
 
-// ─── The atomic Vector noun (B-0998: vectors before trajectories) ───
+// ─── The atomic Vector noun (081KT2T2J0008QG0R003VK5GRX: vectors before trajectories) ───
 
 [<Fact>]
 let ``Vector zero has no magnitude`` () =

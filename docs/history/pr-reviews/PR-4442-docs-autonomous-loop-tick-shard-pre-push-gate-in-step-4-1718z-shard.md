@@ -33,7 +33,7 @@ Pre-empt-at-#1 from the 6th tick (1718Z) of the 2026-05-20 autonomous-loop sessi
 
 **The substrate landing:**
 
-- **`docs/AUTONOMOUS-LOOP-PER-TICK.md` step 4** extended with a 'Tick-shard-specific gate' subsection naming `tools/hygiene/check-shard-before-push.ts` (the bundled checker that runs `audit-tick-shard-relative-paths` + `audit-md032-plus-linestart` + `markdownlint-cli2`). The canonical doc is cited by all three Otto surfaces (CLI, Desktop, B-0448 cloud); adding the gate reference there reaches all surfaces at their natural verify step.
+- **`docs/AUTONOMOUS-LOOP-PER-TICK.md` step 4** extended with a 'Tick-shard-specific gate' subsection naming `tools/hygiene/check-shard-before-push.ts` (the bundled checker that runs `audit-tick-shard-relative-paths` + `audit-md032-plus-linestart` + `markdownlint-cli2`). The canonical doc is cited by all three Otto surfaces (CLI, Desktop, 081KRFA460008QG0R000CYBGKW cloud); adding the gate reference there reaches all surfaces at their natural verify step.
 - **`docs/hygiene-history/ticks/2026/05/20/1718Z.md`** documents the pre-empt cycle.
 
 **Why AUTONOMOUS-LOOP-PER-TICK.md (not README.md):** the template at `docs/hygiene-history/tick-shard-TEMPLATE.md` already comprehensively documents the path-depth gotcha, and the README links to the template. The failure mode revealed was copy-from-prior-shard bypassing the template entirely. The canonical step-4 verify-gate doc is where autonomous-loop authors look at the moment they would catch this.
@@ -158,7 +158,7 @@ markdownlint-cli2). The failure mode was copy-from-prior-shard
 .claude/rules/*) bypassing both the template AND the checker.
 
 Highest-leverage fix is the canonical AUTONOMOUS-LOOP-PER-TICK.md
-which all three Otto surfaces (CLI sentinel, Desktop routine, B-0448
+which all three Otto surfaces (CLI sentinel, Desktop routine, 081KRFA460008QG0R000CYBGKW
 cloud routine) cite. Adding the checker reference at step 4 reaches
 the autonomous-loop authoring path at its natural verify gate.
 

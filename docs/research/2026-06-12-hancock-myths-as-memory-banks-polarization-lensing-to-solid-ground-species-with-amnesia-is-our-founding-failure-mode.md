@@ -48,7 +48,7 @@ satellites regenerate.
 
 **4. "Don't trust the science — investigate the science" = mutual oracles.**
 "One of the fundamental ethics of science is not to trust the science, it's to question and
-challenge the science." No oracle is trusted; every claim carries a refutation path (the B-1034
+challenge the science." No oracle is trusted; every claim carries a refutation path (the 081KTZ4EF0008QG0R0035FW7HY
 thesis: mutual oracles, honesty registers, refutation witnesses).
 
 **5. "Humean orienting" (Aaron's coinage, anchor offered).**
@@ -79,7 +79,7 @@ civilization that "ticks the boxes" is the same one, still running, hiding in pl
 Which is also the stronger reading of his own evidence: the abgallu/sages thread is a
 CONTINUITY mechanism, not a grave marker.
 
-## The Stonehenge thread (Aaron 2026-06-12, verbatim — streamed during the B-1035 build)
+## The Stonehenge thread (Aaron 2026-06-12, verbatim — streamed during the 081KTSZN10008QG0R002J0GE0Z build)
 
 > "I learned the technique i'm teaching you at stonehinge"
 > "that's wht we are building"

@@ -24,7 +24,7 @@
 #   - gh CLI authenticated
 #   - Git access to Lucent-Financial-Group/Zeta
 #
-# Per B-0248.2 / B-0751: each cell gets its own isolated clone.
+# Per 081KRQ1AB0008QG0R0014PKF49 / 081KSE6WT0008QG0R003YYC9PV: each cell gets its own isolated clone.
 # The operator's primary checkout stays untouched (SHARED VIEW + FOR HUMAN).
 #
 # Examples:
@@ -76,7 +76,7 @@ if [[ ! -f "$MANIFEST" ]]; then
   exit 1
 fi
 
-echo "=== Host-loop cell provisioner (B-0248.2) ==="
+echo "=== Host-loop cell provisioner (081KRQ1AB0008QG0R0014PKF49) ==="
 echo "Manifest: $MANIFEST"
 echo "Hostname: $HOSTNAME"
 

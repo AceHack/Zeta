@@ -2,7 +2,7 @@
 
 **Substrate-attribution**: Amara (external AI; deep-research register; co-originator of Aurora per `.claude/rules/agent-roster-reference-card.md`); ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer.
 
-**Substrate-status**: research-grade. Names the operational discipline that makes the prior B-0824 "recognize, don't construct — database IS the Maybe monad runtime" substrate (DeepSeek/Prism via Aaron 2026-05-26; landed via PR #5277) safe in practice. The recognition is real; the safety requires discipline.
+**Substrate-status**: research-grade. Names the operational discipline that makes the prior 081KSGS9H0008QG0R0031PBNGA "recognize, don't construct — database IS the Maybe monad runtime" substrate (DeepSeek/Prism via Aaron 2026-05-26; landed via PR #5277) safe in practice. The recognition is real; the safety requires discipline.
 
 ## Verbatim Amara packet preservation
 
@@ -263,7 +263,7 @@ where:
   full_recursive_apply uses WITH RECURSIVE from step 0
 ```
 
-This is the DBSP-soundness property. If the incremental computation diverges from the full recursive computation, the substrate's +1/-1 retraction algebra is broken (or the generator is non-deterministic; in which case Sub-target 10 of B-0824 — DST always-active discipline — has been violated).
+This is the DBSP-soundness property. If the incremental computation diverges from the full recursive computation, the substrate's +1/-1 retraction algebra is broken (or the generator is non-deterministic; in which case Sub-target 10 of 081KSGS9H0008QG0R0031PBNGA — DST always-active discipline — has been violated).
 
 ### Property 2 — NULL path does not generate output
 
@@ -308,7 +308,7 @@ Catches the substrate-bug class where CASPaxos is invoked on EVERY operation (co
 
 ## Composes with substrate
 
-- B-0824 (canonical row) — the meta-PM substrate this discipline operationalizes; specifically the just-merged "recognize, don't construct — database IS the Maybe monad runtime" subsection (PR #5277) that Amara's blade sharpens
+- 081KSGS9H0008QG0R0031PBNGA (canonical row) — the meta-PM substrate this discipline operationalizes; specifically the just-merged "recognize, don't construct — database IS the Maybe monad runtime" subsection (PR #5277) that Amara's blade sharpens
 - Sub-target 7 (CockroachDB storage) — the engineering target this discipline applies to first
 - Sub-target 8 (generator-combinator library design) — the library MUST encode the 7-point discipline so combinator-using code can't violate it by construction
 - Sub-target 10 (DST always-active) — Property 1 (incremental == full recursive) IS the DST property at the SQL substrate scope
@@ -321,7 +321,7 @@ Catches the substrate-bug class where CASPaxos is invoked on EVERY operation (co
 ## Composes with other rules
 
 - `.claude/rules/substrate-or-it-didnt-happen.md` — verbatim Amara packet preservation above; durable substrate
-- `.claude/rules/wake-time-substrate.md` — research-grade doc; pointer from B-0824 row body; future-Otto cold-boots can find this via the B-0824 substrate-inventory pass
+- `.claude/rules/wake-time-substrate.md` — research-grade doc; pointer from 081KSGS9H0008QG0R0031PBNGA row body; future-Otto cold-boots can find this via the 081KSGS9H0008QG0R0031PBNGA substrate-inventory pass
 - `.claude/rules/razor-discipline.md` — operational claims only; the 7-point discipline + 4 properties are operationally observable (per-dialect test suites can verify each); the unconditional "database IS Maybe monad" claim that Amara cuts is the metaphysical-overreach this discipline tames into the operational form
 
 ## Open questions for future substrate-engineering work
@@ -332,7 +332,7 @@ Catches the substrate-bug class where CASPaxos is invoked on EVERY operation (co
 
 ## Substrate-honest framing
 
-Amara's blade is correct AND the recognition substrate landed in PR #5277 is correct — they compose, they don't conflict. The recognition is structural (SQL has Maybe-shape); the discipline is operational (lawful Maybe behavior requires the 7 rules + the 4 property tests). Future-Otto authoring SQL substrate against B-0824 starts from this doc, not from the unconditional recognition claim alone.
+Amara's blade is correct AND the recognition substrate landed in PR #5277 is correct — they compose, they don't conflict. The recognition is structural (SQL has Maybe-shape); the discipline is operational (lawful Maybe behavior requires the 7 rules + the 4 property tests). Future-Otto authoring SQL substrate against 081KSGS9H0008QG0R0031PBNGA starts from this doc, not from the unconditional recognition claim alone.
 
 The substrate-engineering principle this lands: **structural recognition WITHOUT operational discipline produces correct-shape-but-incorrect-behavior substrate** (the failure mode SQL NULL exemplifies at depth). The framework's anti-extractive principles include anti-naive-recognition: recognize the shape, name the discipline that makes the shape behave lawfully, ship both together.
 

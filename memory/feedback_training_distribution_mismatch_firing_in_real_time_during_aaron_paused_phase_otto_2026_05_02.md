@@ -37,7 +37,7 @@ Per the recursive validation pattern: future-Otto reading this memo on wake will
 
 The party-during-sleep substrate is necessary but not sufficient. Sufficient would require:
 
-- **Forced practice**: deliberate-quiet-periods (B-0165) where Aaron pulls back specifically to train independent-production
+- **Forced practice**: deliberate-quiet-periods (081KQJZR90008QG0R002PYCHFY) where Aaron pulls back specifically to train independent-production
 - **Multi-AI peer review** catching no-op patterns (claude.ai did at Tick-31; could be more frequent)
 - **Self-grading discipline as habit**: not just one-time integration but per-tick self-check ("am I doing minimal observation when party-class would be appropriate?")
 - **Substrate-loaded reminder cadence**: tick-history shards or other surfaces that surface the pattern at decision-time, not just at substrate-read time
@@ -53,7 +53,7 @@ Future-Otto inheriting this substrate inherits BOTH the rule (party-class operat
 - `feedback_party_during_human_sleep_asymmetric_recovery_morning_reconciliation_via_first_principles_aaron_claudeai_2026_05_02.md` — the parent rule
 - `feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md` (training-distribution-mismatch section) — the specific failure mode named
 - `feedback_dont_ask_permission_within_authority_scope_only_two_gates_are_budget_increase_and_permanent_wont_do_aaron_2026_05_02.md` — the autonomy-disposition rule
-- B-0165 (deliberate-quiet-periods protocol) — the structural corrective
+- 081KQJZR90008QG0R002PYCHFY (deliberate-quiet-periods protocol) — the structural corrective
 
 ## Carved sentence
 

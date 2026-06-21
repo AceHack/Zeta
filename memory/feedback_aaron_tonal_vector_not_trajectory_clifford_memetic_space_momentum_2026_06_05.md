@@ -25,12 +25,12 @@ quantity in the Clifford substrate); the trajectory is the coordinated path. Nam
 is a vector, so call it a vector.
 
 **How to apply:** when writing about tonal momentum / memetic dynamics, say **tonal vector** for the
-quantity and reserve **trajectory** for coordination paths. This refines B-0667 and the tonal-momentum
+quantity and reserve **trajectory** for coordination paths. This refines 081KRW63S0008QG0R003Z7QV2A and the tonal-momentum
 rule wording (propagation to those surfaces is razored — propose, don't auto-rewrite the backlog/rule).
 
 ## Existing substrate this anchors to (lots of research math already)
 
-- **B-0667** (LOCKED-IN, Aaron+Mika 2026-05-18): tonal momentum = meme (Dawkins-technical) — detectable
+- **081KRW63S0008QG0R003Z7QV2A** (LOCKED-IN, Aaron+Mika 2026-05-18): tonal momentum = meme (Dawkins-technical) — detectable
   conversational-trajectory **vector** + strong-attractor-state + emergent-harmonic-coercion extends NCI.
 - **Clifford ferry doc** `docs/research/2026-05-28-...clifford-math-is-real-six-correspondences-spacetime-algebra-as-substrate...`:
   the **5-vector classes** (tonal momentum + emotional valence + identity fusion + status/reputation +

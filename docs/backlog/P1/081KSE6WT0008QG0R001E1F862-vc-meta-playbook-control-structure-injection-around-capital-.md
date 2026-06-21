@@ -1,6 +1,5 @@
 ---
-id: B-0769
-zetaid: 081KSE6WT0008QG0R001E1F862
+id: 081KSE6WT0008QG0R001E1F862
 priority: P1
 status: open
 title: VC meta-playbook (control-structure injection around capital flow in verticals) — substrate-honest variant for Zeta
@@ -11,8 +10,8 @@ last_updated: 2026-05-25
 depends_on:
   - 081KSE6WT0008QG0R00063R6HB
 composes_with:
-  - B-0741
-  - B-0754
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -27,7 +26,7 @@ tags: [strategy, vc-meta-playbook, control-structure, capital-flow, vertical-saa
 ## Problem
 
 Aaron 2026-05-25 mid-iteration-2-wait, naming the third strategic
-anchor under B-0765 ServiceTitan-route + B-0768 Itron-co-creation:
+anchor under 081KSE6WT0008QG0R00063R6HB ServiceTitan-route + 081KSE6WT0008QG0R0004ZPPRP Itron-co-creation:
 *"Also ST is based on VC meta playbook around control structrue
 injection around capitol in different virticles."*
 
@@ -67,7 +66,7 @@ larger):
 | Delivery / rideshare | DoorDash / Uber | Order routing + payments + driver mgmt |
 
 ServiceTitan is one empirical anchor in a well-documented meta-
-playbook pattern. Aaron 2026-05-25 sharpening (per B-0768 ST
+playbook pattern. Aaron 2026-05-25 sharpening (per 081KSE6WT0008QG0R0004ZPPRP ST
 provenance): *"ST was two guys in a garage i saw both"* — Aaron
 watched ST execute this playbook from inception. The pattern is
 direct lived experience, not theoretical case-study.
@@ -76,7 +75,7 @@ direct lived experience, not theoretical case-study.
 
 Apply the VC meta-playbook to Zeta's vertical, in the
 substrate-honest variant that preserves operator-in-the-
-negotiation-high-seat (per B-0763 / B-0765 / B-0768) and does
+negotiation-high-seat (per 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R0004ZPPRP) and does
 NOT execute the extractive failure mode the standard VC meta-
 playbook converges on.
 
@@ -86,9 +85,9 @@ playbook converges on.
 |---|---|
 | **Vertical** | AI cluster infrastructure (specifically the AI-cluster substrate where Zeta is pioneer — modern declarative AI clusters with GPU + storage + scheduling + observability + identity + repair-tool semantics) |
 | **Existing control structures** | k8s control plane, GitOps reconciliation (ArgoCD/Flux), CNCF ecosystem (KEDA/DAPR/OPA/Crossplane/etc.), cloud-provider APIs (AWS/GCP/Azure/Cloudflare/etc.), hardware vendor SDKs (NVIDIA/AMD/Intel) |
-| **Control layer Zeta builds** | Operator-facing interfaces + reference architecture + zero-typing install (B-0754) + USB-as-repair-tool (B-0760) + telemetry flywheel (B-0762) + Zeta-native scheduler (B-0767) + binary-compatible Zeta-native k8s impls (B-0766) |
+| **Control layer Zeta builds** | Operator-facing interfaces + reference architecture + zero-typing install (081KSGS9H0008QG0R002T3BJ2R) + USB-as-repair-tool (081KSE6WT0008QG0R003WG0V6P) + telemetry flywheel (081KSE6WT0008QG0R003FG3E8R) + Zeta-native scheduler (081KSE6WT0008QG0R0016CEE2Z) + binary-compatible Zeta-native k8s impls (081KSE6WT0008QG0R00049EFBD) |
 | **Capital flows the control layer gates** | Compute spend (GPU $/hour), storage spend, network egress, model-API calls, identity/auth costs, observability SaaS spend, support contracts, training/inference spot/reserved purchases, multi-region orchestration |
-| **Compound expansions** | Once operator runs Zeta cluster substrate, adjacent product surfaces: managed AI-workload marketplace, optimization advisor (B-0762 telemetry-driven), vendor-cost arbitrage (B-0763 swap mechanism), DST replay services, model-locality-aware CDN, compliance/governance automation |
+| **Compound expansions** | Once operator runs Zeta cluster substrate, adjacent product surfaces: managed AI-workload marketplace, optimization advisor (081KSE6WT0008QG0R003FG3E8R telemetry-driven), vendor-cost arbitrage (081KSE6WT0008QG0R000WVYAJ2 swap mechanism), DST replay services, model-locality-aware CDN, compliance/governance automation |
 
 ## Substrate-honest variant — the failure mode this row protects against
 
@@ -96,12 +95,12 @@ The standard VC meta-playbook converges on EXTRACTION:
 
 | Extractive pattern | Standard VC outcome | Zeta substrate-honest alternative |
 |---|---|---|
-| Take rent on every transaction | Marketplace fee, payment-processing margin, capital-as-a-service spread | Open reference (B-0761); operator can swap vendors per B-0763 → competitive pricing pressure underneath |
-| Lock vendors out | Exclusive marketplace contracts; preferred-vendor positioning | Vendor-swap preserved per B-0763 + binary-compat per B-0766 → every vendor competes |
-| Lock operators in | Switching cost = rewrite-application; data export crippled | Standards-first per B-0765 (uses k8s CRDs + Helm + OCI everyone already speaks); switching cost ≈ 0 |
-| Hoard data asymmetrically | Operator's data becomes vendor's strategic asset | Telemetry is opt-in per B-0762; collected data published openly; no asymmetry |
-| Capture upside; socialize downside | Vendor takes growth; operators absorb risk + failure cost | Failure-tolerance built in (B-0760 USB-as-repair-tool); operator carries upside via lower TCO |
-| Hide pricing | Quote-based; opaque rate cards; sales-touch required | Cost-comparison surface mandated per B-0763 acceptance |
+| Take rent on every transaction | Marketplace fee, payment-processing margin, capital-as-a-service spread | Open reference (081KSE6WT0008QG0R0015ZF2G6); operator can swap vendors per 081KSE6WT0008QG0R000WVYAJ2 → competitive pricing pressure underneath |
+| Lock vendors out | Exclusive marketplace contracts; preferred-vendor positioning | Vendor-swap preserved per 081KSE6WT0008QG0R000WVYAJ2 + binary-compat per 081KSE6WT0008QG0R00049EFBD → every vendor competes |
+| Lock operators in | Switching cost = rewrite-application; data export crippled | Standards-first per 081KSE6WT0008QG0R00063R6HB (uses k8s CRDs + Helm + OCI everyone already speaks); switching cost ≈ 0 |
+| Hoard data asymmetrically | Operator's data becomes vendor's strategic asset | Telemetry is opt-in per 081KSE6WT0008QG0R003FG3E8R; collected data published openly; no asymmetry |
+| Capture upside; socialize downside | Vendor takes growth; operators absorb risk + failure cost | Failure-tolerance built in (081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool); operator carries upside via lower TCO |
+| Hide pricing | Quote-based; opaque rate cards; sales-touch required | Cost-comparison surface mandated per 081KSE6WT0008QG0R000WVYAJ2 acceptance |
 | Build moat via lock-in | Switching cost moat | Moat via composition coherence + open reference + telemetry flywheel + AI-trainable substrate |
 
 The substrate-honest variant: **same control-structure position;
@@ -141,7 +140,7 @@ evaluates against:
 | **Strategic acquirer** | Strategic-fit + synergy-justified post-integration EBITDA | Acquirer-synergy add-backs; redundant-function elimination | Accretion to acquirer's own valuation + capability fill |
 | **Public markets** | Quarterly EPS + adj EBITDA + guidance accuracy | SBC; restructuring; M&A; one-times; impairments | Predictable beat-and-raise pattern + survives audit |
 
-ServiceTitan empirical anchor (per B-0768 provenance + Aaron's
+ServiceTitan empirical anchor (per 081KSE6WT0008QG0R0004ZPPRP provenance + Aaron's
 direct lived experience): IPO'd Dec 2024; navigated multiple
 investor-profile transitions (early-stage growth → late-stage
 growth → pre-IPO → public markets) each requiring different adj
@@ -196,8 +195,8 @@ bandwidth-engineering payoff.
 ## Acceptance
 
 - [ ] Document the dual-framing explicitly in
-      `docs/strategic-substrate.md` (compose with B-0765 +
-      B-0768): VC meta-playbook IS what Zeta executes;
+      `docs/strategic-substrate.md` (compose with 081KSE6WT0008QG0R00063R6HB +
+      081KSE6WT0008QG0R0004ZPPRP): VC meta-playbook IS what Zeta executes;
       substrate-honest variant IS what makes Zeta different
 - [ ] Per-extractive-pattern audit: for every Zeta substrate
       decision, check the failure-mode table above. Is the
@@ -224,25 +223,25 @@ bandwidth-engineering payoff.
       contracts; non-coercion-invariant at corporate-governance
       scope; etc.)
 
-## Composition with the strategic substrate cluster (B-0765 + B-0766 + B-0767 + B-0768)
+## Composition with the strategic substrate cluster (081KSE6WT0008QG0R00063R6HB + 081KSE6WT0008QG0R00049EFBD + 081KSE6WT0008QG0R0016CEE2Z + 081KSE6WT0008QG0R0004ZPPRP)
 
 The composed strategic substrate from this session:
 
 | Layer | Row | Role |
 |---|---|---|
-| Meta-strategy (this row) | B-0769 | The VC meta-playbook Zeta executes; substrate-honest variant |
-| Tactical playbook A | B-0765 P1 | ServiceTitan up-and-comer mode: plug into existing standards |
-| Tactical playbook B | B-0768 P1 | Itron incumbent-with-incumbent mode: co-create standards |
-| Implementation roadmap | B-0766 P1 | Slow-replace dependencies with binary-compatible Zeta-native impls |
-| First implementation wave | B-0767 P1 | Zeta-native scheduler first (DST + AI-aware) |
-| Adoption mechanism | B-0762 P2 | Auto-submit-back telemetry flywheel → adoption cost → 0 |
-| Vendor-relationship contract | B-0763 P2 | Operator-in-the-negotiation-high-seat via interface ownership |
-| Ecosystem leverage | B-0764 P2 | CNCF projects as force multipliers behind interfaces |
-| Reference target | B-0761 P2 | Open AI-trainable cluster reference + ARC-AGI benchmark |
-| UX bar | B-0759 P2 | First-time-CLI-user persona + 3-node prod-ready inflection |
-| Substrate primitive | B-0754 P2 | Zero-typing cluster install (iteration N in progress) |
-| Operational resilience | B-0760 P2 | USB as universal repair tool; zero-disruption at 3+ nodes |
-| Edge-case coverage | B-0758 P3 | unRAID-style USB-persistent-OS / zero-disk |
+| Meta-strategy (this row) | 081KSE6WT0008QG0R001E1F862 | The VC meta-playbook Zeta executes; substrate-honest variant |
+| Tactical playbook A | 081KSE6WT0008QG0R00063R6HB P1 | ServiceTitan up-and-comer mode: plug into existing standards |
+| Tactical playbook B | 081KSE6WT0008QG0R0004ZPPRP P1 | Itron incumbent-with-incumbent mode: co-create standards |
+| Implementation roadmap | 081KSE6WT0008QG0R00049EFBD P1 | Slow-replace dependencies with binary-compatible Zeta-native impls |
+| First implementation wave | 081KSE6WT0008QG0R0016CEE2Z P1 | Zeta-native scheduler first (DST + AI-aware) |
+| Adoption mechanism | 081KSE6WT0008QG0R003FG3E8R P2 | Auto-submit-back telemetry flywheel → adoption cost → 0 |
+| Vendor-relationship contract | 081KSE6WT0008QG0R000WVYAJ2 P2 | Operator-in-the-negotiation-high-seat via interface ownership |
+| Ecosystem leverage | 081KSE6WT0008QG0R0009YYNP4 P2 | CNCF projects as force multipliers behind interfaces |
+| Reference target | 081KSE6WT0008QG0R0015ZF2G6 P2 | Open AI-trainable cluster reference + ARC-AGI benchmark |
+| UX bar | 081KSE6WT0008QG0R003G0Y62D P2 | First-time-CLI-user persona + 3-node prod-ready inflection |
+| Substrate primitive | 081KSGS9H0008QG0R002T3BJ2R P2 | Zero-typing cluster install (iteration N in progress) |
+| Operational resilience | 081KSE6WT0008QG0R003WG0V6P P2 | USB as universal repair tool; zero-disruption at 3+ nodes |
+| Edge-case coverage | 081KSE6WT0008QG0R00021PPX1 P3 | unRAID-style USB-persistent-OS / zero-disk |
 
 This row is the **load-bearing strategic context** that explains
 WHY the rest of the cluster fits together as one coherent
@@ -253,33 +252,33 @@ substrate-honest execution of a well-tested commercial pattern.
 
 ## Composes with
 
-- B-0741 — ontology negotiation (at standards layer per
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (at standards layer per
   ServiceTitan + Itron; substrate-honest because every operator
   using any standard benefits)
-- B-0754 — zero-typing first-boot (the operator-facing control
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the operator-facing control
   layer entry point)
-- B-0759 — first-time-CLI-user persona (the adoption bet that
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (the adoption bet that
   makes the VC meta-playbook work at scale)
-- B-0761 — open reference architecture (the substrate-honest
+- 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (the substrate-honest
   variant of "compound expansion" — open vs proprietary
   reference)
-- B-0762 — auto-submit-back telemetry (the substrate-honest
+- 081KSE6WT0008QG0R003FG3E8R — auto-submit-back telemetry (the substrate-honest
   variant of "hoard data" — opt-in + open data)
-- B-0763 — cloud-native plugins fit Zeta interfaces (the
+- 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces (the
   substrate-honest variant of "lock vendors out" — vendor
   competition preserved)
-- B-0764 — CNCF ecosystem force multipliers (the
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF ecosystem force multipliers (the
   substrate-honest variant of "build moat via lock-in" — moat
   via composition coherence, not lock-in)
-- B-0765 P1 — ServiceTitan route (the tactical playbook A this
+- 081KSE6WT0008QG0R00063R6HB P1 — ServiceTitan route (the tactical playbook A this
   row's meta-strategy informs)
-- B-0766 P1 — slow-replace k8s binary-compat (the implementation
+- 081KSE6WT0008QG0R00049EFBD P1 — slow-replace k8s binary-compat (the implementation
   roadmap that gives Zeta ownership over time without breaking
   vendor competition)
-- B-0767 P1 — Zeta-native scheduler first (the first
+- 081KSE6WT0008QG0R0016CEE2Z P1 — Zeta-native scheduler first (the first
   implementation wave that delivers AI-cluster-substrate value
   the meta-playbook depends on)
-- B-0768 P1 — Itron incumbent-with-incumbent strategy (the
+- 081KSE6WT0008QG0R0004ZPPRP P1 — Itron incumbent-with-incumbent strategy (the
   tactical playbook B this row's meta-strategy also informs)
 - `.claude/rules/non-coercion-invariant.md` (HC-8) — the floor
   that protects against extractive failure mode
@@ -312,7 +311,7 @@ operates it substrate-honestly per existing framework rules.
   not named explicitly, drift toward extractive failure mode
   is the default trajectory under outside pressure (VCs,
   growth metrics, board mandates, etc.)
-- Aaron's empirical-provenance lived experience (per B-0768
+- Aaron's empirical-provenance lived experience (per 081KSE6WT0008QG0R0004ZPPRP
   "ST was two guys in a garage i saw both") gives this row
   unusually strong grounding — not theoretical
 
@@ -338,7 +337,7 @@ operates it substrate-honestly per existing framework rules.
 Aaron 2026-05-25 mid-iteration-2-wait, naming the third strategic
 anchor: VC meta-playbook (control-structure injection around
 capital flow in verticals) IS the playbook that produced
-ServiceTitan. Per B-0768 empirical-provenance: Aaron watched ST
+ServiceTitan. Per 081KSE6WT0008QG0R0004ZPPRP empirical-provenance: Aaron watched ST
 execute this playbook from two-guys-in-a-garage inception.
 Direct lived experience, not theoretical case-study.
 
@@ -349,6 +348,6 @@ the substrate-honest variant looks like, (4) what the
 extractive failure mode looks like, (5) which existing
 framework rules protect against the failure mode.
 
-Together with B-0765 + B-0766 + B-0767 + B-0768 + the rest
+Together with 081KSE6WT0008QG0R00063R6HB + 081KSE6WT0008QG0R00049EFBD + 081KSE6WT0008QG0R0016CEE2Z + 081KSE6WT0008QG0R0004ZPPRP + the rest
 of the cluster-install substrate cluster, this completes the
 strategic-substrate composition for the Zeta cluster vertical.

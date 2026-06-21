@@ -101,7 +101,7 @@ function parseEventFile(eventDir: string, name: string): ParsedEvent | null {
  * Read + deterministically order the event log → the recorded actions. Tolerant:
  * a missing dir, a non-JSON file, a malformed envelope, a non-canonical id, an
  * unknown action kind, or an ill-shaped payload is skipped (never throws). Recurses
- * date-partitioned dirs (YYYY/MM/DD/{id}.json, B-0867.2 / bus shape). Ordered by
+ * date-partitioned dirs (YYYY/MM/DD/{id}.json, 081KSNY2Z0008QG0R001K6HJ7Z / bus shape). Ordered by
  * `at` then `id` so the fold is replayable (DST).
  */
 export function readEventActions(eventDir: string): readonly NextAction[] {

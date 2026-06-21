@@ -12,7 +12,7 @@ Carved sentence (Aaron 2026-06-02):
 
 When about to author *any* new primitive / collection class / "special index" /
 container / structure, run this **before** writing it. (Full treatment + worked
-examples + the registry itself: [`docs/backlog/P1/B-1006-*`](../../docs/backlog/P1/).)
+examples + the registry itself: [`docs/backlog/P1/081KT2T2J0008QG0R0008TFHJT-*`](../../docs/backlog/P1/).)
 
 ### 1. Algebra-first admission procedure (ordered)
 
@@ -37,14 +37,14 @@ no taste, no seniority, no politics):
   anything that crosses a language/wire boundary).
 - **Uniqueness** — not a duplicate / view / composition (the 4-question triage:
   already-have-it? a view? does existing decompose into it? or it into existing?).
-- **Composability** — composes at the HKT level with the rest (`B-1004`).
+- **Composability** — composes at the HKT level with the rest (`081KT2T2J0008QG0R0038CRFJM`).
 
 ### 3. The registry IS our BCL + the ship gate
 
 - The canonical-primitives registry is the **Zeta Base Class Library** — multi-axis
   (data Z-set algebras · codec algebra · temporal-operator algebra · generic-math
   base; everything-is-algebra is the convergence target).
-- **Registry-membership is the precondition to ship** (via Ace, `B-0288`/`B-0824`).
+- **Registry-membership is the precondition to ship** (via Ace, `081KR2E4K0008QG0R002YE3MMD`/`081KSGS9H0008QG0R0031PBNGA`).
   We don't ship what's not in the registry. Goal: everything in it eventually —
   "or else what's it for."
 - **Only off-ramp: a named asymmetric exception** (host adapter / interop shim /
@@ -96,13 +96,13 @@ memory *before* the special-class is minted, not after it leaks in. Aaron 2026-0
 - [`monad-propagation-pattern-cross-language-substrate-shape.md`](monad-propagation-pattern-cross-language-substrate-shape.md) — composability gate (HKT-composes) + cross-language shape
 - [`human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](human-audit-and-legal-risk-acceptance-pattern-in-settings.md) — named asymmetric exceptions are documented waivers
 - [`wake-time-substrate.md`](wake-time-substrate.md) — why this auto-loads
-- B-1006 (the registry + full treatment), B-1004 (minimal vocabulary), B-0288/B-0824 (Ace), B-0976 (Bonsai codec), B-0428 (HKT), B-1000/B-1005 (the engine using the primitives)
+- 081KT2T2J0008QG0R0008TFHJT (the registry + full treatment), 081KT2T2J0008QG0R0038CRFJM (minimal vocabulary), 081KR2E4K0008QG0R002YE3MMD/081KSGS9H0008QG0R0031PBNGA (Ace), 081KT07NV0008QG0R003BE6MJ2 (Bonsai codec), 081KRFA460008QG0R0018SN61J (HKT), 081KT2T2J0008QG0R000S7GHQ8/081KT2T2J0008QG0R003BT1RS7 (the engine using the primitives)
 
 ## Full reasoning
 
-Aaron 2026-06-02 derived these across the B-1006 arc: the suspicion test →
+Aaron 2026-06-02 derived these across the 081KT2T2J0008QG0R0008TFHJT arc: the suspicion test →
 4-question triage → the registry → the three gates → multi-axis (codec/time) →
 codecs-are-algebra → algebra-first procedure → registry-is-BCL/ship-gate →
 tick-source-folds-to-algebra. The minimal procedures are saved here as the
-auto-loaded authoring discipline; B-1006 holds the full substrate + the worked
+auto-loaded authoring discipline; 081KT2T2J0008QG0R0008TFHJT holds the full substrate + the worked
 audit/procedure-runs.

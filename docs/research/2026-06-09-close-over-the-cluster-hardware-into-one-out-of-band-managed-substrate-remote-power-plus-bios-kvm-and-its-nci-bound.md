@@ -107,7 +107,7 @@ human presence border; never coercion. No new code; names the close-over + the g
 ## Pointers
 
 - Close-over thesis: #7229 (flasher OS-split = accidental complexity) · `interfaces-are-the-value` ·
-  self-registration GitOps (#7237/#7240, B-0794). Local flash counterpart: zflash (#7239/#7228).
+  self-registration GitOps (#7237/#7240, 081KSGS9H0008QG0R0027HJZYH). Local flash counterpart: zflash (#7239/#7228).
 - Alignment bound: the repelling force / NCI (#7235) · minimal sufficient border
   ([[aaron-minimal-sufficient-border-hates-borders-loves-safety-protocols]]) · consent-first §6 · `no-directives`
   (source ≠ authorization) · non-reversible-action gate.

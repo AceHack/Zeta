@@ -1,6 +1,5 @@
 ---
-id: B-0682
-zetaid: 081KS3X9Y0008QG0R000W00V73
+id: 081KS3X9Y0008QG0R000W00V73
 priority: P1
 status: closed
 title: ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec
@@ -18,16 +17,16 @@ type: feature
 
 # ZetaId canonical string encoding + endianness + bit-numbering
 
-> **Status 2026-06-06 (promoted P1 — B-0956 blocker, Aaron "start with B-0682"):** the **TypeScript
+> **Status 2026-06-06 (promoted P1 — 081KSXN940008QG0R002FWR9B2 blocker, Aaron "start with 081KS3X9Y0008QG0R000W00V73"):** the **TypeScript
 > canonical encoding has LANDED** — `src/Core.TypeScript/zeta-id/encoding.ts` + `encoding.test.ts` (13/13
 > green, ~35.7k assertions). Implements §1 Crockford base32 (26-char, filename-safe — alphabet excludes
 > I/L/O/U, single canonical case), §2 big-endian, and the **sort-preserving** property (string sort ==
-> numeric ZetaId sort == chronological, since version+timestamp are the high bits) that the B-0956 decision
+> numeric ZetaId sort == chronological, since version+timestamp are the high bits) that the 081KSXN940008QG0R002FWR9B2 decision
 > `workitems/<zetaid>-<desc>.md` + `done/YYYY/MM/` time-ordering depends on. Plus canonical hex
 > (`toHex`/`fromHex`), Crockford-lenient `parse` (I/L→1, O→0, lowercase), 128-bit-overflow rejection,
 > `isCanonical`, and §4 canonical fixture vectors. **Remaining for full cross-language parity:** Rust
-> (B-0679) + Python (B-0680) must reproduce the same vectors; §3 bit-numbering (LSB-0) is documented in
-> `encoding.ts`. The TS half unblocks the B-0956 `new-workitem.ts` mint tool.
+> (081KS3X9Y0008QG0R001Z8SBZJ) + Python (081KS3X9Y0008QG0R002WGH8PJ) must reproduce the same vectors; §3 bit-numbering (LSB-0) is documented in
+> `encoding.ts`. The TS half unblocks the 081KSXN940008QG0R002FWR9B2 `new-workitem.ts` mint tool.
 
 ## Context
 
@@ -109,9 +108,9 @@ Add to `tests/cross-verification/zeta-id/`:
 
 ## Composes with
 
-- B-0681 (v2 spec hardening) — these fields may shift bit positions
-- B-0679 / B-0680 (Rust + Python) — implementations adopt the encoding
-- Git-filename-first deployment per Aaron (B-0517 substrate)
+- 081KS3X9Y0008QG0R003044PQQ (v2 spec hardening) — these fields may shift bit positions
+- 081KS3X9Y0008QG0R001Z8SBZJ / 081KS3X9Y0008QG0R002WGH8PJ (Rust + Python) — implementations adopt the encoding
+- Git-filename-first deployment per Aaron (081KRHWGX0008QG0R0029X10F4 substrate)
 
 ## Resolution
 

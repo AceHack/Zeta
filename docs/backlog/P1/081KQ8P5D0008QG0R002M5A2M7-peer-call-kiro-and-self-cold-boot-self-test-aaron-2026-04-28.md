@@ -1,6 +1,5 @@
 ---
-id: B-0065
-zetaid: 081KQ8P5D0008QG0R002M5A2M7
+id: 081KQ8P5D0008QG0R002M5A2M7
 priority: P1
 status: umbrella
 title: Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
@@ -161,7 +160,7 @@ bearing in this session — applied to Claude itself.
 
 ## Composes with
 
-- **B-0064** — GitHub × Playwright integration; the
+- **081KQ8P5D0008QG0R0010FP5SY** — GitHub × Playwright integration; the
   Playwright runs may benefit from a peer-call
   validation pass.
 - `feedback_kiro_cli_added_to_agent_roster_aaron_2026_04_28.md`

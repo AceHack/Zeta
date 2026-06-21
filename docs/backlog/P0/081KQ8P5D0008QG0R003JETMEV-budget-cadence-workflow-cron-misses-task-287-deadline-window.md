@@ -1,6 +1,5 @@
 ---
-id: B-0085
-zetaid: 081KQ8P5D0008QG0R003JETMEV
+id: 081KQ8P5D0008QG0R003JETMEV
 priority: P0
 status: closed
 closed: 2026-05-02
@@ -35,7 +34,7 @@ tags: [task-287, deadline-2026-04-29, budget-snapshot, visibility-constraint, ca
 > next deadline-window mismatch is detected, OR extend task #269
 > directly.
 
-# B-0085 — Budget cadence workflow's weekly-Sundays cron misses task #287 deadline window
+# 081KQ8P5D0008QG0R003JETMEV — Budget cadence workflow's weekly-Sundays cron misses task #287 deadline window
 
 ## The gap
 

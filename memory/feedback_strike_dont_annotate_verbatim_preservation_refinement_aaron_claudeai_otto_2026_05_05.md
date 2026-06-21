@@ -92,7 +92,7 @@ artifact / synthesis text:
 3. **Add a single clean correction note**: in the operational-
    status header (frontmatter) or a brief paragraph in the
    relevant section, name the correction once. Example: *"Aaron
-   explicitly disconfirmed tinygrad-as-paper-id; B-0202
+   explicitly disconfirmed tinygrad-as-paper-id; 081KQTPYE0008QG0R002Y7X5KH
    substrate-engineering claim survives independently."*
 4. **Trust git history for the trajectory**: anyone who needs
    to see how Otto's thinking evolved can `git log -p <file>`

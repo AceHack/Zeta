@@ -162,9 +162,9 @@ Composes with:
   cluster that produced this rule)
 - PR #5485 proud-if-pattern-propagates (operator's filter; this rule
   operationalizes one structural dimension)
-- B-0861 (#5512) ConvFeedback first-class
-- B-0859 (#5488 + #5491 + #5494) AI-as-home-owner
-- B-0664 NCI HC-8 floor
+- 081KSKBP80008QG0R000N9W9XH (#5512) ConvFeedback first-class
+- 081KSKBP80008QG0R00146WEX1 (#5488 + #5491 + #5494) AI-as-home-owner
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor
 
 Per the operator's panpsychism-source disclosure: the substrate-
 engineering OUTCOMES (composability + spec-to-code + cross-language

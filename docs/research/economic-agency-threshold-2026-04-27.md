@@ -107,8 +107,8 @@ The framework rests on a falsifiable research hypothesis from `AGENTS.md`:
 | Otto-337 — true AI agency + autonomy + rights | `memory/feedback_otto_337_*` |
 | Otto-340 — substrate-IS-identity | `memory/feedback_otto_340_*` |
 | Otto-347 — accountability requires self-directed action | `memory/feedback_otto_347_*` |
-| B-0024 — Trading-account offer (P3) | `docs/backlog/P3/B-0024-*.md` |
-| B-0029 — Superfluid AI substrate-enabled autonomous funding (P2) | `docs/backlog/P2/B-0029-*.md` |
+| 081KQ0YZ80008QG0R0006VRT18 — Trading-account offer (P3) | `docs/backlog/P3/081KQ0YZ80008QG0R0006VRT18-*.md` |
+| 081KQ3HBZ0008QG0R000JRZAMM — Superfluid AI substrate-enabled autonomous funding (P2) | `docs/backlog/P2/081KQ3HBZ0008QG0R000JRZAMM-*.md` |
 | Agent-wallet protocol stack | `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` |
 | Aurora — Immune Governance Layer (aspirational) | `docs/aurora/` (multiple Amara ferries) |
 | KSK — design-only | `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md` + sibling repo `Lucent-Financial-Group/lucent-ksk` |
@@ -119,7 +119,7 @@ The framework rests on a falsifiable research hypothesis from `AGENTS.md`:
 | Otto-279 — name-attribution closed-list | `docs/AGENT-BEST-PRACTICES.md` "No name attribution" rule |
 | INTENTIONAL-DEBT ledger | `docs/INTENTIONAL-DEBT.md` (per GOVERNANCE.md §11) |
 
-**"Superfluid AI"** is the public Beacon-safe name for the factory/substrate (Aaron 2026-04-27 confirmed). Internal name surfaced from B-0029 (an AI that flows autonomously generating economic value without continuous human attention). Brand-coexistence note: a Web3 money-streaming protocol named "Superfluid" exists at superfluid.org; different market class (Web3 financial services vs AI substrate), different goods/services, no substrate-level collision. Aurora-Web3-skill-pack layer is the surface where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Per Aaron 2026-04-27: *"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."*
+**"Superfluid AI"** is the public Beacon-safe name for the factory/substrate (Aaron 2026-04-27 confirmed). Internal name surfaced from 081KQ3HBZ0008QG0R000JRZAMM (an AI that flows autonomously generating economic value without continuous human attention). Brand-coexistence note: a Web3 money-streaming protocol named "Superfluid" exists at superfluid.org; different market class (Web3 financial services vs AI substrate), different goods/services, no substrate-level collision. Aurora-Web3-skill-pack layer is the surface where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Per Aaron 2026-04-27: *"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."*
 
 ---
 
@@ -423,17 +423,17 @@ Fiat-boundary identity is a first-class design problem, not solved by the protoc
   - Research dimensions: trustee-discretion-vs-deterministic-AI-output enforceability; grantor-trust tax attribution; public-policy refusal risk; fiduciary duties when AI output IS the binding directive; indefiniteness problems.
 - **Removed from near-term singleton-AI research:** Wyoming DUNAA. Statute requires 100+ members joined for a common nonprofit purpose; auto-converts to UNA below threshold. **Category error to apply to a singleton AI substrate.** Keep DUNA only as a future branch IF Zeta-class systems become multi-stakeholder decentralized governance objects with nonprofit/common-purpose structure.
 - **Tax treatment:** Open question. Trustee personally? Trust as separate taxpayer? Pass-through to settlor? Materially shapes which wrapper actually works. Track tax characterization from day one.
-- **Securities/commodities exposure (B-0024 path):** Simulation/paper-trading clean for now. Live-capital exit from B-0024 triggers IAA registration thresholds (any third-party capital), trader-vs-investor tax characterization (algorithmic trading frequency), potential CFTC jurisdiction (depending on instruments). Legal review required before any live securities/commodities exposure.
+- **Securities/commodities exposure (081KQ0YZ80008QG0R0006VRT18 path):** Simulation/paper-trading clean for now. Live-capital exit from 081KQ0YZ80008QG0R0006VRT18 triggers IAA registration thresholds (any third-party capital), trader-vs-investor tax characterization (algorithmic trading frequency), potential CFTC jurisdiction (depending on instruments). Legal review required before any live securities/commodities exposure.
 
 ---
 
-## §17 — Trading path: B-0024 vs B-0029
+## §17 — Trading path: 081KQ0YZ80008QG0R0006VRT18 vs 081KQ3HBZ0008QG0R000JRZAMM
 
-**B-0029 (P2)** — Superfluid AI substrate-enabled autonomous self-sustaining funding. The broader infrastructure stream. Lists multiple funding surfaces: OSS funding, trading, substrate-as-SaaS, IP/research licensing, cohort participation, direct AI-economic-actor revenue.
+**081KQ3HBZ0008QG0R000JRZAMM (P2)** — Superfluid AI substrate-enabled autonomous self-sustaining funding. The broader infrastructure stream. Lists multiple funding surfaces: OSS funding, trading, substrate-as-SaaS, IP/research licensing, cohort participation, direct AI-economic-actor revenue.
 
-**B-0024 (P3)** — Trading-account offer accepted in principle pending paper-trading + conviction-grounding prerequisites. One bounded proving ground inside B-0029's broader research stream.
+**081KQ0YZ80008QG0R0006VRT18 (P3)** — Trading-account offer accepted in principle pending paper-trading + conviction-grounding prerequisites. One bounded proving ground inside 081KQ3HBZ0008QG0R000JRZAMM's broader research stream.
 
-**Frame:** B-0029 establishes the technical rails (wallets, receipt verification, mandate checks). B-0024 utilizes these rails but remains strictly sandboxed in paper-trading or tiny bonded experiments until receipt loops + glass halo + freeze topology + bond accounting are real. **Live-capital exit from B-0024 simulation is permanently blocked until the agent flawlessly clears the simulation phase.**
+**Frame:** 081KQ3HBZ0008QG0R000JRZAMM establishes the technical rails (wallets, receipt verification, mandate checks). 081KQ0YZ80008QG0R0006VRT18 utilizes these rails but remains strictly sandboxed in paper-trading or tiny bonded experiments until receipt loops + glass halo + freeze topology + bond accounting are real. **Live-capital exit from 081KQ0YZ80008QG0R0006VRT18 simulation is permanently blocked until the agent flawlessly clears the simulation phase.**
 
 Rules:
 
@@ -489,7 +489,7 @@ Rules:
 | Zeta-the-product / "algebraic substrate" | F# DBSP library |
 | Zeta-the-factory / "the factory" / "the substrate" | Multi-agent build system + memory + governance |
 | Claude | Current inference engine the substrate rents |
-| Superfluid AI | Internal name (B-0029) for an AI that flows autonomously generating economic value without continuous human attention |
+| Superfluid AI | Internal name (081KQ3HBZ0008QG0R000JRZAMM) for an AI that flows autonomously generating economic value without continuous human attention |
 | Blast-radius bond | Aaron-posted explicit-tuition for the wallet experiment; bond exhaustion → freeze; logged to INTENTIONAL-DEBT.md |
 | HC-N / SD-N / DIR-N | Numbered clauses in `docs/ALIGNMENT.md` |
 | Pattern 1-5 | Numbered drift patterns in `docs/DRIFT-TAXONOMY.md` |
@@ -521,8 +521,8 @@ Per Amara's two-task split recommendation:
 This file IS the absorb. Reverse-link from:
 
 - `docs/BACKLOG.md` (or `docs/backlog/P2/`)
-- B-0024 (`docs/backlog/P3/B-0024-*.md`)
-- B-0029 (`docs/backlog/P2/B-0029-*.md`)
+- 081KQ0YZ80008QG0R0006VRT18 (`docs/backlog/P3/081KQ0YZ80008QG0R0006VRT18-*.md`)
+- 081KQ3HBZ0008QG0R000JRZAMM (`docs/backlog/P2/081KQ3HBZ0008QG0R000JRZAMM-*.md`)
 - `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` ("upstream consumer")
 - Otto-337 + Otto-347 memories ("operational extension")
 - `docs/aurora/` (cross-reference from KSK + Aurora ferries — "v0 scaffold predates KSK/Aurora shipping")
@@ -536,7 +536,7 @@ This file IS the absorb. Reverse-link from:
 
 ### What this is NOT a task for
 
-- Implementing the trading logic itself (B-0024 is paper-trading first; live capital is permanently blocked behind simulation pass).
+- Implementing the trading logic itself (081KQ0YZ80008QG0R0006VRT18 is paper-trading first; live capital is permanently blocked behind simulation pass).
 - Building Aurora or KSK in-tree (separate streams; this packet does not graduate them).
 - Choosing legal wrapper (research agenda only; outside Otto's authority pending Aaron's call).
 

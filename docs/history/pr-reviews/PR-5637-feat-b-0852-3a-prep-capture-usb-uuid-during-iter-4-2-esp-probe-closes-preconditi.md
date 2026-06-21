@@ -31,7 +31,7 @@
 
 Operator-blocking pain point 2026-05-27: *\"i'm witing on the tool to be resable so i don't have to enter credentals over and over everytime.\"*
 
-Root cause: the B-0852 cred-persistence picker at Step 6.95-picker has 3 gate preconditions:
+Root cause: the 081KSKBP80008QG0R003AX2A69 cred-persistence picker at Step 6.95-picker has 3 gate preconditions:
 
 1. \`ZETA_CREDS_PICKER=1\` env var
 2. \`ZETA_CREDS_PASSPHRASE\` env var
@@ -70,8 +70,8 @@ This iteration is the SMALLEST SHIPPABLE ADVANCE — closes one of three precond
 
 ## Composes with
 
-- B-0789 / iter-4.2 (existing ESP-probe + pubkey-injection substrate this commit piggybacks on)
-- B-0852 / Step 6.95-picker (the picker that consumes \`/etc/zeta/usb-uuid\`)
+- 081KSGS9H0008QG0R002T3BJ2R / iter-4.2 (existing ESP-probe + pubkey-injection substrate this commit piggybacks on)
+- 081KSKBP80008QG0R003AX2A69 / Step 6.95-picker (the picker that consumes \`/etc/zeta/usb-uuid\`)
 - `tools/installer/zeta-creds-crypto.ts` (the HKDF-UUID-binding this UUID feeds)
 - `tools/installer/zeta-creds-picker.ts` (existing TS impl that reads \`/etc/zeta/usb-uuid\`)
 - `full-ai-cluster/INJECTION-POINTS.md` (catalog of injection points; this work makes in-flight item #5 more concrete)

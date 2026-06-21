@@ -1,6 +1,5 @@
 ---
-id: B-0126.3
-zetaid: 081KR2E4K0008QG0R002MG5Q5Z
+id: 081KR2E4K0008QG0R002MG5Q5Z
 priority: P1
 status: closed
 title: "Layers 1-3: document meta-learning pattern adapted for Zeta"
@@ -12,9 +11,9 @@ classification: buildable-now
 type: friction-reducer
 ---
 
-# B-0126.3 — Layers 1-3: document meta-learning pattern adapted for Zeta
+# 081KR2E4K0008QG0R002MG5Q5Z — Layers 1-3: document meta-learning pattern adapted for Zeta
 
-**Slice of:** [B-0126](B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
+**Slice of:** [081KQGDBJ0008QG0R001JC9HCJ](081KQGDBJ0008QG0R001JC9HCJ-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
 
 ## What
 
@@ -33,5 +32,5 @@ dedicated `docs/META-LEARNING.md` with AGENTS.md pointer.
 
 ## Depends on
 
-Independent of B-0126.1/B-0126.2 (Layer 4 attribution). Can be done in
+Independent of 081KR2E4K0008QG0R001N1PPHP/081KR2E4K0008QG0R0005GS263 (Layer 4 attribution). Can be done in
 parallel.

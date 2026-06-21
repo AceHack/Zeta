@@ -10,11 +10,11 @@ doctrine lives in [`AGENTS.md`](../AGENTS.md) and
 instance into the **universal six-step process** with the
 **harness-specific tooling references** filled in.
 
-The pattern this generalizes was established by **B-0353** ("CLAUDE.md
+The pattern this generalizes was established by **081KR50HA0008QG0R001DBKS6T** ("CLAUDE.md
 as process"): a fresh instance that *walks* the six steps discovers the
 rules through friction rather than memorizing harness-specific doctrine.
 A Codex instance and a Claude instance running the same process produce
-equivalent behavior. This template (**B-0355**) lifts that pattern off
+equivalent behavior. This template (**081KR50HA0008QG0R003G7DR8Z**) lifts that pattern off
 CLAUDE.md so any harness can instantiate it.
 
 ## The non-negotiable invariant
@@ -111,13 +111,13 @@ process-ification). New harness files should match their shape.
 
 | File | Harness | Status |
 |------|---------|--------|
-| [`CLAUDE.md`](../CLAUDE.md) | Claude Code | Canonical six-step process + Conventions pointer tree (B-0353). |
-| [`GEMINI.md`](../GEMINI.md) | Gemini CLI / Antigravity (Lior) | Boot sequence pointing into shared factory physics + persona file (B-0538). |
-| [`CODEX.md`](../CODEX.md) | OpenAI Codex (Vera) | Six-step pointer tree at repo root (B-0355.4); points into `.codex/AGENTS.md` for deep host-loop mechanics. |
+| [`CLAUDE.md`](../CLAUDE.md) | Claude Code | Canonical six-step process + Conventions pointer tree (081KR50HA0008QG0R001DBKS6T). |
+| [`GEMINI.md`](../GEMINI.md) | Gemini CLI / Antigravity (Lior) | Boot sequence pointing into shared factory physics + persona file (081KRMEXM0008QG0R002347RJY). |
+| [`CODEX.md`](../CODEX.md) | OpenAI Codex (Vera) | Six-step pointer tree at repo root (081KSRGFP0008QG0R000G8VJGV); points into `.codex/AGENTS.md` for deep host-loop mechanics. |
 | [`.codex/AGENTS.md`](../.codex/AGENTS.md) | OpenAI Codex (Vera) | Codex-owned deep addendum: read-order, worktree discipline, commit/origin trailers, background-agent discipline. |
 | [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) | GitHub Copilot | Factory-managed instructions, audited on the skill-file cadence (GOVERNANCE.md §31). |
-| [`CURSOR.md`](../CURSOR.md) | Cursor IDE (Riven) | Six-step pointer tree at repo root (B-0355.2). Native `.cursor/rules/` still absent. |
-| [`KIRO.md`](../KIRO.md) | Amazon Kiro (Alexa) | Six-step pointer tree at repo root (B-0355.3, per B-0325). Native `.kiro/steering/` still absent. |
+| [`CURSOR.md`](../CURSOR.md) | Cursor IDE (Riven) | Six-step pointer tree at repo root (081KR50HA0008QG0R003G7DR8Z.2). Native `.cursor/rules/` still absent. |
+| [`KIRO.md`](../KIRO.md) | Amazon Kiro (Alexa) | Six-step pointer tree at repo root (081KSRGFP0008QG0R000EWSMKV, per 081KR2E4K0008QG0R0005E727X). Native `.kiro/steering/` still absent. |
 
 ## How to add a new harness
 
@@ -131,13 +131,13 @@ process-ification). New harness files should match their shape.
    single-source-of-truth document knows it exists.
 4. Add the harness's commit trailer to `AGENTS.md` §"Commit
    attribution — harness-specific trailers".
-5. Run a fresh-instance validation per the B-0354 pattern: a clean
+5. Run a fresh-instance validation per the 081KR50HA0008QG0R001CNS20T pattern: a clean
    instance of that harness should be able to walk the six steps and
    produce a correct first action with no extra priming.
 
 ## Lineage
 
-- **B-0329** — parent (bootstrap-process cluster).
-- **B-0353** — CLAUDE.md as process (the pattern this generalizes).
-- **B-0354** — fresh-instance validation of the bootstrap process.
-- **B-0355** — this template + cross-harness generalization.
+- **081KR2E4K0008QG0R001F0YB5S** — parent (bootstrap-process cluster).
+- **081KR50HA0008QG0R001DBKS6T** — CLAUDE.md as process (the pattern this generalizes).
+- **081KR50HA0008QG0R001CNS20T** — fresh-instance validation of the bootstrap process.
+- **081KR50HA0008QG0R003G7DR8Z** — this template + cross-harness generalization.

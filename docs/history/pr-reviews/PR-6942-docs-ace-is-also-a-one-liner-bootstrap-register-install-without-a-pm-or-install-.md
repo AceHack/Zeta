@@ -27,7 +27,7 @@
 
 ## Description
 
-Extends #6939/#6941: Ace is the zero-dependency bootstrap (curl one-liner register) that installs a tool with no PM, or installs a PM itself (incl. Ace) — solves the chicken-and-egg, completes viruses-need-a-host (081KTHTPPCD): the one-liner lays down the host the pointer map resolves against -> self-installing from bare metal (B-0863). Security bound: content-address+verify, consent-gated. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Extends #6939/#6941: Ace is the zero-dependency bootstrap (curl one-liner register) that installs a tool with no PM, or installs a PM itself (incl. Ace) — solves the chicken-and-egg, completes viruses-need-a-host (081KTHTPPCD): the one-liner lays down the host the pointer map resolves against -> self-installing from bare metal (081KSKBP80008QG0R000F4311E). Security bound: content-address+verify, consent-gated. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

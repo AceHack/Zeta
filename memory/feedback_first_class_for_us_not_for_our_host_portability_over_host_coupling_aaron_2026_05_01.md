@@ -1,11 +1,11 @@
 ---
 name: First-class for us, not for our host — portability-over-host-coupling factory principle — Aaron 2026-05-01
-description: Aaron 2026-05-01 — *"this can be first class for us and more portable, one less tool we have to worry about."* Reverses the host-favoring "Jekyll first-class on GitHub" framing. The right axis is "first-class for the FACTORY," not "first-class for our host." When a tool's primary advantage is host-coupling (zero-config because the host built it in), that advantage is illusory: it locks the factory to that host. Tool selection should optimize for portability (works across hosts) + factory-coherence (matches existing stack) + bounded-install-graph ("one less tool we have to worry about"). Concrete trigger: B-0154 static-site-generator decision, where Bun/Node-based SSGs (Astro, BunPress, Bun-SSG, Bunjucks, Fresh-Bun, Eleventy) provide the same SEO features as Jekyll (auto-sitemap, robots.txt, Open Graph) without GitHub-coupling. Composes with git-native-vs-GitHub-native distinction + B-0156 TS-trajectory + outcomes-driven-decisions.
+description: Aaron 2026-05-01 — *"this can be first class for us and more portable, one less tool we have to worry about."* Reverses the host-favoring "Jekyll first-class on GitHub" framing. The right axis is "first-class for the FACTORY," not "first-class for our host." When a tool's primary advantage is host-coupling (zero-config because the host built it in), that advantage is illusory: it locks the factory to that host. Tool selection should optimize for portability (works across hosts) + factory-coherence (matches existing stack) + bounded-install-graph ("one less tool we have to worry about"). Concrete trigger: 081KQGDBJ0008QG0R002NV04N9 static-site-generator decision, where Bun/Node-based SSGs (Astro, BunPress, Bun-SSG, Bunjucks, Fresh-Bun, Eleventy) provide the same SEO features as Jekyll (auto-sitemap, robots.txt, Open Graph) without GitHub-coupling. Composes with git-native-vs-GitHub-native distinction + 081KQGDBJ0008QG0R000A4EZS5 TS-trajectory + outcomes-driven-decisions.
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 verbatim: 'this can be first class for us and more portable, one less tool we have to worry about'"
   - "Reverses Aaron's earlier same-day Jekyll-first-class framing ('jekyl is first class on github that's why i chose it') after research surfaced Bun-based SSG capability parity"
-  - "B-0154 static-site-generator decision criterion #2 reversal trigger"
+  - "081KQGDBJ0008QG0R002NV04N9 static-site-generator decision criterion #2 reversal trigger"
 composes_with:
   - feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md
   - feedback_outcomes_over_vanity_metrics_goodhart_resistance.md
@@ -99,7 +99,7 @@ SEO feature parity:
   components that need interactivity), framework-agnostic
   (mix React/Svelte/Vue). 2025 SSG comparisons rank it
   the modern Jekyll-replacement for content sites. The
-  B-0154 spike-target.
+  081KQGDBJ0008QG0R002NV04N9 spike-target.
 - **BunPress** — VitePress-inspired docs engine; builds
   4000 files in ~0.18s; auto-generated sitemap.xml, robots.txt,
   Open Graph tags out of the box.
@@ -146,7 +146,7 @@ the install graph (per `package.json: "packageManager":
 cost of the SSG choice is the SSG library itself (a
 dependency in `package.json`), not a new toolchain.
 
-The bounded-install-graph axis composes with B-0156 (TS
+The bounded-install-graph axis composes with 081KQGDBJ0008QG0R000A4EZS5 (TS
 standardization) + the dependency-source-priority guidance
 (`memory/feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`
 — prefer existing deps over new). Every new toolchain is a
@@ -188,7 +188,7 @@ let host-coupling sneak in as default.
   — "first-class for us" is a self-encoding test (the
   factory itself is the anchor); "first-class on host" uses
   the host as the anchor.
-- B-0156 TS-standardization + B-0154 SSG-decision —
+- 081KQGDBJ0008QG0R000A4EZS5 TS-standardization + 081KQGDBJ0008QG0R002NV04N9 SSG-decision —
   worked-example applications.
 
 # What this rule does NOT do
@@ -206,7 +206,7 @@ let host-coupling sneak in as default.
   might find Bun is the wrong fit for that problem; the
   rule still says "first-class for us" — which might
   mean a different stack for a different problem.
-- **NOT a trump-card for B-0154.** Aaron's two-pass
+- **NOT a trump-card for 081KQGDBJ0008QG0R002NV04N9.** Aaron's two-pass
   reversal IS the discipline applied; future decisions
   may surface other axes that re-weight again. The rule
   is the meta-process (ask first-class-for-whom),

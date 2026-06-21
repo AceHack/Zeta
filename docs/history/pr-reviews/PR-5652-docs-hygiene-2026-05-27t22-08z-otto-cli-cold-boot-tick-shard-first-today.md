@@ -39,7 +39,7 @@ First 2026-05-27 tick shard. Fresh Otto-CLI cold-boot at 22:08Z, ~24h cadence si
 
 - Rate-limit: Normal (GraphQL 4911/5000, 53min reset; REST core 4956/5000)
 - Dotgit: Recovered (0 stuck `git pack-objects`/`git maintenance`/`git repack` procs; no stale `index.lock`)
-- Peer-saturation: 30+ `/private/tmp/zeta-*` worktrees + 29 peer claude/gemini procs across active substrate-engineering arc (B-0852 cred-blob tree, B-0853 cosign, B-0854 install-step-state-machine, B-0855 self-registration, B-0856 path-A tmp-coord, B-0857 install-sh-universal, B-0858 heartbeat-folder, B-0860 nemerle)
+- Peer-saturation: 30+ `/private/tmp/zeta-*` worktrees + 29 peer claude/gemini procs across active substrate-engineering arc (081KSKBP80008QG0R003AX2A69 cred-blob tree, 081KSKBP80008QG0R000Y2B7HC cosign, 081KSKBP80008QG0R002VRN56K install-step-state-machine, 081KSKBP80008QG0R000GPC0TB self-registration, 081KSKBP80008QG0R000TQC624 path-A tmp-coord, 081KSKBP80008QG0R002J03WGA install-sh-universal, 081KSKBP80008QG0R001KK9WV6 heartbeat-folder, 081KSKBP80008QG0R000J2YFK2 nemerle)
 - Branch hygiene: isolated worktree off `origin/main` per `agent-worktree-hygiene-never-hold-main` (operator's primary on stale main with 23 peer-WIP untracked entries; NOT touched)
 
 ## Empirical anchor extension
@@ -51,7 +51,7 @@ Reinforces 2026-05-26 anchor that "peer-saturation without dotgit-corruption is 
 - [x] Sentinel re-armed (`CronList` will show `1f398e97`)
 - [x] Branch guard passed (`git branch --show-current` = `otto-cli/cold-boot-2208z-2026-05-27`)
 - [x] Post-commit canary clean (`git ls-tree HEAD | wc -l` = 61, matches origin/main root entry count)
-- [x] Push succeeded via `timeout --kill-after=5s 90s` per B-0615 discipline
+- [x] Push succeeded via `timeout --kill-after=5s 90s` per 081KRW63S0008QG0R000EAZ9K2 discipline
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

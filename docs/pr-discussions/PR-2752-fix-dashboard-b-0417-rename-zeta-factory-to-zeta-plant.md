@@ -1,6 +1,6 @@
 ---
 pr_number: 2752
-title: "fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant"
+title: "fix(dashboard): 081KDW5GVK008QG0R0026JFKMV rename Zeta Factory to Zeta Plant"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-11T20:52:53Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-11T21:19:51Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #2752: fix(dashboard): B-0417 rename Zeta Factory to Zeta Plant
+# PR #2752: fix(dashboard): 081KDW5GVK008QG0R0026JFKMV rename Zeta Factory to Zeta Plant
 
 ## PR description
 

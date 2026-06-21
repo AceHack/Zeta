@@ -8,7 +8,7 @@
  * `check-counts.ts`, a reader may not realize they point to the same
  * file, and a grep for the full path misses the bare form.
  *
- * Per the verify-then-claim memo's 7-class taxonomy (B-0170):
+ * Per the verify-then-claim memo's 7-class taxonomy (081KQNJ500008QG0R003SCWBDV):
  *   "fully-qualified vs bare paths consistent across document"
  *
  * Reuses findPathClaims() from check-existence.ts for path extraction.

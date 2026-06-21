@@ -1,6 +1,5 @@
 ---
-id: B-0894
-zetaid: 081KSNY2Z0008QG0R0032E7PCY
+id: 081KSNY2Z0008QG0R0032E7PCY
 title: Reboot-survival discipline — in-flight state must survive macOS `/private/tmp/` clear (worktrees + bus envelopes + bg-task output + sentinel)
 status: open
 priority: P1
@@ -18,7 +17,7 @@ tags:
   - cross-cutting
 ---
 
-# B-0894 — Reboot-survival discipline — in-flight state must survive macOS `/private/tmp/` clear
+# 081KSNY2Z0008QG0R0032E7PCY — Reboot-survival discipline — in-flight state must survive macOS `/private/tmp/` clear
 
 ## Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`)
 
@@ -28,7 +27,7 @@ Searched surfaces (origin/main):
 
 - `docs/agendas/`: none on this specific topic
 - `docs/trajectories/`: none
-- `docs/backlog/`: no row covers the cross-cutting "in-flight state survives reboot" discipline. B-0750 (agent worktree hygiene + cleanup automation) is sibling at worktree-cleanup scope but NOT at reboot-survival scope. B-0530 (cron-sentinel mutex) is sibling at multi-agent contention scope but assumes worktrees exist on disk. B-0858.5 (heartbeat auto-state-gathering, consent-first) is sibling at state-gathering-scope.
+- `docs/backlog/`: no row covers the cross-cutting "in-flight state survives reboot" discipline. 081KSE6WT0008QG0R003YYC9PV (agent worktree hygiene + cleanup automation) is sibling at worktree-cleanup scope but NOT at reboot-survival scope. 081KRMEXM0008QG0R000X1PPGC (cron-sentinel mutex) is sibling at multi-agent contention scope but assumes worktrees exist on disk. 081KSKBP80008QG0R003NG37GQ (heartbeat auto-state-gathering, consent-first) is sibling at state-gathering-scope.
 - `.claude/rules/`: `agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` HARDCODES `/private/tmp/zeta-<task-tag>-<hhmmz>/` and `/tmp/zeta-<task-tag>-<hhmmz>/` as the recommended location in 10+ places — directly contradicts reboot-survival requirement. `claim-acquire-before-worktree-work.md` references `/private/tmp/` in saturation-ceiling patterns. `refresh-world-model-poll-pr-gate.md` references `.git/index.lock` recovery but not reboot-survival cross-class.
 - `memory/`: 0 hits on "reboot survival" as named pattern.
 - `docs/research/`: 0 hits on the named pattern.
@@ -68,9 +67,9 @@ Lior's pattern (`~/Documents/src/repos/Zeta/worktrees/lior-*` + `~/.gemini/tmp/p
 
 1. **`agent-worktree-hygiene` rule edit lands**: change Rule 2's recommended location from `/private/tmp/zeta-<task-tag>-<hhmmz>/` to `~/Documents/src/repos/Zeta/worktrees/<surface>-<task-tag>-<hhmmz>/` (the persistent-location pattern Lior already proves works). Add new Rule 5 "Reboot-survival is a hard invariant — NEVER use `/tmp/` or `/private/tmp/` for git worktrees." Add empirical anchor (this restart) as proof point. Update all 10+ examples in the rule.
 2. **`claim-acquire-before-worktree-work` rule update**: saturation-ceiling sub-cases reference `/private/tmp/`; flip to persistent location.
-3. **Bus envelope migration plan filed** as B-0894.1 (sub-row): `ZETA_BUS_DIR` should default to `~/.zeta-bus/` or `~/Library/Application Support/Zeta/bus/`. Migration ships separately.
+3. **Bus envelope migration plan filed** as 081KSNY2Z0008QG0R0032E7PCY.1 (sub-row): `ZETA_BUS_DIR` should default to `~/.zeta-bus/` or `~/Library/Application Support/Zeta/bus/`. Migration ships separately.
 4. **Background-task output is harness-level**: cannot be moved from agent-side; document the workaround (always check `git ls-remote origin <branch>` as ground-truth post-restart, never rely on captured output files). Add to `refresh-world-model-poll-pr-gate.md` or similar.
-5. **Per-agent persistent worktree-pool primitive** (long-term mechanization): worktree pool under `~/Documents/src/repos/Zeta/worktrees/pool/<surface>/` with N pre-allocated slots per agent identity. Sub-row B-0894.2 if shipped separately.
+5. **Per-agent persistent worktree-pool primitive** (long-term mechanization): worktree pool under `~/Documents/src/repos/Zeta/worktrees/pool/<surface>/` with N pre-allocated slots per agent identity. Sub-row 081KSNY2Z0008QG0R0032E7PCY.2 if shipped separately.
 
 ## What ships in this PR
 
@@ -89,9 +88,9 @@ The worktree where THIS backlog row is being authored IS the dogfooding-proof-po
 
 ## Composes with
 
-- **B-0750** — sibling at agent-worktree-cleanup scope; this row adds the location-discipline that prevents the cleanup problem from compounding with reboot-loss
-- **B-0530** — sibling at multi-agent contention scope; both assume worktrees exist on disk; this row ensures they do
-- **B-0858.5** — sibling at consent-first state-gathering scope; same root cause class (state needs persistent location)
+- **081KSE6WT0008QG0R003YYC9PV** — sibling at agent-worktree-cleanup scope; this row adds the location-discipline that prevents the cleanup problem from compounding with reboot-loss
+- **081KRMEXM0008QG0R000X1PPGC** — sibling at multi-agent contention scope; both assume worktrees exist on disk; this row ensures they do
+- **081KSKBP80008QG0R003NG37GQ** — sibling at consent-first state-gathering scope; same root cause class (state needs persistent location)
 - **`.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`** — the rule being edited
 - **`.claude/rules/claim-acquire-before-worktree-work.md`** — sibling rule referencing `/private/tmp/`
 - **`.claude/rules/tick-must-never-stop.md`** — sentinel session-exit non-persistence is sibling at cron-scope (separate from filesystem-scope; both are reboot-survival)

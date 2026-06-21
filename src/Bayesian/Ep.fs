@@ -1,6 +1,6 @@
 namespace Zeta.Bayesian
 
-/// # Expectation Propagation (B-1000 slice 5)
+/// # Expectation Propagation (081KT2T2J0008QG0R000S7GHQ8 slice 5)
 ///
 /// EP handles **non-conjugate** factors — where the true factor `f(x)`
 /// isn't in the exponential family, so the exact message isn't either.

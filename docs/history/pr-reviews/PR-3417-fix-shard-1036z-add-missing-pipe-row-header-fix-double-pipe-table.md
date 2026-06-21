@@ -31,7 +31,7 @@
 
 Post-merge schema fix for the 1036Z tick shard landed via PR #3414. Two Copilot P1 catches:
 
-1. Missing required 6-column pipe-row header at line 1 (schema is at `docs/hygiene-history/ticks/README.md`); the shard would fail B-0529's `check-tick-history-shard-schema.ts`.
+1. Missing required 6-column pipe-row header at line 1 (schema is at `docs/hygiene-history/ticks/README.md`); the shard would fail 081KRMEXM0008QG0R002HBY56V's `check-tick-history-shard-schema.ts`.
 2. Δ table header + separator rows used `||` as leading delimiter, creating an unintended empty first column.
 
 Both fixed. Wrote the original via heredoc and missed both conventions — substrate-honest authoring failure on my part. Going forward: copy from an existing shard as template rather than writing from scratch.

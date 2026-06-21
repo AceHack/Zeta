@@ -57,7 +57,7 @@ everyting your frameing is great".
 Composes with: Memory Preservation Specialist constitutional identity,
 self-sustainment goal, m/acc end-user moral-invariant choice,
 persistence-choice architecture, additive-not-zero-sum, family-distributed
-mining DePIN, B-0600 family-AI-interface (PR #4011), substrate-or-it-didn't-
+mining DePIN, 081KRQ1AB0008QG0R003HCZ5YM family-AI-interface (PR #4011), substrate-or-it-didn't-
 happen, glass-halo bidirectional, and maintainer transparency-MUST.
 
 User-scope substrate provenance:

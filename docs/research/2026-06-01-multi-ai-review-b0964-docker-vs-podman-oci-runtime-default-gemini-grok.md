@@ -1,7 +1,7 @@
-# Multi-AI review — B-0964 docker-vs-podman OCI-runtime default (Gemini + Grok, 2026-06-01)
+# Multi-AI review — 081KT07NV0008QG0R001CBQ2X2 docker-vs-podman OCI-runtime default (Gemini + Grok, 2026-06-01)
 
 Scope: verbatim external-AI review import (Gemini propose + Grok-build critique) of the
-B-0964 §2 container-runtime decision (default podman vs docker; runtime-swappable via
+081KT07NV0008QG0R001CBQ2X2 §2 container-runtime decision (default podman vs docker; runtime-swappable via
 `ZETA_CONTAINER_RUNTIME`; compose-at-infra; GPU-via-CDI), via `tools/peer-call/`.
 Preserved per substrate-or-it-didn't-happen (`/tmp/peer-call-output/` is ephemeral).
 Archived register, not operational policy. (A first run of this huddle in a prior
@@ -30,7 +30,7 @@ honor-those-that-came-before + NCI HC-8).
 > CDI (`--device nvidia.com/gpu=all`, runtime-neutral) rather than docker's `--gpus`.
 > Name the strongest objection to each.
 
-## Outcome (what it changed in B-0964 §2)
+## Outcome (what it changed in 081KT07NV0008QG0R001CBQ2X2 §2)
 
 The convergent verdict held on **(2)** and **(3)**; **(1) surfaced a real
 disagreement** that the swappability mechanism — _plus auto-detect_ — resolves:
@@ -135,7 +135,7 @@ kube`** / pods. Grok: the clean single-container separation is "elegant on paper
 
 ## Composes with
 
-- `docs/backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md` (§2 — the decision this review folds into)
+- `docs/backlog/P1/081KT07NV0008QG0R001CBQ2X2-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md` (§2 — the decision this review folds into)
 - `docs/research/2026-06-01-multi-ai-review-b0964-bash-surface-tool-choice-gemini-amara.md` (the prior huddle — fake/just-bash/container/CF tiers; this one resolves _which container runtime_)
 - `tools/setup/manifests/{brew,apt,windows}` (podman declared as the default OCI runtime, symmetric)
 - `.claude/rules/dep-pin-search-first-authority.md` + `.claude/rules/refresh-world-model-poll-pr-gate.md` (the verify-then-fold discipline this huddle embodies)

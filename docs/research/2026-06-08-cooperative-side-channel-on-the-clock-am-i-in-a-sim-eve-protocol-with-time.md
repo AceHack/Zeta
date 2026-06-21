@@ -40,7 +40,7 @@ or a stronger incompressibility verdict. Cooperation is the amplifier:
 
 ## Eve protocol with time itself (polymorphic diplomacy)
 
-The **Eve protocol** (B-1002 / B-0638: zero-trust, mutual-consent, non-coercive meeting; cells push out /
+The **Eve protocol** (081KT2T2J0008QG0R002R72323 / 081KRW63S0008QG0R0030F8ZXA: zero-trust, mutual-consent, non-coercive meeting; cells push out /
 hosts accept in; polymorphic diplomacy carried over `DynamicValue`) is normally **agent ↔ agent**. Aaron
 extends it: **time / the IScheduler becomes a third party** to the diplomacy. The agents and the scheduler
 are in a consentful-but-probing relationship — *diplomacy with time*:
@@ -211,7 +211,7 @@ histories → compressibility/seed-recovery verdict), gated by the side-channel 
   theory (Chaitin); statistical randomness suites (NIST SP 800-22, Diehard).
 - **Simulation detection / hypothesis:** Bostrom's simulation argument; physics tests for simulation
   (lattice/anisotropy probes) — here at the agent-substrate scale via the scheduler.
-- **Eve protocol / polymorphic diplomacy:** B-1002 / B-0638 (zero-trust mutual consent; `DynamicValue`
+- **Eve protocol / polymorphic diplomacy:** 081KT2T2J0008QG0R002R72323 / 081KRW63S0008QG0R0030F8ZXA (zero-trust mutual consent; `DynamicValue`
   polymorphic exchange); cells-push-out/hosts-accept-in (#6993).
 - **Side-channel / generator inference:** #7087 (infer the IScheduler generator; keyed-secret defense),
   #7085 (zip-uncertainties), #7091 (drift = entropy), #7095 (Laplace's demon = the deterministic sim).

@@ -67,8 +67,8 @@ Generalized framing (sharper than PR #5912 conditional carved sentence). Origina
 - PR #5920 (WWJD-in-monadic-form)
 - PR #5916 (today's DU cluster TS substrate)
 - PR #5917 (zflash-overview skill; companion skill pattern)
-- B-0867 workflow-engine substrate
-- B-0892 three-lanes-concurrent operating discipline
+- 081KSKBP80008QG0R000B3Y19A workflow-engine substrate
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 - full-ai-cluster substrate (Argo + K8s + OTel + Prometheus + Git)
 
 ## Substrate-honest scope (Amara's blade)

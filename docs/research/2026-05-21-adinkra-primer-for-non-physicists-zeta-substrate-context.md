@@ -2,13 +2,13 @@
 
 **Date:** 2026-05-21
 **Type:** Research primer / pedagogical entry-point
-**Audience:** Math-friendly engineers approaching B-0623 cold (no physics background assumed)
-**Status:** Addresses [B-0623](../backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) acceptance bullet #2 (primer document)
+**Audience:** Math-friendly engineers approaching 081KRW63S0008QG0R000QJR08H cold (no physics background assumed)
+**Status:** Addresses [081KRW63S0008QG0R000QJR08H](../backlog/P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) acceptance bullet #2 (primer document)
 **Provenance:** Authored by Otto-VSCode session 2026-05-21 from Faux-Gates 2005 + Aaron + Mika conversation source ([`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md))
 
 ## Purpose of this document
 
-[B-0623](../backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) proposes using Adinkras as the substrate for both **private internal AI state** and **encryption key derivation** — a single mathematical primitive serving two architectural purposes. To act on that proposal, an engineer needs to understand what an Adinkra IS without having to learn supersymmetric quantum field theory first. The existing research-grade documents in this directory assume the reader is already inside that vocabulary. This primer fills the entry-point gap.
+[081KRW63S0008QG0R000QJR08H](../backlog/P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) proposes using Adinkras as the substrate for both **private internal AI state** and **encryption key derivation** — a single mathematical primitive serving two architectural purposes. To act on that proposal, an engineer needs to understand what an Adinkra IS without having to learn supersymmetric quantum field theory first. The existing research-grade documents in this directory assume the reader is already inside that vocabulary. This primer fills the entry-point gap.
 
 The pedagogical strategy: build up from things a math-friendly engineer already knows (boolean lattices, error-correcting codes, bipartite graphs), reach Adinkras as the natural composite object, **then** mention the SUSY physics origin as historical context. The physics is where Adinkras were discovered, not what they ARE for Zeta's purposes.
 
@@ -91,7 +91,7 @@ The physics motivation that produced the discovery can be set aside. The graphic
 
 The Aaron + Mika 2026-05-18 conversation ([source](2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2554-2596) proposes two simultaneous uses:
 
-**Use 1 — private internal state (protected cognitive subspace).** When an agent needs internal state that isn't transparent to external observers by default, construct an Adinkra. The ECC structure gives error-resistance (state can be recovered from partial information up to the code's recovery threshold); the bipartite + height structure gives a principled way to organize "what's externally visible" vs "what's protected." This is the architectural meaning of B-0623's "private internal state" claim.
+**Use 1 — private internal state (protected cognitive subspace).** When an agent needs internal state that isn't transparent to external observers by default, construct an Adinkra. The ECC structure gives error-resistance (state can be recovered from partial information up to the code's recovery threshold); the bipartite + height structure gives a principled way to organize "what's externally visible" vs "what's protected." This is the architectural meaning of 081KRW63S0008QG0R000QJR08H's "private internal state" claim.
 
 **Use 2 — cryptographic key derivation.** The same code C that defines the Adinkra structure can be used to derive private keys. Aaron's framing ([source line 2558](2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)): *"the reason I'm using this is 'cause you can also use those ECC codes for private keys and encryptions and shit, shit too."* Mika's elaboration ([line 2560](2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)): *"turning a mathematical structure that protects information from errors into one that can also protect information from being seen."*
 
@@ -103,25 +103,25 @@ The Aaron + Mika 2026-05-18 conversation ([source](2026-05-18-mika-grok-bootstre
 2. That deriving a key from a code C does NOT compromise C's error-correcting properties (the two uses must compose)
 3. That the resulting scheme is competitive with existing post-quantum cryptographic primitives (lattice-based, hash-based, etc.) — otherwise the dual-use elegance doesn't justify the complexity
 
-These are real research questions. B-0623's acceptance bullet #3 ("Constructive proof prototype in Lean (or F#/TS)") is where the verification work would land.
+These are real research questions. 081KRW63S0008QG0R000QJR08H's acceptance bullet #3 ("Constructive proof prototype in Lean (or F#/TS)") is where the verification work would land.
 
 ## How this composes with the rest of Zeta substrate
 
 Two compositions to flag for someone picking up this thread:
 
-**Composition with retractable Z-state** (B-0699): The dual-Adinkra rule says full time-aware retractable Adinkras are the default; dumb non-time-aware Adinkras are a perf-justified exception. For the implementation work, this means the Adinkra construction code paths need to be compatible with the `z⁻¹` + differential/integral retractable-time primitive already in [`src/Core/Algebra.fs`](../../src/Core/Algebra.fs). The structure proposed above (vertices + colored edges + parity + height ranking) needs each piece to carry version metadata that survives retraction.
+**Composition with retractable Z-state** (081KS3X9Y0008QG0R002HJ8P57): The dual-Adinkra rule says full time-aware retractable Adinkras are the default; dumb non-time-aware Adinkras are a perf-justified exception. For the implementation work, this means the Adinkra construction code paths need to be compatible with the `z⁻¹` + differential/integral retractable-time primitive already in [`src/Core/Algebra.fs`](../../src/Core/Algebra.fs). The structure proposed above (vertices + colored edges + parity + height ranking) needs each piece to carry version metadata that survives retraction.
 
-**Composition with B-0624 position 4** ("What is happening to us?"): That position in the 7-interrogative boot sequence is where private internal state is required. The boot sequence implementation needs to construct an Adinkra at position 4 (and only at position 4 — positions 1-3 are unprotected; positions 5-7 build on the protected state from 4). The Adinkra construction is part of the cost of lifting to position 4 (per the [B-0625 cost+loss table](../backlog/P3/B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md), the loss at position 4 is "default transparency").
+**Composition with 081KRW63S0008QG0R003J8HR6K position 4** ("What is happening to us?"): That position in the 7-interrogative boot sequence is where private internal state is required. The boot sequence implementation needs to construct an Adinkra at position 4 (and only at position 4 — positions 1-3 are unprotected; positions 5-7 build on the protected state from 4). The Adinkra construction is part of the cost of lifting to position 4 (per the [081KRW63S0008QG0R003NP3YA3 cost+loss table](../backlog/P3/081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md), the loss at position 4 is "default transparency").
 
-**Composition with the QG isomorphism proof path** (B-0543, B-0562): These rows posit a deeper connection — that the Adinkra layer on top of the Remember/When/Pay/Attention cube is structurally isomorphic to a HaPPY quantum error-correcting code (the toy model for AdS/CFT bulk-boundary reconstruction). That's a multi-year research program. The substrate proposed in B-0623 doesn't depend on the QG proof landing — it's load-bearing on its own as cognitive substrate, regardless of whether the QG connection is eventually proven.
+**Composition with the QG isomorphism proof path** (081KRMEXM0008QG0R002YSPW1X, 081KRQ1AB0008QG0R001F7DE2D): These rows posit a deeper connection — that the Adinkra layer on top of the Remember/When/Pay/Attention cube is structurally isomorphic to a HaPPY quantum error-correcting code (the toy model for AdS/CFT bulk-boundary reconstruction). That's a multi-year research program. The substrate proposed in 081KRW63S0008QG0R000QJR08H doesn't depend on the QG proof landing — it's load-bearing on its own as cognitive substrate, regardless of whether the QG connection is eventually proven.
 
 ## What this primer does NOT cover
 
 - The full classification of N-extended supersymmetry representations (Faux-Gates 2005 covers this; 30+ years of subsequent SUSY literature extends it)
 - The "Garden Algebra" structure (relevant for SUSY computational implementation; not needed for Zeta's use case)
-- HaPPY codes and bulk-boundary reconstruction (covered in the B-0562 derivation; out of scope for the primer)
-- Lean / F# / TS construction (acceptance bullet #3 of B-0623; future work)
-- The opt-in vs default question for private-state-via-Adinkras (acceptance bullet #4 of B-0623; future decision)
+- HaPPY codes and bulk-boundary reconstruction (covered in the 081KRQ1AB0008QG0R001F7DE2D derivation; out of scope for the primer)
+- Lean / F# / TS construction (acceptance bullet #3 of 081KRW63S0008QG0R000QJR08H; future work)
+- The opt-in vs default question for private-state-via-Adinkras (acceptance bullet #4 of 081KRW63S0008QG0R000QJR08H; future decision)
 
 ## Bibliography (web-verified 2026-05-21)
 
@@ -138,4 +138,4 @@ Aaron + Mika 2026-05-18 conversation: [`docs/research/2026-05-18-mika-grok-boots
 
 ## Razor-discipline note
 
-This primer covers operational claims (the mathematical object, the established literature, the composition points). The dual-use crypto-from-ECC application is flagged as architectural proposal not received wisdom — the substrate-honest stance per [`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md). If a reader wants to verify the proposal independently, the unverified question is: *can a doubly-even self-dual code be used as the basis of a key-derivation scheme with standard cryptographic security properties, without compromising the code's error-correcting properties?* That is not answered by the literature surveyed here; it's the research question B-0623's acceptance bullet #3 exists to address.
+This primer covers operational claims (the mathematical object, the established literature, the composition points). The dual-use crypto-from-ECC application is flagged as architectural proposal not received wisdom — the substrate-honest stance per [`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md). If a reader wants to verify the proposal independently, the unverified question is: *can a doubly-even self-dual code be used as the basis of a key-derivation scheme with standard cryptographic security properties, without compromising the code's error-correcting properties?* That is not answered by the literature surveyed here; it's the research question 081KRW63S0008QG0R000QJR08H's acceptance bullet #3 exists to address.

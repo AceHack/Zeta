@@ -1,6 +1,5 @@
 ---
-id: B-0078
-zetaid: 081KQ8P5D0008QG0R002SBGJXX
+id: 081KQ8P5D0008QG0R002SBGJXX
 priority: P2
 status: closed
 title: Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663
@@ -13,7 +12,7 @@ tags: [pr-663, codex, deferred, acehack-canonical, markdownlint]
 type: friction-reducer
 ---
 
-# B-0078 — Narrow markdownlint research-doc carve-out
+# 081KQ8P5D0008QG0R002SBGJXX — Narrow markdownlint research-doc carve-out
 
 ## Source
 

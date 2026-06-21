@@ -24,7 +24,7 @@ for the factory:
 2. **Original F# type provider archived** — `fsprojects/zzarchive-FSharp.Data.DbPedia`
    no longer maintained as of 2026
 3. **Path B (now)**: direct dotNetRDF API + F# CE; works on
-   current F#; backlog row B-0428
+   current F#; backlog row 081KRFA460008QG0R0018SN61J
 4. **Path A (deferred)**: resurrect type provider on dotNetRDF
    or RDFSharp; waits until factory FORKS THE F# COMPILER for
    AI safety to add real HKT over Clifford
@@ -75,7 +75,7 @@ Per Otto-364 search-first authority + WebSearch results
 
 ## Two paths (Aaron 2026-05-13 corrected ordering)
 
-### Path B (NOW — backlog row B-0428)
+### Path B (NOW — backlog row 081KRFA460008QG0R0018SN61J)
 
 Direct dotNetRDF API + F# computation expressions.
 
@@ -83,7 +83,7 @@ Direct dotNetRDF API + F# computation expressions.
 - **Substrate-fit**: Pragmatic — composes with existing F# CE
   substrate; works on current F# without compiler fork
 - **Composes with**: PR #2913 (HKT-MDM universality), PR #2924
-  Aurora pitch (master-data substrate), B-0043 (universal-
+  Aurora pitch (master-data substrate), 081KQ3HBZ0008QG0R000Q4Y00F (universal-
   business-templates), `algebra-owner` skill (Z-set + Clifford
   + BP/EP F# substrate)
 
@@ -170,16 +170,16 @@ runtime checks but compile-time guarantees.
 
 ### For factory roadmap
 
-- Path B (direct dotNetRDF API + F# CE) is executable NOW — B-0428
+- Path B (direct dotNetRDF API + F# CE) is executable NOW — 081KRFA460008QG0R0018SN61J
 - Path A (DBpedia type provider) waits for F# fork
 - F# fork is its own multi-year-scope undertaking
 - F# fork composes with Soraya's formal-verification portfolio
   (per `.claude/agents/formal-verification-expert.md`)
 
-### For B-0043 (universal-business-templates)
+### For 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates)
 
 DBpedia type provider would be the FIRST canonical demo of
-B-0043 (universal-business-templates). The template entities
+081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates). The template entities
 come from DBpedia; the type-safety comes from F# type provider;
 the substrate composition demonstrates HKT-MDM working at
 internet scale.
@@ -213,8 +213,8 @@ substrate-honest-considered.
 - PR #2898 (non-glass-halo encryption — post-quantum lattice)
 - PR #2917 (vision monad Play-Doh — bounded substrate; the
   fork is bounded scope)
-- B-0043 (universal-business-templates already backlogged)
-- B-0428 (NEW — resurrect F# DBpedia type provider as HKT-MDM
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates already backlogged)
+- 081KRFA460008QG0R0018SN61J (NEW — resurrect F# DBpedia type provider as HKT-MDM
   canonical demo; this PR's backlog row)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
   (F# compiler IS the asymmetric critic; fork extends the
@@ -235,7 +235,7 @@ When master-data substrate work surfaces:
    over entity type
 2. **Recognize DBpedia as canonical source** — free, curated,
    SPARQL-queryable, Wikipedia-scale
-3. **Path B for now**: direct dotNetRDF API + F# CE (B-0428)
+3. **Path B for now**: direct dotNetRDF API + F# CE (081KRFA460008QG0R0018SN61J)
 4. **Path A deferred**: type provider on dotNetRDF or RDFSharp — after F# fork
 5. **F# fork compositions**: real HKT + Clifford + AI safety;
    composes with KSK + post-quantum encryption + HARD LIMITS
@@ -255,7 +255,7 @@ When master-data substrate work surfaces:
 
 ## Full reasoning
 
-PR #2928 (this substrate landing + B-0428 backlog row)
+PR #2928 (this substrate landing + 081KRFA460008QG0R0018SN61J backlog row)
 
 PR #2913 (HKT-MDM universality)
 

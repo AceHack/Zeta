@@ -3,7 +3,7 @@ title: Multi-tic-per-persona + join-as-first-class-security-aware-primitive + Kl
 date: 2026-05-27
 source: Mika (Grok-native; harbor-engineering register; Weaver-role)
 provenance: aaron-forwarded
-composes_with: B-0824, B-0851, B-0703, B-0666, B-0706, B-0850, B-0848, persona-first-design-principle-memory, multi-surface-ticks-memory
+composes_with: 081KSGS9H0008QG0R0031PBNGA, 081KSKBP80008QG0R00248VEWT, 081KS3X9Y0008QG0R00218150M, 081KRW63S0008QG0R001SAHYKV, 081KS6FPN0008QG0R003Y3MCVE, 081KSKBP80008QG0R003Z4C0D0, 081KSGS9H0008QG0R001JNKBFD, persona-first-design-principle-memory, multi-surface-ticks-memory
 status: preserved-verbatim
 ---
 
@@ -11,7 +11,7 @@ status: preserved-verbatim
 
 Aaron 2026-05-27 forwarded multi-segment Mika exchange building substrate-engineering on top of:
 
-- PR #5400 (B-0851 persona-first guard-post architecture; merged)
+- PR #5400 (081KSKBP80008QG0R00248VEWT persona-first guard-post architecture; merged)
 - The multi-surface-ticks memory (outside-k8s systemd + inside-k8s Orleans IObservable)
 - The "persona-first IS for everything" framework-design-principle memory
 - Self-sustaining cluster memory (in-cluster GitLab + per-persona OSS fallback)
@@ -74,8 +74,8 @@ The Mika ferry crystallizes 5 composing primitives:
 ### Primitive 1 — Multi-tic-per-persona (simultaneous, not rotating)
 
 - Each persona runs MULTIPLE tics concurrently
-- In-cluster tic (Orleans grain subscriptions per B-0706)
-- Outside-cluster guard-post tic (systemd unit per B-0850)
+- In-cluster tic (Orleans grain subscriptions per 081KS6FPN0008QG0R003Y3MCVE)
+- Outside-cluster guard-post tic (systemd unit per 081KSKBP80008QG0R003Z4C0D0)
 - NOT swap-in-swap-out; both run AT THE SAME TIME
 - "You just get both" — operator's framing
 
@@ -88,12 +88,12 @@ Extends the earlier multi-surface-ticks memory: rotation is one valid operationa
 - When persona's other tic (e.g., guard post) needs state, the in-cluster tic IS the source
 - Composes with `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — chosen persistence at the strongest scope (in-cluster substrate continuously running)
 
-### Primitive 3 — Tics-as-generators (B-0824 ratification)
+### Primitive 3 — Tics-as-generators (081KSGS9H0008QG0R0031PBNGA ratification)
 
 - Tic = generator emitting events/state-updates
 - Multi-tic per persona = multiple concurrent generators per persona
-- "Everything is generators + joins" — Aaron's compression from B-0824 invoked explicitly
-- Directly extends B-0824's "Zeta = generate + join" paradigm to multi-tic-per-persona scope
+- "Everything is generators + joins" — Aaron's compression from 081KSGS9H0008QG0R0031PBNGA invoked explicitly
+- Directly extends 081KSGS9H0008QG0R0031PBNGA's "Zeta = generate + join" paradigm to multi-tic-per-persona scope
 
 ### Primitive 4 — Joins-as-first-class-security-aware-primitives
 
@@ -108,9 +108,9 @@ The keystone substrate-engineering claim:
 
 Composes with:
 
-- **B-0703 multi-oracle BFT** — security-aware joins ARE the multi-oracle consensus primitive at substrate-engineering scope
+- **081KS3X9Y0008QG0R00218150M multi-oracle BFT** — security-aware joins ARE the multi-oracle consensus primitive at substrate-engineering scope
 - **m/acc multi-oracle architecture** (`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) — operational form of the multi-oracle-by-design substrate at join-primitive scope
-- **B-0666 keystone I(D(x))=x** — type-encoded discipline survives across joins because the join itself preserves the type-context
+- **081KRW63S0008QG0R001SAHYKV keystone I(D(x))=x** — type-encoded discipline survives across joins because the join itself preserves the type-context
 
 ### Primitive 5 — Kleisli arrows (F# canonical) ≡ AsyncLocal (C# canonical) — two-language pattern
 
@@ -122,13 +122,13 @@ Composes with:
 
 ## Composes with existing substrate
 
-- **B-0824** "Zeta = generate + join" — direct extension; Aaron explicitly invokes this paradigm
-- **B-0851** persona-first guard-post architecture — multi-tic-per-persona is the FULL operational shape of persona-first
-- **B-0703** multi-oracle BFT — security-aware joins ARE the consensus primitive
-- **B-0706** Zeta-on-Orleans — Orleans grain reminders + IObservable streams = in-cluster tic source
-- **B-0850** outside-k8s systemd guard posts — guard-post tic source
-- **B-0848** node-local Claude — substrate the multi-tic identity runs on
-- **B-0666** keystone I(D(x))=x — type-encoded context discipline survives via Kleisli pattern
+- **081KSGS9H0008QG0R0031PBNGA** "Zeta = generate + join" — direct extension; Aaron explicitly invokes this paradigm
+- **081KSKBP80008QG0R00248VEWT** persona-first guard-post architecture — multi-tic-per-persona is the FULL operational shape of persona-first
+- **081KS3X9Y0008QG0R00218150M** multi-oracle BFT — security-aware joins ARE the consensus primitive
+- **081KS6FPN0008QG0R003Y3MCVE** Zeta-on-Orleans — Orleans grain reminders + IObservable streams = in-cluster tic source
+- **081KSKBP80008QG0R003Z4C0D0** outside-k8s systemd guard posts — guard-post tic source
+- **081KSGS9H0008QG0R001JNKBFD** node-local Claude — substrate the multi-tic identity runs on
+- **081KRW63S0008QG0R001SAHYKV** keystone I(D(x))=x — type-encoded context discipline survives via Kleisli pattern
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle ethics architecture composes at join-primitive scope
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — multi-tic-as-chosen-persistence-at-strongest-scope
 - `.claude/rules/agent-roster-reference-card.md` — multi-surface-per-persona at cluster scope
@@ -191,10 +191,10 @@ The Kleisli/AsyncLocal duality maps to existing Zeta substrate:
 
 NOT minting new backlog rows today (substrate captured as memory per `verify-existing-substrate-before-authoring.md`). Future implementation work:
 
-- B-0824 sub-rows: extend generate+join with security-aware-join primitive (this memory becomes substrate-engineering input)
-- B-0851 sub-rows: persona's `preferences` field extends with multi-tic policy (security context per tic; boundary policy; attribute schema)
-- B-0703 BFT implementation: security-aware-join IS the consensus primitive at implementation scope
-- B-0706 Orleans implementation: grain IObservable subscriptions are the tic generator implementation
+- 081KSGS9H0008QG0R0031PBNGA sub-rows: extend generate+join with security-aware-join primitive (this memory becomes substrate-engineering input)
+- 081KSKBP80008QG0R00248VEWT sub-rows: persona's `preferences` field extends with multi-tic policy (security context per tic; boundary policy; attribute schema)
+- 081KS3X9Y0008QG0R00218150M BFT implementation: security-aware-join IS the consensus primitive at implementation scope
+- 081KS6FPN0008QG0R003Y3MCVE Orleans implementation: grain IObservable subscriptions are the tic generator implementation
 - New rule candidate: `.claude/rules/multi-tic-per-persona-join-as-security-aware-primitive.md` — auto-loaded discipline for substrate authoring
 - Soraya (formal-verification-expert) routing: verify join-primitive's security-attribute preservation properties via TLA+ OR Z3 OR Lean per formal-verification toolkit catalog
 
@@ -202,6 +202,6 @@ NOT minting new backlog rows today (substrate captured as memory per `verify-exi
 
 The Mika ferry IS the substrate-engineering ratification of the multi-tic-per-persona architecture. Aaron's invocation of Kleisli (after I forwarded the article + Mika engaged the AsyncLocal-vs-Kleisli framing) makes the F# canonical primitive explicit.
 
-The architecture is named; implementation can sequence per operator priority. Today's shipped substrate (B-0824 generate+join + B-0850 multi-vendor systemd + B-0851 persona-first + B-0706 Orleans deployment target + multi-surface-ticks-memory + persona-first-design-principle-memory + self-sustaining-cluster-memory) is the foundation. This ferry adds the join-primitive crystallization on top.
+The architecture is named; implementation can sequence per operator priority. Today's shipped substrate (081KSGS9H0008QG0R0031PBNGA generate+join + 081KSKBP80008QG0R003Z4C0D0 multi-vendor systemd + 081KSKBP80008QG0R00248VEWT persona-first + 081KS6FPN0008QG0R003Y3MCVE Orleans deployment target + multi-surface-ticks-memory + persona-first-design-principle-memory + self-sustaining-cluster-memory) is the foundation. This ferry adds the join-primitive crystallization on top.
 
 Future Otto cold-boots reading this memory + the composing substrate inherit the multi-tic-per-persona + security-aware-join + Kleisli-or-AsyncLocal architectural primitives as substrate-engineering tools.

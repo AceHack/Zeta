@@ -40,10 +40,10 @@ Shadow autocomplete suggested (iv) "let stay in conversation"; operator overrode
 ## Substrate captured
 
 - **Operator-verbatim preservation** of the empirical-validation + reservoir-walls + caustic-focus + physics-AI-human-symmetric-reasoning vision
-- **LOCAL→GLOBAL connection**: current empirical-validation-sequencing on Resolution C (B-0867.24 / .25) IS the local instance of the global restriction-of-choice-based-on-empirical-evidence discipline
+- **LOCAL→GLOBAL connection**: current empirical-validation-sequencing on Resolution C (081KSNY2Z0008QG0R003N3DR84 / .25) IS the local instance of the global restriction-of-choice-based-on-empirical-evidence discipline
 - **Reservoir Computing** (Jaeger 2001 echo state networks; Maass 2002 liquid state machines) + **caustic engineering** (Matt Ferraro / substrate-smoothness rule lineage) mapping to workflow-system-as-walls
 - **4-intuition-substrate symmetry** with substrate-anchor table per type:
-  - Physical intuition → weight-free physics-infinite-game / B-0666 / substrate-smoothness Ferraro lineage
+  - Physical intuition → weight-free physics-infinite-game / 081KRW63S0008QG0R001SAHYKV / substrate-smoothness Ferraro lineage
   - Memetic intuition → tonal-momentum rule / 5-vector Clifford-space transport
   - Biological intuition → Aurora immune-math / Hawkins cortical-columns / threat-model
   - Horticultural intuition → Germinate-the-Heartland / free-time-budget-as-cultural-soil
@@ -62,7 +62,7 @@ Cross-references across rules + backlog + research substrate (see doc body) — 
 - [x] LOCAL→GLOBAL connection explicit
 - [x] Current focus-area mapping explicit
 - [x] Substrate-honest framing section (what doc does NOT do)
-- [x] Persistent worktree per B-0894.3
+- [x] Persistent worktree per 081KSNY2Z0008QG0R001RWF499
 - [x] Tree-size canary (61=61)
 - [x] Local markdownlint passes
 - [ ] CI passes

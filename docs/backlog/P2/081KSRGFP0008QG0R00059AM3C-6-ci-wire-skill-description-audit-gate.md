@@ -1,6 +1,5 @@
 ---
-id: B-0347.6
-zetaid: 081KSRGFP0008QG0R00059AM3C
+id: 081KSRGFP0008QG0R00059AM3C
 priority: P2
 status: open
 title: "CI-wire the skill-description audit gate so the cap is enforced, not just checkable"
@@ -14,9 +13,9 @@ type: friction-reducer
 tags: [skill-routing, ci, durable-gate, carved-sentence]
 ---
 
-# B-0347.6 — CI-wire the skill-description audit gate
+# 081KSRGFP0008QG0R00059AM3C — CI-wire the skill-description audit gate
 
-B-0347.4 (PR #6029) shipped `tools/hygiene/audit-skill-description-length.ts`,
+081KR50HA0008QG0R002ZNFQBZ.4 (PR #6029) shipped `tools/hygiene/audit-skill-description-length.ts`,
 a deterministic Rule-0 gate that fails on any over-cap, multiline, or
 boilerplate skill description. But nothing runs it automatically — a
 description can silently regrow past the routing budget and only be
@@ -24,9 +23,9 @@ caught when someone manually invokes the tool. CI-wiring is what makes
 the structural fix durable rather than checkable.
 
 This child is robustness-hardening on top of the merged tool; it is not
-in the B-0347 acceptance contract (which closes on #4 / B-0347.5), so it
+in the 081KR50HA0008QG0R002ZNFQBZ acceptance contract (which closes on #4 / 081KSRGFP0008QG0R0037CJXA8), so it
 does not block umbrella closure. It does, however, prevent the original
-B-0347 failure mode from re-opening over time.
+081KR50HA0008QG0R002ZNFQBZ failure mode from re-opening over time.
 
 ## Work scope
 
@@ -54,12 +53,12 @@ Add a GitHub Actions workflow that runs the audit on push/PR touching
 
 ## Out of scope
 
-- Promoting the ≤120 warnings to errors (would block on B-0347.7).
-- Any change to the audit tool's logic (B-0347.4 owns the tool).
+- Promoting the ≤120 warnings to errors (would block on 081KSRGFP0008QG0R002SV9GGY).
+- Any change to the audit tool's logic (081KR50HA0008QG0R002ZNFQBZ.4 owns the tool).
 
 ## Composes with
 
-- B-0347 (umbrella) — durable enforcement of its structural fix.
-- B-0347.4 — the audit tool this workflow invokes.
+- 081KR50HA0008QG0R002ZNFQBZ (umbrella) — durable enforcement of its structural fix.
+- 081KR50HA0008QG0R002ZNFQBZ.4 — the audit tool this workflow invokes.
 - `.github/workflows/role-ref-current-state-surfaces-lint.yml` — the
   precedent CI lint to mirror.

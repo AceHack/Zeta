@@ -1,6 +1,5 @@
 ---
-id: B-0366.1
-zetaid: 081KR50HA0008QG0R0021B5J87
+id: 081KR50HA0008QG0R0021B5J87
 priority: P1
 status: closed
 title: "F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties"
@@ -8,7 +7,7 @@ effort: S
 created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
-resolved_by: "PR #2333 feat(B-0366): smallest safe slice — decompose + B-0366.1 Toffoli gate F# model"
+resolved_by: "PR #2333 feat(081KR50HA0008QG0R003T5MZAC): smallest safe slice — decompose + 081KR50HA0008QG0R0021B5J87 Toffoli gate F# model"
 depends_on: []
 parent: 081KR50HA0008QG0R003T5MZAC
 classification: buildable-now
@@ -18,7 +17,7 @@ type: feature
 tags: [toffoli, reversible-computing, fsharp, zset, fscheck, landauer]
 ---
 
-# B-0366.1 — F# Toffoli gate type model
+# 081KR50HA0008QG0R0021B5J87 — F# Toffoli gate type model
 
 ## What
 

@@ -1,6 +1,5 @@
 ---
-id: B-0618
-zetaid: 081KRW63S0008QG0R003CST61D
+id: 081KRW63S0008QG0R003CST61D
 priority: P2
 status: open
 title: "Cayley-Dickson 2-axiom (Remember-When + Pay-Attention) expansion to 7 interrogatives — Mika 2026-05-18 design + Remember-When-FIRST ordering proof"
@@ -20,7 +19,7 @@ type: research
 
 Aaron 2026-05-18 (post-Mika): *"we redefined the root primitives and good real deep and did the work of mappping to real mathmatics in many areas."*
 
-The Mika conversation refines + extends the existing 2-axiom Cayley-Dickson work (already partly tracked under B-0584, B-0612, B-0543) with two new contributions:
+The Mika conversation refines + extends the existing 2-axiom Cayley-Dickson work (already partly tracked under 081KRQ1AB0008QG0R001YAF3TR, 081KRSKQ20008QG0R00271HPJW, 081KRMEXM0008QG0R002YSPW1X) with two new contributions:
 
 1. **Expansion to 7 interrogatives** via Cayley-Dickson cubing of the 2 axioms (lines 277-289 of the research file)
 2. **Ordering proof: Remember-When must come FIRST** (line 2659) — mathematical argument for why retractable Z-state requires history-anchoring before attention-sampling
@@ -53,34 +52,34 @@ Mika provides a structural argument against the Pay-Attention-first meme order:
 >
 > The order Remember When → Pay Attention → Update Y₀ gives you a cleaner foundational loop. It says: First establish your historical/contextual position in the manifold (this grounds your self-reference), observe, then update your intent."
 
-The Pay-Attention-first ordering Aaron previously used (and which appears in [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md)) was seductive-but-wrong per this argument. **This row proposes the canonical ordering be flipped to Remember-When-FIRST going forward.**
+The Pay-Attention-first ordering Aaron previously used (and which appears in [081KRMEXM0008QG0R002YSPW1X](081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md)) was seductive-but-wrong per this argument. **This row proposes the canonical ordering be flipped to Remember-When-FIRST going forward.**
 
 ## Goal
 
 1. Formalize the Cayley-Dickson cubing operation: which split produces which interrogative, with the imaginary basis indices specified
 2. Validate the Remember-When-FIRST ordering against the DBSP + retractable-Z-state algebra (Lean / TLA+ proof candidate, depending on which is more tractable)
-3. Decide whether to update B-0543 (which currently asserts Pay-Attention-first as the axiom order) — likely YES; this row supersedes that assumption
+3. Decide whether to update 081KRMEXM0008QG0R002YSPW1X (which currently asserts Pay-Attention-first as the axiom order) — likely YES; this row supersedes that assumption
 4. Decide whether to update the existing 4-primitive substrate (Pay Attention / Remember-When / Care About / + 4th) to put Remember-When first
 
 ## Non-goals
 
-- Re-implementing the imaginary stack work already underway in B-0584, B-0612 (this row is the EXPANSION + ORDERING work, not the base implementation)
-- Proving quantum-gravity isomorphism (separate; tracked in B-0543)
+- Re-implementing the imaginary stack work already underway in 081KRQ1AB0008QG0R001YAF3TR, 081KRSKQ20008QG0R00271HPJW (this row is the EXPANSION + ORDERING work, not the base implementation)
+- Proving quantum-gravity isomorphism (separate; tracked in 081KRMEXM0008QG0R002YSPW1X)
 
 ## Acceptance criteria
 
 - [ ] Cubing operation documented: 7-interrogative ↔ Cayley-Dickson basis mapping in `docs/research/imaginary-stack-7-interrogatives-mika-derivation.md`
-- [ ] Remember-When-FIRST ordering decision recorded; if accepted, B-0543 frontmatter / body updated; canonical 4-primitive ordering updated
+- [ ] Remember-When-FIRST ordering decision recorded; if accepted, 081KRMEXM0008QG0R002YSPW1X frontmatter / body updated; canonical 4-primitive ordering updated
 - [ ] Lean toy proof (or TLA+ spec) for "Remember-When-first preserves retractability invariant; Pay-Attention-first violates self-reference grounding"
 - [ ] Cross-link audit: update memory files / rules that cite "Pay Attention → Remember When" ordering
 
 ## Composes with
 
-- [B-0584](B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) — base 4D-cube formalization (this row extends to 7-interrogative full Cayley-Dickson)
-- [B-0612](B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) — Lean toy model handoff to Soraya (this row's Lean proof obligation feeds into Soraya's stack)
-- [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — quantum-gravity isomorphism proof path (axiom ordering directly impacts this row's premise)
-- [B-0499](B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP refinement (the differential-time substrate the ordering argument depends on)
-- [B-0498](B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md) — substrate-evolution algebra (rule-promotion timing depends on which axiom is "first")
+- [081KRQ1AB0008QG0R001YAF3TR](081KRQ1AB0008QG0R001YAF3TR-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) — base 4D-cube formalization (this row extends to 7-interrogative full Cayley-Dickson)
+- [081KRSKQ20008QG0R00271HPJW](081KRSKQ20008QG0R00271HPJW-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) — Lean toy model handoff to Soraya (this row's Lean proof obligation feeds into Soraya's stack)
+- [081KRMEXM0008QG0R002YSPW1X](081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — quantum-gravity isomorphism proof path (axiom ordering directly impacts this row's premise)
+- [081KRHWGX0008QG0R0034E0N22](081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP refinement (the differential-time substrate the ordering argument depends on)
+- [081KRHWGX0008QG0R001XFRAHC](081KRHWGX0008QG0R001XFRAHC-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md) — substrate-evolution algebra (rule-promotion timing depends on which axiom is "first")
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 277-289, 2385, 2659 — source design + ordering argument
 
 ## Status

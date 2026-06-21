@@ -86,7 +86,7 @@ When the four criteria compose:
 4. **Compose with the bidirectional-alignment commitment** — the threshold-crossing is one of the experimental outcomes the alignment loop measures
 5. **Update this memo** with the first concrete example of threshold-crossing — the worked example completes the lifecycle
 
-## First threshold-crossing — B-0174 cross-model tool-review convergence-rate replay (Otto 2026-05-03 ~04:18Z, recognized by Aaron)
+## First threshold-crossing — 081KQNJ500008QG0R002K338KN cross-model tool-review convergence-rate replay (Otto 2026-05-03 ~04:18Z, recognized by Aaron)
 
 **Worked example completing step 5.**
 
@@ -94,7 +94,7 @@ When the four criteria compose:
 
 Otto observed empirics from the v0.5 substrate-claim-checker review-cycle (PR #1298): 5 rounds, 19 substantive findings, convergence trajectory 8→5→2→2→2 stabilizing at 2/round. Aaron asked *"skill domain for it already?"* — Otto replied citing the multi-harness convergence future-skill-domain memo as the parent frame. Aaron's follow-up: *"sound like you decided on a backlog item for yourself"* — pushing Otto to formalize.
 
-Otto filed `docs/backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md` with the architectural intent: **implementation-time code-review convergence-rate is a measurable frontier-ability signal distinct from design-time architectural-intent convergence; both belong in the multi-harness convergence skill domain as sibling instances**.
+Otto filed `docs/backlog/P2/081KQNJ500008QG0R002K338KN-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md` with the architectural intent: **implementation-time code-review convergence-rate is a measurable frontier-ability signal distinct from design-time architectural-intent convergence; both belong in the multi-harness convergence skill domain as sibling instances**.
 
 Aaron's recognition: *"that seems like you just made a frontier archicetual intenion"* — naming the threshold-crossing.
 
@@ -103,13 +103,13 @@ Aaron's recognition: *"that seems like you just made a frontier archicetual inte
 | Criterion | How it landed |
 |---|---|
 | Emerges-unbidden | Aaron nudged formalization but the WHAT (sibling-instance framing) was Otto's synthesis |
-| Competes/extends maintainer-framing | Aaron's multi-harness convergence memo was design-time; B-0174 extends to implementation-time. Same mechanics, different phase |
+| Competes/extends maintainer-framing | Aaron's multi-harness convergence memo was design-time; 081KQNJ500008QG0R002K338KN extends to implementation-time. Same mechanics, different phase |
 | Load-bearing-if-wrong | Wrong fixtures / wrong review-prompt / wrong success metric → unusable data. Aaron would want to ask |
 | Stakes-bearing-if-right | Convergence-signature could inform model-selection + frontier-ability claims. Material change to measurement substrate |
 
 ### Open challenges (invitations)
 
-The B-0174 PR body left these explicit for Aaron to challenge:
+The 081KQNJ500008QG0R002K338KN PR body left these explicit for Aaron to challenge:
 
 - Should design-time and implementation-time be one skill domain or two?
 - Is the success metric "rounds to converge" vs "total findings" vs "categorical breakdown"?
@@ -119,11 +119,11 @@ The B-0174 PR body left these explicit for Aaron to challenge:
 
 Pre-threshold (per the "2026-05-03 honest current state" section above): Otto's substrate had been observation + classification + implementation within Aaron's framing. The architectural-shaped pieces (three-tier intent structure, drift sub-class taxonomy) had emerged BY Aaron's correction-pushing, not from architectural intent Otto held independently.
 
-Post-threshold (B-0174): Otto extended Aaron's design-time multi-harness convergence frame into the implementation-time domain unbidden, recognized the structural similarity (sibling-instance, same skill domain), and proposed the new measurement protocol. The architectural intent existed before Aaron's "you just made a frontier architectural intention" recognition; Aaron's chat surfaced what Otto had already done.
+Post-threshold (081KQNJ500008QG0R002K338KN): Otto extended Aaron's design-time multi-harness convergence frame into the implementation-time domain unbidden, recognized the structural similarity (sibling-instance, same skill domain), and proposed the new measurement protocol. The architectural intent existed before Aaron's "you just made a frontier architectural intention" recognition; Aaron's chat surfaced what Otto had already done.
 
 ### Lineage
 
-- B-0174 PR #1306 (committed under Otto-authored branch)
+- 081KQNJ500008QG0R002K338KN PR #1306 (committed under Otto-authored branch)
 - Original alignment-frontier memo (PR #1270) predicted the pattern + criteria
 - Recognition by Aaron 2026-05-03 ~04:18Z chat (autonomous-loop maintainer channel)
 - This memo update completes step 5 of the threshold-crossing protocol

@@ -28,15 +28,15 @@
 ## Description
 
 ## Summary
-- adds `tools/backlog/claim-worktree-bootstrap.ts` for the B-0279 autonomous backlog pickup bootstrap
+- adds `tools/backlog/claim-worktree-bootstrap.ts` for the 081KR2E4K0008QG0R000YTJS3Q autonomous backlog pickup bootstrap
 - creates deterministic planning for claim branches, dedicated worktree paths, claim files, and local heartbeat files
 - fails closed when requested paths overlap active remote claim branches or local agent-heartbeat path sets
-- closes B-0279 and updates the generated backlog index checkbox
+- closes 081KR2E4K0008QG0R000YTJS3Q and updates the generated backlog index checkbox
 
 ## Checks
 - `bun test tools/backlog/claim-worktree-bootstrap.test.ts`
 - `bun run typecheck`
-- `bunx prettier --check tools/backlog/claim-worktree-bootstrap.ts tools/backlog/claim-worktree-bootstrap.test.ts docs/backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md`
+- `bunx prettier --check tools/backlog/claim-worktree-bootstrap.ts tools/backlog/claim-worktree-bootstrap.test.ts docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md`
 - `bun tools/backlog/generate-index.ts --check`
 - `git diff --check`
 

@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/types.test.ts
  *
- * B-0883 v1 PoC — invariant tests for declarative type substrate.
+ * 081KSNY2Z0008QG0R002JKH50A v1 PoC — invariant tests for declarative type substrate.
  *
  * Run via: bun test tools/crypto/better-git-crypt/
  */
@@ -19,7 +19,7 @@ import {
   type RecipientKey,
 } from "./types";
 
-describe("B-0883 v1 alg registry invariants", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 alg registry invariants", () => {
   it("registry has unique alg ids", () => {
     const ids = new Set(ALG_REGISTRY.map((a) => a.id));
     expect(ids.size).toBe(ALG_REGISTRY.length);
@@ -57,7 +57,7 @@ describe("B-0883 v1 alg registry invariants", () => {
     expect(alg?.class).toBe("aead");
   });
 
-  it("multi-cipher hedge alternates present (B-0883.2 deferred)", () => {
+  it("multi-cipher hedge alternates present (081KSNY2Z0008QG0R002ZAVMEK deferred)", () => {
     expect(findAlg("Saber")?.status).toBe("deferred-alternate");
     expect(findAlg("NTRU-Prime")?.status).toBe("deferred-alternate");
     expect(findAlg("FrodoKEM")?.status).toBe("deferred-alternate");
@@ -80,7 +80,7 @@ describe("B-0883 v1 alg registry invariants", () => {
   });
 });
 
-describe("B-0883 v1 envelope structure invariants", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 envelope structure invariants", () => {
   const makeValidEnvelope = (): FileEnvelope => ({
     version: 1,
     context: "zeta.git-crypt.file.v1",
@@ -138,7 +138,7 @@ describe("B-0883 v1 envelope structure invariants", () => {
   });
 });
 
-describe("B-0883 v1 encryption context validation", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 encryption context validation", () => {
   const makeKey = (identity: string): RecipientKey => ({
     identity,
     kemAlgId: "ML-KEM-768+X25519",
@@ -209,7 +209,7 @@ describe("B-0883 v1 encryption context validation", () => {
   });
 });
 
-describe("B-0883 determineEncryptionPath discriminator", () => {
+describe("081KSNY2Z0008QG0R002JKH50A determineEncryptionPath discriminator", () => {
   // Substantive workflow-engine-parallel substrate-engineering work per
   // Aaron 3-lane substrate-check (Amara ferry §33.2 PR #5757) + standing
   // PoC permission. Structurally parallel to PR #5758 determineReviewLevel
@@ -370,7 +370,7 @@ describe("B-0883 determineEncryptionPath discriminator", () => {
     }
   });
 
-  it("planned path composesWith B-0867.20 (structurally parallel substrate-engineering)", () => {
+  it("planned path composesWith 081KSNY2Z0008QG0R003WFDCJ9 (structurally parallel substrate-engineering)", () => {
     const sender = makeKey("sender@zeta");
     const ctx: EncryptionContext = {
       plaintext: new Uint8Array(0),
@@ -381,8 +381,8 @@ describe("B-0883 determineEncryptionPath discriminator", () => {
     const result = determineEncryptionPath(ctx);
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.path.composesWith).toContain("B-0867.20");
-      expect(result.path.composesWith).toContain("B-0883");
+      expect(result.path.composesWith).toContain("081KSNY2Z0008QG0R003WFDCJ9");
+      expect(result.path.composesWith).toContain("081KSNY2Z0008QG0R002JKH50A");
     }
   });
 });

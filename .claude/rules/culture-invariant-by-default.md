@@ -34,7 +34,7 @@ conform. The seed is the treaty.
 
 4-language byte-lock and DST replay both REQUIRE it — culture comparison varies by
 locale, so keys sort differently per machine → consensus + determinism diverge.
-Live failure: **B-0969** (`GCounter.Merge` ordinal Dictionary vs `ZSet.ofSeq`
+Live failure: **081KT07NV0008QG0R001YDB73K** (`GCounter.Merge` ordinal Dictionary vs `ZSet.ofSeq`
 culture-sensitive sort → non-associative on special keys). Deeper why (Aaron):
 low-level byte/order/UoM mismatch must not compound into AI↔human collision — the
 Mars Climate Orbiter lesson (lbf vs N) generalized; get the bytes right so the
@@ -47,5 +47,5 @@ bound platforms.
 
 ## Pointers
 
-- B-0969 — the canonical live instance · `src/Core/ZSet.fs` `ofSeq` · `src/Core/Crdt.fs` (fix: `StringComparer.Ordinal`)
+- 081KT07NV0008QG0R001YDB73K — the canonical live instance · `src/Core/ZSet.fs` `ofSeq` · `src/Core/Crdt.fs` (fix: `StringComparer.Ordinal`)
 - `docs/PRIMITIVE-REGISTRY.md` (Bag row notes the Ordinal parity requirement)

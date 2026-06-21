@@ -31,7 +31,7 @@
 
 Settled tick after the 11-PR cron-tick-discipline cascade fully landed on main.
 
-PR #3915 (1706Z settling) confirmed MERGED. Substantive backlog rows (B-0030 lint-with-exclusions extraction, B-0027 markdown-table fix tool, etc.) deferred to quieter peer-saturation windows where start-gate work + bounded-context contamination recovery overhead is lower.
+PR #3915 (1706Z settling) confirmed MERGED. Substantive backlog rows (081KQ3HBZ0008QG0R000ACTVA6 lint-with-exclusions extraction, 081KQ3HBZ0008QG0R003WJ62HM markdown-table fix tool, etc.) deferred to quieter peer-saturation windows where start-gate work + bounded-context contamination recovery overhead is lower.
 
 No brief-acks; not in Standing-by. Single-observation tick.
 

@@ -1,6 +1,6 @@
 # Dependency status — what the factory runs on
 
-> **First-class factory surface** (B-0109): per the human maintainer
+> **First-class factory surface** (081KQDTYV0008QG0R002H74QXZ): per the human maintainer
 > 2026-04-30, *"looking at github status should be first class for us we
 > live on git and github for now until we get a 2nd host in the future."*
 > The factory's hot path runs through GitHub today; any GitHub
@@ -36,7 +36,7 @@ This page answers three questions in under 30 seconds:
 2. **Are any of those dependencies currently flagged or degraded?** (current state — § Live status sources, or the answer-now snippet above)
 3. **Is there a known issue affecting our merge / CI / review pipeline right now?** (active incidents — § Known concern classes)
 
-This is the static-markdown first iteration of B-0109. Future iterations may add a cron-driven scraper writing to a sibling `docs/dependency-status-current.json`, per-incident issues, or hybrid coverage. The watched-list + status-source registry has independent value and lands first.
+This is the static-markdown first iteration of 081KQDTYV0008QG0R002H74QXZ. Future iterations may add a cron-driven scraper writing to a sibling `docs/dependency-status-current.json`, per-incident issues, or hybrid coverage. The watched-list + status-source registry has independent value and lands first.
 
 ## Watched dependencies
 
@@ -173,18 +173,18 @@ Recommended sequencing (each becomes its own backlog row when promoted):
 3. **Tick-shard cross-reference** — when shard rows mention CI behaviour, allow a soft pointer to the incident-log row covering that timeframe
 4. **Mitigation rules** — the conditional "when GitHub Pull Requests is degraded, do not arm auto-merge" rules belong in distinct backlog rows once the visibility surface is operational
 
-## Out of scope (per B-0109)
+## Out of scope (per 081KQDTYV0008QG0R002H74QXZ)
 
 - Building a full incident-management system. The factory needs visibility, not Pagerduty.
 - Real-time alerting / paging / on-call rotation. If dependencies fail, the factory pauses, files an incident note, waits for restoration. No auto-paging.
 - Per-dependency mitigation plans. Those belong in separate rows when concrete.
-- Replacing or vendoring degraded dependencies preemptively. (Vendoring discussions belong in B-0086 TS+Bun migration for the deps that ARE in-scope.)
+- Replacing or vendoring degraded dependencies preemptively. (Vendoring discussions belong in 081KQ8P5D0008QG0R003BFZPRC TS+Bun migration for the deps that ARE in-scope.)
 
 ## Composes with
 
-- **B-0109** (this row) — design + implementation row tracking this surface
-- **B-0086** (TS+Bun migration) — dependency reduction is itself a status-mitigation strategy
-- **B-0096** (Forbidden Pattern Quarantine) — patterns flagged by external sources compose naturally with this surface's vocabulary
+- **081KQDTYV0008QG0R002H74QXZ** (this row) — design + implementation row tracking this surface
+- **081KQ8P5D0008QG0R003BFZPRC** (TS+Bun migration) — dependency reduction is itself a status-mitigation strategy
+- **081KQB8J40008QG0R000A61G4T** (Forbidden Pattern Quarantine) — patterns flagged by external sources compose naturally with this surface's vocabulary
 - `memory/feedback_all_cryptography_quantum_resistant_even_one_gap_is_attack_vector_2026_04_23.md` — quantum-resistant policy presumes known crypto-primitive state
 - `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md` — absorb-and-contribute presumes the dependency list is legible
 - `docs/AUTONOMOUS-LOOP.md` — autonomous loop runs on GitHub-mediated state; tick rituals consume this surface

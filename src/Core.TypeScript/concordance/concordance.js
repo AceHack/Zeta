@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// concordance.ts — B-0291 + B-0292 slice
+// concordance.ts — 081KR2E4K0008QG0R000DK0BFY + 081KR2E4K0008QG0R001ZZ5XXF slice
 // Text → tokens → concordance index. Structure recognizer stub.
 import { readFileSync, existsSync } from "node:fs";
 function tokenize(text) {

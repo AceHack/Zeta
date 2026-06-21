@@ -1,6 +1,5 @@
 ---
-id: B-0449
-zetaid: 081KRFA460008QG0R002DG8KPZ
+id: 081KRFA460008QG0R002DG8KPZ
 priority: P1
 status: open
 title: "bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)"
@@ -18,7 +17,7 @@ type: feature
 
 ## Origin
 
-`tools/bg/README.md` (after PR #3040 landed B-0442 slice 3) states:
+`tools/bg/README.md` (after PR #3040 landed 081KRFA460008QG0R00061SXRW slice 3) states:
 
 > The architectural direction from PR #2998 was to make the foreground
 > loop **OPTIONAL** by moving substrate-engineering work to durable
@@ -34,7 +33,7 @@ type: feature
 > substrate on their own.
 
 This row is the design-pass for slice 5 across all three services
-(B-0440 standing-by, B-0441 backlog-ready, B-0442 missed-substrate).
+(081KRFA460008QG0R001KC0VBH standing-by, 081KRFA460008QG0R00229616S backlog-ready, 081KRFA460008QG0R00061SXRW missed-substrate).
 Closes the gap between "nudges land on the bus" and "subscriber
 agents take action."
 
@@ -84,7 +83,7 @@ subscriber-handling a cron-tick function call:
 
 1. **Composes with existing infrastructure** — no new launchd jobs,
    no new daemon process to monitor
-2. **Surface-agnostic** — works on CLI, Desktop routine, B-0448
+2. **Surface-agnostic** — works on CLI, Desktop routine, 081KRFA460008QG0R000CYBGKW
    cloud routine; all 3 surfaces converge per
    `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh)
 3. **Failure-isolated by design** — a buggy subscriber handler
@@ -134,16 +133,16 @@ from the implementation work (per-topic handlers).
 Once Option C is adopted (or alternative chosen), three follow-up
 rows track per-topic handler implementation:
 
-- B-0459 — `infinite-backlog-nudge` handler (slice 5.1)
-- B-0460 — `work-assignment` handler (slice 5.2)
-- B-0461 — `missed-substrate-cascade` handler (slice 5.3)
+- 081KRHWGX0008QG0R000TVGDGV — `infinite-backlog-nudge` handler (slice 5.1)
+- 081KRHWGX0008QG0R001E9KEJ1 — `work-assignment` handler (slice 5.2)
+- 081KRHWGX0008QG0R000JMEYBH — `missed-substrate-cascade` handler (slice 5.3)
 
-(The original draft of this row reserved B-0450/B-0451/B-0452;
+(The original draft of this row reserved 081KRFA460008QG0R001QFS6EV/081KRFA460008QG0R00308W7FJ/081KRA5AR0008QG0R0029YWXYW;
 those slots were subsequently allocated by the 2026-05-13 collision-
-renumber cascade — B-0450 to the PM-2 getting-started guide,
-B-0451 to the duplicate-row-id substrate-cleanup, B-0452 to the
+renumber cascade — 081KRFA460008QG0R001QFS6EV to the PM-2 getting-started guide,
+081KRFA460008QG0R00308W7FJ to the duplicate-row-id substrate-cleanup, 081KRA5AR0008QG0R0029YWXYW to the
 P2 contributor-compliance series. Reservations were aspirational,
-not allocated; the slice-5 family is now scheduled at B-0459+.)
+not allocated; the slice-5 family is now scheduled at 081KRHWGX0008QG0R000TVGDGV+.)
 
 ## Substrate-honest framing
 
@@ -161,11 +160,11 @@ substrate worth landing because:
 
 ## Composes with
 
-- B-0400 (bus protocol — substrate)
-- B-0440 (standing-by detector — publishes `infinite-backlog-nudge`)
-- B-0441 (backlog-ready notifier — publishes `work-assignment`)
-- B-0442 (missed-substrate cascade detector — publishes `missed-substrate-cascade`)
-- B-0448 (cloud routines integration — composes with subscriber pattern)
-- B-0402 (Zeta shadow-mode CLI — the subscriber library could compose)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — substrate)
+- 081KRFA460008QG0R001KC0VBH (standing-by detector — publishes `infinite-backlog-nudge`)
+- 081KRFA460008QG0R00229616S (backlog-ready notifier — publishes `work-assignment`)
+- 081KRFA460008QG0R00061SXRW (missed-substrate cascade detector — publishes `missed-substrate-cascade`)
+- 081KRFA460008QG0R000CYBGKW (cloud routines integration — composes with subscriber pattern)
+- 081KR7JY10008QG0R0008NGW95 (Zeta shadow-mode CLI — the subscriber library could compose)
 - `docs/AUTONOMOUS-LOOP-PER-TICK.md` (canonical 7-step discipline — where subscriber-call lands in step 1)
 - `.claude/rules/dont-ask-permission.md` (subscriber actions are within authority scope)

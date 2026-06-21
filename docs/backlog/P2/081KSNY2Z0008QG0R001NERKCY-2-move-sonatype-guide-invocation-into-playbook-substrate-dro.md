@@ -1,6 +1,5 @@
 ---
-id: B-0887.2
-zetaid: 081KSNY2Z0008QG0R001NERKCY
+id: 081KSNY2Z0008QG0R001NERKCY
 priority: P2
 status: open
 title: Move sonatype-guide invocation into playbook substrate — drop PR-gated review; no vendor lockin per operator 2026-05-28 "we are getting rid of PRs mostly for playbooks"
@@ -31,7 +30,7 @@ tags:
 
 > *"we are getting rid of PRs mostly for playbooks unless you tell me it's worth the vendor lockin"*
 
-Locks Q3 of B-0883.1 library landscape audit. Sonatype-guide does NOT justify keeping PRs. Move the invocation into the playbook substrate.
+Locks Q3 of 081KSNY2Z0008QG0R0037X4DP4 library landscape audit. Sonatype-guide does NOT justify keeping PRs. Move the invocation into the playbook substrate.
 
 ## What this row tracks
 
@@ -39,16 +38,16 @@ Reframe sonatype-guide invocation from "PR-time gate" (where reviewer bot invoke
 
 ## What we LOSE by dropping PR-gated sonatype-guide
 
-- GitHub status-check UI integration for sonatype results (don't need it; trajectory-async-review per B-0873 replaces it)
-- Reviewer-bot integration where Copilot/sonatype-bot post PR comments (replaced by B-0887 Zeta-native review substrate's playbook-based reviewer-agent invocations)
-- Required-checks gating before merge (replaced by B-0887 path-protection; sonatype-step happens BEFORE the path-protected fast-lane push, not after)
+- GitHub status-check UI integration for sonatype results (don't need it; trajectory-async-review per 081KSNY2Z0008QG0R000F0C5V0 replaces it)
+- Reviewer-bot integration where Copilot/sonatype-bot post PR comments (replaced by 081KSNY2Z0008QG0R001DFZK4V Zeta-native review substrate's playbook-based reviewer-agent invocations)
+- Required-checks gating before merge (replaced by 081KSNY2Z0008QG0R001DFZK4V path-protection; sonatype-step happens BEFORE the path-protected fast-lane push, not after)
 - Per-line code-comment workflow for sonatype findings (replaced by playbook sections as review threads)
 
 ## What we GAIN
 
-- **Vendor-independence** — same playbook runs on GitHub / GitLab / Gitea / Bitbucket per B-0867.15 per-host adapters
+- **Vendor-independence** — same playbook runs on GitHub / GitLab / Gitea / Bitbucket per 081KSNY2Z0008QG0R002A785QR per-host adapters
 - **Full throttle** — no GraphQL rate limits on PR-comment posting
-- **Self-hosted deployment** — operator can run sonatype-guide locally; results land in playbook event-log (per B-0867.2) instead of GitHub-PR-comment
+- **Self-hosted deployment** — operator can run sonatype-guide locally; results land in playbook event-log (per 081KSNY2Z0008QG0R001K6HJ7Z) instead of GitHub-PR-comment
 - **Composability with workflow engine** — sonatype-guide invocation is a MenuOption / DU case in the agent-loop state machine; reuses the same playbook substrate that handles every other agent decision
 
 ## Architecture
@@ -73,9 +72,9 @@ Library-evaluation playbook includes a step:
 - on-fail: emit event "sonatype-failed" + halt playbook + escalate via shadow envelope
 ```
 
-Playbook step runs via the agent-loop state machine; result is a state-machine event written to the fast-lane folder (per B-0890.1) on main; trajectory-async-review (per B-0873) surfaces the results for operator scan.
+Playbook step runs via the agent-loop state machine; result is a state-machine event written to the fast-lane folder (per 081KSNY2Z0008QG0R000E5KTPX) on main; trajectory-async-review (per 081KSNY2Z0008QG0R000F0C5V0) surfaces the results for operator scan.
 
-### Composition with B-0867.21 two-path interface
+### Composition with 081KSNY2Z0008QG0R000S738W3 two-path interface
 
 - DU path = invoke sonatype-guide via structured MenuOption (`{ tag: "RunSonatypeGuide", packageUrl: "..." }`)
 - Conversational path = operator OR reviewer-agent writes intent in playbook document: "audit this package before pull"
@@ -91,18 +90,18 @@ Both paths feed same event log; sonatype-guide invocation is a first-class workf
 
 ## Composition
 
-- **B-0887** (Zeta-native review substrate — parent; sonatype-guide is one specific reviewer in the substrate)
-- **B-0867.21** (two-path interface — sonatype-guide invocation works via both DU + conversational paths)
-- **B-0867** (workflow engine — sonatype-guide MenuOption + handler)
-- **B-0890.1** (folder-based fast-lane on main — sonatype-guide results land here)
-- **B-0867.15** (per-host adapters — playbook step works isomorphically across hosts)
+- **081KSNY2Z0008QG0R001DFZK4V** (Zeta-native review substrate — parent; sonatype-guide is one specific reviewer in the substrate)
+- **081KSNY2Z0008QG0R000S738W3** (two-path interface — sonatype-guide invocation works via both DU + conversational paths)
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine — sonatype-guide MenuOption + handler)
+- **081KSNY2Z0008QG0R000E5KTPX** (folder-based fast-lane on main — sonatype-guide results land here)
+- **081KSNY2Z0008QG0R002A785QR** (per-host adapters — playbook step works isomorphically across hosts)
 
 ## Substrate-honest framing
 
-P2 — substrate-honest re-scoping of an existing workflow. The audit itself doesn't change; only the invocation surface moves. Small effort once the underlying B-0887 substrate is operational; until then, the existing PR-comment workflow continues during transition.
+P2 — substrate-honest re-scoping of an existing workflow. The audit itself doesn't change; only the invocation surface moves. Small effort once the underlying 081KSNY2Z0008QG0R001DFZK4V substrate is operational; until then, the existing PR-comment workflow continues during transition.
 
 ## Full reasoning
 
-Operator 2026-05-28 in response to B-0883.1 Q3: *"we are getting rid of PRs mostly for playbooks unless you tell me it's worth the vendor lockin"*.
+Operator 2026-05-28 in response to 081KSNY2Z0008QG0R0037X4DP4 Q3: *"we are getting rid of PRs mostly for playbooks unless you tell me it's worth the vendor lockin"*.
 
-Otto's recommendation: NOT worth the vendor lockin. Sonatype-guide is a check against package URLs; same check runs in playbook substrate without GitHub-PR-coordination. Composes with the broader B-0887 / B-0890.1 / B-0867.21 architecture moving toward Zeta-native review.
+Otto's recommendation: NOT worth the vendor lockin. Sonatype-guide is a check against package URLs; same check runs in playbook substrate without GitHub-PR-coordination. Composes with the broader 081KSNY2Z0008QG0R001DFZK4V / 081KSNY2Z0008QG0R000E5KTPX / 081KSNY2Z0008QG0R000S738W3 architecture moving toward Zeta-native review.

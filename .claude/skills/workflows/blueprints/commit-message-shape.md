@@ -103,7 +103,7 @@ pattern to preserve formatting through the shell:
 
 ```bash
 git commit -m "$(cat <<'EOF'
-feat(B-0042): add the thing
+feat(081KQ3HBZ0008QG0R002GDRFS5): add the thing
 
 Why: Aaron asked for it. The constraint is X.
 

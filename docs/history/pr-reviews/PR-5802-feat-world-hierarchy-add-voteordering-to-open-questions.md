@@ -19,7 +19,7 @@
 | Created at | 2026-05-28T12:57:21Z |
 | Merged at | 2026-05-28T22:40:35Z |
 | Merge commit SHA | `01ca2de65c17d3ff5562445c7cf02e8e98229360` |
-| Branch | `lior/atomic-B-0915-vote-ordering` |
+| Branch | `lior/atomic-081KSNY2Z0008QG0R002BNQVE1-vote-ordering` |
 | Base branch | `main` |
 | URL | https://github.com/Lucent-Financial-Group/Zeta/pull/5802 |
 | Changed files | 2 |

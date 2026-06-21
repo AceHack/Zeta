@@ -8,7 +8,7 @@ open FsCheck.Xunit
 open global.Xunit
 open Zeta.Core
 
-// B-1016 floor primitive #3 — Merkle integrity, MATH LEG. This is what makes
+// 081KT7YW00008QG0R002T1XNWT floor primitive #3 — Merkle integrity, MATH LEG. This is what makes
 // "lightlike history" provable: tamper-evidence means the past cannot be silently
 // rewritten, so the derived curve/curvature are trustworthy.
 //

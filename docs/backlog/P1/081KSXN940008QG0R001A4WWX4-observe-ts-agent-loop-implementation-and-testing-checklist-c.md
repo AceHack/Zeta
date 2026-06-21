@@ -1,6 +1,5 @@
 ---
-id: B-0958
-zetaid: 081KSXN940008QG0R001A4WWX4
+id: 081KSXN940008QG0R001A4WWX4
 priority: P1
 status: open
 title: "observe.ts agent-loop — implementation + testing checklist (the closed observe→execute→loadWorld loop; toward vendor-store distribution)"
@@ -21,7 +20,7 @@ composes_with:
 tags: [observe, agent-loop, event-sourcing, local-llm, execute, sovereign, testing, checklist, vendor-store, umbrella]
 ---
 
-# B-0958 — observe.ts agent-loop: implementation + testing checklist
+# 081KSXN940008QG0R001A4WWX4 — observe.ts agent-loop: implementation + testing checklist
 
 ## The directive (Aaron 2026-05-31)
 
@@ -68,13 +67,13 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
       (`ActionExecutionStarted` / `Succeeded` / `Failed` / `ModeChanged`) so **replay folds
       observations, never redoes commands** (the design-review caution). _This is the #1 gap — "the
       loop including actions" isn't real until the meaningful actions execute._
-  - [x] **`do_item` Phase-1 envelope + executor port** — design B-0964 (#6342) + impl (#6344):
+  - [x] **`do_item` Phase-1 envelope + executor port** — design 081KT07NV0008QG0R001CBQ2X2 (#6342) + impl (#6344):
         `ActionObservation` (Started/Succeeded/Failed), injected `CommandExecutor` port (fake /
         OCI-runtime tiers), `foldObservations` (no executor ⇒ replay can't re-run), command-vs-
         observation split, terminal-append reconcile-needed handling. **Sibling module
         (`tools/observe/do-item.ts`) — NOT yet integrated into the unified `execute` dispatch.**
   - [ ] **Integrate `do_item` into unified `execute`** + Phase-2 real executors (podman/docker OCI
-        per B-0964 §2.2; podman declared in manifests #6346) + the remaining kinds
+        per 081KT07NV0008QG0R001CBQ2X2 §2.2; podman declared in manifests #6346) + the remaining kinds
         (`respond_to_operator`, `decompose`, `explore`, `play`, `edit_grammar`).
 - [ ] **End-to-end closed-loop integration test** — `loadWorld → observeWithLlm → execute →
 folderSink → loadWorld` as ONE flow against a real temp git repo (today every piece is unit-
@@ -95,9 +94,9 @@ folderSink → loadWorld` as ONE flow against a real temp git repo (today every 
 - [ ] **Real-model loop test** — `observeWithLlm` / `runLoop` driven by a real ollama (today only the
       isolated `chooseIndex` is real-model-validated; the loop is mock-only).
 - [ ] **Date-partitioned write in `folderSink`** — sink currently writes flat `<eventDir>/<id>.json`;
-      B-0867.2 / the bus partition `YYYY/MM/DD/{id}.json`. `loadWorld` already recurses; decide
+      081KSNY2Z0008QG0R001K6HJ7Z / the bus partition `YYYY/MM/DD/{id}.json`. `loadWorld` already recurses; decide
       flat-vs-partitioned + align the writer.
-- [ ] **Corporate batch-to-main transport** — the other rail (swap the `commit` fn for the B-0890
+- [ ] **Corporate batch-to-main transport** — the other rail (swap the `commit` fn for the 081KSNY2Z0008QG0R0017JSTGD
       batch-merge coordinator; same event shape).
 - [ ] **`observe-loop` TS skill** — `.claude/skills/observe-loop/` packaging the four modules + a
       fresh-git-repo bootstrap procedure (per `zeta-ships-with-skills-immediate-value`). After the
@@ -106,7 +105,7 @@ folderSink → loadWorld` as ONE flow against a real temp git repo (today every 
       2026-05-31). Once the **TS loop APIs are stable** (the items above) AND **golden-vectors ✓ in
       all 4** (TS/Rust/C#/F#, against the one canonical `golden-vectors.json` oracle — DONE, the safe
       ground), build the observe loop per the role-split below. Don't build on shaky ground: locked
-      golden-vectors first, then the loop. The 4-language fold (B-0867.28) is the proof the pattern
+      golden-vectors first, then the loop. The 4-language fold (081KSXN940008QG0R0002287MP) is the proof the pattern
       works.
 
   | Language | Role on the loop       | Frontier                                                                                                              |
@@ -136,10 +135,10 @@ folderSink → loadWorld` as ONE flow against a real temp git repo (today every 
 
 ## Composes with
 
-- [B-0948](../P2/B-0948-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md) — workflow DUs + BFT-oracle/compiler summons + observe-keystone research (the research-stage sibling; this row is the operational build+test tracker)
-- [B-0867](B-0867-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) — workflow engine v1 (the grammar + Otto's 5 modifications)
-- [B-0890.1](B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md) — folders-direct-to-main (the sovereign transport)
-- [B-0951](../P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md) — eventually-consistent git-native indexes (the read accel over the same log)
+- [081KSXN940008QG0R002B89QZ1](../P2/081KSXN940008QG0R002B89QZ1-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md) — workflow DUs + BFT-oracle/compiler summons + observe-keystone research (the research-stage sibling; this row is the operational build+test tracker)
+- [081KSKBP80008QG0R000B3Y19A](081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) — workflow engine v1 (the grammar + Otto's 5 modifications)
+- [081KSNY2Z0008QG0R000E5KTPX](081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md) — folders-direct-to-main (the sovereign transport)
+- [081KSXN940008QG0R000R76H45](../P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md) — eventually-consistent git-native indexes (the read accel over the same log)
 - the observe-act 16-direction ADR + the synthesis research doc (linked above)
 
 ## Status

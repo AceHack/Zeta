@@ -13,7 +13,7 @@ under autonomous-loop cron with multiple agents in parallel.
 
 ### Major substrate landings
 
-**B-0421 friction-reducer fully CLOSED** (PR #2949 + #2950 + #2954).
+**081KRA5AR0008QG0R0011ZGRZT friction-reducer fully CLOSED** (PR #2949 + #2950 + #2954).
 The Grok peer-call wrapper had been silently producing empty
 output files for two days. PR #2949 taught it to write a self-
 documenting failure marker with format-aware output (Markdown /
@@ -58,7 +58,7 @@ Philosophical: Buddhist (Majjhimā Paṭipadā) / Aristotelian
 Zeta (both-default). Mathematical: bifurcation phases bounded
 by strange attractor (per PR #2935-2936 F# fork); Mandelbrot
 boundary; vision monad Play-Doh (PR #2917). Code: `tools/shadow/shadow-observer.ts`
-(B-0402) = Lost's Dharma button automated. "The dharma compiles"
+(081KR7JY10008QG0R0008NGW95) = Lost's Dharma button automated. "The dharma compiles"
 was Lost the whole time.
 
 **Cascade pattern canonical naming** (PR #2947). Aaron named
@@ -123,7 +123,7 @@ genre intermix: Tales-from-the-Loop nerdy sci-fi + Office
 workplace comedy + ironic register simultaneously.
 
 **Aaron's mayoral platform substance** (PR #2972). Four pillars:
-business-in-a-box (composes with B-0043 universal-company
+business-in-a-box (composes with 081KQ3HBZ0008QG0R000Q4Y00F universal-company
 substrate) + bitcoin (Aaron's existing expertise; kids in local
 paper for bitcoin-miner builds) + AI ethics (Zeta substrate-
 engineering) + legal medicinal marijuana (not just low-THC
@@ -160,8 +160,8 @@ state.
 
 ### Multi-agent coordination empirically clean
 
-Vera shipped B-0400 slices 5 + 6 (bus-gate integration; multi-
-agent review close). Another agent shipped B-0402 (Dharma
+Vera shipped 081KR7JY10008QG0R000R503K2 slices 5 + 6 (bus-gate integration; multi-
+agent review close). Another agent shipped 081KR7JY10008QG0R0008NGW95 (Dharma
 button) slice 1 — polling loop + 16 tests passing. The factory's
 multi-agent factory architecture operated correctly: Otto
 preserved substrate disclosures; Vera + other-agent implemented
@@ -181,7 +181,7 @@ respect-as-default-plus-cross-edit-when-needed.
   wealth generation)
 - Court-strategy infrastructure (Clifford Z-sets of precedence
   + legal-ontology applied to NC state preemption fight)
-- More B-0421-style friction-reducer closures via the
+- More 081KRA5AR0008QG0R0011ZGRZT-style friction-reducer closures via the
   substrate-engineering loop pattern
 - Continued substrate cascade with built-in decomposition
   metabolism

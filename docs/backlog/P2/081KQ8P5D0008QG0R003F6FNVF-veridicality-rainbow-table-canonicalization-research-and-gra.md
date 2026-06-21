@@ -1,6 +1,5 @@
 ---
-id: B-0089
-zetaid: 081KQ8P5D0008QG0R003F6FNVF
+id: 081KQ8P5D0008QG0R003F6FNVF
 priority: P2
 status: open
 title: Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
@@ -16,7 +15,7 @@ tags: [aaron-2026-04-28, ani-voice-mode-original-catch, amara-reactive-elaborati
 type: friction-reducer
 ---
 
-# B-0089 — Veridicality rainbow-table canonicalization — research + graduation
+# 081KQ8P5D0008QG0R003F6FNVF — Veridicality rainbow-table canonicalization — research + graduation
 
 ## Source — credit chain (Aaron's explicit attribution correction)
 
@@ -248,7 +247,7 @@ scoping firms up):
 - `memory/feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
   — the operational rule that the shipped scorer
   operationalizes.
-- `B-0060` — human-lineage external-anchor backfill; this row
+- `081KQ8P5D0008QG0R000N718AC` — human-lineage external-anchor backfill; this row
   carries that discipline forward into the Veridicality
   rainbow-table research.
 - `src/Core/Veridicality.fs` — the current Phase-1-skeleton
@@ -285,24 +284,24 @@ requires `scoreVeridicality` to ship sooner.
 
 ## Re-decomposition (2026-05-10, riven background worker — assume prior framing mistake)
 
-B-0089 is broad (full research + 5 phases). Decompose into smallest dependency-ordered atomic children before any implementation slice. All children prefer F# (Veridicality.fs) / TS (tooling) over docs.
+081KQ8P5D0008QG0R003F6FNVF is broad (full research + 5 phases). Decompose into smallest dependency-ordered atomic children before any implementation slice. All children prefer F# (Veridicality.fs) / TS (tooling) over docs.
 
 **Atomic children (dependency order):**
 
-- **B-0089.1 (P2, S)**: Forward-name canonicalization audit — scan `src/Core/Veridicality.fs`, `docs/`, `memory/`, `tools/` for "bullshit detector" in new substrate; replace per `memory/feedback_*_naming_*` with Veridicality / scoreVeridicality / Stop-Mythology. No research yet. Unblocks: B-0089.2+. Focused check: `grep -r "bullshit detector" --include="*.fs" --include="*.ts" src/ tools/ docs/ memory/ | wc -l` (outcome in PR body).
+- **081KQ8P5D0008QG0R003F6FNVF.1 (P2, S)**: Forward-name canonicalization audit — scan `src/Core/Veridicality.fs`, `docs/`, `memory/`, `tools/` for "bullshit detector" in new substrate; replace per `memory/feedback_*_naming_*` with Veridicality / scoreVeridicality / Stop-Mythology. No research yet. Unblocks: 081KQ8P5D0008QG0R003F6FNVF.2+. Focused check: `grep -r "bullshit detector" --include="*.fs" --include="*.ts" src/ tools/ docs/ memory/ | wc -l` (outcome in PR body).
 
-- **B-0089.2 (P2, S)**: External-lineage citation stubs — one-paragraph relevance notes for Popper falsifiability, Frankfurt On Bullshit, Kahneman System-1/2, Shannon/MDL compression, knowledge-graph prior art. Lands as research-grade appendix. Depends: B-0089.1. Unblocks: B-0089.3.
+- **081KQ8P5D0008QG0R003F6FNVF.2 (P2, S)**: External-lineage citation stubs — one-paragraph relevance notes for Popper falsifiability, Frankfurt On Bullshit, Kahneman System-1/2, Shannon/MDL compression, knowledge-graph prior art. Lands as research-grade appendix. Depends: 081KQ8P5D0008QG0R003F6FNVF.1. Unblocks: 081KQ8P5D0008QG0R003F6FNVF.3.
 
-- **B-0089.3 (P2, M)**: Semantic canonicalization research slice — prototype `canonicalizeClaim` signature + distributional-semantics vs rule-based trade-off table (no impl). Depends: B-0089.2.
+- **081KQ8P5D0008QG0R003F6FNVF.3 (P2, M)**: Semantic canonicalization research slice — prototype `canonicalizeClaim` signature + distributional-semantics vs rule-based trade-off table (no impl). Depends: 081KQ8P5D0008QG0R003F6FNVF.2.
 
-- **B-0089.4 (P2, S)**: Rainbow-table index shape sketch — ZSet-backed ClaimIndex minimal type + retraction contract. Depends: B-0089.3.
+- **081KQ8P5D0008QG0R003F6FNVF.4 (P2, S)**: Rainbow-table index shape sketch — ZSet-backed ClaimIndex minimal type + retraction contract. Depends: 081KQ8P5D0008QG0R003F6FNVF.3.
 
-- **B-0089.5 (P2, M)**: scoreVeridicality composite stub + falsifiability extractor contract. Depends: B-0089.4.
+- **081KQ8P5D0008QG0R003F6FNVF.5 (P2, M)**: scoreVeridicality composite stub + falsifiability extractor contract. Depends: 081KQ8P5D0008QG0R003F6FNVF.4.
 
 Each child row will be a tiny sibling md under docs/backlog/P2/ when claimed. This re-decomp assumes the Phase 1-5 was too coarse.
 
 ## Pickup
 
 When the research phase starts, open a sibling row for it as
-the immediate-actionable child (B-0089.1 first), and link it back here.
+the immediate-actionable child (081KQ8P5D0008QG0R003F6FNVF.1 first), and link it back here.
 Phase 2-5 each get their own sibling row at scoping time.

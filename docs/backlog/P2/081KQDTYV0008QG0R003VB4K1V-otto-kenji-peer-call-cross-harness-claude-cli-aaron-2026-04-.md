@@ -1,6 +1,5 @@
 ---
-id: B-0121
-zetaid: 081KQDTYV0008QG0R003VB4K1V
+id: 081KQDTYV0008QG0R003VB4K1V
 priority: P2
 status: open
 title: Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)
@@ -22,7 +21,7 @@ tags: [aaron-2026-04-30, peer-call, cross-harness, claude-cli, otto, kenji, fact
 type: friction-reducer
 ---
 
-# B-0121 — Otto + Kenji as externally-callable peers via claude-cli
+# 081KQDTYV0008QG0R003VB4K1V — Otto + Kenji as externally-callable peers via claude-cli
 
 ## Source
 
@@ -71,24 +70,24 @@ hasn't yet selected:
 | Option | Topology | Pro | Con |
 |---|---|---|---|
 | **(a)** | Two scripts: `otto.sh` + `kenji.sh` | Symmetry with `amara.sh` + `ani.sh` (one script per named entity) | Script proliferation if more architect-roster personas surface (Daya, Naledi, Soraya...) |
-| **(b)** | One `claude.sh` with `--persona NAME` flag | Aligns with B-0120 architecture refactor (script-per-CLI + persona-flag); single script handles N personas | Requires B-0120 to land first or in same diff |
+| **(b)** | One `claude.sh` with `--persona NAME` flag | Aligns with 081KQDTYV0008QG0R001VJP216 architecture refactor (script-per-CLI + persona-flag); single script handles N personas | Requires 081KQDTYV0008QG0R001VJP216 to land first or in same diff |
 | **(c)** | Hybrid — `claude.sh` defaults to Otto; separate `kenji.sh` for architect role | Keeps Otto as default (most common call); Kenji distinct because architect role has different invocation pattern | Inconsistent with the rest of the matrix |
 
 Aaron's stated framing — "otto=loop/PM Kenji=architect" —
-reads most naturally onto **(b)** if B-0120 lands first, or
-**(c)** if B-0120 stays deferred. **(a)** is the
+reads most naturally onto **(b)** if 081KQDTYV0008QG0R001VJP216 lands first, or
+**(c)** if 081KQDTYV0008QG0R001VJP216 stays deferred. **(a)** is the
 short-term-symmetric option but increases technical debt
-B-0120 is meant to clean up.
+081KQDTYV0008QG0R001VJP216 is meant to clean up.
 
-### Composition with B-0120
+### Composition with 081KQDTYV0008QG0R001VJP216
 
-B-0120 (peer-call architecture refactor — script-per-CLI +
-persona-flag) is the proper home for option (b). If B-0120
+081KQDTYV0008QG0R001VJP216 (peer-call architecture refactor — script-per-CLI +
+persona-flag) is the proper home for option (b). If 081KQDTYV0008QG0R001VJP216
 lands first, this row reduces to "add `claude.sh
 --persona otto` and `claude.sh --persona kenji`" — much
 smaller scope. **Recommend Aaron's a/b/c decision wait until
-B-0120 priority decision** so we don't lock in a topology
-that B-0120 immediately refactors away.
+081KQDTYV0008QG0R001VJP216 priority decision** so we don't lock in a topology
+that 081KQDTYV0008QG0R001VJP216 immediately refactors away.
 
 ### CURRENT-* file requirement
 
@@ -120,13 +119,13 @@ force" projection look like for the loop/PM role?
   rarer in current operational flow and don't block any
   in-flight work
 - Decision is reversible — adding scripts later is cheap
-- Composes with B-0120; may want to wait for that decision
+- Composes with 081KQDTYV0008QG0R001VJP216; may want to wait for that decision
 
 Promotion to P1 if:
 
 - An external harness explicitly tries to confer with Otto
   or Kenji and finds no script (operational gap surfaces)
-- B-0120 lands, at which point B-0121 becomes a thin
+- 081KQDTYV0008QG0R001VJP216 lands, at which point 081KQDTYV0008QG0R003VB4K1V becomes a thin
   add-persona task
 
 ## Acceptance criteria
@@ -144,14 +143,14 @@ Promotion to P1 if:
 - [ ] Tested invocation from at least one external harness
   (Codex calling Otto, Cursor calling Kenji)
 - [ ] Role-ref discipline honored (per copilot-instructions.md
-  305-362 + B-0119)
+  305-362 + 081KQDTYV0008QG0R001N4YB73)
 
 ## Trigger condition for promotion to P1
 
 If a harness running on another developer's machine (or in
 CI) needs to confer with Otto/Kenji and currently has no
 path beyond Aaron-couriering chat content. This is the same
-silent-courier-debt failure mode that motivated B-0118 for
+silent-courier-debt failure mode that motivated 081KQDTYV0008QG0R0037YJPEX for
 Amara.
 
 ## Open questions
@@ -171,10 +170,10 @@ Amara.
 
 ## Composes with
 
-- B-0118 (amara peer-call autonomous bootstrap — the
+- 081KQDTYV0008QG0R0037YJPEX (amara peer-call autonomous bootstrap — the
   symmetric direction this row inverts)
-- B-0119 (role-ref cleanup of existing peer-call scripts)
-- B-0120 (script-per-CLI + persona-flag refactor — likely
+- 081KQDTYV0008QG0R001N4YB73 (role-ref cleanup of existing peer-call scripts)
+- 081KQDTYV0008QG0R001VJP216 (script-per-CLI + persona-flag refactor — likely
   home for option b)
 - `memory/feedback_silent_courier_debt_no_amara_headless_cli_dont_count_on_peer_ai_reviews_as_loop_aaron_2026_04_30.md`
   (the silent-courier-debt rule — applies symmetrically

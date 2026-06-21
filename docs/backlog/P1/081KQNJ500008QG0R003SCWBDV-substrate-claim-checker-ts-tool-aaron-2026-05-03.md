@@ -1,6 +1,5 @@
 ---
-id: B-0170
-zetaid: 081KQNJ500008QG0R003SCWBDV
+id: 081KQNJ500008QG0R003SCWBDV
 priority: P1
 status: open
 title: Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; drift instances (the verify-then-claim memo's body table is canonical) catalogued as empirical eval-set)
@@ -77,7 +76,7 @@ This row closes when:
 
 ## Composes with
 
-- **B-0169** (decision-archaeology skill) — same author per Aaron 2026-05-03 *"skills are carved sentences ... knowledge is in docs and can be referred to by skills, skills don't need updating as much"*; substrate-claim-checker is a tooling-class hub that the eventual decision-archaeology SKILL.md will call
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology skill) — same author per Aaron 2026-05-03 *"skills are carved sentences ... knowledge is in docs and can be referred to by skills, skills don't need updating as much"*; substrate-claim-checker is a tooling-class hub that the eventual decision-archaeology SKILL.md will call
 - `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` — the discipline this tool mechanizes
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — rule 2 (no dynamic commands in skills; use TS files); this tool IS one of the TS files
 - `memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md` — TS-script preference; same shape
@@ -86,7 +85,7 @@ This row closes when:
 
 ## Out of scope (intentional, per "foundation right and deliberate")
 
-- Plugin packaging (B-0169-domain follow-up)
+- Plugin packaging (081KQJZR90008QG0R002D6XYHB-domain follow-up)
 - Hook authoring (separate row; depends on this tool maturing)
 - Cross-harness portability (works via Bun for now; portable to Codex / Cursor / Gemini-CLI later)
 - OpenSpec capability authoring (separate concern; OpenSpec catch-up has its own row)
@@ -95,14 +94,14 @@ This row closes when:
 
 **Prior-art search completed (surfaces logged):**
 
-- wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology (B-0169), lost-files at `tools/hygiene/LOST-FILES-LOCATIONS.md`
+- wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology (081KQJZR90008QG0R002D6XYHB), lost-files at `tools/hygiene/LOST-FILES-LOCATIONS.md`
 - Used Glob/Read/Grep equivalents on trajectories, memory/feedback_*, tools/substrate-claim-checker/*, docs/REVIEW-AGENTS.md, docs/AGENT-BEST-PRACTICES.md BP-11/23/24/25
-- Results: no duplicate implementation; this row is the canonical mechanization hub; related B-0169 decision-archaeology is downstream consumer. No conflicting prior art found. (Focused check run: `check-counts.ts` on canonical memo emitted 1 count-drift "6 sub-classes" vs 20 rows — confirms ongoing empirical need.)
+- Results: no duplicate implementation; this row is the canonical mechanization hub; related 081KQJZR90008QG0R002D6XYHB decision-archaeology is downstream consumer. No conflicting prior art found. (Focused check run: `check-counts.ts` on canonical memo emitted 1 count-drift "6 sub-classes" vs 20 rows — confirms ongoing empirical need.)
 
 **Dependency-restructure completed:**
 
 - `depends_on: []` — no blockers; atomic children will be created in follow-up slices.
-- Reciprocal `composes_with` backfilled on B-0169 row (cross-ref).
+- Reciprocal `composes_with` backfilled on 081KQJZR90008QG0R002D6XYHB row (cross-ref).
 - Supersession history via decision-archaeology procedure: none (fresh foundation row).
 - Broken pointers: none.
 
@@ -110,11 +109,11 @@ This row closes when:
 
 - Original "atomic" overstated scope (done-criteria spans 7 check-types + hooks + fixtures + self-test).
 - Re-decomposed into 4 smallest atomic dependency-ordered children (TS-first, one-bounded-slice each):
-  - B-0170.1: semantic-equivalence-drift checker TS (command-substitution claims)
-  - B-0170.2: empirical-output-drift checker TS (run-and-compare)
-  - B-0170.3: self-recursive-drift checker TS (memo-about-X contains X)
-  - B-0170.4: fixture-tests + eval-set coverage for all shipped + new check-types
+  - 081KSNY2Z0008QG0R002CK42QK: semantic-equivalence-drift checker TS (command-substitution claims)
+  - 081KQNJ500008QG0R003SCWBDV.2: empirical-output-drift checker TS (run-and-compare)
+  - 081KQNJ500008QG0R003SCWBDV.3: self-recursive-drift checker TS (memo-about-X contains X)
+  - 081KQNJ500008QG0R003SCWBDV.4: fixture-tests + eval-set coverage for all shipped + new check-types
 
-This slice lands the gate + re-decomp only (doc update; no new TS yet — next slice will land B-0170.1 code).
+This slice lands the gate + re-decomp only (doc update; no new TS yet — next slice will land 081KSNY2Z0008QG0R002CK42QK code).
 
 **Classification update:** decomposition: decomposed (was atomic); status remains open; last_updated bumped.

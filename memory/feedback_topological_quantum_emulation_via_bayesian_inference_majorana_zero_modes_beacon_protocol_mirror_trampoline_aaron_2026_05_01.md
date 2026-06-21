@@ -243,11 +243,11 @@ Future-Otto reading this should know:
   topoconductor work is the appropriate research lineage
   to cite + extend. Verify per Otto-364 search-first
   before any load-bearing operational claim.
-- **Backlog row pending.** A B-row (B-0152 candidate or
+- **Backlog row pending.** A B-row (081KQGDBJ0008QG0R00280ZEV2 candidate or
   later) operationalizes the research lane — design how
   the three-layer stack composes within the Zeta seed
   executor architecture, with Pareto-improvement
-  methodology per B-0147's research spine.
+  methodology per 081KQGDBJ0008QG0R0004ACHJJ's research spine.
 
 ## The carved sentence (preserved provisional)
 

@@ -160,7 +160,7 @@ nits on machine-generated tables.
    touches ONLY files under `docs/agent-heartbeats/**` (no
    other paths) AND comes from the `agent-heartbeats` source
    branch, return a single one-line comment "no review needed
-   — heartbeat batch merge per B-0858.4" and stop. These PRs
+   — heartbeat batch merge per 081KSKBP80008QG0R001KK9WV6.4" and stop. These PRs
    are mechanically-generated periodic merges of ZetaID-named
    heartbeat records (per `src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts`);
    their content is observational tick metadata, not factory

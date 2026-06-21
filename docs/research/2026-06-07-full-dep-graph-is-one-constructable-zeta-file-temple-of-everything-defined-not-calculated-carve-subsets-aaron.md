@@ -13,7 +13,7 @@ install (npm/cargo/pip), which is slow, can fail, and discovers conflicts only w
 
 - **The full graph of all `dependson` edges (#6971) is ONE constructable `.zeta`/`.ace` file** — the "**temple
   of everything**": every package/dep/version and every edge, *defined as data* (the infinite file, #6969;
-  the n-dimensional dependency space, B-0824, made explicit). The whole graph is **known statically.**
+  the n-dimensional dependency space, 081KSGS9H0008QG0R0031PBNGA, made explicit). The whole graph is **known statically.**
 - **Defined, not calculated.** You don't *solve* the graph at install; it's *already there*. Desired-state: you
   state your roots, and the answer is a **lookup into the defined graph**, not a search. (Nixpkgs is the closest
   existing thing — one giant *defined* expression graph; Zeta generalizes it to all ecosystems.)
@@ -59,7 +59,7 @@ install (npm/cargo/pip), which is slow, can fail, and discovers conflicts only w
 - **Compile-time conflict resolution (#6940)** — conflicts read off the static graph, pre-resolved.
 - **Ace ensure / declarative / content-addressed layers (#6959/#6960)** — `ensure` carves the subgraph;
   content-addressing makes the carve reproducible/deduped.
-- **n-dim dependency space / holographic projection (B-0824)** — the full graph; a niche = a projection/slice.
+- **n-dim dependency space / holographic projection (081KSGS9H0008QG0R0031PBNGA)** — the full graph; a niche = a projection/slice.
 - **DST test seam (#6958)** — static subgraph carve replays deterministically.
 
 ## Beacon anchors

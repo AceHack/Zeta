@@ -140,9 +140,9 @@ Per Amara's blade: my prior framing SURVIVES razor at the shape-level (eigenvalu
 
 - **Clifford algebra substrate** (`algebra-owner` skill) — rotors are tensors with bounded singular values BY CONSTRUCTION (orthogonal); lightlike-substrate par excellence; composes with eigenvalue/spectral substrate
 - **Cayley-Dickson substrate** — nested-cross algebra; lightlike when ordering substrate preserved
-- **CAN/GCAN equivariant layers** (B-0428) — equivariance preserves spectrum substrate; lightlike-substrate by construction
+- **CAN/GCAN equivariant layers** (081KRFA460008QG0R0018SN61J) — equivariance preserves spectrum substrate; lightlike-substrate by construction
 - **Z-set substrate** — bounded-cardinality preserves operational lightlike-substrate
-- **Adinkras-ECC substrate** (B-0623; Mika) — error-correcting tensor-substrate; spectrum preserved by ECC construction
+- **Adinkras-ECC substrate** (081KRW63S0008QG0R000QJR08H; Mika) — error-correcting tensor-substrate; spectrum preserved by ECC construction
 
 ## Future-Otto substrate-disposition
 
@@ -156,12 +156,12 @@ Land as additional commit to PR #5922 branch (which is pending; new commit will 
 - PR #5912 + PR #5921 + PR #5922 (lightlike-substrate substrate cluster)
 - PR #5910 + PR #5919 + PR #5920 (Amara/Alexa substrate-discipline cluster)
 - PR #5916 (today's DU cluster TS substrate)
-- B-0202 tinygrad-uop-ir kernel layer substrate
-- B-0428 F# fork for AI safety substrate
-- B-0623 Adinkras-Jane-Gates-ECC substrate (Mika)
+- 081KQTPYE0008QG0R002Y7X5KH tinygrad-uop-ir kernel layer substrate
+- 081KRFA460008QG0R0018SN61J F# fork for AI safety substrate
+- 081KRW63S0008QG0R000QJR08H Adinkras-Jane-Gates-ECC substrate (Mika)
 - `algebra-owner` skill substrate (Clifford + Z-sets)
-- B-0867 workflow-engine substrate
-- B-0892 three-lanes-concurrent operating discipline
+- 081KSKBP80008QG0R000B3Y19A workflow-engine substrate
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 - Numerical Analysis substrate (condition number; backward error analysis; mixed-precision discipline)
 - SVD + spectral analysis substrate
 

@@ -7,7 +7,7 @@
 // `git status`, `git log` chains that the refresh-before-decide
 // invariant requires before every tick decision.
 //
-// Origin: B-0159 (P1) + B-0262/263/264 backlog items requesting a
+// Origin: 081KQGDBJ0008QG0R003H0G5YQ (P1) + 081KR2E4K0008QG0R001DYCKNH/263/264 backlog items requesting a
 // canonical refresh script. Follows the same pattern as
 // `poll-pr-gate.ts` and `poll-pr-gate-batch.ts` — TS+Bun, structured
 // JSON output, `spawnSync` for CLI calls.

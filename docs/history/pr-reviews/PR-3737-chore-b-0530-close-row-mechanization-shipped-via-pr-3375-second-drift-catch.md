@@ -29,8 +29,8 @@
 
 ## Summary
 
-- Second drift-catch this session (paired with [PR #3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) for B-0506).
-- B-0530 mechanized 2026-05-15 via [PR #3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375); `tools/orchestrator-checks/cron-sentinel-mutex.ts` implements all 6 acceptance criteria, but the row's `status` stayed `open`.
+- Second drift-catch this session (paired with [PR #3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) for 081KRHWGX0008QG0R002DPG02X).
+- 081KRMEXM0008QG0R000X1PPGC mechanized 2026-05-15 via [PR #3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375); `tools/orchestrator-checks/cron-sentinel-mutex.ts` implements all 6 acceptance criteria, but the row's `status` stayed `open`.
 - **Live verification this tick**: tool reports `peerDetected: true` for two Claude Desktop processes; the `docs/AUTONOMOUS-LOOP-PER-TICK.md` §1 peer-handling clause routed 3 consecutive ticks around `git worktree add` without contention failures.
 
 ## Atomic-commit note

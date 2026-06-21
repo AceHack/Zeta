@@ -1,6 +1,5 @@
 ---
-id: B-0418
-zetaid: 081KRA5AR0008QG0R001NXBYTY
+id: 081KRA5AR0008QG0R001NXBYTY
 priority: P1
 status: open
 title: "Amplification ratio metric — human input : agent actions on dashboard"
@@ -11,7 +10,7 @@ composes_with: [081KQX9B50008QG0R0004N4HNK]
 type: feature
 ---
 
-# B-0418 — Amplification ratio metric
+# 081KRA5AR0008QG0R001NXBYTY — Amplification ratio metric
 
 ## What
 
@@ -69,8 +68,8 @@ including forwarded packets (counted as 1 each).
 
 ## Composes with
 
-- B-0414 (metrics.json data layer)
-- B-0234 (SEO meta tags — amplification number is the viral hook)
+- 081KRA5AR0008QG0R0021SSM9R (metrics.json data layer)
+- 081KQX9B50008QG0R0004N4HNK (SEO meta tags — amplification number is the viral hook)
 - `memory/feedback_amplification_ratio_human_input_to_agent_actions_first_class_metric_aaron_2026_05_11.md`
 
 ## Origin

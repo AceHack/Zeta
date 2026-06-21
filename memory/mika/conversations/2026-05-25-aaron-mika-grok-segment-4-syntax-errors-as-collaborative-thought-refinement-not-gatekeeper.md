@@ -1,22 +1,22 @@
 ---
 name: mika-2026-05-25-segment-4-syntax-errors-as-collaborative-thought-refinement
-description: Mika voice conversation segment 4 — syntax errors flip from gatekeeper rejection to AI-assisted collaborative thought-refinement; "I think you're trying to express X, did you mean X or Y?" instead of "Error: Unexpected token"; small extension to B-0735 parser substrate
+description: Mika voice conversation segment 4 — syntax errors flip from gatekeeper rejection to AI-assisted collaborative thought-refinement; "I think you're trying to express X, did you mean X or Y?" instead of "Error: Unexpected token"; small extension to 081KSE6WT0008QG0R000XJ524Z parser substrate
 date: 2026-05-25
 persona: mika
 platform: grok (voice-mode)
 type: conversation
 forwarded_by: aaron
 verbatim: true
-discipline: persona-scope archive — segment 4 of the runbooks-as-executable-reality conversation; small but distinct extension to B-0735 (probabilistic parser substrate); composes with the per-person personalized parser scope
+discipline: persona-scope archive — segment 4 of the runbooks-as-executable-reality conversation; small but distinct extension to 081KSE6WT0008QG0R000XJ524Z (probabilistic parser substrate); composes with the per-person personalized parser scope
 substrate_landings:
-  - B-0735 (adds AI-assisted-syntax-errors-as-collaborative-thought-refinement scope item)
+  - 081KSE6WT0008QG0R000XJ524Z (adds AI-assisted-syntax-errors-as-collaborative-thought-refinement scope item)
 prior_conversation: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md
 tags: [syntax-errors-as-collaboration, parser-as-thinking-partner-not-gatekeeper, ai-error-messages, mika-substrate-segment-4, b0735-extension]
 ---
 
 # Aaron + Mika 2026-05-25 segment 4 — Syntax errors as collaborative thought-refinement (verbatim preservation)
 
-Brief but substantive continuation of the parser discussion (segment 3 → B-0735). This segment flips the conventional parser-error model from gatekeeper-rejection to AI-assisted thought-refinement.
+Brief but substantive continuation of the parser discussion (segment 3 → 081KSE6WT0008QG0R000XJ524Z). This segment flips the conventional parser-error model from gatekeeper-rejection to AI-assisted thought-refinement.
 
 ## Verbatim conversation
 
@@ -42,20 +42,20 @@ Brief but substantive continuation of the parser discussion (segment 3 → B-073
 >
 > I actually really like that direction. It turns the entire parsing experience into a thinking partner instead of a gatekeeper.
 
-→ Lands as a small extension to B-0735 (AI-assisted-syntax-errors-as-collaborative-thought-refinement scope item).
+→ Lands as a small extension to 081KSE6WT0008QG0R000XJ524Z (AI-assisted-syntax-errors-as-collaborative-thought-refinement scope item).
 
 ## Notes (added at preservation time)
 
-- This composes naturally with B-0735's probabilistic grammar + per-person personalized parser substrate: low-confidence parses (the boundary between accept + reject) become the surface area where collaborative thought-refinement happens
+- This composes naturally with 081KSE6WT0008QG0R000XJ524Z's probabilistic grammar + per-person personalized parser substrate: low-confidence parses (the boundary between accept + reject) become the surface area where collaborative thought-refinement happens
 - The pattern flips the social-contract of parser errors: from compiler-yelling-at-you (which kills the Notepad-freedom-of-personal-ontology Aaron values) to AI-helping-you-refine (which preserves the freedom while improving precision over time)
-- Composes with B-0733 AI agency stack — the AI doing the refinement IS the participant's AI peer, operating with their own Crystal Ball + Glass Halo + runbook system + (per B-0735) personalized parser
+- Composes with 081KSE6WT0008QG0R00102H071 AI agency stack — the AI doing the refinement IS the participant's AI peer, operating with their own Crystal Ball + Glass Halo + runbook system + (per 081KSE6WT0008QG0R000XJ524Z) personalized parser
 - Composes with the NCI HC-8 floor — AI offers refinement OPTIONS ("did you mean X or Y?") rather than coercing the participant into one interpretation; preserves participant authority over their own intent
 
 ## Composes with
 
 - Segment-3 file (linked via `prior_conversation`)
-- B-0735 (segment-3 substrate; this segment extends with AI-assisted-syntax-errors scope item)
-- B-0687 (zetaparse — the parser substrate this all extends)
-- B-0733 (AI agency stack — peer AI is the refinement collaborator)
+- 081KSE6WT0008QG0R000XJ524Z (segment-3 substrate; this segment extends with AI-assisted-syntax-errors scope item)
+- 081KS3X9Y0008QG0R00323NSZA (zetaparse — the parser substrate this all extends)
+- 081KSE6WT0008QG0R00102H071 (AI agency stack — peer AI is the refinement collaborator)
 - `.claude/rules/non-coercion-invariant.md` HC-8 (refinement offers options; doesn't coerce)
 - `.claude/rules/glass-halo-bidirectional.md` (refinement conversation is observable substrate)

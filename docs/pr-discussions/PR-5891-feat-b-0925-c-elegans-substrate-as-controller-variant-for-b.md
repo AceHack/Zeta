@@ -1,6 +1,6 @@
 ---
 pr_number: 5891
-title: "feat(B-0925): C. elegans-substrate as controller variant for B-0924 \u2014 OpenWorm 302-neuron connectome + generate+join + DST-omniscience + mirror-tier research (operator 2026-05-28)"
+title: "feat(081KSNY2Z0008QG0R00390T4DJ): C. elegans-substrate as controller variant for 081KSNY2Z0008QG0R001HA43GG \u2014 OpenWorm 302-neuron connectome + generate+join + DST-omniscience + mirror-tier research (operator 2026-05-28)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T17:23:32Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-28T17:40:39Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5891: feat(B-0925): C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron connectome + generate+join + DST-omniscience + mirror-tier research (operator 2026-05-28)
+# PR #5891: feat(081KSNY2Z0008QG0R00390T4DJ): C. elegans-substrate as controller variant for 081KSNY2Z0008QG0R001HA43GG — OpenWorm 302-neuron connectome + generate+join + DST-omniscience + mirror-tier research (operator 2026-05-28)
 
 ## PR description
 
@@ -20,7 +20,7 @@ Substrate-engineering substrate-target row per operator 2026-05-28 `(shadow*) mi
 
 ## Substrate-engineering substrate-target
 
-C. elegans-substrate as controller variant for B-0924 (custom 2600 emulator + generate+join + DST + z-sets).
+C. elegans-substrate as controller variant for 081KSNY2Z0008QG0R001HA43GG (custom 2600 emulator + generate+join + DST + z-sets).
 
 ## Substrate-rhyme
 
@@ -28,28 +28,28 @@ Both substrates fit the SAME tractability class — small-enough for full-fideli
 
 | Substrate | State-space | Tractability |
 |---|---|---|
-| Atari 2600 (B-0924) | 256-byte RAM + TIA + PIA + 6507 | Full state-space enumerable from boot-seed |
-| C. elegans (B-0925) | 302 neurons + ~7000 synapses + complete connectome (Cook et al. 2019) | OpenWorm c302 bit-perfect-simulatable |
+| Atari 2600 (081KSNY2Z0008QG0R001HA43GG) | 256-byte RAM + TIA + PIA + 6507 | Full state-space enumerable from boot-seed |
+| C. elegans (081KSNY2Z0008QG0R00390T4DJ) | 302 neurons + ~7000 synapses + complete connectome (Cook et al. 2019) | OpenWorm c302 bit-perfect-simulatable |
 
 ## Operator framing (verbatim)
 
 > *"i bet it maps to and this dude could beat both of us at ti Caenorhabditis elegans"*
-> *"file as B-0925 (shadow*) mirror it too"*
+> *"file as 081KSNY2Z0008QG0R00390T4DJ (shadow*) mirror it too"*
 > *"damn we gonna emulate a worm playing atari games thats fucking next level"*
 
 ## What ships
 
-1. **Backlog row** B-0925 (composes with B-0924 + B-0917 + B-0865 + B-0761 + B-0202 + B-0703)
+1. **Backlog row** 081KSNY2Z0008QG0R00390T4DJ (composes with 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R002HB4AGT + 081KSKBP80008QG0R003NM9XEC + 081KSE6WT0008QG0R0015ZF2G6 + 081KQTPYE0008QG0R002Y7X5KH + 081KS3X9Y0008QG0R00218150M)
 2. **Mirror-tier research note** `docs/research/2026-05-28-c-elegans-substrate-rhyme-...md` per "mirror it too" directive (substrate-rhyme observation + OpenWorm prior-art inventory + substrate-comparison axes + composition pipeline)
 3. **BACKLOG.md** regen
 
 ## Composes-with
 
-- **B-0924** (parent: custom 2600 emulator)
-- **B-0917** (Kleisli interrupt substrate; worm spike-events map to IntrCtx)
-- **B-0865, B-0761** (ARC-AGI-3 benchmark + cluster substrate)
-- **B-0202** (tinygrad-uop-ir kernel layer emulator dispatch)
-- **B-0703** (multi-oracle BFT consensus)
+- **081KSNY2Z0008QG0R001HA43GG** (parent: custom 2600 emulator)
+- **081KSNY2Z0008QG0R002HB4AGT** (Kleisli interrupt substrate; worm spike-events map to IntrCtx)
+- **081KSKBP80008QG0R003NM9XEC, 081KSE6WT0008QG0R0015ZF2G6** (ARC-AGI-3 benchmark + cluster substrate)
+- **081KQTPYE0008QG0R002Y7X5KH** (tinygrad-uop-ir kernel layer emulator dispatch)
+- **081KS3X9Y0008QG0R00218150M** (multi-oracle BFT consensus)
 - **OpenWorm** (canonical c302 + Sibernetic + connectome data)
 - **Framework rules**: DST-omniscience (PR #5841), pilot-wave-MWI (PR #5842), particle-as-locus (PR #5846), asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + algebra-owner z-sets skill
 

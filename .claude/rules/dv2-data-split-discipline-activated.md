@@ -64,4 +64,4 @@ this discipline's load-bearing guards.
 - `docs/research/2026-06-10-the-end-goal-dual-use-hard-soft-self-modeling-database-dynamicvalue-stored-procs-entropy-quarantine-over-reticulum.md` — noninterference origin (entropy quarantine; the end-goal doc) + the formalization route (Soraya/Sova)
 - [`async-all-the-way-truthful-signatures.md`](async-all-the-way-truthful-signatures.md) — noninterference's load-bearing guards (no ambient entropy paths)
 - DST deeper treatment (archived): `.claude/rules.bak/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`
-- Repo-split substrate: B-0424 · B-0425 · B-0426 · B-0427 (ruleset-divergence smell = DV2.0 on repo topology)
+- Repo-split substrate: 081KRFA460008QG0R001H98EXJ · 081KRFA460008QG0R003JQ46J4 · 081KRFA460008QG0R0007RWSN1 · 081KRFA460008QG0R000VKJF0H (ruleset-divergence smell = DV2.0 on repo topology)

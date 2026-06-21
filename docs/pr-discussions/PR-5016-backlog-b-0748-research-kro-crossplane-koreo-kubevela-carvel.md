@@ -1,6 +1,6 @@
 ---
 pr_number: 5016
-title: "backlog(B-0748)+research: kro+Crossplane+Koreo+KubeVela+Carvel+ACK/KCC/ASO+Radius+Terraform-Controller+Pulumi-K8s-Operator spectrum evaluation + verbatim research preservation (Aaron 2026-05-25)"
+title: "backlog(081KSE6WT0008QG0R002E6P098)+research: kro+Crossplane+Koreo+KubeVela+Carvel+ACK/KCC/ASO+Radius+Terraform-Controller+Pulumi-K8s-Operator spectrum evaluation + verbatim research preservation (Aaron 2026-05-25)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T22:37:43Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-25T22:41:47Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5016: backlog(B-0748)+research: kro+Crossplane+Koreo+KubeVela+Carvel+ACK/KCC/ASO+Radius+Terraform-Controller+Pulumi-K8s-Operator spectrum evaluation + verbatim research preservation (Aaron 2026-05-25)
+# PR #5016: backlog(081KSE6WT0008QG0R002E6P098)+research: kro+Crossplane+Koreo+KubeVela+Carvel+ACK/KCC/ASO+Radius+Terraform-Controller+Pulumi-K8s-Operator spectrum evaluation + verbatim research preservation (Aaron 2026-05-25)
 
 ## PR description
 
@@ -24,10 +24,10 @@ Aaron 2026-05-25, two forwarded research dumps + extension:
 ## Three verbatim research docs preserved
 
 - **`docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md`** — primary spectrum (low-level → middleware → kro → Crossplane)
-- **`docs/research/2026-05-25-fido2-webauthn-passkeys-oauth-oidc-biometric-bridge-aaron-forwarded.md`** — re-emphasized biometric/OIDC bridge (seeds B-0744)
+- **`docs/research/2026-05-25-fido2-webauthn-passkeys-oauth-oidc-biometric-bridge-aaron-forwarded.md`** — re-emphasized biometric/OIDC bridge (seeds 081KSE6WT0008QG0R000SH6E0R)
 - **`docs/research/2026-05-25-radius-terraform-pulumi-controllers-crossplane-alternatives-aaron-forwarded.md`** — Aaron's extension dump with Crossplane competitors
 
-## B-0748 row
+## 081KSE6WT0008QG0R002E6P098 row
 
 8 scope items for the spectrum evaluation:
 
@@ -42,15 +42,15 @@ Aaron 2026-05-25, two forwarded research dumps + extension:
 
 ## Composes with
 
-- B-0747 (machine substrate scope; sibling at different layer)
-- B-0742 (reference k8s stack; directly affected by spectrum choices)
-- B-0741 (cross-fork ontology negotiation; uses whatever composition layer)
-- B-0727 (4-tier cluster topology; cloud tier composes with cloud-provider operators)
-- B-0744 (biometric/OIDC bridge — informed by the FIDO2/WebAuthn research preserved here)
+- 081KSE6WT0008QG0R003D199HE (machine substrate scope; sibling at different layer)
+- 081KSE6WT0008QG0R000YYH3DY (reference k8s stack; directly affected by spectrum choices)
+- 081KSE6WT0008QG0R002CC6314 (cross-fork ontology negotiation; uses whatever composition layer)
+- 081KSE6WT0008QG0R0006HKTXJ (4-tier cluster topology; cloud tier composes with cloud-provider operators)
+- 081KSE6WT0008QG0R000SH6E0R (biometric/OIDC bridge — informed by the FIDO2/WebAuthn research preserved here)
 
 ## Aaron's "composes with machine outside k8s and other things gitops like" signal
 
-The spectrum thinking extends BEYOND k8s. B-0749 (queued follow-up) carves the "GitOps-beyond-k8s + spectrum thinking generalization" scope.
+The spectrum thinking extends BEYOND k8s. 081KSE6WT0008QG0R001RG4FXD (queued follow-up) carves the "GitOps-beyond-k8s + spectrum thinking generalization" scope.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -87,13 +87,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T22:39:52Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align B-0748 scope numbers with backlog row**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align 081KSE6WT0008QG0R002E6P098 scope numbers with backlog row**
 
-These notes label Radius as **Scope item 7** and Terraform/Pulumi as **Scope item 8**, but `B-0748` defines them as scope items **6** and **7** respectively. That mismatch causes durable cross-reference drift between `docs/research` and the canonical backlog row, so follow-up work can be tracked against the wrong acceptance criteria and appear incomplete even when implemented.
+These notes label Radius as **Scope item 7** and Terraform/Pulumi as **Scope item 8**, but `081KSE6WT0008QG0R002E6P098` defines them as scope items **6** and **7** respectively. That mismatch causes durable cross-reference drift between `docs/research` and the canonical backlog row, so follow-up work can be tracked against the wrong acceptance criteria and appear incomplete even when implemented.
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/backlog/P2/B-0748-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-evaluation-for-zeta-reference-stack-machine-state-fork-state-aaron-2026-05-25.md:219 (unresolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R002E6P098-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-evaluation-for-zeta-reference-stack-machine-state-fork-state-aaron-2026-05-25.md:219 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-25T22:39:52Z):
 

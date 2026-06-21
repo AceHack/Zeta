@@ -119,7 +119,7 @@ feat(workflow-engine): PrReviewLifecycle PoC — producing-side review …
 
 …work substrate (Aaron 'does it give you time to look at prs and put comments'); 18 tests pass (#5810)
 
-* feat(workflow-engine): PrReviewLifecycle PoC — producing-side review work substrate companion to B-0867.20 ReviewLifetime (Aaron 2026-05-28 'does it give you time to look at prs and put comments'); 18 tests pass
+* feat(workflow-engine): PrReviewLifecycle PoC — producing-side review work substrate companion to 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (Aaron 2026-05-28 'does it give you time to look at prs and put comments'); 18 tests pass
 
 Per Aaron 2026-05-28 substrate-engineering substrate-engineering gap-
 recognition: AutoLoopLifetime (PR #5805) only models SHIP work, not
@@ -162,7 +162,7 @@ Tests (18; all pass):
 - Type-level exhaustive
 
 Composes with:
-- B-0867.20 ReviewLifetime (PR #5758; receiving-side; sibling)
+- 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (PR #5758; receiving-side; sibling)
 - AutoLoopLifetime (PR #5805; will integrate when both merge)
 - .claude/rules/fighting-past-self-vs-peer-agent-distinguisher (don't-touch + review-allowed)
 - .claude/rules/asymmetric-authorship (reviewer AUTHORS feedback)

@@ -38,13 +38,13 @@ The substrate-honest synthesis: BOTH framings hold.
 - Kestrel correct that the substrate is spec, not running code
 - Aaron correct that the 7 turns were iterative pressure-test refinement (concept-refinement at design layer IS substantive engineering per the genie-bottle / spec-quality framing)
 - Each turn's design DID hold under Kestrel's adversarial review (evidence of soundness, not vapor)
-- B-0547 tracks the multi-year implementation for when the spec is clean
+- 081KRMEXM0008QG0R001VGNET5 tracks the multi-year implementation for when the spec is clean
 
 ## Corrected tier label
 
 NOT "coherent design, capture-resistance entirely unproven" (Kestrel's framing).
 
-YES "coherent design, pressure-tested by iterative adversarial review, implementation tracked at B-0547 as XL multi-year, capture-resistance unproven at the running-code layer but tested for contradictions at the design layer."
+YES "coherent design, pressure-tested by iterative adversarial review, implementation tracked at 081KRMEXM0008QG0R001VGNET5 as XL multi-year, capture-resistance unproven at the running-code layer but tested for contradictions at the design layer."
 
 ## Architecture-stairs pattern documented as context-dependent
 

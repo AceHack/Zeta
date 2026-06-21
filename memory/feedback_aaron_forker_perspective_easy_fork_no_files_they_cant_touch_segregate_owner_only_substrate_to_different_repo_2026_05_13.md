@@ -1,6 +1,6 @@
 ---
 name: aaron-forker-perspective-easy-fork-no-files-they-cant-touch-segregate-owner-only-substrate-to-different-repo-2026-05-13
-description: Aaron 2026-05-13 design discipline — when splitting repos, think from the FORKER's perspective. Fork should be EASY. Don't put files in the repo that the forker can't touch (owner-only substrate, Aaron's first-party authority surface, credentials, sensitive decisions). Put owner-only stuff in a DIFFERENT repo. Composes with B-0424 + B-0425 + honor-system license framing.
+description: Aaron 2026-05-13 design discipline — when splitting repos, think from the FORKER's perspective. Fork should be EASY. Don't put files in the repo that the forker can't touch (owner-only substrate, Aaron's first-party authority surface, credentials, sensitive decisions). Put owner-only stuff in a DIFFERENT repo. Composes with 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license framing.
 metadata:
   type: feedback
 ---
@@ -14,8 +14,8 @@ context)"*. Forker UX comes first. Anything in a forkable repo
 must be touchable by the forker; non-touchable substrate goes
 in a separate repo.
 
-**How to apply:** When designing repo splits (per B-0424 +
-B-0425), audit every file from the forker's perspective:
+**How to apply:** When designing repo splits (per 081KRFA460008QG0R001H98EXJ +
+081KRFA460008QG0R003JQ46J4), audit every file from the forker's perspective:
 1. Can the forker touch this file?
 2. If NO → it goes in a different repo
 3. If YES → it stays in the forkable repo
@@ -64,12 +64,12 @@ forker's perspective, don't put any files they can't touch."
 
 ## Compositional consequences for the repo-split design
 
-This discipline refines B-0424 + B-0425:
+This discipline refines 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4:
 
 | Repo type | What's in it | What's NOT in it |
 |---|---|---|
 | **Factory** (Forge / ace / Zeta — designed-to-be-forked) | Everything forker can touch: framework code, governance docs, factory tooling, public substrate | Anything owner-only |
-| **Product repos** (per B-0425 — honor-system license) | Strategic-product substrate, public + glass-halo, asking "no fork please" | Anything owner-only |
+| **Product repos** (per 081KRFA460008QG0R003JQ46J4 — honor-system license) | Strategic-product substrate, public + glass-halo, asking "no fork please" | Anything owner-only |
 | **Owner-only repo** (NEW — not yet specified) | Aaron's first-party authority surface, credentials, sensitive coordination, pre-disclosure substrate | None of the forkable substrate |
 
 ## A potential third repo category emerges
@@ -105,19 +105,19 @@ identify:
    needed; may include sensitive memory files, owner-only
    first-party authority substrate, multi-clearance work
 2. **What gets migrated to owner-only repo before Stage 1 of
-   B-0424?** — likely small; Aaron has been substrate-honest +
+   081KRFA460008QG0R001H98EXJ?** — likely small; Aaron has been substrate-honest +
    glass-halo discipline-applying which means MOST substrate IS
    forker-touchable
-3. **What gets migrated to product-repos per B-0425?** —
+3. **What gets migrated to product-repos per 081KRFA460008QG0R003JQ46J4?** —
    strategic-product substrate that's public but honor-system
 4. **What stays in factory repos?** — framework + tooling +
    governance + public substrate that benefits from forking
 
 ## Composes with
 
-- B-0424 — three-repo split Stage 1 (factory): now requires
+- 081KRFA460008QG0R001H98EXJ — three-repo split Stage 1 (factory): now requires
   the forker-perspective audit before creating Forge / ace
-- B-0425 — product-repo split planning: composes; the honor-
+- 081KRFA460008QG0R003JQ46J4 — product-repo split planning: composes; the honor-
   system license applies to product repos; owner-only repo is
   a separate concept
 - `memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md`
@@ -141,7 +141,7 @@ When auditing repos for the split:
 3. **If NO → mark for migration** to a non-forked repo
    (owner-only repo or product repo with honor-system license)
 4. **If YES → keeps it in the forkable repo**
-5. **Document the migration** in B-0424's prep checklist
+5. **Document the migration** in 081KRFA460008QG0R001H98EXJ's prep checklist
 6. **Update the ADR** with the third-category recognition
 
 ## Strategic encryption (PR #2902) composes here
@@ -201,7 +201,7 @@ discipline can apply it when:
 
 This memory file landing in this PR.
 
-PR #2904 (B-0424 + B-0425 + honor-system license substrate;
+PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license substrate;
 landed this round)
 
 PR #2903 (civsim forkable design + mutual privacy)

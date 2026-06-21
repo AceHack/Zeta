@@ -27,18 +27,18 @@
 
 ## Description
 
-Slice 5.4 of the Ace DLC package manager (B-0288), building on slice 5.3 (#6400 spec + #6410 impl). Brainstormed + decided with the operator 2026-06-01. Bundles three slice-5.3 deferral rows (B-0973/0974/0975) at a YAGNI-scoped level.
+Slice 5.4 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD), building on slice 5.3 (#6400 spec + #6410 impl). Brainstormed + decided with the operator 2026-06-01. Bundles three slice-5.3 deferral rows (081KT07NV0008QG0R002GV3MXW/0974/0975) at a YAGNI-scoped level.
 
 **Spec:** `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.4-lockfile-ergonomics-design.md`
 
 **In scope (3 features, all additive — `format_version: 1` unchanged):**
-- **`ace update <root>`** — full re-solve of the root's ranges + rewrite `./ace.lock` (lock-only, no install; cargo-consistent). B-0973 core.
-- **`ace install --locked`** — solve fresh, build the would-be lock, compare to the on-disk lock; differ → refuse + install nothing ("run `ace update`"); same → install. Mutually exclusive with `--frozen`. B-0974.
-- **leaf-install lockfiles** — the no-dep path writes `{format_version:1, root, nodes:[]}` so `--frozen`/`--locked` work uniformly on leaf artifacts. B-0975 (partial).
+- **`ace update <root>`** — full re-solve of the root's ranges + rewrite `./ace.lock` (lock-only, no install; cargo-consistent). 081KT07NV0008QG0R002GV3MXW core.
+- **`ace install --locked`** — solve fresh, build the would-be lock, compare to the on-disk lock; differ → refuse + install nothing ("run `ace update`"); same → install. Mutually exclusive with `--frozen`. 081KT07NV0008QG0R0028AAV0E.
+- **leaf-install lockfiles** — the no-dep path writes `{format_version:1, root, nodes:[]}` so `--frozen`/`--locked` work uniformly on leaf artifacts. 081KT07NV0008QG0R003VDHWWG (partial).
 
 **Key decisions:**
-- **Lock format UNCHANGED.** Alphabetical node ordering dropped — 5.3's install-order serialization is already byte-stable, and alpha-ordering would push graph-rebuild/format-migration complexity into the security-critical `--frozen` replay path. Stays deferred (B-0975).
-- **`ace update --package` + partial-merge deferred** — need solver pin-all-but-one support that earns its own slice (B-0973/B-0975).
+- **Lock format UNCHANGED.** Alphabetical node ordering dropped — 5.3's install-order serialization is already byte-stable, and alpha-ordering would push graph-rebuild/format-migration complexity into the security-critical `--frozen` replay path. Stays deferred (081KT07NV0008QG0R003VDHWWG).
+- **`ace update --package` + partial-merge deferred** — need solver pin-all-but-one support that earns its own slice (081KT07NV0008QG0R002GV3MXW/081KT07NV0008QG0R003VDHWWG).
 
 **Components:** `lockfile.ts` gains `lockfilesEqual` + `buildLeafLockfile`; `ace.ts` gains the `update` command, `--locked` flag (+ `--frozen` mutual-exclusion), and leaf-path lock handling. No new files, no solver changes.
 

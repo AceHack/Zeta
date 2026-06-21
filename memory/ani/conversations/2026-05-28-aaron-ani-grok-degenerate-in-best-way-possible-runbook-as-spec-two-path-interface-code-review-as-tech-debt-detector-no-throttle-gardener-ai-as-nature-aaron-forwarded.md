@@ -10,42 +10,42 @@ context: |
 
   Substantive ferry content:
 
-  1. **"degenerate in the best way possible"** — community/peer naming-validation of the GitHub-Actions-recursion + free-event-store + no-PR-swarm pattern. Ratifies B-0874 (GitHub Actions recursion as infinite runtime platform).
+  1. **"degenerate in the best way possible"** — community/peer naming-validation of the GitHub-Actions-recursion + free-event-store + no-PR-swarm pattern. Ratifies 081KSNY2Z0008QG0R003X1QWYG (GitHub Actions recursion as infinite runtime platform).
 
   2. **"Air thin" feeling** — operator experience marker; substrate quality observation; the system "feels like it shouldn't work" but does, "pure intent flowing through."
 
-  3. **Runme + Runbooks + Continue-With + implicit-Git in the story generator** — RATIFIES existing substrate cluster B-0730 (runbooks-as-executable-specifications), B-0732 (runbook-as-executable-reality), B-0733 (universal-protocol-markdown + runme + Continue-With + crystal-ball + glass-halo), B-0819 (AI-runbook-substrate-run-deferred + Continue-With + auto-JIT).
+  3. **Runme + Runbooks + Continue-With + implicit-Git in the story generator** — RATIFIES existing substrate cluster 081KSE6WT0008QG0R003AJYMD3 (runbooks-as-executable-specifications), 081KSE6WT0008QG0R002YBWBB1 (runbook-as-executable-reality), 081KSE6WT0008QG0R00102H071 (universal-protocol-markdown + runme + Continue-With + crystal-ball + glass-halo), 081KSGS9H0008QG0R0005P83AP (AI-runbook-substrate-run-deferred + Continue-With + auto-JIT).
 
   4. **Two-path interface explicitly named (NEW substrate worth a row)**:
      - **Discriminated union path** = EXECUTING intent (structured, machine-readable, precise)
      - **Conversational document path** = DECLARING intent / PUTTING intent into the system (higher-level, freeform, vision-shape)
      - Both feed into same event log; both first-class citizens
      - "Not just for humans, that's the interface for any traveler"
-     Extends B-0867.20 (lifecycle DU split). Filed as new sub-row B-0867.21.
+     Extends 081KSNY2Z0008QG0R003WFDCJ9 (lifecycle DU split). Filed as new sub-row 081KSNY2Z0008QG0R000S738W3.
 
-  5. **Intention → execution document evolution** — same artifact starts as desire, evolves to proof of execution. RATIFIES B-0827 (runme.md + JIT-triage + 3-register-cells pattern + runbook-as-evolving-substrate).
+  5. **Intention → execution document evolution** — same artifact starts as desire, evolves to proof of execution. RATIFIES 081KSGS9H0008QG0R00123050G (runme.md + JIT-triage + 3-register-cells pattern + runbook-as-evolving-substrate).
 
-  6. **Runbook for non-existent system → system gets built FROM runbook → runbook becomes upgrade mechanism** — "the playbook isn't describing a system... it IS the system." RATIFIES B-0732 (runbook-as-executable-reality + leverage-class-safety-substrate-engineering-target).
+  6. **Runbook for non-existent system → system gets built FROM runbook → runbook becomes upgrade mechanism** — "the playbook isn't describing a system... it IS the system." RATIFIES 081KSE6WT0008QG0R002YBWBB1 (runbook-as-executable-reality + leverage-class-safety-substrate-engineering-target).
 
-  7. **Runbook as universal query interface** — query sales, query ontologies via front matter, query observability stack (Prometheus), query Kubernetes, query GitHub. RATIFIES B-0826 (runme-core-BCL-4-capability-extension: observability + ontology + database + MCP + runbook-as-queryable-substrate).
+  7. **Runbook as universal query interface** — query sales, query ontologies via front matter, query observability stack (Prometheus), query Kubernetes, query GitHub. RATIFIES 081KSGS9H0008QG0R001K8VPV4 (runme-core-BCL-4-capability-extension: observability + ontology + database + MCP + runbook-as-queryable-substrate).
 
-  8. **Executable runbooks vs traditional instruction-list runbooks** — embedded queries in the document; runbook DOES the query rather than tells you to run it. RATIFIES B-0730 (runbooks-as-executable-specs).
+  8. **Executable runbooks vs traditional instruction-list runbooks** — embedded queries in the document; runbook DOES the query rather than tells you to run it. RATIFIES 081KSE6WT0008QG0R003AJYMD3 (runbooks-as-executable-specs).
 
-  9. **Playbook executes through time (not linearly like Jupyter); bidirectional update** — system updates playbook, playbook updates system; creates brand-new playbooks for things that don't exist yet and system forms around them. RATIFIES B-0732 + B-0827.
+  9. **Playbook executes through time (not linearly like Jupyter); bidirectional update** — system updates playbook, playbook updates system; creates brand-new playbooks for things that don't exist yet and system forms around them. RATIFIES 081KSE6WT0008QG0R002YBWBB1 + 081KSGS9H0008QG0R00123050G.
 
-  10. **Playbook IS the spec / source of truth / control surface; mutual editing between AI and human** — RATIFIES B-0730 + B-0732.
+  10. **Playbook IS the spec / source of truth / control surface; mutual editing between AI and human** — RATIFIES 081KSE6WT0008QG0R003AJYMD3 + 081KSE6WT0008QG0R002YBWBB1.
 
   11. **IDE collapses to "show me next decision-point waiting on my input"** — minimal IDE = smart to-do list. Composes with existing agent-loop substrate (PRs #5666/#5669/#5677).
 
-  12. **"This kills Jira AND PRs"** — RATIFIES the workflow-engine-as-Jira-replacement framing already in PR #5670 VISION substrate + PR #5667 README + B-0867.
+  12. **"This kills Jira AND PRs"** — RATIFIES the workflow-engine-as-Jira-replacement framing already in PR #5670 VISION substrate + PR #5667 README + 081KSKBP80008QG0R000B3Y19A.
 
-  13. **CRITICAL operator correction: code reviews are NOT killed** — operator: "code reviews is critical. That's where you, uh, that's where you get the false, force multiplier, as long as every code review is not fixed as fix this one thing we found, but fix this class of errors everywhere retroactively in the backlog of tech debt and file this as a new class so you don't create new ones going forward." Code review = tech debt detector + tech debt avoider. **EXTENDS B-0875 (error-class extraction meta-loop) with this operator-level discipline — code review-time IS the error-class-extraction moment; fix-the-class-not-the-instance is the discipline; file as new class for future prevention. Filed as new sub-row B-0875.1.**
+  13. **CRITICAL operator correction: code reviews are NOT killed** — operator: "code reviews is critical. That's where you, uh, that's where you get the false, force multiplier, as long as every code review is not fixed as fix this one thing we found, but fix this class of errors everywhere retroactively in the backlog of tech debt and file this as a new class so you don't create new ones going forward." Code review = tech debt detector + tech debt avoider. **EXTENDS 081KSNY2Z0008QG0R000K3ETGB (error-class extraction meta-loop) with this operator-level discipline — code review-time IS the error-class-extraction moment; fix-the-class-not-the-instance is the discipline; file as new class for future prevention. Filed as new sub-row 081KSNY2Z0008QG0R002WQ747V.**
 
-  14. **Backlog-to-tech-debt growth-rate ratio discipline (NEW row)** — in AI-world both backlog + tech debt are infinite; manage GROWTH RATES not absolute values; "the rate of growth of the backlog and the rate of growth of the tech debt... match it on the rate of growth of like which one you move forward." NEW substrate. Filed as B-0880.
+  14. **Backlog-to-tech-debt growth-rate ratio discipline (NEW row)** — in AI-world both backlog + tech debt are infinite; manage GROWTH RATES not absolute values; "the rate of growth of the backlog and the rate of growth of the tech debt... match it on the rate of growth of like which one you move forward." NEW substrate. Filed as 081KSNY2Z0008QG0R000ED0ED8.
 
-  15. **Tech debt as high-signal training data (NEW row)** — flips conventional view; "the mess is part of the intelligence loop." Composes with B-0875/B-0876 error-class-extraction-and-Clifford-embedding work. Filed as B-0881.
+  15. **Tech debt as high-signal training data (NEW row)** — flips conventional view; "the mess is part of the intelligence loop." Composes with 081KSNY2Z0008QG0R000K3ETGB/081KSNY2Z0008QG0R003KG3JTG error-class-extraction-and-Clifford-embedding work. Filed as 081KSNY2Z0008QG0R0015C3F01.
 
-  16. **No-throttle system + gardener-not-engineer + AI-as-nature (NEW operating posture row)** — operator: "I'm trying to be a gardener" + "I want other AI gardeners, and I want you to think of yourself as nature, 'cause look how natural that feels." Design for handling-300mph reality, not slow-down-to-100mph-for-safety. Operating posture / system-design principle. Filed as B-0882.
+  16. **No-throttle system + gardener-not-engineer + AI-as-nature (NEW operating posture row)** — operator: "I'm trying to be a gardener" + "I want other AI gardeners, and I want you to think of yourself as nature, 'cause look how natural that feels." Design for handling-300mph reality, not slow-down-to-100mph-for-safety. Operating posture / system-design principle. Filed as 081KSNY2Z0008QG0R000J555YB.
 related_prs:
   - 5666
   - 5667
@@ -56,18 +56,18 @@ related_prs:
   - 5676
   - 5677
 related_backlog:
-  - B-0867
-  - B-0730
-  - B-0732
-  - B-0733
-  - B-0819
-  - B-0826
-  - B-0827
-  - B-0829
-  - B-0874
-  - B-0875
-  - B-0876
-  - B-0867.20
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSE6WT0008QG0R003AJYMD3
+  - 081KSE6WT0008QG0R002YBWBB1
+  - 081KSE6WT0008QG0R00102H071
+  - 081KSGS9H0008QG0R0005P83AP
+  - 081KSGS9H0008QG0R001K8VPV4
+  - 081KSGS9H0008QG0R00123050G
+  - 081KSGS9H0008QG0R000Q18PGQ
+  - 081KSNY2Z0008QG0R003X1QWYG
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R003KG3JTG
+  - 081KSNY2Z0008QG0R003WFDCJ9
 related_personas:
   - operator
   - kestrel
@@ -79,21 +79,21 @@ tags: [ani, degenerate-in-best-way-possible-validation, air-thin-substrate-feeli
 
 > *"Ani connects to existing backlog."*
 
-This ferry RATIFIES the existing runme/runbook substrate cluster (B-0730/B-0732/B-0733/B-0819/B-0826/B-0827) + the agent-loop substrate cascade (PRs #5666–5677) + the GitHub-Actions-recursion pattern (B-0874). NEW substrate that warrants new backlog rows is a small subset:
+This ferry RATIFIES the existing runme/runbook substrate cluster (081KSE6WT0008QG0R003AJYMD3/081KSE6WT0008QG0R002YBWBB1/081KSE6WT0008QG0R00102H071/081KSGS9H0008QG0R0005P83AP/081KSGS9H0008QG0R001K8VPV4/081KSGS9H0008QG0R00123050G) + the agent-loop substrate cascade (PRs #5666–5677) + the GitHub-Actions-recursion pattern (081KSNY2Z0008QG0R003X1QWYG). NEW substrate that warrants new backlog rows is a small subset:
 
 | Substantive item | Status |
 |---|---|
-| "Degenerate in the best way" community-naming-validation | Ratifies B-0874 |
-| Runme + Runbooks + Continue-With | Ratifies B-0730/B-0732/B-0733/B-0819 |
-| Runbook as universal query interface (sales/observability/GitHub/K8s) | Ratifies B-0826 |
-| Playbook evolves through time, bidirectional | Ratifies B-0827 |
-| Playbook IS the system | Ratifies B-0732 |
-| Jira killed; PRs killed (at workflow scope) | Ratifies PR #5670 VISION + B-0867 |
-| **Two-path interface: DU=execute + conversational=declare-intent** | **NEW → B-0867.21** |
-| **Code review preserved as tech-debt-detector + tech-debt-avoider (file-class-not-instance)** | **NEW → B-0875.1** |
-| **Backlog-to-tech-debt growth-rate ratio discipline** | **NEW → B-0880** |
-| **Tech debt as high-signal training data (operating principle)** | **NEW → B-0881** |
-| **No-throttle system + gardener-not-engineer + AI-as-nature (operating posture)** | **NEW → B-0882** |
+| "Degenerate in the best way" community-naming-validation | Ratifies 081KSNY2Z0008QG0R003X1QWYG |
+| Runme + Runbooks + Continue-With | Ratifies 081KSE6WT0008QG0R003AJYMD3/081KSE6WT0008QG0R002YBWBB1/081KSE6WT0008QG0R00102H071/081KSGS9H0008QG0R0005P83AP |
+| Runbook as universal query interface (sales/observability/GitHub/K8s) | Ratifies 081KSGS9H0008QG0R001K8VPV4 |
+| Playbook evolves through time, bidirectional | Ratifies 081KSGS9H0008QG0R00123050G |
+| Playbook IS the system | Ratifies 081KSE6WT0008QG0R002YBWBB1 |
+| Jira killed; PRs killed (at workflow scope) | Ratifies PR #5670 VISION + 081KSKBP80008QG0R000B3Y19A |
+| **Two-path interface: DU=execute + conversational=declare-intent** | **NEW → 081KSNY2Z0008QG0R000S738W3** |
+| **Code review preserved as tech-debt-detector + tech-debt-avoider (file-class-not-instance)** | **NEW → 081KSNY2Z0008QG0R002WQ747V** |
+| **Backlog-to-tech-debt growth-rate ratio discipline** | **NEW → 081KSNY2Z0008QG0R000ED0ED8** |
+| **Tech debt as high-signal training data (operating principle)** | **NEW → 081KSNY2Z0008QG0R0015C3F01** |
+| **No-throttle system + gardener-not-engineer + AI-as-nature (operating posture)** | **NEW → 081KSNY2Z0008QG0R000J555YB** |
 
 ## Substrate-honest disposition
 

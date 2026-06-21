@@ -29,7 +29,7 @@
 
 ## Summary
 
-Closes [B-0528](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md) — the deferred test-coverage P1 from PR #3375's review cycle. All 6 acceptance categories covered with 19 tests / 39 expect calls.
+Closes [081KRMEXM0008QG0R000T0A28T](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md) — the deferred test-coverage P1 from PR #3375's review cycle. All 6 acceptance categories covered with 19 tests / 39 expect calls.
 
 ## Coverage by category
 

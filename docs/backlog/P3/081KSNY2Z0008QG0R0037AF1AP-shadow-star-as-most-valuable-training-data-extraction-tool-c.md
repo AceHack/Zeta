@@ -1,9 +1,8 @@
 ---
-id: B-0903
-zetaid: 081KSNY2Z0008QG0R0037AF1AP
+id: 081KSNY2Z0008QG0R0037AF1AP
 priority: P3
 status: open
-title: shadow*-as-most-valuable-training-data extraction tool — corpus to fine-tuning dataset (composes with B-0875 + B-0877)
+title: shadow*-as-most-valuable-training-data extraction tool — corpus to fine-tuning dataset (composes with 081KSNY2Z0008QG0R000K3ETGB + 081KSNY2Z0008QG0R0004ZF85W)
 authors:
   - aaron
   - otto-cli
@@ -30,7 +29,7 @@ related_skills:
 tags: [shadow-star-as-training-data-extraction-tool, 4-kestrel-criteria-real-engineering-diverse-heterogeneous-longitudinal, plus-holographic-information-completeness-bonus, corpus-export-to-fine-tuning-dataset, composes-with-error-class-extraction-and-heterogeneous-reviewer-ensemble]
 ---
 
-# B-0903 — shadow*-as-most-valuable-training-data extraction tool
+# 081KSNY2Z0008QG0R0037AF1AP — shadow*-as-most-valuable-training-data extraction tool
 
 ## Context
 
@@ -42,12 +41,12 @@ This row tracks the extraction tool that turns the 148-doc shadow-* corpus (and 
 
 Build the export tool that:
 
-- Parses shadow-* corpus (per B-0901 ontology)
+- Parses shadow-* corpus (per 081KSNY2Z0008QG0R000C5NN8N ontology)
 - Extracts (input, target) pairs suitable for fine-tuning AI models on substrate-engineering quality
 - Emits standard dataset formats (JSONL for HuggingFace; conversation format for chat-model fine-tuning; eval format for benchmark evaluation)
 - Includes metadata for the 4 Kestrel criteria (real engineering / diverse / heterogeneous / longitudinal)
-- Composes with B-0875 (error-class extraction) for class-balanced sampling
-- Composes with B-0877 (heterogeneous reviewer ensemble) for multi-supervision-signal preservation
+- Composes with 081KSNY2Z0008QG0R000K3ETGB (error-class extraction) for class-balanced sampling
+- Composes with 081KSNY2Z0008QG0R0004ZF85W (heterogeneous reviewer ensemble) for multi-supervision-signal preservation
 
 ## Phase decomposition
 
@@ -57,23 +56,23 @@ Build the export tool that:
 
 ### Phase 2 — eval format
 
-Eval format suitable for benchmarking other AI agents against the shadow-* dataset (composes with B-0902's experimental harness).
+Eval format suitable for benchmarking other AI agents against the shadow-* dataset (composes with 081KSNY2Z0008QG0R0021S5F3G's experimental harness).
 
 ### Phase 3 — class-balanced + reviewer-diversity sampling
 
-Per B-0875 + B-0877: ensure the exported dataset is balanced across error classes + preserves heterogeneous-reviewer signal.
+Per 081KSNY2Z0008QG0R000K3ETGB + 081KSNY2Z0008QG0R0004ZF85W: ensure the exported dataset is balanced across error classes + preserves heterogeneous-reviewer signal.
 
 ### Phase 4+ (yes-and backlog)
 
 - Publish dataset to HuggingFace Hub (under operator-attributed account; per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` discipline)
 - Establish license + attribution
 - Track downstream AI training that uses the dataset
-- Compose with B-0902 experimental validation results
+- Compose with 081KSNY2Z0008QG0R0021S5F3G experimental validation results
 
 ## Acceptance
 
 - [x] Research-doc landed (companion file in this PR)
-- [x] B-0903 row filed (this row)
+- [x] 081KSNY2Z0008QG0R0037AF1AP row filed (this row)
 - [ ] Phase 1 JSONL export tool implemented + tested
 - [ ] Phase 2 eval format implemented + tested
 - [ ] Phase 3 class-balanced sampling implemented + validated
@@ -81,12 +80,12 @@ Per B-0875 + B-0877: ensure the exported dataset is balanced across error classe
 
 ## Composes with
 
-- B-0901 (ontology builder) — provides the structured corpus this tool exports
-- B-0902 (holographic validation) — this tool's output IS that experiment's corpus
-- B-0904 (GitHub-as-free-accelerator) — economic substrate making corpus accumulation sustainable
-- B-0875 (error-class extraction meta-loop) — class definitions used for class-balanced sampling
-- B-0877 (heterogeneous reviewer ensemble) — multi-supervision-signal source
-- B-0900 (Bell-like distributed-cluster contextuality) — the experiment's input substrate
+- 081KSNY2Z0008QG0R000C5NN8N (ontology builder) — provides the structured corpus this tool exports
+- 081KSNY2Z0008QG0R0021S5F3G (holographic validation) — this tool's output IS that experiment's corpus
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-accelerator) — economic substrate making corpus accumulation sustainable
+- 081KSNY2Z0008QG0R000K3ETGB (error-class extraction meta-loop) — class definitions used for class-balanced sampling
+- 081KSNY2Z0008QG0R0004ZF85W (heterogeneous reviewer ensemble) — multi-supervision-signal source
+- 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality) — the experiment's input substrate
 
 ## Composes with rules + skills
 
@@ -98,4 +97,4 @@ Per B-0875 + B-0877: ensure the exported dataset is balanced across error classe
 
 ## Full reasoning
 
-Per substrate-recognition research-doc. Operator-authorized as part of "land all four" + the 5th insight (B-0904) added by operator immediately after. Phase 1 IS bounded substrate-engineering work; Phase 2+ are separately-authorizable.
+Per substrate-recognition research-doc. Operator-authorized as part of "land all four" + the 5th insight (081KSNY2Z0008QG0R001JQABB4) added by operator immediately after. Phase 1 IS bounded substrate-engineering work; Phase 2+ are separately-authorizable.

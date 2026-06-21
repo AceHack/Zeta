@@ -1,6 +1,6 @@
 ---
 name: Alignment dashboard as agent self-repair surface — background feeds, foreground repairs
-description: B-0401 dashboard isn't just for human observability. Background services (Lior, Alexa) get read access, foreground service (Otto) gets repair authority. Aaron exits the repair loop. Dashboard + bus = agents monitor and fix each other.
+description: 081KR7JY10008QG0R001VP6JWG dashboard isn't just for human observability. Background services (Lior, Alexa) get read access, foreground service (Otto) gets repair authority. Aaron exits the repair loop. Dashboard + bus = agents monitor and fix each other.
 type: project
 ---
 
@@ -14,7 +14,7 @@ of me"
 ```
 Background services (Lior, Alexa, Riven)
     ↓ write health/alignment signals
-Dashboard (B-0401)
+Dashboard (081KR7JY10008QG0R001VP6JWG)
     ↓ read by foreground service
 Foreground service (Otto)
     ↓ repair action
@@ -38,18 +38,18 @@ agents can read too.
 
 **How to apply:**
 
-- B-0401 dashboard design should include machine-readable
+- 081KR7JY10008QG0R001VP6JWG dashboard design should include machine-readable
   API, not just human-readable HTML
 - Background services need write access (health endpoint)
 - Foreground service needs read access + repair authority
-- The bus (B-0400) is the transport for health signals
+- The bus (081KR7JY10008QG0R000R503K2) is the transport for health signals
 - Dashboard is the shared state that replaces Aaron-as-relay
 
 **Connects to:**
 
-- B-0401 (demo surface — add agent-readable API to spec)
-- B-0400 (inter-agent bus — health signal transport)
+- 081KR7JY10008QG0R001VP6JWG (demo surface — add agent-readable API to spec)
+- 081KR7JY10008QG0R000R503K2 (inter-agent bus — health signal transport)
 - project_trust_migration_path (Aaron → zero trust)
-- B-0403 (weight-free — Aaron carrying repair load is weight)
+- 081KR7JY10008QG0R0021F5609 (weight-free — Aaron carrying repair load is weight)
 - feedback_shadow_tick_source_existential (agents need
   independent observability, not just human relay)

@@ -1,6 +1,6 @@
 ---
 pr_number: 2749
-title: "docs(backlog): B-0415 craft school subject dependency graph"
+title: "docs(backlog): 081KRA5AR0008QG0R002TKYRW3 craft school subject dependency graph"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-11T20:22:48Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-11T21:19:46Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #2749: docs(backlog): B-0415 craft school subject dependency graph
+# PR #2749: docs(backlog): 081KRA5AR0008QG0R002TKYRW3 craft school subject dependency graph
 
 ## PR description
 
@@ -35,10 +35,10 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0415) describing a “craft school” curriculum layer that maps human anchors to subjects and models prerequisites as a `depends_on` DAG.
+Adds a new P2 backlog row (081KRA5AR0008QG0R002TKYRW3) describing a “craft school” curriculum layer that maps human anchors to subjects and models prerequisites as a `depends_on` DAG.
 
 **Changes:**
-- Introduces backlog item B-0415 with schema-compliant YAML frontmatter.
+- Introduces backlog item 081KRA5AR0008QG0R002TKYRW3 with schema-compliant YAML frontmatter.
 - Defines the proposed “human anchors → subjects → depends_on” dependency-graph concept plus acceptance criteria.
 - Adds an example mapping and origin note for traceability.
 
@@ -69,23 +69,23 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0415-craft-school-subject-dependency-graph-human-anchors-2026-05-11.md:20 (unresolved)
+### Thread 1: docs/backlog/P2/081KRA5AR0008QG0R002TKYRW3-craft-school-subject-dependency-graph-human-anchors-2026-05-11.md:20 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-11T20:26:09Z):
 
 P1: The link target `docs/HUMAN-ANCHOR-ARRAY.md` does not exist in the repo (search only finds this reference), so this will render as a broken link. Either update the reference to the existing Craft curriculum/subjects docs (e.g. under `docs/craft/`) or add the intended `docs/HUMAN-ANCHOR-ARRAY.md` file in the same PR so the cross-reference is valid.
 
-### Thread 2: docs/backlog/P2/B-0415-craft-school-subject-dependency-graph-human-anchors-2026-05-11.md:2 (unresolved)
+### Thread 2: docs/backlog/P2/081KRA5AR0008QG0R002TKYRW3-craft-school-subject-dependency-graph-human-anchors-2026-05-11.md:2 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-11T20:26:24Z):
 
 **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Regenerate backlog index after adding new row**
 
-Adding this per-row backlog file without updating `docs/BACKLOG.md` leaves the generated index out of sync, so `B-0415` is missing from the canonical backlog listing even though the row exists. Because this repo’s backlog flow treats `docs/BACKLOG.md` as generated output, this drift can break review/triage surfaces and will be caught by the backlog index integrity workflow once parity checks run on auto-generated mode.
+Adding this per-row backlog file without updating `docs/BACKLOG.md` leaves the generated index out of sync, so `081KRA5AR0008QG0R002TKYRW3` is missing from the canonical backlog listing even though the row exists. Because this repo’s backlog flow treats `docs/BACKLOG.md` as generated output, this drift can break review/triage surfaces and will be caught by the backlog index integrity workflow once parity checks run on auto-generated mode.
 
 Useful? React with 👍 / 👎.
 
-### Thread 3: docs/backlog/P2/B-0415-craft-school-subject-dependency-graph-human-anchors-2026-05-11.md:17 (unresolved)
+### Thread 3: docs/backlog/P2/081KRA5AR0008QG0R002TKYRW3-craft-school-subject-dependency-graph-human-anchors-2026-05-11.md:17 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-11T20:26:24Z):
 

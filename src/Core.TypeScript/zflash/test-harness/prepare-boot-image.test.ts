@@ -19,7 +19,7 @@ describe("prepare-boot-image", () => {
     }
   });
 
-  test("retention restart uses B-0891 USB markers when booting from a zflash-prepared image", () => {
+  test("retention restart uses 081KSNY2Z0008QG0R0008PN7RQ USB markers when booting from a zflash-prepared image", () => {
     const planned = planQcow2SnapshotRetention({
       isoPath: "/tmp/installer.iso",
       bootImagePath: "/tmp/zflash-boot.img",

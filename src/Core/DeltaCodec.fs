@@ -70,7 +70,7 @@ type CborDeltaCodec<'K when 'K : comparison>
 /// golden-vector-locked canonical CBOR — the Log entry INHERITS the existing 4-lang
 /// byte-lock rather than inventing a new canonical encoding (it adds no new noun: an
 /// entry is just a `DynamicValue`). `Captured` keys are **ordinal-sorted**
-/// (culture-invariant; B-0969) for cross-language + DST determinism — the prior
+/// (culture-invariant; 081KT07NV0008QG0R001YDB73K) for cross-language + DST determinism — the prior
 /// `System.Text.Json` `Dictionary` encoding in `GitDeltaLog`/`DiskDeltaLog` is NOT
 /// canonical and is the gap this closes. Lossless round-trip: `ofDynamicValue (toDynamicValue e) = e`.
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

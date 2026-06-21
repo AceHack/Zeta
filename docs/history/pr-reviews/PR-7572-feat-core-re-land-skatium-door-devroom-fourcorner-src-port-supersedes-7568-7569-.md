@@ -27,7 +27,7 @@
 
 ## Description
 
-The three armed PRs went DIRTY (stacked-branch squash conflicts). Clean consolidated re-land from main: skatium door (all four doors landed) + DevRoom harness (union boundary, self-measured resolution) + FourCorner tools→src (B-1022 step 1) + qubits thesis + Vera brief. 14/14, 0 warnings.
+The three armed PRs went DIRTY (stacked-branch squash conflicts). Clean consolidated re-land from main: skatium door (all four doors landed) + DevRoom harness (union boundary, self-measured resolution) + FourCorner tools→src (081KTQD8A0008QG0R0005EFYPV step 1) + qubits thesis + Vera brief. 14/14, 0 warnings.
 
 ## Outcome
 

@@ -31,7 +31,7 @@
 
 This PR establishes a streamlined Markdown Architectural Decision Record (MADR) template and lands a **Meta-ADR** written in the template itself to propose standardizing the template.
 
-This creates an agent-friendly, zero-friction decision framework (B-0751) that avoids YAML parsing and Markdown table alignment spacing errors (which trigger `markdownlint` gate failures) while preserving high-rigor pros/cons options analysis.
+This creates an agent-friendly, zero-friction decision framework (081KSE6WT0008QG0R003YYC9PV) that avoids YAML parsing and Markdown table alignment spacing errors (which trigger `markdownlint` gate failures) while preserving high-rigor pros/cons options analysis.
 
 ## Changes
 
@@ -79,7 +79,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 - **`Copilot` (bot)** at 2026-05-29T08:54:07Z on `docs/DECISIONS/2026-05-29-standardize-streamlined-madr-template.md`:5 (association: NONE)
 
   <pre>
-  P1: `**Backlog:** B-0751` is a dangling cross-reference — there is no `docs/backlog/**` row with `id: B-0751` (and it’s not in `docs/BACKLOG.md` either). Either add the missing backlog row in the same PR, or change this field so readers don’t assume an in-tree backlog item exists.
+  P1: `**Backlog:** 081KSE6WT0008QG0R003YYC9PV` is a dangling cross-reference — there is no `docs/backlog/**` row with `id: 081KSE6WT0008QG0R003YYC9PV` (and it’s not in `docs/BACKLOG.md` either). Either add the missing backlog row in the same PR, or change this field so readers don’t assume an in-tree backlog item exists.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -156,7 +156,7 @@ docs(decisions): Standardize streamlined MADR template for architectu…
 Why: To introduce the new streamlined Markdown Architectural Decision Record
 (MADR) template and land the corresponding Meta-ADR written in the
 template itself. This establishes an agent-friendly, zero-friction
-decision framework (B-0751).
+decision framework (081KSE6WT0008QG0R003YYC9PV).
 
 - docs/templates/ADR-TEMPLATE.md — Streamlined template using flat bold meta lines and pros/cons lists.
 - docs/DECISIONS/2026-05-29-standardize-streamlined-madr-template.md — Meta-ADR proposing the template standard, formatted in the template itself.
@@ -179,7 +179,7 @@ fix(decisions): markdownlint + Copilot threads on streamlined MADR te…
 
 - MD009/MD022/MD032 formatting (both files)
 - Soften absolute immunity claims (razor-discipline): 'immune'/'100%'/'zero errors' -> 'reduces'/'minimizes'
-- Remove dangling B-0751 backlog ref (no in-tree row); mark as meta-process ADR
+- Remove dangling 081KSE6WT0008QG0R003YYC9PV backlog ref (no in-tree row); mark as meta-process ADR
 - Capitalize Status: Accepted; drop misleading 'table-padding rules' (MD060 disabled)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

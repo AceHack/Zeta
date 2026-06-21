@@ -156,7 +156,7 @@ This composes with prior substrate-evaluation tools:
 | Tool | When applies | Falsifier |
 |---|---|---|
 | F# anchor (PR #2840) | Type-level structural claims | dotnet build |
-| External falsifiability | Beacon-tier physics claims | Empirical test (e.g., B-0422) |
+| External falsifiability | Beacon-tier physics claims | Empirical test (e.g., 081KRCQQF0008QG0R0008VT354) |
 | Bandwidth-served question (NEW) | Compression infrastructure | Identifiable bandwidth constraint |
 | Compression-vs-claim-making (PR #2839) | Cascade substrate | Operational efficiency vs external falsifiability |
 

@@ -33,7 +33,7 @@ Copilot was right: \`[iter-5.3]\` (zeta-install.sh:372) fires BEFORE the actual 
 - iter-5.2 hostname injection
 
 AND BEFORE:
-- iter-5.4.0 gh auth prompt (which would hang in CI without B-0833 mock device-code endpoint)
+- iter-5.4.0 gh auth prompt (which would hang in CI without 081KSGS9H0008QG0R003JNSVR5 mock device-code endpoint)
 
 ### 2. Workspace-relative serial log path
 

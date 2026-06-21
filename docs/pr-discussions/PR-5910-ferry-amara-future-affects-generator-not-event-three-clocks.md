@@ -51,7 +51,7 @@ Operationalizes `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PE
 - PR #5841 (DST + Persist + generator-time + feedback substrate composition) — generator-time IS the substrate-dimension; this rule operationalizes its temporal semantics
 - PR #5778 (Persist-as-bridge / μένω substrate) — Amara explicitly names "μένω bridge doing real work"
 - PRs #5505-#5577 (Result<T, TFeedback> + asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + retraction-native substrate cluster)
-- PRs #5890 + #5891 + #5892 (B-0924 + B-0925 + research-mirror cluster)
+- PRs #5890 + #5891 + #5892 (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror cluster)
 
 ## Substrate-honest framing
 

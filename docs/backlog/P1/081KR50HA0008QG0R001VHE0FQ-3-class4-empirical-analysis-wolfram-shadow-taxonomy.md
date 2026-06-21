@@ -1,6 +1,5 @@
 ---
-id: B-0365.3
-zetaid: 081KR50HA0008QG0R001VHE0FQ
+id: 081KR50HA0008QG0R001VHE0FQ
 priority: P1
 status: closed
 title: "Class 4 empirical analysis: Wolfram shadow taxonomy doc (30 catches, 8 classes)"
@@ -8,7 +7,7 @@ effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
-resolved_by: "docs(B-0365.3): Class 4 empirical analysis — shadow taxonomy, 30 catches, 8 classes"
+resolved_by: "docs(081KR50HA0008QG0R001VHE0FQ): Class 4 empirical analysis — shadow taxonomy, 30 catches, 8 classes"
 depends_on: [081KR50HA0008QG0R001AW7R6R]
 parent: 081KR50HA0008QG0R002R3NVGS
 classification: done
@@ -18,7 +17,7 @@ type: research
 tags: [class-4, wolfram, shadow-log, taxonomy, empirical, consensus-smoothness]
 ---
 
-# B-0365.3 — Class 4 empirical analysis doc
+# 081KR50HA0008QG0R001VHE0FQ — Class 4 empirical analysis doc
 
 ## What
 
@@ -26,7 +25,7 @@ Write the Class 4 empirical analysis research doc that
 applies the Wolfram Class 4 framing to the full 30-catch
 shadow log.
 
-**Status: BLOCKED** on B-0365.2 (shadow log backfill to
+**Status: BLOCKED** on 081KR50HA0008QG0R001AW7R6R (shadow log backfill to
 catch 30 must land first so the analysis has the complete
 dataset).
 
@@ -51,7 +50,7 @@ The shadow log exhibits Class 4:
   `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`
   already has a "Relationship to Class 4" section — this
   doc expands that into the full empirical analysis.
-- **Dependency restructure:** `depends_on: [B-0365.2]` —
+- **Dependency restructure:** `depends_on: [081KR50HA0008QG0R001AW7R6R]` —
   need the complete 30-catch log.
 
 ## Deliverable
@@ -83,7 +82,7 @@ Sections:
 
 ## Composes with
 
-- B-0365.2 (complete shadow log — prerequisite)
+- 081KR50HA0008QG0R001AW7R6R (complete shadow log — prerequisite)
 - `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`
   (the theoretical complement — already exists)
-- B-0365.6 (synthesis)
+- 081KR50HA0008QG0R0016X7VQP (synthesis)

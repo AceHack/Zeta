@@ -1,6 +1,5 @@
 ---
-id: B-0162
-zetaid: 081KQJZR90008QG0R000V16E1C
+id: 081KQJZR90008QG0R000V16E1C
 priority: P1
 status: closed
 closed: 2026-05-07
@@ -12,7 +11,7 @@ decomposition: clean
 depends_on: []
 ---
 
-# B-0162 — Pre-commit hook for role-ref convention on current-state surfaces
+# 081KQJZR90008QG0R000V16E1C — Pre-commit hook for role-ref convention on current-state surfaces
 
 ## P2 → P1 promotion (Tick-11 + Tick-12 observation, 2026-05-02)
 
@@ -165,7 +164,7 @@ trust calculus rule)
 - Otto-352 manufactured-patience-as-discipline cousin (3-
   recurrence threshold)
 - Existing `tools/hygiene/` ecosystem
-- B-0070 orphan role-ref + un-stripped name-attribution lint
+- 081KQ8P5D0008QG0R003VN5P2Z orphan role-ref + un-stripped name-attribution lint
   (PR #1187 — already deployed; this row is a pre-commit
   faster-feedback-loop counterpart, not a duplicate)
 
@@ -177,7 +176,7 @@ patterns; medium if needs to grow new infra. ~2-4 hours work.
 
 ## Notes
 
-The B-0070 lint runs in CI and catches the failure post-commit.
+The 081KQ8P5D0008QG0R003VN5P2Z lint runs in CI and catches the failure post-commit.
 This row is the pre-commit FASTER-FEEDBACK-LOOP counterpart —
 catch the violation BEFORE the push so review-thread overhead
 is avoided. Per Aaron 2026-05-01 / Osmani Ratchet Pattern: 2x

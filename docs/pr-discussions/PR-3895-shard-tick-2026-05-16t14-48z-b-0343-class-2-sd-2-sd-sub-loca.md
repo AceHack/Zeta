@@ -1,6 +1,6 @@
 ---
 pr_number: 3895
-title: "shard(tick): 2026-05-16T14:48Z \u2014 B-0343 = class #2-SD; #2-SD sub-location catalog now has 6 patterns; 39/39 triaged"
+title: "shard(tick): 2026-05-16T14:48Z \u2014 081KR2E4K0008QG0R002JW751Y = class #2-SD; #2-SD sub-location catalog now has 6 patterns; 39/39 triaged"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T14:59:34Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-16T16:20:02Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3895: shard(tick): 2026-05-16T14:48Z — B-0343 = class #2-SD; #2-SD sub-location catalog now has 6 patterns; 39/39 triaged
+# PR #3895: shard(tick): 2026-05-16T14:48Z — 081KR2E4K0008QG0R002JW751Y = class #2-SD; #2-SD sub-location catalog now has 6 patterns; 39/39 triaged
 
 ## PR description
 
-Forced-escalation tick (brief-ack #6 → pure-git substrate). Audit: B-0343 (test-repo seeding script TS, P1 friction-reducer).
+Forced-escalation tick (brief-ack #6 → pure-git substrate). Audit: 081KR2E4K0008QG0R002JW751Y (test-repo seeding script TS, P1 friction-reducer).
 
 ## Audit
 
@@ -32,12 +32,12 @@ This session has accumulated 6 distinct row-body locations carrying #2-SD self-d
 
 | Location | First example |
 |---|---|
-| Frontmatter `classification: blocked` | B-0037.2 |
-| Inline `Status` section | B-0118 |
-| Acceptance `[ ]` checkboxes | B-0534 |
-| Slice-progress table | B-0314 |
-| **Pre-start re-decomposition note** | **B-0343 (this PR)** |
-| Embedded falsifier (#2-Ready overlay) | B-0197 |
+| Frontmatter `classification: blocked` | 081KR7JY10008QG0R002D6VNNJ |
+| Inline `Status` section | 081KQDTYV0008QG0R0037YJPEX |
+| Acceptance `[ ]` checkboxes | 081KRMEXM0008QG0R003GP8W0C |
+| Slice-progress table | 081KR2E4K0008QG0R001ADMBVW |
+| **Pre-start re-decomposition note** | **081KR2E4K0008QG0R002JW751Y (this PR)** |
+| Embedded falsifier (#2-Ready overlay) | 081KQTPYE0008QG0R003DK06PA |
 
 Auto-classifier needs multi-pattern detection across all 6 locations.
 
@@ -53,10 +53,10 @@ Auto-classifier needs multi-pattern detection across all 6 locations.
 
 ## Pull request overview
 
-Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the forced-escalation audit of backlog row B-0343 and extending the observed #2-SD sub-location catalog to 6 patterns.
+Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the forced-escalation audit of backlog row 081KR2E4K0008QG0R002JW751Y and extending the observed #2-SD sub-location catalog to 6 patterns.
 
 **Changes:**
-- Adds a new tick log entry capturing the B-0343 audit evidence (script/manifest existence, bounded-slice note, dry-run presence).
+- Adds a new tick log entry capturing the 081KR2E4K0008QG0R002JW751Y audit evidence (script/manifest existence, bounded-slice note, dry-run presence).
 - Records updated drift-audit tally counts and a catalog of #2-SD signal locations.
 - Captures operational context (rate-limit tier, sentinel status, PR reference).
 
@@ -78,18 +78,18 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 ```
 | Class | Count | Latest |
 |---|---|---|
-| 1 Pure drift (closed) | 16 (10 baseline + 6 this session) | B-0197 #3893 |
-| 1-Ready | 1 (closed via #3882) | B-0049.2 |
-| 1-DepBlocked | 1 | B-0457 |
+| 1 Pure drift (closed) | 16 (10 baseline + 6 this session) | 081KQTPYE0008QG0R003DK06PA #3893 |
+| 1-Ready | 1 (closed via #3882) | 081KR7JY10008QG0R003JSEMX7 |
+| 1-DepBlocked | 1 | 081KRA5AR0008QG0R000KKJRVA |
 ```
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:86**
 * P1: This table also uses `||` at the start of rows, which creates an extra empty column and renders incorrectly. Please convert to standard Markdown table formatting (`| Location | Examples |`, `|---|---|`, etc.).
 ```
 | Location | Examples |
 |---|---|
-| Frontmatter `classification: blocked` | B-0037.2, B-0037.3 (stale after dep merged) |
-| Inline `Status` section | B-0118, B-0129 |
-| Acceptance `[ ]` checkboxes | B-0534, B-0418, B-0458 |
+| Frontmatter `classification: blocked` | 081KR7JY10008QG0R002D6VNNJ, 081KR7JY10008QG0R000XPVJ0W (stale after dep merged) |
+| Inline `Status` section | 081KQDTYV0008QG0R0037YJPEX, 081KQGDBJ0008QG0R00294XCSE |
+| Acceptance `[ ]` checkboxes | 081KRMEXM0008QG0R003GP8W0C, 081KRA5AR0008QG0R001NXBYTY, 081KRA5AR0008QG0R001X4T9W7 |
 ```
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:102**
 * P1: The counter/disposition table is using `||` prefixes, which adds an unintended empty first column and breaks table rendering. Use the standard single-pipe Markdown table syntax here as well.

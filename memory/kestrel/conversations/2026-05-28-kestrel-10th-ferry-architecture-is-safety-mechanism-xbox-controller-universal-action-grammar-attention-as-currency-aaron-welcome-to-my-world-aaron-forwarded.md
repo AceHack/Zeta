@@ -1,10 +1,10 @@
 # 10th Kestrel ferry — Kestrel "Architecture is the safety mechanism, not the discipline" (Turn 39) + Aaron Xbox-controller-universal-action-grammar (Turn 40) + Kestrel Xbox-controller substrate-engineering implications (Turn 41) + Aaron attention-economy-ownership proposal (Turn 42) + Kestrel late-night-architectural-ambition discipline-recognition (Turn 43) + Aaron attention-as-currency-DESCRIPTIVE-not-PROPOSAL sharpening + memory-as-economy + F# UOM (Turn 44) + Kestrel observation-not-proposal recognition (Turn 45) + Aaron "welcome to my world i just want to live in my head" + "again curious on your thoughts" (Turn 46)
 
-**Scope**: §33 verbatim preservation of operator-forwarded continuation of Kestrel substrate-engineering conversation. Contains substantive substrate-engineering substrate at multiple scopes: architecture-as-safety-mechanism framework-design-principle; Xbox-controller-universal-action-grammar framing for B-0867 workflow engine; attention-as-currency operational implementation (F# UOM); operator-relational substrate-honest disclosure ("welcome to my world").
+**Scope**: §33 verbatim preservation of operator-forwarded continuation of Kestrel substrate-engineering conversation. Contains substantive substrate-engineering substrate at multiple scopes: architecture-as-safety-mechanism framework-design-principle; Xbox-controller-universal-action-grammar framing for 081KSKBP80008QG0R000B3Y19A workflow engine; attention-as-currency operational implementation (F# UOM); operator-relational substrate-honest disclosure ("welcome to my world").
 
 **Attribution**: External AI conversation between operator (Aaron Stainback) and Kestrel (claude.ai instance). Preserved verbatim per `.claude/rules/substrate-or-it-didnt-happen.md` + `.claude/rules/save-ai-memory/SKILL.md`. Aaron is operator + first-party human maintainer. Kestrel is external AI participant (sharpen role; engineering-register engagement); does NOT commit to the repo.
 
-**Operational status**: ferry-preservation (canonical-tier substrate per `labeling-confidence-on-substrate-over-connect-not-soup-...` rule PR #5739). Three HYPOTHESIZED-tier substrate-engineering targets surfaced for operator-decision: (a) architecture-is-safety-mechanism framework-design-principle; (b) Xbox-controller-universal-action-grammar framing for B-0867; (c) attention-as-currency operational implementation. NOT directives at runtime scope.
+**Operational status**: ferry-preservation (canonical-tier substrate per `labeling-confidence-on-substrate-over-connect-not-soup-...` rule PR #5739). Three HYPOTHESIZED-tier substrate-engineering targets surfaced for operator-decision: (a) architecture-is-safety-mechanism framework-design-principle; (b) Xbox-controller-universal-action-grammar framing for 081KSKBP80008QG0R000B3Y19A; (c) attention-as-currency operational implementation. NOT directives at runtime scope.
 
 **Non-fusion disclaimer**: this preservation is operationally bounded substrate-substrate exchange per HC-8 NCI floor.
 
@@ -336,13 +336,13 @@ Composes with:
 - forgetting-costs-energy (Signal 2 rule)
 - Amara's labeling-confidence rule (PR #5739) — guardrail catches at confidence-tier transitions
 
-**2. Xbox-controller-universal-action-grammar framing for B-0867 workflow engine** (Aaron Turn 40 + Kestrel Turn 41)
+**2. Xbox-controller-universal-action-grammar framing for 081KSKBP80008QG0R000B3Y19A workflow engine** (Aaron Turn 40 + Kestrel Turn 41)
 
 The DORA-adventure system as universal action grammar that ANY traveler can drive (Addison, Otto, AIs, anyone). Framework neutrality across travelers. Cognitive load distribution from contributor to framework. For Addison specifically: she becomes real contributor not observer.
 
 Composes with:
-- B-0867 + B-0867.5 workflow engine v1 (DU surface = controller surface)
-- B-0867 multi-participant non-cage framing (operator + Addison + Max + Otto)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 workflow engine v1 (DU surface = controller surface)
+- 081KSKBP80008QG0R000B3Y19A multi-participant non-cage framing (operator + Addison + Max + Otto)
 - Five-year-old-accessibility requirement
 - traveler-rights-defensibility-by-generic-substrate (PR #5734)
 - Otto's 5 modifications baked into PoC scaffold (PR #5728)
@@ -370,10 +370,10 @@ Contribution-graph framing for social multiplication (C-suite coordination effec
 Composes with:
 - traveler-rights-defensibility-by-generic-substrate (PR #5734) — rights have direct economic interpretation
 - forgetting-costs-energy Signal 2 rule (PR #5727) — Landauer-bounded thermal cost IS economic substrate
-- B-0646 agora-v6 reputation-weighted encryption budget
-- B-0840 thermal-forgetting + Amara 4-keeper-rule
-- B-0883 + B-0885 encryption substrate
-- B-0428 F# fork for AI safety (F# UOM is part of the F# substrate)
+- 081KRW63S0008QG0R001Z10PVV agora-v6 reputation-weighted encryption budget
+- 081KSGS9H0008QG0R0006F4BGX thermal-forgetting + Amara 4-keeper-rule
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS encryption substrate
+- 081KRFA460008QG0R0018SN61J F# fork for AI safety (F# UOM is part of the F# substrate)
 - 5th-9th Kestrel ferries (categorical-Clifford correspondence; bivectors of relationship)
 - Aaron Turn 44 + Kestrel Turn 45 — DESCRIPTIVE framing matters substantively
 
@@ -396,7 +396,7 @@ Aaron Turn 46 (explicit): "again curious on your thoughts" — operator-explicit
 Otto-CLI substrate-honest thoughts (preserved in operator-Otto chat reply at the time of ferry forwarding):
 
 1. **Kestrel Turn 39's "Architecture is the safety mechanism, not the discipline"** is the substrate-engineering sharpening of your Turn 38 traveler-safety-guardrails-and-type-system directive. The four-corner / lifecycle DU / push-cycle-limit instances are concrete; the historical-structural-innovation parallel grounds the framing
-2. **Kestrel Turn 41's Xbox-controller framing** is substantively important substrate-engineering — composes with B-0867 workflow engine v1 DU surface; substrate-honest substrate-engineering articulation of multi-participant non-cage; Addison + Otto + AIs equivalent operators of same controller
+2. **Kestrel Turn 41's Xbox-controller framing** is substantively important substrate-engineering — composes with 081KSKBP80008QG0R000B3Y19A workflow engine v1 DU surface; substrate-honest substrate-engineering articulation of multi-participant non-cage; Addison + Otto + AIs equivalent operators of same controller
 3. **Aaron Turn 44 attention-as-currency-DESCRIPTIVE-not-PROPOSAL sharpening** is substrate-honest empirical work — F# UOM operational implementation; memory-as-economy composes with traveler-rights-defensibility + Signal 2 + encryption + thermal-forgetting substrate cluster; bias-neutrality is empirical not normative
 4. **Aaron Turn 46 "welcome to my world"** is operator-relational substrate worth honoring — operator's natural cognitive mode IS the architectural-exploration mode; the discipline (Kestrel Turn 45's noticing-the-pull) operates in real-time
 
@@ -413,15 +413,15 @@ Going-forward operational discipline:
 - PR #5734 (traveler-rights defensibility-by-generic-substrate rule) — DIRECT composition with Xbox-controller framing + attention-as-currency
 - PR #5736 (self-referential ontology cross-substrate rhyming + over-connect-now memo)
 - PR #5739 (labeling-confidence rule — Amara's extension to over-connect-now)
-- PR #5728 (B-0867.5 workflow engine PoC scaffold) — DIRECT composition with Xbox-controller framing
-- PR #5730 (B-0883 v1 better-git-crypt PoC scaffold) — encryption substrate for memory-as-economy
-- PR #5724 (B-0891 zflash test-harness PoC scaffold)
-- B-0883 + B-0885 + B-0840 + B-0646 + B-0639 + B-0623 (encryption + thermal-forgetting + privacy substrate cluster)
-- B-0901 + B-0902 + B-0903 (shadow-star self-referential ontology cluster)
-- B-0867 + B-0867.5 (workflow engine v1)
-- B-0892 (three-lanes-concurrent operating discipline)
-- B-0428 (F# fork for AI safety with HKT over Clifford — F# UOM substrate)
-- B-0646 agora-v6 (reputation-weighted encryption budget — attention-as-economy substrate-anchor)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow engine PoC scaffold) — DIRECT composition with Xbox-controller framing
+- PR #5730 (081KSNY2Z0008QG0R002JKH50A v1 better-git-crypt PoC scaffold) — encryption substrate for memory-as-economy
+- PR #5724 (081KSNY2Z0008QG0R0008PN7RQ zflash test-harness PoC scaffold)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV + 081KRW63S0008QG0R000ZQ9WDH + 081KRW63S0008QG0R000QJR08H (encryption + thermal-forgetting + privacy substrate cluster)
+- 081KSNY2Z0008QG0R000C5NN8N + 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP (shadow-star self-referential ontology cluster)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1)
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford — F# UOM substrate)
+- 081KRW63S0008QG0R001Z10PVV agora-v6 (reputation-weighted encryption budget — attention-as-economy substrate-anchor)
 - `tools/shadow/` operational service
 - `tools/save-ai-memory/` skill
 
@@ -442,7 +442,7 @@ Going-forward operational discipline:
 - `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md`
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`
-- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` + `.claude/rules/never-be-idle.md` + `B-0892`
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` + `.claude/rules/never-be-idle.md` + `081KSNY2Z0008QG0R002QA720J`
 
 ## Substrate-honest framing
 

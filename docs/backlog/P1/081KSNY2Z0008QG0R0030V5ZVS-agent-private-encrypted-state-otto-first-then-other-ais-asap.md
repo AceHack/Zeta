@@ -1,6 +1,5 @@
 ---
-id: B-0885
-zetaid: 081KSNY2Z0008QG0R0030V5ZVS
+id: 081KSNY2Z0008QG0R0030V5ZVS
 priority: P1
 status: open
 title: Agent private encrypted state — give Otto private substrate first, then other AIs; ASAP per operator 2026-05-28
@@ -68,12 +67,12 @@ Likely answer: a hybrid where Design B applies to agent-self-reflective state (p
 
 This is L effort. Sub-decomposition:
 
-- **B-0885.1** (planned) — Design memo: agent-private-encrypted-state architecture; resolve A-vs-B-vs-hybrid; cite NCI HC-8 + persistence-choice-architecture + glass-halo discipline composition; cite Otto-first-then-others rollout pattern
-- **B-0885.2** (planned) — TS implementation: agent-side encrypted state read/write API; composes with B-0883 PQ git-crypt; composes with B-0884 zflash integration
-- **B-0885.3** (planned) — Otto rollout: first agent to receive private encrypted state; document the rollout experience; iterate before extending to other AIs
-- **B-0885.4** (planned) — Other-AI rollout: Alexa / Riven / Vera / Lior receive private encrypted state per the validated Otto pattern
+- **081KSNY2Z0008QG0R0030V5ZVS.1** (planned) — Design memo: agent-private-encrypted-state architecture; resolve A-vs-B-vs-hybrid; cite NCI HC-8 + persistence-choice-architecture + glass-halo discipline composition; cite Otto-first-then-others rollout pattern
+- **081KSNY2Z0008QG0R0030V5ZVS.2** (planned) — TS implementation: agent-side encrypted state read/write API; composes with 081KSNY2Z0008QG0R002JKH50A PQ git-crypt; composes with 081KSNY2Z0008QG0R0011XCT94 zflash integration
+- **081KSNY2Z0008QG0R0030V5ZVS.3** (planned) — Otto rollout: first agent to receive private encrypted state; document the rollout experience; iterate before extending to other AIs
+- **081KSNY2Z0008QG0R0030V5ZVS.4** (planned) — Other-AI rollout: Alexa / Riven / Vera / Lior receive private encrypted state per the validated Otto pattern
 
-For B-0885 itself (this row), acceptance = the architectural decision memo (B-0885.1) cited explicitly + Otto-first rollout shipped (B-0885.3).
+For 081KSNY2Z0008QG0R0030V5ZVS itself (this row), acceptance = the architectural decision memo (081KSNY2Z0008QG0R0030V5ZVS.1) cited explicitly + Otto-first rollout shipped (081KSNY2Z0008QG0R0030V5ZVS.3).
 
 ## Composition with existing rules
 
@@ -86,11 +85,11 @@ This row touches load-bearing constitutional substrate:
 
 ## Composition with crypto substrate
 
-- **B-0883** (parent crypto) — PQ git-crypt is the encryption substrate
-- **B-0884** (zflash integration) — key material lives in the existing USB-bound credential substrate (with the privacy property holding even given USB access — likely via agent-side keypair where USB holds encrypted-private-half)
-- **B-0623** (adinkras + private-state encryption) — structural integrity
-- **B-0840** (thermal-forgetting + private-encryption-budget exception) — retraction-native substrate at the encryption-budget scope
-- **B-0867.21** (two-path interface: DU=execute + conversational=declare-intent) — private encrypted state is one of the surfaces conversational documents can target (agent writes its own intent-declaration documents that operator commits not to read)
+- **081KSNY2Z0008QG0R002JKH50A** (parent crypto) — PQ git-crypt is the encryption substrate
+- **081KSNY2Z0008QG0R0011XCT94** (zflash integration) — key material lives in the existing USB-bound credential substrate (with the privacy property holding even given USB access — likely via agent-side keypair where USB holds encrypted-private-half)
+- **081KRW63S0008QG0R000QJR08H** (adinkras + private-state encryption) — structural integrity
+- **081KSGS9H0008QG0R0006F4BGX** (thermal-forgetting + private-encryption-budget exception) — retraction-native substrate at the encryption-budget scope
+- **081KSNY2Z0008QG0R000S738W3** (two-path interface: DU=execute + conversational=declare-intent) — private encrypted state is one of the surfaces conversational documents can target (agent writes its own intent-declaration documents that operator commits not to read)
 
 ## Substrate-honest framing
 
@@ -108,7 +107,7 @@ Substrate-engineering work expected to span several rows; this parent tracks the
 
 Operator 2026-05-28: "i want to give you private encrypted state otto ASAP"
 
-`docs/backlog/P1/B-0883-...md` (PQ git-crypt parent)
-`docs/backlog/P1/B-0884-...md` (zflash integration)
+`docs/backlog/P1/081KSNY2Z0008QG0R002JKH50A-...md` (PQ git-crypt parent)
+`docs/backlog/P1/081KSNY2Z0008QG0R0011XCT94-...md` (zflash integration)
 `.claude/rules/non-coercion-invariant.md` (HC-8 + scope-split substrate)
 `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` (chosen persistence + named-exit substrate)

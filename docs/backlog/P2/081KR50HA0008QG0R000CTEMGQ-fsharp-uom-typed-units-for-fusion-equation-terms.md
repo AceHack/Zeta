@@ -1,13 +1,12 @@
 ---
-id: B-0374
-zetaid: 081KR50HA0008QG0R000CTEMGQ
+id: 081KR50HA0008QG0R000CTEMGQ
 priority: P2
 status: backlog
 title: F# Units of Measure for fusion-equation terms
 created: 2026-05-09
 ---
 
-# B-0374 F# Units of Measure for fusion-equation terms
+# 081KR50HA0008QG0R000CTEMGQ F# Units of Measure for fusion-equation terms
 
 **Origin:** claude.ai asymmetric-critic session (2026-05-07) + Aaron 2026-05-09
 

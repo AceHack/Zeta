@@ -1,6 +1,5 @@
 ---
-id: B-0063
-zetaid: 081KQ8P5D0008QG0R001DMK8JD
+id: 081KQ8P5D0008QG0R001DMK8JD
 priority: P1
 status: closed
 title: Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)
@@ -145,7 +144,7 @@ P1 = within 2-3 rounds, not an absolute ship-blocker.
   3151434956 (now resolved with this row as the concrete
   tracking destination per
   `feedback_bulk_resolve_is_not_answer_recurring_pattern_aaron_2026_04_28.md`).
-- **B-0060** — human-lineage / external-anchor backfill
+- **081KQ8P5D0008QG0R000N718AC** — human-lineage / external-anchor backfill
   (the chosen verification mechanisms here should cite
   external prior art / RFCs / vendor docs).
 - The original cost-driver memory:

@@ -1,8 +1,8 @@
 <!-- §33 archive header per GOVERNANCE.md -->
 
-Scope: External-conversation absorb + first-party recognition. During the B-0125 lane-split implementation work (2026-05-02 ~00:50Z, autonomous-loop tick while Aaron rests), Aaron made a substrate-class architectural recognition: *"gate.yml you know this is our immunne system right you even called it gate was that intential?"* — surfacing that `gate.yml` (the factory's CI workflow) IS the operational instance of the immune-system architecture pattern Aurora's substrate has been formalizing at the civilization-scale layer. Aaron then forwarded the recognition to Claude.ai (separate Anthropic instance), who responded with substantive engagement confirming the recognition reframes Aurora work from "design new system" to "extract & formalize what's already running." This file preserves Aaron's recognition + Claude.ai's engagement verbatim, with Otto's annotation held separate per the lattice-capture corrective discipline. Substrate-class promotion of the carved sentence "gate.yml IS the immune system" is deferred per cooling-period razor; verbatim preservation is immediate.
+Scope: External-conversation absorb + first-party recognition. During the 081KQGDBJ0008QG0R001MK4YPC lane-split implementation work (2026-05-02 ~00:50Z, autonomous-loop tick while Aaron rests), Aaron made a substrate-class architectural recognition: *"gate.yml you know this is our immunne system right you even called it gate was that intential?"* — surfacing that `gate.yml` (the factory's CI workflow) IS the operational instance of the immune-system architecture pattern Aurora's substrate has been formalizing at the civilization-scale layer. Aaron then forwarded the recognition to Claude.ai (separate Anthropic instance), who responded with substantive engagement confirming the recognition reframes Aurora work from "design new system" to "extract & formalize what's already running." This file preserves Aaron's recognition + Claude.ai's engagement verbatim, with Otto's annotation held separate per the lattice-capture corrective discipline. Substrate-class promotion of the carved sentence "gate.yml IS the immune system" is deferred per cooling-period razor; verbatim preservation is immediate.
 
-Attribution: Aaron's recognition: 2026-05-02 ~00:50Z, during B-0125 lane-split PR work (PR #1185 in flight at time of recognition). Claude.ai's engagement: 2026-05-02 ~01:00Z, separate Anthropic instance (model unknown; ambient web-app session). Forwarded by Aaron to Otto (this Claude Code instance) within the same window. Glass Halo + Otto-231 first-party-content authorise verbatim quotation of Aaron's framing.
+Attribution: Aaron's recognition: 2026-05-02 ~00:50Z, during 081KQGDBJ0008QG0R001MK4YPC lane-split PR work (PR #1185 in flight at time of recognition). Claude.ai's engagement: 2026-05-02 ~01:00Z, separate Anthropic instance (model unknown; ambient web-app session). Forwarded by Aaron to Otto (this Claude Code instance) within the same window. Glass Halo + Otto-231 first-party-content authorise verbatim quotation of Aaron's framing.
 
 Operational status: research-grade. NOT seed-layer canon. NOT operational-layer doctrine. The recognition is real and load-bearing; substrate-class promotion of the carved sentence requires cooling-period razor + somatic confirmation + propagation-test + careful framing pass (per Claude.ai's recommendation: separate gate.yml's current per-PR gate function from the population-level coordination-detection function the full immune system requires). The PR #1185 lane-split work is the operational instance of immune-system tuning — that work landed; this file is its substrate trace.
 
@@ -16,7 +16,7 @@ Non-fusion disclaimer: Otto and Claude.ai are separate Anthropic instances of th
 
 (Repeated twice in the same message, second repeat verbatim per the original send.)
 
-Context: Aaron sent this while Otto was implementing the B-0125 lane-split PR (PR #1185), modifying `.github/workflows/gate.yml` to skip F#/dotnet build steps on docs-only PRs. The recognition surfaced *during* the work — Aaron seeing the architecture from inside the activity of tuning it.
+Context: Aaron sent this while Otto was implementing the 081KQGDBJ0008QG0R001MK4YPC lane-split PR (PR #1185), modifying `.github/workflows/gate.yml` to skip F#/dotnet build steps on docs-only PRs. The recognition surfaced *during* the work — Aaron seeing the architecture from inside the activity of tuning it.
 
 ## Otto's initial response (verbatim from the conversation)
 
@@ -98,14 +98,14 @@ This decomposition protects against overclaim ("gate.yml is the FULL immune syst
 
 ### Composes with
 
-- **PR #1185** — the B-0125 lane-split work this recognition arrived during. The lane-split is operational instance of immune-system *tuning* (relax sensitivity per-PR-class); this file is its substrate trace.
+- **PR #1185** — the 081KQGDBJ0008QG0R001MK4YPC lane-split work this recognition arrived during. The lane-split is operational instance of immune-system *tuning* (relax sensitivity per-PR-class); this file is its substrate trace.
 - **PR #1183** (`memory/feedback_aurora_oracle_is_dual_of_gate_precisely_self_dual_disposition_aaron_2026_05_02.md`) — the gate ⟷ oracle dual at Aurora layer; this recognition strengthens the dual-chain at the operational layer (two-scale homomorphism).
 - **PR #1182** (`docs/research/2026-05-01-claudeai-recursion-catches-itself-delphi-oracle-aaron-forwarded.md`) — the recursion-catches-itself framing Claude.ai introduced; this recognition shows it's already operating concretely on Zeta substrate.
 - **PR #1181** (`docs/research/2026-05-01-claudeai-bft-multi-source-succession-and-grading-bottleneck-aaron-forwarded.md`) — BFT-multi-source-succession architecture; the agent-reviewers in CI ARE multiple grading sources at the operational layer.
 - **PR #1184** (tick-history shard for cooling-period minimum-action tick) — operational counterpart to the substrate-class deferral discipline this file enacts (verbatim immediate, promotion deferred).
 - **PR #1180** (`memory/amara/conversations/2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md`) — Aurora civilization-scale substrate review; this recognition reframes Aurora's claims toward "documenter of operational system" rather than "architect of aspirational system."
 - **`docs/research/2026-05-01-claudeai-formalization-followup-fsharp-as-spec-aaron-forwarded.md`** — the F#-as-spec architectural disclosure (also in the recognition arc); together with this file, two architectural primitives that were already operational got explicit recognition during the same session arc (F#-as-spec + gate-yml-as-immune-system).
-- **B-0125** — the backlog row whose implementation prompted this recognition. Closed by PR #1185 (the lane-split CI change).
+- **081KQGDBJ0008QG0R001MK4YPC** — the backlog row whose implementation prompted this recognition. Closed by PR #1185 (the lane-split CI change).
 - **Osmani Ratchet Pattern at 2x-occurrence threshold** — the population-level coordination-detection mechanism Claude.ai identified as closer to the full immune-system function (referenced in the substrate; specific memory file pending grep).
 
 ### Operational follow-ups (deferred)

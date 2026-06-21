@@ -1,6 +1,6 @@
 ---
 pr_number: 4120
-title: "backlog(B-0614): forced-#6 meta-fallback edge case \u2014 post-cycle-close substrate-pool saturation"
+title: "backlog(081KRSKQ20008QG0R0028VN0KR): forced-#6 meta-fallback edge case \u2014 post-cycle-close substrate-pool saturation"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T22:53:28Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-18T07:29:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4120: backlog(B-0614): forced-#6 meta-fallback edge case — post-cycle-close substrate-pool saturation
+# PR #4120: backlog(081KRSKQ20008QG0R0028VN0KR): forced-#6 meta-fallback edge case — post-cycle-close substrate-pool saturation
 
 ## PR description
 
-Files a small P3 backlog row at [docs/backlog/P3/B-0614-...md](../backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) capturing an empirical counter-example to the [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) rule's "ALWAYS works at #6" meta-fallback claim.
+Files a small P3 backlog row at [docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-...md](../backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) capturing an empirical counter-example to the [`holding-without-named-dependency-is-standing-by-failure.md`](../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) rule's "ALWAYS works at #6" meta-fallback claim.
 
 ## Observation
 
@@ -48,11 +48,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Pull request overview
 
-Adds backlog item B-0614 to track a forced-#6 meta-fallback edge case and updates the generated backlog index accordingly.
+Adds backlog item 081KRSKQ20008QG0R0028VN0KR to track a forced-#6 meta-fallback edge case and updates the generated backlog index accordingly.
 
 **Changes:**
 - Adds a P3 backlog row documenting the empirical edge case and deferred acceptance criteria.
-- Adds B-0614 to the generated `docs/BACKLOG.md` P3 section.
+- Adds 081KRSKQ20008QG0R0028VN0KR to the generated `docs/BACKLOG.md` P3 section.
 
 ### Reviewed changes
 
@@ -60,12 +60,12 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md` | New backlog row capturing the forced-#6 meta-fallback saturation investigation. |
-| `docs/BACKLOG.md` | Generated backlog index entry for B-0614. |
+| `docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md` | New backlog row capturing the forced-#6 meta-fallback saturation investigation. |
+| `docs/BACKLOG.md` | Generated backlog index entry for 081KRSKQ20008QG0R0028VN0KR. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md:38 (unresolved)
+### Thread 1: docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md:38 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T22:55:56Z):
 
@@ -87,9 +87,9 @@ The 2026-05-17T22:07Z autonomous-loop session hit **three forced-#6s in sequence
 
 **Refinement to consider** (NOT proposing rule-text change here per the row's "future sessions" acceptance — this comment is observation-only):
 
-B-0614's body documents ONE forced-#6 in post-cycle-close producing dry meta-fallback. The 3-in-a-row sequence pattern observed here is a related but distinct phenomenon: **forced-#6s in sequence burn through "missed surfaces" (cross-axis observations, missed write-surfaces) before reaching true saturation**. The first 1-2 forced-#6s in a sequence can be rescued by genuine missed-surface discovery; the third+ exhibits the dry-meta-fallback pattern this row documents.
+081KRSKQ20008QG0R0028VN0KR's body documents ONE forced-#6 in post-cycle-close producing dry meta-fallback. The 3-in-a-row sequence pattern observed here is a related but distinct phenomenon: **forced-#6s in sequence burn through "missed surfaces" (cross-axis observations, missed write-surfaces) before reaching true saturation**. The first 1-2 forced-#6s in a sequence can be rescued by genuine missed-surface discovery; the third+ exhibits the dry-meta-fallback pattern this row documents.
 
-The implication for future rule refinement: the rule's "always works at #6 meta-fallback" claim is even narrower than B-0614 indicates. It works for the FIRST forced-#6 reliably (substrate pool fresh); works occasionally for the SECOND (depends on missed-surface availability); rarely works for the THIRD+ (substrate pool exhausted).
+The implication for future rule refinement: the rule's "always works at #6 meta-fallback" claim is even narrower than 081KRSKQ20008QG0R0028VN0KR indicates. It works for the FIRST forced-#6 reliably (substrate pool fresh); works occasionally for the SECOND (depends on missed-surface availability); rarely works for the THIRD+ (substrate pool exhausted).
 
 Filing as comment-only per this row's "let evidence accumulate over future sessions" disposition. The observation lives here for future-Otto archaeology; row update + rule refinement deferred.
 

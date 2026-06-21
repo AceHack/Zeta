@@ -1,6 +1,6 @@
 ---
 pr_number: 5421
-title: "feat(B-0852.2a): wire-format envelope serializer + CredBundle plaintext schema (17 unit tests; pure functions)"
+title: "feat(081KSKBP80008QG0R003AX2A69.2a): wire-format envelope serializer + CredBundle plaintext schema (17 unit tests; pure functions)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T07:43:42Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:25:11Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5421: feat(B-0852.2a): wire-format envelope serializer + CredBundle plaintext schema (17 unit tests; pure functions)
+# PR #5421: feat(081KSKBP80008QG0R003AX2A69.2a): wire-format envelope serializer + CredBundle plaintext schema (17 unit tests; pure functions)
 
 ## PR description
 
 ## Summary
 
-B-0852 sub-row .2 first slice — the on-disk wire format that B-0852.2b persist/restore CLIs will use to read/write \`/esp/zeta-creds.enc\`. Pure functions; no I/O.
+081KSKBP80008QG0R003AX2A69 sub-row .2 first slice — the on-disk wire format that 081KSKBP80008QG0R003AX2A69.2b persist/restore CLIs will use to read/write \`/esp/zeta-creds.enc\`. Pure functions; no I/O.
 
 ## Wire format (binary; v1 magic \`ZCV1\`)
 
@@ -26,7 +26,7 @@ B-0852 sub-row .2 first slice — the on-disk wire format that B-0852.2b persist
 |---|---|---|
 | magic | 4 bytes | \"ZCV1\" |
 | reserved | 4 bytes | zero (future-version-bump) |
-| salt_len + salt | u16 + bytes | from B-0852.1 envelope |
+| salt_len + salt | u16 + bytes | from 081KSKBP80008QG0R003AX2A69.1 envelope |
 | iv_len + iv | u16 + bytes | |
 | tag_len + tag | u16 + bytes | |
 | ciphertext_len + ciphertext | u32 + bytes | |
@@ -43,12 +43,12 @@ Trailing bytes rejected in v1 (v2 will explicit-version-bump).
 }
 \`\`\`
 
-\`personaScoped:false\` manifest entries (B-0852.5) → \`globalCreds\`; \`personaScoped:true\` → \`personaCreds[<persona>]\`. Composes with B-0852.5 semantics.
+\`personaScoped:false\` manifest entries (081KSKBP80008QG0R003AX2A69.5) → \`globalCreds\`; \`personaScoped:true\` → \`personaCreds[<persona>]\`. Composes with 081KSKBP80008QG0R003AX2A69.5 semantics.
 
 ## Full pipeline (covered by integration test)
 
 \`\`\`
-CredBundle → encodeBundle → encrypt (B-0852.1) → serializeEnvelope
+CredBundle → encodeBundle → encrypt (081KSKBP80008QG0R003AX2A69.1) → serializeEnvelope
   → [disk write/read simulation] →
 parseEnvelope → decrypt → decodeBundle → CredBundle (byte-identical)
 \`\`\`
@@ -62,20 +62,20 @@ parseEnvelope → decrypt → decodeBundle → CredBundle (byte-identical)
 Ran 17 tests across 1 file. [1.67s]
 \`\`\`
 
-scrypt N=2^17 dominates timing per B-0852.1 OWASP-recommended parameters.
+scrypt N=2^17 dominates timing per 081KSKBP80008QG0R003AX2A69.1 OWASP-recommended parameters.
 
 ## Composes with
 
-- **B-0852.1** crypto module (merged PR #5411) — Envelope type producer/consumer
-- **B-0852.5** cred-manifest schema (merged PR #5414) — \`personaScoped\` semantics drive bundle layout
-- **B-0852.10** per-cred handlers (merged PR #5418) — value producers feed bundle maps
-- **B-0852.2b** future — persist/restore CLIs consume this module
+- **081KSKBP80008QG0R003AX2A69.1** crypto module (merged PR #5411) — Envelope type producer/consumer
+- **081KSKBP80008QG0R003AX2A69.5** cred-manifest schema (merged PR #5414) — \`personaScoped\` semantics drive bundle layout
+- **081KSKBP80008QG0R003AX2A69.10** per-cred handlers (merged PR #5418) — value producers feed bundle maps
+- **081KSKBP80008QG0R003AX2A69.2b** future — persist/restore CLIs consume this module
 
 ## What this is NOT
 
 - NOT the persist CLI (next slice; needs FS + passphrase prompt)
 - NOT the restore CLI (next slice; same)
-- NOT zflash \`--bake-cred\` integration (B-0852.9)
+- NOT zflash \`--bake-cred\` integration (081KSKBP80008QG0R003AX2A69.9)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -85,7 +85,7 @@ scrypt N=2^17 dominates timing per B-0852.1 OWASP-recommended parameters.
 
 ## Pull request overview
 
-Adds the B-0852.2a “envelope framing” layer for credential persistence by defining (1) a binary on-disk wire format for the encrypted envelope produced by `zeta-creds-crypto.ts`, and (2) a JSON plaintext schema (`CredBundle`) for the decrypted inner payload. This fits into the installer toolchain as the serialization boundary that future persist/restore CLIs will consume.
+Adds the 081KSKBP80008QG0R003AX2A69.2a “envelope framing” layer for credential persistence by defining (1) a binary on-disk wire format for the encrypted envelope produced by `zeta-creds-crypto.ts`, and (2) a JSON plaintext schema (`CredBundle`) for the decrypted inner payload. This fits into the installer toolchain as the serialization boundary that future persist/restore CLIs will consume.
 
 **Changes:**
 - Introduces `serializeEnvelope` / `parseEnvelope` for a length-prefixed binary envelope format with a `ZCV1` header.

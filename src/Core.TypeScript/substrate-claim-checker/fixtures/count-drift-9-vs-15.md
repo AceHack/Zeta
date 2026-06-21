@@ -1,5 +1,5 @@
 <!--
-Eval-set fixture for substrate-claim-checker (B-0170).
+Eval-set fixture for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV).
 
 Reproduces the count-drift pattern surfaced in PR #1259
 `review(pr-1257-postmerge): verify-then-claim count drift

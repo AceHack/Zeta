@@ -1,6 +1,5 @@
 ---
-id: B-1004
-zetaid: 081KT2T2J0008QG0R0038CRFJM
+id: 081KT2T2J0008QG0R0038CRFJM
 priority: P1
 status: open
 title: "Conform everything to the minimal HKT-composing vocabulary — INumerics + Rx/Bonsai-over-DBSP + Z-set/GSet/Bag/IndexedZSet (±1 retraction-native); INumerics sparingly; constraint breeds novelty; apply to the Infer.NET engine (factor-graph state/deltas → IndexedZSet + DBSP IVM) (Aaron 2026-06-02 observation)"
@@ -42,22 +41,22 @@ The elegant part: **the Z-set vocabulary enforces this by construction.** A `±1
 
 **`INumerics` sparingly** — reach for the full generic-math number tower *only if it really makes sense* (the message-group's `(*)`/`(/)` genuinely is multiplicative-group → warranted; don't force `INumber` where the Z-set/DBSP vocabulary already fits).
 
-## Apply to the Infer.NET engine (B-1000) — the conformance audit
+## Apply to the Infer.NET engine (081KT2T2J0008QG0R000S7GHQ8) — the conformance audit
 
 - **Message families (slice 2)** — ✅ already conforming: `Gaussian`/`Beta`/`Bernoulli` are generic-math (`One`/`(*)`/`(/)`), a commutative **group** (product/divide). (Caveat: a *group*, not a clean `ISemiring` — there is no clean ⊕/mixture at message scope; conform via generic-math group, don't force a ring.)
 - **FactorGraph state (slices 3–4)** — ❌ currently ad-hoc `Map<int, Map<int, 'M>>`. **Conform to `IndexedZSet`** keyed by edge `(factorId, varId)`; the per-round message changes become **Z-set deltas**; `passOnce` becomes a **DBSP operator**; `runToFixpoint` becomes the **`NestedCircuit.Iterate()`** fixed-point drive (loops to the LFP cap, polling each op's `Fixedpoint scope` residual test — the actual `src/Core/NestedCircuit.fs` API; `.Fixedpoint` is the per-`CircuitOp` contract, not a member of `NestedCircuit`) — the slice-4b incremental form (re-infer on a delta). This is the conformance that buys incremental inference.
-- **Serialization / transport (B-1001/B-1002)** — the codec tower + Eve transport conform too (the value-codec rung over the Z-set/columnar state; Rx/Bonsai expression-trees as the serialized reactive composition).
+- **Serialization / transport (081KT2T2J0008QG0R000VG204F/081KT2T2J0008QG0R002R72323)** — the codec tower + Eve transport conform too (the value-codec rung over the Z-set/columnar state; Rx/Bonsai expression-trees as the serialized reactive composition).
 
 ## Acceptance (research → build)
 
 1. **conformance audit** of the engine surface: list every type/op not in the vocabulary; map each to {generic-math, Z-set/GSet/Bag/IndexedZSet, DBSP, Rx/Bonsai} or justify the exception ("INumerics sparingly").
 2. **conform FactorGraph** → `IndexedZSet` state + Z-set deltas + DBSP `passOnce`/`NestedCircuit` fixpoint (slice 4b). Tests preserved (existing BP/EP results unchanged; now incremental).
-3. **Rx/Bonsai layer** — the reactive/serializable composition over the DBSP circuit (Bonsai expression-trees per `Bonsai.fs` / B-0976).
+3. **Rx/Bonsai layer** — the reactive/serializable composition over the DBSP circuit (Bonsai expression-trees per `Bonsai.fs` / 081KT07NV0008QG0R003BE6MJ2).
 4. **hold the generative-constraint discipline** for future authoring: new primitives conform to the vocabulary by default; an exception is a documented "really really makes sense" justification.
 
 ## Composes with substrate
 
-- **B-1000** (Infer.NET engine — the conformance target) · **B-1001/B-1002/B-1003** (codec/transport/multi-traveler — conform too) · **B-0428** (real HKT — the max-HKT-composition this enables) · **B-0976** (Bonsai expression-tree serializer)
+- **081KT2T2J0008QG0R000S7GHQ8** (Infer.NET engine — the conformance target) · **081KT2T2J0008QG0R000VG204F/081KT2T2J0008QG0R002R72323/081KT2T2J0008QG0R00301P27H** (codec/transport/multi-traveler — conform too) · **081KRFA460008QG0R0018SN61J** (real HKT — the max-HKT-composition this enables) · **081KT07NV0008QG0R003BE6MJ2** (Bonsai expression-tree serializer)
 - existing F#: `Algebra.fs`/`ZSet.fs`/`GSet.fs`/`Bag.fs`/`IndexedZSet.fs` (the Z-set family, generic-math-shaped), `Semiring.fs` (the weight algebra), `Circuit.fs`/`NestedCircuit.fs` (DBSP), `Bonsai.fs` (Rx serializer), `Message.fs` (generic-math messages)
 - rules: `numerical-algebra-shaped-into-the-generic-math-interface` (this generalizes it to the full vocabulary), `bcl-interface-boundary-own-your-interfaces-hexagonal` (own the surrounding interfaces), `interfaces-are-the-asset` / `code-follows-from-types` (Meijer — the algebras are the asset), `all-complexity-is-accidental-in-greenfield` + `razor-discipline` (the constraint is the razor), `dv2-data-split-discipline-activated` (idempotency/Z-set siblings), `monad-propagation-pattern` (HKT composition), `grep-substrate-anchors-before-razor` + `god-tier-claims-don't-collapse`
 

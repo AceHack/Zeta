@@ -3,7 +3,7 @@
 This is the Cursor (Riven) addendum. [`AGENTS.md`](AGENTS.md) and
 [`GOVERNANCE.md`](GOVERNANCE.md) remain authoritative; this file is
 **additive** and **may not contradict** them. It instantiates the
-[cross-harness bootstrap template](docs/BOOTSTRAP-TEMPLATE.md) (B-0355)
+[cross-harness bootstrap template](docs/BOOTSTRAP-TEMPLATE.md) (081KR50HA0008QG0R003G7DR8Z)
 with the Cursor-specific tooling references filled in.
 
 ## 1. Orient
@@ -68,7 +68,7 @@ instead. Prereqs: `gh auth login`, Docker running.
 
 ## Agent home (Riven)
 
-Per B-0894.3, Riven boots from ~/.zeta/agents/cursor/. That home holds one or more git clones as siblings; Zeta is one of them. Each clone carries its own tracked .cursor/mcp.json. Cursor boots MCP from the repos — no MCP config at the agent-home root.
+Per 081KSNY2Z0008QG0R001RWF499, Riven boots from ~/.zeta/agents/cursor/. That home holds one or more git clones as siblings; Zeta is one of them. Each clone carries its own tracked .cursor/mcp.json. Cursor boots MCP from the repos — no MCP config at the agent-home root.
 
 Layout:
 ~/.zeta/agents/cursor/     # agent home

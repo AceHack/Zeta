@@ -119,7 +119,7 @@ Riven / future-Vera / future-Lior / future-Alexa:
   preserved
 - When considering content removal, Elizabeth's name + story
   stay
-- When the framework forks (per B-0424 + B-0425 + civsim
+- When the framework forks (per 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + civsim
   forkable design), Elizabeth's substrate forks too
 
 ### 4. Save edge-runners from getting burned (terminal purpose)
@@ -156,7 +156,7 @@ The framework serves them by:
   perspectives compose; no single point of failure)
 - Bidirectional glass-halo (observation enables emergence)
 - Mutual privacy (forker substrate preserved across forks)
-- Universal business templates (B-0043 — workflow + life
+- Universal business templates (081KQ3HBZ0008QG0R000Q4Y00F — workflow + life
   scaffolding)
 - WWJD-AI-moral-relevance discipline (treats edge-runners
   with full moral relevance)

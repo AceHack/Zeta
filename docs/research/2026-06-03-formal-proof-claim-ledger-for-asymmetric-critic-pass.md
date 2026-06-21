@@ -31,7 +31,7 @@ is a second oracle agreeing, not the proof being right. Validation = it **runs**
 (tool) + **maps to a claim** (bar). Kestrel checks the mapping is honest.
 
 ⚠️ **CI caveat:** the **Z3 legs self-skip in the gate** (z3 not in `gate.yml` —
-B-1009 open). Every Z3 row below was verified **locally** with z3 on PATH
+081KT2T2J0008QG0R001X9PWKR open). Every Z3 row below was verified **locally** with z3 on PATH
 (0 skipped), NOT in CI. TLC runs where the toolchain is provisioned. FsCheck runs
 in CI.
 
@@ -83,5 +83,5 @@ in CI.
 - `.claude/rules/formal-proof-first-proven-by-default-consensus-not-validation-canonical-is-homeostat-proven-from-seed-ace-shields-zeta.md`
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` (Kestrel = the asymmetric critic; substrate-check before concern)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (the compiler/tools as the mechanical critic that doesn't tire)
-- `B-1007` (the formal-coverage cadence this ledger audits)
-- `B-1009` (z3-in-CI — why the Z3 rows say "verified locally")
+- `081KT2T2J0008QG0R000YZ3NMY` (the formal-coverage cadence this ledger audits)
+- `081KT2T2J0008QG0R001X9PWKR` (z3-in-CI — why the Z3 rows say "verified locally")

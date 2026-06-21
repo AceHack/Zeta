@@ -57,9 +57,9 @@ This composes with the git-blame discipline (Aaron 2026-05-05 same session: *"yo
 
 The session that produced this rule had multiple backlog-row failures:
 
-1. **Compression-cadence proposal** — Should have been searched against backlog. B-0161 P1 (substrate-reshelf-asymmetry-applied-to-PR-1202-CLAUDE.md-overshoot) already covers the CLAUDE.md trim work. The agent proposed a parallel cadence without finding B-0161.
+1. **Compression-cadence proposal** — Should have been searched against backlog. 081KQJZR90008QG0R002Z4B6VW P1 (substrate-reshelf-asymmetry-applied-to-PR-1202-CLAUDE.md-overshoot) already covers the CLAUDE.md trim work. The agent proposed a parallel cadence without finding 081KQJZR90008QG0R002Z4B6VW.
 
-2. **Claude-code-env-mapping skill (PR #1702)** — Should have been searched against backlog. B-0019 (P3, /btw git-native durability gap) and B-0020 (P3, /btw harness integration research) cover the /btw scope. The new skill could have extended these rather than parallel-authoring.
+2. **Claude-code-env-mapping skill (PR #1702)** — Should have been searched against backlog. 081KQ0YZ80008QG0R002C5EC8F (P3, /btw git-native durability gap) and 081KQ0YZ80008QG0R000T0AJXS (P3, /btw harness integration research) cover the /btw scope. The new skill could have extended these rather than parallel-authoring.
 
 3. **PR-comment git-native archive impulse** — Should have been searched against backlog AND memory. `memory/project_git_native_pr_review_archive_high_signal_training_data_*.md` already names the substrate (5-phase plan: research doc → prototype tool → first-run baseline → cadence → training pipeline). The agent rediscovered it after Aaron's prompt.
 

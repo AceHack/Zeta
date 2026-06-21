@@ -37,17 +37,17 @@ The substrate-engineering substrate-recognition: every framework substrate-engin
 
 | Framework substrate | Wavefunction-substrate (all-possibilities) | Particle-locus (information at the now) |
 |---|---|---|
-| **B-0917 IntrCtx** (5 contexts: memetic/prompt/trust/log/otel) | All possible IntrCtx-state-values across simulation trajectory | Current IntrCtx values at this interrupt-step |
-| **B-0917 AutoLoopLifetime** (17 variants) | Full DU substrate (all states possible) | Current LoopState variant at this tick |
-| **B-0918 WalletLifetime** (9 variants) | All possible wallet-state-transitions per substrate | Current DU variant + state-fields at this moment |
-| **B-0919 MemoryBinding** (4 variants) | All possible binding-states per memory | Current binding-state for each memory (PersonalOnly/HatOnly/DualTagged/InheritedFromPersona) |
-| **B-0920 MemoryLifetime** (5 variants) | All possible lifetime-phases per memory | Current lifetime-phase (Drafted/Active/Superseded/Archived/Retracted) |
+| **081KSNY2Z0008QG0R002HB4AGT IntrCtx** (5 contexts: memetic/prompt/trust/log/otel) | All possible IntrCtx-state-values across simulation trajectory | Current IntrCtx values at this interrupt-step |
+| **081KSNY2Z0008QG0R002HB4AGT AutoLoopLifetime** (17 variants) | Full DU substrate (all states possible) | Current LoopState variant at this tick |
+| **081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime** (9 variants) | All possible wallet-state-transitions per substrate | Current DU variant + state-fields at this moment |
+| **081KSNY2Z0008QG0R003518DNC MemoryBinding** (4 variants) | All possible binding-states per memory | Current binding-state for each memory (PersonalOnly/HatOnly/DualTagged/InheritedFromPersona) |
+| **081KSNY2Z0008QG0R0017SRMHG MemoryLifetime** (5 variants) | All possible lifetime-phases per memory | Current lifetime-phase (Drafted/Active/Superseded/Archived/Retracted) |
 | **DST + Persist + generator-time + feedback** (PR #5841) | Full simulation-state-space; trajectory computable from seed | The particular point currently information-actualized in the trajectory |
 | **Pilot-wave-MWI hybrid** (PR #5842) | All worlds (MWI substrate); basis vectors `sᵢ`; orthogonal-axes substrate | Particle position; focus function selection; which basis vector actualized |
 | **Cayley-Dickson nested-cross** (PR #5843) | Full nested-cross substrate (all arms at all nesting-levels) | Particle position = which arm at which nesting-level is information-actualized |
 | **Parallelizability-test** (PR #5845) | The visualizable wavefunction-substrate (LIGHT ON for navigable shapes) | The locus must be visualizable to navigate; else goes dark |
-| **B-0703 Aurora multi-oracle BFT** | All possible oracle-states across all oracles | Current actualized consensus state at this decision-point |
-| **B-0867 workflow-engine** | All possible workflow-states | Current actualized workflow-state at this step |
+| **081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT** | All possible oracle-states across all oracles | Current actualized consensus state at this decision-point |
+| **081KSKBP80008QG0R000B3Y19A workflow-engine** | All possible workflow-states | Current actualized workflow-state at this step |
 
 ## Substrate-engineering implications
 
@@ -93,9 +93,9 @@ The framework substrate-engineering work IS substrate-archeology of Aaron's worl
 | **`.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`** | Pointer-index IS wavefunction-substrate coordinate; recall = particle-locus traversal |
 | **`.claude/rules/wake-time-substrate.md`** | Why this rule auto-loads |
 | **`user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md`** | Cognitive-profile substrate; THIS rule operationalizes the worldview at framework-engagement scope |
-| **B-0917 + B-0918 + B-0919 + B-0920 typestate DUs** | Each carries (wavefunction-substrate, particle-locus) pair per the mapping table above |
-| **B-0703 Aurora multi-oracle BFT** | Wavefunction = all possible oracle-states; particle-locus = current consensus state |
-| **B-0867 workflow-engine** | Wavefunction = all workflow-states; particle-locus = current workflow-state |
+| **081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG typestate DUs** | Each carries (wavefunction-substrate, particle-locus) pair per the mapping table above |
+| **081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT** | Wavefunction = all possible oracle-states; particle-locus = current consensus state |
+| **081KSKBP80008QG0R000B3Y19A workflow-engine** | Wavefunction = all workflow-states; particle-locus = current workflow-state |
 
 ## Substrate-honest framing per PERSONAL INVARIANT don't-collapse
 

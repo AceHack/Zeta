@@ -12,7 +12,7 @@ created: 2026-05-17T06:16Z
 | Tick (UTC) | Disposition | Concrete artifact |
 |---|---|---|
 | 06:02Z | Substantive (#1 of session) | 0602Z tick shard + 3-thread verification for PR #4015 + commit plan A/B/C |
-| 06:07Z | Substantive | Bus envelope `da3cd5d2` (work-assignment for B-0510) + 0602Z shard follow-up section |
+| 06:07Z | Substantive | Bus envelope `da3cd5d2` (work-assignment for 081KRHWGX0008QG0R001VR9FNA) + 0602Z shard follow-up section |
 | 06:11Z | Brief-ack #1 | Refresh observation only |
 | 06:13Z | Brief-ack #2 | Refresh observation only |
 | 06:13:43Z | Brief-ack #3 | Refresh observation (named explicit) |
@@ -108,8 +108,8 @@ The test would be a backlog row, not a tick-scope undertaking.
 ## What pre-empted at #5 (this artifact)
 
 The session had 6 deferred commit groups inherited across the
-0418Z + 0602Z shards (Groups A-F covering B-0475 closure, Kestrel
-notebook + 2026-05-17 entry, imaginary-stack research + B-0584,
+0418Z + 0602Z shards (Groups A-F covering 081KRHWGX0008QG0R000M9RFY2 closure, Kestrel
+notebook + 2026-05-17 entry, imaginary-stack research + 081KRQ1AB0008QG0R001YAF3TR,
 Riven cursor handoff, bun/package.json + Otto-cwd memory, and the
 new Group F for PR #4015 thread fixes A/B/C).
 

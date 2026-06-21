@@ -29,9 +29,9 @@
 
 ## Summary
 
-- Produces `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` — B-0465 definition-of-done output
-- Closes B-0465; unblocks B-0466 (naming review), B-0467 (glue mechanism), B-0468 (ADR)
-- Updates B-0465 backlog row: status→closed, pre-start checklist added
+- Produces `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` — 081KRHWGX0008QG0R002B2P0K0 definition-of-done output
+- Closes 081KRHWGX0008QG0R002B2P0K0; unblocks 081KRHWGX0008QG0R003XHCEXT (naming review), 081KRHWGX0008QG0R00394BM1G (glue mechanism), 081KRHWGX0008QG0R000F6HE6D (ADR)
+- Updates 081KRHWGX0008QG0R002B2P0K0 backlog row: status→closed, pre-start checklist added
 
 ## Verdict table
 
@@ -58,8 +58,8 @@ Searched:
 - [x] `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` exists and renders
 - [x] All 7 products have verdicts with evidence pointers
 - [x] Summary table present
-- [x] Recommendations sections for B-0466, B-0467, B-0468 present
-- [x] B-0465 backlog row updated to closed with pre-start checklist
+- [x] Recommendations sections for 081KRHWGX0008QG0R003XHCEXT, 081KRHWGX0008QG0R00394BM1G, 081KRHWGX0008QG0R000F6HE6D present
+- [x] 081KRHWGX0008QG0R002B2P0K0 backlog row updated to closed with pre-start checklist
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

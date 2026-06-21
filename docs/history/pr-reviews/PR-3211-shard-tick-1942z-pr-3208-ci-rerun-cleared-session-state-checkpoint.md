@@ -27,7 +27,7 @@
 
 ## Description
 
-Tick 1942Z. PR #3208 (B-0517 Phase 2 tool) hit UNSTABLE from same mise rate-limit pattern; reran failed jobs; cleared to CLEAN verify-merge armed.
+Tick 1942Z. PR #3208 (081KRHWGX0008QG0R0029X10F4 Phase 2 tool) hit UNSTABLE from same mise rate-limit pattern; reran failed jobs; cleared to CLEAN verify-merge armed.
 
 Session-state checkpoint: 12 razor-cadence batch shards (100% rule coverage), 2 mechanization tools shipped, 9-variant reference-classification taxonomy as durable artifact.
 
@@ -60,7 +60,7 @@ CI workflow wiring (`factory-hygiene-audit.yml` composing both audit tools daily
 - **`Copilot` (bot)** at 2026-05-14T19:51:04Z on `docs/hygiene-history/ticks/2026/05/14/1942Z.md`:7 (association: NONE)
 
   <pre>
-  This line records B-0517 Phase 2 as already merged on main, but the same shard describes #3208 (the B-0517 Phase 2 tool) as still UNSTABLE/CLEAN with autoMerge armed at lines 6, 15, 38, and 50. That makes the checkpoint internally contradictory; either the prior-merge list or the later in-flight status needs to be corrected.
+  This line records 081KRHWGX0008QG0R0029X10F4 Phase 2 as already merged on main, but the same shard describes #3208 (the 081KRHWGX0008QG0R0029X10F4 Phase 2 tool) as still UNSTABLE/CLEAN with autoMerge armed at lines 6, 15, 38, and 50. That makes the checkpoint internally contradictory; either the prior-merge list or the later in-flight status needs to be corrected.
 
   </pre>
 
@@ -141,14 +141,14 @@ shard(tick): 1942Z — PR #3208 CI rerun cleared + session state checkp…
 
 …oint
 
-PR #3208 (B-0517 Phase 2 tool) hit UNSTABLE state — 5 failed lint jobs from
+PR #3208 (081KRHWGX0008QG0R0029X10F4 Phase 2 tool) hit UNSTABLE state — 5 failed lint jobs from
 the same mise rate-limit pattern earlier in the session. Reran failed jobs;
 transitioned UNSTABLE → CLEAN with autoMerge armed.
 
 Session-state checkpoint:
 - 12 razor-cadence batch shards (B1-B12 = 100% rule coverage, 50/50)
 - 2 mechanization tools (PR #3202 + PR #3208) with full test suites
-- 3 backlog rows filed (B-0506, B-0514, B-0517)
+- 3 backlog rows filed (081KRHWGX0008QG0R002DPG02X, 081KRHWGX0008QG0R002E3BCDS, 081KRHWGX0008QG0R0029X10F4)
 - 9-variant reference-classification taxonomy (durable artifact for any
   future Layer B mechanization)
 
@@ -193,7 +193,7 @@ fix(pr3211): 4 Copilot threads on 1942Z shard (self-contradiction + o…
 
 All 4 findings real:
 
-1. Line 7 self-contradiction: shard says "prior merges include B-0517 Phase 2"
+1. Line 7 self-contradiction: shard says "prior merges include 081KRHWGX0008QG0R0029X10F4 Phase 2"
    but later describes #3208 (the PR landing that phase) as still in-flight.
    Clarified: #3208 was UNSTABLE at refresh time + merged later in same tick.
 

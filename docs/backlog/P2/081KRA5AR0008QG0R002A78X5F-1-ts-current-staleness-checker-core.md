@@ -1,12 +1,11 @@
 ---
-id: B-0113.1
-zetaid: 081KRA5AR0008QG0R002A78X5F
+id: 081KRA5AR0008QG0R002A78X5F
 priority: P2
 status: open
 title: TS implementation of CURRENT-*.md staleness checker core (Bun + git mtime diff, no bash)
 tier: factory-hygiene
 effort: S
-ask: Pure-TS (Bun) module that, given maintainer name, returns staleness delta between newest memory/feedback_*<name>*.md and memory/CURRENT-<name>.md last commit date. Fail if >24h and no allowlist override. Replaces bash proposal in parent B-0113 per Rule 0 (TS over bash).
+ask: Pure-TS (Bun) module that, given maintainer name, returns staleness delta between newest memory/feedback_*<name>*.md and memory/CURRENT-<name>.md last commit date. Fail if >24h and no allowlist override. Replaces bash proposal in parent 081KQDTYV0008QG0R002424VSE per Rule 0 (TS over bash).
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
@@ -17,11 +16,11 @@ tags: [riven-2026-05-11, ts-over-bash, current-freshness, mechanical-enforcement
 type: friction-reducer
 ---
 
-# B-0113.1 — TS CURRENT staleness checker core
+# 081KRA5AR0008QG0R002A78X5F — TS CURRENT staleness checker core
 
 ## Why
 
-B-0113 proposed bash; Rule 0 + AGENTS.md mandate TS. This atomic child isolates the pure logic (no workflow, no hook) so it can be unit-tested, reused by CI or pre-commit wrapper, and reviewed independently.
+081KQDTYV0008QG0R002424VSE proposed bash; Rule 0 + AGENTS.md mandate TS. This atomic child isolates the pure logic (no workflow, no hook) so it can be unit-tested, reused by CI or pre-commit wrapper, and reviewed independently.
 
 ## Acceptance
 
@@ -34,11 +33,11 @@ B-0113 proposed bash; Rule 0 + AGENTS.md mandate TS. This atomic child isolates 
 
 ## Dependency note
 
-This is the root; B-0113.2 (CI wiring) and B-0113.3 (rule update) depend on it.
+This is the root; 081KRA5AR0008QG0R0010A24JD (CI wiring) and 081KRA5AR0008QG0R0016B8371 (rule update) depend on it.
 
 ## Evidence of TS preference
 
-See AGENTS.md "TS over bash (Rule 0)", recent B-0086 trajectory, all hygiene ports in PRs #866+.
+See AGENTS.md "TS over bash (Rule 0)", recent 081KQ8P5D0008QG0R003BFZPRC trajectory, all hygiene ports in PRs #866+.
 
 ## Focused check outcome (in worktree)
 

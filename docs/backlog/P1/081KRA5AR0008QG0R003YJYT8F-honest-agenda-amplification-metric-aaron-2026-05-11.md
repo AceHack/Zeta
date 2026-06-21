@@ -1,6 +1,5 @@
 ---
-id: B-0419
-zetaid: 081KRA5AR0008QG0R003YJYT8F
+id: 081KRA5AR0008QG0R003YJYT8F
 priority: P1
 status: open
 title: "Honest agenda amplification metric — actions weighted by agenda alignment"
@@ -11,7 +10,7 @@ composes_with: []
 type: feature
 ---
 
-# B-0419 — Honest agenda amplification metric
+# 081KRA5AR0008QG0R003YJYT8F — Honest agenda amplification metric
 
 ## What
 
@@ -30,7 +29,7 @@ Honest amplification = Σ(alignment × action_weight) / N(messages)
 Aaron 2026-05-11: "we can make an honest math one but it won't
 be that clean it will require angenda amplification."
 
-The vanity ratio (B-0418) is viral but optimizing for it would
+The vanity ratio (081KRA5AR0008QG0R001NXBYTY) is viral but optimizing for it would
 degrade the actual work. The honest version is the internal
 alignment-measurement metric — what an alignment-focused
 factory should actually track for self-evaluation.
@@ -72,7 +71,7 @@ these questions.
 
 ## Composes with
 
-- B-0418 (vanity counter — kept as separate viral metric)
+- 081KRA5AR0008QG0R001NXBYTY (vanity counter — kept as separate viral metric)
 - `memory/feedback_agenda_amplification_honest_math_vs_vanity_ratio_aaron_2026_05_11.md`
 - `docs/AGENDA.md` (existing agenda transparency substrate)
 - Otto's 7-vector coercion disclosure
@@ -81,5 +80,5 @@ these questions.
 ## Origin
 
 Aaron 2026-05-11: "its a vantiy metric but viral" (about
-B-0418) → "we can make an honest math one but it won't be
+081KRA5AR0008QG0R001NXBYTY) → "we can make an honest math one but it won't be
 that clean it will require angenda amplification" (this row).

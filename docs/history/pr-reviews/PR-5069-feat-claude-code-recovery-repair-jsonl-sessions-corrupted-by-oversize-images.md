@@ -350,7 +350,7 @@ to the operator without ceremonial scaffolding.
 - **`Copilot` (bot)** at 2026-05-26T02:31:08Z on `.claude/skills/claude-session-recovery/SKILL.md`:3 (association: NONE)
 
   <pre>
-  Skill frontmatter `description` is significantly longer than the repo guidance to carve skill descriptions to &lt;120 chars (see docs/ops/COST-REDUCTION-LESSONS.md:53-55 / B-0347). Consider shrinking this to a single carved sentence and move the trigger-phrase list into the body (it’s already present under “Specific trigger phrases”).
+  Skill frontmatter `description` is significantly longer than the repo guidance to carve skill descriptions to &lt;120 chars (see docs/ops/COST-REDUCTION-LESSONS.md:53-55 / 081KR50HA0008QG0R002ZNFQBZ). Consider shrinking this to a single carved sentence and move the trigger-phrase list into the body (it’s already present under “Specific trigger phrases”).
 
   </pre>
 
@@ -583,7 +583,7 @@ Addresses 6 new review findings on PR #5069 (Copilot, third pass):
   annotation lands on the container that actually lost images.
 
 - SKILL.md description carving (#6): was 158 chars, target was
-  <120 per the carved-sentence guidance (B-0347 /
+  <120 per the carved-sentence guidance (081KR50HA0008QG0R002ZNFQBZ /
   docs/ops/COST-REDUCTION-LESSONS.md). Now 110 chars; trigger
   phrases stay in the body's "Specific trigger phrases" section.
 

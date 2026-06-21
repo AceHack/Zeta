@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // audit_candidate_failures.ts — reconstruction audit for filter-gate failures.
 //
-// B-0058 responsibility #3: failed and deferred candidate adoptions are
+// 081KQ3HBZ0008QG0R002S674CG responsibility #3: failed and deferred candidate adoptions are
 // evidence, not trash. This audit makes sure the filter-gate log keeps enough
 // structured context for later agents to reconstruct what was rejected, why,
 // by whom, and under which alignment clauses.

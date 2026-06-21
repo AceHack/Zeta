@@ -270,7 +270,7 @@ Codex-Loop-Run-Id: 20260527T003110Z
 **Message:**
 
 ```
-fix(B-0506 audit): handle spawnSync launch errors + reject dash-prefi…
+fix(081KRHWGX0008QG0R002DPG02X audit): handle spawnSync launch errors + reject dash-prefi…
 
 …xed flag values + sharpen exit-128 comment
 

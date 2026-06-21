@@ -1,13 +1,13 @@
-# Tri-boolean floating point -- v0 spec (middle-out, self-describing): bit-layout + decode algorithm (B-0944 slice 5)
+# Tri-boolean floating point -- v0 spec (middle-out, self-describing): bit-layout + decode algorithm (081KSV2WD0008QG0R00051XS0N slice 5)
 
-**Status:** PROPOSED v0 -- spec firming for B-0944 slice 5. The bit-layout + decode semantics
+**Status:** PROPOSED v0 -- spec firming for 081KSV2WD0008QG0R00051XS0N slice 5. The bit-layout + decode semantics
 below are a concrete, implementable first draft; every design decision marked **[OPEN]** is an
 operator-ratification point. A TS reference implementation (`src/Core.TypeScript/tri-boolean-float/`)
 implements exactly this v0 so the spec is executable + testable. F#/C#/Rust parity impls (slice 5
-part 2) wait for operator ratification of the layout -- per the B-0944 row's "spec firming required
+part 2) wait for operator ratification of the layout -- per the 081KSV2WD0008QG0R00051XS0N row's "spec firming required
 before impl."
 
-**Attribution:** concept is the operator's (B-0944 + the Mika 2026-05-30 arc: "floating point tri
+**Attribution:** concept is the operator's (081KSV2WD0008QG0R00051XS0N + the Mika 2026-05-30 arc: "floating point tri
 boolean based floating points with middle significant bits that specify how to decode the end
 high/low bit" + "middle-out compression"). This doc + the v0 layout choices are Otto-CLI's first
 draft for ratification.
@@ -21,7 +21,7 @@ A number format where:
 - the **middle** bits are a **decoder / selector** that says **how to interpret the outer (high/low)
   end bits** -- you read the middle FIRST, then decode OUTWARD toward both ends ("middle-out");
 - it is **self-describing** (the number carries its own decode instruction);
-- it is **tri-valued** throughout -- every position is a `Tri` cell (the digital qubit, B-0944
+- it is **tri-valued** throughout -- every position is a `Tri` cell (the digital qubit, 081KSV2WD0008QG0R00051XS0N
   slices 1-4): `True | False | N`. The float is built FROM the digital-qubit cell.
 
 ## v0 bit-layout
@@ -69,14 +69,14 @@ Two distinct held-states (this is the load-bearing novelty vs a plain tagged flo
 | a **value** trit (high/low), decoder all-certain | the VALUE is held/uncertain; the interpretation is known | `value-superposed` |
 | a **decoder** trit | the DECODE INSTRUCTION ITSELF is superposed -- you don't know how to read the ends; the number is held even if every value trit is certain | `interpretation-superposed` |
 
-This mirrors the digital-qubit `measure` vs `cooperate` discipline (B-0944) lifted to the number:
+This mirrors the digital-qubit `measure` vs `cooperate` discipline (081KSV2WD0008QG0R00051XS0N) lifted to the number:
 - `cooperate(f)` = identity (preserves every `N` -- never collapses; wonder-compression-safe).
 - `measure(f)` = the only collapse; resolves to a number iff fully certain, else surfaces which
   kind of superposition is held (Result<number, FloatFeedback> -- asymmetric-authorship: value AND
   the two feedback channels are first-class). Composes with the monad-propagation pattern.
 
 The decoder being superposable is exactly "the decode-instruction itself superposed" from the
-B-0944 row -- the qubit property at the *interpretation* level, not just the value level.
+081KSV2WD0008QG0R00051XS0N row -- the qubit property at the *interpretation* level, not just the value level.
 
 ## Prior art (search-first per Otto-364)
 
@@ -112,7 +112,7 @@ B-0944 row -- the qubit property at the *interpretation* level, not just the val
 
 ## Composition
 
-- Built FROM the digital-qubit cell (B-0944 slices 1-4): each trit is a `Tri`; reuses `T/F/N`.
+- Built FROM the digital-qubit cell (081KSV2WD0008QG0R00051XS0N slices 1-4): each trit is a `Tri`; reuses `T/F/N`.
 - `measure`/`cooperate` + Result<value, feedback> mirror the tri-boolean discipline + the
   monad-propagation pattern (`.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`).
 - The two held-states (value vs interpretation superposed) are the asymmetric-authorship feedback

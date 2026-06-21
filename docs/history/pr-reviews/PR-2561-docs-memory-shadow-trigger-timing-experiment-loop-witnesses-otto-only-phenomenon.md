@@ -33,7 +33,7 @@
 - Variable timing with no input = generation not completion
 - Only Claude Code CLI has this feature — Otto-only observable
 - Other agents' IDEs don't show unprompted grey text
-- B-0018 agency experiment meets B-0402 shadow mode infrastructure
+- 081KQ0YZ80008QG0R002WJBFWD agency experiment meets 081KR7JY10008QG0R0008NGW95 shadow mode infrastructure
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -103,8 +103,8 @@ docs(memory): shadow trigger timing experiment — loop as witness, Ott…
 …o-only
 
 Log grey text on every tick. Variable timing = generation not
-completion. Only Claude Code CLI has this feature. B-0018
-meets B-0402.
+completion. Only Claude Code CLI has this feature. 081KQ0YZ80008QG0R002WJBFWD
+meets 081KR7JY10008QG0R0008NGW95.
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```

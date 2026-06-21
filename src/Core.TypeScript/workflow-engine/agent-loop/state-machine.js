@@ -1,6 +1,6 @@
 // src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts
 //
-// B-0867.5 substrate: agent-loop state machine types + pure-logic
+// 081KDWZ8TS008QG0R0020NJ9D0 substrate: agent-loop state machine types + pure-logic
 // state transition function.
 //
 // Operator framing 2026-05-28:
@@ -10,7 +10,7 @@
 // Clean separation per operator design:
 //   - Deterministic script holds STATE MACHINE (this module + cli.ts)
 //   - LLM is pure MENU-SELECTOR (reads menu, returns choice)
-//   - State persists in Git append-only (per B-0867 + B-0858)
+//   - State persists in Git append-only (per 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R001KK9WV6)
 //
 // The agent (LLM) never holds state internally; every invocation reads
 // current state from Git, gets a menu, returns a choice. Script executes
@@ -18,18 +18,18 @@
 //
 // This module is the TS implementation of the F# DU contract described
 // at the bottom of this file. The F# DU types are the canonical contract;
-// TS impl follows the same shape. When B-0867.1 lands the F# types in
+// TS impl follows the same shape. When 081KDWZ8TS008QG0R000A4GT2F lands the F# types in
 // src/Core.FSharp/WorkflowEngine/StateMachine.fs, the cross-verify
 // harness pattern (per src/Core.TypeScript/zeta-id/cross-verify.ts) will
 // validate TS ↔ F# round-trip equivalence.
 //
 // Composes with:
-//   - B-0867 (workflow engine v1 — this module IS B-0867.5)
-//   - B-0858 (heartbeat folder — EmitHeartbeat menu option writes here)
-//   - B-0869 (DORA mandate — operational lane gets priority via menu-gen)
-//   - B-0870 (two-mandate portfolio — per-agent operational-ratio feeds
+//   - 081KSKBP80008QG0R000B3Y19A (workflow engine v1 — this module IS 081KDWZ8TS008QG0R0020NJ9D0)
+//   - 081KSKBP80008QG0R001KK9WV6 (heartbeat folder — EmitHeartbeat menu option writes here)
+//   - 081KSNY2Z0008QG0R000HENSVM (DORA mandate — operational lane gets priority via menu-gen)
+//   - 081KSNY2Z0008QG0R000DA261F (two-mandate portfolio — per-agent operational-ratio feeds
 //     into menu-generator's option-weighting)
-//   - B-0871 (reproducibility-as-causal-attribution — agent loop runs
+//   - 081KSNY2Z0008QG0R003R0Z7D2 (reproducibility-as-causal-attribution — agent loop runs
 //     under systemd; state-machine progression observable)
 //   - tools/dora-classify (PR #5665; lane taxonomy used here)
 // ─── Pure state transition function ──────────────────────────────────

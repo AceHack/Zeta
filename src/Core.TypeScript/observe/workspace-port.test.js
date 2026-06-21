@@ -88,7 +88,7 @@ describe("simulatedWorkspacePort — pre-seeded state", () => {
     test("pre-seeded files are readable immediately", () => {
         const state = emptySimulatedState();
         const port = simulatedWorkspacePort(state);
-        port.writeFile("docs/backlog/P1/item.md", "---\nid: B-0170\nzetaid: 081KTEST\n---\n# Item");
+        port.writeFile("docs/backlog/P1/item.md", "---\nid: 081KQNJ500008QG0R003SCWBDV\nzetaid: 081KTEST\n---\n# Item");
         port.writeFile("src/Core.TypeScript/observe/observe.ts", "// the controller");
         const result = port.readFile("docs/backlog/P1/item.md");
         expect(result.ok).toBe(true);

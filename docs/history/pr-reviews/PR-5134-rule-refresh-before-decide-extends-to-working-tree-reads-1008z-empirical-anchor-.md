@@ -54,7 +54,7 @@ Searched `.claude/rules/` + `memory/` for: `git fetch`, `FETCH_HEAD`, `local HEA
 - [x] Verify-before-defer composition: `git worktree add --detach /private/tmp/zeta-otto-cli-refresh-extend-1008z origin/main` → exit=0, HEAD=`1641da6d2`, ls-tree=61, status=0, no `index.lock`
 - [x] Branch-guard fired pre-commit per [`zeta-expected-branch.md`](.claude/rules/zeta-expected-branch.md) (`git branch --show-current` matched `ZETA_EXPECTED_BRANCH`)
 - [x] Post-commit canary per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md): `ls-tree HEAD~1 = HEAD = 61`
-- [x] Push wrapped in `timeout --kill-after=5s 90s` per B-0615 discipline
+- [x] Push wrapped in `timeout --kill-after=5s 90s` per 081KRW63S0008QG0R000EAZ9K2 discipline
 - [x] Stays additive — no existing content removed; existing 28-line rule preserved verbatim
 
 ## Composes with

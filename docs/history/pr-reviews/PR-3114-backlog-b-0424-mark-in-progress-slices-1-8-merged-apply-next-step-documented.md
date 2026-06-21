@@ -29,12 +29,12 @@
 
 ## Summary
 
-- Slices B-0424.1–B-0424.8 (PRs #2994, #2996, #3003, #3019, #3025, #3026, #3027, #3028) are all merged
+- Slices 081KRFA460008QG0R001H98EXJ.1–081KRFA460008QG0R001H98EXJ.8 (PRs #2994, #2996, #3003, #3019, #3025, #3026, #3027, #3028) are all merged
 - Tests: **30/30 pass** (`bun test tools/scaffold/create-repo.ts`)
 - Dry-run verified 2026-05-14: 12 operations planned for both `forge` and `ace` — no errors
-- B-0424 status updated `open` → `in-progress`; completed-slices table and `--apply` execution instructions added
+- 081KRFA460008QG0R001H98EXJ status updated `open` → `in-progress`; completed-slices table and `--apply` execution instructions added
 
-## What's left (for full B-0424 closure)
+## What's left (for full 081KRFA460008QG0R001H98EXJ closure)
 
 The only remaining step is running `--apply` to actually create the GitHub repos — an irreversible external action that requires Aaron's explicit review. The dry-run shows exactly what will happen before he decides.
 
@@ -71,12 +71,12 @@ After `--apply`, six manual follow-ups remain (documented in the updated backlog
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CAGaD`
-- **Path**: `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T08:12:20Z on `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T08:12:20Z on `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`:4 (association: NONE)
 
   <pre>
   P1: `in-progress` is not a valid backlog frontmatter status per `tools/backlog/README.md:63`, which only permits `open`, `closed`, `superseded-by-B-NNNN`, or `deferred`. This row will no longer conform to the documented schema; keep it `open` or add/update schema/tooling support for this new state in the same PR.
@@ -86,15 +86,15 @@ After `--apply`, six manual follow-ups remain (documented in the updated backlog
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CAGah`
-- **Path**: `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T08:12:20Z on `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`:108 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T08:12:20Z on `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`:108 (association: NONE)
 
   <pre>
-  P1: This tells the operator to run the irreversible `--apply` commands locally, bypassing the `scaffold-stage1-create-repos` workflow that was added as the safe apply entrypoint with actor allowlisting, a `CONFIRM` gate, PAT-secret handling, and concurrency protection. Since the row itself calls B-0424.2 the safe apply entrypoint, the next-step instructions should route through that workflow (or explicitly justify why these controls are being bypassed).
+  P1: This tells the operator to run the irreversible `--apply` commands locally, bypassing the `scaffold-stage1-create-repos` workflow that was added as the safe apply entrypoint with actor allowlisting, a `CONFIRM` gate, PAT-secret handling, and concurrency protection. Since the row itself calls 081KRFA460008QG0R001H98EXJ.2 the safe apply entrypoint, the next-step instructions should route through that workflow (or explicitly justify why these controls are being bypassed).
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -103,7 +103,7 @@ After `--apply`, six manual follow-ups remain (documented in the updated backlog
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
 
 **Message:**
 
@@ -127,7 +127,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
 
 **Message:**
 
@@ -141,7 +141,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md`
 
 **Message:**
 

@@ -81,10 +81,10 @@ docs(archive): Lior preservation of 3942, 3941
 **Message:**
 
 ```
-fix(#3948): correct relative link to B-0543 from docs/pr-discussions/
+fix(#3948): correct relative link to 081KRMEXM0008QG0R002YSPW1X from docs/pr-discussions/
 
-Copilot review thread caught: `[B-0543](docs/backlog/)` resolves to
-`docs/pr-discussions/docs/backlog/` (broken). Fix uses `../backlog/P2/B-0543-...md`.
+Copilot review thread caught: `[081KRMEXM0008QG0R002YSPW1X](docs/backlog/)` resolves to
+`docs/pr-discussions/docs/backlog/` (broken). Fix uses `../backlog/P2/081KRMEXM0008QG0R002YSPW1X-...md`.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

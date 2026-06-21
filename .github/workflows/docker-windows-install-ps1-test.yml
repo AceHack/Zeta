@@ -1,6 +1,6 @@
 # .github/workflows/docker-windows-install-ps1-test.yml
 #
-# Slice 2c — CI for the Server-Core Docker test of tools/setup/install.ps1 (B-0857 Windows
+# Slice 2c — CI for the Server-Core Docker test of tools/setup/install.ps1 (081KSKBP80008QG0R002J03WGA Windows
 # parity). Mirrors docker-nixos-install-sh-test.yml but on a Windows host (Windows containers need
 # one). Base + runner are a MATCHED PAIR: servercore:ltsc2025 on runs-on: windows-2025 (Windows
 # Server 2025, the current LTSC). WebSearch 2026-05-31: actions/runner-images#11742 (windows-2025

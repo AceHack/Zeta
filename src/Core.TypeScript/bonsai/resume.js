@@ -1,5 +1,5 @@
 /**
- * resume.ts — TS reference (oracle #1) for the **resume engine** (B-0976 slice), the
+ * resume.ts — TS reference (oracle #1) for the **resume engine** (081KT07NV0008QG0R003BE6MJ2 slice), the
  * self-evolving-saga kernel that the serialized Bonsai expression-tree feeds. Where
  * `bonsai.ts` is the *serializer* (the deferred computation's shape), this is the *evaluator*
  * that runs that shape with **restore-not-replay** durable execution.

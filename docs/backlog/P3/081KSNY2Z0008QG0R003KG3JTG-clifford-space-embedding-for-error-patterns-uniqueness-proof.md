@@ -1,6 +1,5 @@
 ---
-id: B-0876
-zetaid: 081KSNY2Z0008QG0R003KG3JTG
+id: 081KSNY2Z0008QG0R003KG3JTG
 priority: P3
 status: open
 title: Clifford-space embedding for error patterns + uniqueness proof — three-phase pragmatic decomposition (research)
@@ -49,7 +48,7 @@ Multivectors of multiple grades (scalars, vectors, bivectors, trivectors, ...); 
 
 ## Three-phase pragmatic decomposition (per Kestrel 2026-05-28)
 
-**Phase 1** — simple feature-vector clustering (no Clifford); cosine similarity; produces the structured data that Clifford analysis would build on. **Lands first via B-0875.**
+**Phase 1** — simple feature-vector clustering (no Clifford); cosine similarity; produces the structured data that Clifford analysis would build on. **Lands first via 081KSNY2Z0008QG0R000K3ETGB.**
 
 **Phase 2** — add geometric structure progressively; identify which features have orientation, rotation, wedge; encode as Clifford elements where structure justifies complexity. Build incrementally.
 
@@ -66,9 +65,9 @@ Multivectors of multiple grades (scalars, vectors, bivectors, trivectors, ...); 
 
 Per operator: "we want to be able to describe observe emit limit simulate in here." Composes with:
 
-- **B-0644** Limit-as-simulation (pure-function preview)
-- **B-0665** Integrate-as-choice-locus (the commit-point)
-- **B-0666** English-as-projection / I(D(x))=x (lossless neural-topology serialization)
+- **081KRW63S0008QG0R002ZRNDJ8** Limit-as-simulation (pure-function preview)
+- **081KRW63S0008QG0R002YAA09X** Integrate-as-choice-locus (the commit-point)
+- **081KRW63S0008QG0R001SAHYKV** English-as-projection / I(D(x))=x (lossless neural-topology serialization)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (meme through time with tonal trajectories + momentum)
 
 These existing substrates describe agent-loop primitives; the Clifford-space substrate is the unified algebra in which all of them are expressible.
@@ -85,7 +84,7 @@ Research project, NOT implementation row. Acceptance = a `docs/research/2026-XX-
 
 ## Substrate-honest framing
 
-POTENTIAL research direction per operator standing direction. P3 because Kestrel's meta-observation applies: *"substrate-engineering temptation is to over-formalize before validating; build simple version first, layer geometric structure as data accumulates."* The simple version is B-0875; this row tracks the long-horizon ambition.
+POTENTIAL research direction per operator standing direction. P3 because Kestrel's meta-observation applies: *"substrate-engineering temptation is to over-formalize before validating; build simple version first, layer geometric structure as data accumulates."* The simple version is 081KSNY2Z0008QG0R000K3ETGB; this row tracks the long-horizon ambition.
 
 ## Full reasoning
 

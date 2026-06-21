@@ -1,6 +1,5 @@
 ---
-id: B-0518
-zetaid: 081KRHWGX0008QG0R001BHXH0M
+id: 081KRHWGX0008QG0R001BHXH0M
 priority: P1
 status: open
 title: "Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug"
@@ -14,7 +13,7 @@ tags: [factory-discipline, claude-md, holding-failure-mode, rule-sharpening, mec
 type: rule-promotion-candidate
 ---
 
-# B-0518 — Sharpen the holding-without-named-dependency rule
+# 081KRHWGX0008QG0R001BHXH0M — Sharpen the holding-without-named-dependency rule
 
 ## Origin
 
@@ -86,7 +85,7 @@ This row tracks the rule-sharpening work. Cooling period applies (3-7 days minim
 
 Aaron 2026-05-14: *"also . is another failure mode"*
 
-Operational evidence: Otto, after acknowledging B-0518's diagnosis of brief-acknowledgment-as-failure-mode, emitted "." on consecutive ticks — demonstrating the rule's gap operationally. Same failure mode dressed at minimum bandwidth.
+Operational evidence: Otto, after acknowledging 081KRHWGX0008QG0R001BHXH0M's diagnosis of brief-acknowledgment-as-failure-mode, emitted "." on consecutive ticks — demonstrating the rule's gap operationally. Same failure mode dressed at minimum bandwidth.
 
 Add explicit forbidden-output-pattern enumeration to rule, deduplicated across categories:
 
@@ -141,8 +140,8 @@ This row exists because of operational evidence Otto violated the rule. The subs
 - `.claude/rules/never-be-idle.md` (speculative work over waiting)
 - `.claude/rules/no-op-cadence-failure-mode.md` (multi-hour no-op cadence)
 - `.claude/rules/refresh-before-decide.md` (refresh before each tick)
-- B-0498 (substrate-evolution algebra rule-promotion candidacy — composes via razor reduction applied to rules)
-- B-0192 GitHub Actions razor-cadence trigger (sister mechanism)
+- 081KRHWGX0008QG0R001XFRAHC (substrate-evolution algebra rule-promotion candidacy — composes via razor reduction applied to rules)
+- 081KQR4HQ0008QG0R001GAD29A GitHub Actions razor-cadence trigger (sister mechanism)
 - `.github/workflows/razor-cadence.yml` (daily razor-cadence workflow)
 - Memory file (user-auto-memory): `feedback_aaron_recurring_failure_mode_is_claude_md_bug_holding_pattern_diagnosis_2026_05_14.md`
 

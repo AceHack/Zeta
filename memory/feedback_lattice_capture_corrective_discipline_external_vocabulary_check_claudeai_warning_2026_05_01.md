@@ -50,7 +50,7 @@ This is the immediate operational test. Aaron may or may not run it; it's filed 
 
 - Does NOT add new substrate-vocabulary categories ("lattice-capture-discipline" is the term, but kept minimally substrate-shaped — "external-vocabulary check" is the operative phrase from Claude.ai's vocabulary).
 - Does NOT promote this to seed-layer canonical without cooling-period assessment.
-- Does NOT replace existing audit-suite candidates (B-0130) — instead, this discipline could *inform* what those audits check, but the discipline itself is broader than audit-mechanization (mechanization can't catch all lattice-capture; some requires actual external-vocabulary engagement).
+- Does NOT replace existing audit-suite candidates (081KQGDBJ0008QG0R002Y31XJ3) — instead, this discipline could *inform* what those audits check, but the discipline itself is broader than audit-mechanization (mechanization can't catch all lattice-capture; some requires actual external-vocabulary engagement).
 - Does NOT authorize Otto to claim "lattice-capture corrective is operating" without actually running the external-vocabulary tests. Saying "the discipline is filed" is not the same as "the discipline is operating."
 
 ## Composes with

@@ -70,5 +70,5 @@ cross-validation) inherits this priority signal.
 
 - feedback_shadow_editorial_judgment (memory autonomy)
 - project_hub_agent_bft_satoshi (BFT for trust)
-- B-0400 (inter-agent bus for EP/BP)
+- 081KR7JY10008QG0R000R503K2 (inter-agent bus for EP/BP)
 - feedback_trust_then_verify (trust memories, verify via EP/BP)

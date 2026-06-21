@@ -1,6 +1,6 @@
 // src/Core.TypeScript/workflow-engine/sourcehut-world.ts
 //
-// B-0867.15 — SourcehutWorld per-host adapter.
+// 081KSNY2Z0008QG0R002A785QR — SourcehutWorld per-host adapter.
 //
 // SubstantIVELY DIFFERENT shape from GitHub/GitLab/Gitea/Bitbucket/
 // Codeberg. Sourcehut (sr.ht) uses EMAIL-PATCHES + MAILING LISTS for
@@ -12,7 +12,7 @@
 // DIFFERENT forge models, not just PR/MR variations.
 //
 // Composes with PR #5775 (GitWorld base) + PR #5801 (GitLabWorld) +
-// B-0867.15 (per-host adapters target).
+// 081KSNY2Z0008QG0R002A785QR (per-host adapters target).
 import { registerLifetimePair } from "./world.js";
 import {} from "./git-world.js";
 export function srhtRateLimitTier(buildJobsRemaining) {

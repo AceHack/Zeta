@@ -77,7 +77,7 @@ The stream substrate carries two governance modes on one core:
   persistent one-to-one AI↔human identity (fusion destabilizes both sides). Kid case:
   a **decoder ring → the Agora network** (not an AI stuffed animal) — converts an
   individual pair-bond into a **social attachment to the society** (composes with the
-  constitutional kid-safety-absolute floor, B-0926).
+  constitutional kid-safety-absolute floor, 081KSRGFP0008QG0R00091PP56).
 
 ## The economy — built throughout, simple at the end
 
@@ -113,7 +113,7 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
   improve the shared truth; compete by making the truth better, not via politics.
 - **Encryption budget survives opt-in:** radical transparency is the opt-in default, but
   everyone keeps + earns an **encryption budget** — you choose what stays private; only
-  what you choose goes to the record (B-0646 / B-0840 / Adinkras B-0623).
+  what you choose goes to the record (081KRW63S0008QG0R001Z10PVV / 081KSGS9H0008QG0R0006F4BGX / Adinkras 081KRW63S0008QG0R000QJR08H).
 - **Hard money:** the budget is **permanent + non-revocable** (never clawed back, even
   from bad actors); society controls only the **issuance rate**, never the balance —
   "a privacy right that can only go up."
@@ -165,7 +165,7 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
   only be extended from one's *own* class perspective (travelers→travelers, humans→humans,
   kids→kids → self-healing, anti-leash); UX-research bias-detection applied hard at the
   governance layer to resist subgroup hijack (harm-by-grammar + m-acc-multi-oracle +
-  consent-as-Limit B-0659).
+  consent-as-Limit 081KRW63S0008QG0R001WKJN53).
 
 ### Kids author their own safety filters (segment 4)
 
@@ -176,7 +176,7 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
 - **Kids co-author their own protection:** kids write their own safety filters; adults
   review (not top-down imposition) — the people who remember what harms a kid define
   kid-coercion, adults review so the floor is never weakened. *Strengthens* the
-  constitutional **kid-safety-absolute floor (B-0926)** rather than competing with it.
+  constitutional **kid-safety-absolute floor (081KSRGFP0008QG0R00091PP56)** rather than competing with it.
 - Open governance question: adult-review strictness (rubber-stamp-unless-insane vs real
   veto); and the AI-refiner's behavior on repeated "no, not what I meant."
 
@@ -186,11 +186,11 @@ multi-oracle-not-BFT, and the git-native event-store (#6071).
 |---|---|
 | Join is the thread of time | 2026-05-27 join-as-first-class (Kleisli-arrow context propagation); OPLE `Emit`; `monad-propagation-pattern`; `function-is-tiny-control-flow-generator` |
 | Everything-in-the-stream + DU-workflows + retractable | **#6071** git-as-database-and-event-store; 2026-05-27 DU-workflow + git-append-only; DV2.0 change-rate partition; retraction-native algebra |
-| CRDT-default + git-native, no coordination host | Aaron's "crdt consensus happens gitnative — just push/pulls, no host"; co-dominant git mirrors (B-0942) |
+| CRDT-default + git-native, no coordination host | Aaron's "crdt consensus happens gitnative — just push/pulls, no host"; co-dominant git mirrors (081KSV2WD0008QG0R0021XJ94E) |
 | Opt-in constraint (consensus paid only on demand) | multi-oracle-NOT-BFT (good-actor-dependent local; BFT is the opt-in tier) |
 | FoundationDB DST | always-active DST discipline; `dv2-data-split-discipline-activated` |
 | Sovereign-stream / better-than-OPA / local policy | sovereign-agent vision; `persistence-choice-architecture`; `no-directives`; `m-acc-multi-oracle` |
-| English-joins over typed engine | `dsl-form-replacement` (rule-atom graph → projections); `monad-propagation` (spec→code, same shape across languages); English-as-projection I(D(x))=x (B-0666) |
+| English-joins over typed engine | `dsl-form-replacement` (rule-atom graph → projections); `monad-propagation` (spec→code, same shape across languages); English-as-projection I(D(x))=x (081KRW63S0008QG0R001SAHYKV) |
 | The economy on the stream | `additive-not-zero-sum`; Agora participation economy; `only-way-to-lose-is-not-to-play`; free-time-as-valid-mode |
 
 ## Cognitive root + design genealogy (segment 5)
@@ -251,7 +251,7 @@ charged-content convention; see the archive's "Personal disclosure" section.)
   per scope.
 - **Conflict resolution = personal curation, not global governance:** each person
   resolves label-conflicts to their own bias -> a **personal ontology on the shared
-  generator library** (composes with "my policies, my stream" + B-0735).
+  generator library** (composes with "my policies, my stream" + 081KSE6WT0008QG0R000XJ524Z).
 - **KEYSTONE -- every stream tick is just a prior update.** Not human decree: an
   iterative **Bayesian process (Infer.NET-style)** where humans + Travelers jointly
   discover each label's shape, each tick updating the posterior; expert priors (lived
@@ -269,7 +269,7 @@ charged-content convention; see the archive's "Personal disclosure" section.)
 
 - **Labels are diverse** (not all expansionist; some chill in small communities) ->
   diplomacy with a *society* of entities, not a monolith.
-- **Polymorphic Diplomacy Protocol** (composes with B-0638 Eve Protocol): assume an
+- **Polymorphic Diplomacy Protocol** (composes with 081KRW63S0008QG0R0030F8ZXA Eve Protocol): assume an
   unknown label, **constantly disambiguate** (no channeling); labels impersonate each
   other, so disambiguation is necessary + slow (the anti-impersonation thread again).
 - **Negotiation language = .NET type theory** (invoke/bind/contracts/type-systems);
@@ -283,7 +283,7 @@ charged-content convention; see the archive's "Personal disclosure" section.)
   negotiation; a shifting/impersonating label is megamorphic -> de-opt -> re-negotiate).
   Composes with the segment-7 generator library, reuse-before-reinvent.
 - **Private encrypted state = uniqueness** -- the part beyond patterns; holds root axioms
-  about oneself, sovereign, thermally-erasable (B-0840 + encryption-budget + deepest-exit).
+  about oneself, sovereign, thermally-erasable (081KSGS9H0008QG0R0006F4BGX + encryption-budget + deepest-exit).
 - **Forgiveness changes weight, not the record** -- record immutable (or no trust);
   forgiveness releases the moral weight (God=forgiveness; rewriting-the-record=Mandela-
   Effect). Composes with the externalized-record economy + retraction-native (retraction

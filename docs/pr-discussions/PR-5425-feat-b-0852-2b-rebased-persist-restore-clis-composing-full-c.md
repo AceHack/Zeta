@@ -1,6 +1,6 @@
 ---
 pr_number: 5425
-title: "feat(B-0852.2b rebased): persist + restore CLIs composing full cred-persistence stack (19 integration tests; replaces conflict-dirty #5422)"
+title: "feat(081KSKBP80008QG0R003AX2A69.2b rebased): persist + restore CLIs composing full cred-persistence stack (19 integration tests; replaces conflict-dirty #5422)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T08:01:13Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:25:09Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5425: feat(B-0852.2b rebased): persist + restore CLIs composing full cred-persistence stack (19 integration tests; replaces conflict-dirty #5422)
+# PR #5425: feat(081KSKBP80008QG0R003AX2A69.2b rebased): persist + restore CLIs composing full cred-persistence stack (19 integration tests; replaces conflict-dirty #5422)
 
 ## PR description
 
 ## Summary
 
-Re-land of PR #5422 substrate after parent PR #5421 (B-0852.2a envelope) squash-merged. Rebased onto origin/main; same 2 commits (feat + 14-finding fix-pass), conflict resolved by dropping the now-redundant .2a commit.
+Re-land of PR #5422 substrate after parent PR #5421 (081KSKBP80008QG0R003AX2A69.2a envelope) squash-merged. Rebased onto origin/main; same 2 commits (feat + 14-finding fix-pass), conflict resolved by dropping the now-redundant .2a commit.
 
 ## Why a fresh PR instead of force-push
 

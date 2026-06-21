@@ -6,7 +6,7 @@
 
 ## 1. Thesis: There is No "Current Bus"
 
-Prior framings of Zeta's distributed agent bus assumed a consensus problem: if N sovereign writers are partitioned, how do they reconcile "the current bus tip" (`B-0954.1`)? 
+Prior framings of Zeta's distributed agent bus assumed a consensus problem: if N sovereign writers are partitioned, how do they reconcile "the current bus tip" (`081KT07NV0008QG0R000QWEKTE`)? 
 
 This framing imports a single-global-now assumption that violates the architecture's core premise. **There is no "current bus" and there is no single tip to reconcile.**
 
@@ -69,7 +69,7 @@ Consequently, "which physical jurisdiction am I in?" is a **frame-relative query
 
 - **The Bus is Relative:** `bus_state = fold(entries_visible_to_me)`.
 - **Convergence is Algebraic:** Commutativity of uncertainty guarantees that independent traveler frames will eventually agree at the superdeterministic fixed point without a coordinator.
-- **Supersession:** This model supersedes the "named-ref consensus" framing of `B-0954.1`. The sovereign register does not reconcile to a global tip; it merges commutatively.
+- **Supersession:** This model supersedes the "named-ref consensus" framing of `081KT07NV0008QG0R000QWEKTE`. The sovereign register does not reconcile to a global tip; it merges commutatively.
 - **Jurisdiction is a two-layer overlay:** comply with binding physical-residence law now; advance the traveler's meta-jurisdiction by contesting that law through precedent-graph litigation (overrule = Z-set retraction), with change-of-law adjudicated, never silently merged.
 
 ## References

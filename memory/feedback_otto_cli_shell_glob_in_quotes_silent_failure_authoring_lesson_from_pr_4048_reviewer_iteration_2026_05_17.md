@@ -14,12 +14,12 @@ command for reproducibility:
 
 ```bash
 # WRONG — silently no-ops, no error, no file copied:
-cp "$PRIMARY/docs/backlog/P2/B-0611-*.md" docs/backlog/P2/
+cp "$PRIMARY/docs/backlog/P2/081KRSKQ20008QG0R0014PPGZM-*.md" docs/backlog/P2/
 cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice*.md" memory/
 ```
 
 The shell does NOT expand `*` inside double quotes. `cp` receives
-the literal argument `B-0611-*.md` (with literal asterisk), tries
+the literal argument `081KRSKQ20008QG0R0014PPGZM-*.md` (with literal asterisk), tries
 to find a file with that exact name, doesn't find one, and (on
 many systems) silently exits 0 with no file copied.
 
@@ -27,7 +27,7 @@ many systems) silently exits 0 with no file copied.
 
 ```bash
 # RIGHT — explicit literal filenames:
-cp "$PRIMARY/docs/backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md" docs/backlog/P2/
+cp "$PRIMARY/docs/backlog/P2/081KRSKQ20008QG0R0014PPGZM-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md" docs/backlog/P2/
 cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice1_audit_recipe_4_of_6_have_footnote_fallback_pattern_intentional_dangling_2026_05_17.md" memory/
 cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice2_audit_verbatim_preservation_constraint_editorial_footnote_pattern_2026_05_17.md" memory/
 # ... etc, one explicit cp per file
@@ -46,7 +46,7 @@ The reviewer caught this on PR #4048 and added an explanatory
 paragraph for the fix:
 
 > *"The literal filenames avoid the shell-glob trap — `*` inside
-> double quotes is NOT expanded by the shell. The original B-0611
+> double quotes is NOT expanded by the shell. The original 081KRSKQ20008QG0R0014PPGZM
 > session authored these 10 copy commands as-is; abbreviating with
 > `*.md` in this memo would have produced non-executable copy
 > paste, contradicting the 'explicit cp per file' claim."*

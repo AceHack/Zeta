@@ -1,13 +1,14 @@
 ---
-id: B-0950
-zetaid: 081KDU93J0OAZMF14J8R4K66ZR06XL
+id: 081KDU93J0OAZMF14J8R4K66ZR06XL
 priority: P1
-status: open
+status: done
 title: Non-mechanism setup realizers — consolidate quantum/elan/python-tools/dotnet-tools/agent-clis/local-llm/tlaps into mechanism-by-source before Ace migration (Aaron 2026-06-21)
 effort: M
 ask: Aaron 2026-06-21
 created: 2026-06-21
 last_updated: 2026-06-21
+closed: 2026-06-21
+closed_by: "#8920"
 decomposition: leaf
 depends_on: []
 composes_with:
@@ -21,7 +22,7 @@ type: chore
 owner: Dejan
 ---
 
-# B-0950 — Non-mechanism setup realizers → mechanism-by-source
+# 081KDU93J0OAZMF14J8R4K66ZR06XL — Non-mechanism setup realizers → mechanism-by-source
 
 ## Operator framing (Aaron 2026-06-21)
 
@@ -33,7 +34,7 @@ uniform realizer**, **`_when.sh` = platform filter**, **`ace-mechanism-pointers.
 dep graph**. Several install steps still use one-off `tools/setup/common/*.sh` scripts that duplicate
 the same parse-manifest → invoke-package-manager logic with different ecosystems.
 
-This row consolidates them **before** any Ace Bun-realizer work (B-0951 / B-0854).
+This row consolidates them **before** any Ace Bun-realizer work (081KSXN940008QG0R000R76H45 / 081KSKBP80008QG0R002VRN56K).
 
 ## Already mechanism-based (do not re-litigate)
 
@@ -94,16 +95,16 @@ After each step: update `linux.sh`/`macos.sh` dispatch, extend `ace-mechanism-po
    attributable to the migration.
 4. `bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce` green with updated
    allowlist.
-5. B-0951 unblocked (Ace realizer work can resume on uniform mechanism graph).
+5. 081KSXN940008QG0R000R76H45 unblocked (Ace realizer work can resume on uniform mechanism graph).
 
 ## Steward vs owner-domain CI residuals (do not conflate)
 
-These are **not** B-0950 acceptance criteria — track on owner lanes:
+These are **not** 081KDU93J0OAZMF14J8R4K66ZR06XL acceptance criteria — track on owner lanes:
 
 | Check | Owner | Status |
 |---|---|---|
-| `build-and-test` — `Z3LawsTests` E-prover FOL | Formal solvers (Soraya / CVC5–E-prover) | Noble apt `eprover` 3.0.03 crashes; skip/smoke gate in #8920 |
-| `cross-verify` — `zeta-ir-v2` / `zset-isa-v2` | Codegen (#8911/#8914/#8918) | Oracle wiring in progress; steward skip for infra dirs in #8920 |
+| `build-and-test` — `Z3LawsTests` E-prover FOL | Formal solvers (Soraya / CVC5–E-prover) | **Done #8920** — `from-autotools-tarball` E 3.2 on Linux; smoke TPTP health gate |
+| `cross-verify` — `zeta-ir-v2` / `zset-isa-v2` | Codegen (#8911/#8914/#8918) | **Done #8922+** — `cross-verify.ts` oracles; `INFRA_DIRS` skip removed post-8920 |
 
 Steward work stops at install-graph hygiene + mechanical CI; domain tests stay with domain owners.
 

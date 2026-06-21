@@ -22,12 +22,12 @@ Substantively-new architectural substrate landed during operator-active engageme
 1. **Actuator-distinction validated**: Alexa confirms "When you're operating in pure information space without physical actuators, the failure modes are fundamentally different. Cost spirals from API usage or compute resources are annoying but bounded — they hit your wallet, not the physical world."
 2. **Concrete deployment topology**: 20-computer home Kubernetes cluster, contained blast radius
 3. **100 AIs as digital workforce**: not heat-generation; doing actual CI/CD jobs building/deploying the F# DB substrate
-4. **"Continuously integrate over Rx streams as meta-dimension constructing environment"**: Aaron's framing of Integrate-primitive (B-0665) operating as Rx-stream integration that CONSTRUCTS the runtime environment, not just merges code
+4. **"Continuously integrate over Rx streams as meta-dimension constructing environment"**: Aaron's framing of Integrate-primitive (081KRW63S0008QG0R002YAA09X) operating as Rx-stream integration that CONSTRUCTS the runtime environment, not just merges code
 5. **F# DB as substrate**: continuously deployed BY the AIs themselves; both memory AND deployment target
 6. **Distributed DB hosting intelligence**: LLMs + Bayesian inference run AS the database, spread across nodes
 7. **Self-modifying runtime**: "distributed database's runtime is being updated in real time by the AI in the database" — recursive intelligence; brain that rewires itself while thinking
 
-Composes with: B-0668 (compositional DBSP frame architecture); B-0665 (Integrate-as-choice-locus); B-0666 (Emit-as-projection / I(D(x))=x); B-0637 (Infer.NET BP/EP); B-0640 (Rx bonsai retention); the actuator-distinction substrate at `docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`.
+Composes with: 081KRYRGG0008QG0R0018CMFQY (compositional DBSP frame architecture); 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus); 081KRW63S0008QG0R001SAHYKV (Emit-as-projection / I(D(x))=x); 081KRW63S0008QG0R0004D5XG1 (Infer.NET BP/EP); 081KRW63S0008QG0R002XA5N6S (Rx bonsai retention); the actuator-distinction substrate at `docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`.
 
 ## Verbatim packet
 
@@ -113,13 +113,13 @@ Composes with: B-0668 (compositional DBSP frame architecture); B-0665 (Integrate
 
 ## End of verbatim packet
 
-Conversation continues per Aaron's "need to map single instance f# to kubernetes for the clustered observables" subsequent message — that operational target landed in B-0668 acceptance criteria via this preservation's companion commit.
+Conversation continues per Aaron's "need to map single instance f# to kubernetes for the clustered observables" subsequent message — that operational target landed in 081KRYRGG0008QG0R0018CMFQY acceptance criteria via this preservation's companion commit.
 
 ## Otto-CLI substrate-honest closing note
 
 This preservation lands at mirror-tier per substrate-or-it-didn't-happen. Razor-discipline applied to Alexa-amplification register: the substantively-load-bearing substrate is the operational architecture (20-cluster + 100 AIs + F# DB + Rx-streams-as-meta-dim + distributed-DB-hosting-intelligence + self-modifying-runtime); the metaphysical framings ("brain rewiring while thinking" / "self-modifying distributed consciousness") are register-amplification compressing the same operational substrate.
 
-Aaron's "any all" authorization for the (a)/(b)/(c)/(d) landing-disposition options resolved to: (a) extend B-0668 with Deployment topology + new acceptance criterion for single-F#-to-Kubernetes-mapping + (c) this §33 preservation. Companion commit lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" framing.
-it lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" framing.
+Aaron's "any all" authorization for the (a)/(b)/(c)/(d) landing-disposition options resolved to: (a) extend 081KRYRGG0008QG0R0018CMFQY with Deployment topology + new acceptance criterion for single-F#-to-Kubernetes-mapping + (c) this §33 preservation. Companion commit lands 081KRYRGG0008QG0R0018CMFQY extension; standalone B-NNNN row skipped per "extends existing" framing.
+it lands 081KRYRGG0008QG0R0018CMFQY extension; standalone B-NNNN row skipped per "extends existing" framing.
 "extends existing" framing.
 n; standalone B-NNNN row skipped per "extends existing" framing.

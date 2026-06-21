@@ -1,6 +1,5 @@
 ---
-id: B-0361
-zetaid: 081KR50HA0008QG0R001G4QHQF
+id: 081KR50HA0008QG0R001G4QHQF
 priority: P1
 status: closed
 title: "Anchor-to-human-lineage step in formal verification and concept workflows"
@@ -15,7 +14,7 @@ type: friction-reducer
 tags: [formal-verification, concept-registry, literature, lineage]
 ---
 
-# B-0361 — Anchor to human lineage
+# 081KR50HA0008QG0R001G4QHQF — Anchor to human lineage
 
 ## What
 
@@ -29,7 +28,7 @@ Add an "is this already defined?" step to three workflows:
    equivalence, shield synthesis safety specs), use the
    established definition and cite it.
 
-2. **Concept-registry extraction** (B-0310) — when registering
+2. **Concept-registry extraction** (081KR2E4K0008QG0R003DS2XHJ) — when registering
    a new concept, check the literature map
    (`reference_formal_methods_literature_map_*`) for
    established anchors. Add `anchor:` field to the concept
@@ -69,7 +68,7 @@ of things that are trivially true by definition.
 
 - `reference_formal_methods_literature_map_*` (the literature map)
 - `.claude/skills/formal-verification-expert/SKILL.md`
-- `tools/alignment/concept_registry.ts` (B-0310)
-- B-0357 (Z3 proof replacement — anchoring prevents tautologies)
+- `tools/alignment/concept_registry.ts` (081KR2E4K0008QG0R003DS2XHJ)
+- 081KR50HA0008QG0R0033TN4H9 (Z3 proof replacement — anchoring prevents tautologies)
 - `memory/feedback_language_drift_anchor_discipline.md`
   (glossary-anchor-keeper precedent)

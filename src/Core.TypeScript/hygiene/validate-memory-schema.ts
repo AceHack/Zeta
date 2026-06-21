@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-// validate-memory-schema.ts — B-0335
-// Enforces the memory-file format standard (B-0330) mechanically.
+// validate-memory-schema.ts — 081KR2E4K0008QG0R000M01QVM
+// Enforces the memory-file format standard (081KR2E4K0008QG0R002VM58S4) mechanically.
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -25,7 +25,7 @@ const PREFIX_TO_TYPE: Record<string, MemoryType> = {
     reference_: "reference",
 };
 
-// Per B-0330: feedback and project files require Why + How-to-apply.
+// Per 081KR2E4K0008QG0R002VM58S4: feedback and project files require Why + How-to-apply.
 const REQUIRED_BODY_MARKERS: Partial<Record<MemoryType, string[]>> = {
     feedback: ["Why:", "How to apply:"],
     project: ["Why:", "How to apply:"],
@@ -238,7 +238,7 @@ function validate(memoryDir: string): ValidateResult {
             for (const marker of checkSectionMarkers(body, fileType)) {
                 violations.push({
                     file, check: "section-marker-missing", severity: "warning",
-                    message: `Missing required body marker: "${marker}" (per B-0330 ${fileType} format)`,
+                    message: `Missing required body marker: "${marker}" (per 081KR2E4K0008QG0R002VM58S4 ${fileType} format)`,
                     fixable: false,
                 });
             }

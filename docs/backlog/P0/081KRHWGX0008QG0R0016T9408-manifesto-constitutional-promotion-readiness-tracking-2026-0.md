@@ -1,6 +1,5 @@
 ---
-id: B-0525
-zetaid: 081KRHWGX0008QG0R0016T9408
+id: 081KRHWGX0008QG0R0016T9408
 priority: P0
 status: open
 title: "Manifesto constitutional-promotion readiness tracking — critical-mass adoption gate"
@@ -35,15 +34,15 @@ What "critical-mass adoption" means structurally remains to be defined. Candidat
 
 ## Concrete next steps for this row (when picked up)
 
-1. ~~Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo~~ **SHIPPED 2026-05-23** as `tools/hygiene/audit-manifesto-citations.ts` (per this row's PR). Initial baseline: **88 files / 684 citations** across 11 surfaces; strongest concentration in `memory/` (513), `backlog/` (80), `hygiene-history/` (48); notable gaps in `agents/`, `commands/`, `trajectories/`, `agendas/` (all zero). See B-0707 (citation-time-series slice).
-2. File child rows for each gate-criterion that has substantive work attached → **B-0707** (citation-time-series tracking) filed; others remain candidates
+1. ~~Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo~~ **SHIPPED 2026-05-23** as `tools/hygiene/audit-manifesto-citations.ts` (per this row's PR). Initial baseline: **88 files / 684 citations** across 11 surfaces; strongest concentration in `memory/` (513), `backlog/` (80), `hygiene-history/` (48); notable gaps in `agents/`, `commands/`, `trajectories/`, `agendas/` (all zero). See 081KS923C0008QG0R002BKAC95 (citation-time-series slice).
+2. File child rows for each gate-criterion that has substantive work attached → **081KS923C0008QG0R002BKAC95** (citation-time-series tracking) filed; others remain candidates
 3. Begin citing the manifesto in load-bearing substrate decisions (next PRs landing constraints 1-10 reference the manifesto)
-4. ~~Track citation count over time~~ → **B-0707** is the dedicated slice for persistent-snapshot + delta-over-time
+4. ~~Track citation count over time~~ → **081KS923C0008QG0R002BKAC95** is the dedicated slice for persistent-snapshot + delta-over-time
 5. When citation rate + cross-AI adoption + mechanical-CI-check land, propose promotion
 
 ### Cadence repair note (2026-05-30)
 
-B-0707's scheduled workflow successfully pushed six daily snapshot
+081KS923C0008QG0R002BKAC95's scheduled workflow successfully pushed six daily snapshot
 branches for 2026-05-24 through 2026-05-29, but each run failed after
 the push because this repository does not permit `GITHUB_TOKEN` to
 create pull requests. The repaired cadence uses branch handoff as the
@@ -72,7 +71,7 @@ First snapshot from `tools/hygiene/audit-manifesto-citations.ts` (count-only, no
 ## Composes with
 
 - `docs/governance/MANIFESTO.md` (the manifesto itself)
-- B-0524 (verbatim V2 fetch — should land before constitutional promotion)
+- 081KRHWGX0008QG0R0007FG84X (verbatim V2 fetch — should land before constitutional promotion)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (constraint 8 already operates as a rule)
 - `.claude/rules/algo-wink-failure-mode.md` (constitutional language is forward-aspirational; this row preserves the promotion gate)
 - The 9-variant reference-classification taxonomy (PR #3202 / 1920Z shard) — could compose with manifesto-citation-counting

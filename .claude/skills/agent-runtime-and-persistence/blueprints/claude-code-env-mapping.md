@@ -12,7 +12,7 @@ bp_rules_cited: [BP-11]
 
 Capability skill. No persona lives here. Thin pointer; not a duplicate of the canonical capability map.
 
-> **Authoring-workflow note (PR #1702 review):** This skill landed via direct authoring rather than the canonical `skill-creator` workflow (GOVERNANCE §4). Re-running the canonical draft → prompt-protector review → dry-run → commit workflow over this skill is captured as follow-up against B-0206 (acceptance criterion 1).
+> **Authoring-workflow note (PR #1702 review):** This skill landed via direct authoring rather than the canonical `skill-creator` workflow (GOVERNANCE §4). Re-running the canonical draft → prompt-protector review → dry-run → commit workflow over this skill is captured as follow-up against 081KQTPYE0008QG0R000ZXH9QC (acceptance criterion 1).
 
 ## The canonical map
 
@@ -29,7 +29,7 @@ Cross-harness peer-call companions in `docs/research/`:
 
 Substrate beyond the upstream-canonical map:
 
-**`/btw` extension** at `.claude/commands/btw.md`. The built-in `/btw` is single-response-no-tools-no-followups (March 2026 release; consult capability map for current behavior). The Zeta extension adds verbatim-preservation + classification (context-add / framing-queued / etc.) + durability-escalation rules (TodoWrite → .btw-queue.md → BACKLOG.md → memory/*.md). Backlog rows B-0019 + B-0020 cover the git-native durability gap and harness-integration scope.
+**`/btw` extension** at `.claude/commands/btw.md`. The built-in `/btw` is single-response-no-tools-no-followups (March 2026 release; consult capability map for current behavior). The Zeta extension adds verbatim-preservation + classification (context-add / framing-queued / etc.) + durability-escalation rules (TodoWrite → .btw-queue.md → BACKLOG.md → memory/*.md). Backlog rows 081KQ0YZ80008QG0R002C5EC8F + 081KQ0YZ80008QG0R000T0AJXS cover the git-native durability gap and harness-integration scope.
 
 **Custom commands** at `.claude/commands/<name>.md`. Existing: `.claude/commands/btw.md`, `.claude/commands/opsx/{explore,archive,apply,propose}.md`.
 
@@ -75,4 +75,4 @@ Wear this skill when:
 - **The capability-map cluster** (claude-cli + codex-cli + grok-cli + gemini-cli capability-maps) for cross-harness specifics
 - **`memory/feedback_otto_holds_synthesis_weight_prior_art_grep_first_before_substrate_landing_aaron_made_concise_formulations_at_high_mental_cost_aaron_2026_05_05.md`** (PR #1701) for the synthesis-weight + prior-art-grep + scout-and-delegate discipline this skill encodes at env-layer
 - **`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`** for verbatim-preservation discipline
-- **B-0019 + B-0020** (P3 backlog) for /btw git-native durability gap and harness-integration scope
+- **081KQ0YZ80008QG0R002C5EC8F + 081KQ0YZ80008QG0R000T0AJXS** (P3 backlog) for /btw git-native durability gap and harness-integration scope

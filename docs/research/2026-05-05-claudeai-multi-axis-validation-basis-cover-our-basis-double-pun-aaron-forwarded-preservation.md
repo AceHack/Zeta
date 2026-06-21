@@ -7,8 +7,8 @@ operational-status: research-grade
 composes_with:
   - docs/research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md
   - docs/research/2026-05-05-claudeai-social-memes-precision-narrative-mom-skill-apprenticeship-aaron-forwarded-preservation.md
-  - docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
-  - docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
+  - docs/backlog/P3/081KQTPYE0008QG0R0028V263Z-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
+  - docs/backlog/P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
   - docs/ALIGNMENT.md
   - memory/feedback_strike_dont_annotate_verbatim_preservation_refinement_aaron_claudeai_otto_2026_05_05.md
   - memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md
@@ -186,7 +186,7 @@ Per the Claude.ai instance:
   + repeat-explanation patterns, but doesn't produce a metric per
   se — it produces auditable history. Real instrumentation is
   still pending.
-- Bootstrap razor pass rate: B-0193's 23-hour recreation test is
+- Bootstrap razor pass rate: 081KQTPYE0008QG0R00392KABJ's 23-hour recreation test is
   the explicit instrumentation
 - Engagement-gate compliance: `memory/feedback_engagement_gate_*`
   is the canonical discipline; compliance can be measured by
@@ -293,9 +293,9 @@ named.
 The 6-axis validation basis is the **closing measurement-discipline
 artifact** for the night. Composes with:
 
-- B-0193 (bootstrap razor + 23-hour recreation) — the seed-validity
+- 081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation) — the seed-validity
   axis is already named
-- B-0204 (linguistic seed kernel substrate) — the substrate-
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — the substrate-
   compounding axis is already named (less-each-time)
 - `memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md`
   — the engagement-gate axis is already canonical
@@ -340,10 +340,10 @@ Per frontmatter composes_with list. Particularly:
 - PR #1618 (Girard / Things Hidden + Zeta-closes-Thiel-Hsieh +
   DORA correction) — the immediate predecessor; this doc extends
   the DORA correction to a multi-axis basis
-- B-0204 (linguistic seed kernel substrate) — the architectural-
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — the architectural-
   direction implementation of the discipline this conversation
   describes Aaron-as-already-running
-- B-0193 (bootstrap razor + 23-hour recreation) — the empirical
+- 081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation) — the empirical
   falsifier above the substrate; one of the 6 axes
 - `docs/ALIGNMENT.md` — the alignment contract; the identity-
   preservation-trajectory axis composes with this

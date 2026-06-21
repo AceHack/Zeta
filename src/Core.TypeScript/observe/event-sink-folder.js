@@ -5,8 +5,8 @@
  * ADRs). Where `execute.ts` defines the `EventSink` port (append a chosen action to
  * the durable log), THIS is the production adapter: it writes the event as a
  * ZetaId-named JSON file into a git folder and commits it **direct to `main`,
- * no-PR** (B-0890.1 folders-on-main; same mechanism as the agent-bus G-Set,
- * B-0954). Corporate batch-to-main (B-0890) is the same event shape behind a
+ * no-PR** (081KSNY2Z0008QG0R000E5KTPX folders-on-main; same mechanism as the agent-bus G-Set,
+ * 081KSXN940008QG0R00171YAZW). Corporate batch-to-main (081KSNY2Z0008QG0R0017JSTGD) is the same event shape behind a
  * different commit fn — swap `commit`, not the envelope.
  *
  * ── Fact, not command (per the design review) ────────────────────────────────
@@ -40,8 +40,8 @@
  *   - tools/agent-bus/publish.ts (the proven atomic-write + git-direct-to-main pattern this mirrors)
  *   - src/Core.TypeScript/zeta-id (the ZetaId codec — Category.WorkItem ids)
  *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
- *   - docs/backlog/P1/B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md
- *   - docs/backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md (the read side: indexes over this log)
+ *   - docs/backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md
+ *   - docs/backlog/P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md (the read side: indexes over this log)
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -197,7 +197,7 @@ export function gitCommitToMain(filePath, envelope) {
         const msg = [
             `observe(${envelope.by}): ${envelope.action.kind} ${gitPath}`,
             "",
-            `Observe event ${envelope.id} appended folder-direct-to-main (sovereign transport, B-0890.1).`,
+            `Observe event ${envelope.id} appended folder-direct-to-main (sovereign transport, 081KSNY2Z0008QG0R000E5KTPX).`,
             "",
             coauthorFor(envelope.by),
         ].join("\n");

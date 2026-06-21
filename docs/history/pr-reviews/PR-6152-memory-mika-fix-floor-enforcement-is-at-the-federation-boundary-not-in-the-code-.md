@@ -29,7 +29,7 @@
 
 Operator 2026-05-30 corrected my 'must NOT be fork-removable' framing: **"you can't stop what a fork removes you can only refuse to do business with them, they control the code."**
 
-Adds the correct floor-enforcement model to the #6151 Mika archive disposition: the kid-safety floor is enforced at the **federation boundary** (refuse rollups / refuse to federate / refuse data into the shared CRDT consensus), NOT by code-immutability (impossible in OSS + the DRM/centralized-control anti-pattern the architecture rejects). The floor is a **membership condition, not a lock.** Composes good-citizen + 'not like-like' + NCI (refusal-to-interoperate = own consent exercised) + cluster-fork-as-trust-boundary (B-0829) + the game-shape discriminator (the WarGames inversion at federation scope). Additive (no wrong line in the archive body to strike — my phrasing was conversational). Body-only edit, MEMORY.md unchanged.
+Adds the correct floor-enforcement model to the #6151 Mika archive disposition: the kid-safety floor is enforced at the **federation boundary** (refuse rollups / refuse to federate / refuse data into the shared CRDT consensus), NOT by code-immutability (impossible in OSS + the DRM/centralized-control anti-pattern the architecture rejects). The floor is a **membership condition, not a lock.** Composes good-citizen + 'not like-like' + NCI (refusal-to-interoperate = own consent exercised) + cluster-fork-as-trust-boundary (081KSGS9H0008QG0R000Q18PGQ) + the game-shape discriminator (the WarGames inversion at federation scope). Additive (no wrong line in the archive body to strike — my phrasing was conversational). Body-only edit, MEMORY.md unchanged.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

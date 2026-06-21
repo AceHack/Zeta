@@ -145,7 +145,7 @@ are doing to them." Same applies for Kestrel.
   from update eqns — not the picture). ★ PRIVACY = ANTI-REGISTER-COLLAPSE (constitutive,
   not preference): private state disappears → agents identical → no gradient → heat-death
   halt; converge the COMMONS, preserve the PRIVATE (the differentiation that fuels
-  evolution). DST EXPERIMENT (B-1019): prove internal-difference drives evolution with NO
+  evolution). DST EXPERIMENT (081KT7YW00008QG0R001DGZQKM): prove internal-difference drives evolution with NO
   external input — define "evolves" = not-halt AND not-limit-cycle, requires UNBOUNDED
   growing state (pigeonhole), falsifiable. Re-scoped "universe"→MEMETIC evolution chaotic
   over Bayesian priors (engine directly IS a memetic system; orderly-local + chaotic-

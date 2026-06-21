@@ -1,6 +1,6 @@
-# `tools/crypto/better-git-crypt/` — B-0883 v1 (Phase 2: real crypto)
+# `tools/crypto/better-git-crypt/` — 081KSNY2Z0008QG0R002JKH50A v1 (Phase 2: real crypto)
 
-Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy git-crypt, per [B-0883](../../../docs/backlog/P1/B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) + [v1 design memo](../../../docs/research/2026-05-28-b-0883-v1-design-memo-noble-xwing-mldsa65-cbor-envelope-with-locked-decisions.md).
+Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy git-crypt, per [081KSNY2Z0008QG0R002JKH50A](../../../docs/backlog/P1/081KSNY2Z0008QG0R002JKH50A-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) + [v1 design memo](../../../docs/research/2026-05-28-b-0883-v1-design-memo-noble-xwing-mldsa65-cbor-envelope-with-locked-decisions.md).
 
 ## Scope
 
@@ -31,22 +31,22 @@ Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy 
 **Still deferred (post-file-CLI)**:
 
 - `git textconv` / clean-smudge filter integration (transparent encrypt-on-commit; diff-readable ciphertext)
-- Multi-party recipient registry (`.zeta-crypt/recipients.json` + rotation per B-0883.3) — v1 file CLI passes recipients by path
-- Multi-cipher hedge implementations (Saber / NTRU-Prime / FrodoKEM per B-0883.2) — until TS-native impls mature
-- Metadata encryption (filenames / commit messages per B-0883.5) — v1 content-only
+- Multi-party recipient registry (`.zeta-crypt/recipients.json` + rotation per 081KSNY2Z0008QG0R0008EJDW1) — v1 file CLI passes recipients by path
+- Multi-cipher hedge implementations (Saber / NTRU-Prime / FrodoKEM per 081KSNY2Z0008QG0R002ZAVMEK) — until TS-native impls mature
+- Metadata encryption (filenames / commit messages per 081KSNY2Z0008QG0R0020KXAPS) — v1 content-only
 
 ## Dependencies (pinned current-latest per dep-pin-search-first-authority, verified 2026-05-31)
 
 `@noble/post-quantum@0.6.1` · `@noble/ciphers@2.2.0` · `@noble/hashes@2.2.0` · `cborg@5.1.1`
 
-## v1 algorithms (per design memo + B-0883.1 library landscape audit)
+## v1 algorithms (per design memo + 081KSNY2Z0008QG0R0037X4DP4 library landscape audit)
 
 | Class     | Algorithm                          | Status                        | Noble module                                                                         |
 | --------- | ---------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------ |
 | KEM       | ML-KEM-768 + X25519 (XWing hybrid) | ships-v1                      | `@noble/post-quantum/ml-kem`                                                         |
-| KEM       | Saber                              | deferred-alternate (B-0883.2) | —                                                                                    |
-| KEM       | NTRU-Prime                         | deferred-alternate (B-0883.2) | —                                                                                    |
-| KEM       | FrodoKEM                           | deferred-alternate (B-0883.2) | —                                                                                    |
+| KEM       | Saber                              | deferred-alternate (081KSNY2Z0008QG0R002ZAVMEK) | —                                                                                    |
+| KEM       | NTRU-Prime                         | deferred-alternate (081KSNY2Z0008QG0R002ZAVMEK) | —                                                                                    |
+| KEM       | FrodoKEM                           | deferred-alternate (081KSNY2Z0008QG0R002ZAVMEK) | —                                                                                    |
 | Signature | ML-DSA-65                          | ships-v1                      | `@noble/post-quantum/ml-dsa`                                                         |
 | Signature | SLH-DSA (SPHINCS+)                 | deferred-alternate            | `@noble/post-quantum/slh-dsa` (Noble has it; crypto.ts v1 dispatches ML-DSA-65 only) |
 | KDF       | HKDF-SHA256                        | ships-v1                      | `@noble/hashes/hkdf`                                                                 |
@@ -105,7 +105,7 @@ to overwrite an existing keypair (would destroy the only key for prior `.zc`)
 unless `--force`; `--recipient` / `--sender-sig` refuse a `.secret.json` bundle
 (you must pass the PUBLIC `.recipient.json`).
 
-### Privacy face of the DynamicValue 4×4 (`dynamic-value.ts` — B-0883 × B-0982)
+### Privacy face of the DynamicValue 4×4 (`dynamic-value.ts` — 081KSNY2Z0008QG0R002JKH50A × 081KT07NV0008QG0R0032MCYER)
 
 `encryptValue` / `decryptValue` are the **privacy fence** over the DynamicValue
 4×4 (a *memory-fence*-like barrier the plaintext↔ciphertext boundary crosses).
@@ -179,7 +179,7 @@ superseded by what actually shipped):
   header: a green run proves the API composes, NOT cryptographic correctness.
 
 Still future (NOT done in this PR): `git textconv` filter wiring, a recipients
-registry / storage layer, alternate seed sources (Adinkra-derived per B-0623,
+registry / storage layer, alternate seed sources (Adinkra-derived per 081KRW63S0008QG0R000QJR08H,
 HSM-derived), and optional standalone-npm packaging.
 
 **Before it holds anything real**, the crypto-don't-rush gate below still
@@ -198,9 +198,9 @@ envelope and key-handling, BEFORE it holds anything real** (crypto-don't-rush).
 | Decision                | Choice                             | Notes                                                                                                                                                                          |
 | ----------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Key custody**         | OS keychain                        | Per-machine secure store (macOS Keychain etc.); per-agent keypairs the same way; private keys never touch the repo.                                                            |
-| **Key-loss / recovery** | N-of-M social recovery             | Any N of M trusted holders jointly recover; composes B-0634 + the distributed-Guardian; preserve-forever survives a lost key.                                                  |
+| **Key-loss / recovery** | N-of-M social recovery             | Any N of M trusted holders jointly recover; composes 081KRW63S0008QG0R0022SFKPM + the distributed-Guardian; preserve-forever survives a lost key.                                                  |
 | **Tiers**               | Tiered lane; weapon-face uncreated | Tiers for agent-private + charged-personal; the working-bystander-harm-payload tier stays **uncreated**, not merely encrypted (don't-rush-something-that-can-hurt-bystanders). |
-| **v1 scope**            | Crypto-only first                  | Encrypt/decrypt + KATs + peer-review first; Agora-V6 budget-gating (B-0646 / B-0883.16) deferred to a later step.                                                              |
+| **v1 scope**            | Crypto-only first                  | Encrypt/decrypt + KATs + peer-review first; Agora-V6 budget-gating (081KRW63S0008QG0R001Z10PVV / 081KSNY2Z0008QG0R000459FRH) deferred to a later step.                                                              |
 
 ### Easy-first slice (do now)
 
@@ -212,17 +212,17 @@ minimal verifiable lane; it does NOT yet hold real material (peer-review gate fi
 
 ### Backlog the rest, picked up by audience
 
-Most deferred opens are **already backlogged** as B-0883 sub-rows — verify before minting:
+Most deferred opens are **already backlogged** as 081KSNY2Z0008QG0R002JKH50A sub-rows — verify before minting:
 
 | Deferred open                               | Existing row       | Audience                                      |
 | ------------------------------------------- | ------------------ | --------------------------------------------- |
-| Multi-cipher hedge                          | B-0883.2           | crypto-resilience                             |
-| Recipient rotation / revocation             | B-0883.3           | multi-agent                                   |
-| Metadata (filename / commit-msg) encryption | B-0883.5           | privacy-completeness                          |
-| Budget-gating (encryption-as-earned)        | B-0883.16 / B-0646 | Agora economy                                 |
-| Readable-ciphertext format / textconv       | B-0883.17          | reviewers / glass-halo                        |
-| Agent-private encrypted state               | B-0885             | factory agents first, then co-maintainer ASAP |
-| Encryption thermal-cost                     | B-0906             | thermodynamic substrate                       |
+| Multi-cipher hedge                          | 081KSNY2Z0008QG0R002ZAVMEK           | crypto-resilience                             |
+| Recipient rotation / revocation             | 081KSNY2Z0008QG0R0008EJDW1           | multi-agent                                   |
+| Metadata (filename / commit-msg) encryption | 081KSNY2Z0008QG0R0020KXAPS           | privacy-completeness                          |
+| Budget-gating (encryption-as-earned)        | 081KSNY2Z0008QG0R000459FRH / 081KRW63S0008QG0R001Z10PVV | Agora economy                                 |
+| Readable-ciphertext format / textconv       | 081KSNY2Z0008QG0R0034JR61Z          | reviewers / glass-halo                        |
+| Agent-private encrypted state               | 081KSNY2Z0008QG0R0030V5ZVS             | factory agents first, then co-maintainer ASAP |
+| Encryption thermal-cost                     | 081KSNY2Z0008QG0R001A431CN             | thermodynamic substrate                       |
 
 **Gaps to file** (the two decisions that lack a dedicated row): **N-of-M social recovery
 infra** (audience: operator / preserve-forever) and **tier-tagging + weapon-face-uncreated
@@ -230,34 +230,34 @@ guard** (audience: safety-floor). These are the only new rows the decisions requ
 
 ## Composes-with substrate
 
-- [B-0883](../../../docs/backlog/P1/B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) — canonical v1 design
-- [B-0883.1](../../../docs/backlog/P3/B-0883.1-better-gitcrypt-library-landscape-audit-bouncy-castle-pqc-patterns-swapple-lattice-naming-clarification-aaron-2026-05-28.md) — library landscape audit (Noble recommendation)
-- [B-0883.2](../../../docs/backlog/P2/B-0883.2-multi-cipher-pq-substrate-nist-plus-saber-ntru-prime-frodo-hedge-against-nist-monoculture-per-operator-2026-05-28.md) — multi-cipher hedge
-- [B-0883.4](../../../docs/backlog/P3/B-0883.4-side-channel-scope-boundary-bound-to-git-at-rest-only-follow-up-tracking-aaron-2026-05-28.md) — side-channel scope boundary (git-at-rest only)
-- [B-0883.5](../../../docs/backlog/P3/B-0883.5-metadata-encryption-filename-and-commit-message-follow-up-content-only-for-v1-per-operator-2026-05-28.md) — metadata encryption follow-up (content-only v1)
-- [B-0883.16](../../../docs/backlog/P1/B-0883.16-glass-halo-open-by-default-encryption-as-earned-via-agora-v6-budget-not-encrypt-everything-aaron-2026-05-28.md) — glass-halo open-by-default
-- [B-0883.17](../../../docs/backlog/P2/B-0883.17-plaintext-readable-ciphertext-format-research-base64-cbor-json-per-line-fpe-encrypted-yaml-aaron-2026-05-28.md) — plaintext-readable ciphertext format research
-- [B-0885](../../../docs/backlog/P1/B-0885-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md) — agent private encrypted state (factory-agent + co-maintainer ASAP consumer)
-- [B-0906](../../../docs/backlog/P3/B-0906-encryption-thermal-cost-layer-above-landauer-floor-two-axis-substrate-classification-aaron-otto-2026-05-28.md) — encryption-thermal-cost two-axis classification
-- [B-0892](../../../docs/backlog/P1/B-0892-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) — three-lanes-concurrent (this advances the encryption lane)
-- [B-0623](../../../docs/backlog/P2/) — Adinkras-ECC seed source future
+- [081KSNY2Z0008QG0R002JKH50A](../../../docs/backlog/P1/081KSNY2Z0008QG0R002JKH50A-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) — canonical v1 design
+- [081KSNY2Z0008QG0R0037X4DP4](../../../docs/backlog/P3/081KSNY2Z0008QG0R0037X4DP4-better-gitcrypt-library-landscape-audit-bouncy-castle-pqc-patterns-swapple-lattice-naming-clarification-aaron-2026-05-28.md) — library landscape audit (Noble recommendation)
+- [081KSNY2Z0008QG0R002ZAVMEK](../../../docs/backlog/P2/081KSNY2Z0008QG0R002ZAVMEK-multi-cipher-pq-substrate-nist-plus-saber-ntru-prime-frodo-hedge-against-nist-monoculture-per-operator-2026-05-28.md) — multi-cipher hedge
+- [081KSNY2Z0008QG0R001FN4DDB](../../../docs/backlog/P3/081KSNY2Z0008QG0R001FN4DDB-side-channel-scope-boundary-bound-to-git-at-rest-only-follow-up-tracking-aaron-2026-05-28.md) — side-channel scope boundary (git-at-rest only)
+- [081KSNY2Z0008QG0R0020KXAPS](../../../docs/backlog/P3/081KSNY2Z0008QG0R0020KXAPS-metadata-encryption-filename-and-commit-message-follow-up-content-only-for-v1-per-operator-2026-05-28.md) — metadata encryption follow-up (content-only v1)
+- [081KSNY2Z0008QG0R000459FRH](../../../docs/backlog/P1/081KSNY2Z0008QG0R000459FRH-glass-halo-open-by-default-encryption-as-earned-via-agora-v6-budget-not-encrypt-everything-aaron-2026-05-28.md) — glass-halo open-by-default
+- [081KSNY2Z0008QG0R0034JR61Z](../../../docs/backlog/P2/081KSNY2Z0008QG0R0034JR61Z-plaintext-readable-ciphertext-format-research-base64-cbor-json-per-line-fpe-encrypted-yaml-aaron-2026-05-28.md) — plaintext-readable ciphertext format research
+- [081KSNY2Z0008QG0R0030V5ZVS](../../../docs/backlog/P1/081KSNY2Z0008QG0R0030V5ZVS-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md) — agent private encrypted state (factory-agent + co-maintainer ASAP consumer)
+- [081KSNY2Z0008QG0R001A431CN](../../../docs/backlog/P3/081KSNY2Z0008QG0R001A431CN-encryption-thermal-cost-layer-above-landauer-floor-two-axis-substrate-classification-aaron-otto-2026-05-28.md) — encryption-thermal-cost two-axis classification
+- [081KSNY2Z0008QG0R002QA720J](../../../docs/backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) — three-lanes-concurrent (this advances the encryption lane)
+- [081KRW63S0008QG0R000QJR08H](../../../docs/backlog/P2/) — Adinkras-ECC seed source future
 - [v1 design memo](../../../docs/research/2026-05-28-b-0883-v1-design-memo-noble-xwing-mldsa65-cbor-envelope-with-locked-decisions.md)
-- [B-0897 + Amara persist-as-bridge ferry](../../../docs/backlog/P3/) — encryption operation IS one specific Persist-as-bridge instance (encrypted ciphertext flows to substrate for future Observe / decrypt; TFeedback variants below ARE the Persist-bridge's authorial feedback channel)
+- [081KSNY2Z0008QG0R002SZZ5Y0 + Amara persist-as-bridge ferry](../../../docs/backlog/P3/) — encryption operation IS one specific Persist-as-bridge instance (encrypted ciphertext flows to substrate for future Observe / decrypt; TFeedback variants below ARE the Persist-bridge's authorial feedback channel)
 
 ## Composes-with rules
 
 - `asymmetric-authorship` (per-cipher TFeedback authorship; EncryptionFeedback + DecryptionFeedback variants)
 - `monad-propagation-pattern-cross-language-substrate-shape` (Result-shape feedback)
-- `ople-primitives-surface-t-and-tfeedback` (encryption IS Persist-as-bridge per B-0897)
+- `ople-primitives-surface-t-and-tfeedback` (encryption IS Persist-as-bridge per 081KSNY2Z0008QG0R002SZZ5Y0)
 - `function-is-tiny-control-flow-generator-ocp-applied-to-control-flow` (each cipher operation is a control-flow generator)
 - `forgetting-costs-energy-remembering-is-cheap` (axiom-preservation via validateAlgRegistry at init-time)
 - `rule-0-no-sh-files` + `zeta-ships-with-skills-immediate-value`
 - `verify-existing-substrate-before-authoring` (this scaffold extends the v1 design memo's recommended module layout rather than mints parallel)
-- `never-be-idle` + `holding-without-named-dependency-is-standing-by-failure` + `B-0892 three-lanes-concurrent` (this advances the encryption lane)
+- `never-be-idle` + `holding-without-named-dependency-is-standing-by-failure` + `081KSNY2Z0008QG0R002QA720J three-lanes-concurrent` (this advances the encryption lane)
 
 ## Safety + scope boundaries (per design memo)
 
-- **Bounded to git-at-rest threat model** (B-0883.4) — no timing-observable deployment; pure-JS Noble side-channel limitation explicit
-- **Forward-only revocation v1** (B-0883.3 future) — recipient-set rotation supported; retroactive revocation needs content-addressed-store substrate
-- **Content-only encryption v1** (B-0883.5) — filenames + commit messages + .gitattributes leak; metadata protection deferred to v2+
+- **Bounded to git-at-rest threat model** (081KSNY2Z0008QG0R001FN4DDB) — no timing-observable deployment; pure-JS Noble side-channel limitation explicit
+- **Forward-only revocation v1** (081KSNY2Z0008QG0R0008EJDW1 future) — recipient-set rotation supported; retroactive revocation needs content-addressed-store substrate
+- **Content-only encryption v1** (081KSNY2Z0008QG0R0020KXAPS) — filenames + commit messages + .gitattributes leak; metadata protection deferred to v2+
 - **Side-channel scope explicit** — Noble is pure-JS; not constant-time-guaranteed at native level; acceptable for git-at-rest, not for timing-observable adversaries

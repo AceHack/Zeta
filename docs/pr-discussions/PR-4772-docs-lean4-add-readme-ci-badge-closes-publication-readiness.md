@@ -50,7 +50,7 @@ Companion-paper draft (substantive writing, not surface work) remains for later.
 
 ## Commit
 
-5th plumbing-fallback PR this session (#4755 Ani extraction / #4761 PR-triage rule / #4762 canonical Step-1a / #4765 B-0709 Soraya hand-off). Dotgit saturation throughout the day; pure-substrate addition; new file only (no edits to existing canonical surfaces under peer contention).
+5th plumbing-fallback PR this session (#4755 Ani extraction / #4761 PR-triage rule / #4762 canonical Step-1a / #4765 081KS923C0008QG0R0032VJZPF Soraya hand-off). Dotgit saturation throughout the day; pure-substrate addition; new file only (no edits to existing canonical surfaces under peer contention).
 
 ## Test plan
 

@@ -1,6 +1,5 @@
 ---
-id: B-0045
-zetaid: 081KQ3HBZ0008QG0R0012P9EBM
+id: 081KQ3HBZ0008QG0R0012P9EBM
 priority: P2
 status: decomposed
 title: All schools, all subjects — universal substrate-knowledge sweep; biology inaugural; trade/vocational equal-or-higher weight
@@ -16,7 +15,7 @@ tags: [universal-sweep, biology, trade-vocational, blue-collar, autopoiesis, tim
 type: friction-reducer
 ---
 
-# B-0045 — All schools, all subjects (universal substrate-knowledge sweep)
+# 081KQ3HBZ0008QG0R0012P9EBM — All schools, all subjects (universal substrate-knowledge sweep)
 
 ## Decomposition (2026-05-09)
 
@@ -25,16 +24,16 @@ Only the biology Stage-1 child has been filed so far; remaining children are fil
 
 | Child | Title | Depends on | Status |
 |-------|-------|-----------|--------|
-| [B-0045.1](B-0045.1-biology-stage1-reading-list-scaffold.md) | Biology Stage 1 — reading-list scaffold | — | open |
-| B-0045.2 | Biology Stage 2 — structural-resonance scan (F1/F2/F3 + yin-yang) | B-0045.1 | not filed |
-| B-0045.3 | Trade/vocational Stage 1 — reading-list / practitioner-source scaffold | B-0045.2 | not filed |
-| B-0045.4 | Biology Stage 4 — time/energy measurables integration | B-0045.2 | not filed |
+| [081KR50HA0008QG0R001Q071YY](081KR50HA0008QG0R001Q071YY-biology-stage1-reading-list-scaffold.md) | Biology Stage 1 — reading-list scaffold | — | open |
+| 081KQ3HBZ0008QG0R0012P9EBM.2 | Biology Stage 2 — structural-resonance scan (F1/F2/F3 + yin-yang) | 081KR50HA0008QG0R001Q071YY | not filed |
+| 081KQ3HBZ0008QG0R0012P9EBM.3 | Trade/vocational Stage 1 — reading-list / practitioner-source scaffold | 081KQ3HBZ0008QG0R0012P9EBM.2 | not filed |
+| 081KQ3HBZ0008QG0R0012P9EBM.4 | Biology Stage 4 — time/energy measurables integration | 081KQ3HBZ0008QG0R0012P9EBM.2 | not filed |
 
-Work in dependency order. B-0045.1 is the root; all others are blocked until it closes.
+Work in dependency order. 081KR50HA0008QG0R001Q071YY is the root; all others are blocked until it closes.
 
 ## Origin
 
-AceHack commit `8535e6b` (2026-04-21). Aaron's two-message compound directive. Parent-scope row; economics + history (B-0046), pop-culture/media (B-0054), mystery-schools (B-0049), mythology + occult + AI-ethics (B-0056/B-0057/B-0058), etymology (B-0059) are all children / siblings of this universal sweep.
+AceHack commit `8535e6b` (2026-04-21). Aaron's two-message compound directive. Parent-scope row; economics + history (081KQ3HBZ0008QG0R0001XKNWK), pop-culture/media (081KQ3HBZ0008QG0R003V6B2ME), mystery-schools (081KQ3HBZ0008QG0R0007CAGSP), mythology + occult + AI-ethics (081KQ3HBZ0008QG0R0034DHWTQ/081KQ3HBZ0008QG0R000K3NSX8/081KQ3HBZ0008QG0R002S674CG), etymology (081KQ3HBZ0008QG0R003GTG5P2) are all children / siblings of this universal sweep.
 
 Filed P2 because this is research-grade substrate-knowledge work, not ship-blocker.
 
@@ -115,4 +114,4 @@ Original request was "biology backlog" with inaugural increment framing; Aaron i
 ## Cross-reference
 
 - AceHack commit: `8535e6b`
-- Sibling rows: B-0046 (economics/history), B-0049 (mystery-schools), B-0054 (pop-culture/media), B-0056-B-0058 (mythology/occult/AI-ethics), B-0059 (etymology)
+- Sibling rows: 081KQ3HBZ0008QG0R0001XKNWK (economics/history), 081KQ3HBZ0008QG0R0007CAGSP (mystery-schools), 081KQ3HBZ0008QG0R003V6B2ME (pop-culture/media), 081KQ3HBZ0008QG0R0034DHWTQ-081KQ3HBZ0008QG0R002S674CG (mythology/occult/AI-ethics), 081KQ3HBZ0008QG0R003GTG5P2 (etymology)

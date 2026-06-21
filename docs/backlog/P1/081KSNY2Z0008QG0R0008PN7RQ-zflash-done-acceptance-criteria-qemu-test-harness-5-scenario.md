@@ -1,6 +1,5 @@
 ---
-id: B-0891
-zetaid: 081KSNY2Z0008QG0R0008PN7RQ
+id: 081KSNY2Z0008QG0R0008PN7RQ
 priority: P1
 status: open
 title: zflash "done" acceptance criteria + QEMU test harness — 5-scenario test matrix (initial format / cluster up / reformat-with-retention / reformat-from-scratch / cluster joining); operator wants testing to begin NOW + offers collaborative testing
@@ -49,22 +48,22 @@ tags:
 
 > _"we really want zflash testable in qemu and also the usb and the inital format and cluster comming up sucessfully and then reformat with retaining the selelctions and keys and then reformat from scratch and then cluster joining that's the acceptace critera i'm looking for for done aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."_
 
-Concrete operator-set acceptance criteria for zflash "done" + signal that testing should begin NOW (operator-personal-axis top priority per B-0886.2) + offer to do some testing collaboratively.
+Concrete operator-set acceptance criteria for zflash "done" + signal that testing should begin NOW (operator-personal-axis top priority per 081KSNY2Z0008QG0R002CR38D8) + offer to do some testing collaboratively.
 
 ## 5-scenario test matrix (acceptance criteria for "done")
 
 | #     | Scenario                                      | What proves done                                                                                                                                                                                                                                 |
 | ----- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **1** | **Initial format (USB-bake from zero)**       | `zflash` script runs cleanly + produces bootable USB image with operator-chosen credentials baked in; passes ISO content audit (per existing `tools/ci/audit-installer-iso-content.ts` substrate); QEMU boots the image to a usable state        |
-| **2** | **Initial boot + cluster comes up**           | USB boots in QEMU; cluster nodes (mini-PC fleet per B-0590) come up successfully; reach steady-state with all expected services running; observability backend reports healthy                                                                   |
-| **3** | **Reformat WITH key + selection retention**   | Re-bake USB with existing operator-chosen credentials + auth settings (Touch ID per B-0737, passphrase per B-0852) + UUID-bound keys preserved; no need to re-enter passphrase or re-pair Touch ID; existing cluster recognizes the re-baked USB |
+| **2** | **Initial boot + cluster comes up**           | USB boots in QEMU; cluster nodes (mini-PC fleet per 081KRQ1AB0008QG0R002G93CM7) come up successfully; reach steady-state with all expected services running; observability backend reports healthy                                                                   |
+| **3** | **Reformat WITH key + selection retention**   | Re-bake USB with existing operator-chosen credentials + auth settings (Touch ID per 081KSE6WT0008QG0R003WZAQKV, passphrase per 081KSKBP80008QG0R003AX2A69) + UUID-bound keys preserved; no need to re-enter passphrase or re-pair Touch ID; existing cluster recognizes the re-baked USB |
 | **4** | **Reformat from scratch (wipe + fresh keys)** | Wipe-and-rebake from zero state; fresh keys; new USB UUID; operator can choose to migrate existing cluster's credentials onto new USB OR start fresh cluster — both paths supported                                                              |
-| **5** | **Cluster joining (new node)**                | New node boots from USB; joins existing running cluster cleanly; gets credentials provisioned per B-0852.3 cred-picker integration; appears in cluster state within bounded time                                                                 |
+| **5** | **Cluster joining (new node)**                | New node boots from USB; joins existing running cluster cleanly; gets credentials provisioned per 081KSKBP80008QG0R003ETGS01 cred-picker integration; appears in cluster state within bounded time                                                                 |
 
 ## Scope clarification 2026-05-31
 
 Aaron clarified that Kubernetes and ArgoCD health need their own integration
-test lane, using kind/k3d or equivalent local-cluster substrate. This B-0891
+test lane, using kind/k3d or equivalent local-cluster substrate. This 081KSNY2Z0008QG0R0008PN7RQ
 USB/ISO lane should mostly prove:
 
 - `zflash` and the ISO/USB boot path work,
@@ -74,7 +73,7 @@ USB/ISO lane should mostly prove:
 - physical hardware testing covers biometric behavior that QEMU cannot model
   honestly.
 
-Full Kubernetes and ArgoCD health is carved out to **B-0967**. B-0891 may keep
+Full Kubernetes and ArgoCD health is carved out to **081KSXN940008QG0R000SCP2H1**. 081KSNY2Z0008QG0R0008PN7RQ may keep
 a narrow cluster smoke signal for end-to-end confidence, but should not absorb
 the full ArgoCD Application health matrix.
 
@@ -90,9 +89,9 @@ QEMU as PRIMARY test environment because:
 USB testing as VALIDATION step (after QEMU green):
 
 - Physical USB confirms the QEMU-validated behavior survives real hardware
-- Operator demos at work (per B-0886.2 in-front-of-eyes word-of-mouth priority) need physical USB
-- Composes with B-0590 fleet-replication-20-machines for at-scale validation
-- KVM substrate (B-0770 + B-0778) enables remote USB-boot of remote machines for fleet-scale tests
+- Operator demos at work (per 081KSNY2Z0008QG0R002CR38D8 in-front-of-eyes word-of-mouth priority) need physical USB
+- Composes with 081KRQ1AB0008QG0R002G93CM7 fleet-replication-20-machines for at-scale validation
+- KVM substrate (081KSE6WT0008QG0R0029S1D5Z + 081KSE6WT0008QG0R0004AP0ZA) enables remote USB-boot of remote machines for fleet-scale tests
 
 ## Testing-begins-now framing
 
@@ -100,10 +99,10 @@ Operator: _"aaron should really consider testing now and all the enhancements we
 
 Two operational implications:
 
-1. **Testing is not gated on full feature completion** — start exercising the existing substrate (B-0844 zflash agent-mode; B-0852 USB-bound credentials; B-0852.3 cred-picker; B-0737 Touch ID) NOW; the 5-scenario test matrix surfaces gaps as they hit
+1. **Testing is not gated on full feature completion** — start exercising the existing substrate (081KSGS9H0008QG0R001EZKNCB zflash agent-mode; 081KSKBP80008QG0R003AX2A69 USB-bound credentials; 081KSKBP80008QG0R003ETGS01 cred-picker; 081KSE6WT0008QG0R003WZAQKV Touch ID) NOW; the 5-scenario test matrix surfaces gaps as they hit
 2. **Operator-collaborative testing pattern** — operator runs some scenarios; agents (Otto + others) run others; coordination via the agent-loop substrate (per existing PRs #5666 + #5669)
 
-This composes with the trajectory-async-review surface (B-0873) — testing-progress reviewed asynchronously at trajectory scope, not gated on per-test approval.
+This composes with the trajectory-async-review surface (081KSNY2Z0008QG0R000F0C5V0) — testing-progress reviewed asynchronously at trajectory scope, not gated on per-test approval.
 
 ## Acceptance criteria for THIS row (the test harness)
 
@@ -114,23 +113,23 @@ This composes with the trajectory-async-review surface (B-0873) — testing-prog
 - `.github/workflows/zflash-qemu-test.yml` CI workflow that runs the harness on PR + on cadence
 - USB test runner (separate path; operator-invoked when ready to validate on hardware)
 - Documentation: how to invoke the harness; how to add scenarios; how to interpret failures
-- Composes with B-0884 (PQ git-crypt + zflash integration) — test scenarios validate PQ-credential path when B-0884 substrate lands
-- Composes with B-0886 ASAP cluster umbrella — test harness lands within the cluster's Phase 2 (USB high-parallel-track)
+- Composes with 081KSNY2Z0008QG0R0011XCT94 (PQ git-crypt + zflash integration) — test scenarios validate PQ-credential path when 081KSNY2Z0008QG0R0011XCT94 substrate lands
+- Composes with 081KSNY2Z0008QG0R0034FR5FG ASAP cluster umbrella — test harness lands within the cluster's Phase 2 (USB high-parallel-track)
 
 ## Composition
 
-- **B-0844** zflash agent-mode native implementation — implementation under test
-- **B-0852** USB-bound credential substrate — implementation under test
-- **B-0852.3** zeta-install.sh step 6.77 cred-picker — implementation under test
-- **B-0737** Touch ID + PAM + ISO-auto-discovery — implementation under test
-- **B-0884** PQ git-crypt + zflash integration — test path extends when this lands
-- **B-0886** ASAP cluster umbrella — this row belongs in Phase 2 (USB high-parallel-track)
-- **B-0886.2** two-priority-axes — USB is operator-personal-axis TOP priority; testing-now aligns with that
-- **B-0889** symbiotic cross-track self-healing — test scenarios include cross-track recovery (cloud-KVM controls local USB-boot)
-- **B-0590** fleet-replication-20-machines — at-scale validation context
-- **B-0770** GL-iNet Comet Pro IP-KVM — for remote USB-boot fleet testing
-- **B-0778** commodity hardware reference + fingerbot — hardware context for cluster tests
-- **B-0967** Kubernetes + ArgoCD kind/k3d integration health tests — separate
+- **081KSGS9H0008QG0R001EZKNCB** zflash agent-mode native implementation — implementation under test
+- **081KSKBP80008QG0R003AX2A69** USB-bound credential substrate — implementation under test
+- **081KSKBP80008QG0R003ETGS01** zeta-install.sh step 6.77 cred-picker — implementation under test
+- **081KSE6WT0008QG0R003WZAQKV** Touch ID + PAM + ISO-auto-discovery — implementation under test
+- **081KSNY2Z0008QG0R0011XCT94** PQ git-crypt + zflash integration — test path extends when this lands
+- **081KSNY2Z0008QG0R0034FR5FG** ASAP cluster umbrella — this row belongs in Phase 2 (USB high-parallel-track)
+- **081KSNY2Z0008QG0R002CR38D8** two-priority-axes — USB is operator-personal-axis TOP priority; testing-now aligns with that
+- **081KSNY2Z0008QG0R003FR5TVG** symbiotic cross-track self-healing — test scenarios include cross-track recovery (cloud-KVM controls local USB-boot)
+- **081KRQ1AB0008QG0R002G93CM7** fleet-replication-20-machines — at-scale validation context
+- **081KSE6WT0008QG0R0029S1D5Z** GL-iNet Comet Pro IP-KVM — for remote USB-boot fleet testing
+- **081KSE6WT0008QG0R0004AP0ZA** commodity hardware reference + fingerbot — hardware context for cluster tests
+- **081KSXN940008QG0R000SCP2H1** Kubernetes + ArgoCD kind/k3d integration health tests — separate
   cluster-health proof; this row consumes only a narrow smoke signal from that
   domain
 

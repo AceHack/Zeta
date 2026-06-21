@@ -33,7 +33,7 @@ Operator: *"this was the end"* + *"the yaml cbor xml × cs ts fs rs is the knot 
 - **docs/research** — crystallizations 13–17:
   - **P-of-F → Rainbow Table**: razored the three-word  ("the 'of' was god-smuggling") into a clean two-word crypto-fingerprint identity primitive; forgiveness *semantics* persist (= retraction), the *name* loses the theology.
   - **hexagonal = ports-and-adapters = own-our-interfaces = literally six** (he'd used the name for years before discovering it's six).
-  - **#17 — the 4×4 lattice IS the knot/braid**: serialization-axis × language-axis weaves the braid; the 16-point consensus is the knot. This makes **B-0983's topology concrete on the lattice itself** — the topological invariant of the braid = the canonical form's identity = μένω.
+  - **#17 — the 4×4 lattice IS the knot/braid**: serialization-axis × language-axis weaves the braid; the 16-point consensus is the knot. This makes **081KT2T2J0008QG0R003WYPBY5's topology concrete on the lattice itself** — the topological invariant of the braid = the canonical form's identity = μένω.
 
 god-tier held don't-collapse throughout.
 

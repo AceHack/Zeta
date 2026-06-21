@@ -1,6 +1,5 @@
 ---
-id: B-0316
-zetaid: 081KR2E4K0008QG0R0032TWN5H
+id: 081KR2E4K0008QG0R0032TWN5H
 priority: P2
 status: open
 title: "Long-tail external-anchor cadenced sweep — memory files + research docs"
@@ -19,13 +18,13 @@ type: friction-reducer
 
 Define and integrate a cadenced sweep procedure for
 external-anchor coverage across the ~930 memory files and
-~358 docs/research/ files. This is Phase 3 of B-0060 —
+~358 docs/research/ files. This is Phase 3 of 081KQ8P5D0008QG0R000N718AC —
 ongoing, not a one-shot.
 
 ## Approach
 
 1. Add an `--sweep N` flag to the external-anchor coverage
-   scanner (B-0311) that samples every Nth file.
+   scanner (081KR2E4K0008QG0R001ZWARTN) that samples every Nth file.
 2. Wire the sweep into an existing cadence tool or the
    razor-cadence workflow as an optional check.
 3. Each sweep iteration:
@@ -41,9 +40,9 @@ This row covers the SETUP of the cadence (the tool flag +
 the wiring), not the execution of all ~1288 files. Execution
 is ongoing cadenced work after setup lands.
 
-## Composes with B-0090
+## Composes with 081KQ8P5D0008QG0R0002TN22C
 
-B-0090 (cadenced lost-substrate recovery audit) already
+081KQ8P5D0008QG0R0002TN22C (cadenced lost-substrate recovery audit) already
 defines a cadence pattern for sweeping memory files. This
 row adds the external-anchor dimension to that sweep.
 

@@ -1,15 +1,14 @@
 ---
-id: B-0088.1
-zetaid: 081KRA5AR0008QG0R000GZ8ECC
+id: 081KRA5AR0008QG0R000GZ8ECC
 priority: P2
 status: closed
-superseded_by: B-0423.4
+superseded_by: 081KRFA460008QG0R0035NKRHG
 resolved: 2026-05-13
-resolved_note: "verified: not in required status checks; moot after B-0423.4 removes the paired-edit check entirely"
+resolved_note: "verified: not in required status checks; moot after 081KRFA460008QG0R0035NKRHG removes the paired-edit check entirely"
 title: Verify whether `check memory/MEMORY.md paired edit` appears in required_status_checks.contexts or ruleset
 tier: factory-tooling
 effort: XS
-ask: re-decomposition of B-0088 (2026-05-11)
+ask: re-decomposition of 081KQ8P5D0008QG0R002FSTGXP (2026-05-11)
 created: 2026-05-11
 last_updated: 2026-05-13
 parent: 081KQ8P5D0008QG0R002FSTGXP
@@ -19,11 +18,11 @@ tags: [riven-2026-05-11, advisory-enforcement, github-branch-protection]
 type: fact-verification
 ---
 
-# B-0088.1 — Verify paired-edit job presence in enforcement surface
+# 081KRA5AR0008QG0R000GZ8ECC — Verify paired-edit job presence in enforcement surface
 
 ## Why
 
-B-0088 is too broad (promote OR weaken + 3 sibling audits). This atomic child isolates the single observable fact: is the job name in the required set today?
+081KQ8P5D0008QG0R002FSTGXP is too broad (promote OR weaken + 3 sibling audits). This atomic child isolates the single observable fact: is the job name in the required set today?
 
 ## Acceptance
 
@@ -33,7 +32,7 @@ B-0088 is too broad (promote OR weaken + 3 sibling audits). This atomic child is
 
 ## Dependency
 
-Root (child of B-0088). Unblocks B-0088.2 decision and B-0088.3+ sibling audits only after fact is substrate.
+Root (child of 081KQ8P5D0008QG0R002FSTGXP). Unblocks 081KRA5AR0008QG0R0036JP9KM decision and 081KRA5AR0008QG0R002WVSEGW+ sibling audits only after fact is substrate.
 
 ## Focused check (run in claim worktree)
 

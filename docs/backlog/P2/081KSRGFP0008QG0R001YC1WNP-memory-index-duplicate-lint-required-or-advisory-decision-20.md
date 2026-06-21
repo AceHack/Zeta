@@ -1,12 +1,11 @@
 ---
-id: B-0933
-zetaid: 081KSRGFP0008QG0R001YC1WNP
+id: 081KSRGFP0008QG0R001YC1WNP
 priority: P2
 status: open
 title: Decide whether memory-index-duplicate-lint is required or explicitly advisory
 tier: factory-tooling
 effort: XS
-ask: follow-up from B-0088.4 audit (2026-05-29)
+ask: follow-up from 081KRA5AR0008QG0R001JKYFRJ audit (2026-05-29)
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: [081KRA5AR0008QG0R001JKYFRJ]
@@ -15,11 +14,11 @@ tags: [advisory-enforcement, github-rulesets, memory-index-duplicate-lint]
 type: decision
 ---
 
-# B-0933 — Decide memory-index-duplicate-lint required/advisory status
+# 081KSRGFP0008QG0R001YC1WNP — Decide memory-index-duplicate-lint required/advisory status
 
 ## Why
 
-B-0088.4 verified that `.github/workflows/memory-index-duplicate-lint.yml`
+081KRA5AR0008QG0R001JKYFRJ verified that `.github/workflows/memory-index-duplicate-lint.yml`
 is active and runs an enforcing duplicate-link audit, but the live
 GitHub `CI Gate` ruleset does not require the workflow or its job name.
 

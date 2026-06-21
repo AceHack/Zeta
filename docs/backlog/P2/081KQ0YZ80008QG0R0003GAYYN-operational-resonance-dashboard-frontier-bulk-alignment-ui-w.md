@@ -1,6 +1,5 @@
 ---
-id: B-0017
-zetaid: 081KQ0YZ80008QG0R0003GAYYN
+id: 081KQ0YZ80008QG0R0003GAYYN
 priority: P2
 status: decomposed
 title: Operational Resonance Dashboard — the bulk-alignment UI within Frontier; minimise time-to-answer "are things going as expected?"; continuous UX research + meta-recursive research-on-research; every pixel earns its way via ongoing A/B experiments
@@ -203,49 +202,49 @@ Maintainer-never-writes-code preserved per AGENTS.md vibe-coded
 hypothesis: maintainer makes architectural-decision-level
 approvals/directions through the UI, agent produces code.
 
-Same-day note: B-0188 was filed for this extension before
-B-0017 was rediscovered; B-0188 closed as duplicate, this
+Same-day note: 081KQR4HQ0008QG0R002ZDREYC was filed for this extension before
+081KQ0YZ80008QG0R0003GAYYN was rediscovered; 081KQR4HQ0008QG0R002ZDREYC closed as duplicate, this
 section preserves the architectural direction in the canonical
 row. Lineage:
 `memory/feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`.
 
 ## Decomposition (2026-05-09)
 
-B-0017 is XL effort spanning naming, research, infrastructure,
+081KQ0YZ80008QG0R0003GAYYN is XL effort spanning naming, research, infrastructure,
 and UI. Decomposed into 8 dependency-ordered atomic child rows.
 
 **Dependency-ordered atomic child rows:**
 
 | ID | Title | Priority | Effort | Depends on |
 |----|-------|----------|--------|-----------|
-| B-0388 | Naming lock — naming-expert review, candidates, Aaron sign-off | P3 | S | — |
-| B-0389 | UX + psychology research scope doc — Chomsky, pre-attentive, cognitive load, UX methodology | P3 | S | — |
-| B-0390 | "Time-to-answer" metric formalization — baseline, measurement methodology, acceptance criteria | P3 | S | — |
-| B-0391 | GitHub Pages static shell — index page, nav shell, CI deploy config | P3 | S | B-0388 |
-| B-0392 | Tier-aware bulk grouping model ADR — Tier 0-4 mapped to reviewer attention levels | P3 | S | B-0390 |
-| B-0393 | A/B experiment infrastructure design — event-capture schema, experiment registration, git-native results | P3 | M | B-0390, B-0391 |
-| B-0394 | MVP dashboard surface — first working "are things going as expected?" page on GH Pages | P3 | L | B-0390, B-0391, B-0392 |
-| B-0395 | Conversation interface Path A — browser/local LLM (WebLLM/transformers.js) embedded in dashboard | P3 | L | B-0394 |
+| 081KR50HA0008QG0R002DR44J1 | Naming lock — naming-expert review, candidates, Aaron sign-off | P3 | S | — |
+| 081KR50HA0008QG0R000TQKYGM | UX + psychology research scope doc — Chomsky, pre-attentive, cognitive load, UX methodology | P3 | S | — |
+| 081KR50HA0008QG0R00223YZP8 | "Time-to-answer" metric formalization — baseline, measurement methodology, acceptance criteria | P3 | S | — |
+| 081KR50HA0008QG0R0036HGEJ5 | GitHub Pages static shell — index page, nav shell, CI deploy config | P3 | S | 081KR50HA0008QG0R002DR44J1 |
+| 081KR50HA0008QG0R003BM7FNK | Tier-aware bulk grouping model ADR — Tier 0-4 mapped to reviewer attention levels | P3 | S | 081KR50HA0008QG0R00223YZP8 |
+| 081KR50HA0008QG0R001DX165X | A/B experiment infrastructure design — event-capture schema, experiment registration, git-native results | P3 | M | 081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5 |
+| 081KR50HA0008QG0R002NZENZJ | MVP dashboard surface — first working "are things going as expected?" page on GH Pages | P3 | L | 081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5, 081KR50HA0008QG0R003BM7FNK |
+| 081KR50HA0008QG0R0019KYAAS | Conversation interface Path A — browser/local LLM (WebLLM/transformers.js) embedded in dashboard | P3 | L | 081KR50HA0008QG0R002NZENZJ |
 
 **Dependency order:**
 
 ```
-B-0388 (naming) ──────────────────────────────────┐
-B-0389 (research scope) ─── (informs all design)  │
-B-0390 (metric) ──────────────────────────────────┤
+081KR50HA0008QG0R002DR44J1 (naming) ──────────────────────────────────┐
+081KR50HA0008QG0R000TQKYGM (research scope) ─── (informs all design)  │
+081KR50HA0008QG0R00223YZP8 (metric) ──────────────────────────────────┤
   │                                                │
-  ├─ B-0392 (tier model) ──────────────────────┐  │
-  └─ B-0391 (GH Pages shell) ◄── B-0388 ───┐  │  │
+  ├─ 081KR50HA0008QG0R003BM7FNK (tier model) ──────────────────────┐  │
+  └─ 081KR50HA0008QG0R0036HGEJ5 (GH Pages shell) ◄── 081KR50HA0008QG0R002DR44J1 ───┐  │  │
        │                                    │  │  │
-       ├─ B-0393 (A/B infra) ───────────────┘  │  │
-       └─ B-0394 (MVP) ◄─ B-0390, B-0392 ──────┘  │
-            └─ B-0395 (conversation interface)     │
+       ├─ 081KR50HA0008QG0R001DX165X (A/B infra) ───────────────┘  │  │
+       └─ 081KR50HA0008QG0R002NZENZJ (MVP) ◄─ 081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R003BM7FNK ──────┘  │
+            └─ 081KR50HA0008QG0R0019KYAAS (conversation interface)     │
                                                    │
-(B-0391 also uses locked name from B-0388) ────────┘
+(081KR50HA0008QG0R0036HGEJ5 also uses locked name from 081KR50HA0008QG0R002DR44J1) ────────┘
 ```
 
-B-0388, B-0389, and B-0390 are parallelizable root atoms.
-B-0393 is a parallel dep for B-0394 — can be stubbed if
-B-0393 lags. B-0395 is strictly last.
+081KR50HA0008QG0R002DR44J1, 081KR50HA0008QG0R000TQKYGM, and 081KR50HA0008QG0R00223YZP8 are parallelizable root atoms.
+081KR50HA0008QG0R001DX165X is a parallel dep for 081KR50HA0008QG0R002NZENZJ — can be stubbed if
+081KR50HA0008QG0R001DX165X lags. 081KR50HA0008QG0R0019KYAAS is strictly last.
 
-B-0017 becomes the tracking/parent row (`status: decomposed`).
+081KQ0YZ80008QG0R0003GAYYN becomes the tracking/parent row (`status: decomposed`).

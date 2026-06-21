@@ -27,7 +27,7 @@
 
 ## Description
 
-Four verbatim beats assembled into the destination stack, with honest bounds: BNN's two readings (Bayesian vs BitNet) converge at 0 bits under REPORT #2's bits↔precision dictionary; the QNN/Q# rung carries the simulator-only caveat and names P0-B (missing bridge functor) as blocker; training≡running is Bayesian filtering / active inference exactly, and promotes the in-tree TestLoop (sim·mea·cut, B-1035) from test harness to training algorithm.
+Four verbatim beats assembled into the destination stack, with honest bounds: BNN's two readings (Bayesian vs BitNet) converge at 0 bits under REPORT #2's bits↔precision dictionary; the QNN/Q# rung carries the simulator-only caveat and names P0-B (missing bridge functor) as blocker; training≡running is Bayesian filtering / active inference exactly, and promotes the in-tree TestLoop (sim·mea·cut, 081KTSZN10008QG0R002J0GE0Z) from test harness to training algorithm.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

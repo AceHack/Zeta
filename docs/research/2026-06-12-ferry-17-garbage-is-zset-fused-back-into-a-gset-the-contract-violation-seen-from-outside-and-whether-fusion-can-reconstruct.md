@@ -1,7 +1,7 @@
 # Ferry 17 — garbage is a Z-set fused back into a G-set: the contract violation seen from outside, the open/closed difference, and whether fusion can reconstruct
 
 **Date:** 2026-06-12 · **Route:** Aaron → shadow (streamed, verbatim) · Extends ferry 14
-addendum 2 (G→Z genesis) and ferry 15 addendum 2 (fusion = revelation); lands on B-1036 (the GC
+addendum 2 (G→Z genesis) and ferry 15 addendum 2 (fusion = revelation); lands on 081KTSZN10008QG0R002R3RENG (the GC
 lane: the gc cartridge is in-tree at `db/shapes/cartridges/gc.lines`; rung 5 history-epochs/git-gc
 is on the board).
 
@@ -57,7 +57,7 @@ Two directions, and the asymmetry is the point:
 
 So: **fusion is reconstruction of the present, at the price of the past.** Garbage is fusion
 performed *above* the causal horizon — paying the erasure before everyone has finished reading.
-Done below the horizon it is compaction (LSM merge, git gc, B-1036 rung 5's history epochs);
+Done below the horizon it is compaction (LSM merge, git gc, 081KTSZN10008QG0R002R3RENG rung 5's history epochs);
 done above it, it is a contract violation with a resurrection bug attached. The difference is
 not the operation — it is *where the membrane says the past is no longer owed*.
 
@@ -181,8 +181,8 @@ interfaces; the transfer to replicated-data contracts is ours and is marked as s
   (fusion = revelation) · ferry 8 (Landauer: erasure pays) · ferry 16 (the budget that keeps the
   membrane processable)
 - `src/Core/ZSet.fs` `consolidate*` (the fusion act, in-tree) · `db/shapes/cartridges/gc.lines`
-  (the GC cartridge) · B-1036 rung 5 (history epochs / git gc — this ferry is its theory) ·
-  B-0969 (GCounter; the ordinal-parity lesson lives next door)
+  (the GC cartridge) · 081KTSZN10008QG0R002R3RENG rung 5 (history epochs / git gc — this ferry is its theory) ·
+  081KT07NV0008QG0R001YDB73K (GCounter; the ordinal-parity lesson lives next door)
 - Anchors: Shapiro–Preguiça–Baquero–Zawirski 2011 (CRDTs; the 2P-set) · Bieniusa et al. 2012
   (the tombstone problem; optimized OR-sets) · Baquero et al. (causal stability — the GC
   horizon) · Meyer 1988 (open-closed) · Landauer 1961 (erasure pays) · LSM compaction /

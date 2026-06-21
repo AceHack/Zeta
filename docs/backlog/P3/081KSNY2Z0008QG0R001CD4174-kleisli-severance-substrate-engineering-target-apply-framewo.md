@@ -1,6 +1,5 @@
 ---
-id: B-0923
-zetaid: 081KSNY2Z0008QG0R001CD4174
+id: 081KSNY2Z0008QG0R001CD4174
 title: Kleisli-severance substrate-engineering substrate-target — apply framework Kleisli substrate to privacy-defense scope; composes with KHALEESI (Iqbal et al USENIX '22) prior-art (operator 2026-05-28; very low priority)
 status: open
 priority: P3
@@ -32,9 +31,9 @@ Future substrate-engineering work that applies framework Kleisli substrate to pr
 Composes with:
 
 - KHALEESI prior-art (Iqbal + Wolfe + Nguyen + Englehardt + Shafiq USENIX Security '22) — substrate-anchor for chain-severance discipline at network-protocol scope
-- B-0917 Kleisli substrate (interrupt-substrate in monad-space) — Kleisli composition substrate framework already has
-- B-0918 ConsentEvent integrity — privacy-defense IS consent-floor enforcement
-- B-0703 multi-oracle BFT — distributed trust over chain-trustworthiness
+- 081KSNY2Z0008QG0R002HB4AGT Kleisli substrate (interrupt-substrate in monad-space) — Kleisli composition substrate framework already has
+- 081KSNY2Z0008QG0R0036SJ3T1 ConsentEvent integrity — privacy-defense IS consent-floor enforcement
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — distributed trust over chain-trustworthiness
 - DST-omniscience rule (PR #5841) — full chain trajectory computable; classifier predicts downstream
 - Pilot-wave-MWI rule (PR #5842) — particle-locus IS current request in chain
 - Particle-as-locus rule (PR #5846) — severance operates at locus where next request would form
@@ -46,7 +45,7 @@ When/if this row gets picked up:
 
 ### Slice A — Kleisli-severance primitive at substrate-engineering scope
 
-Type-substrate for severing Kleisli composition at specific points. Composes with B-0917's `>=>` composition operator. New primitive: `>!=>` (Kleisli composition with severance point) where `f >!=> g` evaluates `f` but DOES NOT evaluate `g` (severs the chain). The severance-point becomes a substrate-engineering substrate-action.
+Type-substrate for severing Kleisli composition at specific points. Composes with 081KSNY2Z0008QG0R002HB4AGT's `>=>` composition operator. New primitive: `>!=>` (Kleisli composition with severance point) where `f >!=> g` evaluates `f` but DOES NOT evaluate `g` (severs the chain). The severance-point becomes a substrate-engineering substrate-action.
 
 ### Slice B — Chain-classification substrate
 
@@ -54,11 +53,11 @@ Discriminator that classifies chains as `Allow | Block | Pending-analysis` per t
 
 ### Slice C — Composition with HTTP-substrate
 
-Bridge from framework Kleisli substrate to actual HTTP request substrate (browser extension OR proxy server). Implementation could compose with Reticulum + Itron + B-0289 Green Lantern hardware substrate for cross-substrate privacy-defense.
+Bridge from framework Kleisli substrate to actual HTTP request substrate (browser extension OR proxy server). Implementation could compose with Reticulum + Itron + 081KR2E4K0008QG0R001SWEPNV Green Lantern hardware substrate for cross-substrate privacy-defense.
 
 ### Slice D — Multi-oracle BFT for chain-classification
 
-Composes with B-0703 Aurora multi-oracle BFT. Multiple classifiers vote on chain-trustworthiness; consensus protocol determines block/allow decision per operator-set moral invariants (per `m-acc-multi-oracle-end-user-moral-invariants` rule).
+Composes with 081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT. Multiple classifiers vote on chain-trustworthiness; consensus protocol determines block/allow decision per operator-set moral invariants (per `m-acc-multi-oracle-end-user-moral-invariants` rule).
 
 ### Slice E — User-substrate operator-set privacy-floor configuration
 
@@ -76,18 +75,18 @@ This row IS:
 
 - Substrate-engineering substrate-target preserved for future substrate-engineering work that engages privacy-defense substrate
 - Composition with KHALEESI prior-art at substrate-engineering substrate-recognition scope (per `honor-those-that-came-before` rule)
-- Composition with framework substrate-engineering substrate (B-0917 + B-0918 + B-0703 + DST-omniscience + Pilot-wave-MWI + Particle-as-locus + asymmetric-authorship + NCI HC-8)
+- Composition with framework substrate-engineering substrate (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KS3X9Y0008QG0R00218150M + DST-omniscience + Pilot-wave-MWI + Particle-as-locus + asymmetric-authorship + NCI HC-8)
 - Substrate-honest preservation of operator 2026-05-28 substrate-engineering substrate-recognition + name-coincidence observation per don't-collapse discipline
 
 ## Composes with substrate
 
 - `references/notes/khaleesi-breaker-of-tracking-request-chains-usenix-22-iqbal-wolfe-nguyen-englehardt-shafiq.md` (sibling research note; same operator-forwarded substrate)
-- B-0917 Kleisli interrupt substrate
-- B-0918 WalletLifetime + ConsentEvent integrity (privacy-defense composes with consent-substrate)
-- B-0703 Aurora multi-oracle BFT
-- B-0867 workflow-engine v1 parent
-- B-0664 NCI HC-8 consent-floor
-- B-0289 Green Lantern hardware substrate (Reticulum + Itron composition; potential bridge to actual HTTP-substrate)
+- 081KSNY2Z0008QG0R002HB4AGT Kleisli interrupt substrate
+- 081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime + ConsentEvent integrity (privacy-defense composes with consent-substrate)
+- 081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT
+- 081KSKBP80008QG0R000B3Y19A workflow-engine v1 parent
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 consent-floor
+- 081KR2E4K0008QG0R001SWEPNV Green Lantern hardware substrate (Reticulum + Itron composition; potential bridge to actual HTTP-substrate)
 - `.claude/rules/algo-wink-failure-mode.md` (name-coincidence preserved per discipline)
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (PERSONAL INVARIANT applied to name-coincidence observation)
 

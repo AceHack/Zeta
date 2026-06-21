@@ -1,6 +1,6 @@
 ---
 pr_number: 5004
-title: "backlog(B-0742): reference k8s local stack as Ace's distributable PoC \u2014 hats become negotiated fork structure ON TOP of reference stack \u2014 deterministic + declarative + GitOps + AI-native + human-native"
+title: "backlog(081KSE6WT0008QG0R000YYH3DY): reference k8s local stack as Ace's distributable PoC \u2014 hats become negotiated fork structure ON TOP of reference stack \u2014 deterministic + declarative + GitOps + AI-native + human-native"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T21:56:52Z"
@@ -12,17 +12,17 @@ archived_at: "2026-05-25T22:01:40Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5004: backlog(B-0742): reference k8s local stack as Ace's distributable PoC — hats become negotiated fork structure ON TOP of reference stack — deterministic + declarative + GitOps + AI-native + human-native
+# PR #5004: backlog(081KSE6WT0008QG0R000YYH3DY): reference k8s local stack as Ace's distributable PoC — hats become negotiated fork structure ON TOP of reference stack — deterministic + declarative + GitOps + AI-native + human-native
 
 ## PR description
 
 ## Summary
 
-Aaron 2026-05-25, continuing the ACE+fork-negotiation arc after B-0741:
+Aaron 2026-05-25, continuing the ACE+fork-negotiation arc after 081KSE6WT0008QG0R002CC6314:
 
 > *"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."*
 
-**Operational anchor for B-0741.** B-0741 = WHAT the primitive is; B-0742 = HOW it's empirically demonstrated via reference-cluster-as-Ace-package.
+**Operational anchor for 081KSE6WT0008QG0R002CC6314.** 081KSE6WT0008QG0R002CC6314 = WHAT the primitive is; 081KSE6WT0008QG0R000YYH3DY = HOW it's empirically demonstrated via reference-cluster-as-Ace-package.
 
 ## Three substantive claims
 
@@ -37,12 +37,12 @@ Inventory of already-landed PR substrate:
 | NFD + lstopo + zeta-install guided installer | #4951 |
 | Dev-cluster (k3d + Cilium + ArgoCD + root App-of-Apps) | #4953 |
 | Build-installer-iso CI workflows | shipped today |
-| zflash + zflash-setup (Touch ID PAM) | #4997 (B-0737) |
+| zflash + zflash-setup (Touch ID PAM) | #4997 (081KSE6WT0008QG0R003WZAQKV) |
 | Bootstrap order (Addison's STARTING-POINT) | Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD |
 
 ### 2. Hats become the negotiated fork structure ON TOP of reference
 
-Forks declare delta via hat-ontology; cross-fork negotiation maps capabilities (B-0741 surface 2). Worked example: LFG-cluster `trading-bot-driver` hat + Healthcare-Zeta-fork `hipaa-data-handler` hat negotiate; overlap is `audit-*` capabilities; disjoints stay per-fork; signed mapping is recorded.
+Forks declare delta via hat-ontology; cross-fork negotiation maps capabilities (081KSE6WT0008QG0R002CC6314 surface 2). Worked example: LFG-cluster `trading-bot-driver` hat + Healthcare-Zeta-fork `hipaa-data-handler` hat negotiate; overlap is `audit-*` capabilities; disjoints stay per-fork; signed mapping is recorded.
 
 ### 3. Ace distributes the reference stack as PoC of reliable AI control over all PMs
 
@@ -57,25 +57,25 @@ Single `ace install zeta/reference-cluster@v1` dispatches across **Nix flakes + 
 
 1. Document `full-ai-cluster/` as canonical reference stack (`REFERENCE-STACK.md`)
 2. Hat-as-fork-structure spec (`FORK-NEGOTIATION.md`)
-3. Ace cluster-distribution scope extension to B-0288 (whole-clusters not just packs)
+3. Ace cluster-distribution scope extension to 081KR2E4K0008QG0R002YE3MMD (whole-clusters not just packs)
 4. Determinism PoC (N=3+ identical-end-state installs)
 5. Cross-PM dispatch PoC (single `ace install` with no manual PM-side steps)
 6. Desired-state-enforcement PoC (introduce drift; observe re-convergence)
 
 ## Composes with
 
-- **B-0741** (abstract primitive this row anchors)
-- B-0731 (hat ontology)
-- B-0247 + B-0287 + B-0288 (Ace PM CLI lineage; scope item 3 extends B-0288 to whole-cluster packages)
-- B-0727 (4-tier federation) + B-0726 (Reticulum)
-- B-0628 / B-0638 / B-0634 / B-0703 (governance + negotiation + signature + consensus)
-- B-0732 (leverage-class safety — Layer 1 provenance captures `ace install` operations)
-- B-0737 (zflash IS part of bring-up; B-0728 contract preserved end-to-end)
+- **081KSE6WT0008QG0R002CC6314** (abstract primitive this row anchors)
+- 081KSE6WT0008QG0R0004HV6RR (hat ontology)
+- 081KQZVQW0008QG0R000ZHEN62 + 081KR2E4K0008QG0R0033WVCXE + 081KR2E4K0008QG0R002YE3MMD (Ace PM CLI lineage; scope item 3 extends 081KR2E4K0008QG0R002YE3MMD to whole-cluster packages)
+- 081KSE6WT0008QG0R0006HKTXJ (4-tier federation) + 081KSE6WT0008QG0R003C9KGQE (Reticulum)
+- 081KRW63S0008QG0R003TX8MG5 / 081KRW63S0008QG0R0030F8ZXA / 081KRW63S0008QG0R0022SFKPM / 081KS3X9Y0008QG0R00218150M (governance + negotiation + signature + consensus)
+- 081KSE6WT0008QG0R002YBWBB1 (leverage-class safety — Layer 1 provenance captures `ace install` operations)
+- 081KSE6WT0008QG0R003WZAQKV (zflash IS part of bring-up; 081KSE6WT0008QG0R0005XASX2 contract preserved end-to-end)
 - All `full-ai-cluster/`-shipping PRs (#4930 + #4950 + #4951 + #4953 + #4958 + #4965 + #4966 + #4997)
 
 ## Closing today's substrate cascade
 
-Today's 2026-05-25 arc (B-0728 destructive-tool authoring contract → B-0742 reference-stack PoC). Full table in the row body.
+Today's 2026-05-25 arc (081KSE6WT0008QG0R0005XASX2 destructive-tool authoring contract → 081KSE6WT0008QG0R000YYH3DY reference-stack PoC). Full table in the row body.
 
 ## Test plan
 
@@ -118,7 +118,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md:57 (unresolved)
+### Thread 1: docs/backlog/P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md:57 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-25T21:59:40Z):
 

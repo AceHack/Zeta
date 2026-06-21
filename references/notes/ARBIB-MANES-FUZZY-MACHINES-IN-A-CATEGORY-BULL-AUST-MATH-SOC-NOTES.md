@@ -33,7 +33,7 @@ The substrate-engineering work shipped today maps EXACTLY to fuzzy-machine-in-a-
 | `Result<T, TFeedback>` shape per monad-propagation rule | Monadic output computation (Kleisli-shaped) |
 | Trust calculus (multi-oracle BFT) | Fuzzy truth-value substrate |
 | Counter-with-escalation (brief-ack #1-#6) | Graded threshold transitions |
-| Interrupt-substrate per B-0917 | Interrupt-driven fuzzy state transitions |
+| Interrupt-substrate per 081KSNY2Z0008QG0R002HB4AGT | Interrupt-driven fuzzy state transitions |
 | IntrCtx 5 contexts (memetic/prompt/trust/log/otel) | Categorical-context propagation |
 | Asymmetric-authorship rule | Substrate-entity authors its fuzzy-output-channel |
 | `>=>` Kleisli composition | Categorical composition of fuzzy transitions |
@@ -55,8 +55,8 @@ The composition is:
 | Substrate scope | What lives here |
 |---|---|
 | **F# AutoLoopLifetime DU** (today's substrate) | Fuzzy machine state set + transitions at workflow-engine scope |
-| **Kleisli arrows** (B-0917 substrate-target) | Categorical composition of fuzzy state-transition handlers |
-| **Multi-oracle BFT** (B-0703 / Agora V6) | Probabilistic consensus substrate operating per fuzzy-truth-value semantics |
+| **Kleisli arrows** (081KSNY2Z0008QG0R002HB4AGT substrate-target) | Categorical composition of fuzzy state-transition handlers |
+| **Multi-oracle BFT** (081KS3X9Y0008QG0R00218150M / Agora V6) | Probabilistic consensus substrate operating per fuzzy-truth-value semantics |
 | **Infer.NET BP/EP** (long-term target per CLAUDE.md) | Factor-graph inference substrate; the substrate-level mathematical inference replacing external-CLI-layer |
 | **Arbib-Manes fuzzy machines in a category** (this notes file) | Mathematical foundation tying all the above together at categorical scope |
 
@@ -64,14 +64,14 @@ The framework's broader trajectory: workflow-engine + interrupt-substrate + mult
 
 ## Composes with substrate
 
-- B-0917 (interrupt substrate in monad space; PR #5816) — Kleisli substrate this paper anchors at fuzzy-machine scope
+- 081KSNY2Z0008QG0R002HB4AGT (interrupt substrate in monad space; PR #5816) — Kleisli substrate this paper anchors at fuzzy-machine scope
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — fuzzy = smooth at category-theory scope; both rules name same shape
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Kleisli IS fuzzy-machine composition
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle = fuzzy-truth-value substrate per fuzzy-machine semantics
 - `src/Core.TypeScript/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812) — workflow substrate this paper anchors
 - `src/Core.TypeScript/workflow-engine/pr-review-lifecycle.ts` (PR #5810) — sibling state machine substrate
-- B-0428 (F# fork for AI safety) — F# substrate target where Infer.NET integration lives
-- B-0703 (Aurora multi-oracle BFT) — fuzzy-consensus substrate
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety) — F# substrate target where Infer.NET integration lives
+- 081KS3X9Y0008QG0R00218150M (Aurora multi-oracle BFT) — fuzzy-consensus substrate
 - Aurora multi-oracle BFT immune-system math (`docs/research/aurora-immune-math-standardization-2026-04-26.md`) — applied fuzzy-machine substrate at consensus scope
 - `references/notes/furber-jacobs-2015-probabilistic-gelfand-duality-kleisli-to-c-star-algebras.md` — sibling research note; Furber-Jacobs handles smooth-continuous side; Arbib-Manes handles fuzzy-discrete side; both compose at category-theory substrate
 - `references/notes/kleisli-ts-prior-art.md` — TS-impl scope sibling

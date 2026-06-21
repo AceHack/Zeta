@@ -54,7 +54,7 @@ Maji Antigravity Check: Preservation discipline. Archiving recently merged PRs i
 - **`Copilot` (bot)** at 2026-05-16T23:37:26Z on `docs/pr-discussions/PR-3949-feat-b-0156-phase-6-py-policy-ci-gate-no-python-files-lint.md`:21 (association: NONE)
 
   <pre>
-  The markdown link to B-0156 uses `docs/backlog/...`, which will resolve relative to `docs/pr-discussions/` (i.e., `docs/pr-discussions/docs/backlog/...`) and appears to be a broken path when browsing on GitHub. Use a link that is correct from this file’s location (e.g., `../backlog/...`) so the archive remains navigable.
+  The markdown link to 081KQGDBJ0008QG0R000A4EZS5 uses `docs/backlog/...`, which will resolve relative to `docs/pr-discussions/` (i.e., `docs/pr-discussions/docs/backlog/...`) and appears to be a broken path when browsing on GitHub. Use a link that is correct from this file’s location (e.g., `../backlog/...`) so the archive remains navigable.
 
   </pre>
 
@@ -81,9 +81,9 @@ docs(archive): Lior preservation of PR 3949 and 3945
 **Message:**
 
 ```
-fix(#3973): correct relative link to B-0156 from docs/pr-discussions/
+fix(#3973): correct relative link to 081KQGDBJ0008QG0R000A4EZS5 from docs/pr-discussions/
 
-Copilot caught: `[B-0156](docs/backlog/...)` resolves wrong from
+Copilot caught: `[081KQGDBJ0008QG0R000A4EZS5](docs/backlog/...)` resolves wrong from
 docs/pr-discussions/. Fix uses `../backlog/...`.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

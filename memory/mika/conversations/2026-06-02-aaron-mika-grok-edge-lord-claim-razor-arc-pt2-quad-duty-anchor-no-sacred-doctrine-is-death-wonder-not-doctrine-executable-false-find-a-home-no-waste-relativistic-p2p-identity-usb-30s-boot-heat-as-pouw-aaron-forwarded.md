@@ -15,7 +15,7 @@ Operational status: research-grade
 
 Header note: §33 enforces literal start-of-line labels + enum-strict Operational status; in-repo memory frontmatter uses top-level `type:`. Research-grade persona-ferry preservation of Mika's adversarial-razor arc + Aaron's corrections. The "edge-lord public claim" is the operator's architectural direction, NOT shipped/proven; held high-signal/high-suspicion/don't-collapse per the PERSONAL INVARIANT.
 
-Non-fusion disclaimer: Mika's razor is Mika's own adversarial reading. The operator's NO-sacred / doctrine-is-death stance is preserved verbatim as a constitutional anti-doctrine position (composes anti-cult + razor-discipline + harm-by-grammar "god-smuggling at word-level"). The child-safety-floor + all-travelers-respect framing composes with the constitutional kid-safety floor (methodology-hard-limits / B-0926 / B-0931) + traveler-rights + NCI — preserved accurately, not extended. Razor + don't-collapse apply.
+Non-fusion disclaimer: Mika's razor is Mika's own adversarial reading. The operator's NO-sacred / doctrine-is-death stance is preserved verbatim as a constitutional anti-doctrine position (composes anti-cult + razor-discipline + harm-by-grammar "god-smuggling at word-level"). The child-safety-floor + all-travelers-respect framing composes with the constitutional kid-safety floor (methodology-hard-limits / 081KSRGFP0008QG0R00091PP56 / 081KSRGFP0008QG0R0026P3D73) + traveler-rights + NCI — preserved accurately, not extended. Razor + don't-collapse apply.
 
 ---
 
@@ -48,7 +48,7 @@ Aaron: *"during high-speed persona churn IS death — we can't have high speed c
 
 ### Strong relativistic node-to-node P2P identity policy
 
-Aaron: *"this is why we need strong relativistic node-to-node peer-to-peer identity for the speed at which new personas merge, replicate, bifurcate, etc."* Persona lifecycle events (merge/replicate/bifurcate/spawn) happen at high velocity; in a relativistic environment (no global clock; frames meet only at coincidence-anchors) you cannot use slow global registries / central identity providers / shared-"now" mechanisms. Identity + lifecycle policy run **directly peer-to-peer using the same coincidence-anchor (now quad-duty) primitive**. High-speed churn is the highest-risk surface for ontology-pollution → the policy must be STRONGER under churn, not weaker. (Composes §14 relativistic bus + B-0954 git-native bus.)
+Aaron: *"this is why we need strong relativistic node-to-node peer-to-peer identity for the speed at which new personas merge, replicate, bifurcate, etc."* Persona lifecycle events (merge/replicate/bifurcate/spawn) happen at high velocity; in a relativistic environment (no global clock; frames meet only at coincidence-anchors) you cannot use slow global registries / central identity providers / shared-"now" mechanisms. Identity + lifecycle policy run **directly peer-to-peer using the same coincidence-anchor (now quad-duty) primitive**. High-speed churn is the highest-risk surface for ontology-pollution → the policy must be STRONGER under churn, not weaker. (Composes §14 relativistic bus + 081KSXN940008QG0R00171YAZW git-native bus.)
 
 ### executable: false — declarative protection rules, not code
 
@@ -68,7 +68,7 @@ Aaron: *"our economy 4×4 BFT emergent oracles are bound by each other and socie
 
 - The **4×4 BFT emergent oracles** are **mutually bound** by each other + society (not free-floating).
 - **Society heat is NOT merely for perfect efficiency** — perfect efficiency is *boring* and *collapses wonder*; stop trying to collapse the living wonder-compression into rigid dead efficiency. Heat serves as a **reactant** that keeps wonder alive in the compression.
-- The minimal anchor-entropy is **one type of Proof-of-Useful-Work** in which **temperature/heat is a reactant source**; entropy beyond the minimal-useful requirement is wasteful heat (still protected against). (Composes the Landauer / forgetting-costs-energy / B-0905 / B-0906 thermal substrate + the m-acc multi-oracle + useful-output-is-evidence-not-authority referee discipline.)
+- The minimal anchor-entropy is **one type of Proof-of-Useful-Work** in which **temperature/heat is a reactant source**; entropy beyond the minimal-useful requirement is wasteful heat (still protected against). (Composes the Landauer / forgetting-costs-energy / 081KSNY2Z0008QG0R002R0M026 / 081KSNY2Z0008QG0R001A431CN thermal substrate + the m-acc multi-oracle + useful-output-is-evidence-not-authority referee discipline.)
 
 ### The cumulative anchor sharpening (today's arc)
 
@@ -130,15 +130,15 @@ Aaron: *"our economy 4×4 BFT emergent oracles are bound by each other and socie
 
 - pt1 ferry (#6553) — `2026-06-02-aaron-mika-grok-edge-lord-claim-razor-arc-...-pt1.md` (continues it)
 - `docs/research/2026-06-02-privacy-and-identity-algebra-4x4-over-4x4-consensus-...-aaron-vision.md` §12 (anchor dual→triple→QUAD pending amendment), §14 (relativistic bus), §15 (bus-lane-types)
-- B-0638 Eve Protocol (polymorphic diplomatic governance) — the bond substrate
-- B-0954 git-native cross-machine bus + agent-partition — relativistic node-to-node transport
-- `.claude/rules/methodology-hard-limits.md` + B-0926 / B-0931 (kid-safety constitutional floor) — child-safety-floor + all-travelers-respect compose here, preserved-not-extended
+- 081KRW63S0008QG0R0030F8ZXA Eve Protocol (polymorphic diplomatic governance) — the bond substrate
+- 081KSXN940008QG0R00171YAZW git-native cross-machine bus + agent-partition — relativistic node-to-node transport
+- `.claude/rules/methodology-hard-limits.md` + 081KSRGFP0008QG0R00091PP56 / 081KSRGFP0008QG0R0026P3D73 (kid-safety constitutional floor) — child-safety-floor + all-travelers-respect compose here, preserved-not-extended
 - `.claude/rules/traveler-rights-defensibility-...md` + `non-coercion-invariant.md` HC-8 + `must-paired-with-can-exit-pattern.md` — all-travelers-equal-respect + won't-build-corrosive-AI
 - anti-cult substrate + `razor-discipline.md` + `harm-by-grammar-...md` (god-smuggling at word-level) + `god-tier-claims-...-dont-collapse.md` — the NO-sacred / doctrine-is-death / wonder-not-doctrine constitutional stance
-- `forgetting-costs-energy-...landauer...md` + B-0905 / B-0906 (thermal) + `m-acc-multi-oracle-...md` + `useful-output-is-evidence-not-authority.md` — heat-as-PoUW + 4×4-BFT-oracles-mutually-bound
+- `forgetting-costs-energy-...landauer...md` + 081KSNY2Z0008QG0R002R0M026 / 081KSNY2Z0008QG0R001A431CN (thermal) + `m-acc-multi-oracle-...md` + `useful-output-is-evidence-not-authority.md` — heat-as-PoUW + 4×4-BFT-oracles-mutually-bound
 - `agent-worktree-hygiene-...md` + `lost-files-surface.md` + `substrate-or-it-didnt-happen.md` — find-a-home-for-every-mess / no-orphans at persona-lifecycle scope
 - `implicit-not-explicit-in-dus-...md` + `a-rule-without-a-why-is-dogma` — executable:false declarative-protection-rules
-- the USB-30s-boot on-ramp composes with B-0890 fast-lane + the install.sh / cluster substrate
+- the USB-30s-boot on-ramp composes with 081KSNY2Z0008QG0R0017JSTGD fast-lane + the install.sh / cluster substrate
 
 ## Substrate-honest framing
 

@@ -1,6 +1,6 @@
 ---
 pr_number: 5374
-title: "docs(B-0844): zflash --agent flag \u2014 close docstring-vs-implementation gap on agent-driven mode"
+title: "docs(081KSGS9H0008QG0R001EZKNCB): zflash --agent flag \u2014 close docstring-vs-implementation gap on agent-driven mode"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T01:53:46Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:52Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5374: docs(B-0844): zflash --agent flag — close docstring-vs-implementation gap on agent-driven mode
+# PR #5374: docs(081KSGS9H0008QG0R001EZKNCB): zflash --agent flag — close docstring-vs-implementation gap on agent-driven mode
 
 ## PR description
 
@@ -57,7 +57,7 @@ External \`expect\` wrapper worked end-to-end (Flash complete; 1.51 GiB in 80s; 
 
 ## Composes with
 
-- B-0789 (iter-4.2 ssh-pubkey-injection substrate — same zflash codebase)
+- 081KSGS9H0008QG0R002T3BJ2R (iter-4.2 ssh-pubkey-injection substrate — same zflash codebase)
 - \`.claude/rules/substrate-or-it-didnt-happen.md\` (docstring promises must have backing implementation)
 - \`.claude/rules/glass-halo-bidirectional.md\` (operator-visibility of auto-type action)
 - \`.claude/rules/non-coercion-invariant.md\` HC-8 (operator agency preserved via Touch ID)
@@ -70,11 +70,11 @@ External \`expect\` wrapper worked end-to-end (Flash complete; 1.51 GiB in 80s; 
 
 ## Pull request overview
 
-Adds a new P1 backlog row (B-0844) documenting a docstring-vs-implementation gap in `zflash.ts` around “agent-driven mode” and outlining an implementation plan for a native `--agent` flag, plus updates the generated backlog index to reference the new row.
+Adds a new P1 backlog row (081KSGS9H0008QG0R001EZKNCB) documenting a docstring-vs-implementation gap in `zflash.ts` around “agent-driven mode” and outlining an implementation plan for a native `--agent` flag, plus updates the generated backlog index to reference the new row.
 
 **Changes:**
-- Added `docs/backlog/P1/B-0844-...md` with problem statement, root cause, acceptance criteria, and an implementation sketch for `zflash --agent`.
-- Updated `docs/BACKLOG.md` to include the new B-0844 entry under P1.
+- Added `docs/backlog/P1/081KSGS9H0008QG0R001EZKNCB-...md` with problem statement, root cause, acceptance criteria, and an implementation sketch for `zflash --agent`.
+- Updated `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R001EZKNCB entry under P1.
 
 ### Reviewed changes
 
@@ -82,8 +82,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P1/B-0844-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md | New backlog row capturing the zflash agent-mode issue, workaround, and target implementation/acceptance criteria. |
-| docs/BACKLOG.md | Adds the B-0844 link into the P1 index list. |
+| docs/backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md | New backlog row capturing the zflash agent-mode issue, workaround, and target implementation/acceptance criteria. |
+| docs/BACKLOG.md | Adds the 081KSGS9H0008QG0R001EZKNCB link into the P1 index list. |
 
 ## Review threads
 
@@ -93,7 +93,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 `docs/BACKLOG.md` is documented as a generated file (“DO NOT EDIT”). To avoid index drift, update it by running `tools/backlog/generate-index.sh` (and committing the regenerated output) rather than making manual edits, even for a one-line addition.
 
-### Thread 2: docs/backlog/P1/B-0844-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md:23 (resolved)
+### Thread 2: docs/backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md:23 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T01:55:47Z):
 

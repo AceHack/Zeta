@@ -7,7 +7,7 @@ slug: adopt-cloudevents-as-the-bus-envelope-align-change-event-dat
 title: "Adopt CloudEvents as the bus envelope + align change-event data with Debezium CDC (before/after/op = Z-set delta)"
 created: 2026-06-07T12:28:30.700Z
 depends_on: []
-composes_with: ["B-0930", "B-0954"]
+composes_with: ["081KSRGFP0008QG0R001Y6RTY9", "081KSXN940008QG0R00171YAZW"]
 ---
 
 # Adopt CloudEvents as the bus envelope + align change-event data with Debezium CDC (before/after/op = Z-set delta)
@@ -30,7 +30,7 @@ analysis: `docs/research/2026-06-07-cloudevents-bus-envelope-and-debezium-cdc-as
 2. **Align change-event `data` with the Debezium CDC envelope** (`before/after/op/source/ts_ms`) — which
    IS a DBSP Z-set delta (c=+after, d=-before, u=-before+after, r=+snapshot). Our DeltaLog/ZSet deltas
    already are this; name the anchor + consider Debezium-format ingest/emit interop. Debezium pairs with the
-   Kafka Schema Registry = SchemaEvolution/B-0930 over DBSP. Debezium already emits CloudEvents
+   Kafka Schema Registry = SchemaEvolution/081KSRGFP0008QG0R001Y6RTY9 over DBSP. Debezium already emits CloudEvents
    (CloudEventsConverter) -> precedent: a Z-set delta (Debezium-shaped) as the CloudEvents `data`.
 
 ## Acceptance
@@ -42,4 +42,4 @@ both anchored in the Beacon register / PRIOR-ART-LIST. Standards adoption — no
 ## Anchors
 
 - CloudEvents (CNCF) · Debezium/CDC (Red Hat) · Kafka Schema Registry · DBSP (Z-set delta) ·
-  src/Core/DeltaLog.fs + ZSet · SchemaEvolution + B-0930 · agent-bus B-0954 · docs/PRIOR-ART-LIST.md.
+  src/Core/DeltaLog.fs + ZSet · SchemaEvolution + 081KSRGFP0008QG0R001Y6RTY9 · agent-bus 081KSXN940008QG0R00171YAZW · docs/PRIOR-ART-LIST.md.

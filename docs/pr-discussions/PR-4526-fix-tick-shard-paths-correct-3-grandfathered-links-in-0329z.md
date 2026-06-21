@@ -22,9 +22,9 @@ Slow-steady audit-baseline cleanup, batch 2 (post #4525). 0329Z.md at `docs/hygi
 
 ## Fixes
 
-- Line 6: `backlog/P3/B-0519-...md`: 4 `..` → 5 `..`
-- Line 7: `backlog/P3/B-0528-...md`: 4 `..` → 5 `..`
-- Line 20: `backlog/P3/B-0528-...md`: 4 `..` → 5 `..`
+- Line 6: `backlog/P3/081KRHWGX0008QG0R001HMWM1W-...md`: 4 `..` → 5 `..`
+- Line 7: `backlog/P3/081KRMEXM0008QG0R000T0A28T-...md`: 4 `..` → 5 `..`
+- Line 20: `backlog/P3/081KRMEXM0008QG0R000T0A28T-...md`: 4 `..` → 5 `..`
 
 ## Baseline trim
 
@@ -65,7 +65,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 **@copilot-pull-request-reviewer** (2026-05-21T11:44:21Z):
 
-The two backlog-related bullets (B-0519/B-0528) are no longer nested under the preceding “PR #3342” bullet; they’re now top-level list items. This changes the shard’s structure and contradicts the PR description’s claim that only relative-path depth was corrected. Suggest restoring the original nesting/indentation while keeping the updated ../../../../../backlog/... targets.
+The two backlog-related bullets (081KRHWGX0008QG0R001HMWM1W/081KRMEXM0008QG0R000T0A28T) are no longer nested under the preceding “PR #3342” bullet; they’re now top-level list items. This changes the shard’s structure and contradicts the PR description’s claim that only relative-path depth was corrected. Suggest restoring the original nesting/indentation while keeping the updated ../../../../../backlog/... targets.
 
 ## General comments
 

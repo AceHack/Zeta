@@ -5,7 +5,7 @@ type: feedback
 ---
 
 <!--
-Eval-set fixture for substrate-claim-checker (B-0170).
+Eval-set fixture for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV).
 
 Reproduces the cross-surface count-drift pattern surfaced as
 verify-then-claim memo instance #19 — the YAML frontmatter

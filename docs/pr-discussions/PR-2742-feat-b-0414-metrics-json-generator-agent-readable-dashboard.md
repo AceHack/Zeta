@@ -1,18 +1,18 @@
 ---
 pr_number: 2742
-title: "feat(B-0414): metrics.json generator \u2014 agent-readable dashboard endpoint"
+title: "feat(081KRA5AR0008QG0R0021SSM9R): metrics.json generator \u2014 agent-readable dashboard endpoint"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-11T20:02:28Z"
 merged_at: "2026-05-11T20:07:24Z"
 closed_at: "2026-05-11T20:07:24Z"
-head_ref: "feat/B-0414-metrics-json-generator-2026-05-11"
+head_ref: "feat/081KRA5AR0008QG0R0021SSM9R-metrics-json-generator-2026-05-11"
 base_ref: "main"
 archived_at: "2026-05-11T20:21:08Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #2742: feat(B-0414): metrics.json generator — agent-readable dashboard endpoint
+# PR #2742: feat(081KRA5AR0008QG0R0021SSM9R): metrics.json generator — agent-readable dashboard endpoint
 
 ## PR description
 

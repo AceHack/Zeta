@@ -28,13 +28,13 @@
 ## Description
 
 ## Summary
-- add a B-0786 ADR recording OpenFeature as the feature-flags operator contract and Flipt as the first backend
-- link the ADR from the B-0786 backlog row and mark the decision-substrate slice complete
+- add a 081KSE6WT0008QG0R000C18G5D ADR recording OpenFeature as the feature-flags operator contract and Flipt as the first backend
+- link the ADR from the 081KSE6WT0008QG0R000C18G5D backlog row and mark the decision-substrate slice complete
 - release the git-native claim in this PR
 
 ## Checks
 - git diff --check origin/main...HEAD
-- bun run lint:markdown -- docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md
+- bun run lint:markdown -- docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md
 
 ## Outcome
 
@@ -61,7 +61,7 @@
 - **`Copilot` (bot)** at 2026-05-26T06:30:18Z on `docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md`:6 (association: NONE)
 
   <pre>
-  Status is set to "Proposed", but the PR (and the B-0786 row acceptance checklist) treats this as the landed decision substrate. Either update the ADR status to an accepted/decided state, or keep the checklist item unchecked until the decision is actually accepted/signed off so the artifacts don’t contradict each other.
+  Status is set to "Proposed", but the PR (and the 081KSE6WT0008QG0R000C18G5D row acceptance checklist) treats this as the landed decision substrate. Either update the ADR status to an accepted/decided state, or keep the checklist item unchecked until the decision is actually accepted/signed off so the artifacts don’t contradict each other.
   </pre>
 
 **Replies:**
@@ -69,7 +69,7 @@
   - **`AceHack` (human)** at 2026-05-26T06:39:42Z on `docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md`:6 (association: MEMBER)
 
     <pre>
-    Addressed in `06de71864`: the ADR status now reads `Accepted`, matching the B-0786 decision-substrate checklist.
+    Addressed in `06de71864`: the ADR status now reads `Accepted`, matching the 081KSE6WT0008QG0R000C18G5D decision-substrate checklist.
 
     Provenance: surface=codex-background-service; origin=codex-launchd-loop; session=codex/launchd-loop; run_id=20260526T063711Z.
     </pre>
@@ -77,12 +77,12 @@
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Es3VK`
-- **Path**: `docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md`
+- **Path**: `docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T06:30:19Z on `docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md`:111 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T06:30:19Z on `docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md`:111 (association: NONE)
 
   <pre>
   The acceptance checklist marks the decision-substrate slice as complete, but the linked ADR currently declares "Status: Proposed". Either switch the ADR to an accepted/decided status or keep this checkbox unchecked until acceptance to avoid cross-doc truth drift.
@@ -95,7 +95,7 @@
 **Touched files (intersect with thread paths):**
 
 - `docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md`
-- `docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md`
+- `docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md`
 
 **Message:**
 
@@ -130,7 +130,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 ```
 docs: accept feature flags ADR
 
-Align the ADR status with the B-0786 decision-substrate acceptance row so the PR artifacts do not contradict each other.
+Align the ADR status with the 081KSE6WT0008QG0R000C18G5D decision-substrate acceptance row so the PR artifacts do not contradict each other.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```

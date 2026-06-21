@@ -395,7 +395,7 @@ async function axisRazorCadence(ghAvailable: boolean): Promise<void> {
     }
     console.log("");
     console.log(
-      "Triage: age IS the cadence-skip signal (per B-0192). Older = more overdue.",
+      "Triage: age IS the cadence-skip signal (per 081KQR4HQ0008QG0R001GAD29A). Older = more overdue.",
     );
   }
   console.log("");

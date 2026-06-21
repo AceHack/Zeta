@@ -30,7 +30,7 @@
 Updates the observe-act ADR (`docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`) with the **canonical-retrofit** direction the operator authorized 2026-05-31.
 
 ## The inversion
-The observe-algebra became canonical: sovereign `tools/observe` (`NextAction` 9-kind DU + observe/simulate/fold) is 4-language-BFT'd (B-0867.27), carries the additive-monoid generic-math interface (B-0867.28), and the v0 16-slot grammar (this ADR) + the generic-math meta-rule (#6266) are landed. So the canonical base is no longer "the corporate keystone" — it is **the algebra**.
+The observe-algebra became canonical: sovereign `tools/observe` (`NextAction` 9-kind DU + observe/simulate/fold) is 4-language-BFT'd (081KSXN940008QG0R0033T2BQT), carries the additive-monoid generic-math interface (081KSXN940008QG0R0002287MP), and the v0 16-slot grammar (this ADR) + the generic-math meta-rule (#6266) are landed. So the canonical base is no longer "the corporate keystone" — it is **the algebra**.
 
 Max built the corporate `Menu16`/`RunLifecyclePhase` loop (`agentic-organization/`, Phase-2-hardened #6216) and asked to refactor it to be more canonical now that the algebra exists. So the corporate keystone retrofits **onto the canonical algebra** (one algebra/grammar/generic-math contract — not two parallel observe worlds). v2's "render the corporate keystone" *direction* is superseded; v2 body preserved (retraction-native).
 
@@ -42,7 +42,7 @@ The canonical *base* is shared; the *transport* differs per register so corporat
 | Algebra / grammar / generic-math | canonical (shared) | **canonical (shared)** |
 | Transport | direct push to main | **direct push to branches + batch PRs to main** |
 
-The retrofit MUST preserve corporate's branch+batch-PR transport (don't scare enterprise teams; composes B-0890/B-0890.1) — must NOT impose sovereign direct-to-main on Max's loop.
+The retrofit MUST preserve corporate's branch+batch-PR transport (don't scare enterprise teams; composes 081KSNY2Z0008QG0R0017JSTGD/081KSNY2Z0008QG0R000E5KTPX) — must NOT impose sovereign direct-to-main on Max's loop.
 
 ## Authorization + glass-halo
 Operator authorized moving forward **without waiting on Max** (operator informs Max directly; prior "Max-review-before-lock" gate lifted for this retrofit). Discipline: changes to Max's Phase-2 loop stay behavior-preserving + tested, documented in the ADR for after-the-fact review.
@@ -111,8 +111,8 @@ docs(ADR): observe-act canonical-retrofit — corporate Menu16 retrofit…
 …s onto canonical algebra; transport is the dial
 
 The observe-algebra became canonical (sovereign tools/observe NextAction +
-observe/simulate/fold, 4-language-BFT'd B-0867.27, additive-monoid generic-math
-B-0867.28, v0 16-slot grammar + generic-math meta-rule landed). Inversion: the
+observe/simulate/fold, 4-language-BFT'd 081KSXN940008QG0R0033T2BQT, additive-monoid generic-math
+081KSXN940008QG0R0002287MP, v0 16-slot grammar + generic-math meta-rule landed). Inversion: the
 canonical base is now THE ALGEBRA; Max's corporate Menu16/RunLifecyclePhase loop
 retrofits ONTO it (one algebra/grammar/generic-math contract, not two parallel
 observe worlds). Transport stays the dial: corporate keeps branch+batch-PR-to-main

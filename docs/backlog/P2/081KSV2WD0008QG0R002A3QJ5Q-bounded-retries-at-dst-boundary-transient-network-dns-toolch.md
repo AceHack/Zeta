@@ -1,6 +1,5 @@
 ---
-id: B-0943
-zetaid: 081KSV2WD0008QG0R002A3QJ5Q
+id: 081KSV2WD0008QG0R002A3QJ5Q
 priority: P2
 status: open
 title: Bounded retries at the DST boundary — transient network/DNS failures (mise toolchain install) must not fail CI
@@ -17,7 +16,7 @@ tags: [ci, dst, retries, mise, flake, network, dns, toolchain, reliability]
 type: bug
 ---
 
-# B-0943 — Bounded retries at the DST boundary
+# 081KSV2WD0008QG0R002A3QJ5Q — Bounded retries at the DST boundary
 
 ## The principle (Aaron 2026-05-30)
 
@@ -83,7 +82,7 @@ starts blocking time-sensitive merges frequently.
 - **Exceptions-as-signals / signal-based reliability** (the force-push-with-lease
   assumption-validation substrate) — bounded-retry is the signal-based primitive at the
   network edge.
-- **B-0615** (git-network-ops timeout/retry under saturation) — sibling at the
+- **081KRW63S0008QG0R000EAZ9K2** (git-network-ops timeout/retry under saturation) — sibling at the
   git-network boundary; same "external-I/O needs bounded-retry, not determinism" shape.
 - `refresh-before-decide` — the refresh that fetches external state is itself a
   boundary-crossing that warrants bounded-retry.

@@ -7,7 +7,7 @@ slug: hat-system-gatekeeper-policy-sync-constrainttemplate-crds-be
 title: "hat-system Gatekeeper policy sync — ConstraintTemplate CRDs before constraints in ArgoCD proofs"
 created: 2026-06-13T18:20:04.592Z
 depends_on: ["081KSXN940008QG0R000SCP2H1"]
-composes_with: ["B-0724"]
+composes_with: ["081KSE6WT0008QG0R00195RG48"]
 ---
 
 # hat-system Gatekeeper policy sync — ConstraintTemplate CRDs before constraints in ArgoCD proofs
@@ -16,7 +16,7 @@ composes_with: ["B-0724"]
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KV13CRKG08QG0R0007JMHKE-*.md` glob. -->
 
-Parent **B-0967** included proof **excludes** `full-ai-cluster/k8s/applications/hat-system/policies/**`
+Parent **081KSXN940008QG0R000SCP2H1** included proof **excludes** `full-ai-cluster/k8s/applications/hat-system/policies/**`
 on kind because Gatekeeper Constraint kinds are registered **after** ConstraintTemplates
 reconcile — ArgoCD sync waves alone are insufficient on a cold cluster.
 
@@ -28,7 +28,7 @@ while ConstraintTemplates are still registering. CRDs + seed hats reconcile; pol
 ## Target
 
 Re-enable `policies/**` in the hat-system Application for dev/kind without blocking
-B-0967 proofs. Pick one durable pattern (document in `full-ai-cluster/dev-cluster/SYNC-WAVES.md`):
+081KSXN940008QG0R000SCP2H1 proofs. Pick one durable pattern (document in `full-ai-cluster/dev-cluster/SYNC-WAVES.md`):
 
 - PostSync **wait Job** between ConstraintTemplate (wave 1) and Constraint (wave 2) that
   polls for `constraints.gatekeeper.sh/*` CRD establishment, or
@@ -44,4 +44,4 @@ B-0967 proofs. Pick one durable pattern (document in `full-ai-cluster/dev-cluste
 
 ## Composes with
 
-hat-system operator + Gatekeeper substrate (PR #4930 lineage); B-0724 if operator wiring is required.
+hat-system operator + Gatekeeper substrate (PR #4930 lineage); 081KSE6WT0008QG0R00195RG48 if operator wiring is required.

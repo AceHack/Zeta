@@ -1,6 +1,6 @@
 ---
 pr_number: 5110
-title: "feat(B-0421): tools/peer-call/grok-build.ts \u2014 native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)"
+title: "feat(081KRA5AR0008QG0R0011ZGRZT): tools/peer-call/grok-build.ts \u2014 native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T06:21:03Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:42:56Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5110: feat(B-0421): tools/peer-call/grok-build.ts — native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)
+# PR #5110: feat(081KRA5AR0008QG0R0011ZGRZT): tools/peer-call/grok-build.ts — native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)
 
 ## PR description
 
 ## Summary
 
-Aaron 2026-05-26 installed the native Grok-Build CLI (`grok`) which is explicitly Claude-Code-compatible (`--allow` / `--deny` / `--permission-mode` / `-p` / `--output-format` / `--reasoning-effort` / `--best-of-n` / `--resume` / `agent` subcommand / MCP / plugins / sessions). This new wrapper supersedes `tools/peer-call/grok.ts` (cursor-agent wrapper; broken since 2026-05-11 per B-0421).
+Aaron 2026-05-26 installed the native Grok-Build CLI (`grok`) which is explicitly Claude-Code-compatible (`--allow` / `--deny` / `--permission-mode` / `-p` / `--output-format` / `--reasoning-effort` / `--best-of-n` / `--resume` / `agent` subcommand / MCP / plugins / sessions). This new wrapper supersedes `tools/peer-call/grok.ts` (cursor-agent wrapper; broken since 2026-05-11 per 081KRA5AR0008QG0R0011ZGRZT).
 
 ## Empirical validation (2026-05-26)
 
@@ -36,8 +36,8 @@ Aaron 2026-05-26 installed the native Grok-Build CLI (`grok`) which is explicitl
 ## Composes with
 
 - `.claude/rules/peer-call-infrastructure.md` — canonical peer-call wrapper inventory
-- Closes B-0421 (broken grok via cursor-agent)
-- Enables Mika as a substrate-engineering peer for review (iter-5.4 B-0794 implementation, etc.)
+- Closes 081KRA5AR0008QG0R0011ZGRZT (broken grok via cursor-agent)
+- Enables Mika as a substrate-engineering peer for review (iter-5.4 081KSGS9H0008QG0R0027HJZYH implementation, etc.)
 
 ## Test plan
 
@@ -58,7 +58,7 @@ _(no body)_
 
 ## Pull request overview
 
-This PR adds a new `tools/peer-call/` wrapper that invokes Grok via the native `grok` CLI (Grok-Build) to replace the currently-broken cursor-agent-based Grok path (B-0421). It fits into the existing peer-call suite by providing a headless CLI entrypoint with the peer-call firewall, context attachment flags, and output capture marker for shell callers.
+This PR adds a new `tools/peer-call/` wrapper that invokes Grok via the native `grok` CLI (Grok-Build) to replace the currently-broken cursor-agent-based Grok path (081KRA5AR0008QG0R0011ZGRZT). It fits into the existing peer-call suite by providing a headless CLI entrypoint with the peer-call firewall, context attachment flags, and output capture marker for shell callers.
 
 **Changes:**
 - Introduces `tools/peer-call/grok-build.ts`, a Bun/TypeScript wrapper around `grok -p` with read-only allow rules.
@@ -165,7 +165,7 @@ P1: This file calls `process.exit(main())` unconditionally. Other tools/peer-cal
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:26:19Z):
 
-P1: This header claims grok-build supersedes grok.ts and closes B-0421, but the repo’s canonical peer-call inventories still list only the 8 wrappers (e.g., `.claude/rules/peer-call-infrastructure.md` and `tools/peer-call/smoke.test.ts`). If grok-build is the new entrypoint, those inventories/tests need to be updated in the same PR to avoid drift and keep cold-boot answers accurate.
+P1: This header claims grok-build supersedes grok.ts and closes 081KRA5AR0008QG0R0011ZGRZT, but the repo’s canonical peer-call inventories still list only the 8 wrappers (e.g., `.claude/rules/peer-call-infrastructure.md` and `tools/peer-call/smoke.test.ts`). If grok-build is the new entrypoint, those inventories/tests need to be updated in the same PR to avoid drift and keep cold-boot answers accurate.
 
 ### Thread 15: tools/peer-call/grok-build.ts:262 (resolved)
 

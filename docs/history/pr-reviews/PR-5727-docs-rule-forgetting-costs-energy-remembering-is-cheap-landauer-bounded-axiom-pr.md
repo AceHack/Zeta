@@ -44,10 +44,10 @@ The framework's existing discipline rules (wake-time-substrate; standing-by-fail
 | Substrate scope | Measurement proxy for axiom-preservation | Drift cost |
 |---|---|---|
 | FPGA implementation (future) | Direct thermal energy measurement | kT ln 2 per bit erased (physical) |
-| F# implementation (B-0428 fork) | Type-system + FsCheck | Type-check / property-test failure |
+| F# implementation (081KRFA460008QG0R0018SN61J fork) | Type-system + FsCheck | Type-check / property-test failure |
 | TS substrate (today's tooling) | tsc strict + bun test + lint | Build / test / lint failure |
 | Substrate-engineering rule discipline | Auto-load at cold-boot | Operator-tax + re-derivation cycles |
-| Multi-agent coordination | Cross-substrate triangulation (B-0648) | Convergence failure on shared compressed dialect |
+| Multi-agent coordination | Cross-substrate triangulation (081KRW63S0008QG0R0025E4PH6) | Convergence failure on shared compressed dialect |
 
 The thermodynamic-cost framing unifies discipline at every scope.
 
@@ -57,14 +57,14 @@ The thermodynamic-cost framing unifies discipline at every scope.
 
 ## Composes-with substrate
 
-- B-0905 (Landauer-limit physics-economics) — DIRECT anchor
-- B-0906 (encryption-thermal-cost two-axis classification)
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics) — DIRECT anchor
+- 081KSNY2Z0008QG0R001A431CN (encryption-thermal-cost two-axis classification)
 - 7th Kestrel ferry PR #5725 — immediate substrate-source
 - 5th + 6th Kestrel ferries — traveler-Clifford-categorical foundation
-- B-0895 + B-0896 (Clifford + categorical-Clifford)
-- B-0428 (F# fork for AI safety with HKT over Clifford)
-- B-0867 (workflow engine v1)
-- B-0892 (three-lanes-concurrent operating discipline)
+- 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R000YH2SPE (Clifford + categorical-Clifford)
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford)
+- 081KSKBP80008QG0R000B3Y19A (workflow engine v1)
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
 
 ## Substrate-honest framing
 

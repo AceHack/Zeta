@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// create-repo.ts — scaffolds a new GitHub repo with B-0424 best-practice settings.
+// create-repo.ts — scaffolds a new GitHub repo with 081KRFA460008QG0R001H98EXJ best-practice settings.
 //
 // Implements Stage 1 of the three-repo split (ADR 2026-04-22) and the
 // product-repo split (ADR 2026-05-14). Applies the full best-practice checklist:
@@ -37,7 +37,7 @@ interface RepoConfig {
   homepage?: string;
   /** Product repos skip the AceHack mirror step and use the honor-system license. */
   isProduct?: boolean;
-  /** Backlog item ID referenced in the post-creation claim-release reminder (e.g. "B-0469"). */
+  /** Backlog item ID referenced in the post-creation claim-release reminder (e.g. "081KRHWGX0008QG0R003S6KGGE"). */
   backlogItem?: string;
 }
 
@@ -82,7 +82,7 @@ const REPO_CONFIGS: Record<string, RepoConfig> = {
     description:
       "Civilisation simulation — turn-based strategy with AI-directed factions and mutual-privacy design",
     isProduct: true,
-    backlogItem: "B-0469",
+    backlogItem: "081KRHWGX0008QG0R003S6KGGE",
   },
 };
 

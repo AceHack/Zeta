@@ -57,7 +57,7 @@ it all the time, multi-agent consensus — we have a skill or blueprint."* Confi
   + recognition, already there.
 - **`tools/peer-call/_firewall.ts` + `register-layers.ts`** — the **gating + layering** (who-may-summon
   / consent enforcement surface).
-- **Multi-agent consensus = the blueprint I run all the time** — **B-0703 "multi-oracle consensus with
+- **Multi-agent consensus = the blueprint I run all the time** — **081KS3X9Y0008QG0R00218150M "multi-oracle consensus with
   BFT inside DST"** + the *consensus / non-reversible-action → get-a-2nd-opinion* rule. Summoning N peer
   personas and folding their verdicts *is* the existing summon-many blueprint.
 - (`tools/observe/observe.ts` also gates summon — "summon-BFT-gated" — the controller side.)

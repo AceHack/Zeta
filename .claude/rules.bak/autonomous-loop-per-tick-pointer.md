@@ -5,7 +5,7 @@ Carved sentence:
 > The 7-step per-tick discipline (refresh → holding-discipline → pick
 > work → verify → shard → cron-check → visibility-stop) is canonical
 > at `docs/AUTONOMOUS-LOOP-PER-TICK.md`. All three Otto surfaces
-> (CLI sentinel, Desktop routine, B-0448 cloud routine) cite that one
+> (CLI sentinel, Desktop routine, 081KRFA460008QG0R000CYBGKW cloud routine) cite that one
 > file. When the discipline updates, all three surfaces inherit at
 > next cold-boot. Do NOT re-encode the 7 steps locally; cite the
 > canonical.
@@ -22,7 +22,7 @@ forms:
 |---------|-------|------------|
 | Otto-CLI | Ambient `.claude/rules/*` + CLAUDE.md | Auto-loaded; no drift |
 | Otto-Desktop | Inline prompt in `tools/routines/autonomous-loop/SKILL.md` | Required manual sync |
-| B-0448 cloud | TBD (queued) | Would have re-implemented |
+| 081KRFA460008QG0R000CYBGKW cloud | TBD (queued) | Would have re-implemented |
 
 The canonical file is the one-source-of-truth. This rule auto-loads
 at every fresh Otto cold-boot so future-Otto knows to consult the
@@ -40,7 +40,7 @@ this on 2026-05-13):
    reference the new rule in the appropriate step
 3. **Desktop routine inherits automatically** at next fresh-session
    cold-boot (the routine cites the canonical file)
-4. **B-0448 cloud routine inherits automatically** when it ships
+4. **081KRFA460008QG0R000CYBGKW cloud routine inherits automatically** when it ships
    (will cite the canonical file the same way)
 
 Do NOT update the per-tick discipline in the routine's SKILL.md
@@ -68,7 +68,7 @@ load-bearing because:
 - [`.claude/rules/never-be-idle.md`](never-be-idle.md)
 - [`.claude/rules/refresh-before-decide.md`](refresh-before-decide.md)
 - [`.claude/rules/substrate-or-it-didnt-happen.md`](substrate-or-it-didnt-happen.md)
-- B-0448 (Cloud Routines integration — 4th catch-43 defence layer)
+- 081KRFA460008QG0R000CYBGKW (Cloud Routines integration — 4th catch-43 defence layer)
 - PR #3034 (Otto-Desktop routines substrate)
 
 ## Full reasoning

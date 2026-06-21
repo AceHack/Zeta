@@ -1,6 +1,6 @@
 ---
 pr_number: 6188
-title: "backlog(B-0949): FromValue wide-decoder mode-search hang \u2014 cross-language hardening (Codex P2 on #6186)"
+title: "backlog(081KSV2WD0008QG0R002K85NP0): FromValue wide-decoder mode-search hang \u2014 cross-language hardening (Codex P2 on #6186)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-31T02:54:16Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-31T03:35:26Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #6188: backlog(B-0949): FromValue wide-decoder mode-search hang — cross-language hardening (Codex P2 on #6186)
+# PR #6188: backlog(081KSV2WD0008QG0R002K85NP0): FromValue wide-decoder mode-search hang — cross-language hardening (Codex P2 on #6186)
 
 ## PR description
 
-## B-0949 — Tri-boolean float `FromValue` wide-decoder mode-search hang (cross-language hardening)
+## 081KSV2WD0008QG0R002K85NP0 — Tri-boolean float `FromValue` wide-decoder mode-search hang (cross-language hardening)
 
 Tracks the **Codex P2** finding on [#6186](https://github.com/Lucent-Financial-Group/Zeta/pull/6186): `FromValue` scans decoder mode `0..2^decoderWidth-1` linearly, so wide decoders (decoderWidth ≥ ~20 → bias ~2³¹) scan **billions of iterations** before finding ordinary values — an effective hang instead of `Result` feedback, for arbitrary public `FloatShape`/`FromTrits` widths.
 
@@ -62,7 +62,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a P3 backlog row tracking the Codex P2 finding from PR #6186: tri-boolean float `FromValue` linearly scans decoder modes `0..2^decoderWidth-1`, which becomes an effective hang for wide decoders (≥~20). The row documents the cross-language scope (TS/F#/C#/Rust must land the same fix) and lists two policy options (analytic mode-window vs. width-cap) plus a slice-6 conformance vector.
 
 **Changes:**
-- New backlog row `docs/backlog/P3/B-0949-...md` with frontmatter and full write-up.
+- New backlog row `docs/backlog/P3/081KSV2WD0008QG0R002K85NP0-...md` with frontmatter and full write-up.
 - Regenerated `docs/BACKLOG.md` index entry.
 
 ### Reviewed changes
@@ -71,8 +71,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P3/B-0949-…2026-05-30.md | New P3 backlog row tracking the wide-decoder mode-search hang. |
-| docs/BACKLOG.md | Regenerated index entry for B-0949. |
+| docs/backlog/P3/081KSV2WD0008QG0R002K85NP0-…2026-05-30.md | New P3 backlog row tracking the wide-decoder mode-search hang. |
+| docs/BACKLOG.md | Regenerated index entry for 081KSV2WD0008QG0R002K85NP0. |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-31T03:00:54Z)
 
@@ -101,7 +101,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0949-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md:40 (resolved)
+### Thread 1: docs/backlog/P3/081KSV2WD0008QG0R002K85NP0-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md:40 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-31T02:56:00Z):
 
@@ -111,7 +111,7 @@ This backlog item says the same wide-decoder hang is present in all four impleme
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/backlog/P3/B-0949-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md:39 (unresolved)
+### Thread 2: docs/backlog/P3/081KSV2WD0008QG0R002K85NP0-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md:39 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-31T03:00:54Z):
 

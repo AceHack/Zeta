@@ -27,7 +27,7 @@
 
 ## Description
 
-Implements **slice 6.2** of `ace registry publish` (B-0980 deferred enhancements). Spec: #6456. Built subagent-driven per `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice6.2-implementation-plan.md`.
+Implements **slice 6.2** of `ace registry publish` (081KT07NV0008QG0R0016FVWD7 deferred enhancements). Spec: #6456. Built subagent-driven per `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice6.2-implementation-plan.md`.
 
 ## Three enhancements
 - **Per-package `url` field** — optional top-level `url` (sibling of `manifest`/`files`, outside the signed manifest) overrides the derived `<base>/<name>-<version>.json`. Excluded from `package_hash` (hashes manifest+files only — verified), ignored by signature/content_hash gates, validated as an absolute URL (invalid → skip+warn). A package WITH a `url` is exempt from the `<name>-<version>.json` filename guard (the override decouples URL from filename); WITHOUT a `url` the filename guard still applies. All other scan guards (reserved-key, URL-unsafe identity, deps-array, dep-edge, file-values, `validatePackagePaths`) apply in both cases.

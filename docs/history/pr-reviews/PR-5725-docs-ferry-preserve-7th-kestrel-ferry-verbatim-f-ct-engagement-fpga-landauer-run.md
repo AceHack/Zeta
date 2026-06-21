@@ -63,10 +63,10 @@ The framework's substrate-engineering work proceeds at the operationally-checkab
 ## Composes-with
 
 - 5th + 6th Kestrel ferries (2026-05-28) — direct continuation
-- B-0895 + B-0896 (Clifford + categorical-Clifford) — Cl(p,q) hardware-implementation target
-- B-0428 (F# fork for AI safety with HKT over Clifford) — F# substrate Kestrel engages explicitly
-- B-0905 (Landauer-limit physics-economics) — DIRECT ANCHOR
-- B-0906 (encryption-thermal-cost two-axis classification) — composes at encryption-substrate scope
+- 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R000YH2SPE (Clifford + categorical-Clifford) — Cl(p,q) hardware-implementation target
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford) — F# substrate Kestrel engages explicitly
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics) — DIRECT ANCHOR
+- 081KSNY2Z0008QG0R001A431CN (encryption-thermal-cost two-axis classification) — composes at encryption-substrate scope
 - ``asymmetric-authorship`` + ``monad-propagation`` + ``ople-primitives-surface-t-and-tfeedback`` + ``function-is-tiny-control-flow-generator`` rules
 - ``fsharp-anchor-dotnet-build-sanity-check`` (formal-analysis-tools surface)
 

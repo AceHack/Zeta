@@ -1,9 +1,8 @@
 ---
-id: B-0813
-zetaid: 081KSGS9H0008QG0R002K93MWX
+id: 081KSGS9H0008QG0R002K93MWX
 priority: P1
 status: open
-title: iter-5.4.2 — ArgoCD application watches `maintainers/*/cluster-nodes/**` tree → reconciles K8s cluster state on registration-PR merge — completes the iter-5.4 arc (gh-auth foothold → self-register → cluster bring-up); decomposes B-0794 sub-target 4
+title: iter-5.4.2 — ArgoCD application watches `maintainers/*/cluster-nodes/**` tree → reconciles K8s cluster state on registration-PR merge — completes the iter-5.4 arc (gh-auth foothold → self-register → cluster bring-up); decomposes 081KSGS9H0008QG0R0027HJZYH sub-target 4
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -46,7 +45,7 @@ Author an ArgoCD `Application` resource (or `ApplicationSet` for multi-maintaine
 
 ### Sub-target 1 — `ClusterNode` CRD definition
 
-Land the provisional CRD at `full-ai-cluster/k8s/crds/cluster-node-crd.yaml` matching the schema sketch in B-0794 sub-target 2:
+Land the provisional CRD at `full-ai-cluster/k8s/crds/cluster-node-crd.yaml` matching the schema sketch in 081KSGS9H0008QG0R0027HJZYH sub-target 2:
 
 ```yaml
 apiVersion: apiextensions.k8s.io/v1
@@ -142,18 +141,18 @@ This is the empirical proof of the full iter-5.4 arc.
 
 ## Composes with
 
-- **[B-0794](B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** (parent; this row is sub-target 4)
-- **[B-0812](B-0812-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-builds-on-iter-5-4-0-gh-auth-foothold-aaron-2026-05-26.md)** (sibling sub-row in iter-5.4 arc; depends on the registration commit landing on main)
-- **[B-0776](B-0776-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md)** — ArgoCD substrate (deploy/configure) must already be on cluster; this row consumes it
-- **[B-0782](../P1/B-0782-cluster-is-the-deterministic-information-object-zeta-cluster-substrate-end-state-aaron-2026-05-26.md)** — cluster-IS-DIO requires reconciler-driven node lifecycle; this row IS the reconciler
-- **[B-0790](../P1/B-0790-zero-dev-machines-cluster-native-architecture-voice-as-primary-operator-surface-aaron-2026-05-26.md)** — zero-dev-machine end-state requires operator-merges-PR-from-phone → cluster-converges-automatically; this row IS that "automatically"
+- **[081KSGS9H0008QG0R0027HJZYH](081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** (parent; this row is sub-target 4)
+- **[081KSGS9H0008QG0R0037H3W4T](081KSGS9H0008QG0R0037H3W4T-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-builds-on-iter-5-4-0-gh-auth-foothold-aaron-2026-05-26.md)** (sibling sub-row in iter-5.4 arc; depends on the registration commit landing on main)
+- **[081KSE6WT0008QG0R002275NDE](081KSE6WT0008QG0R002275NDE-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md)** — ArgoCD substrate (deploy/configure) must already be on cluster; this row consumes it
+- **[081KSE6WT0008QG0R003CMCX84](../P1/081KSE6WT0008QG0R003CMCX84-cluster-is-the-deterministic-information-object-zeta-cluster-substrate-end-state-aaron-2026-05-26.md)** — cluster-IS-DIO requires reconciler-driven node lifecycle; this row IS the reconciler
+- **[081KSGS9H0008QG0R00153CQ8B](../P1/081KSGS9H0008QG0R00153CQ8B-zero-dev-machines-cluster-native-architecture-voice-as-primary-operator-surface-aaron-2026-05-26.md)** — zero-dev-machine end-state requires operator-merges-PR-from-phone → cluster-converges-automatically; this row IS that "automatically"
 
 ## Out of scope
 
-- Multi-maintainer governance (B-0794 sub-target 6; future)
+- Multi-maintainer governance (081KSGS9H0008QG0R0027HJZYH sub-target 6; future)
 - Full operator-pattern controller in Go (initial impl is kustomize + simple kubectl-shell loop; Go operator deferred)
-- Cross-cluster federation (B-0741 substrate via re-landed B-0811; separate scope at iter-7)
-- ArgoCD itself install/config (B-0776; assumed already present per cluster bring-up)
+- Cross-cluster federation (081KSE6WT0008QG0R002CC6314 substrate via re-landed 081KSE6WT0008QG0R002CC6314; separate scope at iter-7)
+- ArgoCD itself install/config (081KSE6WT0008QG0R002275NDE; assumed already present per cluster bring-up)
 
 ## Substrate-inventory pass
 
@@ -161,9 +160,9 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../.claud
 
 - `grep -rlF "iter-5.4.2"` → unused; safe
 - `grep -rlF "cluster-nodes-reconciler"` → unused; safe
-- ID B-0813 next-free per `git ls-tree origin/main` (highest = B-0812 just-filed in PR #5211)
-- B-0794 + B-0812 + B-0782 + B-0790 + B-0776 verified on main / in flight
+- ID 081KSGS9H0008QG0R002K93MWX next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R0037H3W4T just-filed in PR #5211)
+- 081KSGS9H0008QG0R0027HJZYH + 081KSGS9H0008QG0R0037H3W4T + 081KSE6WT0008QG0R003CMCX84 + 081KSGS9H0008QG0R00153CQ8B + 081KSE6WT0008QG0R002275NDE verified on main / in flight
 
 ## Origin
 
-Direct decomposition of B-0794 sub-target 4 (cluster-substrate-reconciliation) after iter-5.4.1 (B-0812) decomposes sub-target 3. Together the iter-5.4.x arc completes the maintainer 2026-05-26 GitOps-native cluster-bring-up vision.
+Direct decomposition of 081KSGS9H0008QG0R0027HJZYH sub-target 4 (cluster-substrate-reconciliation) after iter-5.4.1 (081KSGS9H0008QG0R0037H3W4T) decomposes sub-target 3. Together the iter-5.4.x arc completes the maintainer 2026-05-26 GitOps-native cluster-bring-up vision.

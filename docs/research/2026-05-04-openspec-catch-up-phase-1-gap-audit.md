@@ -3,11 +3,11 @@
 Scope: read-only baseline survey of `openspec/specs/**` against the
 project's actual implementation surface and the doctrine substrate
 (CLAUDE.md / GOVERNANCE.md / docs/ALIGNMENT.md). Output is the
-recommended catch-up sequence for Phase 2 of B-0171.
+recommended catch-up sequence for Phase 2 of 081KQNJ500008QG0R001N94412.
 
 Attribution: authored by the autonomous-loop session 2026-05-04 against
 maintainer Aaron's 2026-05-03 verbatim ask preserved in
-[`docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md):
+[`docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md):
 *"openspec which we are way behind on, that's suppsed to be our source
 of truth lol, if we were to delete everying other than it"*.
 
@@ -269,7 +269,7 @@ disaster-recovery test).
 
 ## 4. Recommended catch-up sequence
 
-Phase 2 of B-0171 spec authoring. Priority dimension is "minimize the
+Phase 2 of 081KQNJ500008QG0R001N94412 spec authoring. Priority dimension is "minimize the
 distance between repo-current-state and the OpenSpec disaster-recovery
 test" — i.e., which specs land first such that "if we deleted everything
 but OpenSpec" recovers the most foundational substrate.
@@ -366,7 +366,7 @@ Rationale for the top-5:
 
 ---
 
-## 6. Acceptance criterion check (B-0171 done-criteria item 4)
+## 6. Acceptance criterion check (081KQNJ500008QG0R001N94412 done-criteria item 4)
 
 The acceptance criterion is: *"if we deleted everything but OpenSpec,
 the project would be lost"* test PASSES.
@@ -393,7 +393,7 @@ will likely do everything eventually"*.
 
 ## 7. Cross-references
 
-- B-0171 row: [`docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)
+- 081KQNJ500008QG0R001N94412 row: [`docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)
 - OpenSpec README: [`openspec/README.md`](../../openspec/README.md)
 - Modified-OpenSpec workflow lineage (no archive, no change-history): see openspec/README.md lines 52-80
 - Spec-zealot (drift detection on existing capabilities): `.claude/skills/spec-zealot/SKILL.md`

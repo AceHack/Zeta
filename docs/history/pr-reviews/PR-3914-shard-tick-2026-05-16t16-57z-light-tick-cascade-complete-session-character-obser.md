@@ -41,7 +41,7 @@ The 1531Z → 1657Z arc (1h 26m) was substantively a **substrate-engineering ses
 
 NOT a backlog-burning session. Future-Otto reading back can frame the arc accordingly.
 
-Backlog peek (B-0058, B-0064, B-0087, B-0003 ALIGNMENT.md rewrite, etc.) — all P1 rows require start-gate work before substantive landing; deferred to dedicated work-sessions.
+Backlog peek (081KQ3HBZ0008QG0R002S674CG, 081KQ8P5D0008QG0R0010FP5SY, 081KQ8P5D0008QG0R000JHD7AB, 081KQ0YZ80008QG0R001QJJTVF ALIGNMENT.md rewrite, etc.) — all P1 rows require start-gate work before substantive landing; deferred to dedicated work-sessions.
 
 ## Test plan
 

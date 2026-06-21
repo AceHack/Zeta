@@ -1,6 +1,5 @@
 ---
-id: B-0252
-zetaid: 081KQZVQW0008QG0R0029709BP
+id: 081KQZVQW0008QG0R0029709BP
 priority: P2
 status: open
 title: "ARC-4 adversarial self-play — structure recognizer at real-time tick speed"
@@ -17,7 +16,7 @@ type: feature
 
 ## What
 
-Extend the structure recognizer (B-0240) to run at
+Extend the structure recognizer (081KQZVQW0008QG0R002QZAFB2) to run at
 real-time tick speed against an adversarial environment
 — specifically, against itself (self-play).
 

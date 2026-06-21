@@ -1,9 +1,8 @@
 ---
-id: B-0088
-zetaid: 081KQ8P5D0008QG0R002FSTGXP
+id: 081KQ8P5D0008QG0R002FSTGXP
 priority: P2
 status: closed
-superseded_by: B-0423.4
+superseded_by: 081KRFA460008QG0R0035NKRHG
 resolved: 2026-05-13
 title: memory/MEMORY.md paired-edit lint is advisory only (not in required-status-checks); promote or remove the discoverability claim
 tier: factory-tooling
@@ -19,7 +18,7 @@ tags: [otto-2026-04-28, github-actions, branch-protection, advisory-vs-enforceme
 type: friction-reducer
 ---
 
-# B-0088 — paired-edit lint is advisory; either promote to required or weaken its claim
+# 081KQ8P5D0008QG0R002FSTGXP — paired-edit lint is advisory; either promote to required or weaken its claim
 
 ## Discovery
 
@@ -145,7 +144,7 @@ parity:
 - `memory-reference-existence-lint.yml` — likely same shape
 - `memory-index-duplicate-lint.yml` — likely same shape
 - `backlog-index-integrity.yml` — likely same shape
-- `github-settings-drift.yml` — already broken (B-0087)
+- `github-settings-drift.yml` — already broken (081KQ8P5D0008QG0R000JHD7AB)
 
 Each lint should be checked: is the claim it makes about
 preventing X actually backed by enforcement? File
@@ -164,7 +163,7 @@ follow-up rows for any that fail the same audit.
 
 ## Composes with
 
-- B-0087 (github-settings-drift broken — same surface, same
+- 081KQ8P5D0008QG0R000JHD7AB (github-settings-drift broken — same surface, same
   visibility-constraint deferral)
 - `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
   — branch protection edits need maintainer pre-approval

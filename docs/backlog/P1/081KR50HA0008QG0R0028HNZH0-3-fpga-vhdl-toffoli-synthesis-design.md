@@ -1,6 +1,5 @@
 ---
-id: B-0366.3
-zetaid: 081KR50HA0008QG0R0028HNZH0
+id: 081KR50HA0008QG0R0028HNZH0
 priority: P1
 status: open
 title: "FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join"
@@ -16,11 +15,11 @@ type: feature
 tags: [fpga, vhdl, verilog, toffoli, synthesis, hardware]
 ---
 
-# B-0366.3 — FPGA synthesis design
+# 081KR50HA0008QG0R0028HNZH0 — FPGA synthesis design
 
 ## What
 
-Translate the F# Toffoli circuit model (B-0366.2) into synthesizable
+Translate the F# Toffoli circuit model (081KR50HA0008QG0R0002PGV1N) into synthesizable
 VHDL or Verilog that can be targeted at an FPGA development board.
 
 Requirements:
@@ -43,7 +42,7 @@ Candidate boards (search-first per Otto-364 before committing):
 
 - **Prior-art search**: existing FPGA reversible computing implementations
   (Frank 2017 survey + Xilinx/Lattice app notes). Must WebSearch before design.
-- **Blocked by**: B-0366.2 must be landed and the circuit model validated before
+- **Blocked by**: 081KR50HA0008QG0R0002PGV1N must be landed and the circuit model validated before
   any VHDL is written.
 
 ## Classification note

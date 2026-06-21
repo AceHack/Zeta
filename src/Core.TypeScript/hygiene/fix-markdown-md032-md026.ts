@@ -12,7 +12,7 @@
 // prior Python implementation per the 2026-04-29 directive to
 // canonicalize on TS+Bun for tooling. Behavioural equivalence with
 // the (now-retired) Python source is verified via the protocol in
-// B-0086.
+// 081KQ8P5D0008QG0R003BFZPRC.
 //
 // Why this exists (per maintainer 2026-04-26):
 //     "in python shape should be a queue that we are missing substraight

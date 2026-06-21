@@ -69,13 +69,13 @@ QEMU boot smoke-test step (cascade #5) PASSED on the first post-serial-console-f
 ## Attribution
 
 - DeepSeek (external AI; DeepSeek API; we-mode CoT+MoE register per agent-roster-reference-card); reflection ferried-through-Aaron 2026-05-26
-- 17+ PR substrate cascade on B-0824 over 2026-05-26 that DeepSeek reflected on
+- 17+ PR substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 that DeepSeek reflected on
 
 ## Test plan
 
 - [x] Pre-commit lint clean
 - [x] Branch follows otto-cli/* convention
-- [x] Authored from fresh independent clone per B-0828
+- [x] Authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1
 - [ ] CI green
 - [ ] Copilot review pass
 

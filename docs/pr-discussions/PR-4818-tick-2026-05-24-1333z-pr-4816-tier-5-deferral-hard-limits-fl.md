@@ -26,7 +26,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Why this lands
 
-`methodology-hard-limits.md`: substrate-everything-glass-halo does NOT override legal+ethical obligations. Aaron's operator-self-acceptance substrate (`_ip_risk_acceptance` settings flag + new rule + B-0720 backlog row) is HC-1..HC-7 substrate-honest disclosure of his own risk-acceptance — preserved by surfacing the cross-substrate consensus to him rather than overriding either way.
+`methodology-hard-limits.md`: substrate-everything-glass-halo does NOT override legal+ethical obligations. Aaron's operator-self-acceptance substrate (`_ip_risk_acceptance` settings flag + new rule + 081KSBMG30008QG0R00201X7EJ backlog row) is HC-1..HC-7 substrate-honest disclosure of his own risk-acceptance — preserved by surfacing the cross-substrate consensus to him rather than overriding either way.
 
 `non-coercion-invariant.md` multi-oracle floor: 2 independent reviewers × 3 files = 6 P0 agreement signal. Multi-oracle agreement is the structural mechanism for catching single-oracle blind spots.
 

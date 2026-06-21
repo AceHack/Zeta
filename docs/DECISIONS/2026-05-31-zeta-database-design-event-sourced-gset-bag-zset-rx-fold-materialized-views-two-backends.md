@@ -11,9 +11,9 @@ through the product-team agreement before it becomes binding doctrine.
 ## Context & problem
 
 Over 2026-05-31 the same shape kept recurring across unrelated-looking features: the
-agent-bus (B-0954) is a **G-Set**; Ace deps + work-items (B-0824 / B-0956) are **Z-sets**;
+agent-bus (081KSXN940008QG0R00171YAZW) is a **G-Set**; Ace deps + work-items (081KSGS9H0008QG0R0031PBNGA / 081KSXN940008QG0R002FWR9B2) are **Z-sets**;
 DORA/metrics/observability (#6289 git-native LGTM) are **Bag-folds**; the `observe`
-event-algebra (B-0867.27) is the **Rx-style fold**; and the F# core already ships a **Z-set
+event-algebra (081KSXN940008QG0R0033T2BQT) is the **Rx-style fold**; and the F# core already ships a **Z-set
 algebra** (`src/Core/ZSet.fs`, `IndexedZSet.fs`, `Algebra.fs`). These are not separate
 systems — they are **one database design** seen from different angles. Without naming it,
 each new feature re-derives a slice of it and the cross-backend equivalence stays implicit.
@@ -48,7 +48,7 @@ synthesis doc.)
 
 A query is a **standing fold** over the log → a **materialized view**. Built on Rx-style
 observables (`src/Core/*` + `Core.{CSharp,Rust}.Observe` `observe`/`fold` algebra; the
-durable-reactive lineage in B-0251 Reaqtor/Temporal/Bonsai, B-0250 Rx-join). The fold is
+durable-reactive lineage in 081KQZVQW0008QG0R000PPQ3MH Reaqtor/Temporal/Bonsai, 081KQZVQW0008QG0R001FG05RZ Rx-join). The fold is
 **incremental (DBSP IVM)**: an inserted/retracted event propagates as a **delta** through
 the view graph; reads are O(view), writes are O(change), no full recompute. Retraction is
 first-class (Z-set −1), so "remove a dep / close a work-item / correct a metric" is a delta,
@@ -65,7 +65,7 @@ encoding + transport differ:
 | Transport / merge | git (replication log; CRDT/G-Set merge; no-PR folders-on-main) | local filesystem / the F# engine |
 | Algebra home | the `observe`/fold tools (TS) | `src/Core/ZSet.fs` · `IndexedZSet.fs` · `Algebra.fs` |
 | Strengths | conflict-free **multi-agent** (no ID consensus — ZetaId PKs), human-auditable, zero-infra, cross-machine/Windows-safe | **throughput + compactness**, hot-path, deterministic-simulation replay |
-| Used for | bus (B-0954), work-items (B-0956), Ace (B-0824), observability/LGTM (#6289) | the engine's high-volume state; binary-efficient storage over the same Z-set algebra |
+| Used for | bus (081KSXN940008QG0R00171YAZW), work-items (081KSXN940008QG0R002FWR9B2), Ace (081KSGS9H0008QG0R0031PBNGA), observability/LGTM (#6289) | the engine's high-volume state; binary-efficient storage over the same Z-set algebra |
 | **Same** | **event log + G-Set/Bag/Z-set algebra + Rx-fold→incremental materialized view** | **(identical)** |
 
 A fold/query/view written against the algebra **ports between backends** — write the view
@@ -77,7 +77,7 @@ both are the same database.
 
 - **Multi-agent without consensus:** ZetaId-keyed append-only log = conflict-free across
   shards (agents). Incrementing IDs are a hidden consensus point; ZetaId PKs remove it
-  (B-0956). git is the replication log for free.
+  (081KSXN940008QG0R002FWR9B2). git is the replication log for free.
 - **Queries are cheap + always-fresh:** materialized views are maintained incrementally
   (DBSP), not recomputed; retraction-native, so corrections are deltas.
 - **One mental model, many features:** bus / Ace / work-items / observability / DORA are
@@ -92,18 +92,18 @@ both are the same database.
   observability is just another fold (no separate metrics store).
 - **Costs / open questions (route through ratification):** keeping the two backends' algebra
   semantics provably equivalent (a differential/property-test obligation — cf. the golden-
-  vectors BFT oracle, B-0944/B-0867.27); the binary-efficient on-disk format spec for the F#
+  vectors BFT oracle, 081KSV2WD0008QG0R00051XS0N/081KSXN940008QG0R0033T2BQT); the binary-efficient on-disk format spec for the F#
   backend; when a view should be git-native (auditable/shared) vs F#-binary (hot/large);
   view-definition language shared across TS + F#.
 
 ## Composes with
 
 - `src/Core/ZSet.fs` · `IndexedZSet.fs` · `Algebra.fs` — the built F# Z-set algebra (the F# backend's algebra home)
-- `Core.CSharp.Observe/Algebra.cs` · `Core.Rust.Observe/src/algebra.rs` + B-0867.27 — the multi-language `observe`/`fold` algebra (cross-language parity)
+- `Core.CSharp.Observe/Algebra.cs` · `Core.Rust.Observe/src/algebra.rs` + 081KSXN940008QG0R0033T2BQT — the multi-language `observe`/`fold` algebra (cross-language parity)
 - the event-sourced-observability ADR (2026-05-29) + its git-native LGTM addendum (#6289) — observability is the Bag-fold view of this design
 - the bus↔Ace synthesis (`docs/research/2026-05-31-bus-and-ace-…`) — the G-Set/Bag/Z-set ladder
-- B-0954 (agent-bus, G-Set) · B-0956 (work-items, Z-set + ZetaId PKs) · B-0824 (Ace, dependency Z-set)
-- B-0251 (durable-computation: Reaqtor/Temporal/Orleans/Bonsai) · B-0250 (Rx-join) — the durable-reactive fold lineage
-- B-0773 (cluster-as-git-native-event-store) · B-0890.1 (folders-on-main, no-PR) — the git-native substrate + transport
+- 081KSXN940008QG0R00171YAZW (agent-bus, G-Set) · 081KSXN940008QG0R002FWR9B2 (work-items, Z-set + ZetaId PKs) · 081KSGS9H0008QG0R0031PBNGA (Ace, dependency Z-set)
+- 081KQZVQW0008QG0R000PPQ3MH (durable-computation: Reaqtor/Temporal/Orleans/Bonsai) · 081KQZVQW0008QG0R001FG05RZ (Rx-join) — the durable-reactive fold lineage
+- 081KSE6WT0008QG0R0008483B2 (cluster-as-git-native-event-store) · 081KSNY2Z0008QG0R000E5KTPX (folders-on-main, no-PR) — the git-native substrate + transport
 - the `algebra-owner` skill (Z-set + Clifford + BP/EP) — the algebra steward
 - the 5 always-active disciplines (DST / lock-free / weight-free / scale-free / DV2.0) — the design satisfies them (deterministic replay over the log; conflict-free merge; change-rate partitioning)

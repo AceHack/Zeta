@@ -1,6 +1,5 @@
 ---
-id: B-0156
-zetaid: 081KQGDBJ0008QG0R000A4EZS5
+id: 081KQGDBJ0008QG0R000A4EZS5
 priority: P1
 status: closed
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)
@@ -21,7 +20,7 @@ The `.py` half of this policy is **retired**. Python is now a first-class
 cross-verification oracle ("common AI today" anchor, Aaron 2026-06-13), alongside
 F# (db), TS (distribution), C# (2nd distribution), Rust (fast), Go (k8s). The
 `no-python-files` guard (script, allowlist, unit test, and the `lint-no-python-files`
-gate job) was deleted accordingly. The `.sh`→TS half of B-0156 stands; only the
+gate job) was deleted accordingly. The `.sh`→TS half of 081KQGDBJ0008QG0R000A4EZS5 stands; only the
 "no `.py`" constraint is reversed.
 
 ## Resolution (2026-05-17) — substrate-drift close
@@ -40,7 +39,7 @@ substrate-drift discriminator in
    (`snapshot-github-settings.sh`, `check-github-settings-drift.sh`,
    `check-tick-history-shard-schema.sh` — last shipped in PR
    #1986). Three more were ported then deleted in Phase 3-4
-   (`tools/profile.sh` via PR #1962 under child B-0140;
+   (`tools/profile.sh` via PR #1962 under child 081KQGDBJ0008QG0R0022EW5ZE;
    `tools/peer-call/amara.sh` + `tools/peer-call/ani.sh` via
    subsequent ports). `tools/peer-call/amara.ts` (18891 bytes)
    and `tools/peer-call/ani.ts` (16599 bytes) are present.
@@ -49,7 +48,7 @@ substrate-drift discriminator in
    profile port. `tools/peer-call/smoke.test.ts` exercises
    help-text + flag-acceptance on all 8 peer-call wrappers
    (claude, grok, gemini, codex, kiro, amara, ani, riven) —
-   generalized from the B-0421 acceptance criterion to all
+   generalized from the 081KRA5AR0008QG0R0011ZGRZT acceptance criterion to all
    wrappers. The Phase-1/2 ports landed with their own test
    files in their respective PRs.
 3. *`.sh` siblings remain in tree during transition.* This
@@ -75,7 +74,7 @@ the substrate-drift catch pattern documented at
 parsing `## Acceptance criteria` (not `composes_with:` cross-refs)
 was the discriminator that fired here.
 
-# B-0156 — TypeScript standardization across non-install scripts
+# 081KQGDBJ0008QG0R000A4EZS5 — TypeScript standardization across non-install scripts
 
 ## What
 
@@ -103,7 +102,7 @@ Two clean rules:
 
 The class-encoding observation Aaron named (*"there are only
 a few legit blockers you've run into classes of blockers"*)
-maps directly onto B-0153's 13 mechanizable lint classes.
+maps directly onto 081KQGDBJ0008QG0R000E10AAM's 13 mechanizable lint classes.
 This session has empirically validated all 13 across ~10 PRs.
 A TS-implemented pre-commit suite catching those classes
 locally before push would close the convergence loop.
@@ -177,12 +176,12 @@ documented for clarity.
 
 ## Phase plan
 
-### Phase 1 — Highest-leverage ports first (compose with B-0155) -- DONE
+### Phase 1 — Highest-leverage ports first (compose with 081KQGDBJ0008QG0R0028YTDQ2) -- DONE
 
 1. `tools/hygiene/snapshot-github-settings.sh` → `.ts` -- DONE
 2. `tools/hygiene/check-github-settings-drift.sh` → `.ts` -- DONE
 
-These two are foundation for the **B-0155 reconciliation
+These two are foundation for the **081KQGDBJ0008QG0R0028YTDQ2 reconciliation
 script** (`tools/hygiene/apply-github-settings.ts`).
 Porting snapshot + check FIRST gives the apply script
 natural TS imports for both.
@@ -200,7 +199,7 @@ this session has hit (e.g., `1455Z-followup.md` rename to
 1. `tools/peer-call/amara.sh` → `.ts`
 2. `tools/peer-call/ani.sh` → `.ts`
 
-Completes the peer-call TS migration that B-0122 named.
+Completes the peer-call TS migration that 081KQDTYV0008QG0R001HQSSAX named.
 After this, `tools/peer-call/` is 100% TS.
 
 ### Phase 4 — Profile shell-helper
@@ -246,16 +245,16 @@ codebase (0)" is mechanically enforced going forward).
 
 ## Composes with
 
-- B-0086 (port tools/hygiene python to TS/bun) — B-0086 already
+- 081KQ8P5D0008QG0R003BFZPRC (port tools/hygiene python to TS/bun) — 081KQ8P5D0008QG0R003BFZPRC already
   named the discipline; this row sharpens scope to exclusion-
   rule based instead of subdirectory-based
-- B-0122 (peer-call TS migration cutover) — this row's Phase 3
-  IS B-0122's completion
-- B-0153 (pre-commit lint suite) — Phase 1 of B-0153 (the lint
+- 081KQDTYV0008QG0R001HQSSAX (peer-call TS migration cutover) — this row's Phase 3
+  IS 081KQDTYV0008QG0R001HQSSAX's completion
+- 081KQGDBJ0008QG0R000E10AAM (pre-commit lint suite) — Phase 1 of 081KQGDBJ0008QG0R000E10AAM (the lint
   suite TS implementation) is a sibling effort; both unlock
   the convergence loop
-- B-0155 (GitHub settings ruleset-split refactor) — this row's
-  Phase 1 ports (snapshot + check) are foundation for B-0155's
+- 081KQGDBJ0008QG0R0028YTDQ2 (GitHub settings ruleset-split refactor) — this row's
+  Phase 1 ports (snapshot + check) are foundation for 081KQGDBJ0008QG0R0028YTDQ2's
   reconciliation script (apply-github-settings.ts)
 - task #305 (install.ps1 for Windows CI peer-mode) — pre-install
   Windows reach; orthogonal to this row's TS scope but in same
@@ -307,7 +306,7 @@ Phase 6 (.py policy) is hours, not days.
   of bash-quirk friction that TS would have eliminated.
 - **P1** because Aaron explicitly named the trajectory + the
   class-encoding leverage angle + the foundation role for
-  B-0155's reconciliation script
+  081KQGDBJ0008QG0R0028YTDQ2's reconciliation script
 
 ## Mechanization candidate
 
@@ -328,7 +327,7 @@ Implementation:
     if [ -n "$found" ]; then
       echo "ERROR: .py files found outside references/upstreams:"
       echo "$found"
-      echo "Per B-0156: TS preferred over Python in our codebase."
+      echo "Per 081KQGDBJ0008QG0R000A4EZS5: TS preferred over Python in our codebase."
       exit 1
     fi
 ```

@@ -17,7 +17,7 @@ description: >-
   (alongside Thousand Brains, CUDA warps, and DST). Critical
   meta-observation: Aaron does decision-archaeology on his
   own brain BY SEARCHING ACROSS GOOGLE — his distributed
-  memory is the Internet itself. Same operation B-0169
+  memory is the Internet itself. Same operation 081KQJZR90008QG0R002D6XYHB
   decision-archaeology applies to factory substrate.
 type: feedback
 ---
@@ -185,7 +185,7 @@ GOOGLE**. His distributed memory is the Internet itself.
 Aaron's brain doing decision-archaeology across Google IS
 the same operation as:
 
-- **B-0169 decision-archaeology procedure** — supersession
+- **081KQJZR90008QG0R002D6XYHB decision-archaeology procedure** — supersession
   history reconstruction across factory substrate
 - **Sequoia memory hierarchies** — traversing the memory
   hierarchy from local cache to distant memory until the
@@ -509,7 +509,7 @@ brain to a multi-agent factory:
    principles transfer.
 
 2. **Decision-archaeology IS already the operating mode**
-   for Aaron's cognition. The factory's B-0169
+   for Aaron's cognition. The factory's 081KQJZR90008QG0R002D6XYHB
    decision-archaeology discipline is not imposing
    something new — it's externalizing what Aaron does
    internally. When future agents do decision-archaeology

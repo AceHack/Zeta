@@ -1,4 +1,4 @@
-# tools/scaffold — B-0424 Stage 1 repo scaffolding
+# tools/scaffold — 081KRFA460008QG0R001H98EXJ Stage 1 repo scaffolding
 
 Governance-file templates and a dry-run TypeScript tool for creating the
 `LFG/Forge` and `LFG/ace` repos with the full best-practice checklist
@@ -80,5 +80,5 @@ The tool prints these at the end, but for reference:
 
 ## Origin
 
-B-0424 (P1) — Three-repo split Stage 1.
+081KRFA460008QG0R001H98EXJ (P1) — Three-repo split Stage 1.
 ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`.

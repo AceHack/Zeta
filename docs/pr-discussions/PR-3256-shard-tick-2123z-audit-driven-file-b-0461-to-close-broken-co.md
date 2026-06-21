@@ -1,6 +1,6 @@
 ---
 pr_number: 3256
-title: "shard(tick): 2123Z \u2014 audit-driven: file B-0461 to close broken composes_with edge"
+title: "shard(tick): 2123Z \u2014 audit-driven: file 081KRHWGX0008QG0R000JMEYBH to close broken composes_with edge"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T21:27:14Z"
@@ -12,26 +12,26 @@ archived_at: "2026-05-14T21:42:54Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3256: shard(tick): 2123Z — audit-driven: file B-0461 to close broken composes_with edge
+# PR #3256: shard(tick): 2123Z — audit-driven: file 081KRHWGX0008QG0R000JMEYBH to close broken composes_with edge
 
 ## PR description
 
 ## Summary
 
-Tick 2026-05-14T21:23Z shard. Substantive work in [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253): authored the missing **B-0461** (`missed-substrate-cascade` subscriber handler) that closes the 1 broken `composes_with` edge surfaced by [`audit-backlog-items.ts`](tools/hygiene/audit-backlog-items.ts).
+Tick 2026-05-14T21:23Z shard. Substantive work in [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253): authored the missing **081KRHWGX0008QG0R000JMEYBH** (`missed-substrate-cascade` subscriber handler) that closes the 1 broken `composes_with` edge surfaced by [`audit-backlog-items.ts`](tools/hygiene/audit-backlog-items.ts).
 
 ## What landed
 
-- [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253) — `docs/backlog/P1/B-0461-b0442-slice-5-3-missed-substrate-cascade-handler-2026-05-14.md` (123 lines following B-0459 sibling shape).
+- [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253) — `docs/backlog/P1/081KRHWGX0008QG0R000JMEYBH-b0442-slice-5-3-missed-substrate-cascade-handler-2026-05-14.md` (123 lines following 081KRHWGX0008QG0R000TVGDGV sibling shape).
 - This shard.
 
 ## Slice-5 subscriber-handler row family now complete
 
 | Slice | Topic | Producer | Row |
 |---|---|---|---|
-| 5.1 | `infinite-backlog-nudge` | B-0440 | B-0459 |
-| 5.2 | `work-assignment` | B-0441 | B-0460 |
-| 5.3 | `missed-substrate-cascade` | B-0442 | **B-0461 (now filed)** |
+| 5.1 | `infinite-backlog-nudge` | 081KRFA460008QG0R001KC0VBH | 081KRHWGX0008QG0R000TVGDGV |
+| 5.2 | `work-assignment` | 081KRFA460008QG0R00229616S | 081KRHWGX0008QG0R001E9KEJ1 |
+| 5.3 | `missed-substrate-cascade` | 081KRFA460008QG0R00061SXRW | **081KRHWGX0008QG0R000JMEYBH (now filed)** |
 
 ## Audit-driven workflow
 
@@ -72,7 +72,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Pull request overview
 
-This PR adds a hygiene-history tick shard documenting the 21:23Z audit-driven workflow around filing B-0461 in the related PR #3253.
+This PR adds a hygiene-history tick shard documenting the 21:23Z audit-driven workflow around filing 081KRHWGX0008QG0R000JMEYBH in the related PR #3253.
 
 **Changes:**
 - Adds a new tick log for the 2026-05-14T21:23Z shard.

@@ -22,7 +22,7 @@ function successfulExecution(step: Qcow2RetentionExecutionStep, command: QemuCom
   return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
 }
 
-describe("B-0891 test-harness dispatcher", () => {
+describe("081KSNY2Z0008QG0R0008PN7RQ test-harness dispatcher", () => {
   test("dry-run can inspect scaffolded retention without claiming runtime success", () => {
     const result = run("--dry-run", "--scenario", "reformat-with-retention");
     expect(result.exitCode).toBe(0);
@@ -188,8 +188,8 @@ describe("B-0891 test-harness dispatcher", () => {
     );
     expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).not.toContain("-cdrom");
     for (const marker of [
-      "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
-      "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
+      "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
+      "[081KSNY2Z0008QG0R0008PN7RQ-retention]   Step 6.95-picker will skip account re-entry",
     ]) {
       expect(result.qemuRetentionPlan?.requiredSerialMarkers).toContain(marker);
     }
@@ -218,12 +218,12 @@ describe("B-0891 test-harness dispatcher", () => {
         readSerialOutput: (path) => {
           if (path.includes("migrate.serial.log")) {
             return [
-              "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
-              "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
+              "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
+              "[081KSNY2Z0008QG0R0008PN7RQ-retention]   Step 6.95-picker will skip account re-entry",
             ].join("\n");
           }
           return [
-            "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal",
+            "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal",
           ].join("\n");
         },
       },

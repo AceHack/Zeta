@@ -33,7 +33,7 @@ Tick 2026-05-14T21:03Z shard. Two Copilot threads triaged + one new BACKLOG.md d
 
 ## What landed
 
-- **[#3247](https://github.com/Lucent-Financial-Group/Zeta/pull/3247)** `chore(backlog): regenerate docs/BACKLOG.md` — addresses Copilot's catch on #3244 (B-0488 close-out should have included the regen). 2-line delta: B-0488 checkbox flip + B-0329 passive pickup. Auto-merge armed.
+- **[#3247](https://github.com/Lucent-Financial-Group/Zeta/pull/3247)** `chore(backlog): regenerate docs/BACKLOG.md` — addresses Copilot's catch on #3244 (081KRHWGX0008QG0R001HDK688 close-out should have included the regen). 2-line delta: 081KRHWGX0008QG0R001HDK688 checkbox flip + 081KR2E4K0008QG0R001F0YB5S passive pickup. Auto-merge armed.
 - **Commit `38771fb` on PR [#3245](https://github.com/Lucent-Financial-Group/Zeta/pull/3245)'s branch** — fixes `git diff --stat` output-format accuracy per Copilot review. Thread resolved.
 - **Thread on [#3244](https://github.com/Lucent-Financial-Group/Zeta/pull/3244)** (merged) — acknowledged + resolved with reply pointing to #3247.
 - This shard.
@@ -52,7 +52,7 @@ Neither was a nit:
 
 ## Merges during this tick
 
-[#3239](https://github.com/Lucent-Financial-Group/Zeta/pull/3239) (audit hygiene) + [#3240](https://github.com/Lucent-Financial-Group/Zeta/pull/3240) (shard 2046Z) + [#3244](https://github.com/Lucent-Financial-Group/Zeta/pull/3244) (B-0488 close-out) all merged.
+[#3239](https://github.com/Lucent-Financial-Group/Zeta/pull/3239) (audit hygiene) + [#3240](https://github.com/Lucent-Financial-Group/Zeta/pull/3240) (shard 2046Z) + [#3244](https://github.com/Lucent-Financial-Group/Zeta/pull/3244) (081KRHWGX0008QG0R001HDK688 close-out) all merged.
 
 ## Session tally: 13 merged + 4 wait-ci
 

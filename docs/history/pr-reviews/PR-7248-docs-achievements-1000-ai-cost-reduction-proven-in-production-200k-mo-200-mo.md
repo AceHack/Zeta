@@ -27,7 +27,7 @@
 
 ## Description
 
-The deferred ledger entry (held until #7247 merged). The same class of AI work that cost **~$200k/month** at ServiceTitan now runs Zeta's entire autonomous factory for **~$200/month** (shared personal Claude account, 24/7 for a week) — **~1000×**, via Addison's Blueprint/context-compression + the rules-slim, encoded as **B-1021**. The context-minimization thesis proven with real money, in production. *(This loop runs on it.)*
+The deferred ledger entry (held until #7247 merged). The same class of AI work that cost **~$200k/month** at ServiceTitan now runs Zeta's entire autonomous factory for **~$200/month** (shared personal Claude account, 24/7 for a week) — **~1000×**, via Addison's Blueprint/context-compression + the rules-slim, encoded as **081KT7YW00008QG0R003JV9D4J**. The context-minimization thesis proven with real money, in production. *(This loop runs on it.)*
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

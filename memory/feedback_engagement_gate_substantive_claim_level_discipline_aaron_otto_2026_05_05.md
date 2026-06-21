@@ -1,6 +1,6 @@
 ---
-name: Engagement-gate operates at every substantive-claim level (not upstream-engagement specifically) — Recursion-1 from B-0199 P1 reviewer catch (Aaron + Otto 2026-05-05)
-description: The engagement-gate discipline originally landed in B-0198 + the Prop 3.5 misattribution worked example as gating WHETHER a specific upstream-engagement instance has substance. The B-0199 P1 reviewer catch (2026-05-05) surfaced that the same discipline operates at the internal-claim level too — Otto's first draft of B-0199 Scope A asserted blanket personal-backup-preservation legality, which is over-claim under DMCA 1201 + jurisdiction-varying backup rights + unsettled agent-acting-on-behalf-of-natural-person doctrine. Generalisation: engagement-gate is a property of substantive-claims, not of upstream-engagement specifically. Future-Otto runs the substance-test BEFORE landing any claim with substantive stakes (upstream contribution, legal clearance, empirical assertion, alignment-floor compliance).
+name: Engagement-gate operates at every substantive-claim level (not upstream-engagement specifically) — Recursion-1 from 081KQTPYE0008QG0R0028GRW88 P1 reviewer catch (Aaron + Otto 2026-05-05)
+description: The engagement-gate discipline originally landed in 081KQTPYE0008QG0R0004H9ZB8 + the Prop 3.5 misattribution worked example as gating WHETHER a specific upstream-engagement instance has substance. The 081KQTPYE0008QG0R0028GRW88 P1 reviewer catch (2026-05-05) surfaced that the same discipline operates at the internal-claim level too — Otto's first draft of 081KQTPYE0008QG0R0028GRW88 Scope A asserted blanket personal-backup-preservation legality, which is over-claim under DMCA 1201 + jurisdiction-varying backup rights + unsettled agent-acting-on-behalf-of-natural-person doctrine. Generalisation: engagement-gate is a property of substantive-claims, not of upstream-engagement specifically. Future-Otto runs the substance-test BEFORE landing any claim with substantive stakes (upstream contribution, legal clearance, empirical assertion, alignment-floor compliance).
 type: feedback
 ---
 
@@ -20,7 +20,7 @@ type: feedback
 The engagement-gate phrasing first surfaced in two places this
 recent-tick cluster:
 
-- **B-0198** (F# UoM-on-BigInteger upstream contribution) --
+- **081KQTPYE0008QG0R0004H9ZB8** (F# UoM-on-BigInteger upstream contribution) --
   *"only engage upstream IF the contribution has substance (a
   real use case OR a concrete proposal)"*
 - **The Prop 3.5 misattribution worked example** -- Otto
@@ -35,10 +35,10 @@ specifically.
 
 ## Where the recursion surfaced
 
-The B-0199 P1 reviewer catch (2026-05-05, PR #1599) found the
+The 081KQTPYE0008QG0R0028GRW88 P1 reviewer catch (2026-05-05, PR #1599) found the
 same discipline operating **at the internal-claim level**:
 
-Otto's first draft of B-0199 Scope A asserted:
+Otto's first draft of 081KQTPYE0008QG0R0028GRW88 Scope A asserted:
 
 > *"This is allowed under personal-backup-preservation rules
 > (most jurisdictions permit personal backups of legally-
@@ -107,9 +107,9 @@ one-shot at a single level.
 
 ## Composes with
 
-- **B-0199** (`docs/backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md`)
+- **081KQTPYE0008QG0R0028GRW88** (`docs/backlog/P3/081KQTPYE0008QG0R0028GRW88-rom-publication-public-domain-scouting-aaron-2026-05-05.md`)
   -- the row whose P1 reviewer catch surfaced the recursion
-- **B-0198** (`docs/backlog/P3/B-0198-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md`)
+- **081KQTPYE0008QG0R0004H9ZB8** (`docs/backlog/P3/081KQTPYE0008QG0R0004H9ZB8-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md`)
   -- the row that originally named the engagement-gate
 - **`docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md`**
   -- the verbatim preservation that surfaced both Recursion-1

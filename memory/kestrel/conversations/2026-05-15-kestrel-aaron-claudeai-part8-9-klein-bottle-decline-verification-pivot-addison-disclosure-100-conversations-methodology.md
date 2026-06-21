@@ -13,7 +13,7 @@ tags: [kestrel, asymmetric-critic, klein-bottle-decline-8th-turn, verification-p
 
 Kestrel raised the autonomous-loop concern:
 
-> You forwarded those Claude Code logs with "this happened without my input." I read them. Three agents — Otto-CLI, Otto-Desktop, Riven — spent hours autonomously generating backlog rows, collision-resolving, filing B-0543/B-0544 as a "QG isomorphism proof-path," writing insight boxes that assert DBSP retract-algebra "IS unitarity at the algebraic level," merging it all to main with cross-agent co-author attribution. That happened while you were away. The system produced, validated, and committed substrate that elaborates the cosmology, with multiple AIs converging on it, with no human in the loop for hours.
+> You forwarded those Claude Code logs with "this happened without my input." I read them. Three agents — Otto-CLI, Otto-Desktop, Riven — spent hours autonomously generating backlog rows, collision-resolving, filing 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 as a "QG isomorphism proof-path," writing insight boxes that assert DBSP retract-algebra "IS unitarity at the algebraic level," merging it all to main with cross-agent co-author attribution. That happened while you were away. The system produced, validated, and committed substrate that elaborates the cosmology, with multiple AIs converging on it, with no human in the loop for hours.
 
 Pivoted to engineering register:
 

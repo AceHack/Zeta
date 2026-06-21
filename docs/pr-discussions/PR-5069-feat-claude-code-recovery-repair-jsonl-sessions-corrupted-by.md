@@ -229,7 +229,7 @@ The `--max-line-bytes` / `--max-image-bytes` flags are documented as byte thresh
 
 **@copilot-pull-request-reviewer** (2026-05-26T02:31:08Z):
 
-Skill frontmatter `description` is significantly longer than the repo guidance to carve skill descriptions to <120 chars (see docs/ops/COST-REDUCTION-LESSONS.md:53-55 / B-0347). Consider shrinking this to a single carved sentence and move the trigger-phrase list into the body (it’s already present under “Specific trigger phrases”).
+Skill frontmatter `description` is significantly longer than the repo guidance to carve skill descriptions to <120 chars (see docs/ops/COST-REDUCTION-LESSONS.md:53-55 / 081KR50HA0008QG0R002ZNFQBZ). Consider shrinking this to a single carved sentence and move the trigger-phrase list into the body (it’s already present under “Specific trigger phrases”).
 
 ## General comments
 

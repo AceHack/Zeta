@@ -1,6 +1,5 @@
 ---
-id: B-0495
-zetaid: 081KRHWGX0008QG0R001RHSSHT
+id: 081KRHWGX0008QG0R001RHSSHT
 priority: P1
 status: closed
 closed: 2026-05-14
@@ -17,7 +16,7 @@ tags: [demo, hamiltonian, git, phase-space, alignment-ui, github-pages, html, js
 type: feature
 ---
 
-# B-0495 — Hamiltonian viz slice-1: static scaffold
+# 081KRHWGX0008QG0R001RHSSHT — Hamiltonian viz slice-1: static scaffold
 
 ## What
 
@@ -42,7 +41,7 @@ pattern for slice-2 to replace with live data.
 ## Pre-start checklist
 
 - Prior-art search: no existing Hamiltonian/phase-space panel in
-  demo/index.html (grep confirmed). Circuit Breaker tab (B-0435) is
+  demo/index.html (grep confirmed). Circuit Breaker tab (081KRFA460008QG0R001MC7D7R) is
   the template pattern for a new lazy-rendered tab.
-- Dependency check: B-0434 is closed/shipped; scaffolding present.
-- Claim: acquired by otto-cli (B-0436 umbrella claim).
+- Dependency check: 081KRFA460008QG0R0005DWKBG is closed/shipped; scaffolding present.
+- Claim: acquired by otto-cli (081KRFA460008QG0R0009TXX5S umbrella claim).

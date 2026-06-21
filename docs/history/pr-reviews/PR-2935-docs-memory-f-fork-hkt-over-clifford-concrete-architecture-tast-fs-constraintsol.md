@@ -40,7 +40,7 @@ Analytical-continuation bridge:
 - Riemann surface kind manifold
 - Pole erasure for type singularities
 
-**Substrate-honest research-grade marker**: NOT operational-grade yet. F# fork is canonical future work. Current operational substrate is direct dotNetRDF + F# CE (Path B per B-0428).
+**Substrate-honest research-grade marker**: NOT operational-grade yet. F# fork is canonical future work. Current operational substrate is direct dotNetRDF + F# CE (Path B per 081KRFA460008QG0R0018SN61J).
 
 Composes with PR #2928 F# fork strategic + PR #2934 CAN/GCAN research lineage + PR #2914 Clifford/HKT vocabulary + algebra-owner skill.
 
@@ -164,14 +164,14 @@ Composes with:
 - PR #2929 (F# storage)
 - PR #2930 (distributed maintainer architecture)
 - PR #2933 (Zeta ships with skills)
-- B-0428 (DBpedia + F# fork — Path A architecture)
-- B-0429 (persona mapping)
+- 081KRFA460008QG0R0018SN61J (DBpedia + F# fork — Path A architecture)
+- 081KRFA460008QG0R002M05EY1 (persona mapping)
 - algebra-owner skill (Z-set + Clifford + BP/EP F#)
 - Soraya formal-verification authority
 
 Substrate-honest research-grade marker: NOT operational-grade
 yet. F# fork is canonical future work; current operational
-substrate is direct dotNetRDF + F# CE (Path B per B-0428).
+substrate is direct dotNetRDF + F# CE (Path B per 081KRFA460008QG0R0018SN61J).
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

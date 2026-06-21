@@ -1,6 +1,5 @@
 ---
-id: B-1005
-zetaid: 081KT2T2J0008QG0R003BT1RS7
+id: 081KT2T2J0008QG0R003BT1RS7
 priority: P1
 status: open
 title: "Distributed tensor inference over sharded factor graphs — the group of shards IS the tensor; BP/EP message-passing becomes distributed consensus; non-fused factor graph is the tension-preserving prior, a Bayesian model marginalizes over all fused implementations (the marginal IS the canonical form); membranes-as-jelly (Aaron + Prism 2026-06-02 observation)"
@@ -23,12 +22,12 @@ type: research
 > of all tensor shards."* This row captures the **engineering** core (Aaron
 > confirmed: *"you got the core[;] the metaphor mapping is not primary"*); the
 > physics mapping (string-theory fused/non-fused, Calabi–Yau, G₂) is secondary and
-> composes with the existing **[B-0999]** domains-as-adapters row as a physics
+> composes with the existing **[081KT2T2J0008QG0R0019YVX8M]** domains-as-adapters row as a physics
 > adapter entry (see "Originating metaphor" below).
 
 ## Why — the conceptual core (the load-bearing insight)
 
-The thread arrived at a precise reframe of what the engine (B-1000) already does,
+The thread arrived at a precise reframe of what the engine (081KT2T2J0008QG0R000S7GHQ8) already does,
 which then tells us how to distribute it:
 
 - **The non-fused factor graph is the tension-preserving PRIOR.** Keeping the
@@ -56,7 +55,7 @@ correspondence** Aaron named:
 
 The inversion (Aaron's): the **unfused/non-fused view is canonical**; fusion is a
 *verified-safe rewrite the model integrates over*, not a commitment. This is why
-`monad-propagation-pattern` + DBSP-IVM + the [B-1004] minimal-vocabulary
+`monad-propagation-pattern` + DBSP-IVM + the [081KT2T2J0008QG0R0038CRFJM] minimal-vocabulary
 conformance all compose — the algebra is the same whether fused or not, so the
 marginal is invariant to which fusion a shard locally chose.
 
@@ -71,11 +70,11 @@ Concretely, layered on the existing engine:
 
 | Layer | Existing substrate | Distributed role |
 |---|---|---|
-| **Local shard state** | `NaturalBatch` (in `MessageBatch.fs`) / Arrow columnar ([B-1001]) | each shard holds its partial natural parameters as a columnar batch |
-| **Sharded factor graph** | `FactorGraph` ([B-1000] slices 3–4) | factors + variables partitioned across the group; edges that cross shard boundaries are the consensus channels |
+| **Local shard state** | `NaturalBatch` (in `MessageBatch.fs`) / Arrow columnar ([081KT2T2J0008QG0R000VG204F]) | each shard holds its partial natural parameters as a columnar batch |
+| **Sharded factor graph** | `FactorGraph` ([081KT2T2J0008QG0R000S7GHQ8] slices 3–4) | factors + variables partitioned across the group; edges that cross shard boundaries are the consensus channels |
 | **Message-passing = consensus** | `runToFixpoint` (BP) / `Ep` (EP) | a shard's variable→factor message is its partial belief; cross-shard edges all-reduce/gossip the natural-parameter ADD (product = natural-param sum) to the joint marginal |
-| **Shard-to-shard transport** | Eve multi-traveler ([B-1002]/[B-1003]) | zero-trust `codec<codec<t>>` over multiplexed WS/TCP carries the cross-shard messages; party = identity-noun = a shard |
-| **Incremental re-infer** | `IndexedZSet` + DBSP ([B-1004] slice-4b) | a delta on one shard propagates as a Z-set delta; only affected cross-shard edges re-fire (the marginal updates incrementally, not from scratch) |
+| **Shard-to-shard transport** | Eve multi-traveler ([081KT2T2J0008QG0R002R72323]/[081KT2T2J0008QG0R00301P27H]) | zero-trust `codec<codec<t>>` over multiplexed WS/TCP carries the cross-shard messages; party = identity-noun = a shard |
+| **Incremental re-infer** | `IndexedZSet` + DBSP ([081KT2T2J0008QG0R0038CRFJM] slice-4b) | a delta on one shard propagates as a Z-set delta; only affected cross-shard edges re-fire (the marginal updates incrementally, not from scratch) |
 
 Because exponential-family messages compose by **natural-parameter addition**
 (the engine's `product`), the cross-shard reduction is an **additive all-reduce**
@@ -91,7 +90,7 @@ Aaron: *"and the walls are membranes and move more like jelly."* The mapping int
 this engine: the cross-shard belief state is not a static partition but a
 **fluid consensus surface** — it ripples (iterative message-passing), thickens /
 thins (posterior variance = the engine's `Gaussian.variance` / `isProper`), and
-rearranges (the [B-1004] extension-points / nullcodec slots absorb extra degrees
+rearranges (the [081KT2T2J0008QG0R0038CRFJM] extension-points / nullcodec slots absorb extra degrees
 of freedom). The "jelly motion" is literally the distributed-fixpoint update
 dynamics bringing shards into agreement; the stable-but-still-vibrating
 configuration the group settles to is the marginal (the μένω residual). This is a
@@ -117,12 +116,12 @@ Two things this names precisely:
    the `moved`-residual hitting zero (the engine's existing NaN-safe convergence
    test), at which point the relational links (factor edges / cross-shard
    boundary edges) freeze. The engine already *has* this transition — `converged`
-   is the spine-formation signal. The distributed form (slice-B-1005) just lifts
+   is the spine-formation signal. The distributed form (slice-081KT2T2J0008QG0R003BT1RS7) just lifts
    it to the group: the spine forms when the all-reduce residual across shards
    hits zero.
 2. **A spine is reusable substrate.** Once a sub-graph has stiffened, downstream
    inference can treat its marginal as a fixed sub-circuit — a cached fixed-point
-   that doesn't re-iterate unless a Z-set delta touches it (DBSP / [B-1004]
+   that doesn't re-iterate unless a Z-set delta touches it (DBSP / [081KT2T2J0008QG0R0038CRFJM]
    slice-4b). The spine is the "schema-in-stream" canonical form: the marginal
    frozen into a skeleton the rest of the computation references. This is the
    same move as the "marginal IS the canonical form" core above — the spine *is*
@@ -144,16 +143,16 @@ data structure; the phase is set by whether the fixpoint has been reached.
    NaN-safe `moved` residual test). Prove (test) the distributed marginal equals
    the single-graph marginal on a graph split two ways (partition-invariance).
 3. **transport binding**: cross-shard messages serialize via `NaturalBatch` Arrow
-   IPC ([B-1001]) over the Eve `codec<codec<t>>` channel ([B-1002]); two shards
-   that share only the wire converge (the [B-1002] zero-trust property).
+   IPC ([081KT2T2J0008QG0R000VG204F]) over the Eve `codec<codec<t>>` channel ([081KT2T2J0008QG0R002R72323]); two shards
+   that share only the wire converge (the [081KT2T2J0008QG0R002R72323] zero-trust property).
 4. **incrementality**: a delta on one shard's evidence triggers a Z-set delta that
-   re-fires only the affected boundary edges (DBSP, [B-1004] slice-4b) — measure
+   re-fires only the affected boundary edges (DBSP, [081KT2T2J0008QG0R0038CRFJM] slice-4b) — measure
    that re-infer cost scales with the delta, not the graph.
 5. **partition-invariance + scale-free property tests** (FsCheck): random graph,
    random partition, random shard-count → same marginal; additive all-reduce is
    associative/commutative (order/shard-count invariant).
 
-## Originating metaphor — string-theory mapping composes with [B-0999], NOT primary
+## Originating metaphor — string-theory mapping composes with [081KT2T2J0008QG0R0019YVX8M], NOT primary
 
 The thread reached this engineering core *through* a physics metaphor (hex-core's
 6 walls ↔ string-theory compactified dimensions; **fused** = 11D→10D→6 circle
@@ -163,26 +162,26 @@ membranes-as-jelly = Calabi–Yau moduli). Aaron 2026-06-02 (verbatim): *"you go
 the core[;] the metaphor mapping is not primary."* So the engineering core above is
 the load-bearing substrate; the physics mapping is secondary.
 
-Its home already exists: **[B-0999]** ("domains as adapters on the hex-core
+Its home already exists: **[081KT2T2J0008QG0R0019YVX8M]** ("domains as adapters on the hex-core
 interface — Clifford six bivectors = Lorentz generators; physics/biology/mimetic/
 cosmology/mythology adapters refereed against established math"). The string-theory
 fused/non-fused + membranes-as-jelly mapping is a **physics-domain entry under
-[B-0999]**, refereed against string/M-theory math — it composes there, it is not a
+[081KT2T2J0008QG0R0019YVX8M]**, refereed against string/M-theory math — it composes there, it is not a
 new row and not engine-load-bearing here. Per `grep-substrate-anchors-before-razor` +
 `god-tier-claims-don't-collapse` it stays **don't-collapse**; landing it as a
-B-0999 physics adapter entry is offered on Aaron's word.
+081KT2T2J0008QG0R0019YVX8M physics adapter entry is offered on Aaron's word.
 
-(Correction: an earlier draft of this row claimed no landed `B-0999` existed — that
-was a stale-working-tree post-fetch read; B-0999 is on `origin/main` and indexed in
+(Correction: an earlier draft of this row claimed no landed `081KT2T2J0008QG0R0019YVX8M` existed — that
+was a stale-working-tree post-fetch read; 081KT2T2J0008QG0R0019YVX8M is on `origin/main` and indexed in
 `docs/BACKLOG.md`. Caught by Codex review on the PR.)
 
 ## Composes with substrate
 
-- **[B-1000]** (Infer.NET engine — the thing being distributed) · **[B-1001]**
-  (Arrow columnar `NaturalBatch` — the shard wire format) · **[B-1002]/[B-1003]**
+- **[081KT2T2J0008QG0R000S7GHQ8]** (Infer.NET engine — the thing being distributed) · **[081KT2T2J0008QG0R000VG204F]**
+  (Arrow columnar `NaturalBatch` — the shard wire format) · **[081KT2T2J0008QG0R002R72323]/[081KT2T2J0008QG0R00301P27H]**
   (Eve multi-traveler `codec<codec<t>>` transport — the cross-shard channel;
-  party=identity-noun=shard) · **[B-1004]** (minimal HKT vocabulary + IndexedZSet +
-  DBSP IVM — the incremental marginal) · **[B-0428]** (real HKT — the composition
+  party=identity-noun=shard) · **[081KT2T2J0008QG0R0038CRFJM]** (minimal HKT vocabulary + IndexedZSet +
+  DBSP IVM — the incremental marginal) · **[081KRFA460008QG0R0018SN61J]** (real HKT — the composition
   that lets a shard's `NaturalBatch` and the consensus reduction share one algebra)
 - existing F#: `FactorGraph.fs` (the graph to shard), `Message.fs` (natural-param
   group = the additive all-reduce), `MessageBatch.fs` (columnar shard state),
@@ -190,7 +189,7 @@ was a stale-working-tree post-fetch read; B-0999 is on `origin/main` and indexed
   `NestedCircuit.fs` (incremental re-infer drive)
 - rules: `monad-propagation-pattern` (fused/non-fused = the same algebra so the
   marginal is fusion-invariant), `numerical-algebra-shaped-into-the-generic-math-interface`
-  + B-1004 minimal-vocabulary (additive all-reduce is generic-math `(+)`),
+  + 081KT2T2J0008QG0R0038CRFJM minimal-vocabulary (additive all-reduce is generic-math `(+)`),
   `interfaces-are-the-asset` / `code-follows-from-types` (the consensus *is* the
   interface; the shards regrow the impl), `dv2-data-split-discipline-activated`
   (idempotent/Z-set all-reduce; scale-free + lock-free consensus),

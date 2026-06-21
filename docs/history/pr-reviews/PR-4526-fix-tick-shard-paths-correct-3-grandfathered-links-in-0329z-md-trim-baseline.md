@@ -33,9 +33,9 @@ Slow-steady audit-baseline cleanup, batch 2 (post #4525). 0329Z.md at `docs/hygi
 
 ## Fixes
 
-- Line 6: `backlog/P3/B-0519-...md`: 4 `..` → 5 `..`
-- Line 7: `backlog/P3/B-0528-...md`: 4 `..` → 5 `..`
-- Line 20: `backlog/P3/B-0528-...md`: 4 `..` → 5 `..`
+- Line 6: `backlog/P3/081KRHWGX0008QG0R001HMWM1W-...md`: 4 `..` → 5 `..`
+- Line 7: `backlog/P3/081KRMEXM0008QG0R000T0A28T-...md`: 4 `..` → 5 `..`
+- Line 20: `backlog/P3/081KRMEXM0008QG0R000T0A28T-...md`: 4 `..` → 5 `..`
 
 ## Baseline trim
 
@@ -74,7 +74,7 @@ Slow-steady audit-baseline cleanup, batch 2 (post #4525). 0329Z.md at `docs/hygi
 - **`Copilot` (bot)** at 2026-05-21T11:44:21Z on `docs/hygiene-history/ticks/2026/05/15/0329Z.md`:7 (association: NONE)
 
   <pre>
-  The two backlog-related bullets (B-0519/B-0528) are no longer nested under the preceding “PR #3342” bullet; they’re now top-level list items. This changes the shard’s structure and contradicts the PR description’s claim that only relative-path depth was corrected. Suggest restoring the original nesting/indentation while keeping the updated ../../../../../backlog/... targets.
+  The two backlog-related bullets (081KRHWGX0008QG0R001HMWM1W/081KRMEXM0008QG0R000T0A28T) are no longer nested under the preceding “PR #3342” bullet; they’re now top-level list items. This changes the shard’s structure and contradicts the PR description’s claim that only relative-path depth was corrected. Suggest restoring the original nesting/indentation while keeping the updated ../../../../../backlog/... targets.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -98,9 +98,9 @@ one-too-few-`..` bug class as PR #4524 (0822Z.md) + PR #4525 (1436Z.md)
 + the PR #4523-fix-commit cycle (1019Z.md).
 
 Fixed:
-- Line 6: backlog/B-0519: 4 '..' → 5 '..'
-- Line 7: backlog/B-0528: 4 '..' → 5 '..'
-- Line 20: backlog/B-0528: 4 '..' → 5 '..'
+- Line 6: backlog/081KRHWGX0008QG0R001HMWM1W: 4 '..' → 5 '..'
+- Line 7: backlog/081KRMEXM0008QG0R000T0A28T: 4 '..' → 5 '..'
+- Line 20: backlog/081KRMEXM0008QG0R000T0A28T: 4 '..' → 5 '..'
 
 Baseline trimmed: 3 entries for 0329Z.md removed (34 → 31). Local audit:
 `scanned 1137 tick shards; 11 broken relative-path links (11

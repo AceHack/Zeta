@@ -1,6 +1,5 @@
 ---
-id: B-0421
-zetaid: 081KRA5AR0008QG0R0011ZGRZT
+id: 081KRA5AR0008QG0R0011ZGRZT
 priority: P2
 status: closed
 title: "Grok peer-call failure — cursor-agent exit 1 during multi-agent review"
@@ -52,7 +51,7 @@ Row status: `closed` — all 4 acceptance criteria addressed.
 Composes with PR #2949 (#3 self-documenting marker), PR #2950
 (#4 smoke test), and this PR (#1 + #2 root cause + fix).
 
-# B-0421 — Grok peer-call failure investigation
+# 081KRA5AR0008QG0R0011ZGRZT — Grok peer-call failure investigation
 
 ## What
 

@@ -1,6 +1,5 @@
 ---
-id: B-0887.1
-zetaid: 081KSNY2Z0008QG0R00069RRZ0
+id: 081KSNY2Z0008QG0R00069RRZ0
 priority: P2
 status: open
 title: PR-discipline rules cross-host framing audit — existing rules encode years of GitHub-specific learning; audit which translate to Zeta-native / cross-host and which need rewrites
@@ -32,7 +31,7 @@ tags:
 
 ## What this row tracks
 
-Audit + framing update for existing `.claude/rules/*.md` files that encode GitHub-PR-workflow-specific learning. B-0887 claimed these rules need "framing updates but NOT semantic changes." That's mostly true — but the audit work to identify WHICH rules need WHICH treatment is non-trivial and worth scoping explicitly.
+Audit + framing update for existing `.claude/rules/*.md` files that encode GitHub-PR-workflow-specific learning. 081KSNY2Z0008QG0R001DFZK4V claimed these rules need "framing updates but NOT semantic changes." That's mostly true — but the audit work to identify WHICH rules need WHICH treatment is non-trivial and worth scoping explicitly.
 
 ## Otto pushback context (operator 2026-05-28)
 
@@ -81,10 +80,10 @@ Each rule classified into:
 
 ## Composition
 
-- **B-0887** (parent — Zeta-native review substrate; relies on existing PR-discipline being preserved)
-- **B-0867.15** (per-host adapters; rule applicability map composes with adapter targets)
-- **B-0875** + **B-0875.1** (error-class extraction + code-review-as-tech-debt-detector compose with the discipline being preserved)
-- **B-0877** (heterogeneous reviewer ensemble audit composes — discipline applies to all reviewer-classes)
+- **081KSNY2Z0008QG0R001DFZK4V** (parent — Zeta-native review substrate; relies on existing PR-discipline being preserved)
+- **081KSNY2Z0008QG0R002A785QR** (per-host adapters; rule applicability map composes with adapter targets)
+- **081KSNY2Z0008QG0R000K3ETGB** + **081KSNY2Z0008QG0R002WQ747V** (error-class extraction + code-review-as-tech-debt-detector compose with the discipline being preserved)
+- **081KSNY2Z0008QG0R0004ZF85W** (heterogeneous reviewer ensemble audit composes — discipline applies to all reviewer-classes)
 
 ## Substrate-honest framing
 

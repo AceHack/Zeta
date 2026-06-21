@@ -40,7 +40,7 @@ Trigger: Aaron *"you see it's much easier dealing with AI context window failure
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`
 - `.claude/rules/substrate-or-it-didnt-happen.md` + `glass-halo-bidirectional.md` + `non-coercion-invariant.md` + 7 more rules
-- B-0700 + B-0709 through B-0716 (Soraya findings this session — parallel discipline at framework-internal scope)
+- 081KRSKQ20008QG0R00367828S + 081KS923C0008QG0R0032VJZPF through 081KS923C0008QG0R0009JFVSE (Soraya findings this session — parallel discipline at framework-internal scope)
 
 ## §33 compliance
 

@@ -1,6 +1,5 @@
 ---
-id: B-0125
-zetaid: 081KQGDBJ0008QG0R001MK4YPC
+id: 081KQGDBJ0008QG0R001MK4YPC
 priority: P1
 status: closed
 closed: 2026-05-02
@@ -24,7 +23,7 @@ depends_on: []
 > from earlier work (PR #857 / task #340) so no separate fix
 > needed there.
 
-# B-0125 — Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
+# 081KQGDBJ0008QG0R001MK4YPC — Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
 
 **Priority:** P1 (high value, soon)
 
@@ -47,7 +46,7 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
 - **Throughput cost is real and recurring.** This session block landed 6 non-code PRs (#997 / #999 / #1000 / #1001 / #1002 / #1003) at ~5min CI each = ~30min CI-blocked time for substrate-only work. Project produces ~half its PRs in this non-code class going forward; cost compounds with the high substrate cadence (~550 checkins/week per chunk-11 CSAP-pushback observation).
 - **Bounded scope.** Path-filter + ruleset-coordination is a contained change.
 - **High Aaron-tax reduction.** Aaron flagged this in chat as visible CI-wait pain.
-- **Two-tracks-separable framing — the load-bearing benefit is not just speed (Aaron 2026-05-01 sharpening).** Aaron's clearer framing 2026-05-01 ~10:50Z: *"it will also let you have two clear tracks that almost never overlap with same files on prs the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes."* The two-tracks-with-near-zero-overlap property is structural, not just throughput-tax-reduction. Track 1 (docs) needs TypeScript-only build + lint; Track 2 (code) needs F# + TypeScript + CodeQL etc. Right now docs PRs are paying the F# long-pole cost; after the split, the tracks rarely touch the same files in a single PR, which means most PRs stay on a single track and benefit accordingly. **Prerequisite for B-0132 (CRDT-composition for BFT propagation)**: CRDT work touches both tracks (docs + code); without the two-tracks split first, every CRDT-related PR pays the cross-track CI cost; with the split, CRDT formalization work routes correctly per-PR.
+- **Two-tracks-separable framing — the load-bearing benefit is not just speed (Aaron 2026-05-01 sharpening).** Aaron's clearer framing 2026-05-01 ~10:50Z: *"it will also let you have two clear tracks that almost never overlap with same files on prs the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes."* The two-tracks-with-near-zero-overlap property is structural, not just throughput-tax-reduction. Track 1 (docs) needs TypeScript-only build + lint; Track 2 (code) needs F# + TypeScript + CodeQL etc. Right now docs PRs are paying the F# long-pole cost; after the split, the tracks rarely touch the same files in a single PR, which means most PRs stay on a single track and benefit accordingly. **Prerequisite for 081KQGDBJ0008QG0R000Y66YYQ (CRDT-composition for BFT propagation)**: CRDT work touches both tracks (docs + code); without the two-tracks split first, every CRDT-related PR pays the cross-track CI cost; with the split, CRDT formalization work routes correctly per-PR.
 
 ## Why not P0
 
@@ -67,7 +66,7 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
    - (b) Coordinated ruleset config change on the existing single ruleset, OR
    - (c) **Multi-ruleset split** — separate docs-targeted ruleset (lower bar; F# Analyze not required) + code-targeted ruleset (severity:all on src/ paths). Aaron 2026-05-01 in chat: *"maybe multiple rulesets i just had one for convience, you can do it for whats best for your and making humans feel comfortable, all makes humans feel comfortable i don't know if that help if not no worries."* This reveals the single severity:all ruleset was set up for convenience, not as a technical requirement. The real constraint is **human-comfort signaling** — humans see "all required checks passing" and feel reassured; the literal severity:all configuration is one of several ways to produce that signal. A multi-ruleset design that surfaces "all required-for-this-surface checks pass" preserves the comfort property without requiring F# Analyze on docs PRs.
 
-**Aaron's host-mutation authorization for this work specifically (2026-05-01):** *"you can do it for what's best."* Scoped explicitly to the ruleset-redesign work in this row. NOT a blanket grant on host mutations going forward — the §16 host-mutation-needs-sign-off rule remains in force; this is an explicit per-row carve-out for B-0125 implementation.
+**Aaron's host-mutation authorization for this work specifically (2026-05-01):** *"you can do it for what's best."* Scoped explicitly to the ruleset-redesign work in this row. NOT a blanket grant on host mutations going forward — the §16 host-mutation-needs-sign-off rule remains in force; this is an explicit per-row carve-out for 081KQGDBJ0008QG0R001MK4YPC implementation.
 4. **Verification across PR shapes:** docs-only PR, TypeScript-only PR, src-only PR, mixed PR, workflow-only PR — all behave correctly.
 5. **No reduction in security coverage** for actual code surfaces. Skip is for non-code only.
 

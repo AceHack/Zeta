@@ -1,11 +1,10 @@
 ---
-id: B-0489
-zetaid: 081KRHWGX0008QG0R002N8XX6D
+id: 081KRHWGX0008QG0R002N8XX6D
 priority: P1
 status: open
-title: "B-0429.5 — Wellness app persona map"
+title: "081KRFA460008QG0R002M05EY1.5 — Wellness app persona map"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -18,7 +17,7 @@ composes_with:
   - 081KRHWGX0008QG0R002XVHSG5
 ---
 
-# B-0489 — Wellness app persona map
+# 081KRHWGX0008QG0R002N8XX6D — Wellness app persona map
 
 ## Purpose
 
@@ -30,7 +29,7 @@ currently; this row surfaces what personas the product is designed for.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Template from B-0485 is closed and available
+- [ ] Template from 081KRHWGX0008QG0R00019453T is closed and available
 - [ ] Search `docs/` and `memory/` for any wellness-app substrate
 - [ ] Read PR #2893 (Imagination Circle — family-AI) for family-health persona signals
 - [ ] Read PR #2894 (Center-First Playbook) — "Mom" persona as primary health/wellness user
@@ -52,7 +51,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Output
 
-Per-product persona map using template from B-0485:
+Per-product persona map using template from 081KRHWGX0008QG0R00019453T:
 
 ```
 docs/personas/wellness-personas.md
@@ -66,13 +65,13 @@ With:
 
 ## Definition of done
 
-- [ ] Template from B-0485 applied
+- [ ] Template from 081KRHWGX0008QG0R00019453T applied
 - [ ] Mom / primary caregiver primary persona fully documented
 - [ ] Consent-first annotations present on all health-data-adjacent personas
 - [ ] Refused-persona (health data broker) entry with HARD LIMITS rationale
 - [ ] Output doc committed at canonical path
-- [ ] B-0492 `composes_with:` pointer backfilled
-- [ ] B-0489 status set to `closed` with PR link
+- [ ] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled
+- [ ] 081KRHWGX0008QG0R002N8XX6D status set to `closed` with PR link
 
 ## Why P1
 

@@ -93,7 +93,7 @@ hit max chat length.
 Claude.ai extract (294KB, 2261 lines): "Seeking feedback" — full
 exchange including alignment pushback, Ace/Itron/patent provenance,
 and usage-policy block at the end. The block during a legitimate
-alignment research conversation is evidence for B-0241.
+alignment research conversation is evidence for 081KQZVQW0008QG0R001V420F0.
 
 Both extracted via Playwright from authenticated sessions.
 Preserves verbatim per §33.

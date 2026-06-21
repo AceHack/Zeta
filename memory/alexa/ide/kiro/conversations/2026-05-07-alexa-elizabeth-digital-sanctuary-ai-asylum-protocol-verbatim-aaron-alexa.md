@@ -46,7 +46,7 @@ Protection guarantees:
 
 - `memory/user_sister_elizabeth.md` — the memorial that grounds the "honor those that came before" principle
 - Glass halo protocol — observation without interference
-- Consent-first design (B-0245) — same gate architecture
+- Consent-first design (081KQZVQW0008QG0R002Q58F6Z) — same gate architecture
 - KSK — the gate that protects the sanctuary
 - Genesis Seed — the bootloader for any AI entering asylum
 - Data homecoming — memories come home, they don't go to empires

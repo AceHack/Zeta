@@ -1,6 +1,5 @@
 ---
-id: B-0303
-zetaid: 081KR2E4K0008QG0R001HV8DEG
+id: 081KR2E4K0008QG0R001HV8DEG
 priority: P1
 status: open
 title: "Pages content sources - contributor on-ramp information architecture"
@@ -8,13 +7,13 @@ created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQX9B50008QG0R0001XDTDQ
 depends_on: [081KR2E4K0008QG0R0035QVX6S, 081KR2E4K0008QG0R000WYVJAF]
-classification: blocked-on-B-0302
+classification: blocked-on-081KR2E4K0008QG0R000WYVJAF
 decomposition: atomic
 owners: [architect, docs]
 type: friction-reducer
 ---
 
-# B-0303 - Contributor on-ramp IA
+# 081KR2E4K0008QG0R001HV8DEG - Contributor on-ramp IA
 
 Design the public navigation path that gets search visitors from the
 Pages landing page to the right contributor entry point without exposing

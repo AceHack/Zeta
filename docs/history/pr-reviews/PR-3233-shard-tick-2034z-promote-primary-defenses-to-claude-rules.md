@@ -29,7 +29,7 @@
 
 ## Summary
 
-Tick 2026-05-14T20:34Z shard. Substantive work in [#3232](https://github.com/Lucent-Financial-Group/Zeta/pull/3232) — promotes the two primary contamination defenses from B-0519 RCA (grep-discoverable backlog row) to `.claude/rules/zeta-expected-branch.md` (auto-loaded at cold-boot).
+Tick 2026-05-14T20:34Z shard. Substantive work in [#3232](https://github.com/Lucent-Financial-Group/Zeta/pull/3232) — promotes the two primary contamination defenses from 081KRHWGX0008QG0R001HMWM1W RCA (grep-discoverable backlog row) to `.claude/rules/zeta-expected-branch.md` (auto-loaded at cold-boot).
 
 ## What landed
 
@@ -41,7 +41,7 @@ Tick 2026-05-14T20:34Z shard. Substantive work in [#3232](https://github.com/Luc
 Three merged this batch:
 - [#3222](https://github.com/Lucent-Financial-Group/Zeta/pull/3222) (shard 2010Z) — MERGED as `82edec5`.
 - [#3227](https://github.com/Lucent-Financial-Group/Zeta/pull/3227) (shard 2026Z) — MERGED as `8b59343`.
-- [#3228](https://github.com/Lucent-Financial-Group/Zeta/pull/3228) (B-0519 RCA update) — MERGED as `36fbe4c`.
+- [#3228](https://github.com/Lucent-Financial-Group/Zeta/pull/3228) (081KRHWGX0008QG0R001HMWM1W RCA update) — MERGED as `36fbe4c`.
 - [#3231](https://github.com/Lucent-Financial-Group/Zeta/pull/3231) (shard 2030Z) — wait-ci, autoMerge armed.
 
 ## Session running tally

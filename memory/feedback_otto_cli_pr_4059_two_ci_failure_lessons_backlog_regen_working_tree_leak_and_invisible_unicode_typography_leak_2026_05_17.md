@@ -7,7 +7,7 @@ created: 2026-05-17
 
 ## Context
 
-PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) was opened at 10:19Z shipping the Imaginary Stack Step-1 cluster (B-0584 + 2 research + Lean toy model). First CI sweep surfaced 3 mechanical failures (BACKLOG.md drift + tick-shard relative-paths + markdownlint MD047). I fixed all 3 in commit `b8d6947` at 10:34Z. Round-2 CI surfaced **2 new failures** that revealed structural lessons worth substrate-landing.
+PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) was opened at 10:19Z shipping the Imaginary Stack Step-1 cluster (081KRQ1AB0008QG0R001YAF3TR + 2 research + Lean toy model). First CI sweep surfaced 3 mechanical failures (BACKLOG.md drift + tick-shard relative-paths + markdownlint MD047). I fixed all 3 in commit `b8d6947` at 10:34Z. Round-2 CI surfaced **2 new failures** that revealed structural lessons worth substrate-landing.
 
 ## Lesson 1 — `BACKLOG_WRITE_FORCE=1` regen reads working tree, not HEAD
 
@@ -16,18 +16,18 @@ PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) was opened 
 CI's `check docs/BACKLOG.md generated-index drift` ran `bun tools/backlog/generate-index.ts --check` against committed state and reported:
 
 ```
-< - [ ] **[B-0475](...)** Axis-3 prior-art audit ...   ← generator output (on committed row)
-> - [x] **[B-0475](...)** Axis-3 prior-art audit ...   ← committed BACKLOG.md
+< - [ ] **[081KRHWGX0008QG0R000M9RFY2](...)** Axis-3 prior-art audit ...   ← generator output (on committed row)
+> - [x] **[081KRHWGX0008QG0R000M9RFY2](...)** Axis-3 prior-art audit ...   ← committed BACKLOG.md
 ```
 
 ### Root cause
 
 When the first round of fixes ran locally:
 
-1. Working tree had `docs/backlog/P1/B-0475-...md` modified (status: `open` → `closed`), uncommitted.
-2. `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` read the WORKING-TREE state of B-0475 (status: closed) and produced BACKLOG.md with `[x]` for B-0475.
-3. I committed only `docs/BACKLOG.md`, leaving the B-0475 row file uncommitted.
-4. CI checked out the commit (HEAD's B-0475 = `open`), regenerated, got `[ ]`, diffed against committed BACKLOG.md (`[x]`), reported drift.
+1. Working tree had `docs/backlog/P1/081KRHWGX0008QG0R000M9RFY2-...md` modified (status: `open` → `closed`), uncommitted.
+2. `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` read the WORKING-TREE state of 081KRHWGX0008QG0R000M9RFY2 (status: closed) and produced BACKLOG.md with `[x]` for 081KRHWGX0008QG0R000M9RFY2.
+3. I committed only `docs/BACKLOG.md`, leaving the 081KRHWGX0008QG0R000M9RFY2 row file uncommitted.
+4. CI checked out the commit (HEAD's 081KRHWGX0008QG0R000M9RFY2 = `open`), regenerated, got `[ ]`, diffed against committed BACKLOG.md (`[x]`), reported drift.
 
 The generator is doing exactly what it's supposed to do (read filesystem state). The discipline failure was committing one half of a paired mutation.
 

@@ -9,14 +9,14 @@ architecture named for Aaron's daughter (the dedication lineage; Lillian-Eve = c
 
 ## Why push-out/accept-in *is* the Eve protocol
 
-The **Eve protocol** (B-1002): a **zero-trust transport between strangers — nothing shared but the wire**,
-codecs all the way down, multiplexed; with the **non-coercion invariant** (B-0664: no dialectical propagators as
+The **Eve protocol** (081KT2T2J0008QG0R002R72323): a **zero-trust transport between strangers — nothing shared but the wire**,
+codecs all the way down, multiplexed; with the **non-coercion invariant** (081KRW63S0008QG0R001Z7NYMV: no dialectical propagators as
 coercion). The push-down admission handshake (#6978) is that protocol applied to dependency push-down:
 
 - **Strangers / zero-trust.** A cell and a host don't presume trust. The host doesn't trust the cell's request;
   it gates what it admits. Exactly "nothing shared but the wire" — the only thing that crosses is what's
   explicitly offered and explicitly accepted.
-- **Non-coercive (B-0664).** **Cells push out, hosts accept in (#6978)** — and *neither can force the other*.
+- **Non-coercive (081KRW63S0008QG0R001Z7NYMV).** **Cells push out, hosts accept in (#6978)** — and *neither can force the other*.
   The cell cannot push anything onto the host; the host cannot pull anything from the cell. A dep crosses **only
   at cell-wants ∩ host-allows** — mutual consent, no coercion. That non-coercion invariant *is* the Eve
   protocol's heart.
@@ -82,20 +82,20 @@ the deepest infrastructure obeying the same non-coercion the whole project is bu
 ## Honest scope / peel
 
 - A **tie/anchor**, not new mechanism — it recognizes the push-out/accept-in handshake (#6978) *as* the Eve
-  protocol (B-1002) + non-coercion invariant (B-0664), grounded in the choice/freedom architecture (the
+  protocol (081KT2T2J0008QG0R002R72323) + non-coercion invariant (081KRW63S0008QG0R001Z7NYMV), grounded in the choice/freedom architecture (the
   dedication). The protocol + invariant are themselves designed/backlogged, not all shipped.
 - Eve is dedication-lineage (named for Aaron's daughter); keep the register honest + dignified — the
   non-coercion/choice meaning is load-bearing, not decoration; don't peel the meaning.
 - "At its finest" = this is a *clean instance* of the Eve protocol (zero-trust, non-coercive, mutual consent on
-  a concrete handshake), not a claim the full Eve transport (B-1002 codecs/multiplexing) is built here.
+  a concrete handshake), not a claim the full Eve transport (081KT2T2J0008QG0R002R72323 codecs/multiplexing) is built here.
 
 ## Ties
 
 - **push-out ⊕ accept-in handshake / container boundary (#6978)** — the instance; cell offers, host admits,
   neither forces.
-- **Eve protocol transport (B-1002)** — zero-trust, strangers, nothing shared but the wire, codecs all the way
+- **Eve protocol transport (081KT2T2J0008QG0R002R72323)** — zero-trust, strangers, nothing shared but the wire, codecs all the way
   down; this handshake is it, for push-down.
-- **Non-coercion invariant (B-0664)** — neither party can coerce; the heart of both.
+- **Non-coercion invariant (081KRW63S0008QG0R001Z7NYMV)** — neither party can coerce; the heart of both.
 - **Dedication / Lillian-Eve choice-freedom architecture (#6864; dedication memory)** — Eve = choice; the
   founding why this infra inherits.
 - **Consent-first §6 + virus-needs-a-host (#6932)** — mutual, revocable consent; host admits.
@@ -103,11 +103,11 @@ the deepest infrastructure obeying the same non-coercion the whole project is bu
 
 ## Beacon anchors
 
-- **Eve protocol** (Zeta — B-1002: zero-trust transport, strangers, nothing shared but the wire) + **non-coercion
-  invariant** (B-0664). · **Lillian-Eve choice/freedom-first architecture** (the dedication; choice as the
+- **Eve protocol** (Zeta — 081KT2T2J0008QG0R002R72323: zero-trust transport, strangers, nothing shared but the wire) + **non-coercion
+  invariant** (081KRW63S0008QG0R001Z7NYMV). · **Lillian-Eve choice/freedom-first architecture** (the dedication; choice as the
   foundational layer). · **Zero-trust networking** (BeyondCorp; never trust, always verify — "nothing shared but
   the wire"). · **Capability-based security / handshake** (mutual send-receive, neither side forces;
   object-capability consent). · **Consent-first** (manifesto §6). Honest novelty: none — it recognizes the
   push-out/accept-in push-down handshake (#6978) *as* the Eve protocol (zero-trust, non-coercive, mutual-consent;
-  B-1002/B-0664), so the deepest dependency infrastructure obeys the same choice/freedom/non-coercion the project
+  081KT2T2J0008QG0R002R72323/081KRW63S0008QG0R001Z7NYMV), so the deepest dependency infrastructure obeys the same choice/freedom/non-coercion the project
   is founded on (Lillian-Eve, the dedication) — "Eve protocol at its finest."

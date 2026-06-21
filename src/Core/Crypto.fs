@@ -7,7 +7,7 @@ namespace Zeta.Core
 /// noun on our zeta interface … hexagonal SSH and some libssh or something and replace it later … we can plug
 /// in ssh or Windows crypto on Windows, both work … we should support both."*).
 ///
-/// **Why it exists now:** it is the missing rung for the Eve-protocol transport (B-1002) — the on-wire
+/// **Why it exists now:** it is the missing rung for the Eve-protocol transport (081KT2T2J0008QG0R002R72323) — the on-wire
 /// key-exchange + authenticated-encryption that lets two strangers who share nothing but the wire establish a
 /// secure channel. The BFT transport (mux-WS) can be written *before* this is wired (build-not-deploy), but it
 /// must not carry stranger traffic until this provides the encryption rung.
@@ -32,7 +32,7 @@ module Crypto =
     type Backend =
         | Ssh // OpenSSH / libssh — cross-platform, CLI-friendly (DEFAULT; Aaron enabled ssh)
         | WindowsCng // Windows CNG / DPAPI — native on Windows
-        | PqLattice // future: Zeta post-quantum lattice (B-0883) — not yet implemented
+        | PqLattice // future: Zeta post-quantum lattice (081KSNY2Z0008QG0R002JKH50A) — not yet implemented
 
     /// SSH by default: cross-platform and CLI-friendly; Windows-CNG opt-in on Windows; PQ-lattice is future.
     let defaultBackend = Ssh
@@ -64,7 +64,7 @@ module Crypto =
         /// A verification result against a public key — a pure fact (no material).
         | Verified of identity: string * payloadHash: string * ok: bool
         /// On-wire key exchange (e.g. X25519) established a shared secret between two peers — referenced, never
-        /// inlined. This is the Eve-transport key-exchange rung (B-1002).
+        /// inlined. This is the Eve-transport key-exchange rung (081KT2T2J0008QG0R002R72323).
         | SharedSecretEstablished of peerA: string * peerB: string * algo: Algorithm * secretRef: CryptoRef
         /// AEAD-encrypted `plaintextHash` (commitment to the plaintext) → ciphertext referenced by `cipherRef`.
         | Encrypted of algo: Algorithm * plaintextHash: string * cipherRef: CryptoRef
@@ -122,7 +122,7 @@ module Crypto =
     /// Returns the `CryptoEvent`(s) to fold onto the stream; the actual bytes stay in the backend behind the
     /// returned `CryptoRef`s. Implementations are the I/O edge (gated: Nazar/Mateo review before real material).
     ///
-    /// Hexagonal so we can "replace it later" (Aaron): start on SSH/CNG, swap in `PqLattice` (B-0883) behind
+    /// Hexagonal so we can "replace it later" (Aaron): start on SSH/CNG, swap in `PqLattice` (081KSNY2Z0008QG0R002JKH50A) behind
     /// the same port without touching callers.
     type ICryptoProvider =
         abstract Backend: Backend

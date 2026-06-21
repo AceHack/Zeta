@@ -70,7 +70,7 @@ This conversation crystallizes several things that compose with existing substra
 
 1. **move-next IS the Imagination Circle** at code scope — present options, let the agent/human choose, repeat. Same pattern Aaron's daughter already lives.
 
-2. **GitHub-as-free-event-store** composes directly with B-0751 (per-agent isolated clones) — each agent gets its own clone, pushes its own events with 128-bit IDs, no coordination overhead. The architecture Aaron described IS what the Zeta factory is already approximating with the broadcast bus + per-agent worktrees.
+2. **GitHub-as-free-event-store** composes directly with 081KSE6WT0008QG0R003YYC9PV (per-agent isolated clones) — each agent gets its own clone, pushes its own events with 128-bit IDs, no coordination overhead. The architecture Aaron described IS what the Zeta factory is already approximating with the broadcast bus + per-agent worktrees.
 
 3. **Non-coercion exceptions audit** is the same PERSONAL INVARIANT discipline operating — high-signal claims held with high-suspicion, not collapsed. Aaron naming his own exceptions honestly is the discipline working on himself.
 

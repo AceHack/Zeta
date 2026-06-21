@@ -2,13 +2,13 @@
 
 Aaron: *"once we do that [the unified ray-traceable + geospatial interfaces] it's easy to create Adinkras that
 spread across the network topology."* The next link: distributed error-correction placed over the geospatial
-**network memory map**. Grounded in `AdinkraCode.fs` + B-0623; faithful capture.
+**network memory map**. Grounded in `AdinkraCode.fs` + 081KRW63S0008QG0R000QJR08H; faithful capture.
 
 ## What it composes
 
 | piece | what it is | role |
 |---|---|---|
-| **Adinkra** (`AdinkraCode.fs`, B-0623) | Adinkras ↔ **doubly-even binary linear codes** (Gates, Iga et al.); N=4 = the [8,4] extended Hamming code — an **ECC** decorating the hypercomplex/SUSY structure with colored-edge information | the error-correcting code |
+| **Adinkra** (`AdinkraCode.fs`, 081KRW63S0008QG0R000QJR08H) | Adinkras ↔ **doubly-even binary linear codes** (Gates, Iga et al.); N=4 = the [8,4] extended Hamming code — an **ECC** decorating the hypercomplex/SUSY structure with colored-edge information | the error-correcting code |
 | **geospatial network map** (`IGeospatial`, #6889) | the locality topology's **network** axis — which node/cell holds which region (distributed placement) | *where* the code-shards live |
 | **ray-traceable** (`IRayTraceable`, #6889) | trace/route across partitions from any frame | *how* shards are reached / recovered |
 | **IStarRing floor** (#6888) | Cayley-Dickson towers as ISemiring; Clifford/GA direction | the algebra the Adinkra decorates |
@@ -36,5 +36,5 @@ Connective/forward capture — it names the composition; it authorizes no build.
 `Trace` to recover, with a provable (traveler-frame) decode. Depends on the ray-traceable *implementations*
 (facets are contracts only today) and a network-map backing. Anchors: erasure coding (Reed-Solomon was the
 principle-prover in `ErasureDistance`; Adinkra doubly-even codes are the genuine code), distributed storage
-(Ceph/IPFS-style sharded redundancy). Ties: `AdinkraCode.fs`, B-0623/B-0699, the ray-traceable interfaces
+(Ceph/IPFS-style sharded redundancy). Ties: `AdinkraCode.fs`, 081KRW63S0008QG0R000QJR08H/081KS3X9Y0008QG0R002HJ8P57, the ray-traceable interfaces
 (#6889), the IStarRing floor (#6888), the geospatial network/locality topology.

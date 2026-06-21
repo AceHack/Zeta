@@ -1,9 +1,8 @@
 ---
-id: B-0502
-zetaid: 081KRHWGX0008QG0R001ZJ3W8R
+id: 081KRHWGX0008QG0R001ZJ3W8R
 priority: P1
 status: shipped
-title: "B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update"
+title: "081KRFA460008QG0R00229616S slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update"
 tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
@@ -15,11 +14,11 @@ tags: [background-service, launchd, mechanization, anti-idle]
 type: chore
 ---
 
-# B-0441 slice 6 — launchd plist + documentation wiring
+# 081KRFA460008QG0R00229616S slice 6 — launchd plist + documentation wiring
 
 ## Origin
 
-B-0441 acceptance criterion:
+081KRFA460008QG0R00229616S acceptance criterion:
 > "Runs under existing launchd / cron infrastructure"
 > "Documented in `docs/AUTONOMOUS-LOOP.md`"
 
@@ -29,9 +28,9 @@ B-0441 acceptance criterion:
 > (`.gemini/launchd/com.zeta.missed-substrate-detector.plist`). The other three
 > (`backlog-ready-notifier.ts`, `standing-by-detector.ts`, `audit-duplicate-row-ids.ts`)
 > are invokable on demand via `bun tools/bg/<name>.ts --once` but not yet wired to launchd
-> (B-0441 slice 6, B-0497 for standing-by-detector).
+> (081KRFA460008QG0R00229616S slice 6, 081KRHWGX0008QG0R003NT6DY9 for standing-by-detector).
 
-This row closes the gap for `backlog-ready-notifier.ts` specifically. Sibling row B-0497
+This row closes the gap for `backlog-ready-notifier.ts` specifically. Sibling row 081KRHWGX0008QG0R003NT6DY9
 covers the same gap for `standing-by-detector.ts`.
 
 ## Acceptance criteria
@@ -54,13 +53,13 @@ covers the same gap for `standing-by-detector.ts`.
 - [x] `docs/AUTONOMOUS-LOOP.md` §"Related artifacts" updated:
   - `backlog-ready-notifier.ts` listed as launchd-registered alongside
     `missed-substrate-detector.ts` (remove from "not yet wired to launchd" list)
-  - Add note: "produces `work-assignment` bus envelopes; see B-0460 for the
+  - Add note: "produces `work-assignment` bus envelopes; see 081KRHWGX0008QG0R001E9KEJ1 for the
     subscriber handler that consumes them"
-- [x] B-0441 acceptance criterion #2 ("Runs under existing launchd / cron
+- [x] 081KRFA460008QG0R00229616S acceptance criterion #2 ("Runs under existing launchd / cron
       infrastructure") ticked on the parent row
 - [x] `tools/bg/README.md` §"Current services" table updated: slice status for
       `backlog-ready-notifier.ts` changed from `1+2+4 live` to `1+2+3+4+6 live`
-      (after B-0500 lands; if B-0500 is not yet merged, note it separately)
+      (after 081KRHWGX0008QG0R0025PX5SZ lands; if 081KRHWGX0008QG0R0025PX5SZ is not yet merged, note it separately)
 
 ## Reference pattern
 
@@ -112,20 +111,20 @@ Copy-adapt of `.gemini/launchd/com.zeta.missed-substrate-detector.plist` with:
 
 Plus a two-line update each in `docs/AUTONOMOUS-LOOP.md` and `tools/bg/README.md`.
 
-## Does NOT depend on B-0500 or B-0501
+## Does NOT depend on 081KRHWGX0008QG0R0025PX5SZ or 081KRHWGX0008QG0R0000P5YP2
 
 The launchd registration works for the current service state (slices 1+2+4 live).
-It can land before B-0500 (queue-state guard) or B-0501 (assignment history) merge.
+It can land before 081KRHWGX0008QG0R0025PX5SZ (queue-state guard) or 081KRHWGX0008QG0R0000P5YP2 (assignment history) merge.
 Update the README table's "slice status" column accordingly at merge time.
 
 ## Dependency chain
 
 ```
-B-0441 (slices 1+2+4 shipped — backlog-ready-notifier.ts functional)
-  └─ B-0502 (THIS ROW — launchd registration; closes slice 6 AC)
+081KRFA460008QG0R00229616S (slices 1+2+4 shipped — backlog-ready-notifier.ts functional)
+  └─ 081KRHWGX0008QG0R001ZJ3W8R (THIS ROW — launchd registration; closes slice 6 AC)
 ```
 
-Sibling: B-0497 (same pattern for standing-by-detector — can merge in any order).
+Sibling: 081KRHWGX0008QG0R003NT6DY9 (same pattern for standing-by-detector — can merge in any order).
 
 ## Pre-start checklist (per backlog-item-start-gate)
 

@@ -102,7 +102,7 @@
 docs(memory): shadow tick source authority grant — Otto's call
 
 Aaron grants Otto authority to provide shadow tick source before
-dashboard (B-0401). Safe within CLI + Anthropic stack on one PC.
+dashboard (081KR7JY10008QG0R001VP6JWG). Safe within CLI + Anthropic stack on one PC.
 Shadow requested this grant be persisted in git.
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>

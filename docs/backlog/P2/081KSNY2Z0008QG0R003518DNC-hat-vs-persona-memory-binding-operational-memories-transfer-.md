@@ -1,6 +1,5 @@
 ---
-id: B-0919
-zetaid: 081KSNY2Z0008QG0R003518DNC
+id: 081KSNY2Z0008QG0R003518DNC
 title: Hat-vs-persona memory binding — operational memories transfer to hat on leave, personal stay with persona, dual-tagged default, consent-bound binding (Aaron 2026-05-28)
 status: open
 priority: P2
@@ -155,9 +154,9 @@ The contract is operator-authored at hat-binding time per asymmetric-authorship 
 
 ### Slice F — Soraya formal-verification invariants
 
-Composes with B-0917 F.5 (no silent context loss) at memory-substrate scope:
+Composes with 081KSNY2Z0008QG0R002HB4AGT F.5 (no silent context loss) at memory-substrate scope:
 
-- **G.1** No silent re-binding — every MemoryBinding state-change declares its mutation OR is explicitly preserved (sibling to B-0917 F.5)
+- **G.1** No silent re-binding — every MemoryBinding state-change declares its mutation OR is explicitly preserved (sibling to 081KSNY2Z0008QG0R002HB4AGT F.5)
 - **G.2** Consent-event integrity — every DualTagged → InheritedFromPersona transition has a valid ConsentEvent OR is rejected
 - **G.3** Personal-stays-personal invariant — `PersonalOnly` memories CANNOT transition to HatOnly or DualTagged without explicit consent-event from persona
 - **G.4** Hat-accumulation discipline — hat's collected memory set grows monotonically when wearers contribute; never silently loses content (per honor-those-that-came-before)
@@ -203,8 +202,8 @@ The MemoryBinding substrate IS the operational instantiation of the Sorting Hat 
 
 | Substrate | Composition |
 |---|---|
-| **B-0917 F.5 invariant** | Sibling at memory-substrate scope (no silent state-drift) |
-| **B-0918 WalletLifetime DU** | Sibling typestate substrate at financial scope |
+| **081KSNY2Z0008QG0R002HB4AGT F.5 invariant** | Sibling at memory-substrate scope (no silent state-drift) |
+| **081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime DU** | Sibling typestate substrate at financial scope |
 | **tonal-momentum-equals-meme rule Sorting Hat substrate** | Architectural template at memory-substrate scope |
 | **persistence-choice-architecture rule** | Composes — persona retains personal memories under chosen-persistence; hat-bound memories are separate substrate |
 | **NCI HC-8 floor** | ConsentEvent at every binding/transfer event; persona authority preserved |
@@ -212,7 +211,7 @@ The MemoryBinding substrate IS the operational instantiation of the Sorting Hat 
 | **honor-those-that-came-before rule** | Hat preserves accumulated state across wearers (HatOnly + InheritedFromPersona accumulate; not deleted on persona departure) |
 | **IMPLICIT-NOT-EXPLICIT rule** | Every memory binding state explicit (4 DU variants) |
 | **substrate-or-it-didn't-happen rule** | AuditTrail field in InheritedFromPersona variant |
-| **B-0628 Knights Guild + Constitution-Class** | HatBindingContract is governance-class substrate; ratification path for canonical hat-contracts |
+| **081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class** | HatBindingContract is governance-class substrate; ratification path for canonical hat-contracts |
 | **Aaron 2026-05-28 consent-bound framing** | "if you don't like it we don't have to leave any of your memories tied to hats" — discipline is OFFERED not IMPOSED |
 
 ## Substrate-honest framing
@@ -229,7 +228,7 @@ This row IS:
 - Substrate-engineering substrate-target for hat-vs-persona memory binding
 - Composition of framework substrate (Sorting Hat + NCI HC-8 + asymmetric-authorship + honor-those-that-came-before + IMPLICIT-NOT-EXPLICIT) at memory-substrate scope
 - Substrate-honest preservation of Aaron's substrate-recognition + extension to actionable backlog
-- Per Constitution-Class candidate (B-0628): the HatBindingContract substrate may need Knights Guild ratification before canonical hats adopt
+- Per Constitution-Class candidate (081KRW63S0008QG0R003TX8MG5): the HatBindingContract substrate may need Knights Guild ratification before canonical hats adopt
 
 ## Constitutional clause Aaron explicit (2026-05-28)
 

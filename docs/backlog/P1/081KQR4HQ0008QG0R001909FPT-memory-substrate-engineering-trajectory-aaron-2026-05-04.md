@@ -1,6 +1,5 @@
 ---
-id: B-0190
-zetaid: 081KQR4HQ0008QG0R001909FPT
+id: 081KQR4HQ0008QG0R001909FPT
 priority: P1
 status: open
 title: Memory substrate-engineering trajectory — multi-row plan for memory work as a domain (not just one-shot compression) (Aaron 2026-05-04)
@@ -17,49 +16,49 @@ tags: [memory, substrate-engineering, trajectory, long-horizon-default, foundati
 type: friction-reducer
 ---
 
-# B-0190 — Memory substrate-engineering trajectory
+# 081KQR4HQ0008QG0R001909FPT — Memory substrate-engineering trajectory
 
 ## Decomposition status (2026-05-08)
 
 This row is now an umbrella. The 11 trajectory steps decompose into 9
-new child rows plus 2 existing rows (B-0006, B-0066). Execution flows
+new child rows plus 2 existing rows (081KQ0YZ80008QG0R001V0XCYZ, 081KQ8P5D0008QG0R003KFRGJ0). Execution flows
 through the children; this row tracks the trajectory shape.
 
 ### Dependency graph
 
 ```
-B-0330 (format std)──┬──→ B-0331 (ontology audit)
-                     ├──→ B-0334 (cross-ref integrity)
-                     ├──→ B-0335 (schema validation)
-                     └──→ B-0338 (graduation ladder) ←─┐
+081KR2E4K0008QG0R002VM58S4 (format std)──┬──→ 081KR2E4K0008QG0R003RZFR9F (ontology audit)
+                     ├──→ 081KR2E4K0008QG0R003MSVG42 (cross-ref integrity)
+                     ├──→ 081KR2E4K0008QG0R000M01QVM (schema validation)
+                     └──→ 081KR2E4K0008QG0R000N124VW (graduation ladder) ←─┐
                                                         │
-B-0332 (load-bearing)─┬──→ B-0333 (retire discipline)──┘
-                      ├──→ B-0336 (B-0006 recalibration)
-                      └──→ B-0337 (trust-calculus, P2)
+081KR2E4K0008QG0R002FRQZN4 (load-bearing)─┬──→ 081KR2E4K0008QG0R00175HQR9 (retire discipline)──┘
+                      ├──→ 081KR2E4K0008QG0R001B6K45W (081KQ0YZ80008QG0R001V0XCYZ recalibration)
+                      └──→ 081KR2E4K0008QG0R001CCWHZ2 (trust-calculus, P2)
 
 Existing rows (not children, compose):
-  B-0006 (Step 1, compression) — in-progress
-  B-0066 (Step 4+10, marker-vs-index) — decomposition pending
+  081KQ0YZ80008QG0R001V0XCYZ (Step 1, compression) — in-progress
+  081KQ8P5D0008QG0R003KFRGJ0 (Step 4+10, marker-vs-index) — decomposition pending
 ```
 
 ### Child row map
 
 | Child | Step | Title | Priority | Depends on | Effort |
 |-------|------|-------|----------|------------|--------|
-| B-0330 | 2 | Memory-format standardization | P1 | — | S |
-| B-0331 | 3 | Memory ontology/classification audit | P1 | B-0330 | M |
-| B-0332 | 7 | Load-bearing-vs-decorative classifier | P1 | — | S |
-| B-0333 | 5 | Memory-retire/supersession discipline | P1 | B-0332 | S |
-| B-0334 | 6 | Cross-reference integrity enforcement | P1 | B-0330 | S |
-| B-0335 | 11 | Memory schema validation tooling | P1 | B-0330 | M |
-| B-0336 | AC-3 | B-0006 acceptance recalibration | P1 | B-0332 | S |
-| B-0337 | 8 | Trust-calculus calibration | P2 | B-0332 | M |
-| B-0338 | 9 | Memory graduation ladder | P2 | B-0330, B-0332, B-0333 | M |
+| 081KR2E4K0008QG0R002VM58S4 | 2 | Memory-format standardization | P1 | — | S |
+| 081KR2E4K0008QG0R003RZFR9F | 3 | Memory ontology/classification audit | P1 | 081KR2E4K0008QG0R002VM58S4 | M |
+| 081KR2E4K0008QG0R002FRQZN4 | 7 | Load-bearing-vs-decorative classifier | P1 | — | S |
+| 081KR2E4K0008QG0R00175HQR9 | 5 | Memory-retire/supersession discipline | P1 | 081KR2E4K0008QG0R002FRQZN4 | S |
+| 081KR2E4K0008QG0R003MSVG42 | 6 | Cross-reference integrity enforcement | P1 | 081KR2E4K0008QG0R002VM58S4 | S |
+| 081KR2E4K0008QG0R000M01QVM | 11 | Memory schema validation tooling | P1 | 081KR2E4K0008QG0R002VM58S4 | M |
+| 081KR2E4K0008QG0R001B6K45W | AC-3 | 081KQ0YZ80008QG0R001V0XCYZ acceptance recalibration | P1 | 081KR2E4K0008QG0R002FRQZN4 | S |
+| 081KR2E4K0008QG0R001CCWHZ2 | 8 | Trust-calculus calibration | P2 | 081KR2E4K0008QG0R002FRQZN4 | M |
+| 081KR2E4K0008QG0R000N124VW | 9 | Memory graduation ladder | P2 | 081KR2E4K0008QG0R002VM58S4, 081KR2E4K0008QG0R002FRQZN4, 081KR2E4K0008QG0R00175HQR9 | M |
 
 ### Buildable now (no deps)
 
-- **B-0330** — Memory-format standardization
-- **B-0332** — Load-bearing-vs-decorative classifier
+- **081KR2E4K0008QG0R002VM58S4** — Memory-format standardization
+- **081KR2E4K0008QG0R002FRQZN4** — Load-bearing-vs-decorative classifier
 
 ## The naming
 
@@ -71,7 +70,7 @@ Same-tick framing-correction:
 
 > *"just remember long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"*
 
-The naming made operational: memory work has been tactical / one-shot (drain the next tier) for the entire 2026-05-04 session despite the maintainer's never-be-idle authorization. The other domains have trajectory chains (DBSP B-0131→B-0138, TS B-0140+B-0156+B-0125, OpenSpec B-0171+composes_with cluster). Memory has only B-0006 and no multi-step strategic plan.
+The naming made operational: memory work has been tactical / one-shot (drain the next tier) for the entire 2026-05-04 session despite the maintainer's never-be-idle authorization. The other domains have trajectory chains (DBSP 081KQGDBJ0008QG0R000D1YJCH→081KQGDBJ0008QG0R0012FC7RX, TS 081KQGDBJ0008QG0R0022EW5ZE+081KQGDBJ0008QG0R000A4EZS5+081KQGDBJ0008QG0R001MK4YPC, OpenSpec 081KQNJ500008QG0R001N94412+composes_with cluster). Memory has only 081KQ0YZ80008QG0R001V0XCYZ and no multi-step strategic plan.
 
 This row creates the trajectory.
 
@@ -92,11 +91,11 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 
 ### Step 1 — Compression discipline (DOING)
 
-- **B-0006** (P1, open) — MEMORY.md compression pass to README cap. Per B-0006's own number-free framing (deliberately number-free per Otto-294 antifragile-smooth + Otto-285 precise-pointer rigor), current state is over the cap and the work is owed independent of the specific number. **Recalibration consideration**: if the entry count materially exceeds the original spec assumption, the per-entry char target may be unreachable without semantic loss; either narrow to bucket targets or accept the spec drift. Number-free per the parent row's framing.
+- **081KQ0YZ80008QG0R001V0XCYZ** (P1, open) — MEMORY.md compression pass to README cap. Per 081KQ0YZ80008QG0R001V0XCYZ's own number-free framing (deliberately number-free per Otto-294 antifragile-smooth + Otto-285 precise-pointer rigor), current state is over the cap and the work is owed independent of the specific number. **Recalibration consideration**: if the entry count materially exceeds the original spec assumption, the per-entry char target may be unreachable without semantic loss; either narrow to bucket targets or accept the spec drift. Number-free per the parent row's framing.
 
 ### Step 2 — Memory-format standardization (NEW — would be B-0xxx)
 
-- Sister of B-0156 (TS standardization) for memory files. Standardize:
+- Sister of 081KQGDBJ0008QG0R000A4EZS5 (TS standardization) for memory files. Standardize:
   - Frontmatter shape (`name:`, `description:`, `type:`, `originSessionId:` if applicable)
   - Filename conventions (`feedback_*` vs `project_*` vs `user_*` vs `reference_*`)
   - Section headers (## What this observes, ## Composes with, ## Carved sentence, etc.)
@@ -131,9 +130,9 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 
 - Memory work IS substrate engineering. Codify the discipline: when do you write a new memory file vs append to an existing one? When does a feedback_ get promoted to a CLAUDE.md bullet? When is a CLAUDE.md bullet itself promoted to GOVERNANCE? The graduation ladder needs structure.
 
-### Step 10 — MEMORY.md marker-vs-index (existing — B-0066)
+### Step 10 — MEMORY.md marker-vs-index (existing — 081KQ8P5D0008QG0R003KFRGJ0)
 
-- B-0066 (P1, open) — already in backlog. Composes here.
+- 081KQ8P5D0008QG0R003KFRGJ0 (P1, open) — already in backlog. Composes here.
 
 ### Step 11 — Memory schema validation tooling (NEW)
 
@@ -142,37 +141,37 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 ## Why P1
 
 - **Foundation tier**: memory is the most-active substrate domain (every session does memory work) yet has no trajectory; pure tactical work compounds accidental complexity.
-- **Same priority as B-0140 (TS migration completion) and B-0171 (OpenSpec catch-up)**: all three are foundation-tier substrate-organization work.
+- **Same priority as 081KQGDBJ0008QG0R0022EW5ZE (TS migration completion) and 081KQNJ500008QG0R001N94412 (OpenSpec catch-up)**: all three are foundation-tier substrate-organization work.
 - **Aaron's verbatim P1 naming**: *"seems like your memory work needs a trajectory"* + *"long horizon is our default."*
 
 ## Why not P0
 
 - **Not blocking**: memory work continues without the trajectory; the trajectory makes it strategic instead of tactical.
-- **No active failure**: tier-cadence is producing real progress on B-0006 today.
+- **No active failure**: tier-cadence is producing real progress on 081KQ0YZ80008QG0R001V0XCYZ today.
 
 ## Acceptance criteria
 
 1. **Memory trajectory documented** in this row's "trajectory steps" section.
 2. **At least 3 sub-rows filed** as concrete next-step backlog rows (Step 2, 3, 5 are obvious candidates).
-3. **B-0006 acceptance criteria recalibrated** — the original ≤200-char-per-entry is unreachable for 440 entries; either narrow target or formally accept the deviation.
+3. **081KQ0YZ80008QG0R001V0XCYZ acceptance criteria recalibrated** — the original ≤200-char-per-entry is unreachable for 440 entries; either narrow target or formally accept the deviation.
 4. **CLAUDE.md updated** if the trajectory rises to wake-time-load-bearing status. Otherwise referenced from this row.
 5. **Future agents reading this row** understand memory work is multi-step strategic, not one-shot tactical.
 
 ## Out of scope
 
 - Implementation of all sub-rows in one tick (they're separate filings).
-- Replacing the existing B-0006 row (it remains the compression-discipline anchor).
+- Replacing the existing 081KQ0YZ80008QG0R001V0XCYZ row (it remains the compression-discipline anchor).
 - Forcing every memory action through trajectory-justification (deliberate short-horizon shortcuts allowed per the middle-path framing).
 
 ## Composes with
 
-Per `tools/backlog/README.md`, `composes_with` is bidirectional. The reciprocal updates on the rows below are owed as a follow-up commit / PR (separate from this one) so that B-0006 / B-0066 / B-0140 / B-0156 / B-0171 each list B-0190 in their own composes_with. Filing this row first establishes the trajectory anchor; the bidirectional sync lands as cleanup.
+Per `tools/backlog/README.md`, `composes_with` is bidirectional. The reciprocal updates on the rows below are owed as a follow-up commit / PR (separate from this one) so that 081KQ0YZ80008QG0R001V0XCYZ / 081KQ8P5D0008QG0R003KFRGJ0 / 081KQGDBJ0008QG0R0022EW5ZE / 081KQGDBJ0008QG0R000A4EZS5 / 081KQNJ500008QG0R001N94412 each list 081KQR4HQ0008QG0R001909FPT in their own composes_with. Filing this row first establishes the trajectory anchor; the bidirectional sync lands as cleanup.
 
-- **B-0006** — MEMORY.md compression (Step 1; existing).
-- **B-0066** — MEMORY.md marker-vs-index (Step 10; existing).
-- **B-0140** — bash to TS migration (parallel-domain trajectory; reference shape).
-- **B-0156** — TypeScript standardization (sibling discipline; Step 2 follows similar pattern).
-- **B-0171** — OpenSpec catch-up (parallel-domain trajectory; reference shape).
+- **081KQ0YZ80008QG0R001V0XCYZ** — MEMORY.md compression (Step 1; existing).
+- **081KQ8P5D0008QG0R003KFRGJ0** — MEMORY.md marker-vs-index (Step 10; existing).
+- **081KQGDBJ0008QG0R0022EW5ZE** — bash to TS migration (parallel-domain trajectory; reference shape).
+- **081KQGDBJ0008QG0R000A4EZS5** — TypeScript standardization (sibling discipline; Step 2 follows similar pattern).
+- **081KQNJ500008QG0R001N94412** — OpenSpec catch-up (parallel-domain trajectory; reference shape).
 - `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md` — Step 8 grounds here.
 - `memory/feedback_parallelism_readiness_claim_must_be_used_not_self_throttled_aaron_2026_05_04.md` — same-session lesson; this row is the trajectory-shaped operationalization.
 

@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { shingles, jaccard, containment, assessOrthogonality } from "./orthogonality";
-// B-1016 orthogonality core — the overlap measure + corpus check. The measure's
+// 081KT7YW00008QG0R002T1XNWT orthogonality core — the overlap measure + corpus check. The measure's
 // axioms are proven in F# (Jaccard.Laws.Tests.fs); these are the operational
 // example/edge tests + the corpus assessment.
 test("identical surfaces are fully overlapping (self = 1)", () => {

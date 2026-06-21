@@ -51,7 +51,7 @@ This mechanism survives Kestrel's three-test for moving from mirror to beacon at
 
 1. **Threshold function**: explicitly disclaimed (it's emergent). Honest answer.
 2. **Encryption boundary**: load-bearing in the design (commitment mechanism for delayed reveal-for-reward). Operational role, not atmospheric.
-3. **Metric-like behavior** (for QG isomorphism): the market-clearing produces something metric-like (aggregate weight clears at emergent points), but the mapping to general-relativistic curvature is still research-grade (B-0543). Engineering-layer mechanism doesn't need physics-layer isomorphism to be useful.
+3. **Metric-like behavior** (for QG isomorphism): the market-clearing produces something metric-like (aggregate weight clears at emergent points), but the mapping to general-relativistic curvature is still research-grade (081KRMEXM0008QG0R002YSPW1X). Engineering-layer mechanism doesn't need physics-layer isomorphism to be useful.
 
 ## What's spec-ahead-of-code vs implemented
 
@@ -69,7 +69,7 @@ That's appropriate tiering — the mechanism is specified at the level Aaron's s
 
 - `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md` (the conversation this design choice emerged in)
 - `memory/feedback_aaron_genie_bottle_offshore_firm_spec_quality_enables_ai_autonomy_2026_05_15.md` (the spec-quality discipline this mechanism specification represents)
-- B-0543 (gravity-as-mechanism vs gravity-as-physics-isomorphism distinction; this memory anchors the engineering-layer gravity definition)
+- 081KRMEXM0008QG0R002YSPW1X (gravity-as-mechanism vs gravity-as-physics-isomorphism distinction; this memory anchors the engineering-layer gravity definition)
 - `docs/governance/MANIFESTO.md` Constraint 1 (Scale-free), Constraint 3 (Weight-free), Constraint 5 (Memory Preservation), Constraint 11 (Default Oracle) — all reflected in the mechanism design
 - PoUW-CC substrate (the reward-mechanism this connects to)
 - `algebra-owner` skill (Z-set + DBSP substrate that could host the bookkeeping)

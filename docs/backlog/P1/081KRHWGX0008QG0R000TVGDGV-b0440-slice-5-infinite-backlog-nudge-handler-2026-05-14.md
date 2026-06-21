@@ -1,9 +1,8 @@
 ---
-id: B-0459
-zetaid: 081KRHWGX0008QG0R000TVGDGV
+id: 081KRHWGX0008QG0R000TVGDGV
 priority: P1
 status: open
-title: "B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)"
+title: "081KRFA460008QG0R001KC0VBH slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
@@ -15,28 +14,28 @@ tags: [multi-agent, background-service, bus, subscriber-pattern, anti-idle, infi
 type: feature
 ---
 
-# B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler
+# 081KRFA460008QG0R001KC0VBH slice 5.1 — infinite-backlog-nudge subscriber handler
 
 ## Origin
 
-B-0449 (bg-services subscriber-agent architecture design pass) planned this row as the implementation
-slice for the `infinite-backlog-nudge` topic handler specific to B-0440. B-0449 chose **Option C**
+081KRFA460008QG0R002DG8KPZ (bg-services subscriber-agent architecture design pass) planned this row as the implementation
+slice for the `infinite-backlog-nudge` topic handler specific to 081KRFA460008QG0R001KC0VBH. 081KRFA460008QG0R002DG8KPZ chose **Option C**
 architecture: subscriber handling runs as a library call in the per-tick step 1 (refresh), not a
 long-running daemon.
 
-Verbatim from B-0449:
+Verbatim from 081KRFA460008QG0R002DG8KPZ:
 
 > Once Option C is adopted (or alternative chosen), three follow-up rows track per-topic handler
 > implementation:
 >
-> - B-0459 — `infinite-backlog-nudge` handler (slice 5.1)
+> - 081KRHWGX0008QG0R000TVGDGV — `infinite-backlog-nudge` handler (slice 5.1)
 
-This row is that follow-up. It depends on B-0449 landing `tools/bus/subscribe.ts`; if B-0449 is
+This row is that follow-up. It depends on 081KRFA460008QG0R002DG8KPZ landing `tools/bus/subscribe.ts`; if 081KRFA460008QG0R002DG8KPZ is
 unstarted, this row is blocked.
 
 ## Context: what standing-by-detector produces
 
-`tools/bg/standing-by-detector.ts` (B-0440 slices 1–4, shipped) publishes:
+`tools/bg/standing-by-detector.ts` (081KRFA460008QG0R001KC0VBH slices 1–4, shipped) publishes:
 
 ```json
 {
@@ -53,15 +52,15 @@ This slice implements the handler that reads and acts on that envelope.
 
 ## Acceptance criteria
 
-- [ ] `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` per B-0449 AC
-      (lands in B-0449; this row blocks until that is merged)
-- [ ] Handler for `infinite-backlog-nudge` (stub behavior per B-0449 slice-5 design):
+- [ ] `tools/bus/subscribe.ts` exports `subscribeOnce(topic, handler)` per 081KRFA460008QG0R002DG8KPZ AC
+      (lands in 081KRFA460008QG0R002DG8KPZ; this row blocks until that is merged)
+- [ ] Handler for `infinite-backlog-nudge` (stub behavior per 081KRFA460008QG0R002DG8KPZ slice-5 design):
   - Reads each matching envelope from the bus dir (honors `ZETA_BUS_DIR`)
   - Logs envelope content (topic, idleMinutes, rationale) to the current tick shard
   - Marks envelope as consumed via `seen.json` per `subscribeOnce` contract
   - Triggers decomposition or backlog-grind action: inspects envelope payload and
     queues speculative work in step 3 (pick speculative work) of the same tick
-    (per B-0449 §"Option C" design: subscriber wires into step 1 and queues into step 3)
+    (per 081KRFA460008QG0R002DG8KPZ §"Option C" design: subscriber wires into step 1 and queues into step 3)
 - [ ] `docs/AUTONOMOUS-LOOP-PER-TICK.md` step 1 (refresh) updated to call
       `subscribeOnce("infinite-backlog-nudge", handler)` after
       `bun tools/github/poll-pr-gate-batch.ts --all-open` + `git fetch origin main`
@@ -74,12 +73,12 @@ This slice implements the handler that reads and acts on that envelope.
 
 ## Scope clarification (what is NOT in scope)
 
-Per B-0449's Option C design, B-0449 itself delivers **no-action stub handlers** (log + consume
-only). B-0459 is the follow-up that **fleshes out** the `infinite-backlog-nudge` handler to
-trigger decomposition or backlog-grind action (per B-0449 §"Subsequent slices flesh out:
+Per 081KRFA460008QG0R002DG8KPZ's Option C design, 081KRFA460008QG0R002DG8KPZ itself delivers **no-action stub handlers** (log + consume
+only). 081KRHWGX0008QG0R000TVGDGV is the follow-up that **fleshes out** the `infinite-backlog-nudge` handler to
+trigger decomposition or backlog-grind action (per 081KRFA460008QG0R002DG8KPZ §"Subsequent slices flesh out:
 `infinite-backlog-nudge` handler → triggers decomposition or backlog grind (slice 5.1)").
 
-The Optional AC in B-0440 ("proactively assigns a small claim from the backlog to the agent's queue")
+The Optional AC in 081KRFA460008QG0R001KC0VBH ("proactively assigns a small claim from the backlog to the agent's queue")
 is a **proxy-pick** behavior: reading the envelope's suggested target row and queuing it for the
 tick's step 3. That is the deliverable of this slice. A separate follow-up row (slice 5.2) would
 handle more complex strategies (e.g., decomposing a large item rather than picking a leaf row).
@@ -87,23 +86,23 @@ handle more complex strategies (e.g., decomposing a large item rather than picki
 ## Dependency chain
 
 ```
-B-0400 (bus protocol)
-  └─ B-0449 (subscribe-once library + step-1 wiring design)
-       └─ B-0459 (THIS ROW — infinite-backlog-nudge handler stub)
+081KR7JY10008QG0R000R503K2 (bus protocol)
+  └─ 081KRFA460008QG0R002DG8KPZ (subscribe-once library + step-1 wiring design)
+       └─ 081KRHWGX0008QG0R000TVGDGV (THIS ROW — infinite-backlog-nudge handler stub)
             └─ [future slice 5.2 — full backlog-grind trigger]
 ```
 
 ## Composes with
 
-- B-0400 (bus protocol — envelope schema + `ZETA_BUS_DIR` convention)
-- B-0440 (standing-by-detector — produces the nudge envelopes this handler consumes)
-- B-0449 (subscribe-once library — the transport this handler uses)
-- B-0448 (cloud routines integration — same per-tick discipline; subscriber wires in step 1)
-- B-0441, B-0442 (sibling services slice 5.2 + 5.3 per B-0449 — B-0460, B-0461)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — envelope schema + `ZETA_BUS_DIR` convention)
+- 081KRFA460008QG0R001KC0VBH (standing-by-detector — produces the nudge envelopes this handler consumes)
+- 081KRFA460008QG0R002DG8KPZ (subscribe-once library — the transport this handler uses)
+- 081KRFA460008QG0R000CYBGKW (cloud routines integration — same per-tick discipline; subscriber wires in step 1)
+- 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW (sibling services slice 5.2 + 5.3 per 081KRFA460008QG0R002DG8KPZ — 081KRHWGX0008QG0R001E9KEJ1, 081KRHWGX0008QG0R000JMEYBH)
 - `docs/AUTONOMOUS-LOOP-PER-TICK.md` (canonical 7-step discipline — step 1 is where call lands)
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- [ ] Prior-art search: verify B-0449 has landed `tools/bus/subscribe.ts` before starting
-- [ ] Dependency check: `grep -q "^status: closed" docs/backlog/P1/B-0449-*.md` — B-0449 row must show `status: closed` (merged)
+- [ ] Prior-art search: verify 081KRFA460008QG0R002DG8KPZ has landed `tools/bus/subscribe.ts` before starting
+- [ ] Dependency check: `grep -q "^status: closed" docs/backlog/P1/081KRFA460008QG0R002DG8KPZ-*.md` — 081KRFA460008QG0R002DG8KPZ row must show `status: closed` (merged)
 - [ ] Search committed memory for `infinite-backlog-nudge handler` to find any prior implementation

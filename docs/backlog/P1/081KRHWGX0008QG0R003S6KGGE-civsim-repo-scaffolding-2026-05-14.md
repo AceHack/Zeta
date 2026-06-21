@@ -1,11 +1,10 @@
 ---
-id: B-0469
-zetaid: 081KRHWGX0008QG0R003S6KGGE
+id: 081KRHWGX0008QG0R003S6KGGE
 priority: P1
 status: closed
 title: "Scaffold Lucent-Financial-Group/civsim public repo (Stage 1)"
 type: infrastructure
-origin: B-0468 ADR Stage 1 (Otto 2026-05-14)
+origin: 081KRHWGX0008QG0R000F6HE6D ADR Stage 1 (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 resolved: 2026-05-14
@@ -23,15 +22,15 @@ composes_with:
   - tools/scaffold/create-repo.ts
 ---
 
-# B-0469 — Scaffold Lucent-Financial-Group/civsim (Stage 1)
+# 081KRHWGX0008QG0R003S6KGGE — Scaffold Lucent-Financial-Group/civsim (Stage 1)
 
 ## What this row does
 
-Execute Stage 1 of the product-repo split ADR (B-0468): scaffold the
+Execute Stage 1 of the product-repo split ADR (081KRHWGX0008QG0R000F6HE6D): scaffold the
 `Lucent-Financial-Group/civsim` public repo with the full best-practice
-checklist inherited from B-0424's by-default principle.
+checklist inherited from 081KRFA460008QG0R001H98EXJ's by-default principle.
 
-Civsim is the only product declared **repo-ready now** in B-0465/B-0466/B-0468.
+Civsim is the only product declared **repo-ready now** in 081KRHWGX0008QG0R002B2P0K0/081KRHWGX0008QG0R003XHCEXT/081KRHWGX0008QG0R000F6HE6D.
 
 ## Pre-start checklist
 
@@ -40,18 +39,18 @@ Civsim is the only product declared **repo-ready now** in B-0465/B-0466/B-0468.
 - `create-repo.ts` at `tools/scaffold/create-repo.ts` covers `forge` and `ace`
   (factory repos) — needs product-repo variant for civsim
 - `tools/scaffold/forge/` and `tools/scaffold/ace/` are the scaffold templates
-- B-0424 `REPO_CONFIGS` pattern is the extension point
+- 081KRFA460008QG0R001H98EXJ `REPO_CONFIGS` pattern is the extension point
 - No existing civsim scaffold directory
 - Honor-system license at `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` is the LICENSE template
 - ADR Stage 1 checklist is the authoritative source of truth
 
 ### Dependency check
 
-- **B-0464** (closed, PR #3122) — license language ✓
-- **B-0465** (closed, PR #3124) — civsim is repo-ready-now verdict ✓
-- **B-0466** (closed, PR #3125) — approved slug: `civsim` ✓
-- **B-0467** (closed, PR #3125) — glue mechanism: `.zeta-version` pin file ✓
-- **B-0468** (closed, PR #3125) — ADR scaffold checklist ✓
+- **081KRHWGX0008QG0R000BWAXNP** (closed, PR #3122) — license language ✓
+- **081KRHWGX0008QG0R002B2P0K0** (closed, PR #3124) — civsim is repo-ready-now verdict ✓
+- **081KRHWGX0008QG0R003XHCEXT** (closed, PR #3125) — approved slug: `civsim` ✓
+- **081KRHWGX0008QG0R00394BM1G** (closed, PR #3125) — glue mechanism: `.zeta-version` pin file ✓
+- **081KRHWGX0008QG0R000F6HE6D** (closed, PR #3125) — ADR scaffold checklist ✓
 
 All dependencies satisfied. Row is unblocked.
 
@@ -74,14 +73,14 @@ human-confirmed step — it falls under "actions visible to others / affect shar
 (new GitHub repo). This row covers the tooling; the `--apply` step is documented
 in the PR description as a manual follow-up.
 
-## ADR scaffolding checklist (from B-0468)
+## ADR scaffolding checklist (from 081KRHWGX0008QG0R000F6HE6D)
 
 **`--apply` executed 2026-05-14T10:52Z by Otto (this session):**
 
 - [x] Repo created: `Lucent-Financial-Group/civsim` — https://github.com/Lucent-Financial-Group/civsim
 - [x] Visibility: **public** (glass-halo)
 - [x] LICENSE: honor-system text (mutual-privacy FAQ clause)
-- [x] `.zeta-version` pin file — pushed as `eaea0682...` (Zeta main at scaffold-template time); follow-up B-0470 bumps to `ce5c4101...` (Zeta main at apply-time)
+- [x] `.zeta-version` pin file — pushed as `eaea0682...` (Zeta main at scaffold-template time); follow-up 081KRHWGX0008QG0R002NJP2BH bumps to `ce5c4101...` (Zeta main at apply-time)
 - [x] Branch protection on `main`: `required_conversation_resolution` + squash-only + no-force-push
 - [x] CodeQL: enabled (default-setup via API)
 - [x] `.claude/CLAUDE.md`: product-scoped bootstrap
@@ -102,8 +101,8 @@ in the PR description as a manual follow-up.
 ## Dependency graph position
 
 ```
-B-0464 → B-0468 → B-0469 (this row)
-B-0465 → B-0468 → B-0469
-B-0466 → B-0468 → B-0469
-B-0467 → B-0468 → B-0469
+081KRHWGX0008QG0R000BWAXNP → 081KRHWGX0008QG0R000F6HE6D → 081KRHWGX0008QG0R003S6KGGE (this row)
+081KRHWGX0008QG0R002B2P0K0 → 081KRHWGX0008QG0R000F6HE6D → 081KRHWGX0008QG0R003S6KGGE
+081KRHWGX0008QG0R003XHCEXT → 081KRHWGX0008QG0R000F6HE6D → 081KRHWGX0008QG0R003S6KGGE
+081KRHWGX0008QG0R00394BM1G → 081KRHWGX0008QG0R000F6HE6D → 081KRHWGX0008QG0R003S6KGGE
 ```

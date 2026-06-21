@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // audit_clause_drift.ts — alignment-clause drift detection.
 //
-// B-0058 slice 2 (responsibility #4): alignment-clause drift detector.
+// 081KQ3HBZ0008QG0R002S674CG slice 2 (responsibility #4): alignment-clause drift detector.
 // Compares docs/ALIGNMENT.md between two git refs. For each clause
 // that was added, removed, or had its body text modified, reports the
 // change and lists the factory surfaces that depend on it (via the

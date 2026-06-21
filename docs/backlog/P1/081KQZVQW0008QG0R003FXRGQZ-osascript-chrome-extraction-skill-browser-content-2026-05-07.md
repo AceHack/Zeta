@@ -1,6 +1,5 @@
 ---
-id: B-0243
-zetaid: 081KQZVQW0008QG0R003FXRGQZ
+id: 081KQZVQW0008QG0R003FXRGQZ
 priority: P1
 status: closed
 closed: 2026-05-07
@@ -13,7 +12,7 @@ decomposition: atomic
 owners: [architect, developer-experience-engineer]
 ---
 
-# B-0243 — Skill: osascript/Chrome browser extraction
+# 081KQZVQW0008QG0R003FXRGQZ — Skill: osascript/Chrome browser extraction
 
 ## What
 

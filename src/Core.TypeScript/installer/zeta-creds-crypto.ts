@@ -1,10 +1,10 @@
-// zeta-creds-crypto.ts — pure crypto primitives for B-0852 credential persistence.
+// zeta-creds-crypto.ts — pure crypto primitives for 081KSKBP80008QG0R003AX2A69 credential persistence.
 //
-// B-0852 sub-row .1 (smallest concrete substrate slice). Pure functions; no I/O.
+// 081KSKBP80008QG0R003AX2A69 sub-row .1 (smallest concrete substrate slice). Pure functions; no I/O.
 // Composes with:
-//   - tools/installer/zeta-creds-persist.ts (B-0852.2; consumes encrypt)
-//   - tools/installer/zeta-creds-restore.ts (B-0852.2; consumes decrypt)
-//   - docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-*.md
+//   - tools/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2; consumes encrypt)
+//   - tools/installer/zeta-creds-restore.ts (081KSKBP80008QG0R003AX2A69.2; consumes decrypt)
+//   - docs/backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-*.md
 //
 // Threat model (Phase 1 scope; per row body):
 //   - Attacker has physical USB access → blob on ESP is readable as a file
@@ -67,7 +67,7 @@ export const SCRYPT_STRETCHED_LEN = 32;
  * Envelope written to /esp/zeta-creds.enc. Wire format is a single binary
  * blob (Phase 1 implementation will length-prefix-pack salt+iv+tag+ciphertext).
  * This module returns the structured object; serialization is a sibling
- * concern (B-0852.2 persist CLI).
+ * concern (081KSKBP80008QG0R003AX2A69.2 persist CLI).
  */
 export interface Envelope {
   readonly salt: Uint8Array;

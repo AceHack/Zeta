@@ -1,6 +1,6 @@
 ---
 pr_number: 3047
-title: "fix(backlog): restore missing slice rows B-0054.1 + B-0055.1"
+title: "fix(backlog): restore missing slice rows 081KR2E4K0008QG0R0003J0FB8 + 081KR7JY10008QG0R0035HP11K"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T22:42:21Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-13T22:58:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3047: fix(backlog): restore missing slice rows B-0054.1 + B-0055.1
+# PR #3047: fix(backlog): restore missing slice rows 081KR2E4K0008QG0R0003J0FB8 + 081KR7JY10008QG0R0035HP11K
 
 ## PR description
 
@@ -20,8 +20,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two atomic decomposition slices landed earlier as code without corresponding `.md` row files:
 
-- `B-0054.1` — media-catalog schema foundation (implemented as [`tools/resonance/media-catalog-schema.ts`](tools/resonance/media-catalog-schema.ts), referenced by 9 sibling rows B-0054.2..B-0054.10)
-- `B-0055.1` — edge-claims catalog (implemented as [`tools/research/edge-claims-catalog.ts`](tools/research/edge-claims-catalog.ts), referenced by B-0055.2 re-decomp row)
+- `081KR2E4K0008QG0R0003J0FB8` — media-catalog schema foundation (implemented as [`tools/resonance/media-catalog-schema.ts`](tools/resonance/media-catalog-schema.ts), referenced by 9 sibling rows 081KR7JY10008QG0R0018G7ZQV..081KR7JY10008QG0R000G3695N)
+- `081KR7JY10008QG0R0035HP11K` — edge-claims catalog (implemented as [`tools/research/edge-claims-catalog.ts`](tools/research/edge-claims-catalog.ts), referenced by 081KR7JY10008QG0R001JW71CT re-decomp row)
 
 The backlog-ready-notifier surfaced both as dangling-dep warnings. Restoring them as `status: closed` rows preserves the dependency edges that 10+ siblings already use AND accurately documents the implementation status.
 
@@ -38,8 +38,8 @@ Once [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044) merges to
 
 ## Completes the sweep
 
-- [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044) — recovers `B-0257..B-0261` + `B-0289` from unmerged commit `c0dcb26`
-- [#3045](https://github.com/Lucent-Financial-Group/Zeta/pull/3045) — fixes notifier YAML inline-comment parsing (B-0395 false-positive)
+- [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044) — recovers `081KR2E4K0008QG0R001J0536V..081KR2E4K0008QG0R0004B55ND` + `081KR2E4K0008QG0R001SWEPNV` from unmerged commit `c0dcb26`
+- [#3045](https://github.com/Lucent-Financial-Group/Zeta/pull/3045) — fixes notifier YAML inline-comment parsing (081KR50HA0008QG0R0019KYAAS false-positive)
 - **This PR** — formalizes the two slice IDs that never had row files
 
 Once all three land, dangling-dep count goes 9 → 0.
@@ -65,8 +65,8 @@ Each restored row documents itself as a *retroactive* artifact — written 2026-
 Restores two missing atomic-decomposition slice rows whose implementations had already landed in code (`tools/resonance/media-catalog-schema.ts` and `tools/research/edge-claims-catalog.ts`) but never received corresponding `.md` row files. This resolves dangling `depends_on` references surfaced by the backlog-ready-notifier from 10+ sibling rows and completes the substrate-hygiene sweep alongside PRs #3044 and #3045.
 
 **Changes:**
-- Adds `B-0054.1` row formalizing the media-catalog schema foundation slice (parent B-0054, referenced by B-0054.2..B-0054.10).
-- Adds `B-0055.1` row formalizing the monolithic edge-claims catalog slice (parent B-0055, referenced by B-0055.2 re-decomp row).
+- Adds `081KR2E4K0008QG0R0003J0FB8` row formalizing the media-catalog schema foundation slice (parent 081KQ3HBZ0008QG0R003V6B2ME, referenced by 081KR7JY10008QG0R0018G7ZQV..081KR7JY10008QG0R000G3695N).
+- Adds `081KR7JY10008QG0R0035HP11K` row formalizing the monolithic edge-claims catalog slice (parent 081KQ3HBZ0008QG0R001K0EC2C, referenced by 081KR7JY10008QG0R001JW71CT re-decomp row).
 - Both rows are marked `status: closed`, document themselves as retroactive substrate corrections, and explicitly state row-first, code-second remains the norm.
 
 ### Reviewed changes
@@ -75,5 +75,5 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0054.1-media-catalog-schema-foundation.md | Retroactive closed row for the media-catalog schema slice; resolves 9 sibling dangling deps. |
-| docs/backlog/P2/B-0055.1-edge-claims-catalog-monolithic-slice.md | Retroactive closed row for the monolithic edge-claims catalog slice; resolves B-0055.2 dangling dep. |
+| docs/backlog/P2/081KR2E4K0008QG0R0003J0FB8-media-catalog-schema-foundation.md | Retroactive closed row for the media-catalog schema slice; resolves 9 sibling dangling deps. |
+| docs/backlog/P2/081KR7JY10008QG0R0035HP11K-edge-claims-catalog-monolithic-slice.md | Retroactive closed row for the monolithic edge-claims catalog slice; resolves 081KR7JY10008QG0R001JW71CT dangling dep. |

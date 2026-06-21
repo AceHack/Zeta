@@ -46,7 +46,7 @@ Each legacy row is one markdown file with YAML frontmatter:
 
 ```markdown
 ---
-id: B-0042
+id: 081KQ3HBZ0008QG0R002GDRFS5
 priority: P2
 status: open
 title: Server Meshing and SpacetimeDB deep research
@@ -58,8 +58,8 @@ last_updated: 2026-04-24
 depends_on: []
 decomposition: blob
 composes_with:
-  - B-0031
-  - B-0038
+  - 081KQ3HBZ0008QG0R003B2NAA2
+  - 081KQ3HBZ0008QG0R0006NJP4K
 tags: [game-industry, sharding, multi-node]
 ---
 
@@ -72,18 +72,18 @@ tags: [game-industry, sharding, multi-node]
 
 | Field          | Required | Type         | Notes |
 |----------------|----------|--------------|-------|
-| `id`           | yes      | `B-NNNN`     | Legacy zero-padded 4 digit alias. Grandfathered rows only; do not allocate for new work. |
+| `id`           | yes      | ZetaId       | 128-bit canonical work-item key (Crockford base32). |
 | `priority`     | yes      | `P0..P3`     | Directory must match (`P2` row → `docs/backlog/P2/`). |
-| `status`       | yes      | enum         | `open` / `closed` / `superseded-by-B-NNNN` / `deferred` / `decomposed` (broken into child rows; stays open until `closed_by` row closes) |
+| `status`       | yes      | enum         | `open` / `closed` / `superseded-by-<zetaid>` / `deferred` / `decomposed` (broken into child rows; stays open until `closed_by` row closes) |
 | `title`        | yes      | string       | Short index-display title. |
 | `tier`         | no       | string       | Free-form; e.g. `research-grade`, `active-substrate`. |
 | `effort`       | no       | `S` / `M` / `L` | Size estimate. |
 | `ask`          | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. Per Otto-293 mutual-alignment language ("ask" not "directive"). |
 | `created`      | yes      | YYYY-MM-DD   | First-landing date. |
 | `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
-| `depends_on`   | no       | list of `B-NNNN` | Legacy hard prerequisite ordering for old rows. New cross-workitem references should use ZetaIds. |
+| `depends_on`   | no       | list of ZetaId | Hard prerequisite ordering. |
 | `decomposition`| no       | enum         | Optional decomposition marker. `blob` means the row is intentionally too large or fuzzy for a single implement cycle and should be split before pickup. |
-| `composes_with`| no       | list of `B-NNNN` | Legacy cross-references. New cross-workitem references should use ZetaIds. |
+| `composes_with`| no       | list of ZetaId | Cross-references to related rows, paths, or rules. |
 | `tags`         | no       | list of string | Free-form. Examples: `multi-node`, `dst`, `ui-rename`. |
 
 ## Adding new work
@@ -127,8 +127,13 @@ committed row files. Same pattern as
 `memory-index-integrity.yml`.
 
 `tools/backlog/lint-no-new-bnnnn.ts` fails if a new legacy
-B-NNNN id appears outside the frozen grandfathered allowlist. Use
-`new-workitem.ts` for current work instead.
+B-named file appears under `docs/backlog/` or `workitems/`.
+Use `new-workitem.ts` for current work instead.
+
+`lint-no-b-refs.ts` fails if any `B-NNNN` token remains outside
+the frozen alias maps (`b-to-zetaid-map.json`,
+`b-id-renumber-aliases.json`). Resolve stragglers with
+`rebuild-legacy-b-id-aliases.ts`.
 
 ## Retirement
 

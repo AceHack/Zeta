@@ -46,7 +46,7 @@ type WeightPairArb() =
 
 // ── Toffoli gate laws ────────────────────────────────────────────────────
 //
-// These properties prove the three load-bearing claims of B-0366.1:
+// These properties prove the three load-bearing claims of 081KR50HA0008QG0R0021B5J87:
 //
 //   (1) Self-inverse: apply ∘ apply = id
 //       The gate is its own inverse — no separate "undo" operation needed.
@@ -130,7 +130,7 @@ let ``Landauer claim: A and B wires are always preserved unchanged`` () =
         out.B |> should equal w.B
 
 
-// ── ToffoliCircuit wire-map model laws (B-0366.2.1) ─────────────────────
+// ── ToffoliCircuit wire-map model laws (081KRA5AR0008QG0R002X77BEB) ─────────────────────
 
 [<Fact>]
 let ``Empty Toffoli circuit satisfies wire-map invariants`` () =
@@ -161,7 +161,7 @@ let ``Toffoli circuit records gate steps by wire id without erasing wire state``
     circuit.Ancilla |> should equal 3
 
 
-// ── Reversible join weight multiplication fragment (B-0366.2.2) ──────────
+// ── Reversible join weight multiplication fragment (081KRA5AR0008QG0R001GQSVWE) ──────────
 
 let private wireBits (fragment: ToffoliCircuitFragment) (wires: WireId list) =
     wires |> List.map (fun wire -> fragment.Circuit.Wires.[wire])
@@ -309,7 +309,7 @@ let ``Weight multiplication fragment propagates colliding partial-product carrie
     |> should equal true
 
 
-// ── Reversibility laws over the retained join-weight fragment (B-0366.2.3) ──
+// ── Reversibility laws over the retained join-weight fragment (081KRA5AR0008QG0R000CYY9ZN) ──
 
 [<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
 let ``Weight multiplication fragment forward then reverse restores retained wires`` (pair: WeightPair) =
@@ -350,7 +350,7 @@ let ``Weight multiplication fragment Landauer accounting reports zero erased bit
     && erasedWireCount initial afterReverse = 0
 
 
-// ── Reversible Z-set join circuit laws (B-0366.2.3) ──────────────────────────
+// ── Reversible Z-set join circuit laws (081KRA5AR0008QG0R000CYY9ZN) ──────────────────────────
 
 let private smallZSet : Arbitrary<ZSet<int>> =
     let g =

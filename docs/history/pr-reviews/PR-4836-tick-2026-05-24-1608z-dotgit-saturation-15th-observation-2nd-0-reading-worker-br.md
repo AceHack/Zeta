@@ -49,7 +49,7 @@
 
 - [x] Build gate not impacted (docs-only)
 - [x] Commit-tree canary: `git ls-tree HEAD | wc -l` = 55 (unchanged from origin/main; new file under existing `docs/`)
-- [x] Silent-push-failure (B-0615) check: local SHA = remote SHA verified
+- [x] Silent-push-failure (081KRW63S0008QG0R000EAZ9K2) check: local SHA = remote SHA verified
 - [x] Branch guard (zeta-expected-branch race-window-caveat): re-checked immediately before commit
 - [ ] CI gate clean
 - [ ] Auto-merge fires when checks green

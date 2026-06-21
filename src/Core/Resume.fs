@@ -1,7 +1,7 @@
 namespace Zeta.Core
 
 /// Resume engine — the F# oracle (#2 of TS/F#/C#/Rust) for the **resume-engine slice**
-/// (B-0976), the self-evolving-saga kernel the serialized Bonsai expression-tree feeds. Where
+/// (081KT07NV0008QG0R003BE6MJ2), the self-evolving-saga kernel the serialized Bonsai expression-tree feeds. Where
 /// `Bonsai` is the *serializer* (the deferred computation's shape), this is the *evaluator*
 /// that runs it with **restore-not-replay** durable execution. Ferry of the TS reference
 /// (`src/Core.TypeScript/bonsai/resume.ts`); replays the shared `resume-golden.json` saga

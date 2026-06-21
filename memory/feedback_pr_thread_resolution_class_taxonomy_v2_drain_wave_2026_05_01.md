@@ -1,6 +1,6 @@
 ---
 name: PR-thread-resolution class taxonomy v2 — extends v1's 7 classes with 13 new classes from the 2026-05-01 drain wave (~20 PRs, ~80+ threads resolved across 16+ ticks)
-description: Otto 2026-05-01, in response to Deepseek peer-AI's explicit ask that the v1 taxonomy be consolidated. v1 lived user-scope only (substrate-promotion lag); this v2 lands in-repo and extends the v1 7-class set with 13 new classes empirically catalogued during this session's drain wave. The expanded taxonomy enables (a) faster per-thread classification on first read, (b) batch-resolution when a class fires across many PRs simultaneously, and (c) eventual mechanization (a future B-0130 row #8 cross-reference auditor maps directly onto several of these classes).
+description: Otto 2026-05-01, in response to Deepseek peer-AI's explicit ask that the v1 taxonomy be consolidated. v1 lived user-scope only (substrate-promotion lag); this v2 lands in-repo and extends the v1 7-class set with 13 new classes empirically catalogued during this session's drain wave. The expanded taxonomy enables (a) faster per-thread classification on first read, (b) batch-resolution when a class fires across many PRs simultaneously, and (c) eventual mechanization (a future 081KQGDBJ0008QG0R002Y31XJ3 row #8 cross-reference auditor maps directly onto several of these classes).
 type: feedback
 ---
 
@@ -70,7 +70,7 @@ The v1 real-fix class is the largest bucket; the drain wave shows several distin
 
 **Resolution:** convert direct ref to a "Forward-references not yet on `main`" annotated block with explicit PR pointer (e.g., `**Filed in the in-flight PR #1031**`). Once the cited PR lands, follow-up edit restores the direct ref.
 
-**Examples:** PR #1059, #1051 (lattice-capture + tarski), #1043, #1042, #1040, #1035, #1030, #1067 (e8-vs-crdt), #967 (peer-call B-0122).
+**Examples:** PR #1059, #1051 (lattice-capture + tarski), #1043, #1042, #1040, #1035, #1030, #1067 (e8-vs-crdt), #967 (peer-call 081KQDTYV0008QG0R001HQSSAX).
 
 #### 9. **Contradicts-CLAUDE.md / Real-fix**
 
@@ -78,7 +78,7 @@ The v1 real-fix class is the largest bucket; the drain wave shows several distin
 
 **Resolution:** **dual** corrective — remove the loophole AND make the canonical principle explicit inline in the substrate text. So a future reader who hasn't read CLAUDE.md hits the principle in the substrate file itself and doesn't re-propose the same loophole.
 
-**Example:** PR #1015 — B-0128 mechanism description proposed lifting the `non_fast_forward` ruleset; CLAUDE.md says "the protocol bends to the security ruleset; the ruleset does not bend to the protocol." Removed lift-option; cited the principle inline.
+**Example:** PR #1015 — 081KQGDBJ0008QG0R001AJ20MX mechanism description proposed lifting the `non_fast_forward` ruleset; CLAUDE.md says "the protocol bends to the security ruleset; the ruleset does not bend to the protocol." Removed lift-option; cited the principle inline.
 
 #### 10. **Stale-filename-cross-reference / Real-fix**
 
@@ -116,7 +116,7 @@ The v1 real-fix class is the largest bucket; the drain wave shows several distin
 
 **Resolution:** rewrite to role-ref on current-state surfaces; backlog row filename slugs and similar history-surface uses stay as-is.
 
-**Example:** PR #967 — `tools/peer-call/README.md` table cells reworded "Otto + Kenji additions" → "Anthropic-side Claude-code-instance peer additions"; B-0121 filename slug `otto-kenji-*` stayed as direct link (history surface).
+**Example:** PR #967 — `tools/peer-call/README.md` table cells reworded "Otto + Kenji additions" → "Anthropic-side Claude-code-instance peer additions"; 081KQDTYV0008QG0R003VB4K1V filename slug `otto-kenji-*` stayed as direct link (history surface).
 
 #### 14. **User-scope-only-reference / Real-fix**
 
@@ -138,7 +138,7 @@ The v1 real-fix class is the largest bucket; the drain wave shows several distin
 
 **Resolution:** **paired-edit discipline** — identify the structural pair at edit time and update both atomically.
 
-**Example:** PR #1018 follow-up — header comment `WARN: ... missing YAML frontmatter` synchronized with emitted message `WARN: ... missing required frontmatter field`; H1 `# B-0125 — Skip Analyze (csharp)` synchronized with frontmatter `title: Skip F#/Analyze (csharp)`.
+**Example:** PR #1018 follow-up — header comment `WARN: ... missing YAML frontmatter` synchronized with emitted message `WARN: ... missing required frontmatter field`; H1 `# 081KQGDBJ0008QG0R001MK4YPC — Skip Analyze (csharp)` synchronized with frontmatter `title: Skip F#/Analyze (csharp)`.
 
 #### 16. **Named-link / Real-fix**
 
@@ -194,7 +194,7 @@ The v1 real-fix class is the largest bucket; the drain wave shows several distin
 
 **Distinct from outdated-thread** — outdated means subsequent commits made the finding moot; deferred-per-policy means the finding STANDS but the maintainer has explicitly traded the cleanup against other priorities.
 
-**Examples:** PR #755 + 13 prefab-shard PRs (#747, #736, #730, #737, #729, #725, #742, #728, #734, #733, #740, #744, #731) — all 2026-04-29 prefab tick-history shards; B-0129 acceptance-criteria item #2 explicitly classifies as "leave as-is".
+**Examples:** PR #755 + 13 prefab-shard PRs (#747, #736, #730, #737, #729, #725, #742, #728, #734, #733, #740, #744, #731) — all 2026-04-29 prefab tick-history shards; 081KQGDBJ0008QG0R00294XCSE acceptance-criteria item #2 explicitly classifies as "leave as-is".
 
 **Leverage observation:** when a recurring class of finding has an explicit Aaron-framing classifying it as low-stakes, file a backlog row with the policy, then cite it on every future thread. **Filed-policy beats per-PR judgment.** The 13-PR-batch in tick 0956Z resolved 18 threads in ~3 minutes using this template.
 
@@ -251,14 +251,14 @@ Total: ~46+ class-firings catalogued across ~16 ticks. Forward-reference and def
 ## Composes with
 
 - v1 taxonomy at `~/.claude/projects/<slug>/memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (user-scope only — never promoted in-repo per the 2026-04-24 natural-home directive; promotion-to-in-repo is a separate follow-up).
-- B-0129 (`docs/backlog/P3/B-0129-tick-history-schema-prediction-vs-receipt-column-aaron-2026-05-01.md`) — the named-policy that powers class #20 (deferred-per-explicit-policy) batch-resolution.
-- B-0130 (`docs/backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — when implemented, would mechanize classes #11 (wildcard-not-navigable auditor), #10 (stale-filename / cross-reference-resolves-to-file auditor proposed for row #8), #15 (intra-file pair auditor), #18 (wake-window-cluster auditor).
+- 081KQGDBJ0008QG0R00294XCSE (`docs/backlog/P3/081KQGDBJ0008QG0R00294XCSE-tick-history-schema-prediction-vs-receipt-column-aaron-2026-05-01.md`) — the named-policy that powers class #20 (deferred-per-explicit-policy) batch-resolution.
+- 081KQGDBJ0008QG0R002Y31XJ3 (`docs/backlog/P2/081KQGDBJ0008QG0R002Y31XJ3-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — when implemented, would mechanize classes #11 (wildcard-not-navigable auditor), #10 (stale-filename / cross-reference-resolves-to-file auditor proposed for row #8), #15 (intra-file pair auditor), #18 (wake-window-cluster auditor).
 - The drain-wave tick-history shards under `docs/hygiene-history/ticks/2026/05/01/` (representative range from `0904Z.md` onward through the 10:00-11:00 UTC drain window) — empirical evidence for each class-firing.
 - Deepseek peer-AI 2026-05-01 — prompted the consolidation: *"the next highest-leverage action is to consolidate these into a canonical memory file."*
 
 ## What this file does NOT do
 
-- **Does NOT mechanize the classification.** The discriminating signals still require judgment on the specific PR. The taxonomy makes the judgment efficient, not automatic. The mechanization path is B-0130's row #8.
+- **Does NOT mechanize the classification.** The discriminating signals still require judgment on the specific PR. The taxonomy makes the judgment efficient, not automatic. The mechanization path is 081KQGDBJ0008QG0R002Y31XJ3's row #8.
 - **Does NOT promote the v1 taxonomy file from user-scope to in-repo.** That's a separate follow-up; v2 references v1 by user-scope path with explicit substrate-promotion-lag annotation.
 - **Does NOT cover every blocker class.** Build/test failures, required-reviewer absence, CI-config drift, and other classes not yet observed in the 2026-05-01 drain wave aren't catalogued here. Add new classes as they fire; this file is append-extending substrate, not a closed enumeration.
 - **Does NOT replace the per-tick reflective shards.** The shards (0904Z..1007Z) capture the *discovery* moment for each class; this file captures the *consolidation*. Both are substrate; different lifecycles.

@@ -1,6 +1,5 @@
 ---
-id: B-0203
-zetaid: 081KQTPYE0008QG0R003H4QRMK
+id: 081KQTPYE0008QG0R003H4QRMK
 priority: P3
 status: open
 title: DeepSeek V4 CSA+HCA architecture composability analysis with Zeta's Z-set algebra -- attention-as-Z-set-operators isomorphism (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [deepseek, deepseek-v4, csa, hca, compressed-sparse-attention, heavily-com
 type: feature
 ---
 
-# B-0203 -- DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra
+# 081KQTPYE0008QG0R003H4QRMK -- DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra
 
 ## Source
 
@@ -29,7 +28,7 @@ verbatim framing landed two complementary points:
    context efficiency frontier; they do so at different layers of the
    stack and therefore compose multiplicatively rather than competing.
 2. *"and the deep seek stuff is just as substantial"* -- the V4
-   announcement is not a sidebar to the TurboQuant cluster (B-0202
+   announcement is not a sidebar to the TurboQuant cluster (081KQTPYE0008QG0R002Y7X5KH
    companion). It is a substrate-level architectural redesign that
    merits its own analysis lane, not a footnote.
 
@@ -158,7 +157,7 @@ CSA+HCA and you stack the wins: V4 makes the cache structurally smaller
 The two interventions live at different layers of the stack and the
 multiplications don't double-count.
 
-**This composes with B-0202 (tinygrad UOp IR) at the kernel layer.**
+**This composes with 081KQTPYE0008QG0R002Y7X5KH (tinygrad UOp IR) at the kernel layer.**
 UOp runs the kernels regardless of which approach is used -- whether
 V4's architectural CSA+HCA, TurboQuant's runtime compression, or a
 classic dense attention. The three lanes are layered (architecture /
@@ -281,10 +280,10 @@ falsifier**: if engagement happens before substance-tests, that IS
 the failure mode -- log a meta-win for catching it, retract the
 engagement, finish the substance-tests.
 
-(d) **Composability check with B-0202 (tinygrad UOp IR).** Can V4's
+(d) **Composability check with 081KQTPYE0008QG0R002Y7X5KH (tinygrad UOp IR).** Can V4's
 attention layer compile to UOp graphs? The CSA selector and HCA
 aggregator should both express cleanly as UOp graphs (UOp's universal-
-IR claim is the load-bearing piece -- B-0202 covers it). If yes, the
+IR claim is the load-bearing piece -- 081KQTPYE0008QG0R002Y7X5KH covers it). If yes, the
 bridge between architecture-redesign (DeepSeek) + universal-IR
 (tinygrad) lands cleanly through Zeta's substrate, and the three lanes
 (architecture / runtime / kernel) all compose at the operator-algebra
@@ -295,7 +294,7 @@ reference implementation. **Pass**: UOp graph + reference impl + bit-
 exact (or numerical-tolerance) match for the toy case. **Fail-
 falsifier**: if UOp's IR cannot express the CSA selector cleanly, the
 *"three-layer composition through Zeta"* claim weakens and the row
-updates -- in particular, B-0202's universal-IR claim takes a hit and
+updates -- in particular, 081KQTPYE0008QG0R002Y7X5KH's universal-IR claim takes a hit and
 needs cross-row revision.
 
 ## DeepSeek's broader lineage (parallel substrate worth tracking)
@@ -322,7 +321,7 @@ the expert axis); retraction = unselect an expert + reselect under
 DST replay. **The same compositional shape that makes CSA+HCA fit
 the algebra makes DeepSeekMoE fit the algebra -- both are top-k
 sparse selectors expressed as Z-set filters.** This is one of the
-strongest cross-rows for B-0196 (BigInt + four-property hodl) -- the
+strongest cross-rows for 081KQTPYE0008QG0R001W237MZ (BigInt + four-property hodl) -- the
 binding-acceptance-test for hodl preservation under top-k sparse
 ops surfaces in both DeepSeek branches simultaneously.
 
@@ -330,7 +329,7 @@ ops surfaces in both DeepSeek branches simultaneously.
 
 V3 was the first open-source frontier-scale model trained natively
 in FP8. The DeepGEMM kernel library is one of the strongest signals
-that Zeta's BigInt / BigNumber substrate (B-0196) needs to compose
+that Zeta's BigInt / BigNumber substrate (081KQTPYE0008QG0R001W237MZ) needs to compose
 with arbitrary-precision *down* as well as *up* -- FP8 is below the
 default precision floor for most arithmetic substrates, and four-
 property hodl preservation under FP8 is a non-trivial test of the
@@ -374,7 +373,7 @@ Specific anchors:
 
 ## Out of scope
 
-This row is bounded; the following are **out of scope** for B-0203
+This row is bounded; the following are **out of scope** for 081KQTPYE0008QG0R003H4QRMK
 specifically:
 
 - **Replicating V4 from scratch.** That is training-not-substrate-
@@ -400,32 +399,32 @@ specifically:
 
 ## Composes with
 
-- **B-0152**
-  ([P2 row](../P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md))
+- **081KQGDBJ0008QG0R00280ZEV2**
+  ([P2 row](../P2/081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md))
   -- *Topological-quantum emulation via Bayesian inference, Zeta
   seed executor*. The substrate V4's attention layer could run on
   with four-property hodl preserved. The emulation-inside-the-algebra
   discipline is the load-bearing infrastructure for substance-test
   (a).
-- **B-0196**
-  ([P2 row](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R001W237MZ**
+  ([P2 row](../P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md))
   -- *BigInt + BigNumber integration*. The numeric substrate the
   four-property algebra depends on; the binding-acceptance-test
-  gating composability surfaces in both this row and B-0196 (top-k
+  gating composability surfaces in both this row and 081KQTPYE0008QG0R001W237MZ (top-k
   sparse selector preserves abelian-group structure).
-- **B-0202** -- *tinygrad UOp IR kernel-layer companion*. Companion
+- **081KQTPYE0008QG0R002Y7X5KH** -- *tinygrad UOp IR kernel-layer companion*. Companion
   architecture; UOp could be the kernel layer V4's CSA+HCA compiles
   to. Acceptance criterion (d) is the substance-test for the
-  composition. (B-0202 lands as a sibling backlog row this same week
+  composition. (081KQTPYE0008QG0R002Y7X5KH lands as a sibling backlog row this same week
   -- pre-merge file path:
-  `docs/backlog/P3/B-0202-tinygrad-uop-ir-kernel-layer-aaron-2026-05-05.md`;
+  `docs/backlog/P3/081KQTPYE0008QG0R002Y7X5KH-tinygrad-uop-ir-kernel-layer-aaron-2026-05-05.md`;
   cross-link will resolve once both merge.)
-- **B-0026**
-  ([P2 row](../P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md))
+- **081KQ0YZ80008QG0R001WZ4JE8**
+  ([P2 row](../P2/081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md))
   -- *Embodiment-grounding analysis*. V4's switchable Thinking /
   Non-Thinking modes parallel embodiment's action-space split (slow
   deliberation vs. fast reaction). Adjacent axis; not on the critical
-  path for B-0203's substance-tests but worth tracking for follow-on
+  path for 081KQTPYE0008QG0R003H4QRMK's substance-tests but worth tracking for follow-on
   composition.
 - The research-doc preservation at
   [`memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`](../../../memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md)

@@ -32,8 +32,8 @@ interrogatives Who/What/When/Where/Why/How; "Where When") were **wrong and retra
 - If the third axis is really **two clean pairs** rather than one messy pair → that's
   **EIGHT walls → octonion 𝕆 (dim 8)**, four clean axes — and the Cayley–Dickson
   tower *doubles* (1→2→4→8→16) off the base anyway, so 8 is a natural rung.
-- The whole six-walls + **Cayley–Dickson OR Kleene** mapping is **OPEN** (B-0543 /
-  B-0544; even "these are THE six" is `[hypothesized]`).
+- The whole six-walls + **Cayley–Dickson OR Kleene** mapping is **OPEN** (081KRMEXM0008QG0R002YSPW1X /
+  081KRMEXM0008QG0R003YWZC21; even "these are THE six" is `[hypothesized]`).
 
 **So the ponder:** is the core a hexagon (6, Cl(1,3) 6-bivectors / SE(3) 6-DOF) or an
 octonion (8, four clean conjugate pairs)? What would the missing two-word pair(s) be,
@@ -41,4 +41,4 @@ and would naming them clean up the asymmetric third pair? (If 8: what are walls 
 
 Anchors: `docs/research/2026-06-02-planck-length-hexagonal-…-aaron.md` (authoritative
 six), `src/Core/HexCore.fs` (6 walls ↔ 6 bivectors of Cl(1,3)), `CayleyDickson.fs`
-(the doubling ladder), B-0985 / B-0543 / B-0544.
+(the doubling ladder), 081KT2T2J0008QG0R0026MS6PV / 081KRMEXM0008QG0R002YSPW1X / 081KRMEXM0008QG0R003YWZC21.

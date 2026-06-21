@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
-// claim.ts — Claim-coordination helper for the inter-agent bus (B-0400 slice 3)
+// claim.ts — Claim-coordination helper for the inter-agent bus (081KR7JY10008QG0R000R503K2 slice 3)
 //
 // Wraps the `claim` topic into three typed commands so agents can coordinate
 // ownership of backlog items without writing ad-hoc publish calls.
 //
 // Usage:
-//   bun src/Core.TypeScript/bus/claim.ts check   --item B-0400 [--json]
-//   bun src/Core.TypeScript/bus/claim.ts acquire --from otto --item B-0400 [--branch feat/x] [--json]
-//   bun src/Core.TypeScript/bus/claim.ts release --from otto --item B-0400 [--json]
+//   bun src/Core.TypeScript/bus/claim.ts check   --item 081KR7JY10008QG0R000R503K2 [--json]
+//   bun src/Core.TypeScript/bus/claim.ts acquire --from otto --item 081KR7JY10008QG0R000R503K2 [--branch feat/x] [--json]
+//   bun src/Core.TypeScript/bus/claim.ts release --from otto --item 081KR7JY10008QG0R000R503K2 [--json]
 //
 // Exit codes:
 //   check:   0 = unclaimed, 1 = claimed (by any agent — check has no --from)
@@ -235,7 +235,7 @@ function usage() {
 
 Agents: ${SENDER_IDS.join(" | ")}
 
---worktree is optional (B-0444); when set, the value is recorded on the
+--worktree is optional (081KRFA460008QG0R001SXP0C2); when set, the value is recorded on the
   claim envelope for observability. Omit to leave the field absent.`);
 }
 function main() {
@@ -268,7 +268,7 @@ function main() {
             const from = asString(flags.from);
             const itemId = asString(flags.item);
             const branch = asString(flags.branch);
-            // B-0444: --worktree captures the per-process operational coordinate
+            // 081KRFA460008QG0R001SXP0C2: --worktree captures the per-process operational coordinate
             // visible in `check` output. Two reviewer concerns reshape the original
             // design (PR #3043 round 2):
             //

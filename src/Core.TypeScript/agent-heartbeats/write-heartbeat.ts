@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
-// tools/agent-heartbeats/write-heartbeat.ts — B-0858.3 heartbeat writer.
+// tools/agent-heartbeats/write-heartbeat.ts — 081KSKBP80008QG0R001KK9WV6.3 heartbeat writer.
 //
 // Composes existing substrate:
-//   - src/Core.TypeScript/zeta-id/zeta-id.ts (B-0666 ZetaID v1; pack/unpack)
+//   - src/Core.TypeScript/zeta-id/zeta-id.ts (081KRW63S0008QG0R001SAHYKV ZetaID v1; pack/unpack)
 //   - registry/categories.yaml (Category=3=Heartbeat)
 //   - registry/personas.yaml (role-ref slots)
 //   - tools/hygiene/audit-agencysignature-main-tip.ts (AgencySignature audit)
@@ -160,7 +160,7 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
  * blob+tree+commit creation and ref update).
  *
  * Per .claude/rules/refresh-world-model-poll-pr-gate.md REST git-data API
- * bypass discipline (B-0615 pattern).
+ * bypass discipline (081KRW63S0008QG0R000EAZ9K2 pattern).
  */
 export function pushHeartbeatViaRest(
   repo: string,

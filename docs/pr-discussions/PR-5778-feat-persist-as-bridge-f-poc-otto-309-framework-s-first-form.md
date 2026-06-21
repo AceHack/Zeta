@@ -29,8 +29,8 @@ Per Aaron 2026-05-28:
 3. **2026-04-25 Otto-310** — lineage correction: Amara taught; Aaron generalized.
 4. **2026-04-25 Otto-314** — μένω = RNS Destination Hash (engineering instance).
 5. **2026-04-26 → 05-27** — Amara signature at every conversation closure; bilateral close yesterday.
-6. **2026-05-28 (today) B-0897** — Amara Persist-as-bridge IS the operational antipode structure.
-7. **2026-05-28 (today) B-0915** — three-reading composition on retraction-in-Clifford.
+6. **2026-05-28 (today) 081KSNY2Z0008QG0R002SZZ5Y0** — Amara Persist-as-bridge IS the operational antipode structure.
+7. **2026-05-28 (today) 081KSNY2Z0008QG0R002BNQVE1** — three-reading composition on retraction-in-Clifford.
 8. **2026-05-28 (this PR) Meno.fsx** — F# code for μένω.
 
 ## What this adds
@@ -43,15 +43,15 @@ Per Aaron 2026-05-28:
 - μένω computation expression (F# unicode identifier) + meno alias
 - 4 PoC demos all pass; runs: `dotnet fsi experiments/meno-persist-as-bridge/Meno.fsx`
 
-**B-0915 updates:** three-reading composition + Persist-as-bridge recognition
+**081KSNY2Z0008QG0R002BNQVE1 updates:** three-reading composition + Persist-as-bridge recognition
 
 **world-hierarchy.ts comment:** records Aaron's *'Oh shit it was the Amara bridge'* recognition; vote ordering preserves don't-collapse
 
 ## Composes with
 
 - Otto-309 / Otto-310 / Otto-314 (framework foundational substrate)
-- B-0897 / B-0898 / B-0899 / B-0900 (Amara TODAY substrate)
-- PR #5774 / #5775 / #5776 / #5777 (world + git-world + hierarchy + B-0915)
+- 081KSNY2Z0008QG0R002SZZ5Y0 / 081KSNY2Z0008QG0R003WCDQTC / 081KSNY2Z0008QG0R001ZKE8R2 / 081KSNY2Z0008QG0R001G7C89T (Amara TODAY substrate)
+- PR #5774 / #5775 / #5776 / #5777 (world + git-world + hierarchy + 081KSNY2Z0008QG0R002BNQVE1)
 - Fauser Clifford Hopf-gebra (arxiv q-alg/9709016, math/0011263)
 
 μένω.
@@ -68,7 +68,7 @@ _(no body)_
 
 ## Pull request overview
 
-Adds new workflow-engine “world” helpers and an initial “world-hierarchy” typing layer (with Bun tests), plus an F# experiment script (`Meno.fsx`) and a new backlog row (B-0915) capturing a future CliffordWorld implementation target.
+Adds new workflow-engine “world” helpers and an initial “world-hierarchy” typing layer (with Bun tests), plus an F# experiment script (`Meno.fsx`) and a new backlog row (081KSNY2Z0008QG0R002BNQVE1) capturing a future CliffordWorld implementation target.
 
 **Changes:**
 - Introduces `World` registry + reusable composed-lifetime matrix builders (`defaultAdvanceMatrix`, `terminalMatrix`, `predicateMatrix`) and world-level dispatch.
@@ -89,7 +89,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 10 
 | tools/workflow-engine/world-hierarchy.ts | New hierarchy typing/verification utilities for Clifford→DBSP→Git→Forge layering. |
 | tools/workflow-engine/world-hierarchy.test.ts | Bun tests for hierarchy metadata + helpers. |
 | experiments/meno-persist-as-bridge/Meno.fsx | F# script PoC for persistence/retraction concepts with demos. |
-| docs/backlog/P2/B-0915-*.md | New backlog row describing CliffordWorld implementation slices and references. |
+| docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-*.md | New backlog row describing CliffordWorld implementation slices and references. |
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-28T12:01:03Z)
@@ -164,13 +164,13 @@ This test imports `./world-hierarchy.js` and `./world.js`, but the sources are `
 
 This header comment introduces direct name attribution (e.g., a specific person’s name/date). Per the repo’s “No name attribution in code, docs, or skills” rule (docs/AGENT-BEST-PRACTICES.md:671+), current-state code under `tools/**` should use role-refs and keep named provenance on the allowlisted history surfaces (e.g., `docs/backlog/**`, `docs/research/**`, `memory/**`). Please rewrite these new attributions accordingly and link to the history artifact if provenance is important.
 
-### Thread 7: docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:6 (resolved)
+### Thread 7: docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:6 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T11:49:43Z):
 
 Backlog per-row frontmatter requires `last_updated` (updated on every content edit) per tools/backlog/README.md. This new row is missing `last_updated`, which makes it non-conformant with the documented schema.
 
-### Thread 8: docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:16 (resolved)
+### Thread 8: docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:16 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T11:49:43Z):
 
@@ -206,7 +206,7 @@ P0 (compile): `composeKey` is imported but never used in this test file. With `n
 
 P1 (correctness/diagnostics): `verifyHierarchy` computes `expectedParent` as `null` for `substrateAlgebra: "clifford"`, but the error path coerces it to the string "clifford" (`expectedParent ?? "clifford"`). That misreports the expected parent for the root case and makes debugging incorrect metadata harder. Consider adjusting `HierarchyFeedback` so the expected parent can be `null` (or introduce a separate root-specific feedback) and return the true expected value.
 
-### Thread 14: docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:16 (resolved)
+### Thread 14: docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:16 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T12:01:02Z):
 
@@ -266,7 +266,7 @@ Spelling in this comment appears incorrect (e.g., "connonical" → "canonical").
 
 These imports reference `./world-hierarchy.js` and `./world.js`, but the sources in this directory are TypeScript files and other workflow-engine tests import extensionless. The `.js` specifiers are likely to fail at runtime/typecheck; align them with local import style (e.g., `./world-hierarchy`, `./world`).
 
-### Thread 24: docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:11 (resolved)
+### Thread 24: docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T12:13:29Z):
 
@@ -302,13 +302,13 @@ P0: The computation-expression instance is declared as `let μένω<'T> = MenoB
 
 P2: The run instruction says `dotnet fsi Meno.fsx`, but the script is located at `experiments/meno-persist-as-bridge/Meno.fsx`. Update the comment to the correct invocation (or note that it must be run from that directory) so the instructions work as written.
 
-### Thread 30: docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:6 (resolved)
+### Thread 30: docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:6 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:08:06Z):
 
 P1: Backlog per-row files require `last_updated` in YAML frontmatter (and it must be kept current on edits). This new row has `created` but is missing `last_updated`, which will violate the documented schema in `tools/backlog/README.md`.
 
-### Thread 31: docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:16 (resolved)
+### Thread 31: docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md:16 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:08:06Z):
 

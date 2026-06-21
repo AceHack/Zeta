@@ -1,10 +1,9 @@
 ---
-id: B-0001
-zetaid: 081KPYCJH0008QG0R003MDS51N
+id: 081KPYCJH0008QG0R003MDS51N
 priority: P2
 status: closed
 closed: 2026-05-10
-closed_by: "claim(B-0001): all three stated purposes verified fulfilled — generator passes --check, backlog-index-integrity.yml CI gate exists, schema documented by real content"
+closed_by: "claim(081KPYCJH0008QG0R003MDS51N): all three stated purposes verified fulfilled — generator passes --check, backlog-index-integrity.yml CI gate exists, schema documented by real content"
 title: Example row — self-reference demonstrating the per-row-file schema
 tier: research-grade
 effort: S
@@ -28,7 +27,7 @@ This is a placeholder row that exists to:
 2. Show contributors what the file shape looks like end-to-
    end — frontmatter + body.
 3. Serve as the first B-NNNN so Phase-2 content migration
-   starts numbering from B-0002.
+   starts numbering from 081KQ0YZ80008QG0R002T6TM7Z.
 
 ## What this row claims
 
@@ -49,7 +48,7 @@ recovered via `git log --diff-filter=D` if needed).
   lands, this row confirms the CI drift-check passes on
   a non-trivial input.
 - Phase 2: migrate existing BACKLOG.md rows starting at
-  B-0002.
+  081KQ0YZ80008QG0R002T6TM7Z.
 - Phase 3: remove this example when the schema-demo role
   is filled by real content, per CLAUDE.md "retire by
   deletion" discipline.
@@ -63,7 +62,7 @@ Required by `.claude/rules/backlog-item-start-gate.md` before any work.
 - Skill router: no overlapping skill covers "backlog example row" scope.
 - `tools/backlog/`: `generate-index.ts`, `README.md` exist — generator
   is the tool this row exercises.
-- `tools/hygiene/LOST-FILES-LOCATIONS.md`: no lost artifacts for B-0001.
+- `tools/hygiene/LOST-FILES-LOCATIONS.md`: no lost artifacts for 081KPYCJH0008QG0R003MDS51N.
 - `docs/DECISIONS/2026-04-22-backlog-per-row-file-restructure.md`:
   Phase 1a/1b/1c phases documented; Phase 1c (`backlog-index-integrity.yml`)
   is landed (confirmed: `.github/workflows/backlog-index-integrity.yml`).
@@ -81,9 +80,9 @@ Required by `.claude/rules/backlog-item-start-gate.md` before any work.
 All three stated purposes are fulfilled:
 
 1. Generator exercises: `bun tools/backlog/generate-index.ts --check` → `ok` (exit 0).
-2. Schema documentation: file shape is demonstrated and real rows (B-0002…B-0400+)
+2. Schema documentation: file shape is demonstrated and real rows (081KQ0YZ80008QG0R002T6TM7Z…081KR7JY10008QG0R000R503K2+)
    now fill the per-row corpus, supplanting the need for this example.
-3. Numbering anchor: B-0002+ exist; Phase 2 migration substantially complete.
+3. Numbering anchor: 081KQ0YZ80008QG0R002T6TM7Z+ exist; Phase 2 migration substantially complete.
 
 Phase 1b milestone (CI drift-check gate) is landed as `backlog-index-integrity.yml`.
 Phase 3 condition ("schema-demo role filled by real content") is satisfied by the

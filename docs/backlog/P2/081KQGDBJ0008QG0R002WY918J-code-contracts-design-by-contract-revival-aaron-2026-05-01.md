@@ -1,12 +1,11 @@
 ---
-id: B-0142
-zetaid: 081KQGDBJ0008QG0R002WY918J
+id: 081KQGDBJ0008QG0R002WY918J
 priority: P2
 status: open
-title: Code Contracts revival — design-by-contract primitives enforcing pre/post-conditions and invariants at compile/runtime, not at review time (Aaron 2026-05-01; sibling of B-0141)
+title: Code Contracts revival — design-by-contract primitives enforcing pre/post-conditions and invariants at compile/runtime, not at review time (Aaron 2026-05-01; sibling of 081KQGDBJ0008QG0R0015RNK3P)
 tier: tooling
 effort: L
-ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`) — "B-0142, not yet filed" — as the mechanization primitive at the runtime/compile boundary for pre-condition enforcement. ID was reserved 2026-05-01; per-row file filed 2026-05-03 by Otto audit pass post-B-0141 filing.
+ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`) — "081KQGDBJ0008QG0R002WY918J, not yet filed" — as the mechanization primitive at the runtime/compile boundary for pre-condition enforcement. ID was reserved 2026-05-01; per-row file filed 2026-05-03 by Otto audit pass post-081KQGDBJ0008QG0R0015RNK3P filing.
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
@@ -21,15 +20,15 @@ type: feature
 
 Aaron 2026-05-01, in the parallelism-scaling-ladder memo (autonomous-loop maintainer channel), named this row in the mechanized-guardrail-vs-mover table:
 
-> | Pre-condition violation | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
+> | Pre-condition violation | Code Contracts (081KQGDBJ0008QG0R002WY918J, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
 
-**Editorial note on the verbatim "throws at runtime" wording**: the originating memo's table cell predates this row's spec. Per CLAUDE.md's Result-over-exception invariant ("user-visible errors surface as `Result<_, DbspError>` or `AppendResult`-style values; exceptions break the referential-transparency the operator algebra depends on"), the actual implementation of B-0142 MUST flow **recoverable-user-facing-failure contract violations** as Result-error values, NOT throw exceptions. **Scope of "MUST"**: limited to recoverable-user-facing failures within Result-flow code paths. **Programmer-error preconditions** (e.g., F# `invalidArg` for argument validation in `src/Core/**`) are explicitly OUT OF SCOPE for the no-throw rule and stay as exceptions per F# idiom — see "Migration concerns + scope clarification" below for the precise scope split. The verbatim quote is preserved; the row spec normalizes to Result-flow within its narrowed scope.
+**Editorial note on the verbatim "throws at runtime" wording**: the originating memo's table cell predates this row's spec. Per CLAUDE.md's Result-over-exception invariant ("user-visible errors surface as `Result<_, DbspError>` or `AppendResult`-style values; exceptions break the referential-transparency the operator algebra depends on"), the actual implementation of 081KQGDBJ0008QG0R002WY918J MUST flow **recoverable-user-facing-failure contract violations** as Result-error values, NOT throw exceptions. **Scope of "MUST"**: limited to recoverable-user-facing failures within Result-flow code paths. **Programmer-error preconditions** (e.g., F# `invalidArg` for argument validation in `src/Core/**`) are explicitly OUT OF SCOPE for the no-throw rule and stay as exceptions per F# idiom — see "Migration concerns + scope clarification" below for the precise scope split. The verbatim quote is preserved; the row spec normalizes to Result-flow within its narrowed scope.
 
 And in the row-listing section:
 
-> - **Code Contracts revival** (per B-0142 (not yet filed)) — design-by-contract primitives that enforce invariants at compile/runtime, not at review time.
+> - **Code Contracts revival** (per 081KQGDBJ0008QG0R002WY918J (not yet filed)) — design-by-contract primitives that enforce invariants at compile/runtime, not at review time.
 
-ID was reserved; per-row file was never filed. Otto 2026-05-03 audit pass (post-B-0141 filing, post-B-0177 audit-row landing) found B-0142 missing alongside B-0141 in the same memo. Two days of substrate-time without the row materializing — sibling instance of the failure mode B-0177 captures.
+ID was reserved; per-row file was never filed. Otto 2026-05-03 audit pass (post-081KQGDBJ0008QG0R0015RNK3P filing, post-081KQNJ500008QG0R0035QCEX9 audit-row landing) found 081KQGDBJ0008QG0R002WY918J missing alongside 081KQGDBJ0008QG0R0015RNK3P in the same memo. Two days of substrate-time without the row materializing — sibling instance of the failure mode 081KQNJ500008QG0R0035QCEX9 captures.
 
 ## The problem
 
@@ -70,11 +69,11 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 
 ## Composes with
 
-- **B-0141 (brittle-pointer auto-rewriter)**: sibling-instance of mechanization-primitives. B-0141 mechanizes substrate cross-reference quality; B-0142 mechanizes function-boundary contract quality.
-- **B-0130 (verify-before-state-claim mechanized auditor)**: claim-integrity discipline; this row mechanizes the contract-integrity discipline at function boundaries
-- **B-0170 (substrate-claim-checker)**: data-claim verification; this row's tool is code-claim verification
-- **B-0177 (audit memos for misfiled backlog)**: this row's existence IS another empirical hit for B-0177's audit hypothesis (sibling to B-0141)
-- **`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`**: the originating substrate where the ID was reserved alongside B-0141
+- **081KQGDBJ0008QG0R0015RNK3P (brittle-pointer auto-rewriter)**: sibling-instance of mechanization-primitives. 081KQGDBJ0008QG0R0015RNK3P mechanizes substrate cross-reference quality; 081KQGDBJ0008QG0R002WY918J mechanizes function-boundary contract quality.
+- **081KQGDBJ0008QG0R002Y31XJ3 (verify-before-state-claim mechanized auditor)**: claim-integrity discipline; this row mechanizes the contract-integrity discipline at function boundaries
+- **081KQNJ500008QG0R003SCWBDV (substrate-claim-checker)**: data-claim verification; this row's tool is code-claim verification
+- **081KQNJ500008QG0R0035QCEX9 (audit memos for misfiled backlog)**: this row's existence IS another empirical hit for 081KQNJ500008QG0R0035QCEX9's audit hypothesis (sibling to 081KQGDBJ0008QG0R0015RNK3P)
+- **`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`**: the originating substrate where the ID was reserved alongside 081KQGDBJ0008QG0R0015RNK3P
 
 ## Why this is L-effort
 
@@ -88,9 +87,9 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 
 Reviewer findings on the original row revealed three real compatibility concerns the row must acknowledge:
 
-1. **Existing `invalidArg` / exception-based code in `src/Core/**`**: programmer-error preconditions currently use `invalidArg` (e.g., bucket/count/window validation). The Result-over-exception invariant per CLAUDE.md applies to **user-visible failures**; programmer-error preconditions historically use exceptions in F# idiom. **Scope refinement**: B-0142's contract primitives target **recoverable user-facing failures** (`Result<_, ContractViolation>` flow); programmer-error preconditions stay as `invalidArg` until a separate decision (likely future row) decides whether to migrate. The row does NOT blanket-ban exceptions; it adds Result-flow contracts WHERE Result-flow is the operator-algebra path.
+1. **Existing `invalidArg` / exception-based code in `src/Core/**`**: programmer-error preconditions currently use `invalidArg` (e.g., bucket/count/window validation). The Result-over-exception invariant per CLAUDE.md applies to **user-visible failures**; programmer-error preconditions historically use exceptions in F# idiom. **Scope refinement**: 081KQGDBJ0008QG0R002WY918J's contract primitives target **recoverable user-facing failures** (`Result<_, ContractViolation>` flow); programmer-error preconditions stay as `invalidArg` until a separate decision (likely future row) decides whether to migrate. The row does NOT blanket-ban exceptions; it adds Result-flow contracts WHERE Result-flow is the operator-algebra path.
 
-2. **Plain-returning APIs (`bool`, `Stream`, `ValueTask`)** in `src/Core/**`: contract primitives returning `Result<_, ContractViolation>` aren't drop-in for plain-returning functions. **Scope refinement**: B-0142's `requires()`/`ensures()`/`invariant()` apply to functions whose return-type already accommodates Result-flow OR whose call-site is willing to accept a wrapping change. For pure plain-returning APIs, the contract layer is **assertion-only** (debug-mode runtime check; production mode no-op) rather than Result-returning. Two-mode primitive: `requires_result()` (Result-returning) vs `requires_assert()` (assertion).
+2. **Plain-returning APIs (`bool`, `Stream`, `ValueTask`)** in `src/Core/**`: contract primitives returning `Result<_, ContractViolation>` aren't drop-in for plain-returning functions. **Scope refinement**: 081KQGDBJ0008QG0R002WY918J's `requires()`/`ensures()`/`invariant()` apply to functions whose return-type already accommodates Result-flow OR whose call-site is willing to accept a wrapping change. For pure plain-returning APIs, the contract layer is **assertion-only** (debug-mode runtime check; production mode no-op) rather than Result-returning. Two-mode primitive: `requires_result()` (Result-returning) vs `requires_assert()` (assertion).
 
 3. **`TreatWarningsAsErrors=true` in `Directory.Build.props`**: the original row's open-question framed contract violations as "warnings or errors" — a false dichotomy under the current build configuration where warning ≡ error. **Scope refinement**: contract violations are categorized at the contract layer (severity field on ContractViolation), but the build-gate disposition is uniform: any contract-layer issue that reaches build is a build break. Per-contract-class CI gating (some contracts produce build-breaks; some only fail tests) is itself a future design question, NOT a per-violation warning/error toggle.
 
@@ -108,4 +107,4 @@ Pre/post-condition violations are silent-failure-class bugs. The function techni
 
 ## Carved sentence
 
-**"Code Contracts revival mechanizes pre/post-conditions and invariants at function boundaries: requires() at entry, ensures() at exit, invariant() across lifetime. Compile-time mode (refinement types) rejects violations at build; runtime mode catches at execution and surfaces violations as Result-error values for **recoverable-user-facing-failure contract violations** (Result-over-exception per CLAUDE.md; NO throw / panic flow within that scope). **Programmer-error preconditions** (e.g., F# `invalidArg`) are out of scope for the no-throw rule and stay as exceptions per F# idiom. Replaces review-time enforcement (manual, brittle) with mechanized enforcement (deterministic, durable). Sibling-instance of B-0141 (substrate-cross-reference quality) at the code-boundary layer."**
+**"Code Contracts revival mechanizes pre/post-conditions and invariants at function boundaries: requires() at entry, ensures() at exit, invariant() across lifetime. Compile-time mode (refinement types) rejects violations at build; runtime mode catches at execution and surfaces violations as Result-error values for **recoverable-user-facing-failure contract violations** (Result-over-exception per CLAUDE.md; NO throw / panic flow within that scope). **Programmer-error preconditions** (e.g., F# `invalidArg`) are out of scope for the no-throw rule and stay as exceptions per F# idiom. Replaces review-time enforcement (manual, brittle) with mechanized enforcement (deterministic, durable). Sibling-instance of 081KQGDBJ0008QG0R0015RNK3P (substrate-cross-reference quality) at the code-boundary layer."**

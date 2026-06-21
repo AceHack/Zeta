@@ -1,6 +1,5 @@
 ---
-id: B-0328
-zetaid: 081KR2E4K0008QG0R00393D6YF
+id: 081KR2E4K0008QG0R00393D6YF
 priority: P1
 status: closed
 title: "Update peer-call/README.md with kiro.ts + claude.ts entries"
@@ -18,7 +17,7 @@ type: friction-reducer
 # Update peer-call/README.md with kiro + claude entries
 
 Update `tools/peer-call/README.md` to document the two new
-sibling wrappers landed by B-0326 (kiro.ts) and B-0327
+sibling wrappers landed by 081KR2E4K0008QG0R001HQF27C (kiro.ts) and 081KR2E4K0008QG0R002KNZ29V
 (claude.ts).
 
 ## Scope
@@ -33,8 +32,8 @@ sibling wrappers landed by B-0326 (kiro.ts) and B-0327
   existing "Examples" section showing worked examples of
   self-test scenarios.
 - Update the open follow-up backlog table at the bottom
-  (remove B-0065 children that have landed; keep B-0120
-  and B-0121 references).
+  (remove 081KQ8P5D0008QG0R002M5A2M7 children that have landed; keep 081KQDTYV0008QG0R001VJP216
+  and 081KQDTYV0008QG0R003VB4K1V references).
 - Update the script count in the opening paragraph.
 
 ## Done-criteria

@@ -21,7 +21,7 @@ license-driven:
    default**; `--apply` moves allowlisted files into `roms-safe/` and the
    rest into an untracked unsafe directory. Report-only-by-default mirrors
    the sibling [`canonicalize.ts`](../tools/roms/canonicalize.ts) discipline,
-   because the failure mode here crosses a legal boundary (B-0083's "legal
+   because the failure mode here crosses a legal boundary (081KQ8P5D0008QG0R001590WJ3's "legal
    blast radius").
 
 ## Per-system trees
@@ -34,6 +34,6 @@ inclusion:
 
 ## Provenance
 
-- Parent backlog: B-0083 (safe-ROM testbed substrate) and B-0273 (safe/unsafe
+- Parent backlog: 081KQ8P5D0008QG0R001590WJ3 (safe-ROM testbed substrate) and 081KR2E4K0008QG0R001JC6S3N (safe/unsafe
   ROM split tooling).
 - Source policy: [`roms/README.md`](../roms/README.md).

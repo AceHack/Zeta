@@ -1,9 +1,8 @@
 ---
-id: B-0004.4
-zetaid: 081KR7JY10008QG0R000D7JTBB
+id: 081KR7JY10008QG0R000D7JTBB
 priority: P2
 status: open
-title: "B-0004.4 — Cross-reference preservation validator: ensure translated file trees have self-consistent internal links"
+title: "081KR7JY10008QG0R000D7JTBB — Cross-reference preservation validator: ensure translated file trees have self-consistent internal links"
 created: 2026-05-10
 last_updated: 2026-05-10
 parent: 081KQ0YZ80008QG0R002HWBHKJ
@@ -14,16 +13,16 @@ effort: S
 decomposition: atomic
 ---
 
-# B-0004.4 — Cross-reference preservation validator
+# 081KR7JY10008QG0R000D7JTBB — Cross-reference preservation validator
 
-**Slice of:** [B-0004](B-0004-translate-repo-to-other-human-languages.md)  
-**Depends on:** B-0004.1 (inventory manifest includes the cross-ref graph for English sources)
+**Slice of:** [081KQ0YZ80008QG0R002HWBHKJ](081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md)  
+**Depends on:** 081KR50HA0008QG0R000YTJE8Q (inventory manifest includes the cross-ref graph for English sources)
 
 ## What
 
 Write `tools/i18n/xref-check.ts` (Bun) that:
 
-1. Reads the cross-ref graph from the B-0004.1 inventory manifest.
+1. Reads the cross-ref graph from the 081KR50HA0008QG0R000YTJE8Q inventory manifest.
 2. For each translated file tree (`docs/i18n/<lang-code>/`), walks all markdown links.
 3. For every internal link in a translated file, checks that the link target resolves either:
    - to the corresponding translated counterpart (preferred), or
@@ -35,7 +34,7 @@ Also validates that memory cross-references within the translated memory tree re
 
 ## Why
 
-B-0004 body calls this out explicitly: *"when memory file references another memory file, the translated version must reference the translated version (not break cross-refs)."* A translated file that links to untranslated targets is worse than no translation for a monolingual reader: they follow a link and hit English content without warning. The validator makes this a measurable gate.
+081KQ0YZ80008QG0R002HWBHKJ body calls this out explicitly: *"when memory file references another memory file, the translated version must reference the translated version (not break cross-refs)."* A translated file that links to untranslated targets is worse than no translation for a monolingual reader: they follow a link and hit English content without warning. The validator makes this a measurable gate.
 
 ## Acceptance criteria
 
@@ -50,4 +49,4 @@ B-0004 body calls this out explicitly: *"when memory file references another mem
 
 - Fixing broken cross-references (manual translation task per language pilot).
 - Validating external links (out-of-repo URLs).
-- GitHub Actions CI wiring (B-0004.5 pipeline ADR decides CI integration).
+- GitHub Actions CI wiring (081KR7JY10008QG0R002YZBE5A pipeline ADR decides CI integration).

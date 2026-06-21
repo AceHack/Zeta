@@ -1,6 +1,6 @@
 ---
 pr_number: 4810
-title: "backlog(B-0719): file Soraya round-67 forced-decomposition \u2014 audit-of-audit (recognition-without-row-filing precedent)"
+title: "backlog(081KSBMG30008QG0R000WJ9FMP): file Soraya round-67 forced-decomposition \u2014 audit-of-audit (recognition-without-row-filing precedent)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-24T02:47:51Z"
@@ -12,20 +12,20 @@ archived_at: "2026-05-24T14:24:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4810: backlog(B-0719): file Soraya round-67 forced-decomposition — audit-of-audit (recognition-without-row-filing precedent)
+# PR #4810: backlog(081KSBMG30008QG0R000WJ9FMP): file Soraya round-67 forced-decomposition — audit-of-audit (recognition-without-row-filing precedent)
 
 ## PR description
 
 ## Summary
 
-Soraya autonomous round 67 = hold #6/6 in fresh counter sequence post B-0718. **Forced-decomposition fired** per brief-ack-counter discipline at meta-meta-scope.
+Soraya autonomous round 67 = hold #6/6 in fresh counter sequence post 081KS923C0008QG0R000TE1589. **Forced-decomposition fired** per brief-ack-counter discipline at meta-meta-scope.
 
 **Recursive forced-decomposition pattern**:
 
 | Round | Forced-decomposition output | Audits |
 |---|---|---|
-| 61 | B-0718 (PR #4797 MERGED) | The four-trigger framework itself |
-| 67 | **B-0719 (this PR)** | The recognition-without-row-filing precedent that B-0718's existence makes possible |
+| 61 | 081KS923C0008QG0R000TE1589 (PR #4797 MERGED) | The four-trigger framework itself |
+| 67 | **081KSBMG30008QG0R000WJ9FMP (this PR)** | The recognition-without-row-filing precedent that 081KS923C0008QG0R000TE1589's existence makes possible |
 
 ## Substantive question
 
@@ -36,7 +36,7 @@ When a routing trigger fires + Soraya responds *"execution-not-my-lane"* (correc
 | Option | Cost | Trade-off |
 |---|---|---|
 | 1. Soraya NOTEBOOK.md per-round trigger-recognition log | Lowest | Persona-private; not cross-persona discoverable |
-| 2. B-0718 row's "Recognition Log" subsection appended in-place | Mid | Co-locates with framework; conflates audit findings with ongoing routing log |
+| 2. 081KS923C0008QG0R000TE1589 row's "Recognition Log" subsection appended in-place | Mid | Co-locates with framework; conflates audit findings with ongoing routing log |
 | 3. New `docs/research/verification-routing-decisions.md` ledger | Highest | Cross-persona discoverable; durable across persona pruning |
 
 ## Acceptance
@@ -86,10 +86,10 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds a new P3 backlog row (B-0719) to capture and audit the “recognition-without-row-filing” substrate gap in verification-routing decisions, and updates the generated backlog index.
+Adds a new P3 backlog row (081KSBMG30008QG0R000WJ9FMP) to capture and audit the “recognition-without-row-filing” substrate gap in verification-routing decisions, and updates the generated backlog index.
 
 **Changes:**
-- Adds `docs/backlog/P3/B-0719-...md` backlog row describing the audit question, options, and acceptance criteria.
+- Adds `docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-...md` backlog row describing the audit question, options, and acceptance criteria.
 - Updates `docs/BACKLOG.md` with an additional backlog index entry.
 
 ### Reviewed changes
@@ -98,7 +98,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md | New P3 backlog row defining the audit-of-audit problem and acceptance criteria. |
+| docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md | New P3 backlog row defining the audit-of-audit problem and acceptance criteria. |
 | docs/BACKLOG.md | Updates generated backlog index (currently introduces a broken reference and misses the new row). |
 
 ## Review threads
@@ -107,9 +107,9 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-24T02:50:03Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace nonexistent B-0700 entry with new B-0719 row**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace nonexistent 081KRSKQ20008QG0R00367828S entry with new 081KSBMG30008QG0R000WJ9FMP row**
 
-This index line links to `backlog/P2/B-0700-...`, but there is no matching `docs/backlog/**/B-0700-*.md` row file, while the commit actually adds `docs/backlog/P3/B-0719-...md`. Since `docs/BACKLOG.md` is declared auto-generated and CI enforces parity via `bun tools/backlog/generate-index.ts --check` in `.github/workflows/backlog-index-integrity.yml`, this creates generated-index drift and leaves the newly added B-0719 task undiscoverable from the canonical backlog index.
+This index line links to `backlog/P2/081KRSKQ20008QG0R00367828S-...`, but there is no matching `docs/backlog/**/081KRSKQ20008QG0R00367828S-*.md` row file, while the commit actually adds `docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-...md`. Since `docs/BACKLOG.md` is declared auto-generated and CI enforces parity via `bun tools/backlog/generate-index.ts --check` in `.github/workflows/backlog-index-integrity.yml`, this creates generated-index drift and leaves the newly added 081KSBMG30008QG0R000WJ9FMP task undiscoverable from the canonical backlog index.
 
 Useful? React with 👍 / 👎.
 
@@ -117,9 +117,9 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-24T02:50:42Z):
 
-`docs/BACKLOG.md` is auto-generated (tools/backlog/README.md) and must match `bun tools/backlog/generate-index.ts --check` in CI. This newly added entry links to `backlog/P2/B-0700-...` which does not exist under `docs/backlog/` in this branch, and the index also does not include the newly added B-0719 row. Regenerate `docs/BACKLOG.md` from the per-row files and ensure only existing rows are referenced (including adding B-0719).
+`docs/BACKLOG.md` is auto-generated (tools/backlog/README.md) and must match `bun tools/backlog/generate-index.ts --check` in CI. This newly added entry links to `backlog/P2/081KRSKQ20008QG0R00367828S-...` which does not exist under `docs/backlog/` in this branch, and the index also does not include the newly added 081KSBMG30008QG0R000WJ9FMP row. Regenerate `docs/BACKLOG.md` from the per-row files and ensure only existing rows are referenced (including adding 081KSBMG30008QG0R000WJ9FMP).
 
-### Thread 3: docs/backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md:48 (resolved)
+### Thread 3: docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md:48 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T02:50:42Z):
 

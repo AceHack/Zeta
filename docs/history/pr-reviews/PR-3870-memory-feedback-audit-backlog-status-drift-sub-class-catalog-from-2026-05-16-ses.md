@@ -62,9 +62,9 @@ Each instance from the session catalogued (21 rows) with row → class mapping. 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T12:03:57Z on `memory/feedback_audit_backlog_status_drift_sub_class_catalog_otto_cli_2026_05_16.md`:61 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Mark B-0443 as open until closure is merged**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Mark 081KRFA460008QG0R000NVM36W as open until closure is merged**
 
-  This row records `B-0443` as `#1 (CLOSED)` even though the repository state at this commit still shows that backlog item unchecked (`docs/BACKLOG.md` has `- [ ] B-0443`). Because this taxonomy is explicitly used for future triage decisions, labeling an open item as closed can cause agents to skip required closure work or misclassify dependency status.
+  This row records `081KRFA460008QG0R000NVM36W` as `#1 (CLOSED)` even though the repository state at this commit still shows that backlog item unchecked (`docs/BACKLOG.md` has `- [ ] 081KRFA460008QG0R000NVM36W`). Because this taxonomy is explicitly used for future triage decisions, labeling an open item as closed can cause agents to skip required closure work or misclassify dependency status.
 
   Useful? React with 👍 / 👎.
   </pre>

@@ -1,13 +1,12 @@
 ---
-id: B-0466
-zetaid: 081KRHWGX0008QG0R003XHCEXT
+id: 081KRHWGX0008QG0R003XHCEXT
 priority: P1
 status: closed
 closed: 2026-05-14
 closed_by: "docs/research/2026-05-14-product-repo-naming-review-b0425.md"
 title: "Naming-expert review for product repo names — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn"
 type: design
-origin: B-0425 decomposition (Otto 2026-05-14)
+origin: 081KRFA460008QG0R003JQ46J4 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on:
@@ -18,12 +17,12 @@ composes_with:
   - .claude/rules/honor-those-that-came-before.md
 ---
 
-# B-0466 — Naming-expert review for product repo names
+# 081KRHWGX0008QG0R003XHCEXT — Naming-expert review for product repo names
 
 ## What this row does
 
 Run **naming-expert review** on each product name that will become a public GitHub
-repo slug. Products where B-0465 verdict is "repo-ready now" or "repo-ready later"
+repo slug. Products where 081KRHWGX0008QG0R002B2P0K0 verdict is "repo-ready now" or "repo-ready later"
 need this review before scaffolding begins.
 
 The naming-expert skill (Ilyana, per `public-api-designer` agent) holds authority over
@@ -35,7 +34,7 @@ That makes their names brand-critical immediately.
 
 ## Depends on
 
-**B-0465** (per-product substrate inventory) — need to know which products get repos
+**081KRHWGX0008QG0R002B2P0K0** (per-product substrate inventory) — need to know which products get repos
 before reviewing which names need approval. A product staying in monorepo doesn't
 need a repo name review.
 
@@ -98,15 +97,15 @@ Plus a summary table of approved repo slugs.
 
 ## Definition of done
 
-- All products with "repo-ready now" verdict (from B-0465) have an approved repo slug
+- All products with "repo-ready now" verdict (from 081KRHWGX0008QG0R002B2P0K0) have an approved repo slug
 - Products with "repo-ready later" have a provisional slug (subject to re-review at
-  creation time) — these do NOT block B-0468
+  creation time) — these do NOT block 081KRHWGX0008QG0R000F6HE6D
 - Collision searches documented with dates (Otto-364 search-first-authority)
 - Summary table present in output file
-- B-0468 can reference the approved slugs
+- 081KRHWGX0008QG0R000F6HE6D can reference the approved slugs
 
 ## Dependency graph position
 
 ```
-B-0465 ──→ B-0466 (this row) ──→ B-0468 (ADR)
+081KRHWGX0008QG0R002B2P0K0 ──→ 081KRHWGX0008QG0R003XHCEXT (this row) ──→ 081KRHWGX0008QG0R000F6HE6D (ADR)
 ```

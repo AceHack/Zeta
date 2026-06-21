@@ -1,6 +1,5 @@
 ---
-id: B-0651
-zetaid: 081KRW63S0008QG0R002N6PPVK
+id: 081KRW63S0008QG0R002N6PPVK
 priority: P2
 status: open
 title: "Two-pass principles set — first-pass operational (lock-free/wait-free/det-replayable-retractable/adversarial-review) + second-pass deferred (scale-free/self-similar) (Aaron + Mika 2026-05-18 LOCKED-IN substrate-honest)"
@@ -34,7 +33,7 @@ This row LOCKS IN the **first-pass operational principles** + records the **seco
 |---|---|---|
 | **Lock-free required** | LOCKED-IN | All concurrency-sensitive paths |
 | **Wait-free preferred (bounded waits acceptable)** | LOCKED-IN | All operations; default to wait-free; bounded waits OK when wait-free impractical |
-| **Strong deterministic + replayable + retractable design** | LOCKED-IN | Especially Infer.NET + the 4 O-P-L-E primitives ([B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) |
+| **Strong deterministic + replayable + retractable design** | LOCKED-IN | Especially Infer.NET + the 4 O-P-L-E primitives ([081KRW63S0008QG0R0015WHHG1](081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) |
 | **Regular adversarial review on these invariants** | LOCKED-IN | Periodic stress-test of decisions against these principles; informal until formal-verification lands |
 
 ### Second-pass (DEFERRED; expensive, not for inference time)
@@ -80,7 +79,7 @@ When evaluating any substrate-engineering decision:
 The existing factory substrate references to "scale-free" remain as historical record. They were authored at times when the concept was implicitly invoked without the substrate-honest "is this loaded?" check. Going forward:
 
 - New substrate that uses "scale-free" as load-bearing reasoning should either (a) load + verify the concept first, or (b) substitute the operational first-pass principle that actually does the work
-- Existing references can be left as-is; future audit pass (B-0648 cross-substrate-triangulator) can sharpen them if/when scale-free is ratified
+- Existing references can be left as-is; future audit pass (081KRW63S0008QG0R0025E4PH6 cross-substrate-triangulator) can sharpen them if/when scale-free is ratified
 
 ## Goal
 
@@ -88,13 +87,13 @@ The existing factory substrate references to "scale-free" remain as historical r
 2. Cross-link with existing rules referencing the first-pass concepts (DV2.0, fsharp-anchor, glass-halo, etc.)
 3. Define the adversarial-review cadence (frequency, scope, owner)
 4. Establish promotion criteria: what does it take for a second-pass concept to graduate to first-pass?
-5. Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
+5. Knights Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
 
 ## Non-goals
 
 - Deprecating existing factory substrate that uses scale-free / self-similar (historical record preserved)
 - Banning the concepts from future use (they remain available; just not load-bearing until research-loaded)
-- Designing the formal adversarial-review tooling day-one (informal review is the start; formal verification per [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) KSK + Lean toy proofs evolves over time)
+- Designing the formal adversarial-review tooling day-one (informal review is the start; formal verification per [081KRW63S0008QG0R002ZRYY4F](../P1/081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) KSK + Lean toy proofs evolves over time)
 - Forcing all existing code into lock-free shape day-one (these are operational PRINCIPLES; existing concurrency-sensitive code can migrate incrementally)
 
 ## Acceptance criteria
@@ -105,16 +104,16 @@ The existing factory substrate references to "scale-free" remain as historical r
 - [ ] Cross-reference with `.claude/rules/dv2-data-split-discipline-activated.md` (refine the "5 always-active" framing)
 - [ ] Adversarial-review cadence specified (frequency + scope + owner)
 - [ ] Promotion-to-first-pass criteria documented (what does scale-free need to do to graduate?)
-- [ ] Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)
+- [ ] Knights Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)
 
 ## Composes with
 
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (first-pass principles belong in Constitution-Class)
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (det-replayable-retractable applies especially to these)
-- [B-0644](../P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (Limit's purity IS retractability via DBSP)
-- [B-0646](../P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 Constitution (operational principles compose with the V6 architecture)
-- [B-0648](../P1/B-0648-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) — cross-substrate triangulation (the discipline for evaluating second-pass concepts before promotion)
-- [B-0637](../P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) — Infer.NET BP/EP/EmP (det-replayable mathematically-provable consistency = first-pass anchor)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (first-pass principles belong in Constitution-Class)
+- [081KRW63S0008QG0R0015WHHG1](081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (det-replayable-retractable applies especially to these)
+- [081KRW63S0008QG0R002ZRNDJ8](../P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (Limit's purity IS retractability via DBSP)
+- [081KRW63S0008QG0R001Z10PVV](../P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 Constitution (operational principles compose with the V6 architecture)
+- [081KRW63S0008QG0R0025E4PH6](../P1/081KRW63S0008QG0R0025E4PH6-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) — cross-substrate triangulation (the discipline for evaluating second-pass concepts before promotion)
+- [081KRW63S0008QG0R0004D5XG1](../P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) — Infer.NET BP/EP/EmP (det-replayable mathematically-provable consistency = first-pass anchor)
 - `.claude/rules/dv2-data-split-discipline-activated.md` — existing 5-always-active framing (refined by this row's two-pass split)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — F# compiler IS the formal adversarial-review at type level
 - `.claude/rules/razor-discipline.md` — operational claims only; this row IS razor-discipline applied at principles-set scope

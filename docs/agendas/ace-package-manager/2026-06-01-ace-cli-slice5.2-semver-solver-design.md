@@ -1,6 +1,6 @@
 # Ace CLI slice 5.2 — semver ranges + version solver (design)
 
-> Spec for slice 5.2 of the Ace DLC package manager (B-0288). Builds directly on
+> Spec for slice 5.2 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD). Builds directly on
 > slice 5.1 (registry data layer + exact-version resolution, merged PR #6369).
 > Brainstormed + decided with the operator 2026-06-01.
 
@@ -21,7 +21,7 @@ graph into slice 5.1's **unchanged** verify + atomic-install engine.
 
 1. **Semver scope = pragmatic subset.** `^`, `~`, `>=`, `<=`, `>`, `<`, `=`, exact
    `x.y.z`, `*` / `x` wildcards, and space-separated AND-ranges (`>=1.2.0 <2.0.0`).
-   **Deferred** (→ B-0970): `||` unions, hyphen ranges (`1.2 - 1.5`), pre-release
+   **Deferred** (→ 081KT07NV0008QG0R002WK9064): `||` unions, hyphen ranges (`1.2 - 1.5`), pre-release
    precedence (`1.0.0-rc.1`), build metadata.
 2. **Own solver, dependency-free on the hot path.** A deterministic newest-first
    backtracking solver we write; no solver library on the install path.
@@ -29,7 +29,7 @@ graph into slice 5.1's **unchanged** verify + atomic-install engine.
    `resolve()` consumes the map (one minimal param) and runs its existing verify +
    atomic install. The solver fetches to read transitive deps; `resolve()` re-fetches
    to verify — accepted (registry reads are local/content-addressed). A single-fetch
-   cache is **deferred** (→ B-0972, lands naturally with the 5.3 lockfile).
+   cache is **deferred** (→ 081KT07NV0008QG0R003659TWT, lands naturally with the 5.3 lockfile).
 4. **Z3 tests our TS.** Differential tests cross-check our TS solver against **Z3**
    (end-to-end multi-constraint assignment) and **node-semver** (the `satisfies` /
    `compare` primitive). Both are **test-only devDependencies** (npm `z3-solver` WASM
@@ -193,18 +193,18 @@ edges are untouched (exact + self-pinned).
 
 ## Sliced-off enhancements (filed as backlog; operator "slice off everything we skipped")
 
-- **B-0970** — advanced semver: `||` unions, hyphen ranges, pre-release precedence,
+- **081KT07NV0008QG0R002WK9064** — advanced semver: `||` unions, hyphen ranges, pre-release precedence,
   build metadata.
-- **B-0971** — remote registry: HTTP-fetched registry index (today the registry is
+- **081KT07NV0008QG0R000SJ34AK** — remote registry: HTTP-fetched registry index (today the registry is
   local bundled∪user JSON).
-- **B-0972** — solver↔installer single-fetch cache: thread the solver's fetched+verified
+- **081KT07NV0008QG0R003659TWT** — solver↔installer single-fetch cache: thread the solver's fetched+verified
   packages to install so each is fetched once (composes with the 5.3 lockfile).
 
 ## Out of scope (explicit)
 
-- `||` / hyphen / pre-release / build-metadata semver (→ B-0970).
-- Remote registry (→ B-0971).
-- Single-fetch cache (→ B-0972).
+- `||` / hyphen / pre-release / build-metadata semver (→ 081KT07NV0008QG0R002WK9064).
+- Remote registry (→ 081KT07NV0008QG0R000SJ34AK).
+- Single-fetch cache (→ 081KT07NV0008QG0R003659TWT).
 - Lockfile (→ slice 5.3, its own brainstorm).
 - Solver as a runtime library; Z3/node-semver on the install path (test-only here).
 

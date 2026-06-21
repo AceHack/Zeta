@@ -1,6 +1,5 @@
 ---
-id: B-0314
-zetaid: 081KR2E4K0008QG0R001ADMBVW
+id: 081KR2E4K0008QG0R001ADMBVW
 priority: P1
 status: open
 title: "BP-NN rule external-anchor backfill"
@@ -41,7 +40,7 @@ BP-1 through BP-28 as enumerated in
 2. WebSearch for the underlying practice in software
    engineering, AI agent design, security, prompt engineering
    literature.
-3. Cite or note "original to Zeta" per the B-0060 protocol.
+3. Cite or note "original to Zeta" per the 081KQ8P5D0008QG0R000N718AC protocol.
 4. Land anchors as inline citations within the rule's section
    in AGENT-BEST-PRACTICES.md.
 
@@ -50,7 +49,7 @@ BP-1 through BP-28 as enumerated in
 - [ ] All 28 rules have external anchor or "original" note.
 - [ ] Citations include URL, author/org, title, date.
 - [ ] Beacon-safety pass on all cited sources.
-- [ ] Coverage scanner (B-0311) confirms 28/28 resolved.
+- [ ] Coverage scanner (081KR2E4K0008QG0R001ZWARTN) confirms 28/28 resolved.
 
 ### Slice progress
 
@@ -80,35 +79,35 @@ BP-1 through BP-28 as enumerated in
 | BP-22 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
 | BP-23–BP-28 | anchor-pending | slices 9+ |
 
-**Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
-**Slice-2 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice2
-**Slice-3 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice3
-**Slice-4 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice4
-**Slice-5 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice5
-**Slice-6 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice6
-**Slice-7 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice7 (in progress)
-**Slice-8 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice8
-**Slice-9 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice9 (this claim — smallest decomposed slice for BP-23/24/25)
-**Slice-10 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice10 (decomposed)
+**Slice-1 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice1
+**Slice-2 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice2
+**Slice-3 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice3
+**Slice-4 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice4
+**Slice-5 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice5
+**Slice-6 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice6
+**Slice-7 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice7 (in progress)
+**Slice-8 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice8
+**Slice-9 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice9 (this claim — smallest decomposed slice for BP-23/24/25)
+**Slice-10 landing:** PR fix/081KR2E4K0008QG0R001ADMBVW-bp-nn-anchor-backfill-slice10 (decomposed)
 
 ## Pre-start checklist (2026-05-10, Otto)
 
 **Prior-art search:**
 
 - Searched: `.claude/rules/`, `docs/research/` for existing BP-NN anchor work.
-- Found: no prior research doc exists for BP-NN anchors. B-0313 (slice 1)
+- Found: no prior research doc exists for BP-NN anchors. 081KR2E4K0008QG0R00289GE8Z (slice 1)
   established the citation format used here (research doc at `docs/research/`
   + inline citations in source doc).
 - Memory files read: `feedback_never_idle_speculative_work_over_waiting.md`
-  (operational context); B-0060 B-0311 B-0313 backlog rows (parent + sibling
+  (operational context); 081KQ8P5D0008QG0R000N718AC 081KR2E4K0008QG0R001ZWARTN 081KR2E4K0008QG0R00289GE8Z backlog rows (parent + sibling
   shape).
 - Tools searched: skill router, `docs/research/` glob — no BP-NN anchor
   research doc exists yet.
 
 **Dependency check:**
 
-- B-0311 (coverage scanner): status: closed (landed). No blocking dep.
-- `composes_with: [B-0060]` — B-0060 is umbrella, status: umbrella (ongoing).
+- 081KR2E4K0008QG0R001ZWARTN (coverage scanner): status: closed (landed). No blocking dep.
+- `composes_with: [081KQ8P5D0008QG0R000N718AC]` — 081KQ8P5D0008QG0R000N718AC is umbrella, status: umbrella (ongoing).
 
 ## Reviewers
 

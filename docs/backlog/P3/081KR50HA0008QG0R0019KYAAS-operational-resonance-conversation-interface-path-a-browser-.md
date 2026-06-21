@@ -1,12 +1,11 @@
 ---
-id: B-0395
-zetaid: 081KR50HA0008QG0R0019KYAAS
+id: 081KR50HA0008QG0R0019KYAAS
 priority: P3
 status: open
 title: Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion
 tier: engineering
 effort: L
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R002NZENZJ]
@@ -16,7 +15,7 @@ tags: [frontier, conversation-interface, local-llm, weblllm, transformers-js, da
 type: feature
 ---
 
-# B-0395 — Conversation interface Path A: browser/local LLM
+# 081KR50HA0008QG0R0019KYAAS — Conversation interface Path A: browser/local LLM
 
 ## What
 
@@ -24,7 +23,7 @@ Embed a browser-hosted local LLM in the Operational Resonance
 Dashboard so the maintainer can discuss architectural decisions
 in-context without paying per-call API costs.
 
-This implements the 2026-05-04 architectural extension in B-0017:
+This implements the 2026-05-04 architectural extension in 081KQ0YZ80008QG0R0003GAYYN:
 
 > *"The UI should have a conversation interface too."*
 > *"Hopefully talking to a local/browser based AI so it won't
@@ -99,14 +98,14 @@ interface ConversationAdapter {
 ## Cost constraint
 
 **Zero external API costs per review session.** This is not a
-preference; it is a hard constraint from B-0017 (Aaron 2026-05-04:
+preference; it is a hard constraint from 081KQ0YZ80008QG0R0003GAYYN (Aaron 2026-05-04:
 "hopefully talking to a local/browser based AI so it won't cost
 us money lol"). Path A satisfies this via local inference.
 
-## Why after B-0394
+## Why after 081KR50HA0008QG0R002NZENZJ
 
 The conversation interface embeds in the MVP dashboard surface.
-Without the MVP surface (B-0394) providing the context that the
+Without the MVP surface (081KR50HA0008QG0R002NZENZJ) providing the context that the
 chat widget operates on (current tier-grouped items, status
 signals), the chat has nothing to be contextually aware of.
 
@@ -143,15 +142,15 @@ Expected: chat directory present, `ConversationAdapter` interface defined.
   dashboard in `frontend/`. WebLLM and transformers.js prior art
   is in upstream libraries — check current docs via WebSearch
   (Otto-364) before choosing runtime.
-- [x] Dependency-restructure: `depends_on: [B-0394]` — needs MVP
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R002NZENZJ]` — needs MVP
   surface for context injection.
 
 ## Composes with
 
-- B-0017 (parent): implements "conversation interface with local AI"
+- 081KQ0YZ80008QG0R0003GAYYN (parent): implements "conversation interface with local AI"
   architectural extension (2026-05-04 section, Path A)
-- B-0394 (dependency): MVP dashboard provides the context surface
-- B-0017 Path B note: `ConversationAdapter` interface enables swap
+- 081KR50HA0008QG0R002NZENZJ (dependency): MVP dashboard provides the context surface
+- 081KQ0YZ80008QG0R0003GAYYN Path B note: `ConversationAdapter` interface enables swap
   to Zeta-native Bayesian inference seed executor
   (`memory/feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md`)
   when Path B matures

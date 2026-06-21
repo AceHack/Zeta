@@ -14,7 +14,7 @@ namespace Zeta.Core
 /// are `DynamicValue`s in one structure, each can represent the other — "the smallest little engine that
 /// is actually complex."
 ///
-/// This is the medium for **polymorphic diplomacy** (Eve, B-1003, NCI-governed): an agent's static
+/// This is the medium for **polymorphic diplomacy** (Eve, 081KT2T2J0008QG0R00301P27H, NCI-governed): an agent's static
 /// identity (yin) + live behaviour (yang) in one structure other agents can read, interrogate, and
 /// negotiate over. First slice (this module): the structure + its lossless round-trip, proven before any
 /// agent touches it.

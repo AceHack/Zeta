@@ -84,14 +84,14 @@ Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1
 
 - PR #4517 (V1 ZetaId constitutional contract — TS implementation + spec + canonical vectors)
 - PR #4522 (C# Core oracle integration — canonical source for byte values + structural pattern)
-- B-0679 (Rust peer oracle — 4th implementation; this PR provides the F# pattern Rust can mirror)
-- B-0680 (Python peer oracle — 5th implementation; same)
-- B-0681 (v2 spec hardening — entropy budget + HLC monotonicity + Firefly drop)
-- B-0682 (Crockford base32 encoding + endianness + bit-numbering — wire format spec)
-- B-0683 (tier-deferred causality — composes with this codec at runtime)
-- B-0684 (clock-protocol negotiation stack diagram — operational architecture)
-- B-0685 (ANTLR cross-language codegen — one of the future paths to generate this F# implementation from a grammar)
-- B-0687 (ZetaParse) + B-0688 (incremental compiler host) — Amara's substrate-engineering layer above
+- 081KS3X9Y0008QG0R001Z8SBZJ (Rust peer oracle — 4th implementation; this PR provides the F# pattern Rust can mirror)
+- 081KS3X9Y0008QG0R002WGH8PJ (Python peer oracle — 5th implementation; same)
+- 081KS3X9Y0008QG0R003044PQQ (v2 spec hardening — entropy budget + HLC monotonicity + Firefly drop)
+- 081KS3X9Y0008QG0R000W00V73 (Crockford base32 encoding + endianness + bit-numbering — wire format spec)
+- 081KS3X9Y0008QG0R0006MQXA4 (tier-deferred causality — composes with this codec at runtime)
+- 081KS3X9Y0008QG0R003MMEAC7 (clock-protocol negotiation stack diagram — operational architecture)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen — one of the future paths to generate this F# implementation from a grammar)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse) + 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) — Amara's substrate-engineering layer above
 
 ## Test plan
 

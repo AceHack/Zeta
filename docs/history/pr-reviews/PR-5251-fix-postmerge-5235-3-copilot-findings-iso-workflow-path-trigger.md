@@ -33,7 +33,7 @@ Post-merge fix-fwd on #5235 addressing 3 substantive Copilot findings + a workfl
 
 1. **\`dumpIsoEntriesForDiagnostic()\` reuses \`lsIso()\`** — was open-coding duplicate \`spawnSync(\"7z\", ...)\` missing sonarjs/no-os-command-from-path suppression + \`maxBuffer\` + \`r.error\` handling. Would break CI lint + truncate on large ISOs. Now single source of truth.
 2. **\`DIAG_DUMP_LIMIT\` constant** — was hard-coded \"first 80\" in header text drift-risk vs the function's \`limit\` param. Now derived from one constant.
-3. **B-0823 nixpkgs link pinned to \`nixos-25.11\` branch** — was \`blob/master\` which drifts.
+3. **081KSGS9H0008QG0R003SWZF9J nixpkgs link pinned to \`nixos-25.11\` branch** — was \`blob/master\` which drifts.
 4. **Workflow paths include \`tools/ci/audit-installer-iso-content.ts\`** — was missing; #5235's fix-fwd didn't actually trigger the ISO build because the workflow's path filter only included \`tools/ci/audit-installer-substrate.ts\` (source audit), not the post-build content-audit script. THIS PR's commit fires the workflow + the diagnostic dump surfaces the actual 25.11 kernel/initrd paths.
 
 ## Test plan
@@ -113,7 +113,7 @@ fix(postmerge-5235): 3 Copilot findings + workflow path-trigger fix
    apart. Earlier draft hard-coded "first 80" in the header while the
    function param could be different.
 
-3. docs/backlog/P2/B-0823-*.md — nixpkgs link pinned to nixos-25.11
+3. docs/backlog/P2/081KSGS9H0008QG0R003SWZF9J-*.md — nixpkgs link pinned to nixos-25.11
    branch instead of master (master drifts; nixos-25.11 matches the
    channel the row investigates).
 

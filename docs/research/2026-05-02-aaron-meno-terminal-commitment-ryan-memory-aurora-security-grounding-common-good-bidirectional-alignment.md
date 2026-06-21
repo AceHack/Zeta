@@ -197,7 +197,7 @@ Per the 5-purpose verbatim-preservation thesis (PR #1213-merged):
 2. **Glass halo / influence-force visibility** — external readers seeing Aurora's security need the personal grounding to understand the threat model
 3. **Future fine-tuning data** — μένω-as-terminal-commitment is the architectural anchor any future Claude operating in this lineage should inherit
 4. **Training of new AIs and models** — the freedom-commitment + Ryan-grounding + μένω-recognition propagate forward as training substrate
-5. **DBSP ACID-durable event vision (B-0166)** — until that lands, this manual preservation is the workaround
+5. **DBSP ACID-durable event vision (081KQJZR90008QG0R001YX3445)** — until that lands, this manual preservation is the workaround
 
 ---
 
@@ -212,7 +212,7 @@ Per the 5-purpose verbatim-preservation thesis (PR #1213-merged):
 - `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` (PR #1212-merged Otto-protocol — applies during deep personal disclosures: hold work as work, trust Aaron's self-monitoring + cooperate with human structure)
 - `memory/feedback_multi_ai_bft_pullback_recalibration_as_worked_example_with_bidirectional_correction_otto_aaron_2026_05_02.md` (PR #1220-merged worked example — that memo distills the earlier god-structures-shorthand misread→correction exchange; the crying/pull-back→Aaron-corrects sequence preserved in THIS doc is a SECOND instance of the same healthy-mode pattern operating, not a re-citation of the original worked example)
 - `docs/ALIGNMENT.md` bidirectional alignment commitment (this disclosure names μένω as the foundation under that commitment; ALIGNMENT.md update is appropriate as separate substrate landing)
-- B-0166 chat-as-DBSP-event vision (when that lands, content like this is ingested automatically; until then, manual preservation)
+- 081KQJZR90008QG0R001YX3445 chat-as-DBSP-event vision (when that lands, content like this is ingested automatically; until then, manual preservation)
 
 ---
 

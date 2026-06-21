@@ -1,6 +1,6 @@
 ---
 name: Candidate-count Goodhart — raw search hits are not violation counts (Amara final-synthesis naming, Aaron 2026-04-28)
-description: New Goodhart-family entry surfaced after B-0091 inspection found "8 active rewrite files" was a candidate-count proxy that resolved to "0 actual rewrites needed" once context-classified. Generalizes to any audit using grep/regex/search — raw hits are CANDIDATE evidence requiring context classification, not VIOLATION counts. Encoded as: count matches to find work; classify context to decide work. Best distilled rule. Composes with the metric ladder + Goodhart family. Critical for B-0092 compliance scanner design (must not Goodhart itself by trying to delete words like "insider" / "confidential" / "roadmap" from the rule definitions themselves).
+description: New Goodhart-family entry surfaced after 081KQ8P5D0008QG0R00353940P inspection found "8 active rewrite files" was a candidate-count proxy that resolved to "0 actual rewrites needed" once context-classified. Generalizes to any audit using grep/regex/search — raw hits are CANDIDATE evidence requiring context classification, not VIOLATION counts. Encoded as: count matches to find work; classify context to decide work. Best distilled rule. Composes with the metric ladder + Goodhart family. Critical for 081KQ8P5D0008QG0R003ZF64GG compliance scanner design (must not Goodhart itself by trying to delete words like "insider" / "confidential" / "roadmap" from the rule definitions themselves).
 type: feedback
 ---
 
@@ -17,7 +17,7 @@ Or, in the canonical decision-procedure form:
 
 ## The triggering catch (this session, 2026-04-28)
 
-B-0091 (audit + rename ServiceTitan references in live docs)
+081KQ8P5D0008QG0R00353940P (audit + rename ServiceTitan references in live docs)
 flagged 12 file matches via `rg -i 'service ?titan'`. The
 naive interpretation became:
 
@@ -87,7 +87,7 @@ context-sensitive audits, zero is the wrong target.
 
 ### Terminal classification states (per audit type)
 
-For the **ServiceTitan naming audit** (B-0091):
+For the **ServiceTitan naming audit** (081KQ8P5D0008QG0R00353940P):
 
 ```text
 KEEP-NAME (pitch / research / disclosure context)
@@ -99,7 +99,7 @@ NEEDS-HUMAN-REVIEW
 ```
 
 For the **public-company contributor compliance scanner**
-(B-0092):
+(081KQ8P5D0008QG0R003ZF64GG):
 
 ```text
 ALLOW (defining the compliance rule itself /
@@ -111,7 +111,7 @@ BLOCK (company-specific internal claim without public source /
        architecture)
 ```
 
-For the **lost-substrate audit** (B-0090):
+For the **lost-substrate audit** (081KQ8P5D0008QG0R0002TN22C):
 
 ```text
 ALREADY-COVERED
@@ -129,9 +129,9 @@ LEGITIMATE-USE (concept-naming / verbatim quote /
 NEEDS-REFRAME (agency-collapsing language about Aaron's role)
 ```
 
-## Critical implication for B-0092 compliance scanner
+## Critical implication for 081KQ8P5D0008QG0R003ZF64GG compliance scanner
 
-The B-0092 contributor-compliance scanner MUST be designed with
+The 081KQ8P5D0008QG0R003ZF64GG contributor-compliance scanner MUST be designed with
 this rule in mind. A scanner that tries to reach "zero uses of
 insider / confidential / roadmap" will **immediately Goodhart
 itself**, because:
@@ -157,7 +157,7 @@ Acceptance = all hits in terminal states; no BLOCK-class
   allowlisted; no ad-hoc bypasses outside rule-definition surfaces.
 ```
 
-This is encoded in B-0092's scanner section as a hard design
+This is encoded in 081KQ8P5D0008QG0R003ZF64GG's scanner section as a hard design
 constraint.
 
 ## External lineage (Tier 2)
@@ -234,11 +234,11 @@ decision procedure.
   — same family at the meta-level (count-as-evidence trap).
 - `memory/feedback_sample_classification_is_calibration_not_clearance_amara_goodhart_catch_3_2026_04_28.md`
   — Catch #3, also count-as-evidence shape.
-- B-0091 (ServiceTitan audit) — worked example: 12 matches →
+- 081KQ8P5D0008QG0R00353940P (ServiceTitan audit) — worked example: 12 matches →
   0 rewrites; the catch's origin trigger.
-- B-0092 (public-company contributor compliance) — critical
+- 081KQ8P5D0008QG0R003ZF64GG (public-company contributor compliance) — critical
   application: scanner must avoid self-destruct.
-- B-0090 (lost-substrate cadenced recovery) — applies same
+- 081KQ8P5D0008QG0R0002TN22C (lost-substrate cadenced recovery) — applies same
   rule to lost-branch / orphan-PR audits.
 
 ## Direct Aaron / Amara framing

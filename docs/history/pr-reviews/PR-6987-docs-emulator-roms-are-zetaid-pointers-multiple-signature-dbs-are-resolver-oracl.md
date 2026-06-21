@@ -27,7 +27,7 @@
 
 ## Description
 
-ROMs = pointers keyed by signature, never stored (reference-not-copy #6925); multiple signature DBs (No-Intro/Redump/TOSEC/MAME DATs) = resolver oracles (AcoustID/MusicBrainz analogue). Already partial: tools/roms (B-0083) pins+SHA-256-verifies DATs per-platform (atari-2600). Next: rom: scheme -> DarkHall cell (#6986) runs the user's legal ROM, verified, deterministic. Never store ROMs. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+ROMs = pointers keyed by signature, never stored (reference-not-copy #6925); multiple signature DBs (No-Intro/Redump/TOSEC/MAME DATs) = resolver oracles (AcoustID/MusicBrainz analogue). Already partial: tools/roms (081KQ8P5D0008QG0R001590WJ3) pins+SHA-256-verifies DATs per-platform (atari-2600). Next: rom: scheme -> DarkHall cell (#6986) runs the user's legal ROM, verified, deterministic. Never store ROMs. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

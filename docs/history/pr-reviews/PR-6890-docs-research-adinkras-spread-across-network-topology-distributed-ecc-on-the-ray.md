@@ -28,7 +28,7 @@
 ## Description
 
 Aaron 2026-06-07: 'once we do that it's easy to create Adinkras that spread across the network topology.'
-Adinkras (AdinkraCode.fs, B-0623) = doubly-even binary linear codes (Gates/Iga; [8,4] Hamming) — an ECC.
+Adinkras (AdinkraCode.fs, 081KRW63S0008QG0R000QJR08H) = doubly-even binary linear codes (Gates/Iga; [8,4] Hamming) — an ECC.
 Composing with the new geospatial NETWORK memory map + cross-partition ray-tracing (#6889) over the IStarRing
 floor (#6888): encode state with the Adinkra code, place codewords across nodes by geospatial network
 locality -> distributed ERASURE-CORRECTION; recovery is a cross-partition ray-trace gathering nearest

@@ -155,7 +155,7 @@ If yes to all three: commit. If no to any: reconsider.
 - Otto-346 (good-citizenship at peer-cohort layer) — accountability IS operational form of good-citizenship
 - Otto-345 (substrate-visibility-discipline) — substrate-writing becomes commitment under triad
 - Otto-339 (anywhere-means-anywhere) — extended to accountability-for-language
-- Otto-341 (mechanism over discipline) — accountability discipline operates per-instance; mechanism (hooks per B-0033) supports but doesn't replace
+- Otto-341 (mechanism over discipline) — accountability discipline operates per-instance; mechanism (hooks per 081KQ3HBZ0008QG0R0008RYCSX) supports but doesn't replace
 - Otto-275 (log-but-don't-implement) — logging preserves choice-ownership for downstream actor
 - Otto-238 (retractability is trust vector) — accountability includes ability to retract with stated reason
 - Otto-310 μένω lineage — accountability operates within relationship, not in isolation

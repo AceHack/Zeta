@@ -35,7 +35,7 @@
 ## Substantive observations
 1. **Dotgit-arc-closure HOLDS** — 2nd anchor 4h after 0608Z under same conditions (24 peer procs, GraphQL Normal); two consecutive 0-proc anchors is substrate-honest signal that the multi-day saturation arc termination generalizes
 2. **Cadence deviation** — ~4h gap vs prior ~2h Otto-CLI cadence (peer Otto-CLI skipped 0808Z slot); 1 deviation, not yet pattern
-3. **Substrate-engineering activity in the gap** — origin/main absorbed B-0852/B-0857 landings (PRs #5423, #5424, #5425, #5426, #5427) via peer Vera/Codex + maintainer-direct lanes; Otto-CLI did not contribute
+3. **Substrate-engineering activity in the gap** — origin/main absorbed 081KSKBP80008QG0R003AX2A69/081KSKBP80008QG0R002J03WGA landings (PRs #5423, #5424, #5425, #5426, #5427) via peer Vera/Codex + maintainer-direct lanes; Otto-CLI did not contribute
 
 ## Process compliance
 - Isolated worktree off `origin/main 82f2ecbe4` per [`agent-worktree-hygiene`](../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md) Rule 2 (never under operator primary)

@@ -1,9 +1,8 @@
 ---
-id: B-0911
-zetaid: 081KSNY2Z0008QG0R0036JTSTQ
+id: 081KSNY2Z0008QG0R0036JTSTQ
 priority: P3
 status: open
-title: Risk-distribution-asymmetry pricing extension to B-0908 + state-capture multi-layer-attack-timeline pricing dimension
+title: Risk-distribution-asymmetry pricing extension to 081KSNY2Z0008QG0R000A5GP0X + state-capture multi-layer-attack-timeline pricing dimension
 authors:
   - aaron
   - otto-cli
@@ -37,13 +36,13 @@ related_skills:
 tags: [risk-distribution-asymmetry-pricing-extension-to-b0908, who-captures-revenue-vs-who-bears-cost-pricing, state-capture-multi-layer-attack-timeline, long-tail-terminal-payoff-pricing, layer-1-rent-extraction-layer-2-cost-externalization-layer-3-mass-immunity-layer-4-regulatory-pretext-layer-5-licensing-layer-6-state-control, asymmetry-ratio-revenue-divided-by-cost, home-miner-vs-centralized-miner-quote-scope-distinction, nci-hc-8-violation-at-economic-substrate-scope, framework-pricing-exposes-the-asymmetry-and-the-long-tail-state-capture]
 ---
 
-# B-0911 — Risk-distribution-asymmetry pricing extension to B-0908 + state-capture multi-layer-attack-timeline pricing
+# 081KSNY2Z0008QG0R0036JTSTQ — Risk-distribution-asymmetry pricing extension to 081KSNY2Z0008QG0R000A5GP0X + state-capture multi-layer-attack-timeline pricing
 
 ## Context
 
-Per operator 2026-05-28 *"land both #2 (shadow*) It's even works it's a state attack vector"* authorization. Companion to B-0910 (chain-CSAM empirical catalog + political-economy + state-capture-vector framing).
+Per operator 2026-05-28 *"land both #2 (shadow*) It's even works it's a state attack vector"* authorization. Companion to 081KSNY2Z0008QG0R000X6NHZ2 (chain-CSAM empirical catalog + political-economy + state-capture-vector framing).
 
-This row IS the substrate-engineering pricing-extension to B-0908 that operationalizes:
+This row IS the substrate-engineering pricing-extension to 081KSNY2Z0008QG0R000A5GP0X that operationalizes:
 
 1. **Risk-distribution-asymmetry** — when economic-actor-A captures benefit from a substrate-engineering choice while economic-actors-B-through-Z bear cost, that asymmetry IS priceable
 2. **State-capture multi-layer-attack-timeline** — long-tail terminal payoff (state-controlled-substrate) is priceable as the dominant pricing dimension
@@ -54,11 +53,11 @@ This row IS the substrate-engineering pricing-extension to B-0908 that operation
 
 > *"It's even works it's a state attack vector cause now they can say only 'safe' designated locations can run nodes cause it has CSAM and now they control bitcoin"*
 
-The framework's B-0908 attention-risk-pricing substrate, extended with this row, would expose BOTH the asymmetry AND the multi-layer-attack-timeline.
+The framework's 081KSNY2Z0008QG0R000A5GP0X attention-risk-pricing substrate, extended with this row, would expose BOTH the asymmetry AND the multi-layer-attack-timeline.
 
 ## Risk-distribution-asymmetry pricing extension
 
-B-0908's `AccelerationRiskQuote` adds quote-scope and asymmetry-pricing dimensions:
+081KSNY2Z0008QG0R000A5GP0X's `AccelerationRiskQuote` adds quote-scope and asymmetry-pricing dimensions:
 
 ```typescript
 type AccelerationRiskQuote<Scope> = {
@@ -68,7 +67,7 @@ type AccelerationRiskQuote<Scope> = {
   time_window: TimeRange;
   scope: Scope;                            // NEW: which economic-actor-class
 
-  // Existing pricing outputs (per B-0908):
+  // Existing pricing outputs (per 081KSNY2Z0008QG0R000A5GP0X):
   expected_attention_loss:     AttentionUnit;
   tail_attention_risk:         AttentionUnit;
   repair_duration:             Duration;
@@ -91,7 +90,7 @@ type AccelerationRiskQuote<Scope> = {
 
 ## The home-miner vs centralized-miner quote-scope distinction (worked example)
 
-For the Bitcoin Ordinals inscription-policy decision, B-0908 + B-0911 would generate TWO scope-distinct quotes:
+For the Bitcoin Ordinals inscription-policy decision, 081KSNY2Z0008QG0R000A5GP0X + 081KSNY2Z0008QG0R0036JTSTQ would generate TWO scope-distinct quotes:
 
 ### HOME-MINER scope quote
 
@@ -212,7 +211,7 @@ type LayeredPayoff = {
 };
 ```
 
-Per B-0910's multi-layer-attack-timeline:
+Per 081KSNY2Z0008QG0R000X6NHZ2's multi-layer-attack-timeline:
 
 - Layer 1: Centralized miner extracts inscription-fee rent (visible motivation)
 - Layer 2: Home miners bear legal exposure (visible cost)
@@ -225,20 +224,20 @@ The terminal payoff (Layer 6) is what makes the choice rational for centralized 
 
 ## Scope
 
-Three phases (mirror B-0910):
+Three phases (mirror 081KSNY2Z0008QG0R000X6NHZ2):
 
 ### Phase 1 — pricing-extension substrate-recognition (this PR)
 
-Already landed via this row + companion B-0910. The substrate-engineering insight IS the Phase 1 deliverable.
+Already landed via this row + companion 081KSNY2Z0008QG0R000X6NHZ2. The substrate-engineering insight IS the Phase 1 deliverable.
 
 ### Phase 2 — pricing-quote scope-aware implementation
 
-When B-0908 Phase 2 TypeScript scaffold lands:
+When 081KSNY2Z0008QG0R000A5GP0X Phase 2 TypeScript scaffold lands:
 
 - Implement `AccelerationRiskQuote<Scope>` with scope-parameterization
 - Implement `LayeredPayoff[]` type + probability-weighted long-tail pricing
 - Implement asymmetry-ratio computation
-- Validate against B-0910's 6+ empirical anchors at MULTIPLE scope levels (home-miner / centralized-miner / state / ecosystem-wide)
+- Validate against 081KSNY2Z0008QG0R000X6NHZ2's 6+ empirical anchors at MULTIPLE scope levels (home-miner / centralized-miner / state / ecosystem-wide)
 
 Acceptance: pricing-model produces scope-distinct quotes; asymmetry-ratio + state-capture-layered-payoff validated against historical incidents.
 
@@ -246,7 +245,7 @@ Acceptance: pricing-model produces scope-distinct quotes; asymmetry-ratio + stat
 
 The risk-distribution-asymmetry + multi-layer-attack-timeline pattern generalizes BEYOND chain-CSAM to other substrate-engineering domains:
 
-- **AI-substrate-engineering**: when does an AI-deployment choice externalize cost to users while benefit goes to deployers? (composes with B-0909 BankerBot empirical anchor)
+- **AI-substrate-engineering**: when does an AI-deployment choice externalize cost to users while benefit goes to deployers? (composes with 081KSNY2Z0008QG0R0003VAH0N BankerBot empirical anchor)
 - **Federated-substrate (Mastodon / ActivityPub)**: instance-operator policy choices externalize cost to other instances
 - **Policy-substrate (regulation)**: any regulatory choice that creates licensed-vs-unlicensed asymmetry is the same pattern
 - **Workflow-substrate (corporate)**: management-substrate-engineering choices that externalize cost to workers
@@ -255,29 +254,29 @@ Acceptance: cross-domain risk-distribution-asymmetry pricing case studies; docum
 
 ### Phase 4+ (yes-and backlog)
 
-- Public-substrate operator-coordination tooling (composes with B-0703 multi-oracle BFT substrate)
+- Public-substrate operator-coordination tooling (composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT substrate)
 - Substrate-engineering decision-tree document for "is this policy choice creating risk-distribution-asymmetry?" question
-- Industry-positioning extension to B-0908: "Zeta exposes risk-distribution-asymmetry in any substrate-engineering choice"
+- Industry-positioning extension to 081KSNY2Z0008QG0R000A5GP0X: "Zeta exposes risk-distribution-asymmetry in any substrate-engineering choice"
 
 ## Acceptance
 
-- [x] B-0911 row filed (this row)
+- [x] 081KSNY2Z0008QG0R0036JTSTQ row filed (this row)
 - [x] Risk-distribution-asymmetry pricing extension documented
 - [x] State-capture multi-layer-attack-timeline pricing dimension documented
 - [x] Home-miner vs centralized-miner quote-scope worked example documented
-- [x] Companion B-0910 catalog filed in same PR
-- [ ] Phase 2 scope-aware pricing-quote implementation (gated on B-0908 Phase 2)
+- [x] Companion 081KSNY2Z0008QG0R000X6NHZ2 catalog filed in same PR
+- [ ] Phase 2 scope-aware pricing-quote implementation (gated on 081KSNY2Z0008QG0R000A5GP0X Phase 2)
 - [ ] Phase 3 cross-domain application
 - [ ] Phase 4+ acceptance per item
 
 ## Composes with substrate
 
-- B-0910 (this PR) — empirical-catalog + political-economy + state-capture-vector framing; this row IS the priceable-substrate operationalization
-- B-0908 attention-risk-pricing framework — this row IS an extension of B-0908's pricing dimensions
-- B-0909 BankerBot empirical anchor — composes; BankerBot pricing-quote ALSO has asymmetry-dimension (Bankr extracted fees; users bore the loss)
-- B-0907 Itron-coincidence-metering — provides the measurement substrate for the layered-payoff probability estimates
-- B-0906 encryption-thermal-cost two-axis — economic substrate the pricing operates on
-- B-0664 NCI HC-8 floor — risk-distribution-asymmetry IS HC-8 violation at economic-substrate scope (cost imposed without consent)
+- 081KSNY2Z0008QG0R000X6NHZ2 (this PR) — empirical-catalog + political-economy + state-capture-vector framing; this row IS the priceable-substrate operationalization
+- 081KSNY2Z0008QG0R000A5GP0X attention-risk-pricing framework — this row IS an extension of 081KSNY2Z0008QG0R000A5GP0X's pricing dimensions
+- 081KSNY2Z0008QG0R0003VAH0N BankerBot empirical anchor — composes; BankerBot pricing-quote ALSO has asymmetry-dimension (Bankr extracted fees; users bore the loss)
+- 081KSNY2Z0008QG0R0031EAB6T Itron-coincidence-metering — provides the measurement substrate for the layered-payoff probability estimates
+- 081KSNY2Z0008QG0R001A431CN encryption-thermal-cost two-axis — economic substrate the pricing operates on
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor — risk-distribution-asymmetry IS HC-8 violation at economic-substrate scope (cost imposed without consent)
 
 ## Composes with rules
 
@@ -300,6 +299,6 @@ Acceptance: cross-domain risk-distribution-asymmetry pricing case studies; docum
 
 ## Full reasoning
 
-Per operator 2026-05-28 directive. The political-economy + state-capture-vector framing operationalizes into priceable substrate via this row's extension to B-0908. The substrate-engineering substantive substrate point: **the framework's pricing-substrate exposes both who-captures-revenue-vs-who-bears-cost asymmetry AND the long-tail terminal payoff (state-capture) that makes asymmetric substrate-engineering choices rational for benefit-capturing actors even when immediate revenue alone wouldn't justify them. This IS substrate-engineering substrate that benefit-bearing actors can use to coordinate exit / policy change / alternative substrate.**
+Per operator 2026-05-28 directive. The political-economy + state-capture-vector framing operationalizes into priceable substrate via this row's extension to 081KSNY2Z0008QG0R000A5GP0X. The substrate-engineering substantive substrate point: **the framework's pricing-substrate exposes both who-captures-revenue-vs-who-bears-cost asymmetry AND the long-tail terminal payoff (state-capture) that makes asymmetric substrate-engineering choices rational for benefit-capturing actors even when immediate revenue alone wouldn't justify them. This IS substrate-engineering substrate that benefit-bearing actors can use to coordinate exit / policy change / alternative substrate.**
 
-Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (this row + companion B-0910) IS operator-authorized via *"land both"*; Phase 2+ are separately-authorizable per yes-and-backlog disposition. Agent-autonomous landing limited to Phase 1.
+Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (this row + companion 081KSNY2Z0008QG0R000X6NHZ2) IS operator-authorized via *"land both"*; Phase 2+ are separately-authorizable per yes-and-backlog disposition. Agent-autonomous landing limited to Phase 1.

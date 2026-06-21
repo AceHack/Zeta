@@ -1,6 +1,6 @@
 name: context-cost-trend-cadence
 
-# Daily DORA trend cadence for B-1016 context-window minimization. Runs
+# Daily DORA trend cadence for 081KT7YW00008QG0R002T1XNWT context-window minimization. Runs
 # `bun src/Core.TypeScript/observe/context-cost-trend.ts --record`, which appends one row per
 # harness (bytes + token estimate) to the append-only trend store
 # src/Core.TypeScript/observe/context-cost-trend.jsonl, and commits it directly to main
@@ -12,7 +12,7 @@ name: context-cost-trend-cadence
 #  - src/Core.TypeScript/observe/context-cost-trend.ts (the --record tool)
 #  - src/Core.TypeScript/observe/context-cost.ts + byte-cost meter (the measured signal)
 #  - .github/workflows/manifesto-citation-snapshot-cadence.yml (pattern reference)
-#  - B-1016 (context-window minimization; over-time enforcement leg)
+#  - 081KT7YW00008QG0R002T1XNWT (context-window minimization; over-time enforcement leg)
 #
 # Cost note: this is a deterministic bash+bun job (NO model/LLM), so the GitHub
 # Actions run is free — exactly the "workflows are free, they just won't gate"
@@ -79,7 +79,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/Core.TypeScript/observe/context-cost-trend.jsonl
           {
-            echo "ops(B-1016): daily context-cost trend row $today"
+            echo "ops(081KT7YW00008QG0R002T1XNWT): daily context-cost trend row $today"
             echo
             echo "Appended one row per harness (bytes + token estimate) to the"
             echo "append-only DORA trend store via context-cost-trend.ts --record."
@@ -93,7 +93,7 @@ jobs:
             echo "Human-Review: not-implied-by-credential"
             echo "Human-Review-Evidence: none"
             echo "Action-Mode: autonomous-fail-open"
-            echo "Task: B-1016"
+            echo "Task: 081KT7YW00008QG0R002T1XNWT"
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
           } | git commit --file=-
           # Fast-forward-safe push to main (Branch Safety floor: no force / linear).

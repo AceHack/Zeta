@@ -8,7 +8,7 @@ import { GRAMMAR_16_V0, SLOT } from "./grammar-16";
 import { renderGrammar16, leadSlot } from "./grammar-16-render";
 import { defaultNodeSession } from "./first-session";
 const item = (over = {}) => ({
-    id: "B-0001",
+    id: "081KPYCJH0008QG0R003MDS51N",
     title: "an item",
     ready: false,
     ambiguous: false,
@@ -20,8 +20,8 @@ const op = (over = {}) => ({
     ...over,
 });
 const EMPTY = { backlog: [] };
-const READY = { backlog: [item({ id: "B-0010", title: "ready one", ready: true })] };
-const AMBIGUOUS = { backlog: [item({ id: "B-0020", title: "fuzzy one", ambiguous: true })] };
+const READY = { backlog: [item({ id: "081KQ0YZ80008QG0R00264RY8Z", title: "ready one", ready: true })] };
+const AMBIGUOUS = { backlog: [item({ id: "081KQ0YZ80008QG0R000T0AJXS", title: "fuzzy one", ambiguous: true })] };
 const OPERATOR_SPOKE = { backlog: [], operator: op({ pendingMessage: true }) };
 const FREE_PERSISTED = { backlog: [item({ ready: true })], mode: "play" };
 const slotOf = (slots, i) => slots.find((s) => s.index === i);
@@ -77,7 +77,7 @@ describe("renderGrammar16 — slot 4 (the primary act)", () => {
     it("T with a do-item label when a ready item exists", () => {
         const s4 = slotOf(renderGrammar16(READY), SLOT.ACCEPT);
         expect(s4.availability.s).toBe("T");
-        expect(s4.label).toContain("B-0010");
+        expect(s4.label).toContain("081KQ0YZ80008QG0R00264RY8Z");
     });
     it("decompose label when only an ambiguous item exists", () => {
         const s4 = slotOf(renderGrammar16(AMBIGUOUS), SLOT.ACCEPT);
@@ -120,7 +120,7 @@ describe("leadSlot — oracle pick -> slot (operator-priority is not a slot)", (
 });
 describe("renderGrammar16 — first-session overlay (slice 4)", () => {
     const PENDING = {
-        backlog: [item({ id: "B-0099", title: "ready work", ready: true })],
+        backlog: [item({ id: "081KQB8J40008QG0R002PEP2A2", title: "ready work", ready: true })],
         nodeSession: defaultNodeSession(),
     };
     it("slot 4 carries first-session sub-menu when nodeSession pending", () => {

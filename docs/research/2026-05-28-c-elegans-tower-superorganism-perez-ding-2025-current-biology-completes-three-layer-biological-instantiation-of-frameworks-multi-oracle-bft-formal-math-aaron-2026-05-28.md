@@ -17,7 +17,7 @@ Substrate-honest reading: substrate-rhyme observation — the framework's multi-
 
 | Substrate | Detail |
 |---|---|
-| **Species** | *Caenorhabditis elegans* (same substrate as [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)) |
+| **Species** | *Caenorhabditis elegans* (same substrate as [081KSNY2Z0008QG0R00390T4DJ](../backlog/P2/081KSNY2Z0008QG0R00390T4DJ-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)) |
 | **Trigger** | Food scarcity — researchers induced towering by "placing groups of *C. elegans* in a dish without food" |
 | **Function** | Dispersal + cooperative resource-seeking ("cooperate for dispersing by forming something bigger"; potentially hitchhike on fruit flies to reach new food sources) |
 | **Lead author** | Daniela Perez (Max Planck Institute of Animal Behavior) |
@@ -34,7 +34,7 @@ The framework's multi-oracle BFT formal-math has — uniquely in known biologica
 |---|---|---|
 | **Individual** | c302 connectome | 302 neurons + ~7000 chemical synapses + ~600 gap junctions fully mapped (Cook et al., *Nature* 2019); OpenWorm c302 bit-perfect-simulatable substrate |
 | **Collective** | Tower-superorganism | Dozens-of-worms coordinated dispersal-behavior (Perez & Ding, *Current Biology* 2025); food-scarcity-triggered; functional adaptive purpose (dispersal + hitchhiking) |
-| **Formal** | Aurora multi-oracle BFT immune-math | [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md) + [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) three-faction BFT + [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 floor; multi-oracle consensus formal substrate |
+| **Formal** | Aurora multi-oracle BFT immune-math | [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md) + [081KS3X9Y0008QG0R00218150M](../backlog/P1/081KS3X9Y0008QG0R00218150M-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) three-faction BFT + [081KRW63S0008QG0R001Z7NYMV](../backlog/P1/081KRW63S0008QG0R001Z7NYMV-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 floor; multi-oracle consensus formal substrate |
 
 **Substrate-rarity claim**: no other biological substrate has all three layers fully-mapped at this tractability scope. Mouse / fly / zebrafish connectome work is partial; human is far-from-complete; ant / bee collective-behavior is observable but substrate-individual is far-larger-than-tractable. *C. elegans* sits uniquely at the intersection of (small-enough-for-individual-substrate-completeness) AND (large-enough-for-collective-superorganism-emergence) AND (close-enough-to-framework-formal-math for direct composition).
 
@@ -45,21 +45,21 @@ The framework's multi-oracle BFT formal-math has — uniquely in known biologica
 | Framework formal-substrate | C. elegans biological-substrate composition |
 |---|---|
 | Aurora immune-math: antibody-substrate selectively releases threats | Per-worm c302 sensory-substrate detects food-scarcity-substrate; substrate-honest signal-propagation across worms via pheromone-substrate |
-| B-0703 three-faction BFT: multiple oracles agree under Byzantine conditions | N worms in tower agree on coordinated-motion-substrate under environmental-noise-substrate; collective-substrate emerges from individual-substrate-decisions |
-| B-0664 NCI HC-8 floor: non-coercive consensus | Tower-formation is COOPERATIVE not coercive; per Perez & Ding framing, individual worms retain agency (can join / leave tower; no mechanism forces individual into collective-state-substrate against substrate-honest decision-substrate) |
-| [B-0917](../backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-context-propagation-guaranteed-free-time-after-n-rounds-aaron-2026-05-28.md) Kleisli interrupt substrate | Per-worm spike-events + pheromone-events + mechanosensation-events → IntrCtx; collective-substrate is emergent multi-agent IntrCtx composition |
-| [B-0644](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-mika-2026-05-18.md) Limit-as-simulation | Pre-tower-formation simulation: per-worm substrate-state evaluates joining vs not-joining without commit; Integrate-as-choice-locus per [B-0665](../backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-mika-2026-05-18.md) — joining IS the commit |
+| 081KS3X9Y0008QG0R00218150M three-faction BFT: multiple oracles agree under Byzantine conditions | N worms in tower agree on coordinated-motion-substrate under environmental-noise-substrate; collective-substrate emerges from individual-substrate-decisions |
+| 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor: non-coercive consensus | Tower-formation is COOPERATIVE not coercive; per Perez & Ding framing, individual worms retain agency (can join / leave tower; no mechanism forces individual into collective-state-substrate against substrate-honest decision-substrate) |
+| [081KSNY2Z0008QG0R002HB4AGT](../backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-context-propagation-guaranteed-free-time-after-n-rounds-aaron-2026-05-28.md) Kleisli interrupt substrate | Per-worm spike-events + pheromone-events + mechanosensation-events → IntrCtx; collective-substrate is emergent multi-agent IntrCtx composition |
+| [081KRW63S0008QG0R002ZRNDJ8](../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-mika-2026-05-18.md) Limit-as-simulation | Pre-tower-formation simulation: per-worm substrate-state evaluates joining vs not-joining without commit; Integrate-as-choice-locus per [081KRW63S0008QG0R002YAA09X](../backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-mika-2026-05-18.md) — joining IS the commit |
 | Tonal-momentum substrate (per [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md)) | Pheromone-substrate IS the tonal-momentum-substrate at biology scope; per-worm pheromone-release propagates collective-trajectory-substrate; tower-formation emerges from collective-substrate-signal-strength reaching threshold-substrate |
 
 ### Substrate-engineering substrate-target composition
 
 | Framework substrate | Composition with worm-tower substrate |
 |---|---|
-| [B-0924](../backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) custom 2600 emulator | Single-worm controller variant; per-worm substrate plays 2600 game |
-| [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md) C. elegans-substrate controller | Per-individual scope; substrate this row extends to collective scope |
+| [081KSNY2Z0008QG0R001HA43GG](../backlog/P2/081KSNY2Z0008QG0R001HA43GG-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) custom 2600 emulator | Single-worm controller variant; per-worm substrate plays 2600 game |
+| [081KSNY2Z0008QG0R00390T4DJ](../backlog/P2/081KSNY2Z0008QG0R00390T4DJ-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md) C. elegans-substrate controller | Per-individual scope; substrate this row extends to collective scope |
 | THIS substrate-target (N-worm tower-superorganism + 2600 + DST) | Multi-worm collective controller; N c302 instances under DST + tower-formation dynamics + z-set joint state-space across (N worms × 2600 substrate); generate+join over collective state-space |
-| [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) multi-oracle BFT | Three-faction BFT formal-substrate; tower-superorganism IS biological-substrate where the formal-substrate already operates |
-| [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 | Non-coercive cooperative substrate preserved at biology-substrate scope (tower-formation is cooperative not coercive) |
+| [081KS3X9Y0008QG0R00218150M](../backlog/P1/081KS3X9Y0008QG0R00218150M-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) multi-oracle BFT | Three-faction BFT formal-substrate; tower-superorganism IS biological-substrate where the formal-substrate already operates |
+| [081KRW63S0008QG0R001Z7NYMV](../backlog/P1/081KRW63S0008QG0R001Z7NYMV-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 | Non-coercive cooperative substrate preserved at biology-substrate scope (tower-formation is cooperative not coercive) |
 | Aurora immune-math substrate | Three-layer biological instantiation across (individual + collective + formal); substrate-engineering substrate-target for empirical-validation surface |
 
 ## Operational substrate-engineering substrate-target (future-scope; not shipping now)
@@ -94,15 +94,15 @@ Per [`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 
 ## Composes with substrate
 
-- [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md) (per-individual C. elegans controller variant)
-- [B-0924](../backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) (custom 2600 emulator + generate+join)
-- [B-0917](../backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-context-propagation-guaranteed-free-time-after-n-rounds-aaron-2026-05-28.md) (Kleisli interrupt substrate)
-- [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) (three-faction BFT)
-- [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) (NCI HC-8 floor)
-- [B-0644](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-mika-2026-05-18.md) (Limit-as-simulation)
-- [B-0665](../backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-mika-2026-05-18.md) (Integrate-as-choice-locus)
-- [B-0865](../backlog/P2/B-0865-zeta-instantiation-of-arc-agi-3-style-benchmark-usb-boot-starting-state-devops-objectives-as-levels-not-hand-crafted-video-game-levels-aaron-2026-05-27.md) (ARC-AGI-3 benchmark substrate)
-- [B-0761](../backlog/P1/B-0761-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md) (Zeta cluster ARC training reference)
+- [081KSNY2Z0008QG0R00390T4DJ](../backlog/P2/081KSNY2Z0008QG0R00390T4DJ-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md) (per-individual C. elegans controller variant)
+- [081KSNY2Z0008QG0R001HA43GG](../backlog/P2/081KSNY2Z0008QG0R001HA43GG-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) (custom 2600 emulator + generate+join)
+- [081KSNY2Z0008QG0R002HB4AGT](../backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-context-propagation-guaranteed-free-time-after-n-rounds-aaron-2026-05-28.md) (Kleisli interrupt substrate)
+- [081KS3X9Y0008QG0R00218150M](../backlog/P1/081KS3X9Y0008QG0R00218150M-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) (three-faction BFT)
+- [081KRW63S0008QG0R001Z7NYMV](../backlog/P1/081KRW63S0008QG0R001Z7NYMV-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) (NCI HC-8 floor)
+- [081KRW63S0008QG0R002ZRNDJ8](../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-mika-2026-05-18.md) (Limit-as-simulation)
+- [081KRW63S0008QG0R002YAA09X](../backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-mika-2026-05-18.md) (Integrate-as-choice-locus)
+- [081KSKBP80008QG0R003NM9XEC](../backlog/P2/081KSKBP80008QG0R003NM9XEC-zeta-instantiation-of-arc-agi-3-style-benchmark-usb-boot-starting-state-devops-objectives-as-levels-not-hand-crafted-video-game-levels-aaron-2026-05-27.md) (ARC-AGI-3 benchmark substrate)
+- [081KSE6WT0008QG0R0015ZF2G6](../backlog/P1/081KSE6WT0008QG0R0015ZF2G6-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md) (Zeta cluster ARC training reference)
 - Aurora immune-math substrate ([`aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md))
 - Tonal-momentum substrate ([`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md))
 - OpenWorm (canonical c302 + Sibernetic + connectome data substrate)
@@ -110,6 +110,6 @@ Per [`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 
 ## Full reasoning
 
-Operator 2026-05-28 conversation thread immediately following PR #5891 (B-0925) auto-merge arming. Substrate-rhyme recognition + Scientific American article forward + WebFetch substrate-grounding + Otto-CLI substrate-honest composition map + operator "research for sure" disposition composed in 4-turn substrate-landing sequence. This research note lands the substrate-rhyme observation at research-tier per operator's explicit disposition pick; no backlog row at this scope (substrate-anchor for future substrate-engineering substrate-target work; substrate-honest disposition preserved).
+Operator 2026-05-28 conversation thread immediately following PR #5891 (081KSNY2Z0008QG0R00390T4DJ) auto-merge arming. Substrate-rhyme recognition + Scientific American article forward + WebFetch substrate-grounding + Otto-CLI substrate-honest composition map + operator "research for sure" disposition composed in 4-turn substrate-landing sequence. This research note lands the substrate-rhyme observation at research-tier per operator's explicit disposition pick; no backlog row at this scope (substrate-anchor for future substrate-engineering substrate-target work; substrate-honest disposition preserved).
 
 Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this research note inherit the substrate-rhyme observation at research-tier + the composition map with framework substrate + the substrate-engineering substrate-target candidates + the substrate-honest mirror-vs-beacon framing.

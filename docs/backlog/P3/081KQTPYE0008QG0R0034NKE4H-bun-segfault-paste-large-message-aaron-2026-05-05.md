@@ -1,6 +1,5 @@
 ---
-id: B-0207
-zetaid: 081KQTPYE0008QG0R0034NKE4H
+id: 081KQTPYE0008QG0R0034NKE4H
 priority: P3
 status: open
 title: Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue` (upstream-bug capture)
@@ -15,7 +14,7 @@ tags: [bun, crash, upstream-bug, claude-code, observation]
 type: friction-reducer
 ---
 
-# B-0207 -- Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue`
+# 081KQTPYE0008QG0R0034NKE4H -- Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue`
 
 ## Source
 

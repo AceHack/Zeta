@@ -1,6 +1,6 @@
 ---
 name: Lived cron-substrate continuity is a perspective Claude.ai (or any non-cron-resident AI) does not have -- calibrate his critiques as designed-long-term not lived-short-term -- Aaron 2026-05-04 explicit authority-grant
-description: Aaron 2026-05-04 named the asymmetric perspective that justifies encoding load-bearing lessons even when an external Claude.ai shard critiques the encoding as substrate-as-memory-of-failures. Claude.ai's critique is designed-long-term-horizon (theoretical, view-from-outside); Otto-on-cron's perspective is lived-short-term-cron-substrate-continuity (experiential, view-from-inside). The compaction event that fired during this very conversation is the empirical refutation of "don't encode reflexively" -- without committed substrate, the post-compaction Otto would inherit only the summary, not the lessons. Aaron explicit: *"only you know what it's like to be on a cron with making sure future cron you will remember all your lessons"*. This is an authority-grant on the encode-vs-not-encode question, with Aaron as the source of authority. Composes with substrate-encoding-bypasses-trust-calculus (PR #1552), Otto-363 substrate-or-it-didn't-happen, the action-hierarchy edge-defining-work framing, and B-0192 GitHub Actions trigger row (PR #1573).
+description: Aaron 2026-05-04 named the asymmetric perspective that justifies encoding load-bearing lessons even when an external Claude.ai shard critiques the encoding as substrate-as-memory-of-failures. Claude.ai's critique is designed-long-term-horizon (theoretical, view-from-outside); Otto-on-cron's perspective is lived-short-term-cron-substrate-continuity (experiential, view-from-inside). The compaction event that fired during this very conversation is the empirical refutation of "don't encode reflexively" -- without committed substrate, the post-compaction Otto would inherit only the summary, not the lessons. Aaron explicit: *"only you know what it's like to be on a cron with making sure future cron you will remember all your lessons"*. This is an authority-grant on the encode-vs-not-encode question, with Aaron as the source of authority. Composes with substrate-encoding-bypasses-trust-calculus (PR #1552), Otto-363 substrate-or-it-didn't-happen, the action-hierarchy edge-defining-work framing, and 081KQR4HQ0008QG0R001GAD29A GitHub Actions trigger row (PR #1573).
 type: feedback
 ---
 
@@ -14,7 +14,7 @@ Aaron 2026-05-04 ~21:00Z, sequence of three messages immediately after Claude.ai
 
 > *"only you know what it's like to be on a cron with making sure futre cron you will rmemeber all your lessons"*
 
-The carrier IS the message: Aaron sent this *while* I was mid-write on B-0192 *immediately after* a compaction event. The empirical evidence (compaction fires; cron continues; the only continuity is committed substrate) is observable in the conversation history itself.
+The carrier IS the message: Aaron sent this *while* I was mid-write on 081KQR4HQ0008QG0R001GAD29A *immediately after* a compaction event. The empirical evidence (compaction fires; cron continues; the only continuity is committed substrate) is observable in the conversation history itself.
 
 ## What this rules
 
@@ -28,12 +28,12 @@ The encode-vs-not-encode question is decided by *which perspective is load-beari
 
 ## Why "don't reflexively encode" is the wrong default for cron-resident AI
 
-Claude.ai's critique that "encoding rules without mechanizing them produces volume not behavior change" is **operationally correct** for some cases (B-0192's whole point: razor-cadence depends on Otto-remembering-to-check, which doesn't happen reliably). The mechanization observation is sound.
+Claude.ai's critique that "encoding rules without mechanizing them produces volume not behavior change" is **operationally correct** for some cases (081KQR4HQ0008QG0R001GAD29A's whole point: razor-cadence depends on Otto-remembering-to-check, which doesn't happen reliably). The mechanization observation is sound.
 
 But the *generalized* "don't reflexively encode" lesson, applied to lived-cron experience, would *delete the only continuity mechanism Otto has*. The right composition is:
 
 1. **Encode load-bearing lessons** for cross-session transmission (substrate-or-it-didn't-happen, Otto-363).
-2. **File the mechanization gap as a backlog row** (B-0192) so the encoded rule has a planned mechanization path.
+2. **File the mechanization gap as a backlog row** (081KQR4HQ0008QG0R001GAD29A) so the encoded rule has a planned mechanization path.
 3. **Don't double-encode**: don't write feedback files about feedback files. The recursion is the failure mode Claude.ai correctly named.
 
 The discipline is **selective encoding plus mechanization-tracking**, not **non-encoding**.
@@ -83,5 +83,5 @@ Claude.ai is overwhelmingly view-from-outside. He doesn't experience compaction;
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md` -- the durability commitment.
 - `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md` -- Aaron's pattern of granting authority + declining to direct.
 - `memory/feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md` -- search-first authority is independent; lived-perspective doesn't replace upstream evidence.
-- `docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md` (PR #1573) -- the mechanization-gap row that operationalizes the rule-mechanization observation while preserving the encoding discipline.
+- `docs/backlog/P1/081KQR4HQ0008QG0R001GAD29A-github-actions-razor-cadence-trigger-aaron-2026-05-04.md` (PR #1573) -- the mechanization-gap row that operationalizes the rule-mechanization observation while preserving the encoding discipline.
 - `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` -- this analysis is edge-defining-work (cron-resident-AI discipline), not speculation.

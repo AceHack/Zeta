@@ -1,6 +1,5 @@
 ---
-id: B-0456
-zetaid: 081KRHWGX0008QG0R000JEBCWZ
+id: 081KRHWGX0008QG0R000JEBCWZ
 priority: P2
 status: closed
 title: Mechanize MD032 (blanks-around-lists) check — catch tick-shard discipline gap before push, not in CI
@@ -15,7 +14,7 @@ tags: [substrate-hygiene, markdownlint, MD032, mechanization, tick-shards, encod
 type: friction-reducer
 ---
 
-# B-0456 — Mechanize MD032 blanks-around-lists check
+# 081KRHWGX0008QG0R000JEBCWZ — Mechanize MD032 blanks-around-lists check
 
 ## Origin
 
@@ -97,7 +96,7 @@ should be mechanized" without forcing immediate scheduling.
 
 ## Composes with
 
-- B-0451 (parent substrate-cleanup row — this is part of the same
+- 081KRFA460008QG0R00308W7FJ (parent substrate-cleanup row — this is part of the same
   sweep of "discipline-in-head, fix-by-mechanization" patterns)
 - `.claude/rules/encoding-rules-without-mechanizing.md` (the rule
   this row enforces)

@@ -29,9 +29,9 @@
 
 ## Summary
 
-- **Convergence**: peer-Otto's concurrent session ran ticks 0545Z–0615Z while I was idle. Their [PR #3370](https://github.com/Lucent-Financial-Group/Zeta/pull/3370) (0615Z shard) + [PR #3372](https://github.com/Lucent-Financial-Group/Zeta/pull/3372) (B-0530 cron-sentinel-mutex row) identified the worktree-prune-race root cause that my 0524Z had narrowed to "highest-likelihood remaining candidate".
+- **Convergence**: peer-Otto's concurrent session ran ticks 0545Z–0615Z while I was idle. Their [PR #3370](https://github.com/Lucent-Financial-Group/Zeta/pull/3370) (0615Z shard) + [PR #3372](https://github.com/Lucent-Financial-Group/Zeta/pull/3372) (081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex row) identified the worktree-prune-race root cause that my 0524Z had narrowed to "highest-likelihood remaining candidate".
 - **Root cause confirmed**: multi-session Otto-CLI self-contention on `.git/objects/pack` during `git worktree add`'s internal `git reset --hard`. Not external pruning.
-- **Non-duplication discipline**: I drafted a parallel B-NNNN row this tick before `git fetch`; abandoned after fetching and seeing B-0530 already on main. Refresh-before-decide applies at backlog-row-allocation scope.
+- **Non-duplication discipline**: I drafted a parallel B-NNNN row this tick before `git fetch`; abandoned after fetching and seeing 081KRMEXM0008QG0R000X1PPGC already on main. Refresh-before-decide applies at backlog-row-allocation scope.
 - **Borrow pattern validated concurrent-Otto-safe**: peer-Otto landed 2 commits to the same worktree's original branch (`feat/ani-full-history-extract-...`) while I was borrowing it for 5 borrow cycles. No conflicts.
 - **My prior PRs**: PR #3363 + #3365 both MERGED.
 - Bus hygiene: 5 expired envelopes cleaned.
@@ -40,7 +40,7 @@
 
 - [x] `bun tools/hygiene/check-tick-history-shard-schema.ts` → 0 violations
 - [x] `bun x markdownlint-cli2` → 0 violations
-- [x] Pipe-row first line + H1-rich body (hybrid pattern per B-0529)
+- [x] Pipe-row first line + H1-rich body (hybrid pattern per 081KRMEXM0008QG0R002HBY56V)
 - [x] Linked rule refs
 - [ ] CI required checks pass
 - [ ] Auto-merge fires
@@ -128,7 +128,7 @@ shard(tick): 0710Z — convergence with peer-Otto 0615Z investigation; …
 …root cause confirmed; non-duplication discipline
 
 Peer-Otto's concurrent session (PID 30425) ran ticks 0545Z-0615Z while I was idle.
-Their PR #3370 (0615Z shard) + PR #3372 (B-0530 cron-sentinel-mutex row) IDENTIFIED
+Their PR #3370 (0615Z shard) + PR #3372 (081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex row) IDENTIFIED
 the worktree-prune-race root cause: multi-session Otto-CLI self-contention on
 shared .git/objects/pack during git worktree add's internal git reset --hard.
 
@@ -137,7 +137,7 @@ was on my "next tick" list as highest-likelihood. Peer-Otto got there first via
 empirical PID-level evidence at 0611Z.
 
 Substrate-honest non-duplication: abandoned my draft B-NNNN row this tick after
-git fetch revealed B-0530 already on main. Refresh-before-decide applies at
+git fetch revealed 081KRMEXM0008QG0R000X1PPGC already on main. Refresh-before-decide applies at
 backlog-row-allocation scope.
 
 Documents the borrow-on-existing vs new-worktree-creation distinction:

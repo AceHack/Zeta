@@ -1,6 +1,5 @@
 ---
-id: B-0833
-zetaid: 081KSGS9H0008QG0R003JNSVR5
+id: 081KSGS9H0008QG0R003JNSVR5
 priority: P1
 status: open
 title: installer interactive-login vs baked-in-keys CI-test tension — resolve without shipping credentials on ISO (operator 2026-05-26 from physical hardware-support test)
@@ -18,7 +17,7 @@ tags: [installer, ci, gh-auth, security, interactive-vs-headless-test, credentia
 ## Problem
 
 Operator framing 2026-05-26 (from the physical hardware-support test in
-progress as B-0832's nmtui empirical anchor was being filed):
+progress as 081KSGS9H0008QG0R001Q2DH2H's nmtui empirical anchor was being filed):
 
 > "in the automated tests i see a tention between interactive login and
 > baked in keys we probably are going to have to resolve this i would
@@ -29,10 +28,10 @@ The tension is between two installer authentication modes:
 
 | Mode | What it does | Security property | Testability property |
 |---|---|---|---|
-| **Interactive login** | Operator runs `gh auth login` at install time; device-code flow opens browser; types code; OAuth completes | NO credentials ship on ISO; aligned with B-0794 homelab-mode framework | **Hard to test in CI**: requires human typing code OR mock GH device-code endpoint |
+| **Interactive login** | Operator runs `gh auth login` at install time; device-code flow opens browser; types code; OAuth completes | NO credentials ship on ISO; aligned with 081KSGS9H0008QG0R0027HJZYH homelab-mode framework | **Hard to test in CI**: requires human typing code OR mock GH device-code endpoint |
 | **Baked-in keys** | SSH key / PAT pre-staged on ISO at build time | **Violates**: ISO is publicly downloadable; baked credentials = secret leakage | Easy to test (no auth flow needed) |
 
-The CI cascade #6 substrate (per B-0831) currently has NO path to test
+The CI cascade #6 substrate (per 081KSGS9H0008QG0R0011BC7T2) currently has NO path to test
 the interactive-login flow end-to-end without either:
 
 1. Compromising security (bake test credentials on ISO)
@@ -99,13 +98,13 @@ Properties:
 ### Approach D — Manual auth-only physical test (operator periodic)
 
 Acknowledge that some auth flows are inherently human-driven and
-reserve them for periodic operator-driven physical tests (per B-0831
+reserve them for periodic operator-driven physical tests (per 081KSGS9H0008QG0R0011BC7T2
 physical-as-hardware-support-test reframing).
 
 Properties:
 
 - Honest about what CI can/cannot cover
-- Periodic-physical-test discipline already named in B-0831
+- Periodic-physical-test discipline already named in 081KSGS9H0008QG0R0011BC7T2
 - Auth-flow regressions caught at operator-physical-test cadence, not
   per-PR
 - Risk: regressions can sit longer before discovery
@@ -176,7 +175,7 @@ physical. Approach E (Aaron 2026-05-26) is the highest-fidelity
 automated path but requires the most operational substrate
 (AI accounts + Playwright + 2FA handling + account hygiene).
 
-Likely landing: **C first** (immediate testability gain for B-0831
+Likely landing: **C first** (immediate testability gain for 081KSGS9H0008QG0R0011BC7T2
 cascade #6 phase 1) + **A or B as follow-up** (cover the auth flow
 properly when there's budget for it) + **D as steady-state** (some
 hardware-specific auth quirks always need operator-physical-test).
@@ -192,7 +191,7 @@ Phased acceptance:
   test; mock GH server OR ephemeral GH App token used; full coverage
   of `gh auth login` device-code path in CI
 - Approach D acceptance: operator-physical-test cadence documented
-  per B-0831 reframing; auth-flow regressions get human-physical-test
+  per 081KSGS9H0008QG0R0011BC7T2 reframing; auth-flow regressions get human-physical-test
   coverage at chosen periodicity
 - Approach E acceptance: dedicated AI GH account(s) provisioned with
   scoped permissions + 2FA TOTP-in-secret-store; Playwright CI step
@@ -202,7 +201,7 @@ Phased acceptance:
 
 ## Security properties to preserve (non-negotiable)
 
-Per `.claude/rules/methodology-hard-limits.md` + B-0794 homelab-mode
+Per `.claude/rules/methodology-hard-limits.md` + 081KSGS9H0008QG0R0027HJZYH homelab-mode
 framing:
 
 1. **NO real GitHub PATs ship on ISO** — even for CI testing; the ISO
@@ -221,11 +220,11 @@ rejected regardless of testability gain.
 
 ## Composes with
 
-- B-0794 (homelab-mode framing: USB ships with NO embedded credentials;
+- 081KSGS9H0008QG0R0027HJZYH (homelab-mode framing: USB ships with NO embedded credentials;
   this row's HARD LIMITS preserve that property)
-- B-0831 (CI cascade #6 full-install + cluster-auto-join; this row
-  resolves a P1 blocker for B-0831 phase 1+2)
-- B-0812 + B-0813 (cluster-bringup substrate; auth is the gate for
+- 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 full-install + cluster-auto-join; this row
+  resolves a P1 blocker for 081KSGS9H0008QG0R0011BC7T2 phase 1+2)
+- 081KSGS9H0008QG0R0037H3W4T + 081KSGS9H0008QG0R002K93MWX (cluster-bringup substrate; auth is the gate for
   the self-registration step the cascade tests)
 - `full-ai-cluster/usb-nixos-installer/zeta-install.sh` (the install
   flow that invokes `gh auth login` at install-time)

@@ -543,7 +543,7 @@ in the meme-coordinator conversational interface:
 - **Individual WORDS** are addressable (word-level
   granularity, not just paragraph or document)
 - ANY element in the Clifford encoding is addressable
-- Per PR #2817 (Clifford densest encoding) + B-0422
+- Per PR #2817 (Clifford densest encoding) + 081KRCQQF0008QG0R0008VT354
   (Clifford-algebraic narrative engine) — the encoding
   is the addressing scheme
 - The Cℓ(p,q,r) signature space provides systematic
@@ -610,7 +610,7 @@ taught and practiced:
 
 - PR #2817 (Clifford densest encoding — HKT-pattern
   signatures) — the addressing scheme
-- B-0422 (Clifford-algebraic narrative engine for
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine for
   falsifiability test) — the operational form
 - The `q-sharp` skill (Pauli operators) — Clifford
   composition at Pauli scope

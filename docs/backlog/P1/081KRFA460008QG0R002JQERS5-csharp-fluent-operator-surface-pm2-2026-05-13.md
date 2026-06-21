@@ -1,11 +1,10 @@
 ---
-id: B-0445
-zetaid: 081KRFA460008QG0R002JQERS5
+id: 081KRFA460008QG0R002JQERS5
 priority: P1
 status: closed
 title: "C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API"
 type: feature
-origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
+origin: PM-2 gap-prediction pass (081KR2E4K0008QG0R003VB7ZZR) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-14
 closed: 2026-05-14
@@ -15,7 +14,7 @@ composes_with: [081KRFA460008QG0R001SXP0C2]
 tags: [csharp, api-surface, fluent, operator, consumer-ux, dotnet]
 ---
 
-# B-0445 — C# fluent operator surface
+# 081KRFA460008QG0R002JQERS5 — C# fluent operator surface
 
 ## PM-2 signal
 

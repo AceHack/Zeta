@@ -3,7 +3,7 @@ import { subscribeOnce } from "./subscribe";
 import { chmodSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { BUS_DIR, ensureDir } from "./bus";
-describe("bus subscribeOnce (B-0459 slice 1)", () => {
+describe("bus subscribeOnce (081KRHWGX0008QG0R000TVGDGV slice 1)", () => {
     const seenFile = join(BUS_DIR, "seen-test-surface.json");
     // Helper to clear state
     function clearState() {
@@ -21,7 +21,7 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
             timestamp: new Date().toISOString(),
             expiresAt: new Date(Date.now() + 10000).toISOString(),
             topic: "work-assignment",
-            payload: { rowId: "B-1234", priority: "P1", rationale: "test" },
+            payload: { rowId: "081KDXM8TP008QG0R003679HZ7", priority: "P1", rationale: "test" },
         };
         const fakeList = mock(() => {
             return [env1];
@@ -52,7 +52,7 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
                 timestamp: new Date().toISOString(),
                 expiresAt: new Date(Date.now() + 10000).toISOString(),
                 topic: "work-assignment",
-                payload: { rowId: "B-3333", priority: "P2", rationale: "test3" },
+                payload: { rowId: "081KE1CC6Z008QG0R002VG9ASH", priority: "P2", rationale: "test3" },
             };
             const fakeList = mock(() => [env]);
             const handler = mock(async (_env) => { });
@@ -75,7 +75,7 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
             timestamp: new Date().toISOString(),
             expiresAt: new Date(Date.now() + 10000).toISOString(),
             topic: "work-assignment",
-            payload: { rowId: "B-2222", priority: "P2", rationale: "test2" },
+            payload: { rowId: "081KDZCSXA008QG0R000769CWZ", priority: "P2", rationale: "test2" },
         };
         const fakeList = mock(() => [env2]);
         const handlerFailing = mock(async () => { throw new Error("fail"); });

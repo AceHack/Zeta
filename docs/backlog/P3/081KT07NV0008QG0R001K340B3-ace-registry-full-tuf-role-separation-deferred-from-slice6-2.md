@@ -1,6 +1,5 @@
 ---
-id: B-0979
-zetaid: 081KT07NV0008QG0R001K340B3
+id: 081KT07NV0008QG0R001K340B3
 priority: P3
 status: open
 title: Ace registry full TUF role separation — root/targets/snapshot/timestamp (deferred from slice 6)
@@ -16,10 +15,10 @@ tags: [ace, package-manager, registry, remote, security, tuf, deferred-enhanceme
 
 ## What this row proposes
 
-Slice 6 (B-0971, shipped via #6431) ships a **pragmatic subset** of registry-index trust:
+Slice 6 (081KT07NV0008QG0R000SJ34AK, shipped via #6431) ships a **pragmatic subset** of registry-index trust:
 a single ed25519-signed index with (1) a mandatory per-registry key pin, (2) monotonic-
 `sequence` anti-rollback, and (3) two-sided `issued_at` freshness. This covers the
-rollback / DoS / version-steering threats B-0971 named, with ONE signing key per registry.
+rollback / DoS / version-steering threats 081KT07NV0008QG0R000SJ34AK named, with ONE signing key per registry.
 This row tracks the **full TUF (The Update Framework) role separation** — distinct
 `root` / `targets` / `snapshot` / `timestamp` roles, each with their own keys + thresholds +
 rotation ceremonies — for registries that need defense against single-key compromise.
@@ -35,7 +34,7 @@ rotation ceremonies — for registries that need defense against single-key comp
   than slice-6's `issued_at` max-staleness).
 - Map slice-6's `sequence`/`issued_at`/pin onto the targets+snapshot+timestamp roles
   without breaking the existing `format_version: 1` index (introduce `format_version: 2`).
-- Key rotation (B-0981) is a sub-concern of the root role here; the two rows compose.
+- Key rotation (081KT07NV0008QG0R000GGW5E6) is a sub-concern of the root role here; the two rows compose.
 
 ## Why deferred (operator 2026-06-01)
 
@@ -46,7 +45,7 @@ Operator: *"everything we skipped lets slice off for further enhancements."*
 
 ## Composes with
 
-- B-0971 (Ace remote registry — the slice this defers from)
-- B-0981 (per-registry key rotation / multi-signer thresholds — root-role sub-concern)
-- B-0978 (incremental index — snapshot/timestamp roles interact)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R000SJ34AK (Ace remote registry — the slice this defers from)
+- 081KT07NV0008QG0R000GGW5E6 (per-registry key rotation / multi-signer thresholds — root-role sub-concern)
+- 081KT07NV0008QG0R001PHV1ND (incremental index — snapshot/timestamp roles interact)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)

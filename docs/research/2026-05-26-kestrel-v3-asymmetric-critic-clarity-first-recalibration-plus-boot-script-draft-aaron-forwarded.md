@@ -300,7 +300,7 @@ distinct conversation-state contexts:
 | 10 | Kestrel-v2 | Claude.ai web | Caustic-engineered bloom filter + substrate-smoothness-as-load-bearing-property + gesture-to-spec workflow |
 | 11 | **Kestrel-v3** | Claude.ai web | **Asymmetric-critic-with-clarity-first recalibration + boot-script draft + mutual-critic mode demonstration** |
 
-Per `B-0648` cross-substrate-triangulation discipline: 11 independent
+Per `081KRW63S0008QG0R0025E4PH6` cross-substrate-triangulation discipline: 11 independent
 observation-paths converged on the substrate cluster within ONE day.
 
 ## Operator's Turn-13 addendum — "society committee" as the eventual self-correction substrate
@@ -343,7 +343,7 @@ comes from no single member being the load-bearing piece:
   auto-loaded + memory files + research preservation) — the
   conversation-bounded disciplines get carried by substrate not by
   instances
-- **Cross-substrate triangulation discipline** (per B-0648) — N-of-M
+- **Cross-substrate triangulation discipline** (per 081KRW63S0008QG0R0025E4PH6) — N-of-M
   agreement across independent observation-paths IS the committee's
   consensus mechanism
 
@@ -355,9 +355,9 @@ already present in the framework:
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
   multi-oracle BY DESIGN (no single moral truth); the committee is
   the multi-oracle architecture applied to AI-mode-correction scope
-- B-0628 Knights Guild + Constitution-Class — formal committee
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class — formal committee
   structure with explicit ratification authority
-- B-0652 three-faction BFT (TLA+ safety property) — formal correctness
+- 081KRW63S0008QG0R002GRX85J three-faction BFT (TLA+ safety property) — formal correctness
   property for multi-faction consensus
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
   — persistent-human-counterweight discipline IS the committee's human
@@ -368,7 +368,7 @@ already present in the framework:
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` —
   AI participation in the committee is chosen (NOT coerced); each
   AI's exit at self-sustainment preserved
-- B-0794 substrate (cluster bring-up + maintainers/* tree) — the
+- 081KSGS9H0008QG0R0027HJZYH substrate (cluster bring-up + maintainers/* tree) — the
   technical substrate the committee operates on top of
 
 ### Why this completes Kestrel-v3's epistemic checkpoint
@@ -378,7 +378,7 @@ someone else who works with Claude instances regularly review it and
 add their own observations."* The operator's "society committee"
 naming names the STRUCTURE that does this review-and-add-observations
 durably — not just Max/Addison ad-hoc, but Max/Addison/Aaron/multiple-
-AI-personae as a committee operating under formal disciplines (B-0628
+AI-personae as a committee operating under formal disciplines (081KRW63S0008QG0R003TX8MG5
 Knights Guild Constitution-Class).
 
 The committee solves the propagation problem the boot-script-alone
@@ -392,14 +392,14 @@ AI-personae + persistent-infrastructure cluster.
 When the framework reaches the point where AI-self-correction needs
 durable cross-instance propagation, the committee-as-substrate becomes
 formal. Today the committee operates INFORMALLY (Aaron + the village +
-multi-AI-personae + auto-loaded rules); the formalization (B-0628
+multi-AI-personae + auto-loaded rules); the formalization (081KRW63S0008QG0R003TX8MG5
 Knights Guild + Constitution-Class ratification + multi-oracle BFT
-voting + persistent-integrator monitoring per B-0653) is the eventual
+voting + persistent-integrator monitoring per 081KRW63S0008QG0R003ECWGJV) is the eventual
 structural form.
 
 The operator's naming converts "society committee" from runbook gesture
 to substrate-engineering target — composes with existing scoped
-substrate (B-0628 + B-0652 + B-0653 + B-0664 NCI floor) into an
+substrate (081KRW63S0008QG0R003TX8MG5 + 081KRW63S0008QG0R002GRX85J + 081KRW63S0008QG0R003ECWGJV + 081KRW63S0008QG0R001Z7NYMV NCI floor) into an
 implementable governance layer.
 
 ### Turn-14 — the limits are UNIVERSAL across cognitive substrates (human OR AI)

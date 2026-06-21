@@ -41,18 +41,18 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 
 | ID | Tier | Title |
 |---|---|---|
-| **B-0800** | P1 | iter-6.0 — bump nixpkgs 24.11→25.11 (urgent EOL recovery) |
-| **B-0801** | P2 | iter-6.1 — `system.autoUpgrade` in `nixos/modules/common.nix` |
-| **B-0802** | P2 | iter-6.2 — kured ArgoCD app (K8s-aware drain+reboot) |
-| **B-0803** | P2 | iter-6.3 — deploy-rs from CI (GitOps alt to autoUpgrade) |
-| **B-0804** | P2 | iter-6.4 — distro-upgrade runbook + orchestrator |
-| **B-0805** | P1 | iter-6.5 (CAPSTONE) — ALL deps current-version sweep + `.claude/rules/dep-pin-search-first-authority.md` |
+| **081KSGS9H0008QG0R001EKTS5A** | P1 | iter-6.0 — bump nixpkgs 24.11→25.11 (urgent EOL recovery) |
+| **081KSGS9H0008QG0R002T6J6FS** | P2 | iter-6.1 — `system.autoUpgrade` in `nixos/modules/common.nix` |
+| **081KSGS9H0008QG0R003GM7TYN** | P2 | iter-6.2 — kured ArgoCD app (K8s-aware drain+reboot) |
+| **081KSGS9H0008QG0R00280HHA7** | P2 | iter-6.3 — deploy-rs from CI (GitOps alt to autoUpgrade) |
+| **081KSGS9H0008QG0R0034ZYYR8** | P2 | iter-6.4 — distro-upgrade runbook + orchestrator |
+| **081KSGS9H0008QG0R002BC2ZR7** | P1 | iter-6.5 (CAPSTONE) — ALL deps current-version sweep + `.claude/rules/dep-pin-search-first-authority.md` |
 
 ## Key design decisions captured
 
-- **autoUpgrade XOR deploy-rs** (B-0801 + B-0803 both note: pick one, not both — they race)
-- **kured composes with either shape** (B-0802 handles K8s-aware reboot orchestration regardless)
-- **B-0805 is the substrate-honest catch**: Otto's training-data defaults skew stale; without agent-discipline encoding the gap re-opens every PR
+- **autoUpgrade XOR deploy-rs** (081KSGS9H0008QG0R002T6J6FS + 081KSGS9H0008QG0R00280HHA7 both note: pick one, not both — they race)
+- **kured composes with either shape** (081KSGS9H0008QG0R003GM7TYN handles K8s-aware reboot orchestration regardless)
+- **081KSGS9H0008QG0R002BC2ZR7 is the substrate-honest catch**: Otto's training-data defaults skew stale; without agent-discipline encoding the gap re-opens every PR
 
 ## Test plan
 
@@ -81,27 +81,27 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Et69j`
-- **Path**: `docs/backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
+- **Path**: `docs/backlog/P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T07:41:56Z on `docs/backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`:127 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T07:41:56Z on `docs/backlog/P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`:127 (association: NONE)
 
   <pre>
-  The link target `../P2/B-0794-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md` does not exist in the repo. The actual B-0794 file lives under `docs/backlog/P1/` and has the slug `B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md`. Update both the directory (`../P1/`) and the filename slug to match the real row, otherwise `tools/backlog/lint-frontmatter.ts` cross-reference validation and any markdown link checker will fail.
+  The link target `../P2/081KSGS9H0008QG0R0027HJZYH-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md` does not exist in the repo. The actual 081KSGS9H0008QG0R0027HJZYH file lives under `docs/backlog/P1/` and has the slug `081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md`. Update both the directory (`../P1/`) and the filename slug to match the real row, otherwise `tools/backlog/lint-frontmatter.ts` cross-reference validation and any markdown link checker will fail.
 
   </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Et698`
-- **Path**: `docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
+- **Path**: `docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T07:41:57Z on `docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`:70 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T07:41:57Z on `docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`:70 (association: NONE)
 
   <pre>
   The example Helm `values` block has two `configuration:` keys at the same level (line 63 and line 70). YAML will silently keep only the second mapping, dropping `rebootDays`, `startTime`, `endTime`, `timeZone`, and `rebootSentinel`. Since this snippet is the implementation reference future Otto will copy into `kured.yaml`, merge the two blocks into a single `configuration:` mapping so the row doesn't seed a broken config.
@@ -111,12 +111,12 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Et6-Q`
-- **Path**: `docs/backlog/P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
+- **Path**: `docs/backlog/P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T07:41:57Z on `docs/backlog/P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`:40 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T07:41:57Z on `docs/backlog/P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`:40 (association: NONE)
 
   <pre>
   The flags list combines `--commit-lock-file` and `--no-write-lock-file`, which is contradictory: `--no-write-lock-file` tells `nix flake update` not to write `flake.lock` at all, while `--commit-lock-file` instructs it to commit the (now-not-written) lock. The intent described in the note ("don't push lock changes back to git") is actually achieved by simply omitting `--commit-lock-file` (and the autoUpgrade unit doesn't have repo write credentials anyway). Recommend dropping both flags from this example, or keeping only `--no-write-lock-file` if a transient in-memory lock update is wanted, so the snippet doesn't get copied into `common.nix` as-is.
@@ -125,12 +125,12 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 ### Thread 4 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Et6-n`
-- **Path**: `docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
+- **Path**: `docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T07:41:57Z on `docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`:68 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T07:41:57Z on `docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`:68 (association: NONE)
 
   <pre>
   Sub-target 2 line 86 says NixOS's autoUpgrade writes `/run/reboot-required` (note `/run` vs `/var/run`), but the example values block on line 68 still configures `rebootSentinel: "/var/run/reboot-required"`. These should match (and per the surrounding note, the verified-correct path is `/run/reboot-required`). Either fix the example to use `/run/reboot-required` or call out explicitly that the path must be verified before merge; right now the snippet contradicts its own sub-target note.
@@ -139,12 +139,12 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Et6-5`
-- **Path**: `docs/backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
+- **Path**: `docs/backlog/P2/081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T07:41:58Z on `docs/backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`:5 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T07:41:58Z on `docs/backlog/P2/081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`:5 (association: NONE)
 
   <pre>
   The title text on line 5 ends without a closing quotation mark for the maintainer quote (`"if we reformat every time it's handled by the cluster not a manual operator`). The row file opens the quote with `"` but never closes it, which both reads as an unfinished sentence and propagates into `docs/BACKLOG.md` verbatim (see `docs/BACKLOG.md:741`). Close the quote.
@@ -157,15 +157,15 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
 
 **Message:**
 
 ```
-backlog(iter-6): file 6-row cluster-update substrate (B-0800/0801/080…
+backlog(iter-6): file 6-row cluster-update substrate (081KSGS9H0008QG0R001EKTS5A/0801/080…
 
 …2/0803/0804/0805) — nixpkgs 24.11→25.11 bump + autoUpgrade + kured + deploy-rs + distro-runbook + ALL-deps-current-sweep capstone
 
@@ -189,12 +189,12 @@ substantively behind, supply-chain-security exposure.
 
 Rows filed:
 
-- **B-0800** (P1) — iter-6.0 — bump nixpkgs 24.11→25.11 (urgent: EOL recovery)
-- **B-0801** (P2) — iter-6.1 — system.autoUpgrade in nixos/modules/common.nix
-- **B-0802** (P2) — iter-6.2 — kured ArgoCD app (K8s-aware drain+reboot)
-- **B-0803** (P2) — iter-6.3 — deploy-rs from CI (GitOps alt to autoUpgrade)
-- **B-0804** (P2) — iter-6.4 — distro-upgrade runbook + orchestrator script
-- **B-0805** (P1) — iter-6.5 (CAPSTONE) — ALL nix + ArgoCD + helm + image deps
+- **081KSGS9H0008QG0R001EKTS5A** (P1) — iter-6.0 — bump nixpkgs 24.11→25.11 (urgent: EOL recovery)
+- **081KSGS9H0008QG0R002T6J6FS** (P2) — iter-6.1 — system.autoUpgrade in nixos/modules/common.nix
+- **081KSGS9H0008QG0R003GM7TYN** (P2) — iter-6.2 — kured ArgoCD app (K8s-aware drain+reboot)
+- **081KSGS9H0008QG0R00280HHA7** (P2) — iter-6.3 — deploy-rs from CI (GitOps alt to autoUpgrade)
+- **081KSGS9H0008QG0R0034ZYYR8** (P2) — iter-6.4 — distro-upgrade runbook + orchestrator script
+- **081KSGS9H0008QG0R002BC2ZR7** (P1) — iter-6.5 (CAPSTONE) — ALL nix + ArgoCD + helm + image deps
   current-version sweep + .claude/rules/dep-pin-search-first-authority.md to
   encode the agent-side discipline so the gap doesn't re-open (the maintainer's
   substrate-honest catch that Otto's training-data defaults skew stale)
@@ -203,8 +203,8 @@ All 6 rows cross-reference via composes_with; index regenerated. P1 rows are
 the urgent ones (EOL recovery + agent-discipline encoding); P2 rows are the
 substrate-engineering for "cluster handles updates, not manual operator".
 
-Pick-one decision (autoUpgrade XOR deploy-rs) documented in both B-0801 +
-B-0803; B-0802 kured composes with either shape.
+Pick-one decision (autoUpgrade XOR deploy-rs) documented in both 081KSGS9H0008QG0R002T6J6FS +
+081KSGS9H0008QG0R00280HHA7; 081KSGS9H0008QG0R003GM7TYN kured composes with either shape.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -213,16 +213,16 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
 
 **Message:**
 
 ```
 fix(backlog-iter6): MD032 blanks-around-lists in 3 iter-6 backlog rows
 
-Markdownlint surfaced 5 MD032 errors across B-0801 / B-0803 / B-0804 —
+Markdownlint surfaced 5 MD032 errors across 081KSGS9H0008QG0R002T6J6FS / 081KSGS9H0008QG0R00280HHA7 / 081KSGS9H0008QG0R0034ZYYR8 —
 "Lists should be surrounded by blank lines". Inserted blank line
 between each "intro sentence:" and the following bullet list.
 
@@ -235,10 +235,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
-- `docs/backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md`
+- `docs/backlog/P2/081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md`
 
 **Message:**
 
@@ -249,28 +249,28 @@ fix(backlog-iter6): 5 Copilot findings on #5123 — broken link + YAML …
 
 All 5 caught by Copilot post-arming review, all real:
 
-(1) B-0803 broken link: linked `../P2/B-0794-iter-5-4-...` but B-0794
-    actually lives at `docs/backlog/P1/B-0794-node-self-registers-in-git-...`.
+(1) 081KSGS9H0008QG0R00280HHA7 broken link: linked `../P2/081KSGS9H0008QG0R0027HJZYH-iter-5-4-...` but 081KSGS9H0008QG0R0027HJZYH
+    actually lives at `docs/backlog/P1/081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-...`.
     Fixed link target.
 
-(2) B-0802 duplicate `configuration:` YAML key: two top-level
+(2) 081KSGS9H0008QG0R003GM7TYN duplicate `configuration:` YAML key: two top-level
     `configuration:` mappings in the example Helm values; YAML silently
     keeps only the second, so rebootDays/startTime/endTime/timeZone/
     rebootSentinel would be dropped if copy-pasted. Merged into a single
     `configuration:` block.
 
-(3) B-0802 reboot sentinel path: example used `/var/run/reboot-required`
+(3) 081KSGS9H0008QG0R003GM7TYN reboot sentinel path: example used `/var/run/reboot-required`
     (Debian-ism) while sub-target note said `/run/reboot-required`
     (NixOS-actual). Aligned to `/run/reboot-required`; added inline
     comment naming the Debian-ism trap.
 
-(4) B-0801 contradictory autoUpgrade flags: `--commit-lock-file` +
+(4) 081KSGS9H0008QG0R002T6J6FS contradictory autoUpgrade flags: `--commit-lock-file` +
     `--no-write-lock-file` are mutually exclusive (no-write means
     no lock to commit). Dropped `--commit-lock-file`; rewrote the
     explanatory note to match (the cluster has no repo write creds
-    anyway; lock updates ship from CI per B-0803).
+    anyway; lock updates ship from CI per 081KSGS9H0008QG0R00280HHA7).
 
-(5) B-0804 unclosed quote in title: opened `"if we reformat every time
+(5) 081KSGS9H0008QG0R0034ZYYR8 unclosed quote in title: opened `"if we reformat every time
     ..."` but never closed. Fixed by adding `" per the maintainer
     2026-05-26` close + attribution; propagates to BACKLOG.md correctly.
 

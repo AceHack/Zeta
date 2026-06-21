@@ -1,6 +1,6 @@
 ---
 pr_number: 5385
-title: "fix(B-0835 Bug 4+5 \u2014 Aaron 2026-05-27 control-plane install): storage probe filters 0B devices + gh CLI in installed system PATH"
+title: "fix(081KSGS9H0008QG0R00120EEHM Bug 4+5 \u2014 Aaron 2026-05-27 control-plane install): storage probe filters 0B devices + gh CLI in installed system PATH"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:30:40Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:19Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5385: fix(B-0835 Bug 4+5 — Aaron 2026-05-27 control-plane install): storage probe filters 0B devices + gh CLI in installed system PATH
+# PR #5385: fix(081KSGS9H0008QG0R00120EEHM Bug 4+5 — Aaron 2026-05-27 control-plane install): storage probe filters 0B devices + gh CLI in installed system PATH
 
 ## PR description
 
@@ -40,7 +40,7 @@ Fix: add \`gh\` to \`common.nix\` \`environment.systemPackages\` so the installe
 
 ## Composes with
 
-- B-0813 (cluster-node schema), B-0817 (register-node tool), iter-5.4 install cascade
+- 081KSGS9H0008QG0R002K93MWX (cluster-node schema), 081KSGS9H0008QG0R002QQNA79 (register-node tool), iter-5.4 install cascade
 - PR #5380 (the registration where these gaps surfaced)
 - Aaron's empirical observations 2026-05-27: \"i can't ping it by name\" (mitigated via IP lookup; found at 192.168.4.128) → \"when i log in gh command is not found and i don't think it registered\" (registration DID happen — PR #5380 — but no \`gh\` to check it)
 

@@ -1,6 +1,5 @@
 ---
-id: B-0037
-zetaid: 081KQ3HBZ0008QG0R0002RB48Q
+id: 081KQ3HBZ0008QG0R0002RB48Q
 priority: P2
 status: decomposed
 title: Meta-cognition as first-class factory discipline — survey, audit cadence, measurables
@@ -16,18 +15,18 @@ tags: [meta-cognition, alignment-trajectory, factory-discipline, measurables, wi
 type: friction-reducer
 ---
 
-# B-0037 — Meta-cognition as first-class factory discipline
+# 081KQ3HBZ0008QG0R0002RB48Q — Meta-cognition as first-class factory discipline
 
 ## Decomposition (2026-05-10)
 
 | Child | Title | Depends on | Status |
 |-------|-------|-----------|--------|
-| [B-0037.1](B-0037.1-meta-cognition-taxonomy-survey-doc.md) | Meta-cognition taxonomy survey doc | — | open |
-| [B-0037.2](B-0037.2-meta-cognition-round-close-checklist.md) | Per-round meta-check checklist in ROUND-HISTORY.md | B-0037.1 | blocked |
-| [B-0037.3](B-0037.3-meta-cognition-measurables-wiring.md) | Measurables wired into ALIGNMENT.md dashboard | B-0037.1 | blocked |
-| [B-0037.4](B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md) | ADR for distributed-vs-concentrated framework | B-0037.1, B-0037.2, B-0037.3 | blocked |
+| [081KR7JY10008QG0R0038AFS7T](081KR7JY10008QG0R0038AFS7T-meta-cognition-taxonomy-survey-doc.md) | Meta-cognition taxonomy survey doc | — | open |
+| [081KR7JY10008QG0R002D6VNNJ](081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md) | Per-round meta-check checklist in ROUND-HISTORY.md | 081KR7JY10008QG0R0038AFS7T | blocked |
+| [081KR7JY10008QG0R000XPVJ0W](081KR7JY10008QG0R000XPVJ0W-meta-cognition-measurables-wiring.md) | Measurables wired into ALIGNMENT.md dashboard | 081KR7JY10008QG0R0038AFS7T | blocked |
+| [081KR7JY10008QG0R001J11M38](081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md) | ADR for distributed-vs-concentrated framework | 081KR7JY10008QG0R0038AFS7T, 081KR7JY10008QG0R002D6VNNJ, 081KR7JY10008QG0R000XPVJ0W | blocked |
 
-Work on children in dependency order; B-0037.1 is the root.
+Work on children in dependency order; 081KR7JY10008QG0R0038AFS7T is the root.
 
 ## Origin
 

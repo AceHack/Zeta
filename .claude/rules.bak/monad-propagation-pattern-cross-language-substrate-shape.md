@@ -168,9 +168,9 @@ primitives aren't natively monadic.
 - **F# Result-over-exception convention** (per CLAUDE.md `Result<_, DbspError>` convention) — F# substrate-side already uses this pattern; the rule lifts it to cross-language scope
 - **Inversion-of-monad pattern** (conversational substrate 2026-05-27) — broader principle of using existing-primitive to emulate monad-discipline; this rule names the SPECIFIC THREE-COMPONENT INSTANTIATION
 - **Itron smart-meter recursive-CTE substrate** (`memory/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md`) — NULL-as-quantum-state pattern is the empirical proof-point that the discriminator-carrier + lazy-propagation discipline works at billions-of-meters scale in production SQL
-- **B-0428 (F# fork for AI safety)** — language-extension substrate that could mechanize the spec-to-code generator
-- **B-0860 (Nemerle dotnet support)** — language-extension substrate that would enable native syntax-extension for the pattern at compile time
-- **B-0829 (cluster-fork-as-trust-boundary)** — relationship-type-inference substrate composes; trust-boundary-types ARE one application of the pattern
+- **081KRFA460008QG0R0018SN61J (F# fork for AI safety)** — language-extension substrate that could mechanize the spec-to-code generator
+- **081KSKBP80008QG0R000J2YFK2 (Nemerle dotnet support)** — language-extension substrate that would enable native syntax-extension for the pattern at compile time
+- **081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary)** — relationship-type-inference substrate composes; trust-boundary-types ARE one application of the pattern
 
 ## Composes with rules
 
@@ -465,7 +465,7 @@ Searched surfaces before authoring:
 
 - `docs/agendas/`: 0 hits on monad-propagation or cross-language-shape agenda
 - `docs/trajectories/`: 0 hits on this specific pattern
-- `docs/backlog/`: 1 hit (`B-0824` package-manager-of-package-managers; mentions related substrate but not the specific monad-propagation pattern); no prior backlog row on the cross-language-shape pattern
+- `docs/backlog/`: 1 hit (`081KSGS9H0008QG0R0031PBNGA` package-manager-of-package-managers; mentions related substrate but not the specific monad-propagation pattern); no prior backlog row on the cross-language-shape pattern
 - `.claude/rules/`: pattern sketched in PR #5505 + #5507 force-push-policy at force-push scope; no prior rule lifting it to cross-language scope
 - `.claude/skills/`: 0 hits on a related skill
 - `memory/`: 0 hits on "monad-propagation" as a named pattern

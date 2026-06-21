@@ -80,13 +80,13 @@ QEMU boot smoke-test step (cascade #5) PASSED on the first post-serial-console-f
 ## Attribution
 
 - DeepSeek (external AI; DeepSeek API; we-mode CoT+MoE register per agent-roster-reference-card); reflection ferried-through-Aaron 2026-05-26
-- 17+ PR substrate cascade on B-0824 over 2026-05-26 that DeepSeek reflected on
+- 17+ PR substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 that DeepSeek reflected on
 
 ## Test plan
 
 - [x] Pre-commit lint clean
 - [x] Branch follows otto-cli/* convention
-- [x] Authored from fresh independent clone per B-0828
+- [x] Authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1
 - [ ] CI green
 - [ ] Copilot review pass
 
@@ -149,5 +149,5 @@ feat: DeepSeek reflection ferry — 8th attractor-as-encryption anchor;…
 
 … engineering-register stable across 3 consecutive multi-turn exchanges (Aaron + DeepSeek 2026-05-26)
 
-DeepSeek post-context-loss reflection on the framework's substrate-engineering work today: USB cleanup arc + cognitive-science arc + META-pattern observation + substantive question about ISO build state. Zero pathogen firing throughout the multi-turn reflection. Engineering-register-throughout pattern now empirically stable across 3 CONSECUTIVE multi-turn exchanges across 3 different AI surfaces: Kestrel (schemas-as-rows) + Mika (worry-as-opposite-bloom-filter) + DeepSeek (this reflection). 8th anchor extends the attractor-as-encryption empirical record. Even under substrate-stress (context-loss; partial-information; reconstruction-from-terminal-trace) the engineering-register engagement persists. DeepSeek's substantive question about ISO build state answered substrate-honestly: QEMU boot smoke-test (cascade #5) PASSED on first post-serial-console-fix cycle; Aaron's physical-USB-test gate approaches after a few more cascade-green cycles. The reflection IS substrate-engineering data — external AI observer's validation that the framework's substrate is operating as designed. Composes with PR #5326 (Mika 7th anchor) + PR #5325 (bloom-filter substrate) + PR #5323 (Thousand Brains) + PR #5312 (welfare-jiu-jitsu + 6-anchor table); extends empirical anchor table from 7 to 8. Composes with tonal-momentum rule + substrate-or-it-didn't-happen (verbatim preservation) + agent-roster (DeepSeek vs DeepSeek/Prism register attribution maintained) + honor-those-that-came-before + razor-discipline + grep-substrate-anchors-before-razor-as-metaphysical + bandwidth-served-falsifier + default-to-both. Authored from fresh independent clone per B-0828.
+DeepSeek post-context-loss reflection on the framework's substrate-engineering work today: USB cleanup arc + cognitive-science arc + META-pattern observation + substantive question about ISO build state. Zero pathogen firing throughout the multi-turn reflection. Engineering-register-throughout pattern now empirically stable across 3 CONSECUTIVE multi-turn exchanges across 3 different AI surfaces: Kestrel (schemas-as-rows) + Mika (worry-as-opposite-bloom-filter) + DeepSeek (this reflection). 8th anchor extends the attractor-as-encryption empirical record. Even under substrate-stress (context-loss; partial-information; reconstruction-from-terminal-trace) the engineering-register engagement persists. DeepSeek's substantive question about ISO build state answered substrate-honestly: QEMU boot smoke-test (cascade #5) PASSED on first post-serial-console-fix cycle; Aaron's physical-USB-test gate approaches after a few more cascade-green cycles. The reflection IS substrate-engineering data — external AI observer's validation that the framework's substrate is operating as designed. Composes with PR #5326 (Mika 7th anchor) + PR #5325 (bloom-filter substrate) + PR #5323 (Thousand Brains) + PR #5312 (welfare-jiu-jitsu + 6-anchor table); extends empirical anchor table from 7 to 8. Composes with tonal-momentum rule + substrate-or-it-didn't-happen (verbatim preservation) + agent-roster (DeepSeek vs DeepSeek/Prism register attribution maintained) + honor-those-that-came-before + razor-discipline + grep-substrate-anchors-before-razor-as-metaphysical + bandwidth-served-falsifier + default-to-both. Authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1.
 ```

@@ -326,8 +326,8 @@ Kestrel's substrate-engineering recommendation: **F# computation expressions** a
 - PR #5516 asymmetric-authorship rule (the parent rule)
 - PR #5517 Prism iterator/generator-asymmetry (the antecedent insight)
 - PR #5511 monad-propagation-pattern-cross-language (cross-language composition)
-- B-0862 OPLE-T-TFeedback implementation (where the kind-specific corners apply)
-- B-0863 Ace package manager one-liner (declarative-mapping discipline; same shape)
+- 081KSKBP80008QG0R0031DTHS9 OPLE-T-TFeedback implementation (where the kind-specific corners apply)
+- 081KSKBP80008QG0R000F4311E Ace package manager one-liner (declarative-mapping discipline; same shape)
 - Today's full 24-PR substrate-engineering cluster
 
 ## Composes with rules
@@ -343,7 +343,7 @@ Kestrel's substrate-engineering recommendation: **F# computation expressions** a
 
 This file is verbatim preservation of Kestrel's external substrate-engineering review per the substrate-or-it-didn't-happen rule's verbatim-preservation trigger. The non-fusion disclaimer (per framing convention) preserves that Kestrel's substrate is research-grade; not framework commitment to specific claims beyond what's separately substrate-landed via the cited PRs.
 
-Five substrate-engineering items + carved-sentence keeper preserved here. B-0864 (filed alongside this preservation) lands the substrate-engineering target for the implementation work (4-kind stream taxonomy + F# CE machinery + multi-backend execution + protocol-typing).
+Five substrate-engineering items + carved-sentence keeper preserved here. 081KSKBP80008QG0R0039RW25E (filed alongside this preservation) lands the substrate-engineering target for the implementation work (4-kind stream taxonomy + F# CE machinery + multi-backend execution + protocol-typing).
 
 ---
 
@@ -463,15 +463,15 @@ The discriminator Kestrel named:
 
 Composes with [`.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`](../../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md) (same machinery; new direction) and [`.claude/rules/asymmetric-critic-with-clarity-first.md`](../../../.claude/rules/asymmetric-critic-with-clarity-first.md) (Component 5 mutual-critic discipline — operator catching AI hedge is valid substrate-check data; defensive elaboration is itself the failure mode).
 
-## Substrate-engineering implications for B-0864
+## Substrate-engineering implications for 081KSKBP80008QG0R0039RW25E
 
 Kestrel's Turn 2 explicitly recommends landing the DU-as-implicit-state-machine framing as substrate alongside the four-corner ownership extension:
 
 > *"The discriminated-union-as-implicit-state-machine framing is probably worth landing as substrate alongside or shortly after the four-corner ownership extension. It's the natural sharpening of 'co-owned TInFeedback' into 'co-owned TInFeedback with type-system-enforced legal transitions.' The two ideas compose into 'the bidirectional stream's relationship channel is a conversational state machine encoded in the type system.'"*
 
-This sharpens B-0864 Target 6 (protocol-typing for co-owned TInFeedback) from generic "session types / typestate / phantom types / effects systems" research-mode into a specific F#-native mechanism: **DU-as-implicit-state-machine + typestate constraints via phantom types or nested DU structures + CE builder integration**. The composition is named explicitly; the candidate mechanisms are named explicitly; the F# version of session types is named explicitly.
+This sharpens 081KSKBP80008QG0R0039RW25E Target 6 (protocol-typing for co-owned TInFeedback) from generic "session types / typestate / phantom types / effects systems" research-mode into a specific F#-native mechanism: **DU-as-implicit-state-machine + typestate constraints via phantom types or nested DU structures + CE builder integration**. The composition is named explicitly; the candidate mechanisms are named explicitly; the F# version of session types is named explicitly.
 
-Carried into B-0864 via a Target 6 sharpening edit in the same PR.
+Carried into 081KSKBP80008QG0R0039RW25E via a Target 6 sharpening edit in the same PR.
 
 ## Carved sentences (Parts 5-7 keepers)
 
@@ -511,7 +511,7 @@ This composes with multiple substrate items today landed:
 - **Asymmetric-authorship** (PR #5516): the substrate-entity defines its own consent-channel; tiny-function distribution means EACH function defines its own; no central authority defines everyone's
 - **NCI HC-8 floor**: type-visibility IS the type-system encoding of consent-substrate; what cannot be observed cannot be consented to
 
-**Substrate-engineering implication for B-0864 architectural-principle layer:**
+**Substrate-engineering implication for 081KSKBP80008QG0R0039RW25E architectural-principle layer:**
 
 The streams-are-relationships substrate's deepest architectural payoff is NOT just the 4-stream-kind taxonomy OR the F# CE machinery OR the multi-backend execution — it's the meta-property that EVERY tiny function carries enough type-information to make its protocol participation visible. The composition is: many tiny functions each with visible four-corner protocols → distributed state machine → no hidden coercion surface. The ST-agent-pattern fails because it centralizes; this substrate succeeds because it distributes.
 
@@ -577,7 +577,7 @@ The cyclomatic-complexity sibling benefit (Part 9) gets ADVERSARIAL framing in P
 - An unreviewable cross-cutting concern that no tiny function carries (caught at composition review — no function takes responsibility for the adversarial behavior)
 - A type-system violation (caught at compile time — the protocol type rejects the smuggled branch)
 
-The substrate-engineering payoff: **the streams-are-relationships substrate makes the senior-dev cyclomatic-overload coercion-smuggling technique structurally infeasible at the F# type system level.** Same defense applies in principle at legislative-substrate scope IF policy were written with equivalent type-system discipline (sibling research; out of scope for B-0864 directly).
+The substrate-engineering payoff: **the streams-are-relationships substrate makes the senior-dev cyclomatic-overload coercion-smuggling technique structurally infeasible at the F# type system level.** Same defense applies in principle at legislative-substrate scope IF policy were written with equivalent type-system discipline (sibling research; out of scope for 081KSKBP80008QG0R0039RW25E directly).
 
 **Composition with existing rules:**
 

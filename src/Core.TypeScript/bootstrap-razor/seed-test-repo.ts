@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * B-0343 bounded slice 2 (re-decomposed per "assume decomposition mistakes" rule).
+ * 081KR2E4K0008QG0R002JW751Y bounded slice 2 (re-decomposed per "assume decomposition mistakes" rule).
  * Builds on the merged manifest-reader + --dry-run stub (PRs #2716/#2722/#2723).
  *
  * This slice adds glob RESOLUTION: turning the manifest's include/exclude
@@ -186,9 +186,9 @@ export interface GitTreeRequestEntry {
  * is the SHA `POST /git/trees` returns; `parents` is the target ref's current commit
  * SHA wrapped in a one-element array, OR the empty array for a brand-new repo's root
  * commit (GitHub accepts `parents: []` as a parentless root commit). `message` carries
- * the provenance line linking back to B-0193 / B-0343 so the recreation experiment's
+ * the provenance line linking back to 081KQTPYE0008QG0R00392KABJ / 081KR2E4K0008QG0R002JW751Y so the recreation experiment's
  * history is self-documenting (AC: "commits the seed with a clear provenance message
- * linking back to B-0193"). GitHub's commit API accepts more optional fields
+ * linking back to 081KQTPYE0008QG0R00392KABJ"). GitHub's commit API accepts more optional fields
  * (`author`, `committer`, `signature`) — the seed sets none, letting the token's
  * identity author the commit, so they are intentionally unrepresented.
  */
@@ -613,7 +613,7 @@ export function buildCreateRepoRequest(
   options?: { readonly private?: boolean; readonly description?: string },
 ): GitCreateRepoRequest | string {
   if (!(AUTHORIZED_ORGS as readonly string[]).includes(org)) {
-    return `unauthorized org "${org}" — seeding is scoped to ${AUTHORIZED_ORGS.join(" or ")} only (NOT ServiceTitan, per B-0343 authorization scope)`;
+    return `unauthorized org "${org}" — seeding is scoped to ${AUTHORIZED_ORGS.join(" or ")} only (NOT ServiceTitan, per 081KR2E4K0008QG0R002JW751Y authorization scope)`;
   }
   return {
     path: `orgs/${org}/repos`,
@@ -623,7 +623,7 @@ export function buildCreateRepoRequest(
       auto_init: false,
       description:
         options?.description ??
-        "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
+        "081KQTPYE0008QG0R00392KABJ bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
     },
   };
 }
@@ -781,8 +781,8 @@ export function parseSeedTreeResponse(response: unknown): { readonly sha: string
 
 /**
  * The provenance commit message for the seed (AC: "clear provenance message linking
- * back to B-0193"). A conventional-commit subject naming the file count, then a body
- * citing the seed manifest as the source-of-truth and the B-0193 parent / B-0343 slice
+ * back to 081KQTPYE0008QG0R00392KABJ"). A conventional-commit subject naming the file count, then a body
+ * citing the seed manifest as the source-of-truth and the 081KQTPYE0008QG0R00392KABJ parent / 081KR2E4K0008QG0R002JW751Y slice
  * lineage. Pure: a string function of the file count only. `fileCount` pluralizes the
  * subject ("1 file" vs "N files"); it is the count of files the seed WRITES (the diff's
  * create + update entries), so a re-seed that touches one file reads naturally. The
@@ -792,13 +792,13 @@ export function parseSeedTreeResponse(response: unknown): { readonly sha: string
 export function seedCommitMessage(fileCount: number): string {
   const noun = fileCount === 1 ? "file" : "files";
   return [
-    `chore(B-0343): seed bootstrap-razor recreation test repo (${fileCount} ${noun})`,
+    `chore(081KR2E4K0008QG0R002JW751Y): seed bootstrap-razor recreation test repo (${fileCount} ${noun})`,
     "",
-    `Seeded from ${MANIFEST_DISPLAY_PATH} per B-0193 AC 1`,
+    `Seeded from ${MANIFEST_DISPLAY_PATH} per 081KQTPYE0008QG0R00392KABJ AC 1`,
     "(bootstrap razor + 23-hour recreation test).",
     "",
-    "Parent: B-0193",
-    "Slice:  B-0343",
+    "Parent: 081KQTPYE0008QG0R00392KABJ",
+    "Slice:  081KR2E4K0008QG0R002JW751Y",
   ].join("\n");
 }
 
@@ -951,7 +951,7 @@ function collectSeedCandidates(root: string, manifest: SeedManifest): readonly s
 }
 
 function emitDryRun(manifest: SeedManifest, root: string): void {
-  console.log(`[B-0343] DRY-RUN: read ${MANIFEST_DISPLAY_PATH}`);
+  console.log(`[081KR2E4K0008QG0R002JW751Y] DRY-RUN: read ${MANIFEST_DISPLAY_PATH}`);
   console.log(`Manifest include patterns (${manifest.include.length}):`);
   for (const item of manifest.include) console.log(`  + ${item}`);
   console.log(`Manifest exclude patterns (${manifest.exclude.length}):`);
@@ -988,7 +988,7 @@ function emitDryRun(manifest: SeedManifest, root: string): void {
     console.log(`  ${mode} ${type} ${sha}  ${path}`);
   }
 
-  console.log("Provenance commit would link to B-0193 / B-0343.");
+  console.log("Provenance commit would link to 081KQTPYE0008QG0R00392KABJ / 081KR2E4K0008QG0R002JW751Y.");
 
   // Step 0 of the flow: create the empty experiment repo (AC 1). Shown here for an
   // EXAMPLE authorized org/repo — `--dry-run` performs no creation (AC 4). The scope
@@ -1039,7 +1039,7 @@ export function main(argv: readonly string[]): ExitCode {
     return 0;
   }
 
-  console.log("This is the minimal TS stub for B-0343.");
+  console.log("This is the minimal TS stub for 081KR2E4K0008QG0R002JW751Y.");
   console.log("Re-run with --dry-run to see the manifest seed plan.");
   console.log("No repo creation performed (bounded slice).");
   return 0;

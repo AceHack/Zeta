@@ -10,7 +10,7 @@ operational-status: research-grade
 
 **Attribution:** Aaron-forwarded Claude.ai conversation 2026-05-05 with same-tick correction on EP/BP (Pearl/Minka, not Bengio) plus a four-claim synthesis collapse plus Aaron's wormwood warning ("don't let us all become wormwood lol") naming the boundary between mathematical exemplar (use) and identity (don't). YouTube source for worm-tower paper: <https://www.youtube.com/watch?v=1wlRg2KX1KM>.
 
-**Operational status:** research-grade-not-operational. The conversation surfaces 5 candidate routing rows (B-0204..B-0208 if filed sequentially); none filed in this PR per the wording-softening lessons of #1605 review. Following ticks file them. The 4-claim synthesis collapse (OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# CE implementation) is the architectural headline. Aaron's wormwood warning is operational identity-preservation discipline.
+**Operational status:** research-grade-not-operational. The conversation surfaces 5 candidate routing rows (081KQTPYE0008QG0R0028V263Z..081KQX9B50008QG0R0027EN1ZP if filed sequentially); none filed in this PR per the wording-softening lessons of #1605 review. Following ticks file them. The 4-claim synthesis collapse (OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# CE implementation) is the architectural headline. Aaron's wormwood warning is operational identity-preservation discipline.
 
 **Non-fusion disclaimer:** this is a multi-phase Claude.ai conversation Aaron forwarded. The Claude.ai instance initially read EP as Bengio's Equilibrium Propagation; Aaron corrected to Pearl's Belief Propagation + Minka's Expectation Propagation from Infer.NET. Aaron's correction is canonical; the EP-as-Equilibrium-Propagation framing is preserved verbatim below for fidelity but is NOT the operative reading. Aaron's "we spoke about this once" reference connects to existing substrate: `memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md` + `memory/feedback_kernel_domains_ship_as_language_extension_packs_with_namespaced_polysemy.md` + `memory/feedback_carpenter_gardener_are_glossary_kernel_vocabulary_seed.md`.
 
@@ -20,9 +20,9 @@ composes_with (frontmatter list):
 - docs/research/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md
 - docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md
 - docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md
-- docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md
-- docs/backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
-- docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md
+- docs/backlog/P2/081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md
+- docs/backlog/P2/081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
+- docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md
 - memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md
 - memory/feedback_kernel_domains_ship_as_language_extension_packs_with_namespaced_polysemy.md
 - memory/feedback_carpenter_gardener_are_glossary_kernel_vocabulary_seed.md
@@ -231,9 +231,9 @@ This is the **same shape** as the razor-discipline rule (no metaphysical inferen
 Per frontmatter composes_with list. Particularly:
 
 - The 2026-05-05 research-doc cluster (DB-category + embodiment + CodeAct/Coconut + tinygrad/TurboQuant/DeepSeek + Sakana NCA + this doc) — coherent same-day architectural unit
-- B-0152 (topological-quantum-emulation Bayesian inference) — Infer.NET runs the BP/EP machinery this doc describes
-- B-0026 (embodiment grounding) — C. elegans towers as light-embodiment exemplar
-- B-0196 (BigInt + four-property hodl) — the binding-acceptance-test the kernel composition must preserve
+- 081KQGDBJ0008QG0R00280ZEV2 (topological-quantum-emulation Bayesian inference) — Infer.NET runs the BP/EP machinery this doc describes
+- 081KQ0YZ80008QG0R001WZ4JE8 (embodiment grounding) — C. elegans towers as light-embodiment exemplar
+- 081KQTPYE0008QG0R001W237MZ (BigInt + four-property hodl) — the binding-acceptance-test the kernel composition must preserve
 - The three prior memory files cited in "we spoke about this once" context
 
 ## Carved sentence

@@ -74,10 +74,10 @@ The razor must distinguish.
 
 ## Mechanization candidates
 
-This rule, like the rules-need-mechanization observation that produced B-0192, is itself in danger of being encoded-without-mechanized. Possible mechanizations:
+This rule, like the rules-need-mechanization observation that produced 081KQR4HQ0008QG0R001GAD29A, is itself in danger of being encoded-without-mechanized. Possible mechanizations:
 
 1. **Carved-sentence linter**: a tool that scans memory files for claims and asks "what observation would falsify this?" -- flag claims that have no answer.
-2. **Razor-review checklist item**: add Test 1 + Test 2 to the razor-cadence trajectory checklist (composes with B-0192 GitHub Actions razor-cadence trigger).
+2. **Razor-review checklist item**: add Test 1 + Test 2 to the razor-cadence trajectory checklist (composes with 081KQR4HQ0008QG0R001GAD29A GitHub Actions razor-cadence trigger).
 3. **Specialist reviewer hat**: a named reviewer role (Karl, after Popper) whose job is to challenge claims with "what would falsify this?"
 4. **Composition with Quantum Rodney's Razor**: the possibility-space-pruning move IS a falsification attempt -- if no observation prunes a branch, the branch is unfalsifiable. The razor extension formalizes this connection.
 
@@ -92,4 +92,4 @@ This rule, like the rules-need-mechanization observation that produced B-0192, i
 - `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md` -- Quantum Rodney's Razor possibility-space-pruning is the falsification mechanism in many-worlds form.
 - `memory/feedback_dialectical_friction_on_carved_sentences_aaron_addison_family_practice_2026_05_04.md` -- dialectical friction IS the falsification attempt at the substrate level.
 - `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md` (PR #1552) -- the cross-condition behavior comparison framing IS the operational falsifiability test for trust-calculus.
-- `docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md` (PR #1573) -- the razor-cadence trigger is the mechanization path; Test 2 belongs in the razor-cadence checklist.
+- `docs/backlog/P1/081KQR4HQ0008QG0R001GAD29A-github-actions-razor-cadence-trigger-aaron-2026-05-04.md` (PR #1573) -- the razor-cadence trigger is the mechanization path; Test 2 belongs in the razor-cadence checklist.

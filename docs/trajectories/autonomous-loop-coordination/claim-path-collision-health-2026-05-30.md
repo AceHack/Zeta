@@ -7,7 +7,7 @@ Session: codex/launchd-loop
 Run ID: 20260530T025330Z
 Claim: `claim/codex-loop-claim-path-collision-health-20260530`
 Grounding backlog:
-`docs/backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
+`docs/backlog/P1/081KQZVQW0008QG0R001FG05RZ-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
 Parent receipt:
 `docs/trajectories/autonomous-loop-coordination/lane-runway-service-health-adapter-2026-05-29.md`
 

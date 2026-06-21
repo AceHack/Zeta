@@ -45,7 +45,7 @@ describe("classifyPath", () => {
   });
 
   test("backlog-row: docs/backlog/", () => {
-    expect(classifyPath("docs/backlog/P1/B-0867-foo.md")).toBe("backlog-row");
+    expect(classifyPath("docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-foo.md")).toBe("backlog-row");
   });
 
   test("shadow-work: docs/hygiene-history/ticks/", () => {
@@ -106,7 +106,7 @@ describe("classifyCommit", () => {
   test("multi-lane commit returns mixed + distinct lanes", () => {
     const r = classifyCommit(makeCommit([
       "src/foo.fs",
-      "docs/backlog/P1/B-0867-x.md",
+      "docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-x.md",
     ]));
     expect(r.lane).toBe("mixed");
     expect([...r.distinctLanes].sort()).toEqual([
@@ -131,7 +131,7 @@ describe("classifyCommit", () => {
   test("preserves per-file lane assignment for audit", () => {
     const r = classifyCommit(makeCommit([
       "src/foo.fs",
-      "docs/backlog/P1/B-0867-x.md",
+      "docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-x.md",
       "memory/otto/cli/claude/conversations/foo.md",
     ]));
     expect(r.perFileLanes).toHaveLength(3);

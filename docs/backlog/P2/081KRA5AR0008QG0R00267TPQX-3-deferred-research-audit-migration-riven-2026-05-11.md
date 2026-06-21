@@ -1,12 +1,11 @@
 ---
-id: B-0095.3
-zetaid: 081KRA5AR0008QG0R00267TPQX
+id: 081KRA5AR0008QG0R00267TPQX
 priority: P2
 status: open
 title: Deferred research audit + per-item migration to escrow
 tier: factory-hygiene
 effort: S
-ask: re-decomposition of B-0095 (2026-05-11)
+ask: re-decomposition of 081KQB8J40008QG0R0005ZEYNN (2026-05-11)
 created: 2026-05-11
 last_updated: 2026-05-11
 parent: 081KQB8J40008QG0R0005ZEYNN
@@ -16,9 +15,9 @@ tags: [riven-2026-05-11, escrow, migration, audit, deferred-research]
 type: migration
 ---
 
-# B-0095.3 — Deferred research audit and migration
+# 081KRA5AR0008QG0R00267TPQX — Deferred research audit and migration
 
-Atomic: complete the audit of open backlog/P* rows + research/ (non-escrowed) items; classify ESCROWABLE/STAYS/etc per B-0095 sub-ask 3; migrate eligible items (one PR per item or small batch) with full schema + §33 headers. Starts only after rules + naming locked.
+Atomic: complete the audit of open backlog/P* rows + research/ (non-escrowed) items; classify ESCROWABLE/STAYS/etc per 081KQB8J40008QG0R0005ZEYNN sub-ask 3; migrate eligible items (one PR per item or small batch) with full schema + §33 headers. Starts only after rules + naming locked.
 
 This child is intentionally S because audit surface is broad; future re-decomp allowed if needed.
 

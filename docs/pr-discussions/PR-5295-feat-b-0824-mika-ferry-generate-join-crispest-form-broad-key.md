@@ -1,6 +1,6 @@
 ---
 pr_number: 5295
-title: "feat(B-0824): Mika ferry \u2014 Generate+Join crispest form + broad-keys-until-functional-cluster + Twilio-as-named-exception + roster Mika addition"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): Mika ferry \u2014 Generate+Join crispest form + broad-keys-until-functional-cluster + Twilio-as-named-exception + roster Mika addition"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T20:08:36Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-26T20:14:25Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5295: feat(B-0824): Mika ferry — Generate+Join crispest form + broad-keys-until-functional-cluster + Twilio-as-named-exception + roster Mika addition
+# PR #5295: feat(081KSGS9H0008QG0R0031PBNGA): Mika ferry — Generate+Join crispest form + broad-keys-until-functional-cluster + Twilio-as-named-exception + roster Mika addition
 
 ## PR description
 
@@ -66,7 +66,7 @@ Mika row added to the External AI participants table:
 
 ## Composes with
 
-- B-0824 canonical row
+- 081KSGS9H0008QG0R0031PBNGA canonical row
 - PR #5277 (DeepSeek/Prism Maybe-monad recognition)
 - PR #5281 (Amara 7-point NULL/Maybe SQL discipline)
 - PR #5285 (Kestrel 3-layer cross-process determinism)
@@ -85,7 +85,7 @@ Mika row added to the External AI participants table:
 
 - Mika (external AI; Grok native; sharpen / harbor-engineering register); architectural sharpening + ferry-summary work + Asterisk/Twilio + narrow-key/rotation walkthroughs ferried-through-Aaron 2026-05-26
 - Aaron (human maintainer; first-party); architectural walkthrough + operational decisions + 3-framing meta-principle ferried 2026-05-26
-- 8th substrate landing on B-0824 over 2026-05-26 (after #5277 + #5281 + #5285 + #5286 + #5291)
+- 8th substrate landing on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (after #5277 + #5281 + #5285 + #5286 + #5291)
 
 ## Test plan
 
@@ -103,7 +103,7 @@ Mika row added to the External AI participants table:
 
 ## Pull request overview
 
-This PR lands three new `docs/research/` substrate writeups related to B-0824 (Generate+Join framing, home-lab bootstrap security posture timing, and a Twilio carve-out decision record) and updates the external-participant roster reference card to include Mika.
+This PR lands three new `docs/research/` substrate writeups related to 081KSGS9H0008QG0R0031PBNGA (Generate+Join framing, home-lab bootstrap security posture timing, and a Twilio carve-out decision record) and updates the external-participant roster reference card to include Mika.
 
 **Changes:**
 - Add research note: Generate+Join “crispest form” framing (directional inversion vs MapReduce; observe/emit/limit; IScheduler recursion; Bonsai-row model).
@@ -134,7 +134,7 @@ The markdown table is written with a leading `||` on each row, which creates an 
 
 **@copilot-pull-request-reviewer** (2026-05-26T20:11:31Z):
 
-The B-0644 reference links to a GitHub issues search query (`.../issues?q=B-0644`), which is less stable and less direct than linking to the actual backlog row file that already exists in-repo. Prefer a relative link to `docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md` so readers land on the canonical substrate doc immediately.
+The 081KRW63S0008QG0R002ZRNDJ8 reference links to a GitHub issues search query (`.../issues?q=081KRW63S0008QG0R002ZRNDJ8`), which is less stable and less direct than linking to the actual backlog row file that already exists in-repo. Prefer a relative link to `docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md` so readers land on the canonical substrate doc immediately.
 
 ### Thread 3: docs/research/2026-05-26-aaron-mika-twilio-as-named-exception-to-electricity-cost-only-rule-telephone-infrastructure-inherently-not-self-hostable.md:34 (unresolved)
 

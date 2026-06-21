@@ -1,6 +1,5 @@
 ---
-id: B-0069
-zetaid: 081KQ8P5D0008QG0R002HB1ENY
+id: 081KQ8P5D0008QG0R002HB1ENY
 priority: P2
 status: closed
 title: Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
@@ -13,7 +12,7 @@ tags: [skill-substrate, commit-discipline, heredoc, agency-signature]
 type: friction-reducer
 ---
 
-# B-0069 — Encode HEREDOC scripts into substrate
+# 081KQ8P5D0008QG0R002HB1ENY — Encode HEREDOC scripts into substrate
 
 ## Why
 
@@ -88,7 +87,7 @@ discover it through trial-and-error.
 - `.claude/skills/commit-message-shape/SKILL.md` — the natural home
 - task #296 — "Integrate ferry-3 canonical commit-attribution
   schema into commit-message-shape SKILL.md via skill-improver
-  workflow" — same skill update target; bundle B-0069 with task
+  workflow" — same skill update target; bundle 081KQ8P5D0008QG0R002HB1ENY with task
   #296 if the skill-improver workflow is already triggering
 - `memory/feedback_otto_354_*` — AgencySignature trailer-discipline
   memory (operational status; refinement to v2 7-schema pending)

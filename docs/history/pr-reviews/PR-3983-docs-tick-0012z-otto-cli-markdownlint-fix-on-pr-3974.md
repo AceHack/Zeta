@@ -29,9 +29,9 @@
 
 ## Summary
 
-Cold-boot autonomous-loop tick. PR #3974 was BLOCKED with auto-merge armed on a single failing required check (`lint (markdownlint)` MD032 on B-0583 backlog row).
+Cold-boot autonomous-loop tick. PR #3974 was BLOCKED with auto-merge armed on a single failing required check (`lint (markdownlint)` MD032 on 081KRQ1AB0008QG0R003DCGHJJ backlog row).
 
-Per [`.claude/rules/blocked-green-ci-investigate-threads.md`](.claude/rules/blocked-green-ci-investigate-threads.md), investigated rather than waited. Fix landed on the B-0583 branch via commit `5ebe94b` (single blank line between intro sentence and following list at line 42-43).
+Per [`.claude/rules/blocked-green-ci-investigate-threads.md`](.claude/rules/blocked-green-ci-investigate-threads.md), investigated rather than waited. Fix landed on the 081KRQ1AB0008QG0R003DCGHJJ branch via commit `5ebe94b` (single blank line between intro sentence and following list at line 42-43).
 
 This PR ships the per-tick shard documenting the cold-boot path: CronList → arm sentinel → refresh → named-dependency surface → fix → push → shard.
 
@@ -92,8 +92,8 @@ docs(tick): 0012Z Otto-CLI markdownlint fix on PR #3974
 
 Cold-boot autonomous-loop tick. PR #3974 was BLOCKED with auto-merge
 armed on a single failing required check (lint (markdownlint) MD032
-on B-0583 backlog row). Investigated per blocked-green-ci rule,
-fixed via single-blank-line insertion (commit 5ebe94b on the B-0583
+on 081KRQ1AB0008QG0R003DCGHJJ backlog row). Investigated per blocked-green-ci rule,
+fixed via single-blank-line insertion (commit 5ebe94b on the 081KRQ1AB0008QG0R003DCGHJJ
 branch), pushed.
 
 Shard captures the cold-boot path (CronList → arm sentinel → refresh

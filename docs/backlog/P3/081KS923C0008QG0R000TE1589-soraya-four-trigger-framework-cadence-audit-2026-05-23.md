@@ -1,6 +1,5 @@
 ---
-id: B-0718
-zetaid: 081KS923C0008QG0R000TE1589
+id: 081KS923C0008QG0R000TE1589
 priority: P3
 status: open
 title: "Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework (six consecutive holds suggest cadence mismatch OR under-specified triggers)"
@@ -22,7 +21,7 @@ composes_with:
   - docs/backlog/P2/081KSBMG30008QG0R003B46GWG-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md
 ---
 
-# B-0718 — Audit Soraya's four-trigger routing-tick framework (forced-decomposition round 61)
+# 081KS923C0008QG0R000TE1589 — Audit Soraya's four-trigger routing-tick framework (forced-decomposition round 61)
 
 ## Origin
 
@@ -38,8 +37,8 @@ Soraya's current routing-tick re-engagement triggers (named round 54, carried fo
 
 | Trigger | What it watches for |
 |---|---|
-| (a) PR merge on filed Soraya rows | B-0717 subitem (b) execution starting; KNOWN_ANCHORS additions in `tools/alignment/concept_registry.ts` |
-| (b) Peer execution-side PR merge | E.g., PR #4780 (B-0711 Residuated FsCheck, 980/980 passing) |
+| (a) PR merge on filed Soraya rows | 081KSBMG30008QG0R003B46GWG subitem (b) execution starting; KNOWN_ANCHORS additions in `tools/alignment/concept_registry.ts` |
+| (b) Peer execution-side PR merge | E.g., PR #4780 (081KS923C0008QG0R0005VM4FB Residuated FsCheck, 980/980 passing) |
 | (c) New BUGS.md entry naming formal tool | TLA+/Z3/Lean/Alloy/FsCheck/Stryker etc. in fix-clause |
 | (d) Fresh spec on main without anchor citation | Razor-discipline catches landed specs missing paper-anchors |
 
@@ -90,7 +89,7 @@ Soraya keeps emitting hold #6 → forced decomposition → file P3 → reset cyc
 - [`.claude/agents/formal-verification-expert.md`](../../../.claude/agents/formal-verification-expert.md) — Soraya persona definition
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the discipline being applied recursively at Soraya-scope
 - [`memory/soraya/NOTEBOOK.md`](../../../memory/soraya/NOTEBOOK.md) — notebook update target
-- B-0709 + B-0716 + B-0717 (recent Soraya-filed rows; latency data source for the catalog)
+- 081KS923C0008QG0R0032VJZPF + 081KS923C0008QG0R0009JFVSE + 081KSBMG30008QG0R003B46GWG (recent Soraya-filed rows; latency data source for the catalog)
 
 ## Substrate-honest framing
 

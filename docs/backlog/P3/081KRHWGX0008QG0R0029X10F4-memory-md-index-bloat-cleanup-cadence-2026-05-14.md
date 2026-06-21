@@ -1,6 +1,5 @@
 ---
-id: B-0517
-zetaid: 081KRHWGX0008QG0R0029X10F4
+id: 081KRHWGX0008QG0R0029X10F4
 priority: P3
 status: open
 title: "MEMORY.md index bloat cleanup + entry-length enforcement cadence"
@@ -63,11 +62,11 @@ Add `tools/hygiene/audit-user-scope-memory-index.ts` that:
 - Computes truncation risk (lines past 200)
 - Exits 0 always (detect-only); future ticks consume the report
 
-This parallels `tools/hygiene/audit-rule-cross-refs.ts` (PR #3202) — same shape, different surface. Could compose with B-0506 (worktree-prune cadence) as one of several factory-hygiene CI crons.
+This parallels `tools/hygiene/audit-rule-cross-refs.ts` (PR #3202) — same shape, different surface. Could compose with 081KRHWGX0008QG0R002DPG02X (worktree-prune cadence) as one of several factory-hygiene CI crons.
 
 ## Composes with
 
-- B-0006 (memory-md hub compression — prior cleanup work on MEMORY.md)
+- 081KQ0YZ80008QG0R001V0XCYZ (memory-md hub compression — prior cleanup work on MEMORY.md)
 - `tools/hygiene/audit-rule-cross-refs.ts` (PR #3202 — parallel mechanization)
 - Razor-cadence #3128 daily fire (item 5 is the MEMORY.md index audit)
 - `encoding-rules-without-mechanizing.md` rule

@@ -30,9 +30,9 @@ composes_with:
   - .claude/rules/must-paired-with-can-exit-pattern.md
   - .claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md
   - .claude/rules/non-coercion-invariant.md
-  - docs/backlog/P2/B-0132-crdt-composition-for-bft-propagation-aaron-2026-05-01.md
-  - docs/backlog/P3/B-0138-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md
-  - docs/backlog/P2/B-0829-schemas-as-rows-cluster-fork-as-trust-boundary-fsharp-type-providers-from-live-cluster-foundation-for-runme-bcl-ontology-kestrel-aaron-2026-05-26.md
+  - docs/backlog/P2/081KQGDBJ0008QG0R000Y66YYQ-crdt-composition-for-bft-propagation-aaron-2026-05-01.md
+  - docs/backlog/P3/081KQGDBJ0008QG0R0012FC7RX-bft-resistance-theorem-aurora-composed-crdt-plus-consensus-aaron-2026-05-01.md
+  - docs/backlog/P2/081KSGS9H0008QG0R000Q18PGQ-schemas-as-rows-cluster-fork-as-trust-boundary-fsharp-type-providers-from-live-cluster-foundation-for-runme-bcl-ontology-kestrel-aaron-2026-05-26.md
 ---
 
 # Kestrel + Aaron 2026-05-30 -- PRs as corporate consensus, CRDT-DU decentralized decisions, the two-sided naming razor, good-citizen frame
@@ -255,8 +255,8 @@ generous on a partner's work.
 - New buildable architecture for the Bayesian model: PRs-as-corporate-consensus +
   git-CRDT-DU-decentralized-decisions. **No existing substrate** on PRs-as-consensus or
   the good-citizen governance frame (verified 2026-05-30). Composes with existing CRDT/BFT
-  substrate (B-0132 CRDT composition, B-0138 BFT-resistance, B-0829 schemas-as-rows /
-  cluster-fork-as-trust-boundary, B-0864 streams-are-relationships). **Backlog candidate**
+  substrate (081KQGDBJ0008QG0R000Y66YYQ CRDT composition, 081KQGDBJ0008QG0R0012FC7RX BFT-resistance, 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows /
+  cluster-fork-as-trust-boundary, 081KSKBP80008QG0R0039RW25E streams-are-relationships). **Backlog candidate**
   (not autonomously filed -- awaiting operator "file this" per backlog discipline).
 - The two-sided naming razor is a doctrine-grade refinement of razor-discipline +
   grep-substrate-anchors-before-razor; preserved here, NOT rule-landed (cooling-period /

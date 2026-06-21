@@ -61,7 +61,7 @@ finds solid vision in blur." `src/Bayesian`.)*
 door is safe: you always know who came in and who went out. The seed talks to the
 outside through *one* door, and everything that crosses it is written in the visitor
 book. Nothing sneaks in a back window. *(grown-up name: Reticulum — the one metered
-channel; noninterference / entropy-quarantine. The bus clause, B-1035.)*
+channel; noninterference / entropy-quarantine. The bus clause, 081KTSZN10008QG0R002J0GE0Z.)*
 
 **8. Anything that can make a copy of itself is a "traveler."** Not just people, and
 not just robots. A song stuck in your head, a dandelion seed on the wind, a story your

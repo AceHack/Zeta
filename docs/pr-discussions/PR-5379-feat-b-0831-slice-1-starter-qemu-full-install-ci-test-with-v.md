@@ -1,6 +1,6 @@
 ---
 pr_number: 5379
-title: "feat(B-0831 Slice 1 STARTER): QEMU full-install CI test with virtual disk + iter-5.3 marker"
+title: "feat(081KSGS9H0008QG0R0011BC7T2 Slice 1 STARTER): QEMU full-install CI test with virtual disk + iter-5.3 marker"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:05:59Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:28:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5379: feat(B-0831 Slice 1 STARTER): QEMU full-install CI test with virtual disk + iter-5.3 marker
+# PR #5379: feat(081KSGS9H0008QG0R0011BC7T2 Slice 1 STARTER): QEMU full-install CI test with virtual disk + iter-5.3 marker
 
 ## PR description
 
 ## What
 
-B-0831 Slice 1 starter per Aaron 2026-05-26 authorization: *"moving testing of zflash and the iso/usb and cluster join would be great while i test on the pc again"*.
+081KSGS9H0008QG0R0011BC7T2 Slice 1 starter per Aaron 2026-05-26 authorization: *"moving testing of zflash and the iso/usb and cluster join would be great while i test on the pc again"*.
 
 Extends \`qemu-boot-test.ts\` (cascade #5) by:
 - Attaching virtual hard disk (qcow2; 20GB sparse) as install target
@@ -40,24 +40,24 @@ The password prompt is the first operator-stdin requirement; we can't proceed pa
 
 - Reboot loop (boot from installed disk)
 - iter-5.3 password auto-confirm (serial stdin injection)
-- iter-5.4.0 gh auth completion (B-0833 Approach A mock device-code endpoint)
-- Cluster auto-join verification (B-0831 Slice 2)
-- ArgoCD reconciliation (B-0831 Slice 3)
+- iter-5.4.0 gh auth completion (081KSGS9H0008QG0R003JNSVR5 Approach A mock device-code endpoint)
+- Cluster auto-join verification (081KSGS9H0008QG0R0011BC7T2 Slice 2)
+- ArgoCD reconciliation (081KSGS9H0008QG0R0011BC7T2 Slice 3)
 
 ## Workflow gating
 
 - Gated to \`push-to-main\` + \`workflow_dispatch\` (not every PR)
 - \`continue-on-error: true\` for STARTER so initial flakiness doesn't block merges
-- Once test proves reliable + runs <10min consistently, can be enabled on every PR per B-0831 acceptance
+- Once test proves reliable + runs <10min consistently, can be enabled on every PR per 081KSGS9H0008QG0R0011BC7T2 acceptance
 
 ## Composes with
 
-- B-0831 (parent — CI cascade #6)
+- 081KSGS9H0008QG0R0011BC7T2 (parent — CI cascade #6)
 - \`tools/ci/qemu-boot-test.ts\` (cascade #5 — same pattern)
 - \`tools/ci/audit-installer-iso-content.ts\` (cascade #4)
 - \`tools/ci/audit-installer-substrate.ts\` (Layer 1 sentinels)
 - \`tools/ci/test-iter-54-install-flow.test.ts\` (Layer 2a structural)
-- B-0833 Approach A (mock GH device-code — required for full install completion)
+- 081KSGS9H0008QG0R003JNSVR5 Approach A (mock GH device-code — required for full install completion)
 
 ## Security
 
@@ -71,7 +71,7 @@ The password prompt is the first operator-stdin requirement; we can't proceed pa
 
 ## Pull request overview
 
-Adds a starter QEMU full-install CI layer for the AI-cluster installer ISO, extending the existing boot smoke test toward B-0831 by attaching a virtual disk, enabling NAT networking, and wiring the new helper into the ISO workflow.
+Adds a starter QEMU full-install CI layer for the AI-cluster installer ISO, extending the existing boot smoke test toward 081KSGS9H0008QG0R0011BC7T2 by attaching a virtual disk, enabling NAT networking, and wiring the new helper into the ISO workflow.
 
 **Changes:**
 - Adds `tools/ci/qemu-full-install-test.ts` for QEMU disk-backed install progress testing.

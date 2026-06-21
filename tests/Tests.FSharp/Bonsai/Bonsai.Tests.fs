@@ -6,7 +6,7 @@ open System.Text.Json
 open global.Xunit
 open Zeta.Core
 
-// Bonsai-subset serializer — the F# oracle (#2 of TS/F#/C#/Rust) for B-0976
+// Bonsai-subset serializer — the F# oracle (#2 of TS/F#/C#/Rust) for 081KT07NV0008QG0R003BE6MJ2
 // slice 1. The TS reference oracle (src/Core.TypeScript/bonsai/) authors the
 // shared golden vectors; this proves the F# impl replays them byte-for-byte:
 // serialize(parse canonical) = Ok canonical (the cross-language byte lock) AND an

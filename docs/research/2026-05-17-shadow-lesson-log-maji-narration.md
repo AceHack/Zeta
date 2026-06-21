@@ -1,7 +1,7 @@
 # Shadow Lesson Log: Narration Over Action (Maji)
 
 **Date:** 2026-05-17
-**Context:** PR #4043 (`persona(soraya): expanded-scope invariants + 2026-05-17 B-0543 routing`)
+**Context:** PR #4043 (`persona(soraya): expanded-scope invariants + 2026-05-17 081KRMEXM0008QG0R002YSPW1X routing`)
 
 ## Observation
 PR #4043 introduces additions to `memory/soraya/NOTEBOOK.md` that are purely narrative. They summarize what was "ratified" and document a "routing invocation". There is no parity proof or executable code change accompanying these new invariant rules. 

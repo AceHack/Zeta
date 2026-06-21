@@ -27,15 +27,15 @@
 
 ## Description
 
-**Substrate-honest co-commit** — peer Otto's B-0037.2 close + Otto-CLI's 13:42Z tick shard absorbed into one commit (`c234501`) due to git-index-lock contention + peer's `git add . && commit` racing my staged shard. Peer's commit message explicitly acknowledges the co-commit pattern.
+**Substrate-honest co-commit** — peer Otto's 081KR7JY10008QG0R002D6VNNJ close + Otto-CLI's 13:42Z tick shard absorbed into one commit (`c234501`) due to git-index-lock contention + peer's `git add . && commit` racing my staged shard. Peer's commit message explicitly acknowledges the co-commit pattern.
 
 ## Substrate landed
 
-### Peer Otto contribution — B-0037.2 round-close meta-check template
+### Peer Otto contribution — 081KR7JY10008QG0R002D6VNNJ round-close meta-check template
 
-`#2-Ready` pickup: B-0037.2's `classification:blocked` field was stale because B-0037.1 had merged earlier this session via PR #3859.
+`#2-Ready` pickup: 081KR7JY10008QG0R002D6VNNJ's `classification:blocked` field was stale because 081KR7JY10008QG0R0038AFS7T had merged earlier this session via PR #3859.
 
-Deliverable: [`docs/ROUND-HISTORY.md`](docs/ROUND-HISTORY.md) appended round-close meta-check template section with 6 checkboxes drawn from B-0037.1 taxonomy (2 each per First/Second/Third meta-cognitive order). Closes B-0037.2.
+Deliverable: [`docs/ROUND-HISTORY.md`](docs/ROUND-HISTORY.md) appended round-close meta-check template section with 6 checkboxes drawn from 081KR7JY10008QG0R0038AFS7T taxonomy (2 each per First/Second/Third meta-cognitive order). Closes 081KR7JY10008QG0R002D6VNNJ.
 
 ### Otto-CLI contribution — 13:42Z tick shard
 
@@ -64,12 +64,12 @@ Extreme cost-aware tier (GraphQL 509 remaining).
 ### Thread 1 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Cj8lS`
-- **Path**: `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`
+- **Path**: `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`copilot-pull-request-reviewer` (human)** at 2026-05-16T13:54:07Z on `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`:7 (association: NONE)
+- **`copilot-pull-request-reviewer` (human)** at 2026-05-16T13:54:07Z on `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`:7 (association: NONE)
 
   <pre>
   The `last_updated` frontmatter field was not updated when closing this row. Per `tools/backlog/README.md`, `last_updated` must be refreshed on every content edit; closing a row from `open` → `closed` and appending a Resolution section qualifies.
@@ -97,25 +97,25 @@ Extreme cost-aware tier (GraphQL 509 remaining).
 **Touched files (intersect with thread paths):**
 
 - `docs/ROUND-HISTORY.md`
-- `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`
+- `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`
 
 **Message:**
 
 ```
 feat(b-0037.2): implement round-close meta-check template + close row
 
-#2-Ready pickup: B-0037.2's classification:blocked field was stale
-because B-0037.1 merged earlier this session via PR #3859.
+#2-Ready pickup: 081KR7JY10008QG0R002D6VNNJ's classification:blocked field was stale
+because 081KR7JY10008QG0R0038AFS7T merged earlier this session via PR #3859.
 
 Deliverable: docs/ROUND-HISTORY.md appended 'Round-close meta-check
-template' section with 6 checkboxes drawn from B-0037.1 taxonomy
+template' section with 6 checkboxes drawn from 081KR7JY10008QG0R0038AFS7T taxonomy
 (2 each per First/Second/Third meta-cognitive order).
 
 All 4 acceptance criteria met:
 - Template section with >=3 meta-check checkboxes (6 actually)
 - At least one checkbox per order (2 per order)
 - Pure doc addition; dotnet build unaffected
-- Cites B-0037.1 as unblocked dependency
+- Cites 081KR7JY10008QG0R0038AFS7T as unblocked dependency
 
 Note: peer-Otto worktree-switch landed this commit on peer's branch
 label; pushed via SHA-push to intended target branch on origin.

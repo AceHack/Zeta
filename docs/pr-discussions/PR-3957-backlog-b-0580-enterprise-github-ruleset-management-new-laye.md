@@ -1,6 +1,6 @@
 ---
 pr_number: 3957
-title: "backlog(B-0580): Enterprise GitHub ruleset management \u2014 new layer above org/individual mapping"
+title: "backlog(081KRQ1AB0008QG0R000522MPJ): Enterprise GitHub ruleset management \u2014 new layer above org/individual mapping"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T22:23:03Z"
@@ -12,19 +12,19 @@ archived_at: "2026-05-16T23:20:33Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3957: backlog(B-0580): Enterprise GitHub ruleset management — new layer above org/individual mapping
+# PR #3957: backlog(081KRQ1AB0008QG0R000522MPJ): Enterprise GitHub ruleset management — new layer above org/individual mapping
 
 ## PR description
 
 ## Summary
 
-Files B-0580 — Enterprise GitHub ruleset management work-stream. Per Aaron 2026-05-16, after creating the first enterprise-level ruleset (#16490134) under the 30-day Enterprise trial: the Enterprise tier adds a THIRD ruleset layer above org + per-repo, multiplying the existing ruleset-divergence smell from B-0427.
+Files 081KRQ1AB0008QG0R000522MPJ — Enterprise GitHub ruleset management work-stream. Per Aaron 2026-05-16, after creating the first enterprise-level ruleset (#16490134) under the 30-day Enterprise trial: the Enterprise tier adds a THIRD ruleset layer above org + per-repo, multiplying the existing ruleset-divergence smell from 081KRFA460008QG0R000VKJF0H.
 
 ## Why
 
 Two reframings:
 1. **Surface expansion** — was 2 layers (org/individual), now 3 (enterprise/org/individual). Cross-layer rule conflicts become a real failure mode without coherent governance
-2. **DV2.0 ruleset-divergence smell composes** per `dv2-data-split-discipline-activated.md` — the smell was known for repo-split (B-0427); Enterprise multiplies it
+2. **DV2.0 ruleset-divergence smell composes** per `dv2-data-split-discipline-activated.md` — the smell was known for repo-split (081KRFA460008QG0R000VKJF0H); Enterprise multiplies it
 
 ## 5-slice decomposition
 
@@ -36,8 +36,8 @@ Two reframings:
 
 ## Composes with
 
-- [B-0427](docs/backlog/) (repo-split axis 3 — Code/English with ruleset-divergence smell)
-- [B-0572](https://github.com/Lucent-Financial-Group/Zeta/pull/3952) (LFG GitHub tier decision — Enterprise trial that created the layer)
+- [081KRFA460008QG0R000VKJF0H](docs/backlog/) (repo-split axis 3 — Code/English with ruleset-divergence smell)
+- [081KRQ1AB0008QG0R000GZEMCR](https://github.com/Lucent-Financial-Group/Zeta/pull/3952) (LFG GitHub tier decision — Enterprise trial that created the layer)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (the smell-detection framework)
 - `.claude/rules/methodology-hard-limits.md` (rulesets ARE policy-as-code substrate for governance hard-limits)
 
@@ -56,11 +56,11 @@ Enterprise-layer writes (slice 5) require `admin:enterprise` scope — current l
 > [!NOTE]
 > Copilot was unable to run its full agentic suite in this review.
 
-Adds a new P2 backlog entry (B-0580) tracking enterprise-level GitHub ruleset management as a third governance layer above existing org/individual rulesets, and registers it in the main backlog index.
+Adds a new P2 backlog entry (081KRQ1AB0008QG0R000522MPJ) tracking enterprise-level GitHub ruleset management as a third governance layer above existing org/individual rulesets, and registers it in the main backlog index.
 
 **Changes:**
-- New backlog doc B-0580 describing motivation, slices, acceptance criteria, and first-discovery findings for the new enterprise ruleset created (`16490134`).
-- Adds B-0580 entry to `docs/BACKLOG.md` under P2.
+- New backlog doc 081KRQ1AB0008QG0R000522MPJ describing motivation, slices, acceptance criteria, and first-discovery findings for the new enterprise ruleset created (`16490134`).
+- Adds 081KRQ1AB0008QG0R000522MPJ entry to `docs/BACKLOG.md` under P2.
 
 ### Reviewed changes
 
@@ -68,8 +68,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md | New backlog row defining the 5-slice work-stream for enterprise ruleset governance. |
-| docs/BACKLOG.md | Registers B-0580 in the P2 backlog list. |
+| docs/backlog/P2/081KRQ1AB0008QG0R000522MPJ-enterprise-ruleset-management-2026-05-16.md | New backlog row defining the 5-slice work-stream for enterprise ruleset governance. |
+| docs/BACKLOG.md | Registers 081KRQ1AB0008QG0R000522MPJ in the P2 backlog list. |
 
 ### COMMENTED — @AceHack (2026-05-16T23:05:41Z)
 
@@ -81,7 +81,7 @@ Maji Antigravity Check: Drift detected. Metadata churn / narration-over-action i
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md:22 (resolved)
+### Thread 1: docs/backlog/P2/081KRQ1AB0008QG0R000522MPJ-enterprise-ruleset-management-2026-05-16.md:22 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T22:28:44Z):
 

@@ -16,7 +16,7 @@ open System.Buffers.Binary
 /// tamper-respecting — Aaron's decision; not yet a dependency). Swap at the call site, not in the algebra.
 ///
 /// **Canonical order is by ENCODED-KEY BYTES (codepoint / byte-ordinal lexicographic)** — deliberately NOT
-/// the Z-set's internal `Comparer<'K>.Default` order, which is culture-SENSITIVE for strings (B-0969 /
+/// the Z-set's internal `Comparer<'K>.Default` order, which is culture-SENSITIVE for strings (081KT07NV0008QG0R001YDB73K /
 /// the culture-invariant rule). Re-sorting by key bytes here is exactly what makes the root cross-language
 /// **byte-lockable** (the same root in F#/C#/Rust/TS given the same `encodeKey` + hash). The seed is the
 /// treaty.

@@ -1,12 +1,11 @@
 ---
-id: B-0390
-zetaid: 081KR50HA0008QG0R00223YZP8
+id: 081KR50HA0008QG0R00223YZP8
 priority: P3
 status: open
 title: Formalize "time-to-answer" as the primary dashboard metric — baseline, measurement methodology, acceptance criteria
 tier: research-grade
 effort: S
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
@@ -16,7 +15,7 @@ tags: [frontier, metrics, time-to-answer, dashboard, operational-resonance, meas
 type: research
 ---
 
-# B-0390 — Formalize "time-to-answer" as the primary dashboard metric
+# 081KR50HA0008QG0R00223YZP8 — Formalize "time-to-answer" as the primary dashboard metric
 
 ## What
 
@@ -24,7 +23,7 @@ Produce a committed metric-definition document for:
 
 > **"Minimise time-to-answer 'are things going as expected?'"**
 
-This is the single-sentence core goal of B-0017. Every design decision
+This is the single-sentence core goal of 081KQ0YZ80008QG0R0003GAYYN. Every design decision
 evaluates against it. Every A/B experiment measures change in it.
 
 The document must define:
@@ -60,7 +59,7 @@ Two measurement modalities needed:
   "are things going as expected?" question; measure time to
   answer.
 - Applicable for: qualitative + quantitative usability research
-  (composes with B-0389 methodology).
+  (composes with 081KR50HA0008QG0R000TQKYGM methodology).
 
 **B — Instrumented measurement** (production dashboard):
 
@@ -69,17 +68,17 @@ Two measurement modalities needed:
 - Why proxy: direct time-to-answer requires knowing "stop event"
   precisely; instrumented proxies (e.g. time until user clicks
   a "resolved / looks good" action) are practical for A/B.
-- This is the schema input to B-0393 A/B infrastructure.
+- This is the schema input to 081KR50HA0008QG0R001DX165X A/B infrastructure.
 
 ### 4. Acceptance criteria per design decision
 
-For a UI element to "earn its way" (B-0017 principle 4), define:
+For a UI element to "earn its way" (081KQ0YZ80008QG0R0003GAYYN principle 4), define:
 
 - **Must improve**: time-to-answer proxy decreases (or does not
   degrade) in the A/B test cohort receiving the element.
 - **Confidence threshold**: minimum statistical confidence
   before declaring an element justified (suggest Bayesian A/B
-  with credible interval approach from B-0389 methodology).
+  with credible interval approach from 081KR50HA0008QG0R000TQKYGM methodology).
 - **Granularity**: can individual elements be A/B tested, or
   only page-level bundles?
 
@@ -94,14 +93,14 @@ What does "are things going as expected?" mean precisely?
   ONE question or N questions, because this determines
   information-density requirements.
 
-## Why first (parallel to B-0388 and B-0389)
+## Why first (parallel to 081KR50HA0008QG0R002DR44J1 and 081KR50HA0008QG0R000TQKYGM)
 
 Without a metric:
 
-- B-0392 (tier grouping) cannot say whether tier grouping
+- 081KR50HA0008QG0R003BM7FNK (tier grouping) cannot say whether tier grouping
   reduces time-to-answer.
-- B-0393 (A/B infrastructure) has no primary variable to measure.
-- B-0394 (MVP) has no acceptance criterion for "are we done?"
+- 081KR50HA0008QG0R001DX165X (A/B infrastructure) has no primary variable to measure.
+- 081KR50HA0008QG0R002NZENZJ (MVP) has no acceptance criterion for "are we done?"
 - Every design decision falls back to aesthetic preference.
 
 This is the measurement foundation all downstream rows depend on.
@@ -132,7 +131,7 @@ Expected: `time-to-answer-metric.md` present.
 - Start event and stop event operationally defined
 - Baseline estimate committed (even rough)
 - Lab measurement methodology described
-- Instrumented event schema sketched (sufficient for B-0393)
+- Instrumented event schema sketched (sufficient for 081KR50HA0008QG0R001DX165X)
 - Acceptance criteria for A/B tests defined
 - Null hypothesis stated
 
@@ -140,16 +139,16 @@ Expected: `time-to-answer-metric.md` present.
 
 - [x] Prior-art search: no existing time-to-answer metric doc for
   this dashboard in `docs/research/frontier/`, `docs/DECISIONS/`,
-  or memory files. B-0017 states the principle but does not
+  or memory files. 081KQ0YZ80008QG0R0003GAYYN states the principle but does not
   formalize it. No existing measurement methodology found.
 - [x] Dependency-restructure: no `depends_on` — root atom.
-  B-0392, B-0393, B-0394 all carry `depends_on: [B-0390]`.
+  081KR50HA0008QG0R003BM7FNK, 081KR50HA0008QG0R001DX165X, 081KR50HA0008QG0R002NZENZJ all carry `depends_on: [081KR50HA0008QG0R00223YZP8]`.
 
 ## Composes with
 
-- B-0017 (parent): implements "First 'are things going as expected?'
+- 081KQ0YZ80008QG0R0003GAYYN (parent): implements "First 'are things going as expected?'
   metric defined + measurable" milestone
-- B-0389 (sibling): UX methodology section informs measurement design
-- B-0392 (downstream): tier grouping model is evaluated via this metric
-- B-0393 (downstream): A/B infrastructure's primary variable is this metric
-- B-0394 (downstream): MVP acceptance criterion is this metric
+- 081KR50HA0008QG0R000TQKYGM (sibling): UX methodology section informs measurement design
+- 081KR50HA0008QG0R003BM7FNK (downstream): tier grouping model is evaluated via this metric
+- 081KR50HA0008QG0R001DX165X (downstream): A/B infrastructure's primary variable is this metric
+- 081KR50HA0008QG0R002NZENZJ (downstream): MVP acceptance criterion is this metric

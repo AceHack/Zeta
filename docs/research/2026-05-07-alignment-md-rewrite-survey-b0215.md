@@ -1,8 +1,8 @@
-Scope: B-0215 survey — preserve/refine/add map for ALIGNMENT.md rewrite
+Scope: 081KQX9B50008QG0R00327XC6Q survey — preserve/refine/add map for ALIGNMENT.md rewrite
 Attribution: Otto
 Operational status: research-grade
 
-# ALIGNMENT.md Rewrite Survey (B-0215)
+# ALIGNMENT.md Rewrite Survey (081KQX9B50008QG0R00327XC6Q)
 
 Current file: 1103 lines, 11 H2 sections, 41 H2+H3
 headings total.
@@ -13,7 +13,7 @@ headings total.
 | ------- | ----- | ------- | ----- |
 | Primary research claim | 1-69 | preserve | Core framing, load-bearing |
 | Glass halo (§sym transparency) | 71-195 | preserve | Foundational, well-written |
-| Bidirectional alignment | 197-449 | refine | EXISTS — B-0217 starts here, not blank |
+| Bidirectional alignment | 197-449 | refine | EXISTS — 081KQX9B50008QG0R001FK1G36 starts here, not blank |
 | What aligned does NOT mean | 30-50 | preserve | Critical boundary-setting |
 | What aligned does mean | 51-69 | preserve | Core definition |
 | HC-1 Consent-first | 452-467 | preserve | Load-bearing |
@@ -45,15 +45,15 @@ headings total.
 
 ## Key findings for downstream rows
 
-1. **B-0217 (bidirectional alignment):** The section
-   ALREADY EXISTS at lines 197-449. B-0217 refines
+1. **081KQX9B50008QG0R001FK1G36 (bidirectional alignment):** The section
+   ALREADY EXISTS at lines 197-449. 081KQX9B50008QG0R001FK1G36 refines
    it, doesn't create it.
 
-2. **B-0216 (factory-as-superfluid):** No existing
+2. **081KQX9B50008QG0R0039H39VC (factory-as-superfluid):** No existing
    section. Needs ADD under Measurability or as new
    DIR clause.
 
-3. **B-0218 (Noether direction):** No existing section.
+3. **081KQX9B50008QG0R003B0HG9R (Noether direction):** No existing section.
    Candidate ADD as DIR-6 or integrate into DIR-1.
 
 4. **HC-4 relaxation:** The isolated-instance relaxation
@@ -78,11 +78,11 @@ headings total.
 
 | Child | Needs | Action |
 | ----- | ----- | ------ |
-| B-0216 | New section | ADD |
-| B-0217 | Lines 197-449 | REFINE |
-| B-0218 | New DIR clause | ADD |
-| B-0219 | HC-1 through HC-7 | REVIEW |
-| B-0220 | SD-1 through SD-9 | REVIEW |
-| B-0221 | DIR-1 through DIR-5 | REVIEW |
-| B-0222 | Measurability 867-1010 | REFINE |
-| B-0223 | Signatures + refs | REVIEW |
+| 081KQX9B50008QG0R0039H39VC | New section | ADD |
+| 081KQX9B50008QG0R001FK1G36 | Lines 197-449 | REFINE |
+| 081KQX9B50008QG0R003B0HG9R | New DIR clause | ADD |
+| 081KQX9B50008QG0R0026EHVW2 | HC-1 through HC-7 | REVIEW |
+| 081KQX9B50008QG0R001D089H3 | SD-1 through SD-9 | REVIEW |
+| 081KQX9B50008QG0R0008KHHZR | DIR-1 through DIR-5 | REVIEW |
+| 081KQX9B50008QG0R000Z511EV | Measurability 867-1010 | REFINE |
+| 081KQX9B50008QG0R001510C9G | Signatures + refs | REVIEW |

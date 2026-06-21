@@ -1,6 +1,6 @@
 ---
 pr_number: 5347
-title: "docs(backlog): B-0834 \u2014 installer preserve install log to file (failures + warnings scroll past too fast; 3rd empirical anchor in same physical test session)"
+title: "docs(backlog): 081KSGS9H0008QG0R001RR3ZXQ \u2014 installer preserve install log to file (failures + warnings scroll past too fast; 3rd empirical anchor in same physical test session)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T23:04:48Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:30:32Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5347: docs(backlog): B-0834 — installer preserve install log to file (failures + warnings scroll past too fast; 3rd empirical anchor in same physical test session)
+# PR #5347: docs(backlog): 081KSGS9H0008QG0R001RR3ZXQ — installer preserve install log to file (failures + warnings scroll past too fast; 3rd empirical anchor in same physical test session)
 
 ## PR description
 
@@ -34,25 +34,25 @@ Per operator 2026-05-26: \"i got some failures and warings on install of nixos n
 
 P2 priority — diagnostic enabler, not hard install blocker.
 
-## The operator-side analog to B-0831
+## The operator-side analog to 081KSGS9H0008QG0R0011BC7T2
 
-B-0831 cascade #6 captures full serial console as workflow-artifact in CI. This row is the OPERATOR-SIDE analog: preserve the log on the install target so operator can review post-failure on real hardware, BEFORE B-0831 lands.
+081KSGS9H0008QG0R0011BC7T2 cascade #6 captures full serial console as workflow-artifact in CI. This row is the OPERATOR-SIDE analog: preserve the log on the install target so operator can review post-failure on real hardware, BEFORE 081KSGS9H0008QG0R0011BC7T2 lands.
 
 ## 3 empirical anchors in 1 test session
 
 | Row | Anchor |
 |---|---|
-| B-0832 | nmtui WiFi rescan needed (dense-WiFi 20+ networks) |
-| B-0833 | interactive-login vs baked-in-keys CI-test tension |
-| B-0834 (this PR) | install log scroll-past-too-fast |
+| 081KSGS9H0008QG0R001Q2DH2H | nmtui WiFi rescan needed (dense-WiFi 20+ networks) |
+| 081KSGS9H0008QG0R003JNSVR5 | interactive-login vs baked-in-keys CI-test tension |
+| 081KSGS9H0008QG0R001RR3ZXQ (this PR) | install log scroll-past-too-fast |
 
-Strong validation of B-0831's reframing within minutes of its own landing: physical-test-as-first-class-hardware-compatibility-matrix-substrate produces real-world substrate-engineering targets that CI emulation cannot reproduce.
+Strong validation of 081KSGS9H0008QG0R0011BC7T2's reframing within minutes of its own landing: physical-test-as-first-class-hardware-compatibility-matrix-substrate produces real-world substrate-engineering targets that CI emulation cannot reproduce.
 
 ## Test plan
 
 - [x] markdownlint clean
 - [x] BACKLOG.md regenerated
-- [x] Composes_with B-0754 + B-0831 + B-0832 + B-0833 + zeta-install.sh + zeta-first-boot.sh
+- [x] Composes_with 081KSGS9H0008QG0R002T3BJ2R + 081KSGS9H0008QG0R0011BC7T2 + 081KSGS9H0008QG0R001Q2DH2H + 081KSGS9H0008QG0R003JNSVR5 + zeta-install.sh + zeta-first-boot.sh
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

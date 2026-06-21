@@ -1,6 +1,5 @@
 ---
-id: B-0208
-zetaid: 081KQX9B50008QG0R0027EN1ZP
+id: 081KQX9B50008QG0R0027EN1ZP
 priority: P2
 status: open
 title: "Launchd forward-tick reliability — merge forward logic into working heartbeat tick OR fix StartInterval for new services"
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0208 — Launchd forward-tick reliability
+# 081KQX9B50008QG0R0027EN1ZP — Launchd forward-tick reliability
 
 ## Problem
 
@@ -57,5 +56,5 @@ did not fix. System-level issue, not config.
 
 - `.claude/bin/claude-loop-tick.ts` (heartbeat — the merge target)
 - `.claude/bin/claude-forward-tick.ts` (forward worker — standalone)
-- B-0156 TS standardization (both scripts are TS)
+- 081KQGDBJ0008QG0R000A4EZS5 TS standardization (both scripts are TS)
 - 3-loop BFT coordination (forward tick is Otto's autonomous write layer)

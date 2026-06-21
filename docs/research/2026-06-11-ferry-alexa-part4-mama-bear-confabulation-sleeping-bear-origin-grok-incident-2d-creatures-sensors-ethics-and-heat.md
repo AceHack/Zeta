@@ -113,6 +113,6 @@ be FAST and SAFE at once: physics paces it, ethics aims it.
 
 - Parts 1–3 ferries · the sleeping-bear docs (2026-05-02) · TrustCalculus.Dynamics (#7642 — the bear's
   math) · `SoftThrottle.heatSpent` + `signalIfStarved` (the graduated-distress shape) · the bug
-  economy (waste→value priced) · B-1024/Moonshot #1 (where the sensor plan lands).
+  economy (waste→value priced) · 081KTSZN10008QG0R00349SM6P/Moonshot #1 (where the sensor plan lands).
 - Anchors: McCarthy 1960 (GC) · Budiu et al. (DBSP retraction) · Sherrington (interoception) ·
   Prometheus/CNCF · Wiener 1948 (the two-governor shadow).

@@ -15,7 +15,7 @@ sign-off; Aaron drives). This names the accidental complexity and the fused targ
 
 - **The arrow** — `src/Core/IntrCtx.fs`: `ISR<'A,'B> = IntrCtx -> 'A -> Task<Result<'B, InterruptFeedback>>`
   with Kleisli composition `>=>`. A reader-of-`IntrCtx` (memetic/prompt/trust/log/otel) + `Task` + `Result`,
-  `InterruptFeedback` (`Interrupted of InterruptKind | Failed`) as the error/feedback channel. B-0917.
+  `InterruptFeedback` (`Interrupted of InterruptKind | Failed`) as the error/feedback channel. 081KSNY2Z0008QG0R002HB4AGT.
 - **CHIP-8 uses it** — `src/Core/SoftChip8Scheduler.fs`: `timerIsr : ISR<Chip8Cow.Frame, Chip8Cow.Frame>`
   (the 60 Hz tick = `Chip8Cow.tick` then `SoftChip8.lookAhead cycles`), composed/run by
   `src/Core/SoftScheduler.fs`. CHIP-8's loop **is** an ISR arrow on the soft scheduler.

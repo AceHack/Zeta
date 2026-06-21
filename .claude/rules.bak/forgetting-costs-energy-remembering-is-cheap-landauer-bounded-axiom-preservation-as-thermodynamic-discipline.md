@@ -69,7 +69,7 @@ write-time:
   `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`):
   when about to emit "Quiet" without a named dependency, ask "is
   this brief-ack erasing the substrate-engineering momentum the
-  three-lanes discipline (B-0892) builds?" Standing-by erases the
+  three-lanes discipline (081KSNY2Z0008QG0R002QA720J) builds?" Standing-by erases the
   decomposition-pressure that produces forward substrate; the
   framework-integrity cost IS Landauer-bounded thermal cost paid in
   lost cadence.
@@ -111,10 +111,10 @@ discipline operates implicitly:
 | Substrate scope | Measurement proxy for axiom-preservation | Drift cost |
 |---|---|---|
 | FPGA implementation (future) | Direct thermal energy measurement | kT ln 2 per bit erased (physical) |
-| F# implementation (B-0428 fork) | F# compiler + type-system invariant enforcement + FsCheck property tests | Type-check failure + property-test failure |
+| F# implementation (081KRFA460008QG0R0018SN61J fork) | F# compiler + type-system invariant enforcement + FsCheck property tests | Type-check failure + property-test failure |
 | TS substrate (today's tooling) | tsc strict mode + bun test + lint(backlog ID uniqueness) | Build / test / lint failure |
 | Substrate-engineering rule discipline | Auto-load at cold-boot (per wake-time-substrate) | Operator-tax of catching the gap; re-derivation cycles |
-| Multi-agent coordination | Cross-substrate triangulation (per B-0648) | Convergence failure on shared compressed dialect |
+| Multi-agent coordination | Cross-substrate triangulation (per 081KRW63S0008QG0R0025E4PH6) | Convergence failure on shared compressed dialect |
 
 The thermodynamic-cost framing unifies the substrate at every scope:
 each scope's "drift cost" is the Landauer-cost analog for its
@@ -171,8 +171,8 @@ principle at different substrate scales.
 
 ## Composes with substrate
 
-- B-0905 (Landauer-limit physics-economics) — DIRECT anchor
-- B-0906 (encryption-thermal-cost two-axis classification) — composes
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics) — DIRECT anchor
+- 081KSNY2Z0008QG0R001A431CN (encryption-thermal-cost two-axis classification) — composes
   at encryption-substrate scope; Axis 2 (irreversibility-when-
   decryption-not-needed) IS Landauer-bounded thermal cost design
 - 7th Kestrel ferry (2026-05-28; PR #5725) — Kestrel Turn 19's
@@ -181,13 +181,13 @@ principle at different substrate scales.
 - 5th + 6th Kestrel ferries (2026-05-28) — traveler-Clifford-
   categorical foundation that this rule composes WITH at thermodynamic
   scope
-- B-0895 + B-0896 (Clifford + categorical-Clifford) — the mathematical
+- 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R000YH2SPE (Clifford + categorical-Clifford) — the mathematical
   substrate the thermodynamic discipline operates at
-- B-0428 (F# fork for AI safety with HKT over Clifford) — F# substrate
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford) — F# substrate
   where axiom-preservation is type-system-enforced
-- B-0867 (workflow engine v1) — when the engine lands, its
+- 081KSKBP80008QG0R000B3Y19A (workflow engine v1) — when the engine lands, its
   state-preservation IS axiom-preservation at workflow scope
-- B-0892 (three-lanes-concurrent operating discipline) — drift across
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline) — drift across
   lanes IS the discipline-failure-mode this rule catches; idle-tick
   failure IS Landauer-bounded thermal cost paid in lost cadence
 
@@ -207,14 +207,14 @@ When authoring NEW substrate or making substrate-engineering decisions:
    substrate-cost is close to zero.
 
 3. **Ask: am I about to emit "Quiet" without named dependency?** If
-   yes during three-lanes active backlog (B-0892), Landauer-cost IS
+   yes during three-lanes active backlog (081KSNY2Z0008QG0R002QA720J), Landauer-cost IS
    paid in lost cadence. The remembering-is-cheap move: pick
    decomposition work from the lagging lane.
 
 4. **Apply at multiple scopes simultaneously**: function-substrate
    (TFeedback preservation via asymmetric-authorship); discipline-
    substrate (auto-load via wake-time-substrate); workflow-substrate
-   (state-preservation when B-0867 engine lands); cluster-substrate
+   (state-preservation when 081KSKBP80008QG0R000B3Y19A engine lands); cluster-substrate
    (multi-agent coordination via cross-substrate triangulation).
 
 5. **The Landauer-cost analog is operationally measurable today**:
@@ -260,8 +260,8 @@ This rule DOES:
 - Provide the thermodynamic interpretation of existing framework
   disciplines so future-Otto cold-boot can reason about discipline-
   failure-mode as physical-cost
-- Compose with the 7th Kestrel ferry substrate + B-0905 Landauer +
-  B-0906 encryption-thermal substrate + the broader categorical-
+- Compose with the 7th Kestrel ferry substrate + 081KSNY2Z0008QG0R002R0M026 Landauer +
+  081KSNY2Z0008QG0R001A431CN encryption-thermal substrate + the broader categorical-
   Clifford foundation
 - Make the FPGA-future-substrate implementation path explicit (when
   empirical thermal-cost measurement matures, the SAME discipline
@@ -303,7 +303,7 @@ Searched surfaces:
 
 - `docs/agendas/`: 0 hits on combined topic
 - `docs/trajectories/`: 0 hits
-- `docs/backlog/`: B-0905 (Landauer-limit) + B-0906 (encryption-
+- `docs/backlog/`: 081KSNY2Z0008QG0R002R0M026 (Landauer-limit) + 081KSNY2Z0008QG0R001A431CN (encryption-
   thermal-cost) are anchors; no prior row on the carved-sentence form
 - `.claude/rules/`: wake-time-substrate + holding-without-named-
   dependency + grep-substrate-anchors + verify-existing-substrate +

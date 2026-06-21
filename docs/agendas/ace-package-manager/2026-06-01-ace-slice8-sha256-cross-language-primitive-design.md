@@ -1,6 +1,6 @@
 # Ace slice 8 — SHA-256 cross-language primitive (design)
 
-> Spec for slice 8 of the Ace package manager (B-0288). The first step of the
+> Spec for slice 8 of the Ace package manager (081KR2E4K0008QG0R002YE3MMD). The first step of the
 > **cross-language Ace trust core**: land **SHA-256** as a 4-oracle primitive
 > (TypeScript / F# / C# / Rust) with golden-vector byte-consensus, per the
 > 4-language compiler-BFT model (`docs/PRIMITIVE-REGISTRY.md` +

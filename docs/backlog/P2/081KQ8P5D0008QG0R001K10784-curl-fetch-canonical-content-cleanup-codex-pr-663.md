@@ -1,6 +1,5 @@
 ---
-id: B-0077
-zetaid: 081KQ8P5D0008QG0R001K10784
+id: 081KQ8P5D0008QG0R001K10784
 priority: P2
 status: closed
 title: tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663
@@ -13,7 +12,7 @@ tags: [pr-663, codex, deferred, acehack-canonical, curl-fetch, install-hardening
 type: friction-reducer
 ---
 
-# B-0077 — curl-fetch.sh canonical-content cleanup
+# 081KQ8P5D0008QG0R001K10784 — curl-fetch.sh canonical-content cleanup
 
 ## Source
 
@@ -29,10 +28,10 @@ PR #663 is a pure-additive forward-sync of AceHack-canonical content to LFG. Mod
 ## Acceptance
 
 - [x] P0 docstring updated to remove pipe-to-shell examples — resolved by
-  B-0063 (PR #2114, 2026-05-08): `curl_fetch_stream` removed entirely;
+  081KQ8P5D0008QG0R001DMK8JD (PR #2114, 2026-05-08): `curl_fetch_stream` removed entirely;
   USAGE section replaced with download-to-temp + verify + exec pattern.
 - [x] P1 commentary updated to match actual call-site state — resolved by
-  B-0063 (PR #2114, 2026-05-08): "two-gate command-substitution" and
+  081KQ8P5D0008QG0R001DMK8JD (PR #2114, 2026-05-08): "two-gate command-substitution" and
   "streamed callers" language removed; COMMAND-SUBSTITUTION + SET-E
   section now accurately describes download-to-temp + exec for all three
   call sites (macos.sh, linux.sh, elan.sh).
@@ -41,7 +40,7 @@ PR #663 is a pure-additive forward-sync of AceHack-canonical content to LFG. Mod
 
 ## Resolution
 
-Both Codex findings were resolved as a side-effect of B-0063 (PR #2114,
+Both Codex findings were resolved as a side-effect of 081KQ8P5D0008QG0R001DMK8JD (PR #2114,
 merged 2026-05-08). Verified 2026-05-10:
 
 - `curl_fetch_stream` and all pipe-to-shell USAGE examples are gone from
@@ -56,5 +55,5 @@ merged 2026-05-08). Verified 2026-05-10:
 ## Composes with
 
 - PR #663 (the forward-sync that surfaced these via Codex review)
-- B-0063 (streamed-installer download-to-temp checksum pattern — the PR that
+- 081KQ8P5D0008QG0R001DMK8JD (streamed-installer download-to-temp checksum pattern — the PR that
   resolved both findings; PR #2114)

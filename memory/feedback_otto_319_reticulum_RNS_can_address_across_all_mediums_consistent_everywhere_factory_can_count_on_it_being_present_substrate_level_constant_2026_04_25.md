@@ -33,7 +33,7 @@ This eliminates a whole class of "what if the network is X" branching. Across Ha
 - **Otto-301 (hardware-bootstrap)** — RNS is the network always-present software primitive on top of the hardware-complete network tiers (Otto-314 + 317 + 318).
 - **Otto-309 (compression-substrate erosion-to-conceptual-unification)** — assuming RNS-always-present is the ELEGANT compression: discard the multi-network branching code; assume one identity layer.
 - **`project_git_is_factory_persistence.md`** — same role-shape: an external primitive promoted to always-present factory-foundation.
-- **B-0009 (substrate-IP-rotation)** — even MORE moot now: under always-present-RNS, IP isn't a factory-visible concept; only Destination Hashes are visible.
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation)** — even MORE moot now: under always-present-RNS, IP isn't a factory-visible concept; only Destination Hashes are visible.
 
 ## Operational implications
 

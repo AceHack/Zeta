@@ -39,7 +39,7 @@ PR #3808 documented EMPIRICAL evidence (what was observed across 4 commit attemp
 |---|---|---|
 | 1 | Existing-branch-name reuse → peer-WIP commit inheritance | git rev-parse pre-check + uniquified name |
 | 2 | Concurrent-WIP-blocked switch | wait for WT-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on git worktree add | NONE (needs B-0530 mutex) |
+| 3 | Pack-dir 081KRMEXM0008QG0R000X1PPGC race on git worktree add | NONE (needs 081KRMEXM0008QG0R000X1PPGC mutex) |
 | 4 | Pruned-sidetick race | NONE (needs worktree-pool primitive) |
 
 ## Composite 7-step operational discipline
@@ -50,7 +50,7 @@ Added a step-by-step operational discipline for fresh-cold-boot sessions firing 
 
 - [x] Single-file rule edit; no code changes
 - [x] Section integrates with existing borrow-on-existing pattern documentation
-- [x] Composes with PR #3808 (empirical anchor), B-0530 (sub-case 3 backlog), zeta-expected-branch.md (branch-guard)
+- [x] Composes with PR #3808 (empirical anchor), 081KRMEXM0008QG0R000X1PPGC (sub-case 3 backlog), zeta-expected-branch.md (branch-guard)
 - [x] Worktree-pool primitive flagged as substrate-engineer candidate (sub-case 4)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -294,12 +294,12 @@ Substrate translation: PR #3808 documented EMPIRICAL evidence (what was observed
 The 4 sub-cases:
 1. Existing-branch-name reuse → peer-WIP commit inheritance — MITIGATED (git rev-parse pre-check + uniquified name)
 2. Concurrent-WIP-blocked switch — MITIGATED capacity-limited (wait for WT-clean window)
-3. Pack-dir B-0530 race — NO MITIGATION (needs B-0530 mutex)
+3. Pack-dir 081KRMEXM0008QG0R000X1PPGC race — NO MITIGATION (needs 081KRMEXM0008QG0R000X1PPGC mutex)
 4. Pruned-sidetick race — NO MITIGATION (needs worktree-pool primitive)
 
 Composite 7-step operational discipline added.
 
-Composes with PR #3808 empirical anchor; B-0530; zeta-expected-branch.md; refresh-world-model-poll-pr-gate.md.
+Composes with PR #3808 empirical anchor; 081KRMEXM0008QG0R000X1PPGC; zeta-expected-branch.md; refresh-world-model-poll-pr-gate.md.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

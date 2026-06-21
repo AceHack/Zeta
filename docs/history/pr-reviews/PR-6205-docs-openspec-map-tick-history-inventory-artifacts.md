@@ -31,11 +31,11 @@
 
 - Map the existing tick-history hygiene documentation and checker/test artifacts into the OpenSpec inventory.
 - Add focused inventory tests proving tick-history is artifact-mapped and no longer reported as unmapped.
-- Update the B-0171 checkpoint so only agentic-organization remains as an unmapped capability flag.
+- Update the 081KQNJ500008QG0R001N94412 checkpoint so only agentic-organization remains as an unmapped capability flag.
 
 ## Why
 
-B-0171 is tracking OpenSpec catch-up. After the previous inventory gate work, tick-history still had a spec but no artifact mapping even though the hygiene history artifacts already exist. This PR connects that spec to the durable artifacts and narrows the remaining reconciliation surface.
+081KQNJ500008QG0R001N94412 is tracking OpenSpec catch-up. After the previous inventory gate work, tick-history still had a spec but no artifact mapping even though the hygiene history artifacts already exist. This PR connects that spec to the durable artifacts and narrows the remaining reconciliation surface.
 
 ## Validation
 
@@ -62,12 +62,12 @@ B-0171 is tracking OpenSpec catch-up. After the previous inventory gate work, ti
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6F7r7X`
-- **Path**: `docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
+- **Path**: `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-31T10:49:18Z on `docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`:38 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-31T10:49:18Z on `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`:38 (association: NONE)
 
   <pre>
   P1: This edits a per-row backlog file but leaves the frontmatter `last_updated` at `2026-05-03`. Backlog rows must update `last_updated` on every content edit (tools/backlog/README.md:67-69), so this checkpoint update should bump it to the edit date.
@@ -75,7 +75,7 @@ B-0171 is tracking OpenSpec catch-up. After the previous inventory gate work, ti
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-31T11:00:39Z on `docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`:38 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-31T11:00:39Z on `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`:38 (association: MEMBER)
 
     <pre>
     Addressed in `4af537487`: `last_updated` bumped to `2026-05-31` (the edit date) per `tools/backlog/README.md` (`last_updated` — updated on every content edit). Resolving.
@@ -113,7 +113,7 @@ B-0171 is tracking OpenSpec catch-up. After the previous inventory gate work, ti
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
+- `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
 - `tools/openspec/inventory.ts`
 
 **Message:**
@@ -121,7 +121,7 @@ B-0171 is tracking OpenSpec catch-up. After the previous inventory gate work, ti
 ```
 docs(openspec): map tick-history inventory artifacts
 
-Map the existing tick-history checker and documentation artifacts into the OpenSpec inventory so B-0171 only reports agentic-organization as the remaining unmapped spec.
+Map the existing tick-history checker and documentation artifacts into the OpenSpec inventory so 081KQNJ500008QG0R001N94412 only reports agentic-organization as the remaining unmapped spec.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```
@@ -130,7 +130,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
+- `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
 - `tools/openspec/inventory.ts`
 
 **Message:**
@@ -138,7 +138,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 ```
 fix(hygiene): accept minute-precision tick-history rows
 
-Address PR #6205 review feedback by aligning check-tick-history-order with the tick-history OpenSpec grammar, adding focused tests for minute-precision ordering, and updating the B-0171 checkpoint metadata.
+Address PR #6205 review feedback by aligning check-tick-history-order with the tick-history OpenSpec grammar, adding focused tests for minute-precision ordering, and updating the 081KQNJ500008QG0R001N94412 checkpoint metadata.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```

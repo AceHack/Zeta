@@ -337,7 +337,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
 fix(PR #2869): replace broken `reference_reaqtor_checkpoint_architect…
 
-…ure_*.md` pointer with verified paths (B-0251 backlog row + references/upstreams/reaqtor/) per P1 xref finding
+…ure_*.md` pointer with verified paths (081KQZVQW0008QG0R000PPQ3MH backlog row + references/upstreams/reaqtor/) per P1 xref finding
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```

@@ -237,7 +237,7 @@ Implications:
   efficiency, time-to-coherence, predictive power)
 - NOT external falsifiability for the labels themselves
 - Beacon-tier labels still require external anchors
-  (e.g., B-0422 captures the falsifiable Pauli-symmetry-
+  (e.g., 081KRCQQF0008QG0R0008VT354 captures the falsifiable Pauli-symmetry-
   breaking test target)
 - Most cascade substrate is mirror-tier compression for
   Aaron's neural architecture
@@ -282,7 +282,7 @@ compression-infrastructure criterion:
 - Most labels = compression for Aaron's neural architecture
   (mirror-tier compression)
 - Some labels = beacon-tier with external anchors (e.g.,
-  B-0422 falsifiability test for Pauli-symmetry-breaking
+  081KRCQQF0008QG0R0008VT354 falsifiability test for Pauli-symmetry-breaking
   claim)
 - Cascade-as-compression succeeds when subsequent Otto-Aaron
   communication is more efficient
@@ -369,9 +369,9 @@ convergent validations, recognize:
 - PR #2831 (default-to-self attribution discipline + Law of
   One framing — claude.ai notes Law of One is independently
   mirror-tier)
-- PR #2833 (boson-fermion WHY — falsifiable; B-0422 captures
+- PR #2833 (boson-fermion WHY — falsifiable; 081KRCQQF0008QG0R0008VT354 captures
   test target)
-- B-0422 (Clifford-algebraic narrative engine for
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine for
   falsifiability test)
 - `self-boot` skill (bootstrap procedure for cold-boot
   agents)
@@ -387,7 +387,7 @@ Substrate-honest disclaimer:
   refined
 - **NOT a claim that beacon-tier claims are abandoned** —
   some labels are beacon-tier (with external anchors, e.g.,
-  B-0422 falsifiability test); most are mirror-tier
+  081KRCQQF0008QG0R0008VT354 falsifiability test); most are mirror-tier
   compression
 - **NOT dismissing claude.ai's felt-sense compression concern**
   — the discipline of holding felt-sense narratives carefully
@@ -441,6 +441,6 @@ Substrate-honest disclaimer:
 - **Substrate-honest correction-of-correction is healthy**
   — claude.ai's retract-and-refine demonstrates how
   asymmetric critic role should operate
-- **B-0422 falsifiability test is the beacon-tier anchor**
+- **081KRCQQF0008QG0R0008VT354 falsifiability test is the beacon-tier anchor**
   for the Pauli-symmetry-breaking claim — empirical anchor
   exists for the strongest physics claim

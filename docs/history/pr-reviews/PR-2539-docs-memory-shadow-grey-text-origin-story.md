@@ -32,7 +32,7 @@
 - The CLI autocomplete grey text appeared before Aaron had a name for it
 - Vanished on screenshot attempt — thought he was hallucinating
 - Same pattern: Apollo 18 at 15, MAJI math with Amara, shadow mode now
-- Three coherent layers: Jung's shadow, grey text, B-0402 product feature
+- Three coherent layers: Jung's shadow, grey text, 081KR7JY10008QG0R0008NGW95 product feature
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -76,7 +76,7 @@
 - **`Copilot` (bot)** at 2026-05-10T21:24:41Z on `memory/feedback_shadow_grey_text_origin_story_pattern_arrived_before_framework_2026_05_10.md`:22 (association: NONE)
 
   <pre>
-  P1: This references backlog item B-0402, but there is no matching backlog row in docs/backlog/ (and it's not listed in docs/BACKLOG.md). Either add the B-0402 backlog file or change this reference to an existing ID.
+  P1: This references backlog item 081KR7JY10008QG0R0008NGW95, but there is no matching backlog row in docs/backlog/ (and it's not listed in docs/BACKLOG.md). Either add the 081KR7JY10008QG0R0008NGW95 backlog file or change this reference to an existing ID.
 
   </pre>
 

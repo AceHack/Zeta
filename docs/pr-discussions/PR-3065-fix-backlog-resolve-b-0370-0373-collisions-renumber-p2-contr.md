@@ -1,6 +1,6 @@
 ---
 pr_number: 3065
-title: "fix(backlog): resolve B-0370-0373 collisions \u2014 renumber P2 contributor-compliance set \u2192 B-0452-0455"
+title: "fix(backlog): resolve 081KR2E4K0008QG0R000ARCH0X-0373 collisions \u2014 renumber P2 contributor-compliance set \u2192 081KRA5AR0008QG0R0029YWXYW-0455"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T23:32:45Z"
@@ -12,47 +12,47 @@ archived_at: "2026-05-14T00:06:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3065: fix(backlog): resolve B-0370-0373 collisions — renumber P2 contributor-compliance set → B-0452-0455
+# PR #3065: fix(backlog): resolve 081KR2E4K0008QG0R000ARCH0X-0373 collisions — renumber P2 contributor-compliance set → 081KRA5AR0008QG0R0029YWXYW-0455
 
 ## PR description
 
 ## Summary
 
-Third per-collision cleanup from the [B-0451](../backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. Four collisions form one connected cluster (B-0092 parent + internal `depends_on` chain).
+Third per-collision cleanup from the [081KRFA460008QG0R00308W7FJ](../backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. Four collisions form one connected cluster (081KQ8P5D0008QG0R003ZF64GG parent + internal `depends_on` chain).
 
 ## The collisions
 
 | ID | Earlier P1 ([#2269](https://github.com/Lucent-Financial-Group/Zeta/pull/2269), 2026-05-09) | Later P2 ([#2683](https://github.com/Lucent-Financial-Group/Zeta/pull/2683), 2026-05-11) |
 |---|---|---|
-| B-0370 | durable-computation-checkpoint-interface-extension | contributor-compliance-core-document-authoring |
-| B-0371 | pages-seo-metadata-jsonld-social-preview | contributor-compliance-cross-reference-integration |
-| B-0372 | pages-sitemap-robots-ai-crawler-policy | t1-t2-self-audit-and-cadenced-review-trajectories |
-| B-0373 | alignment-proof-primitive-ladder-one-type-one-property | t4-t5-onboarding-and-drift-retrospective-trajectories |
+| 081KR2E4K0008QG0R000ARCH0X | durable-computation-checkpoint-interface-extension | contributor-compliance-core-document-authoring |
+| 081KR2E4K0008QG0R001733JTN | pages-seo-metadata-jsonld-social-preview | contributor-compliance-cross-reference-integration |
+| 081KR2E4K0008QG0R0015BCPF7 | pages-sitemap-robots-ai-crawler-policy | t1-t2-self-audit-and-cadenced-review-trajectories |
+| 081KR50HA0008QG0R001NNPEXC | alignment-proof-primitive-ladder-one-type-one-property | t4-t5-onboarding-and-drift-retrospective-trajectories |
 
 ## Resolution: keep P1 set, renumber P2 set
 
 Per first-merged-wins + external-references:
 
 - The P1 set was filed 2 days earlier via [#2269](https://github.com/Lucent-Financial-Group/Zeta/pull/2269) (itself a prior collision-resolution sweep).
-- B-0370 P1 + B-0373 P1 are already shipped (`[x]` in BACKLOG.md).
+- 081KR2E4K0008QG0R000ARCH0X P1 + 081KR50HA0008QG0R001NNPEXC P1 are already shipped (`[x]` in BACKLOG.md).
 - External P1 references in [PR review history](../history/pr-reviews/PR-2369-fix-backlog-refresh-generated-index-after-pr-2367.md) and a [memory file](../../memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md).
 - The P2 set's references are internal (parent + chain) — editable in this PR.
 
 → Keep P1 set; renumber P2 set as a unit:
 
 ```
-B-0370 → B-0452 (contributor-compliance-core)
-B-0371 → B-0453 (cross-reference-integration)
-B-0372 → B-0454 (T1+T2 trajectories)
-B-0373 → B-0455 (T4+T5 trajectories)
+081KR2E4K0008QG0R000ARCH0X → 081KRA5AR0008QG0R0029YWXYW (contributor-compliance-core)
+081KR2E4K0008QG0R001733JTN → 081KRA5AR0008QG0R0004P7SWS (cross-reference-integration)
+081KR2E4K0008QG0R0015BCPF7 → 081KRA5AR0008QG0R003F6TA3A (T1+T2 trajectories)
+081KR50HA0008QG0R001NNPEXC → 081KRA5AR0008QG0R0033TJSAF (T4+T5 trajectories)
 ```
 
 ## Internal-chain remap
 
-- `B-0453.depends_on: [B-0370]` → `[B-0452]`
-- `B-0454.depends_on: [B-0370]` → `[B-0452]`
-- `B-0455.depends_on: [B-0370, B-0371]` → `[B-0452, B-0453]`
-- [B-0092](../backlog/P2/B-0092-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md) parent body §Decomposition updated to new IDs with renumber note
+- `081KRA5AR0008QG0R0004P7SWS.depends_on: [081KR2E4K0008QG0R000ARCH0X]` → `[081KRA5AR0008QG0R0029YWXYW]`
+- `081KRA5AR0008QG0R003F6TA3A.depends_on: [081KR2E4K0008QG0R000ARCH0X]` → `[081KRA5AR0008QG0R0029YWXYW]`
+- `081KRA5AR0008QG0R0033TJSAF.depends_on: [081KR2E4K0008QG0R000ARCH0X, 081KR2E4K0008QG0R001733JTN]` → `[081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS]`
+- [081KQ8P5D0008QG0R003ZF64GG](../backlog/P2/081KQ8P5D0008QG0R003ZF64GG-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md) parent body §Decomposition updated to new IDs with renumber note
 
 Each row has `renumbered_from: B-NNNN` + reason in frontmatter.
 
@@ -62,15 +62,15 @@ Each row has `renumbered_from: B-NNNN` + reason in frontmatter.
 |---|---|---|
 | Duplicate-ID groups | 11 | 7 |
 
-[B-0451](../backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **1/12 → 9/12** (after [#3058](https://github.com/Lucent-Financial-Group/Zeta/pull/3058) merges too).
+[081KRFA460008QG0R00308W7FJ](../backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **1/12 → 9/12** (after [#3058](https://github.com/Lucent-Financial-Group/Zeta/pull/3058) merges too).
 
-Remaining 3 groups: `B-0409` (3-way), `B-0410`, `B-0411`.
+Remaining 3 groups: `081KRA5AR0008QG0R000Y6102S` (3-way), `081KRA5AR0008QG0R0035N4S6C`, `081KRA5AR0008QG0R000C3P8KP`.
 
 ## Test plan
 
 - [x] All 4 P2 files renamed (`git mv` preserves history where possible)
 - [x] Internal `depends_on` chain remapped (3 rows)
-- [x] B-0092 parent body §Decomposition updated
+- [x] 081KQ8P5D0008QG0R003ZF64GG parent body §Decomposition updated
 - [x] `bun tools/backlog/generate-index.ts` regenerated `docs/BACKLOG.md`
 - [x] Inline audit confirms 11 → 7
 - [x] Worktree-isolated build (`/tmp/zeta-b0370-fix`)
@@ -83,11 +83,11 @@ Remaining 3 groups: `B-0409` (3-way), `B-0410`, `B-0411`.
 
 ## Pull request overview
 
-Mechanical renumber of the P2 contributor-compliance child set (B-0370–B-0373 → B-0452–B-0455) to resolve ID collisions with an earlier-filed P1 set, plus remap of the internal `depends_on` chain and parent decomposition section in B-0092.
+Mechanical renumber of the P2 contributor-compliance child set (081KR2E4K0008QG0R000ARCH0X–081KR50HA0008QG0R001NNPEXC → 081KRA5AR0008QG0R0029YWXYW–081KRA5AR0008QG0R0033TJSAF) to resolve ID collisions with an earlier-filed P1 set, plus remap of the internal `depends_on` chain and parent decomposition section in 081KQ8P5D0008QG0R003ZF64GG.
 
 **Changes:**
-- Renamed/renumbered four P2 rows (B-0370–B-0373 → B-0452–B-0455) with `renumbered_from` + reason in frontmatter and updated body titles
-- Remapped internal `depends_on` references (`[B-0370]` → `[B-0452]`, `[B-0370, B-0371]` → `[B-0452, B-0453]`) and updated B-0092 §Decomposition with renumber note and new children list
+- Renamed/renumbered four P2 rows (081KR2E4K0008QG0R000ARCH0X–081KR50HA0008QG0R001NNPEXC → 081KRA5AR0008QG0R0029YWXYW–081KRA5AR0008QG0R0033TJSAF) with `renumbered_from` + reason in frontmatter and updated body titles
+- Remapped internal `depends_on` references (`[081KR2E4K0008QG0R000ARCH0X]` → `[081KRA5AR0008QG0R0029YWXYW]`, `[081KR2E4K0008QG0R000ARCH0X, 081KR2E4K0008QG0R001733JTN]` → `[081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS]`) and updated 081KQ8P5D0008QG0R003ZF64GG §Decomposition with renumber note and new children list
 - Regenerated `docs/BACKLOG.md` to reflect the new IDs in the P2 section
 
 ### Reviewed changes
@@ -99,11 +99,11 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0452-contributor-compliance-core-document-authoring.md | Renumber from B-0370; add renumbered_from + reason |
-| docs/backlog/P2/B-0453-contributor-compliance-cross-reference-integration.md | Renumber from B-0371; remap depends_on to B-0452 |
-| docs/backlog/P2/B-0454-t1-t2-self-audit-and-cadenced-review-trajectories.md | Renumber from B-0372; remap depends_on to B-0452 |
-| docs/backlog/P2/B-0455-t4-t5-onboarding-and-drift-retrospective-trajectories.md | Renumber from B-0373; remap depends_on to [B-0452, B-0453] |
-| docs/backlog/P2/B-0092-...-aaron-2026-04-28.md | Update §Decomposition with new child IDs + renumber note |
+| docs/backlog/P2/081KRA5AR0008QG0R0029YWXYW-contributor-compliance-core-document-authoring.md | Renumber from 081KR2E4K0008QG0R000ARCH0X; add renumbered_from + reason |
+| docs/backlog/P2/081KRA5AR0008QG0R0004P7SWS-contributor-compliance-cross-reference-integration.md | Renumber from 081KR2E4K0008QG0R001733JTN; remap depends_on to 081KRA5AR0008QG0R0029YWXYW |
+| docs/backlog/P2/081KRA5AR0008QG0R003F6TA3A-t1-t2-self-audit-and-cadenced-review-trajectories.md | Renumber from 081KR2E4K0008QG0R0015BCPF7; remap depends_on to 081KRA5AR0008QG0R0029YWXYW |
+| docs/backlog/P2/081KRA5AR0008QG0R0033TJSAF-t4-t5-onboarding-and-drift-retrospective-trajectories.md | Renumber from 081KR50HA0008QG0R001NNPEXC; remap depends_on to [081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS] |
+| docs/backlog/P2/081KQ8P5D0008QG0R003ZF64GG-...-aaron-2026-04-28.md | Update §Decomposition with new child IDs + renumber note |
 | docs/BACKLOG.md | Regenerated index — P2 entries moved to new IDs |
 </details>
 

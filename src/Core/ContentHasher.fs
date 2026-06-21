@@ -16,7 +16,7 @@ open System
 [<RequireQualifiedAccess>]
 module ContentHasher =
 
-    /// The default adapter: **XxHash128** (fast, non-cryptographic — dedup/history grade; B-0969-adjacent).
+    /// The default adapter: **XxHash128** (fast, non-cryptographic — dedup/history grade; 081KT07NV0008QG0R001YDB73K-adjacent).
     /// NOT tamper-evident — for the git-replacement store, select a BLAKE3 adapter behind this same port.
     [<Sealed>]
     type XxHash128Hasher() =

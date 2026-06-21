@@ -1,20 +1,19 @@
 ---
-id: B-0145
-zetaid: 081KQGDBJ0008QG0R000RWAA67
+id: 081KQGDBJ0008QG0R000RWAA67
 priority: P1
 status: closed
 title: Product Manager (PM-2) role — research-to-predict-features-before-friction
 created: 2026-05-01
 last_updated: 2026-05-14
 closed: 2026-05-14
-closed_by: "B-0270 + B-0271 + PR #3074"
+closed_by: "081KR2E4K0008QG0R0035RG9G6 + 081KR2E4K0008QG0R003VB7ZZR + PR #3074"
 decomposition: decomposed
 children: [081KR2E4K0008QG0R0035RG9G6, 081KR2E4K0008QG0R003VB7ZZR]
 depends_on: []
 type: friction-reducer
 ---
 
-# B-0145 — Product Manager (PM-2) role — research-to-predict-features-before-friction
+# 081KQGDBJ0008QG0R000RWAA67 — Product Manager (PM-2) role — research-to-predict-features-before-friction
 
 ## Completion notes (2026-05-14)
 
@@ -25,11 +24,11 @@ All acceptance criteria met across three child deliverables:
 | AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row | PR #3074 |
 | AC 2 — Cadence weekly/Sundays UTC | Documented in `docs/forward-radar/TEMPLATE.md` header (cadence established; the "reviewed after first 4 cycles" clause is a standing governance commitment, not a close-gate) | PR #3074 |
 | AC 3 — Output template | `docs/forward-radar/TEMPLATE.md` | PR #3074 |
-| AC 4 — First forward-radar memo | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | B-0271 |
+| AC 4 — First forward-radar memo | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | 081KR2E4K0008QG0R003VB7ZZR |
 | AC 5 — Calibration metric tracker | `docs/forward-radar/calibration.md` | PR #3074 |
 
-Skill: `.claude/skills/product-manager/SKILL.md` (B-0270).
-Agent: `.claude/agents/pm2.md`, persona Mira (B-0270).
+Skill: `.claude/skills/product-manager/SKILL.md` (081KR2E4K0008QG0R0035RG9G6).
+Agent: `.claude/agents/pm2.md`, persona Mira (081KR2E4K0008QG0R0035RG9G6).
 
 ---
 
@@ -37,16 +36,16 @@ Agent: `.claude/agents/pm2.md`, persona Mira (B-0270).
 
 **Prior-art search:**
 
-- `.claude/skills/product-manager/SKILL.md` — exists (B-0270 closed) ✅
-- `.claude/agents/pm2.md` — exists, persona Mira (B-0270 closed) ✅
-- `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` — first research pass (B-0271 closed) ✅
+- `.claude/skills/product-manager/SKILL.md` — exists (081KR2E4K0008QG0R0035RG9G6 closed) ✅
+- `.claude/agents/pm2.md` — exists, persona Mira (081KR2E4K0008QG0R0035RG9G6 closed) ✅
+- `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` — first research pass (081KR2E4K0008QG0R003VB7ZZR closed) ✅
 - `docs/EXPERT-REGISTRY.md` — PM-2/Mira entry missing ❌ → this slice adds it
 - `docs/forward-radar/` — directory missing ❌ → this slice creates TEMPLATE.md + calibration.md
 
 **Dependency check:**
 
-- B-0270 (closed): skill + agent ✅
-- B-0271 (closed): first research pass ✅
+- 081KR2E4K0008QG0R0035RG9G6 (closed): skill + agent ✅
+- 081KR2E4K0008QG0R003VB7ZZR (closed): first research pass ✅
 - `depends_on: []` — no blockers
 
 **Remaining open acceptance criteria addressed by this slice:**
@@ -55,7 +54,7 @@ Agent: `.claude/agents/pm2.md`, persona Mira (B-0270).
 - AC 3: `docs/forward-radar/TEMPLATE.md`
 - AC 5: `docs/forward-radar/calibration.md`
 - AC 2 (cadence: weekly, Sundays UTC) is documented in TEMPLATE.md header
-- AC 4 (first memo) was addressed by B-0271 (research doc in docs/research/)
+- AC 4 (first memo) was addressed by 081KR2E4K0008QG0R003VB7ZZR (research doc in docs/research/)
 
 **Branch:** `feat/pm2-forward-radar-b0145-2026-05-13`
 
@@ -244,7 +243,7 @@ caught*.
 - `docs/CONFLICT-RESOLUTION.md` — when PM-2's predictions
   conflict with PM-1's queue, the conference protocol
   is the rail
-- B-0144 — sibling rung-2 work (scaling ladder); this row
+- 081KQGDBJ0008QG0R0021E8YZV — sibling rung-2 work (scaling ladder); this row
   is on the orthogonal direction-axis
 - task #244 (factory-demo target) — PM-2's first concrete
   forward-research target should be: *"what features does
@@ -263,7 +262,7 @@ PM-2 cycles).
   (PM-1 reactive cadence catches gaps when they surface);
   it is a lead-time / direction unlock, not a correctness fix.
 - **Not P2** because the parallelism scaling ladder
-  (B-0144 et seq.) increases the COST of feature-gap
+  (081KQGDBJ0008QG0R0021E8YZV et seq.) increases the COST of feature-gap
   surprises — at higher throughput, every stumble-into-a-
   missing-feature blocks more parallel lanes. PM-2 lead-time
   is the multiplier that lets the throughput-axis pay off.

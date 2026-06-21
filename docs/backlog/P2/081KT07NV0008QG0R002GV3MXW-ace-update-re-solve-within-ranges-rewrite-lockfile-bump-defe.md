@@ -1,6 +1,5 @@
 ---
-id: B-0973
-zetaid: 081KT07NV0008QG0R002GV3MXW
+id: 081KT07NV0008QG0R002GV3MXW
 priority: P2
 status: open
 title: Ace `ace update` — re-solve within ranges + rewrite the lockfile (bump; deferred from slice 5.3 lockfile)
@@ -36,13 +35,13 @@ enhancements."*
   solve with all-but-`<name>` pinned to the existing lock when `--package` is given),
   write the lock. No install side effect required (lock-only), or `--install` to also
   install.
-- Single-package bump uses the existing lock as a partial pin set (composes with B-0975).
+- Single-package bump uses the existing lock as a partial pin set (composes with 081KT07NV0008QG0R003VDHWWG).
 
 ## Composes with
 
 - Slice 5.3 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
-- B-0975 (lockfile ergonomics — partial-merge is the single-package-bump primitive)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R003VDHWWG (lockfile ergonomics — partial-merge is the single-package-bump primitive)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)
 
 ## Progress — `ace update` core shipped by #6416 (slice 5.4)
 
@@ -52,5 +51,5 @@ install **before** writing (content_hash + store-collision + `validatePackagePat
 preflight-before-write per spec #6412 / fix-forward #6414). Leaf root → leaf lock.
 
 **Still deferred** (row stays open): `--package <name>` single-dependency bump, which
-consumes the B-0975 partial-merge primitive. No `--install` side-effect mode shipped
+consumes the 081KT07NV0008QG0R003VDHWWG partial-merge primitive. No `--install` side-effect mode shipped
 (update is lock-only by design).

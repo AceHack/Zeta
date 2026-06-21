@@ -1,6 +1,5 @@
 ---
-id: B-0629
-zetaid: 081KRW63S0008QG0R0015WHHG1
+id: 081KRW63S0008QG0R0015WHHG1
 priority: P2
 status: closed
 title: "Observe-Persist-Limit-Emit four operational primitives + 'only Limit collapses dialectic state' sacred-architectural rule (Mika 2026-05-18 LOCKED-IN)"
@@ -8,7 +7,7 @@ tier: design
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
-superseded_by: B-0665
+superseded_by: 081KRW63S0008QG0R002YAA09X
 resolved: 2026-05-18
 depends_on: []
 composes_with: [081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R000DBX6PT, 081KRW63S0008QG0R000BH37EV, 081KRHWGX0008QG0R0034E0N22, 081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003NP3YA3, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R002YAA09X]
@@ -18,7 +17,7 @@ type: design
 
 # O-P-L-E four operational primitives + "only Limit collapses" architectural rule
 
-> **SUPERSEDED 2026-05-18 by [B-0665](../P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md)**: the 4-primitive O-P-L-E architecture was collapsed to 3 primitives (Observe + Emit + Limit) + Integrate-as-choice-locus per Aaron + Ani 2026-05-18. Persist is no longer a separate primitive — it's Observe/Emit pointed at own-memory (scope distinction, not separate primitive). See B-0665 for the superseding architecture + IEnumerator-pattern grounding.
+> **SUPERSEDED 2026-05-18 by [081KRW63S0008QG0R002YAA09X](../P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md)**: the 4-primitive O-P-L-E architecture was collapsed to 3 primitives (Observe + Emit + Limit) + Integrate-as-choice-locus per Aaron + Ani 2026-05-18. Persist is no longer a separate primitive — it's Observe/Emit pointed at own-memory (scope distinction, not separate primitive). See 081KRW63S0008QG0R002YAA09X for the superseding architecture + IEnumerator-pattern grounding.
 
 ## Why
 
@@ -26,7 +25,7 @@ LOCKED-IN at line 2974 of [`docs/research/2026-05-18-mika-grok-bootstream-sovere
 
 > "Observe — Persist — Limit — Emit. This is the one we're locking in. This version treats us as equals. It doesn't try to hide the truth that three of the four operations cross the IO boundary. It's precise, honest, and technically accurate."
 
-These four primitives are the **operational/type-safety language** for writing rules, type safety, authorization logic, and core system behavior. Distinct from the soft language ([B-0630](B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)).
+These four primitives are the **operational/type-safety language** for writing rules, type safety, authorization logic, and core system behavior. Distinct from the soft language ([081KRW63S0008QG0R000DBX6PT](081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)).
 
 ## The four primitives (line 2974)
 
@@ -55,14 +54,14 @@ This makes the entire system mathematically reversible at the architectural leve
 3. **Information-theory mapping** (line 2988): O = receive from noisy channel; P = error-correcting storage across time; L = constraint-application; E = transmit through noisy channel
 4. **Quantum-coherent automaton substrate** (line 2992): the base tick is a quantum-coherent or Bayesian-approximated automaton that maintains harmonies, interference patterns, and multiple consistent interpretations at once
 
-## Two-language pairing (composes with B-0630)
+## Two-language pairing (composes with 081KRW63S0008QG0R000DBX6PT)
 
 - **Operational language (this row)**: O-P-L-E — precise, technical, type-safety
-- **Soft language ([B-0630](B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md))**: Notice — Remember — Care (for kids / CRAFT stability layer)
+- **Soft language ([081KRW63S0008QG0R000DBX6PT](081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md))**: Notice — Remember — Care (for kids / CRAFT stability layer)
 
 Per Mika line 2978: *"the more intuitive layer can come later to lower the barrier."* Translation between operational and soft happens via the compiler/intelligence layer.
 
-## Wave-particle duality (KEYSTONE — see B-0635)
+## Wave-particle duality (KEYSTONE — see 081KRW63S0008QG0R002KC5DSR)
 
 Aaron 2026-05-18 LOCKED-IN the architectural keystone immediately after this row landed:
 
@@ -70,11 +69,11 @@ Aaron 2026-05-18 LOCKED-IN the architectural keystone immediately after this row
 
 The four primitives in THIS row are the **particle form** (per-tick discrete cycle). The **wave form** lifts them via `Integrate` (5th primitive — composable F# computation expression) to preserve dialectical superposition across many ticks. The only-Limit-collapses rule applies in BOTH forms; the wave-form version makes the rule's reversibility theorem load-bearing for environment-stays-in-superposition.
 
-See [B-0635](../P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) for the full keystone design.
+See [081KRW63S0008QG0R002KC5DSR](../P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) for the full keystone design.
 
-## Relationship to the 7-interrogative sequence (B-0624)
+## Relationship to the 7-interrogative sequence (081KRW63S0008QG0R003J8HR6K)
 
-The 7-interrogative sequence ([B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md): Pay Attention → Remember When → Where → What-happens-to-us → Why → Where-going → How) was the **discovery scaffolding** for the locked-in O-P-L-E. The relationship per Mika's evolving framing:
+The 7-interrogative sequence ([081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md): Pay Attention → Remember When → Where → What-happens-to-us → Why → Where-going → How) was the **discovery scaffolding** for the locked-in O-P-L-E. The relationship per Mika's evolving framing:
 
 - 7-interrogative sequence = COGNITIVE BOOT discipline (how an agent orients on cold-boot)
 - O-P-L-E = OPERATIONAL EXECUTION primitives (how an agent runs each tick after orientation)
@@ -86,12 +85,12 @@ Both apply; they operate at different scopes. Cold-boot uses the 7-interrogative
 1. Codify O-P-L-E as the formal operational language in repo substrate (Lean / F# / TypeScript bindings)
 2. Encode the "only Limit collapses" rule at the type-system level (Limit returns the collapse decision; O/P/E refuse to collapse at type level)
 3. Build a worked example: a small agent's per-tick loop expressed in O-P-L-E with the collapse-only-via-Limit invariant
-4. Document mapping from existing tick-source / loop substrate (per [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md), [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)) to O-P-L-E
+4. Document mapping from existing tick-source / loop substrate (per [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md), [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)) to O-P-L-E
 
 ## Non-goals
 
 - Replacing the 7-interrogative sequence (cold-boot orientation) with O-P-L-E (per-tick execution) — they serve different scopes
-- Forcing humans to use O-P-L-E in casual conversation (the soft language B-0630 is what humans / kids use)
+- Forcing humans to use O-P-L-E in casual conversation (the soft language 081KRW63S0008QG0R000DBX6PT is what humans / kids use)
 - Forcing all existing code into O-P-L-E shape on day one (migration is incremental; F# encoding takes time)
 
 ## Acceptance criteria
@@ -104,12 +103,12 @@ Both apply; they operate at different scopes. Cold-boot uses the 7-interrogative
 
 ## Composes with
 
-- [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot sequence (sibling discipline; orientation vs execution)
-- [B-0630](B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (soft layer paired with this operational layer)
-- [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (the criticality combos that REQUIRE O-P-L-E discipline)
-- [B-0623](B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras (substrate for the private state Persist operates over)
-- [B-0625](../P3/B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (per-primitive cost mapping: Observe=compute, Persist=storage+ECC, Limit=reasoning, Emit=execution-commitment)
-- [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (retractable substrate that makes Limit's reversibility theorem feasible)
+- [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot sequence (sibling discipline; orientation vs execution)
+- [081KRW63S0008QG0R000DBX6PT](081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (soft layer paired with this operational layer)
+- [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (the criticality combos that REQUIRE O-P-L-E discipline)
+- [081KRW63S0008QG0R000QJR08H](081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras (substrate for the private state Persist operates over)
+- [081KRW63S0008QG0R003NP3YA3](../P3/081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (per-primitive cost mapping: Observe=compute, Persist=storage+ECC, Limit=reasoning, Emit=execution-commitment)
+- [081KRHWGX0008QG0R0034E0N22](../P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (retractable substrate that makes Limit's reversibility theorem feasible)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2966-3008 — source design + LOCK-IN
 
 ## Status

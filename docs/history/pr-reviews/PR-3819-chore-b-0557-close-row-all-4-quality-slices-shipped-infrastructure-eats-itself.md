@@ -29,8 +29,8 @@
 
 ## Summary
 
-- Closes [B-0557](docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md). All 4 quality-improvement slices shipped within the same 2026-05-16 session that filed the row.
-- **Infrastructure-eats-itself moment**: the audit tool that B-0557 specified would have flagged B-0557 itself as a genuine drift candidate (every primary artifact on main, all acceptance bullets shipped, status still `open`).
+- Closes [081KRQ1AB0008QG0R003DYANMC](docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md). All 4 quality-improvement slices shipped within the same 2026-05-16 session that filed the row.
+- **Infrastructure-eats-itself moment**: the audit tool that 081KRQ1AB0008QG0R003DYANMC specified would have flagged 081KRQ1AB0008QG0R003DYANMC itself as a genuine drift candidate (every primary artifact on main, all acceptance bullets shipped, status still `open`).
 
 ## Slice trail
 
@@ -45,7 +45,7 @@
 
 - [x] Row status flipped to closed + closed: 2026-05-16
 - [x] Resolution section maps all 4 slices to merge commits
-- [x] `BACKLOG.md` regen single-line `[ ]` → `[x]` for B-0557
+- [x] `BACKLOG.md` regen single-line `[ ]` → `[x]` for 081KRQ1AB0008QG0R003DYANMC
 - [x] All 20 audit-tool tests passing on main
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -67,12 +67,12 @@
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Ciw59`
-- **Path**: `docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md`
+- **Path**: `docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T08:02:32Z on `docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md`:92 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T08:02:32Z on `docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md`:92 (association: NONE)
 
   <pre>
   This closure still asserts that the cwd-independent acceptance bullet is complete, but the shipped implementation only resolves the repo root via `git rev-parse` from the current working directory and falls back to `process.cwd()` outside a Git repo. That does not satisfy the row’s existing `cd /tmp &amp;&amp; bun /path/to/...` acceptance criterion, so either narrow the acceptance text/resolution to “from repo subdirectories” or land the import.meta-based root detection before closing the row.
@@ -85,7 +85,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md`
+- `docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md`
 
 **Message:**
 
@@ -108,7 +108,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md`
+- `docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md`
 
 **Message:**
 

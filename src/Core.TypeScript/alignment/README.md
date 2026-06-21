@@ -19,10 +19,10 @@ folder as the experimental loop.
 | `audit_archive_headers.ts` | Archive-header discipline (proposed §33) | Per-file lint (detect-only v0) |
 | `audit_clause_coverage.ts` | HC/SD/DIR clause citations in skills, agents, backlog P0/P1 | Per-surface coverage audit |
 | `audit_clause_drift.ts` | Clause additions/removals/changes + impact survey | Cross-ref drift detection |
-| `detect-clause-drift.ts` | Clause cross-references (blast radius) across the working tree | Pre-renegotiation impact survey (B-0058.4) |
-| `audit_retractibility.ts` | Git-tracked + inbound-ref entanglement per surface | Retractibility gate (B-0058 #1) |
-| `filter_gate_log.ts`  | Pass/fail/defer decisions for candidate adoptions | Honesty log (B-0058 #3) |
-| `audit_candidate_failures.ts` | Reconstruction audit for failed/deferred candidates | Honesty audit (B-0058 #3) |
+| `detect-clause-drift.ts` | Clause cross-references (blast radius) across the working tree | Pre-renegotiation impact survey (081KRQ1AB0008QG0R001BPDBHT) |
+| `audit_retractibility.ts` | Git-tracked + inbound-ref entanglement per surface | Retractibility gate (081KQ3HBZ0008QG0R002S674CG #1) |
+| `filter_gate_log.ts`  | Pass/fail/defer decisions for candidate adoptions | Honesty log (081KQ3HBZ0008QG0R002S674CG #3) |
+| `audit_candidate_failures.ts` | Reconstruction audit for failed/deferred candidates | Honesty audit (081KQ3HBZ0008QG0R002S674CG #3) |
 | `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
 
 The three scripts form the gitops observability trio:

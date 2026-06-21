@@ -11,7 +11,7 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
 
-// B-1016 clock primitive (gap #1) — PROVEN. The temporal index the cost curve +
+// 081KT7YW00008QG0R002T1XNWT clock primitive (gap #1) — PROVEN. The temporal index the cost curve +
 // curvature are defined over. Three legs (mirrors byte-cost / Jaccard):
 //   1. Z3 — the order axioms (total order) + monotone tick hold over unbounded ℤ.
 //   2. FsCheck — the same laws on the real Versionstamp/Scheduler types.

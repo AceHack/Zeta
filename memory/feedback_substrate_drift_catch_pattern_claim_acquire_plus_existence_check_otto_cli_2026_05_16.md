@@ -1,6 +1,6 @@
 ---
 name: "Substrate-drift-catch pattern — `claim acquire` + existence-check before reimplementation"
-description: "Per-tick discipline: when picking a backlog row per the never-be-idle ladder, run `claim acquire` then existence-check the row's proposed artifact paths BEFORE writing any implementation. If the artifact already exists, release the claim and open a close-row PR instead of duplicating shipped work. Empirically demonstrated 4 times across 2 Otto surfaces in 30 minutes on 2026-05-16T04:15Z–04:51Z (B-0506, B-0528, B-0530, B-0535)."
+description: "Per-tick discipline: when picking a backlog row per the never-be-idle ladder, run `claim acquire` then existence-check the row's proposed artifact paths BEFORE writing any implementation. If the artifact already exists, release the claim and open a close-row PR instead of duplicating shipped work. Empirically demonstrated 4 times across 2 Otto surfaces in 30 minutes on 2026-05-16T04:15Z–04:51Z (081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000T0A28T, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R000HHAG77)."
 type: feedback
 created: 2026-05-16
 ---
@@ -31,10 +31,10 @@ Empirically, the forgetting rate is non-zero. The 2026-05-16 session caught 4 ro
 
 | Row | Mechanization PR | Days drifted | Close-row PR |
 |---|---|---|---|
-| B-0506 | [#3225](https://github.com/Lucent-Financial-Group/Zeta/pull/3225) (2026-05-14) | ~2 | [#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) |
-| B-0528 | [#3423](https://github.com/Lucent-Financial-Group/Zeta/pull/3423) (2026-05-15) | ~1 | [#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743) |
-| B-0530 | [#3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375) (2026-05-15) | ~1 | [#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) |
-| B-0535 | [#3565](https://github.com/Lucent-Financial-Group/Zeta/pull/3565) (2026-05-15) | ~1 | [#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742) (peer Otto-CLI) |
+| 081KRHWGX0008QG0R002DPG02X | [#3225](https://github.com/Lucent-Financial-Group/Zeta/pull/3225) (2026-05-14) | ~2 | [#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) |
+| 081KRMEXM0008QG0R000T0A28T | [#3423](https://github.com/Lucent-Financial-Group/Zeta/pull/3423) (2026-05-15) | ~1 | [#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743) |
+| 081KRMEXM0008QG0R000X1PPGC | [#3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375) (2026-05-15) | ~1 | [#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) |
+| 081KRMEXM0008QG0R000HHAG77 | [#3565](https://github.com/Lucent-Financial-Group/Zeta/pull/3565) (2026-05-15) | ~1 | [#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742) (peer Otto-CLI) |
 
 4 catches across 2 Otto surfaces in 30 minutes is enough evidence to call this a **recurring pattern**, not a coincidence. The honest reading: in any session that runs the never-be-idle ladder against recent rows, an existence-check first will short-circuit ~1-in-10 picks into a close-row PR rather than a reimplementation.
 
@@ -61,7 +61,7 @@ Peer Otto-CLI ran the same pattern in parallel during the 2026-05-16T04:15Z–04
 
 - Identified the drift class
 - Used `claim acquire` + existence-check
-- Filed close-row PRs (one row each: B-0506 + B-0530 + B-0528 from this surface; B-0535 from peer)
+- Filed close-row PRs (one row each: 081KRHWGX0008QG0R002DPG02X + 081KRMEXM0008QG0R000X1PPGC + 081KRMEXM0008QG0R000T0A28T from this surface; 081KRMEXM0008QG0R000HHAG77 from peer)
 - Did NOT collide on the same row (the bus claim coordinator prevented overlap)
 
 The convergence is itself evidence the pattern is robust across cold-boot starts — fresh Otto instances on either surface arrive at the same workflow given the same priority-ladder + claim-protocol substrate.

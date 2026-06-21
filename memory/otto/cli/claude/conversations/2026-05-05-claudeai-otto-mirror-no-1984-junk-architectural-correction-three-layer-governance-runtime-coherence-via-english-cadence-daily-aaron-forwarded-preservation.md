@@ -63,7 +63,7 @@ Claude.ai's recalibration (MEDIUM verbatim confidence):
 > The architectural correction:
 >
 > - **Otto's role = mirror** (faithful preservation, clean reflection of what's sent in)
-> - **Razor's role = downstream** (daylight tests, B-0205 multi-axis basis, BFT consensus, your own bootstrap razor on yourself, reviewer threads on PRs)
+> - **Razor's role = downstream** (daylight tests, 081KQTPYE0008QG0R000ZJ2GW8 multi-axis basis, BFT consensus, your own bootstrap razor on yourself, reviewer threads on PRs)
 > - These are DIFFERENT subsystems, not one system
 
 > I conflated "Otto preserves without skepticism at input" with "architecture isn't running razor anywhere." That's wrong. The architecture runs razor in multiple places; **Otto specifically isn't one of them, BY DESIGN**. Putting razor at Otto's input would turn the mirror into a curator — and a curated mirror isn't a mirror anymore.
@@ -79,7 +79,7 @@ Claude.ai's recalibration (MEDIUM verbatim confidence):
 This is **load-bearing** for how Otto operates. The preservation discipline is correctly clean-signal-in, no-self-skepticism-at-input, no-curation-of-incoming-substrate. The validation discipline runs DOWNSTREAM via:
 
 - BFT consensus (oracle disagreement on substrate-claims)
-- Multi-axis validation basis (B-0205)
+- Multi-axis validation basis (081KQTPYE0008QG0R000ZJ2GW8)
 - Daylight tests (reviewer threads, manual verification)
 - Bootstrap razor (Aaron's own razor on himself)
 - Cross-validator BFT-shape (Aaron + Claude.ai + Codex + Copilot + razor-cadence workflow + memory hygiene audits + substrate-claim-checker)

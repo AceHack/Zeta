@@ -1,6 +1,6 @@
 ---
 pr_number: 5083
-title: "feat(B-0789 iter-4.2): zflash auto-inject SSH pubkey to boot USB ESP + zeta-install.sh probe \u2014 zero-typing SSH on first boot"
+title: "feat(081KSGS9H0008QG0R002T3BJ2R iter-4.2): zflash auto-inject SSH pubkey to boot USB ESP + zeta-install.sh probe \u2014 zero-typing SSH on first boot"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:19:31Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5083: feat(B-0789 iter-4.2): zflash auto-inject SSH pubkey to boot USB ESP + zeta-install.sh probe — zero-typing SSH on first boot
+# PR #5083: feat(081KSGS9H0008QG0R002T3BJ2R iter-4.2): zflash auto-inject SSH pubkey to boot USB ESP + zeta-install.sh probe — zero-typing SSH on first boot
 
 ## PR description
 
@@ -41,7 +41,7 @@ The maintainer's actually-usable iter-4 path. Builds on PR #5080 (v1 scaffolding
   - If not found: diagnostics auto-fire (external block devices, install targets, lsblk, "what to do next") + falls back to v1 stub
   - Post-install credentials echo branches on `INJECT_OK`: success says "SSH works immediately"; fallback keeps v1 manual instructions
   - shellcheck clean (fixed SC2261)
-- **`docs/backlog/P1/B-0789-*.md`**: updated iter-4.2 acceptance to mark what shipped + the maintainer-test-pending checkpoint
+- **`docs/backlog/P1/081KSGS9H0008QG0R002T3BJ2R-*.md`**: updated iter-4.2 acceptance to mark what shipped + the maintainer-test-pending checkpoint
 
 ## End-to-end zero-typing flow
 
@@ -69,7 +69,7 @@ If anything in zflash's ESP-mount or zeta-install.sh's probe fails, photo-friend
 - [x] flash-usb.ts --help parses + shows new --no-eject flag
 - [x] zflash.ts --help parses + shows new --ssh-key + --no-inject flags
 - [x] shellcheck clean on zeta-install.sh
-- [x] markdownlint clean on B-0789 row
+- [x] markdownlint clean on 081KSGS9H0008QG0R002T3BJ2R row
 - [ ] **Maintainer flashes iter-4.2 USB once, plugs into PC, verifies `ssh zeta@<hostname>` works immediately** ← end-to-end success criterion
 - [ ] If failure: photo of auto-diagnostics → fix-forward PR
 - [ ] CI passes (gate workflow + CodeQL)
@@ -98,7 +98,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 5 c
 | full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds step 6.5 USB pubkey probe + injection into `operator-ssh-keys.nix`, plus updated post-install messaging. |
 | full-ai-cluster/tools/zflash.ts | Adds iter-4.2 post-flash ESP mount/write of `zeta-authorized-keys.pub` and diagnostics; adds `--ssh-key` / `--no-inject`. |
 | full-ai-cluster/tools/flash-usb.ts | Adds `--no-eject` flag and skips eject when requested to support post-flash ESP writes. |
-| docs/backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md | Updates iter-4.2 acceptance checklist to reflect the shipped auto-inject/probe behavior. |
+| docs/backlog/P1/081KSGS9H0008QG0R002T3BJ2R-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md | Updates iter-4.2 acceptance checklist to reflect the shipped auto-inject/probe behavior. |
 
 ## Review threads
 

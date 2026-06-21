@@ -39,7 +39,7 @@ Addresses the deferred deep finding from [PR #3614](https://github.com/Lucent-Fi
 ```
 docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md  +57/-3
 memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md  +2/-1
-docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md  +1/-1
+docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md  +1/-1
 ```
 
 ## Test plan
@@ -59,7 +59,7 @@ docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attenti
 
 ## Pull request overview
 
-This PR updates the B-0544 research substrate to acknowledge that the original memory/attention coherence laws were not type-correct under the stated `M` and `A` signatures, and reframes the work as provisional plus deferred Step 1.5 research.
+This PR updates the 081KRMEXM0008QG0R003YWZC21 research substrate to acknowledge that the original memory/attention coherence laws were not type-correct under the stated `M` and `A` signatures, and reframes the work as provisional plus deferred Step 1.5 research.
 
 **Changes:**
 - Replaces the original coherence laws with resolution paths involving `Ã`, `θ`, or propositional restriction.
@@ -74,11 +74,11 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 | ---- | ----------- |
 | `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md` | Reframes coherence laws, adds Law 1', and introduces Step 1.5 research paths. |
 | `memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md` | Updates the absorbed memory summary with the type-correctness caveat and new open question. |
-| `docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md` | Updates the backlog item to note the Step 1.5 coherence-law sub-task. |
+| `docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md` | Updates the backlog item to note the Step 1.5 coherence-law sub-task. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md:33 (unresolved)
+### Thread 1: docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md:33 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T00:30:25Z):
 

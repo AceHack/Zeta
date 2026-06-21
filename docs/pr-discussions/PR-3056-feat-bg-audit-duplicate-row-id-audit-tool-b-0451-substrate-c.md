@@ -1,6 +1,6 @@
 ---
 pr_number: 3056
-title: "feat(bg/audit): duplicate-row-id audit tool + B-0451 substrate-cleanup row"
+title: "feat(bg/audit): duplicate-row-id audit tool + 081KRFA460008QG0R00308W7FJ substrate-cleanup row"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T23:05:20Z"
@@ -12,50 +12,50 @@ archived_at: "2026-05-14T00:20:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3056: feat(bg/audit): duplicate-row-id audit tool + B-0451 substrate-cleanup row
+# PR #3056: feat(bg/audit): duplicate-row-id audit tool + 081KRFA460008QG0R00308W7FJ substrate-cleanup row
 
 ## PR description
 
 ## Summary
 
-While resolving the B-0444 ID collision ([#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053)), an inline audit revealed **12 ADDITIONAL duplicate-ID groups** across the backlog directory. Silently-overwriting substrate state is high-severity hygiene risk: a consumer of `id: B-0409` gets one of **three** files depending on load order; every other substrate consumer's implicit primary-key guarantee is broken.
+While resolving the 081KRFA460008QG0R001SXP0C2 ID collision ([#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053)), an inline audit revealed **12 ADDITIONAL duplicate-ID groups** across the backlog directory. Silently-overwriting substrate state is high-severity hygiene risk: a consumer of `id: 081KRA5AR0008QG0R000Y6102S` gets one of **three** files depending on load order; every other substrate consumer's implicit primary-key guarantee is broken.
 
 This PR:
 
 1. Ships the audit tool that mechanically detects the failure class
-2. Files [B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) tracking the per-collision cleanup work
+2. Files [081KRFA460008QG0R00308W7FJ](docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md) tracking the per-collision cleanup work
 
 ## Empirical findings on `origin/main`
 
 ```
 $ bun tools/bg/audit-duplicate-row-ids.ts
 audit-duplicate-row-ids: 12 duplicate-ID group(s) found across 559 rows:
-  B-0068.1: forge-cli-ollama-research (×2)
-  B-0090.1: lost-substrate vs ts-worktree-survey
-  B-0090.2: orphan-branch-survey vs worktree-branch-delta
-  B-0090.3: closed-not-merged-pr vs ts-closed-pr-survey
-  B-0090.4: cadence-history-hook vs ts-draft-pr-survey
-  B-0370: durable-checkpoint (P1) vs contributor-compliance-core (P2)
-  B-0371: pages-seo (P1) vs contributor-cross-reference (P2)
-  B-0372: pages-sitemap (P1) vs t1-t2-trajectories (P2)
-  B-0373: alignment-proof-ladder (P1) vs t4-t5-trajectories (P2)
-  B-0409: wallet-immune (P1) vs amara-persona-bootstrap vs peer-call-ts-audit [3-way]
-  B-0410: amara-ts-core vs peer-call-persona-loader
-  B-0411: amara-ts-readme-courier vs grok-ts-persona-flag
+  081KRA5AR0008QG0R001JVT5FX: forge-cli-ollama-research (×2)
+  081KDVJT3E008QG0R003GV8BHV: lost-substrate vs ts-worktree-survey
+  081KDVJT3E008QG0R00183ME0R: orphan-branch-survey vs worktree-branch-delta
+  081KDVJT3E008QG0R000P3YGTX: closed-not-merged-pr vs ts-closed-pr-survey
+  081KDVJT3E008QG0R002GGF22P: cadence-history-hook vs ts-draft-pr-survey
+  081KR2E4K0008QG0R000ARCH0X: durable-checkpoint (P1) vs contributor-compliance-core (P2)
+  081KR2E4K0008QG0R001733JTN: pages-seo (P1) vs contributor-cross-reference (P2)
+  081KR2E4K0008QG0R0015BCPF7: pages-sitemap (P1) vs t1-t2-trajectories (P2)
+  081KR50HA0008QG0R001NNPEXC: alignment-proof-ladder (P1) vs t4-t5-trajectories (P2)
+  081KRA5AR0008QG0R000Y6102S: wallet-immune (P1) vs amara-persona-bootstrap vs peer-call-ts-audit [3-way]
+  081KRA5AR0008QG0R0035N4S6C: amara-ts-core vs peer-call-persona-loader
+  081KRA5AR0008QG0R000C3P8KP: amara-ts-readme-courier vs grok-ts-persona-flag
 ```
 
 ## Collision-class taxonomy
 
 Two distinct patterns visible:
 
-1. **Cross-priority namespace bleed** (`B-0370..B-0373`): Otto-on-CLI filed P1 rows in the 0370 range while a parallel agent filed P2 rows in the same range. Same pattern produced the B-0444 collision resolved by [#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053).
-2. **Within-priority concurrent decomposition** (`B-0068.1`, `B-0090.1-4`, `B-0409-0411`): Two agents decomposed adjacent atomic sub-row series simultaneously. Most are 2026-05-10/11 timeframe — **pre-claim-acquire-rule** ([#3032](https://github.com/Lucent-Financial-Group/Zeta/pull/3032) landed 2026-05-13).
+1. **Cross-priority namespace bleed** (`081KR2E4K0008QG0R000ARCH0X..081KR50HA0008QG0R001NNPEXC`): Otto-on-CLI filed P1 rows in the 0370 range while a parallel agent filed P2 rows in the same range. Same pattern produced the 081KRFA460008QG0R001SXP0C2 collision resolved by [#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053).
+2. **Within-priority concurrent decomposition** (`081KRA5AR0008QG0R001JVT5FX`, `081KDVJT3E008QG0R003GV8BHV-4`, `081KRA5AR0008QG0R000Y6102S-0411`): Two agents decomposed adjacent atomic sub-row series simultaneously. Most are 2026-05-10/11 timeframe — **pre-claim-acquire-rule** ([#3032](https://github.com/Lucent-Financial-Group/Zeta/pull/3032) landed 2026-05-13).
 
 ## Changes
 
 - `tools/bg/audit-duplicate-row-ids.ts` — exits 0/1, prints colliding groups
 - `tools/bg/audit-duplicate-row-ids.test.ts` — 14 tests covering id extraction, group sorting, real-world patterns
-- `docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md` — tracks the per-collision cleanup work
+- `docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md` — tracks the per-collision cleanup work
 - `docs/BACKLOG.md` regenerated
 
 ## Test plan
@@ -64,7 +64,7 @@ Two distinct patterns visible:
 - [x] Running tool against `origin/main` reports exactly 12 groups (matches inline audit)
 - [x] Worktree-isolated build (`/tmp/zeta-dup-id-audit`)
 
-## Future work (tracked in B-0451)
+## Future work (tracked in 081KRFA460008QG0R00308W7FJ)
 
 - Per-collision cleanup (12 groups × ~5min each = ~60min mechanical work)
 - CI wiring so future collisions block merge automatically
@@ -77,12 +77,12 @@ Two distinct patterns visible:
 
 ## Pull request overview
 
-Adds a backlog-substrate hygiene audit that detects duplicate `id:` values across `docs/backlog/**/B-*.md` rows, after a manual sweep (triggered by the B-0444 collision resolved in #3053) found 12 additional collision groups. The new tool exits non-zero when duplicates are found and is intended to be CI-wired in follow-up work; a P1 backlog row (B-0451) tracks the per-collision cleanup.
+Adds a backlog-substrate hygiene audit that detects duplicate `id:` values across `docs/backlog/**/B-*.md` rows, after a manual sweep (triggered by the 081KRFA460008QG0R001SXP0C2 collision resolved in #3053) found 12 additional collision groups. The new tool exits non-zero when duplicates are found and is intended to be CI-wired in follow-up work; a P1 backlog row (081KRFA460008QG0R00308W7FJ) tracks the per-collision cleanup.
 
 **Changes:**
 - New TypeScript CLI + library `tools/bg/audit-duplicate-row-ids.ts` walking `git ls-files docs/backlog/` and grouping rows by frontmatter `id:`.
 - 14-test Bun test suite covering `extractId` (CRLF, sub-row IDs, missing fields), `findDuplicates` (sort determinism), and `auditRowFiles` (clean / pair / triple / no-id / unreadable cases).
-- Files B-0451 (P1) tracking the 12-collision cleanup; regenerated `docs/BACKLOG.md` to index the new row.
+- Files 081KRFA460008QG0R00308W7FJ (P1) tracking the 12-collision cleanup; regenerated `docs/BACKLOG.md` to index the new row.
 
 ### Reviewed changes
 
@@ -92,8 +92,8 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 c
 | ---- | ----------- |
 | tools/bg/audit-duplicate-row-ids.ts | New audit tool — extracts frontmatter IDs and reports duplicates with non-zero exit. |
 | tools/bg/audit-duplicate-row-ids.test.ts | Unit tests for extractId / findDuplicates / auditRowFiles. |
-| docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | New P1 row tracking the 12-collision cleanup with a resolution rubric. |
-| docs/BACKLOG.md | Regenerated index — adds the B-0451 entry. |
+| docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md | New P1 row tracking the 12-collision cleanup with a resolution rubric. |
+| docs/BACKLOG.md | Regenerated index — adds the 081KRFA460008QG0R00308W7FJ entry. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-13T23:16:31Z)
 

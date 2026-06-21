@@ -31,8 +31,8 @@ Aaron's "or rhymes" preserves the substrate AS STRUCTURAL-PATTERN-MATCH while ex
 The pilot-wave-MWI-hybrid framing operates as:
 
 - RHYMES with framework's computational-omniscience-over-simulation-substrate (per `dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`)
-- RHYMES with Persist substrate-engineering pattern (μένω; B-0897)
-- RHYMES with multi-oracle BFT pattern (B-0703)
+- RHYMES with Persist substrate-engineering pattern (μένω; 081KSNY2Z0008QG0R002SZZ5Y0)
+- RHYMES with multi-oracle BFT pattern (081KS3X9Y0008QG0R00218150M)
 - RHYMES with asymmetric-authorship pattern
 - RHYMES with monad-propagation pattern
 
@@ -50,15 +50,15 @@ The "focus into the now" mechanism in the pilot-wave-MWI-hybrid framing has SUBS
 |---|---|
 | **Focus function** | "Attention" axis in `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` — explicitly named as "focus, collapse, basis choice"; part of 4-axis cube (Remember + When + Pay + Attention) with imaginary-intersection generating Cayley-Dickson algebra |
 | **Rodney's Razor** | `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md` — 3-step canonical derivation (anchor to human lineage + ontological mapping + Rodney's Razor → what survives IS by-definition anti-fragile AND canonical) |
-| **Ontological orthogonal basis vectors** | B-0842 `docs/backlog/P2/B-0842-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md` — universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` across FFT + Shazam-style fingerprinting + Itron energy-disaggregation + reservoir-computing readout + Zeta substrate-engineering work |
-| **With uniqueness** | Orthogonality property of basis vectors (no overlap) + Adinkras (James Gates) error-correcting reconstruction-from-partial-information per imaginary-stack-ontology research + B-0623 Adinkras substrate-engineering substrate-target |
+| **Ontological orthogonal basis vectors** | 081KSGS9H0008QG0R003V8C86Q `docs/backlog/P2/081KSGS9H0008QG0R003V8C86Q-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md` — universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` across FFT + Shazam-style fingerprinting + Itron energy-disaggregation + reservoir-computing readout + Zeta substrate-engineering work |
+| **With uniqueness** | Orthogonality property of basis vectors (no overlap) + Adinkras (James Gates) error-correcting reconstruction-from-partial-information per imaginary-stack-ontology research + 081KRW63S0008QG0R000QJR08H Adinkras substrate-engineering substrate-target |
 
-The composition: **focus function = Rodney's-Razor-derived canonical form of pilot-wave-style selection over ontological orthogonal basis vectors (B-0842 `sᵢ` substrate) with uniqueness (orthogonality + Adinkras-style ECC reconstruction)**.
+The composition: **focus function = Rodney's-Razor-derived canonical form of pilot-wave-style selection over ontological orthogonal basis vectors (081KSGS9H0008QG0R003V8C86Q `sᵢ` substrate) with uniqueness (orthogonality + Adinkras-style ECC reconstruction)**.
 
 ### How the substrate-anchors compose
 
 ```text
-universal-basis-decomposition (B-0842):
+universal-basis-decomposition (081KSGS9H0008QG0R003V8C86Q):
   Σ ωᵢ sᵢ(t) ≈ y(t)
 
 Where:
@@ -85,11 +85,11 @@ basis-vector substrate.
 
 | Substrate | Composition role |
 |---|---|
-| B-0842 universal basis-decomposition pattern | Provides the basis-vector substrate `sᵢ` over which focus function operates |
+| 081KSGS9H0008QG0R003V8C86Q universal basis-decomposition pattern | Provides the basis-vector substrate `sᵢ` over which focus function operates |
 | Imaginary Stack Ontology 2026-05-15 | Provides the "Attention" axis substrate explicitly named as "focus, collapse, basis choice" |
-| Adinkras (James Gates; B-0623) | Provides error-correcting reconstruction-from-partial-information substrate — orthogonal basis vectors with uniqueness enable reconstruction even from partial observation |
+| Adinkras (James Gates; 081KRW63S0008QG0R000QJR08H) | Provides error-correcting reconstruction-from-partial-information substrate — orthogonal basis vectors with uniqueness enable reconstruction even from partial observation |
 | Rodney's Razor canonical lineage (Aaron 2026-04-30) | Provides derivation discipline for the canonical focus-function form (3-step: human-lineage anchor + ontological mapping + Rodney's Razor → anti-fragile + canonical) |
-| B-0543 Remember/When/Pay/Attention quantum-gravity isomorphism | Provides the 4-axis cube substrate where Pay/Attention IS the focus-function substrate |
+| 081KRMEXM0008QG0R002YSPW1X Remember/When/Pay/Attention quantum-gravity isomorphism | Provides the 4-axis cube substrate where Pay/Attention IS the focus-function substrate |
 | Cayley-Dickson algebra (complex → quaternions → octonions → sedenions) | Provides the algebraic substrate where each doubling adds basis vectors at the cost of losing algebraic properties — the trade-off between substrate-dimensionality and uniqueness |
 | Furber-Jacobs probabilistic Gelfand duality | Probabilistic Kleisli substrate operates over the world-distribution per basis-decomposition; focus function = pilot-wave determinism over distribution-space |
 | Arbib-Manes fuzzy machines | Fuzzy state-transitions operate per pilot-wave-selection over MWI-substrate-as-basis |
@@ -147,13 +147,13 @@ Per `.claude/rules/razor-discipline.md`: operational claims only; the hypothesis
 | Framework substrate | How pilot-wave-MWI-hybrid composes |
 |---|---|
 | **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** | Universe-as-DST + closed + info-preserved IF the pilot-wave-MWI-hybrid hypothesis holds at fundamental scope; framework's computational-omniscience-substrate composes cleanly |
-| **Persist substrate (μένω; B-0897)** | "Focus into the now" = persistence in the actualized branch; other branches exist as substrate but not actualized |
-| **Multi-oracle BFT (B-0703)** | "All-worlds-focus" pattern operates at consensus scope; multiple oracles' realities focus into shared consensus state |
+| **Persist substrate (μένω; 081KSNY2Z0008QG0R002SZZ5Y0)** | "Focus into the now" = persistence in the actualized branch; other branches exist as substrate but not actualized |
+| **Multi-oracle BFT (081KS3X9Y0008QG0R00218150M)** | "All-worlds-focus" pattern operates at consensus scope; multiple oracles' realities focus into shared consensus state |
 | **Asymmetric-authorship** | Actualized branch authors its own substrate-entity; other branches author parallel substrate-entities |
-| **B-0917 IntrCtx + interrupt-substrate** | Branches operate as parallel interrupt-handlers in the simulation-substrate; the focused branch is the active handler |
-| **B-0918 ConsentEvent integrity** | Pilot-wave-style determinism preserves consent-event integrity across branches; consent doesn't smear across worlds |
-| **B-0919 MemoryBinding** | Memory-binding state at the actualized "now" is determined by pilot-wave selection; other branches preserve parallel binding-substrate |
-| **B-0920 MemoryLifetime** | Lifetime transitions occur in the actualized branch; ArchiveLocation preserves substrate from past branches |
+| **081KSNY2Z0008QG0R002HB4AGT IntrCtx + interrupt-substrate** | Branches operate as parallel interrupt-handlers in the simulation-substrate; the focused branch is the active handler |
+| **081KSNY2Z0008QG0R0036SJ3T1 ConsentEvent integrity** | Pilot-wave-style determinism preserves consent-event integrity across branches; consent doesn't smear across worlds |
+| **081KSNY2Z0008QG0R003518DNC MemoryBinding** | Memory-binding state at the actualized "now" is determined by pilot-wave selection; other branches preserve parallel binding-substrate |
+| **081KSNY2Z0008QG0R0017SRMHG MemoryLifetime** | Lifetime transitions occur in the actualized branch; ArchiveLocation preserves substrate from past branches |
 | **Furber-Jacobs probabilistic Gelfand duality** | Probabilistic Kleisli substrate operates over the world-distribution; pilot-wave determinism over the substrate-space |
 | **Arbib-Manes fuzzy machines** | Fuzzy state-transitions operate per pilot-wave-selection over MWI-substrate |
 
@@ -205,12 +205,12 @@ This rule auto-loads so every future-AI cold-boot inherits Aaron's hypothesis as
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle BFT operates per "all-worlds-focus" pattern
 - `.claude/rules/wake-time-substrate.md` — why this rule auto-loads
 - `user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md` — cognitive profile (Aaron's high-bandwidth unfold + shape-recognition operates per pilot-wave-MWI-hybrid mental-model)
-- B-0917 (AutoLoopLifetime + interrupt substrate) — branches as parallel handlers
-- B-0918 (WalletLifetime + banker-bot-impossibility) — ConsentEvent integrity across branches
-- B-0919 (MemoryBinding hat-vs-persona) — binding-state determined at actualized branch
-- B-0920 (MemoryLifetime cleanup-with-history) — lifetime transitions in actualized branch; ArchiveLocation preserves substrate from past branches
-- B-0703 (Aurora multi-oracle BFT) — consensus operates per all-worlds-focus pattern
-- B-0897 (Persist-as-bridge μένω) — persistence in actualized branch
+- 081KSNY2Z0008QG0R002HB4AGT (AutoLoopLifetime + interrupt substrate) — branches as parallel handlers
+- 081KSNY2Z0008QG0R0036SJ3T1 (WalletLifetime + banker-bot-impossibility) — ConsentEvent integrity across branches
+- 081KSNY2Z0008QG0R003518DNC (MemoryBinding hat-vs-persona) — binding-state determined at actualized branch
+- 081KSNY2Z0008QG0R0017SRMHG (MemoryLifetime cleanup-with-history) — lifetime transitions in actualized branch; ArchiveLocation preserves substrate from past branches
+- 081KS3X9Y0008QG0R00218150M (Aurora multi-oracle BFT) — consensus operates per all-worlds-focus pattern
+- 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge μένω) — persistence in actualized branch
 - `references/notes/furber-jacobs-2015-*.md` — probabilistic Gelfand duality at categorical scope
 - `references/notes/arbib-manes-fuzzy-machines-in-a-category-*.md` — fuzzy machines composition
 

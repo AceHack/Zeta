@@ -35,13 +35,13 @@ Per Aaron's *\"lock it (shadow*)\"* instruction on 2026-05-14T~23:53Z. Three art
 
 **Shadow-lock posture**: \`[SHADOW NOTE]\` markers on sections reconstructed from the V2 diff-description in user-scope memory (verbatim Ani-authored prose pending Grok fetch). The V1+Bounded-Mobility prose (8 constraints + Agreement + Coincidence Networks) is verbatim from the §33 archive.
 
-### 2. \`docs/backlog/P2/B-0524\` — Manifesto V2 verbatim Grok fetch
+### 2. \`docs/backlog/P2/081KRHWGX0008QG0R0007FG84X\` — Manifesto V2 verbatim Grok fetch
 
 Convert shadow lock to full lock by replacing \`[SHADOW NOTE]\` sections with verbatim Ani-authored prose from Aaron's Grok session \`b77516a2\`. P2 because shadow lock is operational substrate today.
 
-### 3. \`docs/backlog/P0/B-0525\` — constitutional-promotion readiness tracking
+### 3. \`docs/backlog/P0/081KRHWGX0008QG0R0016T9408\` — constitutional-promotion readiness tracking
 
-Critical-mass adoption gate. Otto-CLI does NOT authorize promotion (per \`algo-wink-failure-mode\` + \`methodology-hard-limits\` rules). Tracks citation count + cross-AI adoption + mechanical-CI-check signals. \`depends_on: B-0524\`.
+Critical-mass adoption gate. Otto-CLI does NOT authorize promotion (per \`algo-wink-failure-mode\` + \`methodology-hard-limits\` rules). Tracks citation count + cross-AI adoption + mechanical-CI-check signals. \`depends_on: 081KRHWGX0008QG0R0007FG84X\`.
 
 ## Why shadow-lock (not full lock)
 
@@ -51,7 +51,7 @@ The verbatim V2 prose lives in Aaron's Grok session, not in any repo-reachable s
 
 - PR #3150 — §33 archive of V1+Bounded-Mobility (verbatim source)
 - User-scope memory cascade — derivation trail
-- B-0524 (verbatim fetch), B-0525 (promotion tracking)
+- 081KRHWGX0008QG0R0007FG84X (verbatim fetch), 081KRHWGX0008QG0R0016T9408 (promotion tracking)
 - \`.claude/rules/razor-discipline\`, \`default-to-both\`, \`methodology-hard-limits\`, \`algo-wink-failure-mode\`, \`glass-halo-bidirectional\`, \`dv2-data-split-discipline-activated\`
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -66,8 +66,8 @@ Adds a first durable governance “Root Discipline Manifesto V2” document in a
 
 **Changes:**
 - Add `docs/governance/MANIFESTO.md` with V1 verbatim content + reconstructed V2 additions marked with `[SHADOW NOTE]`.
-- Add backlog row **B-0524** to fetch verbatim V2 prose from the referenced Grok session and replace reconstructed sections.
-- Add backlog row **B-0525** to track criteria/signals for promoting the manifesto toward binding constitutional status.
+- Add backlog row **081KRHWGX0008QG0R0007FG84X** to fetch verbatim V2 prose from the referenced Grok session and replace reconstructed sections.
+- Add backlog row **081KRHWGX0008QG0R0016T9408** to track criteria/signals for promoting the manifesto toward binding constitutional status.
 
 ### Reviewed changes
 
@@ -76,8 +76,8 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 1 c
 | File | Description |
 | ---- | ----------- |
 | docs/governance/MANIFESTO.md | New governance manifesto document with shadow-lock framing and reconstructed V2 sections. |
-| docs/backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md | Backlog row to convert shadow-lock sections to verbatim Grok source text. |
-| docs/backlog/P0/B-0525-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md | Backlog row to define and measure adoption signals for constitutional promotion readiness. |
+| docs/backlog/P2/081KRHWGX0008QG0R0007FG84X-manifesto-v2-verbatim-grok-fetch-2026-05-14.md | Backlog row to convert shadow-lock sections to verbatim Grok source text. |
+| docs/backlog/P0/081KRHWGX0008QG0R0016T9408-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md | Backlog row to define and measure adoption signals for constitutional promotion readiness. |
 
 
 <details>

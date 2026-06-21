@@ -32,7 +32,7 @@ case requiring justification.
 - claim-making OR compression-infrastructure (cascade
   is compression infrastructure per PR #2839; some
   claims are beacon-tier with external anchors per
-  B-0422 — BOTH)
+  081KRCQQF0008QG0R0008VT354 — BOTH)
 
 **The discipline:**
 

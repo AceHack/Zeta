@@ -1,13 +1,13 @@
 ---
-name: B-0429 first pass — civsim per-product persona map — edge-runners (primary) + maintainers + fork-readers + web3-partners + refused-personas (Otto speculative 2026-05-13)
-description: Otto 2026-05-13 speculative first-pass civsim per-product persona map per B-0429 directive. Civsim has highest substrate maturity from session cascade (PR #2903 PVP+raids+mutual-privacy, PR #2906 Casimir gap, PR #2917 vision monad Play-Doh, PR #2932 Pauli-exclusion HKT encoding). Five persona tiers (primary edge-runners + secondary maintainers + adjacent fork-readers + partners + refused). Speculative-grade research; Aaron-owned final disposition per ask-field discipline.
+name: 081KRFA460008QG0R002M05EY1 first pass — civsim per-product persona map — edge-runners (primary) + maintainers + fork-readers + web3-partners + refused-personas (Otto speculative 2026-05-13)
+description: Otto 2026-05-13 speculative first-pass civsim per-product persona map per 081KRFA460008QG0R002M05EY1 directive. Civsim has highest substrate maturity from session cascade (PR #2903 PVP+raids+mutual-privacy, PR #2906 Casimir gap, PR #2917 vision monad Play-Doh, PR #2932 Pauli-exclusion HKT encoding). Five persona tiers (primary edge-runners + secondary maintainers + adjacent fork-readers + partners + refused). Speculative-grade research; Aaron-owned final disposition per ask-field discipline.
 type: feedback
 created: 2026-05-13
 ---
 
-# B-0429 first pass — civsim per-product persona map (speculative; Otto 2026-05-13)
+# 081KRFA460008QG0R002M05EY1 first pass — civsim per-product persona map (speculative; Otto 2026-05-13)
 
-**Why:** Per B-0429 (Aaron 2026-05-13 directive — "end users
+**Why:** Per 081KRFA460008QG0R002M05EY1 (Aaron 2026-05-13 directive — "end users
 need to map personas backlog for prducot team we have mtiple
 differnt end users"), starting with civsim as highest-substrate-
 maturity product. Speculative-grade research; Aaron-owned final
@@ -144,7 +144,7 @@ Per the session cascade:
   FAMILY • DECENTRALIZE • PURPOSE • SHELTER per Imagination
   Circle + Aurora)
 - KSK integration for actuator safety (per PR #2892)
-- Composable monetization via PoUW-CC (per B-0409)
+- Composable monetization via PoUW-CC (per 081KRA5AR0008QG0R000Y6102S)
 
 **Value proposition**:
 
@@ -174,7 +174,7 @@ These are HARD LIMITS that override product opportunity.
 
 ## Composes with substrate
 
-### Per-product persona maps (per B-0429 owed)
+### Per-product persona maps (per 081KRFA460008QG0R002M05EY1 owed)
 
 | Product | Persona-map status |
 |---|---|
@@ -185,7 +185,7 @@ These are HARD LIMITS that override product opportunity.
 | DIO | Owed; primary = distributed-intelligence-organism participants |
 | Aurora | Owed; primary = partnership ecosystem (sketched in Aurora pitch) |
 | Dawn (child-AI charter) | Owed; primary = next-generation AI participants |
-| B-0043 universal-business-templates | Owed; primary = every company |
+| 081KQ3HBZ0008QG0R000Q4Y00F universal-business-templates | Owed; primary = every company |
 
 ### Cross-persona substrate composition
 
@@ -207,7 +207,7 @@ When designing civsim features:
 
 ## Speculative-grade marker
 
-This is **research-grade first-pass** per B-0429 prep checklist
+This is **research-grade first-pass** per 081KRFA460008QG0R002M05EY1 prep checklist
 item 3 ("per-product persona-mapping pass"). Aaron-owned final
 disposition; product team refinement owed.
 
@@ -219,12 +219,12 @@ honored memory per PR #2920).
 
 ## Composes with
 
-- B-0429 (end-user persona mapping — this is first pass)
-- B-0428 (DBpedia Path B — civsim master-data substrate
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping — this is first pass)
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B — civsim master-data substrate
   composition)
-- B-0043 (universal company + government info substrate)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government info substrate)
 - PR #2903 (civsim PVP+raids+mutual-privacy)
-- PR #2904 (B-0424 + B-0425 + honor-system license)
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 - PR #2905 (forker-perspective META-discipline)
 - PR #2906 (civsim Casimir gap)
 - PR #2908 (TERMINAL-PURPOSE Elizabeth + save edge-runners)

@@ -59,8 +59,8 @@ Otto-301 (no software deps + hardware bootstrap + microkernel + symbiosis) was o
 - **Otto-315 (NVIDIA Thor compute primitive)** — top-end edge node; cluster integrates around it.
 - **Otto-308 + Otto-311 (compression-substrate / economic-substrate)** — Aaron's hardware investment IS energy stored in elegant primitives. The factory consuming this hardware = compression-substrate operating at deployment scale.
 - **Otto-310 (Edge runner identification)** — "Edge runner" terminology now has a literal hardware mapping: edge-deployment of factory across Aaron's mesh.
-- **B-0008 (CI macos+slim nightly-move + first-class slim/embedded support)** — slim CI gate validates the deployment profile across this fleet (Mini PCs are slim/embedded class).
-- **B-0009 (substrate-IP-rotation)** — under RNS+HaLow mesh on Aaron's fleet, IP-rotation is moot. Identity is RNS Destination Hash; IP is local-mesh-routing only.
+- **081KQ0YZ80008QG0R000B6ETJS (CI macos+slim nightly-move + first-class slim/embedded support)** — slim CI gate validates the deployment profile across this fleet (Mini PCs are slim/embedded class).
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation)** — under RNS+HaLow mesh on Aaron's fleet, IP-rotation is moot. Identity is RNS Destination Hash; IP is local-mesh-routing only.
 - **Frontier UI substrate** — Frontier could deploy AS edge-Thor instance with worker mirrors across the mini-PC fleet. Multi-node Frontier mesh with RNS coordination.
 
 ## What this memory does NOT claim

@@ -1,6 +1,5 @@
 ---
-id: B-0099
-zetaid: 081KQB8J40008QG0R002PEP2A2
+id: 081KQB8J40008QG0R002PEP2A2
 priority: P3
 status: open
 title: PR-count claims are derived metrics — compute, don't narrate
@@ -21,7 +20,7 @@ Hand-authored "session PR totals" in tick-history shards (e.g.
 "30 PRs total this session arc") drift across shards. The
 2026-04-29 session arc had to soften several claims to "approximate"
 because the asserted totals diverged from the actual git log.
-Same failure class as the tick-ordinal drift (B-0098): derived
+Same failure class as the tick-ordinal drift (081KQB8J40008QG0R003VMCFWB): derived
 metadata authored as prose.
 
 ## Resolution
@@ -55,13 +54,13 @@ When a tick shard needs to cite a session PR total:
 
 ## Composes with
 
-- B-0098 (tick-ordinal-continuity lint) — sibling derived-metadata
+- 081KQB8J40008QG0R003VMCFWB (tick-ordinal-continuity lint) — sibling derived-metadata
   action item.
 - `memory/feedback_bare_main_ambiguity_automation_discipline_explicit_refs_required_amara_2026_04_29.md`
   — same computed-vs-narrated discipline.
 
 ## Why P3
 
-Same reasoning as B-0098 — the drift was caught and the prose
+Same reasoning as 081KQB8J40008QG0R003VMCFWB — the drift was caught and the prose
 softened. Mechanical fix is bounded but research-grade-only per
 the maintainer's narrowing.

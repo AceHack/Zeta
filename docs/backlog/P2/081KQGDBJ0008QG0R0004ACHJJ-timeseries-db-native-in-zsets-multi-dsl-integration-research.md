@@ -1,6 +1,5 @@
 ---
-id: B-0147
-zetaid: 081KQGDBJ0008QG0R0004ACHJJ
+id: 081KQGDBJ0008QG0R0004ACHJJ
 priority: P2
 status: open
 title: TimeSeries DB native-in-Zsets multi-DSL integration research (metrics-are-our-eyes)
@@ -12,21 +11,21 @@ decomposition: clean
 type: feature
 ---
 
-# B-0147 — TimeSeries DB native-in-Zsets multi-DSL integration research
+# 081KQGDBJ0008QG0R0004ACHJJ — TimeSeries DB native-in-Zsets multi-DSL integration research
 
 ## Decomposition status
 
 This row is now the umbrella for the timeseries-native-in-
 ZSets research lane. The actionable research slices are:
 
-1. B-0224 candidate landscape and dependency-source filter.
-2. B-0225 algebra-fit / retraction / ZSet mapping analysis.
-3. B-0226 cardinality-adaptive storage research.
-4. B-0227 CRDT multi-mode timeseries semantics.
-5. B-0228 formal specification plan.
-6. B-0229 meta-DSL integration sketch.
-7. B-0230 Pareto-frontier synthesis.
-8. B-0231 recommendation and follow-up row filing.
+1. 081KQX9B50008QG0R0037YZ1WX candidate landscape and dependency-source filter.
+2. 081KQX9B50008QG0R003Z7Z9EG algebra-fit / retraction / ZSet mapping analysis.
+3. 081KQX9B50008QG0R0028P9BMR cardinality-adaptive storage research.
+4. 081KQX9B50008QG0R002RZXEQK CRDT multi-mode timeseries semantics.
+5. 081KQX9B50008QG0R003GWYQR3 formal specification plan.
+6. 081KQX9B50008QG0R0016JBZ2G meta-DSL integration sketch.
+7. 081KQX9B50008QG0R001T7M5SK Pareto-frontier synthesis.
+8. 081KQX9B50008QG0R00142CANX recommendation and follow-up row filing.
 
 ## What
 
@@ -122,7 +121,7 @@ time-series persistence is a fitness function.
      retraction-native semantics aren't supported by any
      existing TSDB)
    - **Defer** — candidates are evolving fast; revisit in N
-     rounds with PM-2 forward-research input (B-0145)
+     rounds with PM-2 forward-research input (081KQGDBJ0008QG0R000RWAA67)
 
 6. **Next-step backlog rows filed.** Whatever the recommendation
    is, the follow-up actions become discrete B-rows (e.g., if
@@ -179,7 +178,7 @@ design predicts. *This is not a Prometheus bug — it is a
 Prometheus design.*
 
 The factory's stance: **Prometheus IS Tier 3 + the right
-operational starting point** (per B-0149) because for the
+operational starting point** (per 081KQGDBJ0008QG0R0035TQVBQ) because for the
 factory's *own* metrics (tick rate, PR-cycle latency,
 per-persona dispatch counts, Aaron-correction rate), the
 cardinality stays bounded — these metrics fit Prometheus's
@@ -226,8 +225,8 @@ least these four options before recommending.
 2026-05-01: *"complexity of the algebra surface, i'm not too
 worried about this one because we have all the formal
 verification"* + *"a little bit"*. The factory's formal-
-verification investment (B-0134 / B-0133 / B-0135 / B-0137 /
-B-0142) mechanically tames algebra complexity — invariants
+verification investment (081KQGDBJ0008QG0R0032X1MMC / 081KQGDBJ0008QG0R0035M1YRC / 081KQGDBJ0008QG0R002X4AFA0 / 081KQGDBJ0008QG0R003NDQTBM /
+081KQGDBJ0008QG0R002WY918J) mechanically tames algebra complexity — invariants
 are proved at compile-time / build-time / verification-pass
 rather than depended-on at review-time. Result: **algebra-
 surface complexity carries less cost in the factory than it
@@ -282,7 +281,7 @@ operation per `feedback_ai_never_without_human_who_understands_both_ai_and_earth
   CRDT semantics, multi-master timeseries devolves to last-write-
   wins (single-head failure mode at the data layer)
 
-Research alongside MDX-as-meta-DSL (B-0148) — the meta-DSL
+Research alongside MDX-as-meta-DSL (081KQGDBJ0008QG0R002175ECA) — the meta-DSL
 framing must compose with CRDT semantics, not constrain them
 out.
 
@@ -295,11 +294,11 @@ F# refinement types / Coq / Isabelle.
 **Composes with** the formal-foundations layer-2 work already
 filed:
 
-- B-0134 (type-theoretic orthogonality discipline)
-- B-0133 (sequent calculus for claim retraction)
-- B-0135 (modal logic for retractability)
-- B-0137 (Tarski stratification proof)
-- B-0142 (Code Contracts revival)
+- 081KQGDBJ0008QG0R0032X1MMC (type-theoretic orthogonality discipline)
+- 081KQGDBJ0008QG0R0035M1YRC (sequent calculus for claim retraction)
+- 081KQGDBJ0008QG0R002X4AFA0 (modal logic for retractability)
+- 081KQGDBJ0008QG0R003NDQTBM (Tarski stratification proof)
+- 081KQGDBJ0008QG0R002WY918J (Code Contracts revival)
 
 The formal spec must cover at minimum:
 
@@ -418,7 +417,7 @@ This composes with:
   rules sit on orthogonal axes; understanding which axes
   matter for which constraint is precondition to Pareto
   analysis
-- B-0135 (modal logic for retractability) — tradeoffs are
+- 081KQGDBJ0008QG0R002X4AFA0 (modal logic for retractability) — tradeoffs are
   retractable design moves; modal-logic gives the formal
   vocabulary for "in this design point, X holds; in that
   design point, Y holds"
@@ -436,7 +435,7 @@ reasons. Find better, not different."*
 - **Implementation.** This is a research B-row. Implementation
   is the recommendation's follow-up B-row(s).
 - **Performance benchmarks.** Benchmarking against the harness
-  (per reproducibility-first / B-0144 work) is a separate
+  (per reproducibility-first / 081KQGDBJ0008QG0R0021E8YZV work) is a separate
   follow-up. Research first; measure later.
 - **The other algebras (graph / hierarchy / filesystem).** Each
   has its own substrate and may already be partly designed.
@@ -472,15 +471,15 @@ reasons. Find better, not different."*
   — the discipline for the chosen project's relationship
 - `feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`
   — research must be search-first, not training-data-recall
-- B-0145 (PM-2 role) — proactive research sources include
+- 081KQGDBJ0008QG0R000RWAA67 (PM-2 role) — proactive research sources include
   Microsoft Research; this row's research-cadence-inputs section
   is a worked example of PM-2's research discipline
-- B-0146 (formal architecture ladder) — when this row's
+- 081KQGDBJ0008QG0R003VHD3KZ (formal architecture ladder) — when this row's
   recommendation lands, the follow-up implementation rows
   should declare their layer (likely Layer 5: reproducibility
   harness)
 
-## Layer (per B-0146)
+## Layer (per 081KQGDBJ0008QG0R003VHD3KZ)
 
 **Layer 5: Reproducibility harness.** The timeseries-DB is the
 substrate that makes metrics persist over time, which is what
@@ -499,7 +498,7 @@ be their own effort estimates.
 - **Not P0** because the factory functions today without
   timeseries persistence (metrics are computed and observed
   per-tick; trend-analysis is informal).
-- **Not P1** because B-0144 (doc/code two-lane) and B-0145
+- **Not P1** because 081KQGDBJ0008QG0R0021E8YZV (doc/code two-lane) and 081KQGDBJ0008QG0R000RWAA67
   (PM-2 role) come first in the throughput + direction axes;
   observability infrastructure compounds value but doesn't
   block the next throughput unlock.

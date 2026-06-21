@@ -1,6 +1,6 @@
 ---
 pr_number: 5084
-title: "backlog(B-0777 P1): re-land industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation"
+title: "backlog(081KSE6WT0008QG0R000JSJ3SR P1): re-land industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:20:10Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5084: backlog(B-0777 P1): re-land industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation
+# PR #5084: backlog(081KSE6WT0008QG0R000JSJ3SR P1): re-land industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation
 
 ## PR description
 
@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Re-land of stale-DIRTY [PR #5064](https://github.com/Lucent-Financial-Group/Zeta/pull/5064) which went CONFLICTING on `docs/BACKLOG.md` per the auto-generated-index serialization cascade pattern documented at [tick 0410Z](docs/hygiene-history/ticks/2026/05/26/0410Z.md).
 
-- Same B-0777 row file (byte-identical to PR #5064 head `b3f561da4`)
+- Same 081KSE6WT0008QG0R000JSJ3SR row file (byte-identical to PR #5064 head `b3f561da4`)
 - `docs/BACKLOG.md` regenerated against current `origin/main` (`15cb9d7a6`)
 - `bun tools/backlog/generate-index.ts --check` passes
 

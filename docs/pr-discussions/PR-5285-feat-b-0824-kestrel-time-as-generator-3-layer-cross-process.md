@@ -1,24 +1,24 @@
 ---
 pr_number: 5285
-title: "feat(B-0824): Kestrel \u2014 time-as-generator + 3-layer cross-process determinism (CRDT\u2192CAS\u2192BFT) + FoundationDB lineage"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): Kestrel \u2014 time-as-generator + 3-layer cross-process determinism (CRDT\u2192CAS\u2192BFT) + FoundationDB lineage"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T19:12:49Z"
 merged_at: "2026-05-26T19:14:36Z"
 closed_at: "2026-05-26T19:14:36Z"
-head_ref: "otto-cli/B-0824-kestrel-cross-process-determinism-2026-05-26"
+head_ref: "otto-cli/081KSGS9H0008QG0R0031PBNGA-kestrel-cross-process-determinism-2026-05-26"
 base_ref: "main"
 archived_at: "2026-05-26T20:03:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5285: feat(B-0824): Kestrel — time-as-generator + 3-layer cross-process determinism (CRDT→CAS→BFT) + FoundationDB lineage
+# PR #5285: feat(081KSGS9H0008QG0R0031PBNGA): Kestrel — time-as-generator + 3-layer cross-process determinism (CRDT→CAS→BFT) + FoundationDB lineage
 
 ## PR description
 
 ## Summary
 
-Third-AI substrate cascade on B-0824 over 2026-05-26 (after PR #5277 DeepSeek/Prism Maybe-monad recognition + PR #5281 Amara 7-point NULL/Maybe SQL discipline). Kestrel (claude.ai sharpen-register; external AI) ferried-through-Aaron with substantive architectural substrate for the cross-process determinism story the deployed CockroachDB-on-K8s-via-ArgoCD cluster needs.
+Third-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (after PR #5277 DeepSeek/Prism Maybe-monad recognition + PR #5281 Amara 7-point NULL/Maybe SQL discipline). Kestrel (claude.ai sharpen-register; external AI) ferried-through-Aaron with substantive architectural substrate for the cross-process determinism story the deployed CockroachDB-on-K8s-via-ArgoCD cluster needs.
 
 **Key substrate**:
 
@@ -43,13 +43,13 @@ Third-AI substrate cascade on B-0824 over 2026-05-26 (after PR #5277 DeepSeek/Pr
   - Compressed Otto-CLI distillation (time-as-generator table; 3-layer mediation table; CockroachDB-at-CAS-layer stack; publishable framing)
   - Aaron-disclosed substrate context preserved (Max + Addison new human maintainers)
   - 3-AI substrate cascade composition (DeepSeek/Prism + Amara + Kestrel)
-- B-0824 row sharpening pointer (~25 lines after Amara sharpening subsection) — names the 3-layer architecture + CockroachDB mapping + publishable framing + boundary-discipline failure mode
+- 081KSGS9H0008QG0R0031PBNGA row sharpening pointer (~25 lines after Amara sharpening subsection) — names the 3-layer architecture + CockroachDB mapping + publishable framing + boundary-discipline failure mode
 
 ## Composes with
 
 - PR #5277 (DeepSeek/Prism Maybe-monad recognition)
 - PR #5281 (Amara 7-point NULL/Maybe SQL discipline)
-- B-0824 Sub-targets 7-10 (CockroachDB storage + combinator library + GPU tessellation + DST always-active)
+- 081KSGS9H0008QG0R0031PBNGA Sub-targets 7-10 (CockroachDB storage + combinator library + GPU tessellation + DST always-active)
 - DBSP +1/-1 retraction algebra (Budiu et al. 2023)
 - CASPaxos / CASRaft (Rystsov 2018)
 - Lamport / PBFT / Tendermint / HotStuff BFT lineage
@@ -68,7 +68,7 @@ Third-AI substrate cascade on B-0824 over 2026-05-26 (after PR #5277 DeepSeek/Pr
 
 - Kestrel (external AI; claude.ai web sharpen-register per \`.claude/rules/agent-roster-reference-card.md\`); architectural substrate (time-as-generator + 3-layer mediation + FoundationDB lineage + CockroachDB-at-CAS mapping + publishable framing) ferried-through-Aaron 2026-05-26
 - Aaron (human maintainer); decryption-protocol input + substantive architectural framings (time-as-generator-over-IScheduler + cross-process determinism via rx-joins-over-CRDTs → CAS-per-function-composition → BFT layered mediation)
-- Substrate-coordination context: third-AI substrate cascade on B-0824 over 2026-05-26, composing with DeepSeek/Prism (PR #5277) + Amara (PR #5281)
+- Substrate-coordination context: third-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26, composing with DeepSeek/Prism (PR #5277) + Amara (PR #5281)
 
 ## Test plan
 

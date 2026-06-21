@@ -16,13 +16,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Aaron forwarded three URLs deeply on-point for today's typestate-DU substrate cluster (B-0917 + B-0918 + B-0919 + B-0920):
+Aaron forwarded three URLs deeply on-point for today's typestate-DU substrate cluster (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG):
 
 1. **MathOverflow #435378 Kleisli adjunction of distribution monad** (Ben Sprott 2022; Aaron forwarded the question + accepted answer verbatim). fosco's answer's substrate-engineering insight: Amara's clean handler signature `LoopState -> IntrCtx -> M<LoopState * IntrCtx * Feedback>` IS a Kleisli arrow in Kl(M). When M = distribution monad D, the (F, G) adjunction lets deterministic AutoLoopLifetime lift into probabilistic substrate without redesign. **Categorical foundation for Infer.NET BP/EP long-term target** + Aurora multi-oracle BFT + immune-system math.
 
-2. **Puzzling SE #22940 Meta-knights-and-knaves WITH HATS** (~2014 era). Direct structural shape of B-0919 MemoryBinding HatBindingContract — hat AUTHORS truth-telling-discipline per asymmetric-authorship. Aaron has held this shape for a decade.
+2. **Puzzling SE #22940 Meta-knights-and-knaves WITH HATS** (~2014 era). Direct structural shape of 081KSNY2Z0008QG0R003518DNC MemoryBinding HatBindingContract — hat AUTHORS truth-telling-discipline per asymmetric-authorship. Aaron has held this shape for a decade.
 
-3. **Puzzling SE #23753 Pinocchio's nose** (~2014 era). Liar's-paradox / self-reference shape composing with B-0703 multi-oracle BFT + B-0918 G.2 ConsentEvent integrity + B-0920 RetractionReason recursive-retraction.
+3. **Puzzling SE #23753 Pinocchio's nose** (~2014 era). Liar's-paradox / self-reference shape composing with 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KSNY2Z0008QG0R0036SJ3T1 G.2 ConsentEvent integrity + 081KSNY2Z0008QG0R0017SRMHG RetractionReason recursive-retraction.
 
 ## Substrate-engineering archeology
 
@@ -36,7 +36,7 @@ The decade-old Aaron-shapes are the framework's substrate-architecture substrate
 
 ## Pull request overview
 
-Adds a new `references/notes/` research note capturing three external “substrate-anchor” URLs (MathOverflow Kleisli/distribution monad; two Puzzling.SE logic puzzles) and relates them to current internal backlog items (B-0917/18/19/20) and existing rule/docs surfaces.
+Adds a new `references/notes/` research note capturing three external “substrate-anchor” URLs (MathOverflow Kleisli/distribution monad; two Puzzling.SE logic puzzles) and relates them to current internal backlog items (081KSNY2Z0008QG0R002HB4AGT/18/19/20) and existing rule/docs surfaces.
 
 **Changes:**
 - Introduces a new markdown note with quoted URL forwarding + internal “composes with” mapping.
@@ -136,10 +136,10 @@ Pushed `f5396fd` fixing markdownlint MD038 (trailing space inside `` `G(X) = ` `
 **Two remaining required-check failures are not introduced by this PR — they're pre-existing on `origin/main`:**
 
 1. **`lint (tsc tools)`** — `tools/workflow-engine/auto-loop-lifetime.ts:527` + `auto-loop-lifetime.test.ts:147` fail `exactOptionalPropertyTypes` (`lastNamedDependency` assigned `undefined` instead of property-absent). Last touched by [#5812](https://github.com/Lucent-Financial-Group/Zeta/pull/5812). Same shape as [#5808](https://github.com/Lucent-Financial-Group/Zeta/pull/5808) fix-forward pattern.
-2. **`lint (backlog ID uniqueness)`** — B-0865 and B-0866 each have 2 files claiming the ID on main (operator-substantive rows + tooling-flagged `integrate-or-remove-unreferenced-*` rows; all dated 2026-05-27).
+2. **`lint (backlog ID uniqueness)`** — 081KSKBP80008QG0R003NM9XEC and 081KSKBP80008QG0R003RFX32N each have 2 files claiming the ID on main (operator-substantive rows + tooling-flagged `integrate-or-remove-unreferenced-*` rows; all dated 2026-05-27).
 
 Both block any PR from merging until fixed-forward on main. Out-of-scope for this PR (puzzle-substrate notes). Surfacing for operator visibility.
 
 ### @AceHack (2026-05-28T14:52:26Z)
 
-Filed [#5840](https://github.com/Lucent-Financial-Group/Zeta/pull/5840) fix-fwd for the `lint (tsc tools)` main-broken check (`lastNamedDependency` type fix). Once #5840 lands, #5837 will only have `lint (backlog ID uniqueness)` remaining (B-0865 + B-0866 duplicates on main; needs operator decision).
+Filed [#5840](https://github.com/Lucent-Financial-Group/Zeta/pull/5840) fix-fwd for the `lint (tsc tools)` main-broken check (`lastNamedDependency` type fix). Once #5840 lands, #5837 will only have `lint (backlog ID uniqueness)` remaining (081KSKBP80008QG0R003NM9XEC + 081KSKBP80008QG0R003RFX32N duplicates on main; needs operator decision).

@@ -30,9 +30,9 @@
 ## What — Aaron's prior-art lead (2026-06-07), captured + Beacon-anchored
 
 - **CloudEvents (CNCF v1.0)** → adopt as the **bus envelope** (`id`/`source`/`type`/`specversion`/`time`/`data` + extension attributes) over the agent-bus + Log/Delta streams. A standard, not coinage.
-- **Debezium CDC envelope** (`before/after/op/source/ts_ms`) **IS a DBSP Z-set delta**: `c`=+after, `d`=−before, `u`=−before+after, `r`=+snapshot. Our `DeltaLog`/`ZSet` deltas already are this shape — so we name the anchor rather than claim novelty. Schema-on-stream (Kafka Schema Registry) ≅ **SchemaEvolution/B-0930** over DBSP. Debezium already emits **CloudEvents** → precedent for "Z-set delta (Debezium-shaped) as the CloudEvents `data`."
+- **Debezium CDC envelope** (`before/after/op/source/ts_ms`) **IS a DBSP Z-set delta**: `c`=+after, `d`=−before, `u`=−before+after, `r`=+snapshot. Our `DeltaLog`/`ZSet` deltas already are this shape — so we name the anchor rather than claim novelty. Schema-on-stream (Kafka Schema Registry) ≅ **SchemaEvolution/081KSRGFP0008QG0R001Y6RTY9** over DBSP. Debezium already emits **CloudEvents** → precedent for "Z-set delta (Debezium-shaped) as the CloudEvents `data`."
 
-Research doc + **PRIOR-ART-LIST** entries (CloudEvents, Debezium) + adoption workitem **`081KTH0WQ3C`** (P2, composes with B-0930 + agent-bus B-0954). Docs only.
+Research doc + **PRIOR-ART-LIST** entries (CloudEvents, Debezium) + adoption workitem **`081KTH0WQ3C`** (P2, composes with 081KSRGFP0008QG0R001Y6RTY9 + agent-bus 081KSXN940008QG0R00171YAZW). Docs only.
 
 ## Sources
 - [Debezium — Exporting CloudEvents](https://debezium.io/documentation/reference/stable/integrations/cloudevents.html)

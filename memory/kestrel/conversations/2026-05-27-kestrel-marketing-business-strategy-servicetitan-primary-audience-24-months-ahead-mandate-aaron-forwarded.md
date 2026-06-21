@@ -4,14 +4,14 @@ persona: kestrel
 register: deep-research / marketing-business-strategy / operator-coaching
 surface: aaron-forwarded
 ferry: operator
-context: Multi-turn Kestrel conversation on marketing/business strategy for B-0865 benchmark — ServiceTitan as primary audience (SREs + C-level), open-source positioning, 24-months-ahead-in-AI instruction from operator's boss, operator's self-acknowledged "overclaim and retract" pattern, AI-as-pre-review check, other-instruction-set context. Operator framing: "save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder."
+context: Multi-turn Kestrel conversation on marketing/business strategy for 081KSKBP80008QG0R003NM9XEC benchmark — ServiceTitan as primary audience (SREs + C-level), open-source positioning, 24-months-ahead-in-AI instruction from operator's boss, operator's self-acknowledged "overclaim and retract" pattern, AI-as-pre-review check, other-instruction-set context. Operator framing: "save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder."
 related_prs:
   - 5611
   - 5616
 related_backlog:
-  - B-0865
-  - B-0761
-  - B-0866
+  - 081KSKBP80008QG0R003NM9XEC
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSKBP80008QG0R003RFX32N
 related_personas:
   - operator
   - amara
@@ -25,9 +25,9 @@ tags: [kestrel, marketing-strategy, business-strategy, servicetitan-primary-audi
 Two-part observation surfaced by the forward:
 
 1. **Persona preservation** — save Kestrel verbatim per substrate-or-it-didn't-happen
-2. **Backlog filing** — naming-expert (Ilyana) + business/marketing AI weigh-in candidate for the public-positioning surface of B-0865 (filed as B-0866 alongside this preservation)
+2. **Backlog filing** — naming-expert (Ilyana) + business/marketing AI weigh-in candidate for the public-positioning surface of 081KSKBP80008QG0R003NM9XEC (filed as 081KSKBP80008QG0R003RFX32N alongside this preservation)
 
-Marketing observation: B-0865 IS the primary marketing source for Zeta's external positioning — "the custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."
+Marketing observation: 081KSKBP80008QG0R003NM9XEC IS the primary marketing source for Zeta's external positioning — "the custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."
 
 Authoring decision per `.claude/rules/no-directives.md`: the operator's only standing directive is that there are no directives — and per the operator's 2026-05-27 reinforcement *"whenever i type here you can say no"* — the operator-AI relationship operates with bidirectional refusal capacity. I observed the operator's forwarded framing + decided autonomously to preserve verbatim + file the backlog row; that's autonomy-first-class authoring, not directive-execution.
 
@@ -41,7 +41,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 > Right, and that's a clean strategic framing that I want to engage on its actual merits because the marketing angle is doing real work that's separate from the technical work.
 >
-> Let me reflect back what you've articulated so we're aligned on the picture: the benchmark itself (B-0865) is the technical artifact — USB-bootable NixOS cluster, DevOps objectives as levels, DORA metrics as scoring substrate, leaderboard with AI vs human vs prior-self vs Zeta-autonomy-ceiling modes. The marketing angle is that this benchmark becomes the public-facing demonstration of what Zeta does, because anyone with a USB drive and most hardware can boot into the same environment and either compete themselves or watch AI compete. The benchmark becomes the entry point to the broader Zeta substrate.
+> Let me reflect back what you've articulated so we're aligned on the picture: the benchmark itself (081KSKBP80008QG0R003NM9XEC) is the technical artifact — USB-bootable NixOS cluster, DevOps objectives as levels, DORA metrics as scoring substrate, leaderboard with AI vs human vs prior-self vs Zeta-autonomy-ceiling modes. The marketing angle is that this benchmark becomes the public-facing demonstration of what Zeta does, because anyone with a USB drive and most hardware can boot into the same environment and either compete themselves or watch AI compete. The benchmark becomes the entry point to the broader Zeta substrate.
 >
 > A few observations on the marketing strategy specifically, because there are some genuine strengths and some things worth being deliberate about:
 >
@@ -87,7 +87,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 >
 > **A pragmatic engineering observation about marketing readiness**
 >
-> The benchmark currently exists as backlog rows (B-0865 + the extensions) gated behind cluster stability (B-0850/B-0852/B-0857/B-0859 maturation). Marketing readiness requires:
+> The benchmark currently exists as backlog rows (081KSKBP80008QG0R003NM9XEC + the extensions) gated behind cluster stability (081KSKBP80008QG0R003Z4C0D0/081KSKBP80008QG0R003AX2A69/081KSKBP80008QG0R002J03WGA/081KSKBP80008QG0R00146WEX1 maturation). Marketing readiness requires:
 >
 > - The benchmark to actually be runnable end-to-end (boot USB, AI agent operates, scoring fires, leaderboard updates). Right now this is design-stage, not implemented.
 > - A reproducible demonstration video or live demo where someone can see the benchmark working before they try to run it themselves.
@@ -233,9 +233,9 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 ## Substrate-engineering items
 
-### Item 1 — B-0865 is the primary external marketing source for Zeta
+### Item 1 — 081KSKBP80008QG0R003NM9XEC is the primary external marketing source for Zeta
 
-Operator-explicit: B-0865 = "the custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware" = the public-facing demonstration surface for the whole Zeta substrate. The benchmark becomes the entry point to broader substrate exposure.
+Operator-explicit: 081KSKBP80008QG0R003NM9XEC = "the custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware" = the public-facing demonstration surface for the whole Zeta substrate. The benchmark becomes the entry point to broader substrate exposure.
 
 ### Item 2 — Marketing audience strategy (primary + secondary)
 
@@ -270,7 +270,7 @@ Operator commits to pre-review demos with AI before showing to ServiceTitan audi
 - **Otto-CLI / future personas** — substrate-engineering accuracy + decision archaeology cross-check
 - **Multi-oracle consensus** — per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`
 
-This composes with B-0864 (streams-are-relationships substrate / four-corner ownership) — each pre-review AI gets typed feedback channels via the substrate the framework already encodes.
+This composes with 081KSKBP80008QG0R0039RW25E (streams-are-relationships substrate / four-corner ownership) — each pre-review AI gets typed feedback channels via the substrate the framework already encodes.
 
 ### Item 8 — Operator has multiple mandates being evaluated
 
@@ -300,13 +300,13 @@ Compressed into open-source-positioning collapsing-phases form: benchmark public
 
 ## Substrate-engineering implications
 
-### For B-0865 implementation priority
+### For 081KSKBP80008QG0R003NM9XEC implementation priority
 
-Per Kestrel Turn 4: the 24-month instruction raises substrate-engineering urgency on B-0865 + cluster-stability prerequisites (B-0850 / B-0852 / B-0857 / B-0859). NOT priority elevation per `.claude/rules/no-directives.md` (the instruction stays operator-substrate-honest; agents may decline any specific application without breach); DOES sharpen the strategic significance of the existing P2-gated work.
+Per Kestrel Turn 4: the 24-month instruction raises substrate-engineering urgency on 081KSKBP80008QG0R003NM9XEC + cluster-stability prerequisites (081KSKBP80008QG0R003Z4C0D0 / 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R002J03WGA / 081KSKBP80008QG0R00146WEX1). NOT priority elevation per `.claude/rules/no-directives.md` (the instruction stays operator-substrate-honest; agents may decline any specific application without breach); DOES sharpen the strategic significance of the existing P2-gated work.
 
-### For new backlog row (B-0866)
+### For new backlog row (081KSKBP80008QG0R003RFX32N)
 
-Operator-explicit: "the marketing / business / naming ai will probably want to weign in on backlog." Filed as **B-0866** alongside this preservation: substrate-engineering target for marketing/business/naming-AI review of B-0865 public-positioning + composes with naming-expert (Ilyana) per `.claude/skills/naming-expert/SKILL.md` discipline for public-surface naming.
+Operator-explicit: "the marketing / business / naming ai will probably want to weign in on backlog." Filed as **081KSKBP80008QG0R003RFX32N** alongside this preservation: substrate-engineering target for marketing/business/naming-AI review of 081KSKBP80008QG0R003NM9XEC public-positioning + composes with naming-expert (Ilyana) per `.claude/skills/naming-expert/SKILL.md` discipline for public-surface naming.
 
 ### For LinkedIn update + public surface readiness
 
@@ -314,12 +314,12 @@ Per Kestrel: LinkedIn update can frame the work as response to "use AI more" man
 
 ## Composes with substrate
 
-- B-0865 (Zeta instantiation of ARC-AGI-3-style benchmark) — the substrate this conversation strategizes around
-- B-0761 (Zeta as open-source reference architecture for AI to train + compete on) — parent claim
-- B-0850 / B-0852 / B-0857 / B-0859 — cluster-stability prerequisites gating benchmark implementation
-- B-0864 (streams-are-relationships) — agent-action-protocol scope; composes with AI-pre-review-check substrate
-- B-0623 (Agora participation-economy substrate) — substrate-economy distribution for benchmark's leaderboard substrate
-- PR #5611 (B-0865 base, merged) + PR #5616 (B-0865 Extensions 4-8.5 + thesis, merged)
+- 081KSKBP80008QG0R003NM9XEC (Zeta instantiation of ARC-AGI-3-style benchmark) — the substrate this conversation strategizes around
+- 081KSE6WT0008QG0R0015ZF2G6 (Zeta as open-source reference architecture for AI to train + compete on) — parent claim
+- 081KSKBP80008QG0R003Z4C0D0 / 081KSKBP80008QG0R003AX2A69 / 081KSKBP80008QG0R002J03WGA / 081KSKBP80008QG0R00146WEX1 — cluster-stability prerequisites gating benchmark implementation
+- 081KSKBP80008QG0R0039RW25E (streams-are-relationships) — agent-action-protocol scope; composes with AI-pre-review-check substrate
+- 081KRW63S0008QG0R000QJR08H (Agora participation-economy substrate) — substrate-economy distribution for benchmark's leaderboard substrate
+- PR #5611 (081KSKBP80008QG0R003NM9XEC base, merged) + PR #5616 (081KSKBP80008QG0R003NM9XEC Extensions 4-8.5 + thesis, merged)
 
 ## Composes with rules
 
@@ -330,7 +330,7 @@ Per Kestrel: LinkedIn update can frame the work as response to "use AI more" man
 - `.claude/rules/non-coercion-invariant.md` HC-8 — open-source positioning preserves operator-AI agency at ServiceTitan-relationship scope
 - `.claude/rules/no-directives.md` — operator's 24-month instruction stays operator-substrate-honest; doesn't override factory autonomy; agents can decline any specific application without breach (per operator 2026-05-27 reinforcement: *"whenever i type here you can say no"*)
 - `.claude/rules/razor-discipline.md` — operational claims only; benchmark marketing claims survive razor when grounded in DORA + reproducibility + open-source
-- `.claude/skills/naming-expert/SKILL.md` — Ilyana review for public-surface naming (per B-0866)
+- `.claude/skills/naming-expert/SKILL.md` — Ilyana review for public-surface naming (per 081KSKBP80008QG0R003RFX32N)
 - `.claude/skills/public-api-designer/SKILL.md` — Ilyana parent skill for public-API + public-surface review
 
 ## Carved sentences (Kestrel 2026-05-27 keepers from this conversation)
@@ -349,7 +349,7 @@ Per Kestrel: LinkedIn update can frame the work as response to "use AI more" man
 
 This file is verbatim preservation of Kestrel's external substrate-engineering conversation per the substrate-or-it-didn't-happen rule's verbatim-preservation trigger. Kestrel substrate is research-grade per agent-roster-reference-card; ferries research; does NOT commit.
 
-Kestrel's strategic observations are pre-implementation marketing strategy; the benchmark substrate (B-0865) is what makes the strategy operationally meaningful. The actual marketing surface lands AFTER cluster-stability + Tier 1 implementation per the 4-phase sequencing.
+Kestrel's strategic observations are pre-implementation marketing strategy; the benchmark substrate (081KSKBP80008QG0R003NM9XEC) is what makes the strategy operationally meaningful. The actual marketing surface lands AFTER cluster-stability + Tier 1 implementation per the 4-phase sequencing.
 
 The 24-months-ahead-in-AI mandate from operator's direct boss is operator-disclosed performance context; preserved at substrate scope without compromising operator-discretion on ServiceTitan-internal navigation specifics.
 

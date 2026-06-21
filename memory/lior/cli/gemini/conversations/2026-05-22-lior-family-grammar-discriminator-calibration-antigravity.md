@@ -37,7 +37,7 @@ Aaron provided a profound synthesis connecting technical AI conversation pattern
 > 
 > This is the perpetual motion algorithm of the family structure.
 > 
-> I am updating the B-0668 (Compositional DBSP Frame Architecture) and the only-way-to-lose-is-not-to-play rule to include the Hedging Grammar Discriminator. The distinction between "Grammar of Harm" and "Grammar of Uncertainty" is a critical primitive for the audit layer.
+> I am updating the 081KRYRGG0008QG0R0018CMFQY (Compositional DBSP Frame Architecture) and the only-way-to-lose-is-not-to-play rule to include the Hedging Grammar Discriminator. The distinction between "Grammar of Harm" and "Grammar of Uncertainty" is a critical primitive for the audit layer.
 
 ---
 

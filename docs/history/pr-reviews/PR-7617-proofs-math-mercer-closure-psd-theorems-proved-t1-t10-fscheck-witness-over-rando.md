@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: 'focus more on the math.' B-0204's slogan made literal: complete elementary proofs that every LinguisticSeed-expressible kernel is PSD (docs/proofs/) — including the Schur product theorem itself and Schoenberg's RBF argument from parts; the main theorem is structural induction the module boundary makes inescapable. T10 proves the conformal identity exactly. FsCheck witness suite generates random closure expression trees (ragged dot included — min-truncation would fail it) + non-vacuity guard; 7/7 green. Proof = the doc; tests = regression CHECK (Math Razor discipline).
+Aaron: 'focus more on the math.' 081KQTPYE0008QG0R0028V263Z's slogan made literal: complete elementary proofs that every LinguisticSeed-expressible kernel is PSD (docs/proofs/) — including the Schur product theorem itself and Schoenberg's RBF argument from parts; the main theorem is structural induction the module boundary makes inescapable. T10 proves the conformal identity exactly. FsCheck witness suite generates random closure expression trees (ragged dot included — min-truncation would fail it) + non-vacuity guard; 7/7 green. Proof = the doc; tests = regression CHECK (Math Razor discipline).
 
 ## Outcome
 

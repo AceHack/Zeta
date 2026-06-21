@@ -1,9 +1,8 @@
 ---
-id: B-0029.5
-zetaid: 081KR50HA0008QG0R002812VHQ
+id: 081KR50HA0008QG0R002812VHQ
 priority: P2
 status: open
-title: "B-0029.5 — Survey: substrate-as-SaaS market validation (hosted factory-discipline tooling opportunity)"
+title: "081KR50HA0008QG0R002812VHQ — Survey: substrate-as-SaaS market validation (hosted factory-discipline tooling opportunity)"
 created: 2026-05-09
 last_updated: 2026-05-09
 parent: 081KQ3HBZ0008QG0R000JRZAMM
@@ -14,13 +13,13 @@ effort: S
 decomposition: atomic
 ---
 
-# B-0029.5 — Substrate-as-SaaS market validation
+# 081KR50HA0008QG0R002812VHQ — Substrate-as-SaaS market validation
 
-**Slice of:** [B-0029](B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md)
+**Slice of:** [081KQ3HBZ0008QG0R000JRZAMM](081KQ3HBZ0008QG0R000JRZAMM-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md)
 
 ## What
 
-Produce a research doc at `docs/research/B-0029.5-substrate-saas-market-validation.md` that answers:
+Produce a research doc at `docs/research/081KR50HA0008QG0R002812VHQ-substrate-saas-market-validation.md` that answers:
 
 1. Is there a paying market for hosted versions of Zeta's factory-discipline tooling?
 2. What comparable hosted AI-factory / agent-loop / formal-verification services exist and at what price points?
@@ -35,7 +34,7 @@ The goal is a "viable vs not viable vs too early" verdict with supporting eviden
 
 ## Acceptance criteria
 
-- [ ] `docs/research/B-0029.5-substrate-saas-market-validation.md` committed
+- [ ] `docs/research/081KR50HA0008QG0R002812VHQ-substrate-saas-market-validation.md` committed
 - [ ] At least 3 comparable hosted services analyzed (pricing + target market + differentiation)
 - [ ] Zeta-specific tools ranked by external-value potential with brief reasoning
 - [ ] "Viable / Not viable / Too early" verdict for each candidate tool surface
@@ -44,8 +43,8 @@ The goal is a "viable vs not viable vs too early" verdict with supporting eviden
 ## Out of scope
 
 - Does NOT build any SaaS infrastructure
-- Does NOT evaluate open-source funding (B-0029.1/B-0029.2)
-- Does NOT evaluate grants (B-0029.3) or trading (B-0029.4)
+- Does NOT evaluate open-source funding (081KR50HA0008QG0R002K2G8B0/081KR50HA0008QG0R0027AAPTZ)
+- Does NOT evaluate grants (081KR50HA0008QG0R001D8Q8X1) or trading (081KR50HA0008QG0R003TDENRZ)
 
 ## Research surfaces
 

@@ -308,7 +308,7 @@ function pickModel(_mode: Mode): string {
   // code/git work; Ani's persona wrapper (ani.ts) overrides to grok-4.3.
   //
   // History: cursor-agent's Grok lineup shifted 2026-05-13 — the old
-  // `grok-4-20-thinking` / `grok-4-20` names were dropped (B-0421, PR #2949),
+  // `grok-4-20-thinking` / `grok-4-20` names were dropped (081KRA5AR0008QG0R0011ZGRZT, PR #2949),
   // moved to grok-4.3; 2026-05-31 the generic default moves again to
   // grok-build-0.1 (in cursor-agent's available-models list). Both modes route
   // to the same identifier.
@@ -362,7 +362,7 @@ export function main(argv: readonly string[]): number {
   // cursor-agent invocation: capture stdout + stderr so we can tee
   // stdout to file, emit OUTPUT-FILE marker, AND write a self-
   // documenting failure marker (including stderr) to the output
-  // file when cursor-agent exits non-zero with empty stdout (B-0421).
+  // file when cursor-agent exits non-zero with empty stdout (081KRA5AR0008QG0R0011ZGRZT).
   // The user's prompt is one fixed argument after `--`; cursor-agent
   // does its own argument parsing.
   const result = spawnSync(
@@ -436,7 +436,7 @@ export function main(argv: readonly string[]): number {
     // (per Copilot #2949 round-1).
     if (parsed.outputFormat === "json") {
       const obj = {
-        error: "cursor-agent failure (B-0421 self-documenting marker)",
+        error: "cursor-agent failure (081KRA5AR0008QG0R0011ZGRZT self-documenting marker)",
         exitCode: exitCodeDisplay,
         model,
         promptBytes,
@@ -448,7 +448,7 @@ export function main(argv: readonly string[]): number {
     } else if (parsed.outputFormat === "stream-json") {
       const obj = {
         type: "error",
-        message: "cursor-agent failure (B-0421 self-documenting marker)",
+        message: "cursor-agent failure (081KRA5AR0008QG0R0011ZGRZT self-documenting marker)",
         exitCode: exitCodeDisplay,
         model,
         promptBytes,
@@ -460,7 +460,7 @@ export function main(argv: readonly string[]): number {
     } else {
       // text → Markdown marker for human consumption
       const failureMarker =
-        `# cursor-agent failure (B-0421 self-documenting marker)\n` +
+        `# cursor-agent failure (081KRA5AR0008QG0R0011ZGRZT self-documenting marker)\n` +
         `\n` +
         `Exit code: ${exitCodeDisplay}\n` +
         `Model: ${model}\n` +
@@ -498,7 +498,7 @@ export function main(argv: readonly string[]): number {
     process.stderr.write(`cursor-agent exited with code ${exitCodeDisplay}\n`);
     if (isFailureCase) {
       process.stderr.write(
-        `cursor-agent produced empty stdout; B-0421 failure marker written to ${outputFile}\n`,
+        `cursor-agent produced empty stdout; 081KRA5AR0008QG0R0011ZGRZT failure marker written to ${outputFile}\n`,
       );
     }
     return 2;

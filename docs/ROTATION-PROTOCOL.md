@@ -135,7 +135,7 @@ This protocol is the M1 milestone's operational substrate:
 > Prove that three background agents (different models/harnesses)
 > can coordinate for 6 months using only remote git + PR/issue
 > surface, while producing measurable improvement on the
-> six-axis instrumentation surface defined in B-0205.
+> six-axis instrumentation surface defined in 081KQTPYE0008QG0R000ZJ2GW8.
 
 The rotation protocol ensures that if one node fails, the
 system self-heals within one tick cycle (60 seconds). The hot
@@ -159,7 +159,7 @@ where to add nodes.
 - `docs/AGENT-CLAIM-PROTOCOL.md` — work coordination
 - `docs/LOCAL-BROADCAST-PEERING.md` — the broadcast bus protocol
 - `~/.local/share/zeta-broadcasts/` — the broadcast directory
-- B-0208 (launchd forward-tick reliability)
-- B-0209 (remote-only background agent test matrix)
-- B-0211 (fractal BFT architecture)
-- B-0238 (harness parity audit)
+- 081KQX9B50008QG0R0027EN1ZP (launchd forward-tick reliability)
+- 081KQX9B50008QG0R001MNYK61 (remote-only background agent test matrix)
+- 081KQX9B50008QG0R0026BG44J (fractal BFT architecture)
+- 081KQX9B50008QG0R002V5ATNP (harness parity audit)

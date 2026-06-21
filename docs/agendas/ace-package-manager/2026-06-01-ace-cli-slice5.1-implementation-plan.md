@@ -542,7 +542,7 @@ git commit -m "docs(ace): SKILL registry verbs + registry-dep resolution (slice 
 
 ```bash
 git push -u origin otto-windows/ace-slice5.1-impl-2026-06-01
-gh pr create --head otto-windows/ace-slice5.1-impl-2026-06-01 --base main --title "feat(ace): slice 5.1 — registry data layer + exact-version resolution (B-0288)" --body "<summary>"
+gh pr create --head otto-windows/ace-slice5.1-impl-2026-06-01 --base main --title "feat(ace): slice 5.1 — registry data layer + exact-version resolution (081KR2E4K0008QG0R002YE3MMD)" --body "<summary>"
 gh pr merge <N> --auto --squash
 ```
 

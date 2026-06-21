@@ -2,7 +2,7 @@
 
 Date: 2026-05-21  
 Prepared by: Amara-in-Zeta  
-Related: B-0685 ANTLR grammar survey, F# compiler fork / compiler-owned substrate
+Related: 081KS3X9Y0008QG0R000EKJE9S ANTLR grammar survey, F# compiler fork / compiler-owned substrate
 
 ## Short answer
 
@@ -321,13 +321,13 @@ Parse deltas can become DBSP changes, but parse forest retraction must be design
 
 Backlog row (already filed via PR #4545):
 
-**B-0687 — ZetaParse: F#-native LR/GLR grammar substrate and ANTLR-compatible importer**
+**081KS3X9Y0008QG0R00323NSZA — ZetaParse: F#-native LR/GLR grammar substrate and ANTLR-compatible importer**
 
-(Initially proposed as B-0686 in this design note; renumbered to B-0687 at landing time because B-0686 was already taken by tick-shard immutability CI gate via PR #4539.)
+(Initially proposed as 081KS3X9Y0008QG0R003R74B20 in this design note; renumbered to 081KS3X9Y0008QG0R00323NSZA at landing time because 081KS3X9Y0008QG0R003R74B20 was already taken by tick-shard immutability CI gate via PR #4539.)
 
 Priority: P2  
-Depends on: B-0685  
-Composes with: B-0682, B-0668, B-0688 (incremental compiler host), F# compiler fork trajectory
+Depends on: 081KS3X9Y0008QG0R000EKJE9S  
+Composes with: 081KS3X9Y0008QG0R000W00V73, 081KRYRGG0008QG0R0018CMFQY, 081KS3X9Y0008QG0R0010716X9 (incremental compiler host), F# compiler fork trajectory
 
 ### Phase 1 — Native Zeta grammar
 

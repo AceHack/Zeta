@@ -448,7 +448,7 @@ describe("mutate — snapshot pair invariant", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Drain log auto-write (B-0322)
+// Drain log auto-write (081KR2E4K0008QG0R002N1C3YJ)
 // ---------------------------------------------------------------------------
 
 describe("mutate — drain log auto-write", () => {

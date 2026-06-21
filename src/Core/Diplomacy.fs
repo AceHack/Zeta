@@ -2,7 +2,7 @@ namespace Zeta.Core
 
 /// **Diplomacy — the polymorphic-diplomacy handshake over yin-yang cells (Aaron's 2026-06-05 ask).**
 /// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge; the Eve / multi-traveler protocol,
-/// B-1003, NCI-governed.)
+/// 081KT2T2J0008QG0R00301P27H, NCI-governed.)
 ///
 /// "How agents describe, interrogate, and decide on the shape of each other." An agent IS a
 /// [[YinYang]] cell: yin (`Remains`, its static identity) + yang (`Acts`, its live behaviour). The

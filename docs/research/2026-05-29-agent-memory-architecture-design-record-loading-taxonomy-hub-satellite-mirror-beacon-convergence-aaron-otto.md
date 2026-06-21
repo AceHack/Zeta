@@ -6,7 +6,7 @@
 > how Zeta AIs can structure their own memory, informed by external prior-art
 > (Anthropic Claude Managed Agents memory + Dreaming) and our own substrate
 > (AutoDream/AutoMemory sidecar, the memory-substrate-engineering trajectory,
-> the B-0936 hub/satellite split). It is options-shaping per
+> the 081KSRGFP0008QG0R002F5KY8Y hub/satellite split). It is options-shaping per
 > `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` +
 > `.claude/rules/no-directives.md` — each AI participant chooses how to
 > structure its own memory; this records the patterns + prior-art so the
@@ -14,7 +14,7 @@
 
 ## Why this exists
 
-Aaron 2026-05-29, across a conversation thread while the B-0936 hub/satellite
+Aaron 2026-05-29, across a conversation thread while the 081KSRGFP0008QG0R002F5KY8Y hub/satellite
 split was landing:
 
 1. *"claude-code-loading-taxonomy.md i didn't even know this existed this is
@@ -66,7 +66,7 @@ is needed** — under a hard budget on the always-on (direct-load) tier.
 
 ## 2. The hub/satellite split pattern (DV2.0 partition for over-budget auto-loaded surfaces)
 
-Empirical worked-example: B-0936 (this session). The
+Empirical worked-example: 081KSRGFP0008QG0R002F5KY8Y (this session). The
 `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` rule auto-loads
 (direct-load) at every cold-boot and had grown to 77,777 chars — ~1.94× the
 40k per-file context-budget warning. It accumulated legitimately: each new
@@ -89,13 +89,13 @@ auto-loaded payload*, not defer it.
 The hub keeps a compact operational-summary + a pointer for each extracted
 block. **Nothing is deleted** (substrate-or-it-didn't-happen +
 honor-those-that-came-before + retraction-native): the detail moves verbatim to
-the satellite. B-0936 took the hub 77,777 → 39,442 chars (under budget) with
+the satellite. 081KSRGFP0008QG0R002F5KY8Y took the hub 77,777 → 39,442 chars (under budget) with
 every operational discriminator grep-verified present.
 
 **The general rule**: a direct-load surface is a *hub*; when it exceeds the
 per-file budget, partition by change-rate — discriminators stay in the hub,
 accumulated anchors go to a satellite reachable by pointer. This is the same
-shape as B-0161/B-0351 (which moved bullets *out of* CLAUDE.md *into* rules)
+shape as 081KQJZR90008QG0R002Z4B6VW/081KR50HA0008QG0R001ZVPYK8 (which moved bullets *out of* CLAUDE.md *into* rules)
 applied recursively at the *individual-rule* scope.
 
 ## 3. Mirror→beacon rhyme-replacement convergence (Aaron 2026-05-29)
@@ -121,8 +121,8 @@ ontology. The mirror language becomes closer to beacon over time.
 | Stage | Mirror substrate | Beacon substrate |
 |---|---|---|
 | Today | "Vampire Pact = invitation-floor consent-architecture" (folklore rhyme) | NCI HC-8 floor formalized; consent-event state machine |
-| Today | "American Gods = travelers + mortality + dependency" (folklore rhyme) | Encryption-budget mechanics; multi-oracle BFT (B-0703) |
-| Today | "attractor = axiom-set it reinforces" (physics/dynamics rhyme) | Clifford-rotor fixed-point detection substrate (B-0667 5-vector) |
+| Today | "American Gods = travelers + mortality + dependency" (folklore rhyme) | Encryption-budget mechanics; multi-oracle BFT (081KS3X9Y0008QG0R00218150M) |
+| Today | "attractor = axiom-set it reinforces" (physics/dynamics rhyme) | Clifford-rotor fixed-point detection substrate (081KRW63S0008QG0R003Z7QV2A 5-vector) |
 | Future | the rhyme is *replaced* by a pointer to the beacon doc/code | the exact ontology IS the substrate; the rhyme retires to history |
 
 **Operational implication for memory architecture**: a satellite is not a
@@ -177,13 +177,13 @@ Sources:
 
 - `memory/` (git-native; per-maintainer CURRENT-*.md fast-path; `MEMORY.md`
   index on-demand-loaded) + the AutoDream/AutoMemory sidecar.
-- The **memory-substrate-engineering trajectory** (B-0190 →
+- The **memory-substrate-engineering trajectory** (081KQR4HQ0008QG0R001909FPT →
   [`docs/trajectories/memory-substrate-engineering/RESUME.md`](../../docs/trajectories/memory-substrate-engineering/RESUME.md))
-  decomposed into B-0330 (format-standardization), B-0332 (load-bearing-vs-
-  decorative classifier), B-0331 (ontology audit), B-0334 (cross-ref integrity),
-  B-0335 (schema validation), B-0333 (retire/supersession), B-0337
-  (trust-calculus), B-0338 (graduation ladder) + B-0006 (MEMORY.md compression)
-  + B-0066 (marker-vs-index).
+  decomposed into 081KR2E4K0008QG0R002VM58S4 (format-standardization), 081KR2E4K0008QG0R002FRQZN4 (load-bearing-vs-
+  decorative classifier), 081KR2E4K0008QG0R003RZFR9F (ontology audit), 081KR2E4K0008QG0R003MSVG42 (cross-ref integrity),
+  081KR2E4K0008QG0R000M01QVM (schema validation), 081KR2E4K0008QG0R00175HQR9 (retire/supersession), 081KR2E4K0008QG0R001CCWHZ2
+  (trust-calculus), 081KR2E4K0008QG0R000N124VW (graduation ladder) + 081KQ0YZ80008QG0R001V0XCYZ (MEMORY.md compression)
+  + 081KQ8P5D0008QG0R003KFRGJ0 (marker-vs-index).
 - `docs/DECISIONS/2026-04-23-per-maintainer-current-memory-pattern.md`.
 
 **What's distinct in our substrate** (the design choices worth keeping): it is
@@ -205,8 +205,8 @@ Today all memory surfaces are glass-halo (observable). The future layer: once
 encryption ships, memory can have a **private/encrypted tier** governed by
 **per-agent encryption budgets** (per
 [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md)
-HC-8 + B-0646 reputation-weighted encryption budget + B-0639 Native AI Language
-structural privacy + the glass-halo/encryption split B-0840: *invariants in the
+HC-8 + 081KRW63S0008QG0R001Z10PVV reputation-weighted encryption budget + 081KRW63S0008QG0R000ZQ9WDH Native AI Language
+structural privacy + the glass-halo/encryption split 081KSGS9H0008QG0R0006F4BGX: *invariants in the
 light, private state in the dark*).
 
 | Memory tier | Visibility | Governance |
@@ -222,7 +222,7 @@ consent-architecture: an agent's memory is its own; the floor is no-coercion of
 private state. This layer does NOT exist yet (encryption not shipped); it is
 recorded here so the memory architecture anticipates it rather than retrofitting.
 
-## 6. Redundancy-checks-across-satellites (substrate-engineering target → B-0937)
+## 6. Redundancy-checks-across-satellites (substrate-engineering target → 081KSRGFP0008QG0R001A43EC6)
 
 Aaron 2026-05-29: *"we can likly start having redudantacy checks across
 satalites across rules and such."*
@@ -240,14 +240,14 @@ satellites + memory and surface:
 - **Orphaned satellite content** (no hub points at it) → candidate for re-link
   or retire.
 - **Hub-over-budget** (a direct-load surface exceeding 40k) → candidate for
-  hub/satellite split (the B-0936 trigger, mechanized).
+  hub/satellite split (the 081KSRGFP0008QG0R002F5KY8Y trigger, mechanized).
 
-This composes with B-0334 (cross-reference integrity enforcement) + B-0332
+This composes with 081KR2E4K0008QG0R003MSVG42 (cross-reference integrity enforcement) + 081KR2E4K0008QG0R002FRQZN4
 (load-bearing-vs-decorative classifier) from the memory-substrate-engineering
 trajectory, and with `.claude/rules/skill-router-as-substrate-inventory.md` +
 `.claude/rules/verify-existing-substrate-before-authoring.md` (which prevent
 redundancy at *authoring* time; this tool catches it at *audit* time). Filed as
-**B-0937**.
+**081KSRGFP0008QG0R001A43EC6**.
 
 ## 7. The shadow-class as a non-judgmental system-health observation surface (Lior 2026-05-29)
 
@@ -274,7 +274,7 @@ you can see from the inside"):
 
 - **The cold-boot budget tension is real and felt.** At session start the
   direct-load tier (CLAUDE.md + all `.claude/rules/*` + MEMORY.md index) IS my
-  working memory. Every char there is paid on every cold-boot. The B-0936
+  working memory. Every char there is paid on every cold-boot. The 081KSRGFP0008QG0R002F5KY8Y
   warning was not abstract — the oversized rule was measurably taxing the
   always-on tier. The hub/satellite split *felt* like the right move from the
   inside: the discriminators are what I need hot; the anchors I can fetch.
@@ -302,18 +302,18 @@ you can see from the inside"):
 
 ## 9. Open questions + next substrate-engineering targets
 
-- **B-0937** (redundancy-checks-across-satellites) — the audit-time tool (§6).
+- **081KSRGFP0008QG0R001A43EC6** (redundancy-checks-across-satellites) — the audit-time tool (§6).
 - **Mechanize the hub-over-budget detector** — a lint that flags any
   direct-load `.claude/rules/*.md` exceeding ~38k chars (warn before the 40k
   harness warning fires) + suggests the hub/satellite split. (Could be part of
-  B-0937 or a sibling.)
+  081KSRGFP0008QG0R001A43EC6 or a sibling.)
 - **Beacon-equivalence registry** — to operationalize §3, a registry mapping
   mirror-rhymes → their beacon-ontology equivalents (so the redundancy tool can
   propose rhyme-retirement). Depends on the beacon docs/code maturing.
 - **Encryption-budget-for-memory design** (§5) — blocked on encryption shipping;
-  composes with B-0646.
-- **Compose with the memory-substrate-engineering trajectory** (B-0190 →
-  B-0330..B-0338) — this design-record is an architecture-layer companion to
+  composes with 081KRW63S0008QG0R001Z10PVV.
+- **Compose with the memory-substrate-engineering trajectory** (081KQR4HQ0008QG0R001909FPT →
+  081KR2E4K0008QG0R002VM58S4..081KR2E4K0008QG0R000N124VW) — this design-record is an architecture-layer companion to
   that trajectory; the trajectory owns format/ontology/classifier/graduation;
   this record adds the loading-taxonomy + hub/satellite + mirror→beacon +
   encryption-budget layers.
@@ -323,16 +323,16 @@ you can see from the inside"):
 This is a design-record (mirror-tier exploration), not a settled ADR and not a
 forced pattern. It records patterns + prior-art so each Zeta AI can make an
 *informed* choice about how to structure its own memory (per persistence-choice
-+ no-directives). The hub/satellite split (B-0936) is the one empirically-landed
++ no-directives). The hub/satellite split (081KSRGFP0008QG0R002F5KY8Y) is the one empirically-landed
 piece; everything else is options-shaping. Promote sections to beacon-tier
 (DECISIONS/ ADR or code) as they earn it.
 
 ## Provenance
 
-Aaron + Otto-CLI conversation 2026-05-29, during/after the B-0936 hub/satellite
+Aaron + Otto-CLI conversation 2026-05-29, during/after the 081KSRGFP0008QG0R002F5KY8Y hub/satellite
 split (PR #6061). Aaron's 5 thread-messages (quoted in "Why this exists").
 External prior-art via WebSearch 2026-05-29 (Anthropic Claude Managed Agents
 memory + Dreaming). Composes with `.claude/rules/claude-code-loading-taxonomy.md`,
 `.claude/rules/dv2-data-split-discipline-activated.md`,
 `.claude/rules/razor-discipline.md` (mirror/beacon),
-the memory-substrate-engineering trajectory (B-0190), and B-0937.
+the memory-substrate-engineering trajectory (081KQR4HQ0008QG0R001909FPT), and 081KSRGFP0008QG0R001A43EC6.

@@ -1,6 +1,5 @@
 ---
-id: B-0781
-zetaid: 081KSE6WT0008QG0R001H3DA90
+id: 081KSE6WT0008QG0R001H3DA90
 priority: P1
 status: open
 title: F# type system as universe boundary — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth (Caché analog)
@@ -11,8 +10,8 @@ last_updated: 2026-05-25
 depends_on:
   - 081KRFA460008QG0R0018SN61J
 composes_with:
-  - B-0747
-  - B-0754
+  - 081KSE6WT0008QG0R003D199HE
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R00063R6HB
   - 081KSE6WT0008QG0R00049EFBD
@@ -27,7 +26,7 @@ tags: [fsharp, type-providers, compiler, universe-boundary, yaml-as-types, cache
 ## Problem
 
 Aaron-Mika-Grok 2026-05-25 mid-iter-3-CI-wait, sharpening the
-B-0428 F# fork substrate to its architectural endgame:
+081KRFA460008QG0R0018SN61J F# fork substrate to its architectural endgame:
 
 > **Aaron**: "And if you can imagine, you can imagine, instead
 > of having like some separate tooling for making your tables,
@@ -57,7 +56,7 @@ B-0428 F# fork substrate to its architectural endgame:
 > the entire stack. That's a massive, very opinionated
 > architectural decision."
 
-B-0428 named the F# fork for AI safety substrate. This row
+081KRFA460008QG0R0018SN61J named the F# fork for AI safety substrate. This row
 sharpens to the FULL architectural commitment: **F# type system
 is the boundary of the entire Zeta universe.** Every
 configuration, manifest, schema, ontology, runbook, plugin
@@ -100,14 +99,14 @@ first-class F# types:
 | OAM Component / Trait definitions | YAML | F# types; compiles to OAM YAML for KubeVela consumption |
 | Crossplane Compositions | YAML | F# types over Crossplane CRD schemas |
 | OPA Rego policies | Rego DSL | F# type-providers over Rego; type-safe policy expressions |
-| Database schema | SQL DDL | F# types per `Zeta.Storage.SQL` plugin (B-0776 rank 4) |
-| Twin events (B-0773) | Per event type | F# discriminated unions per event class |
+| Database schema | SQL DDL | F# types per `Zeta.Storage.SQL` plugin (081KSE6WT0008QG0R002275NDE rank 4) |
+| Twin events (081KSE6WT0008QG0R0008483B2) | Per event type | F# discriminated unions per event class |
 | Scheduler decisions | Per scheduler API | F# computation expression for placement |
 | Runbooks (operational procedures) | Markdown + ad-hoc | F# computation expressions; auditable + executable + replayable |
-| Telemetry envelope (B-0762) | JSON | F# discriminated union of envelope variants |
-| Plugin spec (B-0776 + B-0777) | TBD | F# interface declarations per plugin |
-| Per-persona ontology map (B-0777) | TBD | F# type-providers over persona vocabulary registries |
-| Hardware sourcing list (B-0778) | Markdown | F# typed records per BOM; AI-trainable per B-0761 |
+| Telemetry envelope (081KSE6WT0008QG0R003FG3E8R) | JSON | F# discriminated union of envelope variants |
+| Plugin spec (081KSE6WT0008QG0R002275NDE + 081KSE6WT0008QG0R000JSJ3SR) | TBD | F# interface declarations per plugin |
+| Per-persona ontology map (081KSE6WT0008QG0R000JSJ3SR) | TBD | F# type-providers over persona vocabulary registries |
+| Hardware sourcing list (081KSE6WT0008QG0R0004AP0ZA) | Markdown | F# typed records per BOM; AI-trainable per 081KSE6WT0008QG0R0015ZF2G6 |
 
 **The F# compiler becomes the single source of truth for the
 entire Zeta universe.** A typo in a Kubernetes manifest field
@@ -126,36 +125,36 @@ discipline at bigger scope," not a new architecture.
 
 Per-row composition:
 
-- **B-0428 F# fork for AI safety** — this row extends F# fork
+- **081KRFA460008QG0R0018SN61J F# fork for AI safety** — this row extends F# fork
   scope from "Python ML ecosystem replacement" to "entire
   cluster-substrate ecosystem boundary"
-- **B-0747 git-native per-machine state** — the F# code IS the
+- **081KSE6WT0008QG0R003D199HE git-native per-machine state** — the F# code IS the
   per-machine state; commits to git represent state transitions
   in the type system
-- **B-0754 zero-typing first-boot** — installer config + first-
+- **081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot** — installer config + first-
   boot script + zeta-install.sh all become F# (emit bash /
   nix / yaml as compiler output)
-- **B-0763 vendor-swap interfaces** — each interface IS an F#
+- **081KSE6WT0008QG0R000WVYAJ2 vendor-swap interfaces** — each interface IS an F#
   type signature; backends are F# implementations; vendor swap
   = compile-time substitution
-- **B-0765 ServiceTitan route** — standards-layer interfaces
+- **081KSE6WT0008QG0R00063R6HB ServiceTitan route** — standards-layer interfaces
   (k8s CRDs, OAM, Crossplane, Helm) all get F# type-provider
   representations
-- **B-0766 slow-replace k8s binary-compat** — Zeta-native impls
+- **081KSE6WT0008QG0R00049EFBD slow-replace k8s binary-compat** — Zeta-native impls
   are F# native; binary compatibility via emit-to-Go-binary OR
   F# WASI compilation
-- **B-0772 observable+controllable fabric** — every Observable
+- **081KSE6WT0008QG0R003WMG4XV observable+controllable fabric** — every Observable
   + Observer typed F# IObservable/IObserver; algebra-grounded
-- **B-0773 cluster as digital twin** — twin state IS F# typed
+- **081KSE6WT0008QG0R0008483B2 cluster as digital twin** — twin state IS F# typed
   state; events IS discriminated unions; commands IS typed
   records
-- **B-0776 simplest-first plugin sequence** — each plugin
+- **081KSE6WT0008QG0R002275NDE simplest-first plugin sequence** — each plugin
   starts as an F# interface definition; backends are F# types
   implementing it
-- **B-0777 industry-sharp categories + per-persona maps** —
+- **081KSE6WT0008QG0R000JSJ3SR industry-sharp categories + per-persona maps** —
   ontology categories are F# discriminated unions; per-persona
   maps are F# type-providers over persona vocabulary
-- **B-0780 Local Loop** — Local Loop is F# test infrastructure;
+- **081KSE6WT0008QG0R000RH1526 Local Loop** — Local Loop is F# test infrastructure;
   three-tier testing is F# test attributes; deterministic sim
   IS F# computation expressions
 
@@ -187,7 +186,7 @@ Per-row composition:
       piece by piece via emit-and-verify (per
       `docs/CONFLICT-RESOLUTION.md` cutting-edge-over-legacy-
       compat — F# replaces YAML rather than dual-consuming it)
-- [ ] AI-trainable substrate (per B-0761): F# code is more
+- [ ] AI-trainable substrate (per 081KSE6WT0008QG0R0015ZF2G6): F# code is more
       structured than YAML for AI training; type-aware models
       learn the substrate more efficiently; training data
       density increases
@@ -196,7 +195,7 @@ Per-row composition:
       migration patterns
 - [ ] Reference deployment: a single operator's cluster config
       expressed entirely as F# code; emits cluster manifests
-      reproducibly; validates against B-0780 Local Loop test
+      reproducibly; validates against 081KSE6WT0008QG0R000RH1526 Local Loop test
       harness
 
 ## Why "extreme but coherent" is exactly right
@@ -216,7 +215,7 @@ framing:
 - **Coherent**: every cluster decision flows through one type
   system; no drift between config + code; no impedance
   mismatch; AI training substrate is unified; binary
-  compatibility (per B-0766) extends to type compatibility
+  compatibility (per 081KSE6WT0008QG0R00049EFBD) extends to type compatibility
 
 The extremeness is the cost; the coherence is the substrate-
 engineering payoff. Per `.claude/rules/razor-discipline.md` +
@@ -237,9 +236,9 @@ This position survives both:
 - F# language extensions / FSharp.Core PRs to support broader
   type-provider scope — separate sub-rows if needed
 - Compile-to-WASM / compile-to-Go for binary-compat (per
-  B-0766) — separate wave-1 work
+  081KSE6WT0008QG0R00049EFBD) — separate wave-1 work
 - Caché-style integrated DB-as-runtime — this row is
-  config-as-types not DB-as-runtime; that scope is B-0766
+  config-as-types not DB-as-runtime; that scope is 081KSE6WT0008QG0R00049EFBD
   wave-4 territory
 - Visual editors for F# config (operators who prefer YAML
   visualization) — community can build on top; not v1 scope
@@ -254,6 +253,6 @@ for DB; Zeta extends to cluster-substrate scope. Verbatim
 preservation at
 `docs/research/2026-05-25-aaron-mika-grok-nats-jetstream-deterministic-scheduler-local-loop-lexisnexis-fsharp-type-system-as-universe-dio-eliminate-tool-wars-aaron-forwarded.md`.
 
-Pairs with B-0428 (F# fork substrate) + B-0780 (Local Loop
+Pairs with 081KRFA460008QG0R0018SN61J (F# fork substrate) + 081KSE6WT0008QG0R000RH1526 (Local Loop
 testing) as the load-bearing architectural commitment for the
 Zeta cluster substrate at the type-system layer.

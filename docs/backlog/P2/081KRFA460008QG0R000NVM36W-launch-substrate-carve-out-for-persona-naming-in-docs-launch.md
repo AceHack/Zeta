@@ -1,6 +1,5 @@
 ---
-id: B-0443
-zetaid: 081KRFA460008QG0R000NVM36W
+id: 081KRFA460008QG0R000NVM36W
 priority: P2
 status: closed
 title: "Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern"
@@ -107,7 +106,7 @@ line):
 - PR #3001 (image brief — recurring trigger)
 - PR #2980 (the launch thread already operating with persona
   naming throughout)
-- B-0429 (end-user persona mapping — composes; both at
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping — composes; both at
   persona-naming policy scope)
 
 ## Pre-start checklist (per backlog-item-start-gate)

@@ -2,35 +2,35 @@ namespace Zeta.Core
 
 /// # The hex core — the seed
 ///
-/// The seed core (B-0998) is bounded by **six reservoir walls** (B-0985):
+/// The seed core (081KT2T2J0008QG0R003VK5GRX) is bounded by **six reservoir walls** (081KT2T2J0008QG0R0026MS6PV):
 /// the *hexagonal-six*. Each wall is a two-word primitive pair; together
 /// the 12 words are the 12 edges of the Cube-of-Space hexahedron and the
 /// 6 walls are its 6 faces.
 ///
 /// This module lands the **most-inevitable-first** slice of the seed
-/// (B-0998 — *"build up nouns from the most inevitable first … vectors
+/// (081KT2T2J0008QG0R003VK5GRX — *"build up nouns from the most inevitable first … vectors
 /// before trajectories"*): the six-wall enumeration (`Wall`) and the
 /// atomic noun (`Vector`), built directly on the existing Cayley–Dickson
 /// algebra (`Complex`) rather than re-implementing it. Later slices add
 /// the seed computation-expression DSL over a reduced Bayesian model and
 /// the `Trajectory` (a derived sequence of vectors).
 ///
-/// ## Attribution (named attribution lives on B-0985, the history surface)
+/// ## Attribution (named attribution lives on 081KT2T2J0008QG0R0026MS6PV, the history surface)
 ///
 ///   - **Remember When** + **Pay Attention** — the seed pair
 ///   - **Which Way** + **How Much** — the vector pair (direction + magnitude)
 ///   - **Rainbow Table**, **Observe Emit** — the remaining two walls
 ///
-/// ## Core math (B-0999, held don't-collapse)
+/// ## Core math (081KT2T2J0008QG0R0019YVX8M, held don't-collapse)
 ///
 /// The 6 walls rhyme with the **6 bivectors of spacetime algebra
 /// Cl(1,3) = the 6 Lorentz generators (3 rotations + 3 boosts)** / the
 /// SE(3) 6-DOF / the cube's 6 faces / Cayley–Dickson. The cross-domain
-/// rhymes are refereed *adapters on this core interface* (B-0999), not a
+/// rhymes are refereed *adapters on this core interface* (081KT2T2J0008QG0R0019YVX8M), not a
 /// totalizing claim — the structural "6" is the through-line, the
 /// per-domain conformance stays a hypothesis to referee.
 
-/// The six reservoir walls (B-0985) — the hex core enumeration. The seed
+/// The six reservoir walls (081KT2T2J0008QG0R0026MS6PV) — the hex core enumeration. The seed
 /// computation expression (a later slice) ranges over these (the
 /// hexahedron's six faces). Listed as the canonical pairs: the seed
 /// pair (`RememberWhen`, `PayAttention`), the vector pair (`WhichWay`,
@@ -56,7 +56,7 @@ module Wall =
           Wall.RainbowTable
           Wall.ObserveEmit ]
 
-/// The atomic noun of the seed core (B-0998 — *vectors before
+/// The atomic noun of the seed core (081KT2T2J0008QG0R003VK5GRX — *vectors before
 /// trajectories*). A vector is two reservoir walls in polar form:
 /// **Which Way** (direction, radians) and **How Much** (magnitude,
 /// non-negative). It is the polar view of the existing Cayley–Dickson ℂ

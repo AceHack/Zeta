@@ -53,7 +53,7 @@ The Stryker gap is specifically mutation-testing-quality. F# coverage via other 
 | Type-level structural | F# compiler + Roslyn analyzers |
 | Property invariants | FsCheck (Tests.FSharp/) |
 | Mutation-testing | **NEW: C# Stryker via cross-verify transitivity (this PR)** |
-| Concurrency/safety | TLA+/TLC (tools/tla/specs/; Soraya loop B-0691) |
+| Concurrency/safety | TLA+/TLC (tools/tla/specs/; Soraya loop 081KS3X9Y0008QG0R001MD26NZ) |
 | Theorem-grade | Lean 4 (tools/lean4/Lean4.lean) |
 | Constraint satisfaction | Z3 (tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs) |
 | Relational model checking | Alloy (tools/formal-verification/run-alloy.ts) |
@@ -63,8 +63,8 @@ The Stryker gap is specifically mutation-testing-quality. F# coverage via other 
 
 - #4563 (checkBilinear)
 - #4567 (unclear; need to check)
-- #4568 (B-0692/B-0693/B-0694 rows)
-- #4569 (B-0695 fast/life branch)
+- #4568 (081KS3X9Y0008QG0R001D454ZK/081KS3X9Y0008QG0R003Y2X2T0/081KS3X9Y0008QG0R000J4SFTS rows)
+- #4569 (081KS3X9Y0008QG0R002EEH26Z fast/life branch)
 
 All BLOCKED on the pre-existing F# Stryker bug per Otto-VSCode's diagnosis.
 
@@ -78,7 +78,7 @@ All BLOCKED on the pre-existing F# Stryker bug per Otto-VSCode's diagnosis.
 
 - PRs #4517 / #4522 / #4548 (3 peer oracles whose cross-verify enables transitive-coverage rationale)
 - PR #4565 (Soraya loop — continuous formal-verification cadence already operating)
-- B-0691 (Soraya loop row)
+- 081KS3X9Y0008QG0R001MD26NZ (Soraya loop row)
 
 ## Follow-up (separate row)
 

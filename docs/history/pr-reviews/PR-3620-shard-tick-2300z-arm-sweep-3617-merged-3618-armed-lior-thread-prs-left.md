@@ -30,7 +30,7 @@
 ## Summary
 
 - **Cheap-survey discipline**: used `gh pr list --json mergeStateStatus,autoMergeRequest` (single call) instead of `poll-pr-gate-batch --all-open` (37 calls). Composes with `memory/feedback_gh_graphql_rate_limit_cascade_cost_*.md` cost-awareness.
-- **2 thread-free arms**: #3618 (B-0544 research) + #3617 (Lior 23:05Z drift; MERGED immediately).
+- **2 thread-free arms**: #3618 (081KRMEXM0008QG0R003YWZC21 research) + #3617 (Lior 23:05Z drift; MERGED immediately).
 - **2 thread-laden LEFT alone**: #3610 (codex P2 archive-naming) + #3609 (copilot threads on Lior content) — Lior-payload threads pending peer-Lior cycle; respects `honor-those-that-came-before` discipline.
 
 ## Test plan

@@ -2,7 +2,7 @@
 /**
  * src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts
  *
- * B-0891 — produce a zflash-prepared raw boot image for QEMU scenarios 3–4.
+ * 081KSNY2Z0008QG0R0008PN7RQ — produce a zflash-prepared raw boot image for QEMU scenarios 3–4.
  *
  * Wraps src/Core.TypeScript/zflash/file-backed.ts with deterministic test
  * credentials so CI can set ZFLASH_QEMU_*_BOOT_IMAGE without physical USB.

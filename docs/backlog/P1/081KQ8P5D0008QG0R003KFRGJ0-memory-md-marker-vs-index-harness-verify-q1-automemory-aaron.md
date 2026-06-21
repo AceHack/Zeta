@@ -1,6 +1,5 @@
 ---
-id: B-0066
-zetaid: 081KQ8P5D0008QG0R003KFRGJ0
+id: 081KQ8P5D0008QG0R003KFRGJ0
 priority: P1
 status: closed
 title: MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
@@ -26,11 +25,11 @@ This row is now an umbrella. Execution is split into
 dependency-ordered child rows so loops can pick small,
 reviewable units instead of re-planning the blob each tick:
 
-1. B-0257 - harness contract verification and evidence capture
-2. B-0258 - index generator implementation
-3. B-0259 - hook + CI drift enforcement
-4. B-0260 - cutover + parity validation
-5. B-0261 - Q1 AutoDream/AutoMemory compatibility check
+1. 081KR2E4K0008QG0R001J0536V - harness contract verification and evidence capture
+2. 081KR2E4K0008QG0R001E27DDV - index generator implementation
+3. 081KR2E4K0008QG0R000XCS9FT - hook + CI drift enforcement
+4. 081KR2E4K0008QG0R001M8NJ56 - cutover + parity validation
+5. 081KR2E4K0008QG0R0004B55ND - Q1 AutoDream/AutoMemory compatibility check
 
 The umbrella depends on all children so backlog pickup selects
 the executable child rows first.
@@ -83,7 +82,7 @@ lose substrate visibility.
 ### Option B — Auto-generated index (recommended)
 
 Same shape as `docs/BACKLOG.md ← docs/backlog/` migration
-(B-0061): MEMORY.md becomes an auto-generated index built
+(081KQ8P5D0008QG0R001BH93SA): MEMORY.md becomes an auto-generated index built
 from each memory's frontmatter. A pre-commit hook
 regenerates on any `memory/*.md` add or modify. Manual
 edits to MEMORY.md are forbidden; the file becomes a
@@ -175,29 +174,29 @@ leaked source for."* This step is the verification.
 ## Done-criteria
 
 - [x] Phase 0 verification report shipped
-      (`docs/research/memory-md-harness-contract-2026-04-28.md` — B-0257).
+      (`docs/research/memory-md-harness-contract-2026-04-28.md` — 081KR2E4K0008QG0R001J0536V).
 - [x] `tools/memory/reindex-memory-md.ts` lands +
-      pre-commit hook + CI drift check (B-0258/B-0259).
+      pre-commit hook + CI drift check (081KR2E4K0008QG0R001E27DDV/081KR2E4K0008QG0R000XCS9FT).
 - [x] MEMORY.md becomes auto-generated; manual edits are
-      forbidden by the hook (B-0260).
+      forbidden by the hook (081KR2E4K0008QG0R001M8NJ56).
 - [x] No regression in at-wake quick-scan service —
-      100 entries visible at session-start (B-0260).
+      100 entries visible at session-start (081KR2E4K0008QG0R001M8NJ56).
 - [x] AutoDream / AutoMemory continues to function —
       write-back compatible; user-scope AutoMemory is
-      a separate surface (B-0261 validation).
+      a separate surface (081KR2E4K0008QG0R0004B55ND validation).
 - [ ] git-hotspot status of `memory/MEMORY.md` drops
       below the top-10 hotspot threshold in the cadenced
-      detector (B-0067) within one round of cutover.
-      (Ongoing monitoring via B-0067 — not a close blocker.)
+      detector (081KQ8P5D0008QG0R001D8RCZ9) within one round of cutover.
+      (Ongoing monitoring via 081KQ8P5D0008QG0R001D8RCZ9 — not a close blocker.)
 
 ## Close recommendation (2026-05-14)
 
-All child rows are closed (B-0257 → B-0261). All done-criteria except
-the B-0067 hotspot-threshold monitoring check are satisfied. The hotspot-
+All child rows are closed (081KR2E4K0008QG0R001J0536V → 081KR2E4K0008QG0R0004B55ND). All done-criteria except
+the 081KQ8P5D0008QG0R001D8RCZ9 hotspot-threshold monitoring check are satisfied. The hotspot-
 threshold check is ongoing monitoring, not a blocking criterion for this
 row.
 
-**Recommendation: close B-0066.** Continue B-0067 as the live detector.
+**Recommendation: close 081KQ8P5D0008QG0R003KFRGJ0.** Continue 081KQ8P5D0008QG0R001D8RCZ9 as the live detector.
 
 Evidence:
 
@@ -206,10 +205,10 @@ Evidence:
 
 ## Composes with
 
-- **B-0061** — docs/BACKLOG.md monolith → per-row
+- **081KQ8P5D0008QG0R001BH93SA** — docs/BACKLOG.md monolith → per-row
   migration. Same problem class, same solution shape;
   the generator pattern transfers.
-- **B-0067** — cadenced git-hotspot detection (filed
+- **081KQ8P5D0008QG0R001D8RCZ9** — cadenced git-hotspot detection (filed
   alongside this row). The hotspot detector should
   highlight any other files exhibiting the same
   pattern (e.g., docs/hygiene-history/loop-tick-

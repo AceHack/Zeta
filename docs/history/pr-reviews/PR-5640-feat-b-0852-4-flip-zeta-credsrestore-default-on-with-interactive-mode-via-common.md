@@ -29,7 +29,7 @@
 
 ## Summary
 
-Closes the loop on the operator pain point named 2026-05-27. The B-0852 install-side cascade (PRs #5637 + #5638 + #5639) writes the encrypted cred-blob; this PR enables the installed system to READ it at every subsequent boot.
+Closes the loop on the operator pain point named 2026-05-27. The 081KSKBP80008QG0R003AX2A69 install-side cascade (PRs #5637 + #5638 + #5639) writes the encrypted cred-blob; this PR enables the installed system to READ it at every subsequent boot.
 
 ## What changed
 
@@ -78,12 +78,12 @@ Per-host configs can override without conflict warnings; common module sets flee
 
 ## Composes with
 
-- PR #5637 (B-0852.3a-prep USB UUID capture)
-- PR #5638 (B-0852.3b passphrase prompt + unset-after-picker)
-- PR #5639 (B-0852.3c default-flip with 4-path opt-out)
+- PR #5637 (081KSKBP80008QG0R003AX2A69.3a-prep USB UUID capture)
+- PR #5638 (081KSKBP80008QG0R003AX2A69.3b passphrase prompt + unset-after-picker)
+- PR #5639 (081KSKBP80008QG0R003AX2A69.3c default-flip with 4-path opt-out)
 - `full-ai-cluster/nixos/modules/zeta-creds-restore.nix` (existing module; 214 lines; no changes needed)
 - `tools/installer/zeta-creds-restore.ts` (existing TS impl)
-- B-0855.1 zeta-self-register (declares `After = \"zeta-creds-restore.service\"`; ordering preserved)
+- 081KSKBP80008QG0R000GPC0TB.1 zeta-self-register (declares `After = \"zeta-creds-restore.service\"`; ordering preserved)
 - `full-ai-cluster/INJECTION-POINTS.md` (catalog; in-flight item #5 now operator-facing end-to-end)
 
 ## Test plan

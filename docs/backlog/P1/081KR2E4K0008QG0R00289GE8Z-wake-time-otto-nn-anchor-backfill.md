@@ -1,6 +1,5 @@
 ---
-id: B-0313
-zetaid: 081KR2E4K0008QG0R00289GE8Z
+id: 081KR2E4K0008QG0R00289GE8Z
 priority: P1
 status: review
 title: "Wake-time Otto-NN principle external-anchor backfill"
@@ -42,7 +41,7 @@ strengthens external credibility and teachability.
 2. WebSearch for the property in agent-design literature,
    multi-agent systems research, organizational autonomy
    theory, software engineering methodology.
-3. Cite or note "original to Zeta" per the B-0060 protocol.
+3. Cite or note "original to Zeta" per the 081KQ8P5D0008QG0R000N718AC protocol.
 4. Land anchors as inline citations in the relevant CLAUDE.md
    bullet or as a dedicated `docs/research/` entry.
 
@@ -60,9 +59,9 @@ strengthens external credibility and teachability.
 
 **Dependency check:**
 
-- B-0311 (coverage scanner): status: closed (landed). No blocking dep.
-- B-0310 (concept registry): closed. No blocking dep.
-- `composes_with: [B-0060]` — B-0060 is umbrella, status: umbrella
+- 081KR2E4K0008QG0R001ZWARTN (coverage scanner): status: closed (landed). No blocking dep.
+- 081KR2E4K0008QG0R003DS2XHJ (concept registry): closed. No blocking dep.
+- `composes_with: [081KQ8P5D0008QG0R000N718AC]` — 081KQ8P5D0008QG0R000N718AC is umbrella, status: umbrella
   (ongoing).
 
 ## Done-criteria
@@ -77,7 +76,7 @@ strengthens external credibility and teachability.
 - [x] Citations include URL/identifier for online sources and bibliographic
   locator for print sources (slices 1 + 2)
 - [x] Beacon-safety pass on all cited sources (slices 1 + 2: pass)
-- [x] Coverage scanner (B-0311) confirms 7/7 resolved (post-slice-2 run 2026-05-10: 58 concepts scanned, Otto-NN 7/7 anchored via research docs; see focused check output in PR)
+- [x] Coverage scanner (081KR2E4K0008QG0R001ZWARTN) confirms 7/7 resolved (post-slice-2 run 2026-05-10: 58 concepts scanned, Otto-NN 7/7 anchored via research docs; see focused check output in PR)
 
 **Slice-1 research landing:**
 `memory/otto/cli/claude/conversations/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`

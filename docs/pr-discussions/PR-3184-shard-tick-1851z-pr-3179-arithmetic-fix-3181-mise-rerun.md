@@ -24,9 +24,9 @@ Tick 1851Z recovers two in-flight Otto PRs:
 
 Codex left 2 new P2 threads — both real findings:
 
-1. **Arithmetic mismatch**: shard said "29/29 cross-references LIVE" but the deduplicated category breakdown sums to 28 (\`6 + 12 + 7 + 3\`). Root cause: \`B-0421\` was double-counted as both a "backlog-row file" reference (in peer-call-infrastructure.md cross-refs) AND one of the "3 backlog rows" (B-0326, B-0327, B-0421). Corrected to 28/28; cumulative razor-cadence tally adjusted 113/114 → 112/113.
+1. **Arithmetic mismatch**: shard said "29/29 cross-references LIVE" but the deduplicated category breakdown sums to 28 (\`6 + 12 + 7 + 3\`). Root cause: \`081KRA5AR0008QG0R0011ZGRZT\` was double-counted as both a "backlog-row file" reference (in peer-call-infrastructure.md cross-refs) AND one of the "3 backlog rows" (081KR2E4K0008QG0R001HQF27C, 081KR2E4K0008QG0R002KNZ29V, 081KRA5AR0008QG0R0011ZGRZT). Corrected to 28/28; cumulative razor-cadence tally adjusted 113/114 → 112/113.
 
-2. **Placeholder vs real glob**: step 4 said "\`ls docs/backlog/P*/B-NNNN-*.md\`" — Codex correctly noted \`B-NNNN\` is placeholder shorthand, not a working glob. Updated to show explicit per-row commands (\`ls docs/backlog/P*/B-0326-*.md\`, etc.) + labeled \`B-NNNN\` as placeholder.
+2. **Placeholder vs real glob**: step 4 said "\`ls docs/backlog/P*/B-NNNN-*.md\`" — Codex correctly noted \`B-NNNN\` is placeholder shorthand, not a working glob. Updated to show explicit per-row commands (\`ls docs/backlog/P*/081KR2E4K0008QG0R001HQF27C-*.md\`, etc.) + labeled \`B-NNNN\` as placeholder.
 
 Fixes at commit \`24449f6\` on the #3179 branch; both threads resolved via GraphQL.
 
@@ -36,7 +36,7 @@ Still hit by mise rate-limit lint failures from prior tick. Reran failed jobs vi
 
 ## Mechanization candidate
 
-\`tools/hygiene/audit-shard-arithmetic.ts\`: parse category breakdowns from tick shards + verify totals sum. Composes with B-0506 worktree-prune cadence. Not filed this tick (per-tick value < new-tool-PR cost).
+\`tools/hygiene/audit-shard-arithmetic.ts\`: parse category breakdowns from tick shards + verify totals sum. Composes with 081KRHWGX0008QG0R002DPG02X worktree-prune cadence. Not filed this tick (per-tick value < new-tool-PR cost).
 
 ## Test plan
 

@@ -163,7 +163,7 @@ programming models that the Zeta factory is built on:
 - F# computation expressions = async workflows = primitive
   layer
 - Reaqtor checkpoint architecture (per
-  `docs/backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md`
+  `docs/backlog/P1/081KQZVQW0008QG0R000PPQ3MH-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md`
   + `references/upstreams/reaqtor/`) = Microsoft Orleans
   + IStatefulOperator + periodic checkpoints = persistence
   layer

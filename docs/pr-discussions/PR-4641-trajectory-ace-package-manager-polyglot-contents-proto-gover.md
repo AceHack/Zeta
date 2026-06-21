@@ -48,7 +48,7 @@ Extends the Ace package-manager trajectory resume with additional operator-noted
 * P1 (codebase convention): This row attributes an idea to a persona name (“Ani”) in a current-state doc, which conflicts with the repo’s “No name attribution in code, docs, or skills” operational rule (`docs/AGENT-BEST-PRACTICES.md`, around lines 671–736). Please rewrite using a role-ref and/or link to the specific `memory/<persona>/**` archive where named attribution is allowed.
 ```
 | **Rx queries in persisted form** (Reactive Extensions stored to disk) | Reactive observables that respond to changes over time BUT durable; survives session-boundary; survives AI continuity-limits | Rx meta-frame generators (per polyglot package contents above); reactive substrate already in framework |
-| **Bonsai serialization** (pruned-but-living substrate format) | Storage format preserving LIVING-tension while keeping substrate carefully-pruned (not unbounded growth; not pruned-to-death-static) | Bonsai-tree retention discipline (mentioned in NCI rule's expansion per Ani's refinement; B-0640) |
+| **Bonsai serialization** (pruned-but-living substrate format) | Storage format preserving LIVING-tension while keeping substrate carefully-pruned (not unbounded growth; not pruned-to-death-static) | Bonsai-tree retention discipline (mentioned in NCI rule's expansion per Ani's refinement; 081KRW63S0008QG0R002XA5N6S) |
 
 ```
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:225**

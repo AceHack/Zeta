@@ -1,6 +1,5 @@
 ---
-id: B-0193
-zetaid: 081KQTPYE0008QG0R00392KABJ
+id: 081KQTPYE0008QG0R00392KABJ
 priority: P1
 status: open
 title: Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)
@@ -17,7 +16,7 @@ tags: [bootstrap-razor, specs-as-source-of-truth, recreation-test, openspec, fal
 type: friction-reducer
 ---
 
-# B-0193 -- Bootstrap razor + 23-hour recreation test
+# 081KQTPYE0008QG0R00392KABJ -- Bootstrap razor + 23-hour recreation test
 
 ## Decomposition status (2026-05-08)
 
@@ -28,40 +27,40 @@ this row tracks the trajectory shape.
 ### Dependency graph
 
 ```
-B-0339 (keep-vs-cut)──┬──→ B-0341 (seed manifest)──→ B-0343 (seeding script)──┐
+081KR2E4K0008QG0R000W3W6C1 (keep-vs-cut)──┬──→ 081KR2E4K0008QG0R002PHZR58 (seed manifest)──→ 081KR2E4K0008QG0R002JW751Y (seeding script)──┐
                        │                                                        │
-                       └──→ B-0342 (success metrics)───────────────────────────┤
+                       └──→ 081KR2E4K0008QG0R00322TP58 (success metrics)───────────────────────────┤
                                                                                 ▼
-B-0340 (spec audit)────────→ B-0341                            B-0344 (experiment)
+081KR2E4K0008QG0R001BRHAPK (spec audit)────────→ 081KR2E4K0008QG0R002PHZR58                            081KR2E4K0008QG0R0035HNPG1 (experiment)
                                                                         │
                                                                         ▼
-                                                               B-0345 (findings)
+                                                               081KR2E4K0008QG0R003KQKYTJ (findings)
                                                                         │
                                                                         ▼
-                                                               B-0346 (backport)
+                                                               081KR2E4K0008QG0R000JGRY8N (backport)
 ```
 
 ### Child row map
 
 | Child | Phase | Title | Depends on | Effort |
 |-------|-------|-------|------------|--------|
-| B-0339 | 1 | Keep-vs-cut criteria documentation | — | S |
-| B-0340 | 1 | Spec completeness audit (inventory.ts) | — | S |
-| B-0341 | 2 | Minimal bootstrap seed manifest | B-0339, B-0340 | S |
-| B-0342 | 2 | Recreation success metrics / rubric | B-0339 | S |
-| B-0343 | 2 | Test-repo seeding script (TS) | B-0341 | M |
-| B-0344 | 3 | Run 23-hour recreation experiment | B-0342, B-0343 | L |
-| B-0345 | 3 | Document findings (research-grade) | B-0344 | M |
-| B-0346 | 3 | Back-port spec gaps to OpenSpec | B-0345 | M |
+| 081KR2E4K0008QG0R000W3W6C1 | 1 | Keep-vs-cut criteria documentation | — | S |
+| 081KR2E4K0008QG0R001BRHAPK | 1 | Spec completeness audit (inventory.ts) | — | S |
+| 081KR2E4K0008QG0R002PHZR58 | 2 | Minimal bootstrap seed manifest | 081KR2E4K0008QG0R000W3W6C1, 081KR2E4K0008QG0R001BRHAPK | S |
+| 081KR2E4K0008QG0R00322TP58 | 2 | Recreation success metrics / rubric | 081KR2E4K0008QG0R000W3W6C1 | S |
+| 081KR2E4K0008QG0R002JW751Y | 2 | Test-repo seeding script (TS) | 081KR2E4K0008QG0R002PHZR58 | M |
+| 081KR2E4K0008QG0R0035HNPG1 | 3 | Run 23-hour recreation experiment | 081KR2E4K0008QG0R00322TP58, 081KR2E4K0008QG0R002JW751Y | L |
+| 081KR2E4K0008QG0R003KQKYTJ | 3 | Document findings (research-grade) | 081KR2E4K0008QG0R0035HNPG1 | M |
+| 081KR2E4K0008QG0R000JGRY8N | 3 | Back-port spec gaps to OpenSpec | 081KR2E4K0008QG0R003KQKYTJ | M |
 
 ### Buildable now (no deps)
 
-- **B-0339** — Keep-vs-cut criteria documentation
-- **B-0340** — Spec completeness audit
+- **081KR2E4K0008QG0R000W3W6C1** — Keep-vs-cut criteria documentation
+- **081KR2E4K0008QG0R001BRHAPK** — Spec completeness audit
 
 ### Human-gated
 
-- **B-0344** — Aaron sets the experiment date (AC 2)
+- **081KR2E4K0008QG0R0035HNPG1** — Aaron sets the experiment date (AC 2)
 
 ## Aaron's verbatim ask
 
@@ -96,14 +95,14 @@ Greenfield-as-permission-to-razor is the operationally load-bearing framing -- w
 
 The maximally strong form Aaron named: **specs + OpenSpec as source of truth; 23-hour recreation is the test; anything that successfully regenerates from specs alone is bootstrap-commentary and gets cut; anything that fails to regenerate is either kept as research-preservation or means the spec is missing something (back-port to specs first, then cut the artifact)**.
 
-## Why this is different from B-0192 (razor-cadence steady-state)
+## Why this is different from 081KQR4HQ0008QG0R001GAD29A (razor-cadence steady-state)
 
 Two distinct razors, two distinct triggers:
 
-- **B-0192 (razor-cadence)**: daily steady-state on *new rules at the encoding boundary*. Catches new claims that don't pass Test 1 (operational form) / Test 2 (unfalsifiability) / mechanization audit / composes-with audit / MEMORY.md index audit.
-- **B-0193 (bootstrap-razor)**: one-time (or periodic) deep pass over *accumulated bootstrap from the 0-to-1 phase*. Cuts everything that doesn't survive the 23-hour-recreation-from-specs test.
+- **081KQR4HQ0008QG0R001GAD29A (razor-cadence)**: daily steady-state on *new rules at the encoding boundary*. Catches new claims that don't pass Test 1 (operational form) / Test 2 (unfalsifiability) / mechanization audit / composes-with audit / MEMORY.md index audit.
+- **081KQTPYE0008QG0R00392KABJ (bootstrap-razor)**: one-time (or periodic) deep pass over *accumulated bootstrap from the 0-to-1 phase*. Cuts everything that doesn't survive the 23-hour-recreation-from-specs test.
 
-These don't conflate. B-0192 prevents new ossification; B-0193 cuts existing bootstrap that hasn't earned load-bearing status.
+These don't conflate. 081KQR4HQ0008QG0R001GAD29A prevents new ossification; 081KQTPYE0008QG0R00392KABJ cuts existing bootstrap that hasn't earned load-bearing status.
 
 ## The 23-hour recreation test (NEW-REPO experiment, NOT destructive on this repo)
 
@@ -174,14 +173,14 @@ The "without" reading is the load-bearing one: get the insights AND be honest WI
 
 ## The carved sentence
 
-**"Specs + OpenSpec are the foundational source of truth (per docs/ARCHITECTURE.md + openspec/README.md, pre-existing). The 23-hour recreation test is the new operationalization: a glass-halo research-reproducible experiment in a NEW repo (LFG or AceHack), fresh-context Otto + specs-only as input, observe what regenerates and what doesn't. Get the insights without nuking ourselves. Two razors, two triggers: B-0192 daily on new rules at the encoding boundary; B-0193 experimental deep pass on accumulated bootstrap. The date is the operational signature -- without a date, 'this is just bootstrap' becomes the new absorber."**
+**"Specs + OpenSpec are the foundational source of truth (per docs/ARCHITECTURE.md + openspec/README.md, pre-existing). The 23-hour recreation test is the new operationalization: a glass-halo research-reproducible experiment in a NEW repo (LFG or AceHack), fresh-context Otto + specs-only as input, observe what regenerates and what doesn't. Get the insights without nuking ourselves. Two razors, two triggers: 081KQR4HQ0008QG0R001GAD29A daily on new rules at the encoding boundary; 081KQTPYE0008QG0R00392KABJ experimental deep pass on accumulated bootstrap. The date is the operational signature -- without a date, 'this is just bootstrap' becomes the new absorber."**
 
 ## Composes with
 
-- **B-0192** (razor-cadence trigger) -- the steady-state razor. B-0193 is the one-time deep pass.
-- **B-0006** (MEMORY.md compression) -- in-flight substrate-fit-for-context-window engineering; orthogonal to B-0193 (compression is not deletion).
-- **B-0190** (memory substrate-engineering trajectory) -- the memory-class trajectory B-0193 will partially cut.
-- `memory/feedback_dialectical_unfalsifiability_detection_razor_extension_holding_all_truths_failure_mode_aaron_2026_05_04.md` (PR #1577) -- Test 2 razor extension; B-0193 is the strongest form of falsifiability discipline.
-- `memory/feedback_lived_cron_substrate_continuity_vs_designed_long_horizon_critique_aaron_2026_05_04.md` (PR #1574) -- the file that contains the Pascal's-wager-bundling caught earlier; flagged for promotion-boundary audit per memory-unfiltered reframe -- B-0193 is the audit mechanism that will eventually fire on it.
+- **081KQR4HQ0008QG0R001GAD29A** (razor-cadence trigger) -- the steady-state razor. 081KQTPYE0008QG0R00392KABJ is the one-time deep pass.
+- **081KQ0YZ80008QG0R001V0XCYZ** (MEMORY.md compression) -- in-flight substrate-fit-for-context-window engineering; orthogonal to 081KQTPYE0008QG0R00392KABJ (compression is not deletion).
+- **081KQR4HQ0008QG0R001909FPT** (memory substrate-engineering trajectory) -- the memory-class trajectory 081KQTPYE0008QG0R00392KABJ will partially cut.
+- `memory/feedback_dialectical_unfalsifiability_detection_razor_extension_holding_all_truths_failure_mode_aaron_2026_05_04.md` (PR #1577) -- Test 2 razor extension; 081KQTPYE0008QG0R00392KABJ is the strongest form of falsifiability discipline.
+- `memory/feedback_lived_cron_substrate_continuity_vs_designed_long_horizon_critique_aaron_2026_05_04.md` (PR #1574) -- the file that contains the Pascal's-wager-bundling caught earlier; flagged for promotion-boundary audit per memory-unfiltered reframe -- 081KQTPYE0008QG0R00392KABJ is the audit mechanism that will eventually fire on it.
 - `docs/research/2026-05-05-claudeai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-aaron-forwarded-preservation.md` (PR #1582) -- the diagnosis that produced the architectural answer this row commits to.
 - OpenSpec specs at `openspec/specs/**` -- the source-of-truth surface this row makes load-bearing.

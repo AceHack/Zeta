@@ -1,1 +1,1 @@
-You’re right about the delta: the skill is loaded and the next useful move is to actually decompose one open blob item end-to-end, not narrate. I’m taking B-0066 and will produce concrete child backlog rows with dependency order so it becomes buildable.
+You’re right about the delta: the skill is loaded and the next useful move is to actually decompose one open blob item end-to-end, not narrate. I’m taking 081KQ8P5D0008QG0R003KFRGJ0 and will produce concrete child backlog rows with dependency order so it becomes buildable.

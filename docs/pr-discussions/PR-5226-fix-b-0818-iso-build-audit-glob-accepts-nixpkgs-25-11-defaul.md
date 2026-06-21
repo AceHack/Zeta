@@ -1,6 +1,6 @@
 ---
 pr_number: 5226
-title: "fix(B-0818): ISO build audit-glob accepts nixpkgs-25.11 default name + file B-0818 substrate fix"
+title: "fix(081KSGS9H0008QG0R00033DT02): ISO build audit-glob accepts nixpkgs-25.11 default name + file 081KSGS9H0008QG0R00033DT02 substrate fix"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:04:15Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:37:39Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5226: fix(B-0818): ISO build audit-glob accepts nixpkgs-25.11 default name + file B-0818 substrate fix
+# PR #5226: fix(081KSGS9H0008QG0R00033DT02): ISO build audit-glob accepts nixpkgs-25.11 default name + file 081KSGS9H0008QG0R00033DT02 substrate fix
 
 ## PR description
 
@@ -27,25 +27,25 @@ PR #5222 (glxinfo P0 fix-fwd) merged successfully, but the post-merge build-iso 
 **This PR (fix-fwd, immediate unblock)**:
 - \`.github/workflows/build-ai-cluster-iso.yml\` audit glob accepts EITHER \`zeta-installer-*.iso\` OR \`nixos-minimal-*.iso\`
 - \`.github/workflows/build-installer-iso.yml\` same fix
-- Updated error messages cite B-0818 for the substrate-layer fix
+- Updated error messages cite 081KSGS9H0008QG0R00033DT02 for the substrate-layer fix
 - ISO content is correct; only filename pattern changed
 
-**B-0818 (substrate-layer follow-up)**:
+**081KSGS9H0008QG0R00033DT02 (substrate-layer follow-up)**:
 - Investigate which 25.11 option actually drives the ISO filename (\`image.baseName\` / \`system.nixosLabel\` / both)
 - Update \`configuration.nix\` with correct override
 - Optionally tighten the workflow glob back once landed
 
 ## Composes with
 
-- B-0800 (nixpkgs 25.11 EOL recovery — #5218 + #5222)
-- B-0816 (cross-distro portability — Zeta-branded ISO is substrate-honest detail)
+- 081KSGS9H0008QG0R001EKTS5A (nixpkgs 25.11 EOL recovery — #5218 + #5222)
+- 081KSGS9H0008QG0R003A37Z65 (cross-distro portability — Zeta-branded ISO is substrate-honest detail)
 
 ## Test plan
 
 - [ ] build-ai-cluster-iso passes on this PR's commit
 - [ ] build-installer-iso passes on this PR's commit
 - [ ] Produced ISO content unchanged (only audit glob loosened)
-- [ ] B-0818 row indexes correctly in BACKLOG.md
+- [ ] 081KSGS9H0008QG0R00033DT02 row indexes correctly in BACKLOG.md
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -59,8 +59,8 @@ This PR unblocks post-merge ISO build workflows after the nixpkgs 25.11 bump cha
 
 **Changes:**
 - Loosened the ISO “audit/locate” glob in the installer ISO workflows to accept either `zeta-installer-*.iso` or `nixos-minimal-*.iso`.
-- Updated workflow error messages to reference B-0818 for the follow-up substrate fix.
-- Added backlog row B-0818 documenting the investigation target and candidate fixes for restoring the intended ISO name override.
+- Updated workflow error messages to reference 081KSGS9H0008QG0R00033DT02 for the follow-up substrate fix.
+- Added backlog row 081KSGS9H0008QG0R00033DT02 documenting the investigation target and candidate fixes for restoring the intended ISO name override.
 
 ### Reviewed changes
 
@@ -68,7 +68,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P2/B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md` | New backlog row capturing the 25.11 ISO naming regression and follow-up substrate work. |
+| `docs/backlog/P2/081KSGS9H0008QG0R00033DT02-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md` | New backlog row capturing the 25.11 ISO naming regression and follow-up substrate work. |
 | `.github/workflows/build-installer-iso.yml` | Update ISO discovery/audit glob (build + release-attach paths) to accept nixpkgs 25.11 default ISO name. |
 | `.github/workflows/build-ai-cluster-iso.yml` | Update ISO discovery/audit glob to accept nixpkgs 25.11 default ISO name and keep audit steps unblocked. |
 
@@ -80,13 +80,13 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated no 
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md:23 (resolved)
+### Thread 1: docs/backlog/P2/081KSGS9H0008QG0R00033DT02-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md:23 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:07:14Z):
 
 The row cites `configuration.nix` “line 284” as the `isoImage.isoName` override, but in the referenced file line ~284 is `unitConfig` and the `isoImage` block is currently around lines 289–294. Please update the line-number reference so future readers can jump to the right location.
 
-### Thread 2: docs/backlog/P2/B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md:89 (resolved)
+### Thread 2: docs/backlog/P2/081KSGS9H0008QG0R00033DT02-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md:89 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:07:14Z):
 

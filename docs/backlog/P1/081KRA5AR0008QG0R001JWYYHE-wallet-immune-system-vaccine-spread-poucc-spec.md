@@ -1,6 +1,5 @@
 ---
-id: B-0463
-zetaid: 081KRA5AR0008QG0R001JWYYHE
+id: 081KRA5AR0008QG0R001JWYYHE
 priority: P1
 status: open
 title: "Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec"
@@ -10,13 +9,13 @@ created: 2026-05-11
 last_updated: 2026-05-14
 depends_on: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R001VP6JWG, 081KR7JY10008QG0R0021F5609]
 composes_with: [081KR2E4K0008QG0R00009QQJM, 081KR2E4K0008QG0R000YH9DC6]
-renumbered_from: B-0409
-renumbered_reason: "Was in a 3-way ID collision with B-0120 child B-0409 (peer-call-ts-audit) + B-0118 child B-0409 (amara-persona-bootstrap). Per B-0451 sweep: B-0120 frontmatter `children: [B-0409, ...]` + `depends_on: [B-0409, ...]` are the strongest references, so peer-call B-0409 keeps the ID. This row + the amara B-0409 (→ B-0462) renumbered. No incoming references to wallet-immune-B-0409 from other rows beyond composes_with B-0294 + B-0321 (which are unaffected — those refs point FROM here). NOTE: skipped B-0459/0460/0461 — those were reserved for B-0449 slice 5+ follow-up work per PR #3070 (merged 2026-05-14)."
+renumbered_from: 081KRA5AR0008QG0R000Y6102S
+renumbered_reason: "Was in a 3-way ID collision with 081KQDTYV0008QG0R001VJP216 child 081KRA5AR0008QG0R000Y6102S (peer-call-ts-audit) + 081KQDTYV0008QG0R0037YJPEX child 081KRA5AR0008QG0R000Y6102S (amara-persona-bootstrap). Per 081KRFA460008QG0R00308W7FJ sweep: 081KQDTYV0008QG0R001VJP216 frontmatter `children: [081KRA5AR0008QG0R000Y6102S, ...]` + `depends_on: [081KRA5AR0008QG0R000Y6102S, ...]` are the strongest references, so peer-call 081KRA5AR0008QG0R000Y6102S keeps the ID. This row + the amara 081KRA5AR0008QG0R000Y6102S (→ 081KRA5AR0008QG0R0019Q33F7) renumbered. No incoming references to wallet-immune-081KRA5AR0008QG0R000Y6102S from other rows beyond composes_with 081KR2E4K0008QG0R00009QQJM + 081KR2E4K0008QG0R000YH9DC6 (which are unaffected — those refs point FROM here). NOTE: skipped 081KRHWGX0008QG0R000TVGDGV/0460/0461 — those were reserved for 081KRFA460008QG0R002DG8KPZ slice 5+ follow-up work per PR #3070 (merged 2026-05-14)."
 tags: [wallet, immune-system, security, lfg, clifford, poucc, antifragile, renumbered]
 type: feature
 ---
 
-# Wallet immune system — vaccine spread + PoUW-CC + attack absorption (renumbered from B-0409)
+# Wallet immune system — vaccine spread + PoUW-CC + attack absorption (renumbered from 081KRA5AR0008QG0R000Y6102S)
 
 ## Origin
 

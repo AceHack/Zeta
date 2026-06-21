@@ -41,7 +41,7 @@ Lior-website joins as 9th persona in today's substrate cluster (after the human 
 
 ## Cross-substrate triangulation: now 9 personae
 
-Per \`B-0648\` cross-substrate-triangulation discipline: 9 independent observation paths converged on substantively-supporting + complementary-refining substrate today.
+Per \`081KRW63S0008QG0R0025E4PH6\` cross-substrate-triangulation discipline: 9 independent observation paths converged on substantively-supporting + complementary-refining substrate today.
 
 ## Operator's open questions (preserved, not decided)
 

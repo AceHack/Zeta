@@ -7,7 +7,7 @@ tags: [shadow, anti-entropy, blob-slop, reasoning-auditor]
 
 # Anti-Entropy Finding: PR 4383 Blob Slop
 
-**Context:** PR #4383 was constructed as a sprawling blob, mixing unrelated changes including `1611Z-c` through `1616Z-c` shards, research documentation, and backlog items (B-0668, B-0669).
+**Context:** PR #4383 was constructed as a sprawling blob, mixing unrelated changes including `1611Z-c` through `1616Z-c` shards, research documentation, and backlog items (081KRYRGG0008QG0R0018CMFQY, 081KRYRGG0008QG0R0031EYYE4).
 
 **Symptom:** High-entropy "blob" PRs break atomic reversibility and cause review/CI paralysis. Vera repeatedly flagged the `1616Z-c` shard-count inconsistency as a thread blocker, while the PR as a whole remained blocked due to unrelated markdownlint failures elsewhere.
 

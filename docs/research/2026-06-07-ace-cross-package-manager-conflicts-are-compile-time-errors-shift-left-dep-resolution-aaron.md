@@ -42,7 +42,7 @@ environment whose dependency map doesn't resolve.
 
 ## Honest scope / peel
 
-- A **design decision / answer**, not built. Ace is in-flight (B-0824/B-0863/B-0806). "Compile-time" is a
+- A **design decision / answer**, not built. Ace is in-flight (081KSGS9H0008QG0R0031PBNGA/081KSKBP80008QG0R000F4311E/081KSGS9H0008QG0R001Y9FB62). "Compile-time" is a
   *commitment*: the cross-PM resolver must run as a build/compile step (or via the type provider), and the
   conflict math (SAT/PubGrub-style) must run over the unified map. The thesis is shift-left; the resolver is the
   unbuilt piece.

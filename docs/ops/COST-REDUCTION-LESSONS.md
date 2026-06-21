@@ -50,7 +50,7 @@ At $15/M input tokens (Opus 4.6):
 
 ### The fix
 
-B-0347: Carve every skill description to <120 chars.
+081KR50HA0008QG0R002ZNFQBZ: Carve every skill description to <120 chars.
 Cost: zero (mechanical edit). Savings: 70% of skill
 listing budget.
 
@@ -69,7 +69,7 @@ start. That's $0.075 per session on Opus 4.6.
 
 ### The fix
 
-B-0161: Trim CLAUDE.md to <40K chars. Move content to
+081KQJZR90008QG0R002Z4B6VW: Trim CLAUDE.md to <40K chars. Move content to
 `.claude/rules/` (auto-loaded, same priority) or skills
 (router-loaded, pay only when needed).
 
@@ -160,8 +160,8 @@ One background loop tick (shorter):
 | **Use Sonnet for mechanical work** (thread resolution, lint, backlog) | ~$500/week | Route by task type |
 | **Reserve Opus high-effort for decisions** (architecture, debugging, research) | ~$2,000/week | Discipline |
 | **Shorter sessions** (avoid compaction tax) | ~$500/week | Natural with loops |
-| Carve skill descriptions (B-0347) | $75/week | Mechanical edit |
-| Trim CLAUDE.md (B-0161) | $115/week | Mechanical edit |
+| Carve skill descriptions (081KR50HA0008QG0R002ZNFQBZ) | $75/week | Mechanical edit |
+| Trim CLAUDE.md (081KQJZR90008QG0R002Z4B6VW) | $115/week | Mechanical edit |
 
 ### The single biggest optimization
 
@@ -237,7 +237,7 @@ but per-request cost can increase.
 
 ## Tracked at
 
-- B-0347 (carved-sentence skill descriptions — the 4%)
-- B-0161 (CLAUDE.md trim — the 4%)
+- 081KR50HA0008QG0R002ZNFQBZ (carved-sentence skill descriptions — the 4%)
+- 081KQJZR90008QG0R002Z4B6VW (CLAUDE.md trim — the 4%)
 - `docs/ops/SKILL-ROUTING-BUDGET.md` (budget math detail)
 - Background loop model routing (not yet filed — file when ready)

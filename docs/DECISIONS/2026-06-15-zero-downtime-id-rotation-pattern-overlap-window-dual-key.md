@@ -75,7 +75,7 @@ All of:
 ## Current Status
 
 - **Phase 1:** ✅ Complete (2026-06-15). Reader uses `zetaid` as canonical. Dual-lookup
-  resolves both. 190 tests green. Observe loop picks `081KQNJ500008QG0R003SCWBDV` (was `B-0170`).
+  resolves both. 190 tests green. Observe loop picks `081KQNJ500008QG0R003SCWBDV` (was `081KQNJ500008QG0R003SCWBDV`).
 - **Phase 2:** 🔲 Next. Mapping table at `src/Core.TypeScript/backlog/b-to-zetaid-map.json`.
 - **Phase 3:** 🔲 After Phase 2. Identify which golden vectors contain B-xxxx, update generators.
 - **Phase 4:** ⛔ No action needed (leave history).

@@ -45,7 +45,7 @@ Fresh otto-cli cold-boot at 14:08Z. Sentinel `643d39e0` re-armed (catch-43 fired
 - [x] Canary check: HEAD ls-tree=61 = HEAD~1 ls-tree=61 (+1 file delta, tree size stable)
 - [x] Sentinel re-armed before substrate work (catch-43 discipline)
 - [x] Explicit-refspec push per `zeta-expected-branch` race-window-caveat
-- [x] `timeout --kill-after` wrapper on network op per B-0615 discipline
+- [x] `timeout --kill-after` wrapper on network op per 081KRW63S0008QG0R000EAZ9K2 discipline
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 

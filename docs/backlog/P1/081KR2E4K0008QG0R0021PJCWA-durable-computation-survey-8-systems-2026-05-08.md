@@ -1,6 +1,5 @@
 ---
-id: B-0369
-zetaid: 081KR2E4K0008QG0R0021PJCWA
+id: 081KR2E4K0008QG0R0021PJCWA
 priority: P1
 status: closed
 closed: 2026-05-08
@@ -14,7 +13,7 @@ classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0278 — Durable computation survey
+# 081KR2E4K0008QG0R0021PJCWA — Durable computation survey
 
 Research doc comparing Temporal, Reaqtor, Orleans, Bonsai,
 Durable Functions, Step Functions, Dataflow/Beam, TPL Dataflow

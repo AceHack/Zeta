@@ -153,7 +153,7 @@ Copilot review threads + markdownlint MD004 caught 3 lines (18, 38,
 clauses). Rewrite as 'plus' to keep ul-style consistent.
 
 Per .claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md
-B-0615 REST git-data API bypass: blob -> tree -> commit -> ref to
+081KRW63S0008QG0R000EAZ9K2 REST git-data API bypass: blob -> tree -> commit -> ref to
 bypass push contention. ls-tree count not applicable (single-file
 edit; base_tree preserves the rest).
 
@@ -177,7 +177,7 @@ headings. Collapsed onto a single line so the heading parses
 cleanly.
 
 Per .claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md
-B-0615 REST git-data API bypass.
+081KRW63S0008QG0R000EAZ9K2 REST git-data API bypass.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

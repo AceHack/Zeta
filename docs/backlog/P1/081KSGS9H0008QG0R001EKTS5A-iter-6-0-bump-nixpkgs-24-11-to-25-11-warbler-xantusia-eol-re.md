@@ -1,6 +1,5 @@
 ---
-id: B-0800
-zetaid: 081KSGS9H0008QG0R001EKTS5A
+id: 081KSGS9H0008QG0R001EKTS5A
 priority: P1
 status: open
 title: iter-6.0 — bump nixpkgs pin from `nixos-24.11` (EOL'd Jun 2025) to `nixos-25.11` Xantusia (current stable; EOL Jun 2026) — full-ai-cluster substrate is currently on an EOL channel; latest-deps-from-the-beginning principle violated; URGENT
@@ -112,15 +111,15 @@ The audit-installer-substrate.ts source-substrate audit checks for specific file
 ## Out of scope
 
 - Rolling the bump out to PC1 (separate ops action; depends on iter-5.x validation first)
-- Automating future bumps (covered by [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) + [B-0803](B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md))
-- Distro-upgrade automation runbook (covered by [B-0804](B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md))
+- Automating future bumps (covered by [081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) + [081KSGS9H0008QG0R00280HHA7](081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md))
+- Distro-upgrade automation runbook (covered by [081KSGS9H0008QG0R0034ZYYR8](081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md))
 
 ## Composes with
 
-- [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — system.autoUpgrade will continuously bump WITHIN a channel (24.11 → fresh 24.11 commits) but NOT cross-channel; this row is the cross-channel jump
-- [B-0802](B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) — kured handles reboot orchestration; relevant for any rebuild that flips reboot-required
-- [B-0803](B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is the eventual GitOps shape for this
-- [B-0804](B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — distro-upgrade runbook + automation
+- [081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — system.autoUpgrade will continuously bump WITHIN a channel (24.11 → fresh 24.11 commits) but NOT cross-channel; this row is the cross-channel jump
+- [081KSGS9H0008QG0R003GM7TYN](081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) — kured handles reboot orchestration; relevant for any rebuild that flips reboot-required
+- [081KSGS9H0008QG0R00280HHA7](081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is the eventual GitOps shape for this
+- [081KSGS9H0008QG0R0034ZYYR8](081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — distro-upgrade runbook + automation
 
 ## Sources
 

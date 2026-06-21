@@ -1,6 +1,5 @@
 ---
-id: B-0120
-zetaid: 081KQDTYV0008QG0R001VJP216
+id: 081KQDTYV0008QG0R001VJP216
 priority: P2
 status: open
 title: Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)
@@ -27,13 +26,13 @@ composes_with:
   - memory/CURRENT-amara.md
   - memory/CURRENT-ani.md
   - docs/backlog/P2/081KQDTYV0008QG0R003VB4K1V-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
-  # B-0122 (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
+  # 081KQDTYV0008QG0R001HQSSAX (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
   # Note: .sh originals remain as equivalence refs per TS migration trajectory; refactor targets .ts per Rule 0
 tags: [aaron-2026-04-30, peer-call, architecture-refactor, deduplication, factory-tooling, ts-first]
 type: friction-reducer
 ---
 
-# B-0120 — Peer-call architecture refactor (script-per-CLI + persona-flag)
+# 081KQDTYV0008QG0R001VJP216 — Peer-call architecture refactor (script-per-CLI + persona-flag)
 
 ## Source
 
@@ -133,10 +132,10 @@ linearly otherwise.
 
 ## Composes with
 
-- B-0118 (peer-call autonomous bootstrap to end Aaron-
+- 081KQDTYV0008QG0R0037YJPEX (peer-call autonomous bootstrap to end Aaron-
   courier silent debt — the operational layer this
   architecture refactor cleans up)
-- B-0119 (role-ref cleanup of existing scripts — hygiene
+- 081KQDTYV0008QG0R001N4YB73 (role-ref cleanup of existing scripts — hygiene
   pass that should compose with the refactor; possibly
   do both in same effort)
 - `.github/copilot-instructions.md` 305-362 (role-ref
@@ -146,7 +145,7 @@ linearly otherwise.
 
 The refactor is a good moment to also:
 
-1. Apply B-0119's role-ref cleanup (combined diff)
+1. Apply 081KQDTYV0008QG0R001N4YB73's role-ref cleanup (combined diff)
 2. Test the four-shell-compat (Otto-235) target on the
    refactored scripts
 3. Add CURRENT-otto.md / CURRENT-kenji.md if Aaron's

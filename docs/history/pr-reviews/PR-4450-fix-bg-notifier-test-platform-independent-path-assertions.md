@@ -38,7 +38,7 @@ No Windows workflow exists today, so this is a portability hardening rather than
 - [x] Computed expected values with \`path.join\` (matches the implementation)
 - [x] 49/49 tests still pass on Linux
 - [x] \`tsc --noEmit -p tsconfig.json\` clean
-- [x] B-0501 claim already released before this PR
+- [x] 081KRHWGX0008QG0R0000P5YP2 claim already released before this PR
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

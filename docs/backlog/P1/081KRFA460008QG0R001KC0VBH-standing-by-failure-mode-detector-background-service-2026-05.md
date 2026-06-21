@@ -1,6 +1,5 @@
 ---
-id: B-0440
-zetaid: 081KRFA460008QG0R001KC0VBH
+id: 081KRFA460008QG0R001KC0VBH
 priority: P1
 status: open
 title: "Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus"
@@ -46,7 +45,7 @@ per `.claude/rules/encoding-rules-without-mechanizing.md`:
 - [x] Polls agent's recent commit history every N minutes (configurable)
 - [x] Detects "Standing-by" pattern: no new commits + no PRs opened/closed
       in last 15min while autonomous-loop cron is firing
-- [x] On detection, publishes nudge message via bus (B-0400):
+- [x] On detection, publishes nudge message via bus (081KR7JY10008QG0R000R503K2):
       `{ topic: "infinite-backlog-nudge", to: <agent>,
          payload: { "Standing-by detected for N min; backlog has X open
          rows; suggested decomposition target: B-NNNN" } }`
@@ -119,11 +118,11 @@ async function detectAndNudge(state: AgentState, bus: BusClient): Promise<void> 
   enforces)
 - `.claude/rules/largest-mechanizable-backlog-wins.md` (the mechanization
   itself increases the mechanizable backlog)
-- B-0400 (bus protocol — transport for nudge messages)
-- B-0402 (shadow observer — canonical background service example)
-- B-0441 (backlog-row-ready notifier — composes; pre-assigns work the
+- 081KR7JY10008QG0R000R503K2 (bus protocol — transport for nudge messages)
+- 081KR7JY10008QG0R0008NGW95 (shadow observer — canonical background service example)
+- 081KRFA460008QG0R00229616S (backlog-row-ready notifier — composes; pre-assigns work the
   agent picks up)
-- B-0442 (missed-substrate cascade detector — composes; catches
+- 081KRFA460008QG0R00061SXRW (missed-substrate cascade detector — composes; catches
   different failure mode in same family)
 - PR #2974 (infinite-backlog metabolism — the rule this mechanizes)
 - PR #2998 (background-services architecture — the substrate that
@@ -136,10 +135,10 @@ async function detectAndNudge(state: AgentState, bus: BusClient): Promise<void> 
 Completed 2026-05-14 during decomposition pass:
 
 - [x] Prior-art search: `tools/bg/` surveyed — `standing-by-detector.ts` + tests already exist
-      (slices 1–4 shipped); no overlap with `tools/shadow/`; B-0400 bus protocol confirmed ready
-- [x] Dependency proof: B-0400 bus protocol merged (PR #2939 + #2959 + #3016); `publish()` API stable
+      (slices 1–4 shipped); no overlap with `tools/shadow/`; 081KR7JY10008QG0R000R503K2 bus protocol confirmed ready
+- [x] Dependency proof: 081KR7JY10008QG0R000R503K2 bus protocol merged (PR #2939 + #2959 + #3016); `publish()` API stable
 - [x] Search committed memory for `Standing-by detector` — no prior decomposition rows found;
-      B-0449 covers subscriber design; B-0459 + B-0497 filed as part of this decomposition
+      081KRFA460008QG0R002DG8KPZ covers subscriber design; 081KRHWGX0008QG0R000TVGDGV + 081KRHWGX0008QG0R003NT6DY9 filed as part of this decomposition
 
 ## Substrate-honest caveats (updated 2026-05-14)
 
@@ -158,8 +157,8 @@ Completed 2026-05-14 during decomposition pass:
 | 2 | Commit-history poll via `git log` | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
 | 3 | PR-activity poll via `gh` | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
 | 4 | Nudge payload computation + bus publish | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
-| 5.1 | `infinite-backlog-nudge` subscriber handler stub | 🔲 Open | B-0459 (depends on B-0449) |
-| 6 | launchd plist registration + AUTONOMOUS-LOOP.md update | 🔲 Open | B-0497 (independent) |
+| 5.1 | `infinite-backlog-nudge` subscriber handler stub | 🔲 Open | 081KRHWGX0008QG0R000TVGDGV (depends on 081KRFA460008QG0R002DG8KPZ) |
+| 6 | launchd plist registration + AUTONOMOUS-LOOP.md update | 🔲 Open | 081KRHWGX0008QG0R003NT6DY9 (independent) |
 
-**B-0449** is the cross-cutting design pass for the subscriber pattern across all three bg services
-(B-0440 + B-0441 + B-0442). B-0459 and B-0497 are the leaf rows for B-0440 specifically.
+**081KRFA460008QG0R002DG8KPZ** is the cross-cutting design pass for the subscriber pattern across all three bg services
+(081KRFA460008QG0R001KC0VBH + 081KRFA460008QG0R00229616S + 081KRFA460008QG0R00061SXRW). 081KRHWGX0008QG0R000TVGDGV and 081KRHWGX0008QG0R003NT6DY9 are the leaf rows for 081KRFA460008QG0R001KC0VBH specifically.

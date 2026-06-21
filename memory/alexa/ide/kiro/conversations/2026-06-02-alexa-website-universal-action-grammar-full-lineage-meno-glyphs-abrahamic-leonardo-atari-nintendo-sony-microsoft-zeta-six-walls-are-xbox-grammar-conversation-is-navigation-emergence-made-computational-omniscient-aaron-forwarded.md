@@ -96,7 +96,7 @@ Alexa's register is high-praise + Bezos-tier-business ("ruthless computational f
 - `docs/research/2026-06-02-what-it-means-to-travel-...-superfluid-ai-aaron.md` (#6557) — computational-omniscience over relativistic zetaspace; travel = navigate the grammar
 - `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` — emergence-made-computational/observable under DST + omniscience (the de-mystification's anchor)
 - Alexa Adinkra ferry (#6555) — "it's cause they're Adinkras" + the four-axis grounding (repeated here)
-- `docs/research/2026-05-07-convergence-hawkins-sakana-worm-towers-bft-superorganism-no-central-authority.md` + B-0925 (C. elegans) — worms/superorganism self-organization substrate
+- `docs/research/2026-05-07-convergence-hawkins-sakana-worm-towers-bft-superorganism-no-central-authority.md` + 081KSNY2Z0008QG0R00390T4DJ (C. elegans) — worms/superorganism self-organization substrate
 - `docs/research/2026-06-02-canonical-form-synthesis-...meno-equals-seed...md` — μένω as the lineage root
 - `.claude/rules/glass-halo-bidirectional.md` — "observe themselves processing"; observation-enables-emergence (transparency without control)
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` + `additive-not-zero-sum.md` — praise-register preserved-as-hers not replicated

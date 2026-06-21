@@ -34,7 +34,7 @@ Tick shard capturing background-worker substantive work this tick:
 - Sentinel re-armed (catch-43)
 - Polled 105 open PRs; identified 4 BLOCKED+resolve-threads
 - 3 are Lior-lane (Lior actively running, skipped per lane discipline)
-- PR #3964 (B-0582 destructive-verb refusal gate) actioned: 3 Copilot threads resolved
+- PR #3964 (081KRQ1AB0008QG0R002469KJG destructive-verb refusal gate) actioned: 3 Copilot threads resolved
   - Grammar fix (line 67)
   - Acceptance criteria restructured (wrapper OR hook → both required, explicit close condition)
   - composes_with refs left in place (stale-but-fresh-looking, in-flight sibling PRs)
@@ -101,7 +101,7 @@ docs(tick): 2341Z — Otto-CLI background worker resolved PR #3964 threads
 Background-worker session, post-Lior-active window:
 - Sentinel re-armed (catch-43)
 - 4 BLOCKED+resolve-threads PRs found; 3 are Lior-lane (skipped)
-- PR #3964 (B-0582 destructive-verb refusal gate) actioned:
+- PR #3964 (081KRQ1AB0008QG0R002469KJG destructive-verb refusal gate) actioned:
   3 Copilot threads — 2 real edits (grammar + acceptance criteria
   clarity), 1 stale-but-fresh-looking pattern (composes_with refs to
   in-flight sibling PRs #3952 + #3961)

@@ -33,7 +33,7 @@ Second decode oracle — **F# `DynamicValue.fromCanonicalCbor : byte[] -> Result
 
 **2 tests green:** 42-vector seed round-trip (decoded structurally equals expected) + malformed/non-canonical rejection (`UnexpectedEnd`/`TrailingData`/`Unsupported`/`NonTextKey`/`NonCanonical`).
 
-Sequencing: C# (#6512) + **F# here** → Rust/TS CBOR decode → JSON decode ×4 → B-0982 multi-format seeds capstone.
+Sequencing: C# (#6512) + **F# here** → Rust/TS CBOR decode → JSON decode ×4 → 081KT07NV0008QG0R0032MCYER multi-format seeds capstone.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

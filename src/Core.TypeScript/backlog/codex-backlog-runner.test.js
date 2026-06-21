@@ -62,12 +62,12 @@ describe("activeClaimsFromRemoteClaimDiffs", () => {
         const claims = activeClaimsFromRemoteClaimDiffs([
             {
                 branch: "origin/claim/trajectory-typescript-bun-live-state",
-                paths: ["docs/trajectories/typescript-bun-migration/RESUME.md", "docs/backlog/P0/B-0058-example.md"],
+                paths: ["docs/trajectories/typescript-bun-migration/RESUME.md", "docs/backlog/P0/081KQ3HBZ0008QG0R002S674CG-example.md"],
             },
         ]);
         expect(claims).toContain("claim/trajectory-typescript-bun-live-state");
         expect(claims).toContain("docs/trajectories/typescript-bun-migration/RESUME.md");
-        expect(claims).toContain("docs/backlog/P0/B-0058-example.md");
+        expect(claims).toContain("docs/backlog/P0/081KQ3HBZ0008QG0R002S674CG-example.md");
         expect(claims).toContain("claim/trajectory-typescript-bun-live-state:docs/trajectories/typescript-bun-migration/RESUME.md");
     });
 });
@@ -77,7 +77,7 @@ describe("activeClaimsFromHeartbeatSignals", () => {
         const claims = activeClaimsFromHeartbeatSignals([
             {
                 claim: "trajectory-typescript-bun-live-state",
-                paths: ["docs/trajectories/typescript-bun-migration/RESUME.md", "docs/backlog/P0/B-0058-example.md"],
+                paths: ["docs/trajectories/typescript-bun-migration/RESUME.md", "docs/backlog/P0/081KQ3HBZ0008QG0R002S674CG-example.md"],
                 updated_at: "2026-05-08T16:55:00Z",
                 status: "active",
             },
@@ -90,13 +90,13 @@ describe("activeClaimsFromHeartbeatSignals", () => {
         const claims = activeClaimsFromHeartbeatSignals([
             {
                 claim: "stale",
-                paths: ["docs/backlog/P0/B-0001-stale.md"],
+                paths: ["docs/backlog/P0/081KPYCJH0008QG0R003MDS51N-stale.md"],
                 updated_at: "2026-05-08T16:00:00Z",
                 status: "active",
             },
             {
                 claim: "done",
-                paths: ["docs/backlog/P0/B-0002-done.md"],
+                paths: ["docs/backlog/P0/081KQ0YZ80008QG0R002T6TM7Z-done.md"],
                 updated_at: "2026-05-08T16:59:00Z",
                 status: "merged-cleaned",
             },

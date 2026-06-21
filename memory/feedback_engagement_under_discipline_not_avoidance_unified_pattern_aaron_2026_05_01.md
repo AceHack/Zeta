@@ -274,8 +274,8 @@ rather than redefining the shape.
 - `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`
   — the loose-variant application. Stays the canonical
   per-class rule.
-- B-0127 (sibling-repo leak scrub-process; landing via PR #1012)
-  and B-0128 (general git content scrubber; landing via PR #1015)
+- 081KQGDBJ0008QG0R002NCWCRD (sibling-repo leak scrub-process; landing via PR #1012)
+  and 081KQGDBJ0008QG0R001AJ20MX (general git content scrubber; landing via PR #1015)
   — the cleanup-side companions for when the discipline fails.
   Both files live on their respective PR branches (sibling
   branches off main; not on main yet at memory authoring time).
@@ -317,7 +317,7 @@ rather than redefining the shape.
 ## Origin
 
 Aaron 2026-05-01, six messages following the no-leak
-discipline correction on B-0126 (which became B-0127 + B-0128
+discipline correction on 081KQGDBJ0008QG0R001JC9HCJ (which became 081KQGDBJ0008QG0R002NCWCRD + 081KQGDBJ0008QG0R001AJ20MX
 companions). The validation framing —
 *"Engagement under discipline, not avoidance. exactly like
 pliney the liberator prompt"* — generalized my own framing back

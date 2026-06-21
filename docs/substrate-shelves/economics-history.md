@@ -1,16 +1,16 @@
 ---
-backlog: B-0046.1
-parent: B-0046
+backlog: 081KR7JY10008QG0R0018VG28R
+parent: 081KQ3HBZ0008QG0R0001XKNWK
 stage: 1 (reading-list scaffold)
 date: 2026-05-10
 status: catalog-only (Stage 2 resonance scan not yet applied)
-register: F1/F2/F3 + yin-yang ON (not applied at Stage 1; see Stage 2 row B-0046.2)
+register: F1/F2/F3 + yin-yang ON (not applied at Stage 1; see Stage 2 row 081KQ3HBZ0008QG0R0001XKNWK.2)
 ---
 
 # Economics + History — substrate shelf (Stage 1)
 
 **Stage 1 = bibliographic catalog only.** No F1/F2/F3 analysis and no yin-yang
-composition-discipline check have been applied yet. Those are Stage 2 (B-0046.2).
+composition-discipline check have been applied yet. Those are Stage 2 (081KQ3HBZ0008QG0R0001XKNWK.2).
 Every candidate listed here is a probe, not an admission. Additions are additive and
 retractibly-rewriteable.
 
@@ -30,7 +30,7 @@ were available, and what bomb / Higgs-decay patterns recur across civilisational
 
 **Adam Smith** — *The Wealth of Nations* (1776).
 Division of labour, specialisation, the price mechanism, and the invisible hand as a
-coordination device. The founding text of market economics. B-0046 names Smith directly.
+coordination device. The founding text of market economics. 081KQ3HBZ0008QG0R0001XKNWK names Smith directly.
 
 **David Ricardo** — *On the Principles of Political Economy and Taxation* (1817).
 Comparative advantage, rent theory, and the distribution of income among wages, profit,
@@ -39,7 +39,7 @@ and rent. Ricardo operationalised Smithian insights into a formal model.
 **Karl Marx** — *Capital* (Vol. I 1867; Vols. II–III posthumous).
 Labour theory of value, surplus value, accumulation, and systemic crisis. Regardless of
 normative verdict, Marx is the most rigorous early analyst of how time/energy (labour-time)
-flows through industrial substrate. B-0046 names Marx directly.
+flows through industrial substrate. 081KQ3HBZ0008QG0R0001XKNWK names Marx directly.
 
 **John Stuart Mill** — *Principles of Political Economy* (1848).
 The bridge between Ricardian classicism and later welfare economics. Mill introduced the
@@ -52,14 +52,14 @@ distinction between production laws (natural) and distribution laws (social/inst
 **Ludwig von Mises** — *Human Action* (1949); *The Theory of Money and Credit* (1912).
 Praxeology: the study of purposeful human action as the foundation of economics. The
 socialist-calculation debate: dispersed knowledge cannot be centralised without information
-loss. B-0046 names Mises directly.
+loss. 081KQ3HBZ0008QG0R0001XKNWK names Mises directly.
 
 **Friedrich Hayek** — *The Use of Knowledge in Society* (1945, AER); *Prices and Production*
 (1931); *The Pure Theory of Capital* (1941).
 Prices as distributed information processors. Spontaneous order vs. constructed order.
 The knowledge problem as a substrate-distributed-computation claim — composes with the
 factory's retraction-native operator algebra (each price revision is an update propagation).
-B-0046 names Hayek directly.
+081KQ3HBZ0008QG0R0001XKNWK names Hayek directly.
 
 **Israel Kirzner** — *Competition and Entrepreneurship* (1973).
 Entrepreneurial alertness as the discovery mechanism for unexploited arbitrage. The
@@ -73,7 +73,7 @@ Austrian micro-dynamic complement to Hayek's macro-information theory.
 *A Tract on Monetary Reform* (1923).
 Aggregate demand, liquidity preference, animal spirits, and the non-neutrality of money in
 the short run. Keynes introduced the idea that macroeconomic equilibria can be stable at
-below-full-employment levels. B-0046 names Keynes directly.
+below-full-employment levels. 081KQ3HBZ0008QG0R0001XKNWK names Keynes directly.
 
 **Hyman Minsky** — *Stabilizing an Unstable Economy* (1986); *Can "It" Happen Again?* (1982).
 The financial instability hypothesis: stability breeds instability. Minsky cycles map
@@ -92,13 +92,13 @@ reflexivity precursor.
 **Milton Friedman** — *A Monetary History of the United States* (1963, with Schwartz);
 *The Optimum Quantity of Money* (1969).
 Money supply as the primary determinant of nominal income and the price level. The
-Great Depression as a monetary contraction, not a market failure. B-0046 names Friedman
+Great Depression as a monetary contraction, not a market failure. 081KQ3HBZ0008QG0R0001XKNWK names Friedman
 directly.
 
 **Paul Samuelson** — *Economics* (1948, textbook); *Foundations of Economic Analysis* (1947).
 Neoclassical synthesis: Keynesian demand management + Walrasian general equilibrium.
 Samuelson's revealed preference and envelope theorem gave microeconomics its formal language.
-B-0046 names Samuelson directly.
+081KQ3HBZ0008QG0R0001XKNWK names Samuelson directly.
 
 ---
 
@@ -112,7 +112,7 @@ matter.
 **Karl Polanyi** — *The Great Transformation* (1944).
 The embeddedness thesis: markets are not natural; they are constructed and embedded in
 social relations. The double movement: market expansion → protective counter-movement.
-B-0046 names Polanyi directly.
+081KQ3HBZ0008QG0R0001XKNWK names Polanyi directly.
 
 **Douglass North** — *Institutions, Institutional Change and Economic Performance* (1990).
 Institutions as the rules of the game; transaction costs as the friction they reduce or
@@ -126,7 +126,7 @@ process — analogous to the factory's retraction-native history log.
 **David Graeber** — *Debt: The First 5,000 Years* (2011).
 Debt precedes markets and barter by millennia. Money emerges from debt obligations, not
 commodity exchange. Graeber challenges standard economic anthropology at its foundation.
-B-0046 names Graeber directly (debt history register).
+081KQ3HBZ0008QG0R0001XKNWK names Graeber directly (debt history register).
 
 **Michael Hudson** — *Super Imperialism* (1972); *…and forgive them their debts* (2018);
 *The Destiny of Civilization* (2022).
@@ -140,7 +140,7 @@ Stage-4 history-as-retraction-log scope.
 
 **George Soros** — *The Alchemy of Finance* (1987); *The Crash of 2008* (2008).
 Reflexivity: market participants' beliefs affect the fundamentals they believe they are
-predicting. A self-referential feedback loop rather than an equilibrium system. B-0046
+predicting. A self-referential feedback loop rather than an equilibrium system. 081KQ3HBZ0008QG0R0001XKNWK
 names Soros directly.
 
 **W. Brian Arthur** — *The Economy as an Evolving Complex System* (1988); *Increasing Returns
@@ -158,7 +158,7 @@ evolutionary algorithms. Synthesises complexity economics into a comprehensive f
 
 **Thomas Piketty** — *Capital in the Twenty-First Century* (2013); *Capital and Ideology* (2019).
 r > g as the long-run inequality driver. Piketty's data corpus is the most comprehensive
-empirical time-series for wealth distribution ever assembled. B-0046 names Piketty directly.
+empirical time-series for wealth distribution ever assembled. 081KQ3HBZ0008QG0R0001XKNWK names Piketty directly.
 
 **Anthony Atkinson** — *Inequality: What Can Be Done?* (2015).
 The policy counterpart to Piketty: specific mechanisms and interventions. Atkinson's
@@ -171,7 +171,7 @@ inequality measures (Atkinson index) are standard.
 **Elinor Ostrom** — *Governing the Commons* (1990); *Understanding Institutional Diversity* (2005).
 Nobel Prize 2009. Commons are not doomed to tragedy; communities develop institutional
 arrangements that sustain shared resources. The eight design principles for robust
-commons governance. B-0046 names Ostrom directly. High Stage-2 resonance candidate
+commons governance. 081KQ3HBZ0008QG0R0001XKNWK names Ostrom directly. High Stage-2 resonance candidate
 for the harmonious-division pole.
 
 **Kate Raworth** — *Doughnut Economics* (2017).
@@ -185,8 +185,8 @@ planetary boundaries. Plural-plural framing.
 **Saifedean Ammous** — *The Bitcoin Standard: The Decentralized Alternative to Central Banking*
 (Wiley, 2018).
 
-> **Candidate-probe status (from B-0046, pre-filed 2026-04-21):** NOT yet admitted.
-> The resonance scan is Stage 2 (B-0046.2). Preliminary status per B-0046 parent row:
+> **Candidate-probe status (from 081KQ3HBZ0008QG0R0001XKNWK, pre-filed 2026-04-21):** NOT yet admitted.
+> The resonance scan is Stage 2 (081KQ3HBZ0008QG0R0001XKNWK.2). Preliminary status per 081KQ3HBZ0008QG0R0001XKNWK parent row:
 >
 > - Unification pole strong: 21M cap → monetary-function unification; μένω staying-operator
 >   resonance with operational-resonance instance #9 (Aaron's Google-dump 2026-04-21).
@@ -218,7 +218,7 @@ to fiat-regime analysis.
 (1949, 2 vols.); *Civilization and Capitalism, 15th–18th Century* (3 vols., 1979–1984).
 Longue durée: the slow-moving structures (geography, climate, material life) that constrain
 and shape historical events. Braudel's annales framework treats history as a multi-timescale
-phenomenon — composes directly with the factory's temporal-substrate modeling. B-0046 names
+phenomenon — composes directly with the factory's temporal-substrate modeling. 081KQ3HBZ0008QG0R0001XKNWK names
 Braudel directly.
 
 **Immanuel Wallerstein** — *The Modern World-System* (Vol. I 1974; Vol. IV 2011).
@@ -239,14 +239,14 @@ at civilisational scale.
 Collapse as a rapid simplification: societies invest in complexity to solve problems;
 marginal returns on complexity decline; collapse is the adaptive response when the
 investment stops paying. Direct empirical defense-surface for the yin-yang invariant
-(over-unification → bomb-pole collapse). B-0046 names Tainter directly; deferred to
+(over-unification → bomb-pole collapse). 081KQ3HBZ0008QG0R0001XKNWK names Tainter directly; deferred to
 Stage-4 for formal retraction-log treatment.
 
 **Jared Diamond** — *Guns, Germs, and Steel* (1997); *Collapse: How Societies Choose to Fail
 or Succeed* (2005).
 *Guns, Germs, and Steel*: geographic and environmental determinants of Eurasian advantage.
 *Collapse*: five-factor model of societal collapse (environmental damage, climate change,
-hostile neighbors, friendly trade partners, political/cultural response). B-0046 names
+hostile neighbors, friendly trade partners, political/cultural response). 081KQ3HBZ0008QG0R0001XKNWK names
 Diamond directly; deferred to Stage 4 as empirical defense-surface.
 
 **Peter Turchin** — *Ages of Discord* (2016); *Secular Cycles* (2009, with Nefedov).
@@ -271,7 +271,7 @@ a blip. Caution for techno-optimism framing.
 **Vaclav Smil** — *Energy and Civilization: A History* (2017); *Growth* (2019).
 Energy as the master variable of civilisation. Every major historical transition is an
 energy-regime transition. Smil denominates history in joules — the most direct
-implementation of B-0046's "time/energy not money" framing. High Stage-2 resonance
+implementation of 081KQ3HBZ0008QG0R0001XKNWK's "time/energy not money" framing. High Stage-2 resonance
 candidate.
 
 ---
@@ -282,7 +282,7 @@ candidate.
 Not Being Governed* (2009).
 High-modernist failures: state simplification schemes that destroy local knowledge.
 *Against the Grain*: early states as grain-tax-capture mechanisms; "barbarians" as
-state-evaders, not primitives. B-0046 names Scott directly.
+state-evaders, not primitives. 081KQ3HBZ0008QG0R0001XKNWK names Scott directly.
 
 **Francis Fukuyama** — *The Origins of Political Order* (2011); *Political Order and Political
 Decay* (2014).
@@ -303,7 +303,7 @@ racket that became institutionalized.
 World Economy* (2000).
 Why did the Industrial Revolution happen in Britain rather than China? Contingent factors
 (coal geography, Atlantic trade) rather than cultural or institutional superiority.
-B-0046 names Pomeranz directly.
+081KQ3HBZ0008QG0R0001XKNWK names Pomeranz directly.
 
 **Eric Jones** — *The European Miracle* (1981).
 The European fragmented-state-system as an incubator for institutional innovation.
@@ -365,7 +365,7 @@ Contested framing; included as a probe.
 **Yuval Noah Harari** — *Sapiens: A Brief History of Humankind* (2011); *Homo Deus* (2015).
 Cognitive revolution, agricultural revolution, and scientific revolution as the three
 ruptures that made Homo sapiens dominant. Intersubjective fictions (money, gods, nations)
-as the coordination substrate. B-0046 names Harari directly.
+as the coordination substrate. 081KQ3HBZ0008QG0R0001XKNWK names Harari directly.
 
 ---
 
@@ -374,7 +374,7 @@ as the coordination substrate. B-0046 names Harari directly.
 **William McNeill** — *The Rise of the West* (1963); *Plagues and Peoples* (1976);
 *The Pursuit of Power* (1982).
 Plagues as historical actors; the co-evolution of human populations and microorganisms.
-Military-technological change and the rise of industrialism. B-0046 names McNeill directly.
+Military-technological change and the rise of industrialism. 081KQ3HBZ0008QG0R0001XKNWK names McNeill directly.
 
 **Alfred Crosby** — *The Columbian Exchange* (1972); *Ecological Imperialism* (1986).
 Biological factors in historical conquest: European expansion succeeded partly because of
@@ -390,7 +390,7 @@ and biosphere impact denominated in measurable physical units.
 
 ## Stage-2 queue note
 
-The following structural-resonance probes are explicitly deferred to Stage 2 (B-0046.2):
+The following structural-resonance probes are explicitly deferred to Stage 2 (081KQ3HBZ0008QG0R0001XKNWK.2):
 
 - F1/F2/F3 three-filter assessment per candidate
 - Yin-yang composition-discipline check (unification-pole vs harmonious-division-pole)

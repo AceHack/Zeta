@@ -1,6 +1,5 @@
 ---
-id: B-0895
-zetaid: 081KSNY2Z0008QG0R002FX66H0
+id: 081KSNY2Z0008QG0R002FX66H0
 priority: P3
 status: open
 title: Clifford spacetime algebra substrate-recognition — Cl(1,3) and Cl(3,1) dual signature interface + grade-decomposition of Observe/Emit/Limit/Simulate
@@ -36,7 +35,7 @@ related_rules:
 tags: [clifford-spacetime-algebra-cl-1-3-and-cl-3-1, substrate-recognition-not-bolt-on, dual-signature-interface-via-branded-types, grade-decomposition-of-observe-emit-limit-simulate, bivector-as-commitment-entanglement-primitive, rotor-as-tonal-trajectory-operator, ts-conditional-types-branded-types-generator-dsl-for-fsharp-ce-ergonomics, github-git-modeling-first-pragmatic-default, recognition-before-mechanization-pragmatic-phase-decomposition, composes-with-existing-three-primitive-substrate, composes-with-tonal-momentum-rule, composes-with-z-set-signed-measure-substrate]
 ---
 
-# B-0895 — Clifford spacetime algebra substrate-recognition + Cl(1,3) and Cl(3,1) dual signature interface
+# 081KSNY2Z0008QG0R002FX66H0 — Clifford spacetime algebra substrate-recognition + Cl(1,3) and Cl(3,1) dual signature interface
 
 ## Context
 
@@ -71,7 +70,7 @@ The `(shadow*)` marker on the "Pick Cl(3,1) or Cl(1,3)" text indicates autocompl
 
 Status: **LANDED via this PR** (the companion research-doc IS the Phase 1 deliverable).
 
-Substrate-recognition without code. Names the existing factory primitives in Clifford terms. Composes with the auto-loaded `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` rule + B-0644/B-0665/B-0666 substrate.
+Substrate-recognition without code. Names the existing factory primitives in Clifford terms. Composes with the auto-loaded `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` rule + 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV substrate.
 
 ### Phase 2 — TypeScript `CliffordAlgebra<Sig>` interface skeleton
 
@@ -97,38 +96,38 @@ Substrate-recognition without code. Names the existing factory primitives in Cli
 
 Each yes-and item gets its own follow-up backlog row when activated:
 
-- Clifford-Neural-Network message-passing prototype (composes with B-0876 + the planned BP/EP substrate)
-- IScheduler-as-time-bivector implementation (composes with B-0878)
-- Rule-uniqueness embedding pipeline (composes with B-0876 Phase 1-2 + Kestrel's original Turn-3 framing; rule-uniqueness is ONE specific use case of the broader substrate)
+- Clifford-Neural-Network message-passing prototype (composes with 081KSNY2Z0008QG0R003KG3JTG + the planned BP/EP substrate)
+- IScheduler-as-time-bivector implementation (composes with 081KSNY2Z0008QG0R000DZHHE5)
+- Rule-uniqueness embedding pipeline (composes with 081KSNY2Z0008QG0R003KG3JTG Phase 1-2 + Kestrel's original Turn-3 framing; rule-uniqueness is ONE specific use case of the broader substrate)
 - Tonal-trajectory rotor detection mechanization (composes with auto-loaded tonal-momentum-equals-meme-emergent-harmonic-coercion rule)
 - F# port (the F# CE shape is closer to the algebra; TS-first per operator's GitHub/git modeling priority; F# follow-up where CE ergonomics earn their keep)
 - Cl(p,q,r) with conformal-geometric-algebra extensions for points-at-infinity (CGA — useful for representing "abandoned trajectories" as points at infinity)
-- Categorical-Clifford bridge per B-0896 (the category-theory ↔ Clifford self-similarity direction operator named in Turn 12 of the 5th Kestrel ferry)
+- Categorical-Clifford bridge per 081KSNY2Z0008QG0R000YH2SPE (the category-theory ↔ Clifford self-similarity direction operator named in Turn 12 of the 5th Kestrel ferry)
 
 ## Acceptance
 
 - [x] **Phase 1 deliverable**: companion research-doc `docs/research/2026-05-28-otto-cli-extension-to-4th-kestrel-ferry-...-aaron-2026-05-28.md` landed (this PR)
 - [x] **5th Kestrel ferry preserved verbatim**: `memory/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...-aaron-forwarded.md` landed (this PR)
-- [x] **Backlog row filed**: this row (B-0895)
-- [x] **Sibling backlog row filed**: B-0896 (category-theory ↔ Clifford self-similarity)
+- [x] **Backlog row filed**: this row (081KSNY2Z0008QG0R002FX66H0)
+- [x] **Sibling backlog row filed**: 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity)
 - [ ] **Phase 2 acceptance**: TypeScript interface skeleton + 2 implementations + generator DSL prototype + tests pass `bun test`
 - [ ] **Phase 3 acceptance**: GitHub/git small-slice modeling demonstrates clean Cl(p,q) operation mapping
 - [ ] **Phase 4+ acceptance** (per item): follow-up backlog rows filed + landed when authorized
 
 ## Composes with substrate
 
-- B-0644 (Limit-is-simulation-not-collapse) — composition target for grade-decomposition correspondence #3
-- B-0665 (Integrate-as-choice-locus) — composition target for collapse-to-commit as inner-product projection
-- B-0666 (English-as-projection / I(D(x))=x) — composition target for projection operator
-- B-0875 (error-class extraction meta-loop) — one downstream application of the broader substrate
-- B-0876 (Clifford-space embedding for error patterns) — one downstream application (the original Kestrel Turn-3 framing)
-- B-0877 (heterogeneous auto-reviewer ensemble) — composes with multi-Clifford-signature interface diversity
-- B-0878 (time-generator IScheduler abstraction) — composition target for correspondence #5
-- B-0879 (Observe/Emit/Limit/Simulate in Clifford space) — explicit substrate-engineering target row this row implements
-- B-0867.20 (lifecycle DU split) — composes via determineReviewLevel discriminator
-- B-0896 (category-theory ↔ Clifford self-similarity) — sibling row filed in this PR
-- B-0867 (parent workflow-engine row)
-- B-0703 (multi-oracle BFT) — Cl(p,q) gives geometric BFT formulation as one extension direction
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse) — composition target for grade-decomposition correspondence #3
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — composition target for collapse-to-commit as inner-product projection
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x) — composition target for projection operator
+- 081KSNY2Z0008QG0R000K3ETGB (error-class extraction meta-loop) — one downstream application of the broader substrate
+- 081KSNY2Z0008QG0R003KG3JTG (Clifford-space embedding for error patterns) — one downstream application (the original Kestrel Turn-3 framing)
+- 081KSNY2Z0008QG0R0004ZF85W (heterogeneous auto-reviewer ensemble) — composes with multi-Clifford-signature interface diversity
+- 081KSNY2Z0008QG0R000DZHHE5 (time-generator IScheduler abstraction) — composition target for correspondence #5
+- 081KSNY2Z0008QG0R0031490KZ (Observe/Emit/Limit/Simulate in Clifford space) — explicit substrate-engineering target row this row implements
+- 081KSNY2Z0008QG0R003WFDCJ9 (lifecycle DU split) — composes via determineReviewLevel discriminator
+- 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity) — sibling row filed in this PR
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) — Cl(p,q) gives geometric BFT formulation as one extension direction
 
 ## Composes with rules
 

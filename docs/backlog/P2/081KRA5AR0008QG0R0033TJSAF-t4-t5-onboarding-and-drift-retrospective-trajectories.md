@@ -1,25 +1,24 @@
 ---
-id: B-0455
-zetaid: 081KRA5AR0008QG0R0033TJSAF
+id: 081KRA5AR0008QG0R0033TJSAF
 priority: P2
 status: open
 title: T4 onboarding briefing + T5 drift retrospective (trajectory packets)
 tier: factory-hygiene
 effort: S
-ask: Onboarding + measurement per B-0092
+ask: Onboarding + measurement per 081KQ8P5D0008QG0R003ZF64GG
 created: 2026-05-11
 last_updated: 2026-05-14
 parent: 081KQ8P5D0008QG0R003ZF64GG
 depends_on: [081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS]
 composes_with: [081KQ8P5D0008QG0R0002TN22C]
-renumbered_from: B-0373
-renumbered_reason: "ID collision with B-0373 P1 (alignment-proof-primitive-ladder). Part of the P2 contributor-compliance set renumbered as a unit: B-0370→B-0452, B-0371→B-0453, B-0372→B-0454, B-0373→B-0455. Internal depends_on [B-0370, B-0371] remapped to [B-0452, B-0453]. Substrate-cleanup tracked in B-0451."
+renumbered_from: 081KR50HA0008QG0R001NNPEXC
+renumbered_reason: "ID collision with 081KR50HA0008QG0R001NNPEXC P1 (alignment-proof-primitive-ladder). Part of the P2 contributor-compliance set renumbered as a unit: 081KR2E4K0008QG0R000ARCH0X→081KRA5AR0008QG0R0029YWXYW, 081KR2E4K0008QG0R001733JTN→081KRA5AR0008QG0R0004P7SWS, 081KR2E4K0008QG0R0015BCPF7→081KRA5AR0008QG0R003F6TA3A, 081KR50HA0008QG0R001NNPEXC→081KRA5AR0008QG0R0033TJSAF. Internal depends_on [081KR2E4K0008QG0R000ARCH0X, 081KR2E4K0008QG0R001733JTN] remapped to [081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS]. Substrate-cleanup tracked in 081KRFA460008QG0R00308W7FJ."
 tags: [contributor-compliance, T4, T5, trajectory, renumbered]
 decomposition: atomic
 classification: buildable-now
 ---
 
-# B-0455 — T4 + T5 trajectory packets (renumbered from B-0373)
+# 081KRA5AR0008QG0R0033TJSAF — T4 + T5 trajectory packets (renumbered from 081KR50HA0008QG0R001NNPEXC)
 
 ## Scope (atomic)
 

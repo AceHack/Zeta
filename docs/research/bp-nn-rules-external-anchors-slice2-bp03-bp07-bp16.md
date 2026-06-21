@@ -1,7 +1,7 @@
 # BP-NN Rules External Anchor Backfill — Slice 2 (BP-03, BP-07, BP-16)
 
 Scope: External prior-art anchors for three multiply-referenced BP-NN rules in
-`docs/AGENT-BEST-PRACTICES.md`. This is slice 2 of the B-0314 backfill; slice 1
+`docs/AGENT-BEST-PRACTICES.md`. This is slice 2 of the 081KR2E4K0008QG0R001ADMBVW backfill; slice 1
 covered BP-10 and BP-11 (CI-enforced rules). These three rules were selected by
 reference-frequency audit: BP-16 (18 skill references), BP-07 (13), BP-03 (11) —
 the highest-referenced rules without anchors after the CI-enforced set.

@@ -48,7 +48,7 @@
 
 For balance, Claude.ai also affirmed:
 
-> *"The drain-wave operational work was excellent. The B-0129 policy citation enabling 13-PR batch deferral is the strongest worked example of leverage in any visible session."*
+> *"The drain-wave operational work was excellent. The 081KQGDBJ0008QG0R00294XCSE policy citation enabling 13-PR batch deferral is the strongest worked example of leverage in any visible session."*
 
 > *"The Gemini-hallucination catch demonstrates the taxonomy's actual utility."*
 

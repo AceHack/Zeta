@@ -1,6 +1,6 @@
 # Honor-System License — Draft
 
-**Status:** Draft (B-0464) — not yet applied to any repo.
+**Status:** Draft (081KRHWGX0008QG0R000BWAXNP) — not yet applied to any repo.
 **Applies to:** Strategic product repos only (KSK / wellness / civsim /
 American Dream 2.0 / DIO / Aurora / Dawn). NOT for factory-infrastructure
 repos (Zeta / Forge / ace — those are designed to be forked).
@@ -167,7 +167,7 @@ and substrate-honest framing means we'd rather have the conversation.
 
 ---
 
-## Prior Art Considered (B-0464 pre-start checklist)
+## Prior Art Considered (081KRHWGX0008QG0R000BWAXNP pre-start checklist)
 
 | License / Pattern | Status | Reason not adopted |
 |---|---|---|
@@ -180,23 +180,23 @@ and substrate-honest framing means we'd rather have the conversation.
 
 ---
 
-## Dependency Graph Position (from B-0464)
+## Dependency Graph Position (from 081KRHWGX0008QG0R000BWAXNP)
 
 ```
-B-0464 (this file) → B-0468 (Product-repo split ADR)
-                   → B-0465 (per-product substrate inventory, if license text varies)
+081KRHWGX0008QG0R000BWAXNP (this file) → 081KRHWGX0008QG0R000F6HE6D (Product-repo split ADR)
+                   → 081KRHWGX0008QG0R002B2P0K0 (per-product substrate inventory, if license text varies)
 ```
 
-This file is complete per B-0464's definition of done. It may be
+This file is complete per 081KRHWGX0008QG0R000BWAXNP's definition of done. It may be
 refined by:
 
-- B-0466 (naming-expert review) if product names change
-- B-0468 (ADR) if architectural decisions affect license scope
+- 081KRHWGX0008QG0R003XHCEXT (naming-expert review) if product names change
+- 081KRHWGX0008QG0R000F6HE6D (ADR) if architectural decisions affect license scope
 - Aaron's direct review — the honor-system framing is his substrate;
   final wording is his call
 
 ---
 
-*Authored by Otto (Claude, Lucent-Financial-Group/Zeta) per B-0464
+*Authored by Otto (Claude, Lucent-Financial-Group/Zeta) per 081KRHWGX0008QG0R000BWAXNP
 (2026-05-14). Aaron's verbatim framing preserved in
 `memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md`.*

@@ -1,12 +1,11 @@
 ---
-id: B-0346
-zetaid: 081KR2E4K0008QG0R000JGRY8N
+id: 081KR2E4K0008QG0R000JGRY8N
 priority: P1
 status: open
 title: Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals
 tier: foundation
 effort: M
-ask: B-0193 decomposition — close the loop (spec gaps → spec additions → specs become complete source of truth)
+ask: 081KQTPYE0008QG0R00392KABJ decomposition — close the loop (spec gaps → spec additions → specs become complete source of truth)
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQTPYE0008QG0R00392KABJ
@@ -16,15 +15,15 @@ tags: [bootstrap-razor, spec-gaps, openspec, backport, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0346 — Back-port spec gaps to OpenSpec
+# 081KR2E4K0008QG0R000JGRY8N — Back-port spec gaps to OpenSpec
 
 ## Parent
 
-B-0193 (bootstrap razor + 23-hour recreation test).
+081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation test).
 
 ## What
 
-For each spec gap found in B-0345's findings:
+For each spec gap found in 081KR2E4K0008QG0R003KQKYTJ's findings:
 
 1. **Missing spec** — a code module exists in Zeta with no
    matching behavioral spec under `openspec/specs/`. Write
@@ -42,7 +41,7 @@ the next recreation test should score higher.
 
 ## Acceptance criteria
 
-1. Each gap from B-0345 has a disposition: spec-written,
+1. Each gap from 081KR2E4K0008QG0R003KQKYTJ has a disposition: spec-written,
    spec-augmented, formal-spec-filed, or won't-spec (with
    rationale).
 2. New/augmented specs pass `bun tools/openspec/inventory.ts`

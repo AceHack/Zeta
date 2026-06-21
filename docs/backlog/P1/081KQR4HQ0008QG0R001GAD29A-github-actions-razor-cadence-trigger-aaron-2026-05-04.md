@@ -1,6 +1,5 @@
 ---
-id: B-0192
-zetaid: 081KQR4HQ0008QG0R001GAD29A
+id: 081KQR4HQ0008QG0R001GAD29A
 priority: P1
 status: closed
 closed: 2026-05-07
@@ -16,7 +15,7 @@ composes_with: [081KQGDBJ0008QG0R0012FC7RX, 081KQR4HQ0008QG0R001909FPT, 081KQR4H
 tags: [razor-cadence, mechanization, github-actions, trigger-reliability, foundation, autonomy]
 ---
 
-# B-0192 -- GitHub Actions trigger for razor cadence + trajectory reviews
+# 081KQR4HQ0008QG0R001GAD29A -- GitHub Actions trigger for razor cadence + trajectory reviews
 
 ## The naming
 
@@ -54,9 +53,9 @@ A workflow at `.github/workflows/razor-cadence.yml` running on a cron schedule (
 
 Acceptance: workflow lands; one cycle fires; issue gets opened automatically; Otto picks it up on next wake.
 
-### 2. Pre-commit / pre-push hooks (MED leverage -- composes with B-0191)
+### 2. Pre-commit / pre-push hooks (MED leverage -- composes with 081KQR4HQ0008QG0R002YNV361)
 
-The B-0191 row already names pre-commit hooks for branch-verify. Generalizes to other per-commit checks (lint, format, archive-header presence, ASCII-only invariant, etc.). All committed under `tools/git-hooks/` and installed via `tools/setup/`.
+The 081KQR4HQ0008QG0R002YNV361 row already names pre-commit hooks for branch-verify. Generalizes to other per-commit checks (lint, format, archive-header presence, ASCII-only invariant, etc.). All committed under `tools/git-hooks/` and installed via `tools/setup/`.
 
 ### 3. System-level cron / launchd (LOW leverage / fragile)
 
@@ -64,7 +63,7 @@ Maintainer-side launchd on macOS or real crontab as fallback when GitHub Actions
 
 ### 4. Trajectory-review GitHub Action
 
-Companion to (1): scheduled action that audits trajectory file freshness, opens issue when a trajectory hasn't been touched in N days. Composes with B-0190 (memory trajectory) and `docs/active-trajectory.md`.
+Companion to (1): scheduled action that audits trajectory file freshness, opens issue when a trajectory hasn't been touched in N days. Composes with 081KQR4HQ0008QG0R001909FPT (memory trajectory) and `docs/active-trajectory.md`.
 
 ## Why P1
 
@@ -88,14 +87,14 @@ Companion to (1): scheduled action that audits trajectory file freshness, opens 
 ## Out of scope
 
 - Razor-content authoring (what the razor reviews actually check) -- that's per-rule and not part of this trigger mechanization.
-- Replacing Aaron-as-external-trigger entirely (long-horizon shape: BFT multi-model AI loops triggering each other -- B-0138 territory).
-- Per-commit hook implementations (B-0191).
+- Replacing Aaron-as-external-trigger entirely (long-horizon shape: BFT multi-model AI loops triggering each other -- 081KQGDBJ0008QG0R0012FC7RX territory).
+- Per-commit hook implementations (081KQR4HQ0008QG0R002YNV361).
 
 ## Composes with
 
-- **B-0138** -- BFT-resistance theorem -- Aurora composed CRDT + consensus. Long-horizon shape: BFT-multi-model AI loops triggering each other. This row is the interim mechanization until BFT-loops carry the trigger.
-- **B-0190** -- memory substrate-engineering trajectory. Trajectory-review action (#4 above) composes here.
-- **B-0191** -- orchestrator branch-verify mechanization. Pre-commit hook layer (#2 above) composes here.
+- **081KQGDBJ0008QG0R0012FC7RX** -- BFT-resistance theorem -- Aurora composed CRDT + consensus. Long-horizon shape: BFT-multi-model AI loops triggering each other. This row is the interim mechanization until BFT-loops carry the trigger.
+- **081KQR4HQ0008QG0R001909FPT** -- memory substrate-engineering trajectory. Trajectory-review action (#4 above) composes here.
+- **081KQR4HQ0008QG0R002YNV361** -- orchestrator branch-verify mechanization. Pre-commit hook layer (#2 above) composes here.
 - `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md` (PR #1552) -- substrate transmission mechanism Claude.ai's design operationalizes.
 - `memory/feedback_claude_ai_recap_shortcut_4_element_pin_aaron_2026_05_04.md` (PR #1559) -- prior cross-Claude-instance substrate transmission; same family.
 

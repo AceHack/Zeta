@@ -1,6 +1,6 @@
 ---
 pr_number: 5128
-title: "fix(B-0058): filter-gate-log test no longer pollutes production ethics-decision log"
+title: "fix(081KQ3HBZ0008QG0R002S674CG): filter-gate-log test no longer pollutes production ethics-decision log"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T08:13:49Z"
@@ -12,14 +12,14 @@ archived_at: "2026-05-26T13:29:29Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5128: fix(B-0058): filter-gate-log test no longer pollutes production ethics-decision log
+# PR #5128: fix(081KQ3HBZ0008QG0R002S674CG): filter-gate-log test no longer pollutes production ethics-decision log
 
 ## PR description
 
 ## Summary
 
 - `tools/alignment/filter_gate_log.test.ts:302` ran `main()` with production args, so every test run wrote `skill:test-entry` entries to the real production log at `tools/alignment/out/filter-gate-log.jsonl`.
-- Empirical anchor: 2026-05-25T22:52Z Lior test run left 2 polluting entries in the local checkout. The file was never committed because it carried only test pollution; per B-0058 responsibility #3 it is supposed to carry only real ethics-gate decisions.
+- Empirical anchor: 2026-05-25T22:52Z Lior test run left 2 polluting entries in the local checkout. The file was never committed because it carried only test pollution; per 081KQ3HBZ0008QG0R002S674CG responsibility #3 it is supposed to carry only real ethics-gate decisions.
 - Fix adds an env-var override (`FILTER_GATE_LOG_PATH`) for `logFilePath()` and updates the polluting test to use `mkdtempSync` + try/finally cleanup.
 
 ## What changed

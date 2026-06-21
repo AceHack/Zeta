@@ -1,6 +1,5 @@
 ---
-id: B-0012
-zetaid: 081KQ0YZ80008QG0R0026XNANM
+id: 081KQ0YZ80008QG0R0026XNANM
 priority: P3
 status: open
 title: Land `docs/DECISIONS/2026-04-22-aurora-ksk-design.md` ADR if still needed (currently dangling reference in some legacy citations)
@@ -35,7 +34,7 @@ If the Aurora-KSK design substrate WARRANTS formalization as an ADR (rather than
 
 ## Composes with
 
-- B-0005 (split aurora from courier-ferry archive) — the ADR if landed should align with the directory-ontology decision in B-0005.
+- 081KQ0YZ80008QG0R003GMGDRH (split aurora from courier-ferry archive) — the ADR if landed should align with the directory-ontology decision in 081KQ0YZ80008QG0R003GMGDRH.
 - Otto-273 (history-of-named-entity-conversations directory pattern).
 - Otto-313 — this row IS the teaching for the Codex catch.
 

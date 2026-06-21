@@ -1,6 +1,5 @@
 ---
-id: B-0834
-zetaid: 081KSGS9H0008QG0R001RR3ZXQ
+id: 081KSGS9H0008QG0R001RR3ZXQ
 priority: P2
 status: open
 title: installer must preserve install log to file — failures + warnings scroll past faster than operator can read (empirical from 2026-05-26 physical hardware-support test; gh login not reached) (Aaron 2026-05-26)
@@ -9,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSGS9H0008QG0R0011BC7T2
   - 081KSGS9H0008QG0R001Q2DH2H
@@ -20,8 +19,8 @@ tags: [installer, first-boot, logging, operator-ux, physical-hardware-support-te
 ## Problem
 
 Empirical from operator's 2026-05-26 physical hardware-support test
-(third empirical-anchor in the same test session after B-0832 nmtui
-WiFi rescan + B-0833 interactive-vs-baked-keys auth tension):
+(third empirical-anchor in the same test session after 081KSGS9H0008QG0R001Q2DH2H nmtui
+WiFi rescan + 081KSGS9H0008QG0R003JNSVR5 interactive-vs-baked-keys auth tension):
 
 Operator framing: *"i got some failures and warings on install of
 nixos not sure if it matters it scrolled by to faster have gh login
@@ -40,10 +39,10 @@ Two observations packed into one report:
    scroll-past-too-fast issue blocks operator's ability to diagnose
 
 The operator's correct framing: *"this is exactly what i'm hoping
-you can log and test in ci"* — B-0831 cascade #6 phase 1 already
+you can log and test in ci"* — 081KSGS9H0008QG0R0011BC7T2 cascade #6 phase 1 already
 plans to capture full serial console as workflow-artifact. This row
 is the OPERATOR-SIDE analog: preserve the log on the install target
-so operator can review after the fact, BEFORE B-0831 cascade #6
+so operator can review after the fact, BEFORE 081KSGS9H0008QG0R0011BC7T2 cascade #6
 lands.
 
 ## Proposed mitigation
@@ -112,25 +111,25 @@ if Approach A misses anything.
   this row modifies)
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` (wrapper
   that calls zeta-install; could set `LOG_FILE` env var)
-- B-0754 (zero-typing first-boot scope; this row extends with
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope; this row extends with
   preserved-log substrate)
-- B-0831 (CI cascade #6 phase 1 captures full serial console; this row
+- 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 phase 1 captures full serial console; this row
   is the OPERATOR-SIDE analog — log preserved on disk so operator can
-  review post-failure, BEFORE B-0831 cascade #6 lands)
-- B-0832 (sibling empirical anchor: nmtui WiFi rescan; same physical
+  review post-failure, BEFORE 081KSGS9H0008QG0R0011BC7T2 cascade #6 lands)
+- 081KSGS9H0008QG0R001Q2DH2H (sibling empirical anchor: nmtui WiFi rescan; same physical
   test session)
-- B-0833 (sibling empirical anchor: interactive-login vs baked-in-keys
+- 081KSGS9H0008QG0R003JNSVR5 (sibling empirical anchor: interactive-login vs baked-in-keys
   CI-test tension; same physical test session — this row's failure
   blocked reaching the gh-login phase)
 - The 2026-05-26 physical hardware-support test (3rd empirical anchor
-  in the same test session; validates B-0831 reframing of
+  in the same test session; validates 081KSGS9H0008QG0R0011BC7T2 reframing of
   physical-as-hardware-support-test producing empirically-anchored
   substrate-engineering targets within minutes)
 
 ## Substrate-honest framing
 
 Three empirical anchors in one physical hardware-support test session
-(B-0832 + B-0833 + this row B-0834) is STRONG validation of B-0831's
+(081KSGS9H0008QG0R001Q2DH2H + 081KSGS9H0008QG0R003JNSVR5 + this row 081KSGS9H0008QG0R001RR3ZXQ) is STRONG validation of 081KSGS9H0008QG0R0011BC7T2's
 reframing: physical-test-as-first-class-hardware-compatibility-matrix-
 substrate produces real-world substrate-engineering targets that CI
 emulation cannot reproduce.
@@ -141,7 +140,7 @@ once Approach A lands). P2 priority because it's a diagnostic
 enabler, not a hard install blocker.
 
 This row also demonstrates the **operator-side analog** pattern to
-the CI-side B-0831 cascade #6: both substrate-engineering targets
+the CI-side 081KSGS9H0008QG0R0011BC7T2 cascade #6: both substrate-engineering targets
 solve the same fundamental problem (preserve install output for
 later review) at different surfaces (operator-physical-test on real
 hardware vs CI-automated-test in QEMU). Both are valuable; both

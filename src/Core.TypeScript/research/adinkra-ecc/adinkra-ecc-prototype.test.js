@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { EXTENDED_HAMMING_8_4_4_GENERATOR, enumerateCodewords, isDoublyEven, isSelfDual, weight, dotMod2, deriveKeySeed, adinkraEccProof, } from "./adinkra-ecc-prototype";
-describe("Adinkra [8,4,4] ECC — B-0623 acceptance #3 constructive proof path", () => {
+describe("Adinkra [8,4,4] ECC — 081KRW63S0008QG0R000QJR08H acceptance #3 constructive proof path", () => {
     const cw = enumerateCodewords(EXTENDED_HAMMING_8_4_4_GENERATOR);
     test("16 codewords (dim 4)", () => expect(cw.length).toBe(16));
     test("generator rows are weight 4 (doubly-even generators)", () => EXTENDED_HAMMING_8_4_4_GENERATOR.forEach((r) => expect(weight(r)).toBe(4)));

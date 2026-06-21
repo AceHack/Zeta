@@ -29,11 +29,11 @@
 
 ## Summary
 
-B-0259: wire the B-0258 reindexer into developer flow and CI so MEMORY.md drift is caught mechanically.
+081KR2E4K0008QG0R000XCS9FT: wire the 081KR2E4K0008QG0R001E27DDV reindexer into developer flow and CI so MEMORY.md drift is caught mechanically.
 
 - **CI workflow** (`.github/workflows/memory-index-drift.yml`) — triggers on `memory/**` changes, runs `bun tools/memory/reindex-memory-md.ts --check`, fails with remediation instructions when stale. Safe-pattern compliant: SHA-pinned checkout, `permissions: contents: read`, no user-authored text in `run:` steps.
 - **Harness hook** (`.claude/hooks/post-write-memory-reindex.ts`) — PostToolUse hook for `Write` + `Edit` matchers; auto-regenerates MEMORY.md after agent writes to any heap file. Excludes MEMORY.md, CURRENT-*.md, README.md, persona/**. Non-blocking on failure (CI is the hard gate).
-- **MEMORY.md regenerated** — first full regeneration via the B-0258 generator (triggered by the hook smoke-test). Previously manually curated; generator output is now canonical.
+- **MEMORY.md regenerated** — first full regeneration via the 081KR2E4K0008QG0R001E27DDV generator (triggered by the hook smoke-test). Previously manually curated; generator output is now canonical.
 
 ## Post-merge manual step required
 
@@ -63,7 +63,7 @@ B-0259: wire the B-0258 reindexer into developer flow and CI so MEMORY.md drift 
 ## Acceptance criteria
 
 - [x] CI fails when generated output is stale (`memory-index-drift.yml`, exit 2 → 1)
-- [x] Developer instructions explain how to fix drift (workflow remediation block + B-0259 row)
+- [x] Developer instructions explain how to fix drift (workflow remediation block + 081KR2E4K0008QG0R000XCS9FT row)
 - [x] Memory-file edits trigger deterministic index regeneration (hook script committed + wiring instructions provided)
 - [x] No cutover behavior changes
 

@@ -66,7 +66,7 @@ Operator-explicit pick: *"go with i (shadow*)"*. PR #5705 already merged at the 
 - [x] Cross-scope mapping (substrate-smoothness rule → code-implementation scope) explicit
 - [x] Local markdownlint passes
 - [x] Tree-size canary (61=61)
-- [x] Persistent worktree per B-0894.3
+- [x] Persistent worktree per 081KSNY2Z0008QG0R001RWF499
 - [ ] CI passes
 - [ ] Auto-merge fires
 

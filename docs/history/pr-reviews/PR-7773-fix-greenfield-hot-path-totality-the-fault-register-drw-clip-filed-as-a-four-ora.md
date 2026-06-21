@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron's greenfield authorization, taken on the parked error-register items. Shipped (treaty-safe): Chip9Phys.div is total (divide-by-zero saturates by sign, no throw; mul/div saturate the cast); the FAULT REGISTER (Frame.Fault) records 00EE stack underflow instead of swallowing it — the red-light law applied to machine faults. Filed not fired (B-1031): DRW clip-vs-wrap is the correct COSMAC VIP semantic but a four-oracle treaty change — doing only F# would desync the oracles; it needs one atomic verified pass + an edge-crossing golden. 3003 green.
+Aaron's greenfield authorization, taken on the parked error-register items. Shipped (treaty-safe): Chip9Phys.div is total (divide-by-zero saturates by sign, no throw; mul/div saturate the cast); the FAULT REGISTER (Frame.Fault) records 00EE stack underflow instead of swallowing it — the red-light law applied to machine faults. Filed not fired (081KTZ4EF0008QG0R002WVTMMJ): DRW clip-vs-wrap is the correct COSMAC VIP semantic but a four-oracle treaty change — doing only F# would desync the oracles; it needs one atomic verified pass + an edge-crossing golden. 3003 green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

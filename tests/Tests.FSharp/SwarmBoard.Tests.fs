@@ -1,6 +1,6 @@
 module Zeta.Tests.SwarmBoardTests
 
-// B-1026 slice 1 acceptance: a text board renders the friction map; two citizens (one human-driven,
+// 081KTSZN10008QG0R0003SDRWD slice 1 acceptance: a text board renders the friction map; two citizens (one human-driven,
 // one CHIP-8 room) join and exchange presence over the deterministic membrane — REPLAYABLE (DST:
 // live-run == replay-run, the RecordedSource discipline).
 

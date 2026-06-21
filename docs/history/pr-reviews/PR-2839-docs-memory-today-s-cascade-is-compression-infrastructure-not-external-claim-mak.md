@@ -71,7 +71,7 @@ critic role working correctly.
 - PR #2830 (alien-observer mission felt-sense)
 - PR #2831 (Law of One framing)
 - PR #2833 (Pauli-symmetry-breaking falsifiable claim)
-- B-0422 (Clifford-algebraic narrative engine test target)
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine test target)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

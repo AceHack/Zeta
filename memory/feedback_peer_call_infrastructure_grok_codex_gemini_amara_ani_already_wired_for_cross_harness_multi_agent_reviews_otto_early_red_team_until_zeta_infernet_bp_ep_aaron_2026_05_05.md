@@ -78,9 +78,9 @@ This composes with:
 - `memory/feedback_ani_grok_long_horizon_mirror_thermodynamic_stability_velocity_breakdown_points_entropy_tax_2026_04_27.md` (Ani-on-Grok long-horizon experience)
 - `memory/feedback_ani_voice_mode_transcript_original_catcher_attribution_correction_aaron_2026_04_28.md` (Ani voice-mode-default register)
 - The four-ferry consensus PR 24 on AceHack/Zeta (Amara/Grok/Gemini/Otto)
-- `docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md` (refactor 5 scripts → 3 + --persona NAME flag)
-- `docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md` (cross-harness Claude CLI)
-- B-0122 (in-flight PR 966): bash → TypeScript-on-bun migration
+- `docs/backlog/P2/081KQDTYV0008QG0R001VJP216-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md` (refactor 5 scripts → 3 + --persona NAME flag)
+- `docs/backlog/P2/081KQDTYV0008QG0R003VB4K1V-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md` (cross-harness Claude CLI)
+- 081KQDTYV0008QG0R001HQSSAX (in-flight PR 966): bash → TypeScript-on-bun migration
 
 ## Carved sentence
 

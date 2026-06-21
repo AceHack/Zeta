@@ -36,7 +36,7 @@ Five always-active substrate-engineering disciplines now documented at wake-time
 - DST
 - **DV2.0 (NEW)** — partition by change-rate
 
-The fifth catches ruleset-divergence smells (B-0427), hub-satellite skill design, HKT-MDM master-data shapes (PR #2913), and substrate placement decisions.
+The fifth catches ruleset-divergence smells (081KRFA460008QG0R000VKJF0H), hub-satellite skill design, HKT-MDM master-data shapes (PR #2913), and substrate placement decisions.
 
 Future-Otto inheriting at cold-boot now finds DV2.0 in the always-loaded rule set.
 
@@ -105,7 +105,7 @@ Five always-active substrate-engineering disciplines:
 - DV2.0 (NEW activation — partition by change-rate)
 
 The fifth catches ruleset-divergence smells in repo-split
-(B-0427), hub-satellite separations in skill design, master-
+(081KRFA460008QG0R000VKJF0H), hub-satellite separations in skill design, master-
 data partition shapes (HKT-MDM per PR #2913), and substrate
 placement decisions (memory vs rule vs skill vs ADR).
 
@@ -116,7 +116,7 @@ Composes with:
 - glass-halo-bidirectional (partition observability)
 - additive-not-zero-sum (different shapes for different rates)
 - fsharp-anchor-dotnet-build-sanity-check (HKT-MDM F#-anchored)
-- B-0424 / B-0425 / B-0426 / B-0427 (repo-split design space)
+- 081KRFA460008QG0R001H98EXJ / 081KRFA460008QG0R003JQ46J4 / 081KRFA460008QG0R0007RWSN1 / 081KRFA460008QG0R000VKJF0H (repo-split design space)
 - PR #2912 (re-activation memory)
 - PR #2913 (HKT-MDM universality)
 - PR #2914 (Clifford/HKT vocabulary)

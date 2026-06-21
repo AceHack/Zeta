@@ -1,6 +1,5 @@
 ---
-id: B-0728
-zetaid: 081KSE6WT0008QG0R0005XASX2
+id: 081KSE6WT0008QG0R0005XASX2
 priority: P2
 status: open
 title: "Destructive-tool authoring contract — safety rails + permission-grants-INVOCATION-not-absolution + runtime-acceptance gate with nonce; canonical pattern landed in flash-usb.ts"
@@ -17,7 +16,7 @@ composes_with:
   - .claude/settings.json
 ---
 
-# B-0728 — Destructive-tool authoring contract
+# 081KSE6WT0008QG0R0005XASX2 — Destructive-tool authoring contract
 
 ## Carved blade
 

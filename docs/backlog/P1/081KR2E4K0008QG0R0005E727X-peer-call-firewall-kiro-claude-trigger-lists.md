@@ -1,6 +1,5 @@
 ---
-id: B-0325
-zetaid: 081KR2E4K0008QG0R0005E727X
+id: 081KR2E4K0008QG0R0005E727X
 priority: P1
 status: closed
 title: "Add KIRO + CLAUDE firewall trigger lists to _firewall.ts"
@@ -25,7 +24,7 @@ existing pattern established by `GROK_SUBSTANTIVE_TRIGGERS`,
 
 ## Why this is the first child
 
-Both B-0326 (kiro.ts) and B-0327 (claude.ts) import from
+Both 081KR2E4K0008QG0R001HQF27C (kiro.ts) and 081KR2E4K0008QG0R002KNZ29V (claude.ts) import from
 `_firewall.ts`. Landing the trigger lists first means the
 script rows can wire the firewall immediately without a
 cross-file dependency on an unmerged sibling.

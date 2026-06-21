@@ -1,6 +1,5 @@
 ---
-id: B-0830
-zetaid: 081KSGS9H0008QG0R00126RHQR
+id: 081KSGS9H0008QG0R00126RHQR
 title: Add ISO release-attach to build-ai-cluster-iso.yml workflow when Zeta starts tagging releases
 status: open
 priority: P3
@@ -10,7 +9,7 @@ depends_on: []
 composes_with: []
 ---
 
-# B-0830 — Add ISO release-attach to build-ai-cluster-iso.yml workflow (when Zeta starts tagging releases) (Aaron 2026-05-26)
+# 081KSGS9H0008QG0R00126RHQR — Add ISO release-attach to build-ai-cluster-iso.yml workflow (when Zeta starts tagging releases) (Aaron 2026-05-26)
 
 ## Scope
 

@@ -3,7 +3,7 @@
 Status: PR-ready source wiring
 Claim: `claim/codex-loop-standing-query-trigger-sources-20260530`
 Grounding backlog:
-`docs/backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
+`docs/backlog/P1/081KQZVQW0008QG0R001FG05RZ-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
 Predecessor:
 `docs/trajectories/autonomous-loop-coordination/standing-query-trigger-inventory-2026-05-29.md`
 
@@ -33,6 +33,6 @@ sources without re-opening each side-effecting probe.
 
 ## Next Use
 
-The next B-0250 slice can add an event-window source that consumes recent
+The next 081KQZVQW0008QG0R001FG05RZ slice can add an event-window source that consumes recent
 trajectory and PR events, emits a coincidence signal, and plugs into the same
 source collection layer without changing the existing monitor contract.

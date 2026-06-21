@@ -1,6 +1,6 @@
 ---
 pr_number: 5021
-title: "rule(B-0752)+backlog: fighting past-self vs peer-agent \u2014 distinguish before punting; fix yours; coordinate on peers; never silent-punt-by-default"
+title: "rule(081KSE6WT0008QG0R000E05579)+backlog: fighting past-self vs peer-agent \u2014 distinguish before punting; fix yours; coordinate on peers; never silent-punt-by-default"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T22:51:01Z"
@@ -12,16 +12,16 @@ archived_at: "2026-05-25T23:52:06Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5021: rule(B-0752)+backlog: fighting past-self vs peer-agent — distinguish before punting; fix yours; coordinate on peers; never silent-punt-by-default
+# PR #5021: rule(081KSE6WT0008QG0R000E05579)+backlog: fighting past-self vs peer-agent — distinguish before punting; fix yours; coordinate on peers; never silent-punt-by-default
 
 ## PR description
 
 Aaron 2026-05-25 Vera-anchor: 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues'.
 
-Closes today's agent-substrate-discipline cluster (B-0750 + B-0751 + B-0752):
-- B-0750: clean up after yourself
-- B-0751: agents have own clones; cross-agent contention eliminated
-- B-0752 (this): distinguish own vs peer; don't silent-punt
+Closes today's agent-substrate-discipline cluster (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579):
+- 081KSE6WT0008QG0R003YYC9PV: clean up after yourself
+- 081KSE6WT0008QG0R003YYC9PV: agents have own clones; cross-agent contention eliminated
+- 081KSE6WT0008QG0R000E05579 (this): distinguish own vs peer; don't silent-punt
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -56,11 +56,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds the B-0752 backlog row and lands an auto-loaded `.claude/rules/` rule that formalizes “ownership classification before cleanup” (fix your own substrate, coordinate on peers, and explicitly surface uncertainty instead of silently punting).
+Adds the 081KSE6WT0008QG0R000E05579 backlog row and lands an auto-loaded `.claude/rules/` rule that formalizes “ownership classification before cleanup” (fix your own substrate, coordinate on peers, and explicitly surface uncertainty instead of silently punting).
 
 **Changes:**
-- Added new P2 backlog row B-0752 describing the rule and follow-on mechanization scope items.
-- Updated `docs/BACKLOG.md` to include the new B-0752 entry in the P2 index.
+- Added new P2 backlog row 081KSE6WT0008QG0R000E05579 describing the rule and follow-on mechanization scope items.
+- Updated `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R000E05579 entry in the P2 index.
 - Added a new `.claude/rules/` rule documenting the decision tree + discriminators for “past-self vs peer-agent” substrate ownership.
 
 ### Reviewed changes
@@ -69,8 +69,8 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 5 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md` | New backlog row capturing the rule landing + tooling/mechanization scope. |
-| `docs/BACKLOG.md` | Adds B-0752 to the generated P2 backlog index list. |
+| `docs/backlog/P2/081KSE6WT0008QG0R000E05579-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md` | New backlog row capturing the rule landing + tooling/mechanization scope. |
+| `docs/BACKLOG.md` | Adds 081KSE6WT0008QG0R000E05579 to the generated P2 backlog index list. |
 | `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md` | New operational rule defining classification + coordination behavior for stale substrate. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T23:13:20Z)
@@ -125,15 +125,15 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T22:52:54Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point to an existing B-0750 sibling rule file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point to an existing 081KSE6WT0008QG0R003YYC9PV sibling rule file**
 
-This reference targets `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`, but that file does not exist in the repository (`rg --files .claude/rules` shows no match), so the newly landed rule’s composition guidance is non-actionable at review/cold-boot time. Because these rule links are used as operational navigation, this should either be corrected to the real filename or landed together with the referenced B-0750 rule file.
+This reference targets `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`, but that file does not exist in the repository (`rg --files .claude/rules` shows no match), so the newly landed rule’s composition guidance is non-actionable at review/cold-boot time. Because these rule links are used as operational navigation, this should either be corrected to the real filename or landed together with the referenced 081KSE6WT0008QG0R003YYC9PV rule file.
 
 Useful? React with 👍 / 👎.
 
 **@AceHack** (2026-05-25T23:20:07Z):
 
-Fixed in 8de5a1a — reworded cross-reference to 'B-0750 sibling rule (to land separately; not yet present in .claude/rules/)'. No longer a broken file pointer.
+Fixed in 8de5a1a — reworded cross-reference to '081KSE6WT0008QG0R003YYC9PV sibling rule (to land separately; not yet present in .claude/rules/)'. No longer a broken file pointer.
 
 ### Thread 2: .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md:22 (resolved)
 
@@ -143,7 +143,7 @@ P1: This rule document uses direct person/agent names (e.g., “Aaron …”, �
 
 **@AceHack** (2026-05-25T23:20:13Z):
 
-Fixed in 8de5a1a — rewrote body attributions to role-refs ('the human maintainer', 'a peer agent', 'the authoring agent'). The named-attribution anchor now lives on docs/backlog/P2/B-0752-* (history surface per .github/copilot-instructions.md:305-366).
+Fixed in 8de5a1a — rewrote body attributions to role-refs ('the human maintainer', 'a peer agent', 'the authoring agent'). The named-attribution anchor now lives on docs/backlog/P2/081KSE6WT0008QG0R000E05579-* (history surface per .github/copilot-instructions.md:305-366).
 
 ### Thread 3: .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md:56 (resolved)
 
@@ -189,13 +189,13 @@ Fixed in 8de5a1a — the table cell no longer uses escaped pipe. Command is now 
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:13:19Z):
 
-P1: This rule links to `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`, but that file does not appear to exist in `.claude/rules/` on this branch. This makes the cross-reference a broken pointer. Consider either adding the referenced rule file in this PR, or change the reference to the actual existing artifact (e.g., the B-0750 backlog row path) until the rule lands.
+P1: This rule links to `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`, but that file does not appear to exist in `.claude/rules/` on this branch. This makes the cross-reference a broken pointer. Consider either adding the referenced rule file in this PR, or change the reference to the actual existing artifact (e.g., the 081KSE6WT0008QG0R003YYC9PV backlog row path) until the rule lands.
 
 **@AceHack** (2026-05-25T23:20:09Z):
 
-Fixed in 8de5a1a (same edit as the codex finding above) — cross-reference now reworded; the B-0750 rule file will land separately.
+Fixed in 8de5a1a (same edit as the codex finding above) — cross-reference now reworded; the 081KSE6WT0008QG0R003YYC9PV rule file will land separately.
 
-### Thread 8: docs/backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md:99 (resolved)
+### Thread 8: docs/backlog/P2/081KSE6WT0008QG0R000E05579-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md:99 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:13:20Z):
 
@@ -219,11 +219,11 @@ Fixed in 8de5a1a (same edit as above) — escaped-pipe command replaced with she
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:13:20Z):
 
-P1: This `.claude/rules/**` file introduces new named-attribution in narrative prose (e.g., specific human + agent-persona names). Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution…” operational standing rule, current-state surfaces should prefer role-refs (e.g., “the human maintainer”, “peer agent”) and keep named provenance on the allowed history surfaces (`docs/backlog/**`, `docs/research/**`, etc.). Consider rewriting the new attributions here to role-refs and linking to the B-0752 row for the named anchor.
+P1: This `.claude/rules/**` file introduces new named-attribution in narrative prose (e.g., specific human + agent-persona names). Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution…” operational standing rule, current-state surfaces should prefer role-refs (e.g., “the human maintainer”, “peer agent”) and keep named provenance on the allowed history surfaces (`docs/backlog/**`, `docs/research/**`, etc.). Consider rewriting the new attributions here to role-refs and linking to the 081KSE6WT0008QG0R000E05579 row for the named anchor.
 
 **@AceHack** (2026-05-25T23:20:15Z):
 
-Fixed in 8de5a1a (same edit as above) — body prose uses role-refs; B-0752 backlog row carries the named anchor.
+Fixed in 8de5a1a (same edit as above) — body prose uses role-refs; 081KSE6WT0008QG0R000E05579 backlog row carries the named anchor.
 
 ## General comments
 

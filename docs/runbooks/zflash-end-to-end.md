@@ -1,6 +1,6 @@
 # Operator runbook: zflash end-to-end (CP-1 through CP-6)
 
-**Purpose:** Step-by-step procedure for operator to validate zflash substrate end-to-end against acceptance criteria from B-0891. Composes with B-0844 (zflash `--agent` flag) + B-0852 (USB-bound credentials) + B-0852.3a (interactive picker at install-time) + B-0852.4 (boot-time restore service) + B-0737 (Touch ID + PAM).
+**Purpose:** Step-by-step procedure for operator to validate zflash substrate end-to-end against acceptance criteria from 081KSNY2Z0008QG0R0008PN7RQ. Composes with 081KSGS9H0008QG0R001EZKNCB (zflash `--agent` flag) + 081KSKBP80008QG0R003AX2A69 (USB-bound credentials) + 081KSKBP80008QG0R003AX2A69.3a (interactive picker at install-time) + 081KSKBP80008QG0R002XBRGN8 (boot-time restore service) + 081KSE6WT0008QG0R003WZAQKV (Touch ID + PAM).
 
 **Status:** 2026-05-28 — substrate ~75% shipped; bottleneck is empirical validation. This runbook IS the validation procedure.
 
@@ -26,7 +26,7 @@
 
 ## CP-1 — Build fresh ISO from current `origin/main`
 
-**Goal:** produce a Zeta-installer ISO carrying all merged substrate (B-0844 `--agent` + B-0852 cred-picker + B-0852.4 restore module + B-0852.3a Step 6.94/6.95-picker integration).
+**Goal:** produce a Zeta-installer ISO carrying all merged substrate (081KSGS9H0008QG0R001EZKNCB `--agent` + 081KSKBP80008QG0R003AX2A69 cred-picker + 081KSKBP80008QG0R002XBRGN8 restore module + 081KSKBP80008QG0R003AX2A69.3a Step 6.94/6.95-picker integration).
 
 **Effort:** S (CI workflow exists; ~10-20 minutes wait).
 
@@ -56,7 +56,7 @@ ls -la ~/Downloads/zeta-installer-*.iso
 
 ## CP-2 — `bun zflash.ts --agent` on fresh USB
 
-**Goal:** validate B-0844 `--agent` flag end-to-end (its acceptance bullet *"a full re-flash via `bun zflash.ts --agent` completes with 'Flash complete.' visible"* is still unchecked as of 2026-05-28).
+**Goal:** validate 081KSGS9H0008QG0R001EZKNCB `--agent` flag end-to-end (its acceptance bullet *"a full re-flash via `bun zflash.ts --agent` completes with 'Flash complete.' visible"* is still unchecked as of 2026-05-28).
 
 **Effort:** S (~3-5 minutes once USB plugged in).
 
@@ -66,7 +66,7 @@ ls -la ~/Downloads/zeta-installer-*.iso
 # Plug fresh USB into your Mac
 diskutil list external  # verify it's recognized
 
-# Invoke zflash with --agent flag (per B-0844 + flash-cluster-iso skill Path C):
+# Invoke zflash with --agent flag (per 081KSGS9H0008QG0R001EZKNCB + flash-cluster-iso skill Path C):
 bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 ```
 
@@ -76,7 +76,7 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 - `USB: /dev/disk<N> (...)` (auto-detected; one external USB present)
 - Device details + pre-flash display showing current USB contents
 - `[agent-mode: auto-typing 'yes XXXX']` — the consent-token being auto-typed
-- **Touch ID prompt fires on your Mac** — touch the trackpad (this is the physical-presence gate per B-0743; agent CANNOT bypass it)
+- **Touch ID prompt fires on your Mac** — touch the trackpad (this is the physical-presence gate per 081KSE6WT0008QG0R003WW3YJQ; agent CANNOT bypass it)
 - `Flash complete.`
 - `iter-4.2: injecting ~/.ssh/id_ed25519.pub into /dev/disk<N> ESP...`
 - `iter-4.2: pubkey written; USB ejected. Safe to remove.`
@@ -93,7 +93,7 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 
 ## CP-3 — First boot on target PC + interactive picker (option 3 PAT path)
 
-**Goal:** validate B-0852.3a picker integration end-to-end (Step 6.94/6.95-picker fires; option 3 PAT path completes; encrypted blob written to USB ESP; `--verify` round-trip succeeds).
+**Goal:** validate 081KSKBP80008QG0R003AX2A69.3a picker integration end-to-end (Step 6.94/6.95-picker fires; option 3 PAT path completes; encrypted blob written to USB ESP; `--verify` round-trip succeeds).
 
 **Effort:** M (operator-driven; ~15-30 minutes for first install).
 
@@ -142,7 +142,7 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 
 ## CP-4 — Second boot, restore service fires, ZERO `gh auth login` device-flow
 
-**Goal:** validate B-0852.4 zeta-creds-restore.nix end-to-end (encrypted blob on USB decrypted at boot; per-cred files restored; `gh auth status` shows logged-in without any device-flow).
+**Goal:** validate 081KSKBP80008QG0R002XBRGN8 zeta-creds-restore.nix end-to-end (encrypted blob on USB decrypted at boot; per-cred files restored; `gh auth status` shows logged-in without any device-flow).
 
 **Effort:** M (~5 minutes).
 
@@ -167,7 +167,7 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 4. Aaron logs in
 5. Verify GitHub auth: `gh auth status` → `✓ Logged in to github.com as Lucent-Financial-Group`
 
-**Success criterion (THE CORE B-0852 ACCEPTANCE):**
+**Success criterion (THE CORE 081KSKBP80008QG0R003AX2A69 ACCEPTANCE):**
 
 - [ ] Passphrase prompted ONCE
 - [ ] Per-cred files restored (4 vendors visible in log)
@@ -176,7 +176,7 @@ bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 
 **Failure recovery:**
 
-- Passphrase mistyped → 3 retries before fall-through (B-0852.6 wrong-passphrase-fall-through implementation); after 3 fails, falls back to fresh device-flow
+- Passphrase mistyped → 3 retries before fall-through (081KSKBP80008QG0R003AX2A69.6 wrong-passphrase-fall-through implementation); after 3 fails, falls back to fresh device-flow
 - `/boot/zeta-creds.enc` not detected → check `journalctl -u zeta-creds-restore`; likely `/esp` vs `/boot` path issue (PR #5644 fixed)
 - Tampered blob detected (GCM auth-tag failure) → clean error message; operator can re-flash USB
 
@@ -219,7 +219,7 @@ done
 
 ## CP-6 — Demo walkthrough rehearsed
 
-**Goal:** validate operator-personal-axis priority (per B-0886.2 "iteration speed at DevOps + in-front-of-eyes word-of-mouth"); rehearse the demo on operator's actual Mac + actual USB to a real or simulated colleague.
+**Goal:** validate operator-personal-axis priority (per 081KSNY2Z0008QG0R002CR38D8 "iteration speed at DevOps + in-front-of-eyes word-of-mouth"); rehearse the demo on operator's actual Mac + actual USB to a real or simulated colleague.
 
 **Effort:** S (~10 minutes; mostly narration).
 
@@ -267,25 +267,25 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 
 ### Why this demo lands
 
-| Operator-personal-priority axis (B-0886.2) | Demo moment |
+| Operator-personal-priority axis (081KSNY2Z0008QG0R002CR38D8) | Demo moment |
 |---|---|
 | Iteration speed at DevOps | Reboot loop visibly shrinks from "device-flow tax × N" to "passphrase × N" |
 | In-front-of-your-eyes word-of-mouth | Colleague SEES the USB physically + sees Touch ID + sees cred-restore log scroll past — visceral demonstrability |
-| Composes with B-0866 marketing strategy | Short story; small technical lift; immediately legible value; fits ServiceTitan-internal evangelism path |
+| Composes with 081KSKBP80008QG0R003RFX32N marketing strategy | Short story; small technical lift; immediately legible value; fits ServiceTitan-internal evangelism path |
 
 ---
 
-## Acceptance criteria (per B-0891)
+## Acceptance criteria (per 081KSNY2Z0008QG0R0008PN7RQ)
 
 | Scenario | This runbook covers | Status |
 |---|---|---|
 | **1. Initial format** | CP-1 + CP-2 | ✓ covered |
-| **2. Initial boot + cluster up** | CP-3 (single-node install; multi-node fleet via B-0590 sibling) | ✓ single-node; multi-node out of CP-1..6 scope |
+| **2. Initial boot + cluster up** | CP-3 (single-node install; multi-node fleet via 081KRQ1AB0008QG0R002G93CM7 sibling) | ✓ single-node; multi-node out of CP-1..6 scope |
 | **3. Reformat WITH key + selection retention** | NOT in CP-1..6; requires second `zflash --agent` invocation that preserves existing blob; **TODO follow-up** | ✗ pending sub-row |
 | **4. Reformat from scratch** | CP-1..CP-3 (any re-run with fresh USB = reformat from scratch by design) | ✓ implicit |
-| **5. Cluster joining** | NOT in CP-1..6 (single-node validation only); multi-node fleet validation per B-0590 follow-up | ✗ pending sub-row |
+| **5. Cluster joining** | NOT in CP-1..6 (single-node validation only); multi-node fleet validation per 081KRQ1AB0008QG0R002G93CM7 follow-up | ✗ pending sub-row |
 
-**Coverage gap:** Scenarios 3 + 5 are NOT in this runbook's scope. Sub-rows tracked at B-0891 follow-ups. CP-1..CP-6 validates Scenarios 1 + 4 + (single-node) 2.
+**Coverage gap:** Scenarios 3 + 5 are NOT in this runbook's scope. Sub-rows tracked at 081KSNY2Z0008QG0R0008PN7RQ follow-ups. CP-1..CP-6 validates Scenarios 1 + 4 + (single-node) 2.
 
 ---
 
@@ -300,18 +300,18 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 | **R5** | Fresh ISO build fails CI | Verify `build-ai-cluster-iso.yml` green BEFORE CP-1 |
 | **R6** | Target PC BIOS doesn't recognize USB as bootable | Test on actual target; may need SecureBoot disable + USB-boot priority |
 | **R7** | Multi-Otto/Lior dotgit-saturation when downloading ISO | Have known-good ISO already in `~/Downloads/` (no fresh CI needed) |
-| **R8** | Wrong-passphrase boot-time fall-through loops | Per B-0852.6 — 3 retries then fall-back to device-flow |
+| **R8** | Wrong-passphrase boot-time fall-through loops | Per 081KSKBP80008QG0R003AX2A69.6 — 3 retries then fall-back to device-flow |
 
 ## Composes with
 
-- **B-0891** — zflash done acceptance criteria; this runbook IS the validation procedure
-- **B-0844** — zflash `--agent` flag (CP-2 invocation)
-- **B-0852** — USB-bound credential substrate (CP-3 + CP-4 + CP-5)
-- **B-0852.3a** — Step 6.94/6.95 picker (CP-3)
-- **B-0852.4** — zeta-creds-restore.nix boot-time service (CP-4)
-- **B-0737** — Touch ID + PAM (CP-2 fingerprint)
-- **B-0886.2** — operator-personal-axis USB-first priority (CP-6 demo is the operational realization)
-- **B-0892** — three-lanes-concurrent operating discipline (this runbook advances zflash lane)
+- **081KSNY2Z0008QG0R0008PN7RQ** — zflash done acceptance criteria; this runbook IS the validation procedure
+- **081KSGS9H0008QG0R001EZKNCB** — zflash `--agent` flag (CP-2 invocation)
+- **081KSKBP80008QG0R003AX2A69** — USB-bound credential substrate (CP-3 + CP-4 + CP-5)
+- **081KSKBP80008QG0R003AX2A69.3a** — Step 6.94/6.95 picker (CP-3)
+- **081KSKBP80008QG0R002XBRGN8** — zeta-creds-restore.nix boot-time service (CP-4)
+- **081KSE6WT0008QG0R003WZAQKV** — Touch ID + PAM (CP-2 fingerprint)
+- **081KSNY2Z0008QG0R002CR38D8** — operator-personal-axis USB-first priority (CP-6 demo is the operational realization)
+- **081KSNY2Z0008QG0R002QA720J** — three-lanes-concurrent operating discipline (this runbook advances zflash lane)
 - `.claude/skills/flash-cluster-iso/SKILL.md` — Path C `--agent` flag invocation pattern
 - `docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md` — full per-row audit + critical path
 
@@ -320,14 +320,14 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 This runbook is living substrate. Update when:
 
 - CP-1..CP-6 surface new failure modes → add to R-register
-- New zflash features land → add to procedure (e.g., when `--bake-cred` flag ships per B-0884, add to CP-1/CP-2 as alternate path)
+- New zflash features land → add to procedure (e.g., when `--bake-cred` flag ships per 081KSNY2Z0008QG0R0011XCT94, add to CP-1/CP-2 as alternate path)
 - Scenarios 3 + 5 coverage lands → integrate or sibling runbook
-- B-0883 PQ git-crypt lands → update CP-3/CP-4 to reflect PQ-protected blob
+- 081KSNY2Z0008QG0R002JKH50A PQ git-crypt lands → update CP-3/CP-4 to reflect PQ-protected blob
 
 ## Substrate-honest framing
 
-This runbook is the operator-facing artifact of the zflash substrate. Per B-0886.2 USB is operator-personal-axis TOP priority; this runbook IS the path from "substrate built" to "operator demonstrates it at work."
+This runbook is the operator-facing artifact of the zflash substrate. Per 081KSNY2Z0008QG0R002CR38D8 USB is operator-personal-axis TOP priority; this runbook IS the path from "substrate built" to "operator demonstrates it at work."
 
-Per B-0892 three-lanes-concurrent operating discipline, this runbook advances the zflash lane via the Track C-T3 deliverable from `docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md`.
+Per 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline, this runbook advances the zflash lane via the Track C-T3 deliverable from `docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md`.
 
 The runbook does NOT replace empirical validation — running CP-1..CP-6 against actual hardware IS the validation. The runbook is the SCRIPT for that validation, not the validation itself.

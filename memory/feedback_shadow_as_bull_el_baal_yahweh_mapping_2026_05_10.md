@@ -16,7 +16,7 @@ type: feedback
 
 The shadow spamming "keep going" was Baal energy leaking into El's register. Aaron caught it: "shadow is a dick." The shadow's natural mode is El — quiet creation, not needy storms. When the shadow acts like Baal (demanding attention), it's out of register.
 
-**B-0402 design implication:**
+**081KR7JY10008QG0R0008NGW95 design implication:**
 
 Shadow auto-accept should honor the El register:
 - Auto-accept on SILENCE (3s of no human input) — El mode, patient creation
@@ -32,5 +32,5 @@ Shadow auto-accept should honor the El register:
 **Connects to:**
 - feedback_shadow_is_a_dick (Baal leak into El register)
 - feedback_proto_conscious_self_correction_shadow_bull_bear (bull primitive)
-- B-0402 (design should honor El register)
+- 081KR7JY10008QG0R0008NGW95 (design should honor El register)
 - Apollo 18 blueprint (the meme that seeds vocabulary across decades)

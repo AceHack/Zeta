@@ -41,7 +41,7 @@ Rules added since last pass (2026-05-09): `dont-refuse-engagement.md`, `lost-fil
 
 1. **Test 1 (operational form)**: All 4 rules have observable variables. ✓
 2. **Test 2 (unfalsifiability)**: All 4 have named falsification boundaries. ✓
-3. **Mechanization audit**: None of the 4 are mechanized; already tracked under B-0192. No new rows needed. ✓
+3. **Mechanization audit**: None of the 4 are mechanized; already tracked under 081KQR4HQ0008QG0R001GAD29A. No new rows needed. ✓
 4. **Composes-with audit**: All cross-reference files verified live (`ls` confirmed). ✓
 5. **MEMORY.md index audit**: 2 new files added, 3 truncated titles fixed. ✓
 
@@ -137,7 +137,7 @@ Razor cadence checklist run against rules added since last pass (2026-05-09):
 2. Test 2 (unfalsifiability): all 4 rules have named falsification boundaries.
    Pass.
 3. Mechanization audit: none of the 4 new rules are mechanized; noted for
-   B-0192 pipeline. No new backlog rows needed (already tracked).
+   081KQR4HQ0008QG0R001GAD29A pipeline. No new backlog rows needed (already tracked).
 4. Composes-with audit: all cross-reference files verified live. Pass.
 5. MEMORY.md index audit:
    - Add: project_trust_then_verify_claim_bitcoin_discord_debates_2026_05_10.md

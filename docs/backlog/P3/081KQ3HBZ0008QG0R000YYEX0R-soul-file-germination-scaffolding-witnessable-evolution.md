@@ -1,6 +1,5 @@
 ---
-id: B-0044
-zetaid: 081KQ3HBZ0008QG0R000YYEX0R
+id: 081KQ3HBZ0008QG0R000YYEX0R
 priority: P3
 status: open
 title: Soul-file germination + scaffolding + witnessable-self-directed-evolution — three aspirational sibling rows
@@ -15,7 +14,7 @@ tags: [aspirational, soul-file, germination, scaffolding, witnessable-evolution,
 type: friction-reducer
 ---
 
-# B-0044 — Soul-file germination + scaffolding + witnessable-evolution (combined aspirational row)
+# 081KQ3HBZ0008QG0R000YYEX0R — Soul-file germination + scaffolding + witnessable-evolution (combined aspirational row)
 
 ## Origin
 
@@ -45,7 +44,7 @@ The measurable-alignment trajectory per `docs/ALIGNMENT.md` is Zeta's primary re
 
 Aaron 2026-04-21: *"skaffolding somewhere backlog"* — single-message capture-ask. "Scaffolding" has at least three compatible senses worth logging:
 
-- **Pedagogical scaffolding** (Vygotsky ZPD + Khan-Academy-style progressive disclosure + training-wheels that fall off). Directly composes with B-0045 all-schools-all-subjects and with the Mr-Khan pedagogy memory.
+- **Pedagogical scaffolding** (Vygotsky ZPD + Khan-Academy-style progressive disclosure + training-wheels that fall off). Directly composes with 081KQ3HBZ0008QG0R0012P9EBM all-schools-all-subjects and with the Mr-Khan pedagogy memory.
 - **Developmental scaffolding** (project generators, boilerplate templates, scaffolded-code patterns). Relevant to self-replication / germination.
 - **Germinative scaffolding** (temporary structures that support the factory's own bring-up, then get torn down). Consistent with the metametameta-seed recursion: each generation's scaffolding is itself a soul-file artifact captured in git, not discarded after use.
 
@@ -73,4 +72,4 @@ Aaron's framing reads this chronology as the **public artifact** — not just th
 
 - AceHack commit: `fd0ac50`
 - Source memories: `user_git_repo_is_factory_soul_file_*`, `feedback_capture_everything_*`, `feedback_witnessable_self_directed_evolution_*`
-- Composes with: B-0045 (all-schools-all-subjects, where pedagogical scaffolding sense lands)
+- Composes with: 081KQ3HBZ0008QG0R0012P9EBM (all-schools-all-subjects, where pedagogical scaffolding sense lands)

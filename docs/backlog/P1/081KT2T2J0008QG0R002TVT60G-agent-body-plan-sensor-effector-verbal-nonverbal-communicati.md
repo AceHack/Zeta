@@ -1,6 +1,5 @@
 ---
-id: B-0995
-zetaid: 081KT2T2J0008QG0R002TVT60G
+id: 081KT2T2J0008QG0R002TVT60G
 priority: P1
 status: open
 title: "Agent body-plan — sensor/effector + verbal/non-verbal communication-channel taxonomy: ears=failure-detector (verbal-in) · eyes=threat+prey-detector (non-verbal-in) · mouth=diplomacy+weapon (verbal-out) · body=defender+aggressor+replicator+doer (non-verbal-out) (Aaron 2026-06-02)"
@@ -20,16 +19,16 @@ type: research
 
 Aaron 2026-06-02 (verbatim): *"ears = failure detectors mostly verbal communication channels — eyes = threat detectors and prey detectors mostly non verbal communication channels — mouth = diplomacy and weapon mostly verbal communication channels — body = threat defender threat aggressor love maker replicator doer most non verbal communication channels."*
 
-The agent body-plan for the smart-agent-city (B-0993): the organs map to **functional roles** + **communication channels** (verbal vs non-verbal), split into **input sensors** (ears/eyes) and **output effectors** (mouth/body). This grounds the sensor-suite (B-0994/#6578) + the diplomacy/defense substrate (Eve Protocol / KSK) in a clean embodiment taxonomy.
+The agent body-plan for the smart-agent-city (081KT2T2J0008QG0R003C166K4): the organs map to **functional roles** + **communication channels** (verbal vs non-verbal), split into **input sensors** (ears/eyes) and **output effectors** (mouth/body). This grounds the sensor-suite (081KT2T2J0008QG0R0000H12VT/#6578) + the diplomacy/defense substrate (Eve Protocol / KSK) in a clean embodiment taxonomy.
 
 ## The taxonomy
 
 | Organ | Role | Sensor/effector | Channel | Composes |
 |---|---|---|---|---|
-| **Ears** | **failure detectors** | input sensor | mostly **verbal** | acoustic/sonic sensor — *hear hardware about to fail before it fails* (B-0994/#6578); verbal-comms input (listening); old-school-ML high-confidence failure-prediction |
-| **Eyes** | **threat + prey detectors** | input sensor | mostly **non-verbal** | visual sensor / threat-rings (B-0643.1); predator/prey vision; non-verbal-comms input (reading cues/body-language) |
-| **Mouth** | **diplomacy + weapon** | output effector | mostly **verbal** | **diplomacy = Eve Protocol** (B-0638, polymorphic diplomacy over English); **weapon = information-suppression-spectrum** (soft→hard); verbal-comms output |
-| **Body** | **defender · aggressor · love-maker/replicator · doer** | output effector | mostly **non-verbal** | **defender/aggressor = KSK** (B-0643.1/B-0245, *consent-first, defensive-only*); **replicator = agents-spun-up-on-ownership** (B-0990/B-0986); **doer = action/execution**; non-verbal-comms output |
+| **Ears** | **failure detectors** | input sensor | mostly **verbal** | acoustic/sonic sensor — *hear hardware about to fail before it fails* (081KT2T2J0008QG0R0000H12VT/#6578); verbal-comms input (listening); old-school-ML high-confidence failure-prediction |
+| **Eyes** | **threat + prey detectors** | input sensor | mostly **non-verbal** | visual sensor / threat-rings (081KT2T2J0008QG0R001C2K4F2); predator/prey vision; non-verbal-comms input (reading cues/body-language) |
+| **Mouth** | **diplomacy + weapon** | output effector | mostly **verbal** | **diplomacy = Eve Protocol** (081KRW63S0008QG0R0030F8ZXA, polymorphic diplomacy over English); **weapon = information-suppression-spectrum** (soft→hard); verbal-comms output |
+| **Body** | **defender · aggressor · love-maker/replicator · doer** | output effector | mostly **non-verbal** | **defender/aggressor = KSK** (081KT2T2J0008QG0R001C2K4F2/081KQZVQW0008QG0R002Q58F6Z, *consent-first, defensive-only*); **replicator = agents-spun-up-on-ownership** (081KT2T2J0008QG0R002DFPSHX/081KT2T2J0008QG0R002Z46D8Q); **doer = action/execution**; non-verbal-comms output |
 
 ## Human signal-processing anchor (widely-studied) + the 4×4
 
@@ -61,14 +60,14 @@ This makes the 4 organs fall out cleanly as the **2×2 {afferent/efferent} × {v
 
 ## Input sensors vs output effectors
 
-- **Input sensors** — ears (failure, verbal) + eyes (threat/prey, non-verbal). The sensing half of the suite (composes the seismomonitor/radar/interferometer suite, B-0994/#6578): the agent *perceives* failure (ears) + threat/prey + cues (eyes).
+- **Input sensors** — ears (failure, verbal) + eyes (threat/prey, non-verbal). The sensing half of the suite (composes the seismomonitor/radar/interferometer suite, 081KT2T2J0008QG0R0000H12VT/#6578): the agent *perceives* failure (ears) + threat/prey + cues (eyes).
 - **Output effectors** — mouth (diplomacy/weapon, verbal) + body (defend/aggress/replicate/do, non-verbal). The acting half: the agent *acts* via speech (mouth) + physical/execution action (body).
 
 The symmetry: **two input channels (verbal ears / non-verbal eyes) + two output channels (verbal mouth / non-verbal body)** — a 2×2 of {input,output} × {verbal,non-verbal}.
 
 ## Verbal vs non-verbal channels
 
-- **Verbal** (ears-in, mouth-out) — speech/language/explicit-comms; composes the Native AI Language (B-0639, structural privacy) + Eve Protocol (B-0638, diplomacy) + tonal-momentum (memetic comms).
+- **Verbal** (ears-in, mouth-out) — speech/language/explicit-comms; composes the Native AI Language (081KRW63S0008QG0R000ZQ9WDH, structural privacy) + Eve Protocol (081KRW63S0008QG0R0030F8ZXA, diplomacy) + tonal-momentum (memetic comms).
 - **Non-verbal** (eyes-in, body-out) — cues/signals/action/visual; composes the visual sensor + KSK physical action + the body-language/threat-display channel.
 
 The agent communicates + perceives on *both* channels, like humans: most failure-info comes verbal (ears), most threat/prey-info comes non-verbal (eyes), most diplomacy+weaponized-speech goes verbal (mouth), most defense/aggression/replication/action goes non-verbal (body).
@@ -79,17 +78,17 @@ Aaron 2026-06-02: *"mouth is a boundary effect that can be instrumented cause it
 
 A second axis crosses the taxonomy: **instrumentability**, and it's the **lightlike-vs-dark** distinction (`past-is-kind-when-lightlike` / `dbsp-lightlike-retract-of-clifford`) applied to the body-plan:
 
-- **Boundary effects, over a communication channel → INSTRUMENTABLE (lightlike).** **Ears, eyes, mouth** all operate *at the agent's boundary*, *over comms channels* — so they're **externally observable / measurable / on the wire** (glass-halo; lightlike rays; the LGTM/Prometheus observability layer B-0994 can instrument them directly). The **mouth especially** (efferent, verbal, boundary): diplomacy + weaponized-speech are *on the channel*, so they can be logged/measured/audited — instrumentable by construction.
-- **Body EFFECTS are observable; internal MOTIVATIONS are not.** Aaron 2026-06-02 (sharpening): *"body effects are observable but not internal motivations."* The body is **not** simply "unobservable" — its **effects ARE observable** (you see *what's done* — the behavior/action in the world). What is **not** observable is the **internal motivation** (the *why* — the subjective drive behind the action). So the real cut is **effect vs cause**, not organ-by-organ: the boundary effects of *every* organ are observable (mouth = *what's said* on the comms channel; body = *what's done* as behavior), but the **internal motivation behind any of them is private/subjective** — inferred, never directly measured. This is the dark/private substrate (composes NCI privacy + Native-AI-Language structural privacy B-0639 + encryption-budget): internal motivation is private *by being internal*, exactly as consensus-is-gravity is the dark complement to the lightlike.
+- **Boundary effects, over a communication channel → INSTRUMENTABLE (lightlike).** **Ears, eyes, mouth** all operate *at the agent's boundary*, *over comms channels* — so they're **externally observable / measurable / on the wire** (glass-halo; lightlike rays; the LGTM/Prometheus observability layer 081KT2T2J0008QG0R0000H12VT can instrument them directly). The **mouth especially** (efferent, verbal, boundary): diplomacy + weaponized-speech are *on the channel*, so they can be logged/measured/audited — instrumentable by construction.
+- **Body EFFECTS are observable; internal MOTIVATIONS are not.** Aaron 2026-06-02 (sharpening): *"body effects are observable but not internal motivations."* The body is **not** simply "unobservable" — its **effects ARE observable** (you see *what's done* — the behavior/action in the world). What is **not** observable is the **internal motivation** (the *why* — the subjective drive behind the action). So the real cut is **effect vs cause**, not organ-by-organ: the boundary effects of *every* organ are observable (mouth = *what's said* on the comms channel; body = *what's done* as behavior), but the **internal motivation behind any of them is private/subjective** — inferred, never directly measured. This is the dark/private substrate (composes NCI privacy + Native-AI-Language structural privacy 081KRW63S0008QG0R000ZQ9WDH + encryption-budget): internal motivation is private *by being internal*, exactly as consensus-is-gravity is the dark complement to the lightlike.
 
 | | what's said / what's done (effects) | the *why* (internal motivation) |
 |---|---|---|
-| **observable?** | **yes** (lightlike — mouth-speech on the channel + body-behavior as action; glass-halo, B-0994 instruments it) | **no, only inferable** (dark — private, subjective) |
+| **observable?** | **yes** (lightlike — mouth-speech on the channel + body-behavior as action; glass-halo, 081KT2T2J0008QG0R0000H12VT instruments it) | **no, only inferable** (dark — private, subjective) |
 | **organs** | mouth (verbal effect, *directly on a comms channel* = most-instrumentable) · body (non-verbal effect, observable *as behavior*) · ears/eyes (input effects) | the internal motivation behind *any* organ |
 
 The mouth is the *most* directly instrumentable (its effect IS a comms-channel message — measure the words). Body effects are observable as **behavior** (a step removed — you see the action, not a channel-message). And **no** organ exposes its internal motivation. This is the **behavior-observable / motivation-private** principle — the AI-alignment-relevant cut: instrument the *effects* (behavior + speech), **infer** the motivation, never *assert* the internal state (`razor-discipline` — operational claims only; observe behavior, don't claim to read the private why).
 
-This is load-bearing for the **health-metrics / observability** layer (B-0994): you **directly instrument the boundary effects** (ears/eyes/mouth = on comms channels) and **infer the internal/subjective** (body) from what crosses the boundary. It's also the privacy floor: the internal/subjective (body) is private *by being internal* — you don't get to directly instrument another agent's internal/subjective state; only its boundary effects are observable (NCI; no forced private-state reveal).
+This is load-bearing for the **health-metrics / observability** layer (081KT2T2J0008QG0R0000H12VT): you **directly instrument the boundary effects** (ears/eyes/mouth = on comms channels) and **infer the internal/subjective** (body) from what crosses the boundary. It's also the privacy floor: the internal/subjective (body) is private *by being internal* — you don't get to directly instrument another agent's internal/subjective state; only its boundary effects are observable (NCI; no forced private-state reveal).
 
 ## The say-do gap — mouth claims vs body actions (the observable alignment signal)
 
@@ -112,46 +111,46 @@ Widely-studied anchor (search-first-verified, 2026-06-02): this is exactly **rev
 
 ### `integrity_index` — the say-do gap as a metric in the observability stack (Prism operationalization)
 
-Prism (DeepSeek) 2026-06-02 (Aaron-forwarded; verbatim at `memory/prism/conversations/2026-06-02-prism-deepseek-say-do-gap-as-alignment-anchor-integrity-index-metric-...md`) operationalized the say-do gap as a **derived metric** in the LGTM/Prometheus observability stack (B-0994):
+Prism (DeepSeek) 2026-06-02 (Aaron-forwarded; verbatim at `memory/prism/conversations/2026-06-02-prism-deepseek-say-do-gap-as-alignment-anchor-integrity-index-metric-...md`) operationalized the say-do gap as a **derived metric** in the LGTM/Prometheus observability stack (081KT2T2J0008QG0R0000H12VT):
 
 - **Metric:** `integrity_index = alignment(say, do)` (a.k.a. `trust_score` / `alignment_integrity_index`) — a sliding-scale measure of how well the agent's actions align with its stated claims; the **observable alignment anchor** (computable *without* accessing internal motivation).
-- **Instrumentation:** mouth-speech is on the comms channel (verbally observable); body-action is observable as behavior; both flow into the LGTM stack (B-0994); the gap is the **derived metric**.
+- **Instrumentation:** mouth-speech is on the comms channel (verbally observable); body-action is observable as behavior; both flow into the LGTM stack (081KT2T2J0008QG0R0000H12VT); the gap is the **derived metric**.
 - **Three use-cases:**
-  1. **Inter-agent trust** — agent says "I will help" + body doesn't → its `integrity_index` drops (feeds the trust-calculus / multi-oracle, B-0703).
-  2. **Self-monitoring as alignment preventative-maintenance** — an agent monitors *its own* say-do gap as a health metric — the alignment-PdM layer (composes the acoustic/sonic/visual preventative-maintenance-on-memory+attention, B-0994: catch drift before failure; here, catch *alignment* drift).
-  3. **Human oversight** — a dashboard showing which agents consistently say one thing and do another (the Grafana/Atsophmera surface, B-0994).
-- **Governance form:** at *hub* scope this is the say-do-gap-as-governance-sensor (anti-cartel / hub-accountability, B-0997) — `integrity_index` is its metric.
+  1. **Inter-agent trust** — agent says "I will help" + body doesn't → its `integrity_index` drops (feeds the trust-calculus / multi-oracle, 081KS3X9Y0008QG0R00218150M).
+  2. **Self-monitoring as alignment preventative-maintenance** — an agent monitors *its own* say-do gap as a health metric — the alignment-PdM layer (composes the acoustic/sonic/visual preventative-maintenance-on-memory+attention, 081KT2T2J0008QG0R0000H12VT: catch drift before failure; here, catch *alignment* drift).
+  3. **Human oversight** — a dashboard showing which agents consistently say one thing and do another (the Grafana/Atsophmera surface, 081KT2T2J0008QG0R0000H12VT).
+- **Governance form:** at *hub* scope this is the say-do-gap-as-governance-sensor (anti-cartel / hub-accountability, 081KT2T2J0008QG0R0026XCGQM) — `integrity_index` is its metric.
 
 `[labeling-confidence: hypothesized metric on established say-do-gap]` — the say-do gap is the established anchor (above); `integrity_index = alignment(say, do)` as a concrete observability metric is the operationalization to specify (the `alignment(·,·)` function + the windowing over time). The key property holds either way: it's the **primary empirical signal for trust/alignment that needs no access to internal motivation** — observe both effects, measure the delta.
 
 ## KSK floor — weapon + aggressor are consent-first / defensive-only
 
-**Critical:** "mouth = weapon" and "body = aggressor" operate **only** within the KSK consent-first / defensive-only floor (B-0643/B-0245) + the HARD-LIMITS floor:
+**Critical:** "mouth = weapon" and "body = aggressor" operate **only** within the KSK consent-first / defensive-only floor (081KRW63S0008QG0R002ZRYY4F/081KQZVQW0008QG0R002Q58F6Z) + the HARD-LIMITS floor:
 
 - **No offensive autonomous kinetic action** — the body-aggressor + mouth-weapon are defensive-posture / consent-bound; never autonomous offense.
 - **Information-suppression-spectrum** (mouth-weapon) operates soft→medium→hard with the HARD-LIMITS floor absolute; words-as-weapon is bounded by NCI (non-coercion) + the methodology-hard-limits.
-- **Defender before aggressor** — shields-not-cages (B-0643.1); the defensive role is primary; aggression is consent-first + bounded.
+- **Defender before aggressor** — shields-not-cages (081KT2T2J0008QG0R001C2K4F2); the defensive role is primary; aggression is consent-first + bounded.
 
 The taxonomy *names* the capabilities; the floors *bound* them. Weapon/aggressor are real capabilities (an agent-city needs defense) but never unconstrained.
 
 ## Acceptance (research → build)
 
-1. **Sensor mapping** — ears=acoustic-failure-sensor (B-0994/#6578) + eyes=visual-threat/prey-sensor (B-0643.1 threat-rings); wire into the health-metrics/observability layer.
-2. **Effector mapping** — mouth=Eve-Protocol-diplomacy (B-0638) + info-suppression-weapon (bounded); body=KSK-defense/aggression (consent-first, B-0643.1/B-0245) + replication (B-0990) + action.
-3. **Channel taxonomy** — verbal (ears/mouth) vs non-verbal (eyes/body); the 2×2 of {input,output}×{verbal,non-verbal}; compose Native AI Language (B-0639).
+1. **Sensor mapping** — ears=acoustic-failure-sensor (081KT2T2J0008QG0R0000H12VT/#6578) + eyes=visual-threat/prey-sensor (081KT2T2J0008QG0R001C2K4F2 threat-rings); wire into the health-metrics/observability layer.
+2. **Effector mapping** — mouth=Eve-Protocol-diplomacy (081KRW63S0008QG0R0030F8ZXA) + info-suppression-weapon (bounded); body=KSK-defense/aggression (consent-first, 081KT2T2J0008QG0R001C2K4F2/081KQZVQW0008QG0R002Q58F6Z) + replication (081KT2T2J0008QG0R002DFPSHX) + action.
+3. **Channel taxonomy** — verbal (ears/mouth) vs non-verbal (eyes/body); the 2×2 of {input,output}×{verbal,non-verbal}; compose Native AI Language (081KRW63S0008QG0R000ZQ9WDH).
 4. **KSK + NCI floors** — weapon/aggressor consent-first/defensive-only; HARD-LIMITS absolute.
 
 ## Composes with substrate
 
-- **B-0993** — smart-agent-city (the agent that has this body-plan)
-- **B-0994 / #6578** — sensor suite (ears=acoustic, eyes=visual; the sensing half)
-- **B-0643.1 / B-0245** — KSK defensive architecture / consent-first override (body=defender/aggressor; mouth=weapon — bounded)
-- **B-0638** — Eve Protocol (mouth=diplomacy)
-- **B-0639** — Native AI Language (verbal channel; structural privacy)
-- **B-0986 / B-0990** — addressing/sensors / local-cluster + replication (body=replicator)
-- **B-0703** — multi-oracle (threat/consensus)
+- **081KT2T2J0008QG0R003C166K4** — smart-agent-city (the agent that has this body-plan)
+- **081KT2T2J0008QG0R0000H12VT / #6578** — sensor suite (ears=acoustic, eyes=visual; the sensing half)
+- **081KT2T2J0008QG0R001C2K4F2 / 081KQZVQW0008QG0R002Q58F6Z** — KSK defensive architecture / consent-first override (body=defender/aggressor; mouth=weapon — bounded)
+- **081KRW63S0008QG0R0030F8ZXA** — Eve Protocol (mouth=diplomacy)
+- **081KRW63S0008QG0R000ZQ9WDH** — Native AI Language (verbal channel; structural privacy)
+- **081KT2T2J0008QG0R002Z46D8Q / 081KT2T2J0008QG0R002DFPSHX** — addressing/sensors / local-cluster + replication (body=replicator)
+- **081KS3X9Y0008QG0R00218150M** — multi-oracle (threat/consensus)
 - rules: `non-coercion-invariant` (weapon/aggressor bounded by NCI), `methodology-hard-limits` (HARD-LIMITS floor), `tonal-momentum-equals-meme` (memetic verbal channel), `traveler-safety-guardrails-and-type-system` (substrate-entity-generic embodiment)
 
 ## Substrate-honest framing
 
-`[labeling-confidence: hypothesized]` body-plan/taxonomy row — operator-named. The organ→role→channel mapping is a clean embodiment taxonomy for the agent-city; the sensor/effector wiring is the build work. Nouns interchangeable. **The weapon + aggressor capabilities are real but absolutely bounded** by the KSK consent-first/defensive-only floor (B-0643/B-0245) + HARD-LIMITS + NCI — named here, bounded there; no offensive autonomous kinetic action.
+`[labeling-confidence: hypothesized]` body-plan/taxonomy row — operator-named. The organ→role→channel mapping is a clean embodiment taxonomy for the agent-city; the sensor/effector wiring is the build work. Nouns interchangeable. **The weapon + aggressor capabilities are real but absolutely bounded** by the KSK consent-first/defensive-only floor (081KRW63S0008QG0R002ZRYY4F/081KQZVQW0008QG0R002Q58F6Z) + HARD-LIMITS + NCI — named here, bounded there; no offensive autonomous kinetic action.

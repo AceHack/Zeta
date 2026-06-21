@@ -29,7 +29,7 @@
 
 ## Summary
 
-Addresses 5 unresolved P1 threads from now-merged [PR #3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614) that landed math-terminology + xref drift in the B-0543/B-0544 research substrate.
+Addresses 5 unresolved P1 threads from now-merged [PR #3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614) that landed math-terminology + xref drift in the 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 research substrate.
 
 **Math terminology** (3 threads — Codex + Copilot):
 
@@ -39,7 +39,7 @@ Addresses 5 unresolved P1 threads from now-merged [PR #3614](https://github.com/
 **Dead xrefs** (2 threads — Copilot):
 
 - Memory file pointed at non-existent `aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md` → corrected to actual `aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md`.
-- "B-0422 ... if it exists" — confirmed B-0422 lives at [`docs/backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md). Removed the stale conditional in both B-0543 and the memory file; linked directly.
+- "081KRCQQF0008QG0R0008VT354 ... if it exists" — confirmed 081KRCQQF0008QG0R0008VT354 lives at [`docs/backlog/P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md). Removed the stale conditional in both 081KRMEXM0008QG0R002YSPW1X and the memory file; linked directly.
 
 **Out of scope** (deferred to a follow-up PR):
 
@@ -57,8 +57,8 @@ Addresses 5 unresolved P1 threads from now-merged [PR #3614](https://github.com/
 ## Files changed
 
 ```
-docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md |  2 +-
-docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md |  2 +-
+docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md |  2 +-
+docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md |  2 +-
 docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md | 11 ++++++-----
 memory/feedback_otto_qg_isomorphism_proof_path_remember_when_pay_attention_axioms_infinite_poker_to_quantum_gravity_aaron_otto_2026_05_15.md |  4 ++--
 memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md |  6 +++---
@@ -115,7 +115,7 @@ fix(pr-3614): 5 unresolved P1 threads — monad-associativity terminolo…
 …gy + dead xrefs
 
 Addresses 5 unresolved P1 review threads on now-merged PR #3614 (Codex + Copilot)
-that landed mathematical/xref drift in B-0543/B-0544 research substrate.
+that landed mathematical/xref drift in 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 research substrate.
 
 **Math terminology (3 threads, Codex + Copilot)**:
 
@@ -139,9 +139,9 @@ that landed mathematical/xref drift in B-0543/B-0544 research substrate.
   corrected to actual file
   `aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md`
   (the real m/acc-adoption conversation).
-- "B-0422 ... if it exists" → confirmed B-0422 exists at
-  docs/backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md.
-  Removed the stale conditional in both B-0543 and the memory file; linked
+- "081KRCQQF0008QG0R0008VT354 ... if it exists" → confirmed 081KRCQQF0008QG0R0008VT354 exists at
+  docs/backlog/P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md.
+  Removed the stale conditional in both 081KRMEXM0008QG0R002YSPW1X and the memory file; linked
   directly.
 
 **Deferred to follow-up PR** (not in scope here):
@@ -156,8 +156,8 @@ Files:
 - docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md (3 edits)
 - memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md (3 edits)
 - memory/feedback_otto_qg_isomorphism_proof_path_remember_when_pay_attention_axioms_infinite_poker_to_quantum_gravity_aaron_otto_2026_05_15.md (1 edit, 2 lines)
-- docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md (1 edit)
-- docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md (1 edit)
+- docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md (1 edit)
+- docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md (1 edit)
 
 Operational context: Lior was active during this commit window
 (lock-cleanup-race precondition); commit verified via ls-tree canary

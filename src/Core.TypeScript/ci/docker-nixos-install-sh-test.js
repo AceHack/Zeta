@@ -2,7 +2,7 @@
 /**
  * src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts
  *
- * B-0849 Phase 1 — TS wrapper for the Docker NixOS install.sh test
+ * 081KSKBP80008QG0R000E3RKPK Phase 1 — TS wrapper for the Docker NixOS install.sh test
  * harness. Per .claude/rules/rule-0-no-sh-files.md: TS-over-bash for
  * DST + cross-platform. Wraps `docker build` of
  * src/Core.TypeScript/ci/dockerfiles/nixos-install-sh-test/Dockerfile with:
@@ -15,14 +15,14 @@
  *     dockerfile is at the fixed path; doesn't pollute root with
  *     build artifacts)
  *
- * Composes with B-0831 cascade #6 QEMU full-install test
+ * Composes with 081KSGS9H0008QG0R0011BC7T2 cascade #6 QEMU full-install test
  * (qemu-full-install-test.ts): Docker = fast iteration (~30-60 sec);
  * QEMU = end-to-end virtualized boot (~15 min). Both run on CI for
  * install-substrate PRs.
  *
  * Operator framing 2026-05-27: "we should add docker based nixos
  * install.sh testing so we can iterate quick that's an easy
- * dockerfile" → B-0849 backlog row → this implementation.
+ * dockerfile" → 081KSKBP80008QG0R000E3RKPK backlog row → this implementation.
  *
  * Usage:
  *   bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts [--keep-image]
@@ -121,8 +121,8 @@ function runBuild(timeoutSec, logPath) {
         // Build context = current dir (repo root)
         ".",
     ];
-    console.log(`[B-0849 Phase 1] docker build ${buildArgs.join(" ")}`);
-    console.log(`[B-0849 Phase 1] timeout: ${timeoutSec}s; log: ${logPath}`);
+    console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] docker build ${buildArgs.join(" ")}`);
+    console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] timeout: ${timeoutSec}s; log: ${logPath}`);
     // spawnDocker helper centralizes the sonarjs suppression + maxBuffer
     const result = spawnDocker(buildArgs, { timeoutMs: timeoutSec * 1000 });
     const elapsedSec = Math.floor((Date.now() - startMs) / 1000);
@@ -147,7 +147,7 @@ function runBuild(timeoutSec, logPath) {
         };
     }
     if (result.status === 0) {
-        console.log(`[B-0849 Phase 1] SUCCESS — docker build completed in ${elapsedSec}s`);
+        console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] SUCCESS — docker build completed in ${elapsedSec}s`);
         return {
             exitCode: 0,
             reason: `docker build succeeded in ${elapsedSec}s`,
@@ -162,16 +162,16 @@ function runBuild(timeoutSec, logPath) {
 }
 function cleanup(keepImage) {
     if (keepImage) {
-        console.log(`[B-0849 Phase 1] --keep-image set; image ${IMAGE_TAG} retained for inspection`);
+        console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] --keep-image set; image ${IMAGE_TAG} retained for inspection`);
         return;
     }
     // spawnDocker helper centralizes the sonarjs suppression
     const rm = spawnDocker(["rmi", "-f", IMAGE_TAG]);
     if (rm.status === 0) {
-        console.log(`[B-0849 Phase 1] cleaned up image ${IMAGE_TAG}`);
+        console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] cleaned up image ${IMAGE_TAG}`);
     }
     else {
-        console.error(`[B-0849 Phase 1] warning: docker rmi ${IMAGE_TAG} failed (non-fatal)`);
+        console.error(`[081KSKBP80008QG0R000E3RKPK Phase 1] warning: docker rmi ${IMAGE_TAG} failed (non-fatal)`);
     }
 }
 function main() {
@@ -207,10 +207,10 @@ function main() {
     checkPrereqs();
     const result = runBuild(timeoutSec, logPath);
     console.log("");
-    console.log(`[B-0849 Phase 1] result: ${result.reason}`);
-    console.log(`[B-0849 Phase 1] log: ${logPath}`);
+    console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] result: ${result.reason}`);
+    console.log(`[081KSKBP80008QG0R000E3RKPK Phase 1] log: ${logPath}`);
     if (result.exitCode !== 0) {
-        console.log("[B-0849 Phase 1] tail of build log:");
+        console.log("[081KSKBP80008QG0R000E3RKPK Phase 1] tail of build log:");
         console.log("--- BEGIN TAIL ---");
         console.log(result.logTail);
         console.log("--- END TAIL ---");

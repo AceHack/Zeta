@@ -58,7 +58,7 @@ when someone touches the un-aligned path.
   `bun src/Core.TypeScript/memory/reindex-memory-md.ts` before pushing memory edits, or
   `memory-index-drift` reds main. (This is how the cluster kept recurring mid-session.)
 
-Anchors: B-0259 (MEMORY.md drift enforcement), B-0423/B-0258 (reindexer serialization
+Anchors: 081KR2E4K0008QG0R000XCS9FT (MEMORY.md drift enforcement), 081KRCQQF0008QG0R0037YYP1A/081KR2E4K0008QG0R001E27DDV (reindexer serialization
 point). Related: [[b-xxxx-to-zetaid-migration-overlap-rotation-not-bigbang]] (same
 "three surfaces must agree" shape — reader, refs, byte-locks). The general principle is
 single-source-of-truth for a derived artifact: one traversal definition, referenced by

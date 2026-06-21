@@ -34,7 +34,7 @@
 - Added focused tests for WSet-backed Mach-Zehnder rows crossing Reticulum and for retraction cancellation after receipt.
 - Cleaned a stale Bayesian test comment that still described WSet as test-fixture-only.
 - Fixed main-drift gates by allowing the host-loop bootstrap shell script in the retirement inventory and cleaning markdownlint whitespace issues.
-- Migrated accidental legacy rows `B-1036` through `B-1039` into ZetaId `workitems/` items and regenerated the legacy backlog index; preserved B-1039's slice-1 in-progress note from main.
+- Migrated accidental legacy rows `081KTSZN10008QG0R002R3RENG` through `081KTSZN10008QG0R001F0B5A6` into ZetaId `workitems/` items and regenerated the legacy backlog index; preserved 081KTSZN10008QG0R001F0B5A6's slice-1 in-progress note from main.
 
 ## Why
 

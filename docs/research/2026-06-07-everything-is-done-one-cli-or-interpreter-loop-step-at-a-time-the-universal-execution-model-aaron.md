@@ -11,7 +11,7 @@ noun` statements** (#6957), executed **one at a time**, through one of two surfa
 
 - **`zs` (interpreter loop)** — interactive REPL: read one statement, eval, print, repeat (#6956).
 - **`zc` (CLI / durable loop)** — non-interactive: run one statement (one-shot) or process a stream of them
-  durably (the daemon / observe loop, B-0958).
+  durably (the daemon / observe loop, 081KSXN940008QG0R001A4WWX4).
 
 Both are the **same step**: take one statement (which is data — homoiconic CLI≡file≡DynamicValue, #6962), apply
 it, advance. **Everything is a fold over a stream of one-at-a-time statements.** There is no "big-bang" mode;
@@ -30,7 +30,7 @@ there is only the loop, stepped.
   **fold** over the statement stream (the Z-set fold; "we built change," #6936 — each step is one *act*). The
   CLI/REPL is the human/agent-facing face of the same incremental fold the data plane runs.
 - **It's how the autonomous loop already works.** Otto's own cron tick is "one step at a time"; the observe
-  loop (B-0958) is "one statement at a time, durably." Aaron is naming the universal shape the agent loop, the
+  loop (081KSXN940008QG0R001A4WWX4) is "one statement at a time, durably." Aaron is naming the universal shape the agent loop, the
   CLI, the REPL, and the data plane all already share — **recursive/self-similar (§9/§10): one loop, one step,
   at every scale.**
 
@@ -63,7 +63,7 @@ there is only the loop, stepped.
 - **Engine of change / "we built change" (#6936)** — each step is one act; the system is the fold of acts.
 - **async-all-the-way / DoP=1 (manifesto §1/§2/§7; the rule)** — one-at-a-time = the deterministic core that
   scales to N on one code path.
-- **Observe loop (B-0958) + the autonomous loop** — the durable one-step-at-a-time loop, already running.
+- **Observe loop (081KSXN940008QG0R001A4WWX4) + the autonomous loop** — the durable one-step-at-a-time loop, already running.
 
 ## Beacon anchors
 

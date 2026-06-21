@@ -1,6 +1,6 @@
 ---
 pr_number: 5225
-title: "fix(B-0816) + feat(B-0819): Flux/Helm convergence-point + force-multiplier ladder + AI-runbook substrate row (Aaron 2026-05-26)"
+title: "fix(081KSGS9H0008QG0R003A37Z65) + feat(081KSGS9H0008QG0R0005P83AP): Flux/Helm convergence-point + force-multiplier ladder + AI-runbook substrate row (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T16:59:06Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:37:40Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5225: fix(B-0816) + feat(B-0819): Flux/Helm convergence-point + force-multiplier ladder + AI-runbook substrate row (Aaron 2026-05-26)
+# PR #5225: fix(081KSGS9H0008QG0R003A37Z65) + feat(081KSGS9H0008QG0R0005P83AP): Flux/Helm convergence-point + force-multiplier ladder + AI-runbook substrate row (Aaron 2026-05-26)
 
 ## PR description
 
 ## Summary
 
-Enriches B-0816 architectural-principle row with two substrate additions:
+Enriches 081KSGS9H0008QG0R003A37Z65 architectural-principle row with two substrate additions:
 
 1. **Historical decision lineage** — Aaron 2026-05-26 verbatim disclosure of the LexisNexis-era Flux feature gaps that drove ArgoCD selection: sync-waves absent, weak self-healing quality, no Rollouts equivalent. The maintainer's caveat ("i think they have something now") preserved.
 
@@ -40,7 +40,7 @@ Cross-cluster portability principle clarified: K8s manifests are engine-agnostic
 
 ## Pull request overview
 
-Updates backlog row **B-0816** to add an empirical/historical anchor for the ArgoCD-over-Flux architectural principle, plus clarifies the 2026-state nuance that Flux can compose with progressive-delivery controllers (e.g., Argo Rollouts) even when ArgoCD isn’t used.
+Updates backlog row **081KSGS9H0008QG0R003A37Z65** to add an empirical/historical anchor for the ArgoCD-over-Flux architectural principle, plus clarifies the 2026-state nuance that Flux can compose with progressive-delivery controllers (e.g., Argo Rollouts) even when ArgoCD isn’t used.
 
 **Changes:**
 - Adds an “empirical prior-art anchor” section describing the operational lineage and constraints motivating ArgoCD selection.
@@ -55,29 +55,29 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md:159 (resolved)
+### Thread 1: docs/backlog/P1/081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md:159 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:01:58Z):
 
-This sentence references backlog rows B-0288 and B-0742 but doesn’t link them, while nearby sections use explicit markdown links for other backlog IDs. Consider linking these IDs to their corresponding row files to keep navigation/xref consistency within this backlog row.
+This sentence references backlog rows 081KR2E4K0008QG0R002YE3MMD and 081KSE6WT0008QG0R000YYH3DY but doesn’t link them, while nearby sections use explicit markdown links for other backlog IDs. Consider linking these IDs to their corresponding row files to keep navigation/xref consistency within this backlog row.
 
-### Thread 2: docs/backlog/P1/B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md:181 (resolved)
+### Thread 2: docs/backlog/P1/081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md:181 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:01:58Z):
 
 This paragraph uses directive/locked-in framing (e.g., “Don’t redesign… the decision is locked in…”) but the row explicitly cites `.claude/rules/no-directives.md` and ends with “NOT a directive… operator autonomy… preserved.” Suggest reframing this newly added guidance as an observation/default preference (and noting the conditions for re-evaluation) so the section doesn’t contradict the autonomy/no-directives framing.
 
-### Thread 3: docs/backlog/P1/B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md:158 (resolved)
+### Thread 3: docs/backlog/P1/081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md:158 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:10:29Z):
 
 The relative link to `.claude/rules/verify-existing-substrate-before-authoring.md` looks one level too shallow from `docs/backlog/P1/` (it currently points under `docs/.claude/...`, which doesn’t exist). Update the link target so it resolves to the repo-root `.claude/rules/...` path from this directory (i.e., go up one more `..`).
 
-### Thread 4: docs/backlog/P1/B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md:243 (resolved)
+### Thread 4: docs/backlog/P1/081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md:243 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:10:29Z):
 
-PR title/description are framed as a B-0816-only fix, but this change set also introduces a new backlog row (B-0819) and links to it. Consider updating the PR title and/or description summary to explicitly mention the new B-0819 row so the scope is accurately represented for reviewers and changelog/history readers.
+PR title/description are framed as a 081KSGS9H0008QG0R003A37Z65-only fix, but this change set also introduces a new backlog row (081KSGS9H0008QG0R0005P83AP) and links to it. Consider updating the PR title and/or description summary to explicitly mention the new 081KSGS9H0008QG0R0005P83AP row so the scope is accurately represented for reviewers and changelog/history readers.
 
 ## General comments
 

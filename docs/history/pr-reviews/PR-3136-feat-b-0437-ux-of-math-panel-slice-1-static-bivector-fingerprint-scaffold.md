@@ -46,7 +46,7 @@
 
 - **DOM-only rendering** — `createElement`/`textContent`/`replaceChildren` throughout; zero `innerHTML` template strings; zero XSS surface
 - **Lazy-loaded** on first tab open via `window._uxOfMathLoaded` guard (same pattern as Alignment and Hamiltonian tabs)
-- **Axis-aligned orthogonal witnesses** (θ = 90°, sin = 1) for slice-1 simplicity — score = v₁ × v₂; slice-2 will introduce non-orthogonal signals per B-0438
+- **Axis-aligned orthogonal witnesses** (θ = 90°, sin = 1) for slice-1 simplicity — score = v₁ × v₂; slice-2 will introduce non-orthogonal signals per 081KDW6QA2008QG0R0020A1PGS
 
 ## Build gate
 
@@ -56,14 +56,14 @@ dotnet build -c Release → Build succeeded. 0 Warning(s). 0 Error(s).
 
 (Pure HTML/JS addition; no .NET source changes.)
 
-## Acceptance criteria (B-0437 slice-1)
+## Acceptance criteria (081KRFA460008QG0R001JTAPZW slice-1)
 
 - [x] Panel renders without errors in `demo/index.html`
 - [x] Displays at least one worked example of a bivector fingerprint (HC-1 canvas)
 - [x] Partial-credit scoring concept explained visually (progress-bar score board + "How to Read This")
 - [x] `dotnet build -c Release` → 0 warnings, 0 errors
 
-## Slice-2 scope (B-0438, not in this PR)
+## Slice-2 scope (081KDW6QA2008QG0R0020A1PGS, not in this PR)
 
 - Live alignment-audit data (fetch from raw GitHub or local JSON)
 - Non-orthogonal witness signals (θ ≠ 90°, expose the sin(θ) factor)
@@ -204,7 +204,7 @@ Slice-1 delivers:
 
 Build gate: dotnet build -c Release → 0 warnings, 0 errors (pure HTML/JS).
 
-Closes slice-1 of B-0437. Slice-2 (B-0438) will wire live alignment-audit
+Closes slice-1 of 081KRFA460008QG0R001JTAPZW. Slice-2 (081KDW6QA2008QG0R0020A1PGS) will wire live alignment-audit
 data and introduce non-orthogonal witness signals.
 
 operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file IS the durable record"

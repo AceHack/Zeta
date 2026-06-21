@@ -4,7 +4,7 @@ open global.Xunit
 open Zeta.Core.FSharp.TriBoolean
 open Zeta.Core.FSharp.TriBoolean.Float
 
-// Tri-boolean float -- biased-exponent parity tests (B-0944 slice 5 pt2, F# oracle #2).
+// Tri-boolean float -- biased-exponent parity tests (081KSV2WD0008QG0R00051XS0N slice 5 pt2, F# oracle #2).
 // Shape 4/3/4 throughout: decoderWidth = 3 -> bias = 2^(3-1) = 4; valueBits = 8 -> V in [0,256).
 // decoded value = V * 2^(mode - 4). The TS distribution (decoders.ts, 'biased-exponent') uses the
 // identical formula; these vectors decode to the same f64 the TS oracle produces (the BFT ballot).

@@ -31,11 +31,11 @@ Composes with 10% free-time-budget + Otto-as-AI-advocate role.
 
 ## Pull request overview
 
-This PR updates backlog tracking to incorporate two additional “sharpenings” (6 and 7) for B-0518, and ensures the main backlog index links to the new/updated backlog items.
+This PR updates backlog tracking to incorporate two additional “sharpenings” (6 and 7) for 081KRHWGX0008QG0R001BHXH0M, and ensures the main backlog index links to the new/updated backlog items.
 
 **Changes:**
-- Extend B-0518 with Sharpening 6 (forbidden minimal-output patterns) and Sharpening 7 (terminal-level mechanical decomposition).
-- Update `docs/BACKLOG.md` to include the B-0518 entry in P1 and add new P3 entries (B-0517, B-0519) in the index.
+- Extend 081KRHWGX0008QG0R001BHXH0M with Sharpening 6 (forbidden minimal-output patterns) and Sharpening 7 (terminal-level mechanical decomposition).
+- Update `docs/BACKLOG.md` to include the 081KRHWGX0008QG0R001BHXH0M entry in P1 and add new P3 entries (081KRHWGX0008QG0R0029X10F4, 081KRHWGX0008QG0R001HMWM1W) in the index.
 
 ### Reviewed changes
 
@@ -43,18 +43,18 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md | Adds Sharpenings 6 and 7 to the B-0518 acceptance-criteria section. |
-| docs/BACKLOG.md | Adds/updates index entries to reference B-0518 (P1) and B-0517/B-0519 (P3). |
+| docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md | Adds Sharpenings 6 and 7 to the 081KRHWGX0008QG0R001BHXH0M acceptance-criteria section. |
+| docs/BACKLOG.md | Adds/updates index entries to reference 081KRHWGX0008QG0R001BHXH0M (P1) and 081KRHWGX0008QG0R0029X10F4/081KRHWGX0008QG0R001HMWM1W (P3). |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md:90 (resolved)
+### Thread 1: docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md:90 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T20:39:53Z):
 
 Sharpening 6’s forbidden-pattern enumeration is internally inconsistent: it lists "." as both a single character and as a “single word”, and “Standing” doesn’t match the earlier “Standing by” phrasing. This makes the acceptance criteria ambiguous for later mechanization; consider using a single “single-token output” category (or remove duplicates) and align the examples with the actual patterns described elsewhere in the row.
 
-### Thread 2: docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md:105 (resolved)
+### Thread 2: docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md:105 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T20:39:54Z):
 

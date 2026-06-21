@@ -14,12 +14,12 @@
  * table. If a slot's role is wrong, v1 changes it there first, then here (no-dogma: the whys
  * stay challengeable; `grammar-16.test.ts` is the conformance lock against the ADR).
  *
- * Per-slot availability is the canonical tri-boolean (B-0944): a state that forbids
+ * Per-slot availability is the canonical tri-boolean (081KSV2WD0008QG0R00051XS0N): a state that forbids
  * committing renders slot 4 as `F`; a held/uncertain option renders it `N`.
  *
  * Composes:
  *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md (the v0 layout + canonical-retrofit)
- *   - src/Core.TypeScript/tri-boolean (B-0944 — the `Tri` per-slot availability)
+ *   - src/Core.TypeScript/tri-boolean (081KSV2WD0008QG0R00051XS0N — the `Tri` per-slot availability)
  *   - ./observe.ts (the sovereign NextAction algebra + buildMenu this grammar renders)
  */
 /**

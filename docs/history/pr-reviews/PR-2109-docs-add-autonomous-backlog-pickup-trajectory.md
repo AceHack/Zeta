@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- add an autonomous backlog pickup trajectory RESUME packet grounded in B-0249 and B-0278 through B-0281
+- add an autonomous backlog pickup trajectory RESUME packet grounded in 081KQZVQW0008QG0R000C35RNY and 081KR2E4K0008QG0R001GFXN05 through 081KR2E4K0008QG0R002FSPPQR
 - link the child packet from the factory trajectory surface
 - refresh the active Codex claim notes and ETA while keeping runner-core paths out of scope
 
@@ -38,7 +38,7 @@
 - bunx markdownlint-cli2 docs/claims/factory-trajectory-autonomous-backlog-pickup.md docs/trajectories/factory-trajectory-surface/RESUME.md docs/trajectories/autonomous-backlog-pickup/RESUME.md
 
 ## Scope
-Docs-only trajectory packet. No runner-core edits; `claim/backlog-0249-tier1-runner` remains the owner for B-0249 runner behavior.
+Docs-only trajectory packet. No runner-core edits; `claim/backlog-0249-tier1-runner` remains the owner for 081KQZVQW0008QG0R000C35RNY runner behavior.
 
 ## Outcome
 

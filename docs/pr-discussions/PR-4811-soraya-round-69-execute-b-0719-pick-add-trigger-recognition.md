@@ -1,6 +1,6 @@
 ---
 pr_number: 4811
-title: "soraya(round-69): execute B-0719 pick \u2014 add Trigger Recognition Log section to NOTEBOOK + update SKILL reference"
+title: "soraya(round-69): execute 081KSBMG30008QG0R000WJ9FMP pick \u2014 add Trigger Recognition Log section to NOTEBOOK + update SKILL reference"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-24T03:08:58Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-24T14:24:39Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4811: soraya(round-69): execute B-0719 pick — add Trigger Recognition Log section to NOTEBOOK + update SKILL reference
+# PR #4811: soraya(round-69): execute 081KSBMG30008QG0R000WJ9FMP pick — add Trigger Recognition Log section to NOTEBOOK + update SKILL reference
 
 ## PR description
 
 ## Summary
 
-Soraya round 69 routing decision execution: B-0719 audit-of-audit (PR #4810 MERGED earlier) named 3 candidate landings for trigger-fired-but-row-not-filed routing-decision substrate. Soraya picked **Option 1** (NOTEBOOK.md per-round Trigger Recognition Log).
+Soraya round 69 routing decision execution: 081KSBMG30008QG0R000WJ9FMP audit-of-audit (PR #4810 MERGED earlier) named 3 candidate landings for trigger-fired-but-row-not-filed routing-decision substrate. Soraya picked **Option 1** (NOTEBOOK.md per-round Trigger Recognition Log).
 
 ## Rationale per Soraya
 
@@ -28,7 +28,7 @@ Soraya round 69 routing decision execution: B-0719 audit-of-audit (PR #4810 MERG
 
 ## Rejected reasoning
 
-- **Option 2** (B-0718 in-place): backlog rows are stable specification surfaces, not running logs. Wrong change-rate partition.
+- **Option 2** (081KS923C0008QG0R000TE1589 in-place): backlog rows are stable specification surfaces, not running logs. Wrong change-rate partition.
 - **Option 3** (new cross-cutting ledger): premature; no consumer demand; bandwidth-served falsifier failing. Re-evaluate if/when consumer surfaces.
 
 ## Changes
@@ -54,7 +54,7 @@ Via REST git-data API bypass (dotgit-saturation persists).
 
 ## Pull request overview
 
-This PR implements the B-0719 Option 1 landing: a per-round “Trigger Recognition Log” in Soraya’s persona NOTEBOOK, and updates the formal-verification skill’s reference patterns to point to that new canonical landing surface for trigger-fired-but-row-not-filed events.
+This PR implements the 081KSBMG30008QG0R000WJ9FMP Option 1 landing: a per-round “Trigger Recognition Log” in Soraya’s persona NOTEBOOK, and updates the formal-verification skill’s reference patterns to point to that new canonical landing surface for trigger-fired-but-row-not-filed events.
 
 **Changes:**
 - Append a `## Trigger Recognition Log` section to `memory/soraya/NOTEBOOK.md` with backfilled rounds 59/66/69 entries.

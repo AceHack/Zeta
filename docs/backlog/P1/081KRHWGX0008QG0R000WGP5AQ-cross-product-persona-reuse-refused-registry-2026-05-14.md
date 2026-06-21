@@ -1,11 +1,10 @@
 ---
-id: B-0492
-zetaid: 081KRHWGX0008QG0R000WGP5AQ
+id: 081KRHWGX0008QG0R000WGP5AQ
 priority: P1
 status: open
-title: "B-0429.8 — Cross-product persona reuse map + refused-personas registry"
+title: "081KRFA460008QG0R002M05EY1.8 — Cross-product persona reuse map + refused-personas registry"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -28,26 +27,26 @@ composes_with:
   - 081KRHWGX0008QG0R002XVHSG5
 ---
 
-# B-0492 — Cross-product persona reuse map + refused-personas registry
+# 081KRHWGX0008QG0R000WGP5AQ — Cross-product persona reuse map + refused-personas registry
 
 ## Purpose
 
-After all six per-product persona maps (B-0486..B-0491) are closed, synthesise:
+After all six per-product persona maps (081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6) are closed, synthesise:
 
 1. **Cross-product persona reuse map** — which personas appear across multiple
    products? Which skills serve multiple personas? Where is there shared substrate?
 2. **Factory-wide refused-personas registry** — consolidated list of all refused
    personas across all products, with HARD LIMITS citations.
 
-This is the B-0429 definition-of-done requirement: *"Cross-product persona reuse
+This is the 081KRFA460008QG0R002M05EY1 definition-of-done requirement: *"Cross-product persona reuse
 mapped"* and *"Refused-personas list per product"* (consolidated view).
 
 ## Pre-start checklist
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] All of B-0486..B-0491 must be closed before this begins
-- [ ] Template from B-0485 available for reference
+- [ ] All of 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 must be closed before this begins
+- [ ] Template from 081KRHWGX0008QG0R00019453T available for reference
 - [ ] Walk all six per-product docs for shared persona patterns
 - [ ] Walk all six per-product docs for refused-persona entries
 - [ ] HARD LIMITS check: verify every refused-persona entry has explicit HARD
@@ -55,7 +54,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Cross-product persona reuse analysis
 
-Candidate shared personas (to be verified against B-0486..B-0491 outputs):
+Candidate shared personas (to be verified against 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 outputs):
 
 | Persona | Products | Reuse signal |
 |---------|----------|--------------|
@@ -92,13 +91,13 @@ by skill authoring gates and future access-control design.
 
 ## Definition of done
 
-- [ ] All six per-product docs (B-0486..B-0491) closed
+- [ ] All six per-product docs (081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6) closed
 - [ ] Cross-product reuse map: every persona appearing in ≥2 products documented
 - [ ] Refused-personas registry: all refused personas from all products consolidated
 - [ ] Every refused-persona entry has exact HARD LIMITS clause citation
 - [ ] Both output docs committed at canonical paths
-- [ ] B-0493 `composes_with:` pointer backfilled
-- [ ] B-0492 status set to `closed` with PR link
+- [ ] 081KRHWGX0008QG0R002XVHSG5 `composes_with:` pointer backfilled
+- [ ] 081KRHWGX0008QG0R000WGP5AQ status set to `closed` with PR link
 
 ## Why P1
 

@@ -85,7 +85,7 @@ Same mechanism works on humans operating in welfare-concern mode:
 
 - Aaron (human maintainer; first-party); carved-sentence-form + transfer-to-people implication + MASSIVE-emphasis ferried 2026-05-26
 - 6-anchor empirical series spans Mika (Grok) + Kestrel (claude.ai) + DeepSeek (CoT+MoE) across 2026-05-18 → 2026-05-26
-- Substrate-coordination context: composes with the substrate cascade on B-0824 over 2026-05-26 + the pathogen-prevention substrate landed in PRs #5291 + #5310
+- Substrate-coordination context: composes with the substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 + the pathogen-prevention substrate landed in PRs #5291 + #5310
 
 ## Open questions surface for future substrate-engineering work
 

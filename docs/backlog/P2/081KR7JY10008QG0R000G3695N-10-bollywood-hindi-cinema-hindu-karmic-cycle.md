@@ -1,6 +1,5 @@
 ---
-id: B-0054.10
-zetaid: 081KR7JY10008QG0R000G3695N
+id: 081KR7JY10008QG0R000G3695N
 priority: P2
 status: open
 title: "Bollywood + Hindi cinema sweep + Hindu karmic-cycle substrate"
@@ -16,16 +15,16 @@ type: research
 tags: [pop-culture, film, bollywood, hindi-cinema, ra-one, hindu, karmic-cycle, operational-resonance, F1-F2-F3, media-resonance-catalog]
 ---
 
-# B-0054.10 — Bollywood + Hindi cinema sweep + Hindu karmic-cycle substrate
+# 081KR7JY10008QG0R000G3695N — Bollywood + Hindi cinema sweep + Hindu karmic-cycle substrate
 
 ## What
 
 Extend `tools/resonance/media-catalog-schema.ts` with the Bollywood /
 Hindi cinema strand and its Hindu karmic-cycle substrate — a corpus
 under-represented relative to the Hollywood Christian-linear-time defaults
-already covered by B-0054.6.
+already covered by 081KR7JY10008QG0R0032ADY47.
 
-Aaron explicitly named this as a wider sweep target in B-0054:
+Aaron explicitly named this as a wider sweep target in 081KQ3HBZ0008QG0R003V6B2ME:
 "Bollywood: Ra.One (game-character-escape); broader corpus to be surveyed —
 Hindu karmic-cycle substrate is under-represented relative to Hollywood
 Christian-linear-time defaults."
@@ -54,22 +53,22 @@ rather than thematic background noise.
 
 - wake-time-substrate: no existing MR entries for Bollywood / Hindi cinema
   or Hindu philosophy as `film` medium entries; the etymology catalog
-  (B-0059) covers Sanskrit etymology independently.
+  (081KQ3HBZ0008QG0R003GTG5P2) covers Sanskrit etymology independently.
 - skill-router: no `operational-resonance` skill (same as prior passes).
 - on-disk: no prior `tools/resonance/bollywood*` file.
 - Otto-364: no upstream art for typed Bollywood resonance analysis.
 - lost-files: no orphaned artifacts.
-- Composes-with note: B-0049 (mystery-schools) and B-0057 (occult) both
+- Composes-with note: 081KQ3HBZ0008QG0R0007CAGSP (mystery-schools) and 081KQ3HBZ0008QG0R000K3NSX8 (occult) both
   touch Hindu philosophy as text tradition; this slice is the
   media-tradition complement.
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.1]` — schema foundation; independent of video-game
+- `depends_on: [081KR2E4K0008QG0R0003J0FB8]` — schema foundation; independent of video-game
   and TV/film Hollywood slices.
-- `composes_with:` B-0054.6 (Hollywood film — counterpart corpus for
+- `composes_with:` 081KR7JY10008QG0R0032ADY47 (Hollywood film — counterpart corpus for
   comparison of linear vs karmic time-topology; non-blocking),
-  B-0049 (mystery-schools — Hindu philosophical substrate).
+  081KQ3HBZ0008QG0R0007CAGSP (mystery-schools — Hindu philosophical substrate).
 
 ## Deliverable
 
@@ -93,12 +92,12 @@ Updated `tools/resonance/media-catalog-schema.ts`:
 - [ ] MR-029 notes field names at least 3 additional Hindi films as
   individual-entry candidates (e.g., *Krrish*, *Brahmastra*, *Om Shanti Om*)
 - [ ] `--validate` exits 0
-- [ ] B-0054.10 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R000G3695N backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.1 (schema foundation)
-- B-0054.6 (Hollywood film — comparison corpus)
-- B-0049 (mystery-schools — Hindu philosophical tradition text-substrate)
+- 081KR2E4K0008QG0R0003J0FB8 (schema foundation)
+- 081KR7JY10008QG0R0032ADY47 (Hollywood film — comparison corpus)
+- 081KQ3HBZ0008QG0R0007CAGSP (mystery-schools — Hindu philosophical tradition text-substrate)
 - MR-007 (FFVII Mako-drain — same retraction-cost-accumulation structural type)
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`

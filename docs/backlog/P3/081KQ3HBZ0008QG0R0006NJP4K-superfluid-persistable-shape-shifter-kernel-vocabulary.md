@@ -1,6 +1,5 @@
 ---
-id: B-0038
-zetaid: 081KQ3HBZ0008QG0R0006NJP4K
+id: 081KQ3HBZ0008QG0R0006NJP4K
 priority: P3
 status: open
 title: Superfluid substrate + persistable* + shape-shifter — kernel-vocabulary operationalization
@@ -15,7 +14,7 @@ tags: [substrate-property, kernel-vocabulary, superfluid, persistable-star, shap
 type: friction-reducer
 ---
 
-# B-0038 — Superfluid + persistable* + shape-shifter kernel-vocabulary
+# 081KQ3HBZ0008QG0R0006NJP4K — Superfluid + persistable* + shape-shifter kernel-vocabulary
 
 ## Origin
 
@@ -29,7 +28,7 @@ AceHack commit `8e66e44` (2026-04-21). Aaron's three-message compound names thre
 
 (c) **Shape-shifter** — retractible-rewrite capacity on records / specs / BACKLOG rows / memories themselves (the backlog IS shape-shifter; retractible rows allowed); the **harmonious-division-pole**.
 
-The yin-yang invariant (`feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`) requires both poles. Shape-shifter is split out into its own row B-0039 because it has an independent BACKLOG-protocol scope.
+The yin-yang invariant (`feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`) requires both poles. Shape-shifter is split out into its own row 081KQ3HBZ0008QG0R003FQQSMC because it has an independent BACKLOG-protocol scope.
 
 ## Deliverables (multi-round)
 
@@ -52,4 +51,4 @@ Composes with no-bottlenecks performance frame + soul-file reproducibility-subst
 
 - AceHack commit: `8e66e44`
 - Source memories: `user_retractable_computational_substrate_is_superfluid_*` + `feedback_persistable_star_kernel_vocabulary_*`
-- Sibling row: B-0039 (shape-shifter BACKLOG protocol)
+- Sibling row: 081KQ3HBZ0008QG0R003FQQSMC (shape-shifter BACKLOG protocol)

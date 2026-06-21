@@ -333,7 +333,7 @@ This composes with:
 - PR #2821 (architecting by divine coincidences within
   bounded context)
 - PR #2833 (Pauli-symmetry-breaking falsifiable claim)
-- B-0422 (Clifford-algebraic narrative engine
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine
   falsifiability test — beacon-tier anchor for the
   Pauli-symmetry-breaking claim)
 - `.claude/rules/razor-discipline.md`
@@ -359,7 +359,7 @@ Substrate-honest disclaimer:
   exists for self-modifying type-level operations; the
   mathematical/computational structure is concrete
 - **NOT abandoning external falsifiability for beacon-tier
-  claims** — B-0422 captures the falsifiable Pauli-
+  claims** — 081KRCQQF0008QG0R0008VT354 captures the falsifiable Pauli-
   symmetry-breaking research target; compiler-falsification
   is for type-level claims, not for empirical-physics
   claims

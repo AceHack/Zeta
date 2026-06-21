@@ -1,6 +1,5 @@
 ---
-id: B-0974
-zetaid: 081KT07NV0008QG0R0028AAV0E
+id: 081KT07NV0008QG0R0028AAV0E
 priority: P2
 status: closed
 title: Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
@@ -40,7 +39,7 @@ flag this slice. Operator: *"everything we skipped lets slice off for further en
 ## Composes with
 
 - Slice 5.3 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
-- B-0288 (Ace DLC package manager CLI)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)
 
 ## Resolution — shipped by #6416 (slice 5.4)
 

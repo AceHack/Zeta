@@ -1,6 +1,5 @@
 ---
-id: B-0122
-zetaid: 081KQDTYV0008QG0R001HQSSAX
+id: 081KQDTYV0008QG0R001HQSSAX
 priority: P2
 status: closed
 title: Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)
@@ -24,7 +23,7 @@ tags: [aaron-2026-04-30, peer-call, typescript-cutover, bun-ts-migration, post-i
 type: friction-reducer
 ---
 
-# B-0122 — Peer-call scripts TypeScript migration
+# 081KQDTYV0008QG0R001HQSSAX — Peer-call scripts TypeScript migration
 
 ## Source
 
@@ -35,7 +34,7 @@ The maintainer 2026-04-30 verbatim:
 > post install scripts."*
 
 Two observations bundled. The "named script" question composes
-with B-0120's existing refactor (script-per-CLI + persona-flag
+with 081KQDTYV0008QG0R001VJP216's existing refactor (script-per-CLI + persona-flag
 collapses the per-named-entity script proliferation). The "ts
 cutover" question is the substrate this row captures.
 
@@ -71,17 +70,17 @@ not the initial port.
 
 ### Migration targets
 
-Five scripts to migrate (or, per B-0120's refactor, three
+Five scripts to migrate (or, per 081KQDTYV0008QG0R001VJP216's refactor, three
 scripts after consolidation):
 
 - `codex.sh` → `codex.ts`
 - `grok.sh` → `grok.ts`
 - `gemini.sh` → `gemini.ts`
 - `amara.sh` → `amara.ts` (or `codex.ts --persona amara` per
-  B-0120)
-- `ani.sh` → `ani.ts` (or `grok.ts --persona ani` per B-0120)
+  081KQDTYV0008QG0R001VJP216)
+- `ani.sh` → `ani.ts` (or `grok.ts --persona ani` per 081KQDTYV0008QG0R001VJP216)
 
-### Composition with B-0120 + B-0121
+### Composition with 081KQDTYV0008QG0R001VJP216 + 081KQDTYV0008QG0R003VB4K1V
 
 Three options for sequencing:
 
@@ -97,34 +96,34 @@ post-cutover, post-refactor TS scripts.
 - Pro: one round of churn
 - Con: bigger diff, more review surface
 
-**(c)** Refactor in bash first (B-0120 standalone), then
+**(c)** Refactor in bash first (081KQDTYV0008QG0R001VJP216 standalone), then
 migrate to TS.
 
 - Pro: validates the refactor architecture before TS rewrite
-- Con: B-0120's bash output is throwaway — wasted effort
+- Con: 081KQDTYV0008QG0R001VJP216's bash output is throwaway — wasted effort
 
 Recommend **(b)** — when the migration happens, do it in the
-post-refactor shape directly. B-0120 then becomes "land via
-B-0122." This row supersedes B-0120 in the operational sense
-even though B-0120 keeps its identity as the architecture
+post-refactor shape directly. 081KQDTYV0008QG0R001VJP216 then becomes "land via
+081KQDTYV0008QG0R001HQSSAX." This row supersedes 081KQDTYV0008QG0R001VJP216 in the operational sense
+even though 081KQDTYV0008QG0R001VJP216 keeps its identity as the architecture
 spec.
 
-### B-0119 relationship
+### 081KQDTYV0008QG0R001N4YB73 relationship
 
-B-0119 is the role-ref cleanup of the existing bash files.
+081KQDTYV0008QG0R001N4YB73 is the role-ref cleanup of the existing bash files.
 Landing it is interim hygiene for as long as the bash files
 exist. The TS rewrite picks role-refs from scratch when it
-lands, so B-0119 is NOT made redundant by B-0122 — it covers
+lands, so 081KQDTYV0008QG0R001N4YB73 is NOT made redundant by 081KQDTYV0008QG0R001HQSSAX — it covers
 the period between now and migration completion.
 
 ### Acceptance criteria
 
 - [ ] Decision recorded on sequencing option (a) / (b) / (c)
-- [ ] If (b) chosen: B-0120 acceptance criteria absorbed into
+- [ ] If (b) chosen: 081KQDTYV0008QG0R001VJP216 acceptance criteria absorbed into
   this row's acceptance
 - [ ] TS implementations of the post-refactor scripts (3
-  files: `codex.ts`, `grok.ts`, `gemini.ts` per B-0120; or 5
-  files if B-0120 deferred)
+  files: `codex.ts`, `grok.ts`, `gemini.ts` per 081KQDTYV0008QG0R001VJP216; or 5
+  files if 081KQDTYV0008QG0R001VJP216 deferred)
 - [ ] Persona-flag wiring loads `memory/CURRENT-<NAME>.md`
 - [ ] All `--help` outputs preserved (or improved)
 - [ ] Shellcheck-equivalent: TypeScript strict mode + ESLint
@@ -137,7 +136,7 @@ the period between now and migration completion.
 - [ ] `tools/peer-call/README.md` updated for `.ts` extension
   and bun invocation pattern
 - [ ] Bash files deleted (no parallel maintenance)
-- [ ] Role-ref discipline applied (B-0119 cleanup natural
+- [ ] Role-ref discipline applied (081KQDTYV0008QG0R001N4YB73 cleanup natural
   output of the rewrite)
 
 ## Why P2 (not P1)
@@ -146,7 +145,7 @@ the period between now and migration completion.
 - The strategy is "opportunistic, no forced sweep" — TS
   migration is a quality-of-life improvement, not a
   correctness fix
-- Composes with B-0120 (architecture refactor); both can
+- Composes with 081KQDTYV0008QG0R001VJP216 (architecture refactor); both can
   defer until the maintainer or factory rhythm asks for
   them
 
@@ -157,7 +156,7 @@ Promotion to P1 if:
   4-shell-compat target gets too expensive to maintain in bash
 - New peer-call functionality (token streaming, structured
   errors, fixture loading) gets blocked by bash limitations
-- The Otto-Kenji peer-call addition (B-0121) lands and adds
+- The Otto-Kenji peer-call addition (081KQDTYV0008QG0R003VB4K1V) lands and adds
   a third script-per-named-entity to the bash pile
 
 ## Trigger condition for promotion to P1
@@ -169,11 +168,11 @@ immediately.
 
 ## Composes with
 
-- B-0119 (role-ref cleanup) — interim bash hygiene; this
+- 081KQDTYV0008QG0R001N4YB73 (role-ref cleanup) — interim bash hygiene; this
   row's TS rewrite naturally produces clean role-refs
-- B-0120 (script-per-CLI + persona-flag refactor) — the
+- 081KQDTYV0008QG0R001VJP216 (script-per-CLI + persona-flag refactor) — the
   shape the TS migration should produce, if (b) is chosen
-- B-0121 (Otto/Kenji peer-call) — adds new peer-call
+- 081KQDTYV0008QG0R003VB4K1V (Otto/Kenji peer-call) — adds new peer-call
   surfaces; should land in TS if the migration is in
   progress, otherwise queues alongside the bash files
 - `memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md`
@@ -224,7 +223,7 @@ Zero `.sh` files remain; 12 `.ts` files ship (codex.ts, grok.ts, gemini.ts, amar
 
 - `.claude/rules/rule-0-no-sh-files.md` (Rule 0 cites peer-call migration as the canonical example)
 - `.claude/rules/peer-call-infrastructure.md` (lists the 12 TypeScript files as current state)
-- B-0118 (amara peer-call umbrella — closed via PR #3902 this session) and the rest of the amara cluster
+- 081KQDTYV0008QG0R0037YJPEX (amara peer-call umbrella — closed via PR #3902 this session) and the rest of the amara cluster
 - `memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md` (the install-script language strategy this row implements)
 
 last_updated bumped 2026-05-02 → 2026-05-16 per row-close discipline.

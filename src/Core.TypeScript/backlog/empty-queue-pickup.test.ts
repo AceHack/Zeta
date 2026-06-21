@@ -17,10 +17,10 @@ const PR_LIST_EMPTY = JSON.stringify([]);
 const PR_LIST_FULL = JSON.stringify([{ number: 1 }, { number: 2 }, { number: 3 }]);
 const PICKUP_SELECTED = JSON.stringify({
   status: "selected",
-  selected: { id: "B-0300", priority: "P1", title: "Test item", relativePath: "docs/backlog/P1/B-0300-test.md" },
+  selected: { id: "081KR2E4K0008QG0R002MFK6AW", priority: "P1", title: "Test item", relativePath: "docs/backlog/P1/081KR2E4K0008QG0R002MFK6AW-test.md" },
   action: "claim-and-implement",
   reason: "highest-priority open unclaimed item",
-  executionPrompt: "Claim and implement the smallest safe slice of B-0300.",
+  executionPrompt: "Claim and implement the smallest safe slice of 081KR2E4K0008QG0R002MFK6AW.",
   blocked: [],
   activeClaims: [],
 });
@@ -35,19 +35,19 @@ const PICKUP_EMPTY = JSON.stringify({
 });
 const PICKUP_DECOMPOSE = JSON.stringify({
   status: "selected",
-  selected: { id: "B-0301", priority: "P0", title: "Big blob", relativePath: "docs/backlog/P0/B-0301-big.md" },
+  selected: { id: "081KR2E4K0008QG0R0035QVX6S", priority: "P0", title: "Big blob", relativePath: "docs/backlog/P0/081KR2E4K0008QG0R0035QVX6S-big.md" },
   action: "decompose-first",
   reason: "highest-priority open item needs decomposition",
-  executionPrompt: "Decompose B-0301 into atomic children.",
+  executionPrompt: "Decompose 081KR2E4K0008QG0R0035QVX6S into atomic children.",
   blocked: [],
   activeClaims: [],
 });
 const PICKUP_DOTTED_ID = JSON.stringify({
   status: "selected",
-  selected: { id: "B-0164.1", priority: "P1", title: "Dotted item", relativePath: "docs/backlog/P1/B-0164.1-dotted.md" },
+  selected: { id: "081KR7JY10008QG0R000MH7PJT", priority: "P1", title: "Dotted item", relativePath: "docs/backlog/P1/081KR7JY10008QG0R000MH7PJT-dotted.md" },
   action: "claim-and-implement",
   reason: "highest-priority open unclaimed item",
-  executionPrompt: "Claim and implement the smallest safe slice of B-0164.1.",
+  executionPrompt: "Claim and implement the smallest safe slice of 081KR7JY10008QG0R000MH7PJT.",
   blocked: [],
   activeClaims: [],
 });
@@ -81,11 +81,11 @@ describe("orchestrate", () => {
     ]));
     const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
     expect(result.status).toBe("claimed");
-    expect(result.backlogId).toBe("B-0300");
+    expect(result.backlogId).toBe("081KR2E4K0008QG0R002MFK6AW");
     expect(result.branch).toBe("claim/backlog-0300");
     expect(result.worktreePath).toBe("/tmp/test-worktrees/backlog-0300");
     expect(result.decisions).toHaveLength(3);
-    expect(result.executionPrompt).toContain("B-0300");
+    expect(result.executionPrompt).toContain("081KR2E4K0008QG0R002MFK6AW");
   });
 
   test("normalizes dotted backlog IDs into claim-safe slugs", () => {
@@ -96,7 +96,7 @@ describe("orchestrate", () => {
     ]));
     const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
     expect(result.status).toBe("claimed");
-    expect(result.backlogId).toBe("B-0164.1");
+    expect(result.backlogId).toBe("081KR7JY10008QG0R000MH7PJT");
     expect(result.branch).toBe("claim/backlog-0164-1");
     expect(result.worktreePath).toBe("/tmp/test-worktrees/backlog-0164-1");
   });
@@ -119,7 +119,7 @@ describe("orchestrate", () => {
     ]));
     const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
     expect(result.status).toBe("decompose-first");
-    expect(result.backlogId).toBe("B-0301");
+    expect(result.backlogId).toBe("081KR2E4K0008QG0R0035QVX6S");
     expect(result.executionPrompt).toContain("Decompose");
     expect(result.decisions).toHaveLength(2);
   });

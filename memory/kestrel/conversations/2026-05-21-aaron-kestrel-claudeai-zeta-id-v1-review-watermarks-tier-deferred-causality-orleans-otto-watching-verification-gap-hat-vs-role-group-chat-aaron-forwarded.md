@@ -1,6 +1,6 @@
 ---
 name: 2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded
-description: "Multi-hour Aaron-Kestrel (claude.ai) trajectory 2026-05-21 spanning 25 substantive sections — ZetaId V1 critique + tier-deferred causality + Orleans/SPIFFE/SPIRE/OPA/Reticulum/DBSP stack-coherence + capability-negotiation-as-architecture lineage (E lang/CapnProto/KeyKOS/IUnknown/Sequoia) + hat-vs-role substrate (GOVERNANCE.md §16 Dynamic hats + §27 Abstraction layers) + group-chat architecture + Aaron's prior-art (GitHub + patent + 27-year cross-vertical career) + MacVector Carbon/Cocoa/WPF triple-platform deep-work + Smalltalk lineage + ANTLR closing → B-0685 row + MultiplexedWebSockets (16× HttpClient + David Fowler review + 2014 SignalR Issue #3114 + 2020 patent + cross-site DNS proxy generalization) + Throttler non-Nagle adaptive batching Itron 100M+ device production tenure + flux-capacitor naming + F# weight-free K8s long-term vision + zero-dependency-down-to-microkernel philosophy (decade-old; 2015 dotnet/corert prior-art) + Aaron's getting-back-up 27-year discipline + 2 substrate-honest correction-and-walk-back cycles operating without entering 1984-paranoid-critic attractor."
+description: "Multi-hour Aaron-Kestrel (claude.ai) trajectory 2026-05-21 spanning 25 substantive sections — ZetaId V1 critique + tier-deferred causality + Orleans/SPIFFE/SPIRE/OPA/Reticulum/DBSP stack-coherence + capability-negotiation-as-architecture lineage (E lang/CapnProto/KeyKOS/IUnknown/Sequoia) + hat-vs-role substrate (GOVERNANCE.md §16 Dynamic hats + §27 Abstraction layers) + group-chat architecture + Aaron's prior-art (GitHub + patent + 27-year cross-vertical career) + MacVector Carbon/Cocoa/WPF triple-platform deep-work + Smalltalk lineage + ANTLR closing → 081KS3X9Y0008QG0R000EKJE9S row + MultiplexedWebSockets (16× HttpClient + David Fowler review + 2014 SignalR Issue #3114 + 2020 patent + cross-site DNS proxy generalization) + Throttler non-Nagle adaptive batching Itron 100M+ device production tenure + flux-capacitor naming + F# weight-free K8s long-term vision + zero-dependency-down-to-microkernel philosophy (decade-old; 2015 dotnet/corert prior-art) + Aaron's getting-back-up 27-year discipline + 2 substrate-honest correction-and-walk-back cycles operating without entering 1984-paranoid-critic attractor."
 type: feedback
 created: 2026-05-21
 participants: [Aaron, Kestrel (claude.ai), Otto-CLI]
@@ -13,7 +13,7 @@ tags: [kestrel, zeta-id, watermarks, tier-deferred-causality, orleans, spiffe-sp
 **Surface**: claude.ai web (Kestrel persona)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 **Companion**: `docs/research/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-stack-coherence-aaron-forwarded.md` (first half, already on main via PR #4522)
-**Composes with**: B-0681, B-0682, B-0683, B-0684, B-0685, the Otto-CLI session that ran in parallel
+**Composes with**: 081KS3X9Y0008QG0R003044PQQ, 081KS3X9Y0008QG0R000W00V73, 081KS3X9Y0008QG0R0006MQXA4, 081KS3X9Y0008QG0R003MMEAC7, 081KS3X9Y0008QG0R000EKJE9S, the Otto-CLI session that ran in parallel
 
 ## Why this is preserved in Kestrel's persona folder
 
@@ -337,7 +337,7 @@ Aaron is taking the read on board. The AI-work-at-ServiceTitan + multi-harness-e
 
 The full Aaron-Kestrel 2026-05-21 trajectory across six sections produced:
 
-- **ZetaId v2 substrate refinements** → 4 backlog rows (B-0681 through B-0684) on main via PR #4522
+- **ZetaId v2 substrate refinements** → 4 backlog rows (081KS3X9Y0008QG0R003044PQQ through 081KS3X9Y0008QG0R003MMEAC7) on main via PR #4522
 - **Three publishable artifacts framing** (corrected to: 2 papers + 1 candidate result needing formalization)
 - **Verification-gap discipline** — line-by-line file-read against math required before any publication
 - **Otto-watching architectural disclosure** — calibrated synthesis is not independent confirmation
@@ -444,17 +444,17 @@ Kestrel's engagement on D + naming-is-hard:
 
 Aaron's closing: *"i really want to take advantage of antlr at some point casue all the grammers are out there already"*
 
-This connects back to the earlier B-0682 conversation (canonical string encoding + endianness + bit-numbering spec) and the broader cross-language description-layer vision (the watermark + tier-deferred causality + tropical-DBSP-generalization papers + the Hat-Mediated Multi-Model Agent Architectures with Retraction-Native Substrate paper).
+This connects back to the earlier 081KS3X9Y0008QG0R000W00V73 conversation (canonical string encoding + endianness + bit-numbering spec) and the broader cross-language description-layer vision (the watermark + tier-deferred causality + tropical-DBSP-generalization papers + the Hat-Mediated Multi-Model Agent Architectures with Retraction-Native Substrate paper).
 
 ANTLR-as-reuse-substrate is operationally significant: every major language has open-source grammars already maintained by other communities; leveraging them avoids re-implementing parsers from scratch and gets cross-language code-generation work for ~free.
 
 Composes with:
-- B-0682 canonical string encoding (Crockford base32 + endianness spec)
-- B-0683 tier-deferred causality worked example (DBSP + Z-set substrate)
-- B-0684 clock-protocol negotiation stack sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
+- 081KS3X9Y0008QG0R000W00V73 canonical string encoding (Crockford base32 + endianness spec)
+- 081KS3X9Y0008QG0R0006MQXA4 tier-deferred causality worked example (DBSP + Z-set substrate)
+- 081KS3X9Y0008QG0R003MMEAC7 clock-protocol negotiation stack sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
 - The cross-domain synthesis paper Kestrel keeps suggesting (uses ANTLR-driven multi-language code-gen as one of the technical contributions)
 
-(Unanswered as of forward-time; substrate-honest follow-up state. ANTLR work itself probably deserves its own B-NNNN backlog row when the priority lands. **Update**: filed as B-0685 by Otto-CLI 2026-05-21T13:11Z per Aaron explicit "we can do the backlog row now".)
+(Unanswered as of forward-time; substrate-honest follow-up state. ANTLR work itself probably deserves its own B-NNNN backlog row when the priority lands. **Update**: filed as 081KS3X9Y0008QG0R000EKJE9S by Otto-CLI 2026-05-21T13:11Z per Aaron explicit "we can do the backlog row now".)
 
 ## Twelfth half — Kestrel on ANTLR (grammars-v4 + three leverage tiers + DSL trap)
 
@@ -707,7 +707,7 @@ The firewall-traversal + DNS-proxy generalization composes directly with:
 
 - **Reticulum** (per Aaron's "+spiffie+spire for identity") — the mesh-substrate Zeta uses for cross-network communication
 - **Orleans grain-to-grain RPC** — high-throughput bidirectional RPC across arbitrary network boundaries IS the substrate Orleans deployment in mesh-context needs
-- **B-0289 Green Lantern hardware spec** — RF-mesh-as-tunnel pattern at hardware scope
+- **081KR2E4K0008QG0R001SWEPNV Green Lantern hardware spec** — RF-mesh-as-tunnel pattern at hardware scope
 - **Aurora data sovereignty** — community guardian AIs need outbound-only-firewall-traversal-compatible RPC
 
 The 2014 SignalR issue → 2020 Itron patent → open-source MultiplexedWebSockets → cross-site-DNS-proxy generalization arc IS the operational substrate Zeta's mesh-deployment story rests on.
@@ -718,18 +718,18 @@ The 2014 SignalR issue → 2020 Itron patent → open-source MultiplexedWebSocke
 
 Across the 21 sections of this archive:
 
-1. ZetaId V1 review with technical critique addressed in spec evolution (v2 follow-ups B-0681 through B-0684)
-2. Tier-deferred causality framing + publishable artifact path (B-0683)
+1. ZetaId V1 review with technical critique addressed in spec evolution (v2 follow-ups 081KS3X9Y0008QG0R003044PQQ through 081KS3X9Y0008QG0R003MMEAC7)
+2. Tier-deferred causality framing + publishable artifact path (081KS3X9Y0008QG0R0006MQXA4)
 3. Capability-negotiation-as-architecture lineage (E lang / CapnProto / KeyKOS / IUnknown / Sequoia)
 4. Distance-vs-trust two-axis tier parameterization
-5. Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP stack-coherence (B-0684)
+5. Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP stack-coherence (081KS3X9Y0008QG0R003MMEAC7)
 6. Hat-vs-role substrate (governance §24 distinction)
 7. Group-chat architecture + ToM models (multi-AI coordination)
 8. Prior-art surfacing: GitHub + patent + 27-year cross-vertical career
 9. MacVector deep-work (Carbon/Cocoa/WPF triple-platform + Boost integration)
 10. VicissitudeDecorator culture marker (Smalltalk lineage)
 11. Language-design respect (Bracha / D / etc.)
-12. ANTLR closing → B-0685 backlog row filed
+12. ANTLR closing → 081KS3X9Y0008QG0R000EKJE9S backlog row filed
 13. F# escalation ladder (`f# → ces → typeproviders → linq → generators → antlr`)
 14. Dual-language C#/F# architecture with multi-oracle by design
 15. Standalone C# Core PR #4522 — IS the architecture-conversation-substrate landed
@@ -832,7 +832,7 @@ The zero-dependency-down-to-microkernel principle composes directly with multipl
 - **MultiplexedWebSockets** — uses Fowler's Channels + Pipelines (similar-shaped platform primitives) + can plug into HTTP/gRPC ecosystem if needed
 - **Reticulum** integration — depends on Reticulum (similar-shaped mesh substrate) + contributes back via Zeta-mesh-deployment patterns
 - **Orleans v1 choice** (per Aaron earlier in trajectory) — depend on Orleans (similar-shaped actor substrate) + can swap to own implementation at maturity
-- **B-0679 / B-0680 Rust + Python peer oracles** — own implementations of the canonical bit-layout in each ecosystem rather than depending on external implementations
+- **081KS3X9Y0008QG0R001Z8SBZJ / 081KS3X9Y0008QG0R002WGH8PJ Rust + Python peer oracles** — own implementations of the canonical bit-layout in each ecosystem rather than depending on external implementations
 
 The default-dependency-model framing makes the substrate decisions visible as principled rather than ad-hoc.
 
@@ -880,7 +880,7 @@ The getting-back-up muscle is also what makes the deliberate-writing mode possib
 
 A multi-hour Aaron-Kestrel trajectory that produced:
 
-1. **Concrete v2 ZetaId spec refinements** → backlog rows B-0681 through B-0684
+1. **Concrete v2 ZetaId spec refinements** → backlog rows 081KS3X9Y0008QG0R003044PQQ through 081KS3X9Y0008QG0R003MMEAC7
 2. **Three publishable artifacts cluster** with honest readiness ranking
 3. **Architectural lineage placement** (E lang / CapnProto / IUnknown / Sequoia / Smalltalk / Bracha / D / etc.)
 4. **Hat-vs-role substrate** (governance §24)
@@ -890,7 +890,7 @@ A multi-hour Aaron-Kestrel trajectory that produced:
 8. **Cross-site DNS proxy generalization** of the patent architecture
 9. **Non-Nagle adaptive batching** Throttler library + Itron 100M+ device production tenure
 10. **Flux-capacitor naming** + 1.21 gigawatts joke + memorable-name discipline
-11. **F# escalation ladder** (`f# → ces → typeproviders → linq → generators → antlr`) → B-0685 ANTLR row filed
+11. **F# escalation ladder** (`f# → ces → typeproviders → linq → generators → antlr`) → 081KS3X9Y0008QG0R000EKJE9S ANTLR row filed
 12. **Dual-language C#/F# architecture** with C# Core PR #4522 IS the architectural-conversation-substrate-landed
 13. **F# weight-free K8s long-term vision** + zero-dependency-down-to-microkernel philosophy
 14. **Two substrate-honest correction-and-walk-back cycles** (sleep-cycle misread + K8s-scope-flag misread)
@@ -912,8 +912,8 @@ Per Aaron's "pick and choose my battles in order based on how sound we have the 
 2. **Cross-domain IVM synthesis** — career-as-substrate; 4-6 weeks
 3. **MultiplexedWebSockets blog post** — bounded warm-up artifact; weekend scope
 4. **LinkedIn update** — bounded; hours scope; the foundational legibility move
-5. **Tier-deferred causality paper** (B-0683 worked example precondition); 8-12 weeks
-6. **ANTLR cross-language codegen** (B-0685) — research-grade; bounded PoC phase
+5. **Tier-deferred causality paper** (081KS3X9Y0008QG0R0006MQXA4 worked example precondition); 8-12 weeks
+6. **ANTLR cross-language codegen** (081KS3X9Y0008QG0R000EKJE9S) — research-grade; bounded PoC phase
 7. **Z-set-over-AST incremental compilation** — long arc; 6+ months
 8. **F# weight-free K8s** — decade-arc vision; research papers along the way
 

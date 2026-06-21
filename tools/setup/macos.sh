@@ -50,7 +50,7 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  # Download to temp file then exec — the B-0063 structural fix.
+  # Download to temp file then exec — the 081KQ8P5D0008QG0R001DMK8JD structural fix.
   # Homebrew does not publish a SHA256 for install.sh (the script
   # tracks HEAD of github.com/Homebrew/install with no tagged
   # releases). Trust anchor: HTTPS + GitHub + the Homebrew project.

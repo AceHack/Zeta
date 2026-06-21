@@ -41,7 +41,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 - [x] Branch guard via `git branch --show-current` before commit
 - [x] ls-tree HEAD == ls-tree origin/main (57/57; canary clean)
-- [x] Post-push `git ls-remote` verification (LOCAL == REMOTE; B-0615 silent-push canary clean)
+- [x] Post-push `git ls-remote` verification (LOCAL == REMOTE; 081KRW63S0008QG0R000EAZ9K2 silent-push canary clean)
 - [x] No peer worktree contention (0 Lior procs, 0 stuck plumbing)
 - [ ] CI passes (CodeQL + gate workflows)
 - [ ] Auto-merge arms cleanly

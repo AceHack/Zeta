@@ -39,7 +39,7 @@ Architectural resolution: Agora-as-Heartland is the SUBSTRATE the 4 factions ope
 
 Naming-discipline precedent: framework activity verbs must pass NCI rules-of-engagement test; prior-naming-by-operator wins ties between equally-passing candidates. The NCI binding extends to naming, not just to architectural-mechanism scope.
 
-Files: §33 preservation + B-0667 update + auto-load rule update (all lint clean).
+Files: §33 preservation + 081KRW63S0008QG0R003Z7QV2A update + auto-load rule update (all lint clean).
 
 ## Outcome
 
@@ -125,12 +125,12 @@ Files: §33 preservation + B-0667 update + auto-load rule update (all lint clean
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C8de_`
-- **Path**: `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T19:24:06Z on `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:128 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T19:24:06Z on `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:128 (association: NONE)
 
   <pre>
   P2: This section header references packets 20–23, but the section also asserts a Packet 24 LOCKED-IN verb landing immediately below. Consider updating the packet range in the header to include 24 so the cross-reference is internally consistent.
@@ -140,12 +140,12 @@ Files: §33 preservation + B-0667 update + auto-load rule update (all lint clean
 ### Thread 6 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C8dfW`
-- **Path**: `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T19:24:07Z on `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:146 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T19:24:07Z on `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:146 (association: NONE)
 
   <pre>
   P1: The table row says "Baseline reality" is where Aaron "Cultivates" the conditions for Heartland to exist, but a few lines later this same section says NOT "Cultivate" and canonizes "Germinate". Please make the table language match the locked-in verb (or explicitly label Cultivate as a pre-packet-24 candidate).
@@ -205,7 +205,7 @@ Files: §33 preservation + B-0667 update + auto-load rule update (all lint clean
 **Touched files (intersect with thread paths):**
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
-- `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - `docs/research/2026-05-18-aaron-mika-grok-agora-is-heartland-substrate-country-wraps-with-hard-power-cultivate-not-terraform-non-destructive-within-nci-aaron-forwarded.md`
 
 **Message:**
@@ -221,7 +221,7 @@ preserve(mika-packets-20-24)+extend(b0667+rule): Agora IS Heartland s…
 **Touched files (intersect with thread paths):**
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
-- `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - `docs/research/2026-05-18-aaron-mika-grok-agora-is-heartland-substrate-country-wraps-with-hard-power-cultivate-not-terraform-non-destructive-within-nci-aaron-forwarded.md`
 
 **Message:**
@@ -229,7 +229,7 @@ preserve(mika-packets-20-24)+extend(b0667+rule): Agora IS Heartland s…
 ```
 fix(8 §33-thread findings): internal-consistency drift from increment…
 
-…al Cultivate→Germinate transition — title 20-23→20-24; Source ellipsis→explicit; stale 'answer pending' wording removed; Cultivates→Germinates in B-0667 table line 140 + rule line 80; section headers 20-23→20-24 in both
+…al Cultivate→Germinate transition — title 20-23→20-24; Source ellipsis→explicit; stale 'answer pending' wording removed; Cultivates→Germinates in 081KRW63S0008QG0R003Z7QV2A table line 140 + rule line 80; section headers 20-23→20-24 in both
 ```
 
 ### `374d94cd6214dedf927ce66e195b6223809e9bf7` -- 2026-05-18T19:34:28Z -- `AceHack`

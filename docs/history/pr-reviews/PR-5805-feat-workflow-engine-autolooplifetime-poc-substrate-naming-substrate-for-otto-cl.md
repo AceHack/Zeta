@@ -68,7 +68,7 @@ type AutoLoopLifetime =
 
 - PR #5774 (world.ts + StandardVerdict + dispatchInWorld pattern)
 - PR #5775 + #5801 + #5804 (per-host adapters for PR scanning)
-- PR #5728 (B-0867.5 workflow-engine PoC scaffold)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC scaffold)
 - Rules: holding-without-named-dependency + refresh-before-decide + verify-before-deferring + dont-ask-permission + asymmetric-authorship + monad-propagation + substrate-smoothness + NCI HC-8
 
 **23 tests pass / 0 fail / 42 expect() calls.**
@@ -199,8 +199,8 @@ Per Aaron 2026-05-28: 'when do you want to update your foreground loop
 to start running on lifecycles and test out our first ones?'
 
 Substrate-engineering substrate-naming substrate dogfooding the
-workflow-engine shipped today (B-0867.5 PoC + B-0867.20 ReviewLifetime
-+ B-0914.* cluster + GitWorld + per-host adapters) on Otto-CLI's own
+workflow-engine shipped today (081KSKBP80008QG0R000B3Y19A.5 PoC + 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime
++ 081KSNY2Z0008QG0R001YK61JQ.* cluster + GitWorld + per-host adapters) on Otto-CLI's own
 foreground autonomous-loop tick-handler. Parallel-run discipline: PoC
 substrate captures existing-but-implicit state machine WITHOUT
 replacing the working ad-hoc handler.
@@ -263,8 +263,8 @@ Composes with shipped substrate:
 - PR #5774 world.ts (LifetimeState + StandardVerdict + dispatchInWorld pattern)
 - PR #5775 git-world.ts + per-host adapters (GitHubWorld for PR-state scanning)
 - PR #5801 GitLabWorld + PR #5804 4-adapter batch (multi-forge support)
-- PR #5728 B-0867.5 workflow-engine PoC (this PR composes with that scaffold)
-- B-0867.20 ReviewLifetime DU (PR #5758; similar lifecycle pattern)
+- PR #5728 081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC (this PR composes with that scaffold)
+- 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime DU (PR #5758; similar lifecycle pattern)
 
 Composes with rules:
 - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md

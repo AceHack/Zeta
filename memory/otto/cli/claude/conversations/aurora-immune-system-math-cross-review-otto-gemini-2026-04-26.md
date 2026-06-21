@@ -175,5 +175,5 @@ Aaron's protocol: forward the synthesis back to Amara for a 3rd-pass refinement.
 - Does NOT publish the framework as adopted Zeta substrate; it remains research-grade per the §33 archive header
 - Does NOT supersede Amara's original framework; both reviews are SUPPLEMENTAL findings preserved with attribution
 - Does NOT settle the 12 fix-list items unilaterally; Amara's 3rd-pass refinement is the canonical resolution path
-- Does NOT extend to public-facing naming decisions (the "Aurora" / "Superfluid AI" / "Immune System" terms are subject to separate naming-expert review per task #271 + B-0035)
+- Does NOT extend to public-facing naming decisions (the "Aurora" / "Superfluid AI" / "Immune System" terms are subject to separate naming-expert review per task #271 + 081KQ3HBZ0008QG0R003002VT6)
 - Does NOT claim the framework is "ironclad" or "ready" without the fix-list addressed; Gemini's verdict was generous on framework-shape correctness, not implementable rigor

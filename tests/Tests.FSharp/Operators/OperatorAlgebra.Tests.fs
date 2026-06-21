@@ -5,7 +5,7 @@ open FsCheck.Xunit
 open Zeta.Core
 
 // ═══════════════════════════════════════════════════════════════════
-// C13 (B-1007 P1) — the DBSP linear-operator algebra over Stream<ZSet>
+// C13 (081KT2T2J0008QG0R000YZ3NMY P1) — the DBSP linear-operator algebra over Stream<ZSet>
 // (Incremental/Circuit): z⁻¹ (delay), I (integrate), D (differentiate),
 // indexed by the logical-clock tick. The existing Circuit.Tests.fs proves
 // these as fixed [<Fact>] EXAMPLES; C13 GENERALISES them to FsCheck over

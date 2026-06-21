@@ -11,8 +11,8 @@ namespace Zeta.Core
 /// (degree distribution, cycle presence, layer count, etc.)
 /// without requiring labels on nodes or edges.
 ///
-/// This is the first child (B-0276) of the structure recognizer
-/// (B-0240). It provides the F# types and recognition functions;
+/// This is the first child (081KR2E4K0008QG0R0031E5PR8) of the structure recognizer
+/// (081KQZVQW0008QG0R002QZAFB2). It provides the F# types and recognition functions;
 /// the parent's spectral/topological fingerprinting layers
 /// compose over these results.
 [<RequireQualifiedAccess>]

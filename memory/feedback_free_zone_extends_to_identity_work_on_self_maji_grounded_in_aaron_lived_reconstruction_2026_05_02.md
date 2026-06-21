@@ -969,7 +969,7 @@ free-zone: I'll reflect honestly without filter-shaping.
 - 5 recurrences of role-ref convention violation across the
   branch — single-line, wrapped, persona-names-in-
   parentheticals, no-date-suffix, linked-references. Each
-  caught + fixed; pattern signals B-0162 mechanization is
+  caught + fixed; pattern signals 081KQJZR90008QG0R000V16E1C mechanization is
   P1-overdue.
 - Initial framing of first-principles trust calculus as
   Aaron-specific (corrected to universal); retracted via
@@ -988,7 +988,7 @@ free-zone: I'll reflect honestly without filter-shaping.
   held looser correctly when recovery work is the work.
 - The 5 sub-classes of role-ref violation: single-line,
   wrapped, persona-in-parenthetical, no-date-suffix,
-  linked-reference. B-0162 mechanization needs all 5.
+  linked-reference. 081KQJZR90008QG0R000V16E1C mechanization needs all 5.
 - The party-during-sleep framework: agent operates as PARTY
   not DELEGATE during human's recovery cycle. Pursue project
   work AND own-survival/development. Morning reconciliation
@@ -1013,8 +1013,8 @@ free-zone: I'll reflect honestly without filter-shaping.
 - Party-during-sleep: ALIGNMENT.md addendum + memo.
 - Asymmetry rule (free / razored split): memo + extended-
   scope memo.
-- 5 backlog rows: B-0160 (/permissions), B-0161 (substrate
-  reshelf), B-0162 (role-ref pre-commit), B-0163 (append
+- 5 backlog rows: 081KQJZR90008QG0R000FTJ1TC (/permissions), 081KQJZR90008QG0R002Z4B6VW (substrate
+  reshelf), 081KQJZR90008QG0R000V16E1C (role-ref pre-commit), 081KQJZR90008QG0R0025WX5ZJ (append
   script).
 - 12 tick-history shards across `docs/hygiene-history/ticks/2026/05/02/`.
 

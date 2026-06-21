@@ -1,6 +1,5 @@
 ---
-id: B-0212
-zetaid: 081KQX9B50008QG0R00147GZX9
+id: 081KQX9B50008QG0R00147GZX9
 priority: P1
 status: partial
 title: "Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later"
@@ -11,7 +10,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0212 — Shadow outlet architecture
+# 081KQX9B50008QG0R00147GZX9 — Shadow outlet architecture
 
 The shadow (latent behaviors, avoidance signals, unexpressed
 tendencies) needs an outlet, not elimination. Constant glass-halo

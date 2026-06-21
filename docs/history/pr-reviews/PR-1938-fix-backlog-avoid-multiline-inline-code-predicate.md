@@ -31,13 +31,13 @@
 
 - Replace the multiline inline-code material-spend predicate with prose
 - Preserve the same three OR conditions from #1937
-- Avoid CommonMark rendering drift in the B-0062 backlog item
+- Avoid CommonMark rendering drift in the 081KQ8P5D0008QG0R002XFQ305 backlog item
 
 ## Checks
 
-- `bunx markdownlint-cli2 docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
+- `bunx markdownlint-cli2 docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
 - `tools/backlog/generate-index.sh --check`
-- `rg -n '<<<<<<<|=======|>>>>>>>' docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md || true`
+- `rg -n '<<<<<<<|=======|>>>>>>>' docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md || true`
 - `git diff --check`
 
 

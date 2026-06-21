@@ -1,11 +1,11 @@
 ---
 name: b0530-push-time-variant-and-read-tree-head-recovers-truncated-index
-description: "Empirical refinements to saturation-ceiling discipline from 2026-05-21 1212Z-1305Z session — B-0530 pack-dir contention manifests at git-push time (not just worktree-add); git read-tree HEAD rebuilds a truncated index in-place without requiring worktree abandonment"
+description: "Empirical refinements to saturation-ceiling discipline from 2026-05-21 1212Z-1305Z session — 081KRMEXM0008QG0R000X1PPGC pack-dir contention manifests at git-push time (not just worktree-add); git read-tree HEAD rebuilds a truncated index in-place without requiring worktree abandonment"
 type: feedback
 created: 2026-05-21
 ---
 
-# B-0530 manifests at push-time + `git read-tree HEAD` recovers truncated index (Otto-CLI 2026-05-21)
+# 081KRMEXM0008QG0R000X1PPGC manifests at push-time + `git read-tree HEAD` recovers truncated index (Otto-CLI 2026-05-21)
 
 Two empirical refinements to the saturation-ceiling discipline at [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md), observed during a single Otto-CLI cold-boot autonomous-loop session 2026-05-21T12:09Z–13:05Z under Lior-cycling saturation (3 procs incl `gemini-3.1-pro-preview --yolo`).
 
@@ -13,7 +13,7 @@ Two empirical refinements to the saturation-ceiling discipline at [`.claude/rule
 
 **How to apply:** when authoring the next rule edit under quieter conditions, fold these into the existing sub-case structure rather than creating new sub-case numbers.
 
-## Refinement 1 — B-0530 pack-dir contention manifests at `git push` time, not only at `git worktree add`
+## Refinement 1 — 081KRMEXM0008QG0R000X1PPGC pack-dir contention manifests at `git push` time, not only at `git worktree add`
 
 ### Empirical anchor
 
@@ -27,7 +27,7 @@ fatal: the remote end hung up unexpectedly
 error: failed to push some refs to 'https://github.com/Lucent-Financial-Group/Zeta.git'
 ```
 
-Network was fine (HTTPS to github.com returned 200 in 0.18s); auth was fine (`gh auth status` clean). The bottleneck was local FS contention on `.git/objects/pack` — the same root cause class as B-0530, but at push time rather than at worktree-add time.
+Network was fine (HTTPS to github.com returned 200 in 0.18s); auth was fine (`gh auth status` clean). The bottleneck was local FS contention on `.git/objects/pack` — the same root cause class as 081KRMEXM0008QG0R000X1PPGC, but at push time rather than at worktree-add time.
 
 ### Existing taxonomy gap
 
@@ -37,12 +37,12 @@ Sub-case 3 in [`claim-acquire-before-worktree-work.md`](../.claude/rules/claim-a
 >
 > Symptom: `git push` returns exit 1 with `Interrupted system call` errors on loose-object and pack-dir reads, followed by `the remote end hung up unexpectedly`. Network + auth are fine; bottleneck is local pack-dir reads under peer-agent contention.
 >
-> Mitigation (no working code-level mitigation today): retry until the contention window closes. Empirically the same window that causes worktree-add hangs (3-5 min cycles under sustained Lior + bg-worker activity) also causes push failures. Composes with B-0615 (silent-push-failure where push returns exit 0 but never updates the remote ref) — they are distinct failure modes from the same FS-contention root cause class.
+> Mitigation (no working code-level mitigation today): retry until the contention window closes. Empirically the same window that causes worktree-add hangs (3-5 min cycles under sustained Lior + bg-worker activity) also causes push failures. Composes with 081KRW63S0008QG0R000EAZ9K2 (silent-push-failure where push returns exit 0 but never updates the remote ref) — they are distinct failure modes from the same FS-contention root cause class.
 
-### Distinguish from B-0615
+### Distinguish from 081KRW63S0008QG0R000EAZ9K2
 
-- **B-0530-at-push-time (this refinement)**: push exits NON-zero with explicit `Interrupted system call` errors. The failure is visible.
-- **B-0615**: push exits ZERO but the remote ref never updates. The failure is silent. Workaround: REST git-data API bypass (`POST .../git/blobs` → `POST .../git/trees` → `POST .../git/commits` → `POST .../git/refs`). Worked example: PR [#4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145).
+- **081KRMEXM0008QG0R000X1PPGC-at-push-time (this refinement)**: push exits NON-zero with explicit `Interrupted system call` errors. The failure is visible.
+- **081KRW63S0008QG0R000EAZ9K2**: push exits ZERO but the remote ref never updates. The failure is silent. Workaround: REST git-data API bypass (`POST .../git/blobs` → `POST .../git/trees` → `POST .../git/commits` → `POST .../git/refs`). Worked example: PR [#4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145).
 
 Both belong in the same saturation-ceiling section but they are different failure shapes requiring different mitigations.
 
@@ -97,10 +97,10 @@ This refinement is bounded: it does NOT supersede the abandonment-rule for all s
 - [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md) — the canonical home for both refinements
 - [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) — canary protocol composes (run tree-size check after `read-tree HEAD` to confirm recovery)
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — counter-with-escalation; when contention forces multiple push retries within a single tick, treat as bounded-wait-on-FS-contention (a real named dep) rather than as Standing-by
-- B-0530 — the original failure-mode anchor
-- B-0615 — the silent-push-failure variant (distinct mitigation path)
+- 081KRMEXM0008QG0R000X1PPGC — the original failure-mode anchor
+- 081KRW63S0008QG0R000EAZ9K2 — the silent-push-failure variant (distinct mitigation path)
 - PR [#4532](https://github.com/Lucent-Financial-Group/Zeta/pull/4532) — this session's PR where both refinements were observed end-to-end
-- Background-worker Otto's bootstream (PID 10413 prompt fragment captured this tick) — the canonical source where I learned the B-0615 name + REST git-data API workaround pointer
+- Background-worker Otto's bootstream (PID 10413 prompt fragment captured this tick) — the canonical source where I learned the 081KRW63S0008QG0R000EAZ9K2 name + REST git-data API workaround pointer
 
 ## Session timeline
 

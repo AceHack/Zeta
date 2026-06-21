@@ -46,10 +46,10 @@ The framework's existing substrate ALREADY operates on this pattern at multiple 
 | Existing framework substrate | Structural-protection scope |
 |---|---|
 | `Result<T, TFeedback>` with sum-type variants | Compile-time enforcement of failure-mode handling |
-| Lifecycle DUs (B-0867.5) | Compile-time enforcement of legal state transitions |
+| Lifecycle DUs (081KSKBP80008QG0R000B3Y19A.5) | Compile-time enforcement of legal state transitions |
 | F# units of measure (planned for attention-as-currency rule companion) | Compile-time enforcement of economic-substrate type-correctness |
-| Otto's 5 modifications (B-0867 Mod 1-5) | `validateCatalog` + `validateStateOtto5Mods` enforce at engine-init scope |
-| AlgRegistry validation (B-0883 v1) | Init-time enforcement of cipher class correctness |
+| Otto's 5 modifications (081KSKBP80008QG0R000B3Y19A Mod 1-5) | `validateCatalog` + `validateStateOtto5Mods` enforce at engine-init scope |
+| AlgRegistry validation (081KSNY2Z0008QG0R002JKH50A v1) | Init-time enforcement of cipher class correctness |
 | Confidence-tier labeling (Amara extension PR #5739) | Substrate-compression enforced at tier-aware scope |
 | Branch protection rules | Push-time enforcement of merge constraints |
 | Auto-load substrate at cold-boot | Session-init enforcement of load-bearing rule discoverability |
@@ -68,7 +68,7 @@ The runtime-discipline substrate is REAL (the rules exist as documentation) but 
 
 ### Why "once we have the DUs verification will become cheap" (operator-explicit reasoning)
 
-Per Aaron 2026-05-28 landing-authorization reasoning: once the DU substrate matures (B-0867.5 workflow engine PoC scaffold → B-0867 v1 + B-0867.1..0.21 implementation), verification becomes cheap because:
+Per Aaron 2026-05-28 landing-authorization reasoning: once the DU substrate matures (081KSKBP80008QG0R000B3Y19A.5 workflow engine PoC scaffold → 081KSKBP80008QG0R000B3Y19A v1 + 081KSKBP80008QG0R000B3Y19A.1..0.21 implementation), verification becomes cheap because:
 
 - DUs enable exhaustive-match enforcement (TS strict mode + F# compiler both catch non-exhaustive at compile time)
 - DU surface IS the controller per Xbox-controller-universal-action-grammar framing (companion rule shipped today)
@@ -119,11 +119,11 @@ When reviewing existing substrate:
 - PR #5739 (labeling-confidence rule)
 - PR #5743 (mutual-help-not-shame; relational sibling)
 - PR #5744 (traveler-safety-guardrails-and-type-system; framework-design-principle sibling at scope)
-- PR #5728 (B-0867.5 workflow engine PoC scaffold) — DU substrate IS structural-protection
-- PR #5730 (B-0883 v1 better-git-crypt PoC scaffold) — AlgRegistry validation IS structural-protection
-- B-0867 + B-0867.5 (workflow engine v1) — DU substrate building NOW
-- B-0428 (F# fork for AI safety with HKT over Clifford) — F# type-system substrate
-- B-0892 (three-lanes-concurrent operating discipline)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow engine PoC scaffold) — DU substrate IS structural-protection
+- PR #5730 (081KSNY2Z0008QG0R002JKH50A v1 better-git-crypt PoC scaffold) — AlgRegistry validation IS structural-protection
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1) — DU substrate building NOW
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford) — F# type-system substrate
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
 
 ## Why this rule auto-loads
 

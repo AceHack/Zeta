@@ -1,6 +1,6 @@
 ---
 pr_number: 5223
-title: "fix(B-0816): enrich empirical anchor with LexisNexis + GitHub use-cases + cloud-agnostic + 0-external-vendor principle"
+title: "fix(081KSGS9H0008QG0R003A37Z65): enrich empirical anchor with LexisNexis + GitHub use-cases + cloud-agnostic + 0-external-vendor principle"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T16:54:43Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-27T19:37:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5223: fix(B-0816): enrich empirical anchor with LexisNexis + GitHub use-cases + cloud-agnostic + 0-external-vendor principle
+# PR #5223: fix(081KSGS9H0008QG0R003A37Z65): enrich empirical anchor with LexisNexis + GitHub use-cases + cloud-agnostic + 0-external-vendor principle
 
 ## PR description
 
-Maintainer 2026-05-26 follow-up framings on B-0816 (just merged via #5220) — 3-context lineage table (LN Legal-Search + GH CoPilot-training + Zeta) + 3 carried-across-contexts properties: cloud-agnostic, 0-external-vendor (open-source only), ArgoCD-convergence.
+Maintainer 2026-05-26 follow-up framings on 081KSGS9H0008QG0R003A37Z65 (just merged via #5220) — 3-context lineage table (LN Legal-Search + GH CoPilot-training + Zeta) + 3 carried-across-contexts properties: cloud-agnostic, 0-external-vendor (open-source only), ArgoCD-convergence.
 
 ## Reviews
 
@@ -24,7 +24,7 @@ Maintainer 2026-05-26 follow-up framings on B-0816 (just merged via #5220) — 3
 
 ## Pull request overview
 
-Updates backlog row **B-0816** to add an empirical prior-art anchor that ties the ArgoCD portability principle to validated use-cases across LexisNexis, GitHub, and Zeta, emphasizing cloud-agnostic operation and an open-source-only (“0 external vendor dependency”) constraint.
+Updates backlog row **081KSGS9H0008QG0R003A37Z65** to add an empirical prior-art anchor that ties the ArgoCD portability principle to validated use-cases across LexisNexis, GitHub, and Zeta, emphasizing cloud-agnostic operation and an open-source-only (“0 external vendor dependency”) constraint.
 
 **Changes:**
 - Adds an “Empirical prior-art anchor” section with quoted lineage/use-cases and a 3-context comparison table.

@@ -143,8 +143,8 @@ prefix. The closest matches found are:
 | Branch | SHA (8) | Date | Bucket | Evidence |
 |---|---|---|---|---|
 | `lost-substrate/inventory-ledger-2026-04-29` | d1575528 | 2026-04-28 | `PRESERVE_REF_ONLY` | `git show --stat d1575528` shows the three-bucket reachability + content-equivalence ledger (round-N from the architect role). Provenance value: documents the methodology that produced this very inventory file. **Recovery candidate** for the recovery lane's own ledger. |
-| `tools/lost-files-locations-list` | 9c4dfe06 | 2026-04-25 | `OBSOLETE_SUPERSEDED` | `git log -1 9c4dfe06` shows "fix(B-0019): #521 review-thread catches — orphan-branch survey corrected". Fix landed via #521 squash-merge. |
-| `backlog/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28` | 02ba264e | 2026-04-28 | `OBSOLETE_SUPERSEDED` | `docs/backlog/P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md` exists on main; `memory/feedback_orphan_role_ref_after_name_stripping_aaron_2026_04_28.md` exists on main. |
+| `tools/lost-files-locations-list` | 9c4dfe06 | 2026-04-25 | `OBSOLETE_SUPERSEDED` | `git log -1 9c4dfe06` shows "fix(081KQ0YZ80008QG0R002C5EC8F): #521 review-thread catches — orphan-branch survey corrected". Fix landed via #521 squash-merge. |
+| `backlog/081KQ8P5D0008QG0R003VN5P2Z-orphan-role-ref-detector-lint-aaron-2026-04-28` | 02ba264e | 2026-04-28 | `OBSOLETE_SUPERSEDED` | `docs/backlog/P2/081KQ8P5D0008QG0R003VN5P2Z-orphan-role-ref-detector-lint-aaron-2026-04-28.md` exists on main; `memory/feedback_orphan_role_ref_after_name_stripping_aaron_2026_04_28.md` exists on main. |
 | `corruption-triage` | (see inventory) | 2026-04-29 | `NEEDS_AARON_DECISION` | Pack-corruption triage substrate. Possibly load-bearing for the recovery lane itself; do not auto-classify. |
 | `(detached HEAD) agent-aaa2183cbc91841f4` | 3ca56e95 | (worktree) | `NEEDS_AARON_DECISION` | Detached-HEAD worktree at `3ca56e95` — name carries no signal; needs `git log -10 3ca56e95` walk before any disposition. |
 
@@ -206,10 +206,10 @@ files at `docs/backlog/P{N}/B-NNNN-<slug>.md` on main.
 
 **Evidence anchor** (sampled, all three found on main):
 
-- `find docs/backlog -name 'B-0068*'` → `P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md`
-- `find docs/backlog -name 'B-0070*'` → `P2/B-0070-orphan-role-ref-detector-lint-aaron-2026-04-28.md`
-- `find docs/backlog -name 'B-0087*'` → `P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md`
-- `find docs/backlog -name 'B-0019*'` → `P3/B-0019-btw-durability-gap-context-add-asides-not-gitnative-persisted.md`
+- `find docs/backlog -name '081KQ8P5D0008QG0R002E1G72J*'` → `P2/081KQ8P5D0008QG0R002E1G72J-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md`
+- `find docs/backlog -name '081KQ8P5D0008QG0R003VN5P2Z*'` → `P2/081KQ8P5D0008QG0R003VN5P2Z-orphan-role-ref-detector-lint-aaron-2026-04-28.md`
+- `find docs/backlog -name '081KQ8P5D0008QG0R000JHD7AB*'` → `P1/081KQ8P5D0008QG0R000JHD7AB-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md`
+- `find docs/backlog -name '081KQ0YZ80008QG0R002C5EC8F*'` → `P3/081KQ0YZ80008QG0R002C5EC8F-btw-durability-gap-context-add-asides-not-gitnative-persisted.md`
 
 **Disposition**: ~63 of 73 → `OBSOLETE_SUPERSEDED`. ~10 (the older
 non-`B-NNNN` shape; `backlog/factory-technology-inventory-…` etc.)

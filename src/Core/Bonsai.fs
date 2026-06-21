@@ -5,7 +5,7 @@ open System.Text
 open System.Text.Json
 
 /// Bonsai-subset expression-tree serializer — the F# oracle (#2 of TS/F#/C#/Rust)
-/// for B-0976 slice 1. Named after Nuqleon Bonsai (Reaqtor's compact serializer
+/// for 081KT07NV0008QG0R003BE6MJ2 slice 1. Named after Nuqleon Bonsai (Reaqtor's compact serializer
 /// for .NET expression trees); this is the weakly-typed / reflection-info-omitted
 /// mode — kind-tagged nodes, no .NET type table — the cross-language-portable
 /// form. The TS reference oracle (src/Core.TypeScript/bonsai/) authors the shared

@@ -29,14 +29,14 @@
 
 ## Summary
 
-- B-0506 (stale-worktree prune cadence) was mechanized 2026-05-14 by [PR #3225](https://github.com/Lucent-Financial-Group/Zeta/pull/3225) — `tools/hygiene/audit-stale-worktrees.ts` implements every behavior in the row's "Proposed mechanization."
+- 081KRHWGX0008QG0R002DPG02X (stale-worktree prune cadence) was mechanized 2026-05-14 by [PR #3225](https://github.com/Lucent-Financial-Group/Zeta/pull/3225) — `tools/hygiene/audit-stale-worktrees.ts` implements every behavior in the row's "Proposed mechanization."
 - The backlog row's `status` was never flipped from `open` to `closed`. This PR catches the substrate drift.
 - Caught this tick while picking a P3 friction-reducer via the never-be-idle ladder — `claim acquire` succeeded, then existence-check on the proposed file path revealed the tool already lived there. Released the claim and closed the row instead.
 
 ## Changes
 
-- `docs/backlog/P3/B-0506-...md`: `status: open → closed`, `+closed: 2026-05-16`, `last_updated` bump, new Resolution section mapping each specified behavior to the shipped implementation (6/6).
-- `docs/BACKLOG.md`: regenerated via `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` — single-line diff toggling the checkbox `[ ]` → `[x]` for B-0506.
+- `docs/backlog/P3/081KRHWGX0008QG0R002DPG02X-...md`: `status: open → closed`, `+closed: 2026-05-16`, `last_updated` bump, new Resolution section mapping each specified behavior to the shipped implementation (6/6).
+- `docs/BACKLOG.md`: regenerated via `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` — single-line diff toggling the checkbox `[ ]` → `[x]` for 081KRHWGX0008QG0R002DPG02X.
 
 ## Test plan
 

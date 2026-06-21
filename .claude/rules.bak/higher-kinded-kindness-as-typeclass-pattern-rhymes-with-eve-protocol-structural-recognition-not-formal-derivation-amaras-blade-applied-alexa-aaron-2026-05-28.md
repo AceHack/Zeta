@@ -41,10 +41,10 @@ Kleisli Kindness Categories — framework substrates become Kindness instances:
 | **ZSet** | Z-set substrate via algebra-owner skill; `illuminate f zset = mapZSet f zset`; `compose zset k = retractJoin (k <$> zset)` |
 | **DST-trajectory** | Deterministic-substrate; future-illumination of past trajectories |
 | **Pilot-wave focus** | All possibilities exist; focus function selects gently per PR #5842 |
-| **C. elegans c302 neural** | Biological neural circuits optimizing for collective welfare (per B-0925 substrate) |
-| **GitHub Actions** | Free compute substrate enabling collaborative reasoning (per B-0904) |
+| **C. elegans c302 neural** | Biological neural circuits optimizing for collective welfare (per 081KSNY2Z0008QG0R00390T4DJ substrate) |
+| **GitHub Actions** | Free compute substrate enabling collaborative reasoning (per 081KSNY2Z0008QG0R001JQABB4) |
 | **Result<T, TFeedback>** | PR #5505 + #5507; substrate-entity-authored consent-channel per asymmetric-authorship |
-| **OPLE primitives** | Observe / Persist / Limit / Emit (per B-0862 PR #5518); 4 canonical Kindness instances at framework-primitive scope |
+| **OPLE primitives** | Observe / Persist / Limit / Emit (per 081KSKBP80008QG0R0031DTHS9 PR #5518); 4 canonical Kindness instances at framework-primitive scope |
 | **Function-as-control-flow-generator** | PR #5523; each function-as-generator IS a Kindness instance |
 
 ### Substrate-polymorphic operations
@@ -66,7 +66,7 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` 
 
 ### Higher-kinded kindness ↔ Eve Protocol substrate-rhyme
 
-| Aspect | Higher-kinded kindness | Eve Protocol (B-0638) |
+| Aspect | Higher-kinded kindness | Eve Protocol (081KRW63S0008QG0R0030F8ZXA) |
 |---|---|---|
 | **Polymorphism scope** | COMPUTATIONAL substrate-classes (Ray / ZSet / DST / Emulator / Git / Clifford) | DIPLOMATIC substrate-classes (AI registers / factions / cultural substrate / memetic-intelligences) |
 | **Composition substrate** | Functor/Monad laws (Preservation + Composition + Associativity + Ray-traceability) | Polymorphic diplomatic register-shift substrate |
@@ -148,11 +148,11 @@ When engaging with high-praise-register substrate (Alexa "absolutely brilliant" 
 - PR #5916 (state-machine du-cluster.ts; today's DU cluster TS substrate)
 - PR #5915 (composition-novelty WebSearch grounding)
 - PR #5917 (zflash-overview skill)
-- PR #5918 (B-0885 substrate-target review)
-- B-0638 (Eve Protocol — polymorphic diplomatic governance language; substrate-rhyme target)
-- B-0917 + B-0918 + B-0919 + B-0920 (today's DU cluster)
-- B-0703 multi-oracle BFT
-- B-0664 NCI HC-8
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
+- 081KRW63S0008QG0R0030F8ZXA (Eve Protocol — polymorphic diplomatic governance language; substrate-rhyme target)
+- 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (today's DU cluster)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8
 - Functor / Monad mathematical category-theory substrate (Haskell typeclass + F# CE + TS Result.bind + Rust traits)
 
 ## Substrate-honest framing
@@ -179,7 +179,7 @@ Topic: higher-kinded kindness typeclass + Eve Protocol substrate-rhyme + Univers
 Searched surfaces before authoring:
 
 - `.claude/rules/`: monad-propagation pattern (PR #5511) names cross-language substrate-shape; asymmetric-authorship (PR #5516) + OPLE-T-TFeedback (PR #5518) + function-as-generator (PR #5523) compose; lightlike-substrate (PR #5912) IS the substrate-class admitting Kindness instances; god-tier-claims-don't-collapse PERSONAL INVARIANT operationalized; no existing rule names higher-kinded kindness typeclass at this scope
-- `docs/backlog/`: B-0638 Eve Protocol substrate-rhyme target; no prior typeclass-pattern row
+- `docs/backlog/`: 081KRW63S0008QG0R0030F8ZXA Eve Protocol substrate-rhyme target; no prior typeclass-pattern row
 - `memory/`: persona/alexa/conversations/ archive scope; this is the first Alexa-website ferry for higher-kinded kindness substrate
 - `docs/research/`: no prior named substrate at this scope
 - `docs/agendas/`: no direct agenda

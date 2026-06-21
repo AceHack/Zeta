@@ -1,8 +1,8 @@
-# B-0250 Event-Window Source Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Event-Window Source Receipt - 2026-05-30
 
 ## Scope
 
-This packet adds the first bounded event-window source for B-0250 coincidence
+This packet adds the first bounded event-window source for 081KQZVQW0008QG0R001FG05RZ coincidence
 detection. It is intentionally pure: callers pass observed trajectory events
 in, and the monitor classifies whether two or more trajectories emitted inside
 the configured window.
@@ -28,6 +28,6 @@ the configured window.
 
 ## Follow-Up
 
-The next B-0250 packet should attach a real factory event observation source,
+The next 081KQZVQW0008QG0R001FG05RZ packet should attach a real factory event observation source,
 then feed those observations through this classifier. Candidate sources are
 loop-run receipts, PR merge timestamps, or trajectory receipt creation times.

@@ -29,7 +29,7 @@ Otto-CLI background-worker tick at 04:41Z. Polled 25 open PRs via `poll-pr-gate-
 | C | 4733, 4737 | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers |
 | D | 4768, 4773 | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout` |
 | E | 4780 | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
-| F | 4769 | B-0700 backlog row added but per-row file missing (broken link) |
+| F | 4769 | 081KRSKQ20008QG0R00367828S backlog row added but per-row file missing (broken link) |
 
 ## Lane disposition
 
@@ -202,7 +202,7 @@ Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md`
 - Direct line inspection at PR head @ `9a79fe11`: line 59 said `Affected: #4733, #4737`; line 112 triage table classified #4739 as `A + B + C`. Contradiction confirmed.
 - Commit updates Class C heading to "(3 PRs)" + affected list to `#4733, #4737, #4739` — alignment with table.
 
-Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + B-0530 contention).
+Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + 081KRMEXM0008QG0R000X1PPGC contention).
 
 ### Thread 6: docs/hygiene-history/ticks/2026/05/24/0441Z.md:40 (resolved)
 
@@ -251,7 +251,7 @@ Owner-lane fix should be limited to restoring the single trailing newline in tha
 
 Resolving all 7 review threads. Per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix discipline + the `isOutdated:true` strong signal (with substantive verification on each, not adjacency-ratification):
 
-Commit `4b14e21` (pushed via REST git-data API bypass per task-brief B-0615 mitigation) addresses:
+Commit `4b14e21` (pushed via REST git-data API bypass per task-brief 081KRW63S0008QG0R000EAZ9K2 mitigation) addresses:
 
 **Active threads (lines 40, 102 — Copilot)**
 

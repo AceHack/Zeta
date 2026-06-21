@@ -1,6 +1,6 @@
 ---
 pr_number: 3783
-title: "feat(B-0557 slice 1): add --check flag to audit-backlog-status-drift"
+title: "feat(081KRQ1AB0008QG0R003DYANMC slice 1): add --check flag to audit-backlog-status-drift"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T06:42:07Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-16T07:00:57Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3783: feat(B-0557 slice 1): add --check flag to audit-backlog-status-drift
+# PR #3783: feat(081KRQ1AB0008QG0R003DYANMC slice 1): add --check flag to audit-backlog-status-drift
 
 ## PR description
 
 ## Summary
 
-- Adds `--check` flag to the audit-backlog-status-drift tool (smallest of [B-0557](docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md)'s 4 follow-up slices).
+- Adds `--check` flag to the audit-backlog-status-drift tool (smallest of [081KRQ1AB0008QG0R003DYANMC](docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md)'s 4 follow-up slices).
 - When `--check` is set and drift candidates exist, exits with code 65 — allows CI/cron jobs to fail the build on detected drift.
 - Default behaviour unchanged (always exit 0 in detect-only mode).
 
@@ -31,8 +31,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Composes with
 
-- [B-0557](docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md) — parent row (4 follow-up slices)
-- [B-0553](docs/backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md) — the audit-tool spec
+- [081KRQ1AB0008QG0R003DYANMC](docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md) — parent row (4 follow-up slices)
+- [081KRQ1AB0008QG0R000QYJFZE](docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md) — the audit-tool spec
 - [PR #3758](https://github.com/Lucent-Financial-Group/Zeta/pull/3758) — original tool impl
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -63,15 +63,15 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0638Z.md:32**
-* This workflow step says the B-0494 row was closed and BACKLOG regenerated, but those changes are not present in this PR: B-0494 remains open in its row file and in `docs/BACKLOG.md`. The shard should either include/land after the close-row update or avoid recording the close as completed.
+* This workflow step says the 081KRHWGX0008QG0R0029WA0HQ row was closed and BACKLOG regenerated, but those changes are not present in this PR: 081KRHWGX0008QG0R0029WA0HQ remains open in its row file and in `docs/BACKLOG.md`. The shard should either include/land after the close-row update or avoid recording the close as completed.
 ```
 5. **Close**: status: open → closed + Resolution section + BACKLOG.md regen
 6. **Open PR**: [PR #3781](https://github.com/Lucent-Financial-Group/Zeta/pull/3781) + arm auto-merge
 ```
 **docs/hygiene-history/ticks/2026/05/16/0638Z.md:53**
-* This visibility signal repeats that B-0494 was closed, but the reviewed tree still has B-0494 open. That makes the new history shard inconsistent with the repository state unless the close-row PR is merged first.
+* This visibility signal repeats that 081KRHWGX0008QG0R0029WA0HQ was closed, but the reviewed tree still has 081KRHWGX0008QG0R0029WA0HQ open. That makes the new history shard inconsistent with the repository state unless the close-row PR is merged first.
 ```
-- B-0494 closed via PR #3781 (first real-world use of new audit tool; pure-drift confirmed)
+- 081KRHWGX0008QG0R0029WA0HQ closed via PR #3781 (first real-world use of new audit tool; pure-drift confirmed)
 ```
 </details>
 
@@ -93,13 +93,13 @@ The script header still documents only `--json` usage and exit codes 0/64. With 
 
 **@copilot-pull-request-reviewer** (2026-05-16T06:46:02Z):
 
-This new tick shard starts with an H1, but the canonical shard schema requires the first line to be the single-row pipe record (`docs/hygiene-history/ticks/README.md:51-57`), and `tools/hygiene/check-tick-history-shard-schema.ts:52-104` validates that first non-empty line. Add the pipe-row header before the rich H1 body so new shards do not add to the known schema/practice drift tracked in B-0529.
+This new tick shard starts with an H1, but the canonical shard schema requires the first line to be the single-row pipe record (`docs/hygiene-history/ticks/README.md:51-57`), and `tools/hygiene/check-tick-history-shard-schema.ts:52-104` validates that first non-empty line. Add the pipe-row header before the rich H1 body so new shards do not add to the known schema/practice drift tracked in 081KRMEXM0008QG0R002HBY56V.
 
 ### Thread 4: docs/hygiene-history/ticks/2026/05/16/0638Z.md:8 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T06:46:02Z):
 
-This records B-0494 as already closed via PR #3781, but in the reviewed tree B-0494 is still `status: open` and `docs/BACKLOG.md` still lists it as open. If the close-row PR is a separate branch, this shard should not land before that PR or it will introduce historical/status drift.
+This records 081KRHWGX0008QG0R0029WA0HQ as already closed via PR #3781, but in the reviewed tree 081KRHWGX0008QG0R0029WA0HQ is still `status: open` and `docs/BACKLOG.md` still lists it as open. If the close-row PR is a separate branch, this shard should not land before that PR or it will introduce historical/status drift.
 
 This issue also appears in the following locations of the same file:
 - line 31

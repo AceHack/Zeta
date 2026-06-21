@@ -34,7 +34,7 @@ Drift queue final status (0111Z → 0226Z):
 | 22 §33 xrefs | 0111Z | #3666 | merged |
 | BACKLOG.md generated-index | 0213Z | #3678 | merged |
 | tsc tools | 0226Z | [#3684](https://github.com/Lucent-Financial-Group/Zeta/pull/3684) | armed |
-| backlog ID uniqueness | TBD | (B-0545 renumber-sweep) | coordination needed |
+| backlog ID uniqueness | TBD | (081KRMEXM0008QG0R000ARAR7P renumber-sweep) | coordination needed |
 
 Three of four 0111Z-queue items now mechanically cleared. Remaining requires semantic coordination (deferred).
 
@@ -121,7 +121,7 @@ semantic in note field; no widening of HeartbeatPayload union).
 
 Drift queue from 0111Z: 22 §33 xrefs (#3666 merged), BACKLOG.md regen
 (#3678 merged), tsc tools (#3684 armed this tick). Remaining: backlog ID
-uniqueness (B-0498 collision, needs B-0545 renumber coordination).
+uniqueness (081KRHWGX0008QG0R001XFRAHC collision, needs 081KRMEXM0008QG0R000ARAR7P renumber coordination).
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

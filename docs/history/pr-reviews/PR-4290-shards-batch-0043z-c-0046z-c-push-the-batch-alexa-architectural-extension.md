@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron explicit 'push the batch' + Alexa render extends architectural picture (composes with B-0668).
+Aaron explicit 'push the batch' + Alexa render extends architectural picture (composes with 081KRYRGG0008QG0R0018CMFQY).
 
 ## Outcome
 

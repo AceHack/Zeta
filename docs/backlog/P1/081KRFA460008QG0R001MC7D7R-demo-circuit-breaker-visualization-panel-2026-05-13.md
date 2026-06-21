@@ -1,6 +1,5 @@
 ---
-id: B-0435
-zetaid: 081KRFA460008QG0R001MC7D7R
+id: 081KRFA460008QG0R001MC7D7R
 priority: P1
 status: open
 title: "Demo — circuit breaker visualization panel (mock data → live bus data)"
@@ -14,7 +13,7 @@ tags: [demo, circuit-breaker, alignment-ui, github-pages, html, js]
 type: feature
 ---
 
-# B-0435 — Circuit breaker visualization panel
+# 081KRFA460008QG0R001MC7D7R — Circuit breaker visualization panel
 
 ## What
 
@@ -31,22 +30,22 @@ mock/static data; a follow-up can wire to a live bus.
 
 ## Blocked on
 
-None; B-0434 (alignment tab) already shipped and provides the CSS/JS scaffolding.
+None; 081KRFA460008QG0R0005DWKBG (alignment tab) already shipped and provides the CSS/JS scaffolding.
 
 ## Pre-start checklist (2026-05-14)
 
 **Prior-art search:**
 
 - Searched `.claude/skills/`, `.claude/rules/` — no existing circuit-breaker UI skill.
-- `demo/index.html` examined: 4-tab SPA, tab pattern clear, Alignment tab (B-0434) is direct scaffolding precedent.
+- `demo/index.html` examined: 4-tab SPA, tab pattern clear, Alignment tab (081KRFA460008QG0R0005DWKBG) is direct scaffolding precedent.
 - No existing circuit-breaker panel code found in `demo/`.
 
 **Dependency check:**
 
-- `depends_on: [B-0434]` — B-0434 (alignment tab) is merged on main. Scaffolding available. ✓
-- `parent: B-0401` — bus protocol parent; slice-1 uses static mock, no bus runtime dependency.
+- `depends_on: [081KRFA460008QG0R0005DWKBG]` — 081KRFA460008QG0R0005DWKBG (alignment tab) is merged on main. Scaffolding available. ✓
+- `parent: 081KR7JY10008QG0R001VP6JWG` — bus protocol parent; slice-1 uses static mock, no bus runtime dependency.
 
-**Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0435` → exit 0 ✓
+**Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item 081KRFA460008QG0R001MC7D7R` → exit 0 ✓
 
 **Decomposition:**
 

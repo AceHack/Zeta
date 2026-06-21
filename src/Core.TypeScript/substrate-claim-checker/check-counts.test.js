@@ -11,7 +11,7 @@
  *   - checkFile: returns ok:false for missing/dir; emits findings
  *     for narrative-vs-table count drift
  *
- * Focused check (2026-05-09): ran check-counts.ts on B-0170 backlog row;
+ * Focused check (2026-05-09): ran check-counts.ts on 081KQNJ500008QG0R003SCWBDV backlog row;
  * detected expected count-drift on "100 rows" narrative claim (table had 8).
  * Tool correctly surfaced the drift instance that the memo's own doc exhibits.
  */

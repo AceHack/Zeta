@@ -1,6 +1,6 @@
 ---
 pr_number: 5090
-title: "backlog(B-0766 P1): re-land slow-replace all dependencies (and k8s itself) with binary-compatible Zeta-native F#/C#/Rust implementations"
+title: "backlog(081KSE6WT0008QG0R00049EFBD P1): re-land slow-replace all dependencies (and k8s itself) with binary-compatible Zeta-native F#/C#/Rust implementations"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:50:45Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:39Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5090: backlog(B-0766 P1): re-land slow-replace all dependencies (and k8s itself) with binary-compatible Zeta-native F#/C#/Rust implementations
+# PR #5090: backlog(081KSE6WT0008QG0R00049EFBD P1): re-land slow-replace all dependencies (and k8s itself) with binary-compatible Zeta-native F#/C#/Rust implementations
 
 ## PR description
 
@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Re-land of stale-DIRTY [PR #5052](https://github.com/Lucent-Financial-Group/Zeta/pull/5052) (Tier-3 disposition per [`.claude/rules/pr-triage-tiers.md`](.claude/rules/pr-triage-tiers.md)).
 
-- Same B-0766 row file (byte-identical to PR #5052 head `f74843b13`, 305 lines)
+- Same 081KSE6WT0008QG0R00049EFBD row file (byte-identical to PR #5052 head `f74843b13`, 305 lines)
 - `docs/BACKLOG.md` regenerated against current origin/main
 - 2 pre-emptive MD032 false-positive fixes (`+` prose-joiner at line start)
 - Commit canary: parent=61, head=61

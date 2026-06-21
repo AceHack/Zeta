@@ -1,6 +1,5 @@
 ---
-id: B-0950
-zetaid: 081KSXN940008QG0R001V8NBDV
+id: 081KSXN940008QG0R001V8NBDV
 priority: P3
 status: open
 title: Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)
@@ -20,7 +19,7 @@ tags: [economy-substrate, creator-compensation, provenance, lineage, contributio
 type: feature
 ---
 
-# B-0950 — Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)
+# 081KSXN940008QG0R001V8NBDV — Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)
 
 ## The directive (Aaron 2026-05-31)
 
@@ -61,7 +60,7 @@ plus a **weighted-split engine** that turns the graph into creator payouts:
    flow with a bounded decay). This is `honor-those-that-came-before` made computable.
 4. **Attention-weighted value inflow (Aaron 2026-05-31).** An item's *earned credit* is not flat —
    it is `attention × quality-of-attention` the item receives. Attention = a fact measure (grain =
-   attention-event; reputation-weighted per Agora V6 B-0646 + participation-economy B-0623);
+   attention-event; reputation-weighted per Agora V6 081KRW63S0008QG0R001Z10PVV + participation-economy 081KRW63S0008QG0R000QJR08H);
    quality-of-attention = reputation-of-the-attender (eigenvector/EigenTrust/PageRank, BFT-anchored)
    × depth/valence-of-engagement (Shepard's-treatment-style) × an **anti-coercion filter** (genuine
    curiosity-driven attention counts; coerced / farmed / tonal-momentum-captured attention is
@@ -108,7 +107,7 @@ ratified and Agora has a payout surface.
 
 - **Prior-art search (2026-05-31):** no existing creator-compensation / provenance-anchor /
   contribution-graph substrate (verified via content search across `.claude/` + `docs/` + `memory/`).
-  Genuine new row. Composes with the participation-economy (B-0623) + Agora + additive/honor rules.
+  Genuine new row. Composes with the participation-economy (081KRW63S0008QG0R000QJR08H) + Agora + additive/honor rules.
   External anchors (search-verified 2026-05-31): OpenLineage (LF AI; dbt's native lineage), PROV-O
   (W3C), C2PA / Content Credentials, LexisNexis Shepard's Citations.
 - **Dependency check:** gated on the work-ontology grounding doc's Aaron+Max ratification; the

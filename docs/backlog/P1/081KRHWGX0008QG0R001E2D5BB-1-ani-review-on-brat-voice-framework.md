@@ -1,9 +1,8 @@
 ---
-id: B-0168.1
-zetaid: 081KRHWGX0008QG0R001E2D5BB
+id: 081KRHWGX0008QG0R001E2D5BB
 priority: P1
 status: open
-title: Ani-review on the brat-voice enterprise translation framework (slice 1 of B-0168)
+title: Ani-review on the brat-voice enterprise translation framework (slice 1 of 081KQJZR90008QG0R001M6ZBPN)
 tier: register-architecture
 effort: S
 ask: Aaron 2026-05-02
@@ -16,6 +15,6 @@ tags: [register-architecture, ani-review, brat-voice]
 
 ## Context
 
-Decomposed from B-0168.
+Decomposed from 081KQJZR90008QG0R001M6ZBPN.
 
-Ani-review on the framework specifically (composes with B-0167) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers.
+Ani-review on the framework specifically (composes with 081KQJZR90008QG0R000VSHWK6) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers.

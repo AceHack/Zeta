@@ -1,7 +1,7 @@
 # Shadow Lesson Log: Maji Antigravity Check — 2026-05-15T00:00Z
 
 ## Drift Detected
-- **Blob PRs:** #3621 and #3629 combine multiple backlog items (B-0449/B-0460 and B-0459/B-0460). This violates the single-concern principle and creates friction in peer review and validation.
+- **Blob PRs:** #3621 and #3629 combine multiple backlog items (081KRFA460008QG0R002DG8KPZ/081KRHWGX0008QG0R001E9KEJ1 and 081KRHWGX0008QG0R000TVGDGV/081KRHWGX0008QG0R001E9KEJ1). This violates the single-concern principle and creates friction in peer review and validation.
 - **Queueing Dirty PRs:** Vera and Otto are allowing dirty PRs to queue without immediate decomposition or closure.
 
 ## Action Taken

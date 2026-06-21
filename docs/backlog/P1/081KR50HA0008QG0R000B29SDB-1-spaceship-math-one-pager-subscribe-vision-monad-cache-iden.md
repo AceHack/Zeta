@@ -1,6 +1,5 @@
 ---
-id: B-0365.1
-zetaid: 081KR50HA0008QG0R000B29SDB
+id: 081KR50HA0008QG0R000B29SDB
 priority: P1
 status: closed
 title: "Spaceship math one-pager: subscribe primitive + vision monad + cache identity"
@@ -8,7 +7,7 @@ effort: S
 created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
-resolved_by: "docs(B-0365.1): spaceship math one-pager — subscribe, vision monad, cache identity"
+resolved_by: "docs(081KR50HA0008QG0R000B29SDB): spaceship math one-pager — subscribe, vision monad, cache identity"
 depends_on: []
 parent: 081KR50HA0008QG0R002R3NVGS
 classification: buildable-now
@@ -18,7 +17,7 @@ type: research
 tags: [dbsp, subscribe, vision-monad, cache, algebra, spaceship-math]
 ---
 
-# B-0365.1 — Spaceship math one-pager
+# 081KR50HA0008QG0R000B29SDB — Spaceship math one-pager
 
 ## What
 
@@ -51,8 +50,8 @@ mathematics.
   "cache = I(stream)" at the operational level. No existing
   doc covers all five bullets above in accessible form.
 - **Dependency restructure:** No `depends_on` required.
-  Composes with B-0365.2–B-0365.6 (all other children of
-  B-0365).
+  Composes with 081KR50HA0008QG0R001AW7R6R–081KR50HA0008QG0R0016X7VQP (all other children of
+  081KR50HA0008QG0R002R3NVGS).
 
 ## Deliverable
 
@@ -81,5 +80,5 @@ Non-fusion disclaimer: ...
 
 - `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md`
   (the formal layer; this is the accessible layer)
-- B-0365.6 (synthesis — references this as Layer 1)
-- B-0364 (policy relocation uses the subscribe primitive)
+- 081KR50HA0008QG0R0016X7VQP (synthesis — references this as Layer 1)
+- 081KR50HA0008QG0R00096ZEYA (policy relocation uses the subscribe primitive)

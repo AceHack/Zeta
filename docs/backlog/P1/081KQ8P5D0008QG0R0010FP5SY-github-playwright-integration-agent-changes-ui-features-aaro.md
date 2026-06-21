@@ -1,6 +1,5 @@
 ---
-id: B-0064
-zetaid: 081KQ8P5D0008QG0R0010FP5SY
+id: 081KQ8P5D0008QG0R0010FP5SY
 priority: P1
 status: umbrella
 title: GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)
@@ -152,7 +151,7 @@ using it on the GitHub-UI surface specifically.
 
 ## Composes with
 
-- **B-0060** — human-lineage / external-anchor backfill;
+- **081KQ8P5D0008QG0R000N718AC** — human-lineage / external-anchor backfill;
   prior art on agentic GitHub-UI automation should be
   cited when the harness lands.
 - `feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`

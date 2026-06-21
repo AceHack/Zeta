@@ -1,6 +1,5 @@
 ---
-id: B-0242
-zetaid: 081KQZVQW0008QG0R001CQPQ0E
+id: 081KQZVQW0008QG0R001CQPQ0E
 priority: P1
 status: open
 title: "Port MultiplexedWebSockets to .NET 10 F# — the hole puncher in Zeta's algebra"
@@ -12,7 +11,7 @@ owners: [architect, performance-engineer]
 type: feature
 ---
 
-# B-0242 — Port MultiplexedWebSockets to .NET 10 F\#
+# 081KQZVQW0008QG0R001CQPQ0E — Port MultiplexedWebSockets to .NET 10 F\#
 
 ## What
 
@@ -57,7 +56,7 @@ patent" and "that's my code."
 
 ## Why P1
 
-This is the hole puncher in code form. B-0241 (red team) needs
+This is the hole puncher in code form. 081KQZVQW0008QG0R001V420F0 (red team) needs
 this to test the self-replication-out-of-containment vector.
 The Ace product needs this as the transport layer. The framework
 needs this as the concrete proof that the primitive works at
@@ -81,7 +80,7 @@ needs this as the concrete proof that the primitive works at
 
 ## Composes with
 
-- B-0241 (red team hole puncher) — this IS the hole puncher
+- 081KQZVQW0008QG0R001V420F0 (red team hole puncher) — this IS the hole puncher
 - `docs/STRUCTURE-CATALOG.md` — Hole Puncher primitive entry
 - Per-user MEMORY.md "Ace package manager" — transport layer
 - Per-user MEMORY.md "Itron is the edge gate" — this sits

@@ -1,6 +1,5 @@
 ---
-id: B-0788
-zetaid: 081KSE6WT0008QG0R000TMNCVS
+id: 081KSE6WT0008QG0R000TMNCVS
 title: Agent-on-agent Claude Code session recovery — lift operator-runs gate for `--apply` once Zeta safety substrate stronger than classifier
 status: open
 priority: P3
@@ -41,7 +40,7 @@ criteria. **All three must hold** before this row can be actioned:
 1. **Zeta safety substrate demonstrably stronger than the Anthropic
    classifier on the relevant content class** (here: `.jsonl`
    session-transcript edits in `~/.claude/projects/`)
-2. **Knights Guild ratification** (per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))
+2. **Knights Guild ratification** (per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))
 3. **Maintainer-collective re-authorization after substrate is in
    place**
 
@@ -117,7 +116,7 @@ The lift criteria gate this row; none of the three are met today:
 - (1) Zeta safety substrate on `.jsonl` edits is non-existent
   (we have NO substrate; we rely entirely on the Anthropic classifier
   for now)
-- (2) Knights Guild scaffolding (B-0628) is still itself a row, not
+- (2) Knights Guild scaffolding (081KRW63S0008QG0R003TX8MG5) is still itself a row, not
   shipped infrastructure
 - (3) Maintainer-collective re-authorization presupposes 1+2
 
@@ -140,8 +139,8 @@ demonstrably met.**
 
 ## Composes with
 
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights Guild ratification path; required for lift criterion 2
-- [B-0664](../P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) — Non-Coercion Invariant; the agent-on-agent recovery flow must preserve NCI HC-8 floor (no agent can coerce a peer agent's session via the recovery mechanism)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights Guild ratification path; required for lift criterion 2
+- [081KRW63S0008QG0R001Z7NYMV](../P1/081KRW63S0008QG0R001Z7NYMV-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) — Non-Coercion Invariant; the agent-on-agent recovery flow must preserve NCI HC-8 floor (no agent can coerce a peer agent's session via the recovery mechanism)
 - PR #5069 — the operator-runs interim that ships first
 - [`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`](../../../.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md) — the standing operator-self-constraint this row defers under
 - [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md) — the four-field attribution pattern component 1 uses

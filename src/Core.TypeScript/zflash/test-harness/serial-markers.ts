@@ -1,5 +1,5 @@
 /**
- * B-0891 shared serial-marker vocabulary for QEMU harness scenarios.
+ * 081KSNY2Z0008QG0R0008PN7RQ shared serial-marker vocabulary for QEMU harness scenarios.
  *
  * Centralizes marker strings so scenario 3 retention restarts and scenario 4
  * path-fork forks agree on what zeta-install emits when a zflash-prepared boot
@@ -8,13 +8,13 @@
 
 /** zeta-install.sh emits these when the boot USB ESP already has zeta-creds.enc. */
 export const B0891_RETENTION_USB_SERIAL_MARKERS: readonly string[] = [
-  "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
-  "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
+  "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
+  "[081KSNY2Z0008QG0R0008PN7RQ-retention]   Step 6.95-picker will skip account re-entry",
 ];
 
 /** zeta-install.sh emits this when the boot USB has no retained cred blob. */
 export const B0891_FRESH_USB_SERIAL_MARKER =
-  "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal";
+  "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal";
 
 /** Post-install first-boot cred restore idempotency markers (installed OS path). */
 export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
@@ -45,11 +45,11 @@ export const FIRST_BOOT_PROGRESS_SERIAL_MARKERS: readonly string[] = [
 
 /** Scenario 5 cluster-joining success markers. */
 export const B0891_CLUSTER_JOIN_SERIAL_MARKERS: readonly string[] = [
-  "[B-0891-joining]     cluster join successful",
-  "[B-0891-joining]     joining-node added to the cluster state",
+  "[081KSNY2Z0008QG0R0008PN7RQ-joining]     cluster join successful",
+  "[081KSNY2Z0008QG0R0008PN7RQ-joining]     joining-node added to the cluster state",
 ];
 
-/** B-0891 phase-3 (future): post-login first-session adventure on installed OS. */
+/** 081KSNY2Z0008QG0R0008PN7RQ phase-3 (future): post-login first-session adventure on installed OS. */
 export const FIRST_SESSION_SERIAL_MARKERS: readonly string[] = [
   "zeta-first-session: begin",
   "zeta-first-session: complete",

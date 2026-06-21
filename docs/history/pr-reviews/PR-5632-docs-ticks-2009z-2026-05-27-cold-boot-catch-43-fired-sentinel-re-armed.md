@@ -40,7 +40,7 @@ catch-43 (`.claude/rules/tick-must-never-stop.md`).
 - Dotgit CLEAR (0 stuck pack/maintenance/repack procs — full recovery
   from 2026-05-23/24 540-proc peaks)
 - Peer activity moderate (36 procs)
-- Worktree count 67 (legacy accumulation; B-0750 mechanization scope)
+- Worktree count 67 (legacy accumulation; 081KSE6WT0008QG0R003YYC9PV mechanization scope)
 
 ## Test plan
 

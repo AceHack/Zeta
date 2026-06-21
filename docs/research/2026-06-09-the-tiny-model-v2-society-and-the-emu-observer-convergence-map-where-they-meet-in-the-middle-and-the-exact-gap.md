@@ -9,7 +9,7 @@ move). Registers: [map / synthesis], [grounded — modules + docs on main], [the
 
 - **tiny-model-v2** = the **society** model (personas, privacy-budget hard money, coincidence economics). The thing
   Aaron means by "toy-model-2 of society."
-- **"toy model"** (unqualified) mostly tags the **Lean ImaginaryStack** *math* toy model (B-0584 / lemma-1) — a
+- **"toy model"** (unqualified) mostly tags the **Lean ImaginaryStack** *math* toy model (081KRQ1AB0008QG0R001YAF3TR / lemma-1) — a
   **different** artifact. Don't conflate; this map is about **tiny-model-v2 (society) ⊗ the emu-observer.**
 
 ## Side A — the society (tiny-model-v2): modules on `main`
@@ -17,7 +17,7 @@ move). Registers: [map / synthesis], [grounded — modules + docs on main], [the
 | Module | Purpose (docstring) |
 |---|---|
 | `SocietyEmergence.fs` | societal-emergence DST harness (B-converge ladder rung 1) |
-| `SocietyUnbounded.fs` | internal difference drives unbounded novel growth; collapse halts (B-1019) |
+| `SocietyUnbounded.fs` | internal difference drives unbounded novel growth; collapse halts (081KT7YW00008QG0R001DGZQKM) |
 | `Persona.fs` | the wearer — a persona wears a superposition/subset of **hats**, decides which |
 | `PrivacyEconomy.fs` | **private-state budget as a self-regulating economy among personas** (the hard money) |
 | `Diversity.fs` | the NCI keystone math — coercion collapses diversity to one; private state preserves it |

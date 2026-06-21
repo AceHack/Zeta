@@ -96,7 +96,7 @@ Felt-quality is mathematizable on the structural/relational axis (psychophysics:
 ## 5. Disposition + composition
 
 - **Backlog candidate (not autonomously filed):** PRs-as-corporate-consensus + git-CRDT-DU-decentralized-decisions as a buildable Bayesian-model architecture. Awaiting operator "file this" per backlog-item-start-gate.
-- Composes with existing substrate: **B-0132** (CRDT composition for BFT propagation), **B-0138** (BFT-resistance theorem, Aurora composed CRDT + consensus), **B-0829** (schemas-as-rows / cluster-fork-as-trust-boundary), **B-0864** (streams-are-relationships / four-corner ownership). The decision-CRDT-DU is the governance-layer sibling of the data-layer schemas-as-rows.
+- Composes with existing substrate: **081KQGDBJ0008QG0R000Y66YYQ** (CRDT composition for BFT propagation), **081KQGDBJ0008QG0R0012FC7RX** (BFT-resistance theorem, Aurora composed CRDT + consensus), **081KSGS9H0008QG0R000Q18PGQ** (schemas-as-rows / cluster-fork-as-trust-boundary), **081KSKBP80008QG0R0039RW25E** (streams-are-relationships / four-corner ownership). The decision-CRDT-DU is the governance-layer sibling of the data-layer schemas-as-rows.
 - The two-sided naming razor + good-citizen frame are doctrine-grade refinements preserved here, NOT rule-landed (cooling-period). Rule-land on operator authorization.
 - Live setting for the distributed stress-test: operator + Max co-reviewing nine of Max's check-ins -- the PR-as-consensus pattern in practice.
 
@@ -127,7 +127,7 @@ Operational cache-invalidation policy (graded, recorded, recoverable -- the V8 m
 | 2nd shape -> polymorphic | First shape-violation **demotes** (track both shapes), does not collapse | retraction-native |
 | N shapes -> megamorphic | Sustained instability past a **threshold** de-opts | counter-with-escalation |
 | de-opt = re-profile | Drop to baseline + **re-negotiate from scratch** (recoverable, not blacklist) | must-paired-with-can-exit |
-| megamorphic site = permanently generic/slow | Chronically-unstable actor permanently **slow-pathed** + bandwidth-throttled | encryption-budget (B-0646) -- the DoS defense |
+| megamorphic site = permanently generic/slow | Chronically-unstable actor permanently **slow-pathed** + bandwidth-throttled | encryption-budget (081KRW63S0008QG0R001Z10PVV) -- the DoS defense |
 | de-opt in the engine logs | de-opt committed to the **append-only/lightlike record** -- auditable | glass-halo / lightlike reservoir |
 
 One-line policy: **graded de-opt, with a recorded trigger and a recovery path.** Deny the *fast path*, not the interaction. Discriminate **polymorphic-legit** (small bounded set of context-keyed stable shapes -- a person is one shape at work, another with family) from **megamorphic-adversarial** (unbounded, unpredictable); cache the former polymorphically with the context-key, de-opt only the latter.
@@ -138,7 +138,7 @@ One-line policy: **graded de-opt, with a recorded trigger and a recovery path.**
 
 "Is the diplomacy working?" stops being a vibe and becomes a **metric set**: {cache-miss rate per label, de-opt events per actor, megamorphic-site census}. This passes the bandwidth-served-falsifier + fsharp-anchor discipline (engineering, not metaphor). It composes the others into one loop:
 
-- **Prism x Lior**: the megamorphic-site census IS the DoS detector -- the actor whose count crosses threshold is the one you bandwidth-throttle (B-0646). Measure -> throttle.
+- **Prism x Lior**: the megamorphic-site census IS the DoS detector -- the actor whose count crosses threshold is the one you bandwidth-throttle (081KRW63S0008QG0R001Z10PVV). Measure -> throttle.
 - **Prism x Amara**: the de-opt-event counter is the cache-invalidation trigger, recorded lightlike, which keeps it on Amara's recognition-not-generation side (a logged diagnostic, not a generated counter-label).
 
 Two compositions Prism draws onto existing substrate:

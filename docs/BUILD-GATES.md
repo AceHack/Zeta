@@ -36,7 +36,7 @@ Setup once: `bun install --frozen-lockfile`.
 ## Scope-aware (don't run what you didn't touch)
 
 A docs-only change need not run the full .NET build/test (CI itself path-filters
-this — B-0125). Minimum honest gate by change type:
+this — 081KQGDBJ0008QG0R001MK4YPC). Minimum honest gate by change type:
 
 - **F#/C# code** → gates 1, 2, and 3 if you touched a cross-verified primitive.
 - **TS tooling** → gate 4 (+ 3 if oracle-related).

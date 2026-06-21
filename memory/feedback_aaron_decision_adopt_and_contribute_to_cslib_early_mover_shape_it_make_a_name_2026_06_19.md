@@ -29,7 +29,7 @@ collaboration thesis made concrete on a real, external, open-governance target.
 - **First contribution candidate = the Byzantine-fault extension to CSLib's FLP/Consensus** (today
   crash-fault only: `ProcFaulty` = stop). That's exactly the **G1** slice of the Aurora (b) BFT-Sybil
   lift — so the first upstream PR *is* our own work, done in their repo (aligned incentives, the
-  small-first contribute-back of B-0952).
+  small-first contribute-back of 081KSXN940008QG0R002528JS9).
 - **Sequencing honesty:** the full (b) guarantee still inherits G3 (anti-Sybil entropy, §B, open) —
   but G1 (Byzantine fault model) is a clean, self-contained, citable contribution that does NOT need G3.
 - **Each concrete external PR still gets a look before it goes out** (large external-repo change =
@@ -37,5 +37,5 @@ collaboration thesis made concrete on a real, external, open-governance target.
   gated on whether to contribute at all.
 
 Anchors: CSLib (Barrett et al. 2026); FLP (Fischer–Lynch–Paterson 1985); the collaboration-readiness
-doc (CSLib = "most natural first" target); B-0952 (small-first contribute-back); GOVERNANCE §23
+doc (CSLib = "most natural first" target); 081KSXN940008QG0R002528JS9 (small-first contribute-back); GOVERNANCE §23
 (upstream-contribution workflow). See [[aurora-b-bft-sybil-cslib-flp-scoping]].

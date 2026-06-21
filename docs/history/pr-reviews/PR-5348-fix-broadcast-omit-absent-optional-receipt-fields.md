@@ -27,7 +27,7 @@
 
 ## Description
 
-## Summary\n- restores the post-merge B-0213 TypeScript fix that was stranded on the original claim branch after PR #5344 merged at stale head 802bd5935\n- omits optional receipt properties instead of setting them to undefined under exactOptionalPropertyTypes\n- releases the temporary claim in-branch before review\n\n## Checks\n- bun test tools/broadcast-local/schema.test.ts\n- bun --bun tsc --noEmit -p tsconfig.json\n- git diff --check origin/main...HEAD
+## Summary\n- restores the post-merge 081KQX9B50008QG0R001YRPGD6 TypeScript fix that was stranded on the original claim branch after PR #5344 merged at stale head 802bd5935\n- omits optional receipt properties instead of setting them to undefined under exactOptionalPropertyTypes\n- releases the temporary claim in-branch before review\n\n## Checks\n- bun test tools/broadcast-local/schema.test.ts\n- bun --bun tsc --noEmit -p tsconfig.json\n- git diff --check origin/main...HEAD
 
 ## Outcome
 

@@ -212,9 +212,9 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Replies:**
 
   - **`AceHack` (human)** at 2026-04-28T17:30:33Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred per Stale-content-deferral class (memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md). The 'Amara/ChatGPT' attribution is pre-existing on AceHack and forwarded as-is by this content-alignment PR. Rewriting persona-name provenance entries widens scope from 'forward-port AceHack content' to 'edit content'. Filing as B-0082 follow-up: convert GLOSSARY persona-name attributions to role-refs across all provenance sections (per Otto-279 + AGENT-BEST-PRACTICES carve-out reading that GLOSSARY is current-state, not history surface). Not blocking this PR.
+    Deferred per Stale-content-deferral class (memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md). The 'Amara/ChatGPT' attribution is pre-existing on AceHack and forwarded as-is by this content-alignment PR. Rewriting persona-name provenance entries widens scope from 'forward-port AceHack content' to 'edit content'. Filing as 081KQ8P5D0008QG0R0032HWBYK follow-up: convert GLOSSARY persona-name attributions to role-refs across all provenance sections (per Otto-279 + AGENT-BEST-PRACTICES carve-out reading that GLOSSARY is current-state, not history surface). Not blocking this PR.
   - **`AceHack` (human)** at 2026-04-28T17:33:39Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -256,9 +256,9 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Replies:**
 
   - **`AceHack` (human)** at 2026-04-28T17:33:40Z on `docs/FACTORY-HYGIENE.md`:106 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
   - **`AceHack` (human)** at 2026-04-28T17:41:23Z on `docs/FACTORY-HYGIENE.md`:106 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -307,9 +307,9 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Replies:**
 
   - **`AceHack` (human)** at 2026-04-28T17:33:42Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
   - **`AceHack` (human)** at 2026-04-28T17:41:25Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
 
 ### Thread 17 -- resolved [collapsed]
 
@@ -336,9 +336,9 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Replies:**
 
   - **`AceHack` (human)** at 2026-04-28T17:33:44Z on `CLAUDE.md`:110 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
   - **`AceHack` (human)** at 2026-04-28T17:41:27Z on `CLAUDE.md`:110 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
 
 ### Thread 19 -- resolved [collapsed]
 
@@ -397,7 +397,7 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Replies:**
 
   - **`AceHack` (human)** at 2026-04-28T17:41:29Z on `.claude/skills/glass-halo-architect/SKILL.md`:3 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+    Deferred to 081KQ8P5D0008QG0R0032HWBYK (docs/backlog/P2/081KQ8P5D0008QG0R0032HWBYK-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The 081KQ8P5D0008QG0R0032HWBYK sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
 
 ### Thread 23 -- resolved [collapsed]
 
@@ -544,7 +544,7 @@ Deferred threads:
   feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md. The
   pattern is pre-existing across docs/GLOSSARY.md provenance entries;
   rewriting in this forward-sync PR widens scope from "port AceHack
-  content" to "edit content". Filing as B-0082 follow-up.
+  content" to "edit content". Filing as 081KQ8P5D0008QG0R0032HWBYK follow-up.
 
 EVIDENCE-BASED labels:
 - File state divergence: VERIFIED via gh api repos/{Lucent-Financial-
@@ -639,9 +639,9 @@ EVIDENCE-BASED labels:
 - File-count drift: VERIFIED via `gh pr view 671 --json changedFiles`
   showing 70 vs marker's 66.
 
-Defers (filed B-0082):
+Defers (filed 081KQ8P5D0008QG0R0032HWBYK):
 - Threads #1, #3, #7, #9 — persona-name attribution in current-state
-  docs. B-0082 covers the GLOSSARY case; the FACTORY-HYGIENE +
+  docs. 081KQ8P5D0008QG0R0032HWBYK covers the GLOSSARY case; the FACTORY-HYGIENE +
   CLAUDE.md instances will fold into the same sweep.
 
 Acknowledges (stale phantom-blockers from Copilot):

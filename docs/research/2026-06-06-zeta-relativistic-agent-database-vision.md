@@ -517,7 +517,7 @@ Three byte-verified, golden-vector-locked format tiers (all from one codec famil
 is fine when it's *verified* binary; the earlier "not binary" meant "no *unverified* format"):
 
 - **Canonical YAML (text)** — git-native / audit / mergeable tier. The standard git
-  serialization (maintainer 2026-06-04); already byte-locked (`Core.FSharp.Yaml`, B-1011:
+  serialization (maintainer 2026-06-04); already byte-locked (`Core.FSharp.Yaml`, 081KT5CF90008QG0R001P4CQ09:
   block-style, quoted strings, insertion-order keys, invariant floats → one fixed rendering per
   value). Fewer bytes than JSON + more readable; speed is fine here because the hot path is CBOR.
 - **CBOR (binary)** — local hot tier. Leanest encode; complete (8/8 shapes).
@@ -560,7 +560,7 @@ layout (e.g. columnar keys+varint weights) beats Arrow materially. Measure befor
   AODB* (CIDR 2017); *Cloud Actor-Oriented DB Transactions in Orleans* (VLDB 2024).
 - **Git-as-data adjacents**: Dolt, TerminusDB, Noms.
 - Internal: `docs/writer-actor-routing-model.md`, the event-sourced-fold synthesis
-  (`docs/research/2026-05-31-the-whole-thing-...`), agent-bus (B-0954), CAP-posture-per-row
+  (`docs/research/2026-05-31-the-whole-thing-...`), agent-bus (081KSXN940008QG0R00171YAZW), CAP-posture-per-row
   (`docs/research/2026-06-01-cap-posture-per-row-...`), `SoftValue.fs`, `Zeta.Bayesian`,
   `Merkle.fs`, `DynamicValue.fs`.
 

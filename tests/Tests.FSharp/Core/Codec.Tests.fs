@@ -5,7 +5,7 @@ open FsCheck.Xunit
 open Zeta.Core.Codec
 
 // ═══════════════════════════════════════════════════════════════════
-// C12 (B-1007 P1) — the CODEC ALGEBRA (B-1006 §122-126): a codec is an
+// C12 (081KT2T2J0008QG0R000YZ3NMY P1) — the CODEC ALGEBRA (081KT2T2J0008QG0R0008TFHJT §122-126): a codec is an
 // INVARIANT FUNCTOR with the round-trip law `Deserialize ∘ Serialize = id`,
 // closed under IDENTITY, PRODUCT, and SUM. We build composite codecs from
 // the `identity` base via `imap` / `product` / `sum` and prove (FsCheck):
@@ -14,7 +14,7 @@ open Zeta.Core.Codec
 //   * partiality is HONEST — a declining component surfaces `Error` through
 //     `product` (closure is honest about partial codecs; no silent
 //     corruption that would let a bad value masquerade as a good one)
-// Codecs are over a `string` decline channel. This makes B-1006's
+// Codecs are over a `string` decline channel. This makes 081KT2T2J0008QG0R0008TFHJT's
 // "the codec axis is an algebra" claim TRUE. Prior art: scodec / Haskell
 // `codec` / profunctor-optics. "The compilers don't lie."
 // ═══════════════════════════════════════════════════════════════════

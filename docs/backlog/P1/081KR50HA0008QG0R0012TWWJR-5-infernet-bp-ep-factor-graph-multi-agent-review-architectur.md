@@ -1,6 +1,5 @@
 ---
-id: B-0365.5
-zetaid: 081KR50HA0008QG0R0012TWWJR
+id: 081KR50HA0008QG0R0012TWWJR
 priority: P1
 status: closed
 closed: 2026-05-09
@@ -18,7 +17,7 @@ type: research
 tags: [infernet, bp, ep, factor-graph, multi-agent, belief-propagation, alignment]
 ---
 
-# B-0365.5 — Infer.NET BP/EP architecture doc
+# 081KR50HA0008QG0R0012TWWJR — Infer.NET BP/EP architecture doc
 
 ## What
 
@@ -26,7 +25,7 @@ Write the research doc documenting the three-stage evolution
 from current peer-call CLI to FPGA-level reversible
 message-passing inference.
 
-This is Layer 6 of B-0365: the self-evolving agent inference
+This is Layer 6 of 081KR50HA0008QG0R002R3NVGS: the self-evolving agent inference
 architecture. The claim: the current multi-agent review
 system (peer-call CLI) is a manually-wired approximation of
 a factor graph. Zeta Infer.NET BP/EP is the substrate-native
@@ -63,7 +62,7 @@ criteria = new variables. The graph is self-modifying.
 FPGA connection: each message-passing step is a Toffoli
 gate operation (reversible). Retracting a belief =
 running the gate in reverse. Landauer limit applies to
-the total computation (B-0366).
+the total computation (081KR50HA0008QG0R003T5MZAC).
 
 ## Pre-start checklist
 
@@ -75,8 +74,8 @@ the total computation (B-0366).
   - No dedicated doc covers the factor graph framing of the
     multi-agent review or the Z-set/message-multiplicity
     connection.
-- **Dependency restructure:** Independent of B-0365.1–B-0365.4.
-  Composes with B-0366 (FPGA Toffoli) and B-0365.6 (synthesis).
+- **Dependency restructure:** Independent of 081KR50HA0008QG0R000B29SDB–081KR50HA0008QG0R0026DVKGY.
+  Composes with 081KR50HA0008QG0R003T5MZAC (FPGA Toffoli) and 081KR50HA0008QG0R0016X7VQP (synthesis).
 
 ## Deliverable
 
@@ -89,7 +88,7 @@ Sections:
 3. The factor graph: variables, factors, messages, posterior
 4. Z-set connection: message multiplicities = +1/-1/Z weights
 5. CASPaxos connection: self-evolving graph topology
-6. FPGA connection: reversible message-passing → Toffoli (pointer to B-0366)
+6. FPGA connection: reversible message-passing → Toffoli (pointer to 081KR50HA0008QG0R003T5MZAC)
 7. Migration path: Current → Infer.NET → FPGA (three-stage table)
 8. Razor check: label claims PROVEN / CONJECTURED / SPECULATIVE
 
@@ -101,7 +100,7 @@ Sections:
       each opinion to a message explicitly
 - [x] Z-set weight / message multiplicity connection is stated
       (labeled CONJECTURED)
-- [x] Pointer to B-0366 for the FPGA Toffoli connection
+- [x] Pointer to 081KR50HA0008QG0R003T5MZAC for the FPGA Toffoli connection
 - [x] Pointer to peer-call memory file as the early
       red-team substrate precedent
 - [x] Claims labeled per razor discipline
@@ -114,7 +113,7 @@ satisfied. PR: claim/b0365.5-infernet-bp-ep-factor-graph-doc-2026-05-09.
 ## Composes with
 
 - `tools/peer-call/README.md` (current implementation)
-- B-0366 (FPGA Toffoli — the hardware realization)
+- 081KR50HA0008QG0R003T5MZAC (FPGA Toffoli — the hardware realization)
 - `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md`
   (Z-set algebra foundation)
-- B-0365.6 (synthesis — this is the self-evolving inference layer)
+- 081KR50HA0008QG0R0016X7VQP (synthesis — this is the self-evolving inference layer)

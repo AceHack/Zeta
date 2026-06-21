@@ -1,11 +1,11 @@
 ---
-name: B-0611 slice 3 audit — docs/research surface; mixed verbatim AND Otto-authored files require per-file pattern selection
+name: 081KRSKQ20008QG0R0014PPGZM slice 3 audit — docs/research surface; mixed verbatim AND Otto-authored files require per-file pattern selection
 description: 9 citation edges across 8 unique dangling refs in docs/research. Mixed file types — some verbatim AI conversation preservation (Option E from slice 2), some Otto-authored research syntheses (Option A/B/C/D from slice 1). Per-file pattern selection needed; not uniform like slice 2.
 type: feedback
 created: 2026-05-17T06:59Z
 ---
 
-# B-0611 slice 3 audit — docs/research mixed file types
+# 081KRSKQ20008QG0R0014PPGZM slice 3 audit — docs/research mixed file types
 
 ## Audit output (`--surfaces docs/research`, 2026-05-17T06:59Z)
 
@@ -48,7 +48,7 @@ The 3 Otto-authored files use the 4-option menu per-citation:
   resolution likely Option B (delete) OR Option A (in-repo
   projection if load-bearing)
 - `2026-05-04-b-0140-bash-to-ts-migration-audit-table.md:76` —
-  citation to a bash-compatibility-target memory. The B-0140 work
+  citation to a bash-compatibility-target memory. The 081KQGDBJ0008QG0R0022EW5ZE work
   may have moved on; resolution likely Option B or Option C
 - `meta-cognition-survey-2026-04-21.md:35 + 156` — citation to a
   three-filter-discipline memory. The survey is dated; resolution
@@ -75,7 +75,7 @@ similar to slice 3.
 
 ## Composes with
 
-- B-0611 — parent backlog row
+- 081KRSKQ20008QG0R0014PPGZM — parent backlog row
 - Slice-1 recipe memo (4-option menu)
 - Slice-2 recipe memo (Option E pattern)
 - `.claude/rules/substrate-or-it-didnt-happen.md` — verbatim

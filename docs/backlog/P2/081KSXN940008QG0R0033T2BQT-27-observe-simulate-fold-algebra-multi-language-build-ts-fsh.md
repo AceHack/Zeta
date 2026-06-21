@@ -1,13 +1,12 @@
 ---
-id: B-0867.27
-zetaid: 081KSXN940008QG0R0033T2BQT
-title: observe/simulate/fold algebra — multi-language build (TS/F#/C#/Rust) + cross-language compiler-parity (= non-Byzantine BFT per B-0944)
+id: 081KSXN940008QG0R0033T2BQT
+title: observe/simulate/fold algebra — multi-language build (TS/F#/C#/Rust) + cross-language compiler-parity (= non-Byzantine BFT per 081KSV2WD0008QG0R00051XS0N)
 status: open
 priority: P2
 created: 2026-05-31
 attribution: aaron-2026-05-31
 depends_on:
-  - B-0867.5
+  - 081KSKBP80008QG0R000B3Y19A.5
 composes_with:
   - 081KSKBP80008QG0R000B3Y19A
   - 081KSXN940008QG0R000ZAQT3W
@@ -22,7 +21,7 @@ tags:
   - deterministic-simulation
 ---
 
-# B-0867.27 — observe/simulate/fold algebra in TS/F#/C#/Rust, made to agree
+# 081KSXN940008QG0R0033T2BQT — observe/simulate/fold algebra in TS/F#/C#/Rust, made to agree
 
 ## The ask (operator 2026-05-31)
 
@@ -36,9 +35,9 @@ projection) in **all four framework languages — TS, F#, C#, Rust — and make 
 agree.** The TS reference impl landed in #6245 (`fold`/`replay` event-sourcing
 foundation). This row tracks porting it to F#/C#/Rust with cross-language parity.
 
-## The pattern already exists — B-0944 (don't reinvent)
+## The pattern already exists — 081KSV2WD0008QG0R00051XS0N (don't reinvent)
 
-[B-0944](../P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md)
+[081KSV2WD0008QG0R00051XS0N](../P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md)
 established the cross-language-parity pattern for TriBoolean (TS/F#/C#/Rust already
 built: `src/Core.{CSharp,FSharp,Rust}.TriBoolean`). Its core insight:
 
@@ -50,12 +49,12 @@ built: `src/Core.{CSharp,FSharp,Rust}.TriBoolean`). Its core insight:
 
 This row applies that exact pattern to the observe-algebra primitive. Composes
 with `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`
-(same shape across languages) + B-0703 (multi-oracle BFT) + B-0944 (the parity
+(same shape across languages) + 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) + 081KSV2WD0008QG0R00051XS0N (the parity
 discipline).
 
 ## What "make them agree" means here (two layers)
 
-1. **Compiler-parity (B-0944 layer):** each language implements the same algebra
+1. **Compiler-parity (081KSV2WD0008QG0R00051XS0N layer):** each language implements the same algebra
    shape — `NextAction`/event as a closed sum type (F# DU / Rust enum / C# sealed
    record hierarchy / TS discriminated union), `simulate` as the exhaustive
    reducer, `fold` as the left-fold projection. 4-of-4 compile = the shape is
@@ -96,7 +95,7 @@ HC/SD/DIR) + the **6 always-active disciplines** (per
 4. **C# impl** — `src/Core.CSharp.Observe` (sealed-record union + reducer + fold) + parity test.
 5. **Rust impl** — `src/Core.Rust.Observe` (enum + reducer + fold) + parity test.
 6. **Parity harness** — all four run the golden vectors; 4-of-4 byte-identical =
-   consensus (B-0944). Wire into the build matrix.
+   consensus (081KSV2WD0008QG0R00051XS0N). Wire into the build matrix.
 
 Sequence + exact crate/proj layout to mirror the `Core.*.TriBoolean` precedent.
 
@@ -107,16 +106,16 @@ Sequence + exact crate/proj layout to mirror the `Core.*.TriBoolean` precedent.
       compiles clean (dotnet 0-warnings; `cargo build` clean).
 - [ ] Each impl replays the golden vectors → byte-identical final + per-event states.
 - [ ] 4-of-4 parity green in the build matrix (the BFT-by-compiler-parity property).
-- [ ] Any disagreement triaged as a surfaced spec ambiguity (B-0944 discipline),
+- [ ] Any disagreement triaged as a surfaced spec ambiguity (081KSV2WD0008QG0R00051XS0N discipline),
       not patched-over.
 - [ ] DST + the other 5 disciplines verified per the table above.
 
 ## Composes with
 
-- B-0944 — the cross-language-parity = compiler-BFT pattern (this row applies it)
-- B-0867 / B-0867.5 — the workflow-engine + PoC the observe-algebra belongs to
-- B-0867.26 — GrammarPatch events live in this same algebra (multi-lang too, eventually)
-- B-0703 — multi-oracle BFT (the consensus frame)
+- 081KSV2WD0008QG0R00051XS0N — the cross-language-parity = compiler-BFT pattern (this row applies it)
+- 081KSKBP80008QG0R000B3Y19A / 081KSKBP80008QG0R000B3Y19A.5 — the workflow-engine + PoC the observe-algebra belongs to
+- 081KSXN940008QG0R000ZAQT3W — GrammarPatch events live in this same algebra (multi-lang too, eventually)
+- 081KS3X9Y0008QG0R00218150M — multi-oracle BFT (the consensus frame)
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — same-shape-across-languages
 - `.claude/rules/dv2-data-split-discipline-activated.md` — the 6 always-active disciplines
 - #6245 — the TS reference impl (`fold`/`replay`)

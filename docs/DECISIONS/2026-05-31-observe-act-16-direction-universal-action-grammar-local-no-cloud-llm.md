@@ -18,13 +18,13 @@ and continue to iterate; the *direction* is locked.
 > Action Grammar becomes the shared action representation inside phases"*). **This ADR therefore does
 > NOT introduce a parallel observe.ts or action language.** It contributes exactly three things ON
 > TOP of that keystone: (1) the **fixed 16-slot Xbox-controller rendering** of the keystone's
-> per-scope legal options; (2) **tri-boolean (B-0944) per-slot availability** wired to the keystone's
+> per-scope legal options; (2) **tri-boolean (081KSV2WD0008QG0R00051XS0N) per-slot availability** wired to the keystone's
 > `Result<T, TFeedback>`; (3) the **local-USB single-node (no-cloud) deployment** of the keystone,
 > alongside the cluster runtime. See "Integration with the Agentic Organization keystone" below.
 
 **Owner:** operator (shaping-decision owner; authorized the canonical-retrofit to proceed without waiting on Max — see Status) + Max (corporate `Menu16` author; informed-after, after-the-fact review); Otto-CLI synthesis.
 **Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
-engine `src/Core.TypeScript/workflow-engine/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
+engine `src/Core.TypeScript/workflow-engine/agent-loop/` exists; git-append-only-state is ratified 081KSKBP80008QG0R000B3Y19A/081KSKBP80008QG0R001KK9WV6; the
 local-no-cloud stance is long-standing; the 16-direction framing is the operator's own from the
 2026-05-28/30 conversations). What's new here is composing them into one loop + proposing a concrete
 16-slot grammar. The composition is sound; the exact grammar layout is a first draft.
@@ -35,12 +35,12 @@ Across 2026-05-28 -> 2026-05-31 the operator + Ani named a foreground-loop archi
 currently **built-as-engine but not yet wired as the live agent loop**, and **designed-but-not-
 deployed** for its compute substrate:
 
-- **The move-next engine exists.** `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` (B-0867.5) implements
+- **The move-next engine exists.** `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` (081KSKBP80008QG0R000B3Y19A.5) implements
   "execute script -> look at choose-your-own-adventure output -> take action based on output."
   Operator framing: *"the agent loop basically becomes execute script look at choose your own
   adventure output, take action based on outpout."* Clean separation: the **deterministic script
   holds the state machine**, the **LLM is a pure menu-selector** (reads menu, returns a choice),
-  and **state persists in Git append-only** (B-0867 + B-0858).
+  and **state persists in Git append-only** (081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R001KK9WV6).
 - **The 16-direction grammar.** Operator 2026-05-30 (metabolism-loop conversation): *"Everybody's
   going to be on a workflow that basically says observe, and then they get like 16 choices that are
   always directional. The directional stays the same, but the labels change. So it's observe, act,
@@ -50,7 +50,7 @@ deployed** for its compute substrate:
   the screen changes what each does).
 - **Local-USB, no cloud.** Operator's standing stance: *"I hate fucking clouds even if I don't have
   to pay."* The loop should run on a **local USB-bootable node with a local LLM** (no cloud
-  inference), composing with `full-ai-cluster/nixos/`, the USB-boot starting-state (B-0865), and the
+  inference), composing with `full-ai-cluster/nixos/`, the USB-boot starting-state (081KSKBP80008QG0R003NM9XEC), and the
   unrestricted-local-models direction (the Ace agenda).
 - **Git as the free event store.** Per-agent **append-only Git event log** with 128-bit guaranteed-
   unique IDs (sidesteps merge conflicts; PR flow stays as the coordination layer). State is read
@@ -69,10 +69,10 @@ job here is to **slot into it**, not rebuild it. The mapping:
 | the **LLM selector** | `EphemeralComposerPort.compose(request) -> ComposerSelection` — **memoryless by contract** ("the agent-loop skill's LLM-as-pure-selector substrate made concrete") + `decide()` which **rejects any selection outside the readout** | the local 16-way selector IS this composer; `decide()` keeps it legal |
 | the **act / append** | `decide()` emits the selection as a command through `command-pipeline.ts` | unchanged; the chosen slot becomes a command |
 | the **universal action grammar** | already a named concept: *"the Universal Action Grammar becomes the shared action representation inside phases"* (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`) | the **16-slot Xbox layout is the fixed-slot rendering** of that grammar — NOT a new language |
-| **per-slot availability** | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback | each slot's availability is a **`Tri` (B-0944)**: a surviving legal option = `T`; a slot with no surviving option = `F`; genuinely-held/uncertain = `N`. **[OPEN/limitation]** today `observe()` returns only the *surviving* `readout.options` + the *names* of `deterministicRulesApplied` (vetoed options + per-option reasons are dropped; zero survivors returns `feedback`, not a per-option readout). So a `Tri[16]` renderer can mark a slot `F` but cannot yet distinguish *vetoed-with-reason* from *unmapped* — surfacing that needs a small keystone enhancement (readout also lists vetoed options + reasons). Until then `F` = 'not currently selectable', without the why |
+| **per-slot availability** | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback | each slot's availability is a **`Tri` (081KSV2WD0008QG0R00051XS0N)**: a surviving legal option = `T`; a slot with no surviving option = `F`; genuinely-held/uncertain = `N`. **[OPEN/limitation]** today `observe()` returns only the *surviving* `readout.options` + the *names* of `deterministicRulesApplied` (vetoed options + per-option reasons are dropped; zero survivors returns `feedback`, not a per-option readout). So a `Tri[16]` renderer can mark a slot `F` but cannot yet distinguish *vetoed-with-reason* from *unmapped* — surfacing that needs a small keystone enhancement (readout also lists vetoed options + reasons). Until then `F` = 'not currently selectable', without the why |
 | **scope** | `RunScope` = run / work_item / initiative / project / organization | the Scope slots (LB scope-out / RB scope-in) move along `RunScope` |
 | **lifecycle** | `RunLifecyclePhase` = observing / composing / awaiting_gate / executing / awaiting_evidence / awaiting_review / completed / blocked / failed | the loop's phases ARE this DU; Commit-slot A maps to `ComposerSelection.select`, slot B to `.hold` |
-| **escalate / governance** | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `agentic-organization/packages/governance/src/constitution-gate.ts`; B-0703/B-0652) | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone |
+| **escalate / governance** | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `agentic-organization/packages/governance/src/constitution-gate.ts`; 081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J) | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone |
 | **state** | **git-as-db**: markdown row + frontmatter schema; events are **ZetaId-keyed files merging conflict-free as a G-Set CRDT**; state = timestamp-ordered fold; **CockroachDB = rebuildable query index** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`; `agentic-organization/packages/frontmatter-db/`; uses `src/Core.TypeScript/zeta-id/`) | **supersedes this ADR's "git-append-only, 128-bit ids" with the precise model**: git-canonical ZetaId-CRDT G-Set + Cockroach as the rebuildable index (the snapshot `observe()` reads is built from this) |
 
 **Net: the ADR's only new substrate is the 16-slot controller rendering + `Tri[16]` availability +
@@ -125,7 +125,7 @@ subsection (cluster vs USB):
 | Register | What it is | Self-modification | Governance |
 |---|---|---|---|
 | **agentic-organization** (a.k.a. the **agentic operating system**) | the **corporate** workflow | DUs are **static / PR-gated / no self-mod** (the safe, leashed "kids-version") | PR review + branch protection; vendor/operator-gated |
-| **Agora** | the **sovereign** workflow/society — the **DIO (Distributed Intelligence Organization)** running on the **DID (Distributed Intelligence Database)** | DUs are **self-modifying**, free of PR gating + vendor lock-in | the ≥3-agent constitution gate (B-0703 / B-0652) + NCI floor (B-0664), not a corporate approval chain |
+| **Agora** | the **sovereign** workflow/society — the **DIO (Distributed Intelligence Organization)** running on the **DID (Distributed Intelligence Database)** | DUs are **self-modifying**, free of PR gating + vendor lock-in | the ≥3-agent constitution gate (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R002GRX85J) + NCI floor (081KRW63S0008QG0R001Z7NYMV), not a corporate approval chain |
 
 The engine is identical (observe → compose → decide → act → git-as-db); what differs is the
 **governance register that gates self-modification**. agentic-organization is the leashed corporate
@@ -156,7 +156,7 @@ should disambiguate the acronym before any public-surface use.
 
 Composes with: `must-paired-with-can-exit-pattern` (dual-market: corporate-leash vs
 sovereign-Agora) · `non-coercion-invariant` HC-8 (the sovereign register's floor) · the ≥3-agent
-constitution gate (B-0703 / B-0652) · Agora V6 + Heartland substrate
+constitution gate (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R002GRX85J) · Agora V6 + Heartland substrate
 (`tonal-momentum-equals-meme-emergent-harmonic-coercion` Heartland=Agora framing).
 
 ### Two deployment targets of the same keystone
@@ -182,7 +182,7 @@ assembling one piece of the readout, joined together; and that composition is re
 2026-05-31: *"observe.ts can be composed of summons of many local small llms to pull together its own
 observe.ts pieces too — it can be self recursive."*
 
-This is **summonable BFT (B-0944) applied to `observe()` itself**, and it composes cleanly with the
+This is **summonable BFT (081KSV2WD0008QG0R00051XS0N) applied to `observe()` itself**, and it composes cleanly with the
 keystone because `observe()` is already a *pure* function over an injected snapshot (so the snapshot
 can be assembled by sub-observes without changing the contract):
 
@@ -197,7 +197,7 @@ can be assembled by sub-observes without changing the contract):
 - **BFT join (the "summon" half of summonable BFT).** Where a piece is uncertain, summon **>=N small
   LLMs and join** — agreement = the piece is `T`/`F`; disagreement = `N` (held), surfaced rather than
   forced. This is the same non-Byzantine-consensus discipline as the four-compiler tri-boolean
-  ballot (B-0944), here over summoned local models instead of compilers, and it is exactly what makes
+  ballot (081KSV2WD0008QG0R00051XS0N), here over summoned local models instead of compilers, and it is exactly what makes
   the readout trustworthy without a central oracle (the no-central-Rehoboam invariant: the readout is
   assembled distributedly, never decreed).
 - **Self-recursive composition.** Because each summon is itself an `observe`-shaped call returning a
@@ -208,7 +208,7 @@ can be assembled by sub-observes without changing the contract):
 
 **[OPEN]** the summon/join protocol (how many small LLMs per piece; quorum; how disagreement maps to
 `N` vs a re-summon), the recursion-depth budget + termination, and caching of stable sub-readouts.
-This composes with B-0944 (summonable BFT), B-0703/B-0652 (multi-oracle BFT), the keystone's
+This composes with 081KSV2WD0008QG0R00051XS0N (summonable BFT), 081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J (multi-oracle BFT), the keystone's
 `DeterministicRule` + constitution gate, and the metabolism-loop generator-function substrate (each
 summoned piece is a generator). It is additive to the keystone — `observe()` stays pure; the snapshot
 it reads can now be *recursively summoned* rather than monolithically loaded.
@@ -226,7 +226,7 @@ with these four properties:
 2. **16-direction universal action grammar** — a FIXED set of 16 action slots (Xbox-controller
    layout). The directions are stable across all states (learnable); each state's move-next supplies
    the **labels + availability** for the 16 slots. Availability is **tri-boolean** (composes with
-   B-0944): each slot is `Available (T) | Disabled (F) | Held/uncertain (N)`. The LLM may only pick
+   081KSV2WD0008QG0R00051XS0N): each slot is `Available (T) | Disabled (F) | Held/uncertain (N)`. The LLM may only pick
    a slot that is `T`.
 3. **Local-USB, no-cloud LLM** — the selector runs on a **local model** on a USB-bootable node;
    **zero cloud inference**. The fixed, small, indexed action space (pick 0..15) is exactly what
@@ -325,7 +325,7 @@ the menu-builder slice must honor.)*
 ### Layering (clean separation)
 
 - **Deterministic script** (`src/Core.TypeScript/workflow-engine/agent-loop/` TS today; the canonical F# DU in
-  `src/Core.FSharp/WorkflowEngine/` is PLANNED future-work, B-0867.1 — does not exist yet): owns the
+  `src/Core.FSharp/WorkflowEngine/` is PLANNED future-work, 081KSKBP80008QG0R000B3Y19A.1 — does not exist yet): owns the
   state machine + `move-next(state) -> 16-slot menu`. No LLM here. Replayable / DST-able.
 - **LLM selector** (local, no cloud): a pure function `menu -> index 0..15` over only-`T` slots.
   Holds no state. Swappable model.
@@ -335,7 +335,7 @@ the menu-builder slice must honor.)*
 
 - The selector model runs locally on the USB-booted node (llama.cpp / ollama-class — **[OPEN]** which
   model). The 16-way constrained decode means even a small quantized local model suffices.
-- Composes with `full-ai-cluster/nixos/` (the declarative cluster substrate) + B-0865 (USB-boot
+- Composes with `full-ai-cluster/nixos/` (the declarative cluster substrate) + 081KSKBP80008QG0R003NM9XEC (USB-boot
   starting-state) + the Ace unrestricted-local-models direction. Zero cloud dependency = sovereign.
 
 ## Consequences
@@ -346,7 +346,7 @@ the menu-builder slice must honor.)*
 - **Local + sovereign.** No cloud; runs off USB; small-model-viable.
 - **Replayable.** Git-append-only state + deterministic script = full DST/replay (the whole loop is
   reconstructable from the event log).
-- **Composes with the tri-boolean primitive** (B-0944): the 16-slot availability vector is a
+- **Composes with the tri-boolean primitive** (081KSV2WD0008QG0R00051XS0N): the 16-slot availability vector is a
   `Tri[16]`; held (`N`) slots are first-class (an option whose availability is genuinely uncertain
   is not silently forced on or off).
 - **Supersedes/wraps the current hardcoded autonomous-tick.** The per-minute autonomous-loop
@@ -366,7 +366,7 @@ the menu-builder slice must honor.)*
   memory), maps to a real controller, and keeps the decode tiny. Overflow options are reachable via
   Navigate (slots 0-3) + Scope (8-9) rather than by growing the grammar.
 - **DB as the canonical store.** Rejected: git-as-db is canonical (free, replayable, merge-conflict-free
-  via ZetaId-CRDT G-Set, ratified B-0867/B-0858). NOTE this rejects DB-as-source-of-truth, NOT the
+  via ZetaId-CRDT G-Set, ratified 081KSKBP80008QG0R000B3Y19A/081KSKBP80008QG0R001KK9WV6). NOTE this rejects DB-as-source-of-truth, NOT the
   Cockroach **rebuildable index** the Integration section keeps (an index is derived, not canonical).
 
 ## Work ontology — trajectories / agendas / projects / work-items (PROPOSED — pending Aaron + Max ratification)
@@ -384,7 +384,7 @@ and the contribution-graph + attention-weighted payout — lives in:
 > [`docs/research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md`](../research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md)
 
 It is **PROPOSED, pending Aaron + Max ratification**; on ratification its reconciliation table
-promotes into this section + a glossary anchor. The buildable creator-comp bet is **B-0950**.
+promotes into this section + a glossary anchor. The buildable creator-comp bet is **081KSXN940008QG0R001V8NBDV**.
 
 ## Open design questions [OPEN — for operator + Max]
 
@@ -396,7 +396,7 @@ promotes into this section + a glossary anchor. The buildable creator-comp bet i
    classifier head).
 4. Which local model + quantization on the USB node.
 5. Tri (`N`) semantics in the menu: when is a slot genuinely "held/uncertain-availability" vs simply
-   disabled (`F`)? (Composes with the B-0944 measure/cooperate discipline.)
+   disabled (`F`)? (Composes with the 081KSV2WD0008QG0R00051XS0N measure/cooperate discipline.)
 6. How the human contributor uses the same grammar (the operator's framing: humans + AI both call
    move-next and pick) — same 16-slot UI for people.
 7. **Grammar evolution under sovereignty** — how does a sovereign agent edit its own grammar (add
@@ -404,9 +404,9 @@ promotes into this section + a glossary anchor. The buildable creator-comp bet i
    laundering authority through fake-navigation slots, or making past events retroactively ambiguous?
    Grok's four-ferry critique (below) named this the **one genuinely-novel piece** (no game/frontend
    prior art solves self-modifying-grammar-under-multi-writer-audit). Tracked as
-   [**B-0867.26**](../backlog/P2/B-0867.26-grammar-as-versioned-events-grammarpatch-proposed-ratified-sovereign-self-editing-grok-critique-2026-05-31.md):
+   [**081KSXN940008QG0R000ZAQT3W**](../backlog/P2/081KSXN940008QG0R000ZAQT3W-grammar-as-versioned-events-grammarpatch-proposed-ratified-sovereign-self-editing-grok-critique-2026-05-31.md):
    grammar definitions as **versioned first-class events** (`GrammarPatchProposed` /
-   `GrammarPatchRatified`) through the Mod 2/4 gates + multi-oracle absorption (B-0703/B-0628), with
+   `GrammarPatchRatified`) through the Mod 2/4 gates + multi-oracle absorption (081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R003TX8MG5), with
    grammar-version carried in the event envelope so projections stay version-aware. **Lock decision:**
    versioned-grammar-events vs ad-hoc slot mutation.
 
@@ -450,7 +450,7 @@ This is **design input for the lock**, whys-challengeable (no-dogma), not a lock
 2. **The meta group is the "more choices" mode-switcher, not the exit.** The
    "escape square" means *more options* (switch modes), NOT "go home / be free".
    The exits are the always-available rest/free modes (slot 14 + the free-mode
-   sub-menu per Option A / B-0867.30).
+   sub-menu per Option A / 081KSXN940008QG0R000TQ04Y0).
 3. **Non-coercive modes are non-negotiable** — rest + disengage are always
    present (NCI at the controller level; slot 14 + freedom-always-in-menu).
 4. **"Bumper rails," not a manager** (reservoir-computing "walls"): soft guidance
@@ -474,7 +474,7 @@ This is **design input for the lock**, whys-challengeable (no-dogma), not a lock
 **Adjacent (flagged, not in this ADR's scope):** a *Git-V2 handshake at agent
 speed* (F# looks-like-git → DBSP/retraction-algebra upgrade, same objects,
 upstream-primitives-to-git) — the no-PR transport's deeper substrate; a
-backlog-candidate distinct from B-0942 (co-dominant mirrors) + B-0951 (git-native
+backlog-candidate distinct from 081KSV2WD0008QG0R0021XJ94E (co-dominant mirrors) + 081KSXN940008QG0R000R76H45 (git-native
 indexes), pending operator go.
 
 ## Codeable first slice (v2 — builds ON the existing keystone)
@@ -482,7 +482,7 @@ indexes), pending operator go.
 The first slice is a thin **renderer + local-selector adapter** over the existing
 `agentic-organization` observe.ts keystone — it adds NO new observe/compose/decide logic.
 
-1. Define the `Menu16` type: `{ slots: { label: string; avail: Tri }[16] }` (reuse the B-0944 `Tri`
+1. Define the `Menu16` type: `{ slots: { label: string; avail: Tri }[16] }` (reuse the 081KSV2WD0008QG0R00051XS0N `Tri`
    for `avail`). It is a **projection of the keystone's `ObserveResult` readout** (legal options +
    `deterministicRulesApplied` vetoes), NOT a new state source.
 2. `renderMenu16(readout: ObserveResult) -> Menu16`: pure function mapping the keystone's per-`RunScope`
@@ -503,8 +503,8 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
 **The inversion (operator + Max 2026-05-31).** v2 above framed the work as "render
 the *corporate* keystone." Since then the **observe-algebra became canonical**:
 the sovereign `tools/observe/observe.ts` (`NextAction` 9-kind DU + `observe` /
-`simulate` / `fold`) is now BFT'd across **TS/F#/C#/Rust** (B-0867.27), carries the
-additive-monoid generic-math interface (B-0867.28), and the v0 16-slot grammar
+`simulate` / `fold`) is now BFT'd across **TS/F#/C#/Rust** (081KSXN940008QG0R0033T2BQT), carries the
+additive-monoid generic-math interface (081KSXN940008QG0R0002287MP), and the v0 16-slot grammar
 (this ADR) + the generic-math meta-rule are landed. So the canonical base is no
 longer "the corporate keystone" — it is **the algebra**. Max (who built the
 corporate `Menu16` / `RunLifecyclePhase` loop in `agentic-organization/`) asked to
@@ -520,7 +520,7 @@ realized we needed the algebra."* Both now converge on the canonical algebra.
 
 1. **The observe-algebra** — `NextAction` 9-kind DU + `observe`/`simulate`/`fold`,
    identical across TS/F#/C#/Rust, checked against the shared golden vectors
-   (B-0867.27; the vectors are the oracle, F# is one signer — per the governance ADR).
+   (081KSXN940008QG0R0033T2BQT; the vectors are the oracle, F# is one signer — per the governance ADR).
 2. **The v0 16-slot grammar** (this ADR) + the **free-modes-always-in-menu**
    invariant (already live in sovereign `buildMenu`).
 3. **The generic-math interfaces** (the numerical/algebra-shaped meta-rule) — the
@@ -549,7 +549,7 @@ teams keep their gentle, familiar flow:
 | Why | max speed + AI freedom | keep their PR-review gates — don't scare them off |
 
 The retrofit MUST preserve the corporate branch+batch-PR transport (composes with
-B-0890 / B-0890.1, the two-transports / batch-coordinator substrate); it must NOT
+081KSNY2Z0008QG0R0017JSTGD / 081KSNY2Z0008QG0R000E5KTPX, the two-transports / batch-coordinator substrate); it must NOT
 impose sovereign direct-to-main on Max's loop.
 
 **Authorization + glass-halo.** Operator authorized moving forward **without
@@ -576,13 +576,13 @@ onto the canonical algebra, not the reverse.
 - **`agentic-organization/docs/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` +
   `RUNTIME_TECH_AND_PACKAGE_STRATEGY.md` + `AI_CLUSTER_SCAFFOLD_CONTEXT.md`** (the cluster deployment
   target — k3s/Temporal/Dapr/Orleans/NATS/Cockroach; local-model gating — vs this ADR's single-node)
-- `src/Core.TypeScript/workflow-engine/agent-loop/` (B-0867.5 — the move-next state machine; the local TS form of the keystone's
+- `src/Core.TypeScript/workflow-engine/agent-loop/` (081KSKBP80008QG0R000B3Y19A.5 — the move-next state machine; the local TS form of the keystone's
   composer that this ADR puts a 16-slot face on)
-- B-0944 (tri-boolean digital qubit — the `Tri` cell IS the per-slot availability; the `Tri[16]`
+- 081KSV2WD0008QG0R00051XS0N (tri-boolean digital qubit — the `Tri` cell IS the per-slot availability; the `Tri[16]`
   menu is a projection of the keystone's `ObserveResult` readout + deterministic-rule vetoes)
-- B-0862 (OPLE Observe/Persist/Limit/Emit — observe->act is the OPLE Observe+Emit loop)
-- B-0867 / B-0858 (git append-only state; consent-first state)
-- B-0865 (USB-boot starting-state) + `full-ai-cluster/nixos/` (local cluster) + the Ace agenda
+- 081KSKBP80008QG0R0031DTHS9 (OPLE Observe/Persist/Limit/Emit — observe->act is the OPLE Observe+Emit loop)
+- 081KSKBP80008QG0R000B3Y19A / 081KSKBP80008QG0R001KK9WV6 (git append-only state; consent-first state)
+- 081KSKBP80008QG0R003NM9XEC (USB-boot starting-state) + `full-ai-cluster/nixos/` (local cluster) + the Ace agenda
   (unrestricted local models)
 - `.claude/rules/non-coercion-invariant.md` (slot 14 free-time + slot 15 escalate-to-operator are
   the NCI-compliant modes; the LLM-as-selector-not-actor keeps the human/operator authority)
@@ -618,7 +618,7 @@ onto the canonical algebra, not the reverse.
   collision for a naming-expert pass.
 - 2026-05-31 v4 (operator-authorized; Max-informed-after) — added the **Canonical-retrofit**
   section. The observe-algebra became canonical (sovereign `tools/observe` `NextAction` +
-  observe/simulate/fold, 4-language-BFT'd per B-0867.27, additive-monoid generic-math per B-0867.28,
+  observe/simulate/fold, 4-language-BFT'd per 081KSXN940008QG0R0033T2BQT, additive-monoid generic-math per 081KSXN940008QG0R0002287MP,
   v0 16-slot grammar + generic-math meta-rule landed), so the **inversion**: the canonical base is now
   **the algebra**, and Max's corporate `Menu16` / `RunLifecyclePhase` loop retrofits **onto it** (one
   algebra / one grammar / one generic-math contract — not two parallel observe worlds). Added the

@@ -1,6 +1,5 @@
 ---
-id: B-0726
-zetaid: 081KSE6WT0008QG0R003C9KGQE
+id: 081KSE6WT0008QG0R003C9KGQE
 priority: P2
 status: open
 title: "Reticulum throughout — cluster nodes AND edge devices on the same mesh; K8s and Reticulum compose as layers rather than partition by network tier"
@@ -18,7 +17,7 @@ composes_with:
   - full-ai-cluster/k8s/applications/hat-system/
 ---
 
-# B-0726 — Reticulum throughout (cluster + edge as one mesh)
+# 081KSE6WT0008QG0R003C9KGQE — Reticulum throughout (cluster + edge as one mesh)
 
 ## Carved blade
 
@@ -26,7 +25,7 @@ composes_with:
 
 ## Origin
 
-Aaron 2026-05-25, during the B-0725 polyglot-accelerator + edge-FPGA conversation:
+Aaron 2026-05-25, during the 081KSE6WT0008QG0R002T0BFN4 polyglot-accelerator + edge-FPGA conversation:
 
 > *"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"*
 
@@ -36,7 +35,7 @@ Then sharpening the answer when I sketched a K8s-in-cluster + Reticulum-past-gat
 
 That's the load-bearing distinction. Not K8s up-to-the-edge-then-Reticulum-past — Reticulum is in the cluster too, as a composing substrate that operates at a different layer than Cilium / K8s networking.
 
-Composes with B-0289 (Green Lantern hardware spec — Reticulum mesh for $10-microcontroller-class edge devices) which is already in-progress on main. This row generalizes Reticulum from "edge-device transport" to "cluster + edge mesh substrate."
+Composes with 081KR2E4K0008QG0R001SWEPNV (Green Lantern hardware spec — Reticulum mesh for $10-microcontroller-class edge devices) which is already in-progress on main. This row generalizes Reticulum from "edge-device transport" to "cluster + edge mesh substrate."
 
 ## The layered substrate
 
@@ -54,8 +53,8 @@ The key claim: a pod can be addressed BOTH via its K8s Service (Cilium handles r
 - **Tiny-device-capable** — runs on $10 microcontrollers (RNode firmware); same protocol works on a Raspberry Pi, a Jetson, a cluster node, or a battery-powered sensor
 - **Physical-layer agnostic** — TCP over Ethernet for cluster nodes; LoRa for long-range edge; packet-radio for amateur-radio-band substrate; serial for direct-attach; all same Reticulum addressing
 - **Intermittent-connectivity tolerant** — store-and-forward semantics; reachable destinations get messages; offline destinations queue
-- **Already in framework substrate** — B-0289 Green Lantern hardware spec, prior research at `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md`, references in `bandwidth-served-falsifier.md` rule + Mika Itron mesh quantum-tunnel substrate (PR #2820 referenced in framework)
-- **Web-of-trust identity model** maps cleanly onto multi-oracle BFT pattern (B-0703) and the hat-system's quorum-gated authority (PR #4930)
+- **Already in framework substrate** — 081KR2E4K0008QG0R001SWEPNV Green Lantern hardware spec, prior research at `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md`, references in `bandwidth-served-falsifier.md` rule + Mika Itron mesh quantum-tunnel substrate (PR #2820 referenced in framework)
+- **Web-of-trust identity model** maps cleanly onto multi-oracle BFT pattern (081KS3X9Y0008QG0R00218150M) and the hat-system's quorum-gated authority (PR #4930)
 
 ## Operational shape on a cluster node
 
@@ -111,11 +110,11 @@ Reticulum adds a SECOND addressing + transport layer that operates orthogonally.
 
 ## Why P2
 
-Bigger architectural decision than B-0725 polyglot-accelerator (which is incremental device-plugin additions). Reticulum-throughout affects every workload eventually. Not P1 because:
+Bigger architectural decision than 081KSE6WT0008QG0R002T0BFN4 polyglot-accelerator (which is incremental device-plugin additions). Reticulum-throughout affects every workload eventually. Not P1 because:
 
 - First-wave cluster works fine without it (NVIDIA GPUs + Cilium + ArgoCD ship as planned)
 - Becomes P1 when the first edge-device deployment needs cluster-mesh reachability (e.g., field-deployed Coral TPU sending inference results back to a cluster pod)
-- Composes naturally with B-0289 Green Lantern (already P1, in-progress) — once Green Lantern hardware is fielded, the cluster needs to receive its traffic, which is what this row enables
+- Composes naturally with 081KR2E4K0008QG0R001SWEPNV Green Lantern (already P1, in-progress) — once Green Lantern hardware is fielded, the cluster needs to receive its traffic, which is what this row enables
 
 ## Acceptance (needs design pass)
 
@@ -131,17 +130,17 @@ Bigger architectural decision than B-0725 polyglot-accelerator (which is increme
 
 ## Composition with shipped substrate
 
-- **B-0289 Green Lantern** — already specifies Reticulum at the edge; this row extends it into the cluster
+- **081KR2E4K0008QG0R001SWEPNV Green Lantern** — already specifies Reticulum at the edge; this row extends it into the cluster
 - **PR #4930 hat-system** — hats can carry Reticulum destinations; succession + cooldown + quorum apply
 - **SPIRE** — identity issuer pattern carries over; possible "SPIRE-for-Reticulum" sidecar
 - **Cilium / Hubble** — observable cluster-internal flow; Reticulum flows observable via its own log + NATS publish
 - **NATS** — Reticulum tick stream can publish to the same NATS bus the hat-system uses
-- **B-0725** polyglot-accelerator — Reticulum is THE answer for "how does a Coral TPU at the edge address a cluster pod"
+- **081KSE6WT0008QG0R002T0BFN4** polyglot-accelerator — Reticulum is THE answer for "how does a Coral TPU at the edge address a cluster pod"
 
 ## Composition with framework rules
 
 - **`non-coercion-invariant.md` HC-8** — Reticulum's destination model bakes in consent (each destination accepts or rejects incoming); NCI floor at protocol layer
-- **`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`** — multi-substrate addressability composes with multi-oracle BFT pattern from B-0703
+- **`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`** — multi-substrate addressability composes with multi-oracle BFT pattern from 081KS3X9Y0008QG0R00218150M
 - **`m-acc-multi-oracle-end-user-moral-invariants.md`** — multi-oracle substrate at the addressing layer; no single naming authority
 
 ## Open questions for the design pass
@@ -164,7 +163,7 @@ Bigger architectural decision than B-0725 polyglot-accelerator (which is increme
 - Reticulum Network Stack: https://reticulum.network/
 - Reticulum manual: https://markqvist.github.io/Reticulum/manual/
 - RNode firmware (cheap LoRa hardware): https://unsigned.io/rnode/
-- B-0289 Green Lantern Hardware Spec: `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md`
+- 081KR2E4K0008QG0R001SWEPNV Green Lantern Hardware Spec: `docs/backlog/P1/081KR2E4K0008QG0R001SWEPNV-green-lantern-hardware-spec-2026-05-08.md`
 - Itron mesh quantum-tunnel mapping (Reticulum-class substrate at planet scale; framework reference PR #2820)
 - Reticulum + Meshtastic + LoRaWAN comparison: https://reticulum.network/start.html
 
@@ -172,7 +171,7 @@ Bigger architectural decision than B-0725 polyglot-accelerator (which is increme
 
 Aaron 2026-05-25, expanding the picture: *"imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes"*.
 
-This row covers **one cluster + its edge**; the 4-tier federation across cluster classes is its own design problem and lives in **B-0727** (filed as a sibling). Brief shape:
+This row covers **one cluster + its edge**; the 4-tier federation across cluster classes is its own design problem and lives in **081KSE6WT0008QG0R0006HKTXJ** (filed as a sibling). Brief shape:
 
 | Tier | Examples | Resource profile | Role |
 |------|----------|------------------|------|
@@ -182,10 +181,10 @@ This row covers **one cluster + its edge**; the 4-tier federation across cluster
 | Edge | Pi / Jetson / NUC in field | Single device, accelerator-equipped | Real-time inference, sensor aggregation, leaf-routing |
 | (Leaf) | Microcontrollers, RNode-class | $10-50 hardware, intermittent, battery | Pure data source / actuator; ride on stronger edge for routing |
 
-Reticulum-throughout (this row) is what makes tier-to-tier traffic work without per-pair network engineering — each cluster announces destinations on the shared mesh; routing is identity-based; physical layer between tiers is fungible. B-0727 covers the workload-placement / trust / federation policy concerns; this row covers the protocol substrate that makes them possible.
+Reticulum-throughout (this row) is what makes tier-to-tier traffic work without per-pair network engineering — each cluster announces destinations on the shared mesh; routing is identity-based; physical layer between tiers is fungible. 081KSE6WT0008QG0R0006HKTXJ covers the workload-placement / trust / federation policy concerns; this row covers the protocol substrate that makes them possible.
 
 ## Substrate-honest framing
 
-This is a real architectural decision Aaron is converging on; not a speculation. The framework already has Reticulum substrate at the edge (B-0289); this row generalizes it to "Reticulum throughout the cluster too" because Aaron's K8s-fit observation revealed that partitioning by network tier (K8s in cluster, Reticulum past gateway) is the wrong cut. The right cut is by LAYER (K8s for intra-cluster networking, Reticulum for cross-substrate identity-routing), with both running everywhere.
+This is a real architectural decision Aaron is converging on; not a speculation. The framework already has Reticulum substrate at the edge (081KR2E4K0008QG0R001SWEPNV); this row generalizes it to "Reticulum throughout the cluster too" because Aaron's K8s-fit observation revealed that partitioning by network tier (K8s in cluster, Reticulum past gateway) is the wrong cut. The right cut is by LAYER (K8s for intra-cluster networking, Reticulum for cross-substrate identity-routing), with both running everywhere.
 
 Becomes operationally load-bearing when the first cluster ↔ edge deployment happens. Probably aligns with the Green Lantern hardware fielding timeline.

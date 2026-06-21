@@ -1,6 +1,5 @@
 ---
-id: B-0126.1
-zetaid: 081KR2E4K0008QG0R001N1PPHP
+id: 081KR2E4K0008QG0R001N1PPHP
 priority: P1
 status: closed
 title: "Layer 4: AI attribution footer for TS comment-posting tools"
@@ -12,9 +11,9 @@ classification: buildable-now
 type: friction-reducer
 ---
 
-# B-0126.1 — Layer 4: AI attribution footer for TS comment-posting tools
+# 081KR2E4K0008QG0R001N1PPHP — Layer 4: AI attribution footer for TS comment-posting tools
 
-**Slice of:** [B-0126](B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
+**Slice of:** [081KQGDBJ0008QG0R001JC9HCJ](081KQGDBJ0008QG0R001JC9HCJ-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
 
 ## What
 
@@ -42,6 +41,6 @@ authorship transparent — glass halo applied to PR interactions.
 
 ## Out of scope
 
-- GitHub Actions workflow attribution (YAML/bash — separate child B-0126.2).
-- Layers 1-3 documentation (B-0126.3).
-- Pilot validation (B-0126.4).
+- GitHub Actions workflow attribution (YAML/bash — separate child 081KR2E4K0008QG0R0005GS263).
+- Layers 1-3 documentation (081KR2E4K0008QG0R002MG5Q5Z).
+- Pilot validation (081KR2E4K0008QG0R000G0DAY4).

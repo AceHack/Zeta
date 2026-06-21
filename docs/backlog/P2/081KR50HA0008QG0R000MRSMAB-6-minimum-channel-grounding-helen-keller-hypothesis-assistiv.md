@@ -1,9 +1,8 @@
 ---
-id: B-0026.6
-zetaid: 081KR50HA0008QG0R000MRSMAB
+id: 081KR50HA0008QG0R000MRSMAB
 priority: P2
 status: open
-title: "B-0026.6 — Helen Keller minimum-channel hypothesis: dual-purpose grounding + assistive-tech research"
+title: "081KR50HA0008QG0R000MRSMAB — Helen Keller minimum-channel hypothesis: dual-purpose grounding + assistive-tech research"
 created: 2026-05-09
 last_updated: 2026-05-09
 parent: 081KQ0YZ80008QG0R001WZ4JE8
@@ -14,15 +13,15 @@ effort: S
 
 ---
 
-# B-0026.6 — Helen Keller minimum-channel hypothesis
+# 081KR50HA0008QG0R000MRSMAB — Helen Keller minimum-channel hypothesis
 
-**Slice of:** [B-0026](B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)  
-**Parallel to:** B-0026.1 (no dependency; both can run simultaneously)
+**Slice of:** [081KQ0YZ80008QG0R001WZ4JE8](081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)  
+**Parallel to:** 081KR50HA0008QG0R000C6N7CJ (no dependency; both can run simultaneously)
 
 ## What
 
-Produce `docs/research/B-0026.6-minimum-channel-grounding-hypothesis.md` that formalizes the
-Helen Keller minimum-channel argument from B-0026 into a structured hypothesis with:
+Produce `docs/research/081KR50HA0008QG0R000MRSMAB-minimum-channel-grounding-hypothesis.md` that formalizes the
+Helen Keller minimum-channel argument from 081KQ0YZ80008QG0R001WZ4JE8 into a structured hypothesis with:
 
 1. **The empirical baseline:** Helen Keller (1880–1968) — deaf-blind from ~19 months, grounded language
    fully through touch + taste + smell + proprioception alone. Full linguistic competence demonstrated
@@ -50,19 +49,19 @@ Helen Keller minimum-channel argument from B-0026 into a structured hypothesis w
    had" — a narrower and more falsifiable version than "AI lacks the full human sensory suite." This
    sharpening lowers the bar for a meaningful counter-experiment.
 
-## Why this is a separate child (parallel, not merged into B-0026.1)
+## Why this is a separate child (parallel, not merged into 081KR50HA0008QG0R000C6N7CJ)
 
-B-0026.1 focuses on the tool-use-vs-trained-embodiment distinction for platform/architecture decisions.
-B-0026.6 focuses on the minimum-channel hypothesis which informs experiment *scope* (one channel is
+081KR50HA0008QG0R000C6N7CJ focuses on the tool-use-vs-trained-embodiment distinction for platform/architecture decisions.
+081KR50HA0008QG0R000MRSMAB focuses on the minimum-channel hypothesis which informs experiment *scope* (one channel is
 enough to test) and has independent value as dual-purpose assistive-tech research. The two parallel
-tracks compound: B-0026.1 answers "how" to ground; B-0026.6 answers "how much grounding is needed."
+tracks compound: 081KR50HA0008QG0R000C6N7CJ answers "how" to ground; 081KR50HA0008QG0R000MRSMAB answers "how much grounding is needed."
 
 ## Acceptance criteria
 
-1. Research doc committed to `docs/research/B-0026.6-minimum-channel-grounding-hypothesis.md`.
+1. Research doc committed to `docs/research/081KR50HA0008QG0R000MRSMAB-minimum-channel-grounding-hypothesis.md`.
 2. H1–H4 hypothesis stated formally with citations (search-first for Helen Keller neuroscience,
    tactile-only grounding, sensory substitution literature).
-3. Implications for B-0026.3 spike design noted (which single channel to test first).
+3. Implications for 081KR50HA0008QG0R002ZRCAF7 spike design noted (which single channel to test first).
 4. Assistive-tech dual-purpose opportunities enumerated with at least 3 concrete research directions.
 5. `dotnet build -c Release`: 0 warnings, 0 errors (doc-only).
 6. PR body: one-sentence H3 summary + build result.

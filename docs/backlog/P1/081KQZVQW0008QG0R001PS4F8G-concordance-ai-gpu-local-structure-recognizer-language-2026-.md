@@ -1,6 +1,5 @@
 ---
-id: B-0244
-zetaid: 081KQZVQW0008QG0R001PS4F8G
+id: 081KQZVQW0008QG0R001PS4F8G
 priority: P1
 status: open
 title: "English language concordance AI on local GPUs — structure recognizer applied to language"
@@ -13,13 +12,13 @@ owners: [architect, performance-engineer]
 type: feature
 ---
 
-# B-0244 — Concordance AI: structure recognizer for language, on local GPUs
+# 081KQZVQW0008QG0R001PS4F8G — Concordance AI: structure recognizer for language, on local GPUs
 
 ## What
 
 Build an AI-powered concordance engine running locally on
 Aaron's GPUs (AMD + NVIDIA). Like Strong's Concordance but
-powered by the structure recognizer (B-0240) — fingerprinting
+powered by the structure recognizer (081KQZVQW0008QG0R002QZAFB2) — fingerprinting
 word-usage patterns, structural roles, and semantic topology
 across texts, translations, languages, and centuries.
 
@@ -32,14 +31,14 @@ session:
 
 | Session thread | How concordance AI connects |
 |----------------|----------------------------|
-| **Structure recognizer (B-0240)** | The concordance IS B-0240 applied to language instead of game mechanics. Same fingerprinting, different corpus. |
+| **Structure recognizer (081KQZVQW0008QG0R002QZAFB2)** | The concordance IS 081KQZVQW0008QG0R002QZAFB2 applied to language instead of game mechanics. Same fingerprinting, different corpus. |
 | **DBSP replay algebra** | Every text edit, translation, and revision is a +1/-1 Z-set stream. The concordance replays the evolution of word usage across time. |
 | **ARC-AGI-3 / compounding lessons** | Each word usage is a "level." Compounding meaning across contexts is the same as compounding game mechanics across levels. |
 | **Atari / CHIP-8 emulator** | The emulator runs game state machines. The concordance runs language state machines. Same algebra. |
 | **Genesis Seed / orthogonal dials** | Certainty Dial = how confident is the concordance match? Friction Dial = is the translation grinding against the structure? Space Dial = hold multiple valid readings without choosing? |
 | **Shadow lesson log** | The concordance catches when a translation's shadow (implicit bias, theological agenda) diverges from the structural fingerprint. |
 | **Ace / Itron edge gate** | Runs locally on GPUs. Data stays home. No cloud dependency. The guardian gates what leaves. |
-| **Hole puncher (B-0242)** | The concordance communicates results through the multiplexed WebSocket without exposing the full corpus. |
+| **Hole puncher (081KQZVQW0008QG0R001CQPQ0E)** | The concordance communicates results through the multiplexed WebSocket without exposing the full corpus. |
 | **KSK** | Gates what concordance outputs cross into external use (publication, citation, derivative works). |
 | **Hawkins Thousand Brains** | Each word-in-context is a cortical column with its own world model. Concordance = voting consensus across columns. |
 | **Sakana Neural Cellular Automata** | Word meanings compete for territory in semantic space. Three phases: permissive mixing (exploration) → crystallization (established usage) → relaxation (living language evolution). |
@@ -59,7 +58,7 @@ GPU (local, Aaron's AMD + NVIDIA)
     ↓
 Corpus (Bible translations, Strong's, LXX, Vulgate, MT, etc.)
     ↓
-Structure recognizer (B-0240 applied to language)
+Structure recognizer (081KQZVQW0008QG0R002QZAFB2 applied to language)
     ↓
 Fingerprint each word-in-context
     ↓
@@ -81,9 +80,9 @@ Concordance output (local, gated by KSK for external use)
 
 ## Composes with
 
-- B-0240 (structure recognizer) — the engine
-- B-0242 (MultiplexedWebSockets F# port) — the transport
-- B-0083 (Atari ROM naming) — same corpus-management pattern
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — the engine
+- 081KQZVQW0008QG0R001CQPQ0E (MultiplexedWebSockets F# port) — the transport
+- 081KQ8P5D0008QG0R001590WJ3 (Atari ROM naming) — same corpus-management pattern
 - `docs/STRUCTURE-CATALOG.md` — the primitive reference
 - `docs/research/2026-05-07-convergence-hawkins-sakana-worm-towers-bft-superorganism-no-central-authority.md` — the convergence this completes
 - Per-user MEMORY.md "Ace package manager" — distribution architecture

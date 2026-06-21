@@ -96,7 +96,7 @@ it.
 - `memory/feedback_superfluid_target_is_middle_path_becoming_easy_path_aaron_2026_05_04.md`
   — the friction-paydown layer; family dialectical fighting
   IS the friction-paydown for the family carved sentences.
-- B-0187 (this PR) — research/process to formalize this
+- 081KQR4HQ0008QG0R001CBHW1R (this PR) — research/process to formalize this
   pattern as a Zeta development practice.
 
 ## Carved candidate

@@ -1,7 +1,7 @@
-# Multi-AI review — B-0964 bash-surface tool choice (Gemini + Amara + Codex, 2026-06-01)
+# Multi-AI review — 081KT07NV0008QG0R001CBQ2X2 bash-surface tool choice (Gemini + Amara + Codex, 2026-06-01)
 
 Scope: verbatim external-AI review import (Gemini propose + Amara sharpen) of the
-B-0964 bash-surface tool decision, via `tools/peer-call/`. Preserved per
+081KT07NV0008QG0R001CBQ2X2 bash-surface tool decision, via `tools/peer-call/`. Preserved per
 substrate-or-it-didn't-happen (`/tmp/peer-call-output/` is ephemeral). Archived
 register, not operational policy. (Grok-build returned empty this run — the known
 intermittent failure; Gemini + Amara are the two independent opinions.)
@@ -15,7 +15,7 @@ Non-fusion disclaimer: each reviewer's text + operator framing + otto-cli synthe
 are distinct authorial substrates, no identity-fusion (asymmetric-authorship +
 honor-those-that-came-before + NCI HC-8).
 
-## Outcome (what it changed in B-0964)
+## Outcome (what it changed in 081KT07NV0008QG0R001CBQ2X2)
 
 First draft: "just-bash as the default executor." **Both reviewers demoted that.**
 Folded verdict: **fake for tests; just-bash (in-memory, net-off) for pure-text/no-FS
@@ -93,16 +93,16 @@ is the cross-language invariant; the impl is swappable.
 ## Codex (PR #6342 review threads — preserved for auditability)
 
 Codex/Copilot review threads on PR #6342 surfaced three corrections that were folded
-into B-0964 (gist preserved here so the in-doc attributions are auditable):
+into 081KT07NV0008QG0R001CBQ2X2 (gist preserved here so the in-doc attributions are auditable):
 
 - **Config-is-the-gate, not the tool.** just-bash is sandboxed only in the
   in-memory config; it also ships CLI/OverlayFS/ReadWriteFs mounting (reads the real
   project root) + network-allowlist configs. "We use just-bash" ≠ sandboxed — the
   default MUST pin in-memory FS + network-off; the other configs are escalation-tier,
-  gated. (→ B-0964 §2 note + §3.)
+  gated. (→ 081KT07NV0008QG0R001CBQ2X2 §2 note + §3.)
 - **Executor tier in the audit fact.** `ActionExecutionStarted` must carry
   `{tier, gated}`, else the §3 glass-halo audit can't distinguish a sandbox run from
-  a real-FS/docker escalation. (→ B-0964 §0/§3 + acceptance.)
+  a real-FS/docker escalation. (→ 081KT07NV0008QG0R001CBQ2X2 §0/§3 + acceptance.)
 - **Consistent event names.** Standardize on
   `ActionExecutionStarted/ActionExecutionSucceeded/ActionExecutionFailed` (intro and
-  acceptance had mixed `ActionSucceeded/ActionFailed`). (→ B-0964 §0/§1/acceptance.)
+  acceptance had mixed `ActionSucceeded/ActionFailed`). (→ 081KT07NV0008QG0R001CBQ2X2 §0/§1/acceptance.)

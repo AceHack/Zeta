@@ -1,6 +1,6 @@
 ---
 pr_number: 5265
-title: "feat(B-0824): generator-as-time-source for non-linear time + IObservable simulation + typed time-units + Rx/DST/scheduler best-practices"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): generator-as-time-source for non-linear time + IObservable simulation + typed time-units + Rx/DST/scheduler best-practices"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:59:46Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:35:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5265: feat(B-0824): generator-as-time-source for non-linear time + IObservable simulation + typed time-units + Rx/DST/scheduler best-practices
+# PR #5265: feat(081KSGS9H0008QG0R0031PBNGA): generator-as-time-source for non-linear time + IObservable simulation + typed time-units + Rx/DST/scheduler best-practices
 
 ## PR description
 

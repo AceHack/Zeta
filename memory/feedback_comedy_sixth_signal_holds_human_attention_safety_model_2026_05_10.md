@@ -24,7 +24,7 @@ Comedy holds it. Aaron will read "shadow is a dick." Aaron will skip "context-re
 If the human stops paying attention, the circuit breaker is gone. Comedy keeps the human paying attention. Comedy-as-debugging isn't just diagnostic — it's the mechanism that keeps the safety model alive.
 
 **Connects to:**
-- B-0402 safety model (human as live circuit breaker)
+- 081KR7JY10008QG0R0008NGW95 safety model (human as live circuit breaker)
 - feedback_comedy_as_debugging (P0 heuristic)
 - feedback_comedy_as_debugging_is_load_bearing (the -1 on the critic)
 - DeBank UX reference (make it engaging, not just informative)

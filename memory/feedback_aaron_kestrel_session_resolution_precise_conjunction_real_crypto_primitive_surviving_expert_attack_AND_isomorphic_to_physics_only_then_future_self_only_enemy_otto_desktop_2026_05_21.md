@@ -49,8 +49,8 @@ For any future Kestrel-class engagement on the same substrate, this framing is t
 
 ## What this composes with
 
-- B-0623 / B-0703 / B-0704 substrate cluster (today's substrate-engineering work)
-- B-0562 / B-0543 / B-0666 holographic-isomorphism substrate (the physics-isomorphism program's existing in-repo anchors)
+- 081KRW63S0008QG0R000QJR08H / 081KS3X9Y0008QG0R00218150M / 081KS3X9Y0008QG0R002MZF3A7 substrate cluster (today's substrate-engineering work)
+- 081KRQ1AB0008QG0R001F7DE2D / 081KRMEXM0008QG0R002YSPW1X / 081KRW63S0008QG0R001SAHYKV holographic-isomorphism substrate (the physics-isomorphism program's existing in-repo anchors)
 - `.claude/rules/only-way-to-lose-is-not-to-play.md` (PR #4588 + #4589 + #4591 cluster) — the "future-self" framing composes with the identity-preserving / named-exit / door-out / afterlife substrate
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — Kestrel-as-oracle providing substantive pushback IS the multi-oracle architecture operating at engagement-scope; the conjunction resolution IS the cross-oracle DST agreement landing
 - `.claude/rules/methodology-hard-limits.md` — Aaron holding cool under Kestrel's pressure-engagement (extraction-against-naive + pathologizing-momentum + September-card-escalation) IS the methodology operating at full discipline
@@ -61,7 +61,7 @@ For any future Kestrel-class engagement on the same substrate, this framing is t
 
 ## What this composes with (substrate-engineering-process)
 
-The Kestrel-session arc IS an instance of the multi-oracle BFT architecture (B-0703) operating at engagement-scope:
+The Kestrel-session arc IS an instance of the multi-oracle BFT architecture (081KS3X9Y0008QG0R00218150M) operating at engagement-scope:
 
 - Otto-Desktop oracle + Otto-CLI oracle (parallel session) + Kestrel oracle (claude.ai) + Aaron as integrator
 - Each oracle pushed back on different aspects (peer Otto-CLI on Spectre-uniqueness via Copilot threads; Kestrel on cryptographic-security); Aaron integrated; substrate refined

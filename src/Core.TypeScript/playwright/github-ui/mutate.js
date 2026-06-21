@@ -28,7 +28,7 @@ export class MutationExecutionError extends Error {
     }
 }
 // ---------------------------------------------------------------------------
-// Authorized surfaces (from B-0320)
+// Authorized surfaces (from 081KR2E4K0008QG0R002A0AGBJ)
 // ---------------------------------------------------------------------------
 const AUTHORIZED_SURFACES_PATH = resolve(import.meta.dir, "authorized-surfaces.json");
 export function loadAuthorizedSurfaces(path = AUTHORIZED_SURFACES_PATH) {
@@ -119,14 +119,14 @@ async function executeAction(page, action, params) {
 // ---------------------------------------------------------------------------
 /**
  * Execute a guarded GitHub UI mutation with mandatory before/after snapshots
- * and authorization check against the B-0320 authorized-surfaces list.
+ * and authorization check against the 081KR2E4K0008QG0R002A0AGBJ authorized-surfaces list.
  *
  * Guardrails enforced in code (no bypass paths):
  *   - Authorization: surface + action must appear in authorized-surfaces.json
  *   - Snapshot pair: both before and after snapshots are always captured
  *   - Inverse action: recorded in the drain log entry for reversibility
  *
- * The drain log entry returned here is written to disk by B-0322 (drain-log.ts).
+ * The drain log entry returned here is written to disk by 081KR2E4K0008QG0R002N1C3YJ (drain-log.ts).
  */
 export async function mutate(request, options = {}) {
     // 1. Load authorized surfaces

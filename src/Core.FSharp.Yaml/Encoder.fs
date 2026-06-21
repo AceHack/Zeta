@@ -1,4 +1,4 @@
-// Canonical YAML ENCODER (B-1011) — the renderer half the parser lacked. Takes a
+// Canonical YAML ENCODER (081KT5CF90008QG0R001P4CQ09) — the renderer half the parser lacked. Takes a
 // `YamlValue` DOM and emits CANONICAL, deterministic, block-style YAML such that
 // `Dom.parse (encode v) = Ok v` (round-trip). Canonical = one fixed rendering per
 // value, so the same value → the same bytes every time (the basis for cross-language
@@ -14,7 +14,7 @@
 //     resolves back to Float (e.g. 1.0 not 1). Culture-INVARIANT throughout.
 //
 // Scope: scalars, maps, sequences, arbitrary nesting. Empty map/seq have no pure
-// block-YAML form, so they render INLINE as flow `{}`/`[]` (B-1016) — the one
+// block-YAML form, so they render INLINE as flow `{}`/`[]` (081KT7YW00008QG0R002T1XNWT) — the one
 // necessary flow exception, round-tripping distinct from null and from each other.
 module Zeta.Core.FSharp.Yaml.Encoder
 
@@ -49,7 +49,7 @@ let private scalar (v: YamlValue) : string option =
         let looksFloat = r |> Seq.exists (fun c -> c = '.' || c = 'e' || c = 'E')
         Some(if looksFloat then r else r + ".0")
     | VStr s -> Some(quote s)
-    // Empty collections render INLINE as flow `{}` / `[]` (B-1016): block style
+    // Empty collections render INLINE as flow `{}` / `[]` (081KT7YW00008QG0R002T1XNWT): block style
     // cannot represent an empty map/seq, so without this `{}`, `[]`, and null all
     // collapse to a bare `key:` -> null. The one necessary flow exception; non-empty
     // containers still return None -> recurse as block.

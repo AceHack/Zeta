@@ -64,7 +64,7 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "qemu-utils": "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
   mtools:
     "file-backed zflash ESP-image writer for Unix/NixOS QEMU proof; no scoop/winget/choco package source is declared yet, so Windows keeps QEMU-only coverage until a Windows package source is selected",
-  // Rootless-podman helpers (added to apt with podman; B-0964 §2). Linux-only: on
+  // Rootless-podman helpers (added to apt with podman; 081KT07NV0008QG0R001CBQ2X2 §2). Linux-only: on
   // Windows podman runs its Linux VM via WSL2, which provides user-namespace mapping,
   // networking, and overlay storage inside the VM — these host packages have no
   // Windows-native equivalent (the WSL2 distro carries them).

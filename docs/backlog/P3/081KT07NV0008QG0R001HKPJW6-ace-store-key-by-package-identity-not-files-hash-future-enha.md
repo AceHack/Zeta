@@ -1,6 +1,5 @@
 ---
-id: B-0966
-zetaid: 081KT07NV0008QG0R001HKPJW6
+id: 081KT07NV0008QG0R001HKPJW6
 priority: P3
 status: open
 title: "Ace store keyed by package identity (not files-hash) — future enhancement, only if same-files-different-identity arises"
@@ -13,7 +12,7 @@ owners: [developer-experience-engineer]
 type: feature
 ---
 
-# B-0966 — Ace store keyed by package identity (future enhancement)
+# 081KT07NV0008QG0R001HKPJW6 — Ace store keyed by package identity (future enhancement)
 
 ## Trigger / origin
 
@@ -80,7 +79,7 @@ store behavior for a case that may never occur (YAGNI).
 
 ## Composes with
 
-- B-0288 (Ace package manager) — parent
+- 081KR2E4K0008QG0R002YE3MMD (Ace package manager) — parent
 - Ace slice-4 design spec (`docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice4-inline-url-dependency-resolution-design.md`) — the `store-collision` preflight this would relax
 - `tools/ace/store.ts` (`installPackage` dir-key) — the code option A would change
 - Ace slice 5 (registry) — if/when registry resolution lands, identity-keyed store may become more relevant

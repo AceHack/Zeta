@@ -8,7 +8,7 @@ title: "zeta flash noun-verb CLI + MCP — unified USB/ISO router"
 created: 2026-06-14T00:01:34.755Z
 completed: 2026-06-14T00:30:00.000Z
 depends_on: []
-composes_with: ["B-0844", "B-0891", "B-0831"]
+composes_with: ["081KSGS9H0008QG0R001EZKNCB", "081KSNY2Z0008QG0R0008PN7RQ", "081KSGS9H0008QG0R0011BC7T2"]
 ---
 
 # zeta flash noun-verb CLI + MCP — unified USB/ISO router
@@ -22,4 +22,4 @@ composes_with: ["B-0844", "B-0891", "B-0831"]
 
 ## Follow-on (not this workitem)
 
-- **B-0831** cascade #6 — QEMU full-install + cluster auto-join (separate backlog row)
+- **081KSGS9H0008QG0R0011BC7T2** cascade #6 — QEMU full-install + cluster auto-join (separate backlog row)

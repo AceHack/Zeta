@@ -1,6 +1,6 @@
 // audit_clause_coverage.test.ts — tests for alignment-clause coverage audit.
 //
-// B-0058 slice: adds test coverage for the clause-extraction regex,
+// 081KQ3HBZ0008QG0R002S674CG slice: adds test coverage for the clause-extraction regex,
 // the audit() integration function, and the main() CLI arg parsing.
 //
 // Run: bun test src/Core.TypeScript/alignment/audit_clause_coverage.test.ts

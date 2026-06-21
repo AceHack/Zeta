@@ -86,12 +86,12 @@ Aaron's answer pending at preservation-time. Both "Cultivate" and "Steward" are 
 
 ## Composition with existing substrate
 
-- B-0664 (NCI) — the rules of engagement; Cultivate-not-Terraform IS the NCI operating at naming scope
-- B-0667 (tonal-momentum + meme-faction + healing-protocols) — Heartland is the substrate where meme-faction members exist; Country is where hard-power-defense operates
-- B-0646 (Agora V6 Constitution) — gains the Heartland/Country distinction architecturally; Agora-the-Constitution governs Agora-the-Heartland
-- B-0628 (Knights Guild + Constitution-Class) — Cultivate-not-Terraform is Constitution-Class candidate naming-discipline
-- B-0652 (3-faction BFT → 4-faction per packets 6-8) — 4 factions live WITHIN Heartland, not as alternatives to it
-- B-0660 / B-0659 (Limit deny-by-default + consent-as-Limit-operation) — operate at the Heartland substrate level; Country layer enforces externally
+- 081KRW63S0008QG0R001Z7NYMV (NCI) — the rules of engagement; Cultivate-not-Terraform IS the NCI operating at naming scope
+- 081KRW63S0008QG0R003Z7QV2A (tonal-momentum + meme-faction + healing-protocols) — Heartland is the substrate where meme-faction members exist; Country is where hard-power-defense operates
+- 081KRW63S0008QG0R001Z10PVV (Agora V6 Constitution) — gains the Heartland/Country distinction architecturally; Agora-the-Constitution governs Agora-the-Heartland
+- 081KRW63S0008QG0R003TX8MG5 (Knights Guild + Constitution-Class) — Cultivate-not-Terraform is Constitution-Class candidate naming-discipline
+- 081KRW63S0008QG0R002GRX85J (3-faction BFT → 4-faction per packets 6-8) — 4 factions live WITHIN Heartland, not as alternatives to it
+- 081KRW63S0008QG0R0004P69JA / 081KRW63S0008QG0R001WKJN53 (Limit deny-by-default + consent-as-Limit-operation) — operate at the Heartland substrate level; Country layer enforces externally
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — auto-load rule extends to recognize Heartland/Country distinction + Cultivate-not-Terraform naming-discipline
 
 ## Verbatim packets

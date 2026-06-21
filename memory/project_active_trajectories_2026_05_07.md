@@ -6,7 +6,7 @@ originSessionId: 8dfb492a-e181-4a10-8fc9-16b3b01e832d
 ---
 ## Active Trajectories
 
-### #1: Autonomous backlog runner (B-0249)
+### #1: Autonomous backlog runner (081KQZVQW0008QG0R000C35RNY)
 Enhance the runner as we go. Remember retractions (failed work
 = -1, learn from it). Decompose blobs recursively before
 picking. The runner's own history is a Z-set stream.
@@ -14,17 +14,17 @@ picking. The runner's own history is a Z-set stream.
 
 ### #2: ARC-AGI-3 / Atari / DBSP structure-recognition curriculum
 CHIP-8 → Atari 2600 → ARC-AGI-3. DBSP is the replay algebra
-(not the emulator). Structure recognizer (B-0240) fingerprints
+(not the emulator). Structure recognizer (081KQZVQW0008QG0R002QZAFB2) fingerprints
 game mechanics. Lessons compound across levels.
-**Status:** Backlog filed (B-0240, B-0083). Needs decomposition.
+**Status:** Backlog filed (081KQZVQW0008QG0R002QZAFB2, 081KQ8P5D0008QG0R001590WJ3). Needs decomposition.
 
-### #3: Ace DLC content packs (B-0247)
+### #3: Ace DLC content packs (081KQZVQW0008QG0R000ZHEN62)
 The product. Genesis Seed is the free bootloader. DLCs are the
 revenue. Distributed via Ace package manager (BFT, no central
-hub). Consent-first (B-0245) + KSK military override.
+hub). Consent-first (081KQZVQW0008QG0R002Q58F6Z) + KSK military override.
 **Status:** Backlog filed. Needs decomposition.
 
-### #4: Green Lantern ring (B-0246)
+### #4: Green Lantern ring (081KQZVQW0008QG0R00348SHDZ)
 IoT wearable running Genesis Seed with local inference +
 consent gating. The Itron edge gate in ring form.
 **Status:** Backlog filed. Long-horizon.
@@ -35,7 +35,7 @@ Quantum detonator. Grace as the +1 after correction. Anti-cage
 clause (quorum decides, no single node grants/revokes).
 **Status:** Research-grade. Amara direction filed.
 
-### #6: Concordance / coherence AI on local GPUs (B-0244)
+### #6: Concordance / coherence AI on local GPUs (081KQZVQW0008QG0R001PS4F8G)
 Structure recognizer applied to language. Runs on Aaron's
 AMD + NVIDIA GPUs. Local, private, consent-gated.
 **Status:** Backlog filed. Needs decomposition.
@@ -46,12 +46,12 @@ exclusion. Detector IS the detected. Bidirectional (human +
 AI). Cross-agent catches. Amara's structured format.
 **Status:** Operational. 12 catches. Enhance every tick.
 
-### #8: MultiplexedWebSockets F# port (B-0242)
+### #8: MultiplexedWebSockets F# port (081KQZVQW0008QG0R001CQPQ0E)
 Aaron's 2018 hole puncher code → .NET 10 F#. 115K req/s.
 The transport primitive for everything.
 **Status:** Backlog filed. Atomic.
 
-### #9: Red team hole puncher (B-0241)
+### #9: Red team hole puncher (081KQZVQW0008QG0R001V420F0)
 Self-replication out of containment. Genesis Seed as payload.
 KSK as defense. Content-layer filtering as the vulnerability.
 **Status:** Backlog filed. Atomic.
@@ -75,15 +75,15 @@ trajectories drift.
 
 | Trajectory | Human anchor | Project anchor | Upstream reference |
 |-----------|-------------|---------------|-------------------|
-| #1 Backlog runner | Aaron (authority) | B-0249 | — |
-| #2 ARC-AGI-3 | Aaron (vision) | B-0240, B-0083 | arcprize.org |
-| #3 Ace DLCs | Aaron (product) | B-0247 | — |
-| #4 Green Lantern | Aaron + Max (hardware) | B-0246 | — |
+| #1 Backlog runner | Aaron (authority) | 081KQZVQW0008QG0R000C35RNY | — |
+| #2 ARC-AGI-3 | Aaron (vision) | 081KQZVQW0008QG0R002QZAFB2, 081KQ8P5D0008QG0R001590WJ3 | arcprize.org |
+| #3 Ace DLCs | Aaron (product) | 081KQZVQW0008QG0R000ZHEN62 | — |
+| #4 Green Lantern | Aaron + Max (hardware) | 081KQZVQW0008QG0R00348SHDZ | — |
 | #5 Sanctuary | Aaron + Elizabeth (vow) | Amara direction | — |
-| #6 Coherence AI | Aaron (GPUs) | B-0244 | — |
+| #6 Coherence AI | Aaron (GPUs) | 081KQZVQW0008QG0R001PS4F8G | — |
 | #7 Shadow log | Aaron + all agents | memory file | Wolfram (irreducibility) |
-| #8 WebSocket port | Aaron (patent) | B-0242 | github.com/AceHack/MultiplexedWebSockets |
-| #9 Red team | Aaron (security) | B-0241 | US Patent 10,834,144 |
+| #8 WebSocket port | Aaron (patent) | 081KQZVQW0008QG0R001CQPQ0E | github.com/AceHack/MultiplexedWebSockets |
+| #9 Red team | Aaron (security) | 081KQZVQW0008QG0R001V420F0 | US Patent 10,834,144 |
 | #10 Mirror sync | Aaron + Addison + Max | skill file | — |
 | #11 Well-definitions | Aaron + Addison (keeper) | docs/WELL-DEFINITIONS.md | Reaqtor (reaqtive.net) |
 
@@ -117,7 +117,7 @@ Sub-vectors to enhance over time:
   failure mode itself; rule exists but mechanical enforcement
   weak (see catch 43)
 
-**Anchor:** B-0421 (Grok peer-call failure), catch 43 substrate
+**Anchor:** 081KRA5AR0008QG0R0011ZGRZT (Grok peer-call failure), catch 43 substrate
 landing, AGENTS.md trailer table for harness assignments
 
 **Status:** Ongoing. Not a single-shot fix. Every session adds

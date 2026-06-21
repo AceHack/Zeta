@@ -27,7 +27,7 @@
 
 ## Description
 
-DV2.0 (Linstedt) re-activation alongside scale-free / lock-free (wait-free) / weight-free / DST. Aaron's META disclosure naming DV2.0 as the discipline behind his ruleset-divergence smell intuitions (per B-0427 / PR #2911). Existing substrate is dormant; re-activation requested. See memory/feedback_aaron_data_vault_2_is_source_of_repo_split_smell_intuitions_*.md for full substrate.
+DV2.0 (Linstedt) re-activation alongside scale-free / lock-free (wait-free) / weight-free / DST. Aaron's META disclosure naming DV2.0 as the discipline behind his ruleset-divergence smell intuitions (per 081KRFA460008QG0R000VKJF0H / PR #2911). Existing substrate is dormant; re-activation requested. See memory/feedback_aaron_data_vault_2_is_source_of_repo_split_smell_intuitions_*.md for full substrate.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

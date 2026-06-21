@@ -1,6 +1,5 @@
 ---
-id: B-0882
-zetaid: 081KSNY2Z0008QG0R000J555YB
+id: 081KSNY2Z0008QG0R000J555YB
 priority: P3
 status: open
 title: No-throttle system + gardener-not-engineer + AI-as-nature — operating posture for Zeta substrate (300mph reality with better steering, not 100mph artificial speed-limits)
@@ -71,12 +70,12 @@ Two artifacts:
 
 ## Composition with existing substrate
 
-- **B-0867** workflow-engine v1 — the no-throttle substrate IS the workflow-engine; this row articulates the posture behind it
-- **B-0874** GitHub Actions recursion / no-PR swarm — concrete instantiation of no-throttle ("if I don't make 'em do PRs, there's no rate limits")
-- **B-0880** growth-rate ratio discipline — operational metric that makes no-throttle survivable
-- **B-0881** tech-debt-as-training-data — accept-the-mess composes with no-throttle posture
-- **B-0859** fair-society-not-tyrants — gardener-not-engineer composes with fair-society shape
-- **B-0875.1** code-review-as-class-detector — preserved code-review IS the steering that no-throttle requires; not a throttle, an active correction mechanism
+- **081KSKBP80008QG0R000B3Y19A** workflow-engine v1 — the no-throttle substrate IS the workflow-engine; this row articulates the posture behind it
+- **081KSNY2Z0008QG0R003X1QWYG** GitHub Actions recursion / no-PR swarm — concrete instantiation of no-throttle ("if I don't make 'em do PRs, there's no rate limits")
+- **081KSNY2Z0008QG0R000ED0ED8** growth-rate ratio discipline — operational metric that makes no-throttle survivable
+- **081KSNY2Z0008QG0R0015C3F01** tech-debt-as-training-data — accept-the-mess composes with no-throttle posture
+- **081KSKBP80008QG0R00146WEX1** fair-society-not-tyrants — gardener-not-engineer composes with fair-society shape
+- **081KSNY2Z0008QG0R002WQ747V** code-review-as-class-detector — preserved code-review IS the steering that no-throttle requires; not a throttle, an active correction mechanism
 
 ## Composes with existing rules
 

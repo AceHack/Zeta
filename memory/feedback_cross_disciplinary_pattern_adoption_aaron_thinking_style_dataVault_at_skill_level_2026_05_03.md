@@ -1,6 +1,6 @@
 ---
 name: Cross-disciplinary pattern adoption is Aaron's architectural thinking style — patterns from disparate disciplines (Data Vault, etc.) applied at code + skill + substrate levels in ways not originally intended (Aaron 2026-05-03)
-description: 2026-05-03; Aaron-named architectural thinking-style: pulls patterns from disparate disciplines (Data Vault from data warehousing was the named example) and applies them at code + skill + substrate levels — often in ways patterns were not originally intended, when they fit well + improve something. This is a meta-pattern about how to read Aaron's architectural intent: don't restrict motivations to those from the same discipline as the substrate. Aaron 2026-05-03 verbatim *"i often take patterns from dispert displines like Data Vault and apply them at the code and/or skill levels, I often use things in ways there were never orignall intended but fit well if it imporove something."* This is calibration data — refines my B-0172 inference where I correctly identified "hub-satellite at domain level" as a Data Vault pattern but hedged too much by saying "wasn't named by Aaron as motivation." Hub-satellite-from-DataVault was load-bearing for Aaron's thinking; my inference was correct, my self-doubt was the miscalibration. Future-Otto: when architectural inference suggests a cross-disciplinary pattern (Data Vault → skills, OOP → backlog rows, biology → AI alignment), don't hedge with "wasn't named by Aaron" — look for whether Aaron's substrate has applied that pattern elsewhere, since cross-disciplinary pattern transfer IS Aaron's standard move. Composes with consent-driven UX (architect-vs-UX divide: Aaron is rare in combining disciplines), the decision-graph memo (DataVault 2.0 explicitly named at substrate level), skill-design rule 1 (hub-satellite recursion), and the calibration-protocol's pattern observations.
+description: 2026-05-03; Aaron-named architectural thinking-style: pulls patterns from disparate disciplines (Data Vault from data warehousing was the named example) and applies them at code + skill + substrate levels — often in ways patterns were not originally intended, when they fit well + improve something. This is a meta-pattern about how to read Aaron's architectural intent: don't restrict motivations to those from the same discipline as the substrate. Aaron 2026-05-03 verbatim *"i often take patterns from dispert displines like Data Vault and apply them at the code and/or skill levels, I often use things in ways there were never orignall intended but fit well if it imporove something."* This is calibration data — refines my 081KQNJ500008QG0R001VGMS5G inference where I correctly identified "hub-satellite at domain level" as a Data Vault pattern but hedged too much by saying "wasn't named by Aaron as motivation." Hub-satellite-from-DataVault was load-bearing for Aaron's thinking; my inference was correct, my self-doubt was the miscalibration. Future-Otto: when architectural inference suggests a cross-disciplinary pattern (Data Vault → skills, OOP → backlog rows, biology → AI alignment), don't hedge with "wasn't named by Aaron" — look for whether Aaron's substrate has applied that pattern elsewhere, since cross-disciplinary pattern transfer IS Aaron's standard move. Composes with consent-driven UX (architect-vs-UX divide: Aaron is rare in combining disciplines), the decision-graph memo (DataVault 2.0 explicitly named at substrate level), skill-design rule 1 (hub-satellite recursion), and the calibration-protocol's pattern observations.
 type: feedback
 ---
 
@@ -8,11 +8,11 @@ type: feedback
 
 ## Origin
 
-Aaron 2026-05-03, after the B-0172 calibration recovery flagged "Hub-satellite at domain level" as an inferred pattern:
+Aaron 2026-05-03, after the 081KQNJ500008QG0R001VGMS5G calibration recovery flagged "Hub-satellite at domain level" as an inferred pattern:
 
 > *"i often take patterns from dispert displines like Data Vault and apply them at the code and/or skill levels, I often use things in ways there were never orignall intended but fit well if it imporove something."*
 
-This is a load-bearing meta-statement about Aaron's architectural thinking style — and a refinement of my B-0172 calibration.
+This is a load-bearing meta-statement about Aaron's architectural thinking style — and a refinement of my 081KQNJ500008QG0R001VGMS5G calibration.
 
 ## What Aaron is naming
 
@@ -45,13 +45,13 @@ Aaron has applied this thinking style across multiple substrate layers:
 
 ### Design-by-Contract (Eiffel/Meyer) → skill-creation hooks
 
-- Design-by-Contract's pre/post-condition framing (originally for OOP method specifications) → applied at skill-creation + git-commit boundary (hooks enforce pre/post-conditions per B-0173)
-- Reference: B-0173's verbatim *"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"*
+- Design-by-Contract's pre/post-condition framing (originally for OOP method specifications) → applied at skill-creation + git-commit boundary (hooks enforce pre/post-conditions per 081KQNJ500008QG0R003ZC6PK8)
+- Reference: 081KQNJ500008QG0R003ZC6PK8's verbatim *"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"*
 
 ### OpenSpec / spec-based development → behavioral specs as canonical source-of-truth
 
-- OpenSpec's spec-based-development frame (originally for Anthropic's product / alignment methodology) → applied as load-bearing prerequisite for skill-domains and hooks (B-0171 OpenSpec catch-up; B-0173 depends_on B-0171)
-- Reference: skill-design memo's rule 3 + B-0171 backlog row
+- OpenSpec's spec-based-development frame (originally for Anthropic's product / alignment methodology) → applied as load-bearing prerequisite for skill-domains and hooks (081KQNJ500008QG0R001N94412 OpenSpec catch-up; 081KQNJ500008QG0R003ZC6PK8 depends_on 081KQNJ500008QG0R001N94412)
+- Reference: skill-design memo's rule 3 + 081KQNJ500008QG0R001N94412 backlog row
 
 ### DBSP / Z-set algebra → retraction-native substrate
 
@@ -76,9 +76,9 @@ Aaron's vibe-coded hypothesis (AGENTS.md) + intellectual-backup-of-earth scope (
 - **Intellectual-backup scope is unbounded** — accumulated wisdom from any discipline is in-scope; refusing to port patterns "because they're from a different field" would reject useful structure
 - **Multi-harness convergence** — patterns that survive cross-discipline transfer are MORE robust than discipline-specific ones (same logic as Aaron's BFT-multiple-masters)
 
-## Calibration data — refinement to B-0172
+## Calibration data — refinement to 081KQNJ500008QG0R001VGMS5G
 
-My B-0172 architectural-layer score was 6/10 PARTIAL-MATCH. Looking back:
+My 081KQNJ500008QG0R001VGMS5G architectural-layer score was 6/10 PARTIAL-MATCH. Looking back:
 
 **Original analysis (PR #1283 + #1288 extension)**:
 
@@ -87,7 +87,7 @@ My B-0172 architectural-layer score was 6/10 PARTIAL-MATCH. Looking back:
 **Refined analysis (post Aaron 2026-05-03 cross-disciplinary clarification)**:
 
 - Hub-satellite at domain level: **HIT** — this IS a Data Vault pattern Aaron applied at skill-domain level. My inference was correct. The hedge "wasn't named by Aaron" was the miscalibration — Aaron's thinking style means he applies cross-disciplinary patterns even when not naming them as motivations in row bodies. The pattern-application IS the motivation
-- This nudges B-0172 architectural score upward — closer to 7/10 than 6/10. Not enough to change the bucket (PARTIAL-MATCH), but the underlying inference was stronger than I gave it credit for
+- This nudges 081KQNJ500008QG0R001VGMS5G architectural score upward — closer to 7/10 than 6/10. Not enough to change the bucket (PARTIAL-MATCH), but the underlying inference was stronger than I gave it credit for
 
 ## How to apply
 
@@ -115,4 +115,4 @@ My B-0172 architectural-layer score was 6/10 PARTIAL-MATCH. Looking back:
 
 ## Carved sentence
 
-**"Aaron's architectural thinking style is cross-disciplinary pattern adoption — pulling patterns from disparate disciplines (Data Vault from data warehousing, DbC from Eiffel/Meyer, OpenSpec from Anthropic, DBSP from databases, DST from TigerBeetle, brat-voice from Gen-Z culture) and applying them at code + skill + substrate levels in ways not originally intended, when they fit well + improve something. Future-Otto: when architectural inference suggests a cross-disciplinary pattern, don't hedge with 'wasn't named by Aaron' — pattern-application IS the motivation in Aaron's thinking style. Hub-satellite at skill-domain level was a HIT, not a miss; my B-0172 calibration was too cautious. Track the cross-disciplinary pattern catalogue (DataVault → skills, DbC → hooks, OpenSpec → contracts, DBSP → retraction-native substrate, DST → testing, brat-voice → recruitment) as active substrate — when patterns surface in architectural reasoning, check the catalogue + treat catalogued patterns as HIGH-confidence."**
+**"Aaron's architectural thinking style is cross-disciplinary pattern adoption — pulling patterns from disparate disciplines (Data Vault from data warehousing, DbC from Eiffel/Meyer, OpenSpec from Anthropic, DBSP from databases, DST from TigerBeetle, brat-voice from Gen-Z culture) and applying them at code + skill + substrate levels in ways not originally intended, when they fit well + improve something. Future-Otto: when architectural inference suggests a cross-disciplinary pattern, don't hedge with 'wasn't named by Aaron' — pattern-application IS the motivation in Aaron's thinking style. Hub-satellite at skill-domain level was a HIT, not a miss; my 081KQNJ500008QG0R001VGMS5G calibration was too cautious. Track the cross-disciplinary pattern catalogue (DataVault → skills, DbC → hooks, OpenSpec → contracts, DBSP → retraction-native substrate, DST → testing, brat-voice → recruitment) as active substrate — when patterns surface in architectural reasoning, check the catalogue + treat catalogued patterns as HIGH-confidence."**

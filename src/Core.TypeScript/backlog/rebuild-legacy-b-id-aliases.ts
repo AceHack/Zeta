@@ -1,0 +1,249 @@
+#!/usr/bin/env bun
+/**
+ * rebuild-legacy-b-id-aliases.ts — rebuild the frozen B-NNNN → ZetaId alias map, then
+ * replace every remaining legacy reference in the repo.
+ *
+ * Sources (priority order):
+ *   1. Existing b-to-zetaid-map.json
+ *   2. Git rename commits (B-<slug>.md → <zetaid>-<slug>.md)
+ *   3. Pre-migration backlog frontmatter (id + zetaid pairs)
+ *   4. Manual renumber aliases (b-id-renumber-aliases.json)
+ *   5. Git history: first `id: B-NNNN` file with zetaid or zetaid filename
+ *   6. Deterministic legacyZetaIdFromBId for never-merged rows
+ *   7. Sub-item inheritance (B-0620.4 → B-0620)
+ *
+ * Usage:
+ *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts --dry-run
+ *   bun src/Core.TypeScript/backlog/rebuild-legacy-b-id-aliases.ts
+ */
+
+import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { basename, join } from "node:path";
+import { spawnSync } from "node:child_process";
+import { legacyZetaIdFromBId, parentBId, timestampForLegacyBId } from "./legacy-b-id-zetaid";
+
+const REPO_ROOT = process.cwd();
+const MAP_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-to-zetaid-map.json");
+const MANUAL_PATH = join(REPO_ROOT, "src", "Core.TypeScript", "backlog", "b-id-renumber-aliases.json");
+const DRY_RUN = process.argv.includes("--dry-run");
+const VERBOSE = process.argv.includes("--verbose");
+
+const SKIP_FILES = new Set([
+  "b-to-zetaid-map.json",
+  "b-id-renumber-aliases.json",
+  "rebuild-legacy-b-id-aliases.ts",
+  "legacy-b-id-zetaid.ts",
+  "autonomous-pickup.test.ts",
+  "backlog-ready-notifier.test.ts",
+]);
+
+const SCAN_EXTENSIONS = new Set([".md", ".ts", ".tsx", ".js", ".json", ".yaml", ".yml", ".jsonc", ".sh", ".fs", ".fsx"]);
+const APPLY_EXTENSIONS = SCAN_EXTENSIONS;
+
+const B_ID_RE = /\b(B-[0-9]{4}(?:\.[0-9]+)*)\b/g;
+
+function git(args: string[]): string {
+  const r = spawnSync("git", args, { cwd: REPO_ROOT, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  if (r.status !== 0) return "";
+  return r.stdout;
+}
+
+function zetaFromFilename(path: string): string | null {
+  const stem = basename(path).replace(/\.md$/, "");
+  const dash = stem.indexOf("-");
+  const prefix = dash === -1 ? stem : stem.slice(0, dash);
+  return /^[0-9A-Z]{10,}$/.test(prefix) ? prefix : null;
+}
+
+function loadJsonMap(path: string): Map<string, string> {
+  try {
+    const raw = JSON.parse(readFileSync(path, "utf8")) as Record<string, string>;
+    return new Map(Object.entries(raw));
+  } catch {
+    return new Map();
+  }
+}
+
+function addMapping(map: Map<string, string>, bId: string, zetaId: string, source: string): void {
+  const existing = map.get(bId);
+  if (existing && existing !== zetaId) {
+    if (VERBOSE) console.warn(`  conflict ${bId}: keep ${existing}, skip ${zetaId} (${source})`);
+    return;
+  }
+  map.set(bId, zetaId);
+}
+
+function fromGitRenames(map: Map<string, string>): void {
+  const commits = git(["log", "--all", "--oneline", "--grep=zetaid-slug", "--format=%H"]).split("\n").filter(Boolean);
+  for (const commit of commits) {
+    const ns = git(["show", commit, "--name-status", "--format="]);
+    for (const line of ns.split("\n")) {
+      if (!line.startsWith("R")) continue;
+      const parts = line.split("\t");
+      if (parts.length < 3) continue;
+      const [, oldPath, newPath] = parts;
+      const m = oldPath!.match(/\/B-([0-9]{4}(?:\.[0-9]+)*)-/);
+      if (!m) continue;
+      const bId = `B-${m[1]}`;
+      const zeta = zetaFromFilename(newPath!);
+      if (zeta) addMapping(map, bId, zeta, `rename ${commit.slice(0, 8)}`);
+    }
+  }
+}
+
+function fromPreMigrationFrontmatter(map: Map<string, string>, commit: string): void {
+  for (const tier of ["P0", "P1", "P2", "P3"]) {
+    const files = git(["ls-tree", "-r", "--name-only", commit, `docs/backlog/${tier}`]).split("\n").filter((f) => f.endsWith(".md"));
+    for (const file of files) {
+      const content = git(["show", `${commit}:${file}`]);
+      if (!content) continue;
+      const idM = content.match(/^id:\s*(\S+)/m);
+      const zM = content.match(/^zetaid:\s*(\S+)/m);
+      if (idM?.[1]?.startsWith("B-") && zM?.[1]) {
+        addMapping(map, idM[1], zM[1], `frontmatter ${file}`);
+      }
+    }
+  }
+}
+
+function fromGitHistory(map: Map<string, string>, bId: string): void {
+  if (map.has(bId)) return;
+  const commits = git(["log", "--all", "-S", `id: ${bId}`, "--format=%H", "--", "docs/backlog"]).split("\n").filter(Boolean);
+  for (const commit of commits.slice(0, 5)) {
+    const hits = git(["grep", "-l", `^id: ${bId}$`, commit, "--", "docs/backlog"]).split("\n").filter(Boolean);
+    for (const hit of hits) {
+      const file = hit.split(":").slice(1).join(":");
+      const content = git(["show", `${commit}:${file}`]);
+      if (!content) continue;
+      const zM = content.match(/^zetaid:\s*(\S+)/m);
+      if (zM?.[1]) {
+        addMapping(map, bId, zM[1], `history zetaid ${file}`);
+        return;
+      }
+      const zeta = zetaFromFilename(file);
+      if (zeta) {
+        addMapping(map, bId, zeta, `history filename ${file}`);
+        return;
+      }
+      const created = content.match(/^created:\s*(\S+)/m)?.[1] ?? null;
+      addMapping(map, bId, legacyZetaIdFromBId(bId, timestampForLegacyBId(bId, created)), `history synthetic ${file}`);
+      return;
+    }
+  }
+}
+
+function inheritSubItems(map: Map<string, string>): void {
+  for (const bId of [...map.keys()]) {
+    if (!bId.includes(".")) continue;
+    let cur: string | null = bId;
+    while (cur && !map.has(cur)) cur = parentBId(cur);
+    if (cur && map.has(cur) && !map.has(bId)) map.set(bId, map.get(cur)!);
+  }
+}
+
+function scanRemainingBIds(): Set<string> {
+  const found = new Set<string>();
+  function walk(dir: string) {
+    for (const entry of readdirSync(dir)) {
+      if (entry === "node_modules" || entry === ".git") continue;
+      const full = join(dir, entry);
+      let st;
+      try { st = statSync(full); } catch { continue; }
+      if (st.isDirectory()) walk(full);
+      else if (APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf(".")))) {
+        if (SKIP_FILES.has(entry)) continue;
+        const text = readFileSync(full, "utf8");
+        for (const m of text.matchAll(B_ID_RE)) found.add(m[1]!);
+      }
+    }
+  }
+  walk(REPO_ROOT);
+  return found;
+}
+
+function replaceReferences(content: string, map: Map<string, string>): string {
+  const keys = [...map.keys()].sort((a, b) => b.length - a.length);
+  let result = content;
+  for (const bId of keys) {
+    const zetaId = map.get(bId)!;
+    const escaped = bId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    result = result.replace(new RegExp(`\\b${escaped}\\b`, "g"), zetaId);
+  }
+  return result;
+}
+
+function cleanFrontmatter(content: string): string {
+  const lines = content.split("\n");
+  if (lines[0] !== "---") return content;
+  const endIdx = lines.indexOf("---", 1);
+  if (endIdx === -1) return content;
+  const fm = lines.slice(1, endIdx);
+  const cleaned: string[] = [];
+  let hasZetaId = false;
+  let dropped = false;
+  for (const line of fm) {
+    if (/^id:\s*[0-9A-Z]{10,}/.test(line) && fm.some((l) => /^zetaid:/.test(l))) {
+      dropped = true;
+      continue;
+    }
+    if (/^zetaid:\s*/.test(line)) {
+      hasZetaId = true;
+      cleaned.push(line.replace(/^zetaid:/, "id:"));
+      continue;
+    }
+    cleaned.push(line);
+  }
+  if (!hasZetaId && !dropped) return content;
+  return ["---", ...cleaned, "---", ...lines.slice(endIdx + 1)].join("\n");
+}
+
+// --- main ---
+const map = loadJsonMap(MAP_PATH);
+fromGitRenames(map);
+fromPreMigrationFrontmatter(map, "28c8c867d");
+for (const [bId, zetaId] of loadJsonMap(MANUAL_PATH)) addMapping(map, bId, zetaId, "manual");
+
+const remaining = scanRemainingBIds();
+for (const bId of remaining) {
+  if (!map.has(bId)) fromGitHistory(map, bId);
+}
+for (const bId of remaining) {
+  if (!map.has(bId)) {
+    addMapping(map, bId, legacyZetaIdFromBId(bId, timestampForLegacyBId(bId, null)), "synthetic fallback");
+  }
+}
+inheritSubItems(map);
+
+const sorted = Object.fromEntries([...map.entries()].sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })));
+if (!DRY_RUN) {
+  writeFileSync(MAP_PATH, `${JSON.stringify(sorted, null, 2)}\n`);
+}
+console.log(`Alias map: ${Object.keys(sorted).length} entries (${remaining.size} unique B-ids seen in repo)`);
+
+let changed = 0;
+function applyWalk(dir: string) {
+  for (const entry of readdirSync(dir)) {
+    if (entry === "node_modules" || entry === ".git") continue;
+    const full = join(dir, entry);
+    let st;
+    try { st = statSync(full); } catch { continue; }
+    if (st.isDirectory()) applyWalk(full);
+    else if (APPLY_EXTENSIONS.has(entry.slice(entry.lastIndexOf("."))) && !SKIP_FILES.has(entry)) {
+      const original = readFileSync(full, "utf8");
+      let modified = replaceReferences(original, map);
+      if (full.includes("docs/backlog/") && entry.endsWith(".md")) modified = cleanFrontmatter(modified);
+      if (modified !== original) {
+        changed++;
+        if (!DRY_RUN) writeFileSync(full, modified);
+      }
+    }
+  }
+}
+applyWalk(REPO_ROOT);
+
+console.log(`${DRY_RUN ? "[DRY RUN] Would change" : "Changed"}: ${changed} files`);
+const still = scanRemainingBIds().size;
+console.log(`Remaining B-ids in repo (excl. skip files): ${still}`);
+if (still > 0 && VERBOSE) {
+  for (const b of [...scanRemainingBIds()].slice(0, 20)) console.log(`  ${b}`);
+}

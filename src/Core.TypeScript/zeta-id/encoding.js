@@ -1,4 +1,4 @@
-// encoding.ts — ZetaId canonical string encoding (B-0682).
+// encoding.ts — ZetaId canonical string encoding (081KS3X9Y0008QG0R000W00V73).
 //
 // Two canonical, big-endian (MSB-first) string forms for the 128-bit ZetaId:
 //
@@ -6,8 +6,8 @@
 //   • Hex — 32 chars, lowercase, zero-padded (`toHex`/`fromHex`), matching the
 //     existing cross-verify convention (`packed.toString(16).padStart(32,"0")`).
 //
-// Why Crockford base32 is the filename form (B-0682 §1, Aaron's deployment context
-// "ZetaId is used in git filenames first"; the B-0956 decision `workitems/<zetaid>-<desc>.md`):
+// Why Crockford base32 is the filename form (081KS3X9Y0008QG0R000W00V73 §1, Aaron's deployment context
+// "ZetaId is used in git filenames first"; the 081KSXN940008QG0R002FWR9B2 decision `workitems/<zetaid>-<desc>.md`):
 //
 //   1. FILENAME-SAFE — alphabet is [0-9 A-Z] minus the ambiguous I,L,O,U. No `/`,
 //      no `+`, no case-fold collision (we always emit one canonical case →
@@ -23,8 +23,8 @@
 // ULID uses Crockford base32 for exactly these reasons. Endianness: BIG-ENDIAN
 // (network byte order) — most-significant 5 bits first. Bit-numbering: LSB-0
 // internally (bit 0 = least significant), consistent with zeta-id.ts; the string
-// is emitted MSB-first regardless. Cross-language implementations (Rust B-0679,
-// Python B-0680) must match these vectors exactly — see CANONICAL_VECTORS in the
+// is emitted MSB-first regardless. Cross-language implementations (Rust 081KS3X9Y0008QG0R001Z8SBZJ,
+// Python 081KS3X9Y0008QG0R002WGH8PJ) must match these vectors exactly — see CANONICAL_VECTORS in the
 // test + the cross-verify fixture.
 /** Crockford base32 alphabet — excludes I, L, O, U (ambiguity). ASCII-ascending
  *  ⇒ fixed-width string sort preserves numeric order. */

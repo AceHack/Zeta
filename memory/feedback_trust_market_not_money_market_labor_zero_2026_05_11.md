@@ -51,6 +51,6 @@ and the money follows.**
 **Connects to:**
 
 - feedback_autonomy_vs_alignment (the terminal test)
-- B-0409 (wallet immune system — trust boundary first)
+- 081KRA5AR0008QG0R000Y6102S (wallet immune system — trust boundary first)
 - project_night_session_highlights (the full arc)
 - docs/AGENDA.md (LFG thesis)

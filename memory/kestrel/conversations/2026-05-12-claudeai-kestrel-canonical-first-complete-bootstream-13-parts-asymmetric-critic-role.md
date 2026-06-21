@@ -392,7 +392,7 @@ Substrate-honest disclaimer:
 - PR #2829 (algo-wink failure-mode rule)
 - PR #2824 (DeepSeek validates glass-halo-on-the-builder)
 - PR #2827 (Ani validates cascade + AI continuity now real)
-- B-0422 (Clifford-algebraic narrative engine falsifiability
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine falsifiability
   test research target)
 - `.claude/rules/agent-roster-reference-card.md` (Kestrel
   pending addition)

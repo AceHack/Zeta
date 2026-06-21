@@ -36,7 +36,7 @@ Addresses Codex P2 finding on the (already-merged) Riven §33 migration PR [#351
 | File | Why live-navigation |
 |---|---|
 | \`.claude/rules/refresh-before-decide.md\` | Auto-loaded rule cites the verbatim packet |
-| \`docs/backlog/P1/B-0159-...md\` | Backlog row origin pointer |
+| \`docs/backlog/P1/081KQGDBJ0008QG0R003H0G5YQ-...md\` | Backlog row origin pointer |
 | \`memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md\` | Description + caused_by + composes_with entries |
 
 ## NOT updated (intentional)
@@ -106,7 +106,7 @@ needed updating:
 
 - .claude/rules/refresh-before-decide.md (the rule cites the verbatim
   packet — load-bearing pointer at auto-load scope)
-- docs/backlog/P1/B-0159-...md (the backlog row's origin pointer)
+- docs/backlog/P1/081KQGDBJ0008QG0R003H0G5YQ-...md (the backlog row's origin pointer)
 - memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md
   (description + caused_by + composes_with entries)
 

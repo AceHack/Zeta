@@ -1,6 +1,5 @@
 ---
-id: B-0364
-zetaid: 081KR50HA0008QG0R00096ZEYA
+id: 081KR50HA0008QG0R00096ZEYA
 priority: P1
 status: claimed
 title: "Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries"
@@ -15,7 +14,7 @@ type: feature
 tags: [dbsp, caspaxos, policy, relocation, fscheck, formal-verification]
 ---
 
-# B-0364 — Policy relocation semantic preservation
+# 081KR50HA0008QG0R00096ZEYA — Policy relocation semantic preservation
 
 ## What
 
@@ -63,8 +62,8 @@ reintegration.
 
 ## Composes with
 
-- B-0357 (Z3 proof replacement — same proof-quality axis)
-- B-0360 (DBSP identity continuity)
-- B-0361 (anchor to human lineage — CSP trace equivalence)
+- 081KR50HA0008QG0R0033TN4H9 (Z3 proof replacement — same proof-quality axis)
+- 081KR50HA0008QG0R0010RZTJK (DBSP identity continuity)
+- 081KR50HA0008QG0R001G4QHQF (anchor to human lineage — CSP trace equivalence)
 - Confucius-unroll discipline (one primitive, one shape, one property)
 - Framing discipline (different capability, not "ahead of")

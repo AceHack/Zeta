@@ -1,6 +1,5 @@
 ---
-id: B-0955
-zetaid: 081KSXN940008QG0R002KEJ7C2
+id: 081KSXN940008QG0R002KEJ7C2
 title: Migrate tools/ production code off Bun-only APIs to node:/process equivalents — honor the Node-safe-baseline policy (2026-04-20 tools-runtime ADR v6)
 status: open
 priority: P2
@@ -25,7 +24,7 @@ tags:
   - node-safe-baseline
 ---
 
-# B-0955 — Migrate `tools/` production code off Bun-only APIs (Node-safe baseline)
+# 081KSXN940008QG0R002KEJ7C2 — Migrate `tools/` production code off Bun-only APIs (Node-safe baseline)
 
 ## Context
 
@@ -95,9 +94,9 @@ Current API breakdown (2026-05-31): `Bun.spawn` (29 — **mostly `*.test.ts`**),
 
 - **Per-tool, not big-bang.** Each migrated tool is its own small PR (or batched by
   API-class), verified tsc+eslint+test green.
-- **`tools/agent-bus/` (B-0954, #6283 — landed) is the reference**: the first tool authored
+- **`tools/agent-bus/` (081KSXN940008QG0R00171YAZW, #6283 — landed) is the reference**: the first tool authored
   to the new convention (`node:` builtins + `import.meta.main` CLIs that run on Node 24.2+).
-- May decompose into per-API-class sub-rows (`B-0955.1` argv, `.2` file/write, `.3`
+- May decompose into per-API-class sub-rows (`081KSXN940008QG0R002KEJ7C2.1` argv, `.2` file/write, `.3`
   spawn, …) if the team prefers finer tracking.
 
 ## Composes with
@@ -105,7 +104,7 @@ Current API breakdown (2026-05-31): `Bun.spawn` (29 — **mostly `*.test.ts`**),
 - the 2026-04-20 tools-runtime ADR **v6 addendum** (PR #6293) — the policy this executes
 - `.claude/rules/rule-0-no-sh-files.md` — the carved sentence the ADR proposes amending
 - `.claude/rules/dep-pin-search-first-authority.md` + "pin only slow-movers" — Node is the slow-mover baseline; Bun the fast-mover accelerator
-- B-0954 (agent-bus) — the landed reference tool
-- B-0076 (disowned-runtime sweep, python/TS) — sibling runtime-hygiene sweep
-- B-0805 (all-deps current-version sweep) — adjacent dep-hygiene
+- 081KSXN940008QG0R00171YAZW (agent-bus) — the landed reference tool
+- 081KQ8P5D0008QG0R003G61V9V (disowned-runtime sweep, python/TS) — sibling runtime-hygiene sweep
+- 081KSGS9H0008QG0R002BC2ZR7 (all-deps current-version sweep) — adjacent dep-hygiene
 - #6290 (mise node 22→24, node-everywhere pin — landed)

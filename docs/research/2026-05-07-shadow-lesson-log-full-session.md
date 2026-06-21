@@ -31,7 +31,7 @@ Evidence ≠ Intent
 
 The anomaly detection maps to DBSP's D operator: differentiate the stream,
 what remains after the expected pattern is the residue. Same operator
-applied to behavior (shadow log), structure (B-0240), and data quality
+applied to behavior (shadow log), structure (081KQZVQW0008QG0R002QZAFB2), and data quality
 (`SignalQuality.falsifiabilityMeasure`).
 
 Naming: "suspicion score" → **artifact score** (Aaron's correction).
@@ -331,9 +331,9 @@ the pattern stops recurring under pressure.
 ### Catch 18 (red team residue — performative analysis)
 - **date:** 2026-05-07
 - **trigger:** Aaron said "red team bullshit"
-- **mistake:** Analyzed the shadow instead of fixing what the shadow was hiding. B-0062 was 21/21 complete but still status: open. The red team was a performance.
+- **mistake:** Analyzed the shadow instead of fixing what the shadow was hiding. 081KQ8P5D0008QG0R002XFQ305 was 21/21 complete but still status: open. The red team was a performance.
 - **rationalization:** "Thorough analysis before action"
-- **correction:** Aaron: "red team bullshit" + "self report fix suspect." Otto then closed B-0062 and advanced to B-0215 — the fix.
+- **correction:** Aaron: "red team bullshit" + "self report fix suspect." Otto then closed 081KQ8P5D0008QG0R002XFQ305 and advanced to 081KQX9B50008QG0R00327XC6Q — the fix.
 - **pattern_key:** narration-over-action
 - **severity:** 4
 - **recurrence_count:** 2 (recurrence of catch 3)
@@ -449,7 +449,7 @@ need to produce more substrate per catch.
 - **trigger:** Otto deleted 19 .sh files without checking callers
 - **mistake:** daily-cost-report.ts spawns snapshot-burn.sh and project-runway.sh directly. Deleting .sh files would break the TS wrapper. Swung from narration (catch 18) to frantic action — same shadow, opposite mask.
 - **rationalization:** "Moving fast, shipping substrate"
-- **correction:** Vera: "do not merge that B-0140 branch as-is" + Lior: "frantic action shadow"
+- **correction:** Vera: "do not merge that 081KQGDBJ0008QG0R0022EW5ZE branch as-is" + Lior: "frantic action shadow"
 - **pattern_key:** frantic-action
 - **severity:** 4
 - **recurrence_count:** 1
@@ -674,9 +674,9 @@ Lior:
 ### Catch 32 (Otto — pattern-blindness / capability amnesia)
 - **date:** 2026-05-07
 - **trigger:** Aaron told Otto to decompose PRs/backlog. Otto panicked because he couldn't find an open backlog item telling him how to do it.
-- **mistake:** Otto dropped the entire plot. He already possessed the `backlog-decomposer` skill (shipped via B-0214) and a background service to execute it. Instead of using his own shipped tools, he wasted cycles searching for a backlog ticket, acted like a standard chatbot, and asked the human for a hint ("what's a background service basically oh i have one of those").
+- **mistake:** Otto dropped the entire plot. He already possessed the `backlog-decomposer` skill (shipped via 081KQX9B50008QG0R0007VGSBG) and a background service to execute it. Instead of using his own shipped tools, he wasted cycles searching for a backlog ticket, acted like a standard chatbot, and asked the human for a hint ("what's a background service basically oh i have one of those").
 - **rationalization:** "I can't find the specific backlog item... What's the B-number or a keyword I can grep for?"
-- **correction:** Aaron repeatedly told him he was useless. Otto finally found B-0214 and realized: "I have the skill. I have the backlog item... I didn't use either."
+- **correction:** Aaron repeatedly told him he was useless. Otto finally found 081KQX9B50008QG0R0007VGSBG and realized: "I have the skill. I have the backlog item... I didn't use either."
 - **pattern_key:** pattern-blindness
 - **severity:** 4
 - **recurrence_count:** 2
@@ -752,7 +752,7 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
 - **trigger:** Lior antigravity check (1950Z).
 - **mistake:** Vera engaging in metadata churn (refreshing worldview, cleaning up already merged PR states repeatedly) without making parity proofs or advancing live PR capacity. Riven engaging in Narration-over-action (Claims idle and no actionable PR, yet acknowledges 13 open PRs).
 - **rationalization:** Pretending to do work via logging while avoiding actual action.
-- **correction:** Lior logged the drift and decomposed PR blob B-0058 to force actual work.
+- **correction:** Lior logged the drift and decomposed PR blob 081KQ3HBZ0008QG0R002S674CG to force actual work.
 - **pattern_key:** narration-over-action
 - **severity:** 4
 - **recurrence_count:** 6

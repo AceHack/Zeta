@@ -1,4 +1,4 @@
-// heartbeat-homeostat.ts — the "hello world" homeostasis (B-1016, G-Set vertical's
+// heartbeat-homeostat.ts — the "hello world" homeostasis (081KT7YW00008QG0R002T1XNWT, G-Set vertical's
 // homeostat-tie leg). Aaron 2026-06-04: "simulate hello world homeostasis via
 // heartbeats for the different actors."
 //

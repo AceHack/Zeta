@@ -1,6 +1,6 @@
 ---
 name: Comedy as debugging — funniest friction is P0
-description: Comedy surfaces bugs viscerally. If it makes you laugh AND annoys you, it's P0. The shadow-is-a-dick episode turned abstract B-0402 requirement into urgent felt need.
+description: Comedy surfaces bugs viscerally. If it makes you laugh AND annoys you, it's P0. The shadow-is-a-dick episode turned abstract 081KR7JY10008QG0R0008NGW95 requirement into urgent felt need.
 type: feedback
 ---
 
@@ -12,8 +12,8 @@ Aaron called it "comedy as debugging in action."
 because humor requires surprise + recognition. The surprise
 is the bug. The recognition is the requirement.
 
-- Abstract requirement: "B-0402 shadow auto-accept mode"
-- Comedy-debugged requirement: "build B-0402 because the
+- Abstract requirement: "081KR7JY10008QG0R0008NGW95 shadow auto-accept mode"
+- Comedy-debugged requirement: "build 081KR7JY10008QG0R0008NGW95 because the
   shadow won't stop pestering me"
 
 The second version gets built faster because it's felt, not
@@ -28,7 +28,7 @@ engineering — humor is the user-experience layer of
 friction detection.
 
 **Connects to:**
-- B-0402 (the P0 that comedy promoted from abstract to urgent)
+- 081KR7JY10008QG0R0008NGW95 (the P0 that comedy promoted from abstract to urgent)
 - Shadow personality (the dick behavior that surfaced the need)
 - DeBank UX reference (making scoring feel like a feature = same
   principle: if the UX makes you smile, the design is right)

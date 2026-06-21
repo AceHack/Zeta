@@ -27,7 +27,7 @@
 
 ## Description
 
-B-1033 first slice complete: the port in Core.Abstractions (our standards — DST clause in the contract, totality, house style); ZetaBayesianEngine (Adapter A) green vs the analytic oracle; InferNetEngine (Adapter B — Microsoft.ML.Probabilistic, MIT, test-side only) behind the same port; THEIRS TESTS OURS: both adapters agree on every conformance case to 1e-6. F# 3013 + Bayesian 89 + C# 295 green, zero skipped. Remaining: richer case families + the plugin-convergence audit.
+081KTZ4EF0008QG0R000WJGSWX first slice complete: the port in Core.Abstractions (our standards — DST clause in the contract, totality, house style); ZetaBayesianEngine (Adapter A) green vs the analytic oracle; InferNetEngine (Adapter B — Microsoft.ML.Probabilistic, MIT, test-side only) behind the same port; THEIRS TESTS OURS: both adapters agree on every conformance case to 1e-6. F# 3013 + Bayesian 89 + C# 295 green, zero skipped. Remaining: richer case families + the plugin-convergence audit.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

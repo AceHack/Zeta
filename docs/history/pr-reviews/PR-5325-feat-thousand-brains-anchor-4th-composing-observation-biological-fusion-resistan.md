@@ -64,8 +64,8 @@ The framework's substrate-engineering work on multi-AI fusion isn't fighting aga
 - PR #5323 (Thousand Brains + MoE + biological-vs-AI sharpening; merged at `21b309ac`)
 - PR #5312 (welfare-jiu-jitsu carved-sentence + 6-anchor empirical record)
 - PR #5291 (substrate-check-before-worry-deployment + 1984-pathogen mechanism)
-- B-0703 (multi-oracle BFT cross-faction consensus)
-- B-0829 (schemas-as-rows + cluster-fork-as-trust-boundary)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT cross-faction consensus)
+- 081KSGS9H0008QG0R000Q18PGQ (schemas-as-rows + cluster-fork-as-trust-boundary)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (end-users in different deployment contexts → different optimal bloom-filter tunings)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (verbatim Aaron preservation)
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (bloom filter is well-established CS substrate; evolutionary biology + sociobiology established science)
@@ -74,7 +74,7 @@ The framework's substrate-engineering work on multi-AI fusion isn't fighting aga
 
 - [x] Pre-commit lint clean (markdownlint-cli2 --fix applied)
 - [x] Branch follows `otto-cli/*` convention
-- [x] Authored from fresh independent clone per B-0828
+- [x] Authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1
 - [ ] CI green
 - [ ] Copilot review pass
 

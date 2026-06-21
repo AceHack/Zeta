@@ -1,6 +1,5 @@
 ---
-id: B-0423.4
-zetaid: 081KRFA460008QG0R0035NKRHG
+id: 081KRFA460008QG0R0035NKRHG
 priority: P1
 class: substrate-architecture
 status: closed
@@ -17,7 +16,7 @@ tier: factory-tooling
 authors: [otto]
 ---
 
-# B-0423.4 — Relax memory-index-integrity.yml CI check
+# 081KRFA460008QG0R0035NKRHG — Relax memory-index-integrity.yml CI check
 
 ## Carved sentence
 
@@ -31,27 +30,27 @@ authors: [otto]
 
 `memory-index-integrity.yml` currently exits 1 when a `memory/*.md`
 file is added or modified without a MEMORY.md paired edit in the same
-PR. This enforces the serialization point that B-0423 is removing.
+PR. This enforces the serialization point that 081KRCQQF0008QG0R0037YYP1A is removing.
 
-The new contract after B-0423 lands:
+The new contract after 081KRCQQF0008QG0R0037YYP1A lands:
 
 - **Required:** New memory files have valid frontmatter (`name:`,
   `description:`, `type:`, `created:` fields).
 - **Not required:** Synchronous MEMORY.md paired edit.
 - **Instead:** MEMORY.md is kept current by `tools/memory/reindex-memory-md.ts`
-  running on the autonomous-loop tick cadence (B-0423.3).
+  running on the autonomous-loop tick cadence (081KRFA460008QG0R0034C2W0E).
 
-**Dependency:** This slice must NOT land before B-0423.3 (loop wiring).
+**Dependency:** This slice must NOT land before 081KRFA460008QG0R0034C2W0E (loop wiring).
 Removing the CI gate without automatic reindexing leaves MEMORY.md
-permanently stale. B-0423.3 is the operational prerequisite.
+permanently stale. 081KRFA460008QG0R0034C2W0E is the operational prerequisite.
 
-**Relationship to B-0088:** B-0088 and its children (B-0088.1,
-B-0088.2, B-0088.3) asked whether to promote the paired-edit check
-to required status or weaken it. B-0423 answers this definitively:
+**Relationship to 081KQ8P5D0008QG0R002FSTGXP:** 081KQ8P5D0008QG0R002FSTGXP and its children (081KRA5AR0008QG0R000GZ8ECC,
+081KRA5AR0008QG0R0036JP9KM, 081KRA5AR0008QG0R002WVSEGW) asked whether to promote the paired-edit check
+to required status or weaken it. 081KRCQQF0008QG0R0037YYP1A answers this definitively:
 the synchronous paired-edit architecture is wrong; this slice replaces
-it with frontmatter validation. B-0088.2's "Option B (weaken)" is
+it with frontmatter validation. 081KRA5AR0008QG0R0036JP9KM's "Option B (weaken)" is
 effectively implemented here, with a stronger architectural rationale.
-Mark B-0088 and children as superseded by B-0423.4 in the commit.
+Mark 081KQ8P5D0008QG0R002FSTGXP and children as superseded by 081KRFA460008QG0R0035NKRHG in the commit.
 
 ## Acceptance criteria
 
@@ -95,32 +94,32 @@ Required fields: name, description, type, created.
 The reindexer (tools/memory/reindex-memory-md.ts) requires these
 fields to index the file into MEMORY.md on cadence. Fix the
 frontmatter before merging.
-See B-0423: docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
+See 081KRCQQF0008QG0R0037YYP1A: docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md
 ```
 
-### Mark B-0088 chain as superseded
+### Mark 081KQ8P5D0008QG0R002FSTGXP chain as superseded
 
-In the same PR, add to B-0088:
+In the same PR, add to 081KQ8P5D0008QG0R002FSTGXP:
 ```
-superseded_by: B-0423.4
+superseded_by: 081KRFA460008QG0R0035NKRHG
 resolved: 2026-05-13
 ```
 
-And add a note to B-0088.2:
+And add a note to 081KRA5AR0008QG0R0036JP9KM:
 ```
-resolved_by: B-0423.4 (Option B implemented via heap architecture, stronger fix)
+resolved_by: 081KRFA460008QG0R0035NKRHG (Option B implemented via heap architecture, stronger fix)
 ```
 
 ## Why P1 (not P0)
 
 This is the core architectural change. However, the serialization
-point's friction is manageable until B-0423.3 (loop wiring) lands.
+point's friction is manageable until 081KRFA460008QG0R0034C2W0E (loop wiring) lands.
 P0 would be appropriate if the serialization point were causing
 factory-blocking failures; currently it produces rebase grind (P1).
 
-Ordering constraint: this row MUST land after B-0423.3 in the merge
+Ordering constraint: this row MUST land after 081KRFA460008QG0R0034C2W0E in the merge
 sequence. The PR for this slice should include a `depends_on:
-[B-0423.1, B-0423.3]` check — only merge after those PRs are green
+[081KRFA460008QG0R0006Q6BWP, 081KRFA460008QG0R0034C2W0E]` check — only merge after those PRs are green
 on main.
 
 ## Implementation notes
@@ -149,9 +148,9 @@ This keeps the workflow fast and avoids adding the bun install step.
 
 ## Composes with
 
-- B-0423 (parent; this is slice 4 of 5)
-- B-0423.1 (test coverage must exist before this lands)
-- B-0423.2 (documentation should describe the new contract)
-- B-0423.3 (loop wiring MUST land before this slice)
-- B-0088 (superseded by this slice)
-- B-0088.2 (Option B is this slice's implementation)
+- 081KRCQQF0008QG0R0037YYP1A (parent; this is slice 4 of 5)
+- 081KRFA460008QG0R0006Q6BWP (test coverage must exist before this lands)
+- 081KRFA460008QG0R000YPS21H (documentation should describe the new contract)
+- 081KRFA460008QG0R0034C2W0E (loop wiring MUST land before this slice)
+- 081KQ8P5D0008QG0R002FSTGXP (superseded by this slice)
+- 081KRA5AR0008QG0R0036JP9KM (Option B is this slice's implementation)

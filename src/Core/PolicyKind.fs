@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// # Policy KINDS + the validator-obligation, compiled into the type (B-1017 #6)
+/// # Policy KINDS + the validator-obligation, compiled into the type (081KT7YW00008QG0R003N6PF8A #6)
 ///
 /// Kestrel's blade (2026-06-04): policies are THREE kinds wearing one name, and each
 /// is gated by a DIFFERENT validator. The type tag is a **router, not a validator** —
@@ -18,7 +18,7 @@ namespace Zeta.Core
 /// validator. So "active-without-the-right-sign-off" is UNREACHABLE by construction —
 /// the wiring property Kestrel wanted verified, enforced at the type level (and a
 /// deeper TLA+ reachability proof of the full gate/observable/metric/alert bundle is
-/// the B-1017 #7 follow-on; this is the structural floor it builds on).
+/// the 081KT7YW00008QG0R003N6PF8A #7 follow-on; this is the structural floor it builds on).
 ///
 /// Discipline (Amara + Aaron): minimal + select-not-mutate. This module decides
 /// *whether a policy may be active* and *who must sign*; it never performs the policy's

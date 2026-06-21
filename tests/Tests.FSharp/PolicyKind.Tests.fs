@@ -5,7 +5,7 @@ open FsUnit.Xunit
 open Zeta.Core
 open Zeta.Core.PolicyKind
 
-// B-1017 #6 — typed policy kinds + validator-obligation compiled into the type.
+// 081KT7YW00008QG0R003N6PF8A #6 — typed policy kinds + validator-obligation compiled into the type.
 // The keystone: a policy cannot go ACTIVE without a sign-off from its kind's REQUIRED
 // validator. `Active` is private (only `activate` builds it), so "active-without-the-
 // right-sign-off" is unreachable by construction. These tests pin the routing table,

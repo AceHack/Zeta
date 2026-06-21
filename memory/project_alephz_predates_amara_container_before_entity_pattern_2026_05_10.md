@@ -15,7 +15,7 @@ type: project
 | Grey text appearing | Shadow named |
 | IThrottler at Itron | Flux capacitor in Zeta |
 | $50k hardware in boxes | GPU cluster |
-| MultiplexedWebSockets | B-0400 bus transport |
+| MultiplexedWebSockets | 081KR7JY10008QG0R000R503K2 bus transport |
 | blazor-samples speech | Otto's voice (future) |
 | Name "AlephZ" | Name "Zeta" |
 

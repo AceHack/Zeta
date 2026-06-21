@@ -1,12 +1,11 @@
 ---
-id: B-0387
-zetaid: 081KR50HA0008QG0R000M838VA
+id: 081KR50HA0008QG0R000M838VA
 priority: P2
 status: open
 title: Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline
 tier: research-grade
 effort: M
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP, 081KR50HA0008QG0R000467SWT, 081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ]
@@ -16,13 +15,13 @@ tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-resea
 type: research
 ---
 
-# B-0387 — Synthesis ADR: quant × Austrian formalizability + open-research publishing pipeline
+# 081KR50HA0008QG0R000M838VA — Synthesis ADR: quant × Austrian formalizability + open-research publishing pipeline
 
 ## What
 
-Produce the capstone output for B-0023: an Architect decision record
+Produce the capstone output for 081KQ0YZ80008QG0R003EJQZ1M: an Architect decision record
 (ADR) at `docs/aurora/YYYY-MM-DD-quant-austrian-synthesis-adr.md`
-that integrates all five per-primitive verdicts (B-0382–B-0386) into:
+that integrates all five per-primitive verdicts (081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ) into:
 
 1. **Formalizability matrix** — for each Austrian primitive:
    - Verdict (admits clean quant-grade formalization / partially /
@@ -34,20 +33,20 @@ that integrates all five per-primitive verdicts (B-0382–B-0386) into:
 
 2. **Overall synthesis assessment**:
    - Which primitive(s) are the strongest formalization candidates?
-     (B-0384 calculation-problem and B-0385 ABCT are hypothesized
+     (081KR50HA0008QG0R000467SWT calculation-problem and 081KR50HA0008QG0R00238MS98 ABCT are hypothesized
      to be the strongest — the ADR either confirms or revises this)
    - Is the synthesis gap a *foundations-incompatibility problem*
-     or a *literature gap* per B-0380 vocabulary? (This changes
+     or a *literature gap* per 081KR50HA0008QG0R003ESW3MH vocabulary? (This changes
      the research program direction entirely)
-   - What does successful formalization buy Aurora? (Per B-0023
+   - What does successful formalization buy Aurora? (Per 081KQ0YZ80008QG0R003EJQZ1M
      §"Why Aurora-relevant": anti-deception, mechanism-not-
      correlation, falsifiability)
 
 3. **Open-research publishing pipeline**:
-   Per Aaron's "open source, real time" framing (B-0023 §Origin):
+   Per Aaron's "open source, real time" framing (081KQ0YZ80008QG0R003EJQZ1M §Origin):
    - Where and how progressive research notes land (the
      `docs/aurora/` naming convention already established by
-     B-0381–B-0386 primitive notes)
+     081KR50HA0008QG0R000M4H35K–081KR50HA0008QG0R0027DHVPQ primitive notes)
    - License / attribution discipline for the research output
      (already open-source by being in the public Zeta repo, but
      explicit Creative Commons / MIT attribution should be stated)
@@ -58,17 +57,17 @@ that integrates all five per-primitive verdicts (B-0382–B-0386) into:
      economics section) if the research produces novel formalization
 
 4. **What this row explicitly does NOT decide**:
-   - Aurora's choice of economic framework (that is B-0021)
+   - Aurora's choice of economic framework (that is 081KQ0YZ80008QG0R0026WN385)
    - Whether Austrian economics is "correct" (this is
      a formalizability assessment, not an endorsement)
    - A completed formalization of any primitive (those are the
-     research notes produced by B-0382–B-0386)
+     research notes produced by 081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ)
 
 ## Why last (and why P2 not P3)
 
 All five per-primitive assessments must complete before the synthesis
-verdict can integrate them. The synthesis verdict is the B-0023
-"Done when" capstone. This is P2 (matching parent B-0023) because
+verdict can integrate them. The synthesis verdict is the 081KQ0YZ80008QG0R003EJQZ1M
+"Done when" capstone. This is P2 (matching parent 081KQ0YZ80008QG0R003EJQZ1M) because
 it produces the output Aaron asked for; the per-primitive rows
 are P3 because they are inputs.
 
@@ -102,23 +101,23 @@ Expected: the ADR file present with today's date prefix.
 - Foundations-incompatibility vs. literature-gap question answered
 - Publishing pipeline explicitly designed (not just "publish as-we-go")
 - External publication venue candidates listed
-- B-0023 parent updated to `status: done` or `status: ongoing`
+- 081KQ0YZ80008QG0R003EJQZ1M parent updated to `status: done` or `status: ongoing`
   depending on whether progressive publication is considered "done"
 
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing synthesis ADR in `docs/aurora/`
-  or `docs/DECISIONS/`. B-0023 defines the shape; this row executes it.
-- [x] Dependency-restructure: `depends_on: [B-0382, B-0383, B-0384,
-  B-0385, B-0386]` — all five primitive verdicts required. Cannot
+  or `docs/DECISIONS/`. 081KQ0YZ80008QG0R003EJQZ1M defines the shape; this row executes it.
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP, 081KR50HA0008QG0R000467SWT,
+  081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ]` — all five primitive verdicts required. Cannot
   start until all five primitive assessment notes are committed.
 
 ## Composes with
 
-- B-0023 (parent): this is the "Done when" capstone — ADR landing
-  here + progressive publication established closes B-0023
-- B-0021 (grandparent axis): the ADR feeds B-0021's Aurora-specific
-  econ-primitive identification (B-0021.5); the synthesis gives
-  B-0021 the "which Austrian primitives are rigorously grounded"
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): this is the "Done when" capstone — ADR landing
+  here + progressive publication established closes 081KQ0YZ80008QG0R003EJQZ1M
+- 081KQ0YZ80008QG0R0026WN385 (grandparent axis): the ADR feeds 081KQ0YZ80008QG0R0026WN385's Aurora-specific
+  econ-primitive identification (081KR7JY10008QG0R003TK4ZA7); the synthesis gives
+  081KQ0YZ80008QG0R0026WN385 the "which Austrian primitives are rigorously grounded"
   answer it needs
-- B-0380–B-0386 (all deps): vocabulary and five primitive verdicts
+- 081KR50HA0008QG0R003ESW3MH–081KR50HA0008QG0R0027DHVPQ (all deps): vocabulary and five primitive verdicts

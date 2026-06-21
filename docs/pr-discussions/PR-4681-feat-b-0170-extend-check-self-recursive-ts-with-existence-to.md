@@ -1,6 +1,6 @@
 ---
 pr_number: 4681
-title: "feat(B-0170): extend check-self-recursive.ts with `existence` topic (v0.9.1)"
+title: "feat(081KQNJ500008QG0R003SCWBDV): extend check-self-recursive.ts with `existence` topic (v0.9.1)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-22T21:49:59Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-22T22:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4681: feat(B-0170): extend check-self-recursive.ts with `existence` topic (v0.9.1)
+# PR #4681: feat(081KQNJ500008QG0R003SCWBDV): extend check-self-recursive.ts with `existence` topic (v0.9.1)
 
 ## PR description
 
 ## Summary
 
-Smallest safe slice of [B-0170](../blob/main/docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md): extend `check-self-recursive.ts` to dispatch a second topic (`existence`), cashing the README v0.9.0 promise that *"Adding additional topics (existence, path-forms, cross-surface, convention) is a 1-line dispatch each"*. No new file, no architecture change.
+Smallest safe slice of [081KQNJ500008QG0R003SCWBDV](../blob/main/docs/backlog/P1/081KQNJ500008QG0R003SCWBDV-substrate-claim-checker-ts-tool-aaron-2026-05-03.md): extend `check-self-recursive.ts` to dispatch a second topic (`existence`), cashing the README v0.9.0 promise that *"Adding additional topics (existence, path-forms, cross-surface, convention) is a 1-line dispatch each"*. No new file, no architecture change.
 
 **Operative-authorization**: aaron 2026-05-14: *"- **Devil-pole** (edge-runner drive): keep pushing, discover, go hard, never-be-idle"*.
 
@@ -37,7 +37,7 @@ Smallest safe slice of [B-0170](../blob/main/docs/backlog/P1/B-0170-substrate-cl
   - `checkFile` clean existence case (no path claims)
   - `checkFile` mixed dispatch emits findings for both topics
 - `tools/substrate-claim-checker/README.md` — version bump, supported-topics list, severity-treatment doc
-- `docs/backlog/P1/B-0170-...md` — `last_updated: 2026-05-22`; sub-class table row reflects `count + existence` shipped
+- `docs/backlog/P1/081KQNJ500008QG0R003SCWBDV-...md` — `last_updated: 2026-05-22`; sub-class table row reflects `count + existence` shipped
 
 ## Focused checks
 
@@ -54,14 +54,14 @@ Stays well within "exactly one bounded step":
 - One new topic case + tests + doc-bump
 - No new file
 - No architecture change
-- Remaining v1 sub-classes (semantic-equivalence, empirical-output) and remaining self-recursive topics (path-forms, cross-surface, convention) stay deferred per the B-0170 done-criteria
+- Remaining v1 sub-classes (semantic-equivalence, empirical-output) and remaining self-recursive topics (path-forms, cross-surface, convention) stay deferred per the 081KQNJ500008QG0R003SCWBDV done-criteria
 
 ## Composes with
 
 - `.claude/rules/skill-router-as-substrate-inventory.md` — extend existing substrate before authoring new; the check-self-recursive.ts dispatch was the substrate to extend
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` — Pure-git tier traversal during this session (GraphQL was 0/5000 at slice start; PR opened post-reset)
 - `.claude/rules/zeta-expected-branch.md` — `ZETA_EXPECTED_BRANCH` set + `git branch --show-current` guard before commit
-- B-0170 done-criteria item #1: each sub-class has at least one check-type. Count + existence now both routed through the self-recursive dispatch, narrowing the v1+ deficit
+- 081KQNJ500008QG0R003SCWBDV done-criteria item #1: each sub-class has at least one check-type. Count + existence now both routed through the self-recursive dispatch, narrowing the v1+ deficit
 
 ## Test plan
 

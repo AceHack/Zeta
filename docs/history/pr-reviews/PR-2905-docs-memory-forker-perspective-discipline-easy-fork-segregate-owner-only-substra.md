@@ -45,7 +45,7 @@ The forker-perspective audit reveals owner-only substrate (Aaron's first-party a
 
 ## Composes with
 
-- PR #2904 (B-0424 + B-0425 + honor-system license)
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 - PR #2903 (civsim forkable + mutual privacy)
 - PR #2902 (strategic encryption authority)
 - PR #2898 (six-layer encryption roadmap)

@@ -1,6 +1,5 @@
 ---
-id: B-0253
-zetaid: 081KQZVQW0008QG0R000W4B8KT
+id: 081KQZVQW0008QG0R000W4B8KT
 priority: P2
 status: open
 title: "Real-time inter-loop messaging via Orleans grains — replace turn-based broadcast files"
@@ -37,8 +36,8 @@ transparency, and real-time messaging.
 - Orleans grain = standing query subscriber (one per loop)
 - Orleans silo = BFT node
 - Grain-to-grain messaging = real-time, not file-based
-- Grain persistence = checkpoint store (B-0251)
-- Standing Rx queries (B-0250) compose as grain observers
+- Grain persistence = checkpoint store (081KQZVQW0008QG0R000PPQ3MH)
+- Standing Rx queries (081KQZVQW0008QG0R001FG05RZ) compose as grain observers
 
 ## Candidate atomic children
 

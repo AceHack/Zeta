@@ -36,7 +36,7 @@ The **horizontal** synthesis companion to the keystone ADR (#6302, the vertical)
 - **Algebra ladder** — G-Set / Bag / Z-set (free join-semilattice / commutative-monoid / abelian-group; grow-only / counts / retraction).
 - **World model** — `World = fold(initial, NextAction[])`; `simulate` = reducer; `fold` = projection; `replay` = trajectory (DST/time-travel). State is a projection of the log.
 - **Controller algebra** — `observe(World)→NextAction` → render the **4×4 / 16-slot** grammar (Navigate/Commit/Scope/Meta; tri-boolean per slot) → local-LLM composer picks → `simulate` → fold. **Freedom-always-in-menu = must-paired-with-can-exit** (free modes + `edit_grammar` rail-change; gate scales with maturity; measure-first). Channels-not-a-second-DU. Composer graded vs the deterministic oracle.
-- **Identity** — ZetaId keys every event; **incrementing IDs are a hidden consensus** → conflict-free; zero-trust falls out; **attest-don't-remember** custody (B-0634).
+- **Identity** — ZetaId keys every event; **incrementing IDs are a hidden consensus** → conflict-free; zero-trust falls out; **attest-don't-remember** custody (081KRW63S0008QG0R0022SFKPM).
 - **Observability** — metrics = **Bag-fold**; DORA = Bag-fold; git-native LGTM = views of the log (exact, time-travel, ray-traceable).
 - **Database** — event log → Rx-fold → incremental materialized views; git-native + F# backends.
 - **Keystone** — node-local folds; same algebra FPGA→policy; no-central-authority / consensus-as-gravity; Landauer-bounded.

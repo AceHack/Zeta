@@ -4,8 +4,8 @@ Status: active child packet
 Last refreshed: 2026-05-08
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
-`docs/backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
-and children B-0278 through B-0281.
+`docs/backlog/P0/081KQZVQW0008QG0R000C35RNY-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
+and children 081KR2E4K0008QG0R001GFXN05 through 081KR2E4K0008QG0R002FSPPQR.
 
 ## Why This Exists
 
@@ -32,27 +32,27 @@ packet.
 
 ## Recommended Next Action
 
-Next concrete action: finish the PR-publication executor path for B-0280.
+Next concrete action: finish the PR-publication executor path for 081KR2E4K0008QG0R0022RVRCZ.
 
 Use the already-landed selector and claim/worktree bootstrap as inputs, then
 wire the publication step so a selected backlog row becomes a pushed branch and
 reviewable PR without the maintainer acting as courier. Keep the slice bounded
-to publication behavior; leave empty-queue loop integration to B-0281.
+to publication behavior; leave empty-queue loop integration to 081KR2E4K0008QG0R002FSPPQR.
 
 ## Next Child Packets
 
-- PR-publication executor completion, grounded in B-0280
-- empty-queue loop integration, grounded in B-0281
+- PR-publication executor completion, grounded in 081KR2E4K0008QG0R0022RVRCZ
+- empty-queue loop integration, grounded in 081KR2E4K0008QG0R002FSPPQR
 - stale-selection skip receipt for active claim/path overlap
 - focused-check summary contract for autonomous PR packets
 
 ## Evidence Links
 
-- `docs/backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
-- `docs/backlog/P0/B-0278-autonomous-backlog-selector-priority-safe-pickup-2026-05-08.md`
-- `docs/backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md`
-- `docs/backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md`
-- `docs/backlog/P0/B-0281-codex-loop-empty-queue-backlog-pickup-integration-2026-05-08.md`
+- `docs/backlog/P0/081KQZVQW0008QG0R000C35RNY-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
+- `docs/backlog/P0/081KR2E4K0008QG0R001GFXN05-autonomous-backlog-selector-priority-safe-pickup-2026-05-08.md`
+- `docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md`
+- `docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md`
+- `docs/backlog/P0/081KR2E4K0008QG0R002FSPPQR-codex-loop-empty-queue-backlog-pickup-integration-2026-05-08.md`
 - `docs/AGENT-CLAIM-PROTOCOL.md`
 - `docs/AGENT-ISSUE-WORKFLOW.md`
 - `docs/AUTONOMOUS-LOOP.md`

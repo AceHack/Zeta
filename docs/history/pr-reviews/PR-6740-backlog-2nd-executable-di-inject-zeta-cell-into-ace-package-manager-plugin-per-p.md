@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron (sequenced after no-git-CLI): a 2nd executable that DI-injects a Zeta cell into the **Ace** package manager; a **file-type plugin per supported package manager** (npm/NuGet/Cargo/pip/…) handling each manager's declarative dep files (package.json/.csproj/Cargo.toml/requirements.txt/…). The file-type plugin model applied to dependency manifests; the first real *second app* on the substrate (forces a clean cell-injection API). Composes the Ace seed 081KTFKQGZP + B-0824. Roadmap item #8. Backlog only.
+Aaron (sequenced after no-git-CLI): a 2nd executable that DI-injects a Zeta cell into the **Ace** package manager; a **file-type plugin per supported package manager** (npm/NuGet/Cargo/pip/…) handling each manager's declarative dep files (package.json/.csproj/Cargo.toml/requirements.txt/…). The file-type plugin model applied to dependency manifests; the first real *second app* on the substrate (forces a clean cell-injection API). Composes the Ace seed 081KTFKQGZP + 081KSGS9H0008QG0R0031PBNGA. Roadmap item #8. Backlog only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

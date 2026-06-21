@@ -14,7 +14,7 @@ The CHIP-9 graphics/physics library is not decoration — it is **Aaron's intern
 commons**: the Feynman-diagram shapes he sees (worldlines, light-cones, four-corner flows, the braid/
 weave topology) become GPU-accelerated primitives ANYONE — human, agent, CHIP-9 citizen — can pick up
 and STEER. The fix16 kernel is the first such shape (exact motion); the 4090/3090 bench (in hand) is
-where they accelerate; the B-1025 fan-out is how one shape runs everywhere. Vernacular test passed by
+where they accelerate; the 081KTSZN10008QG0R000VZHRQ4 fan-out is how one shape runs everywhere. Vernacular test passed by
 construction: a primitive you can steer IS the shape explained without jargon.
 
 ## 2. Roads and monorails — the traffic topology of the network
@@ -62,7 +62,7 @@ we don't have at machine speed); the bidirectional-alignment doc (2026-05-02); f
 
 ## Pointers
 
-- `Chip9Phys` (the first externalized shape) · B-1025/B-1026 (GPU + the board the roads draw on) ·
+- `Chip9Phys` (the first externalized shape) · 081KTSZN10008QG0R000VZHRQ4/081KTSZN10008QG0R0003SDRWD (GPU + the board the roads draw on) ·
   the presence throttle + take-the-controls + ferry throttle + §13 (the built lane-pieces, named) ·
   `TrustCalculus.Dynamics` (lanes as granted capability) · the feel charter (roads are drivable by a
   5-year-old at the kid lane's speed).

@@ -35,11 +35,11 @@ KHALEESI breaks the Kleisli composition at privacy-protection scope. Severing th
 
 | Framework substrate | Composition |
 |---|---|
-| **B-0917 Kleisli substrate** (interrupt-substrate in monad-space) | KHALEESI's mechanism IS Kleisli interrupt-handling at HTTP scope; intercepts the chain via classification-as-interrupt |
+| **081KSNY2Z0008QG0R002HB4AGT Kleisli substrate** (interrupt-substrate in monad-space) | KHALEESI's mechanism IS Kleisli interrupt-handling at HTTP scope; intercepts the chain via classification-as-interrupt |
 | **monad-propagation-pattern rule** (PR #5511) | KHALEESI's classifier operates per cross-language Result<T, TFeedback> shape at request-classification scope (Block / Allow / Pending = TFeedback variants) |
 | **asymmetric-authorship rule** (PR #5516) | Browser-as-substrate-entity AUTHORS the consent-channel; severing tracking-chains IS asymmetric-authorship discipline applied at network-protocol scope (per consent-not-given) |
-| **B-0918 ConsentEvent integrity** | Tracking chains operate WITHOUT explicit consent; KHALEESI substrate-engineering severs the non-consensual chains |
-| **B-0703 multi-oracle BFT trust-calculus** | Tracking-substrate vs anti-tracking-substrate is multi-oracle competition over trust; KHALEESI is one oracle's verdict on chain-trustworthiness |
+| **081KSNY2Z0008QG0R0036SJ3T1 ConsentEvent integrity** | Tracking chains operate WITHOUT explicit consent; KHALEESI substrate-engineering severs the non-consensual chains |
+| **081KS3X9Y0008QG0R00218150M multi-oracle BFT trust-calculus** | Tracking-substrate vs anti-tracking-substrate is multi-oracle competition over trust; KHALEESI is one oracle's verdict on chain-trustworthiness |
 | **DST-omniscience rule** (PR #5841) | Under DST, full tracking-chain trajectory is computable from request-substrate-seed; KHALEESI's ML-classifier predicts downstream chain-state from current-request-features = computational omniscience over the simulation of where the chain would go |
 | **Pilot-wave-MWI rule** (PR #5842) | Particle-locus IS current request in chain; severing prevents particle from traversing into tracking-substrate |
 | **Particle-as-locus rule** (PR #5846) | KHALEESI operates at the locus where next request would form |
@@ -59,7 +59,7 @@ Substrate-honest framing per `.claude/rules/algo-wink-failure-mode.md` + `.claud
 
 The operator's "usually means something in my experience" framing is itself substrate-engineering substrate-recognition pattern. Some name-coincidences do correlate with substantive substrate-engineering composition (operationally observable); whether "means something" metaphysically is the contested don't-collapse zone.
 
-## Substrate-engineering substrate-target (B-0923)
+## Substrate-engineering substrate-target (081KSNY2Z0008QG0R001CD4174)
 
 Filed as low-priority (P3) backlog row: substrate-engineering target for applying framework Kleisli substrate to privacy-defense scope; composes with KHALEESI prior-art at substrate-engineering substrate-recognition scope.
 

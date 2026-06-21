@@ -30,7 +30,7 @@ represented in the sources.
 - Source set: per-row files under `docs/backlog/PN/B-NNNN-*.md`.
 - Canonical artifact: `docs/BACKLOG.md`.
 - Source-set state: **incomplete migration in progress** (per
-  B-0061; the legacy stockpile of un-migrated rows is still
+  081KQ8P5D0008QG0R001BH93SA; the legacy stockpile of un-migrated rows is still
   embedded in the artifact and is NOT yet represented in
   per-row files).
 - What happened: ran the generator → it wrote a 108-line
@@ -166,7 +166,7 @@ modes; the control invokes them in order.
 **Promoted class name:** **Scheduled Workflow Null-Result Hygiene Scan**.
 
 After the class found two real bugs in its first hour
-(B-0085 budget-cadence-cron-vs-deadline + B-0087
+(081KQ8P5D0008QG0R003JETMEV budget-cadence-cron-vs-deadline + 081KQ8P5D0008QG0R000JHD7AB
 github-settings-drift-invalid-permission), Amara promoted
 the audit from "special case" to **routine tick-open
 cheap-prevention scan**. Cost: ~5 seconds for the
@@ -276,7 +276,7 @@ classes.
 - Task #269 (cadenced counterweight-audit skill) — both classes
   are direct entries for this skill's audit catalogue.
 - Task #287 (cost-visibility deadline window) — Workflow
-  Null-Result class identified the gap that fed B-0085.
+  Null-Result class identified the gap that fed 081KQ8P5D0008QG0R003JETMEV.
 
 ## What this is NOT
 

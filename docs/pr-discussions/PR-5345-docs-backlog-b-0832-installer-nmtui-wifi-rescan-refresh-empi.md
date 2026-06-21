@@ -1,6 +1,6 @@
 ---
 pr_number: 5345
-title: "docs(backlog): B-0832 \u2014 installer nmtui WiFi rescan/refresh (empirical from physical hardware-support test 2026-05-26; 20+ overlapping networks)"
+title: "docs(backlog): 081KSGS9H0008QG0R001Q2DH2H \u2014 installer nmtui WiFi rescan/refresh (empirical from physical hardware-support test 2026-05-26; 20+ overlapping networks)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T22:58:25Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:30:34Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5345: docs(backlog): B-0832 — installer nmtui WiFi rescan/refresh (empirical from physical hardware-support test 2026-05-26; 20+ overlapping networks)
+# PR #5345: docs(backlog): 081KSGS9H0008QG0R001Q2DH2H — installer nmtui WiFi rescan/refresh (empirical from physical hardware-support test 2026-05-26; 20+ overlapping networks)
 
 ## PR description
 
 ## Summary
 
-First empirical UX feedback from operator's physical hardware-support test 2026-05-26 — validates B-0831's reframing of physical-test as first-class hardware-compatibility-matrix substrate.
+First empirical UX feedback from operator's physical hardware-support test 2026-05-26 — validates 081KSGS9H0008QG0R0011BC7T2's reframing of physical-test as first-class hardware-compatibility-matrix substrate.
 
 ## Issue
 
@@ -36,15 +36,15 @@ The installer's zeta-first-boot service auto-launches nmtui when no ethernet is 
 
 P2 priority — UX friction, not hard blocker (operator continued the test via \"moving forward\" workaround).
 
-## Empirical anchor — B-0831 validation
+## Empirical anchor — 081KSGS9H0008QG0R0011BC7T2 validation
 
-This row IS what B-0831 predicted: physical hardware-support test surfaces real-world issues that CI emulation cannot reproduce. QEMU has no concept of dense-WiFi channel-contention. The substrate-engineering value of physical-as-hardware-support-test is now empirically validated within one tick of B-0831 landing.
+This row IS what 081KSGS9H0008QG0R0011BC7T2 predicted: physical hardware-support test surfaces real-world issues that CI emulation cannot reproduce. QEMU has no concept of dense-WiFi channel-contention. The substrate-engineering value of physical-as-hardware-support-test is now empirically validated within one tick of 081KSGS9H0008QG0R0011BC7T2 landing.
 
 ## Test plan
 
 - [x] markdownlint clean
 - [x] BACKLOG.md regenerated
-- [x] Composes_with B-0754 (zero-typing first-boot scope) + B-0831 (CI cascade #6 + physical-as-hardware-support-test substrate)
+- [x] Composes_with 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope) + 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 + physical-as-hardware-support-test substrate)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -54,11 +54,11 @@ This row IS what B-0831 predicted: physical hardware-support test surfaces real-
 
 ## Pull request overview
 
-Adds a new backlog row (B-0832) capturing empirical operator feedback from a physical hardware-support test: dense WiFi environments can cause `nmtui` to miss the target SSID on initial scan, and the installer needs a visible rescan/refresh path.
+Adds a new backlog row (081KSGS9H0008QG0R001Q2DH2H) capturing empirical operator feedback from a physical hardware-support test: dense WiFi environments can cause `nmtui` to miss the target SSID on initial scan, and the installer needs a visible rescan/refresh path.
 
 **Changes:**
-- Adds `docs/backlog/P2/B-0832...md` describing the issue and outlining three mitigation approaches (A banner, B rescan/relaunch loop, C `nmcli` flow).
-- Regenerates/updates `docs/BACKLOG.md` to include the new B-0832 entry.
+- Adds `docs/backlog/P2/081KSGS9H0008QG0R001Q2DH2H...md` describing the issue and outlining three mitigation approaches (A banner, B rescan/relaunch loop, C `nmcli` flow).
+- Regenerates/updates `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R001Q2DH2H entry.
 
 ### Reviewed changes
 
@@ -66,22 +66,22 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0832-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md | New P2 backlog row documenting the dense-WiFi `nmtui` rescan UX gap and candidate mitigations. |
-| docs/BACKLOG.md | Adds the generated index entry for B-0832 under P2. |
+| docs/backlog/P2/081KSGS9H0008QG0R001Q2DH2H-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md | New P2 backlog row documenting the dense-WiFi `nmtui` rescan UX gap and candidate mitigations. |
+| docs/BACKLOG.md | Adds the generated index entry for 081KSGS9H0008QG0R001Q2DH2H under P2. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0832-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md:20 (resolved)
+### Thread 1: docs/backlog/P2/081KSGS9H0008QG0R001Q2DH2H-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md:20 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T23:01:00Z):
 
-P1 (xref): This row references `B-0831` in `composes_with`, but there is no `B-0831` row/file anywhere in the repo (search across `docs/backlog/**` and `docs/BACKLOG.md` finds none). Either add the missing `B-0831` row in this PR, or change/remove the reference to the correct existing backlog ID to avoid broken cross-links.
+P1 (xref): This row references `081KSGS9H0008QG0R0011BC7T2` in `composes_with`, but there is no `081KSGS9H0008QG0R0011BC7T2` row/file anywhere in the repo (search across `docs/backlog/**` and `docs/BACKLOG.md` finds none). Either add the missing `081KSGS9H0008QG0R0011BC7T2` row in this PR, or change/remove the reference to the correct existing backlog ID to avoid broken cross-links.
 
-### Thread 2: docs/backlog/P2/B-0832-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md:119 (resolved)
+### Thread 2: docs/backlog/P2/081KSGS9H0008QG0R001Q2DH2H-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md:119 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T23:01:00Z):
 
-P1 (xref): This bullet points to `B-0831`, but `B-0831` does not exist in the current repo (no per-row file and not present in `docs/BACKLOG.md`). Update this to the correct existing backlog ID or add the missing row so the "Composes with" section stays linkable/accurate.
+P1 (xref): This bullet points to `081KSGS9H0008QG0R0011BC7T2`, but `081KSGS9H0008QG0R0011BC7T2` does not exist in the current repo (no per-row file and not present in `docs/BACKLOG.md`). Update this to the correct existing backlog ID or add the missing row so the "Composes with" section stays linkable/accurate.
 
 ## General comments
 
@@ -91,11 +91,11 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 
 ### @AceHack (2026-05-26T23:02:02Z)
 
-Both threads resolved no-op as stale-false-positives. B-0831 row landed via PR #5343 (merge commit `1072f569`) which Copilot reviewed PR #5345 before #5343 merged. Cross-refs are valid on current `main`:
+Both threads resolved no-op as stale-false-positives. 081KSGS9H0008QG0R0011BC7T2 row landed via PR #5343 (merge commit `1072f569`) which Copilot reviewed PR #5345 before #5343 merged. Cross-refs are valid on current `main`:
 
 ```
-$ git ls-tree -r origin/main -- docs/backlog/ | grep B-0831
-100644 blob 38ea4ac78fdc...	docs/backlog/P1/B-0831-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-routine-human-physical-usb-test-aaron-2026-05-26.md
+$ git ls-tree -r origin/main -- docs/backlog/ | grep 081KSGS9H0008QG0R0011BC7T2
+100644 blob 38ea4ac78fdc...	docs/backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-routine-human-physical-usb-test-aaron-2026-05-26.md
 ```
 
 Per `.claude/rules/blocked-green-ci-investigate-threads.md` stale-but-fresh-looking-findings subsection: these were TRUE at thread-filing time but became STALE by review-resolution time. No-op resolution.

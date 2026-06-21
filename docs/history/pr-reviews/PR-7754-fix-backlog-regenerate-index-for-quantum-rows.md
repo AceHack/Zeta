@@ -28,8 +28,8 @@
 ## Description
 
 ## Summary
-- regenerate docs/BACKLOG.md from the per-row backlog frontmatter after the B-1029/B-1030 quantum rows landed
-- move B-1030 back to the generated P3 section and restore the generated titles from frontmatter
+- regenerate docs/BACKLOG.md from the per-row backlog frontmatter after the 081KTWJ1R0008QG0R001ZBWKTR/081KTWJ1R0008QG0R000JJDPFZ quantum rows landed
+- move 081KTWJ1R0008QG0R000JJDPFZ back to the generated P3 section and restore the generated titles from frontmatter
 
 ## Validation
 - bun tools/backlog/generate-index.ts --check

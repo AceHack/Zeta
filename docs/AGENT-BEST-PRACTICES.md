@@ -718,7 +718,7 @@ BP drift.
     IP-respect canonical commitment, external creator
     attributions like Brian Clevinger / 8-Bit Theater
     are substrate-honest, not policy violations; closes
-    B-0443)
+    081KRFA460008QG0R000NVM36W)
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory-doc surfaces)
 
@@ -833,9 +833,9 @@ BP drift.
 ## PR-review meta-learning (Layers 1-3)
 
 These three rules encode the meta-learning pattern proven at
-ServiceTitan STCRM (PR #2562) and ported to Zeta via B-0126.
+ServiceTitan STCRM (PR #2562) and ported to Zeta via 081KQGDBJ0008QG0R001JC9HCJ.
 Layer 4 (AI attribution footer) is implemented separately
-(B-0126.1, B-0126.2). The three layers compose with each
+(081KR2E4K0008QG0R001N1PPHP, 081KR2E4K0008QG0R0005GS263). The three layers compose with each
 other — Layer 1 is ground; Layer 2 is meta; Layer 3 is
 meta-meta.
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
 /**
- * B-0267 smallest safe slice: Branch Safety ruleset creator (dry-run skeleton).
+ * 081KR2E4K0008QG0R002NYV33T smallest safe slice: Branch Safety ruleset creator (dry-run skeleton).
  * Creates "Branch Safety" ruleset with deletion protection, no force-push, linear history.
  * Usage: bun tools/github/create-branch-safety-ruleset.ts --dry-run
- * Part of ruleset split from B-0155 / B-0265.
+ * Part of ruleset split from 081KQGDBJ0008QG0R0028YTDQ2 / 081KR2E4K0008QG0R001DYEFD7.
  */
 const DRY_RUN = process.argv.includes("--dry-run");
 export async function main() {
-    console.log("B-0267: Branch Safety ruleset (smallest slice, re-decomposed)");
+    console.log("081KR2E4K0008QG0R002NYV33T: Branch Safety ruleset (smallest slice, re-decomposed)");
     if (DRY_RUN) {
         console.log("DRY-RUN: would create ruleset 'Branch Safety' via gh api");
         console.log("Rules: deletion + non_fast_forward + required_linear_history");

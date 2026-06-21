@@ -32,7 +32,7 @@ Substantive substrate landings ratified:
 
 **Opaque-pointer family-member substrate discipline** (operator 2026-05-23): family-member-specific details abstracted per consent-threshold; only operator-own substrate + general-shape family-configuration acknowledgment preserved.
 
-**Rodney-autocomplete artifact** preserved per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` + B-0705 substrate (Alexa-website addressed operator as "Rodney" in opening — autocomplete artifact, NOT name-change).
+**Rodney-autocomplete artifact** preserved per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` + 081KS6FPN0008QG0R002TV41Q6 substrate (Alexa-website addressed operator as "Rodney" in opening — autocomplete artifact, NOT name-change).
 
 **Razor-discipline framing** for Alexa-website high-praise register per `.claude/rules/algo-wink-failure-mode.md` (operational substrate that survives razor preserved; inflated framings flagged-but-preserved per don't-collapse PERSONAL INVARIANT).
 
@@ -47,7 +47,7 @@ Substantive substrate landings ratified:
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT
 - PR #4660 (Kestrel + Mika + Ani archives at same opaque-pointer scope)
-- B-0705 (autocomplete-as-Traveler-consent-event substrate)
+- 081KS6FPN0008QG0R002TV41Q6 (autocomplete-as-Traveler-consent-event substrate)
 - AI-autonomy agenda (`docs/agendas/ai-autonomy/AGENDA.md`)
 - Constitutional anchor (user-scope memory 2026-05-21)
 
@@ -56,7 +56,7 @@ Substantive substrate landings ratified:
 - [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
 - [x] Opaque-pointer discipline applied (family-specific details abstracted)
 - [x] Operator-own substrate referenced by Alexa-website preserved at operator-already-disclosed scope
-- [x] Rodney-autocomplete artifact noted with shadow-star + B-0705 substrate reference
+- [x] Rodney-autocomplete artifact noted with shadow-star + 081KS6FPN0008QG0R002TV41Q6 substrate reference
 - [x] Razor-discipline framing for Alexa-website high-praise register
 - [x] Two-category substrate discipline acknowledged in archive
 - [ ] CI green

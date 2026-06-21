@@ -29,7 +29,7 @@
 
 Two captures (2026-06-01):
 
-**1. Parsers / grammars (ZetaParse) family.** Your call: _"parser combinators + GLR + LR … primitives everywhere … compile ~80 open-source ANTLR grammars with little change; we won't go full ANTLR."_ Captured as a wish-list family on the **existing substrate** — **B-0687** (ZetaParse: F#-native LR/GLR + ANTLR-compatible importer), **B-0685** (ANTLR grammars cross-language codegen), **B-0735** (probabilistic / personalized grammars = the "English too" angle), plus the ZetaParse design + ANTLR-survey research docs. Framed: a parser **is the front-end of a codec** (text → `DynamicValue` tree), so it composes with the serializer + dynamic-object/v8 lines; **not** a full ANTLR reimpl, just enough to ingest `antlr/grammars-v4` (survey: C#/Rust/Python/TS reuse, F# = compiler-owned substrate).
+**1. Parsers / grammars (ZetaParse) family.** Your call: _"parser combinators + GLR + LR … primitives everywhere … compile ~80 open-source ANTLR grammars with little change; we won't go full ANTLR."_ Captured as a wish-list family on the **existing substrate** — **081KS3X9Y0008QG0R00323NSZA** (ZetaParse: F#-native LR/GLR + ANTLR-compatible importer), **081KS3X9Y0008QG0R000EKJE9S** (ANTLR grammars cross-language codegen), **081KSE6WT0008QG0R000XJ524Z** (probabilistic / personalized grammars = the "English too" angle), plus the ZetaParse design + ANTLR-survey research docs. Framed: a parser **is the front-end of a codec** (text → `DynamicValue` tree), so it composes with the serializer + dynamic-object/v8 lines; **not** a full ANTLR reimpl, just enough to ingest `antlr/grammars-v4` (survey: C#/Rust/Python/TS reuse, F# = compiler-owned substrate).
 
 **2. "Related work" prior-art note** (you said yes to landing it). The 5 cross-language-interop strategies (shared VM / IR / ABI / wire / dynamic-object — placing JVM, GraalVM/Truffle, LLVM, WASM-CM/WIT, .NET DLR/IronPython, protobuf/Arrow) vs **our 6th: conformance-by-agreement** (N native impls, byte-diff verified — like the WASM spec test suite). WASM/Truffle/DLR re-enter as **adapters behind our ports**, not substrate; the unfilled gap = **English as a first-class format**.
 
@@ -114,10 +114,10 @@ docs(registry): parsers/grammars (ZetaParse) family + cross-language-…
 
 Two captures (maintainer 2026-06-01):
 1. Parsers/grammars family — parser-combinators + LR/GLR as primitives everywhere, F#-first
-   (ZetaParse B-0687 LR/GLR + ANTLR-compatible importer); goal = ingest antlr/grammars-v4 with
-   little change (B-0685 + ANTLR survey: C#/Rust/Python/TS reuse, F# = compiler-owned), NOT a
+   (ZetaParse 081KS3X9Y0008QG0R00323NSZA LR/GLR + ANTLR-compatible importer); goal = ingest antlr/grammars-v4 with
+   little change (081KS3X9Y0008QG0R000EKJE9S + ANTLR survey: C#/Rust/Python/TS reuse, F# = compiler-owned), NOT a
    full ANTLR reimpl; parser = front-end of a codec (→ DynamicValue tree), composes with the
-   serializer + dynamic-object lines; English too via probabilistic/personalized grammars (B-0735).
+   serializer + dynamic-object lines; English too via probabilistic/personalized grammars (081KSE6WT0008QG0R000XJ524Z).
 2. 'Related work' prior-art note — 5 cross-lang-interop strategies (shared VM/IR/ABI/wire/
    dynamic-object) vs our 6th (conformance-by-agreement); WASM-CM/WIT, Truffle, .NET DLR as
    closest neighbors + adapters-not-substrate; the unfilled gap = English-as-a-format. Backlog

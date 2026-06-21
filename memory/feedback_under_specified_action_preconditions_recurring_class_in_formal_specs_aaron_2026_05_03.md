@@ -9,7 +9,7 @@ type: feedback
 Same author-time class manifested in two different formal-verification
 tools during the 2026-05-03 verify-then-claim sweep:
 
-- **B-0184 Alloy `Spine.als`**: `pred SizeDoubling [maxCap]` originally
+- **081KQNJ500008QG0R001N1AAJ9 Alloy `Spine.als`**: `pred SizeDoubling [maxCap]` originally
   used `check` (∀-quantification — counterexample-by-construction with
   no batch-size constraints). The `check` semantics asks *"is this
   property true for ALL instances Alloy can construct?"* — and Alloy
@@ -18,7 +18,7 @@ tools during the 2026-05-03 verify-then-claim sweep:
   + `run SizeDoublingAdmitsInstance` (existence proof, not
   ∀-quantification) + `7 Int` bitwidth to prevent cap-function overflow.
 
-- **B-0181 TLA+ `SpineMergeInvariants.tla`**: `Cascade(i)` action only
+- **081KQNJ500008QG0R003DMVGZB TLA+ `SpineMergeInvariants.tla`**: `Cascade(i)` action only
   required `levels[i] >= Cap(i)` — no constraint on level i+1. TLC
   found a 16-step trace where `Cascade(0)` fires 5 times in a row
   without `Cascade(1)` ever firing, accumulating level 1 to 10 >
@@ -67,8 +67,8 @@ Author-time discipline:
 
 ## Composes with
 
-- B-0184 Spine.als spec bug (PR #1415) — same class, Alloy surface
-- B-0181 SpineMergeInvariants.tla spec bug (this PR) — same class,
+- 081KQNJ500008QG0R001N1AAJ9 Spine.als spec bug (PR #1415) — same class, Alloy surface
+- 081KQNJ500008QG0R003DMVGZB SpineMergeInvariants.tla spec bug (this PR) — same class,
   TLA+ surface
 - The `verify-then-claim` discipline (Otto-279 + the math-proofs
   honest assessment 2026-05-03): when a spec is claimed to validate

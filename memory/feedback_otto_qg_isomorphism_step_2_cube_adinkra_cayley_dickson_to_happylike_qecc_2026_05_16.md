@@ -16,9 +16,9 @@ created: 2026-05-16
    - Maps Adinkra edges to supersymmetry transformations
    - Maps Cayley-Dickson tower to extendability
 
-2. **Created backlog row**: `docs/backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md`
+2. **Created backlog row**: `docs/backlog/P2/081KRQ1AB0008QG0R001F7DE2D-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md`
    - P2 (research), XL (multi-year effort)
-   - Depends on B-0543 and B-0544
+   - Depends on 081KRMEXM0008QG0R002YSPW1X and 081KRMEXM0008QG0R003YWZC21
    - Documents the work, effort estimate, and next steps
 
 ### The mapping strategy
@@ -69,8 +69,8 @@ If Step 2 succeeds, we have:
 
 ### Composes with
 
-- B-0543 (the proof strategy this is Step 2 of)
-- B-0544 (Step 1 formalization)
+- 081KRMEXM0008QG0R002YSPW1X (the proof strategy this is Step 2 of)
+- 081KRMEXM0008QG0R003YWZC21 (Step 1 formalization)
 - `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` (Riven's cube + Adinkra + Cayley-Dickson elaboration)
 - `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md` (Step 1 foundation)
 - `docs/governance/MANIFESTO.md` V2.1 (the constraints the proof would ground in physical necessity)

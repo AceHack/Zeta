@@ -1,6 +1,5 @@
 ---
-id: B-0792
-zetaid: 081KSGS9H0008QG0R003V23XNZ
+id: 081KSGS9H0008QG0R003V23XNZ
 priority: P1
 status: open
 title: iter-5 wifi-credentials injection via USB ESP — homelab persona MOSTLY HAS NO ETHERNET; cluster must "remember the wifi on setup"; analogous to iter-4.x pubkey injection but for NetworkManager profile (Aaron 2026-05-26)
@@ -11,7 +10,7 @@ last_updated: 2026-05-26
 depends_on:
   - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0029S1D5Z
   - 081KSE6WT0008QG0R0004AP0ZA
@@ -30,7 +29,7 @@ Today's substrate ([full-ai-cluster/nixos/modules/common.nix:31](full-ai-cluster
 - **Ethernet works automatically** (DHCP, no config) — fine for one-off bench testing where operator has an ethernet cable
 - **Wifi does NOT work automatically** — requires console-side `nmtui` / `nmcli` to set up first connection; defeats zero-typing discipline
 
-For the homelab persona (per B-0759 broadening + B-0790 end-state), MOST cluster nodes are wifi-only mini-PCs with no ethernet jack populated. Without wifi-injection, iter-4.x doesn't bootstrap the homelab persona at all.
+For the homelab persona (per 081KSE6WT0008QG0R003G0Y62D broadening + 081KSGS9H0008QG0R00153CQ8B end-state), MOST cluster nodes are wifi-only mini-PCs with no ethernet jack populated. Without wifi-injection, iter-4.x doesn't bootstrap the homelab persona at all.
 
 ## Target
 
@@ -132,7 +131,7 @@ For worker nodes (`worker-gpu-1` joining `control-plane`), iter-5 also needs:
 - Bootstrap join token (k3s / kubeadm / Talos / whatever cluster substrate the workers join)
 - Control-plane address (probably auto-discoverable via mDNS once sub-target 3 is in)
 
-This sub-target is downstream of cluster-orchestration-substrate selection (B-0776 simplest-first plugin sequence likely informs the choice). Track separately when that lands.
+This sub-target is downstream of cluster-orchestration-substrate selection (081KSE6WT0008QG0R002275NDE simplest-first plugin sequence likely informs the choice). Track separately when that lands.
 
 ## Acceptance
 
@@ -142,16 +141,16 @@ This sub-target is downstream of cluster-orchestration-substrate selection (B-07
 - [ ] **Sub-target 3b**: Avahi enabled so `<hostname>.local` resolves from LAN
 - [ ] **Sub-target 4**: `bun tools/zflash.ts --host <hostname>` writes `zeta-hostname.txt` to ESP; install selects right per-host config
 - [ ] **Empirical validation**: wifi-only mini-PC boots, joins wifi via injected credentials, accessible via `ssh zeta@<hostname>.local` from operator Mac with NO console intervention
-- [ ] **Sub-target 5** (deferred): cluster join substrate for workers (downstream of B-0776)
+- [ ] **Sub-target 5** (deferred): cluster join substrate for workers (downstream of 081KSE6WT0008QG0R002275NDE)
 
 ## Composes with substrate
 
-- **B-0789** (iter-4 SSH+password substrate; depends_on; iter-5 extends the ESP-injection pattern this row builds on)
-- **B-0754** (iter-3 USB install; depends_on through B-0789)
-- **B-0759** (first-time-CLI-user persona broadened to homelab; this row is load-bearing for homelab specifically)
-- **B-0770** (Comet Pro IP-KVM; composes; remote-first install still needs network reachability after install)
-- **B-0778** (commodity hardware reference; wifi-only mini-PCs are common in the curated list)
-- **B-0790** (zero-dev-machines cluster-native architecture end-state; iter-5 wifi-injection is load-bearing for the homelab persona target)
+- **081KSGS9H0008QG0R002T3BJ2R** (iter-4 SSH+password substrate; depends_on; iter-5 extends the ESP-injection pattern this row builds on)
+- **081KSGS9H0008QG0R002T3BJ2R** (iter-3 USB install; depends_on through 081KSGS9H0008QG0R002T3BJ2R)
+- **081KSE6WT0008QG0R003G0Y62D** (first-time-CLI-user persona broadened to homelab; this row is load-bearing for homelab specifically)
+- **081KSE6WT0008QG0R0029S1D5Z** (Comet Pro IP-KVM; composes; remote-first install still needs network reachability after install)
+- **081KSE6WT0008QG0R0004AP0ZA** (commodity hardware reference; wifi-only mini-PCs are common in the curated list)
+- **081KSGS9H0008QG0R00153CQ8B** (zero-dev-machines cluster-native architecture end-state; iter-5 wifi-injection is load-bearing for the homelab persona target)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; wifi credentials on USB ESP = plaintext credential class; may want `_wifi_credentials_acceptance` block if cluster goes beyond personal homelab into shared-substrate scope)
 
 ## Security framing
@@ -166,7 +165,7 @@ Future hardening (out-of-scope this row): encrypted credentials with Touch ID ga
 
 ## Out of scope (for this row; tracked elsewhere)
 
-- Cluster orchestration substrate (k3s vs Talos vs whatever) — tracked under B-0776
+- Cluster orchestration substrate (k3s vs Talos vs whatever) — tracked under 081KSE6WT0008QG0R002275NDE
 - Worker join token / control-plane discovery — sub-target 5; deferred
 - Encrypted credentials / Touch ID gate — future hardening
 - WPA-Enterprise / 802.1X / corporate wifi — not homelab scope

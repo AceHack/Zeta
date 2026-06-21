@@ -36,7 +36,7 @@ NOT adapt (safety rails outside the learning loop, consent, honest registers). T
 each word names the half the other can't. Carve: *responsive in what evolves, responsible in what
 doesn't.*
 
-### 2. "Safety at a glance" — a REQUIREMENT on the board/TV, filed into B-1026's lane
+### 2. "Safety at a glance" — a REQUIREMENT on the board/TV, filed into 081KTSZN10008QG0R0003SDRWD's lane
 
 For humans, the safety state must be a RENDER, not a document: the swarm board / TV surfaces must show
 the constraint status visibly (which rails are active, what's inside/outside the membrane) the way
@@ -68,7 +68,7 @@ form of §6 — the hairdresser-understandable version Aaron's craft register ai
 - Part 1 ferry + peel (`...ferry-alexa-website-conversation-log-jun9-11-...md`) — craft-school
   load-bearing; the safety-copy peel (#7635/#7636).
 - `docs/governance/MANIFESTO.md` §6 consent-first — the clause line 4 carves into vernacular.
-- B-1026 (the board) — where "safety at a glance" lands as a render requirement; `universal/color.md`
+- 081KTSZN10008QG0R0003SDRWD (the board) — where "safety at a glance" lands as a render requirement; `universal/color.md`
   (the render contract) · the glass-halo protocol (the watching half).
 - Anchors: Lee & Ditko 1962 (the inverted principle) · McLuhan · Wu, *The Attention Merchants* ·
   Engelbart 1968 (seeing-is-believing's proof case).

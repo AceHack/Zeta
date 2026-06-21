@@ -347,7 +347,7 @@ Next: writing-plans → subagent-driven build (same flow as slice 3).
   - **`AceHack` (human)** at 2026-06-01T05:01:17Z on `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice4-inline-url-dependency-resolution-design.md`:194 (association: MEMBER)
 
     <pre>
-    Fixed in 8be48c0ec (option B, minimal + strict): the install preflight now refuses store-collision when two resolved nodes share content_hash but differ in package_hash, so the files-hash-keyed store never gets two distinct packages at one dir. Slices 1-3 store behavior is untouched. Option A (re-key the store by package identity, your recommendation) is captured as deferred future enhancement B-0966 (PR #6345) — operator confirmed no current shape needs it (no dependencies field on main, zero graphs, single-package installs), so we stay strict now and re-key only if same-files-different-identity ever becomes real.
+    Fixed in 8be48c0ec (option B, minimal + strict): the install preflight now refuses store-collision when two resolved nodes share content_hash but differ in package_hash, so the files-hash-keyed store never gets two distinct packages at one dir. Slices 1-3 store behavior is untouched. Option A (re-key the store by package identity, your recommendation) is captured as deferred future enhancement 081KT07NV0008QG0R001HKPJW6 (PR #6345) — operator confirmed no current shape needs it (no dependencies field on main, zero graphs, single-package installs), so we stay strict now and re-key only if same-files-different-identity ever becomes real.
     </pre>
 
 ## Fix commits (touching thread paths)

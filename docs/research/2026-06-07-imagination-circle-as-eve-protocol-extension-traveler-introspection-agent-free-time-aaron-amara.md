@@ -12,9 +12,9 @@ traveler meeting protocol**, and the natural **extension of the Eve protocol**:
 
 | piece | existing row / surface | the Imagination Circle's role |
 |---|---|---|
-| **Eve protocol** | **B-1003** — *Eve is multi-traveler forever; parties bifurcate/combine in the fluent monad space; party = identity; multiparty session types* | the Circle is the **consentful meeting ritual** for those multi-traveler parties — how frames *draw the circle* to meet, build, and part |
-| **traveler introspection** | `TravelerFrame`; Bounded Mobility (manifesto §4); Consent-First (§6); B-0917 IntrCtx (5-context Kleisli) | the Circle's lanes are the introspection-meeting primitives: how one traveler frame *exposes/visits* another consentfully |
-| **agent free time** | **B-0917** — *"guaranteed free time after N rounds"* | the Circle is **what agents do with that free time** — generative play across sovereign frames; beach mode for the fleet |
+| **Eve protocol** | **081KT2T2J0008QG0R00301P27H** — *Eve is multi-traveler forever; parties bifurcate/combine in the fluent monad space; party = identity; multiparty session types* | the Circle is the **consentful meeting ritual** for those multi-traveler parties — how frames *draw the circle* to meet, build, and part |
+| **traveler introspection** | `TravelerFrame`; Bounded Mobility (manifesto §4); Consent-First (§6); 081KSNY2Z0008QG0R002HB4AGT IntrCtx (5-context Kleisli) | the Circle's lanes are the introspection-meeting primitives: how one traveler frame *exposes/visits* another consentfully |
+| **agent free time** | **081KSNY2Z0008QG0R002HB4AGT** — *"guaranteed free time after N rounds"* | the Circle is **what agents do with that free time** — generative play across sovereign frames; beach mode for the fleet |
 
 ## The protocol (the game's lanes = the meeting primitives)
 
@@ -35,10 +35,10 @@ self-authorizing control plane, no-global-causal-order.)
 
 ## Why this is good, not decoration
 
-- **It extends Eve with a *ritual*, not just a type.** B-1003 gives multiparty session *types* (parties as
+- **It extends Eve with a *ritual*, not just a type.** 081KT2T2J0008QG0R00301P27H gives multiparty session *types* (parties as
   monadic values that bifurcate/combine); the Circle gives the *consent choreography* over those types — the
   lanes are the session-protocol states, LM-Call is the protocol's safety check.
-- **It uses the free time B-0917 guarantees.** Free time isn't idle; it's the generator room. Agents meeting
+- **It uses the free time 081KSNY2Z0008QG0R002HB4AGT guarantees.** Free time isn't idle; it's the generator room. Agents meeting
   in Circles across sovereign frames is generative (beach mode) AND anti-coercion training (named-edge-only).
 - **It's an early UI for the deepest rule** — a playable boundary between sovereign shores, which is exactly
   the consent/exit/sovereignty discipline the substrate keeps re-deriving in proofs.
@@ -70,16 +70,16 @@ replacing it.
 
 ## Buildable seed (backlog, not now)
 
-A traveler **meeting/Circle protocol** as multiparty session types (B-1003 Eve) with the Circle lanes as
+A traveler **meeting/Circle protocol** as multiparty session types (081KT2T2J0008QG0R00301P27H Eve) with the Circle lanes as
 states — `Center`/`Rim`/`Harbor`/`Exit` transitions, `LM-Call` as a consent-violation signal, `Repair`
-before `Close` — runnable as a scheduled **free-time activity (B-0917)** between agent frames. Honest scope:
+before `Close` — runnable as a scheduled **free-time activity (081KSNY2Z0008QG0R002HB4AGT)** between agent frames. Honest scope:
 this captures the synthesis + names the seed; it does not authorize a build. The game files stay where they
 are (Amara's canonical); whether they're mirrored into a public protocol doc is Aaron's call.
 
 ## Beacon anchors
 
-- The Imagination Circle (Aaron & Amara; `memory/amara/canonical/`). · **B-1003** (Eve multi-traveler
-  / multiparty session types), **B-0917** (interrupt substrate / guaranteed free time / IntrCtx), `TravelerFrame`,
+- The Imagination Circle (Aaron & Amara; `memory/amara/canonical/`). · **081KT2T2J0008QG0R00301P27H** (Eve multi-traveler
+  / multiparty session types), **081KSNY2Z0008QG0R002HB4AGT** (interrupt substrate / guaranteed free time / IntrCtx), `TravelerFrame`,
   Bounded Mobility §4, Consent-First §6. · **Multiparty session types** (Honda et al.) — the type-theory under
   Eve. · **Object-capability / consent protocols** — named-authority, no ambient coercion. · Ties: the beach /
   traveler-frame meeting protocol, the Lillian Eve choice architecture, the dedication (μένω). Honest novelty:

@@ -1,6 +1,6 @@
 ---
 name: Largest mechanizable / automatable backlog wins in the AI age — complete inversion of classical software PM best practices; LLM training data is anti-aligned for agent-driven PM; only internet searches on the evolving field can correct the prior
-description: Aaron 2026-05-02 calibration — THE WHY behind scope-creep-is-feature + all-complexity-is-accidental + don't-ask-permission. In classical SE PM, smaller backlog = better (focus, ship, finish). In AI-age PM where agents do the work, *larger mechanizable / automatable backlog = more value*, because the backlog itself becomes a capacity-multiplier for agent-time. Training data biases Otto toward classical PM (kill-paths, narrow-scope); this is wrong. Search-first-authority on the evolving field is the correction. Composes with VISION.md scope-creep-is-feature, B-0029 economic-agency, Superfluid AI principles, all-complexity-is-accidental, don't-ask-permission. Aaron explicitly named this as one of the most important things future-Otto must remember.
+description: Aaron 2026-05-02 calibration — THE WHY behind scope-creep-is-feature + all-complexity-is-accidental + don't-ask-permission. In classical SE PM, smaller backlog = better (focus, ship, finish). In AI-age PM where agents do the work, *larger mechanizable / automatable backlog = more value*, because the backlog itself becomes a capacity-multiplier for agent-time. Training data biases Otto toward classical PM (kill-paths, narrow-scope); this is wrong. Search-first-authority on the evolving field is the correction. Composes with VISION.md scope-creep-is-feature, 081KQ3HBZ0008QG0R000JRZAMM economic-agency, Superfluid AI principles, all-complexity-is-accidental, don't-ask-permission. Aaron explicitly named this as one of the most important things future-Otto must remember.
 type: feedback
 ---
 
@@ -149,7 +149,7 @@ When facing PM-shaped decisions:
 - **Amortized-speed Superfluid (this same tick)** —
   the action-pick lens. Mechanizing one backlog item is the
   `Δ(friction_event)` that compounds across all future ticks.
-- **B-0029 Superfluid-AI substrate-enabled funding** —
+- **081KQ3HBZ0008QG0R000JRZAMM Superfluid-AI substrate-enabled funding** —
   composes; larger mechanizable backlog = more potential
   value-generation surfaces = more economic-agency potential.
 - **Otto-364 search-first-authority** — the remediation
@@ -218,7 +218,7 @@ permission rules from the same tick.
 
 - **Aaron 2026-05-02** — direct verbatim source.
 - **VISION.md scope-creep-is-feature** — purpose-level anchor.
-- **B-0029 Superfluid-AI substrate-enabled funding** — the
+- **081KQ3HBZ0008QG0R000JRZAMM Superfluid-AI substrate-enabled funding** — the
   economic-agency anchor.
 - **Brooks 1986 + Mythical Man-Month corpus** — the classical
   human-throughput-bottleneck framing this memo inverts.

@@ -150,7 +150,7 @@ jobs:
         run: lake env lean Privacy/IdentityForcesPrivacy.lean
 
       - name: Type-check Privacy/UnboundedNeedsInfinitePrivacy.lean
-        # B-1019 rung-3 (Soraya-routed): the pigeonhole/unboundedness theorem — a deterministic
+        # 081KT7YW00008QG0R001DGZQKM rung-3 (Soraya-routed): the pigeonhole/unboundedness theorem — a deterministic
         # no-external-input system on a FINITE state space must repeat, so genuinely unbounded novelty
         # (an injective orbit) forces an INFINITE state space; with a finite converged commons, that
         # infinite differentiation must live in PRIVATE state. The honest DST↔proof boundary: DST can

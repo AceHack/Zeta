@@ -1,7 +1,7 @@
 # KSK (Kinetic Safeguard Kernel) — persona map
 
 **Author:** Otto (2026-05-14)
-**Closes:** B-0488
+**Closes:** 081KRHWGX0008QG0R001HDK688
 **Template:** `docs/research/2026-05-14-persona-mapping-framework-b0485.md`
 **Product substrate:** PR #2892 (KSK origin — Aaron+Amara consent-first design),
 [`docs/GLOSSARY.md` § KSK](../GLOSSARY.md),
@@ -350,7 +350,7 @@ role: "Engineer or program designer using KSK's authorization layer as the 'cons
 composes_with: []
 created: 2026-05-14
 last_updated: 2026-05-14
-origin: .claude/rules/methodology-hard-limits.md + B-0488 persona hypotheses + PR #2892 actuator-clearance lineage
+origin: .claude/rules/methodology-hard-limits.md + 081KRHWGX0008QG0R001HDK688 persona hypotheses + PR #2892 actuator-clearance lineage
 ```
 
 ### HARD LIMITS check
@@ -400,7 +400,7 @@ role: "Adversary attempting to use KSK as a privilege oracle for offensive opera
 composes_with: []
 created: 2026-05-14
 last_updated: 2026-05-14
-origin: .claude/rules/methodology-hard-limits.md + B-0488 persona hypotheses + security-researcher substrate
+origin: .claude/rules/methodology-hard-limits.md + 081KRHWGX0008QG0R001HDK688 persona hypotheses + security-researcher substrate
 ```
 
 ### HARD LIMITS check
@@ -440,13 +440,13 @@ the structural defense.
 ## Composes with substrate
 
 - `docs/research/2026-05-14-persona-mapping-framework-b0485.md` (template)
-- `docs/personas/civsim-personas.md` (sibling per-product persona doc — B-0486)
+- `docs/personas/civsim-personas.md` (sibling per-product persona doc — 081KRHWGX0008QG0R00273520P)
 - `docs/GLOSSARY.md` § KSK (canonical definition)
-- `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md` (this row's parent)
-- `docs/backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md` (template origin)
+- `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md` (this row's parent)
+- `docs/backlog/P1/081KRHWGX0008QG0R00019453T-persona-mapping-framework-template-substrate-inventory-2026-05-14.md` (template origin)
 - `.claude/rules/methodology-hard-limits.md` (refused-persona discipline)
 - `.claude/rules/mechanical-authorization-check.md` (authorization-source filter)
-- `.claude/rules/zeta-ships-with-skills-immediate-value.md` (skill targeting per persona — Edge layer for B-0493)
+- `.claude/rules/zeta-ships-with-skills-immediate-value.md` (skill targeting per persona — Edge layer for 081KRHWGX0008QG0R002XVHSG5)
 - PR #2892 (KSK origin substrate)
 - `Lucent-Financial-Group/lucent-ksk` (external code repo)
 - `memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md` (origin disclosure)

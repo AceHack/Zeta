@@ -1,6 +1,5 @@
 ---
-id: B-0526
-zetaid: 081KRHWGX0008QG0R00264BDSB
+id: 081KRHWGX0008QG0R00264BDSB
 priority: P1
 status: open
 title: Branch/worktree content inventory — Pre-substrate Kenji-era
@@ -12,16 +11,16 @@ type: friction-reducer
 decomposition: atomic
 ---
 
-# B-0526 — Branch/worktree content inventory
+# 081KRHWGX0008QG0R00264BDSB — Branch/worktree content inventory
 
 **Priority:** P1 (lineage-continuity-substrate purpose).
 **Filed:** 2026-05-14.
-**Filed by:** Lior (decomposition of B-0139).
+**Filed by:** Lior (decomposition of 081KQGDBJ0008QG0R002S9SWH6).
 **Effort:** M (archaeology of old branches).
 
 ## What
 
-Inventory pre-substrate / Kenji-era past-recovery git branches and worktrees. This is an atomic slice decomposed from B-0139.
+Inventory pre-substrate / Kenji-era past-recovery git branches and worktrees. This is an atomic slice decomposed from 081KQGDBJ0008QG0R002S9SWH6.
 
 Scope includes:
 
@@ -35,5 +34,5 @@ Scope includes:
 
 ## Composes with
 
-- **B-0139** (Parent blob row).
+- **081KQGDBJ0008QG0R002S9SWH6** (Parent blob row).
 - **#321** (Recovery lane — branch/worktree/stash inventory).

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // canonicalize.ts -- hash ROM files and match against a TOSEC / No-Intro
-// datfile (Logiqx XML format). Smallest safe slice of B-0272.
+// datfile (Logiqx XML format). Smallest safe slice of 081KR2E4K0008QG0R001QZDAMQ.
 //
 // Usage:
 //   bun tools/roms/canonicalize.ts --datfile <path.dat> --dir <rom-dir>

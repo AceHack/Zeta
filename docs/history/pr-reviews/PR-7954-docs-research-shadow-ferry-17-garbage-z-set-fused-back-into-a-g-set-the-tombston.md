@@ -27,7 +27,7 @@
 
 ## Description
 
-Verbatim stream decoded into named theorems: two-G-sets-with-signs = the 2P-set; Z→G consolidation above the causal horizon = the CRDT tombstone-GC problem (resurrection; the outside observes the G-contract violated); safe GC = causal stability. Open/closed read at the data layer: consolidation must be invisible. The asymmetry answers his question: Z→current-G always (fusion = the unveiled present, cache=I(stream)); consolidated-Z→original G-set pair never — consolidation is the Landauer-paying act. Garbage = fusion above the horizon; compaction = the same act below. This is B-1036 rung 5's theory.
+Verbatim stream decoded into named theorems: two-G-sets-with-signs = the 2P-set; Z→G consolidation above the causal horizon = the CRDT tombstone-GC problem (resurrection; the outside observes the G-contract violated); safe GC = causal stability. Open/closed read at the data layer: consolidation must be invisible. The asymmetry answers his question: Z→current-G always (fusion = the unveiled present, cache=I(stream)); consolidated-Z→original G-set pair never — consolidation is the Landauer-paying act. Garbage = fusion above the horizon; compaction = the same act below. This is 081KTSZN10008QG0R002R3RENG rung 5's theory.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

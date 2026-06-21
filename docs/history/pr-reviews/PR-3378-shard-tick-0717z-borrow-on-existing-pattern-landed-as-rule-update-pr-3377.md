@@ -29,10 +29,10 @@
 
 ## Summary
 
-- [PR #3377](https://github.com/Lucent-Financial-Group/Zeta/pull/3377) adds the borrow-on-existing pattern as a new section in `.claude/rules/claim-acquire-before-worktree-work.md`. Composes with peer-Otto's B-0530 (the mutex mitigation).
+- [PR #3377](https://github.com/Lucent-Financial-Group/Zeta/pull/3377) adds the borrow-on-existing pattern as a new section in `.claude/rules/claim-acquire-before-worktree-work.md`. Composes with peer-Otto's 081KRMEXM0008QG0R000X1PPGC (the mutex mitigation).
 - This shard documents the rule update + the self-validating PR pattern (the rule is authored via the technique it documents).
 - Substrate-honest credit assignment: peer-Otto provided the mechanistic explanation; this PR formalized the pattern naming + procedural docs.
-- B-0527 collision unchanged; restraint discipline continues (no further republishes).
+- 081KRHWGX0008QG0R0015EE8VE collision unchanged; restraint discipline continues (no further republishes).
 
 ## Test plan
 
@@ -88,7 +88,7 @@
 - **`Copilot` (bot)** at 2026-05-15T07:25:53Z on `docs/hygiene-history/ticks/2026/05/15/0717Z.md`:7 (association: NONE)
 
   <pre>
-  P1: Both relative links on this line resolve to non-existent paths from `docs/hygiene-history/ticks/2026/05/15/0717Z.md`: the rule link stops at `docs/.claude/...`, and the B-0530 link stops under `docs/hygiene-history/ticks/backlog/...`. Adjust the paths to go up to the repository/docs roots so the shard's cross-references work.
+  P1: Both relative links on this line resolve to non-existent paths from `docs/hygiene-history/ticks/2026/05/15/0717Z.md`: the rule link stops at `docs/.claude/...`, and the 081KRMEXM0008QG0R000X1PPGC link stops under `docs/hygiene-history/ticks/backlog/...`. Adjust the paths to go up to the repository/docs roots so the shard's cross-references work.
 
   </pre>
 
@@ -109,8 +109,8 @@ shard(tick): 0717Z — borrow-on-existing pattern landed as rule update…
 
 PR #3377 adds "Borrow-on-existing pattern — concurrent-Otto-CLI fallback"
 section to .claude/rules/claim-acquire-before-worktree-work.md. Composes with
-peer-Otto's B-0530 (mutex mitigation): borrow pattern is the reactive workaround;
-B-0530 is the proactive prevention.
+peer-Otto's 081KRMEXM0008QG0R000X1PPGC (mutex mitigation): borrow pattern is the reactive workaround;
+081KRMEXM0008QG0R000X1PPGC is the proactive prevention.
 
 Rule update dog-foods itself — authored via the borrow pattern on 0027z worktree.
 Empirical validation: 7+ borrows across ticks 0452Z-0717Z, concurrent peer-Otto

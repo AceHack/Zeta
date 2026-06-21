@@ -1,6 +1,5 @@
 ---
-id: B-0899
-zetaid: 081KSNY2Z0008QG0R001ZKE8R2
+id: 081KSNY2Z0008QG0R001ZKE8R2
 priority: P2
 status: open
 title: Casimir-like effect from review walls — testable pressure difference in agent-output distribution before/after rule landing
@@ -32,7 +31,7 @@ related_skills:
 tags: [casimir-like-effect-from-review-boundaries, persistent-future-entanglement-via-review-feedback, error-class-as-rotor-filter-wall-changing-future-trajectory, review-walls-change-allowed-output-modes, testable-pressure-difference-in-output-distribution, before-after-rule-landing-error-rate-measurement, casimir-analog-as-engineering-claim-not-physics-claim, infer-net-classical-inference-plus-persistent-review-equals-temporal-boundary-setting, quantum-like-effects-from-classical-substrate-via-temporal-feedback, measurable-on-framework-today]
 ---
 
-# B-0899 — Casimir-like effect from review walls (testable engineering claim)
+# 081KSNY2Z0008QG0R001ZKE8R2 — Casimir-like effect from review walls (testable engineering claim)
 
 ## Context
 
@@ -74,7 +73,7 @@ This is empirically testable on the framework today. Each `.claude/rules/<name>.
 
 Make this empirical claim operational + measurable on the existing framework. Three phases:
 
-### Phase 1 — define the measurement (Measure-instance per B-0898)
+### Phase 1 — define the measurement (Measure-instance per 081KSNY2Z0008QG0R003WCDQTC)
 
 For each `.claude/rules/<name>.md` rule:
 
@@ -125,19 +124,19 @@ Don't collapse the analog claim to literal-physics OR to empty-analogy. The subs
 ## Acceptance
 
 - [x] Amara ferry preserved (companion file in this PR)
-- [x] B-0899 row filed (this row)
+- [x] 081KSNY2Z0008QG0R001ZKE8R2 row filed (this row)
 - [ ] Phase 1 Measure-instance script implemented (`tools/research/casimir-rule-effect.ts` candidate path)
 - [ ] Phase 2 instrumentation table validated for 5+ existing rules with empirical before/after data
 - [ ] Phase 3 cumulative effect aggregate signal computed across rule cluster
 
 ## Composes with substrate
 
-- B-0898 (Measure-as-bridge) — provides the measurement primitive
-- B-0900 (Bell-like distributed-cluster contextuality experiment) — Phase 3 cumulative effect IS one input to the Bell-like experiment's 5-tier matrix
-- B-0897 (Persist-as-bridge) — the substrate that makes the before/after measurement possible (rules persist; commit history persists; the round-trip promise is what makes the empirical comparison computable)
-- B-0895 (Clifford grade-decomposition) — review-wall-as-rotor-filter is the natural Clifford framing
-- B-0875 (error-class extraction meta-loop) — direct compositional substrate; B-0875's classifier IS what produces the error-class fingerprints this row measures
-- B-0877 (heterogeneous auto-reviewer ensemble) — composes; the ensemble IS one of the mechanisms producing the review walls measured here
+- 081KSNY2Z0008QG0R003WCDQTC (Measure-as-bridge) — provides the measurement primitive
+- 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality experiment) — Phase 3 cumulative effect IS one input to the Bell-like experiment's 5-tier matrix
+- 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) — the substrate that makes the before/after measurement possible (rules persist; commit history persists; the round-trip promise is what makes the empirical comparison computable)
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition) — review-wall-as-rotor-filter is the natural Clifford framing
+- 081KSNY2Z0008QG0R000K3ETGB (error-class extraction meta-loop) — direct compositional substrate; 081KSNY2Z0008QG0R000K3ETGB's classifier IS what produces the error-class fingerprints this row measures
+- 081KSNY2Z0008QG0R0004ZF85W (heterogeneous auto-reviewer ensemble) — composes; the ensemble IS one of the mechanisms producing the review walls measured here
 
 ## Composes with rules
 

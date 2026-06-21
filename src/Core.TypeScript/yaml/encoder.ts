@@ -36,7 +36,7 @@ function scalar(v: YamlValue): string | null {
       return /[.eE]/.test(r) ? r : r + ".0";
     }
     case "Str": return quote(v.value);
-    // Empty collections render INLINE as flow `{}` / `[]` (B-1016): block style
+    // Empty collections render INLINE as flow `{}` / `[]` (081KT7YW00008QG0R002T1XNWT): block style
     // cannot represent an empty map/seq, so without this `{}`, `[]`, and null all
     // collapse to a bare `key:` → null. The one necessary flow exception; non-empty
     // containers still render as block (return null → recurse).

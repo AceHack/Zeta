@@ -27,7 +27,7 @@
 
 ## Description
 
-Max's WHY-led self-study: play first (BREATHE, correspondence pong), learn every structure VISUALLY (the catalog of faces: ids, the capacitor ramp-vs-cliff, the switchboard, index faces, the self-trace, magnetic types), make a tiny cartridge (the format IS the curriculum), then the B-1028 MIPS road — his machine, his room. Plus THE SHAPE CATALOG: shape.worldline/lightcone/fourcorner/braid/spiral/seam registered + cost-declared, each to ship as its own cartridge (see it draw → read its generator → change a number → see it again). Budget lint holds. 1 new test green.
+Max's WHY-led self-study: play first (BREATHE, correspondence pong), learn every structure VISUALLY (the catalog of faces: ids, the capacitor ramp-vs-cliff, the switchboard, index faces, the self-trace, magnetic types), make a tiny cartridge (the format IS the curriculum), then the 081KTSZN10008QG0R001BCCTXT MIPS road — his machine, his room. Plus THE SHAPE CATALOG: shape.worldline/lightcone/fourcorner/braid/spiral/seam registered + cost-declared, each to ship as its own cartridge (see it draw → read its generator → change a number → see it again). Budget lint holds. 1 new test green.
 
 ## Outcome
 

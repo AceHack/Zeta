@@ -1,6 +1,6 @@
 ---
 pr_number: 4795
-title: "backlog(B-0717): file Soraya round-57 hand-off \u2014 LSM Spine registry-rows + BP-16 cross-check pair"
+title: "backlog(081KSBMG30008QG0R003B46GWG): file Soraya round-57 hand-off \u2014 LSM Spine registry-rows + BP-16 cross-check pair"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-24T00:14:59Z"
@@ -12,19 +12,19 @@ archived_at: "2026-05-24T14:25:27Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4795: backlog(B-0717): file Soraya round-57 hand-off — LSM Spine registry-rows + BP-16 cross-check pair
+# PR #4795: backlog(081KSBMG30008QG0R003B46GWG): file Soraya round-57 hand-off — LSM Spine registry-rows + BP-16 cross-check pair
 
 ## PR description
 
 ## Summary
 
-Soraya autonomous round 57 — re-engagement trigger fired (PR #4791 / B-0716 MERGED at 00:06:45Z).
+Soraya autonomous round 57 — re-engagement trigger fired (PR #4791 / 081KS923C0008QG0R0009JFVSE MERGED at 00:06:45Z).
 
-**Two bounded subitems** under existing B-0709 umbrella:
+**Two bounded subitems** under existing 081KS923C0008QG0R0032VJZPF umbrella:
 
 ### Subitem (a) — Registry-row capture for 3 LSM Spine specs
 
-Mechanical follow-up to B-0716 (which corrected the enumeration but did NOT execute the registry-row authoring). `verification-registry.md` still has **zero `Spine` matches**.
+Mechanical follow-up to 081KS923C0008QG0R0009JFVSE (which corrected the enumeration but did NOT execute the registry-row authoring). `verification-registry.md` still has **zero `Spine` matches**.
 
 | Spec | Property class | Tool |
 |---|---|---|
@@ -60,11 +60,11 @@ Per Aaron's 2026-05-23 21:30Z direction: Otto auto-ships Soraya findings immedia
 
 ## Pull request overview
 
-This PR files a new backlog row (B-0717) capturing a formal-verification hand-off: registering the LSM “Spine” spec cluster in the verification registry and adding a BP-16 cross-check pairing request (TLA+ spec + FsCheck properties) to reduce TLA+/implementation drift risk.
+This PR files a new backlog row (081KSBMG30008QG0R003B46GWG) capturing a formal-verification hand-off: registering the LSM “Spine” spec cluster in the verification registry and adding a BP-16 cross-check pairing request (TLA+ spec + FsCheck properties) to reduce TLA+/implementation drift risk.
 
 **Changes:**
-- Added new backlog row file `B-0717` under `docs/backlog/P2/` describing the Spine registry-row work + BP-16 cross-check pairing acceptance criteria.
-- Updated `docs/BACKLOG.md` to include new index entries (including B-0717).
+- Added new backlog row file `081KSBMG30008QG0R003B46GWG` under `docs/backlog/P2/` describing the Spine registry-row work + BP-16 cross-check pairing acceptance criteria.
+- Updated `docs/BACKLOG.md` to include new index entries (including 081KSBMG30008QG0R003B46GWG).
 
 ### Reviewed changes
 
@@ -72,8 +72,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md | New P2 backlog row describing Spine registry-row capture and BP-16 paired-tool cross-check request. |
-| docs/BACKLOG.md | Backlog index updated to reference B-0717 (and also adds a B-0700 entry). |
+| docs/backlog/P2/081KSBMG30008QG0R003B46GWG-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md | New P2 backlog row describing Spine registry-row capture and BP-16 paired-tool cross-check request. |
+| docs/BACKLOG.md | Backlog index updated to reference 081KSBMG30008QG0R003B46GWG (and also adds a 081KRSKQ20008QG0R00367828S entry). |
 
 ## Review threads
 
@@ -81,9 +81,9 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@copilot-pull-request-reviewer** (2026-05-24T00:17:25Z):
 
-The new BACKLOG entry for B-0700 links to `backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, but there is no corresponding per-row file under `docs/backlog/` (search for `id: B-0700` returns no matches). This leaves a broken link and will likely fail the backlog index integrity gate; either add the missing row file or remove this line and regenerate `docs/BACKLOG.md` from the row files (`tools/backlog/generate-index.sh`).
+The new BACKLOG entry for 081KRSKQ20008QG0R00367828S links to `backlog/P2/081KRSKQ20008QG0R00367828S-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, but there is no corresponding per-row file under `docs/backlog/` (search for `id: 081KRSKQ20008QG0R00367828S` returns no matches). This leaves a broken link and will likely fail the backlog index integrity gate; either add the missing row file or remove this line and regenerate `docs/BACKLOG.md` from the row files (`tools/backlog/generate-index.sh`).
 
-### Thread 2: docs/backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md:51 (resolved)
+### Thread 2: docs/backlog/P2/081KSBMG30008QG0R003B46GWG-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md:51 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T00:17:26Z):
 

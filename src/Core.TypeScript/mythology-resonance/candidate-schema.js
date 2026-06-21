@@ -1,5 +1,5 @@
-// Mythology operational-resonance candidate schema (B-0056.1 smallest safe slice)
-// Pure-TS, retractibility-native stub. Re-decomposed from broad B-0056 L research track
+// Mythology operational-resonance candidate schema (081KR7JY10008QG0R001NXS6DQ smallest safe slice)
+// Pure-TS, retractibility-native stub. Re-decomposed from broad 081KQ3HBZ0008QG0R0034DHWTQ L research track
 // (assumes initial doc-only decomposition had mistake by lacking executable check surface).
 // Minimal validator stub — future slices extend with real filter checks against ALIGNMENT.md + resonance index
 export function validateMythologyCandidate(candidate) {

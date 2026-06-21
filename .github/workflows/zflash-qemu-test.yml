@@ -1,6 +1,6 @@
 # .github/workflows/zflash-qemu-test.yml
 #
-# B-0891 — zflash QEMU test-harness CI floor.
+# 081KSNY2Z0008QG0R0008PN7RQ — zflash QEMU test-harness CI floor.
 #
 # This first workflow slice validates the fail-closed planning surface for
 # the 5-scenario zflash QEMU matrix without requiring QEMU or nested KVM.
@@ -12,7 +12,7 @@ name: zflash-qemu-test
 on:
   schedule:
     # Weekly Sundays 15:17 UTC — off-the-hour weekend cadence. This keeps
-    # the B-0891 dry-run floor watching runner-image/Bun/dependency drift
+    # the 081KSNY2Z0008QG0R0008PN7RQ dry-run floor watching runner-image/Bun/dependency drift
     # without paying for default-on QEMU execution.
     - cron: "17 15 * * 0"
   pull_request:

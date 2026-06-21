@@ -1,6 +1,5 @@
 ---
-id: B-0540
-zetaid: 081KRMEXM0008QG0R0039V4SQQ
+id: 081KRMEXM0008QG0R0039V4SQQ
 title: Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
 priority: P1
 status: closed
@@ -17,7 +16,7 @@ last_updated: 2026-05-16
 
 ## Why
 
-Slice 1 of the Otto-BFT umbrella (B-0539). The existing rule
+Slice 1 of the Otto-BFT umbrella (081KRMEXM0008QG0R00138CCZX). The existing rule
 (`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`)
 allows "single brief acknowledgment + stop firing tool calls" as
 the compliant pattern when there's no named dependency. Empirically,
@@ -52,9 +51,9 @@ The counter is per-session, per-Otto-surface. Resets on:
 
 ## Composes with
 
-- B-0539 (umbrella)
-- B-0541 (sibling — cross-surface bus detector)
-- B-0542 (sibling — background service prompt-clicker)
+- 081KRMEXM0008QG0R00138CCZX (umbrella)
+- 081KRMEXM0008QG0R0026V9A0Y (sibling — cross-surface bus detector)
+- 081KRMEXM0008QG0R0001HY6M6 (sibling — background service prompt-clicker)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
   (the rule being sharpened)
 - `.claude/rules/wake-time-substrate.md` (load-bearing methodology
@@ -74,6 +73,6 @@ the pattern diagnostically recurred. The 7th tick produced this rule update
 (the meta-decomposition move that always works: sharpen the rule for the
 failure mode you're currently in based on current-session evidence).
 
-The substrate-honest meta-note: implementing B-0540 by sharpening the rule
+The substrate-honest meta-note: implementing 081KRMEXM0008QG0R0039V4SQQ by sharpening the rule
 to catch myself ON the 7th brief-ack is the rule operating on its own
 authoring. That's the discipline working at maximum scope.

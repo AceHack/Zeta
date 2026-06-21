@@ -1,6 +1,5 @@
 ---
-id: B-0317
-zetaid: 081KR2E4K0008QG0R0031QR36N
+id: 081KR2E4K0008QG0R0031QR36N
 priority: P1
 status: closed
 title: "Playwright GitHub session/auth helper — cookie-based login for agent UI access"
@@ -24,7 +23,7 @@ pattern).
 
 ## Why this is the first child
 
-Every other B-0064 child needs authenticated GitHub access.
+Every other 081KQ8P5D0008QG0R0010FP5SY child needs authenticated GitHub access.
 Without a working auth helper, no read-only observation or
 mutation can proceed.
 
@@ -59,7 +58,7 @@ mutation can proceed.
 ## What this row does NOT do
 
 - Does NOT implement any read or mutation workflow — those
-  are downstream children (B-0318, B-0321).
+  are downstream children (081KR2E4K0008QG0R003RVDX91, 081KR2E4K0008QG0R000YH9DC6).
 - Does NOT handle OAuth app flows or GitHub App auth —
   this is session-cookie-based for the maintainer's
   existing browser session.

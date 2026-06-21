@@ -98,7 +98,7 @@ async function withFakeClusterCli(
   }
 }
 
-describe("B-0967 argocd-health-test argument parsing", () => {
+describe("081KSXN940008QG0R000SCP2H1 argocd-health-test argument parsing", () => {
   test("defaults to safe dry-run against the k3d dev cluster", () => {
     const parsed = parseArgs([], {});
     expect("kind" in parsed).toBe(false);
@@ -202,7 +202,7 @@ describe("B-0967 argocd-health-test argument parsing", () => {
   });
 });
 
-describe("B-0967 argocd-health-test manifest parsing", () => {
+describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () => {
   test("extracts the k3d cluster name from metadata", () => {
     expect(parseK3dClusterName("apiVersion: k3d.io/v1alpha5\nkind: Simple\nmetadata:\n  name: zeta-ci\n")).toBe(
       "zeta-ci",
@@ -292,7 +292,7 @@ describe("B-0967 argocd-health-test manifest parsing", () => {
   });
 });
 
-describe("B-0967 argocd-health-test Application verdicts", () => {
+describe("081KSXN940008QG0R000SCP2H1 argocd-health-test Application verdicts", () => {
   test("parses kubectl Application JSON into compact snapshots", () => {
     const snapshots = parseApplicationList(
       JSON.stringify({
@@ -409,18 +409,18 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
   });
 });
 
-describe("B-0967 argocd-health-test planning", () => {
-  test("builds the B-0967 plan without touching Docker or Kubernetes", () => {
+describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
+  test("builds the 081KSXN940008QG0R000SCP2H1 plan without touching Docker or Kubernetes", () => {
     const parsed = parseArgs(["--dry-run"], {});
     if ("kind" in parsed) throw new Error(parsed.message);
     const plan = buildPlan(parsed);
     if ("kind" in plan) throw new Error(plan.message);
-    expect(plan.rowId).toBe("B-0967");
+    expect(plan.rowId).toBe("081KSXN940008QG0R000SCP2H1");
     expect(plan.scope).toBe("full");
     expect(plan.clusterName).toBe("zeta-dev");
     expect(plan.expectedApplications.some((app) => app.name === "argocd")).toBe(true);
     expect(plan.expectedApplications.filter((app) => !app.excludedFromDev).length).toBeGreaterThan(10);
-    expect(plan.notes.join("\n")).toContain("separate from B-0891");
+    expect(plan.notes.join("\n")).toContain("separate from 081KSNY2Z0008QG0R0008PN7RQ");
   });
 
   test("included dry-run lists proof targets on kind", () => {
@@ -483,7 +483,7 @@ describe("B-0967 argocd-health-test planning", () => {
   });
 });
 
-describe("B-0967 argocd-health-test preflight failures", () => {
+describe("081KSXN940008QG0R000SCP2H1 argocd-health-test preflight failures", () => {
   test("classifies a present but down container runtime separately from missing tools", () => {
     const failure = preflightFailure([
       {
@@ -496,7 +496,7 @@ describe("B-0967 argocd-health-test preflight failures", () => {
   });
 });
 
-describe("B-0967 argocd-health-test live failure shaping", () => {
+describe("081KSXN940008QG0R000SCP2H1 argocd-health-test live failure shaping", () => {
   test("returns a structured failure when kubectl emits malformed Application list JSON", async () => {
     await withFakeClusterCli("invalid-list-json", async () => {
       const parsed = parseArgs(

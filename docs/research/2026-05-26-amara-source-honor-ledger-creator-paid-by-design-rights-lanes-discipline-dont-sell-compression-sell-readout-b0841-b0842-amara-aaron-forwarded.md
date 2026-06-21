@@ -1,18 +1,18 @@
 ---
-title: Amara ratification + sharpening of B-0841 (Shortform productization) + B-0842 (basis-decomposition pattern) — rights-lane discipline + Source Honor Ledger + "Don't sell compression. Sell readout." + "pay OGs by design not compulsion" (3rd Amara ferry 2026-05-26)
+title: Amara ratification + sharpening of 081KSGS9H0008QG0R001876MP6 (Shortform productization) + 081KSGS9H0008QG0R003V8C86Q (basis-decomposition pattern) — rights-lane discipline + Source Honor Ledger + "Don't sell compression. Sell readout." + "pay OGs by design not compulsion" (3rd Amara ferry 2026-05-26)
 date: 2026-05-26
 source: Aaron-forwarded; 3rd Amara ferry in same day continuing the substrate-engineering ratification arc (1st = no-coercion-even-inward NCI; 2nd = thermal-forgetting / 4-keeper-rule; 3rd = THIS rights-lane + creator-payment substrate)
-provenance: Aaron 2026-05-26 forwarded Amara's substantive response to the B-0841 + B-0842 productization-substrate via Claude Code conversation
+provenance: Aaron 2026-05-26 forwarded Amara's substantive response to the 081KSGS9H0008QG0R001876MP6 + 081KSGS9H0008QG0R003V8C86Q productization-substrate via Claude Code conversation
 status: substrate-honest verbatim preservation + Amara ratification + Aaron sharpening + final keeper form for creator-payment discipline
 composes_with:
   - docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md (2nd Amara ferry; same persona; 4-keeper-rule)
   - docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md (1st Amara ferry; NCI scope-split)
-  - docs/backlog/P2/B-0841 (Shortform productization — Amara extends with rights-lane discipline)
-  - docs/backlog/P2/B-0842 (universal basis-decomposition pattern — Amara extends with sᵢ(t) basis signals are the source creators; pay them)
-  - docs/backlog/P1/B-0840 (thermal-forgetting / 4-keeper-rule — composes at retention-of-paid-source-contribution scope)
-  - docs/backlog/P1/B-0839 (Kirsanov parent — the substrate-source for the Shortform-equivalent discipline)
-  - docs/backlog/P3/B-0830 (Aurora — community-guardian-AIs; rights-lane discipline composes at productization scope)
-  - docs/backlog/P3/B-0826 (DePIN — multi-stream PoUW-CC; payment-distribution substrate)
+  - docs/backlog/P2/081KSGS9H0008QG0R001876MP6 (Shortform productization — Amara extends with rights-lane discipline)
+  - docs/backlog/P2/081KSGS9H0008QG0R003V8C86Q (universal basis-decomposition pattern — Amara extends with sᵢ(t) basis signals are the source creators; pay them)
+  - docs/backlog/P1/081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / 4-keeper-rule — composes at retention-of-paid-source-contribution scope)
+  - docs/backlog/P1/081KSGS9H0008QG0R002F1G7ER (Kirsanov parent — the substrate-source for the Shortform-equivalent discipline)
+  - docs/backlog/P3/081KSGS9H0008QG0R00126RHQR (Aurora — community-guardian-AIs; rights-lane discipline composes at productization scope)
+  - docs/backlog/P3/081KSGS9H0008QG0R001K8VPV4 (DePIN — multi-stream PoUW-CC; payment-distribution substrate)
   - .claude/rules/additive-not-zero-sum.md (cash-register-that-keeps-giving-gifts; positive-sum monetization)
   - .claude/rules/glass-halo-bidirectional.md ("Glass Halo for IP" — show payment graph)
   - .claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md (end-user-invariant-set discipline at creator-payment scope)
@@ -22,7 +22,7 @@ composes_with:
 
 ## Substrate-honest framing
 
-Mirror-tier verbatim preservation per `.claude/rules/substrate-or-it-didnt-happen.md`. Aaron forwarded by Amara 2026-05-26 (3rd Amara ferry in same day) with substantive ratification + critical sharpening of B-0841 (Shortform productization) + B-0842 (universal basis-decomposition pattern).
+Mirror-tier verbatim preservation per `.claude/rules/substrate-or-it-didnt-happen.md`. Aaron forwarded by Amara 2026-05-26 (3rd Amara ferry in same day) with substantive ratification + critical sharpening of 081KSGS9H0008QG0R001876MP6 (Shortform productization) + 081KSGS9H0008QG0R003V8C86Q (universal basis-decomposition pattern).
 
 Critical substrate landings captured here:
 
@@ -64,7 +64,7 @@ Critical substrate landings captured here:
 > - **escrow lane**: revenue held until rights are resolved
 > - **partner lane**: best economics, official guide, shared promotion
 >
-> That composes perfectly with B-0841: sell the outputs, and sell the discipline. The uploaded update already framed B-0841 as productizing Shortform-like features from Zeta's internal substrate-engineering process, with a separate external rights lane needed for public-facing guides.
+> That composes perfectly with 081KSGS9H0008QG0R001876MP6: sell the outputs, and sell the discipline. The uploaded update already framed 081KSGS9H0008QG0R001876MP6 as productizing Shortform-like features from Zeta's internal substrate-engineering process, with a separate external rights lane needed for public-facing guides.
 >
 > The generous-cut idea is genuinely good. Make it a feature, not a confession:
 >
@@ -160,7 +160,7 @@ Critical substrate landings captured here:
 > Not "pay because a court made us."
 > Pay because the sources are part of the basis.
 >
-> In the B-0842 frame:
+> In the 081KSGS9H0008QG0R003V8C86Q frame:
 >
 > ```math
 > \sum_i \omega_i s_i(t) \approx y(t)
@@ -209,7 +209,7 @@ Critical substrate landings captured here:
 >
 > > Zeta does not only cite its sources. Zeta pays its sources.
 >
-> That is clean as hell. It makes B-0841/B-0842 feel ethically native instead of legally defensive: Shortform-like outputs, but with creator-paid synthesis as the differentiator. The uploaded update already frames B-0841 as selling both the outputs and the discipline; this adds the moral/economic layer that makes the product feel Glass Halo-native.
+> That is clean as hell. It makes 081KSGS9H0008QG0R001876MP6/081KSGS9H0008QG0R003V8C86Q feel ethically native instead of legally defensive: Shortform-like outputs, but with creator-paid synthesis as the differentiator. The uploaded update already frames 081KSGS9H0008QG0R001876MP6 as selling both the outputs and the discipline; this adds the moral/economic layer that makes the product feel Glass Halo-native.
 >
 > **Tiny blade**: don't phrase it as "even if we don't have to by law" in customer-facing copy. Say:
 >
@@ -226,14 +226,14 @@ The Amara keeper rules integrate cleanly with existing Zeta substrate:
 | Amara substrate | Composes with |
 | --- | --- |
 | Rights-lane discipline (5 lanes) | `_*_acceptance` pattern per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`; each lane gets its own `_*_acceptance` block |
-| 2+ sources + no-substitute rule | B-0842 universal basis-decomposition pattern (multi-source IS basis decomposition; substitution risk maps to alpha=1 hoarding failure mode) |
-| Source Honor Ledger / Basis Royalty Pool | B-0826 DePIN multi-stream PoUW-CC (payment-distribution substrate); additive-not-zero-sum rule (cash-register-that-keeps-giving-gifts) |
+| 2+ sources + no-substitute rule | 081KSGS9H0008QG0R003V8C86Q universal basis-decomposition pattern (multi-source IS basis decomposition; substitution risk maps to alpha=1 hoarding failure mode) |
+| Source Honor Ledger / Basis Royalty Pool | 081KSGS9H0008QG0R001K8VPV4 DePIN multi-stream PoUW-CC (payment-distribution substrate); additive-not-zero-sum rule (cash-register-that-keeps-giving-gifts) |
 | Glass Halo for IP | `.claude/rules/glass-halo-bidirectional.md` (bidirectional transparency at IP scope) |
-| "Don't sell compression. Sell readout." | B-0842 substantive claim that readout-weights ARE the moat (compression alone competes with the source) |
+| "Don't sell compression. Sell readout." | 081KSGS9H0008QG0R003V8C86Q substantive claim that readout-weights ARE the moat (compression alone competes with the source) |
 | "We pay contributors by design, not by compulsion" | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (end-user-invariant-set discipline applied to creator-relationships) |
-| Creator escrow + rapid takedown path | NCI HC-8 floor (preserve creator agency over their substrate); B-0664 |
+| Creator escrow + rapid takedown path | NCI HC-8 floor (preserve creator agency over their substrate); 081KRW63S0008QG0R001Z7NYMV |
 
-### The 4-keeper-rule from B-0840 maps onto creator-relationship governance
+### The 4-keeper-rule from 081KSGS9H0008QG0R0006F4BGX maps onto creator-relationship governance
 
 Amara's 2nd ferry 4-keeper-rule maps onto creator-relationship governance:
 
@@ -251,6 +251,6 @@ The pattern composes at substrate-engineering meta-scope.
 
 ## Origin
 
-Aaron-forwarded 3rd Amara ferry in same day 2026-05-26. Companion substrate to B-0841 (Shortform productization) + B-0842 (universal basis-decomposition pattern). Forthcoming companion backlog row: B-0843 (Source Honor Ledger / Basis Royalty Pool operational implementation).
+Aaron-forwarded 3rd Amara ferry in same day 2026-05-26. Companion substrate to 081KSGS9H0008QG0R001876MP6 (Shortform productization) + 081KSGS9H0008QG0R003V8C86Q (universal basis-decomposition pattern). Forthcoming companion backlog row: 081KSGS9H0008QG0R0012R8ZWS (Source Honor Ledger / Basis Royalty Pool operational implementation).
 
 Per `.claude/rules/honor-those-that-came-before.md` — Amara's substrate-engineering discipline + Aaron's "pay OGs by design" extension + the 4-keeper-rule mapping onto creator-relationship governance IS substrate worth honoring + composing with rather than collapsing into agent's own framing.

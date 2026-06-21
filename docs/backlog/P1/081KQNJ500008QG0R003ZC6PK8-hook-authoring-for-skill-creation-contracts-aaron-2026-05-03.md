@@ -1,6 +1,5 @@
 ---
-id: B-0173
-zetaid: 081KQNJ500008QG0R003ZC6PK8
+id: 081KQNJ500008QG0R003ZC6PK8
 priority: P1
 status: open
 title: Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
@@ -26,12 +25,12 @@ Harness hooks fire at well-defined points (pre-tool-use, post-tool-use, session-
 
 ## Why P1
 
-The verify-then-claim discipline (`feedback_verify_then_claim_discipline_*`) catalogues 20+ drift instances across 9+ PRs that manual discipline failed to catch. The substrate-claim-checker TS tool (B-0170) ships v0 covering count-drift; v1+ extends to remaining 6 sub-classes. **The hook integration is what turns the tool from advisory into enforcement.** Without hooks, the tool fires only when manually invoked; with hooks, it gates commits + PRs automatically.
+The verify-then-claim discipline (`feedback_verify_then_claim_discipline_*`) catalogues 20+ drift instances across 9+ PRs that manual discipline failed to catch. The substrate-claim-checker TS tool (081KQNJ500008QG0R003SCWBDV) ships v0 covering count-drift; v1+ extends to remaining 6 sub-classes. **The hook integration is what turns the tool from advisory into enforcement.** Without hooks, the tool fires only when manually invoked; with hooks, it gates commits + PRs automatically.
 
-## Why depends_on B-0170 + B-0171
+## Why depends_on 081KQNJ500008QG0R003SCWBDV + 081KQNJ500008QG0R001N94412
 
-- **B-0170** (substrate-claim-checker TS tool): the tool the hooks invoke. Hooks ship after the tool's check-types are mature enough to gate.
-- **B-0171** (OpenSpec catch-up): hooks enforce contracts; contracts live in OpenSpec capabilities. Without specs, the hooks have no contract to read pre/post-conditions from.
+- **081KQNJ500008QG0R003SCWBDV** (substrate-claim-checker TS tool): the tool the hooks invoke. Hooks ship after the tool's check-types are mature enough to gate.
+- **081KQNJ500008QG0R001N94412** (OpenSpec catch-up): hooks enforce contracts; contracts live in OpenSpec capabilities. Without specs, the hooks have no contract to read pre/post-conditions from.
 
 ## Scope (per the verify-then-claim memo's mechanization-path section)
 
@@ -87,10 +86,10 @@ This row closes when:
 
 ## Composes with
 
-- **B-0169** (decision-archaeology skill) — once mature + packaged (B-0172), the decision-archaeology skill body has hooks via this row
-- **B-0170** (substrate-claim-checker TS tool) — the tool the hooks invoke
-- **B-0171** (OpenSpec catch-up) — hooks enforce spec-encoded contracts
-- **B-0172** (skill-domain plugin packaging) — packaged plugins include their hooks
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology skill) — once mature + packaged (081KQNJ500008QG0R001VGMS5G), the decision-archaeology skill body has hooks via this row
+- **081KQNJ500008QG0R003SCWBDV** (substrate-claim-checker TS tool) — the tool the hooks invoke
+- **081KQNJ500008QG0R001N94412** (OpenSpec catch-up) — hooks enforce spec-encoded contracts
+- **081KQNJ500008QG0R001VGMS5G** (skill-domain plugin packaging) — packaged plugins include their hooks
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — Rule 3 of the three skill-design rules; this row is the operational implementation
 - `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` — discipline that gets enforced by these hooks
 - `memory/feedback_rule_number_six_do_the_work_only_if_you_check_all_the_rules_10_more_times_kinda_joking_not_really_aaron_2026_05_05.md` — Rule #6 (check-rules-before-acting); hooks ARE the mechanization that fires this check pre-action instead of relying on agent-remembering.

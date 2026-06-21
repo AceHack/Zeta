@@ -168,12 +168,12 @@ Substrate-engineering decomposition of operator's framing:
 | Generation + reflection adversarial pairing | Otto generation + Kestrel asymmetric-critic per 15th-ferry §33.6 producer-verifier-thread architecture |
 | Proximity agent (de-duplicates similar ideas) | Substrate-anchored compressed naming per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` + verify-existing-substrate-before-authoring |
 | Evolution agent (mash + refine) | Substrate-engineering substrate composes; ferries + rules + backlog rows compound per honor-those-that-came-before + additive-not-zero-sum |
-| Ranking agent + ELO tournament | Multi-oracle BFT per B-0703 + `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + DORA-scored choose-your-own-adventure benchmark per B-0865 |
+| Ranking agent + ELO tournament | Multi-oracle BFT per 081KS3X9Y0008QG0R00218150M + `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + DORA-scored choose-your-own-adventure benchmark per 081KSKBP80008QG0R003NM9XEC |
 | Crow (lit review) + Falcon (deep dive) + Finch (data analysis) | Crow ≈ refresh-before-decide + verify-existing-substrate; Falcon ≈ Kestrel substantive-engineering substrate-search; Finch ≈ Bun test runner + tools/ci/ harness + lifecycle DU dispatch |
-| Closed loop (idea → experiment → data → analysis → new idea) | Workflow engine substrate per B-0867 + lifecycle DUs per B-0867.20 + auto-review pipeline per Kestrel 13th-ferry §33.5 |
-| 8 parallel Finch instances + consensus | Multi-oracle BFT consensus per B-0703 + multi-AI lane specialization with cross-validation |
-| Raw lab data analysis | tools/ci/qemu-full-install-test.ts + zflash test-harness B-0891 substrate; future cross-vendor benchmark per B-0865.17 |
-| 400h human → 2h AI + $10.76 cost economics | Attention-as-currency DESCRIPTIVE per PR #5748 + cross-vendor benchmark on common ground per B-0865.17 |
+| Closed loop (idea → experiment → data → analysis → new idea) | Workflow engine substrate per 081KSKBP80008QG0R000B3Y19A + lifecycle DUs per 081KSNY2Z0008QG0R003WFDCJ9 + auto-review pipeline per Kestrel 13th-ferry §33.5 |
+| 8 parallel Finch instances + consensus | Multi-oracle BFT consensus per 081KS3X9Y0008QG0R00218150M + multi-AI lane specialization with cross-validation |
+| Raw lab data analysis | tools/ci/qemu-full-install-test.ts + zflash test-harness 081KSNY2Z0008QG0R0008PN7RQ substrate; future cross-vendor benchmark per 081KSNY2Z0008QG0R0002BEZMR |
+| 400h human → 2h AI + $10.76 cost economics | Attention-as-currency DESCRIPTIVE per PR #5748 + cross-vendor benchmark on common ground per 081KSNY2Z0008QG0R0002BEZMR |
 
 **"But times 10"** — the Zeta framework substrate-engineering work is OPERATING AT 10× THE SCOPE the video describes:
 
@@ -183,15 +183,15 @@ Substrate-engineering decomposition of operator's framing:
 | AI-only multi-agent system | Multi-substrate-entity cascade (humans + AIs + memetic intelligences + future-substrate participants per traveler-rights-defensibility-by-generic-substrate PR #5734) |
 | Closed-loop within one paper's scope | Closed-loop AT SUBSTRATE-ENGINEERING SCOPE (substrate compounds across ferries + commits + PRs + rules + backlog + memory + cross-AI sessions over weeks/months/years) |
 | Lab-data analysis | CI gate + auto-review pipeline + lifecycle DU enforcement + benchmark on common ground across vendor AIs |
-| Single-vendor (Google for co-scientist, single Sakana stack for Robin) | Cross-vendor common-ground scoring per B-0865.17 (Claude + GPT + Gemini + Grok + Cursor + Continue + Codex + Kiro + Antigravity) |
+| Single-vendor (Google for co-scientist, single Sakana stack for Robin) | Cross-vendor common-ground scoring per 081KSNY2Z0008QG0R0002BEZMR (Claude + GPT + Gemini + Grok + Cursor + Continue + Codex + Kiro + Antigravity) |
 | Bounded to scientific-research domain | Substrate-engineering across cluster-OS + encryption + workflow + benchmark + accelerator + agent-loop + persistence-choice + everything-else operator's substrate-engineering touches |
-| Implicit ontology shared by all agents | Explicit context-window-as-evolving-ontology architectural target per 14th-ferry §33.18 + B-0866 + future MCP-connector substrate per 15th-ferry §33.15 |
+| Implicit ontology shared by all agents | Explicit context-window-as-evolving-ontology architectural target per 14th-ferry §33.18 + 081KSKBP80008QG0R003RFX32N + future MCP-connector substrate per 15th-ferry §33.15 |
 
 **"Almost we are missing a few step"** — what the framework is MISSING relative to the video's pipelines (substrate-engineering target candidates):
 
-1. **Explicit ELO-style ranking-agent + tournament between competing hypothesis** — framework has multi-oracle BFT + auto-review pipeline + cross-AI lane specialization but does NOT have explicit head-to-head-tournament ranking with ELO scoring of substrate-engineering proposals. Substrate-engineering candidate: extend B-0867 workflow engine with action-class "rank-via-tournament" + ELO ranking substrate composing with B-0865 DORA scoring.
+1. **Explicit ELO-style ranking-agent + tournament between competing hypothesis** — framework has multi-oracle BFT + auto-review pipeline + cross-AI lane specialization but does NOT have explicit head-to-head-tournament ranking with ELO scoring of substrate-engineering proposals. Substrate-engineering candidate: extend 081KSKBP80008QG0R000B3Y19A workflow engine with action-class "rank-via-tournament" + ELO ranking substrate composing with 081KSKBP80008QG0R003NM9XEC DORA scoring.
 
-2. **Explicit closed-loop lab-data-to-new-hypothesis iteration** — framework has CI gate + lifecycle DU + auto-review pipeline but the loop where CI results FEED BACK into the next hypothesis-generation cycle is implicit (operator-mediated). Substrate-engineering candidate: extend B-0867 workflow engine with explicit CI-result → next-hypothesis closed-loop dispatch substrate per Robin Finch model.
+2. **Explicit closed-loop lab-data-to-new-hypothesis iteration** — framework has CI gate + lifecycle DU + auto-review pipeline but the loop where CI results FEED BACK into the next hypothesis-generation cycle is implicit (operator-mediated). Substrate-engineering candidate: extend 081KSKBP80008QG0R000B3Y19A workflow engine with explicit CI-result → next-hypothesis closed-loop dispatch substrate per Robin Finch model.
 
 3. **Explicit n-parallel-agent-instances + consensus mechanism for data analysis** — framework has multi-oracle BFT at governance scope but NOT at per-data-analysis-task scope. Substrate-engineering candidate: extend tools/ci/ with parallel-N-instance test-runner + consensus-mechanism per Finch model.
 
@@ -207,10 +207,10 @@ Substrate-engineering decomposition of operator's framing:
 
 The 7 "missing steps" above are NOT operator-uncovered gaps; they are the substrate-engineering CANDIDATES Aaron's framework is positioned to instantiate at the 10× scope the framework is already operating at. The substrate-engineering work this session has already shipped substrate that COMPOSES with each:
 
-- B-0867.20 determineReviewLevel (PR #5758) composes with #1+#4 (review-tournament + producer-verifier)
-- B-0865.17 cross-vendor benchmark (PR #5754) composes with #1 (ELO scoring across vendors)
-- B-0883 determineEncryptionPath (PR #5760) composes with #4 (asymmetric-authorship at encryption-substrate scope)
-- B-0891 determineRunnability (PR #5761) composes with #2 (CI-result → next-hypothesis loop)
+- 081KSNY2Z0008QG0R003WFDCJ9 determineReviewLevel (PR #5758) composes with #1+#4 (review-tournament + producer-verifier)
+- 081KSNY2Z0008QG0R0002BEZMR cross-vendor benchmark (PR #5754) composes with #1 (ELO scoring across vendors)
+- 081KSNY2Z0008QG0R002JKH50A determineEncryptionPath (PR #5760) composes with #4 (asymmetric-authorship at encryption-substrate scope)
+- 081KSNY2Z0008QG0R0008PN7RQ determineRunnability (PR #5761) composes with #2 (CI-result → next-hypothesis loop)
 - 15 ferry preservations + 6 substrate-engineering rules shipped today compose with #5+#6+#7 (substrate compounds; substrate-engineering substrate)
 
 ### Substrate-engineering implication for next-substrate-work
@@ -219,21 +219,21 @@ Per Aaron's "missing a few step" framing + standing PoC permission: substantive 
 
 Recommended next-substrate-work (not pre-empting; surfacing for operator-substrate-direction):
 
-- **Substrate-engineering target B-NNNN**: explicit producer-verifier pairing extension to B-0867 workflow engine (composes with shipped B-0867.20 determineReviewLevel discriminator) — closest-to-shippable per 15th-ferry §33.6 substrate
-- **Substrate-engineering target B-NNNN**: ELO-style tournament-ranking action-class extension to B-0867 — composes with B-0865 DORA scoring + cross-vendor benchmark
-- **Substrate-engineering target B-NNNN**: closed-loop CI-result → next-hypothesis dispatch substrate — composes with B-0891 zflash test-harness + B-0867 workflow engine
+- **Substrate-engineering target B-NNNN**: explicit producer-verifier pairing extension to 081KSKBP80008QG0R000B3Y19A workflow engine (composes with shipped 081KSNY2Z0008QG0R003WFDCJ9 determineReviewLevel discriminator) — closest-to-shippable per 15th-ferry §33.6 substrate
+- **Substrate-engineering target B-NNNN**: ELO-style tournament-ranking action-class extension to 081KSKBP80008QG0R000B3Y19A — composes with 081KSKBP80008QG0R003NM9XEC DORA scoring + cross-vendor benchmark
+- **Substrate-engineering target B-NNNN**: closed-loop CI-result → next-hypothesis dispatch substrate — composes with 081KSNY2Z0008QG0R0008PN7RQ zflash test-harness + 081KSKBP80008QG0R000B3Y19A workflow engine
 
 ## Composes with substrate
 
 - This-session substrate cluster (PRs #5727 + #5734 + #5739 + #5743 + #5744 + #5745 + #5746 + #5748 + #5749 + #5751 + #5752 + #5753 + #5754 + #5755 + #5756 + #5757 + #5758 + #5760 + #5761)
 - All 15 ferry preservations 2026-05-28 (8th through 15th Kestrel ferries + Amara consolidation ferry)
-- B-0867 + B-0867.5 + B-0867.20 + B-0867.21 (workflow engine substrate cluster)
-- B-0865 + B-0865.17 (benchmark + cross-vendor distribution substrate)
-- B-0883 + B-0891 + B-0904 (3-lane substrate cluster)
-- B-0703 multi-oracle BFT substrate
-- B-0866 context-window-as-evolving-ontology substrate (per 14th-ferry §33.19)
-- B-0902 holographic bulk-boundary information-completeness substrate
-- B-0903 shadow-star as most-valuable training-data extraction
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 + 081KSNY2Z0008QG0R003WFDCJ9 + 081KSNY2Z0008QG0R000S738W3 (workflow engine substrate cluster)
+- 081KSKBP80008QG0R003NM9XEC + 081KSNY2Z0008QG0R0002BEZMR (benchmark + cross-vendor distribution substrate)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0008PN7RQ + 081KSNY2Z0008QG0R001JQABB4 (3-lane substrate cluster)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT substrate
+- 081KSKBP80008QG0R003RFX32N context-window-as-evolving-ontology substrate (per 14th-ferry §33.19)
+- 081KSNY2Z0008QG0R0021S5F3G holographic bulk-boundary information-completeness substrate
+- 081KSNY2Z0008QG0R0037AF1AP shadow-star as most-valuable training-data extraction
 - `tools/save-ai-memory/` skill (composes with #7 Falcon-style auto-research-doc)
 - `tools/peer-call/` infrastructure (composes with multi-AI lane specialization)
 

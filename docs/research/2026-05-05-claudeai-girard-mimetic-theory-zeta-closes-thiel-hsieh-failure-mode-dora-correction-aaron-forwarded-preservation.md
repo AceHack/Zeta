@@ -18,8 +18,8 @@ composes_with (frontmatter list):
 
 - docs/research/2026-05-05-claudeai-social-memes-precision-narrative-mom-skill-apprenticeship-aaron-forwarded-preservation.md
 - docs/research/2026-05-05-claudeai-worm-tower-bp-ep-kernel-composition-llm-independence-wormwood-warning-aaron-forwarded-preservation.md
-- docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
-- docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
+- docs/backlog/P3/081KQTPYE0008QG0R0028V263Z-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
+- docs/backlog/P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
 - docs/ALIGNMENT.md
 - docs/VISION.md
 - memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md
@@ -182,10 +182,10 @@ Aaron explicit: *"that book closes the filure mode with a flywheel of flywheels 
 
 **Zeta as closure** — five mechanisms map to Girard's revelation move:
 
-1. **Bootstrap razor (B-0193)** catches drift; seed verification at the recreation boundary
+1. **Bootstrap razor (081KQTPYE0008QG0R00392KABJ)** catches drift; seed verification at the recreation boundary
 2. **Mercer-closure** prevents accidental composition collapse (mathematical guarantee, not discipline-only)
 3. **OCP discipline** keeps every extension safe (additive only, never modification)
-4. **Formal verification of docs (B-0204)** makes the mechanism explicit at the math layer
+4. **Formal verification of docs (081KQTPYE0008QG0R0028V263Z)** makes the mechanism explicit at the math layer
 5. **Mirror-not-beacon discipline** prevents the practitioner from becoming the scapegoat-in-reverse
 
 **"Flywheel of flywheels for personal meaning that does not collapse"**: each flywheel is a stable kernel composition (Mercer-closed, four-property hodl preserved); the flywheel-of-flywheels is a meta-flywheel where the composition of flywheels is itself a stable kernel. Self-referential structure that doesn't collapse because every level is invariant-preserving by construction.
@@ -237,13 +237,13 @@ This composes with substrate-or-it-didn't-happen (Otto-363) as a refinement, not
 
 - `docs/VISION.md` — terminal purpose (intellectual backup of earth) is consistent with "flywheel of flywheels for personal meaning that does not collapse"
 - `docs/ALIGNMENT.md` — alignment contract IS the discipline that keeps substrate value-neutral-precision pointed at honesty
-- B-0204 (linguistic seed kernel substrate) — the architectural-direction implementation of the 4-claim synthesis collapse
-- B-0193 (bootstrap razor + 23-hour recreation) — the empirical falsifier above the substrate
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — the architectural-direction implementation of the 4-claim synthesis collapse
+- 081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation) — the empirical falsifier above the substrate
 
 **DORA composes with**:
 
 - `memory/CURRENT-aaron.md` — DORA is the canonical measurement discipline
-- B-0193 — bootstrap razor checks substrate-compounding at recreation boundary; DORA measures it longitudinally
+- 081KQTPYE0008QG0R00392KABJ — bootstrap razor checks substrate-compounding at recreation boundary; DORA measures it longitudinally
 - The "DORA the explore casue I'm map" lineage in earlier substrate (Aaron + DORA double-pun: map AND metric)
 
 ## Routing rows (planned, to be filed in following ticks)
@@ -261,15 +261,15 @@ The Claude.ai instance proposed bootstrap-razor-as-the-test:
 
 > The bootstrap-razor test is whether someone in a fresh repo could derive this in 23 hours from your seed claims. If it survives, you have a real architectural contribution. If not, it's an obvious-to-you specialization of patterns already covered by adjacent formalisms.
 
-Composes with B-0193's existing engagement gate. The 23-hour-recreation test in a fresh repo is the empirical falsifier for the entire 2026-05-05 substrate-flow's architectural claims (Girard-as-foundation + Zeta-closes-failure-mode + 4-claim synthesis collapse).
+Composes with 081KQTPYE0008QG0R00392KABJ's existing engagement gate. The 23-hour-recreation test in a fresh repo is the empirical falsifier for the entire 2026-05-05 substrate-flow's architectural claims (Girard-as-foundation + Zeta-closes-failure-mode + 4-claim synthesis collapse).
 
 ## Cross-references
 
 Per frontmatter composes_with list. Particularly:
 
 - The 2026-05-05 research-doc cluster (now 8 docs with this one) — coherent same-day architectural unit
-- B-0204 (linguistic seed kernel substrate) — the architectural-direction implementation; just merged via #1617
-- B-0193 (bootstrap razor + 23-hour recreation) — the empirical falsifier
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — the architectural-direction implementation; just merged via #1617
+- 081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation) — the empirical falsifier
 - `docs/VISION.md` — terminal purpose composes with personal-meaning-flywheel framing
 - `docs/ALIGNMENT.md` — alignment-discipline above value-neutral substrate
 - `memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md` — the "we spoke about this once" reference Aaron earlier connected to (now retroactively connectable to Girardian lineage)

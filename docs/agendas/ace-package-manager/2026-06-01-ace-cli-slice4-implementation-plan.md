@@ -804,7 +804,7 @@ After all tasks pass + the plan doc is committed:
 ```bash
 git push -u origin otto-windows/ace-slice4-impl-2026-06-01
 gh pr create --head otto-windows/ace-slice4-impl-2026-06-01 --base main \
-  --title "feat(ace): slice 4 — inline-URL transitive dependency resolution (B-0288)" --body "<summary>"
+  --title "feat(ace): slice 4 — inline-URL transitive dependency resolution (081KR2E4K0008QG0R002YE3MMD)" --body "<summary>"
 gh pr merge <N> --auto --squash
 ```
 

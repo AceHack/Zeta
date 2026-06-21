@@ -3,7 +3,7 @@ import { canonicalJson, fromCanonicalJson, type Tagged } from "./json";
 import { canonicalCbor, fromCanonicalCbor, type Tagged as CborTagged } from "./cbor";
 // NOTE: `Tagged` is defined separately in json.ts AND cbor.ts (structurally
 // identical, nominally distinct) — the DUPLICATION the DynamicValue-unify decision
-// (B-1011) removes. Bridged with casts here until they share one type.
+// (081KT5CF90008QG0R001P4CQ09) removes. Bridged with casts here until they share one type.
 import { encode } from "../yaml/encoder";
 import { parse, type YamlValue } from "../yaml/dom";
 import { canonicalXml, fromCanonicalXml } from "./xml";

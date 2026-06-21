@@ -1,6 +1,5 @@
 ---
-id: B-0292
-zetaid: 081KR2E4K0008QG0R001ZZ5XXF
+id: 081KR2E4K0008QG0R001ZZ5XXF
 priority: P1
 status: open
 title: "Concordance AI — local GPU inference for structure recognition"
@@ -12,15 +11,15 @@ decomposition: decomposed
 type: feature
 ---
 
-# B-0292 — Local GPU inference
+# 081KR2E4K0008QG0R001ZZ5XXF — Local GPU inference
 
 Run structure recognition on concordance index using local
 GPU. No cloud API dependency.
 
 ## Pre-start checklist (backlog-item start gate)
 
-- Prior-art search: grepped codebase for concordance/B-029*/structure/GPU/local-inference (surfaces: tools/concordance/concordance.ts is the only hit from B-0291; no prior GPU code; no wake-time-substrate / skill-router / Otto-364 collisions in this lane). LOST-FILES-LOCATIONS.md and decision-archaeology paths checked via trajectory RESUMEs — no overlap.
-- Dependency restructure: B-0291 now closed (corpus pipeline landed), reciprocal composes_with added implicitly via shared concordance module; supersession via B-0244 parent confirmed; classification updated from blocked-on-B-0291.
+- Prior-art search: grepped codebase for concordance/B-029*/structure/GPU/local-inference (surfaces: tools/concordance/concordance.ts is the only hit from 081KR2E4K0008QG0R000DK0BFY; no prior GPU code; no wake-time-substrate / skill-router / Otto-364 collisions in this lane). LOST-FILES-LOCATIONS.md and decision-archaeology paths checked via trajectory RESUMEs — no overlap.
+- Dependency restructure: 081KR2E4K0008QG0R000DK0BFY now closed (corpus pipeline landed), reciprocal composes_with added implicitly via shared concordance module; supersession via 081KQZVQW0008QG0R001PS4F8G parent confirmed; classification updated from blocked-on-081KR2E4K0008QG0R000DK0BFY.
 - Re-decomposition performed (assumed original atomic was mistake — acceptance criteria too broad for one PR): smallest safe slice carved as "TS typed structure recognition surface + CPU stub".
 - Update row: this section + status/classification/decomp fields updated before any further work.
 

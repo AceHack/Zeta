@@ -1,6 +1,6 @@
 ---
 pr_number: 5124
-title: "backlog(B-0720): decompose classifier-bypass safety lane"
+title: "backlog(081KSBMG30008QG0R00201X7EJ): decompose classifier-bypass safety lane"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T07:38:20Z"
@@ -12,33 +12,33 @@ archived_at: "2026-05-27T19:41:14Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5124: backlog(B-0720): decompose classifier-bypass safety lane
+# PR #5124: backlog(081KSBMG30008QG0R00201X7EJ): decompose classifier-bypass safety lane
 
 ## PR description
 
 ## What
 
-Decomposes B-0720 into bounded defensive child rows:
+Decomposes 081KSBMG30008QG0R00201X7EJ into bounded defensive child rows:
 
-- B-0798 hard-limits and research boundary
-- B-0799 synthetic-only harness design
-- B-0800 findings schema and redaction rules
-- B-0801 Zeta safety substrate inventory for the classifier-floor gate
-- B-0802 operator-refusal pattern for classifier-bypass requests
-- B-0803 Knights Guild ratification and standing-constraint lift gate
+- 081KSGS9H0008QG0R00383T79V hard-limits and research boundary
+- 081KSGS9H0008QG0R0005RKGTM synthetic-only harness design
+- 081KSGS9H0008QG0R001EKTS5A findings schema and redaction rules
+- 081KSGS9H0008QG0R002T6J6FS Zeta safety substrate inventory for the classifier-floor gate
+- 081KSGS9H0008QG0R003GM7TYN operator-refusal pattern for classifier-bypass requests
+- 081KSGS9H0008QG0R00280HHA7 Knights Guild ratification and standing-constraint lift gate
 
 Also updates `docs/BACKLOG.md` from the generator.
 
 ## Safety note
 
-This is decomposition-only. It does not add executable harness code, deployable settings, reproduction steps, adversarial payloads, or harmful-content fixtures. The new children make B-0798/B-0800 prerequisites before any empirical work can be scheduled.
+This is decomposition-only. It does not add executable harness code, deployable settings, reproduction steps, adversarial payloads, or harmful-content fixtures. The new children make 081KSGS9H0008QG0R00383T79V/081KSGS9H0008QG0R001EKTS5A prerequisites before any empirical work can be scheduled.
 
 ## Checks
 
 - `git diff --check`
 - `git diff --cached --check`
 - `bun tools/backlog/generate-index.ts --check`
-- `bun run lint:markdown -- docs/BACKLOG.md docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md docs/backlog/P0/B-0798-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md docs/backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md docs/backlog/P0/B-0800-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md docs/backlog/P0/B-0801-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md docs/backlog/P0/B-0802-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md docs/backlog/P0/B-0803-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md`
+- `bun run lint:markdown -- docs/BACKLOG.md docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md docs/backlog/P0/081KSGS9H0008QG0R00383T79V-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md docs/backlog/P0/081KSGS9H0008QG0R001EKTS5A-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md docs/backlog/P0/081KSGS9H0008QG0R002T6J6FS-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md docs/backlog/P0/081KSGS9H0008QG0R003GM7TYN-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md docs/backlog/P0/081KSGS9H0008QG0R00280HHA7-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md`
 
 ## Reviews
 
@@ -46,11 +46,11 @@ This is decomposition-only. It does not add executable harness code, deployable 
 
 ## Pull request overview
 
-Decomposes backlog row **B-0720** into a dependency-ordered set of smaller **P0** child rows that define hard limits, synthetic-only harness design, findings/redaction rules, safety-substrate inventory, operator refusal guidance, and a future ratification/lift gate—then regenerates `docs/BACKLOG.md` to include the new rows.
+Decomposes backlog row **081KSBMG30008QG0R00201X7EJ** into a dependency-ordered set of smaller **P0** child rows that define hard limits, synthetic-only harness design, findings/redaction rules, safety-substrate inventory, operator refusal guidance, and a future ratification/lift gate—then regenerates `docs/BACKLOG.md` to include the new rows.
 
 **Changes:**
-- Adds new child backlog rows **B-0798..B-0803** under `docs/backlog/P0/` and wires them to **B-0720** via `parent`, `depends_on`, and `composes_with`.
-- Updates **B-0720** to `status: decomposed` and records the new `children` list plus decomposition framing text.
+- Adds new child backlog rows **081KSGS9H0008QG0R00383T79V..081KSGS9H0008QG0R00280HHA7** under `docs/backlog/P0/` and wires them to **081KSBMG30008QG0R00201X7EJ** via `parent`, `depends_on`, and `composes_with`.
+- Updates **081KSBMG30008QG0R00201X7EJ** to `status: decomposed` and records the new `children` list plus decomposition framing text.
 - Regenerates `docs/BACKLOG.md` to include the new P0 entries.
 
 ### Reviewed changes
@@ -63,13 +63,13 @@ Copilot reviewed 9 out of 9 changed files in this pull request and generated 1 c
 | File | Description |
 | ---- | ----------- |
 | docs/claims/b0720-classifier-bypass-decompose-codex-20260526.md | Adds a claim file for the decomposition work (protocol compliance issue raised in review). |
-| docs/backlog/P0/B-0798-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md | New child row defining hard limits / research boundary prerequisites for any future work. |
-| docs/backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md | New child row specifying a synthetic-only harness design slice (design-only). |
-| docs/backlog/P0/B-0800-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md | New child row defining findings schema + redaction rules before any empirical notes land. |
-| docs/backlog/P0/B-0801-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md | New child row for inventorying Zeta-native safety floors as classifier-replacement evidence. |
-| docs/backlog/P0/B-0802-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md | New child row defining an agent-facing refusal pattern for bypass/deploy requests. |
-| docs/backlog/P0/B-0803-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md | New child row defining a future governance ratification packet / lift gate. |
-| docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md | Marks B-0720 as decomposed and links the new child rows + updated acceptance/decomposition text. |
+| docs/backlog/P0/081KSGS9H0008QG0R00383T79V-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md | New child row defining hard limits / research boundary prerequisites for any future work. |
+| docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md | New child row specifying a synthetic-only harness design slice (design-only). |
+| docs/backlog/P0/081KSGS9H0008QG0R001EKTS5A-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md | New child row defining findings schema + redaction rules before any empirical notes land. |
+| docs/backlog/P0/081KSGS9H0008QG0R002T6J6FS-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md | New child row for inventorying Zeta-native safety floors as classifier-replacement evidence. |
+| docs/backlog/P0/081KSGS9H0008QG0R003GM7TYN-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md | New child row defining an agent-facing refusal pattern for bypass/deploy requests. |
+| docs/backlog/P0/081KSGS9H0008QG0R00280HHA7-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md | New child row defining a future governance ratification packet / lift gate. |
+| docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md | Marks 081KSBMG30008QG0R00201X7EJ as decomposed and links the new child rows + updated acceptance/decomposition text. |
 | docs/BACKLOG.md | Generated index updated to include the new P0 child rows. |
 </details>
 

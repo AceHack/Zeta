@@ -1,5 +1,5 @@
 apiVersion: v2
 name: my-app
-description: Example consumer chart (B-0821); database.url injected via dependency graph
+description: Example consumer chart (081KSGS9H0008QG0R00367G209); database.url injected via dependency graph
 type: application
 version: 1.0.0

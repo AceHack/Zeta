@@ -345,7 +345,7 @@ async function axisRazorCadence(ghAvailable) {
             console.log(`  #${iss.number} created=${iss.createdAt} -- ${iss.title}`);
         }
         console.log("");
-        console.log("Triage: age IS the cadence-skip signal (per B-0192). Older = more overdue.");
+        console.log("Triage: age IS the cadence-skip signal (per 081KQR4HQ0008QG0R001GAD29A). Older = more overdue.");
     }
     console.log("");
 }

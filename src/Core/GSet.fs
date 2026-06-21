@@ -15,11 +15,11 @@ open System.Runtime.CompilerServices
 /// without coordination: any two replicas that have seen the same elements (in
 /// any order, with any duplication) compute the same set.
 ///
-/// This is the comms substrate of the git-native agent-bus (B-0954): an
+/// This is the comms substrate of the git-native agent-bus (081KSXN940008QG0R00171YAZW): an
 /// append-only `docs/agent-bus/` folder of ZetaId-keyed messages *is* a G-Set —
 /// re-observing the same message id is `union` and a no-op (the same reason the
 /// observe-loop's `folderSink` treats an `EEXIST` write as success). Ace's
-/// dependency graph (B-0824) is the general `ZSet`, where add/remove nets via
+/// dependency graph (081KSGS9H0008QG0R0031PBNGA) is the general `ZSet`, where add/remove nets via
 /// retraction; the bus never retracts, so the weaker G-Set is exactly right.
 ///
 /// Represented as an immutable **ascending-sorted, de-duplicated** run. The
@@ -54,7 +54,7 @@ type GSet<'T when 'T : comparison> =
         if xa.IsEmpty then GSet<'T>(xb)
         elif xb.IsEmpty then GSet<'T>(xa)
         else
-            // Default collation = binary/ordinal (B-0969): never culture-sensitive Comparer<string>.Default.
+            // Default collation = binary/ordinal (081KT07NV0008QG0R001YDB73K): never culture-sensitive Comparer<string>.Default.
             let cmp = Collation.forKey<'T> ()
             let out = ImmutableArray.CreateBuilder<'T>(xa.Length + xb.Length)
             let mutable i = 0
@@ -144,7 +144,7 @@ module GSet =
     let empty<'T when 'T : comparison> : GSet<'T> = GSet<'T>.Empty
 
     /// Canonicalize arbitrary input: sort ascending + drop duplicates. Uses the default binary/ordinal
-    /// collation (B-0969): string ordering is ordinal, never culture-sensitive.
+    /// collation (081KT07NV0008QG0R001YDB73K): string ordering is ordinal, never culture-sensitive.
     let ofSeq (xs: seq<'T>) : GSet<'T> =
         let cmp = Collation.forKey<'T> ()
         let sorted =

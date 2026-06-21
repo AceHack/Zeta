@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 // detect-clause-drift.ts — alignment-clause cross-reference (blast-radius) scan.
 //
-// B-0058.4 (decomposed from B-0058): pre-renegotiation impact survey.
+// 081KRQ1AB0008QG0R001BPDBHT (decomposed from 081KQ3HBZ0008QG0R002S674CG): pre-renegotiation impact survey.
 // Scans the repository working tree for references to alignment clauses
 // (HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5) from docs/ALIGNMENT.md and
 // reports which files reference each clause. Answers "who depends on
 // this clause, and what breaks if it moves?" BEFORE an ALIGNMENT.md
 // renegotiation is accepted.
 //
-// Distinct from audit_clause_drift.ts (B-0058 slice 2), which diffs
+// Distinct from audit_clause_drift.ts (081KQ3HBZ0008QG0R002S674CG slice 2), which diffs
 // docs/ALIGNMENT.md between two git refs to detect WHAT changed. This
 // tool detects WHO references the clauses (the blast radius). The two
 // compose: audit_clause_drift.ts names the changed clauses; this tool

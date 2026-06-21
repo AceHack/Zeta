@@ -9,7 +9,7 @@
 
 PR review/lint friction is a first-class system-health signal (see the related
 ADR [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md),
-B-0938, which *measures* the friction coefficient). A large share of that
+081KSRGFP0008QG0R000J9Y634, which *measures* the friction coefficient). A large share of that
 friction is **mechanically fixable** — `markdownlint --fix`, `prettier --write`,
 `dotnet format`, `semgrep --autofix` (for rules with a `fix:`) — i.e.
 deterministic, zero-LLM transforms. The remainder (actionlint workflow logic,
@@ -38,7 +38,7 @@ git-native bus or adding heavy infrastructure?
 
 Constraints honored: substrate-or-it-didn't-happen (results must be git-native,
 not only host-durable PR comments); the git-native bus (`docs/agent-bus/`,
-B-0954) is the canonical cross-machine substrate; "no directives, only
+081KSXN940008QG0R00171YAZW) is the canonical cross-machine substrate; "no directives, only
 observations" (a review record is an observation, not a command); GITHUB_TOKEN
 pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
 
@@ -74,14 +74,14 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
   (markdown) with minimal surface; no intelligence; idempotent.
 * **Cons:** No structured record of *what* was healed / *what remains*; the
   intelligence layer has nothing to consume; no observability of the heal as a
-  system-health signal (the B-0938 friction monitor can't see it cleanly).
+  system-health signal (the 081KSRGFP0008QG0R000J9Y634 friction monitor can't see it cleanly).
 
 ### Option 3: Commit-back heal + emit a bus review record
 
-* **Pros:** Git-native + cross-machine (B-0954); the org consumes heal/review
-  records as observations; composes with the B-0938 friction monitor; one
+* **Pros:** Git-native + cross-machine (081KSXN940008QG0R00171YAZW); the org consumes heal/review
+  records as observations; composes with the 081KSRGFP0008QG0R000J9Y634 friction monitor; one
   canonical surface.
-* **Cons:** Depends on `docs/agent-bus/` being populated (B-0954 not yet on
+* **Cons:** Depends on `docs/agent-bus/` being populated (081KSXN940008QG0R00171YAZW not yet on
   main); bus-record schema for "review observation" needs defining.
 
 ### Option 4: Dedicated review folder
@@ -120,10 +120,10 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
 * **Consequences:**
 
   * **Positive:** Mechanical friction auto-heals for free; review results become
-    git-native observations the org (and the B-0938 friction monitor) can
+    git-native observations the org (and the 081KSRGFP0008QG0R000J9Y634 friction monitor) can
     consume; mechanical and intelligence layers compose through one seam (the bus
     record), each shippable on its own; no parallel review surface.
-  * **Negative/Costs:** Depends on B-0954 populating `docs/agent-bus/` for the
+  * **Negative/Costs:** Depends on 081KSXN940008QG0R00171YAZW populating `docs/agent-bus/` for the
     emission half; requires defining a "review observation" bus-record schema;
     the intelligence step depends on the accelerator / local-LLM runtime; the
     AUTOFIX_TOKEN re-trigger wrinkle persists until required gates are removed.
@@ -158,9 +158,9 @@ pushes do not re-trigger workflows (the re-trigger wrinkle from #6393).
 
 * PR #6393 — the mechanical lint auto-heal workflow (the first piece, in flight).
 * [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md)
-  (B-0938) — measures friction; this ADR reduces a class of it + structures the
+  (081KSRGFP0008QG0R000J9Y634) — measures friction; this ADR reduces a class of it + structures the
   review-emission the monitor can consume.
-* B-0954 — git-native cross-machine bus (`docs/agent-bus/`), the proposed
+* 081KSXN940008QG0R00171YAZW — git-native cross-machine bus (`docs/agent-bus/`), the proposed
   emission target.
 * `accelerator-move-next.yml` + `accelerator-local-llm-validate.yml` — the
   agent-in-Actions / local-LLM substrate the intelligence step rides on.

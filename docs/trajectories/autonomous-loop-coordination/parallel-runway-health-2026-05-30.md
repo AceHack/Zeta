@@ -7,7 +7,7 @@ Session: codex/launchd-loop
 Run ID: 20260530T040934Z
 Claim: `claim/codex-loop-b0249-parallel-runway-health-20260530`
 Grounding backlog:
-`docs/backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
+`docs/backlog/P0/081KQZVQW0008QG0R000C35RNY-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
 Parent receipt:
 `docs/trajectories/autonomous-loop-coordination/local-worktree-dirt-health-2026-05-30.md`
 
@@ -18,7 +18,7 @@ monitor.
 
 The existing lane-runway classifier answers whether each lane has open PRs or
 active claims. That is necessary, but it can still report a healthy quiet
-Codex lane when B-0249 says the loop should keep at least one bounded work item
+Codex lane when 081KQZVQW0008QG0R000C35RNY says the loop should keep at least one bounded work item
 in flight and target roughly two.
 
 ## Rule

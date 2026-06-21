@@ -29,7 +29,7 @@
 
 ## Summary
 
-- PR #3956 (B-0402 shadow freshness fix #3) was sitting at `gate: BLOCKED`, `nextAction: resolve-threads`, auto-merge armed, all 7 required checks green. Six unresolved review threads were the only blocker.
+- PR #3956 (081KR7JY10008QG0R0008NGW95 shadow freshness fix #3) was sitting at `gate: BLOCKED`, `nextAction: resolve-threads`, auto-merge armed, all 7 required checks green. Six unresolved review threads were the only blocker.
 - Verified each finding against source at `bdc56f232` per [`blocked-green-ci-investigate-threads.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) suspect-by-default discipline before mutating.
 - Result: PR #3956 went BLOCKED → CLEAN → MERGED (`mergeCommit: 3cad45557583c8f23e782b6123d1d7fc85dc07fa`).
 
@@ -137,12 +137,12 @@ docs(tick): 2349Z Otto-CLI background worker — PR #3956 thread sweep …
 
 …→ merged
 
-PR #3956 (B-0402 shadow freshness fix #3) cleared BLOCKED → CLEAN →
+PR #3956 (081KR7JY10008QG0R0008NGW95 shadow freshness fix #3) cleared BLOCKED → CLEAN →
 MERGED via 6-thread substrate-honest sweep. Four threads (1, 3, 5, 6)
 were stale acknowledgment work — fixes already shipped in commit
 bdc56f232. Thread #4 verified as false positive against source. Thread
 #2 acknowledged as real per-window-vs-process refinement gap, deferred
-to B-0402 follow-up scope.
+to 081KR7JY10008QG0R0008NGW95 follow-up scope.
 
 Verified each finding against source at PR head before mutating
 threads per blocked-green-ci-investigate-threads.md suspect-by-default

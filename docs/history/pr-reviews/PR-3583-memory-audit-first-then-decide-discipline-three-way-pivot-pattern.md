@@ -49,8 +49,8 @@ Naive reading produces paralysis. The audit-first-then-decide pivot routes the d
 
 Today's session arc:
 
-- 10+ mechanical-fix PRs (B-0533 cluster + Otto-279 batches)
-- 3 backlog rows (B-0535, B-0536, B-0537 — content-judgment residual capture)
+- 10+ mechanical-fix PRs (081KRMEXM0008QG0R000K25MXS cluster + Otto-279 batches)
+- 3 backlog rows (081KRMEXM0008QG0R000HHAG77, 081KRMEXM0008QG0R001BH94PS, 081KRMEXM0008QG0R0034SS319 — content-judgment residual capture)
 - 3 quiet checkpoint shards (1919Z, 1952Z, 2038Z — null actionable)
 
 ## Test plan

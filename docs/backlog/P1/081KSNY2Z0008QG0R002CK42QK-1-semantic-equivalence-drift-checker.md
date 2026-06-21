@@ -1,6 +1,5 @@
 ---
-id: B-0170.1
-zetaid: 081KSNY2Z0008QG0R002CK42QK
+id: 081KSNY2Z0008QG0R002CK42QK
 priority: P1
 status: closed
 closed: 2026-06-12
@@ -16,9 +15,9 @@ owners: [lior]
 type: tooling
 ---
 
-# B-0170.1 — Semantic-equivalence-drift checker
+# 081KSNY2Z0008QG0R002CK42QK — Semantic-equivalence-drift checker
 
-This task implements the "semantic-equivalence-drift" checker, as specified in the parent task B-0170.
+This task implements the "semantic-equivalence-drift" checker, as specified in the parent task 081KQNJ500008QG0R003SCWBDV.
 
 ## Scope
 

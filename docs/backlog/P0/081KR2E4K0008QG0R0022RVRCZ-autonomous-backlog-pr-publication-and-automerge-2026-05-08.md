@@ -1,6 +1,5 @@
 ---
-id: B-0280
-zetaid: 081KR2E4K0008QG0R0022RVRCZ
+id: 081KR2E4K0008QG0R0022RVRCZ
 priority: P0
 status: closed
 closed: 2026-05-08
@@ -15,7 +14,7 @@ decomposition: atomic
 owners: [architect, codex]
 ---
 
-# B-0280 - PR publication and auto-merge
+# 081KR2E4K0008QG0R0022RVRCZ - PR publication and auto-merge
 
 Turn one autonomous backlog pickup into a reviewable GitHub PR
 without the maintainer acting as courier or permission surface.

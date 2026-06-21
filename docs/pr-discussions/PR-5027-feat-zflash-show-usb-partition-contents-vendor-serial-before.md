@@ -59,14 +59,14 @@ Empirical anchor for Path B: this session's successful agent-driven flash via th
 
 ## Composes with
 
-- B-0737 — zflash + Touch ID PAM + short challenge (the substrate this enhances)
-- B-0743 — "I execute, you fingerprint" desktop admin consent pattern (the rule this skill instantiates)
-- B-0728 — destructive-tool authoring contract (the safety floor preserved)
-- B-0738 / B-0739 — Linux + Windows extensions (not in scope here)
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM + short challenge (the substrate this enhances)
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" desktop admin consent pattern (the rule this skill instantiates)
+- 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (the safety floor preserved)
+- 081KSE6WT0008QG0R003BG8M6J / 081KSE6WT0008QG0R0025170CV — Linux + Windows extensions (not in scope here)
 
 ## Test plan
 
-- [x] Edits made in isolated worktree (`/private/tmp/zeta-zflash-detail-2026-05-25`) off fresh `origin/main` per B-0751 (agents don't touch the operator's primary checkout)
+- [x] Edits made in isolated worktree (`/private/tmp/zeta-zflash-detail-2026-05-25`) off fresh `origin/main` per 081KSE6WT0008QG0R003YYC9PV (agents don't touch the operator's primary checkout)
 - [x] `bun full-ai-cluster/tools/flash-usb.ts --help` parses (no TS syntax errors)
 - [x] Skill SKILL.md frontmatter valid; shows up in skill router listing
 - [ ] CI green
@@ -139,7 +139,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:16:26Z):
 
-The skill frontmatter `description` is far longer than the carved-sentence routing budget target used across the skill catalog (see B-0347: prefer <120 chars; hard target <150). This one is long enough that it’s likely to be truncated/dropped in skill listings, hurting routing. Suggest carving it down to a single short routing sentence and moving the detailed path/Touch ID/expect discussion into the body.
+The skill frontmatter `description` is far longer than the carved-sentence routing budget target used across the skill catalog (see 081KR50HA0008QG0R002ZNFQBZ: prefer <120 chars; hard target <150). This one is long enough that it’s likely to be truncated/dropped in skill listings, hurting routing. Suggest carving it down to a single short routing sentence and moving the detailed path/Touch ID/expect discussion into the body.
 
 ### Thread 4: .claude/skills/flash-cluster-iso/SKILL.md:123 (resolved)
 

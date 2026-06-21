@@ -29,7 +29,7 @@ But the prior 2129Z autonomous-loop cascade established a different precedent:
 
 | PR | Artifact type | Reason for separation |
 |---|---|---|
-| [#4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097) | substrate fix (B-0613 zsh portability correction) | Substrate-level change |
+| [#4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097) | substrate fix (081KRSKQ20008QG0R002TH55X6 zsh portability correction) | Substrate-level change |
 | [#4100](https://github.com/Lucent-Financial-Group/Zeta/pull/4100) | tick shard (2129Z) | Tick-history hygiene |
 | [#4104](https://github.com/Lucent-Financial-Group/Zeta/pull/4104) | rule worked-example (`blocked-green-ci`) | Rule-substrate landing |
 

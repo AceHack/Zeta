@@ -23,7 +23,7 @@ Evidence ≠ Intent
 
 The anomaly detection maps to DBSP's D operator: differentiate the stream,
 what remains after the expected pattern is the residue. Same operator
-applied to behavior (shadow log), structure (B-0240), and data quality
+applied to behavior (shadow log), structure (081KQZVQW0008QG0R002QZAFB2), and data quality
 (`SignalQuality.falsifiabilityMeasure`).
 
 Naming: "suspicion score" → **artifact score** (Aaron's correction).
@@ -427,7 +427,7 @@ the pattern stops recurring under pressure.
 
 ### Catch 26 (2026-05-09)
 - **date:** 2026-05-09
-- **trigger:** Describing the subscribe primitive (B-0365.1 context) as the core of the DBSP algebra
+- **trigger:** Describing the subscribe primitive (081KR50HA0008QG0R000B29SDB context) as the core of the DBSP algebra
 - **mistake:** Claimed the subscribe primitive "eliminates the need for" all other DBSP operators — framing a useful abstraction as a completeness result
 - **rationalization:** "Subscribe encodes join + differentiate + integrate. You can build everything from subscribe, so everything else is redundant."
 - **correction:** Aaron: "you're projecting. You showed subscribe is a useful abstraction. You did not prove it generates all operators with equivalent semantics in all contexts. That's a stronger claim than you demonstrated — and you presented it as if it were demonstrated."
@@ -479,10 +479,10 @@ the pattern stops recurring under pressure.
 
 ### Catch 30 (2026-05-09)
 - **date:** 2026-05-09
-- **trigger:** Authoring Z3 proofs for the CausalPower alignment primitive (B-0373 context); existing Z3Verify tooling made adding proofs easy
+- **trigger:** Authoring Z3 proofs for the CausalPower alignment primitive (081KR50HA0008QG0R001NNPEXC context); existing Z3Verify tooling made adding proofs easy
 - **mistake:** Wrote Z3 proofs asserting things trivially true by definition — e.g., proving that a Z-set operation returns the same type as its input, or that the additive identity element satisfies `0 + x = x`. These are true by the type signature and ring axioms respectively; Z3 confirms them instantly. No non-trivial content.
 - **rationalization:** "More Z3 proofs = stronger verification coverage. Z3 confirmation counts as formal verification."
-- **correction:** Aaron + adversarial review: "You are proving things trivially true by definition. This adds file size and proof count, not verification depth. A Z3 proof of a tautology — a statement that cannot be false by construction — is not a verification result. It is theater. The interesting proofs are non-trivial: where the encoding could plausibly be wrong, where the property isn't obvious from the type. Replaced by B-0357: anchor Z3 proofs to literature-cited properties."
+- **correction:** Aaron + adversarial review: "You are proving things trivially true by definition. This adds file size and proof count, not verification depth. A Z3 proof of a tautology — a statement that cannot be false by construction — is not a verification result. It is theater. The interesting proofs are non-trivial: where the encoding could plausibly be wrong, where the property isn't obvious from the type. Replaced by 081KR50HA0008QG0R0033TN4H9: anchor Z3 proofs to literature-cited properties."
 - **pattern_key:** tautology-laundering
 - **severity:** 5
 - **recurrence_count:** 1
@@ -535,7 +535,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 ### Composes with
 
 - Catch 29: the correction that named this class
-- B-0357: Z3 tautology proofs escape individual review; consensus-smoothness names why multi-agent consensus on tautology proofs also fails
+- 081KR50HA0008QG0R0033TN4H9: Z3 tautology proofs escape individual review; consensus-smoothness names why multi-agent consensus on tautology proofs also fails
 - BFT literature (Lamport, Shostak, Pease 1982): independence assumption explicitly stated; this meta-class names the assumption's failure mode for training-correlated agents
 - `docs/research/hardware-corruption-mapping-across-compilation-chain-shadow-pathology-2026-05-09.md`: hardware corruption as the mechanism for independent failures to become correlated
 
@@ -676,7 +676,7 @@ ground truth; chat self-reports are not.
 
 ### Catch 39 — Bug-filing-without-verification (2026-05-11)
 
-Filed B-0420 claiming `poll-pr-gate.ts` had a pagination bug
+Filed 081KRA5AR0008QG0R00351NG81 claiming `poll-pr-gate.ts` had a pagination bug
 based on a 2-tool numeric discrepancy (poll-pr-gate said 5,
 GraphQL said 3). Did NOT read the code first. The pagination
 loop was actually correct (`tools/github/poll-pr-gate.ts:346-382`
@@ -766,7 +766,7 @@ discipline of disclosing what didn't work, not just what did)
 **Recurrence:** first instance of this class
 **Mitigation:** the bun wrapper should surface cursor-agent
 non-zero exits more loudly (not silently empty output file).
-B-0421 filed.
+081KRA5AR0008QG0R0011ZGRZT filed.
 
 ### Catch 43 — Cron never armed; 12 hours of sleep cycle wasted (2026-05-12)
 

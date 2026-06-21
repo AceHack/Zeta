@@ -1,29 +1,29 @@
 #!/usr/bin/env bun
-// new-workitem.ts — mint a new work-item with a consensus-free ZetaId (B-0956).
+// new-workitem.ts — mint a new work-item with a consensus-free ZetaId (081KSXN940008QG0R002FWR9B2).
 //
-// THE WHOLE POINT (B-0956): allocating a sequential `B-NNNN` id requires
+// THE WHOLE POINT (081KSXN940008QG0R002FWR9B2): allocating a sequential `B-NNNN` id requires
 // cross-agent consensus (scan origin/main + in-flight PRs for the next free
 // number, race peers). That does NOT scale to 500 concurrent agents. This tool
 // mints a `Category.WorkItem` ZetaId LOCALLY — 128-bit, crypto-minted, no
 // consensus, no origin check, no PR scan — so N agents create work-items with
-// zero coordination and zero collision (the B-0954 agent-bus G-Set property).
+// zero coordination and zero collision (the 081KSXN940008QG0R00171YAZW agent-bus G-Set property).
 //
 // FILE SHAPE (decided 2026-06-06, the 500-agent collision test):
 //   workitems/<zetaid>-<description>.md
-//   • <zetaid> = the canonical Crockford base32 ZetaId (B-0682) — the conflict-free,
+//   • <zetaid> = the canonical Crockford base32 ZetaId (081KS3X9Y0008QG0R000W00V73) — the conflict-free,
 //     filename-safe, SORT-PRESERVING key. Because version+timestamp are the ZetaId's
 //     high bits, `ls workitems/` sorted == chronological creation order, for free.
 //   • <description> = a human-readable slug of the title (rides along; identity is
 //     the zetaid PREFIX, so a reword changes only the suffix — resolve by
 //     `<zetaid>-*.md` glob).
 //
-// STATE is the folder (B-0956): active items live in `workitems/`; completed ones
+// STATE is the folder (081KSXN940008QG0R002FWR9B2): active items live in `workitems/`; completed ones
 // move to `workitems/done/YYYY/MM/<zetaid>-<desc>.md` (a separate complete-workitem
 // step). `type ∈ {task,bug}` is frontmatter, immutable. `state` mirrors the folder.
 //
 // Usage:
 //   bun tools/backlog/new-workitem.ts --type task --title "Do the thing"
-//       [--priority P2] [--depends-on B-0956,<zetaid>] [--composes-with ...]
+//       [--priority P2] [--depends-on 081KSXN940008QG0R002FWR9B2,<zetaid>] [--composes-with ...]
 //       [--persona N] [--dir workitems] [--dry-run]
 //
 // Exit codes: 0 ok · 2 usage error.

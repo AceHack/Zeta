@@ -1,4 +1,4 @@
-// audit-worktree-survey.test.ts -- focused coverage for the B-0090.5
+// audit-worktree-survey.test.ts -- focused coverage for the 081KDVJT3E008QG0R000SCFYN5
 // worktree recovery survey classifier.
 import { describe, expect, test } from "bun:test";
 import { chmodSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";

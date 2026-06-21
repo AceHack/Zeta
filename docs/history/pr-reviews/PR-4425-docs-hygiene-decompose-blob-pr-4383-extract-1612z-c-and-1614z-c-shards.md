@@ -54,7 +54,7 @@ Decomposing blob PR #4383. Extracting 1612Z-c.md and 1614Z-c.md shards to reduce
 - **`Copilot` (bot)** at 2026-05-20T15:51:49Z on `docs/hygiene-history/ticks/2026/05/19/1612Z-c.md`:7 (association: NONE)
 
   <pre>
-  P1: Backlog IDs should be written in full `B-XXXX` form (and/or linked) for cross-reference integrity. `B-0623/0562/0625` drops the `B-` prefix on the latter two IDs, which makes it ambiguous and harder to grep/link; consider expanding to `B-0623`, `B-0562`, `B-0625` (or proper markdown links).
+  P1: Backlog IDs should be written in full `B-XXXX` form (and/or linked) for cross-reference integrity. `081KRW63S0008QG0R000QJR08H/0562/0625` drops the `B-` prefix on the latter two IDs, which makes it ambiguous and harder to grep/link; consider expanding to `081KRW63S0008QG0R000QJR08H`, `081KRQ1AB0008QG0R001F7DE2D`, `081KRW63S0008QG0R003NP3YA3` (or proper markdown links).
 
   </pre>
 
@@ -69,7 +69,7 @@ Decomposing blob PR #4383. Extracting 1612Z-c.md and 1614Z-c.md shards to reduce
 - **`Copilot` (bot)** at 2026-05-20T15:51:50Z on `docs/hygiene-history/ticks/2026/05/19/1614Z-c.md`:5 (association: NONE)
 
   <pre>
-  P1: `B-0668` is referenced here, but there is no `id: B-0668` backlog row under `docs/backlog/**` and it does not appear in `docs/BACKLOG.md` in this branch. If this is meant to reference a backlog item, update to the correct existing `B-` ID (or add an explicit link to the actual artifact/PR being referenced).
+  P1: `081KRYRGG0008QG0R0018CMFQY` is referenced here, but there is no `id: 081KRYRGG0008QG0R0018CMFQY` backlog row under `docs/backlog/**` and it does not appear in `docs/BACKLOG.md` in this branch. If this is meant to reference a backlog item, update to the correct existing `B-` ID (or add an explicit link to the actual artifact/PR being referenced).
 
   </pre>
 

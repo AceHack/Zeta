@@ -11,7 +11,7 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
 
-// B-1016 slice 1 — the context-window minimization byte-cost meter, proven.
+// 081KT7YW00008QG0R002T1XNWT slice 1 — the context-window minimization byte-cost meter, proven.
 // Three legs, mirroring the Z-set abelian-group precedent (Z3.Laws.Tests.fs):
 //   1. Z3 (symbolic, unbounded ℤ) — the summation monoid laws hold for all ints.
 //   2. FsCheck (real type, large domain) — the same laws on the actual ByteCost.
@@ -133,7 +133,7 @@ let ``measureText matches the byte-cost golden vectors`` () =
 // 4. Harness-aware apply — a harness's cost is the sum over the surfaces
 //    IT boots. Here: the Claude Code harness boots .claude/rules/*.md.
 //    (Different harnesses boot different manifests — the (harness × surface)
-//     keying of B-1016; this proves the meter runs on the real surface and
+//     keying of 081KT7YW00008QG0R002T1XNWT; this proves the meter runs on the real surface and
 //     that per-file costs fold to the harness total.)
 // ════════════════════════════════════════════════════════════════════
 

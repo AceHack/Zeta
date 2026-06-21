@@ -33,7 +33,7 @@ Third decode oracle — **Rust `DynamicValue::from_canonical_cbor(&[u8]) -> Resu
 
 **Cargo test/clippy/fmt green:** `cbor_decode_cross_verify` round-trips all 42 seed vectors (decode → re-encode == seed; structural == expected, skipping the NaN vector since Rust `f64` NaN != NaN) + a decode-rejection unit test (incl non-shortest int/width, invalid UTF-8, non-canonical NaN, 1.0-as-f32, 1.0-as-f64).
 
-Sequencing: C# (#6512) + F# (#6514) + **Rust here** → TS CBOR decode → JSON decode ×4 → B-0982 multi-format seeds.
+Sequencing: C# (#6512) + F# (#6514) + **Rust here** → TS CBOR decode → JSON decode ×4 → 081KT07NV0008QG0R0032MCYER multi-format seeds.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -31,7 +31,7 @@
 
 - Adds `decomposition: atomic` to 12 P1 backlog items that are single-PR-able
 - Adds `classification: buildable-now` to 9 items whose `depends_on` are empty or all closed
-- Updates B-0217 classification from `buildable-after-survey` to `buildable-now` (B-0215 dependency is closed)
+- Updates 081KQX9B50008QG0R001FK1G36 classification from `buildable-after-survey` to `buildable-now` (081KQX9B50008QG0R00327XC6Q dependency is closed)
 - Leaves 9 blob-scope items unclassified for future decomposition passes
 - Skips 6 items already classified as `decomposed`
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // surface-dsl.ts — compile carved-sentence surfaces into a DSL the observe.ts
-// loop executes (B-1016 refinement C, Aaron 2026-06-04: "once we compress this we
+// loop executes (081KT7YW00008QG0R002T1XNWT refinement C, Aaron 2026-06-04: "once we compress this we
 // can use this as DSL into observe.ts where very little intelligence is needed
 // except at the choose point after simulate").
 //
@@ -10,7 +10,7 @@
 // chooseAction (model) → simulate (deterministic). This compiles the rule corpus
 // into the compact DSL fed to the model AT THE CHOOSE POINT ONLY; every other leg
 // is model-free. And the DSL's compression is measurable by the byte-cost meter
-// (the same B-1016 unit) — so "less intelligence needed" is a measured claim.
+// (the same 081KT7YW00008QG0R002T1XNWT unit) — so "less intelligence needed" is a measured claim.
 //
 // NCI: reads + compiles surfaces; removes nothing.
 import { Glob } from "bun";

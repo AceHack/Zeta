@@ -2,7 +2,7 @@
 /**
  * tools/crypto/better-git-crypt/cli/main.ts
  *
- * B-0883 v1 — better-git-crypt CLI (post-quantum file encryption; the rejected
+ * 081KSNY2Z0008QG0R002JKH50A v1 — better-git-crypt CLI (post-quantum file encryption; the rejected
  * legacy git-crypt's replacement).
  *
  * Scaffold modes (no crypto):
@@ -185,7 +185,7 @@ function emitJson(value: unknown): void {
 
 function modeListAlgs(): number {
   emitJson({
-    rowId: "B-0883",
+    rowId: "081KSNY2Z0008QG0R002JKH50A",
     subRow: "v1",
     registrySize: ALG_REGISTRY.length,
     byClass: {
@@ -202,7 +202,7 @@ function modeValidate(): number {
   try {
     validateAlgRegistry(ALG_REGISTRY);
     emitJson({
-      rowId: "B-0883",
+      rowId: "081KSNY2Z0008QG0R002JKH50A",
       subRow: "v1",
       mode: "validate",
       result: "passed",
@@ -216,7 +216,7 @@ function modeValidate(): number {
     });
     return 0;
   } catch (e) {
-    emitJson({ rowId: "B-0883", subRow: "v1", mode: "validate", result: "failed", error: (e as Error).message });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", subRow: "v1", mode: "validate", result: "failed", error: (e as Error).message });
     return 1;
   }
 }
@@ -225,7 +225,7 @@ function modeDryRunEnvelope(): number {
   try {
     validateAlgRegistry(ALG_REGISTRY);
   } catch (e) {
-    emitJson({ rowId: "B-0883", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "registry-validation", error: (e as Error).message });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "registry-validation", error: (e as Error).message });
     return 1;
   }
   const synthetic: FileEnvelope = {
@@ -245,7 +245,7 @@ function modeDryRunEnvelope(): number {
   try {
     validateEnvelopeStructure(synthetic);
     emitJson({
-      rowId: "B-0883",
+      rowId: "081KSNY2Z0008QG0R002JKH50A",
       subRow: "v1",
       mode: "dry-run-envelope",
       result: "passed",
@@ -263,14 +263,14 @@ function modeDryRunEnvelope(): number {
       },
       stillDeferred: {
         gitTextconv: "git clean/smudge or textconv filter integration (transparent encrypt-on-commit)",
-        recipientRegistry: ".zeta-crypt/recipients.json multi-party registry + rotation (B-0883.3)",
-        multiCipherHedge: "B-0883.2 — Saber / NTRU-Prime / FrodoKEM alternates when TS-native impls mature",
-        metadataEncryption: "B-0883.5 — filenames / commit messages (v1 is content-only)",
+        recipientRegistry: ".zeta-crypt/recipients.json multi-party registry + rotation (081KSNY2Z0008QG0R0008EJDW1)",
+        multiCipherHedge: "081KSNY2Z0008QG0R002ZAVMEK — Saber / NTRU-Prime / FrodoKEM alternates when TS-native impls mature",
+        metadataEncryption: "081KSNY2Z0008QG0R0020KXAPS — filenames / commit messages (v1 is content-only)",
       },
     });
     return 0;
   } catch (e) {
-    emitJson({ rowId: "B-0883", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "envelope-structure-validation", error: (e as Error).message });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "envelope-structure-validation", error: (e as Error).message });
     return 1;
   }
 }
@@ -284,7 +284,7 @@ function modeGenRecipient(identity: string, outDir: string, force: boolean): num
     // destroy the ONLY secret bundle able to decrypt files already encrypted to it.
     if (!force && (existsSync(secPath) || existsSync(recPath))) {
       emitJson({
-        rowId: "B-0883",
+        rowId: "081KSNY2Z0008QG0R002JKH50A",
         mode: "gen-recipient",
         result: "failed",
         error: `refusing to overwrite an existing keypair for '${identity}' (${existsSync(secPath) ? secPath : recPath}). Regenerating destroys the ONLY secret bundle that can decrypt files already encrypted to it. Use a different --out-dir / identity, or pass --force if you are certain.`,
@@ -300,7 +300,7 @@ function modeGenRecipient(identity: string, outDir: string, force: boolean): num
       /* best-effort on filesystems without POSIX modes */
     }
     emitJson({
-      rowId: "B-0883",
+      rowId: "081KSNY2Z0008QG0R002JKH50A",
       mode: "gen-recipient",
       result: "passed",
       identity,
@@ -310,7 +310,7 @@ function modeGenRecipient(identity: string, outDir: string, force: boolean): num
     });
     return 0;
   } catch (e) {
-    emitJson({ rowId: "B-0883", mode: "gen-recipient", result: "failed", error: (e as Error).message });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", mode: "gen-recipient", result: "failed", error: (e as Error).message });
     return 1;
   }
 }
@@ -336,7 +336,7 @@ function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: st
     // itself, or an existing .zc the user meant to keep).
     if (!force && existsSync(outPath)) {
       emitJson({
-        rowId: "B-0883",
+        rowId: "081KSNY2Z0008QG0R002JKH50A",
         mode: "encrypt-file",
         result: "failed",
         in: inPath,
@@ -349,12 +349,12 @@ function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: st
     const extras = recipientPaths.map((p) => loadPublicRecipient(p));
     const res = encryptBytes(plaintext, self, extras);
     if (!res.ok) {
-      emitJson({ rowId: "B-0883", mode: "encrypt-file", result: "failed", in: inPath, feedback: res.feedback });
+      emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", mode: "encrypt-file", result: "failed", in: inPath, feedback: res.feedback });
       return 1;
     }
     writeFileSync(outPath, res.envelopeBytes); // Uint8Array writes directly (no copy)
     emitJson({
-      rowId: "B-0883",
+      rowId: "081KSNY2Z0008QG0R002JKH50A",
       mode: "encrypt-file",
       result: "passed",
       in: inPath,
@@ -366,7 +366,7 @@ function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: st
     });
     return 0;
   } catch (e) {
-    emitJson({ rowId: "B-0883", mode: "encrypt-file", result: "failed", in: inPath, error: (e as Error).message });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", mode: "encrypt-file", result: "failed", in: inPath, error: (e as Error).message });
     return 1;
   }
 }
@@ -395,7 +395,7 @@ function modeDecryptFile(
     // P2: don't silently destroy an existing (possibly edited) plaintext.
     if (!force && existsSync(out)) {
       emitJson({
-        rowId: "B-0883",
+        rowId: "081KSNY2Z0008QG0R002JKH50A",
         mode: "decrypt-file",
         result: "failed",
         in: inPath,
@@ -407,22 +407,22 @@ function modeDecryptFile(
     if (!res.ok) {
       if ("identityMismatch" in res) {
         emitJson({
-          rowId: "B-0883",
+          rowId: "081KSNY2Z0008QG0R002JKH50A",
           mode: "decrypt-file",
           result: "failed",
           in: inPath,
           error: `envelope signerIdentity '${res.identityMismatch.actual}' does not match --sender-sig identity '${res.identityMismatch.expected}'`,
         });
       } else {
-        emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, feedback: res.feedback });
+        emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", mode: "decrypt-file", result: "failed", in: inPath, feedback: res.feedback });
       }
       return 1;
     }
     writeFileSync(out, res.plaintext); // Uint8Array writes directly (no copy)
-    emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "passed", in: inPath, out, plaintextBytes: res.plaintext.length });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", mode: "decrypt-file", result: "passed", in: inPath, out, plaintextBytes: res.plaintext.length });
     return 0;
   } catch (e) {
-    emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, error: (e as Error).message });
+    emitJson({ rowId: "081KSNY2Z0008QG0R002JKH50A", mode: "decrypt-file", result: "failed", in: inPath, error: (e as Error).message });
     return 1;
   }
 }

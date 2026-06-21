@@ -4,7 +4,7 @@ The human maintainer 2026-05-13 22:08Z: *"any changes you need to make to it so 
 like the routines and like a 3 coordinated version?"*
 
 This file IS the canonical per-tick discipline that all three Otto
-surfaces (Otto-CLI, Otto-Desktop, and the queued B-0448 cloud routine)
+surfaces (Otto-CLI, Otto-Desktop, and the queued 081KRFA460008QG0R000CYBGKW cloud routine)
 cite. One source of truth; three readers. When the discipline updates,
 all three surfaces inherit the change at their next cold-boot cycle.
 
@@ -16,7 +16,7 @@ Before this file, the per-tick instructions diverged across surfaces:
 |---------|---------------------------|------|
 | Otto-CLI | `<<autonomous-loop>>` sentinel + ambient-loaded `.claude/rules/` + CLAUDE.md | Auto-loaded; ambient |
 | Otto-Desktop routine | Inline prompt body in `tools/routines/autonomous-loop/SKILL.md` | Required manual sync |
-| B-0448 cloud routine | TBD — not yet shipped | Would have re-implemented the discipline a third time |
+| 081KRFA460008QG0R000CYBGKW cloud routine | TBD — not yet shipped | Would have re-implemented the discipline a third time |
 
 The risk: when the discipline evolved (e.g., the
 [`holding-without-named-dependency`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
@@ -39,8 +39,8 @@ Never act on stale state. Minimum refresh:
 - `git fetch origin main && git status` — main HEAD + local state
 - `CronList` — verify the autonomous-loop sentinel is still armed
 - `bun tools/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
-  ([B-0530](backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05.md);
-  Pattern 8 of [B-0519](backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md))
+  ([081KRMEXM0008QG0R000X1PPGC](backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05.md);
+  Pattern 8 of [081KRHWGX0008QG0R001HMWM1W](backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md))
 
 #### When peers are detected
 
@@ -136,14 +136,14 @@ Per-tick repeat-Holding output IS the Standing-by failure mode.
 Priority order:
 
 1. **Known-gap fixes** — explicitly named gaps in shipped substrate
-   (e.g., bg-services slice 5 subscriber agents; B-0442's stub-detector
+   (e.g., bg-services slice 5 subscriber agents; 081KRFA460008QG0R00061SXRW's stub-detector
    when it existed)
 2. **Generative factory improvements** — friction reducers,
    tool ports, infrastructure
 3. **Gap-of-gap audits** — meta-improvements (substrate-discovery,
    index regeneration)
 4. **Sometimes-task: local-memory ↔ git-memory delta audit + migrate**
-   (B-0797; per the maintainer 2026-05-26 *"can you direct your
+   (081KSGS9H0008QG0R0033YXK4D; per the maintainer 2026-05-26 *"can you direct your
    background service on the local only memories as part of its
    natural loop sometimes as an option?"*). NOT every tick — invoke
    when the higher-priority queue is empty AND the operator is offline
@@ -257,7 +257,7 @@ canonical-bootstream first (cold-boot), then applies the 7-step
 discipline above. When this file updates, the routine's behaviour
 updates at the next fresh-session cold-boot (no manual sync needed).
 
-### B-0448 cloud routine (queued, not shipped)
+### 081KRFA460008QG0R000CYBGKW cloud routine (queued, not shipped)
 
 When shipped, will read this file from the repo via the same
 `docs/AUTONOMOUS-LOOP-PER-TICK.md` URL pattern that Desktop uses.
@@ -277,6 +277,6 @@ Same 7-step discipline.
 - [`.claude/rules/refresh-before-decide.md`](../.claude/rules/refresh-before-decide.md)
 - [`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md)
 - [`.claude/rules/encoding-rules-without-mechanizing.md`](../.claude/rules/encoding-rules-without-mechanizing.md)
-- B-0448 (Cloud Routines integration — 4th catch-43 defence layer)
+- 081KRFA460008QG0R000CYBGKW (Cloud Routines integration — 4th catch-43 defence layer)
 - PR #3030 (Otto Claude Desktop bootstream)
 - PR #3034 (Otto-Desktop routines substrate landed 2026-05-13)

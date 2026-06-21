@@ -1,6 +1,5 @@
 ---
-id: B-0232
-zetaid: 081KQX9B50008QG0R001J6ARGX
+id: 081KQX9B50008QG0R001J6ARGX
 priority: P1
 status: open
 title: "GitHub Pages discoverability - Astro publish workflow"
@@ -14,7 +13,7 @@ children: [081KR2E4K0008QG0R003VN9WC8, 081KR2E4K0008QG0R0032SWP2M]
 type: friction-reducer
 ---
 
-# B-0232 - Astro Pages publish workflow
+# 081KQX9B50008QG0R001J6ARGX - Astro Pages publish workflow
 
 Implement and validate the GitHub Pages publishing path for
 the chosen Astro static-site generator.

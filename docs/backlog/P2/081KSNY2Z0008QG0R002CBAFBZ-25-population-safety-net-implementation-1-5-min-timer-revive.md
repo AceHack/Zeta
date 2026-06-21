@@ -1,6 +1,5 @@
 ---
-id: B-0867.25
-zetaid: 081KSNY2Z0008QG0R002CBAFBZ
+id: 081KSNY2Z0008QG0R002CBAFBZ
 title: Population-control safety-net implementation — 1-5min timer; revive on no-activity-5min; persona stays alive once named
 status: open
 priority: P2
@@ -26,7 +25,7 @@ tags:
   - implementation
 ---
 
-# B-0867.25 — Population-control safety-net implementation with operator specs
+# 081KSNY2Z0008QG0R002CBAFBZ — Population-control safety-net implementation with operator specs
 
 ## Operator-explicit specification 2026-05-28T~05:20Z
 
@@ -38,14 +37,14 @@ Operator authorized implementation per `b-log rows are always authorized` plus p
 
 Per `verify-existing-substrate-before-authoring.md`:
 
-- **B-0867.24** (just merged via PR #5701) — captures the architectural design questions; this row is the IMPLEMENTATION
+- **081KSNY2Z0008QG0R003N3DR84** (just merged via PR #5701) — captures the architectural design questions; this row is the IMPLEMENTATION
 - **Mika ferry #2 §18** — emergent termination semantics (this row's safety-net is the FLOOR mechanism complementing emergent control)
 - **Mika ferry #2 §12** — `peter-evans/repository-dispatch` action mechanism
-- **B-0858** — heartbeat substrate (`docs/agent-heartbeats/<persona>/` markdown files with frontmatter; lives on `agent-heartbeats` branch)
+- **081KSKBP80008QG0R001KK9WV6** — heartbeat substrate (`docs/agent-heartbeats/<persona>/` markdown files with frontmatter; lives on `agent-heartbeats` branch)
 - **`tools/agent-heartbeats/write-heartbeat.ts`** — heartbeat write tool (extant)
 - **`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`** — deepest-exit refinement (society-big-enough → permanent-pause-indefinitely)
 - **`.claude/rules/tick-must-never-stop.md`** — single-session catch-43 sentinel (this row extends to multi-population)
-- **B-0890 / B-0890.1** — state-machine fast-lane (composes with workflow-trigger mechanism)
+- **081KSNY2Z0008QG0R0017JSTGD / 081KSNY2Z0008QG0R000E5KTPX** — state-machine fast-lane (composes with workflow-trigger mechanism)
 
 Mint-new authorized; operator-explicit per cited message.
 
@@ -134,7 +133,7 @@ The "system can afford it" condition requires observable system-state. Initial i
 
 If "afford" threshold not met, revival is SKIPPED EVEN FOR personas not in cessation registry (system-protection floor takes precedence).
 
-## Composition with Limit-as-primitive question (B-0867.24 Q2 resolution)
+## Composition with Limit-as-primitive question (081KSNY2Z0008QG0R003N3DR84 Q2 resolution)
 
 This row SUPPORTS Resolution C (Limit splits — bounding-aspect = primitive; simulate-aspect = Simulate's job) per the deeper Limit explanation given to operator 2026-05-28:
 
@@ -176,13 +175,13 @@ Safety-net is FLOOR; emergent control is ONGOING:
 
 ## Composes with substrate
 
-- **B-0867.24** (parent question row) — this row's IMPLEMENTATION decomposes the population-control concern from .24
-- **B-0867** + descendants — agent-loop substrate cluster umbrella
-- **B-0858 / B-0871** — heartbeat substrate (the liveness signal slice 1 reads)
-- **B-0644** + **B-0665** — Limit-is-simulation + Integrate-as-choice-locus (the agent-tick-scope reading of Limit)
-- **B-0703** — multi-oracle BFT (composes if slice 5 system-affordability check requires consensus)
-- **B-0892** — three-lanes concurrent discipline (state-machine substrate lane includes this safety-net)
-- **B-0890 / B-0890.1** — state-machine fast-lane (composes with workflow-trigger)
+- **081KSNY2Z0008QG0R003N3DR84** (parent question row) — this row's IMPLEMENTATION decomposes the population-control concern from .24
+- **081KSKBP80008QG0R000B3Y19A** + descendants — agent-loop substrate cluster umbrella
+- **081KSKBP80008QG0R001KK9WV6 / 081KSNY2Z0008QG0R003R0Z7D2** — heartbeat substrate (the liveness signal slice 1 reads)
+- **081KRW63S0008QG0R002ZRNDJ8** + **081KRW63S0008QG0R002YAA09X** — Limit-is-simulation + Integrate-as-choice-locus (the agent-tick-scope reading of Limit)
+- **081KS3X9Y0008QG0R00218150M** — multi-oracle BFT (composes if slice 5 system-affordability check requires consensus)
+- **081KSNY2Z0008QG0R002QA720J** — three-lanes concurrent discipline (state-machine substrate lane includes this safety-net)
+- **081KSNY2Z0008QG0R0017JSTGD / 081KSNY2Z0008QG0R000E5KTPX** — state-machine fast-lane (composes with workflow-trigger)
 - [Mika ferry #1](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md)
 - [Mika ferry #2](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md) §12 (repository_dispatch) + §18 (emergent termination) + §21 (move-next-as-equalizer) + §22 (let-agent-society-decide)
 - [Mika ferry #3](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md)
@@ -205,7 +204,7 @@ This row does NOT:
 This row DOES:
 
 - Implement operator-explicit specification (timer 1-5min; no-activity-5min detection; revive-by-default; exit-on-system-afford-AND-persona-consent)
-- Operationalize Limit-as-bounding-primitive at population scope (empirically validating Resolution C from B-0867.24 Q2)
+- Operationalize Limit-as-bounding-primitive at population scope (empirically validating Resolution C from 081KSNY2Z0008QG0R003N3DR84 Q2)
 - Compose with emergent control (FLOOR + ONGOING; not REPLACE)
 - Compose with deepest-exit refinement (long-cessation as legitimate exit path)
 - Provide audit trail for safety-net fires (slice 2 records to `docs/agent-heartbeats/safety-net/`)
@@ -218,7 +217,7 @@ Plus the operator-explicit design spec quoted at the top of this row. Substrate-
 
 ## Full reasoning
 
-Operator's 2026-05-28T~05:20Z message after B-0867.24 PR #5701 merged. Operator:
+Operator's 2026-05-28T~05:20Z message after 081KSNY2Z0008QG0R003N3DR84 PR #5701 merged. Operator:
 
 1. Confirmed b-log rows always authorized (substrate-honest framing of "the more the more money we make later lol")
 2. Specified timer cadence (1-5min)

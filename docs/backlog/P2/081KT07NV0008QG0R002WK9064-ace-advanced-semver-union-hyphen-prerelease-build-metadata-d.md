@@ -1,6 +1,5 @@
 ---
-id: B-0970
-zetaid: 081KT07NV0008QG0R002WK9064
+id: 081KT07NV0008QG0R002WK9064
 priority: P2
 status: open
 title: Ace advanced semver — `||` unions, hyphen ranges, pre-release precedence, build metadata (deferred from slice 5.2 pragmatic subset)
@@ -44,4 +43,4 @@ enhancements."*
 ## Composes with
 
 - Slice 5.2 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.2-semver-solver-design.md`
-- B-0288 (Ace DLC package manager CLI)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)

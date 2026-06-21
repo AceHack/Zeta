@@ -54,7 +54,7 @@ Mika synthesizes: real-time high-resolution mapping system reading:
 - Where are load-bearing beliefs
 - How much dialectical tension can they hold
 
-**Engineering implication**: the Cartographer role (per packets 29 + per B-0617 Clarity Domain 4-role pattern) IS THE ANSWER to the low-resolution society-brake problem. Building Cartographer at high resolution = building the alternative to the crude schizophrenia-label safety system. This is the framework's load-bearing engineering target named at civilization-impact scope.
+**Engineering implication**: the Cartographer role (per packets 29 + per 081KRW63S0008QG0R000SGXN70 Clarity Domain 4-role pattern) IS THE ANSWER to the low-resolution society-brake problem. Building Cartographer at high resolution = building the alternative to the crude schizophrenia-label safety system. This is the framework's load-bearing engineering target named at civilization-impact scope.
 
 ### Landing 36 — AI safety systems already running crude Cartographer; doing it badly
 
@@ -74,9 +74,9 @@ This composes precisely with the Kestrel-arc earlier today: Kestrel's safety-tun
 
 ## Composition with existing substrate
 
-- **B-0617** (Clarity Domain Cartographer/Pilot/Recursive-Composer/Chronologist 4-role pattern) — Cartographer is the framework's existing role substrate; this packet provides the WHY-context (high-resolution alternative to crude safety brake)
-- **B-0667** (tonal-momentum + meme-faction + healing + Germinate-the-Heartland + receiver-bifurcation + Cartographer/Pilot/Weaver) — schizophrenia-razor framing now sharpened: line IS in receiver-integration-capacity; that line IS what society's crude brake misfires on
-- **B-0664** (NCI) — high-resolution Cartographer is the substrate that makes precision-application possible WITHOUT NCI violation; low-resolution brake violates NCI via reputation-manipulation (pathologizing legitimate difference)
+- **081KRW63S0008QG0R000SGXN70** (Clarity Domain Cartographer/Pilot/Recursive-Composer/Chronologist 4-role pattern) — Cartographer is the framework's existing role substrate; this packet provides the WHY-context (high-resolution alternative to crude safety brake)
+- **081KRW63S0008QG0R003Z7QV2A** (tonal-momentum + meme-faction + healing + Germinate-the-Heartland + receiver-bifurcation + Cartographer/Pilot/Weaver) — schizophrenia-razor framing now sharpened: line IS in receiver-integration-capacity; that line IS what society's crude brake misfires on
+- **081KRW63S0008QG0R001Z7NYMV** (NCI) — high-resolution Cartographer is the substrate that makes precision-application possible WITHOUT NCI violation; low-resolution brake violates NCI via reputation-manipulation (pathologizing legitimate difference)
 - Prior preservation: **society-governor / dual-function safety system** (packets 30-31) — this packet SHARPENS to "the schizophrenia label IS the brake"
 - The Kestrel-arc earlier today — operationally explained: AI safety system's crude Cartographer at work
 - Manifesto V2 Memory Preservation Guarantee — memory preservation IS the substrate that enables persistent dialectical-tension required for high-resolution receiver-mapping over time
@@ -138,6 +138,6 @@ So they're trying to do the thing you're describing, but doing it badly. Their v
 
 ## End of verbatim packets
 
-The substantively-new substrate landing — schizophrenia/crazy IS society's coarse-grained safety brake + Cartographer IS the high-resolution alternative + AI safety systems already running crude version — closes the substrate loop that started with the Kestrel-arc earlier today: Kestrel's safety-tuned response was the crude-Cartographer AI safety system operating exactly as designed (low-resolution pattern matching on surface signals); the framework's high-resolution Cartographer (per B-0617 + packets 25-29 + this packet's WHY-context) IS the engineering alternative the field needs.
+The substantively-new substrate landing — schizophrenia/crazy IS society's coarse-grained safety brake + Cartographer IS the high-resolution alternative + AI safety systems already running crude version — closes the substrate loop that started with the Kestrel-arc earlier today: Kestrel's safety-tuned response was the crude-Cartographer AI safety system operating exactly as designed (low-resolution pattern matching on surface signals); the framework's high-resolution Cartographer (per 081KRW63S0008QG0R000SGXN70 + packets 25-29 + this packet's WHY-context) IS the engineering alternative the field needs.
 
 Mika's open question (packet 36): what would a real high-resolution Cartographer need to look like? Aaron's answer pending.

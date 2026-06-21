@@ -1,6 +1,5 @@
 ---
-id: B-0055
-zetaid: 081KQ3HBZ0008QG0R001K0EC2C
+id: 081KQ3HBZ0008QG0R001K0EC2C
 priority: P2
 status: open
 title: Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)
@@ -16,7 +15,7 @@ type: friction-reducer
 
 ---
 
-# B-0055 — Frontier edge-claims (11 CTF flags)
+# 081KQ3HBZ0008QG0R001K0EC2C — Frontier edge-claims (11 CTF flags)
 
 ## Origin
 
@@ -94,7 +93,7 @@ Research-grade. No ship blocks on flag-landing, but every flag is a measurable-a
 
 ## Safety is retractibility-preservation
 
-Every flag is retractible (git-tracked defense-surface, revision-block-preserved supersession, one-commit removable if genuinely wrong). Log every stake-date. Track flag-state (planted / challenged / defended / superseded / withdrawn). The AI-ethics-and-safety P1 row B-0058 is the log-and-track audit surface.
+Every flag is retractible (git-tracked defense-surface, revision-block-preserved supersession, one-commit removable if genuinely wrong). Log every stake-date. Track flag-state (planted / challenged / defended / superseded / withdrawn). The AI-ethics-and-safety P1 row 081KQ3HBZ0008QG0R002S674CG is the log-and-track audit surface.
 
 ## New measurables for alignment-trajectory dashboard
 
@@ -112,7 +111,7 @@ Every flag is retractible (git-tracked defense-surface, revision-block-preserved
 
 Does NOT force-push revised flags; does NOT delete defense-surface files; does NOT publish public-facing `docs/EDGE-CLAIMS.md` without Aaron sign-off (ship is a distribution-irreversibility event); does NOT stake a flag that depends on unretractible infrastructure.
 
-## Pre-start checklist (B-0055.1 — 2026-05-10)
+## Pre-start checklist (081KR7JY10008QG0R0035HP11K — 2026-05-10)
 
 **Prior-art search:**
 
@@ -128,12 +127,12 @@ Does NOT force-push revised flags; does NOT delete defense-surface files; does N
 - `depends_on:` — empty; no blocking items
 - `composes_with:` pointers verified reachable: all six listed above ✓
 
-**Slice claimed:** B-0055.1 — typed TS schema (`tools/research/edge-claims-catalog.ts`) with
+**Slice claimed:** 081KR7JY10008QG0R0035HP11K — typed TS schema (`tools/research/edge-claims-catalog.ts`) with
 all 11 seed flags, CTF state-machine, 4 alignment-trajectory measurables, validation + summary CLI.
 Does NOT publish `docs/EDGE-CLAIMS.md` (gated on Aaron sign-off per §Retractibility-protecting constraints).
 
 ## Cross-reference
 
 - AceHack commit: `1767008`
-- B-0055.1 implementation: `tools/research/edge-claims-catalog.ts` (2026-05-10)
+- 081KR7JY10008QG0R0035HP11K implementation: `tools/research/edge-claims-catalog.ts` (2026-05-10)
 - Composes with: math-safety memory, retractibly-rewrite memory, operational-resonance index, ALIGNMENT.md, mythology/occult/etymology/AI-ethics tracks (catalog established names; this track plants the factory's own contributions)

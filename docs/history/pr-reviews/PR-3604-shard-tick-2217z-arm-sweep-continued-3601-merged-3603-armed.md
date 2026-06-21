@@ -31,7 +31,7 @@
 
 - 2 stuck-no-action PRs surfaced since 2214Z arm-sweep:
   - **#3601** Lior 22:20Z drift report — armed → MERGED immediately.
-  - **#3603** Riven cursor-terminal loop scaffold (B-0498 decomposed) — armed, awaiting required CI.
+  - **#3603** Riven cursor-terminal loop scaffold (081KRHWGX0008QG0R001XFRAHC decomposed) — armed, awaiting required CI.
 - origin/main advanced 4442e3f→8d0a4f5 (prior-tick #3594 + #3600 landed in window).
 - Lior idle this tick; canary tree 52→52 (no corruption).
 
@@ -69,7 +69,7 @@
 - **`Copilot` (bot)** at 2026-05-15T22:21:50Z on `docs/hygiene-history/ticks/2026/05/15/2217Z.md`:20 (association: NONE)
 
   <pre>
-  P1: This line associates the Riven cursor-terminal scaffold with `B-0498`, but `B-0498` already exists on main as “Substrate-evolution algebra ... rule-promotion after cooling period” (`docs/backlog/P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md`). That makes this tick record point readers to the wrong backlog item (or documents a duplicate-ID collision in #3603) and should be corrected or explicitly called out as a mismatch.
+  P1: This line associates the Riven cursor-terminal scaffold with `081KRHWGX0008QG0R001XFRAHC`, but `081KRHWGX0008QG0R001XFRAHC` already exists on main as “Substrate-evolution algebra ... rule-promotion after cooling period” (`docs/backlog/P2/081KRHWGX0008QG0R001XFRAHC-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md`). That makes this tick record point readers to the wrong backlog item (or documents a duplicate-ID collision in #3603) and should be corrected or explicitly called out as a mismatch.
 
   </pre>
 
@@ -78,9 +78,9 @@
   - **`AceHack` (human)** at 2026-05-15T22:57:52Z on `docs/hygiene-history/ticks/2026/05/15/2217Z.md`:20 (association: MEMBER)
 
     <pre>
-    Confirmed: real collision. `git ls-tree origin/main -- docs/backlog/` shows BOTH `P1/B-0498-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md` (from now-merged #3603) AND `P2/B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md` (predates by 1 day). Per `memory/feedback_b0451_per_collision_renumber_procedure_external_references_rule_trumps_first_merged_2026_05_14.md` — rule: first-merged wins; P2 dated 2026-05-14 predates → P1 should renumber.
+    Confirmed: real collision. `git ls-tree origin/main -- docs/backlog/` shows BOTH `P1/081KRHWGX0008QG0R001XFRAHC-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md` (from now-merged #3603) AND `P2/081KRHWGX0008QG0R001XFRAHC-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md` (predates by 1 day). Per `memory/feedback_b0451_per_collision_renumber_procedure_external_references_rule_trumps_first_merged_2026_05_14.md` — rule: first-merged wins; P2 dated 2026-05-14 predates → P1 should renumber.
 
-    This shard accurately quotes #3603 title at the time of the tick; the collision lives at backlog-row level, not in this historical shard record. Filing renumber backlog row B-0545 to sweep the renamed references across docs/backlog, PR titles, shard quotes, and any rule/skill files mentioning B-0498-riven.
+    This shard accurately quotes #3603 title at the time of the tick; the collision lives at backlog-row level, not in this historical shard record. Filing renumber backlog row 081KRMEXM0008QG0R000ARAR7P to sweep the renamed references across docs/backlog, PR titles, shard quotes, and any rule/skill files mentioning 081KRHWGX0008QG0R001XFRAHC-riven.
 
     Resolving this thread as: substrate-honestly noted; correction filed at the appropriate scope.
     </pre>

@@ -4,7 +4,7 @@
  *
  * Existence-drift sub-class checker — catches claims that a file or
  * directory exists when it doesn't. Per the verify-then-claim memo,
- * one of 7 sub-classes B-0170 v1+ should mechanize.
+ * one of 7 sub-classes 081KQNJ500008QG0R003SCWBDV v1+ should mechanize.
  *
  * v0.6 changes:
  * - Gitignore awareness: paths that exist on disk but are gitignored

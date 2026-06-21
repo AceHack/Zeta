@@ -22,7 +22,7 @@ namespace Zeta.Core
 /// **The self-reflective jewel — no new opcodes needed:** the trace lands in the machine's OWN plane
 /// memory, and DRW's collision flag (VF) reports XOR hits per selected plane — so a ROM can ASK
 /// "have I been here?" by drawing a probe sprite on the R plane at any cell and reading VF. The
-/// machine reads its own worldline THROUGH its own instruction set. (B-1031 note: DRW now CLIPS
+/// machine reads its own worldline THROUGH its own instruction set. (081KTZ4EF0008QG0R002WVTMMJ note: DRW now CLIPS
 /// at edges, so a probe sprite at columns 57-63 loses its over-edge tail — probe within the court
 /// or accept the narrowed read; the clip never wraps a probe onto cells it did not ask about.) Self-reflection in soft mode,
 /// full ISA to the bone; the QEMU/microkernel rung gets the same trace surface at metal (named slice).

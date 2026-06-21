@@ -1,6 +1,6 @@
 // audit_retractibility.test.ts — tests for retractibility audit tool.
 //
-// B-0058 slice: adds test coverage for the retractibility check's
+// 081KQ3HBZ0008QG0R002S674CG slice: adds test coverage for the retractibility check's
 // arg parsing, inbound-ref counting, audit shape, and CLI exit codes.
 //
 // Run: bun test tools/alignment/audit_retractibility.test.ts

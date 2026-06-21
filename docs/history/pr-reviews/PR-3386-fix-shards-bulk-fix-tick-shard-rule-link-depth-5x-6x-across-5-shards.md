@@ -90,7 +90,7 @@ Already-correct shards on main verified intact (0027Z, 0230Z, 0615Z, 0710Z, 0724
 - **`Copilot` (bot)** at 2026-05-15T08:16:02Z on `docs/hygiene-history/ticks/2026/05/15/0717Z.md`:7 (association: NONE)
 
   <pre>
-  P1: This line still contains a broken relative link to B-0530. From `docs/hygiene-history/ticks/2026/05/15/`, `../../../backlog/...` only climbs to `docs/hygiene-history/ticks/2026/backlog/...`; the actual row exists under `docs/backlog/P3/`, so readers will get a dead link even though this PR is fixing link-depth issues.
+  P1: This line still contains a broken relative link to 081KRMEXM0008QG0R000X1PPGC. From `docs/hygiene-history/ticks/2026/05/15/`, `../../../backlog/...` only climbs to `docs/hygiene-history/ticks/2026/backlog/...`; the actual row exists under `docs/backlog/P3/`, so readers will get a dead link even though this PR is fixing link-depth issues.
 
   </pre>
 
@@ -136,7 +136,7 @@ Methodology:
   - Post-fix re-verification: detection script returns empty for all 5
   - Sample realpath check: the fixed links resolve correctly
 
-Composes with [B-0519 Pattern 8](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)
+Composes with [081KRHWGX0008QG0R001HMWM1W Pattern 8](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md)
 + [PR #3380](https://github.com/Lucent-Financial-Group/Zeta/pull/3380)'s
 "next tick candidate" framing. Substrate-honest action-side closure of
 the investigation peer-Otto deferred.
@@ -153,10 +153,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(shards): correct B-0530 link depth in 0717Z (3 → 5 dotdots)
+fix(shards): correct 081KRMEXM0008QG0R000X1PPGC link depth in 0717Z (3 → 5 dotdots)
 
 Copilot P1 catch on PR #3386: line 7 of 0717Z had
-`../../../backlog/P3/B-0530-...` (3 dotdots) which from
+`../../../backlog/P3/081KRMEXM0008QG0R000X1PPGC-...` (3 dotdots) which from
 `docs/hygiene-history/ticks/2026/05/15/` only climbs to `2026/`,
 not `docs/`. Needs 5 dotdots to reach `docs/backlog/`.
 

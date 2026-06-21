@@ -1,6 +1,5 @@
 ---
-id: B-0073
-zetaid: 081KQ8P5D0008QG0R002RYXE89
+id: 081KQ8P5D0008QG0R002RYXE89
 priority: P0
 status: closed
 closed: 2026-05-02
@@ -27,7 +26,7 @@ tags: [code-scanning, codeql, ruleset, lfg, blocker, task-306]
 > no longer firing. PR-blocking on this ruleset is no longer
 > an active concern; AceHack→LFG forward-sync is operational.
 
-# B-0073 — LFG csharp Code Scanning cleanup
+# 081KQ8P5D0008QG0R002RYXE89 — LFG csharp Code Scanning cleanup
 
 ## Source
 

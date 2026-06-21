@@ -1,12 +1,11 @@
 ---
-id: B-0058.4
-zetaid: 081KRQ1AB0008QG0R001BPDBHT
+id: 081KRQ1AB0008QG0R001BPDBHT
 priority: P1
 status: closed
 title: Alignment-clause drift detector tool and workflow
 tier: substrate-foundational-discipline
 effort: S
-ask: Aaron 2026-04-21 (decomposed from B-0058)
+ask: Aaron 2026-04-21 (decomposed from 081KQ3HBZ0008QG0R002S674CG)
 created: 2026-05-16
 last_updated: 2026-05-29
 decomposition: leaf
@@ -16,11 +15,11 @@ tags: [ai-ethics, ai-safety, alignment, drift-detector, alignment-clause]
 type: friction-reducer
 ---
 
-# B-0058.4 — Alignment-clause drift detector tool and workflow (P1)
+# 081KRQ1AB0008QG0R001BPDBHT — Alignment-clause drift detector tool and workflow (P1)
 
 ## Origin
 
-Decomposed from B-0058 (AI ethics + safety research track) to provide an atomic, implementable target for the alignment-clause drift detector mechanism.
+Decomposed from 081KQ3HBZ0008QG0R002S674CG (AI ethics + safety research track) to provide an atomic, implementable target for the alignment-clause drift detector mechanism.
 
 ## What this row owns
 

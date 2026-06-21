@@ -31,7 +31,7 @@ Resuming the **algebra ladder** (top-of-list, where we started) — the **F# Bag
 
 **`src/Core/Bag.fs`** — mirrors the TS reference + Rust twin: ascending-key-sorted canonical run, per-key **SUM** combiner (commutative monoid, **NOT idempotent** — `union(a,a)` doubles counts, the Bag/G-Set distinction), `int64` counts with a `Checked.(+)` overflow guard (F# analog of the TS safe-integer guard / Rust `checked_add`).
 
-**Notable:** uses F# **structural `compare`** — which is **ordinal** for strings (`String.CompareOrdinal`), matching the TS `<` and byte-ordered Rust twins **and** the invariant-culture default — so it **fixes the G-Set `Comparer<'T>.Default` culture-sensitivity gap (B-0969) at this rung from the start**.
+**Notable:** uses F# **structural `compare`** — which is **ordinal** for strings (`String.CompareOrdinal`), matching the TS `<` and byte-ordered Rust twins **and** the invariant-culture default — so it **fixes the G-Set `Comparer<'T>.Default` culture-sensitivity gap (081KT07NV0008QG0R001YDB73K) at this rung from the start**.
 
 **`tests/Tests.FSharp/Algebra/Bag.Tests.fs`** — 10 law/unit tests (commutative / associative / identity / **non-idempotent** / multiplicity / addN-noop / total / custom-equality) + a **golden-vector replay** of `src/Core.TypeScript/bag/golden-vectors.json`. **11/11 pass; Release build 0-warning.** Byte-parity with the TS + Rust oracles.
 

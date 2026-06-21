@@ -1,6 +1,6 @@
 ---
 pr_number: 5263
-title: "fix(B-0823): suffix-pattern match for nixpkgs 25.11 store-hashed kernel/initrd paths"
+title: "fix(081KSGS9H0008QG0R003SWZF9J): suffix-pattern match for nixpkgs 25.11 store-hashed kernel/initrd paths"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:54:20Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:35:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5263: fix(B-0823): suffix-pattern match for nixpkgs 25.11 store-hashed kernel/initrd paths
+# PR #5263: fix(081KSGS9H0008QG0R003SWZF9J): suffix-pattern match for nixpkgs 25.11 store-hashed kernel/initrd paths
 
 ## PR description
 
@@ -42,9 +42,9 @@ Added \`matchesAny()\` helper — generic suffix-pattern matcher (\`entry.starts
 
 ## Composes with
 
-- B-0823 (substrate-layer follow-up; now empirically confirmed via diagnostic dump)
-- B-0818 (sibling 25.11 isoName regression — same root cause class; same fix-pattern)
-- B-0800 (nixpkgs 25.11 EOL recovery)
+- 081KSGS9H0008QG0R003SWZF9J (substrate-layer follow-up; now empirically confirmed via diagnostic dump)
+- 081KSGS9H0008QG0R00033DT02 (sibling 25.11 isoName regression — same root cause class; same fix-pattern)
+- 081KSGS9H0008QG0R001EKTS5A (nixpkgs 25.11 EOL recovery)
 
 The diagnostic dump pattern (from #5251) worked as designed — revealed actual 25.11 paths on first failure, enabling targeted fix without log-archaeology.
 

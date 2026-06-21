@@ -1,6 +1,5 @@
 ---
-id: B-0274
-zetaid: 081KR2E4K0008QG0R003VN9WC8
+id: 081KR2E4K0008QG0R003VN9WC8
 priority: P1
 status: open
 title: "Pages discoverability - Astro workflow scaffold and SHA pinning"
@@ -13,7 +12,7 @@ decomposition: atomic
 type: friction-reducer
 ---
 
-# B-0274 - Astro workflow scaffold
+# 081KR2E4K0008QG0R003VN9WC8 - Astro workflow scaffold
 
 Create the GitHub Pages deployment workflow skeleton for Astro,
 including minimal permissions and SHA-pinned actions.

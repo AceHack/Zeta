@@ -30,19 +30,19 @@
 //   7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title)
 //   8. Duplicate IDs (multiple files claiming the same `id: B-NNNN`) —
 //      factory-wide uniqueness violation per tools/backlog/README.md.
-//      Surfaced 2026-05-14 (Copilot caught two files claiming B-0329 on
+//      Surfaced 2026-05-14 (Copilot caught two files claiming 081KR2E4K0008QG0R001F0YB5S on
 //      PR #3247; PR #3249 added this audit class).
 //   9. Parent-child status mismatch — parent declares `status: closed`
 //      while a declared `child` is still `status: open`. Surfaced 2026-
-//      05-15 (PR #3518 closed B-0442 without closing children B-0504 +
-//      B-0505; B-0532 row + this audit class capture the failure mode).
+//      05-15 (PR #3518 closed 081KRFA460008QG0R00061SXRW without closing children 081KRHWGX0008QG0R000PVB6FF +
+//      081KRHWGX0008QG0R002C038BJ; 081KRMEXM0008QG0R003FZNK3E row + this audit class capture the failure mode).
 //
 // Usage:
 //   bun tools/hygiene/audit-backlog-items.ts                            # detect-only
 //   bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
-//       # exit non-zero on duplicate-ID groups (B-0535 CI gate)
+//       # exit non-zero on duplicate-ID groups (081KRMEXM0008QG0R000HHAG77 CI gate)
 //   bun tools/hygiene/audit-backlog-items.ts --enforce-parent-child-status
-//       # exit non-zero on parent-child status-mismatch groups (B-0532 CI gate)
+//       # exit non-zero on parent-child status-mismatch groups (081KRMEXM0008QG0R003FZNK3E CI gate)
 //
 // Exit codes:
 //   0 -- survey ran (findings reported in body); detect-only mode
@@ -528,7 +528,7 @@ function isClosedStatus(status) {
     return CLOSED_STATUSES.has(status) || status.startsWith("superseded-by-");
 }
 function reportParentChildStatusMismatch(rows) {
-    console.log("## 9. Parent-child status mismatch (B-0532)");
+    console.log("## 9. Parent-child status mismatch (081KRMEXM0008QG0R003FZNK3E)");
     console.log("");
     const byId = new Map();
     for (const r of rows)
@@ -633,11 +633,11 @@ async function main() {
     console.log("  memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md");
     console.log("  (typed-edge backlog graph).");
     if (enforceDuplicateIds && duplicateIdGroups > 0) {
-        process.stderr.write(`\nerror: ${duplicateIdGroups} duplicate-ID group(s) found; --enforce-duplicate-ids set (B-0535 gate)\n`);
+        process.stderr.write(`\nerror: ${duplicateIdGroups} duplicate-ID group(s) found; --enforce-duplicate-ids set (081KRMEXM0008QG0R000HHAG77 gate)\n`);
         return 1;
     }
     if (enforceParentChildStatus && parentChildMismatches > 0) {
-        process.stderr.write(`\nerror: ${parentChildMismatches} parent-child status-mismatch group(s) found; --enforce-parent-child-status set (B-0532 gate)\n`);
+        process.stderr.write(`\nerror: ${parentChildMismatches} parent-child status-mismatch group(s) found; --enforce-parent-child-status set (081KRMEXM0008QG0R003FZNK3E gate)\n`);
         return 1;
     }
     return 0;

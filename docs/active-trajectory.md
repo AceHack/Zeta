@@ -234,7 +234,7 @@ Lease rejection on the real push is NOT a retry condition. It means the remote m
 | `.github/workflows/scorecard.yml` | ALREADY_RESOLVED | Identical content on both forks. |
 | `.mise.toml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `uv = "0.9"`; LFG has `uv = "0.11.8"`. LFG-newer pins. |
 | `.github/workflows/resume-diff.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `gh pr view --json comments` (returns GraphQL node IDs, broken per Codex P1 on LFG #649). LFG uses `gh api .../issues/.../comments --paginate --jq` (returns REST integer IDs, fixed). LFG version is the bug-fix. |
-| `tools/setup/common/elan.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream <url> \| sh` (streamed pipe-to-sh). LFG uses `curl_fetch --output` to temp + per-arch SHA256 verify + run. LFG version is structurally safer per Scorecard PinnedDependenciesID hardening. |
+| `tools/setup/mechanisms/from-elan.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack used streamed pipe-to-sh. LFG uses pinned tarball + SHA256 verify via `from-elan.sh` mechanism. |
 | `tools/setup/linux.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream https://mise.run \| sh`. LFG uses pinned-tarball + per-arch SHA256 + temp-dir + trap. LFG version is structurally safer. |
 | `.github/workflows/codeql.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack dropped `java-kotlin` matrix cell. LFG kept it with explicit code-scanning-service rationale (no-findings SARIF per language). LFG-newer matrix structure. |
 | `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` (wrong-per-uv-decision) + extra cache paths already covered on LFG. LFG uses `install.sh` three-way-parity routing through `uv tool install`. See "gate.yml evidence detail" paragraph below the table. |
@@ -423,7 +423,7 @@ Per multi-AI review 2026-04-29T10:50Z packet:
 
 - **Gate-runner script** (now bumped to highest priority among deferred follow-ups): build `tools/zero-zero-zero/check-gate.sh` that emits a machine-readable summary of all 9 gate conditions and fails closed. Replaces the prose ledger AND the illustrative inline snippet above with a verifiable-by-execution gate. Per multi-AI review 2026-04-29T11:05Z (Codex P1 + Copilot 5 threads + Amara): the durable script must be tested against fixtures: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk portability, `mktemp` + `trap` cleanup. Until the script lands, binary direction MUST be classified manually via `git diff --name-status -z` per file + direct `git show` evidence. Best blade (Amara): *"The binary hole is found. The gate condition is right. The parser still needs teeth."*
 - **Self-reference rule for personas in operational specs**: "Otto" is a named identity in the substrate. Should references to "Otto" in reusable operational specs follow the same role-vs-name rule as references to "Aaron" / "Amara"? Probably yes. Capture in `docs/AGENT-BEST-PRACTICES.md` extension.
-- **LOST recovery soft-trigger predicate format**: "deferred with stated condition" needs a verifiable predicate that auto-resurfaces the work for resume/retire decision when the condition becomes true. Example shape: `"deferred until: (B-0105 lands) AND (no consolidation work is active)"`.
+- **LOST recovery soft-trigger predicate format**: "deferred with stated condition" needs a verifiable predicate that auto-resurfaces the work for resume/retire decision when the condition becomes true. Example shape: `"deferred until: (081KQB8J40008QG0R0021GX1HK lands) AND (no consolidation work is active)"`.
 - **Time-gap between dry-run and real push**: structure the destructive sequence so dry-run + real push run as one operator-approved unit, not two separate decisions. Capture timestamps for both for any post-incident analysis.
 
 State summary:
@@ -525,7 +525,7 @@ Remaining steps to clear the gate:
 - Do NOT open new audit branches without referencing this file's "next action."
 - Do NOT invoke peer-call (codex / gemini / grok) without an explicit specific question that this file does not already answer.
 - Do NOT confuse parallel-tool-calls with peer mode. Peer mode is each AI running its own autonomous loop with git-native work-claim coordination — that is a separate trajectory (NOT this one) and is captured as a backlog candidate (the maintainer flagged "need a trajectory for real peer mode" 2026-04-29T09:30Z).
-- Do NOT add new substrate islands to the absorption files (the multi-AI feedback packets) — they live in `docs/research/` as non-normative archives per B-0105.
+- Do NOT add new substrate islands to the absorption files (the multi-AI feedback packets) — they live in `docs/research/` as non-normative archives per 081KQB8J40008QG0R0021GX1HK.
 
 ## Resume protocol
 
@@ -543,7 +543,7 @@ This file is the load-state. Without it, every resume re-derives state from scra
 
 This file is itself an instance of a more general pattern: any multi-session trajectory needs a known-path load-state file. After 0/0/0 closes, candidates for the same shape:
 
-- B-0105 consolidation-gate trajectory (next consolidation round)
+- 081KQB8J40008QG0R0021GX1HK consolidation-gate trajectory (next consolidation round)
 - Future peer-mode trajectory (when the maintainer chooses to start it)
 - Any future Aurora-round absorption arc
 

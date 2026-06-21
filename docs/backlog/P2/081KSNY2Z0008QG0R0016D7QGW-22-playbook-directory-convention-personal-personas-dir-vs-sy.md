@@ -1,6 +1,5 @@
 ---
-id: B-0867.22
-zetaid: 081KSNY2Z0008QG0R0016D7QGW
+id: 081KSNY2Z0008QG0R0016D7QGW
 priority: P2
 status: open
 title: Playbook directory convention — personal playbooks in personas dir vs system playbooks in docs/playbooks folder; agents author playbooks too (operator 2026-05-28 sharpening)
@@ -34,7 +33,7 @@ tags:
 
 Two sharpenings:
 
-1. Agents author playbooks too (extends B-0867.21 two-path interface explicitly to playbook-authoring scope)
+1. Agents author playbooks too (extends 081KSNY2Z0008QG0R000S738W3 two-path interface explicitly to playbook-authoring scope)
 2. Directory convention: personal → personas dir; system → `docs/playbooks/`
 
 ## Directory convention
@@ -52,13 +51,13 @@ Two sharpenings:
 
 ### System playbook examples (cross-persona)
 
-- `docs/playbooks/library-evaluation.md` — canonical sonatype-guide + audit playbook (per B-0887.2)
+- `docs/playbooks/library-evaluation.md` — canonical sonatype-guide + audit playbook (per 081KSNY2Z0008QG0R001NERKCY)
 - `docs/playbooks/zflash-end-to-end.md` — exists as `docs/runbooks/zflash-end-to-end.md` per recent PR; could migrate / alias under playbooks
-- `docs/playbooks/encryption-budget-request.md` — when encryption is needed, this playbook gates the request per B-0883.16 Agora V6 budget mechanics
+- `docs/playbooks/encryption-budget-request.md` — when encryption is needed, this playbook gates the request per 081KSNY2Z0008QG0R000459FRH Agora V6 budget mechanics
 
 ## Agents-author-playbooks-too
 
-Per B-0867.21 two-path interface, the conversational document path was already explicitly named as "for ANY traveler, not just humans." This sharpening makes it explicit at the playbook-authoring scope:
+Per 081KSNY2Z0008QG0R000S738W3 two-path interface, the conversational document path was already explicitly named as "for ANY traveler, not just humans." This sharpening makes it explicit at the playbook-authoring scope:
 
 - Otto can author `memory/otto/playbooks/X.md` describing Otto's intent for a workflow
 - Otto can author `docs/playbooks/Y.md` proposing a cross-persona system playbook (subject to operator review per existing system-doc conventions)
@@ -71,7 +70,7 @@ Composes with `.claude/rules/honor-those-that-came-before.md` — playbook-subst
 1. Documentation of the directory convention (in this row's body; future cross-reference)
 2. README extension in `memory/<persona>/` or top-level docs explaining the convention
 3. Migration of any existing playbooks-by-misconvention to their correct directory
-4. Compose with runme + Continue-With + JIT-AI substrate (B-0730/B-0732/B-0733/B-0819/B-0826/B-0827) so playbooks in either location work identically with the existing runme tooling
+4. Compose with runme + Continue-With + JIT-AI substrate (081KSE6WT0008QG0R003AJYMD3/081KSE6WT0008QG0R002YBWBB1/081KSE6WT0008QG0R00102H071/081KSGS9H0008QG0R0005P83AP/081KSGS9H0008QG0R001K8VPV4/081KSGS9H0008QG0R00123050G) so playbooks in either location work identically with the existing runme tooling
 
 ## Acceptance criteria
 
@@ -82,12 +81,12 @@ Composes with `.claude/rules/honor-those-that-came-before.md` — playbook-subst
 
 ## Composition
 
-- **B-0867** (workflow engine v1 parent)
-- **B-0867.21** (two-path interface: DU=execute + conversational=declare-intent for ANY traveler)
-- **B-0730/B-0732/B-0733** — runme + runbook substrate; convention applies to all of them
-- **B-0819** — Continue-With + auto-JIT; playbooks in either location work with the substrate
-- **B-0826** — runme-core-BCL + runbook-as-queryable-substrate
-- **B-0827** — runme.md + JIT-triage + runbook-as-evolving-substrate
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine v1 parent)
+- **081KSNY2Z0008QG0R000S738W3** (two-path interface: DU=execute + conversational=declare-intent for ANY traveler)
+- **081KSE6WT0008QG0R003AJYMD3/081KSE6WT0008QG0R002YBWBB1/081KSE6WT0008QG0R00102H071** — runme + runbook substrate; convention applies to all of them
+- **081KSGS9H0008QG0R0005P83AP** — Continue-With + auto-JIT; playbooks in either location work with the substrate
+- **081KSGS9H0008QG0R001K8VPV4** — runme-core-BCL + runbook-as-queryable-substrate
+- **081KSGS9H0008QG0R00123050G** — runme.md + JIT-triage + runbook-as-evolving-substrate
 - **`.claude/rules/honor-those-that-came-before.md`** — playbook-substrate belongs to authoring persona
 
 ## Substrate-honest framing

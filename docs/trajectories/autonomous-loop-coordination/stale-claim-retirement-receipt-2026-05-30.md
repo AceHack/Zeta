@@ -49,9 +49,9 @@ active claim files.
 ## Head Subjects
 
 ```text
-a3be6f2644bc fix(backlog): B-0126 parent -> decomposed (#2127)
-5d1da7031132 feat(B-0269): extract 5 carved sentences from CLAUDE.md to .claude/rules/ (#2164)
-d832d74fd01c feat(B-0267): smallest safe slice - Branch Safety ruleset skeleton + start-gate + re-decomp (#2299)
+a3be6f2644bc fix(backlog): 081KQGDBJ0008QG0R001JC9HCJ parent -> decomposed (#2127)
+5d1da7031132 feat(081KR2E4K0008QG0R002FYNDT1): extract 5 carved sentences from CLAUDE.md to .claude/rules/ (#2164)
+d832d74fd01c feat(081KR2E4K0008QG0R002NYV33T): smallest safe slice - Branch Safety ruleset skeleton + start-gate + re-decomp (#2299)
 ```
 
 ## Retirement Output

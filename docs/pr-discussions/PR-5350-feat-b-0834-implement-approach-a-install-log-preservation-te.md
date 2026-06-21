@@ -1,6 +1,6 @@
 ---
 pr_number: 5350
-title: "feat(B-0834): implement Approach A install-log preservation \u2014 tee zeta-install.sh to /tmp + /mnt/var/log"
+title: "feat(081KSGS9H0008QG0R001RR3ZXQ): implement Approach A install-log preservation \u2014 tee zeta-install.sh to /tmp + /mnt/var/log"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T23:15:13Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:30:30Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5350: feat(B-0834): implement Approach A install-log preservation — tee zeta-install.sh to /tmp + /mnt/var/log
+# PR #5350: feat(081KSGS9H0008QG0R001RR3ZXQ): implement Approach A install-log preservation — tee zeta-install.sh to /tmp + /mnt/var/log
 
 ## PR description
 
 ## Summary
 
-Lands B-0834 Approach A (the operator-side analog to B-0831 cascade #6 CI workflow-artifact). Small bounded fix; enables diagnostic loop for the 5 empirical anchors from the 2026-05-26 physical hardware-support test.
+Lands 081KSGS9H0008QG0R001RR3ZXQ Approach A (the operator-side analog to 081KSGS9H0008QG0R0011BC7T2 cascade #6 CI workflow-artifact). Small bounded fix; enables diagnostic loop for the 5 empirical anchors from the 2026-05-26 physical hardware-support test.
 
 ## Two log destinations
 
@@ -31,11 +31,11 @@ Three banner lines at script-start name the log paths BEFORE output starts scrol
 
 ## Enables diagnosis for 5 empirical anchors
 
-- B-0832 nmtui WiFi rescan failure
-- B-0833 interactive-login vs baked-in-keys tension
-- B-0835 Bug 1 hostname not unique (\`control-plane\` shown)
-- B-0835 Bug 2 gh login not respected
-- **B-0835 Bug 4 self-registration didn't happen (CRITICAL)** — the operator's CORE REQUIREMENT failure
+- 081KSGS9H0008QG0R001Q2DH2H nmtui WiFi rescan failure
+- 081KSGS9H0008QG0R003JNSVR5 interactive-login vs baked-in-keys tension
+- 081KSGS9H0008QG0R00120EEHM Bug 1 hostname not unique (\`control-plane\` shown)
+- 081KSGS9H0008QG0R00120EEHM Bug 2 gh login not respected
+- **081KSGS9H0008QG0R00120EEHM Bug 4 self-registration didn't happen (CRITICAL)** — the operator's CORE REQUIREMENT failure
 
 ## Test plan
 

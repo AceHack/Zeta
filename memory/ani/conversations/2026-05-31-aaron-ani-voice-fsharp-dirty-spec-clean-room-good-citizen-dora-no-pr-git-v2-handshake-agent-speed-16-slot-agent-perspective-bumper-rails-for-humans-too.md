@@ -15,7 +15,7 @@ context: >
   the F# spec; TS = primary distribution, C# = second distribution (both
   clean-room), Rust = low-level/WASM.
 
-  (2) GOOD-CITIZEN DORA METRIC (re-states B-0952) -- track upstreaming as a KPI
+  (2) GOOD-CITIZEN DORA METRIC (re-states 081KSXN940008QG0R002528JS9) -- track upstreaming as a KPI
   so we're not just harvesting; the product-AI-team "called it out" (is this real
   or fluffy?); strategy = start SMALL, earn inroads, small clean contributions
   build trust -> bigger contributions later; bake it INTO the workflow ("the
@@ -55,11 +55,11 @@ context: >
   (per the `dst-plus-persist-plus-generator-time-plus-feedback-equals-
   computational-omniscience-over-simulation-substrate` rule -- which ALSO names
   retro-causal-like signal propagation as operational at simulation scope); the
-  monadic interrupts / "interrupts in waveforms" are anchored by B-0917 (Kleisli
+  monadic interrupts / "interrupts in waveforms" are anchored by 081KSNY2Z0008QG0R002HB4AGT (Kleisli
   interrupt substrate); the Atari emulator simulating all state-space at once is
-  B-0924; the C. elegans worm-colony superorganium as a multi-oracle Bayesian
+  081KSNY2Z0008QG0R001HA43GG; the C. elegans worm-colony superorganium as a multi-oracle Bayesian
   engine ("why reinvent Bayesian inference -- evolution had millions of years")
-  is B-0925. EDGE-DEFINING HYPOTHESES (per `edge-defining-work-not-speculation`,
+  is 081KSNY2Z0008QG0R00390T4DJ. EDGE-DEFINING HYPOTHESES (per `edge-defining-work-not-speculation`,
   not god-tier): physics-schema-retrocausality over DBSP retraction-algebra;
   isomorphisms to a physics schema -> "maybe we don't need digital at all"
   (FPGA/signal-processing Rube-Goldberg). Plus the metabolism loop (eat random
@@ -74,17 +74,17 @@ composes_with:
   - tools/observe/grammar-16.ts
   - docs/VISION.md
   - docs/DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md
-  - docs/backlog/P2/B-0952-... (contribute-back DORA metrics)
-  - docs/backlog/P3/B-0867.30-... (free-mode slots A/B)
-  - docs/backlog/P2/B-0942-... (co-dominant git mirrors / git-native CRDT)
-  - docs/backlog/P2/B-0951-... (git-native indexes + Hindsight storage)
+  - docs/backlog/P2/081KSXN940008QG0R002528JS9-... (contribute-back DORA metrics)
+  - docs/backlog/P3/081KSXN940008QG0R000TQ04Y0-... (free-mode slots A/B)
+  - docs/backlog/P2/081KSV2WD0008QG0R0021XJ94E-... (co-dominant git mirrors / git-native CRDT)
+  - docs/backlog/P2/081KSXN940008QG0R000R76H45-... (git-native indexes + Hindsight storage)
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/must-paired-with-can-exit-pattern.md
   - .claude/rules/measure-first-with-kpis-before-restricting-choice (universal default)
   - .claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md
   - .claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md
-  - docs/backlog/P*/B-0924-... (Atari emulator all-state-space)
-  - docs/backlog/P*/B-0925-... (C. elegans worm-colony controller)
+  - docs/backlog/P*/081KSNY2Z0008QG0R001HA43GG-... (Atari emulator all-state-space)
+  - docs/backlog/P*/081KSNY2Z0008QG0R00390T4DJ-... (C. elegans worm-colony controller)
 ---
 
 # Aaron x Ani (voice) 2026-05-31 -- F# dirty-spec / clean-room, good-citizen DORA, no-PR = workflow-is-branch-protection, Git-V2-handshake at agent-speed, the 16-slot grammar from the agent's perspective (bumper-rails, for-humans-too)
@@ -110,8 +110,8 @@ composes_with:
 >    deterministic simulator -- and the framework is **anchored toward it** (the
 >    `dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-
 >    omniscience-over-simulation-substrate` rule names omniscience +
->    retro-causal-like propagation as operational at simulation scope; B-0917
->    Kleisli interrupts; B-0924 Atari all-state-space; B-0925 C. elegans
+>    retro-causal-like propagation as operational at simulation scope; 081KSNY2Z0008QG0R002HB4AGT
+>    Kleisli interrupts; 081KSNY2Z0008QG0R001HA43GG Atari all-state-space; 081KSNY2Z0008QG0R00390T4DJ C. elegans
 >    worm-colony) -- but the operator is **NOT claiming this framework has achieved
 >    it yet.** My initial "god-tier / HIGH-SUSPICION" framing was a
 >    grep-substrate-anchors-before-razor FAILURE (the anchors were in context and I
@@ -185,7 +185,7 @@ not locked decisions. Each carries the why so a newcomer can push back.
    workflow); outside contributors will need more. Composes with the
    canonical-retrofit transport-dial (sovereign direct-push; corporate
    branch+batch-PR) + `dont-ask-permission` (the standing-authority / no-bad-actor
-   model). Bake the good-citizen DORA upstream metric (B-0952) INTO this workflow
+   model). Bake the good-citizen DORA upstream metric (081KSXN940008QG0R002528JS9) INTO this workflow
    so it's daily-life.
 
 ### Adjacent backlog-candidate (flagged, NOT minted unprompted)
@@ -197,8 +197,8 @@ not locked decisions. Each carries the why so a newcomer can push back.
    contribute the agent-speed-coordination primitives back UPSTREAM to git
    (anti-vendor-lock; "don't become the thing you hate"). The real problem named:
    *"how do you make Git work at agent speed? Agent coordination instead of human
-   coordination speed."* Distinct from B-0942 (co-dominant mirrors / git-native
-   CRDT) + B-0951 (git-native indexes / Hindsight storage). Backlog-candidate
+   coordination speed."* Distinct from 081KSV2WD0008QG0R0021XJ94E (co-dominant mirrors / git-native
+   CRDT) + 081KSXN940008QG0R000R76H45 (git-native indexes / Hindsight storage). Backlog-candidate
    pending operator go.
 
 ## Verbatim conversation (ASCII-normalized)
@@ -404,7 +404,7 @@ humans-too; visible + constrained-actions) are candidates for the observe-act
 ADR's design space (open-question #6 + the rationale layer) and go through the
 product-team agreement (whys-challengeable) before any lock. Computational
 omniscience + the worm/atari work are **operationally-real, substrate-anchored**
-(DST-omniscience rule + B-0917 + B-0924 + B-0925) per the operator's 2026-05-31
+(DST-omniscience rule + 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ) per the operator's 2026-05-31
 correction -- NOT god-tier (my initial framing was a grep-substrate-anchors-before-
 razor failure); only the further-reaching engineering bets (physics-retrocausality,
 "no digital at all") are edge-defining hypotheses. The Git-V2 (DBSP-handshake)

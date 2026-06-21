@@ -76,4 +76,4 @@ Two GitHub event types matter here:
   two-job split). Referenced by PR number to avoid a dead link before #6394 merges
   (Copilot xref, #6393).
 * [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md)
-  (B-0938) — the friction this autofix reduces, now reduced *safely*.
+  (081KSRGFP0008QG0R000J9Y634) — the friction this autofix reduces, now reduced *safely*.

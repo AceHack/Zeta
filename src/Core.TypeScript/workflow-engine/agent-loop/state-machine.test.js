@@ -9,7 +9,7 @@ function ctx(agent = "otto") {
 function idle() {
     return { tag: "Idle", context: ctx() };
 }
-function workCandidate(id = "B-0867", lane = "operational") {
+function workCandidate(id = "081KSKBP80008QG0R000B3Y19A", lane = "operational") {
     return {
         id,
         lane,
@@ -25,7 +25,7 @@ describe("transition", () => {
         const next = transition(idle(), opt);
         expect(next.tag).toBe("ExecutingWork");
         if (next.tag === "ExecutingWork") {
-            expect(next.work.id).toBe("B-0867");
+            expect(next.work.id).toBe("081KSKBP80008QG0R000B3Y19A");
         }
     });
     test("EmitHeartbeat → RecordingHeartbeat with note", () => {
@@ -175,7 +175,7 @@ describe("postResultTransition", () => {
     test("ExecutingWork + result → EmittingResult", () => {
         const state = { tag: "ExecutingWork", context: ctx(), work: workCandidate() };
         const result = {
-            workId: "B-0867",
+            workId: "081KSKBP80008QG0R000B3Y19A",
             lane: "operational",
             success: true,
             doraContribution: 0.6,
@@ -183,7 +183,7 @@ describe("postResultTransition", () => {
         const next = postResultTransition(state, result);
         expect(next.tag).toBe("EmittingResult");
         if (next.tag === "EmittingResult") {
-            expect(next.result.workId).toBe("B-0867");
+            expect(next.result.workId).toBe("081KSKBP80008QG0R000B3Y19A");
             expect(next.result.doraContribution).toBe(0.6);
         }
     });
@@ -215,7 +215,7 @@ describe("cycleClose", () => {
             tag: "EmittingResult",
             context: ctx(),
             result: {
-                workId: "B-0867",
+                workId: "081KSKBP80008QG0R000B3Y19A",
                 lane: "operational",
                 success: true,
                 doraContribution: 0.6,
@@ -275,11 +275,11 @@ describe("integration: full agent cycle", () => {
         let state = idle();
         expect(state.tag).toBe("Idle");
         // Cycle 1: pick work
-        state = transition(state, { tag: "PickWork", work: workCandidate("B-0867", "operational") });
+        state = transition(state, { tag: "PickWork", work: workCandidate("081KSKBP80008QG0R000B3Y19A", "operational") });
         expect(state.tag).toBe("ExecutingWork");
         // Work executes (deterministic script runs; result returned)
         const result = {
-            workId: "B-0867",
+            workId: "081KSKBP80008QG0R000B3Y19A",
             lane: "operational",
             success: true,
             doraContribution: 0.6,

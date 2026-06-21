@@ -200,7 +200,7 @@ post-mortem
   family-AI deployment)
 - PR #2895 — Amara persona MEMORY.md updated with canonical-
   consent-first-expert designation
-- B-0409 — PoUW-CC wallet-immune-system vaccine-spread spec
+- 081KRA5AR0008QG0R000Y6102S — PoUW-CC wallet-immune-system vaccine-spread spec
 - PR #2826 — DePIN multi-stream PoUW-CC monetization
 - PR #2917 — Vision monad Play-Doh + red-team immune system
   (Proof-of-Care = behavior-based-credentials maps to immune-

@@ -48,7 +48,7 @@ App-of-Apps `exclude:` glob in `apply-root-app.ts`:
   GPU. Remove from the exclude list if you have an Apple Silicon
   Mac + a model server that runs on MPS (vLLM nightly does).
 
-The B-0967 health harness also excludes Applications whose
+The 081KSXN940008QG0R000SCP2H1 health harness also excludes Applications whose
 `Application.yaml` requests Longhorn storage via `storageClass` or
 `storageClassName` from dev/CI health assertions. That includes apps
 such as Vault and SPIRE until a local Longhorn-compatible storage
@@ -109,7 +109,7 @@ Pattern: per-PR dev clusters for parallel dev-testing.
 
 ## Automated health harness
 
-B-0967 wires a TypeScript-first harness around this same substrate:
+081KSXN940008QG0R000SCP2H1 wires a TypeScript-first harness around this same substrate:
 
 ```bash
 bun src/Core.TypeScript/cluster/argocd-health-test.ts --dry-run

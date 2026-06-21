@@ -124,7 +124,7 @@
 - **`Copilot` (bot)** at 2026-05-10T23:43:00Z on `memory/feedback_factory_is_model_distillation_machine_casimir_gap_all_participants_2026_05_10.md`:45 (association: NONE)
 
   <pre>
-  `B-0405` is referenced here but doesn’t appear to exist anywhere in the repo (no backlog row, no docs/BACKLOG entry). This makes the cross-reference non-actionable; either add the corresponding backlog item or replace this with the correct existing ID / reference.
+  `081KR7JY10008QG0R001FV5FND` is referenced here but doesn’t appear to exist anywhere in the repo (no backlog row, no docs/BACKLOG entry). This makes the cross-reference non-actionable; either add the corresponding backlog item or replace this with the correct existing ID / reference.
 
   </pre>
 

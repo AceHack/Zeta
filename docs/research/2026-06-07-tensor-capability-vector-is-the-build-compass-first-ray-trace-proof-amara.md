@@ -21,8 +21,8 @@ Can I replay it deterministically?  → DST (the replay capability)
 
 A "no" on any line names the next workitem. Amara's framing also re-confirms the corrected model from #6876
 (light/dark = capability vector, **orthogonal** to the execution axis — "dark" = not-yet-ray-traceable, not
-"serial"), and that the thread *snapped existing backlog into one lens* (B-0917 soft interrupt substrate →
-field updates → B-0924 Atari scene as a ray-traceable probabilistic field → DST replay).
+"serial"), and that the thread *snapped existing backlog into one lens* (081KSNY2Z0008QG0R002HB4AGT soft interrupt substrate →
+field updates → 081KSNY2Z0008QG0R001HA43GG Atari scene as a ray-traceable probabilistic field → DST replay).
 
 ## The first proof — keep the build surface boring (Amara's blade)
 
@@ -51,15 +51,15 @@ that makes the metaphor real.
 - **introspection** — `Globals` MUMPS verbs over `DynamicValue` (have).
 - **replay (DST)** — the substrate's deterministic-simulation discipline (have).
 - **gap to the first proof** — an explicit *scene* type + a `trace(R, S)` operator that composes these into a
-  single walk-accumulate-sample-replay pass; and the B-0917 interrupt → field-update edge. That `trace`
+  single walk-accumulate-sample-replay pass; and the 081KSNY2Z0008QG0R002HB4AGT interrupt → field-update edge. That `trace`
   operator + a minimal scene is the buildable first workitem (backlog), gated behind the unified-floor
   rewrite (deferred to the Lior/Vera checkpoint — now largely landed).
 
 ## Beacon anchors
 
 - Amara (peer-AI review, 2026-06-07) — the build-compass keeper + the first-proof acceptance test. · #6876
-  (capability vector = ray-traceability, light/dark orthogonal to execution), #6877 (Atari emulator / B-0924
-  / B-0917 mapping). · Ray marching / volumetric (NeRF) rendering; sparse-voxel-octree / BVH traversal;
+  (capability vector = ray-traceability, light/dark orthogonal to execution), #6877 (Atari emulator / 081KSNY2Z0008QG0R001HA43GG
+  / 081KSNY2Z0008QG0R002HB4AGT mapping). · Ray marching / volumetric (NeRF) rendering; sparse-voxel-octree / BVH traversal;
   Gherkin-style acceptance test (one ray, one scene). · DST (replay). Honest novelty: none in ray tracing;
   the contribution is the **capability vector as an operational gap-finder** plus a minimal, metal-touching
   first proof (`trace(R, S_before/after)` deterministic·inspectable·replayable) that keeps the build surface

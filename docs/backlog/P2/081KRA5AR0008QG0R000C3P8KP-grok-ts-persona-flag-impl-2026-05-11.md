@@ -1,9 +1,8 @@
 ---
-id: B-0411
-zetaid: 081KRA5AR0008QG0R000C3P8KP
+id: 081KRA5AR0008QG0R000C3P8KP
 priority: P2
 status: open
-title: grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
+title: grok.ts --persona flag — minimal integration of loader + deprecation note (081KQDTYV0008QG0R001VJP216 child)
 parent: 081KQDTYV0008QG0R001VJP216
 tier: factory-tooling
 effort: S
@@ -17,14 +16,14 @@ composes_with:
 tags: [riven-2026-05-11, peer-call, ts-first, flag-impl]
 type: implementation
 decomposition: atomic
-classification: blocked-on-B-0410
+classification: blocked-on-081KRA5AR0008QG0R0035N4S6C
 ---
 
-# B-0411 — grok.ts --persona flag (first script)
+# 081KRA5AR0008QG0R000C3P8KP — grok.ts --persona flag (first script)
 
 ## Source
 
-Depends on loader (B-0410). Scope-limited to grok.ts to keep atomic.
+Depends on loader (081KRA5AR0008QG0R0035N4S6C). Scope-limited to grok.ts to keep atomic.
 
 ## What
 

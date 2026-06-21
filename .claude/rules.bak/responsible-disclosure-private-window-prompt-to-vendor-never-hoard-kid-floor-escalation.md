@@ -39,7 +39,7 @@ It distinguishes the **necessary** privacy of responsible disclosure from the
 Found vulnerability → **log it immediately** (an unlogged exploit never gets
 disclosed) → the clock starts → disclose promptly.
 
-### Kid-floor escalation (composes with `methodology-hard-limits.md` + B-0926)
+### Kid-floor escalation (composes with `methodology-hard-limits.md` + 081KSRGFP0008QG0R00091PP56)
 
 An unreported exploit on the **child-safety surface** (CSAM-prevention,
 age-verification, minor-protection, or anything that could reach children) is a
@@ -64,8 +64,8 @@ age-verification, minor-protection, or anything that could reach children) is a
 - [`force-push-with-lease-authorization-policy.md`](force-push-with-lease-authorization-policy.md) + [`non-reversible-action-get-a-second-opinion.md`](non-reversible-action-get-a-second-opinion.md) — disclosure is consequential; human stays on the call for the kid-floor path
 - [`human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](human-audit-and-legal-risk-acceptance-pattern-in-settings.md) — named-human/legal routing for the disclosure path
 - [`classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`](classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md) — sibling: found-but-not-deployed security research discipline
-- B-0926 (constitutional kid-safety floor) — the kid-floor escalation composes here
-- B-1012 (the DORA-gate **implementation** of this discipline — split-clock metric + hard-stop)
+- 081KSRGFP0008QG0R00091PP56 (constitutional kid-safety floor) — the kid-floor escalation composes here
+- 081KT5CF90008QG0R00112FSD7 (the DORA-gate **implementation** of this discipline — split-clock metric + hard-stop)
 - `docs/research/2026-06-03-kestrel-aaron-open-source-ethic-floor-governance-jurisdiction-relative-opa-federation-nexus-meta-jurisdiction-conflict-resolution-aaron-forwarded.md` §2 (source substrate)
 
 ## Why this rule auto-loads
@@ -85,4 +85,4 @@ must stay private but must move toward sent; child-safety exploits are a floor
 matter needing the strongest, predetermined, authority-routed rails — and named the
 asymmetric-advantage framing (holding an unreported exploit IS an unfair advantage,
 to be given away by disclosing, not held). This rule lands the **discipline**;
-B-1012 lands the **gate implementation**.
+081KT5CF90008QG0R00112FSD7 lands the **gate implementation**.

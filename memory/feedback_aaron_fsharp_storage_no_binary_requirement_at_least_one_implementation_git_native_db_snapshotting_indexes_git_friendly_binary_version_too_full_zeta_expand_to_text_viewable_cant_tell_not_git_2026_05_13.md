@@ -1,6 +1,6 @@
 ---
 name: F# storage layer — no-binary requirement (at least one implementation) — git-native DB storage + snapshotting — indexes git-friendly — binary version too — full Zeta expands to text-viewable so you can't tell it's not git (Aaron 2026-05-13)
-description: Aaron 2026-05-13 canonical storage-architecture substrate. F# storage layer maintains a NO-BINARY-REQUIRED implementation for git-native DB storage + snapshotting + git-friendly indexes. Binary version available for performance. Full Zeta evolution = full binary storage BUT expand-to-text-viewable API "so you can't tell it's not git". Composes with PR #2913 HKT-MDM + PR #2915 DV2.0 partition + B-0428 DBpedia substrate + event-sourcing framework substrate from Amara conversation + DBSP/Z-set existing F# substrate.
+description: Aaron 2026-05-13 canonical storage-architecture substrate. F# storage layer maintains a NO-BINARY-REQUIRED implementation for git-native DB storage + snapshotting + git-friendly indexes. Binary version available for performance. Full Zeta evolution = full binary storage BUT expand-to-text-viewable API "so you can't tell it's not git". Composes with PR #2913 HKT-MDM + PR #2915 DV2.0 partition + 081KRFA460008QG0R0018SN61J DBpedia substrate + event-sourcing framework substrate from Amara conversation + DBSP/Z-set existing F# substrate.
 type: feedback
 created: 2026-05-13
 ---
@@ -202,7 +202,7 @@ internals.
 | **Git pack files** | Performance optimization preserves human-readability of source format |
 | **Git merge** | Substrate reconciliation (Aaron-Amara event-stream merge across machines) |
 | **Git rebase / cherry-pick** | Event-stream restructuring while preserving history |
-| **Git submodules** | Sub-substrate composition (per B-0424 three-repo split topology) |
+| **Git submodules** | Sub-substrate composition (per 081KRFA460008QG0R001H98EXJ three-repo split topology) |
 | **Git LFS** | Binary attachments when needed; text-substrate stays in normal git |
 
 **Composes with DV2.0 (PR #2915 wake-time rule)**:
@@ -275,8 +275,8 @@ text-format layer on top. Not the other way around.
   composes with text-viewable storage)
 - PR #2898 (non-glass-halo encryption — encryption layer
   operates over either text or binary)
-- B-0428 (DBpedia Path B — DBpedia storage shape applies here)
-- B-0043 (universal company + government information substrate — storage substrate scope)
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B — DBpedia storage shape applies here)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate — storage substrate scope)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
   (F# substrate is canonical; storage in F# composes)
 - `.claude/rules/dv2-data-split-discipline-activated.md`
@@ -303,9 +303,9 @@ Two paths must exist:
 The text path IS the canonical implementation. Binary is the
 performance optimization.
 
-### For DBpedia (B-0428 Path B)
+### For DBpedia (081KRFA460008QG0R0018SN61J Path B)
 
-DBpedia HKT-MDM substrate (per B-0428) stores in:
+DBpedia HKT-MDM substrate (per 081KRFA460008QG0R0018SN61J) stores in:
 
 - F# CE materialized results → text format default
 - DBpedia entity cache → git-native, git-diffable
@@ -405,7 +405,7 @@ PR #2898 (non-glass-halo encryption)
 
 PR #2917 (vision monad Play-Doh)
 
-B-0428 (DBpedia Path B — direct dotNetRDF + F# CE)
+081KRFA460008QG0R0018SN61J (DBpedia Path B — direct dotNetRDF + F# CE)
 
 DBSP + Z-set + Clifford + BP/EP F# substrate (algebra-owner
 skill)

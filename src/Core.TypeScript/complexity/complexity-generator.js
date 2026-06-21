@@ -214,7 +214,7 @@ ${listStr}
             [ "saves", [ "save-state recordings (the campaign notebook)" ]
               "rooms.persona", [ "identity (the persona's own; clause 2 — theirs)" ] ]
 
-    /// THE BEN LINE (B-1039: the prediction lives WITH the room). A cartridge declares its own
+    /// THE BEN LINE (081KTSZN10008QG0R001F0B5A6: the prediction lives WITH the room). A cartridge declares its own
     /// cost prediction in-file:
     ///
     ///     ben	draw	shape.dynamicvalue	O(children)
@@ -276,7 +276,7 @@ ${listStr}
     /// the prediction is OPTIONAL in-file — the registry row is the required half; see unstated.)
     let benHolds (d: MediaLines.Doc) : bool = benCheck d |> List.forall (fun b -> b.Ok)
 
-    /// THE BUDGET REFUSAL (B-1035 budget metering; Aaron: "constrain function selection by how
+    /// THE BUDGET REFUSAL (081KTSZN10008QG0R002J0GE0Z budget metering; Aaron: "constrain function selection by how
     /// long it takes — we have TIME too, not just memory"). A room states its budget as maximum
     /// polynomial degrees (time, space); asking for an over-budget strategy is REFUSED — and the
     /// refusal is USEFUL: it names every stated in-budget strategy on the same artifact, so the

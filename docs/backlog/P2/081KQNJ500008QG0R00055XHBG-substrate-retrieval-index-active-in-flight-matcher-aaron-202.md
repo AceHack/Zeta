@@ -1,6 +1,5 @@
 ---
-id: B-0175
-zetaid: 081KQNJ500008QG0R00055XHBG
+id: 081KQNJ500008QG0R00055XHBG
 priority: P2
 status: open
 title: Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 'specialed indeex we build over time'; addresses 4-layer retrieval gap empirically self-demonstrated)
@@ -76,8 +75,8 @@ A working substrate-retrieval-index that:
 
 ## Composes with
 
-- **B-0170 (substrate-claim-checker)**: checks substrate for drift; this row's tool checks for rule-non-application
-- **B-0174 (cross-model tool-review convergence)**: cross-model calibration; this row's tool measures rule-application calibration
+- **081KQNJ500008QG0R003SCWBDV (substrate-claim-checker)**: checks substrate for drift; this row's tool checks for rule-non-application
+- **081KQNJ500008QG0R002K338KN (cross-model tool-review convergence)**: cross-model calibration; this row's tool measures rule-application calibration
 - **Skill router**: existing description-keyed search for skills; same architectural pattern for memos
 - **Mirror-vs-beacon-safe register architecture** (`docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`): the publication boundary IS the conversion; this row's index is the retrieval boundary on the beacon-safe layer
 - **Carved-sentence-plus-index discipline** (`memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`): this row is the implementation of layer-4 the discipline names

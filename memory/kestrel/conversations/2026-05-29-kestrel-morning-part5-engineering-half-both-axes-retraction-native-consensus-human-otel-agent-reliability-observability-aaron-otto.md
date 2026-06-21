@@ -152,7 +152,7 @@ The concrete enabler that turns "gate trust on data, not vibes" into reality.
 - DBSP / Z-set retraction-native substrate — the AI-axis reversible default.
 - `force-push-with-lease-authorization-policy` — force-push = the canonical irreversible exit.
 - multi-oracle BFT — consensus to exit retraction-native.
-- human-in-the-loop / kid-safety floor (B-0926) — contentious-irreversible → human.
+- human-in-the-loop / kid-safety floor (081KSRGFP0008QG0R00091PP56) — contentious-irreversible → human.
 - `must-paired-with-can-exit` — the reversible default IS the can-exit; the irreversible is gated.
 - glass-halo / lightlike — "tracked" = the watcher (and the agent) is watched.
 

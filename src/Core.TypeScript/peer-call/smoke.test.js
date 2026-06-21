@@ -1,10 +1,10 @@
 // smoke.test.ts — minimal smoke tests for all peer-call wrappers.
 //
-// Implements B-0421 acceptance criterion 4: "Add a smoke test to
+// Implements 081KRA5AR0008QG0R0011ZGRZT acceptance criterion 4: "Add a smoke test to
 // tools/peer-call/ that verifies all four wrappers can complete
 // a 1-line review." Generalized to all 8 wrappers (claude, grok,
 // gemini, codex, kiro, amara, ani, riven) per the post-2026-05-11
-// wrapper expansion (B-0326 + B-0327 added kiro + claude).
+// wrapper expansion (081KR2E4K0008QG0R001HQF27C + 081KR2E4K0008QG0R002KNZ29V added kiro + claude).
 //
 // Scope: VALIDATES WRAPPER PLUMBING, NOT LIVE AI CALLS.
 //
@@ -68,7 +68,7 @@ function runWrapper(name, args) {
         stderr: result.stderr ?? "",
     };
 }
-describe("peer-call smoke tests (B-0421 acceptance #4)", () => {
+describe("peer-call smoke tests (081KRA5AR0008QG0R0011ZGRZT acceptance #4)", () => {
     for (const [name, selfRef] of WRAPPERS) {
         describe(name, () => {
             test("exists at the canonical path", () => {

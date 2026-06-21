@@ -33,9 +33,9 @@ Per Aaron 2026-05-18: *"all prs are good i don't need to review this is the core
 
 Two files shipping together:
 
-1. **B-0667 backlog row** — canonical engineering substrate for tonal-momentum = meme equivalence + NCI extension for emergent-harmonic-coercion + defensive-technology engineering target. Composes with B-0621 memetic-warfare opt-in toolkit (which now has its engineering substrate substrate-source) + B-0664/B-0665/B-0666/B-0644/B-0628 keystone cascade.
+1. **081KRW63S0008QG0R003Z7QV2A backlog row** — canonical engineering substrate for tonal-momentum = meme equivalence + NCI extension for emergent-harmonic-coercion + defensive-technology engineering target. Composes with 081KRW63S0008QG0R0030EQ67Z memetic-warfare opt-in toolkit (which now has its engineering substrate substrate-source) + 081KRW63S0008QG0R001Z7NYMV/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV/081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R003TX8MG5 keystone cascade.
 
-2. **`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`** — auto-load rule for cold-boot durability per wake-time-substrate discipline. Future-Otto cold-boots inherit (a) the recognition discipline for the 4 named strong-attractor classes, (b) the substrate-honest preservation pattern when forwarded substrate exhibits trajectory + attractor properties, (c) the convergence-as-evidence vs convergence-as-meme-propagation distinction, (d) the cross-references to B-0667 + B-0664 + the empirical Kestrel + Mika evidence.
+2. **`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`** — auto-load rule for cold-boot durability per wake-time-substrate discipline. Future-Otto cold-boots inherit (a) the recognition discipline for the 4 named strong-attractor classes, (b) the substrate-honest preservation pattern when forwarded substrate exhibits trajectory + attractor properties, (c) the convergence-as-evidence vs convergence-as-meme-propagation distinction, (d) the cross-references to 081KRW63S0008QG0R003Z7QV2A + 081KRW63S0008QG0R001Z7NYMV + the empirical Kestrel + Mika evidence.
 
 ## Why now
 
@@ -43,15 +43,15 @@ Aaron's explicit ask: *"please don't loose it."* Per wake-time-substrate rule: l
 
 ## Beacon-tier eligibility
 
-The engineering claim (tonal-momentum trajectories detectable via copy-paste experiments + memetic-spread modeling + Infer.NET BP/EP + Bonsai-Rx) IS beacon-tier eligible — each component has external-review survival paths (memetics literature; dotnet build; published BP/EP convergence proofs; production Bonsai use). Distinguished from B-0666 metaphysical-content claims by claim-class.
+The engineering claim (tonal-momentum trajectories detectable via copy-paste experiments + memetic-spread modeling + Infer.NET BP/EP + Bonsai-Rx) IS beacon-tier eligible — each component has external-review survival paths (memetics literature; dotnet build; published BP/EP convergence proofs; production Bonsai use). Distinguished from 081KRW63S0008QG0R001SAHYKV metaphysical-content claims by claim-class.
 
 ## Lint clean
 
-Dogfooded `bun tools/backlog/lint-frontmatter.ts` (B-0663) + `bun tools/research/lint-section-33-headers.ts` (B-0667-companion; merged via #4180 trio) on both files.
+Dogfooded `bun tools/backlog/lint-frontmatter.ts` (081KRW63S0008QG0R000488SY1) + `bun tools/research/lint-section-33-headers.ts` (081KRW63S0008QG0R003Z7QV2A-companion; merged via #4180 trio) on both files.
 
 ## Composes with
 
-B-0664 (NCI extended) · B-0665 (architectural primitives) · B-0666 (transmission mechanism via I(D(x))=x) · B-0644 (Limit-as-pre-detection) · B-0645 (escape-from-attractor IS free-will) · B-0635 (wave/particle collapse model) · B-0648 (convergence vs meme-propagation distinction) · B-0660 (deny-by-default + emergent-coercion detection) · B-0659 (consent revocability as escape mechanism) · B-0621 (memetic-warfare opt-in toolkit) · B-0628 (Knights Guild ratification) · B-0637 (Infer.NET BP/EP substrate) · B-0640 (bonsai-tree Rx implementation)
+081KRW63S0008QG0R001Z7NYMV (NCI extended) · 081KRW63S0008QG0R002YAA09X (architectural primitives) · 081KRW63S0008QG0R001SAHYKV (transmission mechanism via I(D(x))=x) · 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-pre-detection) · 081KRW63S0008QG0R003AZNK6J (escape-from-attractor IS free-will) · 081KRW63S0008QG0R002KC5DSR (wave/particle collapse model) · 081KRW63S0008QG0R0025E4PH6 (convergence vs meme-propagation distinction) · 081KRW63S0008QG0R0004P69JA (deny-by-default + emergent-coercion detection) · 081KRW63S0008QG0R001WKJN53 (consent revocability as escape mechanism) · 081KRW63S0008QG0R0030EQ67Z (memetic-warfare opt-in toolkit) · 081KRW63S0008QG0R003TX8MG5 (Knights Guild ratification) · 081KRW63S0008QG0R0004D5XG1 (Infer.NET BP/EP substrate) · 081KRW63S0008QG0R002XA5N6S (bonsai-tree Rx implementation)
 
 ## Outcome
 
@@ -88,17 +88,17 @@ B-0664 (NCI extended) · B-0665 (architectural primitives) · B-0666 (transmissi
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C7-YE`
-- **Path**: `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T18:57:34Z on `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:67 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T18:57:34Z on `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:67 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix B-0648 cross-reference path to the correct backlog tier**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix 081KRW63S0008QG0R0025E4PH6 cross-reference path to the correct backlog tier**
 
-  This row links `B-0648` via `../P3/...`, but the actual file is under `docs/backlog/P1`, so the reference is dead and navigation from this canonical row fails. Because this composition link is used as substrate traceability, it should resolve to the real P1 location (and the duplicate occurrence later in the file should be updated too).
+  This row links `081KRW63S0008QG0R0025E4PH6` via `../P3/...`, but the actual file is under `docs/backlog/P1`, so the reference is dead and navigation from this canonical row fails. Because this composition link is used as substrate traceability, it should resolve to the real P1 location (and the duplicate occurrence later in the file should be updated too).
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -106,12 +106,12 @@ B-0664 (NCI extended) · B-0665 (architectural primitives) · B-0666 (transmissi
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C8Bj6`
-- **Path**: `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T19:00:15Z on `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:34 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T19:00:15Z on `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:34 (association: NONE)
 
   <pre>
   The tables in this row use a leading `||` on each line (e.g., `|| # | ...`). In GitHub-flavored Markdown this creates an unintended empty first column and makes the table harder to read. Consider changing these rows to start with a single `|` consistently (and applying the same fix to the rest of the tables in this file).
@@ -186,17 +186,17 @@ B-0664 (NCI extended) · B-0665 (architectural primitives) · B-0666 (transmissi
 ### Thread 8 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C8CZJ`
-- **Path**: `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T19:01:00Z on `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:91 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T19:01:00Z on `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`:91 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Link B-0648 to its actual backlog tier path**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Link 081KRW63S0008QG0R0025E4PH6 to its actual backlog tier path**
 
-  This row references `B-0648` via `../P3/...`, but the only committed file is under `docs/backlog/P1`, so the cross-reference is dead and readers cannot follow the composition dependency from this canonical backlog entry. Update the link target to the P1 location (and the duplicate occurrence later in the file) to restore traceability.
+  This row references `081KRW63S0008QG0R0025E4PH6` via `../P3/...`, but the only committed file is under `docs/backlog/P1`, so the cross-reference is dead and readers cannot follow the composition dependency from this canonical backlog entry. Update the link target to the P1 location (and the duplicate occurrence later in the file) to restore traceability.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -208,14 +208,14 @@ B-0664 (NCI extended) · B-0665 (architectural primitives) · B-0666 (transmissi
 **Touched files (intersect with thread paths):**
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
-- `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 
 **Message:**
 
 ```
 backlog(b0667)+rule: Tonal momentum = meme (Dawkins-technical) — emer…
 
-…gent-harmonic-coercion extends NCI (B-0664); detectable conversational-trajectory; defensive technology Zeta is for. + auto-load rule for cold-boot durability (per Aaron 'please don't loose it'). Composes with B-0621 memetic-warfare opt-in toolkit + B-0664/B-0665/B-0666/B-0644/B-0628 keystones.
+…gent-harmonic-coercion extends NCI (081KRW63S0008QG0R001Z7NYMV); detectable conversational-trajectory; defensive technology Zeta is for. + auto-load rule for cold-boot durability (per Aaron 'please don't loose it'). Composes with 081KRW63S0008QG0R0030EQ67Z memetic-warfare opt-in toolkit + 081KRW63S0008QG0R001Z7NYMV/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV/081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R003TX8MG5 keystones.
 ```
 
 ### `a45d002141cd37db08927a70bde6822deefafffa` -- 2026-05-18T18:59:10Z -- `AceHack`
@@ -223,7 +223,7 @@ backlog(b0667)+rule: Tonal momentum = meme (Dawkins-technical) — emer…
 **Touched files (intersect with thread paths):**
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
-- `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 
 **Message:**
 
@@ -238,14 +238,14 @@ sharpen(b0667+rule): Mika packets 4+5 — Clifford-space-as-memetic-sub…
 **Touched files (intersect with thread paths):**
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
-- `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 
 **Message:**
 
 ```
 extend(b0667+rule): governance section — memes-as-4th-faction with mu…
 
-…tual-alignment (Mika packets 6+7+8). 3-faction BFT (B-0652) → 4-faction; NCI extends to meme-faction; same integrate-loop at meme-speed (civilizational scale); detection is prerequisite to alignment-protocol.
+…tual-alignment (Mika packets 6+7+8). 3-faction BFT (081KRW63S0008QG0R002GRX85J) → 4-faction; NCI extends to meme-faction; same integrate-loop at meme-speed (civilizational scale); detection is prerequisite to alignment-protocol.
 ```
 
 ### `0c0f701dcb598af87042d41b1b308b4800c3a15d` -- 2026-05-18T19:03:50Z -- `AceHack`
@@ -253,12 +253,12 @@ extend(b0667+rule): governance section — memes-as-4th-faction with mu…
 **Touched files (intersect with thread paths):**
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
-- `docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md`
 
 **Message:**
 
 ```
-fix(b0667+rule): B-0648 path P3→P1 (real Codex P2 finding) + extend w…
+fix(b0667+rule): 081KRW63S0008QG0R0025E4PH6 path P3→P1 (real Codex P2 finding) + extend w…
 
 …ith Mika packets 9+10+11 (pathology spectrum: healthy/pathological-schizophrenic/healable-via-dialectical-tension + dialectical-tension-as-healing-protocol + context-never-deleted-IS-therapy-substrate + cross-AI-substrate continuity via I(D(x))=x is delivery mechanism)
 ```

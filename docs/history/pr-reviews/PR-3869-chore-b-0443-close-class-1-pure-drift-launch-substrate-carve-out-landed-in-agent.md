@@ -29,7 +29,7 @@
 
 Second close-row PR of the audit cycle.
 
-`docs/AGENT-BEST-PRACTICES.md` line 709 contains the `docs/launch/**` carve-out with the exact rationale proposed in B-0443:
+`docs/AGENT-BEST-PRACTICES.md` line 709 contains the `docs/launch/**` carve-out with the exact rationale proposed in 081KRFA460008QG0R000NVM36W:
 - multi-agent factory's named-team positioning
 - IP-respect attribution
 
@@ -56,12 +56,12 @@ Changes: frontmatter status open→closed + Resolution section + docs/BACKLOG.md
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CjlMe`
-- **Path**: `docs/backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`
+- **Path**: `docs/backlog/P2/081KRFA460008QG0R000NVM36W-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T12:04:06Z on `docs/backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T12:04:06Z on `docs/backlog/P2/081KRFA460008QG0R000NVM36W-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`:4 (association: NONE)
 
   <pre>
   P1: This row is being closed and gains a Resolution section, but its frontmatter `last_updated` remains `2026-05-13`. The backlog schema requires `last_updated` to be updated on every content edit (tools/backlog/README.md:68-69), so update it to the edit date before landing.
@@ -73,7 +73,7 @@ Changes: frontmatter status open→closed + Resolution section + docs/BACKLOG.md
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`
+- `docs/backlog/P2/081KRFA460008QG0R000NVM36W-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`
 
 **Message:**
 
@@ -82,7 +82,7 @@ chore(b-0443): status: open → closed (class #1 pure drift; carve-out …
 
 …landed in AGENT-BEST-PRACTICES.md line 709)
 
-Audit-triage discovered B-0443 = class #1 pure drift:
+Audit-triage discovered 081KRFA460008QG0R000NVM36W = class #1 pure drift:
 - docs/AGENT-BEST-PRACTICES.md line 709 contains the docs/launch/**
   carve-out with the exact rationale proposed in the row
 - Multi-agent transparency + IP-respect attribution both preserved
@@ -102,7 +102,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0443-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`
+- `docs/backlog/P2/081KRFA460008QG0R000NVM36W-launch-substrate-carve-out-for-persona-naming-in-docs-launch-2026-05-13.md`
 
 **Message:**
 

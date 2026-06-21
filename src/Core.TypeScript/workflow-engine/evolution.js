@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/evolution.ts
  *
- * B-0914.5 — pure-TS evolution agent (mash + refine surviving substrate)
+ * 081KDX1YWP008QG0R002GZJNXA — pure-TS evolution agent (mash + refine surviving substrate)
  * for workflow engine. Pure function over ranked survivors → refined
  * variants per the co-scientist evolution agent pattern.
  *
@@ -13,9 +13,9 @@
  * Substrate-engineering composition:
  *   - Closes the tournament loop with TrueSkill (PR #5764):
  *     1. Generate hypotheses (LLM call; out of scope for this file)
- *     2. Rank via TrueSkill (B-0914.1 — shipped)
+ *     2. Rank via TrueSkill (081KDX1YWP008QG0R003F59WB0 — shipped)
  *     3. Take top-N survivors
- *     4. Mash + refine (THIS FILE — B-0914.5)
+ *     4. Mash + refine (THIS FILE — 081KDX1YWP008QG0R002GZJNXA)
  *     5. Loop back to step 2 with refined variants
  *
  * Per Aaron 2026-05-28 'S M L all please in that order lol' — this is
@@ -23,9 +23,9 @@
  * tight scope; composes with TrueSkill substrate.
  *
  * Composes with:
- *   - B-0914.5 backlog row (evolution agent extension)
- *   - B-0914.1 (PR #5764) TrueSkill substrate (ranking input)
- *   - B-0867 workflow engine substrate (future ActionClass 'evolve-via-mash-refine')
+ *   - 081KDX1YWP008QG0R002GZJNXA backlog row (evolution agent extension)
+ *   - 081KDX1YWP008QG0R003F59WB0 (PR #5764) TrueSkill substrate (ranking input)
+ *   - 081KSKBP80008QG0R000B3Y19A workflow engine substrate (future ActionClass 'evolve-via-mash-refine')
  *   - .claude/rules/additive-not-zero-sum.md (substrate compounds via composition)
  *   - .claude/rules/honor-those-that-came-before.md (survivors' substrate preserved)
  *   - .claude/rules/monad-propagation-pattern (Result<T, TFeedback>)
@@ -66,7 +66,7 @@ export function evolveSurvivors(context) {
                         substrate: merged,
                         derivedFrom: [top.id, next.id],
                         strategy: "simple-merge",
-                        composesWith: [...top.composesWith, ...next.composesWith, "B-0914.5"],
+                        composesWith: [...top.composesWith, ...next.composesWith, "081KDX1YWP008QG0R002GZJNXA"],
                     },
                 ],
             };
@@ -98,7 +98,7 @@ export function evolveSurvivors(context) {
                         substrate: crossed,
                         derivedFrom: [top.id, next.id],
                         strategy: "cross-pollinate",
-                        composesWith: [...top.composesWith, ...next.composesWith, "B-0914.5"],
+                        composesWith: [...top.composesWith, ...next.composesWith, "081KDX1YWP008QG0R002GZJNXA"],
                     },
                 ],
             };
@@ -124,7 +124,7 @@ export function evolveSurvivors(context) {
                         substrate: mutated,
                         derivedFrom: [top.id],
                         strategy: "mutate",
-                        composesWith: [...top.composesWith, "B-0914.5"],
+                        composesWith: [...top.composesWith, "081KDX1YWP008QG0R002GZJNXA"],
                     },
                 ],
             };
@@ -135,7 +135,7 @@ export function evolveSurvivors(context) {
  * Convenience: take top-N TrueSkill-ranked items + evolve them per
  * the chosen strategy.
  *
- * Composes with TrueSkill substrate (B-0914.1; PR #5764):
+ * Composes with TrueSkill substrate (081KDX1YWP008QG0R003F59WB0; PR #5764):
  * caller sorts items by `conservativeSkill(rating)` descending, slices
  * top-N, passes to this function.
  */

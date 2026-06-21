@@ -1,7 +1,7 @@
 namespace Zeta.Core
 
 /// **ProbabilitySemiring — the exact-rational probability `(+,×)` and Viterbi `(max,×)` semirings,
-/// and HMM/Markov inference as a matrix-vector product over them (B-1020, the NCI discharge piece 2).**
+/// and HMM/Markov inference as a matrix-vector product over them (081KTAH8Q0008QG0R001YHSSA0, the NCI discharge piece 2).**
 /// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge — the Non-Coercion Invariant.)
 ///
 /// Homeostat ≈ Markov: both iterate one operator to a fixed point (closed-semiring family, Lehmann 1977).

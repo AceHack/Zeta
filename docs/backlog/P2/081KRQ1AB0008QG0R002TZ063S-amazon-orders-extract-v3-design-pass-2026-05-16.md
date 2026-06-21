@@ -1,6 +1,5 @@
 ---
-id: B-0610
-zetaid: 081KRQ1AB0008QG0R002TZ063S
+id: 081KRQ1AB0008QG0R002TZ063S
 title: Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 status: open
 priority: P2
@@ -157,9 +156,9 @@ than generic terms.
 ## Composes with
 
 - [PR #3993](https://github.com/Lucent-Financial-Group/Zeta/pull/3993) — v1-v2.5 substrate this row refines
-- [B-0590](B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)
+- [081KRQ1AB0008QG0R002G93CM7](081KRQ1AB0008QG0R002G93CM7-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)
   — consumer of the hardware-filtered output
-- [B-0600](B-0600-family-distributed-ai-interface-miner-fleet-mom-dad-2026-05-16.md)
+- [081KRQ1AB0008QG0R003HCZ5YM](081KRQ1AB0008QG0R003HCZ5YM-family-distributed-ai-interface-miner-fleet-mom-dad-2026-05-16.md)
   — different consumer (mom/dad AI uses the inventory substrate)
 - User-scope: `aaron_amazon_2025_hardware_audit_for_zeta_215_orders_107_hardware_77k_spend_2026_05_17.md`
   (the 2025 audit; reference data for the hardware-regex widening)

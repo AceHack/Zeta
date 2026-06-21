@@ -1,6 +1,5 @@
 ---
-id: B-0356
-zetaid: 081KR50HA0008QG0R003B1S5NF
+id: 081KR50HA0008QG0R003B1S5NF
 priority: P1
 status: partial
 title: "Capture model + token usage in commit trailer (git-native, cost derived at query time)"
@@ -15,7 +14,7 @@ type: friction-reducer
 tags: [cost-governance, model-routing, A/B-testing, enterprise-billing]
 ---
 
-# B-0356 — Capture model + token usage in commit trailer
+# 081KR50HA0008QG0R003B1S5NF — Capture model + token usage in commit trailer
 
 ## What
 
@@ -70,4 +69,4 @@ never rot, only the rate card changes.
 - `docs/ops/COST-REDUCTION-LESSONS.md` (pricing reference)
 - `docs/ops/agents/otto-cost-profile.md` (per-agent cost model)
 - `tools/ops/model-rating-report.ts` (report consumer)
-- B-0347 (skill description carving — reduces context cost)
+- 081KR50HA0008QG0R002ZNFQBZ (skill description carving — reduces context cost)

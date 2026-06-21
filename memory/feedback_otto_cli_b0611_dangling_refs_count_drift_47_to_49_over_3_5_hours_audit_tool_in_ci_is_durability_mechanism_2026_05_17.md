@@ -1,6 +1,6 @@
 ---
-name: B-0611 dangling-refs count drift — 47 → 49 over 3.5h shows one-shot cleanup is insufficient; audit tool in CI is the durability mechanism
-description: Real-time data point captured during autonomous-loop session 2026-05-17 0808Z-0820Z. Catalog memo from same morning (0430Z) recorded 47 file:line pairs across 6 surfaces. Re-running the newly-merged audit-dangling-memory-refs.ts (PR #4042) at 0817Z showed 49 edges / 35 unique dangling refs across 5 surfaces (`.claude/agents` now 0). The +2 edge drift over ~3.5h is operational evidence that one-shot B-0611 cleanup will be re-incremented by next session's natural rule/memo authoring unless the audit tool is wired into CI as a non-required check that surfaces drift on every PR.
+name: 081KRSKQ20008QG0R0014PPGZM dangling-refs count drift — 47 → 49 over 3.5h shows one-shot cleanup is insufficient; audit tool in CI is the durability mechanism
+description: Real-time data point captured during autonomous-loop session 2026-05-17 0808Z-0820Z. Catalog memo from same morning (0430Z) recorded 47 file:line pairs across 6 surfaces. Re-running the newly-merged audit-dangling-memory-refs.ts (PR #4042) at 0817Z showed 49 edges / 35 unique dangling refs across 5 surfaces (`.claude/agents` now 0). The +2 edge drift over ~3.5h is operational evidence that one-shot 081KRSKQ20008QG0R0014PPGZM cleanup will be re-incremented by next session's natural rule/memo authoring unless the audit tool is wired into CI as a non-required check that surfaces drift on every PR.
 type: project
 created: 2026-05-17T08:20Z
 ---
@@ -16,7 +16,7 @@ created: 2026-05-17T08:20Z
 
 **Net change**: +2 edges, ~3.5h elapsed. One surface emptied; new edges
 appeared in other surfaces. The 35-unique-dangling headline from the
-B-0611 row remains accurate at session-current state.
+081KRSKQ20008QG0R0014PPGZM row remains accurate at session-current state.
 
 ## By-surface breakdown (audit tool, 08:17Z)
 
@@ -42,14 +42,14 @@ memory files accumulate naturally with each rule update, each new
 memo, each PR description**. The pattern is generative, not
 incidental.
 
-A one-shot B-0611 cleanup that resolves 35 refs at point-in-time T
+A one-shot 081KRSKQ20008QG0R0014PPGZM cleanup that resolves 35 refs at point-in-time T
 will, by the same generative process, accumulate new dangling refs
 between T and T+N. Without a durability mechanism, the count drifts
 right back up.
 
-## Implication for B-0611 cleanup strategy
+## Implication for 081KRSKQ20008QG0R0014PPGZM cleanup strategy
 
-The B-0611 row's "Proposed mechanization" already includes an
+The 081KRSKQ20008QG0R0014PPGZM row's "Proposed mechanization" already includes an
 audit-tool CI-integration acceptance bullet. This data point
 strengthens the case: the audit tool from PR #4042 should ship as a
 **non-required CI check** that:
@@ -69,9 +69,9 @@ sees the check + decides whether to address the new ref or let it ride.
 - [PR #4042](https://github.com/Lucent-Financial-Group/Zeta/pull/4042)
   — audit tool mechanization
 - [PR #4046](https://github.com/Lucent-Financial-Group/Zeta/pull/4046)
-  — B-0611 row + 4 slice recipes + session memos + 3 tick shards
-- B-0611 row (now on `origin/main` via #4046):
-  `docs/backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md`
+  — 081KRSKQ20008QG0R0014PPGZM row + 4 slice recipes + session memos + 3 tick shards
+- 081KRSKQ20008QG0R0014PPGZM row (now on `origin/main` via #4046):
+  `docs/backlog/P2/081KRSKQ20008QG0R0014PPGZM-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md`
 - Slice 4 memo (largest scope finding) — references the same pattern
 - The dangling-refs file:line catalog memo (still filesystem-only in
   primary worktree at session 0820Z; candidate for follow-up PR)

@@ -27,7 +27,7 @@
 
 ## Description
 
-The push-out/accept-in handshake (#6978) = the Eve protocol (B-1002 zero-trust, nothing shared but the wire) + non-coercion (B-0664): mutual free consent, neither forces — Eve=choice (dedication/Lillian-Eve, the founding why the infra inherits). Mechanism: host/cell as different git repos => zip over two CRDTs (convergent, no coordinator #6964) or a saga (effectful #6959/#6976). push/accept are seam-generic verbs spanning git (commits/merge) + bus (messages, #6933), unified per seam (#6957). 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+The push-out/accept-in handshake (#6978) = the Eve protocol (081KT2T2J0008QG0R002R72323 zero-trust, nothing shared but the wire) + non-coercion (081KRW63S0008QG0R001Z7NYMV): mutual free consent, neither forces — Eve=choice (dedication/Lillian-Eve, the founding why the infra inherits). Mechanism: host/cell as different git repos => zip over two CRDTs (convergent, no coordinator #6964) or a saga (effectful #6959/#6976). push/accept are seam-generic verbs spanning git (commits/merge) + bus (messages, #6933), unified per seam (#6957). 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

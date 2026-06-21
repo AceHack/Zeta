@@ -90,12 +90,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6A0JPe`
-- **Path**: `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- **Path**: `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-09T11:11:58Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:32 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-09T11:11:58Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:32 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Correct unit assignments to keep inequality type-consistent**
@@ -107,7 +107,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-09T11:22:32Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:32 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-09T11:22:32Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:32 (association: MEMBER)
 
     <pre>
     Fixed in d8d2283e: Corrected LearningGain unit from float&lt;substrate/friction&gt; to float&lt;friction/efficiency&gt;. Now η*LearningGain = efficiency*(friction/efficiency) = friction, which type-checks against ξ_t : float&lt;friction&gt;.
@@ -116,12 +116,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ### Thread 3 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6A0KTD`
-- **Path**: `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- **Path**: `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-09T11:15:44Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:19 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-09T11:15:44Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:19 (association: NONE)
 
   <pre>
   P0: This backlog row file is missing the required YAML frontmatter (`---` block with `id`, `priority`, `status`, `title`, `created`, `last_updated`, etc.). Without it, the row can’t be correctly indexed (and currently renders as an empty `[]` entry in docs/BACKLOG.md). Convert the header fields here into the standard frontmatter schema and ensure `last_updated` is set (and updated on future edits).
@@ -129,7 +129,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-09T11:22:42Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:19 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-09T11:22:42Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:19 (association: MEMBER)
 
     <pre>
     Fixed in d8d2283e: Added YAML frontmatter block (id, priority, status, title, tier, effort, ask, created, last_updated, depends_on, composes_with, tags, type) so generate-index.ts can parse the row correctly.
@@ -146,7 +146,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-09T11:15:44Z on `docs/BACKLOG.md`:328 (association: NONE)
 
   <pre>
-  P0: This generated backlog index entry is empty (`**[](...)**` with no id/title). That indicates the corresponding per-row file is missing required frontmatter fields (at least `id` and `title`). Fix the per-row file frontmatter and regenerate the index so this line becomes `**[B-0374](...)** ...`.
+  P0: This generated backlog index entry is empty (`**[](...)**` with no id/title). That indicates the corresponding per-row file is missing required frontmatter fields (at least `id` and `title`). Fix the per-row file frontmatter and regenerate the index so this line becomes `**[081KR50HA0008QG0R000CTEMGQ](...)** ...`.
 
   </pre>
 
@@ -155,18 +155,18 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
   - **`AceHack` (human)** at 2026-05-09T11:22:43Z on `docs/BACKLOG.md`:328 (association: MEMBER)
 
     <pre>
-    Fixed in d8d2283e: BACKLOG.md entry updated from empty **[](..)** to **[B-0374](...)** F# Units of Measure for fusion-equation terms. Passes bun tools/backlog/generate-index.ts --check.
+    Fixed in d8d2283e: BACKLOG.md entry updated from empty **[](..)** to **[081KR50HA0008QG0R000CTEMGQ](...)** F# Units of Measure for fusion-equation terms. Passes bun tools/backlog/generate-index.ts --check.
     </pre>
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6A0Kkc`
-- **Path**: `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- **Path**: `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-09T11:16:23Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:5 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-09T11:16:23Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:5 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add YAML frontmatter for backlog index generation**
@@ -178,7 +178,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-09T11:22:44Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:5 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-09T11:22:44Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:5 (association: MEMBER)
 
     <pre>
     Fixed in d8d2283e: Converted prose metadata to standard YAML frontmatter so generate-index.ts extractField parses id/status/title correctly.
@@ -187,12 +187,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ### Thread 6 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6A0MNp`
-- **Path**: `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- **Path**: `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-09T11:21:21Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:12 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-09T11:21:21Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:12 (association: NONE)
 
   <pre>
   P1: This backlog row doesn’t follow the per-row YAML frontmatter schema (`id/priority/status/title/created/last_updated/...`) documented in `tools/backlog/README.md`. Without frontmatter (and with `Status: backlog` vs the allowed enum), the index generator can’t reliably render the row (and it’s currently showing up with an empty title in `docs/BACKLOG.md`). Convert the header metadata to YAML frontmatter and use a supported `status` value (e.g., `open`), including `last_updated`.
@@ -210,7 +210,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-09T11:21:21Z on `docs/BACKLOG.md`:328 (association: NONE)
 
   <pre>
-  P1: The `B-0374` entry renders with an empty link label (`**[](...)**`). This is almost certainly because the new row file is missing the required YAML `title` frontmatter. Fix the row’s frontmatter and then regenerate `docs/BACKLOG.md` via `tools/backlog/generate-index.sh` (this file is generated; hand edits are likely to drift).
+  P1: The `081KR50HA0008QG0R000CTEMGQ` entry renders with an empty link label (`**[](...)**`). This is almost certainly because the new row file is missing the required YAML `title` frontmatter. Fix the row’s frontmatter and then regenerate `docs/BACKLOG.md` via `tools/backlog/generate-index.sh` (this file is generated; hand edits are likely to drift).
 
   </pre>
 
@@ -231,12 +231,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ### Thread 9 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6A0Nbs`
-- **Path**: `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- **Path**: `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-09T11:27:26Z on `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`:4 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-09T11:27:26Z on `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`:4 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use a supported status for backlog rows**
@@ -272,18 +272,18 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - `docs/research/2026-05-07-claudeai-shadow-logs-bft-asymmetric-critic-session-aaron-forwarded-preservation.md`
 
 **Message:**
 
 ```
-fix(§33): remove YAML fences from archive header + add B-0374 F# UoM …
+fix(§33): remove YAML fences from archive header + add 081KR50HA0008QG0R000CTEMGQ F# UoM …
 
 …backlog
 
 Archive header lint requires literal Scope:/Attribution:/etc. lines
-without YAML --- fences. Also adds B-0374 (P2) for F# Units of
+without YAML --- fences. Also adds 081KR50HA0008QG0R000CTEMGQ (P2) for F# Units of
 Measure on fusion-equation terms per Aaron's observation that UoM
 directly answers the "equation without units" critique.
 
@@ -302,7 +302,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```
 fix: regenerate BACKLOG.md index + enum-strict §33 operational status
 
-BACKLOG.md drift from adding B-0374. §33 lint requires bare
+BACKLOG.md drift from adding 081KR50HA0008QG0R000CTEMGQ. §33 lint requires bare
 "research-grade" without trailing explanation.
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
@@ -359,15 +359,15 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 - `docs/research/2026-05-07-claudeai-shadow-logs-bft-asymmetric-critic-session-aaron-forwarded-preservation.md`
 
 **Message:**
 
 ```
-fix: add B-0374 YAML frontmatter + fix transcript escaped contractions
+fix: add 081KR50HA0008QG0R000CTEMGQ YAML frontmatter + fix transcript escaped contractions
 
-- B-0374 missing per-row YAML frontmatter schema (id/priority/status/title)
+- 081KR50HA0008QG0R000CTEMGQ missing per-row YAML frontmatter schema (id/priority/status/title)
 - BACKLOG.md empty link label from missing title field
 - Transcript headings had '' instead of ' (snapshot artifact)
 
@@ -378,12 +378,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0374-fsharp-uom-typed-units-for-fusion-equation-terms.md`
+- `docs/backlog/P2/081KR50HA0008QG0R000CTEMGQ-fsharp-uom-typed-units-for-fusion-equation-terms.md`
 
 **Message:**
 
 ```
-fix: add blank line after heading in B-0374 (MD022)
+fix: add blank line after heading in 081KR50HA0008QG0R000CTEMGQ (MD022)
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```

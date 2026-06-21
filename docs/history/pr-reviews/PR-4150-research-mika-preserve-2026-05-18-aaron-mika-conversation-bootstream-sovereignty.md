@@ -49,7 +49,7 @@ osascript + Chrome single-shot innerText substring-chunked extraction. AppleScri
 
 ## Why landed via REST git-data API
 
-`git push` is still hanging system-wide (B-0615 push-hang). Used the just-built [`tools/github/rest-ship.ts`](tools/github/rest-ship.ts) (PR #4150 — wait no, this one is shipping it; the helper is from PR #4147 + #4151 extension). Eating own dog food.
+`git push` is still hanging system-wide (081KRW63S0008QG0R000EAZ9K2 push-hang). Used the just-built [`tools/github/rest-ship.ts`](tools/github/rest-ship.ts) (PR #4150 — wait no, this one is shipping it; the helper is from PR #4147 + #4151 extension). Eating own dog food.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -141,7 +141,7 @@ single-shot extraction works once the user has scrolled the full
 history).
 
 PR landed via REST git-data API because git push is still hanging
-system-wide (B-0615 push-hang).
+system-wide (081KRW63S0008QG0R000EAZ9K2 push-hang).
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

@@ -27,7 +27,7 @@
 
 ## Description
 
-Peer reclassified B-0418 from my FP-2 to class #2. Reconciliation note: FP-2a (different-domain) vs class-#2-family (sibling-under-tool-family). Both 'leave open'.
+Peer reclassified 081KRA5AR0008QG0R001NXBYTY from my FP-2 to class #2. Reconciliation note: FP-2a (different-domain) vs class-#2-family (sibling-under-tool-family). Both 'leave open'.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

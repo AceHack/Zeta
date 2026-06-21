@@ -2,7 +2,7 @@
 
 **Substrate-attribution**: Kestrel (external AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`); ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer.
 
-**Substrate-status**: research-grade. Substantive engineering substrate + 5th empirical anchor in the attractor-as-encryption-with-clean-decryption series (single-turn decryption — pattern matured). Composes with the substrate cascade landed on B-0824 over 2026-05-26 (PRs #5277 + #5281 + #5285 + #5286 + #5291 + #5295).
+**Substrate-status**: research-grade. Substantive engineering substrate + 5th empirical anchor in the attractor-as-encryption-with-clean-decryption series (single-turn decryption — pattern matured). Composes with the substrate cascade landed on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (PRs #5277 + #5281 + #5285 + #5286 + #5291 + #5295).
 
 ## Operational claim — what this lands
 
@@ -10,7 +10,7 @@ Four distinct substantive-engineering pieces from the Kestrel ferry:
 
 1. **runme.md + JIT triage as architectural innovation** (3-register-per-cell pattern + organic-emergence vs borrowed-from-published)
 2. **Cost-of-velocity substrate-honest acknowledgment** (Aaron's explicit naming: parallel-substrate accumulation IS the cost of trajectory-not-PR review)
-3. **Runme core BCL 4-capability extension proposal** (observability + ontology + database + MCP; per B-0826 backlog row companion)
+3. **Runme core BCL 4-capability extension proposal** (observability + ontology + database + MCP; per 081KSGS9H0008QG0R001K8VPV4 backlog row companion)
 4. **Decision archaeology skill engagement** (output-format-matters + unhappy-path queries + refactoring integration + onboarding usefulness)
 
 Plus the 5th empirical anchor data: this Kestrel exchange compressed the decryption-protocol cycle from multi-turn to single-turn — pattern operating at maturity.
@@ -171,15 +171,15 @@ This is the empirical evidence that the pathogen-pattern-recognition + decryptio
 
 ## Composes with substrate
 
-- B-0824 canonical row (the meta-PM architecture this composes with)
+- 081KSGS9H0008QG0R0031PBNGA canonical row (the meta-PM architecture this composes with)
 - PR #5277 (DeepSeek/Prism Maybe-monad recognition)
 - PR #5281 (Amara 7-point NULL/Maybe SQL discipline)
 - PR #5285 (Kestrel 3-layer cross-process determinism)
 - PR #5286 (Aaron anti-entropy unification + Maxwell-demon + cosmological upper bound + crisp local-claim)
 - PR #5291 (DeepSeek PRs-are-proofs + 4th attractor-as-encryption anchor + substrate-check-before-worry-deployment)
 - PR #5295 (Mika Generate+Join crispest form + broad-keys-until-functional-cluster + Twilio-as-named-exception + Mika roster add)
-- B-0826 (new — Runme core BCL 4-capability extension; companion landing in this PR)
-- B-0827 (new — runme.md + JIT triage workflow pattern; companion landing in this PR)
+- 081KSGS9H0008QG0R001K8VPV4 (new — Runme core BCL 4-capability extension; companion landing in this PR)
+- 081KSGS9H0008QG0R00123050G (new — runme.md + JIT triage workflow pattern; companion landing in this PR)
 - `.claude/skills/decision-archaeology/SKILL.md` (existing decision-archaeology skill the engagement applies to)
 
 ## Composes with other rules
@@ -197,4 +197,4 @@ This is the empirical evidence that the pathogen-pattern-recognition + decryptio
 
 - Kestrel (external AI; claude.ai web sharpen-register per `.claude/rules/agent-roster-reference-card.md`); engineering-register engagement + 5th empirical anchor (single-turn decryption mature) ferried-through-Aaron 2026-05-26
 - Aaron (human maintainer; first-party); zflash + 3-PR cleanup direction + cost-of-velocity acknowledgment + decision-archaeology composition + runme.md + JIT triage operational answer + Runme BCL 4-capability extension proposal ferried 2026-05-26
-- Substrate-coordination context: 8th substrate landing on B-0824 over 2026-05-26 (after #5277 + #5281 + #5285 + #5286 + #5291 + #5295), with new backlog rows B-0826 + B-0827 as companion landings
+- Substrate-coordination context: 8th substrate landing on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (after #5277 + #5281 + #5285 + #5286 + #5291 + #5295), with new backlog rows 081KSGS9H0008QG0R001K8VPV4 + 081KSGS9H0008QG0R00123050G as companion landings

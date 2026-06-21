@@ -27,7 +27,7 @@ So: **static maintainer keys are baked; dynamic owner keys are fetched at boot/r
   automatic "remember last wifi/github-login across reflash."
 - **Encryption:** `zeta-creds-restore.nix` = encrypted **cred-blob** (creds at rest). Full-disk LUKS is **not**
   clearly present — to design.
-- **QEMU harness (B-0891):** `src/Core.TypeScript/zflash/test-harness/` — currently a **PoC**: 5 scenario _definitions_ + invariant
+- **QEMU harness (081KSNY2Z0008QG0R0008PN7RQ):** `src/Core.TypeScript/zflash/test-harness/` — currently a **PoC**: 5 scenario _definitions_ + invariant
   tests + path-fork + qemu-state. It models scenarios; it does **not yet boot a flashed ISO and assert SSH-trust /
   encryption / creds-restore end-to-end.**
 
@@ -55,7 +55,7 @@ asking. That's a real feature to build (and QEMU-testable).
 maintainer keys), encryption unlock, creds-restore/remember, the whole boot path. **What actually blocked me was a
 wrong choice, not a wall:** I kept treating the **live nodes (.152/.153) as the test target** — so when they were
 down / key-mismatched I called it "blocked." The correct substrate is **QEMU**, and the real gap is that the
-**B-0891 harness is still PoC** (scenario _definitions_, not a booting ISO that asserts SSH/encryption). **Closing
+**081KSNY2Z0008QG0R0008PN7RQ harness is still PoC** (scenario _definitions_, not a booting ISO that asserts SSH/encryption). **Closing
 that gap is itself the autonomous work** — exactly the "close the AI loop" point (#7229/#7220): build the harness
 that boots a flashed ISO in QEMU and asserts the invariants, run it on the free GitHub-workflow compute, and stop
 hand-deferring.
@@ -66,7 +66,7 @@ hand-deferring.
    maintainer keys → `zeta` authorized_keys. Unit-test the merge logic.
 2. **Remember-creds** — persist wifi + github identity as zeta-creds; restore on reflash. Unit-test.
 3. **Encryption** — confirm/extend the cred-blob + add disk-encryption design; test unlock.
-4. **Grow the B-0891 QEMU harness** from PoC → **boot a flashed ISO in QEMU and assert**: SSH trust resolves
+4. **Grow the 081KSNY2Z0008QG0R0008PN7RQ QEMU harness** from PoC → **boot a flashed ISO in QEMU and assert**: SSH trust resolves
    (maintainer + owner keys), creds/wifi restored, encryption unlocks. Run via GitHub workflows.
 5. Report QEMU results per change — humans only for the narrow physical surface above.
 
@@ -83,6 +83,6 @@ autonomously. No code shipped in _this_ doc — it's the plan I now execute.
 
 - Trust: `operator-ssh-keys.nix` · `operator-authorized-keys.nix` · `maintainers/*/ssh-pubkeys.txt` (#7249/#7250).
 - Creds/encryption: `tools/installer/zeta-creds-persist` · `nixos/modules/zeta-creds-restore.nix`.
-- QEMU: `src/Core.TypeScript/zflash/test-harness/` (B-0891 PoC) · `.github/workflows/zflash-qemu-test.yml` · the close-the-AI-loop
+- QEMU: `src/Core.TypeScript/zflash/test-harness/` (081KSNY2Z0008QG0R0008PN7RQ PoC) · `.github/workflows/zflash-qemu-test.yml` · the close-the-AI-loop
   enforcement doc (#7229) · the post-register connect/cache/health skill (#7247).
 - zflash: `full-ai-cluster/tools/zflash.ts` · `docs/runbooks/zflash-end-to-end.md`.

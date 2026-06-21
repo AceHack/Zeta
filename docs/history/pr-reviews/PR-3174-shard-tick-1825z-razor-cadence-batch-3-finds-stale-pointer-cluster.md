@@ -54,9 +54,9 @@ Decomposed from PR #3165. Contains only the tick shard.
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-14T18:39:57Z on `docs/hygiene-history/ticks/2026/05/14/1825Z.md`:58 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add the referenced B-0514 backlog file**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add the referenced 081KRHWGX0008QG0R002E3BCDS backlog file**
 
-  This tick entry states that **B-0514** was filed at `docs/backlog/P3/B-0514-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md`, but this commit only adds the tick shard and does not add that backlog artifact, leaving a broken traceability pointer. In contexts where this shard is consumed independently (as this decomposed commit is), reviewers cannot verify the documented finding or resolution options, which undermines the audit trail this file is meant to preserve.
+  This tick entry states that **081KRHWGX0008QG0R002E3BCDS** was filed at `docs/backlog/P3/081KRHWGX0008QG0R002E3BCDS-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md`, but this commit only adds the tick shard and does not add that backlog artifact, leaving a broken traceability pointer. In contexts where this shard is consumed independently (as this decomposed commit is), reviewers cannot verify the documented finding or resolution options, which undermines the audit trail this file is meant to preserve.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -66,7 +66,7 @@ Decomposed from PR #3165. Contains only the tick shard.
   - **`AceHack` (human)** at 2026-05-14T18:44:53Z on `docs/hygiene-history/ticks/2026/05/14/1825Z.md`:58 (association: MEMBER)
 
     <pre>
-    B-0514 is in the companion PR #3172 (`lior/decompose-chore-b-0514`), which is the other decomposed slice from PR #3165. The two PRs are designed to merge together: #3172 adds B-0514 + BACKLOG.md, #3174 adds the tick shard that documents filing it. The reference will resolve once both merge onto main.
+    081KRHWGX0008QG0R002E3BCDS is in the companion PR #3172 (`lior/decompose-chore-b-0514`), which is the other decomposed slice from PR #3165. The two PRs are designed to merge together: #3172 adds 081KRHWGX0008QG0R002E3BCDS + BACKLOG.md, #3174 adds the tick shard that documents filing it. The reference will resolve once both merge onto main.
     </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -80,7 +80,7 @@ Decomposed from PR #3165. Contains only the tick shard.
 - **`Copilot` (bot)** at 2026-05-14T18:41:32Z on `docs/hygiene-history/ticks/2026/05/14/1825Z.md`:58 (association: NONE)
 
   <pre>
-  The tick claims B-0514 was filed at this backlog path, but that file is not present in the current tree (repository search only finds this reference). Landing this shard as-is creates the same kind of stale cross-reference the tick is documenting; either include the backlog row in the PR or describe it as not-yet-filed/out-of-tree.
+  The tick claims 081KRHWGX0008QG0R002E3BCDS was filed at this backlog path, but that file is not present in the current tree (repository search only finds this reference). Landing this shard as-is creates the same kind of stale cross-reference the tick is documenting; either include the backlog row in the PR or describe it as not-yet-filed/out-of-tree.
 
   </pre>
 
@@ -89,7 +89,7 @@ Decomposed from PR #3165. Contains only the tick shard.
   - **`AceHack` (human)** at 2026-05-14T18:44:56Z on `docs/hygiene-history/ticks/2026/05/14/1825Z.md`:58 (association: MEMBER)
 
     <pre>
-    B-0514 is in companion PR #3172 (the other decomposed slice). Both PRs should merge onto main where the reference resolves. The shard correctly documents the filing — the artifact exists, just in a sibling PR.
+    081KRHWGX0008QG0R002E3BCDS is in companion PR #3172 (the other decomposed slice). Both PRs should merge onto main where the reference resolves. The shard correctly documents the filing — the artifact exists, just in a sibling PR.
     </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]

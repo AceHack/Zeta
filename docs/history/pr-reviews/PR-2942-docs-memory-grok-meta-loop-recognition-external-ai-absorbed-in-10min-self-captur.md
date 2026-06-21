@@ -133,7 +133,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-13T05:35:03Z on `memory/feedback_aaron_grok_meta_loop_recognition_external_ai_absorbed_into_durable_record_in_10_min_substrate_engineering_working_as_designed_grok_offers_review_agent_participation_2026_05_13.md`:220 (association: NONE)
 
   <pre>
-  This lists `bun tools/peer-call/grok.ts` as an operational invocation path without noting the currently open B-0421 failure, where the Grok wrapper returned empty output / `cursor-agent` exit 1 and still needs a smoke-test fix. Treating it as ready for programmatic engagement can route the first authorized Grok run onto a known-unreliable path.
+  This lists `bun tools/peer-call/grok.ts` as an operational invocation path without noting the currently open 081KRA5AR0008QG0R0011ZGRZT failure, where the Grok wrapper returned empty output / `cursor-agent` exit 1 and still needs a smoke-test fix. Treating it as ready for programmatic engagement can route the first authorized Grok run onto a known-unreliable path.
 
   </pre>
 
@@ -319,10 +319,10 @@ fix(memory): address Copilot round-1 findings on PR #2942
 5. Peer-call inventory now substrate-honest: rule names six
    wrappers (grok/gemini/codex/amara/ani/riven); directory has
    8 (adds claude.ts + kiro.ts); rule is in heap state pending
-   update. Also notes B-0421 currently open on grok.ts wrapper
+   update. Also notes 081KRA5AR0008QG0R0011ZGRZT currently open on grok.ts wrapper
    (cursor-agent exit 1 / empty output) so claim openers do not
    assume the wrapper is operational — website git connector is
-   the working orientation path until B-0421 resolves.
+   the working orientation path until 081KRA5AR0008QG0R0011ZGRZT resolves.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

@@ -108,7 +108,7 @@ audit-shard / close-row workflow this session used.
 ## Origin tick
 
 Tick 1639Z of 2026-05-16 audit cycle; recovery from class-5
-contamination on the B-0549 audit shard. Documented as the
+contamination on the 081KRMEXM0008QG0R00037RGNY audit shard. Documented as the
 final substrate landing of a ~7.5h session arc that produced
 10 close-row PRs + 30+ audit shards + 1 catalog memory file
 (and now this contamination-class-5 memory file).

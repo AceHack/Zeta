@@ -1,9 +1,8 @@
 ---
-id: B-0793
-zetaid: 081KSGS9H0008QG0R000EDNTY5
+id: 081KSGS9H0008QG0R000EDNTY5
 priority: P1
 status: open
-title: Role-as-capability-composition (NOT baked host) — a single node can be control-plane AND gpu-worker AND storage simultaneously; refactor nixos/hosts/{role}/configuration.nix → composable nixos/modules/role-*.nix capability modules; iter-5.2 hostname injection (B-0792) is partial fix at hostname scope but role-stack-as-baked-host-config remains the architectural blocker
+title: Role-as-capability-composition (NOT baked host) — a single node can be control-plane AND gpu-worker AND storage simultaneously; refactor nixos/hosts/{role}/configuration.nix → composable nixos/modules/role-*.nix capability modules; iter-5.2 hostname injection (081KSGS9H0008QG0R003V23XNZ) is partial fix at hostname scope but role-stack-as-baked-host-config remains the architectural blocker
 effort: L
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -23,7 +22,7 @@ The maintainer 2026-05-26 surfaced the architectural concern during iter-5 subst
 
 > *"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant [sic] and host names tied to them are not great either."*
 
-iter-5.2 (B-0792, PR #5103) partially addressed this by decoupling **hostname** from role-stack — operator can pass `--host pikachu` and get hostname `pikachu` regardless of which flake config the node was installed from. But the deeper architectural issue remains: **role-stack itself is baked into per-host flake configs**, making multi-role composition (one node = control-plane AND gpu-worker AND storage simultaneously) require an explosion of pre-baked configs.
+iter-5.2 (081KSGS9H0008QG0R003V23XNZ, PR #5103) partially addressed this by decoupling **hostname** from role-stack — operator can pass `--host pikachu` and get hostname `pikachu` regardless of which flake config the node was installed from. But the deeper architectural issue remains: **role-stack itself is baked into per-host flake configs**, making multi-role composition (one node = control-plane AND gpu-worker AND storage simultaneously) require an explosion of pre-baked configs.
 
 Today's flake.nix structure:
 
@@ -127,19 +126,19 @@ So K8s workload scheduling can use the same role taxonomy as the install-time co
 
 ## Composes with substrate
 
-- **B-0792** (iter-5 wifi + hostname injection; depends_on; this row picks up where B-0792 sub-target 4 deferred the role-stack decomposition)
-- **B-0776** (simplest-first plugin sequence; composes; each plugin's "which roles need it" question becomes cleaner with role-as-capability)
-- **B-0789** (iter-4 SSH+password substrate; composes; same ESP-injection pattern)
-- **B-0790** (zero-dev-machines cluster-native end-state; this row is load-bearing for multi-role nodes in the homelab persona's typical sub-3-node cluster)
-- **B-0759** (first-time-CLI-user broadened to homelab persona; capability auto-detection in sub-target 4 is load-bearing for the no-CLI-typing experience)
-- **B-0778** (commodity hardware reference; this row composes with the curated hardware list — each hardware shape maps to a default role-set)
+- **081KSGS9H0008QG0R003V23XNZ** (iter-5 wifi + hostname injection; depends_on; this row picks up where 081KSGS9H0008QG0R003V23XNZ sub-target 4 deferred the role-stack decomposition)
+- **081KSE6WT0008QG0R002275NDE** (simplest-first plugin sequence; composes; each plugin's "which roles need it" question becomes cleaner with role-as-capability)
+- **081KSGS9H0008QG0R002T3BJ2R** (iter-4 SSH+password substrate; composes; same ESP-injection pattern)
+- **081KSGS9H0008QG0R00153CQ8B** (zero-dev-machines cluster-native end-state; this row is load-bearing for multi-role nodes in the homelab persona's typical sub-3-node cluster)
+- **081KSE6WT0008QG0R003G0Y62D** (first-time-CLI-user broadened to homelab persona; capability auto-detection in sub-target 4 is load-bearing for the no-CLI-typing experience)
+- **081KSE6WT0008QG0R0004AP0ZA** (commodity hardware reference; this row composes with the curated hardware list — each hardware shape maps to a default role-set)
 
 ## Out of scope (for this row; tracked elsewhere)
 
-- Cluster orchestration substrate selection (K3S vs Talos vs etc.) — tracked under B-0776
-- Worker join token / control-plane discovery — B-0792 sub-target 5; deferred
+- Cluster orchestration substrate selection (K3S vs Talos vs etc.) — tracked under 081KSE6WT0008QG0R002275NDE
+- Worker join token / control-plane discovery — 081KSGS9H0008QG0R003V23XNZ sub-target 5; deferred
 - Capability auto-detection implementation details — sub-target 4; deferred
-- K8s node-label taxonomy schema — sub-target 5; deferred (depends on B-0776 cluster substrate selection)
+- K8s node-label taxonomy schema — sub-target 5; deferred (depends on 081KSE6WT0008QG0R002275NDE cluster substrate selection)
 - Resource isolation between co-located roles (cgroups; namespaces; QoS) — separate concern; track when needed
 
 ## Origin
@@ -148,7 +147,7 @@ The maintainer 2026-05-26 during iter-5.2 substrate-engineering response:
 
 > *"also since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant and host names tied to them are not great either."*
 
-iter-5.2 (B-0792, PR #5103) addressed the hostname-side concern (decoupled hostname from role-stack via injected-hostname.nix module + zflash --host flag). This row captures the deeper role-side concern: role-stack-as-baked-host-config is the remaining architectural blocker for true multi-role nodes.
+iter-5.2 (081KSGS9H0008QG0R003V23XNZ, PR #5103) addressed the hostname-side concern (decoupled hostname from role-stack via injected-hostname.nix module + zflash --host flag). This row captures the deeper role-side concern: role-stack-as-baked-host-config is the remaining architectural blocker for true multi-role nodes.
 
 Filing as P1 because:
 

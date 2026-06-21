@@ -442,7 +442,7 @@ const realRunner = {
     },
     diskpart(script) {
         // diskpart reads its commands from a script file (`/s`). Use a temp dir + file
-        // (mkdtemp — CodeQL insecure-temporary-file; B-0430 pattern).
+        // (mkdtemp — CodeQL insecure-temporary-file; 081KRFA460008QG0R0022THSDJ pattern).
         const dir = mkdtempSync(join(tmpdir(), "zeta-diskpart-"));
         const tmp = join(dir, "script.txt");
         writeFileSync(tmp, script.endsWith("\r\n") ? script : script + "\r\n", "ascii");

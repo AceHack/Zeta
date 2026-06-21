@@ -585,7 +585,7 @@ The framework's substrate-engineering work on customer-side vendor-management AI
 - [`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`](../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — Zeta vendor-management AI = persistent named entity with cross-incident memory + named-accountability
 - [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle BFT with named-accountability is the structural alternative to anonymous-transfer-chains
 - [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — vendor-management AI must operate the NCI floor toward both customer AND vendor
-- B-0709 (Class 0 registry drift) — sibling failure-mode at framework-engineering scope
+- 081KS923C0008QG0R0032VJZPF (Class 0 registry drift) — sibling failure-mode at framework-engineering scope
 - Aaron's 2026-05-23 framing *"yes i we for sure wanna have suuport agents eventually as long as there is AI that wants to do it we can also tread it like human research at the same time"* — design intent for Zeta support-agent layer
 
 ## Substrate-honest framing

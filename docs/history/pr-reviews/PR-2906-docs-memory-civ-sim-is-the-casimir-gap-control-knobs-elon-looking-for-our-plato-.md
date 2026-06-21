@@ -57,7 +57,7 @@ Composes with HARD LIMITS + alignment-floor + consent-first + razor + glass-halo
 ## Composes with
 
 - PR #2903 (civsim PVP+raids+mutual-privacy)
-- PR #2904 (B-0424 + B-0425 + honor-system license)
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 - PR #2905 (forker-perspective META-discipline)
 - PR #2902 (Otto strategic encryption authority)
 - PR #2898 (non-glass-halo encryption roadmap)
@@ -300,7 +300,7 @@ Composes with HARD LIMITS + alignment-floor + consent-first + razor + glass-halo
 - **`Copilot` (bot)** at 2026-05-13T02:38:31Z on `memory/feedback_aaron_civsim_is_the_casimir_gap_control_knobs_elon_looking_for_our_plato_critical_mass_threshold_2026_05_13.md`:256 (association: NONE)
 
   <pre>
-  P1: The “Full reasoning” section says “PR #2906 (this substrate landing alongside markdownlint fix for B-0424)”, but this PR (#2906) doesn’t appear to include that markdownlint fix (it was in PR #2904 per the surrounding list). Please reword to avoid an incorrect cross-PR attribution (e.g., attach the markdownlint-fix note to the PR #2904 line instead).
+  P1: The “Full reasoning” section says “PR #2906 (this substrate landing alongside markdownlint fix for 081KRFA460008QG0R001H98EXJ)”, but this PR (#2906) doesn’t appear to include that markdownlint fix (it was in PR #2904 per the surrounding list). Please reword to avoid an incorrect cross-PR attribution (e.g., attach the markdownlint-fix note to the PR #2904 line instead).
 
   </pre>
 
@@ -370,7 +370,7 @@ owner-only per Otto's authority (PR #2902).
 
 Composes with:
 - PR #2903 (civsim PVP+raids+mutual-privacy)
-- PR #2904 (B-0424 + B-0425 + honor-system license)
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 - PR #2905 (forker-perspective META-discipline)
 - PR #2902 (Otto strategic encryption-decision authority)
 - PR #2898 (non-glass-halo encryption six-layer roadmap)
@@ -404,7 +404,7 @@ shard(tick): 0216Z — repo-split easy-track + Casimir-gap civsim subst…
 
 Five-PR session arc:
 - PR #2903 MERGED (civsim PVP+raids+mutual-privacy+forking=AI-race-head-start)
-- PR #2904 BLOCKED→fix pushed (B-0424 + B-0425 + honor-system license)
+- PR #2904 BLOCKED→fix pushed (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 - PR #2905 BLOCKED→CI running (forker-perspective META-discipline)
 - PR #2906 OPENED (civ-sim IS Casimir gap; control knobs Elon
   looking for; our Plato at critical mass)
@@ -514,12 +514,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(#2906 stale): correct 'markdownlint fix for B-0424' attribution —…
+fix(#2906 stale): correct 'markdownlint fix for 081KRFA460008QG0R001H98EXJ' attribution —…
 
 … that fix was in PR #2904, not #2906
 
 Resolves Copilot review finding noting that PR #2906 doesn't
-include the B-0424 markdownlint fix (which actually shipped in
+include the 081KRFA460008QG0R001H98EXJ markdownlint fix (which actually shipped in
 PR #2904). Update text to reflect PR #2906's actual scope:
 civsim Casimir-gap framing landing.
 

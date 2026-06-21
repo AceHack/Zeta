@@ -26,7 +26,7 @@ the name for it is closure-propagation-with-state as self-evolving sagas.**
 | Existing substrate | What it already carries |
 | --- | --- |
 | `.claude/skills/rx-expert/SKILL.md` (Bonsai / Reaqtor section) | Bart De Smet's **Nuqleon Bonsai** as the expression-tree serialiser; **Reaqtor** = server-side Rx where subscriptions survive reboot |
-| [`B-0640`](../backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) | "Bonsai trees + Rx queries — real-time implementation substrate for Integrate"; Aaron already wired bonsai-trees to retractable Rx ("managing state and data movement through different levels cleanly") |
+| [`081KRW63S0008QG0R002XA5N6S`](../backlog/P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) | "Bonsai trees + Rx queries — real-time implementation substrate for Integrate"; Aaron already wired bonsai-trees to retractable Rx ("managing state and data movement through different levels cleanly") |
 | `src/Core/Checkpoint.fs` | Mirrors Reaqtor `IStatefulOperator` (Save/Load at yield points); periodic state-snapshot checkpoint persistence |
 | `docs/PRIOR-ART-LIST.md` | Reaqtor / IQbservable ⭐ — "stateful event-processing"; Bonsai as slim-IR inspiration for persistent queries |
 | elevator-pitch memory (2026-05-12) | "green threads / **durable functions** / Orleans grains"; *"my brain runs on temporal workflows"* |
@@ -216,7 +216,7 @@ generator is exactly a serialized deferred-execution expression).
 The operator (2026-06-01): *"so now every partition has self evolving sagas and
 so do cross partition joins."*
 
-The framework already partitions: B-0959 §0 (agent-partition) makes each surface
+The framework already partitions: 081KSXN940008QG0R003FCQ7WT §0 (agent-partition) makes each surface
 a **shard**, lanes the partition, the bus the cross-machine carrier; the algebra
 ladder's IndexedZSet stores `Z[K × V]` **grouped by key** — that grouping IS the
 partition (by key). Two consequences:
@@ -260,7 +260,7 @@ partial failure**:
   sides, then does the join as a *local* computation. This is the CALM move made
   physical: pull both sides to one place, join coordination-free, rather than a
   distributed lock round. (Mirrors the existing agent-worktree discipline — an
-  agent that has both checkouts can merge them; B-0959 §0 shards + bus.)
+  agent that has both checkouts can merge them; 081KSXN940008QG0R003FCQ7WT §0 shards + bus.)
 - **Mitigation factors in the saga for when one side fails.** A cross-partition
   join is a *long-running distributed* operation, so it is a **saga** in the
   full sense — it must carry **compensating / mitigation actions** for the case
@@ -288,7 +288,7 @@ itself* can evolve. The mediator agent's tick stream is where Durable-Functions'
 | Partial failure | **Mitigation factors inside the saga** — compensate / retract (ℤ inverse) / retry / hold-resume |
 | Evolution | Compensation logic is **data**, so the mitigation strategy itself evolves |
 
-## The saga context IS the OTel context (propagation) — already IntrCtx (B-0917)
+## The saga context IS the OTel context (propagation) — already IntrCtx (081KSNY2Z0008QG0R002HB4AGT)
 
 The operator (2026-06-01): *"context ends up being same as otel context, it
 passes through function calls mostly."* This closes the "how does the context
@@ -296,7 +296,7 @@ propagate?" question — and the repo already converges here.
 
 The durable/saga **context** (the thing state hangs off of — `currentStep`,
 cached results, resume value, identity) is the **same ambient object** as the
-**OTel context**, and as **B-0917 IntrCtx**. The propagation model is OTel's:
+**OTel context**, and as **081KSNY2Z0008QG0R002HB4AGT IntrCtx**. The propagation model is OTel's:
 
 - **In-process: implicit / ambient** — `AsyncLocal` / `Activity.Current` threads
   the context through the call graph with no hand-passing. ("Passes through
@@ -309,14 +309,14 @@ cached results, resume value, identity) is the **same ambient object** as the
 
 This is already substrate, not new:
 
-- **[B-0917](../backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md)** —
+- **[081KSNY2Z0008QG0R002HB4AGT](../backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md)** —
   *Kleisli arrows for **context-propagation** (memetic / prompt / trust / **log** /
   **otel**)*. The IntrCtx already carries `log` + `otel`; the durable/saga context
   IS this. The ZSpike `do` / `request` / `notify` are the **Kleisli arrows that
-  thread the context** — the same shape B-0917 names.
-- **[B-0957](../backlog/P1/B-0957-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md)** —
+  thread the context** — the same shape 081KSNY2Z0008QG0R002HB4AGT names.
+- **[081KSXN940008QG0R001YABTHH](../backlog/P1/081KSXN940008QG0R001YABTHH-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md)** —
   scopes **propagate via OTel-baggage / DI-scope**. The mechanism.
-- **[B-0872](../backlog/P2/B-0872-otel-trace-id-composition-with-zetaid-baggage-propagation-kestrel-2026-05-28.md)** —
+- **[081KSNY2Z0008QG0R000ZNRFCE](../backlog/P2/081KSNY2Z0008QG0R000ZNRFCE-otel-trace-id-composition-with-zetaid-baggage-propagation-kestrel-2026-05-28.md)** —
   **OTel trace-ID composition with ZetaID** alongside W3C Trace Context. The
   context carries **identity** (the saga's id = the trace/span id).
 - **Lightlike-observability** (Amara, PR cluster 2026-05-28) — *"OTel is ray
@@ -327,14 +327,14 @@ One honest split keeps the identity exact. OTel baggage is small + propagated on
 *every* hop (size-limited), so the layering is:
 
 - **OTel context = the propagation + identity layer** — trace/span id (= the
-  saga's id, B-0872) + small hot state in baggage. *This* is the part that "is
+  saga's id, 081KSNY2Z0008QG0R000ZNRFCE) + small hot state in baggage. *This* is the part that "is
   the same as OTel context."
 - **The heavy serialized state** (closure + Bonsai expr-tree) lives in the
   **state store, keyed by the context-id** — not in baggage. The context
   propagates the *handle*; the store holds the *payload*.
 
 So "context = OTel context" is exactly right for **propagation + identity**; the
-durable payload hangs off the store keyed by that context — which is why B-0917
+durable payload hangs off the store keyed by that context — which is why 081KSNY2Z0008QG0R002HB4AGT
 puts `log` + `otel` *inside* IntrCtx alongside the durable-relevant contexts.
 
 ## Composes with the DU workflow engine — a generic saga in `observe.ts` is just serialize(Rx) + serialize(state)
@@ -343,7 +343,7 @@ The operator (2026-06-01): *"this composes with DUs workflow we can create a
 generic saga pattern around these in observe.ts that's just serialize rx and
 state."*
 
-The lifecycle-DU workflow engine (B-0867 + the
+The lifecycle-DU workflow engine (081KSKBP80008QG0R000B3Y19A + the
 `implicit-not-explicit-in-DUs` discipline) already models a workflow as an
 **explicit discriminated-union state machine** (legal transitions enforced at
 compile time). A **self-evolving saga is the generic pattern that engine
@@ -361,7 +361,7 @@ serializing its Rx-expression + its state onto the retraction-native stream.
 
 | Layer | Role in the generic saga |
 | --- | --- |
-| Lifecycle DU (B-0867) | **legal transitions** — compile-time-enforced structure |
+| Lifecycle DU (081KSKBP80008QG0R000B3Y19A) | **legal transitions** — compile-time-enforced structure |
 | Bonsai-serialized expr-tree | the pattern in **serialized, runtime-mutable** form |
 | Closure / state capture | the saga's accumulator (`src/Core/Checkpoint.fs`) |
 | Tick stream (agent) | the **carrier** (per-partition + cross-partition mediator) |
@@ -379,7 +379,7 @@ the input.
 
 The operator (2026-06-01): *"we are going to have dapr and dapr actors and
 workflow."* Dapr is the planned runtime substrate (it is **already deployed** in
-the cluster per [B-0785](../backlog/P1/B-0785-unified-namespace-across-fsharp-kubernetes-ontology-plus-experiment-id-routing-via-argo-rollouts-cilium-service-mesh-aaron-mika-2026-05-25.md):
+the cluster per [081KSE6WT0008QG0R000R8CPFX](../backlog/P1/081KSE6WT0008QG0R000R8CPFX-unified-namespace-across-fsharp-kubernetes-ontology-plus-experiment-id-routing-via-argo-rollouts-cilium-service-mesh-aaron-mika-2026-05-25.md):
 `full-ai-cluster/k8s/applications/dapr`). Two pieces, two different relationships
 to this primitive:
 
@@ -415,31 +415,31 @@ This note's first cut under-cited the substrate — the operator's catch
 ("we have some backlog around this too") is correct. The durable-execution
 cluster this primitive composes onto:
 
-- **[B-0251](../backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** —
+- **[081KQZVQW0008QG0R000PPQ3MH](../backlog/P1/081KQZVQW0008QG0R000PPQ3MH-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** —
   *durable-computation stack: Temporal + Reaqtor + Orleans + Bonsai* (tags incl.
   `durable-functions`). The canonical research row for this whole area.
-- **[B-0668](../backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** +
-  **[B-0668.1](../backlog/P1/B-0668.1-fsharp-k8s-mapping.md)** — *our-own fork of
+- **[081KRYRGG0008QG0R0018CMFQY](../backlog/P1/081KRYRGG0008QG0R0018CMFQY-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** +
+  **[081KSNY2Z0008QG0R001TMM2HY](../backlog/P1/081KSNY2Z0008QG0R001TMM2HY-fsharp-k8s-mapping.md)** — *our-own fork of
   Azure/durabletask*; explicitly: **"durable-task state-history IS the DBSP
   time-indexed-state substrate; saga compensation = retraction = additive inverse
   in Z-set algebra."** The **saga = retraction = ℤ-inverse** insight this note's
   "sharp part" leans on **already lives here** — this note sharpens + extends
-  B-0668, it does not mint it. The Integrate (∫) primitive gets its
+  081KRYRGG0008QG0R0018CMFQY, it does not mint it. The Integrate (∫) primitive gets its
   retraction-aware persistence at the durabletask layer; the F# → Orleans →
-  our-own-durabletask-fork → K8s pipeline is B-0668's target.
-- **[B-0706](../backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** —
+  our-own-durabletask-fork → K8s pipeline is 081KRYRGG0008QG0R0018CMFQY's target.
+- **[081KS6FPN0008QG0R003Y3MCVE](../backlog/P1/081KS6FPN0008QG0R003Y3MCVE-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** —
   *Zeta-on-Orleans*: **grain identity = agent identity**, grains as ticksource +
   cron. The agent-mediator = grain/actor mapping; composes with the Dapr-Actors
   carrier above (Orleans grain ≈ Dapr virtual actor).
-- **[B-0776](../backlog/P1/B-0776-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md)** /
-  **[B-0764](../backlog/P2/B-0764-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-dapr-opa-oam-kubevela-plus-ace-and-ontology-negotiation-aaron-2026-05-25.md)** —
+- **[081KSE6WT0008QG0R002275NDE](../backlog/P1/081KSE6WT0008QG0R002275NDE-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md)** /
+  **[081KSE6WT0008QG0R0009YYNP4](../backlog/P2/081KSE6WT0008QG0R0009YYNP4-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-dapr-opa-oam-kubevela-plus-ace-and-ontology-negotiation-aaron-2026-05-25.md)** —
   Dapr (distributed-app runtime) + Temporal/Orleans/Argo (workflow/actors) as
   already-deployed cluster substrate to wrap.
-- **[B-0777](../backlog/P1/B-0777-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** `Zeta.Actors`
-  + **[B-0040](../backlog/P2/B-0040-actor-model-factory-register-lens.md)** (actor-model lens) +
-  **[B-0253](../backlog/P2/B-0253-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** — the actor-model surface.
+- **[081KSE6WT0008QG0R000JSJ3SR](../backlog/P1/081KSE6WT0008QG0R000JSJ3SR-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** `Zeta.Actors`
+  + **[081KQ3HBZ0008QG0R000RP1WDN](../backlog/P2/081KQ3HBZ0008QG0R000RP1WDN-actor-model-factory-register-lens.md)** (actor-model lens) +
+  **[081KQZVQW0008QG0R000W4B8KT](../backlog/P2/081KQZVQW0008QG0R000W4B8KT-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** — the actor-model surface.
 
-Net: the self-evolving-saga is the **crystallization + cross-language + self-evolution extension** of an existing backlog cluster (B-0251 research → B-0668 durabletask-fork-with-Z-set-retraction → B-0706 Orleans-deployment), now with Dapr named as the concrete runtime. The new contribution over the backlog is (1) the explicit replay-vs-resume fork + looser-body-constraints, (2) self-evolution (mutate the running pattern), (3) the cross-language Bonsai-subset/oracle discipline. The Z-set-retraction-as-saga-compensation core is B-0668's; cite it.
+Net: the self-evolving-saga is the **crystallization + cross-language + self-evolution extension** of an existing backlog cluster (081KQZVQW0008QG0R000PPQ3MH research → 081KRYRGG0008QG0R0018CMFQY durabletask-fork-with-Z-set-retraction → 081KS6FPN0008QG0R003Y3MCVE Orleans-deployment), now with Dapr named as the concrete runtime. The new contribution over the backlog is (1) the explicit replay-vs-resume fork + looser-body-constraints, (2) self-evolution (mutate the running pattern), (3) the cross-language Bonsai-subset/oracle discipline. The Z-set-retraction-as-saga-compensation core is 081KRYRGG0008QG0R0018CMFQY's; cite it.
 
 ## The interface is the hard part — Temporal (especially) and DF are the interface to beat
 
@@ -518,7 +518,7 @@ already runs.
 This note does **not**:
 
 - build the serializer (operator drives that; it is a major primitive);
-- supersede B-0640 (it composes onto it; B-0640 is the implementation row);
+- supersede 081KRW63S0008QG0R002XA5N6S (it composes onto it; 081KRW63S0008QG0R002XA5N6S is the implementation row);
 - claim Nuqleon must be adopted (the own-vs-adopt call is the operator's, and
   the cross-language-oracle tension above is the input to it).
 
@@ -530,12 +530,12 @@ This note **does**:
 - make the Durable-Functions-subsumption argument explicit;
 - surface the sharp connection — it rides the Z-set / IndexedZSet ladder, with
   **retraction as the pattern-evolution operator**;
-- compose it onto the existing substrate (B-0640, rx-expert Bonsai/Reaqtor,
+- compose it onto the existing substrate (081KRW63S0008QG0R002XA5N6S, rx-expert Bonsai/Reaqtor,
   `src/Core/Checkpoint.fs`, PRIOR-ART Reaqtor⭐, the durable-functions elevator pitch, the
   travelers thread) rather than mint a parallel.
 
 The PRIMITIVE-REGISTRY want-line lands in **this** PR (the Event/reactive line,
-placed clear of #6413's line-49 + footer edits → clean 3-way merge). A B-0640
+placed clear of #6413's line-49 + footer edits → clean 3-way merge). A 081KRW63S0008QG0R002XA5N6S
 status cross-reference + the 4/4-ladder footer note are composed now that #6413
 has merged — this branch's merge of `origin/main` brought the 4/4 algebra-ladder
 line + footer in, so the registry is internally consistent (4/4 everywhere).

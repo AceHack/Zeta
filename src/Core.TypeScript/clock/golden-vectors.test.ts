@@ -3,7 +3,7 @@ import seedJson from "./golden-vectors.json";
 import { run, tick, delay, compare, ofInt, fromSeed, step } from "./clock";
 
 // Clock TS oracle replay — the distribution-side leg of the clock byte-lock
-// (B-1016 floor #1). Reads the SAME seed the F# oracle verifies
+// (081KT7YW00008QG0R002T1XNWT floor #1). Reads the SAME seed the F# oracle verifies
 // (Clock.Laws.Tests.fs) and asserts Scheduler.run produces the identical monotone
 // stamp sequence. F# + TS agreeing on the timeline = DST replay is byte-locked.
 

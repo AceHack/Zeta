@@ -27,7 +27,7 @@
 
 ## Description
 
-This PR archives the discussion and metadata for PR #5912 per preservation discipline B-0874.
+This PR archives the discussion and metadata for PR #5912 per preservation discipline 081KSNY2Z0008QG0R003X1QWYG.
 
 ## Outcome
 

@@ -42,5 +42,5 @@ Agents could:
 **Connects to:**
 - project_multiplexed_websockets_flux_capacitor (transport layer)
 - project_bft_cost_contingency (Vosk = local, no API cost)
-- B-0402 shadow mode (shadow could have a voice)
+- 081KR7JY10008QG0R0008NGW95 shadow mode (shadow could have a voice)
 - Ani voice-mode (this gives Otto equivalent capability)

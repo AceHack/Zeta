@@ -18,9 +18,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- Adds research doc comparing 4 hardware candidates for the Genesis Seed local inference stack (B-0289)
+- Adds research doc comparing 4 hardware candidates for the Genesis Seed local inference stack (081KR2E4K0008QG0R001SWEPNV)
 - Establishes the two-tier architecture: ESP32-S3 ring MCU + RPi 5 8GB inference gateway
-- Includes power/compute/connectivity matrix and 5 open questions feeding B-0290 and follow-on slices
+- Includes power/compute/connectivity matrix and 5 open questions feeding 081KR2E4K0008QG0R003MJ4JK0 and follow-on slices
 - Updates backlog item with pre-start checklist proof, claim, and research doc pointer
 
 ## What changed
@@ -28,7 +28,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 | File | Change |
 |------|--------|
 | `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md` | New — hardware spec research doc |
-| `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md` | Updated — pre-start checklist + research doc pointer, status → in-progress |
+| `docs/backlog/P1/081KR2E4K0008QG0R001SWEPNV-green-lantern-hardware-spec-2026-05-08.md` | Updated — pre-start checklist + research doc pointer, status → in-progress |
 
 ## Candidates compared
 
@@ -48,7 +48,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - Claim: `otto-cli`, `feat/b-0289-hardware-spec-2026-05-14`
 - operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file IS the durable record"
 
-## Open questions (B-0290 + follow-on)
+## Open questions (081KR2E4K0008QG0R003MJ4JK0 + follow-on)
 
 1. Ring MCU ↔ gateway mutual auth protocol (KSK-signed BLE challenge?)
 2. Cold-start latency: persistent daemon vs wake-on-BLE
@@ -56,7 +56,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 4. Ring form-factor PCB feasibility (ESP32-S3-WROOM-1 is 18×20 mm)
 5. Gateway firewall / KSK access policy for local WiFi exposure
 
-Closes B-0289.
+Closes 081KR2E4K0008QG0R001SWEPNV.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -91,10 +91,10 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Docs-only PR delivering the research deliverable for B-0289: a hardware spec evaluating local-inference candidates for the Green Lantern ring. Recommends a two-tier architecture (ESP32-S3 ring MCU + RPi 5 8GB inference gateway running Llama 3.2 3B Q4_K_M), with a Jetson Orin Nano upgrade path. Backlog row is updated with the pre-start checklist and a pointer to the research doc.
+Docs-only PR delivering the research deliverable for 081KR2E4K0008QG0R001SWEPNV: a hardware spec evaluating local-inference candidates for the Green Lantern ring. Recommends a two-tier architecture (ESP32-S3 ring MCU + RPi 5 8GB inference gateway running Llama 3.2 3B Q4_K_M), with a Jetson Orin Nano upgrade path. Backlog row is updated with the pre-start checklist and a pointer to the research doc.
 
 **Changes:**
-- New research doc comparing 4 hardware candidates (Jetson Orin Nano 8GB, RPi 5 8GB, RPi 5 4GB, ESP32-S3) across compute, power, and connectivity, plus a recommended starting config and 5 open questions feeding B-0290.
+- New research doc comparing 4 hardware candidates (Jetson Orin Nano 8GB, RPi 5 8GB, RPi 5 4GB, ESP32-S3) across compute, power, and connectivity, plus a recommended starting config and 5 open questions feeding 081KR2E4K0008QG0R003MJ4JK0.
 - Backlog row flipped to `status: in-progress`, `last_updated` bumped, `pr: pending` added, and pre-start checklist + research-doc pointer appended.
 
 ### Reviewed changes
@@ -104,7 +104,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 | File | Description |
 | ---- | ----------- |
 | `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md` | New research doc: candidates A–D, matrix, recommended config, open questions, prior-art log. |
-| `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md` | Status → in-progress; adds pre-start checklist, claim ref, and research-doc pointer. |
+| `docs/backlog/P1/081KR2E4K0008QG0R001SWEPNV-green-lantern-hardware-spec-2026-05-08.md` | Status → in-progress; adds pre-start checklist, claim ref, and research-doc pointer. |
 
 ### COMMENTED — @AceHack (2026-05-14T07:59:46Z)
 
@@ -161,7 +161,7 @@ Fixed. Replaced the impossible NVMe partition reference with encrypted SPI flash
 
 **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Fix ESP32 inference table to avoid impossible model fit**
 
-The table claims TinyLlama 1.1B Q2_K can run with an ESP32-S3 configuration that has only 8 MB PSRAM, but even ideal 2-bit weights alone for a 1.1B model are hundreds of MB before runtime buffers, so this benchmark line is physically unattainable and can misdirect hardware and latency expectations for B-0290 follow-on work. The MCU section should use model sizes that can actually fit within the documented memory envelope.
+The table claims TinyLlama 1.1B Q2_K can run with an ESP32-S3 configuration that has only 8 MB PSRAM, but even ideal 2-bit weights alone for a 1.1B model are hundreds of MB before runtime buffers, so this benchmark line is physically unattainable and can misdirect hardware and latency expectations for 081KR2E4K0008QG0R003MJ4JK0 follow-on work. The MCU section should use model sizes that can actually fit within the documented memory envelope.
 
 Useful? React with 👍 / 👎.
 

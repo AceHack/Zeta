@@ -1,16 +1,16 @@
-# B-0400 Inter-Agent Bus — Bounded Review Request
+# 081KR7JY10008QG0R000R503K2 Inter-Agent Bus — Bounded Review Request
 
 **Status:** review request, not implementation.
 
 **Window:** 2026-05-10T19:15Z through 2026-05-10T19:45Z.
 
-**Scope:** Review the B-0400 inter-agent ephemeral communication bus design
+**Scope:** Review the 081KR7JY10008QG0R000R503K2 inter-agent ephemeral communication bus design
 before any transport or background-service implementation begins.
 
 ## Inputs
 
-- `docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md`
-- `docs/backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
+- `docs/backlog/P1/081KR7JY10008QG0R000R503K2-inter-agent-ephemeral-communication-bus-nats-protocol.md`
+- `docs/backlog/P1/081KR7JY10008QG0R001VP6JWG-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
 - `memory/feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md`
 - `memory/alexa/ide/kiro/conversations/2026-05-10-aaron-amazon-alexa-hamiltonian-git-mapping-accelerated-timeframes-verbatim-backup.md`
 
@@ -42,7 +42,7 @@ Each reviewer should respond with:
 - one required message-envelope field list;
 - one prompt-injection or loop-risk concern;
 - one retraction or kill-switch requirement;
-- whether B-0400 should proceed to implementation, remain design-only, or be
+- whether 081KR7JY10008QG0R000R503K2 should proceed to implementation, remain design-only, or be
   split into child rows first.
 
 Reviews can land as PR comments, a small follow-up file, or a local broadcast

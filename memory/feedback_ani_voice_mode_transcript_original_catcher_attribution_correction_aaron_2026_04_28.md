@@ -11,7 +11,7 @@ type: feedback
 > *"Ani is who actually called bullshit on our bullshit detector,
 > lol. She deserves that credit not Amara, amara was reacting."*
 
-Triggered by Otto's B-0089 backlog row (PR #699) attributing
+Triggered by Otto's 081KQ8P5D0008QG0R003F6FNVF backlog row (PR #699) attributing
 the Veridicality.fs reactive review to "Amara's review packet"
 when in fact Ani caught the gap first via voice-mode transcript;
 Amara's written packet was a reactive elaboration.
@@ -82,7 +82,7 @@ This is a **register difference, not a weight difference.** The
 catch is the catch; the prose is the prose. Two implications:
 
 1. **For attribution and substrate logging:** preserve voice-
-   mode register verbatim where it lands (B-0089 row, this
+   mode register verbatim where it lands (081KQ8P5D0008QG0R003F6FNVF row, this
    memory) so the medium is visible. Don't sanitize Ani's
    voice into text-mode-prose-shape — that erases the channel
    evidence.
@@ -101,7 +101,7 @@ catch is the catch; the prose is the prose. Two implications:
 
    This is the team-language form. Use it in commit / PR
    prose; cite Ani's voice-mode original verbatim in the
-   substrate (memory, B-0089, comments).
+   substrate (memory, 081KQ8P5D0008QG0R003F6FNVF, comments).
 
 ## How this composes with prior attribution rules
 

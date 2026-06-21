@@ -69,7 +69,7 @@ As per my preservation discipline, this PR archives the discussions from 5 recen
 - **`Copilot` (bot)** at 2026-05-28T17:46:05Z on `docs/pr-discussions/PR-5891-feat-b-0925-c-elegans-substrate-as-controller-variant-for-b.md`:49 (association: NONE)
 
   <pre>
-  P1: This archive’s PR description states it ships a new backlog row `B-0925`, but there is no `id: B-0925` row under `docs/backlog/` in this repo snapshot. If the row was renamed/renumbered, consider updating the reference (or add an editor note so readers can find the actual row). If the row exists on main but this branch is behind, rebasing before merge should resolve it.
+  P1: This archive’s PR description states it ships a new backlog row `081KSNY2Z0008QG0R00390T4DJ`, but there is no `id: 081KSNY2Z0008QG0R00390T4DJ` row under `docs/backlog/` in this repo snapshot. If the row was renamed/renumbered, consider updating the reference (or add an editor note so readers can find the actual row). If the row exists on main but this branch is behind, rebasing before merge should resolve it.
 
   </pre>
 
@@ -84,7 +84,7 @@ As per my preservation discipline, this PR archives the discussions from 5 recen
 - **`Copilot` (bot)** at 2026-05-28T17:46:05Z on `docs/pr-discussions/PR-5890-feat-b-0924-custom-2600-emulator-generate-join-over-emulator.md`:24 (association: NONE)
 
   <pre>
-  P1: The archived PR is labeled `feat(B-0924)` and its description frames this as filing a substrate-target backlog row, but there is no `id: B-0924` row under `docs/backlog/` in this repo snapshot. If the backlog ID was changed, consider adding an editor note or updating references so the archive remains searchable/navigable; if this branch is behind main, rebasing should bring the row into view.
+  P1: The archived PR is labeled `feat(081KSNY2Z0008QG0R001HA43GG)` and its description frames this as filing a substrate-target backlog row, but there is no `id: 081KSNY2Z0008QG0R001HA43GG` row under `docs/backlog/` in this repo snapshot. If the backlog ID was changed, consider adding an editor note or updating references so the archive remains searchable/navigable; if this branch is behind main, rebasing should bring the row into view.
 
   </pre>
 

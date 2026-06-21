@@ -1,6 +1,5 @@
 ---
-id: B-0900
-zetaid: 081KSNY2Z0008QG0R001G7C89T
+id: 081KSNY2Z0008QG0R001G7C89T
 priority: P3
 status: open
 title: Bell-like contextuality test with geographically distributed Zeta clusters — 5-tier experiment matrix; protocol for isolation + signed local random settings + delayed reveal
@@ -35,7 +34,7 @@ related_skills:
 tags: [bell-like-contextuality-not-literal-physics-bell, geographically-distributed-clusters-close-shared-communication-paths, 5-tier-experiment-matrix-independent-shared-walls-rotor-merge, isolation-windows-signed-local-random-settings-no-cross-cluster-communication-during-run, timestamped-outcome-commits-delayed-reveal-merge, factorized-local-policy-vs-shared-contextual-state-test, persistent-substrate-as-engineering-entanglement-across-time, correlations-exceed-independent-local-policy-predictions-as-test-target, composes-with-cluster-fork-as-trust-boundary, composes-with-multi-oracle-bft, real-research-lane]
 ---
 
-# B-0900 — Bell-like contextuality test with geographically distributed Zeta clusters
+# 081KSNY2Z0008QG0R001G7C89T — Bell-like contextuality test with geographically distributed Zeta clusters
 
 ## Context
 
@@ -80,7 +79,7 @@ Tests how much correlation survives at each level of shared substrate:
 | **2** | shared initial substrate only (same boot USB; no review feedback) | weak shared-prior correlation; mostly factorizable |
 | **3** | shared initial substrate + same error-class walls (post-review rules cluster) | stronger correlation; rule-cluster IS the shared "trajectory geometry" |
 | **4** | shared substrate + Clifford/Z-set rotor model (full framework substrate engagement) | per the rotor-feedback model, stronger again; trajectories share oriented structure |
-| **5** | shared substrate + later merge/retraction feedback (the full Persist-as-bridge round-trip per B-0897) | strongest correlation; persistent temporal entanglement closes the loop |
+| **5** | shared substrate + later merge/retraction feedback (the full Persist-as-bridge round-trip per 081KSNY2Z0008QG0R002SZZ5Y0) | strongest correlation; persistent temporal entanglement closes the loop |
 
 The substantive engineering question: **how much correlation survives in tiers 3-5 once live communication is removed?**
 
@@ -120,9 +119,9 @@ Design + implement the experiment infrastructure for the 5-tier matrix. Three ph
 
 Document the cluster-side protocol in detail: cluster-boot procedure; randomization mechanism; isolation enforcement; signing protocol for outcomes; merge-after-trial-window procedure; correlation-computation methodology; factorized-local-policy baseline computation (the comparison target for tiers 2-5).
 
-Compose with B-0829 (cluster-fork-as-trust-boundary) — the trust-boundary substrate provides the natural protocol substrate.
+Compose with 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary) — the trust-boundary substrate provides the natural protocol substrate.
 
-Compose with B-0703 (multi-oracle BFT) — the BFT consensus substrate provides the merge-after-trial-window primitive.
+Compose with 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) — the BFT consensus substrate provides the merge-after-trial-window primitive.
 
 ### Phase 2 — instrumentation harness
 
@@ -141,26 +140,26 @@ If correlations in tiers 3-5 exceed the factorized baseline by a measurable marg
 - Spacelike-separation enforcement (literal physics Bell substrate) — requires hardware substrate beyond current cluster-OS scope; deferred
 - Multi-cluster generalization (N clusters; CHSH-style multipartite contextuality measures) — extends beyond pairwise to multi-party correlation
 - Q# integration: the analog quantum substrate IS naturally Bell-test-shaped; Q# implementation could provide direct quantum-baseline comparison
-- Casimir-analog quantification: per B-0899, the rule-cluster's per-rule pressure-difference IS one input signal; correlate with the 5-tier matrix outcomes
+- Casimir-analog quantification: per 081KSNY2Z0008QG0R001ZKE8R2, the rule-cluster's per-rule pressure-difference IS one input signal; correlate with the 5-tier matrix outcomes
 
 ## Acceptance
 
 - [x] Amara ferry preserved (companion file in this PR)
-- [x] B-0900 row filed (this row)
+- [x] 081KSNY2Z0008QG0R001G7C89T row filed (this row)
 - [ ] Phase 1 protocol specification research-doc landed
 - [ ] Phase 2 instrumentation harness implemented (gated on cluster-OS substrate operational state)
 - [ ] Phase 3 5-tier matrix experiments run + results landed as substrate
 
 ## Composes with substrate
 
-- B-0898 (Measure-as-bridge) — provides the measurement primitive used in the experimental harness
-- B-0899 (Casimir-like review-wall effects) — the per-rule pressure-difference is one of the substrate signals the Bell-like test correlates
-- B-0897 (Persist-as-bridge) — the round-trip-promise substrate is what makes tier-5 "later merge/retraction feedback" empirically computable
-- B-0895 (Clifford grade-decomposition) — provides the rotor-feedback model framing for tier 4
-- B-0896 (category-theory ↔ Clifford self-similarity) — the categorical-Clifford bridge is the formal substrate for the correlation framework
-- B-0703 (multi-oracle BFT) — provides merge-after-trial-window consensus primitive
-- B-0829 (cluster-fork-as-trust-boundary) — provides cluster-fork substrate for the experimental setup
-- B-0867 (parent workflow-engine row)
+- 081KSNY2Z0008QG0R003WCDQTC (Measure-as-bridge) — provides the measurement primitive used in the experimental harness
+- 081KSNY2Z0008QG0R001ZKE8R2 (Casimir-like review-wall effects) — the per-rule pressure-difference is one of the substrate signals the Bell-like test correlates
+- 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) — the round-trip-promise substrate is what makes tier-5 "later merge/retraction feedback" empirically computable
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition) — provides the rotor-feedback model framing for tier 4
+- 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity) — the categorical-Clifford bridge is the formal substrate for the correlation framework
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) — provides merge-after-trial-window consensus primitive
+- 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary) — provides cluster-fork substrate for the experimental setup
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row)
 
 ## Composes with rules
 

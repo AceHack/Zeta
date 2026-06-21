@@ -38,7 +38,7 @@ Tick 2026-05-14T21:28Z shard. End-to-end verification that the audit-driven loop
 All three ID-integrity classes report 0 issues. End-to-end loop closed:
 
 1. **Tick 2113Z** ([#3250](https://github.com/Lucent-Financial-Group/Zeta/pull/3250)) — added duplicate-ID audit class
-2. **Tick 2123Z** ([#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253)) — fixed the broken-composes_with finding it surfaced (filed B-0461)
+2. **Tick 2123Z** ([#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253)) — fixed the broken-composes_with finding it surfaced (filed 081KRHWGX0008QG0R000JMEYBH)
 3. **Tick 2128Z** (this) — verified main reports 0 across all three classes
 
 ## Session running tally: 22 merged + 1 wait-ci
@@ -71,7 +71,7 @@ Plus [#3256](https://github.com/Lucent-Financial-Group/Zeta/pull/3256) (shard 21
 
 ## Prior-tick PRs merged this batch
 
-- [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253) → `54236b4` (B-0461 filing)
+- [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253) → `54236b4` (081KRHWGX0008QG0R000JMEYBH filing)
 
 ## Test plan
 
@@ -144,7 +144,7 @@ This row makes the session tally internally inconsistent: the lane says 9 merged
 
 **@copilot-pull-request-reviewer** (2026-05-14T21:33:17Z):
 
-This is written as a path, but `docs/backlog/P3/B-0519-*.md` is not an actual file, so the cross-reference is not navigable. There is a single concrete matching row (`docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md`); use that filename instead so future readers can jump to the cited substrate.
+This is written as a path, but `docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-*.md` is not an actual file, so the cross-reference is not navigable. There is a single concrete matching row (`docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md`); use that filename instead so future readers can jump to the cited substrate.
 
 ## General comments
 
@@ -154,6 +154,6 @@ Addressed all three reviewer findings:
 
 1. **Tick-shard count 9→10** (threads by chatgpt-codex-connector + copilot): The PR list had 10 entries (#3231, #3233, #3237, #3240, #3245, #3246, #3248, #3249, #3251, #3252). The running total of 22 is only consistent with count=10 (5+1+10+2+1+2+1=22). Fixed count and removed the trailing "(10)" annotation.
 
-2. **Exact filename for B-0519** (thread by copilot): Replaced glob `B-0519-*.md` with `B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md` so the cross-reference is directly navigable.
+2. **Exact filename for 081KRHWGX0008QG0R001HMWM1W** (thread by copilot): Replaced glob `081KRHWGX0008QG0R001HMWM1W-*.md` with `081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md` so the cross-reference is directly navigable.
 
 All threads resolved; changes pushed in 6fc2b026.

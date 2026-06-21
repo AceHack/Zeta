@@ -1,6 +1,5 @@
 ---
-id: B-0940
-zetaid: 081KSV2WD0008QG0R0028NY0MV
+id: 081KSV2WD0008QG0R0028NY0MV
 priority: P2
 status: open
 title: Evaluate what Ubuntu support brings us — NixOS is primary; Ubuntu's value is community/contributor reach
@@ -17,7 +16,7 @@ tags: [install-sh, nixos, ubuntu, ci, docker, three-way-parity, strategic]
 type: evaluation
 ---
 
-# B-0940 — Evaluate what Ubuntu support brings us (NixOS primary)
+# 081KSV2WD0008QG0R0028NY0MV — Evaluate what Ubuntu support brings us (NixOS primary)
 
 ## Origin
 

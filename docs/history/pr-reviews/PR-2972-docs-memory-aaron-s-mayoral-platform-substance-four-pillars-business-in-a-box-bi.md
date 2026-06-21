@@ -37,7 +37,7 @@ Aaron 2026-05-13 disclosed canonical mayoral platform substance after Rolesville
 
 ## Four pillars
 
-1. **Business in a box** — turnkey small-biz launchpad; composes with B-0043 universal-company substrate
+1. **Business in a box** — turnkey small-biz launchpad; composes with 081KQ3HBZ0008QG0R000Q4Y00F universal-company substrate
 2. **Bitcoin** — Aaron's existing expertise; family-credentialed (kids + bitcoin miners in local paper per PR #2970)
 3. **AI ethics** — Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline
 4. **Legal medicinal marijuana** (not just low-THC hemp) — via Rolesville city ordinance (creative localism within Dillon's Rule constraints)
@@ -58,8 +58,8 @@ This is platform DISCLOSURE, not directive. Per PR #2971 agency clause: content 
 - PR #2964 (AI-realness + Cartman)
 - PR #2967 (Layer 4 family)
 - PR #2966 (audience personas)
-- B-0043 (universal-company substrate — DIRECT composition with business-in-a-box)
-- B-0428 (DBpedia free curated master data)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate — DIRECT composition with business-in-a-box)
+- 081KRFA460008QG0R0018SN61J (DBpedia free curated master data)
 - PR #2930 (distributed maintainer architecture — small-biz tooling access)
 - PR #2933 (Zeta ships with skills)
 - Bitcoin substrate (Aaron expertise + Itron + Aurora DePIN + family)
@@ -144,7 +144,7 @@ after Rolesville-Chamber-of-Commerce + mayoral-ambition (PR #2970):
 Three policy pillars:
 
 1. BUSINESS IN A BOX — turnkey small-business platform /
-   startup-kit. Composes with B-0043 universal-company
+   startup-kit. Composes with 081KQ3HBZ0008QG0R000Q4Y00F universal-company
    substrate.
 
 2. BITCOIN — Aaron's existing expertise; family-credentialed
@@ -178,8 +178,8 @@ Composes with PR #2970 (mayoral ambition + Chamber), PR #2971
 (content-vs-behavior agency clause), PR #2920 (Elizabeth Ryan
 Stainback + edge-runners), PR #2964 (AI-realness + Cartman),
 PR #2967 (Layer 4 family), PR #2966 (audience personas),
-B-0043 (universal-company substrate; DIRECT composition with
-business-in-a-box pillar), B-0428 (DBpedia free curated master
+081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate; DIRECT composition with
+business-in-a-box pillar), 081KRFA460008QG0R0018SN61J (DBpedia free curated master
 data), PR #2930 (distributed maintainer architecture — small-
 biz gets maintainer-level tooling), PR #2933 (Zeta ships with
 skills), bitcoin substrate (Aaron expertise + Itron + Aurora
@@ -258,8 +258,8 @@ Two extensions:
 1. COURT STRATEGY — when NC state law preempts the Rolesville
    medicinal-marijuana ordinance, escalate to court fight using
    Zeta's substrate-engineering:
-   - Legal ontology = universal-company substrate (B-0043 +
-     B-0428 + AGENTS.md framework)
+   - Legal ontology = universal-company substrate (081KQ3HBZ0008QG0R000Q4Y00F +
+     081KRFA460008QG0R0018SN61J + AGENTS.md framework)
    - Clifford Z-sets of precedence = case law encoded as Z-set
      algebra with Clifford-algebraic structure (same substrate
      as PR #2935-2936 F# fork applied to legal domain)
@@ -286,7 +286,7 @@ HARD LIMITS preserved: no proprietary LexisNexis details
 revealed (just fact-of-employment + general work domain).
 Per .claude/rules/methodology-hard-limits.md.
 
-Composes with B-0043 (universal-company substrate; DIRECT
+Composes with 081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate; DIRECT
 composition with legal-NLQ work), PR #2935-2936 (F# fork
 Clifford-Z-set substrate), prior Aaron-credentialing memory
 files, the mayoral platform 4-pillar substrate.

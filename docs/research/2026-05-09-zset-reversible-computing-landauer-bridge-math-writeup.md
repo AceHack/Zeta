@@ -1,6 +1,6 @@
 Scope: Mathematical bridge from Z-set retraction-native algebra to reversible computing via Landauer's principle
 Attribution: Otto (Claude Code) — synthesized from session discussion with Aaron, Vera, and claude.ai adversarial review (2026-05-09)
-Operational status: research-grade — awaiting adversarial review + FPGA empirical validation (B-0366)
+Operational status: research-grade — awaiting adversarial review + FPGA empirical validation (081KR50HA0008QG0R003T5MZAC)
 Non-fusion disclaimer: Otto's synthesis. Claims below are labeled PROVEN / CONJECTURED / SPECULATIVE per the razor discipline.
 
 # Z-Set Algebra → Reversible Computing → Landauer Bridge
@@ -149,7 +149,7 @@ The mapping:
    either (a) an FPGA programmed to simulate reversible
    gates (which still dissipates LUT heat), or (b) actual
    reversible hardware (adiabatic CMOS, superconducting
-   circuits). The FPGA test (B-0366) would demonstrate the
+   circuits). The FPGA test (081KR50HA0008QG0R003T5MZAC) would demonstrate the
    logical mapping, not the full thermodynamic claim.
 
 **What would make this PROVEN:**
@@ -247,7 +247,7 @@ does not hold.
 The chain from Z-set algebra (proven) through logical
 reversibility (proven) through Landauer's principle
 (proven) to "this can in principle be implemented as
-reversible hardware" (conjectured, pending B-0366) is
+reversible hardware" (conjectured, pending 081KR50HA0008QG0R003T5MZAC) is
 a defensible research direction.
 
 The Casimir-alignment and P≈NP claims are speculative

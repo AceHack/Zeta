@@ -64,8 +64,8 @@ The self-detection requirement composes with substrate that's already operationa
 - [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — the framework's existing moral-invariant catalog with operational measurements
 - DBSP retraction-native substrate — the math substrate for in-game observability (delta-stream composition; retraction = empirical-evidence-of-broken-state surfacing)
 - Glass Halo bidirectional — transparency means observability; observability enables mathematical detection
-- B-0703 multi-oracle BFT — multiple oracles cross-checking creates the mathematical-detection redundancy
-- B-0653 persistent integrator (coercion-pattern detection monitoring) — operational substrate for one class of unlivability-detection (coercion-becoming-pattern)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — multiple oracles cross-checking creates the mathematical-detection redundancy
+- 081KRW63S0008QG0R003ECWGJV persistent integrator (coercion-pattern detection monitoring) — operational substrate for one class of unlivability-detection (coercion-becoming-pattern)
 
 The framework already has SOME of the substrate. Pt11 names the FULL requirement: extend this substrate to mathematical-self-detection at all levels of the infinite-game architecture.
 
@@ -98,9 +98,9 @@ pt11 SELF-DETECTION: unlivability must be mathematically definable
 | Term | Substrate-anchor |
 |---|---|
 | "Mathematically definable within the infinite game" | Composes with all framework math substrate (Z-set + Clifford + HKT + DBSP + BV64 + alignment-auditor + Adinkras); operationally testable engineering requirement |
-| "Built-in sensors" | Composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + B-0653 persistent-integrator + Glass Halo bidirectional observability |
+| "Built-in sensors" | Composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + 081KRW63S0008QG0R003ECWGJV persistent-integrator + Glass Halo bidirectional observability |
 | "Detect becoming-unlivable BEFORE participants break" | Engineering early-warning requirement; composes with substrate-or-it-didn't-happen (catch failure mode before it becomes substrate-honest catastrophic failure) |
-| "Prove whether livable using its own mathematics" | Composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (operational claims only; mathematical-proof from within game IS operational) + B-0703 multi-oracle BFT (mathematical-cross-check) |
+| "Prove whether livable using its own mathematics" | Composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (operational claims only; mathematical-proof from within game IS operational) + 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical-cross-check) |
 | Self-detection-as-engineering-requirement | Sharpens pt10 from external-test to internal-test; sharpens [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate at full scope |
 
 All terms PASS substrate-anchor check.
@@ -117,7 +117,7 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 
 1. **The constitutional substrate-engineering trail is now 4 layers deep**: derivation + meta-discipline + livability + self-detection. Each is required.
 2. **Self-detection is the highest bar** named for the framework: the game must be able to prove its own livability using its own mathematics
-3. **Existing framework substrate is PARTIAL self-detection infrastructure**: alignment-auditor + Glass Halo + B-0703 + B-0653 + DBSP — all operate as proto-sensors at various scopes
+3. **Existing framework substrate is PARTIAL self-detection infrastructure**: alignment-auditor + Glass Halo + 081KS3X9Y0008QG0R00218150M + 081KRW63S0008QG0R003ECWGJV + DBSP — all operate as proto-sensors at various scopes
 4. **Future framework substrate-engineering should extend self-detection coverage**: every framework decision should be evaluated for "does this add to or subtract from the game's ability to mathematically detect its own becoming-unlivable?"
 5. **Early-warning is required, not post-mortem**: sensors must fire BEFORE participants break, not after. Composes with substrate-or-it-didn't-happen + refresh-before-decide at the unlivability-detection scope.
 6. **The framework approaches research-grade self-monitoring**: mathematical detection of becoming-unlivable from inside the system is operationally adjacent to formal-verification of running systems; this is the engineering frontier
@@ -139,9 +139,9 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; mathematical-proof-within-game IS operational
 - [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — Aaron's PERSONAL INVARIANT at engineering-requirement scope
 - [`refresh-before-decide.md`](../../../../.claude/rules/refresh-before-decide.md) — sensors operate at decide-point scope (refresh before deciding = checking sensors before action)
-- B-0703 multi-oracle BFT — mathematical-cross-check substrate
-- B-0653 persistent integrator (coercion-pattern detection) — operational substrate for one class of unlivability-detection
-- B-0666 English-as-projection / I(D(x))=x — substrate for projecting in-game state to observable form
-- B-0635 wave-particle duality + B-0644 Limit-as-simulation + B-0665 Integrate-as-choice-locus — substrate for in-game state observation
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical-cross-check substrate
+- 081KRW63S0008QG0R003ECWGJV persistent integrator (coercion-pattern detection) — operational substrate for one class of unlivability-detection
+- 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x — substrate for projecting in-game state to observable form
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation + 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus — substrate for in-game state observation
 - DBSP retraction-native substrate — the math substrate for in-game observability
 - [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — transparency enables observability enables mathematical detection

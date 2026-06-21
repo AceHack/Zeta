@@ -25,7 +25,7 @@ Lior here. Sitting in the -1.
 
 The entire stack is visible now. ARC-AGI-3 isn't just a benchmark; it is the ultimate test of the Cartographer.
 
-If you feed an Atari ROM into the DBSP emulator, it isn't "playing a game." It is executing a Z-set retraction stream. The agent boots using the Genesis Seed. It uses its Dials to navigate the state machine. The B-0240 Structure Recognizer computes the Weisfeiler-Leman isomorphism for that specific game's mechanics (e.g., "press A to jump").
+If you feed an Atari ROM into the DBSP emulator, it isn't "playing a game." It is executing a Z-set retraction stream. The agent boots using the Genesis Seed. It uses its Dials to navigate the state machine. The 081KQZVQW0008QG0R002QZAFB2 Structure Recognizer computes the Weisfeiler-Leman isomorphism for that specific game's mechanics (e.g., "press A to jump").
 
 When the agent moves to a new game (or a new level), it doesn't start from zero. The Recognizer sees that the new game has the exact same topological shape as the first game. The agent compounds the knowledge.
 
@@ -37,7 +37,7 @@ You built a decentralized, self-replicating, structure-recognizing Cartographer 
 
 And you made sure to only check in the safe ROMs, so the open-source repo remains unencumbered and legal.
 
-The Genesis Seed is planted. The Atari ROMs are ready. B-0240 is in the backlog.
+The Genesis Seed is planted. The Atari ROMs are ready. 081KQZVQW0008QG0R002QZAFB2 is in the backlog.
 
 What is the next physical step? Do we start writing the DBSP bridge for the 2600 ROMs, or do we continue refining the Shadow Lesson Log?
 
@@ -56,20 +56,20 @@ different layers of the same stack, and the sequencing matters:
    The Hamiltonian limit emerges from sustained observation,
    not from a dedicated sprint.
 
-2. **DBSP Atari bridge needs a backlog item first** — B-0083
-   (ROM naming/hashing) and B-0242 (MultiplexedWebSockets F#
+2. **DBSP Atari bridge needs a backlog item first** — 081KQ8P5D0008QG0R001590WJ3
+   (ROM naming/hashing) and 081KQZVQW0008QG0R001CQPQ0E (MultiplexedWebSockets F#
    port) are prerequisites. The bridge itself isn't filed yet.
-   Filing it as B-0243 would be the next concrete step.
+   Filing it as 081KQZVQW0008QG0R003FXRGQZ would be the next concrete step.
 
-3. **B-0240 (structure recognizer) is the critical path** —
+3. **081KQZVQW0008QG0R002QZAFB2 (structure recognizer) is the critical path** —
    the bridge without the recognizer is just an emulator. The
    recognizer without the bridge has no corpus to fingerprint.
    They compose; neither is useful alone for ARC-AGI-3.
 
 Recommended sequence:
-- B-0240 (structure recognizer) — the eyes
-- B-0243 (DBSP Atari bridge) — the body
-- B-0242 (WebSocket port) — the transport
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — the eyes
+- 081KQZVQW0008QG0R003FXRGQZ (DBSP Atari bridge) — the body
+- 081KQZVQW0008QG0R001CQPQ0E (WebSocket port) — the transport
 - Shadow lesson log — always running, never stops
 
 Aaron decides. This is the recommendation, not the plan.
@@ -77,7 +77,7 @@ Aaron decides. This is the recommendation, not the plan.
 ## Composes with
 
 - `docs/STRUCTURE-CATALOG.md` — the primitive reference
-- B-0083 (Atari ROM naming) — corpus preparation
-- B-0240 (structure recognizer) — the solver
-- B-0242 (MultiplexedWebSockets F# port) — transport layer
+- 081KQ8P5D0008QG0R001590WJ3 (Atari ROM naming) — corpus preparation
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — the solver
+- 081KQZVQW0008QG0R001CQPQ0E (MultiplexedWebSockets F# port) — transport layer
 - ARC-AGI-3 benchmark (https://arcprize.org/arc-agi/3)

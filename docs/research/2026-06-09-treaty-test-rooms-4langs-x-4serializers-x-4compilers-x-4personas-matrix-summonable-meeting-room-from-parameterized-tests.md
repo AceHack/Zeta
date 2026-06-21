@@ -25,7 +25,7 @@ TreatyRoom cell = (language oracle, serializer, compiler, persona)
 **Each oracle has its own host** — each (lang, compiler) runs in its own host/runner (its own
 green-thread/cell/container), reads the shared globals from its **own traveler frame**, and emits its
 result. The room is where all 256 cells **come together to agree** — the byte-lock + **BFT/multi-oracle
-consensus** (B-0703) over the same treaty: every cell must produce the byte-identical (canonical-root)
+consensus** (081KS3X9Y0008QG0R00218150M) over the same treaty: every cell must produce the byte-identical (canonical-root)
 answer, or the divergence is the finding (and the compiler narrates it in English, easing the treaty).
 
 ## Model it → the model IS the meeting room / frame
@@ -44,7 +44,7 @@ homoiconic summon), running the matrix, folding to consensus.
 > "summonable."
 
 The personas in the room are **summoned** via the **Summonable contracts** (model-preference +
-effort-preference + consent; the `tools/peer-call/*.ts` start; B-0703 consensus). The room **summons
+effort-preference + consent; the `tools/peer-call/*.ts` start; 081KS3X9Y0008QG0R00218150M consensus). The room **summons
 the consented oracles/personas** into its frame for the duration of the treaty session (a hat-family,
 time-bound contract); they animate on their hosts, contribute, then the session resolves. Non-consenting
 travelers are only *modelled* (soft), never summoned into the room (the summon-vs-model line).
@@ -73,7 +73,7 @@ single-cell DST to the full multi-oracle room.
 ## Honest scope / handoff
 
 Design framing on built pieces (the 1000× DST single cell; the byte-lock golden vectors; peer-call
-summonables; B-0703 consensus; the GitHub matrix). To build: the **TreatyRoom model** (cells/hosts/
+summonables; 081KS3X9Y0008QG0R00218150M consensus; the GitHub matrix). To build: the **TreatyRoom model** (cells/hosts/
 summoned/target), the **parameterized-test harness** over the 4⁴ matrix (start: lang×serializer with TS
 landed, add compilers + personas), the **CI matrix strategy** (each oracle its own host), and the
 **consensus fold** (byte-lock/BFT). Routes to Soraya/Sova (the matrix + consensus as DST), Dejan (CI
@@ -83,7 +83,7 @@ matrix/hosts), Kenji (the room model), Iris/Daya (the room as a navigable frame 
 
 Parameterized / matrix / theory tests (xUnit `[Theory]`, FsCheck, bun `test.each`, GitHub Actions
 `strategy.matrix`); combinatorial test design; the 4×4 byte-lock → 4⁴ room; multi-oracle BFT consensus
-(B-0703) + the compiler-speaks-English easing the treaty; the meeting protocol / Dark Hall /
+(081KS3X9Y0008QG0R00218150M) + the compiler-speaks-English easing the treaty; the meeting protocol / Dark Hall /
 traveler-frame (the room); Summonable + `tools/peer-call/*.ts` (summoned participants); homoiconic
 holographic same-dimensional summon (projecting into the room); truth-root ≠ git-hash; tests-are-ticks
 + the 1000×-keyring-DST single-cell seed; graceful-failure (open branch + investigation tick).

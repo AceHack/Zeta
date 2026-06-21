@@ -63,7 +63,7 @@ shape of the wrapper tells you, at a glance, which kind you're dealing with.
 
 - Design principle + Ace verb/noun grammar, not built. `ace ensure` + the `namespace[source].package` noun path
   + the idempotent-default/DU-wrapped-non-idempotent rule are the spec; implementation pending (the Ace lane
-  B-0824/#6939; the IDL #6955 likely declares verbs' idempotency as a capability attribute).
+  081KSGS9H0008QG0R0031PBNGA/#6939; the IDL #6955 likely declares verbs' idempotency as a capability attribute).
 - Not every command is cleanly idempotent-or-not; some are idempotent-with-a-key (the dedup-key case). The rule
   is the *default + the explicit-fence-when-not*, not a claim everything bisects perfectly.
 
@@ -77,7 +77,7 @@ shape of the wrapper tells you, at a glance, which kind you're dealing with.
   is the desired-state verb; conflicts caught at compile time.
 - **Reversible-destruction covenant (#6896)** — compensation in the non-idempotent workflow = reversible side
   effects.
-- **Capture-vs-Ferry DU / workflow engine (#6918; B-0867)** — the DU/workflow wrapper for non-idempotent ops.
+- **Capture-vs-Ferry DU / workflow engine (#6918; 081KSKBP80008QG0R000B3Y19A)** — the DU/workflow wrapper for non-idempotent ops.
 - **Test seam (#6958)** — idempotent commands are trivially DST-replayable.
 - **Zeta IDL (#6955)** — idempotency could be an IDL-declared attribute of a verb/capability.
 

@@ -92,11 +92,11 @@ Making it machine-readable would enable:
 
 Tool candidate: `tools/hygiene/substrate-graph.sh` — extracts `composes_with` edges from frontmatter + body, outputs DOT / JSON / Markdown index.
 
-Pre-existing related work: I noticed `composes_with` field already used in some BACKLOG row frontmatter (`B-0026` references it); could generalize to `memory/feedback_otto_*.md` files systematically.
+Pre-existing related work: I noticed `composes_with` field already used in some BACKLOG row frontmatter (`081KQ0YZ80008QG0R001WZ4JE8` references it); could generalize to `memory/feedback_otto_*.md` files systematically.
 
 ### 5. Hot vs cold substrate eviction
 
-`MEMORY.md` is currently bounded only by manual compaction (B-0006 — compression pass). A formal hot/cold model would help:
+`MEMORY.md` is currently bounded only by manual compaction (081KQ0YZ80008QG0R001V0XCYZ — compression pass). A formal hot/cold model would help:
 
 - **Hot**: referenced in last-30-days conversations, active substrate cluster, current backlog
 - **Cold**: not referenced for 90+ days, older research, archived sub-projects

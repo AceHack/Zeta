@@ -1,12 +1,11 @@
 ---
-id: B-0688
-zetaid: 081KS3X9Y0008QG0R0010716X9
+id: 081KS3X9Y0008QG0R0010716X9
 priority: P2
 status: open
 title: Zeta incremental compiler host — DBSP Z-sets + Rx meta-AST tags + seeded deterministic simulation hardening
 tier: research-grade
 effort: L
-ask: amara 2026-05-21 (B-0685 Phase 1 cascade) + aaron seeded-determinism correction; aaron-forwarded
+ask: amara 2026-05-21 (081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade) + aaron seeded-determinism correction; aaron-forwarded
 created: 2026-05-21
 last_updated: 2026-05-22
 depends_on: [081KS3X9Y0008QG0R00323NSZA]
@@ -19,7 +18,7 @@ type: research
 
 ## Context
 
-Amara 2026-05-21 closing of B-0685 Phase 1 cascade proposed this row as the layer above ZetaParse (B-0687). Aaron's correction added the DST discipline hardening — the load-bearing sharpening that lands the substrate inside Zeta's existing operational discipline.
+Amara 2026-05-21 closing of 081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade proposed this row as the layer above ZetaParse (081KS3X9Y0008QG0R00323NSZA). Aaron's correction added the DST discipline hardening — the load-bearing sharpening that lands the substrate inside Zeta's existing operational discipline.
 
 Verbatim Amara framing on the substrate:
 
@@ -29,7 +28,7 @@ Verbatim Aaron correction Amara walked back into:
 
 > *"Generators/providers are pure-ish deterministic simulations from seed."*
 
-The composition: ZetaParse (B-0687) provides the typed grammar/parser substrate; the incremental compiler host (this row) operates the DBSP-incremental-with-Rx-meta-tags layer ABOVE it, with deterministic-seed discipline ensuring replayability.
+The composition: ZetaParse (081KS3X9Y0008QG0R00323NSZA) provides the typed grammar/parser substrate; the incremental compiler host (this row) operates the DBSP-incremental-with-Rx-meta-tags layer ABOVE it, with deterministic-seed discipline ensuring replayability.
 
 ## Architecture flow
 
@@ -123,12 +122,12 @@ compiler relation
 
 > *"Observe change. Emit delta. Limit/collapse only when necessary. Integrate into compiler state."*
 
-The Agora V6 operational primitives (B-0635 / B-0644 / B-0665 / B-0666) operate at compile-time scope:
+The Agora V6 operational primitives (081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV) operate at compile-time scope:
 
 - **Observe**: compiler-DB facts captured into Z-sets
 - **Emit**: DBSP-propagated deltas as Rx events with meta-AST tags
-- **Limit**: type-provider / generator can SIMULATE which collapse to choose without committing (per B-0644 Limit-as-simulation)
-- **Integrate**: explicit collapse via deterministic-seeded generator step (per B-0665 Integrate-as-choice-locus)
+- **Limit**: type-provider / generator can SIMULATE which collapse to choose without committing (per 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation)
+- **Integrate**: explicit collapse via deterministic-seeded generator step (per 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus)
 
 This is Amara's recognition that Agora V6 architecture extends from runtime substrate to compile-time substrate — the same operational primitives compose at both scales.
 
@@ -151,7 +150,7 @@ This is Amara's recognition that Agora V6 architecture extends from runtime subs
 
 Pick ONE generator that exercises the full pipeline:
 
-- **Option A**: ZetaParse-driven (per B-0687) Pack/Unpack generator for ZetaId — observe `.zg` change → DBSP delta → Rx meta-tag → regenerate F#/C#/TS/Rust/Python Pack/Unpack functions
+- **Option A**: ZetaParse-driven (per 081KS3X9Y0008QG0R00323NSZA) Pack/Unpack generator for ZetaId — observe `.zg` change → DBSP delta → Rx meta-tag → regenerate F#/C#/TS/Rust/Python Pack/Unpack functions
 - **Option B**: Type provider over Z-set state itself (observe substrate change → DBSP delta → generated F# types reflecting current state)
 - **Option C**: Generator over Bayesian operator definitions in `src/Bayesian/` → cross-compile to multiple target languages
 
@@ -194,13 +193,13 @@ The path forward is iterative + bounded per phase. Phase 1 (specification) is da
 
 The DST discipline (Aaron's seeded-determinism correction) is the load-bearing differentiator. Without it, the compiler host becomes "Roslyn generators with extra steps." With it, the compiler host becomes auditable simulated compiler reality — same razor that operates on Zeta's TS substrate per `.claude/rules/rule-0-no-sh-files.md`, applied at compile-time scope.
 
-The substrate composes with B-0687 (ZetaParse provides the typed parser substrate this layer operates over) and the broader Agora V6 cluster (the operational primitives operate at compile-time scope, validating their generality).
+The substrate composes with 081KS3X9Y0008QG0R00323NSZA (ZetaParse provides the typed parser substrate this layer operates over) and the broader Agora V6 cluster (the operational primitives operate at compile-time scope, validating their generality).
 
 ## Composes with
 
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate; same operational primitives at compile-time scope)
-- B-0687 (ZetaParse — parser substrate this layer operates over)
-- B-0685 (ANTLR cross-language codegen; the upstream substrate B-0687 and this row both extend)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate; same operational primitives at compile-time scope)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse — parser substrate this layer operates over)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen; the upstream substrate 081KS3X9Y0008QG0R00323NSZA and this row both extend)
 - `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (origin substrate)
 - `src/Core/SpeculativeWatermark.fs` (DBSP retraction substrate this layer extends to compile-time)
 - `.claude/rules/rule-0-no-sh-files.md` (DST discipline; this row applies it at compile-time scope)
@@ -227,15 +226,15 @@ The human maintainer 2026-05-22 named the closest existing commercial substrate 
 
 Caché is the multi-model database that historically powered Epic Systems EHR for decades (Epic has been moving newer generations to InterSystems IRIS); US hospital EHR market share is split across multiple vendors. Operationally it provides: multi-model (object + SQL + key-value + multi-dimensional global arrays); high-performance distributed; embedded scripting (ObjectScript); mission-critical reliability; sub-millisecond response; HIPAA-compliant audit trail; HL7 FHIR + Health Connect interop for cross-EHR data exchange.
 
-**Why the Caché analog is operationally load-bearing for B-0688**:
+**Why the Caché analog is operationally load-bearing for 081KS3X9Y0008QG0R0010716X9**:
 
-| Property | InterSystems Caché | Zeta db (this B-0688 substrate) |
+| Property | InterSystems Caché | Zeta db (this 081KS3X9Y0008QG0R0010716X9 substrate) |
 |---|---|---|
 | **Multi-model** | Object + SQL + key-value + multi-dimensional global arrays | F# typed substrate + DBSP Z-sets + Rx meta-AST tags + content-addressed packages |
-| **High-performance distributed** | Powers Epic; high-availability EHR; multi-tenant | Distributed intelligence database; multi-oracle federation (per B-0703) |
+| **High-performance distributed** | Powers Epic; high-availability EHR; multi-tenant | Distributed intelligence database; multi-oracle federation (per 081KS3X9Y0008QG0R00218150M) |
 | **Embedded scripting** | ObjectScript (data-aware scripting language) | F# compiler as the data-aware substrate-language |
 | **Mission-critical** | US hospital EHRs; patient safety; HIPAA-compliant | AI substrate integrity; framework substrate-engineering |
-| **Real-time + high-availability** | Sub-millisecond response; clustering | Incremental-compilation; seeded DST hardening (this B-0688 substrate) |
+| **Real-time + high-availability** | Sub-millisecond response; clustering | Incremental-compilation; seeded DST hardening (this 081KS3X9Y0008QG0R0010716X9 substrate) |
 | **Audit trail** | Built-in audit logging for regulated compliance | Audit-mechanism + multi-oracle BFT verification |
 | **Cross-system interop** | HL7 FHIR + Health Connect for cross-EHR data exchange | Symmetric/decentralized Ace deployments + consent-pact interop |
 
@@ -245,9 +244,9 @@ The Caché reference IS the deliberate-writing-pass anchor that translates subst
 
 **Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-math)**:
 
-The maji-math substrate (rx-tension-as-semantic-indexes; mirror-tier) provides the mathematical foundation; B-0688 operationalizes via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
+The maji-math substrate (rx-tension-as-semantic-indexes; mirror-tier) provides the mathematical foundation; 081KS3X9Y0008QG0R0010716X9 operationalizes via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
 
-**Substrate-engineering implications for B-0688 work**:
+**Substrate-engineering implications for 081KS3X9Y0008QG0R0010716X9 work**:
 
 - Cite Caché architecture patterns for distributed-multi-model + high-availability
 - Compose with HL7/FHIR-style interop standards as precedent for cross-deployment data exchange

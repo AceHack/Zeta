@@ -46,7 +46,7 @@ describe("bus — publish + list", () => {
 
   test("list --topic filters by topic", () => {
     run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
-    run("publish", "--from", "vera", "--to", "otto", "--topic", "claim", "--payload", '{"action":"claim","itemId":"B-0400"}');
+    run("publish", "--from", "vera", "--to", "otto", "--topic", "claim", "--payload", '{"action":"claim","itemId":"081KR7JY10008QG0R000R503K2"}');
 
     const heartbeats = JSON.parse(run("list", "--topic", "heartbeat", "--json").stdout);
     expect(heartbeats).toHaveLength(1);
@@ -54,7 +54,7 @@ describe("bus — publish + list", () => {
 
     const claims = JSON.parse(run("list", "--topic", "claim", "--json").stdout);
     expect(claims).toHaveLength(1);
-    expect(claims[0].payload.itemId).toBe("B-0400");
+    expect(claims[0].payload.itemId).toBe("081KR7JY10008QG0R000R503K2");
   });
 
   test("list --to filters by recipient (includes broadcast)", () => {
@@ -79,14 +79,14 @@ describe("bus — read", () => {
   afterEach(cleanTestDir);
 
   test("read returns a specific message by id", () => {
-    const p = run("publish", "--from", "vera", "--to", "otto", "--topic", "claim", "--payload", '{"action":"claim","itemId":"B-0001"}', "--json");
+    const p = run("publish", "--from", "vera", "--to", "otto", "--topic", "claim", "--payload", '{"action":"claim","itemId":"081KPYCJH0008QG0R003MDS51N"}', "--json");
     const env = JSON.parse(p.stdout);
 
     const r = run("read", env.id, "--json");
     expect(r.exitCode).toBe(0);
     const msg = JSON.parse(r.stdout);
     expect(msg.id).toBe(env.id);
-    expect(msg.payload.itemId).toBe("B-0001");
+    expect(msg.payload.itemId).toBe("081KPYCJH0008QG0R003MDS51N");
   });
 
   test("read unknown id exits 1", () => {
@@ -269,7 +269,7 @@ describe("bus — status", () => {
 
   test("status shows latest heartbeat per agent (deduplicated)", () => {
     run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"idle"}');
-    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"working","note":"on B-0400"}');
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"working","note":"on 081KR7JY10008QG0R000R503K2"}');
     run("publish", "--from", "vera", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
 
     const r = run("status", "--json");
@@ -279,19 +279,19 @@ describe("bus — status", () => {
     expect(out.agents).toHaveLength(2);
     const ottoEntry = out.agents.find((a: { agent: string }) => a.agent === "otto");
     expect(ottoEntry.status).toBe("working");
-    expect(ottoEntry.note).toBe("on B-0400");
+    expect(ottoEntry.note).toBe("on 081KR7JY10008QG0R000R503K2");
     expect(out.totals.agents).toBe(2);
   });
 
   test("status --json includes active claim messages", () => {
     run("publish", "--from", "vera", "--to", "*", "--topic", "claim",
-      "--payload", JSON.stringify({ action: "claim", itemId: "B-0300", branch: "feat/b-0300" }));
+      "--payload", JSON.stringify({ action: "claim", itemId: "081KR2E4K0008QG0R002MFK6AW", branch: "feat/b-0300" }));
 
     const r = run("status", "--json");
     expect(r.exitCode).toBe(0);
     const out = JSON.parse(r.stdout);
     expect(out.claims).toHaveLength(1);
-    expect(out.claims[0].itemId).toBe("B-0300");
+    expect(out.claims[0].itemId).toBe("081KR2E4K0008QG0R002MFK6AW");
     expect(out.claims[0].from).toBe("vera");
     expect(out.claims[0].action).toBe("claim");
     expect(out.claims[0].branch).toBe("feat/b-0300");
@@ -325,12 +325,12 @@ describe("bus — status", () => {
 
   test("status human-readable shows claims section when claims present", () => {
     run("publish", "--from", "riven", "--to", "*", "--topic", "claim",
-      "--payload", JSON.stringify({ action: "claim", itemId: "B-0001" }));
+      "--payload", JSON.stringify({ action: "claim", itemId: "081KPYCJH0008QG0R003MDS51N" }));
 
     const r = run("status");
     expect(r.exitCode).toBe(0);
     expect(r.stdout).toContain("claims:");
-    expect(r.stdout).toContain("B-0001");
+    expect(r.stdout).toContain("081KPYCJH0008QG0R003MDS51N");
     expect(r.stdout).toContain("riven");
   });
 

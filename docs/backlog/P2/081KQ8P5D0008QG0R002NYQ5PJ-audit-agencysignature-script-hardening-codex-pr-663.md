@@ -1,6 +1,5 @@
 ---
-id: B-0079
-zetaid: 081KQ8P5D0008QG0R002NYQ5PJ
+id: 081KQ8P5D0008QG0R002NYQ5PJ
 priority: P2
 status: closed
 title: tools/hygiene/audit-agencysignature-main-tip.ts hardening — 5 Codex findings on PR #663 (sh→ts ported)
@@ -14,7 +13,7 @@ type: friction-reducer
 closed_reason: All findings fixed — 3 by TS port (no subshell, JS Date.parse, multi-trailer regex), 2 by this PR (--max 0 false-PASS, --since unvalidated input)
 ---
 
-# B-0079 — audit-agencysignature-main-tip.sh hardening
+# 081KQ8P5D0008QG0R002NYQ5PJ — audit-agencysignature-main-tip.sh hardening
 
 ## Source
 

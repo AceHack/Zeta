@@ -27,7 +27,7 @@
 
 ## Description
 
-Queue #1: RecordedSource — record/replay any live Source at the membrane; PROVEN scheduler-run-on-live == run-on-replay (DST survives real IO); text codec = the first channel-reliability treaty surface. Queue #2: SoftIsr — SoftValue in the ISR value channel (observeWith commutes under >=>, proven; held distribution = value, annihilation = error). #3: B-1022 FourCorner-port trigger FIRED ('we are the consumer for our treaties') — 4-oracle port + golden vectors queued. 9/9, 0 warnings.
+Queue #1: RecordedSource — record/replay any live Source at the membrane; PROVEN scheduler-run-on-live == run-on-replay (DST survives real IO); text codec = the first channel-reliability treaty surface. Queue #2: SoftIsr — SoftValue in the ISR value channel (observeWith commutes under >=>, proven; held distribution = value, annihilation = error). #3: 081KTQD8A0008QG0R0005EFYPV FourCorner-port trigger FIRED ('we are the consumer for our treaties') — 4-oracle port + golden vectors queued. 9/9, 0 warnings.
 
 ## Outcome
 

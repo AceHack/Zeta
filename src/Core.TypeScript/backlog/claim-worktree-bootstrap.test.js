@@ -4,9 +4,9 @@ function request(overrides = {}) {
     return {
         repoRoot: "/repo/Zeta",
         slug: "backlog-0279",
-        backlogId: "B-0279",
+        backlogId: "081KR2E4K0008QG0R000YTJS3Q",
         scope: "Build claim and worktree bootstrap",
-        durableTarget: "docs/backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md",
+        durableTarget: "docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md",
         paths: ["src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts", "src/Core.TypeScript/backlog/claim-worktree-bootstrap.test.ts"],
         sessionId: "codex/20260508T0529Z-b0279",
         harness: "codex",
@@ -34,18 +34,18 @@ describe("pathsOverlap", () => {
     });
     test("does not confuse sibling prefixes", () => {
         expect(pathsOverlap("src/Core.TypeScript/backlogger/foo.ts", "src/Core.TypeScript/backlog")).toBe(false);
-        expect(pathsOverlap("docs/backlog/P0/B-0279.md", "docs/backlog/P1/B-0279.md")).toBe(false);
+        expect(pathsOverlap("docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q.md", "docs/backlog/P1/081KR2E4K0008QG0R000YTJS3Q.md")).toBe(false);
     });
 });
 describe("findPathOverlaps", () => {
     test("returns all active overlap evidence", () => {
-        const overlaps = findPathOverlaps(["src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts", "docs/backlog/P0/B-0279.md"], [
+        const overlaps = findPathOverlaps(["src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts", "docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q.md"], [
             signal({ source: "origin/claim/a", claim: "a", paths: ["src/Core.TypeScript/backlog/"] }),
-            signal({ source: "heartbeat.json", claim: "b", paths: ["docs/backlog/P0/B-0279.md"] }),
+            signal({ source: "heartbeat.json", claim: "b", paths: ["docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q.md"] }),
         ]);
         expect(overlaps.map((overlap) => overlap.signal.claim)).toEqual(["a", "b"]);
         expect(overlaps[0]?.requestedPath).toBe("src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts");
-        expect(overlaps[1]?.activePath).toBe("docs/backlog/P0/B-0279.md");
+        expect(overlaps[1]?.activePath).toBe("docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q.md");
     });
     test("assertNoPathOverlaps fails closed with concrete evidence", () => {
         expect(() => assertNoPathOverlaps(["src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts"], [signal({ source: "origin/claim/a", claim: "a", paths: ["src/Core.TypeScript/backlog/"] })])).toThrow("active claim/path overlap detected");
@@ -72,8 +72,8 @@ describe("buildBootstrapPlan", () => {
     test("accepts normalized dotted backlog child slugs", () => {
         const plan = buildBootstrapPlan(request({
             slug: "backlog-0164-1",
-            backlogId: "B-0164.1",
-            durableTarget: "docs/backlog/P1/B-0164.1-child-row.md",
+            backlogId: "081KR7JY10008QG0R000MH7PJT",
+            durableTarget: "docs/backlog/P1/081KR7JY10008QG0R000MH7PJT-child-row.md",
         }), "/repo/Zeta/.git");
         expect(plan.branch).toBe("claim/backlog-0164-1");
         expect(plan.claimRelativePath).toBe("docs/claims/backlog-0164-1.md");

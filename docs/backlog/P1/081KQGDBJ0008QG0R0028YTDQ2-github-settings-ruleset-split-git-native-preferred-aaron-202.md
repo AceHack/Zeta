@@ -1,6 +1,5 @@
 ---
-id: B-0155
-zetaid: 081KQGDBJ0008QG0R0028YTDQ2
+id: 081KQGDBJ0008QG0R0028YTDQ2
 priority: P1
 status: open
 title: GitHub settings refactor — split single ruleset into multiple smaller always-on rulesets, prefer git-native over legacy UI/CLI-only settings (Aaron 2026-05-01)
@@ -13,7 +12,7 @@ children: [081KR2E4K0008QG0R001DYEFD7, 081KR2E4K0008QG0R001VZMQBH, 081KR2E4K0008
 type: friction-reducer
 ---
 
-# B-0155 — GitHub settings refactor — ruleset split + git-native preferred
+# 081KQGDBJ0008QG0R0028YTDQ2 — GitHub settings refactor — ruleset split + git-native preferred
 
 ## What
 
@@ -223,9 +222,9 @@ mechanism Aaron's directive flags as "nasty."
 
 ## Composes with
 
-- B-0154 (GitHub Pages for SEO + Wiki first-class; forward-ref to PR #1125 not yet merged on main) — both rows are
+- 081KQGDBJ0008QG0R002NV04N9 (GitHub Pages for SEO + Wiki first-class; forward-ref to PR #1125 not yet merged on main) — both rows are
   GitHub-host-config refactor work; ordering: drift-debt resolved
-  first (PR #1126), then this row, then B-0154's Pages workflow
+  first (PR #1126), then this row, then 081KQGDBJ0008QG0R002NV04N9's Pages workflow
   lands cleanly
 - `memory/feedback_github_settings_as_code_declarative_checked_in_file.md`
   — declarative-config-as-code discipline; this row IS this

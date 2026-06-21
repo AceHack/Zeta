@@ -1,6 +1,5 @@
 ---
-id: B-0180
-zetaid: 081KQNJ500008QG0R0001QHA1J
+id: 081KQNJ500008QG0R0001QHA1J
 priority: P2
 status: open
 title: Fix CircuitRegistration.tla config bug — `.cfg` references invariant `Safety` not defined in `.tla` (blocks B1 → A CI registration)
@@ -41,7 +40,7 @@ The verify-then-claim follow-up tick should pick (1) if the spec has a clear "wh
 
 ## Why this is the smallest of 3 B1 fixes
 
-This is a config-syntax error, not a semantic counterexample. The other two B1 broken specs (B-0179 SpineAsyncProtocol, B-0181 SpineMergeInvariants) require investigating actual counterexamples — substantially harder. This one is bounded to "find the missing operator definition or drop the line."
+This is a config-syntax error, not a semantic counterexample. The other two B1 broken specs (081KQNJ500008QG0R000S68KDE SpineAsyncProtocol, 081KQNJ500008QG0R003DMVGZB SpineMergeInvariants) require investigating actual counterexamples — substantially harder. This one is bounded to "find the missing operator definition or drop the line."
 
 ## After the fix
 
@@ -51,6 +50,6 @@ This is a config-syntax error, not a semantic counterexample. The other two B1 b
 
 ## Composes with
 
-- B-0179 (SpineAsyncProtocol counterexample — sibling B1 issue)
-- B-0181 (SpineMergeInvariants counterexample — sibling B1 issue)
+- 081KQNJ500008QG0R000S68KDE (SpineAsyncProtocol counterexample — sibling B1 issue)
+- 081KQNJ500008QG0R003DMVGZB (SpineMergeInvariants counterexample — sibling B1 issue)
 - Closure of B1 → A in the math-proofs honest assessment requires all 3 sibling fixes

@@ -1,13 +1,12 @@
 ---
-id: B-0485
-zetaid: 081KRHWGX0008QG0R00019453T
+id: 081KRHWGX0008QG0R00019453T
 priority: P1
 status: closed
 closed: 2026-05-14
 closed_by: "docs/research/2026-05-14-persona-mapping-framework-b0485.md"
-title: "B-0429.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate"
+title: "081KRFA460008QG0R002M05EY1.1 — Persona-mapping framework: define per-persona template + audit existing persona substrate"
 type: research
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -26,16 +25,16 @@ composes_with:
   - memory/user_sister_elizabeth.md
 ---
 
-# B-0485 — Persona-mapping framework: template definition + substrate inventory
+# 081KRHWGX0008QG0R00019453T — Persona-mapping framework: template definition + substrate inventory
 
-**Gate row for B-0486..B-0491.** No per-product persona-map work begins until
+**Gate row for 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6.** No per-product persona-map work begins until
 this row closes.
 
 ## Purpose
 
 Define the canonical per-persona capture template and inventory all existing
 persona substrate across the repo. This gives every subsequent product row
-(B-0486..B-0491) a consistent schema and avoids duplicating or contradicting
+(081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6) a consistent schema and avoids duplicating or contradicting
 existing work.
 
 ## Pre-start checklist
@@ -47,7 +46,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [x] Read Imagination Circle substrate (PR #2893) for family-AI personas
 - [x] Read Center-First Playbook (PR #2894) for Mom + family member personas
 - [x] Read parenting-history substrate (PR #2900) for Aaron's kids personas
-- [x] Walk `composes_with:` chain (B-0429 → B-0424 → B-0425)
+- [x] Walk `composes_with:` chain (081KRFA460008QG0R002M05EY1 → 081KRFA460008QG0R001H98EXJ → 081KRFA460008QG0R003JQ46J4)
 - [x] Otto-364: check WONT-DO.md for any refused persona-mapping work
 
 ## Existing persona substrate to inventory
@@ -66,7 +65,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 ## Per-persona capture template (to be defined)
 
 The output of this row is a canonical YAML-frontmatter template plus a short
-markdown body scaffold that every product-persona doc (B-0486..B-0491) will
+markdown body scaffold that every product-persona doc (081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6) will
 use. Minimum fields:
 
 ```yaml
@@ -99,7 +98,7 @@ Containing:
 1. Canonical per-persona template (YAML + markdown scaffold)
 2. Inventory of all existing persona substrate found
 3. Conflicts or gaps identified
-4. Substrate-ready signal: "B-0486..B-0491 can begin"
+4. Substrate-ready signal: "081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 can begin"
 
 ## Definition of done
 
@@ -107,11 +106,11 @@ Containing:
 - [x] All existing persona substrate inventoried (table complete)
 - [x] Conflicts / stale references flagged
 - [x] Output doc committed at canonical path
-- [x] B-0486..B-0491 unblocked (no remaining template ambiguity)
-- [x] B-0485 status set to `closed` with PR link
+- [x] 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 unblocked (no remaining template ambiguity)
+- [x] 081KRHWGX0008QG0R00019453T status set to `closed` with PR link
 
 ## Why P1 / gate
 
-All six per-product rows (B-0486..B-0491) depend on a consistent template.
-Without it, per-product docs will diverge in schema, making B-0492
+All six per-product rows (081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6) depend on a consistent template.
+Without it, per-product docs will diverge in schema, making 081KRHWGX0008QG0R000WGP5AQ
 (cross-product synthesis) expensive to merge.

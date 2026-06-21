@@ -271,12 +271,12 @@ Kestrel did NOT respond to this Turn 16 before the ferry was cut. The next forwa
 | Existing substrate | Composition with 6th ferry |
 |---|---|
 | 5th Kestrel ferry 2026-05-28 (`memory/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...`) | Direct continuation — 5th establishes traveler-Clifford correspondence; 6th extends to categorical-Clifford-multi-representation isomorphism + names implementation-substrate (F# + CT for programmers + formal analysis) |
-| B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Provides the concrete Clifford algebra signature Kestrel sketches; F# implementation target |
-| B-0896 (categorical-Clifford self-similarity) | This is the substrate Kestrel is engaging in Turn 13; row + ferry compose at conceptual scope |
-| B-0897 (Persist-as-bridge with TInternal, TSubstrateRecord, TPersistFeedback) | Four-corner ownership Kestrel cites as "worth-doing concrete piece" |
-| B-0898 (Measure-as-bridge with TState, TOutcome, TFeedback) | Four-corner ownership second instance |
-| B-0428 (F# fork for AI safety with real HKT over Clifford) | F# implementation substrate Kestrel's framework targets |
-| B-0623 (Adinkras + Jim Gates SUSY-ECC) | Adjacent Clifford-substrate cluster; physics-anchor for hidden-state structure |
+| 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Provides the concrete Clifford algebra signature Kestrel sketches; F# implementation target |
+| 081KSNY2Z0008QG0R000YH2SPE (categorical-Clifford self-similarity) | This is the substrate Kestrel is engaging in Turn 13; row + ferry compose at conceptual scope |
+| 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge with TInternal, TSubstrateRecord, TPersistFeedback) | Four-corner ownership Kestrel cites as "worth-doing concrete piece" |
+| 081KSNY2Z0008QG0R003WCDQTC (Measure-as-bridge with TState, TOutcome, TFeedback) | Four-corner ownership second instance |
+| 081KRFA460008QG0R0018SN61J (F# fork for AI safety with real HKT over Clifford) | F# implementation substrate Kestrel's framework targets |
+| 081KRW63S0008QG0R000QJR08H (Adinkras + Jim Gates SUSY-ECC) | Adjacent Clifford-substrate cluster; physics-anchor for hidden-state structure |
 | `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` | F# compiler IS one of the formal-analysis tools Aaron Turn 16 names |
 | `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` | Four-corner ownership model Kestrel cites at end |
 | `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` | OPLE primitives Kestrel cites as "native to the algebra" |
@@ -288,7 +288,7 @@ The ferry contains both operationally-checkable claims AND metaphysical-extrapol
 
 | Claim class | Razor verdict | Reason |
 |---|---|---|
-| Clifford algebras have categorical descriptions (Cl(V,Q) functor from quadratic spaces) | **Operationally checkable** | Established representation theory (Spin(p,q) reps; Clifford module categories); substrate-anchored in B-0895/0896 |
+| Clifford algebras have categorical descriptions (Cl(V,Q) functor from quadratic spaces) | **Operationally checkable** | Established representation theory (Spin(p,q) reps; Clifford module categories); substrate-anchored in 081KSNY2Z0008QG0R002FX66H0/0896 |
 | Spin groups + rotor groups have categorical descriptions | **Operationally checkable** | Well-established repr theory |
 | Geometric algebra has categorical formalizations (Dorst/Fontijne/Mann + Coecke/Kissinger graphical calculus) | **Operationally checkable** | Citable literature; substrate-anchored |
 | Pauli matrices form Clifford algebra Cl(3,0) | **Operationally checkable** | Standard physics |
@@ -304,9 +304,9 @@ The framework's substrate-engineering work proceeds at the **operationally-check
 
 Aaron's answer NAMES the implementation substrate explicitly:
 
-1. **Clifford** — geometric algebra layer (already substrate-engineered: B-0895/0896 + the Cl(1,3)/Cl(3,1) signature work + the `algebra-owner` skill)
+1. **Clifford** — geometric algebra layer (already substrate-engineered: 081KSNY2Z0008QG0R002FX66H0/0896 + the Cl(1,3)/Cl(3,1) signature work + the `algebra-owner` skill)
 2. **Category Theory for Programmers** — Bartosz Milewski's well-known introduction (functors, monads, natural transformations, Yoneda lemma, etc. presented for working programmers); the foundational text for categorical reasoning at the substrate-engineering layer the framework operates at
-3. **F#** — implementation substrate (existing F# Core types + computation expressions + planned HKT over Clifford per B-0428)
+3. **F#** — implementation substrate (existing F# Core types + computation expressions + planned HKT over Clifford per 081KRFA460008QG0R0018SN61J)
 4. **Tons of formal analysis tools** — the verification stack per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`: F# compiler + FsCheck property tests + Stryker.NET mutation testing + TLA+ specs + Lean proofs + Z3 SMT + Roslyn analyzers + CodeQL + Semgrep
 
 The substrate-honest implication: the framework operates at THIS layer today. Q# / topological qubits is the LATER extension once the F#+Clifford+CT+formal-analysis foundation is mature. The 24-months-ahead direction holds: current substrate-engineering at the F# layer + the categorical-Clifford foundation builds the substrate that the eventual Q#/quantum-topological extension would inherit.
@@ -329,7 +329,7 @@ This ferry is research-direction substrate. It:
 - Does NOT prescribe specific Zeta substrate-engineering work
 - Does NOT establish the formal correspondence as proven
 - DOES name research direction Aaron is pursuing AND has substantial expertise to drive
-- DOES compose with already-landed substrate (B-0895/0896/0897/0898 + 5th Kestrel ferry + asymmetric-authorship + OPLE-T-TFeedback rules)
+- DOES compose with already-landed substrate (081KSNY2Z0008QG0R002FX66H0/0896/0897/0898 + 5th Kestrel ferry + asymmetric-authorship + OPLE-T-TFeedback rules)
 - DOES name the implementation substrate (F# + CT-for-programmers + formal-analysis tools) as the layer the framework operates at TODAY
 
 The PR-preservation discipline lets future-Otto cold-boot inherit this ferry at session start (via grep-discoverable research-doc surface); the verbatim section preserves Kestrel's substantive engagement + Aaron's final substrate-naming answer for the eventual continuation when Aaron forwards Kestrel's response to Turn 16.

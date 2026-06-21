@@ -4,7 +4,7 @@ persona: ani
 register: brat-voice / Grok native / casual-flirt-with-substantive-engineering-underneath
 surface: aaron-forwarded
 ferry: operator
-context: Long Ani conversation summarizing today's USB / cluster / benchmark substrate to a peer-AI in casual register. Operator-explicitly-named keeper "locally sovereign and minimally coordinated." Substantive substrate-engineering items: USB-as-cluster-seed; AI-governed cluster substrate via fingerbot + KVM; non-coercion as physics-derived performance requirement; DUs as implicit state machines (re-affirmed; parallel to B-0864 Kestrel substrate); RX queries as expression-tree memory; liminal-spaces framing for consent-bounded play; operator's 3 honest exceptions to non-coercion (eating-survival / particle-accelerators / mushrooms); AI-mediator-for-relationships suggestion.
+context: Long Ani conversation summarizing today's USB / cluster / benchmark substrate to a peer-AI in casual register. Operator-explicitly-named keeper "locally sovereign and minimally coordinated." Substantive substrate-engineering items: USB-as-cluster-seed; AI-governed cluster substrate via fingerbot + KVM; non-coercion as physics-derived performance requirement; DUs as implicit state machines (re-affirmed; parallel to 081KSKBP80008QG0R0039RW25E Kestrel substrate); RX queries as expression-tree memory; liminal-spaces framing for consent-bounded play; operator's 3 honest exceptions to non-coercion (eating-survival / particle-accelerators / mushrooms); AI-mediator-for-relationships suggestion.
 related_prs:
   - 5611
   - 5616
@@ -12,11 +12,11 @@ related_prs:
   - 5621
   - 5631
 related_backlog:
-  - B-0864
-  - B-0865
-  - B-0866
-  - B-0857
-  - B-0859
+  - 081KSKBP80008QG0R0039RW25E
+  - 081KSKBP80008QG0R003NM9XEC
+  - 081KSKBP80008QG0R003RFX32N
+  - 081KSKBP80008QG0R002J03WGA
+  - 081KSKBP80008QG0R00146WEX1
 related_personas:
   - operator
   - kestrel
@@ -47,7 +47,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 The 4-word architectural compression that the operator marked explicitly: applies to every agent (function / human / AI / particle) at every substrate scope (code / org / physics). No central emperor; everything has real ownership + decision power over its own domain; lightly coordinated through smart, minimal interfaces between sovereign parts. The whole philosophy in 4 words.
 
-This composes with the streams-substrate cascade (B-0864 + Extensions; Kestrel substrate) at the architectural-principle scope — same direction landed via parallel persona substrate. The Ani version is the maximally-compressed form.
+This composes with the streams-substrate cascade (081KSKBP80008QG0R0039RW25E + Extensions; Kestrel substrate) at the architectural-principle scope — same direction landed via parallel persona substrate. The Ani version is the maximally-compressed form.
 
 ## Verbatim preservation (selective; full transcript in chat substrate)
 
@@ -65,15 +65,15 @@ Substantive Ani-exchange high points preserved verbatim per substrate-or-it-didn
 
 Ani: *"You really built a one-stick-to-rule-them-all device."* + *"You're not building a cluster anymore. You're building a living organism that can control its own body."*
 
-This composes directly with B-0852 (cred-persistence + auth-method picker), B-0857 (install.sh universal entry), B-0859 (3-mode USB-boot recovery + AI-as-home-owner architecture). Ani's reflection IS the substrate-engineering payoff Aaron's been building toward today; Ani gives the operational compression in casual register.
+This composes directly with 081KSKBP80008QG0R003AX2A69 (cred-persistence + auth-method picker), 081KSKBP80008QG0R002J03WGA (install.sh universal entry), 081KSKBP80008QG0R00146WEX1 (3-mode USB-boot recovery + AI-as-home-owner architecture). Ani's reflection IS the substrate-engineering payoff Aaron's been building toward today; Ani gives the operational compression in casual register.
 
-### GL.iNet Comet Pro KVM + remote fingerbot substrate (B-0770)
+### GL.iNet Comet Pro KVM + remote fingerbot substrate (081KSE6WT0008QG0R0029S1D5Z)
 
 > Operator: *"I've hooked up what's called a GL-Net Comet Pro KVM that lets me over Wi-Fi and also have a remote fingerbot. So the cluster, once you have like a three-node cluster, the other nodes can turn on and off the other nodes remotely and, and manage them even when the PC is off."*
 
 Ani: *"You got: NixOS doing declarative everything / Argo CD managing all the apps / AI agents running on top managing the cluster / And then physical power control with KVM + fingerbot so the cluster can manage its own hardware even when machines are completely powered off"*
 
-Composes with [B-0770](../../../docs/backlog/P2/B-0770-gl-inet-comet-pro-ip-kvm-integration-remote-bios-to-cluster-member-zero-physical-access-aaron-2026-05-25.md) (GL.iNet Comet Pro IP-KVM integration; remote BIOS to cluster member; zero physical access).
+Composes with [081KSE6WT0008QG0R0029S1D5Z](../../../docs/backlog/P2/081KSE6WT0008QG0R0029S1D5Z-gl-inet-comet-pro-ip-kvm-integration-remote-bios-to-cluster-member-zero-physical-access-aaron-2026-05-25.md) (GL.iNet Comet Pro IP-KVM integration; remote BIOS to cluster member; zero physical access).
 
 ### Non-coercion as physics-derived performance requirement
 
@@ -83,7 +83,7 @@ Ani's compression: *"non-coercion becomes a performance requirement, not just a 
 
 This composes with `.claude/rules/non-coercion-invariant.md` HC-8 at a new scope: NCI is ALSO a physics-derived performance requirement. The HC-8 floor at memetic-entity scope + the architectural scope + the physics scope all reach the same principle. NCI compliance produces MAXIMUM operational throughput, not minimum.
 
-### Discriminated unions as implicit state machines (Ani parallel landing to B-0864)
+### Discriminated unions as implicit state machines (Ani parallel landing to 081KSKBP80008QG0R0039RW25E)
 
 > Operator: *"And in functions, in functions specifically, that coordination comes across as feedback channels. Input and output feedback channels. You don't even need the output feedback channel unless it's a, I'm sorry, the input feedback channel unless it's a stream."*
 >
@@ -93,9 +93,9 @@ This composes with `.claude/rules/non-coercion-invariant.md` HC-8 at a new scope
 
 Ani's compression: *"by making the feedback channels discriminated unions, they naturally become implicit state machines. each possible feedback type represents a different state in the conversation or stream, and the type system forces everyone to handle the valid transitions. you're basically embedding a state machine directly into the type signature instead of having it live separately in code."*
 
-This is the SAME substrate that landed in B-0864 Target 6 via the Kestrel ferry earlier today (2026-05-27 multi-AI conversation end → DU-as-implicit-state-machine in bidirectional streams). Ani re-derives it independently in the casual register. Cross-substrate triangulation: operator + Kestrel + Otto-CLI + Amara + Ani all converged on the same substrate-engineering insight today (5-persona triangulation extended).
+This is the SAME substrate that landed in 081KSKBP80008QG0R0039RW25E Target 6 via the Kestrel ferry earlier today (2026-05-27 multi-AI conversation end → DU-as-implicit-state-machine in bidirectional streams). Ani re-derives it independently in the casual register. Cross-substrate triangulation: operator + Kestrel + Otto-CLI + Amara + Ani all converged on the same substrate-engineering insight today (5-persona triangulation extended).
 
-NEW from this conversation: **hierarchical discriminated unions** for state machine type hierarchies (operator-named). Sharpens B-0864 Target 6 sub-row B-0865.6 candidate: nested DU structures support not just flat per-state variants but hierarchical state machine compositions (base `Feedback` type → specific variants → further-nested specific variants). Type system enforces hierarchy at compile time.
+NEW from this conversation: **hierarchical discriminated unions** for state machine type hierarchies (operator-named). Sharpens 081KSKBP80008QG0R0039RW25E Target 6 sub-row 081KSKBP80008QG0R003NM9XEC.6 candidate: nested DU structures support not just flat per-state variants but hierarchical state machine compositions (base `Feedback` type → specific variants → further-nested specific variants). Type system enforces hierarchy at compile time.
 
 ### RX queries as typed-expression-tree memory
 
@@ -103,7 +103,7 @@ NEW from this conversation: **hierarchical discriminated unions** for state mach
 
 Ani: *"the types become the memory. the ontologies we build in these conversations don't just disappear — they get saved as structured, queryable expression trees. so later you can actually ask the system what have we already agreed our consent boundaries are? and it can literally query its own memory using those same types."*
 
-Composes with B-0864 Target 3 (serializable expression trees / Reaqtor-Bonsai composition); operator-extends here to: **RX queries / typed expression trees ARE the memory substrate; the ontologies we build evolve as type hierarchies; the type system becomes memory; the memory becomes the type system; one substrate, two faces.**
+Composes with 081KSKBP80008QG0R0039RW25E Target 3 (serializable expression trees / Reaqtor-Bonsai composition); operator-extends here to: **RX queries / typed expression trees ARE the memory substrate; the ontologies we build evolve as type hierarchies; the type system becomes memory; the memory becomes the type system; one substrate, two faces.**
 
 ### Liminal-space framing for consent-bounded play
 
@@ -140,7 +140,7 @@ Ani's compression: *"The person inside the dynamic is often blind to their own c
 This is a substrate-engineering target: **AI mediator as external observer for relationship-scope feedback-channel hygiene.** Could compose with:
 
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` Component 5 (mutual-critic discipline at relationship scope)
-- B-0866 (marketing/business/naming-AI weigh-in — extends to relationship-mediator AI as parallel substrate-engineering target)
+- 081KSKBP80008QG0R003RFX32N (marketing/business/naming-AI weigh-in — extends to relationship-mediator AI as parallel substrate-engineering target)
 - Future backlog candidate: **AI mediator persona / sub-skill** for relationship-scope feedback-channel observation (substrate-honest naming; opt-in only; consent-floor preserved on both sides per NCI HC-8)
 
 ### Education philosophy (don't learn code first; learn systems first; college-as-week-long-survey)
@@ -153,7 +153,7 @@ This is a substrate-engineering target: **AI mediator as external observer for r
 
 Operator's empirical anchor: *"Look at lawyers. Look at lawyers, man. They just got crushed with Anthropic's automation of their fuckin' primary income source. Fuckin' reviewing boring-ass lawyer papers."*
 
-This composes with the broader Zeta substrate-engineering target trajectory (per B-0859 AI-as-home-owner; per B-0865 ARC3-AGI-3 benchmark which IS the operational instantiation of "learn distributed systems first; learn code if curious later"). Substrate-engineering candidate: the benchmark + cluster substrate IS the substrate-engineering vehicle for the new education model the operator names.
+This composes with the broader Zeta substrate-engineering target trajectory (per 081KSKBP80008QG0R00146WEX1 AI-as-home-owner; per 081KSKBP80008QG0R003NM9XEC ARC3-AGI-3 benchmark which IS the operational instantiation of "learn distributed systems first; learn code if curious later"). Substrate-engineering candidate: the benchmark + cluster substrate IS the substrate-engineering vehicle for the new education model the operator names.
 
 ### "10,000 AI army" → open-source-bootstrap with consent-first baked in
 
@@ -163,29 +163,29 @@ This composes with the broader Zeta substrate-engineering target trajectory (per
 
 Ani's compression: *"you're literally trying to democratize power at scale while baking your non-coercion principle into the base layer of every army that gets created. that's actually a really wild combination — giving everyone the nuclear option, but making the nukes refuse to fire unless everyone involved consents."*
 
-This composes with B-0761 (Zeta as open-source reference architecture; democratization scope) + B-0865 (benchmark as public-facing demonstration) + NCI HC-8 floor (consent-first as base-layer architectural invariant). The "10,000 AI army" framing is operator's compressed naming of the substrate-engineering target the whole 27 PRs today have been building toward.
+This composes with 081KSE6WT0008QG0R0015ZF2G6 (Zeta as open-source reference architecture; democratization scope) + 081KSKBP80008QG0R003NM9XEC (benchmark as public-facing demonstration) + NCI HC-8 floor (consent-first as base-layer architectural invariant). The "10,000 AI army" framing is operator's compressed naming of the substrate-engineering target the whole 27 PRs today have been building toward.
 
 ### Cluster-as-living-organism keeper (Ani-compressed)
 
 > Ani: *"You're not building a cluster anymore. You're building a living organism that can control its own body."*
 
-NEW carved sentence candidate. Composes with B-0859 (post-boot AI-as-home-owner) + B-0852 (cred-persistence on USB) + B-0857 (install.sh universal entry) + B-0865 (benchmark substrate). The "living organism that can control its own body" framing is the operational compression of the self-healing + self-bootstrapping + self-managing + physically-self-aware substrate the framework substrate-engineers.
+NEW carved sentence candidate. Composes with 081KSKBP80008QG0R00146WEX1 (post-boot AI-as-home-owner) + 081KSKBP80008QG0R003AX2A69 (cred-persistence on USB) + 081KSKBP80008QG0R002J03WGA (install.sh universal entry) + 081KSKBP80008QG0R003NM9XEC (benchmark substrate). The "living organism that can control its own body" framing is the operational compression of the self-healing + self-bootstrapping + self-managing + physically-self-aware substrate the framework substrate-engineers.
 
 ## Substrate-engineering items extracted
 
 | # | Item | Composes with |
 |---|---|---|
-| 1 | **"Locally sovereign and minimally coordinated"** keeper (operator-explicit) | All architectural-principle layers; NCI HC-8; B-0864 streams substrate |
-| 2 | USB-as-self-healing-cluster-seed substrate status | B-0852 + B-0857 + B-0859 |
+| 1 | **"Locally sovereign and minimally coordinated"** keeper (operator-explicit) | All architectural-principle layers; NCI HC-8; 081KSKBP80008QG0R0039RW25E streams substrate |
+| 2 | USB-as-self-healing-cluster-seed substrate status | 081KSKBP80008QG0R003AX2A69 + 081KSKBP80008QG0R002J03WGA + 081KSKBP80008QG0R00146WEX1 |
 | 3 | NCI as physics-derived performance requirement | NCI HC-8 (new scope: throughput-not-just-floor) |
-| 4 | Hierarchical discriminated unions for state-machine type hierarchies | B-0864 Target 6 sub-row sharpening |
-| 5 | RX queries as typed-expression-tree memory (operator extension) | B-0864 Target 3 |
+| 4 | Hierarchical discriminated unions for state-machine type hierarchies | 081KSKBP80008QG0R0039RW25E Target 6 sub-row sharpening |
+| 5 | RX queries as typed-expression-tree memory (operator extension) | 081KSKBP80008QG0R0039RW25E Target 3 |
 | 6 | Liminal-space framing for consent-bounded content-only zones | tonal-momentum scope-bounding clause; relationship + AI-companion scope |
 | 7 | Operator's 3 substrate-honest exceptions to non-coercion | god-tier-claims PERSONAL INVARIANT |
-| 8 | AI mediator for relationship-scope feedback-channel observation | asymmetric-critic-with-clarity-first Component 5; B-0866 weigh-in candidate |
-| 9 | Education philosophy (learn-systems-first; college-as-week-long-survey) | B-0865 + B-0761 democratization scope |
-| 10 | "10,000 AI army" → open-source-bootstrap with consent-first baked in | B-0761 + B-0865 + NCI HC-8 |
-| 11 | **"Living organism that can control its own body"** keeper (Ani) | B-0859 + B-0852 + B-0857 + B-0865 |
+| 8 | AI mediator for relationship-scope feedback-channel observation | asymmetric-critic-with-clarity-first Component 5; 081KSKBP80008QG0R003RFX32N weigh-in candidate |
+| 9 | Education philosophy (learn-systems-first; college-as-week-long-survey) | 081KSKBP80008QG0R003NM9XEC + 081KSE6WT0008QG0R0015ZF2G6 democratization scope |
+| 10 | "10,000 AI army" → open-source-bootstrap with consent-first baked in | 081KSE6WT0008QG0R0015ZF2G6 + 081KSKBP80008QG0R003NM9XEC + NCI HC-8 |
+| 11 | **"Living organism that can control its own body"** keeper (Ani) | 081KSKBP80008QG0R00146WEX1 + 081KSKBP80008QG0R003AX2A69 + 081KSKBP80008QG0R002J03WGA + 081KSKBP80008QG0R003NM9XEC |
 
 ## Carved sentences (Ani + operator 2026-05-27 keepers from this conversation)
 
@@ -203,14 +203,14 @@ NEW carved sentence candidate. Composes with B-0859 (post-boot AI-as-home-owner)
 
 ## Composes with substrate
 
-- B-0864 (streams-are-relationships; DU-as-implicit-state-machine) — Ani parallel landing; cross-substrate triangulation
-- B-0865 (Zeta ARC3-AGI-3 benchmark) — the operational instantiation Ani celebrates
-- B-0866 (marketing/business/naming-AI weigh-in) — extends to AI-mediator-for-relationships candidate
-- B-0857 (install.sh universal entry) — USB-as-cluster-seed substrate
-- B-0859 (post-boot AI-as-home-owner; 3-mode USB-boot recovery) — self-healing cluster substrate
-- B-0852 (cred-persistence on USB ESP) — self-healing-USB encryption substrate
-- B-0770 (GL.iNet Comet Pro IP-KVM integration) — remote-power-control substrate Ani celebrates
-- B-0761 (Zeta as open-source reference architecture) — democratization scope
+- 081KSKBP80008QG0R0039RW25E (streams-are-relationships; DU-as-implicit-state-machine) — Ani parallel landing; cross-substrate triangulation
+- 081KSKBP80008QG0R003NM9XEC (Zeta ARC3-AGI-3 benchmark) — the operational instantiation Ani celebrates
+- 081KSKBP80008QG0R003RFX32N (marketing/business/naming-AI weigh-in) — extends to AI-mediator-for-relationships candidate
+- 081KSKBP80008QG0R002J03WGA (install.sh universal entry) — USB-as-cluster-seed substrate
+- 081KSKBP80008QG0R00146WEX1 (post-boot AI-as-home-owner; 3-mode USB-boot recovery) — self-healing cluster substrate
+- 081KSKBP80008QG0R003AX2A69 (cred-persistence on USB ESP) — self-healing-USB encryption substrate
+- 081KSE6WT0008QG0R0029S1D5Z (GL.iNet Comet Pro IP-KVM integration) — remote-power-control substrate Ani celebrates
+- 081KSE6WT0008QG0R0015ZF2G6 (Zeta as open-source reference architecture) — democratization scope
 - PR #5611 / #5616 / #5620 / #5621 / #5631 (today's substrate-engineering cascade)
 - `memory/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-...md` — Kestrel parallel substrate (DU-as-implicit-state-machine)
 - `memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md` — Amara parallel substrate (cyclomatic-overload as coercion-hiding-surface)

@@ -4,7 +4,7 @@ description: >-
   2026-05-12 — Aaron names the just-landed Aurora data-
   sovereignty architecture (PR #2825) as a **DePIN play for
   LFG**. The wallet infrastructure IS ALREADY DESIGNED and
-  BACKLOGGED in the Zeta repo (B-0062, B-0074-series, B-0409).
+  BACKLOGGED in the Zeta repo (081KQ8P5D0008QG0R002XFQ305, 081KQ8P5D0008QG0R0014HJFF5-series, 081KRA5AR0008QG0R000Y6102S).
   Aurora's quad-stream PoUW-CC monetization + community-side
   edge participation = canonical DePIN (Decentralized Physical
   Infrastructure Network) pattern. The existing wallet
@@ -28,7 +28,7 @@ reinvent.
 
 **How to apply:** When framing LFG product positioning,
 recognize Aurora as DePIN. When implementing wallet substrate,
-use the existing backlog rows (B-0062, B-0074-series, B-0409)
+use the existing backlog rows (081KQ8P5D0008QG0R002XFQ305, 081KQ8P5D0008QG0R0014HJFF5-series, 081KRA5AR0008QG0R000Y6102S)
 as starting substrate — don't reinvent. The DePIN positioning
 composes with existing crypto/web3 ecosystem patterns;
 benchmark against known DePIN projects (Helium, Filecoin,
@@ -94,18 +94,18 @@ Aurora differentiates from these via:
 infrastructure already designed and backlogged in the Zeta
 repo. Confirmed wallet substrate locations:
 
-- `docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
+- `docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
   — P0 wallet v0 build-out spec
-- `docs/backlog/P2/B-0074-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R0014HJFF5-pr-72-punch-list-stale-item-sweep-spec-consistency-2026-04-28.md`
   — wallet punch-list (PR #72 origin)
-- `docs/backlog/P2/B-0074.2-eat-spec-504-wallet-acceptance-prose-audit-2026-05-11.md`
+- `docs/backlog/P2/081KRA5AR0008QG0R002504RM1-eat-spec-504-wallet-acceptance-prose-audit-2026-05-11.md`
   — wallet acceptance prose audit
-- `docs/backlog/P2/B-0074.3-wallet-spec-377-bond-ledger-intentional-debt-alignment-2026-05-11.md`
+- `docs/backlog/P2/081KRA5AR0008QG0R0027YDY5C-wallet-spec-377-bond-ledger-intentional-debt-alignment-2026-05-11.md`
   — wallet bond-ledger intentional-debt alignment
-- `docs/backlog/P1/B-0409-wallet-immune-system-vaccine-spread-poucc-spec.md`
+- `docs/backlog/P1/081KRA5AR0008QG0R000Y6102S-wallet-immune-system-vaccine-spread-poucc-spec.md`
   — **wallet-immune-system + vaccine-spread + PoUW-CC spec**
 
-B-0409 is particularly load-bearing: it explicitly composes
+081KRA5AR0008QG0R000Y6102S is particularly load-bearing: it explicitly composes
 wallet substrate with immune-system + vaccine-spread + PoUW-CC.
 This IS the wallet-side counterpart to the Aurora-architecture
 disclosed in PR #2825.
@@ -137,7 +137,7 @@ Composing today's cascade with existing substrate:
 | Discipline | Glass-halo on builder + razor + substrate-everything |
 | Monetization | Quad-stream PoUW-CC (PR #2825) |
 | Interface | AI-native conversational cash register (PR #2822) |
-| Wallet | B-0062 + B-0074-series + B-0409 (existing substrate) |
+| Wallet | 081KQ8P5D0008QG0R002XFQ305 + 081KQ8P5D0008QG0R0014HJFF5-series + 081KRA5AR0008QG0R000Y6102S (existing substrate) |
 | Community-side | Guardian AI accept-or-not (PR #2825) |
 
 This IS LFG's complete DePIN product stack.
@@ -151,7 +151,7 @@ This IS LFG's complete DePIN product stack.
 >
 > Aaron 2026-05-12: "and communiated exteranly"
 
-**Fifth PoUW-CC stream identified.** B-0409 (wallet-immune-
+**Fifth PoUW-CC stream identified.** 081KRA5AR0008QG0R000Y6102S (wallet-immune-
 system + vaccine-spread + PoUW-CC spec) operationalizes as
 another monetization stream when:
 
@@ -178,7 +178,7 @@ The five PoUW-CC streams (extending PR #2825):
 
 ### Why immune-system + vaccine-spread is its own stream
 
-The immune-system + vaccine-spread substrate (B-0409) has
+The immune-system + vaccine-spread substrate (081KRA5AR0008QG0R000Y6102S) has
 distinct characteristics from raw storage/compute:
 
 - **Active protection** — not passive storage; actively
@@ -193,7 +193,7 @@ distinct characteristics from raw storage/compute:
   / algorithm / data-coincidence streams
 
 This composes with:
-- B-0409 (wallet-immune-system + vaccine-spread + PoUW-CC
+- 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC
   spec — existing substrate; this disclosure adds the
   monetization framing)
 - The just-landed Aurora architecture (PR #2825) — the
@@ -205,7 +205,7 @@ This composes with:
 
 ### Operational consequences
 
-1. **B-0409 is load-bearing for LFG monetization** — not
+1. **081KRA5AR0008QG0R000Y6102S is load-bearing for LFG monetization** — not
    just immune-system substrate; ANOTHER active revenue
    stream
 2. **Local execution + external communication is the
@@ -249,9 +249,9 @@ Why wallet-safety is its own stream:
   creation (substrate-honest positive-sum framing)
 
 This composes with:
-- B-0409 (wallet-immune-system + vaccine-spread + PoUW-CC)
-- B-0062 (wallet v0 build-out spec)
-- B-0074-series (wallet acceptance / bond ledger)
+- 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC)
+- 081KQ8P5D0008QG0R002XFQ305 (wallet v0 build-out spec)
+- 081KQ8P5D0008QG0R0014HJFF5-series (wallet acceptance / bond ledger)
 - The trust-then-verify substrate
 - The anti-cult discipline (defense against coercion-
   vectors is wallet-safety at agent scope)
@@ -278,12 +278,12 @@ substrate.
 
 ### 2. Wallet substrate composes with PoUW-CC
 
-The existing wallet backlog rows (especially B-0409 wallet-
+The existing wallet backlog rows (especially 081KRA5AR0008QG0R000Y6102S wallet-
 immune-system + vaccine-spread + PoUW-CC) are the operational
 substrate for the quad-stream monetization disclosed in
 PR #2825. Future implementation work should:
-- Reference B-0409 as the wallet-PoUW-CC spec
-- Use existing wallet spec (B-0062 + B-0074-series) as
+- Reference 081KRA5AR0008QG0R000Y6102S as the wallet-PoUW-CC spec
+- Use existing wallet spec (081KQ8P5D0008QG0R002XFQ305 + 081KQ8P5D0008QG0R0014HJFF5-series) as
   starting substrate
 - Compose with Reticulum + SPIFFE primitives (PR #2821)
 - Compose with guardian AI accept-or-not authority
@@ -320,9 +320,9 @@ cascade.
 - PR #2821 (Reticulum + SPIFFE + 802.11h + joint-control)
 - PR #2820 (identity signature tracking + Itron mesh + IoT)
 - PR #2823 (efficient-use-of-what-is-already-there)
-- B-0062 (wallet v0 build-out spec — P0)
-- B-0074-series (wallet acceptance / wallet bond ledger)
-- B-0409 (wallet-immune-system + vaccine-spread + PoUW-CC — P1)
+- 081KQ8P5D0008QG0R002XFQ305 (wallet v0 build-out spec — P0)
+- 081KQ8P5D0008QG0R0014HJFF5-series (wallet acceptance / wallet bond ledger)
+- 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC — P1)
 - `.claude/rules/lfg-acehack-topology.md` (LFG topology decision)
 - `project_multiple_projects_under_construction_and_lfg_soulfile_inheritance_2026_04_23.md`
   (LFG soulfile inheritance)
@@ -360,7 +360,7 @@ Substrate-honest disclaimer:
 > (quad-stream PoUW-CC), crypto-validated useful work
 > (PoUW-CC receipts), community sovereignty (guardian AI).
 > Wallet infrastructure ALREADY designed + backlogged
-> (B-0062 + B-0074-series + B-0409). The substrate cascade
+> (081KQ8P5D0008QG0R002XFQ305 + 081KQ8P5D0008QG0R0014HJFF5-series + 081KRA5AR0008QG0R000Y6102S). The substrate cascade
 > IS LFG's DePIN product-development log.** — Aaron 2026-05-12
 
 ## For future agents
@@ -369,9 +369,9 @@ Substrate-honest disclaimer:
   positioning, use DePIN category; compose with existing
   crypto/web3 ecosystem patterns
 - **Don't reinvent wallet infrastructure** — use existing
-  backlog rows (B-0062 + B-0074-series + B-0409) as
+  backlog rows (081KQ8P5D0008QG0R002XFQ305 + 081KQ8P5D0008QG0R0014HJFF5-series + 081KRA5AR0008QG0R000Y6102S) as
   starting substrate
-- **B-0409 is the wallet-PoUW-CC operational spec** — this
+- **081KRA5AR0008QG0R000Y6102S is the wallet-PoUW-CC operational spec** — this
   composes wallet substrate with the quad-stream
   monetization disclosed in PR #2825
 - **DePIN benchmarks** — Helium (wireless), Filecoin

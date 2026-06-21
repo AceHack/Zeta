@@ -27,7 +27,7 @@
 
 ## Description
 
-Grounds #6932's external-state half: Ace (PM-of-PMs, B-0824) = the external-state closure — declarative pointers to all package managers + deps = one env/dep map; NixOS (metal/OS) + Ace (between) + ArgoCD (cluster) = full-stack closure, resolved by reference. = B-0824 holographic projection of n-dim dep space; declarative all the way; #6937 pinned-vs-floating faults. NixOS/ArgoCD shipped, Ace in-flight. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Grounds #6932's external-state half: Ace (PM-of-PMs, 081KSGS9H0008QG0R0031PBNGA) = the external-state closure — declarative pointers to all package managers + deps = one env/dep map; NixOS (metal/OS) + Ace (between) + ArgoCD (cluster) = full-stack closure, resolved by reference. = 081KSGS9H0008QG0R0031PBNGA holographic projection of n-dim dep space; declarative all the way; #6937 pinned-vs-floating faults. NixOS/ArgoCD shipped, Ace in-flight. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

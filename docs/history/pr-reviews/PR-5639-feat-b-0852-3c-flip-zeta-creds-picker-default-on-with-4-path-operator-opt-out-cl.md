@@ -65,7 +65,7 @@ Each opt-out case echoes the **SPECIFIC reason** the picker is being skipped; th
 3. iter-4.2: captures USB UUID → `/etc/zeta/usb-uuid`
 4. Step 6.95-picker: auto-fires; encrypts cred-blob to `/esp/zeta-creds.enc`
 5. `ZETA_CREDS_PASSPHRASE` unset from installer env (PR #5638 discipline)
-6. **(Follow-up B-0852.3d)**: restore-on-boot path reads blob → operator never re-enters credentials
+6. **(Follow-up 081KSKBP80008QG0R003AX2A69.3d)**: restore-on-boot path reads blob → operator never re-enters credentials
 
 ## Local validation
 
@@ -74,8 +74,8 @@ Each opt-out case echoes the **SPECIFIC reason** the picker is being skipped; th
 
 ## Composes with
 
-- PR #5637 (B-0852.3a-prep USB UUID capture)
-- PR #5638 (B-0852.3b passphrase prompt + unset-after-picker)
+- PR #5637 (081KSKBP80008QG0R003AX2A69.3a-prep USB UUID capture)
+- PR #5638 (081KSKBP80008QG0R003AX2A69.3b passphrase prompt + unset-after-picker)
 - `tools/installer/zeta-creds-picker.ts` (existing TS impl; no changes; this PR only changes the install-script gate)
 - `full-ai-cluster/INJECTION-POINTS.md` (catalog; in-flight item #5 substrate now operator-facing)
 
@@ -147,7 +147,7 @@ feat(b-0852.3c): flip ZETA_CREDS_PICKER default-ON with 4-path operat…
 
 …or-opt-out — closes precondition #1; picker auto-fires for every install (operator's 'don't re-enter credentials over and over' solution lands)
 
-Closes precondition #1 of 3 blocking the B-0852 cred-persistence
+Closes precondition #1 of 3 blocking the 081KSKBP80008QG0R003AX2A69 cred-persistence
 picker. Together with PR #5637 (precondition #3 USB-UUID capture)
 and PR #5638 (precondition #2 passphrase prompt), this is the LAST
 sub-row needed to close the operator pain point named 2026-05-27:
@@ -157,10 +157,10 @@ credentals over and over everytime."
 PRE-CONDITION-CLOSING STATUS POST-MERGE OF THIS PR:
 - #1 ZETA_CREDS_PICKER=1: DEFAULT-ON (this PR)
 - #2 ZETA_CREDS_PASSPHRASE: auto-populated by Step 6.56 prompt (PR #5638)
-- #3 /etc/zeta/usb-uuid: auto-captured by B-0852.3a-prep at iter-4.2 ESP probe (PR #5637)
+- #3 /etc/zeta/usb-uuid: auto-captured by 081KSKBP80008QG0R003AX2A69.3a-prep at iter-4.2 ESP probe (PR #5637)
 
 Result: picker auto-fires for every install where operator entered
-a passphrase at Step 6.56. Reboot restore-path follows in B-0852.3d.
+a passphrase at Step 6.56. Reboot restore-path follows in 081KSKBP80008QG0R003AX2A69.3d.
 
 WHAT CHANGED:
 Replaced gate condition:
@@ -198,21 +198,21 @@ LOCAL VALIDATION:
 - ~30 lines added/restructured around gate condition; net +30 lines
 
 COMPOSES WITH:
-- PR #5637 (B-0852.3a-prep USB UUID capture)
-- PR #5638 (B-0852.3b passphrase prompt + unset-after-picker)
+- PR #5637 (081KSKBP80008QG0R003AX2A69.3a-prep USB UUID capture)
+- PR #5638 (081KSKBP80008QG0R003AX2A69.3b passphrase prompt + unset-after-picker)
 - tools/installer/zeta-creds-picker.ts (existing TS impl; no changes
   needed; this PR only changes the install-script gate that invokes it)
 - full-ai-cluster/INJECTION-POINTS.md (catalog of injection points;
   in-flight item #5 substrate now operator-facing)
 
 Per operator 2026-05-27 multi-message direction + the operator-blocking
-pain point named in B-0852: this PR ships the LAST blocker to "don't
+pain point named in 081KSKBP80008QG0R003AX2A69: this PR ships the LAST blocker to "don't
 re-enter credentials over and over." Once merged + ISO rebuilds +
 operator boots:
   1. Step 6.56 prompts for passphrase (PR #5638)
   2. iter-4.2 captures USB UUID -> /etc/zeta/usb-uuid (PR #5637)
   3. Step 6.95-picker auto-fires; encrypts cred-blob to /esp/zeta-creds.enc
-  4. (Follow-up B-0852.3d: restore-on-boot path reads blob; operator
+  4. (Follow-up 081KSKBP80008QG0R003AX2A69.3d: restore-on-boot path reads blob; operator
      never re-enters credentials)
 
 Co-Authored-By: Claude <noreply@anthropic.com>

@@ -1,6 +1,5 @@
 ---
-id: B-0858.5
-zetaid: 081KSKBP80008QG0R003NG37GQ
+id: 081KSKBP80008QG0R003NG37GQ
 priority: P2
 status: open
 title: Heartbeat auto-state-gathering — writer gathers observable current state before pushing; heartbeats become debug logs once attached (Aaron 2026-05-27)
@@ -125,11 +124,11 @@ debug logs once we have current state attached."
 
 ## Sub-rows planned
 
-- **B-0858.5a** — local-only auto-gather (cwd, branch, staged/unstaged/untracked counts; git-clean-state; current-worktree-path) — zero REST cost; fastest landing
-- **B-0858.5b** — git-state auto-gather (last-commit-sha-prefix; behind-vs-ahead status vs origin/main) — pure-git calls; no REST
-- **B-0858.5c** — REST-state auto-gather (rate-limit; open-PR-count; recent-merged-PR-count) — bounded REST cost; might skip when rate-limit low
-- **B-0858.5d** — peer-state auto-gather (peer-agent-process-count via pgrep; dotgit-saturation-tier per refresh-world-model rule) — local; informational
-- **B-0858.5e** — sentinel-state auto-gather (CronList check for `<<autonomous-loop>>` presence) — harness-tool call
+- **081KSKBP80008QG0R001KK9WV6.5a** — local-only auto-gather (cwd, branch, staged/unstaged/untracked counts; git-clean-state; current-worktree-path) — zero REST cost; fastest landing
+- **081KSKBP80008QG0R001KK9WV6.5b** — git-state auto-gather (last-commit-sha-prefix; behind-vs-ahead status vs origin/main) — pure-git calls; no REST
+- **081KSKBP80008QG0R001KK9WV6.5c** — REST-state auto-gather (rate-limit; open-PR-count; recent-merged-PR-count) — bounded REST cost; might skip when rate-limit low
+- **081KSKBP80008QG0R001KK9WV6.5d** — peer-state auto-gather (peer-agent-process-count via pgrep; dotgit-saturation-tier per refresh-world-model rule) — local; informational
+- **081KSKBP80008QG0R001KK9WV6.5e** — sentinel-state auto-gather (CronList check for `<<autonomous-loop>>` presence) — harness-tool call
 
 Order: 5a → 5b → 5d (all local) → 5c (REST-cost-bounded) → 5e (last).
 
@@ -147,9 +146,9 @@ Order: 5a → 5b → 5d (all local) → 5c (REST-cost-bounded) → 5e (last).
 
 ## Composes with substrate
 
-- B-0858 (parent row; PR #5456 merged)
-- B-0858.3 writer (PR #5464 merged) — this row extends
-- B-0858.4 merge tool (PR #5471 in-flight) — heartbeats now batch-merge
+- 081KSKBP80008QG0R001KK9WV6 (parent row; PR #5456 merged)
+- 081KSKBP80008QG0R001KK9WV6.3 writer (PR #5464 merged) — this row extends
+- 081KSKBP80008QG0R001KK9WV6.4 merge tool (PR #5471 in-flight) — heartbeats now batch-merge
   to main periodically, so debug-log property eventually visible in main
   history without needing to query agent-heartbeats branch separately
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` — rate-limit
@@ -163,13 +162,13 @@ Topic: auto-state-gathering for agent heartbeats
 
 Searched:
 
-- `tools/agent-heartbeats/` — writer + merge tool already shipped (B-0858.3 + B-0858.4)
+- `tools/agent-heartbeats/` — writer + merge tool already shipped (081KSKBP80008QG0R001KK9WV6.3 + 081KSKBP80008QG0R001KK9WV6.4)
 - `tools/hygiene/audit-agencysignature-main-tip.ts` — sibling forensic tool
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — externalized counter discipline this row extends
 - `memory/` — no prior memory on auto-state-gathering specifically
 - `docs/backlog/` — no existing row covers this scope; this row fills the gap
 
-Conclusion: composes with B-0858.3 + B-0858.4; extends the writer
+Conclusion: composes with 081KSKBP80008QG0R001KK9WV6.3 + 081KSKBP80008QG0R001KK9WV6.4; extends the writer
 with optional auto-gather mode (defaults preserve current minimal
 behavior).
 
@@ -184,7 +183,7 @@ defers until USB push lands.
 ## Full reasoning
 
 Operator 2026-05-27 verbatim quotes preserved above. Filed in the
-same heartbeat-substrate iteration as B-0858 row + .3 writer + .4
+same heartbeat-substrate iteration as 081KSKBP80008QG0R001KK9WV6 row + .3 writer + .4
 merge tool. Implementation deferred per operator's explicit USB-priority
 direction. Recording the row exists is critical for deferring the
 work to reliably happen (operator 2026-05-27 separation-of-concerns

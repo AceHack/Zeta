@@ -6,16 +6,16 @@ provenance: Aaron 2026-05-26 forwarded transcript via Claude Code conversation; 
 youtube_url: https://www.youtube.com/watch?v=_bqa_I5hNAo
 status: substrate-honest verbatim preservation + framework composition
 composes_with:
-  - 2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md (B-0839.2 sibling — RNN/LSTM/GRU)
-  - 2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (B-0839.3 sibling — Reservoir Computing)
+  - 2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.2 sibling — RNN/LSTM/GRU)
+  - 2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.3 sibling — Reservoir Computing)
   - docs/research/ip-questionable/README.md (folder authority; operator's verbatim-third-party-content acceptance)
   - .claude/rules/substrate-or-it-didnt-happen.md (mirror-tier preservation discipline)
   - .claude/rules/wake-time-substrate.md (operator-forwarded substrate gets row + research-doc landing)
   - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md (Hawkins 1000 Brains cortical-columns section)
   - .claude/rules/substrate-smoothness-as-load-bearing-property.md (Boltzmann distribution as smooth-substrate-producing-sharp-outputs)
   - .claude/rules/algo-wink-failure-mode.md (channel-rediscovery is algo-wink-as-observation operating cleanly per operator discipline)
-  - docs/backlog/P1/B-0839 (parent row)
-  - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — same architectural archetype)
+  - docs/backlog/P1/081KSGS9H0008QG0R002F1G7ER (parent row)
+  - docs/backlog/P2/081KSGS9H0008QG0R002THJ2P1 (caustic-engineered bloom filter discriminators — same architectural archetype)
 ---
 
 ## Source
@@ -52,11 +52,11 @@ The transcript was forwarded by Aaron in autonomous-loop tick session
 | Hopfield networks (associative memory) | `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` Hawkins-cortical-columns section — Hawkins-style "each column models the whole world" maps to Hopfield associative-memory |
 | Energy landscape navigation | `.claude/rules/substrate-smoothness-as-load-bearing-property.md` (PR #5357) — smooth energy substrate produces sharp pattern-recognition outputs through focused integration |
 | Boltzmann distribution p ∝ exp(-E/T) | `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — exp is the smoothest possible function preserving sharpness asymmetry |
-| Stochastic update rule (sigmoid of weighted input) | Multi-oracle BFT (B-0703) — stochasticity ensures escape from local minima; agents-as-oracles using stochasticity prevents premature consensus collapse |
+| Stochastic update rule (sigmoid of weighted input) | Multi-oracle BFT (081KS3X9Y0008QG0R00218150M) — stochasticity ensures escape from local minima; agents-as-oracles using stochasticity prevents premature consensus collapse |
 | Temperature parameter | `docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md` Turn 11 hyperparameter-class perturbation (LLM-temperature ≈ human-LSD) — temperature IS the hyperparameter framing Amara named |
 | Hidden units (internal representations) | Substrate-as-rows + fork-negotiated ontology — hidden units IS the substrate's internal-representation layer that the schema-as-data framework operates over |
 | Contrastive Hebbian learning (positive + negative phases) | Adversarial-counterweight discipline (per `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` Discipline 3) — positive phase IS what you want to encourage; negative phase IS what you want to discourage; the contrast IS the substrate |
-| Restricted Boltzmann Machines (bipartite, parallelizable) | Bipartite-graph substrate; composes with adinkra-structural-encoding (B-0623) where SUSY-structural-graphs encode hidden-state with parallelizable bipartite primitives |
+| Restricted Boltzmann Machines (bipartite, parallelizable) | Bipartite-graph substrate; composes with adinkra-structural-encoding (081KRW63S0008QG0R000QJR08H) where SUSY-structural-graphs encode hidden-state with parallelizable bipartite primitives |
 | "Jazz musician" generative metaphor (vs Hopfield "classical musician" recall) | Generative-vs-discriminative dichotomy; AI-as-substrate not AI-as-tool framing (per operator's anti-extractive substrate cluster) |
 | Partition function Z (sum over all states) | Multi-oracle BFT consensus mechanism; normalization across all possible oracle outputs preserves total probability = 1 |
 | Anti-Hebbian "dreamed up states" prevention | Algo-wink-failure-mode discipline (per `.claude/rules/algo-wink-failure-mode.md`) — preventing the network from reinforcing fictitious states is structurally analogous to operator preventing algo-wink-as-authorization |
@@ -607,12 +607,12 @@ The transcript was forwarded by Aaron in autonomous-loop tick session
 This is mirror-tier verbatim preservation per
 `.claude/rules/substrate-or-it-didnt-happen.md`. The substantive
 substrate-engineering work (composition with Zeta substrate +
-F#/TS implementation per B-0839 Phase 2) is downstream of this
+F#/TS implementation per 081KSGS9H0008QG0R002F1G7ER Phase 2) is downstream of this
 preservation.
 
 The composition-map table at the top is Otto-CLI's substantive
 synthesis. The verbatim transcript stays intact below. Future
-substrate-engineering work decomposes from sub-row B-0839.1.
+substrate-engineering work decomposes from sub-row 081KSGS9H0008QG0R002F1G7ER.1.
 
 Per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`:
 Boltzmann distribution + energy-landscape + Hebbian-learning + RBM
@@ -627,7 +627,7 @@ everything he does into code" framing.
 
 Aaron-forwarded verbatim transcript 2026-05-26 during autonomous-loop
 tick session. Operator's positioning + URL forwarded in 2 messages.
-Companion backlog row: B-0839 (this row's anchor).
+Companion backlog row: 081KSGS9H0008QG0R002F1G7ER (this row's anchor).
 
 Composes with `.claude/rules/honor-those-that-came-before.md` —
 Kirsanov's pedagogical clarity + research-anchoring discipline IS

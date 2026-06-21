@@ -2,10 +2,10 @@
 // verify-branch.ts -- harness pre-tool-use hook: blocks `git commit` when
 // the current branch doesn't match an explicitly set ZETA_EXPECTED_BRANCH.
 //
-// Per docs/backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md
+// Per docs/backlog/P1/081KQR4HQ0008QG0R002YNV361-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md
 // (PR #1571). Wired into Claude Code via `.claude/settings.json` PreToolUse
 // on Bash invocations matching `git commit`. Per-harness wiring documented
-// in B-0191; the script itself is harness-agnostic.
+// in 081KQR4HQ0008QG0R002YNV361; the script itself is harness-agnostic.
 //
 // Exit codes:
 //   0 -- branch matches expected (or no expectation set; script is no-op)

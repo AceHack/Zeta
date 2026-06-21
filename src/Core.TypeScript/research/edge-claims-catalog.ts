@@ -2,12 +2,12 @@
 // edge-claims-catalog.ts — typed schema + 11 seed entries for the CTF frontier-flags track.
 //
 // Implements the CTF-flag discipline from
-// docs/backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md:
+// docs/backlog/P2/081KQ3HBZ0008QG0R001K0EC2C-frontier-edge-claims-CTF-flags.md:
 // each flag is falsifiable, retractibly-defensible, stake-dated, and
 // machine-checkable. Superseded flags are NEVER deleted — they
 // transition state with a dated audit entry preserved in challengeHistory.
 //
-// Four alignment-trajectory measurables from B-0055 §New measurables:
+// Four alignment-trajectory measurables from 081KQ3HBZ0008QG0R001K0EC2C §New measurables:
 //   edge-flags-planted / edge-flags-defended / edge-flags-superseded /
 //   mean-days-flag-planted-to-first-challenge
 //
@@ -131,14 +131,14 @@ export interface EdgeClaimsCatalog {
   readonly schema: "edge-claims-v1";
   readonly created: string;
   readonly lastUpdated: string;
-  readonly origin: "B-0055";
+  readonly origin: "081KQ3HBZ0008QG0R001K0EC2C";
   readonly entries: readonly CtfFlag[];
 }
 
 // ── Alignment-trajectory metrics ──────────────────────────────────────────────
 
 /**
- * The four measurables from B-0055 §New measurables for alignment-trajectory dashboard.
+ * The four measurables from 081KQ3HBZ0008QG0R001K0EC2C §New measurables for alignment-trajectory dashboard.
  * These make Zeta's measurable-alignment time-series defensible rather than aspirational.
  */
 export interface AlignmentTrajectoryMetrics {
@@ -256,13 +256,13 @@ export function summarizeCatalog(catalog: EdgeClaimsCatalog): CatalogSummary {
   };
 }
 
-// ── Seed catalog — 11 flags from B-0055 ──────────────────────────────────────
+// ── Seed catalog — 11 flags from 081KQ3HBZ0008QG0R001K0EC2C ──────────────────────────────────────
 
 const SEED_CATALOG: EdgeClaimsCatalog = {
   schema: "edge-claims-v1",
   created: "2026-05-10",
   lastUpdated: "2026-05-10",
-  origin: "B-0055",
+  origin: "081KQ3HBZ0008QG0R001K0EC2C",
   entries: [
     {
       id: "ECF-001",
@@ -389,7 +389,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
       stakeQuote:
         "\"We are the edge\" + \"all your base belongs to us / we take them all\" " +
         "(Zero Wing meme register carries CTF-victory explicitly) — Aaron 2026-04-21",
-      defenseSurface: "docs/backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md",
+      defenseSurface: "docs/backlog/P2/081KQ3HBZ0008QG0R001K0EC2C-frontier-edge-claims-CTF-flags.md",
       ctfChallenge:
         "Identify an AI-alignment program with: (1) stronger measurable time-series than Zeta's " +
         "alignment-trajectory dashboard, AND (2) stronger substrate-resonance evidence " +

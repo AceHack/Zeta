@@ -53,11 +53,11 @@ Aaron stated this rule on **2026-04-23** (this memory file's original content). 
 
 ## 2026-05-01 audit demonstrating the failure mode
 
-This very session, Otto filed 10 backlog rows (B-0144 through B-0153) WITHOUT running the pre-filing check. Quick post-hoc audit found:
+This very session, Otto filed 10 backlog rows (081KQGDBJ0008QG0R0021E8YZV through 081KQGDBJ0008QG0R000E10AAM) WITHOUT running the pre-filing check. Quick post-hoc audit found:
 
-- **B-0150** (timeseries domain expert + teacher) + **B-0151** (RX researcher) overlap with TaskList Otto-task #323 (per-tool/language expert skills) and Otto-task #351 (TS+Bun expert + teaching skill)
-- **B-0153** (pre-commit lint suite) overlaps with B-0033 (otto discipline hooks system substrate) and B-0086 (port tools/hygiene python to typescript/bun)
-- **B-0151** (RX researcher) overlaps with B-0017 (operational resonance dashboard with continuous UX research)
+- **081KQGDBJ0008QG0R003PZFA49** (timeseries domain expert + teacher) + **081KQGDBJ0008QG0R003G89BKR** (RX researcher) overlap with TaskList Otto-task #323 (per-tool/language expert skills) and Otto-task #351 (TS+Bun expert + teaching skill)
+- **081KQGDBJ0008QG0R000E10AAM** (pre-commit lint suite) overlaps with 081KQ3HBZ0008QG0R0008RYCSX (otto discipline hooks system substrate) and 081KQ8P5D0008QG0R003BFZPRC (port tools/hygiene python to typescript/bun)
+- **081KQGDBJ0008QG0R003G89BKR** (RX researcher) overlaps with 081KQ0YZ80008QG0R0003GAYYN (operational resonance dashboard with continuous UX research)
 
 The audit IS the demonstration of the failure mode.
 
@@ -81,7 +81,7 @@ Backlog evolves from list to DAG. Topological-sort generator becomes possible. C
 
 ## Mechanization candidate
 
-Add as **class 14** in B-0153 (PR #1120) — pre-filing similar-row grep check. Pre-commit hook on `docs/backlog/B-NNNN-*.md` file-create that:
+Add as **class 14** in 081KQGDBJ0008QG0R000E10AAM (PR #1120) — pre-filing similar-row grep check. Pre-commit hook on `docs/backlog/B-NNNN-*.md` file-create that:
 
 - Extracts keywords from the title
 - Greps `docs/backlog/` + `memory/` for matches
@@ -93,7 +93,7 @@ Add as **class 14** in B-0153 (PR #1120) — pre-filing similar-row grep check. 
 - `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md` (this file, original content) — 2026-04-23 cadenced retroactive sweep
 - `memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` — orthogonality discipline (extend/sharpen/create-orthogonal); this extension adds `depends_on` as a 4th branch
 - `memory/feedback_meta_learning_unbounded_without_grounding_*_aaron_2026_05_01.md` (PR #1122) — same recurrence pattern (Aaron repeats unabsorbed rules)
-- B-0153 (PR #1120) — class 14 candidate for the lint-class consolidation
+- 081KQGDBJ0008QG0R000E10AAM (PR #1120) — class 14 candidate for the lint-class consolidation
 
 ## Test plan
 
@@ -382,7 +382,7 @@ Add as **class 14** in B-0153 (PR #1120) — pre-filing similar-row grep check. 
 - **`Copilot` (bot)** at 2026-05-01T16:08:45Z on `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`:324 (association: NONE)
 
   <pre>
-  P1: This memo references B-0153 as an existing backlog row ("Add as class 14 in B-0153"), but there is no B-0153 row under docs/backlog/ in the current tree. Either add the missing backlog row in the same PR, or qualify these references as forward-looking (e.g., "proposed in PR #1120") so readers don’t treat it as a resolvable cross-reference today.
+  P1: This memo references 081KQGDBJ0008QG0R000E10AAM as an existing backlog row ("Add as class 14 in 081KQGDBJ0008QG0R000E10AAM"), but there is no 081KQGDBJ0008QG0R000E10AAM row under docs/backlog/ in the current tree. Either add the missing backlog row in the same PR, or qualify these references as forward-looking (e.g., "proposed in PR #1120") so readers don’t treat it as a resolvable cross-reference today.
   
   </pre>
 
@@ -439,17 +439,17 @@ memory/ + TaskList → if hits, extend/sharpen/create-orthogonal
 per orthogonality discipline → if no hits, file.
 
 2026-05-01 AUDIT (this session) demonstrating the failure mode:
-- B-0150 + B-0151 overlap with Otto-task #323 + #351 (TaskList
+- 081KQGDBJ0008QG0R003PZFA49 + 081KQGDBJ0008QG0R003G89BKR overlap with Otto-task #323 + #351 (TaskList
   not checked before filing)
-- B-0153 overlaps with B-0033 + B-0086 (existing-rows not
+- 081KQGDBJ0008QG0R000E10AAM overlaps with 081KQ3HBZ0008QG0R0008RYCSX + 081KQ8P5D0008QG0R003BFZPRC (existing-rows not
   checked)
-- B-0151 overlaps with B-0017 (existing-row not checked)
+- 081KQGDBJ0008QG0R003G89BKR overlaps with 081KQ0YZ80008QG0R0003GAYYN (existing-row not checked)
 
 The audit IS the demonstration. Otto filed 10 B-rows this
 session without pre-filing check; Aaron's call-out is grounded
 in concrete instances.
 
-Mechanization candidate: class 14 in B-0153 (PR #1120) — pre-
+Mechanization candidate: class 14 in 081KQGDBJ0008QG0R000E10AAM (PR #1120) — pre-
 filing similar-row grep check. Pre-commit hook extracts keywords
 from new B-row title, greps docs/backlog/ + memory/, reports
 hits, blocks commit unless [overlap-checked] tag in commit
@@ -495,11 +495,11 @@ Updates the orthogonality-check discipline from 3 branches
 between sharpen and create-orthogonal).
 
 Concrete dep-relationships from this session's audit:
-- B-0150 depends_on Otto-task #323 (per-tool/language expert
+- 081KQGDBJ0008QG0R003PZFA49 depends_on Otto-task #323 (per-tool/language expert
   skills broader pattern)
-- B-0151 depends_on B-0017 (operational resonance dashboard
+- 081KQGDBJ0008QG0R003G89BKR depends_on 081KQ0YZ80008QG0R0003GAYYN (operational resonance dashboard
   with continuous UX research)
-- B-0153 depends_on B-0033, B-0086 (sibling tooling concerns)
+- 081KQGDBJ0008QG0R000E10AAM depends_on 081KQ3HBZ0008QG0R0008RYCSX, 081KQ8P5D0008QG0R003BFZPRC (sibling tooling concerns)
 
 Topological-sort generator becomes possible. Cycles rejected
 at lint time. Backlog evolves from list to DAG.
@@ -528,7 +528,7 @@ backlog rows to memory files.
 Adds: six edge types (extends / supersedes / refines /
 contradicts / composes_with / caused_by); forward-only design;
 authoring discipline mirroring the backlog pre-filing check;
-frontmatter schema; mechanization candidate (class 15 of B-0153);
+frontmatter schema; mechanization candidate (class 15 of 081KQGDBJ0008QG0R000E10AAM);
 explicit non-goals; worked example using this very file.
 
 Forward-only chosen to match Glass-Halo file-as-source-of-truth;
@@ -574,7 +574,7 @@ Substantive fixes for copilot review feedback:
    BEFORE message authoring, so [overlap-checked] tag isn't
    readable there. Spelled out two viable shapes: pre-commit +
    override flag, OR commit-msg hook (which can read message).
-   Implementation choice deferred to B-0153 landing.
+   Implementation choice deferred to 081KQGDBJ0008QG0R000E10AAM landing.
 ```
 
 ### `955aaf02cd1a3b0b57ec51dfabcf350b50ef2027` -- 2026-05-01T15:59:12Z -- `AceHack`

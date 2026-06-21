@@ -39,7 +39,7 @@ Motivation: at 60s interval with 10-min claude timeout, a stuck loop burns ~50,0
 
 ### 2. Push-hang workaround in spawned-claude prompts
 
-Both `pickup` and `drain` mode prompts now include explicit instructions for the REST git-data API bypass when `git push` silently fails (exit 0, no remote update — [B-0615](docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md)). The bypass uses:
+Both `pickup` and `drain` mode prompts now include explicit instructions for the REST git-data API bypass when `git push` silently fails (exit 0, no remote update — [081KRW63S0008QG0R000EAZ9K2](docs/backlog/P3/081KRW63S0008QG0R000EAZ9K2-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md)). The bypass uses:
 
 ```
 POST /repos/.../git/blobs (file content base64)
@@ -74,8 +74,8 @@ This PR's commit (`686e055`) was landed via REST git-data API while `git push` w
 ## Composes with
 
 - [PR #4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145) (the rule documenting `timeout --kill-after` discipline + REST bypass)
-- [B-0615](docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) (the open bug both PRs address)
-- [B-0530](docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) (sibling multi-Otto coordination)
+- [081KRW63S0008QG0R000EAZ9K2](docs/backlog/P3/081KRW63S0008QG0R000EAZ9K2-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) (the open bug both PRs address)
+- [081KRMEXM0008QG0R000X1PPGC](docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) (sibling multi-Otto coordination)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -124,7 +124,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 feat(claude-loop-tick): self-sufficient background service — zero-PR …
 
-…backoff, push-hang awareness, ship-rate metric (B-0615 sibling)
+…backoff, push-hang awareness, ship-rate metric (081KRW63S0008QG0R000EAZ9K2 sibling)
 
 Addresses Aaron's directive 2026-05-18: fix background services so they
 stop wasting resources when output rate drops to zero (relevant to
@@ -144,7 +144,7 @@ Three bundled improvements (all touch background-loop self-sufficiency):
 2. **Push-hang workaround instructions in spawned-claude prompts**
    (lines 231, 250): inform the spawned claude session about the
    REST git-data API bypass pattern documented in PR #4145. When
-   git push silently fails (exit 0, no remote update — B-0615),
+   git push silently fails (exit 0, no remote update — 081KRW63S0008QG0R000EAZ9K2),
    the bypass uses POST /repos/.../git/{blobs,trees,commits,refs}
    to land commits directly via REST.
 

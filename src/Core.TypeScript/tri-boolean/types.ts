@@ -1,4 +1,4 @@
-// Tri-boolean core primitive -- the digital qubit cell (B-0944).
+// Tri-boolean core primitive -- the digital qubit cell (081KSV2WD0008QG0R00051XS0N).
 //
 // Three-valued state: True | False | Null. Null is the HELD living-uncertainty
 // (superposition) state -- it is never silently collapsed. measure() is the only
@@ -11,7 +11,7 @@
 //   + .claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-...md.
 //
 // This is the TS (distribution) implementation. F#/C#/Rust parity impls are the other
-// non-Byzantine oracles for the "summonable BFT" cross-language consensus (B-0944).
+// non-Byzantine oracles for the "summonable BFT" cross-language consensus (081KSV2WD0008QG0R00051XS0N).
 
 /** The three-valued state. 'N' (Null) is the held / superposed living-uncertainty state. */
 export type Tri = { readonly s: "T" } | { readonly s: "F" } | { readonly s: "N" };

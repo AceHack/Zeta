@@ -1,6 +1,6 @@
 ---
 pr_number: 5093
-title: "fix(B-0789 iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2)"
+title: "fix(081KSGS9H0008QG0R002T3BJ2R iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:57:44Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:36Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5093: fix(B-0789 iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2)
+# PR #5093: fix(081KSGS9H0008QG0R002T3BJ2R iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2)
 
 ## PR description
 

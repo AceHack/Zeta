@@ -76,7 +76,7 @@ omit the `[source]`/namespace and Ace *resolves* the best one.
 - **Template / temple of everything (#6972) + compile-time conflicts (#6940)** — sources are nodes in the
   defined graph; selection conflicts pre-visible.
 - **SoftValue / Bayesian (the soft layer)** — criteria scoring under uncertainty = a soft optimum.
-- **B-0824 n-dim dependency space / holographic projection** — source/ecosystem/OS is a dimension; resolution =
+- **081KSGS9H0008QG0R0031PBNGA n-dim dependency space / holographic projection** — source/ecosystem/OS is a dimension; resolution =
   multi-criteria optimization over the n-dim space.
 
 ## Beacon anchors

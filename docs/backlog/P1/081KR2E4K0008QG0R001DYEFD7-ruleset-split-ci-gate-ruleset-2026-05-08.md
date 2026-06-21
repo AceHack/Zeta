@@ -1,6 +1,5 @@
 ---
-id: B-0265
-zetaid: 081KR2E4K0008QG0R001DYEFD7
+id: 081KR2E4K0008QG0R001DYEFD7
 priority: P1
 status: closed
 closed: 2026-05-08
@@ -14,9 +13,9 @@ classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0265 — CI gate ruleset
+# 081KR2E4K0008QG0R001DYEFD7 — CI gate ruleset
 
-First child of B-0155. Create a dedicated ruleset for required
+First child of 081KQGDBJ0008QG0R0028YTDQ2. Create a dedicated ruleset for required
 status checks (the 7 CI contexts currently in legacy branch
 protection). Move from legacy branch protection to ruleset.
 

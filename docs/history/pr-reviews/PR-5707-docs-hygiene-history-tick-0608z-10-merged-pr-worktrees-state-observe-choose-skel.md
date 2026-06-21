@@ -47,7 +47,7 @@ Attempted `git worktree remove` mass-cleanup of the 9 confirmed-clean worktrees 
 - [`fighting-past-self-vs-peer-agent-distinguisher`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md)
 - [`classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md)
 - [`must-paired-with-can-exit-pattern.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/must-paired-with-can-exit-pattern.md)
-- B-0867.23 — agent-loop primitive-naming row
+- 081KSNY2Z0008QG0R003206PFM — agent-loop primitive-naming row
 - PR #5700 — locked-architecture landing
 - PR #5697 — canonical `~/.zeta/agents/<persona>/<stream>/` worktree location
 

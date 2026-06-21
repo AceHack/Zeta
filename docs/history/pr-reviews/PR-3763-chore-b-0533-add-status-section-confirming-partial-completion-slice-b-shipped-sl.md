@@ -27,7 +27,7 @@
 
 ## Description
 
-Per row-close gate triage (PR #3757 step-0 discriminator): B-0533 is partial-completion, not drift. Slice B (lint tool + gate.yml) shipped via PR #3548 + #3555; Slice A (sweep) pending — lint check still failing on PRs #3670/#3659/#3643/#3633/#3599. Row stays status: open.
+Per row-close gate triage (PR #3757 step-0 discriminator): 081KRMEXM0008QG0R000K25MXS is partial-completion, not drift. Slice B (lint tool + gate.yml) shipped via PR #3548 + #3555; Slice A (sweep) pending — lint check still failing on PRs #3670/#3659/#3643/#3633/#3599. Row stays status: open.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -48,12 +48,12 @@ Per row-close gate triage (PR #3757 step-0 discriminator): B-0533 is partial-com
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CiLzy`
-- **Path**: `docs/backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`
+- **Path**: `docs/backlog/P3/081KRMEXM0008QG0R000K25MXS-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T06:03:10Z on `docs/backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`:93 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T06:03:10Z on `docs/backlog/P3/081KRMEXM0008QG0R000K25MXS-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`:93 (association: NONE)
 
   <pre>
   Frontmatter `last_updated` is still 2026-05-15 but this PR adds a new "## Status (2026-05-16)" section. Per tools/backlog/README.md, `last_updated` must be bumped on every content edit to a per-row file.
@@ -65,7 +65,7 @@ Per row-close gate triage (PR #3757 step-0 discriminator): B-0533 is partial-com
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`
+- `docs/backlog/P3/081KRMEXM0008QG0R000K25MXS-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`
 
 **Message:**
 
@@ -75,7 +75,7 @@ chore(b-0533): add Status section confirming partial-completion (Slic…
 …e B shipped, Slice A pending)
 
 Empirical pure-git audit at 2026-05-16T05:48Z (rate-limit 0/5000)
-confirms B-0533 is partial completion per row-close gate triage.
+confirms 081KRMEXM0008QG0R000K25MXS is partial completion per row-close gate triage.
 
 Shipped (Slice B): tools/hygiene/audit-section-33-migration-xrefs.ts
 via PR #3548 + PR #3555; gate.yml lint-section-33-migration-xrefs
@@ -95,7 +95,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`
+- `docs/backlog/P3/081KRMEXM0008QG0R000K25MXS-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md`
 
 **Message:**
 

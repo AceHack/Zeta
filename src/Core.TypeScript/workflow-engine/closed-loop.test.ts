@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/closed-loop.test.ts
  *
- * B-0914.2 — invariant tests for closed-loop orchestrator.
+ * 081KSNY2Z0008QG0R001YK61JQ.2 — invariant tests for closed-loop orchestrator.
  */
 
 import { describe, expect, it } from "bun:test";
@@ -58,7 +58,7 @@ const mockEvolve = async (
   ];
 };
 
-describe("B-0914.2 closed-loop orchestrator", () => {
+describe("081KSNY2Z0008QG0R001YK61JQ.2 closed-loop orchestrator", () => {
   it("runCycle with empty hypotheses returns EmptyHypothesisSet", async () => {
     const callbacks: LoopCallbacks<SubstrateT> = {
       dispatchCi: passingCi,

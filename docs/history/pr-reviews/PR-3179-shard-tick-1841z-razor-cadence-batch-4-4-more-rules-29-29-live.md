@@ -48,7 +48,7 @@ Continues per-tick razor-cadence composes-with audit. Batch 4: 4 more rules, 29/
 |-------|----|-------|-----------|
 | 1 | #3152 | 4 | 30/30 (100%) |
 | 2 | #3161 | 4 | 37/37 (100%) |
-| 3 | #3174 (decomposed) | 4 | 17/18 (94%) — B-0514 captures the 1 MISS |
+| 3 | #3174 (decomposed) | 4 | 17/18 (94%) — 081KRHWGX0008QG0R002E3BCDS captures the 1 MISS |
 | 4 | this PR | 4 | 29/29 (100%) |
 | **Total** | — | **16** | **113/114 (99.1%)** |
 
@@ -63,7 +63,7 @@ The peer-call infrastructure has unusually dense cross-references: 12 TS files a
 - [x] 6 rule cross-refs verified LIVE
 - [x] 12 peer-call TS files verified LIVE
 - [x] 5 memory + 1 research + 1 backlog-row file verified LIVE
-- [x] 3 backlog rows (B-0326, B-0327, B-0421) verified LIVE
+- [x] 3 backlog rows (081KR2E4K0008QG0R001HQF27C, 081KR2E4K0008QG0R002KNZ29V, 081KRA5AR0008QG0R0011ZGRZT) verified LIVE
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -112,7 +112,7 @@ The peer-call infrastructure has unusually dense cross-references: 12 TS files a
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use a real glob for backlog ID verification**
 
-  The verification command uses `B-NNNN-*.md`, which is a placeholder-style token rather than a glob that matches numeric backlog IDs, so it will not validate the referenced `B-0326/B-0327/B-0421` artifacts as written. This undermines the claim that step 4 mechanically verified those backlog references.
+  The verification command uses `B-NNNN-*.md`, which is a placeholder-style token rather than a glob that matches numeric backlog IDs, so it will not validate the referenced `081KR2E4K0008QG0R001HQF27C/081KR2E4K0008QG0R002KNZ29V/081KRA5AR0008QG0R0011ZGRZT` artifacts as written. This undermines the claim that step 4 mechanically verified those backlog references.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -139,7 +139,7 @@ cross-reference matrix (12 sibling TS files referenced from 2 rules — foundati
 cold-boot substrate).
 
 Cumulative razor-cadence item 4: 16/47 rules audited (~34%), 113/114 cross-refs
-LIVE (99.1%). Batches 1+2+4 clean; batch 3 had 1 MISS (B-0514 captures).
+LIVE (99.1%). Batches 1+2+4 clean; batch 3 had 1 MISS (081KRHWGX0008QG0R002E3BCDS captures).
 
 Holding decision: Aaron's decomposed PRs #3172 + #3174 have open threads but
 autoMerge=none signals he hasn't released them; leaving to his control.
@@ -164,13 +164,13 @@ Two Codex P2 threads on PR #3179 (1841Z shard):
 
 1. Arithmetic: shard said "29/29 cross-references LIVE" but the deduplicated category
    breakdown sums to 28 (6 rules + 12 peer-call TS files + 7 memory/research/row-file +
-   3 backlog rows). The double-count was likely B-0421 appearing both as a referenced
+   3 backlog rows). The double-count was likely 081KRA5AR0008QG0R0011ZGRZT appearing both as a referenced
    path AND as a backlog row. Corrected to 28/28 + updated cumulative razor-cadence
    tally from 113/114 to 112/113 LIVE.
 
 2. Glob clarity: step 4 said "ls docs/backlog/P*/B-NNNN-*.md" — Codex correctly
    noted that's a placeholder, not a working glob. Updated to show the actual
-   per-row iteration commands (ls docs/backlog/P*/B-0326-*.md, etc.) and labeled
+   per-row iteration commands (ls docs/backlog/P*/081KR2E4K0008QG0R001HQF27C-*.md, etc.) and labeled
    B-NNNN as placeholder shorthand.
 
 After this lands, both Codex threads will be resolved via GraphQL.

@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/consensus.test.ts
  *
- * B-0914.3 — invariant tests for n-parallel + consensus substrate.
+ * 081KDX1YWP008QG0R003FMNBHX — invariant tests for n-parallel + consensus substrate.
  */
 import { describe, expect, it } from "bun:test";
 import { nIdenticalAnalyzers, runConsensus } from "./consensus";
@@ -11,7 +11,7 @@ const failingAnalyzer = (reason) => async () => ({ ok: false, reason });
 const throwingAnalyzer = (msg) => async () => {
     throw new Error(msg);
 };
-describe("B-0914.3 n-parallel + consensus substrate", () => {
+describe("081KDX1YWP008QG0R003FMNBHX n-parallel + consensus substrate", () => {
     it("empty analyzers → InsufficientAnalyzers", async () => {
         const result = await runConsensus({ analyzers: [], mechanism: { kind: "majority" } });
         expect(result.ok).toBe(false);

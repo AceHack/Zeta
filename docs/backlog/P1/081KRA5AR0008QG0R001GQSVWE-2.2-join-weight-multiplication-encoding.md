@@ -1,9 +1,8 @@
 ---
-id: B-0366.2.2
-zetaid: 081KRA5AR0008QG0R001GQSVWE
+id: 081KRA5AR0008QG0R001GQSVWE
 priority: P1
 status: closed
-title: "Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)"
+title: "Z-set join weight multiplication as reversible Toffoli encoding (slice of 081KR50HA0008QG0R0002PGV1N)"
 effort: S
 created: 2026-05-11
 last_updated: 2026-06-19
@@ -18,7 +17,7 @@ type: research
 tags: [toffoli, zset-join, weight-encoding, reversible]
 ---
 
-# B-0366.2.2 — Join weight multiplication encoding
+# 081KRA5AR0008QG0R001GQSVWE — Join weight multiplication encoding
 
 ## What (bounded slice)
 

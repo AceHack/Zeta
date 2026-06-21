@@ -236,9 +236,9 @@ wait for instruction. Priority ladder:
    rule): write `CADENCE-TRACK: <work> overdue, deferred to
    <trigger>` into this tick's shard.
 
-   **Check 0c — authorization check** (B-0308): runs
+   **Check 0c — authorization check** (081KR2E4K0008QG0R002S3FDXN): runs
    `bun tools/authorization/check-authorization.ts` which
-   composes the pace-extractor (B-0306) and resolver (B-0307).
+   composes the pace-extractor (081KR2E4K0008QG0R0007CFSZ7) and resolver (081KR2E4K0008QG0R003CF4YHE).
    Prints two-layer DX output: raw JSON (Layer 1) then labeled
    interpretation (Layer 2). If `operative: null`, the never-idle
    floor applies. Does NOT gate work — surfaces information for
@@ -414,7 +414,7 @@ host metadata to manifest as permanent structural mass in git.
 
 Pattern: **create → merge → archive → commit archive**.
 
-### 4c. Reindex MEMORY.md heap→stack on cadence (B-0423)
+### 4c. Reindex MEMORY.md heap→stack on cadence (081KRCQQF0008QG0R0037YYP1A)
 
 After archiving PRs (step 4b), promote any unindexed heap memory
 files to the MEMORY.md stack view. Run a cheap staleness check first:
@@ -429,7 +429,7 @@ bun tools/memory/reindex-memory-md.ts --check
 ```bash
 bun tools/memory/reindex-memory-md.ts
 git add memory/MEMORY.md
-git commit -m "chore(memory): reindex MEMORY.md stack from heap [B-0423]
+git commit -m "chore(memory): reindex MEMORY.md stack from heap [081KRCQQF0008QG0R0037YYP1A]
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
@@ -441,7 +441,7 @@ additions.
 
 **Why this step exists:** Memory files commit with frontmatter but
 without a synchronous MEMORY.md paired-edit (heap-state-acceptable
-per B-0423). Without this cadence step, MEMORY.md would go
+per 081KRCQQF0008QG0R0037YYP1A). Without this cadence step, MEMORY.md would go
 permanently stale once parallel agents stop doing paired edits.
 This step keeps the heap→stack promotion loop closed automatically.
 
@@ -584,7 +584,7 @@ declared) against `CronList` and re-arms missing rows.
 
 ## Related artifacts
 
-- **Background Services Architecture** (B-0440, B-0441, B-0442) — the
+- **Background Services Architecture** (081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW) — the
   proactive multi-agent loop is augmented by macOS `launchd` background
   daemons that ensure failure modes and deadlocks are broken without
   human intervention. See `tools/bg/`. Currently 4 services exist in
@@ -594,14 +594,14 @@ declared) against `CronList` and re-arms missing rows.
   `.gemini/launchd/com.zeta.backlog-ready-notifier.plist`). The
   remaining two (`standing-by-detector.ts`, `audit-duplicate-row-ids.ts`)
   are invokable on demand via `bun tools/bg/<name>.ts --once` but not
-  yet wired to launchd (B-0497 for standing-by-detector; B-0442
+  yet wired to launchd (081KRHWGX0008QG0R003NT6DY9 for standing-by-detector; 081KRFA460008QG0R00061SXRW
   slice 5+ for audit-duplicate-row-ids). `backlog-ready-notifier.ts`
-  produces `work-assignment` bus envelopes; see B-0460 for the
+  produces `work-assignment` bus envelopes; see 081KRHWGX0008QG0R001E9KEJ1 for the
   subscriber handler that consumes them. Note: plist files contain
   machine-specific paths and are maintainer-only artifacts.
 
-  **`missed-substrate-detector` auto-recovery** (B-0442 slice 5, landed
-  2026-05-15 via B-0503 + B-0504): the detector can optionally open a
+  **`missed-substrate-detector` auto-recovery** (081KRFA460008QG0R00061SXRW slice 5, landed
+  2026-05-15 via 081KRHWGX0008QG0R0027YXBTB + 081KRHWGX0008QG0R000PVB6FF): the detector can optionally open a
   recovery PR for each `CascadeFinding`:
 
   - `--auto-recover` (default `off`): when set, after detecting a

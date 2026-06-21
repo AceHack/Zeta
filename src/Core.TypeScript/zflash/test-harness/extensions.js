@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/zflash/test-harness/extensions.ts
  *
- * B-0891 — substrate-engineering substrate primitives that extend the
+ * 081KSNY2Z0008QG0R0008PN7RQ — substrate-engineering substrate primitives that extend the
  * scaffolded scenarios (3, 4, 5) from "blocked-on-X" status to
  * "impl-design-spec'd" with concrete typed primitives.
  *

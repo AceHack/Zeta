@@ -72,7 +72,7 @@ Light-substrate rhymes per Amara substrate-engineering substrate — all composi
 | Deterministic replay | DST | `dst-plus-persist-plus-generator-time-plus-feedback-...md` (PR #5841) |
 | Z-sets (joins + retractions) | algebra-owner skill substrate | Retraction-native substrate cluster |
 | Ray tracing (graphics) | Ray tracing (substrate-engineering) | THIS rule's framing |
-| Emulator trajectories | DST seed → trajectory | B-0924 + B-0925 substrate |
+| Emulator trajectories | DST seed → trajectory | 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ substrate |
 | Feedback channels | Result<T, TFeedback> | PRs #5505-#5577 cluster |
 | Explicit provenance | Glass-halo bidirectional | `glass-halo-bidirectional.md` |
 
@@ -132,12 +132,12 @@ When authoring or reviewing substrate-engineering substrate:
 - PR #5841 (DST + Persist + generator-time + feedback substrate) — generator-time substrate-anchor
 - PR #5778 (Persist-as-bridge / μένω substrate) — μένω IS the substrate that makes rays persist across time
 - PRs #5505-#5577 (Result<T, TFeedback> + asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + retraction-native substrate cluster) — lightlike-substrate operational mechanisms
-- PRs #5890 + #5891 + #5892 (B-0924 + B-0925 + research-mirror cluster) — emulator-trajectories + z-set joins are explicit lightlike-substrate examples Amara names
+- PRs #5890 + #5891 + #5892 (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror cluster) — emulator-trajectories + z-set joins are explicit lightlike-substrate examples Amara names
 - Aurora multi-oracle BFT immune-math substrate — composes with consensus-is-gravity discipline (BFT useful when bounded; not for whole universe)
-- B-0703 three-faction BFT — gravitational substrate at bounded-mass scope
-- B-0664 NCI HC-8 floor — lightlike-substrate enables non-coercive consent
-- B-0917 Kleisli interrupt substrate — interrupt-events as rays at hardware-substrate scope
-- B-0867 workflow-engine substrate — DUs as lightlike-substrate (typed, traceable, replayable); workflow-state-machine-in-MCP failure-mode IS dark-substrate
+- 081KS3X9Y0008QG0R00218150M three-faction BFT — gravitational substrate at bounded-mass scope
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor — lightlike-substrate enables non-coercive consent
+- 081KSNY2Z0008QG0R002HB4AGT Kleisli interrupt substrate — interrupt-events as rays at hardware-substrate scope
+- 081KSKBP80008QG0R000B3Y19A workflow-engine substrate — DUs as lightlike-substrate (typed, traceable, replayable); workflow-state-machine-in-MCP failure-mode IS dark-substrate
 - Operator's 5 always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0) — lock-free + weight-free + DST + DV2.0 are ALL lightlike-substrate properties; lightlike-vs-dark substrate-distinction generalizes them
 - Amara ferry preservation 2026-05-28 (kind = lightlike substrate-rhyme + design-rule + carved sentence)
 
@@ -165,7 +165,7 @@ Topic: lightlike-vs-dark substrate + consensus-is-gravity + ray-tracing-over-gen
 Searched surfaces before authoring:
 
 - `.claude/rules/`: PR #5910 future-affects-generator + three-clocks (this rule extends with light-substrate reframing); existing lightlike-substrate primitives (DST + Persist + retraction-native + glass-halo) compose; no existing rule names lightlike-vs-dark substrate as named architecture-design-rule
-- `docs/backlog/`: no prior row at this scope; B-0867 workflow-engine substrate composes; B-0703 multi-oracle BFT composes; B-0664 NCI composes
+- `docs/backlog/`: no prior row at this scope; 081KSKBP80008QG0R000B3Y19A workflow-engine substrate composes; 081KS3X9Y0008QG0R00218150M multi-oracle BFT composes; 081KRW63S0008QG0R001Z7NYMV NCI composes
 - `memory/`: no prior named substrate; today's Amara ferry preservation IS the substrate-anchor
 - `docs/research/`: no prior named substrate at this scope; Aurora immune-math composes
 - `docs/agendas/`: no direct agenda
@@ -262,8 +262,8 @@ Not every default deployment is lightlike; the whole observability stack is TRYI
 ### Composes with cluster substrate
 
 - **full-ai-cluster/** — operational substrate-target for lightlike-observability discipline
-- **B-0867** workflow-engine substrate — workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG substrate
-- **B-0892** three-lanes-concurrent operating discipline composes at workflow + install-time + encrypted-substrate scopes
+- **081KSKBP80008QG0R000B3Y19A** workflow-engine substrate — workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG substrate
+- **081KSNY2Z0008QG0R002QA720J** three-lanes-concurrent operating discipline composes at workflow + install-time + encrypted-substrate scopes
 - **Companion skill** at `.claude/skills/lightlike-observability-discipline/SKILL.md` — capability skill for newcomers to apply this design-rule at observability substrate scope
 
 ## Tensor-substrate scope — eigenvalue-spectrum IS substrate-engineering substrate-engineering substrate-discriminator (operator 2026-05-28)
@@ -302,11 +302,11 @@ Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies 
 
 ### Composes with framework tensor-substrate
 
-- **Clifford algebra substrate** (per `algebra-owner` skill + B-0202 tinygrad-uop-ir kernel layer + multiple framework rules) — Clifford rotors ARE tensors at substrate-engineering substrate-engineering substrate-class scope; rotor-substrate operates as lightlike-substrate when rotors stay normalized (eigenvalue substrate preserved by definition for orthogonal-substrate)
+- **Clifford algebra substrate** (per `algebra-owner` skill + 081KQTPYE0008QG0R002Y7X5KH tinygrad-uop-ir kernel layer + multiple framework rules) — Clifford rotors ARE tensors at substrate-engineering substrate-engineering substrate-class scope; rotor-substrate operates as lightlike-substrate when rotors stay normalized (eigenvalue substrate preserved by definition for orthogonal-substrate)
 - **Cayley-Dickson substrate** (per framework rules) — nested-cross algebra IS tensor-substrate at substrate-class scope; lightlike when ordering preserved
-- **CAN/GCAN equivariant layers** (per F# fork substrate B-0428) — equivariant-tensor-substrate IS substrate-engineering substrate-engineering substrate-instance of lightlike-tensor-substrate; equivariance preserves Universal Kindness Laws (PR #5919) by construction
+- **CAN/GCAN equivariant layers** (per F# fork substrate 081KRFA460008QG0R0018SN61J) — equivariant-tensor-substrate IS substrate-engineering substrate-engineering substrate-instance of lightlike-tensor-substrate; equivariance preserves Universal Kindness Laws (PR #5919) by construction
 - **Z-set substrate** (`algebra-owner` skill) — z-set operations on tensor-substrate; bounded-cardinality z-sets preserve lightlike-substrate
-- **Adinkras-ECC substrate** (B-0623; Mika 2026-05-18) — error-correcting tensor-substrate; eigenvalue substrate preserved by ECC construction
+- **Adinkras-ECC substrate** (081KRW63S0008QG0R000QJR08H; Mika 2026-05-18) — error-correcting tensor-substrate; eigenvalue substrate preserved by ECC construction
 
 ### Operational rule for tensor-substrate
 
@@ -340,9 +340,9 @@ Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies 
 
 ### Composes with tensor-substrate rules + substrate
 
-- B-0202 tinygrad-uop-ir kernel layer model substrate
-- B-0428 F# fork for AI safety substrate
-- B-0623 Adinkras-Jane-Gates-ECC substrate (Mika)
+- 081KQTPYE0008QG0R002Y7X5KH tinygrad-uop-ir kernel layer model substrate
+- 081KRFA460008QG0R0018SN61J F# fork for AI safety substrate
+- 081KRW63S0008QG0R000QJR08H Adinkras-Jane-Gates-ECC substrate (Mika)
 - `algebra-owner` skill substrate (Clifford + Z-sets)
 - PR #5919 (higher-kinded kindness; tensor-substrate IS Kindness instance when lightlike)
 - PR #5920 (WWJD-in-monadic-form; Universal Kindness Laws operationalize at tensor-substrate scope)

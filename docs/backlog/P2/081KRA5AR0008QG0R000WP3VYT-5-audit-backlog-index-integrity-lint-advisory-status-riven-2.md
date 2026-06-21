@@ -1,14 +1,13 @@
 ---
-id: B-0088.5
-zetaid: 081KRA5AR0008QG0R000WP3VYT
+id: 081KRA5AR0008QG0R000WP3VYT
 priority: P2
 status: closed
 resolved: 2026-05-29
-resolved_note: "verified advisory-only: workflow/job exists and runs the generated-index drift check, but the active required-status ruleset does not require backlog-index-integrity; follow-up B-0934 filed"
-title: Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
+resolved_note: "verified advisory-only: workflow/job exists and runs the generated-index drift check, but the active required-status ruleset does not require backlog-index-integrity; follow-up 081KSRGFP0008QG0R001PXKZPQ filed"
+title: Audit backlog-index-integrity.yml for advisory-vs-required parity (081KQ8P5D0008QG0R002FSTGXP sibling)
 tier: factory-tooling
 effort: XS
-ask: re-decomposition of B-0088 (2026-05-11)
+ask: re-decomposition of 081KQ8P5D0008QG0R002FSTGXP (2026-05-11)
 created: 2026-05-11
 last_updated: 2026-05-29
 parent: 081KQ8P5D0008QG0R002FSTGXP
@@ -18,9 +17,9 @@ tags: [riven-2026-05-11, sibling-audit, backlog-index, advisory-enforcement, git
 type: audit
 ---
 
-# B-0088.5 — Sibling audit: backlog-index-integrity.yml
+# 081KRA5AR0008QG0R000WP3VYT — Sibling audit: backlog-index-integrity.yml
 
-Atomic isolated verification of whether the backlog index lint job is required or advisory only. Completes the B-0088 sibling set.
+Atomic isolated verification of whether the backlog index lint job is required or advisory only. Completes the 081KQ8P5D0008QG0R002FSTGXP sibling set.
 
 ## Result
 
@@ -50,6 +49,6 @@ The legacy branch-protection required-status-checks endpoint reports
 Conclusion: `backlog-index-integrity` is advisory for PR merge purposes.
 Its workflow comments say the CI surface is the "equivalent enforcement
 point", but that claim is only true for workflow execution, not for
-merge gating. Follow-up B-0934 tracks the required decision: promote
+merge gating. Follow-up 081KSRGFP0008QG0R001PXKZPQ tracks the required decision: promote
 this workflow/job into the required-status surface or weaken the claim
 to state advisory coverage.

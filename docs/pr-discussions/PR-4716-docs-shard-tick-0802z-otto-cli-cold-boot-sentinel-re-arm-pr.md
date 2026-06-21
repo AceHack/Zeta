@@ -22,7 +22,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - 8h sentinel-death gap since 0008Z (`5dd33255` died with its session per documented mechanism)
 - PR #4668 named-dep state unchanged from 0008Z (DIRTY, 12 threads, 55+ behind, auto-merge armed); continued decline-to-act on operator-authority territory per HC-8 + no-directives
 - Brief-ack #1 with explicit named-dep (counter not engaged per holding-without-named-dependency rule)
-- B-0615 partial-extract failure mode empirically reproduced (25s timeout killed worktree-add at 76%; 60s retry clean)
+- 081KRW63S0008QG0R000EAZ9K2 partial-extract failure mode empirically reproduced (25s timeout killed worktree-add at 76%; 60s retry clean)
 
 ## Test plan
 

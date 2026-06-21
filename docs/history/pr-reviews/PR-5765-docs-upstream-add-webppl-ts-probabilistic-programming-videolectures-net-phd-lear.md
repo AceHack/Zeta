@@ -43,8 +43,8 @@ Both added to `references/reference-sources.json` + new 'Probabilistic programmi
 ## Composes with
 
 - PR #5763 (Google co-scientist + Sakana Robin + Infer.NET upstreams)
-- PR #5764 (B-0914.1 TrueSkill 1v1 substrate)
-- B-0914 / B-0914.1 backlog substrate
+- PR #5764 (081KSNY2Z0008QG0R001YK61JQ.1 TrueSkill 1v1 substrate)
+- 081KSNY2Z0008QG0R001YK61JQ / 081KSNY2Z0008QG0R001YK61JQ.1 backlog substrate
 
 ## Test plan
 

@@ -47,7 +47,7 @@ The flag was not a nit. `EXCLUDE_RE.test(path)` with `.*\.plist` matches `foo.pl
 ## Prior-tick PRs status
 
 - [#3240](https://github.com/Lucent-Financial-Group/Zeta/pull/3240) (shard 2046Z) — wait-ci, autoMerge armed
-- [#3244](https://github.com/Lucent-Financial-Group/Zeta/pull/3244) (B-0488 close-out) — wait-ci, autoMerge armed
+- [#3244](https://github.com/Lucent-Financial-Group/Zeta/pull/3244) (081KRHWGX0008QG0R001HDK688 close-out) — wait-ci, autoMerge armed
 - [#3245](https://github.com/Lucent-Financial-Group/Zeta/pull/3245) (shard 2055Z) — wait-ci, autoMerge armed
 
 ## Test plan

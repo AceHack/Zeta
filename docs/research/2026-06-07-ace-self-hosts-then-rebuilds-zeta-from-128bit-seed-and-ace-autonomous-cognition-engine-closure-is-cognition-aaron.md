@@ -56,7 +56,7 @@ A **second backronym** for ACE, alongside **Awesome Closure Engine** (#6943). Bo
 
 - **Backronyms** (ACE now has two facets: Awesome Closure Engine / Autonomous Cognition Engine) — naming notes,
   public/glossary use gated on `naming-expert` + human review. Recorded as Aaron's coinage.
-- **Bootstrap-from-seed** is in-flight design (B-0863/#6942 + 081KTHTPPCD), with the two hard bounds:
+- **Bootstrap-from-seed** is in-flight design (081KSKBP80008QG0R000F4311E/#6942 + 081KTHTPPCD), with the two hard bounds:
   host-relative (not absolute) + reconstruction (not resurrection). Self-hosting + tiny-seed reconstruction is
   the real, defensible thesis.
 - Ferry's code-block "examples" (yaml/bash) were Alexa-generated illustrations, not a spec; summarized, not

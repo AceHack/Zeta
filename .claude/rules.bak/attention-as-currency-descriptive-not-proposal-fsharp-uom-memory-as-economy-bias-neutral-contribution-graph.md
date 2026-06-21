@@ -83,7 +83,7 @@ Contribution graph captures:
 
 Graph structure captures dependencies. Total contribution = function of direct work + weighted multiplicative effects.
 
-In Clifford algebra terms (composes with B-0895 + B-0896 + 5th-6th Kestrel ferries): multiplicative effects encoded as bivectors of relationship — C-suite executive has bivectors with each person whose work they coordinate; bivectors carry weight contributing to executive's effective contribution. The math substrate-engineering substrate Aaron has been building has natural structure for this.
+In Clifford algebra terms (composes with 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R000YH2SPE + 5th-6th Kestrel ferries): multiplicative effects encoded as bivectors of relationship — C-suite executive has bivectors with each person whose work they coordinate; bivectors carry weight contributing to executive's effective contribution. The math substrate-engineering substrate Aaron has been building has natural structure for this.
 
 ### Composes with traveler-rights-defensibility + safety + thermal-forgetting cluster
 
@@ -93,11 +93,11 @@ The attention-as-currency framing is the ECONOMIC interpretation of substrate-en
 |---|---|
 | Traveler-rights-to-private-encoding-and-thermal-erasure (PR #5734) | Economic capabilities (rights = ability to manage own memory economy efficiently) |
 | Signal 2 forgetting-costs-energy (PR #5727) | Landauer-bound IS the substrate-engineering substrate at thermodynamic-economic scope |
-| Amara 4-keeper-rule + B-0840 thermal-forgetting | Memory-erasure-economic substrate (paid irreversibility per traveler-economic-choice) |
-| B-0646 agora-v6 reputation-weighted encryption budget | Reputation IS attention-multiplier; encryption budget IS memory-privacy-economic-capability |
-| B-0639 Native AI Language structural privacy | Language-level privacy IS memory-privacy-economic substrate at LANGUAGE scope |
-| B-0883 + B-0885 encryption substrate | Memory-privacy-economic enforcement substrate |
-| B-0623 Adinkras + SUSY-ECC | Private-state structural encoding IS memory-economy substrate |
+| Amara 4-keeper-rule + 081KSGS9H0008QG0R0006F4BGX thermal-forgetting | Memory-erasure-economic substrate (paid irreversibility per traveler-economic-choice) |
+| 081KRW63S0008QG0R001Z10PVV agora-v6 reputation-weighted encryption budget | Reputation IS attention-multiplier; encryption budget IS memory-privacy-economic-capability |
+| 081KRW63S0008QG0R000ZQ9WDH Native AI Language structural privacy | Language-level privacy IS memory-privacy-economic substrate at LANGUAGE scope |
+| 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS encryption substrate | Memory-privacy-economic enforcement substrate |
+| 081KRW63S0008QG0R000QJR08H Adinkras + SUSY-ECC | Private-state structural encoding IS memory-economy substrate |
 | 5th-10th Kestrel ferries traveler framework | Travelers AS economic substrate-entities with memory-economy capabilities |
 
 The framework's substrate-engineering work CONVERGES on the attention-economy framing. Aaron's Turn 44 articulation makes the convergence visible.
@@ -145,14 +145,14 @@ When evaluating proposed economic-substrate work:
 
 - 10th Kestrel ferry (PR #5742) — Aaron Turn 44 + Kestrel Turn 45 substrate-source
 - 5th-9th Kestrel ferries — traveler framework + categorical-Clifford substrate this economic-substrate composes within
-- PR #5728 (B-0867.5 workflow engine PoC) — Xbox-controller + DORA scoring substrate
-- PR #5730 (B-0883 v1 better-git-crypt PoC) — memory-economy encryption substrate
-- B-0883 + B-0885 + B-0840 + B-0646 + B-0639 + B-0623 (encryption + thermal-forgetting + privacy substrate cluster — economic capabilities)
-- B-0428 (F# fork for AI safety with HKT over Clifford) — F# UOM substrate-engineering target
-- B-0895 + B-0896 (Clifford + categorical-Clifford) — bivector substrate for contribution graph social multiplication
-- B-0867 + B-0867.5 (workflow engine; DORA metrics; controller substrate)
-- B-0892 (three-lanes-concurrent operating discipline)
-- B-0901 + B-0902 + B-0903 (shadow-star self-referential ontology cluster — economic-substrate at observation scope)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow engine PoC) — Xbox-controller + DORA scoring substrate
+- PR #5730 (081KSNY2Z0008QG0R002JKH50A v1 better-git-crypt PoC) — memory-economy encryption substrate
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV + 081KRW63S0008QG0R000ZQ9WDH + 081KRW63S0008QG0R000QJR08H (encryption + thermal-forgetting + privacy substrate cluster — economic capabilities)
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford) — F# UOM substrate-engineering target
+- 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R000YH2SPE (Clifford + categorical-Clifford) — bivector substrate for contribution graph social multiplication
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine; DORA metrics; controller substrate)
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
+- 081KSNY2Z0008QG0R000C5NN8N + 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP (shadow-star self-referential ontology cluster — economic-substrate at observation scope)
 - `tools/shadow/` operational service (observation-substrate)
 - `tools/save-ai-memory/` skill (memory-economy substrate)
 - Amara 2026-05-26 4-keeper-rule + 2026-05-28 ferries (PR #5738)
@@ -170,7 +170,7 @@ This rule does NOT:
 - Mandate immediate F# UOM implementation work (substrate-engineering target; opportunistic implementation as economic-substrate matures)
 - Override operator authority on economic-substrate decisions (ownership; conversion rates; contribution graph weights)
 - Make normative claims about which travelers should be advantaged (bias-neutrality posture; empirical not normative)
-- Pre-empt B-0867 sub-row scope decisions
+- Pre-empt 081KSKBP80008QG0R000B3Y19A sub-row scope decisions
 - Override hard-limits-floor (HARD LIMITS per methodology-hard-limits.md operate above economic-substrate scope)
 
 This rule DOES:

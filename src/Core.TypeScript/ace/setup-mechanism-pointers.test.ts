@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseMechanismManifest } from "./setup-manifest.ts";
 import {
@@ -45,6 +45,18 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
       for (const dep of p.dependencies) {
         expect(dep.update).toBeDefined();
       }
+    }
+  });
+
+  test("every from-*.sh mechanism has an Ace pointer realizer", () => {
+    const pointers = buildSetupMechanismPointers();
+    const realizers = new Set(pointers.map((p) => p.realizer));
+    const mechanismDir = join(repoRoot, "tools/setup/mechanisms");
+    const scripts = readdirSync(mechanismDir)
+      .filter((name) => name.startsWith("from-") && name.endsWith(".sh"))
+      .map((name) => `tools/setup/mechanisms/${name}`);
+    for (const script of scripts) {
+      expect(realizers.has(script)).toBe(true);
     }
   });
 

@@ -1,6 +1,5 @@
 ---
-id: B-0174
-zetaid: 081KQNJ500008QG0R002K338KN
+id: 081KQNJ500008QG0R002K338KN
 priority: P2
 status: open
 title: Cross-model tool-review convergence-rate replay protocol — measure how many review rounds different models need to settle on a tool-authoring PR (Otto 2026-05-03 sibling-instance of multi-harness convergence skill domain)
@@ -46,7 +45,7 @@ The **convergence-rate signature** is `[findings_round_1, findings_round_2, ...,
 - **Reproducible** — same tool draft + same review prompt = directly comparable across models
 - **Quantitative** — finding-counts are measurable; convergence-rounds are measurable
 - **Frontier-ability signal** — models with faster convergence-rate produce higher-quality code per cycle
-- **Composes with the calibration protocol** — Otto's in-the-moment guesses on B-0173 + B-0172 + B-0166 (under `memory/architectural-intent-guesses/`) measure architectural-intent inference; this row measures code-implementation quality
+- **Composes with the calibration protocol** — Otto's in-the-moment guesses on 081KQNJ500008QG0R003ZC6PK8 + 081KQNJ500008QG0R001VGMS5G + 081KQJZR90008QG0R001YX3445 (under `memory/architectural-intent-guesses/`) measure architectural-intent inference; this row measures code-implementation quality
 
 ## Acceptance criteria
 
@@ -59,9 +58,9 @@ This row closes when:
 
 ## Composes with
 
-- **B-0170** (substrate-claim-checker tool) — depends_on; the v0.5 review-cycle is the empirical seed
-- **B-0169** (decision-archaeology skill) — composes_with; Otto's convergence-signature is part of decision-archaeology data for "how this tool came to be"
-- **B-0173** (hook authoring) — composes_with; hooks could automate the review-prompt invocation
+- **081KQNJ500008QG0R003SCWBDV** (substrate-claim-checker tool) — depends_on; the v0.5 review-cycle is the empirical seed
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology skill) — composes_with; Otto's convergence-signature is part of decision-archaeology data for "how this tool came to be"
+- **081KQNJ500008QG0R003ZC6PK8** (hook authoring) — composes_with; hooks could automate the review-prompt invocation
 - `memory/feedback_multi_harness_alignment_convergence_design_future_skill_domain_aaron_2026_05_03.md` — parent skill domain
 - `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md` — sibling protocol (architectural-intent inference vs code-implementation quality)
 - `memory/architectural-intent-guesses/` — sibling calibration data directory

@@ -1,5 +1,5 @@
 {
-  "description": "ProbabilitySemiring golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Exact rational ℚ (no floats — byte-lockable). A rational is {n, d} in lowest terms with d>0. add/mul = the probability semiring (+,×); max = the Viterbi-semiring ⊕ (max,×); forwardStep = π·P over (+,×) (Markov/HMM-forward); viterbiStep = best-path score over (max,×). P[i][j] = weight from state i to state j. This is the NCI discharge (B-1020): the probability and Viterbi corners of the closed-semiring fixed-point family.",
+  "description": "ProbabilitySemiring golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Exact rational ℚ (no floats — byte-lockable). A rational is {n, d} in lowest terms with d>0. add/mul = the probability semiring (+,×); max = the Viterbi-semiring ⊕ (max,×); forwardStep = π·P over (+,×) (Markov/HMM-forward); viterbiStep = best-path score over (max,×). P[i][j] = weight from state i to state j. This is the NCI discharge (081KTAH8Q0008QG0R001YHSSA0): the probability and Viterbi corners of the closed-semiring fixed-point family.",
   "normalize": [
     { "n": 2, "d": 4, "result": { "n": 1, "d": 2 } },
     { "n": 6, "d": -3, "result": { "n": -2, "d": 1 } },

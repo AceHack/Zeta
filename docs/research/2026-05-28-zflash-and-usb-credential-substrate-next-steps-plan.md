@@ -8,7 +8,7 @@ Produced by background research agent dispatched 2026-05-28 per operator standin
 
 ## 1. Per-row audit — shipped vs pending vs sketch-only
 
-### 1.1 B-0737 — zflash Touch ID PAM + short challenge + ISO auto-discovery
+### 1.1 081KSE6WT0008QG0R003WZAQKV — zflash Touch ID PAM + short challenge + ISO auto-discovery
 
 **Status: SHIPPED. Operationally exercised.**
 
@@ -23,13 +23,13 @@ Produced by background research agent dispatched 2026-05-28 per operator standin
 
 **Gaps (minor):** Touch ID timing-out under certain background-process conditions; Linux equivalent out of scope; `~/Downloads/` hard-coded.
 
-### 1.2 B-0844 — zflash `--agent` flag, native auto-type challenge
+### 1.2 081KSGS9H0008QG0R001EZKNCB — zflash `--agent` flag, native auto-type challenge
 
 **Status: SHIPPED + ratified.** `--agent` flag parsed at zflash.ts line 810; spawn with piped stdin + stdout-tail challenge match at lines 985-1014; glass-halo `[agent-mode]` line shipped.
 
 **Gaps:** No empirical end-to-end test of `--agent` mode in 2026-05-27/28 sessions yet. The row's acceptance bullet "a full re-flash via `bun zflash.ts --agent` completes with 'Flash complete.' visible" is still unchecked. `--bake-cred` flag NOT implemented.
 
-### 1.3 B-0852 (parent) — credential persistence on USB ESP
+### 1.3 081KSKBP80008QG0R003AX2A69 (parent) — credential persistence on USB ESP
 
 **Status: ~75% SHIPPED. End-to-end USB validation is the gating step.**
 
@@ -37,21 +37,21 @@ Shipped sub-rows: .1 crypto (HKDF + AES-256-GCM); .2a wire-format envelope + Cre
 
 Pending: **.3b zflash CLI `--bake-cred` override flags** (sketch-only); **.3d empirical USB end-to-end test** (the gate); .4b Mode A interactive systemd-ask-password verification; .4e empirical USB restore loop test; .6 wrong-passphrase fall-through; .7 ISO build + fresh-USB + boot-test; .8 memory-file landing.
 
-### 1.4 B-0852.3 — Step 6.77 cred-picker integration
+### 1.4 081KSKBP80008QG0R003ETGS01 — Step 6.77 cred-picker integration
 
 **Status: SHIPPED for install-time picker; partial for zflash-time CLI override.** Picker landed at Step 6.94 / 6.95-picker (drift from original 6.77 row name). zflash `--bake-cred` NOT implemented. Empirical USB end-to-end test NOT RUN.
 
-### 1.5 B-0884 — PQ git-crypt + zflash integration
+### 1.5 081KSNY2Z0008QG0R0011XCT94 — PQ git-crypt + zflash integration
 
-**Status: ROW FILED PR #5679; NO CODE.** Composes B-0883 with the zflash cluster. B-0883 also row-only (no PR yet). Operator's WHY is B-0885 ("agent private encrypted state — Otto first, then other AIs; ASAP").
+**Status: ROW FILED PR #5679; NO CODE.** Composes 081KSNY2Z0008QG0R002JKH50A with the zflash cluster. 081KSNY2Z0008QG0R002JKH50A also row-only (no PR yet). Operator's WHY is 081KSNY2Z0008QG0R0030V5ZVS ("agent private encrypted state — Otto first, then other AIs; ASAP").
 
-### 1.6 B-0886.2 — two-priority-axes correction (USB top on operator-personal)
+### 1.6 081KSNY2Z0008QG0R002CR38D8 — two-priority-axes correction (USB top on operator-personal)
 
-**Status: ROW FILED PR #5683. Framing-correction.** USB is FIRST on operator-personal-day-to-day axis (DevOps iteration + word-of-mouth evangelism). This is the operationally load-bearing framing for this plan — bumps urgency of B-0852.3d empirical test + B-0884 wiring.
+**Status: ROW FILED PR #5683. Framing-correction.** USB is FIRST on operator-personal-day-to-day axis (DevOps iteration + word-of-mouth evangelism). This is the operationally load-bearing framing for this plan — bumps urgency of 081KSKBP80008QG0R003AX2A69.3d empirical test + 081KSNY2Z0008QG0R0011XCT94 wiring.
 
-### 1.7 B-0889 — symbiotic cross-track self-healing
+### 1.7 081KSNY2Z0008QG0R003FR5TVG — symbiotic cross-track self-healing
 
-**Status: ROW FILED PR #5683. L effort; touches multiple substrate clusters.** Cross-track recovery (cloud KVMs control local boot; local restarts GitHub workflows; firmware updates via shared KVM). Composes with B-0590 fleet-replication + B-0770 GL-iNet Comet Pro KVM + B-0778 commodity-KVM-finger + B-0874 GitHub Actions recursion.
+**Status: ROW FILED PR #5683. L effort; touches multiple substrate clusters.** Cross-track recovery (cloud KVMs control local boot; local restarts GitHub workflows; firmware updates via shared KVM). Composes with 081KRQ1AB0008QG0R002G93CM7 fleet-replication + 081KSE6WT0008QG0R0029S1D5Z GL-iNet Comet Pro KVM + 081KSE6WT0008QG0R0004AP0ZA commodity-KVM-finger + 081KSNY2Z0008QG0R003X1QWYG GitHub Actions recursion.
 
 ---
 
@@ -114,15 +114,15 @@ Can run fully in parallel.
 
 ### Track D — Boot-time restore robustness (post-empirical)
 
-Defer until CP-4 surfaces actual failures, then fix-fwd. Targets: D-T1 wrong-passphrase fall-through (B-0852.6); D-T2 tamper detection UX; D-T3 interactive-mode systemd-ask-password TTY-binding; D-T4 multi-vendor cred round-trip test; D-T5 per-persona substrate round-trip.
+Defer until CP-4 surfaces actual failures, then fix-fwd. Targets: D-T1 wrong-passphrase fall-through (081KSKBP80008QG0R003AX2A69.6); D-T2 tamper detection UX; D-T3 interactive-mode systemd-ask-password TTY-binding; D-T4 multi-vendor cred round-trip test; D-T5 per-persona substrate round-trip.
 
-### Track E — PQ git-crypt + zflash integration (B-0884)
+### Track E — PQ git-crypt + zflash integration (081KSNY2Z0008QG0R0011XCT94)
 
-**Gated on B-0883 reaching prototype maturity.** E-T1 wait for B-0883 prototype; E-T2 design memo `docs/zflash/pq-gitcrypt-integration.md`; E-T3 implement `tools/zflash/pq-gitcrypt-integration/`; E-T4 extend zeta-install.sh picker for PQ git-crypt key bake; E-T5 round-trip test; E-T6 compatibility test with non-PQ creds in same blob.
+**Gated on 081KSNY2Z0008QG0R002JKH50A reaching prototype maturity.** E-T1 wait for 081KSNY2Z0008QG0R002JKH50A prototype; E-T2 design memo `docs/zflash/pq-gitcrypt-integration.md`; E-T3 implement `tools/zflash/pq-gitcrypt-integration/`; E-T4 extend zeta-install.sh picker for PQ git-crypt key bake; E-T5 round-trip test; E-T6 compatibility test with non-PQ creds in same blob.
 
-**Effort estimate: L (2-4 dev-days)** once B-0883 prototype is available.
+**Effort estimate: L (2-4 dev-days)** once 081KSNY2Z0008QG0R002JKH50A prototype is available.
 
-### Track F — Symbiotic self-healing (B-0889)
+### Track F — Symbiotic self-healing (081KSNY2Z0008QG0R003FR5TVG)
 
 **Gated on basic cluster being up + at least one local node USB-bootable.** F-T1 wait for CP-6; F-T2 procure/verify GL-iNet Comet Pro KVM OR commodity-KVM-finger; F-T3 build `tools/cross-track-self-healing/cloud-controls-local/`; F-T4 build `tools/cross-track-self-healing/local-controls-cloud/`; F-T5 integration test cloud-only-down; F-T6 integration test local-cluster-down; F-T7 firmware-update playbook.
 
@@ -136,32 +136,32 @@ Track A (critical path):  CP-1 ── CP-2 ── CP-3 ── CP-4 ── CP-5 �
 Track B (--bake-cred):       ─────B-T1..B-T6 (start after CP-2)
 Track C (docs/skills):       ─────────────── (parallel throughout)
 Track D (boot robustness):                  D-T1..D-T5 (start after CP-4 failures)
-Track E (PQ git-crypt):     (blocked on B-0883 prototype) ─── E-T1..E-T6
+Track E (PQ git-crypt):     (blocked on 081KSNY2Z0008QG0R002JKH50A prototype) ─── E-T1..E-T6
 Track F (cross-track heal): ─────────────── CP-6 ── F-T1..F-T7 (blocked on hardware)
 ```
 
 ---
 
-## 4. Compose-points with B-0884 PQ git-crypt + B-0889 symbiotic self-healing
+## 4. Compose-points with 081KSNY2Z0008QG0R0011XCT94 PQ git-crypt + 081KSNY2Z0008QG0R003FR5TVG symbiotic self-healing
 
-### 4.1 With B-0884 — when relative to zflash work?
+### 4.1 With 081KSNY2Z0008QG0R0011XCT94 — when relative to zflash work?
 
-**Substrate-honest:** B-0883 + B-0884 should NOT block CP-1..CP-6. Operator's USB-iteration-speed priority needs current B-0852 substrate empirically demonstrable FIRST. Then B-0883/B-0884 lands as additive.
+**Substrate-honest:** 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0011XCT94 should NOT block CP-1..CP-6. Operator's USB-iteration-speed priority needs current 081KSKBP80008QG0R003AX2A69 substrate empirically demonstrable FIRST. Then 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0011XCT94 lands as additive.
 
 | Phase | What ships | What's deferred |
 |---|---|---|
-| **Phase A (now → ~1 week)** | CP-1..CP-6 demo-ready | B-0883/B-0884; cluster substrate; PQ key material |
-| **Phase B (after A)** | Track B (`--bake-cred`), Track C (docs), Track D (boot robustness) | B-0884 still deferred until B-0883 prototype |
-| **Phase C (after B-0883 prototype)** | B-0884 integration: USB-bound credential substrate becomes KEY-STORE for PQ git-crypt; PQ key just becomes one more manifest entry | Hardware-bound key; per-AI distinct passphrases; cross-cluster federation |
-| **Phase D (after C + operator validation)** | B-0885 agent-private-encrypted-state Otto-first goes live | Other AI personas' private state |
+| **Phase A (now → ~1 week)** | CP-1..CP-6 demo-ready | 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0011XCT94; cluster substrate; PQ key material |
+| **Phase B (after A)** | Track B (`--bake-cred`), Track C (docs), Track D (boot robustness) | 081KSNY2Z0008QG0R0011XCT94 still deferred until 081KSNY2Z0008QG0R002JKH50A prototype |
+| **Phase C (after 081KSNY2Z0008QG0R002JKH50A prototype)** | 081KSNY2Z0008QG0R0011XCT94 integration: USB-bound credential substrate becomes KEY-STORE for PQ git-crypt; PQ key just becomes one more manifest entry | Hardware-bound key; per-AI distinct passphrases; cross-cluster federation |
+| **Phase D (after C + operator validation)** | 081KSNY2Z0008QG0R0030V5ZVS agent-private-encrypted-state Otto-first goes live | Other AI personas' private state |
 
-**Architectural property preserved:** ONE credential substrate primitive (USB-bound encrypted blob with operator passphrase + USB-UUID derivation). B-0883 adds a CIPHER + USE-CASE; B-0884 wires that cipher into existing primitive WITHOUT inventing parallel primitive. Declarative manifest accommodates new cred types — that's the design's load-bearing property.
+**Architectural property preserved:** ONE credential substrate primitive (USB-bound encrypted blob with operator passphrase + USB-UUID derivation). 081KSNY2Z0008QG0R002JKH50A adds a CIPHER + USE-CASE; 081KSNY2Z0008QG0R0011XCT94 wires that cipher into existing primitive WITHOUT inventing parallel primitive. Declarative manifest accommodates new cred types — that's the design's load-bearing property.
 
-### 4.2 With B-0889 — implications for zflash cluster
+### 4.2 With 081KSNY2Z0008QG0R003FR5TVG — implications for zflash cluster
 
-B-0889 turns zflash substrate from "initial-provisioning" into "ongoing-recovery." Implications: USB cluster nodes need addressable BIOS/boot (hardware procurement constraint per B-0770/B-0778); cloud-side needs per-node USB-UUID metadata (composes with iter-4.2 capture); local-restart-GitHub-workflow needs PAT in operator's USB-bound blob (already in B-0852.5 manifest); cross-node BIOS firmware update needs firmware-image distribution (composes with B-0590); recovery flow must respect NCI HC-8.
+081KSNY2Z0008QG0R003FR5TVG turns zflash substrate from "initial-provisioning" into "ongoing-recovery." Implications: USB cluster nodes need addressable BIOS/boot (hardware procurement constraint per 081KSE6WT0008QG0R0029S1D5Z/081KSE6WT0008QG0R0004AP0ZA); cloud-side needs per-node USB-UUID metadata (composes with iter-4.2 capture); local-restart-GitHub-workflow needs PAT in operator's USB-bound blob (already in 081KSKBP80008QG0R003AX2A69.5 manifest); cross-node BIOS firmware update needs firmware-image distribution (composes with 081KRQ1AB0008QG0R002G93CM7); recovery flow must respect NCI HC-8.
 
-**Sequencing:** B-0889 should NOT start until Phase A is empirically validated. Otherwise risk building cross-track-recovery atop unproven primitive.
+**Sequencing:** 081KSNY2Z0008QG0R003FR5TVG should NOT start until Phase A is empirically validated. Otherwise risk building cross-track-recovery atop unproven primitive.
 
 ---
 
@@ -192,7 +192,7 @@ Operator narration: "One command. Eight characters typed. One fingerprint. The f
 ### Act 2 — Boot target PC + interactive picker (~5 min)
 
 ```text
-Step 6.94: B-0852.3a cred-picker (DEFAULT-ON)
+Step 6.94: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON)
 ═══════════════════════════════════════════════════════════════
 GitHub authentication method:
   1) Restore from encrypted USB blob (requires passphrase) — N/A
@@ -233,11 +233,11 @@ Operator punchline: "Second boot. I typed my passphrase ONCE. All credentials re
 
 ### Why this demo lands
 
-| Operator-personal-priority axis evidence (B-0886.2) | Demo moment |
+| Operator-personal-priority axis evidence (081KSNY2Z0008QG0R002CR38D8) | Demo moment |
 |---|---|
 | Iteration speed at DevOps | Reboot loop visibly shrinks from "device-flow tax × N" to "passphrase × N" |
 | In-front-of-your-eyes word-of-mouth | Colleague SEES USB + Touch ID + cred-restore log scroll past — visceral demonstrability |
-| Composes with B-0866 marketing strategy | Short story, small technical lift, immediately legible value |
+| Composes with 081KSKBP80008QG0R003RFX32N marketing strategy | Short story, small technical lift, immediately legible value |
 
 ---
 
@@ -257,22 +257,22 @@ Operator punchline: "Second boot. I typed my passphrase ONCE. All credentials re
 
 ### Medium-impact
 
-R8 `--bake-cred` regression in default mode (all behind flag; tests both modes). R9 wrong-passphrase fall-through loops (retry-cap; drop to console). R10 multi-vendor silent vendor drop (Track D-T4 tests all 3). R11 B-0884 tries to refactor B-0852 (hold line: PQ key is one manifest entry).
+R8 `--bake-cred` regression in default mode (all behind flag; tests both modes). R9 wrong-passphrase fall-through loops (retry-cap; drop to console). R10 multi-vendor silent vendor drop (Track D-T4 tests all 3). R11 081KSNY2Z0008QG0R0011XCT94 tries to refactor 081KSKBP80008QG0R003AX2A69 (hold line: PQ key is one manifest entry).
 
 ### Hardware-dependent
 
-R12 USB controller compat (flash-usb sanity rails). R13 SecureBoot + unsigned ISO (B-0853 sigstore filed; disable SecureBoot one-time). R14 Operator doesn't yet own GL-iNet KVM (Track F gated). R15 Target PC no IPMI (consumer motherboards rarely; that's what B-0770+B-0778 substrate addresses).
+R12 USB controller compat (flash-usb sanity rails). R13 SecureBoot + unsigned ISO (081KSKBP80008QG0R000Y2B7HC sigstore filed; disable SecureBoot one-time). R14 Operator doesn't yet own GL-iNet KVM (Track F gated). R15 Target PC no IPMI (consumer motherboards rarely; that's what 081KSE6WT0008QG0R0029S1D5Z+081KSE6WT0008QG0R0004AP0ZA substrate addresses).
 
 ### Substrate-honest compose-with
 
-R16 B-0855 self-registration may run BEFORE Step 6.95-picker (verify systemd `Before=zeta-self-register.service` in zeta-creds-restore.nix). R17 B-0857 install.sh consolidation in-flight (coordinate if it moves). R18 B-0859 post-boot AI-as-home-owner blocks if cred-restore breaks (CP-1..CP-6 de-risks).
+R16 081KSKBP80008QG0R000GPC0TB self-registration may run BEFORE Step 6.95-picker (verify systemd `Before=zeta-self-register.service` in zeta-creds-restore.nix). R17 081KSKBP80008QG0R002J03WGA install.sh consolidation in-flight (coordinate if it moves). R18 081KSKBP80008QG0R00146WEX1 post-boot AI-as-home-owner blocks if cred-restore breaks (CP-1..CP-6 de-risks).
 
 ---
 
 ## 7. Operational discipline notes
 
-1. **Honor what came before** — don't refactor step numbering (drift to 6.94/6.95-picker is substrate-honest; document drift in B-0852.3 rather than rename).
-2. `--bake-cred` work goes behind a flag; default zflash unchanged per B-0844 acceptance.
+1. **Honor what came before** — don't refactor step numbering (drift to 6.94/6.95-picker is substrate-honest; document drift in 081KSKBP80008QG0R003ETGS01 rather than rename).
+2. `--bake-cred` work goes behind a flag; default zflash unchanged per 081KSGS9H0008QG0R001EZKNCB acceptance.
 3. All net-new code is TS per Rule 0; NixOS `.nix` is declarative; install-graph `.sh` carve-out does NOT extend to zflash cluster.
 4. Empirical anchor every fix-fwd commit per codeql-canary discipline.
 5. Substrate-or-it-didn't-happen — demo walkthrough is NOT substrate until it's a runbook (Track C-T3); writing surfaces gaps.
@@ -282,11 +282,11 @@ R16 B-0855 self-registration may run BEFORE Step 6.95-picker (verify systemd `Be
 
 ## 8. TL;DR
 
-- **The substrate is built.** ~75% of B-0852 shipped; B-0737 + B-0844 done; B-0852.4 restore module + common.nix wiring landed last night.
+- **The substrate is built.** ~75% of 081KSKBP80008QG0R003AX2A69 shipped; 081KSE6WT0008QG0R003WZAQKV + 081KSGS9H0008QG0R001EZKNCB done; 081KSKBP80008QG0R002XBRGN8 restore module + common.nix wiring landed last night.
 - **Bottleneck is now empirical, not architectural.** One operator-day of CP-1..CP-6 against queued fresh USB validates the "ZERO gh-device-flow on reboot" acceptance bullet.
 - **Critical path is 6 steps; parallel tracks well-defined.** Track B (`--bake-cred`) starts after CP-2; Tracks C/D fill around it.
-- **B-0884 PQ git-crypt intentionally deferred** until B-0883 prototype; existing B-0852 substrate accommodates PQ key as one more manifest entry.
-- **B-0889 symbiotic self-healing gated on hardware** (KVM); not next-cycle scope; design notes for when it comes.
+- **081KSNY2Z0008QG0R0011XCT94 PQ git-crypt intentionally deferred** until 081KSNY2Z0008QG0R002JKH50A prototype; existing 081KSKBP80008QG0R003AX2A69 substrate accommodates PQ key as one more manifest entry.
+- **081KSNY2Z0008QG0R003FR5TVG symbiotic self-healing gated on hardware** (KVM); not next-cycle scope; design notes for when it comes.
 - **Demo walkthrough lands operator-personal-axis priority** — 10 minutes, 1 colleague, 2 reboots, visible-zero-device-flow.
 
 ---

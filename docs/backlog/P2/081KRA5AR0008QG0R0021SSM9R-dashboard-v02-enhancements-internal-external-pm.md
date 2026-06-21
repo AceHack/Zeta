@@ -1,6 +1,5 @@
 ---
-id: B-0414
-zetaid: 081KRA5AR0008QG0R0021SSM9R
+id: 081KRA5AR0008QG0R0021SSM9R
 priority: P2
 status: open
 title: "Dashboard v0.2 enhancements — agent JSON + promotion metrics + continuity claim + verification rate"

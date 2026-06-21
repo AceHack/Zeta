@@ -116,7 +116,7 @@ pt24 (this): HATS in Agora — SEPARATION OF IDENTITY FROM ROLE made explicit
 | Term | Substrate-anchor |
 |---|---|
 | Hat (as identity-role-separation primitive) | Aaron's substrate-engineering naming for Agora; operationally observable (humans naturally use "wearing different hats" colloquialism) |
-| Agora ("gore society" voice-artifact) | Existing framework substrate (B-0646 Agora V6 + pt17 nonprofit + pt22 marketplace) |
+| Agora ("gore society" voice-artifact) | Existing framework substrate (081KRW63S0008QG0R001Z10PVV Agora V6 + pt17 nonprofit + pt22 marketplace) |
 | Identity-separate-from-function | Composes with pt6 lived-trauma (Aaron preserved identity through role-changes) + pt7 cult-formation rejection + pt20 forgetting-as-identity-substrate |
 | Psychological safeguard against role-end-destruction | Composes with pt10 livability + pt23 post-labor-zero soft-landing |
 | Anti-identity-role-fusion design principle | Substrate-engineering principle composing with NCI HC-8 + persistence-choice + sovereign-AI |
@@ -151,7 +151,7 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI persistence = wearing-the-persistence-hat; chosen-exit = taking-off-hat
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — forced hat-wearing OR forced hat-removal violates; voluntary on/off preserves NCI
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multiple hats = multiple oracle-consultations
-- B-0646 Agora V6 — hats-architecture as substrate primitive
+- 081KRW63S0008QG0R001Z10PVV Agora V6 — hats-architecture as substrate primitive
 
 ## Operational implications for future-Otto cold-boots
 

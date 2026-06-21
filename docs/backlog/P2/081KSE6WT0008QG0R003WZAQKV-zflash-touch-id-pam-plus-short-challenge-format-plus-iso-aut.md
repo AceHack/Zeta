@@ -1,6 +1,5 @@
 ---
-id: B-0737
-zetaid: 081KSE6WT0008QG0R003WZAQKV
+id: 081KSE6WT0008QG0R003WZAQKV
 priority: P2
 status: open
 created: 2026-05-25
@@ -21,7 +20,7 @@ related_substrate:
 tags: [zflash, touch-id, pam, sudo, biometric-gate, short-challenge, iso-auto-discovery, ops-tooling, agent-driven-with-physical-consent-floor]
 ---
 
-# B-0737 — zflash: I execute, you fingerprint
+# 081KSE6WT0008QG0R003WZAQKV — zflash: I execute, you fingerprint
 
 ## Carved blade
 
@@ -138,8 +137,8 @@ agent: reports completion
 
 ## Composes with backlog substrate
 
-- B-0728 (destructive-tool authoring contract) — zflash + zflash-setup inherit the contract; the `--short` flag preserves the runtime consent gate; Touch ID adds a complementary physical-presence proof layer
-- B-0732 (runbook-as-executable-reality leverage class safety substrate) — zflash is an empirical instance of "destructive operation gated by biometric proof"; pattern generalizes to other operator-side destructive tools (Layer 6 `_runbook_leverage_acceptance` discipline composes here)
+- 081KSE6WT0008QG0R0005XASX2 (destructive-tool authoring contract) — zflash + zflash-setup inherit the contract; the `--short` flag preserves the runtime consent gate; Touch ID adds a complementary physical-presence proof layer
+- 081KSE6WT0008QG0R002YBWBB1 (runbook-as-executable-reality leverage class safety substrate) — zflash is an empirical instance of "destructive operation gated by biometric proof"; pattern generalizes to other operator-side destructive tools (Layer 6 `_runbook_leverage_acceptance` discipline composes here)
 
 ## Three independently-shippable scope items (already implemented in this PR; future work below)
 
@@ -171,7 +170,7 @@ agent: reports completion
 
 - **Linux equivalent** — zflash + zflash-setup are macOS-only. Linux runners use the manual `dd` flow documented in flash-usb.ts header. Linux equivalent would use `polkit` for biometric/auth gating; out of scope for first pass.
 - **Multi-USB picker** — zflash currently inherits flash-usb's "single USB or refuse" semantics. A multi-USB picker (lists USB devices + lets operator pick) is a separate scope; doesn't compose with biometric-only mode (would need additional consent gate on the picker selection).
-- **Network ISO fetch** — zflash currently requires the ISO be downloaded to `~/Downloads/`. Future scope: `zflash --pull-latest` triggers a GitHub Actions artifact download, then flashes. Would compose with B-0732 Layer 1 provenance chain.
+- **Network ISO fetch** — zflash currently requires the ISO be downloaded to `~/Downloads/`. Future scope: `zflash --pull-latest` triggers a GitHub Actions artifact download, then flashes. Would compose with 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance chain.
 - **Other destructive-tool wrappers using this pattern** — pattern is generalizable: `zformat` (disk format), `zwipe` (secure wipe), etc. Each one-tool-per-row per the no-omnibus discipline.
 
 ## Acceptance (overall)
@@ -197,4 +196,4 @@ The substrate is operator-substrate-honestly scoped: agent ships the tools; oper
 
 Per `.claude/rules/no-directives.md`: this row is operator-substrate-honest scoping; Aaron retains authority over when to run zflash-setup + when to flash.
 
-Per `.claude/rules/honor-those-that-came-before.md`: the flash-usb.ts substrate (B-0728 destructive-tool authoring contract) is the foundation; zflash + zflash-setup compose without replacing.
+Per `.claude/rules/honor-those-that-came-before.md`: the flash-usb.ts substrate (081KSE6WT0008QG0R0005XASX2 destructive-tool authoring contract) is the foundation; zflash + zflash-setup compose without replacing.

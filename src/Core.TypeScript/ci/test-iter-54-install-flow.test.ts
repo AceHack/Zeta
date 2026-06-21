@@ -1,7 +1,7 @@
 // tools/ci/test-iter-54-install-flow.test.ts
 //
 // Layer 2a (structural-behavioral) of the 4-layer CI testing approach for
-// the iter-5.4 substrate (per B-0831 cascade #6 + B-0833 interactive-login
+// the iter-5.4 substrate (per 081KSGS9H0008QG0R0011BC7T2 cascade #6 + 081KSGS9H0008QG0R003JNSVR5 interactive-login
 // tension). Layer 1 (audit-installer-substrate.ts) verifies that specific
 // sentinel substrings are present in zeta-install.sh; this layer verifies
 // LOGICAL RELATIONSHIPS between substrings — that they appear in the right
@@ -80,14 +80,14 @@ const ITER_540_BLOCK = extractStep(
 
 const ITER_541_BLOCK = extractStep(
   "Step 6.9: iter-5.4.1 self-registration commit+push",
-  // The next step is the B-0835 Bug 1 symlink section. Match the actual
+  // The next step is the 081KSGS9H0008QG0R00120EEHM Bug 1 symlink section. Match the actual
   // comment in the script.
-  "B-0835 Bug 1 fix: pre-stage per-file symlinks",
+  "081KSGS9H0008QG0R00120EEHM Bug 1 fix: pre-stage per-file symlinks",
 );
 
 const ITER_42_BLOCK = extractStep(
   "Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey",
-  "Step 6.56: B-0852.3b cred-blob passphrase prompt",
+  "Step 6.56: 081KSKBP80008QG0R003AX2A69.3b cred-blob passphrase prompt",
 );
 
 const ITER_595_BLOCK = extractStep(
@@ -95,7 +95,7 @@ const ITER_595_BLOCK = extractStep(
   "Step 7: print initial credentials",
 );
 
-describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
+describe("iter-5.4.0 — gh auth + ssh-key flow (081KSGS9H0008QG0R00120EEHM Bug 2a + 2b)", () => {
   test("the gh auth login branch is gated on user opt-in", () => {
     // Operator must answer Y/y to GH_AUTH_REPLY. Opt-out path (n) skips.
     expect(ITER_540_BLOCK).toContain("GH_AUTH_REPLY");
@@ -106,7 +106,7 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
     expect(ITER_540_BLOCK).toContain("if gh auth login; then");
   });
 
-  test("B-0835 Bug 2a fix: gh auth setup-git is inside the auth-success branch", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2a fix: gh auth setup-git is inside the auth-success branch", () => {
     // The bug: if `gh auth login` succeeds but `gh auth setup-git` is
     // never called, subsequent `git push` prompts for HTTPS basic-auth.
     // The fix: setup-git must be in the success-of-login branch.
@@ -125,7 +125,7 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
     expect(successBranch).toContain("subsequent git push may prompt for password");
   });
 
-  test("B-0835 Bug 2a fix: setup-git is called BEFORE ssh-key fetch", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2a fix: setup-git is called BEFORE ssh-key fetch", () => {
     const setupGitIdx = ITER_540_BLOCK.indexOf("gh auth setup-git");
     const sshKeyListIdx = ITER_540_BLOCK.indexOf("gh ssh-key list");
     expect(setupGitIdx).toBeGreaterThan(0);
@@ -135,13 +135,13 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
     expect(setupGitIdx).toBeLessThan(sshKeyListIdx);
   });
 
-  test("B-0835 Bug 2b fix: SSH_KEY_ERR_FILE is created via mktemp", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2b fix: SSH_KEY_ERR_FILE is created via mktemp", () => {
     expect(ITER_540_BLOCK).toMatch(
       /SSH_KEY_ERR_FILE=\$\(mktemp [^)]+\)/,
     );
   });
 
-  test("B-0835 Bug 2b fix: SSH_KEY_ERR_FILE is used as stderr redirect on gh ssh-key list", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2b fix: SSH_KEY_ERR_FILE is used as stderr redirect on gh ssh-key list", () => {
     // The fix: stderr must be captured so we can discriminate scope-error
     // from empty-list. If the redirect goes to /dev/null instead, the
     // discrimination silently fails.
@@ -150,7 +150,7 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
     );
   });
 
-  test("B-0835 Bug 2b fix: discriminates scope-error from empty-list", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2b fix: discriminates scope-error from empty-list", () => {
     // The discriminator: grep the stderr file for scope/insufficient/
     // admin:public_key/read:public_key keywords.
     expect(ITER_540_BLOCK).toMatch(
@@ -158,19 +158,19 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
     );
   });
 
-  test("B-0835 Bug 2b fix: scope-error branch tells operator how to recover", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2b fix: scope-error branch tells operator how to recover", () => {
     // The substrate-honest WARN must include the actual command to run.
     expect(ITER_540_BLOCK).toContain("gh auth refresh -s admin:public_key");
     expect(ITER_540_BLOCK).toContain("nixos-rebuild switch");
   });
 
-  test("B-0835 Bug 2b fix: empty-no-error branch points to settings/keys", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2b fix: empty-no-error branch points to settings/keys", () => {
     expect(ITER_540_BLOCK).toContain(
       "https://github.com/settings/keys",
     );
   });
 
-  test("B-0835 Bug 2b fix: cleans up SSH_KEY_ERR_FILE temp file", () => {
+  test("081KSGS9H0008QG0R00120EEHM Bug 2b fix: cleans up SSH_KEY_ERR_FILE temp file", () => {
     // Trap-style cleanup or explicit rm -f. The current implementation uses
     // explicit rm -f at end of the block.
     expect(ITER_540_BLOCK).toMatch(
@@ -188,7 +188,7 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
   });
 });
 
-describe("B-0891 retained zflash credential preseed", () => {
+describe("081KSNY2Z0008QG0R0008PN7RQ retained zflash credential preseed", () => {
   test("iter-4.2 copies the zflash-baked blob to target ESP before USB unmount", () => {
     expect(ITER_42_BLOCK).toContain(
       'BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"',
@@ -249,7 +249,7 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
   });
 });
 
-describe("iter-5.4.1 — self-registration commit+push flow (B-0812)", () => {
+describe("iter-5.4.1 — self-registration commit+push flow (081KSGS9H0008QG0R0037H3W4T)", () => {
   test("iter-5.4.1 is gated on iter-5.4.0 success (GH_AUTH_OK = 1)", () => {
     // Cascade-skip: if gh auth login failed or was skipped, self-reg cannot
     // run (no token for the push). The discipline is explicit.
@@ -264,14 +264,14 @@ describe("iter-5.4.1 — self-registration commit+push flow (B-0812)", () => {
     expect(ITER_541_BLOCK).toMatch(/\) \|\| true/);
   });
 
-  test("ClusterNode YAML matches B-0813 schema: spec.roles is array", () => {
-    // Copilot finding on #5352: spec.role was scalar; the B-0813 CRD
+  test("ClusterNode YAML matches 081KSGS9H0008QG0R002K93MWX schema: spec.roles is array", () => {
+    // Copilot finding on #5352: spec.role was scalar; the 081KSGS9H0008QG0R002K93MWX CRD
     // requires spec.roles[] (array). The fix: emit `roles:\n    - $HOST`.
     expect(ITER_541_BLOCK).toContain("  roles:\n    - $HOST");
     expect(ITER_541_BLOCK).not.toMatch(/^\s+role: /m);
   });
 
-  test("ClusterNode YAML matches B-0813 schema: spec.registration block", () => {
+  test("ClusterNode YAML matches 081KSGS9H0008QG0R002K93MWX schema: spec.registration block", () => {
     // Copilot finding on #5352: maintainer was at spec.maintainer (flat);
     // schema requires spec.registration.maintainer (nested block).
     expect(ITER_541_BLOCK).toMatch(
@@ -279,7 +279,7 @@ describe("iter-5.4.1 — self-registration commit+push flow (B-0812)", () => {
     );
   });
 
-  test("ClusterNode YAML matches B-0813 schema: spec.hardware.storage nested", () => {
+  test("ClusterNode YAML matches 081KSGS9H0008QG0R002K93MWX schema: spec.hardware.storage nested", () => {
     // Copilot finding on #5352: storage was sibling of hardware (`spec.storage`);
     // schema requires storage nested under hardware (`spec.hardware.storage`).
     expect(ITER_541_BLOCK).toContain("  hardware:");
@@ -347,7 +347,7 @@ describe("iter-5.4 substrate-honest framing (defense-in-depth assertions)", () =
   });
 });
 
-describe("iter-5.1 hardware-configuration copy (B-0891 phase-2 initrd)", () => {
+describe("iter-5.1 hardware-configuration copy (081KSNY2Z0008QG0R0008PN7RQ phase-2 initrd)", () => {
   test("nixos-generate-config output is copied into flake host tree before nixos-install", () => {
     const genIdx = SCRIPT.indexOf("nixos-generate-config --root /mnt");
     const copyIdx = SCRIPT.indexOf("installing probe-generated hardware-configuration.nix");

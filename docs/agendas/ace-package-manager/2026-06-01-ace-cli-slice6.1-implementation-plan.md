@@ -455,5 +455,5 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - [ ] Canary: `git ls-tree HEAD | wc -l` → 67; no stray `tools/ace/_patch_*.ts`.
 - [ ] Final holistic code-review subagent over `git diff origin/main..HEAD -- tools/ace/ .claude/skills/ace/SKILL.md`.
 - [ ] Open the impl PR; arm auto-merge; run the PR-gate loop.
-- [ ] Post-merge: annotate B-0980 (mark `ace registry publish` core shipped; per-package url
+- [ ] Post-merge: annotate 081KT07NV0008QG0R0016FVWD7 (mark `ace registry publish` core shipped; per-package url
   + ETag sidecar + multi-dir + incremental/multi-signer stay deferred).

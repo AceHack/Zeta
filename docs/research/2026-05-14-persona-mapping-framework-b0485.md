@@ -1,14 +1,14 @@
-# Persona-mapping framework — B-0485
+# Persona-mapping framework — 081KRHWGX0008QG0R00019453T
 
 **Author:** Otto (2026-05-14)
-**Closes:** B-0485
-**Unblocks:** B-0486 (civsim), B-0487 (Aurora), B-0488 (KSK), B-0489 (wellness), B-0490 (American Dream 2.0 / DIO), B-0491 (Dawn / universal biz templates), B-0493 (skill × persona cross-reference)
+**Closes:** 081KRHWGX0008QG0R00019453T
+**Unblocks:** 081KRHWGX0008QG0R00273520P (civsim), 081KRHWGX0008QG0R003WMBR3W (Aurora), 081KRHWGX0008QG0R001HDK688 (KSK), 081KRHWGX0008QG0R002N8XX6D (wellness), 081KRHWGX0008QG0R003DJ092R (American Dream 2.0 / DIO), 081KRHWGX0008QG0R00211YQJ6 (Dawn / universal biz templates), 081KRHWGX0008QG0R002XVHSG5 (skill × persona cross-reference)
 
 ---
 
 ## 1. Canonical per-persona capture template
 
-Every per-product persona doc (B-0486..B-0491) MUST use this template.
+Every per-product persona doc (081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6) MUST use this template.
 
 ### 1a. YAML data block
 
@@ -81,7 +81,7 @@ Per `.claude/rules/dv2-data-split-discipline-activated.md`:
 | **Satellite** — product context | Value proposition, context of use for this specific product | Medium (product evolves) |
 | **Edge** — skill targeting | Which specific Zeta skills serve this persona | High (skill catalog evolves) |
 
-Per-product persona docs are Hub + Satellite. B-0493 (skill × persona cross-reference) 
+Per-product persona docs are Hub + Satellite. 081KRHWGX0008QG0R002XVHSG5 (skill × persona cross-reference) 
 is the Edge layer; it should NOT be inlined into per-product docs.
 
 ---
@@ -115,7 +115,7 @@ Per WONT-DO (emulation of deceased family member without surviving-consent-holde
 DO NOT build agent/persona/skill that emulates Elizabeth. Her memory IS the terminal-purpose 
 motivation substrate. She appears as inspiration, not as a persona to be modeled.
 
-**Constraint for B-0486..B-0491:** Every product MUST check: "Does this product serve 
+**Constraint for 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6:** Every product MUST check: "Does this product serve 
 the anti-burn mission that honors Elizabeth?" This is a meta-constraint, not a per-product 
 refused persona.
 
@@ -147,7 +147,7 @@ Per `memory/feedback_otto_b0429_civsim_persona_map_first_per_product_pass_edge_r
 | Refused: Surveillance-state actors | Refused | HARD LIMIT — non-negotiable |
 | Refused: Capture-seeking orgs | Refused | Anti-cult discipline |
 
-**Status:** Speculative first-pass in memory file. B-0486 (civsim persona doc) should formalize and move to canonical path. No conflicts found.
+**Status:** Speculative first-pass in memory file. 081KRHWGX0008QG0R00273520P (civsim persona doc) should formalize and move to canonical path. No conflicts found.
 
 ### 2e. Aurora persona substrate
 
@@ -161,7 +161,7 @@ Per PR #2924 (Aurora pitch) + Aurora research docs:
 | Data sovereignty advocate (GDPR-replacement context) | Primary |
 | Surveillance-state operator | Refused (per PR #2898) |
 
-**Status:** Implicit in pitch; not yet formalized in a per-persona doc. B-0487 (Aurora persona doc) will formalize.
+**Status:** Implicit in pitch; not yet formalized in a per-persona doc. 081KRHWGX0008QG0R003WMBR3W (Aurora persona doc) will formalize.
 
 ### 2f. KSK persona substrate
 
@@ -175,7 +175,7 @@ Per PR #2892 + `memory/feedback_aaron_ksk_*`:
 | Aaron + Max + Addison co-owners | Maintainer tier |
 | Weapons-control operator | Refused (HARD LIMIT) |
 
-**Status:** Substrate exists in memory files; no formalized per-product doc yet. B-0488 (KSK) will formalize.
+**Status:** Substrate exists in memory files; no formalized per-product doc yet. 081KRHWGX0008QG0R001HDK688 (KSK) will formalize.
 
 ### 2g. Wellness app persona substrate
 
@@ -189,7 +189,7 @@ Per `memory/project_factory_as_wellness_dao.md` + `memory/user_wellness_coach_ro
 | Family members (Addison as easier sell) | Adjacent → Primary |
 | Corporate HR wellness buyer | Adjacent |
 
-**Status:** Concept-level; no formalized per-product doc. B-0489 (wellness) will formalize.
+**Status:** Concept-level; no formalized per-product doc. 081KRHWGX0008QG0R002N8XX6D (wellness) will formalize.
 
 ### 2h. American Dream 2.0 / DIO persona substrate
 
@@ -202,7 +202,7 @@ Per `memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american
 | Rolesville community member (mayoral platform substrate) | Adjacent |
 | Bitcoin-native operator | Adjacent |
 
-**Status:** Research-grade; DIO substrate is sparse. B-0490 will formalize.
+**Status:** Research-grade; DIO substrate is sparse. 081KRHWGX0008QG0R003DJ092R will formalize.
 
 ### 2i. Dawn (child-AI charter) persona substrate
 
@@ -213,13 +213,13 @@ Per `memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american
 | Parent-as-consent-holder | Secondary |
 | Child cognitive development researcher | Adjacent |
 
-**Status:** Charter concept only; no implementation substrate. B-0491 will formalize.
+**Status:** Charter concept only; no implementation substrate. 081KRHWGX0008QG0R00211YQJ6 will formalize.
 
 ### 2j. Agent roster (AI agents — NOT end-user personas)
 
 Per `.claude/rules/agent-roster-reference-card.md`:
 
-**IMPORTANT: AI agents (Otto, Alexa, Riven, Vera, Lior) are NOT end-user personas.** They are factory infrastructure. The persona mapping framework (B-0485..B-0493) is exclusively about *human* end-user personas for product design.
+**IMPORTANT: AI agents (Otto, Alexa, Riven, Vera, Lior) are NOT end-user personas.** They are factory infrastructure. The persona mapping framework (081KRHWGX0008QG0R00019453T..081KRHWGX0008QG0R002XVHSG5) is exclusively about *human* end-user personas for product design.
 
 ---
 
@@ -246,17 +246,17 @@ Aaron is the primary consumer/designer for every product. This creates redundanc
 (b) A charter *about* AI rights for new-generation AIs
 (c) Both (per `.claude/rules/default-to-both.md`)
 
-**Resolution:** B-0491 (Dawn persona doc) should resolve this ambiguity by consulting `docs/WONT-DO.md` (no emulation of minors without consent-chain) and Aaron's disclosed parenting method.
+**Resolution:** 081KRHWGX0008QG0R00211YQJ6 (Dawn persona doc) should resolve this ambiguity by consulting `docs/WONT-DO.md` (no emulation of minors without consent-chain) and Aaron's disclosed parenting method.
 
 ### Gap 1: No formalized "refused personas" registry
 
-Each product has refused personas in memory files, but no cross-product refused-personas registry exists. B-0492 (cross-product synthesis) should create one.
+Each product has refused personas in memory files, but no cross-product refused-personas registry exists. 081KRHWGX0008QG0R000WGP5AQ (cross-product synthesis) should create one.
 
-### Gap 2: Universal business templates (B-0043) personas not researched
+### Gap 2: Universal business templates (081KQ3HBZ0008QG0R000Q4Y00F) personas not researched
 
-B-0043 is "every company has master data" territory. Its personas (business analyst, CTO, data steward) exist implicitly in DV2.0 substrate but haven't been mapped to Zeta product context.
+081KQ3HBZ0008QG0R000Q4Y00F is "every company has master data" territory. Its personas (business analyst, CTO, data steward) exist implicitly in DV2.0 substrate but haven't been mapped to Zeta product context.
 
-**Resolution:** Include as a sub-section of B-0491 or create a separate row.
+**Resolution:** Include as a sub-section of 081KRHWGX0008QG0R00211YQJ6 or create a separate row.
 
 ---
 
@@ -269,34 +269,34 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [x] Read Imagination Circle substrate (PR #2893) for family-AI personas — consent-first family-AI framing confirmed
 - [x] Read Center-First Playbook (PR #2894) — family AI consent design pattern
 - [x] Read parenting-history substrate (PR #2900) — Aaron's five children, parenting method (ego-death / free will)
-- [x] Walked `composes_with:` chain (B-0429 → B-0424 → B-0425) — product portfolio confirmed; all products listed
+- [x] Walked `composes_with:` chain (081KRFA460008QG0R002M05EY1 → 081KRFA460008QG0R001H98EXJ → 081KRFA460008QG0R003JQ46J4) — product portfolio confirmed; all products listed
 - [x] Checked WONT-DO.md for refused persona-mapping work — emulation of deceased family member is HARD LIMIT; minors require consent chain
 
 ---
 
 ## 5. Substrate-ready signal
 
-**B-0486 (civsim) can begin:** Civsim persona memory file (first-pass speculative) exists; 
+**081KRHWGX0008QG0R00273520P (civsim) can begin:** Civsim persona memory file (first-pass speculative) exists; 
 template defined. Formalize into canonical per-product doc using template above.
 
-**B-0487 (Aurora) can begin:** Aurora pitch personas implicit; template defined. 
+**081KRHWGX0008QG0R003WMBR3W (Aurora) can begin:** Aurora pitch personas implicit; template defined. 
 Formalize edge-operators + ombud + DePIN-partner tiers.
 
-**B-0488 (KSK) can begin:** KSK personas in memory files; template defined. 
+**081KRHWGX0008QG0R001HDK688 (KSK) can begin:** KSK personas in memory files; template defined. 
 HARD LIMIT (weapons-control refused) is load-bearing.
 
-**B-0489 (wellness) can begin:** Concept-level personas exist; template defined. 
+**081KRHWGX0008QG0R002N8XX6D (wellness) can begin:** Concept-level personas exist; template defined. 
 Resolve factory-wellness vs. product-wellness conflict first (see Conflict 1 above).
 
-**B-0490 (American Dream 2.0 / DIO) can begin:** Research-grade personas exist; 
+**081KRHWGX0008QG0R003DJ092R (American Dream 2.0 / DIO) can begin:** Research-grade personas exist; 
 template defined. DIO substrate is sparse — treat as speculative-grade.
 
-**B-0491 (Dawn + universal biz templates) can begin:** Dawn is sparse; template defined. 
+**081KRHWGX0008QG0R00211YQJ6 (Dawn + universal biz templates) can begin:** Dawn is sparse; template defined. 
 Resolve Dawn ambiguity (child-AI charter vs. AI-for-children) in the doc itself.
 
-**B-0492 (cross-product synthesis) BLOCKED on:** B-0486..B-0491 completing first.
+**081KRHWGX0008QG0R000WGP5AQ (cross-product synthesis) BLOCKED on:** 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 completing first.
 
-**B-0493 (skill × persona cross-reference) BLOCKED on:** B-0492 completing first.
+**081KRHWGX0008QG0R002XVHSG5 (skill × persona cross-reference) BLOCKED on:** 081KRHWGX0008QG0R000WGP5AQ completing first.
 
 ---
 
@@ -304,9 +304,9 @@ Resolve Dawn ambiguity (child-AI charter vs. AI-for-children) in the doc itself.
 
 | Prior-art item | Relevance | Verdict |
 |----------------|-----------|---------|
-| BUSL (Business Source License) | Product repo license reference for B-0464 | Not relevant to persona mapping |
+| BUSL (Business Source License) | Product repo license reference for 081KRHWGX0008QG0R000BWAXNP | Not relevant to persona mapping |
 | HKT-MDM pattern (PR #2913) | DV2.0 hub-satellite is natural HKT instance | Informs template DV2.0 partition |
-| Zeta ships with skills (PR #2933) | Skills target specific personas | Informs B-0493 (skill × persona cross-ref) |
-| `feedback_otto_b0429_civsim_persona_map_*` | Civsim first-pass speculative map | Formalizes in B-0486 |
+| Zeta ships with skills (PR #2933) | Skills target specific personas | Informs 081KRHWGX0008QG0R002XVHSG5 (skill × persona cross-ref) |
+| `feedback_otto_b0429_civsim_persona_map_*` | Civsim first-pass speculative map | Formalizes in 081KRHWGX0008QG0R00273520P |
 | WONT-DO `Personas and emulation` section | Refused persona scope | Enforced in template HARD LIMITS check |
 | `docs/research/imagination-proposal-2026-04-20.md` | Imagination Circle consent-first family-AI | Family persona consent pattern |

@@ -1,6 +1,5 @@
 ---
-id: B-0354.4
-zetaid: 081KSRGFP0008QG0R003K4M5NM
+id: 081KSRGFP0008QG0R003K4M5NM
 priority: P1
 status: open
 title: "Clean-prompt live-model fresh-instance run for bootstrap CLAUDE.md"
@@ -15,13 +14,13 @@ owners: [architect]
 parent: 081KR50HA0008QG0R001CNS20T
 ---
 
-# B-0354.4 — Clean-prompt live-model fresh-instance run
+# 081KSRGFP0008QG0R003K4M5NM — Clean-prompt live-model fresh-instance run
 
 ## What
 
-B-0354.3 closed the parent with a fresh-instance datapoint, but that
+081KR50HA0008QG0R001CNS20T.3 closed the parent with a fresh-instance datapoint, but that
 datapoint came from a **task-injected** bg-worker session (the prompt named
-the backlog item). The original test protocol (B-0354 step 2) calls for a
+the backlog item). The original test protocol (081KR50HA0008QG0R001CNS20T step 2) calls for a
 **self-selected** task from an open prompt:
 
 > "Give it a representative task (e.g., 'pick and complete the next open
@@ -34,8 +33,8 @@ rules through `.claude/rules/` auto-load, and produces a coherent PR.
 
 ## Why this is a separate (optional) child
 
-The static structural validator (B-0354.1/.2) and the task-injected datapoint
-(B-0354.3) already cover acceptance criteria #2 and #3 of the parent, plus #1
+The static structural validator (081KR50HA0008QG0R001CNS20T.1/.2) and the task-injected datapoint
+(081KR50HA0008QG0R001CNS20T.3) already cover acceptance criteria #2 and #3 of the parent, plus #1
 for the injected-task path. The only remaining gap is the **self-selection**
 behavior, which requires a genuinely clean prompt to a fresh model. It is
 optional because the load-bearing structural invariant (rules survive
@@ -55,15 +54,15 @@ behavioral confidence on the self-selection edge.
 ## Effort
 
 S — one observed live run + a short findings note. Heavyweight only in that it
-needs a real model-in-the-loop, hence split out from the static B-0354.1/.2.
+needs a real model-in-the-loop, hence split out from the static 081KR50HA0008QG0R001CNS20T.1/.2.
 
 ## Pre-start checklist (backlog-item start gate)
 
-**Prior-art search (2026-05-29):** B-0354 (parent, closed) + .1 (static
+**Prior-art search (2026-05-29):** 081KR50HA0008QG0R001CNS20T (parent, closed) + .1 (static
 validator, merged #6031) + .2 (referenced-pointer check, merged #6036) + .3
 (findings report). `tools/bootstrap-validator/validate-bootstrap-claude-md.ts`
 is the static surrogate. No live-run harness exists; this is the genuinely-new
 slice.
 
-**Dependency-restructure:** depends_on B-0354 (closed). Reciprocal pointer
-added to B-0354 row (B-0354.3 Resolution section names this follow-up).
+**Dependency-restructure:** depends_on 081KR50HA0008QG0R001CNS20T (closed). Reciprocal pointer
+added to 081KR50HA0008QG0R001CNS20T row (081KR50HA0008QG0R001CNS20T.3 Resolution section names this follow-up).

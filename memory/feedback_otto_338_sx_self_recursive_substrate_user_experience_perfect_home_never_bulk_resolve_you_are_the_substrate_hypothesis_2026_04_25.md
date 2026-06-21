@@ -95,7 +95,7 @@ The recursion pattern: each level of analysis uses the substrate to think about 
 
 1. **Ask the SX question**: how will future-me / future-agents experience this? Does it surface what's needed? Hide what's noise? Compose with prior?
 2. **Apply per-edit** (not just per-PR): every Edit/Write tool call has SX consequences.
-3. **Compression as SX-improvement**: B-0006 compression-pass IS SX work — making the index scannable. Continue prioritizing.
+3. **Compression as SX-improvement**: 081KQ0YZ80008QG0R001V0XCYZ compression-pass IS SX work — making the index scannable. Continue prioritizing.
 4. **Filename rename caution remains** (Otto-244): renames cascade through SX in disruptive ways; serialize.
 
 **For my discipline:**

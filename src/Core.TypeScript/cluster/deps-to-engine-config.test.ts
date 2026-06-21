@@ -1,4 +1,4 @@
-// tools/cluster/deps-to-engine-config.test.ts — unit tests for B-0821 cluster emitter
+// tools/cluster/deps-to-engine-config.test.ts — unit tests for 081KSGS9H0008QG0R00367G209 cluster emitter
 
 import { describe, expect, test } from "bun:test";
 import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
@@ -81,7 +81,7 @@ describe("deps-to-engine-config run", () => {
   });
 });
 
-describe("B-0821 acceptance — variable flow on shipped example", () => {
+describe("081KSGS9H0008QG0R00367G209 acceptance — variable flow on shipped example", () => {
   test("postgres connection-url → my-app database.url in Flux and ArgoCD outputs", () => {
     const outDir = mkdtempSync(join(tmpdir(), "b0821-accept-"));
     try {

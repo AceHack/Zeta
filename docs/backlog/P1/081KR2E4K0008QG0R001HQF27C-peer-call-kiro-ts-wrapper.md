@@ -1,6 +1,5 @@
 ---
-id: B-0326
-zetaid: 081KR2E4K0008QG0R001HQF27C
+id: 081KR2E4K0008QG0R001HQF27C
 priority: P1
 status: closed
 title: "Author kiro.ts peer-call wrapper"
@@ -21,7 +20,7 @@ Create `tools/peer-call/kiro.ts` — a TypeScript+Bun wrapper
 for invoking the Kiro CLI as a peer reviewer, following the
 existing sibling pattern (grok.ts, gemini.ts, etc.).
 
-## Pre-start checklist (B-0065 gate)
+## Pre-start checklist (081KQ8P5D0008QG0R002M5A2M7 gate)
 
 - [x] Search-first gate: research Kiro CLI headless/
       non-interactive flags via WebSearch before authoring.
@@ -53,7 +52,7 @@ existing sibling pattern (grok.ts, gemini.ts, etc.).
   its own standalone CLI, or grok.ts if it routes through
   cursor-agent).
 - Wire `KIRO_SUBSTANTIVE_TRIGGERS` from `_firewall.ts`
-  (landed by B-0325).
+  (landed by 081KR2E4K0008QG0R0005E727X).
 - AgencySignature preamble naming Kiro's role in the peer
   distribution. Kiro's default role: **specification peer** —
   spec-grounded second opinion, requirement-aware review.

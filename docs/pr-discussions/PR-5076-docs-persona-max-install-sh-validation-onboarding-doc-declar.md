@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Follow-up to PR #5074 (Max persona tier-2 Docker Desktop workstream). Adds four scope items Aaron surfaced across subsequent ticks:
 
-1. **install.sh validation on a fresh-ish Mac** as bonus scope — running `tools/setup/install.sh` on Max's Mac IS substrate-engineering work, not just onboarding. Each gap surfaced gets a per-class disposition (real missing dep → manifest entry; implicit-system-state → doctor.sh detection; can't-be-automated → onboarding doc; slow/costly → opt-in env var). Composes with GOVERNANCE.md §24 + B-0759 first-time-CLI-user persona.
+1. **install.sh validation on a fresh-ish Mac** as bonus scope — running `tools/setup/install.sh` on Max's Mac IS substrate-engineering work, not just onboarding. Each gap surfaced gets a per-class disposition (real missing dep → manifest entry; implicit-system-state → doctor.sh detection; can't-be-automated → onboarding doc; slow/costly → opt-in env var). Composes with GOVERNANCE.md §24 + 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona.
 
 2. **New-dev onboarding documentation ownership** — Max owns `docs/ONBOARDING.md` (or operator-picked path) covering everything install.sh demonstrably can't automate. Aaron 2026-05-25: *"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too."*
 

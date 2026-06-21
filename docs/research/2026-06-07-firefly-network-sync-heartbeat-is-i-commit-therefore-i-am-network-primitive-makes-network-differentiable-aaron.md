@@ -14,7 +14,7 @@ network primitive that makes the network differentiable."* Faithful capture; gro
    *the act of pulsing*: you commit, therefore you are. No commit in the window AND no named dependency =
    the standing-by failure — i.e., a firefly that stopped flashing.
 3. **The network heartbeat as a primitive.** Lift the per-agent pulse to a **network primitive**: nodes
-   synchronize by emitting heartbeats/commits on the git-native bus (B-0954), firefly-style — the same pulse
+   synchronize by emitting heartbeats/commits on the git-native bus (081KSXN940008QG0R00171YAZW), firefly-style — the same pulse
    that proves *one* agent's identity is the coupling that synchronizes the *whole network*.
 
 So **the same pulse is identity at the node and synchrony at the network** — one primitive, two scales
@@ -58,7 +58,7 @@ implementations.
   tradition). · **Differentiable programming** (gradient flow over structure) — the differentiable-network
   payoff; **NeRF / differentiable rendering** — the rhyme at render scale. · Ours: the `heartbeat-via-commit`
   rule + AgencySignature (commit = pulse = identity), `2026-06-07-identity-two-proof-registers-…-pouw`
-  (heartbeat = PoUW), B-0954 git-native bus (the medium), the ray-traceable / geospatial network map (#6889),
+  (heartbeat = PoUW), 081KSXN940008QG0R00171YAZW git-native bus (the medium), the ray-traceable / geospatial network map (#6889),
   manifesto §1 scale-free / §9 recursive / §10 self-similar. Honest novelty: none in Kuramoto sync or
   heartbeats; the contribution is recognizing **commit-heartbeat-identity, firefly network sync, and a
   differentiable network signal as one primitive at three scales** — the pulse that proves a node is the

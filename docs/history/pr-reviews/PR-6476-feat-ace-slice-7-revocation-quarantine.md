@@ -27,7 +27,7 @@
 
 ## Description
 
-Implements **slice 7** (revocation/quarantine; B-0288, lifecycle stage 12). Spec: #6466. Built subagent-driven per `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice7-implementation-plan.md` (Tasks A→D + a pure-layer fix).
+Implements **slice 7** (revocation/quarantine; 081KR2E4K0008QG0R002YE3MMD, lifecycle stage 12). Spec: #6466. Built subagent-driven per `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice7-implementation-plan.md` (Tasks A→D + a pure-layer fix).
 
 ## What it does
 - **Two marks in the signed index (format_version 2):** `revoked` (permanent hard-refuse) + `quarantined` (soft-refuse, override-able), as sibling maps in `IndexSignableContent` — covered by the existing signature + monotonic-sequence anti-rollback + freshness gates (a revocation can't be un-seen by serving an older index). Plain publish stays format_version 1.

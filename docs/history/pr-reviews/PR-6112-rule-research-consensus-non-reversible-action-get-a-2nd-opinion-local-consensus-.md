@@ -40,7 +40,7 @@ Two files, one thread (the consensus-architecture arc from this session):
 
 ## Research doc (the WHY)
 
-**Non-interrupting attention-summon changes the cost structure of consensus.** Humans: serial attention; a 2nd opinion interrupts someone's primary layer → `O(interrupt)`, expensive → minimize consensus. Agents: summon is a non-interrupting fork → `O(local-fork)`, cheap → *can* run a local quorum before every non-reversible action. "Consensus can be local" is true for agents, false for humans. Adds local-transient consensus alongside distributed-standing BFT (B-0703); local-consensus-before-acting = the reconciler pattern applied to decisions (composes the anti-entropy-converter framing).
+**Non-interrupting attention-summon changes the cost structure of consensus.** Humans: serial attention; a 2nd opinion interrupts someone's primary layer → `O(interrupt)`, expensive → minimize consensus. Agents: summon is a non-interrupting fork → `O(local-fork)`, cheap → *can* run a local quorum before every non-reversible action. "Consensus can be local" is true for agents, false for humans. Adds local-transient consensus alongside distributed-standing BFT (081KS3X9Y0008QG0R00218150M); local-consensus-before-acting = the reconciler pattern applied to decisions (composes the anti-entropy-converter framing).
 
 ## Empirical anchor
 

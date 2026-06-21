@@ -1,11 +1,10 @@
 ---
-id: B-0479
-zetaid: 081KRHWGX0008QG0R0023DWW8D
+id: 081KRHWGX0008QG0R0023DWW8D
 priority: P1
 status: open
 title: "Axis-3 ADR — Code/English + formal-verification three-axis design decision"
 type: adr
-origin: B-0427 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000VKJF0H decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000VKJF0H
@@ -29,11 +28,11 @@ composes_with:
 
 ## Purpose
 
-Synthesize the outputs of B-0476 (ruleset divergence audit), B-0477
-(Code/English classification matrix), and B-0478 (FV sub-axis evaluation)
+Synthesize the outputs of 081KRHWGX0008QG0R000BS8Y4R (ruleset divergence audit), 081KRHWGX0008QG0R002893S6E
+(Code/English classification matrix), and 081KRHWGX0008QG0R0008EYYCA (FV sub-axis evaluation)
 into a committed architecture decision record.
 
-This ADR extends the 2026-04-22 three-repo-split ADR and the B-0474 Axis-2
+This ADR extends the 2026-04-22 three-repo-split ADR and the 081KRHWGX0008QG0R0023FDYVE Axis-2
 Mirror/Beacon ADR to cover Axis 3 (Code/English + FV sub-axis). Together,
 the three ADRs form the complete three-axis repo-split design.
 
@@ -41,12 +40,12 @@ the three ADRs form the complete three-axis repo-split design.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0476 output doc reviewed (ruleset divergence audit complete)
-- [ ] B-0477 output doc reviewed (classification matrix complete)
-- [ ] B-0478 output doc reviewed (FV evaluation complete)
+- [ ] 081KRHWGX0008QG0R000BS8Y4R output doc reviewed (ruleset divergence audit complete)
+- [ ] 081KRHWGX0008QG0R002893S6E output doc reviewed (classification matrix complete)
+- [ ] 081KRHWGX0008QG0R0008EYYCA output doc reviewed (FV evaluation complete)
 - [ ] 2026-04-22 ADR reviewed for consistent framing
-- [ ] B-0474 (Axis-2 ADR) reviewed — check whether it is closed or in-flight
-- [ ] Ambiguous cases from B-0477 and B-0478 resolved
+- [ ] 081KRHWGX0008QG0R0023FDYVE (Axis-2 ADR) reviewed — check whether it is closed or in-flight
+- [ ] Ambiguous cases from 081KRHWGX0008QG0R002893S6E and 081KRHWGX0008QG0R0008EYYCA resolved
 
 ## ADR structure (output doc template)
 
@@ -60,8 +59,8 @@ Required sections:
 
 - Three-axis system: Axis 1 (Factory/Product/Owner-only) + Axis 2 (Mirror/Beacon)
   + Axis 3 (Code/English + FV sub-axis)
-- Aaron's 2026-05-13 framing (verbatim from B-0427)
-- Companion to: 2026-04-22 ADR + 2026-05-14 product-repo ADR + B-0474 Axis-2 ADR
+- Aaron's 2026-05-13 framing (verbatim from 081KRFA460008QG0R000VKJF0H)
+- Companion to: 2026-04-22 ADR + 2026-05-14 product-repo ADR + 081KRHWGX0008QG0R0023FDYVE Axis-2 ADR
 - DV2.0 change-rate framing (the intellectual foundation for Code/English cut)
 
 ### Decision: Code/English tier definitions
@@ -79,13 +78,13 @@ Required sections:
 
 ### Decision: Formal-verification sub-axis
 
-- Per-property-class decisions from B-0478 (co-locate / split)
+- Per-property-class decisions from 081KRHWGX0008QG0R0008EYYCA (co-locate / split)
 - FsCheck co-locate decision (pre-decided; rationale included)
 - Any new FV repos proposed (with scope and owner)
 
 ### Decision: Ruleset-divergence smell test operationalization
 
-- Summary of B-0476 findings
+- Summary of 081KRHWGX0008QG0R000BS8Y4R findings
 - Which divergences confirmed split recommendations
 - Which divergences were resolved by ruleset alignment instead
 - Canonical statement: "the ruleset divergence smell test is operative
@@ -102,35 +101,35 @@ Required sections:
 
 - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
 - `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md`
-- `docs/DECISIONS/2026-05-14-mirror-beacon-axis-two-axis-design.md` (B-0474 output)
+- `docs/DECISIONS/2026-05-14-mirror-beacon-axis-two-axis-design.md` (081KRHWGX0008QG0R0023FDYVE output)
 - `docs/research/2026-05-14-axis3-prior-art-audit-b0475.md`
 - `docs/research/2026-05-14-github-ruleset-divergence-audit-b0476.md`
 - `docs/research/2026-05-14-axis3-code-english-classification-matrix-b0477.md`
 - `docs/research/2026-05-14-formal-verification-repo-split-evaluation-b0478.md`
 
-## Closing B-0427
+## Closing 081KRFA460008QG0R000VKJF0H
 
 This ADR PR also:
 
-- Updates B-0427 status to `closed`
-- Updates B-0475/B-0476/B-0477/B-0478/B-0479 to `closed`
-- Releases the `otto-cli` claim on B-0427
+- Updates 081KRFA460008QG0R000VKJF0H status to `closed`
+- Updates 081KRHWGX0008QG0R000M9RFY2/081KRHWGX0008QG0R000BS8Y4R/081KRHWGX0008QG0R002893S6E/081KRHWGX0008QG0R0008EYYCA/081KRHWGX0008QG0R0023DWW8D to `closed`
+- Releases the `otto-cli` claim on 081KRFA460008QG0R000VKJF0H
 
 ## Definition of done
 
 - [ ] ADR written and committed at canonical path
 - [ ] All three Axis-3 decisions formally recorded
   (Code/English tiers + FV sub-axis + ruleset smell test)
-- [ ] All ambiguous repos from B-0477 and B-0478 resolved with explicit reasoning
+- [ ] All ambiguous repos from 081KRHWGX0008QG0R002893S6E and 081KRHWGX0008QG0R0008EYYCA resolved with explicit reasoning
 - [ ] Three-axis matrix complete (Axis 1 + 2 + 3 for all repos)
-- [ ] B-0427 closed; all 5 child rows closed
+- [ ] 081KRFA460008QG0R000VKJF0H closed; all 5 child rows closed
 - [ ] PR merged; claim released
 
 ## Why P1
 
-- Terminal row for the B-0427 planning item
+- Terminal row for the 081KRFA460008QG0R000VKJF0H planning item
 - Produces the durable substrate-or-it-didn't-happen artifact (committed ADR)
 - Without this ADR, the prior-art audit + classification + ruleset audit +
   FV evaluation remain research-grade (Mirror tier); the ADR is what
   promotes them to Beacon and makes them operative
-- Completes the three-axis design space opened by B-0424/B-0425/B-0426/B-0427
+- Completes the three-axis design space opened by 081KRFA460008QG0R001H98EXJ/081KRFA460008QG0R003JQ46J4/081KRFA460008QG0R0007RWSN1/081KRFA460008QG0R000VKJF0H

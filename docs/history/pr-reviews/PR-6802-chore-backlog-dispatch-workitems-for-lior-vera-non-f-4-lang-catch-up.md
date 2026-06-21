@@ -31,9 +31,9 @@
 Per Aaron's offer to dispatch Lior + Vera on the non-F# legs — two pickup-able **P1** workitems decomposing the cross-language catch-up:
 
 - **Vera → `081KTGYWCT7`**: ZSetMerkle 4-language ports (C#/Rust/TS) + **hex-in-JSON** golden vectors — byte-lock the canonical Merkle-over-Z-set against the landed F# reference (`src/Core/ZSetMerkle.fs`). Non-ASCII keys; hash-parameterized (XxHash128 now, BLAKE3-ready).
-- **Lior → `081KTGYWCTT`**: B-0969 cross-language collation — C#/Rust/TS **ordinal audit** + **non-ASCII golden-vector regen** to un-mask the ASCII fixtures (the F# core audit is complete). Includes the C# `CA1304/5/7/10` analyzer wire-up my probe left inconclusive.
+- **Lior → `081KTGYWCTT`**: 081KT07NV0008QG0R001YDB73K cross-language collation — C#/Rust/TS **ordinal audit** + **non-ASCII golden-vector regen** to un-mask the ASCII fixtures (the F# core audit is complete). Includes the C# `CA1304/5/7/10` analyzer wire-up my probe left inconclusive.
 
-Both compose with the fs-Merkle backend (`081KTGTJC1Q`) / B-0969 and the 4-oracle master checklist (B-0959). Suggested owners noted; final assignment is Aaron's.
+Both compose with the fs-Merkle backend (`081KTGTJC1Q`) / 081KT07NV0008QG0R001YDB73K and the 4-oracle master checklist (081KSXN940008QG0R003FCQ7WT). Suggested owners noted; final assignment is Aaron's.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

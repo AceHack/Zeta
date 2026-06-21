@@ -11,7 +11,7 @@ const ctx = {
     sessionStartIso: "2026-06-11T16:00:00.000Z",
 };
 const candidate = {
-    id: "B-0867.5",
+    id: "081KDWZ8TS008QG0R0020NJ9D0",
     lane: "backlog-row",
     estimatedDoraContribution: 0.85,
     uncertainty: 0.15,
@@ -19,21 +19,21 @@ const candidate = {
     agentInterest: 0.95,
 };
 const backlogRow = {
-    id: "B-0867.5",
+    id: "081KDWZ8TS008QG0R0020NJ9D0",
     title: "TS-F# Workflow Engine Parity",
     priority: "P1",
-    filePath: "docs/backlog/P1/B-0867.5-parity.md",
+    filePath: "docs/backlog/P1/081KDWZ8TS008QG0R0020NJ9D0-parity.md",
     trajectory: "dora-mandate",
 };
 const resultSuccess = {
-    workId: "B-0867.5",
+    workId: "081KDWZ8TS008QG0R0020NJ9D0",
     lane: "backlog-row",
     success: true,
     doraContribution: 0.9,
     notes: "Bit-perfect parity achieved",
 };
 const resultFailure = {
-    workId: "B-0867.5",
+    workId: "081KDWZ8TS008QG0R0020NJ9D0",
     lane: "backlog-row",
     success: false,
     doraContribution: 0.0,

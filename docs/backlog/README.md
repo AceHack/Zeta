@@ -54,12 +54,12 @@ rows to `docs/BACKLOG.md`.
 **Legacy stockpile:** `docs/BACKLOG.md` remains as a
 read-only archive of un-migrated rows during the migration
 window. Its top-of-file warning header points at this README
-and the migration-tracking row (B-0061). Once migration
+and the migration-tracking row (081KQ8P5D0008QG0R001BH93SA). Once migration
 completes, the monolith collapses to an auto-generated
 pointer index via `tools/backlog/generate-index.ts`.
 
 **Tracking the migration itself:**
-[`P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md`](./P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)
+[`P1/081KQ8P5D0008QG0R001BH93SA-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md`](./P1/081KQ8P5D0008QG0R001BH93SA-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)
 owns the audit + batched-migration + cutover. Aaron 2026-04-28 explicit framing:
 *"don't miss anyting make sure it's all accounted for, and
 make sure not BACKLOG.md residue is left over in the

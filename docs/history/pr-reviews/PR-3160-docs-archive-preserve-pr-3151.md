@@ -54,7 +54,7 @@ Autonomously generated PR preservation for 3151
 - **`Copilot` (bot)** at 2026-05-14T18:28:18Z on `docs/pr-discussions/PR-3151-chore-b-0442-decompose-into-atomic-child-rows-b-0503-b-0504.md`:46 (association: NONE)
 
   <pre>
-  This archive records PR #3151 as merged and lists B-0503/B-0504/B-0505 plus the regenerated backlog index as landed changes, but those backlog row files and `docs/BACKLOG.md` entries are absent from the reviewed tree. That makes the preserved record point at non-existent substrate; rebase this archive PR onto the commit that actually contains PR #3151 (or correct the archived source if it was generated from the wrong PR/repo) before merging.
+  This archive records PR #3151 as merged and lists 081KRHWGX0008QG0R0027YXBTB/081KRHWGX0008QG0R000PVB6FF/081KRHWGX0008QG0R002C038BJ plus the regenerated backlog index as landed changes, but those backlog row files and `docs/BACKLOG.md` entries are absent from the reviewed tree. That makes the preserved record point at non-existent substrate; rebase this archive PR onto the commit that actually contains PR #3151 (or correct the archived source if it was generated from the wrong PR/repo) before merging.
 
   </pre>
 
@@ -86,7 +86,7 @@ fix(archive): clarify PR-3151 referenced files are on main not in thi…
 …s diff
 
 The archive was branched from commit 09fa6185 (pre-merge). PR #3151 merged
-at 18:08Z (commit 759af2d6) added B-0503/B-0504/B-0505 and docs/BACKLOG.md
+at 18:08Z (commit 759af2d6) added 081KRHWGX0008QG0R0027YXBTB/081KRHWGX0008QG0R000PVB6FF/081KRHWGX0008QG0R002C038BJ and docs/BACKLOG.md
 to main. Those files are not in this archive PR's diff because this PR is a
 documentation record, not a re-application of the original changes.
 

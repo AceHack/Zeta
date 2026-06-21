@@ -6,7 +6,7 @@ namespace Zeta.Core
 /// the **protocol state machine** that drives a single-shot agreement to that quorum: a deterministic reducer
 /// `receive : view → message → view × outbound`, transport-agnostic. The **anti-Sybil credential (the drift
 /// stream) travels with every message** — distinctness is established on the wire, per the Eve-protocol
-/// "nothing shared but the wire" target (B-1002).
+/// "nothing shared but the wire" target (081KT2T2J0008QG0R002R72323).
 ///
 /// **Scale-free / beautiful-on-1 (manifesto §1, §7):** the reducer is pure and deterministic — at DoP=1 a
 /// single cooperative loop folds messages in a replayable order (DST); at DoP=N the real transport fans the
@@ -15,7 +15,7 @@ namespace Zeta.Core
 ///
 /// **Transport is OUT of scope here (gated).** The concrete transport is Aaron's `MultiplexedWebSockets`
 /// (ASP.NET `System.Threading.Channels` + `System.IO.Pipelines`, Fowler-reviewed — 115k msg/s vs HttpClient
-/// 7k/s), tracked by **B-1002 / B-0242**. For *strangers over the wire* it requires on-wire key exchange +
+/// 7k/s), tracked by **081KT2T2J0008QG0R002R72323 / 081KQZVQW0008QG0R001CQPQ0E**. For *strangers over the wire* it requires on-wire key exchange +
 /// authenticated encryption and must NOT deploy before Zeta's encryption-floor + an Aminata/Soraya
 /// threat-model of the negotiation handshake. This module owns the protocol *logic* behind the
 /// `IBftTransport` port (hexagonal — `bcl-interface-boundary`); the mux-WS adapter plugs in there.

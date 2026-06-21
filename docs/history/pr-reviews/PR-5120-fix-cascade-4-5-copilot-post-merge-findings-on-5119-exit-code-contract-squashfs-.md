@@ -229,7 +229,7 @@ Substrate-honest framing: this is the cleaner pattern for ALL
 CI tool deps going forward. The ubuntu-runner-image PATH is
 brittle; declarative Nix pin is reproducible across runner
 versions + matches Aaron's '0 dev machines' homelab persona
-substrate (per B-0790) where everything is Nix-defined.
+substrate (per 081KSGS9H0008QG0R00153CQ8B) where everything is Nix-defined.
 
 Composes with the prior 5-finding fix-fwd in this same PR.
 

@@ -31,13 +31,13 @@ The **keystone ADR** — names the architecture spine the whole night's work han
 
 **The keystone:** Zeta is **one decentralized substrate** — an append-only ZetaId-keyed **event log** whose *every layer* is a **node-local fold** with **no central authority**; the **same G-Set/Bag/Z-set algebra runs top to bottom**; consensus is reserved (gravity); the floor is **Landauer-bounded**.
 
-**The vertical (one design at 7 layers):** FPGA Toffoli-Z-set (B-0366) → microkernel/unikernel (B-0945) → F# HKT-Clifford engine (B-0428/B-0547) → DB design (event log + folds) → labels/tags+scopes (B-0957) → OPA policy (B-0776) → decentralized identity/zero-trust (B-0646 + SPIFFE/SPIRE + AgencySignature).
+**The vertical (one design at 7 layers):** FPGA Toffoli-Z-set (081KR50HA0008QG0R003T5MZAC) → microkernel/unikernel (081KSV2WD0008QG0R000WNY74Q) → F# HKT-Clifford engine (081KRFA460008QG0R0018SN61J/081KRMEXM0008QG0R001VGNET5) → DB design (event log + folds) → labels/tags+scopes (081KSXN940008QG0R001YABTHH) → OPA policy (081KSE6WT0008QG0R002275NDE) → decentralized identity/zero-trust (081KRW63S0008QG0R001Z10PVV + SPIFFE/SPIRE + AgencySignature).
 
 **Two invariants at every layer:**
 1. **No central authority** — IDs minted locally (ZetaId), trust decided locally (**zero-trust falls out of the substrate**, not bolted on), policy node-local, consensus only as gravity.
 2. **Landauer-bounded** — forgetting costs energy; made *physical* by the FPGA reversible Toffoli-Z-set ops.
 
-**Through-line:** the **same Z-set algebra at silicon (B-0366) and at planning (B-0956 work-items)** — folds all the way down. Not a stack of systems; one substrate at seven layers.
+**Through-line:** the **same Z-set algebra at silicon (081KR50HA0008QG0R003T5MZAC) and at planning (081KSXN940008QG0R002FWR9B2 work-items)** — folds all the way down. Not a stack of systems; one substrate at seven layers.
 
 Status: **Proposed keystone**, routed through ratification. Composes ~every ADR/row from tonight + the HW/OS/runtime rows.
 
@@ -69,9 +69,9 @@ Status: **Proposed keystone**, routed through ratification. Composes ~every ADR/
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-06-01T01:09:26Z on `docs/DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md`:40 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Link the B-0957 substrate row before citing it**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Link the 081KSXN940008QG0R001YABTHH substrate row before citing it**
 
-  This metadata layer is presented as backed by `B-0957`, but that work item does not exist anywhere in the repo (`rg -n "B-0957"` only finds this new ADR). Because this ADR is meant to be the keystone traceability map for the stack, readers cannot inspect or ratify the labels/tags/scopes substrate it relies on; either add the missing backlog row or replace the reference with an existing artifact.
+  This metadata layer is presented as backed by `081KSXN940008QG0R001YABTHH`, but that work item does not exist anywhere in the repo (`rg -n "081KSXN940008QG0R001YABTHH"` only finds this new ADR). Because this ADR is meant to be the keystone traceability map for the stack, readers cannot inspect or ratify the labels/tags/scopes substrate it relies on; either add the missing backlog row or replace the reference with an existing artifact.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -87,7 +87,7 @@ Status: **Proposed keystone**, routed through ratification. Composes ~every ADR/
 - **`Copilot` (bot)** at 2026-06-01T01:10:16Z on `docs/DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md`:40 (association: NONE)
 
   <pre>
-  P1 (xref): `B-0957` is cited as an existing backlog row, but there is no `docs/backlog/**` row with `id: B-0957` in the tree. This leaves the keystone ADR pointing at a non-existent facet; either add the B-0957 row in the PR or change this to a pending/non-row reference.
+  P1 (xref): `081KSXN940008QG0R001YABTHH` is cited as an existing backlog row, but there is no `docs/backlog/**` row with `id: 081KSXN940008QG0R001YABTHH` in the tree. This leaves the keystone ADR pointing at a non-existent facet; either add the 081KSXN940008QG0R001YABTHH row in the PR or change this to a pending/non-row reference.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -101,7 +101,7 @@ Status: **Proposed keystone**, routed through ratification. Composes ~every ADR/
 - **`Copilot` (bot)** at 2026-06-01T01:10:16Z on `docs/DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md`:92 (association: NONE)
 
   <pre>
-  P1 (xref): this second `B-0957` reference is also dangling; no backlog row with that ID exists, so readers cannot resolve the metadata/policy/identity facet this ADR claims to compose with.
+  P1 (xref): this second `081KSXN940008QG0R001YABTHH` reference is also dangling; no backlog row with that ID exists, so readers cannot resolve the metadata/policy/identity facet this ADR claims to compose with.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -127,10 +127,10 @@ consensus reserved (gravity); Landauer-bounded floor. Two invariants at every la
 central authority — IDs minted locally (ZetaId), trust decided locally (zero-trust falls out of
 the substrate, not bolted on), policy evaluated locally (node-OPA), consensus only as gravity;
 (2) Landauer-bounded — forgetting costs energy, made physical by the FPGA Toffoli-Z-set
-reversible ops. Through-line: the SAME Z-set algebra at silicon (B-0366) and at planning
-(B-0956). Vertical stack cross-links: B-0366/B-0725/B-0842 (HW) · B-0945 (microkernel) ·
-B-0428/B-0547 (F# engine) · DB-design ADR/B-0954/B-0956/B-0824 (data) · B-0957/B-0668 (metadata)
-· B-0776 OPA (policy) · B-0646/SPIFFE/AgencySignature + trust rules (identity). Status: Proposed
+reversible ops. Through-line: the SAME Z-set algebra at silicon (081KR50HA0008QG0R003T5MZAC) and at planning
+(081KSXN940008QG0R002FWR9B2). Vertical stack cross-links: 081KR50HA0008QG0R003T5MZAC/081KSE6WT0008QG0R002T0BFN4/081KSGS9H0008QG0R003V8C86Q (HW) · 081KSV2WD0008QG0R000WNY74Q (microkernel) ·
+081KRFA460008QG0R0018SN61J/081KRMEXM0008QG0R001VGNET5 (F# engine) · DB-design ADR/081KSXN940008QG0R00171YAZW/081KSXN940008QG0R002FWR9B2/081KSGS9H0008QG0R0031PBNGA (data) · 081KSXN940008QG0R001YABTHH/081KRYRGG0008QG0R0018CMFQY (metadata)
+· 081KSE6WT0008QG0R002275NDE OPA (policy) · 081KRW63S0008QG0R001Z10PVV/SPIFFE/AgencySignature + trust rules (identity). Status: Proposed
 keystone. Aaron-directed.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -145,11 +145,11 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-docs(adr): link B-0957 (the metadata-layer row) in the keystone, note…
+docs(adr): link 081KSXN940008QG0R001YABTHH (the metadata-layer row) in the keystone, note…
 
 … it lands via #6300 (Codex #6302)
 
-B-0957 was cited as bare text while the keystone's other rows are links; B-0957 lands via the
+081KSXN940008QG0R001YABTHH was cited as bare text while the keystone's other rows are links; 081KSXN940008QG0R001YABTHH lands via the
 armed #6300 (not yet on main, hence rg couldn't find it from the review base). Made it a proper
 relative link + '(lands via #6300)' so the traceability map is navigable + the cross-PR
 ordering is explicit.

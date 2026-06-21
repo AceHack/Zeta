@@ -22,7 +22,7 @@ Distinct from multi-directional-guess agendas (e.g., fair-chance project traject
 
 DeepSeek substrate-engineering pipeline mapping (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) applied to Ace package manager. Solves operational gap: 'skills evolving faster than distribution cycles can capture.' Packages = bounded time-crystal houses; living skill keeps evolving (META-LOOP preserved); frame stays weight-free.
 
-Composes with existing B-0247 / B-0287 (closed) / B-0288 (in-progress) / B-0424 chain. B-0288 backlog row updated with the substrate-engineering pipeline framing.
+Composes with existing 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE (closed) / 081KR2E4K0008QG0R002YE3MMD (in-progress) / 081KRFA460008QG0R001H98EXJ chain. 081KR2E4K0008QG0R002YE3MMD backlog row updated with the substrate-engineering pipeline framing.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 
@@ -57,11 +57,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds a new trajectory document for the Ace package-manager “skill crystallization” framing and updates the existing B-0288 backlog row to include the same substrate-engineering pipeline mapping context, aligning ongoing CLI work with the new trajectory narrative.
+Adds a new trajectory document for the Ace package-manager “skill crystallization” framing and updates the existing 081KR2E4K0008QG0R002YE3MMD backlog row to include the same substrate-engineering pipeline mapping context, aligning ongoing CLI work with the new trajectory narrative.
 
 **Changes:**
 - Added `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md` to capture the operator-self-claimed trajectory and pipeline mapping.
-- Updated `B-0288` backlog row with a “substrate-engineering pipeline framing” section referencing the trajectory.
+- Updated `081KR2E4K0008QG0R002YE3MMD` backlog row with a “substrate-engineering pipeline framing” section referencing the trajectory.
 
 ### Reviewed changes
 
@@ -70,7 +70,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 | File | Description |
 | ---- | ----------- |
 | docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md | New trajectory resume describing the Ace skill-crystallization pipeline framing and cross-synthesis mapping. |
-| docs/backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md | Adds pipeline-framing context to the existing CLI backlog row. |
+| docs/backlog/P1/081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md | Adds pipeline-framing context to the existing CLI backlog row. |
 
 
 <details>
@@ -120,7 +120,7 @@ This issue also appears in the following locations of the same file:
 
 Grammar: “Time-crystal packages composes” should be “compose” (plural subject).
 
-### Thread 4: docs/backlog/P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md:29 (unresolved)
+### Thread 4: docs/backlog/P1/081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md:29 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T17:30:41Z):
 

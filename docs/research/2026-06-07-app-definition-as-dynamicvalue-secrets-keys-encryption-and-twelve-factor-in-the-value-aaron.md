@@ -31,7 +31,7 @@ secrets are factors of it.* Faithful capture; Beacon-anchored.
 4. **Hardware-pointer** — the value **points to specific hardware** for its keys (singular, or n-of-m).
 
 These are not a new codec: encryption is a **transform** over canonical CBOR (the PQ `.zc` privacy codec
-already does this — "privacy is a TRANSFORM, not a 5th codec", B-0883/B-0982; DynamicValue
+already does this — "privacy is a TRANSFORM, not a 5th codec", 081KSNY2Z0008QG0R002JKH50A/081KT07NV0008QG0R0032MCYER; DynamicValue
 `encryptValue`/`decryptValue` memory-fence). The new part is **per-branch / pointer-to-secret / hardware
 & n-of-m / license-gate** semantics expressed *in the value*.
 
@@ -54,7 +54,7 @@ forked/composed like everything else — the same closure as tenant-as-DynamicVa
 
 ## Ties
 
-- §1 secrets: PQ `.zc` codec (B-0883/B-0982, encryption-as-transform), DynamicValue
+- §1 secrets: PQ `.zc` codec (081KSNY2Z0008QG0R002JKH50A/081KT07NV0008QG0R0032MCYER, encryption-as-transform), DynamicValue
   `encryptValue`/`decryptValue`, ZetaID (pointer-to-secret), the determinism contract (`081KTGEVV75` —
   a secret/hardware key is a *host-injected declared capability*, not embedded), the
   pointer-not-authority admission gate, Nostr keys (the identity thread, `2026-06-07-identity-*`).

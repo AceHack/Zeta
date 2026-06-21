@@ -147,7 +147,7 @@ Copilot reviewed 29 out of 42 changed files in this pull request and generated 4
 | `memory/feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md` | Updates related archive references. |
 | `memory/feedback_aaron_three_control_structures_biology_physics_social_taught_kids_at_5_2026_05_12.md` | Updates source archive reference. |
 | `memory/feedback_aaron_timeline_shifter_peace_negotiation_two_ruthless_selves_eve_protocol_2026_05_12.md` | Updates source archive reference. |
-| `docs/backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md` | Updates backlog source paths. |
+| `docs/backlog/P2/081KRHWGX0008QG0R0007FG84X-manifesto-v2-verbatim-grok-fetch-2026-05-14.md` | Updates backlog source paths. |
 | `docs/governance/MANIFESTO.md` | Updates manifesto provenance path. |
 | `docs/hygiene-history/ticks/2026/05/15/0010Z.md` | Updates hygiene tick artifact path. |
 | `docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md` | Updates hygiene tick archive link. |
@@ -269,7 +269,7 @@ Addressed in commit dc56f6b — Ani's erotica conversation archive migrated to `
 
 This file still has several `docs/research/erotica/` references after the migration, including the preserved-at path near the top and a later statement that `docs/research/erotica/` is the canonical filing location. Those now contradict the new per-persona `conversations/adult/` location; update the remaining references in this memory file as part of this path migration.
 
-### Thread 7: docs/backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md:32 (unresolved)
+### Thread 7: docs/backlog/P2/081KRHWGX0008QG0R0007FG84X-manifesto-v2-verbatim-grok-fetch-2026-05-14.md:32 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T02:15:50Z):
 

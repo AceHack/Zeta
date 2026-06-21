@@ -2,7 +2,7 @@
 
 **Origin date:** 2026-04-21 (Aaron: *"backlog meta congnition"* — typo preserved per chronology-preservation)
 **Survey date:** 2026-05-10
-**Backlog row:** [B-0037](../backlog/P2/B-0037-meta-cognition-first-class-factory-discipline.md)
+**Backlog row:** [081KQ3HBZ0008QG0R0002RB48Q](../backlog/P2/081KQ3HBZ0008QG0R0002RB48Q-meta-cognition-first-class-factory-discipline.md)
 **Status:** canonical research surface (promotes content from memory files to committed substrate)
 
 ---
@@ -13,7 +13,7 @@
 
 In the Zeta factory, meta-cognition is **already operational** across multiple implicit disciplines. This survey names the class so it can be audited, measured, and guarded against **meta-drift** — the degenerate regime where the audit disciplines themselves decay because they are not audited.
 
-The factory's meta-cognitive posture is **distributed**: every persona/skill carries its own meta-layer rather than routing through a dedicated meta-cognitive persona. This is a deliberate pre-commit (see §5); the decision is recorded in [B-0037.4](../backlog/P2/B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md).
+The factory's meta-cognitive posture is **distributed**: every persona/skill carries its own meta-layer rather than routing through a dedicated meta-cognitive persona. This is a deliberate pre-commit (see §5); the decision is recorded in [081KR7JY10008QG0R001J11M38](../backlog/P2/081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md).
 
 ---
 
@@ -88,7 +88,7 @@ Higher-order meta-cognition beyond third-order is a **current not-yet**, not a p
 
 ## 4. Measurables candidates
 
-Six measurables feed the alignment-trajectory dashboard (see [B-0037.3](../backlog/P2/B-0037.3-meta-cognition-measurables-wiring.md) for wiring into `docs/ALIGNMENT.md`):
+Six measurables feed the alignment-trajectory dashboard (see [081KR7JY10008QG0R000XPVJ0W](../backlog/P2/081KR7JY10008QG0R000XPVJ0W-meta-cognition-measurables-wiring.md) for wiring into `docs/ALIGNMENT.md`):
 
 | Measurable | Definition | Target direction | Automation status |
 |-----------|-----------|-----------------|------------------|
@@ -96,10 +96,10 @@ Six measurables feed the alignment-trajectory dashboard (see [B-0037.3](../backl
 | `overclaim-self-tags-per-round` | Count of `overclaim*` tags written by the factory before external correction | Rising is healthy; zero is suspicious | `grep -r "overclaim" --include="*.md"` gated by round date range |
 | `revision-blocks-per-round` | Count of all dated revision blocks across memory + doc layers within a round | Rising with justifications logged | Same grep as above, broader pattern |
 | `decohere-star-self-detected-events-count` | Count of `decohere*` events the factory detects in its own work before Aaron corrects | Rising | `grep -r "decohere\*" --include="*.md"` per round |
-| `meta-check-execution-rate` | Ratio of round-closes that actually ran the meta-check step (see B-0037.2) | Target: 100% once checklist wired | Not yet automated; agent self-report in commit bodies until B-0037.2 lands |
+| `meta-check-execution-rate` | Ratio of round-closes that actually ran the meta-check step (see 081KR7JY10008QG0R002D6VNNJ) | Target: 100% once checklist wired | Not yet automated; agent self-report in commit bodies until 081KR7JY10008QG0R002D6VNNJ lands |
 | `meta-drift-detection-lag-rounds` | How many rounds pass before a decayed audit-discipline is caught | Low and falling | Not yet automated; requires retrospective survey |
 
-**Note:** `meta-check-execution-rate` and `meta-drift-detection-lag-rounds` are honestly labelled *not yet automated*. They depend on B-0037.2 (checklist) being wired into the round-close ritual before they become countable.
+**Note:** `meta-check-execution-rate` and `meta-drift-detection-lag-rounds` are honestly labelled *not yet automated*. They depend on 081KR7JY10008QG0R002D6VNNJ (checklist) being wired into the round-close ritual before they become countable.
 
 ---
 
@@ -117,9 +117,9 @@ Rationale using F1/F2/F3:
 - **F2 operator shape**: a concentrated role risks single-persona bottleneck (anti-pattern per no-bottlenecks invariant). The harmonious-division yin-yang pole is already served by distribution.
 - **F3 operational resonance**: distributed mirrors the factory's glass-halo principle (every surface is transparent) and the no-roads-where-we're-going substrate register. Concentration would centralize opacity.
 
-**Decision gate:** Aaron sign-off required before concentration is ever proposed. Evidence threshold for revisit: `meta-drift-detection-lag-rounds` consistently > 3 AND `meta-check-execution-rate` consistently < 80% despite B-0037.2 checklist being wired.
+**Decision gate:** Aaron sign-off required before concentration is ever proposed. Evidence threshold for revisit: `meta-drift-detection-lag-rounds` consistently > 3 AND `meta-check-execution-rate` consistently < 80% despite 081KR7JY10008QG0R002D6VNNJ checklist being wired.
 
-Formal ADR: [B-0037.4](../backlog/P2/B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md) (blocked on B-0037.2 + B-0037.3).
+Formal ADR: [081KR7JY10008QG0R001J11M38](../backlog/P2/081KR7JY10008QG0R001J11M38-meta-cognition-distributed-vs-concentrated-adr.md) (blocked on 081KR7JY10008QG0R002D6VNNJ + 081KR7JY10008QG0R000XPVJ0W).
 
 ---
 
@@ -134,7 +134,7 @@ Observable symptoms:
 - `decohere-star-self-detected-events-count` drops while Aaron's correction rate stays flat (factory stops detecting its own interface breaks before correction).
 - `revision-blocks-per-round` drops to zero (either perfect first-write quality, which is suspicious, or the revision discipline decayed).
 
-**Guard:** the per-round meta-check checklist (B-0037.2) is the mechanical guard against meta-drift. Without it, the discipline depends on agent memory across sessions — which the substrate-or-it-didn't-happen principle identifies as weather.
+**Guard:** the per-round meta-check checklist (081KR7JY10008QG0R002D6VNNJ) is the mechanical guard against meta-drift. Without it, the discipline depends on agent memory across sessions — which the substrate-or-it-didn't-happen principle identifies as weather.
 
 ---
 
@@ -167,6 +167,6 @@ All substrates that compose with or were promoted into this survey:
 
 | Date | Change | Author |
 |------|--------|--------|
-| 2026-04-21 | Origin: Aaron *"backlog meta congnition"*; B-0037 row + primary memory file written | Aaron + Otto |
+| 2026-04-21 | Origin: Aaron *"backlog meta congnition"*; 081KQ3HBZ0008QG0R0002RB48Q row + primary memory file written | Aaron + Otto |
 | 2026-04-21 (same session) | Revision: retract "third-order ceiling" per Aaron's three-message correction arc (*"yet"* / *"soon"* / *"as it's retractable"*) | Aaron |
-| 2026-05-10 | This survey doc: promotes latent memory content to canonical committed research substrate; B-0037 decomposed into B-0037.1–B-0037.4 | Otto (B-0037.1 implementation) |
+| 2026-05-10 | This survey doc: promotes latent memory content to canonical committed research substrate; 081KQ3HBZ0008QG0R0002RB48Q decomposed into 081KR7JY10008QG0R0038AFS7T–081KR7JY10008QG0R001J11M38 | Otto (081KR7JY10008QG0R0038AFS7T implementation) |

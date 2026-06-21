@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// Ben — **the ben verb, slice 1: exact meters + the prediction grader** (B-1039; Aaron: "make
+/// Ben — **the ben verb, slice 1: exact meters + the prediction grader** (081KTSZN10008QG0R001F0B5A6; Aaron: "make
 /// ben(chmark) as easy as measure… see how good our PREDICTION is"). This slice carries only
 /// what is EXACT and DST-clean — no wall clock, no GC counters. THE GLASS-SIDE RULING (Aaron
 /// 2026-06-11, verbatim: "glass-side only no wall clock in the room"): wall-clock time NEVER

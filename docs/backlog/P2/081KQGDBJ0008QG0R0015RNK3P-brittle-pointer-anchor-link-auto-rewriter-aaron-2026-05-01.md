@@ -1,12 +1,11 @@
 ---
-id: B-0141
-zetaid: 081KQGDBJ0008QG0R0015RNK3P
+id: 081KQGDBJ0008QG0R0015RNK3P
 priority: P2
 status: open
 title: Brittle-pointer auto-rewriter — convert section-number pointers to anchor-links so markdown cross-references survive renumbering and partial-rename (Aaron 2026-05-01)
 tier: tooling
 effort: M
-ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`) — "B-0141, not yet filed" — as the guardrail-vs-mover row's mechanized response to brittle pointers. ID was reserved; per-row file was never filed (caught by Aaron 2026-05-03 reminder during B-0176 casing-fix discussion).
+ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`) — "081KQGDBJ0008QG0R0015RNK3P, not yet filed" — as the guardrail-vs-mover row's mechanized response to brittle pointers. ID was reserved; per-row file was never filed (caught by Aaron 2026-05-03 reminder during 081KQNJ500008QG0R0023RV2M7 casing-fix discussion).
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
@@ -21,15 +20,15 @@ type: feature
 
 Aaron 2026-05-01, in the parallelism-scaling-ladder memo (autonomous-loop maintainer channel), named this row in the mechanized-guardrail-vs-mover table:
 
-> | Brittle-pointer (B-0141, not yet filed) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
+> | Brittle-pointer (081KQGDBJ0008QG0R0015RNK3P, not yet filed) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
 
-Aaron 2026-05-03, during B-0176 title-casing review-cycle, surfaced the row was never filed:
+Aaron 2026-05-03, during 081KQNJ500008QG0R0023RV2M7 title-casing review-cycle, surfaced the row was never filed:
 
-> "B-0176 lowercase-title vs B-0170 there is a baclog item for md links that survive rename where possible"
+> "081KQNJ500008QG0R0023RV2M7 lowercase-title vs 081KQNJ500008QG0R003SCWBDV there is a baclog item for md links that survive rename where possible"
 >
 > "it might have the word technical numbering or somthing in it"
 
-Otto searched extensively across `docs/backlog/` and `memory/`, could not locate the row by direct file. Subsequent search via the parallelism-scaling-ladder memo's table-row revealed: the ID was reserved, the per-row file was never filed. Two days of substrate-time without the row materializing — exactly the failure mode B-0177 (audit memos for misfiled backlog) addresses.
+Otto searched extensively across `docs/backlog/` and `memory/`, could not locate the row by direct file. Subsequent search via the parallelism-scaling-ladder memo's table-row revealed: the ID was reserved, the per-row file was never filed. Two days of substrate-time without the row materializing — exactly the failure mode 081KQNJ500008QG0R0035QCEX9 (audit memos for misfiled backlog) addresses.
 
 ## The problem
 
@@ -69,11 +68,11 @@ Optional second pass:
 
 ## Composes with
 
-- **B-0170 (substrate-claim-checker)**: checks claims for drift; this row's tool checks pointers for brittleness — sibling-instance of mechanized-quality-tooling
-- **B-0175 (substrate-retrieval-index)**: layer-4 active retrieval; pointer-rewriting is a layer-3 mechanization that helps in-flight retrieval find correct targets
-- **B-0177 (audit memos for misfiled backlog rows)**: this row's existence IS empirical evidence that B-0177's hypothesis is correct (memo named `B-0141, not yet filed` — never got filed; B-0177 catches this class)
+- **081KQNJ500008QG0R003SCWBDV (substrate-claim-checker)**: checks claims for drift; this row's tool checks pointers for brittleness — sibling-instance of mechanized-quality-tooling
+- **081KQNJ500008QG0R00055XHBG (substrate-retrieval-index)**: layer-4 active retrieval; pointer-rewriting is a layer-3 mechanization that helps in-flight retrieval find correct targets
+- **081KQNJ500008QG0R0035QCEX9 (audit memos for misfiled backlog rows)**: this row's existence IS empirical evidence that 081KQNJ500008QG0R0035QCEX9's hypothesis is correct (memo named `081KQGDBJ0008QG0R0015RNK3P, not yet filed` — never got filed; 081KQNJ500008QG0R0035QCEX9 catches this class)
 - **memory/parallelism-scaling-ladder memo (Aaron 2026-05-01)**: the originating substrate where the ID was reserved
-- **`memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`** (Aaron 2026-05-03): identifies markdown links as one of the substrate-encoded provenance graph's edge surfaces (alongside frontmatter `depends_on`/`composes_with`, ADR `Superseded by` blockquotes, SUPERSEDE markers, commit messages, cross-references in memo bodies). The brittle-pointer rewriter PRESERVES those graph edges across rename + renumbering — without it, the implicit decision-graph (DataVault-2.0-shaped, PROV-O analogue) loses edges every time a section is renumbered or a heading text is edited. **Architectural framing**: B-0141 isn't just a markdown-quality tool; it's a graph-edge-preservation tool. The pointers ARE the graph; brittle pointers ARE graph-edge rot. (Per Aaron 2026-05-03 retrieval anecdote: VS Code search across `memory/` is the current human-side retrieval tool for finding cross-cluster connections like this one.)
+- **`memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`** (Aaron 2026-05-03): identifies markdown links as one of the substrate-encoded provenance graph's edge surfaces (alongside frontmatter `depends_on`/`composes_with`, ADR `Superseded by` blockquotes, SUPERSEDE markers, commit messages, cross-references in memo bodies). The brittle-pointer rewriter PRESERVES those graph edges across rename + renumbering — without it, the implicit decision-graph (DataVault-2.0-shaped, PROV-O analogue) loses edges every time a section is renumbered or a heading text is edited. **Architectural framing**: 081KQGDBJ0008QG0R0015RNK3P isn't just a markdown-quality tool; it's a graph-edge-preservation tool. The pointers ARE the graph; brittle pointers ARE graph-edge rot. (Per Aaron 2026-05-03 retrieval anecdote: VS Code search across `memory/` is the current human-side retrieval tool for finding cross-cluster connections like this one.)
 
 ## Why this is M-effort
 

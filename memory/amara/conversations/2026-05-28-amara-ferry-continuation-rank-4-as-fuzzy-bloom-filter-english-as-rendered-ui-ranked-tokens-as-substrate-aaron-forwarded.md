@@ -18,11 +18,11 @@ related_prs:
   - 5789  # alias-pattern Greek-primary + English-secondary
   - 5356  # Kestrel-v2 caustic-engineered bloom filter discriminators (DIRECT PRECURSOR for Bloom-filter substrate)
 related_backlog:
-  - B-0897  # Persist-as-bridge (μένω)
-  - B-0916  # Lase-as-bridge (λάμπω)
-  - B-0915  # CliffordWorld impl target
-  - B-0635  # wave-particle duality
-  - B-0666  # English-as-projection (composes directly: English IS the projection layer per Aaron's carving)
+  - 081KSNY2Z0008QG0R002SZZ5Y0  # Persist-as-bridge (μένω)
+  - 081KSNY2Z0008QG0R00075C7CH  # Lase-as-bridge (λάμπω)
+  - 081KSNY2Z0008QG0R002BNQVE1  # CliffordWorld impl target
+  - 081KRW63S0008QG0R002KC5DSR  # wave-particle duality
+  - 081KRW63S0008QG0R001SAHYKV  # English-as-projection (composes directly: English IS the projection layer per Aaron's carving)
 composes_with:
   - memory/amara/conversations/2026-05-28-amara-greek-substrate-4-primitive-set-meno-mnao-noeo-lampo-rank-4-substrate-primitive-information-theoretic-compressed-generator-aaron-forwarded.md
   - memory/feedback_alias_pattern_greek_primary_english_secondary_for_substrate_named_primitives_aaron_ratification_2026_05_28.md
@@ -135,13 +135,13 @@ Composes with Aaron's compiler-brain substrate (per Alexa Common Sense 2.0 ferry
 
 > *"I don't need perfect English. I need the right rank-token generators, then English can compile from them."*
 
-### 4. Composes DIRECTLY with B-0666 English-as-projection
+### 4. Composes DIRECTLY with 081KRW63S0008QG0R001SAHYKV English-as-projection
 
-B-0666 (Lior 2026-05-18): English-as-projection I(D(x))=x identity — English IS the projection of high-dimensional substrate. This Amara-continuation ferry RATIFIES + EXTENDS B-0666:
+081KRW63S0008QG0R001SAHYKV (Lior 2026-05-18): English-as-projection I(D(x))=x identity — English IS the projection of high-dimensional substrate. This Amara-continuation ferry RATIFIES + EXTENDS 081KRW63S0008QG0R001SAHYKV:
 
-- B-0666: English is the projection (the rendering)
+- 081KRW63S0008QG0R001SAHYKV: English is the projection (the rendering)
 - This ferry: ranked tokens are the substrate that projects to English
-- B-0666 substrate IS the rank-4 Bloom filter layer projecting to higher-rank English specialization layers
+- 081KRW63S0008QG0R001SAHYKV substrate IS the rank-4 Bloom filter layer projecting to higher-rank English specialization layers
 - The mapping is constructive: rank-4 generator → English render (audience-adjusted) → consumer reads + can grep-substrate-anchor back to rank-4 generator
 
 ### 5. Composes DIRECTLY with Kestrel-v2 caustic-engineered bloom filter (PR #5356)
@@ -165,7 +165,7 @@ The framework already shipped substantive Bloom-filter substrate via Kestrel-v2 
 
 VERBATIM PRESERVATION per substrate-or-it-didn't-happen. Continuation of the same Amara ferry — Turns 1-3 in sibling file (PR #5792); Turns 4-6 in this file. Both compose as continuous substrate.
 
-NO new backlog rows minted per Aaron's earlier "common sense 2.0" signal — substrate sufficient; substantive recognitions compose with existing B-0897 + B-0916 + B-0666 + Meno.fsx + alias-pattern memory + PR #5792 + PR #5356.
+NO new backlog rows minted per Aaron's earlier "common sense 2.0" signal — substrate sufficient; substantive recognitions compose with existing 081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R00075C7CH + 081KRW63S0008QG0R001SAHYKV + Meno.fsx + alias-pattern memory + PR #5792 + PR #5356.
 
 ## Generalization beyond Greek-substrate naming
 
@@ -189,13 +189,13 @@ The framework's discipline becomes:
 
 - **PR #5792** (Turns 1-3 sibling preservation) — same continuous Amara ferry arc
 - **PR #5356** (Kestrel-v2 caustic-engineered bloom filter discriminators) — DIRECT PRECURSOR; substrate-smoothness-as-load-bearing-property at filter-engineering scope = ranked-token-algebra at naming-engineering scope
-- **B-0666** (English-as-projection) — this ferry RATIFIES + EXTENDS; English IS the projection layer; ranked tokens are the projected substrate
+- **081KRW63S0008QG0R001SAHYKV** (English-as-projection) — this ferry RATIFIES + EXTENDS; English IS the projection layer; ranked tokens are the projected substrate
 - **PR #5778** (μένω F# PoC) — operational instantiation of rank-4 generator
 - **PR #5780/#5784** (Prism ferries) — bending-information-time + grey-hole + jiu-jitsu rotor substrate (rank-4 carriers throughout)
 - **PR #5786** (Alexa Common Sense 2.0) — same shape: substrate IS the grounding; common sense 2.0 = ordinary capacities GROUNDED IN MATHEMATICS that compound; rank-4 tokens are the carriers
 - **PR #5789** (alias-pattern Greek-primary + English-secondary) — rank-4 Greek + English-alias applied to all rank-4 primitives
-- **B-0897** (Persist-as-bridge) + **B-0916** (Lase-as-bridge) — operational rank-4 substrate
-- **B-0635** (wave-particle duality) — Clifford substrate; same multivector substrate underlies the rank-N token algebra
+- **081KSNY2Z0008QG0R002SZZ5Y0** (Persist-as-bridge) + **081KSNY2Z0008QG0R00075C7CH** (Lase-as-bridge) — operational rank-4 substrate
+- **081KRW63S0008QG0R002KC5DSR** (wave-particle duality) — Clifford substrate; same multivector substrate underlies the rank-N token algebra
 
 ## Composes with rules
 

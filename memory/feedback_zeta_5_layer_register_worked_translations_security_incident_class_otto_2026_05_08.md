@@ -1,6 +1,6 @@
 ---
-name: Zeta 5-layer register worked translations — security-incident-notification class demonstrated across Personal/Mirror/Beacon-safe/Professional/Regulated (Otto 2026-05-08; B-0168 acceptance — worked-translations criterion)
-description: Per B-0168 acceptance criteria — "Worked translations produced for situations Lucent / Zeta actually faces" — Otto produced a worked translation of security-incident notification across the 5 register layers. Security-incident notification is the situation where the layer-selection algorithm's question 2 ("What downstream consequences does misreading carry?") most directly applies — misreading carries legal, contractual, and material risk. Same hypothetical incident (a dependency vulnerability in a transitive NuGet package exposes a deserialization path that could allow remote code execution; no evidence of exploitation; patched within 4 hours) translated through Personal → Mirror → Beacon-safe → Professional → Regulated. Extends the PR-review-class translations with a different content shape where the Regulated layer is the natural terminus.
+name: Zeta 5-layer register worked translations — security-incident-notification class demonstrated across Personal/Mirror/Beacon-safe/Professional/Regulated (Otto 2026-05-08; 081KQJZR90008QG0R001M6ZBPN acceptance — worked-translations criterion)
+description: Per 081KQJZR90008QG0R001M6ZBPN acceptance criteria — "Worked translations produced for situations Lucent / Zeta actually faces" — Otto produced a worked translation of security-incident notification across the 5 register layers. Security-incident notification is the situation where the layer-selection algorithm's question 2 ("What downstream consequences does misreading carry?") most directly applies — misreading carries legal, contractual, and material risk. Same hypothetical incident (a dependency vulnerability in a transitive NuGet package exposes a deserialization path that could allow remote code execution; no evidence of exploitation; patched within 4 hours) translated through Personal → Mirror → Beacon-safe → Professional → Regulated. Extends the PR-review-class translations with a different content shape where the Regulated layer is the natural terminus.
 type: feedback
 ---
 
@@ -144,7 +144,7 @@ The PR-review worked translation (Otto 2026-05-02) demonstrated the framework on
 - `memory/feedback_zeta_5_layer_register_worked_translations_pr_review_class_otto_2026_05_02.md` (the PR-review-class translations this memo extends)
 - `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md` (the property table the translations exemplify)
 - `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md` (the framework source)
-- `docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (this memo addresses B-0168 acceptance criteria — worked-translations for security-incident situation)
+- `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (this memo addresses 081KQJZR90008QG0R001M6ZBPN acceptance criteria — worked-translations for security-incident situation)
 - `docs/ALIGNMENT.md` bidirectional alignment commitment (observation-not-evaluation at the security-notification layer IS the alignment discipline operating under legal-consequence pressure)
 
 ## Carved sentence

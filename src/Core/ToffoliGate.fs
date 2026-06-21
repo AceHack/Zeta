@@ -11,7 +11,7 @@ namespace Zeta.Core
 /// This is the bit-level realisation of the Landauer bridge established
 /// in docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md.
 ///
-/// B-0366.1: smallest safe slice — pure F# type model, no FPGA required.
+/// 081KR50HA0008QG0R0021B5J87: smallest safe slice — pure F# type model, no FPGA required.
 [<Struct>]
 type Bit =
     | Zero
@@ -30,7 +30,7 @@ type ZSetGateOp =
     | Retract  // -1: recover one unit of information
 
 
-// ── Wire-map formal model (B-0366.2.1) ──────────────────────────────────────
+// ── Wire-map formal model (081KRA5AR0008QG0R002X77BEB) ──────────────────────────────────────
 //
 // A Toffoli circuit is a gate network over named wires. Each wire has an
 // integer index (WireId) and carries a Bit value. A circuit step is a
@@ -65,7 +65,7 @@ type ToffoliGateStep = {
     Target   : WireId
 }
 
-/// A Toffoli gate network (B-0366.2.1 formal model).
+/// A Toffoli gate network (081KRA5AR0008QG0R002X77BEB formal model).
 ///
 /// Gates:   ordered sequence of gate applications (wire-index based).
 /// Wires:   current bit state of every named wire.
@@ -81,7 +81,7 @@ type ToffoliCircuit = {
 
 /// A bounded Toffoli sub-circuit with named wire groups.
 ///
-/// B-0366.2.2 uses this fragment shape for one reversible join-weight
+/// 081KRA5AR0008QG0R001GQSVWE uses this fragment shape for one reversible join-weight
 /// multiplication primitive. The circuit keeps the encoded inputs,
 /// product target wires, and all partial-product/carry wires reachable
 /// so exact reversal never depends on erased intermediates.
@@ -178,10 +178,10 @@ module ToffoliGate =
     /// product (ZSet.cartesian / ZSet.join / IndexedZSet.join) multiplies with
     /// Checked.(*), which throws on int64 overflow; reconciling this fragment's
     /// unbounded product with that checked semantics (an overflow/error wire or
-    /// a bounded-domain law) is deferred to B-0366.2.3.
+    /// a bounded-domain law) is deferred to 081KRA5AR0008QG0R000CYY9ZN.
     ///
     /// This is intentionally the core multiplication primitive only;
-    /// B-0366.2.3 layers laws over the fragment before full join(A,B).
+    /// 081KRA5AR0008QG0R000CYY9ZN layers laws over the fragment before full join(A,B).
     let modelWeightMul (left: Weight) (right: Weight) : ToffoliCircuitFragment =
         let leftMagnitude = magnitude left
         let rightMagnitude = magnitude right

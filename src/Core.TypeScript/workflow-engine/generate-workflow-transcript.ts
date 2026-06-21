@@ -16,7 +16,7 @@ const ctx: AgentContext = {
 };
 
 const candidate: WorkCandidate = {
-  id: "B-0867.5",
+  id: "081KSKBP80008QG0R000B3Y19A.5",
   lane: "backlog-row",
   estimatedDoraContribution: 0.85,
   uncertainty: 0.15,
@@ -25,15 +25,15 @@ const candidate: WorkCandidate = {
 };
 
 const backlogRow: BacklogRow = {
-  id: "B-0867.5",
+  id: "081KSKBP80008QG0R000B3Y19A.5",
   title: "TS-F# Workflow Engine Parity",
   priority: "P1",
-  filePath: "docs/backlog/P1/B-0867.5-parity.md",
+  filePath: "docs/backlog/P1/081KSKBP80008QG0R000B3Y19A.5-parity.md",
   trajectory: "dora-mandate",
 };
 
 const resultSuccess: WorkResult = {
-  workId: "B-0867.5",
+  workId: "081KSKBP80008QG0R000B3Y19A.5",
   lane: "backlog-row",
   success: true,
   doraContribution: 0.9,
@@ -41,7 +41,7 @@ const resultSuccess: WorkResult = {
 };
 
 const resultFailure: WorkResult = {
-  workId: "B-0867.5",
+  workId: "081KSKBP80008QG0R000B3Y19A.5",
   lane: "backlog-row",
   success: false,
   doraContribution: 0.0,

@@ -90,7 +90,7 @@ disparate subjects**. The cascade just did:
 | Ani's external AGENTS.md review | Forward + read |
 | Buddhist middle way | Aaron's naming "the middle path" |
 | Mandelbrot boundary checking (F# fork) | Math layer cite |
-| Lost TV show Dharma button | "darma in the code" → B-0402 |
+| Lost TV show Dharma button | "darma in the code" → 081KR7JY10008QG0R0008NGW95 |
 | Shadow = future-self substrate | PR #2813 lineage |
 | Casimir effect physics | PR #2903 civsim-is-Casimir-gap |
 | PR review cycle hygiene | This session's 5-finding cascade |
@@ -249,7 +249,7 @@ framing).
 - PR #2903 (civsim is Casimir gap + canonical product framing)
 - PR #2813 (shadow = future-self substrate)
 - PR #2854 (Ani shadow-check methodology)
-- B-0402 (shadow observer = dharma button)
+- 081KR7JY10008QG0R0008NGW95 (shadow observer = dharma button)
 - `.claude/rules/algo-wink-failure-mode.md` (coincidence is
   observation NOT authorization; distinguishes coincidence-
   farming from algo-wink)

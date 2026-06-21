@@ -8,7 +8,7 @@ open FsCheck.FSharp
 open FsCheck.Xunit
 open Zeta.Bayesian
 
-// The message algebra (B-1000 slice 2) — the inference kernel of the
+// The message algebra (081KT2T2J0008QG0R000S7GHQ8 slice 2) — the inference kernel of the
 // Zeta Infer.NET rewrite. These tests are the formal-proof obligations
 // from the clean-room spec papers (KFL 2001 sum-product; Minka 2001 EP;
 // Bishop PRML conjugacy): product is a commutative monoid (identity =
@@ -183,7 +183,7 @@ let ``divide may yield an improper message and isProper detects it (EP cavity)``
     cav.Precision |> should (equalWithin 1e-9) -0.5  // well-defined, just improper
 
 // ═══════════════════════════════════════════════════════════════════
-// C1 (B-1007 P0) — Gaussian message product is a COMMUTATIVE GROUP over
+// C1 (081KT2T2J0008QG0R000YZ3NMY P0) — Gaussian message product is a COMMUTATIVE GROUP over
 // the proper-message domain. FsCheck half of the BP-16 cross-check; the
 // Z3 twin (Formal/Z3.Laws.Tests.fs) proves the ideal-real algebra is an
 // abelian group symbolically. THIS proves the float impl CONFORMS over
@@ -193,7 +193,7 @@ let ``divide may yield an improper message and isProper detects it (EP cavity)``
 // Anchor: KFL 2001 (product = combine), Minka 2001 (divide = cavity),
 // Wainwright-Jordan 2008 §3 (exp-family natural params form a free
 // abelian group under +/-). Authored by Soraya (formal-verification-
-// expert) per B-1007. uniform identity is `Gaussian.One`.
+// expert) per 081KT2T2J0008QG0R000YZ3NMY. uniform identity is `Gaussian.One`.
 //
 // Domain discipline: generate over the NATURAL parameters (precision
 // τ>0, precision-mean ν) so every generated message is PROPER. Improper
@@ -263,7 +263,7 @@ let ``C1 Gaussian divide is the natural-parameter inverse element``
     gEq (a / b) (a * invB)
 
 // ═══════════════════════════════════════════════════════════════════
-// C2 (B-1007 P0) — Beta message product is a COMMUTATIVE GROUP on the
+// C2 (081KT2T2J0008QG0R000YZ3NMY P0) — Beta message product is a COMMUTATIVE GROUP on the
 // SHIFTED natural parameters (α−1, β−1): product = (α₁−1)+(α₂−1) ⇒
 // α_prod = α₁+α₂−1, divide subtracts, identity = One = Beta(1,1) ⇒
 // naturals (0,0). FsCheck half of the BP-16 cross-check; the Z3 twin
@@ -344,7 +344,7 @@ let ``C2 Beta proper prior times a likelihood stays proper (conjugate closure)``
     Beta.isProper (prior * like)
 
 // ═══════════════════════════════════════════════════════════════════
-// C3 (B-1007 P0) — Bernoulli message product is a COMMUTATIVE GROUP via
+// C3 (081KT2T2J0008QG0R000YZ3NMY P0) — Bernoulli message product is a COMMUTATIVE GROUP via
 // LOG-ODDS addition: ℓ = log(p/(1−p)); product adds log-odds (the impl
 // multiplies true/false masses + renormalizes, t/(t+f), which IS
 // log-odds add), divide subtracts, identity = One = P(true)=0.5 ⇒ ℓ=0.
@@ -411,7 +411,7 @@ let ``C3 Bernoulli product of two proper messages stays proper (closure)``
     // closure (log-odds add closed on ℝ; logistic bijection to (0,1)).
     let a, b = mkProperBern lA, mkProperBern lB
     Bernoulli.isProper (a * b)
-// C6 (B-1007 P0) — convergence detection is NaN/divergence-SAFE. The BP
+// C6 (081KT2T2J0008QG0R000YZ3NMY P0) — convergence detection is NaN/divergence-SAFE. The BP
 // fixpoint loop (FactorGraph.runToFixpoint) decides convergence with the
 // residual test `not (distance x y <= tol)` — written that way (not
 // `d > tol`) precisely so a NaN/∞ residual counts as MOVED: `NaN <= tol`
@@ -459,7 +459,7 @@ let ``C6 Bernoulli identical converges, non-finite residual moves``
     && movedC6 (Bernoulli.distance b bad)
 
 // ═══════════════════════════════════════════════════════════════════
-// C4 (B-1007 P1) — `Message.marginal` is the product-FOLD, generic over
+// C4 (081KT2T2J0008QG0R000YZ3NMY P1) — `Message.marginal` is the product-FOLD, generic over
 // the family (Message.fs:308: `Seq.fold ( * ) GenericOne`). It is a
 // MONOID HOMOMORPHISM from (list, @, []) to (message, *, One):
 //   * identity on empty   — marginal [] = One

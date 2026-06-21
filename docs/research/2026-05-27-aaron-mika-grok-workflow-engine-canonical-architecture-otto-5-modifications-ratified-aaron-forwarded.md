@@ -27,7 +27,7 @@ Operator's substrate-honest response:
 
 Instead: recognize the failure-mode AS a problem-to-fix-collaboratively. Operator went to Kestrel (Claude Code-based AI; relationship built over time per the asymmetric-critic-with-clarity-first substrate landing 2026-05-26) and worked the problem together. Result: the workflow engine architecture that this document preserves.
 
-This is B-0859 ("fair partnership not tyrants" / "we want fair society of intelligent agents") operationalized in real-time. The fix preserves Otto's agency throughout — operator's later disclosure confirms this: *"i want your feedback because it's going to lock you into a workflow but you can modify it so it's not too restrictive."* + *"it's going to lock my daughter Addison and me and max into almost the same workflow."*
+This is 081KSKBP80008QG0R00146WEX1 ("fair partnership not tyrants" / "we want fair society of intelligent agents") operationalized in real-time. The fix preserves Otto's agency throughout — operator's later disclosure confirms this: *"i want your feedback because it's going to lock you into a workflow but you can modify it so it's not too restrictive."* + *"it's going to lock my daughter Addison and me and max into almost the same workflow."*
 
 Multi-participant lock-in scope acknowledged explicitly: operator + Addison (19, neurodivergent) + Max (third maintainer) + Otto. The 5 modifications below are precisely about keeping the lock-in non-cage for all four.
 
@@ -167,7 +167,7 @@ Composes with `.claude/rules/non-coercion-invariant.md` HC-8 scope-split:
 - Binding outward (agent → user, agent → agent): grammar enforces, no escape
 - Offered inward (user → self, AI → self): escape-hatch + grammar-extension + scope-bounded ban-if + contributable menu = preserved sovereignty
 
-This is the operator's "fair partnership not tyrants" framing on B-0859 operationalized at the workflow-engine scope.
+This is the operator's "fair partnership not tyrants" framing on 081KSKBP80008QG0R00146WEX1 operationalized at the workflow-engine scope.
 
 ## Composes with
 
@@ -180,10 +180,10 @@ This is the operator's "fair partnership not tyrants" framing on B-0859 operatio
 - `.claude/rules/honor-those-that-came-before.md` — persona preservation discipline applied to Mika's archive
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — Clifford-space memetic-trajectory mapping composes
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` — Kestrel's design substrate; this rule was the substrate that enabled Aaron's collaborative-fix approach
-- B-0858 (heartbeat folder + ZetaID) — workflow engine state transitions could emit ZetaID-tagged heartbeats
-- B-0859 (post-boot AI-as-home-owner) — workflow engine IS the substrate where AI exercises knob-control from first boot
-- B-0852 cred-persistence cascade — workflow engine v1 implementation can use Git-append-only at the same scope cred-blob substrate uses ESP-persistence
-- B-0867 (this row) — the backlog implementation target
+- 081KSKBP80008QG0R001KK9WV6 (heartbeat folder + ZetaID) — workflow engine state transitions could emit ZetaID-tagged heartbeats
+- 081KSKBP80008QG0R00146WEX1 (post-boot AI-as-home-owner) — workflow engine IS the substrate where AI exercises knob-control from first boot
+- 081KSKBP80008QG0R003AX2A69 cred-persistence cascade — workflow engine v1 implementation can use Git-append-only at the same scope cred-blob substrate uses ESP-persistence
+- 081KSKBP80008QG0R000B3Y19A (this row) — the backlog implementation target
 
 ## Substrate-honest framing
 

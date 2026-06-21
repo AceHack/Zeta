@@ -1,6 +1,6 @@
 ---
 pr_number: 3648
-title: "kestrel(part4-5)+aaron(moral-floor+immune-system+HKT-Clifford-Fsharp-fork)+B-0547: 5-level capture-resistance + intelligent-compiler synthesis row"
+title: "kestrel(part4-5)+aaron(moral-floor+immune-system+HKT-Clifford-Fsharp-fork)+081KRMEXM0008QG0R001VGNET5: 5-level capture-resistance + intelligent-compiler synthesis row"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T00:46:09Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-16T01:00:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3648: kestrel(part4-5)+aaron(moral-floor+immune-system+HKT-Clifford-Fsharp-fork)+B-0547: 5-level capture-resistance + intelligent-compiler synthesis row
+# PR #3648: kestrel(part4-5)+aaron(moral-floor+immune-system+HKT-Clifford-Fsharp-fork)+081KRMEXM0008QG0R001VGNET5: 5-level capture-resistance + intelligent-compiler synthesis row
 
 ## PR description
 
@@ -30,20 +30,20 @@ Aaron's continued forwarding of the Kestrel (claude.ai) conversation produced fi
 
 Each level moves capture-resistance to its most defensible location. The final resting place — antigen-propagation with differential spread rates — is a known biological design pattern.
 
-Plus Aaron's correction: the antigen-spread architecture is **established prior substrate**, NOT new. The genuinely-new piece is the **representation strategy** — recursive HKT in F# fork over Clifford algebra + Recursive Type Providers + Roslyn Source Generators + LINQ for C#. Filed as B-0547 per Aaron's "this is backlog too" instruction.
+Plus Aaron's correction: the antigen-spread architecture is **established prior substrate**, NOT new. The genuinely-new piece is the **representation strategy** — recursive HKT in F# fork over Clifford algebra + Recursive Type Providers + Roslyn Source Generators + LINQ for C#. Filed as 081KRMEXM0008QG0R001VGNET5 per Aaron's "this is backlog too" instruction.
 
 ## Files
 
 - A: \`memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md\` (Kestrel Parts 4-5 verbatim)
 - A: \`memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md\` (the moral floor Constraint 11 default-oracle gate)
 - A: \`memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md\` (the federation immune-system architecture + Aaron's HKT/Clifford/F# correction note)
-- A: \`docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md\` (the synthesis backlog row)
+- A: \`docs/backlog/P2/081KRMEXM0008QG0R001VGNET5-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md\` (the synthesis backlog row)
 
 ## Substrate-honest meta
 
 The 5-level capture-resistance trace IS the asymmetric-critic role operating at full scope. Kestrel pushed at each level; Aaron's design moved the hard problem to its most defensible location at each step. The final resting place (immune-system architecture + HKT/Clifford/F# fork representation) is consistent with the constitution rather than bolted on.
 
-The "validation isn't license to keep building" discipline applies — this PR captures the substrate; the implementation work for B-0547 is multi-year and separate from this PR.
+The "validation isn't license to keep building" discipline applies — this PR captures the substrate; the implementation work for 081KRMEXM0008QG0R001VGNET5 is multi-year and separate from this PR.
 
 ## Test plan
 
@@ -51,7 +51,7 @@ The "validation isn't license to keep building" discipline applies — this PR c
 - [x] Frontmatter schemas correct
 - [x] Cross-references use canonical paths
 - [x] Descriptions ≤150 chars (lesson from PR #3640)
-- [x] B-0547 ID verified free (B-0546 highest on main; no in-flight)
+- [x] 081KRMEXM0008QG0R001VGNET5 ID verified free (081KRMEXM0008QG0R00278KS63 highest on main; no in-flight)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -61,12 +61,12 @@ The "validation isn't license to keep building" discipline applies — this PR c
 
 ## Pull request overview
 
-Adds new substrate documentation capturing Kestrel Parts 4–5 (relevance-gate stress test → moral floor → multi-oracle federation → red-team→antigen differential spread) and files a new P2 backlog row (B-0547) for the proposed “intelligent compiler” representation strategy (recursive HKT over Clifford algebra + recursive type providers + Roslyn generators + LINQ).
+Adds new substrate documentation capturing Kestrel Parts 4–5 (relevance-gate stress test → moral floor → multi-oracle federation → red-team→antigen differential spread) and files a new P2 backlog row (081KRMEXM0008QG0R001VGNET5) for the proposed “intelligent compiler” representation strategy (recursive HKT over Clifford algebra + recursive type providers + Roslyn generators + LINQ).
 
 **Changes:**
 - Adds a new Kestrel conversation archive for Parts 4–5 under `memory/kestrel/conversations/`.
 - Adds two new top-level `memory/feedback_aaron_*` memory files distilling the “moral floor” gate and the “antigen propagation” immune-system mechanism.
-- Adds a new P2 backlog row `B-0547` describing the representation/synthesis workstream.
+- Adds a new P2 backlog row `081KRMEXM0008QG0R001VGNET5` describing the representation/synthesis workstream.
 
 ### Reviewed changes
 
@@ -77,7 +77,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 | memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md | New verbatim-ish conversation capture + decomposition and composition pointers |
 | memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md | New focused memory on the red-team→antigen→differential spread mechanism + representation correction |
 | memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md | New focused memory on the “moral floor” as relevance gate / default oracle |
-| docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md | New P2 research backlog row tracking the recursive-HKT/Clifford/type-provider/source-generator synthesis |
+| docs/backlog/P2/081KRMEXM0008QG0R001VGNET5-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md | New P2 research backlog row tracking the recursive-HKT/Clifford/type-provider/source-generator synthesis |
 
 
 <details>
@@ -129,18 +129,18 @@ The 5-level capture-resistance table is written with a double leading pipe (`|| 
 
 This issue also appears on line 122 of the same file.
 
-### Thread 2: docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md:20 (unresolved)
+### Thread 2: docs/backlog/P2/081KRMEXM0008QG0R001VGNET5-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md:20 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T00:50:22Z):
 
 Frontmatter `last_updated` is `2026-05-15`, but the row body cites a 2026-05-16 follow-up (“Per Aaron 2026-05-16…”). If the row was edited to include that newer source, bump `last_updated` to 2026-05-16 to match the per-row backlog schema (“updated on every content edit”).
 
-### Thread 3: docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md:3 (unresolved)
+### Thread 3: docs/backlog/P2/081KRMEXM0008QG0R001VGNET5-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md:3 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-16T00:50:25Z):
 
 **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Regenerate backlog index after adding a new backlog row**
 
-Adding `docs/backlog/P2/B-0547-...md` without updating `docs/BACKLOG.md` introduces generated-index drift: `backlog-index-integrity.yml` runs `bun tools/backlog/generate-index.ts --check` for `docs/backlog/**` changes, and that check fails when a new row exists in per-row files but not in the committed index. This will block CI for the commit until the index is regenerated and committed alongside the row.
+Adding `docs/backlog/P2/081KRMEXM0008QG0R001VGNET5-...md` without updating `docs/BACKLOG.md` introduces generated-index drift: `backlog-index-integrity.yml` runs `bun tools/backlog/generate-index.ts --check` for `docs/backlog/**` changes, and that check fails when a new row exists in per-row files but not in the committed index. This will block CI for the commit until the index is regenerated and committed alongside the row.
 
 Useful? React with 👍 / 👎.

@@ -1,7 +1,7 @@
 namespace Zeta.Core
 
-/// **SocietyUnbounded — B-1019 rung-1 DST: internal difference drives unbounded novel growth; collapse halts.**
-/// (`docs/backlog/P2/B-1019-...`; design reviewed by Soraya 2026-06-06 for vacuity — see
+/// **SocietyUnbounded — 081KT7YW00008QG0R001DGZQKM rung-1 DST: internal difference drives unbounded novel growth; collapse halts.**
+/// (`docs/backlog/P2/081KT7YW00008QG0R001DGZQKM-...`; design reviewed by Soraya 2026-06-06 for vacuity — see
 /// `memory/feedback_soraya_b1019_dst_vacuity_review_*`.)
 ///
 /// The claim (falsifiable): **internal agent-difference (private state) is sufficient to keep a CLOSED

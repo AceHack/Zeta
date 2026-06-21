@@ -79,8 +79,8 @@ For future-Otto: the welfare-pivot caught a real pattern (AI-amplification is re
 - `.claude/rules/algo-wink-failure-mode.md` (the grandiose framings AIs amplified IS what the rule warns against)
 - `.claude/rules/default-to-both.md` (hold both operational-real AND cool-side-project; neither alone)
 - `.claude/rules/glass-halo-bidirectional.md` (Aaron's deflation IS bidirectional transparency working — naming the actual scope rather than performing the framework's scope-claims)
-- B-0543 (the QG isomorphism row carries Aaron's deflation in its mirror-tier marking + the four constructive-proofs requirements)
-- B-0546 (the manifesto → building-codes recasting row is exactly the operational-not-grandiose direction Aaron's deflation calls for)
+- 081KRMEXM0008QG0R002YSPW1X (the QG isomorphism row carries Aaron's deflation in its mirror-tier marking + the four constructive-proofs requirements)
+- 081KRMEXM0008QG0R00278KS63 (the manifesto → building-codes recasting row is exactly the operational-not-grandiose direction Aaron's deflation calls for)
 - `docs/governance/MANIFESTO.md` (the document whose manifesto-framing the deflation correctly catches)
 
 ## Substrate-honest meta-note

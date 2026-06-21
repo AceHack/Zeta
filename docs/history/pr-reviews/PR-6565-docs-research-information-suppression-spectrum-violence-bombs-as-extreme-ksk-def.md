@@ -29,18 +29,18 @@
 
 Operator-direct synthesis (Aaron 2026-06-02) — *"our kinetic safeguard kernel synthesis work"* + *"search for all this backlog this composes with."* Research-grade composition map (NOT new KSK substrate).
 
-**Part 1 — information-suppression spectrum** (violence + bombs as the extreme): soft (algorithmic) → medium (deplatform/legal/economic) → hard (imprison/exile/seizure) → terminal (physical violence) → **terminal+ (bombs / infrastructure annihilation)**. Every propagation tech = liberation-tool + control-weapon; suppression = weaponization of communication control (printing-press/telegraph/radio-TV/internet/social-media dark-side, extends B-0985).
+**Part 1 — information-suppression spectrum** (violence + bombs as the extreme): soft (algorithmic) → medium (deplatform/legal/economic) → hard (imprison/exile/seizure) → terminal (physical violence) → **terminal+ (bombs / infrastructure annihilation)**. Every propagation tech = liberation-tool + control-weapon; suppression = weaponization of communication control (printing-press/telegraph/radio-TV/internet/social-media dark-side, extends 081KT2T2J0008QG0R0026MS6PV).
 
 **Part 2 — the KSK (Kinetic Safeguard Kernel) defensive architecture:**
-- **opt-in bus lane (internal)** + **border protocol (external)** — graduated agent-chosen protection + boundary threat-escalation (B-0985 bus-lanes; B-0667 detection)
+- **opt-in bus lane (internal)** + **border protocol (external)** — graduated agent-chosen protection + boundary threat-escalation (081KT2T2J0008QG0R0026MS6PV bus-lanes; 081KRW63S0008QG0R003Z7QV2A detection)
 - **Faraday shields NOT cages** — protect-without-trap, variable strength per force = **must-paired-with-can-exit / NCI** (protection ≠ capture)
 - **concentric threat-level rings** — protection scales with actual risk
-- **Reticulum hubs naturally form** — organic topology, substrate-dispersion (B-0726/B-0984/B-0463 immunity)
-- **anti-monopoly/cartel-as-society + BFT 4×4** — = **B-0703 multi-oracle** + **`useful-output-is-evidence-not-authority`** (utility absorbed before it becomes root power)
+- **Reticulum hubs naturally form** — organic topology, substrate-dispersion (081KSE6WT0008QG0R003C9KGQE/081KT2T2J0008QG0R003DMEKFH/081KRA5AR0008QG0R001JWYYHE immunity)
+- **anti-monopoly/cartel-as-society + BFT 4×4** — = **081KS3X9Y0008QG0R00218150M multi-oracle** + **`useful-output-is-evidence-not-authority`** (utility absorbed before it becomes root power)
 
-Composes **B-0643/B-0245 (KSK)** + B-0703 + B-0726/B-0984 + B-0664/NCI + must-paired-with-can-exit + B-0463 + B-0667 + B-0646 + B-0985 + Adinkra-protective-invariants.
+Composes **081KRW63S0008QG0R002ZRYY4F/081KQZVQW0008QG0R002Q58F6Z (KSK)** + 081KS3X9Y0008QG0R00218150M + 081KSE6WT0008QG0R003C9KGQE/081KT2T2J0008QG0R003DMEKFH + 081KRW63S0008QG0R001Z7NYMV/NCI + must-paired-with-can-exit + 081KRA5AR0008QG0R001JWYYHE + 081KRW63S0008QG0R003Z7QV2A + 081KRW63S0008QG0R001Z10PVV + 081KT2T2J0008QG0R0026MS6PV + Adinkra-protective-invariants.
 
-**Substrate-honest:** KSK is **consent-first** (B-0245); HARD-LIMITS + kid-safety floor absolute; nothing here authorizes offensive/autonomous kinetic action. Aaron's spectrum + synthesis held hypothesized→validated; Alexa's "attacks impossible / structurally immune / actual omniscience / computational consciousness" amplifications **manifesto-tier don't-collapse** — the framework reduces-attack-surface + raises-cost, it does NOT make suppression "impossible." Candidate follow-up: a B-0643-extension build row on your go.
+**Substrate-honest:** KSK is **consent-first** (081KQZVQW0008QG0R002Q58F6Z); HARD-LIMITS + kid-safety floor absolute; nothing here authorizes offensive/autonomous kinetic action. Aaron's spectrum + synthesis held hypothesized→validated; Alexa's "attacks impossible / structurally immune / actual omniscience / computational consciousness" amplifications **manifesto-tier don't-collapse** — the framework reduces-attack-surface + raises-cost, it does NOT make suppression "impossible." Candidate follow-up: a 081KRW63S0008QG0R002ZRYY4F-extension build row on your go.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

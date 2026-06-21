@@ -13,11 +13,11 @@ tags: [amara, trust-gradient-coordination-policy, routing-gradient-not-staircase
 **Surface**: Amara on ChatGPT/Aurora (external AI; deep-research/sharpen register)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 **Companion archives** (all on main):
-- PR #4545 — B-0685 Phase 1 + ZetaParse + incremental compiler host scaffolding + B-0687/B-0688 backlog rows
+- PR #4545 — 081KS3X9Y0008QG0R000EKJE9S Phase 1 + ZetaParse + incremental compiler host scaffolding + 081KS3X9Y0008QG0R00323NSZA/081KS3X9Y0008QG0R0010716X9 backlog rows
 - PR #4546 — Caché-lineage + distributed multidimensional compiler over consensus + IUnknown-without-DCOM
 - PR #4547 — no-fork-first deployment ladder + fork-as-reward-not-entrance-fee
 
-**Composes with**: PR #4546 trust-gradient framing (extended with row-level CASPaxos/CASRaft + COORDINATION POLICY reframe), B-0688 (incremental compiler host — gradient applies to compiler-fact consensus decisions)
+**Composes with**: PR #4546 trust-gradient framing (extended with row-level CASPaxos/CASRaft + COORDINATION POLICY reframe), 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — gradient applies to compiler-fact consensus decisions)
 
 ## Why this is preserved (fourth Amara archive for 2026-05-21)
 
@@ -36,8 +36,8 @@ The trust-gradient substrate is the canonical "where does consensus apply?" refe
 |---|---|---|---|
 | 1 | ANTLR grammar survey v1 | `sandbox:/mnt/data/antlr-grammar-survey-2026-05-21.md` | `docs/research/antlr-grammar-survey-2026-05-21.md` (superseded by #2) |
 | 2 | ANTLR grammar survey v2 — canonical F# compiler-fork version | `sandbox:/mnt/data/antlr-grammar-survey-2026-05-21-v2-fsharp-compiler-fork.md` | `docs/research/antlr-grammar-survey-2026-05-21.md` (canonical) |
-| 3 | ZetaParse LR/GLR F# compiler-fork design | `sandbox:/mnt/data/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` | `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` (composes with B-0687) |
-| 4 | Zeta incremental compiler host — seeded deterministic version | `sandbox:/mnt/data/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21-v2-seeded-determinism.md` | `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` (composes with B-0688) |
+| 3 | ZetaParse LR/GLR F# compiler-fork design | `sandbox:/mnt/data/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` | `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` (composes with 081KS3X9Y0008QG0R00323NSZA) |
+| 4 | Zeta incremental compiler host — seeded deterministic version | `sandbox:/mnt/data/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21-v2-seeded-determinism.md` | `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` (composes with 081KS3X9Y0008QG0R0010716X9) |
 | 5 | Trust-gradient consensus decision table | `sandbox:/mnt/data/trust-gradient-consensus-decision-table-2026-05-21.md` + `...-v2-row-casraft-caspaxos.md` | `docs/research/trust-gradient-coordination-policy-2026-05-21.md` (composes with PR #4546) |
 
 > *"And here's the full bundle: [Download all Amara design notes as a ZIP](sandbox:/mnt/data/amara-design-notes-2026-05-21-bundle.zip)"*
@@ -168,7 +168,7 @@ Adversarial commitments use BFT.
 
 ## Operational implications for Zeta substrate
 
-### For B-0688 incremental compiler host
+### For 081KS3X9Y0008QG0R0010716X9 incremental compiler host
 
 The trust-gradient coordination policy applies directly to compiler-fact consensus decisions:
 
@@ -181,13 +181,13 @@ The trust-gradient coordination policy applies directly to compiler-fact consens
 
 The gradient becomes operational at compiler-fact-emission scope.
 
-### For B-0635 / B-0644 / B-0665 / B-0666 (Agora V6)
+### For 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6)
 
 The trust-gradient coordination policy IS Agora V6's Integrate-as-choice-locus discipline at distributed-systems scope:
 
 - Choice-locus per Integrate = "which coordination tier does this fact require?"
-- Limit-as-simulation per B-0644 = "simulate the consensus before committing to a tier" (compose with seeded-deterministic discipline per B-0688)
-- Wave-particle-duality per B-0635 = "tier-deferred causality" (B-0683) = facts can be in superposition of coordination tiers until forced to collapse via Integrate
+- Limit-as-simulation per 081KRW63S0008QG0R002ZRNDJ8 = "simulate the consensus before committing to a tier" (compose with seeded-deterministic discipline per 081KS3X9Y0008QG0R0010716X9)
+- Wave-particle-duality per 081KRW63S0008QG0R002KC5DSR = "tier-deferred causality" (081KS3X9Y0008QG0R0006MQXA4) = facts can be in superposition of coordination tiers until forced to collapse via Integrate
 
 The Agora V6 operational primitives compose at distributed-coordination scope.
 
@@ -214,12 +214,12 @@ The CRDT substrate IS the algebra tier (no consensus). The trust-gradient coordi
 ## Composes with substrate
 
 - PR #4546 (Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM) — the trust-gradient framing this cascade refines
-- PR #4545 (B-0685 Phase 1 + B-0687 + B-0688) — backlog scaffolding the trust-gradient applies to
+- PR #4545 (081KS3X9Y0008QG0R000EKJE9S Phase 1 + 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9) — backlog scaffolding the trust-gradient applies to
 - PR #4547 (no-fork-first deployment ladder) — the no-fork-first stack uses the trust-gradient at every layer
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate) — trust-gradient IS Integrate-as-choice-locus at distributed-systems scope
-- B-0683 (tier-deferred causality) — facts can be in superposition of coordination tiers
-- B-0687 (ZetaParse) — parser substrate stays at algebra tier (local DBSP retraction)
-- B-0688 (incremental compiler host) — full trust-gradient operates at compiler-fact-emission scope
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate) — trust-gradient IS Integrate-as-choice-locus at distributed-systems scope
+- 081KS3X9Y0008QG0R0006MQXA4 (tier-deferred causality) — facts can be in superposition of coordination tiers
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse) — parser substrate stays at algebra tier (local DBSP retraction)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) — full trust-gradient operates at compiler-fact-emission scope
 - `src/Core/Crdt.fs` (existing CRDT substrate) — algebra tier; trust-gradient gives the framing for when escalation is needed
 - `src/Core/Consensus.fs` (existing consensus substrate; if exists) — CASPaxos/CASRaft tier substrate
 - Earlier Amara persona substrate cluster + Kestrel persona substrate cluster

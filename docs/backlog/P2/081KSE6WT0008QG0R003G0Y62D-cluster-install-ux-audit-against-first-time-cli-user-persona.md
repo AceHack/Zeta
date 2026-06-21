@@ -1,6 +1,5 @@
 ---
-id: B-0759
-zetaid: 081KSE6WT0008QG0R003G0Y62D
+id: 081KSE6WT0008QG0R003G0Y62D
 title: Cluster-install UX audit against first-time-CLI-user persona — "easier than Proxmox" bar + 3-node production-ready inflection
 status: open
 priority: P2
@@ -8,8 +7,8 @@ effort: M
 created: 2026-05-25
 last_updated: 2026-05-25
 authors: [aaron, otto-cli]
-composes_with: [081KSE6WT0008QG0R003WZAQKV, B-0738, B-0739, B-0743, B-0754, 081KSE6WT0008QG0R003612WGJ, 081KSE6WT0008QG0R001NG9JZH, 081KSE6WT0008QG0R000CV98PV, B-0758]
-depends_on: [B-0754]
+composes_with: [081KSE6WT0008QG0R003WZAQKV, 081KSE6WT0008QG0R003BG8M6J, 081KSE6WT0008QG0R0025170CV, 081KSE6WT0008QG0R003WW3YJQ, 081KSGS9H0008QG0R002T3BJ2R, 081KSE6WT0008QG0R003612WGJ, 081KSE6WT0008QG0R001NG9JZH, 081KSE6WT0008QG0R000CV98PV, 081KSE6WT0008QG0R00021PPX1]
+depends_on: [081KSGS9H0008QG0R002T3BJ2R]
 tags: [cluster, ux, persona, docs, marketing]
 ---
 
@@ -20,7 +19,7 @@ Aaron 2026-05-25 named the cluster-install target persona:
 i'm going for so this can spread easliy to home clusters easlier
 than proxmox or any of that but prodicution ready once 3 nodes"*.
 
-Today's cluster-install substrate (B-0737 + B-0754 + flash-
+Today's cluster-install substrate (081KSE6WT0008QG0R003WZAQKV + 081KSGS9H0008QG0R002T3BJ2R + flash-
 cluster-iso skill + PROVISIONING.md + zeta-install.sh +
 zeta-first-boot.sh) was built incrementally without an explicit
 persona filter. Some surfaces already pass it (the zflash
@@ -56,7 +55,7 @@ not maintainer / agent internals) passes the two filters:
       and `zeta-first-boot.sh` — error messages name next safe
       action; bail messages point at recovery / alternative
       paths (e.g., "no internal disks → see USB-persistent OS at
-      B-0758")
+      081KSE6WT0008QG0R00021PPX1")
 - [ ] Audit pass on the in-ISO `/etc/zeta-install.md` text in
       `configuration.nix` — same persona filter
 - [ ] Audit pass on `.claude/skills/flash-cluster-iso/SKILL.md`
@@ -70,7 +69,7 @@ not maintainer / agent internals) passes the two filters:
       Proxmox VE / unRAID / Talos / k3sup / k3os — honest
       strengths + scope-exclusions
 - [ ] "Production-ready at 3 nodes" inflection celebrated:
-      auto-discovery (B-0757) announces when the 3rd CP joins;
+      auto-discovery (081KSE6WT0008QG0R000CV98PV) announces when the 3rd CP joins;
       docs explicitly call out the moment; recovery paths
       assume HA from that point
 - [ ] "Zero-config happy path" tested end-to-end by a non-
@@ -81,19 +80,19 @@ not maintainer / agent internals) passes the two filters:
 
 ## Composes with
 
-- B-0737 — zflash + Touch ID (one-touch Mac-side; already
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID (one-touch Mac-side; already
   persona-aligned)
-- B-0738 / B-0739 — Linux + Windows zflash extensions (must
+- 081KSE6WT0008QG0R003BG8M6J / 081KSE6WT0008QG0R0025170CV — Linux + Windows zflash extensions (must
   apply same persona filter)
-- B-0743 — "I execute, you fingerprint" (consent UX pattern;
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" (consent UX pattern;
   already persona-aligned)
-- B-0754 v1 — zero-typing first-boot + greedy N-disk
-- B-0755 — role taxonomy expansion (persona-aligned role
+- 081KSGS9H0008QG0R002T3BJ2R v1 — zero-typing first-boot + greedy N-disk
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (persona-aligned role
   names: `all-in-one`, `storage-only`, etc.)
-- B-0756 — HA control-plane (the 3-node inflection's
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane (the 3-node inflection's
   technical substrate)
-- B-0757 — cluster auto-discovery (the seamless growth path)
-- B-0758 — USB-persistent OS unRAID-style (the explicit
+- 081KSE6WT0008QG0R000CV98PV — cluster auto-discovery (the seamless growth path)
+- 081KSE6WT0008QG0R00021PPX1 — USB-persistent OS unRAID-style (the explicit
   unRAID competitive framing)
 - `.claude/skills/user-experience-engineer/SKILL.md` —
   first-10-minutes UX audit discipline applies here
@@ -112,10 +111,10 @@ not maintainer / agent internals) passes the two filters:
   installed cluster) — different persona; out of cluster-
   install scope
 - Multi-region / enterprise prod ops — different persona;
-  out of B-0754/B-0759 v1 scope
+  out of 081KSGS9H0008QG0R002T3BJ2R/081KSE6WT0008QG0R003G0Y62D v1 scope
 
 ## Origin
 
-Aaron 2026-05-25, mid-B-0754-v1 conversation, naming the
+Aaron 2026-05-25, mid-081KSGS9H0008QG0R002T3BJ2R-v1 conversation, naming the
 target persona that the cluster-install substrate has been
 implicitly serving.

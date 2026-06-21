@@ -32,7 +32,7 @@
 - Fixed MD032 self-violation in my prior 0104Z shard (PR #3080) — line wrap put `+` at line-start; rewrap pushes it mid-line
 - Flagged PR #3082's catastrophic stale-base hazard (1462 files / -179K lines if merged); branch forked from `a3be6f2` (PR #2127, ancient)
 - Attempted PR #3075 rebase on main; conflict on `0104Z.md` add/add (concurrent shard for same minute); aborted to avoid clobbering parallel-tick activity surfaced during rebase replay
-- Released stale B-0456 claim
+- Released stale 081KRHWGX0008QG0R000JEBCWZ claim
 - Confirmed PR #3078 (hazard-flagged last tick) was rebased before merge — substrate intact on main
 
 ## Pattern observation
@@ -120,7 +120,7 @@ chore(tick): 0120Z shard — MD032 fix on #3080, catastrophic stale-bas…
 - Attempted PR #3075 rebase on main; conflict on 0104Z.md add/add
   (concurrent shard for same minute); aborted rebase to avoid clobbering
   parallel-tick activity surfaced during rebase replay
-- Released stale B-0456 claim
+- Released stale 081KRHWGX0008QG0R000JEBCWZ claim
 
 Pattern: 4 stale-base hazards today (#3077, #3078, #3079, #3082);
 #3078 was rebased + merged after hazard-comment, substrate intact on

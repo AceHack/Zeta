@@ -1,6 +1,5 @@
 ---
-id: B-0367.2
-zetaid: 081KRHWGX0008QG0R0027Y03SQ
+id: 081KRHWGX0008QG0R0027Y03SQ
 parent: 081KR50HA0008QG0R000Z4XCPJ
 priority: P1
 status: open
@@ -16,7 +15,7 @@ type: feature
 tags: [algebra, uncertainty, semiring, zset]
 ---
 
-# B-0367.2 — Semiring slice 2
+# 081KRHWGX0008QG0R0027Y03SQ — Semiring slice 2
 
-Extracted from B-0367 umbrella.
+Extracted from 081KR50HA0008QG0R000Z4XCPJ umbrella.
 `ZSet<'K, 'W when 'W: ISemiring>` parameterization — breaking change requiring migration of all ZSet callers.

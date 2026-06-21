@@ -36,7 +36,7 @@ Adds the **capstone** to the beacon synthesis doc (#5949, merged) — the *payof
 **Coherent AI comes from an externalized reservoir, not from the LLM.** Move state out of the bounded/lossy context window into the coherent substrate (DU state machine + git append-only); the LLM becomes a pure readout/selector.
 
 - **Reservoir computing** (Jaeger 2001 ESN; Maass et al. 2002 LSM): workflow-engine = reservoir; LLM = readout. **Already demonstrated** — every cold-boot reconstructs state from substrate, not context window (the autonomous loop *is* the existence proof).
-- **The loop = `observe → choose`** (pure OPLE): `observe.ts` = Observe; `choose --dry-run` = Limit (B-0644 simulate); `choose` = Integrate (B-0665) + Emit/Persist. A **readout with lookahead**.
+- **The loop = `observe → choose`** (pure OPLE): `observe.ts` = Observe; `choose --dry-run` = Limit (081KRW63S0008QG0R002ZRNDJ8 simulate); `choose` = Integrate (081KRW63S0008QG0R002YAA09X) + Emit/Persist. A **readout with lookahead**.
 - **Idealized in DST, bounded in the real** — one architecture, two regimes; the `IScheduler` is the seam. Perfect recall is **DST-only**; open-system memory is bounded by the **Bekenstein/holographic bound** ('t Hooft/Susskind) — which *tightens* the reservoir (fading-memory) analogy.
 - **Time = a generator function bridging over Persist**: the future illuminates the past by updating the generator (**redescribe** = presheaf natural-transformation, Pillar 2; **compress** = bounded-window mechanism), **never by editing events**. Events immutable; generator mutable.
 
@@ -74,7 +74,7 @@ Adds the **capstone** to the beacon synthesis doc (#5949, merged) — the *payof
 - **`Copilot` (bot)** at 2026-05-29T07:15:42Z on `docs/research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md`:218 (association: NONE)
 
   <pre>
-  P1: This presents `observe.ts`/`choose` as an existing CLI surface, but the repository only has `tools/agent-loop/state-machine.ts` and the docs record the `observe.ts`/`choose.ts --dry-run` scripts as uncommitted/follow-up work (for example `docs/hygiene-history/ticks/2026/05/28/0608Z.md` and `docs/backlog/P2/B-0867.23-...`). Qualify this as the planned entry-point mapping so the research doc does not drift ahead of the shipped substrate.
+  P1: This presents `observe.ts`/`choose` as an existing CLI surface, but the repository only has `tools/agent-loop/state-machine.ts` and the docs record the `observe.ts`/`choose.ts --dry-run` scripts as uncommitted/follow-up work (for example `docs/hygiene-history/ticks/2026/05/28/0608Z.md` and `docs/backlog/P2/081KSNY2Z0008QG0R003206PFM-...`). Qualify this as the planned entry-point mapping so the research doc does not drift ahead of the shipped substrate.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -100,7 +100,7 @@ Adds the payoff section the four pillars serve, per operator 2026-05-29
   Clark-Chalmers). Already demonstrated empirically: every cold-boot
   reconstructs state from substrate, not context window.
 - The loop reduces to observe -> choose = pure OPLE: observe.ts = Observe;
-  choose --dry-run = Limit (B-0644 simulate); choose = Integrate (B-0665) +
+  choose --dry-run = Limit (081KRW63S0008QG0R002ZRNDJ8 simulate); choose = Integrate (081KRW63S0008QG0R002YAA09X) +
   Emit/Persist. Readout-with-lookahead.
 - Idealized in DST, bounded in the real: one architecture, two regimes; the
   IScheduler is the seam. Perfect recall is DST-only; open-system memory is
@@ -136,14 +136,14 @@ boundary per Bekenstein). The framework runs it in reverse — we ARE the shadow
 bulk via generate+join.
 
 - D = project-down (compress/encode to shadow); I = project-up (generate+join,
-  reconstruct bulk). Round-trip I(D(x))=x (B-0666): lossless in DST, bounded/
+  reconstruct bulk). Round-trip I(D(x))=x (081KRW63S0008QG0R001SAHYKV): lossless in DST, bounded/
   lossy in the real (Bekenstein — can't store the bulk's full shadow).
 - compress = project-down; generate+join = project-up. The 128-bit ID is the
   shadow; the bulk is reconstructed on demand, never stored whole.
 
-Connects to existing substrate (not minting): B-0666 (I(D(x))=x), B-0902
+Connects to existing substrate (not minting): 081KRW63S0008QG0R001SAHYKV (I(D(x))=x), 081KSNY2Z0008QG0R0021S5F3G
 (holographic bulk-boundary; shadow-star corpus encodes agent-output state-space),
-B-0824 (holographic-projection dependency space), generate-join research.
+081KSGS9H0008QG0R0031PBNGA (holographic-projection dependency space), generate-join research.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```
@@ -198,7 +198,7 @@ research(beacon): qualify observe.ts/choose as planned entry-points, …
 Copilot caught real drift: the loop section presented observe.ts/choose as an
 existing CLI surface, but only tools/agent-loop/state-machine.ts +
 work-lifecycle-state-machine.ts are shipped; observe.ts / choose --dry-run are
-follow-up (B-0867.23). Qualified as the planned design mapping so the beacon doc
+follow-up (081KSNY2Z0008QG0R003206PFM). Qualified as the planned design mapping so the beacon doc
 does not drift ahead of shipped substrate (which is the doc's own discipline).
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>

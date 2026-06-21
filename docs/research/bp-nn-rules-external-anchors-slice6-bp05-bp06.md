@@ -1,7 +1,7 @@
 # BP-NN Rules External Anchor Backfill — Slice 6 (BP-05, BP-06)
 
 Scope: External prior-art anchors for two BP-NN rules in
-`docs/AGENT-BEST-PRACTICES.md`. This is slice 6 of the B-0314 backfill;
+`docs/AGENT-BEST-PRACTICES.md`. This is slice 6 of the 081KR2E4K0008QG0R001ADMBVW backfill;
 slices 1–5 covered BP-10, BP-11, BP-03, BP-07, BP-16, BP-04, BP-08, BP-09,
 BP-12, BP-13, BP-14, BP-01, BP-02, BP-15. These two rules are the remaining
 rules in the "Frontmatter & scope" / "Voice & behaviour" sections of the doc:
@@ -189,4 +189,4 @@ social hierarchy.
 | BP-06 | Modesty bias is measurable sycophancy, not a virtue | Perez (2023) RLHF sycophancy; Salecha (2024) social desirability bias; Malmqvist (2024) sycophancy survey |
 
 All six anchors sourced 2022–2025, verified via WebSearch 2026-05-10.
-Full slice-progress record in `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`.
+Full slice-progress record in `docs/backlog/P1/081KR2E4K0008QG0R001ADMBVW-bp-nn-rule-anchor-backfill.md`.

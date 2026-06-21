@@ -1,6 +1,6 @@
 ---
 pr_number: 3163
-title: "decompose(B-0448): 7 atomic child rows B-0507..B-0513 for Cloud Routines integration"
+title: "decompose(081KRFA460008QG0R000CYBGKW): 7 atomic child rows 081KRHWGX0008QG0R000E8BHQ9..081KRHWGX0008QG0R003TCDFZ5 for Cloud Routines integration"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T18:27:07Z"
@@ -12,51 +12,51 @@ archived_at: "2026-05-14T18:34:06Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3163: decompose(B-0448): 7 atomic child rows B-0507..B-0513 for Cloud Routines integration
+# PR #3163: decompose(081KRFA460008QG0R000CYBGKW): 7 atomic child rows 081KRHWGX0008QG0R000E8BHQ9..081KRHWGX0008QG0R003TCDFZ5 for Cloud Routines integration
 
 ## PR description
 
 ## Summary
 
-- Decomposes B-0448 (Cloud Routines integration — 4th catch-43 defence layer) into 7 dependency-ordered atomic child backlog rows (B-0507..B-0513)
-- Updates B-0448 parent row to `status: decomposed` with `child_rows` frontmatter field
+- Decomposes 081KRFA460008QG0R000CYBGKW (Cloud Routines integration — 4th catch-43 defence layer) into 7 dependency-ordered atomic child backlog rows (081KRHWGX0008QG0R000E8BHQ9..081KRHWGX0008QG0R003TCDFZ5)
+- Updates 081KRFA460008QG0R000CYBGKW parent row to `status: decomposed` with `child_rows` frontmatter field
 - No code changes — documentation-only decomposition PR
 
 ## Dependency graph
 
 ```
-B-0507 (research, unblocked)
-  └── B-0508 (schema)
-        ├── B-0509 (installer)
-        └── B-0510 (cloud-schedule.json)
-              └── B-0511 (register + empirical fire)
-                    ├── B-0512 (README 4-layer table)
-                    └── B-0513 (memory file)
+081KRHWGX0008QG0R000E8BHQ9 (research, unblocked)
+  └── 081KRHWGX0008QG0R002S107P7 (schema)
+        ├── 081KRHWGX0008QG0R0014D2T5E (installer)
+        └── 081KRHWGX0008QG0R001VR9FNA (cloud-schedule.json)
+              └── 081KRHWGX0008QG0R0013DSSZZ (register + empirical fire)
+                    ├── 081KRHWGX0008QG0R003WEP6E9 (README 4-layer table)
+                    └── 081KRHWGX0008QG0R003TCDFZ5 (memory file)
 ```
 
 ## Child rows
 
 | Slice | Row | Title |
 |-------|-----|-------|
-| 1 | B-0507 | Research Cloud Routines auth + registration API surface (gate row) |
-| 2 | B-0508 | Define `cloud-schedule.json` schema for `tools/routines/<id>/` |
-| 3 | B-0509 | Extend `tools/routines/install.ts` to detect + surface `cloud-schedule.json` |
-| 4 | B-0510 | Author `autonomous-loop/cloud-schedule.json` (first Cloud Routine declaration) |
-| 5 | B-0511 | Register Cloud Routine + empirical first-fire observation |
-| 6 | B-0512 | Update `tools/routines/README.md` with 4-layer catch-43 table |
-| 7 | B-0513 | Memory file capturing empirical Cloud Routine bootstrap learning |
+| 1 | 081KRHWGX0008QG0R000E8BHQ9 | Research Cloud Routines auth + registration API surface (gate row) |
+| 2 | 081KRHWGX0008QG0R002S107P7 | Define `cloud-schedule.json` schema for `tools/routines/<id>/` |
+| 3 | 081KRHWGX0008QG0R0014D2T5E | Extend `tools/routines/install.ts` to detect + surface `cloud-schedule.json` |
+| 4 | 081KRHWGX0008QG0R001VR9FNA | Author `autonomous-loop/cloud-schedule.json` (first Cloud Routine declaration) |
+| 5 | 081KRHWGX0008QG0R0013DSSZZ | Register Cloud Routine + empirical first-fire observation |
+| 6 | 081KRHWGX0008QG0R003WEP6E9 | Update `tools/routines/README.md` with 4-layer catch-43 table |
+| 7 | 081KRHWGX0008QG0R003TCDFZ5 | Memory file capturing empirical Cloud Routine bootstrap learning |
 
 ## Focused checks
 
-- [x] ID collision check: B-0507..B-0513 verified clear on-disk (highest on-disk was B-0505) and in-flight (B-0506 open PR is the only in-flight row in this range)
-- [x] Bus claim acquired: `otto-cli` claimed B-0448 before write work began
-- [x] Format matches existing decomposed child rows (e.g. B-0471..B-0474)
-- [x] Decomposition hint from B-0448 itself used as starting point, then refined
-- [x] Each child row has `parent: B-0448`, correct `depends_on:`, pre-start checklist, acceptance criteria, and definition of done
+- [x] ID collision check: 081KRHWGX0008QG0R000E8BHQ9..081KRHWGX0008QG0R003TCDFZ5 verified clear on-disk (highest on-disk was 081KRHWGX0008QG0R002C038BJ) and in-flight (081KRHWGX0008QG0R002DPG02X open PR is the only in-flight row in this range)
+- [x] Bus claim acquired: `otto-cli` claimed 081KRFA460008QG0R000CYBGKW before write work began
+- [x] Format matches existing decomposed child rows (e.g. 081KRHWGX0008QG0R002VV6DTS..081KRHWGX0008QG0R0023FDYVE)
+- [x] Decomposition hint from 081KRFA460008QG0R000CYBGKW itself used as starting point, then refined
+- [x] Each child row has `parent: 081KRFA460008QG0R000CYBGKW`, correct `depends_on:`, pre-start checklist, acceptance criteria, and definition of done
 
 ## Next step
 
-Pick up B-0507 (unblocked). After B-0507 closes, B-0508, B-0509, and B-0510 can proceed in parallel.
+Pick up 081KRHWGX0008QG0R000E8BHQ9 (unblocked). After 081KRHWGX0008QG0R000E8BHQ9 closes, 081KRHWGX0008QG0R002S107P7, 081KRHWGX0008QG0R0014D2T5E, and 081KRHWGX0008QG0R001VR9FNA can proceed in parallel.
 
 operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file IS the durable record"
 
@@ -93,11 +93,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Documentation-only backlog decomposition of B-0448 into seven dependency-ordered child backlog rows for Cloud Routines integration.
+Documentation-only backlog decomposition of 081KRFA460008QG0R000CYBGKW into seven dependency-ordered child backlog rows for Cloud Routines integration.
 
 **Changes:**
-- Marks B-0448 as decomposed and adds child row references.
-- Adds B-0507..B-0513 child rows covering research, schema, installer support, first declaration, registration, README updates, and memory capture.
+- Marks 081KRFA460008QG0R000CYBGKW as decomposed and adds child row references.
+- Adds 081KRHWGX0008QG0R000E8BHQ9..081KRHWGX0008QG0R003TCDFZ5 child rows covering research, schema, installer support, first declaration, registration, README updates, and memory capture.
 - Defines dependency ordering and acceptance criteria for each slice.
 
 ### Reviewed changes
@@ -109,29 +109,29 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 10 
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md` | Updates parent row status and decomposition summary. |
-| `docs/backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md` | Adds research gate row for Cloud Routines unknowns. |
-| `docs/backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md` | Adds schema-definition slice. |
-| `docs/backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md` | Adds installer-extension slice. |
-| `docs/backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md` | Adds first Cloud Routine declaration slice. |
-| `docs/backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md` | Adds registration and empirical-fire slice. |
-| `docs/backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md` | Adds README update slice. |
-| `docs/backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md` | Adds memory-capture slice. |
+| `docs/backlog/P1/081KRFA460008QG0R000CYBGKW-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md` | Updates parent row status and decomposition summary. |
+| `docs/backlog/P1/081KRHWGX0008QG0R000E8BHQ9-b0448-slice1-cloud-routines-api-research-2026-05-14.md` | Adds research gate row for Cloud Routines unknowns. |
+| `docs/backlog/P1/081KRHWGX0008QG0R002S107P7-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md` | Adds schema-definition slice. |
+| `docs/backlog/P1/081KRHWGX0008QG0R0014D2T5E-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md` | Adds installer-extension slice. |
+| `docs/backlog/P1/081KRHWGX0008QG0R001VR9FNA-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md` | Adds first Cloud Routine declaration slice. |
+| `docs/backlog/P1/081KRHWGX0008QG0R0013DSSZZ-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md` | Adds registration and empirical-fire slice. |
+| `docs/backlog/P1/081KRHWGX0008QG0R003WEP6E9-b0448-slice6-readme-4-layer-table-2026-05-14.md` | Adds README update slice. |
+| `docs/backlog/P1/081KRHWGX0008QG0R003TCDFZ5-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md` | Adds memory-capture slice. |
 </details>
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md:45 (unresolved)
+### Thread 1: docs/backlog/P1/081KRHWGX0008QG0R001VR9FNA-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md:45 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-14T18:30:50Z):
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep cloud schedule trigger shape consistent**
 
-This template uses a `triggers` array, but slice 2 defines the canonical schema with a singular `trigger` object (`docs/backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md`, schema examples). If B-0508 lands as written, implementers following this row will produce `cloud-schedule.json` files that fail schema/type validation and installer expectations, blocking B-0510/B-0511 until one side is rewritten; align both slices to one field shape.
+This template uses a `triggers` array, but slice 2 defines the canonical schema with a singular `trigger` object (`docs/backlog/P1/081KRHWGX0008QG0R002S107P7-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md`, schema examples). If 081KRHWGX0008QG0R002S107P7 lands as written, implementers following this row will produce `cloud-schedule.json` files that fail schema/type validation and installer expectations, blocking 081KRHWGX0008QG0R001VR9FNA/081KRHWGX0008QG0R0013DSSZZ until one side is rewritten; align both slices to one field shape.
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md:107 (unresolved)
+### Thread 2: docs/backlog/P1/081KRHWGX0008QG0R0013DSSZZ-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md:107 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-14T18:30:50Z):
 
@@ -141,61 +141,61 @@ The fallback instructs closing the row as `status: blocked`, but backlog pickup 
 
 Useful? React with 👍 / 👎.
 
-### Thread 3: docs/backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md:12 (unresolved)
+### Thread 3: docs/backlog/P1/081KRFA460008QG0R000CYBGKW-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md:12 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:20Z):
 
-P1: This new parent field uses `child_rows`, but decomposed backlog parents consistently use `children:` (for example B-0426 and many other parents). Keeping a unique field name makes the child list invisible to existing grep/tooling conventions and contradicts the line below that tells readers to use the `child_rows` field for PR tracking.
+P1: This new parent field uses `child_rows`, but decomposed backlog parents consistently use `children:` (for example 081KRFA460008QG0R0007RWSN1 and many other parents). Keeping a unique field name makes the child list invisible to existing grep/tooling conventions and contradicts the line below that tells readers to use the `child_rows` field for PR tracking.
 
-### Thread 4: docs/backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md:2 (unresolved)
-
-**@copilot-pull-request-reviewer** (2026-05-14T18:32:21Z):
-
-P1: These new backlog rows are not reflected in `docs/BACKLOG.md`; searching the generated index shows no B-0507 entry. `tools/backlog/README.md` says the generator regenerates `docs/BACKLOG.md`, so the index will be stale and readers/tools using it will miss the new decomposition.
-
-### Thread 5: docs/backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md:57 (unresolved)
+### Thread 4: docs/backlog/P1/081KRHWGX0008QG0R000E8BHQ9-b0448-slice1-cloud-routines-api-research-2026-05-14.md:2 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:21Z):
 
-P1: This template uses a plural `triggers` array, but the schema slice (B-0508) and installer contract (B-0509) both define a singular `trigger`/`CloudTrigger`. As written, the first `cloud-schedule.json` produced by this row would not validate against the schema it depends on.
+P1: These new backlog rows are not reflected in `docs/BACKLOG.md`; searching the generated index shows no 081KRHWGX0008QG0R000E8BHQ9 entry. `tools/backlog/README.md` says the generator regenerates `docs/BACKLOG.md`, so the index will be stale and readers/tools using it will miss the new decomposition.
 
-### Thread 6: docs/backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md:107 (unresolved)
+### Thread 5: docs/backlog/P1/081KRHWGX0008QG0R001VR9FNA-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md:57 (unresolved)
+
+**@copilot-pull-request-reviewer** (2026-05-14T18:32:21Z):
+
+P1: This template uses a plural `triggers` array, but the schema slice (081KRHWGX0008QG0R002S107P7) and installer contract (081KRHWGX0008QG0R0014D2T5E) both define a singular `trigger`/`CloudTrigger`. As written, the first `cloud-schedule.json` produced by this row would not validate against the schema it depends on.
+
+### Thread 6: docs/backlog/P1/081KRHWGX0008QG0R0013DSSZZ-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md:107 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:22Z):
 
 P1: `blocked` is not an allowed backlog status; the current schema allows `open`, `closed`, `superseded-by-B-NNNN`, `deferred`, and `decomposed`. Following this instruction would create a row status that the backlog tooling/documentation does not define, so use an allowed blocked-state representation instead.
 
-### Thread 7: docs/backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md:38 (unresolved)
+### Thread 7: docs/backlog/P1/081KRHWGX0008QG0R003TCDFZ5-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md:38 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:22Z):
 
 P1: The proposed memory filename uses a hyphenated date placeholder, but the memory format standard requires snake_case filenames and date suffixes in `_YYYY_MM_DD` form. If this template is followed literally, the new memory file will violate the memory filename rules.
 
-### Thread 8: docs/backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md:48 (unresolved)
+### Thread 8: docs/backlog/P1/081KRHWGX0008QG0R003TCDFZ5-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md:48 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:22Z):
 
 P1: This frontmatter template is not valid for `memory/` files: `type` must be a top-level field, no extra `metadata:` field is allowed, and the value must match the filename prefix. The proposed path starts with `feedback_` but this template marks it as `project`, so the implementing slice would create a memory file that fails the documented memory schema.
 
-### Thread 9: docs/backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md:95 (unresolved)
+### Thread 9: docs/backlog/P1/081KRHWGX0008QG0R003TCDFZ5-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md:95 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:22Z):
 
 P2: The proposed `MEMORY.md` index entry is longer than the memory index standard's under-150-character limit. Following this template would add an over-budget index line; shorten the label/filename reference or move detail into the memory body.
 
-### Thread 10: docs/backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md:60 (unresolved)
+### Thread 10: docs/backlog/P1/081KRHWGX0008QG0R001VR9FNA-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md:60 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:23Z):
 
 P2: This template would put a persona name into a current-state configuration file under `tools/routines/`. The repo convention keeps names on history surfaces like backlog rows, but reusable code/config should use role references instead, so the future `cloud-schedule.json` should avoid carrying this attribution into the routine description.
 
-### Thread 11: docs/backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md:27 (unresolved)
+### Thread 11: docs/backlog/P1/081KRHWGX0008QG0R003WEP6E9-b0448-slice6-readme-4-layer-table-2026-05-14.md:27 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:23Z):
 
 P2: This says the replacement is a "4-column table", but the template below is a 7-column table and appears to be a 4-layer table. The mismatch makes the work item ambiguous for the implementer.
 
-### Thread 12: docs/backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md:75 (unresolved)
+### Thread 12: docs/backlog/P1/081KRHWGX0008QG0R003WEP6E9-b0448-slice6-readme-4-layer-table-2026-05-14.md:75 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:32:23Z):
 

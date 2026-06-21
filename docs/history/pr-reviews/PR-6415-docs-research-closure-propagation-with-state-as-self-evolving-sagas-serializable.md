@@ -27,7 +27,7 @@
 
 ## Description
 
-Captures the operator's six 2026-06-01 sharpening passes into one crystallization note + a PRIMITIVE-REGISTRY want-line. **Composed onto existing substrate, not minted parallel** (`verify-existing-substrate`): B-0640 (Bonsai trees + Rx), rx-expert SKILL (Bonsai/Reaqtor), `src/Core/Checkpoint.fs` (mirrors Reaqtor `IStatefulOperator`), PRIOR-ART Reaqtor⭐, the durable-functions elevator pitch, the Amara Temporal/Step/Durable/Dapr note.
+Captures the operator's six 2026-06-01 sharpening passes into one crystallization note + a PRIMITIVE-REGISTRY want-line. **Composed onto existing substrate, not minted parallel** (`verify-existing-substrate`): 081KRW63S0008QG0R002XA5N6S (Bonsai trees + Rx), rx-expert SKILL (Bonsai/Reaqtor), `src/Core/Checkpoint.fs` (mirrors Reaqtor `IStatefulOperator`), PRIOR-ART Reaqtor⭐, the durable-functions elevator pitch, the Amara Temporal/Step/Durable/Dapr note.
 
 ## The primitive
 
@@ -123,7 +123,7 @@ Crystallizes the operator's three sharpening framings (serialize deferred
 execution onto the stream / subsumes Durable Functions / "closure propagation
 with state as self-evolving sagas") into one named primitive — composed ONTO
 the existing substrate, not minted parallel (verify-existing-substrate):
-B-0640 (Bonsai trees + Rx), rx-expert SKILL Bonsai/Reaqtor section,
+081KRW63S0008QG0R002XA5N6S (Bonsai trees + Rx), rx-expert SKILL Bonsai/Reaqtor section,
 Checkpoint.fs (mirrors Reaqtor IStatefulOperator), PRIOR-ART Reaqtor⭐, the
 durable-functions elevator pitch, the Amara Temporal/Step/Durable/Dapr note.
 
@@ -140,7 +140,7 @@ its data. Self-propagating-pattern-with-state = (Bonsai tree, closure) on a
 retraction-native stream = the travelers shape at workflow scope.
 
 Prior art grounded at current upstream (Nuqleon Bonsai, search-first 2026-06-01).
-Registry want-line + B-0640 xref follow after #6413 merges (avoid footer conflict).
+Registry want-line + 081KRW63S0008QG0R002XA5N6S xref follow after #6413 merges (avoid footer conflict).
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

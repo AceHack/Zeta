@@ -3,12 +3,12 @@ import { executePlan, extractPrUrl, substituteUrl, } from "./pr-publication-exec
 import { buildPublicationPlan } from "./pr-publication-plan";
 function input(overrides = {}) {
     return {
-        backlogId: "B-0280",
+        backlogId: "081KR2E4K0008QG0R0022RVRCZ",
         backlogTitle: "PR publication executor",
-        backlogPath: "docs/backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md",
-        branch: "claim/B-0280-pr-publication-executor",
+        backlogPath: "docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md",
+        branch: "claim/081KR2E4K0008QG0R0022RVRCZ-pr-publication-executor",
         baseBranch: "main",
-        bodyFilePath: "tmp/pr-bodies/B-0280.md",
+        bodyFilePath: "tmp/pr-bodies/081KR2E4K0008QG0R0022RVRCZ.md",
         summary: ["adds the executor that runs push/create-pr/auto-merge"],
         checks: [{ command: "bun test", status: "passed" }],
         requiredChecks: { ok: 1, inProgress: 0, pending: 0, failed: 0 },

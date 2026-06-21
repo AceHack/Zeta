@@ -34,7 +34,7 @@ Tick 2026-05-14T21:35Z shard. Two substantive review catches on [#3258](https://
 ## Catches addressed
 
 1. **Codex + Copilot (independent same finding)** — tally row `Tick shards | 9` contradicted the listed 10 PRs; lane totals summed to 21, not the stated 22.
-2. **Copilot** — line 108 used `docs/backlog/P3/B-0519-*.md` glob instead of the concrete filename; not navigable.
+2. **Copilot** — line 108 used `docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-*.md` glob instead of the concrete filename; not navigable.
 
 ## Parallel-Otto convergence pattern
 
@@ -54,7 +54,7 @@ Wait-ci: #3258, this shard's PR.
 ## Test plan
 
 - [x] All 3 threads on #3258 resolved (`isResolved=true` verified via GraphQL)
-- [x] Remote `shard/tick-2128Z-...` has corrected tally + concrete B-0519 filename
+- [x] Remote `shard/tick-2128Z-...` has corrected tally + concrete 081KRHWGX0008QG0R001HMWM1W filename
 - [x] Composite branch-guard + `gh pr create --head`
 - [x] `markdownlint-cli2` + `audit-md032-plus-linestart` clean
 - [ ] CI clears

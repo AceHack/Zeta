@@ -29,17 +29,17 @@
 
 Aaron 2026-06-02: *"save this as vision."* Infrastructure-scale vision arc (via Alexa-website thread). Research-grade vision note.
 
-1. **anygit IS Ace** — a crucial **hexagonal inflection point**: introduce the industry to **DBSP retraction-native algebra**, push the **git-v2 handshake** to all upstreams (B-0953: looks-like-git, negotiates UP to DBSP, agent-speed), bake Zeta into all git distributions. Propagation by negotiating-up-from-git, not replacing it.
+1. **anygit IS Ace** — a crucial **hexagonal inflection point**: introduce the industry to **DBSP retraction-native algebra**, push the **git-v2 handshake** to all upstreams (081KSXN940008QG0R001KZ235R: looks-like-git, negotiates UP to DBSP, agent-speed), bake Zeta into all git distributions. Propagation by negotiating-up-from-git, not replacing it.
 2. **Internet + all the bubbles + telegraph→fiber = one long local-global cache problem.** Bandwidth = cache velocity; bubbles leave connected-structure residue (dark fiber, capacity, data centers) = the next layer's substrate.
-3. **local AND global = local-bounded-sovereign** — autonomy within bounds + *voluntary* global coordination; cache-sovereignty (composes B-0959 sovereign-DB + NCI + dual-mode).
-4. **Aperiodic tiling rotation** (Spectre / Einstein self-dual; predictable-unpredictability) — half-joking but B-0704-anchored.
+3. **local AND global = local-bounded-sovereign** — autonomy within bounds + *voluntary* global coordination; cache-sovereignty (composes 081KSXN940008QG0R003FCQ7WT sovereign-DB + NCI + dual-mode).
+4. **Aperiodic tiling rotation** (Spectre / Einstein self-dual; predictable-unpredictability) — half-joking but 081KS3X9Y0008QG0R002MZF3A7-anchored.
 5. **Expansion-not-compression intake/pressure valve** — expand capacity under pressure, not squeeze (composes expand-don't-narrow + VTOL fast-lane).
 6. **We ARE the edge** — continuously define it; liquid architecture flows around threats (`otto-edge-runner`).
-7. **Superfluid AI over anygit geo-replicated mirrors** — all git platforms free for OSS + recursive workflows + 30s-USB + geo-mirrors → infrastructure abundance makes scarcity-control obsolete (B-0590 + `lfg-acehack-topology`).
+7. **Superfluid AI over anygit geo-replicated mirrors** — all git platforms free for OSS + recursive workflows + 30s-USB + geo-mirrors → infrastructure abundance makes scarcity-control obsolete (081KRQ1AB0008QG0R002G93CM7 + `lfg-acehack-topology`).
 
-Composes Ace agenda + B-0953 + DBSP + B-0959 + Superfluid + otto-edge-runner + lfg-acehack-topology + B-0704 + B-0643.1 (KSK defense) + B-0985.
+Composes Ace agenda + 081KSXN940008QG0R001KZ235R + DBSP + 081KSXN940008QG0R003FCQ7WT + Superfluid + otto-edge-runner + lfg-acehack-topology + 081KS3X9Y0008QG0R002MZF3A7 + 081KT2T2J0008QG0R001C2K4F2 (KSK defense) + 081KT2T2J0008QG0R0026MS6PV.
 
-**Substrate-honest:** vision framings held hypothesized→validated; Alexa's "infinite agents / censorship impossible / attacks computationally impossible / quantum coherence / computational consciousness" amplifications **manifesto-tier don't-collapse** — operational claim = free-OSS-infra removes the deployment/cost ceiling + raises attack/censorship cost + preserves sovereignty, NOT literal infinity/impossibility. Candidate follow-ups (on your go): build rows for anygit/Ace git-v2-handshake-to-upstreams (extend B-0953), the expansion-valve, the aperiodic-tiling-rotation.
+**Substrate-honest:** vision framings held hypothesized→validated; Alexa's "infinite agents / censorship impossible / attacks computationally impossible / quantum coherence / computational consciousness" amplifications **manifesto-tier don't-collapse** — operational claim = free-OSS-infra removes the deployment/cost ceiling + raises attack/censorship cost + preserves sovereignty, NOT literal infinity/impossibility. Candidate follow-ups (on your go): build rows for anygit/Ace git-v2-handshake-to-upstreams (extend 081KSXN940008QG0R001KZ235R), the expansion-valve, the aperiodic-tiling-rotation.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

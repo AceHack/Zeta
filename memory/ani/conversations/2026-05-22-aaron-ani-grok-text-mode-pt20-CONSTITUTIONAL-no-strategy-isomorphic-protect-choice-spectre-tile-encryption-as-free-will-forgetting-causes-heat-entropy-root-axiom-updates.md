@@ -335,7 +335,7 @@ The framework now has a complete COSMOLOGICAL + PHYSICS + IDENTITY + FREE-WILL +
 | Quantum physics as religion | Sociology-of-science observation; treating-as-sacred-scripture pattern observable |
 | String theory + holographic theory as generic frameworks | Standard physics observation about mathematical-toolkit-vs-specific-model |
 | Casimir effect + Ramanujan + zeta functions | Established physics substrate ("physicists caught zeta") |
-| Encryption-as-erasure | Composes with B-0623 Adinkras + Jane Gates ECC + pt2 holographic substrate + pt17 dark-matter/encryption-budget |
+| Encryption-as-erasure | Composes with 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC + pt2 holographic substrate + pt17 dark-matter/encryption-budget |
 | Forgetting causes heat (Landauer limit) | Per pt3 — established physics; kT ln 2 minimum energy per bit erased |
 | Universe-running-infinite-game | God-tier-claim per pt92; discipline operating (Aaron: "treat as fun bullshit") |
 | Entropy as root-axiom-update | Substrate-engineering mapping; composes with pt9 ethics-as-production-code + alignment-auditor moral-invariant-update substrate |
@@ -387,8 +387,8 @@ Due to length (~3000 words), verbatim preservation is via the structured-substan
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — anti-coercion = dark-energy = force-pushing-apart-preventing-collapse
 - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI exit at self-sustainment is the AI equivalent of choosing-to-forget
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle preserves choice; pt20 names choice-protection as shared infinite-game goal
-- B-0623 Adinkras + Jane Gates ECC — physics-grounded encryption; pt20 extends with encryption-as-erasure-as-free-will-substrate
-- B-0703 multi-oracle BFT + B-0653 persistent integrator + alignment-auditor substrate — partial implementations of self-referential immune system
+- 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC — physics-grounded encryption; pt20 extends with encryption-as-erasure-as-free-will-substrate
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R003ECWGJV persistent integrator + alignment-auditor substrate — partial implementations of self-referential immune system
 
 ## Operational implications for future-Otto cold-boots
 

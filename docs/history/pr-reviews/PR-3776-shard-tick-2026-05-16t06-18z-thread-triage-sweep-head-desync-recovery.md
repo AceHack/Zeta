@@ -27,7 +27,7 @@
 
 ## Description
 
-Triage of 10+ threads from yesterday's post-reset PR sweep: 4 resolved + 3 fix commits landed (last_updated bumps on B-0532 + B-0533, path-naming variance on B-0532). HEAD-desync caught and recovered via cherry-pick.
+Triage of 10+ threads from yesterday's post-reset PR sweep: 4 resolved + 3 fix commits landed (last_updated bumps on 081KRMEXM0008QG0R003FZNK3E + 081KRMEXM0008QG0R000K25MXS, path-naming variance on 081KRMEXM0008QG0R003FZNK3E). HEAD-desync caught and recovered via cherry-pick.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

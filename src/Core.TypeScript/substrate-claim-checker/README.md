@@ -3,7 +3,7 @@
 Substrate-claim-checker per the verify-then-claim discipline memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches 6 B-0170 check-types:
+Catches 6 081KQNJ500008QG0R003SCWBDV check-types:
 
 - **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
   instances", "13-row table", "5 procedure skills") and the actual
@@ -76,7 +76,7 @@ input error).
 - **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
 - **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
 - **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
-- **Self-recursive drift** (the memo about drift contains its own drift) — shipped v0.9.0 (count-topic only; others deferred per B-0170.3 slice)
+- **Self-recursive drift** (the memo about drift contains its own drift) — shipped v0.9.0 (count-topic only; others deferred per 081KQNJ500008QG0R003SCWBDV.3 slice)
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
 
@@ -87,8 +87,8 @@ input error).
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` —
   rule 2 (no dynamic commands in skills; use TS files); this tool
   IS one of the TS files for that purpose
-- B-0170 (the backlog row this tool implements; see
-  `docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md`)
+- 081KQNJ500008QG0R003SCWBDV (the backlog row this tool implements; see
+  `docs/backlog/P1/081KQNJ500008QG0R003SCWBDV-substrate-claim-checker-ts-tool-aaron-2026-05-03.md`)
 
 ## Eval set (drift instances catalogued in the verify-then-claim memo)
 
@@ -105,7 +105,7 @@ Frozen on-disk fixtures live in `fixtures/`. Each fixture is a minimal
 markdown file reproducing one historical drift instance, paired with
 a regression test in `fixtures.test.ts`. The fixture seed is one
 count-drift case from PR #1259; additional sub-classes land
-incrementally per B-0170.4. See `fixtures/README.md` for the index
+incrementally per 081KQNJ500008QG0R003SCWBDV.4. See `fixtures/README.md` for the index
 and the "adding a new fixture" procedure.
 
 ## Hooks integration (planned, not v0)
@@ -328,7 +328,7 @@ it opts in.
 
 Adding additional topics (path-forms, cross-surface, convention)
 is a 1-line dispatch each; deferred to follow-up slices per the
-B-0170 done-criteria.
+081KQNJ500008QG0R003SCWBDV done-criteria.
 
 ### Usage
 

@@ -1,6 +1,5 @@
 ---
-id: B-0320
-zetaid: 081KR2E4K0008QG0R002A0AGBJ
+id: 081KR2E4K0008QG0R002A0AGBJ
 priority: P1
 status: closed
 title: "Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate"
@@ -23,11 +22,11 @@ agent is pre-authorized to mutate via Playwright.
 
 ## Why
 
-B-0064 Phase 2 requires guardrails. The central guardrail is
+081KQ8P5D0008QG0R0010FP5SY Phase 2 requires guardrails. The central guardrail is
 a **pre-authorized surface list** — mutations outside this
 list are blocked. This data file has no code dependencies
 and can land independently, enabling parallel work on
-the mutation helpers (B-0321).
+the mutation helpers (081KR2E4K0008QG0R000YH9DC6).
 
 ## Scope
 
@@ -54,9 +53,9 @@ the mutation helpers (B-0321).
   3. Dismissed-alert re-classification.
 - Include a `tools/playwright/github-ui/authorized-surfaces.schema.json`
   for validation.
-- The mutation helpers (B-0321) MUST check this list
+- The mutation helpers (081KR2E4K0008QG0R000YH9DC6) MUST check this list
   before executing — but that enforcement lands with
-  B-0321, not here.
+  081KR2E4K0008QG0R000YH9DC6, not here.
 
 ## Done-criteria
 
@@ -68,6 +67,6 @@ the mutation helpers (B-0321).
 
 ## What this row does NOT do
 
-- Does NOT implement mutation code — that is B-0321.
+- Does NOT implement mutation code — that is 081KR2E4K0008QG0R000YH9DC6.
 - Does NOT auto-expand the list — expansion requires
   explicit maintainer authorization via commit.

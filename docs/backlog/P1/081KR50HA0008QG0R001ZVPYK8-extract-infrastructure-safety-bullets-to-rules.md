@@ -1,6 +1,5 @@
 ---
-id: B-0351
-zetaid: 081KR50HA0008QG0R001ZVPYK8
+id: 081KR50HA0008QG0R001ZVPYK8
 priority: P1
 status: closed
 closed: 2026-05-10
@@ -17,7 +16,7 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0351 — Extract infrastructure/safety bullets to `.claude/rules/`
+# 081KR50HA0008QG0R001ZVPYK8 — Extract infrastructure/safety bullets to `.claude/rules/`
 
 ## What
 

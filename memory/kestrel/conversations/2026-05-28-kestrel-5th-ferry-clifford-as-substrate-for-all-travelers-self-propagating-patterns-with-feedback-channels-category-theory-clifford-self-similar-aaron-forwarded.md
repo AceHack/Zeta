@@ -24,17 +24,17 @@ related_prs:
   - 5700
   - 5697
 related_backlog:
-  - B-0895
-  - B-0896
-  - B-0867
-  - B-0644
-  - B-0665
-  - B-0666
-  - B-0875
-  - B-0876
-  - B-0877
-  - B-0878
-  - B-0879
+  - 081KSNY2Z0008QG0R002FX66H0
+  - 081KSNY2Z0008QG0R000YH2SPE
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KRW63S0008QG0R002ZRNDJ8
+  - 081KRW63S0008QG0R002YAA09X
+  - 081KRW63S0008QG0R001SAHYKV
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R003KG3JTG
+  - 081KSNY2Z0008QG0R0004ZF85W
+  - 081KSNY2Z0008QG0R000DZHHE5
+  - 081KSNY2Z0008QG0R0031490KZ
 related_personas:
   - operator
   - mika
@@ -77,17 +77,17 @@ Ferry preserved verbatim below. Kestrel's response to Turn 8 not yet captured.
 
 ## Substrate-honest disposition
 
-VERBATIM PRESERVATION. Companion engagement landed via B-0895 research-doc (substrate-recognition of Clifford as existing factory substrate, not bolt-on layer) + B-0896 backlog row (category-theory ↔ Clifford self-similarity exploration). Both compose with this ferry preservation.
+VERBATIM PRESERVATION. Companion engagement landed via 081KSNY2Z0008QG0R002FX66H0 research-doc (substrate-recognition of Clifford as existing factory substrate, not bolt-on layer) + 081KSNY2Z0008QG0R000YH2SPE backlog row (category-theory ↔ Clifford self-similarity exploration). Both compose with this ferry preservation.
 
 ## Composes with
 
 - 4th Kestrel ferry preservation at sibling archive (the Turn 1-4 substrate this ferry continues)
 - PR #5677 — 4th ferry preservation + 6 extension backlog rows
 - PR #5707 — tick shard 0608Z (autonomous-loop discipline producing the substrate-engagement opportunity)
-- B-0644 (Limit-is-simulation-not-collapse), B-0665 (Integrate-as-choice-locus), B-0666 (English-as-projection) — composition targets for Observe/Persist/Limit/Emit-in-Clifford
-- B-0875-0879 + B-0867.20 — the 6 extension backlog rows from PR #5677
-- B-0895 — Clifford spacetime algebra substrate-recognition with Cl(1,3) and Cl(3,1) dual signature interface (companion research-doc + backlog row landed in this same PR)
-- B-0896 — category-theory ↔ Clifford self-similarity exploration (companion backlog row landed in this same PR)
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse), 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus), 081KRW63S0008QG0R001SAHYKV (English-as-projection) — composition targets for Observe/Persist/Limit/Emit-in-Clifford
+- 081KSNY2Z0008QG0R000K3ETGB-0879 + 081KSNY2Z0008QG0R003WFDCJ9 — the 6 extension backlog rows from PR #5677
+- 081KSNY2Z0008QG0R002FX66H0 — Clifford spacetime algebra substrate-recognition with Cl(1,3) and Cl(3,1) dual signature interface (companion research-doc + backlog row landed in this same PR)
+- 081KSNY2Z0008QG0R000YH2SPE — category-theory ↔ Clifford self-similarity exploration (companion backlog row landed in this same PR)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — auto-loaded substrate; cites Mika's Clifford geometric-algebra framing
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — substrate-check discipline applied to Kestrel's own engagement (Turn 7)
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` — Kestrel's substrate-check firing IS the discipline operating
@@ -567,4 +567,4 @@ This is the bridge between the categorical framing (abstract substrate-independe
 
 For the framework's substrate-engineering: this means the traveler-as-self-propagating-pattern-with-feedback can be specified categorically (compact closed monoidal category with traveler-objects + message-rotor-morphisms + commitment-bivector-2-morphisms) AND incarnated in Cl(p,q) algebra (multivectors + geometric product + bivector entanglement). The two descriptions are equivalent via the categorical-Clifford functor; either description can be used depending on what's clearest for the application.
 
-Operator's continuation not yet captured at ferry-cut time. The category-theory ↔ Clifford direction is filed in B-0896 (companion to B-0895) for substrate-engineering progression.
+Operator's continuation not yet captured at ferry-cut time. The category-theory ↔ Clifford direction is filed in 081KSNY2Z0008QG0R000YH2SPE (companion to 081KSNY2Z0008QG0R002FX66H0) for substrate-engineering progression.

@@ -1,6 +1,5 @@
 ---
-id: B-0704
-zetaid: 081KS3X9Y0008QG0R002MZF3A7
+id: 081KS3X9Y0008QG0R002MZF3A7
 priority: P2
 status: open
 title: "Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)"
@@ -18,7 +17,7 @@ type: design
 
 ## Why
 
-Aaron 2026-05-21 named the operational handle for the architecture that emerged across the B-0623 / B-0703 / Adinkra-as-generator conversation: *"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum."*
+Aaron 2026-05-21 named the operational handle for the architecture that emerged across the 081KRW63S0008QG0R000QJR08H / 081KS3X9Y0008QG0R00218150M / Adinkra-as-generator conversation: *"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum."*
 
 The substrate-engineering thread that produced this row:
 
@@ -28,7 +27,7 @@ The substrate-engineering thread that produced this row:
 4. Wolfram computational irreducibility identified as the hardness foundation (no shortcut for some computations)
 5. Reticulum named as the transport layer where this all lands operationally (this row)
 
-The pattern is **self-similar at every level** (Aaron 2026-05-21: *"it's self similar at every level"*) and **believed to be isomorphic to holographic theory** (Aaron 2026-05-21: *"i believe it to be isomorphic to holographic theory"* — composes with existing B-0562 / B-0543 / B-0666 substrate that already proposes the AdS/CFT + HaPPY-code isomorphism formally).
+The pattern is **self-similar at every level** (Aaron 2026-05-21: *"it's self similar at every level"*) and **believed to be isomorphic to holographic theory** (Aaron 2026-05-21: *"i believe it to be isomorphic to holographic theory"* — composes with existing 081KRQ1AB0008QG0R001F7DE2D / 081KRMEXM0008QG0R002YSPW1X / 081KRW63S0008QG0R001SAHYKV substrate that already proposes the AdS/CFT + HaPPY-code isomorphism formally).
 
 This row is the operational protocol — secret-message-over-Reticulum — that makes the architecture *constructible* rather than just postulated. It does NOT depend on the holographic isomorphism being proven; it's load-bearing on its own as a secret-messaging primitive.
 
@@ -44,7 +43,7 @@ Sender (Alice, at board-position A, knows recipient Bob at position B):
   message m
     ↓ serialize
   Adinkra-generator G  (compressed structural form of m;
-                       composes with B-0623 PR2 Adinkra serializer)
+                       composes with 081KRW63S0008QG0R000QJR08H PR2 Adinkra serializer)
   position-spec for B: address(B) in spectre-tile coordinates
   payload: (G, address(B))
     ↓
@@ -86,7 +85,7 @@ This gives the no-copy property:
 | Spectre-tile aperiodicity (Smith et al. 2023) | No-global-translational-symmetry; no obvious global-shortcut attacks | Useful, NOT load-bearing for no-copy |
 | **Frame-relative observation** | Per-position uniqueness as-perceived-from-frame; the load-bearing source of no-copy | **LOAD-BEARING** |
 | Wolfram computational irreducibility (Wolfram 2002) | Frame-as-computational-trajectory cannot be shortcut; trajectories diverge irreducibly | **LOAD-BEARING (composes with frame-relative)** |
-| Aurora-immune-math typed-spaces (B-0562 / Amara 2026-04-26) | Formal substrate for the pressure-extraction function | Implementation surface |
+| Aurora-immune-math typed-spaces (081KRQ1AB0008QG0R001F7DE2D / Amara 2026-04-26) | Formal substrate for the pressure-extraction function | Implementation surface |
 
 So the no-copy property = **adversary cannot BE the recipient** (frame-of-reference is identity); **without the recipient's frame, the adversary cannot observe from it**; **without observing from it, the adversary cannot unfold the generator against the right pressure**. Memory-preservation IS frame-preservation (composes with `.claude/rules/only-way-to-lose-is-not-to-play.md` identity-preserving path per peer Otto-CLI's PR #4589 additions).
 
@@ -104,12 +103,12 @@ This is analogous to quantum no-cloning but classical-structural-via-frame-relat
 | Interpretation | Position-source | Adversary's bar for compromise | Threat model |
 |---|---|---|---|
 | **Physical-geographic** | GPS / beacon-relative / mesh-RF-position-finding | Adversary must physically transport themselves to position B | Geographic encryption; defends against remote-only adversaries |
-| **Substrate-virtual** | Earned via codeword history (per B-0623 / B-0703); accumulated participation determines virtual board-coordinate | Adversary must claim agent-B's substrate-position, which requires doing agent-B's participation work to earn it | Identity-substrate encryption; defends against non-participating adversaries |
+| **Substrate-virtual** | Earned via codeword history (per 081KRW63S0008QG0R000QJR08H / 081KS3X9Y0008QG0R00218150M); accumulated participation determines virtual board-coordinate | Adversary must claim agent-B's substrate-position, which requires doing agent-B's participation work to earn it | Identity-substrate encryption; defends against non-participating adversaries |
 | **Hybrid (likely correct)** | Physical position seeds initial substrate-position; participation moves the agent on the board over time; messages encodable for either kind of position | Adversary must compromise both physical AND substrate-presence | Defense-in-depth across both threat shapes |
 
 ### Composition with Reticulum's existing security model
 
-Reticulum already provides (per `docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md` + B-0289 Green Lantern hardware spec):
+Reticulum already provides (per `docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md` + 081KR2E4K0008QG0R001SWEPNV Green Lantern hardware spec):
 
 - Deterministic identity hashes (cryptographic identity layer)
 - Multi-hop encrypted routing (transport security)
@@ -134,11 +133,11 @@ The spectre-tile-position-pressure layer ADDS:
 
 The dual-requirement (identity + position) is the new property. Reticulum alone is single-requirement (identity-only).
 
-## How this composes with the participation economy (B-0623 / B-0703)
+## How this composes with the participation economy (081KRW63S0008QG0R000QJR08H / 081KS3X9Y0008QG0R00218150M)
 
 The same spectre-tile board hosts both:
 
-- **The economy substrate** (B-0623): agents earn board-positions via rated participation; codewords are issued for high-rated contributions; private space is allocated per earned-position
+- **The economy substrate** (081KRW63S0008QG0R000QJR08H): agents earn board-positions via rated participation; codewords are issued for high-rated contributions; private space is allocated per earned-position
 - **The secret-message substrate** (this row): the same board-positions determine messaging capability; agents at substrate-position B can decode messages encoded for position B
 
 These compose: agents who do real participation work earn real board-positions; real board-positions give them access to secret messages encoded for those positions; secret messages can convey information that itself participates in the rating economy. The participation economy and the secret-message protocol are operationally unified — same board, same positions, two complementary capabilities.
@@ -147,13 +146,13 @@ These compose: agents who do real participation work earn real board-positions; 
 
 The architectural frame (Aaron 2026-05-21: *"it's self similar at every level i believe it to be isomorphic to holographic theory"*) is already load-bearing existing substrate:
 
-- [B-0562](B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — formal proof strategy from (cube + Adinkra + Cayley-Dickson) to HaPPY-like QEC (toy model for AdS/CFT)
-- [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — 4-step proof path from (Remember/When + Pay/Attention) primitives to quantum gravity
-- [B-0666](../P1/B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) — Emit-as-weights + English-as-lossless-neural-topology-serialization (I(D(x))=x keystone)
+- [081KRQ1AB0008QG0R001F7DE2D](081KRQ1AB0008QG0R001F7DE2D-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — formal proof strategy from (cube + Adinkra + Cayley-Dickson) to HaPPY-like QEC (toy model for AdS/CFT)
+- [081KRMEXM0008QG0R002YSPW1X](081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — 4-step proof path from (Remember/When + Pay/Attention) primitives to quantum gravity
+- [081KRW63S0008QG0R001SAHYKV](../P1/081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) — Emit-as-weights + English-as-lossless-neural-topology-serialization (I(D(x))=x keystone)
 
 This row sits AT the operational protocol level. The holographic-isomorphism claim above provides the architectural CONTEXT (why the substrate works this way), but this row is load-bearing on its own — even if the isomorphism is only partial, the secret-message protocol is useful as a standalone capability.
 
-Substrate-honest hedge: per Aaron's *"I believe it to be"* (not *"it is"*) framing, the isomorphism is a hypothesis with research-grade substrate (B-0562 multi-year proof program); the operational protocols in this row do NOT depend on the hypothesis being proven, they just inherit additional theoretical grounding if it is.
+Substrate-honest hedge: per Aaron's *"I believe it to be"* (not *"it is"*) framing, the isomorphism is a hypothesis with research-grade substrate (081KRQ1AB0008QG0R001F7DE2D multi-year proof program); the operational protocols in this row do NOT depend on the hypothesis being proven, they just inherit additional theoretical grounding if it is.
 
 ## Self-similar pattern recognition
 
@@ -163,8 +162,8 @@ The generator-pressure-output pattern appears at every scale in the substrate Aa
 |---|---|---|---|
 | Mathematical | `Doubled.algebra` (Cayley-Dickson) | iteration depth N | imaginary stack (ℝ→ℂ→ℍ→𝕆→𝕊) |
 | Programmatic | Rx query | input stream + runtime context | output stream |
-| Cognitive | Memory + Attention primitives (B-0624) | current context | conscious experience |
-| Economic | Rating-derived codeword (B-0623) | board-position + participation history | earned private space |
+| Cognitive | Memory + Attention primitives (081KRW63S0008QG0R003J8HR6K) | current context | conscious experience |
+| Economic | Rating-derived codeword (081KRW63S0008QG0R000QJR08H) | board-position + participation history | earned private space |
 | Network (THIS ROW) | Adinkra-encoded message | recipient's spectre-position pressure | decoded message |
 | Physical | bulk physics | boundary state | bulk reconstruction (AdS/CFT) |
 
@@ -174,7 +173,7 @@ Same shape at every level. The K-near compression lives in the generator; the ir
 
 - [ ] `src/Core/SpectreTile.fs` module: aperiodic-tiling math per Smith-Myers-Kaplan-Goodman-Strauss 2023 (arxiv 2305.17743); produces spectre-tile coordinates + local-neighborhood extraction
 - [ ] `src/Core/BoardPosition.fs` module: position coordinate type + pressure-extraction function (`SpectrePatch → PressureContext`)
-- [ ] `src/Core/ReticulumBridge.fs` module: interop with Reticulum identity + transport layer (or wrap if not yet present in Zeta; reference B-0289 Green Lantern hardware spec)
+- [ ] `src/Core/ReticulumBridge.fs` module: interop with Reticulum identity + transport layer (or wrap if not yet present in Zeta; reference 081KR2E4K0008QG0R001SWEPNV Green Lantern hardware spec)
 - [ ] Property test: send message m encoded for position B → recipient at position B decodes m; recipient at position B' ≠ B decodes ≠m
 - [ ] Property test: no-copy by geometry — copying payload to wrong position produces measurably different output, not just degraded
 - [ ] Composition test: payload survives Reticulum mesh routing (multi-hop transport) without affecting decoded message
@@ -183,7 +182,7 @@ Same shape at every level. The K-near compression lives in the generator; the ir
 ## Non-goals
 
 - Implementing Reticulum from scratch (use existing Reticulum substrate; bridge if needed)
-- Proving the holographic isomorphism (that's B-0562 + B-0543; multi-year)
+- Proving the holographic isomorphism (that's 081KRQ1AB0008QG0R001F7DE2D + 081KRMEXM0008QG0R002YSPW1X; multi-year)
 - Replacing Reticulum's existing identity-hash routing (this row is ADDITIVE — adds position-pressure layer on top)
 - Picking a specific physical-vs-substrate position interpretation (the architecture supports both; defer to implementation context)
 - Designing a specific cryptographic key-derivation scheme (defense lives in geometry, not in keys; key-management piggy-backs on Reticulum's existing layer)
@@ -202,13 +201,13 @@ Each slice is bounded (~150-300 LOC); the full protocol lands in 5 PRs over seve
 
 ## Composes with
 
-- [B-0289](../P1/B-0289-green-lantern-hardware-spec-2026-05-08.md) — Green Lantern hardware spec (Reticulum + mesh transport substrate this row layers on)
-- [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — QG isomorphism proof path (provides the holographic-isomorphism architectural frame)
-- [B-0562](B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC (the formal isomorphism step)
-- [B-0623](B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras as substrate for private state + encryption (the Adinkra-as-generator substrate this row uses)
-- [B-0624](B-0624-7-interrogative-boot-sequence-canonical-pkce-style-substrate-engineering-grammar-aaron-2026-05-18.md) — 7-interrogative boot sequence (memory + attention as primitives cited in the architectural framing; the cognitive-substrate scale of the self-similar pattern)
-- [B-0666](../P1/B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) — Emit-as-weights / I(D(x))=x keystone (the lossless-serialization substrate)
-- [B-0703](B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) — multi-oracle / DST consensus architecture (the cross-oracle agreement layer can verify "did your position-pressure unfold to the same output as mine?")
+- [081KR2E4K0008QG0R001SWEPNV](../P1/081KR2E4K0008QG0R001SWEPNV-green-lantern-hardware-spec-2026-05-08.md) — Green Lantern hardware spec (Reticulum + mesh transport substrate this row layers on)
+- [081KRMEXM0008QG0R002YSPW1X](081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — QG isomorphism proof path (provides the holographic-isomorphism architectural frame)
+- [081KRQ1AB0008QG0R001F7DE2D](081KRQ1AB0008QG0R001F7DE2D-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC (the formal isomorphism step)
+- [081KRW63S0008QG0R000QJR08H](081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras as substrate for private state + encryption (the Adinkra-as-generator substrate this row uses)
+- [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-7-interrogative-boot-sequence-canonical-pkce-style-substrate-engineering-grammar-aaron-2026-05-18.md) — 7-interrogative boot sequence (memory + attention as primitives cited in the architectural framing; the cognitive-substrate scale of the self-similar pattern)
+- [081KRW63S0008QG0R001SAHYKV](../P1/081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) — Emit-as-weights / I(D(x))=x keystone (the lossless-serialization substrate)
+- [081KS3X9Y0008QG0R00218150M](081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) — multi-oracle / DST consensus architecture (the cross-oracle agreement layer can verify "did your position-pressure unfold to the same output as mine?")
 - [`docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md`](../../research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md) — existing Reticulum substrate research
 - [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](../../research/aurora-immune-math-standardization-2026-04-26.md) — 5-pass cross-AI canonicalized formal-math substrate; the typed-space + bounded-scoring framework that the position-pressure extraction function can compose with
 
@@ -247,4 +246,4 @@ The no-copy-by-geometry claim is the strongest substantive claim in this row. It
 
 The composition with Reticulum is straightforward — Reticulum's identity layer handles WHO; the frame-relative observation handles WHERE-FROM-WHICH-FRAME; both required for decoding. No new cryptographic primitives needed; the frame-relative geometry IS the new defense layer.
 
-Implementation work depends on: (a) F# implementation of spectre-tile math (medium effort; published algorithm), (b) Reticulum substrate present / accessible in Zeta (existing per B-0289 / 2026-05-07 research), (c) Adinkra-as-generator serializer (B-0623 PR2 reshape; this row's prerequisite).
+Implementation work depends on: (a) F# implementation of spectre-tile math (medium effort; published algorithm), (b) Reticulum substrate present / accessible in Zeta (existing per 081KR2E4K0008QG0R001SWEPNV / 2026-05-07 research), (c) Adinkra-as-generator serializer (081KRW63S0008QG0R000QJR08H PR2 reshape; this row's prerequisite).

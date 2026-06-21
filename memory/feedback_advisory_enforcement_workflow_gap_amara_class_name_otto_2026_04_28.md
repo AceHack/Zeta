@@ -35,7 +35,7 @@ message.
   --jq '.required_status_checks.contexts'`.
 - Observed: PR #688 + #689 both failed the lint, both
   auto-merged anyway.
-- Filed as: B-0088.
+- Filed as: 081KQ8P5D0008QG0R002FSTGXP.
 
 ## Risk (Amara framing)
 
@@ -137,7 +137,7 @@ In Zeta's `.github/workflows/`, candidates for the same audit:
 - `memory-reference-existence-lint.yml` (likely same shape)
 - `memory-index-duplicate-lint.yml` (likely same shape)
 - `backlog-index-integrity.yml` (likely same shape)
-- `github-settings-drift.yml` (already broken — B-0087;
+- `github-settings-drift.yml` (already broken — 081KQ8P5D0008QG0R000JHD7AB;
   separate failure mode, "workflow startup error", but also
   not in required list either way)
 
@@ -145,8 +145,8 @@ Each should be audited per the procedure above.
 
 ## Composes with
 
-- B-0088 (the concrete-instance backlog row this class names)
-- B-0087 (github-settings-drift — different failure mode but
+- 081KQ8P5D0008QG0R002FSTGXP (the concrete-instance backlog row this class names)
+- 081KQ8P5D0008QG0R000JHD7AB (github-settings-drift — different failure mode but
   same audit family)
 - `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`
   — Workflow Null-Result Audit + Scheduled Workflow

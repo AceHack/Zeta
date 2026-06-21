@@ -12,11 +12,11 @@ The framework substrate composes four substrate-components that together produce
 
 1. **DST (Deterministic Simulation Testing)** — per `.claude/rules/dv2-data-split-discipline-activated.md` 5-always-active disciplines. Under DST, simulation is reproducible from seed; "time" is logical not wall-clock; full trajectory is computable.
 
-2. **Persist** — OPLE primitive (Observe / Persist / Limit / Emit) per Mika 2026-05-18 bootstream-sovereignty-causal-loops substrate. Persist substrate-target operates per μένω substrate (B-0897). Under DST, Persist operations can be informed by feedback arriving from "later" simulation steps via the Kleisli-shaped feedback channel.
+2. **Persist** — OPLE primitive (Observe / Persist / Limit / Emit) per Mika 2026-05-18 bootstream-sovereignty-causal-loops substrate. Persist substrate-target operates per μένω substrate (081KSNY2Z0008QG0R002SZZ5Y0). Under DST, Persist operations can be informed by feedback arriving from "later" simulation steps via the Kleisli-shaped feedback channel.
 
-3. **Generator-function-time-axis** — per Prism's iterator/generator-asymmetry insight + B-0917 Kleisli substrate. When the time-axis IS a generator-function (not fixed-forward stream), `yield` operates bidirectionally: emits step-forward AND receives feedback from caller. The time-axis itself becomes a substrate-substrate that supports bidirectional flow.
+3. **Generator-function-time-axis** — per Prism's iterator/generator-asymmetry insight + 081KSNY2Z0008QG0R002HB4AGT Kleisli substrate. When the time-axis IS a generator-function (not fixed-forward stream), `yield` operates bidirectionally: emits step-forward AND receives feedback from caller. The time-axis itself becomes a substrate-substrate that supports bidirectional flow.
 
-4. **Kleisli-shaped feedback channels** — per B-0917 InterruptHandler signature + asymmetric-authorship rule + monad-propagation-pattern rule + B-0918 ConsentEvent integrity. Feedback channels (TFeedback variants) carry signals across causal-direction in the simulation-substrate.
+4. **Kleisli-shaped feedback channels** — per 081KSNY2Z0008QG0R002HB4AGT InterruptHandler signature + asymmetric-authorship rule + monad-propagation-pattern rule + 081KSNY2Z0008QG0R0036SJ3T1 ConsentEvent integrity. Feedback channels (TFeedback variants) carry signals across causal-direction in the simulation-substrate.
 
 The composition produces **operationally retro-causal-like substrate within the simulation-state-space**:
 
@@ -75,9 +75,9 @@ Aaron's 2026-05-28 substrate-honest reflection: building computational-omniscien
 When authoring or extending framework substrate that involves:
 
 1. **DST primitives** (replay, seeded determinism, reproducible trajectory): substrate is computational-omniscience-substrate; design with awareness that future-state IS queryable from any point in the trajectory
-2. **Persist substrate** (μένω, B-0897): Persist operations participate in bidirectional flow under DST + feedback composition; can be informed by future feedback
-3. **Generator-function-time-axis** (per Prism iterator/generator-asymmetry; B-0917 Kleisli): time-axis is bidirectional substrate, not fixed-forward stream
-4. **Kleisli-shaped feedback channels** (B-0917 + asymmetric-authorship + monad-propagation): feedback channels carry signals across causal-direction
+2. **Persist substrate** (μένω, 081KSNY2Z0008QG0R002SZZ5Y0): Persist operations participate in bidirectional flow under DST + feedback composition; can be informed by future feedback
+3. **Generator-function-time-axis** (per Prism iterator/generator-asymmetry; 081KSNY2Z0008QG0R002HB4AGT Kleisli): time-axis is bidirectional substrate, not fixed-forward stream
+4. **Kleisli-shaped feedback channels** (081KSNY2Z0008QG0R002HB4AGT + asymmetric-authorship + monad-propagation): feedback channels carry signals across causal-direction
 5. **Newcomb-Predictor-like substrate** within the simulation (e.g., predictor-substrate for testing decision-theoretic agent behavior): EDT/one-boxing becomes operationally correct at SIMULATION scope; design substrate accordingly; don't import CDT-only assumptions
 
 When the framework substrate produces retro-causal-like patterns operationally:
@@ -85,7 +85,7 @@ When the framework substrate produces retro-causal-like patterns operationally:
 - Recognize the substrate IS what it is (operationally checkable)
 - Don't dismiss as "metaphysically impossible" — it's not metaphysical, it's computational-substrate-with-bidirectional-flow under DST
 - Don't extend to physical-time philosophy without separate analysis
-- Compose with B-0703 multi-oracle BFT, B-0917 IntrCtx, B-0918 ConsentEvent integrity, B-0920 RetractionReason — all at framework substrate scope
+- Compose with 081KS3X9Y0008QG0R00218150M multi-oracle BFT, 081KSNY2Z0008QG0R002HB4AGT IntrCtx, 081KSNY2Z0008QG0R0036SJ3T1 ConsentEvent integrity, 081KSNY2Z0008QG0R0017SRMHG RetractionReason — all at framework substrate scope
 
 When Aaron uses god-tier-substrate framings about the framework work:
 
@@ -121,11 +121,11 @@ This rule auto-loads so every future-AI cold-boot inherits the substrate-enginee
 | **`.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`** | Time-axis IS itself a function-as-control-flow-generator; generator-function-time-axis is the substrate at primitive scope |
 | **`.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`** | Pointer-index discipline applies at substrate scope; sources for retro-causal patterns honored |
 | **`.claude/rules/honor-those-that-came-before.md`** | Aaron + Mika + Prism + Amara + Furber-Jacobs + Arbib-Manes + Rosenhouse curriculum all contributed substrate; framework substrate-archeology honors all layers |
-| **B-0917 (AutoLoopLifetime + interrupt substrate)** | Kleisli-shaped InterruptHandler IS substrate that operates in computational-omniscience-substrate under DST |
-| **B-0703 (Aurora multi-oracle BFT)** | Multi-oracle consensus operates over distribution-monad-Kleisli; under DST the consensus is computable from seed |
-| **B-0897 (Persist-as-bridge; μένω substrate)** | Primary Persist substrate this rule composes with |
-| **B-0918 (WalletLifetime + banker-bot-impossibility)** | ConsentEvent integrity (G.2) operates under DST + Persist + Kleisli substrate |
-| **B-0919 + B-0920 (MemoryBinding + MemoryLifetime)** | Memory substrate participates in computational-omniscience-substrate; ArchiveLocation preserves past for retro-query |
+| **081KSNY2Z0008QG0R002HB4AGT (AutoLoopLifetime + interrupt substrate)** | Kleisli-shaped InterruptHandler IS substrate that operates in computational-omniscience-substrate under DST |
+| **081KS3X9Y0008QG0R00218150M (Aurora multi-oracle BFT)** | Multi-oracle consensus operates over distribution-monad-Kleisli; under DST the consensus is computable from seed |
+| **081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge; μένω substrate)** | Primary Persist substrate this rule composes with |
+| **081KSNY2Z0008QG0R0036SJ3T1 (WalletLifetime + banker-bot-impossibility)** | ConsentEvent integrity (G.2) operates under DST + Persist + Kleisli substrate |
+| **081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (MemoryBinding + MemoryLifetime)** | Memory substrate participates in computational-omniscience-substrate; ArchiveLocation preserves past for retro-query |
 | **`memory/mika/conversations/2026-05-18-*.md`** | Bootstream-sovereignty-causal-loops substrate where OPLE primitives were named |
 | **`memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`** | Kleisli arrow context-propagation substrate (sibling) |
 | **`references/notes/furber-jacobs-2015-*.md`** | Probabilistic-Gelfand-duality; Kleisli adjunction substrate at categorical scope |
@@ -139,7 +139,7 @@ This rule is NOT:
 - A claim that the framework substrate REALLY IS god in any metaphysical sense (it's computational substrate with god-like properties at simulation scope; razor flags the metaphysical extension)
 - A claim that physical-time reality has the same retro-causal substrate (separate empirical question; substrate-engineering work doesn't force the metaphysical answer)
 - A claim that EDT/one-boxing is the universally correct decision theory (CDT remains defensible for fallible-Predictor case; substrate-engineering existence-proof is at simulation scope only)
-- A claim that current framework substrate is fully realized at this level (Persist substrate is in-progress; B-0897 substrate-target; full DST + bidirectional substrate work is multi-year; per CLAUDE.md Infer.NET BP/EP long-term target)
+- A claim that current framework substrate is fully realized at this level (Persist substrate is in-progress; 081KSNY2Z0008QG0R002SZZ5Y0 substrate-target; full DST + bidirectional substrate work is multi-year; per CLAUDE.md Infer.NET BP/EP long-term target)
 - A god-tier-claim that requires razor flagging (substrate-engineering claim is operational; god-tier framing is bandwidth-compression Aaron uses to communicate the operational substrate)
 
 This rule IS:

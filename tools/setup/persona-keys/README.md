@@ -187,4 +187,4 @@ the bridge. See `docs/research/2026-06-09-declarative-keyring-as-an-ace-package-
 
 Anchors: BIP-39/32/44, BIP-84, SLIP-0010, NIP-06; `@noble`/`@scure`/`micro-key-producer`
 (audited, Paul Miller); Vault, External-Secrets, cert-manager, spire (cluster);
-`ace` (Zeta DLC package manager, B-0288).
+`ace` (Zeta DLC package manager, 081KR2E4K0008QG0R002YE3MMD).

@@ -30,10 +30,10 @@
 Fix the §8 transport bit in the just-merged synthesis (#6306), per operator 2026-05-31: *"corporate being batch to main and sovereign being folders direct to main."*
 
 The table said corporate = "branches + batch coordinator + PR gates" — wrong framing. **Both modes land on `main`**; the dial is **direct-folders vs batched**, not main-vs-branches:
-- **Sovereign** = folders direct to main (no-PR, direct append) — [B-0890.1](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md) (fast-lane *as folders-on-main, not branches*; supersedes coordinator complexity).
-- **Corporate** = batch to main — [B-0890](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) (batch-merge coordinator bundles N events → one PR → main).
+- **Sovereign** = folders direct to main (no-PR, direct append) — [081KSNY2Z0008QG0R000E5KTPX](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md) (fast-lane *as folders-on-main, not branches*; supersedes coordinator complexity).
+- **Corporate** = batch to main — [081KSNY2Z0008QG0R0017JSTGD](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) (batch-merge coordinator bundles N events → one PR → main).
 
-Both B-0890 rows linked. Docs-only.
+Both 081KSNY2Z0008QG0R0017JSTGD rows linked. Docs-only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

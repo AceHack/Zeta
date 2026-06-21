@@ -1,6 +1,6 @@
 ---
 name: external-reviewer known-bad-advice classes — check OUR rules before applying ANY external-reviewer suggestion
-description: Otto-292 substrate-discipline rule — when an external reviewer (Copilot, Codex, Sonar, Meziantou, Gemini Code Assist, etc.) suggests a change, do NOT apply blindly; FIRST check whether the suggestion contradicts a Zeta rule (especially history-surface carve-outs, F#-first language fit, Result-over-exception, retraction-native, public-API conservatism, append-only-history). When the suggestion contradicts our rule, REPLY with the Zeta rule citation and resolve the thread without applying. Aaron Otto-292 2026-04-25 after I stripped names from `docs/backlog/P2/B-0004` per Copilot suggestion despite Otto-279 history-surface rule. Two-layer strategy — (1) reduce reviewer error rate by surfacing carve-outs in `.github/copilot-instructions.md` so reviewer sees them inline; (2) catch what slips through with a "check OUR rules first" pre-apply discipline + a known-bad-advice class catalog.
+description: Otto-292 substrate-discipline rule — when an external reviewer (Copilot, Codex, Sonar, Meziantou, Gemini Code Assist, etc.) suggests a change, do NOT apply blindly; FIRST check whether the suggestion contradicts a Zeta rule (especially history-surface carve-outs, F#-first language fit, Result-over-exception, retraction-native, public-API conservatism, append-only-history). When the suggestion contradicts our rule, REPLY with the Zeta rule citation and resolve the thread without applying. Aaron Otto-292 2026-04-25 after I stripped names from `docs/backlog/P2/081KQ0YZ80008QG0R002HWBHKJ` per Copilot suggestion despite Otto-279 history-surface rule. Two-layer strategy — (1) reduce reviewer error rate by surfacing carve-outs in `.github/copilot-instructions.md` so reviewer sees them inline; (2) catch what slips through with a "check OUR rules first" pre-apply discipline + a known-bad-advice class catalog.
 type: feedback
 ---
 
@@ -43,7 +43,7 @@ the Zeta rule, resolve the thread, do not apply**.
 - I stripped `Aaron` name attribution from a
   `docs/backlog/**` row (the i18n / l10n / g11n / a11y
   translation row, landing in a sibling PR — once that PR
-  merges, the path will be `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)
+  merges, the path will be `docs/backlog/P2/081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md`)
   per a Copilot review thread, despite Otto-279
   (`memory/feedback_research_counts_as_history_first_name_attribution_for_humans_and_agents_otto_279_2026_04_24.md`)
   explicitly authorizing first-name attribution on

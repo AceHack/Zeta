@@ -1,19 +1,18 @@
 ---
-id: B-0676
-zetaid: 081KS1AX70008QG0R001Y9EN85
+id: 081KS1AX70008QG0R001Y9EN85
 status: open
 priority: P2
-title: B-0620 slice 4 consolidator script
+title: 081KRQ1AB0008QG0R0000AMJ5S slice 4 consolidator script
 created: 2026-05-20
 last_updated: 2026-05-20
 type: feature
 ---
 
-# B-0676: B-0620 slice 4 consolidator script
+# 081KS1AX70008QG0R001Y9EN85: 081KRQ1AB0008QG0R0000AMJ5S slice 4 consolidator script
 
 ## Scope
 
-Implement the central consolidator script (`tools/inventory/consolidate.ts`) that merges outputs from N different vendor adapters into a single unified inventory file. This slice creates the `tools/inventory/` directory if it does not already exist; `tools/inventory/consolidate.ts` is the planned entrypoint. This preserves the B-0620 slice 4 decomposition while using a numeric backlog id compatible with autonomous claim bootstrap tooling.
+Implement the central consolidator script (`tools/inventory/consolidate.ts`) that merges outputs from N different vendor adapters into a single unified inventory file. This slice creates the `tools/inventory/` directory if it does not already exist; `tools/inventory/consolidate.ts` is the planned entrypoint. This preserves the 081KRQ1AB0008QG0R0000AMJ5S slice 4 decomposition while using a numeric backlog id compatible with autonomous claim bootstrap tooling.
 
 ## Output categories
 

@@ -1,6 +1,5 @@
 ---
-id: B-0437
-zetaid: 081KRFA460008QG0R001JTAPZW
+id: 081KRFA460008QG0R001JTAPZW
 priority: P1
 status: closed
 title: "Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)"
@@ -14,7 +13,7 @@ tags: [demo, ux-of-math, bivector, clifford, alignment-ui, github-pages, html, j
 type: feature
 ---
 
-# B-0437 — UX-of-math panel
+# 081KRFA460008QG0R001JTAPZW — UX-of-math panel
 
 ## What
 
@@ -31,7 +30,7 @@ Clifford/HKT substrate legible as an alignment-signal surface.
 
 ## Blocked on
 
-None; depends on B-0434 CSS/JS scaffolding (already shipped).
+None; depends on 081KRFA460008QG0R0005DWKBG CSS/JS scaffolding (already shipped).
 
 ## Slice history
 
@@ -39,4 +38,4 @@ None; depends on B-0434 CSS/JS scaffolding (already shipped).
 |-------|----|--------------|
 | 1 | #3136 | Static bivector fingerprint canvas (HC-1 worked example) + partial-credit score board |
 | 2 | #3137 | Non-orthogonal bivector slider — sin(θ) weight visualisation |
-| 3 | — | Clickable score board rows → any clause's fingerprint loads in canvas; closes B-0437 |
+| 3 | — | Clickable score board rows → any clause's fingerprint loads in canvas; closes 081KRFA460008QG0R001JTAPZW |

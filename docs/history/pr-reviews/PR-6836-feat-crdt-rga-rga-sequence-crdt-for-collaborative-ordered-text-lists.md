@@ -30,7 +30,7 @@
 ## What — the remaining hard CRDT (`081KTH4Q782`)
 **`Rga<'T>`** — the sequence/list CRDT (collaborative ordered text/lists): unique-id elements `(lamport, replica)`, `After`-anchor, tombstone `Remove`; **`ToList`** flattens the causal tree with **siblings ordered by id DESCENDING** (the standard RGA rule → concurrent inserts **converge** deterministically); **`Merge`** = union by id + OR tombstones → commutative + associative + idempotent. `ToList` is pure in the element set ⇒ equal sets ⇒ equal sequences ⇒ convergence.
 
-Bug fixed in dev: F# `option` `None` is `null` at runtime and can't be a `Dictionary` key → head children (`After=None`) tracked via a separate roots list. Keys ordinal (B-0969-clean).
+Bug fixed in dev: F# `option` `None` is `null` at runtime and can't be a `Dictionary` key → head children (`After=None`) tracked via a separate roots list. Keys ordinal (081KT07NV0008QG0R001YDB73K-clean).
 
 ## Test
 `dotnet test … --filter RgaTests` → **4 passed**: sequential+tombstone, concurrent-insert convergence (same both merge orders), idempotent+associative, contiguous-run anchoring.

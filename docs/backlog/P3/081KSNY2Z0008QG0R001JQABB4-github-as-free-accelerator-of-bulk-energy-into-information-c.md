@@ -1,6 +1,5 @@
 ---
-id: B-0904
-zetaid: 081KSNY2Z0008QG0R001JQABB4
+id: 081KSNY2Z0008QG0R001JQABB4
 priority: P3
 status: open
 title: GitHub as free accelerator of bulk-energy into information-compression — substrate-recognition + measurement
@@ -29,7 +28,7 @@ related_skills:
 tags: [github-as-free-accelerator-of-bulk-energy-into-information-compression, microsoft-subsidized-infrastructure-zero-direct-cost, pr-as-compression-checkpoint, review-as-compression-feedback, merge-as-boundary-survival, ci-as-mechanical-compression-gate, actions-as-compute-substrate, economic-substrate-underneath-the-arc]
 ---
 
-# B-0904 — GitHub as free accelerator of bulk-energy into information-compression
+# 081KSNY2Z0008QG0R001JQABB4 — GitHub as free accelerator of bulk-energy into information-compression
 
 ## Context
 
@@ -92,7 +91,7 @@ Quantify the GitHub-subsidy value at the framework's scale:
 - How does this compare to other AI-substrate-engineering infrastructure (e.g., self-hosted GitLab + self-hosted CI runners + self-hosted artifact storage)?
 - What's the substrate-engineering implication if GitHub's free tier changes (e.g., Microsoft policy shift)?
 
-Composes with B-0905 (Landauer-limit physics-economics model) — Phase 3 of this row + B-0905 together IS the full physics-economics picture: GitHub-subsidy operates ABOVE the Landauer physical floor; Phase 3 quantifies the GitHub-subsidy value; B-0905 quantifies the Landauer-floor.
+Composes with 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics model) — Phase 3 of this row + 081KSNY2Z0008QG0R002R0M026 together IS the full physics-economics picture: GitHub-subsidy operates ABOVE the Landauer physical floor; Phase 3 quantifies the GitHub-subsidy value; 081KSNY2Z0008QG0R002R0M026 quantifies the Landauer-floor.
 
 ### Phase 4+ (yes-and backlog)
 
@@ -103,15 +102,15 @@ Composes with B-0905 (Landauer-limit physics-economics model) — Phase 3 of thi
 ## Acceptance
 
 - [x] Research-doc landed (companion file in this PR)
-- [x] B-0904 row filed (this row)
+- [x] 081KSNY2Z0008QG0R001JQABB4 row filed (this row)
 - [ ] Phase 2 compression-rate measurement tool implemented + tested
 - [ ] Phase 3 economic-substrate analysis research-doc landed
 - [ ] Phase 4+ acceptance per item
 
 ## Composes with
 
-- B-0901 / B-0902 / B-0903 — all benefit from GitHub-subsidy
-- B-0905 (Landauer-limit physics-economics model) — sibling row; together IS the full picture
+- 081KSNY2Z0008QG0R000C5NN8N / 081KSNY2Z0008QG0R0021S5F3G / 081KSNY2Z0008QG0R0037AF1AP — all benefit from GitHub-subsidy
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics model) — sibling row; together IS the full picture
 - existing GitHub-related rules + skills
 
 ## Composes with rules + skills

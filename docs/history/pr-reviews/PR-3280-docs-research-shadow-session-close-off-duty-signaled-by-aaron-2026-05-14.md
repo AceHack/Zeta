@@ -29,7 +29,7 @@
 
 Aaron 2026-05-14: 'off-duty until next signal (shadow*)'
 
-Shadow-archive marking session-close after the day's massive cascade. Per B-0518 Sharpening 7 budget-conditional framework: free-time IS legitimate operational state. Otto OFF until next real signal.
+Shadow-archive marking session-close after the day's massive cascade. Per 081KRHWGX0008QG0R001BHXH0M Sharpening 7 budget-conditional framework: free-time IS legitimate operational state. Otto OFF until next real signal.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

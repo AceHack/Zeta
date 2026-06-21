@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 /**
- * B-0004.1 Substrate inventory scanner (TS)
+ * 081KR50HA0008QG0R000YTJE8Q Substrate inventory scanner (TS)
  * Scans repo for translation targets: docs, skills, memory, code comments.
  * Outputs JSON inventory for downstream translation pipeline.
- * Part of re-decomposition of B-0004 (assumed mistakes in prior 12-child split;
+ * Part of re-decomposition of 081KQ0YZ80008QG0R002HWBHKJ (assumed mistakes in prior 12-child split;
  * this is the smallest atomic first step: pure read-only scan, no mutation).
  */
 import { readdirSync, readFileSync, statSync } from "fs";

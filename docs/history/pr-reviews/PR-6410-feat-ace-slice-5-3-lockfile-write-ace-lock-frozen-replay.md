@@ -27,7 +27,7 @@
 
 ## Description
 
-Slice 5.3 of the Ace DLC package manager (B-0288), building on 5.1 (#6369) + 5.2 (#6388/#6391). Implements the spec merged in #6400. Subagent-driven build (7 TDD tasks + 3 review-fix rounds).
+Slice 5.3 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD), building on 5.1 (#6369) + 5.2 (#6388/#6391). Implements the spec merged in #6400. Subagent-driven build (7 TDD tasks + 3 review-fix rounds).
 
 ## What this adds
 - **`tools/ace/lockfile.ts`** (new, pure): `Lockfile`/`LockNode` types, `buildLockfile(root, order, registry)` (full pin: name+version+url+package_hash per node, inline-edge-first url precedence, root excluded), `serializeLockfile` (canonical JSON), `parseLockfile` (total — malformed → `{error}`, never throws), `verifyRootMatchesLock` (drift gate).
@@ -45,7 +45,7 @@ cargo-style write + opt-in `--frozen` read · `./ace.lock` in CWD + `--lockfile`
 ## Review trail
 Three review rounds during the build: lockfile.ts module review (P2 test gap fixed), ace.ts integration review (untrusted-signature frozen test added + de-shadow), final holistic review (frozen two-pass atomicity + store-collision parity + SKILL flags). All false-green-sanity-checked.
 
-Deferred enhancements tracked in B-0973 (`ace update`), B-0974 (`--locked` mode), B-0975 (lockfile ergonomics) — filed with the spec.
+Deferred enhancements tracked in 081KT07NV0008QG0R002GV3MXW (`ace update`), 081KT07NV0008QG0R0028AAV0E (`--locked` mode), 081KT07NV0008QG0R003VDHWWG (lockfile ergonomics) — filed with the spec.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

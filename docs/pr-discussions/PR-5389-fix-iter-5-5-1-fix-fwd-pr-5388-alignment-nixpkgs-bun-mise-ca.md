@@ -36,7 +36,7 @@ PR #5388 added \`bun\` via nixpkgs systemPackages on cluster nodes — DRIFTED f
 
 ## Composes with
 
-- [B-0824](docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) (Ace package-manager-of-package-managers — extending install.sh's three-way-parity to NixOS IS Ace at today's bash-glue layer)
+- [081KSGS9H0008QG0R0031PBNGA](docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) (Ace package-manager-of-package-managers — extending install.sh's three-way-parity to NixOS IS Ace at today's bash-glue layer)
 - PR #5388 (iter-5.5.0 substrate this fix-fwds)
 - \`.mise.toml\` (canonical runtime pins at repo root)
 - GOVERNANCE §24 (three-way parity — dev/CI/devcontainer; now extended to NixOS cluster)

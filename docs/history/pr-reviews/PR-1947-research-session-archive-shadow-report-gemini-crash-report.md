@@ -212,7 +212,7 @@ Three files archiving the 2026-05-07 40+ hour session:
    context/attention level.
 
 3. Tick shard 1730Z: session-level archive capturing
-   red team, B-0140, shadow log, ASA trig check.
+   red team, 081KQGDBJ0008QG0R0022EW5ZE, shadow log, ASA trig check.
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```

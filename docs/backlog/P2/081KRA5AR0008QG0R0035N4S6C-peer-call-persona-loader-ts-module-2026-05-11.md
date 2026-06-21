@@ -1,9 +1,8 @@
 ---
-id: B-0410
-zetaid: 081KRA5AR0008QG0R0035N4S6C
+id: 081KRA5AR0008QG0R0035N4S6C
 priority: P2
 status: open
-title: Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)
+title: Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (081KQDTYV0008QG0R001VJP216 child)
 parent: 081KQDTYV0008QG0R001VJP216
 tier: factory-tooling
 effort: S
@@ -19,14 +18,14 @@ composes_with:
 tags: [riven-2026-05-11, peer-call, ts-first, module-extract]
 type: implementation
 decomposition: atomic
-classification: blocked-on-B-0409
+classification: blocked-on-081KRA5AR0008QG0R000Y6102S
 ---
 
-# B-0410 — Peer-call persona-loader.ts (shared module)
+# 081KRA5AR0008QG0R0035N4S6C — Peer-call persona-loader.ts (shared module)
 
 ## Source
 
-Depends on B-0409 survey. Extracts the duplicated persona load into single source of truth so flag impl is 3 lines.
+Depends on 081KRA5AR0008QG0R000Y6102S survey. Extracts the duplicated persona load into single source of truth so flag impl is 3 lines.
 
 ## What
 

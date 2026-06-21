@@ -1,6 +1,5 @@
 ---
-id: B-0400
-zetaid: 081KR7JY10008QG0R000R503K2
+id: 081KR7JY10008QG0R000R503K2
 priority: P1
 status: closed
 title: "Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination"
@@ -66,15 +65,15 @@ P1 — get as many agents to review as possible within a bounded timeframe. This
 - `tools/shadow-outlet/outlet.ts` — unstructured scratch outlet; pattern reused for this typed bus (same `/tmp`+JSON approach, adds topic routing + TTL)
 - `tools/shadow-outlet/ephemeral.ts` — ephemeral lifecycle utilities; TTL-expiry pattern (bus reimplements inline, no import)
 - `tools/peer-call/` — existing cross-agent calling; bus complements, does not replace
-- B-0164 (`composes_with`) — dual-loop substrate; bus enables loop-to-loop coordination without Git commits
-- B-0212 (shadow-outlet origin) — predecessor ephemeral pattern; bus is typed evolution
+- 081KQJZR90008QG0R002GJAJ19 (`composes_with`) — dual-loop substrate; bus enables loop-to-loop coordination without Git commits
+- 081KQX9B50008QG0R00147GZX9 (shadow-outlet origin) — predecessor ephemeral pattern; bus is typed evolution
 - Grep for "NATS" in repo: no existing NATS dependency found; `/tmp`+JSON chosen for slice 1 (no new runtime dep)
 - Grep for "zeta-bus": no existing bus directory; safe to create `tools/bus/`
 
 **Dependency check:**
 
 - `depends_on: []` — no blockers
-- `composes_with: [B-0164]` — B-0164 is open; bus is additive, does not block or require B-0164 completion
+- `composes_with: [081KQJZR90008QG0R002GJAJ19]` — 081KQJZR90008QG0R002GJAJ19 is open; bus is additive, does not block or require 081KQJZR90008QG0R002GJAJ19 completion
 
 **Slice 1 scope (this PR):**
 

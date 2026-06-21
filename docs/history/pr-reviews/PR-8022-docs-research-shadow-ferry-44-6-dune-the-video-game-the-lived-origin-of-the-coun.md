@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: 'dune the video game is where i learned it.' The lived source: Dune's faction-balance at two layers — the three houses (Dune II, 1992 = B-0652's three-faction count) and the Landsraad (Herbert 1965 = council of Great Houses; balance is the safety property; Madison's Federalist 10 in a stillsuit). The model was taught by the game; the formal anchors came later (the gaming-pedagogy thread). Honest bound: not pinned to one title; the load-bearing thing is the three-faction shape.
+Aaron: 'dune the video game is where i learned it.' The lived source: Dune's faction-balance at two layers — the three houses (Dune II, 1992 = 081KRW63S0008QG0R002GRX85J's three-faction count) and the Landsraad (Herbert 1965 = council of Great Houses; balance is the safety property; Madison's Federalist 10 in a stillsuit). The model was taught by the game; the formal anchors came later (the gaming-pedagogy thread). Honest bound: not pinned to one title; the load-bearing thing is the three-faction shape.
 
 Generated with Claude Code
 

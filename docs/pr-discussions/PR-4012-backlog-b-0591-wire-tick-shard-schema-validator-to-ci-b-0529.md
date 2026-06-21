@@ -1,6 +1,6 @@
 ---
 pr_number: 4012
-title: "backlog(B-0591): wire tick-shard schema validator to CI (B-0529 Later item)"
+title: "backlog(081KRSKQ20008QG0R0019RXMSD): wire tick-shard schema validator to CI (081KRMEXM0008QG0R002HBY56V Later item)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T01:41:35Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-17T02:12:14Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4012: backlog(B-0591): wire tick-shard schema validator to CI (B-0529 Later item)
+# PR #4012: backlog(081KRSKQ20008QG0R0019RXMSD): wire tick-shard schema validator to CI (081KRMEXM0008QG0R002HBY56V Later item)
 
 ## PR description
 
 ## Summary
 
-Files [B-0591](docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md) as the explicit decomposition of [B-0529](docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)'s **"Later (separate row)"** Recommendation.
+Files [081KRSKQ20008QG0R0019RXMSD](docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md) as the explicit decomposition of [081KRMEXM0008QG0R002HBY56V](docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)'s **"Later (separate row)"** Recommendation.
 
 Two slices documented:
 
@@ -27,7 +27,7 @@ Two slices documented:
 
 ## Composes with
 
-- [`docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`](docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md) (parent)
+- [`docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`](docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md) (parent)
 - [`tools/hygiene/check-tick-history-shard-schema.ts`](tools/hygiene/check-tick-history-shard-schema.ts) (validator to wire)
 - [`tools/hygiene/add-pipe-row-header.ts`](tools/hygiene/add-pipe-row-header.ts) (retrofit tool from [PR #3990](https://github.com/Lucent-Financial-Group/Zeta/pull/3990))
 - [`docs/hygiene-history/ticks/README.md`](docs/hygiene-history/ticks/README.md) (schema docs from [PR #4004](https://github.com/Lucent-Financial-Group/Zeta/pull/4004))
@@ -47,46 +47,46 @@ Two slices documented:
 
 ## Pull request overview
 
-Adds a new P3 backlog row decomposing B-0529’s later CI-wiring recommendation for the tick-shard schema validator.
+Adds a new P3 backlog row decomposing 081KRMEXM0008QG0R002HBY56V’s later CI-wiring recommendation for the tick-shard schema validator.
 
 **Changes:**
-- Adds B-0591 with frontmatter and context tying the work to B-0529.
+- Adds 081KRSKQ20008QG0R0019RXMSD with frontmatter and context tying the work to 081KRMEXM0008QG0R002HBY56V.
 - Defines acceptance criteria for advisory CI wiring and future required-check promotion.
 - Cross-links the validator, retrofit tool, target workflow, and shard schema docs.
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md:8 (unresolved)
+### Thread 1: docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md:8 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:47:17Z):
 
-`depends_on` is a hard prerequisite in the backlog tooling and only unblocks when the referenced row is closed; B-0529 is currently `status: open`. Since this row is the child slice for B-0529's "Later" recommendation, this makes B-0591 ineligible for autonomous pickup until the parent closes, while parent closure may depend on this child. Use a non-blocking graph edge (or close/update the parent) instead of `depends_on` here.
+`depends_on` is a hard prerequisite in the backlog tooling and only unblocks when the referenced row is closed; 081KRMEXM0008QG0R002HBY56V is currently `status: open`. Since this row is the child slice for 081KRMEXM0008QG0R002HBY56V's "Later" recommendation, this makes 081KRSKQ20008QG0R0019RXMSD ineligible for autonomous pickup until the parent closes, while parent closure may depend on this child. Use a non-blocking graph edge (or close/update the parent) instead of `depends_on` here.
 
-### Thread 2: docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md:43 (unresolved)
+### Thread 2: docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md:43 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:47:18Z):
 
 This glob should include a slash before the filename pattern (for example, `docs/hygiene-history/ticks/**/*.md`). As written, `**.md` does not reliably match the nested shard files under `YYYY/MM/DD/HHMMZ.md`, so implementing the acceptance literally could leave the advisory validator job skipped for the files it is meant to watch.
 
-### Thread 3: docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md:2 (unresolved)
+### Thread 3: docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md:2 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:47:18Z):
 
-Adding this per-row backlog file also requires regenerating `docs/BACKLOG.md`; the current generated index does not include B-0591, and `backlog-index-integrity.yml` runs `tools/backlog/generate-index.ts --check` when `docs/BACKLOG.md` is generated. This PR will fail that check until the generated index is updated in the same change.
+Adding this per-row backlog file also requires regenerating `docs/BACKLOG.md`; the current generated index does not include 081KRSKQ20008QG0R0019RXMSD, and `backlog-index-integrity.yml` runs `tools/backlog/generate-index.ts --check` when `docs/BACKLOG.md` is generated. This PR will fail that check until the generated index is updated in the same change.
 
-### Thread 4: docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md:44 (unresolved)
+### Thread 4: docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md:44 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:47:18Z):
 
-This unchecked acceptance item is for a future “separate row,” so keeping it under B-0591’s acceptance criteria makes this supposedly atomic Slice 1 row look unclosable until the future required-check promotion lands. Move the Slice 2 implementation requirement to “Not in scope”/follow-up tracking, or make this row explicitly own both slices.
+This unchecked acceptance item is for a future “separate row,” so keeping it under 081KRSKQ20008QG0R0019RXMSD’s acceptance criteria makes this supposedly atomic Slice 1 row look unclosable until the future required-check promotion lands. Move the Slice 2 implementation requirement to “Not in scope”/follow-up tracking, or make this row explicitly own both slices.
 
-### Thread 5: docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md:62 (unresolved)
+### Thread 5: docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md:62 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:47:18Z):
 
 This claims the shard README has already been updated by PR #4004, but the current `docs/hygiene-history/ticks/README.md` still documents only the required first-line pipe row and contains no hybrid/H1-body or `add-pipe-row-header.ts` reference. Either include/merge that README update before this row, or rephrase this as pending work so the backlog row does not point at substrate that is not present in this branch.
 
-### Thread 6: docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md:37 (unresolved)
+### Thread 6: docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md:37 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:47:18Z):
 

@@ -1,6 +1,5 @@
 ---
-id: B-0009
-zetaid: 081KQ0YZ80008QG0R0000HSTWD
+id: 081KQ0YZ80008QG0R0000HSTWD
 priority: P3
 status: open
 title: Substrate-controlled visible IP — bypass non-account-bound rate limits responsibly across deployment surfaces (own up to it, don't hide the framing)
@@ -70,7 +69,7 @@ Aaron 2026-04-25 follow-up: *"if we need to use Tor in the beginning that's fine
 
 Tor is **permitted as expedient first-implementation** if multi-node natural-egress (Otto-316 / Otto-317 / Otto-318) and RNS Destination Hash addressing (Otto-319) prove insufficient for early IP-rotation needs. Tor's protocol-quality concerns (slowness, exit-node attribution issues, anonymization-vs-expression friction) are real but acceptable at the bootstrap stage where capability matters more than protocol-elegance.
 
-Long-term: when Tor is used, the replacement is owed — see B-0013 (proper-protocol-better-than-Tor).
+Long-term: when Tor is used, the replacement is owed — see 081KQ0YZ80008QG0R000J7N7YT (proper-protocol-better-than-Tor).
 
 Otto-311 economic-substrate framing applied: Tor is the brute-force-store-energy primitive; the proper-protocol-replacement is the elegant-store. Start with brute-force-Tor to get the capability live; store the operational-evidence energy into the proper-replacement substrate.
 

@@ -24,7 +24,7 @@ The collation treaty already has shipped substrate and prior research (surfaced 
   ordinal** (codepoint ≡ UTF-8 byte order; the DB `*_bin`/`C` collation), chosen because it is (i) identically
   supportable across all four oracles and (ii) familiar to DB people. **Other collations (case-insensitive,
   invariant) are opt-in catalog entries, never the silent default.** The collation is **part of a value's identity**
-  (B-0969 strategy a). This already answers Aaron's doubt: the model is **parameterized** (a catalog), with binary
+  (081KT07NV0008QG0R001YDB73K strategy a). This already answers Aaron's doubt: the model is **parameterized** (a catalog), with binary
   as the *seed*, not a single global decree.
 - `docs/research/2026-06-07-collation-as-sql-server-parameterized-model-with-application-levels-stable-binary-seed-…`
   — the parameterized-model + application-levels + stable-binary-seed design.

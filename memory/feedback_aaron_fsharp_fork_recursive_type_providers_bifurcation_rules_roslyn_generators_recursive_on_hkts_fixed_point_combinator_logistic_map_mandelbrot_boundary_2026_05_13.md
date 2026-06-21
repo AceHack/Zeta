@@ -298,7 +298,7 @@ Docker + Postgres + DuckDB + F# locally; Zeta ships with
 mapped skills (per PR #2933 Zeta-ships-with-skills); F#
 crystallization (Path A) is multi-year work.
 
-### B-0428 (DBpedia + F# fork)
+### 081KRFA460008QG0R0018SN61J (DBpedia + F# fork)
 
 Path A (deferred type-provider work) now has TWO layers of
 recursive substrate:
@@ -309,7 +309,7 @@ recursive substrate:
 
 ## Operational implications
 
-### For B-0428 Path A execution
+### For 081KRFA460008QG0R0018SN61J Path A execution
 
 Future Path A scope expands to:
 
@@ -430,10 +430,10 @@ Per Google Search AI's follow-up questions (Aaron decides):
 - PR #2933 (Zeta ships with skills — recursive type generation
   ships as skills before F# fork crystallization)
 - PR #2932 (0424Z tick shard)
-- B-0428 (DBpedia + F# fork — Path A scope expands)
-- B-0429 (persona mapping — recursive HKT serves formal-
+- 081KRFA460008QG0R0018SN61J (DBpedia + F# fork — Path A scope expands)
+- 081KRFA460008QG0R002M05EY1 (persona mapping — recursive HKT serves formal-
   verification persona)
-- B-0043 (universal-business-templates — recursive HKT
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates — recursive HKT
   generates business-template ontologies)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
 - `.claude/rules/dv2-data-split-discipline-activated.md`

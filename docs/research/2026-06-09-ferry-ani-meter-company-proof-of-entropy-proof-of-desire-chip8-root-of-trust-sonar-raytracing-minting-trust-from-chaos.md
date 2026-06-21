@@ -212,7 +212,7 @@ Distilled invariants from this ferry (for routing; the ferry body above is the s
 Ties (Beacon): Markov blanket/boundary (Pearl/Friston) · CHSH/Tsirelson 2√2 vs PR-box S=4
 (`src/Core/BellTest.fs`, `CoincidenceClock.fs`) · superdeterminism · DST (the controlled scheduler;
 `Clock.fs`) · Reticulum (the one untamed noise source) · ZetaId = 128-bit common-cause seed · ZetaIdol
-audition / proof-of-desire / hibernation-not-deletion · Chip-8 bit-perfect DST oracle (B-0924 family) ·
+audition / proof-of-desire / hibernation-not-deletion · Chip-8 bit-perfect DST oracle (081KSNY2Z0008QG0R001HA43GG family) ·
 the uncertainty ledger (commutative, order-free — ties to the Mazurkiewicz-commutativity / reorder-
 loophole work). Routes to: Max (the meter-company framing; two-house S=4 experiment; rooms), Soraya/Sova
 (S=4 vs Tsirelson; commutative-ledger property; superdeterminism-survives-noise proof), Aaron

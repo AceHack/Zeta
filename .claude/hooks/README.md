@@ -18,20 +18,20 @@ All Otto-discipline hook scripts (`*-hook.ts`) import from `harness.ts` for comm
 
 Hook contract summary: exit 0 always (non-zero = hook error, not deny). Deny is signalled via JSON stdout. Allow is silence + exit 0.
 
-## Otto-discipline hooks (B-0033 series)
+## Otto-discipline hooks (081KQ3HBZ0008QG0R0008RYCSX series)
 
 These hooks convert recurring failure-mode disciplines from language-layer substrate into harness-layer mechanism (Otto-341). Each is a separate script; each adds one entry to `settings.json` when wired.
 
 | Script | Matcher | Status | Backlog row |
 |--------|---------|--------|-------------|
-| `pre-edit-recent-read.ts` | `Edit` | planned | B-0033.2 |
-| `pre-bash-inline-python.ts` | `Bash` | planned | B-0033.3 |
-| `pre-commit-directive-vocab.ts` | `Bash` | planned | B-0033.4 |
-| `pre-commit-dst-exempt.ts` | `Bash` | planned | B-0033.5 |
-| `pre-commit-magic-number.ts` | `Bash` | planned | B-0033.6 |
-| `pre-action-bulk-resolve.ts` | `mcp__*` | planned | B-0033.7 |
-| `pre-commit-heartbeat-repeat.ts` | `Bash` | planned | B-0033.8 |
-| `pre-commit-table-cellcount.ts` | `Bash` | planned | B-0033.9 |
+| `pre-edit-recent-read.ts` | `Edit` | planned | 081KR50HA0008QG0R0005ABWPH |
+| `pre-bash-inline-python.ts` | `Bash` | planned | 081KQ3HBZ0008QG0R0008RYCSX.3 |
+| `pre-commit-directive-vocab.ts` | `Bash` | planned | 081KQ3HBZ0008QG0R0008RYCSX.4 |
+| `pre-commit-dst-exempt.ts` | `Bash` | planned | 081KQ3HBZ0008QG0R0008RYCSX.5 |
+| `pre-commit-magic-number.ts` | `Bash` | planned | 081KQ3HBZ0008QG0R0008RYCSX.6 |
+| `pre-action-bulk-resolve.ts` | `mcp__*` | planned | 081KQ3HBZ0008QG0R0008RYCSX.7 |
+| `pre-commit-heartbeat-repeat.ts` | `Bash` | planned | 081KQ3HBZ0008QG0R0008RYCSX.8 |
+| `pre-commit-table-cellcount.ts` | `Bash` | planned | 081KQ3HBZ0008QG0R0008RYCSX.9 |
 | `session-start-cron-verify.ts` | `SessionStart` | **wired** | catch 43 mitigation |
 | `stop-detect-response-rut.ts` | `Stop` | **wired** | repeated-token-rut guard (response layer) |
 
@@ -53,7 +53,7 @@ Settings wiring pattern for a discipline hook (PreToolUse, Edit matcher):
 
 ### `verify-branch-pretooluse.ts`
 
-Wraps `tools/orchestrator-checks/verify-branch.ts` (PR #1585) into the Claude Code PreToolUse JSON contract. Mechanizes the orchestrator branch-verify rule (per B-0191) -- when `ZETA_EXPECTED_BRANCH` is set in the session env and `git branch --show-current` doesn't match, the hook blocks the `git commit` Bash invocation with `permissionDecision: "deny"` and the script's stderr as the reason.
+Wraps `tools/orchestrator-checks/verify-branch.ts` (PR #1585) into the Claude Code PreToolUse JSON contract. Mechanizes the orchestrator branch-verify rule (per 081KQR4HQ0008QG0R002YNV361) -- when `ZETA_EXPECTED_BRANCH` is set in the session env and `git branch --show-current` doesn't match, the hook blocks the `git commit` Bash invocation with `permissionDecision: "deny"` and the script's stderr as the reason.
 
 If `ZETA_EXPECTED_BRANCH` is unset, the hook is a no-op (exits 0, allow). The default-off behavior means wiring this hook does not change any commit flow unless an agent (or maintainer) explicitly sets the env var for a task.
 
@@ -97,4 +97,4 @@ The `matcher` fires on all Bash tool calls, but the script itself reads stdin JS
 - `tools/orchestrator-checks/verify-branch.ts` (PR #1585) -- the underlying check.
 - `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md` (PR #1568) -- the manual discipline this mechanizes.
 - `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md` -- the harness-hooks-suffice rule.
-- `docs/backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md` (PR #1571) -- the design.
+- `docs/backlog/P1/081KQR4HQ0008QG0R002YNV361-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md` (PR #1571) -- the design.

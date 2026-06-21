@@ -34,7 +34,7 @@
 //   bun tools/hygiene/check-md032-blanks-around-lists.ts <file1> <file2> ...
 //   bun tools/hygiene/check-md032-blanks-around-lists.ts --staged
 //
-// B-0456 — see docs/backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md
+// 081KRHWGX0008QG0R000JEBCWZ — see docs/backlog/P2/081KRHWGX0008QG0R000JEBCWZ-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md
 
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";

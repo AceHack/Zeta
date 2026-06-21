@@ -50,13 +50,13 @@ is fragile.
 | Service | Status | What it does |
 |---------|--------|--------------|
 | `autonomous-loop` cron (CronCreate sentinel) | Operational; every-minute heartbeat | Fires `<<autonomous-loop>>` ticks; lifecycle bounded to session |
-| `tools/shadow/shadow-observer.ts` (B-0402) | Slice 1 + 2 shipped on main; slice 3 + 4 pending | Polls grey-text from CLI; can invoke `--detect-cmd` external detector |
+| `tools/shadow/shadow-observer.ts` (081KR7JY10008QG0R0008NGW95) | Slice 1 + 2 shipped on main; slice 3 + 4 pending | Polls grey-text from CLI; can invoke `--detect-cmd` external detector |
 | `com.zeta.claude-loop` launchd service | Operational per user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md` | Heartbeat/gate 60s |
 | `com.zeta.claude-forward` launchd service | Operational | Background forwarding |
 | `.github/workflows/razor-cadence.yml` | Daily 09:17 UTC | Razor-cadence GitHub Actions workflow |
-| Vera's foreground loop | Operational (separate Codex agent) | Continues shipping B-0400+ slices independently |
+| Vera's foreground loop | Operational (separate Codex agent) | Continues shipping 081KR7JY10008QG0R000R503K2+ slices independently |
 | Peer-call wrappers (`tools/peer-call/*.ts`) | 8 wrappers ready | Synchronous external-model invocation |
-| Bus protocol (B-0400) | Operational | Inter-agent messaging via `/tmp` |
+| Bus protocol (081KR7JY10008QG0R000R503K2) | Operational | Inter-agent messaging via `/tmp` |
 | `tools/hygiene/*` audit scripts (42 of them) | Operational on-demand | Cross-reference / lost-files / etc. audits |
 | CI / Copilot / Codex auto-review | Operational on every PR | Mechanical critic |
 | TLA+ / Z3 / Lean / FsCheck / Stryker | Operational when wired | Formal verification stack |
@@ -174,9 +174,9 @@ When future-Otto cold-boots, apply this discipline operationally:
   formal-verification scale)
 - Otto-329 launchd-services (existing background-services
   substrate; user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md`)
-- B-0402 shadow observer (canonical background service example;
+- 081KR7JY10008QG0R0008NGW95 shadow observer (canonical background service example;
   slices 1 + 2 shipped)
-- B-0400 bus protocol (inter-agent message infrastructure for
+- 081KR7JY10008QG0R000R503K2 bus protocol (inter-agent message infrastructure for
   background communication)
 - PR #2956 (Vera's autonomous tsc-tools fix — background-agent
   operating independently of Otto-foreground)

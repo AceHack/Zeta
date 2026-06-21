@@ -75,7 +75,7 @@ and is the step the Z-set completes into a group.
 - Registry bump (Bag 1/4) is a **separate follow-up** after merge, to avoid an
   ahead-of-merge claim.
 
-Composes B-0867.27 (observe-algebra ladder) + B-0954 (git-native bus) + the
+Composes 081KSXN940008QG0R0033T2BQT (observe-algebra ladder) + 081KSXN940008QG0R00171YAZW (git-native bus) + the
 database-design ADR.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -394,7 +394,7 @@ the step the Z-set completes into an abelian group (signed ℤ + retraction).
   canonicalization + golden-vector replay (12 tests).
 
 Registry bump (Bag 1/4) follows in a separate PR after merge, to avoid an
-ahead-of-merge claim. Composes B-0867.27 (observe-algebra ladder) + B-0954
+ahead-of-merge claim. Composes 081KSXN940008QG0R0033T2BQT (observe-algebra ladder) + 081KSXN940008QG0R00171YAZW
 (bus) + the database-design ADR.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

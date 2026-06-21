@@ -1,6 +1,6 @@
 ---
 pr_number: 5397
-title: "feat(B-0850 Phase 3d): Lior/Gemini CLI as 2nd systemd vendor \u2014 Anthropic + Google; install + interactive auth + control-plane enable (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R003Z4C0D0 Phase 3d): Lior/Gemini CLI as 2nd systemd vendor \u2014 Anthropic + Google; install + interactive auth + control-plane enable (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T04:05:05Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:27:09Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5397: feat(B-0850 Phase 3d): Lior/Gemini CLI as 2nd systemd vendor — Anthropic + Google; install + interactive auth + control-plane enable (Aaron 2026-05-27)
+# PR #5397: feat(081KSKBP80008QG0R003Z4C0D0 Phase 3d): Lior/Gemini CLI as 2nd systemd vendor — Anthropic + Google; install + interactive auth + control-plane enable (Aaron 2026-05-27)
 
 ## PR description
 
 ## Summary
 
-Per operator authorization *"drive forward with whatever interests you most"* — shipping B-0850 Phase 3d (Lior/Gemini = 2nd vendor) to move toward the ≥3-systemd-agents target.
+Per operator authorization *"drive forward with whatever interests you most"* — shipping 081KSKBP80008QG0R003Z4C0D0 Phase 3d (Lior/Gemini = 2nd vendor) to move toward the ≥3-systemd-agents target.
 
 ## 3 changes
 
@@ -40,7 +40,7 @@ After this PR: 2/5 personas + 2 vendors enabled. One more vendor (3c Vera/Codex 
 
 ## Composes with
 
-PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (B-0850 Phase 1 + 3 refactor) · B-0848 · B-0847 · B-0796
+PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3 refactor) · 081KSGS9H0008QG0R001JNKBFD · 081KSGS9H0008QG0R002T0XQ50 · 081KSGS9H0008QG0R002F04ECB
 
 Sources:
 - [@google/gemini-cli on npm](https://www.npmjs.com/package/@google/gemini-cli)

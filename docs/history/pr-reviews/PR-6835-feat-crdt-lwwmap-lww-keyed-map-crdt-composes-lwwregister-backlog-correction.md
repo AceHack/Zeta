@@ -28,7 +28,7 @@
 ## Description
 
 ## What — local-first CRDT-on-Z-set (`081KTH4Q782`)
-**`LwwMap<'K,'V>`**: each key independently holds an `LwwRegister<'V option>`; `Set` / `Remove` (LWW tombstone) / `TryGet`; **`Merge` = per-key `LwwRegister.Merge`** → commutative + associative + idempotent (a CRDT). Keys use F# structural comparison (**ordinal for string, B-0969-clean**). Composes the existing `LwwRegister` (no duplicate merge logic).
+**`LwwMap<'K,'V>`**: each key independently holds an `LwwRegister<'V option>`; `Set` / `Remove` (LWW tombstone) / `TryGet`; **`Merge` = per-key `LwwRegister.Merge`** → commutative + associative + idempotent (a CRDT). Keys use F# structural comparison (**ordinal for string, 081KT07NV0008QG0R001YDB73K-clean**). Composes the existing `LwwRegister` (no duplicate merge logic).
 
 **Backlog corrected:** GCounter/PNCounter/OrSet/LwwRegister **already existed** (the item over-listed them as missing); `LwwMap` now added; **genuinely remaining = RGA/sequence CRDT** (the hard one) + **PSI** over the `.zc` transform.
 

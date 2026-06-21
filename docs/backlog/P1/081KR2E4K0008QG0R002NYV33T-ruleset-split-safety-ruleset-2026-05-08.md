@@ -1,6 +1,5 @@
 ---
-id: B-0267
-zetaid: 081KR2E4K0008QG0R002NYV33T
+id: 081KR2E4K0008QG0R002NYV33T
 priority: P1
 status: closed
 title: "GitHub ruleset split — safety ruleset (deletion + force-push + linear history)"
@@ -13,23 +12,23 @@ decomposition: 2-slice
 type: friction-reducer
 ---
 
-# B-0267 — Safety ruleset
+# 081KR2E4K0008QG0R002NYV33T — Safety ruleset
 
-Third child of B-0155. Dedicated ruleset for branch safety
+Third child of 081KQGDBJ0008QG0R0028YTDQ2. Dedicated ruleset for branch safety
 (no deletion, no force-push, linear history required).
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0265 (CI Gate, closed) created
+- [x] Prior-art search: 081KR2E4K0008QG0R001DYEFD7 (CI Gate, closed) created
   first dedicated ruleset via `gh api` + snapshot update.
-  B-0266 (Review Policy, PR #2159 merged) followed same
+  081KR2E4K0008QG0R001VZMQBH (Review Policy, PR #2159 merged) followed same
   pattern with `tools/migrations/b0266-review-policy-ruleset.ts`.
-- [x] Dependency check: B-0265 (CI Gate) is closed. No blockers.
-- [x] Parent B-0155 reviewed — three-ruleset target documented in
+- [x] Dependency check: 081KR2E4K0008QG0R001DYEFD7 (CI Gate) is closed. No blockers.
+- [x] Parent 081KQGDBJ0008QG0R0028YTDQ2 reviewed — three-ruleset target documented in
   `docs/GITHUB-SETTINGS.md` migration matrix.
 - [x] Current Default ruleset (id: 15256879) inspected — contains
   5 rules (deletion, non_fast_forward, copilot_code_review,
-  pull_request, required_linear_history). B-0266 migration
+  pull_request, required_linear_history). 081KR2E4K0008QG0R001VZMQBH migration
   script committed but not yet executed.
 
 ## Acceptance criteria
@@ -39,10 +38,10 @@ Third child of B-0155. Dedicated ruleset for branch safety
 - [x] Default ruleset updated (safety rules removed)
 - [x] Snapshot updated
 
-## Pre-start checklist (B-0267 start gate)
+## Pre-start checklist (081KR2E4K0008QG0R002NYV33T start gate)
 
-- Prior-art-search: axes (wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md) executed; B-0266 migration script + github/ TS tools + ruleset patterns from recent merges surveyed (2026-05-09 refresh).
-- Dependency-restructure: depends_on [B-0265] walked; reciprocal composes_with added in B-0155 parent; no broken pointers.
+- Prior-art-search: axes (wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md) executed; 081KR2E4K0008QG0R001VZMQBH migration script + github/ TS tools + ruleset patterns from recent merges surveyed (2026-05-09 refresh).
+- Dependency-restructure: depends_on [081KR2E4K0008QG0R001DYEFD7] walked; reciprocal composes_with added in 081KQGDBJ0008QG0R0028YTDQ2 parent; no broken pointers.
 - Re-decomposition note (per always-re-decompose): original "atomic" assumption mistaken — split requires 2 slices (1. creator skeleton + claim, 2. full gh api + legacy removal + tests). This is slice 1 (bounded: skeleton only).
 
 ## Implementation
@@ -50,7 +49,7 @@ Third child of B-0155. Dedicated ruleset for branch safety
 Slice 1 skeleton: `tools/github/create-branch-safety-ruleset.ts`
 
 Dry-run-only skeleton for slice 1. Full gh api creation + Default
-ruleset update + tests are slice 2. Order-independent with B-0266.
+ruleset update + tests are slice 2. Order-independent with 081KR2E4K0008QG0R001VZMQBH.
 
 ### Run
 

@@ -1,6 +1,5 @@
 ---
-id: B-0358
-zetaid: 081KR50HA0008QG0R00224DXPP
+id: 081KR50HA0008QG0R00224DXPP
 priority: P1
 status: closed
 title: "Bool as degenerate distribution — replace binary API returns with confidence scores"
@@ -15,7 +14,7 @@ type: friction-reducer
 tags: [type-design, bayesian, signal-quality, veridicality, api-surface]
 ---
 
-# B-0358 — Bool as degenerate distribution
+# 081KR50HA0008QG0R00224DXPP — Bool as degenerate distribution
 
 ## What
 
@@ -79,4 +78,4 @@ weights as evidence).
 - PR #2205 (gradient falsifiability — already in this shape)
 - `src/Core/SignalQuality.fs`
 - `src/Core/Veridicality.fs`
-- B-0357 (Z3 proof replacement — same epistemic-honesty axis)
+- 081KR50HA0008QG0R0033TN4H9 (Z3 proof replacement — same epistemic-honesty axis)

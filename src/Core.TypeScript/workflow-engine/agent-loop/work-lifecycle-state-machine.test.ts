@@ -13,7 +13,7 @@ import {
   type WorkLifecycleState,
 } from "./work-lifecycle-state-machine";
 
-function row(id = "B-0867.5"): BacklogRow {
+function row(id = "081KSKBP80008QG0R000B3Y19A.5"): BacklogRow {
   return {
     id,
     title: "Agent-loop MVP",

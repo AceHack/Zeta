@@ -124,7 +124,7 @@ CSLib adoption + contribute-back is now a standing GO (§7). Sequenced, smallest
    `ProcFaulty` is crash/stop only; extend it to an equivocating (Byzantine) fault + the
    double-vote/equivocation-exclusion our `BftSybilConsensus.tla` already models. This is a clean,
    self-contained, citable contribution that does **not** need G3 — and it *is* our own (b) work done
-   upstream (the small-first contribute-back of B-0952; aligned incentives).
+   upstream (the small-first contribute-back of 081KSXN940008QG0R002528JS9; aligned incentives).
 3. **Then** the identity-keyed quorum (G2, rides `NonRegisterCollapse`) and — once G3 has a path —
    the full BFT-under-Sybil soundness, as either upstream or in-tree per Soraya's routing.
 

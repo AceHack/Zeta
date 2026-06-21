@@ -1,6 +1,5 @@
 ---
-id: B-0755
-zetaid: 081KSE6WT0008QG0R003612WGJ
+id: 081KSE6WT0008QG0R003612WGJ
 priority: P2
 status: open
 title: Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
@@ -10,7 +9,7 @@ created: 2026-05-25
 last_updated: 2026-05-25
 depends_on: []
 composes_with:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 tags: [cluster, nixos, hosts]
 ---
 
@@ -55,7 +54,7 @@ Host configs for:
 - [ ] `nixos/hosts/all-in-one/` exists, imports k3s-server.nix +
       GPU modules + extra Longhorn paths; documented
 - [ ] `flake.nix` nixosConfigurations entries for all four
-- [ ] B-0754 v1 first-boot keystroke prompt extended:
+- [ ] 081KSGS9H0008QG0R002T3BJ2R v1 first-boot keystroke prompt extended:
       'c' control-plane / 'g' control-plane-gpu /
       'w' worker-gpu / 'p' worker-cpu / 's' worker-storage /
       'a' all-in-one. Default stays control-plane (most common
@@ -65,9 +64,9 @@ Host configs for:
 
 ## Composes with
 
-- B-0754 — zero-typing USB install (the keystroke-prompt
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing USB install (the keystroke-prompt
   surface that needs to grow when new roles land)
-- B-0737 — zflash + Touch ID PAM
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM
 - `full-ai-cluster/nixos/modules/` — the module library this
   row's host configs compose from
 
@@ -87,5 +86,5 @@ Host configs for:
 
 ## Origin
 
-Aaron 2026-05-25, mid-B-0754 implementation, surveying the role
+Aaron 2026-05-25, mid-081KSGS9H0008QG0R002T3BJ2R implementation, surveying the role
 options the zero-typing flow should support.

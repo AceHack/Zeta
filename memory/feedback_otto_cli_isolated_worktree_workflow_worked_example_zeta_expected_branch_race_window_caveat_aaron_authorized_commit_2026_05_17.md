@@ -64,11 +64,11 @@ After Step 0 (switching primary back), the second attempt succeeded:
 git worktree add /private/tmp/zeta-b0611-substrate-0740z otto/b0611-...
 # Preparing worktree (checking out 'otto/b0611-...')
 # Updating files: 100% (5432/5432), done.
-# HEAD is now at bcb2c5b feat(routines): B-0510 ...
+# HEAD is now at bcb2c5b feat(routines): 081KRHWGX0008QG0R001VR9FNA ...
 ```
 
 The worktree-add succeeded despite Lior-active at 3 procs — the
-B-0530 contention-rollback failure mode (`Interrupted system call`)
+081KRMEXM0008QG0R000X1PPGC contention-rollback failure mode (`Interrupted system call`)
 did NOT occur this attempt. Empirically: worktree-add at this
 moment was contention-free.
 
@@ -83,7 +83,7 @@ filenames — no globs:
 cd /private/tmp/zeta-b0611-substrate-0740z
 mkdir -p docs/backlog/P2 docs/hygiene-history/ticks/2026/05/17 memory
 PRIMARY=/Users/acehack/Documents/src/repos/Zeta
-cp "$PRIMARY/docs/backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md" docs/backlog/P2/
+cp "$PRIMARY/docs/backlog/P2/081KRSKQ20008QG0R0014PPGZM-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md" docs/backlog/P2/
 cp "$PRIMARY/memory/feedback_otto_cli_lior_active_step_8_read_only_canary_rule_evidence_collection_brief_ack_pre_empt_2026_05_17.md" memory/
 cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice1_audit_recipe_4_of_6_have_footnote_fallback_pattern_intentional_dangling_2026_05_17.md" memory/
 cp "$PRIMARY/memory/feedback_otto_cli_b0611_slice2_audit_verbatim_preservation_constraint_editorial_footnote_pattern_2026_05_17.md" memory/
@@ -100,7 +100,7 @@ All 10 files showed as untracked in the isolated worktree, exactly
 as expected (they were untracked in primary too).
 
 (The literal filenames avoid the shell-glob trap — `*` inside double
-quotes is NOT expanded by the shell. The original B-0611 session
+quotes is NOT expanded by the shell. The original 081KRSKQ20008QG0R0014PPGZM session
 authored these 10 copy commands as-is; abbreviating with `*.md` in
 this memo would have produced non-executable copy paste, contradicting
 the "explicit cp per file" claim.)
@@ -128,7 +128,7 @@ Bash invocation:
 cd /private/tmp/zeta-b0611-substrate-0740z && \
 git add \
   docs/BACKLOG.md \
-  docs/backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md \
+  docs/backlog/P2/081KRSKQ20008QG0R0014PPGZM-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md \
   docs/hygiene-history/ticks/2026/05/17/0418Z.md \
   docs/hygiene-history/ticks/2026/05/17/0602Z.md \
   docs/hygiene-history/ticks/2026/05/17/0728Z.md \
@@ -177,7 +177,7 @@ later via:
 ```bash
 gh pr create --head otto/b0611-audit-prep-substrate-plus-session-memos-2026-05-17 \
              --base main \
-             --title "backlog(B-0611): file dangling-memory-refs cleanup row + 4 slice recipes + session memos + 3 tick shards" \
+             --title "backlog(081KRSKQ20008QG0R0014PPGZM): file dangling-memory-refs cleanup row + 4 slice recipes + session memos + 3 tick shards" \
              --body-file <prepared-body>
 ```
 
@@ -189,7 +189,7 @@ for PR creation under multi-Otto contention.)
 
 | Anchor | Value | Significance |
 |---|---|---|
-| Worktree-add succeeded first try | Lior at 3 procs, peer-claude at 1 | B-0530 worktree-prune-race didn't fire at this moment |
+| Worktree-add succeeded first try | Lior at 3 procs, peer-claude at 1 | 081KRMEXM0008QG0R000X1PPGC worktree-prune-race didn't fire at this moment |
 | ls-tree count post-commit | 53 (matches origin/main) | No canary corruption — commit-tree integrity preserved |
 | Branch-guard passed in same Bash call | branch ✓ before commit | Race window minimized to within one Bash subprocess |
 | Push succeeded background-task | Exit 0, branch on origin | No ref-contamination at push time |
@@ -225,7 +225,7 @@ enumerated in the 0728Z session-summary shard.
   triggered this session — peer-claude was low. Future-Otto
   operating under multi-instance saturation would face higher
   risk; the worked example here is the lower-bound case
-- **The worktree-add B-0530 race** did not fire this attempt;
+- **The worktree-add 081KRMEXM0008QG0R000X1PPGC race** did not fire this attempt;
   the rule notes "try once; if it fails with `Interrupted system
   call`, fall back to borrow-on-existing-sidetick pattern" — this
   fallback was NOT exercised today

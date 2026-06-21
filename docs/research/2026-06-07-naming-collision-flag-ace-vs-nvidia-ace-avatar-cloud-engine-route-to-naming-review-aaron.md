@@ -10,13 +10,13 @@ technologies (LLM-powered interactive avatars), packaged as NVIDIA NIM microserv
 TTS (speech), **Audio2Face** (facial animation), **NeMo LLMs / Nemotron** SLMs (conversation). Used in gaming,
 customer service, telehealth. It is an **AI/LLM brand from a major vendor.**
 
-Our **Ace** = the package-manager-of-package-managers / external-state closure engine (B-0824/B-0863; #6939–
+Our **Ace** = the package-manager-of-package-managers / external-state closure engine (081KSGS9H0008QG0R0031PBNGA/081KSKBP80008QG0R000F4311E; #6939–
 #6945). Same three letters, AI-adjacent space.
 
 ## Why this matters (and why the backronyms worsen it)
 
 - **It's a vendor brand in an overlapping domain (AI).** "Ace" for an AI-ecosystem tool risks confusion and
-  trademark friction, especially on public surfaces (the B-0863 curl-install, distribution, marketing).
+  trademark friction, especially on public surfaces (the 081KSKBP80008QG0R000F4311E curl-install, distribution, marketing).
 - **"Autonomous Cognition Engine" (#6945) collides hardest.** NVIDIA ACE *is* LLM/cognition-adjacent (avatars
   that think/talk). An "Autonomous **Cognition** Engine" reads right into NVIDIA ACE's lane — far more
   collision-prone than "Awesome Closure Engine" (#6943, package-manager/closure framing) or the plain
@@ -50,7 +50,7 @@ leaning toward disambiguation or a public rename. The decision is the human's (n
 
 - **ACE backronyms** — #6943 (Awesome Closure Engine) + #6945 (Autonomous Cognition Engine); the latter is the
   highest-collision framing.
-- **Ace lane** — B-0824 / B-0863 / B-0806 (`ACTIVE-WORKSTREAMS.md`); public-surface naming risk lands here.
+- **Ace lane** — 081KSGS9H0008QG0R0031PBNGA / 081KSKBP80008QG0R000F4311E / 081KSGS9H0008QG0R001Y9FB62 (`ACTIVE-WORKSTREAMS.md`); public-surface naming risk lands here.
 - **Naming discipline** — `naming-expert` (Ilyana) + human sign-off for public names; glossary hygiene.
 
 ## Beacon anchors

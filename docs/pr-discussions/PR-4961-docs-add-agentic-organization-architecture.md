@@ -129,7 +129,7 @@ What changed:
 - Added the correctness guardrail: Go and TypeScript operators must share the same leader-election Lease or have an ADR-backed disjoint ownership partition. Two active writers on the same `HatBinding` lifecycle are a bug, not redundancy.
 - Normalized the docs to the shipped CRD lifecycle/event names (`Pending | Warmup | Active | Probation | Revoked`, `SwapOn | SwapOff | WarmupBegin | WarmupEnd | Probation | QuorumGrant | Throttled`).
 - Added readiness tests for CRD schema parity, HatSwap payload parity, controller ownership/Lease behavior, and read-only TS projection idempotency.
-- Updated B-0724’s stale path/naming note now that this branch has merged the backlog PR content.
+- Updated 081KSE6WT0008QG0R00195RG48’s stale path/naming note now that this branch has merged the backlog PR content.
 
 Validation: `git diff --check` passed and the stale path/name/lifecycle sweeps are clean except for unrelated generic state-transition wording.
 

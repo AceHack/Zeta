@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Extends [`.claude/rules/zeta-expected-branch.md`](../../.claude/rules/zeta-expected-branch.md) with two primary defenses for multi-Otto-one-checkout topology. Promotes them from B-0519 RCA (grep-discoverable backlog row) to `.claude/rules/` (auto-loaded at cold-boot for every fresh session).
+Extends [`.claude/rules/zeta-expected-branch.md`](../../.claude/rules/zeta-expected-branch.md) with two primary defenses for multi-Otto-one-checkout topology. Promotes them from 081KRHWGX0008QG0R001HMWM1W RCA (grep-discoverable backlog row) to `.claude/rules/` (auto-loaded at cold-boot for every fresh session).
 
 ## Why promote from RCA to rule
 
@@ -72,7 +72,7 @@ This PR promotes branch-contamination defenses into the cold-boot `.claude/rules
 **Changes:**
 - Adds a caveat that the `ZETA_EXPECTED_BRANCH` env-var hook is defense-in-depth because shell env may not persist across Bash-tool calls.
 - Adds primary operator defenses: query current branch before commit and use `gh pr create --head`.
-- Links the rule back to the B-0519 RCA.
+- Links the rule back to the 081KRHWGX0008QG0R001HMWM1W RCA.
 
 
 <details>
@@ -92,7 +92,7 @@ this rule operationalizes; field-test tick shards 2010Z/2026Z/2030Z)
 
 **@copilot-pull-request-reviewer** (2026-05-14T20:39:45Z):
 
-This cites a 2030Z field-test, but `docs/hygiene-history/ticks/2026/05/14/2030Z.md` does not exist and the B-0519 RCA only lists 2010Z/2026Z field-test ticks. Either add the missing shard/evidence or remove 2030Z so the promoted rule remains traceable.
+This cites a 2030Z field-test, but `docs/hygiene-history/ticks/2026/05/14/2030Z.md` does not exist and the 081KRHWGX0008QG0R001HMWM1W RCA only lists 2010Z/2026Z field-test ticks. Either add the missing shard/evidence or remove 2030Z so the promoted rule remains traceable.
 
 This issue also appears on line 116 of the same file.
 
@@ -100,7 +100,7 @@ This issue also appears on line 116 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-14T20:39:45Z):
 
-This new reference says the rule now operationalizes the B-0519 primary defenses, but the referenced B-0519 row still says carrying this in `.claude/rules/` “would be the right home if/when this is promoted.” If this PR promotes the defense, update that row in the same PR to point back here or explicitly scope the remaining open work so the backlog/RCA does not drift from the loaded rule.
+This new reference says the rule now operationalizes the 081KRHWGX0008QG0R001HMWM1W primary defenses, but the referenced 081KRHWGX0008QG0R001HMWM1W row still says carrying this in `.claude/rules/` “would be the right home if/when this is promoted.” If this PR promotes the defense, update that row in the same PR to point back here or explicitly scope the remaining open work so the backlog/RCA does not drift from the loaded rule.
 
 ### Thread 3: .claude/rules/zeta-expected-branch.md:81 (unresolved)
 

@@ -1,5 +1,5 @@
 /**
- * src/Core.TypeScript/observe/do-item.ts — effectful `do_item`, Phase 1 (B-0964).
+ * src/Core.TypeScript/observe/do-item.ts — effectful `do_item`, Phase 1 (081KT07NV0008QG0R001CBQ2X2).
  *
  * `do_item` is the first action kind with a REAL side-effect (the agent actually
  * does work). The other kinds `execute` handles (`free_time`/`self_reflect`) have
@@ -26,7 +26,7 @@
  * Phase 1 (this file): the envelope + port + transition, fake executor, no dep,
  * no shell. Phase 2 wires real impls behind `CommandExecutor` (local OCI runtime —
  * podman default, swappable — for real work; just-bash in-memory for text; per
- * B-0964 §2 / §2.2 review-folded routing).
+ * 081KT07NV0008QG0R001CBQ2X2 §2 / §2.2 review-folded routing).
  * Integrating `executeDoItem` into the unified `execute`/log/sink is a follow-up
  * (Phase 1 keeps it a sibling so the existing `execute` + its tests stay green).
  *
@@ -42,7 +42,7 @@
  * Composes with (exact paths):
  *   - src/Core.TypeScript/observe/observe.ts (simulate = the single reducer; World / BacklogItem)
  *   - src/Core.TypeScript/observe/execute.ts (EventSink<E> = the durability port reused here for observations; AppendOutcome)
- *   - docs/backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md
+ *   - docs/backlog/P1/081KT07NV0008QG0R001CBQ2X2-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md (Result<T, TFeedback>)
  */
@@ -55,12 +55,12 @@ import type { AppendOutcome, EventSink } from "./execute";
 /**
  * Which surface ran the command — recorded in the Started observation for the audit.
  * `oci` = the runtime-agnostic local OCI runtime (podman default, swappable to
- * docker/nerdctl/finch via `ZETA_CONTAINER_RUNTIME`; B-0964 §2.2). The tier names the
+ * docker/nerdctl/finch via `ZETA_CONTAINER_RUNTIME`; 081KT07NV0008QG0R001CBQ2X2 §2.2). The tier names the
  * boundary CLASS, not a specific vendor — so the audit doesn't lie about which engine ran.
  */
 export type ExecutorTier = "fake" | "just-bash" | "oci" | "cloud-burst";
 
-/** What to run. Phase 1: the caller supplies it (B-0964 §4: the sub-loop / recipe map decides later). */
+/** What to run. Phase 1: the caller supplies it (081KT07NV0008QG0R001CBQ2X2 §4: the sub-loop / recipe map decides later). */
 export interface RunSpec {
   readonly script: string;
   readonly cwd?: string;
@@ -71,7 +71,7 @@ export type RunOutcome =
   | { readonly ok: true; readonly stdout: string; readonly exitCode: 0 }
   | { readonly ok: false; readonly reason: string; readonly exitCode: number; readonly stderr: string };
 
-/** The injected bash surface. Fake in tests; oci / just-bash in prod (B-0964 §2). */
+/** The injected bash surface. Fake in tests; oci / just-bash in prod (081KT07NV0008QG0R001CBQ2X2 §2). */
 export interface CommandExecutor {
   readonly tier: ExecutorTier;
   run: (spec: RunSpec) => Promise<RunOutcome>;
@@ -115,7 +115,7 @@ export function applyObservation(world: World, observation: ActionObservation): 
 
 /**
  * Replay the observation log. Pure fold — **no executor parameter**, so replay cannot
- * re-run the command (the B-0964 §0 correctness guarantee, enforced by the type).
+ * re-run the command (the 081KT07NV0008QG0R001CBQ2X2 §0 correctness guarantee, enforced by the type).
  */
 export function foldObservations(initial: World, observations: readonly ActionObservation[]): World {
   return observations.reduce(applyObservation, initial);

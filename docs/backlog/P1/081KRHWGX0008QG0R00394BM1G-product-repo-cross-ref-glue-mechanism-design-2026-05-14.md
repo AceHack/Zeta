@@ -1,13 +1,12 @@
 ---
-id: B-0467
-zetaid: 081KRHWGX0008QG0R00394BM1G
+id: 081KRHWGX0008QG0R00394BM1G
 priority: P1
 status: closed
 closed: 2026-05-14
 closed_by: "docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md"
 title: "Product-repo cross-ref glue mechanism design — how product repos reference Zeta/Forge/ace"
 type: design
-origin: B-0425 decomposition (Otto 2026-05-14)
+origin: 081KRFA460008QG0R003JQ46J4 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on:
@@ -21,7 +20,7 @@ composes_with:
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md
 ---
 
-# B-0467 — Product-repo cross-ref glue mechanism design
+# 081KRHWGX0008QG0R00394BM1G — Product-repo cross-ref glue mechanism design
 
 ## What this row does
 
@@ -34,8 +33,8 @@ of the factory-infrastructure repos, not peers in the Ouroboros cycle.
 
 ## Depends on
 
-- **B-0465** — need to know which products get repos; design must work for all of them
-- **B-0424** — the established glue pattern (peer repos, version-pin files,
+- **081KRHWGX0008QG0R002B2P0K0** — need to know which products get repos; design must work for all of them
+- **081KRFA460008QG0R001H98EXJ** — the established glue pattern (peer repos, version-pin files,
   `repository_dispatch` CI triggers) must be understood before extending it
 
 ## The design problem
@@ -67,7 +66,7 @@ Product repos get a `.zeta-version` file pinning a Zeta git SHA or semver tag.
 CI in the product repo reads the pin on install. Forge CI publishes a
 `repository_dispatch` event when a new Zeta release tags.
 
-**Pros**: consistent with existing B-0424 pattern; no new tooling needed  
+**Pros**: consistent with existing 081KRFA460008QG0R001H98EXJ pattern; no new tooling needed  
 **Cons**: manual pin-file bumps until ace ships; may diverge across 7 products
 
 ### Option B — Dependabot / Renovate tracking NuGet/npm packages
@@ -85,7 +84,7 @@ Zeta features
 Product repos get an `ace.toml` + lockfile instead of a `.zeta-version` pin file.
 
 **Pros**: Ouroboros bootstraps at product scope; ace becomes the universal glue  
-**Cons**: ace doesn't exist yet (B-0424 Stage 3 is multi-year deferred)
+**Cons**: ace doesn't exist yet (081KRFA460008QG0R001H98EXJ Stage 3 is multi-year deferred)
 
 ### Recommended path: Option A now → Option B for packaged releases → Option C when ace ships
 
@@ -114,11 +113,11 @@ Structure:
 - Three options documented with pros/cons
 - Recommended staged approach chosen with rationale
 - Per-product notes for any special cases (KSK robotics CI, civsim encryption)
-- B-0468 (ADR) can reference this decision
+- 081KRHWGX0008QG0R000F6HE6D (ADR) can reference this decision
 
 ## Dependency graph position
 
 ```
-B-0465 ──→ B-0467 (this row) ──→ B-0468 (ADR)
-B-0424 ──→ B-0467 (this row)
+081KRHWGX0008QG0R002B2P0K0 ──→ 081KRHWGX0008QG0R00394BM1G (this row) ──→ 081KRHWGX0008QG0R000F6HE6D (ADR)
+081KRFA460008QG0R001H98EXJ ──→ 081KRHWGX0008QG0R00394BM1G (this row)
 ```

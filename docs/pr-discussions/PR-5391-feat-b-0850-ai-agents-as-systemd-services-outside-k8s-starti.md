@@ -1,6 +1,6 @@
 ---
 pr_number: 5391
-title: "feat(B-0850): AI agents as systemd services OUTSIDE k8s \u2014 starting with Otto; cluster repair from OUTSIDE the failure domain; 'control plane outside the control plane' pattern (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R003Z4C0D0): AI agents as systemd services OUTSIDE k8s \u2014 starting with Otto; cluster repair from OUTSIDE the failure domain; 'control plane outside the control plane' pattern (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T03:03:11Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:14Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5391: feat(B-0850): AI agents as systemd services OUTSIDE k8s — starting with Otto; cluster repair from OUTSIDE the failure domain; 'control plane outside the control plane' pattern (Aaron 2026-05-27)
+# PR #5391: feat(081KSKBP80008QG0R003Z4C0D0): AI agents as systemd services OUTSIDE k8s — starting with Otto; cluster repair from OUTSIDE the failure domain; 'control plane outside the control plane' pattern (Aaron 2026-05-27)
 
 ## PR description
 
@@ -39,11 +39,11 @@ Classic **\"control plane outside the control plane\"** — when k8s has issues,
 | 1 | systemd unit (zeta-otto.service) NixOS module | None (read-only K8s) |
 | 2 | repair-policy framework + per-scope authorization | per-scope explicit |
 | 3 | multi-agent parameterization (Alexa/Riven/Vera/Lior) | Ilyana + Knights Guild |
-| 4 | out-of-band ↔ in-cluster composability (Twilio + bus + PRs) | composes B-0796 |
+| 4 | out-of-band ↔ in-cluster composability (Twilio + bus + PRs) | composes 081KSGS9H0008QG0R002F04ECB |
 
 ## Composes with
 
-[B-0848](docs/backlog/P2/B-0848-...) (node-local Claude — this row's Phase 1 IS systemd deployment shape) · [B-0847](docs/backlog/P2/B-0847-...) (per-AI GitHub identity) · [B-0796](docs/backlog/P2/B-0796-...) (Twilio out-of-band sibling) · [B-0824](docs/backlog/P1/B-0824-...) (Ace multi-PM at multi-AI scope) · PR #2930 (distributed maintainer architecture) · B-0703 (multi-oracle BFT) · B-0813 + B-0817 (ClusterNode CRD + register-node)
+[081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) (node-local Claude — this row's Phase 1 IS systemd deployment shape) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...) (per-AI GitHub identity) · [081KSGS9H0008QG0R002F04ECB](docs/backlog/P2/081KSGS9H0008QG0R002F04ECB-...) (Twilio out-of-band sibling) · [081KSGS9H0008QG0R0031PBNGA](docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-...) (Ace multi-PM at multi-AI scope) · PR #2930 (distributed maintainer architecture) · 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) · 081KSGS9H0008QG0R002K93MWX + 081KSGS9H0008QG0R002QQNA79 (ClusterNode CRD + register-node)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -53,11 +53,11 @@ Classic **\"control plane outside the control plane\"** — when k8s has issues,
 
 ## Pull request overview
 
-Adds a new P2 backlog row B-0850 capturing the operator decision to run AI agents (starting with Otto) as systemd services outside k8s for out-of-band cluster repair, and registers it in the backlog index.
+Adds a new P2 backlog row 081KSKBP80008QG0R003Z4C0D0 capturing the operator decision to run AI agents (starting with Otto) as systemd services outside k8s for out-of-band cluster repair, and registers it in the backlog index.
 
 **Changes:**
 - New per-row file under `docs/backlog/P2/` with frontmatter, phased plan, acceptance criteria, and composes-with references.
-- Adds the B-0850 entry to `docs/BACKLOG.md` P2 open list.
+- Adds the 081KSKBP80008QG0R003Z4C0D0 entry to `docs/BACKLOG.md` P2 open list.
 
 ### Reviewed changes
 
@@ -65,8 +65,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0850-...md | New backlog row documenting Otto-as-systemd-service substrate. |
-| docs/BACKLOG.md | Registers B-0850 in P2 open list. |
+| docs/backlog/P2/081KSKBP80008QG0R003Z4C0D0-...md | New backlog row documenting Otto-as-systemd-service substrate. |
+| docs/BACKLOG.md | Registers 081KSKBP80008QG0R003Z4C0D0 in P2 open list. |
 
 ## General comments
 

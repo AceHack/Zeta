@@ -1,9 +1,8 @@
 ---
-id: B-0140
-zetaid: 081KQGDBJ0008QG0R0022EW5ZE
+id: 081KQGDBJ0008QG0R0022EW5ZE
 priority: P1
 status: closed
-title: Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)
+title: Bash → TS migration completion — debt-prevention prerequisite to 081KQGDBJ0008QG0R000Y66YYQ (CRDT-composition)
 created: 2026-05-01
 last_updated: 2026-05-09
 depends_on: []
@@ -13,13 +12,13 @@ composes_with: [081KQR4HQ0008QG0R001909FPT, 081KQTPYE0008QG0R001W237MZ]
 type: friction-reducer
 ---
 
-# B-0140 — Bash → TS migration completion
+# 081KQGDBJ0008QG0R0022EW5ZE — Bash → TS migration completion
 
-**Priority:** P1 (debt-prevention; prerequisite to B-0132 CRDT-composition; bounded scope; substantial cumulative cost if deferred).
+**Priority:** P1 (debt-prevention; prerequisite to 081KQGDBJ0008QG0R000Y66YYQ CRDT-composition; bounded scope; substantial cumulative cost if deferred).
 
 **Filed:** 2026-05-01.
 
-**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: Aaron 2026-05-01 ~10:55Z: *"Bash → TS migration completion this is also usefull so we don't just keep building dept"*. Companion to B-0125 (build-track split); both are prerequisites to B-0132 (CRDT-composition) per Aaron's framing that CRDT work shouldn't compound debt onto a half-migrated tooling layer.
+**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: Aaron 2026-05-01 ~10:55Z: *"Bash → TS migration completion this is also usefull so we don't just keep building dept"*. Companion to 081KQGDBJ0008QG0R001MK4YPC (build-track split); both are prerequisites to 081KQGDBJ0008QG0R000Y66YYQ (CRDT-composition) per Aaron's framing that CRDT work shouldn't compound debt onto a half-migrated tooling layer.
 
 **Effort:** M (1-3 weeks — finish the in-progress migration; remove dead `.sh` files; update CI references).
 
@@ -36,10 +35,10 @@ Specific scope (concrete; verify-before-state-claim discipline applies — first
 
 ## Why P1
 
-- **Debt-prevention is real and recurring.** Each duplicated implementation (.sh + .ts) is maintenance debt that grows with every change. Without completion, CRDT-composition work (B-0132) will touch both tracks of the duplicated tooling and compound the debt.
-- **Aaron flagged it explicitly as backlog-worthy** in same exchange as B-0125 + B-0132 prerequisite framing.
+- **Debt-prevention is real and recurring.** Each duplicated implementation (.sh + .ts) is maintenance debt that grows with every change. Without completion, CRDT-composition work (081KQGDBJ0008QG0R000Y66YYQ) will touch both tracks of the duplicated tooling and compound the debt.
+- **Aaron flagged it explicitly as backlog-worthy** in same exchange as 081KQGDBJ0008QG0R001MK4YPC + 081KQGDBJ0008QG0R000Y66YYQ prerequisite framing.
 - **Bounded scope** — the duplications are finite and discoverable via grep; cutover is mechanical per item.
-- **Composes with existing work**: task #341 (TS port + future git scripts: enforce 3-tier multi-remote design) and B-0122 (peer-call scripts TypeScript migration — post-install cutover) both touch this scope. B-0140 is the **completion-side row** that consolidates the in-progress migration.
+- **Composes with existing work**: task #341 (TS port + future git scripts: enforce 3-tier multi-remote design) and 081KQDTYV0008QG0R001HQSSAX (peer-call scripts TypeScript migration — post-install cutover) both touch this scope. 081KQGDBJ0008QG0R0022EW5ZE is the **completion-side row** that consolidates the in-progress migration.
 - **Bash compatibility target preserved** per `feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md` — `tools/setup/install.sh` and bootstrap-class scripts stay bash; post-bootstrap tooling migrates.
 
 ## Why not P0
@@ -49,7 +48,7 @@ Specific scope (concrete; verify-before-state-claim discipline applies — first
 
 ## Why not P2
 
-- **The cost compounds**: each new substrate operation (B-0132 onwards) touches more tools/ scripts; deferring multi-week leaves more accumulation to clean up later.
+- **The cost compounds**: each new substrate operation (081KQGDBJ0008QG0R000Y66YYQ onwards) touches more tools/ scripts; deferring multi-week leaves more accumulation to clean up later.
 - **Aaron explicitly framed it as "so we don't just keep building dept"** — the priority signal is clear.
 
 ## Acceptance criteria
@@ -70,10 +69,10 @@ Specific scope (concrete; verify-before-state-claim discipline applies — first
 
 ## Composes with
 
-- **B-0125** (skip-csharp-on-docs-only) — companion prerequisite to B-0132; both about clean separation before adding more.
-- **B-0132** (CRDT-composition for BFT propagation) — depends on this row + B-0125; CRDT work shouldn't compound debt onto half-migrated tooling.
+- **081KQGDBJ0008QG0R001MK4YPC** (skip-csharp-on-docs-only) — companion prerequisite to 081KQGDBJ0008QG0R000Y66YYQ; both about clean separation before adding more.
+- **081KQGDBJ0008QG0R000Y66YYQ** (CRDT-composition for BFT propagation) — depends on this row + 081KQGDBJ0008QG0R001MK4YPC; CRDT work shouldn't compound debt onto half-migrated tooling.
 - **Task #341** (TS port + future git scripts: enforce 3-tier multi-remote design) — broader scope; this row is the completion sub-scope.
-- **B-0122** (peer-call scripts TypeScript migration — post-install cutover) — peer-call-specific migration; this row covers the rest.
+- **081KQDTYV0008QG0R001HQSSAX** (peer-call scripts TypeScript migration — post-install cutover) — peer-call-specific migration; this row covers the rest.
 - **`feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md`** — bash compatibility target for bootstrap-class scripts; this row preserves that boundary.
 - **`feedback_otto_215_windows_via_peer_harness_not_ci_matrix_plus_bun_ts_post_install_migration_before_windows_work_otto_215_2026_04_24.md`** — Bun-TS post-install migration; this row's completion is the post-install side.
 - **`feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`** — Otto picks the implementation cadence; framing-as-input not directive.
@@ -123,7 +122,7 @@ files with .ts counterparts removed, 2 CI workflows updated.
 | tools/profile.sh | #1962 | merged |
 | tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | merged, .sh deleted |
 
-**REMAINING (0 files — all ported in B-0156 PR):**
+**REMAINING (0 files — all ported in 081KQGDBJ0008QG0R000A4EZS5 PR):**
 
 | .sh path | lines | CI-referenced | status |
 |----------|-------|--------------|--------|

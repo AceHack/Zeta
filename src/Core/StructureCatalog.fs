@@ -7,8 +7,8 @@ namespace Zeta.Core
 /// to collections of entries, enabling query-by-shape and
 /// query-by-similarity without relying on labels.
 ///
-/// This is the second child (B-0277) of the structure recognizer
-/// (B-0240). It consumes the fingerprint library from B-0276.
+/// This is the second child (081KR2E4K0008QG0R000Z7EM4Y) of the structure recognizer
+/// (081KQZVQW0008QG0R002QZAFB2). It consumes the fingerprint library from 081KR2E4K0008QG0R0031E5PR8.
 [<RequireQualifiedAccess>]
 module StructureCatalog =
 

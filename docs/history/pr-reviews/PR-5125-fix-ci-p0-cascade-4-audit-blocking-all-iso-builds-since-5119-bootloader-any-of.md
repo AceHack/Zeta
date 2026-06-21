@@ -35,7 +35,7 @@ The cascade #4 ISO content audit (shipped in #5119) is **blocking every ISO buil
 - **isolinux** for BIOS boot → `isolinux/isolinux.cfg`
 - **refind** for UEFI boot → `EFI/BOOT/refind_x64.efi`
 
-Not legacy GRUB at `boot/grub/grub.cfg`. The build log even shows `efi-image_eltorito > Copying grub.cfg` — it lands in `EFI/`, not `boot/grub/`. My cascade #4 draft was version-skewed (training-data default leaked through — ironically the exact gap **B-0805 capstone** names as the systemic agent-discipline failure mode).
+Not legacy GRUB at `boot/grub/grub.cfg`. The build log even shows `efi-image_eltorito > Copying grub.cfg` — it lands in `EFI/`, not `boot/grub/`. My cascade #4 draft was version-skewed (training-data default leaked through — ironically the exact gap **081KSGS9H0008QG0R002BC2ZR7 capstone** names as the systemic agent-discipline failure mode).
 
 ## What this means for the maintainer
 
@@ -55,7 +55,7 @@ The last successful ISO build was **`17523e4fb`** (PR #5117, iter-5.2.1 era) —
 
 ## Composes with
 
-- B-0805 (capstone, P1) — dep-pin-search-first-authority discipline; this PR is exactly the kind of failure that backlog row was designed to prevent
+- 081KSGS9H0008QG0R002BC2ZR7 (capstone, P1) — dep-pin-search-first-authority discipline; this PR is exactly the kind of failure that backlog row was designed to prevent
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -118,7 +118,7 @@ GRUB layout). NixOS installer ISOs as of nixos-24.11 use:
 NOT legacy grub at the asserted path. Build log confirms: `efi-image_eltorito
 > Copying grub.cfg` lands in EFI/, not boot/grub/. My cascade #4 draft
 list was version-skewed (training-data default leaked through; ironically
-exactly what B-0805 capstone names as the systemic agent-discipline gap).
+exactly what 081KSGS9H0008QG0R002BC2ZR7 capstone names as the systemic agent-discipline gap).
 
 Fix:
 - Drop `boot/grub/grub.cfg` from REQUIRED_ISO_PATHS (the 3 remaining —
@@ -131,7 +131,7 @@ Fix:
 - Header comment documents the empirical anchor so future-Otto doesn't
   re-introduce the same legacy-path assumption.
 
-Confirms B-0805 (capstone, P1) was the right substrate-engineering call:
+Confirms 081KSGS9H0008QG0R002BC2ZR7 (capstone, P1) was the right substrate-engineering call:
 this exact failure mode is what dep-pin-search-first-authority discipline
 prevents.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0171.1
-zetaid: 081KSNY2Z0008QG0R003YZ3JXC
+id: 081KSNY2Z0008QG0R003YZ3JXC
 priority: P1
 status: open
 title: "OpenSpec catch-up - author Z-Set Algebra spec"
@@ -14,9 +13,9 @@ owners: [lior]
 type: spec-authoring
 ---
 
-# B-0171.1 — Author Z-Set Algebra spec
+# 081KSNY2Z0008QG0R003YZ3JXC — Author Z-Set Algebra spec
 
-This task implements the first item from the Phase 1 audit of the OpenSpec catch-up project (B-0171). It involves creating a formal specification for the Z-Set and IndexedZSet data structures.
+This task implements the first item from the Phase 1 audit of the OpenSpec catch-up project (081KQNJ500008QG0R001N94412). It involves creating a formal specification for the Z-Set and IndexedZSet data structures.
 
 ## Scope
 

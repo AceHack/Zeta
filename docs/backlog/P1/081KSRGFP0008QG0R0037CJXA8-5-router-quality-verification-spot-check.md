@@ -1,6 +1,5 @@
 ---
-id: B-0347.5
-zetaid: 081KSRGFP0008QG0R0037CJXA8
+id: 081KSRGFP0008QG0R0037CJXA8
 priority: P1
 status: open
 title: "Router-quality verification — spot-check 10 carved skill descriptions"
@@ -14,12 +13,12 @@ type: friction-reducer
 tags: [skill-routing, verification, carved-sentence]
 ---
 
-# B-0347.5 — Router-quality verification
+# 081KSRGFP0008QG0R0037CJXA8 — Router-quality verification
 
-Closes acceptance criterion #4 of the B-0347 umbrella, the only
+Closes acceptance criterion #4 of the 081KR50HA0008QG0R002ZNFQBZ umbrella, the only
 acceptance criterion still open. The bulk carving shipped (257/257
 descriptions ≤150 chars, single-line, boilerplate-free) and the
-durable audit gate landed via B-0347.4 (PR #6029). What remains is
+durable audit gate landed via 081KR50HA0008QG0R002ZNFQBZ.4 (PR #6029). What remains is
 confirming the carved sentences actually route correctly — a length
 cap does not by itself prove a description still triggers the right
 match.
@@ -46,18 +45,18 @@ and needs a routing-term added back (carve, do not re-bloat).
   in the PR body (task → expected → matched).
 - [ ] Any mismatch surfaced is fixed by adding the missing routing
   term to that one description (single-line, still ≤150 chars per the
-  B-0347.4 gate).
+  081KR50HA0008QG0R002ZNFQBZ.4 gate).
 - [ ] Re-run `bun tools/hygiene/audit-skill-description-length.ts`
   after any fix — still `0 errors`.
 
 ## Out of scope
 
 - Skill body changes (descriptions only).
-- The ≤120-char preferred tightening (that is B-0347.7).
-- CI wiring of the audit (that is B-0347.6).
+- The ≤120-char preferred tightening (that is 081KSRGFP0008QG0R002SV9GGY).
+- CI wiring of the audit (that is 081KSRGFP0008QG0R00059AM3C).
 
 ## Composes with
 
-- B-0347 (umbrella) — this child closes its acceptance #4.
-- B-0347.4 — the shipped audit gate this verification runs against.
+- 081KR50HA0008QG0R002ZNFQBZ (umbrella) — this child closes its acceptance #4.
+- 081KR50HA0008QG0R002ZNFQBZ.4 — the shipped audit gate this verification runs against.
 - `tools/hygiene/audit-skill-description-length.ts` — re-run after fixes.

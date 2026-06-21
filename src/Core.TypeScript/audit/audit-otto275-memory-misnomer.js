@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * B-0071.1 smallest safe slice: Pure-TS audit of references to the
+ * 081KDVHQA5008QG0R0018D0MX2 smallest safe slice: Pure-TS audit of references to the
  * misclassified otto_275_forever memory file.
  * Re-decomposed per "assume decomposition mistakes" rule.
  * Scans for the old filename and "live-lock 9th pattern" framing.
@@ -36,7 +36,7 @@ for (const f of allFiles) {
     });
 }
 console.log(JSON.stringify({
-    slice: 'B-0071.1',
+    slice: '081KDVHQA5008QG0R0018D0MX2',
     oldName: OLD_NAME,
     framing: OLD_FRAMING,
     hitCount: hits.length,

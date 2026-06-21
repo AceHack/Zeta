@@ -1,6 +1,5 @@
 ---
-id: B-0430
-zetaid: 081KRFA460008QG0R0022THSDJ
+id: 081KRFA460008QG0R0022THSDJ
 priority: P2
 status: open
 title: "Peer-call wrappers — CodeQL insecure-temp-file alert on autogenOutputPath() across all 8 wrappers (substrate-consistent fix needed)"
@@ -11,7 +10,7 @@ composes_with: []
 type: security
 ---
 
-# B-0430 — Peer-call wrappers: CodeQL insecure-temp-file across all 8 wrappers
+# 081KRFA460008QG0R0022THSDJ — Peer-call wrappers: CodeQL insecure-temp-file across all 8 wrappers
 
 ## What
 
@@ -98,11 +97,11 @@ function autogenOutputPath(entity: string): string {
 
 ## Composes with
 
-- PR #2949 (B-0421 self-documenting failure marker; CodeQL
+- PR #2949 (081KRA5AR0008QG0R0011ZGRZT self-documenting failure marker; CodeQL
   re-surfaced via this PR)
-- PR #2950 (B-0421 acceptance #4 smoke test; can extend with
+- PR #2950 (081KRA5AR0008QG0R0011ZGRZT acceptance #4 smoke test; can extend with
   tmpdir-isolation verification)
-- B-0421 (parent friction-reducer; CodeQL fix is adjacent)
+- 081KRA5AR0008QG0R0011ZGRZT (parent friction-reducer; CodeQL fix is adjacent)
 - `tools/peer-call/*.ts` (all 8 wrappers + 3 utility files)
 - `.claude/rules/peer-call-infrastructure.md` (canonical
   inventory)
@@ -121,7 +120,7 @@ function autogenOutputPath(entity: string): string {
 
 ## Origin
 
-CodeQL alert surfaced 2026-05-13 during PR #2949 review (B-0421
+CodeQL alert surfaced 2026-05-13 during PR #2949 review (081KRA5AR0008QG0R0011ZGRZT
 self-documenting failure marker). Otto filed this row to track
 the substrate-consistent fix across all 8 wrappers; resolved the
 PR #2949 thread with reference to this row.

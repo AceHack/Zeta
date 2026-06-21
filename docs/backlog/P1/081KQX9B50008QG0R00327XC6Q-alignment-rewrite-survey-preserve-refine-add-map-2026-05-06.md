@@ -1,6 +1,5 @@
 ---
-id: B-0215
-zetaid: 081KQX9B50008QG0R00327XC6Q
+id: 081KQX9B50008QG0R00327XC6Q
 priority: P1
 status: closed
 closed: 2026-05-07
@@ -13,7 +12,7 @@ depends_on: []
 classification: buildable-now
 ---
 
-# B-0215 - ALIGNMENT.md rewrite survey
+# 081KQX9B50008QG0R00327XC6Q - ALIGNMENT.md rewrite survey
 
 Survey the current `docs/ALIGNMENT.md` structure before
 editing it. The output is a compact preserve/refine/add map
@@ -22,7 +21,7 @@ weakening the existing alignment floor.
 
 ## Why this comes first
 
-B-0003 currently mixes several conceptual asks with an
+081KQ0YZ80008QG0R001QJJTVF currently mixes several conceptual asks with an
 existing 1000+ line contract. The first safe action is not
 to rewrite the contract. It is to map what already exists,
 especially the HC / SD / DIR clauses and the existing
@@ -34,10 +33,10 @@ clauses to preserve, refine, or add.
 - A short research or design note records the existing
   `docs/ALIGNMENT.md` headings and assigns each to
   preserve / refine / add / remove.
-- The note identifies every section needed by B-0216
-  through B-0223.
+- The note identifies every section needed by 081KQX9B50008QG0R0039H39VC
+  through 081KQX9B50008QG0R001510C9G.
 - The note explicitly calls out existing bidirectional
-  alignment text so B-0217 starts from current substrate,
+  alignment text so 081KQX9B50008QG0R001FK1G36 starts from current substrate,
   not from the stale assumption that the clause is absent.
 - No policy text is changed in `docs/ALIGNMENT.md` in this
   row.

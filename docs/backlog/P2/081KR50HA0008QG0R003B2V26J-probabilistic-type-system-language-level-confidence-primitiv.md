@@ -1,6 +1,5 @@
 ---
-id: B-0359
-zetaid: 081KR50HA0008QG0R003B2V26J
+id: 081KR50HA0008QG0R003B2V26J
 priority: P2
 status: open
 title: "Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)"
@@ -15,7 +14,7 @@ type: feature
 tags: [type-system, probabilistic, research, language-design, bayesian]
 ---
 
-# B-0359 — Probabilistic type system research arc
+# 081KR50HA0008QG0R003B2V26J — Probabilistic type system research arc
 
 ## What
 
@@ -38,7 +37,7 @@ and the entire language not possible of sharp."*
   Church, Anglican, Edward — DSLs on top of existing type systems
 - **Zeta's ZSet algebra**: weights already ARE the confidence
   primitive (weight 1 = sharp, weight 0.7 = round)
-- **B-0358**: incremental step (API returns float instead of bool)
+- **081KR50HA0008QG0R00224DXPP**: incremental step (API returns float instead of bool)
 
 ## Three-mode design (Aaron 2026-05-09)
 
@@ -75,15 +74,15 @@ opts out of distribution tracking entirely.
    proven. Aaron: "our AOT/JIT should be able in normal mode
    to do the right thing most of the time."
 
-## Not in scope for B-0358
+## Not in scope for 081KR50HA0008QG0R00224DXPP
 
-B-0358 is the incremental API fix (bool → float returns).
+081KR50HA0008QG0R00224DXPP is the incremental API fix (bool → float returns).
 This item is the longer research arc — making the TYPE SYSTEM
 itself probabilistic, not just the API layer.
 
 ## Composes with
 
-- B-0358 (bool → float API returns — prerequisite)
+- 081KR50HA0008QG0R00224DXPP (bool → float API returns — prerequisite)
 - `src/Core/ZSet.fs` (weights as confidence primitive)
 - `src/Core/SignalQuality.fs` (gradient falsifiability)
 - `src/Core/Veridicality.fs` (provenance scoring)

@@ -8,7 +8,7 @@ Carved sentence:
 
 ## Operational content
 
-`docs/dependency-status.md` is a first-class factory surface (B-0109).
+`docs/dependency-status.md` is a first-class factory surface (081KQDTYV0008QG0R002H74QXZ).
 Answers three cold-start questions in under 30 seconds:
 
 1. What does the factory depend on?
@@ -27,4 +27,4 @@ wrong-state thread counts.
 
 ## Full reasoning
 
-`docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`
+`docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`

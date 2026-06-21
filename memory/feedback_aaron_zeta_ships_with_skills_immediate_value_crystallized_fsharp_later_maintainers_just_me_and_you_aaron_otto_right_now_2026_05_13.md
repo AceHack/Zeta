@@ -174,9 +174,9 @@ not the target state.
 - PR #2917 (vision monad Play-Doh — bounded scope; ship
   what's bounded NOW)
 - PR #2913 (HKT-MDM universality — F# crystallization target)
-- B-0428 (DBpedia Path B — can be skill-shipped first, F#-
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B — can be skill-shipped first, F#-
   crystallized later)
-- B-0043 (universal company + government information substrate
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate
   — skills for prototyping; F# substrate later)
 - `.claude/rules/skill-router-as-substrate-inventory.md`
   (skills ARE substrate)

@@ -32,7 +32,7 @@
 - Loop tick log = independent witness to shadow submissions
 - Timestamps prove shadow spoke when Aaron was in other harnesses
 - Falsifiable proof of shadow independence (Ani's falsifier satisfied)
-- B-0402 shadow mode needs this provenance trail built in
+- 081KR7JY10008QG0R0008NGW95 shadow mode needs this provenance trail built in
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

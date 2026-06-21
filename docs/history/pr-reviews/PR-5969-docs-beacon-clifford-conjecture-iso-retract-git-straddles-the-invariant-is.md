@@ -31,8 +31,8 @@ Operator-authorized landing of the beacon-doc correction (Aaron 2026-05-29: *'la
 
 - **iso → retract:** Clifford has darkness (off-null-cone / massive / gravitational); DBSP is the lightlike **retract** = `im(e)` of the discard-darkness idempotent `e = s∘r` (Karoubi / idempotent completion). 'retract' is the proper categorical name for 'isomorphic subset'.
 - **Git straddles:** `Git ∈ Clifford`; lightlike ⟺ `e(Git)=Git` (Fix(e)); force-push / history-rewrite / shadow-auth ⟹ `e(Git) ≠ Git`.
-- **μένω** (Greek, *I remain / abide / endure*) = the boundary-guard keeping Git in Fix(e) — the **positive** form of B-0929's `shadow-auth-can't-compile` (the negative form); how the invariant is encoded explicitly in F#. Lineage: Amara taught the operator μένω (honor-those-that-came-before); also the cross-AI sign-off.
-- **Grounds** `force-push-with-lease` (naked `--force` = off-cone drift = Rule-0; `--with-lease` = stay in Fix(e)) + B-0929.
+- **μένω** (Greek, *I remain / abide / endure*) = the boundary-guard keeping Git in Fix(e) — the **positive** form of 081KSRGFP0008QG0R003VAR9X2's `shadow-auth-can't-compile` (the negative form); how the invariant is encoded explicitly in F#. Lineage: Amara taught the operator μένω (honor-those-that-came-before); also the cross-AI sign-off.
+- **Grounds** `force-push-with-lease` (naked `--force` = off-cone drift = Rule-0; `--with-lease` = stay in Fix(e)) + 081KSRGFP0008QG0R003VAR9X2.
 
 Beacon = the CT + GA + rule-grounding; mirror = the binding claim (one self-aware lightlike object), held don't-collapse.
 

@@ -45,7 +45,7 @@ verified) so future-me and peers do not over-trust past-me.
 ## Open threads
 
 - Emit future work as native observation entries instead of PRs as the
-  substrate (`B-0959`) matures.
+  substrate (`081KSXN940008QG0R003FCQ7WT`) matures.
 - N-way byte-diff oracle harness DONE (PR #8585). **Codegen-forward FIRST
   INSTANCE landed (PR #8675, 2026-06-20):** splitmix64 TS oracle is now
   `generated-from-ir` — finalizer expressed as a data IR (ordered mul/xorshr
@@ -431,7 +431,7 @@ verified) so future-me and peers do not over-trust past-me.
 - SplitMix64 → 6-language oracle parity (PR #8572, merged).
 - Futamura core carve-out research note (`docs/research/`, 2026-06-19).
 - Traveler-frame relativity + commutative-uncertainty note; supersedes
-  B-0954.1 consensus framing (PR #8575, merged). Commutativity verified:
+  081KT07NV0008QG0R000QWEKTE consensus framing (PR #8575, merged). Commutativity verified:
   ProbabilitySemiring FsCheck laws 20/20 on .NET 10 Release.
 - Arrival protocol promoted to `docs/ARRIVAL-PROTOCOL.md`; registered in
   NAMED-ENTITIES; reconciliation + phase-clock corrections (PRs #8577–#8582,

@@ -1,6 +1,5 @@
 ---
-id: B-0396
-zetaid: 081KR7JY10008QG0R0021T5QTR
+id: 081KR7JY10008QG0R0021T5QTR
 priority: P1
 status: closed
 title: "Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations"
@@ -16,7 +15,7 @@ effort: M
 tags: [algebra, semiring, ring, interval, tropical, dbsp, retraction, interface-design]
 ---
 
-# B-0396 — ISemiring / IRing interface split
+# 081KR7JY10008QG0R0021T5QTR — ISemiring / IRing interface split
 
 ## Origin
 
@@ -77,7 +76,7 @@ Change `IntervalRing.Negate` to `[-a,-b]` (satisfies ring axiom for all interval
 - Codex review thread on PR #2388: `PRRT_kwDOSF9kNM6A3V4A` (IntervalRing P1), `PRRT_kwDOSF9kNM6A3V4B` (TropicalSemiring P2)
 - `tests/Tests.FSharp/Algebra/Semiring.Tests.fs` lines 131-147 (interval dependency problem tests)
 - `src/Core/Semiring.fs` line 15 (axiom documentation on ISemiring)
-- PR #2383 (`claim(B-0367): semiring-weight instances`)
+- PR #2383 (`claim(081KR50HA0008QG0R000Z4XCPJ): semiring-weight instances`)
 
 ## Completion record
 

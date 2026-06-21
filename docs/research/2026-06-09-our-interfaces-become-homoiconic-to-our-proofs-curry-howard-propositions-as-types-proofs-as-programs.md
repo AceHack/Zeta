@@ -40,7 +40,7 @@ proof.
   the proofs: change the type, the proof obligation regenerates; this is the proof-room (a DST tick)
   derived from the type, à la Meijer + type providers.
 - **It rides on dependent types.** Lean/Coq/F*/Idris terms *are* proofs; our F#-side refinement
-  witnesses + the Lean proof-rooms (D4/B-0131) approach this. The interface carries its proof as a term.
+  witnesses + the Lean proof-rooms (D4/081KQGDBJ0008QG0R000D1YJCH) approach this. The interface carries its proof as a term.
 - **Closes types → rooms → governance.** Types define tests (rooms); rooms have hats (governance); and
   now the interface **carries its proof homoiconically** — so the governed, content-addressed room is
   *also* the proof of its own contract. The polity runs on objects that are simultaneously interface +
@@ -56,7 +56,7 @@ interface and its proof share one content-addressed representation. Don't claim 
 *with* it, and we close the drift gap. To realize: proof obligations generated from the type (type
 provider / Meijer), proofs content-addressed alongside the interface, Lean terms as the homoiconic
 proof carrier where dependent typing is needed. Routes to Soraya/Sova (the proof-rooms as type-derived,
-homoiconic; D4/B-0131 first), the F#/observe core (type → proof-obligation generation), the public-API/
+homoiconic; D4/081KQGDBJ0008QG0R000D1YJCH first), the F#/observe core (type → proof-obligation generation), the public-API/
 interface owners (Ilyana — the interface is now also the proof surface).
 
 ## Anchors / ties (Beacon)
@@ -66,4 +66,4 @@ dependent type theory / proofs-as-terms (Martin-Löf; Lean, Coq, Agda, Idris, F*
 define the code"; F# type providers (regenerate from types); "interfaces are the valuable thing —
 code/docs/proofs regenerate from them"; homoiconic (code=data, now =proof); content-addressing
 (interface + proof share one fingerprint = canonical root); the proof-rooms (every dependency/claim a
-DST room; D4/B-0131 Lean); types → tests → rooms → hats → governance (the loop this closes).
+DST room; D4/081KQGDBJ0008QG0R000D1YJCH Lean); types → tests → rooms → hats → governance (the loop this closes).

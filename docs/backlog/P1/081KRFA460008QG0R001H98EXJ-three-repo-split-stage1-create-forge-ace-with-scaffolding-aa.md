@@ -1,6 +1,5 @@
 ---
-id: B-0424
-zetaid: 081KRFA460008QG0R001H98EXJ
+id: 081KRFA460008QG0R001H98EXJ
 priority: P1
 status: open
 title: "Three-repo split Stage 1 — create empty Forge + ace with day-one scaffolding"
@@ -57,7 +56,7 @@ Both with full best-practice scaffolding applied at creation:
 - Declarative `docs/GITHUB-SETTINGS.md` per repo
 - Per-repo `docs/UPSTREAM-RHYTHM.md`
 
-## Pre-start checklist — COMPLETED 2026-05-13 (B-0424.1)
+## Pre-start checklist — COMPLETED 2026-05-13 (081KRFA460008QG0R001H98EXJ.1)
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
@@ -69,11 +68,11 @@ Per `.claude/rules/backlog-item-start-gate.md`:
    - No existing `tools/scaffold/` directory — clean slate, no prior art to extend
    - Skill router checked: no existing scaffold or repo-creation skill
 
-2. **Dependency-restructure** — B-0425 (product-repo split planning) is sibling row, not a blocker for Stage 1. Reciprocal pointer in B-0425 not yet present; will add in a follow-up pass. Stage 1 is executable independently.
+2. **Dependency-restructure** — 081KRFA460008QG0R003JQ46J4 (product-repo split planning) is sibling row, not a blocker for Stage 1. Reciprocal pointer in 081KRFA460008QG0R003JQ46J4 not yet present; will add in a follow-up pass. Stage 1 is executable independently.
 
 3. **License question resolved** — Apache 2.0 (same as Zeta). Forge and ace are open-source/designed-to-be-forked; honor-system framing does not apply.
 
-4. **Scope decision** — B-0424 is too broad to implement in one PR. This PR (B-0424.1) implements the smallest safe slice: day-one governance file templates for Forge and ace + a TypeScript dry-run tool (`tools/scaffold/create-repo.ts`) that shows the GitHub API calls needed to complete Stage 1. Actual GitHub repo creation (irreversible external action) is deferred to a follow-up PR with Aaron's review.
+4. **Scope decision** — 081KRFA460008QG0R001H98EXJ is too broad to implement in one PR. This PR (081KRFA460008QG0R001H98EXJ.1) implements the smallest safe slice: day-one governance file templates for Forge and ace + a TypeScript dry-run tool (`tools/scaffold/create-repo.ts`) that shows the GitHub API calls needed to complete Stage 1. Actual GitHub repo creation (irreversible external action) is deferred to a follow-up PR with Aaron's review.
 
 ## Completed slices — all merged 2026-05-13
 
@@ -81,14 +80,14 @@ All scaffolding code is in `main`. Tests pass: 30/30 (bun test tools/scaffold/cr
 
 | Slice | PR | Description |
 |-------|-----|-------------|
-| B-0424.1 | #2994 | Forge + ace day-one governance templates + dry-run `create-repo.ts` tool |
-| B-0424.2 | #2996 | `workflow_dispatch` gate for Stage 1 repo creation (safe apply entrypoint) |
-| B-0424.3 | #3003 | `UPSTREAM-RHYTHM.md` templates for Forge + ace scaffold dirs |
-| B-0424.4 | #3019 | OpenSSF Scorecard workflow to Forge + ace scaffold dirs |
-| B-0424.5 | #3025 | Dry-run test suite for `create-repo.ts` (18 tests) |
-| B-0424.6 | #3026 | `.semgrep.yml` GHA injection rule to forge+ace scaffold templates |
-| B-0424.7 | #3027 | `.github/dependabot.yml` to forge+ace scaffold templates |
-| B-0424.8 | #3028 | BP-10 invisible-Unicode + mutable-tag rules to forge+ace scaffold templates |
+| 081KRFA460008QG0R001H98EXJ.1 | #2994 | Forge + ace day-one governance templates + dry-run `create-repo.ts` tool |
+| 081KRFA460008QG0R001H98EXJ.2 | #2996 | `workflow_dispatch` gate for Stage 1 repo creation (safe apply entrypoint) |
+| 081KRFA460008QG0R001H98EXJ.3 | #3003 | `UPSTREAM-RHYTHM.md` templates for Forge + ace scaffold dirs |
+| 081KRFA460008QG0R001H98EXJ.4 | #3019 | OpenSSF Scorecard workflow to Forge + ace scaffold dirs |
+| 081KRFA460008QG0R001H98EXJ.5 | #3025 | Dry-run test suite for `create-repo.ts` (18 tests) |
+| 081KRFA460008QG0R001H98EXJ.6 | #3026 | `.semgrep.yml` GHA injection rule to forge+ace scaffold templates |
+| 081KRFA460008QG0R001H98EXJ.7 | #3027 | `.github/dependabot.yml` to forge+ace scaffold templates |
+| 081KRFA460008QG0R001H98EXJ.8 | #3028 | BP-10 invisible-Unicode + mutable-tag rules to forge+ace scaffold templates |
 
 **Dry-run verified 2026-05-14** — both repos produce 12 planned operations (create, merge-settings,
 push-scaffold, branch-protection, signed-commits, secret-scanning, dependabot-alerts,
@@ -125,12 +124,12 @@ After `--apply` completes, the checklist of manual steps from step 07 applies:
 5. Verify $0 budget caps at org level: github.com/organizations/Lucent-Financial-Group/settings/billing
 6. Confirm CodeQL default-setup active: Security → Code scanning → Default setup
 
-B-0424 closes when both repos exist at LFG/Forge + LFG/ace and the ADR is updated with
+081KRFA460008QG0R001H98EXJ closes when both repos exist at LFG/Forge + LFG/ace and the ADR is updated with
 Stage 1 completion note.
 
 ## Composes with
 
-- B-0425 (product-repo split planning) — sibling backlog row
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning) — sibling backlog row
 - `.claude/rules/lfg-acehack-topology.md` — LFG = active dev; AceHack
   = mirror; both forks already exist for Zeta
 - `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md`

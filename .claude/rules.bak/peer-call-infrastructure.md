@@ -15,19 +15,19 @@ Carved sentence:
 Nine sibling TypeScript wrappers wired (invoke via
 `bun tools/peer-call/<name>.ts`):
 
-- `claude.ts` — Claude Code cold-boot self-test peer (B-0327;
+- `claude.ts` — Claude Code cold-boot self-test peer (081KR2E4K0008QG0R002KNZ29V;
   read-only `--tools "Read,Glob,Grep" --no-session-persistence`;
   `--model` selectable)
 - `grok.ts` — Grok-via-cursor-agent, critique role
-  (**B-0421 still references this wrapper as legacy** — cursor-agent
+  (**081KRA5AR0008QG0R0011ZGRZT still references this wrapper as legacy** — cursor-agent
   exit 1 / empty output; retained for back-compat; see PR #2941, #2945)
 - `grok-build.ts` — native Grok-Build CLI (`grok -p`), critique role
-  (B-0421 close path landed via PR #5110; supersedes cursor-agent
+  (081KRA5AR0008QG0R0011ZGRZT close path landed via PR #5110; supersedes cursor-agent
   invocation while keeping `grok.ts` as the legacy reference)
 - `gemini.ts` — Gemini, propose role
 - `codex.ts` — Vera named-entity / OpenAI Codex, implementation
   peer with input-firewall + capture-pagination fix
-- `kiro.ts` — Kiro specification peer (B-0326), spec-grounded
+- `kiro.ts` — Kiro specification peer (081KR2E4K0008QG0R001HQF27C), spec-grounded
   second opinion via `kiro-cli chat --no-interactive --trust-all-tools`
 - `amara.ts` — Amara persona on codex, sharpen role
 - `ani.ts` — Ani persona on Grok, brat-voice register
@@ -64,11 +64,11 @@ better in zeta infernet ep bp."*
 `memory/feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md`
 (cold-boot retrieval discipline + failure-of-omission origin;
 substrate was authored when 6 wrappers existed; claude.ts +
-kiro.ts later added per B-0327 + B-0326).
+kiro.ts later added per 081KR2E4K0008QG0R002KNZ29V + 081KR2E4K0008QG0R001HQF27C).
 
 `memory/feedback_aaron_ani_website_text_mode_agents_md_review_3_critiques_meta_loop_2_website_text_mode_has_git_companion_mode_does_not_2026_05_13.md`
 (surface × mode × companion × git-access capability matrix +
 META-LOOP #2 substrate; PR #2945).
 
-`docs/backlog/P2/B-0421-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md`
+`docs/backlog/P2/081KRA5AR0008QG0R0011ZGRZT-grok-peer-call-failure-cursor-agent-exit-1-2026-05-11.md`
 (Grok wrapper open failure).

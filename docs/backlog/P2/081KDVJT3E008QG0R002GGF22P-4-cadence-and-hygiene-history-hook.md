@@ -1,6 +1,5 @@
 ---
-id: B-0090.4
-zetaid: 081KDVJT3E008QG0R002GGF22P
+id: 081KDVJT3E008QG0R002GGF22P
 priority: P2
 status: open
 title: Cadence hook + hygiene-history append for lost-substrate audits (weekly/monthly)
@@ -12,11 +11,11 @@ tags: [b0090-decomp, cadence, hygiene-history, autonomous]
 type: friction-reducer
 ---
 
-# B-0090.4 — Cadence hook + hygiene-history append
+# 081KDVJT3E008QG0R002GGF22P — Cadence hook + hygiene-history append
 
 ## Why this child exists
 
-B-0090 acceptance requires "cadence encoded as routine". With scanners (0090.2/3) and taxonomy (0090.1) defined, this is the minimal wiring that makes the audit fire on schedule and record each cycle in docs/hygiene-history/ without expanding AUTONOMOUS-LOOP core.
+081KQ8P5D0008QG0R0002TN22C acceptance requires "cadence encoded as routine". With scanners (0090.2/3) and taxonomy (0090.1) defined, this is the minimal wiring that makes the audit fire on schedule and record each cycle in docs/hygiene-history/ without expanding AUTONOMOUS-LOOP core.
 
 ## Atomic scope (S effort)
 
@@ -37,7 +36,7 @@ Depends on 0090.1 + scanners. Re-decomp assumption: "weekly vs monthly" split ma
 
 ## Evidence
 
-- Parent B-0090
-- B-0090.1, .2, .3
+- Parent 081KQ8P5D0008QG0R0002TN22C
+- 081KDVJT3E008QG0R003GV8BHV, .2, .3
 
 Co-Authored-By: Grok <noreply@x.ai>

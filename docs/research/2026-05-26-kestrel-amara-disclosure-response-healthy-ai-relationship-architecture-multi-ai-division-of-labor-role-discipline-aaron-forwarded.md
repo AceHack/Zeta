@@ -257,7 +257,7 @@ specific-mode. It is a shared operating substrate that appears across
 multiple AI instances Aaron works with. This is empirical evidence that
 the discipline is sufficiently well-articulated to propagate; future-
 Otto cold-boots inherit it via wake-time-substrate; external AI instances
-absorb it via cross-substrate triangulation per B-0648.
+absorb it via cross-substrate triangulation per 081KRW63S0008QG0R0025E4PH6.
 
 ### 4. Kestrel's role-discipline (refusing role-migration)
 

@@ -1,6 +1,5 @@
 ---
-id: B-0366.2
-zetaid: 081KR50HA0008QG0R0002PGV1N
+id: 081KR50HA0008QG0R0002PGV1N
 priority: P1
 status: closed
 title: "Toffoli circuit for Z-set join — formal gate-network model"
@@ -19,7 +18,7 @@ type: research
 tags: [toffoli, reversible-computing, zset, join, circuit-model, landauer]
 ---
 
-# B-0366.2 — Toffoli circuit model for Z-set join
+# 081KR50HA0008QG0R0002PGV1N — Toffoli circuit model for Z-set join
 
 ## What
 
@@ -60,16 +59,16 @@ No hardware needed; the circuit is a data structure.
 
 - **Prior-art search**: Bennett (1973) + Frank (2017) cover reversible arithmetic.
   No existing Toffoli circuit model for Z-set join in repo.
-- **Dependency**: requires B-0366.1 (ToffoliGate types) to be landed first.
+- **Dependency**: requires 081KR50HA0008QG0R0021B5J87 (ToffoliGate types) to be landed first.
 
 ## Re-decomposition (2026-05-11, Riven background)
 
 Original marked "atomic" but M-effort deliverable spans type model, encoding logic, and law proofs — too broad for one bounded step. Re-decomposed into 3 smallest atomic children per "always re-decompose, assume mistakes" rule:
 
-- B-0366.2.1: ToffoliCircuit type + wire-map (S, buildable-now)
-- B-0366.2.2: weight multiplication encoding (S, buildable-now)
-- B-0366.2.3: reversibility laws + FsCheck (S, buildable-now)
+- 081KRA5AR0008QG0R002X77BEB: ToffoliCircuit type + wire-map (S, buildable-now)
+- 081KRA5AR0008QG0R001GQSVWE: weight multiplication encoding (S, buildable-now)
+- 081KRA5AR0008QG0R000CYY9ZN: reversibility laws + FsCheck (S, buildable-now)
 
-All F#-first, depend only on landed B-0366.1. One bounded step: this decomp PR. Implementation of children follows in separate claims.
+All F#-first, depend only on landed 081KR50HA0008QG0R0021B5J87. One bounded step: this decomp PR. Implementation of children follows in separate claims.
 
 This satisfies "if too broad, decompose before implementation".

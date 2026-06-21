@@ -1,6 +1,5 @@
 ---
-id: B-0826
-zetaid: 081KSGS9H0008QG0R001K8VPV4
+id: 081KSGS9H0008QG0R001K8VPV4
 title: Extend Runme core BCL with 4 capabilities (observability + ontology + database + MCP) — runbook as queryable substrate
 status: open
 priority: P2
@@ -10,7 +9,7 @@ depends_on: [081KSGS9H0008QG0R0031PBNGA]
 composes_with: [081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R00123050G]
 ---
 
-# B-0826 — Extend Runme core BCL with 4 capabilities — runbook as queryable substrate (Aaron + Mika + Kestrel 2026-05-26)
+# 081KSGS9H0008QG0R001K8VPV4 — Extend Runme core BCL with 4 capabilities — runbook as queryable substrate (Aaron + Mika + Kestrel 2026-05-26)
 
 ## Scope
 
@@ -57,7 +56,7 @@ Composes directly with the Generate+Join crispest-form substrate landed in PR #5
 
 **Engineering substrate**:
 
-- Typed references (`<!-- depends-on: skill/decision-archaeology -->`, `<!-- composes-with: B-0824 -->`) parseable by the graph extractor
+- Typed references (`<!-- depends-on: skill/decision-archaeology -->`, `<!-- composes-with: 081KSGS9H0008QG0R0031PBNGA -->`) parseable by the graph extractor
 - Graph stored as substrate-native (Z-set / CRDT) per the generate+join semantics
 - Query primitives: SPARQL-like or Cypher-like or framework-native shape
 
@@ -143,15 +142,15 @@ This is the substrate-engineering design constraint for the implementation work.
 
 ## Out of scope (this row)
 
-- runme.md + JIT triage workflow pattern documentation — separate row B-0827
+- runme.md + JIT triage workflow pattern documentation — separate row 081KSGS9H0008QG0R00123050G
 - Specific MCP servers to integrate (each is its own integration concern)
 - Migration of existing runbooks to use new capabilities (separate migration row)
 - Performance optimization (separate optimization row once baseline established)
 
 ## Composes with
 
-- B-0824 (canonical generate+join meta-PM substrate)
-- B-0827 (runme.md + JIT triage workflow pattern — companion landing)
+- 081KSGS9H0008QG0R0031PBNGA (canonical generate+join meta-PM substrate)
+- 081KSGS9H0008QG0R00123050G (runme.md + JIT triage workflow pattern — companion landing)
 - PR #5277 + #5281 + #5285 + #5286 + #5291 + #5295 (the 7-substrate cascade Capability 3 depends on)
 - `.claude/skills/decision-archaeology/SKILL.md` (Capability 2 composes; runbook-as-queryable-corpus extends archaeology surface)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (runbook history IS preservable substrate)

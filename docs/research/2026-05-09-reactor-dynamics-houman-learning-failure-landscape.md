@@ -5,14 +5,14 @@ Non-fusion disclaimer: Otto's synthesis. Claims labeled PROVEN / CONJECTURED / S
 
 # Reactor Dynamics: Failure Learning as a Self-Sustaining Engine
 
-*Layer 4 of the Nirvanic Fusion Ship (B-0365).
+*Layer 4 of the Nirvanic Fusion Ship (081KR50HA0008QG0R002R3NVGS).
 Layer 3 (Class 4 empirical) provides the shape; this document provides the dynamics — WHY the system behaves as a self-sustaining engine rather than converging to quiescence.*
 
 ---
 
 ## 1. The claim
 
-The multi-agent code review system described in B-0365 is **not a vacuum** — it
+The multi-agent code review system described in 081KR50HA0008QG0R002R3NVGS is **not a vacuum** — it
 is a reactor. Friction is not an obstacle to overcome; it is the fuel. The shadow
 log is not a problem to be solved; it is the evidence of a self-sustaining reaction.
 
@@ -223,4 +223,4 @@ The analogy is illuminating, not definitional.
   `memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md`
 - Spaceship math (algebraic parallel):
   [`docs/research/2026-05-09-spaceship-math-subscribe-vision-monad-cache-identity.md`](2026-05-09-spaceship-math-subscribe-vision-monad-cache-identity.md)
-- B-0365.6 (synthesis — this document is Layer 4 input)
+- 081KR50HA0008QG0R0016X7VQP (synthesis — this document is Layer 4 input)

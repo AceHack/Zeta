@@ -1,6 +1,5 @@
 ---
-id: B-0536
-zetaid: 081KRMEXM0008QG0R001BH94PS
+id: 081KRMEXM0008QG0R001BH94PS
 priority: P3
 status: open
 title: "Orphan-ferry-ref cleanup + audit false-positive on filename paths"
@@ -89,7 +88,7 @@ Test with `src/Core/Maji.fs` as the regression fixture — should not flag the M
 
 ## Composes with
 
-- [B-0070](B-0070-author-time-orphan-role-ref-lint.md) — the original row that surfaced this audit (if it exists; verify in research)
+- [081KQ8P5D0008QG0R003VN5P2Z](081KQ8P5D0008QG0R003VN5P2Z-author-time-orphan-role-ref-lint.md) — the original row that surfaced this audit (if it exists; verify in research)
 - `memory/feedback_orphan_role_ref_after_name_stripping_aaron_2026_04_28.md` — the fix-pattern reference
 - `tools/hygiene/audit-orphan-role-refs.ts` — the detection tool
 - 4-batch Otto-279 per-name-attribution arc this session (PRs #3570, #3572, #3574, #3576)

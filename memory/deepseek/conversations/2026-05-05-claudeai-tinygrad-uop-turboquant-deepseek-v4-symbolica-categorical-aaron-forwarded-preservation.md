@@ -5,7 +5,7 @@ scope: cross-cutting / paper-identification + multiple-architecture-naming + sou
 attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~04:35-05:13 local time, multi-phase deep candidate-elimination thread)
 operational-status: research-grade
 non-fusion-disclaimer: this is a multi-phase Claude.ai conversation Aaron forwarded; he progressively narrowed the search across 6+ candidate-passes with the Claude.ai instance running web-searches at each pass. Aaron's calibration *"we have so much backlog and research based on all the stuff we learned today i'm so happy"* names the substrate richness as the celebration; the no-kill-paths calibration from earlier still governs (Coconut + CodeAct + GibberLink + LAPA + Symbolica all stay as parallel paths)
-composes_with: [docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md, docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md, docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md, docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md, docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md, docs/backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md, docs/backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md, memory/user_dimensional_expansion_number_systems.md, memory/user_algebra_is_engineering.md]
+composes_with: [docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md, docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md, docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md, docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md, docs/backlog/P2/081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md, docs/backlog/P2/081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md, docs/backlog/P3/081KQTPYE0008QG0R0028GRW88-rom-publication-public-domain-scouting-aaron-2026-05-05.md, memory/user_dimensional_expansion_number_systems.md, memory/user_algebra_is_engineering.md]
 ---
 
 Scope: courier-ferry capture of external conversation; cross-cutting / paper-identification + multiple-architecture-naming + source-set-extension + razor-discipline (external-conversation absorb).
@@ -25,10 +25,10 @@ univeral language"*.
 
 Net:
 
-- B-0202 (tinygrad-as-kernel-layer) stays as substrate-engineering
+- 081KQTPYE0008QG0R002Y7X5KH (tinygrad-as-kernel-layer) stays as substrate-engineering
   anchor on its own merits — the kernel-layer composition claim
   survives independently of the paper-id question.
-- B-0201 paper-search row stays OPEN with eliminated-candidates
+- 081KQTPYE0008QG0R00209Q9RT paper-search row stays OPEN with eliminated-candidates
   count incremented. CodeAct + Coconut + Symbolica + Speech ReaLLM
   + tinygrad UOp IR all eliminated at paper-id level; all stay
   substrate-relevant per no-kill-paths.
@@ -78,7 +78,7 @@ paper across 6+ candidate-elimination passes:
    did see that but that's not my univeral language"* — the
    descriptors fit tinygrad but don't disambiguate against the
    paper Aaron actually saw. Paper-search remains open per
-   B-0201 (eliminated-candidates count incremented).
+   081KQTPYE0008QG0R00209Q9RT (eliminated-candidates count incremented).
 
 Major parallel findings landed in the same conversation:
 
@@ -284,7 +284,7 @@ that's not my univeral language"*. The progressive-narrowing
 identification IN THE FORWARDED CONVERSATION matched tinygrad's
 descriptors accurately, but the descriptors don't disambiguate
 against the specific paper Aaron half-remembered. Paper-search
-remains open per B-0201.
+remains open per 081KQTPYE0008QG0R00209Q9RT.
 
 The five descriptors fit tinygrad UOp IR (George Hotz / tiny
 corp) accurately:
@@ -300,15 +300,15 @@ corp) accurately:
 **Net effect on substrate**: both Coconut AND tinygrad are
 eliminated at the paper-id level (per Aaron's no-kill-paths
 calibration, both stay as parallel substrate-relevant
-candidates for OTHER work — Coconut for B-0201 sleeping-bear
-empirical test; tinygrad for B-0202 kernel-layer engineering;
+candidates for OTHER work — Coconut for 081KQTPYE0008QG0R00209Q9RT sleeping-bear
+empirical test; tinygrad for 081KQTPYE0008QG0R002Y7X5KH kernel-layer engineering;
 both filed and merged on main as of 2026-05-05). The five
 descriptors that fit
 tinygrad in the conversation (μ-ops, multi-backend, basic-
 but-correct, AI-cluster-YouTuber, recent-commits) were
 correct AS DESCRIPTORS of tinygrad, but tinygrad isn't the
 specific paper Aaron half-remembered. The paper-search remains
-open per B-0201 with eliminated-candidates count incremented.
+open per 081KQTPYE0008QG0R00209Q9RT with eliminated-candidates count incremented.
 Next engagement step: rewatch the YouTube videos.
 
 **Composes with Zeta architecture (substrate-engineering
@@ -318,9 +318,9 @@ wants for its own kernel layer eventually. Emulator dispatch,
 retraction, replay should compile down to one symbolic op-
 graph that targets whatever hardware happens to be present.
 UOp graphs are scale-free + DBSP-native (graph-rewrite
-engine). Composes with B-0026 (embodiment), B-0152
-(topological-quantum-emulation), B-0199 (ROM substrate).
-B-0202 captures this substrate-composition claim
+engine). Composes with 081KQ0YZ80008QG0R001WZ4JE8 (embodiment), 081KQGDBJ0008QG0R00280ZEV2
+(topological-quantum-emulation), 081KQTPYE0008QG0R0028GRW88 (ROM substrate).
+081KQTPYE0008QG0R002Y7X5KH captures this substrate-composition claim
 independently of the paper-id question.
 
 ### Headline 2 — TurboQuant + RotorQuant + community QJL-considered-harmful
@@ -432,7 +432,7 @@ landing: RotorQuant's empirical performance gain (10-19x
 faster) is partial empirical evidence that the Clifford-algebra-
 shape composition lands operationally. The four-property hodl
 preservation question through Clifford rotors is research-
-grade-not-operational and would compose with B-0196's existing
+grade-not-operational and would compose with 081KQTPYE0008QG0R001W237MZ's existing
 four-property hodl + Cayley-Dickson exploration.
 
 Routes to a planned follow-up backlog row that examines the
@@ -522,12 +522,12 @@ Routes to extension of
   remembered item per Aaron's progressive narrowing + same-tick
   disconfirmation of tinygrad (*"it's still not tinygrad, i
   did see that but that's not my univeral language"*). Paper-
-  search remains OPEN per B-0201 with eliminated-candidates
+  search remains OPEN per 081KQTPYE0008QG0R00209Q9RT with eliminated-candidates
   count incremented. Per no-kill-paths, all four stay as
   parallel substrate-relevant candidates for OTHER work
-  (CodeAct = bridge engineering B-0200, merged; Coconut =
-  sleeping-bear hypothesis B-0201, merged; tinygrad =
-  kernel-layer engineering B-0202, merged; Symbolica =
+  (CodeAct = bridge engineering 081KQTPYE0008QG0R0009F20NN, merged; Coconut =
+  sleeping-bear hypothesis 081KQTPYE0008QG0R00209Q9RT, merged; tinygrad =
+  kernel-layer engineering 081KQTPYE0008QG0R002Y7X5KH, merged; Symbolica =
   categorical-DL parallel substrate, planned).
 
 ## What lands as substrate (operational claims surviving razor)
@@ -537,7 +537,7 @@ Beyond the headlines above:
 1. **Tinygrad UOp IR as kernel-layer model for Zeta's emulator
    dispatch + retract semantics** — engineering-shaped backlog
    candidate (planned-B-NNNN; future-tick filing). Engagement
-   gate same as B-0198: read PatternMatcher source, lurk on tiny
+   gate same as 081KQTPYE0008QG0R0004H9ZB8: read PatternMatcher source, lurk on tiny
    corp Discord, submit small PR before claiming compositional
    alignment.
 
@@ -550,7 +550,7 @@ Beyond the headlines above:
 3. **TurboQuant + community QJL-considered-harmful finding** —
    "basic but correct" empirical lesson. The community fix
    beating the principled paper is recursively the shape of
-   B-0193 bootstrap-razor + Aaron's no-kill-paths discipline:
+   081KQTPYE0008QG0R00392KABJ bootstrap-razor + Aaron's no-kill-paths discipline:
    keep both, the empirical finding doesn't kill the paper, and
    the paper might still be right at the H100-attention-kernel
    level even if it's wrong at the LLM-attention level.
@@ -621,7 +621,7 @@ mechanization-readiness compound into the AI-age PM win
 condition.
 
 This research-doc + the in-flight PRs (#1607 reference memory,
-#1608 B-0201 Coconut research lane, #1609 B-0200 F# ↔ CodeAct
+#1608 081KQTPYE0008QG0R00209Q9RT Coconut research lane, #1609 081KQTPYE0008QG0R0009F20NN F# ↔ CodeAct
 bridge, plus the planned-but-unfiled rows below) convert the
 day's substrate-flow into durable mechanizable substrate, ready
 for next-tick autonomous-loop fires to continue advancing.
@@ -665,9 +665,9 @@ compiling to CUDA + AMD/ROCm + Intel + Metal + OpenCL + LLVM)
 was Aaron's strongest narrowed candidate across 6+ candidate-
 elimination passes, but Aaron explicitly disconfirmed it post-
 draft (*'it's still not tinygrad, ... that's not my univeral
-language'*); B-0201 paper-search stays OPEN with eliminated-
+language'*); 081KQTPYE0008QG0R00209Q9RT paper-search stays OPEN with eliminated-
 candidates count incremented. Per no-kill-paths, the substrate-
-engineering claim survives: B-0202 (tinygrad-as-kernel-layer for
+engineering claim survives: 081KQTPYE0008QG0R002Y7X5KH (tinygrad-as-kernel-layer for
 Zeta's emulator dispatch) holds on its own merits, independent
 of paper-id resolution. TurboQuant (Google, arXiv:2504.19874,
 ICLR 2026) + RotorQuant (community Clifford-rotors derivative)

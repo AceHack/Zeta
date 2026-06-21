@@ -8,7 +8,7 @@ Kept out of the rule so the rule stays a small carved sentence (cold-start cost)
 - **Clone = per writer/loop/ticksource** — the unit that actually writes
   concurrently. Each loop/ticksource gets its OWN clone (private working tree).
   Two writers never share a tree (that's the shared-stash race). `git worktree`
-  off a clone is the cheap-disk variant (B-0558 worktree-pool; Agent
+  off a clone is the cheap-disk variant (081KRQ1AB0008QG0R001KQ9S4B worktree-pool; Agent
   `isolation: worktree`).
 - **Persona = the OWNER/identity** — you commit as your persona (`<persona>/*`
   branch ns, AgencySignature `persona=`, ZetaId persona field) regardless of which

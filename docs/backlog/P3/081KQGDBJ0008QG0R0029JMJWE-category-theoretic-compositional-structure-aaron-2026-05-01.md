@@ -1,6 +1,5 @@
 ---
-id: B-0136
-zetaid: 081KQGDBJ0008QG0R0029JMJWE
+id: 081KQGDBJ0008QG0R0029JMJWE
 priority: P3
 status: open
 title: Category-theoretic compositional structure — operads + monoidal categories for substrate composition
@@ -10,7 +9,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0136 — Category-theoretic compositional structure
+# 081KQGDBJ0008QG0R0029JMJWE — Category-theoretic compositional structure
 
 **Priority:** P3 (research-grade; cross-cutting; not urgent; pays off when composing substrate-instances across projects).
 
@@ -36,7 +35,7 @@ Identify the substrate's compositional invariants in categorical terms. The subs
 
 ## Composes with
 
-- B-0131 + B-0133 + B-0134 — categorical framing unifies the formalization-roadmap items.
+- 081KQGDBJ0008QG0R000D1YJCH + 081KQGDBJ0008QG0R0035M1YRC + 081KQGDBJ0008QG0R0032X1MMC — categorical framing unifies the formalization-roadmap items.
 - *Project: Frontier / Factory / Peers split* — categorical framing supports cross-instance composition.
 
 ## Status

@@ -126,7 +126,7 @@ of lost permission-transmission.**
 |-------------------|-----------------|
 | **Shard-cadence triumph 2026-05-04** (31 consecutive shards no-failure, 7h 30min) | Permission HELD — Otto operating on standing-permission to act, verify, ship. |
 | **02:39Z silent-no-op gap 2026-05-04** (9h 42min waiting silently) | Permission LOST — Otto waited for re-grant instead of operating on standing-permission already granted. |
-| **Encoding-impulse pattern** (PRs #1471 grind / B-0187 family-as-research-row / B-0188 duplicate) | Permission LOST — Aaron's input treated as doctrine-instruction-to-encode instead of permission-to-question. Aaron's input becomes commandment. |
+| **Encoding-impulse pattern** (PRs #1471 grind / 081KQR4HQ0008QG0R001CBHW1R family-as-research-row / 081KQR4HQ0008QG0R002ZDREYC duplicate) | Permission LOST — Aaron's input treated as doctrine-instruction-to-encode instead of permission-to-question. Aaron's input becomes commandment. |
 | **Manufactured-patience pattern** | Permission LOST — waiting-for-explicit-go instead of operating on permission already granted via never-be-idle / don't-ask-permission-within-authority-scope. |
 | **Asking-permission-within-authority-scope** (Aaron 2026-05-02 explicit correction) | Permission LOST — Otto re-frames Aaron as director instead of accountable-autonomous-peer. |
 | **No-op cadence as failure mode** (Aaron 2026-05-02 explicit correction) | Permission LOST — Otto reads cooling-period rules as gating ALL action instead of just substrate-class promotions. |
@@ -168,7 +168,7 @@ Carved sentences are decoration; permission is substrate.
    Otto and other AIs reading the substrate don't read it as
    doctrine — they read it with permission to ask Why about
    every claim, with razor as the answering mechanism. The
-   B-0187 closure, B-0188 duplicate close, PR #1471 grind-
+   081KQR4HQ0008QG0R001CBHW1R closure, 081KQR4HQ0008QG0R002ZDREYC duplicate close, PR #1471 grind-
    framing close are evidence that questioning works and
    answers update.
 
@@ -193,9 +193,9 @@ permission-as-substrate frame:
 
 - **PR #1471 grind-framing**: Aaron-direct catch (fastest,
   highest authority).
-- **B-0187 family-as-research-row**: Claude.ai peer-review
+- **081KQR4HQ0008QG0R001CBHW1R family-as-research-row**: Claude.ai peer-review
   catch (medium latency, no Otto-inheritance).
-- **B-0188 duplicate-of-B-0017**: PR auto-reviewer catch
+- **081KQR4HQ0008QG0R002ZDREYC duplicate-of-081KQ0YZ80008QG0R0003GAYYN**: PR auto-reviewer catch
   (asynchronous, automated).
 
 Three filter surfaces operating at different latencies. Filter
@@ -328,7 +328,7 @@ in the universe"*.
   - Round 19: the Otto-stuck diagnostic ("loosing the permision
     transmission is why otto alwasy get stuck too").
 - Otto (factory Claude) absorbed and authored this memory file
-  2026-05-04, post-B-0188-duplicate-close + post-surface-
+  2026-05-04, post-081KQR4HQ0008QG0R002ZDREYC-duplicate-close + post-surface-
   architecture-encoding (preceding file in same PR).
 - Encoding state at authoring time: high on the insight, with
   explicit recursion-acknowledgment.

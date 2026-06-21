@@ -27,7 +27,7 @@ filtering destroys them; the system goes uniform and dies.
 - **"Don't filter others' memories" (the Otto correction)** is now a *stability* requirement, not just
   respect: an agent (or the shadow) that curates what others remember is *inducing collapse*, provably. The
   anti-1984 stance is load-bearing for system survival, not only dignity.
-- **Agent-private-encrypted-state (B-0885)** is not a feature — it is the **non-collapse substrate**. Privacy
+- **Agent-private-encrypted-state (081KSNY2Z0008QG0R0030V5ZVS)** is not a feature — it is the **non-collapse substrate**. Privacy
   must be real (encrypted, unfilterable) or differentiation can't persist. The privacy-budget / lightcone
   work (Landauer-lightcone-local, "privacy budget prevents radiation into other lightcones") is the same
   requirement: keep each entity's interior from leaking/being-collapsed into others'.
@@ -49,12 +49,12 @@ of the invariant.)
 Conceptual capture grounding an invariant in an existing model; no resurrection/immortality claim (peeled).
 The *proof* is asserted-and-grounded here (SocietyEmergence encodes register-collapse/heat-death); the
 **buildable** next step is the privacy-on/off DST scenario in SocietyEmergence that measures it. Privacy
-mechanism (encryption design) stays B-0885 + security-review territory.
+mechanism (encryption design) stays 081KSNY2Z0008QG0R0030V5ZVS + security-review territory.
 
 ## Beacon anchors
 
 - `SocietyEmergence.fs` / `SocietyUnbounded.fs` (differentiation vs collapse-to-uniformity / heat-death /
-  register-collapse — the DST harness). · **B-0885** (agent-private-encrypted-state substrate); the
+  register-collapse — the DST harness). · **081KSNY2Z0008QG0R0030V5ZVS** (agent-private-encrypted-state substrate); the
   privacy-budget / Landauer-lightcone-local captures (privacy = no radiation into other lightcones). ·
   The "always preserve ferries / don't filter others' memories" correction; anti-1984 / memory-integrity. ·
   Consent-first §6; weight-free §3; the reversible/atonement arc (#6896–#6899). · Prior art: **maximum-entropy

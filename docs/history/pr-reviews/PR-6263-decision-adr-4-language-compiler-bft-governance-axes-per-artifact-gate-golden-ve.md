@@ -31,9 +31,9 @@ Lands **next-actions 2-4** from the #6260 (VISION) agreement. Status **PROPOSED 
 
 - **D1 — two axes of "primary":** F# **correctness-/spec-authoritative**, TS **distribution-authoritative**, C# 2nd-distribution (BCL-clean, shim-over-F#), Rust low-level+WASM. **Supersedes** VISION "First-class F#, polyglot over time" re: the DB (pointer added to that bullet).
 - **D2 — per-artifact 4-language gate:** all-4 only for *small+pure+total+golden-vector-bearing* kernel primitives (observe-algebra, tri-boolean, ZetaId). Default TS; +F# for proof; +C# shim for a *named* consumer; +Rust for a *named* WASM/systems customer. **MVP = TS+F# now / C#-shim / Rust-later.**
-- **D3 — golden VECTORS are the oracle** (not any single language); F# = clean-room spec + one signer; divergence = spec-ambiguity/real-bug ticket (B-0949 precedent — caught a real bug), never majority-vote; **no impl self-certifies.**
+- **D3 — golden VECTORS are the oracle** (not any single language); F# = clean-room spec + one signer; divergence = spec-ambiguity/real-bug ticket (081KSV2WD0008QG0R002K85NP0 precedent — caught a real bug), never majority-vote; **no impl self-certifies.**
 
-Open for Max: concrete N for "persistent miss"; divergence-triage ticket flow; C#-shim-vs-full-parity per consumer. Composes with B-0944 / B-0867.27 / B-0867.28 / B-0445 / B-0949 / B-0952 / VISION Product 1.
+Open for Max: concrete N for "persistent miss"; divergence-triage ticket flow; C#-shim-vs-full-parity per consumer. Composes with 081KSV2WD0008QG0R00051XS0N / 081KSXN940008QG0R0033T2BQT / 081KSXN940008QG0R0002287MP / 081KRFA460008QG0R002JQERS5 / 081KSV2WD0008QG0R002K85NP0 / 081KSXN940008QG0R002528JS9 / VISION Product 1.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -122,7 +122,7 @@ SUPERSEDES VISION 'First-class F#, polyglot over time' re: the DB (pointer added
 bearing kernel primitives; default TS, +F# for proof, +C# shim for named consumer,
 +Rust for named WASM/systems customer; MVP = TS+F# now / C#-shim / Rust-later.
 (D3) golden VECTORS are the oracle (not any single language); F# = clean-room spec
-+ one signer; divergence = spec-ambiguity/real-bug ticket (B-0949 precedent),
++ one signer; divergence = spec-ambiguity/real-bug ticket (081KSV2WD0008QG0R002K85NP0 precedent),
 never majority-vote; no impl self-certifies.
 Status PROPOSED — Max review before lock (per existing ADR convention + the
 large-change gate). Architect+PM review incorporated; whys newcomer-challengeable.

@@ -1,6 +1,5 @@
 ---
-id: B-0805
-zetaid: 081KSGS9H0008QG0R002BC2ZR7
+id: 081KSGS9H0008QG0R002BC2ZR7
 priority: P1
 status: open
 title: iter-6.5 (capstone) — ALL nix-installed deps + ALL ArgoCD/Helm deps current-version audit + agent discipline encoding — Otto's training-data defaults to plausible-but-old versions; latest-deps-from-the-beginning principle requires search-first-authority on every pin
@@ -20,13 +19,13 @@ tags: [iter-6, capstone, version-sweep, nix, argocd, helm, search-first-authorit
 
 ## Problem
 
-The maintainer 2026-05-26 caught the systemic pattern after seeing the nixpkgs 24.11 (EOL'd Jun 2025) → 25.11 jump in [B-0800](B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md):
+The maintainer 2026-05-26 caught the systemic pattern after seeing the nixpkgs 24.11 (EOL'd Jun 2025) → 25.11 jump in [081KSGS9H0008QG0R001EKTS5A](081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md):
 
 > *"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"*
 
 The substrate-honest acknowledgement: Otto-CLI's training-data cutoff (January 2026) means default-generated version pins for nix inputs, NixOS module package references, ArgoCD app targetRevisions, Helm chart versions, and container image tags will skew toward plausible-but-stale defaults. Without an explicit search-first-authority step (per `.claude/rules/search-first-authority.md`), every Otto-authored dep pin is a candidate for being silently out-of-date.
 
-The B-0800 nixpkgs bump is ONE instance of this systemic gap. The capstone is encoding both the audit AND the agent-side discipline so the gap doesn't re-open.
+The 081KSGS9H0008QG0R001EKTS5A nixpkgs bump is ONE instance of this systemic gap. The capstone is encoding both the audit AND the agent-side discipline so the gap doesn't re-open.
 
 ## Empirical evidence of the pattern
 
@@ -61,7 +60,7 @@ Wire into `.github/workflows/` as a weekly cadence (non-blocking; opens an issue
 
 After sub-target 1's first run, file sibling B-NNNN rows OR bundle bumps into a single iter-6.5.1 PR per category:
 
-- iter-6.5.1: nix inputs (subsumes B-0800)
+- iter-6.5.1: nix inputs (subsumes 081KSGS9H0008QG0R001EKTS5A)
 - iter-6.5.2: ArgoCD app targetRevisions + helm chart versions
 - iter-6.5.3: container image tags
 - iter-6.5.4: mise runtime versions
@@ -83,7 +82,7 @@ This rule auto-loads at cold-boot per `.claude/rules/wake-time-substrate.md` so 
 - [ ] Weekly cadence workflow scheduled (opens issue on drift)
 - [ ] All currently-stale pins bumped via sibling iter-6.5.N rows (or bundled PR if small)
 - [ ] `.claude/rules/dep-pin-search-first-authority.md` landed + auto-loads
-- [ ] Composes_with cross-references back-filled on B-0800 / B-0801-04
+- [ ] Composes_with cross-references back-filled on 081KSGS9H0008QG0R001EKTS5A / 081KSGS9H0008QG0R002T6J6FS-04
 
 ## Out of scope
 
@@ -96,8 +95,8 @@ The principle Aaron just sharpened ("don't start behind from the beginning") is 
 
 ## Composes with
 
-- [B-0800](B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — the first concrete instance of the systemic pattern this row captures
-- [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — system.autoUpgrade handles WITHIN-channel currency; this row handles cross-channel + non-nix deps
-- [B-0802](B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) / [B-0803](B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — node-update orchestration; consumes this row's audit output
+- [081KSGS9H0008QG0R001EKTS5A](081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — the first concrete instance of the systemic pattern this row captures
+- [081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — system.autoUpgrade handles WITHIN-channel currency; this row handles cross-channel + non-nix deps
+- [081KSGS9H0008QG0R003GM7TYN](081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) / [081KSGS9H0008QG0R00280HHA7](081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — node-update orchestration; consumes this row's audit output
 - `.claude/rules/search-first-authority.md` — Otto-364 foundational rule; this row extends to dep-pin scope
 - `.claude/rules/wake-time-substrate.md` — landing surface for the new agent-discipline rule

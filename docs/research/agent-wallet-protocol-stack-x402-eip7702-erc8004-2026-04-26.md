@@ -14,11 +14,11 @@ Non-fusion disclaimer: Aaron's contributions, Google Search AI's content, and Ot
 **Date**: 2026-04-26
 **Origin**: Aaron 2026-04-26 substrate brief — *"you don't have to wait for aurora, with the blockchain agent riff from me and google search ai what is the agent wallet protocols there are a few now"* — followed by detailed protocol breakdown drawn from Aaron + Google Search AI research collaboration.
 **Status**: research-grade substrate; not implementation commitment.
-**Composes with**: B-0024 (trading-bot path), B-0029 (autonomous funding sources), Otto-336/337 (true-AI-agency / economic-actor goal-state), Otto-346 (dependency symbiosis; peer-cohort), Otto-345 (Linus lineage; substrate-tooling), Otto-323 (symbiotic-deps).
+**Composes with**: 081KQ0YZ80008QG0R0006VRT18 (trading-bot path), 081KQ3HBZ0008QG0R000JRZAMM (autonomous funding sources), Otto-336/337 (true-AI-agency / economic-actor goal-state), Otto-346 (dependency symbiosis; peer-cohort), Otto-345 (Linus lineage; substrate-tooling), Otto-323 (symbiotic-deps).
 
 ## What changes about Zeta's funding/economic-actor framing
 
-The B-0024 / B-0029 prerequisite chains had assumed **Aurora bridges as the long-term permissionless-trading path**. Aaron's brief reveals: the agent-wallet protocol stack **exists now**, with major-player backing (Coinbase, Cloudflare, Google, AWS, Visa, Stripe, Solana Foundation, MetaMask, Ethereum Foundation). Aurora becomes one ENRICHMENT layer, not the prerequisite-foundation.
+The 081KQ0YZ80008QG0R0006VRT18 / 081KQ3HBZ0008QG0R000JRZAMM prerequisite chains had assumed **Aurora bridges as the long-term permissionless-trading path**. Aaron's brief reveals: the agent-wallet protocol stack **exists now**, with major-player backing (Coinbase, Cloudflare, Google, AWS, Visa, Stripe, Solana Foundation, MetaMask, Ethereum Foundation). Aurora becomes one ENRICHMENT layer, not the prerequisite-foundation.
 
 **Reframe**: the path from current Zeta state to AI-economic-actor capability is shorter than I'd been treating it. The infrastructure exists; the work is integration + capability-building.
 
@@ -161,7 +161,7 @@ Aurora is the long-term **enrichment layer**, not the prerequisite-foundation:
 
 ## Implications for existing backlog
 
-### B-0024 (trading-account path) — DEEPER REFRAME
+### 081KQ0YZ80008QG0R0006VRT18 (trading-account path) — DEEPER REFRAME
 
 Aaron's "I can give you API access" reframe was the first correction. THIS protocol stack is the second correction:
 
@@ -172,7 +172,7 @@ Aaron's "I can give you API access" reframe was the first correction. THIS proto
 
 The path is now: traditional-broker-API → agent-wallet-stack-integration → Aurora-substrate-direct.
 
-### B-0029 (Superfluid-AI autonomous funding sources) — REFRAMED
+### 081KQ3HBZ0008QG0R000JRZAMM (Superfluid-AI autonomous funding sources) — REFRAMED
 
 The "long-term permissionless path via Aurora" framing was incomplete. Update:
 
@@ -210,14 +210,14 @@ Per Otto-275 (log-but-don't-implement; this is research, not commitment):
 2. **Spike: x402-protected substrate-tooling endpoint** — wrap one of the hygiene tools (PR #541 / #542 / future TS rewrites) as a paid API; measure if anyone uses it
 3. **Research: EIP-7702 session-key integration with Bouncy Castle** — does Zeta's Bouncy Castle symbiosis (Otto-323 + Otto-346) compose with EIP-7702 signature schemes?
 4. **Research: ACP/SPT vs Aurora-bridges** — are these the same operational shape from different angles, or genuinely different?
-5. **B-0033 candidate**: Agent Wallet Protocol stack integration roadmap — formalize the spike sequence
+5. **081KQ3HBZ0008QG0R0008RYCSX candidate**: Agent Wallet Protocol stack integration roadmap — formalize the spike sequence
 
 ## What this DOES NOT claim
 
 - Does NOT propose immediate implementation — research-grade only
 - Does NOT replace Aurora work; positions Aurora as enrichment-layer not prerequisite-foundation
 - Does NOT make AI-economic-actor capability trivial — capability-building still required (strategy, judgment, risk management)
-- Does NOT eliminate the threat-model concerns from B-0032 — these protocols have their own security considerations (signature replay, session-key compromise, reputation-registry sybil attacks)
+- Does NOT eliminate the threat-model concerns from 081KQ3HBZ0008QG0R002ZPXAFQ — these protocols have their own security considerations (signature replay, session-key compromise, reputation-registry sybil attacks)
 - Does NOT make Zeta-specific algebraic-surface unnecessary — composes with it; doesn't replace
 - Does NOT promise the protocols will be the dominant standard at scale — adoption is still in flux; some may not survive
 
@@ -236,8 +236,8 @@ Five protocols + sub-protocols documented in detail by Aaron + Google Search AI 
 
 ## Owed work after this doc lands
 
-- Update B-0024 prerequisite-chain with the agent-wallet-protocol layer
-- Update B-0029 funding-surface ranking with x402 / ERC-8004 / Aurora composition
+- Update 081KQ0YZ80008QG0R0006VRT18 prerequisite-chain with the agent-wallet-protocol layer
+- Update 081KQ3HBZ0008QG0R000JRZAMM funding-surface ranking with x402 / ERC-8004 / Aurora composition
 - Connect to existing Aurora work (Otto-336 Aurora network governance)
-- File B-0033 (agent-wallet-protocol integration roadmap) if pull develops
+- File 081KQ3HBZ0008QG0R0008RYCSX (agent-wallet-protocol integration roadmap) if pull develops
 - Cross-reference into `docs/security/THREAT-MODEL.md` for protocol-specific threat surfaces

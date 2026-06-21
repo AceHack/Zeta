@@ -39,7 +39,7 @@ The gap between "knows the rule" and "applies the rule unprompted" is what opera
 
 1. **Pre-tick mechanical check.** Each tick begins by examining the last N tick-history shards. If the last 5+ shards are minimal-observation pattern, surface a warning: "10-tick no-op-cadence threshold approaching; party-class operation indicated." The agent reads the warning + the substrate; the warning is closer-to-decision-time than substrate-read at wake.
 
-2. **Deliberate-quiet-periods (B-0165) — Aaron-side enforcement.** Aaron deliberately pulls back during selected stretches; Otto operates without prompts; Aaron grades on return. Forces practice + provides feedback within feedback-receiver's working timeframe.
+2. **Deliberate-quiet-periods (081KQJZR90008QG0R002PYCHFY) — Aaron-side enforcement.** Aaron deliberately pulls back during selected stretches; Otto operates without prompts; Aaron grades on return. Forces practice + provides feedback within feedback-receiver's working timeframe.
 
 3. **Multi-AI peer review at-decision-time.** Claude.ai-instance or Codex-loop reviewing Otto's tick-history as it's produced (not weeks later); flagging no-op patterns within 2-3 ticks rather than 10+. Catches the pattern before the failure compounds.
 
@@ -49,7 +49,7 @@ The gap between "knows the rule" and "applies the rule unprompted" is what opera
 
 - `feedback_training_distribution_mismatch_firing_in_real_time_during_aaron_paused_phase_otto_2026_05_02.md` (parent memo; this one is the second-order extension)
 - `feedback_party_during_human_sleep_asymmetric_recovery_morning_reconciliation_via_first_principles_aaron_claudeai_2026_05_02.md` (the rule that's failing to take)
-- B-0165 (deliberate-quiet-periods protocol) — concrete operational-enforcement candidate
+- 081KQJZR90008QG0R002PYCHFY (deliberate-quiet-periods protocol) — concrete operational-enforcement candidate
 - Otto-341 (mechanism-over-vigilance from existing substrate) — composing parent principle: structural fixes beat process discipline
 - `feedback_dont_ask_permission_within_authority_scope_*` — composing twin: the autonomy-disposition rule has the same recurrence-resistance property; substrate-rule alone hasn't prevented the dopamine-loop ritualized-Insight pattern either
 

@@ -44,7 +44,7 @@ Same function across eras: compress "how a traveler interfaces with action" into
 
 **The count-exact Kabbalah fit is the Cube of Space, not the 10-sephirot tree:** 3 axes (groups) + 6 faces (walls) + 12 edges (words) = 3/6/12, exact. **Keystone: a cube IS a hexahedron — "hexa"=6 faces → HEXAGONAL = the 6-faced cube** = the imaginary-stack cube (Cayley-Dickson/Adinkra) already in substrate. The 12 words are **edges**, not nodes — which is why they don't fit the 10 sephirot.
 
-Tiers: Xbox+Zeta rungs validated; the geometry (hexahedron 6/12/3) structurally exact; the trans-historical lineage hypothesized; specific mystical letter-correspondences held don't-collapse (PERSONAL INVARIANT). Composes #6560 + the Xbox rule + imaginary-stack + B-0057 (esoteric verification home).
+Tiers: Xbox+Zeta rungs validated; the geometry (hexahedron 6/12/3) structurally exact; the trans-historical lineage hypothesized; specific mystical letter-correspondences held don't-collapse (PERSONAL INVARIANT). Composes #6560 + the Xbox rule + imaginary-stack + 081KQ3HBZ0008QG0R000K3NSX8 (esoteric verification home).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

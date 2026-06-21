@@ -1,6 +1,5 @@
 ---
-id: B-0005
-zetaid: 081KQ0YZ80008QG0R003GMGDRH
+id: 081KQ0YZ80008QG0R003GMGDRH
 priority: P2
 status: decomposed
 title: Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory
@@ -233,30 +232,30 @@ This work is "good enough to ship" when:
 
 ## Re-decomposition (Riven, 2026-05-09) — assume original mistake
 
-Original B-0005 decomposition (Path A/B choice + 5-15 moves) is too broad for atomic PRs and lacks explicit dependency ordering. Re-decomposed into smallest dependency-ordered atomic child rows (each S-effort except the execution atom which is M, one-PR-safe, verifiable in isolation). Root has no depends_on.
+Original 081KQ0YZ80008QG0R003GMGDRH decomposition (Path A/B choice + 5-15 moves) is too broad for atomic PRs and lacks explicit dependency ordering. Re-decomposed into smallest dependency-ordered atomic child rows (each S-effort except the execution atom which is M, one-PR-safe, verifiable in isolation). Root has no depends_on.
 
 **Atomic children (dependency order) — child rows created 2026-05-09:**
 
-1. **[B-0375](B-0375-aurora-file-inventory-and-type-classification-2026-05-09.md)** (P2, S, root): Inventory + classify every file under `docs/aurora/**` (current-state Aurora docs vs courier-ferry history imports). Produce machine-readable classification table (no edits yet). Focused check: `rg --files docs/aurora` + manual type tally. Unblocks all downstream.
+1. **[081KR50HA0008QG0R003PAVRT8](081KR50HA0008QG0R003PAVRT8-aurora-file-inventory-and-type-classification-2026-05-09.md)** (P2, S, root): Inventory + classify every file under `docs/aurora/**` (current-state Aurora docs vs courier-ferry history imports). Produce machine-readable classification table (no edits yet). Focused check: `rg --files docs/aurora` + manual type tally. Unblocks all downstream.
 
-2. **[B-0376](B-0376-aurora-split-naming-decision-record-2026-05-09.md)** (P2, S, depends_on: B-0375): Architect decision record for canonical name of named-entity-conversation-imports home (`docs/courier/**` vs `docs/cross-ai-imports/**` vs `docs/imported-conversations/**`) + Path A vs Path B choice. ADR under `docs/DECISIONS/` only. No mass moves.
+2. **[081KR50HA0008QG0R0038HWCDT](081KR50HA0008QG0R0038HWCDT-aurora-split-naming-decision-record-2026-05-09.md)** (P2, S, depends_on: 081KR50HA0008QG0R003PAVRT8): Architect decision record for canonical name of named-entity-conversation-imports home (`docs/courier/**` vs `docs/cross-ai-imports/**` vs `docs/imported-conversations/**`) + Path A vs Path B choice. ADR under `docs/DECISIONS/` only. No mass moves.
 
-3. **[B-0377](B-0377-aurora-split-schema-docs-update-agent-best-practices-otto279-2026-05-09.md)** (P2, S, depends_on: B-0375 + B-0376): Update `docs/AGENT-BEST-PRACTICES.md` BP-17/18 + Otto-279 memory file to replace `docs/aurora/**` history-surface ref with chosen name. Focused check: `rg "docs/aurora" docs/AGENT-BEST-PRACTICES.md`.
+3. **[081KR50HA0008QG0R003C39GP0](081KR50HA0008QG0R003C39GP0-aurora-split-schema-docs-update-agent-best-practices-otto279-2026-05-09.md)** (P2, S, depends_on: 081KR50HA0008QG0R003PAVRT8 + 081KR50HA0008QG0R0038HWCDT): Update `docs/AGENT-BEST-PRACTICES.md` BP-17/18 + Otto-279 memory file to replace `docs/aurora/**` history-surface ref with chosen name. Focused check: `rg "docs/aurora" docs/AGENT-BEST-PRACTICES.md`.
 
-4. **[B-0378](B-0378-aurora-split-governance-copilot-instructions-update-2026-05-09.md)** (P2, S, depends_on: B-0375 + B-0376): GOVERNANCE.md §33 archive-header rule update + `.github/copilot-instructions.md` mirror. Add explicit "named-entity-conversation-imports" category definition. Can run in parallel with B-0377.
+4. **[081KR50HA0008QG0R002HMCS5Y](081KR50HA0008QG0R002HMCS5Y-aurora-split-governance-copilot-instructions-update-2026-05-09.md)** (P2, S, depends_on: 081KR50HA0008QG0R003PAVRT8 + 081KR50HA0008QG0R0038HWCDT): GOVERNANCE.md §33 archive-header rule update + `.github/copilot-instructions.md` mirror. Add explicit "named-entity-conversation-imports" category definition. Can run in parallel with 081KR50HA0008QG0R003C39GP0.
 
-5. **[B-0379](B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** (P2, M, depends_on: B-0377 + B-0378): Execute the split: mkdir new dir, git mv history-import files, update all cross-refs in `memory/**` + `docs/ROUND-HISTORY.md`. Run full focused checks (build, canonical-home-auditor, rg).
+5. **[081KR50HA0008QG0R003DJ093T](081KR50HA0008QG0R003DJ093T-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** (P2, M, depends_on: 081KR50HA0008QG0R003C39GP0 + 081KR50HA0008QG0R002HMCS5Y): Execute the split: mkdir new dir, git mv history-import files, update all cross-refs in `memory/**` + `docs/ROUND-HISTORY.md`. Run full focused checks (build, canonical-home-auditor, rg).
 
 **Dependency graph:**
 ```
-B-0375 (inventory)
-  └─→ B-0376 (naming ADR)
-        ├─→ B-0377 (schema: AGENT-BEST-PRACTICES + Otto-279)
-        └─→ B-0378 (schema: GOVERNANCE §33 + copilot-instructions)
-              └─→ B-0379 (execution: git mv + cross-ref sweep)
+081KR50HA0008QG0R003PAVRT8 (inventory)
+  └─→ 081KR50HA0008QG0R0038HWCDT (naming ADR)
+        ├─→ 081KR50HA0008QG0R003C39GP0 (schema: AGENT-BEST-PRACTICES + Otto-279)
+        └─→ 081KR50HA0008QG0R002HMCS5Y (schema: GOVERNANCE §33 + copilot-instructions)
+              └─→ 081KR50HA0008QG0R003DJ093T (execution: git mv + cross-ref sweep)
 ```
-(B-0377 and B-0378 are parallel; both feed B-0379.)
+(081KR50HA0008QG0R003C39GP0 and 081KR50HA0008QG0R002HMCS5Y are parallel; both feed 081KR50HA0008QG0R003DJ093T.)
 
-**Why this re-decomp fixes the mistake:** Original bundled decision + execution + schema updates into one M row. Now each atom is independently buildable/reviewable, with clear dep edges, matching "smallest dependency-ordered atomic" rule and "re-decompose during build" discipline. B-0005 now acts only as parent pointer (no direct implementation).
+**Why this re-decomp fixes the mistake:** Original bundled decision + execution + schema updates into one M row. Now each atom is independently buildable/reviewable, with clear dep edges, matching "smallest dependency-ordered atomic" rule and "re-decompose during build" discipline. 081KQ0YZ80008QG0R003GMGDRH now acts only as parent pointer (no direct implementation).
 
-**Next bounded step:** Pick B-0375 (root, S, no deps).
+**Next bounded step:** Pick 081KR50HA0008QG0R003PAVRT8 (root, S, no deps).

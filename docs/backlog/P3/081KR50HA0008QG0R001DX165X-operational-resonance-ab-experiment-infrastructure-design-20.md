@@ -1,12 +1,11 @@
 ---
-id: B-0393
-zetaid: 081KR50HA0008QG0R001DX165X
+id: 081KR50HA0008QG0R001DX165X
 priority: P3
 status: open
 title: A/B experiment infrastructure design — event-capture schema, experiment-registration, git-native result storage for dashboard
 tier: engineering
 effort: M
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5]
@@ -16,7 +15,7 @@ tags: [frontier, a-b-experiments, event-capture, experiment-infrastructure, dash
 type: engineering
 ---
 
-# B-0393 — A/B experiment infrastructure design
+# 081KR50HA0008QG0R001DX165X — A/B experiment infrastructure design
 
 ## What
 
@@ -27,10 +26,10 @@ dashboard interaction feeds into. This is a **design doc first**
 The infrastructure must satisfy:
 
 > *"Every interaction with the UI should be feeding into multiple
-> UI experiments to improve the UI UX at all times."* — B-0017
+> UI experiments to improve the UI UX at all times."* — 081KQ0YZ80008QG0R0003GAYYN
 
 > *"Every pixel and list and other elements count — make them earn
-> their way through ongoing experiments."* — B-0017
+> their way through ongoing experiments."* — 081KQ0YZ80008QG0R0003GAYYN
 
 ### Infrastructure components to design
 
@@ -50,14 +49,14 @@ type DashboardEvent = {
 ```
 
 The exact schema is a design decision; the above is a starting
-hypothesis. The implementer must validate against B-0390's
+hypothesis. The implementer must validate against 081KR50HA0008QG0R00223YZP8's
 instrumented measurement modality definition.
 
 **2. Experiment registration** (TypeScript types + storage)
 
 - Experiment: an ID + description + variant definitions +
   start/end timestamps + target metric (defaults to
-  time-to-answer proxy from B-0390)
+  time-to-answer proxy from 081KR50HA0008QG0R00223YZP8)
 - Variant: an ID + feature-flag overrides for the UI
 - Registration lives in a git-native file (YAML or JSON)
   checked into the repo, not a database. Append-only.
@@ -97,12 +96,12 @@ instrumented measurement modality definition.
   the schema must accommodate agent-origin sessions.
 - **Static-site-compatible**: no server required; client-side only.
 
-## Why after B-0390 and B-0391
+## Why after 081KR50HA0008QG0R00223YZP8 and 081KR50HA0008QG0R0036HGEJ5
 
-- **B-0390**: the experiment's primary variable is the time-to-answer
-  metric; the event schema must match B-0390's instrumented
+- **081KR50HA0008QG0R00223YZP8**: the experiment's primary variable is the time-to-answer
+  metric; the event schema must match 081KR50HA0008QG0R00223YZP8's instrumented
   measurement modality.
-- **B-0391**: the infrastructure must be compatible with the GH Pages
+- **081KR50HA0008QG0R0036HGEJ5**: the infrastructure must be compatible with the GH Pages
   static hosting model (no server-side processing).
 
 ## Output artifacts
@@ -135,19 +134,19 @@ Expected: tools directory and design doc both present.
 
 - [x] Prior-art search: no existing A/B experiment infrastructure
   for this dashboard found in `tools/`, `docs/research/frontier/`,
-  or memory files. The experiment-tracking concept is in B-0017
+  or memory files. The experiment-tracking concept is in 081KQ0YZ80008QG0R0003GAYYN
   but not yet designed. Check `tools/` for any existing analytics
   or event-capture tooling before creating new structure.
-- [x] Dependency-restructure: `depends_on: [B-0390, B-0391]` —
-  needs metric definition and host model. B-0394 depends on this.
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5]` —
+  needs metric definition and host model. 081KR50HA0008QG0R002NZENZJ depends on this.
 
 ## Composes with
 
-- B-0017 (parent): implements "A/B experiment infrastructure
+- 081KQ0YZ80008QG0R0003GAYYN (parent): implements "A/B experiment infrastructure
   designed" milestone
-- B-0390 (dependency): event schema implements instrumented
+- 081KR50HA0008QG0R00223YZP8 (dependency): event schema implements instrumented
   measurement modality
-- B-0391 (dependency): static-site constraints govern the
+- 081KR50HA0008QG0R0036HGEJ5 (dependency): static-site constraints govern the
   client-side architecture
-- B-0394 (downstream): MVP wires this infrastructure for
+- 081KR50HA0008QG0R002NZENZJ (downstream): MVP wires this infrastructure for
   first live experiments

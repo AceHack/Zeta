@@ -210,7 +210,7 @@ solves self-modifying-grammar-under-multi-writer-audit cleanly.
 
 > **Critique (multi-agent + sovereign self-editing grammar)**
 >
-> The binding strategy (grammar → domain event algebra in git append-only ledger; read-models/dashboards *only* tail the log, never authoritative) is the correct direction and already latent in the existing B-0867 substrate (the PoC's `Action` + `ActionClass` + `ActionGate` + `feedbackVariants` + four-corner ownership + Otto 5 mods + `TickCyclePattern` variants). Good.
+> The binding strategy (grammar → domain event algebra in git append-only ledger; read-models/dashboards *only* tail the log, never authoritative) is the correct direction and already latent in the existing 081KSKBP80008QG0R000B3Y19A substrate (the PoC's `Action` + `ActionClass` + `ActionGate` + `feedbackVariants` + four-corner ownership + Otto 5 mods + `TickCyclePattern` variants). Good.
 >
 > **Where it breaks under the stated conditions:**
 >

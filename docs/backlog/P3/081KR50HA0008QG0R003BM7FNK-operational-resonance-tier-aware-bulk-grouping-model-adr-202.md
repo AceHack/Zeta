@@ -1,12 +1,11 @@
 ---
-id: B-0392
-zetaid: 081KR50HA0008QG0R003BM7FNK
+id: 081KR50HA0008QG0R003BM7FNK
 priority: P3
 status: open
 title: Tier-aware bulk grouping model — ADR mapping Tier 0-4 to reviewer attention levels for dashboard bulk-review surface
 tier: research-grade
 effort: S
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R00223YZP8]
@@ -16,7 +15,7 @@ tags: [frontier, tier-aware, bulk-review, dashboard, operational-resonance, adr,
 type: research
 ---
 
-# B-0392 — Tier-aware bulk grouping model ADR
+# 081KR50HA0008QG0R003BM7FNK — Tier-aware bulk grouping model ADR
 
 ## What
 
@@ -24,7 +23,7 @@ Produce an ADR that defines how the dashboard groups items for
 bulk review based on structural tier, and maps each tier to
 the appropriate reviewer attention level.
 
-This implements the 2026-05-04 architectural extension in B-0017:
+This implements the 2026-05-04 architectural extension in 081KQ0YZ80008QG0R0003GAYYN:
 
 > *"I review your architecture decisions based on those levels
 > you named earlier, so I don't need tiny corrects at every step."*
@@ -57,7 +56,7 @@ The ADR must:
 
 4. **Define the time-to-answer impact** — how does tier-aware
    grouping reduce the time-to-answer the primary question?
-   (this is how the model earns its presence per B-0390.)
+   (this is how the model earns its presence per 081KR50HA0008QG0R00223YZP8.)
 
 5. **State explicit non-goals** — what the tier model does NOT
    decide (e.g., code quality, correctness — those are
@@ -72,13 +71,13 @@ The ADR must:
   existing governance distinction between "mechanical" and
   "judgment" items is the informal predecessor; this ADR
   formalizes it for dashboard routing.
-- **B-0390 metric**: the ADR must cite B-0390's accepted
+- **081KR50HA0008QG0R00223YZP8 metric**: the ADR must cite 081KR50HA0008QG0R00223YZP8's accepted
   time-to-answer definition and show how tier grouping reduces it.
 
-## Why after B-0390
+## Why after 081KR50HA0008QG0R00223YZP8
 
 The tier routing decision is "does tier grouping reduce
-time-to-answer?" Without B-0390 defining the metric, the model
+time-to-answer?" Without 081KR50HA0008QG0R00223YZP8 defining the metric, the model
 cannot justify itself. The ADR depends on having the metric
 to evaluate against.
 
@@ -92,7 +91,7 @@ Structure:
 - Tier definitions (0-4 with classification rules)
 - Routing decisions per tier
 - Relationship to existing register tiers
-- Time-to-answer impact analysis (cite B-0390)
+- Time-to-answer impact analysis (cite 081KR50HA0008QG0R00223YZP8)
 - Non-goals
 
 ## Focused check
@@ -108,26 +107,26 @@ Expected: ADR file present.
 - Tier 0-4 defined with classification rules
 - Routing decision per tier stated
 - Relationship to mirror/beacon register tiers stated
-- Time-to-answer impact analysis present (cites B-0390)
+- Time-to-answer impact analysis present (cites 081KR50HA0008QG0R00223YZP8)
 - Non-goals section present
 
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing formal tier-aware grouping
   model ADR found in `docs/DECISIONS/`. The concept appears in
-  B-0017 body (2026-05-04 section) and memory files but has not
+  081KQ0YZ80008QG0R0003GAYYN body (2026-05-04 section) and memory files but has not
   been formalized into an ADR. Mirror/beacon register tiers are
   distinct; check before conflating.
-- [x] Dependency-restructure: `depends_on: [B-0390]` — needs
-  the time-to-answer metric to evaluate grouping impact. B-0394
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R00223YZP8]` — needs
+  the time-to-answer metric to evaluate grouping impact. 081KR50HA0008QG0R002NZENZJ
   depends on this ADR for the grouping UI component.
 
 ## Composes with
 
-- B-0017 (parent): implements "tier-aware bulk grouping" architectural
+- 081KQ0YZ80008QG0R0003GAYYN (parent): implements "tier-aware bulk grouping" architectural
   extension (2026-05-04 section)
-- B-0390 (dependency): time-to-answer metric used to evaluate tier model
-- B-0394 (downstream): MVP dashboard uses this model for the
+- 081KR50HA0008QG0R00223YZP8 (dependency): time-to-answer metric used to evaluate tier model
+- 081KR50HA0008QG0R002NZENZJ (downstream): MVP dashboard uses this model for the
   tier-grouped review surface
 - GOVERNANCE.md (existing): formalizes the mechanical/judgment
   distinction already present informally

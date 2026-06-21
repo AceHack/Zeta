@@ -211,8 +211,8 @@ NOT in C#, F#, or Rust (grep across all four cores: zero hits outside `tools/`).
 ports** carry the concrete `observe`/`simulate`/`fold` (World/NextAction/Chooser) but **not** the generic.
 Per the `tools → src` rule (`tools/` = the dep-shield/host-bootstrap, not where our-own primitives live),
 the build is **graduate `FourCornerOwnership` `tools → src` + port TS→F#/C#/Rust**, onto the Cayley-Dickson
-oscillator. Tracked as **B-1022** (the fusion). One-directional F# kin today: `Policy<'input,'decision,
-'feedback>` (`Policy.fs`, B-1017) + `StreamPolicy.fs` + `FeedbackThrottle.fs`.
+oscillator. Tracked as **081KTQD8A0008QG0R0005EFYPV** (the fusion). One-directional F# kin today: `Policy<'input,'decision,
+'feedback>` (`Policy.fs`, 081KT7YW00008QG0R003N6PF8A) + `StreamPolicy.fs` + `FeedbackThrottle.fs`.
 
 ## The architecture, end to end (in Aaron's shapes)
 

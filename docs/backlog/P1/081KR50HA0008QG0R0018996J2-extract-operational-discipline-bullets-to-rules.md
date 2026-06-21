@@ -1,6 +1,5 @@
 ---
-id: B-0349
-zetaid: 081KR50HA0008QG0R0018996J2
+id: 081KR50HA0008QG0R0018996J2
 priority: P1
 status: closed
 title: "Extract operational-discipline bullets to .claude/rules/"
@@ -16,7 +15,7 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0349 — Extract operational-discipline bullets to `.claude/rules/`
+# 081KR50HA0008QG0R0018996J2 — Extract operational-discipline bullets to `.claude/rules/`
 
 ## What
 

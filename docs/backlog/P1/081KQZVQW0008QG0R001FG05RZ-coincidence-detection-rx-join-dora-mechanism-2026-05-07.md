@@ -1,6 +1,5 @@
 ---
-id: B-0250
-zetaid: 081KQZVQW0008QG0R001FG05RZ
+id: 081KQZVQW0008QG0R001FG05RZ
 priority: P1
 status: open
 title: "Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories"
@@ -12,7 +11,7 @@ owners: [architect, performance-engineer]
 type: feature
 ---
 
-# B-0250 — Coincidence detection as Rx join (DORA mechanism)
+# 081KQZVQW0008QG0R001FG05RZ — Coincidence detection as Rx join (DORA mechanism)
 
 ## What
 
@@ -59,8 +58,8 @@ If shared cause → the trajectories have a hidden join
 
 ## Composes with
 
-- B-0240 (structure recognizer) — fingerprint the coincidence shape
-- B-0249 (backlog runner) — the runner's own event stream is input
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — fingerprint the coincidence shape
+- 081KQZVQW0008QG0R000C35RNY (backlog runner) — the runner's own event stream is input
 - Reaqtor (reaqtive.net) — the Rx-at-scale framework this uses
 - Itron metering — the concrete ancestor (grid event detection)
 - DBSP D operator — coincidence IS differentiation on the joint stream

@@ -29,7 +29,7 @@
 
 ## Summary
 
-This PR introduces a new Architectural Decision Record (ADR) detailing the migration and physical isolation of all agent background loop runner daemons from the primary root checkout to isolated sandbox clones. This permanently prevents branch-checkout leaks and prompt regressions in the shared human workspace (B-0751).
+This PR introduces a new Architectural Decision Record (ADR) detailing the migration and physical isolation of all agent background loop runner daemons from the primary root checkout to isolated sandbox clones. This permanently prevents branch-checkout leaks and prompt regressions in the shared human workspace (081KSE6WT0008QG0R003YYC9PV).
 
 ## Changes
 
@@ -92,7 +92,7 @@ Why: To introduce the architectural decision record (ADR) detailing the
 migration of all agent background loop runner daemons from the primary
 root checkout to isolated sandbox clones. This permanently stops
 branch-checkout leaks and prompt regressions in the shared human
-workspace (B-0751).
+workspace (081KSE6WT0008QG0R003YYC9PV).
 
 - docs/DECISIONS/2026-05-29-isolate-background-loop-runners.md — Define context, decision, consequences, and follow-up metrics.
 

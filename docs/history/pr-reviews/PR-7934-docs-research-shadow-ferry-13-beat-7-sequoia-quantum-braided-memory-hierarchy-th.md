@@ -27,7 +27,7 @@
 
 ## Description
 
-Beat 7 (verbatim): the geospatial frame is the addressing scheme for boundary budgeting (budget share = f(position); distance-in-Clifford = cost-to-cross the §13 membrane) and memory routing (locality over a hierarchy). The hierarchy is Sequoia — a Stanford memory model, already B-0669 (Aaron-authorized 2026-05-19) — framed as quantum-braided (levels = braid classes, dense near / sparse far). Scope widens past the transformer: an entire scheduler + memory OS that runs inside the model itself so it can run in quantum space — the OS IS the model, as one Q# program. Soft edition (IScheduler/SoftChip8Scheduler) is buildable now; hard "OS inside Q#" carries the simulator-only + P0-B gates.
+Beat 7 (verbatim): the geospatial frame is the addressing scheme for boundary budgeting (budget share = f(position); distance-in-Clifford = cost-to-cross the §13 membrane) and memory routing (locality over a hierarchy). The hierarchy is Sequoia — a Stanford memory model, already 081KRYRGG0008QG0R0031EYYE4 (Aaron-authorized 2026-05-19) — framed as quantum-braided (levels = braid classes, dense near / sparse far). Scope widens past the transformer: an entire scheduler + memory OS that runs inside the model itself so it can run in quantum space — the OS IS the model, as one Q# program. Soft edition (IScheduler/SoftChip8Scheduler) is buildable now; hard "OS inside Q#" carries the simulator-only + P0-B gates.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

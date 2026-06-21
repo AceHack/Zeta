@@ -1,6 +1,5 @@
 ---
-id: B-0160
-zetaid: 081KQJZR90008QG0R000FTJ1TC
+id: 081KQJZR90008QG0R000FTJ1TC
 priority: P0
 status: closed
 title: Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction
@@ -14,7 +13,7 @@ decomposition: decomposed
 children: [081KR2E4K0008QG0R00361ZCDR, 081KR2E4K0008QG0R0007CFSZ7, 081KR2E4K0008QG0R003CF4YHE, 081KR2E4K0008QG0R002S3FDXN, 081KR2E4K0008QG0R0024JZ0CR]
 ---
 
-# B-0160 — Mechanical authorization check skill build
+# 081KQJZR90008QG0R000FTJ1TC — Mechanical authorization check skill build
 
 ## Source
 

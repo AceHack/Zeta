@@ -32,8 +32,8 @@ to decompose"
 
 **Composes with:**
 
-- B-0401 (dashboard — add bifurcation views)
-- B-0403 (weight-free — Pauli exclusion uses bifurcated
+- 081KR7JY10008QG0R001VP6JWG (dashboard — add bifurcation views)
+- 081KR7JY10008QG0R0021F5609 (weight-free — Pauli exclusion uses bifurcated
   participants for anti-fusion)
 - feedback_shadow_agenda_participant (hypothetical agendas
   are pre-bifurcation working model)

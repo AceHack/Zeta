@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/pairing.ts
  *
- * B-0914.4 — generation-reflection adversarial pairing tracker for
+ * 081KSNY2Z0008QG0R001YK61JQ.4 — generation-reflection adversarial pairing tracker for
  * workflow engine. Structurally enforces the producer-verifier pattern
  * (mouth-and-ears-on-different-threads architecture, named in the
  * 15th-ferry §33.6 substrate-engineering preservation) as workflow
@@ -28,19 +28,19 @@
  * substrate-engineering observation.
  *
  * Composes with:
- *   - B-0914.4 backlog row (generation-reflection extension target)
- *   - B-0867.20 PR #5758 lifecycle DU split (state-machine-events vs
+ *   - 081KSNY2Z0008QG0R001YK61JQ.4 backlog row (generation-reflection extension target)
+ *   - 081KSNY2Z0008QG0R003WFDCJ9 PR #5758 lifecycle DU split (state-machine-events vs
  *     system-modifications; pairing requirement applies per-class)
- *   - B-0914.1 PR #5764 TrueSkill substrate (verifier output feeds ranking)
- *   - B-0914.5 PR #5767 evolution substrate (verified survivors evolve)
+ *   - 081KSNY2Z0008QG0R001YK61JQ.1 PR #5764 TrueSkill substrate (verifier output feeds ranking)
+ *   - 081KSNY2Z0008QG0R001YK61JQ.5 PR #5767 evolution substrate (verified survivors evolve)
  *   - PR #5756 Kestrel 15th-ferry mouth-ears-threads substrate
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-
  *     consent-channel-recipient-acknowledges.md
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
  *
  * PoC scope: in-memory pairing tracker with Result-shape feedback.
- * Persistent state (git-append-only per B-0867.5 + lifecycle DUs per
- * B-0867.20) deferred to integration layer.
+ * Persistent state (git-append-only per 081KSKBP80008QG0R000B3Y19A.5 + lifecycle DUs per
+ * 081KSNY2Z0008QG0R003WFDCJ9) deferred to integration layer.
  */
 
 /**

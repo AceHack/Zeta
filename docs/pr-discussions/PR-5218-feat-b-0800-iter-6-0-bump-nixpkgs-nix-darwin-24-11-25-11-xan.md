@@ -1,6 +1,6 @@
 ---
 pr_number: 5218
-title: "feat(B-0800 iter-6.0): bump nixpkgs + nix-darwin 24.11 \u2192 25.11 'Xantusia' (current stable; EOL recovery)"
+title: "feat(081KSGS9H0008QG0R001EKTS5A iter-6.0): bump nixpkgs + nix-darwin 24.11 \u2192 25.11 'Xantusia' (current stable; EOL recovery)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T16:41:56Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:39:19Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5218: feat(B-0800 iter-6.0): bump nixpkgs + nix-darwin 24.11 → 25.11 'Xantusia' (current stable; EOL recovery)
+# PR #5218: feat(081KSGS9H0008QG0R001EKTS5A iter-6.0): bump nixpkgs + nix-darwin 24.11 → 25.11 'Xantusia' (current stable; EOL recovery)
 
 ## PR description
 
@@ -50,7 +50,7 @@ NixOS guidance: `stateVersion` is sticky — don't bump on already-installed hos
 
 ## Composes with
 
-- B-0801–B-0805 iter-6 cluster-update arc (already on main; this is iter-6 sub-target 0 the urgent EOL recovery)
+- 081KSGS9H0008QG0R002T6J6FS–081KSGS9H0008QG0R002BC2ZR7 iter-6 cluster-update arc (already on main; this is iter-6 sub-target 0 the urgent EOL recovery)
 - `.claude/rules/dep-pin-search-first-authority.md` (this PR is exactly the discipline the rule encodes — WebSearch-grounded version bump with citation)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

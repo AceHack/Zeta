@@ -1,6 +1,6 @@
 ---
 pr_number: 5210
-title: "feat(iter-5.4.0 B-0794): homelab gh-auth-login + operator-pubkey copy at install time"
+title: "feat(iter-5.4.0 081KSGS9H0008QG0R0027HJZYH): homelab gh-auth-login + operator-pubkey copy at install time"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T16:19:36Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:39:24Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5210: feat(iter-5.4.0 B-0794): homelab gh-auth-login + operator-pubkey copy at install time
+# PR #5210: feat(iter-5.4.0 081KSGS9H0008QG0R0027HJZYH): homelab gh-auth-login + operator-pubkey copy at install time
 
 ## PR description
 
 ## Summary
 
-Implements **iter-5.4.0** — minimum-viable B-0794 homelab-mode device-registration substrate the maintainer's deferral named:
+Implements **iter-5.4.0** — minimum-viable 081KSGS9H0008QG0R0027HJZYH homelab-mode device-registration substrate the maintainer's deferral named:
 > *"i'll wait till we have the install.sh and git native device registration into github is ready before i run again"*
 
 Per Mika 2026-05-26 substrate (homelab-first; production-mode deferred):
@@ -50,7 +50,7 @@ After this lands → next ISO build triggers (push to `full-ai-cluster/**` match
 - iter-5.1 (wifi persist) + iter-5.2 (hostname inject) + iter-5.2.2 (install-time auto-gen + login banner) + iter-5.3 (password prompt) + **iter-5.4.0 (gh-auth + operator-pubkey-copy)**
 - Empirical UX: boot → 6.x prompts → gh auth login → operator authenticates → ssh from any of operator's GitHub-registered keys works on first boot
 
-## Not in scope (B-0794 future sub-rows)
+## Not in scope (081KSGS9H0008QG0R0027HJZYH future sub-rows)
 
 - Self-registration commit/push to `maintainers/<name>/cluster-nodes/` (sub-target 3 full)
 - ArgoCD app watching the tree (sub-target 4)

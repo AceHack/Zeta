@@ -122,12 +122,12 @@ This row was the FIRST instance that named the #2-Ready sub-class in the catalog
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CkO2q`
-- **Path**: `docs/backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`
+- **Path**: `docs/backlog/P2/081KQTPYE0008QG0R003DK06PA-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T15:09:19Z on `docs/backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`:4 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T15:09:19Z on `docs/backlog/P2/081KQTPYE0008QG0R003DK06PA-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`:4 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Bump last_updated when closing this backlog row**
@@ -158,7 +158,7 @@ This row was the FIRST instance that named the #2-Ready sub-class in the catalog
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`
+- `docs/backlog/P2/081KQTPYE0008QG0R003DK06PA-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`
 - `docs/research/chain-rule-proof-log.md`
 - `tools/lean4/Lean4/DbspChainRule.lean`
 
@@ -263,7 +263,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`
+- `docs/backlog/P2/081KQTPYE0008QG0R003DK06PA-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md`
 - `docs/research/chain-rule-proof-log.md`
 
 **Message:**

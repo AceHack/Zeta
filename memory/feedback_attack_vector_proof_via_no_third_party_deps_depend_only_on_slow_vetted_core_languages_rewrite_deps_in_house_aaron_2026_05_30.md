@@ -1,6 +1,6 @@
 ---
 name: attack-vector-proof-via-no-3rd-party-deps-depend-only-on-slow-vetted-core-rewrite-deps-in-house
-description: "Aaron 2026-05-30: the core languages move glacially and are the most-vetted layer in software; the attack surface is the 3rd-party dependency supply chain. Depend ONLY on the slow vetted core (compiler + std lib), pull in ZERO 3rd-party deps, and rewrite the ones we currently depend on in-house over time -> the supply-chain attack surface collapses to ~the languages themselves = attack-vector-proof. Composes with summonable-BFT (same move = consensus + hardening) + the B-0944 multi-language build (slice-1 shipped zero-dep via PR #6158)."
+description: "Aaron 2026-05-30: the core languages move glacially and are the most-vetted layer in software; the attack surface is the 3rd-party dependency supply chain. Depend ONLY on the slow vetted core (compiler + std lib), pull in ZERO 3rd-party deps, and rewrite the ones we currently depend on in-house over time -> the supply-chain attack surface collapses to ~the languages themselves = attack-vector-proof. Composes with summonable-BFT (same move = consensus + hardening) + the 081KSV2WD0008QG0R00051XS0N multi-language build (slice-1 shipped zero-dep via PR #6158)."
 type: feedback
 created: 2026-05-30
 ---
@@ -31,7 +31,7 @@ dependencies; rewrite the ones we currently depend on, in-house, over time -> at
 Building core primitives in bare TS/F#/C#/Rust (no deps) gives BOTH at once:
 
 - **consensus-verified** -- the four compilers agree on the primitive's shape (summonable BFT;
-  compilers as non-Byzantine oracles, B-0944).
+  compilers as non-Byzantine oracles, 081KSV2WD0008QG0R00051XS0N).
 - **supply-chain-hardened** -- no untrusted deps; the attack surface is ~the languages.
 
 The "compilers don't lie" oracles are ALSO the slowest-moving, most-vetted code you can stand
@@ -39,18 +39,18 @@ on. One move (bare-language multi-impl), two properties (consensus + hardening).
 
 ## Empirical anchor
 
-B-0944 slice 1 (the TS tri-boolean digital qubit, `src/Core.TypeScript/tri-boolean/`, shipped via PR #6158) ships with
+081KSV2WD0008QG0R00051XS0N slice 1 (the TS tri-boolean digital qubit, `src/Core.TypeScript/tri-boolean/`, shipped via PR #6158) ships with
 ZERO 3rd-party dependencies -- only the language + `bun:test` for tests. The multi-language core-
 primitive program is attack-vector-proof by construction from day one.
 
 ## Composes with
 
-- `docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md` -- the multi-language build that embodies this (zero-dep, summonable-BFT)
+- `docs/backlog/P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md` -- the multi-language build that embodies this (zero-dep, summonable-BFT)
 - `.claude/rules/references-upstreams-not-our-code-search-excludes.md` -- upstreams are for STUDY, not DEPEND; this principle is the dependency-side counterpart (study them, then rewrite in-house rather than depend)
-- `docs/backlog/P1/B-0853-sigstore-cosign-artifact-signing-free-stuff-iso-containers-tarballs-backed-by-fulcio-rekor-aaron-2026-05-27.md` -- artifact-signing hardens what we DO ship; this hardens what we depend ON (the inbound supply chain)
-- `docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md` -- the deps-management program; this principle is its security-minimizing complement (manage what you must depend on; rewrite/remove the rest)
+- `docs/backlog/P1/081KSKBP80008QG0R000Y2B7HC-sigstore-cosign-artifact-signing-free-stuff-iso-containers-tarballs-backed-by-fulcio-rekor-aaron-2026-05-27.md` -- artifact-signing hardens what we DO ship; this hardens what we depend ON (the inbound supply chain)
+- `docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md` -- the deps-management program; this principle is its security-minimizing complement (manage what you must depend on; rewrite/remove the rest)
 - `.claude/rules/dep-pin-search-first-authority.md` -- when a dep IS pinned, verify current; this principle is the upstream move (minimize the deps that need pinning at all)
-- summonable BFT (B-0944) -- same bare-language multi-impl move yields consensus AND hardening
+- summonable BFT (081KSV2WD0008QG0R00051XS0N) -- same bare-language multi-impl move yields consensus AND hardening
 
 ## Substrate-honest framing
 

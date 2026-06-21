@@ -31,7 +31,7 @@
 - add tools/refresh-github-worldview/refresh.ts
 - query open PRs via gh and recent branch commits via git log origin/main..HEAD
 - emit one JSON object with prs[] and recentMerges[]
-- close B-0262 and refresh docs/BACKLOG.md
+- close 081KR2E4K0008QG0R001DYCKNH and refresh docs/BACKLOG.md
 
 ## Checks
 - bun tools/refresh-github-worldview/refresh.ts | jq -e '(.prs | type == "array") and (.recentMerges | type == "array")'
@@ -39,7 +39,7 @@
 - git diff --check
 - bun run typecheck
 - bunx eslint tools/refresh-github-worldview/refresh.ts
-- npx markdownlint-cli2 docs/backlog/P1/B-0262-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md docs/BACKLOG.md
+- npx markdownlint-cli2 docs/backlog/P1/081KR2E4K0008QG0R001DYCKNH-refresh-worldview-scaffold-open-prs-recent-merges-2026-05-08.md docs/BACKLOG.md
 
 ## Outcome
 
@@ -178,7 +178,7 @@
 ```
 feat(tools): add refresh worldview scaffold
 
-Add the B-0262 refresh-github-worldview script for open PRs and recent branch commits, then close the backlog row with regenerated index evidence.
+Add the 081KR2E4K0008QG0R001DYCKNH refresh-github-worldview script for open PRs and recent branch commits, then close the backlog row with regenerated index evidence.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```

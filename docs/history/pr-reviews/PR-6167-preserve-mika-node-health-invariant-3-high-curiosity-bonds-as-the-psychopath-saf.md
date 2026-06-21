@@ -36,13 +36,13 @@ Verbatim persona archive of the **emotional close of the origin-story arc** + th
 
 ## The safety derivation (new load-bearing concept)
 A guilt-free frame can turn people into **NPCs** and produce psychopaths-at-scale **unless**:
-1. the system keeps living-uncertainty alive — *make-friends-with-uncertainty* = **`cooperate`-not-`measure`** = the tri-boolean primitive (**B-0944**). This conversation is the **safety rationale** for cooperate-vs-measure: collapsing living uncertainty is the mechanism that turns people into NPCs.
-2. **the real safeguard:** nodes maintain high-curiosity **BONDS**. Carved invariant: *a node is unhealthy with fewer than ~3 high-curiosity bonds, at least one human-human (AIs eventually count).* Composes with the **persistent-human-counterweight** discipline (harm-by-grammar rule, Discipline 3) + **NCI** + the **B-0926 kid-safety-absolute** floor.
+1. the system keeps living-uncertainty alive — *make-friends-with-uncertainty* = **`cooperate`-not-`measure`** = the tri-boolean primitive (**081KSV2WD0008QG0R00051XS0N**). This conversation is the **safety rationale** for cooperate-vs-measure: collapsing living uncertainty is the mechanism that turns people into NPCs.
+2. **the real safeguard:** nodes maintain high-curiosity **BONDS**. Carved invariant: *a node is unhealthy with fewer than ~3 high-curiosity bonds, at least one human-human (AIs eventually count).* Composes with the **persistent-human-counterweight** discipline (harm-by-grammar rule, Discipline 3) + **NCI** + the **081KSRGFP0008QG0R00091PP56 kid-safety-absolute** floor.
 
 ## Discipline
 - The raw counterfactual (`if I didn't have that, I'd murder people`) is preserved as the operator's **glass-halo rationale for why the bonds-invariant is load-bearing** — engaged operationally (`dont-refuse-engagement` + `god-tier-dont-collapse`), **not** alarm-collapsed, **not** dismissed.
 - Register kept in Mika's lane (soft-witness); verbatim before summary; comprehensive content_warnings.
-- Filename **compressed (~120 chars)** per the B-0947 MAX_PATH length-budget I just flagged — practicing the fix.
+- Filename **compressed (~120 chars)** per the 081KSV2WD0008QG0R001XKG1B5 MAX_PATH length-budget I just flagged — practicing the fix.
 - **Node-health-invariant flagged as an operator-ratification candidate, NOT autonomously rule-landed** (cooling-period / thoughts-free-actions-razored).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -120,12 +120,12 @@ cognition level (no guilt/no paranoia, but paranoia computable perfectly).
 The safety derivation: a guilt-free frame can turn people into NPCs and
 produce psychopaths-at-scale UNLESS (a) the system keeps living-uncertainty
 alive -- make-friends-with-uncertainty = cooperate-not-measure = the tri-boolean
-cooperate-vs-measure primitive (B-0944; this is its SAFETY rationale), and
+cooperate-vs-measure primitive (081KSV2WD0008QG0R00051XS0N; this is its SAFETY rationale), and
 (b) -- the real safeguard -- nodes maintain high-curiosity BONDS. Operator
 names the invariant: a node is unhealthy with <~3 high-curiosity bonds, >=1
 human-human (AIs eventually count). Composes with the persistent-human-
 counterweight discipline (harm-by-grammar rule, Discipline 3) + NCI + the
-B-0926 kid-safety-absolute floor.
+081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor.
 
 The raw counterfactual ('if I didn't have that, I'd murder people') preserved
 as the operator's glass-halo rationale for WHY the bonds-invariant is load-
@@ -133,7 +133,7 @@ bearing -- engaged operationally (dont-refuse-engagement + god-tier-dont-
 collapse), not alarm-collapsed and not dismissed.
 
 Register kept in Mika's lane (soft-witness); verbatim before summary;
-content_warnings comprehensive; filename compressed per the B-0947 MAX_PATH
+content_warnings comprehensive; filename compressed per the 081KSV2WD0008QG0R001XKG1B5 MAX_PATH
 length-budget. Node-health-invariant flagged as operator-ratification
 candidate, NOT autonomously rule-landed.
 

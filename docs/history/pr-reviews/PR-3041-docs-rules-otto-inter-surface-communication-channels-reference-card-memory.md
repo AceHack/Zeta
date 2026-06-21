@@ -73,7 +73,7 @@ All 8 channels exercised in the 2026-05-13 session:
 - [PR #3032](https://github.com/Lucent-Financial-Group/Zeta/pull/3032) (claim-acquire)
 - [PR #3036](https://github.com/Lucent-Financial-Group/Zeta/pull/3036) (identity-stays-unified)
 - [PR #3037](https://github.com/Lucent-Financial-Group/Zeta/pull/3037) (SENDER_IDS schema extension)
-- B-0444 P2 (bus envelope worktree field — follow-up gap)
+- 081KRFA460008QG0R001SXP0C2 P2 (bus envelope worktree field — follow-up gap)
 - \`.claude/rules/wake-time-substrate.md\`, \`.claude/rules/glass-halo-bidirectional.md\`, \`.claude/rules/substrate-or-it-didnt-happen.md\`
 
 ## Test plan
@@ -248,7 +248,7 @@ files landed, PR #3032 rule auto-loaded for future, 9 bus envelopes scanned,
 multiple Aaron-as-ferry paste-relays, cross-lane PR thread resolution.
 
 Composes with PR #3032 (claim-acquire), PR #3036 (identity-stays-unified),
-PR #3037 (SENDER_IDS schema), B-0444 (bus envelope worktree field), and
+PR #3037 (SENDER_IDS schema), 081KRFA460008QG0R001SXP0C2 (bus envelope worktree field), and
 the existing wake-time-substrate / glass-halo-bidirectional / substrate-or-it-didn't-happen
 rules.
 

@@ -1,6 +1,6 @@
 ---
 pr_number: 5411
-title: "feat(B-0852.1): TS crypto module \u2014 HKDF-SHA256 + AES-256-GCM for credential persistence (pure functions; 18 unit tests; smallest concrete substrate slice)"
+title: "feat(081KSKBP80008QG0R003AX2A69.1): TS crypto module \u2014 HKDF-SHA256 + AES-256-GCM for credential persistence (pure functions; 18 unit tests; smallest concrete substrate slice)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T06:53:21Z"
@@ -12,15 +12,15 @@ archived_at: "2026-05-27T19:25:21Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5411: feat(B-0852.1): TS crypto module — HKDF-SHA256 + AES-256-GCM for credential persistence (pure functions; 18 unit tests; smallest concrete substrate slice)
+# PR #5411: feat(081KSKBP80008QG0R003AX2A69.1): TS crypto module — HKDF-SHA256 + AES-256-GCM for credential persistence (pure functions; 18 unit tests; smallest concrete substrate slice)
 
 ## PR description
 
 ## Summary
 
-Smallest concrete substrate slice of B-0852 cred-persistence. Pure crypto functions; no I/O; 18 unit tests covering the threat model.
+Smallest concrete substrate slice of 081KSKBP80008QG0R003AX2A69 cred-persistence. Pure crypto functions; no I/O; 18 unit tests covering the threat model.
 
-## Threat model (Phase 1 scope per B-0852 row body)
+## Threat model (Phase 1 scope per 081KSKBP80008QG0R003AX2A69 row body)
 
 - HKDF-SHA256 binds key to `(USB-UUID || passphrase)` — copying ESP contents to a different-UUID USB cannot decrypt (defeats "copy to uuid" attack named by Aaron 2026-05-27)
 - AES-256-GCM authenticated encryption rejects tampered ciphertext/tag/salt
@@ -47,17 +47,17 @@ Tests cover: round-trip (small/empty/1MiB), wrong passphrase, wrong UUID (copy-t
 
 ## Composes with
 
-- **B-0852** (parent row) — credential persistence on USB ESP + boot-sequence auth-method picker
-- **B-0852.2** (next sub-row) — TS persist/restore CLIs consuming this module's `encrypt`/`decrypt`
-- **B-0852.5** (sibling sub-row) — declarative cred-manifest schema (this module is the cipher layer; manifest is the data-shape layer)
+- **081KSKBP80008QG0R003AX2A69** (parent row) — credential persistence on USB ESP + boot-sequence auth-method picker
+- **081KSKBP80008QG0R003AX2A69.2** (next sub-row) — TS persist/restore CLIs consuming this module's `encrypt`/`decrypt`
+- **081KSKBP80008QG0R003AX2A69.5** (sibling sub-row) — declarative cred-manifest schema (this module is the cipher layer; manifest is the data-shape layer)
 - node:crypto `hkdfSync` + `createCipheriv("aes-256-gcm", ...)` — standard primitives; no third-party dep
 
 ## What this is NOT
 
-- NOT the persist/restore CLI (B-0852.2)
-- NOT the cred-manifest schema (B-0852.5)
-- NOT the NixOS module (B-0852.4)
-- NOT serialization of the envelope (B-0852.2 will length-prefix-pack salt+iv+tag+ciphertext)
+- NOT the persist/restore CLI (081KSKBP80008QG0R003AX2A69.2)
+- NOT the cred-manifest schema (081KSKBP80008QG0R003AX2A69.5)
+- NOT the NixOS module (081KSKBP80008QG0R002XBRGN8)
+- NOT serialization of the envelope (081KSKBP80008QG0R003AX2A69.2 will length-prefix-pack salt+iv+tag+ciphertext)
 - NOT hardware-bound keys (Phase 3; explicit deferral)
 
 ## Test plan
@@ -75,7 +75,7 @@ Tests cover: round-trip (small/empty/1MiB), wrong passphrase, wrong UUID (copy-t
 
 ## Pull request overview
 
-Adds a small, pure TypeScript crypto substrate for B-0852 credential persistence, implementing key derivation + authenticated encryption and validating the Phase-1 threat model via Bun unit tests.
+Adds a small, pure TypeScript crypto substrate for 081KSKBP80008QG0R003AX2A69 credential persistence, implementing key derivation + authenticated encryption and validating the Phase-1 threat model via Bun unit tests.
 
 **Changes:**
 - Introduces `deriveKey` (HKDF-SHA256) and `encrypt`/`decrypt` (AES-256-GCM) as pure functions with a structured envelope shape.

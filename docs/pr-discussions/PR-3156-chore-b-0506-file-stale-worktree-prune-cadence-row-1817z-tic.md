@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two-commit shipment for tick 2026-05-14T18:17Z:
 
-1. **B-0506 backlog row** (P3 friction-reducer): mechanize \`git worktree prune --expire=now\` via small TypeScript audit tool + per-tick or daily cadence wire-up
+1. **081KRHWGX0008QG0R002DPG02X backlog row** (P3 friction-reducer): mechanize \`git worktree prune --expire=now\` via small TypeScript audit tool + per-tick or daily cadence wire-up
 2. **1817Z tick shard**: documents the 23-stale-worktree manual cleanup that triggered the mechanization row + side observation about an accidental stash-pop
 
 ## Why now
@@ -35,15 +35,15 @@ Per PR #3153's newly-merged otto-channels reference card ID-allocation disciplin
 
 \`\`\`
 $ find docs/backlog -name "B-*.md" -type f | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
-B-0503
-B-0504
-B-0505
+081KRHWGX0008QG0R0027YXBTB
+081KRHWGX0008QG0R000PVB6FF
+081KRHWGX0008QG0R002C038BJ
 
-$ gh pr list --state open --search "B-0506 OR B-0507 OR B-0508" --json number,title
+$ gh pr list --state open --search "081KRHWGX0008QG0R002DPG02X OR 081KRHWGX0008QG0R000E8BHQ9 OR 081KRHWGX0008QG0R002S107P7" --json number,title
 (empty)
 \`\`\`
 
-B-0506 safe — no on-disk collision, no in-flight contention.
+081KRHWGX0008QG0R002DPG02X safe — no on-disk collision, no in-flight contention.
 
 ## Side observation: stash-pop hazard
 
@@ -51,7 +51,7 @@ The shard captures a substrate-honest observation: a long-standing prior-session
 
 ## Test plan
 
-- [x] B-0506 row created in \`docs/backlog/P3/\` with full frontmatter
+- [x] 081KRHWGX0008QG0R002DPG02X row created in \`docs/backlog/P3/\` with full frontmatter
 - [x] On-disk + in-flight ID-allocation check passed
 - [x] 1817Z shard committed at canonical path
 - [x] Stash-pop hazard substrate-honestly preserved in shard
@@ -64,11 +64,11 @@ The shard captures a substrate-honest observation: a long-standing prior-session
 
 ## Pull request overview
 
-Adds a new factory-hygiene backlog row (B-0506) and a tick shard documenting the empirical stale-worktree cleanup that motivated it, to reduce recurring “branch already used by worktree” lockouts after session crashes.
+Adds a new factory-hygiene backlog row (081KRHWGX0008QG0R002DPG02X) and a tick shard documenting the empirical stale-worktree cleanup that motivated it, to reduce recurring “branch already used by worktree” lockouts after session crashes.
 
 **Changes:**
 - Added tick shard for 2026-05-14T18:17Z documenting pruning 23 stale worktree admin entries and the motivating incident.
-- Added P3 backlog row B-0506 proposing mechanization (TS audit tool + cadence) for `git worktree prune --expire=now`.
+- Added P3 backlog row 081KRHWGX0008QG0R002DPG02X proposing mechanization (TS audit tool + cadence) for `git worktree prune --expire=now`.
 
 ### Reviewed changes
 
@@ -77,17 +77,17 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 | File | Description |
 | ---- | ----------- |
 | docs/hygiene-history/ticks/2026/05/14/1817Z.md | New tick shard capturing the stale-worktree cleanup and related operational observations. |
-| docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md | New P3 backlog row proposing a mechanized stale-worktree prune cadence/tooling. |
+| docs/backlog/P3/081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md | New P3 backlog row proposing a mechanized stale-worktree prune cadence/tooling. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md:14 (resolved)
+### Thread 1: docs/backlog/P3/081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md:14 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:25:15Z):
 
-Frontmatter `type: feature` conflicts with the PR description calling B-0506 a “P3 friction-reducer”. If this row is meant to be tracked as a friction-reducer (as the text later implies), align either the PR description or the row’s `type` so tooling/triage doesn’t categorize it inconsistently.
+Frontmatter `type: feature` conflicts with the PR description calling 081KRHWGX0008QG0R002DPG02X a “P3 friction-reducer”. If this row is meant to be tracked as a friction-reducer (as the text later implies), align either the PR description or the row’s `type` so tooling/triage doesn’t categorize it inconsistently.
 
-### Thread 2: docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md:55 (resolved)
+### Thread 2: docs/backlog/P3/081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md:55 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:25:15Z):
 

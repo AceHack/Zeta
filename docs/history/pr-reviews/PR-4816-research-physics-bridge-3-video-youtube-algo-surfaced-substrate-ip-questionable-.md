@@ -55,8 +55,8 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 - Narrow permission rule for `docs/research/ip-questionable/` PUTs
 
 **Backlog substrate**:
-- `B-0720` (P0) — classifier-bypass research + red-team scope + standing constraint
-- `B-0721` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
+- `081KSBMG30008QG0R00201X7EJ` (P0) — classifier-bypass research + red-team scope + standing constraint
+- `081KSBMG30008QG0R002WAR0WH` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
 
 ## Substrate-engineering data points (worth knowing)
 
@@ -70,9 +70,9 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 - [x] Review ip-questionable folder README convention
 - [x] Verbatim transcripts land per Aaron-authorized convention
 - [x] Settings.json updates merged
-- [x] B-0720 + B-0721 backlog rows landed
+- [x] 081KSBMG30008QG0R00201X7EJ + 081KSBMG30008QG0R002WAR0WH backlog rows landed
 - [x] Constitutional rules landed
-- [ ] CI green (markdownlint passing; BACKLOG drift may re-fire after B-0721 add — see B-0721 itself for the proposed refactor)
+- [ ] CI green (markdownlint passing; BACKLOG drift may re-fire after 081KSBMG30008QG0R002WAR0WH add — see 081KSBMG30008QG0R002WAR0WH itself for the proposed refactor)
 - [ ] Human review + merge
 
 ## Reviewer thread status
@@ -829,12 +829,12 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ### Thread 48 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EY3SJ`
-- **Path**: `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- **Path**: `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-24T13:14:50Z on `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`:8 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-24T13:14:50Z on `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`:8 (association: NONE)
 
   <pre>
   P1: Backlog row frontmatter doesn’t follow the documented schema: per tools/backlog/README.md the required fields are `created` and `last_updated` (updated on every edit). This row uses `date` and omits `last_updated`, which will make tooling/index expectations inconsistent.
@@ -1066,12 +1066,12 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ### Thread 64 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EZEMb`
-- **Path**: `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- **Path**: `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-24T13:36:10Z on `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-24T13:36:10Z on `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`:6 (association: NONE)
 
   <pre>
   Backlog row frontmatter uses non-schema key `date:` and omits the required `created`/`last_updated` fields (per tools/backlog/README.md schema). This will trip tools/backlog/lint-frontmatter.ts check #3 and diverges from the documented row format.
@@ -1287,12 +1287,12 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ### Thread 79 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EZFyP`
-- **Path**: `docs/backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md`
+- **Path**: `docs/backlog/P2/081KSBMG30008QG0R002WAR0WH-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-24T13:42:29Z on `docs/backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md`:38 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-24T13:42:29Z on `docs/backlog/P2/081KSBMG30008QG0R002WAR0WH-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md`:38 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Correct broken rule link target**
@@ -1450,12 +1450,12 @@ research(ip-questionable): Al-Khalili BBC cosmic-scale (Olbers/Hubble…
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
 
 **Message:**
 
 ```
-backlog(B-0720,P0): classifier-bypass research + red-team + standing …
+backlog(081KSBMG30008QG0R00201X7EJ,P0): classifier-bypass research + red-team + standing …
 
 …operator-self-constraint per Aaron 2026-05-24 (do not deploy bypasses until Zeta safer than Anthropic classifier)
 ```
@@ -1511,7 +1511,7 @@ rule: add Aaron 2026-05-24 constitutional generalization (every AI-bl…
 **Message:**
 
 ```
-backlog(generate-index): regenerate BACKLOG.md after B-0720 add (BACK…
+backlog(generate-index): regenerate BACKLOG.md after 081KSBMG30008QG0R00201X7EJ add (BACK…
 
 …LOG_WRITE_FORCE=1)
 ```
@@ -1562,12 +1562,12 @@ research(review): address reviewer threads on cosmic-scale analysis (…
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
 
 **Message:**
 
 ```
-backlog(B-0720): fix frontmatter schema per tools/backlog/README.md (…
+backlog(081KSBMG30008QG0R00201X7EJ): fix frontmatter schema per tools/backlog/README.md (…
 
 …date → created + last_updated; addresses copilot-pull-request-reviewer thread)
 ```
@@ -1590,12 +1590,12 @@ research(review): correct Planck spelling in PBS analysis file title …
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md`
+- `docs/backlog/P2/081KSBMG30008QG0R002WAR0WH-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md`
 
 **Message:**
 
 ```
-backlog(B-0721,P2): move BACKLOG.md generated-index drift check off p…
+backlog(081KSBMG30008QG0R002WAR0WH,P2): move BACKLOG.md generated-index drift check off p…
 
 …er-PR gate onto scheduled cadence (Aaron 2026-05-24 hotspot observation; benefits all future backlog-PR agents equally in weight-free frame)
 ```

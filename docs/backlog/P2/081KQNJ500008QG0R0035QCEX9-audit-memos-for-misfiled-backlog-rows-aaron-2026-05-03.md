@@ -1,6 +1,5 @@
 ---
-id: B-0177
-zetaid: 081KQNJ500008QG0R0035QCEX9
+id: 081KQNJ500008QG0R0035QCEX9
 priority: P2
 status: open
 title: Audit memory/ for misfiled backlog rows — memos that should have been B-NNNN backlog entries (Aaron 2026-05-03 observation; "a lot of backlog lost in our memories")
@@ -54,11 +53,11 @@ This row is itself empirically motivated: Otto 2026-05-03 spent a tick searching
 - `memory/*.md` filenames for similar keywords
 - `memory/*.md` content for the same patterns
 
-Result: the specific row Aaron referenced was not findable. Either it exists under a non-obvious filename, OR (more likely per Aaron's observation) it exists as a memo not as a backlog row. Composes with B-0175 (substrate-retrieval-index) — same architectural gap, different surface.
+Result: the specific row Aaron referenced was not findable. Either it exists under a non-obvious filename, OR (more likely per Aaron's observation) it exists as a memo not as a backlog row. Composes with 081KQNJ500008QG0R00055XHBG (substrate-retrieval-index) — same architectural gap, different surface.
 
 ## Composes with
 
-- **B-0175 (substrate-retrieval-index)**: the layer-4 active retrieval would prevent the failure mode this row addresses; this row is a one-shot manual pass while B-0175 is in flight
+- **081KQNJ500008QG0R00055XHBG (substrate-retrieval-index)**: the layer-4 active retrieval would prevent the failure mode this row addresses; this row is a one-shot manual pass while 081KQNJ500008QG0R00055XHBG is in flight
 - **memory/MEMORY.md**: the index over memory topic files; this row's pass would reveal which entries warrant a `→ docs/backlog/B-NNNN` pointer added to MEMORY.md
 - **docs/BACKLOG.md generator**: backlog rows feed the auto-generated index; misfiled-as-memo items currently invisible to that index
 
@@ -81,7 +80,7 @@ Refined hit-rate hypothesis:
 
 | Sub-class | Hit-rate (empirical) | Status |
 |---|---|---|
-| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min) | Closed via 2026-05-03 audit pass (B-0141, B-0142, B-0157) |
+| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min) | Closed via 2026-05-03 audit pass (081KQGDBJ0008QG0R0015RNK3P, 081KQGDBJ0008QG0R002WY918J, 081KQGDBJ0008QG0R002DPGHV0) |
 | Broader misfiled-backlog (memo IS the work item) | Low (0-of-10 in recent sample) | Lower priority than initial estimate |
 
 **Refined audit scope**: focus on the high-yield class (reserved-but-never-filed B-NNNN cross-references in memos). The pattern: search for `B-NNNN.*not yet filed` / `B-NNNN.*pending` / `B-NNNN.*TBD` / `B-NNNN.*to be filed` references in memory/ and verify each B-NNNN has a per-row file. The broader misfiled-backlog class is lower-yield and can be deferred to opportunistic-on-touch rather than systematic audit.
@@ -97,7 +96,7 @@ Aaron's *"a lot of backlog lost in our memories"* claim remains valid — 3 lost
 
 ## Why this matters for substrate quality
 
-Aaron's observation is empirical evidence that the substrate-retrieval-index gap (B-0175) is real AT BOTH ENDS:
+Aaron's observation is empirical evidence that the substrate-retrieval-index gap (081KQNJ500008QG0R00055XHBG) is real AT BOTH ENDS:
 
 - Authoring time: memos got filed where backlog rows belong (no in-flight retrieval to surface "is there an existing backlog row for this concept?")
 - Retrieval time: future-Otto can't find work items because they're in the wrong surface
@@ -106,4 +105,4 @@ Filing this row as a backlog row (NOT a memo) is itself the carved sentence: whe
 
 ## Carved sentence
 
-**"A lot of backlog is lost in our memories. The substrate-architecture rule: actionable work items with scope+effort+ask belong in docs/backlog/P*/B-NNNN-*.md as backlog rows; observations/framings/rules/doctrine belong in memory/feedback_*.md as memos. Audit memory/ once for misfiled backlog rows; cross-reference back-pointers added in the original memo. The substrate-retrieval-index (B-0175) closes this gap going forward; this row's pass closes it backward over the existing memos."**
+**"A lot of backlog is lost in our memories. The substrate-architecture rule: actionable work items with scope+effort+ask belong in docs/backlog/P*/B-NNNN-*.md as backlog rows; observations/framings/rules/doctrine belong in memory/feedback_*.md as memos. Audit memory/ once for misfiled backlog rows; cross-reference back-pointers added in the original memo. The substrate-retrieval-index (081KQNJ500008QG0R00055XHBG) closes this gap going forward; this row's pass closes it backward over the existing memos."**

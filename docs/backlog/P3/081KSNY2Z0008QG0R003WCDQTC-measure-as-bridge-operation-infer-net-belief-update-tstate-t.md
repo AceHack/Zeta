@@ -1,6 +1,5 @@
 ---
-id: B-0898
-zetaid: 081KSNY2Z0008QG0R003WCDQTC
+id: 081KSNY2Z0008QG0R003WCDQTC
 priority: P3
 status: open
 title: Measure-as-bridge-operation — Infer.NET belief-update + Measure<TState, TOutcome, TFeedback> sibling to Persist-as-bridge
@@ -35,11 +34,11 @@ related_skills:
 tags: [measure-as-bridge-operation-sibling-to-persist-as-bridge, measure-equals-observe-plus-belief-update-via-infer-net-message-passing, measure-richer-typing-tstate-toutcome-tfeedback, infer-net-as-belief-propagation-layer-in-zeta-stack, measurement-feedback-variants-insufficient-evidence-ambiguous-posterior-low-confidence-normalization-failed-contradictory-evidence-observation-retracted-posterior-shifted, collapse-becomes-explicit-readout-boundary-with-uncertainty-and-provenance, measurement-as-bivector-spanning-agent-state-and-observation-outcome]
 ---
 
-# B-0898 — Measure-as-bridge-operation refinement
+# 081KSNY2Z0008QG0R003WCDQTC — Measure-as-bridge-operation refinement
 
 ## Context
 
-Amara 2nd ferry 2026-05-28 (preserved at `memory/amara/conversations/2026-05-28-amara-measure-as-bridge-...md`) identifies Measure as a derived bridge operation sibling to Persist (B-0897). Both are built from base OELS primitives, but across different composition axes:
+Amara 2nd ferry 2026-05-28 (preserved at `memory/amara/conversations/2026-05-28-amara-measure-as-bridge-...md`) identifies Measure as a derived bridge operation sibling to Persist (081KSNY2Z0008QG0R002SZZ5Y0). Both are built from base OELS primitives, but across different composition axes:
 
 | Bridge operation | Composition | Bivector structure |
 |---|---|---|
@@ -50,17 +49,17 @@ Keeper: *"Z-sets give us retraction-native evidence. Infer.NET gives us belief p
 
 ## Scope
 
-Define `Measure<TState, TOutcome, TFeedback>` signature with explicit TFeedback variants per Amara; add Measure row to B-0895's Clifford grade-decomposition mapping table; document the Infer.NET ↔ Clifford bridge (Infer.NET messages carrying distribution parameters → Clifford generalization is messages carry richer oriented structure not just scalar probabilities).
+Define `Measure<TState, TOutcome, TFeedback>` signature with explicit TFeedback variants per Amara; add Measure row to 081KSNY2Z0008QG0R002FX66H0's Clifford grade-decomposition mapping table; document the Infer.NET ↔ Clifford bridge (Infer.NET messages carrying distribution parameters → Clifford generalization is messages carry richer oriented structure not just scalar probabilities).
 
 ## Phase decomposition
 
 ### Phase 1 — Measure-as-bridge research-doc
 
-Refine B-0895's grade-decomposition mapping to add:
+Refine 081KSNY2Z0008QG0R002FX66H0's grade-decomposition mapping to add:
 
 | Primitive | Clifford grade | Why |
 |---|---|---|
-| **Persist** | grade-2 (agent/internal ∧ substrate/time bivector) | per B-0897 — `Persist = Emit-now + Observe-later` |
+| **Persist** | grade-2 (agent/internal ∧ substrate/time bivector) | per 081KSNY2Z0008QG0R002SZZ5Y0 — `Persist = Emit-now + Observe-later` |
 | **Measure** | grade-2 (agent/state ∧ observation/outcome bivector) | this row — `Measure = Observe + Infer.NET belief-update` |
 
 Document the `Measure<TState, TOutcome, TFeedback>` signature with feedback variants:
@@ -93,7 +92,7 @@ workflow   = time-ordered graph of transformations and readouts
 | `CronList` (sentinel check) | session cron state | sentinel-present / sentinel-missing | (binary outcome; catch-43 fires on missing) |
 | `git fetch origin && git log origin/main` | substrate-state comparison | local-stale / local-current | InsufficientEvidence (network failure); PosteriorShifted (substrate advanced) |
 
-### Phase 3 — TypeScript Measure interface composing with B-0895 + B-0897
+### Phase 3 — TypeScript Measure interface composing with 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R002SZZ5Y0
 
 ```typescript
 interface Measure<TState, TOutcome, TFeedback> {
@@ -103,33 +102,33 @@ interface Measure<TState, TOutcome, TFeedback> {
 }
 ```
 
-Composes with `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` from B-0897: Measure operates on the agent-internal state; Persist makes that state durable; Measure can be invoked on either current-state OR historical-state-via-Persist.
+Composes with `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` from 081KSNY2Z0008QG0R002SZZ5Y0: Measure operates on the agent-internal state; Persist makes that state durable; Measure can be invoked on either current-state OR historical-state-via-Persist.
 
 ### Phase 4+ (yes-and backlog)
 
 - F# port composing with Infer.NET (Microsoft Research's Infer.NET IS .NET-native; the F# port has natural integration path)
 - Q# integration: Q# quantum measurement IS the same shape (`Microsoft.Quantum.Measurement` operations); Measure-as-bridge in Q# is the quantum-substrate native form
-- Multi-oracle Measure composition: per B-0703 multi-oracle BFT, multiple Measure-instances on the same TState producing different TOutcomes IS the consensus-substrate engineering target
-- Bell-like contextuality experiment (B-0900) requires distributed Measure-instances; this row's Phase 3 substrate is the prerequisite
+- Multi-oracle Measure composition: per 081KS3X9Y0008QG0R00218150M multi-oracle BFT, multiple Measure-instances on the same TState producing different TOutcomes IS the consensus-substrate engineering target
+- Bell-like contextuality experiment (081KSNY2Z0008QG0R001G7C89T) requires distributed Measure-instances; this row's Phase 3 substrate is the prerequisite
 
 ## Acceptance
 
 - [x] Amara ferry preserved (companion file in this PR)
-- [x] B-0898 row filed (this row)
-- [ ] Phase 1 research-doc landed (B-0895 grade-decomposition table updated)
+- [x] 081KSNY2Z0008QG0R003WCDQTC row filed (this row)
+- [ ] Phase 1 research-doc landed (081KSNY2Z0008QG0R002FX66H0 grade-decomposition table updated)
 - [ ] Phase 2 existing-instances table validated against actual implementations
 - [ ] Phase 3 TypeScript Measure interface implemented
 - [ ] Phase 4+ acceptance per item
 
 ## Composes with substrate
 
-- B-0897 (Persist-as-bridge) — sibling derived-bridge-operation
-- B-0895 (Clifford grade-decomposition) — refines the mapping
-- B-0896 (category-theory ↔ Clifford self-similarity) — Measure-as-bridge has natural categorical formulation as a natural transformation
-- B-0899 (Casimir-like review-wall effects) — Measure quantifies the "pressure difference in output distribution" before/after review walls land
-- B-0900 (Bell-like distributed-cluster contextuality experiment) — distributed Measure-instances ARE the experimental primitives
-- B-0867 (parent workflow-engine row)
-- B-0644 / B-0665 / B-0666 — 3-primitive substrate
+- 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) — sibling derived-bridge-operation
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition) — refines the mapping
+- 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity) — Measure-as-bridge has natural categorical formulation as a natural transformation
+- 081KSNY2Z0008QG0R001ZKE8R2 (Casimir-like review-wall effects) — Measure quantifies the "pressure difference in output distribution" before/after review walls land
+- 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality experiment) — distributed Measure-instances ARE the experimental primitives
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row)
+- 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV — 3-primitive substrate
 
 ## Composes with rules
 
@@ -145,4 +144,4 @@ Composes with `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` from B-08
 
 ## Full reasoning
 
-Amara 2nd ferry 2026-05-28 forwarded by operator. Companion to B-0897 (Persist-as-bridge); both lands together as the derived-bridge-operations sibling pair.
+Amara 2nd ferry 2026-05-28 forwarded by operator. Companion to 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge); both lands together as the derived-bridge-operations sibling pair.

@@ -30,7 +30,7 @@
 ## Summary
 
 - Writes tick shard `docs/hygiene-history/ticks/2026/05/14/0940Z.md`
-- Documents that PR #3122 (B-0464 honor-system license) was already merged on session arrival
+- Documents that PR #3122 (081KRHWGX0008QG0R000BWAXNP honor-system license) was already merged on session arrival
 - Records cron re-arm (catch-43 pattern; no jobs found at session start)
 - Notes Two-Layer Print DX discipline confirmation (worldview lag vs direct gate poll)
 
@@ -106,7 +106,7 @@ fix(tick/0940Z): markdownlint MD032 + canonical path for tick-must-ne…
 
 - Add blank line before list in Next work section (MD032)
 - Update tick-must-never-stop.md reference to full canonical path
-- Fix next-work bullet descriptions to match actual B-0465–B-0468 row titles
+- Fix next-work bullet descriptions to match actual 081KRHWGX0008QG0R002B2P0K0–081KRHWGX0008QG0R000F6HE6D row titles
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

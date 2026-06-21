@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 - add a remote-only replay report for the autonomous-loop coordination trajectory
-- ground the report in B-0209 and the existing remote-only coordination matrix
+- ground the report in 081KQX9B50008QG0R001MNYK61 and the existing remote-only coordination matrix
 - release the temporary Codex claim in-branch so the PR diff carries only the durable report
 
 ## Checks

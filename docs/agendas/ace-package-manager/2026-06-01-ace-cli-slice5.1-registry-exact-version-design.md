@@ -5,7 +5,7 @@
 - **Status:** approved (the operator 2026-06-01) — spec for implementation
 - **Builds on:** slice 4 (inline-URL transitive resolution: `resolve.ts` identity-keyed DFS + verify + atomic install; `store.ts` store + trust store)
 - **Agenda:** `docs/agendas/ace-package-manager/AGENDA.md` (lifecycle stages distribute → discover)
-- **Backlog:** B-0288
+- **Backlog:** 081KR2E4K0008QG0R002YE3MMD
 
 ## Goal
 
@@ -155,7 +155,7 @@ the transitive graph. Per the operator 2026-06-01:
   we write our own solver we should test it against existing ones") — the
   `bcl-interface-boundary` differential-test trick (own impl + a library-backed
   adapter behind a flag, tested against each other on shared constraint-graph
-  fixtures), exactly as the Rust observe oracle (B-0867.27/.29, PRs #6255/#6257)
+  fixtures), exactly as the Rust observe oracle (081KSXN940008QG0R0033T2BQT/.29, PRs #6255/#6257)
   differential-tested our own `ZetaJsonParser` against a `serde_json`-backed
   adapter behind the `serde` feature flag.
 - **Pulling in a vetted solver library is on the table** if the problem proves

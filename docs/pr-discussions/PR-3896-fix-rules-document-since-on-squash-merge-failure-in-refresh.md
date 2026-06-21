@@ -107,7 +107,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-16T15:27:30Z):
 
-P1: This new guidance conflicts with existing documentation that recommends `git log origin/main --since="<last-refresh-timestamp>"` as a “concrete query” for recent merges (docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md:381-385). To avoid truth-drift, either scope this warning more narrowly (e.g., only unreliable under squash-merge + old author dates) and/or add a note/link indicating the other doc should be updated to the safer query pattern.
+P1: This new guidance conflicts with existing documentation that recommends `git log origin/main --since="<last-refresh-timestamp>"` as a “concrete query” for recent merges (docs/backlog/P1/081KQGDBJ0008QG0R003H0G5YQ-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md:381-385). To avoid truth-drift, either scope this warning more narrowly (e.g., only unreliable under squash-merge + old author dates) and/or add a note/link indicating the other doc should be updated to the safer query pattern.
 
 This issue also appears in the following locations of the same file:
 - line 42

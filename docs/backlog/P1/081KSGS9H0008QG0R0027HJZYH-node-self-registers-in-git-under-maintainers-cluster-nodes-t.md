@@ -1,6 +1,5 @@
 ---
-id: B-0794
-zetaid: 081KSGS9H0008QG0R0027HJZYH
+id: 081KSGS9H0008QG0R0027HJZYH
 priority: P1
 status: open
 title: Node self-registers in git under maintainers/<name>/cluster-nodes/<node>/ on first boot → ArgoCD picks up registration → full GitOps-native bring-up of K8s + apps + charts; cluster substrate is git-source-of-truth from install moment forward
@@ -31,7 +30,7 @@ Today's substrate (iter-4.x + iter-5.1+5.2 in PR #5103):
 - Node DOES NOT register itself in git
 - Cluster substrate (k8s, ArgoCD, apps, charts) requires operator to manually `kubectl apply -f ...` OR pre-bake into the NixOS install ISO
 
-Result: every cluster bring-up requires operator-driven manual workflow OR ISO rebuilds for substrate changes. Neither composes with B-0782 (DIO end-state) or B-0790 (zero-dev-machine homelab persona).
+Result: every cluster bring-up requires operator-driven manual workflow OR ISO rebuilds for substrate changes. Neither composes with 081KSE6WT0008QG0R003CMCX84 (DIO end-state) or 081KSGS9H0008QG0R00153CQ8B (zero-dev-machine homelab persona).
 
 ## Target
 
@@ -48,13 +47,13 @@ zflash --host pikachu --role control-plane
 
 ## Sub-targets
 
-### Sub-target 1 — node git-auth substrate (depends on B-0789 iter-5+)
+### Sub-target 1 — node git-auth substrate (depends on 081KSGS9H0008QG0R002T3BJ2R iter-5+)
 
-Per B-0789 iter-5+ sub-row design (cluster-as-PR-author): per-node SSH keypair generated at install time + auto-registered as repo deploy key (write-enabled). Per-node revocable. Commit identity = `<hostname>@<maintainer-cluster>.local` or similar.
+Per 081KSGS9H0008QG0R002T3BJ2R iter-5+ sub-row design (cluster-as-PR-author): per-node SSH keypair generated at install time + auto-registered as repo deploy key (write-enabled). Per-node revocable. Commit identity = `<hostname>@<maintainer-cluster>.local` or similar.
 
 Without git-auth, node can't push registration commit. This is the load-bearing dependency.
 
-Out of this row: implementation of node git-auth (tracked under B-0789 iter-5+); this row consumes the substrate.
+Out of this row: implementation of node git-auth (tracked under 081KSGS9H0008QG0R002T3BJ2R iter-5+); this row consumes the substrate.
 
 ### Sub-target 2 — node-config schema in maintainers/<name>/cluster-nodes/<node>/
 
@@ -103,8 +102,8 @@ spec:
 
 A NixOS systemd service `zeta-register.service` that runs once on first boot AFTER install completes + after network is up. It:
 
-1. Reads `/etc/zeta/cluster-node-id` (from B-0792 iter-5.2) for hostname
-2. Reads `/etc/zeta/cluster-node-roles` (from B-0793 iter-5.3) for role-set
+1. Reads `/etc/zeta/cluster-node-id` (from 081KSGS9H0008QG0R003V23XNZ iter-5.2) for hostname
+2. Reads `/etc/zeta/cluster-node-roles` (from 081KSGS9H0008QG0R000EDNTY5 iter-5.3) for role-set
 3. Probes hardware (CPU model, RAM, GPUs via `lspci`/`nvidia-smi`, storage via `lsblk`, IP via `ip addr`, MAC via `ip link`)
 4. Generates `node.yaml` + role-labels + taints
 5. Commits + pushes to `maintainers/<maintainer>/cluster-nodes/<hostname>/`
@@ -133,7 +132,7 @@ Out of this row: actual multi-maintainer governance. Initial scope = single-main
 
 ## Acceptance
 
-- [ ] **Sub-target 1**: B-0789 iter-5+ node git-auth substrate lands (prerequisite)
+- [ ] **Sub-target 1**: 081KSGS9H0008QG0R002T3BJ2R iter-5+ node git-auth substrate lands (prerequisite)
 - [ ] **Sub-target 2**: node-config schema documented + accepted as `zeta.lucent-financial-group.com/v1` CRD
 - [ ] **Sub-target 3**: `zeta-register.service` ships in `nixos/modules/`; runs once on first boot; writes + commits + pushes
 - [ ] **Sub-target 4**: ArgoCD application watches cluster-nodes tree; reconciles on new node commit
@@ -142,34 +141,34 @@ Out of this row: actual multi-maintainer governance. Initial scope = single-main
 
 ## Composes with substrate
 
-- **B-0789** (depends_on; load-bearing for node git-auth — without it, node can't push registration commit; iter-5+ sub-row of B-0789 is the canonical home for the git-auth substrate this row consumes)
-- **B-0792** (depends_on; iter-5.2 hostname injection provides the node identity this row registers under)
-- **B-0793** (depends_on; iter-5.3 role-as-capability provides the role-set this row registers)
-- **B-0776** (composes; ArgoCD substrate IS one of the plugins in the simplest-first sequence; this row's reconciliation requires ArgoCD already deployed)
-- **B-0782** (composes; cluster-as-DIO requires cluster nodes are git-native first-class citizens; this row IS the bridge from "node booted" to "node IS cluster substrate")
-- **B-0790** (composes; zero-dev-machine homelab persona end-state requires full automation including registration; this row is load-bearing for the end-state)
+- **081KSGS9H0008QG0R002T3BJ2R** (depends_on; load-bearing for node git-auth — without it, node can't push registration commit; iter-5+ sub-row of 081KSGS9H0008QG0R002T3BJ2R is the canonical home for the git-auth substrate this row consumes)
+- **081KSGS9H0008QG0R003V23XNZ** (depends_on; iter-5.2 hostname injection provides the node identity this row registers under)
+- **081KSGS9H0008QG0R000EDNTY5** (depends_on; iter-5.3 role-as-capability provides the role-set this row registers)
+- **081KSE6WT0008QG0R002275NDE** (composes; ArgoCD substrate IS one of the plugins in the simplest-first sequence; this row's reconciliation requires ArgoCD already deployed)
+- **081KSE6WT0008QG0R003CMCX84** (composes; cluster-as-DIO requires cluster nodes are git-native first-class citizens; this row IS the bridge from "node booted" to "node IS cluster substrate")
+- **081KSGS9H0008QG0R00153CQ8B** (composes; zero-dev-machine homelab persona end-state requires full automation including registration; this row is load-bearing for the end-state)
 - `maintainers/<name>/` substrate (composes; per-maintainer subtree pattern this row's `cluster-nodes/` subdir lives inside)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; multi-maintainer + cross-attribution scope; future Stage-3 cluster ops)
 
 ## Out of scope (for this row; tracked elsewhere)
 
-- Node git-auth substrate (deploy key generation + registration) — B-0789 iter-5+
-- ArgoCD substrate selection / install (assumed already present per cluster bring-up) — B-0776
-- K8s/K3S join token + control-plane discovery — B-0792 sub-target 5 (deferred)
+- Node git-auth substrate (deploy key generation + registration) — 081KSGS9H0008QG0R002T3BJ2R iter-5+
+- ArgoCD substrate selection / install (assumed already present per cluster bring-up) — 081KSE6WT0008QG0R002275NDE
+- K8s/K3S join token + control-plane discovery — 081KSGS9H0008QG0R003V23XNZ sub-target 5 (deferred)
 - Multi-maintainer governance — sub-target 6; future
 - Per-node settings UI / dashboard for non-CLI operators — separate row at homelab-persona UX scope
 
 ## Origin
 
-Aaron 2026-05-26 during iter-5 substrate-engineering session, after the iter-5.2 hostname injection + B-0793 role-as-capability discussion:
+Aaron 2026-05-26 during iter-5 substrate-engineering session, after the iter-5.2 hostname injection + 081KSGS9H0008QG0R000EDNTY5 role-as-capability discussion:
 
 > *"also the machine alt to register itself in git somewhere under the maintainers dev cluster node so it registers with it settings in git to complete node setup and start kubernetes / argocd / full node / cluster install and all apps / charts"*
 
 Filing as P1 because:
 
-1. **End-state load-bearing**: B-0790 zero-dev-machine homelab persona requires this (no manual kubectl post-install)
-2. **Composes with DIO**: B-0782 cluster-IS-the-DIO requires git-native first-class node substrate
-3. **Composes with cluster-as-PR-author** (B-0789 iter-5+): same git-auth substrate, downstream use case
+1. **End-state load-bearing**: 081KSGS9H0008QG0R00153CQ8B zero-dev-machine homelab persona requires this (no manual kubectl post-install)
+2. **Composes with DIO**: 081KSE6WT0008QG0R003CMCX84 cluster-IS-the-DIO requires git-native first-class node substrate
+3. **Composes with cluster-as-PR-author** (081KSGS9H0008QG0R002T3BJ2R iter-5+): same git-auth substrate, downstream use case
 4. **Aaron named explicitly during active session**: not speculative
 
-Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline + *"land all changes before next USB flash so we are putting our best foot forward"* — implementation of THIS row is deferred to follow-on (depends on B-0789 iter-5+ git-auth), but the substrate target is named NOW so iter-5.x work aligns with it.
+Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline + *"land all changes before next USB flash so we are putting our best foot forward"* — implementation of THIS row is deferred to follow-on (depends on 081KSGS9H0008QG0R002T3BJ2R iter-5+ git-auth), but the substrate target is named NOW so iter-5.x work aligns with it.

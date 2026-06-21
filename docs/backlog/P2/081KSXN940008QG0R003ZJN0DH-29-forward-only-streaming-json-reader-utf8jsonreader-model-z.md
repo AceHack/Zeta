@@ -1,6 +1,5 @@
 ---
-id: B-0867.29
-zetaid: 081KSXN940008QG0R003ZJN0DH
+id: 081KSXN940008QG0R003ZJN0DH
 title: Forward-only streaming JSON reader (Utf8JsonReader model) — zero-copy, ASP.NET-grade; DOM built on it, trusted-only
 status: open
 priority: P2
@@ -24,7 +23,7 @@ tags:
   - rust
 ---
 
-# B-0867.29 — Forward-only streaming JSON reader (Utf8JsonReader model)
+# 081KSXN940008QG0R003ZJN0DH — Forward-only streaming JSON reader (Utf8JsonReader model)
 
 ## The observations (operator 2026-05-31)
 
@@ -142,9 +141,9 @@ mature — own the interface in every language (per the hexagonal substrate).
 
 ## Composes with
 
-- B-0867.27 — the Rust observe oracle crate this reader lives in
-- B-0944 — cross-language-parity = compiler-BFT (the differential test is the same
+- 081KSXN940008QG0R0033T2BQT — the Rust observe oracle crate this reader lives in
+- 081KSV2WD0008QG0R00051XS0N — cross-language-parity = compiler-BFT (the differential test is the same
   "not flying blind" discipline at parser scope)
-- B-0867.28 — the System.Numerics / UoM interface-gate (sibling parser/algebra-interface row)
+- 081KSXN940008QG0R0002287MP — the System.Numerics / UoM interface-gate (sibling parser/algebra-interface row)
 - `.claude/rules/no-directives.md` — these are observations acted on by an accountable peer
 - the hexagonal / own-your-interfaces substrate (memory: hexagonal-own-interfaces-is-the-io-monad-shape)

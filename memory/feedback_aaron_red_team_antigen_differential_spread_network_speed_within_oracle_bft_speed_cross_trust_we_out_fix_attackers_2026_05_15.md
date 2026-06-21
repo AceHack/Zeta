@@ -122,6 +122,6 @@ Federation-scope antigen-propagation between Aaron's oracle + future external or
 - `memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_*.md` (the moral floor the federation protects via shared red-team)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle structural anti-monoculture; this answers the threat-catalog-capture question without imposing a single curator)
 - `docs/governance/MANIFESTO.md` Constraint 1 (Scale-free), Constraint 3 (Weight-free), Constraint 11 (Default Oracle)
-- B-0543 (QG-isomorphism — the cosmology framing composes with the immune-system architecture at the substrate-protection layer)
+- 081KRMEXM0008QG0R002YSPW1X (QG-isomorphism — the cosmology framing composes with the immune-system architecture at the substrate-protection layer)
 - Bus envelope substrate (`/tmp/zeta-bus/`) — the agent-scope prototype of within-trust antigen propagation
-- B-0539 (Otto-BFT internal-quorum) — antigen propagation within the Otto identity is the same shape as within-oracle propagation here
+- 081KRMEXM0008QG0R00138CCZX (Otto-BFT internal-quorum) — antigen propagation within the Otto identity is the same shape as within-oracle propagation here

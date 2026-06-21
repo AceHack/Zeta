@@ -62,12 +62,12 @@ Investigation-only shard. PR #3871 has been auto-merge-armed since 12:15Z but bl
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Cj3P3`
-- **Path**: `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
+- **Path**: `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T13:32:36Z on `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`:4 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T13:32:36Z on `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`:4 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Update last_updated when closing this backlog row**
@@ -80,12 +80,12 @@ Investigation-only shard. PR #3871 has been auto-merge-armed since 12:15Z but bl
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Cj3RB`
-- **Path**: `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
+- **Path**: `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T13:32:41Z on `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T13:32:41Z on `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`:4 (association: NONE)
 
   <pre>
   The frontmatter `last_updated` field was not bumped despite this edit changing `status` from `open` to `closed` and appending a new "Resolution" section. The per-row schema in `tools/backlog/README.md:69` requires `last_updated` to be updated on every content edit. Please bump it to `2026-05-16` to match the closure date used in the Resolution section.
@@ -97,7 +97,7 @@ Investigation-only shard. PR #3871 has been auto-merge-armed since 12:15Z but bl
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
+- `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
 
 **Message:**
 
@@ -127,7 +127,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
+- `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md`
 
 **Message:**
 

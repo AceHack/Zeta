@@ -7,8 +7,8 @@
  * (git, gh) is injected so the function is unit-testable without touching
  * the filesystem or making real GitHub calls.
  *
- * Per B-0503 (slice 5a of B-0442); wiring into pollOnce + real adapter
- * implementations are scope for B-0504.
+ * Per 081KRHWGX0008QG0R0027YXBTB (slice 5a of 081KRFA460008QG0R00061SXRW); wiring into pollOnce + real adapter
+ * implementations are scope for 081KRHWGX0008QG0R000PVB6FF.
  */
 /**
  * Deterministic recovery-branch name: `recovery/<prNumber>`.
@@ -17,12 +17,12 @@
  * attempts if the branch name is stable across invocations for the same
  * `prNumber`.
  *
- * Retry-safety constraint for B-0504 adapter implementations:
+ * Retry-safety constraint for 081KRHWGX0008QG0R000PVB6FF adapter implementations:
  *
  *   The deterministic name implies the `gitCreateBranch` adapter must
  *   handle "branch already exists" gracefully. If a prior recovery attempt
  *   failed mid-flight (cherry-pick conflict, push error, gh pr create
- *   error), the stale local branch persists. The B-0504 adapter should
+ *   error), the stale local branch persists. The 081KRHWGX0008QG0R000PVB6FF adapter should
  *   either:
  *     (a) attempt `git branch -D <recoveryBranch>` before `git checkout -b`
  *         (safe because we're about to recreate from `origin/main`), OR
@@ -30,9 +30,9 @@
  *         translate it into success (resume on existing branch).
  *
  *   Without this, a single partial failure would wedge recovery for the
- *   affected PR until manual branch cleanup. B-0503 (this row) provides
+ *   affected PR until manual branch cleanup. 081KRHWGX0008QG0R0027YXBTB (this row) provides
  *   the core function; the recovery-from-stale-branch logic lives in
- *   B-0504's real adapter where the spawnSync error parsing happens.
+ *   081KRHWGX0008QG0R000PVB6FF's real adapter where the spawnSync error parsing happens.
  */
 export function buildRecoveryBranchName(prNumber) {
     return `recovery/${prNumber}`;

@@ -1,6 +1,5 @@
 ---
-id: B-0883
-zetaid: 081KSNY2Z0008QG0R002JKH50A
+id: 081KSNY2Z0008QG0R002JKH50A
 priority: P1
 status: closed
 closed: 2026-06-12
@@ -50,15 +49,15 @@ Build a Zeta-native better-git-crypt that supersedes the 2026-04-21 git-crypt re
 
 | Original rejection reason | Better-git-crypt solution |
 |---|---|
-| No access revocation (violates Zeta retraction-native value #4) | Retraction-native key rotation: revoked keys cannot decrypt historical content (forward-secrecy at the version level; compose with B-0840 thermal-forgetting-as-root-axiom-update substrate) |
-| Binary diffs break code review | Diff-readable encrypted content (encrypted-but-line-structured per content-class; reviewers can see structure even when contents are encrypted; compose with B-0623 adinkras-ECC for structural integrity) |
+| No access revocation (violates Zeta retraction-native value #4) | Retraction-native key rotation: revoked keys cannot decrypt historical content (forward-secrecy at the version level; compose with 081KSGS9H0008QG0R0006F4BGX thermal-forgetting-as-root-axiom-update substrate) |
+| Binary diffs break code review | Diff-readable encrypted content (encrypted-but-line-structured per content-class; reviewers can see structure even when contents are encrypted; compose with 081KRW63S0008QG0R000QJR08H adinkras-ECC for structural integrity) |
 | Pre-v1.0 with authors reserving compatibility-break right | Zeta-owned substrate with semver discipline + retraction-native primitives baked in |
 
 PLUS — **post-quantum** crypto by default (not optional add-on):
 
 - ML-KEM (formerly Kyber; NIST-standardized 2024) for key encapsulation
 - ML-DSA (formerly Dilithium; NIST-standardized 2024) for signatures
-- Possibly NTRU / Saber / "Swapple lattice" (operator naming; needs clarification per B-0883.1) as alternates
+- Possibly NTRU / Saber / "Swapple lattice" (operator naming; needs clarification per 081KSNY2Z0008QG0R0037X4DP4) as alternates
 
 ## Architectural composition
 
@@ -66,26 +65,26 @@ Post-quantum-git-crypt is NOT a single tool but composes with existing Zeta encr
 
 | Existing substrate | Composes how |
 |---|---|
-| **B-0623** Adinkras (Jim Gates ECC) — private-state encryption | Structural integrity layer above the lattice KEM/signature |
-| **B-0840** Thermal-forgetting + private-encryption-budget exception | Forward-secrecy semantic — revoked keys = thermal-forgotten content; budget mechanics apply to per-content encryption |
-| **B-0852** Credential-persistence-on-USB-ESP + boot-sequence + encrypted-blob-bound-to-USB-UUID | The USB-bound credential IS the post-quantum-git-crypt key-store anchor |
-| **B-0852.3** zeta-install.sh step 6.77 cred-picker | Interactive bake-vs-zflash-token-override path; PQ git-crypt is one consumer |
-| **B-0737** zflash + Touch ID + PAM | Authentication layer; PQ git-crypt key access gated by Touch ID per session |
-| **B-0844** zflash agent-mode native implementation | Distribution + bootstrap path for PQ git-crypt keys |
+| **081KRW63S0008QG0R000QJR08H** Adinkras (Jim Gates ECC) — private-state encryption | Structural integrity layer above the lattice KEM/signature |
+| **081KSGS9H0008QG0R0006F4BGX** Thermal-forgetting + private-encryption-budget exception | Forward-secrecy semantic — revoked keys = thermal-forgotten content; budget mechanics apply to per-content encryption |
+| **081KSKBP80008QG0R003AX2A69** Credential-persistence-on-USB-ESP + boot-sequence + encrypted-blob-bound-to-USB-UUID | The USB-bound credential IS the post-quantum-git-crypt key-store anchor |
+| **081KSKBP80008QG0R003ETGS01** zeta-install.sh step 6.77 cred-picker | Interactive bake-vs-zflash-token-override path; PQ git-crypt is one consumer |
+| **081KSE6WT0008QG0R003WZAQKV** zflash + Touch ID + PAM | Authentication layer; PQ git-crypt key access gated by Touch ID per session |
+| **081KSGS9H0008QG0R001EZKNCB** zflash agent-mode native implementation | Distribution + bootstrap path for PQ git-crypt keys |
 
 ## Acceptance criteria
 
 This is XL effort. Sub-decomposition expected:
 
-- **B-0883.1** (P3 spike) — Library landscape audit: Bouncy Castle PQC patterns + "Swapple lattice" naming clarification + TS PQC library survey (liboqs-bindings, BoringSSL PQ branch, libsodium-PQ extensions)
-- **B-0883.2** (planned) — Design memo: better-git-crypt architecture composing PQ-KEM + retraction-native rotation + diff-readable encryption
-- **B-0883.3** (planned) — Prototype: TS implementation of PQ-KEM file encryption with versioned key-rotation
-- **B-0883.4** (planned) — Integration with zflash credential substrate (composes with B-0884)
-- **B-0883.5** (planned) — Production hardening + Sonatype audit of any external library dependencies
+- **081KSNY2Z0008QG0R0037X4DP4** (P3 spike) — Library landscape audit: Bouncy Castle PQC patterns + "Swapple lattice" naming clarification + TS PQC library survey (liboqs-bindings, BoringSSL PQ branch, libsodium-PQ extensions)
+- **081KSNY2Z0008QG0R002ZAVMEK** (planned) — Design memo: better-git-crypt architecture composing PQ-KEM + retraction-native rotation + diff-readable encryption
+- **081KSNY2Z0008QG0R0008EJDW1** (planned) — Prototype: TS implementation of PQ-KEM file encryption with versioned key-rotation
+- **081KSNY2Z0008QG0R001FN4DDB** (planned) — Integration with zflash credential substrate (composes with 081KSNY2Z0008QG0R0011XCT94)
+- **081KSNY2Z0008QG0R0020KXAPS** (planned) — Production hardening + Sonatype audit of any external library dependencies
 
-For row B-0883 itself, acceptance = design memo at `docs/research/2026-XX-XX-better-gitcrypt-post-quantum-lattice-based-architecture.md` that addresses all three 2026-04-21 rejection reasons + cites PQ algorithm choice + sub-decomposition plan.
+For row 081KSNY2Z0008QG0R002JKH50A itself, acceptance = design memo at `docs/research/2026-XX-XX-better-gitcrypt-post-quantum-lattice-based-architecture.md` that addresses all three 2026-04-21 rejection reasons + cites PQ algorithm choice + sub-decomposition plan.
 
-## Library landscape (preliminary; refined by B-0883.1)
+## Library landscape (preliminary; refined by 081KSNY2Z0008QG0R0037X4DP4)
 
 Candidate TS / cross-platform PQ libraries to study:
 

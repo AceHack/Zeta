@@ -194,7 +194,7 @@ Co-Authored-By: Kiro <noreply@kiro.dev>
 ```
 fix: rescue orphaned multi-vm.ts + delete superseded move-next.ts
 
-multi-vm.ts (B-0891 scenario 5 cluster-joining QEMU primitives) was
+multi-vm.ts (081KSNY2Z0008QG0R0008PN7RQ scenario 5 cluster-joining QEMU primitives) was
 left as an untracked file at the old tools/zflash/test-harness/ path
 after PR #7864 moved the harness to src/Core.TypeScript/. Relocated
 to the correct directory where its imports (./extensions,

@@ -91,7 +91,7 @@ memories freely — that is the whole point of this folder.
   `memory/project_memory_format_standard.md` §6.4 for the full
   fallback/enforcement table).
 - A synchronous MEMORY.md paired-edit is **no longer required**
-  (heap-state model, B-0423). `MEMORY.md` is kept current by
+  (heap-state model, 081KRCQQF0008QG0R0037YYP1A). `MEMORY.md` is kept current by
   `tools/memory/reindex-memory-md.ts` running on cadence via the
   autonomous-loop tick. Agents MAY run it manually to promote heap
   files to the stack view immediately:
@@ -104,7 +104,7 @@ memories freely — that is the whole point of this folder.
   subsumed by a newer memory. The agents are trusted to curate
   their own corpus.
 
-## Stack-vs-heap model (B-0423)
+## Stack-vs-heap model (081KRCQQF0008QG0R0037YYP1A)
 
 `MEMORY.md` is the **STACK** — an indexed, ordered, traversable
 canonical view of the heap. Files in `memory/` that have not yet
@@ -121,13 +121,13 @@ Both states are valid:
   before the next reindex cadence fires.
 
 Heap→stack promotion happens on cadence (not per-PR) via
-`tools/memory/reindex-memory-md.ts` (B-0423), callable from the
+`tools/memory/reindex-memory-md.ts` (081KRCQQF0008QG0R0037YYP1A), callable from the
 autonomous-loop tick. Readers should assume the newest few entries
 may be in heap state and check direct paths if the index seems
 stale.
 
 The architectural fix and its child implementation rows are tracked
-at `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
+at `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`.
 
 The reason the *human* rule is stricter: humans deleting
 memories behind the agents' backs amounts to silently
@@ -166,7 +166,7 @@ The persona-surface standard splits into TWO shapes:
 3. **Layer 3 — Factory-internal role personas (Hats)**:
    - Mapped under `memory/<role>/<name>/` matching the `.claude/agents/<role>.md` config files (e.g. `memory/kenji/`, `memory/kira/`, etc.).
 
-## Supersession discipline (B-0333)
+## Supersession discipline (081KR2E4K0008QG0R00175HQR9)
 
 When a memory file is superseded by a newer one:
 
@@ -187,11 +187,11 @@ When a memory file is superseded by a newer one:
    reasoning:` section should be updated to point to
    the replacement. The audit tool
    `tools/hygiene/audit-memory-cross-references.ts`
-   (B-0334) detects broken cross-references.
+   (081KR2E4K0008QG0R003MSVG42) detects broken cross-references.
 
 4. **Check load-bearing status.** If the superseded file
    is cited from CLAUDE.md, AGENTS.md, GOVERNANCE.md,
-   or docs/ALIGNMENT.md (load-bearing per B-0332's
+   or docs/ALIGNMENT.md (load-bearing per 081KR2E4K0008QG0R002FRQZN4's
    classification), update the bootstrap surface pointer
    to the replacement. A load-bearing file superseded
    without updating its bootstrap citation is a

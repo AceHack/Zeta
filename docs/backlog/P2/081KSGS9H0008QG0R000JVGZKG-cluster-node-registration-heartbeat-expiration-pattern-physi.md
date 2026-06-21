@@ -1,9 +1,8 @@
 ---
-id: B-0815
-zetaid: 081KSGS9H0008QG0R000JVGZKG
+id: 081KSGS9H0008QG0R000JVGZKG
 priority: P2
 status: open
-title: Cluster-node registration heartbeat / expiration pattern — keep git registration physically in sync with machine; re-register on cadence or expire stale entries (B-0815 design row)
+title: Cluster-node registration heartbeat / expiration pattern — keep git registration physically in sync with machine; re-register on cadence or expire stale entries (081KSGS9H0008QG0R000JVGZKG design row)
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -20,7 +19,7 @@ tags: [cluster-node, registration, heartbeat, expiration, gitops, physical-sync,
 
 ## Problem
 
-iter-5.4.1 (B-0812) registers a machine via a one-shot commit at install time. iter-5.4.2 (B-0813) reconciles the cluster on that commit's PR-merge. **But there's no mechanism to detect when the registered state has drifted from physical reality.**
+iter-5.4.1 (081KSGS9H0008QG0R0037H3W4T) registers a machine via a one-shot commit at install time. iter-5.4.2 (081KSGS9H0008QG0R002K93MWX) reconciles the cluster on that commit's PR-merge. **But there's no mechanism to detect when the registered state has drifted from physical reality.**
 
 Drift scenarios:
 
@@ -39,7 +38,7 @@ Design + implement a heartbeat/expiration pattern that keeps `maintainers/<op>/c
 
 ### Option A — TTL-based expiration (operator's first sketch)
 
-Each `node.yaml` includes a `registration.expires_at` field. A scheduled GitHub Action (or ArgoCD CronJob) scans the tree daily; entries past their `expires_at` get flagged + (after grace period) auto-deregistered via the tool from B-0814.
+Each `node.yaml` includes a `registration.expires_at` field. A scheduled GitHub Action (or ArgoCD CronJob) scans the tree daily; entries past their `expires_at` get flagged + (after grace period) auto-deregistered via the tool from 081KSGS9H0008QG0R000EPPQTR.
 
 - **Pros**: simple; no node-side daemon required; entire policy is git-substrate-visible
 - **Cons**: nodes that go offline for legit reasons (maintenance, vacation, weekend power-off) need manual re-register; TTL choice (daily / weekly / 30-day) is policy guesswork
@@ -77,7 +76,7 @@ Add `registration.expires_at` (ISO 8601 timestamp; 30d-default at registration t
 
 ### Sub-target 2 — Scanner (GitHub Action OR ArgoCD CronJob)
 
-Daily scan of `maintainers/*/cluster-nodes/**/node.yaml` for past-expiry entries. Opens deregister-PR via B-0814 tool for each (with `--reason "expired registration; last_heartbeat <timestamp> exceeded TTL"`).
+Daily scan of `maintainers/*/cluster-nodes/**/node.yaml` for past-expiry entries. Opens deregister-PR via 081KSGS9H0008QG0R000EPPQTR tool for each (with `--reason "expired registration; last_heartbeat <timestamp> exceeded TTL"`).
 
 ### Sub-target 3 — Node-side refresh daemon (Option C only)
 
@@ -103,31 +102,31 @@ Past-expiry entries get a 3-day grace (operator can manually refresh or rollback
 
 ## Out of scope
 
-- Cross-maintainer policy (single-maintainer per cluster default; B-0794 sub-target 6 future)
+- Cross-maintainer policy (single-maintainer per cluster default; 081KSGS9H0008QG0R0027HJZYH sub-target 6 future)
 - Predictive failure detection (separate concern; consumed by operator UX dashboard not by registration lifecycle)
-- Network-partition detection (compose with B-0726 Reticulum cluster substrate; out of this row's scope)
+- Network-partition detection (compose with 081KSE6WT0008QG0R003C9KGQE Reticulum cluster substrate; out of this row's scope)
 
 ## Composes with
 
-- **[B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — parent cluster-bring-up substrate
-- **[B-0812](../P1/B-0812-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-builds-on-iter-5-4-0-gh-auth-foothold-aaron-2026-05-26.md)** — registration flow that creates the `expires_at` field
-- **[B-0813](../P1/B-0813-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — reconciler that consumes the deregister-PR's effect
-- **[B-0814](../P1/B-0814-tools-cluster-deregister-node-ts-removes-registered-machine-from-git-sibling-to-iter-5-4-1-self-registration-aaron-2026-05-26.md)** — deregister tool used by the scanner
-- **[B-0790](../P1/B-0790-zero-dev-machines-cluster-native-architecture-all-prs-from-cluster-voice-as-primary-operator-surface-aaron-2026-05-26.md)** — zero-dev-machine end-state benefits from automatic stale-node cleanup
+- **[081KSGS9H0008QG0R0027HJZYH](../P1/081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — parent cluster-bring-up substrate
+- **[081KSGS9H0008QG0R0037H3W4T](../P1/081KSGS9H0008QG0R0037H3W4T-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-builds-on-iter-5-4-0-gh-auth-foothold-aaron-2026-05-26.md)** — registration flow that creates the `expires_at` field
+- **[081KSGS9H0008QG0R002K93MWX](../P1/081KSGS9H0008QG0R002K93MWX-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — reconciler that consumes the deregister-PR's effect
+- **[081KSGS9H0008QG0R000EPPQTR](../P1/081KSGS9H0008QG0R000EPPQTR-tools-cluster-deregister-node-ts-removes-registered-machine-from-git-sibling-to-iter-5-4-1-self-registration-aaron-2026-05-26.md)** — deregister tool used by the scanner
+- **[081KSGS9H0008QG0R00153CQ8B](../P1/081KSGS9H0008QG0R00153CQ8B-zero-dev-machines-cluster-native-architecture-all-prs-from-cluster-voice-as-primary-operator-surface-aaron-2026-05-26.md)** — zero-dev-machine end-state benefits from automatic stale-node cleanup
 
 ## Substrate-inventory pass
 
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
-- `grep -rlF "heartbeat"` → existing references (B-0726 Reticulum, B-0703 multi-oracle BFT) are at different scopes; no overlap
+- `grep -rlF "heartbeat"` → existing references (081KSE6WT0008QG0R003C9KGQE Reticulum, 081KS3X9Y0008QG0R00218150M multi-oracle BFT) are at different scopes; no overlap
 - `grep -rlF "expires_at"` → no existing usage; safe
 - `grep -rlF "physical-sync"` → no existing usage; safe
-- ID B-0815 next-free per `git ls-tree origin/main` (B-0814 in same PR; B-0813 in PR #5212)
+- ID 081KSGS9H0008QG0R000JVGZKG next-free per `git ls-tree origin/main` (081KSGS9H0008QG0R000EPPQTR in same PR; 081KSGS9H0008QG0R002K93MWX in PR #5212)
 
 ## Origin
 
-The maintainer 2026-05-26 in the iter-5.4 substrate-engineering session, immediately after requesting the deregister tool (B-0814):
+The maintainer 2026-05-26 in the iter-5.4 substrate-engineering session, immediately after requesting the deregister tool (081KSGS9H0008QG0R000EPPQTR):
 
 > *"Or the next step will be how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"*
 
-Filed as P2 (not P1) because deregister tool (B-0814) covers the manual deletion case the maintainer named first; the automatic heartbeat/expiration is the second-order extension. Once iter-5.4.1 + 5.4.2 + B-0814 land + validate, B-0815 becomes the natural follow-on.
+Filed as P2 (not P1) because deregister tool (081KSGS9H0008QG0R000EPPQTR) covers the manual deletion case the maintainer named first; the automatic heartbeat/expiration is the second-order extension. Once iter-5.4.1 + 5.4.2 + 081KSGS9H0008QG0R000EPPQTR land + validate, 081KSGS9H0008QG0R000JVGZKG becomes the natural follow-on.

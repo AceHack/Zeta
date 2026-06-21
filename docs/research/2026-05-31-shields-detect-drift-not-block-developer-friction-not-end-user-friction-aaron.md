@@ -65,8 +65,8 @@ converts a dev-time annoyance into a dev-time *blocker* without any end-user ben
 
 This composes with **MEASURE-FIRST** (the universal default: measure/detect before
 restricting choice — here, detect drift before blocking work) and with the **no-PR /
-no-branch-protection** direction (B-0890.1 folders-on-main; B-0953 Git-V2; the
-agent-bus B-0954): the whole transport story is "remove the human-paced gates from
+no-branch-protection** direction (081KSNY2Z0008QG0R000E5KTPX folders-on-main; 081KSXN940008QG0R001KZ235R Git-V2; the
+agent-bus 081KSXN940008QG0R00171YAZW): the whole transport story is "remove the human-paced gates from
 day-to-day forward progress; keep the detectors."
 
 ## Reconciliation with assert-don't-skip (the latent tension, resolved)
@@ -84,7 +84,7 @@ the two compose into a **three-part** discipline:
   its red is invisible. **Drift must be SURFACED when the shield fires** (a dashboard,
   a notification, a drift report — someone sees it and fixes it). The failure mode to
   avoid is *both* skip-to-green (no detection) *and* silently-red-ignored (detection
-  nobody acts on). cf. B-0947 (Windows CI "non-required so it merges CLEAN but Windows
+  nobody acts on). cf. 081KSV2WD0008QG0R001XKG1B5 (Windows CI "non-required so it merges CLEAN but Windows
   is silently red") — that's the *silently-red-ignored* hole: the detector exists but
   its red isn't surfaced/actioned. The fix is **visibility**, not making it block.
 
@@ -112,9 +112,9 @@ regardless; they are end-user/world friction at the extreme, not dev-friction.)
 - The MEASURE-FIRST principle (detect before restricting) +
   [`docs/DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md`](../DECISIONS/2026-05-29-monitoring-and-reducing-pr-review-friction.md),
   plus the `FrictionTelemetry` ZetaId category (friction is measured, not assumed)
-- B-0890.1 (folders-on-main, no branches) + B-0953 (Git-V2 handshake) + B-0954
+- 081KSNY2Z0008QG0R000E5KTPX (folders-on-main, no branches) + 081KSXN940008QG0R001KZ235R (Git-V2 handshake) + 081KSXN940008QG0R00171YAZW
   (git-native agent-bus) — the no-PR / no-branch-protection transport this justifies
-- B-0947 (Windows CI silently-red) — the *visible* failure mode this names the fix for
+- 081KSV2WD0008QG0R001XKG1B5 (Windows CI silently-red) — the *visible* failure mode this names the fix for
 - `.claude/rules/methodology-hard-limits.md` (the gates that DO remain — end-user/world
   friction at the extreme, never dev-friction)
 - DX vs UX distinction (developer-experience-engineer vs user-experience-engineer):

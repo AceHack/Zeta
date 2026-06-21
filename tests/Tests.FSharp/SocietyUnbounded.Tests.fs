@@ -6,7 +6,7 @@ open Zeta.Core
 module SU = Zeta.Core.SocietyUnbounded
 
 // ═══════════════════════════════════════════════════════════════════
-// SocietyUnbounded — B-1019 rung-1 DST (Soraya-reviewed for vacuity 2026-06-06). CLOSED system, no
+// SocietyUnbounded — 081KT7YW00008QG0R001DGZQKM rung-1 DST (Soraya-reviewed for vacuity 2026-06-06). CLOSED system, no
 // external input after the init seed. THE CONTRAST: internal difference (distinct private evidence)
 // drives unbounded NOVEL growth (distinct-belief count keeps rising); collapse the difference (identical
 // evidence = register-collapse) and the system HALTS at uniformity (heat-death). Honest scope: bounded-

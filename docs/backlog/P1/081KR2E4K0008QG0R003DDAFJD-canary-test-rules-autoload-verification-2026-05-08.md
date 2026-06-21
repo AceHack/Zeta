@@ -1,6 +1,5 @@
 ---
-id: B-0268
-zetaid: 081KR2E4K0008QG0R003DDAFJD
+id: 081KR2E4K0008QG0R003DDAFJD
 priority: P1
 status: closed
 closed: 2026-05-08
@@ -14,7 +13,7 @@ classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0268 — Canary test for rules auto-load
+# 081KR2E4K0008QG0R003DDAFJD — Canary test for rules auto-load
 
 The canary file exists at .claude/rules/test-canary.md with
 detection string RULES_AUTOLOAD_CANARY_2026_05_01_LIVE_OFF_THE_LAND.

@@ -23,10 +23,10 @@ Distinct from multi-directional-guess agendas. Operator retains source-attributi
 ## Trajectory + linked substrate
 
 - Trajectory: [`docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md`](../../trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md)
-- Backlog parent: B-0247 (ace-dlc-content-packs-kernel-extensions-package-manager)
-- Backlog package format spec: B-0287 (closed; `docs/research/2026-05-08-ace-dlc-package-format-spec.md`)
-- Backlog CLI: B-0288 (in-progress)
-- Backlog repo-split scaffolding: B-0424
+- Backlog parent: 081KQZVQW0008QG0R000ZHEN62 (ace-dlc-content-packs-kernel-extensions-package-manager)
+- Backlog package format spec: 081KR2E4K0008QG0R0033WVCXE (closed; `docs/research/2026-05-08-ace-dlc-package-format-spec.md`)
+- Backlog CLI: 081KR2E4K0008QG0R002YE3MMD (in-progress)
+- Backlog repo-split scaffolding: 081KRFA460008QG0R001H98EXJ
 - Spec v2 extension: `docs/research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md`
 
 ## Cross-AI substrate-triangulation

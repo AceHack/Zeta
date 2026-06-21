@@ -27,11 +27,11 @@
 
 ## Description
 
-Fourth actual close-row of the audit cycle. #2-Ready pickup: B-0037.2's `classification: blocked` was stale because B-0037.1 merged earlier this session via [PR #3859](https://github.com/Lucent-Financial-Group/Zeta/pull/3859).
+Fourth actual close-row of the audit cycle. #2-Ready pickup: 081KR7JY10008QG0R002D6VNNJ's `classification: blocked` was stale because 081KR7JY10008QG0R0038AFS7T merged earlier this session via [PR #3859](https://github.com/Lucent-Financial-Group/Zeta/pull/3859).
 
 ## Deliverable
 
-`docs/ROUND-HISTORY.md` appended `## Round-close meta-check template` section with **6 checkboxes** drawn from the B-0037.1 taxonomy:
+`docs/ROUND-HISTORY.md` appended `## Round-close meta-check template` section with **6 checkboxes** drawn from the 081KR7JY10008QG0R0038AFS7T taxonomy:
 
 **First-order** (recognition at boundaries):
 - [ ] `overclaim*` scan
@@ -51,10 +51,10 @@ Guards against meta-drift — the degenerate regime where audit-disciplines deca
 
 | Criterion | State |
 |---|---|
-| 1. Template section with ≥3 meta-check checkboxes drawn from B-0037.1 taxonomy | ✅ 6 checkboxes |
+| 1. Template section with ≥3 meta-check checkboxes drawn from 081KR7JY10008QG0R0038AFS7T taxonomy | ✅ 6 checkboxes |
 | 2. At least one checkbox per meta-cognitive order | ✅ 2 each per First/Second/Third |
 | 3. `dotnet build -c Release` unaffected | ✅ pure doc addition |
-| 4. PR body cites B-0037.1 as unblocked dependency | ✅ |
+| 4. PR body cites 081KR7JY10008QG0R0038AFS7T as unblocked dependency | ✅ |
 
 ## Multi-Otto recovery pattern
 
@@ -62,7 +62,7 @@ Required 4 attempts to land via SHA-push. Peer-Otto's worktree-switches interlea
 
 Changes:
 - `docs/ROUND-HISTORY.md` — template section appended
-- B-0037.2 row — frontmatter `status: open` → `status: closed` + Resolution
+- 081KR7JY10008QG0R002D6VNNJ row — frontmatter `status: open` → `status: closed` + Resolution
 - `docs/BACKLOG.md` — regenerated index
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -84,12 +84,12 @@ Changes:
 ### Thread 1 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Cj9EC`
-- **Path**: `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`
+- **Path**: `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T13:56:21Z on `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`:4 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T13:56:21Z on `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`:4 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Bump last_updated when closing backlog row**
@@ -102,12 +102,12 @@ Changes:
 ### Thread 2 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6Cj9Ep`
-- **Path**: `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`
+- **Path**: `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T13:56:24Z on `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T13:56:24Z on `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`:4 (association: NONE)
 
   <pre>
   P1: Closing this backlog row changes the row content but leaves its frontmatter stale: `last_updated` is still 2026-05-10 (tools/backlog/README.md requires updating it on every content edit), and the row still carries `classification: blocked` even though the new resolution says that classification is stale/unblocked. Update the frontmatter so the row metadata matches the closure.
@@ -119,25 +119,25 @@ Changes:
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md`
+- `docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-meta-cognition-round-close-checklist.md`
 
 **Message:**
 
 ```
 feat(b-0037.2): implement round-close meta-check template + close row
 
-#2-Ready pickup: B-0037.2's classification:blocked field was stale
-because B-0037.1 merged earlier this session via PR #3859.
+#2-Ready pickup: 081KR7JY10008QG0R002D6VNNJ's classification:blocked field was stale
+because 081KR7JY10008QG0R0038AFS7T merged earlier this session via PR #3859.
 
 Deliverable: docs/ROUND-HISTORY.md appended 'Round-close meta-check
-template' section with 6 checkboxes drawn from B-0037.1 taxonomy
+template' section with 6 checkboxes drawn from 081KR7JY10008QG0R0038AFS7T taxonomy
 (2 each per First/Second/Third meta-cognitive order).
 
 All 4 acceptance criteria met:
 - Template section with >=3 meta-check checkboxes (6 actually)
 - At least one checkbox per order (2 per order)
 - Pure doc addition; dotnet build unaffected
-- Cites B-0037.1 as unblocked dependency
+- Cites 081KR7JY10008QG0R0038AFS7T as unblocked dependency
 
 Note: peer-Otto worktree-switch landed this commit on peer's branch
 label; pushed via SHA-push to intended target branch on origin.

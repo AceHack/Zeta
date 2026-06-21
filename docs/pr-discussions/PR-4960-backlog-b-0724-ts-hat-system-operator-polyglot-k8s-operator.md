@@ -1,6 +1,6 @@
 ---
 pr_number: 4960
-title: "backlog(B-0724): TS hat-system operator \u2014 polyglot K8s-operator pattern proof for Max"
+title: "backlog(081KSE6WT0008QG0R00195RG48): TS hat-system operator \u2014 polyglot K8s-operator pattern proof for Max"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T17:23:03Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:50:02Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4960: backlog(B-0724): TS hat-system operator — polyglot K8s-operator pattern proof for Max
+# PR #4960: backlog(081KSE6WT0008QG0R00195RG48): TS hat-system operator — polyglot K8s-operator pattern proof for Max
 
 ## PR description
 
@@ -31,12 +31,12 @@ Future Rust (kube-rs) + Python (kopf) extensions land via the same pattern.
 - **The pattern** — multiple language operators watching the same CRDs; leader election picks active reconciler
 - **TS operator stack** — Max's preferred choices (kubernetes/client-node, NestJS optional, fastify webhook, nats.js + pino for tick emit)
 - **Learning curve** — captures Aaron's *"max needs to learn the operator pattern... he is backend/frontend over paas"* + *"he will be resistant probably like most devs at first until he internlizes is worth"*. Frames the Go scaffold as a TEACHING TOOL, with a pair-programming pattern + a 7-step suggested PR sequence + resource list (kubernetes.io concepts, kubebuilder book, @kubernetes/client-node README, existing TS-operator references).
-- **Composition with shipped substrate** — PR #4930 Go scaffold (reference/baseline), PR #4958 agentic-organization docs (CLUSTER_NATIVE_HAT_SYSTEM mentions the architecture), B-0722 (smoke test as polyglot validation gate), B-0723 (multi-kubelet × polyglot for redundancy)
+- **Composition with shipped substrate** — PR #4930 Go scaffold (reference/baseline), PR #4958 agentic-organization docs (CLUSTER_NATIVE_HAT_SYSTEM mentions the architecture), 081KSE6WT0008QG0R002RFEC0S (smoke test as polyglot validation gate), 081KSE6WT0008QG0R002CQS1HR (multi-kubelet × polyglot for redundancy)
 
 ## Test plan
 
 - [ ] Row renders correctly at `docs/backlog/P2/`
-- [ ] `docs/BACKLOG.md` includes B-0724
+- [ ] `docs/BACKLOG.md` includes 081KSE6WT0008QG0R00195RG48
 - [ ] All cross-refs resolve (Go operator paths, PR numbers, related backlog rows)
 - [ ] Learning-curve section reads as welcoming-but-honest to a dev new to K8s
 
@@ -50,11 +50,11 @@ Single file (+ index regen) — no implementation in this PR.
 
 ## Pull request overview
 
-Adds backlog row **B-0724** describing a planned TypeScript implementation of the hat-system Kubernetes operator as a deliberate “polyglot operator” pattern proof alongside the existing Go scaffold, and updates the generated backlog index to include the new row.
+Adds backlog row **081KSE6WT0008QG0R00195RG48** describing a planned TypeScript implementation of the hat-system Kubernetes operator as a deliberate “polyglot operator” pattern proof alongside the existing Go scaffold, and updates the generated backlog index to include the new row.
 
 **Changes:**
-- Add new P2 backlog row file `B-0724` describing the TS operator plan, acceptance criteria, and learning resources.
-- Regenerate/update `docs/BACKLOG.md` to include `B-0724` (and `B-0721`).
+- Add new P2 backlog row file `081KSE6WT0008QG0R00195RG48` describing the TS operator plan, acceptance criteria, and learning resources.
+- Regenerate/update `docs/BACKLOG.md` to include `081KSE6WT0008QG0R00195RG48` (and `081KSBMG30008QG0R002WAR0WH`).
 
 ### Reviewed changes
 
@@ -62,7 +62,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md | New backlog row capturing the TS operator + polyglot-operator rationale and acceptance notes |
+| docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md | New backlog row capturing the TS operator + polyglot-operator rationale and acceptance notes |
 | docs/BACKLOG.md | Backlog index updated to include the new row link |
 
 ### COMMENTED — @AceHack (2026-05-25T17:29:15Z)
@@ -93,27 +93,27 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:18 (resolved)
+### Thread 1: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:18 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:26:40Z):
 
-`composes_with` includes a file path for `B-0722...` that does not exist in `docs/backlog/P2/` in this repo. This breaks the “all cross-refs resolve” test plan and makes the composition list unreliable. Either add the referenced row file(s) in this PR or remove/replace the entry with an existing row/path.
+`composes_with` includes a file path for `081KSE6WT0008QG0R002RFEC0S...` that does not exist in `docs/backlog/P2/` in this repo. This breaks the “all cross-refs resolve” test plan and makes the composition list unreliable. Either add the referenced row file(s) in this PR or remove/replace the entry with an existing row/path.
 
 **@AceHack** (2026-05-25T17:29:15Z):
 
 Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewritten to raw k3d fallback. Intent preserved, state honest.
 
-### Thread 2: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:54 (resolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:54 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:26:40Z):
 
-This row references `B-0723` as an existing backlog item, but there is no `B-0723` row file under `docs/backlog/` currently. If `B-0723` isn’t filed yet, consider changing the text to avoid implying it exists (or add the missing row in the same PR) so cross-references remain resolvable.
+This row references `081KSE6WT0008QG0R002CQS1HR` as an existing backlog item, but there is no `081KSE6WT0008QG0R002CQS1HR` row file under `docs/backlog/` currently. If `081KSE6WT0008QG0R002CQS1HR` isn’t filed yet, consider changing the text to avoid implying it exists (or add the missing row in the same PR) so cross-references remain resolvable.
 
 **@AceHack** (2026-05-25T17:29:17Z):
 
 Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewritten to raw k3d fallback. Intent preserved, state honest.
 
-### Thread 3: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:125 (resolved)
+### Thread 3: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:125 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:26:41Z):
 
@@ -123,7 +123,7 @@ There are multiple consecutive blank lines here. CI runs `markdownlint-cli2` on 
 
 Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewritten to raw k3d fallback. Intent preserved, state honest.
 
-### Thread 4: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:80 (resolved)
+### Thread 4: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:80 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:26:41Z):
 
@@ -133,7 +133,7 @@ The text references a `dev-cluster/` directory (and a PR #4953) as if it exists 
 
 Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewritten to raw k3d fallback. Intent preserved, state honest.
 
-### Thread 5: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:159 (resolved)
+### Thread 5: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:159 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:26:41Z):
 
@@ -143,19 +143,19 @@ Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewri
 
 Addressed in 7166bbb50 — dangling refs qualified with 'pending merge' or rewritten to raw k3d fallback. Intent preserved, state honest.
 
-### Thread 6: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:72 (unresolved)
+### Thread 6: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:72 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:35:16Z):
 
 The TS stack table says the webhook follows the “same … pattern as the Go webhook”, but the Go operator scaffold in-tree does not currently implement a validating/mutating webhook (only mentions it in a comment). Reword this as a planned parity target (or link to the actual Go webhook implementation once it exists) to avoid implying it already ships.
 
-### Thread 7: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:84 (unresolved)
+### Thread 7: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:84 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:35:16Z):
 
 Acceptance criteria references “the same envtest-style harness pattern Go uses”, but there’s no envtest harness in the current Go scaffold under `full-ai-cluster/k8s/applications/hat-system/operator/` (and no `envtest` references). Please rephrase to “envtest-style harness pattern to be added” (or point at the actual test harness once it lands) so the row stays accurate.
 
-### Thread 8: docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:155 (unresolved)
+### Thread 8: docs/backlog/P2/081KSE6WT0008QG0R00195RG48-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md:155 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:35:16Z):
 

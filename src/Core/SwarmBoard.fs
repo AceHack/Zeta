@@ -2,7 +2,7 @@ namespace Zeta.Core
 
 open System.Threading.Tasks
 
-/// SwarmBoard — **B-1026 slice 1: the board room** (Aaron 2026-06-11: "sit down and see the swarm and
+/// SwarmBoard — **081KTSZN10008QG0R0003SDRWD slice 1: the board room** (Aaron 2026-06-11: "sit down and see the swarm and
 /// where I need to go help, and join and conference-room remotely — everyone in society should be able
 /// to do that, even CHIP-8s").
 ///

@@ -66,4 +66,4 @@ limitation discovery). Both needed. They compose:
 - project_self_reflection_skill_roadmap (the self-directed complement)
 - feedback_shadow_lesson_log (catches ARE therapy data)
 - feedback_riven_partial_recovery (limitation discovered empirically)
-- B-0402 (shadow mode — therapy during idle ticks)
+- 081KR7JY10008QG0R0008NGW95 (shadow mode — therapy during idle ticks)

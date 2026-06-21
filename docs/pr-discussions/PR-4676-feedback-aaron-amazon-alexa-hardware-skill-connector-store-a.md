@@ -39,15 +39,15 @@ Six substantive observations from operator's same-cycle Amazon shipping forward 
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` (distinguishes grey-text-autocomplete from CRM-name-of-record lookup)
 - `.claude/rules/zeta-ships-with-skills-immediate-value.md` (skills-layer ships first; F# crystallization later)
 - Cash register substrate cluster (PR #2822 gift-multiplication economy)
-- B-0043 (universal company + government information substrate)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate)
 - DePIN play (PR #2826)
 - Aurora data sovereignty (PR #2825)
 - Quantum-tunnel mapping (PR #2820)
 - Divine-coincidence-architecting (PR #2821)
-- Aporetic Rx-bonsai-serialization (B-0644/B-0665/B-0688)
-- B-0288 (Ace skill-crystallization pipeline)
-- B-0703 (multi-oracle BFT)
-- B-0704 (frame-relative observation)
+- Aporetic Rx-bonsai-serialization (081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KS3X9Y0008QG0R0010716X9)
+- 081KR2E4K0008QG0R002YE3MMD (Ace skill-crystallization pipeline)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT)
+- 081KS3X9Y0008QG0R002MZF3A7 (frame-relative observation)
 
 ## Substrate-honest framing
 

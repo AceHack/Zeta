@@ -1,6 +1,5 @@
 ---
-id: B-1006
-zetaid: 081KT2T2J0008QG0R0008TFHJT
+id: 081KT2T2J0008QG0R0008TFHJT
 priority: P1
 status: open
 title: "Canonical primitives registry + promotion gate + the 'what's the difference?' suspicion test — anything without a clean adapter onto the core (two dimensions + ZSet/GSet/Bag/IndexedZSet/event-index) is suspect: if it's just a zset/gset+emit+rx composition, don't mint a special class (Aaron 2026-06-02 observation)"
@@ -79,7 +78,7 @@ Questions 1–2 catch duplicates and views; 3–4 catch the two reduction direct
 
 - **If there is no real difference** (Q1/Q2/Q4) → it is *not* a primitive. Express
   it as the composition/view/duplicate; do **not** mint a special index/class.
-  (This is earn-its-keep / B-1004 minimal-vocabulary at primitive granularity, and
+  (This is earn-its-keep / 081KT2T2J0008QG0R0038CRFJM minimal-vocabulary at primitive granularity, and
   the razor `all-complexity-is-accidental-in-greenfield`.)
 - **If there is a real, nameable difference** (Q3) → state it precisely. A candidate
   earns primitive status only by doing something a composition of canonical
@@ -92,7 +91,7 @@ Questions 1–2 catch duplicates and views; 3–4 catch the two reduction direct
 The discriminator names the failure mode: a "special index class" that is secretly
 `IndexedZSet + an emit + an rx operator + another IndexedZSet` is redundant
 structure pretending to be a primitive. The Z-set vocabulary already auto-prunes
-non-earning *entries* (B-1004); this extends the discipline to non-earning
+non-earning *entries* (081KT2T2J0008QG0R0038CRFJM); this extends the discipline to non-earning
 *classes*.
 
 ## The canonical primitives registry — the gated output
@@ -195,7 +194,7 @@ on whatever axis it earns:
    distinct algebra/complexity/invariant on an existing axis, or it *is* a new
    orthogonal axis.
 3. **Composability** — it **composes at the HKT level** with the rest of the
-   registry (B-1004); it isn't a dead-end class that the other primitives can't
+   registry (081KT2T2J0008QG0R0038CRFJM); it isn't a dead-end class that the other primitives can't
    compose with.
 
 (This replaces the earlier vaguer "correctness + aesthetics" framing — "aesthetics"
@@ -225,7 +224,7 @@ The cross-language guarantee is *compounding*:
 - So **the more primitives we ship, the larger the surface that is
   cross-language-guaranteed** — every new BCL atom is one more thing that provably
   behaves identically in F#/C#/TS/Rust/….
-- **Ace distributes the BCL** (B-0288 package-manager CLI / B-0824
+- **Ace distributes the BCL** (081KR2E4K0008QG0R002YE3MMD package-manager CLI / 081KSGS9H0008QG0R0031PBNGA
   package-manager-of-package-managers): the registry is what Ace ships, and the
   gate (quality + uniqueness + composability + byte-lock) is *why* what Ace ships
   is trustworthy across languages. The registry → BCL → Ace pipeline is the
@@ -279,7 +278,7 @@ Aaron's "codecs are a different orthogonal of primitive, still essential". So:
 |---|---|---|---|
 | **event-index** | Q2 (view) / Q4 (composition) | **fold** → `IndexedZSet<tick, 'V>` | `src/Core/IndexedZSet.fs` is a sorted run of `KeyGroup<'K, 'V>` where each group's `Values` is a `ZSet<'V>` (there is no `KeyGroup<'K, ZSet<'V>>` instantiation) — an abelian group keyed by any comparable `'K`. An event/time-keyed log is just `'K = tick`. The only candidate-difference is a *monotone-tick / append-only invariant* on the key — not a new algebra, complexity, or structure; at most a **constrained wrapper/view** of `IndexedZSet`, not a primitive. |
 | **Rx** (`IObservable`) | Q2 (view) + adapter | **view + interop adapter**, not a primitive | `src/Core/Rx.fs` is `RxAdapter`; its own doc: *"DBSP's `Stream<ZSet<'T>>` is morally equivalent to `IObservable<ChangeSet<'T>>`"* (Meijer push-dual of `IEnumerable`). Rx is the **push-dual presentation** of `tick-source + ZSet deltas` plus an adapter into System.Reactive. It earns its keep as **ecosystem interop**, not as a core primitive. |
-| **Bonsai** | Q3 (categorical — a different orthogonal axis) | **promote → codec axis** | `src/Core/Bonsai.fs` is an *expression-tree serializer* (serialize/parse → `Result`, compact-JSON byte-diff cross-oracle contract). It's a **codec** — and codecs are *a different orthogonal axis of primitive, still essential for function* (Aaron 2026-06-02): a value you can't serialize can't cross a boundary. So Bonsai is a real primitive **on the codec axis** (`codec<codec<t>>`, the B-0976 serializer roster / B-1002 Eve transport), not on the collection axis. It enters the registry — just on its own axis. |
+| **Bonsai** | Q3 (categorical — a different orthogonal axis) | **promote → codec axis** | `src/Core/Bonsai.fs` is an *expression-tree serializer* (serialize/parse → `Result`, compact-JSON byte-diff cross-oracle contract). It's a **codec** — and codecs are *a different orthogonal axis of primitive, still essential for function* (Aaron 2026-06-02): a value you can't serialize can't cross a boundary. So Bonsai is a real primitive **on the codec axis** (`codec<codec<t>>`, the 081KT07NV0008QG0R003BE6MJ2 serializer roster / 081KT2T2J0008QG0R002R72323 Eve transport), not on the collection axis. It enters the registry — just on its own axis. |
 | **tick-source** | Q3 (categorical — a different kind) | **promote-recommended → time axis (candidate pending correctness-gate)** | `Op` in `src/Core/Circuit.fs` exposes `StepAsync` / `ClockStart` / `ClockEnd` / `Fixedpoint` — the circuit advances one **tick** at a time. The tick-source is not data; it is the **time/control axis the whole Z-set family is indexed *by***. Nothing in zset/gset *produces* ticks (they are the data flowing *between* ticks). It can't be reduced to a collection composition → a genuine primitive, distinct in **kind** (control/time, not data); the Circuit clock/step machinery is the implementation. Aesthetics/categorical gate passed; **stays candidate until the correctness gate (stated laws + tests for tick-source as a primitive) is written** (Codex review). |
 
 **Result (corrected per Aaron 2026-06-02 + Codex review):** the two candidates with a
@@ -331,7 +330,7 @@ turned out expressible as algebra, so it folds.
 **The "everything is algebra" convergence:** with **codecs** (codec algebra) and
 **time** (temporal-operator algebra) both folding to algebra, the registry collapses
 toward **algebras on orthogonal axes (data Z-set algebras · codec algebra ·
-temporal-operator algebra) + the generic-math base** — the deepest form of B-1004's
+temporal-operator algebra) + the generic-math base** — the deepest form of 081KT2T2J0008QG0R0038CRFJM's
 "conform to the minimal vocabulary": *the vocabulary is algebras, all the way down.*
 The only non-algebra things left are the **runtimes** (drivers/engines that *execute*
 the algebra) and explicit **asymmetric exceptions** (host adapters) — neither of which
@@ -376,7 +375,7 @@ admits only the algebras.
 ## Acceptance (research → process)
 
 1. **materialize the registry** — decide where it lives (a standalone
-   `docs/CANONICAL-PRIMITIVES.md`? a section under B-1004? a `src/Core/README`?)
+   `docs/CANONICAL-PRIMITIVES.md`? a section under 081KT2T2J0008QG0R0038CRFJM? a `src/Core/README`?)
    and seed it with the promoted/candidate tiers above. (Offered; the *where* is an
    aesthetics call for Aaron.)
 2. **define the promotion gate** as a short checklist (correctness + aesthetics +
@@ -385,15 +384,15 @@ admits only the algebras.
    tick-source — answer "what's the difference from `IndexedZSet`/`zset+emit+rx`?"
    precisely; promote the ones with a real difference, fold the ones without.
 4. **wire the discipline forward** — new candidate structures default to suspect;
-   the test is the entry filter (composes B-1004's "conform to the vocabulary").
+   the test is the entry filter (composes 081KT2T2J0008QG0R0038CRFJM's "conform to the vocabulary").
 
 ## Composes with substrate
 
-- **[B-1004]** (minimal HKT vocabulary — this row is the **registry + gate** that
-  operationalizes it: B-1004 says *conform*; this says *here is the gated list to
-  conform to, and the test that keeps it minimal*) · **[B-1000]** (the engine whose
-  message families / FactorGraph use these primitives) · **[B-1005]** (distributed
-  inference composes the promoted primitives) · **[B-0428]** (real HKT — the
+- **[081KT2T2J0008QG0R0038CRFJM]** (minimal HKT vocabulary — this row is the **registry + gate** that
+  operationalizes it: 081KT2T2J0008QG0R0038CRFJM says *conform*; this says *here is the gated list to
+  conform to, and the test that keeps it minimal*) · **[081KT2T2J0008QG0R000S7GHQ8]** (the engine whose
+  message families / FactorGraph use these primitives) · **[081KT2T2J0008QG0R003BT1RS7]** (distributed
+  inference composes the promoted primitives) · **[081KRFA460008QG0R0018SN61J]** (real HKT — the
   composition the promoted primitives compose at)
 - existing F#: `src/Core/ZSet.fs` / `src/Core/GSet.fs` / `src/Core/Bag.fs` /
   `src/Core/IndexedZSet.fs` (promoted family), `src/Core/Bonsai.fs` /

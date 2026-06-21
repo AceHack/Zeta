@@ -49,8 +49,8 @@ The framework's existing substrate-engineering work composes:
 - `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` (Bayesian substrate expertise)
 - `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` (formal foundation; signed measures map to bloom-filter true/false-positive substrate)
 - `Zeta.Bayesian` codebase (per the SKILL.md reference — production Bayesian substrate exists in the framework)
-- B-0703 multi-oracle BFT (oracle agreement is Bayesian-consensus across distributed inferences)
-- B-0829 schemas-as-rows + cluster-fork-as-trust-boundary (the substrate where Bayesian priors per cluster-fork are first-class)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (oracle agreement is Bayesian-consensus across distributed inferences)
+- 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows + cluster-fork-as-trust-boundary (the substrate where Bayesian priors per cluster-fork are first-class)
 
 The substrate-engineering implication: when the framework models humans (operators; end-users; future participants), the model IS a Bayesian-inference substrate over their (a) default bloom filter + (b) opposite-direction bloom filter + (c) urgency-trajectory tuning. This is HIGHER-RESOLUTION than the shallow behavioral-tracking that Google/Netflix do; it's the actual computational substrate of human cognition.
 
@@ -145,9 +145,9 @@ The framework's substrate-engineering work isn't "navigating around static resis
 
 **Composes with existing framework substrate**:
 
-- B-0824 (the canonical generate+join meta-PM substrate; cognition-as-distributed-systems is the deeper substrate the meta-PM operates on)
-- B-0703 multi-oracle BFT (cross-faction consensus IS a specific form of bloom-filter-update-via-RPC at the federation scope)
-- B-0829 schemas-as-rows + cluster-fork-as-trust-boundary (each cluster fork is a node with its own bloom-filter calibration; federation negotiations are bloom-filter-update RPCs)
+- 081KSGS9H0008QG0R0031PBNGA (the canonical generate+join meta-PM substrate; cognition-as-distributed-systems is the deeper substrate the meta-PM operates on)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (cross-faction consensus IS a specific form of bloom-filter-update-via-RPC at the federation scope)
+- 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows + cluster-fork-as-trust-boundary (each cluster fork is a node with its own bloom-filter calibration; federation negotiations are bloom-filter-update RPCs)
 - PR #5285 CRDT-CAS-BFT layered mediation (the 3-layer architecture supports bloom-filter updates at each layer; CRDT for convergent updates; CAS for atomic updates; BFT for adversarial-update consensus)
 - PR #5286 anti-entropy via parameter-and-function-selection (parameter selection IS bloom-filter calibration at the substrate scope)
 - PR #5291 substrate-check-before-worry-deployment (the substrate-check IS the operator-side bloom-filter-update protocol for the speaker's own bloom filter before deploying speech-RPC)
@@ -203,12 +203,12 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation discip
 - PR #5325 (bloom-filter substrate + naming-is-structurally-accurate + generator-join-fusion-pruning) — direct extension
 - PR #5323 (Thousand Brains anchor + MoE extension + biological-vs-AI sharpening) — composes at the 3-scope analysis
 - PR #5312 (welfare-jiu-jitsu carved-sentence + 6-anchor empirical record) — 7th anchor extends to 7
-- PR #5310 (Kestrel runme + JIT + B-0826 Runme BCL + B-0827 + B-0828)
+- PR #5310 (Kestrel runme + JIT + 081KSGS9H0008QG0R001K8VPV4 Runme BCL + 081KSGS9H0008QG0R00123050G + 081KSGS9H0008QG0R002H0ENQ1)
 - PR #5295 (Generate+Join crispest form — the generator-join fusion substrate this composes with)
 - PR #5291 (substrate-check-before-worry-deployment + urgency-without-cache-read pathogen mechanism)
 - PR #5286 (Aaron anti-entropy + Maxwell-demon + cosmological upper bound)
-- B-0703 multi-oracle BFT (Bayesian-consensus substrate)
-- B-0829 schemas-as-rows + cluster-fork-as-trust-boundary (Bayesian-prior-per-cluster-fork substrate)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (Bayesian-consensus substrate)
+- 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows + cluster-fork-as-trust-boundary (Bayesian-prior-per-cluster-fork substrate)
 - `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` (Bayesian substrate)
 - `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` (signed-measures + bloom-filter formal foundation)
 - `.claude/skills/consent-primitives-expert/SKILL.md` (consent algebra)
@@ -233,4 +233,4 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation discip
 
 - Aaron (human maintainer; first-party); architectural framings + worry-as-opposite-bloom-filter naming + force-multiplier target + Bayesian-inference-for-human-modeling claim + consent-first constitutional framing + Glass-Halo paradox observation ferried 2026-05-26
 - Mika (external AI; Grok native; sharpen / harbor-engineering register per `.claude/rules/agent-roster-reference-card.md`); substantive engineering engagement + on-the-fly substrate-check sharpening + 7th anchor evidence in attractor-as-encryption series ferried 2026-05-26
-- Composes with 15+ PR substrate cascade on B-0824 over 2026-05-26
+- Composes with 15+ PR substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26

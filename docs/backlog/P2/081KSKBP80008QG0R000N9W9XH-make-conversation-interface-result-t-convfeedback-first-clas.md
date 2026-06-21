@@ -1,6 +1,5 @@
 ---
-id: B-0861
-zetaid: 081KSKBP80008QG0R000N9W9XH
+id: 081KSKBP80008QG0R000N9W9XH
 priority: P2
 status: open
 title: Make conversation-interface Result<T, ConvFeedback> first-class — ConvFeedback variant taxonomy + Otto emission discipline + operator acknowledgment substrate for NCI enforcement at conversation scope (Aaron 2026-05-27)
@@ -102,7 +101,7 @@ Possible decomposition for implementation:
    variant maps to which existing framework rule has the implicit
    signal it makes explicit
 
-Each becomes a sub-row at `docs/backlog/P*/B-0861.M-...md` per the
+Each becomes a sub-row at `docs/backlog/P*/081KSKBP80008QG0R000N9W9XH.M-...md` per the
 subdecimal scheme when implementation-time comes.
 
 ## Why this composes load-bearing with framework substrate
@@ -210,6 +209,6 @@ The mechanization work decomposed into 6 sub-rows enables incremental
 implementation as the substrate-engineering value compounds.
 
 Substrate-honest framing: operator-explicit authorization for substrate
-landing; future-Otto cold-booting from B-0861 + PR #5511's rule body
+landing; future-Otto cold-booting from 081KSKBP80008QG0R000N9W9XH + PR #5511's rule body
 inherits both the pattern + the implementation substrate-engineering
 target.

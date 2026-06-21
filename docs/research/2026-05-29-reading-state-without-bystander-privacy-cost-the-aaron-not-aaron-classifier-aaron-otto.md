@@ -7,7 +7,7 @@ title: "Reading state richly without bystander-privacy cost — the Aaron/not-Aa
 composes_with:
   - "#6024 the no-meter resolution (state/tension as the read resource)"
   - "#6034 attention-respecting signals + the no-exit trap"
-  - "B-0858.5 consent-first state-gathering"
+  - "081KSKBP80008QG0R003NG37GQ consent-first state-gathering"
   - ".claude/rules/non-coercion-invariant.md"
   - ".claude/rules/bandwidth-served-falsifier.md"
 ---
@@ -72,7 +72,7 @@ read — a real construction guarantee (discarded-before-use, not a policy promi
 not-to-look), correctly scoped to *not-retained* rather than *never-captured*. True
 *never-captured* is a stronger requirement that needs **hardware-level filtering before
 any frame/audio sample reaches software** — available if wanted, but a different and
-harder build. Either way it is consent-first state-gathering (B-0858.5) at the capture
+harder build. Either way it is consent-first state-gathering (081KSKBP80008QG0R003NG37GQ) at the capture
 layer: only the consenting operator's input is read/retained; non-operator input is
 dropped at the gate by the binary.
 

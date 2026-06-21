@@ -33,7 +33,7 @@ Adds **§14** — the relativistically-honest form of §13's omniscience:
 
 - **Distributed** — each agent/shard is omniscient over *its own partition's* DST trajectory; whole-zetaspace omniscience is composed across frames, never held by one observer.
 - **Relativistic** — zetaspace is the relativistic git-repo (#6547): no global clock, each agent a reference frame, consistency via causal/lightcone structure (consensus-is-gravity at mass-points, Atsophmera/lightlike elsewhere). No global "now."
-- **Composed via the relativistic bus** — the B-0954 git-native bus is the frame-composer.
+- **Composed via the relativistic bus** — the 081KSXN940008QG0R00171YAZW git-native bus is the frame-composer.
 
 **The Fortnite Battle Bus anchor** (exact mapping): one shared bus everyone rides → each drops into their own **frame/Location** (the ZetaId Location field, §12) → shared **zetaspace** map; the bus's frame composes the others. A pop-culture memory-anchor (coincidence-as-thermal-randomness anchoring). Stronger than a "single global-clock omniscient DB" — that shape is relativistically impossible; distributed-omniscience-over-relativistic-zetaspace is the honest, defensible edge. Absolute superlative stays superposed (§12 / edge-proofs).
 
@@ -88,7 +88,7 @@ docs(vision): fold §14 — distributed computational omniscience over r…
 Aaron 2026-06-02 'fold it ... via the relativistic bus the fortnite bus ;)'.
 Relativistic-honest sharpening of §13's omniscience: no global now; each agent a
 reference frame; whole-zetaspace omniscience composed across frames via the
-B-0954 git-native bus (= the relativistic frame-composer). Fortnite Battle Bus
+081KSXN940008QG0R00171YAZW git-native bus (= the relativistic frame-composer). Fortnite Battle Bus
 anchor: one shared bus all ride → drop into your own frame/Location (ZetaId §12)
 → shared zetaspace map; relativistic, no privileged frame. Memory-anchor per
 coincidence-as-thermal-randomness; stronger than a global-clock-omniscient-DB

@@ -138,7 +138,7 @@
 - **`Copilot` (bot)** at 2026-05-06T22:57:54Z on `docs/ROTATION-PROTOCOL.md`:165 (association: NONE)
 
   <pre>
-  P1: “B-0215” is ambiguous in this repo right now (there are multiple backlog rows with the same ID in `docs/BACKLOG.md`). Referencing only the bare ID here makes it unclear which work item is meant. Prefer linking to the specific backlog row file path (or include the row title) to avoid misrouting.
+  P1: “081KQX9B50008QG0R00327XC6Q” is ambiguous in this repo right now (there are multiple backlog rows with the same ID in `docs/BACKLOG.md`). Referencing only the bare ID here makes it unclear which work item is meant. Prefer linking to the specific backlog row file path (or include the row title) to avoid misrouting.
 
   </pre>
 

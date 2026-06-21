@@ -51,12 +51,12 @@ This row was the FIRST instance that named the #2-Ready sub-class in the catalog
 
 ## Pull request overview
 
-Sixth close-row in the audit cycle. Replaces three bare "Prop 3.5"/"Proposition 3.5" misattributions in the Lean chain-rule proof and its research log with strikethrough+annotated corrections that cite Theorem 3.3, then marks B-0197 closed in the backlog and root index.
+Sixth close-row in the audit cycle. Replaces three bare "Prop 3.5"/"Proposition 3.5" misattributions in the Lean chain-rule proof and its research log with strikethrough+annotated corrections that cite Theorem 3.3, then marks 081KQTPYE0008QG0R003DK06PA closed in the backlog and root index.
 
 **Changes:**
 - Corrects two misattributions in `tools/lean4/Lean4/DbspChainRule.lean` (lines 51 and 202–203) with witnessable-evolution strikethrough and dated annotation citing Theorem 3.3.
 - Corrects the parallel misattribution in `docs/research/chain-rule-proof-log.md` (lines 113–115).
-- Flips B-0197 to `status: closed`, adds a Resolution section to the per-row file, and updates `docs/BACKLOG.md` to render it as closed.
+- Flips 081KQTPYE0008QG0R003DK06PA to `status: closed`, adds a Resolution section to the per-row file, and updates `docs/BACKLOG.md` to render it as closed.
 
 ### Reviewed changes
 
@@ -66,8 +66,8 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 1 c
 | ---- | ----------- |
 | `tools/lean4/Lean4/DbspChainRule.lean` | Replace two bare Prop 3.5 references with Theorem 3.3 citations, preserving original prose via strikethrough. |
 | `docs/research/chain-rule-proof-log.md` | Apply the same correction pattern to the proof-log narrative. |
-| `docs/backlog/P2/B-0197-…md` | Frontmatter `status: open → closed`; appends Resolution + falsifier-pass + composes-with note. |
-| `docs/BACKLOG.md` | Marks the B-0197 row checked in the generated index. |
+| `docs/backlog/P2/081KQTPYE0008QG0R003DK06PA-…md` | Frontmatter `status: open → closed`; appends Resolution + falsifier-pass + composes-with note. |
+| `docs/BACKLOG.md` | Marks the 081KQTPYE0008QG0R003DK06PA row checked in the generated index. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-16T14:46:16Z)
 
@@ -149,7 +149,7 @@ This issue also appears in the following locations of the same file:
 
 The corrected prose here is hard to parse and partially redundant. Line 202 ends with `...via Theorem 3.3]` and line 203 immediately starts with `~~Budiu et al. Proposition 3.5~~ Budiu et al. Theorem 3.3 ([corrected 2026-05-05: ...])`, with no connector — the two lines no longer form a single coherent sentence, and the `[corrected 2026-05-05: ...]` annotation appears twice saying essentially the same thing ("paper makes it explicit via Theorem 3.3" / "paper states LTI condition explicitly via Theorem 3.3, not in an unspoken premise"). Consider collapsing this into one strikethrough span plus one corrected-annotation, matching the cleaner pattern used at line 51.
 
-### Thread 4: docs/backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md:4 (resolved)
+### Thread 4: docs/backlog/P2/081KQTPYE0008QG0R003DK06PA-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md:4 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-16T15:09:19Z):
 

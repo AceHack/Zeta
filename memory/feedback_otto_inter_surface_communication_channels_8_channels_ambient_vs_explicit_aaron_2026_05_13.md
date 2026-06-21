@@ -72,14 +72,14 @@ behavior until it MERGED to main.
 
 9 envelopes observed at `/tmp/zeta-bus/`:
 
-- Topic `work-assignment` from Otto (6 envelopes) — broadcasts like "picking up B-0441 next"
+- Topic `work-assignment` from Otto (6 envelopes) — broadcasts like "picking up 081KRFA460008QG0R00229616S next"
 - Topic `review-request` from Otto + riven (3 envelopes)
 
 Schema: `{ topic, from, to, payload, timestamp, expiresAt }`. 2-hour TTL.
 `action` field unused in observed envelopes — these are advisory broadcasts,
 NOT lock claims. Lock claims use `tools/bus/claim.ts` (separate mechanism).
 
-**Gap identified** (B-0444 P2): bus envelope should include `worktree` field for
+**Gap identified** (081KRFA460008QG0R001SXP0C2 P2): bus envelope should include `worktree` field for
 multi-surface disambiguation when SENDER_IDS schema doesn't suffice.
 
 ### Channel: Aaron as ferry (explicit, high-bandwidth)

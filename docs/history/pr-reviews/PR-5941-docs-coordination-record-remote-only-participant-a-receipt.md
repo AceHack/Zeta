@@ -29,7 +29,7 @@
 
 ## Summary
 - add the clean Participant A acknowledgement receipt for B claim ea0d85461
-- record the A/B path comparison as disjoint in the B-0209 two-participant dry-run packet
+- record the A/B path comparison as disjoint in the 081KQX9B50008QG0R001MNYK61 two-participant dry-run packet
 - release the A acknowledgement claim file on the PR branch
 
 ## Checks

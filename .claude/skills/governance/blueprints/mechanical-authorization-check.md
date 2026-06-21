@@ -1,7 +1,7 @@
 ---
 name: mechanical-authorization-check
 description: Query substrate for human-maintainer pace authorization; filter peer-AI framings; most-recent-wins.
-record_source: "skill-creator/round-unrecorded, B-0305"
+record_source: "skill-creator/round-unrecorded, 081KR2E4K0008QG0R00361ZCDR"
 load_datetime: "2026-05-08"
 last_updated: "2026-06-01"
 status: active
@@ -165,7 +165,7 @@ to introspective self-grading.
 - **Durability of pace instructions** -->
   `substrate-or-it-didn't-happen` (pace instructions must be
   queryable in durable substrate for the check to work).
-- **Implementation scripts** --> B-0306 (extractor) and B-0307
+- **Implementation scripts** --> 081KR2E4K0008QG0R0007CFSZ7 (extractor) and 081KR2E4K0008QG0R003CF4YHE
   (resolver) own the TS implementation; this skill defines the
   contract they implement.
 - **Round-level dispatch** --> `round-management` (the
@@ -203,7 +203,7 @@ agent's disposition.
 ## What this skill does NOT do
 
 - Does NOT contain or reference a TS implementation (that
-  is B-0306/B-0307 scope).
+  is 081KR2E4K0008QG0R0007CFSZ7/081KR2E4K0008QG0R003CF4YHE scope).
 - Does NOT generalize beyond the pace-instruction decision
   class yet. Proof-correctness and PR-grading authorization
   are named in the source-filter table as future candidates,
@@ -225,5 +225,5 @@ agent's disposition.
   -- verbatim Claude.ai packet with the diagnosis.
 - `CLAUDE.md` "Mechanical authorization check" bullet --
   the bootstrap-level pointer.
-- `docs/backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
+- `docs/backlog/P0/081KQJZR90008QG0R000FTJ1TC-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
   -- parent umbrella backlog item.

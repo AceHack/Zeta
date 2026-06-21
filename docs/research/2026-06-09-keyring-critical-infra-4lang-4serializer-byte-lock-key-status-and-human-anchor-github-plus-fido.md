@@ -35,7 +35,7 @@ must hold across the **4×4 grid: 4 language oracles × 4 serializers**:
 - **Conformance:** every cell of the grid MUST reproduce `expected` **bit-perfect**
   from `input`. `gen.test.ts` is the **TS×JSON** cell (passing: deep-equal +
   determinism). The remaining 15 cells are the conformance matrix to fill (kin:
-  the existing `golden-vectors-*.json` for cbor/arrow/merkle; B-0982 four-oracle
+  the existing `golden-vectors-*.json` for cbor/arrow/merkle; 081KT07NV0008QG0R0032MCYER four-oracle
   multi-format seed doctrine).
 - **Culture-invariant:** ordinal/byte-perfect throughout (per
   `.claude/rules/culture-invariant-by-default.md`) — required for 4-lang byte-lock.
@@ -72,7 +72,7 @@ follow-on; the schema field is in place now so the data has a home.
 ## Pointers
 
 - `tools/setup/persona-keys/{gen.ts,keyring.sh,golden-vectors-keyring.json,gen.test.ts,README.md}`.
-- Rules: `no-binary-in-proof-lineage`, `culture-invariant-by-default`; B-0982
+- Rules: `no-binary-in-proof-lineage`, `culture-invariant-by-default`; 081KT07NV0008QG0R0032MCYER
   four-oracle multi-format golden-vector seeds; the existing `golden-vectors-*.json`.
 - Trust bootstrap = GitHub/main (the identity-trust-network-plane doc); SolidGround
   / points-of-certainty (the Seed kernel); the traveler frame (whose identity these keys are).

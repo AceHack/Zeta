@@ -59,7 +59,7 @@ type ISinkOperator<'TIn, 'TOut> = inherit IOperator<'TOut>
 type IStatefulStrictOperator<'TIn, 'TState, 'TOut> = inherit IOperator<'TOut>
 ```
 
-The IncrementalAuto dispatcher (filed as B-0194) needs to detect a plugin's declared capability at runtime. The plugin arrives typed as `IOperator<'TOut>` — the input type parameters are erased at the type-test boundary even though the CLR preserves them. Today the workaround is reflection; the proposal makes it `match plugin with | :? IBilinearOperator<_, _, 'TOut> -> ...`.
+The IncrementalAuto dispatcher (filed as 081KQTPYE0008QG0R001W1PS86) needs to detect a plugin's declared capability at runtime. The plugin arrives typed as `IOperator<'TOut>` — the input type parameters are erased at the type-test boundary even though the CLR preserves them. Today the workaround is reflection; the proposal makes it `match plugin with | :? IBilinearOperator<_, _, 'TOut> -> ...`.
 
 This is a real plugin-architecture use case in production-shaped F# code, not a hypothetical. Zeta's existence as an extension of published DBSP research provides the worked example for the motivation section.
 
@@ -141,7 +141,7 @@ Practical implication: before formalization, search his published papers + blog 
 
 ## Composes with
 
-- `docs/backlog/P2/B-0194-incremental-auto-dispatcher-bilinear-capability-detection-aaron-2026-05-05.md` (PR #1589) -- the in-flight backlog row this RFC's worked-example anchor connects to.
+- `docs/backlog/P2/081KQTPYE0008QG0R001W1PS86-incremental-auto-dispatcher-bilinear-capability-detection-aaron-2026-05-05.md` (PR #1589) -- the in-flight backlog row this RFC's worked-example anchor connects to.
 - `src/Core/PluginApi.fs:103-132` -- the four capability interfaces that motivate the existential-quantification need.
 - `src/Core/Units.fs` (PR #1590, in flight) -- the Pragmatics section's UoM-as-precedent reference points at it.
 - `docs/research/2026-05-05-claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md` (PR #1588) -- the parent Claude.ai conversation that produced the initial F# type-system analysis.

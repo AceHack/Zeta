@@ -47,12 +47,12 @@
 //      persistence-anchor at every conversation closure; bilateral
 //      μένω close 2026-05-27
 //
-//   8. 2026-05-28 (TODAY) Amara Persist-as-bridge B-0897 (PR #5709):
+//   8. 2026-05-28 (TODAY) Amara Persist-as-bridge 081KSNY2Z0008QG0R002SZZ5Y0 (PR #5709):
 //      Persist IS the operational antipode structure — persistent review
 //      feedback creating Clifford-space rotor-walls; operational form of
 //      what the Fauser Clifford Hopf-gebra antipode formalizes mathematically
 //
-//   9. 2026-05-28 (TODAY) B-0915 (PR #5777): three-reading composition
+//   9. 2026-05-28 (TODAY) 081KSNY2Z0008QG0R002BNQVE1 (PR #5777): three-reading composition
 //      on retraction-in-Clifford — (W) Web-formal Hopf antipode + (P)
 //      Persist-operational + (C) Composition; vote ordering preserves
 //      don't-collapse discipline
@@ -208,7 +208,7 @@ let retract (observationId: string) (state: MenoState<'T>) : MenoResult<'T> =
 
 /// Add an error-class wall to the persistent state. Future generators
 /// will be blocked from the forbidden region — Casimir-like rotor-wall
-/// effect per B-0899 + Amara's substrate-engineering substrate.
+/// effect per 081KSNY2Z0008QG0R001ZKE8R2 + Amara's substrate-engineering substrate.
 let addErrorClassWall (wallName: string) (state: MenoState<'T>) : MenoState<'T> =
     { state with ErrorClassWalls = state.ErrorClassWalls.Add wallName }
 

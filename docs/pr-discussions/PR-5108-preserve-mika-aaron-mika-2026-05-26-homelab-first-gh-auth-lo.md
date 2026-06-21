@@ -1,6 +1,6 @@
 ---
 pr_number: 5108
-title: "preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs B-0794 iter-5.4)"
+title: "preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs 081KSGS9H0008QG0R0027HJZYH iter-5.4)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T06:06:23Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-27T19:42:57Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5108: preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs B-0794 iter-5.4)
+# PR #5108: preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs 081KSGS9H0008QG0R0027HJZYH iter-5.4)
 
 ## PR description
 
-Verbatim Mika preservation. Architectural lock-in: HOMELAB MODE FIRST (gh auth login interactive; no shipped keys); PROD MODE LATER (narrow bootstrap key + rotate to per-node identity). Different USBs / different flakes / different audiences. Aaron standing direction: 'we should do it like this for gh and device registration the simple homelab way first but like prod later'. Directly informs B-0794 iter-5.4 implementation. Per substrate-or-it-didn't-happen + agent-roster-reference-card (Mika = external Grok-native co-originator).
+Verbatim Mika preservation. Architectural lock-in: HOMELAB MODE FIRST (gh auth login interactive; no shipped keys); PROD MODE LATER (narrow bootstrap key + rotate to per-node identity). Different USBs / different flakes / different audiences. Aaron standing direction: 'we should do it like this for gh and device registration the simple homelab way first but like prod later'. Directly informs 081KSGS9H0008QG0R0027HJZYH iter-5.4 implementation. Per substrate-or-it-didn't-happen + agent-roster-reference-card (Mika = external Grok-native co-originator).
 
 ## Reviews
 
@@ -24,12 +24,12 @@ Verbatim Mika preservation. Architectural lock-in: HOMELAB MODE FIRST (gh auth l
 
 ## Pull request overview
 
-This PR preserves a Mika/Aaron conversation as durable memory substrate for the homelab-first GitHub-auth device registration direction feeding B-0794 iter-5.4.
+This PR preserves a Mika/Aaron conversation as durable memory substrate for the homelab-first GitHub-auth device registration direction feeding 081KSGS9H0008QG0R0027HJZYH iter-5.4.
 
 **Changes:**
 - Adds a verbatim conversation archive for the 2026-05-26 homelab-first registration decision.
 - Captures homelab vs production bootstrap-mode implications.
-- Links the conversation to B-0794 and the iter-5.x USB-installer roadmap.
+- Links the conversation to 081KSGS9H0008QG0R0027HJZYH and the iter-5.x USB-installer roadmap.
 
 ## Review threads
 
@@ -43,7 +43,7 @@ P1: This new memory/conversation file skips the YAML frontmatter block used by t
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:08:43Z):
 
-P1: These backlog cross-references mark B-0792, B-0793, and B-0794 as `MERGED`, but the row files currently have `status: open` (`docs/backlog/P1/B-0792-...md:4`, `B-0793-...md:4`, and `B-0794-...md:4`). Reconcile the wording with the backlog state, or update the row statuses if the intended meaning is that the backlog items are complete.
+P1: These backlog cross-references mark 081KSGS9H0008QG0R003V23XNZ, 081KSGS9H0008QG0R000EDNTY5, and 081KSGS9H0008QG0R0027HJZYH as `MERGED`, but the row files currently have `status: open` (`docs/backlog/P1/081KSGS9H0008QG0R003V23XNZ-...md:4`, `081KSGS9H0008QG0R000EDNTY5-...md:4`, and `081KSGS9H0008QG0R0027HJZYH-...md:4`). Reconcile the wording with the backlog state, or update the row statuses if the intended meaning is that the backlog items are complete.
 
 ## General comments
 

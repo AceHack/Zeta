@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- grandfather B-1024 through B-1028 in the frozen legacy backlog ID allowlist
+- grandfather 081KTSZN10008QG0R00349SM6P through 081KTSZN10008QG0R001BCCTXT in the frozen legacy backlog ID allowlist
 - restores the docs/backlog freeze guard after those legacy rows landed on main
 
 ## Verification

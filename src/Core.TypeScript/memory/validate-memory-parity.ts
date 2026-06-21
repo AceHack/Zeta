@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 /**
- * B-0260: MEMORY.md cutover parity validator.
+ * 081KR2E4K0008QG0R001M8NJ56: MEMORY.md cutover parity validator.
  *
  * Verifies that every file referenced in the old hand-curated index
  * fragments (INDEX-PRE-2026-04-23.md, INDEX-POST-LINE-200.md) is still
  * discoverable after the cutover to the generated index produced by
- * reindex-memory-md.ts (B-0258/B-0423).
+ * reindex-memory-md.ts (081KR2E4K0008QG0R001E27DDV/081KRCQQF0008QG0R0037YYP1A).
  *
  * A file is "covered" when it exists in memory/ AND has valid YAML
  * frontmatter (so the reindexer picks it up, placing it in the
@@ -165,7 +165,7 @@ async function main() {
   if (jsonMode) {
     console.log(JSON.stringify(report, null, 2));
   } else {
-    console.log("=== B-0260 MEMORY.md Parity Validation ===");
+    console.log("=== 081KR2E4K0008QG0R001M8NJ56 MEMORY.md Parity Validation ===");
     console.log(`Run at:              ${report.runAt}`);
     console.log(`Old-index entries:   ${report.totalOldIndexEntries}`);
     console.log(`Unique files:        ${report.totalUniqueFiles}`);

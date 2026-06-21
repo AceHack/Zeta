@@ -1,6 +1,5 @@
 ---
-id: B-0182
-zetaid: 081KQNJ500008QG0R002QDZ0BG
+id: 081KQNJ500008QG0R002QDZ0BG
 priority: P2
 status: open
 title: Filter formal-verification tests to standard Linux only — TLC + Alloy + Lean are pure-math computation; no OS-specific behavior
@@ -104,7 +103,7 @@ preserves dev-local validation.
 - `docs/research/2026-05-03-math-proofs-honest-assessment.md`
   (the assessment doc; CI cost is implicit context for "runs in CI"
   A-grade gating)
-- B-0017 Operational Resonance Dashboard (when CI cost becomes a
+- 081KQ0YZ80008QG0R0003GAYYN Operational Resonance Dashboard (when CI cost becomes a
   visible dashboard metric)
 
 ## Effort estimate

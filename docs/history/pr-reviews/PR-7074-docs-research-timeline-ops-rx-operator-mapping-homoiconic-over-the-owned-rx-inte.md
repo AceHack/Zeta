@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: make timeline-ops homoiconic to our owned Rx. Added: (a) op→Rx-operator map (fork=Publish/GroupBy, zip=Zip, join=Join/GroupJoin [coincidence locus], converge-flatten=SelectMany, converge-consensus=Scan+CRDT-merge≠SelectMany, rewind/ff=Replay/Scan); (b) homoiconic layer — ops as Bonsai/DynamicValue expression trees over the owned IQbservable/Reaqtor port (Rx.fs/RxAdapter; bcl-interface-boundary), System.Reactive/DBSP/ferry as backends => serializable, DST-replayable, meta-homoiconic. Composes B-0640 + StoredProc native-vs-interp. Doc-only. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Aaron: make timeline-ops homoiconic to our owned Rx. Added: (a) op→Rx-operator map (fork=Publish/GroupBy, zip=Zip, join=Join/GroupJoin [coincidence locus], converge-flatten=SelectMany, converge-consensus=Scan+CRDT-merge≠SelectMany, rewind/ff=Replay/Scan); (b) homoiconic layer — ops as Bonsai/DynamicValue expression trees over the owned IQbservable/Reaqtor port (Rx.fs/RxAdapter; bcl-interface-boundary), System.Reactive/DBSP/ferry as backends => serializable, DST-replayable, meta-homoiconic. Composes 081KRW63S0008QG0R002XA5N6S + StoredProc native-vs-interp. Doc-only. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

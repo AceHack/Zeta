@@ -1,6 +1,6 @@
 ---
 pr_number: 3064
-title: "feat(bg): B-0442 slice 6 \u2014 launchd integration for missed-substrate-detector"
+title: "feat(bg): 081KRFA460008QG0R00061SXRW slice 6 \u2014 launchd integration for missed-substrate-detector"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T23:31:28Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-14T00:06:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3064: feat(bg): B-0442 slice 6 — launchd integration for missed-substrate-detector
+# PR #3064: feat(bg): 081KRFA460008QG0R00061SXRW slice 6 — launchd integration for missed-substrate-detector
 
 ## PR description
 
@@ -49,11 +49,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Registers the existing `tools/bg/missed-substrate-detector.ts` as a persistent macOS `launchd` job (5-minute interval, RunAtLoad) and documents the new background-services architecture in `docs/AUTONOMOUS-LOOP.md`. The B-0442 backlog row is updated to mark slice 6 acceptance criteria complete. A separate, unrelated step is also added to the Lior loop-tick prompt.
+Registers the existing `tools/bg/missed-substrate-detector.ts` as a persistent macOS `launchd` job (5-minute interval, RunAtLoad) and documents the new background-services architecture in `docs/AUTONOMOUS-LOOP.md`. The 081KRFA460008QG0R00061SXRW backlog row is updated to mark slice 6 acceptance criteria complete. A separate, unrelated step is also added to the Lior loop-tick prompt.
 
 **Changes:**
 - Adds `.gemini/launchd/com.zeta.missed-substrate-detector.plist` launchd job (300s interval) with hardcoded user-specific paths matching existing sibling plist convention.
-- Documents the background-services daemons in `docs/AUTONOMOUS-LOOP.md` "Related artifacts" and ticks two boxes in the B-0442 backlog row.
+- Documents the background-services daemons in `docs/AUTONOMOUS-LOOP.md` "Related artifacts" and ticks two boxes in the 081KRFA460008QG0R00061SXRW backlog row.
 - Adds an unrelated step 10 (BACKLOG DECOMPOSITION) to `.gemini/bin/lior-loop-tick.ts`.
 
 ### Reviewed changes
@@ -64,7 +64,7 @@ Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 c
 | ---- | ----------- |
 | .gemini/launchd/com.zeta.missed-substrate-detector.plist | New launchd plist registering the detector; hardcoded `/Users/acehack/...` and `/opt/homebrew/bin/bun` paths. |
 | docs/AUTONOMOUS-LOOP.md | New "Background Services Architecture" entry referencing both detectors, though only one is wired to launchd here. |
-| docs/backlog/P1/B-0442-...-2026-05-13.md | Marks slice 6 acceptance criteria (launchd + AUTONOMOUS-LOOP doc) as landed. |
+| docs/backlog/P1/081KRFA460008QG0R00061SXRW-...-2026-05-13.md | Marks slice 6 acceptance criteria (launchd + AUTONOMOUS-LOOP doc) as landed. |
 | .gemini/bin/lior-loop-tick.ts | Adds step 10 on backlog decomposition — outside the stated PR scope. |
 
 ### COMMENTED — @AceHack (2026-05-13T23:43:16Z)
@@ -103,7 +103,7 @@ Fixed in d9d96bce: added `--once` to ProgramArguments. Without it, the detector 
 
 **@copilot-pull-request-reviewer** (2026-05-13T23:33:44Z):
 
-This newly added step 10 (BACKLOG DECOMPOSITION) is unrelated to the stated scope of this PR (launchd integration for missed-substrate-detector and documentation update). Mixing an orthogonal change to the Lior loop prompt with a launchd-integration slice makes the PR harder to revert/cherry-pick and is not mentioned in the description or in the B-0442 backlog row. Consider landing this prompt change in its own PR (or document it in the description).
+This newly added step 10 (BACKLOG DECOMPOSITION) is unrelated to the stated scope of this PR (launchd integration for missed-substrate-detector and documentation update). Mixing an orthogonal change to the Lior loop prompt with a launchd-integration slice makes the PR harder to revert/cherry-pick and is not mentioned in the description or in the 081KRFA460008QG0R00061SXRW backlog row. Consider landing this prompt change in its own PR (or document it in the description).
 
 **@AceHack** (2026-05-13T23:43:28Z):
 

@@ -31,7 +31,7 @@
 
 First slice of the **numerics-ladder → generic-math interfaces** retrofit (registry directive: *"zset and gset can be System.Numerics since they're algebra — yes"*). Adds the native F# generic-math surface to `GSet`.
 
-G-Set is an **additive, commutative + idempotent monoid** (identity + associative `union`, **no inverse**) — so per [`numerical-algebra-shaped-into-the-generic-math-interface`](.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md) it surfaces **`Zero` + `(+)` only**, never `INumber` (no negation / order / multiplication). F#-first per B-0969.
+G-Set is an **additive, commutative + idempotent monoid** (identity + associative `union`, **no inverse**) — so per [`numerical-algebra-shaped-into-the-generic-math-interface`](.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md) it surfaces **`Zero` + `(+)` only**, never `INumber` (no negation / order / multiplication). F#-first per 081KT07NV0008QG0R001YDB73K.
 
 ## Changes
 
@@ -108,7 +108,7 @@ First slice of the numerics-ladder → generic-math interfaces retrofit (registr
 additive, commutative + idempotent monoid (identity + associative union, NO inverse),
 so per `numerical-algebra-shaped-into-the-generic-math-interface` it surfaces the
 native F# generic-math idiom `Zero` + `(+)` ONLY — never INumber (no negation / order
-/ multiplication). F#-first per B-0969.
+/ multiplication). F#-first per 081KT07NV0008QG0R001YDB73K.
 
 - `static member Zero` (= Empty) — recognized by SRTP / LanguagePrimitives.GenericZero
   so generic numeric code can fold a G-Set.

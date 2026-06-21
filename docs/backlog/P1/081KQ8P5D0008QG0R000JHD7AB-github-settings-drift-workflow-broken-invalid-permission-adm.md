@@ -1,6 +1,5 @@
 ---
-id: B-0087
-zetaid: 081KQ8P5D0008QG0R000JHD7AB
+id: 081KQ8P5D0008QG0R000JHD7AB
 priority: P1
 status: partial
 title: github-settings-drift.yml broken since PR #45 — option A landed (invalid permission removed); options B/C remain maintainer-gated
@@ -15,7 +14,7 @@ composes_with:
 tags: [otto-2026-04-28, github-actions, workflow-startup-failure, invalid-permission, drift-detector-broken, factory-hygiene, option-a-landed]
 ---
 
-# B-0087 — github-settings-drift.yml broken since PR #45
+# 081KQ8P5D0008QG0R000JHD7AB — github-settings-drift.yml broken since PR #45
 
 ## Discovery
 
@@ -157,7 +156,7 @@ filed. Future-Otto: this is what good discipline looks like.
 
 ## Composes with
 
-- B-0085 (budget cadence cron-vs-deadline gap, also caught
+- 081KQ8P5D0008QG0R003JETMEV (budget cadence cron-vs-deadline gap, also caught
   by workflow null-result audit) — same discipline, same
   application pattern.
 - `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`

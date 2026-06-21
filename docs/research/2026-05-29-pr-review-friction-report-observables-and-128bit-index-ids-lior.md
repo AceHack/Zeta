@@ -129,11 +129,11 @@ Where:
 ### The HFLV Collision Rule
 When a PR is classified as **Low Value ($V < \epsilon$)** but exhibits **High Friction ($\mu > \theta$)**, it constitutes a High-Friction Low-Value (HFLV) collision.
 
-The reactive observable pipeline surfaces these HFLV occurrences for triage and triggers **gate-preserving** mitigations, per the Resolute Agent pattern (ADR `2026-05-29-automated-background-review-thread-resolution.md`, B-0938). The mitigations are diagnostic and mechanical-repair only — they never bypass required checks, review, or branch protection:
+The reactive observable pipeline surfaces these HFLV occurrences for triage and triggers **gate-preserving** mitigations, per the Resolute Agent pattern (ADR `2026-05-29-automated-background-review-thread-resolution.md`, 081KSRGFP0008QG0R000J9Y634). The mitigations are diagnostic and mechanical-repair only — they never bypass required checks, review, or branch protection:
 1. **Mechanical Repair, Re-Verified Through Gates:** If the block is a style violation (`0x10`), the agent applies the deterministic fix (the actual `markdownlint`/whitespace correction) in an isolated worktree, re-runs the linter/build gate to confirm it is clean, then commits, pushes, and resolves the thread citing the fixing commit. The PR re-enters — never sidesteps — the standard required-check and branch-protection gates.
 2. **No-Op Resolution of Already-Addressed Threads:** Outdated threads (`0x20`) are resolved only after direct line-level inspection confirms the finding is already addressed on the branch (per `.claude/rules/blocked-green-ci-investigate-threads.md`); a brief reply records the verification. Genuinely ambiguous collisions are surfaced — not silently resolved — by emitting the HFLV `ZetaId` Shadow token so the right reviewer can act.
 
-No soft-approval, linter-bypass, or direct-to-main route is introduced. The only sanctioned direct-push surface remains the `docs/agent-heartbeats/**` observational carve-out, and even that stays gated on the branch-protection prerequisites that `B-0032` treats as load-bearing.
+No soft-approval, linter-bypass, or direct-to-main route is introduced. The only sanctioned direct-push surface remains the `docs/agent-heartbeats/**` observational carve-out, and even that stays gated on the branch-protection prerequisites that `081KQ3HBZ0008QG0R002ZPXAFQ` treats as load-bearing.
 
 ---
 

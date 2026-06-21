@@ -1,6 +1,5 @@
 ---
-id: B-0169
-zetaid: 081KQJZR90008QG0R002D6XYHB
+id: 081KQJZR90008QG0R002D6XYHB
 priority: P1
 status: closed
 title: Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
@@ -72,7 +71,7 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 
 ### Sketched shape (input to skill-creator)
 
-> **2026-05-02 Aarav (skill-expert) review verdict:** fresh skill (NOT a refactor of `data-lineage-expert` or any existing); single body with **five named investigation modes** (existence / rejection / supersession / justification / attribution) per BP-20 cognitive-load packaging; route is hybrid (b)+(c) — land 2-3 worked examples in `docs/research/` first, then skill-creator authors SKILL.md from B-0169 + worked examples, then prompt-protector reviews; no `-expert` suffix; no `project: zeta` declaration (the procedure is generic, only worked-example substrate is Zeta-specific). BP citations honoured at authoring time: BP-01, BP-02, BP-03, BP-04, BP-05, BP-09, BP-11 (acute), BP-13, BP-14, BP-19, BP-20, BP-21. Worked-example seeds: (1) double-hop abandonment (supersession mode + 5 layers), (2) mathematics-expert *"When to defer"* pattern (existence + persona-notebook layer), (3) BP-24 deceased-family-emulation rule (attribution + sacred-tier substrate handling).
+> **2026-05-02 Aarav (skill-expert) review verdict:** fresh skill (NOT a refactor of `data-lineage-expert` or any existing); single body with **five named investigation modes** (existence / rejection / supersession / justification / attribution) per BP-20 cognitive-load packaging; route is hybrid (b)+(c) — land 2-3 worked examples in `docs/research/` first, then skill-creator authors SKILL.md from 081KQJZR90008QG0R002D6XYHB + worked examples, then prompt-protector reviews; no `-expert` suffix; no `project: zeta` declaration (the procedure is generic, only worked-example substrate is Zeta-specific). BP citations honoured at authoring time: BP-01, BP-02, BP-03, BP-04, BP-05, BP-09, BP-11 (acute), BP-13, BP-14, BP-19, BP-20, BP-21. Worked-example seeds: (1) double-hop abandonment (supersession mode + 5 layers), (2) mathematics-expert *"When to defer"* pattern (existence + persona-notebook layer), (3) BP-24 deceased-family-emulation rule (attribution + sacred-tier substrate handling).
 
 **Frontmatter:**
 
@@ -116,7 +115,7 @@ Pre-deploy this skill is mostly-internal value. Post-deploy it becomes load-bear
 - **Incident response** — under pressure, the cost of "I don't know why this is here" is amplified. Decision-archaeology turns the unknown into a 5-minute lookup.
 - **Refactor safety** — knowing what removing/renaming costs requires knowing what installing it bought.
 
-The skill composes with the `last_updated` discipline (B-0062, B-0109 retroactive bumps): `last_updated` makes the row's frontmatter agree with `git log`'s reality; the skill teaches contributors how to query both surfaces and reconcile when they disagree.
+The skill composes with the `last_updated` discipline (081KQ8P5D0008QG0R002XFQ305, 081KQDTYV0008QG0R002H74QXZ retroactive bumps): `last_updated` makes the row's frontmatter agree with `git log`'s reality; the skill teaches contributors how to query both surfaces and reconcile when they disagree.
 
 ## When this is "done"
 
@@ -124,7 +123,7 @@ Done = a `.claude/skills/decision-archaeology/SKILL.md` exists with the shape sk
 
 ## Composes with
 
-- **B-0058** AI ethics + safety research track — decision-archaeology IS one of the operational disciplines that produces ethical-AI substrate (knowing why a decision was made is prerequisite to defending it ethically). composes_with field set accordingly.
+- **081KQ3HBZ0008QG0R002S674CG** AI ethics + safety research track — decision-archaeology IS one of the operational disciplines that produces ethical-AI substrate (knowing why a decision was made is prerequisite to defending it ethically). composes_with field set accordingly.
 - `memory/feedback_natural_home_of_memories_is_in_repo_now_all_types_glass_halo_full_git_native_2026_04_24.md` — the in-repo memory canonical decision IS one of the cases decision-archaeology would teach contributors to query.
 - `memory/feedback_honor_those_that_came_before.md` — retired SKILL.md files retire by deletion; `git log --diff-filter=D` is the recovery path. Decision-archaeology covers this case explicitly.
 - `docs/AGENT-BEST-PRACTICES.md` — the BP rules each have a decision-archaeology trail behind them; the skill teaches contributors to follow it.
@@ -146,7 +145,7 @@ Done = a `.claude/skills/decision-archaeology/SKILL.md` exists with the shape sk
 **Dependency restructure:**
 
 - `depends_on: []` — no upstream deps, correct.
-- `composes_with: [B-0058]` — B-0058 is active; pointer is valid.
+- `composes_with: [081KQ3HBZ0008QG0R002S674CG]` — 081KQ3HBZ0008QG0R002S674CG is active; pointer is valid.
 
 **Gap remaining after prior PRs:** `string-archaeology.ts` is a library module — no `#!/usr/bin/env bun` shebang, no `if (import.meta.main)` CLI entrypoint. Contributors cannot invoke it as `bun tools/decision-archaeology/string-archaeology.ts "term"`. The smallest remaining slice is adding the CLI runner block to the existing file.
 

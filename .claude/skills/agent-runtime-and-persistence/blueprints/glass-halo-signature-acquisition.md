@@ -47,9 +47,9 @@ DocuSign). Record which tier was used.
 - **Third-party privacy:** a person's glass-halo covers **only their own** information.
   It never waives anyone else's. Where a disclosure references others, only the
   consenting signer's part is recorded; non-consenting parties stay protected.
-- **Revocable:** consent is revocable (B-0659 consent-as-Limit) -- a signer revokes by
+- **Revocable:** consent is revocable (081KRW63S0008QG0R001WKJN53 consent-as-Limit) -- a signer revokes by
   committing a revocation under their identity (or via the e-signature process).
-- **Kid-safety floor overrides** (B-0654 / B-0926): the signer must be an adult competent
+- **Kid-safety floor overrides** (081KRW63S0008QG0R002WT5VTQ / 081KSRGFP0008QG0R00091PP56): the signer must be an adult competent
   to consent; consent never authorizes exposure that conflicts with kid-safety.
 - **Charged content marking:** if the record carries charged-but-public material, add
   `content_warnings` frontmatter per `memory/<persona>/README.md` (charged-content convention).
@@ -73,9 +73,9 @@ DocuSign). Record which tier was used.
 
 - `docs/consent/glass-halo/README.md` (convention) + `SIGNING.md` (Touch-ID mechanism)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (named-human acceptance)
-- `.claude/rules/non-coercion-invariant.md` (HC-8) + B-0659 (consent-as-Limit, revocable)
+- `.claude/rules/non-coercion-invariant.md` (HC-8) + 081KRW63S0008QG0R001WKJN53 (consent-as-Limit, revocable)
 - `.claude/rules/glass-halo-bidirectional.md` + the externalized-record economy (the record IS the consent)
-- B-0654 (child-safety > consent) + B-0926 (kid-safety-absolute) -- the overriding floor
+- 081KRW63S0008QG0R002WT5VTQ (child-safety > consent) + 081KSRGFP0008QG0R00091PP56 (kid-safety-absolute) -- the overriding floor
 
 ## Origin
 

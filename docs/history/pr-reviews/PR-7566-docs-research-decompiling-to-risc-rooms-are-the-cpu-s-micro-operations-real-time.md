@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron+Max: 'decompiling to MIPS-like primitives / rooms = CPU micro-operations / branch detection in real time / converting to RISC.' One statement of the telos: hard→soft = decompile programs to a RISC μop set; a room IS a μop (literal — modern CISC CPUs crack to RISC μops; Zeta does the same as rooms); real-time branch detection = the soft fork on input (mispredict = Z-set retraction = antiparticle); decompile target = the soft-IR (B-1022); loop = decompile→rooms→branch-detect→JIT→shader. Lives in Arcade (predict cabinet). Docs only.
+Aaron+Max: 'decompiling to MIPS-like primitives / rooms = CPU micro-operations / branch detection in real time / converting to RISC.' One statement of the telos: hard→soft = decompile programs to a RISC μop set; a room IS a μop (literal — modern CISC CPUs crack to RISC μops; Zeta does the same as rooms); real-time branch detection = the soft fork on input (mispredict = Z-set retraction = antiparticle); decompile target = the soft-IR (081KTQD8A0008QG0R0005EFYPV); loop = decompile→rooms→branch-detect→JIT→shader. Lives in Arcade (predict cabinet). Docs only.
 
 ## Outcome
 

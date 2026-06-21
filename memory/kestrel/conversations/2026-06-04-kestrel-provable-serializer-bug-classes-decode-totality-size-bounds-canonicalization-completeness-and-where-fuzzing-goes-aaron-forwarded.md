@@ -9,7 +9,7 @@ context: |
   collapse/lens; (2) where does heavy FUZZING go. Key frame: memory-safety bugs are off
   the table (GC/lifetimes), so the residual is logic + hostile-input safety. The
   under-covered category = SAFETY ON HOSTILE INPUT (existing proofs = correctness on
-  VALID input). Directly actionable for the serializer doctrine (B-1011) + the proof bar.
+  VALID input). Directly actionable for the serializer doctrine (081KT5CF90008QG0R001P4CQ09) + the proof bar.
 related_memory:
   - project_verification_oracle_portfolio_fscheck_z3_lean_tla_plus_assignment_map_2026_06_04.md
   - project_polymorphic_diplomacy_validation_pipeline_shape_selector_policy_vulns_default_closed_structural_provable_2026_06_04.md

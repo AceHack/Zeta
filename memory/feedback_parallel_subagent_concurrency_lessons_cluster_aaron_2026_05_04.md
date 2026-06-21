@@ -19,7 +19,7 @@ This file IS the encoding that operationalizes the hope.
 
 ## Lesson 1 — parallel tracks on the SAME file race even with worktree isolation
 
-**The mistake (2026-05-04 ~19:50-20:30Z)**: I dispatched tier-36 and then tier-37 (B-0006 MEMORY.md compression) as parallel subagents with `isolation: "worktree"`. Both attempted to compress the top-25 longest entries in the 351-400 char range. Tier-36 stalled for ~21 minutes (10x the watchdog) hitting "File has been modified since read" errors because tier-37 was simultaneously editing the same file from its own worktree.
+**The mistake (2026-05-04 ~19:50-20:30Z)**: I dispatched tier-36 and then tier-37 (081KQ0YZ80008QG0R001V0XCYZ MEMORY.md compression) as parallel subagents with `isolation: "worktree"`. Both attempted to compress the top-25 longest entries in the 351-400 char range. Tier-36 stalled for ~21 minutes (10x the watchdog) hitting "File has been modified since read" errors because tier-37 was simultaneously editing the same file from its own worktree.
 
 **Why worktree-isolation didn't fix this**: separate worktrees in git share the parent `.git` directory. Each worktree has its own working tree (file checkout) but the underlying object store is shared. When two worktrees both stage edits to the same file path, they don't directly conflict (each has its own index), BUT the orchestrator's CWD can see the other worktree's working-tree state if the path checks include the other worktree.
 
@@ -47,7 +47,7 @@ The subagent worktrees live at `.claude/worktrees/agent-<id>/`. They have their 
 - Worktree's HEAD pointer transient state
 - Some `git checkout` operation in the subagent that briefly touches parent state
 
-The B-0140 audit subagent flagged this same shape: *"the worktree's git checkout main initially landed on a different branch... with a dirty memory/MEMORY.md from upstream sync."* The old-PR triage subagent flagged the inverse: *"the persistent bash cwd was `.claude/worktrees/agent-...`, not `/Users/acehack/Documents/src/repos/Zeta`."*
+The 081KQGDBJ0008QG0R0022EW5ZE audit subagent flagged this same shape: *"the worktree's git checkout main initially landed on a different branch... with a dirty memory/MEMORY.md from upstream sync."* The old-PR triage subagent flagged the inverse: *"the persistent bash cwd was `.claude/worktrees/agent-...`, not `/Users/acehack/Documents/src/repos/Zeta`."*
 
 **The rule**: defensive hygiene every time orchestrator does git operations after subagent dispatch:
 ```bash
@@ -63,7 +63,7 @@ Before any orchestrator commit on `main` or a fresh feature branch. Especially w
 ## Lesson 3 — compression subagents take ~10-20 min, not ~12 min watchdog
 
 **The mistake (observed across tier-36 + tier-37)**: I wrote dispatch prompts that said *"Watchdog ~12 minutes"* assuming the 600s watchdog was the binding constraint. Reality:
-- B-0140 audit subagent: ~7 min (read .sh + .ts files, fast)
+- 081KQGDBJ0008QG0R0022EW5ZE audit subagent: ~7 min (read .sh + .ts files, fast)
 - Old-PR triage subagent: ~7 min (8 `gh pr view` calls, fast)
 - Tier-36 MEMORY.md compression: ~21 min (25 underlying memory files to read + concurrency hazard)
 - Tier-37 MEMORY.md compression: ~14 min (25 underlying files, but no concurrency hazard)
@@ -92,7 +92,7 @@ The compression subagents are slow because they read 25 underlying memory files 
 This file is being landed in a session where:
 - ~48 substrate PRs have shipped today
 - The parallelism-readiness lesson (PR #1546) caused me to deploy 3 parallel subagents
-- Two of those (B-0140 audit + old-PR triage) succeeded cleanly
+- Two of those (081KQGDBJ0008QG0R0022EW5ZE audit + old-PR triage) succeeded cleanly
 - One pair of those (tier-36 + tier-37) hit the concurrency hazard
 
 Future-Otto reading this should immediately recognize: the lessons are not abstract. They came from THIS session's mistakes. The parallelism-readiness lesson + this concurrency-cluster lesson are SEQUENTIAL learnings — first the agent has to deploy parallelism, then the agent has to learn to do it safely. PR #1546 was step 1; this file is step 2.

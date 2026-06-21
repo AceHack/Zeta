@@ -18,13 +18,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- Adds a five-step reproducible verification procedure to the existing `docs/research/memory-md-harness-contract-2026-04-28.md` research note — the only missing acceptance criterion for B-0257
-- Adds a pre-start checklist to B-0257 (prior-art search evidence + implementation decision) per `backlog-item-start-gate.md`
-- Closes B-0257 (`status: open` → `status: closed`)
+- Adds a five-step reproducible verification procedure to the existing `docs/research/memory-md-harness-contract-2026-04-28.md` research note — the only missing acceptance criterion for 081KR2E4K0008QG0R001J0536V
+- Adds a pre-start checklist to 081KR2E4K0008QG0R001J0536V (prior-art search evidence + implementation decision) per `backlog-item-start-gate.md`
+- Closes 081KR2E4K0008QG0R001J0536V (`status: open` → `status: closed`)
 
 ## What was missing
 
-B-0257 required a research note with a **reproducible verification procedure**. The note existed (2026-04-28) and covered the findings, but had no step-by-step procedure another agent could follow to independently re-derive those findings.
+081KR2E4K0008QG0R001J0536V required a research note with a **reproducible verification procedure**. The note existed (2026-04-28) and covered the findings, but had no step-by-step procedure another agent could follow to independently re-derive those findings.
 
 ## Verification procedure added (5 steps)
 
@@ -55,10 +55,10 @@ Four explicit constraints for Q1 AutoDream/AutoMemory compatibility now live in 
 - [x] `wc -l memory/MEMORY.md` — 370 (> 200 cap)
 - [x] `wc -c memory/MEMORY.md` — 108332 (> 25 KB cap)
 - [x] `head -1 memory/MEMORY.md` — AutoDream marker confirmed
-- [x] No changes to `memory/MEMORY.md` (B-0257 AC: explicitly forbidden)
+- [x] No changes to `memory/MEMORY.md` (081KR2E4K0008QG0R001J0536V AC: explicitly forbidden)
 - [x] `git diff --stat` — 2 files changed; research note + backlog row only
 
-Closes #B-0257
+Closes #081KR2E4K0008QG0R001J0536V
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -101,12 +101,12 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds reproducible verification documentation for B-0257’s MEMORY.md harness-contract research and updates the backlog row toward closure.
+Adds reproducible verification documentation for 081KR2E4K0008QG0R001J0536V’s MEMORY.md harness-contract research and updates the backlog row toward closure.
 
 **Changes:**
 - Adds a five-step verification procedure to the MEMORY.md harness-contract research note.
 - Documents AutoDream/AutoMemory compatibility constraints.
-- Updates B-0257 frontmatter/status and adds a pre-start checklist.
+- Updates 081KR2E4K0008QG0R001J0536V frontmatter/status and adds a pre-start checklist.
 
 ### Reviewed changes
 
@@ -115,7 +115,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
 | File | Description |
 | ---- | ----------- |
 | `docs/research/memory-md-harness-contract-2026-04-28.md` | Adds verification steps, findings summary, and AutoDream/AutoMemory constraints. |
-| `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md` | Marks B-0257 closed and records prior-art / implementation checklist. |
+| `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md` | Marks 081KR2E4K0008QG0R001J0536V closed and records prior-art / implementation checklist. |
 
 
 <details>
@@ -268,7 +268,7 @@ P1: This list is not preceded by a blank line, so the linted Markdown file will 
 
 Line 169 is a blank line between `**Expected signal:**` (line 168) and the list (line 170). `markdownlint-cli2` exits 0 — no MD032 violation present. Resolving.
 
-### Thread 4: docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md:28 (resolved)
+### Thread 4: docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md:28 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T04:42:04Z):
 
@@ -278,11 +278,11 @@ P1: This list starts immediately after a paragraph, which violates the repo's en
 
 Line 23 is blank between `**Prior-art search:**` (line 22) and the list (line 24); line 29 is blank after the list. `markdownlint-cli2` exits 0 — no MD032 violation. Resolving.
 
-### Thread 5: docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md:4 (resolved)
+### Thread 5: docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md:4 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T04:42:04Z):
 
-P1: Closing this row is premature while the newly added verification procedure still contains incomplete dated evidence and incorrect current-state claims (`--check` exit status and AutoDream marker preservation). Because those defects are directly in the acceptance evidence for B-0257, keep the row open until the research note is corrected.
+P1: Closing this row is premature while the newly added verification procedure still contains incomplete dated evidence and incorrect current-state claims (`--check` exit status and AutoDream marker preservation). Because those defects are directly in the acceptance evidence for 081KR2E4K0008QG0R001J0536V, keep the row open until the research note is corrected.
 
 **@AceHack** (2026-05-14T04:58:50Z):
 
@@ -329,8 +329,8 @@ This issue also appears in the following locations of the same file:
 - line 173
 - line 173
 
-### Thread 10: docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md:4 (unresolved)
+### Thread 10: docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md:4 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T05:02:55Z):
 
-P1: Closing B-0257 is premature while the verification note still contains contradictory verification results and a non-portable Step 2 command. Keep the row open until the reproducible procedure is self-consistent and can be followed as written.
+P1: Closing 081KR2E4K0008QG0R001J0536V is premature while the verification note still contains contradictory verification results and a non-portable Step 2 command. Keep the row open until the reproducible procedure is self-consistent and can be followed as written.

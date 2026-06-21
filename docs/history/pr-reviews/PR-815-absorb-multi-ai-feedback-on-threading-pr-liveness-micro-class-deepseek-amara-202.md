@@ -39,9 +39,9 @@ Second multi-AI synthesis packet absorb (research-grade). Aaron's framing: *"Oka
 
 - **Verbatim packet absorb** at `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md` (§33 archive header).
 - **3 backlog rows**:
-  - **B-0102 (P3)** — PR-liveness race micro-class refinement. Renames `force-push-triggers-pr-auto-close` → `pr-liveness-race-during-merge-cascade` per Amara's correction (the trap is force-push + active base movement + GitHub reachability/diff race, not force-push alone). Adds mechanical guard + recovery-note format.
-  - **B-0103 (P2)** — Computed-metadata-discipline unified lint. **Promoted from P3 to P2** consolidating B-0098 (ordinal) + B-0099 (PR-count) + new shard-filename-vs-row-timestamp into a single guard. Three instances in 24 hours = enough signal.
-  - **B-0104 (P3)** — Modern .NET Threading Bridge. Connects Deepseek's review of the 2026-04-28 Gemini Pro threading doc to `docs/LOCKS.md`. Five specific corrections (ReaderWriterLockSlim replacement nuance, Lock cast-to-object trap, FrozenSet wording, Task.WhenEach internals caveat, operator-algebra async lifecycle cross-link).
+  - **081KQB8J40008QG0R002DQ0FDR (P3)** — PR-liveness race micro-class refinement. Renames `force-push-triggers-pr-auto-close` → `pr-liveness-race-during-merge-cascade` per Amara's correction (the trap is force-push + active base movement + GitHub reachability/diff race, not force-push alone). Adds mechanical guard + recovery-note format.
+  - **081KQB8J40008QG0R003XNATZJ (P2)** — Computed-metadata-discipline unified lint. **Promoted from P3 to P2** consolidating 081KQB8J40008QG0R003VMCFWB (ordinal) + 081KQB8J40008QG0R002PEP2A2 (PR-count) + new shard-filename-vs-row-timestamp into a single guard. Three instances in 24 hours = enough signal.
+  - **081KQB8J40008QG0R0016EHY06 (P3)** — Modern .NET Threading Bridge. Connects Deepseek's review of the 2026-04-28 Gemini Pro threading doc to `docs/LOCKS.md`. Five specific corrections (ReaderWriterLockSlim replacement nuance, Lock cast-to-object trap, FrozenSet wording, Task.WhenEach internals caveat, operator-algebra async lifecycle cross-link).
 
 The Observer-Auditor Loop proposal (Deepseek's second-AI participation) is **deferred** — research-grade, requires separate maintainer decision. Treat as future peer-harness phase-one consideration.
 
@@ -78,8 +78,8 @@ Operator lanes mutate substrate.
 - [x] §33 archive header on research note (Scope / Attribution / Operational status / Non-fusion disclaimer)
 - [x] Verbatim Deepseek + Amara quotes preserved
 - [x] Backlog rows follow existing frontmatter pattern
-- [x] B-0103 cites the 3 instances of metadata-drift class as evidence for P2 promotion
-- [x] B-0104 lists the 5 specific Deepseek corrections with before/after wording
+- [x] 081KQB8J40008QG0R003XNATZJ cites the 3 instances of metadata-drift class as evidence for P2 promotion
+- [x] 081KQB8J40008QG0R0016EHY06 lists the 5 specific Deepseek corrections with before/after wording
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -115,12 +115,12 @@ Operator lanes mutate substrate.
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WAum`
-- **Path**: `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- **Path**: `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`:69 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`:69 (association: NONE)
   P1: The implementation sketch uses `for shard in $(git diff --name-only ... 'docs/hygiene-history/ticks/**/*.md')`, which is brittle: (1) command-substitution will word-split on whitespace/newlines, and (2) the `**` pathspec is not reliably enabled without explicit pathspec glob magic. Prefer a `git diff --name-only -z ... -- docs/hygiene-history/ticks/` + `while IFS= read -r -d '' shard; do ...` pattern (or similar) so the iteration is robust and doesn’t silently skip files.
   ```suggestion
   while IFS= read -r -d '' shard; do
@@ -133,12 +133,12 @@ Operator lanes mutate substrate.
 ### Thread 3 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WAvG`
-- **Path**: `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
+- **Path**: `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:70 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:70 (association: NONE)
   P1: The guard captures `baseRefName`/`baseRefOid` via `gh pr view`, but the uniqueness checks are hardcoded to `origin/main`. That can be wrong if the PR targets a non-`main` base branch, or if `origin/main` isn’t the intended base in this repo’s multi-remote setup. Consider driving `git log`/`git diff` off the captured `baseRefOid` (or an explicit `refs/remotes/<remote>/<baseRefName>`) so the “unique commits”/“diff” checks reflect the actual PR base.
   ```suggestion
   BASE_BEFORE="$(jq -r '.baseRefOid' "/tmp/pr-$PR-before.json")"
@@ -158,23 +158,23 @@ Operator lanes mutate substrate.
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WAvW`
-- **Path**: `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- **Path**: `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`:12 (association: NONE)
-  P1: This backlog row references B-0098 and B-0099 (in the title and `composes_with`), but those backlog IDs don’t appear to exist anywhere under `docs/backlog/` in the current tree. If those items are meant to be part of this consolidation, either include their backlog-row files in this PR, or update the references to the correct existing backlog IDs so cross-links don’t break after merge.
+- **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`:12 (association: NONE)
+  P1: This backlog row references 081KQB8J40008QG0R003VMCFWB and 081KQB8J40008QG0R002PEP2A2 (in the title and `composes_with`), but those backlog IDs don’t appear to exist anywhere under `docs/backlog/` in the current tree. If those items are meant to be part of this consolidation, either include their backlog-row files in this PR, or update the references to the correct existing backlog IDs so cross-links don’t break after merge.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WAvn`
-- **Path**: `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- **Path**: `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:36:27Z on `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`:27 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:36:27Z on `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`:27 (association: NONE)
   P0: The concrete example of filename↔row timestamp drift here appears to be incorrect: `docs/hygiene-history/ticks/2026/04/29/0613Z.md` currently has a row timestamp of `2026-04-29T06:13:00Z`, which matches `0613Z.md`. Either update this bullet to reference a real drift instance (with the exact shard path + first-line timestamp), or drop the specific filename/timestamp so the backlog row doesn’t encode an unverified claim.
   ```suggestion
   3. **Shard-filename-vs-row-timestamp drift** — a shard filename
@@ -185,12 +185,12 @@ Operator lanes mutate substrate.
 ### Thread 6 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WAvz`
-- **Path**: `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- **Path**: `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:36:27Z on `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`:68 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:36:27Z on `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`:68 (association: NONE)
   P0: The proposed parsing for `filename_hhmm` only matches `^[0-9]{4}Z` and will fail for valid shard names like `0430Z-01.md` and the recommended high-concurrency form `HHMMSSZ-<short-content-hash>.md` (see `docs/hygiene-history/ticks/README.md`). The lint should extract HHMM from both formats (and handle the `-NN` suffix) so it doesn’t produce false positives or empty `filename_hhmm`.
   ```suggestion
     shard_base=$(basename "$shard" .md)
@@ -207,12 +207,12 @@ Operator lanes mutate substrate.
 ### Thread 7 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WRZI`
-- **Path**: `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- **Path**: `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`:119 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`:119 (association: NONE)
   The implementation sketch uses bash-only features (`[[ ... =~ ... ]]`, `BASH_REMATCH`, `read -d`, process substitution `< <(...)`). Since the proposed lint is named `*.sh`, please make the bash requirement explicit (e.g., note it must start with a bash shebang and be invoked via `bash` in CI) so it doesn’t get run under `sh` by default on some runners.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -248,12 +248,12 @@ Operator lanes mutate substrate.
 ### Thread 10 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WRaY`
-- **Path**: `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md`
+- **Path**: `docs/backlog/P3/081KQB8J40008QG0R0016EHY06-modern-dotnet-threading-bridge-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-29T06:57:32Z on `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md`:163 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-29T06:57:32Z on `docs/backlog/P3/081KQB8J40008QG0R0016EHY06-modern-dotnet-threading-bridge-2026-04-29.md`:163 (association: NONE)
   The suggested search command uses `\|` alternation without `-E` (`grep -rl 'A\|B\|...'`), which is not portable across grep implementations. Prefer `grep -r -l -E 'A|B|...' docs/` (or `grep -RIlE` if you want to skip binary files), or use `rg` if that’s the project’s preferred tool.
   ```suggestion
      `grep -r -l -E 'ReaderWriterLockSlim|System.Threading.Lock|FrozenDictionary|FrozenSet|Task.WhenEach|SemaphoreSlim' docs/`.
@@ -262,12 +262,12 @@ Operator lanes mutate substrate.
 ### Thread 11 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WRdV`
-- **Path**: `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
+- **Path**: `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T06:57:34Z on `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:88 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T06:57:34Z on `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:88 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Refresh base ref before classifying PR uniqueness**
   
   The guard computes `unique-commits` and `diff` against local `origin/main`, but in the exact merge-cascade scenario this row targets, `origin/main` can be stale unless it is refreshed first. That can produce false `unique commits`/`diff` evidence and drive the downstream enforcement branch to open or skip a successor PR incorrectly. Fetching the current base ref (or diffing against the captured `baseRefOid` from `gh pr view`) immediately before each snapshot avoids classification against outdated graph state.
@@ -277,12 +277,12 @@ Operator lanes mutate substrate.
 ### Thread 12 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-WZeF`
-- **Path**: `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
+- **Path**: `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T07:07:52Z on `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:66 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T07:07:52Z on `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:66 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add explicit limit to cascade-detection PR query**
   
   The cascade detector relies on `gh pr list` but does not set `--limit`, so it only inspects the default first 30 open PRs. The GitHub CLI manual states `--limit <int> (default 30)`, which means an active auto-merge cascade can be missed whenever matching PRs fall outside that window; in that case the guard incorrectly treats the repo as safe to rebase/force-push and reintroduces the race this row is trying to prevent.
@@ -295,9 +295,9 @@ Operator lanes mutate substrate.
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
-- `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
-- `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md`
+- `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
+- `docs/backlog/P3/081KQB8J40008QG0R0016EHY06-modern-dotnet-threading-bridge-2026-04-29.md`
 - `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 
 **Message:**
@@ -315,7 +315,7 @@ and locks."
 Three actionable items filed as backlog rows (research-grade,
 honoring the maintainer's narrowing on task #309):
 
-  B-0102 (P3) — PR-liveness race micro-class refinement.
+  081KQB8J40008QG0R002DQ0FDR (P3) — PR-liveness race micro-class refinement.
     Renames Otto's `force-push-triggers-pr-auto-close` to the
     more accurate `pr-liveness-race-during-merge-cascade`.
     Adds mechanical guard (before/after capture script) and
@@ -324,14 +324,14 @@ honoring the maintainer's narrowing on task #309):
     movement + GitHub PR reachability/diff computation —
     not force-push alone.
 
-  B-0103 (P2) — computed-metadata-discipline unified lint.
-    Promoted from individual P3 items (B-0098 ordinal +
-    B-0099 PR-count + new shard-filename-vs-row-timestamp).
+  081KQB8J40008QG0R003XNATZJ (P2) — computed-metadata-discipline unified lint.
+    Promoted from individual P3 items (081KQB8J40008QG0R003VMCFWB ordinal +
+    081KQB8J40008QG0R002PEP2A2 PR-count + new shard-filename-vs-row-timestamp).
     Three instances in one session is enough signal to
     consolidate. Canonical rule: "Agent-authored metadata
     must match derived truth."
 
-  B-0104 (P3) — Modern .NET Threading Bridge.
+  081KQB8J40008QG0R0016EHY06 (P3) — Modern .NET Threading Bridge.
     Connects Deepseek's review of the 2026-04-28 Gemini Pro
     threading research doc to docs/LOCKS.md. Five specific
     corrections: ReaderWriterLockSlim replacement nuance
@@ -363,13 +363,13 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
-- `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
+- `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
 
 **Message:**
 
 ```
-absorb round-3: convergent reviewer corrections + B-0102/B-0103 harde…
+absorb round-3: convergent reviewer corrections + 081KQB8J40008QG0R002DQ0FDR/081KQB8J40008QG0R003XNATZJ harde…
 
 …ning + verbatim record
 
@@ -379,7 +379,7 @@ consistent set of corrections. Cross-model consensus = strong
 signal. Aaron's framing: "this round is useful, the reviewers
 converged on the right corrections."
 
-Corrections applied to B-0102 (PR-liveness race):
+Corrections applied to 081KQB8J40008QG0R002DQ0FDR (PR-liveness race):
   1. Probabilistic-framing caveat — "observed race, NOT
      deterministic; guard remains even if a future force-push
      happens not to close the PR."
@@ -397,7 +397,7 @@ Corrections applied to B-0102 (PR-liveness race):
   6. RUN_ID in artifact paths — /tmp/pr-$PR-$RUN_ID-before.json
      (Claude.ai's parallel-agent future-proofing).
 
-Corrections applied to B-0103 (computed-metadata-discipline):
+Corrections applied to 081KQB8J40008QG0R003XNATZJ (computed-metadata-discipline):
   7. Boundary clause — applies to claims of equivalence with
      derivable substrate truth (ordinals/counts/timestamps/
      SHAs/PR-states); does NOT apply to summaries,
@@ -408,7 +408,7 @@ Verbatim absorb at:
   docs/research/multi-ai-feedback-2026-04-29-round3-on-pr-liveness-corrections.md
 with §33 archive header.
 
-Corrections to B-0098 (grep portability wording) and B-0099
+Corrections to 081KQB8J40008QG0R003VMCFWB (grep portability wording) and 081KQB8J40008QG0R002PEP2A2
 (@me CLI flag) belong on PR #811's branch — applied separately.
 
 Durable headline of round 3 (per Deepseek): "Loop learns
@@ -426,12 +426,12 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
 
 **Message:**
 
 ```
-fix(B-0103): Copilot P0/P1 — drop unverified literal example + handle…
+fix(081KQB8J40008QG0R003XNATZJ): Copilot P0/P1 — drop unverified literal example + handle…
 
 … multiple shard-name shapes + NUL-delimited iteration
 
@@ -461,9 +461,9 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`
-- `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
-- `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md`
+- `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`
+- `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`
+- `docs/backlog/P3/081KQB8J40008QG0R0016EHY06-modern-dotnet-threading-bridge-2026-04-29.md`
 - `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`
 
 **Message:**
@@ -475,7 +475,7 @@ fix(round-5 reviewer feedback): bash-shebang declared + fenced-code c…
 
 Five real defects on PR #815 from Copilot + Codex:
 
-1. B-0103: implementation sketch uses bash-only features
+1. 081KQB8J40008QG0R003XNATZJ: implementation sketch uses bash-only features
    (`[[ =~ ]]`, BASH_REMATCH, `read -d ''`, process substitution)
    but didn't declare bash. Added `#!/usr/bin/env bash` shebang
    + comment listing the bash-required features + note that
@@ -485,19 +485,19 @@ Five real defects on PR #815 from Copilot + Codex:
    closes that broke CommonMark fenced-code parsing. Moved
    the closing emphasis outside the fence.
 
-4. B-0104 grep example: `grep -rl 'A\|B\|...'` uses BRE
+4. 081KQB8J40008QG0R0016EHY06 grep example: `grep -rl 'A\|B\|...'` uses BRE
    alternation without `-E`, non-portable on BSD/macOS grep.
    Replaced with `grep -rlE 'A|B|...'` + comment explaining
    the flag.
 
-5. B-0102: guard hardcoded `origin/main` for uniqueness
+5. 081KQB8J40008QG0R002DQ0FDR: guard hardcoded `origin/main` for uniqueness
    computation, but during merge-cascade the base may have
    advanced. Replaced with captured `baseRefOid` from
    `gh pr view --json` JSON output (canonical PR base) +
    `git fetch --no-tags origin` before each classify pass.
 
 All five are corrections to existing rules — permitted under
-B-0105 consolidation directive.
+081KQB8J40008QG0R0021GX1HK consolidation directive.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 ```

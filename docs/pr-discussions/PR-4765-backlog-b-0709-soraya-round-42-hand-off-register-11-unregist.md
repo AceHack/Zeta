@@ -1,6 +1,6 @@
 ---
 pr_number: 4765
-title: "backlog(B-0709): Soraya round-42 hand-off \u2014 register 11 unregistered formal-verification specs"
+title: "backlog(081KS923C0008QG0R0032VJZPF): Soraya round-42 hand-off \u2014 register 11 unregistered formal-verification specs"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-23T20:54:09Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-23T21:00:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4765: backlog(B-0709): Soraya round-42 hand-off — register 11 unregistered formal-verification specs
+# PR #4765: backlog(081KS923C0008QG0R0032VJZPF): Soraya round-42 hand-off — register 11 unregistered formal-verification specs
 
 ## PR description
 
 ## Summary
 
-Files Soraya's first-tick hand-off-to-Kenji as backlog row **B-0709**.
+Files Soraya's first-tick hand-off-to-Kenji as backlog row **081KS923C0008QG0R0032VJZPF**.
 
 Soraya's autonomous formal-verification routing loop started today (2026-05-23, 17-min cadence, session-only `faf5893d`). Her **first scan** surfaced a Class 0 drift gap at portfolio scale:
 
@@ -81,7 +81,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md:50 (unresolved)
+### Thread 1: docs/backlog/P2/081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md:50 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-23T20:56:52Z):
 

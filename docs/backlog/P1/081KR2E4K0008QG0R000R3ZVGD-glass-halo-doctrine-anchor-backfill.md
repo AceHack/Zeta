@@ -1,6 +1,5 @@
 ---
-id: B-0315
-zetaid: 081KR2E4K0008QG0R000R3ZVGD
+id: 081KR2E4K0008QG0R000R3ZVGD
 priority: P1
 status: closed
 closed: 2026-05-10
@@ -40,7 +39,7 @@ AGENTS.md, CLAUDE.md, docs/ALIGNMENT.md).
 2. WebSearch for the underlying concept in AI transparency
    research, explainable AI (XAI), organizational
    transparency theory, software auditability literature.
-3. Cite or note "original to Zeta" per the B-0060 protocol.
+3. Cite or note "original to Zeta" per the 081KQ8P5D0008QG0R000N718AC protocol.
 4. Land anchors inline in the doctrine's defining surface.
 
 ## Done-criteria
@@ -49,7 +48,7 @@ AGENTS.md, CLAUDE.md, docs/ALIGNMENT.md).
       "original" note.
 - [ ] Citations include URL, author/org, title, date.
 - [ ] Beacon-safety pass on all cited sources.
-- [ ] Coverage scanner (B-0311) confirms resolution.
+- [ ] Coverage scanner (081KR2E4K0008QG0R001ZWARTN) confirms resolution.
 
 ## Pre-start checklist (2026-05-10, slice 1)
 
@@ -79,8 +78,8 @@ Results:
 
 ### Dependency check
 
-- B-0311 (external-anchor coverage scanner): **closed** ✓
-- B-0060 (parent umbrella): umbrella, no gate ✓
+- 081KR2E4K0008QG0R001ZWARTN (external-anchor coverage scanner): **closed** ✓
+- 081KQ8P5D0008QG0R000N718AC (parent umbrella): umbrella, no gate ✓
 - No broken `depends_on` pointers in this row.
 
 ### Scope for slice 1
@@ -124,9 +123,9 @@ Lands two remaining doctrines:
    added noting the bilateral / symmetric form as original to Zeta,
    linking to `docs/ALIGNMENT.md` §"Symmetric transparency: the glass halo".
    CLAUDE.md omitted: currently razor-trimmed to 47-line bootstrap;
-   adding doctrine content contradicts the B-0353 condensation intent.
+   adding doctrine content contradicts the 081KR50HA0008QG0R001DBKS6T condensation intent.
 
-All five B-0315 doctrines now have external anchor or "original" note
+All five 081KR2E4K0008QG0R000R3ZVGD doctrines now have external anchor or "original" note
 on at least one defining surface. Core done-criteria met; the coverage
 scanner remains deferred to the next audit pass:
 
@@ -135,7 +134,7 @@ scanner remains deferred to the next audit pass:
 - [x] Beacon-safety pass: all cited sources (Dalio, Doshi-Velez/Kim,
       Brundage et al., Korbak et al., Richardson Saga, MS Azure) are
       reputable academic/industry publications
-- [ ] Coverage scanner (B-0311, closed) — deferred to next audit pass
+- [ ] Coverage scanner (081KR2E4K0008QG0R001ZWARTN, closed) — deferred to next audit pass
 
 ## Reviewers
 

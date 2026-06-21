@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { measureHarness, assessDrift, frontmatterDescription, residentText } from "./context-cost";
-// B-1016 drift-alert core — pure functions (no I/O). The CLI edge is exercised
+// 081KT7YW00008QG0R002T1XNWT drift-alert core — pure functions (no I/O). The CLI edge is exercised
 // manually; the measurement + drift logic is what must be correct.
 test("measureHarness sums whole-mode files into resident (harness × surface)", () => {
     const cost = measureHarness("test", [

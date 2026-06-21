@@ -28,7 +28,7 @@ That is **exactly** the yin/yang cell + durable substrate just shipped:
 | free modes            | the forward-momentum apex (obligated vs free-time lanes) |
 
 So wiring observe.ts is **not greenfield** — it is unifying two things already built to rhyme.
-`Observe.Algebra` (oracle #2 of the 4-language parity, B-0944) means the reducer already exists
+`Observe.Algebra` (oracle #2 of the 4-language parity, 081KSV2WD0008QG0R00051XS0N) means the reducer already exists
 in F# matching the TS byte-for-byte.
 
 ## The whole stack (bottom → top), all shipped + green

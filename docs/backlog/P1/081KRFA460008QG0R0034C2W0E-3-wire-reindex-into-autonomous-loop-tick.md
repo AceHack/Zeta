@@ -1,6 +1,5 @@
 ---
-id: B-0423.3
-zetaid: 081KRFA460008QG0R0034C2W0E
+id: 081KRFA460008QG0R0034C2W0E
 priority: P1
 class: substrate-architecture
 status: closed
@@ -17,7 +16,7 @@ tier: factory-tooling
 authors: [otto]
 ---
 
-# B-0423.3 — Wire reindex-memory-md.ts into autonomous-loop tick
+# 081KRFA460008QG0R0034C2W0E — Wire reindex-memory-md.ts into autonomous-loop tick
 
 ## Carved sentence
 
@@ -28,7 +27,7 @@ authors: [otto]
 
 ## Context
 
-B-0423's architectural fix requires three layers:
+081KRCQQF0008QG0R0037YYP1A's architectural fix requires three layers:
 
 1. **Heap layer** — memory files commit without MEMORY.md paired edit
 2. **Stack layer** — MEMORY.md is kept current by the reindexer
@@ -37,7 +36,7 @@ B-0423's architectural fix requires three layers:
 Layer 3 is the missing link. The reindexer exists and works, but nothing
 calls it on cadence. This slice wires it into the loop.
 
-**Dependency:** Lands after B-0423.1 (test coverage) to ensure the
+**Dependency:** Lands after 081KRFA460008QG0R0006Q6BWP (test coverage) to ensure the
 reindexer is trustworthy before it runs automatically on every tick.
 
 ## Acceptance criteria
@@ -48,7 +47,7 @@ reindexer is trustworthy before it runs automatically on every tick.
   - Every N ticks (recommended: every 5 ticks, i.e. every ~5 min),
     run `bun tools/memory/reindex-memory-md.ts`.
   - Commit the result if MEMORY.md changed (commit message:
-    `chore(memory): reindex MEMORY.md stack from heap [B-0423]`).
+    `chore(memory): reindex MEMORY.md stack from heap [081KRCQQF0008QG0R0037YYP1A]`).
   - Use `--check` first to detect staleness before writing.
 - [ ] Document the "every N ticks" cadence rationale:
   - Every-tick reindex on every minute-cadence cron tick burns
@@ -71,7 +70,7 @@ follow this checklist.
   > **7. Reindex memory**: If N ticks have elapsed since last
   > reindex, run `bun tools/memory/reindex-memory-md.ts`.
   > If MEMORY.md changed, commit with the standard chore message.
-  > Maintains the heap→stack promotion cadence per B-0423.
+  > Maintains the heap→stack promotion cadence per 081KRCQQF0008QG0R0037YYP1A.
 
 ### State tracking for "every N ticks" cadence
 
@@ -98,7 +97,7 @@ committed silently as infrastructure.
 
 The reindex commit, if MEMORY.md changed, must:
 
-- Use message: `chore(memory): reindex MEMORY.md stack from heap [B-0423]`
+- Use message: `chore(memory): reindex MEMORY.md stack from heap [081KRCQQF0008QG0R0037YYP1A]`
 - Include the `Co-Authored-By:` trailer matching the active harness
   (e.g. `Co-Authored-By: Claude <noreply@anthropic.com>` for Otto;
   use the appropriate identity for Codex/Grok/Gemini/Kiro loops)
@@ -117,14 +116,14 @@ Run `dotnet build -c Release` and `bun test` to verify nothing broken.
 
 ## Why P1 (not P2)
 
-This slice is the operational linchpin of the B-0423 fix. The heap
+This slice is the operational linchpin of the 081KRCQQF0008QG0R0037YYP1A fix. The heap
 architecture only works if promotion happens. Without this slice,
-removing the CI paired-edit enforcement (B-0423.4) leaves MEMORY.md
-permanently stale. This must land before B-0423.4.
+removing the CI paired-edit enforcement (081KRFA460008QG0R0035NKRHG) leaves MEMORY.md
+permanently stale. This must land before 081KRFA460008QG0R0035NKRHG.
 
 ## Composes with
 
-- B-0423 (parent; this is slice 3 of 5)
-- B-0423.1 (depends on test coverage for confidence)
-- B-0423.2 (documentation should be consistent with the loop doc)
-- B-0423.4 (CI relaxation must not land before this slice)
+- 081KRCQQF0008QG0R0037YYP1A (parent; this is slice 3 of 5)
+- 081KRFA460008QG0R0006Q6BWP (depends on test coverage for confidence)
+- 081KRFA460008QG0R000YPS21H (documentation should be consistent with the loop doc)
+- 081KRFA460008QG0R0035NKRHG (CI relaxation must not land before this slice)

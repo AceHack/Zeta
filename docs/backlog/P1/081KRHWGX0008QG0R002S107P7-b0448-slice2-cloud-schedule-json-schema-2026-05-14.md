@@ -1,11 +1,10 @@
 ---
-id: B-0508
-zetaid: 081KRHWGX0008QG0R002S107P7
+id: 081KRHWGX0008QG0R002S107P7
 priority: P1
 status: closed
-title: "B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/"
+title: "081KRFA460008QG0R000CYBGKW slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/"
 type: feature
-origin: B-0448 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000CYBGKW decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000CYBGKW
@@ -19,7 +18,7 @@ composes_with:
 tags: [routines, cloud-routines, schema, json, canonical]
 ---
 
-# B-0508 — Define cloud-schedule.json schema for tools/routines/<id>/
+# 081KRHWGX0008QG0R002S107P7 — Define cloud-schedule.json schema for tools/routines/<id>/
 
 ## Purpose
 
@@ -30,12 +29,12 @@ should be registered as a Cloud Routine on Anthropic's infrastructure.
 This slice is SCHEMA ONLY: no installer changes, no registration, no
 empirical fire. The schema defines the on-disk contract; later slices consume it.
 
-**Depends on B-0507** — the schema shape may need to be corrected based on
+**Depends on 081KRHWGX0008QG0R000E8BHQ9** — the schema shape may need to be corrected based on
 auth/trigger findings from that research slice.
 
 ## Schema design
 
-Based on B-0448's research (subject to B-0507 corrections):
+Based on 081KRFA460008QG0R000CYBGKW's research (subject to 081KRHWGX0008QG0R000E8BHQ9 corrections):
 
 ```json
 {
@@ -73,8 +72,8 @@ A routine may have both a `schedule.json` (Desktop) and a
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0507 research doc is committed and findings reviewed
-- [ ] Correct schema shape based on B-0507 auth/trigger findings
+- [ ] 081KRHWGX0008QG0R000E8BHQ9 research doc is committed and findings reviewed
+- [ ] Correct schema shape based on 081KRHWGX0008QG0R000E8BHQ9 auth/trigger findings
 - [ ] Verify `tools/routines/` README doesn't already document a cloud-schedule.json format
 - [ ] Check if a JSON Schema file ($schema pointer) should be authored alongside
 
@@ -94,7 +93,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [x] TypeScript exported type for `CloudScheduleResult` in `install.ts` (or a
   separate `cloud-install.ts` if the installer logic warrants splitting)
 - [x] `dotnet build -c Release` still passes (no F# changes in this slice)
-- [x] B-0508 closed with PR link
+- [x] 081KRHWGX0008QG0R002S107P7 closed with PR link
 
 ## Why schema-first
 

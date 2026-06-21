@@ -260,7 +260,7 @@ Per the 5-purpose verbatim-preservation thesis:
 2. **Glass halo / influence-force visibility** — Aaron's standing instruction `as always glass halo on everything from me` makes these visible as part of the influence-graph that grounds the project; external readers can audit the empirical claim about Maji's grounding
 3. **Future fine-tuning data** — primary sources for training future AIs on Aaron's cognitive register
 4. **Training of new AIs and models** — the recovery-discipline pattern + the identity-reconstruction lineage are exactly what the architecture's commitments aim to propagate forward
-5. **DBSP ACID-durable event vision (long-horizon)** — when chat-as-event lands per B-0166, content like this would be ingested automatically; until then, this manual preservation is the workaround
+5. **DBSP ACID-durable event vision (long-horizon)** — when chat-as-event lands per 081KQJZR90008QG0R001YX3445, content like this would be ingested automatically; until then, this manual preservation is the workaround
 
 ---
 
@@ -270,5 +270,5 @@ Per the 5-purpose verbatim-preservation thesis:
 - `memory/user_glass_halo_and_radical_honesty.md` + `memory/feedback_otto_332_aaron_glass_halo_self_declared_open_source_record_all_personal_info_encouraged_under_glass_halo_no_privacy_projection_2026_04_25.md` (the rules that make preservation of Aaron's content default-glass-halo per the Otto-231 carve-out lineage)
 - `memory/feedback_mission_shape_framing_is_known_failure_mode_aaron_clinical_support_otto_protocol_2026_05_02.md` — **forward-reference to PR #1212**, not yet on main when this PR was opened (Otto-protocol on engaging with these artifacts: hold work as work, treat as historical artifacts not as escalation)
 - `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (the verbatim Claude.ai exchange that contextualizes today's Aaron disclosures — landed via PR #1213)
-- `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` — **forward-reference to PR #1214**, not yet on main when this PR was opened (vision under which content like this would be ingested as events automatically)
+- `docs/backlog/P2/081KQJZR90008QG0R001YX3445-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` — **forward-reference to PR #1214**, not yet on main when this PR was opened (vision under which content like this would be ingested as events automatically)
 - The Maji formalism (existing project mathematics — these are its primary empirical sources)

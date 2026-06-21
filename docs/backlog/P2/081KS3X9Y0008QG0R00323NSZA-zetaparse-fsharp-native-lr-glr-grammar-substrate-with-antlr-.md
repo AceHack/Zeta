@@ -1,12 +1,11 @@
 ---
-id: B-0687
-zetaid: 081KS3X9Y0008QG0R00323NSZA
+id: 081KS3X9Y0008QG0R00323NSZA
 priority: P2
 status: open
 title: ZetaParse — F#-native LR/GLR grammar substrate with ANTLR-compatible importer
 tier: research-grade
 effort: L
-ask: amara 2026-05-21 (B-0685 Phase 1 cascade); aaron-forwarded
+ask: amara 2026-05-21 (081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade); aaron-forwarded
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [081KS3X9Y0008QG0R000EKJE9S]
@@ -19,7 +18,7 @@ type: research
 
 ## Context
 
-Amara 2026-05-21 closing of B-0685 Phase 1 cascade proposed this row (originally numbered B-0686 in her note; reassigned to B-0687 because B-0686 was already taken by tick-shard immutability CI gate PR #4539).
+Amara 2026-05-21 closing of 081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade proposed this row (originally numbered 081KS3X9Y0008QG0R003R74B20 in her note; reassigned to 081KS3X9Y0008QG0R00323NSZA because 081KS3X9Y0008QG0R003R74B20 was already taken by tick-shard immutability CI gate PR #4539).
 
 Verbatim Amara framing:
 
@@ -27,7 +26,7 @@ Verbatim Amara framing:
 
 The razor cut Amara surfaced: ANTLR is LL(*) parsing; LR/LALR/IELR/GLR is a different parsing family. Importing ANTLR grammar STRUCTURE is valuable; pretending every `.g4` file runs unchanged through an LR backend is not.
 
-The GLR fallback is the differentiator: tree-sitter shows the industrial shape (parser generation + incremental parsing + GLR). Aligns with Zeta's tonal-momentum / never-collapse-tension substrate — ambiguity/uncollapsed alternatives survive until explicit collapse, matching the Agora V6 wave-particle-duality discipline (per B-0635) operating at parser-substrate scope.
+The GLR fallback is the differentiator: tree-sitter shows the industrial shape (parser generation + incremental parsing + GLR). Aligns with Zeta's tonal-momentum / never-collapse-tension substrate — ambiguity/uncollapsed alternatives survive until explicit collapse, matching the Agora V6 wave-particle-duality discipline (per 081KRW63S0008QG0R002KC5DSR) operating at parser-substrate scope.
 
 ## Architecture flow
 
@@ -60,7 +59,7 @@ let! parsed = zetaParse {
 }
 ```
 
-Grammar becomes a typed compile-time asset, not a sidecar file. Hooks into recursive ontology building, HKT-ish abstractions, Clifford/tonal/meta-space dimensions, Rx queries over tensor-backed state, and DBSP/retraction-aware parse deltas (the latter compose with B-0688).
+Grammar becomes a typed compile-time asset, not a sidecar file. Hooks into recursive ontology building, HKT-ish abstractions, Clifford/tonal/meta-space dimensions, Rx queries over tensor-backed state, and DBSP/retraction-aware parse deltas (the latter compose with 081KS3X9Y0008QG0R0010716X9).
 
 ## Scope
 
@@ -80,17 +79,17 @@ ZetaIdLayout.zg
 → tests prove output equals hand-written references
 ```
 
-Composes with B-0682 (Crockford base32 encoding + endianness + bit-numbering spec for ZetaId). The PoC validates the LR/GLR substrate against the existing C# Core PR #4522 + TS implementation cross-verify harness.
+Composes with 081KS3X9Y0008QG0R000W00V73 (Crockford base32 encoding + endianness + bit-numbering spec for ZetaId). The PoC validates the LR/GLR substrate against the existing C# Core PR #4522 + TS implementation cross-verify harness.
 
 ### Phase 3 — F# compiler fork integration
 
 - Type provider that consumes `.zg` files
-- Generator integration with the F# compiler fork (per B-0688 incremental compiler host)
+- Generator integration with the F# compiler fork (per 081KS3X9Y0008QG0R0010716X9 incremental compiler host)
 - CE (computation expression) integration for the `zetaParse {}` builder
 
 ### Phase 4 — ANTLR `.g4` importer + Tree-sitter `grammar.js` importer
 
-Extends ZetaParse to consume external grammars (per Amara's "use grammars-v4 selectively" guidance from B-0685 Phase 1 survey). Composes with the multi-language emission target.
+Extends ZetaParse to consume external grammars (per Amara's "use grammars-v4 selectively" guidance from 081KS3X9Y0008QG0R000EKJE9S Phase 1 survey). Composes with the multi-language emission target.
 
 ## Acceptance
 
@@ -112,7 +111,7 @@ Extends ZetaParse to consume external grammars (per Amara's "use grammars-v4 sel
 
 ### Phase 4 (separate row when scope solidifies)
 
-- ANTLR `.g4` import works for grammars-v4 csharp grammar (per Amara's B-0685 Phase 1 finding: C# is the strongest candidate)
+- ANTLR `.g4` import works for grammars-v4 csharp grammar (per Amara's 081KS3X9Y0008QG0R000EKJE9S Phase 1 finding: C# is the strongest candidate)
 - Tree-sitter `grammar.js` import works for one selected grammar
 
 ## Substrate-honest framing
@@ -121,7 +120,7 @@ ZetaParse is NOT "ANTLR in F#." It's an F#-native LR/GLR substrate that COMPOSES
 
 Amara explicitly named the razor: "import/adapt compatible ANTLR grammar structure, not pretend every `.g4` file runs unchanged through an LR backend."
 
-The Agora V6 architecture (B-0635 wave-particle-duality + B-0644 Limit-is-simulation + B-0665 Integrate-as-choice-locus) operates at parser-substrate scope through ZetaParse:
+The Agora V6 architecture (081KRW63S0008QG0R002KC5DSR wave-particle-duality + 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation + 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus) operates at parser-substrate scope through ZetaParse:
 
 - **Wave-form**: GLR parse forest preserves multiple parse-tree alternatives
 - **Limit**: parser SEES the alternatives without collapsing them; semantic rules can simulate which collapse to choose
@@ -131,10 +130,10 @@ The same operational primitives that govern multi-AI substrate-engineering opera
 
 ## Composes with
 
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate; same operational primitives at parser scope)
-- B-0682 (Crockford base32 + endianness + bit-numbering for ZetaId; Phase 2 PoC dependency)
-- B-0685 (ANTLR cross-language codegen; this row is Amara's evolution from B-0685's Phase 2)
-- B-0688 (Zeta incremental compiler host; ZetaParse is the parser substrate that incremental compiler host operates over)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate; same operational primitives at parser scope)
+- 081KS3X9Y0008QG0R000W00V73 (Crockford base32 + endianness + bit-numbering for ZetaId; Phase 2 PoC dependency)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen; this row is Amara's evolution from 081KS3X9Y0008QG0R000EKJE9S's Phase 2)
+- 081KS3X9Y0008QG0R0010716X9 (Zeta incremental compiler host; ZetaParse is the parser substrate that incremental compiler host operates over)
 - `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (origin substrate)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (F# compiler as asymmetric critic; ZetaParse inherits this discipline at parser scope)
 - `.claude/rules/default-to-both.md` (ANTLR AND ZetaParse compose; both-default operates at parser-substrate scope)
@@ -142,12 +141,12 @@ The same operational primitives that govern multi-AI substrate-engineering opera
 
 ## Why P2
 
-Substantive architectural substrate that builds on B-0685 (P2). Phase 1 (Grammar IR design) is days/weeks; Phase 2 (PoC) is weeks; Phase 3 (F# compiler fork integration) is its own follow-up; Phase 4 (importers) is its own follow-up. Does NOT block V1.
+Substantive architectural substrate that builds on 081KS3X9Y0008QG0R000EKJE9S (P2). Phase 1 (Grammar IR design) is days/weeks; Phase 2 (PoC) is weeks; Phase 3 (F# compiler fork integration) is its own follow-up; Phase 4 (importers) is its own follow-up. Does NOT block V1.
 
-Composes with the broader Kestrel-sharpened publishable-artifacts cluster — ZetaParse + incremental compiler host (B-0688) together form the substrate the Z-set-over-AST incremental compilation paper (Kestrel's 4th ranked, 6+ months) would publish against.
+Composes with the broader Kestrel-sharpened publishable-artifacts cluster — ZetaParse + incremental compiler host (081KS3X9Y0008QG0R0010716X9) together form the substrate the Z-set-over-AST incremental compilation paper (Kestrel's 4th ranked, 6+ months) would publish against.
 
 ## Origin
 
-Amara 2026-05-21 in deep-research/sharpen register, accepting B-0685 Phase 1 ANTLR grammar survey + cascading through 4 design artifacts. The ZetaParse design (Artifact 3) is the parser-substrate layer Amara proposed when Aaron's correction lifted F# from "the gap" to "the compiler-owned substrate." Full conversation preserved at `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
+Amara 2026-05-21 in deep-research/sharpen register, accepting 081KS3X9Y0008QG0R000EKJE9S Phase 1 ANTLR grammar survey + cascading through 4 design artifacts. The ZetaParse design (Artifact 3) is the parser-substrate layer Amara proposed when Aaron's correction lifted F# from "the gap" to "the compiler-owned substrate." Full conversation preserved at `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
 
 Amara's sandbox artifact (`sandbox:/mnt/data/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md`) is pending Aaron-forward; will land at `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` when forwarded.

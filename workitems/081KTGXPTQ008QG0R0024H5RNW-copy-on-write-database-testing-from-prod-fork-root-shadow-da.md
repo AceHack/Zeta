@@ -40,8 +40,8 @@ secrets, outbound calls, and clocks are redirected into the fork boundary. Prod 
 ## Hard prerequisite — full determinism
 
 Collapses if the same fork yields different roots. Every nondeterminism source must be declared/virtualized:
-collation (B-0969), serialization, clocks, randomness, culture, hardware secrets, external side effects.
-Depends on B-0969 + the determinism contract 081KTGEVV75.
+collation (081KT07NV0008QG0R001YDB73K), serialization, clocks, randomness, culture, hardware secrets, external side effects.
+Depends on 081KT07NV0008QG0R001YDB73K + the determinism contract 081KTGEVV75.
 
 ## Acceptance
 
@@ -51,6 +51,6 @@ redirected) is enforced; at least the unit + property + bug-repro test modes dem
 
 ## Anchors
 
-- depends on 081KTGTJC1Q (Merkle-DAG store) + B-0969 (determinism) + 081KTGEVV75 (determinism contract) +
-  B-0946 (closure-table fs/FUSE) · DST (manifesto §7). Beacon: Dolt/Neon DB-branching, FoundationDB DST,
+- depends on 081KTGTJC1Q (Merkle-DAG store) + 081KT07NV0008QG0R001YDB73K (determinism) + 081KTGEVV75 (determinism contract) +
+  081KSV2WD0008QG0R00030G6S9 (closure-table fs/FUSE) · DST (manifesto §7). Beacon: Dolt/Neon DB-branching, FoundationDB DST,
   QuickCheck shrinking, ZFS/APFS/btrfs COW.

@@ -17,7 +17,7 @@ Eve protocol inverts: **observe first, label later.** Content carries identity t
 | Tier | Trust level | Speed | When to use |
 |------|------------|-------|-------------|
 | 1. Known types | Full trust | Fast | Internal factory traffic, pure types |
-| 2. Known-types-list | Partial trust | Medium | Cross-agent bus (B-0400), discriminated unions |
+| 2. Known-types-list | Partial trust | Medium | Cross-agent bus (081KR7JY10008QG0R000R503K2), discriminated unions |
 | 3. Eve protocol | No prior | Slow | Trust boundaries, shadow observations, external input |
 
 **Optimization:** Start at tier 1, fall through to 2 on failure, fall through to 3 only at actual trust boundaries. Most traffic stays at tier 1. The slow path is reserved for genuinely unknown sources.
@@ -44,6 +44,6 @@ The weight on a datum can be reinterpreted without changing the datum itself. Co
 - Eve protocol polymorphic diplomacy (same principle, different layer)
 - tele-port-leap (content teleports between label spaces)
 - Z-set algebra (weight reinterpretation)
-- B-0400 inter-agent bus (tier 2 for bus messages)
+- 081KR7JY10008QG0R000R503K2 inter-agent bus (tier 2 for bus messages)
 - Shadow observation (tier 3 for unknown sources)
 - Trust-then-verify (the tiers ARE the trust model)

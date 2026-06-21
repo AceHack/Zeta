@@ -1,11 +1,10 @@
 ---
-id: B-0491
-zetaid: 081KRHWGX0008QG0R00211YQJ6
+id: 081KRHWGX0008QG0R00211YQJ6
 priority: P1
 status: open
-title: "B-0429.7 — Dawn + Universal business templates persona map"
+title: "081KRFA460008QG0R002M05EY1.7 — Dawn + Universal business templates persona map"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -19,7 +18,7 @@ composes_with:
   - docs/backlog/P3/081KQ3HBZ0008QG0R000Q4Y00F-universal-company-government-information-substrate.md
 ---
 
-# B-0491 — Dawn + Universal business templates persona map
+# 081KRHWGX0008QG0R00211YQJ6 — Dawn + Universal business templates persona map
 
 ## Purpose
 
@@ -27,7 +26,7 @@ Produce the canonical persona map for two frontier/thin-substrate products:
 
 - **Dawn** — child-AI charter product; personas are the most consent-sensitive
   in the factory (children, parents, guardians)
-- **Universal business templates (B-0043)** — universal-company/government
+- **Universal business templates (081KQ3HBZ0008QG0R000Q4Y00F)** — universal-company/government
   substrate; the widest possible persona surface
 
 Both are frontier products. Grouped because both have thin substrate and require
@@ -37,9 +36,9 @@ careful persona scoping before implementation.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Template from B-0485 is closed and available
+- [ ] Template from 081KRHWGX0008QG0R00019453T is closed and available
 - [ ] Search for Dawn charter substrate in `docs/` and `memory/`
-- [ ] Read B-0043 (`docs/backlog/P3/B-0043-*.md`) for universal-business scope
+- [ ] Read 081KQ3HBZ0008QG0R000Q4Y00F (`docs/backlog/P3/081KQ3HBZ0008QG0R000Q4Y00F-*.md`) for universal-business scope
 - [ ] Read PR #2920 (TERMINAL-PURPOSE Elizabeth) for Dawn's edge-runner persona
       context and terminal-purpose grounding
 - [ ] Read PR #2893 (Imagination Circle) for consent-first scaffolding relevant
@@ -58,19 +57,19 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 | Refused | Unaccompanied minor without guardian consent | PR #2893 PEC v0.1 |
 | Refused | Adult posing as child or misrepresenting age | methodology-hard-limits |
 
-## Universal business templates (B-0043) — persona hypotheses
+## Universal business templates (081KQ3HBZ0008QG0R000Q4Y00F) — persona hypotheses
 
 | Persona type | Candidate | Source hint |
 |---|---|---|
 | Primary | Startup founder / SMB operator | "every company" framing |
-| Primary | Enterprise information architect | B-0043 universal scope |
-| Secondary | Government agency information manager | B-0043 "government" clause |
+| Primary | Enterprise information architect | 081KQ3HBZ0008QG0R000Q4Y00F universal scope |
+| Secondary | Government agency information manager | 081KQ3HBZ0008QG0R000Q4Y00F "government" clause |
 | Adjacent | Consultant deploying templates for clients | universal reach |
 | Refused | Tax-evasion / fraudulent entity structuring | methodology-hard-limits |
 
 ## Output
 
-Per-product persona maps using template from B-0485:
+Per-product persona maps using template from 081KRHWGX0008QG0R00019453T:
 
 ```
 docs/personas/dawn-universal-biz-personas.md
@@ -81,13 +80,13 @@ per PR #2893 PEC v0.1 + Charter v0.2.
 
 ## Definition of done
 
-- [ ] Template from B-0485 applied to both products
+- [ ] Template from 081KRHWGX0008QG0R00019453T applied to both products
 - [ ] Dawn: parent/guardian primary persona with consent-first annotations
 - [ ] Dawn: at least 2 refused personas with PEC v0.1 / HARD LIMITS rationale
 - [ ] Universal biz templates: at least 2 primary personas documented
 - [ ] Output doc committed at canonical path
-- [ ] B-0492 `composes_with:` pointer backfilled
-- [ ] B-0491 status set to `closed` with PR link
+- [ ] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled
+- [ ] 081KRHWGX0008QG0R00211YQJ6 status set to `closed` with PR link
 
 ## Why consent-first matters for Dawn
 

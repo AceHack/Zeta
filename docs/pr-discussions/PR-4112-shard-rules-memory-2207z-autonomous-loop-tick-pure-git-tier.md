@@ -22,7 +22,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Commits
 
-- `2cf6fac` **shard(2026-05-17/2207Z)**: autonomous-loop tick — pure-git tier, cron re-arm, Lior race respected, bg-worker B-0170 unchallenged
+- `2cf6fac` **shard(2026-05-17/2207Z)**: autonomous-loop tick — pure-git tier, cron re-arm, Lior race respected, bg-worker 081KQNJ500008QG0R003SCWBDV unchallenged
 - `e1b679a` **rules(tick-must-never-stop)**: distinguish session-exit non-persistence from within-session auto-expire (2207Z empirical anchor)
 - `41ce70f` **memory(shadow-catch)**: riven-cursor-terminal-loop.sh untracked Rule 0 violation candidate (2218Z observation)
 

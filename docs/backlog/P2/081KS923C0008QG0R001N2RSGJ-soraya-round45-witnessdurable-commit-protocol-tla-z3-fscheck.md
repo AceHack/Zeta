@@ -1,6 +1,5 @@
 ---
-id: B-0712
-zetaid: 081KS923C0008QG0R001N2RSGJ
+id: 081KS923C0008QG0R001N2RSGJ
 priority: P2
 status: open
 title: "Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)"
@@ -18,7 +17,7 @@ composes_with:
   - tools/tla/specs/TwoPCSink.tla
 ---
 
-# B-0712 — WitnessDurable commit protocol formal verification triple (round-45 hand-off)
+# 081KS923C0008QG0R001N2RSGJ — WitnessDurable commit protocol formal verification triple (round-45 hand-off)
 
 ## Origin
 
@@ -74,4 +73,4 @@ M + S + S (total ~M+). Assignee: kenji.
 - [`docs/research/proof-tool-coverage.md`](../../research/proof-tool-coverage.md) §2 line 100 — gap named 2026-04-17
 - [`tools/tla/specs/TwoPCSink.tla`](../../../tools/tla/specs/TwoPCSink.tla) — structural cousin
 - `memory/soraya/NOTEBOOK.md` — Round 45 entry (pending NOTEBOOK update; locate by `## Round 45` heading once landed; pruned-preserved)
-- B-0710 + B-0711 (sibling Soraya hand-offs from same session)
+- 081KS923C0008QG0R003GHCG1P + 081KS923C0008QG0R0005VM4FB (sibling Soraya hand-offs from same session)

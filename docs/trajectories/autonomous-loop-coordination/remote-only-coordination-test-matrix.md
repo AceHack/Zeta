@@ -2,11 +2,11 @@
 
 Status: first matrix
 Grounding backlog:
-`docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
+`docs/backlog/P2/081KQX9B50008QG0R001MNYK61-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
 
 ## Purpose
 
-B-0209 asks whether background agents can coordinate when the local
+081KQX9B50008QG0R001MNYK61 asks whether background agents can coordinate when the local
 broadcast bus, shared filesystem, shared terminal, and local worktree
 state are all unavailable. This matrix makes that test concrete before
 runner behavior changes land.

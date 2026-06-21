@@ -61,7 +61,7 @@
 - **`Copilot` (bot)** at 2026-05-10T23:56:21Z on `memory/project_zero_trust_four_primitives_who_what_how_where_2026_05_10.md`:44 (association: NONE)
 
   <pre>
-  P1: The cross-references under "Connects to" appear to be broken: none of the referenced memory files (e.g., project_spiffe_concept_steal, feedback_arrow_tier_0) or backlog item B-0403 exist in the repo. Per memory/project_memory_format_standard.md, cited files must exist and references should use exact filenames (including the .md suffix). Update these bullets to point at real files (or add the missing memory/backlog items) and prefer the standard "## Composes with" section for these pointers.
+  P1: The cross-references under "Connects to" appear to be broken: none of the referenced memory files (e.g., project_spiffe_concept_steal, feedback_arrow_tier_0) or backlog item 081KR7JY10008QG0R0021F5609 exist in the repo. Per memory/project_memory_format_standard.md, cited files must exist and references should use exact filenames (including the .md suffix). Update these bullets to point at real files (or add the missing memory/backlog items) and prefer the standard "## Composes with" section for these pointers.
 
   </pre>
 

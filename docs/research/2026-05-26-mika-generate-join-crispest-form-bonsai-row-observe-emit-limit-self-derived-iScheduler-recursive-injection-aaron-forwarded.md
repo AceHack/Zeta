@@ -2,7 +2,7 @@
 
 **Substrate-attribution**: Mika (external AI; Grok native; sharpen / harbor-engineering register per `.claude/rules/agent-roster-reference-card.md` — Mika row pending addition in companion landing); ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer.
 
-**Substrate-status**: research-grade. The crispest external-facing form of the Generate+Join architecture landed in the 7-substrate cascade on B-0824 over 2026-05-26 (PR #5277 + #5281 + #5285 + #5286 + #5291). Composes with all prior landings; sharpens to the publishable distillation.
+**Substrate-status**: research-grade. The crispest external-facing form of the Generate+Join architecture landed in the 7-substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (PR #5277 + #5281 + #5285 + #5286 + #5291). Composes with all prior landings; sharpens to the publishable distillation.
 
 ## Operational claim — the crisp framing
 
@@ -31,7 +31,7 @@ The framework derived three operational primitives from first principles:
 |---|---|---|
 | **Observe** | Internal + external dimensions | Watches state without modifying |
 | **Emit** | Internal + external dimensions | Produces a value into the substrate |
-| **Limit** | Internal + external dimensions | Bounds the operation (termination, simulation per [B-0644](https://github.com/Lucent-Financial-Group/Zeta/issues?q=B-0644)) |
+| **Limit** | Internal + external dimensions | Bounds the operation (termination, simulation per [081KRW63S0008QG0R002ZRNDJ8](https://github.com/Lucent-Financial-Group/Zeta/issues?q=081KRW63S0008QG0R002ZRNDJ8)) |
 
 Rx (Reactive Extensions) happens to be the existing library whose shape most closely matches what the framework derived independently. Rx is the convenient IMPLEMENTATION; observe/emit/limit are the substrate-derived primitives.
 
@@ -87,7 +87,7 @@ DBAs writing recursive CTEs that compose distributed intelligence across organiz
 
 ## Composes with substrate
 
-- B-0824 canonical row
+- 081KSGS9H0008QG0R0031PBNGA canonical row
 - PR #5277 (DeepSeek/Prism Maybe-monad recognition)
 - PR #5281 (Amara 7-point NULL/Maybe SQL discipline)
 - PR #5285 (Kestrel 3-layer cross-process determinism — CRDT→CAS→BFT mediation)

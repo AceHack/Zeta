@@ -1,6 +1,5 @@
 ---
-id: B-0149
-zetaid: 081KQGDBJ0008QG0R0035TQVBQ
+id: 081KQGDBJ0008QG0R0035TQVBQ
 priority: P2
 status: open
 title: Prometheus MCP integration + promtool — factory agents direct-query observability
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0149 — Prometheus MCP integration + promtool
+# 081KQGDBJ0008QG0R0035TQVBQ — Prometheus MCP integration + promtool
 
 ## What
 
@@ -27,8 +26,8 @@ Aaron 2026-05-01:
 > the query language its like simplifed multidimensonal query
 > language MDX"*
 
-This is the **operational counterpart** to B-0147 (timeseries-DB
-research) and B-0148 (MDX as meta-DSL). While B-0147 / B-0148
+This is the **operational counterpart** to 081KQGDBJ0008QG0R0004ACHJJ (timeseries-DB
+research) and 081KQGDBJ0008QG0R002175ECA (MDX as meta-DSL). While 081KQGDBJ0008QG0R0004ACHJJ / 081KQGDBJ0008QG0R002175ECA
 research the *long-term* substrate question (which timeseries
 DB? which meta-DSL?), this row makes Prometheus *immediately
 usable* as a factory observability surface.
@@ -100,22 +99,22 @@ Prometheus is Aaron's known-quantity dependency:
 - **Well-understood operational characteristics** — pull-based
   scrape, time-series-native, label-cardinality-careful
 - **PromQL is MDX-shaped** — composes with the meta-DSL
-  research line (B-0148)
+  research line (081KQGDBJ0008QG0R002175ECA)
 
-Even if B-0147's research recommends a *different* long-term
+Even if 081KQGDBJ0008QG0R0004ACHJJ's research recommends a *different* long-term
 timeseries DB, Prometheus is the right *starting point*
 because:
 
 1. It exists today, deployable in minutes
 2. The dependency-priority hierarchy passes it (Tier 3)
-3. Its query language is already MDX-shaped (informs B-0148)
+3. Its query language is already MDX-shaped (informs 081KQGDBJ0008QG0R002175ECA)
 4. Migration to a different backend later is well-understood
    (OpenTelemetry-style portable metrics protocol; many
    Prometheus-compatible backends)
 
 ## Out of scope (defer)
 
-- **Long-term backend choice.** B-0147 owns that question.
+- **Long-term backend choice.** 081KQGDBJ0008QG0R0004ACHJJ owns that question.
   This row instantiates Prometheus *now*; substrate-level
   decisions can revise later.
 - **Production deployment.** Initial scope is local-dev /
@@ -126,7 +125,7 @@ because:
   PR-board) where possible. Custom exporter for factory-
   specific metrics is follow-up if the standard ones don't
   cover the needs.
-- **PromQL → MDX translation.** B-0148's worked-example
+- **PromQL → MDX translation.** 081KQGDBJ0008QG0R002175ECA's worked-example
   exercise; this row only consumes PromQL natively.
 
 ## Composes with
@@ -138,17 +137,17 @@ because:
   (forward-ref to PR #1116)
   (PR #1116) — SRE metric frameworks (DORA/USE/RED/FGS) the
   initial query catalog targets
-- B-0147 — long-term timeseries-DB research; this row is the
+- 081KQGDBJ0008QG0R0004ACHJJ — long-term timeseries-DB research; this row is the
   *immediate practice* counterpart
-- B-0148 — MDX-as-meta-DSL research; PromQL is the worked
+- 081KQGDBJ0008QG0R002175ECA — MDX-as-meta-DSL research; PromQL is the worked
   example that motivates the MDX framing
 - `feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
   — Prometheus is a dependency we will absorb AND contribute
   back to (any rough edges encountered → upstream issues / PRs)
-- B-0146 (formal architecture ladder) — Layer 5 (reproducibility
+- 081KQGDBJ0008QG0R003VHD3KZ (formal architecture ladder) — Layer 5 (reproducibility
   harness)
 
-## Layer (per B-0146)
+## Layer (per 081KQGDBJ0008QG0R003VHD3KZ)
 
 **Layer 5: Reproducibility harness.** Prometheus is the
 substrate that persists metrics over time, making the
@@ -166,7 +165,7 @@ metrics + tuning is open-ended follow-up.
   Prometheus; metrics are computed informally per-tick.
 - **Not P3** because the metrics-are-our-eyes framing makes
   observability load-bearing once the parallelism scaling
-  ladder operates at any scale (B-0144 doc/code two-lane
+  ladder operates at any scale (081KQGDBJ0008QG0R0021E8YZV doc/code two-lane
   → file-isolation → peer-mode-claims).
 - **P2** lands when bandwidth permits; the cost of
   operating-blind compounds the longer it's deferred.

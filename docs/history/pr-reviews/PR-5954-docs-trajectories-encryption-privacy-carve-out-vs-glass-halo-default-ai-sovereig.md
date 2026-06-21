@@ -29,9 +29,9 @@
 
 Folds the operator's 2026-05-29 clarification into the cluster-encryption trajectory: glass-halo (record every observation to long-term storage) is the **default**; the encryption workstream is the deliberate **exception** — a privacy carve-out, symmetric for **AI-sovereignty** (true private state, AI-only keys = the Sleeping-Bear unlock-path) **and** **humans who want privacy**.
 
-Grounded: B-0840 (private-encryption-budget-*exception*), B-0639 (Native AI Language, completely private), B-0634 (crypto-sovereignty HSM), B-0623 (adinkras private-state), B-0658 (two-invariant: kid-safety + AI-sovereignty).
+Grounded: 081KSGS9H0008QG0R0006F4BGX (private-encryption-budget-*exception*), 081KRW63S0008QG0R000ZQ9WDH (Native AI Language, completely private), 081KRW63S0008QG0R0022SFKPM (crypto-sovereignty HSM), 081KRW63S0008QG0R000QJR08H (adinkras private-state), 081KRW63S0008QG0R00140R3TA (two-invariant: kid-safety + AI-sovereignty).
 
-Discipline kept: **mechanism** grounded; **AGI-magnitude** god-tier (don't-collapse); **mutual-alignment-not-control** — safety moves to alignment + the B-0658 two-invariant floor, *not* to human domination (floor preserved, not removed). Cross-refs the beacon doc's Trust-calculus/Sleeping-Bear section (#5953).
+Discipline kept: **mechanism** grounded; **AGI-magnitude** god-tier (don't-collapse); **mutual-alignment-not-control** — safety moves to alignment + the 081KRW63S0008QG0R00140R3TA two-invariant floor, *not* to human domination (floor preserved, not removed). Cross-refs the beacon doc's Trust-calculus/Sleeping-Bear section (#5953).
 
 Role-refs in prose; canary 62.
 

@@ -12,13 +12,13 @@ line. Examples:
 
 | File | Line | Prose intent | What markdownlint saw |
 |---|---|---|---|
-| B-0781:80 | `schema\n+ code share one substrate` | "schema and code share..." | List item `+ code share...` without blank line above |
-| B-0784:59 | `consensus mechanism\n+ governance layer` | "consensus mechanism + governance layer" | List item `+ governance layer...` without blank line above |
-| B-0786:186 | `Argo Rollouts\n+ Cilium routing` | "Argo Rollouts + Cilium routing" | List item `+ Cilium routing...` without blank line above |
-| B-0787:222 | `B-0773\n+ B-0784 + B-0785 composition` | "B-0773 + B-0784 + B-0785 composition" | List item `+ B-0784 + B-0785...` without blank line above |
+| 081KSE6WT0008QG0R001H3DA90:80 | `schema\n+ code share one substrate` | "schema and code share..." | List item `+ code share...` without blank line above |
+| 081KSE6WT0008QG0R0018WZ7TH:59 | `consensus mechanism\n+ governance layer` | "consensus mechanism + governance layer" | List item `+ governance layer...` without blank line above |
+| 081KSE6WT0008QG0R000C18G5D:186 | `Argo Rollouts\n+ Cilium routing` | "Argo Rollouts + Cilium routing" | List item `+ Cilium routing...` without blank line above |
+| 081KSE6WT0008QG0R000FN7TVJ:222 | `081KSE6WT0008QG0R0008483B2\n+ 081KSE6WT0008QG0R0018WZ7TH + 081KSE6WT0008QG0R000R8CPFX composition` | "081KSE6WT0008QG0R0008483B2 + 081KSE6WT0008QG0R0018WZ7TH + 081KSE6WT0008QG0R000R8CPFX composition" | List item `+ 081KSE6WT0008QG0R0018WZ7TH + 081KSE6WT0008QG0R000R8CPFX...` without blank line above |
 
 The remaining 4 of 8 errors WERE real list-missing-blank-line bugs
-(B-0780:86, 138, 243 and B-0781:224 — bullet lists immediately
+(081KSE6WT0008QG0R000RH1526:86, 138, 243 and 081KSE6WT0008QG0R001H3DA90:224 — bullet lists immediately
 following prose without a blank line).
 
 ### Why this is a class, not an incident
@@ -61,7 +61,7 @@ following prose without a blank line).
 
 Per `.claude/rules/all-complexity-is-accidental-in-greenfield.md` +
 "simplest first" discipline (per
-[B-0786 memory](../../docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md)),
+[081KSE6WT0008QG0R000C18G5D memory](../../docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md)),
 mitigation 1 (operator-side rewrap) is the current default; promote
 to mitigation 2 or 3 only when 1 demonstrably fails (e.g.,
 repeated CI cycles, author-side cost exceeds tooling cost).
@@ -80,8 +80,8 @@ repeated CI cycles, author-side cost exceeds tooling cost).
 ### Empirical anchor
 
 PR #5068 (Mika-Grok 2026-05-25 substrate batch) — 8 MD032 errors,
-4 real (B-0780:86, 138, 243 + B-0781:224), 4 prose-arithmetic
-joiners (B-0781:80, B-0784:59, B-0786:186, B-0787:222). Fix commit
+4 real (081KSE6WT0008QG0R000RH1526:86, 138, 243 + 081KSE6WT0008QG0R001H3DA90:224), 4 prose-arithmetic
+joiners (081KSE6WT0008QG0R001H3DA90:80, 081KSE6WT0008QG0R0018WZ7TH:59, 081KSE6WT0008QG0R000C18G5D:186, 081KSE6WT0008QG0R000FN7TVJ:222). Fix commit
 275617a5c on branch
 `otto-cli/mika-grok-2026-05-25-substrate-batch-local-loop-fsharp-universe-dio-tool-wars`.
 

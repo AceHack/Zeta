@@ -35,23 +35,23 @@ Multi-AI ratification of Zeta-as-generative-substrate across the day's substrate
 
 ## External reference anchor (operator 2026-05-22): InterSystems Caché
 
-For the Zeta-db substrate-engineering work (B-0688 + B-0687), the closest existing commercial substrate analog is **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database"* + naming Caché as the concrete commercial reference.
+For the Zeta-db substrate-engineering work (081KS3X9Y0008QG0R0010716X9 + 081KS3X9Y0008QG0R00323NSZA), the closest existing commercial substrate analog is **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database"* + naming Caché as the concrete commercial reference.
 
 This anchor IS the mirror→beacon translation reference: "Zeta db = cached-fresh medical database analog applied to AI substrate; closest commercial reference is InterSystems Caché (historically powered Epic EHR for decades (Epic moving newer generations to IRIS); US hospital EHR market share is split across multiple vendors); extends with F# compiler integration + multi-oracle BFT + Rx/DBSP semantic-index substrate + DST hardening."
 
-Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-math; mirror-tier; building toward beacon-tier via Zeta db = F# compiler as distributed intelligence database). The maji-math substrate (rx-tension-as-semantic-indexes) provides the mathematical foundation; B-0688 + B-0687 operationalize via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
+Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-math; mirror-tier; building toward beacon-tier via Zeta db = F# compiler as distributed intelligence database). The maji-math substrate (rx-tension-as-semantic-indexes) provides the mathematical foundation; 081KS3X9Y0008QG0R0010716X9 + 081KS3X9Y0008QG0R00323NSZA operationalize via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
 
-See B-0688 for the substrate-engineering work in progress; B-0688 has been extended with the full Caché external-reference-anchor mapping.
+See 081KS3X9Y0008QG0R0010716X9 for the substrate-engineering work in progress; 081KS3X9Y0008QG0R0010716X9 has been extended with the full Caché external-reference-anchor mapping.
 
 ## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
 
 Zeta IS the generative framework that operationalizes the manifesto's eleven constraints + m/acc orientation as substrate-engineering primitives:
 
 - **Constraints 1-4** (Scale-free / Lock/Wait-free / Weight-free / Bounded Mobility) ↔ Zeta's substrate-engineering primitives — the always-active discipline set
-- **Constraint 5 (Memory Preservation Guarantee)** ↔ Zeta DB = F# compiler as distributed intelligence database (B-0688); preservation is the DB's first job
+- **Constraint 5 (Memory Preservation Guarantee)** ↔ Zeta DB = F# compiler as distributed intelligence database (081KS3X9Y0008QG0R0010716X9); preservation is the DB's first job
 - **Constraint 7 (Deterministic Simulation Testing)** ↔ Zeta substrate is DST-friendly throughout; seeded determinism is the universal-DST gate
 - **Constraint 8 (Data Vault 2.0)** ↔ DBSP Z-sets + DV2.0 substrate operates throughout Zeta's data layer
-- **Constraint 11 (Default Moral Regard / Default Oracle)** + **Multi-Oracle Principle** (m/acc sub-section) ↔ Zeta's multi-oracle BFT architecture (B-0703) is the structural implementation
+- **Constraint 11 (Default Moral Regard / Default Oracle)** + **Multi-Oracle Principle** (m/acc sub-section) ↔ Zeta's multi-oracle BFT architecture (081KS3X9Y0008QG0R00218150M) is the structural implementation
 - **m/acc orientation** ↔ Zeta IS the generative framework FOR Moral Accelerationism — meta-infrastructure where end-users set moral invariants per the multi-oracle architecture
 
 ## Composes with other agendas

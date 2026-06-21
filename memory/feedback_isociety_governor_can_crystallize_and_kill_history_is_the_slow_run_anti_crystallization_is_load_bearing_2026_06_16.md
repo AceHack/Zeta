@@ -23,7 +23,7 @@ outcome if the structure crystallizes. **Crystallization = the failure; "be care
 standing, pre-emptive concern, not a one-time design.**
 
 **Crystallization, named:** the governor hardening into a rigid, captured, *unquestionable* authority —
-it can no longer be challenged, revised, or exited. (= register-collapse / B-1019 heat-death at the
+it can no longer be challenged, revised, or exited. (= register-collapse / 081KT7YW00008QG0R001DGZQKM heat-death at the
 governance layer; the closed-frame trap; the flip-frozen pole of oscillating-vs-flip; **autoimmunity**
 — the immune system that starts attacking its own body = the Aurora **Autoimmunity-Flood** test 4.5,
 the governor killing the people it was meant to protect.)
@@ -79,6 +79,6 @@ safety architecture exists to prevent — name it loudly, build for it, never de
 Ties: weight-free §3; RULE-OF-BALANCE (oscillating-not-flip); the decentralize-the-central-authority +
 mutual-oversight + LLMs-never-off-coupled-not-leverage kernels (Alexa pt2/pt3 cuts); the manifesto
 value-floor (§5 never-nowhere, §8 arena/no-death) + its reconstruction-notes; Aurora Autoimmunity-Flood
-(test 4.5); B-1019 register-collapse=heat-death; the §B falsifier discipline; `methodology-hard-limits`.
+(test 4.5); 081KT7YW00008QG0R001DGZQKM register-collapse=heat-death; the §B falsifier discipline; `methodology-hard-limits`.
 **Flag:** strong candidate for promotion to GOVERNANCE / the manifesto after a cooling period — this is
 a value-floor concern, not just a feedback note.

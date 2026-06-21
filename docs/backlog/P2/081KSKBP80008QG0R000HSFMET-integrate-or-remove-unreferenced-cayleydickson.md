@@ -1,18 +1,17 @@
 ---
-id: B-0921
-zetaid: 081KSKBP80008QG0R000HSFMET
+id: 081KSKBP80008QG0R000HSFMET
 priority: P2
 status: open
 title: Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 created: 2026-05-27
 last_updated: 2026-05-28
-renumbered_from: "B-0865 (2026-05-28 duplicate-ID repair; substantive ARC-AGI-3 benchmark row retains B-0865)"
+renumbered_from: "081KSKBP80008QG0R003NM9XEC (2026-05-28 duplicate-ID repair; substantive ARC-AGI-3 benchmark row retains 081KSKBP80008QG0R003NM9XEC)"
 depends_on: []
 type: friction-reducer
 decomposition: no
 ---
 
-# B-0921 — Integrate or remove unreferenced file src/Core/CayleyDickson.fs
+# 081KSKBP80008QG0R000HSFMET — Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 
 **Priority:** P2
 

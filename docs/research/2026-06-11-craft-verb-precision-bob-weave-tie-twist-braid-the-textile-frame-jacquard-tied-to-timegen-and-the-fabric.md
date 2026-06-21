@@ -42,7 +42,7 @@ machines. Weaving is not a metaphor for computing; weaving is computing's PARENT
 Babbage/Lovelace → Hollerith → us. The mill where Aaron was born and the machine he builds are one
 tradition.)
 
-## Research + backlog (filed: B-1027)
+## Research + backlog (filed: 081KTSZN10008QG0R001BW91GT)
 
 Salon (PSD kernel packs — built) and Textile (mill/loom — built in first form) are the two CRAFT
 SCHOOLS to research deeply: the braid-group formalization (does our weave satisfy the braid relations?

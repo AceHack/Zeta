@@ -1,6 +1,5 @@
 ---
-id: B-0961
-zetaid: 081KSXN940008QG0R000JZVFXX
+id: 081KSXN940008QG0R000JZVFXX
 title: ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
 status: open
 priority: P2
@@ -15,9 +14,9 @@ composes_with:
   - 081KSNY2Z0008QG0R0030V5ZVS # agent private encrypted state (Home/Encryption considered, deferred)
 ---
 
-# B-0961 — ZetaId root-category taxonomy: gap analysis + deferral
+# 081KSXN940008QG0R000JZVFXX — ZetaId root-category taxonomy: gap analysis + deferral
 
-> **Why this row exists (not dogma):** the bus-partition review (B-0954.1)
+> **Why this row exists (not dogma):** the bus-partition review (081KT07NV0008QG0R000QWEKTE)
 > needs coordination primitives (claim, lock). The first draft proposed adding
 > `Claim(9)` + `Lock(10)` to the ZetaId `Category` enum. A multi-agent review
 > (Grok critique + Amara sharpen, 2026-06-01) **rejected promoting them to root
@@ -39,7 +38,7 @@ zone_ — root `Category` slots — is wrong for now.** Both reviewers converged
 
 So the operational decision:
 
-1. **Phase 1 (now, for B-0954.1):** model Claim and Lock as **first-class typed
+1. **Phase 1 (now, for 081KT07NV0008QG0R000QWEKTE):** model Claim and Lock as **first-class typed
    events under existing categories** — Claim under `Bus(6)` (where
    `tools/bus/claim.ts` already lives), Lock as a typed coordination event
    (also `Bus(6)` or `WorkItem(8)`-adjacent). **No root-`Category` change.**
@@ -57,7 +56,7 @@ The full verbatim reviews are preserved at
 1. **Backlog-conversion is already covered.** `WorkItem(8)` was reserved
    _explicitly_ for `B-xxxxx → ZetaId migration`. Converting `docs/backlog/P*/B-*.md`
    into ZetaId-keyed events needs the conversion **tooling** (parse each `P*/B-*.md`
-   → one `WorkItem` event), not a new category — tracked under B-0959.
+   → one `WorkItem` event), not a new category — tracked under 081KSXN940008QG0R003FCQ7WT.
    _(Review caveat: `WorkItem(8)` is itself an umbrella — bugs, epics, converted
    B-rows — which is the same category-smell this row guards against. If a router
    later needs to distinguish them, that's a sub-type on the payload, not new
@@ -78,7 +77,7 @@ and the case for two _categories_ if/when Phase 2 fires:
 
 | Axis            | **Claim**                                                   | **Lock**                                                          |
 | --------------- | ----------------------------------------------------------- | ----------------------------------------------------------------- |
-| What it asserts | ownership / responsibility ("agent X owns WorkItem B-0400") | mutual-exclusion ("exclusive write to this ref/row/file, _now_")  |
+| What it asserts | ownership / responsibility ("agent X owns WorkItem 081KR7JY10008QG0R000R503K2") | mutual-exclusion ("exclusive write to this ref/row/file, _now_")  |
 | Granularity     | coarse — a whole work-item / lane                           | fine — one specific resource / critical section                   |
 | Lifetime        | long — survives a sleep cycle (24h TTL today)               | short — held only during the critical operation                   |
 | Enforcement     | cooperative / advisory (exit-1 if taken; not a hard gate)   | hard mutual-exclusion (exactly-one; CAS via `--force-with-lease`) |
@@ -102,7 +101,7 @@ Revisit at Phase 2 with real producers; not decided here (promotion is deferred)
 `Category` bits sit inside the **128-bit content-addressed ZetaId**. If the
 category participates in identity, then **promoting claim from `Bus(6)` to
 `Claim(9)` changes the logical claim's id** — breaking references, G-Set
-identity, "find all current claims on B-0400". Two clean rules; pick ONE before
+identity, "find all current claims on 081KR7JY10008QG0R000R503K2". Two clean rules; pick ONE before
 Phase 2:
 
 - **(A) Category participates in identity forever** — then promotion is a
@@ -113,7 +112,7 @@ Phase 2:
   but changes what "content-addressed" means for coordination events.
 
 This is undecided today and is **the** gate on whether root-promotion is even
-affordable. It must be answered in the B-0954.1 / identity-model work first.
+affordable. It must be answered in the 081KT07NV0008QG0R000QWEKTE / identity-model work first.
 
 ## §4 Growth theory — RESOLVED: 4 bits is not a ceiling, it's an escape (operator 2026-05-31)
 
@@ -175,8 +174,8 @@ producers/consumers) still hold before any root-`Category` promotion.
 
 - **Encryption / PrivateState** — a **property** of an event (is the payload
   encrypted), not a kind. Belongs on the envelope, not `Category`. Defer until a
-  consumer routes on it. (Composes B-0840 / B-0885.)
-- **Home** — a _repo-boundary_ concept (B-0959 §0 agent-partition), not an event
+  consumer routes on it. (Composes 081KSGS9H0008QG0R0006F4BGX / 081KSNY2Z0008QG0R0030V5ZVS.)
+- **Home** — a _repo-boundary_ concept (081KSXN940008QG0R003FCQ7WT §0 agent-partition), not an event
   category. Deferred.
 - **Memory** — `Emission(1)` / `WorkItem(8)`-shaped today; no router needs a
   distinct category. Deferred.
@@ -194,12 +193,12 @@ escape/version mechanism (§4) lands, not a change this row makes.
 
 ## §6 Acceptance criteria (phase-gated)
 
-**Phase 1 (unblocks B-0954.1, no root-Category change):**
+**Phase 1 (unblocks 081KT07NV0008QG0R000QWEKTE, no root-Category change):**
 
 - [ ] Define typed `Claim` + `Lock` coordination event shapes under existing
       categories (Claim under `Bus(6)`; Lock as typed CAS event).
 - [ ] `tools/bus/claim.ts` keeps `Bus(6)` (no id-breaking move yet).
-- [ ] Lock event = single-row CAS / lock-folder per B-0954.1.
+- [ ] Lock event = single-row CAS / lock-folder per 081KT07NV0008QG0R000QWEKTE.
 
 **Phase 2 (root-Category promotion — only when Gates A + B pass):**
 
@@ -215,12 +214,12 @@ escape/version mechanism (§4) lands, not a change this row makes.
       **wide** extension decode together — never let `15` become a normal category.)
 
 Backlog-conversion tooling (B-\*.md → `WorkItem(8)`) is **out of scope here** —
-tracked under B-0959 (sovereign-DB lane).
+tracked under 081KSXN940008QG0R003FCQ7WT (sovereign-DB lane).
 
 ## §7 Master-checklist linkage
 
 This row is the coordination-category slice of the sovereign-DB lane. Referenced
-from **B-0959** (lane master), reachable from **docs/ACTIVE-WORKSTREAMS.md** (the
+from **081KSXN940008QG0R003FCQ7WT** (lane master), reachable from **docs/ACTIVE-WORKSTREAMS.md** (the
 cross-lane index). The "convert the backlog → ZetaId event store" arc is gated on
 Phase 1 settling the coordination event shapes (and `WorkItem(8)` already exists,
 so the conversion is tooling, not a category).

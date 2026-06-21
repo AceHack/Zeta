@@ -29,9 +29,9 @@
 
 Your call (2026-06-01): _"x402 + all the other wallet primitives … slowly building a blockchain … indexer that does some of ETH/Bitcoin/Solana."_ Captured a **Blockchain / wallet / payments** family:
 
-- **multi-chain wallet** — real backlog: B-0062 wallet-v0, B-0622 type-safe agent-wallet, B-0918 WalletLifetime DU, B-0929 wallet-independence, B-0463 wallet-immune-system, B-0074.2/.3 wallet+bond-ledger spec. HD-derived **per chain off the one seed** (composes with the seed-tree note).
-- **N-of-M HSM** (B-0634 cryptographic sovereignty).
-- **x402** — HTTP `402 Payment Required` machine-payable protocol (agent↔agent/service crypto payments; composes with wallet + Bus + attention-as-currency B-0908).
+- **multi-chain wallet** — real backlog: 081KQ8P5D0008QG0R002XFQ305 wallet-v0, 081KRW63S0008QG0R002V20TYJ type-safe agent-wallet, 081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime DU, 081KSRGFP0008QG0R003VAR9X2 wallet-independence, 081KRA5AR0008QG0R001JWYYHE wallet-immune-system, 081KRA5AR0008QG0R002504RM1/.3 wallet+bond-ledger spec. HD-derived **per chain off the one seed** (composes with the seed-tree note).
+- **N-of-M HSM** (081KRW63S0008QG0R0022SFKPM cryptographic sovereignty).
+- **x402** — HTTP `402 Payment Required` machine-payable protocol (agent↔agent/service crypto payments; composes with wallet + Bus + attention-as-currency 081KSNY2Z0008QG0R000A5GP0X).
 - **multi-chain indexer** (ETH / Bitcoin / Solana, partial) — one indexer port, per-chain adapters (own-your-interfaces).
 
 **⚠️ Substrate-honest gap:** I could **not locate the F# indexer source** in this repo's `src/` (or the obvious siblings — `sol/` is a Foundry/Solidity project, not F#). So the indexer entry is family-level only. **Where is "our f# here"?** Point me at the path and I'll survey it and add the specific indexer primitives properly (no fabricated survey).

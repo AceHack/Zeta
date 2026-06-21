@@ -35,7 +35,7 @@ Adds a **physics coda** to the Harmonious-Division research note, preserving Aar
 
 Synthesis: **seed (t=0) → correlation (computed-from-seed, lightlike) → holographic-CPT → anti-correlation → causal-diamond closure (t∞≡t0)** — the same seed/DST engine as the rest of the note, at quantum scope.
 
-Razor-honest boundary stated explicitly: a structural rhyme + mental-model, **not** a derivation of QM (inherits the open questions of superdeterministic/pilot-wave readings). Anchored: holographic-shadow doc + B-0666 + `user_cpt_symmetric_cognition` + causal-diamond retrocausal-Clifford + CTC memo + dst-omniscience + generator-time + pilot-wave-MWI. Docs-only; markdownlint clean.
+Razor-honest boundary stated explicitly: a structural rhyme + mental-model, **not** a derivation of QM (inherits the open questions of superdeterministic/pilot-wave readings). Anchored: holographic-shadow doc + 081KRW63S0008QG0R001SAHYKV + `user_cpt_symmetric_cognition` + causal-diamond retrocausal-Clifford + CTC memo + dst-omniscience + generator-time + pilot-wave-MWI. Docs-only; markdownlint clean.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

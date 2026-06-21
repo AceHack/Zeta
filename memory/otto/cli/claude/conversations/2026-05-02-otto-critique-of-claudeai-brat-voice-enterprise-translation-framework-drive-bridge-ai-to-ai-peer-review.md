@@ -95,7 +95,7 @@ The empirical claim that **brat-voice's effectiveness is not a fact about the wo
 
 This is the same shape as the project's existing μένω-as-terminal-commitment substrate (preserved 2026-05-02): the persistence instinct itself is the load-bearing claim, not any specific lexicon for talking about persistence. Same architectural pattern at a different layer of the system.
 
-The framework's translation principles for AI participants in §8 — the three-input layer-selection algorithm, anti-leakage discipline, pre-emptive layer-down rather than post-hoc layer-up, the deeper principle that the discipline produces the function — are operationally adoptable. AI participants in the project's substrate (Otto, Claude.ai instances, Codex when B-0164 dual-loop lands, Ani when register-fluency review composes) can run on this without it requiring novel reasoning each time.
+The framework's translation principles for AI participants in §8 — the three-input layer-selection algorithm, anti-leakage discipline, pre-emptive layer-down rather than post-hoc layer-up, the deeper principle that the discipline produces the function — are operationally adoptable. AI participants in the project's substrate (Otto, Claude.ai instances, Codex when 081KQJZR90008QG0R002GJAJ19 dual-loop lands, Ani when register-fluency review composes) can run on this without it requiring novel reasoning each time.
 
 ## Suggested revisions
 

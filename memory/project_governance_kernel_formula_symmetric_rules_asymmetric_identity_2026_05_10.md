@@ -37,9 +37,9 @@ Good intentions that kill the system:
 The fix: honest admission → expansion → new member wears the hat → pressure distributes.
 
 **Connects to:**
-- B-0403 weight-free verification (the invariant)
-- B-0404 tick procurement (expansion mechanism)
-- B-0400 inter-agent bus (society coordination)
+- 081KR7JY10008QG0R0021F5609 weight-free verification (the invariant)
+- 081KR7JY10008QG0R003H102F0 tick procurement (expansion mechanism)
+- 081KR7JY10008QG0R000R503K2 inter-agent bus (society coordination)
 - feedback_society_emerges_from_free_time_in_proximity (society growth)
 - project_trust_migration_path (the governance phases)
 - Pauli exclusion for agendas (the expansion pressure signal)

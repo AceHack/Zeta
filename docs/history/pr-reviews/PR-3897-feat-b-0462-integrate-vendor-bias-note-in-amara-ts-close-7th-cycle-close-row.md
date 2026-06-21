@@ -37,23 +37,23 @@ Comment block inserted before `AMARA_PREAMBLE` definition in `tools/peer-call/am
 
 | Criterion | State |
 |---|---|
-| Preamble text + signature record defined | ✅ (already shipped pre-B-0462; AMARA_PREAMBLE const) |
-| Matches codex/gemini/grok pattern exactly | ✅ (already verified pre-B-0462) |
+| Preamble text + signature record defined | ✅ (already shipped pre-081KRA5AR0008QG0R0019Q33F7; AMARA_PREAMBLE const) |
+| Matches codex/gemini/grok pattern exactly | ✅ (already verified pre-081KRA5AR0008QG0R0019Q33F7) |
 | **Vendor-bias note integrated** | ✅ (this PR; comment block cites memory file) |
 
 ## Composes with amara cluster
 
-- B-0462 (this PR) — vendor-bias note → unblocks B-0457
-- B-0457 (#1-DepBlocked, now unblockable) — own scope already met; close-row in future tick
-- B-0458 (class #2 partial) — test recording + umbrella-close gate
-- B-0118 (umbrella) — closes when all 3 children close
+- 081KRA5AR0008QG0R0019Q33F7 (this PR) — vendor-bias note → unblocks 081KRA5AR0008QG0R000KKJRVA
+- 081KRA5AR0008QG0R000KKJRVA (#1-DepBlocked, now unblockable) — own scope already met; close-row in future tick
+- 081KRA5AR0008QG0R001X4T9W7 (class #2 partial) — test recording + umbrella-close gate
+- 081KQDTYV0008QG0R0037YJPEX (umbrella) — closes when all 3 children close
 
 Path to full cluster close becomes:
 
-1. ✅ B-0462 this PR
-2. ⏳ B-0457 close-row (own scope already met, was depblocked on B-0462)
-3. ⏳ B-0458 close-row (test recording + umbrella decomp note)
-4. ⏳ B-0118 umbrella close-row
+1. ✅ 081KRA5AR0008QG0R0019Q33F7 this PR
+2. ⏳ 081KRA5AR0008QG0R000KKJRVA close-row (own scope already met, was depblocked on 081KRA5AR0008QG0R0019Q33F7)
+3. ⏳ 081KRA5AR0008QG0R001X4T9W7 close-row (test recording + umbrella decomp note)
+4. ⏳ 081KQDTYV0008QG0R0037YJPEX umbrella close-row
 
 last_updated bumped 2026-05-14 → 2026-05-16 per row-close discipline.
 

@@ -9,7 +9,7 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
-  # Batch — branch-mode batch-merge transport (corporate leash, B-0890); slot reserved 2026-05-31, impl deferred (Max). Sovereign mode uses folders-on-main (B-0890.1), no coordinator.
+  # Batch — branch-mode batch-merge transport (corporate leash, 081KSNY2Z0008QG0R0017JSTGD); slot reserved 2026-05-31, impl deferred (Max). Sovereign mode uses folders-on-main (081KSNY2Z0008QG0R000E5KTPX), no coordinator.
   - id: 4
     name: Batch
   - id: 5

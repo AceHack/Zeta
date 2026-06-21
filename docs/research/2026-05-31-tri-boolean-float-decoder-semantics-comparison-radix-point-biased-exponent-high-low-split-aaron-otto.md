@@ -1,4 +1,4 @@
-# Tri-boolean float -- decoder-semantics comparison: radix-point vs biased-exponent vs high-low-split (B-0944 slice 5)
+# Tri-boolean float -- decoder-semantics comparison: radix-point vs biased-exponent vs high-low-split (081KSV2WD0008QG0R00051XS0N slice 5)
 
 **Status:** design exploration per the operator 2026-05-31: *"ratify v0 layout: radix-point decoder,
 unsigned for now"* + *"lets try a few different designs unless it's obviously right."* It is NOT
@@ -76,7 +76,7 @@ picks across TS/F#/C#/Rust.
 
 ## Composition
 
-- All three reuse the digital-qubit cell (B-0944 slices 1-4) + the measure/cooperate + Result<value,
+- All three reuse the digital-qubit cell (081KSV2WD0008QG0R00051XS0N slices 1-4) + the measure/cooperate + Result<value,
   feedback> discipline (monad-propagation; asymmetric-authorship feedback channels).
 - `DecoderSemantics` is a parameter, so cross-language parity (slice 5 pt2) implements the SAME three
   (or the chosen subset); the conformance harness (slice 6) ballots them.

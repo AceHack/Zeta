@@ -37,8 +37,8 @@ Continues the per-tick razor-cadence composes-with audit pattern established in 
 
 | Rule (PR) | File refs | Backlog rows |
 |-----------|-----------|--------------|
-| `zeta-ships-with-skills-immediate-value.md` (#2938) | 8 | B-0043, B-0428, B-0429 |
-| `dv2-data-split-discipline-activated.md` (#2915) | 13 | B-0043, B-0424, B-0425, B-0426, B-0427 |
+| `zeta-ships-with-skills-immediate-value.md` (#2938) | 8 | 081KQ3HBZ0008QG0R000Q4Y00F, 081KRFA460008QG0R0018SN61J, 081KRFA460008QG0R002M05EY1 |
+| `dv2-data-split-discipline-activated.md` (#2915) | 13 | 081KQ3HBZ0008QG0R000Q4Y00F, 081KRFA460008QG0R001H98EXJ, 081KRFA460008QG0R003JQ46J4, 081KRFA460008QG0R0007RWSN1, 081KRFA460008QG0R000VKJF0H |
 | `methodology-hard-limits.md` (#2860) | 10 | — |
 | `shadow-check-name-acceptance.md` (#2855) | 10 | — |
 

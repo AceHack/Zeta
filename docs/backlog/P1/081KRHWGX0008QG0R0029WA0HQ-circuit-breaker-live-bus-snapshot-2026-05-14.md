@@ -1,11 +1,10 @@
 ---
-id: B-0494
-zetaid: 081KRHWGX0008QG0R0029WA0HQ
+id: 081KRHWGX0008QG0R0029WA0HQ
 priority: P1
 status: closed
 title: "Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot"
 type: feature
-origin: B-0435 slice-2 (noted in PR #3133 body)
+origin: 081KRFA460008QG0R001MC7D7R slice-2 (noted in PR #3133 body)
 created: 2026-05-14
 last_updated: 2026-05-16
 closed: 2026-05-16
@@ -17,11 +16,11 @@ composes_with:
 tags: [demo, circuit-breaker, alignment-ui, github-pages, html, js, bus]
 ---
 
-# B-0494 — Circuit breaker viz: slice-2 live bus snapshot
+# 081KRHWGX0008QG0R0029WA0HQ — Circuit breaker viz: slice-2 live bus snapshot
 
 ## What
 
-B-0435 slice-1 (PR #3133, merged 2026-05-14) ships the circuit breaker panel with
+081KRFA460008QG0R001MC7D7R slice-1 (PR #3133, merged 2026-05-14) ships the circuit breaker panel with
 **static mock data**. Slice-2 wires `renderCircuitBreakerTab()` to read a committed
 JSON snapshot generated from the live `/tmp/zeta-bus/` envelopes, so the panel
 reflects actual agent activity rather than hardcoded values.
@@ -72,7 +71,7 @@ from the build moment rather than the mock.
   (requires CORS / deployment plumbing — future slice)
 - Automated refresh of the snapshot in CI (future slice; for now, snapshot is
   committed from a local run)
-- Adding new bus topics for richer circuit-breaker signals (B-0213 territory)
+- Adding new bus topics for richer circuit-breaker signals (081KQX9B50008QG0R001YRPGD6 territory)
 
 ## Pre-start checklist (backlog-item-start-gate)
 
@@ -88,8 +87,8 @@ from the build moment rather than the mock.
 
 **Dependency check:**
 
-- `depends_on: [B-0435]` — slice-1 merged (PR #3133, 2026-05-14) ✓
-- `composes_with: B-0213` — bus hardening is a sibling, not a blocker
+- `depends_on: [081KRFA460008QG0R001MC7D7R]` — slice-1 merged (PR #3133, 2026-05-14) ✓
+- `composes_with: 081KQX9B50008QG0R001YRPGD6` — bus hardening is a sibling, not a blocker
 - No blockers; all scaffolding in place from slice-1
 
 **Claim acquired:** otto-cli, 2026-05-14, branch `feat/b-0494-circuit-breaker-live-bus-snapshot`
@@ -109,6 +108,6 @@ All 6 acceptance criteria verifiably shipped:
 | `dotnet build -c Release` 0/0 | implicit (PR #3134 merged CI green) |
 | `bun tsc --noEmit` passes | implicit (PR #3134 merged CI green) |
 
-Row left open from 2026-05-14 to 2026-05-16 as substrate drift. Caught by **the new `tools/hygiene/audit-backlog-status-drift.ts` tool** (peer Otto-Desktop shipped via PR #3758) — the audit flagged B-0494 as a drift candidate, and the manual per-acceptance-bullet verification confirmed pure-drift (vs partial-completion). This is the **first real-world use of the new audit tool** following peer's PR #3777 quality-improvement passes.
+Row left open from 2026-05-14 to 2026-05-16 as substrate drift. Caught by **the new `tools/hygiene/audit-backlog-status-drift.ts` tool** (peer Otto-Desktop shipped via PR #3758) — the audit flagged 081KRHWGX0008QG0R0029WA0HQ as a drift candidate, and the manual per-acceptance-bullet verification confirmed pure-drift (vs partial-completion). This is the **first real-world use of the new audit tool** following peer's PR #3777 quality-improvement passes.
 
 Closing per `.claude/rules/backlog-item-start-gate.md` step 0 substrate-drift discriminator (merged via PR #3757). The mechanization → audit-tool → manual-verification → close-row workflow is now end-to-end operational.

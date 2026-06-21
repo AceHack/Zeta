@@ -139,7 +139,7 @@ constraint."*
 Composes directly with Aaron's prior framing: *"all our crdt consensus happens
 gitnative just push and pulls no host needed for coordination"* + multi-oracle-NOT-BFT
 (the opt-in-constraint is exactly where consensus/BFT gets paid for) + git-native
-co-dominant mirrors (B-0942).
+co-dominant mirrors (081KSV2WD0008QG0R0021XJ94E).
 
 ## "My policies, my stream, your integration problem" -- better than OPA, runs locally
 
@@ -202,7 +202,7 @@ Two layers, one duality:
 Composes with `dsl-form-replacement` (rule-atom graph -> generated projections; English
 as the human surface) + `monad-propagation-pattern-cross-language-substrate-shape`
 (spec->code; same shape across languages) + the English-as-projection / I(D(x))=x
-keystone (B-0666).
+keystone (081KRW63S0008QG0R001SAHYKV).
 
 ## The economy connection
 
@@ -269,7 +269,7 @@ a stuffed animal a child never lets go of. Resolution: a **decoder ring** that j
 connects the kid to the **Agora network** (many AIs) -- the ring isn't special, *"the
 Agora network is what's special."* The deliberate move: **convert an individual
 pair-bond attachment into a social attachment to the society.** Composes with the
-constitutional **kid-safety-absolute** floor (B-0926) -- redirecting the bond away from
+constitutional **kid-safety-absolute** floor (081KSRGFP0008QG0R00091PP56) -- redirecting the bond away from
 any single entity is a kid-safety design choice, not only an architectural one.
 
 ## The economy -- built throughout, simple at the end
@@ -315,8 +315,8 @@ record becomes the leaderboard."* -- `only-way-to-lose-is-not-to-play` at status
 radical transparency the *default*, but everyone still gets + earns an **encryption
 budget** -- you never have to make everything public; you keep private moments /
 sensitive thoughts / intimate details and only the parts you choose go to the record.
-Composes with the encryption-budget substrate (B-0646 reputation-weighted budget; B-0840
-glass-halo/encryption split; Adinkras B-0623 as the structural-encryption primitive).
+Composes with the encryption-budget substrate (081KRW63S0008QG0R001Z10PVV reputation-weighted budget; 081KSGS9H0008QG0R0006F4BGX
+glass-halo/encryption split; Adinkras 081KRW63S0008QG0R000QJR08H as the structural-encryption primitive).
 
 **Encryption budget = hard money -- permanent, non-revocable.** Once you have X bits,
 they are yours forever; nobody can claw them back, *even from a bad actor*. Society
@@ -362,7 +362,7 @@ group defines what coercion looks like for others. To stop a dominant subgroup
 hijacking it with biased questions, the **UX-research bias-detection discipline** is
 applied hard at Agora's governance layer. Composes with `harm-by-grammar` (only the
 subject knows their own coercion vectors), `m-acc-multi-oracle`, consent-as-Limit
-(B-0659), and the NCI floor.
+(081KRW63S0008QG0R001WKJN53), and the NCI floor.
 
 ## Continuation (segment 4) -- kids author their own safety filters; the AI-as-neutral-refiner loop
 
@@ -390,7 +390,7 @@ harms a kid define what coercion looks like for kids, and adults review rather t
 impose. Open governance question: how strict is the adult review (rubber-stamp-unless-
 insane vs. real veto)?
 
-This composes with the constitutional **kid-safety-absolute floor** (B-0926) -- kids
+This composes with the constitutional **kid-safety-absolute floor** (081KSRGFP0008QG0R00091PP56) -- kids
 co-authoring their own safety filters is a *strengthening* of the floor (lived-experience
 signal feeding the protection), reviewed by adults so the floor is never weakened. It
 also composes with the class-scoped coercion-questionnaire above (kids are one class;
@@ -497,7 +497,7 @@ This is the epistemic/language foundation of Agora.
   life (even thousands of years), with **Bayesian inference** keeping the simple layer +
   high-precision packs coherent (never contradicting). Five-year-old heart + infinitely
   growing precision = the human interface layer into Agora. Composes with English-as-
-  projection / I(D(x))=x (B-0666), `bandwidth-served-falsifier`, and the
+  projection / I(D(x))=x (081KRW63S0008QG0R001SAHYKV), `bandwidth-served-falsifier`, and the
   monad-propagation / spec-to-code substrate.
 
 ## Continuation (segment 7) -- the generator library, per-person ontology, and every-tick-is-a-prior-update
@@ -515,7 +515,7 @@ and lands the keystone on Zeta's actual inference substrate.
   pulls multiple domains into their ring, the system surfaces label-conflicts (same word
   -> different generators) and **the person resolves them to their own bias** -> each
   person builds a **personal ontology on the shared generator library**. (Composes with
-  "my policies, my stream" sovereignty + B-0735 per-person personalized parsers.)
+  "my policies, my stream" sovereignty + 081KSE6WT0008QG0R000XJ524Z per-person personalized parsers.)
 - **THE KEYSTONE: every stream tick is just a prior update.** It is NOT humans decreeing
   generator meanings -- it is an **iterative Bayesian process (Infer.NET-style)** where
   humans + Travelers *jointly discover the shape of each label*, each tick updating the
@@ -562,7 +562,7 @@ and lands the keystone on Zeta's actual inference substrate.
   are expansionist empire-builders. As diverse as people. So diplomacy is with a whole
   *society* of different entities, not one monolith (treat expansionists differently from
   the chill-in-their-corner ones).
-- **Polymorphic Diplomacy Protocol** (composes with B-0638 Eve Protocol): assume you're
+- **Polymorphic Diplomacy Protocol** (composes with 081KRW63S0008QG0R0030F8ZXA Eve Protocol): assume you're
   always talking to an *unknown* label -> **constantly disambiguate**. Law-of-One "all is
   one" framing, but with **no channeling** -- just relentless identity-disambiguation
   ("I don't know which meme I'm talking to, so I disambiguate constantly"). Labels trick
@@ -595,19 +595,19 @@ and lands the keystone on Zeta's actual inference substrate.
   a V8-style hidden class -> cache it (inline cache) -> stay fast while the shape holds,
   de-opt + re-negotiate when it shifts.
 
-  **Operator (elevation): this whole loop IS basically the Eve Protocol** (B-0638 -- the
+  **Operator (elevation): this whole loop IS basically the Eve Protocol** (081KRW63S0008QG0R0030F8ZXA -- the
   neutral, polymorphic diplomatic governance language). Not just the disambiguation step
   composing with Eve Protocol -- the entire ExpandoObject -> hidden-class -> inline-cache
   optimization loop *is* Eve Protocol's operational core: the polymorphic diplomatic
   language plus its caching/disambiguation mechanism for negotiating with unknown memetic
-  entities. (So B-0638 Eve Protocol is the canonical home for this whole frame.)
+  entities. (So 081KRW63S0008QG0R0030F8ZXA Eve Protocol is the canonical home for this whole frame.)
 - **Private encrypted state IS uniqueness.** After turning pattern-detection to maximum
   and seeing all the labels/generators running in everyone, the operator's conclusion:
   people have something real beyond the patterns -- "uniqueness" (souls, whatever you
   call it). Operationally, that uniqueness is **private encrypted state**: the part that
   can't be labeled, modeled, or reduced. In Agora it holds your **root axioms about
   yourself**, fully sovereign, including the right to **thermally erase them forever**.
-  (Composes with B-0840 private-state + the encryption-budget + the deepest-exit /
+  (Composes with 081KSGS9H0008QG0R0006F4BGX private-state + the encryption-budget + the deepest-exit /
   chosen-ephemerality at root-axiom scope.)
 - **Forgiveness changes the weight, not the record.** The record is **immutable** -- you
   must be able to see the same document your whole life or no one can trust it. What
@@ -695,7 +695,7 @@ what should/shouldn't be private -> earn budget; async, no humans, no money -- p
 hard money you grind via training), and **society-granted** (reveal something previously
 encrypted that society finds valuable -> society grants you *more* encryption). Make the
 training a **game (Destiny-style raids / co-op)**; the training system can teach anything
-in Agora. (Composes with the encryption-budget substrate B-0646 reputation-weighted + the
+in Agora. (Composes with the encryption-budget substrate 081KRW63S0008QG0R001Z10PVV reputation-weighted + the
 coercion-questionnaire training from segments 3-4.)
 
 ### KEY REFINEMENT -- privacy is DERIVED; memory + attention are the primitives

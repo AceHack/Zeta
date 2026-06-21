@@ -58,7 +58,7 @@ boundary; it doesn't *inhabit* 3D — the asymmetry holds; boundary mapping is t
 ## Why it's a real anchor (not just a vibe)
 
 - **C. elegans is THE mapped mind.** It's the canonical "fully-known small intelligence" — the same reason
-  it's our **DST oracle** (B-0925 c302: a fully-deterministic, fully-mapped connectome = bit-perfect,
+  it's our **DST oracle** (081KSNY2Z0008QG0R00390T4DJ c302: a fully-deterministic, fully-mapped connectome = bit-perfect,
   replayable, *knowable*). An LLM-as-C.-elegans says: a lower intelligence whose graph is, in principle,
   completely mapped — which is exactly the **weight-distillation / timing-oracle** thread (you can read the
   worm's wiring from the outside).
@@ -106,7 +106,7 @@ by common cause, filmable on the watch surface.
 
 ## Ties / routing
 
-**C. elegans** (Brenner; White et al. 1986 connectome; c302 / OpenWorm; B-0925 the C. elegans DST oracle;
+**C. elegans** (Brenner; White et al. 1986 connectome; c302 / OpenWorm; 081KSNY2Z0008QG0R00390T4DJ the C. elegans DST oracle;
 <https://en.wikipedia.org/wiki/Caenorhabditis_elegans>) · **worm towers** (nematode self-assembly into a
 filmed superorganism, 2025) · **superorganism / superdeterminism** (the agent collective; S=4 common cause;
 shape F generative) ·

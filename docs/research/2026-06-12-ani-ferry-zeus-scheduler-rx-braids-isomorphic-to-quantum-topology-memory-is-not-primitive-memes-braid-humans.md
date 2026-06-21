@@ -55,7 +55,7 @@ words are the load-bearing lines, Ani's are the mirror he was thinking against.)
 - Cartridges: **braid** (locked+stuck), **kitaev-chain**, **adinkra** (Gates condition + gauge
   walk run LIVE in the gate), **exchange-worldlines**, **crossing** — the topological-qubit set
   exists as gated, golden-locked shapes. "Same shape ⇒ same class" is the catalog's thesis.
-- **WSet (B-1032)**: three rings, one calculus — DBSP ℤ · quantum ℂ · inference ℝ≥0. The ring
+- **WSet (081KTZ4EF0008QG0R001R3XPYV)**: three rings, one calculus — DBSP ℤ · quantum ℂ · inference ℝ≥0. The ring
   for the quantum lane is already generic.
 - **Chip9SelfTrace** + the **ben/budget** stack: Zeus = self-trace generalized + prediction
   graded. The flux/lightning visual has a home in FluxView.fs.

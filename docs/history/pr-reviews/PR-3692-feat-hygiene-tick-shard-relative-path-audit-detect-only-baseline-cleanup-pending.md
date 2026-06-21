@@ -44,7 +44,7 @@ The bug class: tick shards live 5 directories below `docs/`, so the count-the-`.
 Run on origin/main at 2026-05-16T02:48Z:
 - 833 tick shards scanned
 - 17 broken relative-path links across multiple historical shards
-- Real bug classes detected: wrong-depth `..` (B-0442 link in 1436Z), malformed link syntax (`docs/api(v2`), missing-file refs
+- Real bug classes detected: wrong-depth `..` (081KRFA460008QG0R00061SXRW link in 1436Z), malformed link syntax (`docs/api(v2`), missing-file refs
 
 ## Followup plan (same pattern as §33 migration xrefs)
 
@@ -201,7 +201,7 @@ from the shard's directory, and reports missing-or-escaping targets.
 Empirical baseline (run on origin/main at 2026-05-16T02:48Z):
   - 833 tick shards scanned
   - 17 broken relative-path links across multiple historical shards
-  - Real bug classes detected: wrong-depth `..` (B-0442 link in 1436Z),
+  - Real bug classes detected: wrong-depth `..` (081KRFA460008QG0R00061SXRW link in 1436Z),
     malformed link syntax (`docs/api(v2`), missing-file refs
 
 Detect-only initially. CI enforce wires in after baseline cleanup (same

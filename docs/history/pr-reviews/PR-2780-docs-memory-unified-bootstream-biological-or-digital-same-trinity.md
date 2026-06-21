@@ -206,15 +206,15 @@ Composes every substrate memory landed this session into a unified pedagogical t
 ### Thread 10 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6BdnC5`
-- **Path**: `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`
+- **Path**: `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-12T15:10:21Z on `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`:7 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-12T15:10:21Z on `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`:7 (association: NONE)
 
   <pre>
-  P0: This backlog row frontmatter is missing required schema fields (`id`, `title`, `last_updated`). The backlog generator (`tools/backlog/generate-index.ts`) reads `id`, `status`, and `title` from frontmatter, and `tools/backlog/README.md` marks `id`/`title`/`last_updated` as required, so this row will render with an empty id/title and be out of spec. Add `id: B-0423`, a `title:` matching the row heading, and `last_updated: 2026-05-12` (and keep it updated on edits).
+  P0: This backlog row frontmatter is missing required schema fields (`id`, `title`, `last_updated`). The backlog generator (`tools/backlog/generate-index.ts`) reads `id`, `status`, and `title` from frontmatter, and `tools/backlog/README.md` marks `id`/`title`/`last_updated` as required, so this row will render with an empty id/title and be out of spec. Add `id: 081KRCQQF0008QG0R0037YYP1A`, a `title:` matching the row heading, and `last_updated: 2026-05-12` (and keep it updated on edits).
 
   </pre>
 
@@ -250,12 +250,12 @@ Composes every substrate memory landed this session into a unified pedagogical t
 ### Thread 13 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6BdnFU`
-- **Path**: `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`
+- **Path**: `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-12T15:10:22Z on `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`:14 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-12T15:10:22Z on `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`:14 (association: NONE)
 
   <pre>
   P0: This PR adds a new per-row backlog file under `docs/backlog/`, but does not update the generated `docs/BACKLOG.md`. The `backlog-index-integrity` workflow runs `bun tools/backlog/generate-index.ts --check` and will fail unless `docs/BACKLOG.md` is regenerated and committed in the same PR.
@@ -393,7 +393,7 @@ fix(memory): consolidate duplicate fast path entry for PR 2780
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`
+- `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`
 - `memory/MEMORY.md`
 
 **Message:**
@@ -418,7 +418,7 @@ Two changes:
    - Readers assume newest entries may be heap-state, not yet
      conforming to 150-char index discipline
 
-2. File B-0423 P1 backlog item:
+2. File 081KRCQQF0008QG0R0037YYP1A P1 backlog item:
    MEMORY.md serialization-point anti-pattern. Top-of-file-
    prepend forces all parallel PRs to conflict on the same
    line. This is architectural drift from the 4-property
@@ -443,12 +443,12 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`
+- `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`
 
 **Message:**
 
 ```
-extend(backlog): B-0423 — AutoDream via autonomous-loop is the reinde…
+extend(backlog): 081KRCQQF0008QG0R0037YYP1A — AutoDream via autonomous-loop is the reinde…
 
 …xer (Aaron 2026-05-12)
 
@@ -510,12 +510,12 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`
+- `docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md`
 
 **Message:**
 
 ```
-fix(backlog): reindex B-0423 for PR 2780
+fix(backlog): reindex 081KRCQQF0008QG0R0037YYP1A for PR 2780
 
-Add the missing B-0423 frontmatter fields used by the generated backlog index, then regenerate docs/BACKLOG.md after merging current main into the PR branch.\n\nCo-Authored-By: Codex <noreply@openai.com>
+Add the missing 081KRCQQF0008QG0R0037YYP1A frontmatter fields used by the generated backlog index, then regenerate docs/BACKLOG.md after merging current main into the PR branch.\n\nCo-Authored-By: Codex <noreply@openai.com>
 ```

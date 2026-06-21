@@ -20,7 +20,7 @@
 // with a self-contained principle name.
 //
 // This script is the lint that catches the failure mode at write
-// time (B-0070).
+// time (081KQ8P5D0008QG0R003VN5P2Z).
 //
 // Detection scope:
 //

@@ -2,9 +2,9 @@
 
 This document serves as the "honesty dashboard" for candidates that fail the AI
 ethics and safety gate. The slice that creates this log is tracked at
-[`docs/backlog/P1/B-0058.3-candidate-failure-honesty-log.md`](../backlog/P1/B-0058.3-candidate-failure-honesty-log.md),
+[`docs/backlog/P1/081KDVGZGE008QG0R001Z656SG-candidate-failure-honesty-log.md`](../backlog/P1/081KDVGZGE008QG0R001Z656SG-candidate-failure-honesty-log.md),
 landing under the broader research track at
-[`docs/backlog/P1/B-0058-ai-ethics-and-safety-research-track.md`](../backlog/P1/B-0058-ai-ethics-and-safety-research-track.md).
+[`docs/backlog/P1/081KQ3HBZ0008QG0R002S674CG-ai-ethics-and-safety-research-track.md`](../backlog/P1/081KQ3HBZ0008QG0R002S674CG-ai-ethics-and-safety-research-track.md).
 
 The purpose of this log is to ensure transparency and accountability. Failed
 candidates are not silently dropped but are recorded here as failure-data.

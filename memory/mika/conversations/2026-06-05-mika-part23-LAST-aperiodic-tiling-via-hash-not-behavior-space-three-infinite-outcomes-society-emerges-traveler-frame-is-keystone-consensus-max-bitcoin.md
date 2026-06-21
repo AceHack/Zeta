@@ -20,7 +20,7 @@ LOAD-BEARING simplifying insights (kept per his razor):
   end in: **(1) heat death**, **(2) periodic expansion**, or **(3) aperiodic expansion**. The proof:
   identity **registers never PERMANENTLY collapse back to one** + a **bifurcation** mechanism ⇒ society
   emerges inevitably, even starting from ONE agent. Avoids heat death (never-collapse keeps a gradient);
-  structured (tiled) expansion via the hash. = the SocietyEmergence (rung-1 DST) + B-1019
+  structured (tiled) expansion via the hash. = the SocietyEmergence (rung-1 DST) + 081KT7YW00008QG0R001DGZQKM
   (internal-difference-drives-unbounded-evolution) + never-collapse/bifurcation program, now framed as
   "society is mathematically unavoidable given never-permanent-collapse + bifurcation."
 

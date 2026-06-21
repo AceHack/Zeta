@@ -1,6 +1,5 @@
 ---
-id: B-0570
-zetaid: 081KRQ1AB0008QG0R002422Z9Q
+id: 081KRQ1AB0008QG0R002422Z9Q
 priority: P1
 status: open
 title: "Scarcity tracker — surface limited shared resources (GitHub API GraphQL/REST, runner minutes, etc.) and inform agent disciplines"
@@ -37,7 +36,7 @@ A substrate component that:
 
 1. **Inventories** known scarce resources (GraphQL/REST budgets, runner minutes, etc.)
 2. **Polls** each resource periodically to surface remaining budget + reset time
-3. **Publishes** state via bus (B-0400) so all agents can read without each polling separately
+3. **Publishes** state via bus (081KR7JY10008QG0R000R503K2) so all agents can read without each polling separately
 4. **Informs** agent-side disciplines (defer / switch surface / wait)
 5. (Optional, future) **Enforces** pre-call budget checks that abort or queue if remaining < threshold
 
@@ -123,16 +122,16 @@ async function publishIfChanged(prev: ScarcityState | null, current: ScarcitySta
 |-------|-------------|--------|
 | 1 | Skeleton — `scarcity-tracker.ts` with no-op poll | open |
 | 2 | Real polling — `gh api rate_limit` integration; returns ScarcityState | open |
-| 3 | Bus-publish wiring — `scarcity-state` topic per B-0400 | open |
+| 3 | Bus-publish wiring — `scarcity-state` topic per 081KR7JY10008QG0R000R503K2 | open |
 | 4 | Change-detection — only publish on material delta | open |
 | 5 | Agent-side discipline rule — `scarcity-aware-api-budget.md` (defer/switch/wait) | open |
 | 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | open |
 
 ## Composes with
 
-- B-0400 (bus protocol — transport for `scarcity-state` envelopes)
-- B-0440 (Standing-by detector — "rate-limit-wait" IS a real-named-dep, not Standing-by)
-- B-0441 (Backlog-ready notifier — sibling background service pattern)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — transport for `scarcity-state` envelopes)
+- 081KRFA460008QG0R001KC0VBH (Standing-by detector — "rate-limit-wait" IS a real-named-dep, not Standing-by)
+- 081KRFA460008QG0R00229616S (Backlog-ready notifier — sibling background service pattern)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (rate-limit-wait composes; THIS session's "real-dep-wait on graphql reset" is canonical example)
 - `.claude/rules/bandwidth-served-falsifier.md` (scarcity tracking IS bandwidth engineering at API-call scope)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (scarce resources are stable hubs; their per-tick state is a satellite — DV2.0 partition applies)
@@ -157,15 +156,15 @@ Tracker = visibility. Mitigations = expanding the pools. They compose:
 
 | Axis | Effect | Effort | Trade-off | Sibling row |
 |---|---|---|---|---|
-| **GitHub App for factory automation** | Separate rate-limit pool from human-user accounts; clean `[bot]` attribution; designed for automation | M (setup once; agents auth via app installation token) | Permissions config needed; PRs show as bot identity | B-0571 |
+| **GitHub App for factory automation** | Separate rate-limit pool from human-user accounts; clean `[bot]` attribution; designed for automation | M (setup once; agents auth via app installation token) | Permissions config needed; PRs show as bot identity | 081KRQ1AB0008QG0R0038VQJZ0 |
 | **Add user accounts (e.g., Addison's GitHub)** | +5000/hr GraphQL + 5000/hr REST per added account; linear scaling | S each (`gh auth login`); ongoing per-account management | Identity attribution muddied across human members; ethical questions for non-engaged family/friends | (no row — discretionary case-by-case) |
-| **Verify LFG GitHub tier** | If GitHub Enterprise Cloud (or upgrade to it), per-user limit jumps 5000/hr → 15000/hr (3×) | XS (just check current tier) | None if already on Enterprise; cost if requires upgrade decision | B-0572 |
+| **Verify LFG GitHub tier** | If GitHub Enterprise Cloud (or upgrade to it), per-user limit jumps 5000/hr → 15000/hr (3×) | XS (just check current tier) | None if already on Enterprise; cost if requires upgrade decision | 081KRQ1AB0008QG0R000GZEMCR |
 
 The scarcity tracker (this row) is the **visibility layer**: surfaces budget state so agents know to defer / switch surface / wait. Mitigations are **capacity** changes: expand the pool the tracker measures. Both are needed for the full picture.
 
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing scarcity tracker in `tools/bg/`; related is `backlog-ready-notifier.ts` which detects agent-side queue state (different scope)
-- [x] Dependency proof: B-0400 bus protocol exists and is in use by `backlog-ready-notifier.ts` (proven pattern)
+- [x] Dependency proof: 081KR7JY10008QG0R000R503K2 bus protocol exists and is in use by `backlog-ready-notifier.ts` (proven pattern)
 - [ ] Empirical: confirmed via 2026-05-16 session that GraphQL saturation is a real ~13-min wait — documented in this row's Origin section
 - [ ] Decomposition: 6 slices identified above

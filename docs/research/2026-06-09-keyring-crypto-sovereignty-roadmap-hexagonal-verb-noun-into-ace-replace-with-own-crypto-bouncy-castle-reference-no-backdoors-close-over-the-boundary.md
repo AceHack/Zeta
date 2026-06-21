@@ -93,4 +93,4 @@ Bouncy Castle (Legion of the Bouncy Castle); supply-chain backdoors (xz/liblzma
 CVE-2024-3094, SolarWinds; Aaron's Itron supply-chain lesson); `close over` /
 Markov-boundary substitution; BP-16 cross-check (two independent oracles); the
 keyring byte-lock (`golden-vectors-keyring.json`) + `no-binary-in-proof-lineage`;
-`ace` (B-0288); the verb-noun-seam + globals-as-tensors docs.
+`ace` (081KR2E4K0008QG0R002YE3MMD); the verb-noun-seam + globals-as-tensors docs.

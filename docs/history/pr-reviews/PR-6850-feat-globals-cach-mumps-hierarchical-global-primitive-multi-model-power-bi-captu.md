@@ -34,7 +34,7 @@ multidimensional GLOBALS (MUMPS, 1966) + multi-model-over-one-store, which maps 
 / many-projections theme.
 
 First code slice: Globals — a sparse subscript-path tree with the canonical MUMPS verbs (set/get/kill/
-data/nextChild=$ORDER/nextNode=$QUERY), pure/immutable, ordinal subscript collation (B-0969; F#
+data/nextChild=$ORDER/nextNode=$QUERY), pure/immutable, ordinal subscript collation (081KT07NV0008QG0R001YDB73K; F#
 string comparison is CompareOrdinal so the sorted path map is ordinal-safe by construction). 6 tests.
 Multi-model views, F#-typed access, globals-over-the-content-addressed-DAG layer on later (backlog).
 

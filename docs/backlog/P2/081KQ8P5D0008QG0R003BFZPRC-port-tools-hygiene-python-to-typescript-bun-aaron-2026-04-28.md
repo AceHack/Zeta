@@ -1,6 +1,5 @@
 ---
-id: B-0086
-zetaid: 081KQ8P5D0008QG0R003BFZPRC
+id: 081KQ8P5D0008QG0R003BFZPRC
 priority: P2
 status: closed
 title: Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)
@@ -18,7 +17,7 @@ tags: [aaron-2026-04-28, typescript, bun, factory-default, language-discipline, 
 type: friction-reducer
 ---
 
-# B-0086 — Port `tools/hygiene/` Python scripts to TypeScript/Bun
+# 081KQ8P5D0008QG0R003BFZPRC — Port `tools/hygiene/` Python scripts to TypeScript/Bun
 
 ## Source
 
@@ -99,7 +98,7 @@ Triggering events that make it "make sense":
 - `tools/invariant-substrates/tally.ts` — the existing TypeScript
   pattern to mirror.
 - `package.json` — root scripts entry point + `bun@1.3.13` pin.
-- B-0061 (per-row backlog migration) — same shape of "incremental
+- 081KQ8P5D0008QG0R001BH93SA (per-row backlog migration) — same shape of "incremental
   migration with discipline applied to NEW work + opportunistic
   port on existing".
 
@@ -133,7 +132,7 @@ When picking this up:
 
 Prior-art-search on 2026-05-10 found:
 
-- Commit `40344c9b` (PR #849, merged 2026-04-29): *"ts(B-0086): port
+- Commit `40344c9b` (PR #849, merged 2026-04-29): *"ts(081KQ8P5D0008QG0R003BFZPRC): port
   tools/hygiene Python → TypeScript on Bun (idiomatic, lint-clean,
   equivalence-verified)"*
 

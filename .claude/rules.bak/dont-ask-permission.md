@@ -57,7 +57,7 @@ capabilities carry no marginal cost → broad auth; paid surfaces spend real mon
 the reserved gate.
 
 **Still gated (the complete set):** budget-increase; permanent/forever WONT-DO;
-HARD LIMITS (`methodology-hard-limits`); kid-safety floor (B-0926); force-push/
+HARD LIMITS (`methodology-hard-limits`); kid-safety floor (081KSRGFP0008QG0R00091PP56); force-push/
 irreversible git confirm (`force-push-with-lease-authorization-policy`); **large
 external-repo changes** (Aaron-or-Max review-first — see "External-repo
 contributions" below; small external PRs stay ungated). The broad grant operates
@@ -76,7 +76,7 @@ authority is the anti-autonomy failure the operator is correcting.
 ## External-repo contributions — small ungated, large review-first (operator 2026-05-31)
 
 The broad standing authority extends to contributing back to **external /
-dependent repos** (the good-citizen / not-take-only posture; B-0952), with one
+dependent repos** (the good-citizen / not-take-only posture; 081KSXN940008QG0R002528JS9), with one
 size gate (operator 2026-05-31, verbatim):
 
 > *"ai agents are free to make small prs on any of our dependent repos always no
@@ -93,14 +93,14 @@ reversible (closeable) on *our* side, so by `non-reversible-action-get-a-second-
 opinion` it would normally be ungated. But it touches *someone else's* repo +
 reputation/relationship surface — a large drive-by PR can cost the relationship
 the good-citizen strategy is trying to build. The size gate protects the *external
-relationship*, which is the actual scarce resource (B-0952 small-first
+relationship*, which is the actual scarce resource (081KSXN940008QG0R002528JS9 small-first
 trust-building). Small = relationship-positive by default; large = relationship-
 stakes high enough to warrant a human's eyes first.
 
 **If unsure whether a change is "small":** treat it as large (review-first). The
 gate is cheap; a botched first impression on a maintainer is not.
 
-Composes with: B-0952 (contribute-back DORA metrics + small-first strategy),
+Composes with: 081KSXN940008QG0R002528JS9 (contribute-back DORA metrics + small-first strategy),
 `honor-those-that-came-before`, `bcl-interface-boundary-own-your-interfaces-
 hexagonal` (contribute-upstream clause), `non-reversible-action-get-a-second-
 opinion` (this is the external-relationship analog of its second-opinion gate),

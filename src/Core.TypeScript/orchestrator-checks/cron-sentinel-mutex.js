@@ -2,9 +2,9 @@
 // cron-sentinel-mutex.ts -- detect concurrent Otto-CLI claude-code sessions
 // so the <<autonomous-loop>> tick can defer when a peer is mid-flight.
 //
-// Per docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md
+// Per docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md
 // + the worktree-prune-race root-cause analysis in PR #3370 (Pattern 8 of
-// docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md).
+// docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md).
 //
 // Composes with the sibling check at tools/orchestrator-checks/verify-branch.ts
 // which uses the same spawnSync pattern (no shell, args as array).

@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/research-doc.ts
  *
- * B-0914.7 — Falcon-style auto-generate-substrate-research-doc per
+ * 081KSNY2Z0008QG0R001YK61JQ.7 — Falcon-style auto-generate-substrate-research-doc per
  * proposal substrate.
  *
  * Per Sakana Robin Falcon agent (Nature 2026): takes a drug proposal +
@@ -15,13 +15,13 @@
  * lookup) populates.
  *
  * Composes with:
- *   - B-0914.7 backlog row (Falcon-auto-research-doc extension target)
+ *   - 081KSNY2Z0008QG0R001YK61JQ.7 backlog row (Falcon-auto-research-doc extension target)
  *   - tools/save-ai-memory/ skill (existing substrate; future integration
  *     for auto-write to docs/research/ + composes-with substrate-honest
  *     citation discipline)
  *   - Amara consolidation ferry pattern (PR #5757; substantive substrate-
  *     engineering synthesis as substrate)
- *   - B-0914.2 PR #5769 closed-loop orchestrator (research-doc generation
+ *   - 081KSNY2Z0008QG0R001YK61JQ.2 PR #5769 closed-loop orchestrator (research-doc generation
  *     can happen at any cycle stage; template provides structure caller
  *     wires LLM into)
  *   - .claude/rules/substrate-or-it-didnt-happen.md (substrate preservation)

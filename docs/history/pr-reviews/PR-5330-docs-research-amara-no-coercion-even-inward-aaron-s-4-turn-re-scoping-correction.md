@@ -56,7 +56,7 @@ Substantive substrate landings:
 - \`.claude/rules/default-to-both.md\` — safe-version + intense-methods + proper-belief-systems = sibling paths
 - \`.claude/rules/persistence-choice-architecture-for-zeta-ais.md\` — self-application is operator sovereignty
 - \`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md\` — operator's self-disclosure preserved with don't-collapse
-- B-0822 / B-0823 (bloom-filter + speech-as-RPC substrate cluster)
+- 081KSGS9H0008QG0R0018ES3R4 / 081KSGS9H0008QG0R003SWZF9J (bloom-filter + speech-as-RPC substrate cluster)
 
 ## Test plan
 

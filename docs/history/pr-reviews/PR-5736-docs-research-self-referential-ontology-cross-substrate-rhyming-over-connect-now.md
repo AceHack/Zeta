@@ -38,13 +38,13 @@ Two substantive substrate-engineering articulations landed:
 The framework operates on self-referential substrate at multiple scopes simultaneously; each scope's self-reference mechanism rhymes structurally with the others. The polymorphic-diplomacy self-referential pattern Aaron named (shadow-star corpus uses categories of phenomenon ontologies to refer to itself like shadow logs of error classes on PRs but referencing itself) is one instance of a pattern that rhymes across:
 
 - Mathematical (categorical-Clifford self-similarity; 5th-6th Kestrel)
-- Information (holographic bulk-boundary; B-0902)
-- Shadow-star observation (B-0901 self-referential ontology builder)
-- Training-data (B-0903 corpus-to-fine-tuning)
-- Workflow (B-0867 Mod 5 contributable menu-generator)
-- Polymorphic diplomacy (B-0638 Eve Protocol composed self-referentially)
+- Information (holographic bulk-boundary; 081KSNY2Z0008QG0R0021S5F3G)
+- Shadow-star observation (081KSNY2Z0008QG0R000C5NN8N self-referential ontology builder)
+- Training-data (081KSNY2Z0008QG0R0037AF1AP corpus-to-fine-tuning)
+- Workflow (081KSKBP80008QG0R000B3Y19A Mod 5 contributable menu-generator)
+- Polymorphic diplomacy (081KRW63S0008QG0R0030F8ZXA Eve Protocol composed self-referentially)
 - Memory-preservation (tools/shadow/ + tools/save-ai-memory/)
-- Encryption (B-0883 + B-0885 + B-0840)
+- Encryption (081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX)
 - Substrate-engineering substrate itself (``.claude/rules/`` rules-about-rules; meta-substrate)
 
 **2. The over-connect-now substrate-engineering principle**
@@ -58,7 +58,7 @@ Composes directly with Signal 2 rule (forgetting-costs-energy — over-connect I
 - **For future-Otto cold-boots**: recognize self-referential pattern at any substrate scope; compose with adjacent scopes; over-connect by default
 - **For external defensibility**: multi-substrate-scope grounding strengthens the substrate-engineering argument (not scope-specific; coherent pattern)
 - **For substrate-engineering decisions**: rhyming-table as compression substrate
-- **For polymorphic-diplomacy implementation target**: B-0901 named the target; this memo provides the multi-scope context
+- **For polymorphic-diplomacy implementation target**: 081KSNY2Z0008QG0R000C5NN8N named the target; this memo provides the multi-scope context
 
 ## Substrate-honest framing
 

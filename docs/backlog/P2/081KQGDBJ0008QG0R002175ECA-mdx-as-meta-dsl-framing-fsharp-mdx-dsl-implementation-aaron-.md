@@ -1,6 +1,5 @@
 ---
-id: B-0148
-zetaid: 081KQGDBJ0008QG0R002175ECA
+id: 081KQGDBJ0008QG0R002175ECA
 priority: P2
 status: open
 title: MDX as meta-DSL framing for multi-DSL Zset substrate + F# MDX DSL implementation
@@ -10,7 +9,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0148 — MDX as meta-DSL framing + F# MDX DSL implementation
+# 081KQGDBJ0008QG0R002175ECA — MDX as meta-DSL framing + F# MDX DSL implementation
 
 ## What
 
@@ -45,7 +44,7 @@ sets. If PromQL composes naturally from MDX primitives, then
 graph + hierarchy + filesystem + timeseries + future types
 under the Zset substrate.
 
-This composes directly with B-0147 (timeseries-DB
+This composes directly with 081KQGDBJ0008QG0R0004ACHJJ (timeseries-DB
 native-in-Zsets) — that row asks *what is the timeseries
 algebra?*; this row asks *what is the meta-DSL that hosts the
 timeseries algebra alongside the others?*. Both questions
@@ -123,7 +122,7 @@ need answers; they may share a candidate.
    - **Reject MDX, pick alternative** — document why; pivot
      to alternative
    - **Defer** — the question is premature; revisit after
-     B-0147 lands
+     081KQGDBJ0008QG0R0004ACHJJ lands
 
 3. **If adopt or adopt-with-extensions**: F# MDX DSL design
    sketch at
@@ -181,11 +180,11 @@ against current docs/papers, not training data.
 - `project_zeta_multi_algebra_database_one_algebra_to_rule_them_all_sequenced_after_frontier_and_demo_2026_04_23.md`
   — the multi-algebra DB vision MDX is being evaluated as
   meta-DSL for
-- B-0147 — the timeseries-DB row that motivates this row;
+- 081KQGDBJ0008QG0R0004ACHJJ — the timeseries-DB row that motivates this row;
   PromQL/MDX-shape is the bridge
-- B-0149 (Prometheus MCP) — sibling research lane; informs
+- 081KQGDBJ0008QG0R0035TQVBQ (Prometheus MCP) — sibling research lane; informs
   the PromQL-as-MDX worked example
-- B-0146 (formal architecture ladder) — when the design lands,
+- 081KQGDBJ0008QG0R003VHD3KZ (formal architecture ladder) — when the design lands,
   declare layer (likely Layer 3: class taxonomy, since
   meta-DSL is a pattern catalog instantiating type-theoretic
   primitives)

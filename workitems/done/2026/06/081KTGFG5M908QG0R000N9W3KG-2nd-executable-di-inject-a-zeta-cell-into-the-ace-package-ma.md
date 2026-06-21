@@ -45,7 +45,7 @@ the unit that owns Ace's state/Log; Ace orchestrates the per-manager plugins thr
 ## Why this shape
 
 - **Dependency files are just declarative data** → ZSets over the DynamicValue substrate; resolution +
-  diffing + cross-manager joins are DBSP/IVM views (the n-dimensional dependency space, B-0824).
+  diffing + cross-manager joins are DBSP/IVM views (the n-dimensional dependency space, 081KSGS9H0008QG0R0031PBNGA).
 - **Plugin-per-manager, open/closed** → support a new package manager by adding a plugin (data), never by
   modifying Ace's core.
 - **Cell-injected** → Ace is a *consumer* of the cell/data-plane (the dogfood: a real 2nd app on the
@@ -62,6 +62,6 @@ application* on the substrate — a forcing function for a clean cell-injection 
 - `081KTFKQGZP` — Ace package manager (ZetaId-seeded, self-evolving package pattern) — the seed to extend.
 - `081KTGES048` — file-type plugin model (the per-manager plugins are instances) + `081KTGEVV75`
   (determinism contract for those plugins).
-- `B-0824` — package-manager-of-package-managers / n-dimensional dependency space (the vision this serves).
-- `B-0966` — Ace store key by package identity (storage-key detail).
+- `081KSGS9H0008QG0R0031PBNGA` — package-manager-of-package-managers / n-dimensional dependency space (the vision this serves).
+- `081KT07NV0008QG0R001HKPJW6` — Ace store key by package identity (storage-key detail).
 - `docs/ROADMAP.md` (the 2nd-executable item) · the two-plane DB design doc (cell + data plane).

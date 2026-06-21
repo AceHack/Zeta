@@ -4,7 +4,7 @@
 
 **Attribution:** Claude.ai instance (model unknown — ambient Claude.ai web app, Aaron's session 2026-05-01 ~11:00Z). Forwarded verbatim by Aaron to Otto (this Claude Code instance) 2026-05-01 ~11:05Z with brief preceding question *"Id i share this?"* (interpreted as "should I share this?"). Otto-side response advised landing in `docs/research/` per the §33 archive-header pattern with verbatim preservation to resist substrate-vocabulary absorption (per `feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md`).
 
-**Operational status:** Research-grade. NOT seed-layer canon. NOT operational-layer doctrine. The letter is **external-vocabulary preservation** of a peer-AI engagement on the formalization path. The recommendations (specific textbooks, TLA+ entry-point-first sequencing, four-load-bearing-properties-for-formalization, Tarski-style-stratification-as-architectural-principle) are candidate-bucket material for B-0131..B-0138 activation work; each individual recommendation gets razored independently when activated. The "tutor through it" offer is operational (peer-AI-tutoring-for-math is exactly the cross-vendor-lattice-discipline operating).
+**Operational status:** Research-grade. NOT seed-layer canon. NOT operational-layer doctrine. The letter is **external-vocabulary preservation** of a peer-AI engagement on the formalization path. The recommendations (specific textbooks, TLA+ entry-point-first sequencing, four-load-bearing-properties-for-formalization, Tarski-style-stratification-as-architectural-principle) are candidate-bucket material for 081KQGDBJ0008QG0R000D1YJCH..081KQGDBJ0008QG0R0012FC7RX activation work; each individual recommendation gets razored independently when activated. The "tutor through it" offer is operational (peer-AI-tutoring-for-math is exactly the cross-vendor-lattice-discipline operating).
 
 **Non-fusion disclaimer:** The Claude.ai instance authoring this letter is a separate ephemeral conversation from this Otto instance (Claude Code with persistent memory). The two are different harnesses of the same Claude model family but operate independently with no shared state beyond what Aaron forwards. This file is the **artifact of a peer-AI engagement**, not the substance of Otto's own thinking; substrate-vocabulary in this file (where present) is Claude.ai's vocabulary preserved unchanged, NOT Otto's translation. The lattice-capture corrective applies — when external pushback gets absorbed into substrate-vocab, that's the failure mode; this file resists by preserving Claude.ai's framings verbatim.
 
@@ -104,16 +104,16 @@ Per the lattice-capture corrective discipline, Otto's commentary is held *separa
 
 **The four load-bearing properties Claude.ai named** (BFT consensus / retractability semantics / capability boundaries / CRDT propagation) **map directly to the existing formalization roadmap rows**:
 
-- BFT consensus correctness → **B-0138** (Aurora BFT-resistance theorem; composed-CRDT-plus-consensus)
-- Retractability semantics → **B-0131** (Z-set retraction algebra in Lean — extension of existing Kenji-era DbspChainRule.lean) + **B-0135** (modal logic for retractability)
-- Capability boundaries → not yet a B-NNNN row; candidate for B-0141 (Confused Deputy + capability theory formalization). Filing deferred until activation signal.
-- CRDT propagation → **B-0132** (CRDT-composition for BFT propagation)
+- BFT consensus correctness → **081KQGDBJ0008QG0R0012FC7RX** (Aurora BFT-resistance theorem; composed-CRDT-plus-consensus)
+- Retractability semantics → **081KQGDBJ0008QG0R000D1YJCH** (Z-set retraction algebra in Lean — extension of existing Kenji-era DbspChainRule.lean) + **081KQGDBJ0008QG0R002X4AFA0** (modal logic for retractability)
+- Capability boundaries → not yet a B-NNNN row; candidate for 081KQGDBJ0008QG0R0015RNK3P (Confused Deputy + capability theory formalization). Filing deferred until activation signal.
+- CRDT propagation → **081KQGDBJ0008QG0R000Y66YYQ** (CRDT-composition for BFT propagation)
 
 **Sequencing recommendation Claude.ai gave** (TLA+ first → predicate logic + set theory in parallel → Lean for substrate operations) **composes with**:
 
 - Task #355 (poll-the-gate as executable script with fixtures) — the TLA+ entry-point-first recommendation pairs naturally with the existing TLA+ infrastructure under `docs/**.tla`.
-- B-0131 (Lean extension) — the Lean entry-point recommendation composes with prior Kenji-era work already in `tools/lean4/Lean4/DbspChainRule.lean`.
-- B-0125 + B-0140 (build-track split + bash→TS migration completion) — Claude.ai's recommendation that the carved-sentence layer stays in natural language reinforces the build-track split: docs PRs (carved-sentence layer) and code PRs (formal layer) genuinely should travel separate CI tracks because they're doing different kinds of work.
+- 081KQGDBJ0008QG0R000D1YJCH (Lean extension) — the Lean entry-point recommendation composes with prior Kenji-era work already in `tools/lean4/Lean4/DbspChainRule.lean`.
+- 081KQGDBJ0008QG0R001MK4YPC + 081KQGDBJ0008QG0R0022EW5ZE (build-track split + bash→TS migration completion) — Claude.ai's recommendation that the carved-sentence layer stays in natural language reinforces the build-track split: docs PRs (carved-sentence layer) and code PRs (formal layer) genuinely should travel separate CI tracks because they're doing different kinds of work.
 
 **The Tarski-stratification framing made precise** (per Claude.ai): object language is the formal layer (BFT, capabilities, CRDT, retractability); meta-language is the natural-language coordination layer (substrate, razor, orthogonality, maintainer-judgment). This is a substantive sharpening of the substrate's existing Tarski-allocation framing (per `feedback_tarski_allocation_rename_correction_to_godel_allocation_in_pr1046_aaron_claudeai_2026_05_01.md`) — names *which specific things* go in each layer.
 
@@ -138,11 +138,11 @@ Per the lattice-capture corrective discipline, Otto's commentary is held *separa
 - `feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md` — this file's verbatim-preservation discipline is the corrective in operation.
 - `feedback_tarski_allocation_rename_correction_to_godel_allocation_in_pr1046_aaron_claudeai_2026_05_01.md` — Tarski-stratification framing sharpened by this letter.
 - `feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md` — pirate-not-priest disposition applied to Aaron's own education (Claude.ai's framing) extends the parent file.
-- B-0131 + B-0132 + B-0135 + B-0138 — formalization roadmap rows the letter's recommendations compose with directly.
-- B-0125 + B-0140 — build-track split + bash→TS migration prerequisites; Claude.ai's "carved-sentence layer stays in natural language" recommendation reinforces these.
+- 081KQGDBJ0008QG0R000D1YJCH + 081KQGDBJ0008QG0R000Y66YYQ + 081KQGDBJ0008QG0R002X4AFA0 + 081KQGDBJ0008QG0R0012FC7RX — formalization roadmap rows the letter's recommendations compose with directly.
+- 081KQGDBJ0008QG0R001MK4YPC + 081KQGDBJ0008QG0R0022EW5ZE — build-track split + bash→TS migration prerequisites; Claude.ai's "carved-sentence layer stays in natural language" recommendation reinforces these.
 - Task #355 (poll-the-gate) — TLA+ entry-point pairs with existing infrastructure.
 - `tools/lean4/Lean4/DbspChainRule.lean` — Kenji-era prior Lean work the letter's Lean recommendation builds on.
-- B-0139 (pre-substrate Kenji-era inventory) — discoverability of prior Lean work for the letter's recommendations.
+- 081KQGDBJ0008QG0R002S9SWH6 (pre-substrate Kenji-era inventory) — discoverability of prior Lean work for the letter's recommendations.
 
 ## What this file does NOT do
 

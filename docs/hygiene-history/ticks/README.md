@@ -79,7 +79,7 @@ and `HH:MM:SSZ` forms are accepted in the timestamp column.
 
 ### Hybrid format (preferred for rich shards)
 
-Per the B-0529 Recommendation (Option 3 "hybrid"), the canonical
+Per the 081KRMEXM0008QG0R002HBY56V Recommendation (Option 3 "hybrid"), the canonical
 shard shape is **the pipe-row first line followed by an H1-rich
 Markdown body**. The pipe-row gives machine-parseable metadata
 (satisfies the validator + future shard-collation projector); the
@@ -108,7 +108,7 @@ legacy table on cadence; until that lands, the legacy table is
 the authoritative read surface and shards are the authoritative
 write surface — both are canonical.
 
-### Optional body metadata (B-0308 and related)
+### Optional body metadata (081KR2E4K0008QG0R002S3FDXN and related)
 
 The pipe-row remains canonical and MUST be the first non-empty
 line; the validator inspects only that line. Optional structured
@@ -126,13 +126,13 @@ block placed below the pipe-row and H1:
 tick: "<ISO 8601 UTC timestamp>"
 agent: otto        # or vera, kenji, etc.
 mode: autonomous   # or interactive
-operative-authorization: "<source> <date>: \"<raw>\""  # B-0308
+operative-authorization: "<source> <date>: \"<raw>\""  # 081KR2E4K0008QG0R002S3FDXN
 ```
 
 <rich body content here>
 ````
 
-The `operative-authorization` field (B-0308) is populated by
+The `operative-authorization` field (081KR2E4K0008QG0R002S3FDXN) is populated by
 `bun tools/authorization/check-authorization.ts` at tick start.
 Format: `formatShardField()` output from that tool. If the
 check is not available, use `"none — never-idle default"`.
@@ -296,7 +296,7 @@ in addition to (not instead of) the normal tick shard here.
 
 Both surfaces are canonical write surfaces; neither replaces the other.
 See: `docs/hygiene-history/divergences/README.md` for the divergence shard
-schema and reconciliation protocol (B-0164 AC #4, 2026-05-10).
+schema and reconciliation protocol (081KQJZR90008QG0R002GJAJ19 AC #4, 2026-05-10).
 
 ## Migration of historical content
 

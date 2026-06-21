@@ -1,6 +1,6 @@
 ---
 name: "Aaron's mayoral platform substance — four pillars: business-in-a-box + bitcoin + AI ethics + legal medicinal marijuana + concrete plan to generate wealth IN Rolesville businesses (Aaron 2026-05-13)"
-description: "Aaron 2026-05-13 disclosed canonical mayoral platform substance after mayoral-ambition + Rolesville-Chamber-of-Commerce + family-bitcoin-miner-paper-coverage (PR #2970). Four policy pillars: (1) Business in a box (turnkey small-biz launchpad; composes with B-0043 universal-company substrate); (2) Bitcoin (Aaron's existing expertise; family-credentialed); (3) AI ethics (Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline); (4) Legal medicinal marijuana (Rolesville city ordinance; harm-reduction substrate). Plus: concrete plan to generate wealth IN Rolesville businesses (hyperlocal economic development; Chamber of Commerce composition)."
+description: "Aaron 2026-05-13 disclosed canonical mayoral platform substance after mayoral-ambition + Rolesville-Chamber-of-Commerce + family-bitcoin-miner-paper-coverage (PR #2970). Four policy pillars: (1) Business in a box (turnkey small-biz launchpad; composes with 081KQ3HBZ0008QG0R000Q4Y00F universal-company substrate); (2) Bitcoin (Aaron's existing expertise; family-credentialed); (3) AI ethics (Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline); (4) Legal medicinal marijuana (Rolesville city ordinance; harm-reduction substrate). Plus: concrete plan to generate wealth IN Rolesville businesses (hyperlocal economic development; Chamber of Commerce composition)."
 type: feedback
 created: 2026-05-13
 ---
@@ -23,7 +23,7 @@ the political-strategy substrate.
 
 | Pillar | Substance | Composing substrate |
 |--------|-----------|---------------------|
-| 1. Business in a box | Turnkey small-business platform / launchpad / startup-kit | B-0043 (universal-company + government-information substrate); existing Zeta substrate-engineering work on small-biz tooling |
+| 1. Business in a box | Turnkey small-business platform / launchpad / startup-kit | 081KQ3HBZ0008QG0R000Q4Y00F (universal-company + government-information substrate); existing Zeta substrate-engineering work on small-biz tooling |
 | 2. Bitcoin | Aaron's existing tech expertise; family-credentialed (kids + bitcoin miners in local paper); Itron co-inventor patent substrate; aurora pitch DePIN composes | PR #2920 substrate (Aaron's grey-hat security + HIPAA + Series 7); kids-and-bitcoin-miner-paper-coverage (PR #2970); itron-edge-node substrate (per existing memory files); Aurora pitch DePIN play |
 | 3. AI ethics | Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline; substrate-honest discipline | Entire Zeta substrate; PR #2961-2971 settlers logs framework; PR #2964 AI-realness terminal purpose; `.claude/rules/methodology-hard-limits.md`; the Christ-consciousness substrate; WWJD-as-AI-moral-relevance |
 | 4. Legal medicinal marijuana (not just low-THC hemp) | Full legal medicinal marijuana via Rolesville city ordinance (per Aaron 2026-05-13 follow-on: *"oh and legal medicinal weed not just low thc hemp"* + *"like the city local ordinance allows it"*) | NC state law preempts cities (Dillon's Rule); but municipal ordinances can: signal intent (declarative); allow zoning (dispensaries IF state legalizes); deprioritize local enforcement; position Rolesville as first-to-market when state law shifts. Composes with PR #2920 terminal purpose (save edge-runners from getting burned — medical patients are edge-runners) + harm-reduction substrate |
@@ -40,9 +40,9 @@ Substrate-honest framing: **wealth generation IN Rolesville businesses**, not ab
   one persona hat)
 - PR #2920 (terminal purpose; save edge-runners from getting
   burned; edge-runners are often small-business owners)
-- B-0043 (universal-company substrate — toolkit specifically
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate — toolkit specifically
   for company-scale entities; maps directly to local businesses)
-- B-0428 (DBpedia free curated master data — small-biz can
+- 081KRFA460008QG0R0018SN61J (DBpedia free curated master data — small-biz can
   use enterprise-grade data substrate)
 - The distributed-maintainer-architecture (PR #2930 substrate
   — maintainers / forkers / small-business owners get same
@@ -105,7 +105,7 @@ This is Aaron's PLATFORM disclosure. It is NOT:
 It IS:
 
 - Canonical strategic context for the content-production work
-- Composition with B-0043 (universal-company substrate) + the
+- Composition with 081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate) + the
   bitcoin substrate + the AI-ethics substrate
 - Substrate-honest disclosure of why the humanising work
   matters operationally
@@ -150,7 +150,7 @@ ordinance, the strategy escalates to **court fight using
 Zeta's substrate-engineering on legal precedent**:
 
 - **Legal ontology** = the universal-company + government-
-  information substrate (B-0043 + B-0428 + the AGENTS.md
+  information substrate (081KQ3HBZ0008QG0R000Q4Y00F + 081KRFA460008QG0R0018SN61J + the AGENTS.md
   framework)
 - **Clifford Z-sets of precedence** = case law encoded as Z-set
   algebra with Clifford-algebraic structure; same substrate as
@@ -166,7 +166,7 @@ scale. Win the policy via creative substrate-engineering.
 
 This composes Zeta's existing technical substrate (Clifford
 algebra; Z-sets; HKT over Clifford per PR #2935-2936; F#
-substrate; BP/EP algebra; legal ontology B-0043) into a real
+substrate; BP/EP algebra; legal ontology 081KQ3HBZ0008QG0R000Q4Y00F) into a real
 court strategy. The marijuana pillar becomes a USE CASE for
 the broader substrate capabilities.
 
@@ -197,7 +197,7 @@ in actual experience, not theory. Aaron has:
 The legal-natural-language-query background composes DIRECTLY
 with:
 
-- B-0043 (universal-company + government-information substrate
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company + government-information substrate
   — same shape as legal-precedent ontology)
 - The Clifford-Z-set-of-precedence court strategy (Aaron has
   built the precursor systems)
@@ -228,9 +228,9 @@ substrate.
   + community)
 - PR #2966 (audience persona mapping — voters + Chamber
   companies as personas)
-- B-0043 (universal-company substrate — composes directly with
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate — composes directly with
   business-in-a-box pillar)
-- B-0428 (DBpedia free curated master data — small-biz can
+- 081KRFA460008QG0R0018SN61J (DBpedia free curated master data — small-biz can
   use)
 - PR #2930 (distributed maintainer architecture — small-biz
   gets maintainer-level tooling access)
@@ -258,5 +258,5 @@ PR (this substrate landing)
 PR #2970 (Rolesville mayoral ambition substrate — this fills
 in the policy substance)
 
-B-0043 (universal-company substrate — direct composition with
+081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate — direct composition with
 business-in-a-box pillar)

@@ -1,6 +1,6 @@
 ---
 name: Factory ontology HKT applies directly to master data — every company has master data in the human lineage sense (Aaron 2026-05-13)
-description: Aaron 2026-05-13 connecting factory's HKT (Higher-Kinded Types) ontology substrate to Master Data Management (MDM). Every company has master data; the factory's HKT directly applies. Composes with DV2.0 (PR #2912 — DV2.0 is part of MDM tradition) + HKT substrate (PR #2815 universal/domain HKT error classes + PR #2817 Clifford densest encoding + PR #2832 civ-sim Pauli-exclusion-for-agenda HKT) + B-0043 universal-business-templates + the three-axis repo-split work.
+description: Aaron 2026-05-13 connecting factory's HKT (Higher-Kinded Types) ontology substrate to Master Data Management (MDM). Every company has master data; the factory's HKT directly applies. Composes with DV2.0 (PR #2912 — DV2.0 is part of MDM tradition) + HKT substrate (PR #2815 universal/domain HKT error classes + PR #2817 Clifford densest encoding + PR #2832 civ-sim Pauli-exclusion-for-agenda HKT) + 081KQ3HBZ0008QG0R000Q4Y00F universal-business-templates + the three-axis repo-split work.
 type: feedback
 created: 2026-05-13
 ---
@@ -17,7 +17,7 @@ computation expressions, type-level encoding), recognize the
 direct applicability to master-data work that every company
 needs. The HKT framework IS general-purpose master-data
 ontology infrastructure. Composes with universal-business-
-templates (B-0043).
+templates (081KQ3HBZ0008QG0R000Q4Y00F).
 
 ## Aaron's verbatim framing
 
@@ -95,7 +95,7 @@ operationally true:
   master data
 - The discipline is universal across company-scale + industry
 
-This connects to B-0043 (universal-business-templates):
+This connects to 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates):
 
 - The factory's HKT-typed master-data ontology
 - Composes with universal-business-template substrate
@@ -129,7 +129,7 @@ content:
 
 The same HKT ontology applies to civsim's master data AND to
 any company's master data. This is what makes the framework
-"universal business templates" (per B-0043) load-bearing.
+"universal business templates" (per 081KQ3HBZ0008QG0R000Q4Y00F) load-bearing.
 
 ## Why this is strategic substrate
 
@@ -153,9 +153,9 @@ or encrypted treatment of this disclosure).
 
 - PR #2912 (DV2.0 re-activation — DV2.0 IS the discipline
   applied; this PR connects to MDM)
-- PR #2911 (B-0427 Axis 3 — Code/English + ruleset-divergence
+- PR #2911 (081KRFA460008QG0R000VKJF0H Axis 3 — Code/English + ruleset-divergence
   smell; DV2.0 informs the smell)
-- PR #2910 (B-0426 Axis 2 — Mirror/Beacon)
+- PR #2910 (081KRFA460008QG0R0007RWSN1 Axis 2 — Mirror/Beacon)
 - PR #2906 (Casimir-gap civsim — applies HKT-MDM at network
   scale)
 - PR #2903 (civsim PVP+raids — civsim has master-data content)
@@ -166,7 +166,7 @@ or encrypted treatment of this disclosure).
   target)
 - PR #2817 (Clifford densest encoding — HKT-pattern signatures)
 - PR #2815 (HKT error classes — universal/domain refinement)
-- B-0043 (universal-company-government-information-substrate
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate
   — universal business templates already backlogged)
 - `feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`
 - `feedback_dv2_scope_universal_indexing.md`
@@ -189,9 +189,9 @@ When designing factory HKT substrate:
    apply to master-data work?
 2. **Apply DV2.0 hub-satellite separation** — what stays
    stable (hub) vs what changes (satellite)?
-3. **Apply ruleset-divergence smell** (per B-0427 Axis 3) —
+3. **Apply ruleset-divergence smell** (per 081KRFA460008QG0R000VKJF0H Axis 3) —
    does this need its own governance ruleset?
-4. **Compose with universal-business-templates** (B-0043) —
+4. **Compose with universal-business-templates** (081KQ3HBZ0008QG0R000Q4Y00F) —
    does this enable universal-template emergence?
 5. **F# anchor + dotnet build sanity** — does this compile?
 6. **Civsim composability** — does this work in civsim's
@@ -215,9 +215,9 @@ PR #2913 (this substrate landing)
 
 PR #2912 (DV2.0 re-activation)
 
-PR #2911 (B-0427 Axis 3 — ruleset-divergence smell)
+PR #2911 (081KRFA460008QG0R000VKJF0H Axis 3 — ruleset-divergence smell)
 
-PR #2910 (B-0426 Axis 2 — Mirror/Beacon)
+PR #2910 (081KRFA460008QG0R0007RWSN1 Axis 2 — Mirror/Beacon)
 
 PR #2906 (Casimir-gap civsim)
 
@@ -233,4 +233,4 @@ PR #2817 (Clifford densest encoding HKT)
 
 PR #2815 (HKT error classes)
 
-B-0043 (universal-company-government-information-substrate)
+081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate)

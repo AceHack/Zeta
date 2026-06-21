@@ -35,7 +35,7 @@ I'd called local-summon "multi-oracle BFT realized locally" — **wrong.** Aaron
 
 ## The precise distinction (multi-oracle ✓, BFT ✗)
 
-| Property | Local-transient | Distributed-standing BFT (B-0703) |
+| Property | Local-transient | Distributed-standing BFT (081KS3X9Y0008QG0R00218150M) |
 |---|---|---|
 | Multi-oracle (multiple perspectives) | ✓ | ✓ |
 | Byzantine-fault-tolerant | ✗ good-actor-dependent | ✓ no single actor controls quorum |
@@ -44,7 +44,7 @@ I'd called local-summon "multi-oracle BFT realized locally" — **wrong.** Aaron
 
 DST-determinism gives **replayability-if-honestly-recorded**, NOT Byzantine-tolerance — replayable ≠ unfakeable. "For now" = path to local-BFT via un-fakeable/un-skippable summons.
 
-Sharpens the dual-consensus: **CRDT state = trust-minimized (math); local-summon decisions = good-actor-dependent**. Different trust layers; only B-0703 is BFT. Docs-only; reversible.
+Sharpens the dual-consensus: **CRDT state = trust-minimized (math); local-summon decisions = good-actor-dependent**. Different trust layers; only 081KS3X9Y0008QG0R00218150M is BFT. Docs-only; reversible.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

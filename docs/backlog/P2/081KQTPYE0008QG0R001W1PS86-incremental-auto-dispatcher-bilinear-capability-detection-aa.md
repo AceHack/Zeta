@@ -1,6 +1,5 @@
 ---
-id: B-0194
-zetaid: 081KQTPYE0008QG0R001W1PS86
+id: 081KQTPYE0008QG0R001W1PS86
 priority: P2
 status: open
 title: IncrementalAuto dispatcher + checkBilinear law + capability detection (active-patterns over reflection) -- contract-by-convention gap in the algebra-capability system (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [dbsp, plugin-api, bilinear, capability-detection, active-patterns, fsharp
 type: friction-reducer
 ---
 
-# B-0194 -- IncrementalAuto dispatcher + checkBilinear law + capability detection
+# 081KQTPYE0008QG0R001W1PS86 -- IncrementalAuto dispatcher + checkBilinear law + capability detection
 
 ## What this addresses
 
@@ -67,12 +66,12 @@ This is genuine F# duck-typing-via-reflection territory. SRTP doesn't help (comp
 
 - **Not blocking current shipping**: the contract-by-convention works for current Core plugins because Core authors verify the laws by hand. The gap surfaces when external plugin authors join.
 - **Design decisions involved**: capability-detection-mechanism choice (marker / reflection / active-pattern) is genuinely a design decision Aaron should weigh in on; not a mechanical task.
-- **Composes with research direction**: `B-0189` (Q# / Bayesian BP/EP runtime) would benefit from a robust capability-dispatch infrastructure when plugins beyond Core's catalogue arrive.
+- **Composes with research direction**: `081KQR4HQ0008QG0R002933PRR` (Q# / Bayesian BP/EP runtime) would benefit from a robust capability-dispatch infrastructure when plugins beyond Core's catalogue arrive.
 
 ## Why not P1
 
 - **Current Core plugin set is small + author-verified by hand**: no observed correctness failure has fired from the gap.
-- **Could be P3**: arguable. Filing P2 because the analysis is fresh and the Q#/Bayesian work (B-0189) is in flight; doing this work soon while the analysis is loaded saves cold-start cost later.
+- **Could be P3**: arguable. Filing P2 because the analysis is fresh and the Q#/Bayesian work (081KQR4HQ0008QG0R002933PRR) is in flight; doing this work soon while the analysis is loaded saves cold-start cost later.
 
 ## Out of scope
 
@@ -86,9 +85,9 @@ This is genuine F# duck-typing-via-reflection territory. SRTP doesn't help (comp
 
 ## Composes with
 
-- **B-0140** (TS+Bun migration) -- not blocking, but the same standardization-of-internal-tooling discipline.
-- **B-0156** (TS standardization sister of memory-format-standardization) -- same shape: contract-by-convention -> mechanically-verified.
-- **B-0189** (Q# Bayesian BP/EP runtime research) -- the consumer of capability-dispatched plugins.
+- **081KQGDBJ0008QG0R0022EW5ZE** (TS+Bun migration) -- not blocking, but the same standardization-of-internal-tooling discipline.
+- **081KQGDBJ0008QG0R000A4EZS5** (TS standardization sister of memory-format-standardization) -- same shape: contract-by-convention -> mechanically-verified.
+- **081KQR4HQ0008QG0R002933PRR** (Q# Bayesian BP/EP runtime research) -- the consumer of capability-dispatched plugins.
 - `src/Core/PluginApi.fs:103-132` -- the four capability interfaces this row's dispatcher consumes.
 - `src/Core/Incremental.fs` -- the existing linear / bilinear / D∘Q∘I rewrites the dispatcher picks among.
 - `src/Core/LawRunner.fs` -- where `LinearLaw` lives; `checkBilinear` lands alongside.

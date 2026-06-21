@@ -1,4 +1,4 @@
-# OTel / Kubernetes / Argo / Prometheus / Git as lightlike-observability substrate — Amara operational mapping + light-carrier join keys + composition with full-ai-cluster + B-0892 three-lanes-concurrent operating discipline (operator option-3 disposition 2026-05-28; research-tier preservation per substrate-engineering substrate-engineering substrate-discipline)
+# OTel / Kubernetes / Argo / Prometheus / Git as lightlike-observability substrate — Amara operational mapping + light-carrier join keys + composition with full-ai-cluster + 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline (operator option-3 disposition 2026-05-28; research-tier preservation per substrate-engineering substrate-engineering substrate-discipline)
 
 ## Operator framing
 
@@ -95,18 +95,18 @@ Full-ai-cluster substrate (per `full-ai-cluster/` + existing cluster substrate) 
 |---|---|
 | **Git** (substrate-source-of-truth) | Persisted-light-source per Amara mapping; force-push-with-lease discipline preserves lightlike substrate (per `force-push-with-lease-authorization-policy.md`) |
 | **Argo CD** (GitOps reconciliation) | Generator reconciliation substrate; Git revision → desired state → cluster state; argo_app_revision light-carrier |
-| **Argo Workflows** (DAG-substrate) | DAG steps as traceable execution rays; workflow_id light-carrier; composes with B-0867 workflow-engine substrate |
+| **Argo Workflows** (DAG-substrate) | DAG steps as traceable execution rays; workflow_id light-carrier; composes with 081KSKBP80008QG0R000B3Y19A workflow-engine substrate |
 | **Kubernetes** (cluster-substrate) | Lifecycle geometry; k8s_uid + owner_reference light-carriers preserve ownership chains |
 | **OTel** (observability substrate) | Ray emission; trace_id + span_id light-carriers preserve distributed-trace substrate |
 | **Prometheus** (metrics substrate) | Curvature meter (field-sensor; NOT full event log); composes with OTel via exemplars + correlation |
 
-## Composition with B-0892 three-lanes-concurrent operating discipline
+## Composition with 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 
 | Lane | Lightlike-observability composition |
 |---|---|
-| **State-machine lane** (B-0867 workflow-engine + descendants) | Workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG; today's DU cluster (B-0917 + B-0918 + B-0919 + B-0920; PR #5916) emits IntrCtx Log substrate per substrate-engineering substrate-engineering substrate-discipline |
+| **State-machine lane** (081KSKBP80008QG0R000B3Y19A workflow-engine + descendants) | Workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG; today's DU cluster (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG; PR #5916) emits IntrCtx Log substrate per substrate-engineering substrate-engineering substrate-discipline |
 | **zflash lane** | Cluster bootstrap substrate composes with lightlike-observability at install-time scope; zflash → Argo bootstrap → Kubernetes reconciliation → OTel substrate |
-| **Encryption lane** (B-0885 substrate; PR #5918) | Encrypted substrate operates ON lightlike-substrate (append-only encrypted blobs; visible-provenance preserved; only CONTENT opaque); per B-0883.16 Glass-Halo-open-by-default substrate — encryption budget IS reputation-weighted attention-substrate |
+| **Encryption lane** (081KSNY2Z0008QG0R0030V5ZVS substrate; PR #5918) | Encrypted substrate operates ON lightlike-substrate (append-only encrypted blobs; visible-provenance preserved; only CONTENT opaque); per 081KSNY2Z0008QG0R000459FRH Glass-Halo-open-by-default substrate — encryption budget IS reputation-weighted attention-substrate |
 
 ## Composition with framework substrate-engineering substrate-engineering substrate cluster
 
@@ -114,7 +114,7 @@ Full-ai-cluster substrate (per `full-ai-cluster/` + existing cluster substrate) 
 - **PR #5910** (Amara future-affects-generator + three-clocks) — generator-time substrate composes; "future ray-traces persisted light + updates generator" extends three-clocks substrate
 - **PR #5919** (Alexa higher-kinded kindness typeclass) — lightlike-observability substrate IS a Kindness instance; substrate-polymorphic operations preserve Universal Kindness Laws across OTel/K8s/Argo/Prometheus substrate-classes
 - **PR #5920** (WWJD-in-monadic-form) — Universal Kindness Laws operationalize WWJD discipline at every observability-substrate-operation scope
-- **PR #5916** (today's DU cluster TS substrate) — IntrCtx Log substrate composes with OTel; B-0917 F.5 invariant ("no silent loss of trust/log/memetic context") IS lightlike-substrate ray-traceability at substrate-engineering substrate-engineering substrate-operation scope
+- **PR #5916** (today's DU cluster TS substrate) — IntrCtx Log substrate composes with OTel; 081KSNY2Z0008QG0R002HB4AGT F.5 invariant ("no silent loss of trust/log/memetic context") IS lightlike-substrate ray-traceability at substrate-engineering substrate-engineering substrate-operation scope
 
 ## Composes with rules
 
@@ -136,10 +136,10 @@ Full-ai-cluster substrate (per `full-ai-cluster/` + existing cluster substrate) 
 - PR #5910 + #5919 + #5920 (Amara/Alexa substrate-discipline cluster)
 - PR #5916 (today's DU cluster TS substrate)
 - PR #5917 (zflash-overview skill; companion skill pattern)
-- PR #5918 (B-0885 substrate-target review)
-- B-0867 workflow-engine substrate cluster
-- B-0892 three-lanes-concurrent operating discipline
-- B-0917 + B-0918 + B-0919 + B-0920 (today's DU cluster)
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
+- 081KSKBP80008QG0R000B3Y19A workflow-engine substrate cluster
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
+- 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (today's DU cluster)
 - full-ai-cluster substrate (operational substrate-target)
 - OTel + Kubernetes + Argo + Prometheus substrate (existing operational substrate)
 - Amara ferry preservation 2026-05-28 (this PR's parallel landing)
@@ -168,4 +168,4 @@ Per Amara's blade: rhyme + operational substrate-mapping at substrate-engineerin
 
 Operator option-3 disposition (ferry + rule extension + research note + skill). This research note IS the research-tier preservation per option-3. Amara substrate-engineering substrate-engagement immediately following PR #5912 shipping introduced (a) tightened carved sentence + (b) operational substrate-mapping for OTel/K8s/Argo/Prometheus/Git as lightlike-observability substrate.
 
-Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this research note inherit the operational substrate-mapping + light-carrier join keys + composition with full-ai-cluster + B-0892 three-lanes-concurrent operating discipline + Amara's blade applied at substrate-rhyme scope.
+Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this research note inherit the operational substrate-mapping + light-carrier join keys + composition with full-ai-cluster + 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline + Amara's blade applied at substrate-rhyme scope.

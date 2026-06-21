@@ -1,6 +1,5 @@
 ---
-id: B-0532
-zetaid: 081KRMEXM0008QG0R003FZNK3E
+id: 081KRMEXM0008QG0R003FZNK3E
 priority: P3
 status: open
 title: "Backlog-graph consistency lint — flag parent `status: closed` while declared child is `status: open`"
@@ -18,7 +17,7 @@ type: feature
 
 ## Origin
 
-PR [#3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (2026-05-15) shipped a row-status flip closing parent `B-0442` without closing children `B-0504` + `B-0505`. The result was a silent backlog-graph inconsistency: parent said *"I'm closed"*, two of three declared children still said *"I'm open"*. Caught by Codex + Copilot review (P1 + P2 findings) before merge — the substrate-honest catch took 4 review-thread cycles to fully resolve.
+PR [#3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (2026-05-15) shipped a row-status flip closing parent `081KRFA460008QG0R00061SXRW` without closing children `081KRHWGX0008QG0R000PVB6FF` + `081KRHWGX0008QG0R002C038BJ`. The result was a silent backlog-graph inconsistency: parent said *"I'm closed"*, two of three declared children still said *"I'm open"*. Caught by Codex + Copilot review (P1 + P2 findings) before merge — the substrate-honest catch took 4 review-thread cycles to fully resolve.
 
 Same shape as the spec-vs-impl-drift problem at row-internal scope: visible-symbol fixes alone aren't sufficient. The graph has structure that must stay coherent under updates.
 
@@ -79,17 +78,17 @@ Composes with the broader [`.claude/rules/encoding-rules-without-mechanizing.md`
 - [`.claude/rules/encoding-rules-without-mechanizing.md`](../../../.claude/rules/encoding-rules-without-mechanizing.md) — this row IS that discipline applied
 - [`.claude/rules/refresh-before-decide.md`](../../../.claude/rules/refresh-before-decide.md) — would have caught the failure earlier; lint catches what discipline missed
 - PR [#3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (the originating incident)
-- B-0442 / B-0503 / B-0504 / B-0505 (the chain that surfaced the failure mode)
+- 081KRFA460008QG0R00061SXRW / 081KRHWGX0008QG0R0027YXBTB / 081KRHWGX0008QG0R000PVB6FF / 081KRHWGX0008QG0R002C038BJ (the chain that surfaced the failure mode)
 - `tools/hygiene/audit-backlog-items.ts` (existing backlog auditing; potential composition target)
 
 ## Status (2026-05-16)
 
 Per the row-close gate triage (per [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) step 0 — substrate-drift discriminator merged via PR #3757), this row is **partial completion, NOT drift**.
 
-**Shipped via PR [#3567](https://github.com/Lucent-Financial-Group/Zeta/pull/3567)** (`feat(B-0532): parent-child status-mismatch lint (hard-error slice) + gate.yml wiring`):
+**Shipped via PR [#3567](https://github.com/Lucent-Financial-Group/Zeta/pull/3567)** (`feat(081KRMEXM0008QG0R003FZNK3E): parent-child status-mismatch lint (hard-error slice) + gate.yml wiring`):
 
 - Hard-error: parent `status: closed` + declared child `status: open` → exit 1
-- `--enforce-parent-child-status` flag on `tools/hygiene/audit-backlog-items.ts` (extended existing tool per skill-router-as-substrate-inventory; same shape as B-0535)
+- `--enforce-parent-child-status` flag on `tools/hygiene/audit-backlog-items.ts` (extended existing tool per skill-router-as-substrate-inventory; same shape as 081KRMEXM0008QG0R000HHAG77)
 - `--json` flag for machine-readable output
 - Gate.yml job `lint-backlog-parent-child-status` wired
 
@@ -100,6 +99,6 @@ Per the row-close gate triage (per [`.claude/rules/backlog-item-start-gate.md`](
 - Test file `tools/hygiene/audit-backlog-items.test.ts` covering hard-error / bidirectional / soft-warning / pass-case scenarios
 - Documentation in `docs/AGENT-BEST-PRACTICES.md` under the row-status-flip discipline section
 
-Row stays `status: open` until Slice 2 lands. The partial-vs-drift distinction is exactly the discriminator that PR #3757's step-0 rule extension and [B-0553](B-0553-audit-backlog-status-drift-detection-2026-05-16.md) mechanize at the discipline + lint scope respectively.
+Row stays `status: open` until Slice 2 lands. The partial-vs-drift distinction is exactly the discriminator that PR #3757's step-0 rule extension and [081KRQ1AB0008QG0R000QYJFZE](081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md) mechanize at the discipline + lint scope respectively.
 
 Audit anchor: 2026-05-16T05:43Z Otto-CLI tick verified that lines mentioning `soft.warning`, `bidirectional` in `tools/hygiene/audit-backlog-items.ts` produce no matches; `ls tools/hygiene/*test*` matching parent-child returns no results; `grep -E 'row-status-flip|backlog-graph|parent-child' docs/AGENT-BEST-PRACTICES.md` returns no results. Empirical confirmation of the partial state.

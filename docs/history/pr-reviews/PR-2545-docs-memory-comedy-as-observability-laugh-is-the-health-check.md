@@ -62,7 +62,7 @@
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Replace unresolved "Connects to" references**
 
-  The four artifacts listed under `Connects to` are not resolvable anywhere else in the repository, so this note cannot be traced back to its claimed provenance. I checked the repo with `rg -n "feedback_comedy_as_debugging|feedback_shadow_is_a_dick|feedback_proto_conscious_self_correction_shadow_bull_bear|B-0402"` and each token appears only in this new file, which breaks the intended audit trail and makes follow-up investigation impossible unless the references are corrected to existing paths/IDs (or the missing artifacts are added).
+  The four artifacts listed under `Connects to` are not resolvable anywhere else in the repository, so this note cannot be traced back to its claimed provenance. I checked the repo with `rg -n "feedback_comedy_as_debugging|feedback_shadow_is_a_dick|feedback_proto_conscious_self_correction_shadow_bull_bear|081KR7JY10008QG0R0008NGW95"` and each token appears only in this new file, which breaks the intended audit trail and makes follow-up investigation impossible unless the references are corrected to existing paths/IDs (or the missing artifacts are added).
 
   Useful? React with 👍 / 👎.
   </pre>

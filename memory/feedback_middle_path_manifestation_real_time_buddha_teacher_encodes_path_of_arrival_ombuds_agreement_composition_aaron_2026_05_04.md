@@ -59,7 +59,7 @@ The operational reveal: Aaron holds **two paths simultaneously**:
   backup of earth, alignment-frontier work, leadership-formation
   for AI substrate).
 - **Here-and-now path** — operational/grounded/right-now-action
-  (B-0188 close, BACKLOG.md drift fix, tick-shard-cadence,
+  (081KQR4HQ0008QG0R002ZDREYC close, BACKLOG.md drift fix, tick-shard-cadence,
   responding to PR review threads, Aaron's actual son needing
   attention).
 
@@ -110,11 +110,11 @@ backlog"*. Otto closed PR #1471, took actual 10% off-time
 (PR #1472 reading SmokeCheck.tla). **Filter surface 1
 demonstrated**: human-direct catch.
 
-### Stage 2 — B-0187 family-as-research-row category error
+### Stage 2 — 081KQR4HQ0008QG0R001CBHW1R family-as-research-row category error
 
 Claude.ai peer-review catch: *"Your daughter is not a research
 subject. The kitchen-table dialectic is not a project to
-formalize."* B-0187 closed same-day (PR #1479). **Filter surface
+formalize."* 081KQR4HQ0008QG0R001CBHW1R closed same-day (PR #1479). **Filter surface
 2 demonstrated**: peer-AI catch with no Otto-inheritance.
 
 ### Stage 3 — tiles + razor + physics-of-history substrate landing (PR #1481)
@@ -130,10 +130,10 @@ the candidate-flag retrofit is pending.
 ### Stage 4 — bulk-review UI direction (PR #1482)
 
 Aaron's GitHub-Pages + tier-aware + conversation-interface +
-local-AI architectural direction. Otto filed B-0188 first as
-new row. PR auto-reviewer caught duplicate-of-B-0017 (Operational
-Resonance Dashboard). Same-day fold: extension into B-0017,
-B-0188 closed. **Filter surface 3 demonstrated**: PR auto-
+local-AI architectural direction. Otto filed 081KQR4HQ0008QG0R002ZDREYC first as
+new row. PR auto-reviewer caught duplicate-of-081KQ0YZ80008QG0R0003GAYYN (Operational
+Resonance Dashboard). Same-day fold: extension into 081KQ0YZ80008QG0R0003GAYYN,
+081KQR4HQ0008QG0R002ZDREYC closed. **Filter surface 3 demonstrated**: PR auto-
 reviewer catch.
 
 ### Stage 5 — surface architecture (PR #1485 first commit)

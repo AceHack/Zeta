@@ -4,9 +4,9 @@
 - **Harness:** claude-code
 - **Claimed at:** 2026-05-09T09:18:00Z
 - **ETA:** 2026-05-09T09:45:00Z
-- **Scope:** B-0212 Phase 1 close-out — complete ephemeral.ts library, wire shadow outlet into SAFE-AUTONOMOUS-ACTIONS.md Tier 1
-- **Durable target:** tools/shadow-outlet/ephemeral.ts, docs/SAFE-AUTONOMOUS-ACTIONS.md, docs/backlog/P1/B-0212-*.md
-- **Platform mirror:** https://github.com/Lucent-Financial-Group/Zeta/issues (B-0212)
+- **Scope:** 081KQX9B50008QG0R00147GZX9 Phase 1 close-out — complete ephemeral.ts library, wire shadow outlet into SAFE-AUTONOMOUS-ACTIONS.md Tier 1
+- **Durable target:** tools/shadow-outlet/ephemeral.ts, docs/SAFE-AUTONOMOUS-ACTIONS.md, docs/backlog/P1/081KQX9B50008QG0R00147GZX9-*.md
+- **Platform mirror:** https://github.com/Lucent-Financial-Group/Zeta/issues (081KQX9B50008QG0R00147GZX9)
 
 ## Notes
 

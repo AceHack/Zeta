@@ -2,9 +2,9 @@
 /**
  * src/Core.TypeScript/cluster/argocd-health-test.ts
  *
- * B-0967 - Kubernetes + ArgoCD health integration harness.
+ * 081KSXN940008QG0R000SCP2H1 - Kubernetes + ArgoCD health integration harness.
  *
- * This is the cluster-health lane carved away from the B-0891 USB/ISO
+ * This is the cluster-health lane carved away from the 081KSNY2Z0008QG0R0008PN7RQ USB/ISO
  * zflash harness. It proves a real local Kubernetes cluster can reconcile
  * the Zeta GitOps substrate to ArgoCD Application health, while zflash keeps
  * owning boot/reformat/key-retention semantics.
@@ -102,7 +102,7 @@ export interface ApplicationVerdict {
 }
 
 export interface HarnessPlan {
-  readonly rowId: "B-0967";
+  readonly rowId: "081KSXN940008QG0R000SCP2H1";
   readonly mode: Mode;
   readonly provider: Provider;
   readonly clusterName: string;
@@ -214,14 +214,14 @@ const DEV_EXCLUDED_DIRS = new Set([
   "qwen-coder",
 ]);
 
-/** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (B-0967). */
+/** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (081KSXN940008QG0R000SCP2H1). */
 const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "agent-memory",
   "forgejo",
   "gitlab",
   "orleans",
   "platform",
-  "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (B-0967)
+  "spire", // Vault upstream CA + kind PVC wiring not ready in included CI (081KSXN940008QG0R000SCP2H1)
   "temporal",
 ]);
 
@@ -592,7 +592,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
     };
   }
   return {
-    rowId: "B-0967",
+    rowId: "081KSXN940008QG0R000SCP2H1",
     mode: options.mode,
     provider: options.provider,
     clusterName: clusterName.value,
@@ -615,7 +615,7 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       "optional safe drift-repair check through root App-of-Apps self-heal",
     ],
     notes: [
-      "B-0967 is separate from B-0891; this harness does not test USB reformat retention.",
+      "081KSXN940008QG0R000SCP2H1 is separate from 081KSNY2Z0008QG0R0008PN7RQ; this harness does not test USB reformat retention.",
       "Dev health assertions exclude cilium, Longhorn, GPU model-serving, Longhorn-backed manifests, and apps deferred until dev wiring exists (gitlab/orleans/temporal/agent-memory); k3d bootstraps Cilium directly and kind CI uses its default CNI.",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
@@ -626,7 +626,7 @@ export function architectureFailure(arch = process.arch): Failure | null {
   if (arch === "x64" || arch === "arm64") return null;
   return {
     kind: "UnsupportedArchitecture",
-    message: `unsupported architecture: ${arch}; B-0967 supports x86_64 and ARM64/aarch64`,
+    message: `unsupported architecture: ${arch}; 081KSXN940008QG0R000SCP2H1 supports x86_64 and ARM64/aarch64`,
   };
 }
 
@@ -772,7 +772,7 @@ export function preflightFailure(preflight: readonly ToolCheck[]): Failure | nul
   }
   return {
     kind: "MissingTool",
-    message: `${missing.tool} is required for B-0967 ArgoCD health tests: ${missing.detail}`,
+    message: `${missing.tool} is required for 081KSXN940008QG0R000SCP2H1 ArgoCD health tests: ${missing.detail}`,
     detail: missing,
   };
 }
@@ -1305,7 +1305,7 @@ function exitCode(result: HarnessResult): 0 | 1 | 2 {
 async function main(): Promise<void> {
   const parsed = parseArgs(process.argv.slice(2));
   if ("kind" in parsed) {
-    console.log(JSON.stringify({ ok: false, rowId: "B-0967", failure: parsed }, null, 2));
+    console.log(JSON.stringify({ ok: false, rowId: "081KSXN940008QG0R000SCP2H1", failure: parsed }, null, 2));
     process.exit(2);
   }
   const result = await runHarness(parsed);

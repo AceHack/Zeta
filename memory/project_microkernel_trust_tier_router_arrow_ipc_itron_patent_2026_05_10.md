@@ -44,4 +44,4 @@ relationships.
 - feedback_arrow_tier_0 (Arrow as Tier 0)
 - feedback_eve_protocol_serialization_three_tiers (tiers 1-3)
 - project_itron_is_the_energy_gate (edge gate = kernel gate)
-- Hat-and-timeboxed-authority (B-0403) at kernel level
+- Hat-and-timeboxed-authority (081KR7JY10008QG0R0021F5609) at kernel level

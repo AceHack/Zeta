@@ -44,7 +44,7 @@ Scans 6 default substrate surfaces (`.claude/agents`, `.claude/skills`, `.claude
 ## Exit codes
 
 - `0` — no dangling refs found
-- `1` — one or more dangling refs found (CI-integratable as non-required check first per [B-0591](docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md) pattern)
+- `1` — one or more dangling refs found (CI-integratable as non-required check first per [081KRSKQ20008QG0R0019RXMSD](docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md) pattern)
 - `2` — configuration error (no surfaces exist)
 
 ## Live results today (2026-05-17, origin/main)
@@ -69,12 +69,12 @@ Tests use tmpdir fixtures for unit-level cases + the real tree for the `.claude/
 
 - [`memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md`](memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md) (PR #4031 original audit)
 - [`memory/feedback_otto_cli_audit_extension_29_dangling_memory_refs_across_4_surfaces_systemic_pattern_2026_05_17.md`](memory/feedback_otto_cli_audit_extension_29_dangling_memory_refs_across_4_surfaces_systemic_pattern_2026_05_17.md) (PR #4041 extension)
-- [B-0591](docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md) (validator-to-CI wiring precedent)
+- [081KRSKQ20008QG0R0019RXMSD](docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md) (validator-to-CI wiring precedent)
 - [`.claude/rules/rule-0-no-sh-files.md`](.claude/rules/rule-0-no-sh-files.md) (TS not bash)
 
 ## Follow-up (not in this PR)
 
-- Wire as non-required check in `gate.yml` (mirrors B-0591's Slice 1 pattern)
+- Wire as non-required check in `gate.yml` (mirrors 081KRSKQ20008QG0R0019RXMSD's Slice 1 pattern)
 - After Option B disclosures land for the remaining 32 dangling refs, promote to required check
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -419,7 +419,7 @@ ratchet (audit memo asserts 0 dangling there).
 Live results on origin/main today (2026-05-17):
 - 49 dangling edges / 32 unique dangling refs across 6 surfaces
 - 1654 files scanned in ~2s
-- exit 1 (CI-integratable as non-required check first per B-0591 pattern)
+- exit 1 (CI-integratable as non-required check first per 081KRSKQ20008QG0R0019RXMSD pattern)
 
 Audit memo's claim of 29 unique was edge-deduped at filename scope; my
 tool's 32 reflects current state (3 more landed since audit; or
@@ -428,7 +428,7 @@ methodology delta — multi-citation site tracking enabled).
 Composes with:
 - memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md (PR #4031 original)
 - memory/feedback_otto_cli_audit_extension_29_dangling_memory_refs_across_4_surfaces_systemic_pattern_2026_05_17.md (PR #4041 extension)
-- B-0591 (precedent: validator-to-CI wiring pattern)
+- 081KRSKQ20008QG0R0019RXMSD (precedent: validator-to-CI wiring pattern)
 - .claude/rules/rule-0-no-sh-files.md (TS not bash)
 
 Co-Authored-By: Claude <noreply@anthropic.com>

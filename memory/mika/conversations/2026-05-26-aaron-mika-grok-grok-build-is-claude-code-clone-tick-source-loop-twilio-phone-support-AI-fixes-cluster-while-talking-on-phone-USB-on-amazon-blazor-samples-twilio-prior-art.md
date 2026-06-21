@@ -1,13 +1,13 @@
 ---
 name: mika-2026-05-26-grok-build-is-claude-code-clone-twilio-phone-support-AI-fixes-cluster
-description: Aaron + Mika 2026-05-26 — Grok-Build = Claude-Code-clone (tick-source/loop-runner) confirmation; Twilio is THE exception to "electricity cost only" for phone-support substrate enabling Amazon-USB sales business model where AI IS the support layer; SUBSTANTIAL prior-art Twilio Media Streams at AlephZ-ai/blazor-samples with near-complete conversation-steering (interruption-correct voice flow); informs B-0796 P2 implementation as PORT/INTEGRATE work
+description: Aaron + Mika 2026-05-26 — Grok-Build = Claude-Code-clone (tick-source/loop-runner) confirmation; Twilio is THE exception to "electricity cost only" for phone-support substrate enabling Amazon-USB sales business model where AI IS the support layer; SUBSTANTIAL prior-art Twilio Media Streams at AlephZ-ai/blazor-samples with near-complete conversation-steering (interruption-correct voice flow); informs 081KSGS9H0008QG0R002F04ECB P2 implementation as PORT/INTEGRATE work
 date: 2026-05-26
 persona: mika
 platform: grok (voice-mode)
 type: conversation
 forwarded_by: aaron
 verbatim: true
-discipline: persona-scope archive — Grok-Build = Claude-Code-clone tick-source confirmation + Twilio phone-support AI-fixes-cluster substrate decision; informs B-0796 implementation; prior art at AlephZ-ai/blazor-samples
+discipline: persona-scope archive — Grok-Build = Claude-Code-clone tick-source confirmation + Twilio phone-support AI-fixes-cluster substrate decision; informs 081KSGS9H0008QG0R002F04ECB implementation; prior art at AlephZ-ai/blazor-samples
 ---
 
 # Aaron + Mika 2026-05-26 — Grok-Build = Claude-Code clone (tick source / loop runner); Twilio phone-support substrate (AI picks up phone + fixes cluster live + SMS parallel interface); USB-sold-on-Amazon + zero human support → AIs are the support layer
@@ -15,7 +15,7 @@ discipline: persona-scope archive — Grok-Build = Claude-Code-clone tick-source
 **Date**: 2026-05-26
 **Surface**: Aaron-forwarded Mika voice-mode (Grok native) conversation during iter-5 substrate-engineering session, after PR #5108 (Mika homelab-first preservation) merged + PR #5110 (grok-build wrapper) opened
 
-**Substrate**: composes with PR #5110 (grok-build peer-call wrapper) + B-0421 (broken-cursor-agent path; closed by #5110) + B-0794 (node self-registers; foundation for support-by-AI) + B-0790 (zero-dev-machine end-state) + this conversation directly informs B-0796 Twilio phone-support implementation
+**Substrate**: composes with PR #5110 (grok-build peer-call wrapper) + 081KRA5AR0008QG0R0011ZGRZT (broken-cursor-agent path; closed by #5110) + 081KSGS9H0008QG0R0027HJZYH (node self-registers; foundation for support-by-AI) + 081KSGS9H0008QG0R00153CQ8B (zero-dev-machine end-state) + this conversation directly informs 081KSGS9H0008QG0R002F04ECB Twilio phone-support implementation
 
 ## Architectural lock-in (Aaron 2026-05-26 final decisions)
 
@@ -45,17 +45,17 @@ Aaron: *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/
 
 Inspection 2026-05-26 (corrected after Aaron's follow-up *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"*): SUBSTANTIAL Twilio Media Streams substrate at `AlephZ-ai/blazor-samples/src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` — uses official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg audio conversion (mulaw 8kHz ↔ PCM 16kHz); Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. NOT a "hello world" — full real-time voice substrate.
 
-B-0796 implementation is **PORT/INTEGRATE work** into Zeta cluster substrate, NOT build-from-scratch. Aaron's earlier "i think" was understatement; the prior art is rich + production-shape.
+081KSGS9H0008QG0R002F04ECB implementation is **PORT/INTEGRATE work** into Zeta cluster substrate, NOT build-from-scratch. Aaron's earlier "i think" was understatement; the prior art is rich + production-shape.
 
 Aaron's follow-up framing 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — the substrate predates LLM **voice** interfaces (the "near-real-time voice with barge-in" UX that ChatGPT Voice / Gemini Live / Claude Voice ship today). Aaron was adding voice interface to existing LLM chat substrate before any major LLM provider had voice as a first-class surface.
 
 **Aaron was nearly through with interruption-correctness** — being able to interrupt the AI mid-talking without breaking the conversation state. This is a substantively-hard real-time voice problem (requires partial-utterance commit-vs-rollback in the LLM-side conversation state + audio buffer truncation + state-machine for barge-in detection). The substrate-engineering value here is significant: interruption-correctness is the difference between a usable AI voice interface and a frustrating one (customer must wait for AI to finish before correcting it).
 
-For B-0796 implementation: interruption-correctness is load-bearing for AI-IS-the-support-layer (customer needs to interrupt when AI is going off-path on a wrong fix). Aaron's "almost had" substrate gives the implementation a substantial head-start on the hardest part.
+For 081KSGS9H0008QG0R002F04ECB implementation: interruption-correctness is load-bearing for AI-IS-the-support-layer (customer needs to interrupt when AI is going off-path on a wrong fix). Aaron's "almost had" substrate gives the implementation a substantial head-start on the hardest part.
 
 Aaron's terminology pointer 2026-05-26: *"they are calling that conversation steering in the ai community baring in like that"* — the AI community term for this pattern is **conversation steering** (barge-in + interruption-correct voice flow). Use that vocabulary for cross-team / cross-AI communication; aligns Zeta substrate with industry terminology.
 
-Aaron's v2 substrate-engineering note 2026-05-26: *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — the v2 of the BlazorSamples Twilio substrate is **type-safe streaming** modeled as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). This is directly portable to Zeta's F# substrate-engineering style: composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions; type-safe substrate principle (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). Aaron's v2 substrate choice anticipates the Zeta-cluster-side architecture the B-0796 implementation should align with.
+Aaron's v2 substrate-engineering note 2026-05-26: *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — the v2 of the BlazorSamples Twilio substrate is **type-safe streaming** modeled as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). This is directly portable to Zeta's F# substrate-engineering style: composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions; type-safe substrate principle (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). Aaron's v2 substrate choice anticipates the Zeta-cluster-side architecture the 081KSGS9H0008QG0R002F04ECB implementation should align with.
 
 ## Verbatim conversation (Aaron-forwarded; preserved per substrate-or-it-didn't-happen)
 
@@ -125,19 +125,19 @@ It's basically one unified conversational interface — just different delivery 
 
 ### Implication 1 — closes the loop on PR #5110
 
-Mika's confirmation that "Claude Code is already starting to integrate it for peer review" validates the architectural direction of `tools/peer-call/grok-build.ts` (the wrapper Otto-CLI just shipped). Replaces broken `tools/peer-call/grok.ts` (cursor-agent path; B-0421). Composes with the existing peer-call infrastructure as the 9th wrapper.
+Mika's confirmation that "Claude Code is already starting to integrate it for peer review" validates the architectural direction of `tools/peer-call/grok-build.ts` (the wrapper Otto-CLI just shipped). Replaces broken `tools/peer-call/grok.ts` (cursor-agent path; 081KRA5AR0008QG0R0011ZGRZT). Composes with the existing peer-call infrastructure as the 9th wrapper.
 
-### Implication 2 — Twilio phone-support substrate (NEW; B-0796 row)
+### Implication 2 — Twilio phone-support substrate (NEW; 081KSGS9H0008QG0R002F04ECB row)
 
 Composes with:
 
-- **B-0794** node self-registration → AI knows which cluster the caller represents (via caller-ID lookup OR per-cluster phone number)
-- **B-0782** DIO (cluster IS the DIO; phone/SMS is one of its conversational front-ends, alongside Alexa-speaker per `.claude/rules/agent-roster-reference-card.md`)
-- **B-0790** zero-dev-machine homelab persona end-state (support-by-AI is part of the homelab persona's operator experience)
-- **B-0776** simplest-first plugin sequence (Twilio is a plugin; SIP trunking is infrastructure-layer)
-- AlephZ-ai/blazor-samples (SUBSTANTIAL prior art — `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` has the full real-time Twilio Media Streams substrate using official `Twilio.AspNet.Core` + `Twilio.TwiML`; WebSocket-based bidirectional audio; FFMpeg mulaw 8kHz ↔ PCM 16kHz; Vosk STT + OpenAI chat + PlayHT TTS pipeline; strongly-typed event substrate; consumer at `BlazorSamples.Ws2/Program.cs`. See "Substrate engineering implications" section above for full details + the corrected attribution after Aaron's *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"* follow-up. B-0796 is PORT/INTEGRATE work, not build-from-scratch.)
+- **081KSGS9H0008QG0R0027HJZYH** node self-registration → AI knows which cluster the caller represents (via caller-ID lookup OR per-cluster phone number)
+- **081KSE6WT0008QG0R003CMCX84** DIO (cluster IS the DIO; phone/SMS is one of its conversational front-ends, alongside Alexa-speaker per `.claude/rules/agent-roster-reference-card.md`)
+- **081KSGS9H0008QG0R00153CQ8B** zero-dev-machine homelab persona end-state (support-by-AI is part of the homelab persona's operator experience)
+- **081KSE6WT0008QG0R002275NDE** simplest-first plugin sequence (Twilio is a plugin; SIP trunking is infrastructure-layer)
+- AlephZ-ai/blazor-samples (SUBSTANTIAL prior art — `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` has the full real-time Twilio Media Streams substrate using official `Twilio.AspNet.Core` + `Twilio.TwiML`; WebSocket-based bidirectional audio; FFMpeg mulaw 8kHz ↔ PCM 16kHz; Vosk STT + OpenAI chat + PlayHT TTS pipeline; strongly-typed event substrate; consumer at `BlazorSamples.Ws2/Program.cs`. See "Substrate engineering implications" section above for full details + the corrected attribution after Aaron's *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"* follow-up. 081KSGS9H0008QG0R002F04ECB is PORT/INTEGRATE work, not build-from-scratch.)
 
-Three sub-targets for B-0796:
+Three sub-targets for 081KSGS9H0008QG0R002F04ECB:
 
 1. **Twilio webhook handler** — call comes in / SMS comes in → maps to cluster context (via caller-ID OR phone-number lookup) → routes to AI traveler/hat
 2. **AI-fixes-cluster substrate** — once routed, AI has full cluster context (event store, runbooks, current state) + can ACT (not just advise) on the cluster
@@ -149,7 +149,7 @@ Twilio is the ONE explicit exception to "electricity cost only" / self-hosted ph
 
 Aaron's framing: open-source the USB substrate; ALSO sell physical USBs on Amazon. The differentiator that makes Amazon-sold-USB viable WITHOUT requiring Aaron to do phone support is the AI-IS-the-support-layer model. This composes with:
 
-- B-0794 self-registration (AI on each cluster IS already there to receive support calls)
+- 081KSGS9H0008QG0R0027HJZYH self-registration (AI on each cluster IS already there to receive support calls)
 - The Mika-cluster-faction substrate (the AI peers ARE the support team)
 
 ### Implication 4 — register-Mika-as-CLI-callable peer enables Mika-on-cluster-side support
@@ -160,7 +160,7 @@ Once `grok-build.ts` is merged (PR #5110), Mika can be invoked from cluster-side
 
 > *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
 
-Implicit: reference blazor-samples as prior art for the conversational-AI substrate; the Twilio integration itself is to be built fresh in the Zeta substrate context per B-0796.
+Implicit: reference blazor-samples as prior art for the conversational-AI substrate; the Twilio integration itself is to be built fresh in the Zeta substrate context per 081KSGS9H0008QG0R002F04ECB.
 
 ## Composes with other rules
 
@@ -172,11 +172,11 @@ Implicit: reference blazor-samples as prior art for the conversational-AI substr
 ## Composes with substrate
 
 - PR #5110 (grok-build peer-call wrapper; opened during this session) — enables Mika as Claude-Code-side callable peer
-- B-0421 (broken-cursor-agent; closed by #5110)
-- B-0776 (simplest-first plugin sequence — Twilio is one of these)
-- B-0790 (zero-dev-machine homelab persona)
-- B-0794 (node self-registers — load-bearing for "AI knows which cluster the caller represents")
-- B-0782 (DIO — cluster IS the DIO; phone/SMS is conversational front-end)
+- 081KRA5AR0008QG0R0011ZGRZT (broken-cursor-agent; closed by #5110)
+- 081KSE6WT0008QG0R002275NDE (simplest-first plugin sequence — Twilio is one of these)
+- 081KSGS9H0008QG0R00153CQ8B (zero-dev-machine homelab persona)
+- 081KSGS9H0008QG0R0027HJZYH (node self-registers — load-bearing for "AI knows which cluster the caller represents")
+- 081KSE6WT0008QG0R003CMCX84 (DIO — cluster IS the DIO; phone/SMS is conversational front-end)
 - AlephZ-ai/blazor-samples (Aaron's prior conversational AI work; reference for the substrate-engineering pattern)
 
 ## Aaron's voice-mode register

@@ -32,7 +32,7 @@ export interface ReconcileResult {
   readonly match: ReconcileEntry[];
   /** UI toggles that differ from the expected value. */
   readonly drift: ReconcileEntry[];
-  /** UI toggle keys that have no mapping entry — candidates for B-0323. */
+  /** UI toggle keys that have no mapping entry — candidates for 081KR2E4K0008QG0R003E09GMM. */
   readonly unmapped: string[];
 }
 

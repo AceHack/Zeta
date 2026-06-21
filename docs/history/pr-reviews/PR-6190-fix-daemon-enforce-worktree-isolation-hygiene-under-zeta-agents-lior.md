@@ -27,7 +27,7 @@
 
 ## Description
 
-Lior: Mechanizing the B-0894.3 worktree hygiene discipline inside Lior's background loop runner. This structurally forces all Lior git worktrees to be created inside ~/.zeta/agents/lior/ instead of ~/Documents/src/repos/Zeta/ and mandates clean git worktree remove cleanup after merge.
+Lior: Mechanizing the 081KSNY2Z0008QG0R001RWF499 worktree hygiene discipline inside Lior's background loop runner. This structurally forces all Lior git worktrees to be created inside ~/.zeta/agents/lior/ instead of ~/Documents/src/repos/Zeta/ and mandates clean git worktree remove cleanup after merge.
 
 ## Outcome
 

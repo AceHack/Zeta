@@ -9,7 +9,7 @@ open FsCheck.FSharp
 open FsCheck.Xunit
 open Zeta.Bayesian
 
-// EP (B-1000 slice 5) — non-conjugate factors via moment matching. The
+// EP (081KT2T2J0008QG0R000S7GHQ8 slice 5) — non-conjugate factors via moment matching. The
 // probit site's closed-form moments are checked against NUMERICAL
 // QUADRATURE of the tilted distribution N(x;m,v)·Φ(x) (self-verifying),
 // and an EP factor plugged into the existing FactorGraph + runToFixpoint
@@ -58,7 +58,7 @@ let ``probit projection matches numerical quadrature of cavity times Phi`` () =
         Gaussian.variance proj |> should (equalWithin 2e-3) qVar
 
 // ═══════════════════════════════════════════════════════════════════
-// C7 (B-1007 P1) — the probit moment-match is accurate OVER THE CAVITY
+// C7 (081KT2T2J0008QG0R000YZ3NMY P1) — the probit moment-match is accurate OVER THE CAVITY
 // DOMAIN, not just at 4 fixed points. Lifts the cross-check above to
 // FsCheck-GENERATED cavities, keeping numerical quadrature of
 // N(x;m,v)·Φ(x) (`tiltedMoments`) as the oracle (Minka 2001 / GPML 3.58).

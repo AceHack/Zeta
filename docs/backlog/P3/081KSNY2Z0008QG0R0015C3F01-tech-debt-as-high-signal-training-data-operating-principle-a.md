@@ -1,6 +1,5 @@
 ---
-id: B-0881
-zetaid: 081KSNY2Z0008QG0R0015C3F01
+id: 081KSNY2Z0008QG0R0015C3F01
 priority: P3
 status: open
 title: Tech debt as high-signal training data — operating principle + measurement substrate (the mess IS part of the intelligence loop)
@@ -47,7 +46,7 @@ Operational implication:
 2. Debt items are classified, retained, and made queryable (not just "filed in TODO")
 3. Debt-class shape informs future architectural decisions
 4. Debt-volume + debt-velocity + debt-class-distribution are operational signals worth tracking
-5. The system's tech-debt-shape over time becomes a benchmark training corpus (composes with B-0875 + B-0876 error-class + Clifford-embedding work)
+5. The system's tech-debt-shape over time becomes a benchmark training corpus (composes with 081KSNY2Z0008QG0R000K3ETGB + 081KSNY2Z0008QG0R003KG3JTG error-class + Clifford-embedding work)
 
 ## Acceptance criteria
 
@@ -56,20 +55,20 @@ Operational implication:
   - Debt item / class identifier
   - Code-location anchor
   - When discovered, by whom (reviewer / agent / human)
-  - Class assignment (if classified per B-0875)
+  - Class assignment (if classified per 081KSNY2Z0008QG0R000K3ETGB)
   - Resolution status (open / class-fix-pending / retroactively-fixed / abandoned)
   - Training-data tags (severity, recurrence, blast-radius)
-- The corpus is queryable for benchmark generation (per B-0875 benchmark-training-data framing)
+- The corpus is queryable for benchmark generation (per 081KSNY2Z0008QG0R000K3ETGB benchmark-training-data framing)
 - `.claude/rules/tech-debt-as-high-signal-training-data.md` — operating-principle rule (substantive substrate; reframes how agents engage debt)
-- Composes with B-0880 (growth-rate ratio) — same metrics feed both
+- Composes with 081KSNY2Z0008QG0R000ED0ED8 (growth-rate ratio) — same metrics feed both
 
 ## Composition
 
-- **B-0875** error-class extraction meta-loop — class assignments are the labeling layer
-- **B-0875.1** code-review-as-tech-debt-detector — feeds debt items into the corpus
-- **B-0876** Clifford-space embedding — long-term: debt items occupy positions in Clifford space
-- **B-0880** backlog-vs-tech-debt growth-rate ratio — same measurement feeders
-- **B-0869** DORA mandate — debt-as-training-data composes with the benchmark substrate
+- **081KSNY2Z0008QG0R000K3ETGB** error-class extraction meta-loop — class assignments are the labeling layer
+- **081KSNY2Z0008QG0R002WQ747V** code-review-as-tech-debt-detector — feeds debt items into the corpus
+- **081KSNY2Z0008QG0R003KG3JTG** Clifford-space embedding — long-term: debt items occupy positions in Clifford space
+- **081KSNY2Z0008QG0R000ED0ED8** backlog-vs-tech-debt growth-rate ratio — same measurement feeders
+- **081KSNY2Z0008QG0R000HENSVM** DORA mandate — debt-as-training-data composes with the benchmark substrate
 
 ## Substrate-honest framing
 

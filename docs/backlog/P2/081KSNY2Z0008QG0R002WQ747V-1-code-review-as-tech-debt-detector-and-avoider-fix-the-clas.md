@@ -1,6 +1,5 @@
 ---
-id: B-0875.1
-zetaid: 081KSNY2Z0008QG0R002WQ747V
+id: 081KSNY2Z0008QG0R002WQ747V
 priority: P2
 status: open
 title: Code review AS tech-debt detector + tech-debt avoider — fix the CLASS retroactively across backlog, file as new class for future prevention (not fix-this-one-thing)
@@ -44,7 +43,7 @@ Code review is preserved (NOT killed by the workflow-engine substrate). But code
 2. **Fix retroactively across backlog**: when a class is detected, the fix sweeps across the codebase + the tech-debt backlog for all instances of the class
 3. **File as new class for future prevention**: the class gets encoded as a rule (Sonar / linter / `.claude/rules/` / test pattern) so the system doesn't create new instances
 
-This EXTENDS B-0875 (error-class extraction meta-loop) by naming the per-PR-review-time as the moment when class-extraction happens (not just the batched daily/weekly extraction).
+This EXTENDS 081KSNY2Z0008QG0R000K3ETGB (error-class extraction meta-loop) by naming the per-PR-review-time as the moment when class-extraction happens (not just the batched daily/weekly extraction).
 
 ## Acceptance criteria
 
@@ -53,15 +52,15 @@ This EXTENDS B-0875 (error-class extraction meta-loop) by naming the per-PR-revi
   - Retroactive scan: where else in codebase + tech-debt backlog does this class appear?
   - Sweep PR(s) that fix all instances of the class
   - Rule encoding draft (Sonar custom rule, linter check, `.claude/rules/` entry candidate)
-- Integration with B-0875 (error-class extraction) — finding-to-class promotion lives at this scope
+- Integration with 081KSNY2Z0008QG0R000K3ETGB (error-class extraction) — finding-to-class promotion lives at this scope
 - `.claude/rules/code-review-as-tech-debt-detector-and-avoider.md` — operator-discipline rule (substantive code-review = class-fix; not instance-fix)
 - Tests cover: finding → class promotion correctness; sweep finds-all-instances; rule encoding draft is machine-checkable
 
 ## Composition
 
-- **B-0875** error-class extraction meta-loop — this row is the per-PR-review-time instantiation of the broader extraction loop
-- **B-0876** Clifford-space embedding — class detection composes with the geometric uniqueness check (eventually)
-- **B-0877** heterogeneous reviewer ensemble — different reviewers detect different class shapes
+- **081KSNY2Z0008QG0R000K3ETGB** error-class extraction meta-loop — this row is the per-PR-review-time instantiation of the broader extraction loop
+- **081KSNY2Z0008QG0R003KG3JTG** Clifford-space embedding — class detection composes with the geometric uniqueness check (eventually)
+- **081KSNY2Z0008QG0R0004ZF85W** heterogeneous reviewer ensemble — different reviewers detect different class shapes
 
 ## Substrate-honest framing
 

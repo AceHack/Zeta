@@ -1,9 +1,8 @@
 ---
-id: B-0804
-zetaid: 081KSGS9H0008QG0R0034ZYYR8
+id: 081KSGS9H0008QG0R0034ZYYR8
 priority: P2
 status: open
-title: iter-6.4 — distro-upgrade automation runbook + scripted canary-rollout — cross-channel jumps (e.g., 25.11 → 26.05) need coordinated cluster-wide canary-test + drain-aware rollout that autoUpgrade (B-0801) doesn't cover; "if we reformat every time it's handled by the cluster not a manual operator" per the maintainer 2026-05-26
+title: iter-6.4 — distro-upgrade automation runbook + scripted canary-rollout — cross-channel jumps (e.g., 25.11 → 26.05) need coordinated cluster-wide canary-test + drain-aware rollout that autoUpgrade (081KSGS9H0008QG0R002T6J6FS) doesn't cover; "if we reformat every time it's handled by the cluster not a manual operator" per the maintainer 2026-05-26
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -25,7 +24,7 @@ tags: [iter-6, distro-upgrade, runbook, canary-rollout, automation, cross-channe
 
 The maintainer 2026-05-26: *"lets backlog all that we need to be able to upgrade without having to reformat every time or if we reformat everytime it's handled by the cluster not a manual operator."*
 
-[B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) `system.autoUpgrade` handles within-channel bumps (e.g., `nixos-25.11` channel commits over time). It does NOT handle cross-channel jumps like `nixos-25.11` → `nixos-26.05` because those usually have breaking changes that need:
+[081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) `system.autoUpgrade` handles within-channel bumps (e.g., `nixos-25.11` channel commits over time). It does NOT handle cross-channel jumps like `nixos-25.11` → `nixos-26.05` because those usually have breaking changes that need:
 
 1. Pre-jump canary build + smoke-test on one node
 2. Coordinated cluster-wide drain (workloads need to handle the rolling reboot serially)
@@ -79,7 +78,7 @@ Including: how to read NixOS release notes for breaking changes; the canary disc
 
 #### Sub-target 2 — Orchestrator script
 
-TS + Bun per Rule 0. Idempotent + dry-run-default + clear progress output. Composes with deploy-rs (B-0803) if that's the chosen update-shape; falls back to SSH + nixos-rebuild if autoUpgrade (B-0801) is the chosen shape.
+TS + Bun per Rule 0. Idempotent + dry-run-default + clear progress output. Composes with deploy-rs (081KSGS9H0008QG0R00280HHA7) if that's the chosen update-shape; falls back to SSH + nixos-rebuild if autoUpgrade (081KSGS9H0008QG0R002T6J6FS) is the chosen shape.
 
 #### Sub-target 3 — Cluster-state precondition checks
 
@@ -118,8 +117,8 @@ After cluster-wide rollout:
 
 ## Composes with
 
-- [B-0800](../P1/B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — the FIRST cross-channel jump (24.11 → 25.11) is the empirical anchor for the runbook
-- [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — autoUpgrade handles within-channel; this row handles cross-channel
-- [B-0802](B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) — kured handles per-node drain+reboot inside the rolling rollout
-- [B-0803](B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is one of the rollout backends the orchestrator targets
-- [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — audit surfaces when a cross-channel jump is overdue
+- [081KSGS9H0008QG0R001EKTS5A](../P1/081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — the FIRST cross-channel jump (24.11 → 25.11) is the empirical anchor for the runbook
+- [081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — autoUpgrade handles within-channel; this row handles cross-channel
+- [081KSGS9H0008QG0R003GM7TYN](081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md) — kured handles per-node drain+reboot inside the rolling rollout
+- [081KSGS9H0008QG0R00280HHA7](081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is one of the rollout backends the orchestrator targets
+- [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — audit surfaces when a cross-channel jump is overdue

@@ -1,16 +1,16 @@
-// backlog-ready-notifier.ts — B-0441 slice 4: bus publish (work-assignment topic)
+// backlog-ready-notifier.ts — 081KRFA460008QG0R00229616S slice 4: bus publish (work-assignment topic)
 //
 // Background service that proactively surfaces ready-to-grind backlog rows
 // to agents whose queue is empty. Slice 4 adds bus publish: when ready
 // rows are found, the notifier publishes a `work-assignment` envelope per
-// ready candidate (capped) via the B-0400 protocol.
+// ready candidate (capped) via the 081KR7JY10008QG0R000R503K2 protocol.
 //
 // Queue-state detection (only assign when an agent's queue is empty) is
 // slice 5; slice 4 publishes unconditionally when ready rows exist so the
 // reactive loop is closed end-to-end.
 //
 // Run: bun tools/bg/backlog-ready-notifier.ts [--once] [--poll-min N] [--backlog-dir PATH] [--no-publish] [--agent NAME] [--to NAME] [--max-assignments N]
-// Compose with: B-0441 + B-0400 (bus) + B-0440 (reactive peer).
+// Compose with: 081KRFA460008QG0R00229616S + 081KR7JY10008QG0R000R503K2 (bus) + 081KRFA460008QG0R001KC0VBH (reactive peer).
 import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { publish } from "../bus/bus";
@@ -42,7 +42,7 @@ export const AGENT_MAP = {
     riven: ["riven", "grok"],
 };
 // Strip a YAML inline comment from a parsed depends_on value.
-// Lines like `- B-0395  # operational-resonance-conversation-interface`
+// Lines like `- 081KR50HA0008QG0R0019KYAAS  # operational-resonance-conversation-interface`
 // previously produced the full string (including the comment) as a
 // "dependency ID" which then surfaced as a false-positive dangling-dep
 // warning. YAML's spec treats `#` (preceded by whitespace) as the start
@@ -168,10 +168,10 @@ const REAL_ADAPTERS = {
         //     predictable filename creation in an OS temp dir even when O_EXCL
         //     would defeat the attack.
         //
-        // Residual race (B-0501 spec atomic-write-note + a PR #4449 review
+        // Residual race (081KRHWGX0008QG0R0000P5YP2 spec atomic-write-note + a PR #4449 review
         // finding): the read-modify-write cycle is not flock-serialised, so two
         // concurrent instances can each compute history-deltas from the same
-        // pre-write snapshot and the later rename wins. The B-0501 spec accepts
+        // pre-write snapshot and the later rename wins. The 081KRHWGX0008QG0R0000P5YP2 spec accepts
         // this as best-effort noise. The caller in `pollOnce` mitigates further
         // by reading history again RIGHT BEFORE write and merging.
         try {
@@ -272,7 +272,7 @@ export function pollOnce(config, adapters = REAL_ADAPTERS) {
             note: `queue busy for ${config.targetAgent} — skip publish`,
         };
     }
-    // B-0501 slice 5a: cooldown gate. History is read lazily inside the publish
+    // 081KRHWGX0008QG0R0000P5YP2 slice 5a: cooldown gate. History is read lazily inside the publish
     // branch so dry-runs (`--no-publish`) and ready-row-empty polls don't pay the
     // disk-IO + JSON-parse cost on every cycle. The scan walks readyRows in order
     // and applies cooldown PER ROW so cooled-down rows don't consume the
@@ -316,7 +316,7 @@ export function pollOnce(config, adapters = REAL_ADAPTERS) {
         // finding): re-read the on-disk history immediately before computing the
         // next write and union any rowIds another instance recorded between our
         // initial read and this point. This reduces (but does not strictly
-        // eliminate) the read-modify-write race the B-0501 spec atomic-write-note
+        // eliminate) the read-modify-write race the 081KRHWGX0008QG0R0000P5YP2 spec atomic-write-note
         // classified as acceptable noise. Strict elimination would require flock
         // or an append-only log, both out of scope for slice 5a.
         if (publishedRowIds.length > 0) {

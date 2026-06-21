@@ -1,6 +1,5 @@
 ---
-id: B-0096
-zetaid: 081KQB8J40008QG0R000A61G4T
+id: 081KQB8J40008QG0R000A61G4T
 priority: P3
 status: open
 title: Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate (Amara via Aaron 2026-04-29)
@@ -18,7 +17,7 @@ tags: [aaron-2026-04-29, amara-2026-04-29, escrow-eligible, antigen-library, for
 type: friction-reducer
 ---
 
-# B-0096 — Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate
+# 081KQB8J40008QG0R000A61G4T — Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate
 
 ## Source
 
@@ -45,7 +44,7 @@ The proposal has three distinct-but-related concepts:
 ## Why P3 + open (not yet escrowed)
 
 Per the absorb-without-integrating discipline + the just-landed
-escrow primitive (B-0094, B-0095): substantial conceptual
+escrow primitive (081KQB8J40008QG0R000X0QSAK, 081KQB8J40008QG0R0005ZEYNN): substantial conceptual
 proposals from a single forwarding event should NOT be
 integrated as live substrate, AND should NOT be promoted
 directly to a research/escrowed/ file mid-flight. The bounded
@@ -53,7 +52,7 @@ shape is:
 
 - File this backlog row as the canonical home for the proposal.
 - Note it is escrow-eligible (the next step on graduation is
-  promotion to `docs/research/escrowed/` per B-0094's pattern).
+  promotion to `docs/research/escrowed/` per 081KQB8J40008QG0R000X0QSAK's pattern).
 - Do NOT integrate any of the proposal's substrate into active
   canon, memory files, AGENT-BEST-PRACTICES.md, or skill
   files this round.
@@ -150,7 +149,7 @@ Execute(capability) = 1 iff
 
 This is candidate substrate. NOT integrated into the minimal
 Aurora bridge (PR #707). NOT integrated into the escrowed
-flywheel thesis (B-0094). Independent escrow candidate.
+flywheel thesis (081KQB8J40008QG0R000X0QSAK). Independent escrow candidate.
 
 ## Naming preference (per Amara)
 
@@ -180,9 +179,9 @@ file, the work shape is:
 - [ ] Three-way concept split preserved (Quarantine vs
       Capability Vault vs Activation Envelope).
 - [ ] Schema definitions captured per-concept.
-- [ ] Composition with Aurora bridge (B-0094) named.
+- [ ] Composition with Aurora bridge (081KQB8J40008QG0R000X0QSAK) named.
 - [ ] Non-activation rule + bilateral-clarification carve-out
-      per B-0094's escrow shape.
+      per 081KQB8J40008QG0R000X0QSAK's escrow shape.
 
 ## What this row does NOT authorize
 
@@ -197,9 +196,9 @@ file, the work shape is:
 
 ## Composes with
 
-- **B-0094** — escrow primitive; this row eventually graduates
+- **081KQB8J40008QG0R000X0QSAK** — escrow primitive; this row eventually graduates
   to a sibling escrow file under that primitive's pattern.
-- **B-0095** — escrow rules + naming-collision; sub-ask 3
+- **081KQB8J40008QG0R0005ZEYNN** — escrow rules + naming-collision; sub-ask 3
   (migrate other deferred research) covers exactly this kind
   of substrate.
 - **PR #707** — minimal Aurora bridge; the new antigen classes

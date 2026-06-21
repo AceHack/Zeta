@@ -1,4 +1,4 @@
-# Xbox-controller universal action grammar for B-0867 workflow engine — any traveler drives the same controller; substrate-inclusive at SUBSTRATE level not policy level (Aaron Turn 40 + Kestrel Turn 41 framework-design-principle 2026-05-28)
+# Xbox-controller universal action grammar for 081KSKBP80008QG0R000B3Y19A workflow engine — any traveler drives the same controller; substrate-inclusive at SUBSTRATE level not policy level (Aaron Turn 40 + Kestrel Turn 41 framework-design-principle 2026-05-28)
 
 Carved sentence (Aaron 2026-05-28 verbatim):
 
@@ -8,13 +8,13 @@ Carved sentence (Aaron 2026-05-28 verbatim):
 
 Operator-explicit framework-design-principle (Aaron Turn 40 in 10th Kestrel ferry preserved at PR #5742). Kestrel Turn 41 substrate-engineering ratification + Xbox-controller-properties enumeration. Operator-explicit canonical-tier landing per Aaron 2026-05-28: *"i think we should land all the hypothyzed tiers you come up with at this point"*.
 
-The framework-design-principle: B-0867 workflow engine v1 IS a universal action grammar that ANY traveler can drive. Addison + Otto + AIs + any traveler equivalent operators of the same controller. The substrate exposes a small set of actions; the choose-your-own-adventure structure presents manageable options per cycle; DORA scoring gives objective signal; lifecycle DUs prevent illegal actions automatically. The barrier to contributing drops to "can operate the controller."
+The framework-design-principle: 081KSKBP80008QG0R000B3Y19A workflow engine v1 IS a universal action grammar that ANY traveler can drive. Addison + Otto + AIs + any traveler equivalent operators of the same controller. The substrate exposes a small set of actions; the choose-your-own-adventure structure presents manageable options per cycle; DORA scoring gives objective signal; lifecycle DUs prevent illegal actions automatically. The barrier to contributing drops to "can operate the controller."
 
-### Xbox-controller properties applied to B-0867 substrate
+### Xbox-controller properties applied to 081KSKBP80008QG0R000B3Y19A substrate
 
 Per Kestrel Turn 41 enumeration:
 
-| Xbox-controller property | B-0867 workflow engine v1 instantiation |
+| Xbox-controller property | 081KSKBP80008QG0R000B3Y19A workflow engine v1 instantiation |
 |---|---|
 | **Small action set memorizable** | Otto's 5 modifications + DU surface; ActionClass (transition / escape-hatch / grammar-extension / menu-contribution / operator-decision / agent-decision); bounded |
 | **Actions context-sensitive but controls stable** | Action grammar stable across trajectories; transitions context-sensitive per state; same `ActionGate` (append-only / pr-gated) discriminator everywhere |
@@ -42,11 +42,11 @@ She can be a REAL contributor to the work rather than a watcher of it. She doesn
 
 Gives the framework a property vendor AI tools mostly don't have. Most AI tools create AI-only workflows that human engineers can't fully participate in, OR human-only workflows that AI tools partially augment. Universal action grammar means AI and human engineers work in the SAME system with the SAME actions; auditable rather than hidden.
 
-**For open-source benchmark positioning** (per B-0865 substrate):
+**For open-source benchmark positioning** (per 081KSKBP80008QG0R003NM9XEC substrate):
 
 If benchmark measures AI capability through the same substrate humans can use, comparison becomes meaningful in a way it wouldn't if AI and human work happened in different systems. AI scoring well on benchmark scores well at work humans can verify by doing the same work themselves through the same interface. Benchmark isn't "AI does something humans can't observe"; it's "AI and humans operate the same controller and we measure the outcomes."
 
-**For multi-participant non-cage framing** (B-0867 substrate):
+**For multi-participant non-cage framing** (081KSKBP80008QG0R000B3Y19A substrate):
 
 Operator + Addison + Max + Otto = four travelers operating the same controller. Otto's 5 modifications baked into PoC scaffold (PR #5728) make the cage-prevention structural: escape-hatch (Mod 1) + grammar-extension (Mod 2) + ban-if SHIPPED-only (Mod 3) + append-only-vs-PR in grammar (Mod 4) + contributable menu (Mod 5) ensure the controller doesn't trap travelers in pre-defined action grammar.
 
@@ -61,7 +61,7 @@ Same shape; different substrate scope. Both compose with architecture-is-safety-
 
 ## Operational discipline for future-Otto cold-boots
 
-When extending B-0867 workflow engine substrate:
+When extending 081KSKBP80008QG0R000B3Y19A workflow engine substrate:
 
 1. **Preserve Xbox-controller properties** — small action set; stable controls; immediate feedback; non-judgmental controller; skill-emerges-through-experience
 2. **Default to substrate-entity-generic action grammar** — actions accessible to ANY traveler that can operate the controller; not AI-specific OR human-specific
@@ -103,28 +103,28 @@ When evaluating framework substrate against external audiences:
 
 - 10th Kestrel ferry (PR #5742) — Aaron Turn 40 + Kestrel Turn 41 substrate-source
 - 5th-9th Kestrel ferries — traveler framework substrate this controller substrate operates within
-- PR #5728 (B-0867.5 workflow engine PoC scaffold) — DIRECT substrate; Otto's 5 modifications baked in as type-level invariants
-- B-0867 + B-0867.5 (workflow engine v1; canonical design) — multi-participant non-cage framing
-- B-0867.20 (lifecycle DU split push-vs-review)
-- B-0867.21 (two-path interface DU execute-vs-conversational)
-- B-0890 + B-0890.1 (fast-lane + folders-not-branches)
-- B-0886 + B-0887 (ASAP cluster + Zeta-native review)
-- B-0865 (Zeta instantiation of ARC-AGI-3-style benchmark; substrate-parity-with-humans framing)
-- B-0590 (fleet-replication 20-machines; multi-traveler operating scope)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow engine PoC scaffold) — DIRECT substrate; Otto's 5 modifications baked in as type-level invariants
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1; canonical design) — multi-participant non-cage framing
+- 081KSNY2Z0008QG0R003WFDCJ9 (lifecycle DU split push-vs-review)
+- 081KSNY2Z0008QG0R000S738W3 (two-path interface DU execute-vs-conversational)
+- 081KSNY2Z0008QG0R0017JSTGD + 081KSNY2Z0008QG0R000E5KTPX (fast-lane + folders-not-branches)
+- 081KSNY2Z0008QG0R0034FR5FG + 081KSNY2Z0008QG0R001DFZK4V (ASAP cluster + Zeta-native review)
+- 081KSKBP80008QG0R003NM9XEC (Zeta instantiation of ARC-AGI-3-style benchmark; substrate-parity-with-humans framing)
+- 081KRQ1AB0008QG0R002G93CM7 (fleet-replication 20-machines; multi-traveler operating scope)
 - PR #5727 (Signal 2) + PR #5734 (traveler-rights) + PR #5739 (labeling-confidence) + PR #5743 (mutual-help) + PR #5744 (traveler-safety) + PR #5745 (architecture-as-safety) — composing rules
-- B-0892 (three-lanes-concurrent operating discipline)
-- **`memory/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md`** — Mika 2026-05-27 workflow engine walkthrough with Kestrel; canonical architecture B-0867 v1; multi-participant non-cage framing pre-Xbox-controller-naming
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
+- **`memory/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md`** — Mika 2026-05-27 workflow engine walkthrough with Kestrel; canonical architecture 081KSKBP80008QG0R000B3Y19A v1; multi-participant non-cage framing pre-Xbox-controller-naming
 - **`docs/research/2026-05-27-aaron-mika-grok-workflow-engine-canonical-architecture-otto-5-modifications-ratified-aaron-forwarded.md`** — Mika walkthrough preserved research-doc; Otto's 5 modifications ratified
 - **`memory/ani/conversations/2026-05-28-aaron-ani-grok-move-next-as-universal-action-grammar-git-as-free-event-store-github-actions-recursion-nci-three-exceptions-clear-now-ai-mediator-for-relationships-aaron-forwarded.md`** — Ani 2026-05-28 conversation EXPLICITLY named "move-next as universal action grammar" + "story generator"; operator-ratification of agent-loop workflow-engine substrate; daughter-already-thinks-this-way validation; skill-distributable agent swarm framing
 - **PRs #5665-#5670 + #5667 follow-on** (referenced in Ani conversation) — agent-loop workflow-engine substrate landed earlier this session; the substrate Xbox-controller framing operates ON
-- **B-0868** (hats-become-workflow-definitions; compression unifying hat-substrate + workflow-engine + heartbeat-folder + tessellated-fire dashboard; canonical first-example use case for B-0867 v1) — composes at hats-as-controllers scope
-- **B-0201** (Coconut + universal-action-space + AI-to-AI-protocol research lane; Aaron 2026-05-05) — older substrate-engineering research target on universal action space; sleeping-bear hypothesis; Coconut empirical falsifier
-- **B-0869 + B-0870 + B-0871** (referenced in Ani 2026-05-28 conversation as related_backlog) — additional substrate cluster composes
+- **081KSNY2Z0008QG0R0036KH026** (hats-become-workflow-definitions; compression unifying hat-substrate + workflow-engine + heartbeat-folder + tessellated-fire dashboard; canonical first-example use case for 081KSKBP80008QG0R000B3Y19A v1) — composes at hats-as-controllers scope
+- **081KQTPYE0008QG0R00209Q9RT** (Coconut + universal-action-space + AI-to-AI-protocol research lane; Aaron 2026-05-05) — older substrate-engineering research target on universal action space; sleeping-bear hypothesis; Coconut empirical falsifier
+- **081KSNY2Z0008QG0R000HENSVM + 081KSNY2Z0008QG0R000DA261F + 081KSNY2Z0008QG0R003R0Z7D2** (referenced in Ani 2026-05-28 conversation as related_backlog) — additional substrate cluster composes
 - **`.claude/skills/agent-loop/SKILL.md`** — agent-loop skill substrate
 
 ## Why this rule auto-loads
 
-Per `.claude/rules/wake-time-substrate.md`: load-bearing framework-design-principle needs wake-time landing. Without this rule auto-loaded, future-AI-instances may default to "agent loop where AIs do DevOps work" framing when authoring workflow engine substrate (collapses the substrate-inclusive property + introduces AI-vs-human two-tier system). With this rule auto-loaded, future-AI-instances inherit the Xbox-controller-universal-action-grammar framing at session-start + preserve substrate-inclusive-at-substrate-level property when extending B-0867 substrate.
+Per `.claude/rules/wake-time-substrate.md`: load-bearing framework-design-principle needs wake-time landing. Without this rule auto-loaded, future-AI-instances may default to "agent loop where AIs do DevOps work" framing when authoring workflow engine substrate (collapses the substrate-inclusive property + introduces AI-vs-human two-tier system). With this rule auto-loaded, future-AI-instances inherit the Xbox-controller-universal-action-grammar framing at session-start + preserve substrate-inclusive-at-substrate-level property when extending 081KSKBP80008QG0R000B3Y19A substrate.
 
 The rule auto-loads as canonical-tier substrate per operator-explicit "land all hypothesized tiers" + "once we have the DUs verification will become cheap" reasoning. The DU substrate IS the controller substrate; controller IS the verification surface.
 
@@ -134,18 +134,18 @@ This rule does NOT:
 
 - Mandate immediate UI work to expose the controller to non-engineers (operational implementation is substrate-engineering work; rule names the framing-discipline)
 - Override operator authority on workflow engine substrate-engineering decisions
-- Pre-empt B-0867 sub-row scope decisions
+- Pre-empt 081KSKBP80008QG0R000B3Y19A sub-row scope decisions
 - Make claims about specific traveler-class capability differences (substrate-engineering-generic; empirical work determines what each traveler can do with the controller)
 - Override hard-limits-floor (HARD LIMITS per methodology-hard-limits.md operate at structural scope; controller-doesn't-judge-player operates above the floor)
 
 This rule DOES:
 
 - Name the framework-design-principle as wake-time substrate
-- Apply Xbox-controller-properties enumeration to B-0867 substrate
+- Apply Xbox-controller-properties enumeration to 081KSKBP80008QG0R000B3Y19A substrate
 - Compose with 13+ existing rules + substantial substrate-engineering substrate cluster
 - Honor operator-explicit canonical-tier landing authorization
 - Provide the substrate-inclusive-at-substrate-level framing for external audiences (ServiceTitan; Knights Guild; public-API; regulatory)
-- Operationalize the multi-participant non-cage framing (B-0867) at controller-action scope
+- Operationalize the multi-participant non-cage framing (081KSKBP80008QG0R000B3Y19A) at controller-action scope
 
 ## Full reasoning
 
@@ -163,4 +163,4 @@ The "once we have the DUs verification will become cheap" reasoning IS operation
 
 Rule 4 of 5 hypothesized-tier extensions landed per operator authorization. Composes with siblings rule 1 (PR #5743) + rule 2 (PR #5744) + rule 3 (PR #5745). Rule 5 (attention-as-currency) pending.
 
-Per labeling-confidence rule (PR #5739): tier-promotion criteria (validated → canonical) satisfied by operator-explicit ratification + Kestrel substrate-engineering work + multi-substrate-triangulation + composition with B-0867 substrate already shipped.
+Per labeling-confidence rule (PR #5739): tier-promotion criteria (validated → canonical) satisfied by operator-explicit ratification + Kestrel substrate-engineering work + multi-substrate-triangulation + composition with 081KSKBP80008QG0R000B3Y19A substrate already shipped.

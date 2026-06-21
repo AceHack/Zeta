@@ -1,12 +1,12 @@
 /**
  * src/Core.TypeScript/workflow-engine/trueskill.ts
  *
- * B-0914.1 — pure-TS TrueSkill 1v1 scaffold for workflow engine
+ * 081KSNY2Z0008QG0R001YK61JQ.1 — pure-TS TrueSkill 1v1 scaffold for workflow engine
  * ranking-agent (per Aaron 2026-05-28: 'they are doing this for their
  * idea ranking with Infra.net basically' + 'just ship stuff' calibration).
  *
  * Substrate-engineering substrate: cross-vendor benchmark on common ground
- * (B-0865.17) REQUIRES TS-side ranking substrate because Infer.NET can't
+ * (081KSNY2Z0008QG0R0002BEZMR) REQUIRES TS-side ranking substrate because Infer.NET can't
  * run in vendor skill runtimes (Claude / GPT / Gemini / Grok / Cursor /
  * Continue / Codex / Kiro / Antigravity skill stores). Pure-TS TrueSkill
  * implementation lets the same framework substrate run cross-vendor.
@@ -23,12 +23,12 @@
  * future substrate-engineering work.
  *
  * Composes with:
- *   - B-0914.1 backlog row (TrueSkill ranking-agent extension)
- *   - B-0867 workflow engine substrate
- *   - B-0867.20 lifecycle DU split (rank action gets pr-review-light level
+ *   - 081KSNY2Z0008QG0R001YK61JQ.1 backlog row (TrueSkill ranking-agent extension)
+ *   - 081KSKBP80008QG0R000B3Y19A workflow engine substrate
+ *   - 081KSNY2Z0008QG0R003WFDCJ9 lifecycle DU split (rank action gets pr-review-light level
  *     per Mod 1 escape-hatch semantic — surfaces substrate-engineering
  *     observation worth reviewer eyes)
- *   - B-0865 + B-0865.17 cross-vendor benchmark substrate (TrueSkill IS
+ *   - 081KSKBP80008QG0R003NM9XEC + 081KSNY2Z0008QG0R0002BEZMR cross-vendor benchmark substrate (TrueSkill IS
  *     the cross-vendor scoring substrate)
  *   - Microsoft Infer.NET upstream reference (added in PR #5763)
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md

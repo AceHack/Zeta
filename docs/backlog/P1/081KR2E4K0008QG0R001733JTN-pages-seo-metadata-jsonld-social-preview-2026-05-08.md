@@ -1,6 +1,5 @@
 ---
-id: B-0371
-zetaid: 081KR2E4K0008QG0R001733JTN
+id: 081KR2E4K0008QG0R001733JTN
 priority: P1
 status: open
 title: "Pages discoverability - SEO metadata, JSON-LD, and social previews"
@@ -14,7 +13,7 @@ owners: [architect, docs]
 type: friction-reducer
 ---
 
-# B-0284 - SEO metadata and structured data
+# 081KR2E4K0008QG0R0028VW6B3 - SEO metadata and structured data
 
 Define the metadata layer for the GitHub Pages site once the
 content inventory exists.

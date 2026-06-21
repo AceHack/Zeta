@@ -1,5 +1,5 @@
 <!--
-Eval-set fixture support file for substrate-claim-checker (B-0170.4).
+Eval-set fixture support file for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV.4).
 
 This is the "predecessor ADR" half of the convention-drift fixture pair.
 It is intentionally missing the top-of-file "**Superseded by**" marker

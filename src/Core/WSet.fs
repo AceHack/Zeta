@@ -2,7 +2,7 @@
 // in tests? we need in real code"). Rodney's Razor (2026-06-11, PR #7802) had demoted this to a test fixture —
 // "essential as mathematics, accidental as code; zero non-test consumers" — and that dissent
 // stays on record as ADVISORY: the human maintainer set the product direction instead — the
-// ring-generic type IS intended substrate for the quantum lane (B-1029), the inference port, and
+// ring-generic type IS intended substrate for the quantum lane (081KTWJ1R0008QG0R001ZBWKTR), the inference port, and
 // future ring instances; consumers arrive ON the shelf, not before it exists. Both registers are
 // kept honestly: the razor's bar is now met by the source-side `QuantumObservableDbsp` bridge, which
 // turns `MachZehnderWSet` output into observable rows and a `ZSet<QuantumObservableRow>`.
@@ -10,7 +10,7 @@ namespace Zeta.Core
 
 open Zeta.Core.Abstractions
 
-/// WSet — **the ring-generic weighted set: three rings, one circuit calculus** (B-1032; Aaron
+/// WSet — **the ring-generic weighted set: three rings, one circuit calculus** (081KTZ4EF0008QG0R001R3XPYV; Aaron
 /// 2026-06-11, PR #7785: "can we connect ZSet circuit to quantum circuit?" / "Infer.NET circuits the same
 /// way?" — same answer, one type). A `WSet<'K,'W>` is a Z-set whose weights live in ANY *-ring:
 ///

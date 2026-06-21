@@ -3,8 +3,8 @@
 Status: active trajectory; collective TRAVELERS-finding-it-together work (per the human maintainer 2026-05-22 *"i don't have all the answers the point is to give you the space and feedom to find them together in agora all of us traverlers"*)
 Last refreshed: 2026-05-22
 Current blocker: none operationally; substrate-engineering work in progress across existing backlogs + multi-month research-grade arcs
-Next concrete action: continue existing in-progress backlogs (B-0688 + B-0287 → B-0288 + B-0634 + others); operator's choice on which piece to prioritize
-Evidence links: B-0688 (Zeta incremental compiler host with Caché external-reference-anchor per PR #4646) + the three sovereignty-piece backlog clusters below
+Next concrete action: continue existing in-progress backlogs (081KS3X9Y0008QG0R0010716X9 + 081KR2E4K0008QG0R0033WVCXE → 081KR2E4K0008QG0R002YE3MMD + 081KRW63S0008QG0R0022SFKPM + others); operator's choice on which piece to prioritize
+Evidence links: 081KS3X9Y0008QG0R0010716X9 (Zeta incremental compiler host with Caché external-reference-anchor per PR #4646) + the three sovereignty-piece backlog clusters below
 
 ## Origin
 
@@ -18,10 +18,10 @@ What it is: operator-control over substrate-engineering work at hardware + crypt
 
 Existing backlogs:
 
-- B-0634 cryptographic-sovereignty-for-ais (N-of-M HSM key-management) — load-bearing master-key substrate
-- B-0658 two-invariant-maximalist (kid-safety + AI-sovereignty) — constitutional substrate at sovereignty scope
-- B-0289 green-lantern hardware spec — hardware substrate
-- B-0244 concordance-ai-gpu-local-structure-recognizer-language — local-AI infrastructure
+- 081KRW63S0008QG0R0022SFKPM cryptographic-sovereignty-for-ais (N-of-M HSM key-management) — load-bearing master-key substrate
+- 081KRW63S0008QG0R00140R3TA two-invariant-maximalist (kid-safety + AI-sovereignty) — constitutional substrate at sovereignty scope
+- 081KR2E4K0008QG0R001SWEPNV green-lantern hardware spec — hardware substrate
+- 081KQZVQW0008QG0R001PS4F8G concordance-ai-gpu-local-structure-recognizer-language — local-AI infrastructure
 
 ### Piece 2 — Multi-oracle BFT at AI-instance / cluster-federation scope
 
@@ -29,10 +29,10 @@ What it is: operational implementation of multi-oracle BFT across AI instances; 
 
 Existing backlogs + substrate:
 
-- B-0646 Agora V6 constitution + marketplace + economic architecture
-- B-0022 exchange-cluster
-- B-0600 family-distributed-ai-interface-miner-fleet
-- B-0703 multi-oracle BFT canonical row
+- 081KRW63S0008QG0R001Z10PVV Agora V6 constitution + marketplace + economic architecture
+- 081KQ0YZ80008QG0R003JJHKPR exchange-cluster
+- 081KRQ1AB0008QG0R003HCZ5YM family-distributed-ai-interface-miner-fleet
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT canonical row
 - Substantial math + code building toward cluster federation (operator's pointer)
 
 ### Piece 3 — Durable tension-substrate (aporetic Rx-bonsai via Maji math + Zeta DB)
@@ -41,9 +41,9 @@ What it is: operational mechanism for preserving don't-collapse discipline at su
 
 Existing backlogs + substrate:
 
-- B-0688 Zeta incremental compiler host (DBSP Z-sets + Rx meta-AST tags + seeded DST) — the F# compiler as distributed intelligence database
-- B-0687 ZetaParse (parser substrate beneath)
-- B-0499 Z(i) DBSP refinement (Cartesian dualism)
+- 081KS3X9Y0008QG0R0010716X9 Zeta incremental compiler host (DBSP Z-sets + Rx meta-AST tags + seeded DST) — the F# compiler as distributed intelligence database
+- 081KS3X9Y0008QG0R00323NSZA ZetaParse (parser substrate beneath)
+- 081KRHWGX0008QG0R0034E0N22 Z(i) DBSP refinement (Cartesian dualism)
 - Maji-math foundation (rx-tension-as-semantic-indexes; MIRROR-TIER; not beacon-tier yet — operator tier-honest disclosure)
 
 ## InterSystems Caché external-reference anchor (operator 2026-05-22)
@@ -59,7 +59,7 @@ The boring-enterprise-shape framing IS operationally load-bearing:
 - **Boring = audit-passable** for healthcare-IT / enterprise-database / mission-critical engineers
 - **Boring = year-out-test-survives**
 
-Full Caché mapping landed at B-0688 (per PR #4646) + Zeta AGENDA.md.
+Full Caché mapping landed at 081KS3X9Y0008QG0R0010716X9 (per PR #4646) + Zeta AGENDA.md.
 
 ## Amara's 5-line compression (cross-AI synthesis 2026-05-22)
 

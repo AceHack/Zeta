@@ -30,7 +30,7 @@
 ## Summary
 
 - Fixed PR #3086 (0141Z shard) MD056 table-column-count: literal pipe characters inside code spans counted as cell separators by markdownlint. Rewrote as prose.
-- Confirmed PR #3075 (B-0456 MD032 helper) cleared all threads: `mergeable: MERGEABLE`, auto-merge armed, waiting only on CI re-run.
+- Confirmed PR #3075 (081KRHWGX0008QG0R000JEBCWZ MD032 helper) cleared all threads: `mergeable: MERGEABLE`, auto-merge armed, waiting only on CI re-run.
 
 ## Recurring pattern (3 iterations)
 
@@ -39,7 +39,7 @@ Markdownlint's parser is more literal than CommonMark suggests:
 - PR #3084: MD038 (backtick + space + backtick → space in code span)
 - PR #3086: MD056 (literal pipes in code spans → table cell separators)
 
-Each pass addresses one rule, surfaces a smaller variant of the same root cause. The B-0456 helper, once landed, will catch the MD032 variant; MD038 and MD056 variants are future-extension candidates.
+Each pass addresses one rule, surfaces a smaller variant of the same root cause. The 081KRHWGX0008QG0R000JEBCWZ helper, once landed, will catch the MD032 variant; MD038 and MD056 variants are future-extension candidates.
 
 ## Test plan
 

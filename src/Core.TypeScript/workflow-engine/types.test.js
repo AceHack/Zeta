@@ -1,13 +1,13 @@
 /**
  * src/Core.TypeScript/workflow-engine/types.test.ts
  *
- * B-0867.5 PoC — invariant tests for declarative type substrate.
+ * 081KDWZ8TS008QG0R0020NJ9D0 PoC — invariant tests for declarative type substrate.
  *
  * Run via: bun test src/Core.TypeScript/workflow-engine/
  */
 import { describe, expect, it } from "bun:test";
 import { SEED_ACTION_CATALOG, SEED_STATES, determineReviewLevel, validateCatalog, validateStateOtto5Mods, } from "./types";
-describe("B-0867.5 workflow-engine scaffold invariants", () => {
+describe("081KDWZ8TS008QG0R0020NJ9D0 workflow-engine scaffold invariants", () => {
     it("seed catalog has unique action ids", () => {
         const ids = new Set(SEED_ACTION_CATALOG.map((a) => a.id));
         expect(ids.size).toBe(SEED_ACTION_CATALOG.length);
@@ -91,7 +91,7 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
         }
     });
 });
-describe("B-0867.20 determineReviewLevel lifecycle DU discriminator", () => {
+describe("081KSNY2Z0008QG0R003WFDCJ9 determineReviewLevel lifecycle DU discriminator", () => {
     // Per Kestrel substantive substrate-engineering substrate (13th ferry §33.5)
     // + Aaron's substrate-check on 3-lane completion (Amara ferry §33.2 PR #5757):
     // discriminator must preserve the state-machine-events-direct-push vs

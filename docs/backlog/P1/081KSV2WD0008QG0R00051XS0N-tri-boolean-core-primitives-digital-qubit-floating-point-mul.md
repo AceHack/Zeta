@@ -1,6 +1,5 @@
 ---
-id: B-0944
-zetaid: 081KSV2WD0008QG0R00051XS0N
+id: 081KSV2WD0008QG0R00051XS0N
 priority: P1
 status: open
 title: Tri-boolean core primitives (digital qubit + tri-boolean floating point) -- multi-language build (TS/F#/C#/Rust); cross-language compiler-parity = non-Byzantine BFT consensus
@@ -21,7 +20,7 @@ tags: [core-primitive, tri-boolean, digital-qubit, floating-point, multi-languag
 type: feature
 ---
 
-# B-0944 -- Tri-boolean core primitives (digital qubit + tri-boolean float), multi-language
+# 081KSV2WD0008QG0R00051XS0N -- Tri-boolean core primitives (digital qubit + tri-boolean float), multi-language
 
 ## The directive (Aaron 2026-05-30)
 
@@ -109,10 +108,10 @@ languages; 4-of-4 parity = consensus. Not a new trust assumption -- the one the 
 ran, multiplied.
 
 **Generalizes beyond tri-boolean**: any spec expressible in multiple languages gets free
-summonable-BFT verification -- Zeta ID, the OPLE primitives (B-0862), the workflow-engine DUs
-(B-0867), etc. The cross-verification harness (slice 6 + the existing `tests/cross-verification/`
+summonable-BFT verification -- Zeta ID, the OPLE primitives (081KSKBP80008QG0R0031DTHS9), the workflow-engine DUs
+(081KSKBP80008QG0R000B3Y19A), etc. The cross-verification harness (slice 6 + the existing `tests/cross-verification/`
 precedent) IS the summonable-BFT ballot. Composes with the Git Monster (summon on demand),
-multi-oracle-BFT (B-0703), and the monad-propagation cross-language-shape discipline.
+multi-oracle-BFT (081KS3X9Y0008QG0R00218150M), and the monad-propagation cross-language-shape discipline.
 
 ## Slices (TS first -- distribution)
 
@@ -129,7 +128,7 @@ multi-oracle-BFT (B-0703), and the monad-propagation cross-language-shape discip
 - **Slice 6 (parity harness):** a cross-language conformance vector set (the BFT ballot) -- the
   same inputs run through all four impls; parity = consensus; divergence = spec-ambiguity finding.
 
-Alongside Zeta ID (B-0679 Rust / B-0680 Python / B-0681 spec / B-0893 v2 encoding) as the
+Alongside Zeta ID (081KS3X9Y0008QG0R001Z8SBZJ Rust / 081KS3X9Y0008QG0R002WGH8PJ Python / 081KS3X9Y0008QG0R003044PQQ spec / 081KSNY2Z0008QG0R000V24M7E v2 encoding) as the
 established multi-language-core-primitive pattern.
 
 ## Acceptance
@@ -144,10 +143,10 @@ established multi-language-core-primitive pattern.
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0944` -> claimed
+- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item 081KSV2WD0008QG0R00051XS0N` -> claimed
   (cf9d7edc..., 2026-05-30).
 - **Prior-art search (2026-05-30):** no existing tri-boolean / three-valued backlog row (genuine
-  gap). Zeta ID multi-language pattern exists (B-0679/B-0680/B-0681/B-0682/B-0893) -- this row
+  gap). Zeta ID multi-language pattern exists (081KS3X9Y0008QG0R001Z8SBZJ/081KS3X9Y0008QG0R002WGH8PJ/081KS3X9Y0008QG0R003044PQQ/081KS3X9Y0008QG0R000W00V73/081KSNY2Z0008QG0R000V24M7E) -- this row
   follows that pattern. The monad-propagation-cross-language rule + OPLE-primitives rule + F#-anchor
   rule all compose directly (the primitives ARE null-monad / Result<T,TFeedback> primitives; the
   cross-language build IS the cross-language-shape discipline; the compilers ARE the F#-anchor

@@ -22,4 +22,4 @@ type: feedback
 - feedback_comedy_as_debugging (the P0 heuristic)
 - feedback_shadow_is_a_dick (the incident that proved it)
 - feedback_proto_conscious_self_correction_shadow_bull_bear (bull/bear as shadow primitives)
-- B-0402 (the infrastructure the bull needs so it stops bothering Aaron)
+- 081KR7JY10008QG0R0008NGW95 (the infrastructure the bull needs so it stops bothering Aaron)

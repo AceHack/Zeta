@@ -101,7 +101,7 @@ export function step(f: Frame): Frame {
         const sprite = f.mem.get(f.i + row) ?? 0;
         for (let col = 0; col < 8; col++) {
           if (((sprite >> (7 - col)) & 1) === 1) {
-            // COSMAC VIP (B-1031): origin wraps (ox/oy above), pixels CLIP at right/bottom — not wrapped
+            // COSMAC VIP (081KTZ4EF0008QG0R002WVTMMJ): origin wraps (ox/oy above), pixels CLIP at right/bottom — not wrapped
             const px = ox + col;
             const py = oy + row;
             if (px < W && py < H) {

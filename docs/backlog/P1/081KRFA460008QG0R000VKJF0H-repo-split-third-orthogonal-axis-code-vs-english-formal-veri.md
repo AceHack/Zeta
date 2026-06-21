@@ -1,6 +1,5 @@
 ---
-id: B-0427
-zetaid: 081KRFA460008QG0R000VKJF0H
+id: 081KRFA460008QG0R000VKJF0H
 priority: P1
 status: decomposed
 title: "Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test"
@@ -39,9 +38,9 @@ it will help with composablity of our depdendies."*
 
 | Axis | Values | Origin |
 |---|---|---|
-| **Axis 1** | Factory / Product / Owner-only | B-0424 + B-0425 + PR #2905 |
-| **Axis 2** | Mirror / Beacon | B-0426 + PR #2910 |
-| **Axis 3** | Code / English (+ formal-verification sub-axis) | THIS / B-0427 |
+| **Axis 1** | Factory / Product / Owner-only | 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + PR #2905 |
+| **Axis 2** | Mirror / Beacon | 081KRFA460008QG0R0007RWSN1 + PR #2910 |
+| **Axis 3** | Code / English (+ formal-verification sub-axis) | THIS / 081KRFA460008QG0R000VKJF0H |
 
 All three axes apply simultaneously per
 `.claude/rules/default-to-both.md`.
@@ -104,9 +103,9 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Composes with
 
-- B-0424 (three-repo split Stage 1 — factory)
-- B-0425 (product-repo split planning)
-- B-0426 (Axis 2 — Mirror/Beacon)
+- 081KRFA460008QG0R001H98EXJ (three-repo split Stage 1 — factory)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning)
+- 081KRFA460008QG0R0007RWSN1 (Axis 2 — Mirror/Beacon)
 - PR #2909 (civsim language mirror/beacon governance)
 - PR #2910 (Axis 2 substrate)
 - PR #2905 (forker-perspective META-discipline)
@@ -126,17 +125,17 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - Per-repo split decisions made
 - Formal-verification per-property-class evaluation complete
 - ADR recording the three-axis design decision (extends
-  2026-04-22 three-repo-split ADR + B-0426 mirror/beacon ADR)
+  2026-04-22 three-repo-split ADR + 081KRFA460008QG0R0007RWSN1 mirror/beacon ADR)
 - Backlog row closed with PR link to ADR + per-repo decisions
 
 ## Why P1
 
-- Composes with B-0424 + B-0425 + B-0426 (sibling backlog
+- Composes with 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + 081KRFA460008QG0R0007RWSN1 (sibling backlog
   rows)
 - Aaron has explicitly named the orthogonality
 - Composes with substrate cascade from this session (three
   orthogonal axes named within ~30 min)
-- Unblocks Stage 1 Factory split (B-0424) by clarifying
+- Unblocks Stage 1 Factory split (081KRFA460008QG0R001H98EXJ) by clarifying
   axis-3 classification
 - Strategic-substrate (per PR #2902) composes with formal-
   verification governance gate
@@ -147,18 +146,18 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 Dependency order:
 
 ```
-B-0475 (prior-art gate, no deps)
-    ├── B-0476 (ruleset divergence audit)   ─┐
-    ├── B-0477 (Code/English classification) ─┤→ B-0479 (ADR — terminal)
-    └── B-0478 (FV sub-axis evaluation)     ─┘
+081KRHWGX0008QG0R000M9RFY2 (prior-art gate, no deps)
+    ├── 081KRHWGX0008QG0R000BS8Y4R (ruleset divergence audit)   ─┐
+    ├── 081KRHWGX0008QG0R002893S6E (Code/English classification) ─┤→ 081KRHWGX0008QG0R0023DWW8D (ADR — terminal)
+    └── 081KRHWGX0008QG0R0008EYYCA (FV sub-axis evaluation)     ─┘
 ```
 
 | Row | Title | Type | Deps |
 |-----|-------|------|------|
-| [B-0475](B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md) | Axis-3 prior-art audit | research | none |
-| [B-0476](B-0476-github-ruleset-divergence-audit-2026-05-14.md) | GitHub ruleset divergence audit | research | B-0475 |
-| [B-0477](B-0477-axis3-code-english-classification-matrix-2026-05-14.md) | Code/English classification matrix | research | B-0475 |
-| [B-0478](B-0478-formal-verification-repo-split-evaluation-2026-05-14.md) | FV sub-axis per-property-class evaluation | research | B-0475 |
-| [B-0479](B-0479-axis3-adr-code-english-formal-verification-design-2026-05-14.md) | Axis-3 ADR (terminal) | adr | B-0476, B-0477, B-0478 |
+| [081KRHWGX0008QG0R000M9RFY2](081KRHWGX0008QG0R000M9RFY2-axis3-prior-art-substrate-consistency-audit-2026-05-14.md) | Axis-3 prior-art audit | research | none |
+| [081KRHWGX0008QG0R000BS8Y4R](081KRHWGX0008QG0R000BS8Y4R-github-ruleset-divergence-audit-2026-05-14.md) | GitHub ruleset divergence audit | research | 081KRHWGX0008QG0R000M9RFY2 |
+| [081KRHWGX0008QG0R002893S6E](081KRHWGX0008QG0R002893S6E-axis3-code-english-classification-matrix-2026-05-14.md) | Code/English classification matrix | research | 081KRHWGX0008QG0R000M9RFY2 |
+| [081KRHWGX0008QG0R0008EYYCA](081KRHWGX0008QG0R0008EYYCA-formal-verification-repo-split-evaluation-2026-05-14.md) | FV sub-axis per-property-class evaluation | research | 081KRHWGX0008QG0R000M9RFY2 |
+| [081KRHWGX0008QG0R0023DWW8D](081KRHWGX0008QG0R0023DWW8D-axis3-adr-code-english-formal-verification-design-2026-05-14.md) | Axis-3 ADR (terminal) | adr | 081KRHWGX0008QG0R000BS8Y4R, 081KRHWGX0008QG0R002893S6E, 081KRHWGX0008QG0R0008EYYCA |
 
-B-0476, B-0477, and B-0478 can be worked in parallel after B-0475 closes.
+081KRHWGX0008QG0R000BS8Y4R, 081KRHWGX0008QG0R002893S6E, and 081KRHWGX0008QG0R0008EYYCA can be worked in parallel after 081KRHWGX0008QG0R000M9RFY2 closes.

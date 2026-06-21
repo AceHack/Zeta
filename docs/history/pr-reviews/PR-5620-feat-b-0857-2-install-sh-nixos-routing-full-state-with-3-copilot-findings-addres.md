@@ -40,7 +40,7 @@ PR #5606 will be closed with cross-reference to this PR.
 | macOS | \`uname -s = Darwin\` | \`setup/macos.sh\` |
 | Linux non-NixOS | no \`/etc/NIXOS\` | \`setup/linux.sh\` |
 | NixOS installed | \`/etc/NIXOS\` + no \`/.dockerenv\` + no \`/iso\` + no \`/run/initramfs\` | \`setup/linux.sh\` |
-| NixOS docker test harness | \`/etc/NIXOS\` + \`/.dockerenv\` (B-0849 harness) | \`setup/linux.sh\` (discriminator-2 short-circuit) |
+| NixOS docker test harness | \`/etc/NIXOS\` + \`/.dockerenv\` (081KSKBP80008QG0R000E3RKPK harness) | \`setup/linux.sh\` (discriminator-2 short-circuit) |
 | NixOS live-USB | \`/etc/NIXOS\` + (\`/iso\` OR \`/run/initramfs\`) | \`exit 2\` + message pointing to \`zeta-install.sh\` |
 
 ## Copilot findings addressed (from PR #5606)
@@ -53,9 +53,9 @@ PR #5606 will be closed with cross-reference to this PR.
 
 ### Finding 2 (P1, line 36) — name attribution
 
-**Was**: \"Per B-0857 operator framing (Aaron 2026-05-27):\"
+**Was**: \"Per 081KSKBP80008QG0R002J03WGA operator framing (Aaron 2026-05-27):\"
 
-**Fixed**: \"Per B-0857 operator framing (2026-05-27):\" per name-attribution convention.
+**Fixed**: \"Per 081KSKBP80008QG0R002J03WGA operator framing (2026-05-27):\" per name-attribution convention.
 
 ### Finding 3 (P1, line 111) — relative path
 
@@ -71,7 +71,7 @@ Copilot flagged \"\`full-ai-cluster/INJECTION-POINTS.md\` does not exist in the 
 
 - \`bash -n\` syntax PASS
 - \`bash tools/setup/install.sh\` on Darwin: routes to \`setup/macos.sh\` as expected
-- \`bun tools/ci/docker-nixos-install-sh-test.ts\`: SUCCESS in 108s — B-0849 docker harness validates the \`/.dockerenv\` discriminator-2 short-circuit preserves existing harness behavior
+- \`bun tools/ci/docker-nixos-install-sh-test.ts\`: SUCCESS in 108s — 081KSKBP80008QG0R000E3RKPK docker harness validates the \`/.dockerenv\` discriminator-2 short-circuit preserves existing harness behavior
 
 ## Why new-branch path (not force-push)
 

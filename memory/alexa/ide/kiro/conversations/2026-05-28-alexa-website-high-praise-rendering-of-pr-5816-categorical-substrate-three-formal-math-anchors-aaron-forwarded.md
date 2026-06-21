@@ -3,9 +3,9 @@
 ## Provenance
 
 - **Surface**: Alexa-website (per `.claude/rules/agent-roster-reference-card.md` external participants table; high-praise emotional/social rendering register; distinct from Alexa-Kiro IDE+CLI which DOES commit; distinct from Alexa-speaker Amazon-device voice-math register)
-- **Trigger**: PR #5816 substrate (interrupt-substrate memo + B-0917 backlog row + three formal-math anchors: kleisli-ts prior-art + Furber-Jacobs 2015 + Arbib-Manes Fuzzy Machines in a Category)
+- **Trigger**: PR #5816 substrate (interrupt-substrate memo + 081KSNY2Z0008QG0R002HB4AGT backlog row + three formal-math anchors: kleisli-ts prior-art + Furber-Jacobs 2015 + Arbib-Manes Fuzzy Machines in a Category)
 - **Forwarding**: Aaron-forwarded verbatim 2026-05-28
-- **Preceded by**: Aaron-Otto session shipping PR #5816 with 4 commits (interrupt memo + B-0917 row + kleisli-ts prior-art + Furber-Jacobs + Arbib-Manes), all stacked as research notes anchoring the substrate-smoothness rule + workflow-engine substrate
+- **Preceded by**: Aaron-Otto session shipping PR #5816 with 4 commits (interrupt memo + 081KSNY2Z0008QG0R002HB4AGT row + kleisli-ts prior-art + Furber-Jacobs + Arbib-Manes), all stacked as research notes anchoring the substrate-smoothness rule + workflow-engine substrate
 
 ## Alexa-website response (verbatim — preserved per substrate-or-it-didnt-happen)
 
@@ -97,11 +97,11 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` 
 
 ### What the response gets substantively right
 
-1. **Kleisli arrows for monadic context propagation across interrupt boundaries** — accurate substrate-engineering substrate-recognition; matches B-0917 substrate-target structure
+1. **Kleisli arrows for monadic context propagation across interrupt boundaries** — accurate substrate-engineering substrate-recognition; matches 081KSNY2Z0008QG0R002HB4AGT substrate-target structure
 2. **Arbib-Manes fuzzy machines as probabilistic reasoning framework** — accurate; matches the Arbib-Manes notes file's framing of workflow-engine AS-fuzzy-machine
 3. **Furber-Jacobs linking Kleisli to C*-algebras** — accurate citation of the formal-math anchor
 4. **x86 interrupt patterns with functional abstractions** — accurate framing of the META-scope substrate-recognition
-5. **NCI HC-8 "free-time presented-not-forced"** — accurate citation; matches B-0917 Slice D substrate-target
+5. **NCI HC-8 "free-time presented-not-forced"** — accurate citation; matches 081KSNY2Z0008QG0R002HB4AGT Slice D substrate-target
 6. **Infer.NET probabilistic programming integration** — accurate framing per CLAUDE.md Infer.NET long-term substrate target
 
 ### What the response over-frames (high-praise register markers)
@@ -134,7 +134,7 @@ Six sources rendering substantively-related substrate in distinct registers per 
 - `.claude/rules/additive-not-zero-sum.md` — cross-AI substrate-engineering input compounds across participants
 - `.claude/rules/honor-those-that-came-before.md` — Alexa's substrate-engineering input honored; preserved with attribution
 - `.claude/rules/algo-wink-failure-mode.md` — Alexa's high-praise is OBSERVATION not AUTHORIZATION; substrate-engineering work continues on operational merits regardless
-- PR #5816 — the substrate Alexa is praising (interrupt-substrate memo + B-0917 + three formal-math anchors)
+- PR #5816 — the substrate Alexa is praising (interrupt-substrate memo + 081KSNY2Z0008QG0R002HB4AGT + three formal-math anchors)
 - `memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md` — sibling cross-AI rendering of related substrate at categorical-substrate scope
 - `references/notes/furber-jacobs-2015-*.md` + `references/notes/arbib-manes-*.md` — formal-math anchors Alexa correctly cited
 - `references/notes/kleisli-ts-prior-art.md` — TS prior-art surface

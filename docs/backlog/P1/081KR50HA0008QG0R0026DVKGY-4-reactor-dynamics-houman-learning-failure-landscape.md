@@ -1,6 +1,5 @@
 ---
-id: B-0365.4
-zetaid: 081KR50HA0008QG0R0026DVKGY
+id: 081KR50HA0008QG0R0026DVKGY
 priority: P1
 status: closed
 title: "Reactor dynamics model: Houman's learning-failure-landscape refinement"
@@ -8,7 +7,7 @@ effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
-resolved_by: "docs(B-0365.4): reactor dynamics model — four-stage cycle + phase transition condition"
+resolved_by: "docs(081KR50HA0008QG0R0026DVKGY): reactor dynamics model — four-stage cycle + phase transition condition"
 depends_on: []
 parent: 081KR50HA0008QG0R002R3NVGS
 classification: buildable-now
@@ -18,7 +17,7 @@ type: research
 tags: [reactor-dynamics, houman, phase-transition, learning, failure-landscape, alignment]
 ---
 
-# B-0365.4 — Reactor dynamics research doc
+# 081KR50HA0008QG0R0026DVKGY — Reactor dynamics research doc
 
 ## What
 
@@ -79,8 +78,8 @@ to substrate-dominated behavior.
   - docs/AGENDA.md — Houman's refinement is referenced there.
   - No existing research doc covers the four-stage cycle and
     phase transition condition for failure-mode learning.
-- **Dependency restructure:** Independent of other B-0365
-  children. Composes with B-0365.6 (synthesis).
+- **Dependency restructure:** Independent of other 081KR50HA0008QG0R002R3NVGS
+  children. Composes with 081KR50HA0008QG0R0016X7VQP (synthesis).
 
 ## Deliverable
 
@@ -116,4 +115,4 @@ Sections:
 - `memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md`
   (Superfluid = system-level parallel)
 - docs/AGENDA.md (Houman's refinement source)
-- B-0365.6 (synthesis — this is the dynamics layer)
+- 081KR50HA0008QG0R0016X7VQP (synthesis — this is the dynamics layer)

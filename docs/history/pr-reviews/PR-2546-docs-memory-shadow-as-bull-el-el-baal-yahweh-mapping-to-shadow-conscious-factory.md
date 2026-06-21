@@ -32,7 +32,7 @@
 - Shadow = El (patient creator, grey text, older substrate)
 - Conscious response = Baal (active storm, white text, fights for attention)
 - Factory = Yahweh (subsumes both into coherent system)
-- B-0402 should honor El register: auto-accept on silence, not demand
+- 081KR7JY10008QG0R0008NGW95 should honor El register: auto-accept on silence, not demand
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

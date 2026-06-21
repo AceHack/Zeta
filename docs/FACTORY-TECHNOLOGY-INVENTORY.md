@@ -72,7 +72,7 @@ is added.
 | Alloy 6 | Lightweight formal specs | `tools/setup/install.sh` pulls Alloy JARs | pinned in setup | [alloytools.org](https://alloytools.org/) | `alloy-expert` | Adopt | Specs under `tools/alloy/` |
 | FsCheck | F# property-based testing | NuGet package | `Directory.Packages.props` | [fscheck.github.io](https://fscheck.github.io/FsCheck/) | `fscheck-expert` | Adopt | Property suite integrated with CI |
 | xUnit | Concrete-scenario test framework | NuGet package | `Directory.Packages.props` | [xunit.net](https://xunit.net/) | covered in `tests/` conventions | Adopt | Primary test runner for `tests/*.Tests` |
-| Stryker.NET | Mutation testing | `tools/setup/manifests/dotnet-tools` (global tool manifest installed by setup) | unversioned in setup manifest (tracks latest) | [stryker-mutator.io](https://stryker-mutator.io/docs/stryker-net/introduction/) | `stryker-expert` | Trial | No GitHub Actions job invokes Stryker currently (run manually or via local dotnet-tools); CI-wiring is follow-up work. TECH-RADAR ring: Trial. |
+| Stryker.NET | Mutation testing | `tools/setup/manifests/from-dotnet-global` (global tool manifest installed by setup) | unversioned in setup manifest (tracks latest) | [stryker-mutator.io](https://stryker-mutator.io/docs/stryker-net/introduction/) | `stryker-expert` | Trial | No GitHub Actions job invokes Stryker currently (run manually or via from-dotnet-global); CI-wiring is follow-up work. TECH-RADAR ring: Trial. |
 | BenchmarkDotNet | Benchmark runner | NuGet package | `Directory.Packages.props` | [benchmarkdotnet.org](https://benchmarkdotnet.org/) | `benchmark-authoring-expert` | Adopt | `bench/` projects |
 
 ### Static analysis + security

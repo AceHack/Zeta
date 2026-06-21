@@ -1,4 +1,4 @@
-# The plugin-convergence audit — four plug-shaped systems, one port grammar (B-1033 second half)
+# The plugin-convergence audit — four plug-shaped systems, one port grammar (081KTZ4EF0008QG0R000WJGSWX second half)
 
 Aaron 2026-06-13: "we already have a plugin system, and they are set up — we might have multiple
 plugin systems that need to converge." Audited. We have FOUR, grown separately and honestly; the
@@ -42,7 +42,7 @@ Every system above is the same five-part sentence:
   ladder-shaped binding, render its light, and answer "what's missing" via the toolbox — or carve
   an explicit exception. IInferenceEngine is the first customer: its adapters should register
   ZetaIds (engine.zeta-bayesian / engine.infer-net) and its construction should become a ladder
-  resolution (the named follow-up on B-1033).
+  resolution (the named follow-up on 081KTZ4EF0008QG0R000WJGSWX).
 - Beacon: Cockburn's hexagonal architecture (ports/adapters); Fowler's plugin pattern; OSGi/MEF
   as the cautionary maximal versions we are NOT building (capability ladders without the
   framework weight).
@@ -51,7 +51,7 @@ Every system above is the same five-part sentence:
 
 - `PluginApi.fs`/`PluginHarness.fs` · `MediaLines` (resolveIoWith/bindingsReport/bindingLight) ·
   `GeneratorRegistry` (idOf/collisions) · `MagneticPorts` (compatible/findAdapter) ·
-  `IInferenceEngine` (the first customer of the converged grammar) · B-1033 (this closes its
+  `IInferenceEngine` (the first customer of the converged grammar) · 081KTZ4EF0008QG0R000WJGSWX (this closes its
   audit half; the engine-ZetaId + ladder follow-up stays on the row)
 
 ## Addendum (same day) — Aaron: "we have universal interfaces too; this smells like that"

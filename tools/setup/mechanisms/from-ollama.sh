@@ -61,7 +61,7 @@ if ! command -v ollama >/dev/null 2>&1; then
       # NixOS: the generic glibc release binary won't run (non-FHS). Install ollama
       # via nix instead — FHS-safe, works in the nixos/nix container AND on real
       # NixOS, and floats with the channel (consistent with the float-ollama
-      # decision). This is the install.sh-retrofit path that closes B-0941's test
+      # decision). This is the install.sh-retrofit path that closes 081KSV2WD0008QG0R0004C8WV8's test
       # false-green; the declarative real-hardware self-heal layer is
       # services.ollama in configuration.nix (complementary). linux.sh already
       # routes NixOS via /etc/NIXOS; honor the same marker here.

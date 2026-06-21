@@ -1,16 +1,15 @@
 ---
-id: B-0867.23
-zetaid: 081KSNY2Z0008QG0R003206PFM
+id: 081KSNY2Z0008QG0R003206PFM
 title: Agent-loop primitive-naming alignment — observe/emit/limit/simulate vs observe/persist/limit/emit vs observe/choose (operator architectural decision in flight)
 status: open
 priority: P2
 created: 2026-05-28
 attribution: aaron-2026-05-28
 depends_on:
-  - B-0867.5
+  - 081KSKBP80008QG0R000B3Y19A.5
 composes_with:
   - 081KSKBP80008QG0R000B3Y19A
-  - B-0867.5
+  - 081KSKBP80008QG0R000B3Y19A.5
   - 081KSNY2Z0008QG0R0031490KZ
   - 081KSKBP80008QG0R0031DTHS9
 tags:
@@ -20,26 +19,26 @@ tags:
   - agent-loop
 ---
 
-# B-0867.23 — Agent-loop primitive-naming alignment
+# 081KSNY2Z0008QG0R003206PFM — Agent-loop primitive-naming alignment
 
 ## The architectural question (operator 2026-05-28, in-flight)
 
 > *"i guess to follow our pattern it should be observe.ts and emit.ts or choose if we like better i'm trying to figure out the mapping to observe emit limit simulate choose and our workflow i know you can treat it as the internal loop vs external multi agent coordination loop they compose but are independent, trying to map it directly to observable let me send you a conversation."*
 
-Operator named the workflow-engine entry points as `observe.ts` + `choose.ts` per the initial direction (current Phase 1 skeleton draft in flight per [B-0867.5](B-0867.5-...) substrate). On reflection, operator surfaced the deeper question: how do the agent-loop entry-point tools map to the broader framework primitives the substrate has been building toward?
+Operator named the workflow-engine entry points as `observe.ts` + `choose.ts` per the initial direction (current Phase 1 skeleton draft in flight per [081KSKBP80008QG0R000B3Y19A.5](081KSKBP80008QG0R000B3Y19A.5-...) substrate). On reflection, operator surfaced the deeper question: how do the agent-loop entry-point tools map to the broader framework primitives the substrate has been building toward?
 
 ## Three naming conventions alive in substrate (as of 2026-05-28T04:50Z UTC)
 
 | Convention | Source | Primitives |
 |---|---|---|
-| **OPLE** | [`.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md`](../../../.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md) + B-0862 | **O**bserve / **P**ersist / **L**imit / **E**mit |
-| **OELS** | [B-0879](../P3/B-0879-observe-emit-limit-simulate-in-clifford-space-unified-algebra-for-three-primitive-substrate-aaron-2026-05-28.md) filename | **O**bserve / **E**mit / **L**imit / **S**imulate |
+| **OPLE** | [`.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md`](../../../.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md) + 081KSKBP80008QG0R0031DTHS9 | **O**bserve / **P**ersist / **L**imit / **E**mit |
+| **OELS** | [081KSNY2Z0008QG0R0031490KZ](../P3/081KSNY2Z0008QG0R0031490KZ-observe-emit-limit-simulate-in-clifford-space-unified-algebra-for-three-primitive-substrate-aaron-2026-05-28.md) filename | **O**bserve / **E**mit / **L**imit / **S**imulate |
 | **Operator initial direction** | This conversation 2026-05-28T~04:43Z | **Observe** / **Choose** (compressed 2-tool form, agent-loop entry-point only) |
 
 ## What's the same across all three
 
 - **Observe** appears in every convention as the first primitive (refresh-then-read substrate freshness)
-- **Limit** appears in OPLE + OELS (per B-0644 Limit-is-simulation-not-collapse — same construct, two namings)
+- **Limit** appears in OPLE + OELS (per 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse — same construct, two namings)
 - The agent-loop workflow IS one specific instantiation of these primitives — not the only one
 
 ## What's different
@@ -47,7 +46,7 @@ Operator named the workflow-engine entry points as `observe.ts` + `choose.ts` pe
 | Primitive | OPLE | OELS | observe/choose | Substrate where |
 |---|---|---|---|---|
 | Persist | yes | no | no | Persist = write to git append-only (per agent-loop SKILL.md "State persists in Git append-only") |
-| Simulate | no | yes | implicit-in-choose | Simulate = Limit-as-pre-commit-dry-run (per B-0644); could be subsumed under Limit or named separately |
+| Simulate | no | yes | implicit-in-choose | Simulate = Limit-as-pre-commit-dry-run (per 081KRW63S0008QG0R002ZRNDJ8); could be subsumed under Limit or named separately |
 | Emit | yes | yes | implicit-in-choose | Emit = ship substrate / heartbeat / commit |
 | Choose | no | no | yes | Choose = menu-generation + LLM-as-pure-selector (per agent-loop skill design) |
 
@@ -60,7 +59,7 @@ This is the deeper architectural question. Two distinct loops compose without be
 | Loop | Scope | Primitives that fit |
 |---|---|---|
 | **Internal agent loop** (single agent per tick) | Observe → Choose → Execute → Emit-result | observe.ts + choose.ts + executor.ts (per current SKILL.md v2 design) |
-| **External multi-agent coordination loop** | Observe (cross-agent) → Negotiate / Limit-simulation → Emit (consensus / proposal) | OPLE or OELS at multi-agent BFT scope (per B-0703 + B-0664 NCI substrate) |
+| **External multi-agent coordination loop** | Observe (cross-agent) → Negotiate / Limit-simulation → Emit (consensus / proposal) | OPLE or OELS at multi-agent BFT scope (per 081KS3X9Y0008QG0R00218150M + 081KRW63S0008QG0R001Z7NYMV NCI substrate) |
 
 The agent-loop entry-point tools (`observe.ts` + `choose.ts`) may operate at the **internal-loop scope**; the OPLE/OELS primitives may operate at the **external-coordination-loop scope**. They compose (internal-loop emits substrate that external-loop observes; external-loop's consensus shapes what's available for internal-loop to choose) but are independent.
 
@@ -81,13 +80,13 @@ The agent-loop entry-point tools (`observe.ts` + `choose.ts`) may operate at the
 
 ## Composes with
 
-- [B-0867.5](B-0867.5-...) — agent-loop substrate (parent direction)
-- [B-0867](B-0867-...) — workflow engine v1 (umbrella)
-- [B-0879](../P3/B-0879-observe-emit-limit-simulate-in-clifford-space-unified-algebra-for-three-primitive-substrate-aaron-2026-05-28.md) — OELS substrate (Clifford-space-unified-algebra angle)
-- [B-0862](B-0862-...) — OPLE T-TFeedback implementation (framework primitive scope)
-- [B-0703](B-0703-...) — multi-oracle BFT (external-coordination-loop substrate)
-- [B-0664](B-0664-...) — NCI HC-8 (constitutional floor for coordination-loop)
-- [B-0644](B-0644-...) — Limit-is-simulation-not-collapse (Simulate ≅ Limit composition substrate)
+- [081KSKBP80008QG0R000B3Y19A.5](081KSKBP80008QG0R000B3Y19A.5-...) — agent-loop substrate (parent direction)
+- [081KSKBP80008QG0R000B3Y19A](081KSKBP80008QG0R000B3Y19A-...) — workflow engine v1 (umbrella)
+- [081KSNY2Z0008QG0R0031490KZ](../P3/081KSNY2Z0008QG0R0031490KZ-observe-emit-limit-simulate-in-clifford-space-unified-algebra-for-three-primitive-substrate-aaron-2026-05-28.md) — OELS substrate (Clifford-space-unified-algebra angle)
+- [081KSKBP80008QG0R0031DTHS9](081KSKBP80008QG0R0031DTHS9-...) — OPLE T-TFeedback implementation (framework primitive scope)
+- [081KS3X9Y0008QG0R00218150M](081KS3X9Y0008QG0R00218150M-...) — multi-oracle BFT (external-coordination-loop substrate)
+- [081KRW63S0008QG0R001Z7NYMV](081KRW63S0008QG0R001Z7NYMV-...) — NCI HC-8 (constitutional floor for coordination-loop)
+- [081KRW63S0008QG0R002ZRNDJ8](081KRW63S0008QG0R002ZRNDJ8-...) — Limit-is-simulation-not-collapse (Simulate ≅ Limit composition substrate)
 - `.claude/skills/agent-loop/SKILL.md` — workflow-engine substrate (consumer of decision)
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` — OPLE rule
 
@@ -98,7 +97,7 @@ The agent-loop entry-point tools (`observe.ts` + `choose.ts`) may operate at the
 3. Whether internal-loop vs external-coordination-loop split is load-bearing (and which loop the agent-loop tools belong to)
 4. Local `observe.ts` + `choose.ts` draft refactored / renamed per decision
 5. Tests authored (deferred from Phase 1 pending naming)
-6. Ship as Phase 1 substrate per [B-0867.5](B-0867.5-...)
+6. Ship as Phase 1 substrate per [081KSKBP80008QG0R000B3Y19A.5](081KSKBP80008QG0R000B3Y19A.5-...)
 
 ## Substrate-honest framing
 

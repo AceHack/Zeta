@@ -1,6 +1,5 @@
 ---
-id: B-0104
-zetaid: 081KQB8J40008QG0R0016EHY06
+id: 081KQB8J40008QG0R0016EHY06
 priority: P3
 status: open
 title: Modern .NET Threading Bridge — connect Deepseek's C# review to docs/LOCKS.md + Gemini Pro threading research

@@ -36,7 +36,7 @@ Per the maintainer's 2026-06-03 refinement: the **author focuses on correctness*
 - Three critic layers: tools (unsoundness) / Kestrel (vacuity) / claim-bar (authoring).
 - `consensus ≠ validation` applied to Kestrel too — its approval is a second oracle agreeing, not the proof being right.
 - High-attention rows flagged: C12 + DynamicValue **injectivity** (stated "corollary of round-trip" — confirm non-vacuous), C4 (re-derives the monoid), C5 (abstraction faithfulness), C7 (cavity domain).
-- CI caveat: Z3 legs **self-skip** (B-1009 open) — verified locally, not in the gate.
+- CI caveat: Z3 legs **self-skip** (081KT2T2J0008QG0R001X9PWKR open) — verified locally, not in the gate.
 
 Docs-only. Point Kestrel at this file for the pass.
 

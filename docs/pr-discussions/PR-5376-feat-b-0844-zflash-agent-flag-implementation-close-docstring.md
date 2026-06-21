@@ -1,6 +1,6 @@
 ---
 pr_number: 5376
-title: "feat(B-0844): zflash --agent flag implementation \u2014 close docstring-vs-implementation gap"
+title: "feat(081KSGS9H0008QG0R001EZKNCB): zflash --agent flag implementation \u2014 close docstring-vs-implementation gap"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T01:57:19Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:28:51Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5376: feat(B-0844): zflash --agent flag implementation — close docstring-vs-implementation gap
+# PR #5376: feat(081KSGS9H0008QG0R001EZKNCB): zflash --agent flag implementation — close docstring-vs-implementation gap
 
 ## PR description
 
 ## What
 
-Implements B-0844 \`--agent\` flag per [PR #5374](https://github.com/Lucent-Financial-Group/Zeta/pull/5374) row spec. Empirical anchor: 2026-05-26 3rd USB re-flash session surfaced docstring-vs-implementation gap (operator: *"i got the fingerprint but it didn't format"*).
+Implements 081KSGS9H0008QG0R001EZKNCB \`--agent\` flag per [PR #5374](https://github.com/Lucent-Financial-Group/Zeta/pull/5374) row spec. Empirical anchor: 2026-05-26 3rd USB re-flash session surfaced docstring-vs-implementation gap (operator: *"i got the fingerprint but it didn't format"*).
 
 ## Implementation
 
@@ -55,7 +55,7 @@ Should show "Flash complete." + iter-4.2 inject + ejection with the auto-typed c
 
 ## Composes with
 
-- B-0844 (parent row — PR #5374)
+- 081KSGS9H0008QG0R001EZKNCB (parent row — PR #5374)
 - \`.claude/rules/substrate-or-it-didnt-happen.md\` (docstring promise now has backing substrate)
 - \`.claude/rules/glass-halo-bidirectional.md\` (auto-type action is operator-visible)
 - \`.claude/rules/non-coercion-invariant.md\` HC-8 (operator agency preserved via Touch ID PAM gate)

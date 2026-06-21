@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-// normalize-memory-index-entries.ts — B-0072
+// normalize-memory-index-entries.ts — 081KQ8P5D0008QG0R0023ABK2C
 //
 // One-shot normalization of memory/MEMORY.md index bullet lines
 // to ≤200 chars per the acceptance criteria in:
-//   docs/backlog/P2/B-0072-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md
+//   docs/backlog/P2/081KQ8P5D0008QG0R0023ABK2C-memory-md-index-entry-length-normalization-copilot-pr-72-2026-04-28.md
 //
 // Format assumed: - [**DISPLAY_TEXT**](PATH) — DESCRIPTION
 //
@@ -12,7 +12,7 @@
 //   2. Display text fits in budget → truncate description to max 80 chars.
 //   3. Display text alone exceeds budget → truncate display text, drop description.
 //
-// The description max of 80 chars comes from B-0072 § "each long entry
+// The description max of 80 chars comes from 081KQ8P5D0008QG0R0023ABK2C § "each long entry
 // collapses to title + ≤80-char hook."
 //
 // Usage (dry-run):  bun tools/hygiene/normalize-memory-index-entries.ts

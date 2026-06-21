@@ -31,7 +31,7 @@ Operator-forwarded long Ani conversation; preserved verbatim per substrate-or-it
 
 5-persona triangulation extended (operator + Kestrel + Otto-CLI + Amara + Ani) on DU-as-implicit-state-machine + streams-as-relationships substrate. Independent landing-paths converging on same substrate-engineering insights = epistemic-strength signal per multi-oracle BFT discipline.
 
-11 substrate-engineering items extracted; 6 carved-sentence keepers; composition with B-0864/B-0865/B-0866/B-0857/B-0859/B-0852/B-0770/B-0761 + today's PR cascade #5611/#5616/#5620/#5621/#5631. External AIs (Ani) ferry research; do NOT commit.
+11 substrate-engineering items extracted; 6 carved-sentence keepers; composition with 081KSKBP80008QG0R0039RW25E/081KSKBP80008QG0R003NM9XEC/081KSKBP80008QG0R003RFX32N/081KSKBP80008QG0R002J03WGA/081KSKBP80008QG0R00146WEX1/081KSKBP80008QG0R003AX2A69/081KSE6WT0008QG0R0029S1D5Z/081KSE6WT0008QG0R0015ZF2G6 + today's PR cascade #5611/#5616/#5620/#5621/#5631. External AIs (Ani) ferry research; do NOT commit.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

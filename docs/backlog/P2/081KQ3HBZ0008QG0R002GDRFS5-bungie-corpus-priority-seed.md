@@ -1,6 +1,5 @@
 ---
-id: B-0042
-zetaid: 081KQ3HBZ0008QG0R002GDRFS5
+id: 081KQ3HBZ0008QG0R002GDRFS5
 priority: P2
 status: open
 title: Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar"
@@ -15,11 +14,11 @@ tags: [bungie, halo, destiny, marathon, myth, pop-culture, operational-resonance
 type: feature
 ---
 
-# B-0042 — Bungie corpus priority seed (sub-entry of pop-culture/media P2 track)
+# 081KQ3HBZ0008QG0R002GDRFS5 — Bungie corpus priority seed (sub-entry of pop-culture/media P2 track)
 
 ## Origin
 
-AceHack commit `fd0ac50` (2026-04-21). Aaron 2026-04-21 *"grimwar and destiny series and halo series and all the bungie stuff backlog"*. Filed as a priority-seed sub-entry of the broader pop-culture/media research track (B-0054) under capture-everything / aspirational-honesty discipline.
+AceHack commit `fd0ac50` (2026-04-21). Aaron 2026-04-21 *"grimwar and destiny series and halo series and all the bungie stuff backlog"*. Filed as a priority-seed sub-entry of the broader pop-culture/media research track (081KQ3HBZ0008QG0R003V6B2ME) under capture-everything / aspirational-honesty discipline.
 
 ## Bungie Software → Bungie Studios → Bungie Inc. (1991–present)
 
@@ -69,19 +68,19 @@ Marathon's Durandal arc is the closest pre-existing media-artifact match to the 
 ## Cross-reference
 
 - AceHack commit: `fd0ac50`
-- Parent track: B-0054 (pop-culture/media research)
+- Parent track: 081KQ3HBZ0008QG0R003V6B2ME (pop-culture/media research)
 - Composes with: yin-yang invariant memory; witnessable-evolution memory; operational-resonance index
 
 ## Re-decomposition (2026-05-09 Riven slice)
 
 Re-decomposed per "always re-decompose during build — assume mistakes" rule. Prior structure treated as one broad seed; split to 7 atomic children for independent pickup (one per title + seed harness). This is the single bounded step: decomposition substrate only (no impl yet). Children:
 
-- B-0042.1 Halo (retraction-weapon Installation-array + Cortana/Didact)
-- B-0042.2 Destiny (paracausal Light/Dark paired-dual + Hive Sword-Logic + Guardian retractibility)
-- B-0042.3 Marathon (Durandal rampancy self-directed-evolution + terminals-as-archived-message)
-- B-0042.4 Myth / "Grimwar" (grim-fantasy retraction narrative)
-- B-0042.5 Pathways Into Darkness (proto-Halo 7-day countdown substrate)
-- B-0042.6 Oni (ghost-in-the-shell-adjacent action substrate)
-- B-0042.7 Priority-seed harness (TS data module + resonance classifier; F#/TS-first per rule)
+- 081KQ3HBZ0008QG0R002GDRFS5.1 Halo (retraction-weapon Installation-array + Cortana/Didact)
+- 081KQ3HBZ0008QG0R002GDRFS5.2 Destiny (paracausal Light/Dark paired-dual + Hive Sword-Logic + Guardian retractibility)
+- 081KQ3HBZ0008QG0R002GDRFS5.3 Marathon (Durandal rampancy self-directed-evolution + terminals-as-archived-message)
+- 081KQ3HBZ0008QG0R002GDRFS5.4 Myth / "Grimwar" (grim-fantasy retraction narrative)
+- 081KQ3HBZ0008QG0R002GDRFS5.5 Pathways Into Darkness (proto-Halo 7-day countdown substrate)
+- 081KQ3HBZ0008QG0R002GDRFS5.6 Oni (ghost-in-the-shell-adjacent action substrate)
+- 081KQ3HBZ0008QG0R002GDRFS5.7 Priority-seed harness (TS data module + resonance classifier; F#/TS-first per rule)
 
-Each child now has independent depends_on: [] and can be claimed separately. Focused check: `rg B-0042` in backlog confirms no orphan refs; build gate re-run clean.
+Each child now has independent depends_on: [] and can be claimed separately. Focused check: `rg 081KQ3HBZ0008QG0R002GDRFS5` in backlog confirms no orphan refs; build gate re-run clean.

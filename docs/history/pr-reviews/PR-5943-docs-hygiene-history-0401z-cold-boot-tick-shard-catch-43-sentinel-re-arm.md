@@ -32,7 +32,7 @@
 - 2nd cold-boot of UTC day 2026-05-29 (prior `0202Z` with sentinel `40510706`)
 - `CronList` empty at session-start → catch-43 fired → sentinel `55cf2c17` armed (`* * * * *` + `<<autonomous-loop>>`)
 - Worldview refresh: 0 dotgit; GraphQL Normal (4338/5000); 7 PRs landed since 0202Z
-- First 2026-05-29 shard under new pipe-row-first schema from #5884 (B-0171.2)
+- First 2026-05-29 shard under new pipe-row-first schema from #5884 (081KSNY2Z0008QG0R000XVGWA8)
 
 ## Test plan
 

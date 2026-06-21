@@ -27,7 +27,7 @@
 
 ## Description
 
-The 16.16 headroom made addressable: a 32-bit deep cell (color 3b / payload 13b / uncertainty 16b) with three LAWFUL lenses (laws tested); recoloring never disturbs the payload — data truly travels with the pixel; softRead = (value, confidence); colorize renders uncertainty honestly (uncertain pixels visibly humble themselves). And the CRT/FPGA corner held open by audit: colorAt is the canonical seam (CRT effects = post-generators; the glow IS phosphor physics; uncertainty can carry persistence), FPGA-friendly by construction (clock-free, fix16, generated time) — MiSTer the fidelity bar, Aaron's FPGAs waiting on the B-1025 Verilog rung. 6/6 green.
+The 16.16 headroom made addressable: a 32-bit deep cell (color 3b / payload 13b / uncertainty 16b) with three LAWFUL lenses (laws tested); recoloring never disturbs the payload — data truly travels with the pixel; softRead = (value, confidence); colorize renders uncertainty honestly (uncertain pixels visibly humble themselves). And the CRT/FPGA corner held open by audit: colorAt is the canonical seam (CRT effects = post-generators; the glow IS phosphor physics; uncertainty can carry persistence), FPGA-friendly by construction (clock-free, fix16, generated time) — MiSTer the fidelity bar, Aaron's FPGAs waiting on the 081KTSZN10008QG0R000VZHRQ4 Verilog rung. 6/6 green.
 
 ## Outcome
 
@@ -109,7 +109,7 @@ The corner audit (doc): colorAt is the canonical seam every renderer binds at �
 post-generators over it (crt.scanline/phosphor/curvature/ntsc as future registry entries); the
 BoundaryLight glow already IS the phosphor-bloom kernel; sub-pixel cells are the honest digital cousin
 of real CRT sub-structure (uncertainty can carry phosphor PERSISTENCE as confidence decay); FPGA = the
-B-1025 Verilog rung with MiSTer as the fidelity champion — and our substrate is FPGA-friendly BY
+081KTSZN10008QG0R000VZHRQ4 Verilog rung with MiSTer as the fidelity champion — and our substrate is FPGA-friendly BY
 CONSTRUCTION (clock-free math, generated time = a pixel clock is just another generator, fix16
 synthesizable, no floats on the hot path). Aaron has FPGAs: the Verilog rung has hardware waiting.
 

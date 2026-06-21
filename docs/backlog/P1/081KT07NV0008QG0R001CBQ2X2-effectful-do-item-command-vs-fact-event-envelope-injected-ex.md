@@ -1,6 +1,5 @@
 ---
-id: B-0964
-zetaid: 081KT07NV0008QG0R001CBQ2X2
+id: 081KT07NV0008QG0R001CBQ2X2
 title: Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
 status: open
 priority: P1
@@ -14,9 +13,9 @@ composes_with:
   - 081KSKBP80008QG0R000B3Y19A # workflow-engine lifecycle DUs (the executed-event envelope is lifecycle-shaped)
 ---
 
-# B-0964 — Effectful do_item
+# 081KT07NV0008QG0R001CBQ2X2 — Effectful do_item
 
-> **Why this row exists (not dogma):** B-0958 LEFT #1 — "`do_item` first, with the
+> **Why this row exists (not dogma):** 081KSXN940008QG0R001A4WWX4 LEFT #1 — "`do_item` first, with the
 > executed-event envelope (`ActionExecutionStarted/Succeeded/Failed/ModeChanged`)
 > so **replay folds facts, never redoes commands**." Today `execute` only handles
 > `free_time`/`self_reflect` (zero side-effect: append + simulate). `do_item` has a
@@ -34,7 +33,7 @@ each action through `simulate`. That is fine for zero-side-effect kinds
 for `do_item`: re-running the log must **not** re-run the work (re-build, re-push,
 re-charge). Standard event-sourcing: **commands ≠ events.**
 
-- **`do_item` is a COMMAND** — an intent the chooser picked ("do B-0883").
+- **`do_item` is a COMMAND** — an intent the chooser picked ("do 081KSNY2Z0008QG0R002JKH50A").
 - Executing it emits **FACT events** — what actually happened:
   `ActionExecutionStarted{item, tier, gated}` → `ActionExecutionSucceeded{item}`
   **or** `ActionExecutionFailed{item, reason}` (+ `ModeChanged{work}`). The
@@ -227,7 +226,7 @@ A local-LLM with a bash surface is a real attack/footgun surface. The floor (per
 ## §4 Open design question — what does do_item actually RUN?
 
 `BacklogItem` carries `{id, title, ready, ambiguous, needsNewAction?}` — **no
-command**. "Doing B-0883" is not a single shell line; it's open-ended agent work.
+command**. "Doing 081KSNY2Z0008QG0R002JKH50A" is not a single shell line; it's open-ended agent work.
 Three shapes (decide in review):
 
 1. **Sub-loop:** `do_item` hands the item to the LLM, which runs a bounded
@@ -278,8 +277,8 @@ operator gating; NOT in the autonomous foreground loop until comfortable.
 
 ## §6 Master-checklist linkage
 
-B-0958 LEFT #1 (effectful do_item) — this is its design + the bash-surface
-decision. Under the sovereign-DB / observe.ts lane (B-0959 §2), reachable from
-`docs/ACTIVE-WORKSTREAMS.md`. Composes B-0962 (do_item is the menu's work action)
+081KSXN940008QG0R001A4WWX4 LEFT #1 (effectful do_item) — this is its design + the bash-surface
+decision. Under the sovereign-DB / observe.ts lane (081KSXN940008QG0R003FCQ7WT §2), reachable from
+`docs/ACTIVE-WORKSTREAMS.md`. Composes 081KT07NV0008QG0R002KWQS05 (do_item is the menu's work action)
 
-- B-0963 (a completed do_item IS the "completion" the liveness proof is about).
+- 081KT07NV0008QG0R001N9GJWX (a completed do_item IS the "completion" the liveness proof is about).

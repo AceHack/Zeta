@@ -129,7 +129,7 @@ The Top-3 selection under this hierarchy:
    `feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`).
    **Score: both axes win. Strongest move overall.**
 
-3. **B-0109 dependency status surface** — friction-reducing-
+3. **081KQDTYV0008QG0R002H74QXZ dependency status surface** — friction-reducing-
    long-term (we currently DON'T see upstream outages),
    evidence-front-loaded (the build itself reveals which
    upstreams matter). **Score: compound win, bigger cost.**
@@ -249,8 +249,8 @@ CLAUDE.md pointer is not learned by future-Otto.
 - **SRE-with-S-as-Substrate** (CURRENT-aaron.md §7) — the
   toil-reduction = mechanism-over-vigilance lineage that the
   friction-reducing axis composes with.
-- **B-0029 Superfluid-AI substrate-enabled autonomous funding** —
-  `docs/backlog/P2/B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md`.
+- **081KQ3HBZ0008QG0R000JRZAMM Superfluid-AI substrate-enabled autonomous funding** —
+  `docs/backlog/P2/081KQ3HBZ0008QG0R000JRZAMM-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md`.
   The economic-actor projection of the same principle.
 - **Aaron 2026-05-02** — direct verbatim source +
   superfluid-anchoring correction.

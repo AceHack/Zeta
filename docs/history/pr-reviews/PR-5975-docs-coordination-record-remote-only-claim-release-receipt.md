@@ -29,8 +29,8 @@
 
 ## Summary
 
-- Add the B-0209 remote-only claim-release receipt for the two-participant dry run.
-- Refresh the autonomous-loop coordination resume so the next child packet is B-0211 local/remote cluster composition.
+- Add the 081KQX9B50008QG0R001MNYK61 remote-only claim-release receipt for the two-participant dry run.
+- Refresh the autonomous-loop coordination resume so the next child packet is 081KQX9B50008QG0R0026BG44J local/remote cluster composition.
 - Release the temporary Codex claim file on-branch so the final PR diff only carries durable docs.
 
 ## Verification

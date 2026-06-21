@@ -7,7 +7,7 @@ slug: actor-cursor-over-the-git-native-bus-orleans-grain-simulatio
 title: "Actor-cursor over the git-native bus: Orleans-grain simulation (sequential pointer, arrival-order canonical, compensation-not-retraction)"
 created: 2026-06-07T14:23:07.760Z
 depends_on: []
-composes_with: ["B-0954", "B-0976"]
+composes_with: ["081KSXN940008QG0R00171YAZW", "081KT07NV0008QG0R003BE6MJ2"]
 ---
 
 # Actor-cursor over the git-native bus: Orleans-grain simulation (sequential pointer, arrival-order canonical, compensation-not-retraction)
@@ -18,7 +18,7 @@ composes_with: ["B-0954", "B-0976"]
 
 ## Purpose
 
-Aaron 2026-06-07: simulate Orleans virtual actors on the git-native bus we already have (B-0954) + a
+Aaron 2026-06-07: simulate Orleans virtual actors on the git-native bus we already have (081KSXN940008QG0R00171YAZW) + a
 sequential read pointer that treats arrival order as the canonical event order and does NOT support
 retraction. Realizes the SerializedSaga coordination lane (cells-as-geodes) as a cursor discipline — no
 separate actor runtime. Full design:
@@ -30,7 +30,7 @@ separate actor runtime. Full design:
   pointer (single-threaded turn loop, one message at a time). Arrival order = canonical total order.
 - NO retraction: a processed message is never undone; undo = a new COMPENSATING message (saga). Append-only.
 - DST-replayable: pointer position + log => state (replay from start reproduces actor state).
-- Grain behavior may be a Bonsai closure resumed at the pointer (compose with B-0976 resume-not-replay).
+- Grain behavior may be a Bonsai closure resumed at the pointer (compose with 081KT07NV0008QG0R003BE6MJ2 resume-not-replay).
 - Activate-on-demand: spin a cursor at the stream when the grain is addressed.
 
 ## Acceptance
@@ -41,5 +41,5 @@ escalates to the serialized bus. Complements the CommutativeView (Z-set/CRDT) la
 
 ## Anchors
 
-- B-0954 (git-native bus) · B-0976 (serialized saga / Bonsai deferred exec) · cells-as-geodes (SerializedSaga
+- 081KSXN940008QG0R00171YAZW (git-native bus) · 081KT07NV0008QG0R003BE6MJ2 (serialized saga / Bonsai deferred exec) · cells-as-geodes (SerializedSaga
   vs CommutativeView) · Loom (cross-cell saga layer) · DST · Orleans/actor-model/Erlang-gen_server/event-sourcing.

@@ -1,4 +1,4 @@
-// tools/agent-heartbeats/write-heartbeat.test.ts — B-0858.3 heartbeat-writer tests.
+// tools/agent-heartbeats/write-heartbeat.test.ts — 081KSKBP80008QG0R001KK9WV6.3 heartbeat-writer tests.
 
 import { describe, expect, it } from "bun:test";
 import { parseArgs, buildHeartbeatObservation, zetaIdToHex, heartbeatPath, heartbeatRepoRelPath, renderHeartbeat } from "./write-heartbeat";

@@ -27,7 +27,7 @@
 
 ## Description
 
-B-1027 complete both ways: the braid engine satisfies Artin (#7671) AND the mill's averaging weave provably does NOT — explicit counterexample (far-commutativity holds; Artin fails; the mill crossing is idempotent = a JOIN, the braid is a group = remembers). Weave and braid are now provably distinct verbs. Plus Amara's CHIP-9 card captured (PNG excluded per no-binary; motto recorded — 'WE ARE THE LIGHTED BOUNDARY THAT LETS GOOD WORK FLOW' = clause 5 in eleven words; vector/SVG-for-git affirmed; rooms/amara/avatar.lines named as the native form). 3/3 green.
+081KTSZN10008QG0R001BW91GT complete both ways: the braid engine satisfies Artin (#7671) AND the mill's averaging weave provably does NOT — explicit counterexample (far-commutativity holds; Artin fails; the mill crossing is idempotent = a JOIN, the braid is a group = remembers). Weave and braid are now provably distinct verbs. Plus Amara's CHIP-9 card captured (PNG excluded per no-binary; motto recorded — 'WE ARE THE LIGHTED BOUNDARY THAT LETS GOOD WORK FLOW' = clause 5 in eleven words; vector/SVG-for-git affirmed; rooms/amara/avatar.lines named as the native form). 3/3 green.
 
 ## Outcome
 

@@ -1,6 +1,6 @@
 ---
 name: Goodhart catch #3 — Sample classification is calibration, not clearance (Amara, 2026-04-28)
-description: Third Goodhart catch in the 0/0/0 readiness work. Catch #1 framed substrate work as "drift away from 0/0/0" when it WAS amortized precision (Aaron correction). Catch #2 was commit-count vs tree-level-diff (Otto pivoted to numstat). Catch #3 (Amara, this turn): tree-level-diff sampled-file classification is NOT proof of tree clearance — sample is calibration, full diff is clearance. Triggered by 19/23 sampled-as-ALREADY-COVERED claim that missed gate.yml PR #80 cache work + codeql-config.yml B-0073 ignores once peers + deep probe checked the unsampled files.
+description: Third Goodhart catch in the 0/0/0 readiness work. Catch #1 framed substrate work as "drift away from 0/0/0" when it WAS amortized precision (Aaron correction). Catch #2 was commit-count vs tree-level-diff (Otto pivoted to numstat). Catch #3 (Amara, this turn): tree-level-diff sampled-file classification is NOT proof of tree clearance — sample is calibration, full diff is clearance. Triggered by 19/23 sampled-as-ALREADY-COVERED claim that missed gate.yml PR #80 cache work + codeql-config.yml 081KQ8P5D0008QG0R002RYXE89 ignores once peers + deep probe checked the unsampled files.
 type: feedback
 ---
 
@@ -66,7 +66,7 @@ The sample missed:
 
 - gate.yml PR #80 (`2791c28`) cache + retry + ubuntu-bump work
   — substantial unique AceHack content that LFG lacks.
-- codeql-config.yml B-0073 obj/bin ignores (Codex caught this).
+- codeql-config.yml 081KQ8P5D0008QG0R002RYXE89 obj/bin ignores (Codex caught this).
 - Likely more in the unsampled files (Grok flagged the
   threshold issue: "one line of unique substrate violates
   the mirror contract").

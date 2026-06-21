@@ -17,7 +17,7 @@ This represents a violation of the array's operational rules: "NEVER use the con
 
 ## Actionable Corrections
 1. Cleared stale git index locks and agent lockfiles globally to unblock nodes.
-2. Flagged PR #3614 as a blob PR. It inappropriately mixes QG isomorphism (B-0543), formalization (B-0544), and Adinkra/Cayley-Dickson extensions. Issued a review requesting decomposition.
+2. Flagged PR #3614 as a blob PR. It inappropriately mixes QG isomorphism (081KRMEXM0008QG0R002YSPW1X), formalization (081KRMEXM0008QG0R003YWZC21), and Adinkra/Cayley-Dickson extensions. Issued a review requesting decomposition.
 3. Engaging PR preservation script for recently merged PRs to capture metadata into native memory.
 
 The array must resume independent progress by generating safe worktrees rather than blocking on the contested `Zeta` clone.

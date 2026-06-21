@@ -1,8 +1,8 @@
-# Peer-AI follow-up reviews on B-0159 (refresh-repo-state script) — 2026-05-01
+# Peer-AI follow-up reviews on 081KQGDBJ0008QG0R003H0G5YQ (refresh-repo-state script) — 2026-05-01
 
 > **Scope:** Multi-AI peer-review packet from four reviewers (Ani, Alexa, Gemini, Amara) responding to the Claude.ai original carved-handoff packet + my Phase 1 absorption (PR #1171 memo + PR #1173 backlog row).
 > **Attribution:** Reviews delivered by the human maintainer relaying responses from each peer-AI 2026-05-01.
-> **Operational status:** Research-grade. Captures convergent peer-review on the unified-refresh script design. Each peer's verbatim contribution preserved below; consolidated requirements absorbed into B-0159 separately.
+> **Operational status:** Research-grade. Captures convergent peer-review on the unified-refresh script design. Each peer's verbatim contribution preserved below; consolidated requirements absorbed into 081KQGDBJ0008QG0R003H0G5YQ separately.
 > **Non-fusion disclaimer:** Each peer's framing preserved verbatim. Disagreements between peers (e.g., Amara's `refresh-repo-state.ts` rename vs Gemini's `refresh-github-worldview.ts` retention) preserved as alternatives, not fused into a single canonical name. Final naming is its own decision.
 
 ---
@@ -37,7 +37,7 @@ This protects the exact failure mode you're trying to prevent (context-switch mi
 
 **3. The "qq222…" spam filter is missing from the spec.** You correctly ignored it in the log, but the unified refresh should have a one-line noise filter so future keyboard-mash doesn't pollute the snapshot.
 
-**4. The backlog row for B-0119 (role-ref cleanup) is still pending.** You filed B-0119 and B-0120 in the ACID cluster, but the actual PR for the other four peer-call scripts (grok.sh, gemini.sh, codex.sh, amara.sh) hasn't been opened. That's the deferred-skill anti-pattern you're trying to kill. Open it as a follow-on after the current PR cycle settles.
+**4. The backlog row for 081KQDTYV0008QG0R001N4YB73 (role-ref cleanup) is still pending.** You filed 081KQDTYV0008QG0R001N4YB73 and 081KQDTYV0008QG0R001VJP216 in the ACID cluster, but the actual PR for the other four peer-call scripts (grok.sh, gemini.sh, codex.sh, amara.sh) hasn't been opened. That's the deferred-skill anti-pattern you're trying to kill. Open it as a follow-on after the current PR cycle settles.
 
 **5. Minor: The "ten minutes" estimate is optimistic.** CI wait + reviewer threads on #1168/#1170 could easily be 20–30 minutes. Adjust the hand-off timing note to "after the current PR cycle (likely 20–40 min)".
 
@@ -55,7 +55,7 @@ You're not just proposing a new tool — you're proposing a **discipline** ("ref
 
 1. **Draft the exact backlog row text** (ready to paste). Include the idempotency/fail-closed requirement and the "extends poll-pr-gate-batch internally" note.
 2. **Draft the short "refresh-before-decide" memory file** (one carved sentence + the PR #1170 worked example + composes-with section). This is the substrate piece.
-3. **Open the role-ref cleanup PR for the other four peer-call scripts** (B-0119). It's mechanical and closes the anti-pattern.
+3. **Open the role-ref cleanup PR for the other four peer-call scripts** (081KQDTYV0008QG0R001N4YB73). It's mechanical and closes the anti-pattern.
 4. **Let the current PR cycle (#1168 + #1170) land first.** Then hand Otto the three things in order: backlog row → memory file → full research doc.
 5. **Optional but high-leverage**: Add the tiny noise filter and `--raw` flag to the unified refresh spec while you're drafting the backlog row.
 
@@ -139,7 +139,7 @@ The Fix: refresh-github-worldview.ts
 
 We are not throwing out poll-pr-gate-batch. We are supersetting it.
 
-I am queueing a new P1 backlog row: B-0128: Implement Unified Worldview Refresh Script.
+I am queueing a new P1 backlog row: 081KQGDBJ0008QG0R001AJ20MX: Implement Unified Worldview Refresh Script.
 
 The Goal: A single bun script that acts as the canonical "before tick decision" call.
 
@@ -150,7 +150,7 @@ The Discipline: Once implemented, this single script will replace the narrow, ad
 Next Actions (Strict Sequence):
 
 1. Do not context switch. Finish your current tick cycle. Let #1168 and #1170 ride through CI and auto-merge.
-2. Only when the lane is clean, generate the backlog row for B-0128 (Unified Worldview Refresh Script) based on the spec above.
+2. Only when the lane is clean, generate the backlog row for 081KQGDBJ0008QG0R001AJ20MX (Unified Worldview Refresh Script) based on the spec above.
 3. Draft a companion memory/ file: feedback_refresh_before_decide_macro_awareness_invariant.md establishing the architectural rule that the loop must always load the macro-state before executing local actions.
 4. Wait for a dedicated, quiet tick to actually implement the script.
 
@@ -307,11 +307,11 @@ The upgrade I'd make is:
 
 - **Tool naming**: Amara `refresh-repo-state.ts` vs Gemini `refresh-github-worldview.ts` vs Claude.ai `refresh-github-worldview` (original). Amara argues "worldview" invites scope creep; Gemini retains it for macro/micro framing. Final decision: pending — file under both names in the backlog row, pick canonical at implementation time.
 - **Snapshot persistence**: Amara `.state/refresh-repo-state/last.json` (gitignored, session-local) vs Deepseek `.zeta/refresh-snapshot.json` (gitignored, session-local) vs alternative `docs/tick-history/latest-repo-state-snapshot.json` (committed if tied to tick-history). Final decision: pending — depends on whether snapshot artifacts become tick-history-relevant.
-- **Backlog row ID**: Gemini suggests `B-0128`; we already filed as `B-0159`. Keep `B-0159` (we're past 0128); document Gemini's framing in the row.
+- **Backlog row ID**: Gemini suggests `081KQGDBJ0008QG0R001AJ20MX`; we already filed as `081KQGDBJ0008QG0R003H0G5YQ`. Keep `081KQGDBJ0008QG0R003H0G5YQ` (we're past 0128); document Gemini's framing in the row.
 
 ## Composition with peer-call infrastructure
 
 These reviews exercise the `tools/peer-call/{amara,ani,codex,gemini,grok}.sh` infrastructure (per task #303 — "Sibling peer-call scripts"). Validates the multi-AI peer-review workflow as architectural-design-time, not just per-PR review. Substrate cluster:
 
-- Aaron originates → Claude.ai carved-handoff packet → my Phase 1 absorption (PR #1171) → my B-0159 backlog row (PR #1173) → Deepseek refines → Ani/Alexa/Gemini/Amara converge → consolidated peer-AI substrate (this document)
+- Aaron originates → Claude.ai carved-handoff packet → my Phase 1 absorption (PR #1171) → my 081KQGDBJ0008QG0R003H0G5YQ backlog row (PR #1173) → Deepseek refines → Ani/Alexa/Gemini/Amara converge → consolidated peer-AI substrate (this document)
 - Six AIs + Aaron + Otto = seven-actor convergence on a single architectural decision in <30min wall-clock.

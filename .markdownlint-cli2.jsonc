@@ -39,7 +39,7 @@
     // (deferred to a separate PR per Otto-275 log-but-don't-
     // implement-yet discipline; tracked at task #267-adjacent).
     "memory/**",
-    // Agent heartbeat records (B-0858.3) are mechanically generated
+    // Agent heartbeat records (081KSKBP80008QG0R001KK9WV6.3) are mechanically generated
     // by `tools/agent-heartbeats/write-heartbeat.ts` with consistent
     // YAML frontmatter + one-line body. Not authored prose; not
     // load-bearing factory logic; ZetaID-named per
@@ -123,9 +123,9 @@
     // ferries; PR #19 (gemini-deep-think + action-mode verbatim
     // Aaron-quote files) exposed the Amara-only scoping as too
     // narrow; a subsequent broadening to `docs/research/2026-*-*.md`
-    // was flagged by an external reviewer as over-reaching (PR #663, B-0078).
+    // was flagged by an external reviewer as over-reaching (PR #663, 081KQ8P5D0008QG0R002SBGJXX).
     //
-    // B-0078 resolution (2026-05-10): the attempted narrowing to
+    // 081KQ8P5D0008QG0R002SBGJXX resolution (2026-05-10): the attempted narrowing to
     // `2026-*verbatim*.md` was empirically wrong — CI revealed 82+
     // date-prefixed research files (Amara ferries, conversation
     // extracts, session logs, peer-review packets) with legitimate

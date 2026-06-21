@@ -1,6 +1,5 @@
 ---
-id: B-0827
-zetaid: 081KSGS9H0008QG0R00123050G
+id: 081KSGS9H0008QG0R00123050G
 title: runme.md + JIT triage 3-register-cell workflow pattern — runbook as evolving substrate
 status: open
 priority: P2
@@ -10,7 +9,7 @@ depends_on: []
 composes_with: [081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R001K8VPV4]
 ---
 
-# B-0827 — runme.md + JIT triage 3-register-cell workflow pattern (Aaron + Kestrel 2026-05-26)
+# 081KSGS9H0008QG0R00123050G — runme.md + JIT triage 3-register-cell workflow pattern (Aaron + Kestrel 2026-05-26)
 
 ## Scope
 
@@ -86,19 +85,19 @@ The cycle is "velocity period creates technical debt → cleanup period pays it 
 - [ ] Convention: gesture-cell marker syntax standardized (e.g., HTML comment `<!-- jit -->` or explicit code-fence info-string)
 - [ ] Tooling: triage helper (`bun tools/runme-triage.ts` or similar) that surfaces ungated gesture cells across the runbook corpus + helps with promotion
 - [ ] Integration with decision-archaeology skill: runbook-history-as-archaeological-substrate queryable
-- [ ] Composition with B-0826 (Runme BCL extension): gesture cells with substrate-internal vocabulary can later become executable cells using the BCL extensions
+- [ ] Composition with 081KSGS9H0008QG0R001K8VPV4 (Runme BCL extension): gesture cells with substrate-internal vocabulary can later become executable cells using the BCL extensions
 - [ ] Optional: external writeup (blog post / paper / conference talk) on the pattern — Kestrel: *"the writeup, if you did one, would land at the intersection of engineering workflow tooling and AI-collaboration patterns — both communities would find it interesting and the combination is uncommon enough to be worth documenting"*
 
 ## Out of scope (this row)
 
-- Runme core BCL extension itself — B-0826
+- Runme core BCL extension itself — 081KSGS9H0008QG0R001K8VPV4
 - Specific archaeology skill enhancements — separate row when those mature
 - Migration of all existing markdown to runme.md — separate migration row
 
 ## Composes with
 
-- B-0824 (canonical generate+join meta-PM substrate)
-- B-0826 (Runme core BCL extension — companion landing)
+- 081KSGS9H0008QG0R0031PBNGA (canonical generate+join meta-PM substrate)
+- 081KSGS9H0008QG0R001K8VPV4 (Runme core BCL extension — companion landing)
 - `.claude/skills/decision-archaeology/SKILL.md` (runbook history as archaeological substrate)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (gesture cells ARE substrate; JIT triage is what makes them progressive)
 - `.claude/rules/all-complexity-is-accidental-in-greenfield.md` (greenfield-stage gestures + cleanup-pay-down rhythm; both are operational discipline)

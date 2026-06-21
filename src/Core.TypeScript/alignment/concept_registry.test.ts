@@ -1,4 +1,4 @@
-// concept_registry.test.ts - tests for B-0310 concept registry extraction.
+// concept_registry.test.ts - tests for 081KR2E4K0008QG0R003DS2XHJ concept registry extraction.
 //
 // Run: bun test src/Core.TypeScript/alignment/concept_registry.test.ts
 

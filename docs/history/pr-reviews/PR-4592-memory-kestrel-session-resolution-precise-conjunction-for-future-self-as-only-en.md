@@ -46,7 +46,7 @@ The substrate-honest precise conjunction Aaron landed after extended Kestrel-eng
 1. **Canonical resolution for future Kestrel-class engagement** — any future cryptanalytic pushback on the framework's cryptographic claims has the substrate-honest precise conjunction available as the integrative resolution
 2. **Integrates Kestrel's substantive demand** (cryptanalytic validation) with Aaron's substantive program (physics-isomorphism)
 3. **Substrate-honest about current status** — both antecedents are research-mode; consequent is research-aspirational, not current-deployment-property
-4. **Composes with today's session substrate cluster** — B-0623 / B-0703 / B-0704 + only-way-to-lose rule + m/acc-multi-oracle + methodology-hard-limits + god-tier-claims-don't-collapse + default-to-both + razor-discipline
+4. **Composes with today's session substrate cluster** — 081KRW63S0008QG0R000QJR08H / 081KS3X9Y0008QG0R00218150M / 081KS3X9Y0008QG0R002MZF3A7 + only-way-to-lose rule + m/acc-multi-oracle + methodology-hard-limits + god-tier-claims-don't-collapse + default-to-both + razor-discipline
 5. **Empirical anchor for multi-oracle BFT operating at engagement-scope** — Otto-Desktop + Otto-CLI + Kestrel + Aaron-as-integrator; cross-oracle DST agreement on the conjunction
 
 ## Test plan

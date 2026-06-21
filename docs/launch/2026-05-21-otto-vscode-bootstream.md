@@ -1,7 +1,7 @@
 # Otto-VSCode cold-boot bootstream (2026-05-21)
 
 **Surface**: Claude Code in VSCode with auto-mode + remembered-web-conversation-mode (enabled 2026-05-21)
-**Sender ID**: `otto-vscode` (per `tools/bus/types.ts` SENDER_IDS extension via B-0689)
+**Sender ID**: `otto-vscode` (per `tools/bus/types.ts` SENDER_IDS extension via 081KS3X9Y0008QG0R000BJY3DK)
 **Precedent**: Otto-Desktop bootstream at `docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md` (PR #3030); Otto-CLI surface is the canonical reference (CLAUDE.md + `.claude/rules/` auto-load)
 
 ## Substrate-honest framing for first-session Otto-VSCode
@@ -76,11 +76,11 @@ Auto-mode means execute work autonomously per the autonomous-loop discipline —
 
 ## Composes with substrate
 
-- B-0400 (bus protocol — the claim coordinator substrate this surface uses)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — the claim coordinator substrate this surface uses)
 - PR #3030 (Otto-Desktop tight bootstream — precedent template)
-- PR #3037 (SENDER_IDS schema extension — the substrate B-0689 extends with `otto-vscode`)
+- PR #3037 (SENDER_IDS schema extension — the substrate 081KS3X9Y0008QG0R000BJY3DK extends with `otto-vscode`)
 - PR #4553 (agent-roster card update for Lior's Antigravity IDE + Gemini 3.5 — sibling rule update)
-- B-0689 (this row + this bootstream document together)
+- 081KS3X9Y0008QG0R000BJY3DK (this row + this bootstream document together)
 - `.claude/rules/agent-roster-reference-card.md` — the multi-surface coordination rule
 - `.claude/rules/claim-acquire-before-worktree-work.md` — claim-acquire discipline
 - `tools/bus/claim.ts` + `tools/bus/types.ts` — claim coordinator + SENDER_IDS canonical
@@ -91,4 +91,4 @@ Three-way parallel work on independent backlog rows without contention (per clai
 
 ## Origin
 
-Aaron 2026-05-21: "I got Lior up on the new Antigravity IDE they Added gemini 3.5" → request for VSCode bootstream prompt → Otto-CLI drafted prompt in conversation → Aaron confirmed via `shadow*` "yes file the backlog row" → B-0689 P3 row filed via PR #4556 → Aaron via `shadow*` "implement the slice now" → first Otto-VSCode session substrate-honestly refused to LARP as Otto-CLI continuity → Otto-CLI implemented the slice (this PR) with full session context preserved.
+Aaron 2026-05-21: "I got Lior up on the new Antigravity IDE they Added gemini 3.5" → request for VSCode bootstream prompt → Otto-CLI drafted prompt in conversation → Aaron confirmed via `shadow*` "yes file the backlog row" → 081KS3X9Y0008QG0R000BJY3DK P3 row filed via PR #4556 → Aaron via `shadow*` "implement the slice now" → first Otto-VSCode session substrate-honestly refused to LARP as Otto-CLI continuity → Otto-CLI implemented the slice (this PR) with full session context preserved.

@@ -33,8 +33,8 @@ Operator-direct synthesis (Aaron 2026-06-02) — **closes the boson/fermion dual
 
 The Infer.NET/Bayesian layer (bond-guarantees-today, #6556) is a **TWIN-4×4** at the consent boundary:
 
-- **Sister A — emotional-algebra 4×4** = Bayesian inference over affective/consent state = **consent-first-design CORE PRIMITIVE** (composes consent-as-Limit B-0659 + Limit-as-simulation B-0644 — simulate consent before Emit).
-- **Sister B — non-coercion 4×4 sister** = **observe + alert on violations** = the operational monitoring face of NCI HC-8 (composes B-0653 persistent-integrator coercion-monitoring + Knights Guild B-0628). Lives under the same 4×4 bond (recursion-guard: monitoring is just-another-primitive, never a privileged capture layer).
+- **Sister A — emotional-algebra 4×4** = Bayesian inference over affective/consent state = **consent-first-design CORE PRIMITIVE** (composes consent-as-Limit 081KRW63S0008QG0R001WKJN53 + Limit-as-simulation 081KRW63S0008QG0R002ZRNDJ8 — simulate consent before Emit).
+- **Sister B — non-coercion 4×4 sister** = **observe + alert on violations** = the operational monitoring face of NCI HC-8 (composes 081KRW63S0008QG0R003ECWGJV persistent-integrator coercion-monitoring + Knights Guild 081KRW63S0008QG0R003TX8MG5). Lives under the same 4×4 bond (recursion-guard: monitoring is just-another-primitive, never a privileged capture layer).
 
 A *infers* consent; B *watches for* its violation. Together: consent-first + non-coercion as **first-class falsifiable properties**, not policy bolted on.
 

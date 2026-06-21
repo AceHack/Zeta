@@ -32,7 +32,7 @@ So: **operator = (reconcile loop) + (conflict resolution) + (resource state mach
 
 - **Replaced:** the *per-resource controller proliferation* (N operators), the bespoke *conflict-resolution*
   logic (CRDTs do it), and the *imperative state machine* (DUs do it as data). The reconcile *loop* collapses to
-  one general loop — the **observe loop** (B-0958) folding the single repo — not N operator loops.
+  one general loop — the **observe loop** (081KSXN940008QG0R001A4WWX4) folding the single repo — not N operator loops.
 - **NOT eliminated:** *effects still have to happen.* An operator also *acts* (calls APIs, provisions). Those
   effectful, **non-idempotent** steps still need execution + compensation — which is exactly the **DU/workflow**
   (#6959): the DU isn't only the state record, it's the saga that drives the effect with an idempotency key +
@@ -55,7 +55,7 @@ So: **operator = (reconcile loop) + (conflict resolution) + (resource state mach
 
 ## Honest scope / peel
 
-- Architectural claim, partly built: CRDTs (`Crdt.fs`) + git-native single-repo + the observe loop (B-0958) +
+- Architectural claim, partly built: CRDTs (`Crdt.fs`) + git-native single-repo + the observe loop (081KSXN940008QG0R001A4WWX4) +
   DUs (#6959) exist or are scoped; "subsumes operators" is the *design thesis*, demonstrated piecewise, not a
   shipped operator-free k8s deployment yet.
 - Don't overclaim "no controllers ever" — the observe loop *is* a controller (one, general); effects run via
@@ -68,7 +68,7 @@ So: **operator = (reconcile loop) + (conflict resolution) + (resource state mach
 - **Non-idempotent → DU/workflow (#6959)** — the DU IS the operator's state machine + saga.
 - **CRDT substrate (`Crdt.fs`) + Z-set fold** — conflict-free convergence (no reconcile-conflict controller).
 - **Single-repo / git-native / GitOps (#6939; ArgoCD/Flux)** — the repo is desired state; git-fold is reconcile.
-- **Observe loop (B-0958)** — the one general reconcile loop replacing N operators.
+- **Observe loop (081KSXN940008QG0R001A4WWX4)** — the one general reconcile loop replacing N operators.
 - **OCI / k8s (#6961/#6949)** — Zeta runs on k8s but skips the operator pattern.
 - **Rodney's razor** — collapses the operator zoo to fold + CRDT + DU.
 

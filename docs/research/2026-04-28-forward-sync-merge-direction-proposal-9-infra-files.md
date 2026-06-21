@@ -87,7 +87,7 @@ M-risk files via the S-risk batches first.
 structurally-safe form. LFG main currently has the better form for
 security purposes — pinned tarball URL + SHA256 verify per arch +
 download-to-temp-then-extract pattern. This is the very pattern that
-B-0063 (streamed-installer download-to-temp hardening) tracks for the
+081KQ8P5D0008QG0R001DMK8JD (streamed-installer download-to-temp hardening) tracks for the
 remaining streamed installers. AceHack's #75 helper-unification is
 useful for the macos.sh (Homebrew streamed) and elan.sh (Lean toolchain
 streamed) cases, but applying it to mise install on Linux *replaced* a
@@ -98,7 +98,7 @@ form for the mise install path on linux.sh; integrate AceHack's
 curl-fetch.sh helper alongside it for the OTHER cases (semgrep
 install via streamed pipe, if applicable). The merged file would have
 both: helper-loaded + safe pinned-tarball pattern for mise. This is the
-trajectory B-0063 documents — file-output download with curl_fetch's
+trajectory 081KQ8P5D0008QG0R001DMK8JD documents — file-output download with curl_fetch's
 file-output retry-all-errors form, which is more aligned with LFG's
 current pattern than AceHack's #75 regression.
 
@@ -135,7 +135,7 @@ streamed form is the upstream-recommended path).
 
 **Why S:** identical-shape change as macos.sh Homebrew install
 (already on AceHack via the curl-fetch.sh helper); the helper
-abstraction is appropriate for streamed installers; B-0063 tracks the
+abstraction is appropriate for streamed installers; 081KQ8P5D0008QG0R001DMK8JD tracks the
 remaining hardening as a separate item.
 
 ---
@@ -340,7 +340,7 @@ merge result mechanically before it lands.
 
 - `docs/DECISIONS/2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md` — the option-c ADR that establishes the cherry-pick-with-rewrites pattern
 - `docs/UPSTREAM-RHYTHM.md` — operational rhythm governing when drain cycles trigger
-- `docs/backlog/P1/B-0063-streamed-installer-download-to-temp-pattern-codex-p0-pr-75.md` (if exists in either fork) — the streamed-installer hardening backlog item that interacts with files #1, #2, #3 above
+- `docs/backlog/P1/081KQ8P5D0008QG0R001DMK8JD-streamed-installer-download-to-temp-pattern-codex-p0-pr-75.md` (if exists in either fork) — the streamed-installer hardening backlog item that interacts with files #1, #2, #3 above
 - `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md` — the Mirror=AceHack-dev / Beacon=LFG-trunk topology that motivates the drift-reduction work
 - `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md` — the maintainer's framing that 0/0/0 is the gate, not a polish
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron #7096: two coop agents pool clock-drift (#7087/#7085) to test reality via drift COMPRESSIBILITY (Kolmogorov/Martin-Lof): compressible/inferable=deterministic SIM; incompressible=true randomness; pattern=exploitable structure. Cooperation amplifies the probe (more samples -> break weak generators / confirm incompressibility) — a game vs the scheduler. EVE PROTOCOL WITH TIME: zero-trust polymorphic diplomacy (B-1002/B-0638) extended so the IScheduler/time is a third party; three parties keep their irreducible identity (#7090) private. Security: stronger #7087 side-channel -> Aminata/Mateo; defense = keyed generator + bounded drift. No code. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Aaron #7096: two coop agents pool clock-drift (#7087/#7085) to test reality via drift COMPRESSIBILITY (Kolmogorov/Martin-Lof): compressible/inferable=deterministic SIM; incompressible=true randomness; pattern=exploitable structure. Cooperation amplifies the probe (more samples -> break weak generators / confirm incompressibility) — a game vs the scheduler. EVE PROTOCOL WITH TIME: zero-trust polymorphic diplomacy (081KT2T2J0008QG0R002R72323/081KRW63S0008QG0R0030F8ZXA) extended so the IScheduler/time is a third party; three parties keep their irreducible identity (#7090) private. Security: stronger #7087 side-channel -> Aminata/Mateo; defense = keyed generator + bounded drift. No code. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

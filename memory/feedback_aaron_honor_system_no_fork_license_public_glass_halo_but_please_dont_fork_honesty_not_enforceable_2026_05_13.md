@@ -1,6 +1,6 @@
 ---
 name: aaron-honor-system-no-fork-license-public-glass-halo-but-please-dont-fork-honesty-not-enforceable-2026-05-13
-description: Aaron 2026-05-13 substrate-honest license refinement — repos stay public + glass-halo BUT license CAN say "no fork please respect honesty or something not enforceable" for strategic-product substrate. Composes with civsim mutual-privacy (PR #2903) + three-repo split (B-0424) + product-repo split (B-0425).
+description: Aaron 2026-05-13 substrate-honest license refinement — repos stay public + glass-halo BUT license CAN say "no fork please respect honesty or something not enforceable" for strategic-product substrate. Composes with civsim mutual-privacy (PR #2903) + three-repo split (081KRFA460008QG0R001H98EXJ) + product-repo split (081KRFA460008QG0R003JQ46J4).
 type: feedback
 created: 2026-05-13
 ---
@@ -14,14 +14,14 @@ forking. This refines glass-halo discipline without breaking it.
 
 **How to apply:** When the factory ships product-repos with
 strategic substrate (KSK / wellness / civsim / American Dream 2.0
-/ DIO / Aurora / Dawn — per B-0425), draft license language that:
+/ DIO / Aurora / Dawn — per 081KRFA460008QG0R003JQ46J4), draft license language that:
 1. Keeps the repo public + glass-halo + indexable + alignment-
    auditable
 2. Asks (honor-system) for no forking of strategic-product
    substrate
 3. Is substrate-honest about non-enforceability
 4. Does NOT apply to factory-infrastructure repos (Zeta + Forge
-   + ace — those are designed-to-be-forked per B-0424)
+   + ace — those are designed-to-be-forked per 081KRFA460008QG0R001H98EXJ)
 
 ## Aaron's verbatim framing
 
@@ -62,9 +62,9 @@ honesty or something not enforcable"*.
   — Otto's strategic encryption authority composes here; gitcrypt
   is the encryption layer; honor-system license is the public-
   visible layer
-- B-0424 — three-repo split (Zeta + Forge + ace) — factory repos
+- 081KRFA460008QG0R001H98EXJ — three-repo split (Zeta + Forge + ace) — factory repos
   are designed-to-be-forked; honor-system does NOT apply
-- B-0425 — product-repo split planning — honor-system applies
+- 081KRFA460008QG0R003JQ46J4 — product-repo split planning — honor-system applies
   here
 
 ## Two layers compose
@@ -121,12 +121,12 @@ Why honor-system instead of proprietary licensing:
 
 Future-Otto: when product-repos get authored, draft the license
 language with this honor-system framing baked in from day one.
-Don't retrofit; do it at scaffolding time per B-0424's
+Don't retrofit; do it at scaffolding time per 081KRFA460008QG0R001H98EXJ's
 "by-default principle" applied at product-repo scope.
 
 ## Full reasoning
 
-PR #2904 (this substrate; backlog rows B-0424 + B-0425 + memory
+PR #2904 (this substrate; backlog rows 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + memory
 file landed together)
 
 `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md`

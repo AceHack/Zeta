@@ -1,6 +1,6 @@
 ---
 pr_number: 5086
-title: "fix(B-0789 iter-4.2 fixfwd): 5 Copilot findings on #5083 (3 P0 incl Nix-injection + 2 P1) before maintainer test"
+title: "fix(081KSGS9H0008QG0R002T3BJ2R iter-4.2 fixfwd): 5 Copilot findings on #5083 (3 P0 incl Nix-injection + 2 P1) before maintainer test"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:26:01Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5086: fix(B-0789 iter-4.2 fixfwd): 5 Copilot findings on #5083 (3 P0 incl Nix-injection + 2 P1) before maintainer test
+# PR #5086: fix(081KSGS9H0008QG0R002T3BJ2R iter-4.2 fixfwd): 5 Copilot findings on #5083 (3 P0 incl Nix-injection + 2 P1) before maintainer test
 
 ## PR description
 

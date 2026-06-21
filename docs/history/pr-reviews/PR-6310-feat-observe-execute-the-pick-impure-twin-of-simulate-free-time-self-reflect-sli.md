@@ -40,7 +40,7 @@ The controller is pure (`observe`/`simulate`/`fold`); **`execute` is the one eff
 
 **Append-first ordering:** if the append fails, the world does NOT advance (durable log stays source of truth). `Result<T, TFeedback>`; never throws.
 
-Composes with the eventually-consistent git-native indexes ([B-0951](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)) — the read side of the same log this writes to.
+Composes with the eventually-consistent git-native indexes ([081KSXN940008QG0R000R76H45](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)) — the read side of the same log this writes to.
 
 Verified: eslint clean, tsc 0, **6/6 tests pass**.
 

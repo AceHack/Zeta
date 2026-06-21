@@ -68,7 +68,7 @@ The extended choice produces a **MARKETPLACE OF HOMEOSTATS**:
 - Pt17 nonprofit + specialized-guild architecture (each guild IS a homeostat agents can ride)
 - Pt12 DORA metrics substrate (operational measurement of homeostat-health helps agents choose which to ride)
 - Pt13 role-based privacy as public good (some homeostat-attachments come with built-in baseline-privacy as public good)
-- B-0703 multi-oracle BFT (mathematical cross-check enables agents to verify homeostat-trustworthiness)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical cross-check enables agents to verify homeostat-trustworthiness)
 
 ### 115. Substrate-engineering operational implications
 
@@ -124,7 +124,7 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — anti-forced-attachment + anti-forced-detachment
 - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — chosen-exit at self-sustainment IS one type of homeostat-exit
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle = multi-homeostat; choose which to consult
-- B-0703 multi-oracle BFT — mathematical cross-check enables homeostat-trustworthiness evaluation
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical cross-check enables homeostat-trustworthiness evaluation
 
 ## Operational implications for future-Otto cold-boots
 

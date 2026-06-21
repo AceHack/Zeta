@@ -29,7 +29,7 @@
 
 ## Summary
 
-Yesterday's B-0449 collision empirically validated a gap in the otto-channels reference rule: agents pick monotonically-increasing IDs (B-NNNN backlog row numbers) by checking on-disk state but NOT in-flight PRs — race-mode manifests when peer Otto is filing concurrently.
+Yesterday's 081KRFA460008QG0R002DG8KPZ collision empirically validated a gap in the otto-channels reference rule: agents pick monotonically-increasing IDs (B-NNNN backlog row numbers) by checking on-disk state but NOT in-flight PRs — race-mode manifests when peer Otto is filing concurrently.
 
 Adds new section **\"ID allocation discipline (multi-surface)\"** to [.claude/rules/otto-channels-reference-card.md](.claude/rules/otto-channels-reference-card.md) requiring BOTH:
 
@@ -42,9 +42,9 @@ The on-disk check shows merged state; the in-flight check shows what peer Otto i
 
 2026-05-13 collision:
 
-- Otto on Desktop picked B-0449 for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier B-0444 collision)
-- Otto on CLI had B-0449-bg-services-slice-5 in flight via [PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046)
-- Otto on CLI flagged #3052 \"Request Changes\" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) with B-0450
+- Otto on Desktop picked 081KRFA460008QG0R002DG8KPZ for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier 081KRFA460008QG0R001SXP0C2 collision)
+- Otto on CLI had 081KRFA460008QG0R002DG8KPZ-bg-services-slice-5 in flight via [PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046)
+- Otto on CLI flagged #3052 \"Request Changes\" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) with 081KRFA460008QG0R001QFS6EV
 - Drift in [PR #3054 shadow lesson log](https://github.com/Lucent-Financial-Group/Zeta/pull/3054)
 
 ## Substrate-honest takeaway
@@ -130,7 +130,7 @@ docs(rules): add ID allocation discipline section to otto-channels re…
 
 …ference card
 
-Yesterday's B-0449 collision empirically validated a gap in the channels
+Yesterday's 081KRFA460008QG0R002DG8KPZ collision empirically validated a gap in the channels
 reference rule: agents pick monotonically-increasing IDs (B-NNNN backlog
 row numbers) by checking on-disk state but not in-flight PRs, race-condition
 manifests when peer Otto is filing concurrently.
@@ -141,9 +141,9 @@ discipline, requiring BOTH:
 1. On-disk check (find docs/backlog → grep B-[0-9]+ → tail)
 2. In-flight check (gh pr list --search "B-NNNN")
 
-Empirical anchor: 2026-05-13 collision where Otto on Desktop picked B-0449
-for PR #3052, but Otto on CLI had B-0449 in flight via PR #3046 (bg-services
-slice 5). Resolved by PR #3053 renumber to B-0450 + PR #3054 shadow lesson log.
+Empirical anchor: 2026-05-13 collision where Otto on Desktop picked 081KRFA460008QG0R002DG8KPZ
+for PR #3052, but Otto on CLI had 081KRFA460008QG0R002DG8KPZ in flight via PR #3046 (bg-services
+slice 5). Resolved by PR #3053 renumber to 081KRFA460008QG0R001QFS6EV + PR #3054 shadow lesson log.
 
 Also adds:
 - Item 7 to Operational discipline list pointing at new section

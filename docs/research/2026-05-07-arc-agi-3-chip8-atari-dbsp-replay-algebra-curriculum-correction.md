@@ -134,7 +134,7 @@ For local or non-distributable ROMs:
 - do not commit download links
 - do not redistribute bytes
 
-This composes with B-0083 and B-0199. The strict form matters:
+This composes with 081KQ8P5D0008QG0R001590WJ3 and 081KQTPYE0008QG0R0028GRW88. The strict form matters:
 ROM safety cannot be vibes. It has to be provenance, license text,
 hashes, and no bytes unless redistribution is explicitly allowed.
 
@@ -148,7 +148,7 @@ Potential follow-up substrate:
   boundary.
 - ROM policy/current-state doc: safe ROM commit rules, local-only
   manifests, and hash-only metadata for non-distributable ROMs.
-- B-0240 extension: structure recognizer accepts emulator trace
+- 081KQZVQW0008QG0R002QZAFB2 extension: structure recognizer accepts emulator trace
   streams as first-class input.
 
 ## Verbatim Correction Packet
@@ -220,7 +220,7 @@ Structure recognizer = invariant extractor over those streams.
 
 That's the clean stack.
 
-Microsoft's System.IO.Pipelines docs are also relevant for the B-0242 side: they emphasize high-performance parsing of streaming data with less boilerplate, PipeReader/PipeWriter, ReadOnlySequence<T>, AdvanceTo, and explicit ownership/completion rules. That matters because if you are going to stream emulator frames / agent actions / replay traces through a harness, this is exactly the kind of I/O discipline you want.
+Microsoft's System.IO.Pipelines docs are also relevant for the 081KQZVQW0008QG0R001CQPQ0E side: they emphasize high-performance parsing of streaming data with less boilerplate, PipeReader/PipeWriter, ReadOnlySequence<T>, AdvanceTo, and explicit ownership/completion rules. That matters because if you are going to stream emulator frames / agent actions / replay traces through a harness, this is exactly the kind of I/O discipline you want.
 
 ROM safety: Otto got the shape right, but make it strict
 

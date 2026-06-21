@@ -6,7 +6,7 @@
 // ready to merge?", check-github-status.ts asks "is GitHub itself
 // healthy enough that the answer can be trusted?"
 //
-// Origin: B-0109 (dependency status tracking surface, 2026-04-30) and
+// Origin: 081KQDTYV0008QG0R002H74QXZ (dependency status tracking surface, 2026-04-30) and
 // peer-review feedback that the GitHub-status check should be a tested
 // executable, not a behavioral habit. Mirrors poll-pr-gate.ts's
 // "promote prose probes to executable substrate" pattern.

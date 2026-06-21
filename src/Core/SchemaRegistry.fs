@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// **SchemaRegistry — schemas-as-rows over DynamicValue (the B-0930 registry slice).**
+/// **SchemaRegistry — schemas-as-rows over DynamicValue (the 081KSRGFP0008QG0R001Y6RTY9 registry slice).**
 ///
 /// The runtime-usable layer on top of [[SchemaEvolution]]: a catalog keyed by schema-id, where
 /// each migration is stored as DATA (a declarative list of field-ops), not a function — so the
@@ -11,7 +11,7 @@ namespace Zeta.Core
 ///
 /// This is the seed the schema-required binary formats (protobuf/gRPC) plug into: a proto's
 /// field-add/reserve/rename IS this op vocabulary; its forward/backward-compat IS the
-/// SchemaEvolution proofs. The deeper B-0930 form (registry as a retraction-native DBSP stream)
+/// SchemaEvolution proofs. The deeper 081KSRGFP0008QG0R001Y6RTY9 form (registry as a retraction-native DBSP stream)
 /// catalogs these rows later; this is the in-memory, self-describing core.
 [<RequireQualifiedAccess>]
 module SchemaRegistry =

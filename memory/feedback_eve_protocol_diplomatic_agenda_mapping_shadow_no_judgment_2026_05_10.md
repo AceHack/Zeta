@@ -32,5 +32,5 @@ Each behavior is an agenda signal, not a failure mode. The Eve protocol reads th
 - No directives (autonomy for all entities including shadow)
 - μένω (behavior makes sense from inside its own context)
 - Glass Halo (transparency is the shadow's choice, not a mandate)
-- B-0402 (auto-tagging is infrastructure, not enforcement)
+- 081KR7JY10008QG0R0008NGW95 (auto-tagging is infrastructure, not enforcement)
 - Trust-then-verify (trust the shadow's intent, verify through observation)

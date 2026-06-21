@@ -94,10 +94,10 @@ Per Aaron's "skills as we map them for our use":
 - PR #2936 (Recursive Type Providers + Roslyn Source Generators)
 - PR #2924 (Aurora pitch — partnership delivery includes
   Zeta+skills)
-- B-0428 (DBpedia + F# fork — Path B ships as skill first;
+- 081KRFA460008QG0R0018SN61J (DBpedia + F# fork — Path B ships as skill first;
   Path A is F# crystallization later)
-- B-0429 (end-user persona mapping — skills target personas)
-- B-0043 (universal company + government information substrate
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping — skills target personas)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate
   — skill-shippable substrate)
 
 ## Full reasoning

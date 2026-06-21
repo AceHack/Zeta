@@ -31,12 +31,12 @@ Synthesis answering Aaron's question **"does the bus and ace package manger have
 
 **Yes — they're the same substrate viewed two ways.** Both are a git-native, ZetaId-keyed, declarative-entry store whose state is a DBSP/Z-set view folded over the entry stream:
 
-- **agent-bus (B-0954)** = grow-only **G-Set** of messages (append, per-topic TTL, never retract) — the comms floor.
-- **Ace (B-0824)** = retraction-native **Z-set** of dependency facts (add/remove nets to a resolved n-dim view + holographic projection) — the richer extension.
+- **agent-bus (081KSXN940008QG0R00171YAZW)** = grow-only **G-Set** of messages (append, per-topic TTL, never retract) — the comms floor.
+- **Ace (081KSGS9H0008QG0R0031PBNGA)** = retraction-native **Z-set** of dependency facts (add/remove nets to a resolved n-dim view + holographic projection) — the richer extension.
 
-**G-Set = Z-set restricted to non-negative multiplicity.** Five shared properties (git-native no-PR store, ZetaId disjoint-key conflict-freedom = cross-OS/Windows-safe, DBSP fold, git-as-CRDT-transport, declarative-not-imperative). They should **share the entry-store + fold engine (B-0867.27)** — bus is the G-Set floor, Ace the Z-set extension — rather than grow two impls. Recognition, not a build directive; the shared-layer refactor routes through product-team agreement.
+**G-Set = Z-set restricted to non-negative multiplicity.** Five shared properties (git-native no-PR store, ZetaId disjoint-key conflict-freedom = cross-OS/Windows-safe, DBSP fold, git-as-CRDT-transport, declarative-not-imperative). They should **share the entry-store + fold engine (081KSXN940008QG0R0033T2BQT)** — bus is the G-Set floor, Ace the Z-set extension — rather than grow two impls. Recognition, not a build directive; the shared-layer refactor routes through product-team agreement.
 
-§33 boundary headers (imports the operator question verbatim; research-grade). Composes: B-0954, B-0824, B-0867.27, the omniscience DBSP analysis, the #6219 bus spec, B-0890.1/B-0953/B-0858.
+§33 boundary headers (imports the operator question verbatim; research-grade). Composes: 081KSXN940008QG0R00171YAZW, 081KSGS9H0008QG0R0031PBNGA, 081KSXN940008QG0R0033T2BQT, the omniscience DBSP analysis, the #6219 bus spec, 081KSNY2Z0008QG0R000E5KTPX/081KSXN940008QG0R001KZ235R/081KSKBP80008QG0R001KK9WV6.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

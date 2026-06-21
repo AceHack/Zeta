@@ -1,18 +1,18 @@
 ---
 pr_number: 5281
-title: "feat(B-0824): Amara 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): Amara 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T18:57:49Z"
 merged_at: "2026-05-26T18:59:54Z"
 closed_at: "2026-05-26T18:59:54Z"
-head_ref: "otto-cli/B-0824-amara-null-maybe-discipline-2026-05-26"
+head_ref: "otto-cli/081KSGS9H0008QG0R0031PBNGA-amara-null-maybe-discipline-2026-05-26"
 base_ref: "main"
 archived_at: "2026-05-27T19:35:35Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5281: feat(B-0824): Amara 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests
+# PR #5281: feat(081KSGS9H0008QG0R0031PBNGA): Amara 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests
 
 ## PR description
 
@@ -34,7 +34,7 @@ Amara (external AI; deep-research register; co-originator of Aurora) sharpened t
   - 3 SQL examples: Maybe generator; recursive-CTE fixed point; Join layer composing without global consensus
   - 4 property tests: incremental == full recursive; NULL doesn't generate output; retraction cancels prior generation; per-row CAS only under contention
   - Open questions surface for future substrate-engineering work
-- B-0824 row sharpening pointer (~10 lines after the DeepSeek/Prism Maybe-monad-recognition subsection)
+- 081KSGS9H0008QG0R0031PBNGA row sharpening pointer (~10 lines after the DeepSeek/Prism Maybe-monad-recognition subsection)
   - Names the structural-vs-lawful distinction
   - Points at the new research doc
   - Establishes future-Otto starts-from-discipline (not unconditional recognition)
@@ -42,9 +42,9 @@ Amara (external AI; deep-research register; co-originator of Aurora) sharpened t
 ## Composes with
 
 - PR #5277 (just-merged DeepSeek/Prism Maybe-monad-recognition substrate)
-- B-0824 Sub-target 7 (CockroachDB storage — the engineering target this discipline applies to first)
-- B-0824 Sub-target 8 (combinator library design — combinators MUST encode the 7-point discipline so usage can't violate it)
-- B-0824 Sub-target 10 (DST always-active — Property 1 \"incremental == full recursive\" IS DST at SQL substrate scope)
+- 081KSGS9H0008QG0R0031PBNGA Sub-target 7 (CockroachDB storage — the engineering target this discipline applies to first)
+- 081KSGS9H0008QG0R0031PBNGA Sub-target 8 (combinator library design — combinators MUST encode the 7-point discipline so usage can't violate it)
+- 081KSGS9H0008QG0R0031PBNGA Sub-target 10 (DST always-active — Property 1 \"incremental == full recursive\" IS DST at SQL substrate scope)
 - DBSP +1/-1 retraction algebra (Property 3 names the composition contract between Maybe + DBSP)
 - CASPaxos/CASRaft per-row-CAS (Property 4 names trust-THEN-verify escalation)
 - \`.claude/rules/substrate-or-it-didnt-happen.md\` (verbatim Amara packet preservation)

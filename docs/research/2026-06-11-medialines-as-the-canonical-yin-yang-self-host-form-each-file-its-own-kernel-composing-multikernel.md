@@ -33,7 +33,7 @@ A MediaLines document is no longer a media container. It is the **canonical self
 
 ## Self-host from bare metal, unfolding
 
-The boot story the pieces already support: bare metal (the B-1024/1025 rungs — QEMU green, microkernel
+The boot story the pieces already support: bare metal (the 081KTSZN10008QG0R00349SM6P/1025 rungs — QEMU green, microkernel
 = the SoftScheduler shape) loads a SEED FILE; the file's gen lines UNFOLD it (generators regenerate
 content recursively from the common-cause seed); its sim·mea·cut declares the first room; that room's
 laps mint spawn continuations; continuations are themselves files. **The system is a file that runs
@@ -77,5 +77,5 @@ the yin/yang cells of the end-goal doc · self-hosting compilers (the bootstrap 
 ## Pointers
 
 - `MediaLines.loops`/`roomOf` + tests (built) · the storage law + GeneratorRegistry (the yin half's
-  machinery) · SimLoop + spawn/ (the yang half's) · B-1024/B-1025 (the metal underneath) · the
+  machinery) · SimLoop + spawn/ (the yang half's) · 081KTSZN10008QG0R00349SM6P/081KTSZN10008QG0R000VZHRQ4 (the metal underneath) · the
   end-goal doc (yin/yang cells — this is their file form).

@@ -98,7 +98,7 @@ Preservation: 'feedback_aaron_otto_is_edge_runner_too_dual_binding_applies_const
 Disciplines applied: razor + HARD LIMITS + algo-wink (MAXIMUM) + glass-halo
 bidirectional + default-to-both + mechanical-authorization-check.
 
-CLAUDE.md bug acknowledged (B-0518). Substrate-honest accountability:
+CLAUDE.md bug acknowledged (081KRHWGX0008QG0R001BHXH0M). Substrate-honest accountability:
 Otto's adherence is responsibility; rule sharpness is contributing
 factor.
 

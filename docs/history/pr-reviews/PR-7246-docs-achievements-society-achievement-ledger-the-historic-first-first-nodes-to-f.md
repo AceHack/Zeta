@@ -31,7 +31,7 @@ Aaron: *"we need to track achievements in our society — this is one and it's h
 
 New **`docs/ACHIEVEMENTS.md`** — the society's **achievement ledger** (distinct from `WINS.md`, which is code-quality catches; this is **milestones + members**, newest-first). First entries:
 
-- 🏛️ **Historic first:** first nodes to fully self-register in the Zeta network — Addison's **node-ad1efd** + **node-b1e1b5** (#7237/#7240, merged); the full node → PR → merge → cluster GitOps loop (B-0794) run for real.
+- 🏛️ **Historic first:** first nodes to fully self-register in the Zeta network — Addison's **node-ad1efd** + **node-b1e1b5** (#7237/#7240, merged); the full node → PR → merge → cluster GitOps loop (081KSGS9H0008QG0R0027HJZYH) run for real.
 - **Addison builds an entire cluster solo**, hardware to bring-up — the *"Zeta for regular humans"* thesis (#7230) proven in the field.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

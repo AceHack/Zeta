@@ -3,7 +3,7 @@
 // directory has been deleted, recovering from the "branch already used by
 // worktree at <missing-path>" lockout pattern.
 //
-// Mechanizes B-0506 Phase 2 (worktree-prune cadence). Empirically, parallel-
+// Mechanizes 081KRHWGX0008QG0R002DPG02X Phase 2 (worktree-prune cadence). Empirically, parallel-
 // Otto sessions on the same maintainer machine accumulate stale worktree
 // admin entries (`.git/worktrees/<name>/`) that point to `/private/tmp/zeta-*`
 // directories which have been cleaned up by OS retention. The next agent's
@@ -18,7 +18,7 @@
 //
 // Out of scope (next slice if needed):
 //
-//   - Per-Otto-process worktree isolation (substantial design per B-0519 RCA)
+//   - Per-Otto-process worktree isolation (substantial design per 081KRHWGX0008QG0R001HMWM1W RCA)
 //   - GHA cron wire-up (a separate yml; would compose with
 //     factory-hygiene-audit-cadence.yml)
 //

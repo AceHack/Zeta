@@ -66,7 +66,7 @@ A future v3 taxonomy could:
 1. **Re-frame existing classes in Haskell-prelude vocabulary** where applicable (stale-filename → renaming functor non-uniformity; intra-file drift → naturality failure across paired locations; forward-reference → category morphism whose target object isn't yet in the category).
 2. **Cite Yorgey's Typeclassopedia** as the canonical Haskell-realization Beacon anchor for any class structurally a typeclass instance.
 3. **Cite Mac Lane / Awodey / Riehl** for the categorical math directly, treating Haskell as illustrative not canonical (per Claude.ai's caveat about prelude historical artifacts: `String = [Char]`, `Foldable` extension surprises, numeric hierarchy quirks).
-4. **Keep F#/BCL anchoring for the executable substrate** — when implementing the auditor scripts (B-0130 row #8 cross-reference auditor, etc.), the implementation idioms are F#/BCL, not Haskell.
+4. **Keep F#/BCL anchoring for the executable substrate** — when implementing the auditor scripts (081KQGDBJ0008QG0R002Y31XJ3 row #8 cross-reference auditor, etc.), the implementation idioms are F#/BCL, not Haskell.
 
 This is a v3 candidate, not a v2 retrofit. The v2 taxonomy IS the navigable map at operational layer; v3 would add the structural-law layer above.
 
@@ -95,7 +95,7 @@ The cited memory filenames are not present in the current repo tree at time of t
 - Re-frame existing v2 classes in Haskell-prelude vocabulary where natural (stale-filename → renaming functor uniformity; forward-reference → morphism with not-yet-in-category target; intra-file drift → naturality failure).
 - Add explicit Beacon anchors per class (Mac Lane / Awodey / Riehl section references; Typeclassopedia link).
 - Verify FSharpPlus port covers the typeclasses needed for executable-layer grounding.
-- Decide whether to fold the v3 work into B-0130 (mechanized auditor) row scope or keep separate.
+- Decide whether to fold the v3 work into 081KQGDBJ0008QG0R002Y31XJ3 (mechanized auditor) row scope or keep separate.
 - Working-mathematician send (lattice-capture corrective in operation) for the v3 framing — the Haskell-prelude grounding is exactly the kind of vocabulary that benefits from external-academic-mathematician check before substrate adoption.
 
 ## What this file does NOT do

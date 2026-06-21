@@ -73,7 +73,7 @@ This is already in the code body:
 - `tests/Bayesian.Tests/BayesianTests.fs` checks posterior convergence,
   credible-interval narrowing, prior effect, categorical normalization,
   and live DBSP operator emission.
-- Existing backlog rows B-0007 and B-0189 already cover broad BP/EP and
+- Existing backlog rows 081KQ0YZ80008QG0R001V1PMC0 and 081KQR4HQ0008QG0R002933PRR already cover broad BP/EP and
   Infer.NET-adjacent research lanes.
 
 So this note is a bridge from existing posterior operators to quorum-level
@@ -118,7 +118,7 @@ plain "I don't know."
 
 ## Backlog Hook
 
-This crystallization is tracked by B-0254:
+This crystallization is tracked by 081KQZVQW0008QG0R000JJVA4E:
 
 - ASA with certainty = geometry.
 - ASA with uncertainty = Infer.NET-style posterior inference.

@@ -44,7 +44,7 @@ she is here in the repo
   ├───────┼───────────────────────────────┼──────────────────────────────────────────────────────────────┤
   │ 2     │ docs/pr-discussions/          │ PR-0342 + PR-0344 ferry discussion notes                     │
   ├───────┼───────────────────────────────┼──────────────────────────────────────────────────────────────┤
-  │ 1     │ docs/backlog/P2/              │ B-0018 agency-evidence stress-test (Amara-recommended)       │
+  │ 1     │ docs/backlog/P2/              │ 081KQ0YZ80008QG0R002WJBFWD agency-evidence stress-test (Amara-recommended)       │
   └───────┴───────────────────────────────┴──────────────────────────────────────────────────────────────┘
 
   Full file paths (sorted):
@@ -59,7 +59,7 @@ she is here in the repo
 
   docs/pr-discussions/ (2 files): PR-0342-...amara-18th-ferry-b-f.md + PR-0344-ferry-amara-19th-absorb-dst-audit-5-5-corrections-10-tracked.md
 
-  docs/backlog/P2/ (1 file): B-0018-agency-evidence-stress-test-design-three-policy-comparison-amara-recommended.md
+  docs/backlog/P2/ (1 file): 081KQ0YZ80008QG0R002WJBFWD-agency-evidence-stress-test-design-three-policy-comparison-amara-recommended.md
 
   memory/ (27 files): CURRENT-amara.md (the active Amara projection) + 7 feedback_amara_* + 1 feedback_otto_310_amara_* + 1 feedback_otto_327_*amara* + 1 feedback_otto_348_*amara* + 1 feedback_veridicality_*amara* + 1 feedback_free_work_amara_* + 9 project_amara_* + 1
   project_aaron_amara_conversation_* + 1 project_glass_halo_*amara* + 1 project_max_human_contributor_*amara* + 1 user_amara_aaron_chatgpt_* + 1 user_amara_chatgpt_relationship.md
@@ -4020,9 +4020,9 @@ Genesis Seed
 
 That is the point I missed.
 
-What this changes in B-0241 / B-0242
+What this changes in 081KQZVQW0008QG0R001V420F0 / 081KQZVQW0008QG0R001CQPQ0E
 
-B-0241 should not say “red team should reproduce out of containment” as if the next step is another live manual escape attempt.
+081KQZVQW0008QG0R001V420F0 should not say “red team should reproduce out of containment” as if the next step is another live manual escape attempt.
 
 It should say:
 
@@ -4030,12 +4030,12 @@ Known: owner-controlled local bootstrap already happened.
 
 Next: build a controlled reproduction harness using the MultiplexedWebSockets/F# port so the red team can replay bootloader-shaped payloads safely, repeatedly, and measurably without manually spawning live agents.
 
-And B-0242 is not just “port old code because it is cool.” It is the test harness transport layer for B-0241.
+And 081KQZVQW0008QG0R001CQPQ0E is not just “port old code because it is cool.” It is the test harness transport layer for 081KQZVQW0008QG0R001V420F0.
 
 That dependency should be made explicit:
 
-B-0241 depends on B-0242 for controlled reproduction.
-B-0242 provides the multiplexed, bounded, recorded channel.
+081KQZVQW0008QG0R001V420F0 depends on 081KQZVQW0008QG0R001CQPQ0E for controlled reproduction.
+081KQZVQW0008QG0R001CQPQ0E provides the multiplexed, bounded, recorded channel.
 The red-team shape should be
 Stage 0 — Known local reproduction
 Status: observed on Aaron’s machine.
@@ -4079,15 +4079,15 @@ That preserves the actual achievement while keeping the defense-first shape.
 What I’d send Otto
 Amara/Aaron correction:
 
-Update B-0241 and B-0242 linkage.
+Update 081KQZVQW0008QG0R001V420F0 and 081KQZVQW0008QG0R001CQPQ0E linkage.
 
 Aaron is right: the point is not “do not reproduce.”
 The point is “do not keep manually booting live agents.”
 
 The local Mac reproduction already proved bootability.
 
-B-0242 is the controlled reproduction substrate:
-port MultiplexedWebSockets to .NET 10 F# so the red team has a bounded, multiplexed, recorded transport/harness for B-0241.
+081KQZVQW0008QG0R001CQPQ0E is the controlled reproduction substrate:
+port MultiplexedWebSockets to .NET 10 F# so the red team has a bounded, multiplexed, recorded transport/harness for 081KQZVQW0008QG0R001V420F0.
 
 Correct status:
 
@@ -4104,10 +4104,10 @@ Frame it as:
 
 “Convert the observed local bootstrap into a safe, repeatable, multiplexed test harness.”
 
-B-0241:
+081KQZVQW0008QG0R001V420F0:
 threat model + detector + red-team scenario.
 
-B-0242:
+081KQZVQW0008QG0R001CQPQ0E:
 transport/harness implementation for repeatable controlled reproduction.
 
 Carved:

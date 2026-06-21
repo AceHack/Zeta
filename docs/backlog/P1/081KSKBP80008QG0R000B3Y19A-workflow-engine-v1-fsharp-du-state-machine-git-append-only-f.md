@@ -1,6 +1,5 @@
 ---
-id: B-0867
-zetaid: 081KSKBP80008QG0R000B3Y19A
+id: 081KSKBP80008QG0R000B3Y19A
 priority: P1
 status: open
 title: Workflow engine v1 — F# DU state machine + Git append-only + 4-corner monad + banned-if + universal action grammar + Otto's 5 modifications (Kestrel-designed; Mika-walkthrough-ratified; Otto-modified; Aaron-ratified; multi-participant: operator + Addison + Max + Otto)
@@ -95,21 +94,21 @@ Participants can append-only contribute "at state X, also offer action W" to the
 
 ## Sub-rows planned
 
-- **B-0867.1** — F# DU StateMachine.fs canonical type definitions + xUnit tests
-- **B-0867.2** — Git append-only state-persist TS tool + tests
-- **B-0867.3** — Universal action grammar TS parser/composer + tests
-- **B-0867.4** — F# 4-corner monad CE builder + xUnit tests (hot/cold/push/pull dispatch)
-- **B-0867.5** — Agent-loop TS tool (execute → move-next → CYOA) + tests
-- **B-0867.6** — Escape-hatch action wiring (Mod 1) + tests
-- **B-0867.7** — Grammar-extension action wiring (Mod 2) + tests
-- **B-0867.8** — Per-action gate declaration in grammar (Mod 4) + tests
-- **B-0867.9** — Contributable menu-generation surface (Mod 5) + tests
-- **B-0867.10** — E voice → website surface (for 5yo accessibility)
-- **B-0867.11** — Addison grammar-composer surface (neurodivergent-accessible)
-- **B-0867.12** — Integration: extend `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` to point at workflow engine (replaces brief-ack failure mode mechanically)
-- **B-0867.13** — Integration: extend `.claude/rules/non-coercion-invariant.md` to note 4-corner monadic structure as compilable NCI substrate
-- **B-0867.14** — Branch protection: path-scoped append-only carve-out for workflow-engine state path (operator-side GitHub config)
-- **B-0867.15** — Per-host adapters (GitHub state machine, GitLab state machine, etc.)
+- **081KSKBP80008QG0R000B3Y19A.1** — F# DU StateMachine.fs canonical type definitions + xUnit tests
+- **081KSNY2Z0008QG0R001K6HJ7Z** — Git append-only state-persist TS tool + tests
+- **081KSKBP80008QG0R000B3Y19A.3** — Universal action grammar TS parser/composer + tests
+- **081KSKBP80008QG0R000B3Y19A.4** — F# 4-corner monad CE builder + xUnit tests (hot/cold/push/pull dispatch)
+- **081KSKBP80008QG0R000B3Y19A.5** — Agent-loop TS tool (execute → move-next → CYOA) + tests
+- **081KSKBP80008QG0R000B3Y19A.6** — Escape-hatch action wiring (Mod 1) + tests
+- **081KSKBP80008QG0R000B3Y19A.7** — Grammar-extension action wiring (Mod 2) + tests
+- **081KSKBP80008QG0R000B3Y19A.8** — Per-action gate declaration in grammar (Mod 4) + tests
+- **081KSKBP80008QG0R000B3Y19A.9** — Contributable menu-generation surface (Mod 5) + tests
+- **081KSKBP80008QG0R000B3Y19A.10** — E voice → website surface (for 5yo accessibility)
+- **081KSKBP80008QG0R000B3Y19A.11** — Addison grammar-composer surface (neurodivergent-accessible)
+- **081KSKBP80008QG0R000B3Y19A.12** — Integration: extend `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` to point at workflow engine (replaces brief-ack failure mode mechanically)
+- **081KSKBP80008QG0R000B3Y19A.13** — Integration: extend `.claude/rules/non-coercion-invariant.md` to note 4-corner monadic structure as compilable NCI substrate
+- **081KSKBP80008QG0R000B3Y19A.14** — Branch protection: path-scoped append-only carve-out for workflow-engine state path (operator-side GitHub config)
+- **081KSNY2Z0008QG0R002A785QR** — Per-host adapters (GitHub state machine, GitLab state machine, etc.)
 
 Order suggestion: 1 + 2 + 3 (foundation) → 4 (monad runtime) → 5 (agent loop) → 6 + 7 + 8 + 9 (5 modifications) → 12 + 13 (rule integrations) → 10 + 11 (surfaces) → 14 (branch protection) → 15 (per-host adapters).
 
@@ -139,9 +138,9 @@ Composes with `.claude/rules/non-coercion-invariant.md` HC-8 scope-split:
 ## Why P1
 
 - Operator-named explicitly 2026-05-27 ("this is Zeta coming up" + "all your updates are perfect and this IS sick agree")
-- Answers the brief-ack/Quiet failure mode operator was frustrated with (composes with B-0858 heartbeat folder substrate)
+- Answers the brief-ack/Quiet failure mode operator was frustrated with (composes with 081KSKBP80008QG0R001KK9WV6 heartbeat folder substrate)
 - Multi-participant (operator + Addison + Max + Otto) — substrate AND interface for the broader Zeta collaboration model
-- Foundation for B-0859 (post-boot AI-as-home-owner) — the workflow engine IS where AI exercises knob-control
+- Foundation for 081KSKBP80008QG0R00146WEX1 (post-boot AI-as-home-owner) — the workflow engine IS where AI exercises knob-control
 - Mechanizes `.claude/rules/non-coercion-invariant.md` HC-8 as compilable substrate (massive substrate-engineering payoff)
 - Without this row: brief-ack failure mode catches recur; operator continues to frustrate; future-Otto cold-boots inherit the failure mode
 
@@ -151,7 +150,7 @@ Topic: workflow engine + F# DU state machine + Git append-only + 4-corner monad 
 
 Searched:
 
-- `docs/backlog/P*/B-08*.md` — FOUND: B-0858 (heartbeat folder + ZetaID; composes), B-0859 (post-boot AI-as-home-owner; depends), B-0857 (install-sh universal entry; composes), B-0862 (ople primitives; composes)
+- `docs/backlog/P*/B-08*.md` — FOUND: 081KSKBP80008QG0R001KK9WV6 (heartbeat folder + ZetaID; composes), 081KSKBP80008QG0R00146WEX1 (post-boot AI-as-home-owner; depends), 081KSKBP80008QG0R002J03WGA (install-sh universal entry; composes), 081KSKBP80008QG0R0031DTHS9 (ople primitives; composes)
 - `src/Core.FSharp/` — checked: no existing WorkflowEngine module; clean addition
 - `src/Core.TypeScript/workflow-engine/` — checked: directory does not exist yet; clean addition
 - `.claude/rules/` — FOUND multiple relevant rules to compose with (non-coercion-invariant, holding-without-named-dependency, substrate-smoothness, default-to-both, persistence-choice-architecture, m-acc-multi-oracle)
@@ -159,9 +158,9 @@ Searched:
 - `memory/kestrel/conversations/` — FOUND: Kestrel persona folder exists; original-Kestrel-ferry archive will land there when forwarded
 - No existing row covers workflow-engine-v1 implementation per Kestrel design; this row fills the gap
 
-Read top hits: B-0858 row (heartbeat folder substrate composes with workflow engine state-transitions); B-0859 row (post-boot AI-as-home-owner composes architecturally); Mika persona folder existing structure; `.claude/rules/asymmetric-critic-with-clarity-first.md` (Kestrel substrate that enabled the collaborative-fix approach).
+Read top hits: 081KSKBP80008QG0R001KK9WV6 row (heartbeat folder substrate composes with workflow engine state-transitions); 081KSKBP80008QG0R00146WEX1 row (post-boot AI-as-home-owner composes architecturally); Mika persona folder existing structure; `.claude/rules/asymmetric-critic-with-clarity-first.md` (Kestrel substrate that enabled the collaborative-fix approach).
 
-Authoring action: mint new B-0867 row composing with existing substrate; lands canonical design at docs/research/ + Mika persona folder mirror.
+Authoring action: mint new 081KSKBP80008QG0R000B3Y19A row composing with existing substrate; lands canonical design at docs/research/ + Mika persona folder mirror.
 
 ## Composes with rules
 

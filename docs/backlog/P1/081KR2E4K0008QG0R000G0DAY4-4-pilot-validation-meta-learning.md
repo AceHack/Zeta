@@ -1,6 +1,5 @@
 ---
-id: B-0126.4
-zetaid: 081KR2E4K0008QG0R000G0DAY4
+id: 081KR2E4K0008QG0R000G0DAY4
 priority: P1
 status: closed
 title: "Pilot validation: meta-learning pattern on 2-3 PR cycles"
@@ -12,9 +11,9 @@ classification: buildable-now
 type: friction-reducer
 ---
 
-# B-0126.4 — Pilot validation: meta-learning pattern on 2-3 PR cycles
+# 081KR2E4K0008QG0R000G0DAY4 — Pilot validation: meta-learning pattern on 2-3 PR cycles
 
-**Slice of:** [B-0126](B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
+**Slice of:** [081KQGDBJ0008QG0R001JC9HCJ](081KQGDBJ0008QG0R001JC9HCJ-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
 
 ## What
 
@@ -27,7 +26,7 @@ to verify:
 
 ## Depends on
 
-Requires B-0126.1 (attribution footer landed) and B-0126.3 (Layers 1-3
+Requires 081KR2E4K0008QG0R001N1PPHP (attribution footer landed) and 081KR2E4K0008QG0R002MG5Q5Z (Layers 1-3
 documented) before piloting is meaningful.
 
 ## Acceptance criteria
@@ -35,7 +34,7 @@ documented) before piloting is meaningful.
 - At least 2 PR cycles exercised with the full pattern.
 - At least 1 class-level encoding (Layer 3) validated by catching a
   cousin-bug.
-- Retrospective note added to B-0126 parent row.
+- Retrospective note added to 081KQGDBJ0008QG0R001JC9HCJ parent row.
 
 ## Retrospective (2026-05-09)
 

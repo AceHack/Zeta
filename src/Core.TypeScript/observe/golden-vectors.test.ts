@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/observe/golden-vectors.test.ts — the conformance fixture is in sync + the
  * reference fold/replay reproduce it. The committed golden-vectors.json is the
- * cross-language spec (B-0867.27); these tests keep it honest on the TS side. The
+ * cross-language spec (081KSXN940008QG0R0033T2BQT); these tests keep it honest on the TS side. The
  * F#/C#/Rust impls will run the SAME fixture and assert the same expected states.
  */
 
@@ -16,7 +16,7 @@ import {
   type GoldenVectors,
 } from "./golden-vectors";
 
-describe("golden-vectors — cross-language conformance fixture (B-0867.27)", () => {
+describe("golden-vectors — cross-language conformance fixture (081KSXN940008QG0R0033T2BQT)", () => {
   const committed = JSON.parse(readFileSync(GOLDEN_VECTORS_PATH, "utf8")) as GoldenVectors;
   const generated = generateGoldenVectors();
 

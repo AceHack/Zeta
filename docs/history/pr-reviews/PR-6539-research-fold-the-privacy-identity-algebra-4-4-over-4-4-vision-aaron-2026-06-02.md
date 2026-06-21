@@ -27,12 +27,12 @@
 
 ## Description
 
-Vision-tier capture (operator's explicit 'fold it') of the 2026-06-02 architectural burst extending **B-0982** (DynamicValue 4×4) + **B-0883** (PQ) into **privacy + identity algebras**.
+Vision-tier capture (operator's explicit 'fold it') of the 2026-06-02 architectural burst extending **081KT07NV0008QG0R0032MCYER** (DynamicValue 4×4) + **081KSNY2Z0008QG0R002JKH50A** (PQ) into **privacy + identity algebras**.
 
 - **privacy fence** (= memory fence; shipped in #6538) — privacy is a TRANSFORM over the 4×4 (encryption is nonce-non-deterministic, so not a 5th byte-locked codec)
 - **privacy algebra + identity algebra = INumeric**; a 4×4-consensus **over** the 4×4-consensus of the remainder (nested)
-- **HKT hack** = F-bounded/CRTP **meta-recursive self-referencing types** (`INumber<TSelf> where TSelf : INumber<TSelf>`) in C#; real HKT in F# (B-0428)
-- push **Cayley-Dickson + Adinkra** (then **Clifford**) into the algebras — *first for privacy*, with **physics-based thermal-reversibility + noise-erasure guarantees** (Landauer / B-0840/0905/0906)
+- **HKT hack** = F-bounded/CRTP **meta-recursive self-referencing types** (`INumber<TSelf> where TSelf : INumber<TSelf>`) in C#; real HKT in F# (081KRFA460008QG0R0018SN61J)
+- push **Cayley-Dickson + Adinkra** (then **Clifford**) into the algebras — *first for privacy*, with **physics-based thermal-reversibility + noise-erasure guarantees** (Landauer / 081KSGS9H0008QG0R0006F4BGX/0905/0906)
 - each fence a **hemostat** in the chain from the remainder (μένω)
 - **Infer.NET incremental priors + DBSP incremental IVM, over bonsai**; **Rx-bonsai is the bridge**
 - **pre-WASM / post-WASM consensus**; **wasm=msaw=uno=onu** — MSAW web-verified both ways: aviation *Minimum Safe Altitude Warning* (safety floor) + math *myopic/true self-avoiding walk* (privacy-as-self-avoiding); both compose

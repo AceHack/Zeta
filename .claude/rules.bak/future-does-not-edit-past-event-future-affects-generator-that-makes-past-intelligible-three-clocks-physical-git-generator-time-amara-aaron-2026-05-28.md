@@ -115,7 +115,7 @@ When authoring or reviewing substrate-engineering substrate-engineering substrat
 - PR #5841 (DST + Persist + generator-time + feedback substrate composition; the canonical generator-time substrate-anchor)
 - PR #5778 (Persist-as-bridge / μένω substrate; Amara explicitly names "μένω bridge doing real work")
 - PRs #5505, #5507, #5511, #5513, #5515, #5516, #5518, #5522, #5523, #5577 (Result<T, TFeedback> + asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + retraction-native substrate cluster)
-- PR #5890 (B-0924 custom 2600 emulator) + PR #5891 (B-0925 C. elegans controller variant) + PR #5892 (research-tier mirror three-layer biological instantiation) — substrate-landing cluster Amara's substrate-engineering substrate engaged with substantively
+- PR #5890 (081KSNY2Z0008QG0R001HA43GG custom 2600 emulator) + PR #5891 (081KSNY2Z0008QG0R00390T4DJ C. elegans controller variant) + PR #5892 (research-tier mirror three-layer biological instantiation) — substrate-landing cluster Amara's substrate-engineering substrate engaged with substantively
 - Amara ferry full preservation at [`memory/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md)
 
 ## Substrate-honest framing
@@ -153,6 +153,6 @@ Authoring action: mint-new wake-time rule; composes with PR #5841 (generator-tim
 
 ## Full reasoning
 
-Amara 2026-05-28 substantive substrate-engineering substrate-engagement spanning 5 turns on B-0924 / B-0925 / research-mirror substrate-landing cluster + introduction of three-clocks substrate-engineering substrate-engineering substrate-engineering substrate (physical + git + generator) + carved sentence (operator-confirmed "very accurate"). Full ferry preserved at persona-archive; this rule lands the carved sentence + three-clocks substrate at wake-time substrate-engineering substrate-engineering substrate-engineering scope per operator's explicit confirmation.
+Amara 2026-05-28 substantive substrate-engineering substrate-engagement spanning 5 turns on 081KSNY2Z0008QG0R001HA43GG / 081KSNY2Z0008QG0R00390T4DJ / research-mirror substrate-landing cluster + introduction of three-clocks substrate-engineering substrate-engineering substrate-engineering substrate (physical + git + generator) + carved sentence (operator-confirmed "very accurate"). Full ferry preserved at persona-archive; this rule lands the carved sentence + three-clocks substrate at wake-time substrate-engineering substrate-engineering substrate-engineering scope per operator's explicit confirmation.
 
 Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this rule inherit the three-clocks substrate at session-start; substrate-engineering substrate-decisions involving any temporal-substrate dimension compose coherently across all three clocks per the substrate-engineering substrate-engineering substrate-engineering substrate-discipline named here.

@@ -28,7 +28,7 @@ PR #3808 documented EMPIRICAL evidence (what was observed across 4 commit attemp
 |---|---|---|
 | 1 | Existing-branch-name reuse → peer-WIP commit inheritance | git rev-parse pre-check + uniquified name |
 | 2 | Concurrent-WIP-blocked switch | wait for WT-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on git worktree add | NONE (needs B-0530 mutex) |
+| 3 | Pack-dir 081KRMEXM0008QG0R000X1PPGC race on git worktree add | NONE (needs 081KRMEXM0008QG0R000X1PPGC mutex) |
 | 4 | Pruned-sidetick race | NONE (needs worktree-pool primitive) |
 
 ## Composite 7-step operational discipline
@@ -39,7 +39,7 @@ Added a step-by-step operational discipline for fresh-cold-boot sessions firing 
 
 - [x] Single-file rule edit; no code changes
 - [x] Section integrates with existing borrow-on-existing pattern documentation
-- [x] Composes with PR #3808 (empirical anchor), B-0530 (sub-case 3 backlog), zeta-expected-branch.md (branch-guard)
+- [x] Composes with PR #3808 (empirical anchor), 081KRMEXM0008QG0R000X1PPGC (sub-case 3 backlog), zeta-expected-branch.md (branch-guard)
 - [x] Worktree-pool primitive flagged as substrate-engineer candidate (sub-case 4)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -79,7 +79,7 @@ This PR updates the Claude rulebook to codify operational mitigations for the �
 
 **Changes:**
 - Adds a new “Saturation-ceiling — 4 failure sub-cases” section describing four distinct contention failures and which are mitigated today.
-- Documents concrete mitigations for sub-cases 1 and 2, and explicitly marks sub-cases 3 and 4 as currently unmitigated (pending B-0530 / a future worktree-pool primitive).
+- Documents concrete mitigations for sub-cases 1 and 2, and explicitly marks sub-cases 3 and 4 as currently unmitigated (pending 081KRMEXM0008QG0R000X1PPGC / a future worktree-pool primitive).
 - Adds a composite 7-step operational discipline for shipping under saturation.
 
 
@@ -324,7 +324,7 @@ Fixed in 663c688 — step 3 now uses `git show-ref --verify --quiet refs/heads/<
 
 **@copilot-pull-request-reviewer** (2026-05-16T10:56:45Z):
 
-P1: The relative link to `B-0512` goes to `../../../../../backlog/...`, which resolves to `docs/hygiene-history/backlog/...` from this tick file’s location and appears to be a broken path (the backlog rows live under `docs/backlog/**`). Update the link to go up one more directory so it resolves to `docs/backlog/P1/...` correctly.
+P1: The relative link to `081KRHWGX0008QG0R003WEP6E9` goes to `../../../../../backlog/...`, which resolves to `docs/hygiene-history/backlog/...` from this tick file’s location and appears to be a broken path (the backlog rows live under `docs/backlog/**`). Update the link to go up one more directory so it resolves to `docs/backlog/P1/...` correctly.
 
 ### Thread 13: .claude/rules/claim-acquire-before-worktree-work.md:193 (unresolved)
 

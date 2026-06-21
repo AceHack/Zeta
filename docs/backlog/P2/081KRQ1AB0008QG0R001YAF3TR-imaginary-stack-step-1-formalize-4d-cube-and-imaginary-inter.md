@@ -1,6 +1,5 @@
 ---
-id: B-0584
-zetaid: 081KRQ1AB0008QG0R001YAF3TR
+id: 081KRQ1AB0008QG0R001YAF3TR
 priority: P2
 status: open
 title: "Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives"
@@ -18,11 +17,11 @@ type: research
 
 ## Parent
 
-B-0543 (Remember-When + Pay-Attention → QG isomorphism proof path)
+081KRMEXM0008QG0R002YSPW1X (Remember-When + Pay-Attention → QG isomorphism proof path)
 
 ## Why
 
-B-0543 Step 2 requires showing that the infinite-game extension produces a structure isomorphic (or homomorphic) to a HaPPY-like quantum error-correcting code. The "cube + imaginary intersection + Adinkra + Cayley-Dickson" framing is currently intuitive. This row decomposes the first concrete formalization step.
+081KRMEXM0008QG0R002YSPW1X Step 2 requires showing that the infinite-game extension produces a structure isomorphic (or homomorphic) to a HaPPY-like quantum error-correcting code. The "cube + imaginary intersection + Adinkra + Cayley-Dickson" framing is currently intuitive. This row decomposes the first concrete formalization step.
 
 ## Goal
 
@@ -44,18 +43,18 @@ This object should be small enough that a category theorist or proof engineer ca
 
 ## Non-goals
 
-- Proving the full HaPPY isomorphism (that's B-0543 Step 2)
+- Proving the full HaPPY isomorphism (that's 081KRMEXM0008QG0R002YSPW1X Step 2)
 - Adding the Adinkra layer (that can be a follow-on row)
-- Predicting new physics (B-0543 Step 4)
+- Predicting new physics (081KRMEXM0008QG0R002YSPW1X Step 4)
 
 ## Composes with
 
-- B-0543 (parent proof strategy)
+- 081KRMEXM0008QG0R002YSPW1X (parent proof strategy)
 - `docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md` (the note that motivated this row)
 
 ## Status
 
-Open. High-value decomposition of B-0543. Ready for a category-theory or algebra specialist (or a proof-engineer agent) to pick up.
+Open. High-value decomposition of 081KRMEXM0008QG0R002YSPW1X. Ready for a category-theory or algebra specialist (or a proof-engineer agent) to pick up.
 
 ---
 

@@ -21,7 +21,7 @@ ZETA CLUSTER NODE INSTALL COMPLETE
     });
 });
 describe("expectedClusterNodeTreePath", () => {
-    it("matches B-0812 maintainers/<op>/cluster-nodes/<host>/node.yaml shape", () => {
+    it("matches 081KSGS9H0008QG0R0037H3W4T maintainers/<op>/cluster-nodes/<host>/node.yaml shape", () => {
         expect(expectedClusterNodeTreePath("qemu-ci", "zeta-deadbe")).toBe("maintainers/qemu-ci/cluster-nodes/zeta-deadbe/node.yaml");
     });
 });

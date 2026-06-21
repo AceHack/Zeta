@@ -29,7 +29,7 @@
 
 ## Summary
 
-Tick shard for 0826Z. Cycle-new after 2 named-deps surfaced (PR #4358 my combined lint fix + PR #4356 peer-Otto B-0211 slice 1). GraphQL exhausted to 4 → Pure-git tier; both this shard and the prior 0816Z shard sat pushed-but-un-PRed pending reset.
+Tick shard for 0826Z. Cycle-new after 2 named-deps surfaced (PR #4358 my combined lint fix + PR #4356 peer-Otto 081KQX9B50008QG0R0026BG44J slice 1). GraphQL exhausted to 4 → Pure-git tier; both this shard and the prior 0816Z shard sat pushed-but-un-PRed pending reset.
 
 Documents:
 - Counter discipline survived 2-named-dep merge cycle without Standing-by exposure

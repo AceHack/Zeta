@@ -1,6 +1,5 @@
 ---
-id: B-0888
-zetaid: 081KSNY2Z0008QG0R003291CK8
+id: 081KSNY2Z0008QG0R003291CK8
 priority: P2
 status: open
 title: Cross-track substrate-sync policy — cloud-GitHub vs USB-local-GitLab; intentional divergence vs auto-sync-via-push-to-both-remotes vs hybrid
@@ -28,9 +27,9 @@ tags:
 
 ## What this row tracks
 
-Name + resolve the cross-track substrate-sync question that B-0886 ASAP cluster umbrella doesn't currently address: when work happens on cloud-GitHub track, when/how does it sync to USB-local-GitLab track (and vice versa)?
+Name + resolve the cross-track substrate-sync question that 081KSNY2Z0008QG0R0034FR5FG ASAP cluster umbrella doesn't currently address: when work happens on cloud-GitHub track, when/how does it sync to USB-local-GitLab track (and vice versa)?
 
-Without explicit policy, the parallel tracks risk substrate-drift over time even though the isomorphic-cross-host property (B-0867.15) makes them codebase-identical at the substrate level. Drift could happen at:
+Without explicit policy, the parallel tracks risk substrate-drift over time even though the isomorphic-cross-host property (081KSNY2Z0008QG0R002A785QR) makes them codebase-identical at the substrate level. Drift could happen at:
 
 - Event log (events on one track not on the other)
 - Playbook documents (drift)
@@ -62,16 +61,16 @@ Otto evaluative response identified this as scoping gap:
   - Evaluates the 5+ candidate policies above (plus any others surfaced)
   - Decides one (or hybrid)
   - Articulates the chosen policy's mechanism, failure modes, recovery procedures
-  - Updates B-0886 umbrella to reference the chosen sync policy
+  - Updates 081KSNY2Z0008QG0R0034FR5FG umbrella to reference the chosen sync policy
 - If chosen policy is operational (vs purely documentary), files implementation sub-rows
 - `.claude/rules/cross-track-substrate-sync.md` if discipline-grade
 
 ## Composition
 
-- **B-0886** (parent ASAP cluster umbrella that owns parallel-tracks framing)
-- **B-0867.15** (per-host adapters that make isomorphic property hold; sync policy operates ON the isomorphic substrate)
-- **B-0884** (zflash credential substrate per-track; potentially affected by sync policy)
-- **B-0887** (Zeta-native review substrate that has trajectory event logs to sync OR not)
+- **081KSNY2Z0008QG0R0034FR5FG** (parent ASAP cluster umbrella that owns parallel-tracks framing)
+- **081KSNY2Z0008QG0R002A785QR** (per-host adapters that make isomorphic property hold; sync policy operates ON the isomorphic substrate)
+- **081KSNY2Z0008QG0R0011XCT94** (zflash credential substrate per-track; potentially affected by sync policy)
+- **081KSNY2Z0008QG0R001DFZK4V** (Zeta-native review substrate that has trajectory event logs to sync OR not)
 
 ## Substrate-honest framing
 

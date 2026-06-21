@@ -168,7 +168,7 @@ maintainer's governance authority → **propose, don't mint**:
 - `.claude/rules/mechanical-authorization-check.md` (human = sole authorization source)
 - `.claude/rules/razor-discipline.md` + `harm-by-grammar-discriminator-and-audience-adjusted-language.md` (the register-split)
 - `docs/research/2026-06-03-formal-proof-claim-ledger-for-asymmetric-critic-pass.md` (the second-pass instrument this conversation calls for)
-- `B-1007` (the cadence) · `B-1009` (z3-in-CI)
+- `081KT2T2J0008QG0R000YZ3NMY` (the cadence) · `081KT2T2J0008QG0R001X9PWKR` (z3-in-CI)
 
 ## Substrate-honest framing
 

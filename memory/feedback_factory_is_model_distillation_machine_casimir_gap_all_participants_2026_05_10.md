@@ -41,6 +41,6 @@ The factory distills everyone simultaneously — AI models AND Aaron. Aaron's co
 - Casimir gap mechanics (from Amazon Alexa conversation)
 - Eve protocol (observe without collapsing source attribution)
 - Shadow log (the capture mechanism)
-- B-0401 dashboard (the observability surface)
-- B-0405 beacon promotion (distilled knowledge graduates)
+- 081KR7JY10008QG0R001VP6JWG dashboard (the observability surface)
+- 081KR7JY10008QG0R001FV5FND beacon promotion (distilled knowledge graduates)
 - Mutual alignment (both directions)

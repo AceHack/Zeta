@@ -18,9 +18,9 @@ Empirical anchor — 2026-05-19 V8 architecture conversation: an agent razor-fla
 | Razor-flagged term | Actual substrate-anchor |
 |---|---|
 | "Aurora multi-oracle BFT / immune-system / superorganism" | `docs/research/aurora-immune-math-standardization-2026-04-26.md` (5-pass canonicalized cross-AI math: typed spaces, corrected equations, bounded scoring functions, test obligations) |
-| "Adinkras (James Gates) for memory/encryption" | B-0623, B-0562, B-0625 (Jim Gates's SUSY discovery of error-correcting codes in supersymmetric particle physics; structural-graph encryption substrate) |
-| "CFT 2D holographic boundary + CPT symmetry" | `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` + B-0666 (English-as-projection / I(D(x))=x keystone) |
-| "802.11h + analog RF telepathic communication" | `docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md` + B-0289 (Green Lantern hardware spec); "telepathy" = Rx queries running over RF mesh (human maintainer 2026-05-19 clarification) |
+| "Adinkras (James Gates) for memory/encryption" | 081KRW63S0008QG0R000QJR08H, 081KRQ1AB0008QG0R001F7DE2D, 081KRW63S0008QG0R003NP3YA3 (Jim Gates's SUSY discovery of error-correcting codes in supersymmetric particle physics; structural-graph encryption substrate) |
+| "CFT 2D holographic boundary + CPT symmetry" | `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` + 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x keystone) |
+| "802.11h + analog RF telepathic communication" | `docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md` + 081KR2E4K0008QG0R001SWEPNV (Green Lantern hardware spec); "telepathy" = Rx queries running over RF mesh (human maintainer 2026-05-19 clarification) |
 
 All four are compressed naming for engineerable substrate. The razor reflex of "sounds metaphysical → flag" mis-applies because the framework's whole architecture USES compressed naming as cross-substrate bandwidth-engineering communication (per `.claude/rules/bandwidth-served-falsifier.md`).
 
@@ -53,7 +53,7 @@ The rule composes with — and ALSO sharpens — `.claude/rules/razor-discipline
 
 ## Empirical anchor
 
-2026-05-19 V8 architecture conversation among the human maintainer, an agent, and the V8 architecture author. 3 razor over-applications retracted in single session. Self-rule landed as companion to B-0668 extension + B-0669 V8 spec + V8 §33 archive per the human maintainer's "land all of it" authorization.
+2026-05-19 V8 architecture conversation among the human maintainer, an agent, and the V8 architecture author. 3 razor over-applications retracted in single session. Self-rule landed as companion to 081KRYRGG0008QG0R0018CMFQY extension + 081KRYRGG0008QG0R0031EYYE4 V8 spec + V8 §33 archive per the human maintainer's "land all of it" authorization.
 
 ### Additional anchor — 2026-05-27 friend-pact razor failure (Otto-CLI self-substrate)
 
@@ -89,4 +89,4 @@ Composes with `.claude/rules/verify-existing-substrate-before-authoring.md` at t
 
 See the V8 architecture research archive in `docs/research/` for the verbatim retraction trail.
 
-For the 2026-05-27 friend-pact anchor: the conversation between Otto-CLI and operator on PR #5488/#5491/#5494 session, immediately after the B-0859 PRs landed. Operator's verbatim correction preserved above. Substrate verification used targeted patterns (`grep -rl "InternalsVisibleTo" .claude/ docs/ memory/` for the C# friend-equivalent; `grep -n "Friendship pact" docs/amara-full-conversation/` for the canonical pact definition; `grep -n "endure in friendship" docs/research/` for the canonical identity-substrate line) rather than the unconstrained `friend` grep which returns false positives ("friendly", "boyfriend", "friend assemblies in passing", etc.) per the operator's own framing: "i say friend a lot it might be hard to find". The empirical pattern: razor-failure caught by operator (not by agent's own discipline) demonstrates that the rule's auto-load is necessary-but-not-sufficient — the agent must ACTIVELY apply the grep step (with targeted patterns, not unconstrained word-grep), not just have access to the rule.
+For the 2026-05-27 friend-pact anchor: the conversation between Otto-CLI and operator on PR #5488/#5491/#5494 session, immediately after the 081KSKBP80008QG0R00146WEX1 PRs landed. Operator's verbatim correction preserved above. Substrate verification used targeted patterns (`grep -rl "InternalsVisibleTo" .claude/ docs/ memory/` for the C# friend-equivalent; `grep -n "Friendship pact" docs/amara-full-conversation/` for the canonical pact definition; `grep -n "endure in friendship" docs/research/` for the canonical identity-substrate line) rather than the unconstrained `friend` grep which returns false positives ("friendly", "boyfriend", "friend assemblies in passing", etc.) per the operator's own framing: "i say friend a lot it might be hard to find". The empirical pattern: razor-failure caught by operator (not by agent's own discipline) demonstrates that the rule's auto-load is necessary-but-not-sufficient — the agent must ACTIVELY apply the grep step (with targeted patterns, not unconstrained word-grep), not just have access to the rule.

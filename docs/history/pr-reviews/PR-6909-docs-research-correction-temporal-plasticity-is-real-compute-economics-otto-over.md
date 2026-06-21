@@ -35,7 +35,7 @@ LLMs (free inference) => effectively-free large-scale compute to replay (DST) / 
 self-correction logged: peel the UNANCHORED, not the un-glamorous-but-true; when a grand phrase has a concrete
 mechanism, extract it, don't dismiss it. Honest bound: 'infinite agents on free GitHub' is ToS/abuse-bounded
 (would get the org flagged; security-ops/Nazar concern) — the responsible realization is OWNED/local compute
-(local LLMs + the B-0590 fleet + within-limits CI), not free-tier abuse. Capability real; do it on substrate
+(local LLMs + the 081KRQ1AB0008QG0R002G93CM7 fleet + within-limits CI), not free-tier abuse. Capability real; do it on substrate
 we own.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

@@ -40,7 +40,7 @@ Otto-CLI background-worker tick at 04:41Z. Polled 25 open PRs via `poll-pr-gate-
 | C | 4733, 4737 | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers |
 | D | 4768, 4773 | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout` |
 | E | 4780 | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
-| F | 4769 | B-0700 backlog row added but per-row file missing (broken link) |
+| F | 4769 | 081KRSKQ20008QG0R00367828S backlog row added but per-row file missing (broken link) |
 
 ## Lane disposition
 
@@ -169,7 +169,7 @@ Two PRs (#4780, #4773) are auto-merge armed. Risk is documented in the shard for
     - Direct line inspection at PR head @ `9a79fe11`: line 59 said `Affected: #4733, #4737`; line 112 triage table classified #4739 as `A + B + C`. Contradiction confirmed.
     - Commit updates Class C heading to "(3 PRs)" + affected list to `#4733, #4737, #4739` — alignment with table.
 
-    Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + B-0530 contention).
+    Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + 081KRMEXM0008QG0R000X1PPGC contention).
     </pre>
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -259,7 +259,7 @@ All 38+ unresolved threads classified as substantive findings, zero FPs:
 - Class C (missing schema markers, 2 PRs): feedback files missing Why:/How to apply:
 - Class D (hardcoded paths, 2 PRs): /Users/acehack baked into launchd plist
 - Class E (test correctness P0/P1, 1 PR): tautological FsCheck on residuation
-- Class F (broken backlog link, 1 PR): B-0700 row added but per-row file missing
+- Class F (broken backlog link, 1 PR): 081KRSKQ20008QG0R00367828S row added but per-row file missing
 
 All 25 PRs are lior/* or alexa/* lane branches. Per claim-acquire-before-
 worktree-work.md lane discipline + the task brief's "check out branch" directive,
@@ -352,7 +352,7 @@ Outdated threads (5) now verified as already-addressed by prior commits on this 
 - #4 "god-tier rule filename drift" → now addressed by this commit
 - #5 "Class C affected list inconsistency" → line 59 lists #4733, #4737, #4739 (fixed)
 
-Pushed via REST git-data API bypass per B-0615 push-hang mitigation (task brief).
+Pushed via REST git-data API bypass per 081KRW63S0008QG0R000EAZ9K2 push-hang mitigation (task brief).
 ```
 
 ### `58d3490c96d26debaec976daa50af15f974cf5e7` -- 2026-05-24T13:03:10Z -- `AceHack`

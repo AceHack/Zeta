@@ -28,7 +28,7 @@ Three load-bearing points:
 2. **Memory scales as a flywheel only for the agent producing it.** Each agent's per-session memory is private. The factory's bench has 18+ named agents/personas; my memory-and-rule flywheel doesn't transfer to Soraya's session, or Aminata's, or a Codex peer-harness session.
 3. **Skills are the shareable substrate.** Skills run across the team AND across harnesses (Codex, Cursor, Gemini-CLI, future-team-members). A skill body is durable team-scale substrate; a memory file is durable per-agent substrate. Different scaling axis.
 
-This corrective composes structurally with the decision-archaeology gap (B-0169) — Aaron's framing there was *"is that a skill?"*, not *"should you write a memory about it?"*. Same load-bearing point at the substrate-class layer: when something is universally useful, the right shape is a skill, not a memory.
+This corrective composes structurally with the decision-archaeology gap (081KQJZR90008QG0R002D6XYHB) — Aaron's framing there was *"is that a skill?"*, not *"should you write a memory about it?"*. Same load-bearing point at the substrate-class layer: when something is universally useful, the right shape is a skill, not a memory.
 
 ### What this changes operationally going forward
 
@@ -94,7 +94,7 @@ LOOP B (produce):  pick row → produce observation → surface N≥0 new rows
 | Mechanism | What it produces | Active? |
 |---|---|---|
 | **Copilot review on every PR** | bugs-per-PR findings → some become rows | Yes (~3-9 findings per PR observed this tick across 3 PRs) |
-| **Aaron-Otto bidirectional exchange** | gap-naming → rows like B-0169 (decision-archaeology) | Yes — highest yield mechanism |
+| **Aaron-Otto bidirectional exchange** | gap-naming → rows like 081KQJZR90008QG0R002D6XYHB (decision-archaeology) | Yes — highest yield mechanism |
 | **Closure-pass meta-observation** | adjacent gaps surfaced when reading a row to close it | Yes but ad-hoc |
 | **Skill-tune-up cadence** | skill-class gaps every 5-10 rounds | Substrate-rule, not auto-running |
 | **Gap-of-gaps audit** (the meta-discipline) | meta-gap-class discoveries | Substrate-rule, not auto-running |
@@ -111,7 +111,7 @@ What would mechanize it fully: a `tools/backlog/expand-from-closure.ts` script t
 
 ### Worked example (this session)
 
-This tick alone: B-0109 first iteration (consume-loop closes-progress on a P0); Aaron's commentary surfaces decision-archaeology (produce-loop emits B-0169); the conversation about flywheels emits this memo (produce-loop emits a memory file). E[N] for this tick > 1 empirically.
+This tick alone: 081KQDTYV0008QG0R002H74QXZ first iteration (consume-loop closes-progress on a P0); Aaron's commentary surfaces decision-archaeology (produce-loop emits 081KQJZR90008QG0R002D6XYHB); the conversation about flywheels emits this memo (produce-loop emits a memory file). E[N] for this tick > 1 empirically.
 
 ## Q3 — Parallel tracks via the team
 
@@ -167,8 +167,8 @@ All three are valid backlog rows the next time `skill-tune-up` / `gap-of-gaps au
 - `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` — the meta-thesis the three flywheels each instantiate at different layers
 - `memory/feedback_never_idle_speculative_work_over_waiting.md` — proper-order pick discipline + the 2026-05-02 2nd + 3rd refinements (backlog-as-aperiodic-tiling-strange-attractor)
 - `memory/feedback_bugs_per_pr_rate_as_immune_system_health_metric_independent_framing_production_otto_aaron_2026_05_02.md` — bugs-per-PR rate IS one of the auto-active expansion-flywheel mechanisms
-- `docs/dependency-status.md` (B-0109 first iteration) — composing-substrate; status surface is one of the things the dispatcher needs to consult before going wide (don't dispatch parallel agents into a degraded-GitHub state)
-- `docs/backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md` — a worked example of the expansion-flywheel: B-0169 was surfaced this session by Aaron-bidirectional-exchange while the consume-loop was running on B-0109
+- `docs/dependency-status.md` (081KQDTYV0008QG0R002H74QXZ first iteration) — composing-substrate; status surface is one of the things the dispatcher needs to consult before going wide (don't dispatch parallel agents into a degraded-GitHub state)
+- `docs/backlog/P1/081KQJZR90008QG0R002D6XYHB-decision-archaeology-skill-aaron-2026-05-02.md` — a worked example of the expansion-flywheel: 081KQJZR90008QG0R002D6XYHB was surfaced this session by Aaron-bidirectional-exchange while the consume-loop was running on 081KQDTYV0008QG0R002H74QXZ
 
 ## Carved sentences
 

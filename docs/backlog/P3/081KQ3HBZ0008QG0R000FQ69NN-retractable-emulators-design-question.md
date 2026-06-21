@@ -1,6 +1,5 @@
 ---
-id: B-0052
-zetaid: 081KQ3HBZ0008QG0R000FQ69NN
+id: 081KQ3HBZ0008QG0R000FQ69NN
 priority: P3
 status: open
 title: Retractable emulators — design question (not implementation) for retractibility-preservation in Zeta's emulator surface
@@ -15,11 +14,11 @@ tags: [emulator, retraction-native, save-state, deterministic-replay, jit-cache,
 type: feature
 ---
 
-# B-0052 — Retractable emulators design question
+# 081KQ3HBZ0008QG0R000FQ69NN — Retractable emulators design question
 
 ## Origin
 
-AceHack commit `9c7f374` (2026-04-21). This row holds the **design question** (not the implementation). Assumes the parent emulator-ideas-absorption row B-0053 has landed enough absorbed patterns that Zeta has an emulator-shaped surface at all — this row is the retractibility-preservation design question layered on top.
+AceHack commit `9c7f374` (2026-04-21). This row holds the **design question** (not the implementation). Assumes the parent emulator-ideas-absorption row 081KQ3HBZ0008QG0R000JWFD37 has landed enough absorbed patterns that Zeta has an emulator-shaped surface at all — this row is the retractibility-preservation design question layered on top.
 
 ## The ask in one sentence
 
@@ -68,9 +67,9 @@ The big question this row opens: **is an emulator's `step()` function a Zeta ope
 - **Time-travel debugging** — rr (Mozilla) does deterministic record-replay for native processes; gdb time-travel; UndoDB. All focus on reverse-execution, not retraction-as-inverse-operator. Studying their what-we-reify-and-what-we-don't decisions tells us where retraction semantics must diverge.
 - **Functional-lenses / zippers** — pure-functional literature on navigating-and-updating nested state without mutation. Retractable emulator state is arguably a giant zipper over (time, memory, registers, peripheral-state).
 
-## Composition with B-0053
+## Composition with 081KQ3HBZ0008QG0R000JWFD37
 
-This row does NOT supersede B-0053; the two compose. B-0053 absorbs engineering patterns *from* existing emulators. This row is the *design question Zeta faces when building an emulator shape of its own that is retractable in Zeta's algebraic sense.* B-0053 feeds candidate patterns in; this row works out how to glue them to Zeta's operator algebra.
+This row does NOT supersede 081KQ3HBZ0008QG0R000JWFD37; the two compose. 081KQ3HBZ0008QG0R000JWFD37 absorbs engineering patterns *from* existing emulators. This row is the *design question Zeta faces when building an emulator shape of its own that is retractable in Zeta's algebraic sense.* 081KQ3HBZ0008QG0R000JWFD37 feeds candidate patterns in; this row works out how to glue them to Zeta's operator algebra.
 
 ## Owner / effort
 
@@ -81,10 +80,10 @@ This row does NOT supersede B-0053; the two compose. B-0053 absorbs engineering 
 
 - Building an emulator (the design question is interesting regardless of whether Zeta ever ships one).
 - Choosing save-state as the retraction primitive (the design question is open — save-state-as-witness-for-retract is the current leading candidate, not a decision).
-- Reading proprietary-BIOS-bearing emulators to study their retractibility (the safe-target discipline from B-0053 applies here too).
+- Reading proprietary-BIOS-bearing emulators to study their retractibility (the safe-target discipline from 081KQ3HBZ0008QG0R000JWFD37 applies here too).
 
 ## Cross-reference
 
 - AceHack commit: `9c7f374`
-- Parent: B-0053 (emulator-ideas-absorption)
-- Composes with: B-0051 (isomorphism catalog — is-VM-step-a-Zeta-operator is literally an isomorphism question); chain-rule-proof-log + DbspChainRule.lean (formal carrier for VM-step-as-operator homomorphism); multiverse / View<T>@clock memory; math-safety memory
+- Parent: 081KQ3HBZ0008QG0R000JWFD37 (emulator-ideas-absorption)
+- Composes with: 081KQ3HBZ0008QG0R002SM3G49 (isomorphism catalog — is-VM-step-a-Zeta-operator is literally an isomorphism question); chain-rule-proof-log + DbspChainRule.lean (formal carrier for VM-step-as-operator homomorphism); multiverse / View<T>@clock memory; math-safety memory

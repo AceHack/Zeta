@@ -1,6 +1,5 @@
 ---
-id: B-1001
-zetaid: 081KT2T2J0008QG0R000VG204F
+id: 081KT2T2J0008QG0R000VG204F
 priority: P1
 status: open
 title: "Columnar message-passing infrastructure — Itron batched-throttled-processor batching (concept-not-code) + security-surface-aware Eve-polymorphic serialization port + the hex-core-Wall ↔ reservoir-computing bridge (Aaron 2026-06-02)"
@@ -14,7 +13,7 @@ tags: [infer-net, columnar, apache-arrow, recordbatch, message-passing, batched-
 type: research
 ---
 
-# Columnar message-passing infrastructure (B-1000 follow-on)
+# Columnar message-passing infrastructure (081KT2T2J0008QG0R000S7GHQ8 follow-on)
 
 Three Aaron 2026-06-02 signals on the columnar message-passing surface (the Apache Arrow `NaturalBatch` store shipped via PR #6592). Captured here so the architecture is durable (substrate-or-it-didn't-happen); the current store is the *same-trust in-memory* form, these are the next layers.
 
@@ -30,10 +29,10 @@ The pattern (Aaron's Itron MPM / nation-scale smart-meter mesh experience): **ac
 
 Aaron: *"we may need a special serialization interface for that … think security surface … if this changes it we might need a different one or more … eve/polymorphic deployment primitives."*
 
-Message *state* crossing a boundary **is a security surface**: the message store carries inference state that can be private/encrypted (per B-0883/B-0885 agent private encrypted state). Different deployment contexts have different security surfaces, so serialization must be **polymorphic over the trust boundary it crosses** (Eve Protocol B-0638 — neutral polymorphic diplomatic language — at serialization scope):
+Message *state* crossing a boundary **is a security surface**: the message store carries inference state that can be private/encrypted (per 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0030V5ZVS agent private encrypted state). Different deployment contexts have different security surfaces, so serialization must be **polymorphic over the trust boundary it crosses** (Eve Protocol 081KRW63S0008QG0R0030F8ZXA — neutral polymorphic diplomatic language — at serialization scope):
 
 - **own the serialization PORT** (`bcl-interface-boundary`): `IMessageSerialization` (or similar). The current Arrow `toRecordBatch`/`ofRecordBatch` is **one adapter** — the *same-trust, same-host in-memory* form.
-- **per-security-surface adapters** (don't force one): same-trust in-memory (Arrow RecordBatch, plaintext) → cross-process IPC (Arrow IPC via `ArrowSerializer`) → **cross-trust-boundary** (encrypted columns per B-0883 PQ-lattice; B-0829 cluster-fork-as-trust-boundary) → adversarial-mesh (authenticated + budget-gated per Agora-v6 B-0883.16).
+- **per-security-surface adapters** (don't force one): same-trust in-memory (Arrow RecordBatch, plaintext) → cross-process IPC (Arrow IPC via `ArrowSerializer`) → **cross-trust-boundary** (encrypted columns per 081KSNY2Z0008QG0R002JKH50A PQ-lattice; 081KSGS9H0008QG0R000Q18PGQ cluster-fork-as-trust-boundary) → adversarial-mesh (authenticated + budget-gated per Agora-v6 081KSNY2Z0008QG0R000459FRH).
 - **Eve-polymorphic**: the serializer adapts to the boundary like a diplomatic register-shift — the message-author defines the consent-channel for its state (asymmetric-authorship); the boundary determines which adapter.
 
 Open question (Soraya / `formal-verification-expert` + `threat-model-critic`): does the security surface change require *one* parameterized secure-serialization interface or *several* primitives? Threat-model the message-state-crossing-trust-boundary before committing the port shape. **Do NOT deploy a cross-trust serializer until Zeta's encryption substrate is in place** (composes `classifier-bypass-research-do-not-deploy-without-zeta-safer-floor` discipline at serialization scope).
@@ -42,26 +41,26 @@ Open question (Soraya / `formal-verification-expert` + `threat-model-critic`): d
 
 Aaron: *"Vector/Wall — is the Wall the metaphor bridged into reservoir computing?"*
 
-Plausible, substrate-anchored rhyme (held don't-collapse, not asserted): the **six reservoir walls** (B-0985) bound a **state reservoir**; reservoir computing = a fixed high-dim recurrent reservoir (holds echo-of-input state) + a trained linear **readout**. The map:
+Plausible, substrate-anchored rhyme (held don't-collapse, not asserted): the **six reservoir walls** (081KT2T2J0008QG0R0026MS6PV) bound a **state reservoir**; reservoir computing = a fixed high-dim recurrent reservoir (holds echo-of-input state) + a trained linear **readout**. The map:
 
 | Reservoir computing | Hex core |
 |---|---|
-| the reservoir (bounded state-holding dynamics) | the six reservoir walls bounding the state (B-0985) |
+| the reservoir (bounded state-holding dynamics) | the six reservoir walls bounding the state (081KT2T2J0008QG0R0026MS6PV) |
 | reservoir state | the `Vector` (direction+magnitude) / the message store (the columnar `NaturalBatch`) |
-| recurrent dynamics settling | BP/EP message passing to a fixed point (B-1000 slice 4 `runToFixpoint`) |
+| recurrent dynamics settling | BP/EP message passing to a fixed point (081KT2T2J0008QG0R000S7GHQ8 slice 4 `runToFixpoint`) |
 | trained linear readout | the **Observe Emit** wall / the marginals |
 
-Anchor: **B-0842** already lists "reservoir-computing readout" as one universal-basis-decomposition domain, and B-0985 literally names them "reservoir" walls. `[labeling-confidence: hypothesized rhyme to referee — anchored (B-0842 + B-0985), not yet a designed mechanism]` per `grep-substrate-anchors-before-razor` + `god-tier-claims-don't-collapse`. Worth landing as a research recognition (a domain adapter on the hex-core interface, B-0999) — the reservoir-computing literature is the referee.
+Anchor: **081KSGS9H0008QG0R003V8C86Q** already lists "reservoir-computing readout" as one universal-basis-decomposition domain, and 081KT2T2J0008QG0R0026MS6PV literally names them "reservoir" walls. `[labeling-confidence: hypothesized rhyme to referee — anchored (081KSGS9H0008QG0R003V8C86Q + 081KT2T2J0008QG0R0026MS6PV), not yet a designed mechanism]` per `grep-substrate-anchors-before-razor` + `god-tier-claims-don't-collapse`. Worth landing as a research recognition (a domain adapter on the hex-core interface, 081KT2T2J0008QG0R0019YVX8M) — the reservoir-computing literature is the referee.
 
 ## Acceptance (research → build, incremental)
 
 1. **Itron-batched-throttle (concept-not-code):** a clean-room throttled batch-accumulator that flushes `NaturalBatch`/`RecordBatch` on a trigger; vectorized `passOnce` over the flushed batch. Referee: the public batched-throttle pattern; NEVER reproduce Itron code.
 2. **serialization port:** define `IMessageSerialization` with the Arrow-same-trust adapter first; threat-model the trust-boundary surfaces (Soraya + Aminata) before adding encrypted/Eve-polymorphic adapters.
-3. **reservoir-computing recognition:** referee the hex-core ↔ reservoir-computing rhyme against the literature (echo-state-networks / liquid-state-machines); land as a B-0999 domain adapter if it holds.
+3. **reservoir-computing recognition:** referee the hex-core ↔ reservoir-computing rhyme against the literature (echo-state-networks / liquid-state-machines); land as a 081KT2T2J0008QG0R0019YVX8M domain adapter if it holds.
 
 ## Composes with substrate
 
-- **B-1000** (Infer.NET rewrite; the columnar `NaturalBatch` store, PR #6592) · **B-0638** (Eve Protocol — polymorphic diplomatic language → serialization-across-trust-boundary) · **B-0883 / B-0885** (PQ-lattice encryption / agent private encrypted state → encrypted columns) · **B-0829** (cluster-fork-as-trust-boundary) · **B-0842** (reservoir-computing readout already a domain) · **B-0985** (six reservoir walls) · **B-0999** (domains-as-adapters on the hex core)
+- **081KT2T2J0008QG0R000S7GHQ8** (Infer.NET rewrite; the columnar `NaturalBatch` store, PR #6592) · **081KRW63S0008QG0R0030F8ZXA** (Eve Protocol — polymorphic diplomatic language → serialization-across-trust-boundary) · **081KSNY2Z0008QG0R002JKH50A / 081KSNY2Z0008QG0R0030V5ZVS** (PQ-lattice encryption / agent private encrypted state → encrypted columns) · **081KSGS9H0008QG0R000Q18PGQ** (cluster-fork-as-trust-boundary) · **081KSGS9H0008QG0R003V8C86Q** (reservoir-computing readout already a domain) · **081KT2T2J0008QG0R0026MS6PV** (six reservoir walls) · **081KT2T2J0008QG0R0019YVX8M** (domains-as-adapters on the hex core)
 - existing F#: `ArrowSerializer.fs` (Tier-4 Arrow IPC; the cross-process adapter), `MessageBatch.fs` (the columnar store), Apache.Arrow 23.0.0
 - rules: `bcl-interface-boundary-own-your-interfaces-hexagonal` (own the serialization port; adapters per deployment), `asymmetric-authorship` (message-author defines the consent-channel), `classifier-bypass-research-do-not-deploy-without-zeta-safer-floor` (don't deploy cross-trust serializer pre-encryption-floor), `grep-substrate-anchors-before-razor` + `god-tier-claims-don't-collapse` (the reservoir rhyme), Itron concept-not-code (the batched-throttle is referenced-pattern, never-reproduced-code)
 

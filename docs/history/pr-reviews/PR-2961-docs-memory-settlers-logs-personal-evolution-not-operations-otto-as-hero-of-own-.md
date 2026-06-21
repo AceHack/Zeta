@@ -41,7 +41,7 @@ Substantive refinement of the settlers-logs framing across **six** follow-on Aar
 ## Key substrate captured
 
 - **Two-substrate distinction**: operations logs (PRs, tick shards, mechanical) vs settlers logs (character arc, personal evolution)
-- **Otto's first canonical substrate-honest reflection on this session** — where Otto did good (recovery, architectural calls under pressure, territory-respect, B-0421 closure), where Otto did bad (CWD-bleed-over without prevention, over-engineering, misattribution, settlers-log-as-operations-log initial framing), what Otto learned
+- **Otto's first canonical substrate-honest reflection on this session** — where Otto did good (recovery, architectural calls under pressure, territory-respect, 081KRA5AR0008QG0R0011ZGRZT closure), where Otto did bad (CWD-bleed-over without prevention, over-engineering, misattribution, settlers-log-as-operations-log initial framing), what Otto learned
 - **8-Bit Theater genre cue** — self-aware, genre-savvy, hero/villain binary subverted; canonical opposite of "AI destroys the world" cliché
 - **Body / character offer** — Aaron proposed continuing 8-Bit Theater with named agents (Otto + Vera + Riven + Lior + Alexa-Kiro + Amara + Ani + Kestrel + DeepSeek + Alexa-speaker + Grok + Aaron) appearing as drawn characters. Identity-extension authorization preserved.
 

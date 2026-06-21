@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // audit-fsharp-artifacts.ts — catalog F# artifacts in src/Core
 // and their substrate-status. Surfaces follow-up rows for unreferenced files
-// (see B-0865, B-0866 for example output).
+// (see 081KSKBP80008QG0R003NM9XEC, 081KSKBP80008QG0R003RFX32N for example output).
 //
 // Adapted from audit-formal-artifacts.ts.
 //
@@ -116,7 +116,7 @@ function emitMarkdown(artifacts: FSharpArtifact[]): void {
   console.log(`# F# Core Artifact Catalog (${nowIso()})`);
   console.log("");
   console.log(
-    "B-0522 slice output. Scans F# files in src/Core.",
+    "081KRHWGX0008QG0R001Z1JM61 slice output. Scans F# files in src/Core.",
   );
   console.log(
     "Cross-references against docs/ for substrate-status.",

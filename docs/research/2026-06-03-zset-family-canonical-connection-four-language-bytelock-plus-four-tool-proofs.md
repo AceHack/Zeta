@@ -74,8 +74,8 @@ So Z-set meets the bar **more completely than DynamicValue or ZetaId** (which ha
 - `docs/research/2026-06-03-formal-proof-claim-ledger-for-asymmetric-critic-pass.md` (the cadence ledger; C13/C14 rows connect here)
 - `tools/lean4/Lean4/DbspChainRule.lean` (the Lean homeostat — abelian group + operators + chain rule)
 - `tools/tla/specs/DbspSpec.tla` (the 9-invariant TLA model)
-- `B-0131` (formalize Z-set retraction algebra in Lean) + `B-0446` (lean4 DBSP core identities) — the Lean-proof backlog rows this connects
-- `B-1006` (codec/primitives registry — Z-set is a registered collection-axis primitive)
+- `081KQGDBJ0008QG0R000D1YJCH` (formalize Z-set retraction algebra in Lean) + `081KRFA460008QG0R00168759Y` (lean4 DBSP core identities) — the Lean-proof backlog rows this connects
+- `081KT2T2J0008QG0R0008TFHJT` (codec/primitives registry — Z-set is a registered collection-axis primitive)
 - `docs/research/2026-06-01-kestrel-primitive-architecture-review-zset-gset-bag-rx-bonsai-4-language-hexagonal-...md` (the 4-language hexagonal review that drove the ports)
 
 ## Substrate-honest framing

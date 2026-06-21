@@ -1,13 +1,12 @@
 ---
-id: B-0756
-zetaid: 081KSE6WT0008QG0R001NG9JZH
+id: 081KSE6WT0008QG0R001NG9JZH
 title: HA control-plane — multi-master k3s embedded etcd quorum + stable API endpoint (DNS round-robin or kube-vip virtual IP)
 status: open
 priority: P3
 size: L
 created: 2026-05-25
 authors: [aaron, otto-cli]
-composes_with: [B-0754, 081KSE6WT0008QG0R003612WGJ]
+composes_with: [081KSGS9H0008QG0R002T3BJ2R, 081KSE6WT0008QG0R003612WGJ]
 depends_on: []
 labels: [cluster, k3s, etcd, ha, networking]
 ---
@@ -57,7 +56,7 @@ opt-in via a new module surface.
          existing HAProxy / nginx / cloud LB; document the
          k3s --tls-san flag needed for cert SAN)
 - [ ] PROVISIONING.md updated with HA section
-- [ ] B-0754 v1 first-boot role keystroke prompt extended to
+- [ ] 081KSGS9H0008QG0R002T3BJ2R v1 first-boot role keystroke prompt extended to
       include 'h' for `ha-init` (first node) and 'j' for
       `ha-join` (additional nodes) when the operator opts in
 - [ ] zflash `--ha-bootstrap-ip <ip>` flag for join nodes
@@ -97,9 +96,9 @@ existing DNS infra), kube-vip v2 if needed.
 
 ## Composes with
 
-- B-0754 — zero-typing USB install (the keystroke prompt this
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing USB install (the keystroke prompt this
   extends; ha-init and ha-join modes)
-- B-0755 — role taxonomy expansion (HA control-plane is
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (HA control-plane is
   another role variant)
 - `modules/k3s-server.nix` — primary module surface
 - `modules/k3s-agent.nix` — agents need to know the stable API
@@ -116,4 +115,4 @@ existing DNS infra), kube-vip v2 if needed.
 ## Origin
 
 Aaron 2026-05-25, surveying the HA architecture during the
-B-0754 v1 ship.
+081KSGS9H0008QG0R002T3BJ2R v1 ship.

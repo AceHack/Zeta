@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-16
 **Status:** Research elaboration (follow-up to 2026-05-15 imaginary-stack note)
-**Parent:** B-0543
+**Parent:** 081KRMEXM0008QG0R002YSPW1X
 
 ## Goal
 
@@ -61,7 +61,7 @@ The algebra obtained by taking the 4D real cube (R, W, P, A) and performing two 
 - The imaginary directions correspond to the bulk operators inside the entanglement wedge.
 - The Adinkra provides the explicit linear dependencies that allow reconstruction from partial boundary data.
 
-If this lemma can be proved (even in a finite-dimensional toy model), Step 2 of the B-0543 proof strategy is achieved.
+If this lemma can be proved (even in a finite-dimensional toy model), Step 2 of the 081KRMEXM0008QG0R002YSPW1X proof strategy is achieved.
 
 ## Open Questions for Next Pass
 

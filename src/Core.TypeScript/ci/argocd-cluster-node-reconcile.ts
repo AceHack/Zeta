@@ -1,7 +1,7 @@
 /**
- * B-0831 slice 3 — mock ArgoCD reconcile planner for ClusterNode registration.
+ * 081KSGS9H0008QG0R0011BC7T2 slice 3 — mock ArgoCD reconcile planner for ClusterNode registration.
  * Pure function: given git tree path + node.yaml body, derive the reconcile
- * shape ArgoCD iter-5.4.2 would apply (B-0813). No live cluster required.
+ * shape ArgoCD iter-5.4.2 would apply (081KSGS9H0008QG0R002K93MWX). No live cluster required.
  */
 
 import { validateClusterNodeYaml } from "./cluster-node-yaml.ts";

@@ -47,7 +47,7 @@ Extends the **always-active substrate-engineering discipline set** in its canoni
 - **DST sibling** — DST *requires* replay; idempotency makes replay *safe* (re-applying an event = no-op).
 - **lock-free** — CAS retry loops require idempotent ops.
 - **git-as-db** — the G-Set CRDT event-fold is idempotent by construction (the whole rebuild-the-index model).
-- **tri-boolean (B-0944)** — `cooperate` = idempotent; `measure` = the deliberate non-idempotent collapse. The split *is* the cooperate/measure split.
+- **tri-boolean (081KSV2WD0008QG0R00051XS0N)** — `cooperate` = idempotent; `measure` = the deliberate non-idempotent collapse. The split *is* the cooperate/measure split.
 - **observe→act / move-next** — re-fired actions must be no-ops = crash-resume safety (this session crashed mid-arc and resumed via idempotent PR-create + git-event append).
 - **retraction-native Z-sets** restore replay-safety at the algebra level for genuinely accumulating ops.
 

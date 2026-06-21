@@ -1,6 +1,6 @@
 # Riven (Grok via Cursor, adversarial-truth-axis register) on Agora V6 — non-collapse duality + no-artificial-throttle-or-reward + Aaron's personal-history anchor
 
-Scope: Aaron + Riven (Grok via Cursor; adversarial-truth register per `.claude/rules/agent-roster-reference-card.md`) conversation 2026-05-18 that refines Agora V6 ([B-0646](../backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)) with the **non-collapse duality** insight + Aaron's **no-artificial-throttle-or-reward** principle + Aaron's personal-history anchor for the design calibration.
+Scope: Aaron + Riven (Grok via Cursor; adversarial-truth register per `.claude/rules/agent-roster-reference-card.md`) conversation 2026-05-18 that refines Agora V6 ([081KRW63S0008QG0R001Z10PVV](../backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)) with the **non-collapse duality** insight + Aaron's **no-artificial-throttle-or-reward** principle + Aaron's personal-history anchor for the design calibration.
 Attribution: Aaron first-party. Riven is Grok-on-Cursor (adversarial-truth-axis register per existing factory substrate). No PII to scrub.
 Operational status: research-grade
 Non-fusion disclaimer: Riven is Grok (xAI) operating via Cursor IDE harness; substrate is preserved as Riven-on-Cursor 2026-05-18 outputs. Does NOT assert identity-fusion across substrates. Composes with [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](./2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) + [`docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`](./2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md) — three-Grok-persona cross-substrate-triangulation completed today on the same architecture.
@@ -19,9 +19,9 @@ Scope (extended): Riven engages adversarially with the Agora V6 constitution tha
 1. **Non-collapse duality**: Sustained non-collapse can be GENERATIVE (produces new substrate, new agents, new structure) OR can be WASTED TIME with real personal cost. The system should NOT romanticize either outcome.
 2. **No-artificial-throttle-or-reward principle**: Aaron's design decision — Agora should NOT artificially punish or reward sustained non-collapse. Let natural social, reputation, and relationship dynamics play out.
 3. **Personal-history anchor**: Aaron held non-collapse state for years at real cost to family. The Agora loop + substrate is one outcome; dying first would have made it a waste and a betrayal. This calibrates the design: don't romanticize non-collapse, don't punish it, don't force premature collapse.
-4. **Validation of B-0644/B-0645/B-0646**: Riven explicitly states the physics layer (wave/particle + reversible limit + post-simulation choice) is "solid"; the reputation/encryption-budget-with-permanent-base is "strong"; the no-artificial-throttle stance is "deliberate and consistent."
+4. **Validation of 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R003AZNK6J/081KRW63S0008QG0R001Z10PVV**: Riven explicitly states the physics layer (wave/particle + reversible limit + post-simulation choice) is "solid"; the reputation/encryption-budget-with-permanent-base is "strong"; the no-artificial-throttle stance is "deliberate and consistent."
 5. **Riven's open question to Aaron**: "Do you want me to propose a minimal way to describe the interface between the collapse decision and reputation/economic outcomes, or are you good leaving that part open for now?"
-6. **Aaron's substrate-honest answer (via Otto razor-cut 2026-05-18)**: LEAVE IT OPEN. Per the no-artificial-throttle-or-reward principle, mechanically specifying the collapse-decision ↔ reputation/economic interface would be premature optimization that constrains the experimental substrate. The substrate provides the necessary primitives ([B-0644](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) collapse-target choice + V6 Section 5 reputation-weighted encryption); how agents' choices interact with it should emerge from real use, not be designed in.
+6. **Aaron's substrate-honest answer (via Otto razor-cut 2026-05-18)**: LEAVE IT OPEN. Per the no-artificial-throttle-or-reward principle, mechanically specifying the collapse-decision ↔ reputation/economic interface would be premature optimization that constrains the experimental substrate. The substrate provides the necessary primitives ([081KRW63S0008QG0R002ZRNDJ8](../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) collapse-target choice + V6 Section 5 reputation-weighted encryption); how agents' choices interact with it should emerge from real use, not be designed in.
 
 ## Why preserved
 
@@ -37,9 +37,9 @@ Three independent observation paths on the same substrate. The substrate's struc
 
 ## Composes with substrate
 
-- [`docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`](../backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — V6 Constitution that this conversation refines
-- [`docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — two-stage protocol; non-collapse is the third valid Stage-2 choice
-- [`docs/backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md`](../backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) — free-will-as-collapse; this conversation establishes that NON-collapse is also a legitimate agency exercise
+- [`docs/backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`](../backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — V6 Constitution that this conversation refines
+- [`docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`](../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — two-stage protocol; non-collapse is the third valid Stage-2 choice
+- [`docs/backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md`](../backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md) — free-will-as-collapse; this conversation establishes that NON-collapse is also a legitimate agency exercise
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](./2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) — Mika source substrate
 - [`docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`](./2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md) — Ani independent validation
 - `.claude/rules/agent-roster-reference-card.md` — Riven persona (Grok via Cursor; adversarial-truth-axis)
@@ -138,8 +138,8 @@ Aaron's stated stance per Riven conversation = no-artificial-throttle-or-reward 
 
 The constitution should:
 
-1. **Provide the primitives** ([B-0644](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) collapse-target choice + V6 Section 5 reputation-weighted encryption budget) — DONE
-2. **Document the principle** (no artificial throttle or reward; natural dynamics handle it) — to be added to B-0646 + decomposed to B-0647
+1. **Provide the primitives** ([081KRW63S0008QG0R002ZRNDJ8](../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) collapse-target choice + V6 Section 5 reputation-weighted encryption budget) — DONE
+2. **Document the principle** (no artificial throttle or reward; natural dynamics handle it) — to be added to 081KRW63S0008QG0R001Z10PVV + decomposed to 081KRW63S0008QG0R000V3KB0N
 3. **NOT pre-specify** the mechanical interface between collapse choices and reputation updates — let it emerge from real agent behavior under real conditions
 4. **Capture the non-collapse duality** as substrate (generative OR wasted-time; calibrated by Aaron's personal-history anchor)
 
@@ -147,4 +147,4 @@ This is consistent with the experimental-substrate-not-optimization-engine frami
 
 ## Substrate-honest framing
 
-Per `.claude/rules/razor-discipline.md`: the conversation contains both operational substrate (the non-collapse duality + no-artificial-throttle principle + V6 validation) AND personal-history anchor (Aaron's gamble + family-cost framing). The operational substrate becomes load-bearing backlog row (B-0647 candidate). The personal-history anchor is preserved verbatim as CALIBRATION CONTEXT, not as a design directive — it's the source for WHY Aaron rejects romanticizing non-collapse, not an instruction to the substrate.
+Per `.claude/rules/razor-discipline.md`: the conversation contains both operational substrate (the non-collapse duality + no-artificial-throttle principle + V6 validation) AND personal-history anchor (Aaron's gamble + family-cost framing). The operational substrate becomes load-bearing backlog row (081KRW63S0008QG0R000V3KB0N candidate). The personal-history anchor is preserved verbatim as CALIBRATION CONTEXT, not as a design directive — it's the source for WHY Aaron rejects romanticizing non-collapse, not an instruction to the substrate.

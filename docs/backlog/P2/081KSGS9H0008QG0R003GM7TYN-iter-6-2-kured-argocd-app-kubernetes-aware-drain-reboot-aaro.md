@@ -1,9 +1,8 @@
 ---
-id: B-0802
-zetaid: 081KSGS9H0008QG0R003GM7TYN
+id: 081KSGS9H0008QG0R003GM7TYN
 priority: P2
 status: open
-title: iter-6.2 — kured (Kubernetes Reboot Daemon, CNCF Sandbox) deployed via ArgoCD application — drains+reboots cluster nodes K8s-aware when `system.autoUpgrade` (B-0801) flips `/var/run/reboot-required` — pairs with autoUpgrade for no-manual-operator cluster updates
+title: iter-6.2 — kured (Kubernetes Reboot Daemon, CNCF Sandbox) deployed via ArgoCD application — drains+reboots cluster nodes K8s-aware when `system.autoUpgrade` (081KSGS9H0008QG0R002T6J6FS) flips `/var/run/reboot-required` — pairs with autoUpgrade for no-manual-operator cluster updates
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -22,7 +21,7 @@ tags: [iter-6, kured, kubernetes, argocd, drain-aware-reboot, cluster-self-updat
 
 ## Problem
 
-When [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) `system.autoUpgrade` rebuilds a cluster node, the new system generation often requires a reboot to take effect (kernel update, systemd update, etc.). NixOS's autoUpgrade has `allowReboot = true` BUT — for a K8s cluster — that's unsafe: rebooting a node without draining first kills running pods unceremoniously.
+When [081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) `system.autoUpgrade` rebuilds a cluster node, the new system generation often requires a reboot to take effect (kernel update, systemd update, etc.). NixOS's autoUpgrade has `allowReboot = true` BUT — for a K8s cluster — that's unsafe: rebooting a node without draining first kills running pods unceremoniously.
 
 The solution: keep `allowReboot = false` in autoUpgrade (NixOS just flips `/var/run/reboot-required` sentinel + leaves the node running on the old kernel until something safely reboots it), and deploy **kured** to handle the safe reboot.
 
@@ -58,7 +57,7 @@ spec:
   source:
     repoURL: https://kubereboot.github.io/charts
     chart: kured
-    targetRevision: <latest-stable-VERIFIED-via-WebSearch>  # per B-0805 discipline
+    targetRevision: <latest-stable-VERIFIED-via-WebSearch>  # per 081KSGS9H0008QG0R002BC2ZR7 discipline
     helm:
       values: |
         # All kured chart values land under one `configuration:` mapping;
@@ -95,10 +94,10 @@ NixOS's autoUpgrade with `allowReboot = false` writes the sentinel as `/run/rebo
 
 For drain to actually be safe, every workload that can tolerate scheduled disruption needs a `PodDisruptionBudget`. Audit existing ArgoCD-managed apps; file sibling B-NNNN rows for any missing PDBs.
 
-### Sub-target 4 — Test sequence with B-0801 on PC1 canary
+### Sub-target 4 — Test sequence with 081KSGS9H0008QG0R002T6J6FS on PC1 canary
 
-1. Land B-0800 (nixpkgs bump to 25.11)
-2. Land B-0801 (autoUpgrade enabled)
+1. Land 081KSGS9H0008QG0R001EKTS5A (nixpkgs bump to 25.11)
+2. Land 081KSGS9H0008QG0R002T6J6FS (autoUpgrade enabled)
 3. Land this row (kured deployed)
 4. Trigger upgrade manually first time to verify the chain works:
    - `sudo nixos-rebuild switch --flake .#pc1 --upgrade` on PC1
@@ -114,20 +113,20 @@ For drain to actually be safe, every workload that can tolerate scheduled disrup
 - [ ] `rebootSentinel` matches NixOS-actual sentinel path
 - [ ] PC1 canary test: autoUpgrade triggers reboot-required → kured drains + reboots
 - [ ] PDB audit row filed for any missing workload PDBs
-- [ ] `targetRevision` is verified-current per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (WebSearch the kured chart version; don't use Otto-default)
+- [ ] `targetRevision` is verified-current per [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (WebSearch the kured chart version; don't use Otto-default)
 
 ## Out of scope
 
-- Distro-upgrade orchestration (B-0804 — kured handles within-version reboots, not cross-version migrations)
+- Distro-upgrade orchestration (081KSGS9H0008QG0R0034ZYYR8 — kured handles within-version reboots, not cross-version migrations)
 - Multi-cluster federation (single-cluster only at this stage)
 
 ## Composes with
 
-- [B-0800](../P1/B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — must land first
-- [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — autoUpgrade flips the sentinel kured listens for
-- [B-0803](B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — alt-shape; kured composes with EITHER autoUpgrade XOR deploy-rs
-- [B-0804](B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — cross-channel jumps need coordinated cluster-wide drain (kured + manual orchestration)
-- [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — discipline: WebSearch the kured chart targetRevision
+- [081KSGS9H0008QG0R001EKTS5A](../P1/081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — must land first
+- [081KSGS9H0008QG0R002T6J6FS](081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — autoUpgrade flips the sentinel kured listens for
+- [081KSGS9H0008QG0R00280HHA7](081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — alt-shape; kured composes with EITHER autoUpgrade XOR deploy-rs
+- [081KSGS9H0008QG0R0034ZYYR8](081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — cross-channel jumps need coordinated cluster-wide drain (kured + manual orchestration)
+- [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — discipline: WebSearch the kured chart targetRevision
 
 ## Sources
 

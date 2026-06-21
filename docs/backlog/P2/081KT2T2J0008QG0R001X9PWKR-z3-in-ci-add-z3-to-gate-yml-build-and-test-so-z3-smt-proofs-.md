@@ -1,6 +1,5 @@
 ---
-id: B-1009
-zetaid: 081KT2T2J0008QG0R001X9PWKR
+id: 081KT2T2J0008QG0R001X9PWKR
 priority: P2
 status: open
 title: "z3 in CI — add z3 to gate.yml build-and-test so the Z3 SMT proofs are ENFORCED, not self-skipped (today the z3 CLI is installed in NO workflow → Z3.Laws.Tests.fs green-by-skip in the gate; assert-don't-skip hole) (Aaron 2026-06-02)"
@@ -16,7 +15,7 @@ type: tooling
 
 # z3 in CI — enforce the Z3 SMT proofs, don't let them self-skip
 
-## The gap (found landing B-1007 C1, 2026-06-02)
+## The gap (found landing 081KT2T2J0008QG0R000YZ3NMY C1, 2026-06-02)
 
 `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` shells to the `z3` CLI and **self-skips
 when z3 is absent from PATH** (the existing `which "z3"` guard → "informational only").
@@ -29,9 +28,9 @@ exercising the proof.
 
 This is the [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
 failure: *a shield with a hole reads as covered.* The Z-set abelian-group Z3 lemmas
-have had this property all along; B-1007 C1 added the Gaussian-group Z3 lemmas, which
+have had this property all along; 081KT2T2J0008QG0R000YZ3NMY C1 added the Gaussian-group Z3 lemmas, which
 were verified **locally** (z3 on PATH, 7/7 passed, 0 skipped) but **self-skip in the
-gate**. As more of B-1007's C1–C14 land with Z3 halves, the gate increasingly *reads
+gate**. As more of 081KT2T2J0008QG0R000YZ3NMY's C1–C14 land with Z3 halves, the gate increasingly *reads
 as* proven while the symbolic half never runs.
 
 ## Fix
@@ -55,7 +54,7 @@ as* proven while the symbolic half never runs.
 The proofs ARE verified — locally, where z3 is present. The hole is *enforcement in
 the gate*, not *correctness of the proof*. So it's important (it's the difference
 between "proven" and "reads-as-proven" in CI) but not silent-corruption-of-results.
-It should land soon after the first few B-1007 Z3 proofs accumulate, so the gate
+It should land soon after the first few 081KT2T2J0008QG0R000YZ3NMY Z3 proofs accumulate, so the gate
 actually guards them.
 
 ## Acceptance
@@ -69,7 +68,7 @@ actually guards them.
 
 ## Composes with
 
-- **B-1007** (the formal-coverage backlog whose Z3 halves this enforces) · **B-1000**
+- **081KT2T2J0008QG0R000YZ3NMY** (the formal-coverage backlog whose Z3 halves this enforces) · **081KT2T2J0008QG0R000S7GHQ8**
   (the engine being proven)
 - rules: [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
   (the exact failure mode), `formal-proof-first-...` (a proof that self-skips in the
@@ -82,7 +81,7 @@ actually guards them.
 
 ## Substrate-honest framing
 
-Pre-existing condition (the Z-set Z3 lemmas had it before B-1007); surfaced now
-because B-1007 makes Z3 proofs a growing, load-bearing part of the formal-coverage
+Pre-existing condition (the Z-set Z3 lemmas had it before 081KT2T2J0008QG0R000YZ3NMY); surfaced now
+because 081KT2T2J0008QG0R000YZ3NMY makes Z3 proofs a growing, load-bearing part of the formal-coverage
 gate. Closing it makes the gate actually guard the symbolic proofs instead of reading
 as if it does.

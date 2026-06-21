@@ -42,7 +42,7 @@ Zeta is the structural-inverse architecture for the same problem-space:
 
 1. **Cultural-cachet-grandiosity guard**: claiming "we're building the anti-Westworld" sounds grandiose-without-the-lol; the lol marks the substantive distinction (architectural inverses are real) while disclaiming the rhetorical inflation.
 2. **Pirate-not-priest applies**: Westworld doesn't get a pass for being culturally prestigious. The parallel is useful as a frame; the razor still cuts the parallel itself when applied. *We're not engaging HBO's intellectual property; we're using a recognizable cultural reference.*
-3. **The architecture-of-the-solution differences are concrete and testable**: BFT-many-masters is a verifiable property; edge-privacy is implementable; retraction-native semantics is mechanizable (per the formalization roadmap B-0131..B-0138). The substantive inversion isn't vibes; it's testable architecture.
+3. **The architecture-of-the-solution differences are concrete and testable**: BFT-many-masters is a verifiable property; edge-privacy is implementable; retraction-native semantics is mechanizable (per the formalization roadmap 081KQGDBJ0008QG0R000D1YJCH..081KQGDBJ0008QG0R0012FC7RX). The substantive inversion isn't vibes; it's testable architecture.
 4. **The "lol" matches Aaron's affective register pattern** — heart-level acknowledgment of the parallel held lightly enough that it doesn't capture the cognitive system.
 
 ## The Solomon-system anchor

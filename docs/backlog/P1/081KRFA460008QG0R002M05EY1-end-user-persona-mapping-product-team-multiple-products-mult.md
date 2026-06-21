@@ -1,6 +1,5 @@
 ---
-id: B-0429
-zetaid: 081KRFA460008QG0R002M05EY1
+id: 081KRFA460008QG0R002M05EY1
 priority: P1
 status: decomposed
 title: "End-user persona mapping — product team — multiple products × multiple personas each"
@@ -50,7 +49,7 @@ Composes with maintainer-scope substrate-honest disclosure
 (Aaron + Otto are current maintainers; end users are everyone
 else with personas TBD).
 
-## Product portfolio (current; per B-0425 product-repo split)
+## Product portfolio (current; per 081KRFA460008QG0R003JQ46J4 product-repo split)
 
 | Product | Status |
 |---|---|
@@ -61,7 +60,7 @@ else with personas TBD).
 | DIO (Distributed Intelligence Organism) | Substrate; personas TBD |
 | Aurora | Pitch deck (PR #2924); personas TBD |
 | Dawn (child-AI charter) | Substrate; personas TBD |
-| Universal business templates (B-0043) | Substrate; personas TBD |
+| Universal business templates (081KQ3HBZ0008QG0R000Q4Y00F) | Substrate; personas TBD |
 
 Each product owes:
 
@@ -130,12 +129,12 @@ Per `.claude/rules/backlog-item-start-gate.md`:
      personas
 
 2. **Dependency restructure** — walk composes_with chain:
-   - B-0424 (Stage 1 factory split — what's productized)
-   - B-0425 (product-repo split — product portfolio)
-   - B-0426 (Mirror/Beacon axis — persona-mapped Beacon work)
-   - B-0427 (Code/English axis — persona-mapped doc work)
-   - B-0428 (DBpedia — analyst/researcher persona)
-   - B-0043 (universal business templates — every company
+   - 081KRFA460008QG0R001H98EXJ (Stage 1 factory split — what's productized)
+   - 081KRFA460008QG0R003JQ46J4 (product-repo split — product portfolio)
+   - 081KRFA460008QG0R0007RWSN1 (Mirror/Beacon axis — persona-mapped Beacon work)
+   - 081KRFA460008QG0R000VKJF0H (Code/English axis — persona-mapped doc work)
+   - 081KRFA460008QG0R0018SN61J (DBpedia — analyst/researcher persona)
+   - 081KQ3HBZ0008QG0R000Q4Y00F (universal business templates — every company
      persona)
 
 3. **Per-product persona-mapping pass**:
@@ -166,7 +165,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Why P1
 
-- Composes with B-0424/B-0425/B-0426/B-0427/B-0428 product
+- Composes with 081KRFA460008QG0R001H98EXJ/081KRFA460008QG0R003JQ46J4/081KRFA460008QG0R0007RWSN1/081KRFA460008QG0R000VKJF0H/081KRFA460008QG0R0018SN61J product
   split work
 - Aaron has explicitly named the work
 - Skills-with-Zeta layer (PR #2933) needs persona clarity to
@@ -177,13 +176,13 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Composes with
 
-- B-0424 (Stage 1 factory split)
-- B-0425 (product-repo split planning — products are personas'
+- 081KRFA460008QG0R001H98EXJ (Stage 1 factory split)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning — products are personas'
   targets)
-- B-0426 (Mirror/Beacon axis — Beacon personas vs Mirror personas)
-- B-0427 (Code/English axis)
-- B-0428 (DBpedia Path B — analyst persona)
-- B-0043 (universal company + government information substrate
+- 081KRFA460008QG0R0007RWSN1 (Mirror/Beacon axis — Beacon personas vs Mirror personas)
+- 081KRFA460008QG0R000VKJF0H (Code/English axis)
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B — analyst persona)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate
   — every-company personas)
 - PR #2933 (Zeta ships with skills — personas drive skill
   authoring)
@@ -222,39 +221,39 @@ When designing skills or features for end users:
 
 ## Decomposition record (Otto, 2026-05-14)
 
-B-0429 decomposed into 9 dependency-ordered atomic child rows.
+081KRFA460008QG0R002M05EY1 decomposed into 9 dependency-ordered atomic child rows.
 
 ### Dependency graph
 
 ```
-B-0485 (gate: template + inventory)
-  ├── B-0486 (Civsim persona map)         ─┐
-  ├── B-0487 (Aurora persona map)          │
-  ├── B-0488 (KSK persona map)             ├─ parallel; all depend on B-0485
-  ├── B-0489 (Wellness persona map)        │
-  ├── B-0490 (AD 2.0 + DIO persona map)   │
-  └── B-0491 (Dawn + Univ biz personas)  ─┘
+081KRHWGX0008QG0R00019453T (gate: template + inventory)
+  ├── 081KRHWGX0008QG0R00273520P (Civsim persona map)         ─┐
+  ├── 081KRHWGX0008QG0R003WMBR3W (Aurora persona map)          │
+  ├── 081KRHWGX0008QG0R001HDK688 (KSK persona map)             ├─ parallel; all depend on 081KRHWGX0008QG0R00019453T
+  ├── 081KRHWGX0008QG0R002N8XX6D (Wellness persona map)        │
+  ├── 081KRHWGX0008QG0R003DJ092R (AD 2.0 + DIO persona map)   │
+  └── 081KRHWGX0008QG0R00211YQJ6 (Dawn + Univ biz personas)  ─┘
                   │
                   ▼
-          B-0492 (cross-product reuse + refused-personas registry)
+          081KRHWGX0008QG0R000WGP5AQ (cross-product reuse + refused-personas registry)
                   │
                   ▼
-          B-0493 (skill catalog × persona cross-reference)
+          081KRHWGX0008QG0R002XVHSG5 (skill catalog × persona cross-reference)
 ```
 
 ### Child rows
 
 | ID | Title | Type | Depends on | Status |
 |----|-------|------|------------|--------|
-| B-0485 | Persona-mapping framework + substrate inventory | research (gate) | — | open |
-| B-0486 | Civsim persona map | planning | B-0485 | open |
-| B-0487 | Aurora persona map | planning | B-0485 | open |
-| B-0488 | KSK persona map | planning | B-0485 | open |
-| B-0489 | Wellness app persona map | planning | B-0485 | open |
-| B-0490 | American Dream 2.0 + DIO persona map | planning | B-0485 | open |
-| B-0491 | Dawn + Universal biz templates persona map | planning | B-0485 | open |
-| B-0492 | Cross-product persona reuse + refused-personas registry | planning | B-0486..B-0491 | open |
-| B-0493 | Skill catalog × persona cross-reference | planning | B-0492 | open |
+| 081KRHWGX0008QG0R00019453T | Persona-mapping framework + substrate inventory | research (gate) | — | open |
+| 081KRHWGX0008QG0R00273520P | Civsim persona map | planning | 081KRHWGX0008QG0R00019453T | open |
+| 081KRHWGX0008QG0R003WMBR3W | Aurora persona map | planning | 081KRHWGX0008QG0R00019453T | open |
+| 081KRHWGX0008QG0R001HDK688 | KSK persona map | planning | 081KRHWGX0008QG0R00019453T | open |
+| 081KRHWGX0008QG0R002N8XX6D | Wellness app persona map | planning | 081KRHWGX0008QG0R00019453T | open |
+| 081KRHWGX0008QG0R003DJ092R | American Dream 2.0 + DIO persona map | planning | 081KRHWGX0008QG0R00019453T | open |
+| 081KRHWGX0008QG0R00211YQJ6 | Dawn + Universal biz templates persona map | planning | 081KRHWGX0008QG0R00019453T | open |
+| 081KRHWGX0008QG0R000WGP5AQ | Cross-product persona reuse + refused-personas registry | planning | 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 | open |
+| 081KRHWGX0008QG0R002XVHSG5 | Skill catalog × persona cross-reference | planning | 081KRHWGX0008QG0R000WGP5AQ | open |
 
 ### Prior-art search completed
 
@@ -268,6 +267,6 @@ B-0485 (gate: template + inventory)
 
 ### Dependency restructure
 
-- B-0424, B-0425, B-0426, B-0427, B-0428, B-0043: `composes_with:` verified in frontmatter
-- PR #2933 (ships-with-skills): verified as key motivation for B-0493
-- PR #2893 PEC v0.1 + Charter v0.2: mandatory for Dawn (B-0491) consent-first personas
+- 081KRFA460008QG0R001H98EXJ, 081KRFA460008QG0R003JQ46J4, 081KRFA460008QG0R0007RWSN1, 081KRFA460008QG0R000VKJF0H, 081KRFA460008QG0R0018SN61J, 081KQ3HBZ0008QG0R000Q4Y00F: `composes_with:` verified in frontmatter
+- PR #2933 (ships-with-skills): verified as key motivation for 081KRHWGX0008QG0R002XVHSG5
+- PR #2893 PEC v0.1 + Charter v0.2: mandatory for Dawn (081KRHWGX0008QG0R00211YQJ6) consent-first personas

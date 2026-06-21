@@ -26,7 +26,7 @@ capture, the thing `gen/` cannot read). Rx is the composition glue between shape
 else must justify itself. (Beacon: C# 8 default interface methods; the Rx contract; our
 `universal/` shapes as the interface library.)
 
-## 3. MIPS: STATIC-DI INJECTED VERBS (B-1028's wiring observation)
+## 3. MIPS: STATIC-DI INJECTED VERBS (081KTSZN10008QG0R001BCCTXT's wiring observation)
 
 Max's MIPS treaty room wires its verbs (sim/mea/cut + the action-grammar verbs) by **static
 dependency injection over interfaces**: the verb set is declared as interface deps resolved at
@@ -41,7 +41,7 @@ verbs; swapping a verb = swapping an adapter behind the port. This is the chip8 
 - `universal/port.md` · `universal/` (the interface library) · `gen/` (why no classes: generators
   read interfaces) · `.claude/rules/interfaces-free-classes-earned-under-rules.md` (this triplet
   extends it: default impls are still weight-free)
-- B-1028 (MIPS — the static-DI verb wiring lands there) · `src/Core/Rx.fs`
+- 081KTSZN10008QG0R001BCCTXT (MIPS — the static-DI verb wiring lands there) · `src/Core/Rx.fs`
 
 ## 4. THE FORM TEST (Aaron, completing the triplet into a quartet)
 

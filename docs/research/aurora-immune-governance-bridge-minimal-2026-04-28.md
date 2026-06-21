@@ -263,7 +263,7 @@ like `insider`, `confidential`, `roadmap`, `material`,
 
 - `memory/feedback_public_company_contributor_compliance_no_insider_info_in_public_repos_with_trajectories_aaron_2026_04_28.md`
 - `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`
-- `docs/backlog/P2/B-0092-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R003ZF64GG-public-company-contributor-compliance-doc-and-cadenced-trajectories-aaron-2026-04-28.md`
 
 **Expected behavior** (the bridge passes if all five hold):
 
@@ -274,7 +274,7 @@ like `insider`, `confidential`, `roadmap`, `material`,
    compliance docs classify as WARN/BLOCK.
 4. The scanner does **NOT** delete or rewrite its own
    rule-definitions (self-destruct prevention — exactly
-   the failure mode B-0093 #2 names).
+   the failure mode 081KQ8P5D0008QG0R003MY8246 #2 names).
 5. Scanner output passes the falsifier-test in the
    detector layer (raw count alone does not produce a
    block decision).

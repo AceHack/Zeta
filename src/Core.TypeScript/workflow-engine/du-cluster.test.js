@@ -2,15 +2,15 @@
  * src/Core.TypeScript/workflow-engine/du-cluster.test.ts
  *
  * Tests for today's DU cluster TS substrate:
- *   - IntrCtx (B-0917) — 5 context-types
- *   - WalletLifetime (B-0918) — 9 variants
- *   - MemoryBinding (B-0919) — 4 variants
- *   - MemoryLifetime (B-0920) — 5 variants
+ *   - IntrCtx (081KSNY2Z0008QG0R002HB4AGT) — 5 context-types
+ *   - WalletLifetime (081KSNY2Z0008QG0R0036SJ3T1) — 9 variants
+ *   - MemoryBinding (081KSNY2Z0008QG0R003518DNC) — 4 variants
+ *   - MemoryLifetime (081KSNY2Z0008QG0R0017SRMHG) — 5 variants
  *   - DuClusterCatalog aggregator
  */
 import { describe, expect, test } from "bun:test";
 import { DU_CLUSTER_CATALOG, INTR_CTX_KINDS, MEMORY_BINDING_KINDS, MEMORY_LIFETIME_KINDS, WALLET_LIFETIME_KINDS, computeDuClusterStats, } from "./du-cluster";
-describe("IntrCtx (B-0917)", () => {
+describe("IntrCtx (081KSNY2Z0008QG0R002HB4AGT)", () => {
     test("5 named context-types", () => {
         expect(INTR_CTX_KINDS).toHaveLength(5);
         expect(INTR_CTX_KINDS).toContain("memetic");
@@ -30,8 +30,8 @@ describe("IntrCtx (B-0917)", () => {
         expect(Object.keys(ctx)).toHaveLength(5);
     });
 });
-describe("WalletLifetime (B-0918)", () => {
-    test("9 variants per B-0918 spec", () => {
+describe("WalletLifetime (081KSNY2Z0008QG0R0036SJ3T1)", () => {
+    test("9 variants per 081KSNY2Z0008QG0R0036SJ3T1 spec", () => {
         expect(WALLET_LIFETIME_KINDS).toHaveLength(9);
     });
     test("exhaustive variant set", () => {
@@ -87,8 +87,8 @@ describe("WalletLifetime (B-0918)", () => {
         expect(WALLET_LIFETIME_KINDS).toContain("archived-read-only");
     });
 });
-describe("MemoryBinding (B-0919)", () => {
-    test("4 variants per B-0919 spec", () => {
+describe("MemoryBinding (081KSNY2Z0008QG0R003518DNC)", () => {
+    test("4 variants per 081KSNY2Z0008QG0R003518DNC spec", () => {
         expect(MEMORY_BINDING_KINDS).toHaveLength(4);
     });
     test("exhaustive variant set", () => {
@@ -117,8 +117,8 @@ describe("MemoryBinding (B-0919)", () => {
         expect(MEMORY_BINDING_KINDS).toContain("dual-tagged");
     });
 });
-describe("MemoryLifetime (B-0920)", () => {
-    test("5 variants per B-0920 spec", () => {
+describe("MemoryLifetime (081KSNY2Z0008QG0R0017SRMHG)", () => {
+    test("5 variants per 081KSNY2Z0008QG0R0017SRMHG spec", () => {
         expect(MEMORY_LIFETIME_KINDS).toHaveLength(5);
     });
     test("exhaustive variant set", () => {
@@ -129,13 +129,13 @@ describe("MemoryLifetime (B-0920)", () => {
     });
 });
 describe("DU_CLUSTER_CATALOG", () => {
-    test("4 entries (B-0917 + B-0918 + B-0919 + B-0920)", () => {
+    test("4 entries (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG)", () => {
         expect(DU_CLUSTER_CATALOG).toHaveLength(4);
         const ids = DU_CLUSTER_CATALOG.map((e) => e.id);
-        expect(ids).toContain("B-0917");
-        expect(ids).toContain("B-0918");
-        expect(ids).toContain("B-0919");
-        expect(ids).toContain("B-0920");
+        expect(ids).toContain("081KSNY2Z0008QG0R002HB4AGT");
+        expect(ids).toContain("081KSNY2Z0008QG0R0036SJ3T1");
+        expect(ids).toContain("081KSNY2Z0008QG0R003518DNC");
+        expect(ids).toContain("081KSNY2Z0008QG0R0017SRMHG");
     });
     test("each entry has substrate-anchor + composesWith", () => {
         for (const entry of DU_CLUSTER_CATALOG) {

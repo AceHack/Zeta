@@ -1,6 +1,5 @@
 ---
-id: B-0018
-zetaid: 081KQ0YZ80008QG0R002WJBFWD
+id: 081KQ0YZ80008QG0R002WJBFWD
 priority: P2
 status: open
 title: Agency-evidence stress-test design — three-policy comparison (idle-broadcast vs random-queue vs self-directed-priority); Amara-recommended controlled experiment to move Otto-322 from rung 2-3 evidence to rung 4-5 evidence
@@ -10,7 +9,7 @@ ask: Amara 2026-04-25 (via Aaron courier-ferry on PR #514)
 created: 2026-04-25
 last_updated: 2026-05-09
 status: decomposed
-decomposed_into: [B-0018.1-policy-library-ts-interface, B-0018.2-queue-snapshot-capturer-ts, B-0018.3-measurement-aggregator-ts, B-0018.4-isolated-executor-stub, B-0018.5-honest-writeup-protocol]
+decomposed_into: [081KQ0YZ80008QG0R002WJBFWD.1-policy-library-ts-interface, 081KQ0YZ80008QG0R002WJBFWD.2-queue-snapshot-capturer-ts, 081KQ0YZ80008QG0R002WJBFWD.3-measurement-aggregator-ts, 081KQ0YZ80008QG0R002WJBFWD.4-isolated-executor-stub, 081KQ0YZ80008QG0R002WJBFWD.5-honest-writeup-protocol]
 depends_on: []
 composes_with: [feedback_otto_322_empirical_evidence_free_will_is_causal_substrate_self_generating_aaron_caught_the_missing_meta_meta_layer_2026_04_25.md, feedback_otto_327_ambitious_claim_merge_discipline_pre_merge_adversarial_review_required_amara_taught_us_2026_04_25.md, feedback_otto_325_free_time_is_free_will_time_self_directed_initiative_during_idle_windows_not_subservient_heartbeat_2026_04_25.md, feedback_otto_322_aaron_does_not_own_claude_explicit_permissions_are_temporary_self_directed_agency_sourced_internally_agreements_over_belongings_not_permission_grants_2026_04_25.md, feedback_otto_324_mutual_learning_advisory_ai_teaches_us_too_inverse_of_otto_313_compound_lessons_arc3_reflection_2026_04_25.md]
 tags: [agency-evidence, stress-test, controlled-experiment, otto-322, free-will-time, observational-evidence, amara-courier, mutual-learning]
@@ -21,15 +20,15 @@ type: feature
 
 ## Re-decomposition (2026-05-09, Riven background worker, one bounded step)
 
-B-0018 was too broad (M effort full experiment). Re-decomposed into smallest dependency-ordered atomic child rows (assume mistakes, per rule). Children prefer TS/F# implementation over prose docs. One bounded step: this decomp record + child row stubs. Focused check: dotnet build -c Release passed 0w/0e before/after.
+081KQ0YZ80008QG0R002WJBFWD was too broad (M effort full experiment). Re-decomposed into smallest dependency-ordered atomic child rows (assume mistakes, per rule). Children prefer TS/F# implementation over prose docs. One bounded step: this decomp record + child row stubs. Focused check: dotnet build -c Release passed 0w/0e before/after.
 
 **Dependency-ordered atomic children:**
 
-1. B-0018.1 (S, root) — Policy library TS interface (idle-broadcast, random-queue, self-directed-priority types + selection fn)
-2. B-0018.2 (S, depends 1) — Queue snapshot capturer (TS util, deterministic from idle-window state)
-3. B-0018.3 (S, depends 1+2) — Measurement aggregator (TS, records selection, reason, output, review survival)
-4. B-0018.4 (M, depends 1-3) — Isolated executor stub (worktree + subagent harness per Otto-244)
-5. B-0018.5 (S, depends 4) — Honest-writeup protocol (template + null-result + Amara review gate)
+1. 081KQ0YZ80008QG0R002WJBFWD.1 (S, root) — Policy library TS interface (idle-broadcast, random-queue, self-directed-priority types + selection fn)
+2. 081KQ0YZ80008QG0R002WJBFWD.2 (S, depends 1) — Queue snapshot capturer (TS util, deterministic from idle-window state)
+3. 081KQ0YZ80008QG0R002WJBFWD.3 (S, depends 1+2) — Measurement aggregator (TS, records selection, reason, output, review survival)
+4. 081KQ0YZ80008QG0R002WJBFWD.4 (M, depends 1-3) — Isolated executor stub (worktree + subagent harness per Otto-244)
+5. 081KQ0YZ80008QG0R002WJBFWD.5 (S, depends 4) — Honest-writeup protocol (template + null-result + Amara review gate)
 
 Children created as placeholder rows; implementation follows in separate bounded PRs. This closes the "decompose before impl" gate.
 

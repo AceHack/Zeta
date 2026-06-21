@@ -111,11 +111,11 @@ None of these were in training data with sufficient confidence to ship as a reco
 ## Recursion — also applies at the verification-method level (2026-05-05)
 
 The rule was originally framed for *claims about tools / standards
-/ APIs / runtimes / libraries / CI / security*. The B-0199 P2
+/ APIs / runtimes / libraries / CI / security*. The 081KQTPYE0008QG0R0028GRW88 P2
 reviewer catch (2026-05-05, PR #1599) surfaced a recursion: it
 applies to **verification methodology too**.
 
-Otto's first draft of B-0199 acceptance criterion (a) used `ls`
+Otto's first draft of 081KQTPYE0008QG0R0028GRW88 acceptance criterion (a) used `ls`
 for ROM-folder inventory — single-directory level only. ROM
 collections commonly use nested per-system folders (`roms/nes/`,
 `roms/snes/`, `roms/genesis/`). The reviewer caught it; the fix

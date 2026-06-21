@@ -30,13 +30,13 @@
 ## Summary
 
 - Session paused briefly and resumed. Sentinel \`bd1c7739\` stayed alive.
-- Peer Otto-Desktop advanced multiple in-flight pieces during the pause: merged [PR #3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) (B-0530 close-row, at \`33719ee\`), fixed Copilot P2 on [PR #3734](https://github.com/Lucent-Financial-Group/Zeta/pull/3734) via commit \`0cfe4ce\`, resolved the related review thread, and authored a 0436Z shard (branch pushed; PR pending peer's lane).
+- Peer Otto-Desktop advanced multiple in-flight pieces during the pause: merged [PR #3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) (081KRMEXM0008QG0R000X1PPGC close-row, at \`33719ee\`), fixed Copilot P2 on [PR #3734](https://github.com/Lucent-Financial-Group/Zeta/pull/3734) via commit \`0cfe4ce\`, resolved the related review thread, and authored a 0436Z shard (branch pushed; PR pending peer's lane).
 - This resume-tick's role was verification (cron + peer-detection + fetch + push-noop + thread-state-check); no new substantive substrate by me.
 
 ## Test plan
 
 - [x] \`bun tools/hygiene/check-shard-before-push.ts\` ok on this shard (all 3 gates)
-- [x] PR #3737 merged at \`33719ee\` (B-0530 close-row, second drift catch of the session)
+- [x] PR #3737 merged at \`33719ee\` (081KRMEXM0008QG0R000X1PPGC close-row, second drift catch of the session)
 - [x] PR #3734 Copilot P2 thread \`PRRT_kwDOSF9kNM6Choco\` resolved (verified outdated + resolved)
 - [x] PR #3734 CI rerunning on peer's fix commit, auto-merge armed
 - [x] Peer's \`shard/tick-0436z-otto-cli-2026-05-16\` branch noted; not pre-empted

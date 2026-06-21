@@ -413,7 +413,7 @@ let main _ =
     witness "Shared trajectory permits independent persona policies" sharedTrajectoryDoesNotImplyCollapsedPersona
 
     // ───────────────────────────────────────────────────────────
-    // B-0373: Alignment proof primitive ladder — CausalPower.
+    // 081KR50HA0008QG0R001NNPEXC: Alignment proof primitive ladder — CausalPower.
     // One primitive: Policy<A>'s dependence on PrivateState<A>.
     // Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
     //
@@ -475,5 +475,5 @@ let main _ =
     prove "CausalPower failure: collapsed policy (ignoring PrivateState) provably has no causal power" causalPowerFailsUnderCollapse
 
     Console.WriteLine ""
-    Console.WriteLine "All DBSP + AI-safety axioms proven; B-0373 adds CausalPower alignment primitive: free policy can have causal power (SAT witness) + collapsed policy provably cannot (UNSAT proof of failure mode)."
+    Console.WriteLine "All DBSP + AI-safety axioms proven; 081KR50HA0008QG0R001NNPEXC adds CausalPower alignment primitive: free policy can have causal power (SAT witness) + collapsed policy provably cannot (UNSAT proof of failure mode)."
     0

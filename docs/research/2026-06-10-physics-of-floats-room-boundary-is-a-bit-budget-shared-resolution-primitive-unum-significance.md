@@ -131,7 +131,7 @@ constraint, `Strong`→lens, `Choice`→prism; say the word and I'll capture tha
 
 **Correction (honest register — owning the miss):** I first wrote this as "to build." Wrong — it is
 **already built, tested, and proven 4/4 cross-language.** The middle-out float **is the TriBoolean
-Float** (B-0944; spec `docs/research/2026-05-30-tri-boolean-float-v0-spec-middle-out-self-describing-decode-aaron-otto.md`):
+Float** (081KSV2WD0008QG0R00051XS0N; spec `docs/research/2026-05-30-tri-boolean-float-v0-spec-middle-out-self-describing-decode-aaron-otto.md`):
 
 - **Built in all four oracles:** `src/Core.FSharp.TriBoolean/Float.fs`, `src/Core.CSharp.TriBoolean/`,
   `src/Core.Rust.TriBoolean/src/float.rs`, `src/Core.TypeScript/tri-boolean-float/`.

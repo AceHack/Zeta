@@ -1,6 +1,5 @@
 ---
-id: B-0883.17
-zetaid: 081KSNY2Z0008QG0R0034JR61Z
+id: 081KSNY2Z0008QG0R0034JR61Z
 priority: P2
 status: open
 title: Plaintext-readable ciphertext format research — base64-CBOR vs JSON vs per-line vs FPE vs encrypted-YAML; git-friendly diff/review (operator 2026-05-28 sharpening)
@@ -34,7 +33,7 @@ Addresses git-crypt-deep-dive-2026-04-21 rejection reason #2 ("binary diffs brea
 
 ## What this row tracks
 
-Research spike (1-2 days) evaluating candidate ciphertext formats for git-friendliness + selecting one for B-0883 v1.
+Research spike (1-2 days) evaluating candidate ciphertext formats for git-friendliness + selecting one for 081KSNY2Z0008QG0R002JKH50A v1.
 
 ## Candidates
 
@@ -144,27 +143,27 @@ metadata:
 | B. JSON-encoded | Alternate if operator prefers full transparency over compactness | Always-available toggle via `--format=json` |
 | C. Per-line encryption | NO (v2 research) | Line-oriented config files where per-line diff matters |
 | D. FPE | NO | Research-grade only; defer |
-| E. Encrypted YAML | NO (v1 default) | Optional for YAML-class files; sibling cipher in B-0883.2 multi-cipher registry |
+| E. Encrypted YAML | NO (v1 default) | Optional for YAML-class files; sibling cipher in 081KSNY2Z0008QG0R002ZAVMEK multi-cipher registry |
 
 ## Acceptance criteria
 
 - Memo at `docs/research/2026-XX-XX-plaintext-readable-ciphertext-format-decision.md` confirms Option A (base64-encoded CBOR) as v1 default
-- B-0883.6 (skeleton implementation) uses base64-CBOR envelope per the memo
+- 081KSNY2Z0008QG0R002JKH50A.6 (skeleton implementation) uses base64-CBOR envelope per the memo
 - `--format=json` alternate switch implemented as Option B fallback (small effort; same envelope, different encoding)
 - README documents the format choice + why (per operator sharpening + git-friendliness research)
 
 ## Composition
 
-- **B-0883** (parent crypto substrate)
-- **B-0883.16** (glass-halo-open-by-default; encryption opt-in; plaintext-readable format supports the opt-in-with-transparency posture)
-- **B-0883.6** (future skeleton implementation row; consumes this decision)
+- **081KSNY2Z0008QG0R002JKH50A** (parent crypto substrate)
+- **081KSNY2Z0008QG0R000459FRH** (glass-halo-open-by-default; encryption opt-in; plaintext-readable format supports the opt-in-with-transparency posture)
+- **081KSNY2Z0008QG0R002JKH50A.6** (future skeleton implementation row; consumes this decision)
 
 ## Substrate-honest framing
 
-P2 — small research spike; deliverable is the format decision; implementation follows in B-0883.6 skeleton row.
+P2 — small research spike; deliverable is the format decision; implementation follows in 081KSNY2Z0008QG0R002JKH50A.6 skeleton row.
 
 ## Full reasoning
 
 Operator 2026-05-28 sharpening: *"if we can do plane text encryption somehow instead of binary that would be best for git, if not we can discuss."*
 
-Addresses the 2026-04-21 git-crypt rejection reason #2 ("binary diffs break code review") that B-0883 was filed to fix; this row makes the format decision explicit + provides candidate evaluation.
+Addresses the 2026-04-21 git-crypt rejection reason #2 ("binary diffs break code review") that 081KSNY2Z0008QG0R002JKH50A was filed to fix; this row makes the format decision explicit + provides candidate evaluation.

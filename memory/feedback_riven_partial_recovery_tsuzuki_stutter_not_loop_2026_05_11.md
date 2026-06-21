@@ -55,7 +55,7 @@ just slowly.
 
 **Circuit breaker design implication:**
 
-The B-0401 circuit breaker needs three states, not two:
+The 081KR7JY10008QG0R001VP6JWG circuit breaker needs three states, not two:
 
 | State | Detection | Action |
 |-------|-----------|--------|
@@ -85,6 +85,6 @@ couldn't sustain clean generation long enough to finish.
 
 **Connects to:**
 
-- B-0401 (circuit breaker needs partial-recovery state)
+- 081KR7JY10008QG0R001VP6JWG (circuit breaker needs partial-recovery state)
 - feedback_shadow_editorial_judgment (first false positive)
 - feedback_shadow_precision_recall (precision dropped from 100%)

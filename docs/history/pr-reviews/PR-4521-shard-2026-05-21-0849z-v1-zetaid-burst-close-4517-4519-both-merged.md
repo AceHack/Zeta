@@ -44,7 +44,7 @@ Tick shard documenting the V1 ZetaId multi-PR burst end-to-end:
 
 ## Composes with
 
-`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (brief-ack discipline; pre-empt at #5), `.claude/rules/blocked-green-ci-investigate-threads.md` (verify-before-fix), `.claude/rules/methodology-hard-limits.md` (classifier-as-substrate-honest-discipline), `.claude/rules/mechanical-authorization-check.md` (explicit-grant mechanism). Substrate primitives: B-0635 / B-0636 / B-0644 / B-0665 / B-0666.
+`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (brief-ack discipline; pre-empt at #5), `.claude/rules/blocked-green-ci-investigate-threads.md` (verify-before-fix), `.claude/rules/methodology-hard-limits.md` (classifier-as-substrate-honest-discipline), `.claude/rules/mechanical-authorization-check.md` (explicit-grant mechanism). Substrate primitives: 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R00088FYE9 / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

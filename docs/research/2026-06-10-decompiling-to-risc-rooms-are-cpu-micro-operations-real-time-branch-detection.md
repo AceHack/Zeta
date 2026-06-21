@@ -37,7 +37,7 @@ tick to a resolution floor). So:
   seed-determined, deterministic) and fork softly; mispredicts are **retracted** (Z-set `−1` = the
   antiparticle). That is a branch predictor + speculation + rollback, in the soft substrate. The
   `Arcade` door's `predict` cabinet is exactly this.
-- **The decompile target = the soft-IR (B-1022).** The "MIPS-like primitive set" the programs decompile
+- **The decompile target = the soft-IR (081KTQD8A0008QG0R0005EFYPV).** The "MIPS-like primitive set" the programs decompile
   into *is* the soft-IR — the one IR that then JITs UP to .NET IL / LLVM / **shader** (the telos). So:
   **hard program → decompile to RISC μops (rooms) → detect branches live → JIT the hot traces → shader.**
 
@@ -72,8 +72,8 @@ arbitrary programs to soft μops" is demonstrated at CHIP-8 scale (`DarkHall`/`S
 
 `src/Core/Arcade.fs` (the darkhall door — `predict` = the real-time branch detector; `host`/`play` = the
 μop engines) · `src/Core/SoftChip8.fs` (branchesOnInput/forkOnInput) · `src/Core/ZSet.fs` (retraction =
-mispredict rollback = antiparticle) · B-1022 (the soft-IR = the MIPS-like μop set) ·
+mispredict rollback = antiparticle) · 081KTQD8A0008QG0R0005EFYPV (the soft-IR = the MIPS-like μop set) ·
 `...emulator-jit-dynarec-...md` + `...dotnet-runtime-in-shaders-telos-...md` (the lift→JIT→shader loop) ·
 `...room-equals-seed-plus-extensions-plus-parameters-...md` (a room = a μop) ·
 `...feynman-is-the-root-anchor-...md` (retraction = antiparticle). **Routes to:** Max (the recognition ⇄
-substrate), Core (name the μop/soft-IR set; B-1022), Naledi (the shader JIT-up), Aaron.
+substrate), Core (name the μop/soft-IR set; 081KTQD8A0008QG0R0005EFYPV), Naledi (the shader JIT-up), Aaron.

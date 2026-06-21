@@ -1,7 +1,7 @@
 /**
- * Mechanical authorization check — tick-start integration (B-0308).
+ * Mechanical authorization check — tick-start integration (081KR2E4K0008QG0R002S3FDXN).
  *
- * Composes B-0306 extractor + B-0307 resolver. Prints two-layer DX:
+ * Composes 081KR2E4K0008QG0R0007CFSZ7 extractor + 081KR2E4K0008QG0R003CF4YHE resolver. Prints two-layer DX:
  * Layer 1: raw structured JSON
  * Layer 2: labeled interpretation
  *

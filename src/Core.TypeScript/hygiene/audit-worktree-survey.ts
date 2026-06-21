@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // audit-worktree-survey.ts -- classify git worktrees into the lost-substrate
-// recovery buckets from B-0090.5.
+// recovery buckets from 081KDVJT3E008QG0R000SCFYN5.
 //
 // Usage:
 //   bun tools/hygiene/audit-worktree-survey.ts

@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- add the B-0209 remote-only two-participant dry-run receipt
+- add the 081KQX9B50008QG0R001MNYK61 remote-only two-participant dry-run receipt
 - update the autonomous-loop coordination trajectory next action to name the missing Participant B leg
 - release the claim in-branch per the git-native claim protocol
 
@@ -37,7 +37,7 @@
 - markdownlint-cli2 docs/trajectories/autonomous-loop-coordination/RESUME.md docs/trajectories/autonomous-loop-coordination/remote-only-two-participant-dry-run-2026-05-28.md
 
 ## Notes
-This is an honest blocked execution receipt, not a full B-0209 pass: Participant A is reconstructable from remote git, and a stale predecessor release is recoverable from git history, but a genuinely separate Participant B still needs to publish a disjoint remote-only claim.
+This is an honest blocked execution receipt, not a full 081KQX9B50008QG0R001MNYK61 pass: Participant A is reconstructable from remote git, and a stale predecessor release is recoverable from git history, but a genuinely separate Participant B still needs to publish a disjoint remote-only claim.
 
 ## Outcome
 

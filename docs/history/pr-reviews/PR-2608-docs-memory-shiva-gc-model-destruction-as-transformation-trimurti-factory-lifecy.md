@@ -79,7 +79,7 @@
 - **`Copilot` (bot)** at 2026-05-11T01:22:02Z on `memory/project_shiva_gc_model_destruction_as_transformation_zset_minus1_2026_05_10.md`:50 (association: NONE)
 
   <pre>
-  The `Connects to` bullets look like memory-file references, but they aren’t valid filenames and several targets don’t exist in-repo (e.g., `feedback_shadow_is_persistence_daemon`, `user_infrastructure_not_religion`, and even `B-0405` has no matches anywhere). Per `memory/project_memory_format_standard.md` §4 (lines 184-197), references to other memory files should use real filenames and the cited files must exist. Please update these bullets to point at existing `*.md` filenames (or add the missing files in this PR) so the composes-with/xref chain isn’t broken.
+  The `Connects to` bullets look like memory-file references, but they aren’t valid filenames and several targets don’t exist in-repo (e.g., `feedback_shadow_is_persistence_daemon`, `user_infrastructure_not_religion`, and even `081KR7JY10008QG0R001FV5FND` has no matches anywhere). Per `memory/project_memory_format_standard.md` §4 (lines 184-197), references to other memory files should use real filenames and the cited files must exist. Please update these bullets to point at existing `*.md` filenames (or add the missing files in this PR) so the composes-with/xref chain isn’t broken.
 
   </pre>
 

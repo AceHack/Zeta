@@ -1,5 +1,5 @@
 <!--
-Eval-set fixture for substrate-claim-checker (B-0170).
+Eval-set fixture for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV).
 
 Reproduces the existence-drift pattern surfaced in PR #1252,
 where a future-domain memo referenced a docs/ markdown file

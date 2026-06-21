@@ -48,7 +48,7 @@
 | 22 §33 xrefs | #3666 | merged |
 | BACKLOG.md generated-index | #3678 | merged |
 | tsc tools (this PR) | this | open |
-| backlog ID uniqueness | B-0545 renumber-sweep | pending coordination |
+| backlog ID uniqueness | 081KRMEXM0008QG0R000ARAR7P renumber-sweep | pending coordination |
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 

@@ -1,6 +1,5 @@
 ---
-id: B-0844
-zetaid: 081KSGS9H0008QG0R001EZKNCB
+id: 081KSGS9H0008QG0R001EZKNCB
 priority: P1
 status: closed
 title: zflash --agent flag — native agent-driven auto-type challenge implementation closing the docstring-vs-actual-implementation gap; empirical anchor from 2026-05-26 USB-re-flash session (Aaron 2026-05-26)
@@ -16,7 +15,7 @@ tags: [zflash, agent-driven, auto-type-challenge, pty, child-process-spawn, doc-
 
 ## Closure (2026-06-11)
 
-`--agent` mode implemented in `src/Core.TypeScript/zflash/cli.ts` — spawns `flash-usb` with piped stdin and auto-types `yes <nonce>` while preserving Touch ID PAM. Invoke via `zeta flash --agent` (B-1030 router) or `bun src/Core.TypeScript/zflash/cli.ts --agent`.
+`--agent` mode implemented in `src/Core.TypeScript/zflash/cli.ts` — spawns `flash-usb` with piped stdin and auto-types `yes <nonce>` while preserving Touch ID PAM. Invoke via `zeta flash --agent` (081KTWJ1R0008QG0R000JJDPFZ router) or `bun src/Core.TypeScript/zflash/cli.ts --agent`.
 
 ## Problem operator authorized agent-driven zflash with Touch ID approval. Agent ran `bun full-ai-cluster/tools/zflash.ts | tail -50` which
 
@@ -141,7 +140,7 @@ The empirical 2026-05-26 session demonstrated the bug-and-workaround flow. This 
 
 ## Composes with
 
-- B-0789 (iter-4.2 ssh-pubkey-injection substrate — same zflash codebase)
+- 081KSGS9H0008QG0R002T3BJ2R (iter-4.2 ssh-pubkey-injection substrate — same zflash codebase)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (substrate vs weather; docstring promises must have backing implementation)
 - `.claude/rules/glass-halo-bidirectional.md` (operator-visibility of auto-type action via printed `[agent-mode: ...]` line)
 - `.claude/rules/non-coercion-invariant.md` HC-8 (operator agency preserved — Touch ID PAM still required)

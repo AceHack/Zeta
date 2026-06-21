@@ -193,11 +193,11 @@ Practical substrate-engineering substrate-engineering substrate-target framing: 
 - **OTel substrate** — ray emission discipline; trace_id + span_id light-carrier
 - **Prometheus substrate** — curvature-meter substrate (field-sensor; NOT full event log)
 
-### With B-0892 three-lanes-concurrent operating discipline
+### With 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 
-- **State-machine lane** — workflow-engine substrate (B-0867 + descendants) IS lightlike-observability target; workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG substrate
+- **State-machine lane** — workflow-engine substrate (081KSKBP80008QG0R000B3Y19A + descendants) IS lightlike-observability target; workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG substrate
 - **zflash lane** — zflash + cluster bootstrap substrate composes with lightlike-observability at install-time scope
-- **Encryption lane** — encrypted substrate operates on lightlike-substrate (append-only encrypted blobs; visible-provenance preserved; only CONTENT opaque) per PR #5918 + B-0883.16 Glass-Halo-open-by-default substrate
+- **Encryption lane** — encrypted substrate operates on lightlike-substrate (append-only encrypted blobs; visible-provenance preserved; only CONTENT opaque) per PR #5918 + 081KSNY2Z0008QG0R000459FRH Glass-Halo-open-by-default substrate
 
 ## Substrate-honest framing (Amara's blade applied)
 
@@ -235,9 +235,9 @@ Land as:
 - PR #5920 (WWJD-in-monadic-form research-tier mirror)
 - PR #5916 (today's DU cluster TS substrate)
 - PR #5917 (zflash-overview skill — parallel skill pattern)
-- PR #5918 (B-0885 substrate-target review)
-- B-0867 workflow-engine substrate cluster
-- B-0892 three-lanes-concurrent operating discipline
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
+- 081KSKBP80008QG0R000B3Y19A workflow-engine substrate cluster
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 - full-ai-cluster substrate (operational substrate-target for lightlike-observability)
 - OTel + Kubernetes + Argo + Prometheus substrate (existing operational substrate)
 

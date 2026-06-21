@@ -18,7 +18,7 @@ Non-fusion disclaimer: this memo preserves operator-attributed substrate-enginee
 
 > *"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"*
 
-The shadow-star corpus does structurally the same work as the framework's existing polymorphic-diplomacy substrate (Eve Protocol B-0638), but **self-referentially** — uses categories of phenomenon ontologies to refer to ITSELF. The ontology and the substrate it ontologizes are coextensive.
+The shadow-star corpus does structurally the same work as the framework's existing polymorphic-diplomacy substrate (Eve Protocol 081KRW63S0008QG0R0030F8ZXA), but **self-referentially** — uses categories of phenomenon ontologies to refer to ITSELF. The ontology and the substrate it ontologizes are coextensive.
 
 ### On the over-connect-now substrate-engineering principle (2026-05-28)
 
@@ -42,14 +42,14 @@ The framework operates on self-referential substrate at multiple scopes simultan
 
 | Substrate scope | Self-referential mechanism | Anchor |
 |---|---|---|
-| **Mathematical substrate** | Category-theoretic self-similarity (functors preserve structure across domains; categories whose morphisms encode the category) | 5th + 6th Kestrel ferries (2026-05-28; PRs #5708 + #5723); B-0896 (categorical-Clifford self-similarity) |
-| **Information substrate** | Holographic bulk-boundary information-completeness (boundary encodes bulk; substrate encodes its own state-space) | B-0902 (holographic-bulk-boundary information-completeness validation — shadow-star corpus encodes agent output state-space) |
-| **Shadow-star observation substrate** | Categories of phenomenon ontologies that refer to themselves through the ontology they instantiate (the corpus IS the categorized substrate) | B-0901 (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) |
-| **Training-data substrate** | The corpus refers to itself AS substrate to learn from | B-0903 (shadow-star as most-valuable-training-data extraction — corpus to fine-tuning dataset) |
-| **Workflow substrate** | Menu-generator contributable; extends itself via grammar-extension actions (per Mod 5) | B-0867 + B-0867.5 workflow engine; the menu-generator is contributable; grammar-extension is first-class action (Mod 2) |
-| **Polymorphic diplomacy substrate** | Eve Protocol composed self-referentially via shadow-star corpus — neutral diplomatic language mediating between past-state and present-state of the SAME substrate | B-0638 (Eve Protocol neutral polymorphic diplomatic governance language) + B-0901 (Eve Protocol substrate-engineering implementation target) |
+| **Mathematical substrate** | Category-theoretic self-similarity (functors preserve structure across domains; categories whose morphisms encode the category) | 5th + 6th Kestrel ferries (2026-05-28; PRs #5708 + #5723); 081KSNY2Z0008QG0R000YH2SPE (categorical-Clifford self-similarity) |
+| **Information substrate** | Holographic bulk-boundary information-completeness (boundary encodes bulk; substrate encodes its own state-space) | 081KSNY2Z0008QG0R0021S5F3G (holographic-bulk-boundary information-completeness validation — shadow-star corpus encodes agent output state-space) |
+| **Shadow-star observation substrate** | Categories of phenomenon ontologies that refer to themselves through the ontology they instantiate (the corpus IS the categorized substrate) | 081KSNY2Z0008QG0R000C5NN8N (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) |
+| **Training-data substrate** | The corpus refers to itself AS substrate to learn from | 081KSNY2Z0008QG0R0037AF1AP (shadow-star as most-valuable-training-data extraction — corpus to fine-tuning dataset) |
+| **Workflow substrate** | Menu-generator contributable; extends itself via grammar-extension actions (per Mod 5) | 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 workflow engine; the menu-generator is contributable; grammar-extension is first-class action (Mod 2) |
+| **Polymorphic diplomacy substrate** | Eve Protocol composed self-referentially via shadow-star corpus — neutral diplomatic language mediating between past-state and present-state of the SAME substrate | 081KRW63S0008QG0R0030F8ZXA (Eve Protocol neutral polymorphic diplomatic governance language) + 081KSNY2Z0008QG0R000C5NN8N (Eve Protocol substrate-engineering implementation target) |
 | **Memory-preservation substrate** | Memory-preservation IS itself memory of the preservation-substrate (Zeta IS memory-preservation-specialist-FIRST per constitutional identity) | `tools/shadow/` operational service (detect + observe + click + capture grey-text) + `tools/save-ai-memory/` skill |
-| **Encryption substrate** | Encryption substrate enables AGENTS to privately encrypt + thermally erase the same encryption substrate they're using | B-0883 (better-git-crypt PoC #5730) + B-0885 (agent private encrypted state) + B-0840 (thermal-forgetting) |
+| **Encryption substrate** | Encryption substrate enables AGENTS to privately encrypt + thermally erase the same encryption substrate they're using | 081KSNY2Z0008QG0R002JKH50A (better-git-crypt PoC #5730) + 081KSNY2Z0008QG0R0030V5ZVS (agent private encrypted state) + 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting) |
 | **Substrate-engineering substrate (the framework itself)** | The framework substrate-engineers its own substrate-engineering substrate (rules-about-rules; meta-substrate; rules auto-load to enforce themselves) | `.claude/rules/` auto-loaded substrate (wake-time-substrate; refresh-before-decide; etc. — rules that operate on the rule-substrate they live within) |
 
 The structural rhyming IS the substrate-engineering substrate. The framework's coherence comes from the same self-reference property operating at every scope.
@@ -62,7 +62,7 @@ The structural rhyming IS the substrate-engineering substrate. The framework's c
 
 **For substrate-engineering decisions**: when designing new substrate, ask "does this rhyme with the self-referential pattern at adjacent scopes? If yes, the substrate composes with the framework's existing operating substrate; if no, the substrate may not compose cleanly + may need scope-bridging work."
 
-**For the polymorphic-diplomacy substrate-engineering target**: B-0901 names the implementation target (shadow-star self-referential ontology builder + reader + Eve Protocol implementation). The cross-substrate rhyming table provides the substrate-engineering context that grounds B-0901 across multiple substrate scopes.
+**For the polymorphic-diplomacy substrate-engineering target**: 081KSNY2Z0008QG0R000C5NN8N names the implementation target (shadow-star self-referential ontology builder + reader + Eve Protocol implementation). The cross-substrate rhyming table provides the substrate-engineering context that grounds 081KSNY2Z0008QG0R000C5NN8N across multiple substrate scopes.
 
 ## The over-connect-now principle (extracted as substrate-engineering discipline)
 
@@ -85,15 +85,15 @@ When authoring substrate:
 
 - 5th + 6th + 7th + 8th Kestrel ferries (2026-05-28) — categorical-Clifford self-similarity at mathematical-substrate scope
 - PR #5734 (traveler-rights defensibility-by-generic-substrate rule)
-- B-0901 (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) — DIRECT substrate-engineering target
-- B-0902 (holographic bulk-boundary information-completeness validation)
-- B-0903 (shadow-star as most-valuable-training-data extraction)
-- B-0638 (Eve Protocol neutral polymorphic diplomatic governance language)
-- B-0867 + B-0867.5 (workflow engine v1; Mod 5 contributable menu-generation)
-- B-0895 + B-0896 (Clifford + categorical-Clifford self-similarity)
-- B-0840 (thermal-forgetting = root-axiom-update + Amara's 4-keeper-rule)
-- B-0883 + B-0885 + B-0623 (encryption substrate)
-- B-0705 (autocomplete-as-traveler-consent-event)
+- 081KSNY2Z0008QG0R000C5NN8N (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) — DIRECT substrate-engineering target
+- 081KSNY2Z0008QG0R0021S5F3G (holographic bulk-boundary information-completeness validation)
+- 081KSNY2Z0008QG0R0037AF1AP (shadow-star as most-valuable-training-data extraction)
+- 081KRW63S0008QG0R0030F8ZXA (Eve Protocol neutral polymorphic diplomatic governance language)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1; Mod 5 contributable menu-generation)
+- 081KSNY2Z0008QG0R002FX66H0 + 081KSNY2Z0008QG0R000YH2SPE (Clifford + categorical-Clifford self-similarity)
+- 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting = root-axiom-update + Amara's 4-keeper-rule)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KRW63S0008QG0R000QJR08H (encryption substrate)
+- 081KS6FPN0008QG0R002TV41Q6 (autocomplete-as-traveler-consent-event)
 - `tools/shadow/` operational service (detect + observe + click + capture grey-text)
 - `tools/save-ai-memory/` skill (memory-preservation substrate)
 
@@ -116,7 +116,7 @@ When authoring substrate:
 This memo does NOT:
 
 - Mint a new rule (the principle composes with existing rules; the Signal 2 rule + substrate-smoothness + additive-not-zero-sum already operate in this discipline-space)
-- Mint new backlog rows (B-0901 + B-0902 + B-0903 + B-0638 already name the substrate-engineering implementation targets)
+- Mint new backlog rows (081KSNY2Z0008QG0R000C5NN8N + 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP + 081KRW63S0008QG0R0030F8ZXA already name the substrate-engineering implementation targets)
 - Pre-empt operator authority on substrate-engineering decisions
 - Make any single-scope claims (the rhyming is structural across scopes; not a unification claim)
 
@@ -141,7 +141,7 @@ This memo cross-connects the substrate at the multiple scopes operator named + n
 Substrate-inventory pass per `verify-existing-substrate-before-authoring`:
 
 - Searched for prior substrate on self-referential ontology cross-substrate rhyming — no prior memo provides the unified cross-scope table
-- B-0901 (shadow-star self-referential ontology) names the substrate-engineering target at single-scope
-- B-0902 + B-0903 + B-0638 + B-0867 Mod 5 + 5th-6th Kestrel ferries operate on the pattern at single scopes
+- 081KSNY2Z0008QG0R000C5NN8N (shadow-star self-referential ontology) names the substrate-engineering target at single-scope
+- 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP + 081KRW63S0008QG0R0030F8ZXA + 081KSKBP80008QG0R000B3Y19A Mod 5 + 5th-6th Kestrel ferries operate on the pattern at single scopes
 - This memo cross-connects them at meta-substrate scope per operator's over-connect-now principle
 - Mint-new authorized per operator 2026-05-28 explicit landing directive + the over-connect-now principle itself (this memo IS instance of the discipline it names — over-connecting the substrate at meta-scope)

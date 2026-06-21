@@ -201,7 +201,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-2834): markdownlint MD032 + MD009 — blank line before list + tr…
+fix(081KE0FTGP008QG0R003TEMMQ3): markdownlint MD032 + MD009 — blank line before list + tr…
 
 …ailing space
 ```

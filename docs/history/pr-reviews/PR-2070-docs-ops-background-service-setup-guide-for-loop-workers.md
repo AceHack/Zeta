@@ -296,7 +296,7 @@ fix(docs): address review findings — markdownlint, name attribution, …
 - Replace persona name attributions with role references on this
   current-state ops surface per repo convention
 - Quote path with spaces in rm command for safety
-- Rebase onto main to drop already-merged B-0276 commits (merged
+- Rebase onto main to drop already-merged 081KR2E4K0008QG0R0031E5PR8 commits (merged
   via PR #2069)
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>

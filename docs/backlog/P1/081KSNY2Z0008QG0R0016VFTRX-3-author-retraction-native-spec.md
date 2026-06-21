@@ -1,6 +1,5 @@
 ---
-id: B-0171.3
-zetaid: 081KSNY2Z0008QG0R0016VFTRX
+id: 081KSNY2Z0008QG0R0016VFTRX
 priority: P1
 status: closed
 closed: 2026-06-12
@@ -16,9 +15,9 @@ owners: [lior]
 type: spec-authoring
 ---
 
-# B-0171.3 — Author Retraction-Native Semantics spec
+# 081KSNY2Z0008QG0R0016VFTRX — Author Retraction-Native Semantics spec
 
-This task implements the third item from the Phase 1 audit of the OpenSpec catch-up project (B-0171). It involves creating a formal specification for Retraction-Native Semantics.
+This task implements the third item from the Phase 1 audit of the OpenSpec catch-up project (081KQNJ500008QG0R001N94412). It involves creating a formal specification for Retraction-Native Semantics.
 
 ## Scope
 

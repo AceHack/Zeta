@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// token-calibration.ts — the bytes→tokens calibration layer (B-1016).
+// token-calibration.ts — the bytes→tokens calibration layer (081KT7YW00008QG0R002T1XNWT).
 //
-// HONESTY BOUNDARY (B-1016): byte-cost is PROVEN and byte-locked (deterministic,
+// HONESTY BOUNDARY (081KT7YW00008QG0R002T1XNWT): byte-cost is PROVEN and byte-locked (deterministic,
 // cross-language). Model TOKENS are NOT — they vary by tokenizer and version, so
 // this layer is an explicit ESTIMATE, model-specific, OUTSIDE the proof lineage.
 // It never feeds a gate on its own; it converts the proven byte signal into a

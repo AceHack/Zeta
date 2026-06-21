@@ -1,6 +1,6 @@
 ---
 name: Clifford Algebra Networks (CAN) + Geometric Clifford Algebra Networks (GCAN) — Brandstetter / Ruhe / Gupta / Welleck / Stark / Hess research lineage — Pin group + sandwich product + PGA + CGA (Aaron 2026-05-13)
-description: Aaron 2026-05-13 forwarded canonical research substrate — YouTube graph-reading-group talk on two papers (CAN + GCAN) by Johannes Brandstetter + David Ruhe + Jayesh K. Gupta + Stephen Welleck + Leo Hess + Hannes Stark links (hannes-stark.com + hannes-stark.com/starkly-speaking). Composes DIRECTLY with PR #2914 Clifford/HKT vocabulary + PR #2817 Clifford densest encoding + PR #2928 F# fork for AI safety with real HKT over Clifford + B-0428 DBpedia substrate. Major prior-art substrate for the factory's HKT+Clifford+F# work.
+description: Aaron 2026-05-13 forwarded canonical research substrate — YouTube graph-reading-group talk on two papers (CAN + GCAN) by Johannes Brandstetter + David Ruhe + Jayesh K. Gupta + Stephen Welleck + Leo Hess + Hannes Stark links (hannes-stark.com + hannes-stark.com/starkly-speaking). Composes DIRECTLY with PR #2914 Clifford/HKT vocabulary + PR #2817 Clifford densest encoding + PR #2928 F# fork for AI safety with real HKT over Clifford + 081KRFA460008QG0R0018SN61J DBpedia substrate. Major prior-art substrate for the factory's HKT+Clifford+F# work.
 type: feedback
 created: 2026-05-13
 ---
@@ -153,7 +153,7 @@ GCAN paper validates the Clifford-as-densest-encoding approach.
 
 ### PR #2928 (F# fork for AI safety with real HKT over Clifford)
 
-The F#-fork strategic substrate (Path A for B-0428 DBpedia
+The F#-fork strategic substrate (Path A for 081KRFA460008QG0R0018SN61J DBpedia
 deferred) IS this research lineage applied to F# type system:
 - Real HKT = first-class M<'T>
 - Over Clifford = sandwich-product type-preserving
@@ -190,7 +190,7 @@ Hannes-Stark.com/starkly-speaking — research blog
 covering:
 - Molecular dynamics applications of equivariant GNNs
 - Geometric deep learning expositions
-- Composes with B-0428 (DBpedia + F# fork) for molecular
+- Composes with 081KRFA460008QG0R0018SN61J (DBpedia + F# fork) for molecular
   master-data substrate
 
 Aaron's forward implies this is canonical reading for
@@ -202,7 +202,7 @@ hannes-stark.com — author profile + paper index.
 
 ## Operational implications
 
-### For B-0428 (DBpedia + F# fork) Path A (deferred)
+### For 081KRFA460008QG0R0018SN61J (DBpedia + F# fork) Path A (deferred)
 
 The F# compiler fork for real HKT over Clifford should
 implement CAN/GCAN layers natively in the type system:
@@ -279,9 +279,9 @@ When designing Clifford-related factory substrate:
 - PR #2924 (Aurora pitch — edge-node multivector substrate)
 - PR #2892 (KSK — typed-safety motivation; sandwich product
   preserves grade structure)
-- B-0428 (DBpedia + F# fork — Path A directly built on this
+- 081KRFA460008QG0R0018SN61J (DBpedia + F# fork — Path A directly built on this
   research)
-- B-0043 (universal company + government information substrate
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate
   — entities-as-multivectors)
 - algebra-owner skill (Z-set + Clifford + BP/EP F# substrate)
 
@@ -302,7 +302,7 @@ work without reinvention.
 
 ## Full reasoning
 
-PR #2934 (this substrate landing + B-0429 persona mapping)
+PR #2934 (this substrate landing + 081KRFA460008QG0R002M05EY1 persona mapping)
 
 PR #2928 (F# fork for AI safety — canonical Path A research
 basis)

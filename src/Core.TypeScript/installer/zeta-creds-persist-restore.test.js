@@ -1,4 +1,4 @@
-// zeta-creds-persist-restore.test.ts — B-0852.2b CLI integration tests.
+// zeta-creds-persist-restore.test.ts — 081KSKBP80008QG0R003AX2A69.2b CLI integration tests.
 //
 // Covers the full persist → restore round-trip via temp-dir filesystem
 // (not just pure-function units; the CLI surfaces have FS I/O).

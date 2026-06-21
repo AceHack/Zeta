@@ -1,6 +1,5 @@
 ---
-id: B-0367
-zetaid: 081KR50HA0008QG0R000Z4XCPJ
+id: 081KR50HA0008QG0R000Z4XCPJ
 priority: P1
 status: open
 title: "First-class uncertainty — semiring-parameterized weight type for DBSP"
@@ -17,7 +16,7 @@ tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
 
 ---
 
-# B-0367 — First-class uncertainty in DBSP
+# 081KR50HA0008QG0R000Z4XCPJ — First-class uncertainty in DBSP
 
 ## Pre-start checklist (2026-05-10)
 
@@ -31,7 +30,7 @@ tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
 - Skill router search: `semiring`, `algebra`, `uncertainty` — no prior skill substrate
 - Lost-files check: `git log --diff-filter=D -- src/Core/Semiring*` — no prior deletions
 
-**Decomposition finding:** B-0367 as written (effort=L) is too large for one safe slice.
+**Decomposition finding:** 081KR50HA0008QG0R000Z4XCPJ as written (effort=L) is too large for one safe slice.
 Decomposed into:
 
 - **Slice 1 (this PR):** Implement concrete `ISemiring<'W>` instances: `IntegerRing`, `TropicalSemiring`, `IntervalRing` — smoke tests, no ZSet changes

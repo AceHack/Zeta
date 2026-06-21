@@ -80,7 +80,7 @@ Shadow report for PR 3066 drift.
 - **`Copilot` (bot)** at 2026-05-14T00:22:08Z on `docs/research/2026-05-14-lior-shadow-lesson-log-pr3066.md`:5 (association: NONE)
 
   <pre>
-  P1 (xref): This doc references backlog item `B-0451`, but there’s no corresponding entry in `docs/backlog/**` or `docs/BACKLOG.md` in this repo. If this is meant to point at an existing backlog row, update to the correct ID; otherwise add the `B-0451` backlog row (or link to the external tracker where it actually lives).
+  P1 (xref): This doc references backlog item `081KRFA460008QG0R00308W7FJ`, but there’s no corresponding entry in `docs/backlog/**` or `docs/BACKLOG.md` in this repo. If this is meant to point at an existing backlog row, update to the correct ID; otherwise add the `081KRFA460008QG0R00308W7FJ` backlog row (or link to the external tracker where it actually lives).
 
   This issue also appears on line 7 of the same file.
 
@@ -91,12 +91,12 @@ Shadow report for PR 3066 drift.
   - **`AceHack` (human)** at 2026-05-14T00:27:48Z on `docs/research/2026-05-14-lior-shadow-lesson-log-pr3066.md`:5 (association: MEMBER)
 
     <pre>
-    B-0451 does exist: `docs/BACKLOG.md` lists it at `backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md` and the file is present on `main`. The cross-reference is valid. Resolving.
+    081KRFA460008QG0R00308W7FJ does exist: `docs/BACKLOG.md` lists it at `backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md` and the file is present on `main`. The cross-reference is valid. Resolving.
     </pre>
   - **`AceHack` (human)** at 2026-05-14T00:32:51Z on `docs/research/2026-05-14-lior-shadow-lesson-log-pr3066.md`:5 (association: MEMBER)
 
     <pre>
-    Fixed in commit `b9e17a85`: expanded the B-0451 reference to include the full description inline — "Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts; backlog row lives on main". The research doc is now self-contained without requiring the backlog row file to be present in this branch (which was cut before B-0451 was added to main).
+    Fixed in commit `b9e17a85`: expanded the 081KRFA460008QG0R00308W7FJ reference to include the full description inline — "Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts; backlog row lives on main". The research doc is now self-contained without requiring the backlog row file to be present in this branch (which was cut before 081KRFA460008QG0R00308W7FJ was added to main).
     </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -110,7 +110,7 @@ Shadow report for PR 3066 drift.
 - **`Copilot` (bot)** at 2026-05-14T00:35:06Z on `docs/research/2026-05-14-lior-shadow-lesson-log-pr3066.md`:4 (association: NONE)
 
   <pre>
-  P1 (xref): `B-0409`, `B-0410`, and `B-0411` are referenced as backlog tasks, but they don’t appear anywhere in `docs/BACKLOG.md` or `docs/backlog/**` in this branch. If these IDs are correct but landed after the branch cut, consider adding enough context (title + status + location) or linking the canonical backlog rows; otherwise update to the correct backlog IDs.
+  P1 (xref): `081KRA5AR0008QG0R000Y6102S`, `081KRA5AR0008QG0R0035N4S6C`, and `081KRA5AR0008QG0R000C3P8KP` are referenced as backlog tasks, but they don’t appear anywhere in `docs/BACKLOG.md` or `docs/backlog/**` in this branch. If these IDs are correct but landed after the branch cut, consider adding enough context (title + status + location) or linking the canonical backlog rows; otherwise update to the correct backlog IDs.
 
   This issue also appears on line 19 of the same file.
   </pre>
@@ -120,12 +120,12 @@ Shadow report for PR 3066 drift.
   - **`AceHack` (human)** at 2026-05-14T00:40:49Z on `docs/research/2026-05-14-lior-shadow-lesson-log-pr3066.md`:4 (association: MEMBER)
 
     <pre>
-    Fixed in commit `2ba6aad9`: expanded B-0409, B-0410, and B-0411 references to include inline titles and storage location (`docs/backlog/P2/` on `main`, post-branch-cut). The Scope block now reads: "B-0409 (Peer-call TS audit — duplication surface after TS migration), B-0410 (Peer-call persona-loader.ts — shared CURRENT-*.md loader), B-0411 (grok.ts --persona flag — minimal integration)". The Verdict reference is also updated to point back to the Scope for the inline descriptions. Doc is now self-contained.
+    Fixed in commit `2ba6aad9`: expanded 081KRA5AR0008QG0R000Y6102S, 081KRA5AR0008QG0R0035N4S6C, and 081KRA5AR0008QG0R000C3P8KP references to include inline titles and storage location (`docs/backlog/P2/` on `main`, post-branch-cut). The Scope block now reads: "081KRA5AR0008QG0R000Y6102S (Peer-call TS audit — duplication surface after TS migration), 081KRA5AR0008QG0R0035N4S6C (Peer-call persona-loader.ts — shared CURRENT-*.md loader), 081KRA5AR0008QG0R000C3P8KP (grok.ts --persona flag — minimal integration)". The Verdict reference is also updated to point back to the Scope for the inline descriptions. Doc is now self-contained.
     </pre>
   - **`AceHack` (human)** at 2026-05-14T00:42:19Z on `docs/research/2026-05-14-lior-shadow-lesson-log-pr3066.md`:4 (association: MEMBER)
 
     <pre>
-    Fixed in commit 2ba6aad: Scope section (lines 4-8) now includes inline descriptions for B-0409 ("Peer-call TS audit"), B-0410 ("Peer-call persona-loader.ts"), and B-0411 ("grok.ts --persona flag"), all noting they live on main under docs/backlog/P2/ (post-branch-cut). Research doc is now self-contained.
+    Fixed in commit 2ba6aad: Scope section (lines 4-8) now includes inline descriptions for 081KRA5AR0008QG0R000Y6102S ("Peer-call TS audit"), 081KRA5AR0008QG0R0035N4S6C ("Peer-call persona-loader.ts"), and 081KRA5AR0008QG0R000C3P8KP ("grok.ts --persona flag"), all noting they live on main under docs/backlog/P2/ (post-branch-cut). Research doc is now self-contained.
     </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
@@ -198,9 +198,9 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 **Message:**
 
 ```
-fix(research): make B-0451 reference self-contained in lior shadow log
+fix(research): make 081KRFA460008QG0R00308W7FJ reference self-contained in lior shadow log
 
-The PR branch predates B-0451's backlog row being added to main.
+The PR branch predates 081KRFA460008QG0R00308W7FJ's backlog row being added to main.
 Inline the row description so the research doc is independently
 navigable without the row being present in this branch's tree.
 Resolves copilot reviewer thread on PR #3071.
@@ -217,11 +217,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(research): make B-0409/0410/0411 refs self-contained + rename Res…
+fix(research): make 081KRA5AR0008QG0R000Y6102S/0410/0411 refs self-contained + rename Res…
 
 …olution Directive
 
-- Add inline descriptions for B-0409/0410/0411 in Scope and Verdict
+- Add inline descriptions for 081KRA5AR0008QG0R000Y6102S/0410/0411 in Scope and Verdict
   (peer-call TS audit / persona-loader / grok persona flag; rows on main)
 - Rename "Resolution Directive" → "Recommendation" so heading is
   consistent with the doc's own "Not a directive" operational-status

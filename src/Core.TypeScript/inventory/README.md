@@ -7,14 +7,14 @@ Reusable utilities for inventory + asset tracking.
 Extraction of personal Amazon order history into local JSON files.
 **Run by a human-actor — not agent-invocable** (agent-driven scraping
 of authenticated personal accounts is blocked by the safety classifier
-per the B-0582 destructive-verb-refusal-gate principle).
+per the 081KRQ1AB0008QG0R002469KJG destructive-verb-refusal-gate principle).
 
 Outputs go to `~/.local/share/zeta-inventory/amazon/<year>/`:
 
 - `amazon-items-full.json` — title + URL + date + price per item
   (personal financial data; never appropriate for git commit by default)
 - `amazon-items-hardware-filtered.json` — hardware-keyword subset
-  (review then optionally commit to Zeta as B-0590 hardware inventory
+  (review then optionally commit to Zeta as 081KRQ1AB0008QG0R002G93CM7 hardware inventory
   substrate, with PII stripped if desired)
 - `amazon-items-partial.json` — per-page checkpoint (v2.3+; written
   after every page; lets a crashed run resume from where it died)
@@ -60,11 +60,11 @@ query.
 
 ### Composes with
 
-- [B-0582](../../docs/backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md)
+- [081KRQ1AB0008QG0R002469KJG](../../docs/backlog/P1/081KRQ1AB0008QG0R002469KJG-destructive-verb-refusal-gate-substrate-level-2026-05-16.md)
   — destructive-verb refusal gate; agent-driven scraping of authenticated
   personal accounts is appropriately refused at the classifier layer;
   human-driven script is the legitimate path
-- [B-0590](../../docs/backlog/P2/B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)
+- [081KRQ1AB0008QG0R002G93CM7](../../docs/backlog/P2/081KRQ1AB0008QG0R002G93CM7-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)
   — fleet replication + hardware inventory substrate; this script's
   hardware-filtered output feeds that row's inventory section
 - Future B-NNNN — multi-account consolidation (the human maintainer's

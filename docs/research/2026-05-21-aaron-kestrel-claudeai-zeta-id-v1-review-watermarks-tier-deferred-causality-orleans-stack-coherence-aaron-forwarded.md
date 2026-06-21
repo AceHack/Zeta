@@ -3,7 +3,7 @@
 **Date**: 2026-05-21 (Aaron 06:16Z - 07:46Z + later cycle)
 **Surface**: claude.ai web (Kestrel)
 **Provenance**: Aaron-forwarded preservation into Zeta's research substrate per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
-**Composes with**: B-0681 (ZetaId v2 spec hardening), B-0682 (canonical string encoding), B-0683 (tier-deferred causality worked example), B-0684 (clock-protocol negotiation stack end-to-end sequence diagram)
+**Composes with**: 081KS3X9Y0008QG0R003044PQQ (ZetaId v2 spec hardening), 081KS3X9Y0008QG0R000W00V73 (canonical string encoding), 081KS3X9Y0008QG0R0006MQXA4 (tier-deferred causality worked example), 081KS3X9Y0008QG0R003MMEAC7 (clock-protocol negotiation stack end-to-end sequence diagram)
 
 ## Why this is preserved
 
@@ -27,7 +27,7 @@ Per Kestrel's read of existing Zeta substrate:
 
 1. **Speculative-watermark unification paper** — DBSP retraction algebra subsumes Beam's ACCUMULATING / DISCARDING / RETRACTING modes as special cases of a single linear operator. Target DEBS 2026 or VLDB 2026. Substrate already in `src/Core/SpeculativeWatermark.fs` (5+ rounds harsh-critic-reviewed).
 
-2. **Tier-deferred causality paper** — Z-sets indexed by causality tier protocol; reader-time tier selection via QueryInterface-style negotiation. Publishable conditional on one-page F# worked example (B-0683 scope).
+2. **Tier-deferred causality paper** — Z-sets indexed by causality tier protocol; reader-time tier selection via QueryInterface-style negotiation. Publishable conditional on one-page F# worked example (081KS3X9Y0008QG0R0006MQXA4 scope).
 
 3. **F# type-safety for long-running agent loops paper** — distinct venue (ICFP / OOPSLA / agent-AI venue). Adjacent but standalone.
 

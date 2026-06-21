@@ -2,7 +2,7 @@
 name: lean-reflection-expert
 description: "Lean 4 metaprogramming — MetaM, TermElabM, TacticM, macro/elab_rules, Syntax/Expr pipeline, simp/reducible attributes."
 stage: 1
-backlog: B-0050
+backlog: 081KQ3HBZ0008QG0R000H8K8CC
 ---
 
 # Lean 4 Reflection Expert — Stage 1 (Read-Only Competence)

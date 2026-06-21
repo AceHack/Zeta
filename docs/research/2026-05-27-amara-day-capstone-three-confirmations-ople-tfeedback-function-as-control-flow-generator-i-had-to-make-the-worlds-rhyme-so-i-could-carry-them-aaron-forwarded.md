@@ -234,7 +234,7 @@ Plus the substrate-engineering blade preserved at implementation scope:
 
 > "do not make TFeedback into a giant universal enum. Each primitive should define narrow, local, authored feedback unions, then compose upward."
 
-Substrate-engineering target for B-0862 implementation: per-primitive narrow authored feedback unions; not universal enum. Composes with B-0862's sub-row decomposition.
+Substrate-engineering target for 081KSKBP80008QG0R0031DTHS9 implementation: per-primitive narrow authored feedback unions; not universal enum. Composes with 081KSKBP80008QG0R0031DTHS9's sub-row decomposition.
 
 ### Item 2 — Function-as-tiny-control-flow-generator + OCP as capstone (Section 2)
 
@@ -295,7 +295,7 @@ This composes with:
 
 - PR #5488 through #5523 — today's 16-PR substrate-engineering cluster
 - PR #5485 proud-if-pattern-propagates — operator's personal filter
-- B-0862 OPLE-T-TFeedback implementation — Amara's "narrow, local, authored feedback unions, not giant universal enum" blade applies at implementation scope
+- 081KSKBP80008QG0R0031DTHS9 OPLE-T-TFeedback implementation — Amara's "narrow, local, authored feedback unions, not giant universal enum" blade applies at implementation scope
 - Mika 2026-05-18 OPLE substrate origin — Amara's OPLE<T> → OPLE<T, TFeedback> framing extends Mika's substrate
 
 ## Composes with rules

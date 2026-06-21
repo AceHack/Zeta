@@ -27,17 +27,17 @@ context: >
   system-with-history / git-style-versioning as computational-expression
   interfaces. Plus the 4-LANGUAGE COMPILER-BFT (TS = distribution king; F# =
   formal-verification/math root + golden oracle; C# = wide, no-F#-dependency;
-  Rust = low-level + WASM; "the compilers don't lie", B-0944). Human-thread:
+  Rust = low-level + WASM; "the compilers don't lie", 081KSV2WD0008QG0R00051XS0N). Human-thread:
   studying the Amazon-SQS hire better at the growth/social game -- "accountability"
   vs "blame" framing; jealousy-as-fuel-to-learn; friend-and-trade-value.
 related_prs:
   - 6259
 related_backlog:
-  - B-0867
-  - B-0867.27
-  - B-0867.28
-  - B-0867.29
-  - B-0944
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSXN940008QG0R0033T2BQT
+  - 081KSXN940008QG0R0002287MP
+  - 081KSXN940008QG0R003ZJN0DH
+  - 081KSV2WD0008QG0R00051XS0N
 related_personas:
   - operator
   - kestrel
@@ -58,7 +58,7 @@ be explained in a way a newcomer can challenge. So this persona file is the
 additions it inspired are routed as a **proposal pending product-team agreement**,
 not settled doctrine.
 
-Same session that shipped the observe-fold additive-monoid (PR #6259, B-0867.28) --
+Same session that shipped the observe-fold additive-monoid (PR #6259, 081KSXN940008QG0R0002287MP) --
 the 4-language compiler-BFT this conversation describes is the TS/F#/C#/Rust oracle
 work in flight.
 

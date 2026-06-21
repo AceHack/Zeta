@@ -16,7 +16,7 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTWFQPDP08QG0R00367ZHRQ-*.md` glob. -->
 
-Migrated from the accidental legacy `B-1036` row so the item lives on the current
+Migrated from the accidental legacy `081KTSZN10008QG0R002R3RENG` row so the item lives on the current
 ZetaId workitem surface instead of extending the frozen sequential backlog.
 
 ## Aaron 2026-06-11, verbatim spine

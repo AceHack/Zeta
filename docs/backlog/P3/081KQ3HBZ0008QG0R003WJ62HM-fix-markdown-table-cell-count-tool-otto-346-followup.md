@@ -1,6 +1,5 @@
 ---
-id: B-0027
-zetaid: 081KQ3HBZ0008QG0R003WJ62HM
+id: 081KQ3HBZ0008QG0R003WJ62HM
 priority: P3
 status: open
 title: Extract `tools/hygiene/fix-markdown-table-cell-count.py` — markdown-table-row-with-wrong-column-count fix tool (Otto-346 follow-up after honest-relapse-catch)
@@ -15,7 +14,7 @@ tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, markd
 type: friction-reducer
 ---
 
-# B-0027 — extract markdown-table-cell-count fix tool
+# 081KQ3HBZ0008QG0R003WJ62HM — extract markdown-table-cell-count fix tool
 
 ## Origin — Otto-346 honest-relapse-catch
 
@@ -74,14 +73,14 @@ MD055/MD056 (table cell count) requires:
 
 ## Implementation target — TypeScript not Python
 
-Per Aaron 2026-04-26 priority bump on B-0015: *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"* + *"our post install code"*.
+Per Aaron 2026-04-26 priority bump on 081KQ0YZ80008QG0R0012002S4: *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"* + *"our post install code"*.
 
 This tool (when built) should be TypeScript via Bun, not Python. It's a POST-install tool (runs in dev environments where Bun is available), per the pre/post-install distinction Aaron clarified:
 
 - POST-install (this tool): TypeScript, single cross-platform script, first-class typing
 - PRE-install (`tools/setup/install.sh`): shell + PowerShell, runs before Bun is available
 
-Wait for sibling-migration guardrail (B-0015) to unblock — first POST-install tool migrates to TS, then this one batches with the follow-on group. Until then, if the recurring pattern needs absorbing urgently, file an interim Python tool with explicit "TS-rewrite owed" header per the existing `bun+TS migration candidate` exception-label pattern in `docs/POST-SETUP-SCRIPT-STACK.md`.
+Wait for sibling-migration guardrail (081KQ0YZ80008QG0R0012002S4) to unblock — first POST-install tool migrates to TS, then this one batches with the follow-on group. Until then, if the recurring pattern needs absorbing urgently, file an interim Python tool with explicit "TS-rewrite owed" header per the existing `bun+TS migration candidate` exception-label pattern in `docs/POST-SETUP-SCRIPT-STACK.md`.
 
 ## Effort sizing
 

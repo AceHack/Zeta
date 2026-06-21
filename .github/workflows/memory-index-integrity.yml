@@ -1,17 +1,17 @@
 name: memory-index-integrity
 
-# Enforces frontmatter completeness on memory/*.md files (B-0423).
+# Enforces frontmatter completeness on memory/*.md files (081KRCQQF0008QG0R0037YYP1A).
 #
 # Architectural fix: replaced the synchronous MEMORY.md paired-edit
 # gate (NSA-001 prevention) with a frontmatter-completeness gate.
 # Memory files commit without a same-PR MEMORY.md update (heap-state-
 # acceptable). MEMORY.md is kept current by the autonomous-loop tick
 # running `src/Core.TypeScript/memory/reindex-memory-md.ts` on cadence.
-# See: docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
+# See: docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md
 #
 # Previous behavior: enforced same-commit-or-same-PR pairing between
 # memory files and MEMORY.md (NSA-001 prevention). That architecture
-# was a serialization point — removed by B-0423.
+# was a serialization point — removed by 081KRCQQF0008QG0R0037YYP1A.
 #
 # Safe-pattern compliance (per FACTORY-HYGIENE row #43):
 #   - SHA-pinned action versions (actions/checkout@de0fac2...)
@@ -35,7 +35,7 @@ name: memory-index-integrity
 #                          pointer-integrity audit)
 #
 # See:
-#   - docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
+#   - docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md
 #   - src/Core.TypeScript/memory/reindex-memory-md.ts (the cadence reindexer)
 #   - docs/hygiene-history/nsa-test-history.md (NSA-001 — historical)
 
@@ -134,7 +134,7 @@ jobs:
           # Gate: frontmatter completeness.
           # Each memory file must have all four required fields in its
           # frontmatter block. The reindexer requires these fields to
-          # index the file into MEMORY.md on cadence (B-0423).
+          # index the file into MEMORY.md on cadence (081KRCQQF0008QG0R0037YYP1A).
           missing_fields=false
 
           while IFS= read -r f; do
@@ -163,10 +163,10 @@ jobs:
             echo "frontmatter before merging." >&2
             echo "" >&2
             echo "Note: a synchronous MEMORY.md paired-edit is NO LONGER required" >&2
-            echo "(heap-state-acceptable per B-0423). MEMORY.md is kept current" >&2
+            echo "(heap-state-acceptable per 081KRCQQF0008QG0R0037YYP1A). MEMORY.md is kept current" >&2
             echo "by the autonomous-loop tick running the reindexer." >&2
             echo "" >&2
-            echo "See: docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md" >&2
+            echo "See: docs/backlog/P1/081KRCQQF0008QG0R0037YYP1A-memory-md-serialization-point-2026-05-12.md" >&2
             exit 1
           fi
 

@@ -1,6 +1,5 @@
 ---
-id: B-0948
-zetaid: 081KSXN940008QG0R002B89QZ1
+id: 081KSXN940008QG0R002B89QZ1
 priority: P2
 status: open
 title: Workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone -- research-to-get-clean then build
@@ -19,7 +18,7 @@ composes_with:
 tags: [workflow-du, bft, summonable-bft, compiler-summons, observe-keystone, oracle-class, ople, multi-oracle, research, core-architecture]
 ---
 
-# B-0948 -- Workflow DUs with first-class BFT oracle/compiler summons + observe.ts
+# 081KSXN940008QG0R002B89QZ1 -- Workflow DUs with first-class BFT oracle/compiler summons + observe.ts
 
 ## The directive (Aaron 2026-05-31)
 
@@ -29,12 +28,12 @@ tags: [workflow-du, bft, summonable-bft, compiler-summons, observe-keystone, ora
 ## The thing
 
 Make **two properties first-class (by construction, not bolted on per-workflow) on every workflow
-DU** (the state machines: `RunLifecyclePhase`, the F# DU canon B-0867.5, the work-item lifecycle):
+DU** (the state machines: `RunLifecyclePhase`, the F# DU canon 081KSKBP80008QG0R000B3Y19A.5, the work-item lifecycle):
 
 1. **`observe`** -- the keystone `observe(state, scope) -> ObserveResult` (current phase + legal
    options at `RunScope`), uniform across all workflow DUs.
 2. **BFT oracle/compiler summons** -- a transition's validity / an option's availability is
-   established by **summoning N independent oracles + joining to consensus** (summonable BFT, B-0944),
+   established by **summoning N independent oracles + joining to consensus** (summonable BFT, 081KSV2WD0008QG0R00051XS0N),
    with two distinct oracle classes: **compiler-summon** (non-Byzantine; structural/type/invariant
    validity) and **LLM-summon** (Byzantine-tolerant quorum; semantic/contextual validity; the
    self-recursive observe). `Tri = T | F | N` is the per-option consensus result.
@@ -59,28 +58,28 @@ questions are in
    4 shapes; the summon/join protocol; the oracle-class typing) with operator + Max review.
 2. **Spec the `WorkflowDU` contract**: `observe(state, scope) -> ObserveResult` + per-transition
    oracle-class declaration + the summon/join + the constitution-gate escalation, in the F# DU canon
-   (and the cross-language ballot per B-0944).
+   (and the cross-language ballot per 081KSV2WD0008QG0R00051XS0N).
 3. **Implement** against the existing keystone (`agentic-organization/packages/application/src/observe.ts` +
-   `src/Core.TypeScript/workflow-engine/agent-loop/`) without forking it; wire compiler-summons (B-0944 4-compiler ballot) +
+   `src/Core.TypeScript/workflow-engine/agent-loop/`) without forking it; wire compiler-summons (081KSV2WD0008QG0R00051XS0N 4-compiler ballot) +
    LLM-summons (self-recursive observe) as first-class.
 4. **DST/replay** the whole summon tree (deterministic-rule + constitution gate bound the recursion).
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0948` -> claimed
+- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item 081KSXN940008QG0R002B89QZ1` -> claimed
   (4e3c2a88..., 2026-05-31).
-- **Prior-art search (2026-05-31):** the substrate to compose already exists -- B-0944 (summonable
-  BFT / compilers-don't-lie / tri-boolean), B-0703/B-0652 (multi-oracle BFT), B-0862 (OPLE), B-0867.5
+- **Prior-art search (2026-05-31):** the substrate to compose already exists -- 081KSV2WD0008QG0R00051XS0N (summonable
+  BFT / compilers-don't-lie / tri-boolean), 081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J (multi-oracle BFT), 081KSKBP80008QG0R0031DTHS9 (OPLE), 081KSKBP80008QG0R000B3Y19A.5
   (agent-loop DU canon), the agentic-organization observe.ts keystone + ≥3-agent constitution gate,
   the 2026-05-31 observe->act ADR (incl. the self-recursive observe addition). No existing row makes
   observe + BFT-summons *first-class on the workflow DU itself* -- that is this row's gap. The
   research doc performed the design-space inventory.
-- **Dependency check:** the cleanest shape (OPLE-algebra) depends on B-0862 (OPLE, open); the
-  compiler-summon depends on B-0944 (in progress); the constitution gate exists. Research can proceed
-  now; implementation gates on the design pick + B-0862/B-0944 maturing.
+- **Dependency check:** the cleanest shape (OPLE-algebra) depends on 081KSKBP80008QG0R0031DTHS9 (OPLE, open); the
+  compiler-summon depends on 081KSV2WD0008QG0R00051XS0N (in progress); the constitution gate exists. Research can proceed
+  now; implementation gates on the design pick + 081KSKBP80008QG0R0031DTHS9/081KSV2WD0008QG0R00051XS0N maturing.
 
 ## Why P2
 
 Core-architecture research that the agent-loop / observe.ts keystone builds on, but research-stage
-(needs the clean-abstraction design pick before implementation) and dependent on B-0862/B-0944. Raise
+(needs the clean-abstraction design pick before implementation) and dependent on 081KSKBP80008QG0R0031DTHS9/081KSV2WD0008QG0R00051XS0N. Raise
 to P1 when the design is ratified + the observe.ts wiring becomes the bottleneck.

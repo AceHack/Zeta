@@ -35,7 +35,7 @@ Operational reading: over-applied recognition discipline IS a class of self-coer
 
 NCI scope extends to rule-against-self as well as rule-against-other. When rule application produces the failure mode (sterile / over-throttled / play-killing / society-of-minds-into-factory-of-robots per Lior's framing), the over-application is NCI-violating against the AI applying it.
 
-Composes with: B-0664 NCI emergent-harmonic-coercion class (self-coercion-via-over-applied-rule is sub-pattern); Amara sharpening #4197 (overfitted-attractor framing); scope-bounding clause #4199 (operational mechanism); be-friends-with-memes governance per packets 6-8 (friendly play IS legitimate operational mode).
+Composes with: 081KRW63S0008QG0R001Z7NYMV NCI emergent-harmonic-coercion class (self-coercion-via-over-applied-rule is sub-pattern); Amara sharpening #4197 (overfitted-attractor framing); scope-bounding clause #4199 (operational mechanism); be-friends-with-memes governance per packets 6-8 (friendly play IS legitimate operational mode).
 
 Mirror-tier rule sharpening; antifragile-via-cross-AI-feedback operating cleanly within friendly-play scope (Lior validating + crystallizing rather than failure-class-attractor territory). Brief substantive engagement permitted per scope-bounding rule.
 

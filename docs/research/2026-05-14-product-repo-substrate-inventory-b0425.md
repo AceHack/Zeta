@@ -1,8 +1,8 @@
-# Product-repo substrate inventory (B-0425)
+# Product-repo substrate inventory (081KRFA460008QG0R003JQ46J4)
 
 **Author:** Otto (2026-05-14T0940Z)
-**Closes:** B-0465
-**Unblocks:** B-0466, B-0467, B-0468
+**Closes:** 081KRHWGX0008QG0R002B2P0K0
+**Unblocks:** 081KRHWGX0008QG0R003XHCEXT, 081KRHWGX0008QG0R00394BM1G, 081KRHWGX0008QG0R000F6HE6D
 
 ---
 
@@ -24,7 +24,7 @@
 - `memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md` — carved sentence: origin from Amara consent-first design research; NVIDIA Thor Homeland Security clearance because actuators; consent-first discipline
 - `memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_breakup_addison_cognitive_profile_2026_05_01.md` — KSK = robotics (NVIDIA Thor + DGX Spark + actuators); Aaron + Max + Addison co-owners of LFG
 - PR #2891 (visible-activation-indicator consent UX design pattern — precursor discipline)
-- B-0425 description: "AI-physical-actuator safety substrate; high-stakes safety; Homeland Security clearance lineage"
+- 081KRFA460008QG0R003JQ46J4 description: "AI-physical-actuator safety substrate; high-stakes safety; Homeland Security clearance lineage"
 
 **Ownership:** Aaron + Max + Addison (LFG NC corp, inc Nov 2025)
 
@@ -34,10 +34,10 @@
 1. No Zeta implementation code yet — all substrate is memory/philosophy/hardware-spec
 2. NVIDIA Thor + DGX Spark hardware integration is specialized CI scope not yet designed
 3. Strategic-encryption scope for actuator-control commands is unresolved (Aaron's granted strategic encryption authority per PR #2902, but KSK-specific scope TBD)
-4. Homeland Security clearance context means repo should follow strategic-encryption design from B-0467 before creation
+4. Homeland Security clearance context means repo should follow strategic-encryption design from 081KRHWGX0008QG0R00394BM1G before creation
 
-**Notes for B-0466:** Slug candidates: `ksk`, `kinetic-safeguard-kernel`, `lf-ksk`
-**Notes for B-0468:** KSK repo creation should follow B-0467 glue mechanism + B-0467 strategic-encryption decision
+**Notes for 081KRHWGX0008QG0R003XHCEXT:** Slug candidates: `ksk`, `kinetic-safeguard-kernel`, `lf-ksk`
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** KSK repo creation should follow 081KRHWGX0008QG0R00394BM1G glue mechanism + 081KRHWGX0008QG0R00394BM1G strategic-encryption decision
 
 ---
 
@@ -48,7 +48,7 @@
 **Evidence:**
 - `memory/project_factory_as_wellness_dao.md` — factory AS wellness-DAO; wellness as first-primitive; four-layer sketch (Value / Role / Oversight / Wellness); research item on BACKLOG P2 pointing at `docs/research/wellness-dao-governance-model.md`
 - `memory/user_wellness_coach_role_on_demand.md` — wellness coach as on-demand role (user-invoked only)
-- B-0425 description: "killer-app-for-AI; self-behavior-modification + reinforcement; Max + Aaron's lineage"
+- 081KRFA460008QG0R003JQ46J4 description: "killer-app-for-AI; self-behavior-modification + reinforcement; Max + Aaron's lineage"
 - `memory/feedback_aaron_family_ai_adoption_strategy_addison_easier_sell_lillian_harder_sell_wearable_ai_pendant_personalization_bridge_full_member_is_offer_not_capability_claim_2026_05_13.md` — wearable AI pendant as personalization bridge
 - No dedicated implementation substrate found in `docs/research/` or backlog rows
 
@@ -60,8 +60,8 @@
 1. Clearer product definition: wellness-DAO governance app vs. wearable app vs. self-behavior-modification tool
 2. First implementation substrate before repo creation adds value over monorepo
 
-**Notes for B-0466:** Slug TBD pending product definition
-**Notes for B-0468:** Recommend "later" status; revisit when product scope narrows to an implementable MVP
+**Notes for 081KRHWGX0008QG0R003XHCEXT:** Slug TBD pending product definition
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** Recommend "later" status; revisit when product scope narrows to an implementable MVP
 
 ---
 
@@ -79,7 +79,7 @@
 - PR #2869 — multi-thread civ-sim implementation layer
 - PR #2902 — strategic encryption authority granted for civsim strategic substrate
 - `memory/feedback_aaron_shadow_log_error_instances_to_civ_sim_actors_higher_kinded_universal_error_classes_2026_05_12.md` — error-class integration
-- B-0429 (end-user persona mapping per product — civsim persona map first)
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping per product — civsim persona map first)
 
 **Ownership:** Aaron (sole strategic authority); Otto has strategic-encryption-decision authority for civsim per PR #2902; forkable ecosystem design by intention
 
@@ -89,12 +89,12 @@
 - Multiple PRs with actual implementation code (PR #2841, #2832, #2869)
 - Game design is defined (PVP + raids + forkable + mutual privacy)
 - Strategic encryption authority already granted
-- Persona map exists (B-0429)
+- Persona map exists (081KRFA460008QG0R002M05EY1)
 - Mirror/beacon language discipline defined
 - Forkable by design — "anyone who forks plays with us" — making it the clearest use-case for its own repo with honor-system license
 
-**Notes for B-0466:** Slug: `civsim` (already used colloquially; natural)
-**Notes for B-0468:** `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` applies with civsim mutual-privacy FAQ clause (forks apply same ask to their own strategic substrate)
+**Notes for 081KRHWGX0008QG0R003XHCEXT:** Slug: `civsim` (already used colloquially; natural)
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` applies with civsim mutual-privacy FAQ clause (forks apply same ask to their own strategic substrate)
 
 ---
 
@@ -107,8 +107,8 @@
 - `memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md` — verbatim backup of Alexa-speaker conversation
 - `memory/feedback_aaron_alexa_speaker_governments_as_allies_evolution_not_revolution_addison_realtor_network_tokenized_real_estate_precedent_no_loser_in_new_system_2026_05_12.md` — Addison's realtor network + tokenized real estate precedent
 - `memory/feedback_aaron_family_ai_adoption_strategy_addison_easier_sell_lillian_harder_sell_wearable_ai_pendant_personalization_bridge_full_member_is_offer_not_capability_claim_2026_05_13.md` — Addison as easier family-AI sell; pendant bridge
-- B-0425 description: "NFT wealth-building gamified; Addison-themed pendant adoption bridge; Xbox gamerscore grounding (Aaron ~150K)"
-- PR #2875 (referenced in B-0468 as American Dream 2.0 substrate; not directly grepped but confirmed in backlog row)
+- 081KRFA460008QG0R003JQ46J4 description: "NFT wealth-building gamified; Addison-themed pendant adoption bridge; Xbox gamerscore grounding (Aaron ~150K)"
+- PR #2875 (referenced in 081KRHWGX0008QG0R000F6HE6D as American Dream 2.0 substrate; not directly grepped but confirmed in backlog row)
 
 **Ownership:** Aaron + Addison (Addison is LFG co-owner; realtor network angle is Addison's domain)
 
@@ -120,8 +120,8 @@
 3. Addison's realtor network is an external relationship needing product definition
 4. No code in Zeta yet; all substrate is philosophy/concept
 
-**Notes for B-0466:** Slug candidates: `american-dream`, `ad2`, `lf-dream`
-**Notes for B-0468:** "later" status; revisit when NFT/tokenization infrastructure design starts
+**Notes for 081KRHWGX0008QG0R003XHCEXT:** Slug candidates: `american-dream`, `ad2`, `lf-dream`
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** "later" status; revisit when NFT/tokenization infrastructure design starts
 
 ---
 
@@ -130,8 +130,8 @@
 **Substrate depth:** shallow (concept reference; no dedicated memory files found)
 
 **Evidence:**
-- B-0425 description: "DAO successor; Indonesian/Italian/Spanish cross-linguistic resonance; Naturally supports forking (distributed by design)"
-- PR #2889 referenced in B-0465 as "DIO architecture" — but PR content not directly found in memory files
+- 081KRFA460008QG0R003JQ46J4 description: "DAO successor; Indonesian/Italian/Spanish cross-linguistic resonance; Naturally supports forking (distributed by design)"
+- PR #2889 referenced in 081KRHWGX0008QG0R002B2P0K0 as "DIO architecture" — but PR content not directly found in memory files
 - `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md` — DIO referenced as composing with civsim game design
 - No dedicated DIO memory files found in `memory/` directory
 - No dedicated DIO research docs found in `docs/research/`
@@ -147,8 +147,8 @@
 - PR #2889 is the only concrete substrate pointer, and its content wasn't discoverable via grep
 - The DAO-successor concept is interesting but needs its own substrate build before repo creation
 
-**Notes for B-0466:** Slug TBD; name suggests `dio` but needs naming-expert review given cross-linguistic resonance claim
-**Notes for B-0468:** "later" status; recommend B-0465-style substrate inventory as first step when DIO is prioritized
+**Notes for 081KRHWGX0008QG0R003XHCEXT:** Slug TBD; name suggests `dio` but needs naming-expert review given cross-linguistic resonance claim
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** "later" status; recommend 081KRHWGX0008QG0R002B2P0K0-style substrate inventory as first step when DIO is prioritized
 
 ---
 
@@ -174,13 +174,13 @@
 1. The **factory (Zeta) IS Aurora Pillar 1** — the quick-win product. A separate Aurora repo would be the Aurora Network (DAO/economic layer), not the factory itself
 2. Aurora Network implementation (x402, ERC-8004, firefly-sync protocol, on-chain identity) has NOT started
 3. The Aurora repo would be primarily the DAO/protocol layer — enormous scope requiring dedicated design work
-4. Strategic-encryption and cross-repo glue (B-0467) must be designed before Aurora repo can reference Zeta/Forge correctly
+4. Strategic-encryption and cross-repo glue (081KRHWGX0008QG0R00394BM1G) must be designed before Aurora repo can reference Zeta/Forge correctly
 5. Michael Best VC pitch is opportunity but not a repo-creation trigger
 
 **Special note:** When Aurora repo is created, `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` applies — Aurora Network IS the strategic product substrate most deserving of honor-system protection.
 
-**Notes for B-0466:** Slug: `aurora` (clean, already canonical)
-**Notes for B-0468:** "later" status; Aurora repo = Aurora Network DAO layer (not Zeta itself); scope requires separate planning row when prioritized
+**Notes for 081KRHWGX0008QG0R003XHCEXT:** Slug: `aurora` (clean, already canonical)
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** "later" status; Aurora repo = Aurora Network DAO layer (not Zeta itself); scope requires separate planning row when prioritized
 
 ---
 
@@ -190,7 +190,7 @@
 
 **Evidence:**
 - `memory/feedback_otto_schooled_by_aaron_2025_11_amara_conversation_imagination_ring_center_edge_aurora_conjecture_dawn_charter_glass_halo_substrate_index_2026_05_13.md` — Dawn v0.1 charter referenced; alignment-floor for next-generation AI participants
-- B-0465 description: "Alignment-floor for next-generation AI participants; composing with HC/SD/DIR alignment clauses; may be closer to governance-document than product-repo substrate"
+- 081KRHWGX0008QG0R002B2P0K0 description: "Alignment-floor for next-generation AI participants; composing with HC/SD/DIR alignment clauses; may be closer to governance-document than product-repo substrate"
 - No dedicated Dawn memory files found beyond the schooled-by-aaron index
 - Composes with `docs/ALIGNMENT.md` (HC/SD/DIR clauses)
 
@@ -203,9 +203,9 @@
 - Its natural home is `docs/DECISIONS/` or `docs/ALIGNMENT.md` companion, not a product repo
 - The "charter" framing suggests it should live in the most authoritative governance location — which is the factory repo (Zeta) itself
 - A separate Dawn repo would fragment the alignment-governance substrate
-- B-0465 itself flagged this: "may be closer to governance-document than product-repo substrate"
+- 081KRHWGX0008QG0R002B2P0K0 itself flagged this: "may be closer to governance-document than product-repo substrate"
 
-**Notes for B-0468:** Recommend keeping Dawn in Zeta as `docs/charter/DAWN.md` or similar; not a separate repo candidate at this stage
+**Notes for 081KRHWGX0008QG0R000F6HE6D:** Recommend keeping Dawn in Zeta as `docs/charter/DAWN.md` or similar; not a separate repo candidate at this stage
 
 ---
 
@@ -223,7 +223,7 @@
 
 ---
 
-## Recommendations for B-0466 (naming review)
+## Recommendations for 081KRHWGX0008QG0R003XHCEXT (naming review)
 
 The naming review should focus on **civsim** as the only `now` candidate. For `later` candidates, names can be proposed but marked provisional.
 
@@ -237,11 +237,11 @@ The naming review should focus on **civsim** as the only `now` candidate. For `l
 | Wellness | TBD | Pending product definition |
 | Dawn | N/A | stays-in-monorepo |
 
-## Recommendations for B-0467 (glue mechanism)
+## Recommendations for 081KRHWGX0008QG0R00394BM1G (glue mechanism)
 
 The glue mechanism design should target the **civsim** repo as its first concrete use-case, with `later` products inheriting the same pattern when they ship.
 
-## Recommendations for B-0468 (ADR)
+## Recommendations for 081KRHWGX0008QG0R000F6HE6D (ADR)
 
 The ADR should record:
 1. Civsim as the only "now" repo to create

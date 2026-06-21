@@ -1,12 +1,11 @@
 ---
-id: B-0334
-zetaid: 081KR2E4K0008QG0R003MSVG42
+id: 081KR2E4K0008QG0R003MSVG42
 priority: P1
 status: closed
 title: Memory cross-reference integrity enforcement — bidirectional composes-with audit
 tier: foundation
 effort: S
-ask: B-0190 Step 6 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 6 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,11 +15,11 @@ tags: [memory, cross-reference, integrity, audit, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0334 — Memory cross-reference integrity enforcement
+# 081KR2E4K0008QG0R003MSVG42 — Memory cross-reference integrity enforcement
 
 ## Parent
 
-B-0190 Step 6 (memory cross-reference integrity audit).
+081KQR4HQ0008QG0R001909FPT Step 6 (memory cross-reference integrity audit).
 
 ## What
 
@@ -52,7 +51,7 @@ Either extend `audit-memory-references.ts` with an
 `--intra-file` mode or create a new
 `audit-memory-cross-references.ts` sibling tool.
 
-## Why depends on B-0330
+## Why depends on 081KR2E4K0008QG0R002VM58S4
 
 The format standard defines where cross-references live in a
 memory file (section name, link syntax). Without it, the parser

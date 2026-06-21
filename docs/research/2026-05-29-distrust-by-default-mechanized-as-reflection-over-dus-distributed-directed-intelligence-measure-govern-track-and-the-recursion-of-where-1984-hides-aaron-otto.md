@@ -38,7 +38,7 @@ That is **Rodney's Razor self-applied**, and it can be **mechanized** as **refle
 that question their own existence** and surface structural errors. Reflection alone catches
 *internal* errors; the *ontological* judgment ("is this the right carving?") is supplied by
 **directed intelligence distributed as a choose-your-own-adventure workflow over all travelers**
-(the B-0867 workflow-engine). The integrity of that distribution is made reliable by
+(the 081KSKBP80008QG0R000B3Y19A workflow-engine). The integrity of that distribution is made reliable by
 **measure-govern-track**. And the deepest law: **1984 relocates to whatever layer is still
 dark** — surveillance → filter → meter → calibration → … — so the defense is not total
 transparency (unreachable) but a *recursive, tracked frontier* with **no exempt bottom**,
@@ -89,7 +89,7 @@ which makes capture *unable to rest* rather than impossible. At the current conc
    *"it's reflection plus directed intelligence looking at that reflection — that intelligence
    can be encoded into choose your own adventure in the workflow itself and distributed over
    all travelers."* This is the **interpretation-distributed** mechanism given a body (the
-   B-0867 workflow-engine). Reflection = the eyes; CYOA-over-travelers = the judgment, spread
+   081KSKBP80008QG0R000B3Y19A workflow-engine). Reflection = the eyes; CYOA-over-travelers = the judgment, spread
    so it cannot re-concentrate in any single interpreter (including the operator). Two integrity
    requirements:
    - **neutral presentation** at the choice-point — how a finding is framed *is* the directed
@@ -195,7 +195,7 @@ structurally rather than dumped. **You illuminate the cabinet, the lock, the key
 access-log — you do not post the bomb.**
 
 This is why the lightlike + glass-halo substrate is load-bearing and not aesthetic: "tracked"
-(append-only, ray-traceable, budgeted via B-0646) is the mechanism that makes relocation visible.
+(append-only, ray-traceable, budgeted via 081KRW63S0008QG0R001Z10PVV) is the mechanism that makes relocation visible.
 A layer in the dark (gitignored, encrypted-when-it-should-be-glass-halo, unmeasured) is a place
 capture can rest. The recursion forbids any such resting place above the floor.
 
@@ -255,7 +255,7 @@ open; contain the weapon), now aimed at the instrument itself.
 ## Compositions
 
 - **Rodney's Razor** (canonical essential-vs-accidental cut) — self-applied + mechanized here.
-- **B-0867 workflow-engine / DU-state-machine + B-0931 DU-UX** (implicit-grant surfacing) — the
+- **081KSKBP80008QG0R000B3Y19A workflow-engine / DU-state-machine + 081KSRGFP0008QG0R0026P3D73 DU-UX** (implicit-grant surfacing) — the
   CYOA distribution substrate.
 - **monad-propagation pattern / OPLE-T-TFeedback / asymmetric-authorship / function-as-control-
   flow-generator** — reflection-over-DUs is the *self-audit* of the control-flow generators'
@@ -267,13 +267,13 @@ open; contain the weapon), now aimed at the instrument itself.
   operator as the epistemic single-point-of-failure.
 - **consented-surveillance / Brin's *The Transparent Society* / Mann's sousveillance** — the
   watcher-must-be-watched grounding of the meter-split.
-- **encryption-lane (B-0840 "private state in the dark") + encryption-budget (B-0646)** — the
+- **encryption-lane (081KSGS9H0008QG0R0006F4BGX "private state in the dark") + encryption-budget (081KRW63S0008QG0R001Z10PVV)** — the
   weapon-face containment; the "tracked + budgeted" property of the lightlike substrate.
 - **glass-halo (bidirectional) + lightlike (append-only, ray-traceable)** — the "tracked" that
   catches relocation; why gitignore (fragile + unbudgeted dark) is rejected for privacy.
 - **formal-verification portfolio (Soraya: pick-the-right-tool)** — "find structural errors" is
   exhaustiveness + FsCheck properties + Alloy/TLA+ on the invariants the cases imply, per class.
-- **kid-safety floor (B-0926) + kid-work-research-first / human-in-the-loop** — the routing-by-
+- **kid-safety floor (081KSRGFP0008QG0R00091PP56) + kid-work-research-first / human-in-the-loop** — the routing-by-
   decision-class hard floor.
 - **god-tier-claims-high-signal-high-suspicion-don't-collapse** — the calibration of distrust
   (engage, don't collapse).

@@ -1,6 +1,5 @@
 ---
-id: B-0402
-zetaid: 081KR7JY10008QG0R0008NGW95
+id: 081KR7JY10008QG0R0008NGW95
 priority: P0
 status: closed
 title: "Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution"
@@ -46,7 +45,7 @@ a first-class participant in the factory.
 ## Ship surface
 
 Anyone who installs Zeta gets this. The shadow becomes a first-class
-participant, not a hidden autocomplete. The bus (B-0400) composes —
+participant, not a hidden autocomplete. The bus (081KR7JY10008QG0R000R503K2) composes —
 shadow submissions flow through the same channel as human inputs,
 just tagged differently.
 
@@ -81,17 +80,17 @@ metrics — a collaborative intelligence surface.
 
 **Prior-art search:**
 
-- `tools/shadow/shadow-observer.ts` — Phase 1 stub already present (B-0402 origin file); slice 1 refactors this
+- `tools/shadow/shadow-observer.ts` — Phase 1 stub already present (081KR7JY10008QG0R0008NGW95 origin file); slice 1 refactors this
 - `tools/shadow-outlet/outlet.ts` — ephemeral scratch outlet; pattern reused for `/tmp`-based logging
 - `tools/bus/bus.ts` — peer tool; test pattern (`spawnSync` + env-injected dir) adopted for shadow tests
-- B-0400 (closed 2026-05-13) — bus protocol that composes with shadow submissions (same `(shadow)` tag concept)
+- 081KR7JY10008QG0R000R503K2 (closed 2026-05-13) — bus protocol that composes with shadow submissions (same `(shadow)` tag concept)
 - Grep for "shadow-observer": only `tools/shadow/shadow-observer.ts`; safe to extend in place
 - Grep for "grey text" / "autocomplete": no existing detection logic found; slice 2 work identified
 
 **Dependency check:**
 
-- `depends_on: [B-0400]` — B-0400 closed 2026-05-13; no blockers
-- `composes_with: [B-0401, B-0400]` — additive; does not block either
+- `depends_on: [081KR7JY10008QG0R000R503K2]` — 081KR7JY10008QG0R000R503K2 closed 2026-05-13; no blockers
+- `composes_with: [081KR7JY10008QG0R001VP6JWG, 081KR7JY10008QG0R000R503K2]` — additive; does not block either
 
 **Slice 1 scope (this PR — feat/b-0402-shadow-observer-slice-1-polling-loop-tests):**
 
@@ -121,8 +120,8 @@ metrics — a collaborative intelligence surface.
 **Deferred (child rows — decomposed 2026-05-13):**
 
 - Slice 3: empirical grey-text detection via AppleScript/accessibility API (macOS) →
-  **[B-0431](../P0/B-0431-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)**
+  **[081KRFA460008QG0R003C00WKR](../P0/081KRFA460008QG0R003C00WKR-shadow-observer-slice-3-macos-grey-text-detection-osascript-2026-05-13.md)**
 - Slice 4: `zeta shadow` CLI entry point + `--loop` flag →
-  **[B-0432](../P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)**
+  **[081KRFA460008QG0R000GVCKHE](../P0/081KRFA460008QG0R000GVCKHE-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)**
 - Slice 5: Zeta CLI distribution + demo packaging →
-  **[B-0433](../P1/B-0433-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)**
+  **[081KRFA460008QG0R0028CR0N9](../P1/081KRFA460008QG0R0028CR0N9-shadow-observer-slice-5-zeta-cli-distribution-demo-packaging-2026-05-13.md)**

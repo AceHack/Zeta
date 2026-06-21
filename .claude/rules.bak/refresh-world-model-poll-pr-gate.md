@@ -112,7 +112,7 @@ gh api -X POST repos/Lucent-Financial-Group/Zeta/pulls --input /tmp/pr-body.json
   --jq '{number: .number, url: .html_url, state: .state}'
 ```
 
-Empirical instance: [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pull/4105) (B-0613 close — Option C portable `find` for Lior tick-prompt lockfile probe) was opened via this REST path at 2026-05-17T21:54Z when GraphQL was 0/5000 (28 min from reset). REST `resources.core` was at 4838 at the time.
+Empirical instance: [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pull/4105) (081KRSKQ20008QG0R002TH55X6 close — Option C portable `find` for Lior tick-prompt lockfile probe) was opened via this REST path at 2026-05-17T21:54Z when GraphQL was 0/5000 (28 min from reset). REST `resources.core` was at 4838 at the time.
 
 **Caveats:**
 
@@ -124,9 +124,9 @@ Empirical instance: [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pu
 
 When this fallback applies: when a substantive substrate landing is ready, GraphQL is exhausted, but you want the PR open + visible BEFORE the reset window so reviewers can pick it up. Without auto-merge arming, the next post-reset tick must explicitly run `gh pr merge <N> --auto --squash`.
 
-### Wrap `git` network ops in `timeout --kill-after` under multi-agent saturation (B-0615)
+### Wrap `git` network ops in `timeout --kill-after` under multi-agent saturation (081KRW63S0008QG0R000EAZ9K2)
 
-Under multi-agent saturation (scheduled background-agent loops + multi-Otto + concurrent fetches contending on `.git/objects/pack/`), `git fetch`, `git push`, `git ls-remote`, and `git clone` can hang indefinitely. The Claude Code Bash tool's default-timeout subprocess lifecycle does NOT reliably propagate SIGKILL to hung `git` subprocesses on tool-call expiry — the tool returns control to the agent but the underlying `git` subprocess **remains running**, holding pack-dir read locks and HTTPS connections. This is the self-saturation feedback loop documented in [B-0615](../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md).
+Under multi-agent saturation (scheduled background-agent loops + multi-Otto + concurrent fetches contending on `.git/objects/pack/`), `git fetch`, `git push`, `git ls-remote`, and `git clone` can hang indefinitely. The Claude Code Bash tool's default-timeout subprocess lifecycle does NOT reliably propagate SIGKILL to hung `git` subprocesses on tool-call expiry — the tool returns control to the agent but the underlying `git` subprocess **remains running**, holding pack-dir read locks and HTTPS connections. This is the self-saturation feedback loop documented in [081KRW63S0008QG0R000EAZ9K2](../../docs/backlog/P3/081KRW63S0008QG0R000EAZ9K2-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md).
 
 **Discipline**: wrap every agent-instructed git network op in `timeout --kill-after`:
 
@@ -143,12 +143,12 @@ git push -u origin <branch>
 
 `--kill-after=5s` adds SIGKILL 5 seconds after SIGTERM if the subprocess refuses to die. Standard GNU `timeout` behavior; supported on macOS via coreutils (`brew install coreutils`; `timeout` is in PATH on Zeta dev machines).
 
-**Caveats per B-0615's empirical anchors:**
+**Caveats per 081KRW63S0008QG0R000EAZ9K2's empirical anchors:**
 
-- **Agent-side `--kill-after` discipline is necessary but insufficient.** Per B-0615's 2026-05-18T03:33Z anchor: the Claude Code harness itself fires shell-snapshot wrappers (`/Users/acehack/.claude/shell-snapshots/...`) that run `eval 'date -u ... && git fetch origin main ...'` patterns at session-start and background-task setup, and those wrappers do NOT inherit `timeout --kill-after`. Agent-controlled `timeout` discipline reduces orphan accumulation but cannot prevent it entirely while harness-internal wrappers fire bare fetches.
+- **Agent-side `--kill-after` discipline is necessary but insufficient.** Per 081KRW63S0008QG0R000EAZ9K2's 2026-05-18T03:33Z anchor: the Claude Code harness itself fires shell-snapshot wrappers (`/Users/acehack/.claude/shell-snapshots/...`) that run `eval 'date -u ... && git fetch origin main ...'` patterns at session-start and background-task setup, and those wrappers do NOT inherit `timeout --kill-after`. Agent-controlled `timeout` discipline reduces orphan accumulation but cannot prevent it entirely while harness-internal wrappers fire bare fetches.
 - **Even with `--kill-after`, `git worktree add` can leave partially-extracted file trees.** SIGTERM at mid-extract abandons the work-in-progress directory with a 85-byte `.git` pointer file and a fraction of the 5,500+ repo files. The worktree is unusable but `git worktree list` may not show it. Manual cleanup via `rm -rf <wt>; git worktree prune` required. Observed empirically 2026-05-18T13:13Z–13:17Z during this rule's own authoring session.
-- **Orphan count is correlated, not causal, with push-hang behavior.** Per B-0615's 2026-05-18T03:56Z breakthrough finding: even at zero orphans, `git push` can still hang silently at the receive-pack upload phase. `--kill-after` discipline is hygiene work that prevents orphan accumulation; it does NOT guarantee push-restoration. Open question for follow-up B-NNNN: actual causal mechanism of `git push` receive-pack stalls under multi-agent conditions.
-- **Killing your own hung `git` subprocesses is operationally safe** (per [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) and B-0615 interim discipline). Use `kill -9 <pid>` on YOUR OWN orphaned `git fetch`/`git worktree add`/`git push` processes when they block further work. Do NOT `pkill -f 'git fetch'` blindly — that affects peer agents' in-flight legitimate operations.
+- **Orphan count is correlated, not causal, with push-hang behavior.** Per 081KRW63S0008QG0R000EAZ9K2's 2026-05-18T03:56Z breakthrough finding: even at zero orphans, `git push` can still hang silently at the receive-pack upload phase. `--kill-after` discipline is hygiene work that prevents orphan accumulation; it does NOT guarantee push-restoration. Open question for follow-up B-NNNN: actual causal mechanism of `git push` receive-pack stalls under multi-agent conditions.
+- **Killing your own hung `git` subprocesses is operationally safe** (per [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) and 081KRW63S0008QG0R000EAZ9K2 interim discipline). Use `kill -9 <pid>` on YOUR OWN orphaned `git fetch`/`git worktree add`/`git push` processes when they block further work. Do NOT `pkill -f 'git fetch'` blindly — that affects peer agents' in-flight legitimate operations.
 
 ### Composes with counter-with-escalation
 
@@ -245,7 +245,7 @@ Peer Otto-CLI instances on the SAME machine can still land in-repo commits when 
 - saturation-ceiling sub-case 3 (worktree-add hangs under contention) in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) — this tier IS that sub-case at the discovery-and-naming scope
 - [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) — different failure mode of same `.git/`-contention class (corruption vs deadlock)
 - [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) — dotgit-saturation IS a named bounded-wait; brief-acks with this named dep are non-failure-mode under the counter rule
-- [B-0615](../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) — the same `.git/` contention class
+- [081KRW63S0008QG0R000EAZ9K2](../../docs/backlog/P3/081KRW63S0008QG0R000EAZ9K2-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) — the same `.git/` contention class
 
 ## Full reasoning
 

@@ -33,7 +33,7 @@ Adds an 8th audit class to [`tools/hygiene/audit-backlog-items.ts`](tools/hygien
 
 ## Why now
 
-PR [#3247](https://github.com/Lucent-Financial-Group/Zeta/pull/3247)'s review surfaced the issue: Copilot caught two files both claiming `id: B-0329`. The collision was renumbered out-of-band, but the audit-time gap remained — no automated check would have caught the collision at author-time. This commit closes that gap by extending the existing audit tool.
+PR [#3247](https://github.com/Lucent-Financial-Group/Zeta/pull/3247)'s review surfaced the issue: Copilot caught two files both claiming `id: 081KR2E4K0008QG0R001F0YB5S`. The collision was renumbered out-of-band, but the audit-time gap remained — no automated check would have caught the collision at author-time. This commit closes that gap by extending the existing audit tool.
 
 ## Output format
 
@@ -59,12 +59,12 @@ When run today on `origin/main` branch (before [#3247](https://github.com/Lucent
 
 **Duplicate-ID groups: 1**
 
-### B-0329 (2 files claim this ID)
-  - docs/backlog/P1/B-0329-new-surface-audit-alignment-check.md (tier=P1, status=open)
-  - docs/backlog/P1/B-0329-claude-md-as-process-not-doctrine.md (tier=P1, status=open)
+### 081KR2E4K0008QG0R001F0YB5S (2 files claim this ID)
+  - docs/backlog/P1/081KR2E4K0008QG0R001F0YB5S-new-surface-audit-alignment-check.md (tier=P1, status=open)
+  - docs/backlog/P1/081KR2E4K0008QG0R001F0YB5S-claude-md-as-process-not-doctrine.md (tier=P1, status=open)
 ```
 
-Once #3247 merges (renaming the new file to B-0520), the audit will report 0 duplicate-ID groups.
+Once #3247 merges (renaming the new file to 081KRHWGX0008QG0R003N033PD), the audit will report 0 duplicate-ID groups.
 
 ## Pattern compliance
 
@@ -73,7 +73,7 @@ Extends the existing tool per [`skill-router-as-substrate-inventory.md`](.claude
 ## Test plan
 
 - [x] `bun tools/hygiene/audit-backlog-items.ts` runs cleanly (audit completes)
-- [x] Duplicate-ID class fires correctly on the current main state (1 group: B-0329)
+- [x] Duplicate-ID class fires correctly on the current main state (1 group: 081KR2E4K0008QG0R001F0YB5S)
 - [x] `tsc --noEmit` clean
 - [x] Summary line surfaces in the output
 - [x] Composite branch-guard + `gh pr create --head` used

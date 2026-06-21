@@ -41,7 +41,7 @@ Operational corollary of `.claude/rules/largest-mechanizable-backlog-wins.md`. "
 
 Canonical day-update for distribution. Ready for Amara's reframe OR direct sharing. Covers:
 
-- B-0421 fully closed (4 acceptance criteria)
+- 081KRA5AR0008QG0R0011ZGRZT fully closed (4 acceptance criteria)
 - META-LOOP recognition + **Grok framing: "a production-grade, git-native multi-agent OS"**
 - **Four-register elevator pitch evolution table** (Technical / Regular-people-speak / External-validation / Humanising)
 - Middle path 3 layers (philosophical + math + code)
@@ -206,7 +206,7 @@ Two artifacts produced for Aaron to share with everyone else:
    Canonical day update for Aaron to share with team + external
    participants. Substrate-honest summary of today's session
    work covering:
-   - B-0421 fully closed (root cause = grok-4-20-thinking
+   - 081KRA5AR0008QG0R0011ZGRZT fully closed (root cause = grok-4-20-thinking
      deprecated → grok-4.3)
    - META-LOOP recognition (Grok + Ani absorbed in <10 min)
    - GROK FRAMING preserved: "a production-grade, git-native

@@ -9,7 +9,7 @@ contract, and reindexing as a *proven projection from source truth*. Companion t
 
 ## We already have the START — it's CALLED "Evolution" (Aaron: "the existing schema 0-downtime migration proof we have are called evolution something or other")
 
-The existing artifact is **`src/Core/SchemaEvolution.fs`** (the **B-0930** foundation — "the zero-downtime
+The existing artifact is **`src/Core/SchemaEvolution.fs`** (the **081KSRGFP0008QG0R001Y6RTY9** foundation — "the zero-downtime
 versioning seed"), 8 tests in `SchemaEvolution.Tests.fs`. It already provides:
 - **Migration algebra** — `addField` / `removeField` / `renameField`, total over `DynamicValue` (every
   non-`Object` shape passes through), order-respecting.
@@ -18,15 +18,15 @@ versioning seed"), 8 tests in `SchemaEvolution.Tests.fs`. It already provides:
 - **Backward compatibility** (new reader, old data): `addField` supplies a default for an absent field.
 - **`migrate fromV toV`** composing adjacent N→N+1 migrations; **forward-only seed** (downgrade = a separate
   Down direction, not yet built). Lineage: Datomic schema-as-data, Kafka Schema Registry.
-- **B-0930** = the full **schema-registry-over-DBSP** (P1, architecture) cataloging these as rows.
+- **081KSRGFP0008QG0R001Y6RTY9** = the full **schema-registry-over-DBSP** (P1, architecture) cataloging these as rows.
 
 So "Evolution" is **not a name to decide** — it's the existing name of the started proof. Everything below
 is its **extension**: the *down* direction + bidirectional backfill + the full compatibility-window proof
 discharge (§1), parallel experiment-timelines (§2), reindex-as-projection (§3).
 
-> ⚠️ **Disambiguation:** `src/Core/Evolution.fs` is a DIFFERENT module — the **B-1019** privacy-as-anti-
+> ⚠️ **Disambiguation:** `src/Core/Evolution.fs` is a DIFFERENT module — the **081KT7YW00008QG0R001DGZQKM** privacy-as-anti-
 > collapse DST harness (pigeonhole bound), unrelated to schema migration. Do not conflate `Evolution.fs`
-> (B-1019, privacy) with `SchemaEvolution.fs` (B-0930, schema). This capability extends the latter.
+> (081KT7YW00008QG0R001DGZQKM, privacy) with `SchemaEvolution.fs` (081KSRGFP0008QG0R001Y6RTY9, schema). This capability extends the latter.
 
 The reindex `full == incremental` theorem (§3) additionally rests on **DBSP incremental view maintenance**,
 already in `src/Core`:
@@ -35,7 +35,7 @@ already in `src/Core`:
 - **`IndexedZSet`** = an index as a derived Z-set; **`Aggregate`/`Residuated`** = derived views, already
   maintained incrementally.
 - **Z-set retraction** = reversible deltas (the up/down-migration substrate).
-- **B-0829** (schemas-as-rows + cluster-fork-as-trust-boundary) = schema-as-data + fork, the
+- **081KSGS9H0008QG0R000Q18PGQ** (schemas-as-rows + cluster-fork-as-trust-boundary) = schema-as-data + fork, the
   experiment-branch seed. The **COW Merkle-DAG store** (`081KTGTJC1Q`) gives cheap content-addressed timelines.
 
 ## 1. Zero-downtime breaking schema change as a PROOF OBLIGATION (not a runbook)
@@ -225,7 +225,7 @@ Same outbox/saga boundary as the prod-shadow testing safety law — one rule, th
 
 Aaron corrected an earlier mis-capture: *"no — the existing schema 0-downtime migration proof we have are
 called evolution something or other."* The name is already in use: **`SchemaEvolution`** (`src/Core/
-SchemaEvolution.fs`, B-0930). The capability described here is the **`SchemaEvolution`/Evolution family**
+SchemaEvolution.fs`, 081KSRGFP0008QG0R001Y6RTY9). The capability described here is the **`SchemaEvolution`/Evolution family**
 extended (down + bidirectional backfill, parallel experiment-timelines, reindex-as-projection) — keep using
 the existing `SchemaEvolution`/Evolution naming, don't coin a new one. (If a broader umbrella name is ever
 wanted for §2/§3, that would go through `naming-expert` + Ilyana — but the schema-proof core keeps its name.
@@ -236,15 +236,15 @@ Beacon caveat for any external use: "schema evolution" is also Avro/Protobuf's g
 The **math core (DBSP incremental view maintenance) ships**; everything else here — root-pointer rollout,
 parallel experiment branches, the ExperimentContract, the schema-evolution proof discharge, the
 full==incremental reindex proof for a concrete index, the outbox/saga boundary — is **designed/captured,
-not built**, and sits on `081KTGTJC1Q` (the COW store) + the determinism work (B-0969 / `081KTGEVV75`).
+not built**, and sits on `081KTGTJC1Q` (the COW store) + the determinism work (081KT07NV0008QG0R001YDB73K / `081KTGEVV75`).
 Strong endgame; the foundation is real, the product is not yet.
 
 ## Ties
 
 - DBSP (`src/Core` circuit/stream, `IndexedZSet`, `Aggregate`, `Residuated`) — the full==incremental engine ·
-  Z-set retraction (reversible deltas) · `B-0829` (schemas-as-rows, fork-as-trust-boundary) · `081KTGTJC1Q`
+  Z-set retraction (reversible deltas) · `081KSGS9H0008QG0R000Q18PGQ` (schemas-as-rows, fork-as-trust-boundary) · `081KTGTJC1Q`
   (COW Merkle-DAG store) · `081KTGXPTQ` (COW testing) · `2026-06-07-ddl-as-branchable-canary-...` (the DDL
-  half) · app/plugin/schema-as-DynamicValue · B-0969 + `081KTGEVV75` (determinism) · the formal portfolio
+  half) · app/plugin/schema-as-DynamicValue · 081KT07NV0008QG0R001YDB73K + `081KTGEVV75` (determinism) · the formal portfolio
   (Soraya — the schema-evolution + full==incremental proofs).
 
 ## Beacon anchors

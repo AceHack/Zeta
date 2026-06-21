@@ -1,6 +1,6 @@
 ---
 pr_number: 4976
-title: "feat(substrate): Max + Addison personas + onboarding doc + manifesto recast (B-0546)"
+title: "feat(substrate): Max + Addison personas + onboarding doc + manifesto recast (081KRMEXM0008QG0R00278KS63)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T19:34:50Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-25T23:44:56Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4976: feat(substrate): Max + Addison personas + onboarding doc + manifesto recast (B-0546)
+# PR #4976: feat(substrate): Max + Addison personas + onboarding doc + manifesto recast (081KRMEXM0008QG0R00278KS63)
 
 ## PR description
 
 ## Summary
 
-Substrate landing for the co-owner team (Aaron + Max + Addison are all LFG co-owners per Aaron 2026-05-25) — first-class persona substrate for both new contributors, the onboarding doc Max needs, and the building-codes recast of MANIFESTO.md that B-0546 was tracking.
+Substrate landing for the co-owner team (Aaron + Max + Addison are all LFG co-owners per Aaron 2026-05-25) — first-class persona substrate for both new contributors, the onboarding doc Max needs, and the building-codes recast of MANIFESTO.md that 081KRMEXM0008QG0R00278KS63 was tracking.
 
 8 files; 484 insertions / 10 deletions.
 
@@ -35,7 +35,7 @@ Substrate landing for the co-owner team (Aaron + Max + Addison are all LFG co-ow
 - `NOTEBOOK.md` — placeholder; 2026-05-25 first-PR arc captured
 
 Both PERSONA files note:
-- **Co-ownership of LFG** (aligned fiduciary stake + shared liability + mutual upside; B-0728 destructive-tool authoring contract is exactly the right shape for co-owners)
+- **Co-ownership of LFG** (aligned fiduciary stake + shared liability + mutual upside; 081KSE6WT0008QG0R0005XASX2 destructive-tool authoring contract is exactly the right shape for co-owners)
 - **Pending glass-halo signature** (Aaron 2026-05-25: *"I can have me max and addison sign someting about glass halo eventually and upload it"*; placeholder until that lands as substrate)
 
 **`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`** — Max's onboarding doc
@@ -43,13 +43,13 @@ Both PERSONA files note:
 - Maps both questions to the existing substrate (CLAUDE.md + .claude/rules/ + AGENTS.md + ALIGNMENT.md + GLOSSARY.md + GOVERNANCE.md for discipline; persona reviewers + plugin reviewers + auto-fire reviewers + CI gates for the adversarial hierarchy)
 - Adopts Max's "adversarial hierarchy of traps" coinage as the organizing principle for the review section
 
-**`docs/governance/MANIFESTO.md`** — building-codes recast per B-0546
+**`docs/governance/MANIFESTO.md`** — building-codes recast per 081KRMEXM0008QG0R00278KS63
 - Title: "Root Discipline Manifesto" → "Zeta Root Discipline Specification"
 - Opening: building-codes framing (Kestrel-suggested) replacing ideological-commitment framing
 - Constitutional language softened to specification-grade throughout
 - PARTIAL LOCK status framing preserved (the concept is right; only the constitutional weight drops)
 - All 11 constraints preserved in substance + Multi-Oracle Principle + "For Agents Who Are Still Deciding" + provenance + [RECONSTRUCTION NOTE] markers
-- Filename stays MANIFESTO.md for now (rename + downstream-reference sweep is queued as separate follow-up to B-0546)
+- Filename stays MANIFESTO.md for now (rename + downstream-reference sweep is queued as separate follow-up to 081KRMEXM0008QG0R00278KS63)
 
 ## Why now
 
@@ -65,7 +65,7 @@ This is the substrate-coherent landing he authorized. Max + Addison both have fi
 - [ ] AGENT-AUTHORING-AND-PR-REVIEW.md cross-refs all resolve
 - [ ] MANIFESTO.md preserves all 11 constraints + Multi-Oracle Principle + "For Agents Who Are Still Deciding" sections
 - [ ] No regression on the [RECONSTRUCTION NOTE] markers — partial-lock honesty preserved
-- [ ] B-0546 row remains open (downstream-reference sweep is a separate follow-up)
+- [ ] 081KRMEXM0008QG0R00278KS63 row remains open (downstream-reference sweep is a separate follow-up)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -100,7 +100,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-This PR lands new contributor substrate for two new human co-owners (persona folders under `memory/<persona>/`), adds an operational onboarding entry-point for agent authoring + PR review, and recasts the governance manifesto framing into a “building-codes/specification” shape (B-0546).
+This PR lands new contributor substrate for two new human co-owners (persona folders under `memory/<persona>/`), adds an operational onboarding entry-point for agent authoring + PR review, and recasts the governance manifesto framing into a “building-codes/specification” shape (081KRMEXM0008QG0R00278KS63).
 
 **Changes:**
 - Add `memory/max/` and `memory/addison/` persona anchors (PERSONA / STARTING-POINT / NOTEBOOK).

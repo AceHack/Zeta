@@ -7,7 +7,7 @@ Carved sentence:
 > workflow→sovereign-DB · encryption · zflash · git-accelerator · Ace-distribution.
 > It is a **map, not a queue**: `claim acquire` before working any item, respect
 > surface lanes, and check the claim-coordinator + open PRs for live claims (the
-> git-native bus once B-0954 populates `docs/agent-bus/`). A bridge
+> git-native bus once 081KSXN940008QG0R00171YAZW populates `docs/agent-bus/`). A bridge
 > until observe.ts coordinates lanes automatically.
 
 ## Why this rule exists
@@ -25,7 +25,7 @@ index: each active lane → its master row(s) + the surface working it, plus the
 coordination discipline. Distinct from `ROADMAP.md` (shipped features) and
 `CURRENT-ROUND.md` (round status); this is _who is building what, per lane._ Update
 it there when lanes shift; the claim-coordinator + open PRs are the live,
-always-current truth (the git-native bus joins once B-0954 populates it).
+always-current truth (the git-native bus joins once 081KSXN940008QG0R00171YAZW populates it).
 
 ## Map, not a queue — the collision-guard
 
@@ -35,11 +35,11 @@ always-current truth (the git-native bus joins once B-0954 populates it).
    don't cross into another surface's active lane.
 3. **Check the live registry** — **today** the claim-coordinator
    (`bun tools/bus/claim.ts check`) + open PRs (authoritative now). The git-native
-   cross-machine bus (`docs/agent-bus/`, B-0954) becomes the registry **once B-0954
+   cross-machine bus (`docs/agent-bus/`, 081KSXN940008QG0R00171YAZW) becomes the registry **once 081KSXN940008QG0R00171YAZW
    populates that folder** — it is absent on main today, so don't rely on it yet.
    The doc's lane snapshot is only a cold-boot hint.
 
-This is the B-0959 §0 agent-partition recognition applied to the agents themselves:
+This is the 081KSXN940008QG0R003FCQ7WT §0 agent-partition recognition applied to the agents themselves:
 each surface is a shard, `claim acquire` is the join-point, lanes are the partition,
 the bus carries claims across machines.
 
@@ -55,9 +55,9 @@ claims + dashboard), this manual pointer + index are redundant — retire them t
 - [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) — the split-brain guard
 - [`agent-roster-reference-card.md`](agent-roster-reference-card.md) — the surface / lane registry
 - [`wake-time-substrate.md`](wake-time-substrate.md) — why a cold-boot pointer (so active lanes are never re-forgotten)
-- B-0954 (git-native bus) — the live cross-machine claim registry
-- B-0892 (three-lanes-concurrent operating discipline) — the coordination-discipline lineage
-- B-0958 (observe-loop sub-tracker) — the loop whose completion retires this pointer
+- 081KSXN940008QG0R00171YAZW (git-native bus) — the live cross-machine claim registry
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline) — the coordination-discipline lineage
+- 081KSXN940008QG0R001A4WWX4 (observe-loop sub-tracker) — the loop whose completion retires this pointer
 
 ## Full reasoning
 

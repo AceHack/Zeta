@@ -97,7 +97,7 @@ rule applied to other in-flight PRs this session.
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T12:47:31Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2520 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace compose references that do not exist in-tree**
   
-  Several paths in the `Composes with` list (e.g., `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`, `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`, and `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`) are not present in this repository state, so readers cannot trace the claimed substrate lineage from this document. Either point to existing artifacts or land the referenced files in the same change set.
+  Several paths in the `Composes with` list (e.g., `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`, `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`, and `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`) are not present in this repository state, so readers cannot trace the claimed substrate lineage from this document. Either point to existing artifacts or land the referenced files in the same change set.
   
   Useful? React with 👍 / 👎.
 
@@ -138,7 +138,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T12:50:27Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2522 (association: NONE)
-  P1: This Composes-with entry links to `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`, but that file is not present in `docs/backlog/P0/` on this branch, so the reference is broken. If this is meant to refer to an in-flight PR, consider linking to the PR instead (or add a TODO/pending note) so readers don’t get dead links.
+  P1: This Composes-with entry links to `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`, but that file is not present in `docs/backlog/P0/` on this branch, so the reference is broken. If this is meant to refer to an in-flight PR, consider linking to the PR instead (or add a TODO/pending note) so readers don’t get dead links.
   ```suggestion
   - Dependency-status tracking surface (pending in PR #912)
     — Aaron's framings here drove its first-class elevation;
@@ -154,7 +154,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T12:50:27Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2524 (association: NONE)
-  P1: This Composes-with entry links to `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`, but that file is not present in `docs/backlog/P1/` on this branch, so the reference is broken. Either adjust the path to the actual file name/location, or link to the relevant PR until the backlog row exists on main.
+  P1: This Composes-with entry links to `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`, but that file is not present in `docs/backlog/P1/` on this branch, so the reference is broken. Either adjust the path to the actual file name/location, or link to the relevant PR until the backlog row exists on main.
   ```suggestion
   - PR #913 — the AceHack mirror-refresh decision; Aaron's
   ```
@@ -187,7 +187,7 @@ rule applied to other in-flight PRs this session.
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:26:06Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2278 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Stop marking uncommitted artifacts as landed**
   
-  This status line asserts that B-0109 was already filed, but in this commit tree there is no corresponding backlog artifact (I checked the tree with `git ls-tree`/`rg`, and no `B-0109` file exists). Reporting absent work as "landed" weakens the repo’s substrate provenance and can mislead later rounds into assuming dependency-gate work is already durable. Either land the referenced artifact in the same change or downgrade the status wording to queued/pending.
+  This status line asserts that 081KQDTYV0008QG0R002H74QXZ was already filed, but in this commit tree there is no corresponding backlog artifact (I checked the tree with `git ls-tree`/`rg`, and no `081KQDTYV0008QG0R002H74QXZ` file exists). Reporting absent work as "landed" weakens the repo’s substrate provenance and can mislead later rounds into assuming dependency-gate work is already durable. Either land the referenced artifact in the same change or downgrade the status wording to queued/pending.
   
   Useful? React with 👍 / 👎.
 
@@ -237,7 +237,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T13:31:42Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2364 (association: NONE)
-  This references a backlog row at `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`, but there is no `B-0109` file under `docs/backlog/` in this branch. Either add the backlog row file (and ensure the path/ID matches), or update this reference to the correct existing backlog entry.
+  This references a backlog row at `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`, but there is no `081KQDTYV0008QG0R002H74QXZ` file under `docs/backlog/` in this branch. Either add the backlog row file (and ensure the path/ID matches), or update this reference to the correct existing backlog entry.
 
 ### Thread 13 -- resolved [collapsed]
 
@@ -248,7 +248,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T13:31:42Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2368 (association: NONE)
-  This references `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`, but there is no `B-0110` backlog row file under `docs/backlog/` in this branch. Either add that backlog row in this PR or update the reference to the correct existing file.
+  This references `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`, but there is no `081KQDTYV0008QG0R001Y2E9TD` backlog row file under `docs/backlog/` in this branch. Either add that backlog row in this PR or update the reference to the correct existing file.
 
 ### Thread 14 -- resolved [collapsed]
 
@@ -270,7 +270,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T13:31:42Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:1428 (association: NONE)
-  This status note claims `B-0109` was filed in PR #912, but there is no `B-0109` backlog row present under `docs/backlog/` in this branch. Please either add the corresponding backlog row file or adjust the text to reference the correct existing backlog ID/path.
+  This status note claims `081KQDTYV0008QG0R002H74QXZ` was filed in PR #912, but there is no `081KQDTYV0008QG0R002H74QXZ` backlog row present under `docs/backlog/` in this branch. Please either add the corresponding backlog row file or adjust the text to reference the correct existing backlog ID/path.
   ```suggestion
   > Incident Response Evolution: The session adopted a
   ```
@@ -306,9 +306,9 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:35:48Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2329 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove landed claim for missing B-0110 artifact**
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove landed claim for missing 081KQDTYV0008QG0R001Y2E9TD artifact**
   
-  This status line says B-0110 was filed in PR #913, but in commit `6b4b933fd3befa8ee73a5f89995c5dd90a690dad` there is no corresponding `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md` artifact in-tree. In this repository, these research absorbs are used as provenance substrate, so marking absent work as landed can mislead later rounds into treating an uncommitted decision as durable.
+  This status line says 081KQDTYV0008QG0R001Y2E9TD was filed in PR #913, but in commit `6b4b933fd3befa8ee73a5f89995c5dd90a690dad` there is no corresponding `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md` artifact in-tree. In this repository, these research absorbs are used as provenance substrate, so marking absent work as landed can mislead later rounds into treating an uncommitted decision as durable.
   
   Useful? React with 👍 / 👎.
 
@@ -362,7 +362,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T13:55:36Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2331 (association: NONE)
-  Broken xref: `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md` does not exist under `docs/backlog/` on this branch. If this is an in-flight PR artifact, consider linking to the PR (or adding an “(in-flight)” note) instead of a repo path that currently 404s.
+  Broken xref: `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md` does not exist under `docs/backlog/` on this branch. If this is an in-flight PR artifact, consider linking to the PR (or adding an “(in-flight)” note) instead of a repo path that currently 404s.
   ```suggestion
   Status: follow-up filed in PR #913 as Path 2 (in-flight at
   the time of this packet); CLAUDE.md doctrine updated;
@@ -435,7 +435,7 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T13:55:38Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2338 (association: NONE)
-  Broken xrefs: `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md` and `memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md` don’t exist on this branch. Either include them in this PR, fix the paths, or convert these references to PR links / “in-flight” notes so the “Composes with” section stays navigable.
+  Broken xrefs: `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md` and `memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md` don’t exist on this branch. Either include them in this PR, fix the paths, or convert these references to PR links / “in-flight” notes so the “Composes with” section stays navigable.
 
 ### Thread 28 -- resolved [collapsed]
 
@@ -466,27 +466,27 @@ rule applied to other in-flight PRs this session.
 ### Thread 30 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-xMDK`
-- **Path**: `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
+- **Path**: `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T14:36:40Z on `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:112 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T14:36:40Z on `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:112 (association: NONE)
   **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace missing no-copy discipline cross-reference**
   
-  This backlog row points to `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` as the governing discipline, but that artifact does not exist in commit `8d78f73` (verified via tree lookup), so future rounds cannot trace or validate the exact rule this cleanup is supposed to implement. Because this file is the durable trigger spec for B-0112, the broken reference undermines provenance and makes the cleanup criteria ambiguous; link to an existing canonical memory file or land the referenced artifact in the same change.
+  This backlog row points to `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` as the governing discipline, but that artifact does not exist in commit `8d78f73` (verified via tree lookup), so future rounds cannot trace or validate the exact rule this cleanup is supposed to implement. Because this file is the durable trigger spec for 081KQDTYV0008QG0R003MV3WAR, the broken reference undermines provenance and makes the cleanup criteria ambiguous; link to an existing canonical memory file or land the referenced artifact in the same change.
   
   Useful? React with 👍 / 👎.
 
 ### Thread 31 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-xMsV`
-- **Path**: `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
+- **Path**: `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-30T14:37:11Z on `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:5 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-30T14:37:11Z on `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:5 (association: NONE)
   Backlog per-row files are required to include `id`, `status`, and `title` in YAML frontmatter (enforced by `.github/workflows/backlog-index-integrity.yml`). This row is missing `title`, so CI will fail; please add `title` (and ideally align the rest of the frontmatter with the schema in `tools/backlog/README.md`, e.g., `created`/`last_updated` instead of `filed`).
   ```suggestion
   title: Stale 2026-04-27 project file internals-bleed-out cleanup
@@ -499,12 +499,12 @@ rule applied to other in-flight PRs this session.
 ### Thread 32 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-xMtK`
-- **Path**: `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
+- **Path**: `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-30T14:37:11Z on `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:26 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-30T14:37:11Z on `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:26 (association: NONE)
   This row links to `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`, but that file does not exist in the repo (verified via repo search/read). Please either add the missing memory file in the same PR or update this reference to the correct existing artifact so the link isn’t broken on merge.
 
 ### Thread 33 -- resolved [collapsed]
@@ -540,12 +540,12 @@ rule applied to other in-flight PRs this session.
 ### Thread 35 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5-xabS`
-- **Path**: `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
+- **Path**: `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-04-30T14:48:21Z on `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:9 (association: NONE)
+- **`Copilot` (bot)** at 2026-04-30T14:48:21Z on `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:9 (association: NONE)
   Backlog per-row files are required (and CI-checked) to include non-empty `id`, `status`, and `title` in YAML frontmatter. This row is missing `title:` (and it also uses non-standard `filed` fields instead of the schema’s required `created`/`last_updated`), so the backlog integrity workflow will flag it as malformed. Update the frontmatter to match `tools/backlog/README.md` (at minimum add `title`, `created`, and `last_updated`).
 
 ### Thread 36 -- resolved [outdated, collapsed]
@@ -653,7 +653,7 @@ not acted on.
 
 Opportunities for hardening (4): switch jq IN-stream to
 explicit array form to silence reviewer noise permanently;
-Copilot stale-index lag as tracked dependency in B-0109;
+Copilot stale-index lag as tracked dependency in 081KQDTYV0008QG0R002H74QXZ;
 post-merge verification as a script not manual; name the
 'Potential vs Real Blocker Discipline' as canon entry to
 prevent future over-conservative-disable.
@@ -804,7 +804,7 @@ Queued for future rounds:
   guard (same class as the no-directives linter).
 - Post-merge verification language tightening (default vs
   deep-investigate tier wording).
-- LFG-only memory alignment with Path 2 (B-0110
+- LFG-only memory alignment with Path 2 (081KQDTYV0008QG0R001Y2E9TD
   three-source drift reduced to two-way, not eliminated).
 
 Worth recording without celebration substrate (per
@@ -890,7 +890,7 @@ locally before changing code. This composes with:
 
 - Copilot stale-index lag (now 4-way independent
   convergence: Deepseek + Alexa + Ani + Gemini all
-  independently flagged it as a B-0109 candidate)
+  independently flagged it as a 081KQDTYV0008QG0R002H74QXZ candidate)
 - The proceed-but-verify rule's real-vs-potential
   blocker discrimination (Gemini's rule is the corollary
   applied to bot reviewers)
@@ -1038,13 +1038,13 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
+- `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
 - `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`
 
 **Message:**
 
 ```
-research+backlog: Deepseek 4th review + B-0112 stale-internals cleanu…
+research+backlog: Deepseek 4th review + 081KQDTYV0008QG0R003MV3WAR stale-internals cleanu…
 
 …p follow-up
 
@@ -1077,7 +1077,7 @@ Three-part landing this tick:
    "the loop is no longer fighting its own rules; it's
    refining the gaps between them").
 
-4. **B-0112 P2 backlog row filed** — the explicit follow-up
+4. **081KQDTYV0008QG0R003MV3WAR P2 backlog row filed** — the explicit follow-up
    trigger Deepseek named for the stale 2026-04-27 project
    file. Concrete trigger conditions (any tick that touches
    the file, scopes work into ../scratch / ../SQLSharp /
@@ -1139,7 +1139,7 @@ grade, not implementation):
 
 None integrated this round beyond verbatim preservation per
 substrate-rate discipline. The packet itself is the substrate;
-operational integration follows the trigger pattern (B-0112-style
+operational integration follows the trigger pattern (081KQDTYV0008QG0R003MV3WAR-style
 follow-up rows when topology becomes operational).
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
@@ -1165,7 +1165,7 @@ verbatim:
    (affirmation-substrate parenting personal-info still in canon;
    minimal-tick spam needs mechanical fix not discipline reminder),
    two Significant flags (substrate production rate extreme;
-   B-0111 false-start search-first failure), two Smaller flags
+   081KDVM0HX008QG0R000HV5TPT false-start search-first failure), two Smaller flags
    (post-merge verification language overpromises; AceHack three-
    source drift reduced not eliminated). Plus deeper architectural
    critique: "loop has substrate-as-output not substrate-as-
@@ -1241,14 +1241,14 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
+- `docs/backlog/P2/081KQDTYV0008QG0R003MV3WAR-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`
 
 **Message:**
 
 ```
-fix(backlog): B-0112 frontmatter schema compliance (Copilot P1)
+fix(backlog): 081KQDTYV0008QG0R003MV3WAR frontmatter schema compliance (Copilot P1)
 
-Copilot caught that B-0112 row was missing required `title` field
+Copilot caught that 081KQDTYV0008QG0R003MV3WAR row was missing required `title` field
 per the schema enforced by `.github/workflows/backlog-index-integrity.yml`
 and documented in `tools/backlog/README.md`.
 
@@ -1264,7 +1264,7 @@ content for this row's purpose.
 
 Note: the BACKLOG.md generated index has 17097 lines of
 pre-existing drift (per-row split happened, monolith not yet
-regenerated, B-0061 P1 row tracks the cleanup). Regenerating
+regenerated, 081KQ8P5D0008QG0R001BH93SA P1 row tracks the cleanup). Regenerating
 the index here would scope-creep this PR. Filing the
 regeneration as a separate focused PR per the
 "infrastructure-fix-not-doctrine" lesson from Claude.ai's
@@ -1366,7 +1366,7 @@ Convergence updates:
   PR #916's YAML-frontmatter break that markdownlint missed.
 - **Standardize in-flight xref states** (landed/in_flight/
   planned) — already partially adopted in PR #917's xref fix.
-- **B-0112 stale-internals follow-up** — already filed in PR
+- **081KQDTYV0008QG0R003MV3WAR stale-internals follow-up** — already filed in PR
   #915 (Deepseek's earlier ask).
 - **Trigger-based research promotion** — Task #352 already does
   this; "do not ask Aaron to schedule" Amara guidance accepted.

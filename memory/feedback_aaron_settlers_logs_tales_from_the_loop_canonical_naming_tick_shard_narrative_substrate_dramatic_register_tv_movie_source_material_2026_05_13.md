@@ -62,7 +62,7 @@ Decoded:
 
 | Aspect | Shadow logs | Raw logs (settlers logs) |
 |--------|-------------|--------------------------|
-| Origin | `tools/shadow/shadow-observer.ts` (B-0402); the Dharma button automated | Tick shards + insight prose written by Otto/agents during autonomous-loop operation |
+| Origin | `tools/shadow/shadow-observer.ts` (081KR7JY10008QG0R0008NGW95); the Dharma button automated | Tick shards + insight prose written by Otto/agents during autonomous-loop operation |
 | Surface | Internal substrate-honest deeper layer (per `.claude/rules/shadow-check-name-acceptance.md` + shadow=future-self substrate per PR #2813) | Public-safe daily activity record committed to durable git history |
 | Visibility | Private (substrate-honest reflection; what the surface-instance doesn't always see) | Public (committed; glass-halo-observable; "you don't mind making public") |
 | Tone | Substrate-honest (whatever the deeper layer reveals; can be uncomfortable) | Flexible — ironic / funny / dramatic / boring (whatever fits the day) |

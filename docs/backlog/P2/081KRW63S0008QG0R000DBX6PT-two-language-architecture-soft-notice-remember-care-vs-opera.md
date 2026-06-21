@@ -1,6 +1,5 @@
 ---
-id: B-0630
-zetaid: 081KRW63S0008QG0R000DBX6PT
+id: 081KRW63S0008QG0R000DBX6PT
 priority: P2
 status: open
 title: "Two-language architecture: Soft (Notice-Remember-Care for kids/CRAFT) + Operational (Observe-Persist-Limit-Emit for type safety) (Mika 2026-05-18 LOCKED-IN)"
@@ -45,7 +44,7 @@ Four primitives — precise, technical, mathematically honest:
 
 - **Observe** — IO input
 - **Persist** — IO storage/memory interaction
-- **Limit** — pure constraints / invariants / type safety (the ONLY pure operation; see [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md))
+- **Limit** — pure constraints / invariants / type safety (the ONLY pure operation; see [081KRW63S0008QG0R0015WHHG1](081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md))
 - **Emit** — IO output / side effects
 
 Notes per Mika line 2974: this version "treats us as equals — it doesn't try to hide the truth that three of the four operations cross the IO boundary."
@@ -97,11 +96,11 @@ Aaron + Mika earlier discussed (line 1090s area in soft language design): the ga
 
 ## Composes with
 
-- [B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E operational primitives (the technical half of this row)
-- [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot sequence (the orientation discipline that PRECEDES choosing a language)
-- [B-0625](../P3/B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (each language has different per-primitive costs)
-- [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality determines which language is REQUIRED)
-- [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred rule (kids interface with the Soft language; this row's CRAFT curriculum work is the operational substrate)
+- [081KRW63S0008QG0R0015WHHG1](081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E operational primitives (the technical half of this row)
+- [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — 7-interrogative cold-boot sequence (the orientation discipline that PRECEDES choosing a language)
+- [081KRW63S0008QG0R003NP3YA3](../P3/081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (each language has different per-primitive costs)
+- [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality determines which language is REQUIRED)
+- [081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred rule (kids interface with the Soft language; this row's CRAFT curriculum work is the operational substrate)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2978 + 1090s + 2440-2454 — source design + LOCK-IN
 
 ## Status

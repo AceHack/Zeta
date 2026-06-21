@@ -29,7 +29,7 @@
 
 Aaron 2026-06-03: *"propagating this framing to the docs that makes sense is sound, it's a small base framing."*
 
-Adds a **small organizing section** to `PRIMITIVE-REGISTRY.md` (the doc that organizes primitives) — the **three bit-perfect shapes**: (1) text/binary serializers → persisted *seeds*; (2) code/data-flow (rx/bonsai) → *code-flow structures*; (3) structured-data (Arrow, kept distinct; eve-polymorphic deserialization-security per B-1001) → *memory/graph/ontology* — plus the protection stack (DST + 4 langs + persisted-seed verification + Rx-join of homeostates + multi-tower math proof; no single point of failure).
+Adds a **small organizing section** to `PRIMITIVE-REGISTRY.md` (the doc that organizes primitives) — the **three bit-perfect shapes**: (1) text/binary serializers → persisted *seeds*; (2) code/data-flow (rx/bonsai) → *code-flow structures*; (3) structured-data (Arrow, kept distinct; eve-polymorphic deserialization-security per 081KT2T2J0008QG0R000VG204F) → *memory/graph/ontology* — plus the protection stack (DST + 4 langs + persisted-seed verification + Rx-join of homeostates + multi-tower math proof; no single point of failure).
 
 Cross-refs the full framing note (merged #6658). Mints nothing new — pure organizing lens. Kept small per the 'small base framing' direction. Canary 67. (Registry already mixes / emphasis and is green on main → MD049 off for this file.)
 
@@ -108,7 +108,7 @@ Aaron 2026-06-03: 'propagating this framing to the docs that makes sense is soun
 it's a small base framing.' Small organizing section in PRIMITIVE-REGISTRY (the doc
 that organizes primitives): the 3 bit-perfect shapes — (1) text/binary serializers
 for persisted seeds; (2) code/data-flow (rx/bonsai) for code-flow structures;
-(3) structured-data (Arrow, distinct, eve-polymorphic deser-security per B-1001)
+(3) structured-data (Arrow, distinct, eve-polymorphic deser-security per 081KT2T2J0008QG0R000VG204F)
 for memory/graph/ontology — + the protection stack (DST + 4 langs + persisted-seed
 verification + Rx-join of homeostates + multi-tower math proof, no single point of
 failure). Cross-refs the full framing note (merged #6658). Mints nothing new.
@@ -132,7 +132,7 @@ docs(registry): soften the protection-model claim to intended/designe…
 Per proven-by-default honesty: the protection stack (DST + 4-lang + persisted-seed
 verification + Rx-join-of-homeostates + multi-tower proof) is the intended MODEL,
 not a claim every primitive already has it. The per-primitive status (mostly ⬜/🚧)
-is the honest current state; built one verified primitive at a time (B-0959).
+is the honest current state; built one verified primitive at a time (081KSXN940008QG0R003FCQ7WT).
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

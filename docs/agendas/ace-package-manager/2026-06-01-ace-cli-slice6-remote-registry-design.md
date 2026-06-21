@@ -1,6 +1,6 @@
 # Ace CLI slice 6 — remote registry (design)
 
-> Spec for slice 6 of the Ace DLC package manager (B-0288 / B-0971). Builds on the
+> Spec for slice 6 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD / 081KT07NV0008QG0R000SJ34AK). Builds on the
 > slice-5.x local registry (5.1 data layer, 5.2 semver+solver, 5.3 lockfile, 5.4
 > lockfile ergonomics — all merged). Brainstormed + decided with the operator
 > 2026-06-01.
@@ -248,7 +248,7 @@ install (graph): read root → verify → loadRegistries(offline?)              
   fetches a single index document.
 - **Full TUF role separation** (root / targets / snapshot / timestamp, key rotation
   ceremonies) → backlog; slice 6 ships a pragmatic signed-index + monotonic-sequence +
-  freshness subset that covers the rollback / DoS / version-steering threats B-0971
+  freshness subset that covers the rollback / DoS / version-steering threats 081KT07NV0008QG0R000SJ34AK
   named, without the full TUF apparatus.
 - **`ace registry publish`** index-generation tooling beyond the test-helper `signIndex`
   → backlog.

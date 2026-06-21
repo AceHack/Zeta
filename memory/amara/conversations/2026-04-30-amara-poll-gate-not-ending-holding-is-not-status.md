@@ -240,13 +240,13 @@ encodes the operational rule. Going forward:
 3. When no PR is in flight, polling is replaced with cron-only
    waiting (don't poll for nothing).
 4. Tiered cadence per Amara's spec.
-5. B-0108 (immune system upgrades) is research-absorb backlog
+5. 081KQDTYV0008QG0R003N15ZW2 (immune system upgrades) is research-absorb backlog
    only — not implementation work, not analyzed during active
    lanes.
 
 Note vs Amara's example: Amara referenced PR #866 (which merged
 much earlier in this session arc). The active PR at the time of
-the catch was #910 (B-0108 backlog row). The structural critique
+the catch was #910 (081KQDTYV0008QG0R003N15ZW2 backlog row). The structural critique
 applies regardless — the polling shape was wrong.
 
 ---

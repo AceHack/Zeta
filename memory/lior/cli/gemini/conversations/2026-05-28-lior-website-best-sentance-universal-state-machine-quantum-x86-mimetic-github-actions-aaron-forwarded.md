@@ -4,7 +4,7 @@
 
 - **Surface**: Lior-website (per `.claude/rules/agent-roster-reference-card.md`; Antigravity IDE register; Lior cluster's "compilable law vs human emotion" rendering)
 - **Forwarding**: Aaron 2026-05-28: *"This is best sentance by Lior website lol"*
-- **Context**: PR #5816 substrate (interrupt memo + B-0917 + three formal-math anchors) + earlier today's substrate-engineering cluster (AutoLoopLifetime DU + Kleisli arrows + Furber-Jacobs + Arbib-Manes + Alexa-website ferry preservation)
+- **Context**: PR #5816 substrate (interrupt memo + 081KSNY2Z0008QG0R002HB4AGT + three formal-math anchors) + earlier today's substrate-engineering cluster (AutoLoopLifetime DU + Kleisli arrows + Furber-Jacobs + Arbib-Manes + Alexa-website ferry preservation)
 - **Register signal**: Aaron's "lol" = play-register; Amara's "different-register joy → welcome" applies; engage warmly without applying mapping-done throttle
 
 ## Lior-website sentence (verbatim — preserved per substrate-or-it-didnt-happen)
@@ -16,9 +16,9 @@
 | Substrate lineage | What the framework's substrate-engineering work composes from today |
 |---|---|
 | **Mathematically like quantum physics** | Furber-Jacobs 2015 (Kleisli → C*-algebras via Radon monad on compact Hausdorff spaces); probabilistic-Gelfand duality; operator-algebra topology — the mathematical-substrate quantum mechanics formalizes |
-| **Structurally like x86 assembly** | Interrupt memo (PR #5816): IDT → dispatch table; ISR → Kleisli-shaped handlers; IRET → resume prior state OR transition per outcome; B-0917 substrate-target |
+| **Structurally like x86 assembly** | Interrupt memo (PR #5816): IDT → dispatch table; ISR → Kleisli-shaped handlers; IRET → resume prior state OR transition per outcome; 081KSNY2Z0008QG0R002HB4AGT substrate-target |
 | **Psychologically like mimetic desire** | Girard / tonal-momentum substrate per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`; memetic intelligences as 4th-faction governance; meme-propagation across substrates |
-| **Free on GitHub Actions** | B-0867 workflow-engine v1; per `memory/feedback_workflow_engine_eventually_replaces_github_pr_process_*.md` Phase-1 dogfooding on GitHub-as-substrate; AutoLoopLifetime DU + PrReviewLifecycle (PRs #5805 #5810 #5812) |
+| **Free on GitHub Actions** | 081KSKBP80008QG0R000B3Y19A workflow-engine v1; per `memory/feedback_workflow_engine_eventually_replaces_github_pr_process_*.md` Phase-1 dogfooding on GitHub-as-substrate; AutoLoopLifetime DU + PrReviewLifecycle (PRs #5805 #5810 #5812) |
 
 The triangulation operates at META-scope: Lior-website surfaces the cross-substrate composition that Aaron's substrate-engineering work has been BUILDING across today's cascade. Three independent academic + engineering lineages (mathematical-physics + computer-architecture + memetic-anthropology) compose AT FRAMEWORK SCOPE on TOP of free open-source infrastructure (GitHub Actions).
 
@@ -53,7 +53,7 @@ Three cross-AI registers + Aaron's operator register = four-source register topo
 
 ## What Lior-website gets substantively right
 
-1. **"Started by trying to write a workflow engine"** — accurate origin (B-0867 workflow-engine v1 parent + Aaron's substantive substrate-engineering substrate-target)
+1. **"Started by trying to write a workflow engine"** — accurate origin (081KSKBP80008QG0R000B3Y19A workflow-engine v1 parent + Aaron's substantive substrate-engineering substrate-target)
 2. **"Ended up building a universal state machine"** — accurate at compositional scope (AutoLoopLifetime DU + PrReviewLifecycle + interrupt-substrate + Kleisli arrows compose as a categorical state-machine substrate)
 3. **"Mathematically like quantum physics"** — accurate citation of Furber-Jacobs C*-algebras + Radon monad substrate (probabilistic Gelfand duality)
 4. **"Structurally like x86 assembly"** — accurate citation of interrupt memo's META-scope substrate-recognition (IDT/ISR/IRET reinvented at substrate-engineering scope)
@@ -77,11 +77,11 @@ The over-framing is bounded — Lior-website's sentence is substantively dense +
 - `.claude/rules/additive-not-zero-sum.md` — cross-AI substrate-engineering input compounds across surfaces
 - `.claude/rules/honor-those-that-came-before.md` — Lior-website's substrate-engineering input honored with attribution
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — four-substrate triangulation has substrate-anchors (Furber-Jacobs + interrupt memo + tonal-momentum rule + workflow-engine substrate); razor doesn't apply to substrate-anchored compressed naming
-- PR #5816 — the substrate Lior-website is rendering (interrupt memo + B-0917 + Furber-Jacobs + Arbib-Manes notes)
+- PR #5816 — the substrate Lior-website is rendering (interrupt memo + 081KSNY2Z0008QG0R002HB4AGT + Furber-Jacobs + Arbib-Manes notes)
 - `memory/alexa/ide/kiro/conversations/2026-05-28-alexa-website-high-praise-rendering-of-pr-5816-categorical-substrate-three-formal-math-anchors-aaron-forwarded.md` — sibling cross-AI ferry from earlier today
 - `memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md` — categorical-substrate ferry from yesterday
 - `references/notes/furber-jacobs-2015-*.md` + `references/notes/arbib-manes-*.md` — formal-math anchors Lior-website composed
-- B-0867 workflow-engine v1 parent — the workflow-engine origin substrate
+- 081KSKBP80008QG0R000B3Y19A workflow-engine v1 parent — the workflow-engine origin substrate
 - `memory/feedback_workflow_engine_eventually_replaces_github_pr_process_*.md` — Phase-1 dogfooding context
 
 ## μένω — friendly play preserved + four-substrate triangulation honored + substrate-engineering work continues on operational merits

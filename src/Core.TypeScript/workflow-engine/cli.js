@@ -2,7 +2,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/cli.ts
  *
- * B-0867.5 — workflow engine agent-loop CLI (PoC scaffold; foreground)
+ * 081KDWZ8TS008QG0R0020NJ9D0 — workflow engine agent-loop CLI (PoC scaffold; foreground)
  *
  * Usage:
  *   bun src/Core.TypeScript/workflow-engine/cli.ts --list-actions
@@ -14,8 +14,8 @@
  * Modes:
  *   --list-actions     Print SEED_ACTION_CATALOG as structured JSON
  *   --list-states      Print SEED_STATES + per-state available action list
- *   --list-du-cluster  Print today's DU cluster (B-0917 + B-0918 + B-0919
- *                      + B-0920) as structured JSON with variants +
+ *   --list-du-cluster  Print today's DU cluster (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC
+ *                      + 081KSNY2Z0008QG0R0017SRMHG) as structured JSON with variants +
  *                      composes-with + substrate-anchors
  *   --dry-run          Validate catalog + simulate one tick at given state
  *                      (default: initial) without executing any side effects
@@ -32,9 +32,9 @@
  * crystallization later)
  *
  * PoC scope: declarative dispatcher + invariant validation + dry-run
- * scaffold. State persistence (B-0867.2), real action grammar parser
- * (B-0867.3), F# 4-corner monad runtime (B-0867.4), full agent-loop
- * Phase 2 (B-0867.5 phase 2 — Mika-spec integration) all deferred to
+ * scaffold. State persistence (081KSNY2Z0008QG0R001K6HJ7Z), real action grammar parser
+ * (081KDWZ8TS008QG0R003BD6345), F# 4-corner monad runtime (081KDWZ8TS008QG0R000KEB8NQ), full agent-loop
+ * Phase 2 (081KDWZ8TS008QG0R0020NJ9D0 phase 2 — Mika-spec integration) all deferred to
  * operator-authorized follow-up work.
  */
 import { SEED_ACTION_CATALOG, SEED_STATES, validateCatalog } from "./types";
@@ -71,8 +71,8 @@ function emitJson(value) {
 }
 function modeListActions() {
     emitJson({
-        rowId: "B-0867",
-        subRow: "B-0867.5",
+        rowId: "081KSKBP80008QG0R000B3Y19A",
+        subRow: "081KDWZ8TS008QG0R0020NJ9D0",
         catalogSize: SEED_ACTION_CATALOG.length,
         actions: SEED_ACTION_CATALOG.map((a) => ({
             id: a.id,
@@ -86,8 +86,8 @@ function modeListActions() {
 }
 function modeListStates() {
     emitJson({
-        rowId: "B-0867",
-        subRow: "B-0867.5",
+        rowId: "081KSKBP80008QG0R000B3Y19A",
+        subRow: "081KDWZ8TS008QG0R0020NJ9D0",
         stateCount: SEED_STATES.length,
         states: SEED_STATES.map((s) => ({
             id: s.id,
@@ -101,8 +101,8 @@ function modeListStates() {
 function modeListDuCluster() {
     const stats = computeDuClusterStats();
     emitJson({
-        rowId: "B-0867",
-        subRow: "B-0867.5",
+        rowId: "081KSKBP80008QG0R000B3Y19A",
+        subRow: "081KDWZ8TS008QG0R0020NJ9D0",
         duClusterDate: "2026-05-28",
         entryCount: stats.entryCount,
         totalVariantCount: stats.totalVariantCount,
@@ -121,8 +121,8 @@ function modeValidate() {
     try {
         validateCatalog(SEED_ACTION_CATALOG, SEED_STATES);
         emitJson({
-            rowId: "B-0867",
-            subRow: "B-0867.5",
+            rowId: "081KSKBP80008QG0R000B3Y19A",
+            subRow: "081KDWZ8TS008QG0R0020NJ9D0",
             mode: "validate",
             result: "passed",
             catalogSize: SEED_ACTION_CATALOG.length,
@@ -133,8 +133,8 @@ function modeValidate() {
     }
     catch (e) {
         emitJson({
-            rowId: "B-0867",
-            subRow: "B-0867.5",
+            rowId: "081KSKBP80008QG0R000B3Y19A",
+            subRow: "081KDWZ8TS008QG0R0020NJ9D0",
             mode: "validate",
             result: "failed",
             error: e.message,
@@ -148,8 +148,8 @@ function modeDryRun(stateId) {
     }
     catch (e) {
         emitJson({
-            rowId: "B-0867",
-            subRow: "B-0867.5",
+            rowId: "081KSKBP80008QG0R000B3Y19A",
+            subRow: "081KDWZ8TS008QG0R0020NJ9D0",
             mode: "dry-run",
             result: "failed",
             stage: "catalog-validation",
@@ -160,8 +160,8 @@ function modeDryRun(stateId) {
     const targetState = stateId !== undefined ? SEED_STATES.find((s) => s.id === stateId) : SEED_STATES[0];
     if (!targetState) {
         emitJson({
-            rowId: "B-0867",
-            subRow: "B-0867.5",
+            rowId: "081KSKBP80008QG0R000B3Y19A",
+            subRow: "081KDWZ8TS008QG0R0020NJ9D0",
             mode: "dry-run",
             result: "failed",
             stage: "state-lookup",
@@ -173,8 +173,8 @@ function modeDryRun(stateId) {
         .map((id) => SEED_ACTION_CATALOG.find((a) => a.id === id))
         .filter((a) => a !== undefined);
     emitJson({
-        rowId: "B-0867",
-        subRow: "B-0867.5",
+        rowId: "081KSKBP80008QG0R000B3Y19A",
+        subRow: "081KDWZ8TS008QG0R0020NJ9D0",
         mode: "dry-run",
         state: {
             id: targetState.id,
@@ -189,10 +189,10 @@ function modeDryRun(stateId) {
         })),
         integrationPending: {
             mikaTickSpec: "Mika's clean minimal tick spec — when forwarded, integrates as TickCyclePattern variant + cycle-step implementation; no commit until spec lands",
-            stateAppendImpl: "B-0867.2 — TS state-persist (git append-only writer)",
-            grammarParserImpl: "B-0867.3 — universal action grammar parser/composer",
-            fourCornerMonadImpl: "B-0867.4 — F# CE builder (hot/cold/push/pull dispatch)",
-            fullAgentLoopImpl: "B-0867.5 phase 2 — full agent-loop runtime (execute → move-next → CYOA OR Mika's integration)",
+            stateAppendImpl: "081KSNY2Z0008QG0R001K6HJ7Z — TS state-persist (git append-only writer)",
+            grammarParserImpl: "081KDWZ8TS008QG0R003BD6345 — universal action grammar parser/composer",
+            fourCornerMonadImpl: "081KDWZ8TS008QG0R000KEB8NQ — F# CE builder (hot/cold/push/pull dispatch)",
+            fullAgentLoopImpl: "081KDWZ8TS008QG0R0020NJ9D0 phase 2 — full agent-loop runtime (execute → move-next → CYOA OR Mika's integration)",
         },
     });
     return 0;

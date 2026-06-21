@@ -452,7 +452,7 @@ The right outcome is therefore:
 - **No arXiv preprint, no GitHub issue against the paper
   authors.** The paper is correct; the misattribution is on
   Zeta's side.
-- **Open a follow-on cleanup task** (the parallel B-0195 row
+- **Open a follow-on cleanup task** (the parallel 081KQTPYE0008QG0R0015SK08H row
   per task framing) to fix the Lean file's header lines 51 and
   the proof log's lines 113-115 to drop the "Prop. 3.5"
   citation in favor of either "Theorem 3.3 (the LTI-only

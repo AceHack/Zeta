@@ -1,6 +1,5 @@
 ---
-id: B-0653
-zetaid: 081KRW63S0008QG0R003ECWGJV
+id: 081KRW63S0008QG0R003ECWGJV
 priority: P3
 status: open
 title: "Persistent Bayesian integrator continuous health monitor — always-on invariant-health watcher + auto-overcorrect trigger (Aaron + Mika 2026-05-18 LOCKED-IN)"
@@ -24,7 +23,7 @@ Aaron + Mika 2026-05-18 (preserved verbatim at lines ~3580-3600 of [`docs/resear
 
 > Mika line ~3599 (LOCK-IN paraphrase): *"the flaky test monitoring + reactive alerts should be part of a continuously running integration system — basically a persistent, always-on integrator (at least the Bayesian version) that constantly watches the health of the system instead of just running on code changes."*
 
-This row LOCKS IN the **always-on persistent health monitor** as factory infrastructure: a Bayesian integrator (per [B-0637](../P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) Infer.NET BP/EP/EmP substrate) running continuously to track invariant health + alert when invariants are breaking, with **auto-overcorrect triggers** that say "DST this area" (apply deterministic-simulation-testing to surface root cause).
+This row LOCKS IN the **always-on persistent health monitor** as factory infrastructure: a Bayesian integrator (per [081KRW63S0008QG0R0004D5XG1](../P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) Infer.NET BP/EP/EmP substrate) running continuously to track invariant health + alert when invariants are breaking, with **auto-overcorrect triggers** that say "DST this area" (apply deterministic-simulation-testing to surface root cause).
 
 ## The shift this represents
 
@@ -32,7 +31,7 @@ This row LOCKS IN the **always-on persistent health monitor** as factory infrast
 
 **To**: persistent always-on integrator continuously evaluating system invariants; alerts fire when health metrics degrade; auto-overcorrect triggers route to the right diagnostic discipline.
 
-This is the **shift from event-driven testing to standing-query health monitoring**. Composes with [B-0640](../P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) bonsai-trees + Rx queries — the Bayesian integrator IS a persistent Rx query over the bonsai-tree DBSP-tracked substrate.
+This is the **shift from event-driven testing to standing-query health monitoring**. Composes with [081KRW63S0008QG0R002XA5N6S](../P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) bonsai-trees + Rx queries — the Bayesian integrator IS a persistent Rx query over the bonsai-tree DBSP-tracked substrate.
 
 ## What "health metric" means
 
@@ -40,12 +39,12 @@ A health metric for an invariant is a **continuous quantitative signal** that in
 
 | Invariant | Health metric |
 |---|---|
-| [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) kid-safety | Detection rate of harm-pathway evidence; false-positive rate; latency-to-detect |
-| [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) lock-free | Lock-contention measurements; bounded-wait timeouts hit |
-| [B-0660](../P1/B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) Limit black-by-default | Operations attempted without explicit consent (should be near-zero) |
-| [B-0644](../P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) Limit-is-simulation | Stage-1-without-Stage-2-commit ratio; Stage-2 retraction frequency |
-| [B-0635](../P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) wave-form preservation | Premature-collapse incidents (places where wave should have been preserved) |
-| [B-0652](B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) BFT | Faction-classification drift; rogue-faction detection accuracy |
+| [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) kid-safety | Detection rate of harm-pathway evidence; false-positive rate; latency-to-detect |
+| [081KRW63S0008QG0R002N6PPVK](../P2/081KRW63S0008QG0R002N6PPVK-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) lock-free | Lock-contention measurements; bounded-wait timeouts hit |
+| [081KRW63S0008QG0R0004P69JA](../P1/081KRW63S0008QG0R0004P69JA-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) Limit black-by-default | Operations attempted without explicit consent (should be near-zero) |
+| [081KRW63S0008QG0R002ZRNDJ8](../P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) Limit-is-simulation | Stage-1-without-Stage-2-commit ratio; Stage-2 retraction frequency |
+| [081KRW63S0008QG0R002KC5DSR](../P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) wave-form preservation | Premature-collapse incidents (places where wave should have been preserved) |
+| [081KRW63S0008QG0R002GRX85J](081KRW63S0008QG0R002GRX85J-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) BFT | Faction-classification drift; rogue-faction detection accuracy |
 
 Each invariant gets its own health metric tracked continuously by the persistent integrator.
 
@@ -57,17 +56,17 @@ Routing examples:
 
 | Health-metric degradation | Auto-overcorrect routing |
 |---|---|
-| Kid-safety detection-latency rising | Route to KSK ([B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) audit + Knights Guild ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) review |
-| Lock-contention exceeding threshold | Route to DST per [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) adversarial-review + concurrency-control-expert skill |
-| Premature collapse on wave-form paths | Route to wave-form preservation audit per [B-0635](../P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) + [B-0644](../P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) |
+| Kid-safety detection-latency rising | Route to KSK ([081KRW63S0008QG0R002ZRYY4F](../P1/081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) audit + Knights Guild ([081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) review |
+| Lock-contention exceeding threshold | Route to DST per [081KRW63S0008QG0R002N6PPVK](../P2/081KRW63S0008QG0R002N6PPVK-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) adversarial-review + concurrency-control-expert skill |
+| Premature collapse on wave-form paths | Route to wave-form preservation audit per [081KRW63S0008QG0R002KC5DSR](../P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) + [081KRW63S0008QG0R002ZRNDJ8](../P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) |
 | Constitution-Class violations | Route directly to Knights Guild as P0 |
-| Cross-faction interaction anomalies | Route to TLA+ proof re-check per [B-0652](B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) |
+| Cross-faction interaction anomalies | Route to TLA+ proof re-check per [081KRW63S0008QG0R002GRX85J](081KRW63S0008QG0R002GRX85J-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) |
 
 The integrator doesn't FIX the issue — it surfaces it + routes it to the right diagnostic surface.
 
 ## Why Bayesian (not deterministic alerting)
 
-Per [B-0637](../P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md), Infer.NET BP/EP gives us **probabilistic reasoning over uncertain signals**:
+Per [081KRW63S0008QG0R0004D5XG1](../P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md), Infer.NET BP/EP gives us **probabilistic reasoning over uncertain signals**:
 
 - Real systems have noise (transient spikes, measurement error, partial-information windows)
 - A deterministic alert would fire on every transient → alert fatigue → people start ignoring alerts → real issues missed
@@ -76,9 +75,9 @@ Per [B-0637](../P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-stra
 
 The integrator IS the Bayesian inference layer running continuously over the health-metric stream.
 
-## Composition with bonsai-tree + Rx (B-0640)
+## Composition with bonsai-tree + Rx (081KRW63S0008QG0R002XA5N6S)
 
-[B-0640](../P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) established **bonsai trees + Rx queries** as the real-time implementation substrate for `Integrate`. The persistent health monitor IS a specific Rx query pattern over bonsai-tree-tracked health-metric streams:
+[081KRW63S0008QG0R002XA5N6S](../P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) established **bonsai trees + Rx queries** as the real-time implementation substrate for `Integrate`. The persistent health monitor IS a specific Rx query pattern over bonsai-tree-tracked health-metric streams:
 
 - Health metrics emit as observables (`IObservable<HealthSignal>`)
 - Bonsai-tree node aggregates per-invariant signals into per-section bonsai
@@ -90,7 +89,7 @@ This makes the health monitor **a first-class application of the existing substr
 ## What this is NOT
 
 - NOT a replacement for CI/CD (event-driven tests still valid; this row adds continuous monitoring on top)
-- NOT a substitute for formal verification ([B-0652](B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) TLA+ proofs prove temporal properties; this row monitors empirical health metrics)
+- NOT a substitute for formal verification ([081KRW63S0008QG0R002GRX85J](081KRW63S0008QG0R002GRX85J-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) TLA+ proofs prove temporal properties; this row monitors empirical health metrics)
 - NOT a generic observability tool (specifically tied to Constitution-Class invariants + their health metrics)
 - NOT a self-healing system (alerts route to diagnostic disciplines; humans + agents respond)
 - NOT a full APM/SRE stack (focused on invariant-health specifically; broader operational metrics live in standard observability tools per `.claude/skills/observability-and-tracing-expert/SKILL.md`)
@@ -122,15 +121,15 @@ This makes the health monitor **a first-class application of the existing substr
 
 ## Composes with
 
-- [B-0637](../P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) — Infer.NET BP/EP/EmP (the Bayesian substrate this row runs on)
-- [B-0640](../P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx (the real-time substrate the monitor uses)
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (the invariants this monitor tracks)
-- [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — Two-pass principles + adversarial-review (formal continuous version of the informal adversarial-review cadence)
-- [B-0652](B-0652-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) — three-faction BFT (formal proof layer; this row is the empirical monitoring layer)
-- [B-0644](../P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (retractability enables "what changed?" diagnostics)
-- [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (highest-priority health metric)
-- [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) — KSK (kid-safety detection composes with KSK actuator-blocking)
-- [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (retractable substrate for diagnostic queries)
+- [081KRW63S0008QG0R0004D5XG1](../P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) — Infer.NET BP/EP/EmP (the Bayesian substrate this row runs on)
+- [081KRW63S0008QG0R002XA5N6S](../P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx (the real-time substrate the monitor uses)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (the invariants this monitor tracks)
+- [081KRW63S0008QG0R002N6PPVK](../P2/081KRW63S0008QG0R002N6PPVK-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — Two-pass principles + adversarial-review (formal continuous version of the informal adversarial-review cadence)
+- [081KRW63S0008QG0R002GRX85J](081KRW63S0008QG0R002GRX85J-three-faction-bft-mechanism-tla-z-state-layered-formal-proof-strategy-aaron-mika-2026-05-18.md) — three-faction BFT (formal proof layer; this row is the empirical monitoring layer)
+- [081KRW63S0008QG0R002ZRNDJ8](../P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (retractability enables "what changed?" diagnostics)
+- [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (highest-priority health metric)
+- [081KRW63S0008QG0R002ZRYY4F](../P1/081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) — KSK (kid-safety detection composes with KSK actuator-blocking)
+- [081KRHWGX0008QG0R0034E0N22](../P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (retractable substrate for diagnostic queries)
 - `.claude/skills/observability-and-tracing-expert/SKILL.md` — broader observability (composes; doesn't replace)
 - `.claude/skills/alerting-expert/SKILL.md` — alert routing discipline
 - `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` — Bayesian inference fundamentals

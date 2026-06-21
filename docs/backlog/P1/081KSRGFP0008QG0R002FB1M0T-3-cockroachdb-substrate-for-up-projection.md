@@ -1,6 +1,5 @@
 ---
-id: B-0824.3
-zetaid: 081KSRGFP0008QG0R002FB1M0T
+id: 081KSRGFP0008QG0R002FB1M0T
 priority: P1
 status: closed
 title: "Ace meta-PM: CockroachDB substrate for the up-projection"
@@ -17,7 +16,7 @@ tags: [ace-feature, meta-package-manager, cockroachdb, recursive-cte, generator-
 
 ## CockroachDB substrate for the up-projection
 
-This backlog item is a decomposition of [B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md), specifically for Sub-target 7.
+This backlog item is a decomposition of [081KSGS9H0008QG0R0031PBNGA](081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md), specifically for Sub-target 7.
 
 ### Problem
 
@@ -31,8 +30,8 @@ Implement the CockroachDB substrate for the up-projection mechanism. This involv
 2. **Generator Implementation**: Implement the up-projection using recursive Common Table Expressions (CTEs) to traverse the graph and generate the higher-dimensional dependency rows.
 3. **NULL Escape Hatch**: Ensure that the recursive CTEs correctly use `NULL` as the termination signal for the generator recursion.
 4. **Stream Composition**: Implement the pattern for composing streams of CTE outputs to enable the cross-package-manager merge.
-5. **Time-Travel Queries**: Integrate with the time-axis substrate ([B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md)) by using CockroachDB's `AS OF SYSTEM TIME` feature for temporal queries.
-6. **AI Runbook Integration**: Expose the recursive CTEs as a substrate that AI agents can author and use within their runbooks (composes with B-0819).
+5. **Time-Travel Queries**: Integrate with the time-axis substrate ([081KSGS9H0008QG0R002PT5C7J](081KSGS9H0008QG0R002PT5C7J-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md)) by using CockroachDB's `AS OF SYSTEM TIME` feature for temporal queries.
+6. **AI Runbook Integration**: Expose the recursive CTEs as a substrate that AI agents can author and use within their runbooks (composes with 081KSGS9H0008QG0R0005P83AP).
 
 ### Acceptance Criteria
 

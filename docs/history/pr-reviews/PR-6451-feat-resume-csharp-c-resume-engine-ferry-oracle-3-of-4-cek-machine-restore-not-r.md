@@ -29,7 +29,7 @@
 
 ## What
 
-C# resume-engine ferry — **oracle #3 of 4** (TS reference done; F# landing via #6448; Rust next) for the B-0976 resume slice. New `Zeta.Core.CSharp.Resume` project that **reuses** the C# Bonsai oracle's types (`Expr`/`ConstValue`/`BinOp`/`Result`/`BonsaiFeedback`) + `BonsaiCodec` for embedded-expr serialize/parse — it does **not** re-implement them (own-our-interface; the Bonsai project IS the port).
+C# resume-engine ferry — **oracle #3 of 4** (TS reference done; F# landing via #6448; Rust next) for the 081KT07NV0008QG0R003BE6MJ2 resume slice. New `Zeta.Core.CSharp.Resume` project that **reuses** the C# Bonsai oracle's types (`Expr`/`ConstValue`/`BinOp`/`Result`/`BonsaiFeedback`) + `BonsaiCodec` for embedded-expr serialize/parse — it does **not** re-implement them (own-our-interface; the Bonsai project IS the port).
 
 - Small-step **CEK machine** over the Bonsai-subset `Expr`; `Invoke` nodes are activities (suspension points). Pure parts evaluate inline; at an activity the machine suspends, handing back a serializable `SagaState` (continuation + pending activity). `Resume` **restores** the continuation without re-invoking prior activities (vs Temporal-style replay).
 - Result-over-throw; the internal mechanism is a private typed exception adapted to `Result` at the two public boundaries.

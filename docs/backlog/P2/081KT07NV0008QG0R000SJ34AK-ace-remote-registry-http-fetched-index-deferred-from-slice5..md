@@ -1,6 +1,5 @@
 ---
-id: B-0971
-zetaid: 081KT07NV0008QG0R000SJ34AK
+id: 081KT07NV0008QG0R000SJ34AK
 priority: P2
 status: closed
 title: Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
@@ -47,8 +46,8 @@ for further enhancements."*
 ## Composes with
 
 - Slice 5.1 registry data layer (`tools/ace/store.ts`)
-- B-0863 (one-liner curl install repository — a sibling remote-distribution concern)
-- B-0288 (Ace DLC package manager CLI)
+- 081KSKBP80008QG0R000F4311E (one-liner curl install repository — a sibling remote-distribution concern)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)
 
 ## Resolution — shipped by #6431 (slice 6)
 
@@ -63,6 +62,6 @@ Codex #6424 P2). Conditional-GET content-addressed cache under `~/.ace/registry-
 solver/lockfile/install-graph are unchanged — the remote merge produces the same
 `Registry` map. Per-package hash-pin + signature gate unchanged (index trust is additive).
 
-**Deferred sub-rows filed:** B-0977 (mirror/failover), B-0978 (incremental/paginated
-index), B-0979 (full TUF role separation), B-0980 (`ace registry publish` tooling),
-B-0981 (key rotation + multi-signer thresholds). Closed.
+**Deferred sub-rows filed:** 081KT07NV0008QG0R000K1X7NZ (mirror/failover), 081KT07NV0008QG0R001PHV1ND (incremental/paginated
+index), 081KT07NV0008QG0R001K340B3 (full TUF role separation), 081KT07NV0008QG0R0016FVWD7 (`ace registry publish` tooling),
+081KT07NV0008QG0R000GGW5E6 (key rotation + multi-signer thresholds). Closed.

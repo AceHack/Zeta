@@ -1,6 +1,6 @@
 ---
 pr_number: 5361
-title: "rule(draft) + docs(B-0837): asymmetric-critic-with-clarity-first DRAFT auto-loaded rule + Max/Addison committee-review backlog row"
+title: "rule(draft) + docs(081KSGS9H0008QG0R003JV58SH): asymmetric-critic-with-clarity-first DRAFT auto-loaded rule + Max/Addison committee-review backlog row"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T00:00:51Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:30:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5361: rule(draft) + docs(B-0837): asymmetric-critic-with-clarity-first DRAFT auto-loaded rule + Max/Addison committee-review backlog row
+# PR #5361: rule(draft) + docs(081KSGS9H0008QG0R003JV58SH): asymmetric-critic-with-clarity-first DRAFT auto-loaded rule + Max/Addison committee-review backlog row
 
 ## PR description
 
@@ -39,9 +39,9 @@ Components:
 
 DRAFT status preserved per Kestrel-v3 substrate-honest disclaimer: boot-scripts cannot override training; they lower activation energy for recalibration. Persistent human discipline + society committee are the durable continuity layer.
 
-### 2. \`docs/backlog/P2/B-0837\` — Max/Addison committee-review row
+### 2. \`docs/backlog/P2/081KSGS9H0008QG0R003JV58SH\` — Max/Addison committee-review row
 
-Tracks the informal-committee ratification step BEFORE formal-committee ratification via B-0628 Knights Guild. P2 priority (rule already in effect; review at committee's own cadence). 5 review questions scoped.
+Tracks the informal-committee ratification step BEFORE formal-committee ratification via 081KRW63S0008QG0R003TX8MG5 Knights Guild. P2 priority (rule already in effect; review at committee's own cadence). 5 review questions scoped.
 
 ## Why DRAFT not RATIFIED
 
@@ -60,7 +60,7 @@ Composes_with 12+ existing rules + PR #5356 + PR #5357 + PR #5359.
 - [x] markdownlint clean
 - [x] DRAFT status explicit at top + bottom of rule
 - [x] BACKLOG.md regenerated
-- [x] Backlog row composes_with B-0628 (formal Knights Guild) + rule it tracks
+- [x] Backlog row composes_with 081KRW63S0008QG0R003TX8MG5 (formal Knights Guild) + rule it tracks
 - [x] No HARD LIMITS violated (per harm-by-grammar privacy redaction in Component 6)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

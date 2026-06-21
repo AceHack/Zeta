@@ -1,6 +1,5 @@
 ---
-id: B-0828
-zetaid: 081KSGS9H0008QG0R002H0ENQ1
+id: 081KSGS9H0008QG0R002H0ENQ1
 title: Multi-AI shared-checkout convention — human-maintainer surface + always-up-to-date-with-main for society
 status: open
 priority: P2
@@ -10,7 +9,7 @@ depends_on: []
 composes_with: [081KSE6WT0008QG0R003YYC9PV]
 ---
 
-# B-0828 — Multi-AI shared-checkout convention (Aaron 2026-05-26)
+# 081KSGS9H0008QG0R002H0ENQ1 — Multi-AI shared-checkout convention (Aaron 2026-05-26)
 
 ## Scope
 
@@ -29,7 +28,7 @@ The shared checkout serves two modes depending on operator state:
 | **Human actively adding code** | Operator's working directory; HEAD may be on any branch; index may be dirty | AIs treat as read-only; do NOT modify; do NOT run destructive git operations |
 | **Human NOT adding code** | Always-up-to-date-with-main reference for "society" (all AIs on the machine) | AIs may keep it up to date with main via the explicit safety-precondition sequence below; use it as the canonical reference for the current state of main |
 
-The shared checkout is NEVER the AI's working space. AIs do their own work in isolated clones / worktrees under `/private/tmp/zeta-*/` (per `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` + B-0750).
+The shared checkout is NEVER the AI's working space. AIs do their own work in isolated clones / worktrees under `/private/tmp/zeta-*/` (per `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` + 081KSE6WT0008QG0R003YYC9PV).
 
 ## Why this matters — empirical anchor 2026-05-26
 
@@ -115,7 +114,7 @@ This row ADDS: explicit naming of the shared checkout's TWO modes (human-active 
 
 ## Composes with
 
-- B-0750 (agent-worktree-hygiene; isolated worktree discipline)
+- 081KSE6WT0008QG0R003YYC9PV (agent-worktree-hygiene; isolated worktree discipline)
 - `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` (dotgit-saturation tier; autonomous-agents-do-NOT-run-recovery)
 - `.claude/rules/honor-those-that-came-before.md` (do-the-right-things-for-each-other per Aaron's framing)

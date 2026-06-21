@@ -1,11 +1,10 @@
 ---
-id: B-0513
-zetaid: 081KRHWGX0008QG0R003TCDFZ5
+id: 081KRHWGX0008QG0R003TCDFZ5
 priority: P1
 status: open
-title: "B-0448 slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning"
+title: "081KRFA460008QG0R000CYBGKW slice 7 — Memory file capturing empirical Cloud Routine bootstrap learning"
 type: substrate
-origin: B-0448 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000CYBGKW decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000CYBGKW
@@ -18,11 +17,11 @@ composes_with:
 tags: [routines, cloud-routines, memory, substrate, catch-43, learning]
 ---
 
-# B-0513 — Memory file capturing empirical Cloud Routine bootstrap learning
+# 081KRHWGX0008QG0R003TCDFZ5 — Memory file capturing empirical Cloud Routine bootstrap learning
 
 ## Purpose
 
-After the first empirical Cloud Routine fire (B-0511), capture the operational
+After the first empirical Cloud Routine fire (081KRHWGX0008QG0R0013DSSZZ), capture the operational
 learnings in a durable memory file — analogous to the split-brain memory
 (`memory/feedback_otto_inter_surface_communication_channels_8_channels_ambient_vs_explicit_aaron_2026_05_13.md`)
 that documented the multi-surface communication substrate.
@@ -31,7 +30,7 @@ This is the "substrate-or-it-didn't-happen" landing for Cloud Routine integratio
 the empirical observations + operational surprises must become wake-time
 substrate so future-Otto inherits the knowledge at cold-boot.
 
-**Depends on B-0511** — requires empirical fire observations to exist.
+**Depends on 081KRHWGX0008QG0R0013DSSZZ** — requires empirical fire observations to exist.
 
 ## Memory file to author
 
@@ -44,14 +43,14 @@ Following the standard memory frontmatter format:
 ```markdown
 ---
 name: cloud-routines-integration-4th-catch-43-layer-empirical-bootstrap
-description: Cloud Routines integration — empirical bootstrap learnings from first fire (B-0448)
+description: Cloud Routines integration — empirical bootstrap learnings from first fire (081KRFA460008QG0R000CYBGKW)
 metadata:
   type: project
 ---
 
-## What was learned (per B-0511 empirical fire)
+## What was learned (per 081KRHWGX0008QG0R0013DSSZZ empirical fire)
 
-[Fill from B-0511 findings]
+[Fill from 081KRHWGX0008QG0R0013DSSZZ findings]
 
 ## Registration surface
 
@@ -59,7 +58,7 @@ metadata:
 
 ## Trigger syntax confirmed
 
-[Per B-0507 research]
+[Per 081KRHWGX0008QG0R000E8BHQ9 research]
 
 ## Quota behavior observed
 
@@ -84,7 +83,7 @@ experience of the factory's first Cloud Routine is load-bearing for all future
 instance onboarding.
 
 **How to apply:** When a new maintainer machine or Cloud Routine needs re-registration,
-this memory file provides the confirmed procedure without requiring B-0507 research
+this memory file provides the confirmed procedure without requiring 081KRHWGX0008QG0R000E8BHQ9 research
 to be repeated.
 ```
 
@@ -107,8 +106,8 @@ agent's discretion after observing the first fire.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0511 closed — first empirical fire observed and documented
-- [ ] Review B-0511's tick shard for raw observations to synthesize
+- [ ] 081KRHWGX0008QG0R0013DSSZZ closed — first empirical fire observed and documented
+- [ ] Review 081KRHWGX0008QG0R0013DSSZZ's tick shard for raw observations to synthesize
 - [ ] Check MEMORY.md for any Cloud Routines entries already present
 
 ## Acceptance criteria
@@ -118,8 +117,8 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] Body covers all 6 sub-sections in the template
 - [ ] MEMORY.md pointer added
 - [ ] If rule warranted: `.claude/rules/<name>.md` filed (optional, at discretion)
-- [ ] B-0448 parent row updated to `status: closed` with all 7 slice PR links
-- [ ] B-0513 closed with PR link
+- [ ] 081KRFA460008QG0R000CYBGKW parent row updated to `status: closed` with all 7 slice PR links
+- [ ] 081KRHWGX0008QG0R003TCDFZ5 closed with PR link
 
 ## Why this is a separate slice
 

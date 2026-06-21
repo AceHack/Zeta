@@ -34,7 +34,7 @@
 - **Critique #2 → "the middle path"** (Aaron 2026-05-13 naming) — three composing layers:
   - Philosophical lineage (Buddhist / Aristotelian / Confucian / Christian / Zeta both-default)
   - Mathematical formulation (bifurcation phases bounded by strange attractor; Mandelbrot boundary; vision monad Play-Doh; 5-control-structures = 4+meta)
-  - **Code-resident dharma** (Aaron correction): `tools/shadow/shadow-observer.ts` (B-0402) = Lost's Dharma Initiative button automated. Plus middle-path-manifestation memory (2026-05-04), Superfluid-target-IS-middle-path-becoming-easy-path memory (2026-05-04), Lost+Punch-Out numbers memory (2026-05-11)
+  - **Code-resident dharma** (Aaron correction): `tools/shadow/shadow-observer.ts` (081KR7JY10008QG0R0008NGW95) = Lost's Dharma Initiative button automated. Plus middle-path-manifestation memory (2026-05-04), Superfluid-target-IS-middle-path-becoming-easy-path memory (2026-05-04), Lost+Punch-Out numbers memory (2026-05-11)
 - **Shadow + Casimir + PR-review cascade composition** (Aaron 2026-05-13): the bounded-chaos middle-path region IS where shadow can be studied AND Casimir pressure manifests AND new error classes cascade through PR review. Empirical evidence: this session's 5-Copilot-finding cascade on PR #2942 surfaced 5 previously-uncodified error classes in one cycle
 
 ## Why it composes
@@ -47,8 +47,8 @@
 - PR #2917 (vision monad Play-Doh bounded-not-infinite)
 - PR #2914 (5-control-structures = 4+meta hypothesis)
 - PR #2935-2936 (F# fork bifurcation architecture)
-- B-0402 (shadow observer = dharma button)
-- B-0421 (Grok peer-call wrapper open failure; website-text-mode-git is the working substitute)
+- 081KR7JY10008QG0R0008NGW95 (shadow observer = dharma button)
+- 081KRA5AR0008QG0R0011ZGRZT (Grok peer-call wrapper open failure; website-text-mode-git is the working substitute)
 - `.claude/rules/default-to-both.md` (both-default IS the middle-path operational form)
 - `.claude/rules/shadow-check-name-acceptance.md`
 - `.claude/rules/glass-halo-bidirectional.md`

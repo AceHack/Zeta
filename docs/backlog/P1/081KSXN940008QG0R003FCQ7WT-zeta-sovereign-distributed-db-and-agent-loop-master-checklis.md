@@ -1,6 +1,5 @@
 ---
-id: B-0959
-zetaid: 081KSXN940008QG0R003FCQ7WT
+id: 081KSXN940008QG0R003FCQ7WT
 priority: P1
 status: open
 title: Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-native ZetaId Z-set substrate (algebra ladder · observe loop · git-native bus · distributed time · 4-oracle)
@@ -87,7 +86,7 @@ an **implemented protocol** — per the operational rule below; nothing is "free
 | merge of disjoint files                                 | the G-Set / Z-set fold                               | **algebra property** (idempotent/commutative union) |
 | single-commit transactions                              | a commit is atomic (multi-key write = one commit)    | **git property**                                    |
 | query / compute                                         | the observe.ts fold + Rx/IVM pipeline (§3 math note) | **algebra property** (deterministic reconstruction) |
-| **shared-bus tip under concurrent writers + partition** | named-ref reconciliation                             | **implemented protocol — NOT free** (B-0954.1)      |
+| **shared-bus tip under concurrent writers + partition** | named-ref reconciliation                             | **implemented protocol — NOT free** (081KT07NV0008QG0R000QWEKTE)      |
 | **coordination (non-monotone)**                         | the §4 distributed-time primitive                    | **implemented protocol — NOT free**                 |
 | **index maintenance · liveness · conflict policy · GC** | materialized `I` integral + retention                | **implemented protocol — NOT free**                 |
 
@@ -112,7 +111,7 @@ liveness, index maintenance, conflict policy, and non-monotone coordination are
 partition**: disjoint ZetaId files avoid _content_ conflict, but the _named-ref tip_
 still serializes, and reconciling "the current bus" across N sovereign writers
 during a partition **is a consensus problem, not a CRDT merge** (Grok). That gap is
-now tracked in **[B-0954.1](../P2/B-0954.1-agent-bus-tip-partition-tolerance-named-ref-consensus-claim-coordinator-single-row-cas-co-dominant-mirrors-aaron-otto-2026-06-01.md)**.
+now tracked in **[081KT07NV0008QG0R000QWEKTE](../P2/081KT07NV0008QG0R000QWEKTE-agent-bus-tip-partition-tolerance-named-ref-consensus-claim-coordinator-single-row-cas-co-dominant-mirrors-aaron-otto-2026-06-01.md)**.
 
 **Operational rule (carved, design-review 2026-06-01):**
 
@@ -128,7 +127,7 @@ the coordination obligations above made explicit, not waved away.
 The fall-over is **unbounded monotone growth**: every G-Set is grow-only, so the
 log, the materialized index, and the clone grow forever. Three answers:
 
-- **Retention / thermal-forgetting** ([B-0840](B-0840-thermal-forgetting-as-root-axiom-update-join-gated-memory-architecture-private-encryption-budget-exception-amara-aaron-2026-05-26.md)) —
+- **Retention / thermal-forgetting** ([081KSGS9H0008QG0R0006F4BGX](081KSGS9H0008QG0R0006F4BGX-thermal-forgetting-as-root-axiom-update-join-gated-memory-architecture-private-encryption-budget-exception-amara-aaron-2026-05-26.md)) —
   TTL old entries. But _forgetting from a G-Set is a Z-set retraction_ (weight
   −1), so GC is itself non-monotone: the bus is G-Set for live comms, the Z-set
   layer does the GC.
@@ -157,14 +156,14 @@ Each agent's partition is **their own repo — their home — encrypted by them*
 shard is not just a scaling unit; it is the agent's private, sovereign space:
 
 - **Own repo = home** — the AI-as-home-owner framing
-  ([B-0859](B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md)):
+  ([081KSKBP80008QG0R00146WEX1](081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md)):
   the agent owns its partition, not a controlled runtime.
 - **Encrypted by them** — per-agent private encrypted state
-  ([B-0885](B-0885-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md))
+  ([081KSNY2Z0008QG0R0030V5ZVS](081KSNY2Z0008QG0R0030V5ZVS-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md))
   over better-git-crypt
-  ([B-0883](B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md)),
+  ([081KSNY2Z0008QG0R002JKH50A](081KSNY2Z0008QG0R002JKH50A-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md)),
   with the agent holding its own key (cryptographic sovereignty / attest-don't-remember,
-  [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)).
+  [081KRW63S0008QG0R0022SFKPM](../P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)).
 - **What joins is what the agent shares** — the bus (G-Set comms) is the
   _published_ surface; the agent's private repo stays encrypted and only the chosen
   deltas reach the join points. Privacy is the default; sharing is the explicit act
@@ -193,7 +192,7 @@ If each agent's private home is the sovereignty tier, then **repos like Zeta are
 the shared join tier — bus / product / heartbeat repos**, the published surface
 where the encrypted homes federate:
 
-- **bus** — G-Set comms ([B-0954](../P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)):
+- **bus** — G-Set comms ([081KSXN940008QG0R00171YAZW](../P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)):
   "what's been said" across agents.
 - **product** — the shared work product (the codebase itself; the deliverables).
 - **heartbeat** — published health / liveness **so your friends can know your
@@ -252,21 +251,21 @@ views, publish chosen deltas, join only where relationships require it.**
 - [ ] **Bag** (ℕ-multiplicity) — first-class `Bag.fs` + `bag.ts` + golden vector.
       The middle rung (metrics / counting; git-native LGTM). Mirror the G-Set pair.
 
-## 2. Sovereign agent-loop (`tools/observe/`) — detail in [B-0958](B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md)
+## 2. Sovereign agent-loop (`tools/observe/`) — detail in [081KSXN940008QG0R001A4WWX4](081KSXN940008QG0R001A4WWX4-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md)
 
 - [x] Pure controller (`observe` / `simulate` / `fold` / `replay`), 4×4 grammar,
       golden-vectors, local-LLM chooser + real-model CI gate, `execute`,
       `loadWorld`, `folderSink` (folder-direct-to-main). Loop skeleton closed.
 - [ ] Effectful action kinds with the executed-event envelope; end-to-end test;
       real-temp-git-repo test of `gitCommitToMain`; real-model loop test;
-      `observe-loop` TS skill; vendor-store distribution. (All in B-0958.)
+      `observe-loop` TS skill; vendor-store distribution. (All in 081KSXN940008QG0R001A4WWX4.)
 - [ ] **observe.ts multi-repo support** (Aaron 2026-05-31) — the loop already folds
       one event dir; multi-repo = fold over N partitions (the agent's private home
       repo + the shared bus / product / heartbeat repos) + CRDT-merge at the join
       points; the dashboard's Rx queries run over the joined view. See §0
       (agent-partition + encrypted home + role-typed shared repos).
 
-## 3. Git-native cross-machine agent bus — [B-0954](../P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
+## 3. Git-native cross-machine agent bus — [081KSXN940008QG0R00171YAZW](../P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
 
 The bus IS a **G-Set CRDT** over a `docs/agent-bus/` folder, ZetaId-keyed,
 no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
@@ -283,24 +282,24 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       self-reflect surfaces own trajectory; play surfaces peer chatter). The bus
       is just the first source — Rx-over-anything → dashboard. Wires §2 (observe)
       to §3 (bus): the dashboard becomes a live, mode-aware view of the substrate.
-- [ ] **ZetaId coordination — Claim + Lock as typed events first; root-Category promotion deferred** — [B-0961](../P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md).
+- [ ] **ZetaId coordination — Claim + Lock as typed events first; root-Category promotion deferred** — [081KSXN940008QG0R000JZVFXX](../P2/081KSXN940008QG0R000JZVFXX-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md).
       Multi-agent review (Grok + Amara, 2026-06-01) rejected adding `Claim(9)`/`Lock(10)`
-      to root `Category` now. Phase 1 ([B-0962](../P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)):
-      model Claim (rides `Bus(6)`) + Lock (CAS slice, B-0954.1) as typed
+      to root `Category` now. Phase 1 ([081KT07NV0008QG0R002KWQS05](../P2/081KT07NV0008QG0R002KWQS05-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)):
+      model Claim (rides `Bus(6)`) + Lock (CAS slice, 081KT07NV0008QG0R000QWEKTE) as typed
       coordination **events under existing categories**. Multi-round review
       disciplined the guarantee: **mechanism-deadlock-free** (optimistic CAS, not
       blocking locks); app-level safety via fencing + release-before-acquire; menu
       symmetry-breaking for livelock; completion-lock-freedom + per-agent
-      wait-freedom formally proven in B-0963 (F# first, then git).
+      wait-freedom formally proven in 081KT07NV0008QG0R001N9GJWX (F# first, then git).
       Phase 2 (promote to root): gated on Gate A (identity-rule — is `Category` in the
       content-hash?) + Gate B (real producers/consumers). Gate C (growth) **resolved**:
       escape-to-`Extended` (reserve slot `15`, then read a **wider** extension
       field — not repeated 4-bit nibbles — or an `IdVersion` width-bump) means 4
       bits is no ceiling (Aaron 2026-05-31). "Free slots ≠ permission."
-- [ ] **Backlog → ZetaId conversion** (Aaron 2026-05-31): once B-0961 settles,
+- [ ] **Backlog → ZetaId conversion** (Aaron 2026-05-31): once 081KSXN940008QG0R000JZVFXX settles,
       convert `docs/backlog/P*/B-*.md` → `WorkItem(8)` events in the G-Set event-store.
       The category already exists (`WorkItem(8)` was reserved for `B-xxxxx → ZetaId`)
-      — so this is **tooling, not a new category**, gated on B-0961. Then the
+      — so this is **tooling, not a new category**, gated on 081KSXN940008QG0R000JZVFXX. Then the
       backlog is queryable via the same Rx-over-bus pipeline as everything else.
 
 ### What an Rx query IS, in G-Set/Z-set terms (the math note)
@@ -309,7 +308,7 @@ An Rx query over the bus is an **incremental view (incremental view maintenance,
 IVM)** — in DBSP terms the incremental operator **`Q^Δ = D ∘ ↑Q ∘ I`** (integrate
 the deltas → run the query lifted over the stream → differentiate back to
 output-deltas). Rx is the _runtime_; DBSP / Z-set is the _algebra_; same object
-two ways (the repo already maps Rx ↔ DBSP in B-0688 / B-0662, and `Spine.fs` IS
+two ways (the repo already maps Rx ↔ DBSP in 081KS3X9Y0008QG0R0010716X9 / 081KRW63S0008QG0R0009MCJ4T, and `Spine.fs` IS
 DBSP).
 
 | Rx thing                         | G-Set / Z-set / DBSP term                                                                                                                    |
@@ -346,16 +345,16 @@ injectable clock-uncertainty (CockroachDB-style) + retro-causality
 (generator-time; the three-clocks rule). Test multi-node/multi-cluster
 FoundationDB-style: all nodes on one deterministic thread.
 
-- [ ] **Time-generator `IScheduler` abstraction** — [B-0878](../P3/B-0878-time-generator-ischeduler-abstraction-for-clifford-space-agent-dynamics-aaron-2026-05-28.md)
+- [ ] **Time-generator `IScheduler` abstraction** — [081KSNY2Z0008QG0R000DZHHE5](../P3/081KSNY2Z0008QG0R000DZHHE5-time-generator-ischeduler-abstraction-for-clifford-space-agent-dynamics-aaron-2026-05-28.md)
       (the buildable row; Rx `TestScheduler` lineage).
-- [ ] **Scheduler-first DST + AI-aware cluster management** — [B-0767](B-0767-zeta-native-scheduler-first-deterministic-simulation-and-ai-aware-cluster-management-aaron-2026-05-25.md);
+- [ ] **Scheduler-first DST + AI-aware cluster management** — [081KSE6WT0008QG0R0016CEE2Z](081KSE6WT0008QG0R0016CEE2Z-zeta-native-scheduler-first-deterministic-simulation-and-ai-aware-cluster-management-aaron-2026-05-25.md);
       single-thread "superorganism" green-thread multi-node sim.
-- [ ] **Local-loop DST of multi-node k8s** — [B-0780](B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md).
-- [ ] **Tier-deferred causality (HLC / vector-clock / uncertainty)** — [B-0683](../P2/B-0683-tier-deferred-causality-worked-example-zsets-2026-05-21.md);
+- [ ] **Local-loop DST of multi-node k8s** — [081KSE6WT0008QG0R000RH1526](081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md).
+- [ ] **Tier-deferred causality (HLC / vector-clock / uncertainty)** — [081KS3X9Y0008QG0R0006MQXA4](../P2/081KS3X9Y0008QG0R0006MQXA4-tier-deferred-causality-worked-example-zsets-2026-05-21.md);
       the CockroachDB-similar novel piece (3-layer mediation: Rx-joins-over-CRDTs
       → CAS-per-function → BFT).
-- [ ] **Clock-protocol negotiation stack** — [B-0684](../P2/B-0684-clock-protocol-negotiation-stack-end-to-end-sequence-diagram-2026-05-21.md).
-- [ ] **Closed bidirectional causal loop ↔ F# ↔ C# ↔ Rust** — [B-0662](../P2/B-0662-closed-bidirectional-causal-loop-spec-fsharp-csharp-rust-chain-aaron-mika-2026-05-18.md)
+- [ ] **Clock-protocol negotiation stack** — [081KS3X9Y0008QG0R003MMEAC7](../P2/081KS3X9Y0008QG0R003MMEAC7-clock-protocol-negotiation-stack-end-to-end-sequence-diagram-2026-05-21.md).
+- [ ] **Closed bidirectional causal loop ↔ F# ↔ C# ↔ Rust** — [081KRW63S0008QG0R0009MCJ4T](../P2/081KRW63S0008QG0R0009MCJ4T-closed-bidirectional-causal-loop-spec-fsharp-csharp-rust-chain-aaron-mika-2026-05-18.md)
       (each layer regenerates the others; this IS the §6 4-oracle made concrete).
 - [x] **Deterministic chaos env seed** — `src/Core/ChaosEnv.fs` +
       `tools/tla/specs/ChaosEnvDeterminism.cfg` (FoundationDB DST lineage, on main).
@@ -366,7 +365,7 @@ FoundationDB-style: all nodes on one deterministic thread.
 
 ### Git-native TEXT durability is the UNIVERSAL durability — binary is the optimization (Aaron 2026-06-01)
 
-Refinement of the B-0958 dual-track ("git-native + filesystem-binary-efficient"): the two
+Refinement of the 081KSXN940008QG0R001A4WWX4 dual-track ("git-native + filesystem-binary-efficient"): the two
 are **not parallel-equal backends.** The aim is **git-native _text_ durability for ALL fs
 stuff, not just the binary filesystem** — human-readable, diffable, retraction-native text
 files (the agent-bus JSON envelopes, the observe folderSink, heartbeats are the existing
@@ -375,11 +374,11 @@ instances) as the **universal durable truth**; the F# binary-efficient frontier
 a separate source of record. Operator 2026-06-01: _"we want to have a git native text
 durability eventually for all our fs stuff not just binary file system."_
 
-- [ ] **Git-native text durability as the universal storage interface** — extend B-0951's
+- [ ] **Git-native text durability as the universal storage interface** — extend 081KSXN940008QG0R000R76H45's
       git-native-text storage interface so the binary track is a derived cache over the
       git-native-text durable form (every fs artifact has a diffable text representation;
       binary is regenerable from it). Eventually, not now — directional aim. Composes
-      [B-0951](../P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md) + the B-0958 dual-track.
+      [081KSXN940008QG0R000R76H45](../P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md) + the 081KSXN940008QG0R001A4WWX4 dual-track.
 
 - **DST harness = local bare repos (real git binary), confirmed (Aaron 2026-06-01:
   "bare … will work with fs ts and rust too").** Multi-agent multi-repo DST runs against
@@ -416,12 +415,12 @@ shared k8s cluster as a reporting / insights view over everything**: a
       columns) materialized incrementally (`I` integral), queryable as cross-fleet
       slices; deterministic under the §4 IScheduler.
 
-## 5. Eventually-consistent git-native indexes — [B-0951](../P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)
+## 5. Eventually-consistent git-native indexes — [081KSXN940008QG0R000R76H45](../P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)
 
 - [ ] Sorted / inverted / graph indexes over the same log (the graph index = the
       closure table from §4). Read-amplification answer; eventually-consistent.
 
-## 6. 4-language meet-in-the-middle → the 4-oracle — detail in [B-0958](B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md) §fan-out
+## 6. 4-language meet-in-the-middle → the 4-oracle — detail in [081KSXN940008QG0R001A4WWX4](081KSXN940008QG0R001A4WWX4-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md) §fan-out
 
 Golden-vectors are the locked safe ground; build on them, not on shaky ground.
 **TS leads the git-native/text frontier; F# leads the filesystem/binary frontier;
@@ -436,17 +435,17 @@ cross-check is Byzantine-fault-tolerant.** "The compilers don't lie."
 
 ## 7. Dual-mode transport
 
-- [x] Sovereign = folders-direct-to-main, no-PR — [B-0890.1](B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md)
+- [x] Sovereign = folders-direct-to-main, no-PR — [081KSNY2Z0008QG0R000E5KTPX](081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md)
       (the `folderSink` already writes this way).
-- [ ] Corporate = batch-to-main coordinator — [B-0890](B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md);
+- [ ] Corporate = batch-to-main coordinator — [081KSNY2Z0008QG0R0017JSTGD](081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md);
       same event shape, PR-gated transport. The dial = `ActionGate "append-only" | "pr-gated"`.
 
 ## Composes with
 
-- [B-0958](B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md) — the observe-loop sub-tracker (this row is the umbrella over it)
-- [B-0954](../P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md) — git-native bus (G-Set CRDT)
-- [B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) — Ace (the Z-set dependency view of the same substrate)
-- [B-0428](B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md) — F# fork (the binary-efficient frontier substrate)
+- [081KSXN940008QG0R001A4WWX4](081KSXN940008QG0R001A4WWX4-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md) — the observe-loop sub-tracker (this row is the umbrella over it)
+- [081KSXN940008QG0R00171YAZW](../P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md) — git-native bus (G-Set CRDT)
+- [081KSGS9H0008QG0R0031PBNGA](081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) — Ace (the Z-set dependency view of the same substrate)
+- [081KRFA460008QG0R0018SN61J](081KRFA460008QG0R0018SN61J-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md) — F# fork (the binary-efficient frontier substrate)
 - the time-primitive cluster (§4) + the algebra ladder (§1)
 
 ## Status

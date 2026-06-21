@@ -1,6 +1,6 @@
 ---
 pr_number: 3098
-title: "docs(b-0258): document ordering/formatting contract; close B-0258"
+title: "docs(b-0258): document ordering/formatting contract; close 081KR2E4K0008QG0R001E27DDV"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T05:06:53Z"
@@ -12,14 +12,14 @@ archived_at: "2026-05-14T06:42:37Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3098: docs(b-0258): document ordering/formatting contract; close B-0258
+# PR #3098: docs(b-0258): document ordering/formatting contract; close 081KR2E4K0008QG0R001E27DDV
 
 ## PR description
 
 ## Summary
 
-- Closes B-0258 (MEMORY.md index generator implementation, P1)
-- The generator itself was already shipped under B-0423 (`tools/memory/reindex-memory-md.ts`, PR #3004, merged 2026-05-13)
+- Closes 081KR2E4K0008QG0R001E27DDV (MEMORY.md index generator implementation, P1)
+- The generator itself was already shipped under 081KRCQQF0008QG0R0037YYP1A (`tools/memory/reindex-memory-md.ts`, PR #3004, merged 2026-05-13)
 - The last open AC was *"Ordering and formatting are documented"*
 
 ## Changes
@@ -30,14 +30,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - `## Formatting` — entry format: `- [**<name>**](<filename>) — <description>`; 240-char truncation; 100-entry cap with overflow note
 - `## Stability` — same-day idempotence guarantee; `--check` exit codes (0 = current, 2 = stale)
 
-**`docs/backlog/P1/B-0258-*.md`** — `status: open → closed`; add pre-start checklist documenting prior-art search (found B-0423 implementation) and dependency confirmation (B-0257 merged PR #3097)
+**`docs/backlog/P1/081KR2E4K0008QG0R001E27DDV-*.md`** — `status: open → closed`; add pre-start checklist documenting prior-art search (found 081KRCQQF0008QG0R0037YYP1A implementation) and dependency confirmation (081KR2E4K0008QG0R001J0536V merged PR #3097)
 
 ## Test plan
 
 - [x] `bun test tools/memory/reindex-memory-md.test.ts` — 18/18 pass
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors
 - [x] `bun tools/memory/reindex-memory-md.ts --check` — exits 2 (STALE, 1202 entries); confirms the generator correctly detects drift
-- [ ] No hook or CI wiring added (per B-0258 AC)
+- [ ] No hook or CI wiring added (per 081KR2E4K0008QG0R001E27DDV AC)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

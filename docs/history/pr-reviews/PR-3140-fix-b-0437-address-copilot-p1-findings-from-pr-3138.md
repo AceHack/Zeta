@@ -31,13 +31,13 @@
 
 Addresses three P1 findings from `copilot-pull-request-reviewer` on merged PR #3138 (feat(b-0437) UX-of-math slice-3):
 
-- **Status enum fix**: `docs/backlog/P1/B-0437-*.md` had `status: done` which is not in the generator's supported enum (`open`/`closed`/`superseded-by-*`/`deferred`/`decomposed`). Changed to `status: closed`.
+- **Status enum fix**: `docs/backlog/P1/081KRFA460008QG0R001JTAPZW-*.md` had `status: done` which is not in the generator's supported enum (`open`/`closed`/`superseded-by-*`/`deferred`/`decomposed`). Changed to `status: closed`.
 
 - **Accessibility fix**: Score-board rows in `uxmRenderScoreBoard()` were bare `div`s — added `role="button"`, `tabindex="0"`, `aria-label`, and a `keydown` handler (Enter / Space) so keyboard and screen-reader users can activate clause selection.
 
 - **Description sync bug**: `#uxm-worked-example-desc` paragraph always showed the HC-1 text ("HC-1 'Non-deceptive' is witnessed by…") even after clicking other clauses. Added the id to the paragraph and updated `uxmSelectClause()` to rewrite it with the selected clause's id, name, and signal values.
 
-Also regenerates `docs/BACKLOG.md` to reflect B-0437 now `[x]` closed.
+Also regenerates `docs/BACKLOG.md` to reflect 081KRFA460008QG0R001JTAPZW now `[x]` closed.
 
 ## Test plan
 
@@ -65,12 +65,12 @@ Also regenerates `docs/BACKLOG.md` to reflect B-0437 now `[x]` closed.
 ### Thread 1 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CGdy8`
-- **Path**: `docs/backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R001JTAPZW-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T15:02:56Z on `docs/backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T15:02:56Z on `docs/backlog/P1/081KRFA460008QG0R001JTAPZW-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md`:4 (association: NONE)
 
   <pre>
   P1: This content edit changes the row status but leaves `last_updated` at 2026-05-13. The backlog schema requires `last_updated` to be updated on every row content edit (`tools/backlog/README.md:69`), so this should be bumped to the PR edit date.
@@ -113,7 +113,7 @@ Also regenerates `docs/BACKLOG.md` to reflect B-0437 now `[x]` closed.
 **Touched files (intersect with thread paths):**
 
 - `demo/index.html`
-- `docs/backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001JTAPZW-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md`
 
 **Message:**
 
@@ -122,7 +122,7 @@ fix(b-0437): address Copilot P1 findings from PR #3138
 
 Three issues from copilot-pull-request-reviewer on merged PR #3138:
 
-1. B-0437 backlog status: `done` is not a valid enum value; change to
+1. 081KRFA460008QG0R001JTAPZW backlog status: `done` is not a valid enum value; change to
    `closed` so generate-index renders it as [x].
 
 2. Accessibility: score-board rows are bare divs — add role="button",
@@ -133,7 +133,7 @@ Three issues from copilot-pull-request-reviewer on merged PR #3138:
    showed HC-1 text after clicking other clauses. Add the id and update
    it in uxmSelectClause() with the selected clause's id/name/v1/v2.
 
-Also regenerates docs/BACKLOG.md to reflect B-0437 now closed.
+Also regenerates docs/BACKLOG.md to reflect 081KRFA460008QG0R001JTAPZW now closed.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

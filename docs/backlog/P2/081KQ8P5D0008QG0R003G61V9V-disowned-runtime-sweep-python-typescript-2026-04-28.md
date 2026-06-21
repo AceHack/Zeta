@@ -1,6 +1,5 @@
 ---
-id: B-0076
-zetaid: 081KQ8P5D0008QG0R003G61V9V
+id: 081KQ8P5D0008QG0R003G61V9V
 priority: P2
 status: closed
 title: Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)
@@ -13,7 +12,7 @@ tags: [codeql, disowned-runtime, python, typescript, dependency-honesty, b-0075-
 type: friction-reducer
 ---
 
-# B-0076 — Disowned-runtime sweep: Python + TypeScript
+# 081KQ8P5D0008QG0R003G61V9V — Disowned-runtime sweep: Python + TypeScript
 
 ## Source
 
@@ -111,7 +110,7 @@ is repo-wide config; CodeQL scans configs as expected.
 
 - PR #662 (the Java leg of this same pattern; this row extends
   the same fix to Python + TS)
-- B-0075 (JVM language preference; this row is the
+- 081KQ8P5D0008QG0R000B5MBB4 (JVM language preference; this row is the
   non-JVM-runtime sibling)
 - CURRENT-aaron.md §28 (dependency-honesty rule — the
   discipline this row applies)

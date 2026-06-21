@@ -42,10 +42,10 @@ to memory organization: the best strategy wins on measured retrieval, not by fia
    mask not-moving"). *Note (peel):* Merkle gives **integrity + change-culling**, not
    inherently **retrieval locality** — keep those axes distinct.
 2. **Coincidence-anchor-routed** (Aaron's human baseline — see below). **Routing keys
-   / filenames = coincidence**, via the **Coincidence-anchor primitive** (B-0623/B-0985;
+   / filenames = coincidence**, via the **Coincidence-anchor primitive** (081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV;
    PRIMITIVE-REGISTRY quad-duty: entropy + **memory-index** + privacy + provenance;
    Adinkra/Gates-grounded; ZetaId-keyed; *"index-face → emergent memory routing"*;
-   coincidence = correlated co-occurring events = Rx-join, B-0250). **Confidence is a
+   coincidence = correlated co-occurring events = Rx-join, 081KQZVQW0008QG0R001FG05RZ). **Confidence is a
    VALUE *contained in* the memory (`SoftValue`/ΔU), NOT the routing key** — it sets
    priority/clustering, never reachability. (Earlier draft mislabeled this
    "confidence-keyed" — corrected: routing is by *coincidence*; confidence rides
@@ -65,8 +65,8 @@ system is **COINCIDENCE-routed**, not confidence-routed. (Otto mis-corrected the
 "cowidence" typo to "confidence"; it meant **coincidence**.)
 
 - **Routing / filenames = coincidence** (the **Coincidence-anchor** primitive,
-  B-0623/B-0985; ZetaId-keyed; index-face = emergent memory routing). Coincidence =
-  **correlated co-occurring events** (Rx-join, B-0250) — and **long-term = COMMON
+  081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV; ZetaId-keyed; index-face = emergent memory routing). Coincidence =
+  **correlated co-occurring events** (Rx-join, 081KQZVQW0008QG0R001FG05RZ) — and **long-term = COMMON
   coincidences with other humans that they also remember** (*"common coincidences …
   that they also remember"*): a coincidence multiple *independent* people share
   becomes a durable, high-traffic routing anchor (decorrelated confirmation = the
@@ -86,7 +86,7 @@ system is **COINCIDENCE-routed**, not confidence-routed. (Otto mis-corrected the
   coincidence-routed one doesn't.)
 
 **Design implications for the math team:** (a) **route/index by coincidence-anchor**
-(B-0623/B-0985), keying long-term anchors by **common/decorrelated coincidence**
+(081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV), keying long-term anchors by **common/decorrelated coincidence**
 (shared-with-others); (b) carry **confidence as a contained value** (`SoftValue`/ΔU)
 for priority/clustering, **never as the routing key**; (c) the index is a
 **social/vernacular address space** over coincidence-anchors, not a private tree;

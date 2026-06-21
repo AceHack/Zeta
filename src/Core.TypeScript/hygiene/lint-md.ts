@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// lint-md.ts — B-0030
+// lint-md.ts — 081KQ3HBZ0008QG0R000ACTVA6
 // Repo-aware markdownlint wrapper with exclusion defaults.
 
 import { spawnSync } from "node:child_process";

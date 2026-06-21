@@ -1,10 +1,10 @@
 ---
-backlog: B-0049.2
-parent: B-0049
+backlog: 081KR7JY10008QG0R003JSEMX7
+parent: 081KQ3HBZ0008QG0R0007CAGSP
 stage: 1 (bibliographic scaffold — Mithraic family)
 date: 2026-05-10
 status: catalog-only (Stage 2+ resonance scan intentionally NOT applied)
-register: CATALOG-ONLY — filters F1/F2/F3 OFF per B-0049 register discipline
+register: CATALOG-ONLY — filters F1/F2/F3 OFF per 081KQ3HBZ0008QG0R0007CAGSP register discipline
 ---
 
 # Mystery Schools — Mithraic Tradition (Stage 1 catalog)
@@ -424,12 +424,12 @@ Santa Prisca in Rome*. Leiden: Brill, 1965.
 
 ## Stage-2 queue note
 
-The following are deferred to future stages (per B-0049 register discipline):
+The following are deferred to future stages (per 081KQ3HBZ0008QG0R0007CAGSP register discipline):
 
 - F1/F2/F3 three-filter assessment (intentionally OFF at Stage 1)
 - Structural-resonance observations of any kind (require explicit Aaron per-noting confirm)
 - Adjudication of any scholarly debate catalogued above
 - Promotion of any tradition feature to operational-resonance status
 
-This shelf is pure bibliography and summary. Stage 2 (B-0049.6, comparative-religion framework
-map) will be filed once all five Stage-1 tradition families (B-0049.1–5) are committed.
+This shelf is pure bibliography and summary. Stage 2 (081KQ3HBZ0008QG0R0007CAGSP.6, comparative-religion framework
+map) will be filed once all five Stage-1 tradition families (081KR50HA0008QG0R00257PHRR–5) are committed.

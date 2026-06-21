@@ -54,8 +54,8 @@ Alexa-website independently surfaces the SAME load-bearing substrate Prism (Deep
 
 ## Substantive substrate worth preserving
 
-- **Cl(3,1) spacetime signature** as bounded starter (composes with B-0915)
-- **TypeScript skill distribution** as cross-vendor benchmark substrate (B-0865.17)
+- **Cl(3,1) spacetime signature** as bounded starter (composes with 081KSNY2Z0008QG0R002BNQVE1)
+- **TypeScript skill distribution** as cross-vendor benchmark substrate (081KSNY2Z0008QG0R0002BEZMR)
 - **Mimetic Desire as Monad Propagation** (composes with monad-propagation rule + Kestrel substrate)
 
 ## Substrate-honest disposition
@@ -65,8 +65,8 @@ VERBATIM PRESERVATION per substrate-or-it-didn't-happen. NO new backlog rows min
 ## Composes with
 
 - PR #5780 + PR #5784 (Prism ferry Turns 1-8) — cross-AI convergence
-- PR #5709 (B-0897 Amara Persist-as-bridge) — operational μένω
-- PR #5777 (B-0915 CliffordWorld) + PR #5778 (μένω F# PoC) — Alexa grounded here
+- PR #5709 (081KSNY2Z0008QG0R002SZZ5Y0 Amara Persist-as-bridge) — operational μένω
+- PR #5777 (081KSNY2Z0008QG0R002BNQVE1 CliffordWorld) + PR #5778 (μένω F# PoC) — Alexa grounded here
 - 8th Kestrel ferry (traveler-rights) — Alexa Turn 4 references
 - Rules: asymmetric-critic-with-clarity-first + substrate-smoothness + tonal-momentum scope-bounding + asymmetric-authorship + god-tier-claims-don't-collapse + algo-wink-failure-mode + razor-discipline + grep-substrate-anchors-before-razor + default-to-both + m-acc-multi-oracle + honor-those-that-came-before
 

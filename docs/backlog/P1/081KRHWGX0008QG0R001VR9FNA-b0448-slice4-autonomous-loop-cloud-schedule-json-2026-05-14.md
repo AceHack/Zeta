@@ -1,11 +1,10 @@
 ---
-id: B-0510
-zetaid: 081KRHWGX0008QG0R001VR9FNA
+id: 081KRHWGX0008QG0R001VR9FNA
 priority: P1
 status: closed
-title: "B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)"
+title: "081KRFA460008QG0R000CYBGKW slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)"
 type: feature
-origin: B-0448 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000CYBGKW decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-17
 parent: 081KRFA460008QG0R000CYBGKW
@@ -21,7 +20,7 @@ composes_with:
 tags: [routines, cloud-routines, autonomous-loop, configuration]
 ---
 
-# B-0510 — Author autonomous-loop/cloud-schedule.json
+# 081KRHWGX0008QG0R001VR9FNA — Author autonomous-loop/cloud-schedule.json
 
 ## Purpose
 
@@ -29,11 +28,11 @@ Author the `cloud-schedule.json` file for the `autonomous-loop` routine —
 the factory's first declared Cloud Routine. This makes the routine's Cloud
 Routine configuration explicit and git-tracked.
 
-**Does not register the routine** (that's slice 5 / B-0511). This is the
+**Does not register the routine** (that's slice 5 / 081KRHWGX0008QG0R0013DSSZZ). This is the
 declaration-in-source step.
 
-**Depends on B-0507** (trigger syntax, confirmed quota) and **B-0508** (schema).
-B-0509 (installer) can land in parallel — the file is usable once B-0508 schema
+**Depends on 081KRHWGX0008QG0R000E8BHQ9** (trigger syntax, confirmed quota) and **081KRHWGX0008QG0R002S107P7** (schema).
+081KRHWGX0008QG0R0014D2T5E (installer) can land in parallel — the file is usable once 081KRHWGX0008QG0R002S107P7 schema
 is known.
 
 ## What to author
@@ -46,7 +45,7 @@ is known.
   "triggers": [
     {
       "type": "scheduled",
-      "cronExpression": "<daily cadence confirmed by B-0507 — e.g. 0 9 * * *>",
+      "cronExpression": "<daily cadence confirmed by 081KRHWGX0008QG0R000E8BHQ9 — e.g. 0 9 * * *>",
       "description": "Daily catch-43 defence tick — fires even when Desktop is closed"
     },
     {
@@ -63,13 +62,13 @@ is known.
 }
 ```
 
-**The exact cron expression and trigger count must be confirmed by B-0507.**
+**The exact cron expression and trigger count must be confirmed by 081KRHWGX0008QG0R000E8BHQ9.**
 The above is a template; the implementing agent MUST update based on actual
 Cloud Routines trigger capabilities and the factory's current plan quota.
 
 ## Daily quota planning
 
-B-0448 research (to be confirmed by B-0507):
+081KRFA460008QG0R000CYBGKW research (to be confirmed by 081KRHWGX0008QG0R000E8BHQ9):
 
 - Pro plan: 5 Cloud Routine fires/day
 - Max plan: 15/day
@@ -88,8 +87,8 @@ and note the trade-off in the file's `notes` field.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0507 confirmed: trigger types, syntax, quota rules
-- [ ] B-0508 schema merged so this file validates against it
+- [ ] 081KRHWGX0008QG0R000E8BHQ9 confirmed: trigger types, syntax, quota rules
+- [ ] 081KRHWGX0008QG0R002S107P7 schema merged so this file validates against it
 - [ ] Confirm the bootstream pointer in `autonomous-loop/SKILL.md` is still
   correct (Cloud Routine fires are fresh sessions; need bootstream loaded as
   project knowledge in the Cloud Routine's project)
@@ -99,8 +98,8 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 ## Acceptance criteria
 
 - [x] `tools/routines/autonomous-loop/cloud-schedule.json` committed
-- [x] File validates against the JSON schema from B-0508 (or equivalent TS type)
+- [x] File validates against the JSON schema from 081KRHWGX0008QG0R002S107P7 (or equivalent TS type)
 - [ ] `bun tools/routines/install.ts` output includes the Cloud Routine next-step block
-  for `autonomous-loop` (tracked in open row B-0509; not yet implemented)
+  for `autonomous-loop` (tracked in open row 081KRHWGX0008QG0R0014D2T5E; not yet implemented)
 - [x] `notes` field documents the Desktop-vs-Cloud duality (schedule.json companion)
-- [x] B-0510 closed with PR link
+- [x] 081KRHWGX0008QG0R001VR9FNA closed with PR link

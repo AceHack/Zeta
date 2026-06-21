@@ -1,6 +1,6 @@
 ---
 pr_number: 3026
-title: "feat(scaffold): B-0424.6 \u2014 add .semgrep.yml GHA injection rule to forge+ace scaffold templates"
+title: "feat(scaffold): 081KRFA460008QG0R001H98EXJ.6 \u2014 add .semgrep.yml GHA injection rule to forge+ace scaffold templates"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T20:24:05Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-13T23:22:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3026: feat(scaffold): B-0424.6 — add .semgrep.yml GHA injection rule to forge+ace scaffold templates
+# PR #3026: feat(scaffold): 081KRFA460008QG0R001H98EXJ.6 — add .semgrep.yml GHA injection rule to forge+ace scaffold templates
 
 ## PR description
 
 ## Summary
 
-- **Slice**: B-0424.6 — ADR 2026-04-22 checklist item: *"Semgrep rule for GHA inline-untrusted-in-run injection (already landed on Zeta; generalise to Forge + ace)"*
+- **Slice**: 081KRFA460008QG0R001H98EXJ.6 — ADR 2026-04-22 checklist item: *"Semgrep rule for GHA inline-untrusted-in-run injection (already landed on Zeta; generalise to Forge + ace)"*
 - Adds `tools/scaffold/forge/.semgrep.yml` and `tools/scaffold/ace/.semgrep.yml`, each containing the `gha-untrusted-in-run-line` rule (Rule 17 from Zeta's `.semgrep.yml`)
 - Updates `create-repo.ts` step07 manual steps: step 3 is now "wire gate workflow" since the config file is now scaffolded (only CI job wiring deferred to Stage 2)
 - Updates `tools/scaffold/README.md` template tree listing and manual-steps note
@@ -33,11 +33,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Context
 
-B-0424 Stage 1 is the three-repo split scaffold (`LFG/Forge` + `LFG/ace`). Previous slices:
-- B-0424.1: pre-start gate + scope decision (scaffold deferred actual creation)
-- B-0424.2: `scaffold-stage1-create-repos.yml` CI dispatch workflow
-- B-0424.3–B-0424.4: governance templates + `create-repo.ts` tool
-- B-0424.5 (PR #3025): dry-run test suite (18 tests)
+081KRFA460008QG0R001H98EXJ Stage 1 is the three-repo split scaffold (`LFG/Forge` + `LFG/ace`). Previous slices:
+- 081KRFA460008QG0R001H98EXJ.1: pre-start gate + scope decision (scaffold deferred actual creation)
+- 081KRFA460008QG0R001H98EXJ.2: `scaffold-stage1-create-repos.yml` CI dispatch workflow
+- 081KRFA460008QG0R001H98EXJ.3–081KRFA460008QG0R001H98EXJ.4: governance templates + `create-repo.ts` tool
+- 081KRFA460008QG0R001H98EXJ.5 (PR #3025): dry-run test suite (18 tests)
 
 This slice completes one remaining ADR checklist item for the template set. The `.semgrep.yml` files are pushed as day-one governance files by `create-repo.ts` step 06 (before branch protection). CI wiring of the `semgrep` lint job remains a Stage-2 task.
 

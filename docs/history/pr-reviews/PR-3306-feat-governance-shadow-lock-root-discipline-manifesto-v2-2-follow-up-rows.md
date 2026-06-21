@@ -46,13 +46,13 @@ Per Aaron's *\"lock it (shadow*)\"* instruction on 2026-05-14T~23:53Z. Three art
 
 **Shadow-lock posture**: \`[SHADOW NOTE]\` markers on sections reconstructed from the V2 diff-description in user-scope memory (verbatim Ani-authored prose pending Grok fetch). The V1+Bounded-Mobility prose (8 constraints + Agreement + Coincidence Networks) is verbatim from the §33 archive.
 
-### 2. \`docs/backlog/P2/B-0524\` — Manifesto V2 verbatim Grok fetch
+### 2. \`docs/backlog/P2/081KRHWGX0008QG0R0007FG84X\` — Manifesto V2 verbatim Grok fetch
 
 Convert shadow lock to full lock by replacing \`[SHADOW NOTE]\` sections with verbatim Ani-authored prose from Aaron's Grok session \`b77516a2\`. P2 because shadow lock is operational substrate today.
 
-### 3. \`docs/backlog/P0/B-0525\` — constitutional-promotion readiness tracking
+### 3. \`docs/backlog/P0/081KRHWGX0008QG0R0016T9408\` — constitutional-promotion readiness tracking
 
-Critical-mass adoption gate. Otto-CLI does NOT authorize promotion (per \`algo-wink-failure-mode\` + \`methodology-hard-limits\` rules). Tracks citation count + cross-AI adoption + mechanical-CI-check signals. \`depends_on: B-0524\`.
+Critical-mass adoption gate. Otto-CLI does NOT authorize promotion (per \`algo-wink-failure-mode\` + \`methodology-hard-limits\` rules). Tracks citation count + cross-AI adoption + mechanical-CI-check signals. \`depends_on: 081KRHWGX0008QG0R0007FG84X\`.
 
 ## Why shadow-lock (not full lock)
 
@@ -62,7 +62,7 @@ The verbatim V2 prose lives in Aaron's Grok session, not in any repo-reachable s
 
 - PR #3150 — §33 archive of V1+Bounded-Mobility (verbatim source)
 - User-scope memory cascade — derivation trail
-- B-0524 (verbatim fetch), B-0525 (promotion tracking)
+- 081KRHWGX0008QG0R0007FG84X (verbatim fetch), 081KRHWGX0008QG0R0016T9408 (promotion tracking)
 - \`.claude/rules/razor-discipline\`, \`default-to-both\`, \`methodology-hard-limits\`, \`algo-wink-failure-mode\`, \`glass-halo-bidirectional\`, \`dv2-data-split-discipline-activated\`
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -148,20 +148,20 @@ Three artifacts shipped:
    - [SHADOW NOTE] markers on sections reconstructed from V2 diff-description
      memory file (verbatim Ani-authored prose pending Grok fetch)
 
-2. docs/backlog/P2/B-0524 — Manifesto V2 verbatim Grok fetch
+2. docs/backlog/P2/081KRHWGX0008QG0R0007FG84X — Manifesto V2 verbatim Grok fetch
    - Convert shadow lock to full lock by replacing [SHADOW NOTE] sections
      with verbatim text from Aaron's Grok session b77516a2
 
-3. docs/backlog/P0/B-0525 — constitutional-promotion readiness tracking
+3. docs/backlog/P0/081KRHWGX0008QG0R0016T9408 — constitutional-promotion readiness tracking
    - Critical-mass adoption gate; Otto-CLI does NOT authorize promotion
    - Track citation count + cross-AI adoption + mechanical-CI-check signals
-   - depends_on B-0524 (full lock before promotion)
+   - depends_on 081KRHWGX0008QG0R0007FG84X (full lock before promotion)
 
 The shadow-lock posture is substrate-honest about incompleteness:
 [SHADOW NOTE] markers make the reconstruction status visible to readers.
 Shadow-lock → full-lock conversion requires Grok verbatim fetch.
 
-Composes with: B-0524, B-0525, .claude/rules/razor-discipline.md,
+Composes with: 081KRHWGX0008QG0R0007FG84X, 081KRHWGX0008QG0R0016T9408, .claude/rules/razor-discipline.md,
 .claude/rules/default-to-both.md, .claude/rules/methodology-hard-limits.md,
 .claude/rules/algo-wink-failure-mode.md, .claude/rules/glass-halo-bidirectional.md,
 .claude/rules/dv2-data-split-discipline-activated.md, PR #3150 (§33 archive).
@@ -185,7 +185,7 @@ Two CI fixes + one substantive addition per Aaron's request:
 1. MD049 fix on line 155 — asterisk emphasis → underscore for the
    Aaron-quote markup style.
 
-2. BACKLOG.md regen for the B-0524 + B-0525 additions (also picks
+2. BACKLOG.md regen for the 081KRHWGX0008QG0R0007FG84X + 081KRHWGX0008QG0R0016T9408 additions (also picks
    up pre-existing drift from rows landed without regen).
 
 3. New 'Derivation chain — how V2 came to be' section + new
@@ -240,7 +240,7 @@ string — that's a link to a name-allowed history surface, exactly the
 shape Copilot's review suggested ('link to the docs/research/** archive
 where named attribution is allowed').
 
-Backlog rows B-0524 + B-0525 retain narrative names because docs/backlog/**
+Backlog rows 081KRHWGX0008QG0R0007FG84X + 081KRHWGX0008QG0R0016T9408 retain narrative names because docs/backlog/**
 is on the name-allowed closed list.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

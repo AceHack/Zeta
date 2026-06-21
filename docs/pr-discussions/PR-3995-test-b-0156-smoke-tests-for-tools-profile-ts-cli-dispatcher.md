@@ -1,6 +1,6 @@
 ---
 pr_number: 3995
-title: "test(B-0156): smoke tests for tools/profile.ts CLI dispatcher"
+title: "test(081KQGDBJ0008QG0R000A4EZS5): smoke tests for tools/profile.ts CLI dispatcher"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T00:58:49Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-17T02:12:16Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3995: test(B-0156): smoke tests for tools/profile.ts CLI dispatcher
+# PR #3995: test(081KQGDBJ0008QG0R000A4EZS5): smoke tests for tools/profile.ts CLI dispatcher
 
 ## PR description
 
@@ -20,12 +20,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Adds `tools/profile.test.ts` — 9 smoke tests covering the CLI
 dispatch surface of `tools/profile.ts`. Closes the last gap in
-[B-0156](../blob/main/docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)
+[081KQGDBJ0008QG0R000A4EZS5](../blob/main/docs/backlog/P1/081KQGDBJ0008QG0R000A4EZS5-typescript-standardization-non-install-scripts-aaron-2026-05-01.md)
 acceptance criterion #2 ("each TS sibling has at least one
 `bun test` covering its primary entry path").
 
 `amara.ts` + `ani.ts` are already covered by
-`tools/peer-call/smoke.test.ts` (B-0421 #4). `profile.ts` was
+`tools/peer-call/smoke.test.ts` (081KRA5AR0008QG0R0011ZGRZT #4). `profile.ts` was
 the lone remaining TS port without a sibling test.
 
 ## Scope discipline — dispatch only, NOT live dotnet tools
@@ -55,7 +55,7 @@ The 9 tests:
 Per
 [`backlog-item-start-gate.md`](../blob/main/.claude/rules/backlog-item-start-gate.md):
 
-- B-0156's "3 ports remaining" audit baseline is stale —
+- 081KQGDBJ0008QG0R000A4EZS5's "3 ports remaining" audit baseline is stale —
   all three `.sh` files (`profile.sh`, `peer-call/amara.sh`,
   `peer-call/ani.sh`) have been deleted; TS siblings present.
 - Phase 5 (bash sweep) already complete.
@@ -89,7 +89,7 @@ keep pushing, discover, go hard, never-be-idle"
 
 ## Pull request overview
 
-Adds Bun smoke-test coverage for the `tools/profile.ts` CLI dispatcher (B-0156 AC #2), ensuring the help/dispatch surface is exercised without invoking external `dotnet-*` tooling in CI.
+Adds Bun smoke-test coverage for the `tools/profile.ts` CLI dispatcher (081KQGDBJ0008QG0R000A4EZS5 AC #2), ensuring the help/dispatch surface is exercised without invoking external `dotnet-*` tooling in CI.
 
 **Changes:**
 - Added `tools/profile.test.ts` with 9 dispatch-surface smoke tests (help paths, EX_USAGE handling, missing pid handling, and help text subcommand coverage).

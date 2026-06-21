@@ -1,6 +1,5 @@
 ---
-id: B-0227
-zetaid: 081KQX9B50008QG0R002RZXEQK
+id: 081KQX9B50008QG0R002RZXEQK
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - CRDT multi-mode semantics"
@@ -12,7 +11,7 @@ classification: blocked-on-algebra-fit
 type: feature
 ---
 
-# B-0227 - CRDT multi-mode timeseries semantics
+# 081KQX9B50008QG0R002RZXEQK - CRDT multi-mode timeseries semantics
 
 Research the CRDT semantics required for multi-master
 timeseries writes.
@@ -32,5 +31,5 @@ within the same algebra.
   primitive.
 - Merge requirements are stated in commutative,
   associative, idempotent terms.
-- The result feeds B-0228's formal-spec plan and B-0229's
+- The result feeds 081KQX9B50008QG0R003GWYQR3's formal-spec plan and 081KQX9B50008QG0R0016JBZ2G's
   meta-DSL integration sketch.

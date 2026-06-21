@@ -1,6 +1,6 @@
 # full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml
 #
-# Conservative CI substrate for B-0967 ArgoCD health checks. The k3d profile
+# Conservative CI substrate for 081KSXN940008QG0R000SCP2H1 ArgoCD health checks. The k3d profile
 # exercises the closer Cilium-takeover shape; this kind profile gives GitHub
 # Actions a stable Kubernetes-in-Docker control plane with default CNI and a
 # local-path-style default storage class.

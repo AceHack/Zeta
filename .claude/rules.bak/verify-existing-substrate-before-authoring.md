@@ -118,10 +118,10 @@ The empirical anchor lives in
 (Anchor 2 there). Cross-referenced here because it's the FIRST instance
 of the same root cause class that surfaced today.
 
-### Anchor 2 — B-0806 Ace section authored without reading Ace agenda (PR #5129 → #5130)
+### Anchor 2 — 081KSGS9H0008QG0R001Y9FB62 Ace section authored without reading Ace agenda (PR #5129 → #5130)
 
-B-0806 backlog row authored an Ace section as if Ace were just "a package
-manager CLI in-progress at B-0288" without reading:
+081KSGS9H0008QG0R001Y9FB62 backlog row authored an Ace section as if Ace were just "a package
+manager CLI in-progress at 081KR2E4K0008QG0R002YE3MMD" without reading:
 
 - `docs/agendas/ace-package-manager/AGENDA.md` (OPERATOR-SELF-CLAIMED
   2026-05-22; 13-stage lifecycle; multi-oracle BFT)
@@ -129,28 +129,28 @@ manager CLI in-progress at B-0288" without reading:
 - `memory/project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md`
   (canonical Aaron 2026-05-07 disclosure: unrestricted local models +
   Guardian/KSK + Bond Curve + Itron composition)
-- 7+ related backlog rows (B-0247, B-0287, B-0288, B-0424, B-0742, B-0777)
+- 7+ related backlog rows (081KQZVQW0008QG0R000ZHEN62, 081KR2E4K0008QG0R0033WVCXE, 081KR2E4K0008QG0R002YE3MMD, 081KRFA460008QG0R001H98EXJ, 081KSE6WT0008QG0R000YYH3DY, 081KSE6WT0008QG0R000JSJ3SR)
 - Research substrate (3+ docs/research/*ace* files)
 
 The maintainer 2026-05-26 caught it: *"that is what ace has been since
 we first talked about it you just keep forgetting we have substantial
 backlog around this"*. Fixed in PR #5130 by rewriting the Ace section
-with proper substrate citation + restating as "B-0806 sits INSIDE the
+with proper substrate citation + restating as "081KSGS9H0008QG0R001Y9FB62 sits INSIDE the
 Ace agenda, not parallel to it."
 
-### Anchor 3 — B-0806 hat/fork-negotiation NOT integrated into architecture (PR #5130 follow-on)
+### Anchor 3 — 081KSGS9H0008QG0R001Y9FB62 hat/fork-negotiation NOT integrated into architecture (PR #5130 follow-on)
 
 After the Anchor 2 correction, the maintainer 2026-05-26 caught a third
 gap: *"i'm assuming you have the hat / fork negoation for ace too"*.
 Hats + fork-negotiation were CITED in the substrate-table after Anchor 2
-but NOT integrated into B-0806's architectural flow. The Ace agenda
-specifies hats + multi-oracle BFT as load-bearing primitives + B-0741
+but NOT integrated into 081KSGS9H0008QG0R001Y9FB62's architectural flow. The Ace agenda
+specifies hats + multi-oracle BFT as load-bearing primitives + 081KSE6WT0008QG0R002CC6314
 (prematurely closed earlier in same session) provides the cross-fork
 ontology negotiation substrate; both should have been integrated into
 the iter-7 architectural shape from the start.
 
 Fixed in PR #5130 follow-on commit by adding "### Architectural
-integration of hats + fork-negotiation" section + tracking B-0741 as a
+integration of hats + fork-negotiation" section + tracking 081KSE6WT0008QG0R002CC6314 as a
 sub-row to re-file per Tier 3.
 
 ## The composition with dep-pin-search-first-authority
@@ -205,9 +205,9 @@ N rounds of substrate-honest correction (today's session had 3).
 
 - PR #5119 + #5125 (cascade #4 ISO audit failure + fix-fwd) — Anchor 1
 - PR #5126 (dep-pin-search-first-authority rule landing) — sibling rule
-- PR #5129 + #5130 (B-0806 Ace section authoring failure + correction) — Anchor 2 + 3
-- B-0805 (capstone: ALL deps current-version sweep) — composes at the dep-pin scope
-- B-0806 (iter-7 cluster-OS-substrate row) — empirical anchor 2 + 3 substrate
+- PR #5129 + #5130 (081KSGS9H0008QG0R001Y9FB62 Ace section authoring failure + correction) — Anchor 2 + 3
+- 081KSGS9H0008QG0R002BC2ZR7 (capstone: ALL deps current-version sweep) — composes at the dep-pin scope
+- 081KSGS9H0008QG0R001Y9FB62 (iter-7 cluster-OS-substrate row) — empirical anchor 2 + 3 substrate
 
 ## Substrate-honest framing
 

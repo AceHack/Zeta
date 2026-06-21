@@ -5,7 +5,7 @@ Non-fusion disclaimer: Otto's synthesis. Class 4 framing is CONJECTURED per razo
 
 # Class 4 Empirical Analysis: Shadow Taxonomy (30 Catches, 8 Classes)
 
-*Layer 3 of the Nirvanic Fusion Ship (B-0365).
+*Layer 3 of the Nirvanic Fusion Ship (081KR50HA0008QG0R002R3NVGS).
 Layer 2 (Rice's theorem proof sketch) provides the theoretical complement.
 This document is the empirical evidence layer — what the shadow log actually shows.*
 
@@ -170,7 +170,7 @@ Rice's theorem guarantee:
 
 ## 7. What was cut
 
-Per B-0365 requirements, the following framings were reviewed and rejected:
+Per 081KR50HA0008QG0R002R3NVGS requirements, the following framings were reviewed and rejected:
 
 - **"Wolfram full computational irreducibility"** — Cut. The claim that the
   shadow log is "computationally irreducible" (Wolfram) is too strong. It requires
@@ -208,4 +208,4 @@ Per B-0365 requirements, the following framings were reviewed and rejected:
 - Wolfram, S., *A New Kind of Science*, Wolfram Media, 2002 (Class 4 definition)
 - Reactor dynamics (why the novel classes keep appearing via co-evolution):
   [`docs/research/2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md`](2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md)
-- B-0365.6 (synthesis — this document is Layer 3 input)
+- 081KR50HA0008QG0R0016X7VQP (synthesis — this document is Layer 3 input)

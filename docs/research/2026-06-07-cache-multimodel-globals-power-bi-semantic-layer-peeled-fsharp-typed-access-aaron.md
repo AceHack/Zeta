@@ -48,7 +48,7 @@ adds those — globals-over-the-content-addressed-DAG, CRDT-merge on the values,
 
 The bounded, buildable foundation under all of the above: a **multidimensional global** = a sparse
 subscript-path tree with the **canonical MUMPS verbs**, pure/immutable, **ordinal subscript collation**
-(B-0969 — F# structural string comparison is already `String.CompareOrdinal`, so the sorted path map is
+(081KT07NV0008QG0R001YDB73K — F# structural string comparison is already `String.CompareOrdinal`, so the sorted path map is
 ordinal-safe by construction).
 
 | MUMPS verb | `Globals` fn | meaning |
@@ -68,7 +68,7 @@ Multi-model views (SQL/object projections), the type-provider typed-access layer
 - This slice is the **storage shape only** — the hierarchical global. The "semantic/relationship layer" and
   "typed access" are separate, larger, backlogged.
 - MUMPS canonical `$ORDER` collation is numeric-then-string; this slice does **ordinal string** collation
-  (B-0969 substrate default). Numeric-subscript collation is a documented later nuance, not this slice.
+  (081KT07NV0008QG0R001YDB73K substrate default). Numeric-subscript collation is a documented later nuance, not this slice.
 - Do **not** build a Power BI / DAX clone. The semantic-query surface is DBSP incremental views, which exist.
 
 ## Beacon anchors

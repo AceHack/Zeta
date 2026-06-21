@@ -1,6 +1,6 @@
 ---
 pr_number: 5275
-title: "feat(B-0824): THE compression \u2014 google=map+reduce; zeta=generate+join"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): THE compression \u2014 google=map+reduce; zeta=generate+join"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T18:22:04Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-26T20:17:50Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5275: feat(B-0824): THE compression — google=map+reduce; zeta=generate+join
+# PR #5275: feat(081KSGS9H0008QG0R0031PBNGA): THE compression — google=map+reduce; zeta=generate+join
 
 ## PR description
 
@@ -31,7 +31,7 @@ Aaron 2026-05-26 dropped THE compression of the entire substrate-engineering arc
 
 The shift: Google's paradigm = function-OVER-data; data moves; functions stay put. Zeta's paradigm = distributed-functions; functions move; data materializes locally on demand.
 
-Placed at TOP of B-0824 (before \`## Problem\`) so future-Otto cold-boot reads the compression first — full substrate (Sub-targets 7-17) unpacks WHY; the compression survives WITHOUT the substrate for operators who only need the headline.
+Placed at TOP of 081KSGS9H0008QG0R0031PBNGA (before \`## Problem\`) so future-Otto cold-boot reads the compression first — full substrate (Sub-targets 7-17) unpacks WHY; the compression survives WITHOUT the substrate for operators who only need the headline.
 
 This compression IS bandwidth-engineering applied to substrate-vocabulary itself — same shape as the substrate it describes (self-similar at meta-substrate scope).
 
@@ -48,7 +48,7 @@ This compression IS bandwidth-engineering applied to substrate-vocabulary itself
 
 ## Pull request overview
 
-Adds a high-level “compression” headline to backlog row **B-0824** so readers get the core paradigm shift (“google=map+reduce; zeta=generate+join”) before the detailed Problem/Sub-targets substrate.
+Adds a high-level “compression” headline to backlog row **081KSGS9H0008QG0R0031PBNGA** so readers get the core paradigm shift (“google=map+reduce; zeta=generate+join”) before the detailed Problem/Sub-targets substrate.
 
 **Changes:**
 - Adds a new top-of-row section summarizing the “generate + join” framing vs “map + reduce”.
@@ -56,7 +56,7 @@ Adds a high-level “compression” headline to backlog row **B-0824** so reader
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md:37 (unresolved)
+### Thread 1: docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md:37 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T18:24:05Z):
 

@@ -94,10 +94,10 @@ Empirical anchor [PR #4097](https://github.com/Lucent-Financial-Group/Zeta/pull/
   `autoMerge: "armed"`, `unresolvedThreads: 2`
 - Both threads (Codex P2 `PRRT_kwDOSF9kNM6Cppvx` + Copilot
   `PRRT_kwDOSF9kNM6Cppwe`) on the same file + same line
-  (`docs/backlog/P3/B-0613-...md` line 75), same finding
+  (`docs/backlog/P3/081KRSKQ20008QG0R002TH55X6-...md` line 75), same finding
   ("Option A is `compgen -G`, a bash builtin, not zsh-valid")
 - **Both threads had `isOutdated: false`** even though peer Otto's
-  commit `6f91e9c` ("fix(B-0613): drop Option A from zsh fallback
+  commit `6f91e9c` ("fix(081KRSKQ20008QG0R002TH55X6): drop Option A from zsh fallback
   recommendation") had already addressed both findings before the
   current session's tick-open. `isOutdated=false` is NOT a
   reliable signal that the finding is still actionable; GitHub
@@ -128,7 +128,7 @@ A stale-armed PR is one with auto-merge armed for hours/days where checks fail o
 | Pattern | Apply when | Empirical instance |
 |---|---|---|
 | **Close as redundant** | The PR's substrate already exists on `main` via a different PR (byte-identical file paths, or content shipped via newer PR). Close with substrate-honest comment + cross-link to the merged equivalent. Preserves alternate-content version in branch history per [`lost-files-surface`](lost-files-surface.md) | [#3823](https://github.com/Lucent-Financial-Group/Zeta/pull/3823) — 07:58Z shard already on main via different PR; closed at 13:31Z |
-| **Re-land via cherry-pick** | The PR's substrate is genuinely new but the branch is too stale to merge (CI fails on unrelated evolved files, merge conflicts on regenerated index files). Cherry-pick the substrate onto a fresh branch off current main, manually re-apply auto-generated files via the generator (e.g., `bun tools/backlog/generate-index.ts`), fix any lint issues that surface | [#3817 → #3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) (B-0558 worktree-pool); [#3779 → #3904](https://github.com/Lucent-Financial-Group/Zeta/pull/3904) (0630Z shard re-land) |
+| **Re-land via cherry-pick** | The PR's substrate is genuinely new but the branch is too stale to merge (CI fails on unrelated evolved files, merge conflicts on regenerated index files). Cherry-pick the substrate onto a fresh branch off current main, manually re-apply auto-generated files via the generator (e.g., `bun tools/backlog/generate-index.ts`), fix any lint issues that surface | [#3817 → #3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) (081KRQ1AB0008QG0R001KQ9S4B worktree-pool); [#3779 → #3904](https://github.com/Lucent-Financial-Group/Zeta/pull/3904) (0630Z shard re-land) |
 | **Forward-signal comment** | The PR is too large (e.g., 61 files in [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545)) or otherwise impractical to re-land in a single tick. Leave a comment naming the two viable resolution paths (rebase OR cherry-pick) AND flagging any newer PRs that may supersede the substrate. Forward signal for whoever picks it up next | [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545#issuecomment-4467314174) — DIRTY 19+ hr, 61-file conflict |
 
 **Decision tree** (in order):

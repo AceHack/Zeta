@@ -77,7 +77,7 @@ install.sh (unix: mac / ubuntu / wsl)   install.ps1 (windows)
    cancel-window; validate remembered state before wipe). → Dejan + Kenji round-close (touches the install write path).
 5. **[correctness]** Render-time **blast-radius gate** on destructive Commit slots (fresh-format = `N` until drift
    corroborated). → Kira/correctness lane.
-6. **[close the AI loop]** Grow the **B-0891 QEMU harness** to: serial-input control (cancel-window present/absent),
+6. **[close the AI loop]** Grow the **081KSNY2Z0008QG0R0008PN7RQ QEMU harness** to: serial-input control (cancel-window present/absent),
    stubbable `gh` (`--with-token`), UUID-mutation (reflash/rebind), multi-disk topology, repair-loop guard — run on
    the free GitHub workflows. → the autonomous QEMU work (#7229).
 

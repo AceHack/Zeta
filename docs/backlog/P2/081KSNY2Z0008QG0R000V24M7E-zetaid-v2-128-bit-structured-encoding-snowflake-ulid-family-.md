@@ -1,8 +1,7 @@
 ---
-id: B-0893
-zetaid: 081KSNY2Z0008QG0R000V24M7E
-renumbered_from: B-0892
-renumbered_from_original: B-0871
+id: 081KSNY2Z0008QG0R000V24M7E
+renumbered_from: 081KSNY2Z0008QG0R002QA720J
+renumbered_from_original: 081KSNY2Z0008QG0R003R0Z7D2
 priority: P2
 status: open
 title: ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)
@@ -67,13 +66,13 @@ Choice depends on query patterns. Final allocation deferred to implementation; b
 - `src/Core.TypeScript/workflow-engine/agent-loop/zeta-id.ts` exports `generateZetaID({trajectory, persona, lifecycle_stage})` returning 128-bit value as 26-char Crockford base32 string (ULID-compatible) OR hex string
 - Pure function; deterministic given (timestamp, structured-bits, random-source)
 - Tests cover: time-ordering preservation under sort, no-collision under 1M generated in same microsecond, structured-bit extraction
-- Composes with event-sourcing layer (B-0867.2) — events use ZetaID as primary key
-- Composes with OTel trace-ID composition (B-0872) — baggage carries ZetaID alongside trace-ID
+- Composes with event-sourcing layer (081KSNY2Z0008QG0R001K6HJ7Z) — events use ZetaID as primary key
+- Composes with OTel trace-ID composition (081KSNY2Z0008QG0R000ZNRFCE) — baggage carries ZetaID alongside trace-ID
 - Composes with prior ZetaID v1 review work preserved at `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-...md` — this row is the v2 extension
 
 ## Scope
 
-This row is the GENERATOR ONLY. The branch-protection rules, agent-state branch convention, and event-sourcing read/write layer are tracked in sibling rows (B-0867.2, B-0867.14 from parent B-0867).
+This row is the GENERATOR ONLY. The branch-protection rules, agent-state branch convention, and event-sourcing read/write layer are tracked in sibling rows (081KSNY2Z0008QG0R001K6HJ7Z, 081KSKBP80008QG0R000B3Y19A.14 from parent 081KSKBP80008QG0R000B3Y19A).
 
 ## Substrate-honest framing
 

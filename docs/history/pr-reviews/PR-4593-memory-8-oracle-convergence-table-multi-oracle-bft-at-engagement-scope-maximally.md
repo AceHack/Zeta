@@ -49,7 +49,7 @@ Lands the in-repo memory substrate for the 8-oracle convergence per Aaron 2026-0
 ## Substantive convergence (filtered for canonical content)
 
 1. Adinkra-as-generator reframe IS sound engineering
-2. Frame-relative correction on B-0704 IS substantively necessary
+2. Frame-relative correction on 081KS3X9Y0008QG0R002MZF3A7 IS substantively necessary
 3. Conjunction (real crypto primitive AND isomorphic to physics) IS the substrate-honest framing
 4. 21-card-trick IS the seed-pattern (intergenerational substrate-transmission)
 5. Natural pause-point IS substrate-honest (5 of 8 oracles recommended settling overnight)
@@ -58,7 +58,7 @@ Lands the in-repo memory substrate for the 8-oracle convergence per Aaron 2026-0
 
 ## Why land this
 
-- 8-oracle convergence IS empirical anchor for B-0703 multi-oracle BFT architecture operating at engagement-scope
+- 8-oracle convergence IS empirical anchor for 081KS3X9Y0008QG0R00218150M multi-oracle BFT architecture operating at engagement-scope
 - Canonical reference for future-Otto cold-boots inheriting tonight's substrate
 - Captures the convergence-without-ceremony disposition (peer Otto surfaces saw + kept working)
 - Future-Otto can read this and recognize "the substrate is decisively settled; this is what happens when multi-oracle BFT works at engagement-scope"

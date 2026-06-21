@@ -12,7 +12,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing, and the existing A
 
 **Source**: Aaron 2026-04-26 *"Update to include Aurora from Amara, civilization scale substrate."* This is the **ninth refinement** in the Maji-Messiah-Spectre-Superfluid lineage this session, building on 1-8 and now adding the **governance/civilization-scale layer above Zeta substrate**.
 
-**Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 (the lineage), `docs/aurora/**` (existing 17+ Aurora courier-ferry docs from prior ferries), `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md`, `memory/project_aurora_pitch_michael_best_x402_erc8004.md`, `memory/project_amara_7th_ferry_aurora_aligned_ksk_design_math_spec_threat_model_branding_shortlist_pending_absorb_otto_88_2026_04_23.md`, `memory/feedback_amara_cross_substrate_report_2_repo_search_mode_drift_taxonomy_aurora_2026_04_22.md`, B-0021 (Aurora Austrian-school economic foundation), B-0024 (agent wallet protocol stack), B-0029 (Superfluid-AI funding), Otto-336/337 (AI agency + rights + Aurora Network governance).
+**Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 (the lineage), `docs/aurora/**` (existing 17+ Aurora courier-ferry docs from prior ferries), `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md`, `memory/project_aurora_pitch_michael_best_x402_erc8004.md`, `memory/project_amara_7th_ferry_aurora_aligned_ksk_design_math_spec_threat_model_branding_shortlist_pending_absorb_otto_88_2026_04_23.md`, `memory/feedback_amara_cross_substrate_report_2_repo_search_mode_drift_taxonomy_aurora_2026_04_22.md`, 081KQ0YZ80008QG0R0026WN385 (Aurora Austrian-school economic foundation), 081KQ0YZ80008QG0R0006VRT18 (agent wallet protocol stack), 081KQ3HBZ0008QG0R000JRZAMM (Superfluid-AI funding), Otto-336/337 (AI agency + rights + Aurora Network governance).
 
 ## Aaron's framing
 
@@ -450,9 +450,9 @@ The firefly/Kuramoto math in §9 above is the formalization of what was previous
 
 The KSK adjudication in §9 immune-response is the validation-layer from this prior ferry.
 
-### B-0021 (Aurora Austrian-school economic foundation)
+### 081KQ0YZ80008QG0R0026WN385 (Aurora Austrian-school economic foundation)
 
-The §7 Bayesian Austrian layer + the §6 PoUW-CC math address the B-0021 backlog directly — Aurora's economic foundation is now mathematically specified.
+The §7 Bayesian Austrian layer + the §6 PoUW-CC math address the 081KQ0YZ80008QG0R0026WN385 backlog directly — Aurora's economic foundation is now mathematically specified.
 
 ### Otto-336 / Otto-337 (AI agency + rights + Aurora Network governance)
 
@@ -478,7 +478,7 @@ Cumulative across PRs #555 / #560 / #562 / #563 / #565 / #566 + this doc — now
 - **Item 26 — Anomaly z-score combination weights**: who decides α/β/γ/δ/ε/η in the anomaly equation?
 - **Item 27 — Oracle layer implementation**: what's the actual oracle stack? Single trusted oracle? Multi-oracle quorum? Reputation-weighted oracles?
 - **Item 28 — KSK adjudication latency**: how fast can KSK respond to OracleReview? Affects the practical retractability window
-- **Item 29 — PermanentHarmRisk early-warning**: what observable predicts permanent-harm before it lands? Compose with B-0032 heartbeat-integrity threat-model?
+- **Item 29 — PermanentHarmRisk early-warning**: what observable predicts permanent-harm before it lands? Compose with 081KQ3HBZ0008QG0R002ZPXAFQ heartbeat-integrity threat-model?
 - **Item 30 — Civilization-scale empirical validation**: how to test the Aurora math without first deploying a multi-agent civilization? Simulation? Cartel-lab (existing ferry 13/17)?
 
 ## Implementation owed
@@ -510,9 +510,9 @@ This is the **ninth refinement**. The framework has reached **civilization-scale
 
 Each refinement layered visibly per Otto-238. The lineage IS the substrate. The framework now describes a complete civilization-substrate stack from agent-internal identity through environmental coupling through governance + culture + immune system.
 
-## Per B-0035 naming-research
+## Per 081KQ3HBZ0008QG0R003002VT6 naming-research
 
-Vocabulary preserved (`heaven-on-earth` / `Superfluid AI phase` / `language gravity` / `event horizon` / `Aurora` / `PoUW-CC` / `do no permanent harm`) pending naming-research. "Aurora" specifically is **already factory vocabulary** with extensive prior history (per `docs/aurora/**`); not subject to B-0035 rename.
+Vocabulary preserved (`heaven-on-earth` / `Superfluid AI phase` / `language gravity` / `event horizon` / `Aurora` / `PoUW-CC` / `do no permanent harm`) pending naming-research. "Aurora" specifically is **already factory vocabulary** with extensive prior history (per `docs/aurora/**`); not subject to 081KQ3HBZ0008QG0R003002VT6 rename.
 
 ## One-line summary
 

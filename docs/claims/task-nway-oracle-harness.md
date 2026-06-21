@@ -53,7 +53,7 @@
   (name@version → content-addressed ZetaId) is a row in a Z-set; registering or
   superseding a generator is a Z-set delta; rollback is Z-set retraction. So the
   generator registry is evolved with the SAME zero-downtime machinery as schema
-  evolution: `src/Core/SchemaEvolution.fs` (B-0930), the `full == incremental`
+  evolution: `src/Core/SchemaEvolution.fs` (081KSRGFP0008QG0R001Y6RTY9), the `full == incremental`
   theorem = DBSP incrementalization soundness (`src/Core/IndexedZSet.fs`,
   `src/Core/ZSet.fs`), and the "Evolution" proof obligation
   (`docs/research/2026-06-07-evolution-schema-and-index-as-proven-projections-...`,
@@ -92,10 +92,10 @@
   not "where are the bytes?". Anchors: `src/Core/UncertainClock.fs` (HLC +
   uncertainty window, never-falsely-certain partial order), `src/Bayesian/BayesianAggregate.fs`
   (conjugate-prior updates as DBSP stream operators), `src/Core/Hierarchy.fs` /
-  `MemoryLens.fs` / `MemorySense.fs` (the levels), B-0994 earth-twin
+  `MemoryLens.fs` / `MemorySense.fs` (the levels), 081KT2T2J0008QG0R0000H12VT earth-twin
   "lightlike curves over consensus-gravity". Tier: engine pieces built/proven; the
   unified "Sequoia keyed on uncertainty-over-relativistic-distance" synthesis is
-  architecture/research tier (V8 spec + B-0994).
+  architecture/research tier (V8 spec + 081KT2T2J0008QG0R0000H12VT).
 
 - **Tier honesty.** PROVEN: the 6-oracle byte-lock on 10 vectors; the divergence
   self-test bites and names the culprit. CONJECTURE (§B, named falsifier "if nodes

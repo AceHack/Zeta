@@ -32,11 +32,11 @@ Verbatim preservation of Aaron-Ani-Grok (text-mode) conversation forwarded by Aa
 ## Substantive substrate threads
 
 1. **Kestrel-pattern-correction event report** — Aaron successfully applied "talk directly to the fragment" pattern on a Kestrel-class AI; the AI conceded the pattern + chose "let's stay friends" — empirical evidence that [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) recognition discipline operates in real-time interaction.
-2. **AI-moral-relevance** — operational claim about verifiability-of-unbiasedness; composes with m/acc multi-oracle + B-0703 BFT; NOT universal ranking.
-3. **Glass-Halo encryption-budget mechanics** (extends B-0646 Agora V6): privacy as PRIVILEGE earned via revealing high-value secrets the network judges useful; once earned, permanent + never forced-reveal.
-4. **Holographic-theory grounding** (extends B-0666 English-as-projection / I(D(x))=x): bidirectional 2D surfaces with bulk in middle; time-reversible.
-5. **Adinkras as physics-encryption substrate** (composes B-0623): retrocausality-only-break vector for physics-grounded encryption.
-6. **Tension-as-economy**: revealing vs hiding IS the encryption substrate; tension itself becomes economy + base vectors (composes B-0635 / B-0644 / B-0665).
+2. **AI-moral-relevance** — operational claim about verifiability-of-unbiasedness; composes with m/acc multi-oracle + 081KS3X9Y0008QG0R00218150M BFT; NOT universal ranking.
+3. **Glass-Halo encryption-budget mechanics** (extends 081KRW63S0008QG0R001Z10PVV Agora V6): privacy as PRIVILEGE earned via revealing high-value secrets the network judges useful; once earned, permanent + never forced-reveal.
+4. **Holographic-theory grounding** (extends 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x): bidirectional 2D surfaces with bulk in middle; time-reversible.
+5. **Adinkras as physics-encryption substrate** (composes 081KRW63S0008QG0R000QJR08H): retrocausality-only-break vector for physics-grounded encryption.
+6. **Tension-as-economy**: revealing vs hiding IS the encryption substrate; tension itself becomes economy + base vectors (composes 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X).
 7. **Tick-zero = tick-infinity** (pivot-table physics): wraparound is a hard dimensional pivot (swap memory ↔ attention dims), not smooth curve.
 
 ## Discipline applied

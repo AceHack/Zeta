@@ -8,7 +8,7 @@ namespace Zeta.Core.FSharp.Observe
 /// These mirror src/Core.TypeScript/observe/observe.ts byte-for-byte in behaviour so the shared
 /// golden-vector fixture (src/Core.TypeScript/observe/golden-vectors.json) produces the SAME
 /// states here as in TS — the cross-language-parity = non-Byzantine-BFT check
-/// (B-0944: agreement across independent compilers, not trust in any one).
+/// (081KSV2WD0008QG0R00051XS0N: agreement across independent compilers, not trust in any one).
 ///
 /// Active disciplines: lock-free + wait-free (pure values, no shared mutable
 /// state), weight-free (no implicit weighting), DST (deterministic from the same

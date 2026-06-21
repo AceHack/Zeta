@@ -27,7 +27,7 @@
 
 ## Description
 
-Rate at 468/5000 — extreme cost-aware tier. PR #3781 (B-0494 close) merged.
+Rate at 468/5000 — extreme cost-aware tier. PR #3781 (081KRHWGX0008QG0R0029WA0HQ close) merged.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

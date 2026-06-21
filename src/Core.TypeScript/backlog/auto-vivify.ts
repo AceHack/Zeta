@@ -4,7 +4,7 @@
 //
 // The anchor is MUMPS's native behaviour: assigning/referencing a global subscript that doesn't exist
 // creates the whole path (SET ^X("a","b","c")=1 auto-creates ^X, "a", "b", "c").
-// B-1022 applies that auto-vivification to markdown pointers so MD link ⇄ MUMPS global ⇄ gitfs path
+// 081KTQD8A0008QG0R0005EFYPV applies that auto-vivification to markdown pointers so MD link ⇄ MUMPS global ⇄ gitfs path
 // are one auto-vivifying namespace. Already the spirit of the [[name]] memory convention; this makes it automatic.
 //
 // Usage:

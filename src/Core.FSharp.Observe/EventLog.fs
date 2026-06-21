@@ -1,6 +1,6 @@
 namespace Zeta.Core.FSharp.Observe
 
-/// The observe event log as an additive MONOID (B-0867.28, Target 2 — F# slice),
+/// The observe event log as an additive MONOID (081KSXN940008QG0R0002287MP, Target 2 — F# slice),
 /// expressed via F#'s native generic-math convention: `Zero` (identity) + `(+)`
 /// (associative op). This is the F# parallel to the C# `EventLog`'s
 /// `System.Numerics` `IAdditiveIdentity` + `IAdditionOperators` — each language

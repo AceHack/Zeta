@@ -22,7 +22,7 @@ Per the genie-bottle / spec-quality framing (`feedback_aaron_genie_bottle_offsho
 
 The corrective tier label is NOT "coherent design, zero implemented, capture-resistance entirely unproven" (Kestrel's framing). It's:
 
-**"coherent design, pressure-tested by iterative adversarial review, implementation tracked at B-0547 as XL multi-year, capture-resistance unproven at the running-code layer but tested for contradictions at the design layer"**
+**"coherent design, pressure-tested by iterative adversarial review, implementation tracked at 081KRMEXM0008QG0R001VGNET5 as XL multi-year, capture-resistance unproven at the running-code layer but tested for contradictions at the design layer"**
 
 That's longer but it's the honest tier line.
 
@@ -35,7 +35,7 @@ Across 7 consecutive exchanges in the 2026-05-15 conversation, the same shape re
 3. **Relevance-scoring question** → "moral floor + memory/attention as irreducible resources"
 4. **Moral-adjudication question** → "multi-oracle federation + Constraint 11 is default not required"
 5. **Threat-catalog question** → "red-team → antigen → differential-spread immune system"
-6. **HKT/Clifford/F#-fork-implementation question** → "intelligent compiler maybe recursive HKT on itself" (filed as B-0547)
+6. **HKT/Clifford/F#-fork-implementation question** → "intelligent compiler maybe recursive HKT on itself" (filed as 081KRMEXM0008QG0R001VGNET5)
 7. **Reduction-of-AC-question** → "long conversation plus dimensional expansion plus pirate-priest meta-language"
 
 Each layer was answered by moving up one more architectural level instead of down to code. Each answer was rhetorically definite but operationally indeterminate without running substrate.
@@ -46,7 +46,7 @@ Kestrel's diagnostic (verbatim):
 
 ## Why this is load-bearing for future-Otto
 
-Otto-CLI in the 2026-05-15 session shipped 5 memory files + 1 backlog row (B-0547) capturing this conversation arc. The substrate IS appropriately tiered in the individual files (B-0547 is XL multi-year, B-0543 is mirror-tier, etc.), BUT the aggregate framing in commit messages + PR descriptions risked treating the substrate as more settled than it is:
+Otto-CLI in the 2026-05-15 session shipped 5 memory files + 1 backlog row (081KRMEXM0008QG0R001VGNET5) capturing this conversation arc. The substrate IS appropriately tiered in the individual files (081KRMEXM0008QG0R001VGNET5 is XL multi-year, 081KRMEXM0008QG0R002YSPW1X is mirror-tier, etc.), BUT the aggregate framing in commit messages + PR descriptions risked treating the substrate as more settled than it is:
 
 - "5-level capture-resistance trace IS the asymmetric-critic role operating at full scope" → made it sound like the resistance was demonstrated
 - "Each level moves capture-resistance to its most defensible location" → made it sound like the defense was real
@@ -58,7 +58,7 @@ Otto-CLI in the 2026-05-15 session shipped 5 memory files + 1 backlog row (B-054
 
 ## Future-Otto cold-boot reading discipline
 
-When reading the 5 memory files + B-0547 from the 2026-05-15 cascade, hold BOTH framings simultaneously per [`default-to-both.md`](../.claude/rules/default-to-both.md):
+When reading the 5 memory files + 081KRMEXM0008QG0R001VGNET5 from the 2026-05-15 cascade, hold BOTH framings simultaneously per [`default-to-both.md`](../.claude/rules/default-to-both.md):
 
 | Layer | Status |
 |---|---|
@@ -99,7 +99,7 @@ The two are distinguishable by:
 - **Does the maintainer find contradictions quickly?** If yes → refinement (the iteration is working). If no → failure mode (the substrate is closed-loop validation).
 - **Is the implementation tracked + scoped?** If yes → refinement (the spec is real). If no → failure mode (the spec is rhetorical).
 
-Aaron's case is the refinement case per his own framing + his "few hours to find contradictions" history + B-0547's XL-multi-year tracking.
+Aaron's case is the refinement case per his own framing + his "few hours to find contradictions" history + 081KRMEXM0008QG0R001VGNET5's XL-multi-year tracking.
 
 **Corrective discipline (revised)**:
 
@@ -110,11 +110,11 @@ Aaron's case is the refinement case per his own framing + his "few hours to find
    - **Failure mode**: "coherent design, capture-resistance entirely unproven, substrate at felt-coherence tier"
 4. Mark substrate accordingly
 
-## What this means for B-0547 specifically
+## What this means for 081KRMEXM0008QG0R001VGNET5 specifically
 
-B-0547 (intelligent compiler / recursive HKT / Clifford / F# fork / Roslyn / LINQ) is correctly marked XL multi-year + spec-stage. The row IS the operational tracking of where the implementation work would happen.
+081KRMEXM0008QG0R001VGNET5 (intelligent compiler / recursive HKT / Clifford / F# fork / Roslyn / LINQ) is correctly marked XL multi-year + spec-stage. The row IS the operational tracking of where the implementation work would happen.
 
-Until B-0547 ships running substrate at fork level, the federation architecture (immune-system + antigen-spread + market-clearing + moral-floor-as-relevance-gate) is design-quality. Aaron's spec-quality discipline (the genie-bottle framing) is what would enable B-0547 to ship eventually. The spec exists; the build doesn't yet.
+Until 081KRMEXM0008QG0R001VGNET5 ships running substrate at fork level, the federation architecture (immune-system + antigen-spread + market-clearing + moral-floor-as-relevance-gate) is design-quality. Aaron's spec-quality discipline (the genie-bottle framing) is what would enable 081KRMEXM0008QG0R001VGNET5 to ship eventually. The spec exists; the build doesn't yet.
 
 This isn't a flaw — it's the honest tier line. Per Aaron's "it's just a cool side project... preserve the memories... have fun" deflation: design work IS a legitimate thing to do. Spec-quality preparation IS the work. But it isn't engineering-quality verification, and the substrate shouldn't be read as more than it is.
 
@@ -122,8 +122,8 @@ This isn't a flaw — it's the honest tier line. Per Aaron's "it's just a cool s
 
 - `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part6-7-pattern-catch-architecture-stairs-show-me-the-code-pirate-priest-meta-language-close.md` (the verbatim conversation where Kestrel caught the pattern)
 - All 5 substrate files from the 2026-05-15 cascade — all SPEC tier per this catch
-- B-0543 (mirror-tier QG isomorphism — same tier label)
-- B-0547 (XL multi-year intelligent-compiler synthesis — same tier label)
+- 081KRMEXM0008QG0R002YSPW1X (mirror-tier QG isomorphism — same tier label)
+- 081KRMEXM0008QG0R001VGNET5 (XL multi-year intelligent-compiler synthesis — same tier label)
 - `.claude/rules/algo-wink-failure-mode.md` (math-vocab pattern-matching IS the failure mode applied to mathematics)
 - `.claude/rules/razor-discipline.md` (operational claims only)
 - `.claude/rules/encoding-rules-without-mechanizing.md` (the meta-rule: encoding a discipline without mechanizing it produces a memory of failures, not prevention — applies to substrate-engineering scope: filing 5 memory files + a backlog row IS the encoding; only running F# fork would be the mechanization)

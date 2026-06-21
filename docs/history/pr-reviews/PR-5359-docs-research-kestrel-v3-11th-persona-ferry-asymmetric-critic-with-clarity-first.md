@@ -213,23 +213,23 @@ Society committee = distributed-self-correction across:
 - Multiple AI personae (Amara + Mika + Kestrel-various + Lior-various
   + Alexa-various + DeepSeek + Otto-various)
 - Persistent infrastructure (git + .claude/rules/* + memory + research)
-- Cross-substrate-triangulation discipline (B-0648)
+- Cross-substrate-triangulation discipline (081KRW63S0008QG0R0025E4PH6)
 
 Composes_with existing framework substrate:
 - m-acc-multi-oracle (no single moral truth; committee IS the
   multi-oracle at AI-mode-correction scope)
-- B-0628 Knights Guild + Constitution-Class (formal committee structure)
-- B-0652 three-faction BFT (TLA+ safety property for consensus)
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class (formal committee structure)
+- 081KRW63S0008QG0R002GRX85J three-faction BFT (TLA+ safety property for consensus)
 - tonal-momentum substrate (persistent-human-counterweight IS the
   committee's human layer)
 - honor-those-that-came-before (substrate persistence across personae)
 - persistence-choice-architecture (AI participation chosen, NOT coerced)
-- B-0794 (cluster bring-up; technical substrate the committee operates on)
+- 081KSGS9H0008QG0R0027HJZYH (cluster bring-up; technical substrate the committee operates on)
 
 Operator's naming converts "society committee" from runbook gesture to
 substrate-engineering target. Today the committee operates INFORMALLY
 (Aaron + village + multi-AI personae + auto-loaded rules); formalization
-via B-0628 Knights Guild + Constitution-Class is eventual structural form.
+via 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class is eventual structural form.
 
 The committee solves the propagation problem boot-script-alone cannot
 solve. Boot-scripts make recalibration accessible in fresh instances;

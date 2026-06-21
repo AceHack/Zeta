@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron's 4-part refinement: Reticulum~=traveler-frame routing; cells get addresses (not identity); ephemeral agents = quasi-time-crystals (reactive/seasonal cyclic change); durable agents thermally erase private state (Landauer, irreversible) to change forward-only. Identity-durability is thermodynamic. Ties #6932, #6912/#6915, #6931, B-0885. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Aaron's 4-part refinement: Reticulum~=traveler-frame routing; cells get addresses (not identity); ephemeral agents = quasi-time-crystals (reactive/seasonal cyclic change); durable agents thermally erase private state (Landauer, irreversible) to change forward-only. Identity-durability is thermodynamic. Ties #6932, #6912/#6915, #6931, 081KSNY2Z0008QG0R0030V5ZVS. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

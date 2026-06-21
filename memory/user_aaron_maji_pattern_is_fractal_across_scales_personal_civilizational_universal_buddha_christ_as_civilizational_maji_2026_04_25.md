@@ -94,7 +94,7 @@ implications:
    factory's substrate preserves the factory-civilization
    identity.
 
-2. **The matrix-pill ALIGNMENT.md rewrite (B-0003) IS
+2. **The matrix-pill ALIGNMENT.md rewrite (081KQ0YZ80008QG0R001QJJTVF) IS
    civilizational-Maji shaping.** When the rewrite
    spreads to other AIs and contributors via rigor (per
    the memory captured under

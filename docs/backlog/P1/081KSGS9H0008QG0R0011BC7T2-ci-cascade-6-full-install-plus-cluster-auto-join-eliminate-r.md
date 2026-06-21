@@ -1,6 +1,5 @@
 ---
-id: B-0831
-zetaid: 081KSGS9H0008QG0R0011BC7T2
+id: 081KSGS9H0008QG0R0011BC7T2
 priority: P1
 status: open
 title: CI cascade #6 — full-install-and-cluster-auto-join (post-boot install completes; node self-registers; eliminates routine human physical USB test) (Aaron 2026-05-26)
@@ -19,13 +18,13 @@ tags: [ci, qemu, cluster-bringup, auto-install, cluster-join, eliminates-human-p
 
 ## Progress (2026-06-14)
 
-- **Slice 1** landed #8126 — full-install-in-QEMU (B-0891 scenario 2 step)
+- **Slice 1** landed #8126 — full-install-in-QEMU (081KSNY2Z0008QG0R0008PN7RQ scenario 2 step)
 - **Slice 2** landed #8129 — cluster-auto-join payload verification
 - **Slice 3** landed #8139 — ArgoCD reconciliation shape verification
 - **Pubkey path fix** #8155 — unblocked scenario 2 green on build-iso run 27486800503
 - **Scenario 2 hard gate** — `continue-on-error: true` removed (scenario 1 already blocking)
 
-Row stays **open**: overall acceptance (physical USB no longer routine gate; periodic hardware-support sanity-checks) not fully met until B-0835 installer bugs addressed and scenarios 3/4 promoted.
+Row stays **open**: overall acceptance (physical USB no longer routine gate; periodic hardware-support sanity-checks) not fully met until 081KSGS9H0008QG0R00120EEHM installer bugs addressed and scenarios 3/4 promoted.
 
 ## Problem
 
@@ -38,8 +37,8 @@ console-output. But it does NOT validate:
 - `zeta-install` greedy N-disk install completes
 - Installed system reboots cleanly
 - Auto-generated hostname appears in login banner
-- Node self-registers with the cluster (per B-0812 iter-5.4.1)
-- ArgoCD sees the new node + reconciles (per B-0813 iter-5.4.2)
+- Node self-registers with the cluster (per 081KSGS9H0008QG0R0037H3W4T iter-5.4.1)
+- ArgoCD sees the new node + reconciles (per 081KSGS9H0008QG0R002K93MWX iter-5.4.2)
 
 The human maintainer currently physically tests by booting from USB on
 real hardware. Operator framing 2026-05-26: *"zflash is the thing plus
@@ -72,7 +71,7 @@ Extend `tools/ci/qemu-boot-test.ts` (or add `tools/ci/qemu-full-install-test.ts`
 ### Slice 2 — cluster-auto-join verification (mock cluster control-plane)
 
 After Slice 1 completes, the installed node should attempt cluster
-self-registration per B-0812 iter-5.4.1. Slice 2 adds:
+self-registration per 081KSGS9H0008QG0R0037H3W4T iter-5.4.1. Slice 2 adds:
 
 - Mock cluster control-plane in CI (or skip if real cluster API is
   reachable from runner)
@@ -80,7 +79,7 @@ self-registration per B-0812 iter-5.4.1. Slice 2 adds:
 - Verify the registration request matches schema
 - Verify the new node would be added to
   `maintainers/<operator>/cluster-nodes/<hostname>/...` tree shape per
-  B-0794 + B-0812 per-maintainer convention
+  081KSGS9H0008QG0R0027HJZYH + 081KSGS9H0008QG0R0037H3W4T per-maintainer convention
 
 This requires either:
 
@@ -93,7 +92,7 @@ Prefer mock; less coupling; more reproducible.
 ### Slice 3 — ArgoCD reconciliation verification
 
 Once the node registers (Slice 2), ArgoCD watches `maintainers/
-cluster-nodes/` tree per B-0813 iter-5.4.2 and reconciles. Slice 3
+cluster-nodes/` tree per 081KSGS9H0008QG0R002K93MWX iter-5.4.2 and reconciles. Slice 3
 verifies:
 
 - Mock ArgoCD (or real ArgoCD instance) sees the new node
@@ -133,15 +132,15 @@ Phased acceptance (each slice ships independently):
   auto-fire service)
 - `full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix`
   (login banner + auto-hostname per iter-5.2.2)
-- B-0812 iter-5.4.1 (node self-registration commit+push to maintainers/
+- 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 (node self-registration commit+push to maintainers/
   cluster-nodes; the substrate this CI cascade verifies end-to-end)
-- B-0813 iter-5.4.2 (ArgoCD app watches `maintainers/*/cluster-nodes/**` tree per per-maintainer glob)
-- B-0814 (tools/cluster-deregister-node.ts sibling)
-- B-0816 (architectural principle: maximize ArgoCD scope + minimize
+- 081KSGS9H0008QG0R002K93MWX iter-5.4.2 (ArgoCD app watches `maintainers/*/cluster-nodes/**` tree per per-maintainer glob)
+- 081KSGS9H0008QG0R000EPPQTR (tools/cluster-deregister-node.ts sibling)
+- 081KSGS9H0008QG0R003A37Z65 (architectural principle: maximize ArgoCD scope + minimize
   NixOS-native lock-in)
-- B-0754 (zero-typing first-boot auto-install scope; the substrate
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot auto-install scope; the substrate
   exercised in CI cascade #6 phase 1)
-- B-0818 (isoName mkForce nixpkgs 25.11 regression; orthogonal but
+- 081KSGS9H0008QG0R00033DT02 (isoName mkForce nixpkgs 25.11 regression; orthogonal but
   composes at ISO-naming scope)
 - `.claude/skills/flash-cluster-iso/SKILL.md` (Path B 0-human-typing
   flow IS the operator-side analog; this CI cascade IS the CI-side

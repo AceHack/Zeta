@@ -1,6 +1,5 @@
 ---
-id: B-0824.1
-zetaid: 081KSKBP80008QG0R002513Q0B
+id: 081KSKBP80008QG0R002513Q0B
 priority: P1
 status: closed
 title: "Ace meta-PM: N-dimensional dependency-space formalism"
@@ -17,7 +16,7 @@ tags: [ace-feature, meta-package-manager, n-dimensional-dependency-space]
 
 ## N-dimensional dependency-space formalism
 
-This backlog item is a decomposition of [B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md).
+This backlog item is a decomposition of [081KSGS9H0008QG0R0031PBNGA](081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md).
 
 ### Problem
 
@@ -39,11 +38,11 @@ Formalize the N-dimensional dependency space. This includes:
     * Security posture (signed, sbom-verified, vuln-scan-status)
     * Operator policy (environment, org-policy, compliance-tier)
 2. **Documentation**: Create a document that formalizes the N-dimensional dependency space, its axes, and how it relates to existing 2D package managers. This documentation will be consumed by future substrate-engineering decisions.
-3. **Composition with B-0822**: Make the composition with [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) explicit in the documentation. The 4 properties from B-0822 are a 4-axis slice of the N-D space.
+3. **Composition with 081KSGS9H0008QG0R0018ES3R4**: Make the composition with [081KSGS9H0008QG0R0018ES3R4](081KSGS9H0008QG0R0018ES3R4-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) explicit in the documentation. The 4 properties from 081KSGS9H0008QG0R0018ES3R4 are a 4-axis slice of the N-D space.
 
 ### Acceptance Criteria
 
 * A document exists that formalizes the N-D dependency space.
 * The document enumerates the axes of the dependency space.
 * The document is consumable by future substrate-engineering decisions.
-* The composition with B-0822 is made explicit.
+* The composition with 081KSGS9H0008QG0R0018ES3R4 is made explicit.

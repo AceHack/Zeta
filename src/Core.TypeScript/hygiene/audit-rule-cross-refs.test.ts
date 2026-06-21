@@ -22,11 +22,11 @@ describe("pullRefs", () => {
     expect(refs[0]!.raw).toBe("tools/peer-call/claude.ts");
   });
 
-  test("pulls B-NNNN backlog ID references", () => {
-    const content = "Composes with B-0192 and B-0506.";
+  test("pulls zetaid backlog ID references", () => {
+    const content = "Composes with 081KQR4HQ0008QG0R001GAD29A and 081KRHWGX0008QG0R002DPG02X.";
     const refs = pullRefs(content, "test.md");
     expect(refs).toHaveLength(2);
-    expect(refs.map((r) => r.raw).sort()).toEqual(["B-0192", "B-0506"]);
+    expect(refs.map((r) => r.raw).sort()).toEqual(["081KQR4HQ0008QG0R001GAD29A", "081KRHWGX0008QG0R002DPG02X"]);
     expect(refs.every((r) => r.kind === "backlog-id")).toBe(true);
   });
 
@@ -37,10 +37,10 @@ describe("pullRefs", () => {
   });
 
   test("dedups repeated references in same file", () => {
-    const content = "See `foo.md` ... then `foo.md` again and B-0001 twice: B-0001";
+    const content = "See `foo.md` ... then `foo.md` again and 081KPYCJH0008QG0R003MDS51N twice: 081KPYCJH0008QG0R003MDS51N";
     const refs = pullRefs(content, "test.md");
     expect(refs).toHaveLength(2);
-    expect(refs.map((r) => r.raw).sort()).toEqual(["B-0001", "foo.md"]);
+    expect(refs.map((r) => r.raw).sort()).toEqual(["081KPYCJH0008QG0R003MDS51N", "foo.md"]);
   });
 });
 
@@ -55,12 +55,12 @@ describe("refExists", () => {
   });
 
   test("resolves a real backlog ID via dir scan", () => {
-    // B-0506 was filed earlier today; should resolve.
-    expect(refExists({ fromRule: "test.md", raw: "B-0506", kind: "backlog-id" })).toBe(true);
+    // 081KRHWGX0008QG0R002DPG02X was filed earlier today; should resolve.
+    expect(refExists({ fromRule: "test.md", raw: "081KRHWGX0008QG0R002DPG02X", kind: "backlog-id" })).toBe(true);
   });
 
   test("returns false for a non-existent backlog ID", () => {
-    expect(refExists({ fromRule: "test.md", raw: "B-9999", kind: "backlog-id" })).toBe(false);
+    expect(refExists({ fromRule: "test.md", raw: "081KED9T0X008QG0R003SZN0FB", kind: "backlog-id" })).toBe(false);
   });
 
   test("resolves a glob pattern when at least one match exists", () => {
@@ -101,13 +101,13 @@ describe("refExists", () => {
     ).toBe(false);
   });
 
-  // B-0708 resolver improvements (2026-05-23): false-positive class fixes
+  // 081KS923C0008QG0R00035KSQA resolver improvements (2026-05-23): false-positive class fixes
   // for template-paths, command-snippets, sibling-rule references, and
   // tools/* directory fallbacks.
 
   test("resolves template-placeholder paths with `...` ellipsis as healthy-FP", () => {
     expect(refExists({ fromRule: "test.md", raw: "docs/.../0603Z.md", kind: "path" })).toBe(true);
-    expect(refExists({ fromRule: "test.md", raw: "docs/backlog/P3/B-0613-...md", kind: "path" })).toBe(true);
+    expect(refExists({ fromRule: "test.md", raw: "docs/backlog/P3/081KRSKQ20008QG0R002TH55X6-...md", kind: "path" })).toBe(true);
   });
 
   test("resolves template-placeholder paths with `YYYY` date-template as healthy-FP", () => {

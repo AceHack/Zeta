@@ -27,7 +27,7 @@
 
 ## Description
 
-Slice 6 of the Ace package manager — **remote registry** (B-0971). Resolve `name@range` against a hosted **signed** index fetched over HTTP(S), merged **under** the local registry. Spec #6424 + fix-forward #6426; plan in this PR (`...slice6-implementation-plan.md`).
+Slice 6 of the Ace package manager — **remote registry** (081KT07NV0008QG0R000SJ34AK). Resolve `name@range` against a hosted **signed** index fetched over HTTP(S), merged **under** the local registry. Spec #6424 + fix-forward #6426; plan in this PR (`...slice6-implementation-plan.md`).
 
 ### What ships
 - **Signed index** (`tools/ace/signing.ts` + `registry-remote.ts`): `{ format_version, sequence, issued_at, packages, signature }`; ed25519 sign/verify reuse the existing manifest crypto + trust store.

@@ -37,7 +37,7 @@ Durable capture of Aaron's 2026-06-07 steering session + the buildable crystalli
 - **Geo/governance/provenance/residency** → best-practices pattern libraries (future; Bounded-Mobility §4 anchor).
 - **Honest reliability**: ~55-65% single-node; gaps = fsync floor, multi-key txn/isolation, general query/index.
 
-Anchored to **B-0959** (master checklist). Buildable sequence + file/seam anchors included.
+Anchored to **081KSXN940008QG0R003FCQ7WT** (master checklist). Buildable sequence + file/seam anchors included.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

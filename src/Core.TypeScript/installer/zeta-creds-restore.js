@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 // zeta-creds-restore.ts — read encrypted cred-blob from ESP + restore to disk.
-// B-0852.2b CLI sibling to zeta-creds-persist.ts.
+// 081KSKBP80008QG0R003AX2A69.2b CLI sibling to zeta-creds-persist.ts.
 //
 // Composes:
-//   - tools/installer/zeta-creds-crypto.ts (B-0852.1; decrypt)
-//   - tools/installer/zeta-creds-manifest.ts (B-0852.5; cred catalog → paths)
-//   - tools/installer/zeta-creds-envelope.ts (B-0852.2a; wire format + bundle)
+//   - tools/installer/zeta-creds-crypto.ts (081KDWYDBW008QG0R001H6HTJK; decrypt)
+//   - tools/installer/zeta-creds-manifest.ts (081KDWYDBW008QG0R002QYAWPV; cred catalog → paths)
+//   - tools/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
 //
 // Usage:
 //   bun tools/installer/zeta-creds-restore.ts \
@@ -18,7 +18,7 @@
 //
 // Interactive passphrase prompts are NOT implemented in this CLI — caller
 // must supply --passphrase-file or --passphrase-env. Interactive prompting
-// is the wrapping NixOS module's responsibility (B-0852.4).
+// is the wrapping NixOS module's responsibility (081KSKBP80008QG0R002XBRGN8).
 //
 // Exit codes:
 //   0 success

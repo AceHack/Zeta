@@ -1,6 +1,6 @@
 ---
 pr_number: 5558
-title: "docs(B-0863): Ace package manager \u2014 one-liner curl-install repository for fast-moving tools (operator 2026-05-27)"
+title: "docs(081KSKBP80008QG0R000F4311E): Ace package manager \u2014 one-liner curl-install repository for fast-moving tools (operator 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T17:56:42Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T18:51:28Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5558: docs(B-0863): Ace package manager — one-liner curl-install repository for fast-moving tools (operator 2026-05-27)
+# PR #5558: docs(081KSKBP80008QG0R000F4311E): Ace package manager — one-liner curl-install repository for fast-moving tools (operator 2026-05-27)
 
 ## PR description
 
@@ -23,7 +23,7 @@ Operator-directed substrate-engineering target row:
 > *\"we can keep a reposity of them for things that change too fast
 > for homebrew and such. hermes would be a candidate\"*
 
-Files B-0863 for the Ace package manager one-liner `curl ... | bash`
+Files 081KSKBP80008QG0R000F4311E for the Ace package manager one-liner `curl ... | bash`
 install repository pattern. Hermes-agent named as canonical first
 candidate (PR #5547 added to brew manifest short-term; one-liner
 pattern is medium-term substrate).
@@ -32,8 +32,8 @@ pattern is medium-term substrate).
 
 - Substrate-engineering problem (Homebrew lag vs AI agent release cadence)
 - Ace one-liner pattern with vendor + URL + verify-pattern + trust-assumption + brew-fallback
-- 6-component implementation decomposition (B-0863.1 schema → B-0863.6 install.sh integration)
-- Composition with B-0288 Ace + B-0824 package-of-packages + 5 framework rules
+- 6-component implementation decomposition (081KSKBP80008QG0R000F4311E.1 schema → 081KSKBP80008QG0R000F4311E.6 install.sh integration)
+- Composition with 081KR2E4K0008QG0R002YE3MMD Ace + 081KSGS9H0008QG0R0031PBNGA package-of-packages + 5 framework rules
 
 Priority P2 — substrate-engineering target; opportunistic implementation.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0867.21
-zetaid: 081KSNY2Z0008QG0R000S738W3
+id: 081KSNY2Z0008QG0R000S738W3
 priority: P1
 status: open
 title: Two-path interface — discriminated union path EXECUTES intent + conversational document path DECLARES intent (both first-class; both feed same event log; for ANY traveler, not just humans)
@@ -45,16 +44,16 @@ tags:
 
 Make the two-path interface explicit in the agent-loop substrate:
 
-- **Discriminated union path** (existing; from PRs #5666 + #5669 + B-0867.16) — EXECUTING intent; structured + machine-readable + precise; "do this specific thing right now"
+- **Discriminated union path** (existing; from PRs #5666 + #5669 + 081KSNY2Z0008QG0R003J3PT4V) — EXECUTING intent; structured + machine-readable + precise; "do this specific thing right now"
 - **Conversational document path** (extension this row tracks) — DECLARING intent; freeform markdown documents committed to the event log; "drop your desire / goal / vision into the system and let the system figure out how to move toward it"
 
-Both paths produce events. Both feed into the same event log (B-0867.2). The conversational document EVOLVES — starts as pure intention, ends as proof of execution + outcome record.
+Both paths produce events. Both feed into the same event log (081KSNY2Z0008QG0R001K6HJ7Z). The conversational document EVOLVES — starts as pure intention, ends as proof of execution + outcome record.
 
 ## Acceptance criteria
 
 - `src/Core.TypeScript/workflow-engine/agent-loop/conversational-intent.ts` — exposes `declareIntent(documentPath, persona)` that:
   - Reads a markdown document with conversational intent
-  - Generates an event (via B-0867.2 event-sourcing layer) with `event_type: "intent-declared"` + a reference to the document
+  - Generates an event (via 081KSNY2Z0008QG0R001K6HJ7Z event-sourcing layer) with `event_type: "intent-declared"` + a reference to the document
   - Document path lives in `agent-intent/{trajectory}/{document-name}.md` or similar convention
 - `src/Core.TypeScript/workflow-engine/agent-loop/intent-to-execution.ts` — tracks intention documents through their lifecycle:
   - `intent-declared` event → swarm picks up the work
@@ -65,12 +64,12 @@ Both paths produce events. Both feed into the same event log (B-0867.2). The con
 
 ## Composition
 
-- **B-0867** workflow-engine v1 (parent)
-- **B-0867.20** lifecycle DU split (trajectory-push vs PR-review) — composes; conversational documents are trajectory-push artifacts that produce events
-- **B-0867.2** event-sourcing layer — both paths produce events here
-- **B-0730 / B-0732** runbook-as-executable-spec — conversational documents IS a runbook subset at intent-declaration scope
-- **B-0827** runbook-as-evolving-substrate — the intention → execution evolution is exactly this pattern
-- **B-0819** AI-runbook-substrate-Continue-With — composes with the auto-JIT pattern
+- **081KSKBP80008QG0R000B3Y19A** workflow-engine v1 (parent)
+- **081KSNY2Z0008QG0R003WFDCJ9** lifecycle DU split (trajectory-push vs PR-review) — composes; conversational documents are trajectory-push artifacts that produce events
+- **081KSNY2Z0008QG0R001K6HJ7Z** event-sourcing layer — both paths produce events here
+- **081KSE6WT0008QG0R003AJYMD3 / 081KSE6WT0008QG0R002YBWBB1** runbook-as-executable-spec — conversational documents IS a runbook subset at intent-declaration scope
+- **081KSGS9H0008QG0R00123050G** runbook-as-evolving-substrate — the intention → execution evolution is exactly this pattern
+- **081KSGS9H0008QG0R0005P83AP** AI-runbook-substrate-Continue-With — composes with the auto-JIT pattern
 
 ## Substrate-honest framing
 

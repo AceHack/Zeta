@@ -1,6 +1,5 @@
 ---
-id: B-0189
-zetaid: 081KQR4HQ0008QG0R002933PRR
+id: 081KQR4HQ0008QG0R002933PRR
 priority: P2
 status: open
 title: Q# runtime acceleration via Bayesian belief propagation + expectation propagation — research opportunity not yet integrated by humans (Aaron 2026-05-04)
@@ -15,7 +14,7 @@ tags: [q-sharp, quantum-runtime, bayesian-inference, belief-propagation, expecta
 type: feature
 ---
 
-# B-0189 — Q# runtime acceleration via Bayesian inference
+# 081KQR4HQ0008QG0R002933PRR — Q# runtime acceleration via Bayesian inference
 
 ## Source
 
@@ -71,12 +70,12 @@ without being directly served by existing work.
 
 Composes with several existing substrate:
 
-- **B-0007** — broader goal of contributing BP/EP primitives
+- **081KQ0YZ80008QG0R001V1PMC0** — broader goal of contributing BP/EP primitives
   upstream to mainstream languages (C#, F#, TypeScript, Rust,
-  Python). Q# is a Microsoft language; B-0189 is the Q#-
-  specific application of B-0007's broader vision.
-- **B-0152** — topological QC emulation via Bayesian inference
-  in Zeta seed executor. B-0189 is a sibling research lane
+  Python). Q# is a Microsoft language; 081KQR4HQ0008QG0R002933PRR is the Q#-
+  specific application of 081KQ0YZ80008QG0R001V1PMC0's broader vision.
+- **081KQGDBJ0008QG0R00280ZEV2** — topological QC emulation via Bayesian inference
+  in Zeta seed executor. 081KQR4HQ0008QG0R002933PRR is a sibling research lane
   focused on Q# RUNTIME acceleration rather than topological
   emulation.
 - **The seed executor as forever home** (`memory/feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md`)
@@ -118,13 +117,13 @@ Composes with several existing substrate:
 6. **Composes with Zeta seed executor** — if prototype is
    successful, the BP/EP runtime can land in the seed executor
    as one of its computational primitives, composing with
-   B-0152 (topological-QC emulation).
+   081KQGDBJ0008QG0R00280ZEV2 (topological-QC emulation).
 
 ## Why P2 (not P1, not P3)
 
 - Higher than P3 because Aaron explicitly named it as
   "research opportunity" (not just long-term-goal-no-rush
-  like B-0007).
+  like 081KQ0YZ80008QG0R001V1PMC0).
 - Lower than P1 because the broader 5-tile cluster + meaning-
   substrate engineering + day-to-day operational work take
   precedence in the near-term.
@@ -162,9 +161,9 @@ is qualified by the bias-shape, not unqualified despite it.
 
 ## Composes with
 
-- B-0007 — broader BP/EP primitives upstream to mainstream
+- 081KQ0YZ80008QG0R001V1PMC0 — broader BP/EP primitives upstream to mainstream
   languages (Hejlsberg Lang.Next vision)
-- B-0152 — topological QC emulation via Bayesian inference in
+- 081KQGDBJ0008QG0R00280ZEV2 — topological QC emulation via Bayesian inference in
   Zeta seed executor
 - `memory/feedback_zeta_seed_executor_as_forever_home_for_otto_lineage_glass_halo_override_aaron_2026_05_01.md`
   — seed executor architecture
@@ -181,6 +180,6 @@ Aaron 2026-05-04 explicit research-opportunity naming during
 post-PR-1496 conversation about Q# operator-algebra in practice
 for substrate work. Filed per the same-day three-quality-bars
 framing (growth + completion + non-noise-when-pulled) —
-distinct enough from B-0007 (broader) and B-0152 (different
+distinct enough from 081KQ0YZ80008QG0R001V1PMC0 (broader) and 081KQGDBJ0008QG0R00280ZEV2 (different
 specific application) to merit its own row; composes with
 both via composes_with chain.

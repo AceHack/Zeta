@@ -75,7 +75,7 @@ structural: consent, exit, reversibility, and proof over domination.
 ## Beacon anchors
 
 - Amara (peer-AI review, 2026-06-07) — the candidate/admission framing + the choice-invariant mapping. ·
-  Ours: `Bonsai`/`BonsaiSoft` (the procedure-as-data), `YinYang.fs` (persisted control cell), **B-0976**
+  Ours: `Bonsai`/`BonsaiSoft` (the procedure-as-data), `YinYang.fs` (persisted control cell), **081KT07NV0008QG0R003BE6MJ2**
   (self-evolving saga — the buildable core), **Nucleus** (deterministic-subset validation), **ZetaID**
   (addressable deps, pointer-not-authority), branch-scoped Merkle roots (canary/rollback), Z-set retraction
   (versioning), [`no-directives`](../../.claude/rules/no-directives.md) (source ≠ authorization). ·

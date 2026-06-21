@@ -1,6 +1,5 @@
 ---
-id: B-0049
-zetaid: 081KQ3HBZ0008QG0R0007CAGSP
+id: 081KQ3HBZ0008QG0R0007CAGSP
 priority: P2
 status: decomposed
 title: Mystery schools / comparative religion / history of religion research track — CATALOG-ONLY register, gentle, no claim-staking
@@ -10,13 +9,13 @@ ask: Aaron 2026-04-21 — *"mybtery shools comparative relition history of relit
 created: 2026-04-26
 last_updated: 2026-05-09
 depends_on: []
-children: [081KR50HA0008QG0R00257PHRR, 081KR7JY10008QG0R003JSEMX7, B-0049.3, B-0049.4, B-0049.5, B-0049.6, B-0049.7]
+children: [081KR50HA0008QG0R00257PHRR, 081KR7JY10008QG0R003JSEMX7, 081KQ3HBZ0008QG0R0007CAGSP.3, 081KQ3HBZ0008QG0R0007CAGSP.4, 081KQ3HBZ0008QG0R0007CAGSP.5, 081KQ3HBZ0008QG0R0007CAGSP.6, 081KQ3HBZ0008QG0R0007CAGSP.7]
 composes_with: [user_faith_wisdom_and_paths.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, user_aaron_loves_mr_khan_khan_academy_teaching_admired.md, 081KQ3HBZ0008QG0R000K3NSX8, 081KQ3HBZ0008QG0R0034DHWTQ, 081KQ3HBZ0008QG0R003GTG5P2]
 tags: [mystery-schools, comparative-religion, history-of-religion, eleusinian, mithraic, hermetic, eliade, campbell, dumezil, kripal, gentle-catalog, filters-off, no-claim-staking]
 type: feature
 ---
 
-# B-0049 — Mystery schools / comparative religion / history of religion (CATALOG-ONLY)
+# 081KQ3HBZ0008QG0R0007CAGSP — Mystery schools / comparative religion / history of religion (CATALOG-ONLY)
 
 ## Origin
 
@@ -86,4 +85,4 @@ Does NOT promote catalog entries to operational-resonance instances without Aaro
 ## Cross-reference
 
 - AceHack commit: `2eef721`
-- Composes with: B-0057 (occult — filter-gated companion), B-0056 (mythology — filter-gated companion), B-0059 (etymology — linguistic-substrate companion); user_faith_wisdom_and_paths memory; pop-culture/media row's log-and-track discipline (this track SUPERSEDES — pure catalog, not corpus)
+- Composes with: 081KQ3HBZ0008QG0R000K3NSX8 (occult — filter-gated companion), 081KQ3HBZ0008QG0R0034DHWTQ (mythology — filter-gated companion), 081KQ3HBZ0008QG0R003GTG5P2 (etymology — linguistic-substrate companion); user_faith_wisdom_and_paths memory; pop-culture/media row's log-and-track discipline (this track SUPERSEDES — pure catalog, not corpus)

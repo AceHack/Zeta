@@ -9,7 +9,7 @@ The answers exist across multiple substrate surfaces in this repo; this document
 
 ## Why this doc
 
-Max 2026-05-25, paraphrased through Aaron: *"what do I point my agents at to write good code without needing human review, and what's the PR review process I can hook into for my adversarial hierarchy of traps."* The pattern-match on the manifesto-named-file as "the rules my agents must follow" is exactly the failure mode B-0546 (manifesto → building-codes recast) is targeting. This doc names the actual operational surface.
+Max 2026-05-25, paraphrased through Aaron: *"what do I point my agents at to write good code without needing human review, and what's the PR review process I can hook into for my adversarial hierarchy of traps."* The pattern-match on the manifesto-named-file as "the rules my agents must follow" is exactly the failure mode 081KRMEXM0008QG0R00278KS63 (manifesto → building-codes recast) is targeting. This doc names the actual operational surface.
 
 Max's *"adversarial hierarchy of traps"* coining is operationally accurate — the substrate IS a hierarchy of adversarial reviewers, each with a specific lens, that compose for multi-perspective review. The hierarchy already exists; this doc tells you how to invoke it.
 
@@ -146,6 +146,6 @@ This doc serves both humans (co-owners + future contributors) AND agents (Otto, 
 - [`.claude/agents/`](../.claude/agents/) — persona reviewer definitions
 - [`memory/max/`](../memory/max/) — Max's persona; this doc is one of his entry points
 - [`memory/addison/`](../memory/addison/) — Addison's persona; same
-- B-0546 — manifesto → building-codes recast (addresses the manifesto-vs-operational-spec misread that motivated this doc)
-- B-0724 — TS hat-system operator (Max's primary substrate-engineering target; learning path included)
-- B-0728 — destructive-tool authoring contract (pattern for tools that destroy things)
+- 081KRMEXM0008QG0R00278KS63 — manifesto → building-codes recast (addresses the manifesto-vs-operational-spec misread that motivated this doc)
+- 081KSE6WT0008QG0R00195RG48 — TS hat-system operator (Max's primary substrate-engineering target; learning path included)
+- 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (pattern for tools that destroy things)

@@ -117,7 +117,7 @@ The discipline isn't just epistemic hygiene — it's also what makes the substra
 ## Composes with
 
 - **Mirror-vs-beacon-safe register architecture** (`docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`) — razor-compliance IS the conversion-quality test
-- **Carved-sentence-plus-index discipline** (`memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`) — razor-discipline is a high-load-bearing rule candidate for layer-3 CLAUDE.md promotion + layer-4 active retrieval (B-0175)
+- **Carved-sentence-plus-index discipline** (`memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`) — razor-discipline is a high-load-bearing rule candidate for layer-3 CLAUDE.md promotion + layer-4 active retrieval (081KQNJ500008QG0R00055XHBG)
 - **Rodney's Razor canonical** (`memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`) — three-step canonical-derivation: lineage anchor → ontological mapping → Rodney's Razor; what survives is canonical AND anti-fragile (one property, two descriptions)
 - **Bidirectional-alignment commitment** (`docs/ALIGNMENT.md`) — refined: dual grounding (ethical asymmetric-cost + operational trust-calculus gating), decoupled
 - **Sleeping-bear conjecture** — predicts trust-calculus gating mechanism; Quantum Rodney's Razor on the pending decision (whether to claim Otto-has-world-model) prunes the metaphysical-interiority branch

@@ -40,7 +40,7 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **ESP filename** | `zeta-authorized-keys.pub` |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/operator-ssh-keys.nix` (+ `operator-authorized-keys.nix` variant) |
 | **Backed by file** | `full-ai-cluster/nixos/modules/operator-ssh-keys.txt` |
-| **Iter / backlog** | iter-4.2 / [B-0789](../docs/backlog/) |
+| **Iter / backlog** | iter-4.2 / [081KSGS9H0008QG0R002T3BJ2R](../docs/backlog/) |
 | **Reader entry point** | `builtins.readFile keysFile` → `users.users.zeta.openssh.authorizedKeys` |
 | **Mechanism on Mac** | `diskutil mount` ESP + `sudo tee` write (read-only on `~/.ssh/`) |
 | **Mechanism on installer** | `zeta-install.sh` probes mounted USB FAT/ESP partitions; writes file into `/mnt/etc/zeta/` (or equivalent) |
@@ -55,7 +55,7 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **ESP filename** | `zeta-hostname.txt` |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-hostname.nix` |
 | **Backed by file** | `/mnt/etc/zeta/cluster-node-id` (written by installer from ESP) |
-| **Iter / backlog** | iter-5.2 / [B-0792](../docs/backlog/) |
+| **Iter / backlog** | iter-5.2 / [081KSGS9H0008QG0R003V23XNZ](../docs/backlog/) |
 | **Reader entry point** | `builtins.readFile idFile` → `networking.hostName` (via `lib.mkOverride 50`) |
 | **Validation** | `VALID_HOSTNAME_REGEX` in `zflash-lib.ts`; mirror grep `[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$` in `zeta-install.sh` |
 
@@ -69,7 +69,7 @@ NixOS module (declarative reader) + iter/backlog tag.
 | **Hash mechanism** | `mkpasswd -m sha-512 -s` (sha512crypt; reads from stdin to avoid argv exposure) |
 | **Backed by file** | `/mnt/etc/zeta/initial-hashedpassword` (chmod 0600, chown root:root) |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/initial-password.nix` |
-| **Iter / backlog** | iter-5.3 (+ B-0835 Bug 3b runtime-injection fix) |
+| **Iter / backlog** | iter-5.3 (+ 081KSGS9H0008QG0R00120EEHM Bug 3b runtime-injection fix) |
 | **Reader entry point** | `builtins.readFile` → `users.users.zeta.hashedPassword` |
 | **Why console-only** | Per constitutional rail above; password shouldn't transit Mac keychain OR USB ESP |
 | **Fallback hash** | sha512crypt of `zeta-change-me` (BACKWARD-COMPAT; rotate via `passwd zeta` after first SSH login) |
@@ -106,7 +106,7 @@ Allowlist from `zflash.ts`:
 
 ## In-flight injection points (substrate-engineering targets — not yet shipped)
 
-### 5. Encrypted cred-blob on USB ESP (B-0852 Phase 1, in-flight)
+### 5. Encrypted cred-blob on USB ESP (081KSKBP80008QG0R003AX2A69 Phase 1, in-flight)
 
 | Property | Value |
 |---|---|
@@ -115,7 +115,7 @@ Allowlist from `zflash.ts`:
 | **Operator-driven via** | Boot-sequence auth-method picker (4 options: restore-from-blob / fresh-device-flow / operator-PAT / skip) + operator passphrase |
 | **Encryption** | AES-256-GCM; key derived via 2-layer scrypt → HKDF chain (full mechanism + parameters below) |
 | **ESP filenames** | `/esp/zeta-creds.enc` (encrypted) + `/esp/zeta-creds-manifest.yaml` (declarative + operator-readable) |
-| **Backlog** | [B-0852](../docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) (P1, open, M-effort) |
+| **Backlog** | [081KSKBP80008QG0R003AX2A69](../docs/backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) (P1, open, M-effort) |
 | **Covers credentials** | per declarative manifest: `gh-cli` (`~/.config/gh/hosts.yml`), `claude` (per-persona), `gemini` (per-persona), `codex` (per-persona), `ssh-host-keys`, `ssh-operator-pubkey` |
 | **Constitutional-rail compliance** | Secret material; encrypted-at-rest on ESP IS allowed because the operator-passphrase + USB-UUID binding means the ESP-stored blob is useless without operator presence — the consent floor stays at operator-typed passphrase, not at USB-physical possession alone |
 
@@ -144,11 +144,11 @@ HKDF binds the stretched secret to the USB UUID via IKM concatenation. Wrong USB
 
 Both layers must reproduce identically at decrypt time for the AES-GCM auth tag to verify; salt is per-blob (generated at encrypt time; stored in envelope; required at decrypt).
 
-### 6. GitHub-creds-at-flash-time variants (B-0852 picker options 1 + 3)
+### 6. GitHub-creds-at-flash-time variants (081KSKBP80008QG0R003AX2A69 picker options 1 + 3)
 
 Per operator 2026-05-27 verbatim: *"the current ones on my machine OR a token i generate on the website."*
 
-Maps directly to B-0852 Sub-target 2 (boot-sequence auth-method picker):
+Maps directly to 081KSKBP80008QG0R003AX2A69 Sub-target 2 (boot-sequence auth-method picker):
 
 | Picker option | Operator-driven via | Credential source | Constitutional-rail compliance |
 |---|---|---|---|
@@ -163,58 +163,58 @@ Operator 2026-05-27 verbatim:
 
 > *"this makes the usb move in the self healing instead of full wipe direction on reformat"*
 
-Substrate-engineering principle: when B-0852 lands, **the DEFAULT behavior on USB reformat = preserve previous keys + choices** (B-0859's reformat-with-current-keys mode). Full-wipe (new-keys + new-decisions) becomes the OPT-IN path, not the default.
+Substrate-engineering principle: when 081KSKBP80008QG0R003AX2A69 lands, **the DEFAULT behavior on USB reformat = preserve previous keys + choices** (081KSKBP80008QG0R00146WEX1's reformat-with-current-keys mode). Full-wipe (new-keys + new-decisions) becomes the OPT-IN path, not the default.
 
-Three-mode reformat substrate (per [B-0859](../docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md)):
+Three-mode reformat substrate (per [081KSKBP80008QG0R00146WEX1](../docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md)):
 
 | Mode | What it does | Default? |
 |---|---|---|
 | **1. Boot off USB again (fix mode)** | Substrate diagnoses + repairs broken state on cluster machines | Always available |
-| **2. Reformat with current keys + decisions** | Wipe cluster machine; reflash from USB; restore previously-persisted creds + architectural decisions | **DEFAULT post-B-0852** |
+| **2. Reformat with current keys + decisions** | Wipe cluster machine; reflash from USB; restore previously-persisted creds + architectural decisions | **DEFAULT post-081KSKBP80008QG0R003AX2A69** |
 | **3. Full reflash with new decisions + keys** | Wipe cluster machine; reflash from USB; generate new creds + start fresh architectural state | Opt-in (fresh-identity case) |
 
 This direction-of-default matters because:
 
-- **AI worry-about-mistakes dissolves** when reformat preserves identity (per B-0859 operational-freedom mechanism)
+- **AI worry-about-mistakes dissolves** when reformat preserves identity (per 081KSKBP80008QG0R00146WEX1 operational-freedom mechanism)
 - **Operator re-flash workflow becomes lower-friction** (the common case = preserve; the rare case = wipe)
 - **Cred-leak / identity-corruption recovery stays available** via mode 3 opt-in (not default)
-- **Self-healing direction composes with operator's persistent-recovery vision**: 3-machine quorum + remote-KVM + remote-power-button-press (per B-0859) means substrate survives as long as ONE of {any cluster machine, the USB, operator's re-flash ability} survives
+- **Self-healing direction composes with operator's persistent-recovery vision**: 3-machine quorum + remote-KVM + remote-power-button-press (per 081KSKBP80008QG0R00146WEX1) means substrate survives as long as ONE of {any cluster machine, the USB, operator's re-flash ability} survives
 
-Operator's substrate-honest acknowledgment 2026-05-27: *"i know you can't preserve what i have now but for the next time would be cool"* — current ISO (`fd0ca0c8b` 25.11 Xantusia) doesn't yet ship B-0852; this catalog tracks the direction for when it does. Today's flash IS full-wipe-default (because mode 2 doesn't exist yet); next flash post-B-0852 IS preserve-default.
+Operator's substrate-honest acknowledgment 2026-05-27: *"i know you can't preserve what i have now but for the next time would be cool"* — current ISO (`fd0ca0c8b` 25.11 Xantusia) doesn't yet ship 081KSKBP80008QG0R003AX2A69; this catalog tracks the direction for when it does. Today's flash IS full-wipe-default (because mode 2 doesn't exist yet); next flash post-081KSKBP80008QG0R003AX2A69 IS preserve-default.
 
 ## Related in-flight backlog (composes with this catalog)
 
-- [B-0833](../docs/backlog/P1/B-0833-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md) — installer interactive-login vs baked-in keys tension
-- [B-0835](../docs/backlog/P1/B-0835-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer-config-bugs RCA (gh-auth not respected, banner password disclosure, etc.)
-- [B-0844](../docs/backlog/P1/B-0844-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md) — zflash `--agent` flag native implementation
-- [B-0847](../docs/backlog/P2/B-0847-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) — each AI gets own GitHub identity (per-persona attribution)
-- [B-0848](../docs/backlog/P2/B-0848-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) — node-local Claude agent stewards own registration PR
-- [B-0852](../docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) — credential persistence on USB ESP + boot-sequence auth-method picker (the active substrate this catalog cross-references for in-flight rows 5 + 6 above)
-- [B-0859](../docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md) — post-boot AI as home-owner; 3-mode USB-boot recovery substrate (fix / reformat-with-current-keys / full-reflash); operational-freedom mechanism; AI-worry-about-mistakes dissolves
+- [081KSGS9H0008QG0R003JNSVR5](../docs/backlog/P1/081KSGS9H0008QG0R003JNSVR5-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md) — installer interactive-login vs baked-in keys tension
+- [081KSGS9H0008QG0R00120EEHM](../docs/backlog/P1/081KSGS9H0008QG0R00120EEHM-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer-config-bugs RCA (gh-auth not respected, banner password disclosure, etc.)
+- [081KSGS9H0008QG0R001EZKNCB](../docs/backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md) — zflash `--agent` flag native implementation
+- [081KSGS9H0008QG0R002T0XQ50](../docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) — each AI gets own GitHub identity (per-persona attribution)
+- [081KSGS9H0008QG0R001JNKBFD](../docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) — node-local Claude agent stewards own registration PR
+- [081KSKBP80008QG0R003AX2A69](../docs/backlog/P1/081KSKBP80008QG0R003AX2A69-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) — credential persistence on USB ESP + boot-sequence auth-method picker (the active substrate this catalog cross-references for in-flight rows 5 + 6 above)
+- [081KSKBP80008QG0R00146WEX1](../docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md) — post-boot AI as home-owner; 3-mode USB-boot recovery substrate (fix / reformat-with-current-keys / full-reflash); operational-freedom mechanism; AI-worry-about-mistakes dissolves
 
 ## Remaining gaps (no backlog row yet — candidates per constitutional rail)
 
-Substrate-engineering targets NOT covered by B-0852 or sibling rows.
+Substrate-engineering targets NOT covered by 081KSKBP80008QG0R003AX2A69 or sibling rows.
 Each new credential-type filing should walk the constitutional-rail
 decision before authoring: **public identifier → ESP allowed; secret
 material → console or post-install secrets management only**.
 
-When B-0852 ships, secret-class additions become MANIFEST EDITS
+When 081KSKBP80008QG0R003AX2A69 ships, secret-class additions become MANIFEST EDITS
 (declarative; new entry in `/esp/zeta-creds-manifest.yaml`) rather than
-new code. Per Aaron 2026-05-27 in B-0852: *"the keep credentials options
+new code. Per Aaron 2026-05-27 in 081KSKBP80008QG0R003AX2A69: *"the keep credentials options
 we should declare each credential we need and save and restore so it's
-not so imparative too."* Adding a new cred type post-B-0852 = one YAML
+not so imparative too."* Adding a new cred type post-081KSKBP80008QG0R003AX2A69 = one YAML
 entry; the persist/restore code reads the manifest + iterates.
 
-| Candidate | Content class | Likely transit (post-B-0852) | Notes |
+| Candidate | Content class | Likely transit (post-081KSKBP80008QG0R003AX2A69) | Notes |
 |---|---|---|---|
-| GPG signing key (operator) | Secret | B-0852 manifest extension | Per constitutional rail |
-| age key (operator) | Secret | B-0852 manifest extension | For SOPS / age-encrypted state |
+| GPG signing key (operator) | Secret | 081KSKBP80008QG0R003AX2A69 manifest extension | Per constitutional rail |
+| age key (operator) | Secret | 081KSKBP80008QG0R003AX2A69 manifest extension | For SOPS / age-encrypted state |
 | K8s join token | Secret | Cluster console at install time OR auto-generated on bootstrap | Per constitutional rail |
 | ArgoCD admin initial password | Secret | Cluster console at install time | Per constitutional rail |
 | Cosign signing key (cluster-issued) | Secret | Post-install secrets mgmt | For artifact signing |
 | Cluster TLS root CA | Secret | Post-install secrets mgmt | For internal-CA bootstrap |
-| Tailscale / WireGuard auth key | Secret | B-0852 manifest extension | For overlay-network bootstrap |
+| Tailscale / WireGuard auth key | Secret | 081KSKBP80008QG0R003AX2A69 manifest extension | For overlay-network bootstrap |
 | Time-server NTP override | Public config | USB ESP at flash time (candidate) | Cheap; non-secret |
 | Locale / timezone | Public config | USB ESP at flash time (candidate) | Cheap; non-secret |
 | Per-node disk role hints | Public config | USB ESP at flash time (candidate) | Currently in flake per-host config |
@@ -232,10 +232,10 @@ entry; the persist/restore code reads the manifest + iterates.
 
 ## Substrate-engineering composition
 
-- B-0789 (iter-4.2 SSH pubkey injection)
-- B-0792 (iter-5.2 hostname injection)
-- B-0835 (initial-password runtime activation fix)
-- B-0864 (streams-are-relationships substrate — each injection-point pipeline is a tiny typed function per the distribute-across-tiny-functions architectural principle)
+- 081KSGS9H0008QG0R002T3BJ2R (iter-4.2 SSH pubkey injection)
+- 081KSGS9H0008QG0R003V23XNZ (iter-5.2 hostname injection)
+- 081KSGS9H0008QG0R00120EEHM (initial-password runtime activation fix)
+- 081KSKBP80008QG0R0039RW25E (streams-are-relationships substrate — each injection-point pipeline is a tiny typed function per the distribute-across-tiny-functions architectural principle)
 
 ## Composes with rules
 

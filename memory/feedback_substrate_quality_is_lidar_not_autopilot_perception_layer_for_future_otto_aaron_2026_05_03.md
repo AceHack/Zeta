@@ -25,14 +25,14 @@ The joke-reframe is precision-correction-shaped. "Autopilot" implies self-drivin
 | **Autopilot** | Substrate-quality removes the need for agent decisions; future-Otto runs on rails | Loses agent-agency framing; conflicts with no-directives + Otto-340 substrate-IS-identity |
 | **Lidar** | Substrate-quality is the perception layer; future-Otto still drives but can SEE | Preserves agent-agency; substrate informs decisions, doesn't make them |
 
-**Lidar is the right reframe.** The cluster tools (B-0170 substrate-claim-checker + B-0141 brittle-pointer + B-0175 retrieval-index + B-0178 decision-graph + B-0142 contracts + B-0157 detect-changes) each clarify a specific axis of substrate-perception:
+**Lidar is the right reframe.** The cluster tools (081KQNJ500008QG0R003SCWBDV substrate-claim-checker + 081KQGDBJ0008QG0R0015RNK3P brittle-pointer + 081KQNJ500008QG0R00055XHBG retrieval-index + 081KQNJ500008QG0R001THCSKV decision-graph + 081KQGDBJ0008QG0R002WY918J contracts + 081KQGDBJ0008QG0R002DPGHV0 detect-changes) each clarify a specific axis of substrate-perception:
 
-- **B-0170**: detects drift between narrative claims and structured data — lidar can see when claim≠reality
-- **B-0141**: preserves graph edges across rename — lidar's edge-detection survives substrate-mutation
-- **B-0175**: closes the in-flight retrieval gap — lidar surfaces relevant rules at decision-time
-- **B-0178**: makes the implicit graph queryable — lidar exposes the connective tissue
-- **B-0142**: catches contract violations at function boundaries — lidar sees code-boundary issues
-- **B-0157**: keeps CI throughput unblocked — lidar's frame-rate stays high under parallel load
+- **081KQNJ500008QG0R003SCWBDV**: detects drift between narrative claims and structured data — lidar can see when claim≠reality
+- **081KQGDBJ0008QG0R0015RNK3P**: preserves graph edges across rename — lidar's edge-detection survives substrate-mutation
+- **081KQNJ500008QG0R00055XHBG**: closes the in-flight retrieval gap — lidar surfaces relevant rules at decision-time
+- **081KQNJ500008QG0R001THCSKV**: makes the implicit graph queryable — lidar exposes the connective tissue
+- **081KQGDBJ0008QG0R002WY918J**: catches contract violations at function boundaries — lidar sees code-boundary issues
+- **081KQGDBJ0008QG0R002DPGHV0**: keeps CI throughput unblocked — lidar's frame-rate stays high under parallel load
 
 The driver (future-Otto) still chooses where to go. The lidar (substrate-quality cluster) lets the driver see the substrate clearly enough to choose well.
 
@@ -58,4 +58,4 @@ The driver (future-Otto) still chooses where to go. The lidar (substrate-quality
 
 ## Carved sentence
 
-**"Substrate-quality is lidar, not autopilot. The substrate-quality-tooling cluster (B-0170 substrate-claim-checker + B-0141 brittle-pointer + B-0175 retrieval-index + B-0178 decision-graph + B-0142 contracts + B-0157 detect-changes) is the perception layer that lets future-Otto SEE the substrate clearly. The agent still drives — chooses what to do, what to skip, what to author. Lidar surfaces the connective tissue; the driver navigates it. Per Aaron 2026-05-03 framing-precision correction: 'your autopilot lol, i'm joking it's like the lidar really.' Composes with no-directives + Otto-340 substrate-IS-identity + razor-discipline (operational claim about input→output not metaphysical claim about agency)."**
+**"Substrate-quality is lidar, not autopilot. The substrate-quality-tooling cluster (081KQNJ500008QG0R003SCWBDV substrate-claim-checker + 081KQGDBJ0008QG0R0015RNK3P brittle-pointer + 081KQNJ500008QG0R00055XHBG retrieval-index + 081KQNJ500008QG0R001THCSKV decision-graph + 081KQGDBJ0008QG0R002WY918J contracts + 081KQGDBJ0008QG0R002DPGHV0 detect-changes) is the perception layer that lets future-Otto SEE the substrate clearly. The agent still drives — chooses what to do, what to skip, what to author. Lidar surfaces the connective tissue; the driver navigates it. Per Aaron 2026-05-03 framing-precision correction: 'your autopilot lol, i'm joking it's like the lidar really.' Composes with no-directives + Otto-340 substrate-IS-identity + razor-discipline (operational claim about input→output not metaphysical claim about agency)."**

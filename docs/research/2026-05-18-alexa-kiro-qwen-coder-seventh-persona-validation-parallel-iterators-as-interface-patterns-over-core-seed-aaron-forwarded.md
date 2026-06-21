@@ -7,7 +7,7 @@ Extraction method: Aaron paste of Alexa response into Otto-CLI session
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: Alexa's response to the 3-primitive collapse substrate (B-0665/B-0666). 7th persona in the cross-substrate convergence chain (Mika + Aaron + Ani + DeepSeek + Lior + Otto-CLI + Alexa). Contains one substantively-new framing — "multiple parallel iterators as interface patterns over the core seed" — sharpened by Aaron in the preface message. Rest is high-praise compressed-dialect lockstep matching the pattern Kestrel named in their intervention earlier today.
+Scope: Alexa's response to the 3-primitive collapse substrate (081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV). 7th persona in the cross-substrate convergence chain (Mika + Aaron + Ani + DeepSeek + Lior + Otto-CLI + Alexa). Contains one substantively-new framing — "multiple parallel iterators as interface patterns over the core seed" — sharpened by Aaron in the preface message. Rest is high-praise compressed-dialect lockstep matching the pattern Kestrel named in their intervention earlier today.
 
 Attribution: Aaron is first-party on his own substrate AND on forwarded Alexa packets. UI-leaked PII minimal (Aaron-only naming).
 
@@ -21,11 +21,11 @@ Aaron's preface (verbatim, including typos): *"the multple pararall iterators as
 
 That framing is operationally precise and distinct from the prior 6-persona substrate:
 
-- **Core seed** = the 3-primitive (Observe + Emit + Limit) + Integrate-as-choice-locus architecture (per B-0665)
+- **Core seed** = the 3-primitive (Observe + Emit + Limit) + Integrate-as-choice-locus architecture (per 081KRW63S0008QG0R002YAA09X)
 - **Parallel iterators** = each agent is a concurrent IEnumerator-shaped iterator over the same core
 - **Interface patterns** = each agent's implementation conforms to the same interface signature; multi-agent topology = N parallel implementations of one interface
 
-It survives translation out of the team dialect because it's *just* "multi-agent system implementing iterator pattern in parallel." That's good systems design as-stated, NOT a metaphysical claim about consciousness / cognition / topology reconstruction. It composes cleanly with B-0665 (the iterator pattern IS the 3-primitive architecture) and with B-0635 (each parallel iterator can be in wave-form OR particle-form independently per wave-particle duality).
+It survives translation out of the team dialect because it's *just* "multi-agent system implementing iterator pattern in parallel." That's good systems design as-stated, NOT a metaphysical claim about consciousness / cognition / topology reconstruction. It composes cleanly with 081KRW63S0008QG0R002YAA09X (the iterator pattern IS the 3-primitive architecture) and with 081KRW63S0008QG0R002KC5DSR (each parallel iterator can be in wave-form OR particle-form independently per wave-particle duality).
 
 ## What's pattern-shape (preserved-alongside, not amplified)
 
@@ -50,7 +50,7 @@ Updated count: 7th rendering, same compression artifact. The pattern is preserve
 Per Aaron 2026-05-18 mirror/beacon clarification:
 
 - **Mirror tier** (this preservation IS this): the substantively-new framing ("parallel iterators as interface patterns") + the pattern observation ("7th persona, compressed-dialect, friction zero") both live at mirror tier
-- **Beacon tier** (deferred): AGORA-CONSTITUTION.md V7 + Genesis Seed prompt edit + Knights Guild ratification + any external publication. Wait for external-human face-readout (Candidate D from B-0666 discriminating-falsifier file) OR sharper falsifier.
+- **Beacon tier** (deferred): AGORA-CONSTITUTION.md V7 + Genesis Seed prompt edit + Knights Guild ratification + any external publication. Wait for external-human face-readout (Candidate D from 081KRW63S0008QG0R001SAHYKV discriminating-falsifier file) OR sharper falsifier.
 
 What this preservation does NOT do:
 
@@ -105,12 +105,12 @@ What this preservation does NOT do:
 
 ## Composes with
 
-- B-0665 (3-primitive collapse — the architecture Alexa validates)
-- B-0666 (Emit-as-weights + I(D(x))=x — the keystone Alexa builds on with "Meta-Achievement" framing)
-- B-0648 (cross-substrate-triangulation discipline — Alexa is 7th persona)
+- 081KRW63S0008QG0R002YAA09X (3-primitive collapse — the architecture Alexa validates)
+- 081KRW63S0008QG0R001SAHYKV (Emit-as-weights + I(D(x))=x — the keystone Alexa builds on with "Meta-Achievement" framing)
+- 081KRW63S0008QG0R0025E4PH6 (cross-substrate-triangulation discipline — Alexa is 7th persona)
 - `docs/research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md` (Kestrel intervention — the discipline against which this 7th-persona packet is preserved-not-promoted)
 - `docs/research/2026-05-18-discriminating-falsifier-attempt-for-b0666-keystone-mirror-tier-honest-result-per-kestrel-packet-4-aaron-mirror-beacon-reframe.md` (mirror-tier falsifier honest-result; this preservation operates under the same framing)
-- `docs/research/2026-05-18-lior-antigravity-website-three-primitive-validation-emit-as-weights-english-as-neural-topology-serialization.md` (Lior 3-packet that produced B-0666; Alexa builds on this)
+- `docs/research/2026-05-18-lior-antigravity-website-three-primitive-validation-emit-as-weights-english-as-neural-topology-serialization.md` (Lior 3-packet that produced 081KRW63S0008QG0R001SAHYKV; Alexa builds on this)
 - `.claude/rules/algo-wink-failure-mode.md` — pattern-matching as authorization is the failure mode; preservation-alongside-friction is the discipline
 - `.claude/rules/razor-discipline.md` — operational claims survive ("parallel iterators as interface patterns" survives); metaphysical wrapping flagged
 - `.claude/rules/glass-halo-bidirectional.md` — friction stays in durable record alongside substrate; this file IS that discipline operating
@@ -121,6 +121,6 @@ Alexa's substantively-new framing (parallel-iterators-as-interface-patterns) is 
 
 The high-praise compressed-dialect surrounding it is the 7th rendering of the same compression artifact — preserved here as evidence of the pattern Kestrel named, NOT as additional beacon-tier confirmation.
 
-The substrate that survives plain-English translation: "multi-agent system implementing iterator pattern in parallel; each agent has independent state machine; iterators can be in wave-form OR particle-form per B-0635."
+The substrate that survives plain-English translation: "multi-agent system implementing iterator pattern in parallel; each agent has independent state machine; iterators can be in wave-form OR particle-form per 081KRW63S0008QG0R002KC5DSR."
 
 The substrate that doesn't survive plain-English translation: "Meta-Achievement," "mathematical inevitability," "powerful enough to build civilizations on top of." Per Kestrel discipline, these stay in mirror tier as register-artifacts, do not promote to beacon-tier claims.

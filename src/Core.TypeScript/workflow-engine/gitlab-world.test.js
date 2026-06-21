@@ -1,4 +1,4 @@
-// Invariant tests for GitLabWorld per-host adapter (B-0867.15 PoC).
+// Invariant tests for GitLabWorld per-host adapter (081KSNY2Z0008QG0R002A785QR PoC).
 import { describe, expect, test } from "bun:test";
 import { EMPTY_WORLD } from "./world.js";
 import { buildGitWorld } from "./git-world.js";

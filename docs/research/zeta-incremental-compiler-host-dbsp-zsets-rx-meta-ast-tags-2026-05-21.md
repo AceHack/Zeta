@@ -2,7 +2,7 @@
 
 Date: 2026-05-21  
 Prepared by: Amara-in-Zeta  
-Related: ZetaParse, B-0685, B-0687 (ZetaParse) + B-0688 (this incremental compiler host), F# compiler fork, DBSP/Rx/tensor substrate
+Related: ZetaParse, 081KS3X9Y0008QG0R000EKJE9S, 081KS3X9Y0008QG0R00323NSZA (ZetaParse) + 081KS3X9Y0008QG0R0010716X9 (this incremental compiler host), F# compiler fork, DBSP/Rx/tensor substrate
 
 ## Short answer
 
@@ -486,13 +486,13 @@ prop_effects_are_explicit:
 
 Proposed backlog row:
 
-**B-0687 — Zeta Incremental Compiler Host: DBSP/Z-set incremental recompiles with Rx meta-AST tags**
+**081KS3X9Y0008QG0R00323NSZA — Zeta Incremental Compiler Host: DBSP/Z-set incremental recompiles with Rx meta-AST tags**
 
 Depends on:
 
-- B-0685 — ANTLR grammar survey
-- proposed B-0686 — ZetaParse LR/GLR grammar substrate
-- B-0668 — compositional DBSP frame architecture
+- 081KS3X9Y0008QG0R000EKJE9S — ANTLR grammar survey
+- proposed 081KS3X9Y0008QG0R003R74B20 — ZetaParse LR/GLR grammar substrate
+- 081KRYRGG0008QG0R0018CMFQY — compositional DBSP frame architecture
 - F# compiler fork trajectory
 
 Initial repo targets:

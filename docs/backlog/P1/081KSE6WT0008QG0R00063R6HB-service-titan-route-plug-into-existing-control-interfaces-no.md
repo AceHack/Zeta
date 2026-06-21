@@ -1,6 +1,5 @@
 ---
-id: B-0765
-zetaid: 081KSE6WT0008QG0R00063R6HB
+id: 081KSE6WT0008QG0R00063R6HB
 priority: P1
 status: open
 title: ServiceTitan route — plug into existing control interfaces/structures (not new ones); ontology negotiation at the standards layer
@@ -9,13 +8,13 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
 composes_with:
-  - B-0744
-  - B-0747
+  - 081KSE6WT0008QG0R000SH6E0R
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -27,7 +26,7 @@ tags: [strategy, standards, control-plane, ontology-negotiation, adoption, servi
 ## Problem
 
 Aaron 2026-05-25 mid-iteration-2-wait, sharpening the strategic
-substrate from B-0763 (negotiation-high-seat) and B-0764
+substrate from 081KSE6WT0008QG0R000WVYAJ2 (negotiation-high-seat) and 081KSE6WT0008QG0R0009YYNP4
 (CNCF-ecosystem as force multipliers): *"i always follow the
 service titan route now take advantage of existing control
 interfaces/structure to spread faster and then our ontology
@@ -44,9 +43,9 @@ notifications) rather than asking operators to adopt new
 workflows. The new value happened within the existing interfaces.
 
 Applied to Zeta cluster-infrastructure substrate, this sharpens
-B-0763's "Zeta defines interfaces" framing:
+081KSE6WT0008QG0R000WVYAJ2's "Zeta defines interfaces" framing:
 
-| B-0763 abstract framing | B-0765 ServiceTitan sharpening |
+| 081KSE6WT0008QG0R000WVYAJ2 abstract framing | 081KSE6WT0008QG0R00063R6HB ServiceTitan sharpening |
 |---|---|
 | Zeta defines interfaces; vendors implement | INSTEAD: Zeta uses EXISTING standard interfaces (k8s CRDs, OAM Components, Crossplane Compositions, Helm charts, OCI artifacts, ArgoCD Applications, Flux Kustomizations) |
 | Plug CNCF projects behind Zeta interfaces | INSTEAD: contribute Zeta substrate AS standard k8s CRDs / OAM Components / Helm charts that operators using existing tooling can already consume |
@@ -79,30 +78,30 @@ of adoption cost.
 **The new value Zeta adds happens INSIDE these standards**, not
 in parallel to them:
 
-- AI-native cluster install (B-0754) — shipped AS NixOS host
+- AI-native cluster install (081KSGS9H0008QG0R002T3BJ2R) — shipped AS NixOS host
   configs + ArgoCD Application manifests + Helm charts; operators
   consume via their existing GitOps + helm flow; Zeta substrate
   is "the most ergonomic NixOS + ArgoCD + KubeVela composition"
-- USB as repair tool (B-0760) — shipped AS standard kubeadm /
+- USB as repair tool (081KSE6WT0008QG0R003WG0V6P) — shipped AS standard kubeadm /
   k3sup join-flow extensions; operators get the repair semantics
   by adopting Zeta's k8s manifests in their existing cluster
-- ARC-AGI reference architecture (B-0761) — published AS a
+- ARC-AGI reference architecture (081KSE6WT0008QG0R0015ZF2G6) — published AS a
   reference GitOps repo any operator can `argocd app create`
   against; benchmark scenarios shipped AS standard ResourceGraphs
   + Compositions + Charts
-- Telemetry flywheel (B-0762) — shipped AS standard OpenTelemetry
+- Telemetry flywheel (081KSE6WT0008QG0R003FG3E8R) — shipped AS standard OpenTelemetry
   exporters + ArgoCD ApplicationSet diff submitters
-- CNCF force multipliers (B-0764) — every CNCF project Zeta
+- CNCF force multipliers (081KSE6WT0008QG0R0009YYNP4) — every CNCF project Zeta
   adopts is already a standard the operator may already use;
   Zeta wires them coherently
-- Cloud-native plugins (B-0763) — re-framed: instead of
+- Cloud-native plugins (081KSE6WT0008QG0R000WVYAJ2) — re-framed: instead of
   Zeta-shaped interfaces, ship as standard k8s CRDs / OAM
   Components / Crossplane Compositions that the operator's
   existing tooling already consumes
 
 ## Ontology negotiation at the standards layer (the killer feature)
 
-The B-0741 ontology-negotiation substrate becomes **far more
+The 081KSE6WT0008QG0R002CC6314 ontology-negotiation substrate becomes **far more
 valuable when it operates AT the standards layer** instead of
 per-project or per-cluster:
 
@@ -126,7 +125,7 @@ benefits, not just Zeta-cluster operators.
 - [ ] Document the policy explicitly in `docs/strategic-substrate.md`
       OR in CLAUDE.md+AGENTS.md so every future substrate
       authoring decision is filtered through it
-- [ ] Audit existing cluster-install substrate (B-0754 v1
+- [ ] Audit existing cluster-install substrate (081KSGS9H0008QG0R002T3BJ2R v1
       currently in iteration-2 testing) against this filter:
       what parts INVENT new control interfaces? Which parts plug
       into existing standards? Refactor toward existing standards
@@ -140,7 +139,7 @@ benefits, not just Zeta-cluster operators.
       Kustomizations, OpenTelemetry exporters, OPA Rego modules,
       DAPR Components, NixOS host configurations, disko shapes
 - [ ] First adopted-standard implementation:
-      `Zeta.Storage.BlobStore` (B-0763) refactored from
+      `Zeta.Storage.BlobStore` (081KSE6WT0008QG0R000WVYAJ2) refactored from
       "Zeta-defined interface" to "standard k8s CRD that Zeta
       ships + operator consumes via their existing kubectl / helm
       / ArgoCD flow"
@@ -155,13 +154,13 @@ benefits, not just Zeta-cluster operators.
 
 ## Composes with + supersedes-by-sharpening
 
-This row **does NOT retract** B-0763 or B-0764 — both remain
+This row **does NOT retract** 081KSE6WT0008QG0R000WVYAJ2 or 081KSE6WT0008QG0R0009YYNP4 — both remain
 useful at the abstract level. It **sharpens** them with the
 ServiceTitan strategic filter: every cluster-install substrate
 decision should pass through "are we inventing or adopting?"
 and prefer adopting.
 
-The composition with B-0741 (ontology negotiation):
+The composition with 081KSE6WT0008QG0R002CC6314 (ontology negotiation):
 
 - **Without this row**: Zeta builds its own ontology layer +
   asks operators to translate from their vocabulary to Zeta's
@@ -175,30 +174,30 @@ layer is the load-bearing differentiator.
 
 ## Composes with
 
-- B-0741 — ontology+category negotiation (the substrate that
+- 081KSE6WT0008QG0R002CC6314 — ontology+category negotiation (the substrate that
   operates at the standards layer per this row's sharpening)
-- B-0744 — FIDO2/WebAuthn auth bridge (plug into existing
+- 081KSE6WT0008QG0R000SH6E0R — FIDO2/WebAuthn auth bridge (plug into existing
   WebAuthn + OIDC standards rather than invent new auth
   protocols)
-- B-0747 — git-native per-machine state + GitOps reconciliation
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state + GitOps reconciliation
   (the existing GitOps standard Zeta plugs into via ArgoCD /
   Flux)
-- B-0748 — kro/Crossplane/Koreo/middleware spectrum (the
+- 081KSE6WT0008QG0R002E6P098 — kro/Crossplane/Koreo/middleware spectrum (the
   existing k8s-CRD-substitution substrate Zeta adopts)
-- B-0749 — KubeVela/OAM Component/Trait (the existing app-model
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM Component/Trait (the existing app-model
   standard Zeta adopts)
-- B-0754 — zero-typing first-boot (must be auditable against
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (must be auditable against
   this filter)
-- B-0759 — first-time-CLI-user persona (the persona benefits
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (the persona benefits
   when Zeta plugs into standards they may already know)
-- B-0761 — open reference architecture (the reference IS the
+- 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (the reference IS the
   most ergonomic composition of existing standards)
-- B-0762 — AI auto-submit-back telemetry (plugs into existing
+- 081KSE6WT0008QG0R003FG3E8R — AI auto-submit-back telemetry (plugs into existing
   GitHub Issues + PR substrate, OpenTelemetry exporters)
-- B-0763 — cloud-native plugins fit Zeta interfaces (sharpened
+- 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces (sharpened
   by this row: prefer standard k8s CRDs over Zeta-defined
   interfaces where the CRD exists)
-- B-0764 — CNCF ecosystem force multipliers (every adopted CNCF
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF ecosystem force multipliers (every adopted CNCF
   project IS a standards-layer plug)
 
 ## What this prevents
@@ -226,7 +225,7 @@ reference-architecture-clarity is where Zeta wins.
 
 ## What this preserves
 
-The B-0763 + B-0764 thesis still holds at the strategic level:
+The 081KSE6WT0008QG0R000WVYAJ2 + 081KSE6WT0008QG0R0009YYNP4 thesis still holds at the strategic level:
 **operator-in-the-negotiation-high-seat**. The sharpening is
 HOW we achieve it — by plugging into standards layers that
 already deliver swap-mechanism + ecosystem + adoption, rather
@@ -235,7 +234,7 @@ they get standards-layer benefits + Zeta's coherent composition.
 
 ## Out of scope
 
-- Reconciling B-0763's "Zeta-defined interface" framing with
+- Reconciling 081KSE6WT0008QG0R000WVYAJ2's "Zeta-defined interface" framing with
   this row's "standards-first" framing in detail per interface
   — handle case-by-case as each interface ships
 - Standards-body engagement (CNCF membership, OASIS

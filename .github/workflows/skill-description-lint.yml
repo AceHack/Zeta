@@ -1,9 +1,9 @@
 # .github/workflows/skill-description-lint.yml
 #
-# CI-wire the skill-description audit gate (B-0347.6) so the routing-budget
+# CI-wire the skill-description audit gate (081KSRGFP0008QG0R00059AM3C) so the routing-budget
 # cap is *enforced*, not just manually checkable.
 #
-# B-0347.4 (PR #6029) shipped src/Core.TypeScript/hygiene/audit-skill-description-length.ts —
+# 081KR50HA0008QG0R002ZNFQBZ.4 (PR #6029) shipped src/Core.TypeScript/hygiene/audit-skill-description-length.ts —
 # a deterministic Rule-0 gate that fails on any over-cap (>150 char), multiline,
 # or boilerplate skill description. But nothing ran it automatically, so a
 # description could silently regrow past the budget and only be caught on a
@@ -13,7 +13,7 @@
 #
 # The tool exits non-zero on ERRORS (over-cap / multiline / boilerplate) and
 # exits 0 on WARNINGS (the <=120-char preferred band is advisory, not fatal —
-# promoting those to errors is B-0347.7's scope, out of scope here). So running
+# promoting those to errors is 081KSRGFP0008QG0R002SV9GGY's scope, out of scope here). So running
 # the tool directly yields exactly the intended gating: fail on errors, pass on
 # warnings.
 #
@@ -27,7 +27,7 @@
 #
 # See:
 #   - src/Core.TypeScript/hygiene/audit-skill-description-length.ts (the gate this invokes)
-#   - docs/backlog/P2/B-0347.6-ci-wire-skill-description-audit-gate.md
+#   - docs/backlog/P2/081KSRGFP0008QG0R00059AM3C-ci-wire-skill-description-audit-gate.md
 #   - .github/workflows/role-ref-current-state-surfaces-lint.yml (the precedent)
 
 on:

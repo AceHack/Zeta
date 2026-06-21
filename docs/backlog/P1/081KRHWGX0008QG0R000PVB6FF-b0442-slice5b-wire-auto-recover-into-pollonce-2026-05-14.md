@@ -1,9 +1,8 @@
 ---
-id: B-0504
-zetaid: 081KRHWGX0008QG0R000PVB6FF
+id: 081KRHWGX0008QG0R000PVB6FF
 priority: P1
 status: closed
-title: "B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags"
+title: "081KRFA460008QG0R00061SXRW slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
@@ -17,11 +16,11 @@ tags: [background-service, bus, mechanization, drift-detection, recovery-pr, con
 type: feature
 ---
 
-# B-0442 slice 5b — wire `--auto-recover` into `pollOnce`
+# 081KRFA460008QG0R00061SXRW slice 5b — wire `--auto-recover` into `pollOnce`
 
 ## Origin
 
-Depends on B-0503 (core `openRecoveryPR` function). This row:
+Depends on 081KRHWGX0008QG0R0027YXBTB (core `openRecoveryPR` function). This row:
 
 1. Adds `autoRecover` + `recoveryDryRun` to `DetectorConfig`.
 2. Implements real `RecoveryAdapters` (production `spawnSync` wrappers).
@@ -149,7 +148,7 @@ return {
 
 ## Real adapters implementation note
 
-`REAL_ADAPTERS.openRecoveryPR` wraps `openRecoveryPR` from B-0503 with
+`REAL_ADAPTERS.openRecoveryPR` wraps `openRecoveryPR` from 081KRHWGX0008QG0R0027YXBTB with
 real `spawnSync` sub-adapters:
 
 ```typescript
@@ -180,15 +179,15 @@ reads git, so the SHA is already validated once upstream).
 ## Dependency chain
 
 ```
-B-0442 (slices 1–4 + 6 shipped)
-  └─ B-0503 (openRecoveryPR core + RecoveryAdapters — MUST LAND FIRST)
-       └─ B-0504 (THIS ROW — wire into pollOnce + real adapters + config + tests)
-            └─ B-0505 (docs + acceptance criteria close)
+081KRFA460008QG0R00061SXRW (slices 1–4 + 6 shipped)
+  └─ 081KRHWGX0008QG0R0027YXBTB (openRecoveryPR core + RecoveryAdapters — MUST LAND FIRST)
+       └─ 081KRHWGX0008QG0R000PVB6FF (THIS ROW — wire into pollOnce + real adapters + config + tests)
+            └─ 081KRHWGX0008QG0R002C038BJ (docs + acceptance criteria close)
 ```
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- [ ] B-0503 must be merged before this row starts (depends_on B-0503)
+- [ ] 081KRHWGX0008QG0R0027YXBTB must be merged before this row starts (depends_on 081KRHWGX0008QG0R0027YXBTB)
 - [ ] Run full test suite: `bun tools/bg/missed-substrate-detector.test.ts`
       and `bun tools/bg/missed-substrate-recovery.test.ts`
 - [ ] Verify `REAL_ADAPTERS` can import from `missed-substrate-recovery.ts`

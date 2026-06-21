@@ -1,12 +1,11 @@
 ---
-id: B-0383
-zetaid: 081KR50HA0008QG0R003Z3V6VP
+id: 081KR50HA0008QG0R003Z3V6VP
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — capital-structure / Hayekian triangle as multi-stage stochastic production process (Austrian primitive #2)
 tier: research-grade
 effort: M
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K]
@@ -17,7 +16,7 @@ type: research
 
 ---
 
-# B-0383 — Formalizability assessment: capital-structure / Hayekian triangle → multi-stage stochastic production
+# 081KR50HA0008QG0R003Z3V6VP — Formalizability assessment: capital-structure / Hayekian triangle → multi-stage stochastic production
 
 ## What
 
@@ -38,7 +37,7 @@ is further from the consumer end; consumer goods production is
 closest. Credit expansion (artificial lowering of interest rates)
 induces *malinvestment* — elongation of the production structure
 beyond what genuine time-preferences support — which must eventually
-be corrected in a bust (ABCT; covered in B-0385 separately).
+be corrected in a bust (ABCT; covered in 081KR50HA0008QG0R00238MS98 separately).
 
 Key academic development: Garrison's *Time and Money* (2001)
 provides the most developed diagrammatic treatment. Lewin's
@@ -72,7 +71,7 @@ well-developed quant frameworks:
    an option exercise but a forced liquidation)?
 
 3. What does the capital-structure formalization inherit from
-   and contribute to the ABCT formalization (B-0385)? (They
+   and contribute to the ABCT formalization (081KR50HA0008QG0R00238MS98)? (They
    are tightly coupled; separating the structural claim from
    the cycle claim is part of the research question.)
 
@@ -86,8 +85,8 @@ well-developed quant frameworks:
 - Statement of the Austrian primitive (with Böhm-Bawerk /
   Hayek / Garrison / Lewin variants)
 - Best-candidate quant formalization
-- Formalization type (per B-0380 vocabulary)
-- Relationship to ABCT (B-0385) — what this primitive contributes
+- Formalization type (per 081KR50HA0008QG0R003ESW3MH vocabulary)
+- Relationship to ABCT (081KR50HA0008QG0R00238MS98) — what this primitive contributes
   vs. what ABCT adds on top
 - Synthesis-gap remaining
 - Verdict
@@ -103,21 +102,21 @@ ls docs/aurora/ | grep capital-structure
 - Research note committed under `docs/aurora/`
 - Hayek / Garrison / Lewin variants distinguished
 - Quant analogs evaluated (real options, DAG models, I-O)
-- Relationship to B-0385 (ABCT) explicitly scoped
-- Verdict explicit per B-0380 vocabulary
+- Relationship to 081KR50HA0008QG0R00238MS98 (ABCT) explicitly scoped
+- Verdict explicit per 081KR50HA0008QG0R003ESW3MH vocabulary
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0381 survey provides prior-work context;
+- [x] Prior-art search: 081KR50HA0008QG0R000M4H35K survey provides prior-work context;
   no existing `docs/aurora/` note on capital-structure formalization.
-- [x] Dependency-restructure: parallelizable with B-0382, B-0384,
-  B-0385, B-0386 after B-0380 and B-0381 complete.
+- [x] Dependency-restructure: parallelizable with 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R000467SWT,
+  081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ after 081KR50HA0008QG0R003ESW3MH and 081KR50HA0008QG0R000M4H35K complete.
 
 ## Composes with
 
-- B-0023 (parent): implements primitive #2
-- B-0380, B-0381 (deps): vocabulary and prior-work context
-- B-0385 (sibling, strong coupling): ABCT assessment; this row
-  scopes the *structure* claim; B-0385 scopes the *cycle dynamics*
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): implements primitive #2
+- 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K (deps): vocabulary and prior-work context
+- 081KR50HA0008QG0R00238MS98 (sibling, strong coupling): ABCT assessment; this row
+  scopes the *structure* claim; 081KR50HA0008QG0R00238MS98 scopes the *cycle dynamics*
   claim that depends on it
-- B-0387 (downstream): verdict feeds synthesis ADR
+- 081KR50HA0008QG0R000M838VA (downstream): verdict feeds synthesis ADR

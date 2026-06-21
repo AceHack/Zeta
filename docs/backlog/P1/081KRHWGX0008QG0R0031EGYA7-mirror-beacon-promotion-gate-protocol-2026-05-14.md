@@ -1,11 +1,10 @@
 ---
-id: B-0473
-zetaid: 081KRHWGX0008QG0R0031EGYA7
+id: 081KRHWGX0008QG0R0031EGYA7
 priority: P1
 status: open
 title: "Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation"
 type: design
-origin: B-0426 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R0007RWSN1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R0007RWSN1
@@ -27,7 +26,7 @@ composes_with:
 ## Purpose
 
 Define the concrete criteria that gate a repo's graduation from Mirror to
-Beacon tier. The B-0426 item names the gate but leaves it abstract. This
+Beacon tier. The 081KRFA460008QG0R0007RWSN1 item names the gate but leaves it abstract. This
 row makes it actionable: what exactly must be true for a repo to be
 promoted?
 
@@ -35,10 +34,10 @@ promoted?
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0471 prior-art audit complete (especially the promotion-gate
+- [ ] 081KRHWGX0008QG0R002VV6DTS prior-art audit complete (especially the promotion-gate
   research doc at `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md`)
 - [ ] `docs/ALIGNMENT.md` reviewed — which clauses apply at Beacon tier?
-- [ ] Reciprocal pointers on B-0471/B-0472/B-0474 verified
+- [ ] Reciprocal pointers on 081KRHWGX0008QG0R002VV6DTS/081KRHWGX0008QG0R002DP6AZN/081KRHWGX0008QG0R0023FDYVE verified
 
 ## Gate dimensions to specify
 
@@ -119,11 +118,11 @@ Containing:
 - [ ] Checklist form of the gate produced (not just prose)
 - [ ] `PromotionProposal` template drafted
 - [ ] Protocol doc cross-references alignment-auditor role
-- [ ] B-0473 closed with PR link; B-0474 unblocked
+- [ ] 081KRHWGX0008QG0R0031EGYA7 closed with PR link; 081KRHWGX0008QG0R0023FDYVE unblocked
 
 ## Why P1
 
-- Direct dependency for B-0474 ADR
-- Can run in parallel with B-0472 after B-0471 completes
+- Direct dependency for 081KRHWGX0008QG0R0023FDYVE ADR
+- Can run in parallel with 081KRHWGX0008QG0R002DP6AZN after 081KRHWGX0008QG0R002VV6DTS completes
 - Bounded design task: answer 5 questions, produce checklist
-- Without this, B-0474 ADR cannot document the gate (undefined)
+- Without this, 081KRHWGX0008QG0R0023FDYVE ADR cannot document the gate (undefined)

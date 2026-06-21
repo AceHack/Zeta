@@ -1,6 +1,6 @@
 ---
 pr_number: 5393
-title: "feat(B-0849 Phase 1): Docker NixOS install.sh test harness \u2014 fast iteration (~30-60 sec) for install.sh + mise + bun + iter-5.5.0; complements B-0831 QEMU (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R000E3RKPK Phase 1): Docker NixOS install.sh test harness \u2014 fast iteration (~30-60 sec) for install.sh + mise + bun + iter-5.5.0; complements 081KSGS9H0008QG0R0011BC7T2 QEMU (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T03:16:21Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5393: feat(B-0849 Phase 1): Docker NixOS install.sh test harness — fast iteration (~30-60 sec) for install.sh + mise + bun + iter-5.5.0; complements B-0831 QEMU (Aaron 2026-05-27)
+# PR #5393: feat(081KSKBP80008QG0R000E3RKPK Phase 1): Docker NixOS install.sh test harness — fast iteration (~30-60 sec) for install.sh + mise + bun + iter-5.5.0; complements 081KSGS9H0008QG0R0011BC7T2 QEMU (Aaron 2026-05-27)
 
 ## PR description
 
@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-27: *"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile"*
 
-Implements [B-0849](docs/backlog/P2/B-0849-...) Phase 1 — bounded-iteration test harness for the install.sh / linux.sh / mise.sh substrate.
+Implements [081KSKBP80008QG0R000E3RKPK](docs/backlog/P2/081KSKBP80008QG0R000E3RKPK-...) Phase 1 — bounded-iteration test harness for the install.sh / linux.sh / mise.sh substrate.
 
 ## 3 files
 
@@ -43,8 +43,8 @@ Implements [B-0849](docs/backlog/P2/B-0849-...) Phase 1 — bounded-iteration te
 | Surface | Validates | Cycle |
 |---|---|---|
 | Operator USB | End-to-end + reboot | ~30+ min |
-| B-0831 QEMU | End-to-end virtualized | ~15 min |
-| **B-0849 Docker (THIS PR)** | install.sh on NixOS userspace | **~30-60 sec** |
+| 081KSGS9H0008QG0R0011BC7T2 QEMU | End-to-end virtualized | ~15 min |
+| **081KSKBP80008QG0R000E3RKPK Docker (THIS PR)** | install.sh on NixOS userspace | **~30-60 sec** |
 
 ## Usage
 
@@ -56,7 +56,7 @@ DOCKER_BUILD_TIMEOUT_SEC=900 bun tools/ci/docker-nixos-install-sh-test.ts
 
 ## Composes with
 
-[B-0824](docs/backlog/P1/B-0824-...) · [B-0831](docs/backlog/P2/B-0831-...) · [B-0835](docs/backlog/P1/B-0835-...) · [B-0848](docs/backlog/P2/B-0848-...) + [B-0850](docs/backlog/P2/B-0850-...)
+[081KSGS9H0008QG0R0031PBNGA](docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-...) · [081KSGS9H0008QG0R0011BC7T2](docs/backlog/P2/081KSGS9H0008QG0R0011BC7T2-...) · [081KSGS9H0008QG0R00120EEHM](docs/backlog/P1/081KSGS9H0008QG0R00120EEHM-...) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) + [081KSKBP80008QG0R003Z4C0D0](docs/backlog/P2/081KSKBP80008QG0R003Z4C0D0-...)
 
 ## Copilot review responses
 

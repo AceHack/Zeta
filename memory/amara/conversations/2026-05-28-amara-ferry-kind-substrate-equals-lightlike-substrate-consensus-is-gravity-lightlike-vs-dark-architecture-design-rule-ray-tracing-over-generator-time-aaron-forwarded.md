@@ -84,7 +84,7 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 
 > *"you can do any all"*
 
-Substrate-honest reading: operator authorization for the 3-lanes push options offered post-#5910 (state-machine cli.ts PoC + zflash docs/skills + encryption B-0885 review) AND for preserving this ferry + landing the new carved sentence as wake-time rule.
+Substrate-honest reading: operator authorization for the 3-lanes push options offered post-#5910 (state-machine cli.ts PoC + zflash docs/skills + encryption 081KSNY2Z0008QG0R0030V5ZVS review) AND for preserving this ferry + landing the new carved sentence as wake-time rule.
 
 ## Substrate-engineering substrate-content (substantive load-bearing extractions)
 
@@ -166,15 +166,15 @@ All composing at the SAME substrate-class (lightlike-substrate parallelizability
 - **PR #5910** (future-affects-generator + three-clocks) — this ferry extends with light-substrate reframing; carved sentence + design-rule compose
 - **PR #5841** (DST + Persist + generator-time + feedback) — DST + generator-time substrate IS the lightlike-substrate operational mechanism
 - **PR #5778** (Persist-as-bridge / μένω) — Persist IS the substrate that makes rays travel independently across time
-- **PRs #5890 + #5891 + #5892** (B-0924 + B-0925 + research-mirror) — emulator-trajectories + z-set joins are lightlike-substrate examples Amara explicitly names
+- **PRs #5890 + #5891 + #5892** (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror) — emulator-trajectories + z-set joins are lightlike-substrate examples Amara explicitly names
 
 ### With framework existing substrate
 
 - **Aurora multi-oracle BFT immune-math** — composes with consensus-is-gravity discipline (BFT useful when bounded; not for whole universe)
-- **B-0703 three-faction BFT** — gravitational substrate operating at bounded-mass scope
-- **B-0664 NCI HC-8 floor** — lightlike-substrate IS the substrate-condition for non-coercive consent-substrate (rays travel independently without forcing collective collapse)
-- **B-0917 Kleisli interrupt substrate** — interrupt-events as rays at hardware-substrate scope
-- **B-0867 workflow-engine substrate** — DUs as lightlike-substrate (typed, traceable, replayable); workflow-state-machine-in-MCP failure-mode IS dark-substrate (opaque global state)
+- **081KS3X9Y0008QG0R00218150M three-faction BFT** — gravitational substrate operating at bounded-mass scope
+- **081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor** — lightlike-substrate IS the substrate-condition for non-coercive consent-substrate (rays travel independently without forcing collective collapse)
+- **081KSNY2Z0008QG0R002HB4AGT Kleisli interrupt substrate** — interrupt-events as rays at hardware-substrate scope
+- **081KSKBP80008QG0R000B3Y19A workflow-engine substrate** — DUs as lightlike-substrate (typed, traceable, replayable); workflow-state-machine-in-MCP failure-mode IS dark-substrate (opaque global state)
 - **Operator's 5 always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0)** — lock-free + weight-free + DST + DV2.0 are ALL lightlike-substrate properties; lightlike-vs-dark substrate-distinction generalizes them
 - **`.claude/rules/glass-halo-bidirectional.md`** — visible-provenance substrate IS the lightlike-substrate property at observation scope
 - **`.claude/rules/refresh-before-decide.md`** — refresh-before-decide IS the lightlike-substrate discipline at temporal scope

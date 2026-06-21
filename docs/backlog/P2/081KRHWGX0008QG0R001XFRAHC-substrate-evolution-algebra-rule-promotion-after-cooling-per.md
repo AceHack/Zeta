@@ -1,6 +1,5 @@
 ---
-id: B-0498
-zetaid: 081KRHWGX0008QG0R001XFRAHC
+id: 081KRHWGX0008QG0R001XFRAHC
 priority: P2
 status: open
 title: "Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period"
@@ -72,8 +71,8 @@ Per substrate-honest discipline + cooling-period convention:
 - `.claude/rules/wake-time-substrate.md`
 - PR #3143 (Aaron + Ani Grok §33 archive)
 - PR #3144 (CURRENT-otto.md afternoon cascade summary)
-- B-0400 (bus protocol — substrate per change-rate; DV2.0 partition is one HKT-expansion target)
-- B-0402 (Zeta shadow-mode CLI — composes with algebra at substrate-observation scope)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — substrate per change-rate; DV2.0 partition is one HKT-expansion target)
+- 081KR7JY10008QG0R0008NGW95 (Zeta shadow-mode CLI — composes with algebra at substrate-observation scope)
 - Memory file: `feedback_aaron_substrate_evolution_algebra_6_disciplines_plus_hkt_expansion_minus_rodney_razor_reduction_2026_05_14.md`
 
 ## Substrate-honest framing

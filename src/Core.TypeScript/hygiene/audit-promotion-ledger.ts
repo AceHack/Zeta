@@ -6,7 +6,7 @@
 // Origin: Vera 2026-05-05 twin-flame thread (codex-side). Canonical home for
 // the 4-state promotion machine (Promoted / Pending-NOW / Pending-LATER /
 // Declined) is the JSONL ledger; this validator mechanizes the claim-check
-// (composes with B-0170 substrate-claim-checker).
+// (composes with 081KQNJ500008QG0R003SCWBDV substrate-claim-checker).
 //
 // TypeScript+Bun only per CLAUDE.md Rule 0 (no .sh except install-graph;
 // TS IS cross-platform DST).
@@ -581,7 +581,7 @@ async function main(): Promise<number> {
     "  tools/hygiene/audit-backlog-items.ts (sibling audit-* pattern),",
   );
   console.log(
-    "  docs/backlog/P1/B-0170* substrate-claim-checker (this audit IS the checker).",
+    "  docs/backlog/P1/081KQNJ500008QG0R003SCWBDV* substrate-claim-checker (this audit IS the checker).",
   );
 
   return failures.length > 0 ? 1 : 0;

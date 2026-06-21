@@ -33,7 +33,7 @@ First **code** slice of the canonical-retrofit (design-of-record: ADR #6267 / `d
 The v0 16-slot grammar (4×4 Navigate/Commit/Scope/Meta, Xbox-controller) existed only as **ADR prose** + a **corporate-private copy** in Max's `Menu16Slot[]` (`agentic-organization/`). This makes it **canonical code** — the single shared base both the sovereign `buildMenu()` and (later) corporate `Menu16` derive from:
 
 - `GRAMMAR_16_V0` — the 16 fixed slots (dense 0–15, four groups of four), in the ADR's exact table order.
-- `RenderedSlot` — the per-state contract (`{...slot, label, availability: Tri}`) both surfaces converge on; `availability` is the canonical tri-boolean (B-0944).
+- `RenderedSlot` — the per-state contract (`{...slot, label, availability: Tri}`) both surfaces converge on; `availability` is the canonical tri-boolean (081KSV2WD0008QG0R00051XS0N).
 - `byGroup` / `GROUP_RANGES` / `SLOT` — helpers + named indices (slot 7 = edit-grammar/branch, slot 14 = free-time NCI) instead of magic numbers.
 - `grammar-16.test.ts` — **conformance lock** against the ADR v0 table (9 tests; the grammar can't silently drift from its source of truth).
 
@@ -190,7 +190,7 @@ feat(observe): canonical v0 16-slot grammar module — the shared base …
 First code slice of the canonical-retrofit (ADR #6267). The v0 16-slot grammar
 (4x4 Navigate/Commit/Scope/Meta, Xbox-controller) lived only as ADR prose +
 Max's corporate-private Menu16Slot[]. This makes it canonical code: GRAMMAR_16_V0
-(16 fixed slots), RenderedSlot (the per-state label + canonical Tri/B-0944
+(16 fixed slots), RenderedSlot (the per-state label + canonical Tri/081KSV2WD0008QG0R00051XS0N
 availability contract both surfaces converge on), byGroup/GROUP_RANGES/SLOT
 helpers. Conformance test locks it against the ADR v0 table (can't silently drift).
 

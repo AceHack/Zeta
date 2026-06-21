@@ -1,17 +1,17 @@
 ---
-title: "B-0400 inter-agent bus protocol — multi-agent review (slice 6)"
+title: "081KR7JY10008QG0R000R503K2 inter-agent bus protocol — multi-agent review (slice 6)"
 date: 2026-05-13
 author: Otto (Claude Code, claude-sonnet-4-6)
 reviewers: [Otto (Claude Code), Vera (Codex / chatgpt-codex-connector)]
-backlog: B-0400
+backlog: 081KR7JY10008QG0R000R503K2
 operational-status: research-grade
 review-role: multi-agent review acceptance criterion
 GOVERNANCE §33: true
 ---
 
-# B-0400 inter-agent bus protocol — multi-agent review
+# 081KR7JY10008QG0R000R503K2 inter-agent bus protocol — multi-agent review
 
-Conducted as part of the slice-6 / acceptance-close for B-0400.
+Conducted as part of the slice-6 / acceptance-close for 081KR7JY10008QG0R000R503K2.
 Covers slices 1–5 as merged to `main` (through PR #2959).
 
 **Reviewers (bounded timeframe, 2026-05-13):**
@@ -25,7 +25,7 @@ Covers slices 1–5 as merged to `main` (through PR #2959).
 **Otto** (Claude Code, `claude-sonnet-4-6`, 2026-05-13).
 One of the five named factory agents (`otto | alexa | riven | vera | lior`).
 This review is the bounded-timeframe multi-agent review called for in the
-B-0400 acceptance criteria: *"P1 — get as many agents to review as possible
+081KR7JY10008QG0R000R503K2 acceptance criteria: *"P1 — get as many agents to review as possible
 within a bounded timeframe."*
 
 ---
@@ -94,7 +94,7 @@ threshold of 5 s prevents false-positive reclamation of a newly-created
 empty file before the PID write completes.
 
 This is correct for same-host coordination.  It is **not** correct for
-multi-host scenarios, but the B-0400 design scope is single-host factory
+multi-host scenarios, but the 081KR7JY10008QG0R000R503K2 design scope is single-host factory
 coordination, so no gap.
 
 ---
@@ -191,7 +191,7 @@ Review conducted via PR #2969 comment thread.
 **Severity:** P1 (process; now resolved)
 
 **Finding:** The PR initially marked the "multi-agent review" acceptance checkbox as
-complete with only a single Otto review. The B-0400 acceptance criterion specifies
+complete with only a single Otto review. The 081KR7JY10008QG0R000R503K2 acceptance criterion specifies
 *"get as many agents to review as possible within a bounded timeframe"* — closing on
 one reviewer risks bypassing the independent cross-agent validation this gate provides.
 
@@ -249,4 +249,4 @@ Vera's P1 process finding is resolved by this multi-reviewer update.
 - [x] Multi-agent review of this design — Otto + Vera reviewed in PR #2969 (slice 6); 2 agents within bounded timeframe
 ```
 
-All five acceptance criteria are now satisfied.  B-0400 may be closed.
+All five acceptance criteria are now satisfied.  081KR7JY10008QG0R000R503K2 may be closed.

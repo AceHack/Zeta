@@ -47,7 +47,7 @@ Contributor's responsibilities (factory-side):
 The general rule emerged from an Aaron-specific exchange:
 
 1. Otto encoded `samples/ServiceTitanCrm/*` references in
-   B-0090 with the framing "renamed from ServiceTitan."
+   081KQ8P5D0008QG0R0002TN22C with the framing "renamed from ServiceTitan."
 2. Aaron flagged: *"we don't have to say service titan
    anywhere in this repo other than to say that's my day
    job."*
@@ -138,7 +138,7 @@ When a new contributor onboards via `AGENTS.md` / `CONTRIBUTING.md`:
 - Surface the public-company-contributor compliance rule
   as part of the welcome.
 - Cite the rule (this memory + the generalized doc once
-  filed via B-0092).
+  filed via 081KQ8P5D0008QG0R003ZF64GG).
 - Make the contributor aware of:
   - The factory's repos are public.
   - Their employer's policies may apply to disclosures.
@@ -200,7 +200,7 @@ On round-close or quarterly cadence:
   "insider" register is a sibling of the "directive"
   register (both load-bearing words that should be reserved
   for their actual technical / legal contexts).
-- B-0092 (filed in same commit as this memory) — operational
+- 081KQ8P5D0008QG0R003ZF64GG (filed in same commit as this memory) — operational
   backlog item for the contributor-compliance doc + cadence
   encoding.
 

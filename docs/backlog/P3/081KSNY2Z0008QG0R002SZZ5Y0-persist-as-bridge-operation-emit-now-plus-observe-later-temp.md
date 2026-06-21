@@ -1,6 +1,5 @@
 ---
-id: B-0897
-zetaid: 081KSNY2Z0008QG0R002SZZ5Y0
+id: 081KSNY2Z0008QG0R002SZZ5Y0
 priority: P3
 status: open
 title: Persist-as-bridge-operation — Emit-now + Observe-later temporal bivector + richer typing Persist<TInternal, TSubstrateRecord, TPersistFeedback>
@@ -37,7 +36,7 @@ related_skills:
 tags: [persist-as-bridge-operation-not-base-primitive, persist-equals-emit-now-plus-observe-later, ople-vs-oels-mismatch-resolved-by-persist-derived-from-emit-plus-observe, persist-as-bivector-spanning-agent-internal-and-substrate-time, persist-richer-typing-tinternal-tsubstraterecord-tpersistfeedback, serialization-compression-redaction-encryption-provenance-indexing-in-the-gap, round-trip-promise-future-talks-to-past, composes-with-b0895-clifford-grade-decomposition-mapping, composes-with-b0896-category-theory-clifford-self-similarity, q-sharp-clifford-substrate-precedent-pauli-operators-as-cl-3-0]
 ---
 
-# B-0897 — Persist-as-bridge-operation refinement
+# 081KSNY2Z0008QG0R002SZZ5Y0 — Persist-as-bridge-operation refinement
 
 ## Context
 
@@ -50,15 +49,15 @@ Two compositional keepers:
 
 ## Scope
 
-Refine B-0895's Clifford grade-decomposition mapping table to add Persist-as-bridge row with the correct bivector structure (`agent/internal ∧ substrate/time`); document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature; identify which existing factory primitives are already Persist instances under this framing.
+Refine 081KSNY2Z0008QG0R002FX66H0's Clifford grade-decomposition mapping table to add Persist-as-bridge row with the correct bivector structure (`agent/internal ∧ substrate/time`); document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature; identify which existing factory primitives are already Persist instances under this framing.
 
-**Substrate-recognition disposition** (per B-0895 disposition): Persist is not new substrate-engineering work — it's substrate the factory is already operating in (the Git event log + memory files + Z-sets + retractions are all Persist-instances). The disposition is naming the bridge-operation shape so the typing + the round-trip promise are explicit.
+**Substrate-recognition disposition** (per 081KSNY2Z0008QG0R002FX66H0 disposition): Persist is not new substrate-engineering work — it's substrate the factory is already operating in (the Git event log + memory files + Z-sets + retractions are all Persist-instances). The disposition is naming the bridge-operation shape so the typing + the round-trip promise are explicit.
 
 ## Phase decomposition
 
 ### Phase 1 — refinement research-doc
 
-Update B-0895's grade-decomposition mapping table to add:
+Update 081KSNY2Z0008QG0R002FX66H0's grade-decomposition mapping table to add:
 
 | Primitive | Clifford grade | Why |
 |---|---|---|
@@ -92,7 +91,7 @@ This table earns its keep because: (a) it makes the framework's already-operatin
 
 ### Phase 3 — typing-system implementation
 
-TypeScript Persist interface composing with the B-0895 `CliffordAlgebra<Sig>` interface skeleton:
+TypeScript Persist interface composing with the 081KSNY2Z0008QG0R002FX66H0 `CliffordAlgebra<Sig>` interface skeleton:
 
 ```typescript
 interface Persist<TInternal, TSubstrateRecord, TPersistFeedback> {
@@ -108,28 +107,28 @@ Plus the round-trip-promise constraint: `decode(encode(x))` should equal `x` mod
 ### Phase 4+ (yes-and backlog)
 
 - Cross-substrate validation: pick 2-3 existing factory Persist-instances; verify the `<TInternal, TSubstrateRecord, TPersistFeedback>` triple is well-typed for each; identify where current implementations have gaps
-- Integration with B-0896 categorical-Clifford bridge: Persist-as-bridge has natural categorical formulation as the natural transformation between Emit-functor and Observe-functor across the temporal axis
+- Integration with 081KSNY2Z0008QG0R000YH2SPE categorical-Clifford bridge: Persist-as-bridge has natural categorical formulation as the natural transformation between Emit-functor and Observe-functor across the temporal axis
 - F# implementation with Result computation expression
 - Q# integration: Aaron's Q# expertise (per operator 2026-05-28 disclosure: "now you know why i know q# so well") means the framework's Clifford substrate has a natural Q# implementation path; Q# Pauli operators ARE Cl(3,0); Persist-as-bridge in Q# would compose with quantum-measurement-as-projection
 
 ## Acceptance
 
 - [x] **Amara ferry preserved**: `memory/amara/conversations/2026-05-28-amara-persist-as-bridge-...md` landed (this PR)
-- [x] **B-0897 row filed**: this row
-- [ ] **Phase 1 research-doc landed**: B-0895 grade-decomposition table updated with Persist-as-bridge row
+- [x] **081KSNY2Z0008QG0R002SZZ5Y0 row filed**: this row
+- [ ] **Phase 1 research-doc landed**: 081KSNY2Z0008QG0R002FX66H0 grade-decomposition table updated with Persist-as-bridge row
 - [ ] **Phase 2 existing-instances table validated**: each factory Persist-instance's `<TInternal, TSubstrateRecord, TPersistFeedback>` triple confirmed against actual implementation
-- [ ] **Phase 3 TypeScript Persist interface implemented**: compose with B-0895 CliffordAlgebra<Sig> interface
+- [ ] **Phase 3 TypeScript Persist interface implemented**: compose with 081KSNY2Z0008QG0R002FX66H0 CliffordAlgebra<Sig> interface
 - [ ] **Phase 4+ acceptance per item**: follow-up backlog rows filed when authorized
 
 ## Composes with substrate
 
-- B-0895 (Clifford spacetime algebra substrate-recognition) — refines the grade-decomposition mapping table
-- B-0896 (category-theory ↔ Clifford self-similarity) — Persist-as-bridge has categorical formulation as natural transformation
-- B-0879 (Observe/Emit/Limit/Simulate in Clifford space) — resolves the OPLE-vs-OELS naming tension this row was tracking
-- B-0867 (parent workflow-engine row)
-- B-0644 (Limit-is-simulation-not-collapse) — Limit + Persist are sibling bivectors at different scopes
-- B-0665 (Integrate-as-choice-locus) — Integrate is the commit-component; Persist is the round-trip-promise-component
-- B-0666 (English-as-projection / I(D(x))=x) — `I(D(x))=x` IS the round-trip promise; Persist generalizes this from English-substrate to any-substrate
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford spacetime algebra substrate-recognition) — refines the grade-decomposition mapping table
+- 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity) — Persist-as-bridge has categorical formulation as natural transformation
+- 081KSNY2Z0008QG0R0031490KZ (Observe/Emit/Limit/Simulate in Clifford space) — resolves the OPLE-vs-OELS naming tension this row was tracking
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row)
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse) — Limit + Persist are sibling bivectors at different scopes
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — Integrate is the commit-component; Persist is the round-trip-promise-component
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x) — `I(D(x))=x` IS the round-trip promise; Persist generalizes this from English-substrate to any-substrate
 
 ## Composes with rules
 
@@ -142,7 +141,7 @@ Plus the round-trip-promise constraint: `decode(encode(x))` should equal `x` mod
 
 - `q-sharp` skill (factory skill library) — Q# Pauli operators are Cl(3,0); Persist-as-bridge in Q# composes with quantum-measurement-as-projection; Aaron's Q# expertise (per operator 2026-05-28 disclosure) is the substrate precedent
 - `algebra-owner` skill — Z-set substrate is one canonical Persist-instance (TInternal = agent's intended retraction; TSubstrateRecord = DBSP signed-measure update; TPersistFeedback = concurrency / downstream / partial)
-- `category-theory-expert` skill — Persist-as-natural-transformation between Emit-functor and Observe-functor across the temporal axis (composes with B-0896)
+- `category-theory-expert` skill — Persist-as-natural-transformation between Emit-functor and Observe-functor across the temporal axis (composes with 081KSNY2Z0008QG0R000YH2SPE)
 
 ## Full reasoning
 

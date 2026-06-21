@@ -29,7 +29,7 @@
 
 ## What
 
-Trust-core hardening follow-up for the Ace package manager (B-0288), surfaced by the 8.1/8.2 final reviews and confirmed against current `origin/main`.
+Trust-core hardening follow-up for the Ace package manager (081KR2E4K0008QG0R002YE3MMD), surfaced by the 8.1/8.2 final reviews and confirmed against current `origin/main`.
 
 `packageHash(pkg)` throws (via `canonicalBytes` → `toTagged`) on a malformed **untrusted** field — a non-safe-integer (float) or a lone UTF-16 surrogate. `resolve.ts`'s **dependency** site already mapped that throw to a styled `invalid-package` refusal; the sibling untrusted-input sites did **not**, so the same input surfaced as the generic `ace: fatal: <internal>` entry-point catch (an internal-error channel) instead of a styled domain refusal.
 

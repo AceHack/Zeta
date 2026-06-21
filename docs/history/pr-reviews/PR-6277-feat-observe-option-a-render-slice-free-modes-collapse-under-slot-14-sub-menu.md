@@ -27,7 +27,7 @@
 
 ## Description
 
-The **Option-A render** the operator chose (*"collapse free modes under slot 14 sub-menu"*; the dedicated-slots alternative is B-0867.30, A/B-tested once B-0393 infra exists). Builds on the canonical grammar table (#6269).
+The **Option-A render** the operator chose (*"collapse free modes under slot 14 sub-menu"*; the dedicated-slots alternative is 081KSXN940008QG0R000TQ04Y0, A/B-tested once 081KR50HA0008QG0R001DX165X infra exists). Builds on the canonical grammar table (#6269).
 
 `renderGrammar16(world)` projects `buildMenu`'s `NextAction`s onto the canonical v0 16-slot grammar:
 - **slot 4 (ACCEPT)** — the primary act (do_item/decompose); `T` when work present, `F` (nothing to commit) when empty.
@@ -85,7 +85,7 @@ feat(observe): Option-A render slice — free modes collapse under slot…
 … 14 sub-menu
 
 The Option-A render the operator chose (collapse the 4 free modes under slot 14 as
-a sub-menu; dedicated-slots = B-0867.30, A/B-tested later). renderGrammar16(world)
+a sub-menu; dedicated-slots = 081KSXN940008QG0R000TQ04Y0, A/B-tested later). renderGrammar16(world)
 projects buildMenu's NextActions onto the canonical v0 16-slot grammar:
 
 - slot 4 (ACCEPT): the primary act (do_item/decompose), T when work present else F
@@ -100,7 +100,7 @@ projects buildMenu's NextActions onto the canonical v0 16-slot grammar:
 
 buildMenu is the single candidate source (no drift). Additive: new files only;
 full tools/observe suite 76/76 green; cross-dir canonical Tri import resolves.
-Composes with the canonical-retrofit ADR + B-0867.30 (the A/B alternative).
+Composes with the canonical-retrofit ADR + 081KSXN940008QG0R000TQ04Y0 (the A/B alternative).
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

@@ -1,6 +1,5 @@
 ---
-id: B-0761
-zetaid: 081KSE6WT0008QG0R0015ZF2G6
+id: 081KSE6WT0008QG0R0015ZF2G6
 priority: P2
 status: open
 title: Zeta cluster as open-source reference architecture for AI to train on and compete on — ARC-AGI-style benchmark substrate
@@ -9,14 +8,14 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSE6WT0008QG0R003612WGJ
   - 081KSE6WT0008QG0R001NG9JZH
   - 081KSE6WT0008QG0R000CV98PV
-  - B-0758
+  - 081KSE6WT0008QG0R00021PPX1
   - 081KSE6WT0008QG0R003G0Y62D
-  - B-0760
+  - 081KSE6WT0008QG0R003WG0V6P
 tags: [cluster, reference-architecture, ai-training, benchmark, open-source, arc-agi]
 ---
 
@@ -31,7 +30,7 @@ competition."*
 The Zeta cluster substrate (NixOS declarative + k3s + Longhorn /
 future Ceph/Rook + zero-typing USB install + 3-node HA quorum +
 mDNS auto-discovery + GitOps + AI-cluster modules) is being built
-as a usable home-cluster product (per B-0759 first-time-CLI-user
+as a usable home-cluster product (per 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user
 persona). But it ALSO incidentally defines something rarer in the
 AI/cluster space:
 
@@ -56,9 +55,9 @@ Zeta is positioned to be:
 1. **Open-source end-to-end** — every layer inspectable, every
    decision reviewable, every artifact reproducible
 2. **Modern** — NixOS declarative, GitOps native, AI-cluster
-   integration, biometric desktop consent (B-0743), zero-typing
-   installer (B-0754), unRAID-style USB-resident-OS option
-   (B-0758), USB-as-repair-tool (B-0760)
+   integration, biometric desktop consent (081KSE6WT0008QG0R003WW3YJQ), zero-typing
+   installer (081KSGS9H0008QG0R002T3BJ2R), unRAID-style USB-resident-OS option
+   (081KSE6WT0008QG0R00021PPX1), USB-as-repair-tool (081KSE6WT0008QG0R003WG0V6P)
 3. **Cloud-agnostic** — runs on bare metal, in any datacenter,
    on any home lab; not tied to a hyperscaler
 4. **Reproducible from first principles** — Nix flakes pin every
@@ -133,16 +132,16 @@ shape at the infrastructure / cluster / DevOps domain:
 
 ## Composes with
 
-- B-0754 — zero-typing USB install (the substrate's UX delivery)
-- B-0755 — role taxonomy expansion (the reference architecture
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing USB install (the substrate's UX delivery)
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the reference architecture
   needs full role coverage)
-- B-0756 — HA control-plane (production-ready inflection)
-- B-0757 — cluster auto-discovery (the seamless growth path)
-- B-0758 — USB-persistent OS (the unRAID-style competitive
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane (production-ready inflection)
+- 081KSE6WT0008QG0R000CV98PV — cluster auto-discovery (the seamless growth path)
+- 081KSE6WT0008QG0R00021PPX1 — USB-persistent OS (the unRAID-style competitive
   framing for storage-heavy reference deployments)
-- B-0759 — first-time-CLI-user UX audit (the human-facing
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user UX audit (the human-facing
   half; this row is the AI-facing half)
-- B-0760 — USB as repair tool (the no-disruption-at-3+-nodes
+- 081KSE6WT0008QG0R003WG0V6P — USB as repair tool (the no-disruption-at-3+-nodes
   invariant the benchmark would test)
 - `docs/research/2026-05-25-...` — full session substrate
   from today's cluster-install work
@@ -176,7 +175,7 @@ which improves the substrate for everyone.
 
 - Multi-cloud-portability tooling (Terraform / Crossplane /
   KubeVela bridges) — separate scope; covered by existing
-  B-0748 / B-0749 work
+  081KSE6WT0008QG0R002E6P098 / 081KSE6WT0008QG0R001RG4FXD work
 - AI-vs-AI competition tooling (judge framework, transcript
   diffing, automated scoring) — separate scope; out of this
   row's v1

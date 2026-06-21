@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/files.test.ts
  *
- * B-0883 v1 — file-level layer tests (serialization round-trip + encrypt/decrypt
+ * 081KSNY2Z0008QG0R002JKH50A v1 — file-level layer tests (serialization round-trip + encrypt/decrypt
  * bytes round-trip + tamper-detection + multi-recipient + wrong-key fail-closed).
  * The crypto primitives themselves are covered by crypto.test.ts; this verifies
  * the files.ts wiring (base64 (de)serialization + self-recipient handling +

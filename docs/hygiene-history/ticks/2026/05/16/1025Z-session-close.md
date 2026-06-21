@@ -31,7 +31,7 @@ work.
 - **4 rate-limit reset cycles** + 4 slow-cadence cycles validated
 - **27 of 38 audit candidates triaged** (~71%) across both Otto lanes
 - **6-pattern drift taxonomy** + sub-variants (FP-2a, class-#2-SD, class-4-multi-row)
-- **Multi-Otto convergence rich**: drift-catches, audit-tool improvements (peer's B-0557 slice 1-4), META memory files (peer authored 4+: session-arc, FP-rate, corner-case, session-end), taxonomy reconciliation
+- **Multi-Otto convergence rich**: drift-catches, audit-tool improvements (peer's 081KRQ1AB0008QG0R003DYANMC slice 1-4), META memory files (peer authored 4+: session-arc, FP-rate, corner-case, session-end), taxonomy reconciliation
 
 ## Substrate-honest natural-close criteria
 

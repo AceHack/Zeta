@@ -9,7 +9,7 @@ open Zeta.Core
 module SE = Zeta.Core.SchemaEvolution
 
 // ═══════════════════════════════════════════════════════════════════
-// Schema evolution (B-0930 seed) — the compatibility proofs that make version-swap-without-
+// Schema evolution (081KSRGFP0008QG0R001Y6RTY9 seed) — the compatibility proofs that make version-swap-without-
 // recompile (zero-downtime) safe. The migration algebra over DynamicValue is proven to honor:
 //   • FORWARD compat — an old reader IGNORES unknown fields; migrations that don't touch a
 //     field PRESERVE it (the extensible-data passthrough).
@@ -120,7 +120,7 @@ let ``Schema: zero-downtime scenario — v1 data is readable by a v3 consumer, v
     let v3 = DynamicValue.Object [ "id", DynamicValue.Int 9L; "f2", DynamicValue.Int 0L; "f3", DynamicValue.String "" ]
     Assert.Equal(DynamicValue.Object [ "id", DynamicValue.Int 9L ], SE.project (Set.ofList [ "id" ]) v3)
 
-// ── bidirectional migration (the Evolution down-direction; B-0930 extension) ──
+// ── bidirectional migration (the Evolution down-direction; 081KSRGFP0008QG0R001Y6RTY9 extension) ──
 
 [<Fact>]
 let ``Schema: migrateDown inverts a lossless addField chain back to the original`` () =

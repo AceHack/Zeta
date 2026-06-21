@@ -437,7 +437,7 @@ Most findings overlap with already-shipped substrate:
 
 - **submit-nuget transient classification** → SHIPPED in PR #923 (v1 hardening). The required-vs-non-required check classification distinguishes required failures from non-required diagnostic noise. Deepseek was reading state before #923 merged.
 - **MEMORY.md merge-conflict tax** → SHIPPED in PR #920 (Git `merge=union` driver in `.gitattributes`). Deepseek was reading state before #920 merged.
-- **Stale project-file internals cleanup** → B-0112 P2 row filed earlier this session with concrete trigger conditions (any tick that touches the file OR scopes work into the named sibling directories OR TS+Bun expert baseline drafting). The "deferred-skill anti-pattern" Deepseek named is exactly what B-0112's trigger-condition addresses.
+- **Stale project-file internals cleanup** → 081KQDTYV0008QG0R003MV3WAR P2 row filed earlier this session with concrete trigger conditions (any tick that touches the file OR scopes work into the named sibling directories OR TS+Bun expert baseline drafting). The "deferred-skill anti-pattern" Deepseek named is exactly what 081KQDTYV0008QG0R003MV3WAR's trigger-condition addresses.
 
 New finding worth noting:
 

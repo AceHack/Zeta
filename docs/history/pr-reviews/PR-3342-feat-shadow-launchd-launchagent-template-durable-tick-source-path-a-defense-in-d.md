@@ -67,7 +67,7 @@ Per the constitutional + strategic memory landings this hour (\`feedback_aaron_z
 
 - \`tools/shadow/shadow-observer.ts\` (the process this LaunchAgent launches)
 - \`tools/shadow/detect-grey-text.applescript\` (AppleScript detector)
-- \`docs/backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md\` (originating row)
+- \`docs/backlog/P0/081KR7JY10008QG0R0008NGW95-zeta-shadow-mode-first-class-cli-autocomplete.md\` (originating row)
 - \`.claude/rules/shadow-star-shorthand-autocomplete-marker.md\` (the shorthand this loop's accepted-suggestions ship under; PR #3339 in flight)
 - \`.claude/skills/save-ai-memory/SKILL.md\` (memory-preservation discipline this composes with)
 
@@ -546,12 +546,12 @@ Per the constitutional + strategic memory landings this hour (\`feedback_aaron_z
 ### Thread 30 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CP94C`
-- **Path**: `docs/backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md`
+- **Path**: `docs/backlog/P3/081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-15T03:33:28Z on `docs/backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md`:69 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-15T03:33:28Z on `docs/backlog/P3/081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md`:69 (association: NONE)
 
   <pre>
   P1: This test scope no longer matches the installer: the current safe-promote path reads old content into memory and atomically renames the temp file over the destination, so a failed final rename leaves the existing destination untouched and there is no pre-rename backup to restore. As written, this backlog row will ask future work to test behavior the implementation does not have.
@@ -661,7 +661,7 @@ Two new files under tools/shadow/launchd/:
 
 Composes with:
 - tools/shadow/shadow-observer.ts (the process launched)
-- docs/backlog/P0/B-0402 (originating backlog row)
+- docs/backlog/P0/081KR7JY10008QG0R0008NGW95 (originating backlog row)
 - .claude/rules/shadow-star-shorthand-autocomplete-marker.md
 - .claude/skills/save-ai-memory/SKILL.md
 
@@ -880,12 +880,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md`
+- `docs/backlog/P3/081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md`
 
 **Message:**
 
 ```
-backlog(p3): B-0528 — unit tests for shadow launchd installer (deferr…
+backlog(p3): 081KRMEXM0008QG0R000T0A28T — unit tests for shadow launchd installer (deferr…
 
 …ed from PR #3342)
 
@@ -973,7 +973,7 @@ P2 — Export helper functions for testability:
   `import.meta.main` guard was added in `970c774` but the functions
   were not exported. Added `export` to main(), parseArgs(),
   requireAbsolute(), tryDetect(), xmlEscape(), substitutePlaceholders(),
-  plutilLint(), and the Args interface. Unblocks the B-0528 test file.
+  plutilLint(), and the Args interface. Unblocks the 081KRMEXM0008QG0R000T0A28T test file.
 
 P1 — Update 0305Z tick shard's "PREFER" code snippet:
   The earlier shard documented the rename-then-write pattern as
@@ -990,7 +990,7 @@ P1 — Cross-ref findings on README.md:5 + plist:24 + ts:185:
   `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` which
   IS on main (#3339 merged). The reviewer's check is against the raw
   branch base; CI's merge-ref check passes. ts:185 is the test
-  coverage finding, already filed as B-0528 (deferred per scope
+  coverage finding, already filed as 081KRMEXM0008QG0R000T0A28T (deferred per scope
   management).
 
 Verified:
@@ -1006,7 +1006,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md`
+- `docs/backlog/P3/081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md`
 - `docs/hygiene-history/ticks/2026/05/15/0305Z.md`
 - `tools/shadow/launchd/README.md`
 
@@ -1033,7 +1033,7 @@ in cycle 3:
    restored both keys with documented trade-off, net same shape as
    before the PR.
 
-3. B-0528 test-scope item #6 — described atomic-promote with backup-
+3. 081KRMEXM0008QG0R000T0A28T test-scope item #6 — described atomic-promote with backup-
    restore on rename failure, but current code uses availability-
    preserving pattern (read-old-into-memory → write temp → atomic
    replace → side-car backup). Rewrote the scope with the actual
@@ -1086,7 +1086,7 @@ P1 — Predictable /tmp filename in plutilLint (symlink attack):
   file and the directory in a `finally` block so we don't leak.
 
 Threads remaining after this push (auto-resolution candidates):
-  - Test coverage P1 (5th time flagged): already filed as B-0528
+  - Test coverage P1 (5th time flagged): already filed as 081KRMEXM0008QG0R000T0A28T
     with rationale. Will reply on the thread.
   - Cross-refs to .claude/rules/shadow-star-shorthand-* (5th time
     flagged): file IS on main via #3339. CI merge-ref check confirms.

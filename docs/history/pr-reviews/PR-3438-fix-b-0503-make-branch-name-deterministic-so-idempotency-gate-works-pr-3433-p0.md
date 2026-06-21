@@ -168,7 +168,7 @@ P? [Copilot, test:104] — Test description/regex mismatch:
 Test count: 14 → 16 (added 2: sanitize-backticks coverage + the
 P0 regression test that asserts branch name is `recovery/<prNumber>`).
 
-Composes with [B-0504](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md):
+Composes with [081KRHWGX0008QG0R000PVB6FF](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KRHWGX0008QG0R0027YXBTB-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md):
 the real adapter `gitCreateBranch` will need to handle the case where
 the recovery branch already exists locally (idempotency gate catches
 the open-PR case; branch-exists-locally is a separate condition the
@@ -221,7 +221,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-docs(b-0503): document retry-safe branch handling for B-0504 adapters
+docs(b-0503): document retry-safe branch handling for 081KRHWGX0008QG0R000PVB6FF adapters
 
 Codex P1 catch: deterministic `recovery/<prNumber>` makes retries
 non-recoverable after partial failures (cherry-pick conflict, push
@@ -229,19 +229,19 @@ error, gh pr create error) because a subsequent attempt re-uses the
 same branch name and `gitCreateBranch` (`git checkout -b`) fails on
 the stale local branch.
 
-This is a real concern. The correct fix belongs in B-0504's adapter
-implementations (per the B-0503 spec: "real adapter implementations
-are scope for B-0504"). Added a docstring section on
+This is a real concern. The correct fix belongs in 081KRHWGX0008QG0R000PVB6FF's adapter
+implementations (per the 081KRHWGX0008QG0R0027YXBTB spec: "real adapter implementations
+are scope for 081KRHWGX0008QG0R000PVB6FF"). Added a docstring section on
 `buildRecoveryBranchName` documenting the two viable strategies for
-B-0504's gitCreateBranch adapter:
+081KRHWGX0008QG0R000PVB6FF's gitCreateBranch adapter:
 
   (a) attempt `git branch -D <recoveryBranch>` before `git checkout
       -b` (safe because we recreate from origin/main); OR
   (b) detect "fatal: A branch named ... already exists" and
       translate it into success (resume on existing branch).
 
-The B-0503 core function correctly surfaces the failure (gitCreateBranch
-→ false → RecoveryResult.error); B-0504's adapter chooses the
+The 081KRHWGX0008QG0R0027YXBTB core function correctly surfaces the failure (gitCreateBranch
+→ false → RecoveryResult.error); 081KRHWGX0008QG0R000PVB6FF's adapter chooses the
 retry strategy.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
@@ -260,7 +260,7 @@ fix(b-0503): make gitCreateBranch retry-safety contract explicit
 
 Codex's follow-up on PR #3438 line 117: my docstring-only response
 to the retry-from-stale-branch concern wasn't enough — the contract
-needed to be explicit in the adapter type itself so B-0504 can't
+needed to be explicit in the adapter type itself so 081KRHWGX0008QG0R000PVB6FF can't
 accidentally violate it.
 
 Strengthened `RecoveryAdapters.gitCreateBranch` docstring with an

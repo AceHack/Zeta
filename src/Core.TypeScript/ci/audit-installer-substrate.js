@@ -58,17 +58,17 @@ const REQUIRED_FILES = [
     { path: "full-ai-cluster/usb-nixos-installer/zeta-install.sh", minBytes: 1000 },
     { path: "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh", minBytes: 500 },
     { path: "full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix", minBytes: 500 },
-    // iter-4 SSH+password credential substrate (B-0789)
+    // iter-4 SSH+password credential substrate (081KSGS9H0008QG0R002T3BJ2R)
     { path: "full-ai-cluster/nixos/modules/initial-password.nix" },
     { path: "full-ai-cluster/nixos/modules/operator-ssh-keys.nix" },
     { path: "full-ai-cluster/nixos/modules/operator-ssh-keys.txt" },
-    // iter-5.1 + 5.2 + 5.2.2 substrate (B-0792)
+    // iter-5.1 + 5.2 + 5.2.2 substrate (081KSGS9H0008QG0R003V23XNZ)
     { path: "full-ai-cluster/nixos/modules/common.nix", minBytes: 500 },
     { path: "full-ai-cluster/nixos/modules/injected-hostname.nix" },
     { path: "full-ai-cluster/nixos/modules/login-banner.nix" },
-    // B-0855.1 post-install first-boot self-registration service surface
+    // 081KDWYJVN008QG0R003XDHYCQ post-install first-boot self-registration service surface
     { path: "full-ai-cluster/nixos/modules/zeta-self-register.nix", minBytes: 500 },
-    // operator-side flash tool (B-0789 + iter-5.x)
+    // operator-side flash tool (081KSGS9H0008QG0R002T3BJ2R + iter-5.x)
     { path: "src/Core.TypeScript/zflash/cli.ts", minBytes: 1000 },
     { path: "src/Core.TypeScript/zflash/flash-usb.ts", minBytes: 1000 },
     { path: "src/Core.TypeScript/zflash/flash-usb-windows.ts", minBytes: 1000 },
@@ -87,16 +87,16 @@ const REQUIRED_SENTINELS = [
             "/dev/urandom", // install-time hostname generator
             // ── iter-5.4 sentinels (PR #5364 + #5352 + #5354 substrate) ──
             "Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy", // iter-5.4.0 anchor
-            "assert_boot_disk_large_enough", // B-0891 install-time BOOT disk floor check
+            "assert_boot_disk_large_enough", // 081KSNY2Z0008QG0R0008PN7RQ install-time BOOT disk floor check
             "LONGHORN1_TAIL_BYTES", // parse tail before wipe (Codex review on #7887)
             "2:0:-${LONGHORN1_TAIL}", // root max-fill geometry (no fixed ROOT_SIZE cap)
             "root max", // operator-visible layout: always fill BOOT disk
             "Step 6.9: iter-5.4.1 self-registration commit+push", // iter-5.4.1 self-reg anchor
             "gh auth login", // device-flow auth invocation
-            "gh auth setup-git", // B-0835 Bug 2a fix — wires git credential helper to gh token
+            "gh auth setup-git", // 081KSGS9H0008QG0R00120EEHM Bug 2a fix — wires git credential helper to gh token
             "gh ssh-key list", // iter-5.4.0 operator-authorized-keys path
-            "SSH_KEY_ERR_FILE", // B-0835 Bug 2b fix — stderr capture for discrimination
-            "admin:public_key", // B-0835 Bug 2b fix — scope-error recovery guidance
+            "SSH_KEY_ERR_FILE", // 081KSGS9H0008QG0R00120EEHM Bug 2b fix — stderr capture for discrimination
+            "admin:public_key", // 081KSGS9H0008QG0R00120EEHM Bug 2b fix — scope-error recovery guidance
             "gh repo clone Lucent-Financial-Group/Zeta", // iter-5.4.1 cluster repo clone
             "register-${NODE_HOSTNAME}-", // iter-5.4.1 registration branch shape
             // iter-5.4.1 YAML schema sentinels. Each catches a specific Copilot
@@ -105,17 +105,17 @@ const REQUIRED_SENTINELS = [
             // spec.storage was a sibling of hardware (should nest under spec.hardware).
             "apiVersion: zeta.lucent-financial-group.com/v1", // ClusterNode CRD apiVersion
             "kind: ClusterNode", // CRD kind
-            "  roles:", // spec.roles is ARRAY (NOT scalar spec.role) per B-0813 schema
-            "  registration:", // spec.registration block (NOT spec.maintainer flat) per B-0813
-            "  hardware:", // spec.hardware block (storage nests inside) per B-0813
+            "  roles:", // spec.roles is ARRAY (NOT scalar spec.role) per 081KSGS9H0008QG0R002K93MWX schema
+            "  registration:", // spec.registration block (NOT spec.maintainer flat) per 081KSGS9H0008QG0R002K93MWX
+            "  hardware:", // spec.hardware block (storage nests inside) per 081KSGS9H0008QG0R002K93MWX
             // iter-5.4.1 hardware-probe sentinels (catches MAC parsing regression from #5352).
             "/proc/cpuinfo", // CPU_MODEL extraction
             "link/ether", // MAC_ADDR parses field AFTER link/ether (not before)
-            // B-0891 phase-2: probe-generated hardware-configuration must land in flake host tree
+            // 081KSNY2Z0008QG0R0008PN7RQ phase-2: probe-generated hardware-configuration must land in flake host tree
             "installing probe-generated hardware-configuration.nix",
             'hosts/${HOST}/hardware-configuration.nix',
         ],
-        rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. B-0835 Bug 2a/2b fixes) substrate must be present in installer script",
+        rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. 081KSGS9H0008QG0R00120EEHM Bug 2a/2b fixes) substrate must be present in installer script",
     },
     {
         path: "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -123,9 +123,9 @@ const REQUIRED_SENTINELS = [
             "ETHERNET_WAIT_SECS", // eth-30s wait
             "nmtui", // wifi setup TUI launch
             "zeta-install", // calls into zeta-install.sh after network up
-            "/dev/ttyS0", // B-0891 serial mirror target (x86 QEMU / CI)
+            "/dev/ttyS0", // 081KSNY2Z0008QG0R0008PN7RQ serial mirror target (x86 QEMU / CI)
             "tee -a", // preserves tty1 + mirrors to serial UART
-            "has_wifi_hardware", // B-0891 skip nmtui on ethernet-only/QEMU
+            "has_wifi_hardware", // 081KSNY2Z0008QG0R0008PN7RQ skip nmtui on ethernet-only/QEMU
             "1.1.1.1", // IP-first internet probe (DNS lag on NAT)
         ],
         rationale: "first-boot script must include eth-wait + nmtui + zeta-install call",
@@ -137,7 +137,7 @@ const REQUIRED_SENTINELS = [
             "./login-banner.nix", // iter-5.2.2 pre-login banner module
             "services.avahi", // iter-5.1 mDNS publishing
             "nssmdns4", // Avahi mDNS via nss
-            "./zeta-self-register.nix", // B-0855.1 first-boot self-registration module
+            "./zeta-self-register.nix", // 081KDWYJVN008QG0R003XDHYCQ first-boot self-registration module
         ],
         rationale: "common.nix must import the iter-5.x modules so every host inherits them",
     },
@@ -152,13 +152,13 @@ const REQUIRED_SENTINELS = [
             "network-online.target", // waits for network before registration intent
             "zeta-creds-restore.service", // ordered after restored creds when that service exists
             'default = "/etc/zeta";', // repoRoot = the install repo (flake source on the node)
-            'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.sh";', // scriptPath = the B-0855.2 bash impl
+            'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.sh";', // scriptPath = the 081KDWYJVN008QG0R001XPR5X4 bash impl
             'default = "/var/lib/zeta-self-register/self-registered.marker";', // markerPath via systemd StateDirectory
-            "tools/installer/zeta-self-register.sh", // delegates implementation to the B-0855.2 bash script
+            "tools/installer/zeta-self-register.sh", // delegates implementation to the 081KDWYJVN008QG0R001XPR5X4 bash script
             'StateDirectory = "zeta-self-register"', // marker dir owned by the service user (cred-restore leaves ~/.config root-owned)
             "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
         ],
-        rationale: "B-0855.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces",
+        rationale: "081KDWYJVN008QG0R001XPR5X4 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces",
     },
     {
         path: "full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix",
@@ -167,7 +167,7 @@ const REQUIRED_SENTINELS = [
             "virtio_blk",
             "boot.initrd.kernelModules",
         ],
-        rationale: "B-0891 QEMU phase-2 initrd floor: virtio modules in host stub until probe copy at install",
+        rationale: "081KSNY2Z0008QG0R0008PN7RQ QEMU phase-2 initrd floor: virtio modules in host stub until probe copy at install",
     },
     {
         path: "full-ai-cluster/nixos/hosts/worker-gpu/hardware-configuration.nix",
@@ -176,7 +176,7 @@ const REQUIRED_SENTINELS = [
             "virtio_blk",
             "boot.initrd.kernelModules",
         ],
-        rationale: "B-0891 QEMU phase-2 initrd floor: virtio modules in worker stub until probe copy at install",
+        rationale: "081KSNY2Z0008QG0R0008PN7RQ QEMU phase-2 initrd floor: virtio modules in worker stub until probe copy at install",
     },
     {
         path: "full-ai-cluster/nixos/modules/injected-hostname.nix",

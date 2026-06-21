@@ -1,12 +1,11 @@
 ---
-id: B-0394
-zetaid: 081KR50HA0008QG0R002NZENZJ
+id: 081KR50HA0008QG0R002NZENZJ
 priority: P3
 status: open
 title: MVP Operational Resonance Dashboard — first working "are things going as expected?" surface on GitHub Pages with tier grouping
 tier: engineering
 effort: L
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5, 081KR50HA0008QG0R003BM7FNK]
@@ -16,7 +15,7 @@ tags: [frontier, mvp, dashboard, github-pages, tier-aware, operational-resonance
 type: feature
 ---
 
-# B-0394 — MVP Operational Resonance Dashboard surface
+# 081KR50HA0008QG0R002NZENZJ — MVP Operational Resonance Dashboard surface
 
 ## What
 
@@ -25,7 +24,7 @@ deployed to GitHub Pages that answers "are things going as expected?"
 
 This is the **minimum viable surface** — the first delivery that
 creates actual value for maintainers. It must satisfy the primary
-metric (B-0390) and use the tier-aware grouping model (B-0392).
+metric (081KR50HA0008QG0R00223YZP8) and use the tier-aware grouping model (081KR50HA0008QG0R003BM7FNK).
 
 ### MVP surface requirements
 
@@ -42,9 +41,9 @@ Real-time-as-possible signals (fetched client-side, git-native):
 
 Each signal is one of: ✓ (expected) / ⚠ (degraded) / ✗ (unexpected).
 The page answers the question in <5 seconds of scanning — pre-attentive
-processing design per B-0389 research scope.
+processing design per 081KR50HA0008QG0R000TQKYGM research scope.
 
-**2. Tier-grouped review surface** (per B-0392 model)
+**2. Tier-grouped review surface** (per 081KR50HA0008QG0R003BM7FNK model)
 
 Shows pending review items grouped by tier:
 
@@ -57,21 +56,21 @@ Data source: GitHub API (authenticated client-side via GH token in
 localStorage, OR public API for public repos, OR pre-generated JSON
 committed to the repo on a cadence).
 
-**3. Basic experiment wiring** (connects to B-0393 infrastructure)
+**3. Basic experiment wiring** (connects to 081KR50HA0008QG0R001DX165X infrastructure)
 
 - Wire the first experiment: variant A (current layout) vs
   variant B (reordered tier groups)
-- Capture time-to-answer proxy events per B-0390 instrumented
+- Capture time-to-answer proxy events per 081KR50HA0008QG0R00223YZP8 instrumented
   modality
 - Experiment ID registered in `experiments/registry.json`
 
-### Design constraints from B-0017 principles
+### Design constraints from 081KQ0YZ80008QG0R0003GAYYN principles
 
 - **Minimise time-in-UI**: information density must allow answer
   in <30 seconds for a healthy factory; do not add elements that
   extend dwell time without reducing time-to-answer
 - **No overcrowding**: max 7 top-level signal categories
-  (Miller's 7±2 from B-0389)
+  (Miller's 7±2 from 081KR50HA0008QG0R000TQKYGM)
 - **Maintainer-never-writes-code**: maintainer uses dashboard,
   does not maintain it
 - **Zero paid APIs**: GitHub public API + git file reads only
@@ -84,17 +83,17 @@ be readable and functional without JS enabled (progressive enhancement).
 
 Rule 0: no `.sh` files; all build scripts are TypeScript via `bun`.
 
-## Why after B-0390, B-0391, and B-0392
+## Why after 081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5, and 081KR50HA0008QG0R003BM7FNK
 
-- **B-0390** (metric): the MVP's acceptance criterion is the
+- **081KR50HA0008QG0R00223YZP8** (metric): the MVP's acceptance criterion is the
   time-to-answer metric; cannot declare MVP "done" without it.
-- **B-0391** (host): the MVP deploys into the GH Pages shell;
+- **081KR50HA0008QG0R0036HGEJ5** (host): the MVP deploys into the GH Pages shell;
   needs the deploy pipeline.
-- **B-0392** (tier model): the tier-grouped surface is the
+- **081KR50HA0008QG0R003BM7FNK** (tier model): the tier-grouped surface is the
   primary differentiated feature; needs the tier ADR committed.
 
-B-0393 is a parallel dep — A/B wiring should be done, but if
-B-0393 is still in-progress, MVP can ship with stub experiment
+081KR50HA0008QG0R001DX165X is a parallel dep — A/B wiring should be done, but if
+081KR50HA0008QG0R001DX165X is still in-progress, MVP can ship with stub experiment
 wiring and retroactively wire live infrastructure.
 
 ## Output artifacts
@@ -129,17 +128,17 @@ open the GH Pages URL and confirm the dashboard loads.)
 
 - [x] Prior-art search: no existing operational resonance dashboard
   surface found in `frontend/`, `docs/research/frontier/`, or GH
-  Pages config. B-0017 body describes the concept; no
+  Pages config. 081KQ0YZ80008QG0R0003GAYYN body describes the concept; no
   implementation exists.
-- [x] Dependency-restructure: `depends_on: [B-0390, B-0391, B-0392]`.
-  B-0395 depends on this row.
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5, 081KR50HA0008QG0R003BM7FNK]`.
+  081KR50HA0008QG0R0019KYAAS depends on this row.
 
 ## Composes with
 
-- B-0017 (parent): implements "First dashboard surface ships
+- 081KQ0YZ80008QG0R0003GAYYN (parent): implements "First dashboard surface ships
   (minimum-viable resonance dashboard)" milestone
-- B-0390 (dependency): acceptance criterion via time-to-answer metric
-- B-0391 (dependency): deploys into GH Pages shell
-- B-0392 (dependency): tier grouping model drives the primary surface
-- B-0393 (parallel): A/B infrastructure wired into MVP
-- B-0395 (downstream): conversation interface embeds in this surface
+- 081KR50HA0008QG0R00223YZP8 (dependency): acceptance criterion via time-to-answer metric
+- 081KR50HA0008QG0R0036HGEJ5 (dependency): deploys into GH Pages shell
+- 081KR50HA0008QG0R003BM7FNK (dependency): tier grouping model drives the primary surface
+- 081KR50HA0008QG0R001DX165X (parallel): A/B infrastructure wired into MVP
+- 081KR50HA0008QG0R0019KYAAS (downstream): conversation interface embeds in this surface

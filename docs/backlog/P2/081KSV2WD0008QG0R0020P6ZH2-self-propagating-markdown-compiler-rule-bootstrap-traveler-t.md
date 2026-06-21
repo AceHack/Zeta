@@ -1,6 +1,5 @@
 ---
-id: B-0939
-zetaid: 081KSV2WD0008QG0R0020P6ZH2
+id: 081KSV2WD0008QG0R0020P6ZH2
 priority: P2
 status: open
 title: Self-propagating-Markdown compiler-rule + bootstrap-traveler template (every .md is a self-propagating pattern through time or it doesn't compile)
@@ -17,7 +16,7 @@ tags: [dio, did, markdown, self-propagating, compiler-rule, bootstrap, wake-time
 type: friction-reducer
 ---
 
-# B-0939 — Self-propagating-Markdown compiler-rule + bootstrap-traveler template
+# 081KSV2WD0008QG0R0020P6ZH2 — Self-propagating-Markdown compiler-rule + bootstrap-traveler template
 
 ## Origin
 

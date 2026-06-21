@@ -1,6 +1,5 @@
 ---
-id: B-0134
-zetaid: 081KQGDBJ0008QG0R0032X1MMC
+id: 081KQGDBJ0008QG0R0032X1MMC
 priority: P2
 status: open
 title: Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)
@@ -10,7 +9,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0134 — Type-theoretic encoding of orthogonality discipline
+# 081KQGDBJ0008QG0R0032X1MMC — Type-theoretic encoding of orthogonality discipline
 
 **Priority:** P2 (research-grade; fourth tractable slice of formalization roadmap).
 
@@ -35,9 +34,9 @@ Encode the meta-meta-meta-rule (orthogonality check before creating a new substr
 ## Composes with
 
 - `memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md` — the rule being mechanized.
-- B-0130 (audit-suite) — this row's mechanization is one specific audit in B-0130's family.
-- B-0131 + B-0133 — type-theoretic encoding composes with sequent calculus and Z-set Lean.
+- 081KQGDBJ0008QG0R002Y31XJ3 (audit-suite) — this row's mechanization is one specific audit in 081KQGDBJ0008QG0R002Y31XJ3's family.
+- 081KQGDBJ0008QG0R000D1YJCH + 081KQGDBJ0008QG0R0035M1YRC — type-theoretic encoding composes with sequent calculus and Z-set Lean.
 
 ## Status
 
-**Filed.** Pace after B-0131 + B-0133 progress.
+**Filed.** Pace after 081KQGDBJ0008QG0R000D1YJCH + 081KQGDBJ0008QG0R0035M1YRC progress.

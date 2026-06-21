@@ -1,6 +1,5 @@
 ---
-id: B-0020
-zetaid: 081KQ0YZ80008QG0R000T0AJXS
+id: 081KQ0YZ80008QG0R000T0AJXS
 priority: P3
 status: open
 title: /btw harness-integration research — does our /btw integrate tightly with each harness's built-in btw equivalent? Claude Code / Codex / Gemini / Cursor surveys + tight-coupling design
@@ -15,7 +14,7 @@ tags: [btw, harness-integration, multi-harness, claude-code, codex, gemini, curs
 type: friction-reducer
 ---
 
-# B-0020 — /btw harness-integration research
+# 081KQ0YZ80008QG0R000T0AJXS — /btw harness-integration research
 
 ## Origin
 
@@ -76,7 +75,7 @@ For each, document:
 ## Composes with
 
 - **`.claude/commands/btw.md`** — current Claude Code implementation
-- **B-0019** (/btw durability gap) — same /btw surface; B-0019 fixes durability, B-0020 fixes harness-coupling
+- **081KQ0YZ80008QG0R002C5EC8F** (/btw durability gap) — same /btw surface; 081KQ0YZ80008QG0R002C5EC8F fixes durability, 081KQ0YZ80008QG0R000T0AJXS fixes harness-coupling
 - **Otto-329 Phase 6** (multi-harness coordination) — this row is one of Phase 6's research deliverables
 
 ## Done when

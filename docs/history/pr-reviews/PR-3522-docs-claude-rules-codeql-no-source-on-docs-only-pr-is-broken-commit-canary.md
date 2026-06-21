@@ -57,8 +57,8 @@ Five worktree-creation attempts this session:
 
 ## Composes with
 
-- [B-0519](docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md) — multi-Otto contamination RCA; this rule is the commit-tree-corruption sub-class
-- B-0530 — cron-sentinel mutex (in-flight same race class)
+- [081KRHWGX0008QG0R001HMWM1W](docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md) — multi-Otto contamination RCA; this rule is the commit-tree-corruption sub-class
+- 081KRMEXM0008QG0R000X1PPGC — cron-sentinel mutex (in-flight same race class)
 - `.claude/rules/claim-acquire-before-worktree-work.md` — worktree hygiene
 - `.claude/rules/verify-before-deferring.md` — verify substrate before classifying
 - `.claude/rules/refresh-before-decide.md` — raw `git ls-tree` IS the refresh

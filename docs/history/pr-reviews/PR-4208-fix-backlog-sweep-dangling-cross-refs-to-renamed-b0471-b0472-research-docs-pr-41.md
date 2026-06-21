@@ -33,18 +33,18 @@ Sweeps 3 backlog rows for dangling cross-references to the OLD `docs/research/20
 
 ## Files touched
 
-- [`docs/backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md`](docs/backlog/P1/B-0473-mirror-beacon-promotion-gate-protocol-2026-05-14.md) — 1 cross-ref updated
-- [`docs/backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md`](docs/backlog/P1/B-0474-mirror-beacon-axis-adr-2026-05-14.md) — 1 cross-ref updated
-- [`docs/backlog/P1/B-0479-axis3-adr-code-english-formal-verification-design-2026-05-14.md`](docs/backlog/P1/B-0479-axis3-adr-code-english-formal-verification-design-2026-05-14.md) — 1 cross-ref updated
+- [`docs/backlog/P1/081KRHWGX0008QG0R0031EGYA7-mirror-beacon-promotion-gate-protocol-2026-05-14.md`](docs/backlog/P1/081KRHWGX0008QG0R0031EGYA7-mirror-beacon-promotion-gate-protocol-2026-05-14.md) — 1 cross-ref updated
+- [`docs/backlog/P1/081KRHWGX0008QG0R0023FDYVE-mirror-beacon-axis-adr-2026-05-14.md`](docs/backlog/P1/081KRHWGX0008QG0R0023FDYVE-mirror-beacon-axis-adr-2026-05-14.md) — 1 cross-ref updated
+- [`docs/backlog/P1/081KRHWGX0008QG0R0023DWW8D-axis3-adr-code-english-formal-verification-design-2026-05-14.md`](docs/backlog/P1/081KRHWGX0008QG0R0023DWW8D-axis3-adr-code-english-formal-verification-design-2026-05-14.md) — 1 cross-ref updated
 
 ## Out of scope
 
-Other `2026-05-14-mirror-beacon-*` refs in these files point to **planned-but-not-shipped files** (B-0473 research doc + B-0474 ADR). Those are legitimate forward-refs to substrate that doesn't yet exist; out of scope for this sweep.
+Other `2026-05-14-mirror-beacon-*` refs in these files point to **planned-but-not-shipped files** (081KRHWGX0008QG0R0031EGYA7 research doc + 081KRHWGX0008QG0R0023FDYVE ADR). Those are legitimate forward-refs to substrate that doesn't yet exist; out of scope for this sweep.
 
 ## Test plan
 
 - [x] Verified b0471/b0472 paths now resolve on main (renamed in #4136)
-- [x] Verified remaining 2026-05-14-mirror-beacon-* refs point to non-existent forward-refs (B-0473 research + B-0474 ADR; legitimate planning)
+- [x] Verified remaining 2026-05-14-mirror-beacon-* refs point to non-existent forward-refs (081KRHWGX0008QG0R0031EGYA7 research + 081KRHWGX0008QG0R0023FDYVE ADR; legitimate planning)
 - [x] No content changes beyond the path substitution
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

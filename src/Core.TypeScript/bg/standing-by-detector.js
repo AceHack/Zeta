@@ -1,17 +1,17 @@
-// standing-by-detector.ts — B-0440 slice 4: bus publish on idle detection
+// standing-by-detector.ts — 081KRFA460008QG0R001KC0VBH slice 4: bus publish on idle detection
 //
 // Background service that detects Standing-by failure mode (idle agent
 // while cron fires) by comparing the timestamp of the most recent commit
 // on HEAD against a configurable idle threshold. Slice 4 adds bus publish:
 // when idle is detected, the detector publishes an `infinite-backlog-nudge`
-// envelope via the B-0400 protocol so any subscribing agent can react.
+// envelope via the 081KR7JY10008QG0R000R503K2 protocol so any subscribing agent can react.
 //
 // PR-activity polling is still TBD (slice 3). Slice 4 is wired ahead of
 // slice 3 because the bus publish path is small and unblocks the
 // full reactive loop (detect → nudge).
 //
 // Run: bun tools/bg/standing-by-detector.ts [--once] [--poll-min N] [--idle-min N] [--no-publish] [--agent NAME]
-// Compose with: B-0440 + B-0400 (bus, PR #3016) + B-0441 (proactive notifier).
+// Compose with: 081KRFA460008QG0R001KC0VBH + 081KR7JY10008QG0R000R503K2 (bus, PR #3016) + 081KRFA460008QG0R00229616S (proactive notifier).
 import { spawnSync } from "node:child_process";
 import { publish } from "../bus/bus";
 import { AGENT_IDS, SENDER_IDS } from "../bus/types";
@@ -68,7 +68,7 @@ const REAL_ADAPTERS = {
     }),
 };
 /**
- * Single poll iteration. Per B-0440 AC: idle iff NO new commits AND
+ * Single poll iteration. Per 081KRFA460008QG0R001KC0VBH AC: idle iff NO new commits AND
  * NO PR activity within idleThresholdMin. The detector reads both signals
  * and computes idle from MAX (most-recent) of the two timestamps. Either
  * signal being recent means the agent is NOT standing by — even an

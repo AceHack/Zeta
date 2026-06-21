@@ -1,6 +1,5 @@
 ---
-id: B-0829
-zetaid: 081KSGS9H0008QG0R000Q18PGQ
+id: 081KSGS9H0008QG0R000Q18PGQ
 title: Schemas-as-rows + cluster-fork-as-trust-boundary + F# type providers from live cluster — foundation layer for Runme BCL ontology capability
 status: open
 priority: P2
@@ -10,11 +9,11 @@ depends_on: [081KSGS9H0008QG0R0031PBNGA]
 composes_with: [081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R001K8VPV4, 081KS3X9Y0008QG0R00218150M]
 ---
 
-# B-0829 — Schemas-as-rows + cluster-fork-as-trust-boundary + F# type providers from live cluster (Aaron + Kestrel 2026-05-26)
+# 081KSGS9H0008QG0R000Q18PGQ — Schemas-as-rows + cluster-fork-as-trust-boundary + F# type providers from live cluster (Aaron + Kestrel 2026-05-26)
 
 ## Scope
 
-Foundation-layer architecture for the meta-PM substrate at B-0824 + the Runme BCL ontology capability at B-0826:
+Foundation-layer architecture for the meta-PM substrate at 081KSGS9H0008QG0R0031PBNGA + the Runme BCL ontology capability at 081KSGS9H0008QG0R001K8VPV4:
 
 1. **Schemas as ROWS in the distributed database substrate** — same generate+join semantics as any other data
 2. **Cluster-fork-as-trust-boundary** — fork-negotiation at operational boundary, not text-merge layer
@@ -33,15 +32,15 @@ Source: Aaron 2026-05-26 architectural framing + Kestrel substantive elaboration
 | Schema migration breaks deployments | Deployment reflects schema state compiled against; federation translates |
 | Schema = code-layer concern | Schema = data-layer concern using same generate+join semantics |
 
-## Relationship to B-0826 (Runme BCL extension)
+## Relationship to 081KSGS9H0008QG0R001K8VPV4 (Runme BCL extension)
 
-B-0826 named the Runme BCL's 4 capabilities (observability + ontology + database + MCP). This row (B-0829) is the FOUNDATION layer for the ontology capability:
+081KSGS9H0008QG0R001K8VPV4 named the Runme BCL's 4 capabilities (observability + ontology + database + MCP). This row (081KSGS9H0008QG0R000Q18PGQ) is the FOUNDATION layer for the ontology capability:
 
-- B-0826 Capability 2 (ontology/graph queries) is the runtime-facing API
-- B-0829 (schemas-as-rows + fork-negotiable substrate) is the underlying architecture
-- They compose: B-0826 surfaces the ontology to runbook authors; B-0829 makes the ontology fork-negotiable + type-provider-compatible at substrate scope
+- 081KSGS9H0008QG0R001K8VPV4 Capability 2 (ontology/graph queries) is the runtime-facing API
+- 081KSGS9H0008QG0R000Q18PGQ (schemas-as-rows + fork-negotiable substrate) is the underlying architecture
+- They compose: 081KSGS9H0008QG0R001K8VPV4 surfaces the ontology to runbook authors; 081KSGS9H0008QG0R000Q18PGQ makes the ontology fork-negotiable + type-provider-compatible at substrate scope
 
-This row is logically prior to B-0826 implementation; the schemas-as-rows substrate needs to exist before the BCL extension can meaningfully expose it.
+This row is logically prior to 081KSGS9H0008QG0R001K8VPV4 implementation; the schemas-as-rows substrate needs to exist before the BCL extension can meaningfully expose it.
 
 ## The 4 architectural pillars
 
@@ -96,7 +95,7 @@ This row's extension:
 
 Operational claim: federation negotiations are multi-oracle consensus events; cluster splits = oracle divergences; cluster merges = oracle agreements.
 
-Composes with B-0703 (multi-oracle BFT cross-faction consensus substrate):
+Composes with 081KS3X9Y0008QG0R00218150M (multi-oracle BFT cross-faction consensus substrate):
 
 - Each cluster fork is functionally an oracle for "what's the right ontology for this domain"
 - Federation negotiations = multi-oracle consensus
@@ -114,7 +113,7 @@ The same discipline that catches single-oracle pre-collapsed framings (per the f
 - BFT layer handles federation-level disagreements where adversarial concerns apply
 - Same three-layer mediation handles data AND ontology
 
-### With multi-oracle pattern (B-0703)
+### With multi-oracle pattern (081KS3X9Y0008QG0R00218150M)
 
 Each cluster fork is an oracle; federation = multi-oracle consensus events at ontology layer.
 
@@ -163,7 +162,7 @@ Kestrel: *"I'm not aware of anyone composing all of it into one architecture the
 - [ ] CRDT-CAS-BFT mediation extended to operate on schemas (compose with PR #5285 substrate)
 - [ ] F# type provider implementation: live-cluster-as-schema-source pattern
 - [ ] Federation protocol stub: cross-cluster schema negotiation handshake (can be deferred until multi-cluster reality)
-- [ ] Runbook BCL frontmatter-to-row-insert integration (composes with B-0826)
+- [ ] Runbook BCL frontmatter-to-row-insert integration (composes with 081KSGS9H0008QG0R001K8VPV4)
 - [ ] DST testability: schema evolution events replayable via generator-over-IScheduler
 - [ ] Decision-archaeology queryability: schema field provenance + rejected forks + deprecation timeline
 - [ ] Documentation: ontology-as-substrate authoring guide + cluster-fork-vs-federation decision tree
@@ -173,14 +172,14 @@ Kestrel: *"I'm not aware of anyone composing all of it into one architecture the
 - Specific federation protocol RFC (separate row once multi-cluster reality forces the design)
 - Migration of existing static schemas to schemas-as-rows (separate migration row)
 - Performance optimization of type-provider-querying-cluster (separate optimization row once baseline established)
-- Specific runbook BCL integration mechanics — that's B-0826 implementation
+- Specific runbook BCL integration mechanics — that's 081KSGS9H0008QG0R001K8VPV4 implementation
 
 ## Composes with
 
-- B-0824 (canonical generate+join meta-PM substrate)
-- B-0826 (Runme BCL extension — ontology capability runtime API)
-- B-0827 (runme.md + JIT triage — schema-evolution proposals via gesture cells)
-- B-0703 (multi-oracle BFT — federation as multi-oracle consensus)
+- 081KSGS9H0008QG0R0031PBNGA (canonical generate+join meta-PM substrate)
+- 081KSGS9H0008QG0R001K8VPV4 (Runme BCL extension — ontology capability runtime API)
+- 081KSGS9H0008QG0R00123050G (runme.md + JIT triage — schema-evolution proposals via gesture cells)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT — federation as multi-oracle consensus)
 - PR #5285 + #5286 + #5291 + #5295 + #5310 + #5312 (the substrate cascade this row depends on)
 - `.claude/skills/algebra-owner/SKILL.md` (Z-set + operator algebra; schemas as Z-sets is natural)
 - `.claude/skills/crdt-expert/SKILL.md` (CRDT layer for schema convergence)

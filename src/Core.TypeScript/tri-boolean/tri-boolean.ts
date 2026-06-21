@@ -1,4 +1,4 @@
-// Tri-boolean digital qubit -- operations (B-0944, TS / distribution).
+// Tri-boolean digital qubit -- operations (081KSV2WD0008QG0R00051XS0N, TS / distribution).
 import { type Tri, T, F, N, type MeasureResult } from "./types";
 
 /** Construct a certain cell from a boolean. */

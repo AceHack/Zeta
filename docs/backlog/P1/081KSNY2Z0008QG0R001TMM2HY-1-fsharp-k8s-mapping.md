@@ -1,6 +1,5 @@
 ---
-id: B-0668.1
-zetaid: 081KSNY2Z0008QG0R001TMM2HY
+id: 081KSNY2Z0008QG0R001TMM2HY
 priority: P1
 status: open
 title: "Compositional DBSP frame architecture: F# to Kubernetes Mapping"
@@ -16,11 +15,11 @@ tags: [dbsp, fsharp, kubernetes, orleans, durabletask]
 
 ## F# to Kubernetes Mapping
 
-This backlog item is a decomposition of [B-0668](B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md).
+This backlog item is a decomposition of [081KRYRGG0008QG0R0018CMFQY](081KRYRGG0008QG0R0018CMFQY-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md).
 
 ### Problem
 
-The compositional DBSP frame architecture described in B-0668 needs a concrete implementation path from a single F# instance to a clustered Kubernetes environment. This path involves several technologies that need to be integrated.
+The compositional DBSP frame architecture described in 081KRYRGG0008QG0R0018CMFQY needs a concrete implementation path from a single F# instance to a clustered Kubernetes environment. This path involves several technologies that need to be integrated.
 
 ### Task
 

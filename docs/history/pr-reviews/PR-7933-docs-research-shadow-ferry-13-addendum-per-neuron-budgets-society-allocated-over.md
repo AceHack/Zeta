@@ -27,7 +27,7 @@
 
 ## Description
 
-Beats 5–6 of the destination stack, verbatim: each neuron holds its own float budget with the society deciding shares ("like its privacy budget" — the every-bug-has-economic-value currency at neuron scale; the economy replaces the global gradient), communicating over Reticulum (B-1035's one metered door — noninterference by construction; LOCC caveat carried). Each unit is a Hawkins Thousand-Brains modeler (grain-fidelity note: book says columns, stream says neurons) with reference frames as Clifford multivectors (Hestenes; grid-cell anchor O'Keefe/Moser).
+Beats 5–6 of the destination stack, verbatim: each neuron holds its own float budget with the society deciding shares ("like its privacy budget" — the every-bug-has-economic-value currency at neuron scale; the economy replaces the global gradient), communicating over Reticulum (081KTSZN10008QG0R002J0GE0Z's one metered door — noninterference by construction; LOCC caveat carried). Each unit is a Hawkins Thousand-Brains modeler (grain-fidelity note: book says columns, stream says neurons) with reference frames as Clifford multivectors (Hestenes; grid-cell anchor O'Keefe/Moser).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

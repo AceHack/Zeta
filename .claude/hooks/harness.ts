@@ -10,7 +10,7 @@
 //   - To DENY:  print the hookDecision JSON to stdout, then exit 0.
 //   - Exit codes other than 0 are treated as errors, not denials.
 //
-// Per B-0033.1 (PR atomic child of B-0033).
+// Per 081KR50HA0008QG0R002B3N54S (PR atomic child of 081KQ3HBZ0008QG0R0008RYCSX).
 
 export type HookEventName = "PreToolUse" | "PostToolUse";
 

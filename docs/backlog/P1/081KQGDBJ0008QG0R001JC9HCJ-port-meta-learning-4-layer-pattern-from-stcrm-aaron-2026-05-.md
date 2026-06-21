@@ -1,6 +1,5 @@
 ---
-id: B-0126
-zetaid: 081KQGDBJ0008QG0R001JC9HCJ
+id: 081KQGDBJ0008QG0R001JC9HCJ
 priority: P1
 status: closed
 title: Port the 4-layer meta-learning pattern from a sibling repo to Zeta
@@ -13,7 +12,7 @@ classification: buildable-now
 type: friction-reducer
 ---
 
-# B-0126 — Port the 4-layer meta-learning pattern from STCRM to Zeta
+# 081KQGDBJ0008QG0R001JC9HCJ — Port the 4-layer meta-learning pattern from STCRM to Zeta
 
 **Priority:** P1 (high leverage; PR-review pain is recurring; pattern already proven in ServiceTitan exploit context)
 
@@ -56,7 +55,7 @@ Port the 4-layer meta-pattern to Zeta substrate, adapted for Zeta's surfaces (CL
 
 ## Why not P2
 
-- **The 8+ class-level lessons from this single session show the cost is paid every PR cycle.** Deferring multi-week leaves substantial Aaron-tax + Otto-tick-time on the table per the same logic as B-0125.
+- **The 8+ class-level lessons from this single session show the cost is paid every PR cycle.** Deferring multi-week leaves substantial Aaron-tax + Otto-tick-time on the table per the same logic as 081KQGDBJ0008QG0R001MK4YPC.
 
 ## Acceptance criteria
 
@@ -76,7 +75,7 @@ Port the 4-layer meta-pattern to Zeta substrate, adapted for Zeta's surfaces (CL
 ## Composes with
 
 - `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`
-  — first substantive use of delegated authority for this; second was B-0125; third is this row.
+  — first substantive use of delegated authority for this; second was 081KQGDBJ0008QG0R001MK4YPC; third is this row.
 - The CSAP eight-layer architecture (`feedback_carved_sentence_fixed_point_stability_*`) — Layer 3 (class-level encoding) IS what the CSAP convergence step does for substrate; this is the same mechanism applied to PR-review-pain.
 - Otto-272/273 DST discipline — the runtime-evidence-tested-rule-revision is the Layer 2 mechanism in math form.
 - `feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`

@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/consensus.ts
  *
- * B-0914.3 — n-parallel analyzer + consensus mechanism substrate at
+ * 081KSNY2Z0008QG0R001YK61JQ.3 — n-parallel analyzer + consensus mechanism substrate at
  * per-data-analysis-task scope.
  *
  * Per Sakana Robin closed-loop architecture (Nature 2026): launches 8
@@ -10,12 +10,12 @@
  * analyzers with configurable consensus mechanism.
  *
  * Composes with:
- *   - B-0914.3 backlog row (n-parallel-consensus extension target)
- *   - B-0703 multi-oracle BFT substrate (governance-scope consensus;
+ *   - 081KSNY2Z0008QG0R001YK61JQ.3 backlog row (n-parallel-consensus extension target)
+ *   - 081KS3X9Y0008QG0R00218150M multi-oracle BFT substrate (governance-scope consensus;
  *     this extends to per-data-analysis-task scope)
- *   - B-0914.2 PR #5769 closed-loop orchestrator (dispatchCi callback
+ *   - 081KSNY2Z0008QG0R001YK61JQ.2 PR #5769 closed-loop orchestrator (dispatchCi callback
  *     can use this substrate to run N parallel analyzers + consensus)
- *   - B-0914.4 PR #5768 pairing tracker (verifier-side: N parallel
+ *   - 081KSNY2Z0008QG0R001YK61JQ.4 PR #5768 pairing tracker (verifier-side: N parallel
  *     verifiers + consensus determines verdict)
  *   - .claude/rules/monad-propagation-pattern (Result<T, TFeedback>)
  *   - .claude/rules/asymmetric-authorship (each parallel instance

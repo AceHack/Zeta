@@ -79,7 +79,7 @@ Copilot reviewed 1 out of 27 changed files in this pull request and generated 1 
 | memory/otto/cli/claude/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md | Adds archived cartographer math lineage trace. |
 | memory/otto/cli/claude/conversations/2026-05-07-mcp-surface-map-otto-authenticated-services.md | Adds archived MCP surface map note. |
 | memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md | Adds archived canonical bootstream artifact. |
-| memory/otto/cli/claude/conversations/2026-05-13-b-0400-bus-protocol-otto-review.md | Adds archived B-0400 bus protocol review doc. |
+| memory/otto/cli/claude/conversations/2026-05-13-b-0400-bus-protocol-otto-review.md | Adds archived 081KR7JY10008QG0R000R503K2 bus protocol review doc. |
 | memory/otto/cli/claude/conversations/2026-05-14-shadow-lesson-log-otto-2139Z-drift.md | Adds archived shadow lesson log entry. |
 | memory/otto/cli/claude/conversations/2026-05-15-shadow-lesson-log-otto-codex-drift.md | Adds archived shadow lesson log entry. |
 | memory/otto/cli/claude/conversations/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md | Adds archived cross-review artifact (Otto/Gemini). |
@@ -104,7 +104,7 @@ Copilot reviewed 1 out of 27 changed files in this pull request and generated 1 
 Mix of file types in `conversations/`:
 
 - **Otto-authored research** (`*-otto-*.md`): Otto-261 git-native
-  backup audit, canonical bootstream, MCP surface map, B-0400
+  backup audit, canonical bootstream, MCP surface map, 081KR7JY10008QG0R000R503K2
   review, etc.
 - **Multi-AI conversation threads** where Otto is one of several
   voices (aaron-otto, aaron-codex-otto, claudeai-otto-mirror,
@@ -154,13 +154,13 @@ git add memory/MEMORY.md
 
 - `lint (§33 migration xrefs)` fails with 22 dead xrefs, all under persona `otto`. The audit gives exact replacements from `docs/research/...` to `memory/otto/cli/claude/conversations/...`. The first several failing references are:
   - `.claude/rules/claim-acquire-before-worktree-work.md:266`
-  - `docs/backlog/P1/B-0003-alignment-md-rewrite.md:73`
-  - `docs/backlog/P1/B-0003-alignment-md-rewrite.md:178`
-  - `docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md:112`
-  - `docs/backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md:54`
-  - `docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md:82`
-  - `docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md:85`
-  - `docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md:55`
+  - `docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md:73`
+  - `docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md:178`
+  - `docs/backlog/P1/081KQ8P5D0008QG0R001BH93SA-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md:112`
+  - `docs/backlog/P1/081KQX9B50008QG0R001W40ZH8-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md:54`
+  - `docs/backlog/P1/081KR2E4K0008QG0R00289GE8Z-wake-time-otto-nn-anchor-backfill.md:82`
+  - `docs/backlog/P1/081KR2E4K0008QG0R00289GE8Z-wake-time-otto-nn-anchor-backfill.md:85`
+  - `docs/backlog/P1/081KR7JY10008QG0R000R503K2-inter-agent-ephemeral-communication-bus-nats-protocol.md:55`
 
 Suggested verification after patching:
 

@@ -77,7 +77,7 @@ named bounded-wait. Reference rules / PRs / files via 6-level paths above.)
 Example link format:
 
 - See [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
-- Composes with [B-0667](../../../../../../docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md)
+- Composes with [081KRW63S0008QG0R003Z7QV2A](../../../../../../docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md)
 
 ## Counter
 

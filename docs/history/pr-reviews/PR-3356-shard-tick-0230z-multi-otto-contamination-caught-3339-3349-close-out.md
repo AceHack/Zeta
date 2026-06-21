@@ -87,7 +87,7 @@ Captures:
 - **`Copilot` (bot)** at 2026-05-15T02:37:26Z on `docs/hygiene-history/ticks/2026/05/15/0230Z.md`:15 (association: NONE)
 
   <pre>
-  P1 (xref): The relative link to the B-0519 RCA is off by one directory. From this tick file location, `../../../../backlog/...` resolves under `docs/hygiene-history/backlog/...` (nonexistent); it should go up to `docs/` first (e.g., `../../../../../backlog/P3/B-0519-...`).
+  P1 (xref): The relative link to the 081KRHWGX0008QG0R001HMWM1W RCA is off by one directory. From this tick file location, `../../../../backlog/...` resolves under `docs/hygiene-history/backlog/...` (nonexistent); it should go up to `docs/` first (e.g., `../../../../../backlog/P3/081KRHWGX0008QG0R001HMWM1W-...`).
 
   This issue also appears on line 15 of the same file.
 

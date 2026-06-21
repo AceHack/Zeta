@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// ace.ts -- Ace DLC package manager CLI. Smallest safe slice of B-0288.
+// ace.ts -- Ace DLC package manager CLI. Smallest safe slice of 081KR2E4K0008QG0R002YE3MMD.
 //
 // Usage:
 //   bun src/Core.TypeScript/ace/ace.ts list [--store <path>] [--json]

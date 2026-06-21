@@ -15,11 +15,11 @@
 //   1 — duplicates present (or I/O / parse error)
 //
 // Background:
-//   This tool exists because PR #3038 created a row with `id: B-0444`
+//   This tool exists because PR #3038 created a row with `id: 081KRFA460008QG0R001SXP0C2`
 //   that collided with the row PR #3033 had filed 25 min earlier. The
 //   collision survived 9 PR landings before being noticed in an ad-hoc
 //   audit (PR #3053 resolved it). A broader sweep found 12 additional
-//   collision groups. See B-0451 for the row that tracks this tool +
+//   collision groups. See 081KRFA460008QG0R00308W7FJ for the row that tracks this tool +
 //   the substrate-wide cleanup.
 import { readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";

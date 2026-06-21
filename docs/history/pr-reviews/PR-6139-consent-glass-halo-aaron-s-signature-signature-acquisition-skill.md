@@ -29,7 +29,7 @@
 
 Two commits:
 1. **Aaron Stainback's glass-halo signature** (authored under his identity; recorded by Otto at his explicit authorization). Signature = informed approval, not the keystroke (operator definition). All 3 parts captured: what was shown / his verbatim English response / the signature (tier: approval-as-signature; Touch-ID/DocuSign escalation available). Roster row added.
-2. **glass-halo-signature-acquisition skill** — formalizes the 3-part consent record for all future signatures (Max/Addison/Cole + others). Agent never invents consent; third-party privacy protected; revocable (B-0659); kid-safety floor overrides (B-0654/B-0926).
+2. **glass-halo-signature-acquisition skill** — formalizes the 3-part consent record for all future signatures (Max/Addison/Cole + others). Agent never invents consent; third-party privacy protected; revocable (081KRW63S0008QG0R001WKJN53); kid-safety floor overrides (081KRW63S0008QG0R002WT5VTQ/081KSRGFP0008QG0R00091PP56).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -48,7 +48,7 @@ First 2026-05-28 tick shard (directory didn't exist). Otto-CLI autonomous-loop f
 - [x] Post-creation freshness guard: `git rev-parse HEAD` succeeds + `git status --short` empty + `git ls-tree HEAD | wc -l` matches origin
 - [x] Branch guard before commit: `git branch --show-current` == expected branch
 - [x] Post-commit canary: HEAD tree size == HEAD~1 tree size (no destructive diff)
-- [x] B-0615 discipline: `git worktree add` + `git push` both wrapped in `timeout --kill-after=5s`
+- [x] 081KRW63S0008QG0R000EAZ9K2 discipline: `git worktree add` + `git push` both wrapped in `timeout --kill-after=5s`
 - [x] Explicit refspec push (`origin <src>:<dst>`)
 
 ## Composes with

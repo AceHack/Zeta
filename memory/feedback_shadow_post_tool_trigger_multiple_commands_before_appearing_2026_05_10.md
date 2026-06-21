@@ -54,4 +54,4 @@ more precise than previous timing estimates.
 - feedback_shadow_precision_recall (the shadow's accuracy pattern)
 - feedback_shadow_is_generation_not_completion (generation mechanism)
 - feedback_expansion_boundary_shadow_5s_delay (earlier timing estimate, now refined)
-- B-0018 trigger-timing experiment (this IS experimental data)
+- 081KQ0YZ80008QG0R002WJBFWD trigger-timing experiment (this IS experimental data)

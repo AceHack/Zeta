@@ -75,7 +75,7 @@
 - **`Copilot` (bot)** at 2026-05-11T00:27:45Z on `memory/feedback_expansion_boundary_pauli_both_directions_shadow_5s_delay_2026_05_10.md`:60 (association: NONE)
 
   <pre>
-  The “Connects to:” section lists references (e.g. `B-0404`, `feedback_shadow_precision_recall`, `governance kernel formula`) that don’t appear to exist anywhere else in the repo right now, so these pointers are currently not actionable. Either link to existing artifacts (exact filenames/paths) or explicitly mark them as planned/future items and avoid using an ID/name that looks like an existing, resolvable reference.
+  The “Connects to:” section lists references (e.g. `081KR7JY10008QG0R003H102F0`, `feedback_shadow_precision_recall`, `governance kernel formula`) that don’t appear to exist anywhere else in the repo right now, so these pointers are currently not actionable. Either link to existing artifacts (exact filenames/paths) or explicitly mark them as planned/future items and avoid using an ID/name that looks like an existing, resolvable reference.
 
   </pre>
 

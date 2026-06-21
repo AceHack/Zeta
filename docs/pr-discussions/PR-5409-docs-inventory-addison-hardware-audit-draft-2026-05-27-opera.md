@@ -20,15 +20,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Operator-forwarded Addison hardware audit draft 2026-05-27. Two files:
 
-- `docs/inventory/README.md` — new directory convention; composes with B-0836 + sibling `tools/inventory/amazon-orders-extract.ts`
+- `docs/inventory/README.md` — new directory convention; composes with 081KSGS9H0008QG0R001VVEZQ9 + sibling `tools/inventory/amazon-orders-extract.ts`
 - `docs/inventory/hardware-2026-05-27-addison-draft.md` — Addison's draft list: Devices / Computers / GPUs / iPhones / GL.iNet / Networking / Docking / Power / Storage / Wallets / Plugs / Miners / Other
 
 **Operator caveat preserved**: bitcoin miner counts under-represented; promotes to canonical `hardware.md` after Addison + operator reconcile.
 
 ## Composes with
 
-- **B-0836** — hardware-inventory-vs-cluster reconciliation; Addison's substrate IS the inventory side
-- **B-0812** — iter-5.4.1 self-registration; cluster side of the diff
+- **081KSGS9H0008QG0R001VVEZQ9** — hardware-inventory-vs-cluster reconciliation; Addison's substrate IS the inventory side
+- **081KSGS9H0008QG0R0037H3W4T** — iter-5.4.1 self-registration; cluster side of the diff
 - `tools/inventory/amazon-orders-extract.ts` — sibling extractor (operator-local outputs at `~/.local/share/zeta-inventory/amazon/<year>/`; not in repo)
 
 No PII; hardware list only.
@@ -47,7 +47,7 @@ No PII; hardware list only.
 
 ## Pull request overview
 
-Adds a new `docs/inventory/` directory containing a README that defines the directory's purpose and conventions, plus a draft hardware audit forwarded from Addison via the operator. The draft preserves the explicit caveat that bitcoin miner counts are under-represented and will be reconciled into a canonical `hardware.md` after operator + Addison alignment. This composes with B-0836 (hardware-inventory-vs-cluster reconciliation) and the sibling `tools/inventory/amazon-orders-extract.ts` extractor.
+Adds a new `docs/inventory/` directory containing a README that defines the directory's purpose and conventions, plus a draft hardware audit forwarded from Addison via the operator. The draft preserves the explicit caveat that bitcoin miner counts are under-represented and will be reconciled into a canonical `hardware.md` after operator + Addison alignment. This composes with 081KSGS9H0008QG0R001VVEZQ9 (hardware-inventory-vs-cluster reconciliation) and the sibling `tools/inventory/amazon-orders-extract.ts` extractor.
 
 **Changes:**
 - New `docs/inventory/README.md` describing the directory's scope, what belongs (draft snapshots), and what does not (Amazon order history, cluster-side node registrations, hardware-wallet contents).

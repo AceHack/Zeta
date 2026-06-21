@@ -27,7 +27,7 @@
 
 ## Description
 
-Engine ZetaIds minted + cost-declared; ladder resolution (Live/Injected/Mock — Adapted carved only when an instance exists); the red light per binding; the honest Mock (flat marginals, Converged=false by construction — a rehearsal that cannot masquerade). universal/port's IInferenceEngine row complete; B-1033 remaining: richer case families only. Bayesian 90 + F# 3013 green.
+Engine ZetaIds minted + cost-declared; ladder resolution (Live/Injected/Mock — Adapted carved only when an instance exists); the red light per binding; the honest Mock (flat marginals, Converged=false by construction — a rehearsal that cannot masquerade). universal/port's IInferenceEngine row complete; 081KTZ4EF0008QG0R000WJGSWX remaining: richer case families only. Bayesian 90 + F# 3013 green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

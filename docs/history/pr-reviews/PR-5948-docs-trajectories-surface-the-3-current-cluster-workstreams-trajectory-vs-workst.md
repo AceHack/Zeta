@@ -39,9 +39,9 @@ Aaron asked "how are we on the 3 [workstreams]?" and — substrate-honestly — 
 
 | Trajectory | Workstream | On-main anchors |
 |---|---|---|
-| `cluster-encryption-credential-substrate` | encryption | B-0789, B-0852(.3), B-0833, B-0835, B-0853 |
-| `usb-zflash-installer` | usb/zflash | `full-ai-cluster/tools/zflash.ts`, `flash-cluster-iso` skill, B-0844, B-0831, B-0792 |
-| `ts-workflow-engine-du-state-machine` | TS workflow engine around DUs | `.claude/skills/agent-loop/` + `tools/agent-loop/`, B-0867(.15/.20), B-0868, B-0862 |
+| `cluster-encryption-credential-substrate` | encryption | 081KSGS9H0008QG0R002T3BJ2R, 081KSKBP80008QG0R003AX2A69(.3), 081KSGS9H0008QG0R003JNSVR5, 081KSGS9H0008QG0R00120EEHM, 081KSKBP80008QG0R000Y2B7HC |
+| `usb-zflash-installer` | usb/zflash | `full-ai-cluster/tools/zflash.ts`, `flash-cluster-iso` skill, 081KSGS9H0008QG0R001EZKNCB, 081KSGS9H0008QG0R0011BC7T2, 081KSGS9H0008QG0R003V23XNZ |
+| `ts-workflow-engine-du-state-machine` | TS workflow engine around DUs | `.claude/skills/agent-loop/` + `tools/agent-loop/`, 081KSKBP80008QG0R000B3Y19A(.15/.20), 081KSNY2Z0008QG0R0036KH026, 081KSKBP80008QG0R0031DTHS9 |
 
 All 18 cited link targets verified to resolve on `origin/main` before commit.
 
@@ -86,7 +86,7 @@ All 18 cited link targets verified to resolve on `origin/main` before commit.
 - **`Copilot` (bot)** at 2026-05-29T06:52:58Z on `docs/trajectories/cluster-encryption-credential-substrate/RESUME.md`:6 (association: NONE)
 
   <pre>
-  These trajectory packets repeatedly attribute statements/dates to a named human ("Aaron 2026-05-29", "Aaron 2026-05-23", "Aaron 2026-05-26", "Aaron 2026-05-27", "Aaron 2026-05-28", "Aaron 2026-05-29", and "Aaron-mika-kestrel-otto..." appears in a cited backlog filename which is unavoidable), and one block attributes a ratification ("ratified 2026-05-28") plus persona names in B-0867.20 ("kestrel-2026-05-28"). Per the copilot-instructions `no name attribution in code, docs, or skills` rule, `docs/trajectories/**` is in the current-state surface category (not the closed history-surface enumeration), so prose attributions should use role-refs ("the human maintainer YYYY-MM-DD") rather than first-name. Filenames cited as link targets are unavoidable and don't need rewriting, but the inline prose attributions in the new RESUME.md bodies should be de-named.
+  These trajectory packets repeatedly attribute statements/dates to a named human ("Aaron 2026-05-29", "Aaron 2026-05-23", "Aaron 2026-05-26", "Aaron 2026-05-27", "Aaron 2026-05-28", "Aaron 2026-05-29", and "Aaron-mika-kestrel-otto..." appears in a cited backlog filename which is unavoidable), and one block attributes a ratification ("ratified 2026-05-28") plus persona names in 081KSNY2Z0008QG0R003WFDCJ9 ("kestrel-2026-05-28"). Per the copilot-instructions `no name attribution in code, docs, or skills` rule, `docs/trajectories/**` is in the current-state surface category (not the closed history-surface enumeration), so prose attributions should use role-refs ("the human maintainer YYYY-MM-DD") rather than first-name. Filenames cited as link targets are unavoidable and don't need rewriting, but the inline prose attributions in the new RESUME.md bodies should be de-named.
 
   Flagging once per PR (the rule appears across all four new/edited files); please sweep `Aaron …`/persona-name attributions in the new prose to role-refs.
   </pre>
@@ -110,9 +110,9 @@ Surfaces the operator's three current cluster-bringup workstreams as
 trajectory RESUME.md packets (previously head-only — which is how the
 third was nearly forgotten at recall time):
 
-- cluster-encryption-credential-substrate (B-0789/0852/0833/0853)
-- usb-zflash-installer (zflash.ts + B-0844/0831/0792)
-- ts-workflow-engine-du-state-machine (agent-loop skill + B-0867/0868/0862)
+- cluster-encryption-credential-substrate (081KSGS9H0008QG0R002T3BJ2R/0852/0833/0853)
+- usb-zflash-installer (zflash.ts + 081KSGS9H0008QG0R001EZKNCB/0831/0792)
+- ts-workflow-engine-du-state-machine (agent-loop skill + 081KSKBP80008QG0R000B3Y19A/0868/0862)
 
 Lands the genus/species taxonomy in factory-trajectory-surface:
 trajectory = genus (any tracked path, incl. states/postures/disciplines);

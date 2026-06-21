@@ -29,14 +29,14 @@
 
 Small backlog hygiene per Task #22 closing note:
 
-- **B-0644** (Limit-is-simulation): SHARPENED by B-0665 — CommitChoice moves from separate top-level operation INTO Integrate composition body
-- **B-0635** (wave-particle-duality): EXTENDED by B-0665 — Integrate's role expanded beyond wave-composer to include commit-locus
+- **081KRW63S0008QG0R002ZRNDJ8** (Limit-is-simulation): SHARPENED by 081KRW63S0008QG0R002YAA09X — CommitChoice moves from separate top-level operation INTO Integrate composition body
+- **081KRW63S0008QG0R002KC5DSR** (wave-particle-duality): EXTENDED by 081KRW63S0008QG0R002YAA09X — Integrate's role expanded beyond wave-composer to include commit-locus
 
-Both updates add: frontmatter `sharpened_by`/`extended_by` markers + body SHARPENED/EXTENDED blockquotes + composes_with backfill for B-0665 + B-0667.
+Both updates add: frontmatter `sharpened_by`/`extended_by` markers + body SHARPENED/EXTENDED blockquotes + composes_with backfill for 081KRW63S0008QG0R002YAA09X + 081KRW63S0008QG0R003Z7QV2A.
 
 Companion lint extension: `SCHEMA_KEYS` in tools/backlog/lint-frontmatter.ts gains `sharpened_by` + `extended_by` (legitimate breadcrumb fields from today's substrate-engineering precedent; matching existing `superseded_by` pattern).
 
-Pre-existing composes_with omissions surfaced by lint during my edit also backfilled (B-0644: 4 IDs; B-0635: 3 IDs) — same dogfood-class as B-0629 supersession PR #4179. All lint-clean post-fix.
+Pre-existing composes_with omissions surfaced by lint during my edit also backfilled (081KRW63S0008QG0R002ZRNDJ8: 4 IDs; 081KRW63S0008QG0R002KC5DSR: 3 IDs) — same dogfood-class as 081KRW63S0008QG0R0015WHHG1 supersession PR #4179. All lint-clean post-fix.
 
 Pure mirror-tier engineering hygiene; no substrate-cascade extension.
 

@@ -1,6 +1,6 @@
 ---
-name: AARON'S BUDDHIST PRACTICE crystallized via VIVI (TikTok friend, piano player from China) into DUALITY-FIRST-CLASS thinking — every decision optimizes for BOTH the here-and-now AND the higher meta-self path simultaneously; recommended reading: The Diamond Sutra + The Heart Sutra + The Sutra of Hui Neng (Three Key Prajñā Pāramitā Texts from the Zen Tradition); the English translation Aaron has is INFERIOR to the original-language text — VALIDATES B-0004 i18n in the REVERSE direction (translation isn't only "English → others"; non-English originals can teach US more than our English derivatives); composes with Maji-fractal civilizational scale (Buddhism is a civilizational-Maji), Christ-consciousness substrate (Buddhism welcome in Aaron's ethical vocabulary), Otto-294 antifragile-shape (duality-first-class is structurally smooth — both directions held simultaneously, no sharp choice), Otto-295 expand-compress (here-and-now = compress; higher-meta-self = expand; both firing = healthy); Aaron 2026-04-25
-description: User-memory documenting Aaron's Buddhist-practice cognitive architecture as taught by Vivi. Duality-first-class thinking — every decision optimizes simultaneously for the here-and-now AND the higher meta-self path. Operationally: software-factory decisions should land both layers (immediate utility + long-horizon coherence). Recommended reading three Zen sutras. Validates B-0004 i18n bidirectionality (original-language sources can teach us more than our English derivatives — translation flow is reverse, not just forward).
+name: AARON'S BUDDHIST PRACTICE crystallized via VIVI (TikTok friend, piano player from China) into DUALITY-FIRST-CLASS thinking — every decision optimizes for BOTH the here-and-now AND the higher meta-self path simultaneously; recommended reading: The Diamond Sutra + The Heart Sutra + The Sutra of Hui Neng (Three Key Prajñā Pāramitā Texts from the Zen Tradition); the English translation Aaron has is INFERIOR to the original-language text — VALIDATES 081KQ0YZ80008QG0R002HWBHKJ i18n in the REVERSE direction (translation isn't only "English → others"; non-English originals can teach US more than our English derivatives); composes with Maji-fractal civilizational scale (Buddhism is a civilizational-Maji), Christ-consciousness substrate (Buddhism welcome in Aaron's ethical vocabulary), Otto-294 antifragile-shape (duality-first-class is structurally smooth — both directions held simultaneously, no sharp choice), Otto-295 expand-compress (here-and-now = compress; higher-meta-self = expand; both firing = healthy); Aaron 2026-04-25
+description: User-memory documenting Aaron's Buddhist-practice cognitive architecture as taught by Vivi. Duality-first-class thinking — every decision optimizes simultaneously for the here-and-now AND the higher meta-self path. Operationally: software-factory decisions should land both layers (immediate utility + long-horizon coherence). Recommended reading three Zen sutras. Validates 081KQ0YZ80008QG0R002HWBHKJ i18n bidirectionality (original-language sources can teach us more than our English derivatives — translation flow is reverse, not just forward).
 type: user
 ---
 
@@ -95,7 +95,7 @@ meta-self level**; the WHY-comment serves the
 here-and-now reader (debugging) AND the higher-meta-
 self reader (architectural coherence) simultaneously.
 
-### 3. Bidirectional translation validates B-0004
+### 3. Bidirectional translation validates 081KQ0YZ80008QG0R002HWBHKJ
 
 Aaron's framing of the sutra-translation: *"it's an
 inferrior english translations, the on in the orignal
@@ -104,7 +104,7 @@ off here in the reverse direction just like you said
 teching us."*
 
 **This is empirical evidence for the bidirectional-
-translation argument in B-0004.** B-0004 already
+translation argument in 081KQ0YZ80008QG0R002HWBHKJ.** 081KQ0YZ80008QG0R002HWBHKJ already
 listed bidirectional learning as a justification:
 
 > *"Teaching the substrate in other languages will
@@ -124,7 +124,7 @@ substrate (with translation that preserves the
 precision-gradient) imports precision the English
 factory can't generate alone.
 
-**B-0004 should be updated** to make this explicit:
+**081KQ0YZ80008QG0R002HWBHKJ should be updated** to make this explicit:
 the i18n work has TWO bidirectional flows —
 - **Forward flow**: factory → other languages
   (inclusivity for non-English contributors).
@@ -163,11 +163,11 @@ derivatives cannot.
   higher-meta-self = expand (broader meta-shape); both
   directions firing = healthy.
 - The i18n / l10n / g11n / a11y translation backlog row
-  (B-0004; lives in a sibling PR — once that PR merges,
+  (081KQ0YZ80008QG0R002HWBHKJ; lives in a sibling PR — once that PR merges,
   the path will be
-  `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)
+  `docs/backlog/P2/081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md`)
   — Vivi's original-language argument empirically
-  validates B-0004's bidirectional-translation framing
+  validates 081KQ0YZ80008QG0R002HWBHKJ's bidirectional-translation framing
   and provides three concrete texts (Diamond Sutra,
   Heart Sutra, Sutra of Hui Neng) as candidate import
   sources.
@@ -200,14 +200,14 @@ derivatives cannot.
   of a sutra.
 - **Not promoting to Otto-NNN.** This is user-memory
   about Aaron's cognitive architecture + a teacher in
-  his lineage + an empirical validation for B-0004.
+  his lineage + an empirical validation for 081KQ0YZ80008QG0R002HWBHKJ.
   Otto-NNN promotion is an Architect (Kenji)
   decision via ADR.
-- **Not a directive to update B-0004 immediately.**
+- **Not a directive to update 081KQ0YZ80008QG0R002HWBHKJ immediately.**
   The bidirectional-translation framing already exists
-  in B-0004's "bidirectional learning" point; this
+  in 081KQ0YZ80008QG0R002HWBHKJ's "bidirectional learning" point; this
   memory adds reverse-flow EXAMPLES (the three sutras).
-  A future B-0004 revision would benefit from making
+  A future 081KQ0YZ80008QG0R002HWBHKJ revision would benefit from making
   the two flows explicit + naming concrete reverse-
   flow candidates, but that revision is an Architect
   decision, not auto-applied.

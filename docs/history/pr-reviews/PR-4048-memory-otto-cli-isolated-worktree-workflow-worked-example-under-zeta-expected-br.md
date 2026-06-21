@@ -47,7 +47,7 @@ Worked-example documentation of Steps 0-6:
 
 Empirical anchors captured:
 
-- Worktree-add succeeded first try; B-0530 race did not fire
+- Worktree-add succeeded first try; 081KRMEXM0008QG0R000X1PPGC race did not fire
 - ls-tree count 53 post-commit matches `origin/main` — no canary corruption per `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`
 - Branch-guard passed in same Bash call as commit (race window minimized to within one Bash subprocess)
 - This PR is itself a second iteration of the workflow — proves the pattern is repeatable
@@ -87,7 +87,7 @@ Empirical anchors captured:
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Replace quoted wildcards in cp example**
 
-  The worked-example command uses quoted globs (`cp "$PRIMARY/docs/backlog/P2/B-0611-*.md" ...` and `cp "$PRIMARY/memory/feedback_otto_cli_lior_active_*.md" ...`), which prevents shell expansion and makes `cp` look for literal `*` filenames. In a normal Bash environment this causes the copy step to fail, so anyone replaying this memo cannot reproduce the documented “10 files copied” outcome unless they manually rewrite the command.
+  The worked-example command uses quoted globs (`cp "$PRIMARY/docs/backlog/P2/081KRSKQ20008QG0R0014PPGZM-*.md" ...` and `cp "$PRIMARY/memory/feedback_otto_cli_lior_active_*.md" ...`), which prevents shell expansion and makes `cp` look for literal `*` filenames. In a normal Bash environment this causes the copy step to fail, so anyone replaying this memo cannot reproduce the documented “10 files copied” outcome unless they manually rewrite the command.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -147,7 +147,7 @@ deferred under pure-git tier).
 
 Empirical anchors:
 
-- Worktree-add succeeded first try; B-0530 worktree-prune-race
+- Worktree-add succeeded first try; 081KRMEXM0008QG0R000X1PPGC worktree-prune-race
   did not fire
 - ls-tree count 53 post-commit (matches origin/main — no canary
   corruption per codeql-no-source-on-docs-only-pr rule)
@@ -197,7 +197,7 @@ fix(memo): address 3 PR #4048 reviewer threads — replace shell-glob s…
   breaks the `&& \` chain — `#` comments out the trailing
   continuation. Fixed by listing all 11 literal paths.
 
-The actual commands run during the original B-0611 session used
+The actual commands run during the original 081KRSKQ20008QG0R0014PPGZM session used
 full literal filenames (per the Bash transcript). The memo
 abbreviated for readability without flagging — the fix surfaces
 the literal commands so the memo is copy-paste-executable.

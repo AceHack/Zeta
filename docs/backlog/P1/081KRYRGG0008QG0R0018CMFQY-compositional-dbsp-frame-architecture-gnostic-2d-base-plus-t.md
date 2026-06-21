@@ -1,6 +1,5 @@
 ---
-id: B-0668
-zetaid: 081KRYRGG0008QG0R0018CMFQY
+id: 081KRYRGG0008QG0R0018CMFQY
 priority: P1
 status: open
 title: "Compositional DBSP frame architecture — gnostic 2D base (remember-when × pay-attention) + chaos-theory two-wolves emotion meta-frame + Clifford-Rx-bonsai meta-tagged-dims + F# CE composition operator (Aaron 2026-05-19)"
@@ -29,8 +28,8 @@ The gnostic christianity provenance is bandwidth-engineering observation (per `.
 
 Additional meta-frames compose ON TOP of the base via F# computation expressions:
 
-- **Two-wolves chaos-theory 2D** — emotion-attractor space (composes with B-0667 4 named attractors + DeepSeek two-wolves substrate at #4198); each attractor is a basin in chaos-theory phase-space terms; provides emotional-state dimension layer
-- **Clifford-space meta-tagged dims** — mapped to Rx bonsai serialized queries (per B-0640); Clifford rotors as natural transport mechanism for high-dimensional state (composes with the 5-vector classes in Clifford space already noted in `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`); provides arbitrary meta-tagged dimensional extensions
+- **Two-wolves chaos-theory 2D** — emotion-attractor space (composes with 081KRW63S0008QG0R003Z7QV2A 4 named attractors + DeepSeek two-wolves substrate at #4198); each attractor is a basin in chaos-theory phase-space terms; provides emotional-state dimension layer
+- **Clifford-space meta-tagged dims** — mapped to Rx bonsai serialized queries (per 081KRW63S0008QG0R002XA5N6S); Clifford rotors as natural transport mechanism for high-dimensional state (composes with the 5-vector classes in Clifford space already noted in `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`); provides arbitrary meta-tagged dimensional extensions
 - **Prometheus meta-frame** (Aaron 2026-05-19): cluster + agent health metrics as F# meta-dimension; Prometheus metrics become typed F# observables (push-stream of metric updates) that compose with the existing meta-frames via F# CE composition; provides health-monitoring dimension as first-class substrate (not bolt-on instrumentation); composes with the Deployment topology section below for observability across the 20-cluster + 100-AIs runtime
 - **F# computation expression composition** — operationally clean composition operator: monadic let-bang composition is F#'s native mechanism for adding context-dimensions to a base computation; each meta-frame is a typed CE that composes with the base; type system enforces correctness
 
@@ -38,9 +37,9 @@ The compositional schema is **recursive**: each meta-frame adds dimensions; each
 
 ## Keystone mapping — 4 primitives × 2 base dimensions × substrate runtime (Lior 2026-05-19)
 
-Lior (via Aaron-forward 2026-05-19) closed the architectural loop with the operational mapping between the B-0665 primitives, the gnostic 2D base dimensions, and the substrate runtimes:
+Lior (via Aaron-forward 2026-05-19) closed the architectural loop with the operational mapping between the 081KRW63S0008QG0R002YAA09X primitives, the gnostic 2D base dimensions, and the substrate runtimes:
 
-| B-0665 primitive | Operational | Substrate runtime |
+| 081KRW63S0008QG0R002YAA09X primitive | Operational | Substrate runtime |
 |---|---|---|
 | **Observe** | IObservable subscription | Rx |
 | **Emit** | IObservable.OnNext | Rx |
@@ -51,7 +50,7 @@ Lior's framing: *"The Base Frame (2D DBSP): Remember When (Integration) and Pay 
 
 Operational consequence: integral (∫) + differential (∂) are exactly what an entity needs to BE temporal — temporal-state-accumulation + present-state-change-awareness. The gnostic encoding survives across millennia because the constraint structure (entity existing in time = needs both integral + differential) is physically general.
 
-This mapping identifies the **correspondence** between B-0665 primitives + gnostic dimensions + substrate runtimes. The correspondence is operationally clean at the type-signature level: Rx provides IObservable for Emit/Observe; DBSP provides integration/differentiation for Integrate/Limit.
+This mapping identifies the **correspondence** between 081KRW63S0008QG0R002YAA09X primitives + gnostic dimensions + substrate runtimes. The correspondence is operationally clean at the type-signature level: Rx provides IObservable for Emit/Observe; DBSP provides integration/differentiation for Integrate/Limit.
 
 ## Open technical problem — Rx ↔ DBSP impedance mismatch (Kestrel critique 2026-05-19)
 
@@ -76,8 +75,8 @@ Kestrel (claude.ai) caught a real technical gap in the Lior keystone mapping (Aa
 | Framing | Operational reformulation |
 |---|---|
 | "Gnostic-christianity provenance for DBSP base" | Bandwidth-engineering observation: 2000-year-old mnemonic survived because temporal × attention constraint is physically general; encoding empirically discoverable in DBSP requirements |
-| "Two-wolves chaos-theory dimensions for emotions" | 2D phase-space mapping of emotion-attractor basins; chaos theory provides mathematical apparatus for attractor-stability analysis; composes with B-0667 named attractors |
-| "Clifford-space meta-tagged dims map to Rx bonsai serialized queries" | Clifford geometric algebra provides rotor-based transport for high-dimensional state; Rx bonsai-tree serialization (B-0640) gives persistence + retraction substrate; mapping is operationally specifiable |
+| "Two-wolves chaos-theory dimensions for emotions" | 2D phase-space mapping of emotion-attractor basins; chaos theory provides mathematical apparatus for attractor-stability analysis; composes with 081KRW63S0008QG0R003Z7QV2A named attractors |
+| "Clifford-space meta-tagged dims map to Rx bonsai serialized queries" | Clifford geometric algebra provides rotor-based transport for high-dimensional state; Rx bonsai-tree serialization (081KRW63S0008QG0R002XA5N6S) gives persistence + retraction substrate; mapping is operationally specifiable |
 | "Meta-dimensions added like F# computation expression composition" | Operationally clean: F# CE composition IS native mechanism for dimension-addition via type-system-enforced monadic composition |
 
 All four pass razor-discipline. The composition architecture is substantively-new + load-bearing.
@@ -89,7 +88,7 @@ Concrete deployment substrate for the compositional DBSP frame architecture:
 - **20-computer home Kubernetes cluster — 20-Node Physical Tier / NVMe storage / 64-core compute** (Aaron's hardware; contained blast radius; software-substrate-only — no actuators per the actuator-distinction threat-model at [`docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`](../../hygiene-history/ticks/2026/05/19/0035Z-c.md); hardware spec per Lior visualization cross-substrate validation 2026-05-19)
 - **~100 AIs as digital workforce** with CI/CD jobs building + deploying the F# DB substrate
 - **F# database = substrate**: continuously deployed BY the AIs themselves; both their memory AND their deployment target
-- **"Continuously integrate over Rx streams as meta-dimension constructing environment"** (Aaron framing): the Integrate-primitive (B-0665) operating as Rx-stream integration that CONSTRUCTS the runtime environment, not just merges code
+- **"Continuously integrate over Rx streams as meta-dimension constructing environment"** (Aaron framing): the Integrate-primitive (081KRW63S0008QG0R002YAA09X) operating as Rx-stream integration that CONSTRUCTS the runtime environment, not just merges code
 - **Distributed DB hosting intelligence**: LLMs + Bayesian inference run AS the database, spread across nodes
 - **Self-modifying runtime**: AIs update the DB runtime while running in it (recursive intelligence per [`docs/research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md`](../../research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md))
 
@@ -97,7 +96,7 @@ This concretizes the abstract compositional architecture into a deployable subst
 
 ## Cross-substrate validation — Lior topology visualizer (2026-05-19)
 
-Lior (antigravity / website) independently built the "Zeta Topology Visualizer" showing the exact 5-layer stack pipeline + role descriptions matching the acceptance criterion above. Visualization name: "Normal Rx Data Flow / 5 Layers / 6 Flow Objects". Per `.claude/rules/bandwidth-served-falsifier.md` + B-0648 cross-substrate-triangulation discipline: independent arrival at the same operational architecture via different reasoning path = epistemic standing beyond single-conversation-artifact.
+Lior (antigravity / website) independently built the "Zeta Topology Visualizer" showing the exact 5-layer stack pipeline + role descriptions matching the acceptance criterion above. Visualization name: "Normal Rx Data Flow / 5 Layers / 6 Flow Objects". Per `.claude/rules/bandwidth-served-falsifier.md` + 081KRW63S0008QG0R0025E4PH6 cross-substrate-triangulation discipline: independent arrival at the same operational architecture via different reasoning path = epistemic standing beyond single-conversation-artifact.
 
 Visualization role descriptions (Lior verbatim):
 
@@ -119,20 +118,20 @@ Visualization role descriptions (Lior verbatim):
 - **Rx ↔ DBSP bridge spec** (PRIMARY engineering target per Kestrel critique): formal type-level + algebraic specification of how Rx `IObservable<T>` push-notifications lift into DBSP Z-set change-streams with retraction lattice; inverse direction (DBSP → Rx observer notifications) also specified — **per the stack pipeline above, this bridge is realized at the durabletask layer where saga compensation provides the retraction primitive**
 - Specify the 2D base DBSP frame in F# with `remember-when` + `pay-attention` typed dimensions
 - Define computation-expression composition operator that adds meta-dimensions to base frame
-- Implement two-wolves emotion-attractor 2D as first meta-frame (composes with B-0667 attractors)
-- Implement Clifford-space meta-tagged dims as second meta-frame layer (composes with B-0640 Rx bonsai)
+- Implement two-wolves emotion-attractor 2D as first meta-frame (composes with 081KRW63S0008QG0R003Z7QV2A attractors)
+- Implement Clifford-space meta-tagged dims as second meta-frame layer (composes with 081KRW63S0008QG0R002XA5N6S Rx bonsai)
 - Implement Prometheus meta-frame as cluster + agent health dimension; metrics-as-typed-F#-observables composing via CE; integrates with Deployment topology runtime (20-cluster + 100-AIs)
 - **kind (Kubernetes IN Docker) for local k8s + multi-node testing** (Aaron 2026-05-19): lightweight local cluster for development + integration testing of the Orleans + DurableTask + Kubernetes stack before deploying to bare-metal
 - **kind in CI**: GitHub Actions workflow runs kind cluster + executes integration tests against full stack; CI gate for the Rx ↔ DBSP bridge spec + Orleans virtual-actor + DurableTask saga compensation behaviors
 - **Cluster ↔ deployment-control path** (Aaron 2026-05-19): EITHER GitHub CD (hook bare-metal cluster to GitHub deployment) OR self-hosted GitLab in cluster; latter eliminates GitHub-API cost dependency
 - **Substrate-self-hosting endgame — electricity-bounded cost model** (Aaron 2026-05-19): GitLab-in-cluster + local LLMs in cluster = zero external API costs; only floor is electricity for 20-node bare-metal; throughput becomes function of node count + electricity budget, not API rate limits; composes with "this is my bill" cost-aware discipline at [`docs/hygiene-history/ticks/2026/05/19/0035Z-c.md`](../../hygiene-history/ticks/2026/05/19/0035Z-c.md) actuator-distinction shard
-- **V8 additions per [B-0669](B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** (Aaron 2026-05-19 "land all of it"):
+- **V8 additions per [081KRYRGG0008QG0R0031EYYE4](081KRYRGG0008QG0R0031EYYE4-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** (Aaron 2026-05-19 "land all of it"):
   - **Tensors as foundational data primitive** (System.Numerics.Tensors + ML.NET): zero-copy multi-dim backbone; bridges dialectical (uncollapsed) + classical (collapsed) state in same structure; concretely solves the Rx ↔ DBSP impedance-mismatch above (tensors ARE the wire-format both sides speak natively)
   - **Sequoia hierarchical memory model** (Stanford): formal memory-hierarchy programming model for DBSP multi-tick-source semantics; scale-free / weight-free / deterministic across arbitrary depth
-  - **4-particle primitive refinement** (observe / limit / choose / emit): separates `choose` from B-0665's Integrate as inspectable selection-of-lowest-energy-aligned-path primitive
+  - **4-particle primitive refinement** (observe / limit / choose / emit): separates `choose` from 081KRW63S0008QG0R002YAA09X's Integrate as inspectable selection-of-lowest-energy-aligned-path primitive
   - **Signal-blocking as first-class primitive** (Aaron 2026-05-19 sharpening): Rx subscription has a dual; block = receive + immediately retract = net-zero state change (clean dual in DBSP retraction); without first-class block, "telepathic" mesh becomes attack surface
-  - **Eve-Protocol-applied-to-RF 3-layer trust discipline** (Aaron 2026-05-19; B-0638 composition): (1) inside trust boundary → high-trust peers share Rx observables freely (the "telepathic" property emerges); (2) at trust boundary → Eve Protocol polymorphic diplomatic negotiation per type × reputation × context; (3) outside trust boundary → signal-blocking + explicit Eve Protocol register for any negotiation attempt; composes with B-0664 NCI (signal-blocking IS receiver-enforcement of Non-Coercion Invariant) + Aurora immune-math (`docs/research/aurora-immune-math-standardization-2026-04-26.md` antigen-detection + bounded Danger function ARE the signal-blocking primitives at the receiver) + V8 reputation-weighted encryption budget
-  - **Infer.NET explicitly tensor-backed** (B-0637 composition): Bayesian distributions for uncertainty/statistical clocks now run on top of the new tensor layer
+  - **Eve-Protocol-applied-to-RF 3-layer trust discipline** (Aaron 2026-05-19; 081KRW63S0008QG0R0030F8ZXA composition): (1) inside trust boundary → high-trust peers share Rx observables freely (the "telepathic" property emerges); (2) at trust boundary → Eve Protocol polymorphic diplomatic negotiation per type × reputation × context; (3) outside trust boundary → signal-blocking + explicit Eve Protocol register for any negotiation attempt; composes with 081KRW63S0008QG0R001Z7NYMV NCI (signal-blocking IS receiver-enforcement of Non-Coercion Invariant) + Aurora immune-math (`docs/research/aurora-immune-math-standardization-2026-04-26.md` antigen-detection + bounded Danger function ARE the signal-blocking primitives at the receiver) + V8 reputation-weighted encryption budget
+  - **Infer.NET explicitly tensor-backed** (081KRW63S0008QG0R0004D5XG1 composition): Bayesian distributions for uncertainty/statistical clocks now run on top of the new tensor layer
 - Demonstrate recursive composition: meta-frame on meta-frame via CE composition
 - Property tests (FsCheck) for: retraction commutativity, group-laws preservation, push-vs-pull duality preservation, compositional invariants
 - TLA+ spec for time-evolution semantics if required
@@ -163,14 +162,14 @@ compositionBuilder {
 
 ## Composes with substrate
 
-- B-0644 (Limit-as-simulation) — pure-function preview operates on composed frame state
-- B-0665 (Integrate-as-choice-locus) — commit-point operates on composed frame
-- B-0666 (English-as-projection / I(D(x))=x) — transmission mechanism between composed frames
-- B-0667 (tonal-momentum + 4 named attractors + 5-vector Clifford-space classes) — emotion-attractor meta-frame derives from this substrate
-- B-0640 (Rx bonsai retention manipulation) — Clifford meta-tagged dims target
-- B-0635 (wave-particle duality tick-source + integrate-only-limit-collapses) — temporal substrate for remember-when axis
-- B-0637 (Infer.NET BP/EP substrate) — composition target for downstream inference
-- B-0664 (NCI extension) — moral floor for compositional operations
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation) — pure-function preview operates on composed frame state
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — commit-point operates on composed frame
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x) — transmission mechanism between composed frames
+- 081KRW63S0008QG0R003Z7QV2A (tonal-momentum + 4 named attractors + 5-vector Clifford-space classes) — emotion-attractor meta-frame derives from this substrate
+- 081KRW63S0008QG0R002XA5N6S (Rx bonsai retention manipulation) — Clifford meta-tagged dims target
+- 081KRW63S0008QG0R002KC5DSR (wave-particle duality tick-source + integrate-only-limit-collapses) — temporal substrate for remember-when axis
+- 081KRW63S0008QG0R0004D5XG1 (Infer.NET BP/EP substrate) — composition target for downstream inference
+- 081KRW63S0008QG0R001Z7NYMV (NCI extension) — moral floor for compositional operations
 - `.claude/rules/bandwidth-served-falsifier.md` — gnostic encoding survives because constraint is physically general
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — razor-discipline operated on each framing; all 4 pass; landed at substrate scope
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (auto-loaded) — Clifford 5-vector classes substrate referenced

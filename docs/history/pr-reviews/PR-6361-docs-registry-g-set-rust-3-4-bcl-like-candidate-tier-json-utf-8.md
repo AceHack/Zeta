@@ -36,7 +36,7 @@ Updates `docs/PRIMITIVE-REGISTRY.md`:
   - Honest cells: **Rust std has no JSON** → the cross-lang primitive is *our `ZetaJsonParser` port* (+ serde adapter behind a feature), not one library. **UTF-8** byte-order caveat (TS/.NET UTF-16-code-unit vs Rust UTF-8-byte order; agree for BMP/ASCII — what the g-set comparator + ZetaId hex rely on).
   - Other candidates flagged for the same slow pull-in: base64, SHA-256, time/clock, big integers, regex.
 
-Docs-only; status view, work tracked by B-0959.
+Docs-only; status view, work tracked by 081KSXN940008QG0R003FCQ7WT.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -432,10 +432,10 @@ docs(registry): wish-list += numerics/algebra tower (Cayley-Dickson),…
 
 All grounded in existing substrate (verify-existing):
 - Numerics/algebra tower: complex/imaginary + Cayley-Dickson ℝ→ℂ→ℍ→𝕆→𝕊 (F#
-  src/Core/CayleyDickson.fs — the 'imaginary stack', B-0623) + Clifford (F# substrate)
+  src/Core/CayleyDickson.fs — the 'imaginary stack', 081KRW63S0008QG0R000QJR08H) + Clifford (F# substrate)
   + Z-set weight ring ℤ (F# src/Core/Algebra.fs). Pull cross-lang.
-- Inference: Infer.NET BP/EP factor-graph (F# substrate; architecture B-0365.5 closed +
-  B-0637) + uncertainty semiring (B-0367) + posterior quorum (B-0255).
+- Inference: Infer.NET BP/EP factor-graph (F# substrate; architecture 081KR50HA0008QG0R0012TWWJR closed +
+  081KRW63S0008QG0R0004D5XG1) + uncertainty semiring (081KR50HA0008QG0R000Z4XCPJ) + posterior quorum (081KQZVQW0008QG0R000K3AG4Z).
 - Nullable/optional wrapper for every primitive, all four langs (one common surface).
 - Meta-note: every primitive gets OUR wrapper (hexagonal port), not just the native type
   — swap native/dep underneath without changing callers.

@@ -60,7 +60,7 @@ The agent reads the warning alongside the substrate. Closer-to-decision-time tha
 
 ## Composes with
 
-- `tools/hygiene/check-role-ref-on-current-state-surfaces.sh` (B-0162 sibling — mechanical check at commit-time vs. tick-time)
+- `tools/hygiene/check-role-ref-on-current-state-surfaces.sh` (081KQJZR90008QG0R000V16E1C sibling — mechanical check at commit-time vs. tick-time)
 - `tools/hygiene/check-tick-history-shard-schema.sh` (sibling)
 - Memos: `feedback_recurrence_after_correction_needs_operational_enforcement_otto_2026_05_02.md`, `feedback_training_distribution_mismatch_firing_in_real_time_during_aaron_paused_phase_otto_2026_05_02.md`, `feedback_party_during_human_sleep_*.md`
 
@@ -74,8 +74,8 @@ The agent reads the warning alongside the substrate. Closer-to-decision-time tha
 ## What's next (out of scope)
 
 This lands operational-enforcement candidate #1. Remaining candidates from the Tick-80 memo:
-- Candidate #2: B-0165 deliberate-quiet-periods protocol (Aaron-side, requires human action)
-- Candidate #3: Multi-AI peer review at-decision-time (composes with B-0164 dual-loop BFT)
+- Candidate #2: 081KQJZR90008QG0R002PYCHFY deliberate-quiet-periods protocol (Aaron-side, requires human action)
+- Candidate #3: Multi-AI peer review at-decision-time (composes with 081KQJZR90008QG0R002GJAJ19 dual-loop BFT)
 - Candidate #4: Tick-history schema decision-shape column (separate substrate change)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -262,7 +262,7 @@ Self-tested before commit:
 - Lowered threshold (1): warning fires correctly with full body
 
 Composes with:
-- tools/hygiene/check-role-ref-on-current-state-surfaces.sh (B-0162
+- tools/hygiene/check-role-ref-on-current-state-surfaces.sh (081KQJZR90008QG0R000V16E1C
   sibling pattern; mechanical check at commit-time vs. tick-time)
 - tools/hygiene/check-tick-history-shard-schema.sh (sibling pattern)
 

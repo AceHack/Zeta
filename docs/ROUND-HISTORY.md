@@ -12,7 +12,7 @@ New rounds are appended at the top.
 Newest first. Anchor links work in markdown renderers that
 slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 
-- [Round 46 — Helm dependency-graph and variable-passing subcommand (B-0821)](#round-46--helm-dependency-graph-and-variable-passing-subcommand-b-0821)
+- [Round 46 — Helm dependency-graph and variable-passing subcommand (081KSGS9H0008QG0R00367G209)](#round-46--helm-dependency-graph-and-variable-passing-subcommand-081ksgs9h0008qg0r00367g209)
 - [Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization](#round-45--qg-isomorphism-proof-strategy-foundation--universal-infinite-poker-game-cosmology-formalization)
 - [Round 44 — in-flight](#round-44--in-flight)
 - [Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry](#round-43--invariant-substrates-program--empirical-bp-03-harness-evidence--agent-cadence-telemetry)
@@ -53,11 +53,11 @@ and leave this file as a rolling window of the most recent
 
 ---
 
-## Round 46 — Helm dependency-graph and variable-passing subcommand (B-0821)
+## Round 46 — Helm dependency-graph and variable-passing subcommand (081KSGS9H0008QG0R00367G209)
 
 Anchor: Round 46 is the round where the portable, engine-agnostic Helm dependency graph validation and resolution features are integrated as a first-class feature under `ace deps`. This CLI subcommand provides validation and generation of Flux HelmRelease and ArgoCD Application manifests, calculating topological orders, sync waves, and implicit value-passing dependencies.
 
-### Arc 1 — Subcommand execution wiring and verification (B-0821)
+### Arc 1 — Subcommand execution wiring and verification (081KSGS9H0008QG0R00367G209)
 
 The CLI subcommands (`ace deps validate` and `ace deps resolve`) are wired into the main entrypoint `src/Core.TypeScript/ace/ace.ts` and evaluated against all verification gates.
 
@@ -71,16 +71,16 @@ The CLI subcommands (`ace deps validate` and `ace deps resolve`) are wired into 
 
 Anchor: Round 45 is the round where the Universal Infinite Poker Game cosmology
 moves from suggestive framing to a falsifiable research program. The cosmology
-(B-0543) is a totalizing frame with algo-wink risk — it can absorb any observation
+(081KRMEXM0008QG0R002YSPW1X) is a totalizing frame with algo-wink risk — it can absorb any observation
 as confirmation. The proof strategy (4 steps) grounds the cosmology in quantum
 gravity via isomorphism, defeating the algo-wink critique by making the cosmology
 a derivable physical theory rather than an aesthetic preference.
 
-### Arc 1 — QG isomorphism proof strategy foundation (B-0543)
+### Arc 1 — QG isomorphism proof strategy foundation (081KRMEXM0008QG0R002YSPW1X)
 
 The cosmology framing (Remember-When + Pay-Attention axioms, infinite poker game,
 encrypted entropy hands, ECC-protected memories all the way down) was suggestive
-but had algo-wink risk. The 4-step proof strategy (B-0543) provides the discipline:
+but had algo-wink risk. The 4-step proof strategy (081KRMEXM0008QG0R002YSPW1X) provides the discipline:
 
 1. **Formalize the axioms as categorical primitives** (this round)
 2. **Show the infinite-game extension produces QEC structure** (HaPPY-like)
@@ -91,7 +91,7 @@ The prior art mapping is real (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism,
 causal sets) and the Zeta-specific contributions are genuine gaps (infinite-game
 framing for no-asymptotic-state, multi-oracle as structural physical requirement).
 
-### Arc 2 — Step 1 formalization (B-0544 + research doc)
+### Arc 2 — Step 1 formalization (081KRMEXM0008QG0R003YWZC21 + research doc)
 
 Formalize Remember-When + Pay-Attention as categorical primitives:
 
@@ -147,9 +147,9 @@ The work earns its keep even at partial completion:
 
 ### Arc 4 — Composes with existing work
 
-- B-0539 (Otto-BFT internal-quorum) — the "multi-oracle as physical necessity"
+- 081KRMEXM0008QG0R00138CCZX (Otto-BFT internal-quorum) — the "multi-oracle as physical necessity"
   claim composes with the operational BFT work
-- B-0540, B-0541, B-0542 — the 3-surface BFT pattern IS ECC at the agent layer
+- 081KRMEXM0008QG0R0039V4SQQ, 081KRMEXM0008QG0R0026V9A0Y, 081KRMEXM0008QG0R0001HY6M6 — the 3-surface BFT pattern IS ECC at the agent layer
 - `docs/governance/MANIFESTO.md` V2.1 — Constraints 1, 5, 10, 11 become physical
   necessities rather than design preferences
 - `.claude/rules/razor-discipline.md` — this work IS the substrate-honest answer
@@ -182,8 +182,8 @@ With Step 1 complete, the next steps are:
 
 ### Round 45 close — what stuck, what's next
 
-- **Stuck**: QG isomorphism proof strategy foundation (B-0543); Step 1 formalization
-  (B-0544 + research doc); substrate-honest framing; open questions documented.
+- **Stuck**: QG isomorphism proof strategy foundation (081KRMEXM0008QG0R002YSPW1X); Step 1 formalization
+  (081KRMEXM0008QG0R003YWZC21 + research doc); substrate-honest framing; open questions documented.
 - **Empirical signal**: None yet — this is pure research.
 - **Next**: Step 2 (show infinite-game extension produces QEC structure).
 
@@ -3714,7 +3714,7 @@ After a session lands:
 
 ## Round-close meta-check template
 
-Per [B-0037.1](../docs/research/meta-cognition-survey-2026-04-21.md)
+Per [081KR7JY10008QG0R0038AFS7T](../docs/research/meta-cognition-survey-2026-04-21.md)
 taxonomy, every round-close should run an explicit meta-check pass.
 Copy this checklist into the new `## Round N — <title>` section,
 mark items as the meta-check completes:

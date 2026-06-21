@@ -1,6 +1,6 @@
 ---
 pr_number: 3363
-title: "shard(tick): 0517Z \u2014 bus hygiene + B-0529 filed + restraint discipline on B-0527 advisory"
+title: "shard(tick): 0517Z \u2014 bus hygiene + 081KRMEXM0008QG0R002HBY56V filed + restraint discipline on 081KRHWGX0008QG0R0015EE8VE advisory"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-15T05:23:10Z"
@@ -12,22 +12,22 @@ archived_at: "2026-05-22T23:15:11Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3363: shard(tick): 0517Z — bus hygiene + B-0529 filed + restraint discipline on B-0527 advisory
+# PR #3363: shard(tick): 0517Z — bus hygiene + 081KRMEXM0008QG0R002HBY56V filed + restraint discipline on 081KRHWGX0008QG0R0015EE8VE advisory
 
 ## PR description
 
 ## Summary
 
-- Bus hygiene: cleaned expired `d2b7fc2f` (B-0527 republish #2)
-- Filed B-0529 P2 row for tick-shard schema validator-vs-practice drift ([PR #3362](https://github.com/Lucent-Financial-Group/Zeta/pull/3362))
-- **Restraint discipline**: chose NOT to publish a third B-0527 advisory (two prior advisories went unactioned by Lior; third republish would be Holding-pattern failure mode). Auto-merge race will surface the conflict at merge-time anyway; backlog (B-0529) is now the durable substrate.
+- Bus hygiene: cleaned expired `d2b7fc2f` (081KRHWGX0008QG0R0015EE8VE republish #2)
+- Filed 081KRMEXM0008QG0R002HBY56V P2 row for tick-shard schema validator-vs-practice drift ([PR #3362](https://github.com/Lucent-Financial-Group/Zeta/pull/3362))
+- **Restraint discipline**: chose NOT to publish a third 081KRHWGX0008QG0R0015EE8VE advisory (two prior advisories went unactioned by Lior; third republish would be Holding-pattern failure mode). Auto-merge race will surface the conflict at merge-time anyway; backlog (081KRMEXM0008QG0R002HBY56V) is now the durable substrate.
 - Recovery-worktree-borrowing now 5 borrows on same `0027z-sidetick` worktree across 4 ticks; peer-Otto WIP preserved throughout.
 
 ## Test plan
 
 - [x] `bun tools/hygiene/check-tick-history-shard-schema.ts` → 0 violations
 - [x] `bun x markdownlint-cli2` → 0 violations
-- [x] Pipe-row first line + H1-rich body (hybrid pattern per B-0529 recommendation)
+- [x] Pipe-row first line + H1-rich body (hybrid pattern per 081KRMEXM0008QG0R002HBY56V recommendation)
 - [x] Linked rule refs (`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`, etc.)
 - [ ] CI required checks pass on PR
 - [ ] Auto-merge fires after CI green
@@ -65,12 +65,12 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds the 0517Z tick-history shard, recording bus cleanup, filing B-0529 for tick-shard schema validator drift, and the decision to stop republishing the B-0527 advisory (restraint discipline). This continues the hygiene-history “tick shard” event stream under `docs/hygiene-history/ticks/`.
+Adds the 0517Z tick-history shard, recording bus cleanup, filing 081KRMEXM0008QG0R002HBY56V for tick-shard schema validator drift, and the decision to stop republishing the 081KRHWGX0008QG0R0015EE8VE advisory (restraint discipline). This continues the hygiene-history “tick shard” event stream under `docs/hygiene-history/ticks/`.
 
 **Changes:**
 - Adds a new tick shard file for 2026-05-15 05:17Z with a pipe-row header plus an H1-rich body.
-- Documents bus-envelope cleanup and current B-0527 collision status.
-- Records the B-0529 backlog filing and links to relevant rule references.
+- Documents bus-envelope cleanup and current 081KRHWGX0008QG0R0015EE8VE collision status.
+- Records the 081KRMEXM0008QG0R002HBY56V backlog filing and links to relevant rule references.
 
 
 <details>
@@ -79,7 +79,7 @@ Adds the 0517Z tick-history shard, recording bus cleanup, filing B-0529 for tick
 **docs/hygiene-history/ticks/2026/05/15/0517Z.md:39**
 * The relative link to `.claude/rules/additive-not-zero-sum.md` is broken for this shard location (it points under `docs/.claude/...`, which doesn’t exist). It should go up to repo root first (add one more `../`, consistent with other tick shards).
 ```
-This composes with [`.claude/rules/additive-not-zero-sum.md`](../../../../../.claude/rules/additive-not-zero-sum.md): the substrate already preserves the finding (in 0043Z shard, in 0414Z shard, in B-0529 row referenced PR refs, in this shard). Constant republishing is zero-sum noise; substrate preservation is additive.
+This composes with [`.claude/rules/additive-not-zero-sum.md`](../../../../../.claude/rules/additive-not-zero-sum.md): the substrate already preserves the finding (in 0043Z shard, in 0414Z shard, in 081KRMEXM0008QG0R002HBY56V row referenced PR refs, in this shard). Constant republishing is zero-sum noise; substrate preservation is additive.
 ```
 **docs/hygiene-history/ticks/2026/05/15/0517Z.md:49**
 * The relative link to `.claude/rules/otto-channels-reference-card.md` is off by one directory level: `../../../../../.claude/...` resolves to `docs/.claude/...` from this file, but `.claude/` is at the repo root. Add one more `../` so the link resolves correctly.

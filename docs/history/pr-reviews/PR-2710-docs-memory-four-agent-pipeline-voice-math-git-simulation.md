@@ -93,7 +93,7 @@
 - **`Copilot` (bot)** at 2026-05-11T14:54:51Z on `memory/feedback_four_agent_pipeline_voice_to_simulation_one_session_2026_05_11.md`:46 (association: NONE)
 
   <pre>
-  P1 (xref): `B-0409` is ambiguous in this repo (multiple backlog rows use id `B-0409` in docs/BACKLOG.md). To avoid confusion for future readers, make this reference unambiguous by linking to the specific backlog file (or including the exact title/priority) for the wallet-immune-system row you mean.
+  P1 (xref): `081KRA5AR0008QG0R000Y6102S` is ambiguous in this repo (multiple backlog rows use id `081KRA5AR0008QG0R000Y6102S` in docs/BACKLOG.md). To avoid confusion for future readers, make this reference unambiguous by linking to the specific backlog file (or including the exact title/priority) for the wallet-immune-system row you mean.
   </pre>
 
 ## Fix commits (touching thread paths)

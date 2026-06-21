@@ -28,12 +28,12 @@ Operator self-claims Agora as their preferred frame WHILE preserving: other cand
 
 ## Linked substrate
 
-- B-0635 wave-particle duality
-- B-0644 Limit-as-simulation
-- B-0646 Agora V6 encryption-budget
-- B-0664 NCI canonical row (HC-8)
-- B-0665 Integrate-as-choice-locus
-- B-0703 multi-oracle BFT
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation
+- 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget
+- 081KRW63S0008QG0R001Z7NYMV NCI canonical row (HC-8)
+- 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT
 - Trajectory: implicit across `docs/trajectories/` substrate-engineering work targeting Agora-as-instance
 
 ## Cross-AI substrate-triangulation

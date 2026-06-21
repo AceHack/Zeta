@@ -13,7 +13,7 @@ operator), continuing the formal-proof cadence. Aaron = courier forwarding
 
 Operational status: research-grade — engineering / proof-strategy substrate (not
 operational policy). The proof-strategy content is load-bearing for the
-canonical-primitives work (B-1007). A rule-extension to `formal-proof-first`
+canonical-primitives work (081KT2T2J0008QG0R000YZ3NMY). A rule-extension to `formal-proof-first`
 (multi-tower / foundation-independence) is **OFFERED, not minted** — Soraya
 (`formal-verification-expert`) owns the formal-coverage portfolio view and BP-16
 cross-check and should ratify before it lands as a rule.
@@ -157,7 +157,7 @@ constructively-provable claim is already classically provable, so it never adds 
 distinct equivalence class. (Counting "claims provable constructively but not
 classically" would be vacuous — that set is empty by ⊆; the genuine value is the
 removed dependency, not a new tower.) Composes with the existing Lean leg
-(`tools/lean4/Lean4/DbspChainRule.lean`) + B-0446 / B-0131 Lean-proof rows.
+(`tools/lean4/Lean4/DbspChainRule.lean`) + 081KRFA460008QG0R00168759Y / 081KQGDBJ0008QG0R000D1YJCH Lean-proof rows.
 
 ## 6. Intuition is calibrated by provable output over time — track the misses
 
@@ -274,7 +274,7 @@ until an axiom is either decomposed away or shown wrong.
 - `docs/research/2026-06-03-formal-proof-claim-ledger-for-asymmetric-critic-pass.md` — the second-pass ledger; multi-tower adds the "from which foundation" axis
 - `docs/research/2026-06-03-zset-family-canonical-connection-four-language-bytelock-plus-four-tool-proofs.md` — the connection ledger; the Lean leg is the start of the constructive/machine-checked tower
 - `docs/research/2026-06-03-kestrel-aaron-critic-layers-permission-liability-autonomy-bounds-anthropomorphic-register-split-aaron-forwarded.md` — same cadence; consensus≠validation applies to Kestrel + to each tower
-- `B-1007` (formal-coverage cadence) · `B-0446` / `B-0131` (Lean-proof rows — the constructive/machine-checked tower) · `B-0543` (axioms→proof-path precedent)
+- `081KT2T2J0008QG0R000YZ3NMY` (formal-coverage cadence) · `081KRFA460008QG0R00168759Y` / `081KQGDBJ0008QG0R000D1YJCH` (Lean-proof rows — the constructive/machine-checked tower) · `081KRMEXM0008QG0R002YSPW1X` (axioms→proof-path precedent)
 - `tools/lean4/Lean4/DbspChainRule.lean` — the existing Lean leg (general over abelian group `G`)
 
 ## Substrate-honest framing

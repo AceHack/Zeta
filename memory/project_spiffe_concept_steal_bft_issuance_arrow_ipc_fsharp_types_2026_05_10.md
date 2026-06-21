@@ -49,7 +49,7 @@ The types encode the trust policy. The compiler enforces it. The kernel routes o
 - project_trust_migration_path_aaron_to_zero_trust (the migration phases)
 - project_microkernel_trust_tier_router (kernel routes on trust level)
 - feedback_arrow_tier_0 (Arrow replaces mTLS at Tier 0)
-- B-0403 weight-free (hat mechanism = SPIFFE SVIDs)
+- 081KR7JY10008QG0R0021F5609 weight-free (hat mechanism = SPIFFE SVIDs)
 - Itron patent US 10,834,144 (hub-agent = SPIRE server, decentralized)
 
 ## Update: OPA + SPIRE Federation + Nested SPIRE (2026-05-10)

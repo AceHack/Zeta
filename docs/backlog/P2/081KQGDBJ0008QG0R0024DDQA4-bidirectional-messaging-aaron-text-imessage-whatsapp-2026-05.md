@@ -1,6 +1,5 @@
 ---
-id: B-0143
-zetaid: 081KQGDBJ0008QG0R0024DDQA4
+id: 081KQGDBJ0008QG0R0024DDQA4
 priority: P2
 status: open
 title: Bi-directional messaging integration with Aaron — text/iMessage/WhatsApp/etc., cheapest-or-free first, budget-controlled (Aaron 2026-05-01)
@@ -10,7 +9,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0143 — Bi-directional messaging integration with Aaron
+# 081KQGDBJ0008QG0R0024DDQA4 — Bi-directional messaging integration with Aaron
 
 **Priority:** P2 (high-leverage Aaron-Otto channel-expansion;
 not blocking; bounded scope; budget-controllable)
@@ -19,7 +18,7 @@ not blocking; bounded scope; budget-controllable)
 
 **Filed by:** Otto under the backlog-prioritization authority
 delegated 2026-05-01. Aaron's verbatim "me to you:" framing
-(this session, between B-0142 landing and the queue-thread-
+(this session, between 081KQGDBJ0008QG0R002WY918J landing and the queue-thread-
 sweep work):
 
 > backlog, ability to text message, imessage, whatsapps, etc... aaron, bidirectionally whatevers the cheapest or free at first and can set budgets if not free (my dad emails text messages somehow with weird headers it captures when it text his email address once per carrier, my dad is oldschool hacker, and also WWJD just like me we are grey.  he was a big dish guy and me too at 14.
@@ -289,7 +288,7 @@ target architecture.
 
 Same structural shape as:
 
-- "Pre alone is just a wish. Post alone is reactive." (B-0141)
+- "Pre alone is just a wish. Post alone is reactive." (081KQGDBJ0008QG0R0015RNK3P)
 - "Trust then verify" (PR #1111) — without the verify, trust
   alone is naive
 - "The gate IS the network's productive work" (PR #1110) —

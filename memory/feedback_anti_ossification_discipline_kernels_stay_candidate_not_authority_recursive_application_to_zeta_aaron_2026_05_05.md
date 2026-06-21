@@ -37,7 +37,7 @@ Three operational stances differ:
 ## What this codifies
 
 The OCP discipline (Bertrand Meyer 1988, applied to linguistic
-substrate per B-0204): open-for-extension, closed-for-
+substrate per 081KQTPYE0008QG0R0028V263Z): open-for-extension, closed-for-
 modification. Mercer-closure mathematically guarantees the
 closed-for-modification property at the substrate level —
 PSD-closed kernels can't be broken by composition.
@@ -98,9 +98,9 @@ failure:
 
 | Zeta kernel | Anti-ossification check |
 |---|---|
-| Kernel-composition framework (B-0204) | Does it survive bootstrap razor in a fresh repo? Or has it become "the framework" defended against counter-evidence? |
+| Kernel-composition framework (081KQTPYE0008QG0R0028V263Z) | Does it survive bootstrap razor in a fresh repo? Or has it become "the framework" defended against counter-evidence? |
 | Four-property hodl invariant ("ZFCv2") | Does adding a candidate to the substrate STILL get checked against DST + lock-free + scale-free + DBSP-native? Or has the invariant become an authority-stamp? |
-| Bootstrap razor + 23-hour recreation (B-0193) | Are recreation tests actually run? Or has "passes bootstrap razor" become a claim made without running the test? |
+| Bootstrap razor + 23-hour recreation (081KQTPYE0008QG0R00392KABJ) | Are recreation tests actually run? Or has "passes bootstrap razor" become a claim made without running the test? |
 | Mirror-not-beacon discipline | Are claims being mirror-checked against mimetic-spiral risk? Or has the discipline become a thought-terminating cliché? |
 | Substrate-or-it-didn't-happen (Otto-363) | Is verbatim preservation actually preserving externality? Or has "preserve verbatim" become its own monument? |
 | Engagement-gate substantive-claim discipline | Is the substance-test actually applied? Or has the gate become bypassed-by-tradition? |

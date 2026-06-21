@@ -113,7 +113,7 @@ The SRE metric frameworks (DORA / USE / RED / Four Golden
 Signals, captured in
 `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`,
 forward-ref to PR #1116) plus the timeseries-DB infrastructure
-(B-0147) are **not decoration**. They ARE the factory's
+(081KQGDBJ0008QG0R0004ACHJJ) are **not decoration**. They ARE the factory's
 **sensory system**.
 
 Without metrics:
@@ -220,7 +220,7 @@ This composes structurally with:
   layers 4–6 (domain frameworks → reproducibility harness →
   accuracy); they're the bridge from formal foundations to
   operational quality
-- The **PM-2 calibration metrics** (B-0145: lead-time% +
+- The **PM-2 calibration metrics** (081KQGDBJ0008QG0R000RWAA67: lead-time% +
   action-rate%) — these are the eyes the PM-2 role uses to
   see whether the proactive-research stance is working
 - The **DORA/USE/RED/FGS frameworks** — the four observability
@@ -266,9 +266,9 @@ future types).
   prior art for embedding query DSLs in F# (computation
   expressions, quotations, type providers)
 
-**Backlog row B-0148** captures the design-question: *Is MDX
+**Backlog row 081KQGDBJ0008QG0R002175ECA** captures the design-question: *Is MDX
 the meta-DSL framing? If yes, what does the F# MDX DSL look
-like?* Companion to B-0147 (which asks *what is the timeseries
+like?* Companion to 081KQGDBJ0008QG0R0004ACHJJ (which asks *what is the timeseries
 algebra?*).
 
 This is also the **second concrete worked-example** for the
@@ -284,17 +284,17 @@ Aaron 2026-05-01 same message:
 
 > *"plus promethius as a sick MCP and promtool"*
 
-While B-0147/B-0148 research the long-term substrate questions,
+While 081KQGDBJ0008QG0R0004ACHJJ/081KQGDBJ0008QG0R002175ECA research the long-term substrate questions,
 **Prometheus + MCP is the immediate-eyes path** — Prometheus
 deploys today, MCP integration is well-supported, promtool is a
 mature CLI, and PromQL queries already work (per the MDX-shape
-observation). **Backlog row B-0149** captures this operational
+observation). **Backlog row 081KQGDBJ0008QG0R0035TQVBQ** captures this operational
 work: deploy Prometheus locally, wire MCP server, adopt
 promtool, build initial query catalog targeting the SRE metric
 frameworks.
 
-Sequence: B-0149 (operational eyes NOW) runs in parallel with
-B-0147 + B-0148 (long-term substrate research). Even if the
+Sequence: 081KQGDBJ0008QG0R0035TQVBQ (operational eyes NOW) runs in parallel with
+081KQGDBJ0008QG0R0004ACHJJ + 081KQGDBJ0008QG0R002175ECA (long-term substrate research). Even if the
 research recommends a different long-term backend, Prometheus
 is the right starting point because (a) Aaron names it as
 "good citizen" baseline, (b) its query language informs the
@@ -303,9 +303,9 @@ is well-understood (Prometheus-compatible APIs are widespread).
 
 ## Implications for the factory
 
-### Backlog row B-0147
+### Backlog row 081KQGDBJ0008QG0R0004ACHJJ
 
-This memory motivates B-0147: **TimeSeries DB native-in-Zsets
+This memory motivates 081KQGDBJ0008QG0R0004ACHJJ: **TimeSeries DB native-in-Zsets
 multi-DSL integration research**. The timeseries-DB is the
 infrastructure that operationalizes "metrics are our eyes" at
 the factory level. The dependency-source priority hierarchy
@@ -333,9 +333,9 @@ that earlier substrate.
 
 ### Microsoft Research as a research-cadence input for PM-2
 
-When B-0145's PM-2 (Product Manager) role gets operationalized,
+When 081KQGDBJ0008QG0R000RWAA67's PM-2 (Product Manager) role gets operationalized,
 **Microsoft Research is a preferred research-source for the
-forward-radar memo**. PM-2's research-cadence inputs (per B-0145)
+forward-radar memo**. PM-2's research-cadence inputs (per 081KQGDBJ0008QG0R000RWAA67)
 should explicitly include `https://www.microsoft.com/en-us/research/` queries
 alongside the other sources. This is the kind of layer-4
 decision that Microsoft Research has consistently led on.
@@ -352,7 +352,7 @@ decision that Microsoft Research has consistently led on.
   (PR #1116) — the SRE metric frameworks + abstraction ladder
   this memory connects to via the eyes framing
 - `project_zeta_multi_algebra_database_one_algebra_to_rule_them_all_sequenced_after_frontier_and_demo_2026_04_23.md`
-  — the multi-algebra DB vision; B-0147 timeseries is one
+  — the multi-algebra DB vision; 081KQGDBJ0008QG0R0004ACHJJ timeseries is one
   algebra in this scheme
 - The 4-axis tightness rule (ZSet-backed + first-class event +
   retractable + columnar storage) per the indexed graph-
@@ -367,9 +367,9 @@ decision that Microsoft Research has consistently led on.
   — long-horizon DB feature alignment; the multi-DSL meta-DSL
   framing here composes with first-class-migrations as another
   first-class layer
-- B-0147 — the actionable instance this memory motivates
-- B-0145 (PM-2) — Microsoft Research as a forward-research input
-- B-0144 (doc/code two-lane) — the parallelism work this memory's
+- 081KQGDBJ0008QG0R0004ACHJJ — the actionable instance this memory motivates
+- 081KQGDBJ0008QG0R000RWAA67 (PM-2) — Microsoft Research as a forward-research input
+- 081KQGDBJ0008QG0R0021E8YZV (doc/code two-lane) — the parallelism work this memory's
   metrics-are-our-eyes will eventually instrument
 
 ## Future-Otto check
@@ -393,10 +393,10 @@ Future-Otto researching a technical question:
 Future-Otto considering whether metrics are worth investing in:
 - They are not optional. They are **the eyes**. The factory
   without them is blind.
-- Investment in the timeseries-DB substrate (B-0147) is
+- Investment in the timeseries-DB substrate (081KQGDBJ0008QG0R0004ACHJJ) is
   investment in the factory's capacity to perceive itself.
 - Without that capacity, the parallelism scaling ladder
-  (B-0144) and the PM-2 role (B-0145) and the amortized-
+  (081KQGDBJ0008QG0R0021E8YZV) and the PM-2 role (081KQGDBJ0008QG0R000RWAA67) and the amortized-
   keystone all degrade — they all need eyes to know
   whether they're working.
 

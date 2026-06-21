@@ -90,7 +90,7 @@ type PairZArb() =
 
 // ── Policy-relocation FsCheck properties ────────────────────────────────
 //
-// The claim (B-0364): a reactive DBSP query Q can be relocated between
+// The claim (081KR50HA0008QG0R00096ZEYA): a reactive DBSP query Q can be relocated between
 // local and central execution with identical delta output via the DBSP
 // retraction-native algebra.
 //

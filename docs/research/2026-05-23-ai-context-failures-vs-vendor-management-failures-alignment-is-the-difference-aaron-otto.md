@@ -171,8 +171,8 @@ This is the kind of comparative-experience anchor the framework can defend to ex
 - [`.claude/rules/substrate-or-it-didnt-happen.md`](../../.claude/rules/substrate-or-it-didnt-happen.md) — discipline operationalized at all scales
 - [`.claude/rules/glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md) — visibility-by-default discipline
 - [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — NCI floor at all surfaces
-- B-0700 (Soraya continuous-loop substrate) — primitive for future vendor-management AI cross-incident continuity
-- B-0709 / B-0710 / B-0711 / B-0712 / B-0713 / B-0714 / B-0715 / B-0716 — Soraya findings this session demonstrating substrate-engineering discipline at framework-internal-formal-verification scope (parallel to the consumer-vendor scope Aaron operated)
+- 081KRSKQ20008QG0R00367828S (Soraya continuous-loop substrate) — primitive for future vendor-management AI cross-incident continuity
+- 081KS923C0008QG0R0032VJZPF / 081KS923C0008QG0R003GHCG1P / 081KS923C0008QG0R0005VM4FB / 081KS923C0008QG0R001N2RSGJ / 081KS923C0008QG0R002RH3EH8 / 081KS923C0008QG0R000ECG5EC / 081KS923C0008QG0R002CVSTJV / 081KS923C0008QG0R0009JFVSE — Soraya findings this session demonstrating substrate-engineering discipline at framework-internal-formal-verification scope (parallel to the consumer-vendor scope Aaron operated)
 
 ## Substrate-honest framing
 

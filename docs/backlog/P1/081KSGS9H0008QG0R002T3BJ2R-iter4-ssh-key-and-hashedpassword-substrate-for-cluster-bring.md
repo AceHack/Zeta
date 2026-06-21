@@ -1,6 +1,5 @@
 ---
-id: B-0789
-zetaid: 081KSGS9H0008QG0R002T3BJ2R
+id: 081KSGS9H0008QG0R002T3BJ2R
 priority: P1
 status: open
 title: Iter-4 cluster credential substrate — hashedPassword (zeta-change-me default) + operator-ssh-keys.nix module + manual edit workflow (v1) with zflash auto-inject as iter-4.2 follow-up
@@ -9,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0029S1D5Z
@@ -29,7 +28,7 @@ Iter-3 (the maintainer's PC 1 test, 2026-05-25) shipped end-to-end zero-typing N
 - `users.users.zeta.openssh.authorizedKeys.keys = [ ]` empty in per-host `configuration.nix` (the example key was commented out)
 - `services.openssh.PasswordAuthentication = false` → no SSH-by-password fallback
 
-PC 1 was unreachable both via local console AND via SSH. The IP-KVM substrate (B-0770 Comet Pro) + "remote fingers" substrate (B-0778 commodity hardware reference) becomes theatrical without local-console reachability.
+PC 1 was unreachable both via local console AND via SSH. The IP-KVM substrate (081KSE6WT0008QG0R0029S1D5Z Comet Pro) + "remote fingers" substrate (081KSE6WT0008QG0R0004AP0ZA commodity hardware reference) becomes theatrical without local-console reachability.
 
 ## Target
 
@@ -47,7 +46,7 @@ Per the maintainer 2026-05-26 *"we can do what's going to make cluster setup eai
 `full-ai-cluster/nixos/modules/initial-password.nix`:
 
 - Sets `users.users.zeta.hashedPassword = "$6$..."` via sha512crypt hash for `zeta-change-me` (generated via `openssl passwd -6 'zeta-change-me'`)
-- sha512crypt picked per simplest-first (per B-0786 memory): universally portable; promote to yescrypt or agenix / sops-nix when (a) repo goes public OR (b) multi-operator key isolation becomes load-bearing
+- sha512crypt picked per simplest-first (per 081KSE6WT0008QG0R000C18G5D memory): universally portable; promote to yescrypt or agenix / sops-nix when (a) repo goes public OR (b) multi-operator key isolation becomes load-bearing
 - Imported by per-host `configuration.nix`
 - Operator rotates immediately on first tty1 login
 
@@ -169,13 +168,13 @@ The maintainer's "wait for 4.2" signal is exactly the right shape for this decom
 
 ## Composes with
 
-- **B-0754** — iter-3 zero-typing USB install (iter-4 is the credential-substrate follow-on)
-- **B-0759** — first-time-CLI-user persona (iter-4 v1 is operator-friction-cost; iter-4.2+ closes the zero-typing gap)
-- **B-0770** — IP-KVM Comet Pro substrate (iter-4 makes local-console access load-bearing — KVM-via-IP becomes operationally valuable when tty1 has a password to type into)
-- **B-0776** — simplest-first plugin sequence (sha512crypt = simplest first; promote to stronger later)
-- **B-0780** — Local Loop deterministic simulation testing (iter-4 cluster nodes are tier-3 substrate; need to be reachable for AI workloads to land)
-- **B-0786** — "simplest first; add complexity only when simple shape demonstrably doesn't fit" discipline (every choice in iter-4 design applied this)
-- **B-0778** — commodity hardware reference (iter-4 v1 closes the "you have a screen so you can log in locally" hardware-substrate gap)
+- **081KSGS9H0008QG0R002T3BJ2R** — iter-3 zero-typing USB install (iter-4 is the credential-substrate follow-on)
+- **081KSE6WT0008QG0R003G0Y62D** — first-time-CLI-user persona (iter-4 v1 is operator-friction-cost; iter-4.2+ closes the zero-typing gap)
+- **081KSE6WT0008QG0R0029S1D5Z** — IP-KVM Comet Pro substrate (iter-4 makes local-console access load-bearing — KVM-via-IP becomes operationally valuable when tty1 has a password to type into)
+- **081KSE6WT0008QG0R002275NDE** — simplest-first plugin sequence (sha512crypt = simplest first; promote to stronger later)
+- **081KSE6WT0008QG0R000RH1526** — Local Loop deterministic simulation testing (iter-4 cluster nodes are tier-3 substrate; need to be reachable for AI workloads to land)
+- **081KSE6WT0008QG0R000C18G5D** — "simplest first; add complexity only when simple shape demonstrably doesn't fit" discipline (every choice in iter-4 design applied this)
+- **081KSE6WT0008QG0R0004AP0ZA** — commodity hardware reference (iter-4 v1 closes the "you have a screen so you can log in locally" hardware-substrate gap)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — Shape A `hashedPassword` in per-host Nix module (per the discipline named in the maintainer-as-top-level liability framing in PR #5076)
 - `maintainers/aaron/legal-entities/inventory.md` (PR #5077) — iter-4.3 multi-key extension composes with the per-context attribution chain (Lucent / Freeborn / ServiceTitan contexts)
 - `memory/max/PERSONA.md` — Max's tier-2 dev-experience work needs reachable clusters; iter-4 v1 unblocks this even with the manual SSH-key edit step
@@ -194,7 +193,7 @@ The maintainer's "wait for 4.2" signal is exactly the right shape for this decom
 The maintainer 2026-05-26, after iter-3 USB install on PC 1 succeeded but left the node unreachable. Sequence:
 
 1. *"what's the password?"* — surfaced the iter-3 gap (no password, no SSH keys, locked accounts)
-2. Substrate-design conversation across multiple ticks reached the iter-4 shape (Shape A `hashedPassword` + SSH-key-from-USB + B-0789 row)
+2. Substrate-design conversation across multiple ticks reached the iter-4 shape (Shape A `hashedPassword` + SSH-key-from-USB + 081KSGS9H0008QG0R002T3BJ2R row)
 3. *"okay i'll wait for that to get into main then send it just let me know"* — gated Max-side text-message rollout on iter-4 substrate landing (decoupled when Max's persona substrate landed first via PR #5078)
 4. *"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"* — explicit authorization to ship iter-4 v1 with simplest-first design; credential-setup skill deferred to iter-5+
 

@@ -1,7 +1,7 @@
 {
   "primitive": "clock",
   "version": "v1",
-  "why": "B-1016 clock primitive (gap #1) — deterministic logical clock / versionstamp. DST replay seed: Scheduler.run(seed, steps) is a pure function of (seed, steps), so every language + every replay must produce the SAME monotone stamp sequence. tick = +1 = z⁻¹ inverse = one scheduler step. Anchors: FoundationDB versionstamp, Lamport 1978, Rx IScheduler.",
+  "why": "081KT7YW00008QG0R002T1XNWT clock primitive (gap #1) — deterministic logical clock / versionstamp. DST replay seed: Scheduler.run(seed, steps) is a pure function of (seed, steps), so every language + every replay must produce the SAME monotone stamp sequence. tick = +1 = z⁻¹ inverse = one scheduler step. Anchors: FoundationDB versionstamp, Lamport 1978, Rx IScheduler.",
   "vectors": [
     { "name": "from-zero", "seed": 0, "steps": 5, "stamps": [1, 2, 3, 4, 5] },
     { "name": "from-seed-10", "seed": 10, "steps": 5, "stamps": [11, 12, 13, 14, 15] },

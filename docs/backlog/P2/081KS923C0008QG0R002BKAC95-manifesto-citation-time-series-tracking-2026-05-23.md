@@ -1,6 +1,5 @@
 ---
-id: B-0707
-zetaid: 081KS923C0008QG0R002BKAC95
+id: 081KS923C0008QG0R002BKAC95
 priority: P2
 status: closed
 closed: 2026-05-23
@@ -16,15 +15,15 @@ tags: [manifesto, governance, time-series, hygiene-history]
 type: friction-reducer
 ---
 
-# B-0707 — Manifesto citation time-series tracking
+# 081KS923C0008QG0R002BKAC95 — Manifesto citation time-series tracking
 
 ## What
 
-Extend `tools/hygiene/audit-manifesto-citations.ts` (shipped 2026-05-23 per B-0525) with a **persistent-snapshot mode** that writes per-day citation counts to a structured location and reports deltas-since-last-snapshot.
+Extend `tools/hygiene/audit-manifesto-citations.ts` (shipped 2026-05-23 per 081KRHWGX0008QG0R0016T9408) with a **persistent-snapshot mode** that writes per-day citation counts to a structured location and reports deltas-since-last-snapshot.
 
 ## Why
 
-The 2026-05-23 baseline (88 files / 684 citations) is a single point. The B-0525 constitutional-promotion gate asks "are citations growing?" — that requires a time-series, not a snapshot.
+The 2026-05-23 baseline (88 files / 684 citations) is a single point. The 081KRHWGX0008QG0R0016T9408 constitutional-promotion gate asks "are citations growing?" — that requires a time-series, not a snapshot.
 
 ## Acceptance criteria
 
@@ -47,12 +46,12 @@ maintainer/agent pass to open or land.
 ## Out of scope
 
 - The `--report` markdown rendering already exists (shipped in slice 1)
-- Cross-AI external citation detection (separate child of B-0525; needs external substrate ingestion)
-- Constitutional-promotion gate decision logic (per B-0525: that's the human maintainer's call)
+- Cross-AI external citation detection (separate child of 081KRHWGX0008QG0R0016T9408; needs external substrate ingestion)
+- Constitutional-promotion gate decision logic (per 081KRHWGX0008QG0R0016T9408: that's the human maintainer's call)
 
 ## Composes with
 
-- B-0525 (parent — constitutional-promotion readiness tracking)
+- 081KRHWGX0008QG0R0016T9408 (parent — constitutional-promotion readiness tracking)
 - `tools/hygiene/audit-manifesto-citations.ts` (the script this extends)
 - `.claude/rules/encoding-rules-without-mechanizing.md` (cron-driven cadence pattern)
 - `tools/hygiene/audit-rule-cross-refs.ts` (sibling count-then-classify pattern)
@@ -63,4 +62,4 @@ P2 because: the slice-1 baseline (count snapshot) is the immediately-useful work
 
 ## Origin tick
 
-Filed as part of B-0525 slice 1 shipping (audit-manifesto-citations.ts; 2026-05-23). Child slice candidate identified in the same PR.
+Filed as part of 081KRHWGX0008QG0R0016T9408 slice 1 shipping (audit-manifesto-citations.ts; 2026-05-23). Child slice candidate identified in the same PR.

@@ -29,11 +29,11 @@
 
 ## Summary
 
-Tick 2026-05-14T21:13Z shard. Substantive work in [#3250](https://github.com/Lucent-Financial-Group/Zeta/pull/3250) — adds an 8th audit class to `audit-backlog-items.ts` that detects duplicate `id: B-NNNN` files (mechanizes the B-0329 collision Copilot caught on #3247).
+Tick 2026-05-14T21:13Z shard. Substantive work in [#3250](https://github.com/Lucent-Financial-Group/Zeta/pull/3250) — adds an 8th audit class to `audit-backlog-items.ts` that detects duplicate `id: B-NNNN` files (mechanizes the 081KR2E4K0008QG0R001F0YB5S collision Copilot caught on #3247).
 
 ## What landed
 
-- [#3250](https://github.com/Lucent-Financial-Group/Zeta/pull/3250) — `reportDuplicateIds` added to `audit-backlog-items.ts`. Live test: reports 1 duplicate-ID group on origin/main (B-0329, fixed by the just-merged #3247).
+- [#3250](https://github.com/Lucent-Financial-Group/Zeta/pull/3250) — `reportDuplicateIds` added to `audit-backlog-items.ts`. Live test: reports 1 duplicate-ID group on origin/main (081KR2E4K0008QG0R001F0YB5S, fixed by the just-merged #3247).
 - This shard.
 
 ## Three-step propagation pattern
@@ -41,7 +41,7 @@ Tick 2026-05-14T21:13Z shard. Substantive work in [#3250](https://github.com/Luc
 Single Copilot review on PR #3247 triggered:
 
 1. **Tick 2059Z**: review-time catch (Copilot flagged the duplicate)
-2. **Tick 2108Z**: out-of-band fix (renumber B-0329 → B-0520) + filed audit-discipline candidate as deferred
+2. **Tick 2108Z**: out-of-band fix (renumber 081KR2E4K0008QG0R001F0YB5S → 081KRHWGX0008QG0R003N033PD) + filed audit-discipline candidate as deferred
 3. **Tick 2113Z (this tick)**: mechanization (extend existing audit tool with 8th class)
 
 Future ticks will see the audit catch this class at run-time, not just at PR-review time.

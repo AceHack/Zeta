@@ -1,6 +1,5 @@
 ---
-id: B-0413
-zetaid: 081KRA5AR0008QG0R003DVPANH
+id: 081KRA5AR0008QG0R003DVPANH
 priority: P2
 status: open
 title: "Dashboard tiered access — GitHub OAuth + agent credentials"

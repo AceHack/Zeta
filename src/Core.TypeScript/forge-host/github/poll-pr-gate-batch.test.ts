@@ -222,7 +222,7 @@ describe("pollAllBounded with injected pollFn", () => {
   });
 });
 
-// ── main() — --with-bus-claims (B-0400 slice 5) ──────────────────────────────
+// ── main() — --with-bus-claims (081KR7JY10008QG0R000R503K2 slice 5) ──────────────────────────────
 
 // Capture process.stdout.write and restore after each test.
 function captureStdout(): { read: () => string; restore: () => void } {
@@ -242,7 +242,7 @@ function captureStdout(): { read: () => string; restore: () => void } {
 const fakeClaim: ClaimRecord = {
   id: "test-uuid",
   from: "otto",
-  itemId: "B-0400",
+  itemId: "081KR7JY10008QG0R000R503K2",
   branch: "feat/b-0400-slice5",
   timestamp: "2026-05-13T00:00:00.000Z",
   expiresAt: "2026-05-14T00:00:00.000Z",
@@ -269,7 +269,7 @@ describe("main() — --with-bus-claims flag", () => {
     expect(Array.isArray(batch.busClaims)).toBe(true);
     expect(batch.busClaims).toHaveLength(1);
     expect(batch.busClaims![0]!.from).toBe("otto");
-    expect(batch.busClaims![0]!.itemId).toBe("B-0400");
+    expect(batch.busClaims![0]!.itemId).toBe("081KR7JY10008QG0R000R503K2");
   });
 
   test("busClaimsFn is NOT called and busClaims is absent when flag is omitted", async () => {

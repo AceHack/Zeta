@@ -591,5 +591,5 @@ Then open the PR against `main`, arm auto-merge, run the PR-gate loop (handle Co
 - **Spec §Testing** (lockfile unit; frozen integration incl. empty-registry / drift / no-lock / tamper) → Task 1–3 unit + Task 6 integration (4 cases) + Task 5 write test. ✓
 - **Spec §Error handling table** (lock-write warning; frozen missing/parse/drift/dead-url/tamper/bad-sig all hard-refuse) → Task 5 (warning) + Task 6 (all refusals). ✓
 - **Spec leaf-install unchanged / no lock** → the graph-install branch is `dependencies.length > 0`; the leaf path is untouched, so no lock is written for leaves and `--frozen` on a leaf falls through to the normal leaf install (no-op flag). ✓ (Optional: a Task-6 note can assert leaf `--frozen` still installs.)
-- **Spec §Files touched** → all covered (lockfile.ts, lockfile.test.ts, resolve.ts, ace.ts, ace.test.ts, SKILL.md). Deferred backlog rows already filed (B-0973/0974/0975 in the spec PR). ✓
+- **Spec §Files touched** → all covered (lockfile.ts, lockfile.test.ts, resolve.ts, ace.ts, ace.test.ts, SKILL.md). Deferred backlog rows already filed (081KT07NV0008QG0R002GV3MXW/0974/0975 in the spec PR). ✓
 - **Type consistency:** `Lockfile` / `LockNode` / `buildLockfile(root, order, registry)` / `serializeLockfile` / `parseLockfile` / `verifyRootMatchesLock` names + signatures consistent across Tasks 1–6. ✓

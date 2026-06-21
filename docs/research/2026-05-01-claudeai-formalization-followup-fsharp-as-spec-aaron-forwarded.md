@@ -4,7 +4,7 @@
 
 **Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01 ~11:30Z-12:00Z). Aaron's F#-as-spec disclosure 2026-05-01 ~12:05Z. Forwarded by Aaron to Otto (this Claude Code instance) within the same window. Glass Halo + Otto-231 first-party-content authorise verbatim quotation.
 
-**Operational status:** Research-grade. NOT seed-layer canon. NOT operational-layer doctrine. Two pieces of external-vocabulary preservation: (1) Claude.ai's second-letter technical assessment of the existing Kenji-era Lean work + recommended sequencing, and (2) Aaron's architectural disclosure that F# is THE spec across multi-target lowering. Both pieces compose with the formalization roadmap rows (B-0131..B-0138) and the existing PR #1057 letter; this file is the followup capturing the next iteration of the dialogue and Aaron's sharpening disclosure.
+**Operational status:** Research-grade. NOT seed-layer canon. NOT operational-layer doctrine. Two pieces of external-vocabulary preservation: (1) Claude.ai's second-letter technical assessment of the existing Kenji-era Lean work + recommended sequencing, and (2) Aaron's architectural disclosure that F# is THE spec across multi-target lowering. Both pieces compose with the formalization roadmap rows (081KQGDBJ0008QG0R000D1YJCH..081KQGDBJ0008QG0R0012FC7RX) and the existing PR #1057 letter; this file is the followup capturing the next iteration of the dialogue and Aaron's sharpening disclosure.
 
 **Non-fusion disclaimer:** Same as PR #1057's predecessor file. Claude.ai is a separate ephemeral conversation from this Otto instance; the two are different harnesses of the same Claude model family operating independently. Substrate-vocabulary in this file (where present) is Claude.ai's vocabulary preserved unchanged, NOT Otto's translation. The lattice-capture corrective applies — when external pushback / external assessment gets absorbed into substrate-vocab, that's the failure mode; this file resists by preserving Claude.ai's framings verbatim. Otto's annotation is held separate, NOT interleaved.
 
@@ -231,12 +231,12 @@ This is structurally analogous to **Compcert / CakeML compiler-verification work
 
 `src/Core` (F# spec) → `src/Core.CSharp` (already in repo, spec-derived C# port) → Rust port (planned/in-flight).
 
-### Implications for the formalization roadmap (B-0131..B-0138)
+### Implications for the formalization roadmap (081KQGDBJ0008QG0R000D1YJCH..081KQGDBJ0008QG0R0012FC7RX)
 
-- **B-0131** (Z-set Lean) verifies the *spec*, which propagates to all spec-derived targets. One proof, multiple inheritances.
-- **B-0132** (CRDT-composition) similarly: prove against F# spec; C#/Rust ports inherit via spec-compliance.
-- **B-0138** (BFT-resistance theorem for Aurora) — the Rust port matters here especially because performance targets often have subtle concurrency issues; the BFT proof against the F# spec doesn't automatically transfer to a Rust runtime unless the Rust port preserves the relevant invariants. **A new candidate row** — *spec-to-port lowering correctness* — fits here, in the same layer as B-0138 (filed deferred until activation).
-- **B-0135** (modal logic for retractability) — Claude.ai's recommended NEXT-target after the existing chain-rule work. Retractability invariant is the easiest of the four because the F# operation algebra already encodes the inverse structure cleanly.
+- **081KQGDBJ0008QG0R000D1YJCH** (Z-set Lean) verifies the *spec*, which propagates to all spec-derived targets. One proof, multiple inheritances.
+- **081KQGDBJ0008QG0R000Y66YYQ** (CRDT-composition) similarly: prove against F# spec; C#/Rust ports inherit via spec-compliance.
+- **081KQGDBJ0008QG0R0012FC7RX** (BFT-resistance theorem for Aurora) — the Rust port matters here especially because performance targets often have subtle concurrency issues; the BFT proof against the F# spec doesn't automatically transfer to a Rust runtime unless the Rust port preserves the relevant invariants. **A new candidate row** — *spec-to-port lowering correctness* — fits here, in the same layer as 081KQGDBJ0008QG0R0012FC7RX (filed deferred until activation).
+- **081KQGDBJ0008QG0R002X4AFA0** (modal logic for retractability) — Claude.ai's recommended NEXT-target after the existing chain-rule work. Retractability invariant is the easiest of the four because the F# operation algebra already encodes the inverse structure cleanly.
 
 ### Recommended sequencing (Claude.ai's framing, preserved)
 
@@ -262,25 +262,25 @@ Claude.ai's earlier "ML-family ecosystem" framing was right at the *verification
 
 > *"the next time you're working on a Lean proof in the substrate (retractability seems like the natural next target, given the existing work), you can paste the proof state — the goals you're trying to close, the tactics you've tried, the errors Lean is giving you — and I can engage at that level. I have actual capability with Lean syntax, Mathlib navigation, and tactic strategy."*
 
-Operational offer. Aaron's cycles permitting; activation when retractability formalization (B-0135 or similar) starts.
+Operational offer. Aaron's cycles permitting; activation when retractability formalization (081KQGDBJ0008QG0R002X4AFA0 or similar) starts.
 
 ## Composes with
 
 - `docs/research/2026-05-01-claudeai-formalization-path-letter-aaron-forwarded.md` (PR #1057) — predecessor first letter; this file is the followup with the second + third letters and Aaron's spec disclosure.
 - `feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md` — verbatim-preservation discipline; Claude.ai's vocabulary preserved unchanged above.
 - `feedback_tarski_allocation_rename_correction_to_godel_allocation_in_pr1046_aaron_claudeai_2026_05_01.md` — Claude.ai's updated Gödel-allocation assessment ("framing is ahead of work but work heading there") refines the substrate's earlier Tarski-allocation framing.
-- B-0131 / B-0132 / B-0135 / B-0138 — formalization roadmap rows the recommendations sharpen.
-- B-0125 + B-0140 — build-track split + bash→TS migration; F#-as-spec disclosure reinforces the *spec-and-derived-targets* layer separation that B-0125's two-tracks-with-near-zero-overlap also produces at the build level.
+- 081KQGDBJ0008QG0R000D1YJCH / 081KQGDBJ0008QG0R000Y66YYQ / 081KQGDBJ0008QG0R002X4AFA0 / 081KQGDBJ0008QG0R0012FC7RX — formalization roadmap rows the recommendations sharpen.
+- 081KQGDBJ0008QG0R001MK4YPC + 081KQGDBJ0008QG0R0022EW5ZE — build-track split + bash→TS migration; F#-as-spec disclosure reinforces the *spec-and-derived-targets* layer separation that 081KQGDBJ0008QG0R001MK4YPC's two-tracks-with-near-zero-overlap also produces at the build level.
 - `tools/lean4/Lean4/DbspChainRule.lean` — the existing Kenji-era 756-line formalization Claude.ai engaged with substantively.
 - `feedback_aaron_both_crazy_and_not_crazy_simultaneously_two_pole_cognitive_architecture_lol_metabolization_aaron_2026_05_01.md` — Claude.ai's third-letter observation that F#-as-loose-pole + Lean-as-lattice-pole is the language-level structural form of the cognitive both-crazy-and-not-crazy architecture.
-- B-0139 (pre-substrate Kenji-era inventory) — the existing DbspChainRule.lean is exactly the kind of pre-substrate Kenji-era artifact B-0139 inventories.
+- 081KQGDBJ0008QG0R002S9SWH6 (pre-substrate Kenji-era inventory) — the existing DbspChainRule.lean is exactly the kind of pre-substrate Kenji-era artifact 081KQGDBJ0008QG0R002S9SWH6 inventories.
 
 ## Operational follow-ups (deferred)
 
 - Working-mathematician send for lattice-capture corrective (per PR #1057's predecessor recommendations) — this followup file extends the same operational ask.
 - Cross-vendor peer-AI review of the spec-derived multi-target architecture claim (Gemini / Codex / Grok have different perspectives on multi-target compilation; useful before investing months in C#/Rust port verification).
-- Candidate B-0141 (capability-boundary formalization) and candidate row for *spec-to-port lowering correctness* — file when activation signals arrive.
-- TLA+ entry-point work for B-0138 (Aurora BFT-resistance) — task #355 (poll-the-gate executable script) overlaps; coordinate when activated.
+- Candidate 081KQGDBJ0008QG0R0015RNK3P (capability-boundary formalization) and candidate row for *spec-to-port lowering correctness* — file when activation signals arrive.
+- TLA+ entry-point work for 081KQGDBJ0008QG0R0012FC7RX (Aurora BFT-resistance) — task #355 (poll-the-gate executable script) overlaps; coordinate when activated.
 
 ## What this file does NOT do
 

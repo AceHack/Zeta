@@ -1,12 +1,11 @@
 ---
-id: B-0391
-zetaid: 081KR50HA0008QG0R0036HGEJ5
+id: 081KR50HA0008QG0R0036HGEJ5
 priority: P3
 status: open
 title: GitHub Pages static shell for Operational Resonance Dashboard — index page, nav shell, CI deploy config
 tier: engineering
 effort: S
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R002DR44J1]
@@ -16,7 +15,7 @@ tags: [frontier, github-pages, dashboard, ci-deploy, host-shell, operational-res
 type: friction-reducer
 ---
 
-# B-0391 — GitHub Pages static shell for Operational Resonance Dashboard
+# 081KR50HA0008QG0R0036HGEJ5 — GitHub Pages static shell for Operational Resonance Dashboard
 
 ## What
 
@@ -27,7 +26,7 @@ the Operational Resonance Dashboard:
    (or a dedicated `gh-pages` branch structure — design decision
    for the implementer, but must be git-native).
 
-2. **Index page** — bare bones: locked name (from B-0388),
+2. **Index page** — bare bones: locked name (from 081KR50HA0008QG0R002DR44J1),
    placeholder "Under construction" content, correct meta tags,
    no content beyond the shell. TypeScript + a minimal
    static-site builder (no full framework needed at shell stage).
@@ -57,7 +56,7 @@ the Operational Resonance Dashboard:
   must still pass after adding this directory — don't break the
   existing build.
 
-## Why after B-0388
+## Why after 081KR50HA0008QG0R002DR44J1
 
 The shell uses the locked name for the page `<title>`, URL slug,
 and component naming. Building the shell before naming is locked
@@ -84,7 +83,7 @@ Expected: directory exists, workflow file present.
 - Static site builds without errors
 - GH Actions workflow deploys successfully to GH Pages
 - Deployed URL is accessible (returns 200)
-- Page shows locked name from B-0388
+- Page shows locked name from 081KR50HA0008QG0R002DR44J1
 - No TypeScript errors in the build
 - `dotnet build -c Release` still passes
 
@@ -94,13 +93,13 @@ Expected: directory exists, workflow file present.
   dashboard found. `frontend/` directory may have other surfaces;
   check before creating conflicting structure. No existing
   deploy workflow for the dashboard found in `.github/workflows/`.
-- [x] Dependency-restructure: `depends_on: [B-0388]` — needs
-  locked name for title/slug. B-0394 depends on this shell.
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R002DR44J1]` — needs
+  locked name for title/slug. 081KR50HA0008QG0R002NZENZJ depends on this shell.
 
 ## Composes with
 
-- B-0017 (parent): implements "GitHub Pages as host" architectural
+- 081KQ0YZ80008QG0R0003GAYYN (parent): implements "GitHub Pages as host" architectural
   extension (2026-05-04 section)
-- B-0388 (dependency): locked name used in page title + URL
-- B-0394 (downstream): MVP surface lands in this shell
-- B-0395 (downstream): conversation interface embeds in this shell
+- 081KR50HA0008QG0R002DR44J1 (dependency): locked name used in page title + URL
+- 081KR50HA0008QG0R002NZENZJ (downstream): MVP surface lands in this shell
+- 081KR50HA0008QG0R0019KYAAS (downstream): conversation interface embeds in this shell

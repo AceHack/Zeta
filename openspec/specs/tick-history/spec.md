@@ -9,7 +9,7 @@ This spec is language-agnostic: it describes observable behaviour (file
 locations, row formats, filename grammars, ordering invariants), not any
 particular runtime or host-language surface.
 
-**Parent:** B-0171.2
+**Parent:** 081KSNY2Z0008QG0R000XVGWA8
 
 ## Requirements
 

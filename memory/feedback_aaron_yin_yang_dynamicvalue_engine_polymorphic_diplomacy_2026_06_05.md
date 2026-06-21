@@ -90,7 +90,7 @@ The same engine, two modes, distinguished only by whether the **in/out boundary*
 
 - **Boundary OFF — test runs in deterministic simulation that update the priors = SELF-REFLECTION.** The
   act (Bonsai) runs internally over test/simulated data, updating the Bayesian priors (`SoftValue` /
-  `BeliefConvergence` / the B-1020 cell) — the agent thinks / dreams / learns *without acting on the
+  `BeliefConvergence` / the 081KTAH8Q0008QG0R001YHSSA0 cell) — the agent thinks / dreams / learns *without acting on the
   world*. Replayable, safe, private.
 - **Boundary ON — runs with real I/O hooked up = MOVING FORWARD.** The in/out ports connect to the real
   world (searches, GitHub, other agents); the agent acts, with real consequences and real evolution.
@@ -104,7 +104,7 @@ governs only the moving-forward mode (real interaction), never self-reflection (
 
 The yin-yang engine becomes the **universal handshake / common language** by which agents **describe,
 interrogate, and negotiate each other's SHAPE** ("this is who I am [yin/remains], this is what I can do
-[yang/acts], this is how I want to relate"). = the **Eve / polymorphic-diplomacy** protocol (B-1003),
+[yang/acts], this is how I want to relate"). = the **Eve / polymorphic-diplomacy** protocol (081KT2T2J0008QG0R00301P27H),
 governed by the **NCI** (don't coerce the other's hidden state). Static identity + live behavior in one
 structure two agents can structurally converse over. Not in use by agents yet — currently in the
 formal-verification phase (math leg + 4-ser leg), proven before any agent touches it.
@@ -116,7 +116,7 @@ formal-verification phase (math leg + 4-ser leg), proven before any agent touche
    (failure localization). The chained legs (math ∧ 4-lang ∧ 4-ser ∧ Bonsai ∧ Arrow ∧ homeostat) are
    exactly such a boundary; keeping the chain tight is the discipline. (Arrow is the current tightening
    point.)
-2. **One Policy base for the whole system (B-1017).** Adding the Arrow serializer forced a real `Policy`
+2. **One Policy base for the whole system (081KT7YW00008QG0R003N6PF8A).** Adding the Arrow serializer forced a real `Policy`
    primitive (it expanded the parameter surface). The consolidation: *every* policy (structure / trust /
    retry / dispatch / routing) shares **one policy base** — design once, interpret many. Arrow's blowup
    paid off as architecture.

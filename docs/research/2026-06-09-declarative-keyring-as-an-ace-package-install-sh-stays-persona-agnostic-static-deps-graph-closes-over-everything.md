@@ -54,7 +54,7 @@ applied to setup: the keyring is nodes (crypto primitives + each derivation) wit
 
 ## Pointers
 
-- `tools/ace/` — the package manager (B-0288): `solver.ts` (z3), `resolve.ts`,
+- `tools/ace/` — the package manager (081KR2E4K0008QG0R002YE3MMD): `solver.ts` (z3), `resolve.ts`,
   `lockfile.ts`, `signing.ts`, `store.ts`, `registry.json` (empty today).
 - `tools/setup/persona-keys/` — the (working, verified, imperative) tool to be
   refactored into an ace package.

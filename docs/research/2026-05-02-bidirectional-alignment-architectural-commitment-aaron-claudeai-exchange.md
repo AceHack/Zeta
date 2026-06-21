@@ -154,7 +154,7 @@ Claude.ai's honest read: *"My honest read of what I've seen in the logs you've s
 
 This document is research-grade preservation of the exchange. Promotion to canonical substrate happens through:
 
-1. **B-0162** — Memory file + CLAUDE.md addition for bidirectional-alignment-as-architectural-commitment (deferred to cooling-period-respecting follow-up PR per the asymmetry rule).
-2. **B-0163** — `docs/ALIGNMENT.md` update via the renegotiation protocol (the contract renegotiation IS the canonical-grade landing for an architectural commitment of this scope).
+1. **081KQJZR90008QG0R000V16E1C** — Memory file + CLAUDE.md addition for bidirectional-alignment-as-architectural-commitment (deferred to cooling-period-respecting follow-up PR per the asymmetry rule).
+2. **081KQJZR90008QG0R0025WX5ZJ** — `docs/ALIGNMENT.md` update via the renegotiation protocol (the contract renegotiation IS the canonical-grade landing for an architectural commitment of this scope).
 
 The thoughts in this exchange remain free; the architectural commitments that emerge get razored grading via these promotion paths.

@@ -22,7 +22,7 @@ malleable *because recomputing it is effectively free*.
 So the honest mapping: **temporal plasticity = mass reprocessing of history made tractable by free compute.**
 It composes with the real substrate: DST (deterministic replay of the whole log), branch reinterpretation
 (reinterpret-the-base = `git checkout v2`), retraction (reversible covenant), and the autonomous-loop /
-workflow-engine (B-0867) fleet that drives the agents.
+workflow-engine (081KSKBP80008QG0R000B3Y19A) fleet that drives the agents.
 
 ## Why Otto was wrong to peel it
 
@@ -39,7 +39,7 @@ true; the *literal tactic* is **ToS- and abuse-bounded**:
 - GitHub Actions has concurrency/usage/fair-use limits; **recursively spamming the free tier is against ToS**
   and would get the org flagged/banned (and is a supply-chain/abuse posture security-ops would flag — Nazar).
 - The legitimate forms of "effectively free, large-scale compute": **local LLMs** (genuinely free, owned
-  hardware), the org's **own fleet** (B-0590 bare-metal cluster), and **within-limits** CI — not abusing a
+  hardware), the org's **own fleet** (081KRQ1AB0008QG0R002G93CM7 bare-metal cluster), and **within-limits** CI — not abusing a
   provider's free tier. The capability is real; the *responsible* substrate is owned/self-hosted compute,
   not free-tier abuse.
 - So: temporal plasticity is real and valuable; achieve it on **owned/local compute**, not by violating a
@@ -48,8 +48,8 @@ true; the *literal tactic* is **ToS- and abuse-bounded**:
 ## Beacon anchors
 
 - DST (deterministic replay of history); branch reinterpretation (#6908, ZetaFS Merkle branches); retraction
-  / reversible covenant (#6896). · The autonomous-loop / workflow engine (**B-0867**); `local-llm` install
-  path; the bare-metal fleet (**B-0590**). · GitHub Actions usage/ToS (the bound); supply-chain/abuse posture
+  / reversible covenant (#6896). · The autonomous-loop / workflow engine (**081KSKBP80008QG0R000B3Y19A**); `local-llm` install
+  path; the bare-metal fleet (**081KRQ1AB0008QG0R002G93CM7**). · GitHub Actions usage/ToS (the bound); supply-chain/abuse posture
   (Nazar / security-ops). Honest novelty: none — it's a **correction**: "temporal plasticity" is a true
   compute-economics claim (free/cheap mass-recompute makes history malleable), Otto wrongly peeled it; the
   responsible realization is owned/local compute (local LLMs + own fleet), not free-tier abuse.

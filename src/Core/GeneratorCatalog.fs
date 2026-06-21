@@ -19,7 +19,7 @@ namespace Zeta.Core
 /// other predicates) are left to the consumer's `map`/`where` rather than named — add a member
 /// when a real second consumer asks, not before.
 ///
-/// Culture-invariant by default (B-0969): all string comparison is `StringComparer.Ordinal` /
+/// Culture-invariant by default (081KT07NV0008QG0R001YDB73K): all string comparison is `StringComparer.Ordinal` /
 /// ordinal `IndexOf` — categories must sort and match identically on every machine (the catalog is
 /// shared substrate; a locale-sorted category list would diverge across nodes).
 [<RequireQualifiedAccess>]

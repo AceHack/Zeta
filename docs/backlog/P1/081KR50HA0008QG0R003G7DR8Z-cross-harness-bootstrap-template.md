@@ -1,6 +1,5 @@
 ---
-id: B-0355
-zetaid: 081KR50HA0008QG0R003G7DR8Z
+id: 081KR50HA0008QG0R003G7DR8Z
 priority: P1
 status: closed
 title: "Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)"
@@ -15,19 +14,19 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0355 — Cross-harness bootstrap template
+# 081KR50HA0008QG0R003G7DR8Z — Cross-harness bootstrap template
 
 ## What
 
 Create a bootstrap-process template that other AI harnesses
-can follow. The pattern from B-0353 (CLAUDE.md as process)
+can follow. The pattern from 081KR50HA0008QG0R001DBKS6T (CLAUDE.md as process)
 generalizes to:
 
 - **AGENTS.md** — universal onboarding (already exists,
   may need process-ification)
 - **CODEX.md** — OpenAI Codex / GPT harness bootstrap
 - **CURSOR.md** — Cursor IDE harness bootstrap
-- **KIRO.md** — Amazon Kiro harness bootstrap (per B-0325)
+- **KIRO.md** — Amazon Kiro harness bootstrap (per 081KR2E4K0008QG0R0005E727X)
 
 Each harness file follows the same orient → refresh → pick →
 build → ship process but with harness-specific tooling
@@ -68,10 +67,10 @@ while the work landed through child rows and direct commits:
    the "Existing instances" registry, and the "How to add a new
    harness" procedure. ✓
 2. **≥1 non-CLAUDE harness file** — multiple landed:
-   [`CODEX.md`](../../../CODEX.md) (B-0355.4, #6045, closed),
-   [`CURSOR.md`](../../../CURSOR.md) (B-0355.2, #6042),
-   [`KIRO.md`](../../../KIRO.md) (B-0355.3, #6043, closed),
-   [`GEMINI.md`](../../../GEMINI.md) (B-0538), plus
+   [`CODEX.md`](../../../CODEX.md) (081KSRGFP0008QG0R000G8VJGV, #6045, closed),
+   [`CURSOR.md`](../../../CURSOR.md) (081KR50HA0008QG0R003G7DR8Z.2, #6042),
+   [`KIRO.md`](../../../KIRO.md) (081KSRGFP0008QG0R000EWSMKV, #6043, closed),
+   [`GEMINI.md`](../../../GEMINI.md) (081KRMEXM0008QG0R002347RJY), plus
    `.codex/AGENTS.md` and `.github/copilot-instructions.md`. ✓
 3. **Universal vs harness-specific documented** — `docs/BOOTSTRAP-TEMPLATE.md`
    §"Universal vs harness-specific" carries the per-step table
@@ -84,21 +83,21 @@ while the work landed through child rows and direct commits:
 
 ### Child / sibling rows
 
-- **B-0355.2** — CURSOR.md (merged #6042)
-- **B-0355.3** — KIRO.md (closed, #6043)
-- **B-0355.4** — CODEX.md (closed, #6045)
+- **081KR50HA0008QG0R003G7DR8Z.2** — CURSOR.md (merged #6042)
+- **081KSRGFP0008QG0R000EWSMKV** — KIRO.md (closed, #6043)
+- **081KSRGFP0008QG0R000G8VJGV** — CODEX.md (closed, #6045)
 
 ### Dependency + still-open sibling
 
-The named blocker `depends_on: B-0354` ("Fresh-instance validation
+The named blocker `depends_on: 081KR50HA0008QG0R001CNS20T` ("Fresh-instance validation
 test for bootstrap CLAUDE.md") is itself **closed** — the dependency
 is satisfied.
 
-The still-open row in the cluster is **B-0354.4** ("Clean-prompt
+The still-open row in the cluster is **081KSRGFP0008QG0R003K4M5NM** ("Clean-prompt
 live-model fresh-instance run for bootstrap CLAUDE.md"). That is the
 **cluster-wide fresh-instance validation** — step 5 of the template's
-"How to add a new harness" procedure — not part of B-0355's own
+"How to add a new harness" procedure — not part of 081KR50HA0008QG0R003G7DR8Z's own
 acceptance criteria (template + ≥1 harness file + universal/
 harness-specific doc + build), all of which are met independently.
-B-0354.4 stays open to track that validation work for the broader
-bootstrap cluster (parent B-0329); it does not block closing B-0355.
+081KSRGFP0008QG0R003K4M5NM stays open to track that validation work for the broader
+bootstrap cluster (parent 081KR2E4K0008QG0R001F0YB5S); it does not block closing 081KR50HA0008QG0R003G7DR8Z.

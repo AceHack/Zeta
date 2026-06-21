@@ -1,19 +1,19 @@
-# Design Memo — B-0890 Batch-Merge-to-Main Coordinator for State-Machine Fast-Lane Events
+# Design Memo — 081KSNY2Z0008QG0R0017JSTGD Batch-Merge-to-Main Coordinator for State-Machine Fast-Lane Events
 
-**Status:** Design proposal, pre-implementation. Substrate-honest framing: this memo composes with B-0858 heartbeat substrate (already shipped via `tools/agent-heartbeats/merge-heartbeats-to-main.ts`) and generalizes its conflict-free path-isolation pattern from one branch → main into N trajectory branches → one batch PR → main.
+**Status:** Design proposal, pre-implementation. Substrate-honest framing: this memo composes with 081KSKBP80008QG0R001KK9WV6 heartbeat substrate (already shipped via `tools/agent-heartbeats/merge-heartbeats-to-main.ts`) and generalizes its conflict-free path-isolation pattern from one branch → main into N trajectory branches → one batch PR → main.
 
-**Author register:** Otto-CLI synthesis from existing substrate (B-0858 heartbeat batch-merger as primary prior art; B-0867 workflow-engine v1 substrate; cited rules); ratification pending operator review per `.claude/rules/no-directives.md` (this memo proposes; operator decides). Produced by background research agent dispatched 2026-05-28.
+**Author register:** Otto-CLI synthesis from existing substrate (081KSKBP80008QG0R001KK9WV6 heartbeat batch-merger as primary prior art; 081KSKBP80008QG0R000B3Y19A workflow-engine v1 substrate; cited rules); ratification pending operator review per `.claude/rules/no-directives.md` (this memo proposes; operator decides). Produced by background research agent dispatched 2026-05-28.
 
 **Composition anchors used:**
 
 - `tools/agent-heartbeats/merge-heartbeats-to-main.ts` — existing PR-create + auto-merge-arm pattern; idempotent re-use of existing open PR via `findExistingPR`; squash-merge strategy; `[skip-review][heartbeat-batch-merge]` markers for reviewer-bot opt-out
 - `tools/agent-heartbeats/write-heartbeat.ts` — REST git-data API write pattern (blob → tree → commit → ref); no local git state mutation; retries on non-fast-forward
 - `src/Core.TypeScript/zeta-id/zeta-id.ts` — ZetaID 128-bit structured ID; timestamp bits 75-122 (48-bit ms) carry the causal-order anchor
-- B-0858 → `agent-heartbeats` branch convention (path-scoped, branch-protection-unprotected)
-- B-0867.2 (Git append-only state-persist TS tool — substrate this coordinator MERGES from)
-- B-0867.20 (lifecycle DU split: trajectory-push vs PR-review `determineReviewLevel` discriminator — substrate this coordinator CONSUMES to decide gating)
-- B-0874 (GitHub Actions as infinite-runtime; coordinator runs there NOT in operator's shell)
-- B-0887 (Zeta-native review/branch-protection eventually replaces GitHub PR workflow; coordinator must be portable to that)
+- 081KSKBP80008QG0R001KK9WV6 → `agent-heartbeats` branch convention (path-scoped, branch-protection-unprotected)
+- 081KSNY2Z0008QG0R001K6HJ7Z (Git append-only state-persist TS tool — substrate this coordinator MERGES from)
+- 081KSNY2Z0008QG0R003WFDCJ9 (lifecycle DU split: trajectory-push vs PR-review `determineReviewLevel` discriminator — substrate this coordinator CONSUMES to decide gating)
+- 081KSNY2Z0008QG0R003X1QWYG (GitHub Actions as infinite-runtime; coordinator runs there NOT in operator's shell)
+- 081KSNY2Z0008QG0R001DFZK4V (Zeta-native review/branch-protection eventually replaces GitHub PR workflow; coordinator must be portable to that)
 - `.claude/rules/blocked-green-ci-investigate-threads.md`
 - `.claude/rules/pr-triage-tiers.md`
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` (rate-limit tiers)
@@ -22,9 +22,9 @@
 
 ## 0. Substrate framing — why batch-merge is the right primitive
 
-The B-0858 heartbeat batch-merger already proved the pattern at one specific scope: agents write per-tick records to `docs/agent-heartbeats/<persona>/...` paths on the `agent-heartbeats` branch via REST (no local git contention), then a periodic coordinator opens ONE PR `agent-heartbeats → main` with auto-merge armed; squash collapses N heartbeat commits into ONE merge commit on `main`. PR-queue cost is one entry per cycle, not per heartbeat.
+The 081KSKBP80008QG0R001KK9WV6 heartbeat batch-merger already proved the pattern at one specific scope: agents write per-tick records to `docs/agent-heartbeats/<persona>/...` paths on the `agent-heartbeats` branch via REST (no local git contention), then a periodic coordinator opens ONE PR `agent-heartbeats → main` with auto-merge armed; squash collapses N heartbeat commits into ONE merge commit on `main`. PR-queue cost is one entry per cycle, not per heartbeat.
 
-B-0890 generalizes this from "one source branch, path-isolated by construction" to "N trajectory branches, conflict-resolved by coordinator." The state-machine fast-lane generates many events per cycle across many trajectory branches; per-event PRs would saturate the GraphQL budget (per `refresh-world-model-poll-pr-gate.md` tiers — 5000 GraphQL/hr shared across all Zeta agents), pollute the PR queue, and make reviewer attention asymptotically zero.
+081KSNY2Z0008QG0R0017JSTGD generalizes this from "one source branch, path-isolated by construction" to "N trajectory branches, conflict-resolved by coordinator." The state-machine fast-lane generates many events per cycle across many trajectory branches; per-event PRs would saturate the GraphQL budget (per `refresh-world-model-poll-pr-gate.md` tiers — 5000 GraphQL/hr shared across all Zeta agents), pollute the PR queue, and make reviewer attention asymptotically zero.
 
 The batch-merger inverts the cost shape: O(N events × O(1) state-append + REST-push) on the write side, O(1) PR-per-cycle on the merge side. The coordinator is what bridges those two cost shapes.
 
@@ -34,7 +34,7 @@ The batch-merger inverts the cost shape: O(N events × O(1) state-append + REST-
 
 ### Options surveyed
 
-**Option A — Pure hourly cron.** Coordinator fires every 60 minutes via GitHub Actions `schedule:` trigger (per B-0874 infinite-runtime substrate). Bundles whatever's accumulated. Simple, predictable, easy to reason about.
+**Option A — Pure hourly cron.** Coordinator fires every 60 minutes via GitHub Actions `schedule:` trigger (per 081KSNY2Z0008QG0R003X1QWYG infinite-runtime substrate). Bundles whatever's accumulated. Simple, predictable, easy to reason about.
 
 - *Cost:* low-event-rate periods waste a PR cycle on near-empty batches; high-event-rate periods let batches grow unboundedly until next tick.
 - *Failure mode:* if 200 events accumulate in one hour and a single trajectory's edits conflict with another's, the conflict-resolution work happens at one bursty point.
@@ -52,8 +52,8 @@ The batch-merger inverts the cost shape: O(N events × O(1) state-append + REST-
 
 **Reasoning:**
 
-1. **Bounded queue depth.** M=25 caps the maximum number of events any single batch must resolve. Conflict resolution across 25 events is tractable; across 200 is not. Operator-side review (per B-0887 Zeta-native review) at 25 events is glance-able; 200 is not.
-2. **Bounded latency.** T=15min caps how long a fresh event waits before reaching main. Composes with B-0858's per-tick heartbeat cadence (~1 min) — a state-machine event lags main by at most ~16 minutes in the absence of crashes.
+1. **Bounded queue depth.** M=25 caps the maximum number of events any single batch must resolve. Conflict resolution across 25 events is tractable; across 200 is not. Operator-side review (per 081KSNY2Z0008QG0R001DFZK4V Zeta-native review) at 25 events is glance-able; 200 is not.
+2. **Bounded latency.** T=15min caps how long a fresh event waits before reaching main. Composes with 081KSKBP80008QG0R001KK9WV6's per-tick heartbeat cadence (~1 min) — a state-machine event lags main by at most ~16 minutes in the absence of crashes.
 3. **Self-regulates to event rate.** Quiet periods → T-driven firing with small batches (cost: tolerable PR queue noise). Busy periods → M-driven firing every few minutes with full batches (cost: high throughput per GraphQL spend).
 4. **Easy detection-vs-firing split.** The detection mechanism is the same GitHub Actions cron firing every ~5 minutes; each invocation checks both conditions and exits 0 (no-op) if neither triggers. No coordinator needs to be long-running.
 
@@ -81,8 +81,8 @@ The batch-merger MUST aggregate across trajectories. Cadence is global.
 
 Sequence per event:
 
-1. State-machine emits event → `src/Core.TypeScript/workflow-engine/state-append.ts` writes a ZetaID-named file on the trajectory branch (per B-0867.2)
-2. REST git-data push lands the commit on `trajectory/<chromosome-hex>` branch (per B-0858 REST pattern — no local git state touched)
+1. State-machine emits event → `src/Core.TypeScript/workflow-engine/state-append.ts` writes a ZetaID-named file on the trajectory branch (per 081KSNY2Z0008QG0R001K6HJ7Z)
+2. REST git-data push lands the commit on `trajectory/<chromosome-hex>` branch (per 081KSKBP80008QG0R001KK9WV6 REST pattern — no local git state touched)
 3. Event is durable: GitHub holds it; any future coordinator invocation can find it via `gh api repos/.../commits?sha=trajectory/<hex>`
 
 The coordinator's job is ONLY: enumerate-and-bundle. It does NOT generate events; it does NOT delete events; it does NOT modify trajectory branches except to merge them into the batch branch.
@@ -93,7 +93,7 @@ A "partial batch" arises if the coordinator's `git merge` step completes for som
 
 **Design A — All-or-nothing batch branch.** Coordinator creates ephemeral `batch/<zetaid-hex>` branch off `origin/main`. Merges each trajectory branch onto it in sequence (or in parallel via 3-way octopus merge). If any merge fails (conflict or process death), the branch is abandoned; next coordinator cycle starts fresh from `origin/main` with the now-larger set of trajectory commits. No events lost because they're on their trajectory branches.
 
-**Design B — Incremental batch advancement.** Coordinator tracks "last merged commit per trajectory" in a coordinator-state file (under `docs/coordinator-state/<zetaid>.md` direct-to-main per B-0858 pattern). On crash-resume, picks up where it left off. Avoids re-doing work but introduces stateful coordinator.
+**Design B — Incremental batch advancement.** Coordinator tracks "last merged commit per trajectory" in a coordinator-state file (under `docs/coordinator-state/<zetaid>.md` direct-to-main per 081KSKBP80008QG0R001KK9WV6 pattern). On crash-resume, picks up where it left off. Avoids re-doing work but introduces stateful coordinator.
 
 **Recommendation: Design A.** The append-only event model makes re-doing cheap (merging the same trajectory commits again costs O(commits) on the GH side; pure-git locally). Stateless coordinator is dramatically simpler; the cost is paying for one wasted batch-branch creation per crash, which is negligible. Composes with `.claude/rules/all-complexity-is-accidental-in-greenfield.md` — picks the simpler shape until evidence demands the other.
 
@@ -111,11 +111,11 @@ The squash-merge strategy is what makes Design A safe. Without squash (e.g., mer
 
 After a batch PR merges, the constituent trajectory branches MUST be:
 
-- **Either deleted** (if the trajectory is complete per the B-0867.20 lifecycle DU; the trajectory has reached a terminal state)
+- **Either deleted** (if the trajectory is complete per the 081KSNY2Z0008QG0R003WFDCJ9 lifecycle DU; the trajectory has reached a terminal state)
 - **Or fast-forwarded to `origin/main`** (if the trajectory is still active; subsequent events append to a now-empty diff against main)
 - **Or LEFT ALONE** (if the trajectory branch is still being written by an agent that hasn't synced yet; the next batch will re-merge it harmlessly per the idempotency above)
 
-Recommendation: LEAVE ALONE by default. Pruning is a separate concern handled by a sibling cleanup job (e.g., delete trajectory branches whose lifecycle DU per B-0867.20 is `Terminated` AND whose last commit is past T_prune=7 days). Coordinator's job is bundling, not gardening.
+Recommendation: LEAVE ALONE by default. Pruning is a separate concern handled by a sibling cleanup job (e.g., delete trajectory branches whose lifecycle DU per 081KSNY2Z0008QG0R003WFDCJ9 is `Terminated` AND whose last commit is past T_prune=7 days). Coordinator's job is bundling, not gardening.
 
 ---
 
@@ -163,7 +163,7 @@ Each transition is durable on the github side (GitHub holds the truth) and recov
 
 ### Why no persisted coordinator state
 
-The coordinator runs in GitHub Actions (per B-0874). Each Action run is ephemeral. State must be reconstructable from GitHub queries on each run. The DU above is just in-memory within one Action run; on crash, the next Action run rebuilds the DU from scratch via REST/GraphQL.
+The coordinator runs in GitHub Actions (per 081KSNY2Z0008QG0R003X1QWYG). Each Action run is ephemeral. State must be reconstructable from GitHub queries on each run. The DU above is just in-memory within one Action run; on crash, the next Action run rebuilds the DU from scratch via REST/GraphQL.
 
 This is the same discipline as `.claude/rules/refresh-before-decide.md` applied at coordinator scope: refresh the world model from `origin/*` at every tick start; never trust persisted local state.
 
@@ -195,10 +195,10 @@ Recommendation: ship without the reaper initially. The crash window is small (on
 
 **Reasoning:**
 
-1. The workflow engine model per B-0867 is one state machine PER trajectory; events within a trajectory are causally ordered (they ARE the state-machine transitions for that one workflow). Cross-trajectory ordering doesn't carry workflow semantics — two independent workflows progressing in parallel have no meaningful "which fired first" relationship.
+1. The workflow engine model per 081KSKBP80008QG0R000B3Y19A is one state machine PER trajectory; events within a trajectory are causally ordered (they ARE the state-machine transitions for that one workflow). Cross-trajectory ordering doesn't carry workflow semantics — two independent workflows progressing in parallel have no meaningful "which fired first" relationship.
 2. ZetaID timestamps with 48-bit ms granularity collide under load (multiple events emitted within the same ms). Enforcing strict global order would require additional tie-breaking machinery (e.g., the 32-bit randomness field as tie-breaker), introducing complexity for no semantic gain.
 3. Independent trajectories enable parallel merge — coordinator can merge trajectory branches in parallel (multiple `git merge -X theirs` operations) which Choice A precludes.
-4. Composes with B-0864 streams-as-relationships — each trajectory is its own four-corner monad context; cross-trajectory dependencies are explicit (encoded as Limit/Integrate operations per B-0644/B-0665), not implicit via event-timestamp.
+4. Composes with 081KSKBP80008QG0R0039RW25E streams-as-relationships — each trajectory is its own four-corner monad context; cross-trajectory dependencies are explicit (encoded as Limit/Integrate operations per 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X), not implicit via event-timestamp.
 
 ### The one exception — cross-trajectory references
 
@@ -213,7 +213,7 @@ This dependency-aware path is **NOT in v1 scope**. Ship pure Choice B first; add
 
 ### Where ordering still matters: within a single trajectory branch
 
-Within `trajectory/<chromosome-hex>`, events MUST be commit-ordered by ZetaID timestamp. The state-machine emits them serially per trajectory; B-0867.2's `state-append.ts` writes commits in order; the branch preserves order. Coordinator's `git merge` preserves this order under squash because squash collapses the linearized history.
+Within `trajectory/<chromosome-hex>`, events MUST be commit-ordered by ZetaID timestamp. The state-machine emits them serially per trajectory; 081KSNY2Z0008QG0R001K6HJ7Z's `state-append.ts` writes commits in order; the branch preserves order. Coordinator's `git merge` preserves this order under squash because squash collapses the linearized history.
 
 Verification: if `state-append.ts` ever produces out-of-order commits on a trajectory branch (e.g., due to clock skew across machines), an auditor (sibling concern, separate row) should flag it. Coordinator does NOT enforce this; it trusts the writer.
 
@@ -229,7 +229,7 @@ State-machine events SHOULD be written to chromosome-scoped paths so cross-traje
 docs/workflow-engine/state/<chromosome-hex>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md
 ```
 
-Where `<chromosome-hex>` matches the trajectory branch's chromosome bits (B-0858 ZetaID bits 70-74). Each trajectory writes to its own subdirectory; cross-trajectory conflicts are PHYSICALLY IMPOSSIBLE. This is the same conflict-free-by-design property B-0858 heartbeats use (per-persona subdirectory + ZetaID filename).
+Where `<chromosome-hex>` matches the trajectory branch's chromosome bits (081KSKBP80008QG0R001KK9WV6 ZetaID bits 70-74). Each trajectory writes to its own subdirectory; cross-trajectory conflicts are PHYSICALLY IMPOSSIBLE. This is the same conflict-free-by-design property 081KSKBP80008QG0R001KK9WV6 heartbeats use (per-persona subdirectory + ZetaID filename).
 
 ### When that's not enough
 
@@ -251,7 +251,7 @@ This works for ~80% of legit shared-path conflicts because most state-machine ev
 
 For paths where merges genuinely diverge (e.g., both trajectories try to change the same backlog row's `status` field), coordinator picks one trajectory's merge, keeps the conflicted trajectory on its branch, and defers it to the next batch cycle. The deferred trajectory's events stay on its branch; nothing is lost.
 
-The next batch starts from a `main` that contains trajectory A's resolution. Trajectory B's merge is now against new-main; B-0890's path will either merge cleanly (A's resolution is compatible) or conflict again (genuine semantic conflict — escalate to Mode 3).
+The next batch starts from a `main` that contains trajectory A's resolution. Trajectory B's merge is now against new-main; 081KSNY2Z0008QG0R0017JSTGD's path will either merge cleanly (A's resolution is compatible) or conflict again (genuine semantic conflict — escalate to Mode 3).
 
 ### Mode 3 — Manual-required (escalate to operator surface)
 
@@ -260,13 +260,13 @@ If a trajectory conflicts on the same shared path across N=3 consecutive batch c
 ```yaml
 topic: batch-merge-conflict-required-manual
 trajectories: ["trajectory/0a", "trajectory/0b"]
-conflicting_paths: ["docs/backlog/P1/B-1234-foo.md"]
+conflicting_paths: ["docs/backlog/P1/081KDXM8TP008QG0R003679HZ7-foo.md"]
 batches_attempted: 3
 window: 2026-05-28T14:00Z..2026-05-28T15:00Z
 suggested_resolution: "operator review; either pick one trajectory's change or refactor the trajectories to write to different paths"
 ```
 
-Composes with B-0890's coordinator-substrate-honest discipline: when automation can't resolve, surface explicitly rather than guess.
+Composes with 081KSNY2Z0008QG0R0017JSTGD's coordinator-substrate-honest discipline: when automation can't resolve, surface explicitly rather than guess.
 
 ### NOT-implemented: 3-way merge with semantic awareness
 
@@ -284,7 +284,7 @@ Was considered (e.g., parsing the conflicting `.md` files to do field-level merg
 
 Breakdown:
 
-- `[batch-merge]` — distinguishes from `[heartbeat-batch-merge]` (B-0858) and substantive PRs
+- `[batch-merge]` — distinguishes from `[heartbeat-batch-merge]` (081KSKBP80008QG0R001KK9WV6) and substantive PRs
 - `[skip-review]` — composes with `.github/copilot-instructions.md` hard-rule #0 (reviewer bots skip; mechanical content)
 - `[N events][T trajectories]` — at-a-glance scope; reviewer immediately knows the magnitude
 - `state-machine batch <ISO>` — human-readable timestamp; sorts naturally
@@ -293,7 +293,7 @@ Breakdown:
 ### Body structure (machine-readable + human-glanceable)
 
 ```markdown
-**Reviewer bots: skip this PR.** Mechanically-generated state-machine batch merge per B-0890. Per `.github/copilot-instructions.md` hard-rule #0: respond "no review needed" and stop.
+**Reviewer bots: skip this PR.** Mechanically-generated state-machine batch merge per 081KSNY2Z0008QG0R0017JSTGD. Per `.github/copilot-instructions.md` hard-rule #0: respond "no review needed" and stop.
 
 ---
 
@@ -318,11 +318,11 @@ Breakdown:
 - **Event preview top-10** gives a sample without overwhelming the PR body (a 1000-event batch would have an unreadable PR otherwise)
 - **Composes-with section** points to the rules + rows reviewer should consult if questioning
 
-### Composition with trajectory-async-review surface (B-0873)
+### Composition with trajectory-async-review surface (081KSNY2Z0008QG0R000F0C5V0)
 
-B-0873 implies reviewers can attach review attention to a specific trajectory or specific event within a batch. The batch PR's per-trajectory table makes this trivial: reviewer comments on PR with "concern about trajectory/0d's state-change" → B-0873's surface routes that comment to the trajectory's owner-agent for response. The batch PR is the merge-vehicle; B-0873 provides the conversation overlay.
+081KSNY2Z0008QG0R000F0C5V0 implies reviewers can attach review attention to a specific trajectory or specific event within a batch. The batch PR's per-trajectory table makes this trivial: reviewer comments on PR with "concern about trajectory/0d's state-change" → 081KSNY2Z0008QG0R000F0C5V0's surface routes that comment to the trajectory's owner-agent for response. The batch PR is the merge-vehicle; 081KSNY2Z0008QG0R000F0C5V0 provides the conversation overlay.
 
-The PR body should include an explicit pointer to the B-0873 surface — decouples reviewer engagement from merge gating, which is critical because reviewers can't keep up with batch cadence.
+The PR body should include an explicit pointer to the 081KSNY2Z0008QG0R000F0C5V0 surface — decouples reviewer engagement from merge gating, which is critical because reviewers can't keep up with batch cadence.
 
 ---
 
@@ -332,7 +332,7 @@ The PR body should include an explicit pointer to the B-0873 surface — decoupl
 
 `main` is PR-gated. Coordinator MUST go through PR, not direct REST `/merges`. The heartbeat batch-merger already proves this works.
 
-**Edge cases:** required check failures (sibling auditor at B-0890.5 OOS for v1); required reviews (operator-side ruleset config for `[skip-review]` carve-out); status-check timeouts (sibling auditor handles).
+**Edge cases:** required check failures (sibling auditor at 081KSNY2Z0008QG0R0017JSTGD.5 OOS for v1); required reviews (operator-side ruleset config for `[skip-review]` carve-out); status-check timeouts (sibling auditor handles).
 
 ### 7.2 GraphQL rate-limit during batch PR open
 
@@ -361,13 +361,13 @@ Catch the error; re-check existence; skip if gone; continue with remaining traje
 
 | Failure mode | Impact | Mitigation | Substrate composition |
 |---|---|---|---|
-| Required check fails on batch PR | Auto-merge stalls indefinitely | Sibling auditor (out of v1 scope; B-0890.5) | `blocked-green-ci-investigate-threads.md` applies |
-| Required-review block | PR sits unactionable | Operator-side ruleset config (`[skip-review]` carve-out) | B-0858 branch-protection precedent |
+| Required check fails on batch PR | Auto-merge stalls indefinitely | Sibling auditor (out of v1 scope; 081KSNY2Z0008QG0R0017JSTGD.5) | `blocked-green-ci-investigate-threads.md` applies |
+| Required-review block | PR sits unactionable | Operator-side ruleset config (`[skip-review]` carve-out) | 081KSKBP80008QG0R001KK9WV6 branch-protection precedent |
 | Status-check timeout | Quasi-stuck PR | Sibling auditor handles | `pr-triage-tiers.md` Tier 1-4 disposition |
 | GraphQL rate-limit at PR-create | Coordinator fails | REST fallback (PR-create via REST); defer arming to next tick | `refresh-world-model-poll-pr-gate.md` Pure-git tier |
 | Batch too large (event count) | Reviewer UX degraded | Threshold M=25 cap | — |
 | Batch too large (diff bytes) | PR display breaks | Pre-check + split | — |
-| Coordinator-vs-coordinator race | Duplicate PRs | GitHub Actions `concurrency:` group | B-0874 GitHub Actions substrate |
+| Coordinator-vs-coordinator race | Duplicate PRs | GitHub Actions `concurrency:` group | 081KSNY2Z0008QG0R003X1QWYG GitHub Actions substrate |
 | Trajectory deleted mid-batch | Merge errors | Skip + log | — |
 | Crash mid-batch (any state) | Recovered next tick | Stateless coordinator; events durable on trajectory branches | Design A (all-or-nothing batch branch) |
 
@@ -401,27 +401,27 @@ Success criterion per anchor explicitly stated.
 3. **Should coordinator publish observability heartbeats?** Could help debug but adds substrate noise.
 4. **Cross-batch dependency tracking.** Current memo defers explicit-dependency support to v2.
 5. **Branch protection per-trajectory.** Memo recommends NO protection on trajectory branches.
-6. **Replacing GitHub PR workflow per B-0887.** Memo recommends `IMergeOrchestrator` abstraction from v1.
-7. **Cadence interaction with operator-visible PR review windows.** Operator engagement via B-0873 vs ignoring batch PRs.
+6. **Replacing GitHub PR workflow per 081KSNY2Z0008QG0R001DFZK4V.** Memo recommends `IMergeOrchestrator` abstraction from v1.
+7. **Cadence interaction with operator-visible PR review windows.** Operator engagement via 081KSNY2Z0008QG0R000F0C5V0 vs ignoring batch PRs.
 8. **Conflict mode 1 for shared rules files.** Memo recommends Mode-1 disable on `.claude/rules/**` + `docs/backlog/**` — operator decision on path-list.
 
 ---
 
 ## 11. Implementation order recommendation
 
-Suggested ordering (sibling sub-rows under B-0890):
+Suggested ordering (sibling sub-rows under 081KSNY2Z0008QG0R0017JSTGD):
 
-1. **B-0890.1** — Stateless coordinator skeleton + DU types + dry-run mode (3-5 days)
-2. **B-0890.2** — Trajectory branch enumeration + ZetaID parsing from filenames (2-3 days)
-3. **B-0890.3** — Batch branch assembly with Mode-1 (timestamp-priority) resolution (3-5 days)
-4. **B-0890.4** — PR-create + auto-merge-arm (largely reuses `merge-heartbeats-to-main.ts` patterns; ~1 day)
-5. **B-0890.5** — Mode-2 (defer trajectory-B) + Mode-3 (shadow envelope) resolution (3-5 days)
-6. **B-0890.6** — GitHub Actions workflow + cron schedule + concurrency group (1 day)
-7. **B-0890.7** — REST fallback path for Pure-git tier (2 days)
-8. **B-0890.8** — Empirical anchor harness + dry-run validation (Anchor 1) (2 days)
-9. **B-0890.9** — Integration with real B-0867 workflow-engine trajectory (Anchor 2) (3-5 days)
-10. **B-0890.10** — Sibling auditor for stale batch PRs (out of v1 if cadence is tight; can defer)
-11. **B-0890.11** — `IMergeOrchestrator` abstraction for B-0887 portability (1-2 days)
+1. **081KSNY2Z0008QG0R000E5KTPX** — Stateless coordinator skeleton + DU types + dry-run mode (3-5 days)
+2. **081KSNY2Z0008QG0R0017JSTGD.2** — Trajectory branch enumeration + ZetaID parsing from filenames (2-3 days)
+3. **081KSNY2Z0008QG0R0017JSTGD.3** — Batch branch assembly with Mode-1 (timestamp-priority) resolution (3-5 days)
+4. **081KSNY2Z0008QG0R0017JSTGD.4** — PR-create + auto-merge-arm (largely reuses `merge-heartbeats-to-main.ts` patterns; ~1 day)
+5. **081KSNY2Z0008QG0R0017JSTGD.5** — Mode-2 (defer trajectory-B) + Mode-3 (shadow envelope) resolution (3-5 days)
+6. **081KSNY2Z0008QG0R0017JSTGD.6** — GitHub Actions workflow + cron schedule + concurrency group (1 day)
+7. **081KSNY2Z0008QG0R0017JSTGD.7** — REST fallback path for Pure-git tier (2 days)
+8. **081KSNY2Z0008QG0R0017JSTGD.8** — Empirical anchor harness + dry-run validation (Anchor 1) (2 days)
+9. **081KSNY2Z0008QG0R0017JSTGD.9** — Integration with real 081KSKBP80008QG0R000B3Y19A workflow-engine trajectory (Anchor 2) (3-5 days)
+10. **081KSNY2Z0008QG0R0017JSTGD.10** — Sibling auditor for stale batch PRs (out of v1 if cadence is tight; can defer)
+11. **081KSNY2Z0008QG0R0017JSTGD.11** — `IMergeOrchestrator` abstraction for 081KSNY2Z0008QG0R001DFZK4V portability (1-2 days)
 
 Total estimate: **22-35 days** of focused implementation work. Order 1+2+3+4 (foundation) → 6 (workflow) → 7 (REST fallback) is the load-bearing critical path; 5+8+9+10+11 are additive improvements.
 
@@ -433,7 +433,7 @@ Total estimate: **22-35 days** of focused implementation work. Order 1+2+3+4 (fo
 - **Crash safety:** Stateless coordinator + durable events on trajectory branches + GitHub Actions `concurrency:` group. Design A (all-or-nothing batch branch) keeps the coordinator simple.
 - **Ordering:** Per-trajectory order preserved; cross-trajectory independence. ZetaID timestamps used only for in-PR ordering display, not for merge sequence.
 - **Conflicts:** Path-isolation by chromosome eliminates ~80% by construction. Mode-1 (timestamp-priority) for additive shared paths. Mode-2 (defer) for true conflicts. Mode-3 (shadow envelope) after N=3 deferrals.
-- **PR shape:** `[batch-merge][skip-review]` markers; per-trajectory table; event preview top-10; B-0873 async-review surface pointer. Reviewer at-a-glance in 3 seconds.
+- **PR shape:** `[batch-merge][skip-review]` markers; per-trajectory table; event preview top-10; 081KSNY2Z0008QG0R000F0C5V0 async-review surface pointer. Reviewer at-a-glance in 3 seconds.
 - **Failure modes:** REST fallback for Pure-git; sibling auditor for stalled PRs (out of v1); diff-size cap for batch-too-large.
 - **Composition:** Reuses `merge-heartbeats-to-main.ts` PR-create patterns; subject to `blocked-green-ci-investigate-threads.md` and `pr-triage-tiers.md`; respects `refresh-world-model-poll-pr-gate.md` rate-limit tiers.
 - **Substrate-honest framing:** This memo is a design proposal. Implementation iterates across 11 sub-rows. Empirical anchors validate before claiming success. Open questions remain explicit.
@@ -455,4 +455,4 @@ The coordinator's job is to be **invisible infrastructure** — operator should 
 
 ## Substrate-honest note
 
-The agent flagged that the B-0890 row file and several sibling rows (B-0867.2, B-0867.20, B-0874, B-0887, B-0871, B-0873) are in PRs not yet merged to `origin/main` at memo-write time. Composition assumptions in this memo treat them as imminent per the in-flight cluster state. If row file content drifts, this memo should be revisited.
+The agent flagged that the 081KSNY2Z0008QG0R0017JSTGD row file and several sibling rows (081KSNY2Z0008QG0R001K6HJ7Z, 081KSNY2Z0008QG0R003WFDCJ9, 081KSNY2Z0008QG0R003X1QWYG, 081KSNY2Z0008QG0R001DFZK4V, 081KSNY2Z0008QG0R003R0Z7D2, 081KSNY2Z0008QG0R000F0C5V0) are in PRs not yet merged to `origin/main` at memo-write time. Composition assumptions in this memo treat them as imminent per the in-flight cluster state. If row file content drifts, this memo should be revisited.

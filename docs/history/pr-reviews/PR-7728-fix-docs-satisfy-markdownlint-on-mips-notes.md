@@ -32,7 +32,7 @@
 - Add the missing final newline to the forwarded Sakana transcript file.
 
 ## Verification
-- mise exec -- markdownlint-cli2 docs/backlog/P2/B-1028-mips-emulator-treaty-room-like-chip8-maxs-machine-hennessy-lineage-aaron-2026-06-11.md docs/craft-school/max-mips-self-study-start-point.md docs/research/ip-questionable/2026-06-11-two-minute-papers-sakana-nca-petri-dish-stable-borders-permissive-mixing-crystallization-relaxation-verbatim-transcript-aaron-forwarded.md
+- mise exec -- markdownlint-cli2 docs/backlog/P2/081KTSZN10008QG0R001BCCTXT-mips-emulator-treaty-room-like-chip8-maxs-machine-hennessy-lineage-aaron-2026-06-11.md docs/craft-school/max-mips-self-study-start-point.md docs/research/ip-questionable/2026-06-11-two-minute-papers-sakana-nca-petri-dish-stable-borders-permissive-mixing-crystallization-relaxation-verbatim-transcript-aaron-forwarded.md
 - git diff --check
 
 ## Outcome

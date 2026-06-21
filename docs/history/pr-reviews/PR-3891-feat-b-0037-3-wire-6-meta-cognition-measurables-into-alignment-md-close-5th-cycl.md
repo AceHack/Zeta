@@ -27,11 +27,11 @@
 
 ## Description
 
-Fifth actual close-row of the audit cycle. #2-Ready pickup: B-0037.3's `classification: blocked` was stale because B-0037.1 merged via PR #3859 and B-0037.2 closed via PR #3888 earlier this session.
+Fifth actual close-row of the audit cycle. #2-Ready pickup: 081KR7JY10008QG0R000XPVJ0W's `classification: blocked` was stale because 081KR7JY10008QG0R0038AFS7T merged via PR #3859 and 081KR7JY10008QG0R002D6VNNJ closed via PR #3888 earlier this session.
 
 ## Deliverable
 
-`docs/ALIGNMENT.md` §"Measurability — what we count" → §"Per-round metrics" appended with all 6 measurables from B-0037.1 taxonomy:
+`docs/ALIGNMENT.md` §"Measurability — what we count" → §"Per-round metrics" appended with all 6 measurables from 081KR7JY10008QG0R0038AFS7T taxonomy:
 
 | Measurable | Procedure |
 |---|---|
@@ -51,12 +51,12 @@ Fifth actual close-row of the audit cycle. #2-Ready pickup: B-0037.3's `classifi
 | 3. No existing measurables modified — pure additive subsection | ✅ |
 | 4. `dotnet build -c Release` unaffected | ✅ pure doc addition |
 
-## B-0037 family complete
+## 081KQ3HBZ0008QG0R0002RB48Q family complete
 
-B-0037.1 (taxonomy doc) → [#3859](https://github.com/Lucent-Financial-Group/Zeta/pull/3859) MERGED
-B-0037.2 (round-close template) → [#3888](https://github.com/Lucent-Financial-Group/Zeta/pull/3888) MERGED
-B-0037.3 (measurables wiring) → this PR
-B-0037.4 (distributed-vs-concentrated ADR) — separate scope; remains open
+081KR7JY10008QG0R0038AFS7T (taxonomy doc) → [#3859](https://github.com/Lucent-Financial-Group/Zeta/pull/3859) MERGED
+081KR7JY10008QG0R002D6VNNJ (round-close template) → [#3888](https://github.com/Lucent-Financial-Group/Zeta/pull/3888) MERGED
+081KR7JY10008QG0R000XPVJ0W (measurables wiring) → this PR
+081KR7JY10008QG0R001J11M38 (distributed-vs-concentrated ADR) — separate scope; remains open
 
 ## Multi-Otto recovery pattern
 

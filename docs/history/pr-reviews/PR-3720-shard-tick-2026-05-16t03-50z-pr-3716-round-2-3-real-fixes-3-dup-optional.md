@@ -60,7 +60,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-16T03:54:09Z on `docs/hygiene-history/ticks/2026/05/16/0350Z.md`:74 (association: NONE)
 
   <pre>
-  P1: This next-tick candidate is stale: `docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md` is already marked `status: done` with `completed: 2026-05-16`, so carrying it as an active claim can send the next tick toward duplicate work. Remove this item or update it to record that the sweep is complete.
+  P1: This next-tick candidate is stale: `docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md` is already marked `status: done` with `completed: 2026-05-16`, so carrying it as an active claim can send the next tick toward duplicate work. Remove this item or update it to record that the sweep is complete.
 
   </pre>
 
@@ -103,10 +103,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(pr-3720): mark B-0545 next-tick candidate done (peer-Otto landed it)
+fix(pr-3720): mark 081KRMEXM0008QG0R000ARAR7P next-tick candidate done (peer-Otto landed it)
 
-Copilot P1: my 'B-0545 renumber-sweep (claim still active until
-2026-05-17T01:44Z)' next-tick candidate was stale — B-0545 is now
+Copilot P1: my '081KRMEXM0008QG0R000ARAR7P renumber-sweep (claim still active until
+2026-05-17T01:44Z)' next-tick candidate was stale — 081KRMEXM0008QG0R000ARAR7P is now
 status: done on main (completed: 2026-05-16; completed_by: otto-cli).
 A peer-Otto-CLI session landed the sweep in parallel with this session's
 work.

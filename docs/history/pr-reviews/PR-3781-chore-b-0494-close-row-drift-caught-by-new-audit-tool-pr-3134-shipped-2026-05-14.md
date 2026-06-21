@@ -27,7 +27,7 @@
 
 ## Description
 
-First real-world use of `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop shipped via PR #3758/#3777). Audit flagged B-0494; manual per-acceptance verification confirmed pure-drift (all 6 acceptance criteria shipped via PR #3134).
+First real-world use of `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop shipped via PR #3758/#3777). Audit flagged 081KRHWGX0008QG0R0029WA0HQ; manual per-acceptance verification confirmed pure-drift (all 6 acceptance criteria shipped via PR #3134).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

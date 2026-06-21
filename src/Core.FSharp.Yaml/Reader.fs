@@ -403,7 +403,7 @@ module Reader =
                 Ok()
             | Error f -> Error f
 
-        /// B-1016: an UNQUOTED value token of exactly `{}` / `[]` is an EMPTY flow
+        /// 081KT7YW00008QG0R002T1XNWT: an UNQUOTED value token of exactly `{}` / `[]` is an EMPTY flow
         /// collection -- emit the empty container event-pair (not a scalar), so empty map
         /// / empty seq / null stay three distinct states across the round-trip
         /// (never-collapse). General flow (`{a: b}`, `[1,2]`) remains out of subset

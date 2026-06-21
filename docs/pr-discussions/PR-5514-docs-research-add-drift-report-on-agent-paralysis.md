@@ -50,21 +50,21 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated no 
 
 **@copilot-pull-request-reviewer** (2026-05-27T17:08:04Z):
 
-P1: The reference to “isolated worktree protocol (B-0751)” is not currently resolvable in-tree (there is no backlog row/document with `id: B-0751`). This makes the citation hard to verify; consider citing the concrete artefact that exists (e.g., PR #5019 per-agent isolated clones) and/or a backlog row that exists (e.g., B-0750 worktree hygiene), and align the wording with what B-0751 is described as elsewhere (“per-agent isolated clones architecture”).
+P1: The reference to “isolated worktree protocol (081KSE6WT0008QG0R003YYC9PV)” is not currently resolvable in-tree (there is no backlog row/document with `id: 081KSE6WT0008QG0R003YYC9PV`). This makes the citation hard to verify; consider citing the concrete artefact that exists (e.g., PR #5019 per-agent isolated clones) and/or a backlog row that exists (e.g., 081KSE6WT0008QG0R003YYC9PV worktree hygiene), and align the wording with what 081KSE6WT0008QG0R003YYC9PV is described as elsewhere (“per-agent isolated clones architecture”).
 
 **@AceHack** (2026-05-27T17:14:28Z):
 
-Fixed in 67aa9848f — replaced the B-0751 reference at line 18 with PR #5019 (closed proposal) + B-0750 (worktree-hygiene row in tree) + agent-worktree-hygiene rule path. All three artifacts are resolvable in-tree.
+Fixed in 67aa9848f — replaced the 081KSE6WT0008QG0R003YYC9PV reference at line 18 with PR #5019 (closed proposal) + 081KSE6WT0008QG0R003YYC9PV (worktree-hygiene row in tree) + agent-worktree-hygiene rule path. All three artifacts are resolvable in-tree.
 
 ### Thread 2: docs/research/agent-paralysis-drift-report-2026-05-27.md:39 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T17:08:05Z):
 
-P1: “per-agent isolated clone/worktree architecture (B-0751)” appears to cite a backlog row that isn’t present in the repo (`id: B-0751` not found). To keep this recommendation actionable, cite the existing source of truth (PR #5019 and/or the relevant backlog row such as B-0750) or add a linkable reference that exists in-tree.
+P1: “per-agent isolated clone/worktree architecture (081KSE6WT0008QG0R003YYC9PV)” appears to cite a backlog row that isn’t present in the repo (`id: 081KSE6WT0008QG0R003YYC9PV` not found). To keep this recommendation actionable, cite the existing source of truth (PR #5019 and/or the relevant backlog row such as 081KSE6WT0008QG0R003YYC9PV) or add a linkable reference that exists in-tree.
 
 **@AceHack** (2026-05-27T17:14:38Z):
 
-Fixed in 67aa9848f — replaced the B-0751 reference at line 38 with PR #5019 (closed design proposal) + B-0750 (worktree-hygiene row that exists in tree). Both are linkable + verifiable.
+Fixed in 67aa9848f — replaced the 081KSE6WT0008QG0R003YYC9PV reference at line 38 with PR #5019 (closed design proposal) + 081KSE6WT0008QG0R003YYC9PV (worktree-hygiene row that exists in tree). Both are linkable + verifiable.
 
 ## General comments
 

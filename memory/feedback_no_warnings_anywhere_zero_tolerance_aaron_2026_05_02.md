@@ -101,7 +101,7 @@ The rule still bites on:
   files we wrote. If our markdown has bad list numbering,
   we fix it.
 - **Code Scanning alerts on our code** — 13 csharp alerts
-  currently open (B-0073 P0). Our code, in scope.
+  currently open (081KQ8P5D0008QG0R002RYXE89 P0). Our code, in scope.
 - **Pre-commit hook warnings** — paired-edit check, ASCII
   lint, invisible-char lint, hook-side warnings.
 - **Our tool execution warnings about OUR state** —
@@ -154,7 +154,7 @@ The right response to a hit:
 
 In scope for elimination (per the no-warnings rule):
 
-- 13 csharp Code Scanning alerts (B-0073 P0)
+- 13 csharp Code Scanning alerts (081KQ8P5D0008QG0R002RYXE89 P0)
 - Any markdownlint findings on our docs (caught + fixed
   during this session on PRs #1199, #1200)
 - Any tsc-tools failures on our scripts (multiple PRs in
@@ -173,7 +173,7 @@ Out of scope per DST external-invariants:
 - **DST discipline** — the framing this rule uses for the
   scope-cut. External invariants are model inputs, not
   factory state.
-- **B-0073 (P0)** — csharp Code Scanning alerts (in scope)
+- **081KQ8P5D0008QG0R002RYXE89 (P0)** — csharp Code Scanning alerts (in scope)
 - **A future bounded-retry-for-transient-CI-flakes row** —
   unfiled at the moment; mechanizes graceful handling of
   external invariants by extending retry budgets and

@@ -1,6 +1,5 @@
 ---
-id: B-0281
-zetaid: 081KR2E4K0008QG0R002FSPPQR
+id: 081KR2E4K0008QG0R002FSPPQR
 priority: P0
 status: closed
 title: "Codex loop - empty queue autonomous backlog pickup"
@@ -14,7 +13,7 @@ owners: [architect, codex]
 type: friction-reducer
 ---
 
-# B-0281 - Empty-queue backlog pickup integration
+# 081KR2E4K0008QG0R002FSPPQR - Empty-queue backlog pickup integration
 
 Wire the selector, claim bootstrap, and PR publication path into the
 Codex background loop so an empty PR queue starts new work.

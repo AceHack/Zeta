@@ -1,6 +1,6 @@
 # OpenSpec Catch-up: Phase 1 Audit & Sequencing
 
-This document contains the audit and sequencing for Phase 1 of the OpenSpec catch-up project (B-0171). The goal of this phase is to identify the most critical, unspecced capabilities in the Zeta codebase and prioritize them for spec authoring.
+This document contains the audit and sequencing for Phase 1 of the OpenSpec catch-up project (081KQNJ500008QG0R001N94412). The goal of this phase is to identify the most critical, unspecced capabilities in the Zeta codebase and prioritize them for spec authoring.
 
 > **Correction (2026-05-28):** the initial draft of this audit concluded that
 > `openspec/specs/` was "effectively empty." That conclusion was inaccurate —

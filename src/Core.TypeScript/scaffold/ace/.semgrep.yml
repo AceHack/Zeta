@@ -1,6 +1,6 @@
 # Semgrep rules for ace — runs via `semgrep --config .semgrep.yml`
 #
-# Day-one security rules applied at repo creation (B-0424 Stage 1).
+# Day-one security rules applied at repo creation (081KRFA460008QG0R001H98EXJ Stage 1).
 # Pattern: Zeta's proven rule-set generalised to ace on day one
 # per ADR 2026-04-22 §"Repo best practices — applied at creation":
 # "if Zeta does it, Forge and ace do it."

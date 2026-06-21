@@ -1,6 +1,5 @@
 ---
-id: B-0238
-zetaid: 081KQX9B50008QG0R002V5ATNP
+id: 081KQX9B50008QG0R002V5ATNP
 priority: P1
 status: open
 title: "Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy"
@@ -11,7 +10,7 @@ decomposition: atomic
 type: friction-reducer
 ---
 
-# B-0238 — Harness parity audit
+# 081KQX9B50008QG0R002V5ATNP — Harness parity audit
 
 Otto (Claude Code) has capabilities Riven (Cursor) doesn't:
 
@@ -55,6 +54,6 @@ BFT's weakest node, which improves the whole system.
 
 ## Composes with
 
-- B-0208 (launchd forward-tick reliability)
-- B-0209 (remote-only background agent test matrix)
+- 081KQX9B50008QG0R0027EN1ZP (launchd forward-tick reliability)
+- 081KQX9B50008QG0R001MNYK61 (remote-only background agent test matrix)
 - docs/SAFE-AUTONOMOUS-ACTIONS.md

@@ -2,10 +2,10 @@
 /**
  * tools/github-accelerator-measurement/measure.ts
  *
- * B-0904 Phase 2 — measurement of compression rate for GitHub-as-free-
+ * 081KSNY2Z0008QG0R001JQABB4 Phase 2 — measurement of compression rate for GitHub-as-free-
  * accelerator-of-bulk-energy-into-information-compression substrate.
  *
- * Per B-0904 substrate-engineering substrate-target:
+ * Per 081KSNY2Z0008QG0R001JQABB4 substrate-engineering substrate-target:
  *   - bulk-input-rate: PR-attempt rate × per-PR-bulk-space-size
  *   - boundary-output-rate: merged-commit rate
  *   - compression-ratio: boundary-output / bulk-input
@@ -267,7 +267,7 @@ export function formatResult(result: MeasurementResult): { stdout: string; exitC
       return {
         stdout: JSON.stringify(
           {
-            rowId: "B-0904",
+            rowId: "081KSNY2Z0008QG0R001JQABB4",
             phase: "Phase 2 — compression-rate measurement",
             window: result.window,
             metrics: result.metrics,

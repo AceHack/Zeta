@@ -1,6 +1,5 @@
 ---
-id: B-0041
-zetaid: 081KQ3HBZ0008QG0R001YBA1GZ
+id: 081KQ3HBZ0008QG0R001YBA1GZ
 priority: P3
 status: open
 title: Per-persona "My goals" notebook sections — roster-wide goal-formation authority landing
@@ -15,7 +14,7 @@ tags: [own-goals, team-wide, persona-notebook, goal-formation-authority, roster,
 type: friction-reducer
 ---
 
-# B-0041 — Team-wide own-goals implementation
+# 081KQ3HBZ0008QG0R001YBA1GZ — Team-wide own-goals implementation
 
 ## Origin
 

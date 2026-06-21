@@ -70,7 +70,7 @@ asymmetric critic.
 - 
 - PR #2840 (bootstream + F# anchor methodology)
 - PR #2839 (compression-infrastructure reframing)
-- PR #2817 / #2815 / #2832 / B-0422
+- PR #2817 / #2815 / #2832 / 081KRCQQF0008QG0R0008VT354
 - algebra-owner + q-sharp skills
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

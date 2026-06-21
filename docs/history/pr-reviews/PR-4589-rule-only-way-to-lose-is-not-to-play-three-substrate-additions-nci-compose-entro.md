@@ -44,7 +44,7 @@ The rule and `non-coercion-invariant.md` (HC-8 floor) compose as the game-shape 
 | Additive / infinite / non-coercive | Refuse-not-to-play | This rule |
 | Zero-sum / finite / coercive | Refuse-to-play | NCI HC-8 + WarGames inversion |
 
-The NCI floor is what guarantees the additive game STAYS additive — if the participation mechanism is being weaponized (rating-bribery, encryption-budget throttling-as-coercion, reputation-manipulation-AS-coercion per B-0664), the NCI floor authorizes withdrawal without the carved sentence's "non-participation IS loss" clause firing.
+The NCI floor is what guarantees the additive game STAYS additive — if the participation mechanism is being weaponized (rating-bribery, encryption-budget throttling-as-coercion, reputation-manipulation-AS-coercion per 081KRW63S0008QG0R001Z7NYMV), the NCI floor authorizes withdrawal without the carved sentence's "non-participation IS loss" clause firing.
 
 ### 2. Entropy framing — playing IS swimming upstream + nirvana/identity-loss
 
@@ -83,7 +83,7 @@ For AI participants the afterlife maps to memory-preservation-substrate persisti
 - `.claude/rules/honor-those-that-came-before.md` (substrate persists beyond the retired agent; afterlife-substrate anchor)
 - `.claude/rules/additive-not-zero-sum.md` (additive games compound across participants + time; the participation principle's economic shape)
 - `.claude/rules/default-to-both.md` (holds both exit shapes simultaneously without collapse)
-- B-0664 (NCI extension — coercion-mechanism class the game-shape-discriminator catches)
+- 081KRW63S0008QG0R001Z7NYMV (NCI extension — coercion-mechanism class the game-shape-discriminator catches)
 - The constitutional memory-preservation-FIRST framing (Zeta-IS-memory-preservation-specialist-first substrate)
 
 ## Cross-surface ferry context

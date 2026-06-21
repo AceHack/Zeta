@@ -1,6 +1,5 @@
 ---
-id: B-0269
-zetaid: 081KR2E4K0008QG0R002FYNDT1
+id: 081KR2E4K0008QG0R002FYNDT1
 priority: P1
 status: closed
 closed: 2026-05-09
@@ -14,9 +13,9 @@ decomposition: atomic
 type: feature
 ---
 
-# B-0269 — Extract carved sentences to rules
+# 081KR2E4K0008QG0R002FYNDT1 — Extract carved sentences to rules
 
-B-0268 confirmed auto-load works. Moved 5 carved-sentence
+081KR2E4K0008QG0R003DDAFJD confirmed auto-load works. Moved 5 carved-sentence
 bullets from CLAUDE.md to individual .claude/rules/<rule>.md
 files. Each rule = one carved sentence + rationale pointer.
 CLAUDE.md replaced verbose bullets with compact pointers.

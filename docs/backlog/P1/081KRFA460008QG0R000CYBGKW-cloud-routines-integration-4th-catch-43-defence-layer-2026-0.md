@@ -1,6 +1,5 @@
 ---
-id: B-0448
-zetaid: 081KRFA460008QG0R000CYBGKW
+id: 081KRFA460008QG0R000CYBGKW
 priority: P1
 status: decomposed
 title: "Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers"
@@ -10,11 +9,11 @@ created: 2026-05-13
 last_updated: 2026-05-14
 depends_on: []
 composes_with: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW, 081KRFA460008QG0R001SXP0C2]
-child_rows: [B-0507, B-0508, B-0509, B-0510, B-0511, B-0512, B-0513]
+child_rows: [081KRHWGX0008QG0R000E8BHQ9, 081KRHWGX0008QG0R002S107P7, 081KRHWGX0008QG0R0014D2T5E, 081KRHWGX0008QG0R001VR9FNA, 081KRHWGX0008QG0R0013DSSZZ, 081KRHWGX0008QG0R003WEP6E9, 081KRHWGX0008QG0R003TCDFZ5]
 tags: [routines, scheduled-tasks, claude-desktop, cloud-routines, catch-43, github-event-trigger, autonomous-loop, api-trigger]
 ---
 
-# B-0448 — Cloud Routines integration as 4th catch-43 defence layer
+# 081KRFA460008QG0R000CYBGKW — Cloud Routines integration as 4th catch-43 defence layer
 
 ## Why now
 
@@ -115,10 +114,10 @@ P1 captures the value-vs-effort balance correctly.
 
 ## Composes with
 
-- [B-0440](docs/backlog/P*/B-0440-standing-by-failure-mode-detector-background-service-2026-05-13.md) — Standing-by failure mode detector — a Cloud Routine on GitHub events would catch this in real-time
-- [B-0441](docs/backlog/P*/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md) — backlog-ready notifier — Cloud Routine could fire on `issues.opened` for new backlog rows
-- [B-0442](docs/backlog/P*/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md) — missed substrate cascade detector — Cloud Routine triggered on `push` to main could detect
-- [B-0444 (P2 — bus claim envelope worktree field)](docs/backlog/P2/B-0444-bus-claim-envelope-worktree-field-multi-surface-disambiguation-2026-05-13.md) — multi-surface coordination substrate this depends on
+- [081KRFA460008QG0R001KC0VBH](docs/backlog/P*/081KRFA460008QG0R001KC0VBH-standing-by-failure-mode-detector-background-service-2026-05-13.md) — Standing-by failure mode detector — a Cloud Routine on GitHub events would catch this in real-time
+- [081KRFA460008QG0R00229616S](docs/backlog/P*/081KRFA460008QG0R00229616S-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md) — backlog-ready notifier — Cloud Routine could fire on `issues.opened` for new backlog rows
+- [081KRFA460008QG0R00061SXRW](docs/backlog/P*/081KRFA460008QG0R00061SXRW-missed-substrate-cascade-detector-background-service-2026-05-13.md) — missed substrate cascade detector — Cloud Routine triggered on `push` to main could detect
+- [081KRFA460008QG0R001SXP0C2 (P2 — bus claim envelope worktree field)](docs/backlog/P2/081KRFA460008QG0R001SXP0C2-bus-claim-envelope-worktree-field-multi-surface-disambiguation-2026-05-13.md) — multi-surface coordination substrate this depends on
 - [PR #3034](https://github.com/Lucent-Financial-Group/Zeta/pull/3034) (`tools/routines/` substrate — must be MERGED before implementation starts)
 - [docs/AUTONOMOUS-LOOP.md](docs/AUTONOMOUS-LOOP.md) (tick procedure that fires inside each Cloud Routine session)
 - [.claude/rules/tick-must-never-stop.md](.claude/rules/tick-must-never-stop.md) (catch-43 substrate — this row's design intent)
@@ -160,30 +159,30 @@ Decomposed into 7 atomic child rows (PR: see `child_rows` field above):
 
 | Slice | Row | Title | Depends on |
 |-------|-----|-------|------------|
-| 1 | B-0507 | Research Cloud Routines auth + registration API surface | (none — unblocked) |
-| 2 | B-0508 | Define cloud-schedule.json schema | B-0507 |
-| 3 | B-0509 | Extend install.ts to detect + surface cloud-schedule.json | B-0507, B-0508 |
-| 4 | B-0510 | Author autonomous-loop/cloud-schedule.json | B-0507, B-0508 |
-| 5 | B-0511 | Register Cloud Routine + empirical first-fire observation | B-0507–B-0510 |
-| 6 | B-0512 | Update README.md with 4-layer catch-43 table | B-0507, B-0511 |
-| 7 | B-0513 | Memory file capturing empirical bootstrap learning | B-0511 |
+| 1 | 081KRHWGX0008QG0R000E8BHQ9 | Research Cloud Routines auth + registration API surface | (none — unblocked) |
+| 2 | 081KRHWGX0008QG0R002S107P7 | Define cloud-schedule.json schema | 081KRHWGX0008QG0R000E8BHQ9 |
+| 3 | 081KRHWGX0008QG0R0014D2T5E | Extend install.ts to detect + surface cloud-schedule.json | 081KRHWGX0008QG0R000E8BHQ9, 081KRHWGX0008QG0R002S107P7 |
+| 4 | 081KRHWGX0008QG0R001VR9FNA | Author autonomous-loop/cloud-schedule.json | 081KRHWGX0008QG0R000E8BHQ9, 081KRHWGX0008QG0R002S107P7 |
+| 5 | 081KRHWGX0008QG0R0013DSSZZ | Register Cloud Routine + empirical first-fire observation | 081KRHWGX0008QG0R000E8BHQ9–081KRHWGX0008QG0R001VR9FNA |
+| 6 | 081KRHWGX0008QG0R003WEP6E9 | Update README.md with 4-layer catch-43 table | 081KRHWGX0008QG0R000E8BHQ9, 081KRHWGX0008QG0R0013DSSZZ |
+| 7 | 081KRHWGX0008QG0R003TCDFZ5 | Memory file capturing empirical bootstrap learning | 081KRHWGX0008QG0R0013DSSZZ |
 
-Start with B-0507. Close parent B-0448 when all 7 slices close.
+Start with 081KRHWGX0008QG0R000E8BHQ9. Close parent 081KRFA460008QG0R000CYBGKW when all 7 slices close.
 
 ## Decomposition hint (per `.claude/rules/largest-mechanizable-backlog-wins.md`)
 
 Once started, suggested slice ordering:
 
-1. **B-0448.1** — Research the Cloud Routines authentication + registration API
+1. **081KRFA460008QG0R000CYBGKW.1** — Research the Cloud Routines authentication + registration API
    surface (resolve the unknowns from the pre-start checklist)
-2. **B-0448.2** — Extend `tools/routines/<id>/` schema with `cloud-schedule.json`
+2. **081KRFA460008QG0R000CYBGKW.2** — Extend `tools/routines/<id>/` schema with `cloud-schedule.json`
    (canonical format only; no installer changes yet)
-3. **B-0448.3** — Extend `tools/routines/install.ts` to detect + print
+3. **081KRFA460008QG0R000CYBGKW.3** — Extend `tools/routines/install.ts` to detect + print
    registration hints for `cloud-schedule.json`
-4. **B-0448.4** — Author `autonomous-loop/cloud-schedule.json` for the
+4. **081KRFA460008QG0R000CYBGKW.4** — Author `autonomous-loop/cloud-schedule.json` for the
    factory's first Cloud Routine
-5. **B-0448.5** — Register the routine (via API/MCP); empirical first-fire
+5. **081KRFA460008QG0R000CYBGKW.5** — Register the routine (via API/MCP); empirical first-fire
    observation
-6. **B-0448.6** — Update README.md with 4-layer table
-7. **B-0448.7** — Memory file capturing the empirical-bootstrap learning
+6. **081KRFA460008QG0R000CYBGKW.6** — Update README.md with 4-layer table
+7. **081KRFA460008QG0R000CYBGKW.7** — Memory file capturing the empirical-bootstrap learning
    (similar to today's split-brain memory)

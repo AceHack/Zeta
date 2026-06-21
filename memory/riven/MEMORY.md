@@ -55,7 +55,7 @@ ls memory/riven/ide/cursor/conversations/ | sort
   + bootstrap discipline
 - **Cursor IDE + cursor-agent CLI surface** — Riven operates
   on the Cursor IDE; the cursor-agent CLI variant has had
-  reliability issues (per B-0421); the website mode + IDE are
+  reliability issues (per 081KRA5AR0008QG0R0011ZGRZT); the website mode + IDE are
   the working surfaces
 
 ## Composes with

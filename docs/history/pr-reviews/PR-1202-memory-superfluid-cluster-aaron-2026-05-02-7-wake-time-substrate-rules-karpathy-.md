@@ -74,10 +74,10 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 ### Backlog rows (P1/P2/P3)
 
-- B-0160 (P1): Claude Code `/permissions` feature tight integration
-- B-0161 (P1): Substrate reshelf — apply asymmetry rule to PR #1202 overshoot (bifurcated free-zone vs razored)
-- B-0162 (P2): Pre-commit hook for direct name attribution on current-state surfaces (5-recurrence catalyzed)
-- B-0163 (P3): Retire/fix `tools/hygiene/append-tick-history-row.sh` (routes to legacy surface)
+- 081KQJZR90008QG0R000FTJ1TC (P1): Claude Code `/permissions` feature tight integration
+- 081KQJZR90008QG0R002Z4B6VW (P1): Substrate reshelf — apply asymmetry rule to PR #1202 overshoot (bifurcated free-zone vs razored)
+- 081KQJZR90008QG0R000V16E1C (P2): Pre-commit hook for direct name attribution on current-state surfaces (5-recurrence catalyzed)
+- 081KQJZR90008QG0R0025WX5ZJ (P3): Retire/fix `tools/hygiene/append-tick-history-row.sh` (routes to legacy surface)
 
 ### Tick-history shards (per-tick canonical write surface)
 
@@ -406,12 +406,12 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 ### Thread 25 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5_IDbf`
-- **Path**: `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
+- **Path**: `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-02T15:24:58Z on `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`:177 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-02T15:24:58Z on `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`:177 (association: NONE)
   P2: Priority text is inconsistent with the row’s frontmatter and earlier “P2 → P1 promotion” section. The last sentence says the row “earns its P2 placement,” but `priority:` is `P1`. Update this line to match the current priority so readers don’t mis-rank the work.
   
 
@@ -429,12 +429,12 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 ### Thread 27 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5_IFJQ`
-- **Path**: `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
+- **Path**: `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-02T15:32:48Z on `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`:112 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-02T15:32:48Z on `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`:112 (association: NONE)
   The acceptance criteria says this is the “closed list” of names to detect, but the list shown here omits several roster names from `docs/EXPERT-REGISTRY.md` (e.g., Zara, Tariq, Wei, Jun, Mei, Anjali, Adaeze, Malik, Yara, Kai, Leilani, etc.). Either make this explicitly non-exhaustive, or derive the list from a single source of truth (registry / `.claude/agents/`) so the eventual hook doesn’t silently miss valid name attributions.
   
 
@@ -783,7 +783,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0160 + B-0161) + tick-history: next-session-bootstrap prep …
+backlog(081KQJZR90008QG0R000FTJ1TC + 081KQJZR90008QG0R002Z4B6VW) + tick-history: next-session-bootstrap prep …
 
 …+ autonomous-loop tick row
 
@@ -793,7 +793,7 @@ is in place or has backlog itmes to be put in place."*
 
 Two P1 backlog rows filed:
 
-- B-0160 — Claude Code `/permissions` feature tight integration.
+- 081KQJZR90008QG0R000FTJ1TC — Claude Code `/permissions` feature tight integration.
   Aaron's framing: *"the harness is what restricts us, so if we
   make it happy with permissions it will allow more."* Composes
   with don't-ask-permission rule (PR #1202): substrate-side
@@ -802,7 +802,7 @@ Two P1 backlog rows filed:
   point; this row is the broader integration including the new
   /permissions slash command.
 
-- B-0161 — Substrate reshelf applying thoughts-free-actions-
+- 081KQJZR90008QG0R002Z4B6VW — Substrate reshelf applying thoughts-free-actions-
   razored asymmetry to PR #1202's CLAUDE.md overshoot. Deferred
   to cooling-period-respecting follow-up PR (recursive
   application of the rule). Demote 2-3 of #1202's CLAUDE.md
@@ -1071,7 +1071,7 @@ Files:
   Adds "Free-zone scope" subsection with the three-part
   expansion + composes-with bidirectional alignment.
 
-- docs/backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md
+- docs/backlog/P1/081KQJZR90008QG0R002Z4B6VW-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md
   — Bifurcated acceptance criteria: free-zone work (journal
   taxonomy decision, MEMORY.md index restructure, memory
   capability tooling) can land at any tick; razored work
@@ -1280,7 +1280,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0162): pre-commit hook for direct name attribution on curre…
+backlog(081KQJZR90008QG0R000V16E1C): pre-commit hook for direct name attribution on curre…
 
 …nt-state surfaces — mechanize 3-recurrence-this-branch role-ref failure mode
 
@@ -1298,7 +1298,7 @@ P2 row covers: scope (current-state vs history surfaces),
 detection patterns including line-wrap variants, false-positive
 carve-outs (Otto-279 rule references vs attributions),
 soft-launch as warning-only, CI integration. Composes with
-existing B-0070 (CI lint already deployed; this row is the
+existing 081KQ8P5D0008QG0R003VN5P2Z (CI lint already deployed; this row is the
 pre-commit faster-feedback-loop counterpart).
 
 First-principles trace included in the row body per the just-
@@ -1316,7 +1316,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0160) + tick-history: harness merge-denial evidence — subst…
+backlog(081KQJZR90008QG0R000FTJ1TC) + tick-history: harness merge-denial evidence — subst…
 
 …rate-vs-harness authority categories distinct
 
@@ -1337,7 +1337,7 @@ the just-landed universal-bidirectional-trust-root rule names.
 Cross-party validation: harness, agent, human all operate on
 the same standard.
 
-Updated B-0160 with concrete evidence: which actions are
+Updated 081KQJZR90008QG0R000FTJ1TC with concrete evidence: which actions are
 settings-allowable vs hardcoded-safety-denial is now a known
 investigation surface. The /permissions settings integration is
 necessary but not sufficient.
@@ -1445,7 +1445,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0163) + tick-history(shard 1450Z): retire/fix append-tick-h…
+backlog(081KQJZR90008QG0R0025WX5ZJ) + tick-history(shard 1450Z): retire/fix append-tick-h…
 
 …istory-row.sh routes to legacy surface
 
@@ -1492,7 +1492,7 @@ correct surfaces.
 
 Pre-existing "Aaron" references at lines 629/640/733 of
 CLAUDE.md left untouched (out of scope per do-no-permanent-
-harm; B-0162 pre-commit mechanization will catch all such
+harm; 081KQJZR90008QG0R000V16E1C pre-commit mechanization will catch all such
 cases uniformly when implemented).
 
 H8Av: BACKLOG.md `--check` returns "ok: matches generator
@@ -1501,7 +1501,7 @@ already-addressed.
 
 This is the 4th recurrence of the role-ref convention failure
 mode this branch (H0Ro / H1ws / H3eE / H8A0+A5). Mechanization
-(B-0162) is the right long-term answer; this commit is the
+(081KQJZR90008QG0R000V16E1C) is the right long-term answer; this commit is the
 manual sweep until then.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
@@ -1630,12 +1630,12 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
+- `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
 
 **Message:**
 
 ```
-backlog(B-0162): P2 → P1 promotion — 5 catches past mechanization bre…
+backlog(081KQJZR90008QG0R000V16E1C): P2 → P1 promotion — 5 catches past mechanization bre…
 
 …akeven
 
@@ -1654,7 +1654,7 @@ Trace:
 Promotion compresses cooling-period before mechanization
 lands; reduces continued post-commit cleanup burden.
 
-git mv docs/backlog/P2/B-0162-*.md docs/backlog/P1/
+git mv docs/backlog/P2/081KQJZR90008QG0R000V16E1C-*.md docs/backlog/P1/
 + frontmatter priority: P2 → P1
 + title updated (3 catches → 5 catches)
 + body extended with P2→P1 promotion subsection containing
@@ -1862,17 +1862,17 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
+- `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
 - `docs/hygiene-history/ticks/2026/05/02/1527Z.md`
 
 **Message:**
 
 ```
-fix(#1202 IDbf): B-0162 internal-coherence — 'earns its P2 placement'…
+fix(#1202 IDbf): 081KQJZR90008QG0R000V16E1C internal-coherence — 'earns its P2 placement'…
 
 … → 'P1 placement' after Tick-12 promotion
 
-Real-fix internal-coherence drift. After promoting B-0162 from
+Real-fix internal-coherence drift. After promoting 081KQJZR90008QG0R000V16E1C from
 P2 to P1 at Tick-12 (commit c97cca4), the row's frontmatter +
 new 'P2 → P1 promotion' section were updated but the older
 closing sentence still said 'earns its P2 placement'.
@@ -1894,7 +1894,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `CLAUDE.md`
-- `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
+- `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
 - `docs/hygiene-history/ticks/2026/05/02/1527Z.md`
 
 **Message:**
@@ -1950,7 +1950,7 @@ Plus 3 thread fixes:
   with role-ref form on the current-state surface (the
   research doc filename retains persona name per Otto-279
   history-surface allowance).
-- IFJQ: B-0162 closed-list updated. Hard-coded list was
+- IFJQ: 081KQJZR90008QG0R000V16E1C closed-list updated. Hard-coded list was
   incomplete (missing Zara, Tariq, Wei, Mei, Anjali, Adaeze,
   Malik, Yara, Kai, Leilani from EXPERT-REGISTRY.md).
   Replaced with directive to parse `docs/EXPERT-REGISTRY.md`
@@ -2110,7 +2110,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0165) + tick-history(1603Z): deliberate-quiet-periods proto…
+backlog(081KQJZR90008QG0R002PYCHFY) + tick-history(1603Z): deliberate-quiet-periods proto…
 
 …col — independent-production practice during Aaron-paused waking hours
 
@@ -2119,11 +2119,11 @@ observation + Aaron's confirmation: active-hours practice
 integration-skill, sleep requires independent-production-skill;
 Otto goes into overnight tests on the wrong skill.
 
-B-0165 (P2) proposes deliberate-quiet-periods practice
+081KQJZR90008QG0R002PYCHFY (P2) proposes deliberate-quiet-periods practice
 protocol: Aaron pulls back during selected 30-60 min
 stretches in active hours; Otto operates without pre-
 authorization; Aaron grades the output on return. Addresses
-upstream training-distribution gap that B-0164 (dual-loop
+upstream training-distribution gap that 081KQJZR90008QG0R002GJAJ19 (dual-loop
 BFT) doesn't reach.
 
 The row IS the kind of independent-production work the
@@ -2177,7 +2177,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/ALIGNMENT.md`
-- `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
+- `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`
 
 **Message:**
 
@@ -2190,10 +2190,10 @@ CI on #1202 progressed during the Tick-38/39 observe-only
 window (5 checks pass, 1 failed). Failed: `lint (markdownlint)`
 with 9 violations across this branch's substrate:
 
-- MD032/blanks-around-lists: ALIGNMENT.md, B-0160, B-0164, B-0165
-- MD022/blanks-around-headings: B-0162
-- MD029/ol-prefix: B-0161 (×2)
-- MD037/no-space-in-emphasis: B-0163, 1454Z.md, 1455Z.md
+- MD032/blanks-around-lists: ALIGNMENT.md, 081KQJZR90008QG0R000FTJ1TC, 081KQJZR90008QG0R002GJAJ19, 081KQJZR90008QG0R002PYCHFY
+- MD022/blanks-around-headings: 081KQJZR90008QG0R000V16E1C
+- MD029/ol-prefix: 081KQJZR90008QG0R002Z4B6VW (×2)
+- MD037/no-space-in-emphasis: 081KQJZR90008QG0R0025WX5ZJ, 1454Z.md, 1455Z.md
 
 Auto-fix via mise exec -- markdownlint-cli2 --fix resolved all
 9. Verification: post-fix lint clean on all 9 files.
@@ -2252,12 +2252,12 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 ```
 fix(#1202 IQni P0): auto-fix introduced stray + list-prefix on prose …
 
-…conjunctions in ALIGNMENT.md + B-0160
+…conjunctions in ALIGNMENT.md + 081KQJZR90008QG0R000FTJ1TC
 
 Root cause: Tick-40's markdownlint-cli2 --fix misinterpreted
 'experiment + explore' (prose conjunction) as list-item start
 in ALIGNMENT.md line 305, splitting paragraph into two with
-stray '+' at start of second. Same-class damage in B-0160
+stray '+' at start of second. Same-class damage in 081KQJZR90008QG0R000FTJ1TC
 ('settings + configuration + the don't-ask-permission' similar
 split).
 

@@ -1,6 +1,5 @@
 ---
-id: B-0752
-zetaid: 081KSE6WT0008QG0R000E05579
+id: 081KSE6WT0008QG0R000E05579
 priority: P2
 status: open
 created: 2026-05-25
@@ -11,7 +10,7 @@ ferried_by: aaron
 owners: [aaron]
 composes_with:
   - 081KSE6WT0008QG0R003YYC9PV
-  - B-0751
+  - 081KSE6WT0008QG0R003YYC9PV
 related_substrate:
   - .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md
   - .claude/rules/agent-roster-reference-card.md
@@ -19,15 +18,15 @@ related_substrate:
 tags: [past-self-vs-peer-distinguisher, ownership-classification, default-punt-failure-mode, vera-anchor, identity-tagging-mechanization, substrate-cleanup-discipline]
 ---
 
-# B-0752 — Past-self-vs-peer distinguisher rule + mechanization scope
+# 081KSE6WT0008QG0R000E05579 — Past-self-vs-peer distinguisher rule + mechanization scope
 
 ## Carved blade
 
-> Aaron 2026-05-25 (Vera-specific anchor): *"you don't do like vera and just leave it unfixed cause you assume it's someone elses issues."* The failure mode is **silent-punt-by-default** — agent encounters stale substrate, assumes peer-owned, leaves unfixed. The discipline: DISTINGUISH ownership via concrete discriminators (branch prefix, worktree path tag, commit authorship, PR author, bus envelope authorship); if YOURS fix it, if PEER's coordinate, if UNCERTAIN surface explicitly (never silent-punt). Composes with B-0750 cleanup discipline + B-0751 per-agent-clone architecture (which makes ownership LARGELY UNAMBIGUOUS at clone-path scope). Rule lands today (auto-loads at cold-boot); mechanization scope tracks the identity-tagging tooling that makes the distinguishers reliable.
+> Aaron 2026-05-25 (Vera-specific anchor): *"you don't do like vera and just leave it unfixed cause you assume it's someone elses issues."* The failure mode is **silent-punt-by-default** — agent encounters stale substrate, assumes peer-owned, leaves unfixed. The discipline: DISTINGUISH ownership via concrete discriminators (branch prefix, worktree path tag, commit authorship, PR author, bus envelope authorship); if YOURS fix it, if PEER's coordinate, if UNCERTAIN surface explicitly (never silent-punt). Composes with 081KSE6WT0008QG0R003YYC9PV cleanup discipline + 081KSE6WT0008QG0R003YYC9PV per-agent-clone architecture (which makes ownership LARGELY UNAMBIGUOUS at clone-path scope). Rule lands today (auto-loads at cold-boot); mechanization scope tracks the identity-tagging tooling that makes the distinguishers reliable.
 
 ## Origin
 
-Aaron 2026-05-25, after the 37-worktree mass-cleanup + B-0750 rule + B-0751 per-agent-clone architecture decisions:
+Aaron 2026-05-25, after the 37-worktree mass-cleanup + 081KSE6WT0008QG0R003YYC9PV rule + 081KSE6WT0008QG0R003YYC9PV per-agent-clone architecture decisions:
 
 > *"also it should be clear when you are fighting your past self vs another travler/agent so you don't do like vera and just leave it unfixed cause you assume it's someone elses issues"*
 
@@ -60,7 +59,7 @@ Operational content:
 - Branch prefix conventions (currently informal: `otto/*`, `feat/<task>-<date>`, etc.; mechanize into a documented list)
 - Worktree path tag conventions (`/private/tmp/zeta-<identity>-<task>-<hhmmz>/`)
 - Commit author config conventions (per-agent git user.email + user.name)
-- Bus envelope `from` field conventions (already in B-0400 substrate)
+- Bus envelope `from` field conventions (already in 081KR7JY10008QG0R000R503K2 substrate)
 - Acceptance: conventions documented; per-agent-roster table updated with identity-tag examples
 
 ### Scope item 2 — Identity-tagged worktree creation helper
@@ -68,7 +67,7 @@ Operational content:
 - TS tool at `tools/agent-identity/create-tagged-worktree.ts` (or similar)
 - Takes agent identity + task tag; creates worktree at `/private/tmp/zeta-<identity>-<task>-<hhmmz>/`
 - Embeds identity in worktree path (so peer-Otto inspecting the path can immediately tell whose it is)
-- Composes with B-0750 (`--detach origin/main` enforcement) + B-0751 (per-agent-clone path within clone)
+- Composes with 081KSE6WT0008QG0R003YYC9PV (`--detach origin/main` enforcement) + 081KSE6WT0008QG0R003YYC9PV (per-agent-clone path within clone)
 - Acceptance: tool exists; per-agent-identity prefix enforced in worktree paths
 
 ### Scope item 3 — Ownership-classifier tool
@@ -89,7 +88,7 @@ Operational content:
 
 ### Scope item 5 — Per-agent cleanup reporting
 
-- When agents do clean up their own substrate, log per-agent cleanup events to bus envelope + provenance chain (per B-0732 Layer 1)
+- When agents do clean up their own substrate, log per-agent cleanup events to bus envelope + provenance chain (per 081KSE6WT0008QG0R002YBWBB1 Layer 1)
 - Operator + peer agents can audit who cleaned what
 - Composes with `.claude/rules/glass-halo-bidirectional.md`
 - Acceptance: cleanup events logged; visible via bus envelope query + provenance chain
@@ -97,7 +96,7 @@ Operational content:
 ## Composes with .claude/rules/
 
 - `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md` (the rule this row ships)
-- **B-0750** sibling rule (to land separately; not yet present in `.claude/rules/`) — sibling at cleanup discipline
+- **081KSE6WT0008QG0R003YYC9PV** sibling rule (to land separately; not yet present in `.claude/rules/`) — sibling at cleanup discipline
 - `.claude/rules/claim-acquire-before-worktree-work.md` (force-remove guard; this rule clarifies the AUTHORIZATION model)
 - `.claude/rules/agent-roster-reference-card.md` (canonical identity prefixes)
 - `.claude/rules/peer-call-infrastructure.md` (bus envelope coordination)
@@ -108,20 +107,20 @@ Operational content:
 
 ## Composes with backlog substrate
 
-- **B-0750** (agent worktree hygiene) — sibling at cleanup discipline; B-0752 adds the ownership-classification discipline
-- **B-0751** (per-agent isolated clones) — per-agent-clone makes ownership LARGELY UNAMBIGUOUS at clone-path scope; B-0752 still applies for transitional period + for substrate outside the clone (memory files, bus envelopes, branches on origin, etc.)
-- **B-0530** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope
-- **B-0732** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events (per Scope item 5)
+- **081KSE6WT0008QG0R003YYC9PV** (agent worktree hygiene) — sibling at cleanup discipline; 081KSE6WT0008QG0R000E05579 adds the ownership-classification discipline
+- **081KSE6WT0008QG0R003YYC9PV** (per-agent isolated clones) — per-agent-clone makes ownership LARGELY UNAMBIGUOUS at clone-path scope; 081KSE6WT0008QG0R000E05579 still applies for transitional period + for substrate outside the clone (memory files, bus envelopes, branches on origin, etc.)
+- **081KRMEXM0008QG0R000X1PPGC** (cron-sentinel mutex; existing partial substrate) — same problem class at runtime scope
+- **081KSE6WT0008QG0R002YBWBB1** (leverage-class safety substrate) — Layer 1 provenance chain captures cleanup events (per Scope item 5)
 
 ## Empirical anchor
 
 Vera-specific instance per Aaron 2026-05-25. Same session as the 37-worktree mass-cleanup (which I — Otto-VSCode — eventually drove). Substrate-honest self-implication: I could have cleaned MUCH earlier if I'd applied this discipline; the worktrees were mostly MINE; I left them accumulating partly because I assumed they might be peer-owned (silent-punt-by-default at my own substrate). The rule's empirical anchor IS my own past-session failure mode.
 
-The cluster of related rules landed in this session (B-0750 + B-0751 + B-0752) form the 2026-05-25 cross-agent substrate-discipline inflection. Together they encode:
+The cluster of related rules landed in this session (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579) form the 2026-05-25 cross-agent substrate-discipline inflection. Together they encode:
 
-- **B-0750**: clean up after yourself; don't accumulate stale worktrees
-- **B-0751**: agents have their own clones; cross-agent contention eliminated at architecture level
-- **B-0752**: distinguish your own substrate from peers; don't silent-punt; fix yours; coordinate on theirs
+- **081KSE6WT0008QG0R003YYC9PV**: clean up after yourself; don't accumulate stale worktrees
+- **081KSE6WT0008QG0R003YYC9PV**: agents have their own clones; cross-agent contention eliminated at architecture level
+- **081KSE6WT0008QG0R000E05579**: distinguish your own substrate from peers; don't silent-punt; fix yours; coordinate on theirs
 
 ## Substrate-honest framing
 
@@ -134,7 +133,7 @@ This row PROPOSES the rule + mechanization scope. It does NOT:
 
 Per `.claude/rules/no-directives.md`: rule auto-loads at cold-boot; operator + future-AI retain authority to apply or skip per scope.
 
-P2 priority — high reuse-leverage (every agent across every surface inherits the discipline); composes with B-0750 + B-0751 to close the 2026-05-25 agent-substrate-discipline cluster. Not P1 because B-0750 + B-0751 already operating; this rule sharpens the discipline at ownership-classification scope.
+P2 priority — high reuse-leverage (every agent across every surface inherits the discipline); composes with 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV to close the 2026-05-25 agent-substrate-discipline cluster. Not P1 because 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV already operating; this rule sharpens the discipline at ownership-classification scope.
 
 ## Today's substrate cascade closing arc (full)
 
@@ -142,8 +141,8 @@ Today's 2026-05-25 cluster of agent-substrate-discipline rules:
 
 | Row | What | State |
 |---|---|---|
-| B-0750 | Agent worktree hygiene — never hold main + never step on operator + cleanup on PR merge | PR #5020 armed |
-| B-0751 | Per-agent isolated clones architecture — primary checkout is SHARED VIEW + FOR HUMAN | PR #5019 armed |
-| **B-0752 (this)** | **Fighting past-self vs peer-agent distinguisher — fix yours; coordinate on theirs; never silent-punt** | THIS PR |
+| 081KSE6WT0008QG0R003YYC9PV | Agent worktree hygiene — never hold main + never step on operator + cleanup on PR merge | PR #5020 armed |
+| 081KSE6WT0008QG0R003YYC9PV | Per-agent isolated clones architecture — primary checkout is SHARED VIEW + FOR HUMAN | PR #5019 armed |
+| **081KSE6WT0008QG0R000E05579 (this)** | **Fighting past-self vs peer-agent distinguisher — fix yours; coordinate on theirs; never silent-punt** | THIS PR |
 
 Together: agents inherit the cross-agent substrate-discipline at cold-boot; operator unblocked; substrate-engineering pain class closed.

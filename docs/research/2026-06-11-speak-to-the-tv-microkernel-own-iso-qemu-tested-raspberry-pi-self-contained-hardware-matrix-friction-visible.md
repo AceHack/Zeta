@@ -21,8 +21,8 @@ Aaron 2026-06-11 (the hardware vision, faithful capture):
    hardware: same image, same inputs, same bytes out — in QEMU, then on metal).
 3. **Our own microkernel + boot-from-ISO** — Zeta boots *itself*: a microkernel backend (the soft
    scheduler IS a cooperative kernel loop already — DoP=1, handlers as ISRs, crossings as interrupts;
-   the microkernel is that, on metal) and our own ISO (lineage exists: B-0830 ISO release workflow,
-   B-0823 nixpkgs ISO/kernel/initrd layout, `full-ai-cluster/`). Test the boot in QEMU; run production
+   the microkernel is that, on metal) and our own ISO (lineage exists: 081KSGS9H0008QG0R00126RHQR ISO release workflow,
+   081KSGS9H0008QG0R003SWZF9J nixpkgs ISO/kernel/initrd layout, `full-ai-cluster/`). Test the boot in QEMU; run production
    on QEMU *and* the microkernel backend — same code path, different DoP of reality.
 4. **Raspberry Pi self-contained** — the first metal target (Aaron has the equipment). Self-contained =
    the whole society in one box: rooms, Reticulum intercom, the TV, the DORA broadcast. **Microcontroller
@@ -50,7 +50,7 @@ need help, we SEE friction and heat** —
 - **Microkernel**: Liedtke, L4 (SOSP 1995) — minimality principle; seL4 (Klein et al. 2009) — the
   *proved* microkernel (our DST/proof discipline's natural ally); MINIX 3 (Tanenbaum).
 - **QEMU**: Bellard (USENIX 2005) — dynamic translation; the standard bring-up substrate.
-- **Boot/ISO**: El Torito; our B-0830/B-0823 lineage (nixpkgs ISO/kernel/initrd).
+- **Boot/ISO**: El Torito; our 081KSGS9H0008QG0R00126RHQR/081KSGS9H0008QG0R003SWZF9J lineage (nixpkgs ISO/kernel/initrd).
 - **Pi/microcontroller**: RNode (Qvist) — Reticulum on microcontroller-class hardware is PROVEN;
   CircuitPython/TinyGo as the class's ergonomics prior art.
 - **Conversational interface**: the CYOA grounding doc (observe.ts) — speech is the same choose-your-
@@ -58,8 +58,8 @@ need help, we SEE friction and heat** —
 
 ## Pointers
 
-- B-1024 (filed with this doc) — the actionable arc.
-- B-0830 · B-0823 · B-0853 (sigstore-signed ISO) · B-0725 (accelerator hardware) · B-0757 (mdns
+- 081KTSZN10008QG0R00349SM6P (filed with this doc) — the actionable arc.
+- 081KSGS9H0008QG0R00126RHQR · 081KSGS9H0008QG0R003SWZF9J · 081KSKBP80008QG0R000Y2B7HC (sigstore-signed ISO) · 081KSE6WT0008QG0R002T0BFN4 (accelerator hardware) · 081KSE6WT0008QG0R000CV98PV (mdns
   auto-discovery) · `full-ai-cluster/` — the existing lineage this vision composes.
 - `universal/color.md` (honest capability) · Moonshot #1 (the broadcast) · `src/Core/SoftThrottle.fs`
   (heat) · `src/Core/SoftScheduler.fs` (the cooperative loop that becomes the microkernel's shape).

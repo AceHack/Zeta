@@ -31,17 +31,17 @@
 
 ## The decision (four composed properties)
 1. **observe→act loop** (`observe.ts` over the existing `tools/agent-loop/` move-next state machine): read git state → build a 16-slot menu → LLM picks an index **0..15** (not free text) → script executes → append event → repeat.
-2. **16-direction universal action grammar** — Xbox-controller layout; **directions fixed** (muscle memory), **labels + availability per state**. Proposed v0 (4×4): **Navigate** (d-pad) / **Commit** (A/B/X/Y) / **Scope** (LB/RB/LT/RT) / **Meta** (Start/View/L3/R3 = refresh/status/free-time/escalate). Per-slot availability is **tri-boolean** (composes B-0944): `Available(T)/Disabled(F)/Held(N)`; the LLM may only pick a `T` slot.
-3. **Local-USB, no-cloud LLM** — selector runs on a local model; the 16-way **constrained decode** makes a small local model viable; zero cloud. Composes `full-ai-cluster/nixos/` + B-0865 USB-boot + the Ace local-models direction.
-4. **Git-as-append-only-state** — no DB; 128-bit ids; replayable/DST (B-0867/B-0858).
+2. **16-direction universal action grammar** — Xbox-controller layout; **directions fixed** (muscle memory), **labels + availability per state**. Proposed v0 (4×4): **Navigate** (d-pad) / **Commit** (A/B/X/Y) / **Scope** (LB/RB/LT/RT) / **Meta** (Start/View/L3/R3 = refresh/status/free-time/escalate). Per-slot availability is **tri-boolean** (composes 081KSV2WD0008QG0R00051XS0N): `Available(T)/Disabled(F)/Held(N)`; the LLM may only pick a `T` slot.
+3. **Local-USB, no-cloud LLM** — selector runs on a local model; the 16-way **constrained decode** makes a small local model viable; zero cloud. Composes `full-ai-cluster/nixos/` + 081KSKBP80008QG0R003NM9XEC USB-boot + the Ace local-models direction.
+4. **Git-as-append-only-state** — no DB; 128-bit ids; replayable/DST (081KSKBP80008QG0R000B3Y19A/081KSKBP80008QG0R001KK9WV6).
 
 The LLM is a **pure selector (1-of-16), not an actor** — the deterministic script decides what each slot *does*, so output is bounded, auditable, safe, and small-local-model-friendly.
 
 ## Why it matters
 - Supersedes/**wraps the hardcoded autonomous-tick incrementally** (its steps map onto slots: refresh→12, select-work→1, commit→4, status→13). Migration keeps the old loop until the new one is trusted.
-- Ties tonight's whole arc together: the **Tri cell IS the per-slot availability**; observe→act **IS** OPLE Observe+Emit (B-0862); the distributed git-event-store is the "no central Rehoboam" substrate.
+- Ties tonight's whole arc together: the **Tri cell IS the per-slot availability**; observe→act **IS** OPLE Observe+Emit (081KSKBP80008QG0R0031DTHS9); the distributed git-event-store is the "no central Rehoboam" substrate.
 
-Includes **6 OPEN questions** (for you + Max) and a **codeable first slice** (Menu16 type reusing the B-0944 `Tri` → move-next emits Menu16 → `observe.ts` → stub selector → act/append → wire behind a flag).
+Includes **6 OPEN questions** (for you + Max) and a **codeable first slice** (Menu16 type reusing the 081KSV2WD0008QG0R00051XS0N `Tri` → move-next emits Menu16 → `observe.ts` → stub selector → act/append → wire behind a flag).
 
 Lands in `docs/DECISIONS/`. Authored for review before lock.
 

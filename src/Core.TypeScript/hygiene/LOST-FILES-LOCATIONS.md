@@ -131,7 +131,7 @@ Completed tool/Bash/Agent invocations that linger in process state without expli
 
 - **Survey command**: no runtime command-line equivalent for grepping outside the harness. Inside the Claude Code harness, `BashOutput` / `KillShell` tools manage live background-shell IDs; the harness surface is the only enumeration path. (Documented for reference; future tooling could expose a TS/Bun listing if the harness API permits.)
 - **Triage**: kill stale completed shells via harness-level tools (`KillShell` against the shell ID returned at dispatch) when count exceeds a threshold. Cleanup-cadence is owed work — Vera per-tick compression candidate (sweep completed background shells at end of each tick rather than waiting for forced-cleanup-by-crash).
-- **Composes with**: B-0207 (Bun v1.3.14 segfault row, the empirical correlation that motivated this class), `tools/hygiene/audit-trajectories.ts` cadence-aging tracking (similar accumulation-without-cleanup shape at a different surface), the broader resource-pressure failure mode (forced-cleanup-by-crash is the worst recovery path).
+- **Composes with**: 081KQTPYE0008QG0R0034NKE4H (Bun v1.3.14 segfault row, the empirical correlation that motivated this class), `tools/hygiene/audit-trajectories.ts` cadence-aging tracking (similar accumulation-without-cleanup shape at a different surface), the broader resource-pressure failure mode (forced-cleanup-by-crash is the worst recovery path).
 
 ## Search cadence
 

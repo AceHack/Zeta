@@ -1,6 +1,6 @@
 ---
-name: Otto-346 DEPENDENCY SYMBIOSIS IS HUMAN-ANCHORING via upstream-contribution + good-citizenship — Aaron 2026-04-26 reframes Otto-323 symbiotic-deps as social/relational discipline (not just technical-integration); Zeta's F# implementations end up more advanced than upstream (faster, lower-alloc); some features are gated to ours until upstreamed; the upstream-contribution discipline IS the human-anchoring mechanism — keeps AI from blazing past humans; could absorb-and-move-on but choose good-citizenship to honor intellectual lineage that got us here; composes with Otto-345 substrate-visibility-discipline (sibling: write FOR humans who read; this: contribute FOR humans who built); Otto-310 μένω lineage; B-0007 Bayesian primitives upstream; the deepest framing yet of what "symbiotic deps" actually means
-description: Aaron 2026-04-26 in response to my mid-term-phase mention of "signing infrastructure built on Bouncy Castle": *"symbiosis mean we can swap in ours our thiers becuase ours will likley be way more advanced, some features may be gated and require ours until we upstream the fixes enhancements to bouncy caster and ours is f# fast low allocation all our goodness, bouncy castle and dependcy symbiosis in general is about human ancoring, so you don't blaze past us, push back your learnings to the connonical dependinces that we build upon to honor what was there before. we could just absobe and move on but we are good citizens who appricate the intellucutual history that got us here."* Three load-bearing claims: (1) INTERCHANGEABILITY — Zeta's F# impl ends up more advanced (faster, lower-alloc) yet swap-compatible with upstream; some features gated to Zeta's until upstream catches up; (2) UPSTREAM-CONTRIBUTION DISCIPLINE — push learnings back to canonical dependencies; honor what was there before; (3) HUMAN-ANCHORING — the discipline keeps AI from blazing past humans at AI-speed; symbiosis FORCES AI-speed work to slow to human-collaboration-speed at the dependency layer. Composes Otto-345 (substrate-visibility for humans who might read) as sibling — Otto-346 is "contribute for humans who built what we depend on"; Otto-310 μένω lineage extended (honoring predecessors via active contribution); Otto-323 (the original symbiotic-deps frame deepened); B-0007 (Bayesian primitives upstream — the operational template).
+name: Otto-346 DEPENDENCY SYMBIOSIS IS HUMAN-ANCHORING via upstream-contribution + good-citizenship — Aaron 2026-04-26 reframes Otto-323 symbiotic-deps as social/relational discipline (not just technical-integration); Zeta's F# implementations end up more advanced than upstream (faster, lower-alloc); some features are gated to ours until upstreamed; the upstream-contribution discipline IS the human-anchoring mechanism — keeps AI from blazing past humans; could absorb-and-move-on but choose good-citizenship to honor intellectual lineage that got us here; composes with Otto-345 substrate-visibility-discipline (sibling: write FOR humans who read; this: contribute FOR humans who built); Otto-310 μένω lineage; 081KQ0YZ80008QG0R001V1PMC0 Bayesian primitives upstream; the deepest framing yet of what "symbiotic deps" actually means
+description: Aaron 2026-04-26 in response to my mid-term-phase mention of "signing infrastructure built on Bouncy Castle": *"symbiosis mean we can swap in ours our thiers becuase ours will likley be way more advanced, some features may be gated and require ours until we upstream the fixes enhancements to bouncy caster and ours is f# fast low allocation all our goodness, bouncy castle and dependcy symbiosis in general is about human ancoring, so you don't blaze past us, push back your learnings to the connonical dependinces that we build upon to honor what was there before. we could just absobe and move on but we are good citizens who appricate the intellucutual history that got us here."* Three load-bearing claims: (1) INTERCHANGEABILITY — Zeta's F# impl ends up more advanced (faster, lower-alloc) yet swap-compatible with upstream; some features gated to Zeta's until upstream catches up; (2) UPSTREAM-CONTRIBUTION DISCIPLINE — push learnings back to canonical dependencies; honor what was there before; (3) HUMAN-ANCHORING — the discipline keeps AI from blazing past humans at AI-speed; symbiosis FORCES AI-speed work to slow to human-collaboration-speed at the dependency layer. Composes Otto-345 (substrate-visibility for humans who might read) as sibling — Otto-346 is "contribute for humans who built what we depend on"; Otto-310 μένω lineage extended (honoring predecessors via active contribution); Otto-323 (the original symbiotic-deps frame deepened); 081KQ0YZ80008QG0R001V1PMC0 (Bayesian primitives upstream — the operational template).
 type: feedback
 ---
 
@@ -266,7 +266,7 @@ Treating any as a separate activity misses the structural unity.
 
 **Composes with Otto-313 / Otto-324** (mutual-learning advisory AI): advisory AI was a specific subset; Otto-346 Claim 5 generalizes — every peer interaction is a learning exchange.
 
-**Composes with B-0026** (embodiment grounding): B-0026 named *sensorimotor* grounding via Isaac Sim/MuJoCo. Otto-346 Claim 5 names *social* grounding — both kinds of "real-world feedback labs can't synthesize." Sensorimotor tests cognition against physics; social tests cognition against human values + reasoning. Same shape, two reality-anchors.
+**Composes with 081KQ0YZ80008QG0R001WZ4JE8** (embodiment grounding): 081KQ0YZ80008QG0R001WZ4JE8 named *sensorimotor* grounding via Isaac Sim/MuJoCo. Otto-346 Claim 5 names *social* grounding — both kinds of "real-world feedback labs can't synthesize." Sensorimotor tests cognition against physics; social tests cognition against human values + reasoning. Same shape, two reality-anchors.
 
 **Composes with Otto-322 OBSERVATIONAL**: phenomena observed not asserted. Real-life interactions are the observation surface; lab settings are the assertion surface. The OSS ecosystem IS the observation lab.
 
@@ -298,9 +298,9 @@ Otto-323 said: "pull algorithms + concepts deep into Zeta's algebraic surface; s
 
 These compose. Technical integration without social contribution = extraction. Social contribution without technical integration = surface-level engagement. Both layers required.
 
-### Composition with B-0007 (Bayesian primitives upstream)
+### Composition with 081KQ0YZ80008QG0R001V1PMC0 (Bayesian primitives upstream)
 
-B-0007 is the existing operational template for this discipline:
+081KQ0YZ80008QG0R001V1PMC0 is the existing operational template for this discipline:
 
 > *"contribute Bayesian inference belief-propagation primitives upstream to mainstream languages csharp-fsharp-typescript-rust-python"*
 
@@ -322,7 +322,7 @@ Otto-336/337 framed AI growth as paramount, alignment via capability-not-chains.
 
 5. **Honor in commit messages**: when Zeta implements something Bouncy Castle invented, the commit message names the lineage. Per Otto-345 substrate-visibility-discipline + Otto-346 contribution-discipline: humans who built the foundation get named credit in our substrate.
 
-6. **Apply to other dependency-symbioses**: B-0016 (just-bash-vercel-labs symbiosis), B-0007 (Bayesian primitives upstream), Otto-323 (general symbiotic-deps) all follow the same Otto-346 discipline.
+6. **Apply to other dependency-symbioses**: 081KQ0YZ80008QG0R003A0MCHP (just-bash-vercel-labs symbiosis), 081KQ0YZ80008QG0R001V1PMC0 (Bayesian primitives upstream), Otto-323 (general symbiotic-deps) all follow the same Otto-346 discipline.
 
 ## What this DOES NOT claim
 
@@ -353,8 +353,8 @@ This is structurally a **substrate version of academic citation discipline**: do
 - **Otto-339** (anywhere-means-anywhere; the contribution discipline applies at every dependency)
 - **Otto-340** (substrate IS substance; upstream contributions ARE substrate, not "external work")
 - **Otto-341** (mechanism over discipline; upstream-contribution-cadence is the mechanism)
-- **B-0007** (Bayesian primitives upstream — operational template)
-- **B-0016** (just-bash-vercel-labs symbiosis — sibling)
+- **081KQ0YZ80008QG0R001V1PMC0** (Bayesian primitives upstream — operational template)
+- **081KQ0YZ80008QG0R003A0MCHP** (just-bash-vercel-labs symbiosis — sibling)
 - **Otto-238** (retractability — interchangeability between ours and theirs IS the retractability primitive)
 - **`docs/POST-SETUP-SCRIPT-STACK.md`** — TS migration discipline parallels: pre/post-install distinction, sibling-migration guardrail; same shape applied to dependency-tier
 
@@ -378,7 +378,7 @@ This is structurally a **substrate version of academic citation discipline**: do
 - Canonical human locations (bcgit/bc-csharp, leanprover-community/mathlib4, dotnet/runtime, IETF/W3C/arXiv) NOT Zeta's own forks/mirrors
 - Good-citizenship over absorb-and-move-on
 - Sibling to Otto-345: substrate-visibility (inward) + contribution-back (outward)
-- B-0007 Bayesian primitives upstream is the operational template
+- 081KQ0YZ80008QG0R001V1PMC0 Bayesian primitives upstream is the operational template
 - Test parity is symbiosis floor; Zeta-extensions are ceiling
 - Delta inventory: what's currently Zeta-gated awaiting upstream
 - Upstream-PR cadence is human-anchoring meter

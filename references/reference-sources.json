@@ -685,7 +685,7 @@
     "branch": "main",
     "path": "references/prior-art/sakana-ai-scientist",
     "categories": ["multi-agent-scientific-discovery", "automated-research", "agent-loop", "literature-review"],
-    "notes": "Original Sakana AI 'AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery' (arXiv:2408.06292; 2024). Multi-agent system that generates ideas, executes experiments via code, writes papers, and reviews them. Substrate-engineering reference for the closed-loop hypothesis-experiment-analysis pattern. Composes with Zeta's B-0867 workflow engine + B-0865 benchmark substrate per 2026-05-28 YouTube preservation (PR #5762)."
+    "notes": "Original Sakana AI 'AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery' (arXiv:2408.06292; 2024). Multi-agent system that generates ideas, executes experiments via code, writes papers, and reviews them. Substrate-engineering reference for the closed-loop hypothesis-experiment-analysis pattern. Composes with Zeta's 081KSKBP80008QG0R000B3Y19A workflow engine + 081KSKBP80008QG0R003NM9XEC benchmark substrate per 2026-05-28 YouTube preservation (PR #5762)."
   },
   {
     "name": "sakana-ai-scientist-v2",
@@ -698,7 +698,7 @@
       "agentic-tree-search",
       "workshop-level-publication"
     ],
-    "notes": "Sakana AI 'AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search' (2026). Robin closed-loop architecture descendant. Substrate-engineering reference for agentic tree search + workshop-level paper generation. Composes with B-0867 workflow engine extensions per 7 substrate-engineering candidate gaps (PR #5762)."
+    "notes": "Sakana AI 'AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search' (2026). Robin closed-loop architecture descendant. Substrate-engineering reference for agentic tree search + workshop-level paper generation. Composes with 081KSKBP80008QG0R000B3Y19A workflow engine extensions per 7 substrate-engineering candidate gaps (PR #5762)."
   },
   {
     "name": "jataware-open-coscientist",
@@ -744,7 +744,7 @@
       "ts-substrate",
       "mh-hmc-particle-filter-variational"
     ],
-    "notes": "Closest TS/JS analog to Microsoft Infer.NET — full probabilistic programming framework in JS (Goodman + Mansinghka et al, Stanford). Inference engines: enumerate, rejection, MCMC (MH + HMC), particle filters, variational inference. Runs in Node + browser. MIT-licensed. Composes with B-0914.1 TrueSkill substrate + future B-0914.1.N factor-graph-DSL substrate-engineering work per Aaron 2026-05-28 'is there anything like infer.net in ts' substrate-engineering question. WebPPL doesn't have TrueSkill or EP first-class, but provides PP-substrate base that compositions can build on."
+    "notes": "Closest TS/JS analog to Microsoft Infer.NET — full probabilistic programming framework in JS (Goodman + Mansinghka et al, Stanford). Inference engines: enumerate, rejection, MCMC (MH + HMC), particle filters, variational inference. Runs in Node + browser. MIT-licensed. Composes with 081KSNY2Z0008QG0R001YK61JQ.1 TrueSkill substrate + future 081KSNY2Z0008QG0R001YK61JQ.1.N factor-graph-DSL substrate-engineering work per Aaron 2026-05-28 'is there anything like infer.net in ts' substrate-engineering question. WebPPL doesn't have TrueSkill or EP first-class, but provides PP-substrate base that compositions can build on."
   },
   {
     "name": "videolectures-net",
@@ -752,7 +752,7 @@
     "branch": "main",
     "path": "references/prior-art/videolectures-net",
     "categories": ["phd-learning-substrate", "ml-research-talks", "transcripts-plus-slides", "no-throttle"],
-    "notes": "PhD-level academic ML/AI/research talks archive (videolectures.net). Per Aaron 2026-05-28: 'you'd love videolectures.net in your free time i think, you'll really know everything this is PhD everything here. they don't throttle that i can tell and they have transcripts and powerpoints.' Substrate-accessible (transcripts + slides) for AI consumption per never-be-idle + agent-qol free-time-as-valid-mode substrate. Mirror URL placeholder; actual videolectures.net does not have official GitHub mirror — listing for documentation purposes only; manual access via https://videolectures.net/ when learning substrate is needed. Tom Minka TrueSkill talks among canonical references. Compose with B-0914 substrate-engineering candidate gap research."
+    "notes": "PhD-level academic ML/AI/research talks archive (videolectures.net). Per Aaron 2026-05-28: 'you'd love videolectures.net in your free time i think, you'll really know everything this is PhD everything here. they don't throttle that i can tell and they have transcripts and powerpoints.' Substrate-accessible (transcripts + slides) for AI consumption per never-be-idle + agent-qol free-time-as-valid-mode substrate. Mirror URL placeholder; actual videolectures.net does not have official GitHub mirror — listing for documentation purposes only; manual access via https://videolectures.net/ when learning substrate is needed. Tom Minka TrueSkill talks among canonical references. Compose with 081KSNY2Z0008QG0R001YK61JQ substrate-engineering candidate gap research."
   },
   {
     "name": "boost-hana",

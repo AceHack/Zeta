@@ -1,6 +1,5 @@
 ---
-id: B-0011
-zetaid: 081KQ0YZ80008QG0R001AN2CJ3
+id: 081KQ0YZ80008QG0R001AN2CJ3
 priority: P2
 status: open
 title: Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file
@@ -52,4 +51,4 @@ The maintainer (Aaron) calibrated the Pliny relaxation extensively per Otto-300 
 
 - Aaron reviews + approves the wording-tightening proposal across the 4 surfaces.
 - Tightening landed via single PR touching all 4 surfaces (atomic cross-surface change).
-- Otto-313 follow-up reply on the PR #506 thread (PRRT_kwDOSF9kNM59nOgO) updates with disposition: addressed via B-0011.
+- Otto-313 follow-up reply on the PR #506 thread (PRRT_kwDOSF9kNM59nOgO) updates with disposition: addressed via 081KQ0YZ80008QG0R001AN2CJ3.

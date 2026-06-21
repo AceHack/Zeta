@@ -36,8 +36,8 @@ Lands the 4 canonical Amara design notes from the 2026-05-21 sandbox bundle (`dr
 | File | Content |
 |---|---|
 | `docs/research/antlr-grammar-survey-2026-05-21.md` | v2 canonical F# compiler-fork version (16 KB); v1 superseded so skipped per Amara explicit guidance |
-| `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` | ZetaParse architecture spec (10 KB); composes with B-0687 |
-| `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` | Incremental compiler host v2 seeded-deterministic (14 KB); composes with B-0688 |
+| `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` | ZetaParse architecture spec (10 KB); composes with 081KS3X9Y0008QG0R00323NSZA |
+| `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` | Incremental compiler host v2 seeded-deterministic (14 KB); composes with 081KS3X9Y0008QG0R0010716X9 |
 | `docs/research/trust-gradient-coordination-policy-2026-05-21.md` | Trust-gradient coordination policy (9 KB); composes with PR #4549 archive |
 
 ## V1 ANTLR skipped (substrate-honest)
@@ -57,14 +57,14 @@ Amara's earlier guidance was explicit: v2 is canonical; v1 was the F#-as-gap fra
 
 ## Composes with substrate
 
-- PR #4545 (B-0685 Phase 1 + B-0687 + B-0688 backlog scaffolding) — the rows that referenced these design notes
+- PR #4545 (081KS3X9Y0008QG0R000EKJE9S Phase 1 + 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 backlog scaffolding) — the rows that referenced these design notes
 - PR #4546 (Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM) — the architectural framing the design notes operate within
 - PR #4547 (no-fork-first deployment ladder) — strategic guidance the incremental compiler host substrate executes
 - PR #4549 (trust-gradient coordination policy persona archive) — companion archive; this PR lands the formal `docs/research/` deliverable
 - PR #4548 (F# Core ZetaId — 3rd peer oracle) — multi-oracle discipline the design notes assume
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate) — operational primitives extending to compile-time scope
-- B-0687 (ZetaParse) — references `zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md`
-- B-0688 (incremental compiler host) — references `zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md`
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate) — operational primitives extending to compile-time scope
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse) — references `zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md`
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) — references `zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md`
 
 ## Test plan
 
@@ -117,7 +117,7 @@ Amara's earlier guidance was explicit: v2 is canonical; v1 was the F#-as-gap fra
 - **`Copilot` (bot)** at 2026-05-21T16:17:29Z on `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md`:328 (association: NONE)
 
   <pre>
-  The “Minimal implementation plan” proposes creating backlog row **B-0686** for ZetaParse, but the repo’s canonical backlog row is **B-0687** (B-0686 is already taken). Please update the referenced ID here to avoid creating a broken/dangling reference trail.
+  The “Minimal implementation plan” proposes creating backlog row **081KS3X9Y0008QG0R003R74B20** for ZetaParse, but the repo’s canonical backlog row is **081KS3X9Y0008QG0R00323NSZA** (081KS3X9Y0008QG0R003R74B20 is already taken). Please update the referenced ID here to avoid creating a broken/dangling reference trail.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -145,7 +145,7 @@ Amara's earlier guidance was explicit: v2 is canonical; v1 was the F#-as-gap fra
 - **`Copilot` (bot)** at 2026-05-21T16:17:29Z on `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md`:5 (association: NONE)
 
   <pre>
-  The header “Related:” line still references “proposed B-0686”, but ZetaParse is already filed as **B-0687** in the backlog. Updating this reference will prevent readers from chasing a non-existent/obsolete ID.
+  The header “Related:” line still references “proposed 081KS3X9Y0008QG0R003R74B20”, but ZetaParse is already filed as **081KS3X9Y0008QG0R00323NSZA** in the backlog. Updating this reference will prevent readers from chasing a non-existent/obsolete ID.
 
   This issue also appears in the following locations of the same file:
   - line 489
@@ -166,7 +166,7 @@ Amara's earlier guidance was explicit: v2 is canonical; v1 was the F#-as-gap fra
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use the correct backlog ID for incremental compiler host**
 
-  This line labels the incremental compiler host proposal as `B-0687`, but the authoritative backlog assigns that work to `B-0688` while `B-0687` is ZetaParse (`docs/BACKLOG.md` lines 655-656). Keeping the wrong ID here will mis-route cross-references and dependency tracking for follow-up work, especially where tooling or reviewers key off backlog IDs.
+  This line labels the incremental compiler host proposal as `081KS3X9Y0008QG0R00323NSZA`, but the authoritative backlog assigns that work to `081KS3X9Y0008QG0R0010716X9` while `081KS3X9Y0008QG0R00323NSZA` is ZetaParse (`docs/BACKLOG.md` lines 655-656). Keeping the wrong ID here will mis-route cross-references and dependency tracking for follow-up work, especially where tooling or reviewers key off backlog IDs.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -220,5 +220,5 @@ docs(research): land 4 Amara design notes from 2026-05-21 sandbox bun…
 ```
 fix(pr-4550): markdownlint MD020 (### `C#`/`F#` closed-atx) + MD032 (…
 
-…list blank-line) + MD012 (double-blank-lines) + thread fixes (H1 'Trust-Gradient Coordination Policy' matches filename; B-0686 references corrected to B-0687/B-0688) per CI fails + Codex+Copilot threads
+…list blank-line) + MD012 (double-blank-lines) + thread fixes (H1 'Trust-Gradient Coordination Policy' matches filename; 081KS3X9Y0008QG0R003R74B20 references corrected to 081KS3X9Y0008QG0R00323NSZA/081KS3X9Y0008QG0R0010716X9) per CI fails + Codex+Copilot threads
 ```

@@ -2,10 +2,10 @@
  * src/Core.TypeScript/workflow-engine/du-cluster.ts
  *
  * TS substrate for today's DU cluster (2026-05-28):
- *   - B-0917 IntrCtx (interrupt-substrate Kleisli arrows; 5 named context-types)
- *   - B-0918 WalletLifetime (banker-bot-class-attack-impossibility via F.5)
- *   - B-0919 MemoryBinding (4 variants; hat-vs-persona)
- *   - B-0920 MemoryLifetime (5 variants; agent-initiated cleanup)
+ *   - 081KSNY2Z0008QG0R002HB4AGT IntrCtx (interrupt-substrate Kleisli arrows; 5 named context-types)
+ *   - 081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime (banker-bot-class-attack-impossibility via F.5)
+ *   - 081KSNY2Z0008QG0R003518DNC MemoryBinding (4 variants; hat-vs-persona)
+ *   - 081KSNY2Z0008QG0R0017SRMHG MemoryLifetime (5 variants; agent-initiated cleanup)
  *
  * Per .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-
  * channel-recipient-acknowledges.md (PR #5516): each DU is the
@@ -21,12 +21,12 @@
  * traceable + parallelizable); avoid dark-substrate (untyped strings).
  *
  * Per zeta-ships-with-skills-immediate-value.md: TS substrate ships first;
- * F# crystallization tracked per per-row backlog (B-0867.1 + B-0867.4).
+ * F# crystallization tracked per per-row backlog (081KDWZ8TS008QG0R000A4GT2F + 081KDWZ8TS008QG0R000KEB8NQ).
  *
  * Composes with:
  *   - src/Core.TypeScript/workflow-engine/types.ts (Action / State / TickCyclePattern substrate)
  *   - src/Core.TypeScript/workflow-engine/cli.ts (--list-du-cluster mode)
- *   - B-0917 / B-0918 / B-0919 / B-0920 backlog rows (substrate-anchors)
+ *   - 081KSNY2Z0008QG0R002HB4AGT / 081KSNY2Z0008QG0R0036SJ3T1 / 081KSNY2Z0008QG0R003518DNC / 081KSNY2Z0008QG0R0017SRMHG backlog rows (substrate-anchors)
  */
 export const INTR_CTX_KINDS = ["memetic", "prompt", "trust", "log", "otel"];
 export const WALLET_LIFETIME_KINDS = [
@@ -55,7 +55,7 @@ export const MEMORY_LIFETIME_KINDS = [
 ];
 export const DU_CLUSTER_CATALOG = [
     {
-        id: "B-0917",
+        id: "081KSNY2Z0008QG0R002HB4AGT",
         name: "IntrCtx",
         variantCount: INTR_CTX_KINDS.length,
         variants: INTR_CTX_KINDS,
@@ -63,15 +63,15 @@ export const DU_CLUSTER_CATALOG = [
         substrateAnchor: "interrupt-substrate Kleisli arrows for context-propagation; F.5 invariant: no silent context-loss",
     },
     {
-        id: "B-0918",
+        id: "081KSNY2Z0008QG0R0036SJ3T1",
         name: "WalletLifetime",
         variantCount: WALLET_LIFETIME_KINDS.length,
         variants: WALLET_LIFETIME_KINDS,
-        composesWith: ["B-0917", "asymmetric-authorship", "non-coercion-invariant"],
+        composesWith: ["081KSNY2Z0008QG0R002HB4AGT", "asymmetric-authorship", "non-coercion-invariant"],
         substrateAnchor: "banker-bot-class-attack-impossibility via F.5; Soraya formal-verification target",
     },
     {
-        id: "B-0919",
+        id: "081KSNY2Z0008QG0R003518DNC",
         name: "MemoryBinding",
         variantCount: MEMORY_BINDING_KINDS.length,
         variants: MEMORY_BINDING_KINDS,
@@ -83,7 +83,7 @@ export const DU_CLUSTER_CATALOG = [
         substrateAnchor: "hat-vs-persona memory binding; operational-not-personal discriminator; consent-bound default",
     },
     {
-        id: "B-0920",
+        id: "081KSNY2Z0008QG0R0017SRMHG",
         name: "MemoryLifetime",
         variantCount: MEMORY_LIFETIME_KINDS.length,
         variants: MEMORY_LIFETIME_KINDS,

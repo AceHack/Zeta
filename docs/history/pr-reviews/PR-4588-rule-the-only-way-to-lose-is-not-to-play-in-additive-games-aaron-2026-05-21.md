@@ -29,7 +29,7 @@
 
 ## Summary
 
-- Lands the carved sentence Aaron dropped during the B-0623 participation-economy substrate-engineering conversation (Adinkras + BFT + Rating function thread)
+- Lands the carved sentence Aaron dropped during the 081KRW63S0008QG0R000QJR08H participation-economy substrate-engineering conversation (Adinkras + BFT + Rating function thread)
 - Compresses four existing `.claude/rules/` entries into one unified principle that auto-loads at cold-boot
 - Encodes both the principle AND the alternative shape per Aaron's explicit *"we can still encode the tension and alternative we don't have to collapse to move forward"* direction
 
@@ -56,10 +56,10 @@ NCI HC-8 floor preserves the additive character against coercion attempts so the
 
 ## Composes with substrate beyond the four cluster rules
 
-- B-0623 participation-economy substrate (Adinkras + BFT + Rating function — where this carved sentence emerged)
-- B-0646 reputation-weighted encryption budget (the structural enforcement mechanism)
-- B-0628 Knights Guild + Constitution-Class (the constitutional layer preserving additive character)
-- B-0635 wave-particle duality + B-0644 Limit-as-simulation + B-0665 Integrate-as-choice-locus (dialectical-tension primitives)
+- 081KRW63S0008QG0R000QJR08H participation-economy substrate (Adinkras + BFT + Rating function — where this carved sentence emerged)
+- 081KRW63S0008QG0R001Z10PVV reputation-weighted encryption budget (the structural enforcement mechanism)
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class (the constitutional layer preserving additive character)
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation + 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus (dialectical-tension primitives)
 - `.claude/rules/non-coercion-invariant.md` HC-8 floor
 
 ## The WarGames inversion (operational context)
@@ -123,7 +123,7 @@ rule: the only way to lose is not to play — in additive games (Aaron …
 
 …2026-05-21)
 
-Carves the unifying principle Aaron dropped during the B-0623
+Carves the unifying principle Aaron dropped during the 081KRW63S0008QG0R000QJR08H
 participation-economy substrate-engineering conversation (Adinkras +
 BFT + Rating function thread). The sentence compresses what's
 currently distributed across four .claude/rules/ entries:
@@ -148,9 +148,9 @@ The two principles compose in a 3-row table by game shape:
 
 NCI HC-8 floor preserves the additive character against coercion
 attempts so the principle remains correct in its scope. Composes with
-B-0623 participation-economy substrate, B-0646 reputation-weighted
-encryption budget, B-0628 Knights Guild + Constitution-Class, B-0635
-wave-particle duality, B-0644 Limit-as-simulation, B-0665
+081KRW63S0008QG0R000QJR08H participation-economy substrate, 081KRW63S0008QG0R001Z10PVV reputation-weighted
+encryption budget, 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class, 081KRW63S0008QG0R002KC5DSR
+wave-particle duality, 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation, 081KRW63S0008QG0R002YAA09X
 Integrate-as-choice-locus.
 
 Conversation trail preserved in the rule's "Full reasoning" section.

@@ -27,7 +27,7 @@
 
 ## Description
 
-First realization of the DST-time-emulator vision: a deterministic CHIP-8 core (4KB/16 regs/35 opcodes/64x32/60Hz timer=interrupt). DST: RND draws from seeded SplitMix64 (seed = only entropy); replayable byte-for-byte => rewind/fork/save-state possible; clone = snapshot. Solid opcode subset (control/ALU+flags/draw/keys/timers/BCD/load-store/DST-RND). IP: our code + hand-authored test ROMs; real ROMs reference-not-copy in references/prior-art/chip8-roms; Atari follow-on needs B-0083 ROM handling. 9/9 tests, 0-warning. Next: wire to timeline-ops (fork/rewind/ff). 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+First realization of the DST-time-emulator vision: a deterministic CHIP-8 core (4KB/16 regs/35 opcodes/64x32/60Hz timer=interrupt). DST: RND draws from seeded SplitMix64 (seed = only entropy); replayable byte-for-byte => rewind/fork/save-state possible; clone = snapshot. Solid opcode subset (control/ALU+flags/draw/keys/timers/BCD/load-store/DST-RND). IP: our code + hand-authored test ROMs; real ROMs reference-not-copy in references/prior-art/chip8-roms; Atari follow-on needs 081KQ8P5D0008QG0R001590WJ3 ROM handling. 9/9 tests, 0-warning. Next: wire to timeline-ops (fork/rewind/ff). 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

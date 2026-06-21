@@ -31,7 +31,7 @@ during measurement). It does **nothing** to superdeterminism (a past common caus
 
 ## 2. The signature: a controllable feedback channel ⇔ exceed Tsirelson ⇔ superdeterministic
 
-The four-corner ownership model (B-0864: `T-In` / `T-Out` / `T-Feedback-In` / `T-Feedback-Out`) is the lens.
+The four-corner ownership model (081KSKBP80008QG0R0039RW25E: `T-In` / `T-Out` / `T-Feedback-In` / `T-Feedback-Out`) is the lens.
 The **feedback corners are a correlation-maintenance loop** — they carry error back and correct drift, keeping
 a *staged* correlation on track (a control loop / phase-lock). Consequence:
 
@@ -83,7 +83,7 @@ the earlier ER=EPR / grey-hole re-calibration).
 Bell 1964 (measurement-independence); Tsirelson 1980 (`2√2`); Information Causality — Pawłowski et al., *Nature*
 462 (2009); 't Hooft (Cellular-Automaton Interpretation); Popescu–Rohrlich 1994 (PR box, `S=4`); Bennett–
 Wiesner 1992 (superdense coding); Holevo 1973 (bound); Shannon 1948 (capacity); Kolmogorov/Solomonoff/Chaitin
-(algorithmic information). Internal: B-0864 four-corner ownership; `BellTest`, `CoincidenceClock`,
+(algorithmic information). Internal: 081KSKBP80008QG0R0039RW25E four-corner ownership; `BellTest`, `CoincidenceClock`,
 `SymmetricEndurance` (`ClockSharing` = loophole switch); the superdeterminism-closure ≡ anti-Sybil note (#7072).
 
 ## 4. Our information-causality *speed* = the heartbeat rate (Lamport causal cone), not constant c (Aaron 2026-06-08)

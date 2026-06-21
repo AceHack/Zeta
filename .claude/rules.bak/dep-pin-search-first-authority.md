@@ -81,9 +81,9 @@ at the moment the next-token decision is being made.
 
 ## Empirical anchors
 
-### Anchor 1 — NixOS 24.11 pinned past EOL (B-0800 / 2026-05-26)
+### Anchor 1 — NixOS 24.11 pinned past EOL (081KSGS9H0008QG0R001EKTS5A / 2026-05-26)
 
-`full-ai-cluster/flake.nix` shipped initially with `nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11"`. The maintainer 2026-05-26 asked: *"is there a 25 we should go ahead and distro upgrade we don't want to be behind"*. WebSearch surfaced: NixOS 25.11 "Xantusia" current stable (released 2025-11-30; EOL 2026-06-30); 24.11 EOL'd 2025-06-30 — past EOL when our flake was authored. Substrate-honest finding: the training-data default for "latest NixOS channel" had drifted stale by 1 year + 2 channel releases. Backlogged as [B-0800](../../docs/backlog/P1/B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md).
+`full-ai-cluster/flake.nix` shipped initially with `nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11"`. The maintainer 2026-05-26 asked: *"is there a 25 we should go ahead and distro upgrade we don't want to be behind"*. WebSearch surfaced: NixOS 25.11 "Xantusia" current stable (released 2025-11-30; EOL 2026-06-30); 24.11 EOL'd 2025-06-30 — past EOL when our flake was authored. Substrate-honest finding: the training-data default for "latest NixOS channel" had drifted stale by 1 year + 2 channel releases. Backlogged as [081KSGS9H0008QG0R001EKTS5A](../../docs/backlog/P1/081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md).
 
 ### Anchor 2 — cascade #4 ISO audit asserted wrong NixOS layout (P0 fix-fwd / 2026-05-26)
 
@@ -91,9 +91,9 @@ at the moment the next-token decision is being made.
 
 The substrate-honest implication: this rule's exact discipline would have prevented the cascade #4 false-positive. The author (the agent) should have WebSearched / verified the NixOS-actual installer ISO directory layout before authoring the REQUIRED_ISO_PATHS list. Skipping that step let the training-data-default leak through into a load-bearing assertion that gates the artifact pipeline.
 
-### Anchor 3 — kured chart targetRevision marker in B-0802 (2026-05-26)
+### Anchor 3 — kured chart targetRevision marker in 081KSGS9H0008QG0R003GM7TYN (2026-05-26)
 
-The B-0802 backlog row authoring intentionally used the placeholder `targetRevision: <latest-stable-VERIFIED-via-WebSearch>  # per B-0805 discipline` rather than a training-data default. This is the SHAPE this rule encourages: when you don't yet know the current version + you're authoring a backlog row that will be implemented later, mark the placeholder explicitly + name the rule the implementer must follow. The implementation PR then does the WebSearch + replaces the placeholder.
+The 081KSGS9H0008QG0R003GM7TYN backlog row authoring intentionally used the placeholder `targetRevision: <latest-stable-VERIFIED-via-WebSearch>  # per 081KSGS9H0008QG0R002BC2ZR7 discipline` rather than a training-data default. This is the SHAPE this rule encourages: when you don't yet know the current version + you're authoring a backlog row that will be implemented later, mark the placeholder explicitly + name the rule the implementer must follow. The implementation PR then does the WebSearch + replaces the placeholder.
 
 ## Composes with
 
@@ -107,9 +107,9 @@ The B-0802 backlog row authoring intentionally used the placeholder `targetRevis
 
 ## Composes with substrate
 
-- [B-0800](../../docs/backlog/P1/B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — empirical anchor 1
-- [B-0805](../../docs/backlog/P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — the capstone backlog row this rule was named in as sub-target 3
-- [B-0801](../../docs/backlog/P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md), [B-0802](../../docs/backlog/P2/B-0802-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md), [B-0803](../../docs/backlog/P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md), [B-0804](../../docs/backlog/P2/B-0804-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — sibling cluster-update rows that consume this rule's discipline
+- [081KSGS9H0008QG0R001EKTS5A](../../docs/backlog/P1/081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — empirical anchor 1
+- [081KSGS9H0008QG0R002BC2ZR7](../../docs/backlog/P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — the capstone backlog row this rule was named in as sub-target 3
+- [081KSGS9H0008QG0R002T6J6FS](../../docs/backlog/P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md), [081KSGS9H0008QG0R003GM7TYN](../../docs/backlog/P2/081KSGS9H0008QG0R003GM7TYN-iter-6-2-kured-argocd-app-kubernetes-aware-drain-reboot-aaron-2026-05-26.md), [081KSGS9H0008QG0R00280HHA7](../../docs/backlog/P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md), [081KSGS9H0008QG0R0034ZYYR8](../../docs/backlog/P2/081KSGS9H0008QG0R0034ZYYR8-iter-6-4-distro-upgrade-automation-runbook-canary-rollout-coordinated-cluster-bump-aaron-2026-05-26.md) — sibling cluster-update rows that consume this rule's discipline
 - PR #5125 (the cascade #4 fix-fwd) — the empirical fix that surfaced the rule-landing trigger
 
 ## Substrate-honest framing
@@ -134,4 +134,4 @@ The maintainer 2026-05-26 substrate-honest catch:
 
 > *"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"*
 
-That sentence names BOTH the systemic gap (training-data version-pin staleness across nix + argocd + downstream) AND the agent-discipline failure mode (Otto-defaults-to-plausible-but-unverified). [B-0805](../../docs/backlog/P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) names both at backlog scope as a capstone; this rule lands the agent-discipline half at wake-time substrate scope so the gap doesn't re-open in every future authoring action.
+That sentence names BOTH the systemic gap (training-data version-pin staleness across nix + argocd + downstream) AND the agent-discipline failure mode (Otto-defaults-to-plausible-but-unverified). [081KSGS9H0008QG0R002BC2ZR7](../../docs/backlog/P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) names both at backlog scope as a capstone; this rule lands the agent-discipline half at wake-time substrate scope so the gap doesn't re-open in every future authoring action.

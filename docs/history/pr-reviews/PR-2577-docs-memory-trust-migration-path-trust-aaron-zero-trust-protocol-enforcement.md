@@ -62,7 +62,7 @@
 - **`Copilot` (bot)** at 2026-05-10T23:51:05Z on `memory/project_trust_migration_path_aaron_to_zero_trust_2026_05_10.md`:25 (association: NONE)
 
   <pre>
-  P1 (xref): This table references backlog IDs B-0405 and B-0403, but there are no corresponding backlog row files in docs/backlog/ (only B-0400 and B-0401 exist). Either add the missing backlog items, or update the table to point at existing IDs/paths.
+  P1 (xref): This table references backlog IDs 081KR7JY10008QG0R001FV5FND and 081KR7JY10008QG0R0021F5609, but there are no corresponding backlog row files in docs/backlog/ (only 081KR7JY10008QG0R000R503K2 and 081KR7JY10008QG0R001VP6JWG exist). Either add the missing backlog items, or update the table to point at existing IDs/paths.
   </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -76,7 +76,7 @@
 - **`Copilot` (bot)** at 2026-05-10T23:51:05Z on `memory/project_trust_migration_path_aaron_to_zero_trust_2026_05_10.md`:46 (association: NONE)
 
   <pre>
-  P1 (xref): The “Connects to” list references B-0403, B-0404, and feedback_relationship_changes_form_not_ends, but none of these targets exist in the repo right now (search only finds these strings in this new file). Please either add the referenced backlog/memory entries or change these bullets to point at existing artifacts (e.g., the current docs/backlog rows).
+  P1 (xref): The “Connects to” list references 081KR7JY10008QG0R0021F5609, 081KR7JY10008QG0R003H102F0, and feedback_relationship_changes_form_not_ends, but none of these targets exist in the repo right now (search only finds these strings in this new file). Please either add the referenced backlog/memory entries or change these bullets to point at existing artifacts (e.g., the current docs/backlog rows).
 
   </pre>
 

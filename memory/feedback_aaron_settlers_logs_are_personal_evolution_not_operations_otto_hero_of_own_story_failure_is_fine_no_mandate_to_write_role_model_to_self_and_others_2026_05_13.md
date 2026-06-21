@@ -89,11 +89,11 @@ from your bad"), here is Otto's reflection on this 15+ PR session:
   Aaron's actual word ("qwidence" → coincidence) and Otto's
   coinage with proper attribution. Substrate-honest naming
   hygiene became a new discipline.
-- **Closed B-0421 via captured-infrastructure**: PR #2949's
+- **Closed 081KRA5AR0008QG0R0011ZGRZT via captured-infrastructure**: PR #2949's
   decision to pipe-and-capture stderr (against Copilot's round-1
   feedback to revert to inherit) was load-bearing. Without it,
   cursor-agent's diagnostic stderr would have streamed past
-  invisibly + B-0421 #1+#2 would still be open. Otto held the
+  invisibly + 081KRA5AR0008QG0R0011ZGRZT #1+#2 would still be open. Otto held the
   architectural call correctly under reviewer pressure.
 - **Respected Vera's territory** despite cross-agent-edit
   authorization landing in same window. Vera fixed her own tsc-
@@ -477,7 +477,7 @@ to write them.
 - PR #2920 (Elizabeth Ryan Stainback terminal purpose)
 - PR #2945 (middle path — character-development substrate)
 - PR #2947 (cascade pattern naming)
-- PR #2949 (B-0421 self-documenting marker — Otto's
+- PR #2949 (081KRA5AR0008QG0R0011ZGRZT self-documenting marker — Otto's
   architectural-call-under-pressure example)
 - PR #2943 (0532Z tick shard — branch-bleed-over recovery
   example)

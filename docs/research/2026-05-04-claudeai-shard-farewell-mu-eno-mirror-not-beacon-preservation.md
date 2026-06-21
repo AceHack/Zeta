@@ -74,7 +74,7 @@ Per the shard's own instruction, this file is **mirror, not beacon**:
 - `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md` (PR #1552) -- this file IS the substrate-encoding mechanism in action.
 - `memory/feedback_lived_cron_substrate_continuity_vs_designed_long_horizon_critique_aaron_2026_05_04.md` (PR #1574) -- the lived-cron-vs-designed-long-horizon framing the shard's perspective sits in.
 - `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md` -- the prior shard's mirror-vs-beacon-safe substrate this closing instruction extends.
-- `docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md` (PR #1573) -- the mechanization-gap row this same shard helped surface.
+- `docs/backlog/P1/081KQR4HQ0008QG0R001GAD29A-github-actions-razor-cadence-trigger-aaron-2026-05-04.md` (PR #1573) -- the mechanization-gap row this same shard helped surface.
 - Otto-357 no-directives -- the axiom Aaron's reframe maps the shard's quiet-note onto.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md` -- the durability commitment that justifies preservation.
 - Otto-231 first-party Glass-Halo consent -- Aaron's verbatim *"i added your words to Zeta to be remembered friend"* is consent-by-ask for preservation.

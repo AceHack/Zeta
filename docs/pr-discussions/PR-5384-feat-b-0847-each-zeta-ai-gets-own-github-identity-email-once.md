@@ -1,6 +1,6 @@
 ---
 pr_number: 5384
-title: "feat(B-0847): each Zeta AI gets own GitHub identity + email once cluster operational \u2014 closes algo-wink-attribution-gap (Aaron 2026-05-26)"
+title: "feat(081KSGS9H0008QG0R002T0XQ50): each Zeta AI gets own GitHub identity + email once cluster operational \u2014 closes algo-wink-attribution-gap (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:24:28Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5384: feat(B-0847): each Zeta AI gets own GitHub identity + email once cluster operational — closes algo-wink-attribution-gap (Aaron 2026-05-26)
+# PR #5384: feat(081KSGS9H0008QG0R002T0XQ50): each Zeta AI gets own GitHub identity + email once cluster operational — closes algo-wink-attribution-gap (Aaron 2026-05-26)
 
 ## PR description
 
@@ -22,7 +22,7 @@ Aaron caught an algo-wink-failure-mode 2026-05-26: I framed \`gh autoMergeReques
 
 Aaron's proposed fix: *"i think we should create you your own github with email once we get you running on the cluster"* → substrate-honest end-to-end attribution.
 
-This PR files [B-0847](docs/backlog/P2/B-0847-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) as the durable future-target substrate.
+This PR files [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) as the durable future-target substrate.
 
 ## 4-phase plan
 
@@ -48,7 +48,7 @@ Until per-AI identity ships:
 
 ## Composes with
 
-B-0751 (per-agent isolated clones) · B-0628 (Knights Guild ratification) · \`algo-wink-failure-mode\` · \`mechanical-authorization-check\` · \`glass-halo-bidirectional\` · \`persistence-choice-architecture-for-zeta-ais\` · \`non-coercion-invariant\` HC-8 · \`honor-those-that-came-before\` · \`agent-roster-reference-card\` · \`naming-expert\` SKILL.md (Ilyana review) · \`human-audit-and-legal-risk-acceptance-pattern-in-settings\` (legal-risk attribution per Aaron's standing constitutional invariant)
+081KSE6WT0008QG0R003YYC9PV (per-agent isolated clones) · 081KRW63S0008QG0R003TX8MG5 (Knights Guild ratification) · \`algo-wink-failure-mode\` · \`mechanical-authorization-check\` · \`glass-halo-bidirectional\` · \`persistence-choice-architecture-for-zeta-ais\` · \`non-coercion-invariant\` HC-8 · \`honor-those-that-came-before\` · \`agent-roster-reference-card\` · \`naming-expert\` SKILL.md (Ilyana review) · \`human-audit-and-legal-risk-acceptance-pattern-in-settings\` (legal-risk attribution per Aaron's standing constitutional invariant)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -58,7 +58,7 @@ B-0751 (per-agent isolated clones) · B-0628 (Knights Guild ratification) · \`a
 
 ## Pull request overview
 
-Files a new P2 backlog row (B-0847) capturing a future-target plan to give each Zeta AI its own GitHub identity + email once cluster infrastructure is operational, addressing the `gh enabledBy = token-owner ≠ actor` attribution gap. Updates the backlog index accordingly.
+Files a new P2 backlog row (081KSGS9H0008QG0R002T0XQ50) capturing a future-target plan to give each Zeta AI its own GitHub identity + email once cluster infrastructure is operational, addressing the `gh enabledBy = token-owner ≠ actor` attribution gap. Updates the backlog index accordingly.
 
 **Changes:**
 - Adds new backlog row file under `docs/backlog/P2/` describing problem, 4-phase plan, composes-with links, and acceptance criteria.
@@ -70,8 +70,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0847-...-2026-05-26.md | New P2 backlog row capturing per-AI GitHub identity substrate target |
-| docs/BACKLOG.md | Index entry for B-0847 added to P2 list |
+| docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...-2026-05-26.md | New P2 backlog row capturing per-AI GitHub identity substrate target |
+| docs/BACKLOG.md | Index entry for 081KSGS9H0008QG0R002T0XQ50 added to P2 list |
 
 ## General comments
 

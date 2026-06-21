@@ -156,7 +156,7 @@ author (me) didn't read the schema before writing.
 
 **Examples this session:**
 
-- B-0068/B-0069/B-0070/B-0071 backlog rows — used off-schema fields
+- 081KQ8P5D0008QG0R002E1G72J/081KQ8P5D0008QG0R002HB1ENY/081KQ8P5D0008QG0R003VN5P2Z/081KQ8P5D0008QG0R0030BTJZK backlog rows — used off-schema fields
   (`slug`, `maintainer`, `ownership`, `status: backlog`) instead of
   the schema in `tools/backlog/README.md` (which uses `status: open`
   and a different field set)
@@ -276,7 +276,7 @@ as user-scope-only.
 
 **Prevention candidate (factory-side):**
 
-1. **B-0070 orphan-role-ref-detector** — extend to also catch
+1. **081KQ8P5D0008QG0R003VN5P2Z orphan-role-ref-detector** — extend to also catch
    broken in-repo path references (already noted as observation in
    prior tick).
 2. **Pre-commit lint** that resolves all `[link](path)` markdown
@@ -331,7 +331,7 @@ highest-ROI structural fixes are:
 
 2. **Pre-commit markdown-xref-resolver** that validates every
    `[text](path)` against the filesystem. Catches Class 6 entirely.
-   Cost: ~50 lines bash or python. Composes with B-0070 lint.
+   Cost: ~50 lines bash or python. Composes with 081KQ8P5D0008QG0R003VN5P2Z lint.
 
 3. **Extend `.github/copilot-instructions.md`** with the project's
    carve-out enumeration (Otto-279 history-surface, memory file
@@ -380,7 +380,7 @@ and scales as thread volume grows.
 - **`feedback_no_required_approval_on_zeta_BLOCKED_means_threads_or_ci_aaron_2026_04_28.md`**
   — companion: that memory says "always double-check threads after
   CI completes"; this catalog makes the post-CI thread pass faster
-- **B-0070** orphan-role-ref-detector — composes with Class 6
+- **081KQ8P5D0008QG0R003VN5P2Z** orphan-role-ref-detector — composes with Class 6
   prevention work
 - **Aaron 2026-04-28** *"can you do anything to improve the false
   positive in the future?"* — the prompting input

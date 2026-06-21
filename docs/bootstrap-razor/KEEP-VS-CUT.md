@@ -1,8 +1,8 @@
 # Keep-vs-Cut Criteria — Bootstrap Razor Taxonomy
 
 Four categories classify every memory/substrate file before a
-bootstrap-razor experiment (B-0193). Each category has a fixed
-disposition. The experiment (B-0344) applies these categories
+bootstrap-razor experiment (081KQTPYE0008QG0R00392KABJ). Each category has a fixed
+disposition. The experiment (081KR2E4K0008QG0R0035HNPG1) applies these categories
 mechanically — no ad-hoc judgement during the run.
 
 ## Category 1: Research-grade preservation — KEEP
@@ -89,8 +89,8 @@ relationship they encode.
 
 ## Usage
 
-B-0344 (experiment run) cites these categories by number.
-The classifier tool (B-0332, `tools/hygiene/classify-memory-load-bearing.ts`)
+081KR2E4K0008QG0R0035HNPG1 (experiment run) cites these categories by number.
+The classifier tool (081KR2E4K0008QG0R002FRQZN4, `tools/hygiene/classify-memory-load-bearing.ts`)
 provides the file inventory. The experiment script categorizes
 each file, applies the disposition, runs the recreation test
 on the CUT-IF-REGENERABLE set, and measures what was lost.

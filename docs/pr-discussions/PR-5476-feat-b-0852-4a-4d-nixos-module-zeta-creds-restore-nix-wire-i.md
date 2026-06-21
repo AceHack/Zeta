@@ -1,6 +1,6 @@
 ---
 pr_number: 5476
-title: "feat(B-0852.4a+4d): NixOS module zeta-creds-restore.nix + wire into cluster common.nix imports \u2014 last gate for end-to-end USB cred-persistence test (Aaron 2026-05-27 USB priority)"
+title: "feat(081KSKBP80008QG0R003AX2A69.4a+4d): NixOS module zeta-creds-restore.nix + wire into cluster common.nix imports \u2014 last gate for end-to-end USB cred-persistence test (Aaron 2026-05-27 USB priority)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T14:30:29Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:23:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5476: feat(B-0852.4a+4d): NixOS module zeta-creds-restore.nix + wire into cluster common.nix imports — last gate for end-to-end USB cred-persistence test (Aaron 2026-05-27 USB priority)
+# PR #5476: feat(081KSKBP80008QG0R003AX2A69.4a+4d): NixOS module zeta-creds-restore.nix + wire into cluster common.nix imports — last gate for end-to-end USB cred-persistence test (Aaron 2026-05-27 USB priority)
 
 ## PR description
 
@@ -20,18 +20,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two commits bundled — the NixOS module + the common.nix import — together completing the end-to-end USB cred-persistence chain.
 
-**Commit 1 (B-0852.4a)**: \`full-ai-cluster/nixos/modules/zeta-creds-restore.nix\` — systemd service \`zeta-creds-restore.service\` that decrypts \`/esp/zeta-creds.enc\` at boot (via B-0852.2b restore CLI), populates per-cred files, fires before B-0855.1 \`zeta-self-register.service\`. Two passphrase modes (file / interactive); disabled by default; opt-in per host config.
+**Commit 1 (081KSKBP80008QG0R003AX2A69.4a)**: \`full-ai-cluster/nixos/modules/zeta-creds-restore.nix\` — systemd service \`zeta-creds-restore.service\` that decrypts \`/esp/zeta-creds.enc\` at boot (via 081KSKBP80008QG0R003AX2A69.2b restore CLI), populates per-cred files, fires before 081KSKBP80008QG0R000GPC0TB.1 \`zeta-self-register.service\`. Two passphrase modes (file / interactive); disabled by default; opt-in per host config.
 
-**Commit 2 (B-0852.4d)**: adds \`./zeta-creds-restore.nix\` to \`full-ai-cluster/nixos/modules/common.nix\` imports list right after \`./zeta-self-register.nix\` — every cluster node now inherits the module surface; per-host opt-in via \`zeta.credsRestore.enable = true;\`.
+**Commit 2 (081KSKBP80008QG0R003AX2A69.4d)**: adds \`./zeta-creds-restore.nix\` to \`full-ai-cluster/nixos/modules/common.nix\` imports list right after \`./zeta-self-register.nix\` — every cluster node now inherits the module surface; per-host opt-in via \`zeta.credsRestore.enable = true;\`.
 
 ## End-to-end USB test path now complete
 
 1. Reflash USB with ISO carrying these changes
 2. Boot, run installer with ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE=...
-3. Step 6.95-picker writes \`/esp/zeta-creds.enc\` (B-0852.3a, PR #5450 in flight)
+3. Step 6.95-picker writes \`/esp/zeta-creds.enc\` (081KSKBP80008QG0R003AX2A69.3a, PR #5450 in flight)
 4. Operator enables \`zeta.credsRestore.enable = true;\` in host config + pre-stages \`/run/zeta-creds-passphrase\`
 5. Reboot → \`zeta-creds-restore.service\` fires → blob decrypted → per-cred files populated
-6. \`zeta-self-register.service\` fires next per B-0855.1 ordering
+6. \`zeta-self-register.service\` fires next per 081KSKBP80008QG0R000GPC0TB.1 ordering
 
 ## Test plan
 

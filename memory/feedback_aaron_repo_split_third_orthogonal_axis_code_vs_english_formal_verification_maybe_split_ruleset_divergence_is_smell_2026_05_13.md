@@ -1,6 +1,6 @@
 ---
 name: Repo-split THIRD orthogonal axis — code vs English (with engineering-docs exception); formal verification maybe split; ruleset-divergence is repo-split smell (Aaron 2026-05-13)
-description: Aaron 2026-05-13 third orthogonal repo-split axis on top of Factory/Product/Owner-only (B-0424+B-0425+PR #2905) and Mirror/Beacon (B-0426+PR #2910). Split repos based on code vs English substrate type — EXCEPT some docs belong in-repo per best engineering practices (README, ADRs, architecture diagrams, GLOSSARY-for-code). Maybe formal verification (TLA+/Lean/Z3/FsCheck/Stryker proofs) gets its own repo. Ruleset-divergence (different GitHub rulesets needed) is the SMELL indicating different repo split — time savings + composability of dependencies. Composes with B-0424 + B-0425 + B-0426 + B-0427 + orthogonal-axes-factory-hygiene + default-to-both.
+description: Aaron 2026-05-13 third orthogonal repo-split axis on top of Factory/Product/Owner-only (081KRFA460008QG0R001H98EXJ+081KRFA460008QG0R003JQ46J4+PR #2905) and Mirror/Beacon (081KRFA460008QG0R0007RWSN1+PR #2910). Split repos based on code vs English substrate type — EXCEPT some docs belong in-repo per best engineering practices (README, ADRs, architecture diagrams, GLOSSARY-for-code). Maybe formal verification (TLA+/Lean/Z3/FsCheck/Stryker proofs) gets its own repo. Ruleset-divergence (different GitHub rulesets needed) is the SMELL indicating different repo split — time savings + composability of dependencies. Composes with 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + 081KRFA460008QG0R0007RWSN1 + 081KRFA460008QG0R000VKJF0H + orthogonal-axes-factory-hygiene + default-to-both.
 type: feedback
 created: 2026-05-13
 ---
@@ -17,10 +17,10 @@ Adds THIRD orthogonal axis to repo-split design space.
 
 **How to apply:** When designing repo splits, classify each
 substrate file on THREE axes:
-- **Axis 1** — Factory / Product / Owner-only (per B-0424 +
-  B-0425 + PR #2905)
-- **Axis 2** — Mirror / Beacon (per B-0426 + PR #2910)
-- **Axis 3** — Code / English (per THIS memory, B-0427)
+- **Axis 1** — Factory / Product / Owner-only (per 081KRFA460008QG0R001H98EXJ +
+  081KRFA460008QG0R003JQ46J4 + PR #2905)
+- **Axis 2** — Mirror / Beacon (per 081KRFA460008QG0R0007RWSN1 + PR #2910)
+- **Axis 3** — Code / English (per THIS memory, 081KRFA460008QG0R000VKJF0H)
   with engineering-docs-stay-with-code exception and
   formal-verification-maybe-separate sub-axis
 
@@ -144,9 +144,9 @@ Each repo gets a position-vector across THREE axes:
 
 | Axis | Values | Default? |
 |---|---|---|
-| **Axis 1** (B-0424+B-0425+PR #2905) | Factory / Product / Owner-only | per substrate-fit |
-| **Axis 2** (B-0426+PR #2910) | Mirror / Beacon | per maturity-tier |
-| **Axis 3** (THIS / B-0427) | Code / English | per substrate-type |
+| **Axis 1** (081KRFA460008QG0R001H98EXJ+081KRFA460008QG0R003JQ46J4+PR #2905) | Factory / Product / Owner-only | per substrate-fit |
+| **Axis 2** (081KRFA460008QG0R0007RWSN1+PR #2910) | Mirror / Beacon | per maturity-tier |
+| **Axis 3** (THIS / 081KRFA460008QG0R000VKJF0H) | Code / English | per substrate-type |
 
 Examples:
 
@@ -166,12 +166,12 @@ The matrix illustrative; per-substrate evaluation owed.
 
 ## Composes with
 
-- B-0424 — three-repo split Stage 1 (Factory: Zeta + Forge +
+- 081KRFA460008QG0R001H98EXJ — three-repo split Stage 1 (Factory: Zeta + Forge +
   ace)
-- B-0425 — product-repo split planning (KSK + wellness +
+- 081KRFA460008QG0R003JQ46J4 — product-repo split planning (KSK + wellness +
   civsim + AD2.0 + DIO + Aurora + Dawn)
-- B-0426 — orthogonal Mirror/Beacon axis (Axis 2)
-- B-0427 — THIS new row (Axis 3: Code/English)
+- 081KRFA460008QG0R0007RWSN1 — orthogonal Mirror/Beacon axis (Axis 2)
+- 081KRFA460008QG0R000VKJF0H — THIS new row (Axis 3: Code/English)
 - PR #2905 — forker-perspective META-discipline (third
   Factory/Product/Owner-only category)
 - PR #2909 — civsim language mirror/beacon governance
@@ -229,7 +229,7 @@ substrate-honest decision criterion.
 
 ## Full reasoning
 
-PR #2911 (this substrate + B-0427 backlog row landing
+PR #2911 (this substrate + 081KRFA460008QG0R000VKJF0H backlog row landing
 together)
 
 PR #2910 (orthogonal Mirror/Beacon axis — Axis 2)
@@ -238,7 +238,7 @@ PR #2909 (civsim language mirror/beacon governance)
 
 PR #2905 (forker-perspective META-discipline)
 
-PR #2904 (B-0424 + B-0425 + honor-system license)
+PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 
 `memory/feedback_orthogonal_axes_factory_hygiene.md` —
 orthogonal axes discipline existing

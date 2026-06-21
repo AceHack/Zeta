@@ -33,9 +33,9 @@
 
 **Root cause:** `noUncheckedIndexedAccess: true` in `tsconfig.json` makes `argv[i]` return `string | undefined`. The loop condition `i < argv.length` guarantees the element exists at runtime, but TypeScript can't narrow through it. `Set<string>.has()` requires `string`, not `string | undefined`, so `KNOWN_FLAGS.has(arg)` at line 87 fails with TS2345.
 
-**Why missed in #3008:** B-0442.1 included a `fix(tsc)` commit for `results[0]!` in the test file but the source file's `argv[i]` indexing was a separate violation that only surfaces when `lint (tsc tools)` CI runs against the merge commit (which combines the PR branch with main's state).
+**Why missed in #3008:** 081KRFA460008QG0R00061SXRW.1 included a `fix(tsc)` commit for `results[0]!` in the test file but the source file's `argv[i]` indexing was a separate violation that only surfaces when `lint (tsc tools)` CI runs against the merge commit (which combines the PR branch with main's state).
 
-**Sibling to #3010** (which fixed the same class of errors in the two test files for B-0440.1 and B-0441.1).
+**Sibling to #3010** (which fixed the same class of errors in the two test files for 081KRFA460008QG0R001KC0VBH.1 and 081KRFA460008QG0R00229616S.1).
 
 ## Test plan
 

@@ -1,9 +1,8 @@
 ---
-id: B-0500
-zetaid: 081KRHWGX0008QG0R0025PX5SZ
+id: 081KRHWGX0008QG0R0025PX5SZ
 priority: P1
 status: closed
-title: "B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce"
+title: "081KRFA460008QG0R00229616S slice 3 — wire isAgentQueueEmpty guard into pollOnce"
 tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
@@ -15,7 +14,7 @@ tags: [background-service, queue-state, bus, mechanization, anti-idle]
 type: feature
 ---
 
-# B-0441 slice 3 — queue-state guard wiring into `pollOnce`
+# 081KRFA460008QG0R00229616S slice 3 — queue-state guard wiring into `pollOnce`
 
 ## Origin
 
@@ -28,7 +27,7 @@ consulted. The file header comment acknowledges this explicitly:
 > slice 4 publishes unconditionally when ready rows exist so the reactive loop is
 > closed end-to-end."
 
-The comment labels this as "slice 5" using B-0441's original design-sketch numbering;
+The comment labels this as "slice 5" using 081KRFA460008QG0R00229616S's original design-sketch numbering;
 the README's canonical per-service ordering calls it "slice 3" (second detection signal).
 Either label — the gap is real: an agent actively grinding a branch will still receive
 work-assignment envelopes on every poll cycle.
@@ -86,8 +85,8 @@ tests. Net change: ~30 lines of implementation + ~40 lines of tests.
 ## Dependency chain
 
 ```
-B-0441 (slices 1+2+4 shipped — backlog-ready-notifier.ts functional)
-  └─ B-0500 (THIS ROW — wire queue-state guard; slice 3)
+081KRFA460008QG0R00229616S (slices 1+2+4 shipped — backlog-ready-notifier.ts functional)
+  └─ 081KRHWGX0008QG0R0025PX5SZ (THIS ROW — wire queue-state guard; slice 3)
 ```
 
 ## Pre-start checklist (per backlog-item-start-gate)

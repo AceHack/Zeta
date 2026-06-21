@@ -1,12 +1,11 @@
 ---
-id: B-0330
-zetaid: 081KR2E4K0008QG0R002VM58S4
+id: 081KR2E4K0008QG0R002VM58S4
 priority: P1
 status: closed
 title: Memory-format standardization — define frontmatter shape, filename conventions, section headers
 tier: foundation
 effort: S
-ask: B-0190 Step 2 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 2 decomposition
 created: 2026-05-08
 last_updated: 2026-05-09
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,11 +15,11 @@ tags: [memory, format, standardization, foundation, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0330 — Memory-format standardization
+# 081KR2E4K0008QG0R002VM58S4 — Memory-format standardization
 
 ## Parent
 
-B-0190 Step 2 (memory-format standardization).
+081KQR4HQ0008QG0R001909FPT Step 2 (memory-format standardization).
 
 ## What
 
@@ -45,7 +44,7 @@ memory file. Standardize:
 
 A `memory/project_memory_format_standard.md` file (project-policy
 classification per `memory/README.md` taxonomy). This file becomes
-the schema that B-0335 (validation tooling) enforces mechanically.
+the schema that 081KR2E4K0008QG0R000M01QVM (validation tooling) enforces mechanically.
 
 ## Acceptance criteria
 
@@ -59,7 +58,7 @@ the schema that B-0335 (validation tooling) enforces mechanically.
 ## Why S effort
 
 Defines a standard; does not rewrite existing files. The
-reclassification work is B-0331.
+reclassification work is 081KR2E4K0008QG0R003RZFR9F.
 
 ## Prior art
 

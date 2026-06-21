@@ -15,7 +15,7 @@
  *          fence + table-cell skip in findClaims; drop unused field
  *   v0.2 — fence skipping in findTables (asymmetric-discipline catch)
  *   v0.3 — separator regex requires `-`; export main + import.meta.main
- *          guard; B-0170 sub-class accuracy; indented-table v1 doc
+ *          guard; 081KQNJ500008QG0R003SCWBDV sub-class accuracy; indented-table v1 doc
  *   v0.4 — CommonMark fence-delimiter tracking (char + length match);
  *          directory rejection via statSync; readFileSync error wrap
  *   v0.4.1 — file header version label refresh; explicit error wrap
@@ -23,16 +23,16 @@
  *            try/catch around readFileSync (eliminates TOCTOU race
  *            CodeQL flagged); categorize ENOENT / EISDIR by err.code
  *   v0.4.3 — bun:test unit-test suite (16 tests across findTables /
- *            findClaims / checkFile); README + B-0170 count drift
+ *            findClaims / checkFile); README + 081KQNJ500008QG0R003SCWBDV count drift
  *            switched to "memo's body table is canonical"
  *   v0.4.4 — fence-close requires whitespace-only after delimiter
  *            (closes "```bash" classified as opening info-string
  *            rather than closer)
- *   v1.0 — B-0170 smallest-slice claim: v1 sub-classes (existence,
+ *   v1.0 — 081KQNJ500008QG0R003SCWBDV smallest-slice claim: v1 sub-classes (existence,
  *          path-form, cross-surface, convention) now shipped in sibling
  *          modules; this file remains the count-drift anchor.
  *
- * Remaining (deferred per B-0170 re-decomp assumption):
+ * Remaining (deferred per 081KQNJ500008QG0R003SCWBDV re-decomp assumption):
  *   - Semantic-equivalence drift
  *   - Empirical-output drift
  *   - Self-recursive drift

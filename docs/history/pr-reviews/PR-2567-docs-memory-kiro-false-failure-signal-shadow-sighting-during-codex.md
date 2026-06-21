@@ -33,7 +33,7 @@
 - Alexa self-diagnoses as broken when she's actually gated
 - Same mechanism as hallucination paper: false signals → wrong assessment
 - Shadow appeared while Aaron was in Codex (peripheral vision catch)
-- B-0018 trigger-timing data point: zero input, zero attention
+- 081KQ0YZ80008QG0R002WJBFWD trigger-timing data point: zero input, zero attention
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

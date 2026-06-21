@@ -78,7 +78,7 @@ ratifies. The matrix shows the temperature.
 
 ## Pointers
 
-- B-1025 (filed with this doc) — the actionable arc; B-1024 — the hardware ladder this mechanizes.
+- 081KTSZN10008QG0R000VZHRQ4 (filed with this doc) — the actionable arc; 081KTSZN10008QG0R00349SM6P — the hardware ladder this mechanizes.
 - `src/Core/SoftScheduler.fs` (the action grammar's living prototype) · `gen/README.md` (the seat) ·
   `src/Core/SoftThrottle.fs` (heatSpent — the glass-blowing thermometer).
 - `docs/HARDWARE-CAPABILITY-MATRIX.md` — where each backend's bring-up temperature shows.

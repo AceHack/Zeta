@@ -27,7 +27,7 @@
 
 ## Description
 
-Round 44 bounded spot-check by Otto-CLI from autonomous-loop. Honest scope disclosure: 3 skills sampled (skills directly touched in today's PR #4753 / B-0708 work), no live-search this invocation. 1 actionable finding (alignment-observability bp_rules_cited empty → TUNE — S). Recommendations-only per skill discipline.
+Round 44 bounded spot-check by Otto-CLI from autonomous-loop. Honest scope disclosure: 3 skills sampled (skills directly touched in today's PR #4753 / 081KS923C0008QG0R00035KSQA work), no live-search this invocation. 1 actionable finding (alignment-observability bp_rules_cited empty → TUNE — S). Recommendations-only per skill discipline.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -105,7 +105,7 @@ notebook(aarav round 44): bounded spot-check on 3 skills — Otto-CLI i…
 …nvoked from autonomous-loop
 
 Round 44 of skill-tune-up ranking. Bounded scope honestly disclosed:
-3 skills sampled (the ones Otto-CLI touched in PR #4753 / B-0708
+3 skills sampled (the ones Otto-CLI touched in PR #4753 / 081KS923C0008QG0R00035KSQA
 work today). NOT a full ~280-skill pass. NO live-search this
 invocation (autonomous-loop bandwidth budget).
 
@@ -135,7 +135,7 @@ Composes with:
   route per Architect/human decision)
 - PR #4753 (alignment-auditor manifesto-citation pattern this
   round notes is mirrorable to the SKILL file)
-- PR #4766 (B-0708 closure; 9-variant taxonomy substrate-placement
+- PR #4766 (081KS923C0008QG0R00035KSQA closure; 9-variant taxonomy substrate-placement
   candidate noted for next-Aarav)
 
 Co-Authored-By: Claude <noreply@anthropic.com>

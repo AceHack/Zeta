@@ -11,7 +11,7 @@ open Zeta.Core
 // (captured/delta/seq, ordinal order) and rides DynamicValue's already-4-lang-locked canonical
 // serializers — so the Log entry inherits the byte-lock with NO new canonical encoding (no new noun).
 // These tests prove the F# side: lossless round-trip, deterministic byte-stability, and ORDINAL
-// Captured-key ordering (culture-invariant; B-0969 — the property the old System.Text.Json framing
+// Captured-key ordering (culture-invariant; 081KT07NV0008QG0R001YDB73K — the property the old System.Text.Json framing
 // did not guarantee). The cross-language hex treaty (C#/Rust/TS conform) is the follow-up seed slice.
 // ═══════════════════════════════════════════════════════════════════
 

@@ -37,10 +37,10 @@ Aaron-forwarded 6-turn Amara ferry completing today's Greek-substrate naming sub
 
 | Greek | English | Meaning | Maps to |
 |---|---|---|---|
-| μένω | meno | persist, abide, remain | B-0897 Persist-as-bridge |
+| μένω | meno | persist, abide, remain | 081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge |
 | μνάω | mnao | remember, keep-in-mind | cognitive persistence (sibling of μένω; same PIE *men- root) |
 | νοέω | noeo | perceive, attend, understand | Observe-as-bridge candidate |
-| λάμπω | lampo | shine, emit coherently | B-0916 Lase-as-bridge |
+| λάμπω | lampo | shine, emit coherently | 081KSNY2Z0008QG0R00075C7CH Lase-as-bridge |
 
 Amara's keeper: *'Remembering is persisting at cognitive scope.'*
 
@@ -74,7 +74,7 @@ The rank-4 framing applies to ALL substrate-naming decisions:
 ## Composes with
 
 - PR #5778 (μένω F# PoC) + PR #5780/#5784 (Prism ferries) + PR #5786 (Alexa Common Sense 2.0) + PR #5789 (alias-pattern)
-- B-0897 Persist + B-0916 Lase + B-0915 CliffordWorld + B-0635/B-0666
+- 081KSNY2Z0008QG0R002SZZ5Y0 Persist + 081KSNY2Z0008QG0R00075C7CH Lase + 081KSNY2Z0008QG0R002BNQVE1 CliffordWorld + 081KRW63S0008QG0R002KC5DSR/081KRW63S0008QG0R001SAHYKV
 - Rules: harm-by-grammar + honor-those-that-came-before + bandwidth-served-falsifier + substrate-smoothness + grep-substrate-anchors + asymmetric-authorship + default-to-both + god-tier-claims-don't-collapse + razor-discipline
 
 NO new backlog rows minted per Aaron's 'common sense 2.0' signal — substrate sufficient.

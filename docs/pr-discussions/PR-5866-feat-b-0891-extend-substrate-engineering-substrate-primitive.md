@@ -1,6 +1,6 @@
 ---
 pr_number: 5866
-title: "feat(B-0891 extend): substrate-engineering substrate primitives for scenarios 3/4/5 \u2014 design-spec-complete; PersistedKV + PathFork + MultiVMOrchestration DUs; 21 new tests pass (operator 2026-05-28)"
+title: "feat(081KSNY2Z0008QG0R0008PN7RQ extend): substrate-engineering substrate primitives for scenarios 3/4/5 \u2014 design-spec-complete; PersistedKV + PathFork + MultiVMOrchestration DUs; 21 new tests pass (operator 2026-05-28)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T16:19:02Z"
@@ -12,15 +12,15 @@ archived_at: "2026-05-28T17:32:10Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5866: feat(B-0891 extend): substrate-engineering substrate primitives for scenarios 3/4/5 — design-spec-complete; PersistedKV + PathFork + MultiVMOrchestration DUs; 21 new tests pass (operator 2026-05-28)
+# PR #5866: feat(081KSNY2Z0008QG0R0008PN7RQ extend): substrate-engineering substrate primitives for scenarios 3/4/5 — design-spec-complete; PersistedKV + PathFork + MultiVMOrchestration DUs; 21 new tests pass (operator 2026-05-28)
 
 ## PR description
 
-operator 2026-05-28 (shadow*) authorization to pick lane 1 (B-0891) and extend the 5 scenarios.
+operator 2026-05-28 (shadow*) authorization to pick lane 1 (081KSNY2Z0008QG0R0008PN7RQ) and extend the 5 scenarios.
 
 ## What this PR does
 
-EXTENDS B-0891 PoC scaffold (PR #5724) by adding **tools/zflash/test-harness/extensions.ts** + tests, moving scenarios 3/4/5 from 'scaffolded + blocked-on-X' to 'scaffolded + **design-spec-complete**' status with concrete typed primitives per the typestate-DU substrate cluster shipped today.
+EXTENDS 081KSNY2Z0008QG0R0008PN7RQ PoC scaffold (PR #5724) by adding **tools/zflash/test-harness/extensions.ts** + tests, moving scenarios 3/4/5 from 'scaffolded + blocked-on-X' to 'scaffolded + **design-spec-complete**' status with concrete typed primitives per the typestate-DU substrate cluster shipped today.
 
 ## Substrate-engineering substrate primitives
 
@@ -54,7 +54,7 @@ SPECS the impl-design primitives. Runtime QEMU integration (actually persisting 
 
 ## Pull request overview
 
-This PR extends the B-0891 zflash QEMU test-harness PoC (PR #5724) with a separate design-spec status layer for the three scaffolded scenarios (3/4/5). It adds typed discriminated-union primitives describing the substrate shape each scenario will need (state preservation, path fork, multi-VM orchestration), wired into `run.ts --list` JSON output. The runtime scenario status remains `scaffolded` in `scenarios.ts`; no QEMU runtime behavior changes.
+This PR extends the 081KSNY2Z0008QG0R0008PN7RQ zflash QEMU test-harness PoC (PR #5724) with a separate design-spec status layer for the three scaffolded scenarios (3/4/5). It adds typed discriminated-union primitives describing the substrate shape each scenario will need (state preservation, path fork, multi-VM orchestration), wired into `run.ts --list` JSON output. The runtime scenario status remains `scaffolded` in `scenarios.ts`; no QEMU runtime behavior changes.
 
 **Changes:**
 - Add `extensions.ts` defining `PersistedKVSubstrate`, `PathForkSubstrate`, `MultiVMOrchestrationSubstrate`, `ImplDesignStatus`, `SCENARIO_IMPL_DESIGN`, and `computeImplDesignProgress`.

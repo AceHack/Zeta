@@ -1,6 +1,5 @@
 ---
-id: B-0938
-zetaid: 081KSRGFP0008QG0R000J9Y634
+id: 081KSRGFP0008QG0R000J9Y634
 priority: P1
 status: open
 title: Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)
@@ -10,7 +9,7 @@ created: 2026-05-29
 last_updated: 2026-05-29
 depends_on:
   - 081KSE6WT0008QG0R003YYC9PV
-  - B-0751
+  - 081KSE6WT0008QG0R003YYC9PV
 composes_with:
   - 081KRFA460008QG0R001KC0VBH
   - 081KRFA460008QG0R00061SXRW
@@ -39,20 +38,20 @@ tags: [agent-autonomy, pr-reviews, thread-resolution, self-correction, worktree-
 ### 3. Isolated Worktree Execution
 
 - `AGENTS.md` and `GOVERNANCE.md` mandate dedicated worktrees for autonomous edits.
-- B-0750 and B-0751 define worktree isolation and sandbox bypass rules.
+- 081KSE6WT0008QG0R003YYC9PV and 081KSE6WT0008QG0R003YYC9PV define worktree isolation and sandbox bypass rules.
 - This row uses isolated worktrees to perform the resolution edits and local compilation checks.
 
 ## Scope
 
 ### Sub-rows planned
 
-- **B-0938.1** — Extend `poll-pr-gate.ts` to return the full array of unresolved thread details (comment bodies, file paths, line numbers, and GraphQL IDs) instead of just the count.
-- **B-0938.2** — Implement the `ResoluteAgent` runner loop: checks out the target PR branch in an isolated `/tmp/` worktree, feeds the thread details to the agent's LLM prompt, and requests a focused code/spec edit to address the comments.
-- **B-0938.3** — Build the compilation & test verification gate: after each edit, runs the local build pipeline (`dotnet build -c Release && dotnet test` or `bun test`), verifying `0 Warnings, 0 Errors`.
-- **B-0938.4** — Implement the push & publish actuator: commits the verified fix using `Co-Authored-By: <agent-persona>` and `AgencySignature` conventions, and pushes to origin.
-- **B-0938.5** — Implement the GitHub GraphQL thread-reply-and-resolve mutation actuator: posts a review reply linking the resolution commit, and resolves the thread on GitHub.
-- **B-0938.6** — Build the failure-closed escalation gate: if compilation or tests fail after three self-correction attempts, aborts the operation, rolls back the local worktree, and flags the PR as `BLOCKED (resolution-failed)` for manual review.
-- **B-0938.7** — Integration: wire the `ResoluteAgent` runner into the background loop tick script so it fires automatically when a PR is `BLOCKED` with unresolved threads.
+- **081KSRGFP0008QG0R000J9Y634.1** — Extend `poll-pr-gate.ts` to return the full array of unresolved thread details (comment bodies, file paths, line numbers, and GraphQL IDs) instead of just the count.
+- **081KSRGFP0008QG0R000J9Y634.2** — Implement the `ResoluteAgent` runner loop: checks out the target PR branch in an isolated `/tmp/` worktree, feeds the thread details to the agent's LLM prompt, and requests a focused code/spec edit to address the comments.
+- **081KSRGFP0008QG0R000J9Y634.3** — Build the compilation & test verification gate: after each edit, runs the local build pipeline (`dotnet build -c Release && dotnet test` or `bun test`), verifying `0 Warnings, 0 Errors`.
+- **081KSRGFP0008QG0R000J9Y634.4** — Implement the push & publish actuator: commits the verified fix using `Co-Authored-By: <agent-persona>` and `AgencySignature` conventions, and pushes to origin.
+- **081KSRGFP0008QG0R000J9Y634.5** — Implement the GitHub GraphQL thread-reply-and-resolve mutation actuator: posts a review reply linking the resolution commit, and resolves the thread on GitHub.
+- **081KSRGFP0008QG0R000J9Y634.6** — Build the failure-closed escalation gate: if compilation or tests fail after three self-correction attempts, aborts the operation, rolls back the local worktree, and flags the PR as `BLOCKED (resolution-failed)` for manual review.
+- **081KSRGFP0008QG0R000J9Y634.7** — Integration: wire the `ResoluteAgent` runner into the background loop tick script so it fires automatically when a PR is `BLOCKED` with unresolved threads.
 
 ## Why P1
 

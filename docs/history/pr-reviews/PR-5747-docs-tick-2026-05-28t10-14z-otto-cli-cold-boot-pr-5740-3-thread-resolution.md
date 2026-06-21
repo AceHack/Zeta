@@ -30,7 +30,7 @@
 ## Summary
 
 - Tick shard for 2026-05-28T10:14Z Otto-CLI cold-boot session.
-- Carries the substrate of [PR #5740](https://github.com/Lucent-Financial-Group/Zeta/pull/5740)'s 3-thread resolution (Copilot review threads on the B-0807 classifier-bypass findings schema) verified, fixed, pushed, and resolved within the same tick.
+- Carries the substrate of [PR #5740](https://github.com/Lucent-Financial-Group/Zeta/pull/5740)'s 3-thread resolution (Copilot review threads on the 081KSGS9H0008QG0R001K8P0FJ classifier-bypass findings schema) verified, fixed, pushed, and resolved within the same tick.
 - Sentinel `a7b83b70` re-armed at session start after catch-43 fired (no scheduled jobs at cold-boot per `tick-must-never-stop.md`).
 
 ## What landed
@@ -38,9 +38,9 @@
 - Investigated PR #5740 BLOCKED state per `.claude/rules/blocked-green-ci-investigate-threads.md` (gate BLOCKED + auto-merge armed + 3 unresolved Copilot threads + 0 required-check failures).
 - Verified each Copilot finding against the PR head source via `git show <head-sha>:<path>` + `awk -v N=<line>` direct inspection (per verify-before-fix discipline).
 - All 3 findings VALID:
-  - **P1 line 49** of `docs/security/B-0807-classifier-bypass-findings-schema.md` — `unknown` instruction contradicted by enum-typed fields; clarified non-enum scope + enum `refusal-required` fallback.
-  - **P1 line 121** — `redaction_level` 4-value vocabulary mismatch with B-0799's 3-value audit-log shape; added `### Mapping to B-0799 Audit-Log Vocabulary` subsection naming the per-record mapping discipline.
-  - **Minor line 133** of `docs/backlog/P0/B-0720-...md` — parenthetical citation punctuation; added `see` to disambiguate.
+  - **P1 line 49** of `docs/security/081KSGS9H0008QG0R001K8P0FJ-classifier-bypass-findings-schema.md` — `unknown` instruction contradicted by enum-typed fields; clarified non-enum scope + enum `refusal-required` fallback.
+  - **P1 line 121** — `redaction_level` 4-value vocabulary mismatch with 081KSGS9H0008QG0R0005RKGTM's 3-value audit-log shape; added `### Mapping to 081KSGS9H0008QG0R0005RKGTM Audit-Log Vocabulary` subsection naming the per-record mapping discipline.
+  - **Minor line 133** of `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-...md` — parenthetical citation punctuation; added `see` to disambiguate.
 - Pushed fix commit `72ea879f5` to PR #5740's branch via explicit-refspec FF push (lease not needed; parent = remote tip).
 - Resolved all 3 thread IDs via `resolveReviewThread` GraphQL mutation.
 

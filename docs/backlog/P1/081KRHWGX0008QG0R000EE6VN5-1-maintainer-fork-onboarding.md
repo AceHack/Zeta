@@ -1,6 +1,5 @@
 ---
-id: B-0248.1
-zetaid: 081KRHWGX0008QG0R000EE6VN5
+id: 081KRHWGX0008QG0R000EE6VN5
 priority: P1
 status: open
 title: "Multi-site fork — maintainer fork onboarding and mirror-sync setup for Addison and Max"
@@ -13,11 +12,11 @@ owners: [security-auditor]
 type: feature
 ---
 
-# B-0248.1 — Maintainer fork onboarding and mirror-sync
+# 081KRHWGX0008QG0R000EE6VN5 — Maintainer fork onboarding and mirror-sync
 
 ## What
 
-First slice of B-0248. Extract the repository redundancy steps to give Addison and Max clean, documented fork/mirror onboarding packets.
+First slice of 081KQZVQW0008QG0R0032TPKT8. Extract the repository redundancy steps to give Addison and Max clean, documented fork/mirror onboarding packets.
 
 ## Scope
 

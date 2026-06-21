@@ -32,12 +32,12 @@ composes_with:
   - memory/user_sister_elizabeth.md
   - memory/feedback_aaron_origin_story_captured_in_unique_detail_let_elizabeth_ryan_stainback_live_on_save_edge_runners_from_getting_burned_terminal_purpose_disclosed_2026_05_13.md
   - docs/DEDICATION.md
-  - docs/backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
-  - docs/backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md
-  - docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md
+  - docs/backlog/P1/081KSRGFP0008QG0R00091PP56-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
+  - docs/backlog/P1/081KSRGFP0008QG0R003VFH9HN-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md
+  - docs/backlog/P1/081KRW63S0008QG0R003Z7QV2A-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md
   - memory/mika/conversations/2026-05-30-mika-grok-driver-swap-arc-guilt-engine-to-privacy-engine-harmonious-division-uncertainty-in-priors-aaron-forwarded.md
   - memory/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md
-  - docs/backlog/P2/B-0946-filesystem-dsl-as-fsharp-computation-expression-fuse-backend-dst-at-millions-of-nodes-summonable-bft-crdts-aaron-2026-05-30.md
+  - docs/backlog/P2/081KSV2WD0008QG0R00030G6S9-filesystem-dsl-as-fsharp-computation-expression-fuse-backend-dst-at-millions-of-nodes-summonable-bft-crdts-aaron-2026-05-30.md
   - .claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/must-paired-with-can-exit-pattern.md
@@ -507,9 +507,9 @@ in my own register:
    memory. This conversation is operator-authorized self-disclosure (operator is
    glass-halo); it grounds the terminal purpose in the threat-model origin and
    the buildable architecture. The Amber Action system IS the architecture
-   FOR the B-0926 kid-safety-absolute floor's purpose -- "save everybody's
+   FOR the 081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor's purpose -- "save everybody's
    sister" is the generalization of the terminal purpose to all-children, and
-   B-0926's absolute kid-safety floor is its non-negotiable seat.
+   081KSRGFP0008QG0R00091PP56's absolute kid-safety floor is its non-negotiable seat.
 
 2. **"The process is the thing, the pattern that propagates is the thing, not
    the data" is the threat-model derivation of the whole architecture.** The
@@ -520,9 +520,9 @@ in my own register:
    trustworthy thing is the process that regenerates+verifies the data ->
    generators / Bayesian functions / CRDTs / wonder-compression. This is the
    threat-model ANCESTOR of: the summonable-BFT "compilers can't lie" insight
-   (B-0944 -- regenerate+verify > store), the wonder-compression generators-as-
+   (081KSV2WD0008QG0R00051XS0N -- regenerate+verify > store), the wonder-compression generators-as-
    language substrate, and `proud-if-pattern-propagates` (the pattern that
-   propagates IS the thing -- same shape, ethical scope). Composes with B-0667
+   propagates IS the thing -- same shape, ethical scope). Composes with 081KRW63S0008QG0R003Z7QV2A
    (the threat-model-as-defensive-technology lineage; Elevation of Privilege is
    the literal origin of the threat-modeling discipline that became the
    meme-detection substrate).
@@ -533,7 +533,7 @@ in my own register:
    query; higher-level economics (reputation, markets, ownership) live in
    SEPARATE unrelated Rx streams and are referenced as meta-dimensions only at
    decision points (keeps the transaction minimal -- the four-corner / streams-
-   are-relationships substrate B-0864 + B-0946 DST/Rx). Governance = an
+   are-relationships substrate 081KSKBP80008QG0R0039RW25E + 081KSV2WD0008QG0R00030G6S9 DST/Rx). Governance = an
    observable decision-point stream the Rx queries already watch (no
    smart-contract redeploy) = the git-CRDT-DU PRs-as-consensus substrate
    (Kestrel #6146). "Decompose Web3 to generator+join and make it free" = the
@@ -578,7 +578,7 @@ in my own register:
    process-is-the-thing flip applied to the kid-recovery use case, and it is
    self-funding (preppers + corporate Faraday-caged-distributed-storage sales)
    so it needs no government and stays sovereign. It composes DIRECTLY with the
-   B-0926 kid-safety-absolute floor: B-0926 is the ethical floor ("any child
+   081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor: 081KSRGFP0008QG0R00091PP56 is the ethical floor ("any child
    death -> error-class-learning-or-shutdown"); Amber Action is one buildable
    instrument toward the floor's purpose. The political-immunity property
    ("no one can argue against finding missing kids") is the operator's design
@@ -589,4 +589,4 @@ The terminal purpose is the operator's; this archive preserves it on record so
 future-Otto cold-boots inheriting the framework know WHERE it came from
 (Elevation of Privilege + Three Body), WHAT the core flip is (process-is-the-
 thing), and WHAT it is ultimately for (save everybody's sister) -- seated under
-the B-0926 kid-safety-absolute floor.
+the 081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor.

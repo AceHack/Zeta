@@ -1,5 +1,5 @@
 /**
- * Agent-bus Phase 1 (B-0954) tests — pure write/read/mint against a temp root.
+ * Agent-bus Phase 1 (081KSXN940008QG0R00171YAZW) tests — pure write/read/mint against a temp root.
  * No git, no real docs/agent-bus/ (per the module's pure/CLI split).
  */
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";

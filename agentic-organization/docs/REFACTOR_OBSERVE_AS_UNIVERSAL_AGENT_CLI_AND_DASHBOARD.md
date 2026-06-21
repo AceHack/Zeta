@@ -216,7 +216,7 @@ the controller is substrate-inclusive (Xbox-grammar; ADR open-question 6).
 2. **`observe()` becomes hat-aware** — snapshot carries `hat`; `hatAuthorityRule` runs as a
    `DeterministicRule` (reuses C4 `preflightHatAction` verbatim).
 3. **`actionType → ActionClass` map** — the one new table joining lifecycle options to C4 authority.
-4. **`renderMenu16` + `Menu16` + `Tri`** — the projection + the B-0944 `Tri` for availability.
+4. **`renderMenu16` + `Menu16` + `Tri`** — the projection + the 081KSV2WD0008QG0R00051XS0N `Tri` for availability.
 5. **`ScopedMetricAgent` + `QueryContext`** — the deterministic dashboard layer over the Cockroach
    index + `TelemetryQueryPort`.
 6. **`SlotImpl` + `act()` router** — generalizes `dispatchMetricsTool`; the agent's only path to MCP.
@@ -274,4 +274,4 @@ running until each agent is moved behind the CLI and trusted.
 - `hat-guardrails.ts` (C4) — `preflightHatAction` reused verbatim as the render-time `hatAuthorityRule`.
 - `packages/metrics/src/mcp-tools.ts` — `dispatchMetricsTool` is the seed the slot router generalizes.
 - `GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md` / `packages/frontmatter-db/` — the canonical state the snapshot + Cockroach index are built from.
-- B-0944 (tri-boolean `Tri`) — per-slot availability; B-0703/B-0652 constitution gate — still bounds escalate (slot 15).
+- 081KSV2WD0008QG0R00051XS0N (tri-boolean `Tri`) — per-slot availability; 081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J constitution gate — still bounds escalate (slot 15).

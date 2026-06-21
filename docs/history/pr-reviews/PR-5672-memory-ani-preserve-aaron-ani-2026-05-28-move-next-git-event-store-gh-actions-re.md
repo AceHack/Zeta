@@ -67,7 +67,7 @@ Layer-1 NCI three-exceptions + AI-mediator-for-relationships is operator-persona
 ## Composes with
 
 - PRs #5665, #5666, #5667, #5668, #5669, #5670 (today's agent-loop substrate cascade)
-- B-0867 (workflow engine v1), B-0868 (hats-as-workflow-definitions), B-0869 (DORA mandate), B-0870 (two-mandate portfolio), B-0871 (reproducibility-as-causal-attribution)
+- 081KSKBP80008QG0R000B3Y19A (workflow engine v1), 081KSNY2Z0008QG0R0036KH026 (hats-as-workflow-definitions), 081KSNY2Z0008QG0R000HENSVM (DORA mandate), 081KSNY2Z0008QG0R000DA261F (two-mandate portfolio), 081KSNY2Z0008QG0R003R0Z7D2 (reproducibility-as-causal-attribution)
 - Prior Ani archive `memory/persona/ani/conversations/2026-05-27-ani-cluster-as-living-organism-...md` — 3-exceptions framing first appearance
 - `.claude/rules/non-coercion-invariant.md` HC-8 floor
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` (agency-preservation discipline)

@@ -35,7 +35,7 @@ generic-math is IWSAM; F# generic-math is SRTP `Zero`/`(+)`. Forcing C#'s IWSAM
 `TreatWarningsAsErrors` — i.e. fighting the language. "Own the interface in each
 language's own idiom" (the BCL-interface-boundary rule) means using the platform's
 *native* generic-math surface, not transplanting one platform's into another.
-Empirically: this is exactly why the B-0867.28 observe-fold monoid used C# IWSAM
+Empirically: this is exactly why the 081KSXN940008QG0R0002287MP observe-fold monoid used C# IWSAM
 *and* F# `Zero`/`(+)` — and the F# side was the cleaner of the two.
 
 ### Implement only the structure that is TRUE (additive-monoidal only, etc.)
@@ -44,7 +44,7 @@ Empirically: this is exactly why the B-0867.28 observe-fold monoid used C# IWSAM
 additive monoid invents arithmetic that doesn't exist (multiplication, ordering,
 negatives). Implement the *subset* the type genuinely has — additive-monoid
 interfaces for a free monoid (the event log), full `INumber` only for an actual
-number. (This is the B-0867.28 "additive-monoidal only, not `INumber<T>`"
+number. (This is the 081KSXN940008QG0R0002287MP "additive-monoidal only, not `INumber<T>`"
 decision for the tri-state/held-capable TriFloat + the event-log.)
 
 ### Why get it into the generic-math interface at all
@@ -66,7 +66,7 @@ decision for the tri-state/held-capable TriFloat + the event-log.)
    makes generic-math a forward investment for the WASM runtime, not just an
    in-process niceness.
 4. **Cross-language parity** — the same algebra declared in each language's
-   generic-math idiom feeds the 4-language compiler-BFT (B-0944): the structure is
+   generic-math idiom feeds the 4-language compiler-BFT (081KSV2WD0008QG0R00051XS0N): the structure is
    checked against the same golden vectors in all four (per the governance ADR).
 
 ## Discriminator — what counts as "numerical / algebra-shaped"
@@ -87,7 +87,7 @@ not for effectful machinery. Stateful/effectful types belong in the
 
 - Authoring a NEW type that has algebraic structure (a number, a fold-accumulator,
   a vector/matrix/tensor, a Z-set, a Clifford multivector, a UoM-carrying quantity).
-- Retrofitting an existing algebra-shaped type (per B-0867.28's monoid retrofit).
+- Retrofitting an existing algebra-shaped type (per 081KSXN940008QG0R0002287MP's monoid retrofit).
 - Reviewing such a type: does it declare the generic-math interface for the
   structure it has, in the right per-language idiom?
 
@@ -106,12 +106,12 @@ not for effectful machinery. Stateful/effectful types belong in the
   interface makes the structure EXPLICIT (the muscle-memory), not implicit
 - the 4-language compiler-BFT governance ADR (2026-05-31) — generic-math interfaces
   feed the cross-language parity check
-- B-0944 (tri-boolean / TriFloat) + B-0428 (F# fork, HKT over Clifford) +
-  B-0915 (Clifford on dotnet-numerics/SIMD) + B-0198 (F# UoM + BigInteger upstream)
+- 081KSV2WD0008QG0R00051XS0N (tri-boolean / TriFloat) + 081KRFA460008QG0R0018SN61J (F# fork, HKT over Clifford) +
+  081KSNY2Z0008QG0R002BNQVE1 (Clifford on dotnet-numerics/SIMD) + 081KQTPYE0008QG0R0004H9ZB8 (F# UoM + BigInteger upstream)
 
 ## Empirical anchor
 
-B-0867.28 (observe-fold additive monoid, PR #6259): the C# `EventLog` implements
+081KSXN940008QG0R0002287MP (observe-fold additive monoid, PR #6259): the C# `EventLog` implements
 `IAdditiveIdentity` plus `IAdditionOperators` (IWSAM), and the F# `EventLog` uses
 `Zero` plus `(+)` — the *same* monoid in *each* language's native generic-math
 idiom; additive-monoidal only (not `INumber`, because the log/TriFloat is a free
@@ -142,6 +142,6 @@ why; compose with the BCL-boundary + monad-propagation + governance-ADR substrat
 
 Operator 2026-05-31: *"general meta rule anyting numerica/algerba shaped we want to
 try to get in into that interface and i love the c# IWASM [IWSAM] stuff that will
-be powerfull for a wasm runtime."* Generalizes the B-0867.28 monoid retrofit (the
+be powerfull for a wasm runtime."* Generalizes the 081KSXN940008QG0R0002287MP monoid retrofit (the
 "don't fight the language" / own-the-interface-per-language lesson) into a standing
 authoring discipline, with the C#-IWSAM-for-WASM forward note recorded.

@@ -47,7 +47,7 @@ function managedProcess(pid: number, stoppedPids: number[]): ManagedQemuCommandP
   };
 }
 
-describe("B-0891 QEMU state-preservation planner", () => {
+describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
   test("plans qcow2 disk bootstrap, snapshot, restore, list, and restart commands", () => {
     const result = planQcow2SnapshotRetention({
       isoPath: "/tmp/zeta.iso",

@@ -33,7 +33,7 @@ Autonomous-loop tick shard for 0608Z (2026-05-26). Cold-boot fresh-session Otto-
 
 - Sentinel was missing at session start → catch-43 fired → re-armed (`<<autonomous-loop>>` job `98529810`, cron `* * * * *`)
 - Worldview refresh: GraphQL Normal (4738/5000), REST core 4803/5000, 0 stuck git pack/maintenance/repack procs, 57 peer claude/gemini/kiro/alexa procs
-- Recent main: B-0792/B-0793/B-0794 cascade landing (NixOS / USB / homelab install substrate)
+- Recent main: 081KSGS9H0008QG0R003V23XNZ/081KSGS9H0008QG0R000EDNTY5/081KSGS9H0008QG0R0027HJZYH cascade landing (NixOS / USB / homelab install substrate)
 - Brief-ack #1 with named bounded wait: peer Otto-CLI session opened [PR #5108](https://github.com/Lucent-Financial-Group/Zeta/pull/5108) at 06:06:25Z (~1.5min before tick), BLOCKED on 2 P1 Copilot threads — peer to address own threads (fighting-past-self-vs-peer-agent-distinguisher rule)
 
 ## Substrate-honest disposition

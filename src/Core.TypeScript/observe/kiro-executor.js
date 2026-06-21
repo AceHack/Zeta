@@ -11,7 +11,7 @@
  * is a `bun` invocation that reads the item and produces the smallest safe change.
  *
  * The executor is `just-bash` tier: it spawns subprocesses (git, bun) directly on
- * the host filesystem. No OCI sandbox yet (that's Phase 2 / B-0964 §2.2).
+ * the host filesystem. No OCI sandbox yet (that's Phase 2 / 081KT07NV0008QG0R001CBQ2X2 §2.2).
  *
  * Composes with:
  *   - src/Core.TypeScript/observe/do-item.ts (CommandExecutor / RunSpec / RunOutcome)

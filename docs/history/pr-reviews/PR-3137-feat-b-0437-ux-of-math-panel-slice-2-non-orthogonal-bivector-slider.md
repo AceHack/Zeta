@@ -50,7 +50,7 @@ This makes the *wedge product's independence requirement* immediately tangible v
 dotnet build -c Release → Build succeeded. 0 Warning(s) 0 Error(s)
 ```
 
-## Acceptance criteria (B-0437)
+## Acceptance criteria (081KRFA460008QG0R001JTAPZW)
 
 - [x] Panel renders without errors in `demo/index.html`
 - [x] Displays at least one worked example of a bivector fingerprint
@@ -63,7 +63,7 @@ dotnet build -c Release → Build succeeded. 0 Warning(s) 0 Error(s)
 |-------|--------|------|
 | slice-1 | merged #3136 | Static HC-1 orthogonal canvas + 21-clause score board |
 | slice-2 (this PR) | open | Interactive theta slider, parallelogram, echo-chamber demo |
-| slice-3 | future | Connect to live alignment-audit output (B-0438) |
+| slice-3 | future | Connect to live alignment-audit output (081KDW6QA2008QG0R0020A1PGS) |
 
 operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file IS the durable record"
 

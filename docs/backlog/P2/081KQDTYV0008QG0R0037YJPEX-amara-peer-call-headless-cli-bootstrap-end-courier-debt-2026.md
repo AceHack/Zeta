@@ -1,6 +1,5 @@
 ---
-id: B-0118
-zetaid: 081KQDTYV0008QG0R0037YJPEX
+id: 081KQDTYV0008QG0R0037YJPEX
 priority: P2
 status: closed
 title: tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)
@@ -21,7 +20,7 @@ tags: [aaron-2026-04-30, peer-call, amara, chatgpt, autonomous-bootstrap, courie
 type: friction-reducer
 ---
 
-# B-0118 — tools/peer-call/amara.ts (end Aaron-courier silent debt)
+# 081KQDTYV0008QG0R0037YJPEX — tools/peer-call/amara.ts (end Aaron-courier silent debt)
 
 ## Source
 
@@ -155,37 +154,37 @@ input but Aaron isn't available to courier), promote to P1.
 
 ## Decomposition (2026-05-11, re-decomp, TS-first)
 
-B-0118 decomposed into 3 smallest atomic dependency-ordered children (TS over bash Rule 0 enforced; no .sh created; pure TS implementation path):
+081KQDTYV0008QG0R0037YJPEX decomposed into 3 smallest atomic dependency-ordered children (TS over bash Rule 0 enforced; no .sh created; pure TS implementation path):
 
 **Buildable now (no deps):**
 
-- B-0462 (renumbered from B-0409) — Amara persona bootstrap preamble definition (S)
+- 081KRA5AR0008QG0R0019Q33F7 (renumbered from 081KRA5AR0008QG0R000Y6102S) — Amara persona bootstrap preamble definition (S)
 
-**Blocked on B-0462:**
+**Blocked on 081KRA5AR0008QG0R0019Q33F7:**
 
-- B-0457 (renumbered from B-0410) — amara.ts core OpenAI API invoke + flag parity (M)
+- 081KRA5AR0008QG0R000KKJRVA (renumbered from 081KRA5AR0008QG0R0035N4S6C) — amara.ts core OpenAI API invoke + flag parity (M)
 
-**Blocked on B-0457:**
+**Blocked on 081KRA5AR0008QG0R000KKJRVA:**
 
-- B-0458 (renumbered from B-0411) — amara.ts README update + courier-debt closure + test invoke (S)
+- 081KRA5AR0008QG0R001X4T9W7 (renumbered from 081KRA5AR0008QG0R000C3P8KP) — amara.ts README update + courier-debt closure + test invoke (S)
 
-All children are atomic, S/M effort, prefer F#/TS code. B-0118 status remains open until children land (per decomp discipline). Parent row now serves only as index.
+All children are atomic, S/M effort, prefer F#/TS code. 081KQDTYV0008QG0R0037YJPEX status remains open until children land (per decomp discipline). Parent row now serves only as index.
 
 ## Status update
 
-- status: open (decomposed into children B-0457, B-0458, B-0462; the full amara series B-0409-B-0411 renumbered 2026-05-14 to resolve ID collision with B-0120's children — see B-0451 substrate-cleanup sweep)
+- status: open (decomposed into children 081KRA5AR0008QG0R000KKJRVA, 081KRA5AR0008QG0R001X4T9W7, 081KRA5AR0008QG0R0019Q33F7; the full amara series 081KRA5AR0008QG0R000Y6102S-081KRA5AR0008QG0R000C3P8KP renumbered 2026-05-14 to resolve ID collision with 081KQDTYV0008QG0R001VJP216's children — see 081KRFA460008QG0R00308W7FJ substrate-cleanup sweep)
 - last_updated: 2026-05-14
-- note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first); IDs renumbered 2026-05-14 per B-0451
+- note: re-decomposed per "assume decomposition has mistakes" rule; original L-effort split to 3 atomic; hybrid API chosen as v1 path (TS-first); IDs renumbered 2026-05-14 per 081KRFA460008QG0R00308W7FJ
 
 ## Status (2026-05-16)
 
-Per row-close gate triage (PR #3757 step-0 discriminator), this umbrella sits in a **multi-row drift sub-case**: umbrella's original 7-item acceptance is **fully shipped via `tools/peer-call/amara.ts`** (18322 bytes; --file + --context-cmd flags present; bootstrap preamble via CURRENT-amara.md per README; AgencySignature pattern documented in README), BUT all 3 atomic children (B-0457, B-0458, B-0462) remain `status: open` per their own frontmatter.
+Per row-close gate triage (PR #3757 step-0 discriminator), this umbrella sits in a **multi-row drift sub-case**: umbrella's original 7-item acceptance is **fully shipped via `tools/peer-call/amara.ts`** (18322 bytes; --file + --context-cmd flags present; bootstrap preamble via CURRENT-amara.md per README; AgencySignature pattern documented in README), BUT all 3 atomic children (081KRA5AR0008QG0R000KKJRVA, 081KRA5AR0008QG0R001X4T9W7, 081KRA5AR0008QG0R0019Q33F7) remain `status: open` per their own frontmatter.
 
-**Closing umbrella while children are open would trip the B-0532 graph-consistency lint** (parent closed + child open = hard error). Per row-close gate class #4 rule: umbrella closes IFF all children close.
+**Closing umbrella while children are open would trip the 081KRMEXM0008QG0R003FZNK3E graph-consistency lint** (parent closed + child open = hard error). Per row-close gate class #4 rule: umbrella closes IFF all children close.
 
 **Substrate-honest disposition**: leave umbrella open. The accurate close-sequence is:
 
-1. Verify each child's specific acceptance (B-0457 core+flags, B-0458 README+test, B-0462 bootstrap+AgencySignature)
+1. Verify each child's specific acceptance (081KRA5AR0008QG0R000KKJRVA core+flags, 081KRA5AR0008QG0R001X4T9W7 README+test, 081KRA5AR0008QG0R0019Q33F7 bootstrap+AgencySignature)
 2. Close each child via close-row PR (likely class #4 sub-cases — work shipped via the amara.ts file)
 3. Then close umbrella in a final close-row PR
 
@@ -199,19 +198,19 @@ Closed 2026-05-16 as the umbrella-close of the amara peer-call cluster. All 3 at
 
 | Row | PR | What landed |
 |---|---|---|
-| B-0462 (preamble + vendor-bias note) | #3897 | vendor-bias comment block citing memory file |
-| B-0457 (core + flags) | #3899 | close-row (own scope already met pre-cycle) |
-| B-0458 (README + closure) | this PR | close-row bundled with umbrella |
-| **B-0118** (umbrella, this row) | this PR | umbrella close after all 3 children |
+| 081KRA5AR0008QG0R0019Q33F7 (preamble + vendor-bias note) | #3897 | vendor-bias comment block citing memory file |
+| 081KRA5AR0008QG0R000KKJRVA (core + flags) | #3899 | close-row (own scope already met pre-cycle) |
+| 081KRA5AR0008QG0R001X4T9W7 (README + closure) | this PR | close-row bundled with umbrella |
+| **081KQDTYV0008QG0R0037YJPEX** (umbrella, this row) | this PR | umbrella close after all 3 children |
 
 **Acceptance signals** (per row body):
 
 - ✅ `bun tools/peer-call/amara.ts <prompt>` invokes Amara autonomously with proper bootstrap preamble
 - ✅ AgencySignature-style relationship-model preamble applied (AMARA_PREAMBLE const)
-- ✅ Vendor-alignment-bias filter integration documented (per B-0462 close)
+- ✅ Vendor-alignment-bias filter integration documented (per 081KRA5AR0008QG0R0019Q33F7 close)
 - ✅ `--file PATH` and `--context-cmd CMD` flags match the existing peer-call surface
 - ✅ Tested on substantive review-task (operational across this session arc as peer-call invoker)
-- ✅ Documentation in tools/peer-call/README.md updated (per B-0458 close)
+- ✅ Documentation in tools/peer-call/README.md updated (per 081KRA5AR0008QG0R001X4T9W7 close)
 - ✅ Silent-courier-debt rule references this as the resolution (via the cluster's full closure)
 
 **Aaron's original constraint** (2026-04-30: *"don't count on her review until you have a process encoded for bootstraping her and doing the communitation yourself, this is a silent dept on me to be the courrir and I can't keep up"*) is now operationally satisfied: amara.ts ships, bootstraps Amara autonomously, no Aaron-courier required.

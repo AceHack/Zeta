@@ -1,11 +1,10 @@
 ---
-id: B-0477
-zetaid: 081KRHWGX0008QG0R002893S6E
+id: 081KRHWGX0008QG0R002893S6E
 priority: P1
 status: open
 title: "Axis-3 Code/English classification matrix — per-repo two-tier classification with engineering-docs exception"
 type: research
-origin: B-0427 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000VKJF0H decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000VKJF0H
@@ -39,9 +38,9 @@ This is the substrate-honest application of Aaron's Code/English split:
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
-- [ ] Walk `depends_on:` chain — B-0475 closed
-- [ ] Check B-0476 progress — ruleset audit can run in parallel; note any
+- [ ] 081KRHWGX0008QG0R000M9RFY2 output doc reviewed (prior-art audit complete; no blocking conflicts)
+- [ ] Walk `depends_on:` chain — 081KRHWGX0008QG0R000M9RFY2 closed
+- [ ] Check 081KRHWGX0008QG0R000BS8Y4R progress — ruleset audit can run in parallel; note any
   divergences already found that constrain classification
 
 ## Axis-3 tier definitions
@@ -85,7 +84,7 @@ For every existing and proposed repo, produce a row in this matrix:
 
 | Repo | Axis-1 | Axis-2 | Axis-3 primary | Axis-3 English content | Split recommendation |
 |------|--------|--------|----------------|------------------------|----------------------|
-| LFG/Zeta | Factory | TBD (B-0472) | Mixed | `docs/research/`, `memory/` | Candidate for English split |
+| LFG/Zeta | Factory | TBD (081KRHWGX0008QG0R002DP6AZN) | Mixed | `docs/research/`, `memory/` | Candidate for English split |
 | LFG/civsim | Product | TBD | Code | Minimal | Stay co-located |
 | Forge (proposed) | Factory-tools | TBD | Code | Minimal | Stay co-located |
 | … | … | … | … | … | … |
@@ -101,7 +100,7 @@ A repo is a candidate for the English/Code split when:
    that is SIGNIFICANTLY faster or slower than the Code-tier content
 2. The English-tier content has different audience requirements (internal substrate
    vs external-facing docs vs research archive)
-3. The English-tier content has different ruleset requirements (per B-0476 smell test)
+3. The English-tier content has different ruleset requirements (per 081KRHWGX0008QG0R000BS8Y4R smell test)
 
 All three criteria needed for a concrete recommendation; one or two criteria
 → "candidate with caveats."
@@ -119,21 +118,21 @@ Containing:
 - Precise Axis-3 tier definitions (Code + English + engineering-docs exception)
 - Per-repo classification matrix (all existing and proposed repos)
 - Split recommendations with DV2.0 change-rate rationale
-- Any ambiguous cases flagged for ADR resolution (B-0479)
+- Any ambiguous cases flagged for ADR resolution (081KRHWGX0008QG0R0023DWW8D)
 
 ## Definition of done
 
 - [ ] Tier definitions written (Code/English/engineering-docs exception)
 - [ ] All existing repos classified (LFG/Zeta, AceHack/Zeta, LFG/civsim)
-- [ ] All proposed repos classified (Forge, product repos from B-0425)
+- [ ] All proposed repos classified (Forge, product repos from 081KRFA460008QG0R003JQ46J4)
 - [ ] DV2.0 change-rate analysis performed for each candidate
 - [ ] Split recommendations stated (or "co-locate" with rationale)
-- [ ] Ambiguous cases flagged for B-0479
-- [ ] Output doc committed and referenced from B-0427
-- [ ] B-0477 closed with PR link
+- [ ] Ambiguous cases flagged for 081KRHWGX0008QG0R0023DWW8D
+- [ ] Output doc committed and referenced from 081KRFA460008QG0R000VKJF0H
+- [ ] 081KRHWGX0008QG0R002893S6E closed with PR link
 
 ## Why P1
 
-- Directly produces the classification matrix that B-0479 (ADR) needs
+- Directly produces the classification matrix that 081KRHWGX0008QG0R0023DWW8D (ADR) needs
 - Bounded and concrete (enumerate repos + apply criteria)
-- Can run in parallel with B-0476 (ruleset audit) after B-0475 completes
+- Can run in parallel with 081KRHWGX0008QG0R000BS8Y4R (ruleset audit) after 081KRHWGX0008QG0R000M9RFY2 completes

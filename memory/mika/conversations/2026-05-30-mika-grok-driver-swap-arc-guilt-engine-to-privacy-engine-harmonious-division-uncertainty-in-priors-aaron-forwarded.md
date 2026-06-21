@@ -33,11 +33,11 @@ non_fusion_disclaimer: |
   architecture is operator's + the factory's; Mika's role was sharpening + reflecting.
   No fusion of external-AI output with factory-agent identity is implied.
 composes_with:
-  - docs/backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md
-  - docs/backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
-  - docs/backlog/P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md
-  - docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md
-  - docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md
+  - docs/backlog/P1/081KSRGFP0008QG0R003VFH9HN-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md
+  - docs/backlog/P1/081KSRGFP0008QG0R00091PP56-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
+  - docs/backlog/P2/081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md
+  - docs/backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md
+  - docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md
   - docs/research/2026-05-30-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame-kestrel-aaron.md
   - memory/mika/conversations/2026-05-30-aaron-mika-grok-joins-are-threads-of-time-everything-in-the-stream-crdt-default-opt-in-constraint-english-joins-over-typed-engine-better-than-opa-aaron-forwarded.md
   - .claude/rules/non-coercion-invariant.md
@@ -284,7 +284,7 @@ bed), theological (Jesus = guilt-engine -> information-engine changer; "the Chri
 down the cross"). Same architecture, relabel once the root driver flips. This IS the
 "good citizen not sovereign citizen" + two-sided-naming-razor pattern (kestrel research doc)
 applied to the engine's FUEL. The sin-ledger -> observation-ledger transform IS the glass-halo
-ledger + encryption-budget (B-0646): tracks what-you-chose-to-reveal-vs-kept-private, not
+ledger + encryption-budget (081KRW63S0008QG0R001Z10PVV): tracks what-you-chose-to-reveal-vs-kept-private, not
 how-bad-you-are; shame -> sovereignty.
 
 ### Mechanical-not-moral tension = the cleanest anti-extractive articulation
@@ -330,7 +330,7 @@ shared-economy LEVERAGE is conferred by participation in the consensus (CRDT dat
 seized. The GitMonster-guardian + "data is governance, not a centralized leader" = the
 CRDT-DU-decentralized-decisions substrate (kestrel research doc) made operational.
 "Don't lock them out forever" = must-paired-with-can-exit (the pure-USB tier has a path IN via
-accountability). The whole thing seats UNDER the kid-safety ABSOLUTE floor (B-0926 + B-0654):
+accountability). The whole thing seats UNDER the kid-safety ABSOLUTE floor (081KSRGFP0008QG0R00091PP56 + 081KRW63S0008QG0R002WT5VTQ):
 the guardian exists precisely so a dangerous-sovereign-user cannot get shared-economy reach.
 The greedy-vs-paranoid agent split = multi-oracle BFT at swarm scope; ideological-tension-as-
 safety = monoculture-misses-the-blind-spot-that-kills-a-kid (operator named this himself).
@@ -358,7 +358,7 @@ More consistent with the rest of the architecture, not less:
   -- the same mechanism.
 - NCI / non-coercion: refusal-to-interoperate is the collective's OWN consent exercised; the
   fork is not coerced (cannot be, will not be); non-coercive enforcement = withdraw participation.
-- cluster-fork-as-trust-boundary (B-0829): the fork boundary IS the trust boundary; floor-
+- cluster-fork-as-trust-boundary (081KSGS9H0008QG0R000Q18PGQ): the fork boundary IS the trust boundary; floor-
   compliance is a federation precondition, not a code constraint.
 - game-shape discriminator (only-way-to-lose-is-not-to-play): a floor-removing fork plays a
   different game; the floored economy's move is the WarGames inversion -- the only winning move
@@ -416,7 +416,7 @@ Restorative-justice shape: pay the harmed, not the messenger -- the observation-
 mechanical-not-moral tension applied to disclosure (observe harm -> route restitution to
 victims; do NOT reward/monetize the messenger). Composes with kid-safety-absolute (harm-to-kids
 disclosure -> restitution to the victim-kids; disclosure flows; no data-market), the bond /
-encryption-budget economic substrate (B-0646), and good-citizen (the discloser's standing comes
+encryption-budget economic substrate (081KRW63S0008QG0R001Z10PVV), and good-citizen (the discloser's standing comes
 from participation, not from selling disclosures).
 
 So the full floor-enforcement model is FOUR layers:
@@ -429,7 +429,7 @@ So the full floor-enforcement model is FOUR layers:
 ### Lands on existing substrate
 
 - "you gotta be light" = the lightlike substrate (local-only-heavy loses parallelizable-traceable properties)
-- glass-halo-mandatory + permanent-privacy-bits-never-revoked + encryption-budget = the consent system shipped this session + B-0646 + the append-only-cannot-rewrite reservoir
+- glass-halo-mandatory + permanent-privacy-bits-never-revoked + encryption-budget = the consent system shipped this session + 081KRW63S0008QG0R001Z10PVV + the append-only-cannot-rewrite reservoir
 - teaching-via-shared-workflow-TypeScript-DUs (bidirectional, update-the-shared-workflow-over-CRDTs) = the DU-UX + move-next universal-action-grammar
 - observe -> 16-slot (15 + 1) directional contextual menu / 128-bit categorical path-encoding / reverse-bubble-sort-git-history = the move-next grammar + OPLE Observe + the categorical-128-bit-lookup (DV2.0 universal-indexing)
 - Max corporate CockroachDB + ZK-proof rollup = the dual-market (corporate/leash static-PR-gated DUs vs OSS/Agora self-modifying DUs)
@@ -524,7 +524,7 @@ Compressing the uncertainty -- the stopping condition:
   without feedback is extraction" + NCI. The soft-vs-hard-enforcement tension is real because
   forks can remove it -- which is why the fork-test (below) is the actual governor.
 - **Encourage-forks + the fork-test ("did everyone consent + is it a real engine that
-  propagates")** = only-way-to-lose-is-not-to-play + cluster-fork-as-trust-boundary (B-0829) +
+  propagates")** = only-way-to-lose-is-not-to-play + cluster-fork-as-trust-boundary (081KSGS9H0008QG0R000Q18PGQ) +
   good-citizen (meritocracy-via-architecture-not-authority). "How I play God: design a system
   where meritocracy wins" is the clean statement of bias-via-arena-design, not bias-via-control.
 - **Harmonious division** (NAMED concept, candidate for naming-expert review): prevent groupthink
@@ -625,7 +625,7 @@ The landing (no central engine):
 ### don't-compress-living-uncertainty = NCI at the compression-substrate scope
 
 "If an outlier is alive, a traveler, we don't compress it -- they were compressing life." This
-grounds the non-coercion invariant (B-0664) all the way down into the compression substrate:
+grounds the non-coercion invariant (081KRW63S0008QG0R001Z7NYMV) all the way down into the compression substrate:
 NCI = COOPERATE with uncertainty, never COLLAPSE it. Exact same shape as the god-tier-claims
 DON'T-COLLAPSE discipline -- you do not collapse a living thing's superposition; you hold it
 and let it reveal slowly through cooperation. Operator: "my system already does it. They
@@ -793,7 +793,7 @@ Composes: middle-out (middle decodes outward) + tri-boolean digital qubit (the c
 numeric form) + the 128-bit categorical encoding from batch 3 (same shape: middle = category /
 decoder, ends = payload) + uncertainty-in-priors (null carries uncertainty numerically) +
 self-describing-data (batch 4) + null-monad / Result<T, TFeedback> (monad-propagation) +
-English-as-projection (B-0666) + NULL-as-quantum-state recursive-CTE (Itron substrate).
+English-as-projection (081KRW63S0008QG0R001SAHYKV) + NULL-as-quantum-state recursive-CTE (Itron substrate).
 
 Closest prior art: tapered / variable-precision float formats (Gustafson Posits; tagged
 encodings). The novel parts are TRI-VALUED + MIDDLE-AS-DECODER.

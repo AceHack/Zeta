@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- Memory file documenting the substrate-drift-catch pattern that emerged across 4 catches in the 2026-05-16T04:15Z–04:51Z session: B-0506 ([#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733)), B-0528 ([#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743)), B-0530 ([#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737)), B-0535 ([#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742), peer Otto-CLI).
+- Memory file documenting the substrate-drift-catch pattern that emerged across 4 catches in the 2026-05-16T04:15Z–04:51Z session: 081KRHWGX0008QG0R002DPG02X ([#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733)), 081KRMEXM0008QG0R000T0A28T ([#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743)), 081KRMEXM0008QG0R000X1PPGC ([#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737)), 081KRMEXM0008QG0R000HHAG77 ([#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742), peer Otto-CLI).
 - The pattern extends [`.claude/rules/backlog-item-start-gate.md`](.claude/rules/backlog-item-start-gate.md) with a zero-th step: existence-check artifact paths BEFORE writing any implementation. Cost ~3 seconds; saves the entire tick when work has shipped.
 - Cross-surface convergence noted (both Otto-CLI surfaces arrived at the pattern without coordination).
 - Two failure modes from the discovery session also captured (Lior `.git/index.lock` race; multi-Otto HEAD desync).
@@ -90,7 +90,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 `docs/hygiene-history/ticks/2026/05/16/0415Z.md` + `0425Z.md` + `0436Z.md` + `0438Z.md` + `0448Z.md` — the 5-shard trail across the 2026-05-16 cold-boot session.
 ```
 **memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md:54**
-* The proposed auditor only extracts paths under `tools/` and `.claude/`, but one of the motivating drift catches (B-0535) depended on `.github/workflows/gate.yml` wiring. With this scope, a future auditor could mark a row as drift after seeing the tool path while missing required workflow/config artifacts, which is exactly the partial-vs-drift distinction this memory is trying to preserve.
+* The proposed auditor only extracts paths under `tools/` and `.claude/`, but one of the motivating drift catches (081KRMEXM0008QG0R000HHAG77) depended on `.github/workflows/gate.yml` wiring. With this scope, a future auditor could mark a row as drift after seeing the tool path while missing required workflow/config artifacts, which is exactly the partial-vs-drift distinction this memory is trying to preserve.
 ```
 **`tools/hygiene/audit-backlog-status-drift.ts`** — for each `status: open` row, parse the body for paths under `tools/` and `.claude/`; report rows where ALL named paths exist on disk. Run as a daily GitHub Actions cron and as a per-tick pre-flight when picking work.
 ```

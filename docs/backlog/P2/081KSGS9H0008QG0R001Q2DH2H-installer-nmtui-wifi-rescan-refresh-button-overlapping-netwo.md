@@ -1,6 +1,5 @@
 ---
-id: B-0832
-zetaid: 081KSGS9H0008QG0R001Q2DH2H
+id: 081KSGS9H0008QG0R001Q2DH2H
 priority: P2
 status: open
 title: installer nmtui WiFi step needs visible rescan/refresh path — empirical from operator's physical hardware-support test 2026-05-26 (20+ overlapping networks; target SSID not initially in scan list) (Aaron 2026-05-26)
@@ -9,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSGS9H0008QG0R0011BC7T2
 tags: [installer, first-boot, networkmanager, nmtui, wifi, physical-hardware-support-test, empirical-anchor, operator-ux]
@@ -18,7 +17,7 @@ tags: [installer, first-boot, networkmanager, nmtui, wifi, physical-hardware-sup
 ## Problem
 
 Empirical from operator's physical hardware-support test 2026-05-26
-(the first physical test post-zflash; B-0831 reframing —
+(the first physical test post-zflash; 081KSGS9H0008QG0R0011BC7T2 reframing —
 physical-test-becomes-hardware-support-test in action):
 
 Operator framing: *"in the network manager i can refresh wifi
@@ -113,11 +112,11 @@ Approach C acceptance (deferred):
 
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` (the
   substrate this row touches)
-- B-0754 (zero-typing first-boot scope; this row extends the
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope; this row extends the
   zero-typing path to dense-WiFi environments)
-- B-0831 (CI cascade #6 full-install + cluster-auto-join — physical
+- 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 full-install + cluster-auto-join — physical
   hardware-support test that surfaced this issue is exactly the
-  reframed role for physical tests per B-0831)
+  reframed role for physical tests per 081KSGS9H0008QG0R0011BC7T2)
 - nmtui upstream documentation (verify F5/Ctrl+R keybind across
   nmtui versions on nixpkgs 25.11)
 - Physical hardware-support-test as first-class substrate
@@ -128,7 +127,7 @@ Approach C acceptance (deferred):
 
 This row is empirically-anchored: operator literally hit the issue
 during their physical hardware-support test 2026-05-26 (the test that
-B-0831 reframed as first-class hardware-compatibility-matrix substrate).
+081KSGS9H0008QG0R0011BC7T2 reframed as first-class hardware-compatibility-matrix substrate).
 
 The operator's "moving forward" indicates they have a workaround AND
 the test continued — the issue is UX friction, not a hard blocker.
@@ -139,7 +138,7 @@ The dense-WiFi case (20+ overlapping networks) is increasingly common
 (urban density, multi-tenant residential, office buildings) and the
 fix benefits any operator in similar environments.
 
-This row IS what B-0831 predicted: physical hardware-support test
+This row IS what 081KSGS9H0008QG0R0011BC7T2 predicted: physical hardware-support test
 surfaces real-world issues that CI emulation cannot reproduce (QEMU
 has no concept of dense-WiFi channel-contention). The substrate-
 engineering value of physical-as-hardware-support-test is now empirically
@@ -155,5 +154,5 @@ test:
    issue touches
 3. Layer mitigations smallest-first (Approach A → B → C)
 4. Note priority based on whether issue blocks vs friction-only
-5. Cross-ref to B-0831 (physical-as-hardware-support-test substrate)
+5. Cross-ref to 081KSGS9H0008QG0R0011BC7T2 (physical-as-hardware-support-test substrate)
    so future cold-boots see the empirical anchor pattern

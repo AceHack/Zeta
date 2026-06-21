@@ -28,11 +28,11 @@
 ## Description
 
 ## Summary
-- add the required blank line before the B-1030 evaluation criteria numbered list
+- add the required blank line before the 081KTWJ1R0008QG0R000JJDPFZ evaluation criteria numbered list
 - fixes the repo-wide markdownlint MD032 failure on main
 
 ## Verification
-- mise exec -- markdownlint-cli2 docs/backlog/P3/B-1030-evaluate-microsoft-quantum-viz-js-circuit-diagram-rendering-for-ts-apps-aaron-2026-06-12.md
+- mise exec -- markdownlint-cli2 docs/backlog/P3/081KTWJ1R0008QG0R000JJDPFZ-evaluate-microsoft-quantum-viz-js-circuit-diagram-rendering-for-ts-apps-aaron-2026-06-12.md
 - git diff --check
 
 ## Outcome

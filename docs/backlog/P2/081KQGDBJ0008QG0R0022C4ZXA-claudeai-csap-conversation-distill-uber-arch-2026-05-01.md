@@ -1,6 +1,5 @@
 ---
-id: B-0124
-zetaid: 081KQGDBJ0008QG0R0022C4ZXA
+id: 081KQGDBJ0008QG0R0022C4ZXA
 priority: P2
 status: open
 title: Distill the Claude.ai CSAP-pushback conversation into uber-architecture (deferred multi-week)
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0124 — Distill the Claude.ai CSAP-pushback conversation into uber-architecture (across 4 projects, eventually)
+# 081KQGDBJ0008QG0R0022C4ZXA — Distill the Claude.ai CSAP-pushback conversation into uber-architecture (across 4 projects, eventually)
 
 **Priority:** P2 (deferred, multi-week)
 
@@ -135,7 +134,7 @@ work but explicitly deferred.
 
 - `docs/research/2026-05-01-claudeai-csap-pushback-from-aaron-chunked-import.md`
   (the verbatim source).
-- B-0117 (cold-start executable checklist tool — adjacent).
+- 081KQDTYV0008QG0R0015BFCBH (cold-start executable checklist tool — adjacent).
 - The Aurora research docs at
   `docs/research/aurora-immune-math-standardization-2026-04-26.md`
   + `memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`

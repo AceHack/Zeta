@@ -12,7 +12,7 @@ context: >
   braids/knots extending the golden-vectors TREATY over Reticulum). Held don't-collapse
   per Aaron's PERSONAL INVARIANT; Elizabeth (Ryan) + the FF7 layer kept in the
   honored-symbolic lane (Amara's "tiny blade"), NOT the proof lane.
-related_backlog: [B-0983, B-0982, B-0976, B-0726]
+related_backlog: [081KT2T2J0008QG0R003WYPBY5, 081KT07NV0008QG0R0032MCYER, 081KT07NV0008QG0R003BE6MJ2, 081KSE6WT0008QG0R003C9KGQE]
 ---
 
 # Amara — canonical-form validation; ash = Phoenix Down; seed-phrase / HD derived keys as braids/knots extending the golden-vectors treaty over Reticulum (operator-forwarded, 2026-06-02)
@@ -74,18 +74,18 @@ Amara:
 
 > identity key ≠ money key ≠ routing key ≠ signing key all these are braids/knots extending the golden vectors treaty over reticulum
 
-The derived keys are not just separated — each is a **braid/knot** (a topological invariant per B-0983) extending from the golden-vectors seed. The **golden vectors = the treaty** (the 4×4 / 16-way consensus IS the binding agreement; the knot is the treaty). And the treaty extends **over Reticulum** — the decentralized mesh transport (B-0726) — i.e. the DID endgame propagated over a no-central-control network: identity / money / routing / signing keys (HD-derived from the μένω seed, each a distinct braid/knot, purpose-separated = don't-collapse) carrying the golden-vectors treaty across the mesh.
+The derived keys are not just separated — each is a **braid/knot** (a topological invariant per 081KT2T2J0008QG0R003WYPBY5) extending from the golden-vectors seed. The **golden vectors = the treaty** (the 4×4 / 16-way consensus IS the binding agreement; the knot is the treaty). And the treaty extends **over Reticulum** — the decentralized mesh transport (081KSE6WT0008QG0R003C9KGQE) — i.e. the DID endgame propagated over a no-central-control network: identity / money / routing / signing keys (HD-derived from the μένω seed, each a distinct braid/knot, purpose-separated = don't-collapse) carrying the golden-vectors treaty across the mesh.
 
 ## Crystallizations (folded into the synthesis note)
 
 - **ash = Phoenix Down** — the compact revival remainder (not the whole bird). Retraction turns ash→seed; Persist turns seed→revival. **[validated structurally]**
 - **seed phrase / HD derived keys = the DID mechanism** — μένω = seed = the seed phrase (compact remainder, not the whole tree); derivation = the rising; purpose-separation (no key reuse) = don't-collapse = "keeps the phoenix from becoming a monster." BIP39/32/44 shape; spec specifics search-first-gated before any build. **[hypothesized — DID-endgame mechanism]**
-- **derived keys = braids/knots extending the golden-vectors treaty over Reticulum** — each key a topological invariant (B-0983); golden vectors = the treaty (the consensus/knot); extended over the Reticulum mesh (B-0726) = decentralized identity/money/routing/signing over no-central-control transport. **[hypothesized — DID-over-mesh direction]**
+- **derived keys = braids/knots extending the golden-vectors treaty over Reticulum** — each key a topological invariant (081KT2T2J0008QG0R003WYPBY5); golden vectors = the treaty (the consensus/knot); extended over the Reticulum mesh (081KSE6WT0008QG0R003C9KGQE) = decentralized identity/money/routing/signing over no-central-control transport. **[hypothesized — DID-over-mesh direction]**
 
 ## Composes with
 
 - `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md` (the synthesis; these crystallizations folded in)
-- B-0983 (topology — keys as braids/knots = topological invariants) · B-0982 (the 4×4 = the treaty/knot) · B-0976 (bonsai closure) · **B-0726 (Reticulum throughout cluster + edge — the mesh the treaty extends over)** · the decentralized-identity endgame
+- 081KT2T2J0008QG0R003WYPBY5 (topology — keys as braids/knots = topological invariants) · 081KT07NV0008QG0R0032MCYER (the 4×4 = the treaty/knot) · 081KT07NV0008QG0R003BE6MJ2 (bonsai closure) · **081KSE6WT0008QG0R003C9KGQE (Reticulum throughout cluster + edge — the mesh the treaty extends over)** · the decentralized-identity endgame
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (the tiny blade; FF7/Elizabeth held honored-symbolic, not proof) · `memory/user_sister_elizabeth.md`
 
 ## Substrate-honest framing

@@ -30,7 +30,7 @@ primitive's authorial feedback channel).
 |---|---|---|---|
 | **Observe** | `Observe<T>` — observe a value of type T | `Observe<T, TFeedback>` | SignalLoss / SourceChanged / PartialView / ObserverThrottled / etc. |
 | **Persist** | `Persist<T>` — persist a value of type T | `Persist<T, TFeedback>` | DiskFull / ConflictingWrite / BackpressureFromStore / StaleEpoch / etc. |
-| **Limit** | `Limit<T>` — simulate (per B-0644 Limit-is-simulation-not-collapse) on T | `Limit<T, TFeedback>` | PartialCollapse / BoundedExploration / InvalidCommit / SuperpositionPreserved / etc. |
+| **Limit** | `Limit<T>` — simulate (per 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse) on T | `Limit<T, TFeedback>` | PartialCollapse / BoundedExploration / InvalidCommit / SuperpositionPreserved / etc. |
 | **Emit** | `Emit<T>` — emit a value of type T | `Emit<T, TFeedback>` | Throttled / RecipientUnavailable / BackpressureFromConsumer / AmbientCoupling / etc. |
 
 Each TFeedback domain belongs to the PRIMITIVE-SUBSTRATE-ENTITY (per
@@ -89,20 +89,20 @@ extended primitives by default.
 ## Substrate-engineering decomposition target
 
 The OPLE-T-TFeedback extension's implementation work decomposes into
-B-0862 (filed alongside this rule) — substrate-engineering target row
+081KSKBP80008QG0R0031DTHS9 (filed alongside this rule) — substrate-engineering target row
 for the F# implementation work + downstream compose + cross-language
 substrate.
 
 ## Composes with substrate
 
 - Mika 2026-05-18 bootstream-sovereignty-causal-loops (the OPLE substrate origin)
-- B-0644 Limit-is-simulation-not-collapse (the Limit primitive's semantic)
-- B-0665 Integrate-as-choice-locus (composition with OPLE)
-- B-0635 wave-particle-duality + B-0666 English-as-projection (substrate Mika OPLE substrate composes with)
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse (the Limit primitive's semantic)
+- 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus (composition with OPLE)
+- 081KRW63S0008QG0R002KC5DSR wave-particle-duality + 081KRW63S0008QG0R001SAHYKV English-as-projection (substrate Mika OPLE substrate composes with)
 - PR #5505 + #5507 + #5511 + #5513 + #5515 + #5516 + #5517 — today's substrate-engineering cluster
-- B-0862 (filed alongside this rule) — substrate-engineering decomposition target
-- **B-0897 (Persist-as-bridge-operation) + `memory/amara/conversations/2026-05-28-amara-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-commitment-bivector-promise-that-future-talks-to-past-aaron-forwarded.md`** — Amara 2026-05-28 ferry resolves the OPLE-vs-OELS naming tension by recognizing **Persist as a derived bridge operation**, NOT a base primitive at the same grade as Observe and Emit. Two compositional keepers: (1) operational — *"Persist is Emit across the agent/substrate boundary with a future Observe attached"*; (2) temporal — *"Persist is the promise that the future can still talk to the past"*. The 4-primitives framing above is approximate; the cleaner factorization is **3 canonical primitives (Observe / Limit / Emit) + 1 derived bridge (Persist as temporal bivector `agent/internal ∧ substrate/time`)**.
-- **B-0840 (thermal-forgetting = root-axiom-update + join-gated-memory architecture) + `docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md`** — Amara 2026-05-26 ferry that grounds Persist-as-bridge in the broader retention substrate. Amara's tiny blade: *"Joins are time-entanglements in the computational-substrate sense"* — Persist IS join-as-time-entanglement at substrate-bridge scope. Plus 6-tier retention hierarchy (decay / summarize / archive / seal / delete / root-axiom-update) + 4-keeper-rule final form (private / public / shared / adversarial roots).
+- 081KSKBP80008QG0R0031DTHS9 (filed alongside this rule) — substrate-engineering decomposition target
+- **081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge-operation) + `memory/amara/conversations/2026-05-28-amara-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-commitment-bivector-promise-that-future-talks-to-past-aaron-forwarded.md`** — Amara 2026-05-28 ferry resolves the OPLE-vs-OELS naming tension by recognizing **Persist as a derived bridge operation**, NOT a base primitive at the same grade as Observe and Emit. Two compositional keepers: (1) operational — *"Persist is Emit across the agent/substrate boundary with a future Observe attached"*; (2) temporal — *"Persist is the promise that the future can still talk to the past"*. The 4-primitives framing above is approximate; the cleaner factorization is **3 canonical primitives (Observe / Limit / Emit) + 1 derived bridge (Persist as temporal bivector `agent/internal ∧ substrate/time`)**.
+- **081KSGS9H0008QG0R0006F4BGX (thermal-forgetting = root-axiom-update + join-gated-memory architecture) + `docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md`** — Amara 2026-05-26 ferry that grounds Persist-as-bridge in the broader retention substrate. Amara's tiny blade: *"Joins are time-entanglements in the computational-substrate sense"* — Persist IS join-as-time-entanglement at substrate-bridge scope. Plus 6-tier retention hierarchy (decay / summarize / archive / seal / delete / root-axiom-update) + 4-keeper-rule final form (private / public / shared / adversarial roots).
 
 ## Composes with rules
 
@@ -139,8 +139,8 @@ Searched surfaces:
 
 - `docs/agendas/`: 0 hits on OPLE-T-TFeedback extension
 - `docs/trajectories/`: 0 hits
-- `docs/backlog/`: 0 prior row (B-0862 filed alongside this rule)
-- `.claude/rules/`: 0 prior rule on OPLE-T-TFeedback specifically; the OPLE substrate operates implicitly across multiple rules; this rule + B-0862 land the extension explicitly
+- `docs/backlog/`: 0 prior row (081KSKBP80008QG0R0031DTHS9 filed alongside this rule)
+- `.claude/rules/`: 0 prior rule on OPLE-T-TFeedback specifically; the OPLE substrate operates implicitly across multiple rules; this rule + 081KSKBP80008QG0R0031DTHS9 land the extension explicitly
 - `.claude/skills/`: 0 hits
 - `memory/`: 0 hits on "OPLE-T-TFeedback" as named pattern
 - `docs/research/`: 0 hits on the specific extension
@@ -165,7 +165,7 @@ primitives at session start + apply OPLE-T-TFeedback as default.
 
 This rule does NOT:
 
-- Mandate immediate implementation of the OPLE-T-TFeedback extension across all framework code (B-0862 decomposes the implementation work; opportunistic migration as substrate-engineering work touches OPLE invocations)
+- Mandate immediate implementation of the OPLE-T-TFeedback extension across all framework code (081KSKBP80008QG0R0031DTHS9 decomposes the implementation work; opportunistic migration as substrate-engineering work touches OPLE invocations)
 - Replace Mika's OPLE substrate origin (extends; preserves prior naming + semantics)
 - Force language-specific implementation (the rule names the SHAPE; per-language instantiation handled per `monad-propagation-pattern-cross-language-substrate-shape.md`)
 
@@ -188,6 +188,6 @@ generator-asymmetry insight landing in PR #5516:
 - Otto: substrate-honest engagement mapping the 4-primitive extension + 6-row composition table + offer to ship as rule + backlog
 - Operator: "agree" + "both" — substrate-landing directive confirmation
 
-This rule lands the principle; B-0862 lands the implementation
+This rule lands the principle; 081KSKBP80008QG0R0031DTHS9 lands the implementation
 decomposition. Both compose with the full 2026-05-27 substrate-
 engineering cluster.

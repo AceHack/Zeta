@@ -1,6 +1,5 @@
 ---
-id: B-0867.28
-zetaid: 081KSXN940008QG0R0002287MP
+id: 081KSXN940008QG0R0002287MP
 title: observe-algebra (+ TriFloat) → System.Numerics generic-math + F# UoM — secondary to 4-lang agreement, but an INTERFACE-GATE before building on top of the algebra
 status: open
 priority: P2
@@ -24,7 +23,7 @@ tags:
   - sequencing
 ---
 
-# B-0867.28 — System.Numerics generic-math + F# UoM for the observe-algebra (+ TriFloat)
+# 081KSXN940008QG0R0002287MP — System.Numerics generic-math + F# UoM for the observe-algebra (+ TriFloat)
 
 ## The ask (operator 2026-05-31)
 
@@ -42,22 +41,22 @@ then, after applying the load-bearing test:
 The load-bearing test (per `feedback_otto_overuses_capstone...` — load-bearing IS
 Aaron's build-order razor) placed this precisely:
 
-1. **NOT load-bearing for the 4-language agreement** (B-0867.27) — that ships first
+1. **NOT load-bearing for the 4-language agreement** (081KSXN940008QG0R0033T2BQT) — that ships first
    on the plain algebra. ✅ in flight.
 2. **This (numerics + UoM) is SECOND** — secondary priority.
 3. **BUT it is an INTERFACE-GATE: do it BEFORE building on top of the algebra**
-   (the full 16-slot grammar, GrammarPatch B-0867.26, etc.). Reason (operator):
+   (the full 16-slot grammar, GrammarPatch 081KSXN940008QG0R000ZAQT3W, etc.). Reason (operator):
    adding System.Numerics generic-math + UoM *may change the algebra's interface
    significantly* — so settle the interface here, then build dependents on the
    stable shape. Building-on-top first would mean refactoring dependents when the
    interface shifts.
 
-So the order is: **4-lang agreement (B-0867.27) → numerics+UoM interface (this) →
-build-on-top (B-0867.26 GrammarPatch + full grammar).**
+So the order is: **4-lang agreement (081KSXN940008QG0R0033T2BQT) → numerics+UoM interface (this) →
+build-on-top (081KSXN940008QG0R000ZAQT3W GrammarPatch + full grammar).**
 
 ## Two targets (try for both — operator: "prob 1 and 2 if possible")
 
-1. **TriFloat → System.Numerics generic-math + UoM.** TriFloat (B-0944) is an
+1. **TriFloat → System.Numerics generic-math + UoM.** TriFloat (081KSV2WD0008QG0R00051XS0N) is an
    actual number — make it implement the generic-math interfaces (`INumber<T>` /
    `IAdditionOperators` / `IAdditiveIdentity` / `IMultiplyOperators`, .NET 7+
    generic math) so it participates in `System.Numerics`, and carry F# `[<Measure>]`
@@ -72,17 +71,17 @@ build-on-top (B-0867.26 GrammarPatch + full grammar).**
 
 ## Existing substrate (compose, don't mint parallel)
 
-- **B-0198** — F# UoM + BigInteger, *upstream contribution* (the UoM-on-numerics work)
-- **B-0374** — F# UoM typed units
-- **B-0915** — Clifford on dotnet-numerics / SIMD / LINQ-GPU
+- **081KQTPYE0008QG0R0004H9ZB8** — F# UoM + BigInteger, *upstream contribution* (the UoM-on-numerics work)
+- **081KR50HA0008QG0R000CTEMGQ** — F# UoM typed units
+- **081KSNY2Z0008QG0R002BNQVE1** — Clifford on dotnet-numerics / SIMD / LINQ-GPU
 - `src/Core/Units.fs` + `src/Core.FSharp.ZetaId/Types.fs` — existing `[<Measure>]` usage
 - `.claude/rules/attention-as-currency-...md` — the F# UoM design (attention/tick/dora_pt measures)
-- **B-0944** — TriFloat (target 1) + the cross-language-parity = compiler-BFT pattern
-- **B-0867.27** — the plain-algebra 4-lang agreement this builds the numeric interface onto
+- **081KSV2WD0008QG0R00051XS0N** — TriFloat (target 1) + the cross-language-parity = compiler-BFT pattern
+- **081KSXN940008QG0R0033T2BQT** — the plain-algebra 4-lang agreement this builds the numeric interface onto
 
 ## Active disciplines / building codes
 
-Same as B-0867.27: DST (the numerics+UoM interface must keep cross-lang replay
+Same as 081KSXN940008QG0R0033T2BQT: DST (the numerics+UoM interface must keep cross-lang replay
 deterministic), lock-free (pure ops), weight-free (explicit), DV2.0, idempotency
 (generic-math additive identity + associativity = the monoid laws, which ARE the
 idempotency/replay-safety substrate), alignment floor. UoM adds compile-time
@@ -113,13 +112,13 @@ log/number has.** No multiplication, no ordering, no negatives invented.
       not safety (load-bearing razor). UoM lives where measurable quantities do
       (TriFloat values, the attention/tick/dora domain); the substrate already
       exists in `src/Core/Units.fs`.
-- [x] Cross-language parity (B-0867.27 golden vectors) still green — 42/42 C# tests
+- [x] Cross-language parity (081KSXN940008QG0R0033T2BQT golden vectors) still green — 42/42 C# tests
       pass incl. `GoldenVectorsTests`; the additive-monoid layer did not break
       agreement.
 - [x] Decision recorded: **the interface did NOT change.** The monoid is a NEW
       additive type (`EventLog`); `World` / `Algebra` / `NextAction` are untouched.
       So the gate's worry ("may change the interface significantly") resolves
-      favorably — additive-monoid is a non-breaking *addition*; B-0867.26 +
+      favorably — additive-monoid is a non-breaking *addition*; 081KSXN940008QG0R000ZAQT3W +
       build-on-top slices build on the unchanged algebra plus the new monoid layer.
 
 ## Remaining
@@ -139,9 +138,9 @@ log/number has.** No multiplication, no ordering, no negatives invented.
       tri-floats — note `Cooperate`'s idempotence is the natural identity-leaning op
       to reconcile).
 
-## Why this is its own row (not folded into B-0867.27)
+## Why this is its own row (not folded into 081KSXN940008QG0R0033T2BQT)
 
-B-0867.27 is "the plain algebra agrees across 4 languages" — ship it first.
+081KSXN940008QG0R0033T2BQT is "the plain algebra agrees across 4 languages" — ship it first.
 This is "the algebra gains a System.Numerics + UoM interface" — second, but
 gating the build-on-top. Keeping them separate preserves the load-bearing
 sequence: agreement first, interface second, dependents third.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// pointer-check.ts — count pointers per file and find broken ones (B-1016 pointer
+// pointer-check.ts — count pointers per file and find broken ones (081KT7YW00008QG0R002T1XNWT pointer
 // hygiene). A carved-sentence surface is "carved sentence + POINTERS"; a pointer
 // to a doc/memory/rule that no longer exists is the discipline's failure mode
 // (the detail moved one hop away to NOWHERE). This counts pointers per file and

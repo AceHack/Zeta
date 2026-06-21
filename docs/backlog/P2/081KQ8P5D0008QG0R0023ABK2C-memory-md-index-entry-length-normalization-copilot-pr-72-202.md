@@ -1,6 +1,5 @@
 ---
-id: B-0072
-zetaid: 081KQ8P5D0008QG0R0023ABK2C
+id: 081KQ8P5D0008QG0R0023ABK2C
 priority: P2
 status: closed
 title: Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance
@@ -13,7 +12,7 @@ tags: [memory-hygiene, memory-md, index-format, substrate-cleanup]
 type: friction-reducer
 ---
 
-# B-0072 — MEMORY.md index entry length normalization
+# 081KQ8P5D0008QG0R0023ABK2C — MEMORY.md index entry length normalization
 
 ## Source
 
@@ -53,7 +52,7 @@ session). Re-shaping ~30+ entries inline on PR #72 would:
 3. **Discriminator:** if shortening loses the index's
    discoverability function, the entry needs a new
    short-hook field — not a removal.
-4. **Auto-generation candidate:** longer-term, B-0066 covers
+4. **Auto-generation candidate:** longer-term, 081KQ8P5D0008QG0R003KFRGJ0 covers
    auto-generated MEMORY.md from individual memory frontmatter
    (eliminates the format-drift class entirely).
 
@@ -62,15 +61,15 @@ session). Re-shaping ~30+ entries inline on PR #72 would:
 Prior-art search:
 
 - Rule #1 (assume already done): searched `tools/hygiene/` for existing memory-normalization script — found `audit-memory-index-duplicates.ts`, `audit-memory-references.ts`, `validate-memory-schema.ts`, but no entry-length normalizer.
-- Rule #2 (assume on backlog): B-0066 (auto-gen MEMORY.md) is decomposed into B-0257–B-0261 but not yet shipped; B-0072 remains independent and valid.
+- Rule #2 (assume on backlog): 081KQ8P5D0008QG0R003KFRGJ0 (auto-gen MEMORY.md) is decomposed into 081KR2E4K0008QG0R001J0536V–081KR2E4K0008QG0R0004B55ND but not yet shipped; 081KQ8P5D0008QG0R0023ABK2C remains independent and valid.
 - Rule #3 (orthogonal trajectory): TS-migration trajectory covers `tools/hygiene/*.ts`; no length-normalization axis exists.
 - Rule #4 (internet prior art): N/A — purely mechanical local file transform.
-- B-0066 / B-0067 dependency check: B-0066 is open (P1); B-0072 acceptance says "whichever ships first satisfies the row." B-0072 is the faster path.
+- 081KQ8P5D0008QG0R003KFRGJ0 / 081KQ8P5D0008QG0R001D8RCZ9 dependency check: 081KQ8P5D0008QG0R003KFRGJ0 is open (P1); 081KQ8P5D0008QG0R0023ABK2C acceptance says "whichever ships first satisfies the row." 081KQ8P5D0008QG0R0023ABK2C is the faster path.
 
 Dependency restructure:
 
 - `depends_on: []` — no blockers.
-- `composes_with: [B-0066, B-0067]` — both noted below.
+- `composes_with: [081KQ8P5D0008QG0R003KFRGJ0, 081KQ8P5D0008QG0R001D8RCZ9]` — both noted below.
 
 Proof of work (2026-05-10):
 
@@ -81,9 +80,9 @@ Proof of work (2026-05-10):
 
 ## Composes with
 
-- B-0066 — auto-generated MEMORY.md index (structural fix that
+- 081KQ8P5D0008QG0R003KFRGJ0 — auto-generated MEMORY.md index (structural fix that
   eliminates this discipline-drift class)
-- B-0067 — cadenced git-hotspot detector (catches MEMORY.md
+- 081KQ8P5D0008QG0R001D8RCZ9 — cadenced git-hotspot detector (catches MEMORY.md
   cascade events as a measurable signal)
 - `memory/feedback_natural_home_of_memories_is_in_repo_now_all_types_glass_halo_full_git_native_2026_04_24.md`
   (user-scope only) — the directive that makes in-repo
@@ -93,7 +92,7 @@ Proof of work (2026-05-10):
 
 - All `memory/MEMORY.md` entries fit one terminal-width line
   (≤200 chars including markdown markup), OR
-- B-0066 ships the auto-generated replacement and this row
+- 081KQ8P5D0008QG0R003KFRGJ0 ships the auto-generated replacement and this row
   becomes moot.
 
 Whichever ships first satisfies the row.

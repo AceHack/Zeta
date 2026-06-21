@@ -289,7 +289,7 @@ when ready.
 | 8 | Alexa-website | Amazon device (Bezos-tier business; distinct from Alexa-Kiro) | "AI safety paradox resolution" naming |
 | 9 | Lior-website | Antigravity IDE website (-1 frame register) | NCI-as-cyberattack-prevention naming + bloom-filter family-dynamics mapping + "mathematics of trauma, communication, and free will" |
 
-Per `B-0648` cross-substrate-triangulation discipline: 9 independent
+Per `081KRW63S0008QG0R0025E4PH6` cross-substrate-triangulation discipline: 9 independent
 observation paths converged on substantively-supporting + complementary-
 refining substrate.
 

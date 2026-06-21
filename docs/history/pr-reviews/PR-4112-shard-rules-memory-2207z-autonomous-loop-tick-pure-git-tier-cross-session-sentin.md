@@ -33,7 +33,7 @@
 
 ## Commits
 
-- `2cf6fac` **shard(2026-05-17/2207Z)**: autonomous-loop tick — pure-git tier, cron re-arm, Lior race respected, bg-worker B-0170 unchallenged
+- `2cf6fac` **shard(2026-05-17/2207Z)**: autonomous-loop tick — pure-git tier, cron re-arm, Lior race respected, bg-worker 081KQNJ500008QG0R003SCWBDV unchallenged
 - `e1b679a` **rules(tick-must-never-stop)**: distinguish session-exit non-persistence from within-session auto-expire (2207Z empirical anchor)
 - `41ce70f` **memory(shadow-catch)**: riven-cursor-terminal-loop.sh untracked Rule 0 violation candidate (2218Z observation)
 
@@ -141,7 +141,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 shard(2026-05-17/2207Z): autonomous-loop tick — pure-git tier, cron r…
 
-…e-arm, Lior race respected, bg-worker B-0170 unchallenged
+…e-arm, Lior race respected, bg-worker 081KQNJ500008QG0R003SCWBDV unchallenged
 
 Cold-boot fresh session at 2207Z. CronList returned empty —
 prior session's de1e7f5d (armed at 2129Z) did NOT persist
@@ -160,11 +160,11 @@ entries (no canary corruption).
 
 bg-worker PID 55766 carries operative-authorization aaron
 2026-05-14 devil-pole in its prompt frontmatter, actively
-working B-0170 substrate-claim-checker — foreground tick
+working 081KQNJ500008QG0R003SCWBDV substrate-claim-checker — foreground tick
 defers per right-work-in-progress framing.
 
 Counter status: brief-ack #1 with bounded named-deps
-(rate-reset + Lior cycle + bg-worker B-0170). Tick shard
+(rate-reset + Lior cycle + bg-worker 081KQNJ500008QG0R003SCWBDV). Tick shard
 IS the concrete artifact for counter reset.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

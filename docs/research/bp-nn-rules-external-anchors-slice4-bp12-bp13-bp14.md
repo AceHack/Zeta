@@ -1,7 +1,7 @@
 # BP-NN Rules External Anchor Backfill — Slice 4 (BP-12, BP-13, BP-14)
 
 Scope: External prior-art anchors for three BP-NN rules in
-`docs/AGENT-BEST-PRACTICES.md`. This is slice 4 of the B-0314 backfill;
+`docs/AGENT-BEST-PRACTICES.md`. This is slice 4 of the 081KR2E4K0008QG0R001ADMBVW backfill;
 slices 1–3 covered BP-10, BP-11, BP-03, BP-07, BP-16, BP-04, BP-08, BP-09.
 These three rules were selected as the next tier: BP-12 (security
 boundary re-sanitisation), BP-13 (parametric vs. retrieved knowledge

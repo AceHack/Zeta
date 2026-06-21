@@ -1,6 +1,6 @@
 ---
 pr_number: 5028
-title: "feat(B-0754): zero-typing USB install \u2014 first-boot service + nmtui fallback + role keystroke prompt"
+title: "feat(081KSGS9H0008QG0R002T3BJ2R): zero-typing USB install \u2014 first-boot service + nmtui fallback + role keystroke prompt"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T23:23:46Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-25T23:58:31Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5028: feat(B-0754): zero-typing USB install — first-boot service + nmtui fallback + role keystroke prompt
+# PR #5028: feat(081KSGS9H0008QG0R002T3BJ2R): zero-typing USB install — first-boot service + nmtui fallback + role keystroke prompt
 
 ## PR description
 
@@ -51,7 +51,7 @@ If anything fails: drop to interactive shell (no `exit 1`); the existing manual 
 | `usb-nixos-installer/zeta-install.sh` | `ZETA_AUTO_CONFIRM=WIPE` env-var bypass for typed confirmation |
 | `usb-nixos-installer/nixos/installer/configuration.nix` | systemd unit + `/etc/zeta-firstboot.conf` + `/etc/zeta-firstboot-enabled` + disable getty@tty1 |
 | `PROVISIONING.md` | Updates Step 4 + Step 5 to reflect zero-typing default |
-| `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-...md` | Follow-up backlog row for role taxonomy expansion (control-plane-gpu, worker-cpu, worker-storage, all-in-one) |
+| `docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-...md` | Follow-up backlog row for role taxonomy expansion (control-plane-gpu, worker-cpu, worker-storage, all-in-one) |
 
 ### Override path (recovery / non-standard shapes)
 
@@ -59,11 +59,11 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 
 ## Composes with
 
-- B-0737 — zflash + Touch ID PAM (the Mac-side one-touch flow this matches on the node side)
-- B-0743 — "I execute, you fingerprint" desktop admin consent pattern (extended here to "I execute, you walk away" for the node-side install)
-- B-0728 — destructive-tool authoring contract (preserved: the destructive consent moves to flash time, gated by Touch ID + nonce)
-- B-0755 — role taxonomy expansion (the prompt grows when more host configs land)
-- B-0756 — HA control-plane + etcd (sibling architecture work)
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM (the Mac-side one-touch flow this matches on the node side)
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" desktop admin consent pattern (extended here to "I execute, you walk away" for the node-side install)
+- 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (preserved: the destructive consent moves to flash time, gated by Touch ID + nonce)
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the prompt grows when more host configs land)
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane + etcd (sibling architecture work)
 
 ## Test plan
 
@@ -98,7 +98,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 5 c
 | full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh | New first-boot orchestration script (role prompt + network + install + reboot). |
 | full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Installs first-boot script, adds first-boot marker/config, and systemd unit on tty1; updates on-USB instructions. |
 | full-ai-cluster/PROVISIONING.md | Updates provisioning steps to reflect the intended zero-typing/`nmtui` flow. |
-| docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md | Adds backlog row for expanding host-role taxonomy and extending the role-prompt surface. |
+| docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md | Adds backlog row for expanding host-role taxonomy and extending the role-prompt surface. |
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T23:35:34Z)
@@ -139,7 +139,7 @@ P0 (data-loss / discrepancy): `ZETA_AUTO_CONFIRM=WIPE` fully bypasses the typed 
 
 P1: The on-USB `zeta-install.md` help text says the first-boot service "runs zeta-install non-interactively" and implies zero typing beyond the role prompt/nmtui. Currently `zeta-install.sh` still prompts for BOOT_DISK selection unless `BOOT_DISK` is set to an actual device path. Update this help text (or implement the missing non-interactive disk selection) so the operator instructions reflect what will really happen on tty1.
 
-### Thread 5: docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md:11 (resolved)
+### Thread 5: docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:26:55Z):
 
@@ -175,7 +175,7 @@ P1: PROVISIONING.md says the first-boot flow runs zeta-install with `BOOT_DISK=a
 
 P1: This “Equivalent to: sudo disko …” block is inaccurate for the current zeta-install implementation: zeta-install uses sgdisk/mkfs/mount directly and does not invoke disko. This could mislead operators trying to do a manual override; either update the equivalence to match the script’s actual steps, or adjust zeta-install to actually use disko if that’s intended.
 
-### Thread 11: docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md:11 (resolved)
+### Thread 11: docs/backlog/P2/081KSE6WT0008QG0R003612WGJ-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:35:34Z):
 

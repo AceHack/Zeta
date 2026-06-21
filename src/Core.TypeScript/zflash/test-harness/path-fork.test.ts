@@ -35,7 +35,7 @@ function pathForkPlan(): readonly PathForkRuntimeForkPlan[] {
 }
 
 describe("path-fork serial marker assertions", () => {
-  test("path-fork fork plans stop on B-0891 markers without requiring a second full install", () => {
+  test("path-fork fork plans stop on 081KSNY2Z0008QG0R0008PN7RQ markers without requiring a second full install", () => {
     const result = planPathForkRuntime({
       isoPath: ISO_PATH,
       bootImagePath: BOOT_IMAGE_PATH,

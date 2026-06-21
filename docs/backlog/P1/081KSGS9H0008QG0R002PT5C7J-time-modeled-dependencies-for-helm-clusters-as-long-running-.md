@@ -1,6 +1,5 @@
 ---
-id: B-0825
-zetaid: 081KSGS9H0008QG0R002PT5C7J
+id: 081KSGS9H0008QG0R002PT5C7J
 priority: P1
 status: closed
 title: time-modeled dependencies for Helm — clusters are long-running stateful systems; chart-graph needs temporal axis for revision history + migration phases + rolling-upgrade windows + concurrent-version overlap; Helm uniquely requires this among package managers; substrate-engineering target for Ace meta-PM (Aaron 2026-05-26)
@@ -24,11 +23,11 @@ tags: [ace-feature, helm, time-modeled-dependencies, rolling-upgrade, migration-
 
 ## Problem
 
-[B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) names the N-dimensional dependency space Ace meta-PM operates over. The maintainer 2026-05-26 also named Helm's UNIQUE requirement:
+[081KSGS9H0008QG0R0031PBNGA](081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) names the N-dimensional dependency space Ace meta-PM operates over. The maintainer 2026-05-26 also named Helm's UNIQUE requirement:
 
 > *"helm needs time modeled in the depedencies like no others"*
 
-(from the broader N-D + holographic + AI-rate negotiation framing in B-0824)
+(from the broader N-D + holographic + AI-rate negotiation framing in 081KSGS9H0008QG0R0031PBNGA)
 
 **Time as a dependency dimension is Helm-distinct** because Helm operates on **long-running stateful systems** (Kubernetes clusters with persistent state, in-flight workloads, running pods, stored data). Other PMs typically don't need a time axis in their dependency graph:
 
@@ -62,17 +61,17 @@ K8s clusters are different from build systems in three ways that make time first
 
 1. **Long-running** — clusters live for years; dep-graph is consulted continuously, not once per build
 2. **Stateful** — persistent volumes / databases / message queues mean state survives version transitions; dep-graph must reason about state-compatibility across versions
-3. **Multi-tenant / multi-use** (per [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)) — migrations span multiple consumers; can't always atomic-swap; need time-windowed dual-running
+3. **Multi-tenant / multi-use** (per [081KSGS9H0008QG0R0018ES3R4](081KSGS9H0008QG0R0018ES3R4-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)) — migrations span multiple consumers; can't always atomic-swap; need time-windowed dual-running
 
 Build-time PMs (Maven / npm / Cargo) can ignore time because the build artifact is instantaneous + the deploy concern is separated. Helm CAN'T separate them — install IS deploy IS continuous-running.
 
 ## Target
 
-Time-axis primitives in Ace's chart-graph substrate (composes with B-0821 named-dependency-graph + B-0822 diamond resolution + B-0824 N-D meta-PM):
+Time-axis primitives in Ace's chart-graph substrate (composes with 081KSGS9H0008QG0R00367G209 named-dependency-graph + 081KSGS9H0008QG0R0018ES3R4 diamond resolution + 081KSGS9H0008QG0R0031PBNGA N-D meta-PM):
 
 ### Sub-target 1 — temporal dependency-graph spec extension
 
-Extend B-0821's `AppDependencyGraph` schema with time-aware fields:
+Extend 081KSGS9H0008QG0R00367G209's `AppDependencyGraph` schema with time-aware fields:
 
 ```yaml
 # maintainers/<op>/cluster-apps/<app>/zeta-deps.yaml
@@ -99,11 +98,11 @@ spec:
 |---|---|---|
 | preparing | old version; new staged in canary namespace | dep-graph reads OLD; new deps allowed in canary only |
 | cutting-over | old + new running concurrently; gradual traffic shift | dep-graph allows BOTH; consumers can target either |
-| dual-running | both versions stable; tenant-by-tenant cutover | per-tenant-isolation per B-0822; dep-graph routes by tenant-id |
+| dual-running | both versions stable; tenant-by-tenant cutover | per-tenant-isolation per 081KSGS9H0008QG0R0018ES3R4; dep-graph routes by tenant-id |
 | draining-old | new version primary; old cleanup in progress | dep-graph reads NEW; old marked deprecated |
 | cleanup | old version retired; only new remains | dep-graph normalizes to NEW |
 
-Ace tracks phase via cluster-state observation + emits per-phase engine config (ArgoCD applications / Flux kustomizations per B-0820 derivability-asymmetry).
+Ace tracks phase via cluster-state observation + emits per-phase engine config (ArgoCD applications / Flux kustomizations per 081KSGS9H0008QG0R00352WW0V derivability-asymmetry).
 
 ### Sub-target 3 — time-bounded dep-graph queries
 
@@ -145,9 +144,9 @@ schedules:
     rollback-window: "72h"
 ```
 
-Ace's scheduler reads the schedule + runs the dep-graph evaluation at the boundary + emits the migration runbook per the AI-runbook substrate (B-0819).
+Ace's scheduler reads the schedule + runs the dep-graph evaluation at the boundary + emits the migration runbook per the AI-runbook substrate (081KSGS9H0008QG0R0005P83AP).
 
-### Sub-target 6 — composition with AI-rate continuous negotiation (B-0824)
+### Sub-target 6 — composition with AI-rate continuous negotiation (081KSGS9H0008QG0R0031PBNGA)
 
 The time-axis IS the substrate AI-rate negotiation operates on:
 
@@ -168,18 +167,18 @@ Time + AI-rate-negotiation compose: Ace is the always-on agent watching the temp
 
 ## Composes with
 
-- **[B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)** — parent N-D meta-PM substrate; time is ONE of the N axes; this row formalizes the time axis for the Helm dimension
-- **[B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md)** — `AppDependencyGraph` spec extended with time-aware fields
-- **[B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)** — multi-tenant + multi-use compose with per-tenant cutover scheduling
-- **[B-0247](B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** + **[B-0288](B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** + **[B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** — Ace package manager (implementation home)
-- **[B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md)** — holographic substrate; time-axis is one slice of the higher-D projection
-- **[B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point; time-axis substrate operates on Helm charts
-- **[B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)** — derivability-asymmetry + multi-cluster; per-cluster temporal state diverges; Ace handles
-- **[B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)** — AI-runbook primitives; migration runbooks are AI-runbooks with temporal-bounded `deferred run / continue with`
+- **[081KSGS9H0008QG0R0031PBNGA](081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)** — parent N-D meta-PM substrate; time is ONE of the N axes; this row formalizes the time axis for the Helm dimension
+- **[081KSGS9H0008QG0R00367G209](081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md)** — `AppDependencyGraph` spec extended with time-aware fields
+- **[081KSGS9H0008QG0R0018ES3R4](081KSGS9H0008QG0R0018ES3R4-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)** — multi-tenant + multi-use compose with per-tenant cutover scheduling
+- **[081KQZVQW0008QG0R000ZHEN62](081KQZVQW0008QG0R000ZHEN62-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** + **[081KR2E4K0008QG0R002YE3MMD](081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md)** + **[081KSE6WT0008QG0R000YYH3DY](../P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** — Ace package manager (implementation home)
+- **[081KRW63S0008QG0R001SAHYKV](081KRW63S0008QG0R001SAHYKV-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md)** — holographic substrate; time-axis is one slice of the higher-D projection
+- **[081KSGS9H0008QG0R003A37Z65](081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point; time-axis substrate operates on Helm charts
+- **[081KSGS9H0008QG0R00352WW0V](../P2/081KSGS9H0008QG0R00352WW0V-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)** — derivability-asymmetry + multi-cluster; per-cluster temporal state diverges; Ace handles
+- **[081KSGS9H0008QG0R0005P83AP](081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)** — AI-runbook primitives; migration runbooks are AI-runbooks with temporal-bounded `deferred run / continue with`
 
 ## Out of scope (this row)
 
-- Implementing time-axis for non-Helm PMs (npm / Maven / apt) — they typically don't need it; if they DO it's their dimension's substrate-engineering work; B-0824 is the home for the meta-architecture
+- Implementing time-axis for non-Helm PMs (npm / Maven / apt) — they typically don't need it; if they DO it's their dimension's substrate-engineering work; 081KSGS9H0008QG0R0031PBNGA is the home for the meta-architecture
 - Full state-migration tooling (the migration logic itself is per-chart; Ace orchestrates the dep-graph + reasons about temporal compatibility; doesn't replace per-chart migration tools like Liquibase / Flyway / kustomize-overlays)
 - Auto-execution of scheduled upgrades without operator confirmation (per `.claude/rules/no-directives.md` operator authority preserved; Ace surfaces + negotiates; operator decides)
 
@@ -193,14 +192,14 @@ Filed P1 because:
 
 1. Helm's UNIQUE requirement among PMs — Maven/npm/apt don't have this need, so existing PM substrate doesn't transfer
 2. Real-world cluster operators hit time-axis problems every migration (when to cut over postgres; how to dual-run; how to roll back safely)
-3. Composes with B-0824 (one axis of the N-D meta-PM substrate) — substrate-engineering work consolidates
-4. Composes with B-0822 multi-tenant + multi-use (per-tenant cutover scheduling)
-5. AI-rate negotiation (B-0824) needs the time-axis to operate over
+3. Composes with 081KSGS9H0008QG0R0031PBNGA (one axis of the N-D meta-PM substrate) — substrate-engineering work consolidates
+4. Composes with 081KSGS9H0008QG0R0018ES3R4 multi-tenant + multi-use (per-tenant cutover scheduling)
+5. AI-rate negotiation (081KSGS9H0008QG0R0031PBNGA) needs the time-axis to operate over
 
 ## Substrate-inventory pass
 
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `rg "time-modeled\|temporal dependency\|migration phase" docs/backlog/` → no prior row on Helm-time-axis substrate
-- `gh pr list --state all --search "B-0825"` → no in-flight collision
-- ID B-0825 next-free per `git ls-tree origin/main` (B-0824 in flight on sibling branch; B-0822/0823 just merged or in-flight)
+- `gh pr list --state all --search "081KSGS9H0008QG0R002PT5C7J"` → no in-flight collision
+- ID 081KSGS9H0008QG0R002PT5C7J next-free per `git ls-tree origin/main` (081KSGS9H0008QG0R0031PBNGA in flight on sibling branch; 081KSGS9H0008QG0R0018ES3R4/0823 just merged or in-flight)

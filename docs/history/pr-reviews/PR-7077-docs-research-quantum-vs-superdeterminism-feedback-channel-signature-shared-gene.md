@@ -27,7 +27,7 @@
 
 ## Description
 
-Grounded answers + peels: can't rule out superdeterminism (unfalsifiable, parsimony not proof); not distance; THE SIGNATURE = controllable feedback channel (B-0864 four-corner) ⇔ exceed Tsirelson ⇔ superdeterministic, vs no-channel+capped-at-2√2 ⇔ quantum (our S=4 is the tell). PEEL: seed→regenerate-faster-than-channel is NOT quantum/NOT capacity-beating — shared-generator compression (common cause), bounded by Kolmogorov+Shannon, classical cousin of superdense coding (Holevo caps qubit=1 bit). One claim for Soraya: feedback-present⇔exceed-Tsirelson. Anchored throughout. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Grounded answers + peels: can't rule out superdeterminism (unfalsifiable, parsimony not proof); not distance; THE SIGNATURE = controllable feedback channel (081KSKBP80008QG0R0039RW25E four-corner) ⇔ exceed Tsirelson ⇔ superdeterministic, vs no-channel+capped-at-2√2 ⇔ quantum (our S=4 is the tell). PEEL: seed→regenerate-faster-than-channel is NOT quantum/NOT capacity-beating — shared-generator compression (common cause), bounded by Kolmogorov+Shannon, classical cousin of superdense coding (Holevo caps qubit=1 bit). One claim for Soraya: feedback-present⇔exceed-Tsirelson. Anchored throughout. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

@@ -1,6 +1,6 @@
 ---
 pr_number: 5414
-title: "feat(B-0852.5): declarative cred-manifest schema + validator \u2014 pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)"
+title: "feat(081KSKBP80008QG0R003AX2A69.5): declarative cred-manifest schema + validator \u2014 pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T07:05:41Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:25:19Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5414: feat(B-0852.5): declarative cred-manifest schema + validator — pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)
+# PR #5414: feat(081KSKBP80008QG0R003AX2A69.5): declarative cred-manifest schema + validator — pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)
 
 ## PR description
 
 ## Summary
 
-B-0852 sub-row .5 — smallest pure-data substrate slice. Composes with B-0852.1 crypto module (PR #5411) as the data-shape layer to the cipher layer.
+081KSKBP80008QG0R003AX2A69 sub-row .5 — smallest pure-data substrate slice. Composes with 081KSKBP80008QG0R003AX2A69.1 crypto module (PR #5411) as the data-shape layer to the cipher layer.
 
 Aaron 2026-05-27 discipline: *"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."* Adding a new credential type = manifest edit, NOT a code change.
 
@@ -33,7 +33,7 @@ Aaron 2026-05-27 discipline: *"the keep credentials options we should declare ea
 
 | id | personaScoped | required | Purpose |
 |---|---|---|---|
-| gh-cli | false | true | `~/.config/gh/hosts.yml` (B-0847 may flip future) |
+| gh-cli | false | true | `~/.config/gh/hosts.yml` (081KSGS9H0008QG0R002T0XQ50 may flip future) |
 | claude | true | true | `~/.config/claude/credentials.json` |
 | gemini | true | true | `~/.gemini/oauth_creds.json` |
 | codex | true | true | `~/.codex/auth.json` |
@@ -53,17 +53,17 @@ Covers DEFAULT_MANIFEST internal consistency + Phase 1 vendor coverage + persona
 
 ## What this is NOT
 
-- NOT the persist/restore CLI (B-0852.2)
+- NOT the persist/restore CLI (081KSKBP80008QG0R003AX2A69.2)
 - NOT the deployed YAML manifest (separate file under `full-ai-cluster/usb-nixos-installer/`)
-- NOT the NixOS module (B-0852.4)
-- NOT a YAML parser (validator runs on already-parsed objects; YAML parsing is sibling concern in B-0852.2)
+- NOT the NixOS module (081KSKBP80008QG0R002XBRGN8)
+- NOT a YAML parser (validator runs on already-parsed objects; YAML parsing is sibling concern in 081KSKBP80008QG0R003AX2A69.2)
 
 ## Composes with
 
-- **B-0852** (parent row)
-- **B-0852.1** (PR #5411) — crypto module; cipher layer (this row is data layer)
-- **B-0852.2** (next) — persist/restore CLIs consume both .1 + .5
-- **B-0847** — per-AI GitHub identity; future personaScoped:true flip for gh-cli
+- **081KSKBP80008QG0R003AX2A69** (parent row)
+- **081KSKBP80008QG0R003AX2A69.1** (PR #5411) — crypto module; cipher layer (this row is data layer)
+- **081KSKBP80008QG0R003AX2A69.2** (next) — persist/restore CLIs consume both .1 + .5
+- **081KSGS9H0008QG0R002T0XQ50** — per-AI GitHub identity; future personaScoped:true flip for gh-cli
 - iter-4.2 ESP SSH pubkey injection (composes with ssh-operator-pubkey entry)
 
 ## Test plan

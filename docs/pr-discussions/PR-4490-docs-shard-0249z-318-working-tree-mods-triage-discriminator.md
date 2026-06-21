@@ -25,7 +25,7 @@ Picks up the [PR #4478 (0202Z)](https://github.com/Lucent-Financial-Group/Zeta/p
 | Status | Count | Treatment |
 |---|---|---|
 | `M` modified | 34 | Already accounted for in [PR #4478 (0202Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4478) orphaned-commit triage |
-| `D` deleted | 1 | `B-0633-...` already deleted on main (stale local state) |
+| `D` deleted | 1 | `081KRW63S0008QG0R000Y109W0-...` already deleted on main (stale local state) |
 | `??` untracked | 283 | **This tick's scope** |
 
 ### Untracked classification (283 files)

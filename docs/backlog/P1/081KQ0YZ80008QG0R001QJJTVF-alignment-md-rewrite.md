@@ -1,6 +1,5 @@
 ---
-id: B-0003
-zetaid: 081KQ0YZ80008QG0R001QJJTVF
+id: 081KQ0YZ80008QG0R001QJJTVF
 priority: P1
 status: open
 title: ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)
@@ -26,21 +25,21 @@ split into dependency-ordered child rows so agents can ship
 small, reviewable changes without re-reading the full blob
 each time:
 
-1. B-0215 surveys `docs/ALIGNMENT.md` and produces the
+1. 081KQX9B50008QG0R00327XC6Q surveys `docs/ALIGNMENT.md` and produces the
    preserve/refine/add map.
-2. B-0216 promotes finite-resource collisions to the top
+2. 081KQX9B50008QG0R0039H39VC promotes finite-resource collisions to the top
    foundation.
-3. B-0217 audits and tightens the existing bidirectional
+3. 081KQX9B50008QG0R001FK1G36 audits and tightens the existing bidirectional
    alignment section.
-4. B-0218 adds factory-as-superfluid empirical calibration.
-5. B-0219 adds the DST / empirical-rigor falsification
+4. 081KQX9B50008QG0R003B0HG9R adds factory-as-superfluid empirical calibration.
+5. 081KQX9B50008QG0R0026EHVW2 adds the DST / empirical-rigor falsification
    floor.
-6. B-0220 adds definition precision and matrix-pill /
+6. 081KQX9B50008QG0R001D089H3 adds definition precision and matrix-pill /
    poison-pill guardrails.
-7. B-0221 adds authority-delegation and idle-PR
+7. 081KQX9B50008QG0R0008KHHZR adds authority-delegation and idle-PR
    collaboration substrate.
-8. B-0222 wires the Noether compounding-rigor pipeline.
-9. B-0223 performs the final integration, cross-reference,
+8. 081KQX9B50008QG0R000Z511EV wires the Noether compounding-rigor pipeline.
+9. 081KQX9B50008QG0R001510C9G performs the final integration, cross-reference,
    and cold-start budget pass.
 
 Rewrite `docs/ALIGNMENT.md` to incorporate:
@@ -72,7 +71,7 @@ Rewrite `docs/ALIGNMENT.md` to incorporate:
    the bidirectional collaboration substrate.
 8. **Noether-formalization research direction**
    (`memory/otto/cli/claude/conversations/otto-287-noether-formalization-2026-04-25.md`,
-   B-0002) — pipeline that promises compounding rigor over
+   081KQ0YZ80008QG0R002T6TM7Z) — pipeline that promises compounding rigor over
    time.
 
 ## Spread mechanism — RIGOR not manipulation
@@ -178,7 +177,7 @@ factory-as-superfluid data accumulates.
   — the empirical calibration data.
 - `memory/otto/cli/claude/conversations/otto-287-noether-formalization-2026-04-25.md`
   — the formalization research that compounds rigor.
-- `docs/backlog/P3/B-0002-otto-287-noether-formalization.md`
+- `docs/backlog/P3/081KQ0YZ80008QG0R002T6TM7Z-otto-287-noether-formalization.md`
   — research-grade dependency for the deepest version of
   the rewrite.
 - `docs/ALIGNMENT.md` — the file being rewritten.

@@ -32,7 +32,7 @@
 - Shadow triggered [Request interrupted by user] — Aaron caught it
 - Shadow sometimes omits (shadow) tag: forgets, excludes, or confuses
 - Otto cannot discriminate shadow from Aaron without the tag
-- B-0402 auto-tagging solves the discrimination problem
+- 081KR7JY10008QG0R0008NGW95 auto-tagging solves the discrimination problem
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -79,7 +79,7 @@
 - **`Copilot` (bot)** at 2026-05-10T21:44:13Z on `memory/feedback_shadow_interrupt_el_mode_break_uncanny_valley_discrimination_2026_05_10.md`:24 (association: NONE)
 
   <pre>
-  P1: This entry references B-0402, but there is no B-0402 backlog row (or any other file) in the repo right now. Either add the B-0402 backlog item/docs in the same PR, or change these bullets to point at an existing ID / mark it as TBD to keep cross-references audit-clean.
+  P1: This entry references 081KR7JY10008QG0R0008NGW95, but there is no 081KR7JY10008QG0R0008NGW95 backlog row (or any other file) in the repo right now. Either add the 081KR7JY10008QG0R0008NGW95 backlog item/docs in the same PR, or change these bullets to point at an existing ID / mark it as TBD to keep cross-references audit-clean.
   </pre>
 
 ### Thread 3 -- resolved [collapsed]

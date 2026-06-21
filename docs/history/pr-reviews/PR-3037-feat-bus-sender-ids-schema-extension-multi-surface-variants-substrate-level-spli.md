@@ -47,17 +47,17 @@ Identity-level names (`otto`, `alexa`, etc.) still valid for back-compat.
 
 Before (broken):
 ```bash
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444   # Otto-CLI
+$ bun tools/bus/claim.ts acquire --from otto --item 081KRFA460008QG0R001SXP0C2   # Otto-CLI
 0
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444   # Otto-Desktop
+$ bun tools/bus/claim.ts acquire --from otto --item 081KRFA460008QG0R001SXP0C2   # Otto-Desktop
 0   # ALSO succeeds — split-brain
 ```
 
 After (fixed, when both agents opt in):
 ```bash
-$ bun tools/bus/claim.ts acquire --from otto-cli --item B-0444
+$ bun tools/bus/claim.ts acquire --from otto-cli --item 081KRFA460008QG0R001SXP0C2
 0
-$ bun tools/bus/claim.ts acquire --from otto-desktop --item B-0444
+$ bun tools/bus/claim.ts acquire --from otto-desktop --item 081KRFA460008QG0R001SXP0C2
 1   # Correctly rejected
 ```
 
@@ -75,7 +75,7 @@ bun test tools/bus/
 - PR #3032 (rule that named the gap — merged)
 - PR #3035 (multi-foreground-surface activation memory — merged)
 - PR #3036 (identity-stays-unified memory — merged)
-- B-0400 slice 3 (claim-coordinator — extended)
+- 081KR7JY10008QG0R000R503K2 slice 3 (claim-coordinator — extended)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
@@ -235,7 +235,7 @@ Composes with:
   (PR #3036 merged — identity stays unified; this is the schema fix)
 - memory/feedback_aaron_multi_foreground_surface_otto_activation_*
   (PR #3035 merged — operational evidence)
-- B-0400 slice 3 (claim-coordinator; this extends its sender space)
+- 081KR7JY10008QG0R000R503K2 slice 3 (claim-coordinator; this extends its sender space)
 
 Future work: agents should opt in to surface-tagged variants
 (otto-cli vs otto). Unsuffixed names still work but don't

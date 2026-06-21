@@ -23,19 +23,19 @@ module Codec =
         /// A stable identifier for this codec (e.g. "bonsai/canonical-json-v1").
         abstract member Name: string
 
-    // ── the codec algebra (B-1006): a codec is an **invariant functor**
+    // ── the codec algebra (081KT2T2J0008QG0R0008TFHJT): a codec is an **invariant functor**
     // with the round-trip law `Deserialize ∘ Serialize = id`, closed under
     // identity, product, and sum. These combinators build composite codecs
     // from component codecs and preserve round-trip by construction (proven
-    // in tests/Tests.FSharp/Core/Codec.Tests.fs — B-1007 C12). Prior art:
+    // in tests/Tests.FSharp/Core/Codec.Tests.fs — 081KT2T2J0008QG0R000YZ3NMY C12). Prior art:
     // scodec `xmap`/`~`/`|+|`, Haskell `codec`, profunctor-optics.
     //
-    // NOTE on notation: B-1006 writes the abstract codec as `Codec<a>`; the
-    // concrete F# type here is `ICodec<a, 'Wire, 'Feedback>`. Below, B-1006's
+    // NOTE on notation: 081KT2T2J0008QG0R0008TFHJT writes the abstract codec as `Codec<a>`; the
+    // concrete F# type here is `ICodec<a, 'Wire, 'Feedback>`. Below, 081KT2T2J0008QG0R0008TFHJT's
     // `Codec<a>` ≙ `ICodec<a, _, _>` (the wire/feedback params elided).
 
     /// The **identity** codec — wire = value, total (never declines): the
-    /// algebra's identity element (B-1006's `Codec<unit>` ≙ `identity<unit>()`).
+    /// algebra's identity element (081KT2T2J0008QG0R0008TFHJT's `Codec<unit>` ≙ `identity<unit>()`).
     /// `Deserialize ∘ Serialize = id` holds trivially (`Ok` round-trips `Ok`).
     let identity<'T, 'Feedback> () : ICodec<'T, 'T, 'Feedback> =
         { new ICodec<'T, 'T, 'Feedback> with

@@ -93,11 +93,11 @@ auto-loads via `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memor
 Cited from 6 distinct surfaces:
 
 - `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md:538`
-- `docs/backlog/P2/B-0088-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md:168`
-- `docs/backlog/P0/B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md:105`
-- `docs/backlog/P0/B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md:135`
-- `docs/backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md:108`
-- `docs/backlog/P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md:164`
+- `docs/backlog/P2/081KQ8P5D0008QG0R002FSTGXP-paired-edit-lint-advisory-not-enforcement-promote-to-required-check-otto-2026-04-28.md:168`
+- `docs/backlog/P0/081KQ8P5D0008QG0R003JETMEV-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md:105`
+- `docs/backlog/P0/081KQ8P5D0008QG0R003JETMEV-budget-cadence-workflow-cron-misses-task-287-deadline-window-aaron-2026-04-28.md:135`
+- `docs/backlog/P1/081KQ8P5D0008QG0R0010FP5SY-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md:108`
+- `docs/backlog/P1/081KQ8P5D0008QG0R000JHD7AB-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md:164`
 
 Single memory file → 6 citation sites needing Option-B disclosure.
 `sort -u` collapses to 1; the catalog preserves all 6.
@@ -119,9 +119,9 @@ Cited from 4 Ani persona conversations:
 
 ### `memory/feedback_reviewer_artifact_snapshot_mismatch_taxonomy_2026_04_29.md` (3 hidden edges)
 
-- `docs/backlog/P2/B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md:87`
-- `docs/backlog/P2/B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-memory.md:8`
-- `docs/backlog/P2/B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-memory.md:23`
+- `docs/backlog/P2/081KQB8J40008QG0R0021GX1HK-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md:87`
+- `docs/backlog/P2/081KRA5AR0008QG0R002JS7GRB-home3-reviewer-artifact-snapshot-mismatch-taxonomy-memory.md:8`
+- `docs/backlog/P2/081KRA5AR0008QG0R002JS7GRB-home3-reviewer-artifact-snapshot-mismatch-taxonomy-memory.md:23`
 
 ### `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md` (3 hidden edges)
 
@@ -135,11 +135,11 @@ Cited from 4 Ani persona conversations:
 
 - `memory/feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md`
   cited from `docs/research/2026-05-04-b-0140-bash-to-ts-migration-audit-table.md:76`
-  AND `docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md:208`
+  AND `docs/backlog/P1/081KQGDBJ0008QG0R000A4EZS5-typescript-standardization-non-install-scripts-aaron-2026-05-01.md:208`
 - `memory/feedback_three_filter_discipline_f1_f2_f3_mandatory_before_any_kernel_promotion.md`
   cited from `docs/research/meta-cognition-survey-2026-04-21.md:35` AND `:156`
 - `memory/feedback_natural_home_of_memories_is_in_repo_now_all_types_glass_halo_full_git_native_2026_04_24.md`
-  cited from B-0072 + B-0169
+  cited from 081KQ8P5D0008QG0R0023ABK2C + 081KQJZR90008QG0R002D6XYHB
 
 ## False-positive class: metasyntactic placeholders in documentation
 
@@ -148,7 +148,7 @@ called this a "bug finding"; it is actually a false positive worth
 documenting as its own class.
 
 ```
-docs/backlog/P2/B-0178-decision-graph-traversal-tool-aaron-2026-05-03.md:77
+docs/backlog/P2/081KQNJ500008QG0R001THCSKV-decision-graph-traversal-tool-aaron-2026-05-03.md:77
   -> memory/feedback_X.md
 ```
 
@@ -281,7 +281,7 @@ disclosure-bearing citations land.
 
 | Class | Description | Count (49-edge sample) | Refinement |
 |-------|-------------|------------------------|------------|
-| FP-1 | Metasyntactic placeholders in CLI/code-block context | ≥1 (B-0178:77) | Skip code-block contexts in regex |
+| FP-1 | Metasyntactic placeholders in CLI/code-block context | ≥1 (081KQNJ500008QG0R001THCSKV:77) | Skip code-block contexts in regex |
 | FP-2 | Already-disclosed user-scope refs | unknown (≥1 confirmed: codeql-canary:126) | Proximity-scan for disclosure footer OR allow-list |
 | **True positive** | Undisclosed dangling refs (real cold-boot blockers) | **≤47 (likely much fewer after FP-2 audit)** | Apply Option-B disclosure per #4038 pattern |
 
@@ -322,7 +322,7 @@ must NOT use `sort -u`.
 - `tools/hygiene/audit-memory-references.ts` (existing tool —
   audits ONLY `memory/MEMORY.md`; does NOT walk other surfaces;
   the substrate-engineer candidate would extend it OR be a new sibling)
-- Future B-0621 (proposed: substrate-engineer-candidate row for
+- Future 081KRW63S0008QG0R0030EQ67Z (proposed: substrate-engineer-candidate row for
   the multi-surface `tools/hygiene/audit-dangling-memory-refs.ts`
   TS tool + CI integration; per next-window plan in
   [tick 2026-05-17 0421Z](../docs/hygiene-history/ticks/2026/05/17/0421Z))
@@ -355,8 +355,8 @@ named dep: Lior absent from `ps -A` + multi-Otto contention eased):
 
 1. Commit this catalog along with the rest of Group A-F per 0418Z
    prescription
-2. File B-0621 row for substrate-engineer candidate (citing this
+2. File 081KRW63S0008QG0R0030EQ67Z row for substrate-engineer candidate (citing this
    catalog as the design-input data)
 3. Either fix the high-priority dangling refs (the `.claude/rules/`
-   5 + the `docs/backlog/P2/B-0178` placeholder bug) OR file a
+   5 + the `docs/backlog/P2/081KQNJ500008QG0R001THCSKV` placeholder bug) OR file a
    separate row for the fix campaign

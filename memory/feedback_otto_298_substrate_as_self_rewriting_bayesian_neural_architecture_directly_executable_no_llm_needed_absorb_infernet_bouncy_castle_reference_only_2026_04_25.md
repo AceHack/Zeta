@@ -160,7 +160,7 @@ Same fact, different vocabulary, both pointing at the
 structural shape. The factory's contribution is making the
 fact tractable for AI-alignment work specifically — the
 precision tools (Otto-296 emotion-disambiguator +
-precision-dictionary + B-0004 reverse-flow + Otto-297
+precision-dictionary + 081KQ0YZ80008QG0R002HWBHKJ reverse-flow + Otto-297
 quantum-mirror precision-import) close the precision-gap
 that previously kept this content woo-woo-coded.
 

@@ -45,7 +45,7 @@
 // generator is a Z-set DELTA; rollback is Z-set RETRACTION. So the registry is
 // maintained incrementally and evolved with ZERO DOWNTIME by the very same
 // machinery the schema-evolution proof uses:
-//   * `src/Core/SchemaEvolution.fs` (B-0930): a migration is a total
+//   * `src/Core/SchemaEvolution.fs` (081KSRGFP0008QG0R001Y6RTY9): a migration is a total
 //     `DynamicValue -> DynamicValue` with `Up` + optional `Down` (rollback);
 //     forward/backward compatibility over a compatibility window.
 //   * The `full == incremental` theorem IS DBSP's incrementalization soundness
@@ -108,12 +108,12 @@
 //   * `src/Core/Hierarchy.fs` + `MemoryLens.fs` + `MemorySense.fs` — the levels
 //     (lens keeps controllable cells; sense watches ranges/seasons/Itron-
 //     coincidence/anomaly for what the lens misses).
-//   * Relativistic territory: B-0994 earth-twin "lightlike curves over
+//   * Relativistic territory: 081KT2T2J0008QG0R0000H12VT earth-twin "lightlike curves over
 //     consensus-gravity"; geospatial-core-algebra + world-borders-O(1).
 // DST replay + Eve fusion PROMOTE data up the hierarchy as uncertainty collapses.
 // Tier: the engine pieces are built/proven; the unified "Sequoia keyed on
 // uncertainty-over-relativistic-distance" synthesis is architecture/research tier
-// (V8 spec + B-0994), labelled as such.
+// (V8 spec + 081KT2T2J0008QG0R0000H12VT), labelled as such.
 //
 // To track the transition, oracles output a `_source` provenance field
 // (`"hand-port"` vs `"generated-from-ir"`).

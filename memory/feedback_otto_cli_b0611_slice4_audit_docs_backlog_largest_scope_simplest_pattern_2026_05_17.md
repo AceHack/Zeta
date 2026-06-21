@@ -1,11 +1,11 @@
 ---
-name: B-0611 slice 4 audit — docs/backlog surface; largest scope (17 refs, ~22 edges) but simplest resolution pattern (all Otto-authored rows, 4-option menu applies)
+name: 081KRSKQ20008QG0R0014PPGZM slice 4 audit — docs/backlog surface; largest scope (17 refs, ~22 edges) but simplest resolution pattern (all Otto-authored rows, 4-option menu applies)
 description: ~22 edges across 17 unique dangling refs in docs/backlog. All citing files are Otto-authored backlog rows (B-NNNN-*.md), no verbatim-preservation constraint. Uses slice-1 4-option menu (in-repo projection / footnote-fallback / deletion / hybrid). Largest scope but no Option E needed.
 type: feedback
 created: 2026-05-17T07:23Z
 ---
 
-# B-0611 slice 4 audit — docs/backlog, 21 citing files, 17 unique refs
+# 081KRSKQ20008QG0R0014PPGZM slice 4 audit — docs/backlog, 21 citing files, 17 unique refs
 
 ## Audit output (`--surfaces docs/backlog`, 2026-05-17T07:23Z)
 
@@ -13,9 +13,9 @@ created: 2026-05-17T07:23Z
 
 | Citing file (truncated) | # citations |
 |---|---:|
-| `B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-*.md` | 2 |
-| `B-0156-typescript-standardization-non-install-scripts-aaron-*.md` | 2 |
-| `B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-*.md` | 2 |
+| `081KQ8P5D0008QG0R003JETMEV-budget-cadence-workflow-cron-misses-task-287-deadline-*.md` | 2 |
+| `081KQGDBJ0008QG0R000A4EZS5-typescript-standardization-non-install-scripts-aaron-*.md` | 2 |
+| `081KRA5AR0008QG0R002JS7GRB-home3-reviewer-artifact-snapshot-mismatch-taxonomy-*.md` | 2 |
 | 18 other rows | 1 each |
 
 Total citing rows: 21. All under `docs/backlog/P*/B-*.md`. All are
@@ -56,7 +56,7 @@ For each of the 17 unique dangling refs in slice 4, pick one of:
    multiple cites (3 of the 21 rows cite 2 refs each; could mix
    options per cite).
 
-## Compositional snapshot after 4 slices (B-0611 complete audit)
+## Compositional snapshot after 4 slices (081KRSKQ20008QG0R0014PPGZM complete audit)
 
 | Slice | Surface | uniqueRefs | edges | Pattern |
 |---|---|---:|---:|---|
@@ -75,7 +75,7 @@ For each of the 17 unique dangling refs in slice 4, pick one of:
 | Option E (verbatim files) | ~15 | Editorial footnote at top of file; mechanical pattern |
 | Audit-tool integration | — | Allowlist / suggest mode / annotation parser (one-time engineering) |
 
-**Estimated work for full B-0611 cleanup**: ~3-4 small PRs
+**Estimated work for full 081KRSKQ20008QG0R0014PPGZM cleanup**: ~3-4 small PRs
 (one per slice + optional audit-tool-integration PR). Per-slice
 PR can be authored independently. Slice 1 + 4 (most homogeneous)
 could ship first; slice 2 + 3 (with Option E) need the projection-
@@ -83,7 +83,7 @@ target inspection step at safe window.
 
 ## Composes with
 
-- B-0611 — parent backlog row
+- 081KRSKQ20008QG0R0014PPGZM — parent backlog row
 - Slice-1 recipe memo (4-option menu + footnote-fallback observation)
 - Slice-2 recipe memo (Option E pattern for verbatim)
 - Slice-3 recipe memo (mixed file types, hybrid resolution)
@@ -107,14 +107,14 @@ The substrate-design decisions are:
    files + per-cite Option A-D on 3 Otto-authored files
 4. **Per-citation decisions (slice 4)**: Option A-D on 21 rows
 5. **Optional engineering (post-cleanup)**: audit-tool allowlist
-   semi-automation per B-0611 acceptance bullet
+   semi-automation per 081KRSKQ20008QG0R0014PPGZM acceptance bullet
 
 After all slices land, `bun tools/hygiene/audit-dangling-memory-refs.ts`
 exits 0 across all 6 surfaces. Until the audit-tool allowlist
 ships, CI integration of the tool is gated on completing slice
 cleanup.
 
-This memo completes the B-0611 audit-prep substrate. Future
+This memo completes the 081KRSKQ20008QG0R0014PPGZM audit-prep substrate. Future
 safe-window Otto starting cleanup can read the 4 per-slice memos
 + the parent backlog row to execute the work without re-running
 discovery.

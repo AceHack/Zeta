@@ -1,6 +1,6 @@
 // audit_clause_drift.test.ts — tests for alignment-clause drift detector.
 //
-// B-0058 slice: adds test coverage for the drift detector's CLI
+// 081KQ3HBZ0008QG0R002S674CG slice: adds test coverage for the drift detector's CLI
 // interface and baseline no-drift assertion.
 //
 // Run: bun test tools/alignment/audit_clause_drift.test.ts

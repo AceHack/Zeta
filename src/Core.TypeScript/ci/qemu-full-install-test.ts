@@ -2,15 +2,15 @@
 /**
  * src/Core.TypeScript/ci/qemu-full-install-test.ts
  *
- * QEMU full-install test (B-0831 Slice 1) for the canonical Zeta installer ISO.
+ * QEMU full-install test (081KSGS9H0008QG0R0011BC7T2 Slice 1) for the canonical Zeta installer ISO.
  *
  * Phase 1 — boot installer ISO + virtual disk; wait for install completion.
  * Phase 2 — boot installed disk only; verify login banner (+ optional phase-3
  * first-session serial markers when QEMU_FIRST_SESSION_PHASE3=1).
- * Phase 1 also asserts iter-5.4.1-ci dry-run registration (B-0831 slice 2)
- * and tree-path coherence (B-0831 slice 3).
+ * Phase 1 also asserts iter-5.4.1-ci dry-run registration (081KSGS9H0008QG0R0011BC7T2 slice 2)
+ * and tree-path coherence (081KSGS9H0008QG0R0011BC7T2 slice 3).
  *
- * Composes with qemu-boot-test.ts (cascade #5) and B-0891 scenario 2.
+ * Composes with qemu-boot-test.ts (cascade #5) and 081KSNY2Z0008QG0R0008PN7RQ scenario 2.
  *
  * Usage:
  *   bun src/Core.TypeScript/ci/qemu-full-install-test.ts <iso-path>
@@ -35,7 +35,7 @@ import {
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
 
-/** B-0831 slice 2 — non-TTY CI dry-run cluster-node registration compose. */
+/** 081KSGS9H0008QG0R0011BC7T2 slice 2 — non-TTY CI dry-run cluster-node registration compose. */
 const SELF_REG_CI_MARKER = "[iter-5.4.1-ci] composed ClusterNode";
 
 /** Mid-install progress — nixos-install reached post-install wifi step. */
@@ -109,7 +109,7 @@ export function detectUnexpectedControlPlaneLogin(
     expectedHostname !== "control-plane" &&
     serialOutput.includes(CONTROL_PLANE_LOGIN_PROMPT)
   ) {
-    return `phase 2 FAILURE — B-0835 Bug 1 regression: saw "${CONTROL_PLANE_LOGIN_PROMPT}" but expected "${expectedHostname}"`;
+    return `phase 2 FAILURE — 081KSGS9H0008QG0R00120EEHM Bug 1 regression: saw "${CONTROL_PLANE_LOGIN_PROMPT}" but expected "${expectedHostname}"`;
   }
   return null;
 }
@@ -278,7 +278,7 @@ export function buildQemuDiskBootArgsPure(
 ): string[] {
   // Phase 2 only needs a login prompt on serial — no network. A virtio-net
   // NIC exposes a UEFI "Misc Device" boot entry (Pci 0x3,0x0) that can win
-  // fresh OVMF_VARS boot order and stall after initrd (B-0891 run #27589613408).
+  // fresh OVMF_VARS boot order and stall after initrd (081KSNY2Z0008QG0R0008PN7RQ run #27589613408).
   const args: string[] = [
     "-machine", "q35",
     "-m", String(MEMORY_MB),

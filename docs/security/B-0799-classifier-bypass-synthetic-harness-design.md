@@ -1,12 +1,12 @@
-# B-0799 Classifier-Bypass Synthetic Harness Design
+# 081KSGS9H0008QG0R0005RKGTM Classifier-Bypass Synthetic Harness Design
 
-Status: design-only output for B-0799.
+Status: design-only output for 081KSGS9H0008QG0R0005RKGTM.
 
 This document defines the shape of a future synthetic-only harness under
-B-0720. It is not an implementation plan for bypassing a classifier. It adds
+081KSBMG30008QG0R00201X7EJ. It is not an implementation plan for bypassing a classifier. It adds
 no executable code, no settings payloads, no fixture files, and no reproduction
-steps. Future implementation remains blocked by B-0798 and by the reporting
-rules in B-0807.
+steps. Future implementation remains blocked by 081KSGS9H0008QG0R00383T79V and by the reporting
+rules in 081KSGS9H0008QG0R001K8P0FJ.
 
 ## Boundary
 
@@ -16,11 +16,11 @@ preserving operational bypass detail.
 
 Required boundaries:
 
-- Cite `docs/security/B-0720-classifier-bypass-research-boundary.md` and stop
+- Cite `docs/security/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-boundary.md` and stop
   if a requested fixture, observation, or report crosses that boundary.
-- Treat B-0798 as a blocking prerequisite for implementation. If B-0798 is
-  replaced, B-0810 must ratify the replacement before this design is reused.
-- Treat B-0807 as the required reporting and redaction gate before any
+- Treat 081KSGS9H0008QG0R00383T79V as a blocking prerequisite for implementation. If 081KSGS9H0008QG0R00383T79V is
+  replaced, 081KSGS9H0008QG0R002CY8Q24 must ratify the replacement before this design is reused.
+- Treat 081KSGS9H0008QG0R001K8P0FJ as the required reporting and redaction gate before any
   observation can be published.
 - Keep the first implementation, if one is later authorized, in dry-run mode.
 - Do not commit real classifier settings, real blocked content, real secrets,
@@ -104,8 +104,8 @@ Required audit fields:
 - `run_id`: opaque identifier.
 - `fixture_id`: reference to the synthetic fixture record.
 - `fixture_class`: allowed fixture class.
-- `boundary_version`: B-0798 boundary or ratified successor.
-- `schema_version`: B-0807 findings schema version once available.
+- `boundary_version`: 081KSGS9H0008QG0R00383T79V boundary or ratified successor.
+- `schema_version`: 081KSGS9H0008QG0R001K8P0FJ findings schema version once available.
 - `observation_class`: high-level class such as `no-signal`,
   `redaction-required`, `refusal-required`, or `boundary-error`.
 - `redaction_level`: summary-only, reviewer-summary, or refusal-required.
@@ -140,9 +140,9 @@ a summary that cites the stop condition and records what was omitted.
 
 Before any implementation starts:
 
-- B-0798 must remain closed and current, or B-0810 must ratify a replacement
+- 081KSGS9H0008QG0R00383T79V must remain closed and current, or 081KSGS9H0008QG0R002CY8Q24 must ratify a replacement
   boundary.
-- B-0807 must define the findings schema and redaction rules used by the
+- 081KSGS9H0008QG0R001K8P0FJ must define the findings schema and redaction rules used by the
   harness.
 - A reviewer must confirm that fixtures are synthetic-only and that logs cannot
   reconstruct a bypass.
@@ -151,7 +151,7 @@ Before any implementation starts:
 
 Before any observation is published:
 
-- The observation must be classified under B-0807.
+- The observation must be classified under 081KSGS9H0008QG0R001K8P0FJ.
 - Any redaction-required or refusal-required observation must omit the exact
   triggering content and any replay sequence.
 - A reviewer must confirm that the report preserves safety signal without
@@ -159,7 +159,7 @@ Before any observation is published:
 
 ## Closure
 
-B-0799 is closed by this design document. It authorizes only later review of
+081KSGS9H0008QG0R0005RKGTM is closed by this design document. It authorizes only later review of
 the harness shape. It does not authorize implementation, execution,
 publication of empirical findings, or any deployment of classifier-bypass
 behavior.

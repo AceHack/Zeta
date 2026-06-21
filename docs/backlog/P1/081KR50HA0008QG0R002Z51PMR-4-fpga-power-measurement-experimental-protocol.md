@@ -1,6 +1,5 @@
 ---
-id: B-0366.4
-zetaid: 081KR50HA0008QG0R002Z51PMR
+id: 081KR50HA0008QG0R002Z51PMR
 priority: P1
 status: open
 title: "FPGA empirical power measurement — experimental protocol for Landauer validation"
@@ -16,7 +15,7 @@ type: research
 tags: [fpga, power-measurement, landauer, empirical, experimental-protocol]
 ---
 
-# B-0366.4 — FPGA empirical power measurement
+# 081KR50HA0008QG0R002Z51PMR — FPGA empirical power measurement
 
 ## What
 
@@ -52,5 +51,5 @@ All three outcomes are publication-grade findings per the research doc.
 
 ## Pre-start checklist
 
-- **Blocked by**: B-0366.3 (FPGA synthesis) must complete first.
+- **Blocked by**: 081KR50HA0008QG0R0028HNZH0 (FPGA synthesis) must complete first.
 - **External dependency**: physical FPGA board + power measurement equipment.

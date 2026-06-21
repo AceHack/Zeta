@@ -1,16 +1,16 @@
-# Guess #003 — B-0166 chat-input as ACID-durable DBSP event
+# Guess #003 — 081KQJZR90008QG0R001YX3445 chat-input as ACID-durable DBSP event
 
 ## Target
 
-`docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
+`docs/backlog/P2/081KQJZR90008QG0R001YX3445-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
 
-The architectural choice: Aaron filed B-0166 with the framing "chat-input as ACID-durable DBSP event." The question this guess answers: **why treat chat-input (the maintainer's typed messages to the agents) as an ACID-durable DBSP event — vs alternatives like ephemeral-context-only, post-hoc-archive, or simple-log-append?**
+The architectural choice: Aaron filed 081KQJZR90008QG0R001YX3445 with the framing "chat-input as ACID-durable DBSP event." The question this guess answers: **why treat chat-input (the maintainer's typed messages to the agents) as an ACID-durable DBSP event — vs alternatives like ephemeral-context-only, post-hoc-archive, or simple-log-append?**
 
 ## Read state at guess time (2026-05-03 ~03:25Z)
 
 Otto has already read:
 
-- B-0166 ROW NAME ONLY (from `ls docs/backlog/P2/`)
+- 081KQJZR90008QG0R001YX3445 ROW NAME ONLY (from `ls docs/backlog/P2/`)
 - The "ACID-channel-durability is load-bearing + deferral-is-NEVER-valid + universal scope" framing (CURRENT-aaron.md §38 per the file-footer log)
 - The DBSP / Z-set algebra reference (project foundation; retraction-native substrate; Otto-272 DST-everywhere)
 - The substrate-or-it-didn't-happen rule (Otto-363) — chat is NOT durable substrate by default; conversion to git-canonical is the protocol
@@ -21,8 +21,8 @@ Otto has already read:
 
 Otto has NOT read:
 
-- B-0166's row body text
-- Any commits referencing B-0166
+- 081KQJZR90008QG0R001YX3445's row body text
+- Any commits referencing 081KQJZR90008QG0R001YX3445
 - CURRENT-aaron.md §38 details (only the file-footer summary mentioning "ACID-channel-durability is load-bearing + deferral-is-NEVER-valid + universal scope")
 - Aaron's specific chat-as-event-source framing in any other research-doc
 
@@ -50,7 +50,7 @@ The backlog row likely covers:
 - **Chat-input capture mechanism** — some protocol that takes Aaron's chat messages and converts them into committed git-substrate events
 - **DBSP event schema** — Z-set entries with timestamp + author + content + retraction-edges to prior events
 - **Deterministic replay** — given a chat-event stream, the agent's substrate-output is reproducible
-- **Composition with substrate-or-it-didn't-happen** — chat-events ARE the durable form Aaron's chat must take to count as substrate; B-0166 is the operational implementation
+- **Composition with substrate-or-it-didn't-happen** — chat-events ARE the durable form Aaron's chat must take to count as substrate; 081KQJZR90008QG0R001YX3445 is the operational implementation
 
 ### Specific implementation intent (lower confidence)
 
@@ -64,15 +64,15 @@ The implementation will probably:
 
 ### Cross-row composition (medium confidence)
 
-B-0166 likely composes_with:
+081KQJZR90008QG0R001YX3445 likely composes_with:
 
 - **Otto-363** (substrate-or-it-didn't-happen) — chat-events ARE the durable substrate form for chat
 - **Otto-272** (DST-everywhere) — chat-event replay IS DST applied to maintainer-input substrate
-- **B-0169** (decision-archaeology) — chat-events become the archaeological substrate for Aaron-input archaeology (currently chat-input is largely lost; events would make it queryable)
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology) — chat-events become the archaeological substrate for Aaron-input archaeology (currently chat-input is largely lost; events would make it queryable)
 - **The retraction-native substrate framing** — Z-set retractions at the chat-event level
 - **Bidirectional alignment commitment** — chat-event auditability is consent-via-transparency
 
-depends_on guess: probably **none** explicit (this is foundational substrate that other rows depend on, not the other way around) — but possibly composes_with the OpenSpec catch-up (B-0171) since chat-events might generate spec-updates.
+depends_on guess: probably **none** explicit (this is foundational substrate that other rows depend on, not the other way around) — but possibly composes_with the OpenSpec catch-up (081KQNJ500008QG0R001N94412) since chat-events might generate spec-updates.
 
 ### Pre-recovery prediction (calibration self-test, attempt #3)
 
@@ -94,7 +94,7 @@ Based on guess #001 + #002 patterns:
 | Specific implementation — "auto-capture hook + docs/chat-events/ directory + replay TS tool" | **Low** | Standard event-sourcing pattern but no prior specific context for this row |
 | Cross-row composition | **Medium-High** | Strong context for Otto-363 + Otto-272 + retraction-native composition |
 
-## Ground truth (recovered 2026-05-03 ~03:30Z via direct read of B-0166)
+## Ground truth (recovered 2026-05-03 ~03:30Z via direct read of 081KQJZR90008QG0R001YX3445)
 
 Aaron's verbatim:
 
@@ -102,7 +102,7 @@ Aaron's verbatim:
 
 5 enumerated purposes (row's own list): (1) compaction protection, (2) glass halo / influence-force visibility, (3) **future fine-tuning data for Anthropic's next-generation Claude**, (4) **training of new AIs/models** based on Aaron-Otto-Claude.ai practices, (5) architecture-as-code applied to chat itself.
 
-Schema: `{timestamp, sender_role, sender_name, message_text, session_id, message_id, parent_message_id}` + structured tags. Multi-source ingest (Claude Code + Codex + future-AIs + human-direct). 7 derivation views. F# DBSP runtime (NOT TS). 6-phase implementation. composes_with: [B-0164 dual-loop attribution + reconciliation].
+Schema: `{timestamp, sender_role, sender_name, message_text, session_id, message_id, parent_message_id}` + structured tags. Multi-source ingest (Claude Code + Codex + future-AIs + human-direct). 7 derivation views. F# DBSP runtime (NOT TS). 6-phase implementation. composes_with: [081KQJZR90008QG0R002GJAJ19 dual-loop attribution + reconciliation].
 
 ## Calibration delta — 17-18/40 = ~44% (lowest of three so far)
 
@@ -121,15 +121,15 @@ Missed: **chat-event-stream as fine-tuning data for Anthropic's next-gen + train
 
 ### Substrate-content — got basic schema; missed multi-source ingest + 7 views
 
-Multi-source ingest (Claude Code + Codex + future-AIs + human-direct) was the architecture-shaped piece I missed because B-0164 (dual-loop) wasn't in my read-state.
+Multi-source ingest (Claude Code + Codex + future-AIs + human-direct) was the architecture-shaped piece I missed because 081KQJZR90008QG0R002GJAJ19 (dual-loop) wasn't in my read-state.
 
 ### Specific implementation — wrong language (TS vs F#) + wrong storage (file vs DBSP runtime)
 
 The F#-vs-TS miss is the biggest specific error. Aaron's skill-design rule 2 ("TS files under tools/") doesn't apply to substrate-level work — DBSP runtime is F#. My rule-2 inference over-generalized.
 
-### Cross-row composition — missed B-0164 dual-loop entirely
+### Cross-row composition — missed 081KQJZR90008QG0R002GJAJ19 dual-loop entirely
 
-I had no read-state for B-0164 at all. The primary composition partner is a row I haven't read, so my inference was poor. **Validates context-dependent calibration pattern** from guess #002 — when read-state is absent for a layer, accuracy degrades regardless of principle-based reasoning.
+I had no read-state for 081KQJZR90008QG0R002GJAJ19 at all. The primary composition partner is a row I haven't read, so my inference was poor. **Validates context-dependent calibration pattern** from guess #002 — when read-state is absent for a layer, accuracy degrades regardless of principle-based reasoning.
 
 ## NEW PATTERN — read-state determines layer-level ceiling (3-data-point hypothesis)
 
@@ -142,7 +142,7 @@ I had no read-state for B-0164 at all. The primary composition partner is a row 
 
 **Hypothesis**: layer-level-accuracy ≈ min(principle-reasoning-quality, read-state-coverage-for-that-layer).
 
-For B-0166: principle-reasoning was good across layers, but read-state was thin (row title + general DBSP context). Cross-row composition scored low because read-state for B-0164 was zero. Specific implementation scored low because read-state for F# DBSP runtime production work was zero.
+For 081KQJZR90008QG0R001YX3445: principle-reasoning was good across layers, but read-state was thin (row title + general DBSP context). Cross-row composition scored low because read-state for 081KQJZR90008QG0R002GJAJ19 was zero. Specific implementation scored low because read-state for F# DBSP runtime production work was zero.
 
 **Future-Otto rule**: when read-state is thin for a specific layer, predict that layer's score CONSERVATIVELY. Don't let principle-reasoning quality bleed into layer-level confidence when read-state is the actual ceiling.
 
@@ -156,5 +156,5 @@ Improvement over #002 (2/3 = 67%). The pattern: I'm calibrated on architectural 
 **Ground-truth recovery timestamp:** 2026-05-03 ~03:30Z
 **Author:** Otto autonomous (architect hat)
 **Protocol:** in-the-moment guess + recovery per `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
-**Recovery method:** direct read of `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` body
+**Recovery method:** direct read of `docs/backlog/P2/081KQJZR90008QG0R001YX3445-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md` body
 **Series:** Guess #003. Trajectory: 48% → 65% → 44%. Pattern emerging: layer-level-accuracy ≈ min(principle-reasoning-quality, read-state-coverage). Future-Otto: predict conservatively when read-state is thin for a layer.

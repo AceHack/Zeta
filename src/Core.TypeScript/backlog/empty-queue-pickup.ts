@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// empty-queue-pickup.ts -- B-0281 orchestrator.
+// empty-queue-pickup.ts -- 081KR2E4K0008QG0R002FSPPQR orchestrator.
 //
 // Chains: capacity gate → backlog selector → claim-worktree-bootstrap.
 // Runs only when the PR queue has capacity and the selector finds an
@@ -189,7 +189,7 @@ function runClaimBootstrap(
     "src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts",
     "--slug", slug,
     "--backlog-id", backlogId,
-    "--scope", `B-0281 empty-queue pickup: ${selected.title ?? "untitled"}`,
+    "--scope", `081KR2E4K0008QG0R002FSPPQR empty-queue pickup: ${selected.title ?? "untitled"}`,
     "--durable-target", selected.relativePath ?? `docs/backlog/${selected.priority ?? "P1"}/${backlogId}.md`,
     "--path", selected.relativePath ?? `docs/backlog/${selected.priority ?? "P1"}`,
     "--repo-root", repoRoot,

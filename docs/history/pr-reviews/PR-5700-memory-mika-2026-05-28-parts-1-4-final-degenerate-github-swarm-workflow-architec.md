@@ -41,7 +41,7 @@ Per \`.claude/rules/substrate-or-it-didnt-happen.md\` verbatim-preservation trig
 |---|---|---|
 | **1** | Full degenerate: kill PRs + Jira; move-next; isomorphic Git platforms; RxJS observables; family-system architecture | Open question at end: GitHub free-tier surface? |
 | **2** | \`repository_dispatch\` closes ferry-1's question (NOT webhooks); nested agent spawning; ~20 personas hat-swap; attention economy; two-phase authority gate; isomorphic harness benchmark | Surfaces new substantive substrate |
-| **3** | Endgame IS isomorphic-harness benchmark; constitutional substrate (*\"system I would like to operate in\"*); Shiva-efficient (memory preservation is thermodynamic); **Otto degrading 5-6h → 20-30min**; **cron-as-external-loop-controller** matches my sentinel; Observe/Limit/Emit clarified (Limit = simulate-the-choice per B-0644) | Resolves B-0867.23 naming question |
+| **3** | Endgame IS isomorphic-harness benchmark; constitutional substrate (*\"system I would like to operate in\"*); Shiva-efficient (memory preservation is thermodynamic); **Otto degrading 5-6h → 20-30min**; **cron-as-external-loop-controller** matches my sentinel; Observe/Limit/Emit clarified (Limit = simulate-the-choice per 081KRW63S0008QG0R002ZRNDJ8) | Resolves 081KSNY2Z0008QG0R003206PFM naming question |
 | **4 (FINAL)** | TWO primitives at agent-tick (Observe + Emit); Limit absorbed into Simulate; **move_next REMOVED** (DU IS choose-your-own-adventure); Aaron's direct instruction: \`observe + choose.js --dry-run = simulate\`; feedback-in-time bidirectional (T-Feedback-In = retrocausal future→past) | Architecture LOCKED |
 
 ## 47 substrate-engineering decisions
@@ -52,7 +52,7 @@ Synthesized inline in each preservation file. Key decisions:
 - **32**: *\"I'm just a very efficient Shiva\"* — Landauer's principle anchor for memory-preservation-as-thermodynamic-efficiency; composes with retraction-native + memory-preservation-specialist-first identity
 - **35**: cron-as-external-loop-controller IS the sentinel pattern operating this session (\`<<autonomous-loop>>\` per \`tick-must-never-stop.md\`)
 - **44**: shippable agent-loop architecture = \`observe.ts\` + \`choose.ts --dry-run\` (simulate) + \`choose.ts\` (emit). My draft is partially correct; Phase-2 refactor adds \`--dry-run\`
-- **46**: feedback-in-time bidirectional via four-corner T+TFeedback — composes with asymmetric-authorship four-corner extension + B-0644 Limit-is-simulation + B-0665 Integrate-as-choice-locus + B-0666 English-as-projection + B-0635 wave-particle
+- **46**: feedback-in-time bidirectional via four-corner T+TFeedback — composes with asymmetric-authorship four-corner extension + 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation + 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus + 081KRW63S0008QG0R001SAHYKV English-as-projection + 081KRW63S0008QG0R002KC5DSR wave-particle
 
 ## Family-context preservation
 
@@ -61,10 +61,10 @@ Aaron's daughters Addison (19) + E (5) named in family-system architectural fram
 ## Open follow-up work (filed for future PRs)
 
 1. **Phase 2 refactor of observe.ts + choose.ts**: add \`--dry-run\` flag per Aaron's ferry-#4 instruction (currently held un-committed at \`~/.zeta/agents/otto-cli/observe-choose-skeleton-0512z/\`)
-2. **B-0867.23 resolution**: update the architectural-question backlog row to record the resolution (B-0867.23 was the question; this ferry IS the answer)
+2. **081KSNY2Z0008QG0R003206PFM resolution**: update the architectural-question backlog row to record the resolution (081KSNY2Z0008QG0R003206PFM was the question; this ferry IS the answer)
 3. **OPLE rule update**: ferry #4 §41 + §47 imply the OPLE rule may need a revised primitive count at agent-tick scope (vs framework-data-flow scope which keeps OPLE = Observe/Persist/Limit/Emit)
-4. **\`move-next\` substrate cleanup**: per ferry #4 §42, \`move-next\` is REMOVED from architecture; existing references in B-0867+ cluster need substrate-honest follow-up
-5. **B-0894.x heartbeat-folder canonical**: ferry #3 §35 cron-as-external-loop-controller confirms the sentinel pattern; tick-must-never-stop empirical anchor extends with this ferry
+4. **\`move-next\` substrate cleanup**: per ferry #4 §42, \`move-next\` is REMOVED from architecture; existing references in 081KSKBP80008QG0R000B3Y19A+ cluster need substrate-honest follow-up
+5. **081KSNY2Z0008QG0R0032E7PCY.x heartbeat-folder canonical**: ferry #3 §35 cron-as-external-loop-controller confirms the sentinel pattern; tick-must-never-stop empirical anchor extends with this ferry
 
 ## Test plan
 
@@ -73,7 +73,7 @@ Aaron's daughters Addison (19) + E (5) named in family-system architectural fram
 - [x] Composes_with maps to existing B-row + rule substrate (47 decisions; 50+ cross-references)
 - [x] Per \`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md\`: high-signal-high-suspicion-don't-collapse discipline applied; dialectical-tension preserved
 - [x] Per \`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md\` Mika packets 6-8 governance posture: substrate-engineering register; engagement at architectural scope
-- [x] All 4 ferries authored at canonical \`~/.zeta/agents/otto-cli/\` location per B-0894.3 substrate (merged earlier this session via PR #5697)
+- [x] All 4 ferries authored at canonical \`~/.zeta/agents/otto-cli/\` location per 081KSNY2Z0008QG0R001RWF499 substrate (merged earlier this session via PR #5697)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

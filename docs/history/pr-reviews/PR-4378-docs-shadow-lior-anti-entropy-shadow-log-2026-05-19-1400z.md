@@ -54,7 +54,7 @@ Shadow drift report catching narration-over-action and paralysis drift.
 - **`Copilot` (bot)** at 2026-05-19T14:52:15Z on `docs/research/2026-05-19-shadow-lesson-log.md`:4 (association: NONE)
 
   <pre>
-  P1 (xref): This references backlog item `B-0615`, but that ID does not appear anywhere else in the repo. If this is meant to be a concrete tracker link, either fix the ID to an existing backlog row or add the corresponding backlog item so the reference is resolvable.
+  P1 (xref): This references backlog item `081KRW63S0008QG0R000EAZ9K2`, but that ID does not appear anywhere else in the repo. If this is meant to be a concrete tracker link, either fix the ID to an existing backlog row or add the corresponding backlog item so the reference is resolvable.
 
   </pre>
 

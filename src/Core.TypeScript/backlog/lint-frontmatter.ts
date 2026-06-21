@@ -14,7 +14,7 @@
 //   bun tools/backlog/lint-frontmatter.ts --strict       # exit 1 on findings
 //   bun tools/backlog/lint-frontmatter.ts --check 1,3    # only run checks 1 and 3
 //
-// Closes B-0663 (mechanizes batch-7 recurring reviewer findings).
+// Closes 081KRW63S0008QG0R000488SY1 (mechanizes batch-7 recurring reviewer findings).
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -55,7 +55,7 @@ interface Frontmatter {
 const SCHEMA_KEYS = new Set([
     // Canonical schema (tools/backlog/README.md)
     "id", "priority", "status", "title",
-    "zetaid", // B-0956: the 128-bit ZetaId alias backfilled into legacy rows (B-NNNN stays the slug/id)
+    "zetaid", // 081KSXN940008QG0R002FWR9B2: the 128-bit ZetaId alias backfilled into legacy rows (B-NNNN stays the slug/id)
     "tier", "effort", "ask", "type",
     "created", "last_updated",
     "depends_on", "decomposition", "composes_with", "tags",
@@ -147,7 +147,7 @@ function parseFrontmatter(path: string): Frontmatter | null {
 }
 
 function parseBList(value: string, allLines?: string[], startIdx?: number, endIdx?: number): string[] {
-    // Inline form: `[B-0001, B-0002, B-0170.4]`
+    // Inline form: `[081KPYCJH0008QG0R003MDS51N, 081KQ0YZ80008QG0R002T6TM7Z, 081KQNJ500008QG0R003SCWBDV.4]`
     const inline = /^\[(.*)\]$/.exec(value);
     if (inline) {
         return inline[1]!

@@ -29,7 +29,7 @@
 
 ## Summary
 
-Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the B-0485 template. Closes [B-0488](docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md) which unblocks B-0492/B-0493 skill-mapping work.
+Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the 081KRHWGX0008QG0R00019453T template. Closes [081KRHWGX0008QG0R001HDK688](docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md) which unblocks 081KRHWGX0008QG0R000WGP5AQ/081KRHWGX0008QG0R002XVHSG5 skill-mapping work.
 
 ## Personas defined
 
@@ -52,12 +52,12 @@ KSK's terminal purpose is **human-in-the-loop refusal of impactful AI actions**.
 
 ## Acceptance criteria
 
-- [x] Template from [B-0485](docs/research/2026-05-14-persona-mapping-framework-b0485.md) applied
+- [x] Template from [081KRHWGX0008QG0R00019453T](docs/research/2026-05-14-persona-mapping-framework-b0485.md) applied
 - [x] Primary personas fully documented (3, exceeds the "grey-hat / ethical researcher" minimum — folded that framing into `ksk-security-engineer`)
 - [x] At least 2 refused personas with explicit HARD LIMITS rationale (R1 + R2)
 - [x] Output doc at `docs/personas/ksk-personas.md`
-- [x] B-0488 status: `open` → `in-progress` (closes on merge)
-- [ ] B-0492 `composes_with:` pointer backfilled (deferred to a follow-up; B-0492 row may not exist yet — needs scoping)
+- [x] 081KRHWGX0008QG0R001HDK688 status: `open` → `in-progress` (closes on merge)
+- [ ] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled (deferred to a follow-up; 081KRHWGX0008QG0R000WGP5AQ row may not exist yet — needs scoping)
 
 ## Test plan
 

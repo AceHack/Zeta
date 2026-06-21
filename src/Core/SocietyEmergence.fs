@@ -1,7 +1,7 @@
 namespace Zeta.Core
 
 /// **SocietyEmergence — the societal-emergence DST harness (B-converge ladder, rung 1; Aaron 2026-06-05).**
-/// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge; extends B-1019 to multi-traveler.)
+/// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge; extends 081KT7YW00008QG0R001DGZQKM to multi-traveler.)
 ///
 /// A deterministic, seed-replayable (DST) multi-traveler simulation that demonstrates **the balance**:
 /// under the **NCI** (each traveler reduces uncertainty on its OWN private evidence — non-coerced),

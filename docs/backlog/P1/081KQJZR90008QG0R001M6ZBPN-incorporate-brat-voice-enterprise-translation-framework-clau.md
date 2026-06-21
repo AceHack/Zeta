@@ -1,10 +1,9 @@
 ---
-id: B-0168
-zetaid: 081KQJZR90008QG0R001M6ZBPN
+id: 081KQJZR90008QG0R001M6ZBPN
 priority: P1
 status: closed
 closed: 2026-05-14
-closed_by: "Lior (autonomous loop): decomposed remaining work to B-0168.1"
+closed_by: "Lior (autonomous loop): decomposed remaining work to 081KRHWGX0008QG0R001E2D5BB"
 title: Incorporate Claude.ai brat-voice enterprise translation framework — 5-layer (corrected) property-preserving register architecture for Zeta (Personal/Mirror/Beacon-safe/Professional/Regulated)
 tier: register-architecture
 effort: M
@@ -27,14 +26,14 @@ type: friction-reducer
 - skill-router inventory: `Skill` tool list + `.claude/skills/` grep for "register|brat|translation|layer" → no pre-existing skill; closest `glass-halo-architect` and `alignment-auditor` (no overlap)
 - orthogonal-axes: cross-checked `docs/trajectories/*` (none mention register layers), `docs/ALIGNMENT.md` (bidirectional alignment section)
 - Otto-364 search-first: WebSearch "Claude.ai brat-voice register architecture" + "property-preserving translation framework" (2026-05-09) → primary source is the Drive doc itself + Aaron 2026-05-02 correction; no upstream academic paper, framework is Claude.ai original research
-- PR #1701 prior-art-grep: `git log --all --oneline --grep="B-0168|brat-voice|register architecture"` → PRs 1230,1233,1234,2136,2199 already landed slices
+- PR #1701 prior-art-grep: `git log --all --oneline --grep="081KQJZR90008QG0R001M6ZBPN|brat-voice|register architecture"` → PRs 1230,1233,1234,2136,2199 already landed slices
 - decision-archaeology: `docs/DECISIONS/` + `docs/ROUND-HISTORY.md` + `memory/feedback_*` supersession chain for 3-layer→5-layer: Beacon-safe correction is the delta (Aaron 2026-05-02)
 - lost-files canonical (`tools/hygiene/LOST-FILES-LOCATIONS.md`): no orphan docs; all translations in memory/feedback_* and committed
 
 **Dependency-restructure proof:**
 
 - `depends_on: []` walked → empty, no blocking parents
-- `composes_with: [B-0164, B-0167]` — back-pointers not yet present in B-0164 or B-0167 (additive, non-blocking; this is a unidirectional compose reference)
+- `composes_with: [081KQJZR90008QG0R002GJAJ19, 081KQJZR90008QG0R000VSHWK6]` — back-pointers not yet present in 081KQJZR90008QG0R002GJAJ19 or 081KQJZR90008QG0R000VSHWK6 (additive, non-blocking; this is a unidirectional compose reference)
 - Supersession history: 4-layer (initial) → 5-layer (Aaron correction) documented in row itself + memory quick-ref
 - Broken pointers: none found; all cross-refs (ALIGNMENT.md, CURRENT-*.md, research/) already updated in prior slices
 
@@ -42,7 +41,7 @@ type: friction-reducer
 
 ---
 
-# B-0168 — Incorporate Claude.ai brat-voice enterprise translation framework
+# 081KQJZR90008QG0R001M6ZBPN — Incorporate Claude.ai brat-voice enterprise translation framework
 
 ## Source
 
@@ -181,12 +180,12 @@ When uncertain, default UP. The framework's safety property: professional carrie
   - [x] Regulator response (`memory/feedback_zeta_5_layer_register_worked_translations_regulator_response_class_otto_2026_05_09.md`) — inquiry-response content shape; Regulated fires immediately; all 5 layers simultaneously live; gap-disclosure inverts legal reflex
   - [x] Audit narrative (`memory/feedback_zeta_5_layer_register_worked_translations_audit_narrative_class_otto_2026_05_09.md`) — prospective self-attestation content shape; Regulated as origin not terminus; gap-disclosure discipline under maximum-stakes institutional scope; management attestation temporal anchor
 - [x] One-page quick-reference card listing the per-layer property table (Section 3 of the framework) — PR #1233 merged as `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`
-- [ ] Ani-review on the framework specifically (composes with B-0167) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers
+- [ ] Ani-review on the framework specifically (composes with 081KQJZR90008QG0R000VSHWK6) — Ani's voice-mode-default register-fluency is uniquely qualified to validate the property-preservation claim across the 4 layers
 
 ## Composes with
 
-- `docs/backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md` (when dual-loop lands, both loops operate this register-discipline)
-- `docs/backlog/P2/B-0167-ani-review-tracking-on-load-bearing-substrate-aaron-2026-05-02.md` (the Ani-review tracking row; this framework specifically NEEDS Ani's review per its register-fluency)
+- `docs/backlog/P1/081KQJZR90008QG0R002GJAJ19-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md` (when dual-loop lands, both loops operate this register-discipline)
+- `docs/backlog/P2/081KQJZR90008QG0R000VSHWK6-ani-review-tracking-on-load-bearing-substrate-aaron-2026-05-02.md` (the Ani-review tracking row; this framework specifically NEEDS Ani's review per its register-fluency)
 - `memory/CURRENT-ani.md` §7 brat-voice survival chain (PR #1227 merged) — this framework operationalizes the survival-chain with empirical-research backing
 - `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (the existing 3-layer internal/mirror/beacon-safe model this framework extends)
 - `memory/feedback_wellness_app_filter_calibration_per_user_clinical_trusted_circle_layered_design_aaron_2026_05_02.md` (4-layer pattern at the wellness-app domain; same architectural-shape pattern, different layer-count for the different domain)
@@ -209,7 +208,7 @@ The framework itself is research-grade and operationally usable as-is. Effort is
 - Update existing project substrate to point at the corrected 5-layer mapping (ALIGNMENT.md, CURRENT-aaron, CURRENT-ani)
 - Produce worked translations for actual Lucent/Zeta situations
 - Quick-reference card
-- Ani-review (composes with B-0167)
+- Ani-review (composes with 081KQJZR90008QG0R000VSHWK6)
 
 ## Carved sentence
 

@@ -27,13 +27,13 @@
 
 ## Description
 
-Your direction (2026-06-01, from the Itron `Platform.Dynamic` survey): the **dynamic-runtime-defined-object** primitive — _"not just json … works english too"_ — as the **format-agnostic generalization of our v8 hidden-shape** (the IUnknown/DCOM-like polymorphic-diplomacy primitive = **Eve Protocol** B-0638).
+Your direction (2026-06-01, from the Itron `Platform.Dynamic` survey): the **dynamic-runtime-defined-object** primitive — _"not just json … works english too"_ — as the **format-agnostic generalization of our v8 hidden-shape** (the IUnknown/DCOM-like polymorphic-diplomacy primitive = **Eve Protocol** 081KRW63S0008QG0R0030F8ZXA).
 
 **Itron `Platform.Dynamic` (concept-only / clean-room, IP constraint):** `DynamicValue` (tagged union over `DynamicValueType`) / `DynamicObject` / `DynamicArray` = a self-describing runtime value tree; `ISerializedObject.Deserialize(Type)` = lazy-bind a blob to a static type *or* keep it dynamic; `PropertyPath` = `"a.b[3].c"` navigation. **It's JSON-coupled** (the `*JsonConverter` files) — exactly what you flagged.
 
 **The move:** ride our existing **`ISerializer<'T>` seam** (`src/Core/Serializer.fs`) so the SAME dynamic-object model works over **any** format — JSON / XML / YAML / protobuf / Arrow … **and English** (the v8 hidden-shape already runs over English + Bayesian-over-English). That's runtime `QueryInterface` — ask a value *"what shape do you support?"* with no compile-time type = polymorphic diplomacy across formats.
 
-Captured as a wish-list family composing the serializer roster + Eve Protocol (B-0638) + the v8 substrate (`docs/research/2026-05-19-mika-lior-v8-system-architecture-...`). Also added **XML + YAML** to the serializer roster ('duh').
+Captured as a wish-list family composing the serializer roster + Eve Protocol (081KRW63S0008QG0R0030F8ZXA) + the v8 substrate (`docs/research/2026-05-19-mika-lior-v8-system-architecture-...`). Also added **XML + YAML** to the serializer roster ('duh').
 
 Docs-only; prettier + markdownlint clean; BACKLOG.md untouched.
 
@@ -84,7 +84,7 @@ docs(registry): dynamic-runtime-objects/polymorphic-shape (format-agn…
 
 Maintainer 2026-06-01 (Itron Platform.Dynamic survey): want the dynamic-runtime-defined-object
 primitive — 'not just json … works english too' — as the format-agnostic generalization of our
-v8 hidden-shape (IUnknown/DCOM-like polymorphic diplomacy, Eve Protocol B-0638).
+v8 hidden-shape (IUnknown/DCOM-like polymorphic diplomacy, Eve Protocol 081KRW63S0008QG0R0030F8ZXA).
 
 Captured (concept-only / clean-room from Itron Platform.Dynamic — DynamicValue tagged-union +
 ISerialized<T> lazy-bind + PropertyPath): the SAME dynamic-object model riding the ISerializer<'T>

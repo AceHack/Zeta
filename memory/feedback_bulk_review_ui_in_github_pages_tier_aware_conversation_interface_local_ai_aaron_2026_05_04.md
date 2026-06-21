@@ -127,8 +127,8 @@ rather than the load-bearing-author.
 
 ## Composes with
 
-- `B-0154` (GitHub Pages for SEO/discoverability) — adjacent
-  but distinct. B-0154 is about external-discoverability of
+- `081KQGDBJ0008QG0R002NV04N9` (GitHub Pages for SEO/discoverability) — adjacent
+  but distinct. 081KQGDBJ0008QG0R002NV04N9 is about external-discoverability of
   existing content; this is about maintainer-review interface
   for ongoing changes. Could share infrastructure but serves
   different audiences.
@@ -142,16 +142,16 @@ rather than the load-bearing-author.
 - AGENTS.md vibe-coded hypothesis — UI preserves maintainer-
   never-writes-code.
 
-## Canonical row: B-0017 (extended 2026-05-04)
+## Canonical row: 081KQ0YZ80008QG0R0003GAYYN (extended 2026-05-04)
 
 Aaron's 2026-05-04 architectural direction is folded into
 existing row
-`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`
+`docs/backlog/P2/081KQ0YZ80008QG0R0003GAYYN-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`
 under the "Aaron 2026-05-04 architectural extension — GitHub
 Pages host + tier-aware + conversation interface + local AI"
 section.
 
-**Same-day course correction story** — B-0188 was filed first
+**Same-day course correction story** — 081KQR4HQ0008QG0R002ZDREYC was filed first
 as a new row, per Aaron's same-conversation framing:
 
 > *"adding to backlog is never a failure mode to be corrected,
@@ -172,15 +172,15 @@ flywheel:
 The bars: **growth + completion + non-noise-when-pulled**.
 
 PR #1482 review (auto-reviewer) caught the failure mode in real
-time: B-0017 (Operational Resonance Dashboard — the bulk-
+time: 081KQ0YZ80008QG0R0003GAYYN (Operational Resonance Dashboard — the bulk-
 alignment UI within Frontier; Aaron 2026-04-25) already exists
-for this exact scope. B-0188 was a duplicate; the right move
-was to extend B-0017 with Aaron's 2026-05-04 architectural
+for this exact scope. 081KQR4HQ0008QG0R002ZDREYC was a duplicate; the right move
+was to extend 081KQ0YZ80008QG0R0003GAYYN with Aaron's 2026-05-04 architectural
 addition (GitHub Pages as host, tier-aware groupings,
 conversation interface, local AI paths), not to file a new row.
 
-B-0188 closed same-day as duplicate-of-B-0017. The architectural
-direction is preserved in B-0017's extension section.
+081KQR4HQ0008QG0R002ZDREYC closed same-day as duplicate-of-081KQ0YZ80008QG0R0003GAYYN. The architectural
+direction is preserved in 081KQ0YZ80008QG0R0003GAYYN's extension section.
 
 **Lesson encoded for future-Otto**: router-as-inventory before
 authoring. The skill-router-as-substrate-inventory rule
@@ -189,8 +189,8 @@ by topic ("bulk-alignment ui", "operational resonance dashboard")
 before creating new ones. The third quality bar (non-noise-when-
 pulled) requires this discipline; duplicate rows ARE noise.
 
-**Lesson distinct from B-0187**: B-0187 was a category error
-(family practice as project-with-effort-estimate); B-0188 was a
+**Lesson distinct from 081KQR4HQ0008QG0R001CBHW1R**: 081KQR4HQ0008QG0R001CBHW1R was a category error
+(family practice as project-with-effort-estimate); 081KQR4HQ0008QG0R002ZDREYC was a
 duplicate (existing row covered the scope). Different failure
 modes, both same-day-closed, both substrate-corrected without
 losing the architectural direction.

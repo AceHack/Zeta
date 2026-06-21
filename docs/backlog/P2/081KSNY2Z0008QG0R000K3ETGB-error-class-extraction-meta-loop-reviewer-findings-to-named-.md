@@ -1,6 +1,5 @@
 ---
-id: B-0875
-zetaid: 081KSNY2Z0008QG0R000K3ETGB
+id: 081KSNY2Z0008QG0R000K3ETGB
 priority: P2
 status: open
 title: Error-class extraction meta-loop — turn auto-reviewer findings into named classes into machine-checkable rules with before/after effectiveness measurement
@@ -51,8 +50,8 @@ Per Kestrel 2026-05-28: *"The sweet spot is probably 'named patterns that recur 
 - `tools/error-class-extract/cluster.ts` — clusters findings by similarity (string-similarity + AST-shape + rule-id), outputs candidate classes with frequency-ranked recurrence count
 - `tools/error-class-extract/effectiveness.ts` — for each landed rule, computes before/after error rate per class
 - CLI report: `bun tools/error-class-extract/extract.ts --since 1week` produces markdown summary of (a) candidate classes ranked by recurrence, (b) effectiveness of rules landed since last run
-- Composes with B-0876 (Clifford-space embedding) — when that lands, clustering switches from string-similarity to geometric-distance in Clifford space
-- Composes with B-0869 (DORA mandate) — error class extraction feeds change-failure-rate metric per class
+- Composes with 081KSNY2Z0008QG0R003KG3JTG (Clifford-space embedding) — when that lands, clustering switches from string-similarity to geometric-distance in Clifford space
+- Composes with 081KSNY2Z0008QG0R000HENSVM (DORA mandate) — error class extraction feeds change-failure-rate metric per class
 
 ## Substrate-honest framing
 

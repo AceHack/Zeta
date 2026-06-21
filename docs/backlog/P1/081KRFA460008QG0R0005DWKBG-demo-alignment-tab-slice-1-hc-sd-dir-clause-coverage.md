@@ -1,6 +1,5 @@
 ---
-id: B-0434
-zetaid: 081KRFA460008QG0R0005DWKBG
+id: 081KRFA460008QG0R0005DWKBG
 priority: P1
 status: closed
 title: "Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html"
@@ -17,7 +16,7 @@ tags: [demo, alignment-ui, github-pages, html, js]
 type: feature
 ---
 
-# B-0434 — Alignment tab slice 1: HC/SD/DIR coverage panel
+# 081KRFA460008QG0R0005DWKBG — Alignment tab slice 1: HC/SD/DIR coverage panel
 
 ## What was shipped
 

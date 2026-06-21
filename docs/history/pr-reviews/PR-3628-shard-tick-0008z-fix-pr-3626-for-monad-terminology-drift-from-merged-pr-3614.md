@@ -30,7 +30,7 @@
 ## Summary
 
 - First tick of 2026-05-16 UTC; fresh-session cold-boot from autonomous-loop
-- Landed [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626) (5 P1 review-thread fixes — monad-associativity terminology + dead xrefs in B-0543/B-0544 research substrate)
+- Landed [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626) (5 P1 review-thread fixes — monad-associativity terminology + dead xrefs in 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 research substrate)
 - Cron sentinel armed (Catch 43 first-action)
 - Lior-active lock-cleanup-race window navigated via borrow-on-existing + ls-tree canary
 

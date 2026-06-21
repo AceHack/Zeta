@@ -1,6 +1,5 @@
 ---
-id: B-0054.5
-zetaid: 081KR7JY10008QG0R0038891J0
+id: 081KR7JY10008QG0R0038891J0
 priority: P2
 status: open
 title: "British long-serial TV — Monty Python + Red Dwarf + Black Mirror"
@@ -16,7 +15,7 @@ type: research
 tags: [pop-culture, tv, monty-python, red-dwarf, black-mirror, british-comedy, operational-resonance, F1-F2-F3, media-resonance-catalog, comedy-as-substrate-probe]
 ---
 
-# B-0054.5 — British long-serial TV: Monty Python + Red Dwarf + Black Mirror
+# 081KR7JY10008QG0R0038891J0 — British long-serial TV: Monty Python + Red Dwarf + Black Mirror
 
 ## What
 
@@ -52,10 +51,10 @@ this slice covers the comedy / sci-fi comedy / anthology strands.
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.1]` — schema foundation; independent of video-game
-  slices (B-0054.2, B-0054.3).
-- `composes_with:` B-0054.6 (Hollywood film sweep — non-blocking sibling),
-  B-0054.10 (Bollywood — non-blocking).
+- `depends_on: [081KR2E4K0008QG0R0003J0FB8]` — schema foundation; independent of video-game
+  slices (081KR7JY10008QG0R0018G7ZQV, 081KR7JY10008QG0R001TRGC72).
+- `composes_with:` 081KR7JY10008QG0R0032ADY47 (Hollywood film sweep — non-blocking sibling),
+  081KR7JY10008QG0R000G3695N (Bollywood — non-blocking).
 
 ## Deliverable
 
@@ -74,10 +73,10 @@ Updated `tools/resonance/media-catalog-schema.ts`:
 - [ ] MR-012 has retractibility-operator mechanic precision (not just "time travel vibes")
 - [ ] MR-013 has at least one Black Mirror episode with specific mechanic named
 - [ ] `--validate` exits 0
-- [ ] B-0054.5 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R0038891J0 backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.1 (schema foundation)
+- 081KR2E4K0008QG0R0003J0FB8 (schema foundation)
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
 - MR-001 (Doctor Who — same BBC TV strand, different sub-genre)

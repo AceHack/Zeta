@@ -1,6 +1,6 @@
 ---
 pr_number: 3148
-title: "chore: regenerate docs/BACKLOG.md index \u2014 add B-0498 + B-0499"
+title: "chore: regenerate docs/BACKLOG.md index \u2014 add 081KRHWGX0008QG0R001XFRAHC + 081KRHWGX0008QG0R0034E0N22"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T16:31:29Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-14T18:05:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3148: chore: regenerate docs/BACKLOG.md index — add B-0498 + B-0499
+# PR #3148: chore: regenerate docs/BACKLOG.md index — add 081KRHWGX0008QG0R001XFRAHC + 081KRHWGX0008QG0R0034E0N22
 
 ## PR description
 
-Adds afternoon-cascade forward-planning rows (B-0498 substrate-evolution algebra rule-promotion candidacy P2; B-0499 Z[i]-weighted DBSP refinement candidate P3) to the BACKLOG.md auto-generated index. Drift was caught by `bun tools/backlog/generate-index.ts --check`.
+Adds afternoon-cascade forward-planning rows (081KRHWGX0008QG0R001XFRAHC substrate-evolution algebra rule-promotion candidacy P2; 081KRHWGX0008QG0R0034E0N22 Z[i]-weighted DBSP refinement candidate P3) to the BACKLOG.md auto-generated index. Drift was caught by `bun tools/backlog/generate-index.ts --check`.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -26,11 +26,11 @@ Adds afternoon-cascade forward-planning rows (B-0498 substrate-evolution algebra
 
 ## Pull request overview
 
-Regenerates the auto-generated backlog index to include two new forward-planning rows (B-0498 in P2 and B-0499 in P3) that were detected as drift by `tools/backlog/generate-index.ts --check`.
+Regenerates the auto-generated backlog index to include two new forward-planning rows (081KRHWGX0008QG0R001XFRAHC in P2 and 081KRHWGX0008QG0R0034E0N22 in P3) that were detected as drift by `tools/backlog/generate-index.ts --check`.
 
 **Changes:**
-- Add B-0498 entry under P2 (substrate-evolution algebra rule-promotion).
-- Add B-0499 entry under P3 (Z[i]-weighted DBSP refinement).
+- Add 081KRHWGX0008QG0R001XFRAHC entry under P2 (substrate-evolution algebra rule-promotion).
+- Add 081KRHWGX0008QG0R0034E0N22 entry under P3 (Z[i]-weighted DBSP refinement).
 
 ## General comments
 

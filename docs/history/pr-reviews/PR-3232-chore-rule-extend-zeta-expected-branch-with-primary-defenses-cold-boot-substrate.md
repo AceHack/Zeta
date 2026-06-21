@@ -29,7 +29,7 @@
 
 ## Summary
 
-Extends [`.claude/rules/zeta-expected-branch.md`](.claude/rules/zeta-expected-branch.md) with two primary defenses for multi-Otto-one-checkout topology. Promotes them from B-0519 RCA (grep-discoverable backlog row) to `.claude/rules/` (auto-loaded at cold-boot for every fresh session).
+Extends [`.claude/rules/zeta-expected-branch.md`](.claude/rules/zeta-expected-branch.md) with two primary defenses for multi-Otto-one-checkout topology. Promotes them from 081KRHWGX0008QG0R001HMWM1W RCA (grep-discoverable backlog row) to `.claude/rules/` (auto-loaded at cold-boot for every fresh session).
 
 ## Why promote from RCA to rule
 
@@ -97,7 +97,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`copilot-pull-request-reviewer` (human)** at 2026-05-14T20:39:45Z on `.claude/rules/zeta-expected-branch.md`:61 (association: NONE)
 
   <pre>
-  This cites a 2030Z field-test, but `docs/hygiene-history/ticks/2026/05/14/2030Z.md` does not exist and the B-0519 RCA only lists 2010Z/2026Z field-test ticks. Either add the missing shard/evidence or remove 2030Z so the promoted rule remains traceable.
+  This cites a 2030Z field-test, but `docs/hygiene-history/ticks/2026/05/14/2030Z.md` does not exist and the 081KRHWGX0008QG0R001HMWM1W RCA only lists 2010Z/2026Z field-test ticks. Either add the missing shard/evidence or remove 2030Z so the promoted rule remains traceable.
 
   This issue also appears on line 116 of the same file.
 
@@ -114,7 +114,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`copilot-pull-request-reviewer` (human)** at 2026-05-14T20:39:45Z on `.claude/rules/zeta-expected-branch.md`:117 (association: NONE)
 
   <pre>
-  This new reference says the rule now operationalizes the B-0519 primary defenses, but the referenced B-0519 row still says carrying this in `.claude/rules/` “would be the right home if/when this is promoted.” If this PR promotes the defense, update that row in the same PR to point back here or explicitly scope the remaining open work so the backlog/RCA does not drift from the loaded rule.
+  This new reference says the rule now operationalizes the 081KRHWGX0008QG0R001HMWM1W primary defenses, but the referenced 081KRHWGX0008QG0R001HMWM1W row still says carrying this in `.claude/rules/` “would be the right home if/when this is promoted.” If this PR promotes the defense, update that row in the same PR to point back here or explicitly scope the remaining open work so the backlog/RCA does not drift from the loaded rule.
 
   </pre>
 
@@ -153,7 +153,7 @@ ZETA_EXPECTED_BRANCH hook is unreliable in this harness because env vars
 don't persist across separate Bash-tool calls — each invocation may spawn
 a fresh shell. The hook is therefore defense-in-depth only.
 
-Promote two primary defenses from B-0519 RCA (backlog row, grep-discoverable)
+Promote two primary defenses from 081KRHWGX0008QG0R001HMWM1W RCA (backlog row, grep-discoverable)
 to .claude/rules/ (auto-loaded at cold-boot):
 
 - `git branch --show-current` immediately before `git commit` — direct
@@ -170,7 +170,7 @@ Per skill-router-as-substrate-inventory.md: extend the existing rule rather
 than mint a new one — same failure mode (wrong-branch commits at git
 operations under multi-Otto-one-checkout topology).
 
-Cross-references to B-0519 RCA added in the Full reasoning section.
+Cross-references to 081KRHWGX0008QG0R001HMWM1W RCA added in the Full reasoning section.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

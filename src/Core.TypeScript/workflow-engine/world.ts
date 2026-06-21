@@ -23,10 +23,10 @@
  *
  * Composes with:
  *   - src/Core.TypeScript/workflow-engine/composed-lifetime.ts (PR #5771) — base dispatch
- *   - B-0422 Clifford-algebraic narrative engine for Pauli-symmetry-
+ *   - 081KRCQQF0008QG0R0008VT354 Clifford-algebraic narrative engine for Pauli-symmetry-
  *     breaking-from-agenda-conservation prediction (civ-sim / game-world
  *     substrate-engineering target this world substrate composes with)
- *   - B-0867 workflow engine (multiple lifetimes interact in workflow world)
+ *   - 081KSKBP80008QG0R000B3Y19A workflow engine (multiple lifetimes interact in workflow world)
  *   - 13th-ferry §33.7 multi-AI cascade (each AI inhabits the world)
  *   - .claude/rules/additive-not-zero-sum (world substrate compounds)
  *   - .claude/rules/honor-those-that-came-before (lifetime variants

@@ -1,6 +1,5 @@
 ---
-id: B-0806
-zetaid: 081KSGS9H0008QG0R001Y9FB62
+id: 081KSGS9H0008QG0R001Y9FB62
 priority: P2
 status: open
 title: Ansible+GitOps + Crossplane composition — cross-OS declarative management for Windows + Macs + non-NixOS Linux; extends GitOps reach beyond K8s manifests + NixOS flake.nix to the heterogeneous OS substrate the maintainer actually runs
@@ -33,8 +32,8 @@ The maintainer 2026-05-26: *"This is good for declarative oses other than nix li
 
 Today's substrate covers:
 
-- **NixOS** (cluster nodes): declarative via `full-ai-cluster/flake.nix` + `nixos-rebuild switch`; iter-6.x cluster-update arc (B-0800–B-0805) automates within-channel + cross-channel updates
-- **macOS** (dev laptops, maintainer's primary Mac): imperative via `tools/setup/macos.sh` → Homebrew + mise; idempotent + auto-updating per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) discipline but NOT declaratively-driven from git
+- **NixOS** (cluster nodes): declarative via `full-ai-cluster/flake.nix` + `nixos-rebuild switch`; iter-6.x cluster-update arc (081KSGS9H0008QG0R001EKTS5A–081KSGS9H0008QG0R002BC2ZR7) automates within-channel + cross-channel updates
+- **macOS** (dev laptops, maintainer's primary Mac): imperative via `tools/setup/macos.sh` → Homebrew + mise; idempotent + auto-updating per [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) discipline but NOT declaratively-driven from git
 - **Debian/Ubuntu Linux** (CI runners, contributor laptops): imperative via `tools/setup/linux.sh` → apt + mise; same shape as macOS
 - **Windows**: no substrate today
 
@@ -76,7 +75,7 @@ spec:
 
 ArgoCD watches a Git folder of these CRs; an Ansible Operator (Red Hat AAP or community) spins up pods to execute the playbook against the named external host.
 
-**Fit for Zeta**: HIGH (the maintainer 2026-05-26 clarification: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*). K8s is always present in Zeta's substrate (the `full-ai-cluster/` is the cluster substrate; not optional). Operator-pattern coupling is therefore not a rejection criterion. Remaining concern is SSH/WinRM access from cluster pods to the operator's heterogeneous machines — iter-5.4 [B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) homelab gh-auth + tailscale-equivalent unlock this. Pattern 1 + Pattern 3 can BOTH ship; pick per use case (Operator for cluster-orchestrated workstation config; ansible-pull for fully-disconnected/edge hosts).
+**Fit for Zeta**: HIGH (the maintainer 2026-05-26 clarification: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*). K8s is always present in Zeta's substrate (the `full-ai-cluster/` is the cluster substrate; not optional). Operator-pattern coupling is therefore not a rejection criterion. Remaining concern is SSH/WinRM access from cluster pods to the operator's heterogeneous machines — iter-5.4 [081KSGS9H0008QG0R0027HJZYH](../P1/081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) homelab gh-auth + tailscale-equivalent unlock this. Pattern 1 + Pattern 3 can BOTH ship; pick per use case (Operator for cluster-orchestrated workstation config; ansible-pull for fully-disconnected/edge hosts).
 
 ### Pattern 2 — Webhook Model (Agentless Push from Ansible Automation Platform)
 
@@ -97,18 +96,18 @@ Each target host runs `ansible-pull` from cron / systemd timer / launchd / Windo
 
 **Fit for Zeta**: HIGH — composes perfectly with our existing patterns:
 
-- Same shape as NixOS `system.autoUpgrade` (B-0801): host pulls from git + reconciles to declared state
-- Same shape as the proposed iter-5.4 (`B-0794`) homelab-first gh-auth device-flow: nodes self-register + self-pull
+- Same shape as NixOS `system.autoUpgrade` (081KSGS9H0008QG0R002T6J6FS): host pulls from git + reconciles to declared state
+- Same shape as the proposed iter-5.4 (`081KSGS9H0008QG0R0027HJZYH`) homelab-first gh-auth device-flow: nodes self-register + self-pull
 - No commercial dependency
 - No central orchestrator needed
 - Works on macOS, Windows (via WSL or native), and any Linux distro out of the box
-- Composes with our agent-discipline rules per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (idempotent playbooks; declarative state; same git-as-source-of-truth)
+- Composes with our agent-discipline rules per [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (idempotent playbooks; declarative state; same git-as-source-of-truth)
 
 **Recommendation: support BOTH Pattern 1 (Operator) AND Pattern 3 (`ansible-pull`)** per the maintainer 2026-05-26: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*. Operator-pattern for cluster-orchestrated workstation reconciliation (the maintainer's workstations reachable from cluster); ansible-pull for fully-disconnected / edge hosts where the cluster can't reach in. Pattern 2 (commercial AAP) stays rejected on cost.
 
 ## Composition with Ace package manager — substrate already exists; this row is INSIDE the Ace agenda, not parallel to it
 
-**Substrate-honest correction** (the maintainer 2026-05-26: *"that is what ace has been since we first talked about it you just keep forgetting we have substantial backlog around this"*): the Ace package-manager-of-package-managers framing is NOT a new architectural insight surfaced by this row; it is the **canonical Ace vision** existing in substantial substrate I should have read before authoring B-0806. The Ace agenda is an operator-self-claimed agenda with backlog cluster + trajectory + cross-AI substrate triangulation already in place. This row sits INSIDE that agenda as one instance of Ace's stage-8 (distribute), not as a parallel architecture.
+**Substrate-honest correction** (the maintainer 2026-05-26: *"that is what ace has been since we first talked about it you just keep forgetting we have substantial backlog around this"*): the Ace package-manager-of-package-managers framing is NOT a new architectural insight surfaced by this row; it is the **canonical Ace vision** existing in substantial substrate I should have read before authoring 081KSGS9H0008QG0R001Y9FB62. The Ace agenda is an operator-self-claimed agenda with backlog cluster + trajectory + cross-AI substrate triangulation already in place. This row sits INSIDE that agenda as one instance of Ace's stage-8 (distribute), not as a parallel architecture.
 
 The maintainer's 2026-05-26 follow-ups in this conversation:
 
@@ -123,24 +122,24 @@ The maintainer's 2026-05-26 follow-ups in this conversation:
 | **[Ace trajectory](../../trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md)** | Active trajectory state + RESUME context |
 | **Canonical project memory** ([`project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md`](../../../memory/project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md)) | Distributes UNRESTRICTED LOCAL MODELS (researchers + lawyers needing dangerous/sensitive content); Guardian/KSK gates EXTERNALIZED effects (not topics); Bond Curve pricing on actions; receipts stay local; composes with Itron runtime for the capability/effect boundary |
 | **[Homebrew-shape distribution memory](../../../memory/feedback_aaron_ace_package_manager_homebrew_shape_bootstrap_website_chat_interface_full_distribution_stack_no_setup_needed_2026_05_13.md)** | Full distribution stack = website + chat interface + Homebrew-shape one-liner + Ace + local AI + Guardian/KSK; no setup needed beyond website visit |
-| **[B-0247](../P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** (parent) | ace-dlc-content-packs-kernel-extensions-package-manager |
-| **[B-0287](../P1/B-0287-ace-dlc-package-format-spec-2026-05-08.md)** (closed) | Package format spec — manifest, content hash, signature, versioning |
-| **[B-0288](../P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) | CLI at `tools/ace/` with install/verify/list |
-| **[B-0424](../P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** | Repo-split scaffolding for Ace |
-| **[B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** | K8s-local-stack as Ace's distributable POC; hats as negotiated fork structure on top of deterministic-declarative-gitops |
-| **[B-0777](../P1/B-0777-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** | Ace package-manager negotiation + per-persona ontology maps |
-| **B-0741** (CLOSED 2026-05-26 prematurely during this session's stale-triage — see "## Sub-row to re-file" below) | "ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills" |
+| **[081KQZVQW0008QG0R000ZHEN62](../P1/081KQZVQW0008QG0R000ZHEN62-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** (parent) | ace-dlc-content-packs-kernel-extensions-package-manager |
+| **[081KR2E4K0008QG0R0033WVCXE](../P1/081KR2E4K0008QG0R0033WVCXE-ace-dlc-package-format-spec-2026-05-08.md)** (closed) | Package format spec — manifest, content hash, signature, versioning |
+| **[081KR2E4K0008QG0R002YE3MMD](../P1/081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) | CLI at `tools/ace/` with install/verify/list |
+| **[081KRFA460008QG0R001H98EXJ](../P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)** | Repo-split scaffolding for Ace |
+| **[081KSE6WT0008QG0R000YYH3DY](../P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** | K8s-local-stack as Ace's distributable POC; hats as negotiated fork structure on top of deterministic-declarative-gitops |
+| **[081KSE6WT0008QG0R000JSJ3SR](../P1/081KSE6WT0008QG0R000JSJ3SR-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** | Ace package-manager negotiation + per-persona ontology maps |
+| **081KSE6WT0008QG0R002CC6314** (CLOSED 2026-05-26 prematurely during this session's stale-triage — see "## Sub-row to re-file" below) | "ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills" |
 | **[Package format spec v2](../../research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md)** | DeepSeek 2026-05-22 substrate-engineering pipeline extension (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) |
 | **Research substrate** | [`docs/research/2026-05-08-ace-dlc-package-format-spec.md`](../../research/2026-05-08-ace-dlc-package-format-spec.md), [`docs/research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md`](../../research/2026-05-07-ace-itron-patent-provenance-hole-puncher-bft-ten-year-plan-verbatim-aaron-claudeai.md), [`docs/research/2026-05-02-aaron-ace-identity-dissolution-for-transfer-wwjd-rejection-arc-children-religious-freedom-first-class.md`](../../research/2026-05-02-aaron-ace-identity-dissolution-for-transfer-wwjd-rejection-arc-children-religious-freedom-first-class.md) |
 
-**My agent-discipline failure** (now 3 instances today; same root cause class): I authored B-0806's Ace section as if Ace were just "a package manager CLI in-progress at B-0288" without reading the agenda / trajectory / project memory / canonical Aaron-disclosed direction. This is the same shape as the cascade #4 ISO audit failure landed earlier today (PR #5125): authoring substrate from incomplete view of what already exists. The `.claude/rules/dep-pin-search-first-authority.md` rule landed in PR #5126 today extends conceptually to "verify-existing-substrate-before-authoring-new-substrate" — this row's Ace section is a second empirical anchor for that discipline-gap.
+**My agent-discipline failure** (now 3 instances today; same root cause class): I authored 081KSGS9H0008QG0R001Y9FB62's Ace section as if Ace were just "a package manager CLI in-progress at 081KR2E4K0008QG0R002YE3MMD" without reading the agenda / trajectory / project memory / canonical Aaron-disclosed direction. This is the same shape as the cascade #4 ISO audit failure landed earlier today (PR #5125): authoring substrate from incomplete view of what already exists. The `.claude/rules/dep-pin-search-first-authority.md` rule landed in PR #5126 today extends conceptually to "verify-existing-substrate-before-authoring-new-substrate" — this row's Ace section is a second empirical anchor for that discipline-gap.
 
-**Third instance same session**: the maintainer 2026-05-26 *"i'm assuming you have the hat / fork negoation for ace too"* surfaced that I had ALSO missed integrating hat / fork-negotiation substrate into B-0806's architectural flow (only added to the citation table after the second catch). Hats + fork-negotiation are CANONICAL existing Ace substrate, NOT add-ons to bolt on later:
+**Third instance same session**: the maintainer 2026-05-26 *"i'm assuming you have the hat / fork negoation for ace too"* surfaced that I had ALSO missed integrating hat / fork-negotiation substrate into 081KSGS9H0008QG0R001Y9FB62's architectural flow (only added to the citation table after the second catch). Hats + fork-negotiation are CANONICAL existing Ace substrate, NOT add-ons to bolt on later:
 
 - Ace agenda already specifies: *"Hats = controls + self-bindings over time crystals (PAIR is load-bearing primitive)"* + *"proto-governance via skill-bound hats with multi-oracle BFT (authority + bindings tied to skills)"*
-- [B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md): hats as negotiated fork structure on top of deterministic-declarative-gitops
-- [B-0777](../P1/B-0777-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md): Ace package-manager negotiation + per-persona ontology maps
-- **B-0741** (CLOSED prematurely earlier this session — `backlog(B-0741): ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills`). Closed via PR #5003 close-comment as part of the stale-PR triage; the close was justified mechanically (DIRTY conflict) but the substrate is genuinely load-bearing for this row — should be cherry-picked + re-landed (see "## Sub-row to re-file" below)
+- [081KSE6WT0008QG0R000YYH3DY](../P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md): hats as negotiated fork structure on top of deterministic-declarative-gitops
+- [081KSE6WT0008QG0R000JSJ3SR](../P1/081KSE6WT0008QG0R000JSJ3SR-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md): Ace package-manager negotiation + per-persona ontology maps
+- **081KSE6WT0008QG0R002CC6314** (CLOSED prematurely earlier this session — `backlog(081KSE6WT0008QG0R002CC6314): ontology+category negotiation as cross-cluster + cross-fork AI-skills+hats federation point — Ace becomes git-native AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills`). Closed via PR #5003 close-comment as part of the stale-PR triage; the close was justified mechanically (DIRTY conflict) but the substrate is genuinely load-bearing for this row — should be cherry-picked + re-landed (see "## Sub-row to re-file" below)
 
 ### Architectural integration of hats + fork-negotiation
 
@@ -156,7 +155,7 @@ git (single source of truth) — per fork; each fork has its own git
 │       (skill-bound hats per Ace agenda; PAIR primitive; controls + self-bindings)
 │   1b. Multi-oracle BFT proto-governance: does the hat have N-of-M consent
 │       from the cluster's oracles for this specific action class?
-│   1c. (Cross-fork operations) Ontology negotiation per B-0741/B-0777:
+│   1c. (Cross-fork operations) Ontology negotiation per 081KSE6WT0008QG0R002CC6314/081KSE6WT0008QG0R000JSJ3SR:
 │       does the source fork's ontology map to the target fork's ontology
 │       at the action's category? (per-persona ontology maps mediate)
 │   1d. Guardian/KSK gate (per canonical Ace project memory):
@@ -174,17 +173,17 @@ git (single source of truth) — per fork; each fork has its own git
 │   crossplane/         → Crossplane invokes ace-deployed providers
 ```
 
-This means the iter-7 implementation arc has **substantially more substrate to compose with than my initial draft**: B-0741 (re-land needed) + B-0742 + B-0777 + the Guardian/KSK substrate from the canonical Ace project memory + the multi-oracle BFT pattern from the agenda. Sub-targets 1–5 each must respect the hat-authority + BFT-proto-governance + (where applicable) ontology-negotiation flow; they're not "thin platform playbooks delegating to `ace install`" but rather "playbooks that invoke `ace install` knowing each invocation goes through the full Ace authority flow."
+This means the iter-7 implementation arc has **substantially more substrate to compose with than my initial draft**: 081KSE6WT0008QG0R002CC6314 (re-land needed) + 081KSE6WT0008QG0R000YYH3DY + 081KSE6WT0008QG0R000JSJ3SR + the Guardian/KSK substrate from the canonical Ace project memory + the multi-oracle BFT pattern from the agenda. Sub-targets 1–5 each must respect the hat-authority + BFT-proto-governance + (where applicable) ontology-negotiation flow; they're not "thin platform playbooks delegating to `ace install`" but rather "playbooks that invoke `ace install` knowing each invocation goes through the full Ace authority flow."
 
 ## Sub-row to re-file
 
-[B-0741](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) (close-comment via PR #5003 stale-triage earlier this session) — the substrate is load-bearing for B-0806's architectural integration above and needs re-landing via cherry-pick (per [`pr-triage-tiers.md`](../../.claude/rules/pr-triage-tiers.md) Tier 3). Sibling B-NNNN row should re-file with whatever ID-renumbering is needed. The close-comment named this as the substrate-honest re-land path; this row tracks it as a known dependency for iter-7 implementation.
+[081KSE6WT0008QG0R002CC6314](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) (close-comment via PR #5003 stale-triage earlier this session) — the substrate is load-bearing for 081KSGS9H0008QG0R001Y9FB62's architectural integration above and needs re-landing via cherry-pick (per [`pr-triage-tiers.md`](../../.claude/rules/pr-triage-tiers.md) Tier 3). Sibling B-NNNN row should re-file with whatever ID-renumbering is needed. The close-comment named this as the substrate-honest re-land path; this row tracks it as a known dependency for iter-7 implementation.
 
 ### Correct layering (architecture-shape revision)
 
 ```text
 Stage 0 — bootstrap-the-bootstrap (minimal install.sh / Powershell / curl one-liner)
-└── installs Ace package manager (B-0288)            [foothold; ONE-time per host]
+└── installs Ace package manager (081KR2E4K0008QG0R002YE3MMD)            [foothold; ONE-time per host]
 
 Stage 1 — Ace as meta-package-manager
 └── ace install ansible                              [orchestration tool]
@@ -211,18 +210,18 @@ The KEY architectural insight: **Stage 0 + Stage 1 reduce "cross-OS setup" to a 
 | ArgoCD installation | Manual / per-platform helm install | `ace install argocd` (same on every OS) |
 | K8s installation | Manual / per-platform kubeadm-or-k3s | `ace install k3s` (same on every OS) |
 | Crossplane installation | helm chart per cluster | `ace install crossplane` (same on every cluster) |
-| Implementation order | iter-7 needs ansible + ace + manifests + ArgoCD + Crossplane simultaneously | iter-7 critical path = land Ace (B-0288), then everything else delegates |
+| Implementation order | iter-7 needs ansible + ace + manifests + ArgoCD + Crossplane simultaneously | iter-7 critical path = land Ace (081KR2E4K0008QG0R002YE3MMD), then everything else delegates |
 
-### Composes with B-0288 (in-progress)
+### Composes with 081KR2E4K0008QG0R002YE3MMD (in-progress)
 
-B-0288 is the load-bearing dependency. The iter-7 architectural arc fundamentally waits on Ace being mature enough to install:
+081KR2E4K0008QG0R002YE3MMD is the load-bearing dependency. The iter-7 architectural arc fundamentally waits on Ace being mature enough to install:
 
 - OS-level packages (Ace as front-end to brew/apt/choco OR Ace-DLC packages directly)
 - Helm charts (Ace front-end to helm)
 - Standalone binaries (curl + verify + install — the existing Ace DLC shape)
 - K8s manifests / kustomize / argocd-app-of-apps
 
-This expands B-0288's scope substantially. Today's B-0288 in-progress definition (`tools/ace/` with install/verify/list, content-addressed signed packages) is the FOUNDATION; the "package manager of package managers" expansion is iter-7 substrate-engineering work that builds on top.
+This expands 081KR2E4K0008QG0R002YE3MMD's scope substantially. Today's 081KR2E4K0008QG0R002YE3MMD in-progress definition (`tools/ace/` with install/verify/list, content-addressed signed packages) is the FOUNDATION; the "package manager of package managers" expansion is iter-7 substrate-engineering work that builds on top.
 
 Sub-target 1 (macOS) + sub-target 2 (Windows) re-shape:
 
@@ -231,7 +230,7 @@ Sub-target 1 (macOS) + sub-target 2 (Windows) re-shape:
 - Sub-target 3 (Crossplane bootstrap) → `ace install crossplane` instead of ArgoCD app + helm chart — same architectural shape
 - Sub-target 4 (non-NixOS Linux) → `ace install <pkg>` with apt/dnf/pacman backends
 
-The architectural simplification means iter-7 sub-targets become THIN — each platform's substrate is "install Ace + write the host-specific playbook that delegates everything to Ace." Heavy lifting consolidates into B-0288's expansion.
+The architectural simplification means iter-7 sub-targets become THIN — each platform's substrate is "install Ace + write the host-specific playbook that delegates everything to Ace." Heavy lifting consolidates into 081KR2E4K0008QG0R002YE3MMD's expansion.
 
 ### Substrate-honest open question
 
@@ -260,7 +259,7 @@ ArgoCD reconciles this CR; Crossplane provisions the bucket; state in git = stat
 - Same git-as-source-of-truth pattern
 - Same K8s CRD reconciliation pattern ArgoCD already operates
 - Covers cloud + on-prem APIs (AWS, GCP, Azure, BIND DNS, Vault, etc.) declaratively
-- Composes with cluster-update arc (B-0800–B-0805) for the cluster substrate
+- Composes with cluster-update arc (081KSGS9H0008QG0R001EKTS5A–081KSGS9H0008QG0R002BC2ZR7) for the cluster substrate
 - Composes with Ansible+ansible-pull for OS-config substrate
 
 **Recommendation: Crossplane is the right answer for cluster-external infrastructure** (DNS, cloud resources, certificate authorities, etc.) — wherever an API-driven external system needs to mirror git state.
@@ -271,7 +270,7 @@ ArgoCD reconciles this CR; Crossplane provisions the bucket; state in git = stat
 git (single source of truth)
 │
 │ Stage 0 — minimal bootstrap-the-bootstrap (one-liner per OS):
-│   installs Ace package manager (B-0288)  [foothold; one-time per host]
+│   installs Ace package manager (081KR2E4K0008QG0R002YE3MMD)  [foothold; one-time per host]
 │
 │ Stage 1 — Ace as "package manager of packages managers" (canonical per
 │   Ace agenda; the maintainer 2026-05-26 restated: "once ace gets a
@@ -292,29 +291,29 @@ The KEY architectural insight (the maintainer 2026-05-26 surfaced after my initi
 
 This is **iter-7 scope** (post-iter-6 cluster-update arc). Sub-targets are large enough each warrants its own sibling row when ready:
 
-### Sub-target 1 — `ansible-pull` substrate for macOS (B-0807, future)
+### Sub-target 1 — `ansible-pull` substrate for macOS (081KSGS9H0008QG0R001K8P0FJ, future)
 
 `tools/ansible/playbooks/macos.yml` declares state for macOS dev workstations. Bootstrap via one-liner in `tools/setup/macos.sh` that installs the ansible-pull cron entry. Covers: dotfiles, dock layout, login items, system preferences, default applications, ssh config, security settings, mise config.
 
 Composes with existing `tools/setup/macos.sh` rather than replacing it — install.sh handles bootstrap (brew + ansible itself); ansible-pull handles ongoing declarative state.
 
-### Sub-target 2 — `ansible-pull` substrate for Windows (B-0808, future)
+### Sub-target 2 — `ansible-pull` substrate for Windows (081KSGS9H0008QG0R00287K8FR, future)
 
 `tools/ansible/playbooks/windows.yml` declares state for Windows hosts. Bootstrap via PowerShell script that installs ansible-pull via WSL OR uses native Windows ansible (via OpenSSH-Server). Covers: Chocolatey/Scoop packages, registry settings, scheduled tasks, services, file associations.
 
 NEW substrate — no Windows path exists today. Opens Zeta to Windows-running maintainers (the maintainer 2026-05-26 explicit ask).
 
-### Sub-target 3 — Crossplane bootstrap as ArgoCD app (B-0809, future)
+### Sub-target 3 — Crossplane bootstrap as ArgoCD app (081KSGS9H0008QG0R001HC663P, future)
 
 `full-ai-cluster/k8s/applications/crossplane.yaml` declares the Crossplane control plane as an ArgoCD-managed app. Adds CRDs for the providers we use (AWS, GCP, etc.). Composes with iter-6 cluster substrate.
 
-### Sub-target 4 — non-NixOS Linux `ansible-pull` substrate (B-0810, future)
+### Sub-target 4 — non-NixOS Linux `ansible-pull` substrate (081KSGS9H0008QG0R002CY8Q24, future)
 
 Same shape as macOS sub-target. Covers Debian/Ubuntu/Fedora/Arch dev laptops + bare-metal Linux that's not a cluster node.
 
 ### Sub-target 5 — Idempotency + dep-pin discipline encoding
 
-Per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md): ansible playbooks AND Crossplane provider versions need the same WebSearch-current-version-pin discipline. Add ansible-galaxy collection versions + Crossplane provider versions to the audit tool's scope when sub-target 1+3 implement.
+Per [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md): ansible playbooks AND Crossplane provider versions need the same WebSearch-current-version-pin discipline. Add ansible-galaxy collection versions + Crossplane provider versions to the audit tool's scope when sub-target 1+3 implement.
 
 ## Acceptance (at the iter-7 capstone scope)
 
@@ -348,19 +347,19 @@ These are sub-target-blocking design decisions; the iter-7 implementation arc st
 
 ## Composes with
 
-- **[B-0288](../P1/B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) — Ace DLC package manager; the cross-OS package layer that ansible-pull/Operator invokes per the maintainer 2026-05-26 architectural clarification. Ansible orchestrates, Ace installs.
-- [B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) — homelab gh-auth device-flow enables hosts to authenticate to git for the pull side
-- [B-0800](B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — nixpkgs bump precedes any ansible-on-NixOS work (rare; cluster nodes stay NixOS-native)
-- [B-0801](../P2/B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — `system.autoUpgrade` is the analog pattern at NixOS-cluster scope; ansible-pull is the analog at heterogeneous-OS scope
-- [B-0803](../P2/B-0803-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is the K8s-deploy-style; this row is the OS-deploy-style; both compose
-- [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — ansible collection version + Crossplane provider version pins need the same WebSearch discipline
+- **[081KR2E4K0008QG0R002YE3MMD](../P1/081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md)** (in-progress) — Ace DLC package manager; the cross-OS package layer that ansible-pull/Operator invokes per the maintainer 2026-05-26 architectural clarification. Ansible orchestrates, Ace installs.
+- [081KSGS9H0008QG0R0027HJZYH](../P1/081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md) — homelab gh-auth device-flow enables hosts to authenticate to git for the pull side
+- [081KSGS9H0008QG0R001EKTS5A](081KSGS9H0008QG0R001EKTS5A-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md) — nixpkgs bump precedes any ansible-on-NixOS work (rare; cluster nodes stay NixOS-native)
+- [081KSGS9H0008QG0R002T6J6FS](../P2/081KSGS9H0008QG0R002T6J6FS-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) — `system.autoUpgrade` is the analog pattern at NixOS-cluster scope; ansible-pull is the analog at heterogeneous-OS scope
+- [081KSGS9H0008QG0R00280HHA7](../P2/081KSGS9H0008QG0R00280HHA7-iter-6-3-deploy-rs-from-ci-gitops-flake-lock-pull-with-auto-rollback-aaron-2026-05-26.md) — deploy-rs is the K8s-deploy-style; this row is the OS-deploy-style; both compose
+- [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) — ansible collection version + Crossplane provider version pins need the same WebSearch discipline
 - [`.claude/rules/dep-pin-search-first-authority.md`](../../.claude/rules/dep-pin-search-first-authority.md) — implementation-time discipline for ansible-galaxy / Crossplane provider version pinning
 - [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle pattern applied at substrate-class scope (ArgoCD + NixOS + Ansible + Crossplane each oracle one substrate domain)
 
 ## Sources
 
 - The maintainer 2026-05-26 source paste — three Ansible+GitOps patterns table
-- [Crossplane Documentation](https://www.crossplane.io/) — current latest stable (verify per [B-0805](../P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) at implementation time)
+- [Crossplane Documentation](https://www.crossplane.io/) — current latest stable (verify per [081KSGS9H0008QG0R002BC2ZR7](../P1/081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) at implementation time)
 - [Ansible Documentation](https://docs.ansible.com/) — `ansible-pull` reference
 - [Red Hat Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) — commercial Pattern-2 reference (rejected for cost)
 - [AWX (open-source AAP)](https://github.com/ansible/awx) — Pattern-2 OSS alternative if needed later

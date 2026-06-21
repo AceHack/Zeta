@@ -29,13 +29,13 @@
 
 ## Summary
 
-- Adds a five-step reproducible verification procedure to the existing `docs/research/memory-md-harness-contract-2026-04-28.md` research note — the only missing acceptance criterion for B-0257
-- Adds a pre-start checklist to B-0257 (prior-art search evidence + implementation decision) per `backlog-item-start-gate.md`
-- Closes B-0257 (`status: open` → `status: closed`)
+- Adds a five-step reproducible verification procedure to the existing `docs/research/memory-md-harness-contract-2026-04-28.md` research note — the only missing acceptance criterion for 081KR2E4K0008QG0R001J0536V
+- Adds a pre-start checklist to 081KR2E4K0008QG0R001J0536V (prior-art search evidence + implementation decision) per `backlog-item-start-gate.md`
+- Closes 081KR2E4K0008QG0R001J0536V (`status: open` → `status: closed`)
 
 ## What was missing
 
-B-0257 required a research note with a **reproducible verification procedure**. The note existed (2026-04-28) and covered the findings, but had no step-by-step procedure another agent could follow to independently re-derive those findings.
+081KR2E4K0008QG0R001J0536V required a research note with a **reproducible verification procedure**. The note existed (2026-04-28) and covered the findings, but had no step-by-step procedure another agent could follow to independently re-derive those findings.
 
 ## Verification procedure added (5 steps)
 
@@ -66,10 +66,10 @@ Four explicit constraints for Q1 AutoDream/AutoMemory compatibility now live in 
 - [x] `wc -l memory/MEMORY.md` — 370 (> 200 cap)
 - [x] `wc -c memory/MEMORY.md` — 108332 (> 25 KB cap)
 - [x] `head -1 memory/MEMORY.md` — AutoDream marker confirmed
-- [x] No changes to `memory/MEMORY.md` (B-0257 AC: explicitly forbidden)
+- [x] No changes to `memory/MEMORY.md` (081KR2E4K0008QG0R001J0536V AC: explicitly forbidden)
 - [x] `git diff --stat` — 2 files changed; research note + backlog row only
 
-Closes #B-0257
+Closes #081KR2E4K0008QG0R001J0536V
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -152,12 +152,12 @@ Closes #B-0257
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6B9l92`
-- **Path**: `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
+- **Path**: `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T04:42:04Z on `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`:28 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T04:42:04Z on `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`:28 (association: NONE)
 
   <pre>
   P1: This list starts immediately after a paragraph, which violates the repo's enabled markdownlint MD032 rule (lists must be surrounded by blank lines). Insert a blank line after `**Prior-art search:**` so the backlog row remains lint-clean.
@@ -166,15 +166,15 @@ Closes #B-0257
 ### Thread 5 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6B9l-A`
-- **Path**: `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
+- **Path**: `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T04:42:04Z on `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T04:42:04Z on `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`:4 (association: NONE)
 
   <pre>
-  P1: Closing this row is premature while the newly added verification procedure still contains incomplete dated evidence and incorrect current-state claims (`--check` exit status and AutoDream marker preservation). Because those defects are directly in the acceptance evidence for B-0257, keep the row open until the research note is corrected.
+  P1: Closing this row is premature while the newly added verification procedure still contains incomplete dated evidence and incorrect current-state claims (`--check` exit status and AutoDream marker preservation). Because those defects are directly in the acceptance evidence for 081KR2E4K0008QG0R001J0536V, keep the row open until the research note is corrected.
   </pre>
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -201,7 +201,7 @@ Closes #B-0257
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
+- `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
 - `docs/research/memory-md-harness-contract-2026-04-28.md`
 
 **Message:**
@@ -212,7 +212,7 @@ docs(b-0257): add reproducible verification procedure to MEMORY.md ha…
 …rness contract note
 
 The existing research note (2026-04-28) documented harness behavior
-but lacked the reproducible verification procedure required by B-0257's
+but lacked the reproducible verification procedure required by 081KR2E4K0008QG0R001J0536V's
 acceptance criteria.
 
 Added a five-step procedure with concrete shell commands:
@@ -225,7 +225,7 @@ Added a five-step procedure with concrete shell commands:
 Added a findings summary table and explicit Q1 AutoDream/AutoMemory
 compatibility constraints section.
 
-Also added pre-start checklist to B-0257 and closed the row.
+Also added pre-start checklist to 081KR2E4K0008QG0R001J0536V and closed the row.
 
 Verification run outputs (2026-05-14):
   wc -l: 370 (>200 cap, CONFIRMED)
@@ -233,7 +233,7 @@ Verification run outputs (2026-05-14):
   reindexer --check: exit 2 STALE — 1202 heap entries, index behind cadence
   head -1: [AutoDream last run: 2026-04-23] (marker preserved, CONFIRMED)
 
-Closes B-0257.
+Closes 081KR2E4K0008QG0R001J0536V.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -242,7 +242,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0257-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
+- `docs/backlog/P1/081KR2E4K0008QG0R001J0536V-memory-md-harness-contract-verification-and-evidence-2026-05-08.md`
 - `docs/research/memory-md-harness-contract-2026-04-28.md`
 
 **Message:**
@@ -257,7 +257,7 @@ extracts the marker line, and passes it to renderIndex() which uses it
 verbatim (falling back to the hardcoded date only when no marker exists).
 
 Also fixes markdownlint failures blocking CI:
-- MD032: blank line before list in B-0257 backlog row
+- MD032: blank line before list in 081KR2E4K0008QG0R001J0536V backlog row
 - MD014: remove $ prefix from shell command (no output shown)
 - MD032: blank line before list in harness-contract research note
 

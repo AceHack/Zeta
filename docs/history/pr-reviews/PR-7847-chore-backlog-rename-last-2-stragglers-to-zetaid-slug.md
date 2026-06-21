@@ -27,7 +27,7 @@
 
 ## Description
 
-B-1030 and B-1040 were created after the batch run. Now all 1131 files use zetaid naming. Zero B-NNNN filenames remain.
+081KTWJ1R0008QG0R000JJDPFZ and 081KTSZN10008QG0R002NMN8P7 were created after the batch run. Now all 1131 files use zetaid naming. Zero B-NNNN filenames remain.
 
 ## Outcome
 

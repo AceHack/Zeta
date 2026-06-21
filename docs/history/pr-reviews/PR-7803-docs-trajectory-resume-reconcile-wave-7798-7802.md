@@ -27,7 +27,7 @@
 
 ## Description
 
-Folds B-1034 (the paper), the fingerprint↔BP capture, the quantum/bayes push (damping honest limits, GDL third ring, SoftPositivity — B-1032 closed), the IBLT reconciliation, and Rodney's razor verdicts into the reload point. Docs only.
+Folds 081KTZ4EF0008QG0R0035FW7HY (the paper), the fingerprint↔BP capture, the quantum/bayes push (damping honest limits, GDL third ring, SoftPositivity — 081KTZ4EF0008QG0R001R3XPYV closed), the IBLT reconciliation, and Rodney's razor verdicts into the reload point. Docs only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

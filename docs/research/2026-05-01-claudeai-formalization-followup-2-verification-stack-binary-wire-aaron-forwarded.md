@@ -162,14 +162,14 @@ Per `.claude/agents/formal-verification-expert.md`: Soraya's role is the routing
 
 The TLA+-hammer-bias guard Soraya enforces is visible in the actual usage: TLA+ specs cover *temporal/distributed* concerns (chaos, hash rebalance, race, interleaving, async); algebraic laws are NOT in TLA+ (they're in Z3 + FsCheck). This is correct portfolio routing.
 
-### Implications for B-0131..B-0138 formalization roadmap
+### Implications for 081KQGDBJ0008QG0R000D1YJCH..081KQGDBJ0008QG0R0012FC7RX formalization roadmap
 
 Re-reading the roadmap rows in light of the four-tool disclosure:
 
-- **B-0131** (Z-set retraction algebra in Lean) → existing DbspChainRule.lean is the foundation; extension scope clear.
-- **B-0132** (CRDT-composition for BFT propagation) → Lean for the algebraic part; Z3 for decidable algebraic laws; potentially TLA+ for the consensus/temporal layer (per Soraya's routing — split the property classes).
-- **B-0135** (modal logic for retractability / Quantum-Rodney's-Razor) → likely Lean for the logical formalization; FsCheck for runtime property verification of retraction operators.
-- **B-0138** (BFT-resistance theorem for Aurora) → TLA+ for the distributed-systems / consensus part; Z3 for the cryptographic-property part (where decidable); Lean for the unified theorem composition.
+- **081KQGDBJ0008QG0R000D1YJCH** (Z-set retraction algebra in Lean) → existing DbspChainRule.lean is the foundation; extension scope clear.
+- **081KQGDBJ0008QG0R000Y66YYQ** (CRDT-composition for BFT propagation) → Lean for the algebraic part; Z3 for decidable algebraic laws; potentially TLA+ for the consensus/temporal layer (per Soraya's routing — split the property classes).
+- **081KQGDBJ0008QG0R002X4AFA0** (modal logic for retractability / Quantum-Rodney's-Razor) → likely Lean for the logical formalization; FsCheck for runtime property verification of retraction operators.
+- **081KQGDBJ0008QG0R0012FC7RX** (BFT-resistance theorem for Aurora) → TLA+ for the distributed-systems / consensus part; Z3 for the cryptographic-property part (where decidable); Lean for the unified theorem composition.
 
 Each row should explicitly identify which tool from the portfolio handles which sub-property. Soraya's routing discipline applies at row-design time.
 
@@ -183,16 +183,16 @@ Each row should explicitly identify which tool from the portfolio handles which 
 - `tools/tla/specs/*.tla` — TLA+ tool's existing 10+ specs.
 - `tests/Tests.FSharp/` — FsCheck tool's existing property-based test suite.
 - `src/Core/LawRunner.fs` + `src/Core/ChaosEnv.fs` — production-side property-checking integrated with the F# implementation.
-- B-0131 / B-0132 / B-0135 / B-0138 — formalization roadmap rows the four-tool routing applies to.
+- 081KQGDBJ0008QG0R000D1YJCH / 081KQGDBJ0008QG0R000Y66YYQ / 081KQGDBJ0008QG0R002X4AFA0 / 081KQGDBJ0008QG0R0012FC7RX — formalization roadmap rows the four-tool routing applies to.
 
 > **Forward-references not yet on `main`** (will be added back when the in-flight PRs land):
-> - **B-0139** (pre-substrate Kenji-era inventory) is filed in the in-flight PR #1055 (branch `backlog/b0131-correction-existing-dbsp-lean-work-aaron-2026-05-01`). The row will catalog TLA+ / Z3Verify / FsCheck infrastructure as pre-substrate Kenji-era artifacts. Once #1055 lands, a follow-up minor-edit can re-add the cross-reference.
+> - **081KQGDBJ0008QG0R002S9SWH6** (pre-substrate Kenji-era inventory) is filed in the in-flight PR #1055 (branch `backlog/b0131-correction-existing-dbsp-lean-work-aaron-2026-05-01`). The row will catalog TLA+ / Z3Verify / FsCheck infrastructure as pre-substrate Kenji-era artifacts. Once #1055 lands, a follow-up minor-edit can re-add the cross-reference.
 > - The verbatim-preservation discipline ("lattice-capture corrective") is a *concept* used in this and predecessor files but does not yet have a dedicated `memory/feedback_*.md` file; the original Claude.ai warning content lives inline in this file's prose. A dedicated memory file is on the deferred-substrate list (cooling-period; not generated this session).
 
 ## Operational follow-ups (deferred)
 
 - Backlog row for **wire-format spec** as a parallel-to-F#-spec authoritative reference. Filing deferred until activation signal — the existing wire-compat is clearly working; explicit substrate row earns slot when verification work starts referencing it.
-- Update B-0131..B-0138 rows with explicit Soraya-routing per acceptance-criteria step. Filing deferred until row activation — the routing question naturally surfaces when the work begins.
+- Update 081KQGDBJ0008QG0R000D1YJCH..081KQGDBJ0008QG0R0012FC7RX rows with explicit Soraya-routing per acceptance-criteria step. Filing deferred until row activation — the routing question naturally surfaces when the work begins.
 - Working-mathematician send (lattice-capture corrective) — the four-tool stack with existing proofs is much stronger evidence to send than the formalization-path letter alone. Aaron's cycles permitting.
 - Cross-vendor peer-AI review (Gemini/Codex/Grok) of the four-tool routing claim — useful before investing in any specific tool's expansion.
 
@@ -247,11 +247,11 @@ Implementation-diversity AS the diversity-input to consensus is structurally sim
 
 **"This is TLA+ territory"** — Aaron's framing tells Otto where in Soraya's portfolio this property lives. BFT-across-impl-diversity is a temporal-distributed property → TLA+. Composes with existing TLA+ specs (`SpineAsyncProtocol.tla`, `OperatorLifecycleRace.tla`, `TransactionInterleaving.tla`, etc.) — those cover specific concurrency/protocol concerns; this property is the **cluster-correctness-under-impl-diversity** layer. Per Soraya's persona scope, this is correct routing — NOT TLA+-hammer-bias because the property is genuinely temporal/distributed.
 
-### Implication for B-0138 (Aurora BFT-resistance theorem)
+### Implication for 081KQGDBJ0008QG0R0012FC7RX (Aurora BFT-resistance theorem)
 
-B-0138 should explicitly include the BFT-via-impl-diversity property as part of the theorem statement. The Byzantine-resistance claim isn't just *"consensus tolerates f adversarial actors out of 3f+1 total"* — it's the stronger *"consensus tolerates f adversarial-or-implementation-buggy actors out of 3f+1 total, where implementation-bug counts as Byzantine if it produces wire-format-different output from the spec."*
+081KQGDBJ0008QG0R0012FC7RX should explicitly include the BFT-via-impl-diversity property as part of the theorem statement. The Byzantine-resistance claim isn't just *"consensus tolerates f adversarial actors out of 3f+1 total"* — it's the stronger *"consensus tolerates f adversarial-or-implementation-buggy actors out of 3f+1 total, where implementation-bug counts as Byzantine if it produces wire-format-different output from the spec."*
 
-The TLA+ spec for B-0138 should model the cluster-of-N-nodes-running-different-implementations explicitly, with implementation-bug as a Byzantine fault source. Testable: inject wire-format-different output as a fault in the model checker; verify consensus still reaches the spec answer.
+The TLA+ spec for 081KQGDBJ0008QG0R0012FC7RX should model the cluster-of-N-nodes-running-different-implementations explicitly, with implementation-bug as a Byzantine fault source. Testable: inject wire-format-different output as a fault in the model checker; verify consensus still reaches the spec answer.
 
 ### The architectural fractal at six layers
 

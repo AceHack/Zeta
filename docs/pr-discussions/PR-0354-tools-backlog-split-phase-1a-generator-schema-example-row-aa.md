@@ -27,7 +27,7 @@ Phase 1a of BACKLOG.md split per Aaron Otto-181 3rd-ask. Aaron approved reasonab
 - `tools/backlog/README.md` — schema spec + frontmatter reference + how-to
 - `tools/backlog/generate-index.sh` — bash generator (3 modes: `--stdout`, `--check`, default write with Phase-1a safety guard)
 - `docs/backlog/README.md` — per-row-dir overview
-- `docs/backlog/P2/B-0001-example-schema-self-reference.md` — example row exercising the schema end-to-end
+- `docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md` — example row exercising the schema end-to-end
 
 ## Defaults applied (Aaron's 6 open questions)
 
@@ -66,7 +66,7 @@ Aaron Otto-182: *"can you ask codex too?"* — inviting `@codex review` below.
 ## Test plan
 
 - [x] Generator empty-dir output: correct header + footer, no rows
-- [x] Generator with B-0001 example: correct P2 section + link + checkbox
+- [x] Generator with 081KPYCJH0008QG0R003MDS51N example: correct P2 section + link + checkbox
 - [x] Safety guard fires with exit 1 on existing monolith
 - [x] Markdownlint clean locally
 - [x] No BACKLOG.md touched
@@ -109,7 +109,7 @@ Phase 1a scaffolding for splitting the monolithic `docs/BACKLOG.md` into per-row
 **Changes:**
 - Adds `tools/backlog/generate-index.sh` to generate/check/print the `docs/BACKLOG.md` index from per-row files, including a Phase-1a overwrite guard.
 - Adds schema + usage documentation for per-row backlog files (`tools/backlog/README.md`, `docs/backlog/README.md`).
-- Adds an example per-row backlog entry to exercise the schema and generator (`docs/backlog/P2/B-0001-...`).
+- Adds an example per-row backlog entry to exercise the schema and generator (`docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-...`).
 
 ### Reviewed changes
 
@@ -120,7 +120,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 9 c
 | tools/backlog/generate-index.sh | Bash generator for `docs/BACKLOG.md` with `--stdout` and `--check` modes plus a write safety guard. |
 | tools/backlog/README.md | Schema/spec and contributor instructions for per-row backlog files and index generation. |
 | docs/backlog/README.md | Overview of `docs/backlog/` layout and quick reference for contributors. |
-| docs/backlog/P2/B-0001-example-schema-self-reference.md | Example backlog row demonstrating frontmatter + body end-to-end. |
+| docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md | Example backlog row demonstrating frontmatter + body end-to-end. |
 
 ### COMMENTED — @AceHack (2026-04-24T11:03:29Z)
 
@@ -249,7 +249,7 @@ _(no body)_
 
 **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Parse single-quoted YAML scalars before status checks**
 
-`extract_field` only strips double quotes, so valid YAML like `status: 'closed'` or `id: 'B-0002'` is returned with surrounding `'` characters. In `generate`, that makes the `status` case fall through to open (`[ ]`) and emits quoted IDs/titles in the index, so quoted frontmatter variants produce incorrect backlog state even though they are valid YAML.
+`extract_field` only strips double quotes, so valid YAML like `status: 'closed'` or `id: '081KQ0YZ80008QG0R002T6TM7Z'` is returned with surrounding `'` characters. In `generate`, that makes the `status` case fall through to open (`[ ]`) and emits quoted IDs/titles in the index, so quoted frontmatter variants produce incorrect backlog state even though they are valid YAML.
 
 Useful? React with 👍 / 👎.
 
@@ -307,7 +307,7 @@ P1: These new docs/tooling files include direct contributor name attribution (e.
 
 **@AceHack** (2026-04-24T11:03:37Z):
 
-Fixed in 6f659a0. Removed direct contributor name attribution from factory-produced docs (tools/backlog/README.md + docs/backlog/P2/B-0001 frontmatter + generate-index.sh header comment); replaced with "maintainer" idiom per the convention in docs/CONTRIBUTOR-CONFLICTS.md + AGENT-BEST-PRACTICES. Commit messages retain the "Aaron Otto-NNN" attribution per the history-file-exemption (documented in loop-tick-history 2026-04-22 — tick-history / commit-messages / memory are audit-trail surfaces where direct attribution is the intent; README / tools docs are factory-produced surfaces where the maintainer idiom applies).
+Fixed in 6f659a0. Removed direct contributor name attribution from factory-produced docs (tools/backlog/README.md + docs/backlog/P2/081KPYCJH0008QG0R003MDS51N frontmatter + generate-index.sh header comment); replaced with "maintainer" idiom per the convention in docs/CONTRIBUTOR-CONFLICTS.md + AGENT-BEST-PRACTICES. Commit messages retain the "Aaron Otto-NNN" attribution per the history-file-exemption (documented in loop-tick-history 2026-04-22 — tick-history / commit-messages / memory are audit-trail surfaces where direct attribution is the intent; README / tools docs are factory-produced surfaces where the maintainer idiom applies).
 
 ### Thread 6: tools/backlog/README.md:139 (resolved)
 
@@ -323,7 +323,7 @@ Fixed in 9bf3d09. Reworded the cross-reference to the auto-memory path that does
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:28Z):
 
-P1: This section says “no row files exist yet”, but this PR adds `docs/backlog/P2/B-0001-example-schema-self-reference.md`. Update the “Current state — Phase 1a” text to reflect that there is now at least an example row present (and clarify whether it’s authoritative or just a schema exerciser).
+P1: This section says “no row files exist yet”, but this PR adds `docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md`. Update the “Current state — Phase 1a” text to reflect that there is now at least an example row present (and clarify whether it’s authoritative or just a schema exerciser).
 ```suggestion
 Tooling + schema landed, and the directory now includes an
 example per-row file to exercise the schema and layout. Phase 2
@@ -336,7 +336,7 @@ target structure and schema example.
 
 **@AceHack** (2026-04-24T11:03:41Z):
 
-Fixed in 9bf3d09. The "no row files exist yet" statement was accurate at initial draft but stale by commit time (B-0001 example was added to exercise the generator). Updated to: one placeholder B-0001 exists as generator-exercise; substantive migration starts at B-0002 with Phase 2. Matches actual repo state.
+Fixed in 9bf3d09. The "no row files exist yet" statement was accurate at initial draft but stale by commit time (081KPYCJH0008QG0R003MDS51N example was added to exercise the generator). Updated to: one placeholder 081KPYCJH0008QG0R003MDS51N exists as generator-exercise; substantive migration starts at 081KQ0YZ80008QG0R002T6TM7Z with Phase 2. Matches actual repo state.
 
 ### Thread 8: tools/backlog/generate-index.sh:24 (resolved)
 

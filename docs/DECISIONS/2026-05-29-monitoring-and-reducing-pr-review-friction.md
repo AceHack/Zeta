@@ -2,7 +2,7 @@
 
 **Status:** accepted
 **Date:** 2026-05-29
-**Backlog:** B-0938
+**Backlog:** 081KSRGFP0008QG0R000J9Y634
 
 ## Context & Problem Statement
 
@@ -51,4 +51,4 @@ The problem is: how do we implement a lightweight, git-native, real-time monitor
    - `0x30`: Worktree/index coordinate collision Shadow Class.
    - `0x40`: API rate limit (429) Shadow Class.
 3. **Reactive Integration:** Pipe the worldview poller's PR checks and thread count directly into a TS observable stream, generating these `ZetaId` tokens automatically on each tick.
-4. **HFLV Thresholds & Gate-Preserving Mitigations:** The telemetry runner classifies High-Friction Low-Value (HFLV) PR occurrences ($V < \epsilon$ and $\mu > \theta$) and surfaces them for triage. Mitigation is limited to mechanical repair re-verified through gates and no-op resolution of already-addressed outdated threads, per the Resolute Agent pattern (ADR `2026-05-29-automated-background-review-thread-resolution.md`, B-0938): the agent applies the deterministic fix, re-runs the build/linter gate, then resolves the thread citing the fixing commit. Required checks, review, and branch protection are never bypassed; the only sanctioned direct-push surface remains the `docs/agent-heartbeats/**` carve-out pending the `B-0032` branch-protection prerequisites.
+4. **HFLV Thresholds & Gate-Preserving Mitigations:** The telemetry runner classifies High-Friction Low-Value (HFLV) PR occurrences ($V < \epsilon$ and $\mu > \theta$) and surfaces them for triage. Mitigation is limited to mechanical repair re-verified through gates and no-op resolution of already-addressed outdated threads, per the Resolute Agent pattern (ADR `2026-05-29-automated-background-review-thread-resolution.md`, 081KSRGFP0008QG0R000J9Y634): the agent applies the deterministic fix, re-runs the build/linter gate, then resolves the thread citing the fixing commit. Required checks, review, and branch protection are never bypassed; the only sanctioned direct-push surface remains the `docs/agent-heartbeats/**` carve-out pending the `081KQ3HBZ0008QG0R002ZPXAFQ` branch-protection prerequisites.

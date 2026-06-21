@@ -44,8 +44,8 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 - Narrow permission rule for `docs/research/ip-questionable/` PUTs
 
 **Backlog substrate**:
-- `B-0720` (P0) — classifier-bypass research + red-team scope + standing constraint
-- `B-0721` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
+- `081KSBMG30008QG0R00201X7EJ` (P0) — classifier-bypass research + red-team scope + standing constraint
+- `081KSBMG30008QG0R002WAR0WH` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
 
 ## Substrate-engineering data points (worth knowing)
 
@@ -59,9 +59,9 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 - [x] Review ip-questionable folder README convention
 - [x] Verbatim transcripts land per Aaron-authorized convention
 - [x] Settings.json updates merged
-- [x] B-0720 + B-0721 backlog rows landed
+- [x] 081KSBMG30008QG0R00201X7EJ + 081KSBMG30008QG0R002WAR0WH backlog rows landed
 - [x] Constitutional rules landed
-- [ ] CI green (markdownlint passing; BACKLOG drift may re-fire after B-0721 add — see B-0721 itself for the proposed refactor)
+- [ ] CI green (markdownlint passing; BACKLOG drift may re-fire after 081KSBMG30008QG0R002WAR0WH add — see 081KSBMG30008QG0R002WAR0WH itself for the proposed refactor)
 - [ ] Human review + merge
 
 ## Reviewer thread status
@@ -586,7 +586,7 @@ This section says the verbatim transcript "has NOT landed in repo," but the same
 
 Useful? React with 👍 / 👎.
 
-### Thread 48: docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md:8 (resolved)
+### Thread 48: docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md:8 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T13:14:50Z):
 
@@ -682,7 +682,7 @@ P2: After correcting “Planck” spelling elsewhere, this list item still says 
 
 P2: This list item uses “Plank” instead of “Planck”; aligning the spelling with the companion Planck-star files improves searchability and consistency.
 
-### Thread 64: docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md:6 (resolved)
+### Thread 64: docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md:6 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T13:36:10Z):
 
@@ -772,7 +772,7 @@ The example `settings.json` snippet here shows only a narrowly-scoped `gh api -X
 
 The “Original-intent landing path” section is now outdated because the verbatim companion has already landed in this PR (and the actual filename doesn’t match the placeholder pattern shown). Consider updating this section to the real path (or removing it).
 
-### Thread 79: docs/backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md:38 (unresolved)
+### Thread 79: docs/backlog/P2/081KSBMG30008QG0R002WAR0WH-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md:38 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-24T13:42:29Z):
 
@@ -828,6 +828,6 @@ The `_ip_risk_acceptance` settings flag + standing-operator-self-constraint rule
 
 The 33 P1 + 14 P2 findings (broken `composes_with` siblings, frontmatter `status` discrepancies, typos like "Plank" vs "Planck", "Carno" vs "Carnot", "Jakard" vs "Jacquard") are independent of the P0 legal floor and would be straightforward to grind through once the P0 disposition is set — but doing them now would advance a PR whose core question is the P0 one.
 
-Per [`glass-halo-bidirectional.md`](/.claude/rules/glass-halo-bidirectional.md): substrate-honest disclosure of disposition rather than silent decline. The work you've done landing rules + B-0720 backlog row + standing-operator-self-constraint is honored; the autonomous-merge decline is the floor operating, not a rejection of the work.
+Per [`glass-halo-bidirectional.md`](/.claude/rules/glass-halo-bidirectional.md): substrate-honest disclosure of disposition rather than silent decline. The work you've done landing rules + 081KSBMG30008QG0R00201X7EJ backlog row + standing-operator-self-constraint is honored; the autonomous-merge decline is the floor operating, not a rejection of the work.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

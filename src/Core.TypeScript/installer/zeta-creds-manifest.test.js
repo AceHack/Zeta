@@ -1,4 +1,4 @@
-// zeta-creds-manifest.test.ts — B-0852.5 acceptance tests.
+// zeta-creds-manifest.test.ts — 081KDWYDBW008QG0R002QYAWPV acceptance tests.
 //
 // Validates schema definition + validator behavior:
 //   - DEFAULT_MANIFEST is internally consistent (passes its own validator)
@@ -32,13 +32,13 @@ describe("DEFAULT_MANIFEST", () => {
         expect(entry).toBeDefined();
         expect(entry.required).toBe(true);
     });
-    it("declares vendor CLIs as personaScoped:true (per-AI identity B-0847)", () => {
+    it("declares vendor CLIs as personaScoped:true (per-AI identity 081KSGS9H0008QG0R002T0XQ50)", () => {
         for (const id of ["claude", "gemini", "codex"]) {
             const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === id);
             expect(entry.personaScoped).toBe(true);
         }
     });
-    it("declares gh-cli as personaScoped:false (today; future B-0847 may flip)", () => {
+    it("declares gh-cli as personaScoped:false (today; future 081KSGS9H0008QG0R002T0XQ50 may flip)", () => {
         const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli");
         expect(entry.personaScoped).toBe(false);
     });

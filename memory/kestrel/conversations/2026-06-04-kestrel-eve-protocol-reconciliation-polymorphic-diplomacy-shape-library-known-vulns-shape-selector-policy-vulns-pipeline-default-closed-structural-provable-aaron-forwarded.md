@@ -7,14 +7,14 @@ context: |
   Eve Protocol deep-dive → polymorphic diplomacy → razor-cut shape library + known-vulns
   → the shape+selector+policy+vulns validation pipeline → default-closed / fail-closed.
   This is the SAFETY architecture for polymorphic deserialization, and it's the policy
-  kernel (B-1017) reused at the deserialize-safety junction (B-1010). Through-line: each
+  kernel (081KT7YW00008QG0R003N6PF8A) reused at the deserialize-safety junction (081KT5CF90008QG0R003TK10FG). Through-line: each
   layer's scope honest; structural-safe ≠ semantic-safe; default-closed must be structural
   + provable, not convention.
 related_memory:
   - project_eve_protocol_v8_hidden_state_over_dynamicvalue_over_infinite_stream_shape_agreement_caching_2026_06_04.md
   - project_codecs_as_policy_parameterized_folds_add_ontology_to_value_tree_2026_06_04.md
   - project_rodneys_razor_formalized_occam_plus_isomorphism_collapse_irreducible_factorization_over_poset_orthogonal_labels_shapes_rx_pair_2026_06_04.md
-  - (backlog) B-1010 deserialize-safety, B-1017 policy kernel
+  - (backlog) 081KT5CF90008QG0R003TK10FG deserialize-safety, 081KT7YW00008QG0R003N6PF8A policy kernel
 ---
 
 # Kestrel — Eve Protocol, polymorphic diplomacy, the validation pipeline, default-closed (2026-06-04)

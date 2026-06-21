@@ -1,6 +1,6 @@
 ---
 pr_number: 5367
-title: "ci(B-0831 layer-2a): structural-behavioral test of iter-5.4 install flow"
+title: "ci(081KSGS9H0008QG0R0011BC7T2 layer-2a): structural-behavioral test of iter-5.4 install flow"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T00:44:20Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:58Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5367: ci(B-0831 layer-2a): structural-behavioral test of iter-5.4 install flow
+# PR #5367: ci(081KSGS9H0008QG0R0011BC7T2 layer-2a): structural-behavioral test of iter-5.4 install flow
 
 ## PR description
 
@@ -25,8 +25,8 @@ Per Aaron's *"yes lets push all of those forward i'll test again in like 30 minu
 | Layer 1 | Source-level sentinel audit | #5365 (armed) |
 | **Layer 2a (THIS PR)** | Structural-behavioral test (logical relationships) | here |
 | Layer 2b | True mock-gh shim execution | future PR (needs iter-5.4 refactored to sourceable function) |
-| Layer 3 | Mock GH device-code endpoint | B-0833 Approach A |
-| Layer 4 | QEMU full-install + cluster auto-join | B-0831 cascade #6 |
+| Layer 3 | Mock GH device-code endpoint | 081KSGS9H0008QG0R003JNSVR5 Approach A |
+| Layer 4 | QEMU full-install + cluster auto-join | 081KSGS9H0008QG0R0011BC7T2 cascade #6 |
 
 ## What this catches that Layer 1 doesn't
 
@@ -63,8 +63,8 @@ True mock-gh shim execution requires refactoring iter-5.4.0 + iter-5.4.1 into a 
 - PR #5364 (Bug 2a + 2b fixes — this asserts STRUCTURE not just presence)
 - PR #5352 (Copilot YAML schema findings — this asserts schema corrections held)
 - PR #5365 (Layer 1 sentinels — same workflow runs both)
-- B-0831 (cascade #6 full-install QEMU — this is layer 2a)
-- B-0833 (interactive-login vs baked-in-keys tension — layer 3 of cascade)
+- 081KSGS9H0008QG0R0011BC7T2 (cascade #6 full-install QEMU — this is layer 2a)
+- 081KSGS9H0008QG0R003JNSVR5 (interactive-login vs baked-in-keys tension — layer 3 of cascade)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

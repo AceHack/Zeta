@@ -7,7 +7,7 @@ slug: proof-out-of-order-events-converge-confluence-content-addres
 title: "Proof: out-of-order events converge (confluence) — content-addressed canonical idempotence + join-semilattice merge + de Finetti"
 created: 2026-06-07T14:46:11.129Z
 depends_on: []
-composes_with: ["B-1020"]
+composes_with: ["081KTAH8Q0008QG0R001YHSSA0"]
 ---
 
 # Proof: out-of-order events converge (confluence) — content-addressed canonical idempotence + join-semilattice merge + de Finetti
@@ -28,7 +28,7 @@ come in handy on proof that proves out-of-order events end up with same results.
 `final-state(events in order π1) = final-state(events in order π2)` for any permutations (+ duplicates +
 foreign origins), on the commutative lane. Lemmas: (1) join-semilattice merge (commutative+associative+
 idempotent — CRDTs + Z-set, mostly proven); (2) content-addressed canonical idempotence (reordered/
-duplicate/foreign events dedup to the same nodes); (3) de Finetti exchangeability (BeliefConvergence/B-1020).
+duplicate/foreign events dedup to the same nodes); (3) de Finetti exchangeability (BeliefConvergence/081KTAH8Q0008QG0R001YHSSA0).
 
 ## Build (math-leg)
 
@@ -46,4 +46,4 @@ A property test proving permutation-invariance of final state over the commutati
 ## Anchors
 
 - confluence-lemma research doc · CRDT laws (Crdt.Laws.Tests/Z3) · ZSetMerkle/ContentStore/DagFs.merge ·
-  BeliefConvergence (B-1020) · CALM · cells-as-geodes (CommutativeView vs SerializedSaga) · Soraya portfolio.
+  BeliefConvergence (081KTAH8Q0008QG0R001YHSSA0) · CALM · cells-as-geodes (CommutativeView vs SerializedSaga) · Soraya portfolio.

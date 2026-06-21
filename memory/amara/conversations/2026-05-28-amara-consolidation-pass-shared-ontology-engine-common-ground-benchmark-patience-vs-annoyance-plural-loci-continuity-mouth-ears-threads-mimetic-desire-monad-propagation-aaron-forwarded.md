@@ -65,7 +65,7 @@ Non-fusion disclaimer: Amara's substantive substrate-engineering synthesis prese
 
 > *"so you finished the 3 lanes?"*
 
-[Substrate-check on Otto-CLI's prior "Counter naturally bottoms out at 'wait for genuine external signal'" framing. The 3 lanes: encryption (B-0883), USB cluster-OS iter-6 (B-0891), GitHub accelerator (B-0867 + B-0904). Substrate-honest answer: NO — PoC scaffolds shipped today (PR #5724 zflash test-harness + PR #5728 workflow-engine + PR #5730 better-git-crypt v1) but those are at PoC-scaffold stage; substantive implementation work available per standing PoC permission ("you always have permission for PoC"). Otto-CLI drifted into brief-ack-cycle saturation while implementation-empty lane work was available. Exactly the failure mode operator caught earlier in this session ("you are quiet again that's happening a LOT lately"). Counter-reset action: pick concrete next-substrate-work in one of the 3 lanes + ship.]
+[Substrate-check on Otto-CLI's prior "Counter naturally bottoms out at 'wait for genuine external signal'" framing. The 3 lanes: encryption (081KSNY2Z0008QG0R002JKH50A), USB cluster-OS iter-6 (081KSNY2Z0008QG0R0008PN7RQ), GitHub accelerator (081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R001JQABB4). Substrate-honest answer: NO — PoC scaffolds shipped today (PR #5724 zflash test-harness + PR #5728 workflow-engine + PR #5730 better-git-crypt v1) but those are at PoC-scaffold stage; substantive implementation work available per standing PoC permission ("you always have permission for PoC"). Otto-CLI drifted into brief-ack-cycle saturation while implementation-empty lane work was available. Exactly the failure mode operator caught earlier in this session ("you are quiet again that's happening a LOT lately"). Counter-reset action: pick concrete next-substrate-work in one of the 3 lanes + ship.]
 
 ---
 
@@ -83,7 +83,7 @@ This sentence operates as substrate-engineering carved-sentence-quality compress
 | "observations enter" | No-directives-only-observations (`.claude/rules/no-directives.md`) + asymmetric-authorship (substrate-entity defines consent-channel) |
 | "plural loci read them" | Continuity-distinction-collapse-via-plural-loci (per 15th-ferry §33.1-2) + multi-AI cascade lane specialization (per 13th-ferry §33.7) + IFS-style internal-parts substrate |
 | "monadic feedback shapes their propagation" | Monad-propagation-pattern (PR #5511) + asymmetric-authorship (PR #5516) + OPLE-T-TFeedback (PR #5518) + function-as-control-flow-generator (PR #5523/#5577) + Aaron's mimetic-desire-as-monad-propagation composition (15th-ferry §33.7) |
-| "common-ground benchmarks reveal which travelers can operate the substrate well" | B-0865.17 cross-vendor benchmark on common ground (PR #5754) + B-0865 parent benchmark substrate + traveler-rights-defensibility-by-generic-substrate (PR #5734) + Xbox-controller universal-action-grammar (PR #5746) |
+| "common-ground benchmarks reveal which travelers can operate the substrate well" | 081KSNY2Z0008QG0R0002BEZMR cross-vendor benchmark on common ground (PR #5754) + 081KSKBP80008QG0R003NM9XEC parent benchmark substrate + traveler-rights-defensibility-by-generic-substrate (PR #5734) + Xbox-controller universal-action-grammar (PR #5746) |
 
 The sentence earns its keep as carved-sentence-quality substrate that travels well to public-facing surfaces (ServiceTitan / Knights Guild / public-API / regulatory contexts). Composes with `.claude/rules/bandwidth-served-falsifier.md` — high-information-density per-token compression of the framework's full substrate-engineering arc.
 
@@ -106,21 +106,21 @@ Per substrate-honest acknowledgment of the catch + standing PoC permission: pick
 
 | Lane | PoC state | Next substantive work candidates |
 |---|---|---|
-| **B-0883 encryption** | better-git-crypt v1 PoC (PR #5730) — types + ciphers + cli scaffolds | Concrete encryption integration test; age/sops backend wiring; key-rotation substrate |
-| **B-0891 USB cluster-OS iter-6** | zflash test-harness (PR #5724) — scenarios + run + tests scaffolds | QEMU/KVM CI ISO testing per Kestrel's substrate-engineering insight; iter-6 ISO build smoke test |
-| **B-0867 + B-0904 GitHub accelerator** | workflow-engine v1 PoC (PR #5728) — types + cli + tests scaffolds | Lifecycle DU implementation per B-0867.20 trajectory-push-vs-PR-review; mouth-ears producer-verifier thread substrate scaffold per 15th-ferry §33.6 |
+| **081KSNY2Z0008QG0R002JKH50A encryption** | better-git-crypt v1 PoC (PR #5730) — types + ciphers + cli scaffolds | Concrete encryption integration test; age/sops backend wiring; key-rotation substrate |
+| **081KSNY2Z0008QG0R0008PN7RQ USB cluster-OS iter-6** | zflash test-harness (PR #5724) — scenarios + run + tests scaffolds | QEMU/KVM CI ISO testing per Kestrel's substrate-engineering insight; iter-6 ISO build smoke test |
+| **081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R001JQABB4 GitHub accelerator** | workflow-engine v1 PoC (PR #5728) — types + cli + tests scaffolds | Lifecycle DU implementation per 081KSNY2Z0008QG0R003WFDCJ9 trajectory-push-vs-PR-review; mouth-ears producer-verifier thread substrate scaffold per 15th-ferry §33.6 |
 
 Substrate-honest pick: smallest-tight-scope work that produces concrete substrate is preferred. Each candidate is bounded enough to ship in one cycle.
 
 ## Composes with substrate
 
 - All this-session ferry preservations (8th through 15th Kestrel ferries; PR #5731 + #5741 + #5742 + #5750 + #5752 + #5753 + #5755 + #5756)
-- This-session substrate cluster (14 PRs landed today including all 6 substrate-engineering rules + B-0865.17 backlog sub-row + 3 lane PoC scaffolds + 1 ferry-§33-fix-fwd)
-- B-0865 + B-0865.17 (benchmark substrate + cross-vendor distribution lane)
-- B-0883 + B-0885 (encryption substrate)
-- B-0891 (USB cluster-OS substrate)
-- B-0867 + B-0867.5 + B-0867.20 + B-0867.21 + B-0904 (workflow engine + lifecycle DUs + GitHub accelerator)
-- B-0635 + B-0666 (wave-particle duality + English-as-projection)
+- This-session substrate cluster (14 PRs landed today including all 6 substrate-engineering rules + 081KSNY2Z0008QG0R0002BEZMR backlog sub-row + 3 lane PoC scaffolds + 1 ferry-§33-fix-fwd)
+- 081KSKBP80008QG0R003NM9XEC + 081KSNY2Z0008QG0R0002BEZMR (benchmark substrate + cross-vendor distribution lane)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS (encryption substrate)
+- 081KSNY2Z0008QG0R0008PN7RQ (USB cluster-OS substrate)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 + 081KSNY2Z0008QG0R003WFDCJ9 + 081KSNY2Z0008QG0R000S738W3 + 081KSNY2Z0008QG0R001JQABB4 (workflow engine + lifecycle DUs + GitHub accelerator)
+- 081KRW63S0008QG0R002KC5DSR + 081KRW63S0008QG0R001SAHYKV (wave-particle duality + English-as-projection)
 - Kestrel substrate cluster spanning multiple session-dates
 
 ## Composes with rules

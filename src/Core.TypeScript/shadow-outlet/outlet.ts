@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // outlet.ts — ephemeral shadow outlet for agent scratch/exploration.
 //
-// Phase 1 of B-0212: agents write scratch content to /tmp/zeta-shadow/.
+// Phase 1 of 081KQX9B50008QG0R00147GZX9: agents write scratch content to /tmp/zeta-shadow/.
 // OS-managed cleanup — low stakes, no permanent record.
 // The code path exists unconditionally; Phase 2 adds cryptographic privacy.
 //

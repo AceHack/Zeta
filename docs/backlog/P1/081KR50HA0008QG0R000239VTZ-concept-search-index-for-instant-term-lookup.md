@@ -1,6 +1,5 @@
 ---
-id: B-0362
-zetaid: 081KR50HA0008QG0R000239VTZ
+id: 081KR50HA0008QG0R000239VTZ
 priority: P1
 status: closed
 title: "Concept search index — pre-built term→file mapping for instant lookups"
@@ -8,7 +7,7 @@ effort: S
 created: 2026-05-09
 last_updated: 2026-05-10
 resolved: 2026-05-09
-resolved_by: "PR #2322 feat(B-0362): smallest safe slice — concept search index (curated regex term→file); PR #2323 feat(B-0362): concept search index — build-index.ts, lookup.ts, AND semantics, tests"
+resolved_by: "PR #2322 feat(081KR50HA0008QG0R000239VTZ): smallest safe slice — concept search index (curated regex term→file); PR #2323 feat(081KR50HA0008QG0R000239VTZ): concept search index — build-index.ts, lookup.ts, AND semantics, tests"
 depends_on: [081KR2E4K0008QG0R003DS2XHJ]
 classification: buildable-now
 decomposition: atomic
@@ -18,7 +17,7 @@ tags: [search, index, concept-registry, performance]
 
 ---
 
-# B-0362 — Concept search index
+# 081KR50HA0008QG0R000239VTZ — Concept search index
 
 ## What
 
@@ -41,7 +40,7 @@ lineage tracing).
 {
   "confucius": ["memory/feedback_confucius_unfolding_*.md", ...],
   "pearl": ["reference_formal_methods_literature_map_*.md", ...],
-  "shield": ["docs/backlog/P2/B-0359-*.md", ...]
+  "shield": ["docs/backlog/P2/081KR50HA0008QG0R003B2V26J-*.md", ...]
 }
 ```
 
@@ -61,8 +60,8 @@ Index rebuilt on commit (or on-demand via `bun tools/search/build-index.ts`).
 
 Shipped in two PRs merged 2026-05-09:
 
-- PR #2322 `feat(B-0362): smallest safe slice — concept search index (curated regex term→file)` — introduced curated-not-corpus design (Vera 2026-05-09 guardrails), 8 concept-query classes
-- PR #2323 `feat(B-0362): concept search index — build-index.ts, lookup.ts, AND semantics, tests` — full implementation: `tools/search/build-index.ts`, `tools/search/lookup.ts`, `tools/search/concept-index.ts`, 13 passing tests
+- PR #2322 `feat(081KR50HA0008QG0R000239VTZ): smallest safe slice — concept search index (curated regex term→file)` — introduced curated-not-corpus design (Vera 2026-05-09 guardrails), 8 concept-query classes
+- PR #2323 `feat(081KR50HA0008QG0R000239VTZ): concept search index — build-index.ts, lookup.ts, AND semantics, tests` — full implementation: `tools/search/build-index.ts`, `tools/search/lookup.ts`, `tools/search/concept-index.ts`, 13 passing tests
 
 Verified 2026-05-10: all acceptance criteria met. Status updated to closed.
 
@@ -73,6 +72,6 @@ to have an index"
 
 ## Composes with
 
-- B-0310 (concept-registry — structured concept IDs)
-- B-0361 (anchor to human lineage — needs fast lookup)
-- B-0332 (load-bearing classifier — needs to scan references)
+- 081KR2E4K0008QG0R003DS2XHJ (concept-registry — structured concept IDs)
+- 081KR50HA0008QG0R001G4QHQF (anchor to human lineage — needs fast lookup)
+- 081KR2E4K0008QG0R002FRQZN4 (load-bearing classifier — needs to scan references)

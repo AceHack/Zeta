@@ -1,9 +1,8 @@
 ---
-id: B-0820
-zetaid: 081KSGS9H0008QG0R00352WW0V
+id: 081KSGS9H0008QG0R00352WW0V
 priority: P2
 status: open
-title: Flux as second sync-engine — flag-toggle between ArgoCD (default) and Flux; eventually support BOTH long-term for multi-cluster engine A/B experimentation; composes with B-0816 Helm-as-convergence-point + B-0819 ontology-based AI-runbook substrate (Aaron 2026-05-26)
+title: Flux as second sync-engine — flag-toggle between ArgoCD (default) and Flux; eventually support BOTH long-term for multi-cluster engine A/B experimentation; composes with 081KSGS9H0008QG0R003A37Z65 Helm-as-convergence-point + 081KSGS9H0008QG0R0005P83AP ontology-based AI-runbook substrate (Aaron 2026-05-26)
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -19,7 +18,7 @@ tags: [argocd, flux, multi-engine, flag-toggle, helm-chart-convergence, multi-cl
 
 ## Problem
 
-[B-0816](../P1/B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md) established ArgoCD as the default sync engine per the LexisNexis + GitHub + Zeta empirical lineage, AND landed the substrate-engineering implication that Helm is the convergence point between engines (Flux and ArgoCD both consume the same Helm charts with different wrappers).
+[081KSGS9H0008QG0R003A37Z65](../P1/081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md) established ArgoCD as the default sync engine per the LexisNexis + GitHub + Zeta empirical lineage, AND landed the substrate-engineering implication that Helm is the convergence point between engines (Flux and ArgoCD both consume the same Helm charts with different wrappers).
 
 The maintainer's 2026-05-26 follow-up directive:
 
@@ -27,7 +26,7 @@ The maintainer's 2026-05-26 follow-up directive:
 
 The substrate target: file the work to add Flux as a SECOND supported sync-engine — flag-toggle between ArgoCD (default) and Flux at cluster-substrate authoring time, eventually supporting BOTH (different clusters; different teams; different engine choices per Helm chart) for direct A/B engine-comparison on production-shape workloads.
 
-This composes with B-0816's "Multi-cluster IS experimentation substrate" point (Aaron 2026-05-26): the reason multi-cluster matters extends beyond cross-cloud-portability to direct engine-comparison on real workloads.
+This composes with 081KSGS9H0008QG0R003A37Z65's "Multi-cluster IS experimentation substrate" point (Aaron 2026-05-26): the reason multi-cluster matters extends beyond cross-cloud-portability to direct engine-comparison on real workloads.
 
 ## Target
 
@@ -37,7 +36,7 @@ Substrate-engineering work to land:
 
 Cluster nodes register with an `engine` field (default `argocd`; can be `flux`); cluster-substrate (apps + charts) are authored once + wrapped twice (per-engine).
 
-Suggested registration schema extension (per B-0813 ClusterNode CRD):
+Suggested registration schema extension (per 081KSGS9H0008QG0R002K93MWX ClusterNode CRD):
 
 ```yaml
 apiVersion: zeta.lucent-financial-group.com/v1
@@ -53,7 +52,7 @@ spec:
   ...
 ```
 
-### Sub-target 2 — Helm-charts-first directory layout (per B-0816 Helm-as-convergence-point substrate)
+### Sub-target 2 — Helm-charts-first directory layout (per 081KSGS9H0008QG0R003A37Z65 Helm-as-convergence-point substrate)
 
 Apps under `maintainers/<op>/cluster-apps/<app>/`:
 
@@ -118,7 +117,7 @@ Aaron's "shit" insight (2026-05-26): *"oh shit maybe we should calculate this fo
 
 Recommended: **start with Approach B (TS tool)** for the substrate-engineering simplicity; evaluate Approach A (Helm-template derivation) as a follow-on when the substrate is settled. Either way, the SOURCE-OF-TRUTH is `dependsOn`-shaped; sync-waves are DERIVED.
 
-This is the same pattern as B-0816's Helm-as-convergence-point: push to the convergence point (here: named-dependency graph); wrap thinly per environment (here: Flux gets `dependsOn` directly; ArgoCD gets derived sync-waves). The architectural privilege of `dependsOn`-as-source-of-truth IS the load-bearing reason giving Flux a chance — derivability is asymmetric, and the asymmetric direction picks the source-of-truth shape regardless of which engine ends up shipping.
+This is the same pattern as 081KSGS9H0008QG0R003A37Z65's Helm-as-convergence-point: push to the convergence point (here: named-dependency graph); wrap thinly per environment (here: Flux gets `dependsOn` directly; ArgoCD gets derived sync-waves). The architectural privilege of `dependsOn`-as-source-of-truth IS the load-bearing reason giving Flux a chance — derivability is asymmetric, and the asymmetric direction picks the source-of-truth shape regardless of which engine ends up shipping.
 
 Side benefit: this makes the Helm-charts-first directory layout (Sub-target 2) even cleaner — the `chart/` directory can carry the named-dependency declaration; both `argocd/` and `flux/` wrappers consume it.
 
@@ -133,7 +132,7 @@ ArgoCD ships with a polished OSS UI (graph view + sync status + manifest diff + 
 | **Headlamp + Flux plugin** | Generic K8s UI with Flux integration |
 | **k9s + Flux plugin** | TUI not GUI |
 
-The "conversation is the new UI" framing per Aaron 2026-05-26 ties to [B-0819](../P1/B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md): once the AI-runbook substrate ships, the GUI matters less — operators describe ontology shapes; agents materialize state; status surfaces via conversational query rather than dashboard polling. UI parity between engines is a near-term concern; long-term the AI-runbook layer is the actual operator surface.
+The "conversation is the new UI" framing per Aaron 2026-05-26 ties to [081KSGS9H0008QG0R0005P83AP](../P1/081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md): once the AI-runbook substrate ships, the GUI matters less — operators describe ontology shapes; agents materialize state; status surfaces via conversational query rather than dashboard polling. UI parity between engines is a near-term concern; long-term the AI-runbook layer is the actual operator surface.
 
 For the near term: document the UI difference as one tradeoff axis when operators pick `engine`; Flux's thinner UI is offset by `dependsOn` legibility + simpler config + Aaron's curiosity about whether "Flux is simpler" claim holds in practice.
 
@@ -145,13 +144,13 @@ Operator-facing runbook for standing up two clusters (one ArgoCD, one Flux) with
 - Sync-fail recovery behavior (selfHeal vs Flux's reconcile)
 - Operator cognitive cost (what surfaces to inspect; how to debug; how to roll back)
 - UI usability for the team's tasks (per Sub-target 5 axis)
-- Progressive-delivery story (ArgoCD + Argo Rollouts vs Flux + Flagger vs Flux + Argo Rollouts per B-0816 compose nuance)
+- Progressive-delivery story (ArgoCD + Argo Rollouts vs Flux + Flagger vs Flux + Argo Rollouts per 081KSGS9H0008QG0R003A37Z65 compose nuance)
 
 Empirical data feeds future engine-evaluation decisions; bandwidth-served work per `.claude/rules/bandwidth-served-falsifier.md`.
 
 ## Acceptance
 
-- [ ] `engine` field added to ClusterNode CRD schema (depends on B-0813)
+- [ ] `engine` field added to ClusterNode CRD schema (depends on 081KSGS9H0008QG0R002K93MWX)
 - [ ] Helm-charts-first directory layout established + documented
 - [ ] At least one app shipped with BOTH `argocd/application.yaml` AND `flux/helmrelease.yaml` wrappers
 - [ ] Flux installable on a cluster via the chosen install path (`flux bootstrap github` OR Helm-chart install)
@@ -161,33 +160,33 @@ Empirical data feeds future engine-evaluation decisions; bandwidth-served work p
 
 ## Composes with
 
-- **[B-0816](../P1/B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point + multi-engine substrate framing (this row IS the concrete Flux-second-engine implementation of that architectural principle)
-- **[B-0794](../P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — parent cluster-bring-up substrate (gets the `engine` field via ClusterNode CRD extension)
-- **[B-0813](../P1/B-0813-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — ArgoCD reconciler; the ClusterNode schema this row extends with `engine` field
-- **[B-0819](../P1/B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)** — AI-runbook substrate; conversation-as-UI framing makes engine-UI-parity less load-bearing long-term
+- **[081KSGS9H0008QG0R003A37Z65](../P1/081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point + multi-engine substrate framing (this row IS the concrete Flux-second-engine implementation of that architectural principle)
+- **[081KSGS9H0008QG0R0027HJZYH](../P1/081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — parent cluster-bring-up substrate (gets the `engine` field via ClusterNode CRD extension)
+- **[081KSGS9H0008QG0R002K93MWX](../P1/081KSGS9H0008QG0R002K93MWX-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — ArgoCD reconciler; the ClusterNode schema this row extends with `engine` field
+- **[081KSGS9H0008QG0R0005P83AP](../P1/081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)** — AI-runbook substrate; conversation-as-UI framing makes engine-UI-parity less load-bearing long-term
 
 ## Out of scope
 
-- Replacing ArgoCD as default (B-0816 explicitly preserves ArgoCD as default per LN+GH+Zeta lineage; this row ADDS Flux as flag-toggleable second engine, NOT supplants the default)
-- Engine-agnostic abstraction layer (no plan to wrap both engines behind a Zeta-specific abstraction; per B-0816's "push to the convergence point; wrap thinly per environment" discipline, the convergence point is Helm; the engine wrappers stay engine-specific)
+- Replacing ArgoCD as default (081KSGS9H0008QG0R003A37Z65 explicitly preserves ArgoCD as default per LN+GH+Zeta lineage; this row ADDS Flux as flag-toggleable second engine, NOT supplants the default)
+- Engine-agnostic abstraction layer (no plan to wrap both engines behind a Zeta-specific abstraction; per 081KSGS9H0008QG0R003A37Z65's "push to the convergence point; wrap thinly per environment" discipline, the convergence point is Helm; the engine wrappers stay engine-specific)
 - Production migration of existing ArgoCD-deployed workloads to Flux (this row is for greenfield workloads + multi-cluster experimentation; existing workloads stay on their engine until evidence supports migration)
 
 ## Substrate-inventory pass
 
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
-- `rg "flux\\b" docs/ memory/ .claude/` → existing references in B-0816 (Helm-as-convergence-point); no prior Flux-second-engine row
-- `gh pr list --state all --search "B-0820"` → no in-flight collision
+- `rg "flux\\b" docs/ memory/ .claude/` → existing references in 081KSGS9H0008QG0R003A37Z65 (Helm-as-convergence-point); no prior Flux-second-engine row
+- `gh pr list --state all --search "081KSGS9H0008QG0R00352WW0V"` → no in-flight collision
 - `gh pr list --state all --search "flux engine"` → no in-flight collision
-- ID B-0820 next-free per `git ls-tree origin/main` (highest = B-0817; B-0818 in flight via #5226; B-0819 in flight via #5225)
+- ID 081KSGS9H0008QG0R00352WW0V next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R002QQNA79; 081KSGS9H0008QG0R00033DT02 in flight via #5226; 081KSGS9H0008QG0R0005P83AP in flight via #5225)
 
 ## Origin
 
-Aaron 2026-05-26 in conversation about ServiceTitan-uses-Flux + Helm-as-convergence-point: *"backlog flux over argocd so we can have a flag and support both eventually"*. Composes with B-0816's Helm-as-convergence-point + multi-engine-experimentation framing landed in #5225.
+Aaron 2026-05-26 in conversation about ServiceTitan-uses-Flux + Helm-as-convergence-point: *"backlog flux over argocd so we can have a flag and support both eventually"*. Composes with 081KSGS9H0008QG0R003A37Z65's Helm-as-convergence-point + multi-engine-experimentation framing landed in #5225.
 
 Filed as P2 because:
 
-1. ArgoCD default (per B-0816) is operationally settled; Flux-as-second-engine is additive enhancement not blocker
-2. Multi-cluster A/B experimentation requires multi-cluster substrate (B-0794 family) to be operational first
+1. ArgoCD default (per 081KSGS9H0008QG0R003A37Z65) is operationally settled; Flux-as-second-engine is additive enhancement not blocker
+2. Multi-cluster A/B experimentation requires multi-cluster substrate (081KSGS9H0008QG0R0027HJZYH family) to be operational first
 3. Substrate authoring discipline (Helm-charts-first + engine-thin-wrappers) can land independently of full Flux deployment
 4. Empirical engine-comparison data is the value here; the substrate-engineering work scaffolds the data collection

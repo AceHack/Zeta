@@ -14,7 +14,7 @@ open Zeta.Core.FSharp.Yaml.Dom
 // Canonical Merkle-over-Z-set (081KTGTJC1Q) — the math leg. The root must be a pure function of the NET
 // Z-set state (retraction-native), order-independent (canonical), and hash-parameterized. The universal
 // properties use INT keys: int is a clean total order, so ZSet.ofSeq is order-independent on it. (String
-// keys go through ZSet's culture-SENSITIVE Comparer<'K>.Default sort — the live B-0969 class — where
+// keys go through ZSet's culture-SENSITIVE Comparer<'K>.Default sort — the live 081KT07NV0008QG0R001YDB73K class — where
 // forward-vs-reverse ofSeq of culture-colliding strings yields genuinely DIFFERENT net Z-sets; the Merkle
 // then correctly gives different roots. Cross-language STRING byte-lock is a golden-vector concern, not a
 // property of this module — see the xUnit anchors for the UTF-8 string encoding.)

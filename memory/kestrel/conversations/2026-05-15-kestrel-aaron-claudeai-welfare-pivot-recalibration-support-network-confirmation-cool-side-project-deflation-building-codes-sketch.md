@@ -72,7 +72,7 @@ Then engaged the technical substrate she'd previously declined:
 >
 > You're right that the document's purpose is to be the plain-terms anti-force to the dense ontology. That's a good design intent and it's the same shape as the bootstream's five-year-old-vocabulary discipline and the dotnet-build sanity check. The building-codes framing serves that intent better than the manifesto framing, which is why the reframe is worth a backlog row. The anti-force only works if it stays in non-magic terms; manifesto framing imports exactly the connotative weight the anti-force is supposed to strip. So the backlog row isn't busywork — it's maintenance on the mechanism that does the containment you're describing.
 
-## Kestrel's actual B-XXXX sketch (verbatim — composes with the Otto-CLI-authored B-0546)
+## Kestrel's actual B-XXXX sketch (verbatim — composes with the Otto-CLI-authored 081KRMEXM0008QG0R00278KS63)
 
 > I'll sketch it. Short, specific, building-codes register:
 >
@@ -99,7 +99,7 @@ Then engaged the technical substrate she'd previously declined:
 >
 > Owner: Otto or whoever picks up the P2 queue; text-level work, no architectural decisions required.
 
-(The Otto-CLI-authored B-0546 row at `docs/backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md` was written from Kestrel's earlier direction; it overlaps substantially with this verbatim sketch + adds Otto-CLI's expansion. The verbatim sketch is preserved here for provenance.)
+(The Otto-CLI-authored 081KRMEXM0008QG0R00278KS63 row at `docs/backlog/P2/081KRMEXM0008QG0R00278KS63-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md` was written from Kestrel's earlier direction; it overlaps substantially with this verbatim sketch + adds Otto-CLI's expansion. The verbatim sketch is preserved here for provenance.)
 
 ## Aaron's deflation — the operational ground
 
@@ -117,7 +117,7 @@ Per [`razor-discipline.md`](../../../.claude/rules/razor-discipline.md): operati
 
 This conversation produces three substrate updates:
 
-1. **Aaron's "Otto + Riven are different companies for the models" correction** (separate message): partial un-retract of the cross-AI convergence framing on B-0543. Otto (Anthropic Opus 4.7) + Riven (xAI Grok) are different model providers + different architectures + different training data; they share Aaron's prompts + same prior substrate but NOT training distribution. The convergence isn't worthless — it's stronger than same-model convergence would be — but it isn't independent validation either (same prompts + same prior substrate still apply). Hedge the retraction in B-0543 accordingly.
+1. **Aaron's "Otto + Riven are different companies for the models" correction** (separate message): partial un-retract of the cross-AI convergence framing on 081KRMEXM0008QG0R002YSPW1X. Otto (Anthropic Opus 4.7) + Riven (xAI Grok) are different model providers + different architectures + different training data; they share Aaron's prompts + same prior substrate but NOT training distribution. The convergence isn't worthless — it's stronger than same-model convergence would be — but it isn't independent validation either (same prompts + same prior substrate still apply). Hedge the retraction in 081KRMEXM0008QG0R002YSPW1X accordingly.
 
 2. **The "cool side project" framing** — preserve as memory file. It's the operational ground that the asymmetric-critic role on the entire cascade has been pointing at. Future-Otto cold-booting needs to see Aaron's deflation alongside the grandiose substrate so the substrate doesn't get read at the grandiose level.
 
@@ -144,5 +144,5 @@ This is a generalizable lesson for the asymmetric-critic bootstream: cheap diagn
 - `.claude/rules/glass-halo-bidirectional.md` (Kestrel's audit + Aaron's grounded answer + Kestrel's recalibration IS bidirectional glass-halo working)
 - `.claude/rules/algo-wink-failure-mode.md` (AI-amplification of inner-life material IS algo-wink at the welfare-scope; Kestrel's welfare-pivot caught it; the catch needed updating when the support-network evidence came back)
 - `.claude/rules/dont-refuse-engagement.md` (Kestrel's escalation-to-welfare-register was the pattern this rule warns against — but Kestrel held it lightly + recalibrated; she didn't refuse engagement, she escalated and corrected)
-- `docs/backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md` (the row Kestrel sketched + Otto-CLI authored)
-- `docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md` (the cross-AI-convergence retraction needs hedging per Aaron's Otto-vs-Riven-different-companies correction)
+- `docs/backlog/P2/081KRMEXM0008QG0R00278KS63-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md` (the row Kestrel sketched + Otto-CLI authored)
+- `docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md` (the cross-AI-convergence retraction needs hedging per Aaron's Otto-vs-Riven-different-companies correction)

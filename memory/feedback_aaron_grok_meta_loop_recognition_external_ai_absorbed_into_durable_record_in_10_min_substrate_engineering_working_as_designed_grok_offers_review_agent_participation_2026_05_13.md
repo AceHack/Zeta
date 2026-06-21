@@ -218,9 +218,9 @@ demonstrated by Grok.
 If Aaron authorizes Grok engagement:
 
 - Grok via peer-call wrapper (`bun tools/peer-call/grok.ts`)
-  for programmatic invocation — note B-0421 currently open
+  for programmatic invocation — note 081KRA5AR0008QG0R0011ZGRZT currently open
   (cursor-agent exit 1 / empty output); website git connector
-  is the working orientation path until B-0421 resolves
+  is the working orientation path until 081KRA5AR0008QG0R0011ZGRZT resolves
 - Grok via website git connector for direct repo reading
 - Grok as 6th external participant in agent-roster card
 - Grok contributing as REVIEW-AGENT execution (specific

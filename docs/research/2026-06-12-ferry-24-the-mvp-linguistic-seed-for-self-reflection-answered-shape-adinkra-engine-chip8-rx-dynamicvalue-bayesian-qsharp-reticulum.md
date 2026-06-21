@@ -21,9 +21,9 @@ each component.
 | **CHIP-8/9** | the court — the bounded host the engine runs in (the float-budget stage; the OS-in-the-model target) | `Chip8Cow.fs`, `Chip9Board.fs`, four-oracle chip9 treaty | sealed-room + fault treaty live; Zeus/vision lane in Vera's worktree |
 | **Rx** | the ACTS half — the time-shadow functor (ferry 18 §7); Meijer's side | `Rx.fs` (+ the Dsl reader-monad) | teardown race fixed today-era; treaty-room law: Rx only in treaty code |
 | **DynamicValue / SoftValue** | the REMAINS half (hard / soft) — the self-describing tree; King's side | `DynamicValue.fs` (4-oracle byte-locked, JSON+CBOR), `SoftValue.fs` | canonical-encoding treaty landed; SoftValue = the uncertainty-carrying soft twin |
-| **Bayesian inference** | the posterior lane — weights as beliefs; the BNN-at-0 spec (ferry 13 beat 2) | `src/Bayesian` + Infer.NET differential oracle (B-1033 port) | the probability carrier for Resolution is the named next rung |
+| **Bayesian inference** | the posterior lane — weights as beliefs; the BNN-at-0 spec (ferry 13 beat 2) | `src/Bayesian` + Infer.NET differential oracle (081KTZ4EF0008QG0R000WJGSWX port) | the probability carrier for Resolution is the named next rung |
 | **Q#** | the quantum runtime — the OS-inside-the-model target (ferry 13 beat 7) | `Core.QSharp.ReferenceOracle` | **simulator-backed today**; P0-B (bridge functor) gates the hard rung; ferry 8's investment ladder applies |
-| **Reticulum** | communications — the one metered door (B-1035 RETICULUM-ONLY; noninterference by construction) | the bus clause + B-1002 transport lane | classical bits only (LOCC bound, REPORT #2) |
+| **Reticulum** | communications — the one metered door (081KTSZN10008QG0R002J0GE0Z RETICULUM-ONLY; noninterference by construction) | the bus clause + 081KT2T2J0008QG0R002R72323 transport lane | classical bits only (LOCC bound, REPORT #2) |
 
 **Why this composes as an MVP for *self-reflection* specifically:** the day's results say the
 minimal self-reflecting kernel is the minimal *self-observer* (ferry 23 addendum 3 — the

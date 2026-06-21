@@ -1,6 +1,5 @@
 ---
-id: B-0225
-zetaid: 081KQX9B50008QG0R003Z7Z9EG
+id: 081KQX9B50008QG0R003Z7Z9EG
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - algebra fit, retraction, and ZSet mapping"
@@ -12,9 +11,9 @@ classification: blocked-on-candidate-landscape
 type: feature
 ---
 
-# B-0225 - Timeseries algebra-fit analysis
+# 081KQX9B50008QG0R003Z7Z9EG - Timeseries algebra-fit analysis
 
-Analyze the top candidates from B-0224 against the ZSet
+Analyze the top candidates from 081KQX9B50008QG0R0037YZ1WX against the ZSet
 substrate.
 
 ## Work scope
@@ -33,4 +32,4 @@ directly with ZSet algebra or requires an adapter.
   and "build native" without choosing prematurely.
 - Retraction semantics are treated as load-bearing, not as
   an optional integration detail.
-- The output feeds B-0226, B-0227, and B-0229.
+- The output feeds 081KQX9B50008QG0R0028P9BMR, 081KQX9B50008QG0R002RZXEQK, and 081KQX9B50008QG0R0016JBZ2G.

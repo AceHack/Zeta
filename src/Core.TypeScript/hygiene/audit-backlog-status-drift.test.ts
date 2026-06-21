@@ -12,7 +12,7 @@ import { join } from "node:path";
 describe("parseFrontmatter", () => {
     test("reads status field from YAML frontmatter", () => {
         const body = `---
-id: B-0001
+id: 081KPYCJH0008QG0R003MDS51N
 status: open
 priority: P3
 ---
@@ -21,7 +21,7 @@ priority: P3
 `;
         const fm = parseFrontmatter(body);
         expect(fm.status).toBe("open");
-        expect(fm.id).toBe("B-0001");
+        expect(fm.id).toBe("081KPYCJH0008QG0R003MDS51N");
     });
 
     test("returns empty object when no frontmatter", () => {
@@ -43,7 +43,7 @@ status: open
 describe("extractPrimaryArtifacts", () => {
     test("extracts tools/ paths from Acceptance section", () => {
         const body = `---
-id: B-0001
+id: 081KPYCJH0008QG0R003MDS51N
 ---
 
 # Title
@@ -69,7 +69,7 @@ Some context.
 
     test("skips Composes with section paths (load-bearing false-positive defence)", () => {
         const body = `---
-id: B-0002
+id: 081KQ0YZ80008QG0R002T6TM7Z
 ---
 
 # T
@@ -84,7 +84,7 @@ id: B-0002
 
     test("skips Origin, Source, Non-goals, and Resolution sections", () => {
         const body = `---
-id: B-0003
+id: 081KQ0YZ80008QG0R001QJJTVF
 ---
 
 ## Origin
@@ -113,12 +113,12 @@ Closed via \`tools/done.ts\`.
     test("skips backlog cross-refs", () => {
         const body = `## Acceptance
 
-- See \`docs/backlog/P3/B-0001-foo.md\` for context.
+- See \`docs/backlog/P3/081KPYCJH0008QG0R003MDS51N-foo.md\` for context.
 - Add \`tools/x.ts\`.
 `;
         const paths = extractPrimaryArtifacts(body);
         expect(paths).toEqual(["tools/x.ts"]);
-        expect(paths).not.toContain("docs/backlog/P3/B-0001-foo.md");
+        expect(paths).not.toContain("docs/backlog/P3/081KPYCJH0008QG0R003MDS51N-foo.md");
     });
 
     test("extracts paths from Proposed mechanization section", () => {
@@ -146,7 +146,7 @@ Add \`tools/scope-target.ts\`.
     });
 
     test("INLINE_CROSSREF: 'Composes with X' bullet inside Acceptance section is NOT a deliverable", () => {
-        // Empirical case from B-0518 (Sharpening 4): an Acceptance sub-section
+        // Empirical case from 081KRHWGX0008QG0R001BHXH0M (Sharpening 4): an Acceptance sub-section
         // contains "Composes with `.claude/rules/encoding-rules-without-mechanizing.md`"
         // as a bullet — that's a sibling reference, not a deliverable.
         const body = `## Acceptance
@@ -181,13 +181,13 @@ Add \`tools/scope-target.ts\`.
     });
 
     test("MIXED_BULLET: deliverable BEFORE inline cross-ref token is extracted", () => {
-        // B-0557 slice 4: mixed bullets where a path appears before a
+        // 081KRQ1AB0008QG0R003DYANMC slice 4: mixed bullets where a path appears before a
         // cross-ref token should still extract the path. The previous behaviour
         // skipped the WHOLE line when any cross-ref keyword matched, dropping
         // the deliverable along with the citation.
         const body = `## Acceptance
 
-- Add \`tools/deliverable.ts\` per [B-0123] convention
+- Add \`tools/deliverable.ts\` per [081KQDTYV0008QG0R0022KG2KY] convention
 - Wire \`tools/foo.ts\` (see also \`tools/sibling.ts\` for shape)
 `;
         const paths = extractPrimaryArtifacts(body);
@@ -214,15 +214,15 @@ Add \`tools/scope-target.ts\`.
         expect(paths).not.toContain("tools/older.ts");
     });
 
-    test("Empirical case from B-0553: composes_with paths NOT in primary sections must be skipped", () => {
+    test("Empirical case from 081KRQ1AB0008QG0R000QYJFZE: composes_with paths NOT in primary sections must be skipped", () => {
         const body = `---
-id: B-0116
+id: 081KQDTYV0008QG0R002C97QMC
 status: open
 composes_with:
   - tools/github/poll-pr-gate.ts
 ---
 
-# B-0116 — tools/gh-jq-safe.sh wrapper
+# 081KQDTYV0008QG0R002C97QMC — tools/gh-jq-safe.sh wrapper
 
 ## Source
 
@@ -250,26 +250,26 @@ describe("findDriftCandidates", () => {
     test("returns rows where all primary artifacts exist on disk", () => {
         const rows: readonly BacklogRow[] = [
             {
-                id: "B-0001",
+                id: "081KPYCJH0008QG0R003MDS51N",
                 path: "docs/backlog/P3/fake.md",
                 status: "open",
                 primaryArtifacts: ["src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts"], // exists
             },
             {
-                id: "B-0002",
+                id: "081KQ0YZ80008QG0R002T6TM7Z",
                 path: "docs/backlog/P3/fake2.md",
                 status: "open",
                 primaryArtifacts: ["tools/hygiene/does-not-exist.ts"],
             },
         ];
         const candidates = findDriftCandidates(rows);
-        expect(candidates.map((r) => r.id)).toEqual(["B-0001"]);
+        expect(candidates.map((r) => r.id)).toEqual(["081KPYCJH0008QG0R003MDS51N"]);
     });
 
     test("does NOT flag rows with empty primary-artifact lists", () => {
         const rows: readonly BacklogRow[] = [
             {
-                id: "B-9999",
+                id: "081KED9T0X008QG0R003SZN0FB",
                 path: "fake",
                 status: "open",
                 primaryArtifacts: [],

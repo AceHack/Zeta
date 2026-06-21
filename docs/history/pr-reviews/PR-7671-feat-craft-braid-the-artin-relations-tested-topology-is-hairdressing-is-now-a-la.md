@@ -27,7 +27,7 @@
 
 ## Description
 
-B-1027's falsifiable item, green: the braid group executable via Artin's faithful free-group action (exact integers). The Artin relation σᵢσᵢ₊₁σᵢ = σᵢ₊₁σᵢσᵢ₊₁ holds at every adjacent pair AND inside arbitrary FsCheck contexts; far strands commute; σ² ≠ id — the braid remembers who crossed over whom (history, not shuffling — why a braid is computation). Honest scope: mill-weave-as-fold-over-braid-word is the remaining B-1027 step. 6/6 green.
+081KTSZN10008QG0R001BW91GT's falsifiable item, green: the braid group executable via Artin's faithful free-group action (exact integers). The Artin relation σᵢσᵢ₊₁σᵢ = σᵢ₊₁σᵢσᵢ₊₁ holds at every adjacent pair AND inside arbitrary FsCheck contexts; far strands commute; σ² ≠ id — the braid remembers who crossed over whom (history, not shuffling — why a braid is computation). Honest scope: mill-weave-as-fold-over-braid-word is the remaining 081KTSZN10008QG0R001BW91GT step. 6/6 green.
 
 ## Outcome
 

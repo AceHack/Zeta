@@ -1,11 +1,10 @@
 ---
-id: B-0484
-zetaid: 081KRHWGX0008QG0R002TYF2NM
+id: 081KRHWGX0008QG0R002TYF2NM
 priority: P1
 status: open
-title: "DBpedia B-0428.5 — end-to-end demo project + integration test"
+title: "DBpedia 081KRFA460008QG0R0018SN61J.5 — end-to-end demo project + integration test"
 type: feature
-origin: B-0428 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R0018SN61J decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R0018SN61J
@@ -19,13 +18,13 @@ composes_with:
   - memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md
 ---
 
-# B-0484 — DBpedia end-to-end demo project
+# 081KRHWGX0008QG0R002TYF2NM — DBpedia end-to-end demo project
 
-**Depends on B-0483 (HKT-MDM bindings must exist). Closes B-0428.**
+**Depends on 081KRHWGX0008QG0R002GFSJC6 (HKT-MDM bindings must exist). Closes 081KRFA460008QG0R0018SN61J.**
 
 ## Purpose
 
-Wire together the full stack built in B-0481..B-0483 into an end-to-end
+Wire together the full stack built in 081KRHWGX0008QG0R003MTMBGR..081KRHWGX0008QG0R002GFSJC6 into an end-to-end
 demo that:
 
 1. Constructs a SPARQL query using the `sparql { }` CE
@@ -33,8 +32,8 @@ demo that:
 3. Binds results to HKT-MDM entities (hub + satellite)
 4. Demonstrates the DV2.0 hub-satellite separation visibly
 
-This is the "definition of done" deliverable for B-0428 and the canonical
-demo that composes with B-0043 (universal-business-templates).
+This is the "definition of done" deliverable for 081KRFA460008QG0R0018SN61J and the canonical
+demo that composes with 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates).
 
 ## Demo shape
 
@@ -83,7 +82,7 @@ name the DV2.0 hub-satellite split so it reads as a canonical demo.
 
 ### ADR appendix update
 
-Add a section to the ADR from B-0480:
+Add a section to the ADR from 081KRHWGX0008QG0R00187PQGZ:
 
 ```markdown
 ## Path-A transition plan
@@ -99,15 +98,15 @@ After the F#-compiler-fork-for-AI-safety ships real HKT over Clifford:
 4. Migration guide: swap `open Zeta.DBpedia.SparqlBuilder` → `open DBpedia.TP`.
 ```
 
-## Composes-with B-0043 check
+## Composes-with 081KQ3HBZ0008QG0R000Q4Y00F check
 
-Read `docs/backlog/P3/B-0043-*.md` and verify:
+Read `docs/backlog/P3/081KQ3HBZ0008QG0R000Q4Y00F-*.md` and verify:
 
-- The demo query (persons / organizations) overlaps with B-0043's
+- The demo query (persons / organizations) overlaps with 081KQ3HBZ0008QG0R000Q4Y00F's
   "universal company + government information substrate" scope
-- Add a pointer from B-0043 to B-0484 in `composes_with:` on both rows
+- Add a pointer from 081KQ3HBZ0008QG0R000Q4Y00F to 081KRHWGX0008QG0R002TYF2NM in `composes_with:` on both rows
 - Write one sentence in the demo comment: _"DBpedia master data — canonical
-  demonstration for B-0043 universal-business-templates"_
+  demonstration for 081KQ3HBZ0008QG0R000Q4Y00F universal-business-templates"_
 
 ## Build gate
 
@@ -128,16 +127,16 @@ an explicit workflow change (add `--filter "Category!=Integration"` to both
 - [ ] End-to-end demo test in `tests/DBpedia.Tests/DemoIntegrationTests.fs`
 - [ ] Demo test passes with recorded fixture or live endpoint per ADR
 - [ ] Output visibly labels hub and satellite with DV2.0 language
-- [ ] ADR from B-0480 updated with Path-A transition plan section
-- [ ] B-0043 `composes_with:` backfilled with B-0484 pointer
+- [ ] ADR from 081KRHWGX0008QG0R00187PQGZ updated with Path-A transition plan section
+- [ ] 081KQ3HBZ0008QG0R000Q4Y00F `composes_with:` backfilled with 081KRHWGX0008QG0R002TYF2NM pointer
 - [ ] `dotnet build -c Release` — 0 warnings 0 errors
 - [ ] `dotnet test Zeta.sln -c Release` — all tests green
-- [ ] B-0428 status updated to `closed` with PR link
-- [ ] B-0484 status set to `closed`
+- [ ] 081KRFA460008QG0R0018SN61J status updated to `closed` with PR link
+- [ ] 081KRHWGX0008QG0R002TYF2NM status set to `closed`
 
-## Why P1 / closes B-0428
+## Why P1 / closes 081KRFA460008QG0R0018SN61J
 
-B-0484 is the only row that produces the externally-visible demo Aaron
+081KRHWGX0008QG0R002TYF2NM is the only row that produces the externally-visible demo Aaron
 named ("DBpedia HKT-MDM canonical demo"). Without it the four implementation
 rows don't constitute a "canonical demo" — they're plumbing. This row
 stitches them together and closes the parent row.

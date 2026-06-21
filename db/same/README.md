@@ -40,7 +40,7 @@ The template carries **three things** — `x`, `y`, and the **context boundary**
 dual-observer weave / bob-and-weave that relates x and y across their boundary) is a **3D rotation** —
 **SO(3) / unit quaternions** (Cayley–Dickson; the Beckman structure-from-rotation line). That rotation
 **maps to geospatial**: an orientation in 3D ↔ a position/bearing on the globe (lat/lon/alt; the ZetaId
-**Location** field; the jurisdiction-relative geospatial borders, B-1015 / `same/` ↔ `dns/`/`network/`).
+**Location** field; the jurisdiction-relative geospatial borders, 081KT5CF90008QG0R000KYNZGF / `same/` ↔ `dns/`/`network/`).
 
 So a `same/` pair is not flat: **`{ctxboundary}-x-y-{/ctxboundary}` ⇒ a 3D rotation ⇒ a geospatial mapping.**
 

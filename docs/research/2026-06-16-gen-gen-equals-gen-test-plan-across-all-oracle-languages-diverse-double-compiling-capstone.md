@@ -18,7 +18,7 @@ The same object that *generates* the structures *corrects their drift* across sp
 
 The "all languages" set is **tiered**; the plan must not blur them:
 
-- **4 correctness oracles (compiler-BFT, ADR 2026-05-31):** **TS · F# · C# · Rust** — already carry golden-vector byte-lock infra (observe / DynamicValue / ZSet / Bag / GSet across all four; B-0867.27, B-0982). *Start here.*
+- **4 correctness oracles (compiler-BFT, ADR 2026-05-31):** **TS · F# · C# · Rust** — already carry golden-vector byte-lock infra (observe / DynamicValue / ZSet / Bag / GSet across all four; 081KSXN940008QG0R0033T2BQT, 081KT07NV0008QG0R0032MCYER). *Start here.*
 - **6 codegen targets (IR-v2 §5):** the four **+ Python + Go**.
 - **+ Q#** (primitive-registry, the 7th oracle; behavioral-equivalence target, not byte-lock — quantum execution model).
 - **+ the CHIP-8 cart** — `gen(gen)` produces a *runnable cart* (the universal substrate `gen/` already targets); **behavioral-equivalence**, not source byte-lock.
@@ -28,8 +28,8 @@ The "all languages" set is **tiered**; the plan must not blur them:
 ## 2. Current legs (look-better — what already exists)
 
 - **`l=gen` at the CODE level — Faces 1+2 PROVEN** (`src/Core/AdinkraCode.fs`): Face 1 `isSelfDual` (`dual(dual C)=C`, the self-dual fixed point); Face 2 `project` (codespace projector Π²=Π). **Face 3 — the Futamura `mix(mix,mix)=cogen` reflective fixpoint — is OPEN (§B).** *That open Face 3 is exactly the generator-self-hosting capstone this plan targets.*
-- **Per-primitive cross-language byte-lock — BUILT:** observe-algebra in all 4 oracles; DynamicValue canonical-encoding byte-lock; ZSet/Bag/GSet golden vectors; four-oracle multi-format seeds (CBOR/JSON/YAML/XML — B-0982).
-- **Byte-lock discipline — established:** text golden vectors (hex-in-JSON; `no-binary-in-proof-lineage`); one canonical collation (UTF-8 codepoint order, `culture-invariant-by-default`, live failure B-0969); injected **DoP=1** deterministic scheduler (noninterference §13 — no ambient scheduler / no `Task.Run` entropy).
+- **Per-primitive cross-language byte-lock — BUILT:** observe-algebra in all 4 oracles; DynamicValue canonical-encoding byte-lock; ZSet/Bag/GSet golden vectors; four-oracle multi-format seeds (CBOR/JSON/YAML/XML — 081KT07NV0008QG0R0032MCYER).
+- **Byte-lock discipline — established:** text golden vectors (hex-in-JSON; `no-binary-in-proof-lineage`); one canonical collation (UTF-8 codepoint order, `culture-invariant-by-default`, live failure 081KT07NV0008QG0R001YDB73K); injected **DoP=1** deterministic scheduler (noninterference §13 — no ambient scheduler / no `Task.Run` entropy).
 
 ## 3. The phased plan (crawl → walk → run — each phase a real gate)
 
@@ -58,8 +58,8 @@ The "all languages" set is **tiered**; the plan must not blur them:
 
 ## 5. Harness (reuse, don't reinvent)
 
-- **Golden vectors:** extend the existing `golden-vectors-*.json` (hex-in-JSON, text, diffable, DST-replayable) to carry the **generator artifact**, not just primitive outputs. Same CI gates as B-0982.
-- **Canonical collation:** UTF-8 codepoint order, pinned in the seed (astral-codepoint divergence between UTF-16 langs and Rust is the trap — B-0969).
+- **Golden vectors:** extend the existing `golden-vectors-*.json` (hex-in-JSON, text, diffable, DST-replayable) to carry the **generator artifact**, not just primitive outputs. Same CI gates as 081KT07NV0008QG0R0032MCYER.
+- **Canonical collation:** UTF-8 codepoint order, pinned in the seed (astral-codepoint divergence between UTF-16 langs and Rust is the trap — 081KT07NV0008QG0R001YDB73K).
 - **Scheduler:** the **DoP=1 deterministic** instance on the byte-lock path (injected capability; no ambient scheduler). Richer DoP=N only *off* the byte-lock path.
 - **Normalization before diff:** a canonical-form pass (formatting/whitespace) so "byte-identical" means *semantic* byte-lock, not formatter-coincidence — define the canonical form per language explicitly (this is a seam: see §6).
 
@@ -82,7 +82,7 @@ The "all languages" set is **tiered**; the plan must not blur them:
 - `docs/research/2026-06-14-zeta-language-ir-compiler-v2-capability-interface-principle-fsharp-host-csharp-contracts-self-hosting-futamura.md` (§5 the north star, §7 Futamura).
 - `docs/DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md` (the 4-oracle compiler-BFT + golden-vectors-as-oracle + divergence tie-break).
 - `src/Core/AdinkraCode.fs` (`l=gen` Faces 1+2 proven; Face 3 open) + FROZEN-CORE §B (Face 3 / entropic-attractor rows).
-- `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` (the generator IS the ECC) · `no-binary-in-proof-lineage.md` (hex-in-JSON) · `culture-invariant-by-default.md` (one collation, B-0969) · `async-all-the-way-truthful-signatures.md` (DoP=1 deterministic).
-- B-0982 / B-0867.27 (four-oracle multi-format golden-vector seeds) — the harness to extend.
+- `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` (the generator IS the ECC) · `no-binary-in-proof-lineage.md` (hex-in-JSON) · `culture-invariant-by-default.md` (one collation, 081KT07NV0008QG0R001YDB73K) · `async-all-the-way-truthful-signatures.md` (DoP=1 deterministic).
+- 081KT07NV0008QG0R0032MCYER / 081KSXN940008QG0R0033T2BQT (four-oracle multi-format golden-vector seeds) — the harness to extend.
 
 **Anchors:** Futamura 1971 (partial evaluation / the 3 projections); Thompson 1984 (*Reflections on Trusting Trust*); Wheeler 2009 (*Diverse Double-Compiling*); reproducible-builds movement; Gates (adinkra doubly-even self-dual ECC); MacWilliams/Gleason (self-dual codes); the reproducible-builds / Nix lineage (distribute the generator).

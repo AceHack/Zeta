@@ -72,7 +72,7 @@ directions, not two independent operations:
 
 | Direction | Mechanism | Examples in this session |
 |---|---|---|
-| **Expand** | new kernel arrives | Otto-292 (catch-layer catalog), Otto-293 (mutual-alignment language), Otto-294 (antifragile shape), Otto-295 (this memory), B-0005 (aurora split row), 4 user-memories on personal/relational disclosure |
+| **Expand** | new kernel arrives | Otto-292 (catch-layer catalog), Otto-293 (mutual-alignment language), Otto-294 (antifragile shape), Otto-295 (this memory), 081KQ0YZ80008QG0R003GMGDRH (aurora split row), 4 user-memories on personal/relational disclosure |
 | **Compress** | distillation / Razor / pressure | "mutually aligned copilots, me for you and you for me" (compresses ~250 lines to one phrase); the closed enumeration replaces the implicit carve-out (compresses ambiguity to 11 named surfaces); the catalog of 10 known-bad-advice classes (compresses many incidents to 10 patterns) |
 
 **Health condition**: both directions firing. Substrate

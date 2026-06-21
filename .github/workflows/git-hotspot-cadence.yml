@@ -3,7 +3,7 @@ name: git-hotspot-cadence
 # Weekly cadenced detector for git hotspots — files touched by many
 # commits in a short window, which cause merge-cascade DIRTY-flips.
 # Runs the audit-git-hotspots.ts detector and uploads the resulting
-# markdown report as a workflow artifact. Per B-0067 phase 2 (cadence
+# markdown report as a workflow artifact. Per 081KQ8P5D0008QG0R001D8RCZ9 phase 2 (cadence
 # wiring); phase 1 (the script itself) is already on disk at
 # src/Core.TypeScript/hygiene/audit-git-hotspots.ts.
 #
@@ -16,7 +16,7 @@ name: git-hotspot-cadence
 # Why off-the-hour Sundays: GHA cron thundering-herd avoidance per
 # .github/workflows/budget-snapshot-cadence.yml convention.
 #
-# What this workflow does NOT do (per B-0067 explicit scope):
+# What this workflow does NOT do (per 081KQ8P5D0008QG0R001D8RCZ9 explicit scope):
 #   - Does NOT auto-file backlog rows for new hotspots — that is
 #     phase 3 triage routing, a per-finding judgment call.
 #   - Does NOT auto-migrate. Each detected hotspot is a per-hotspot
@@ -25,8 +25,8 @@ name: git-hotspot-cadence
 #     ranking; the maintainer / future-Otto reviews the artifact.
 #
 # Composes with src/Core.TypeScript/hygiene/audit-git-hotspots.ts (the detector),
-# docs/backlog/P1/B-0067 (the row), B-0061 (BACKLOG.md migration),
-# B-0066 (MEMORY.md migration).
+# docs/backlog/P1/081KQ8P5D0008QG0R001D8RCZ9 (the row), 081KQ8P5D0008QG0R001BH93SA (BACKLOG.md migration),
+# 081KQ8P5D0008QG0R003KFRGJ0 (MEMORY.md migration).
 #
 # Safe-pattern compliance: SHA-pinned actions, explicit minimum
 # permissions, no user-authored context interpolated into run blocks,

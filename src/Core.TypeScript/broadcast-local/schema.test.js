@@ -10,7 +10,7 @@ function validEnvelope() {
         expiresAt: localBroadcastExpiresAt(writtenAt),
         priority: "P1",
         status: "working",
-        summary: "Claimed B-0213 broadcast schema slice.",
+        summary: "Claimed 081KQX9B50008QG0R001YRPGD6 broadcast schema slice.",
         scope: [{ kind: "claim", value: "claim/codex-b0213-broadcast-bus-schema-ttl-receipts-20260526" }],
     };
 }
@@ -46,7 +46,7 @@ describe("local broadcast schema", () => {
             ...validEnvelope(),
             id: "vera-20260526T225000Z",
             from: "vera",
-            summary: "Working on B-0213 conflict detection.",
+            summary: "Working on 081KQX9B50008QG0R001YRPGD6 conflict detection.",
             scope: [{ kind: "path", value: "tools/broadcast-local/" }],
         };
         const otto = {
@@ -69,7 +69,7 @@ describe("local broadcast schema", () => {
                 scope: { kind: "path", value: "tools/broadcast-local/" },
                 broadcastIds: ["otto-20260526T225100Z", "vera-20260526T225000Z"],
                 agents: ["otto", "vera"],
-                summaries: ["Also touching local broadcast tooling.", "Working on B-0213 conflict detection."],
+                summaries: ["Also touching local broadcast tooling.", "Working on 081KQX9B50008QG0R001YRPGD6 conflict detection."],
             },
         ];
         expect(detectLocalBroadcastScopeConflicts([vera, otto, riven], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);

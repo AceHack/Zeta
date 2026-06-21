@@ -50,7 +50,7 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0249
+Task: 081KQZVQW0008QG0R000C35RNY
 
 
 ## Outcome
@@ -111,7 +111,7 @@ feat(health): add Codex parallel runway signal
 
 Add a bounded Codex parallel-runway classifier to the factory health monitor so a healthy Codex service with zero owned PRs or claims warns instead of looking complete.
 
-The signal uses B-0249 runway policy: one active item is the hard minimum and two active items is the target. Active items include lane-owned open PR branches and active claim branches.
+The signal uses 081KQZVQW0008QG0R000C35RNY runway policy: one active item is the hard minimum and two active items is the target. Active items include lane-owned open PR branches and active claim branches.
 
 Focused checks:
 
@@ -143,7 +143,7 @@ Human-Review-Evidence: none
 
 Action-Mode: autonomous-fail-open
 
-Task: B-0249
+Task: 081KQZVQW0008QG0R000C35RNY
 ```
 
 ### `050639795b0ef0d9f95d19fa3a64f6c30e0e130a` -- 2026-05-30T04:21:29Z -- ``
@@ -192,5 +192,5 @@ Human-Review-Evidence: none
 
 Action-Mode: autonomous-fail-open
 
-Task: B-0249
+Task: 081KQZVQW0008QG0R000C35RNY
 ```

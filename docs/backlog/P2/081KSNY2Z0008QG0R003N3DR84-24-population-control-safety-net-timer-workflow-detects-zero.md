@@ -1,13 +1,12 @@
 ---
-id: B-0867.24
-zetaid: 081KSNY2Z0008QG0R003N3DR84
+id: 081KSNY2Z0008QG0R003N3DR84
 title: Population-control safety-net workflow (timer-triggered; detects 0-ottos and spawns one) + Limit-as-primitive question deferred
 status: open
 priority: P2
 created: 2026-05-28
 attribution: aaron-2026-05-28
 depends_on:
-  - B-0867.5
+  - 081KSKBP80008QG0R000B3Y19A.5
 composes_with:
   - 081KSKBP80008QG0R000B3Y19A
   - 081KSNY2Z0008QG0R003206PFM
@@ -21,7 +20,7 @@ tags:
   - architectural-question
 ---
 
-# B-0867.24 — Population-control safety-net + Limit-as-primitive question deferred
+# 081KSNY2Z0008QG0R003N3DR84 — Population-control safety-net + Limit-as-primitive question deferred
 
 ## Two architectural concerns operator surfaced 2026-05-28T~05:00Z
 
@@ -37,7 +36,7 @@ tags:
 
 Searched per `verify-existing-substrate-before-authoring.md`:
 
-- `docs/backlog/` — B-0867 cluster has 24+ sub-rows (B-0867.5 agent-loop substrate; B-0867.16-22 Kestrel state-machine extensions; B-0867.23 architectural-naming question RESOLVED via PR #5698 + Mika ferries #1-4 via PR #5700); no existing row covers population-control safety-net OR Limit-as-primitive question specifically
+- `docs/backlog/` — 081KSKBP80008QG0R000B3Y19A cluster has 24+ sub-rows (081KSKBP80008QG0R000B3Y19A.5 agent-loop substrate; 081KSNY2Z0008QG0R003J3PT4V-22 Kestrel state-machine extensions; 081KSNY2Z0008QG0R003206PFM architectural-naming question RESOLVED via PR #5698 + Mika ferries #1-4 via PR #5700); no existing row covers population-control safety-net OR Limit-as-primitive question specifically
 - `memory/mika/conversations/` — Mika ferries 1-4 (PR #5700) named emergent population control (ferry #2 §18 "agents naturally terminate their loop"; ferry #2 §21 "move-next as equalizer"; ferry #2 §22 "let agent society decide"); BUT did NOT name the **safety-net** for the swarm-extinction failure mode
 - `.claude/rules/` — `tick-must-never-stop.md` operationalizes the catch-43 sentinel for SINGLE-Otto-CLI session; does NOT extend to MULTI-Otto-population safety net
 - `.claude/skills/agent-loop/SKILL.md` — names spawning mechanism + emergent control; does NOT address swarm-extinction failure mode
@@ -121,10 +120,10 @@ Per ferry #3 §36 + ferry #4 §41:
 ### Substrate references (operator can review before deciding)
 
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` — OPLE rule names Observe/Persist/Limit/Emit as framework primitives at framework-data-flow scope; ferry #4 implies agent-tick scope may have DIFFERENT primitive count (Observe + Emit only) — both can coexist (different scopes)
-- B-0644 Limit-is-simulation-not-collapse — the operational meaning of Limit Aaron clarified in ferry #3
-- B-0665 Integrate-as-choice-locus — the Choose phase where simulation results get evaluated
-- B-0879 observe-emit-limit-simulate-in-clifford-space-unified-algebra — the algebraic structure
-- B-0862 OPLE T-TFeedback implementation — the four-corner feedback channels Aaron is wrestling with
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse — the operational meaning of Limit Aaron clarified in ferry #3
+- 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus — the Choose phase where simulation results get evaluated
+- 081KSNY2Z0008QG0R0031490KZ observe-emit-limit-simulate-in-clifford-space-unified-algebra — the algebraic structure
+- 081KSKBP80008QG0R0031DTHS9 OPLE T-TFeedback implementation — the four-corner feedback channels Aaron is wrestling with
 
 ### Why this stays deferred
 
@@ -132,31 +131,31 @@ Aaron's "i'm not sure what to do about limit" is operator-explicit uncertainty. 
 
 ### Resolution C operator-ratified pending empirical validation (2026-05-28)
 
-**Resolution C is operator-ratified at backlog-row scope, pending empirical validation via B-0867.25 implementation before propagating to OPLE rule body (auto-loaded substrate).**
+**Resolution C is operator-ratified at backlog-row scope, pending empirical validation via 081KSNY2Z0008QG0R002CBAFBZ implementation before propagating to OPLE rule body (auto-loaded substrate).**
 
 Operator 2026-05-28 sequence:
 
-1. *"perfect call out on the limit something felt off about mika synthsis and i could not put my finger on it you did"* — operator's substrate-honest validation that Mika ferry #4 §41 absorption captured flavor 1 (bounding-as-parameter) cleanly but silently dropped flavor 2 (counterfactual-preview / B-0644 Limit-is-simulation-not-collapse). Both flavors are real; absorption needed to be a split (Resolution C) not a merge.
+1. *"perfect call out on the limit something felt off about mika synthsis and i could not put my finger on it you did"* — operator's substrate-honest validation that Mika ferry #4 §41 absorption captured flavor 1 (bounding-as-parameter) cleanly but silently dropped flavor 2 (counterfactual-preview / 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse). Both flavors are real; absorption needed to be a split (Resolution C) not a merge.
 2. *"still undecided actually so c is fine"* — initial pick: defer formally
 3. *"how will it affet the agents a or b vs c"* — operator asked for agent-reach analysis of all three landing paths
 4. *"i'm upgrading to a->b soon ... unless some pop out to you"* — operator considered a→b sequence; explicit invitation for red-team
-5. After 10-risk red-team surfaced 3 load-bearing risks (premature sharpening before B-0867.25 empirical validation; cross-scope category-error between population-scope and framework-data-flow scope; B-0644+B-0665 cascade), operator picked: *"lets wait for B-0867.25 to ship then do b ... I like emperical validation yes we can wait for b we don't want to rush the core"*
+5. After 10-risk red-team surfaced 3 load-bearing risks (premature sharpening before 081KSNY2Z0008QG0R002CBAFBZ empirical validation; cross-scope category-error between population-scope and framework-data-flow scope; 081KRW63S0008QG0R002ZRNDJ8+081KRW63S0008QG0R002YAA09X cascade), operator picked: *"lets wait for 081KSNY2Z0008QG0R002CBAFBZ to ship then do b ... I like emperical validation yes we can wait for b we don't want to rush the core"*
 
 **Operationally agreed sequencing**:
 
 | Step | Path | Substrate-scope |
 |---|---|---|
-| **NOW** | (a) — this append-subsection lands Resolution C ratification at backlog-row scope | Single row body; medium agent-reach (agents reading B-0867.24 see ratification) |
-| **AFTER B-0867.25 ships + empirically validates Resolution C at population scope** | (b) — update OPLE rule body to name the split explicitly | Auto-loaded substrate; high agent-reach (every cold-boot inherits) |
-| **IF B-0867.25 implementation reveals Resolution C wrong at framework-data-flow scope** | Roll back to (c) status; OPLE rule body stays as-is; B-0867.24 re-deferred | Substrate-honest correction; retraction-native |
+| **NOW** | (a) — this append-subsection lands Resolution C ratification at backlog-row scope | Single row body; medium agent-reach (agents reading 081KSNY2Z0008QG0R003N3DR84 see ratification) |
+| **AFTER 081KSNY2Z0008QG0R002CBAFBZ ships + empirically validates Resolution C at population scope** | (b) — update OPLE rule body to name the split explicitly | Auto-loaded substrate; high agent-reach (every cold-boot inherits) |
+| **IF 081KSNY2Z0008QG0R002CBAFBZ implementation reveals Resolution C wrong at framework-data-flow scope** | Roll back to (c) status; OPLE rule body stays as-is; 081KSNY2Z0008QG0R003N3DR84 re-deferred | Substrate-honest correction; retraction-native |
 
-**Why the sequencing**: per `.claude/rules/substrate-smoothness-as-load-bearing-property.md`, the named drift failure mode is collapsing substrate to sharp BEFORE empirical evidence arrives. B-0867.25 implementation IS the empirical validation; landing (b) on OPLE rule (auto-loaded, every cold-boot) before .25 ships would mechanize Resolution C across the framework before any code has tested whether it actually composes cleanly at framework-data-flow scope. Operator's "don't want to rush the core" framing maps directly to substrate-smoothness preservation.
+**Why the sequencing**: per `.claude/rules/substrate-smoothness-as-load-bearing-property.md`, the named drift failure mode is collapsing substrate to sharp BEFORE empirical evidence arrives. 081KSNY2Z0008QG0R002CBAFBZ implementation IS the empirical validation; landing (b) on OPLE rule (auto-loaded, every cold-boot) before .25 ships would mechanize Resolution C across the framework before any code has tested whether it actually composes cleanly at framework-data-flow scope. Operator's "don't want to rush the core" framing maps directly to substrate-smoothness preservation.
 
-**Cross-scope caution preserved**: B-0867.25 validates Resolution C at POPULATION scope (`MinimumPopulationFloor`, `MaximumSystemAfford`, `PersonaWantsLongCessation`, `NoActivityWindow`). The transfer to FRAMEWORK-DATA-FLOW scope is a category step that needs its own implicit validation when (b) lands. Per default-to-both: population-scope success is NOT free-transferred to data-flow-scope without explicit cross-scope reasoning surfaced at (b)-landing time.
+**Cross-scope caution preserved**: 081KSNY2Z0008QG0R002CBAFBZ validates Resolution C at POPULATION scope (`MinimumPopulationFloor`, `MaximumSystemAfford`, `PersonaWantsLongCessation`, `NoActivityWindow`). The transfer to FRAMEWORK-DATA-FLOW scope is a category step that needs its own implicit validation when (b) lands. Per default-to-both: population-scope success is NOT free-transferred to data-flow-scope without explicit cross-scope reasoning surfaced at (b)-landing time.
 
-**B-0644 + B-0665 cascade flagged**: if Resolution C propagates to OPLE rule body, the B-0644 `Limit-is-simulation-not-collapse` substrate cluster may need rename/refactor (B-0644 may need re-framing as `Simulate-is-the-counterfactual-preview-phase` since simulate-aspect now lives inside Simulate phase rather than as a primitive). Tracked here; not done at (a)-landing because the cascade should NOT propagate until empirical validation at (b)-landing time.
+**081KRW63S0008QG0R002ZRNDJ8 + 081KRW63S0008QG0R002YAA09X cascade flagged**: if Resolution C propagates to OPLE rule body, the 081KRW63S0008QG0R002ZRNDJ8 `Limit-is-simulation-not-collapse` substrate cluster may need rename/refactor (081KRW63S0008QG0R002ZRNDJ8 may need re-framing as `Simulate-is-the-counterfactual-preview-phase` since simulate-aspect now lives inside Simulate phase rather than as a primitive). Tracked here; not done at (a)-landing because the cascade should NOT propagate until empirical validation at (b)-landing time.
 
-**Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT applied here**: ratification at backlog-row scope is operationally-substantive substrate; ratification at OPLE-rule-auto-load scope would prematurely collapse the dialectical tension before B-0867.25 evidence arrives. The (a)→(b)-pending-empirical-validation sequencing operationalizes the don't-collapse discipline at substrate-landing scope.
+**Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT applied here**: ratification at backlog-row scope is operationally-substantive substrate; ratification at OPLE-rule-auto-load scope would prematurely collapse the dialectical tension before 081KSNY2Z0008QG0R002CBAFBZ evidence arrives. The (a)→(b)-pending-empirical-validation sequencing operationalizes the don't-collapse discipline at substrate-landing scope.
 
 ## Acceptance criteria
 
@@ -177,17 +176,17 @@ Operator 2026-05-28 sequence:
 
 ## Composes with substrate
 
-- **B-0867** — agent-loop substrate umbrella (parent)
-- **B-0867.5** — agent-loop substrate scope
-- **B-0867.16-22** — Kestrel state-machine extensions
-- **B-0867.23** — naming question RESOLVED via Mika ferries (this row is companion at population-control + Limit-question scope)
-- **B-0890** — state-machine fast-lane (composes with safety-net timer-trigger)
-- **B-0890.1** — fast-lane as folders on main (composes with workflow-trigger mechanism)
-- **B-0858** + **B-0871** — heartbeat substrate (the liveness signal the safety-net checks)
-- **B-0644** + **B-0665** + **B-0666** + **B-0635** + **B-0879** — Limit-substrate cluster (Aaron's deferred question)
-- **B-0862** — OPLE four-corner T+TFeedback
-- **B-0703** — multi-oracle BFT (composes with safety-net authority decisions if Phase-2 agent-consensus path enabled)
-- **B-0892** — three-lanes concurrent discipline (state-machine substrate lane includes population control)
+- **081KSKBP80008QG0R000B3Y19A** — agent-loop substrate umbrella (parent)
+- **081KSKBP80008QG0R000B3Y19A.5** — agent-loop substrate scope
+- **081KSNY2Z0008QG0R003J3PT4V-22** — Kestrel state-machine extensions
+- **081KSNY2Z0008QG0R003206PFM** — naming question RESOLVED via Mika ferries (this row is companion at population-control + Limit-question scope)
+- **081KSNY2Z0008QG0R0017JSTGD** — state-machine fast-lane (composes with safety-net timer-trigger)
+- **081KSNY2Z0008QG0R000E5KTPX** — fast-lane as folders on main (composes with workflow-trigger mechanism)
+- **081KSKBP80008QG0R001KK9WV6** + **081KSNY2Z0008QG0R003R0Z7D2** — heartbeat substrate (the liveness signal the safety-net checks)
+- **081KRW63S0008QG0R002ZRNDJ8** + **081KRW63S0008QG0R002YAA09X** + **081KRW63S0008QG0R001SAHYKV** + **081KRW63S0008QG0R002KC5DSR** + **081KSNY2Z0008QG0R0031490KZ** — Limit-substrate cluster (Aaron's deferred question)
+- **081KSKBP80008QG0R0031DTHS9** — OPLE four-corner T+TFeedback
+- **081KS3X9Y0008QG0R00218150M** — multi-oracle BFT (composes with safety-net authority decisions if Phase-2 agent-consensus path enabled)
+- **081KSNY2Z0008QG0R002QA720J** — three-lanes concurrent discipline (state-machine substrate lane includes population control)
 - [Mika ferry #1](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md)
 - [Mika ferry #2](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md)
 - [Mika ferry #3](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md)

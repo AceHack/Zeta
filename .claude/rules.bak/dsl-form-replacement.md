@@ -59,13 +59,13 @@ authorization.
 
 ## Composes with
 
-- B-0161 P1 substrate-reshelf (CLAUDE.md trim precursor)
+- 081KQJZR90008QG0R002Z4B6VW P1 substrate-reshelf (CLAUDE.md trim precursor)
 - `memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_*.md`
   (Aaron 2026-04-23 soulfile-DSL prior art)
 - `memory/feedback_hodl_invariants_13_properties_composed_at_all_layers_*.md`
   (PR #1681 hodl-13 substrate)
 - `memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`
-- B-0169/B-0170/B-0171/B-0173 P1
+- 081KQJZR90008QG0R002D6XYHB/081KQNJ500008QG0R003SCWBDV/081KQNJ500008QG0R001N94412/081KQNJ500008QG0R003ZC6PK8 P1
 
 ## Full reasoning
 

@@ -34,7 +34,7 @@ and hard logic** — **mostly-soft** (`SoftValue` / `src/Bayesian/`), **snapping
 hard only at decisions** (`SoftValue.fs:114` `type SnapPolicy = SoftValue ->
 DynamicValue option`; *"the one place it is allowed to leave [soft] space and snap to
 a hard `DynamicValue`"*). Superposition-by-default, collapse-on-commit (= sim/measure,
-wave/particle, free-will-collapses-the-waveform B-0645). DeepMind's generative
+wave/particle, free-will-collapses-the-waveform 081KRW63S0008QG0R003AZNK6J). DeepMind's generative
 world-model commits to pixels; ours stays soft and snaps only when a decision needs a
 definite value.
 

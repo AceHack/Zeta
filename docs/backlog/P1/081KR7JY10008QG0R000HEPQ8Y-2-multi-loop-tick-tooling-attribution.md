@@ -1,6 +1,5 @@
 ---
-id: B-0164.2
-zetaid: 081KR7JY10008QG0R000HEPQ8Y
+id: 081KR7JY10008QG0R000HEPQ8Y
 priority: P1
 status: open
 title: "Multi-loop tick-history tooling attribution (dual-loop AC #5)"
@@ -17,25 +16,25 @@ type: friction-reducer
 tags: [dual-loop, tick-history, tooling, attribution, b-0163]
 ---
 
-# B-0164.2 — Multi-loop tick-history tooling attribution
+# 081KR7JY10008QG0R000HEPQ8Y — Multi-loop tick-history tooling attribution
 
 ## Context
 
-Extracted from B-0164 AC #5 during decomposition (2026-05-10).
+Extracted from 081KQJZR90008QG0R002GJAJ19 AC #5 during decomposition (2026-05-10).
 
-B-0164 AC #1 (per-loop attribution channel) is already satisfied by
+081KQJZR90008QG0R002GJAJ19 AC #1 (per-loop attribution channel) is already satisfied by
 existing substrate: tick shards under `docs/hygiene-history/ticks/**`
 include a model-identifier column that can carry any loop's identity
 (e.g., `opus-4-7 / autonomous-loop` or `gpt-5.5 / codex-loop`).
 
-This child row is about the **tooling layer**: when B-0163 retires
+This child row is about the **tooling layer**: when 081KQJZR90008QG0R0025WX5ZJ retires
 `tools/hygiene/append-tick-history-row.sh` and replaces it with a TS
 successor, that successor must explicitly support multi-loop attribution
 so both loops can write tick shards correctly without toil.
 
 ## What
 
-Update the B-0163 TS successor of `tools/hygiene/append-tick-history-row.sh`
+Update the 081KQJZR90008QG0R0025WX5ZJ TS successor of `tools/hygiene/append-tick-history-row.sh`
 to:
 
 1. Accept a `--loop-id` (or `--model-id`) parameter that writes the
@@ -55,8 +54,8 @@ to:
 
 ## Blocker
 
-Gated by B-0163 (retire `append-tick-history-row.sh` and ship the TS
-successor). Once B-0163 lands, this row is unblocked: the TS successor is
+Gated by 081KQJZR90008QG0R0025WX5ZJ (retire `append-tick-history-row.sh` and ship the TS
+successor). Once 081KQJZR90008QG0R0025WX5ZJ lands, this row is unblocked: the TS successor is
 the edit target, and the change is additive (one new optional parameter).
 
 ## Scope / out of scope
@@ -70,7 +69,7 @@ the existing model-identifier column).
 
 ## Composes with
 
-- B-0163 (tick tooling retirement — gating dependency)
-- B-0164 (parent — divergence-shard schema, attribution protocol)
-- B-0164.3 (cron coordination — if loops run concurrently, the tool must be
+- 081KQJZR90008QG0R0025WX5ZJ (tick tooling retirement — gating dependency)
+- 081KQJZR90008QG0R002GJAJ19 (parent — divergence-shard schema, attribution protocol)
+- 081KR7JY10008QG0R0035GWRQ0 (cron coordination — if loops run concurrently, the tool must be
   safe to call from two processes simultaneously; check for write-race)

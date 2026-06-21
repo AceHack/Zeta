@@ -56,7 +56,7 @@ Wires the install.sh menu to use the TS hardware-detect module shipped by #5642.
 
 ## Closes
 
-Closes operator's \"getting the menu fixed so it has all the cluster types we talked about — storage cpu gpu etc... and letting you select multiple or detecting based on hardware\" at the **detection-based-on-hardware** scope. Multi-select-cluster-types remains a future B-0792-extension (requires flake-shape refactor for per-node role-tagging).
+Closes operator's \"getting the menu fixed so it has all the cluster types we talked about — storage cpu gpu etc... and letting you select multiple or detecting based on hardware\" at the **detection-based-on-hardware** scope. Multi-select-cluster-types remains a future 081KSGS9H0008QG0R003V23XNZ-extension (requires flake-shape refactor for per-node role-tagging).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

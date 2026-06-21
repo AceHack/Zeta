@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // check-semantic-equivalence.ts -- finds claims of semantic equivalence in markdown files.
-// Part of B-0170.1.
+// Part of 081KSNY2Z0008QG0R002CK42QK.
 
 import fs from 'fs';
 import path from 'path';

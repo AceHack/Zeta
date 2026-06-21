@@ -39,7 +39,7 @@ Per Aaron 2026-05-31 on the observe.ts ADR: resolve the **Aaron↔Max label conf
   - **Creator-comp ≠ DRM (Part D):** provenance → attribution → compensation; additive, not zero-sum. C2PA proves provenance-without-restriction works and *lacks a payout layer* — the gap we fill.
   - **Multi-attribution contribution graph (Part E):** Kimball bridge-table weighting + DV2.0 link + PROV-O graph; weight = payment-split key; transitive attribution along `wasDerivedFrom` = `honor-those-that-came-before` made computable.
   - **Attention × quality-of-attention payout (Part F):** two-factor (attention-value inflow × contribution-graph distribution); quality = reputation-of-attender (eigenvector/EigenTrust/PageRank) × depth/valence (Shepard's-treatment) × **anti-coercion filter**; guards (NCI, anti-extraction, BFT, glass-halo) so pay-for-attention ≠ attention-farming Moloch.
-- **B-0950 (P3):** the buildable bet — contribution-graph + attention-weighted split engine; gated on ratification + Agora payout layer.
+- **081KSXN940008QG0R001V8NBDV (P3):** the buildable bet — contribution-graph + attention-weighted split engine; gated on ratification + Agora payout layer.
 - **observe.ts ADR:** new "Work ontology (PROPOSED)" section pointing at the research doc.
 
 ### Ratification needed
@@ -68,17 +68,17 @@ Docs/research/backlog only — nothing canonical until both ratify.
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6F6byA`
-- **Path**: `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
+- **Path**: `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-31T03:34:16Z on `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`:17 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-31T03:34:16Z on `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`:17 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Point B-0623 composition at the existing row**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Point 081KRW63S0008QG0R000QJR08H composition at the existing row**
 
-  This `composes_with` entry names a path that is not present in the tree I checked at `5b658fe`; the only B-0623 backlog row there is `docs/backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md`. Because this is frontmatter rather than a markdown link, the normal link scan can miss it, leaving readers or backlog tooling with a dead composition edge for the payout prerequisites; update this to the existing B-0623 row or to the intended Agora/economy row.
+  This `composes_with` entry names a path that is not present in the tree I checked at `5b658fe`; the only 081KRW63S0008QG0R000QJR08H backlog row there is `docs/backlog/P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md`. Because this is frontmatter rather than a markdown link, the normal link scan can miss it, leaving readers or backlog tooling with a dead composition edge for the payout prerequisites; update this to the existing 081KRW63S0008QG0R000QJR08H row or to the intended Agora/economy row.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -114,12 +114,12 @@ Docs/research/backlog only — nothing canonical until both ratify.
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6F6bzH`
-- **Path**: `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
+- **Path**: `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-31T03:34:26Z on `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`:66 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-31T03:34:26Z on `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`:66 (association: NONE)
 
   <pre>
   The numbered list under "The thing" repeats item number `4.` twice, which breaks ordered-list semantics and makes later references ambiguous.
@@ -132,7 +132,7 @@ Docs/research/backlog only — nothing canonical until both ratify.
 **Touched files (intersect with thread paths):**
 
 - `docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`
-- `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
+- `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
 - `docs/research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md`
 
 **Message:**
@@ -155,7 +155,7 @@ Lands (all PROPOSED, pending Aaron+Max ratification):
   multi-attribution contribution graph (Part E: Kimball bridge-table weighting + DV2.0 link + PROV-O
   graph); attention x quality-of-attention payout (Part F: two-factor, with anti-coercion/NCI/BFT
   guards so pay-for-attention != attention-farming Moloch).
-- B-0950 (P3): creator-compensation via contribution-graph + attention-weighted split (the buildable
+- 081KSXN940008QG0R001V8NBDV (P3): creator-compensation via contribution-graph + attention-weighted split (the buildable
   bet), gated on the ontology ratification + Agora payout layer.
 - observe.ts ADR: "Work ontology (PROPOSED)" section pointing at the research doc.
 
@@ -172,7 +172,7 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
+- `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
 - `docs/research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md`
 
 **Message:**
@@ -186,7 +186,7 @@ Aaron 2026-05-31: 'track any data used for synthesis and its creators even if th
 original source material don't even know we are using it, we should preemptively attribute to them
 too any human materials we train/synthesis on.'
 
-Part G added to the research doc + item #2 in B-0950:
+Part G added to the research doc + item #2 in 081KSXN940008QG0R001V8NBDV:
 - Contribution graph extends UPSTREAM to source creators of any human material synthesized/trained on,
   recorded PRE-EMPTIVELY (before/without their knowledge) — the anti-extraction inverse of
   scrape-silently-attribute-nothing; honor-those-that-came-before at training-data scope.
@@ -199,7 +199,7 @@ Part G added to the research doc + item #2 in B-0950:
 - Substrate-honest: best-effort lineage-capture + reserved escrow for the unidentifiable tail, not a
   perfect-attribution claim; framework-synthesis (cited sources, forwarded conversations, named
   corpora) already partly practiced (verbatim preservation + §33 + citation hygiene).
-- Fixed a numbering bug in B-0950's list (renumbered to 1-6).
+- Fixed a numbering bug in 081KSXN940008QG0R001V8NBDV's list (renumbered to 1-6).
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```
@@ -209,18 +209,18 @@ Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`
-- `docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
+- `docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md`
 - `docs/research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md`
 
 **Message:**
 
 ```
-fix(#6194): correct B-0623 path, un-split ADR code span, disambiguate…
+fix(#6194): correct 081KRW63S0008QG0R000QJR08H path, un-split ADR code span, disambiguate…
 
 … ladder hierarchy-vs-frequency (Codex+Copilot)
 
-- Codex P2: B-0950 composes_with pointed at an invented path (B-0623-participation-economy-...);
-  the real row is B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md
+- Codex P2: 081KSXN940008QG0R001V8NBDV composes_with pointed at an invented path (081KRW63S0008QG0R000QJR08H-participation-economy-...);
+  the real row is 081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md
   (the participation-economy/BFT/rating thread lives in that adinkras row). Path corrected.
 - Copilot P2: ADR 'trajectory = accumulating-snapshot fact' inline code span was split across a
   newline (broken render). Kept on one line.

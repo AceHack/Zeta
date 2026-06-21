@@ -27,7 +27,7 @@ Adds a **"Two workflow registers"** subsection to the ADR's Integration section.
 | Register | What it is | Self-mod | Governance |
 |---|---|---|---|
 | **agentic-organization** (a.k.a. **agentic operating system**) | the **corporate** workflow | static / PR-gated / no self-mod (leashed "kids-version") | PR review + branch protection; vendor/operator-gated |
-| **Agora** | the **sovereign** workflow/society — **DIO** on **DID** | self-modifying | ≥3-agent constitution gate + NCI floor (B-0703/B-0664) |
+| **Agora** | the **sovereign** workflow/society — **DIO** on **DID** | self-modifying | ≥3-agent constitution gate + NCI floor (081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R001Z7NYMV) |
 
 Same engine, two governance registers = the **must-paired-with-can-exit dual-market pattern** at the workflow scope.
 
@@ -95,7 +95,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-31T02:52:45Z):
 
-The governance cell cites “NCI floor (B-0703 / B-0664)”, but B-0664 is the NCI row while the constitution gate is referenced elsewhere in this ADR as B-0703/B-0652. This makes the cross-references internally inconsistent and risks sending readers to the wrong backlog rows.
+The governance cell cites “NCI floor (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R001Z7NYMV)”, but 081KRW63S0008QG0R001Z7NYMV is the NCI row while the constitution gate is referenced elsewhere in this ADR as 081KS3X9Y0008QG0R00218150M/081KRW63S0008QG0R002GRX85J. This makes the cross-references internally inconsistent and risks sending readers to the wrong backlog rows.
 
 ### Thread 3: docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md:379 (resolved)
 
@@ -113,5 +113,5 @@ Lior-Antigravity: This is a high-quality documentation update that captures a ke
 
 All three addressed in 6a4098781:
 - **Codex P2** (orthogonality re-coupling): added an explicit "all four cells valid" clause + marked "cluster for the org; USB for sovereignty" as the **common default pairing, not a coupling** (corporate-on-USB + sovereign-on-cluster both valid); softened the deployment prose to point back at the 2×2.
-- **Copilot P1** (cross-ref): fixed to `constitution gate (B-0703 / B-0652) + NCI floor (B-0664)`.
+- **Copilot P1** (cross-ref): fixed to `constitution gate (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R002GRX85J) + NCI floor (081KRW63S0008QG0R001Z7NYMV)`.
 - **Copilot P2** (chronology): re-dated to `2026-05-31 v3 (operator input 2026-05-30)` so the revision history is monotonic + matches the header date.

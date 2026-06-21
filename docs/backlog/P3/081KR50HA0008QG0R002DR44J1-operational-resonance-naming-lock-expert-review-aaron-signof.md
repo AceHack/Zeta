@@ -1,12 +1,11 @@
 ---
-id: B-0388
-zetaid: 081KR50HA0008QG0R002DR44J1
+id: 081KR50HA0008QG0R002DR44J1
 priority: P3
 status: open
 title: Lock name for Operational Resonance Dashboard — run naming-expert review, collect candidates, Aaron sign-off
 tier: research-grade
 effort: S
-ask: decomposition of B-0017
+ask: decomposition of 081KQ0YZ80008QG0R0003GAYYN
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
@@ -16,7 +15,7 @@ tags: [frontier, naming, operational-resonance, naming-expert, dashboard]
 type: research
 ---
 
-# B-0388 — Lock name for Operational Resonance Dashboard
+# 081KR50HA0008QG0R002DR44J1 — Lock name for Operational Resonance Dashboard
 
 ## What
 
@@ -34,9 +33,9 @@ Produce a committed doc with:
 2. **Recommendation** from naming-expert with justification.
 
 3. **Aaron sign-off** — once received, mark the canonical name
-   in the parent row (B-0017) and in `docs/GLOSSARY.md`.
+   in the parent row (081KQ0YZ80008QG0R0003GAYYN) and in `docs/GLOSSARY.md`.
 
-Candidate pool from B-0017 body (starting point, not exhaustive):
+Candidate pool from 081KQ0YZ80008QG0R0003GAYYN body (starting point, not exhaustive):
 
 - Operational Resonance Dashboard
 - Coherence Surface
@@ -49,7 +48,7 @@ Candidate pool from B-0017 body (starting point, not exhaustive):
 
 ## Why first
 
-All downstream rows (B-0391 GH Pages shell, B-0394 MVP surface,
+All downstream rows (081KR50HA0008QG0R0036HGEJ5 GH Pages shell, 081KR50HA0008QG0R002NZENZJ MVP surface,
 docs, component names) need the locked name before authoring.
 A name minted mid-build becomes technical debt in URLs, component
 IDs, and docs.
@@ -59,7 +58,7 @@ IDs, and docs.
 - `docs/research/frontier/naming-candidates-operational-resonance-dashboard.md`
   — candidates + rationale + recommendation
 - Updated GLOSSARY.md entry for the locked name
-- Updated B-0017 frontmatter `title:` with final name note
+- Updated 081KQ0YZ80008QG0R0003GAYYN frontmatter `title:` with final name note
 
 ## Focused check
 
@@ -75,23 +74,23 @@ Expected: locked name appears in GLOSSARY.md after this row completes.
 - Naming-expert recommendation recorded
 - Aaron sign-off noted in the doc (or in the PR description)
 - GLOSSARY.md updated with the locked name
-- B-0017 body updated with pointer to the naming doc
+- 081KQ0YZ80008QG0R0003GAYYN body updated with pointer to the naming doc
 
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing naming-decision doc found for
   this dashboard in `docs/DECISIONS/`, `docs/GLOSSARY.md`, or
-  `docs/research/frontier/`. The B-0017 body lists candidates
+  `docs/research/frontier/`. The 081KQ0YZ80008QG0R0003GAYYN body lists candidates
   but has no locked decision. No skill or memory file has a
   naming decision for this item.
 - [x] Dependency-restructure: no `depends_on` — this is a root
-  atom. All sibling rows B-0389–B-0395 carry reciprocal
-  `composes_with: [B-0388]` where the name is needed.
+  atom. All sibling rows 081KR50HA0008QG0R000TQKYGM–081KR50HA0008QG0R0019KYAAS carry reciprocal
+  `composes_with: [081KR50HA0008QG0R002DR44J1]` where the name is needed.
 
 ## Composes with
 
-- B-0017 (parent): naming-lock is the first milestone from "Done when"
-- B-0391 (downstream): GH Pages shell uses the locked name for title/slug
-- B-0394 (downstream): MVP dashboard uses the locked name
-- B-0389 through B-0395 (all siblings): locked name provides
+- 081KQ0YZ80008QG0R0003GAYYN (parent): naming-lock is the first milestone from "Done when"
+- 081KR50HA0008QG0R0036HGEJ5 (downstream): GH Pages shell uses the locked name for title/slug
+- 081KR50HA0008QG0R002NZENZJ (downstream): MVP dashboard uses the locked name
+- 081KR50HA0008QG0R000TQKYGM through 081KR50HA0008QG0R0019KYAAS (all siblings): locked name provides
   consistent vocabulary

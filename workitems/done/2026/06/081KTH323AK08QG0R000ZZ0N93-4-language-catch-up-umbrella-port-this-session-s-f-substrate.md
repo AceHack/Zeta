@@ -33,7 +33,7 @@ reference; all ports get **hex-in-JSON golden vectors** (`.claude/rules/no-binar
 | F# module (src/Core unless noted) | What | Port priority |
 |---|---|---|
 | `ZSetMerkle` | canonical Merkle-over-Z-set root | P1 (`081KTGYWCT7`) |
-| `Collation` + GSet/ZSet/IndexedZSet ordinal fix (B-0969) | binary/ordinal collation default | P1 (`081KTGYWCTT`) |
+| `Collation` + GSet/ZSet/IndexedZSet ordinal fix (081KT07NV0008QG0R001YDB73K) | binary/ordinal collation default | P1 (`081KTGYWCTT`) |
 | `SchemaEvolution` (+ registry) | migration algebra, down-direction, dump | P2 (`081KTH0HFZ8`) |
 | `ContentStore` | content-addressed single-instance COW store | NEW |
 | `DagFs` | multi-parent file tree + 2 edit modes | NEW |
@@ -59,5 +59,5 @@ BLAKE3 known-answer + ZSetMerkle roots + Debezium round-trip + collation ordinal
 
 ## Anchors
 
-- the per-module workitems (081KTGYWCT7 / 081KTGYWCTT / 081KTH0HFZ8) · B-0959 (4-oracle master checklist) ·
-  B-0969 (collation) · 081KTGTJC1Q (the store) · no-binary-in-proof-lineage (hex-in-JSON).
+- the per-module workitems (081KTGYWCT7 / 081KTGYWCTT / 081KTH0HFZ8) · 081KSXN940008QG0R003FCQ7WT (4-oracle master checklist) ·
+  081KT07NV0008QG0R001YDB73K (collation) · 081KTGTJC1Q (the store) · no-binary-in-proof-lineage (hex-in-JSON).

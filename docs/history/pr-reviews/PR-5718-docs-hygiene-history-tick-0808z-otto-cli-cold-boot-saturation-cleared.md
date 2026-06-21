@@ -35,13 +35,13 @@ Verified observations:
 
 - **Sentinel was empty** → re-armed `1593cd34` per catch-43 + `.claude/rules/tick-must-never-stop.md`
 - **dotgit-saturation cleared** (0 stuck git pack/maintenance/repack procs; recovers from the prior multi-day arc anchored at 13+ Extreme-tier readings 2026-05-23 → 2026-05-24)
-- **Substrate-engineering arc continues without operator presence**: B-0895 → B-0909 (9 PRs) landed on origin/main between prior shard and this tick — validates autonomous-loop substrate value
+- **Substrate-engineering arc continues without operator presence**: 081KSNY2Z0008QG0R002FX66H0 → 081KSNY2Z0008QG0R0003VAH0N (9 PRs) landed on origin/main between prior shard and this tick — validates autonomous-loop substrate value
 - **Otto-CLI open-PR queue: 0** (only Lior's lane has open work: #5629 + #5580, both DIRTY)
 - **Operator's primary checkout on peer Alexa branch** with 30+ deleted files: contested; not an agent-side cleanup target per `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`
 - **GraphQL Normal** (4948/5000); REST/core 4937/5000
 - **Counter-with-escalation**: brief-ack cycle #1; concrete-artifact reset via condition #3
 
-Substantive verified-observation shard rather than fabricated commentary on the already-comprehensive B-0895-B-0909 substrate cluster.
+Substantive verified-observation shard rather than fabricated commentary on the already-comprehensive 081KSNY2Z0008QG0R002FX66H0-081KSNY2Z0008QG0R0003VAH0N substrate cluster.
 
 ## Test plan
 

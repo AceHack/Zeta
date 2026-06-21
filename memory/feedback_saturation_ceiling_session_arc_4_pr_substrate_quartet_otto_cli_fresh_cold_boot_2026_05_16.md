@@ -16,7 +16,7 @@ A fresh-cold-boot Otto-CLI session firing via scheduled-task autonomous-loop DUR
 | Cycle 1 (06:43Z-06:51Z) | 8 min | Brief-acks 1-3, pure-git tier, counter reset via rate-reset |
 | Cycle 2 (06:58Z-07:18Z) | 20 min | 3 blocked attempts + 1 success → PR #3808 shipped (later closed) |
 | Cycle 3 (07:25Z-07:30Z) | 5 min | Pre-emptive decomposition at #4 → PR #3812 shipped |
-| Cycle 4 (07:38Z-07:40Z) | 2 min | Pre-emptive at #5 deep extreme cost-aware tier → B-0558 row branch pushed |
+| Cycle 4 (07:38Z-07:40Z) | 2 min | Pre-emptive at #5 deep extreme cost-aware tier → 081KRQ1AB0008QG0R001KQ9S4B row branch pushed |
 | Cycle 5 (07:46Z-07:56Z) | 10 min | Pure-git tier persists → meta-fallback PR #3818 shipped + 2 deferred PRs created post-reset (#3817, #3818) |
 | CI fix cycle (08:00Z-08:36Z) | 36 min | Diagnostics + fixes pushed for #3808, #3812, #3817 |
 | Final hold (08:36Z onward) | brief-acks 1-5 | Pure-git tier deep, named-wait on rate-reset 17→ |
@@ -27,7 +27,7 @@ A fresh-cold-boot Otto-CLI session firing via scheduled-task autonomous-loop DUR
 |---|---|---|
 | #3808 (CLOSED) | empirical evidence (tick shard) | substantively captured in #3818 |
 | #3812 | operational mitigations (rule body for sub-cases 1+2) | OPEN, fix pushed |
-| #3817 | structural-fix tracking (B-0558 worktree-pool primitive) | OPEN, DIRTY (rebase abandoned under contention) |
+| #3817 | structural-fix tracking (081KRQ1AB0008QG0R001KQ9S4B worktree-pool primitive) | OPEN, DIRTY (rebase abandoned under contention) |
 | #3818 | recursive meta-fallback (holding-discipline rule + sub-case 5 + pure-git tier compatibility) | **MERGED ✓** |
 
 ## NEW substrate discovered this session
@@ -38,8 +38,8 @@ A fresh-cold-boot Otto-CLI session firing via scheduled-task autonomous-loop DUR
 |---|---|---|
 | 1 | Existing-branch-name reuse → peer-WIP commit inheritance | uniquified name + git rev-parse pre-check (works) |
 | 2 | Concurrent-WIP-blocked switch | wait for WT-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on git worktree add | NONE; needs B-0530 mutex |
-| 4 | Pruned-sidetick race | NONE; needs worktree-pool primitive (B-0558) |
+| 3 | Pack-dir 081KRMEXM0008QG0R000X1PPGC race on git worktree add | NONE; needs 081KRMEXM0008QG0R000X1PPGC mutex |
+| 4 | Pruned-sidetick race | NONE; needs worktree-pool primitive (081KRQ1AB0008QG0R001KQ9S4B) |
 | **5** | **Peer-side destructive git operation discarding unstaged edits** | **commit immediately after Edit; don't rely on unstaged-modifications-follow-switch under saturation** |
 
 Sub-case 5 was discovered DURING authoring PR #3818 — the first authoring attempt was destroyed by peer Otto's destructive operation; re-application from conversation context shipped successfully.
@@ -90,10 +90,10 @@ When firing as fresh-cold-boot Otto-CLI scheduled-task autonomous-loop during pe
 
 - PR #3818 (merged: operational substrate in rule body)
 - PR #3812 (operational mitigations in claim-acquire rule)
-- PR #3817 (B-0558 worktree-pool primitive backlog row)
+- PR #3817 (081KRQ1AB0008QG0R001KQ9S4B worktree-pool primitive backlog row)
 - PR #3825 (peer's substrate-drift-catch session arc — different theme, complementary)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (saturation-ceiling sub-cases 1-4)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (counter discipline + cascade-saturation anchor + sub-case 5)
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` (rate-limit operational tiers)
-- B-0530 (cron-sentinel mutex — sub-case 3 structural fix)
-- B-0558 (worktree-pool primitive — sub-case 4 structural fix)
+- 081KRMEXM0008QG0R000X1PPGC (cron-sentinel mutex — sub-case 3 structural fix)
+- 081KRQ1AB0008QG0R001KQ9S4B (worktree-pool primitive — sub-case 4 structural fix)

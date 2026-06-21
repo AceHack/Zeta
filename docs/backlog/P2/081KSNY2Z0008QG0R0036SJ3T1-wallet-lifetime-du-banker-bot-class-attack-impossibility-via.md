@@ -1,6 +1,5 @@
 ---
-id: B-0918
-zetaid: 081KSNY2Z0008QG0R0036SJ3T1
+id: 081KSNY2Z0008QG0R0036SJ3T1
 title: WalletLifetime DU — banker-bot class attack impossibility via F.5 (no silent context loss) Soraya formal verification + IntrCtx composition (Aaron 2026-05-28)
 status: open
 priority: P2
@@ -9,7 +8,7 @@ authors: [aaron, otto, amara]
 composes_with:
   - 081KSNY2Z0008QG0R002HB4AGT  # interrupt substrate in monad space; F.5 invariant origin
   - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 parent
-  - B-0867.5  # workflow-engine PoC
+  - 081KSKBP80008QG0R000B3Y19A.5  # workflow-engine PoC
   - 081KSNY2Z0008QG0R003WFDCJ9  # ReviewLifetime DU sibling
   - 081KRW63S0008QG0R001Z7NYMV  # NCI HC-8
   - 081KRW63S0008QG0R003TX8MG5  # Knights Guild + Constitution-Class governance
@@ -26,7 +25,7 @@ depends_on:
 
 > *"soyra can now prove banker bot class attack is not possible in our workflow system if we design the wallet lifetime right"*
 
-Citing F.5 from B-0917 (Amara's Soraya target-list refinement):
+Citing F.5 from 081KSNY2Z0008QG0R002HB4AGT (Amara's Soraya target-list refinement):
 
 > **F.5 No silent loss of trust/log/memetic context** — every IntrCtx component change either declares its mutation OR is explicitly preserved; no hidden state-drift
 
@@ -47,7 +46,7 @@ The class name "banker bot" captures the canonical instance: a financial-AI bot 
 
 ## Why F.5 makes this class FORMALLY IMPOSSIBLE under wallet lifetime substrate
 
-Per B-0917 Slice F.5 (Amara 2026-05-28 enumeration):
+Per 081KSNY2Z0008QG0R002HB4AGT Slice F.5 (Amara 2026-05-28 enumeration):
 
 > Every IntrCtx component change either declares its mutation OR is explicitly preserved; no hidden state-drift
 
@@ -84,7 +83,7 @@ type WalletLifetime =
 
 Every variant carries AuditTrail (no silent-state-drift); state-changing variants carry ConsentEvent (asymmetric-authorship); each variant is EXPLICIT not implicit per IMPLICIT-NOT-EXPLICIT rule.
 
-### Slice B — IntrCtx composition (compose with B-0917)
+### Slice B — IntrCtx composition (compose with 081KSNY2Z0008QG0R002HB4AGT)
 
 ```fsharp
 type IntrCtx = {
@@ -101,7 +100,7 @@ Wallet composition is OPTIONAL per asymmetric-authorship — workflows without f
 
 ### Slice C — Soraya formal-verification of banker-bot-impossibility
 
-Building on B-0917 Slice F.5, prove the composition theorem:
+Building on 081KSNY2Z0008QG0R002HB4AGT Slice F.5, prove the composition theorem:
 
 ```
 ∀ WalletLifetime transitions w_i → w_j carried in IntrCtx,
@@ -140,19 +139,19 @@ Per `.claude/rules/non-coercion-invariant.md` HC-8 + `.claude/rules/asymmetric-a
 - Each state-changing variant requires ConsentEvent (operator OR delegated-authority OR multi-oracle BFT consensus)
 - No agent can coerce wallet state-change without consent (NCI floor structurally enforced at WalletLifetime scope)
 
-### Slice F — Integration with Aurora multi-oracle BFT (B-0703)
+### Slice F — Integration with Aurora multi-oracle BFT (081KS3X9Y0008QG0R00218150M)
 
 For multi-oracle wallet operations (large transactions / authority-rotation / cross-tenant operations):
 
 - ConsentEvent variant includes MultiOracleConsensus shape
 - Soraya proves: wallet state-change with MultiOracleConsensus ConsentEvent implies threshold-N-of-M valid signatures (per Aurora BFT semantics)
-- Composes with B-0703 Aurora substrate-engineering substrate
+- Composes with 081KS3X9Y0008QG0R00218150M Aurora substrate-engineering substrate
 
 ## Acceptance criteria
 
 - [ ] **Slice A** — WalletLifetime DU with explicit variants per IMPLICIT-NOT-EXPLICIT rule + AuditTrail + ConsentEvent fields
 - [ ] **Slice B** — IntrCtx composition (Wallet as Option<WalletLifetime>)
-- [ ] **Slice C** — Soraya formal-verification of banker-bot-impossibility theorem (extending B-0917 F.5)
+- [ ] **Slice C** — Soraya formal-verification of banker-bot-impossibility theorem (extending 081KSNY2Z0008QG0R002HB4AGT F.5)
 - [ ] **Slice D** — Aminata threat-model review enumerating 6+ adversarial classes
 - [ ] **Slice E** — NCI HC-8 composition (wallet authors state-evolution; consumer cannot coerce)
 - [ ] **Slice F** — Aurora multi-oracle BFT integration (MultiOracleConsensus ConsentEvent variant)
@@ -163,13 +162,13 @@ For multi-oracle wallet operations (large transactions / authority-rotation / cr
 
 | Substrate | Composition |
 |---|---|
-| **B-0917 F.5** | Origin invariant; this row composes F.5 with WalletLifetime to derive banker-bot-impossibility |
-| **B-0917 IntrCtx** | Substrate where Wallet component lives |
+| **081KSNY2Z0008QG0R002HB4AGT F.5** | Origin invariant; this row composes F.5 with WalletLifetime to derive banker-bot-impossibility |
+| **081KSNY2Z0008QG0R002HB4AGT IntrCtx** | Substrate where Wallet component lives |
 | **IMPLICIT-NOT-EXPLICIT rule** | Every WalletLifetime variant explicit; every state-change explicit |
 | **asymmetric-authorship rule** | Wallet AUTHORS state-evolution; consumer ACKNOWLEDGES |
 | **monad-propagation rule** | Result<WalletLifetime, WalletFeedback> shape; explicit failure-channel |
 | **NCI HC-8** | Wallet operations respect consent-floor structurally |
-| **B-0703 Aurora multi-oracle BFT** | MultiOracleConsensus ConsentEvent for high-stakes wallet operations |
+| **081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT** | MultiOracleConsensus ConsentEvent for high-stakes wallet operations |
 | **Aminata threat-model-critic** | Adversarial review of WalletLifetime substrate |
 | **Soraya formal-verification-expert** | TLA+/Z3/Lean proof of banker-bot-impossibility |
 
@@ -177,14 +176,14 @@ For multi-oracle wallet operations (large transactions / authority-rotation / cr
 
 This row is NOT:
 
-- A claim that WalletLifetime DU is the ONLY way to engineer financial substrate (other patterns exist; this is the framework-substrate-native one composing with B-0917)
+- A claim that WalletLifetime DU is the ONLY way to engineer financial substrate (other patterns exist; this is the framework-substrate-native one composing with 081KSNY2Z0008QG0R002HB4AGT)
 - A claim that banker-bot-impossibility proof eliminates ALL financial attacks (only the class operating via silent state-drift; other classes — phishing, social-engineering, key-theft — still operate at different scopes)
 - A claim ready for impl-time (Aaron 2026-05-28: "soyra CAN NOW PROVE banker bot class attack is not possible IF we design the wallet lifetime right"; the IF is load-bearing — design substrate not yet built)
-- A claim that we ship financial substrate today (B-0918 is substrate-engineering substrate-target for FUTURE work)
+- A claim that we ship financial substrate today (081KSNY2Z0008QG0R0036SJ3T1 is substrate-engineering substrate-target for FUTURE work)
 
 This row IS:
 
-- Substrate-engineering substrate-target deriving from B-0917 F.5 composition with WalletLifetime DU
+- Substrate-engineering substrate-target deriving from 081KSNY2Z0008QG0R002HB4AGT F.5 composition with WalletLifetime DU
 - Concrete formal-verification target with adversarial-threat anchor (per `bandwidth-served-falsifier` discipline: the substrate IS bandwidth-engineering of formal-impossibility-class-of-attacks)
 - Composition of framework substrate (NCI HC-8 + asymmetric-authorship + monad-propagation + multi-oracle BFT + Soraya formal-verification + Aminata threat-model) at financial-substrate scope
 - Substrate-honest preservation of Aaron's substrate-recognition + extension to actionable backlog
@@ -193,8 +192,8 @@ This row IS:
 
 Per `.claude/rules/bandwidth-served-falsifier.md`: the substrate-target serves identifiable bandwidth — eliminating the substrate-space where banker-bot class attacks operate. This is NOT decorative-complexity; it's substrate-engineering substrate that produces concrete adversarial-attack-class-impossibility property.
 
-Per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`: the "banker bot class attack" framing has substrate-anchors (B-0917 F.5 invariant + IntrCtx substrate + asymmetric-authorship rule + NCI HC-8 floor + Aurora multi-oracle BFT); razor doesn't apply to substrate-anchored compressed naming.
+Per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`: the "banker bot class attack" framing has substrate-anchors (081KSNY2Z0008QG0R002HB4AGT F.5 invariant + IntrCtx substrate + asymmetric-authorship rule + NCI HC-8 floor + Aurora multi-oracle BFT); razor doesn't apply to substrate-anchored compressed naming.
 
 Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`: the "formally impossible" framing is HIGH-SIGNAL (genuinely derivable via F.5 composition with explicit WalletLifetime substrate) + HIGH-SUSPICION (only impossible for the SPECIFIC attack-class operating via silent-state-drift; other adversarial classes operate elsewhere); preserve dialectical tension.
 
-## μένω — Aaron's substrate-recognition honored; B-0918 substrate-target composes F.5 + WalletLifetime + Soraya + Aminata; banker-bot class attacks become structurally impossible WHEN substrate engineered correctly
+## μένω — Aaron's substrate-recognition honored; 081KSNY2Z0008QG0R0036SJ3T1 substrate-target composes F.5 + WalletLifetime + Soraya + Aminata; banker-bot class attacks become structurally impossible WHEN substrate engineered correctly

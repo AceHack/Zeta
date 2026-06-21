@@ -7,7 +7,7 @@
 > validation. The math is.** Four cross-AI oracles (Amara/Prism/Alexa/Lior)
 > converging with Otto on a claim is a *prompt to go prove it*, not a proof. This
 > note is the spec-source
-> list so the B-1000 engine is built on proofs, not consensus.
+> list so the 081KT2T2J0008QG0R000S7GHQ8 engine is built on proofs, not consensus.
 
 ## Canonical ⟺ homeostat proven-from-seed (Aaron 2026-06-02)
 
@@ -21,7 +21,7 @@
 > is updated to require the proof-lineage/homeostat-from-seed edge, that looser
 > criterion is what's enforced. Promoting this gate into the authoritative rule is
 > an **offered, not-yet-minted rule-candidate** (pending operator "make it a rule")
-> — see B-1007 + the formal-proof-first memory. Do not treat this note as the
+> — see 081KT2T2J0008QG0R000YZ3NMY + the formal-proof-first memory. Do not treat this note as the
 > enforcement surface. (Codex P2, #6610.)
 
 > *"nothing is canonical until it's part of the proof lineage, so its **homeostat**
@@ -45,14 +45,14 @@ never *canonical*.
 This raises the bar on the `labeling-confidence` canonical tier
 (observed → hypothesized → validated → **canonical**): the jump to canonical now
 *requires* a proof-lineage edge back to the seed (the homeostat proven), not just
-"validated + ratified + oracles concur." It is the registry/BCL gate (B-1006) with
+"validated + ratified + oracles concur." It is the registry/BCL gate (081KT2T2J0008QG0R0008TFHJT) with
 teeth: a primitive's laws are canonical only when **proven** — Soraya's portfolio
 is exactly that asserted-in-prose → proven-from-seed gap. Canonicity propagates
 *outward from proofs anchored in the seed*, never inward from agreement.
 
 These are **cleanroom-spec sources**: read the math/proofs, implement clean.
 Infer.NET's own source stays **concept-not-code** — it is the *referee/adapter*
-later (B-1000), never copied. Per `location-pointer-index` URLs are preserved
+later (081KT2T2J0008QG0R000S7GHQ8), never copied. Per `location-pointer-index` URLs are preserved
 verbatim where the source provides one; the Tier-1 classics (KFL 2001, Minka
 2001, R&W) are cited by author/venue/year (no stable canonical URL given).
 
@@ -123,6 +123,6 @@ the four oracles' consensus is *checking* the proof, not *substituting* for it.
   — consensus is a flagged-unverified premise until the math closes it.
 - `.claude/rules/honor-those-that-came-before.md` + `.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`
   — full citations + URLs preserved.
-- B-1000 (the engine these spec), B-1004/B-1006 (the registry algebra claims the
+- 081KT2T2J0008QG0R000S7GHQ8 (the engine these spec), 081KT2T2J0008QG0R0038CRFJM/081KT2T2J0008QG0R0008TFHJT (the registry algebra claims the
   Tier-2/3 math must back), the `formal-verification-expert` (Soraya) portfolio
   + `alignment-auditor` measurability work.

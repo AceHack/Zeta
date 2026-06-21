@@ -1,6 +1,6 @@
 ---
 pr_number: 5873
-title: "feat(B-0904 Phase 2 Lane 2): compression-rate measurement substrate for GitHub-as-free-accelerator; 20 tests pass; live baseline 84% compression-ratio in last 24h (operator 2026-05-28 pick lane 2)"
+title: "feat(081KSNY2Z0008QG0R001JQABB4 Phase 2 Lane 2): compression-rate measurement substrate for GitHub-as-free-accelerator; 20 tests pass; live baseline 84% compression-ratio in last 24h (operator 2026-05-28 pick lane 2)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T16:41:01Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-28T17:30:22Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5873: feat(B-0904 Phase 2 Lane 2): compression-rate measurement substrate for GitHub-as-free-accelerator; 20 tests pass; live baseline 84% compression-ratio in last 24h (operator 2026-05-28 pick lane 2)
+# PR #5873: feat(081KSNY2Z0008QG0R001JQABB4 Phase 2 Lane 2): compression-rate measurement substrate for GitHub-as-free-accelerator; 20 tests pass; live baseline 84% compression-ratio in last 24h (operator 2026-05-28 pick lane 2)
 
 ## PR description
 
 Operator 2026-05-28 (shadow*) authorization to pick Lane 2 next.
 
-Ships Phase 2 of B-0904 substrate-engineering target: instrumentation to measure GitHub-as-free-accelerator compression-rate.
+Ships Phase 2 of 081KSNY2Z0008QG0R001JQABB4 substrate-engineering target: instrumentation to measure GitHub-as-free-accelerator compression-rate.
 
 ## What this measures
 
@@ -40,7 +40,7 @@ Ships Phase 2 of B-0904 substrate-engineering target: instrumentation to measure
 
 ## Composes with
 
-DST-omniscience (PR #5841) + Cayley-Dickson razor (PR #5843) + asymmetric-authorship (PR #5516) + monad-propagation (PR #5511) + B-0904 substrate.
+DST-omniscience (PR #5841) + Cayley-Dickson razor (PR #5843) + asymmetric-authorship (PR #5516) + monad-propagation (PR #5511) + 081KSNY2Z0008QG0R001JQABB4 substrate.
 
 Generated with Claude Code
 
@@ -50,7 +50,7 @@ Generated with Claude Code
 
 ## Pull request overview
 
-Adds a Bun/TypeScript measurement tool for B-0904 to compute GitHub PR compression metrics, plus unit tests for parsing, metric calculation, interpretation, and formatting.
+Adds a Bun/TypeScript measurement tool for 081KSNY2Z0008QG0R001JQABB4 to compute GitHub PR compression metrics, plus unit tests for parsing, metric calculation, interpretation, and formatting.
 
 **Changes:**
 - Adds `measure.ts` CLI for collecting PR state via `gh pr list` and emitting JSON metrics.

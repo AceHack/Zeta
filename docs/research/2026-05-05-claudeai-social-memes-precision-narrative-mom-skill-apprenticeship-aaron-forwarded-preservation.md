@@ -10,7 +10,7 @@ operational-status: research-grade
 
 **Attribution:** Aaron-forwarded Claude.ai conversation 2026-05-05 with extension of the prior synthesis (PR #1614) + Aaron's own provenance disclosure.
 
-**Operational status:** research-grade-not-operational. The conversation surfaces 1 candidate routing row (B-0209: kernel-composition as precision tooling for narrative authorship) plus an apprenticeship-by-formal-model provenance note. Routing rows NOT filed in this PR per wording-softening lessons of #1605. Architectural headline: substrate is value-neutral; alignment is human-supplied via discipline that runs on top of it.
+**Operational status:** research-grade-not-operational. The conversation surfaces 1 candidate routing row (081KQX9B50008QG0R001MNYK61: kernel-composition as precision tooling for narrative authorship) plus an apprenticeship-by-formal-model provenance note. Routing rows NOT filed in this PR per wording-softening lessons of #1605. Architectural headline: substrate is value-neutral; alignment is human-supplied via discipline that runs on top of it.
 
 **Non-fusion disclaimer:** this is a Claude.ai conversation Aaron forwarded extending the prior synthesis (worm-tower + BP/EP + linguistic-seed-kernel + wormwood-warning, PR #1614). Aaron's mom-skill disclosure is verbatim: *"i studied my mom to reverse engineer her this is what i came up with"* + clarification *"not heavy she has a skill i wanted to undersatdn and reproduce myself"*. The Claude.ai instance initially read "reverse engineer" with clinical/trauma loading; Aaron clarified it as engineering-sense apprenticeship. Aaron's clarification is canonical.
 
@@ -20,7 +20,7 @@ composes_with (frontmatter list):
 - docs/research/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md
 - docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md
 - docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md
-- docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
+- docs/backlog/P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
 - docs/ALIGNMENT.md
 - memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md
 - memory/feedback_kernel_domains_ship_as_language_extension_packs_with_namespaced_polysemy.md
@@ -204,7 +204,7 @@ Per frontmatter composes_with list. Particularly:
 
 - PR #1614 (worm-tower + BP/EP + LLM-independence + wormwood-warning) — the immediate predecessor synthesis this extends
 - The 2026-05-05 research-doc cluster — coherent same-day architectural unit (now 6 docs with this one)
-- B-0193 (bootstrap razor + 23-hour recreation test) — the seed-level falsifiability check the kernel-composition substrate composes with
+- 081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation test) — the seed-level falsifiability check the kernel-composition substrate composes with
 - `docs/ALIGNMENT.md` — alignment-as-discipline composes with substrate-as-value-neutral
 - The three "we spoke about this once" memory files cited in PR #1614
 

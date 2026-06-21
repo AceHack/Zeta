@@ -27,7 +27,7 @@
 
 ## Description
 
-Synthesis: an Ace file = Dockerfile-legible + Nix-reproducible (idempotent ensure #6959) + content-addressed per-layer cache in the Zeta FS (dedup across builds/OSes, #6925) + one universal file -> per-OS patch sets (B-0824 projection x B-0806 cross-OS). = the external-state closure (#6939) written down; DST-able via the test seam (#6958). Vision/design; reproducibility bounded by step hermeticity. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Synthesis: an Ace file = Dockerfile-legible + Nix-reproducible (idempotent ensure #6959) + content-addressed per-layer cache in the Zeta FS (dedup across builds/OSes, #6925) + one universal file -> per-OS patch sets (081KSGS9H0008QG0R0031PBNGA projection x 081KSGS9H0008QG0R001Y9FB62 cross-OS). = the external-state closure (#6939) written down; DST-able via the test seam (#6958). Vision/design; reproducibility bounded by step hermeticity. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

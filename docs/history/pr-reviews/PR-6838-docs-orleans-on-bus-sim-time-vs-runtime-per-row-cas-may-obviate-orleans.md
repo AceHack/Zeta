@@ -32,7 +32,7 @@
 
 - **Sim-time vs runtime:** the sequential pointer is sufficient under **DST** (single-threaded, deterministic, replayable) but **not at runtime** — a thread can fail mid read/write, and the bare cursor has no single-activation/recovery.
 - **Three options:** (1) Orleans (single-activation + recovery), (2) build consensus, (3) **per-row CAS** — the Zeta-aligned answer.
-- **Per-row CAS likely obviates Orleans:** a failed write never commits (row stays at prior value; retry via CAS) → **lock-free** (manifesto §2), no single-activation needed. Already our direction — **B-0962** (optimistic-CAS claim-locks, deadlock-free), **SlateDB** (CAS-manifest + `writer_epoch`), content-addressing (CAS = swap-iff-expected-hash).
+- **Per-row CAS likely obviates Orleans:** a failed write never commits (row stays at prior value; retry via CAS) → **lock-free** (manifesto §2), no single-activation needed. Already our direction — **081KT07NV0008QG0R002KWQS05** (optimistic-CAS claim-locks, deadlock-free), **SlateDB** (CAS-manifest + `writer_epoch`), content-addressing (CAS = swap-iff-expected-hash).
 - **Honest boundary:** per-row CAS covers single-row-state actors; **multi-row-atomic** turns still escalate to the serialized bus / saga. DST is the sim lens over both.
 
 Docs only.

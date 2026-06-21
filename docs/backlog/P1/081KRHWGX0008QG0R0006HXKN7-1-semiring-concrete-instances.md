@@ -1,6 +1,5 @@
 ---
-id: B-0367.1
-zetaid: 081KRHWGX0008QG0R0006HXKN7
+id: 081KRHWGX0008QG0R0006HXKN7
 parent: 081KR50HA0008QG0R000Z4XCPJ
 priority: P1
 status: open
@@ -16,7 +15,7 @@ type: feature
 tags: [algebra, uncertainty, semiring]
 ---
 
-# B-0367.1 — Semiring slice 1
+# 081KRHWGX0008QG0R0006HXKN7 — Semiring slice 1
 
-Extracted from B-0367 umbrella.
+Extracted from 081KR50HA0008QG0R000Z4XCPJ umbrella.
 Implement concrete `ISemiring<'W>` instances: `IntegerRing`, `TropicalSemiring`, `IntervalRing` — smoke tests, no ZSet changes.

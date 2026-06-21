@@ -1,6 +1,5 @@
 ---
-id: B-0195
-zetaid: 081KQTPYE0008QG0R0015SK08H
+id: 081KQTPYE0008QG0R0015SK08H
 priority: P2
 status: open
 title: DBSP chain rule formal-verification finding -- cross-check counter-example + verify Prop 3.5 reading + writeup decision (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [dbsp, formal-verification, lean, chain-rule, paper-writeup, research]
 type: friction-reducer
 ---
 
-# B-0195 -- DBSP chain rule formal-verification finding: cross-check + writeup decision
+# 081KQTPYE0008QG0R0015SK08H -- DBSP chain rule formal-verification finding: cross-check + writeup decision
 
 ## Source
 
@@ -167,7 +166,7 @@ the Lean file's framing.
 
 ## Composes with
 
-- **B-0189** -- Q# Bayesian BP/EP runtime research uses chain-
+- **081KQR4HQ0008QG0R002933PRR** -- Q# Bayesian BP/EP runtime research uses chain-
   rule reasoning at the operator-algebra layer; the DBSP paper's
   Prop 3.5 reading affects how chain-rule preconditions are
   formalized for the Bayesian-inference runtime.

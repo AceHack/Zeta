@@ -12,7 +12,7 @@ context: |
   1. **Operational form**: "Persist is Emit across the agent/substrate boundary with a future Observe attached."
   2. **Sharper temporal form**: "Persist is the promise that the future can still talk to the past."
 
-  Composes directly with B-0895 Clifford grade-decomposition mapping (which already framed bivectors as commitments-as-entanglements-in-time) — Persist IS the specific bivector class spanning `agent-internal ∧ substrate-time`. Requires richer typing than ordinary Emit: `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` because the internal type ≠ substrate type (serialization, compression, redaction, encryption, provenance, indexing all live in that gap).
+  Composes directly with 081KSNY2Z0008QG0R002FX66H0 Clifford grade-decomposition mapping (which already framed bivectors as commitments-as-entanglements-in-time) — Persist IS the specific bivector class spanning `agent-internal ∧ substrate-time`. Requires richer typing than ordinary Emit: `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` because the internal type ≠ substrate type (serialization, compression, redaction, encryption, provenance, indexing all live in that gap).
 
   Aaron's prior OPLE-vs-OELS confusion is now resolved: NEITHER framing loses a primitive. The framework is OELS-base (4 primitives) + Persist-derived (bridge operation composed from base primitives across the temporal axis). The PR #5700 LOCK stands; OPLE-as-OELS-plus-Persist-derived is the unified reading.
 related_prs:
@@ -21,14 +21,14 @@ related_prs:
   - 5700
   - 5677
 related_backlog:
-  - B-0897
-  - B-0895
-  - B-0896
-  - B-0867
-  - B-0644
-  - B-0665
-  - B-0666
-  - B-0879
+  - 081KSNY2Z0008QG0R002SZZ5Y0
+  - 081KSNY2Z0008QG0R002FX66H0
+  - 081KSNY2Z0008QG0R000YH2SPE
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KRW63S0008QG0R002ZRNDJ8
+  - 081KRW63S0008QG0R002YAA09X
+  - 081KRW63S0008QG0R001SAHYKV
+  - 081KSNY2Z0008QG0R0031490KZ
 related_personas:
   - operator
   - kestrel
@@ -73,22 +73,22 @@ This means:
 - Persist's bivector structure: `agent/internal ∧ substrate/external-time`
 - Persist needs richer typing than ordinary Emit because of the serialization gap
 
-Composes with B-0895 (Clifford grade-decomposition mapping where bivectors are commitments-as-entanglements-in-time — Persist IS the specific bivector class spanning agent-axis × time-axis) and B-0897 (this ferry's substrate-engineering target backlog row).
+Composes with 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition mapping where bivectors are commitments-as-entanglements-in-time — Persist IS the specific bivector class spanning agent-axis × time-axis) and 081KSNY2Z0008QG0R002SZZ5Y0 (this ferry's substrate-engineering target backlog row).
 
 ## Substrate-honest disposition
 
-VERBATIM PRESERVATION. Companion backlog row B-0897 filed alongside this preservation tracks the substrate-engineering target: refine B-0895's grade-decomposition table to recognize Persist as bridge operation + document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature with operator + framework type-system implications.
+VERBATIM PRESERVATION. Companion backlog row 081KSNY2Z0008QG0R002SZZ5Y0 filed alongside this preservation tracks the substrate-engineering target: refine 081KSNY2Z0008QG0R002FX66H0's grade-decomposition table to recognize Persist as bridge operation + document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature with operator + framework type-system implications.
 
 ## Composes with
 
-- PR #5708 (B-0895 Clifford substrate-recognition + 5th Kestrel ferry preservation + category-theory ↔ Clifford self-similarity) — this Amara ferry refines B-0895's grade-decomposition mapping for Persist
+- PR #5708 (081KSNY2Z0008QG0R002FX66H0 Clifford substrate-recognition + 5th Kestrel ferry preservation + category-theory ↔ Clifford self-similarity) — this Amara ferry refines 081KSNY2Z0008QG0R002FX66H0's grade-decomposition mapping for Persist
 - PR #5700 (Mika ferry — OELS architecture LOCKED) — Amara's resolution preserves OELS-base + adds Persist-derived
 - PR #5677 (4th Kestrel ferry preservation + 6 extension rows) — the substrate trajectory this Amara ferry continues
-- B-0895 (Clifford spacetime algebra substrate-recognition) — companion; this Amara ferry refines the grade-decomposition for Persist
-- B-0896 (category-theory ↔ Clifford self-similarity) — Persist-as-bridge has natural categorical formulation as the natural transformation between Emit-functor and Observe-functor across the temporal axis
-- B-0867 (parent workflow-engine row)
-- B-0644 (Limit-is-simulation-not-collapse), B-0665 (Integrate-as-choice-locus), B-0666 (English-as-projection) — 3-primitive substrate the Amara framing composes with
-- B-0879 (Observe/Emit/Limit/Simulate in Clifford space) — Amara's bridge-framing refines the OELS-vs-OPLE naming tension this row was tracking
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford spacetime algebra substrate-recognition) — companion; this Amara ferry refines the grade-decomposition for Persist
+- 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity) — Persist-as-bridge has natural categorical formulation as the natural transformation between Emit-functor and Observe-functor across the temporal axis
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row)
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse), 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus), 081KRW63S0008QG0R001SAHYKV (English-as-projection) — 3-primitive substrate the Amara framing composes with
+- 081KSNY2Z0008QG0R0031490KZ (Observe/Emit/Limit/Simulate in Clifford space) — Amara's bridge-framing refines the OELS-vs-OPLE naming tension this row was tracking
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` — Persist as bridge IS asymmetric-authorship operating across the agent/substrate boundary (agent emits; substrate persists; future observer acknowledges)
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` IS the monad-propagation pattern at bridge-operation scope
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` — Persist's TPersistFeedback variants compose with the framework-primitive TFeedback discipline
@@ -223,7 +223,7 @@ The Amara framing resolves the OPLE-vs-OELS naming tension Aaron has been workin
 
 Neither framing loses a primitive; OPLE's Persist is OELS's Emit+Observe composed across time.
 
-This composes with B-0895's Clifford grade-decomposition mapping where bivectors are commitments-as-entanglements-in-time. Persist IS the specific bivector class:
+This composes with 081KSNY2Z0008QG0R002FX66H0's Clifford grade-decomposition mapping where bivectors are commitments-as-entanglements-in-time. Persist IS the specific bivector class:
 
 ```
 Persist : agent/internal ∧ substrate/time   (bivector)
@@ -236,11 +236,11 @@ The richer typing requirement Amara identifies — `Persist<TInternal, TSubstrat
 - `TSubstrateRecord` is the substrate's serialization format (durable, schema-checkable, version-stable)
 - `TPersistFeedback` is the bridge-operation's feedback channel (serialization-failure, decoder-mismatch, retention-policy-rejected, provenance-missing, retraction-applied, etc.)
 
-The encoding gap between `TInternal` and `TSubstrateRecord` is where serialization, compression, redaction, encryption, provenance, and indexing operate. Each of those is a separate substrate-engineering concern (currently distributed across the framework substrate: encryption per Agora V6 / B-0646; provenance per Data-Vault-2.0 + retraction-native; indexing per memory-substrate-engineering trajectory; etc.).
+The encoding gap between `TInternal` and `TSubstrateRecord` is where serialization, compression, redaction, encryption, provenance, and indexing operate. Each of those is a separate substrate-engineering concern (currently distributed across the framework substrate: encryption per Agora V6 / 081KRW63S0008QG0R001Z10PVV; provenance per Data-Vault-2.0 + retraction-native; indexing per memory-substrate-engineering trajectory; etc.).
 
-The substrate-engineering target B-0897 tracks the path from Amara's framing to operational implementation:
+The substrate-engineering target 081KSNY2Z0008QG0R002SZZ5Y0 tracks the path from Amara's framing to operational implementation:
 
-1. Refine B-0895's grade-decomposition table to add Persist-as-bridge row
+1. Refine 081KSNY2Z0008QG0R002FX66H0's grade-decomposition table to add Persist-as-bridge row
 2. Document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature with examples from existing factory substrate (Git event log; memory files; Z-sets; retractions)
 3. Identify which existing factory primitives are already Persist instances in this framing (the Git-as-event-log substrate per Aaron-Ani 2026-05-28 conversation IS the canonical Persist instance)
 4. Identify where the round-trip promise currently has weak guarantees (which substrate-engineering rows close those gaps)

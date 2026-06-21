@@ -9,13 +9,13 @@
 // move should be big-picture awareness — mission, trajectory,
 // disciplines — and individual decisions flow downstream from that.
 //
-// This tool is the executable form of the prose rule (B-0117), the
+// This tool is the executable form of the prose rule (081KQDTYV0008QG0R0015BFCBH), the
 // same prose-rule -> executable-tool pattern that produced
 // `tools/github/poll-pr-gate.ts` from the poll-the-gate rule.
 //
 // Origin: peer-review recommendation 2026-04-30 (the cold-start
 // executable was named in a peer-AI review session) and reinforced
-// by the substrate-or-it-didn't-happen rule. Filed as B-0117 to
+// by the substrate-or-it-didn't-happen rule. Filed as 081KQDTYV0008QG0R0015BFCBH to
 // close the gap.
 //
 // Usage:

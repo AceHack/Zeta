@@ -31,12 +31,12 @@
 First buildable slice of the git-compatible fs backend (`081KTGTJC1Q`, greenlit easy-first). The Merkle **leaves ARE the retractable DBSP Z-set entries**, so the content-addressed root is a **pure function of the net Z-set state** — retraction is native (equal Z-sets → equal roots; `+w` then `−w` is a no-op on the root).
 
 - **`ZSetMerkle.rootWith`** (hash-parameterized) + **`root`** (default XxHash128). **BLAKE3** plugs in at the call site for the tamper-evident store (Aaron's decision; not yet a dependency) — swap the digest, not the algebra.
-- **Canonical order by encoded-key bytes (ordinal)** — deliberately NOT the Z-set's internal culture-**sensitive** `Comparer.Default` (B-0969); this is what makes the root cross-language **byte-lockable**. Length-prefixed injective leaf encoding; LE byte order fixed across languages.
+- **Canonical order by encoded-key bytes (ordinal)** — deliberately NOT the Z-set's internal culture-**sensitive** `Comparer.Default` (081KT07NV0008QG0R001YDB73K); this is what makes the root cross-language **byte-lockable**. Length-prefixed injective leaf encoding; LE byte order fixed across languages.
 
 ## Test — math leg, 7 green (FsCheck + xUnit)
 order-independence · retraction-no-op · determinism · `root`==`rootWith` · empty determinism · key/weight/support sensitivity · distinct-digest→distinct-root. Universal properties use `int` keys (clean total order); string UTF-8 encoding anchored in xUnit facts.
 
-> FsCheck note: with string keys the order-independence property *correctly* fails — `ZSet.ofSeq` sorts via culture-**sensitive** `Comparer.Default` (live B-0969 class), so forward-vs-reverse `ofSeq` of culture-colliding strings yields genuinely different net Z-sets. The Merkle is right; `ofSeq` is the issue (filing separately).
+> FsCheck note: with string keys the order-independence property *correctly* fails — `ZSet.ofSeq` sorts via culture-**sensitive** `Comparer.Default` (live 081KT07NV0008QG0R001YDB73K class), so forward-vs-reverse `ofSeq` of culture-colliding strings yields genuinely different net Z-sets. The Merkle is right; `ofSeq` is the issue (filing separately).
 
 ## Follow-up (parallelizable → Vera/Lior)
 4-lang golden vectors (C#/Rust/TS oracles) · BLAKE3 dependency · closure-table DAG · content-addressed store wiring.

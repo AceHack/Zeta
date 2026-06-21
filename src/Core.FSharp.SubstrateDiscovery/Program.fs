@@ -69,11 +69,11 @@ let main argv =
         0
 
     | [| "--biology" |] ->
-        // B-0045 smallest safe slice (inaugural): biology substrate stub.
+        // 081KQ3HBZ0008QG0R0012P9EBM smallest safe slice (inaugural): biology substrate stub.
         // Bounded one-step: wire the first subject into the discovery binary
         // as F# code (per "prefer F# code over docs"). Prints the retraction-
         // native biology entry point; no new deps, no doc changes.
-        Console.WriteLine "B-0045.2: biology inaugural substrate"
+        Console.WriteLine "081KDVG7PQ008QG0R000JT7Y0Y: biology inaugural substrate"
         Console.WriteLine "  autopoiesis (Maturana/Varela) + retraction-native homeostasis"
         Console.WriteLine "  Kauffman autocatalytic sets + Wolpert fate maps as operator seeds"
         Console.WriteLine "  Stage-1 scaffold wired to discovery tool (code, not doc)"

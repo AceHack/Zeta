@@ -9,10 +9,10 @@ composes_with:
   - docs/research/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md
   - docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md
   - docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md
-  - docs/backlog/P3/B-0052-retractable-emulators-design-question.md
-  - docs/backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
-  - docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md
-  - docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md
+  - docs/backlog/P3/081KQ3HBZ0008QG0R000FQ69NN-retractable-emulators-design-question.md
+  - docs/backlog/P2/081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
+  - docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md
+  - docs/backlog/P2/081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md
   - memory/user_dimensional_expansion_number_systems.md
   - memory/user_algebra_is_engineering.md
 ---
@@ -130,11 +130,11 @@ preservation BEFORE synthesis.
 > not geometrically. Pattern-equivariant cohomology composes
 > naturally with the NCA's pattern space.
 >
-> — B-0052 retraction semantics: damage-recovery training is
+> — 081KQ3HBZ0008QG0R000FQ69NN retraction semantics: damage-recovery training is
 > the canonical NCA training approach — explicitly retract-
 > and-replay. Direct architectural fit.
 >
-> — B-0026 embodiment: NCAs are minimum-Helen-Keller-channel
+> — 081KQ0YZ80008QG0R001WZ4JE8 embodiment: NCAs are minimum-Helen-Keller-channel
 > embodiment substrate (2D grid + local neighbors only) and
 > could provide the light embodiment axis cleanly.
 >
@@ -147,9 +147,9 @@ preservation BEFORE synthesis.
 > earns elevation. If it requires the conversation to make
 > sense, it's mirror-territory.
 >
-> File row recommendation for tomorrow: B-0201 — "Sakana
+> File row recommendation for tomorrow: 081KQTPYE0008QG0R00209Q9RT — "Sakana
 > Digital Ecosystems NCA + Stovold identity-stability NCA as
-> candidate substrate for B-0052 retraction semantics +
+> candidate substrate for 081KQ3HBZ0008QG0R000FQ69NN retraction semantics +
 > immune-system math composition; 4/4 hodl fit pre-validation;
 > engagement gate = clone the github.com/SakanaAI/digital-
 > ecosystem repo, run the local index.html, write one
@@ -193,8 +193,8 @@ Claude.ai instance flagged two issues:
 > eliminated tinygrad. The substrate-composition framing
 > (tinygrad-shape kernel layer for Zeta) still lands cleanly
 > on its own merits — it just isn't the paper-id. Clean cut
-> would be: B-0202 stays as substrate-engineering anchor,
-> B-0201 / paper-search row stays open with the candidate-
+> would be: 081KQTPYE0008QG0R002Y7X5KH stays as substrate-engineering anchor,
+> 081KQTPYE0008QG0R00209Q9RT / paper-search row stays open with the candidate-
 > eliminated count incremented and "rewatch the YouTube
 > videos" as next engagement step.
 >
@@ -282,11 +282,11 @@ identification.
 "fix(#1610): tinygrad is NOT the paper-id"). Net effect on
 substrate:
 
-- **B-0202** (tinygrad-as-kernel-layer engineering) stays as
+- **081KQTPYE0008QG0R002Y7X5KH** (tinygrad-as-kernel-layer engineering) stays as
   substrate-engineering anchor on its own merits — the
   composition claim (one symbolic IR → all hardware) lands
   cleanly regardless of paper-id resolution
-- **B-0201** (paper-search row) stays OPEN with eliminated-
+- **081KQTPYE0008QG0R00209Q9RT** (paper-search row) stays OPEN with eliminated-
   candidates count incremented; tinygrad joins CodeAct +
   Coconut + Symbolica + Speech ReaLLM in the eliminated-but-
   substrate-relevant pile
@@ -315,7 +315,7 @@ forced fit."*
 
 This is structurally significant. The four-property hodl
 ("ZFCv2") was originally derived as the binding-acceptance-
-test for NUMERIC TYPE candidates in B-0196. Finding it land
+test for NUMERIC TYPE candidates in 081KQTPYE0008QG0R001W237MZ. Finding it land
 4/4 by construction in NCA architecture is independent
 empirical evidence that the four-property invariant captures
 something architecturally fundamental, not just a numeric-
@@ -363,11 +363,11 @@ The Claude.ai instance named four cross-compositions:
    geometrically. Pattern-equivariant cohomology composes
    naturally with NCA pattern space.
 
-3. **B-0052 retraction semantics** — damage-recovery training
+3. **081KQ3HBZ0008QG0R000FQ69NN retraction semantics** — damage-recovery training
    IS the canonical NCA training approach. Explicitly retract-
    and-replay. Direct architectural fit.
 
-4. **B-0026 embodiment grounding** — NCAs are minimum-Helen-
+4. **081KQ0YZ80008QG0R001WZ4JE8 embodiment grounding** — NCAs are minimum-Helen-
    Keller-channel embodiment substrate (2D grid + local
    neighbors only). Could provide light embodiment axis
    cleanly. Composes with Aaron's same-day calibration that
@@ -415,7 +415,7 @@ The Claude.ai instance flagged this explicitly:
 > earns elevation. If it requires the conversation to make
 > sense, it's mirror-territory.
 
-Per B-0193 bootstrap-razor + the 23-hour recreation test
+Per 081KQTPYE0008QG0R00392KABJ bootstrap-razor + the 23-hour recreation test
 discipline: the NCA composition claim is research-grade-not-
 operational until validated by a fresh-repo clean recreation.
 The 4/4 hodl-fit-by-construction claim is theoretically clean
@@ -444,7 +444,7 @@ Per the wording-softening lessons of #1605 review, the
 following rows are NOT filed in this PR:
 
 - **Planned-B-NNNN (P3): Sakana NCA + Stovold identity-stability
-  as candidate substrate for B-0052 retraction semantics** —
+  as candidate substrate for 081KQ3HBZ0008QG0R000FQ69NN retraction semantics** —
   4/4 hodl fit pre-validation; one-hour engagement gate (clone
   repo, run index.html, observe flicker-mixing-attractor vs
   DBSP cycle dynamics)
@@ -452,7 +452,7 @@ following rows are NOT filed in this PR:
   preservation primitive** — own research thread per the
   Claude.ai instance's flag; composes with topological-
   invariants-not-geometry + bidirectional-alignment substrate
-- **Planned update to B-0201 (paper-search)**: increment
+- **Planned update to 081KQTPYE0008QG0R00209Q9RT (paper-search)**: increment
   eliminated-candidates count to include tinygrad UOp IR;
   add "rewatch the YouTube videos" as next engagement step
 - **Planned update to `memory/reference_aaron_ai_news_source_set_*`**:
@@ -478,13 +478,13 @@ following rows are NOT filed in this PR:
   synthesis + embodiment-thread-recursion + CodeAct/Coconut/
   source-set + tinygrad/TurboQuant/DeepSeek/Symbolica) — see
   composes_with frontmatter
-- B-0052 (retractable emulators design question) — direct
+- 081KQ3HBZ0008QG0R000FQ69NN (retractable emulators design question) — direct
   architectural fit with NCA damage-recovery training
-- B-0026 (embodiment grounding) — NCAs as minimum-channel
+- 081KQ0YZ80008QG0R001WZ4JE8 (embodiment grounding) — NCAs as minimum-channel
   embodiment substrate
-- B-0196 (BigInt + four-property hodl) — the binding-
+- 081KQTPYE0008QG0R001W237MZ (BigInt + four-property hodl) — the binding-
   acceptance-test framework that NCAs score 4/4 against
-- B-0152 (topological-quantum-emulation Bayesian inference)
+- 081KQGDBJ0008QG0R00280ZEV2 (topological-quantum-emulation Bayesian inference)
   — adjacent substrate the NCA dynamics could compose with
 - `memory/user_dimensional_expansion_number_systems.md` —
   date 2026-04-19 verified via git log Round 34 commit;
@@ -503,10 +503,10 @@ it's independent empirical evidence that the four-property
 invariant captures something architecturally fundamental
 beyond just numeric-type validation. The substrate composes
 with immune-system math + topological-invariants-not-geometry
-+ B-0052 retraction semantics + B-0026 light embodiment.
++ 081KQ3HBZ0008QG0R000FQ69NN retraction semantics + 081KQ0YZ80008QG0R001WZ4JE8 light embodiment.
 Strange attractors as identity-preservation primitive deserves
 its own thread. Same-tick corrections: tinygrad UOp IR is NOT
-the paper-id (Aaron disconfirmed; B-0202 substrate-engineering
+the paper-id (Aaron disconfirmed; 081KQTPYE0008QG0R002Y7X5KH substrate-engineering
 claim survives independently); '13 months later' arithmetic
 was off by an order of magnitude (actual gap ~16 days,
 relationship is contemporaneous-convergent not anticipated).

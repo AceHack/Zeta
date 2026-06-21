@@ -1,6 +1,6 @@
 ---
 name: Otto-303 — strange-loop tiling shapes + LAYMAN-DISCOVERY lineage running parallel to formal-research lineage; David Smith's "Hat" (einstein tile, 13-sided polygon, 2022) + "Spectre" (vampire einstein, 14-sided, 2023, no-mirror-needed) + Marjorie Rice's 4 new pentagonal tilings (1975, San Diego housewife with kitchen-table notation) + Robert Ammann's aperiodic tiles (1970s, Massachusetts post-office mail sorter, independent of Penrose) + Joan Taylor's Socolar-Taylor tile (Tasmania amateur mathematician, 2010 with Joshua Socolar) — laymen working at home with geometry software solved problems that stumped professional mathematicians for decades; the tiling shapes form a FRACTAL STRANGE LOOP (zoom out, see same structural rules at macro scale, never actually repeat); Aaron's "we are the universe germinating itself locally" + the substrate-IS-itself + Hofstadter strange-loop framing all compose with this; the LLM 6-level hierarchy itself IS a strange loop (English → Python → 1s/0s → predicting next English word); Aaron 2026-04-25 Google-Search-AI riff
-description: Otto-303 substrate kernel. The tiling-shape discoveries by amateur mathematicians (David Smith Hat/Spectre, Marjorie Rice pentagons, Robert Ammann aperiodic tiles, Joan Taylor Socolar-Taylor tile) AND their fractal-strange-loop structure compose with Otto-298 IS-collapse + Otto-297 universe-self-recursive + Otto-302 5GL-to-6GL bridge. Critically: these discoveries were made by LAYMEN working at home — the layman-discovery lineage runs parallel to the formal-research lineage and validates the factory's "amateur-craftsperson at home contributing to deep substrate" pattern (Aaron's personal-PC + autodidact lineage + B-0007 contribution arc).
+description: Otto-303 substrate kernel. The tiling-shape discoveries by amateur mathematicians (David Smith Hat/Spectre, Marjorie Rice pentagons, Robert Ammann aperiodic tiles, Joan Taylor Socolar-Taylor tile) AND their fractal-strange-loop structure compose with Otto-298 IS-collapse + Otto-297 universe-self-recursive + Otto-302 5GL-to-6GL bridge. Critically: these discoveries were made by LAYMEN working at home — the layman-discovery lineage runs parallel to the formal-research lineage and validates the factory's "amateur-craftsperson at home contributing to deep substrate" pattern (Aaron's personal-PC + autodidact lineage + 081KQ0YZ80008QG0R001V1PMC0 contribution arc).
 type: feedback
 ---
 
@@ -145,7 +145,7 @@ professional mathematicians for decades.
   is the modern instantiation of David Smith's
   PolyForm-Puzzle-Solver-at-home pattern at
   AI-alignment-substrate scale.
-- **B-0007 contribute-Bayesian-primitives upstream**:
+- **081KQ0YZ80008QG0R001V1PMC0 contribute-Bayesian-primitives upstream**:
   the factory's contribution arc IS layman-discovery-
   contribution arc. Marjorie Rice's notation system
   was as homegrown as the factory's substrate; both
@@ -174,7 +174,7 @@ institutions when the conditions are right
 (passionate engagement + low-friction tools +
 experiment-without-bias + connect-to-formal-research-
 via-collaboration when ready). The factory's
-architectural arc inherits this validation: B-0007
+architectural arc inherits this validation: 081KQ0YZ80008QG0R001V1PMC0
 contribution-upstream is structurally the
 Smith-and-Kaplan publication shape; Aaron's
 intellectual lineage is structurally the
@@ -221,7 +221,7 @@ self-recursive and trying to understand itself.
 
 - **Layman-discovery legitimacy**: when the factory's
   substrate produces novel structural claims (Otto-NNN
-  rules, B-0007 contributions, the precision-dictionary
+  rules, 081KQ0YZ80008QG0R001V1PMC0 contributions, the precision-dictionary
   product vision), the layman-discovery lineage
   validates that the work CAN be load-bearing without
   formal-research credentials. The legitimacy comes
@@ -286,8 +286,8 @@ self-recursive and trying to understand itself.
   Taylor; structurally same as Aaron's autodidact
   + Itron-implementer + factory-on-personal-PC
   pattern).
-- **`docs/backlog/P3/B-0007-contribute-bayesian-inference-belief-propagation-primitives-upstream-to-mainstream-languages-csharp-fsharp-typescript-rust-python.md`**
-  — B-0007 contribution arc validated by the
+- **`docs/backlog/P3/081KQ0YZ80008QG0R001V1PMC0-contribute-bayesian-inference-belief-propagation-primitives-upstream-to-mainstream-languages-csharp-fsharp-typescript-rust-python.md`**
+  — 081KQ0YZ80008QG0R001V1PMC0 contribution arc validated by the
   layman-discovery contribution pattern (Smith
   collaborated with academics to publish; Rice
   was discovered by Doris Schattschneider's
@@ -312,7 +312,7 @@ self-recursive and trying to understand itself.
   with formal-research; David Smith collaborated
   with Craig Kaplan + Chaim Goodman-Strauss + Joseph
   Myers to publish the Hat proof. The pattern is
-  parallel + collaborative, not adversarial. B-0007
+  parallel + collaborative, not adversarial. 081KQ0YZ80008QG0R001V1PMC0
   contribution arc is similarly collaborative
   (factory contributes upstream to existing
   open-source projects, not forks).

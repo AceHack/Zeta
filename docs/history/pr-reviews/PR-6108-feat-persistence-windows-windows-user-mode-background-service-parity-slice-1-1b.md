@@ -69,7 +69,7 @@ auto-deletes), flip `%LOCALAPPDATA%\zeta-otto-loop\loop-ref.txt` -> `main`. Otto
 this at merge.
 
 ### Follow-ups
-- Backlog row B-0940 (added to this PR).
+- Backlog row 081KSV2WD0008QG0R0028NY0MV (added to this PR).
 - Slice 2: install-graph `windows.ps1` (scoop-primary) + `install.sh` dispatch.
 - Slice 3: elevation/Windows-Hello parity doc.
 - Git bus (Zeta-ID-keyed directed-message/claim channel) — next slice.

@@ -28,7 +28,7 @@ bug / design-question / substrate-engineering-suggestion / naming-improvement / 
 
 ## Composes with
 
-- B-0867.20 ReviewLifetime (PR #5758; receiving-side; sibling)
+- 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (PR #5758; receiving-side; sibling)
 - AutoLoopLifetime (PR #5805; will integrate)
 - fighting-past-self-vs-peer-agent + asymmetric-authorship + honor-those-that-came-before + grep-substrate-anchors
 

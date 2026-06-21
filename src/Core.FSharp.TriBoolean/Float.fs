@@ -1,6 +1,6 @@
 namespace Zeta.Core.FSharp.TriBoolean
 
-/// Tri-boolean floating point -- biased-exponent decoder (B-0944 slice 5 pt2, F# parity oracle).
+/// Tri-boolean floating point -- biased-exponent decoder (081KSV2WD0008QG0R00051XS0N slice 5 pt2, F# parity oracle).
 ///
 /// Mirrors the TS distribution surface (src/Core.TypeScript/tri-boolean-float) with the RATIFIED
 /// biased-exponent decoder. The middle field decodes the ends (middle-out, self-describing):

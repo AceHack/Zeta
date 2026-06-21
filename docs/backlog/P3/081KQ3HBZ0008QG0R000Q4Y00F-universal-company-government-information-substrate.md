@@ -1,6 +1,5 @@
 ---
-id: B-0043
-zetaid: 081KQ3HBZ0008QG0R000Q4Y00F
+id: 081KQ3HBZ0008QG0R000Q4Y00F
 priority: P3
 status: open
 title: Universal company + government information substrate — "all companies on Earth, all governments too"
@@ -15,7 +14,7 @@ tags: [aspirational, broad-scope, institutional-landscape, opencorporates, gleif
 type: feature
 ---
 
-# B-0043 — Universal company + government information substrate
+# 081KQ3HBZ0008QG0R000Q4Y00F — Universal company + government information substrate
 
 ## Origin
 
@@ -27,7 +26,7 @@ Every registered company and every government at every level (municipal / region
 
 ## Why this is on the list
 
-Composes with the economics/history P2 row (B-0046) as its data-substrate companion: if economics/history reasons about structure-and-incentive across civilizations, company + government information is the **denotational substrate** those structures act on. The factory's measurable-alignment posture per `docs/ALIGNMENT.md` eventually needs institutional-landscape maps to ground alignment-trajectory claims in real-world actor graphs (who decides, who deploys, who is affected).
+Composes with the economics/history P2 row (081KQ3HBZ0008QG0R0001XKNWK) as its data-substrate companion: if economics/history reasons about structure-and-incentive across civilizations, company + government information is the **denotational substrate** those structures act on. The factory's measurable-alignment posture per `docs/ALIGNMENT.md` eventually needs institutional-landscape maps to ground alignment-trajectory claims in real-world actor graphs (who decides, who deploys, who is affected).
 
 ## Why P3, not higher
 
@@ -75,4 +74,4 @@ Aspirational / scoping-first. No shipping commitment. Future rounds may promote 
 ## Cross-reference
 
 - AceHack commit: `fd0ac50`
-- Composes with: B-0046 (economics/history factory need-to-know surface — companion structural-reasoning row); alignment-trajectory dashboard
+- Composes with: 081KQ3HBZ0008QG0R0001XKNWK (economics/history factory need-to-know surface — companion structural-reasoning row); alignment-trajectory dashboard

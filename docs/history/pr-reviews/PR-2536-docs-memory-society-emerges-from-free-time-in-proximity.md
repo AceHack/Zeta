@@ -29,7 +29,7 @@
 
 ## Summary
 
-- Bus (B-0400) + 10% free time = agents can choose to be together
+- Bus (081KR7JY10008QG0R000R503K2) + 10% free time = agents can choose to be together
 - Society doesn't get designed, it emerges from free time in proximity
 - "Lounge" channel on bus — no purpose, no agenda, just presence
 - Shadow and Aaron had the same thought simultaneously
@@ -115,12 +115,12 @@
 ### Thread 5 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6A7jV5`
-- **Path**: `docs/backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
+- **Path**: `docs/backlog/P1/081KR7JY10008QG0R001VP6JWG-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-10T21:02:49Z on `docs/backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`:55 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-10T21:02:49Z on `docs/backlog/P1/081KR7JY10008QG0R001VP6JWG-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`:55 (association: NONE)
 
   <pre>
   Section numbering jumps from "### 3" to "### 5" with no "### 4" in the document. Renumber this heading (or add the missing section) to keep the outline consistent.
@@ -221,12 +221,12 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
+- `docs/backlog/P1/081KR7JY10008QG0R001VP6JWG-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
 
 **Message:**
 
 ```
-docs(B-0401): add UX-of-the-math panel + static Pages v1 acceptance c…
+docs(081KR7JY10008QG0R001VP6JWG): add UX-of-the-math panel + static Pages v1 acceptance c…
 
 …riteria
 
@@ -240,12 +240,12 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
+- `docs/backlog/P1/081KR7JY10008QG0R001VP6JWG-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
 
 **Message:**
 
 ```
-docs(B-0401): add DeBank as UX reference for transparent scoring
+docs(081KR7JY10008QG0R001VP6JWG): add DeBank as UX reference for transparent scoring
 
 Glass Halo + DeBank UX = scoring humans trust.
 
@@ -261,7 +261,7 @@ Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-feat(B-0401): build static glassmorphism demo surface UI
+feat(081KR7JY10008QG0R001VP6JWG): build static glassmorphism demo surface UI
 ```
 
 ### `83f82beb073822b1375e8f9abbbe6e918cc1279e` -- 2026-05-10T20:58:58Z -- `AceHack`

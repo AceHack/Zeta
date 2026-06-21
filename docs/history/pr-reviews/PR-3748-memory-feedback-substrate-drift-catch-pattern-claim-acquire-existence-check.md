@@ -29,7 +29,7 @@
 
 ## Summary
 
-- Memory file documenting the substrate-drift-catch pattern that emerged across 4 catches in the 2026-05-16T04:15Z–04:51Z session: B-0506 ([#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733)), B-0528 ([#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743)), B-0530 ([#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737)), B-0535 ([#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742), peer Otto-CLI).
+- Memory file documenting the substrate-drift-catch pattern that emerged across 4 catches in the 2026-05-16T04:15Z–04:51Z session: 081KRHWGX0008QG0R002DPG02X ([#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733)), 081KRMEXM0008QG0R000T0A28T ([#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743)), 081KRMEXM0008QG0R000X1PPGC ([#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737)), 081KRMEXM0008QG0R000HHAG77 ([#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742), peer Otto-CLI).
 - The pattern extends [`.claude/rules/backlog-item-start-gate.md`](.claude/rules/backlog-item-start-gate.md) with a zero-th step: existence-check artifact paths BEFORE writing any implementation. Cost ~3 seconds; saves the entire tick when work has shipped.
 - Cross-surface convergence noted (both Otto-CLI surfaces arrived at the pattern without coordination).
 - Two failure modes from the discovery session also captured (Lior `.git/index.lock` race; multi-Otto HEAD desync).
@@ -138,7 +138,7 @@ memory(feedback): substrate-drift-catch pattern (claim acquire + exis…
 …tence-check)
 
 Four-catch empirical evidence from 2026-05-16T04:15Z–04:51Z session
-(B-0506, B-0528, B-0530, B-0535 across two Otto-CLI surfaces).
+(081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000T0A28T, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R000HHAG77 across two Otto-CLI surfaces).
 
 The pattern extends backlog-item-start-gate with a zero-th step:
 run existence-check on artifact paths BEFORE writing any

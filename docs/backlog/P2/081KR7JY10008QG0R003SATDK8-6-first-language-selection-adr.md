@@ -1,9 +1,8 @@
 ---
-id: B-0004.6
-zetaid: 081KR7JY10008QG0R003SATDK8
+id: 081KR7JY10008QG0R003SATDK8
 priority: P2
 status: open
-title: "B-0004.6 — First language selection ADR: evidence-based pick of pilot language + community outreach plan"
+title: "081KR7JY10008QG0R003SATDK8 — First language selection ADR: evidence-based pick of pilot language + community outreach plan"
 created: 2026-05-10
 last_updated: 2026-05-10
 parent: 081KQ0YZ80008QG0R002HWBHKJ
@@ -14,16 +13,16 @@ effort: XS
 decomposition: atomic
 ---
 
-# B-0004.6 — First language selection ADR
+# 081KR7JY10008QG0R003SATDK8 — First language selection ADR
 
-**Slice of:** [B-0004](B-0004-translate-repo-to-other-human-languages.md)  
-**Depends on:** B-0004.2 (anchor set tells us how much precision the translation must preserve, which affects language complexity)
+**Slice of:** [081KQ0YZ80008QG0R002HWBHKJ](081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md)  
+**Depends on:** 081KR50HA0008QG0R002TN3JX2 (anchor set tells us how much precision the translation must preserve, which affects language complexity)
 
 ## What
 
 Produce `docs/DECISIONS/ADR-i18n-first-language-YYYYMMDD.md` documenting:
 
-1. **Language candidate evaluation** — score the 14 candidate languages from B-0004's initial set against:
+1. **Language candidate evaluation** — score the 14 candidate languages from 081KQ0YZ80008QG0R002HWBHKJ's initial set against:
    - Native-speaker population size (absolute reach).
    - Existing AI/F#/OSS community size in that language.
    - Structural distance from English (affects translation error rate for precision terms).
@@ -51,5 +50,5 @@ Language selection affects everything downstream (tooling character sets, right-
 ## Out of scope
 
 - Actually posting to GitHub Discussions (requires maintainer sign-off per risky-action rule).
-- Second language selection (B-0004.12 handles subsequent languages after pilot validates the process).
-- Translation work itself (B-0004.7 pilot).
+- Second language selection (081KR7JY10008QG0R00016GT9R handles subsequent languages after pilot validates the process).
+- Translation work itself (081KR7JY10008QG0R0022YWDVZ pilot).

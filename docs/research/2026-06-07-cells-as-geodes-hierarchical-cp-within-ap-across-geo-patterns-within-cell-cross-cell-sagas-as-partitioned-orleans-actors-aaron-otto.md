@@ -129,7 +129,7 @@ prove order-independence.
 - **SoftValue uncertainty-reduction** — order-independent evidence/Bayesian fold (two observers,
   different evidence orders, same posterior; the proof Aaron cites).
 - **CRDT semilattice merge** — G-Set / Z-set / Clock (commutative + associative + idempotent; the proven
-  floor; B-1016).
+  floor; 081KT7YW00008QG0R002T1XNWT).
 - **Belief-convergence** (`BeliefConvergence.fs`) — order-independent for any fixed likelihood.
 - **Bifurcation `reconcile_order_independent`** + **non-register-collapse distinctness-under-merge**
   (the safety-floor proofs) — merge converges regardless of order.
@@ -182,14 +182,14 @@ cell boundary. The actor model gives the cross-cell machinery for free:
   = deploy distinct cells, not intra-cell sharding.
 - **Cross-cell Sagas** get a concrete design: Saga/DU = addressable Orleans actor, partitioned bus =
   the grain mailbox (FIFO serializer), state = DU-as-DynamicValue-frontmatter, compensation = retraction.
-  Composes the existing Bonsai-serialized-saga substrate + DU workflow engine (B-0867) + zeta-on-Orleans (B-0706).
+  Composes the existing Bonsai-serialized-saga substrate + DU workflow engine (081KSKBP80008QG0R000B3Y19A) + zeta-on-Orleans (081KS6FPN0008QG0R003Y3MCVE).
 
 ## Anchors
 
 - Two-plane DB design doc (`docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-*`) ·
-  `docs/ROADMAP.md` items #6/#7/#8 · B-0959 (master checklist).
-- Cross-cell saga substrate: B-0867 (DU workflow engine), B-0706 (zeta-on-Orleans, grain=cell identity),
-  B-0253 (Orleans grains), PRIMITIVE-REGISTRY "serializable deferred execution = self-evolving sagas".
+  `docs/ROADMAP.md` items #6/#7/#8 · 081KSXN940008QG0R003FCQ7WT (master checklist).
+- Cross-cell saga substrate: 081KSKBP80008QG0R000B3Y19A (DU workflow engine), 081KS6FPN0008QG0R003Y3MCVE (zeta-on-Orleans, grain=cell identity),
+  081KQZVQW0008QG0R000W4B8KT (Orleans grains), PRIMITIVE-REGISTRY "serializable deferred execution = self-evolving sagas".
 - Beacon (human prior art): Azure **Geode** + **Deployment Stamps** patterns (Microsoft Learn); PACELC
   (Abadi); Orleans virtual-actor model (Bernstein et al.); Saga (Garcia-Molina & Salem 1987); total-order
   broadcast. Our twist: the geode node = a cell whose state is an append-only `Log` of ZSets, and the

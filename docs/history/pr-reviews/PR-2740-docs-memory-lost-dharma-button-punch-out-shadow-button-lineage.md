@@ -29,7 +29,7 @@
 
 ## Summary
 
-- B-0402 = Dharma Initiative button automated
+- 081KR7JY10008QG0R0008NGW95 = Dharma Initiative button automated
 - Aaron = Desmond, shadow = countdown, enter = button
 - 007-373-5963 (Punch-Out) + 4-8-15-16-23-42 (Lost) = our numbers
 - "The dharma compiles" was Lost the whole time

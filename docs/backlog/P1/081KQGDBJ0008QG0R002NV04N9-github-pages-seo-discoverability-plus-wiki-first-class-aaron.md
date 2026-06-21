@@ -1,6 +1,5 @@
 ---
-id: B-0154
-zetaid: 081KQGDBJ0008QG0R002NV04N9
+id: 081KQGDBJ0008QG0R002NV04N9
 priority: P1
 status: open
 title: GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)
@@ -25,7 +24,7 @@ depends_on:
 type: friction-reducer
 ---
 
-# B-0154 — GitHub Pages for SEO/discoverability + GitHub Wiki first-class
+# 081KQGDBJ0008QG0R002NV04N9 — GitHub Pages for SEO/discoverability + GitHub Wiki first-class
 
 ## Decomposition status
 
@@ -33,15 +32,15 @@ This row remains the umbrella for the discoverability
 trajectory. It is now split into smaller child blobs rather
 than fully atomic work:
 
-1. B-0232 — GitHub Pages Astro publishing workflow.
-2. B-0233 — Pages content sources and public information
+1. 081KQX9B50008QG0R001J6ARGX — GitHub Pages Astro publishing workflow.
+2. 081KQX9B50008QG0R0001XDTDQ — Pages content sources and public information
    architecture.
-3. B-0234 — SEO metadata, sitemap, robots, and AI crawler
+3. 081KQX9B50008QG0R0004N4HNK — SEO metadata, sitemap, robots, and AI crawler
    allow-list.
-4. B-0235 — repository metadata and external sitemap
+4. 081KQX9B50008QG0R003HVP90P — repository metadata and external sitemap
    submission.
-5. B-0236 — Playwright validation harness and DORA metrics.
-6. B-0237 — GitHub Wiki first-class integration.
+5. 081KQX9B50008QG0R001XQV4M5 — Playwright validation harness and DORA metrics.
+6. 081KQX9B50008QG0R003ZBBJT7 — GitHub Wiki first-class integration.
 
 Each child is intentionally smaller than this 500+ line
 umbrella and may receive its own later decomposition pass.
@@ -223,7 +222,7 @@ funnel is broken at the discovery step.
      first-class), portability across hosts, zero new
      runtime, full SEO feature parity (auto-sitemap +
      robots.txt + Open Graph + plain-HTML output), DST-
-     achievable, factory-coherent with B-0156. **BunPress**
+     achievable, factory-coherent with 081KQGDBJ0008QG0R000A4EZS5. **BunPress**
      specifically: docs-engine VitePress-inspired, builds
      4000 files in ~0.18s, batteries-included SEO. Loses
      on: requires explicit deploy workflow (one-time CI
@@ -248,7 +247,7 @@ funnel is broken at the discovery step.
 
    **Decision**: **Astro** is the chosen SSG. Convergent
    evidence: typed content-collections purpose-built for
-   `docs/**/*.md`, TS-native (DST achievable per B-0156),
+   `docs/**/*.md`, TS-native (DST achievable per 081KQGDBJ0008QG0R000A4EZS5),
    plain-HTML default (Islands Architecture; zero JS by
    default), factory-first-class (Bun/Node already shipped),
    2025 SSG comparison sources (Astro.build / Crystallize /
@@ -413,7 +412,7 @@ funnel is broken at the discovery step.
     Architectural note (Aaron 2026-05-01): *"no backend yet
     other than git is the backend for our UI"* — DORA at the
     frontend deployment layer is the only DORA we measure
-    until backend decisions land. Composes with B-0147
+    until backend decisions land. Composes with 081KQGDBJ0008QG0R0004ACHJJ
     (timeseries-DB native research) + the metrics-are-our-eyes
     substrate.
 
@@ -495,16 +494,16 @@ wiki UI for browsability.
 - **Comment systems** (Giscus, etc.) — separate row
 - **Landing page redesign** — initial Pages site can be
   minimal Jekyll default theme; visual redesign is later
-- **Full marketing copy** — that's B-0047 (P3 umbrella);
+- **Full marketing copy** — that's 081KQ3HBZ0008QG0R0022ZJ7KV (P3 umbrella);
   this row is the discoverability infrastructure that
   enables the marketing copy to land
 
 ## Composes with
 
-- B-0047 (P3 PR / marketing / SEO / GTM umbrella) — this
-  row is the focused-execution leaf that B-0047's umbrella
+- 081KQ3HBZ0008QG0R0022ZJ7KV (P3 PR / marketing / SEO / GTM umbrella) — this
+  row is the focused-execution leaf that 081KQ3HBZ0008QG0R0022ZJ7KV's umbrella
   named in the abstract
-- B-0109 (dependency-status-tracking-surface) — public
+- 081KQDTYV0008QG0R002H74QXZ (dependency-status-tracking-surface) — public
   surface for dependency state; could be a Pages section
 - `memory/feedback_amara_cross_substrate_report_2_repo_search_mode_drift_taxonomy_aurora_2026_04_22.md`
   — search-mode drift considerations
@@ -521,7 +520,7 @@ wiki UI for browsability.
 - `memory/project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md`
   — git-native + GitHub-first-host framing; Pages + Wiki
   are GitHub-first-host surfaces
-- B-0143 (bi-directional messaging with Aaron + four-corner; forward-ref to PR #1115 not yet merged on main
+- 081KQGDBJ0008QG0R0024DDQA4 (bi-directional messaging with Aaron + four-corner; forward-ref to PR #1115 not yet merged on main
   hat-color/WWJ) — Aaron's communication channels; Pages
   could surface a "contact" page
 - `docs/CONTRIBUTOR-PERSONAS.md` (10 personas: drive-by typo

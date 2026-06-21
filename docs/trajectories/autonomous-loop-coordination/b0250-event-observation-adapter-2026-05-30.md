@@ -1,9 +1,9 @@
-# B-0250 Event Observation Adapter Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Event Observation Adapter Receipt - 2026-05-30
 
 ## Scope
 
 This packet wires the first real factory event observation source into the
-B-0250 coincidence detector. The source is merged PR metadata from GitHub,
+081KQZVQW0008QG0R001FG05RZ coincidence detector. The source is merged PR metadata from GitHub,
 which is already a required factory coordination surface and does not require a
 new daemon, queue, or local broadcast dependency.
 
@@ -33,6 +33,6 @@ their lane trajectory; unclassified branches keep their branch name under an
 
 ## Follow-Up
 
-The next B-0250 packet can add a second event source, such as loop-run receipts
+The next 081KQZVQW0008QG0R001FG05RZ packet can add a second event source, such as loop-run receipts
 or trajectory receipt commit times, then compare coincidence signals across
 both observation streams.

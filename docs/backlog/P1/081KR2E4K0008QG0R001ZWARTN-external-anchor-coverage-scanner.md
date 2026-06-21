@@ -1,6 +1,5 @@
 ---
-id: B-0311
-zetaid: 081KR2E4K0008QG0R001ZWARTN
+id: 081KR2E4K0008QG0R001ZWARTN
 priority: P1
 status: closed
 title: "External-anchor coverage scanner — per-concept anchor presence/absence audit"
@@ -18,7 +17,7 @@ type: friction-reducer
 # External-anchor coverage scanner
 
 Build `tools/alignment/audit_external_anchors.ts` — given
-the concept registry from B-0310, scans the substrate surface
+the concept registry from 081KR2E4K0008QG0R003DS2XHJ, scans the substrate surface
 where each concept lives and extracts existing external anchor
 URLs (papers, RFCs, blog posts, Stack Overflow / Stack Exchange
 threads, conference talks). Produces a coverage report mapping
@@ -27,7 +26,7 @@ marker.
 
 ## How it works
 
-1. Load the concept registry (from B-0310 tool output or
+1. Load the concept registry (from 081KR2E4K0008QG0R003DS2XHJ tool output or
    inline extraction).
 2. For each concept, locate its definition section in the
    source surface.

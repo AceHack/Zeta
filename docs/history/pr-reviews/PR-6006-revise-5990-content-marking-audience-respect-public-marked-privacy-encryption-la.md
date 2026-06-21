@@ -31,7 +31,7 @@ Corrects PR #5990's gitignore-private approach per the operator's 2026-05-29 mod
 
 - **No gitignored private folders** — gitignore is anti-glass-halo (opaque), not-lightlike (lost on crash), an unbudgeted dark area.
 - **Everything public + marked** (audience-respect): `content_warnings` + `information_hazard` type×strength. Marking is how a reader chooses what to read in an all-public world.
-- **Privacy = encryption lane** (B-0840 + B-0646 budget): committed-but-key-gated = lightlike-indexed + budgeted. Never gitignore.
+- **Privacy = encryption lane** (081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV budget): committed-but-key-gated = lightlike-indexed + budgeted. Never gitignore.
 - **Kid-safety = downstream kid-safe *distribution*** (filtered artifact), not repo censorship (GitHub-account liability + code-as-speech).
 - **Carve-out:** working bystander-harm payload → encryption-lane or uncreated, not rushed. The conversation about it is public-marked.
 

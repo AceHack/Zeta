@@ -341,11 +341,11 @@ Operator backpressure-check at Otto-CLI scope (NOT directed at Kestrel; this is 
 | Existing substrate | Composition with 7th ferry |
 |---|---|
 | 5th + 6th Kestrel ferries (2026-05-28) | Direct continuation — 7th extends the traveler-Clifford-categorical foundation into physical substrate (FPGAs + Landauer-limit) |
-| B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Cl(p,q) hardware-implementation target — Kestrel notes Cl(3,0) / Cl(4,0) fit commodity FPGAs |
-| B-0896 (categorical-Clifford self-similarity) | Categorical structures map to FPGA dataflow per Kestrel Turn 21 |
-| B-0428 (F# fork for AI safety with HKT over Clifford) | F# substrate Kestrel Turn 17 engages explicitly (discriminated unions / computation expressions / type providers / F* / FsCheck / units of measure) |
-| B-0905 (Landauer-limit physics-economics) | Direct anchor — Kestrel Turn 19 develops the agents-forgetting-root-axioms → thermal-noise framing operationally |
-| B-0906 (encryption-thermal-cost two-axis classification) | Composes with Landauer-bounded computation framing at encryption-substrate scope |
+| 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Cl(p,q) hardware-implementation target — Kestrel notes Cl(3,0) / Cl(4,0) fit commodity FPGAs |
+| 081KSNY2Z0008QG0R000YH2SPE (categorical-Clifford self-similarity) | Categorical structures map to FPGA dataflow per Kestrel Turn 21 |
+| 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford) | F# substrate Kestrel Turn 17 engages explicitly (discriminated unions / computation expressions / type providers / F* / FsCheck / units of measure) |
+| 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics) | Direct anchor — Kestrel Turn 19 develops the agents-forgetting-root-axioms → thermal-noise framing operationally |
+| 081KSNY2Z0008QG0R001A431CN (encryption-thermal-cost two-axis classification) | Composes with Landauer-bounded computation framing at encryption-substrate scope |
 | `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` | F# compiler IS one of the formal-analysis tools (asymmetric-critic at type-level) |
 | `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` | Four-corner ownership Kestrel Turn 17 cites as "implicitly functorial — preserves structure across function boundaries" |
 | `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` | Monad pattern Kestrel Turn 17 names as natural F# instantiation |
@@ -414,7 +414,7 @@ This ferry is research-direction substrate. It:
 - Does NOT prescribe Zeta substrate-engineering work
 - Does NOT establish the FPGA + Landauer + runtime-rewritable architecture as proven-implementable
 - DOES name research direction operator is pursuing with substantial domain expertise (FPGAs, Q#, reversible computing)
-- DOES compose with already-landed substrate (5th + 6th Kestrel ferries; B-0895/0896/0897/0898; B-0428; B-0905; B-0906; asymmetric-authorship + monad-propagation + OPLE-T-TFeedback rules)
+- DOES compose with already-landed substrate (5th + 6th Kestrel ferries; 081KSNY2Z0008QG0R002FX66H0/0896/0897/0898; 081KRFA460008QG0R0018SN61J; 081KSNY2Z0008QG0R002R0M026; 081KSNY2Z0008QG0R001A431CN; asymmetric-authorship + monad-propagation + OPLE-T-TFeedback rules)
 - DOES name the implementation-substrate layer progressively from abstract (F# + CT-for-programmers) → physical (FPGAs + Landauer) → evolvable-physical (runtime-rewritable + open bitstream) → currently-deployed (couple-hundred-bucks test inventory)
 - DOES preserve the operator backpressure-check Aaron Turn 23 as ConvFeedback substrate per asymmetric-authorship + conversation-interface rules
 

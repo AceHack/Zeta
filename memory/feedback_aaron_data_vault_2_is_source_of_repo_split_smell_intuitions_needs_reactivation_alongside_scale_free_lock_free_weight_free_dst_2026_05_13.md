@@ -1,6 +1,6 @@
 ---
 name: Data Vault 2.0 is the source of Aaron's repo-split 'smell' intuitions — needs re-activation alongside scale-free / lock-free (wait-free) / weight-free / DST (Aaron 2026-05-13)
-description: Aaron 2026-05-13 META disclosure — his repo-split 'smell' intuitions (ruleset-divergence per B-0427) come from applying Data Vault 2.0 (Linstedt) data-split disciplines AS RIGOROUSLY as Deterministic Simulation Testing. He has forgotten to repeat DV2.0 enough to keep it activated like the other always-active disciplines. Re-activation call. Composes with existing DV2.0 substrate (feedback_skills_as_carved_sentences_*) + scale-free + lock-free/wait-free + weight-free + DST + B-0424 + B-0425 + B-0426 + B-0427 orthogonal-axes work.
+description: Aaron 2026-05-13 META disclosure — his repo-split 'smell' intuitions (ruleset-divergence per 081KRFA460008QG0R000VKJF0H) come from applying Data Vault 2.0 (Linstedt) data-split disciplines AS RIGOROUSLY as Deterministic Simulation Testing. He has forgotten to repeat DV2.0 enough to keep it activated like the other always-active disciplines. Re-activation call. Composes with existing DV2.0 substrate (feedback_skills_as_carved_sentences_*) + scale-free + lock-free/wait-free + weight-free + DST + 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + 081KRFA460008QG0R0007RWSN1 + 081KRFA460008QG0R000VKJF0H orthogonal-axes work.
 type: feedback
 created: 2026-05-13
 ---
@@ -19,7 +19,7 @@ discipline needing re-activation.
 discipline as a wake-time substrate alongside the other
 always-active disciplines (scale-free + lock-free / wait-free +
 weight-free + DST). DV2.0 hub-satellite data-split discipline
-applies operationally to repo-split decisions (B-0427 Axis 3 +
+applies operationally to repo-split decisions (081KRFA460008QG0R000VKJF0H Axis 3 +
 ruleset-divergence smell test) — the smell test IS DV2.0 applied
 to repo topology.
 
@@ -36,7 +36,7 @@ free weight free DST"*
 ### 1. Provenance of repo-split smell intuitions
 
 Aaron's "ruleset-divergence is a smell for different repo split"
-discipline (per B-0427 / PR #2911) comes from applying Data Vault
+discipline (per 081KRFA460008QG0R000VKJF0H / PR #2911) comes from applying Data Vault
 2.0's data-split discipline at repo-topology scope.
 
 DV2.0 (Linstedt's enterprise data warehouse modeling) splits
@@ -101,7 +101,7 @@ Multiple files already exist:
 The substrate is NOT new. The DISCIPLINE has gone dormant.
 Re-activation IS the requested action.
 
-### 5. DV2.0 applied to repo-split (composes with B-0424 + B-0425 + B-0426 + B-0427)
+### 5. DV2.0 applied to repo-split (composes with 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + 081KRFA460008QG0R0007RWSN1 + 081KRFA460008QG0R000VKJF0H)
 
 DV2.0 maps directly to the orthogonal repo-split axes:
 
@@ -110,7 +110,7 @@ DV2.0 maps directly to the orthogonal repo-split axes:
 | Hubs (stable business keys) | Code repos (stable infrastructure: Zeta DB, Forge factory, ace package manager) |
 | Links (stable relationships) | Cross-repo dependency manifests (ace pull / version pins) |
 | Satellites (versioned descriptive attrs) | Memory files / research docs / philosophy substrate (fast-changing English) |
-| Different change rates | The ruleset-divergence smell (B-0427 Axis 3) — different change rates need different rulesets |
+| Different change rates | The ruleset-divergence smell (081KRFA460008QG0R000VKJF0H Axis 3) — different change rates need different rulesets |
 
 The repo-split smell IS DV2.0 applied to git repository
 topology.
@@ -150,10 +150,10 @@ All five apply simultaneously per `.claude/rules/default-to-both.md`.
   (DV2.0 universal-indexing scope)
 - `memory/feedback_cross_disciplinary_pattern_adoption_aaron_thinking_style_dataVault_at_skill_level_2026_05_03.md`
   (cross-disciplinary pattern adoption)
-- B-0424 (three-repo split Stage 1)
-- B-0425 (product-repo split planning)
-- B-0426 (Axis 2 — Mirror/Beacon)
-- B-0427 (Axis 3 — Code/English with ruleset-divergence smell)
+- 081KRFA460008QG0R001H98EXJ (three-repo split Stage 1)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning)
+- 081KRFA460008QG0R0007RWSN1 (Axis 2 — Mirror/Beacon)
+- 081KRFA460008QG0R000VKJF0H (Axis 3 — Code/English with ruleset-divergence smell)
 - PR #2911 (Axis 3 substrate)
 - `.claude/rules/wake-time-substrate.md` (substrate must reach
   wake-time landing to be load-bearing)
@@ -230,7 +230,7 @@ PR #2910 (Axis 2 — Mirror/Beacon)
 
 PR #2905 (forker-perspective META-discipline)
 
-PR #2904 (B-0424 + B-0425 + honor-system license)
+PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 
 `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`
 (existing DV2.0 substrate)

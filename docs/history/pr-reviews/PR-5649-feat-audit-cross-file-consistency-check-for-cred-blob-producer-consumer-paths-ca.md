@@ -59,7 +59,7 @@ Exit 4 = cross-file consistency assertion(s) failed (isolated). Mixed failure cl
 
 - #5640 (introduced the restore-service default-on)
 - #5644 (fixed both sides to align /mnt/boot ↔ /boot)
-- B-0852 cred-persistence cascade
+- 081KSKBP80008QG0R003AX2A69 cred-persistence cascade
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

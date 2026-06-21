@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/grammar.ts
  *
- * B-0867.3 minimal universal action grammar parser/composer.
+ * 081KSKBP80008QG0R000B3Y19A.3 minimal universal action grammar parser/composer.
  *
  * v0 line format:
  *

@@ -1,6 +1,5 @@
 ---
-id: B-0055.1
-zetaid: 081KR7JY10008QG0R0035HP11K
+id: 081KR7JY10008QG0R0035HP11K
 priority: P2
 status: closed
 title: "Edge-claims catalog — monolithic TS implementation (11 CTF flags + schema)"
@@ -15,20 +14,20 @@ type: friction-reducer
 tags: [edge-claims, CTF, catalog, schema, monolithic, re-decomp-target]
 ---
 
-# B-0055.1 — Edge-claims catalog (monolithic slice)
+# 081KR7JY10008QG0R0035HP11K — Edge-claims catalog (monolithic slice)
 
 ## Origin
 
-This row formalizes the slice that landed first under the B-0055
+This row formalizes the slice that landed first under the 081KQ3HBZ0008QG0R001K0EC2C
 frontier edge-claims CTF track. The implementation went directly to
-code without a corresponding `.md` row — leaving B-0055.2
-(re-decomposition row) with a dangling `depends_on: [B-0055.1]`
+code without a corresponding `.md` row — leaving 081KR7JY10008QG0R001JW71CT
+(re-decomposition row) with a dangling `depends_on: [081KR7JY10008QG0R0035HP11K]`
 reference against a row that didn't exist.
 
 Restored 2026-05-13 as part of the substrate-hygiene sweep that
-also recovered B-0257..B-0261 and B-0289 (PR #3044), fixed the
+also recovered 081KR2E4K0008QG0R001J0536V..081KR2E4K0008QG0R0004B55ND and 081KR2E4K0008QG0R001SWEPNV (PR #3044), fixed the
 notifier YAML-inline-comment parser bug (PR #3045), and created
-B-0054.1 (sibling slice-row restoration in this PR).
+081KR2E4K0008QG0R0003J0FB8 (sibling slice-row restoration in this PR).
 
 ## What landed
 
@@ -41,21 +40,21 @@ B-0054.1 (sibling slice-row restoration in this PR).
 - [x] Catalog file exists at the canonical path
 - [x] 11 CTF flags populated with stake-date + defense-surface +
       falsifiability hook
-- [x] B-0055.2 (re-decomposition row) can reference it via
-      `depends_on: [B-0055.1]`
+- [x] 081KR7JY10008QG0R001JW71CT (re-decomposition row) can reference it via
+      `depends_on: [081KR7JY10008QG0R0035HP11K]`
 - [x] Row file exists so backlog-ready-notifier no longer flags
       the dependency as dangling
 
 ## Re-decomposition status
 
-B-0055.2 is the canonical re-decomp row for this monolithic slice.
+081KR7JY10008QG0R001JW71CT is the canonical re-decomp row for this monolithic slice.
 The plan: break the ~600 LOC monolith into smallest atomic TS
-modules + corresponding backlog rows. Tracked via B-0055.2.
+modules + corresponding backlog rows. Tracked via 081KR7JY10008QG0R001JW71CT.
 
 ## Composes with
 
-- B-0055 (frontier edge-claims CTF track — parent)
-- B-0055.2 (re-decomposition row depending on this slice)
+- 081KQ3HBZ0008QG0R001K0EC2C (frontier edge-claims CTF track — parent)
+- 081KR7JY10008QG0R001JW71CT (re-decomposition row depending on this slice)
 - `tools/research/edge-claims-catalog.ts` (the monolithic
   implementation)
 
@@ -65,4 +64,4 @@ This row is a *retroactive* artifact — written 2026-05-13 to
 document a slice that landed earlier without a row. Future slices
 should land row-first, code-second; this row is the substrate
 correction, not a precedent for code-first development. The
-re-decomp work via B-0055.2 should happen row-first.
+re-decomp work via 081KR7JY10008QG0R001JW71CT should happen row-first.

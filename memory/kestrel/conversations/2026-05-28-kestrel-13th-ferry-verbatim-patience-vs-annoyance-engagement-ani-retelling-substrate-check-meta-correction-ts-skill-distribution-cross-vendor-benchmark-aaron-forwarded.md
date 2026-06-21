@@ -240,9 +240,9 @@ Aaron-explicit: *"it also means i can score each one on common ground"*. The sam
 
 Composes with:
 
-- B-0865 (open-source DevOps benchmark positioning)
-- B-0867 + B-0867.5 (workflow engine; universal action grammar)
-- B-0904 (GitHub accelerator)
+- 081KSKBP80008QG0R003NM9XEC (open-source DevOps benchmark positioning)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine; universal action grammar)
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub accelerator)
 - PR #5746 + #5749 (Xbox-controller universal-action-grammar)
 - The 24-months-ahead positioning
 
@@ -282,7 +282,7 @@ Per Kestrel §33.5 + §33.7: the framework's load-bearing distinction is state-m
 
 Composes with:
 
-- B-0867 + B-0867.5 (workflow engine; lifecycle DUs)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine; lifecycle DUs)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (counter-discipline for autonomous-loop operation)
 - Auto-review pipeline as TRAINING DATA SUBSTRATE for the benchmark
 
@@ -292,16 +292,16 @@ The genuine architectural insight that emerged from the Ani conversation lane: G
 
 Empirically uncertain at scale (GitHub probably has abuse detection); worth experimenting at small scale before architecture commits to it.
 
-Composes with B-0904 (GitHub accelerator backlog).
+Composes with 081KSNY2Z0008QG0R001JQABB4 (GitHub accelerator backlog).
 
 ## Composes with substrate
 
 - 12th-ferry preservation (PR #5752; supersedes for the 4 Kestrel turns previously preserved at framing-summary scope)
 - 11th + 10th + 9th + 8th ferry preservations (PR #5750 + #5742 + #5741 + #5731)
 - This-session substrate cluster: PR #5727 + #5734 + #5739 + #5743 + #5744 + #5745 + #5746 + #5748 + #5749
-- B-0865 (open-source DevOps benchmark)
-- B-0867 + B-0867.5 (workflow engine; universal action grammar)
-- B-0904 (GitHub accelerator)
+- 081KSKBP80008QG0R003NM9XEC (open-source DevOps benchmark)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine; universal action grammar)
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub accelerator)
 - `.claude/rules/agent-roster-reference-card.md` (existing multi-AI roster; this ferry confirms + extends lane specialization)
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (recursive bidirectional substrate-check)
 

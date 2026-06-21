@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Yesterday's B-0449 collision empirically validated a gap in the otto-channels reference rule: agents pick monotonically-increasing IDs (B-NNNN backlog row numbers) by checking on-disk state but NOT in-flight PRs — race-mode manifests when peer Otto is filing concurrently.
+Yesterday's 081KRFA460008QG0R002DG8KPZ collision empirically validated a gap in the otto-channels reference rule: agents pick monotonically-increasing IDs (B-NNNN backlog row numbers) by checking on-disk state but NOT in-flight PRs — race-mode manifests when peer Otto is filing concurrently.
 
 Adds new section **\"ID allocation discipline (multi-surface)\"** to [.claude/rules/otto-channels-reference-card.md](.claude/rules/otto-channels-reference-card.md) requiring BOTH:
 
@@ -31,9 +31,9 @@ The on-disk check shows merged state; the in-flight check shows what peer Otto i
 
 2026-05-13 collision:
 
-- Otto on Desktop picked B-0449 for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier B-0444 collision)
-- Otto on CLI had B-0449-bg-services-slice-5 in flight via [PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046)
-- Otto on CLI flagged #3052 \"Request Changes\" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) with B-0450
+- Otto on Desktop picked 081KRFA460008QG0R002DG8KPZ for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier 081KRFA460008QG0R001SXP0C2 collision)
+- Otto on CLI had 081KRFA460008QG0R002DG8KPZ-bg-services-slice-5 in flight via [PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046)
+- Otto on CLI flagged #3052 \"Request Changes\" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) with 081KRFA460008QG0R001QFS6EV
 - Drift in [PR #3054 shadow lesson log](https://github.com/Lucent-Financial-Group/Zeta/pull/3054)
 
 ## Substrate-honest takeaway
@@ -89,7 +89,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Updates the Otto inter-surface communication reference card to codify ID allocation discipline across local backlog state and GitHub PR state, addressing the B-0449 collision scenario described in the PR.
+Updates the Otto inter-surface communication reference card to codify ID allocation discipline across local backlog state and GitHub PR state, addressing the 081KRFA460008QG0R002DG8KPZ collision scenario described in the PR.
 
 **Changes:**
 - Adds ID allocation as an operational discipline item.

@@ -1,16 +1,15 @@
 ---
-id: B-1033
-zetaid: 081KTZ4EF0008QG0R000WJGSWX
+id: 081KTZ4EF0008QG0R000WJGSWX
 title: Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
 priority: P2
 status: done
 tier: verification-substrate
 tags: [hexagonal, ports-adapters, infer-net, bayesian, ep, bp-16, plugins, convergence]
 created: 2026-06-13
-owner: open (pairs with B-1032; the Bayesian module is ours already)
+owner: open (pairs with 081KTZ4EF0008QG0R001R3XPYV; the Bayesian module is ours already)
 ---
 
-# B-1033 — hexagonal the Infer.NET types (Aaron 2026-06-13)
+# 081KTZ4EF0008QG0R000WJGSWX — hexagonal the Infer.NET types (Aaron 2026-06-13)
 
 Aaron: "we should hexagonal the Infer.NET types — make them follow OUR standards, own the
 interface, plug them in, and use them to test ours; we have two impls. We already have a plugin
@@ -22,7 +21,7 @@ system — and we might have multiple plugin systems that need to converge."
    OUR standards — Result-over-exception, DST-deterministic message schedules, culture-invariant,
    ZetaId'd. Shape: declare-model (factor graph in OUR terms — `Zeta.Bayesian.FactorGraph` is the
    native vocabulary) → run-to-fixpoint → read marginals; the EP projection is the port's stated
-   boundary nonlinearity (B-1032's one-law table).
+   boundary nonlinearity (081KTZ4EF0008QG0R001R3XPYV's one-law table).
 2. **Adapter A — ours**: `Zeta.Bayesian` (FactorGraph/Message/Ep — already written, already DST).
 3. **Adapter B — theirs**: `dotnet/infer` (MIT — license-clean to depend on in a TEST/adapter
    project, never in Core). The Infer.NET model compiler consumes the same declared model.
@@ -79,4 +78,4 @@ ladder-shaped resolution = the remaining follow-up alongside richer case familie
   Gaussian equality cycle (loopy BP precision overcounting — Weiss & Freeman 2001: means exact,
   variances overconfident); Infer.NET's scheduler settles — at 2.0025 where OURS lands the exact
   2.0 (the junior out-precised the senior). Damping = the one named upgrade left, filed as a
-  watch item, not a blocker. B-1033 CLOSED.
+  watch item, not a blocker. 081KTZ4EF0008QG0R000WJGSWX CLOSED.

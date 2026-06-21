@@ -1,6 +1,6 @@
 ---
 pr_number: 5450
-title: "feat(B-0852.3a): interactive cred-picker + zeta-install.sh Step 6.94 integration (16 tests; Aaron 2026-05-27 USB push)"
+title: "feat(081KSKBP80008QG0R003AX2A69.3a): interactive cred-picker + zeta-install.sh Step 6.94 integration (16 tests; Aaron 2026-05-27 USB push)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T13:36:46Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:23:51Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5450: feat(B-0852.3a): interactive cred-picker + zeta-install.sh Step 6.94 integration (16 tests; Aaron 2026-05-27 USB push)
+# PR #5450: feat(081KSKBP80008QG0R003AX2A69.3a): interactive cred-picker + zeta-install.sh Step 6.94 integration (16 tests; Aaron 2026-05-27 USB push)
 
 ## PR description
 
@@ -23,13 +23,13 @@ End-to-end cred-persistence stack now usable on USB:
 - New \`tools/installer/zeta-creds-picker.ts\` — interactive picker per cred (bake/defer/skip + literal/file/env source)
 - 16 unit tests passing (parseArgs + runPicker against mock readline)
 - zeta-install.sh Step 6.94 invokes picker conditional on \`ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE + /etc/zeta/usb-uuid\`
-- Picker invokes B-0852.2b persist CLI with collected --bake-cred args
+- Picker invokes 081KSKBP80008QG0R003AX2A69.2b persist CLI with collected --bake-cred args
 
 Operator USB-push direction: \"lets keep pushing forward and get cred persistance any anthing else we can make it in before i test again\".
 
 ## What unblocks on USB
 
-Operator reflashes USB → boots → runs installer with picker env vars set → bakes desired creds via interactive prompt → reboot → /esp/zeta-creds.enc written. B-0852.4 NixOS module (boot-time restore) is the next sub-row.
+Operator reflashes USB → boots → runs installer with picker env vars set → bakes desired creds via interactive prompt → reboot → /esp/zeta-creds.enc written. 081KSKBP80008QG0R002XBRGN8 NixOS module (boot-time restore) is the next sub-row.
 
 ## Test plan
 
@@ -55,7 +55,7 @@ _(no body)_
 
 ## Pull request overview
 
-Adds an interactive credential picker (`tools/installer/zeta-creds-picker.ts`) that, for each cred in `DEFAULT_MANIFEST`, asks the operator whether to bake-in-now / defer-to-device-flow / skip, with per-source sub-prompts (literal / `@file` / `env:VAR`), then invokes the B-0852.2b `zeta-creds-persist` CLI with the collected `--bake-cred` args. A new Step 6.94 in `zeta-install.sh` wires the picker into the USB installer behind `ZETA_CREDS_PICKER=1` + `ZETA_CREDS_PASSPHRASE` + `/etc/zeta/usb-uuid` gates, and 16 unit tests cover `parseArgs` and `runPicker` against a mock readline.
+Adds an interactive credential picker (`tools/installer/zeta-creds-picker.ts`) that, for each cred in `DEFAULT_MANIFEST`, asks the operator whether to bake-in-now / defer-to-device-flow / skip, with per-source sub-prompts (literal / `@file` / `env:VAR`), then invokes the 081KSKBP80008QG0R003AX2A69.2b `zeta-creds-persist` CLI with the collected `--bake-cred` args. A new Step 6.94 in `zeta-install.sh` wires the picker into the USB installer behind `ZETA_CREDS_PICKER=1` + `ZETA_CREDS_PASSPHRASE` + `/etc/zeta/usb-uuid` gates, and 16 unit tests cover `parseArgs` and `runPicker` against a mock readline.
 
 **Changes:**
 - New picker CLI with explicit bake / defer / skip prompts and source validation against per-cred handlers.

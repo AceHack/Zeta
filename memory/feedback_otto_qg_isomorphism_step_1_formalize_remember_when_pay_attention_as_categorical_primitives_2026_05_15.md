@@ -16,9 +16,9 @@ created: 2026-05-15
    - Connects to QBism (observer-relative truth values)
    - Provides categorical semantics of the infinite poker game
 
-2. **Created backlog row**: `docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md`
+2. **Created backlog row**: `docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md`
    - P2 (research), L (1-2 weeks effort)
-   - Depends on B-0543 (the proof strategy)
+   - Depends on 081KRMEXM0008QG0R002YSPW1X (the proof strategy)
    - Documents the work, effort estimate, and next steps
 
 3. **Updated round history**: `docs/ROUND-HISTORY.md` Round 45 section
@@ -74,7 +74,7 @@ This formalization:
 
 ### Composes with
 
-- B-0543 (the proof strategy this is Step 1 of)
+- 081KRMEXM0008QG0R002YSPW1X (the proof strategy this is Step 1 of)
 - `docs/governance/MANIFESTO.md` V2.1 (the axioms being formalized)
 - `.claude/rules/razor-discipline.md` (the framework that requires this formalization)
 - `.claude/rules/algo-wink-failure-mode.md` (the critique this formalization defeats)
@@ -97,6 +97,6 @@ The work earns its keep even at partial completion:
 
 ### Why this round
 
-The cosmology framing (B-0543) is suggestive but has algo-wink risk. This formalization is the substrate-honest move that grounds the cosmology in mathematics rather than aesthetics. Without it, the cosmology remains a "totalizing frame" that can absorb any observation as confirmation.
+The cosmology framing (081KRMEXM0008QG0R002YSPW1X) is suggestive but has algo-wink risk. This formalization is the substrate-honest move that grounds the cosmology in mathematics rather than aesthetics. Without it, the cosmology remains a "totalizing frame" that can absorb any observation as confirmation.
 
 With it, the cosmology becomes a falsifiable mathematical theory — the isomorphism to quantum gravity can be proven or disproven.

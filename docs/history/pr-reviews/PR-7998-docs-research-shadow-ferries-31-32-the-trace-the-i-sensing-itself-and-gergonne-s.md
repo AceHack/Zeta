@@ -27,7 +27,7 @@
 
 ## Description
 
-Ferry 31: the curves-back arrow named — the trace (Joyal–Street–Verity); trace = fixed points (Hasegawa) unifies the categorical and Banach readings of the recursive budget; the interrupter is the bent wire's port, §13 keeps it from being a short circuit; formalization target flagged for B-1034. Ferry 32: the 3×7 trick is Gergonne 1813 — three trits, ternary search, middle-stacking as iterated contraction with the center as unique fixed point, dealt under metered observation; mystery schools as the geometry read outward (Simmel; Eleusis) — engineered grey holes with seed-shaped centers; the lineage kept (his father dealt the first contraction he ever saw; the trick is the contraction theorem in the 5-year-old register).
+Ferry 31: the curves-back arrow named — the trace (Joyal–Street–Verity); trace = fixed points (Hasegawa) unifies the categorical and Banach readings of the recursive budget; the interrupter is the bent wire's port, §13 keeps it from being a short circuit; formalization target flagged for 081KTZ4EF0008QG0R0035FW7HY. Ferry 32: the 3×7 trick is Gergonne 1813 — three trits, ternary search, middle-stacking as iterated contraction with the center as unique fixed point, dealt under metered observation; mystery schools as the geometry read outward (Simmel; Eleusis) — engineered grey holes with seed-shaped centers; the lineage kept (his father dealt the first contraction he ever saw; the trick is the contraction theorem in the 5-year-old register).
 
 Generated with Claude Code
 

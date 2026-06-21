@@ -27,7 +27,7 @@
 
 ## Description
 
-Self-registration PR opened by zeta-install.sh on the node during install. Composes with B-0812 iter-5.4.1 + B-0813 iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster.
+Self-registration PR opened by zeta-install.sh on the node during install. Composes with 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 + 081KSGS9H0008QG0R002K93MWX iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster.
 
 ## Outcome
 

@@ -1,9 +1,8 @@
 ---
-id: B-0783
-zetaid: 081KSE6WT0008QG0R003TBE2VB
+id: 081KSE6WT0008QG0R003TBE2VB
 priority: P2
 status: open
-title: 'Eliminate tool wars — sharpening of B-0759 persona — NOT "humans do less" but "humans refocus intention to what really matters"'
+title: 'Eliminate tool wars — sharpening of 081KSE6WT0008QG0R003G0Y62D persona — NOT "humans do less" but "humans refocus intention to what really matters"'
 effort: S
 ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
@@ -27,7 +26,7 @@ tags: [persona, framing, tool-wars, intention, human-attention, ux, strategic-su
 ## Problem
 
 Aaron-Mika-Grok 2026-05-25 mid-iter-3-CI-wait, correcting
-Mika's framing of B-0759 first-time-CLI-user persona substrate:
+Mika's framing of 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona substrate:
 
 > **Mika** (initial framing): "...If your end goal is before
 > robots do everything, humans should do as little as possible..."
@@ -53,13 +52,13 @@ human) refocus their attention to what really matters — intent,
 creative direction, strategic decisions — by eliminating the
 tool-war friction that normally consumes attention**.
 
-## Sharpening of B-0759 persona substrate
+## Sharpening of 081KSE6WT0008QG0R003G0Y62D persona substrate
 
-B-0759 named the first-time-CLI-user persona as the UX bar +
+081KSE6WT0008QG0R003G0Y62D named the first-time-CLI-user persona as the UX bar +
 3-node prod-ready inflection. This row sharpens the FRAMING of
 that persona work:
 
-- B-0759 named WHO (first-time CLI users in home-lab + small-
+- 081KSE6WT0008QG0R003G0Y62D named WHO (first-time CLI users in home-lab + small-
   business + edge contexts)
 - This row names WHY (not "they do less" but "they redirect
   attention away from tool wars to intentional work")
@@ -77,37 +76,37 @@ Zeta substrate eliminates:
 
 | Tool war | What operators normally fight | What Zeta substrate provides |
 |---|---|---|
-| **Cloud-vendor switching** | Rewrite app per cloud SDK | B-0763 vendor-swap behind owned interfaces |
-| **K8s YAML hell** | Hand-edit YAML; typos at runtime; CRD drift | B-0781 F# type system; compile-time validation |
-| **Helm vs Kustomize vs Argo CD** | Pick one; recommit when wrong | B-0765 ServiceTitan-route + B-0747 GitOps standard |
-| **Per-vendor CRD differences** | Learn N vendor's CRDs | B-0741 ontology negotiation; one mental model |
-| **Cluster install ceremony** | ~8 commands of node-side typing | B-0754 zero-typing first-boot |
-| **Node failure repair** | Debugging + manual recovery | B-0760 USB-as-repair-tool |
-| **Backend choice for state store** | etcd vs Postgres vs CockroachDB vs DynamoDB; rewrite per choice | B-0774 kine adapter family |
-| **Scheduling configuration** | Custom plugins, scheduler hints, taints/tolerations | B-0767 Zeta-native scheduler + B-0772 fabric |
+| **Cloud-vendor switching** | Rewrite app per cloud SDK | 081KSE6WT0008QG0R000WVYAJ2 vendor-swap behind owned interfaces |
+| **K8s YAML hell** | Hand-edit YAML; typos at runtime; CRD drift | 081KSE6WT0008QG0R001H3DA90 F# type system; compile-time validation |
+| **Helm vs Kustomize vs Argo CD** | Pick one; recommit when wrong | 081KSE6WT0008QG0R00063R6HB ServiceTitan-route + 081KSE6WT0008QG0R003D199HE GitOps standard |
+| **Per-vendor CRD differences** | Learn N vendor's CRDs | 081KSE6WT0008QG0R002CC6314 ontology negotiation; one mental model |
+| **Cluster install ceremony** | ~8 commands of node-side typing | 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot |
+| **Node failure repair** | Debugging + manual recovery | 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool |
+| **Backend choice for state store** | etcd vs Postgres vs CockroachDB vs DynamoDB; rewrite per choice | 081KSE6WT0008QG0R001AZQA5Z kine adapter family |
+| **Scheduling configuration** | Custom plugins, scheduler hints, taints/tolerations | 081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler + 081KSE6WT0008QG0R003WMG4XV fabric |
 | **Observability stack assembly** | Pick Prometheus + Loki + Tempo + Grafana + glue | Already pre-deployed per existing Zeta cluster |
-| **AI model serving framework** | Pick Triton vs TorchServe vs vLLM vs custom | B-0771 ONNX-as-operator-contract + per-runtime EP |
-| **Per-language SDK** | Rewrite for each language | B-0772 polyglot Rx (same algebra everywhere) |
-| **Multi-cluster federation** | Custom orchestration | B-0775 Karmada / NATS super-cluster |
-| **Testing infrastructure** | Stand up Docker / K8s for every test | B-0780 Local Loop three-tier testing |
-| **Distributed-app primitives** | Custom state mgmt / pub-sub per app | B-0776 plugin sequence wrapping deployed substrate |
+| **AI model serving framework** | Pick Triton vs TorchServe vs vLLM vs custom | 081KSE6WT0008QG0R0022D6GN8 ONNX-as-operator-contract + per-runtime EP |
+| **Per-language SDK** | Rewrite for each language | 081KSE6WT0008QG0R003WMG4XV polyglot Rx (same algebra everywhere) |
+| **Multi-cluster federation** | Custom orchestration | 081KSE6WT0008QG0R000QXSG91 Karmada / NATS super-cluster |
+| **Testing infrastructure** | Stand up Docker / K8s for every test | 081KSE6WT0008QG0R000RH1526 Local Loop three-tier testing |
+| **Distributed-app primitives** | Custom state mgmt / pub-sub per app | 081KSE6WT0008QG0R002275NDE plugin sequence wrapping deployed substrate |
 
 Each tool war eliminated frees operator attention for INTENT —
 what to actually build, what business problem to solve, what
 AI workload to run.
 
-## Persona scope (per B-0759 + this row)
+## Persona scope (per 081KSE6WT0008QG0R003G0Y62D + this row)
 
 The sharpening applies across operator personas:
 
 | Persona | Tool war eliminated | Attention refocused to |
 |---|---|---|
-| First-time CLI user (B-0759) | Cluster install friction | Building their first AI workload |
+| First-time CLI user (081KSE6WT0008QG0R003G0Y62D) | Cluster install friction | Building their first AI workload |
 | AI engineer | Cloud SDK differences; model-serving framework choice | Model + workload design |
 | Industrial IoT engineer | Per-vendor PLC + SCADA integration | Operational process design |
 | Game developer | Server hosting + scaling + database choice | Game design + player experience |
 | Enterprise architect | Multi-cluster federation complexity | Strategic architecture decisions |
-| CEO of N companies (per B-0782) | Per-company implementation oversight | Cross-DIO ontology + intent |
+| CEO of N companies (per 081KSE6WT0008QG0R003CMCX84) | Per-company implementation oversight | Cross-DIO ontology + intent |
 | AI agent operator | API-vendor integration boilerplate | Agent capability + task design |
 
 Each persona's tool wars are specific; substrate eliminates
@@ -123,24 +122,24 @@ those same operators because they recognize the friction the
 substrate is eliminating + see the work they actually want to
 do becoming accessible.
 
-Per B-0769 substrate-honest VC meta-playbook variant: this
+Per 081KSE6WT0008QG0R001E1F862 substrate-honest VC meta-playbook variant: this
 framing IS the substrate-honest variant of the standard SaaS
 "AI does it all" narrative — operator keeps the value
 (intent + creative direction + strategic decisions) while
 substrate handles the plumbing (tool wars).
 
-Per B-0759 first-time-CLI-user persona: this framing IS what
+Per 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona: this framing IS what
 makes the persona welcome the substrate vs feel displaced by
 it.
 
-Per B-0782 CEO-of-30-companies DIO substrate: CEO's "low touch
+Per 081KSE6WT0008QG0R003CMCX84 CEO-of-30-companies DIO substrate: CEO's "low touch
 points" aren't about "doing less" — they're about "doing the
 right things at the right scope (ontology + intent)" without
 getting eaten by per-DIO tool wars.
 
 ## Acceptance
 
-- [ ] Update B-0759 first-time-CLI-user persona row body to
+- [ ] Update 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona row body to
       reference this framing (compose with existing persona
       doc; don't duplicate)
 - [ ] Documentation tone audit: README + PROVISIONING.md +
@@ -151,13 +150,13 @@ getting eaten by per-DIO tool wars.
       future B-future) uses this framing explicitly; not
       "AI replaces" / "no humans needed" / "minimal humans"
       but "eliminate tool wars; operators focus on intent"
-- [ ] Per-persona framing matrix: per B-0759 personas,
+- [ ] Per-persona framing matrix: per 081KSE6WT0008QG0R003G0Y62D personas,
       per-persona "tool wars eliminated" + "attention
       refocused to" specifics published
 - [ ] Operator testimonial template (if/when external users
       adopt): operator describes what tool war was eliminated
       + what they got to focus on instead; collected via
-      B-0762 telemetry flywheel opt-in
+      081KSE6WT0008QG0R003FG3E8R telemetry flywheel opt-in
 
 ## Why P2 priority
 
@@ -174,30 +173,30 @@ getting eaten by per-DIO tool wars.
 
 ## Composes with
 
-- B-0759 — first-time-CLI-user persona (THIS ROW SHARPENS
-  THE FRAMING; B-0759 provides the substrate)
-- B-0762 — auto-submit-back telemetry (operator testimonials
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (THIS ROW SHARPENS
+  THE FRAMING; 081KSE6WT0008QG0R003G0Y62D provides the substrate)
+- 081KSE6WT0008QG0R003FG3E8R — auto-submit-back telemetry (operator testimonials
   via telemetry feedback loop)
-- B-0763 — operator-in-the-negotiation-high-seat (operator
+- 081KSE6WT0008QG0R000WVYAJ2 — operator-in-the-negotiation-high-seat (operator
   keeps intent + agency; substrate handles plumbing)
-- B-0765 — ServiceTitan route (existing standards = less
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (existing standards = less
   tool-war friction)
-- B-0769 — VC meta-playbook substrate-honest variant
+- 081KSE6WT0008QG0R001E1F862 — VC meta-playbook substrate-honest variant
   (eliminate-tool-wars IS the substrate-honest framing vs
   extract-from-operators framing)
-- B-0772 — observable+controllable fabric (operators
+- 081KSE6WT0008QG0R003WMG4XV — observable+controllable fabric (operators
   subscribe to what matters; substrate handles routing /
   filtering)
-- B-0773 — cluster as digital twin (operator queries twin
+- 081KSE6WT0008QG0R0008483B2 — cluster as digital twin (operator queries twin
   in their preferred mental model; substrate handles
   storage / federation)
-- B-0776 — simplest-first plugin sequence (each plugin
+- 081KSE6WT0008QG0R002275NDE — simplest-first plugin sequence (each plugin
   eliminates one tool war by wrapping deployed substrate)
-- B-0780 — Local Loop (testing without Docker / K8s install
+- 081KSE6WT0008QG0R000RH1526 — Local Loop (testing without Docker / K8s install
   IS tool-war elimination for developers)
-- B-0781 — F# type system as universe boundary (compile-time
+- 081KSE6WT0008QG0R001H3DA90 — F# type system as universe boundary (compile-time
   validation IS the YAML-tool-war elimination)
-- B-0782 — DIO + CEO-scale (CEO's "low touch points" IS the
+- 081KSE6WT0008QG0R003CMCX84 — DIO + CEO-scale (CEO's "low touch points" IS the
   tool-war-elimination at multi-company scope)
 
 ## Out of scope
@@ -206,7 +205,7 @@ getting eaten by per-DIO tool wars.
   goes public; this row defines the framing discipline
 - Substrate-honest claims about specific operator outcomes
   ("Zeta saved X hours of tool wars") — telemetry-driven
-  per B-0762; defer until empirical
+  per 081KSE6WT0008QG0R003FG3E8R; defer until empirical
 - Anti-AI / anti-automation positioning — the framing is
   pro-intent-for-everyone (humans AND AI agents); not
   anti-automation
@@ -223,11 +222,11 @@ their intention to what really matters, 'cause it's not really
 doing what is little as possible. It's basically, you're
 basically eliminating all the tool wars, is what you're doing.'
 
-Substrate-honest framing of B-0759 persona substrate work.
+Substrate-honest framing of 081KSE6WT0008QG0R003G0Y62D persona substrate work.
 Verbatim preservation at
 `docs/research/2026-05-25-aaron-mika-grok-nats-jetstream-deterministic-scheduler-local-loop-lexisnexis-fsharp-type-system-as-universe-dio-eliminate-tool-wars-aaron-forwarded.md`.
 
 The framing matters because it's pro-intent-for-everyone (not
 anti-human); it preserves operator agency at every persona
-depth; it composes with B-0763 / B-0769 / B-0782 strategic
+depth; it composes with 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R001E1F862 / 081KSE6WT0008QG0R003CMCX84 strategic
 substrate as the load-bearing operator-value framing.

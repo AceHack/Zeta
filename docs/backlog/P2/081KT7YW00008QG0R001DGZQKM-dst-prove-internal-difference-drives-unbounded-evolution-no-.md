@@ -1,6 +1,5 @@
 ---
-id: B-1019
-zetaid: 081KT7YW00008QG0R001DGZQKM
+id: 081KT7YW00008QG0R001DGZQKM
 priority: P2
 status: in-progress
 title: "DST: prove internal agent-difference (private state) drives UNBOUNDED evolution with NO external input -> grounds privacy as CONSTITUTIVE (anti-register-collapse: private state gone -> agents identical -> no gradient -> heat-death halt). Falsifiable: define evolves = not-halt AND not-limit-cycle, needs unbounded growing state (pigeonhole); halt/cycle refutes. Engine IS a memetic-evolution system; prior under test = chaotic-over-Bayesian-priors (orderly-local + chaotic-global) (Aaron+Kestrel 2026-06-04)"
@@ -12,7 +11,7 @@ type: task
 depends_on: []
 ---
 
-# B-1019 — DST: prove internal difference drives unbounded evolution (no external input)
+# 081KT7YW00008QG0R001DGZQKM — DST: prove internal difference drives unbounded evolution (no external input)
 
 **Priority:** P2 (a falsifiable dynamical proof that grounds privacy-as-constitutive).
 **Filed:** 2026-06-04 (Aaron + Kestrel). **Design:**
@@ -71,5 +70,5 @@ DST harness can only ever *fail to refute* unboundedness, never prove it.
   The honest DST↔proof boundary. Machine-checked, sorry-free; registry row added. ✅ landed
   2026-06-06 (`unbounded_with_finite_commons_needs_infinite_privacy`).
 
-All three rungs landed; B-1019 may move to `done/` once Aaron/Soraya confirm the portfolio
+All three rungs landed; 081KT7YW00008QG0R001DGZQKM may move to `done/` once Aaron/Soraya confirm the portfolio
 satisfies the pre-committed reading.

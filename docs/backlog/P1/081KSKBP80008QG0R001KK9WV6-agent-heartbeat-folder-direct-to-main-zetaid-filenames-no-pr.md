@@ -1,6 +1,5 @@
 ---
-id: B-0858
-zetaid: 081KSKBP80008QG0R001KK9WV6
+id: 081KSKBP80008QG0R001KK9WV6
 priority: P1
 status: open
 title: Agent heartbeat folder — direct-to-main push (no PR) with ZetaID-collision-free filenames per agent; mechanizes the externalized-counter discipline operator named 2026-05-27
@@ -95,13 +94,13 @@ The brief-ack failure mode the operator caught 2026-05-27 (100+ "Quiet." emissio
 
 ## Sub-rows planned
 
-- **B-0858.1** — Define folder layout + heartbeat schema (this row; spec)
-- **B-0858.2** — Branch protection rule: path-scoped carve-out for `docs/agent-heartbeats/**` (operator-side GitHub config; requires repo-admin)
-- **B-0858.3** — TS heartbeat-writer tool: `tools/agent-heartbeats/write-heartbeat.ts` (composes with `src/Core.TypeScript/zeta-id/zeta-id.ts` ZetaID generator)
-- **B-0858.4** — Sentinel/cron integration: per-tick autonomous-loop fire writes a heartbeat
-- **B-0858.5** — Counter integration: `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` extension naming this folder as the externalized counter source
-- **B-0858.6** — Auto-cleanup policy: heartbeats older than 7 days auto-deleted (or rolled into compressed summary) to bound repo growth
-- **B-0858.7** — Cross-agent collision verification (empirical test multiple agents writing concurrently; ZetaID uniqueness empirically holds)
+- **081KSKBP80008QG0R001KK9WV6.1** — Define folder layout + heartbeat schema (this row; spec)
+- **081KSKBP80008QG0R001KK9WV6.2** — Branch protection rule: path-scoped carve-out for `docs/agent-heartbeats/**` (operator-side GitHub config; requires repo-admin)
+- **081KSKBP80008QG0R001KK9WV6.3** — TS heartbeat-writer tool: `tools/agent-heartbeats/write-heartbeat.ts` (composes with `src/Core.TypeScript/zeta-id/zeta-id.ts` ZetaID generator)
+- **081KSKBP80008QG0R001KK9WV6.4** — Sentinel/cron integration: per-tick autonomous-loop fire writes a heartbeat
+- **081KSKBP80008QG0R003NG37GQ** — Counter integration: `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` extension naming this folder as the externalized counter source
+- **081KSKBP80008QG0R001KK9WV6.6** — Auto-cleanup policy: heartbeats older than 7 days auto-deleted (or rolled into compressed summary) to bound repo growth
+- **081KSKBP80008QG0R001KK9WV6.7** — Cross-agent collision verification (empirical test multiple agents writing concurrently; ZetaID uniqueness empirically holds)
 
 ## What this is NOT
 
@@ -128,7 +127,7 @@ Searched:
 
 Read top hits: ZetaID TS impl + bit layout YAML + Kestrel review + sibling AgencySignature spec doc.
 
-Authoring action: mint new B-0858 row composing with existing ZetaID + AgencySignature substrate.
+Authoring action: mint new 081KSKBP80008QG0R001KK9WV6 row composing with existing ZetaID + AgencySignature substrate.
 
 ## Why P1
 
@@ -149,11 +148,11 @@ Authoring action: mint new B-0858 row composing with existing ZetaID + AgencySig
 
 ## Composes with substrate
 
-- B-0852.3a picker (PR #5450) — each picker invocation could emit a heartbeat with disposition=committed-substrate
-- B-0855 self-register architectural fix — same per-tick observability scope
-- B-0857 install.sh universal entry — heartbeats from install-time agents could capture install progress
-- B-0628 Knights Guild Constitution-Class — heartbeat folder semantics may be Constitution-Class candidate (operator decides)
-- B-0666 English-as-projection — heartbeat schema is structured English; composes with the projection substrate
+- 081KSKBP80008QG0R003AX2A69.3a picker (PR #5450) — each picker invocation could emit a heartbeat with disposition=committed-substrate
+- 081KSKBP80008QG0R000GPC0TB self-register architectural fix — same per-tick observability scope
+- 081KSKBP80008QG0R002J03WGA install.sh universal entry — heartbeats from install-time agents could capture install progress
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild Constitution-Class — heartbeat folder semantics may be Constitution-Class candidate (operator decides)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection — heartbeat schema is structured English; composes with the projection substrate
 
 ## Heartbeat per CLAUDE.md discipline
 

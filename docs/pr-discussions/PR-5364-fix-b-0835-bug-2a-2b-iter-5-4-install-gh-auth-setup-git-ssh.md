@@ -1,6 +1,6 @@
 ---
 pr_number: 5364
-title: "fix(B-0835 Bug 2a + 2b): iter-5.4 install \u2014 gh auth setup-git + ssh-key scope discrimination"
+title: "fix(081KSGS9H0008QG0R00120EEHM Bug 2a + 2b): iter-5.4 install \u2014 gh auth setup-git + ssh-key scope discrimination"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T00:33:18Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:29:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5364: fix(B-0835 Bug 2a + 2b): iter-5.4 install — gh auth setup-git + ssh-key scope discrimination
+# PR #5364: fix(081KSGS9H0008QG0R00120EEHM Bug 2a + 2b): iter-5.4 install — gh auth setup-git + ssh-key scope discrimination
 
 ## PR description
 
@@ -33,7 +33,7 @@ Open this URL to continue in your web browser: https://github.com/login/device
 [iter-5.4.0]   WARN: 'gh ssh-key list' failed; no keys written
 [iter-5.4.0]   (gh auth succeeded but the user has no SSH keys
 [iter-5.4.0]   registered with GitHub, OR the jq/tee pipe broke)
-[iter-5.4.1] ── self-registration commit+push (B-0812) ──
+[iter-5.4.1] ── self-registration commit+push (081KSGS9H0008QG0R0037H3W4T) ──
 [iter-5.4.1]   maintainer:  AceHack
 [iter-5.4.1]   node-name:   node-efe404
 Switched to a new branch 'register-node-efe404-20260527T0005332'
@@ -60,7 +60,7 @@ Defers opt-in \`--with-ssh-key-scope\` flag to future B-NNNN (security tradeoff:
 ## Files
 
 - \`full-ai-cluster/usb-nixos-installer/zeta-install.sh\` — \`gh auth setup-git\` after login; stderr-capturing ssh-key-list with 3-way discrimination (success / empty-with-scope-error / empty-no-scope-error / pipe-broke)
-- \`docs/backlog/P1/B-0835-*.md\` — Bug 2a + 2b verbatim empirical anchors + fix specs + acceptance criteria for 3rd physical test
+- \`docs/backlog/P1/081KSGS9H0008QG0R00120EEHM-*.md\` — Bug 2a + 2b verbatim empirical anchors + fix specs + acceptance criteria for 3rd physical test
 
 ## Acceptance for next physical test cycle
 
@@ -72,17 +72,17 @@ Defers opt-in \`--with-ssh-key-scope\` flag to future B-NNNN (security tradeoff:
 
 ## Composes with
 
-- B-0835 (this row — Bug 2a + 2b empirical anchors land in body)
-- B-0812 iter-5.4.1 self-registration (the step Bug 2a blocks)
-- B-0813 iter-5.4.2 ArgoCD reconciliation (downstream of self-reg)
-- B-0834 install log preservation (would have diagnosed Bug 2a faster — composes)
-- B-0833 auth tension (Bug 2a is concrete instance of the interactive-login vs token-baked tension)
+- 081KSGS9H0008QG0R00120EEHM (this row — Bug 2a + 2b empirical anchors land in body)
+- 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 self-registration (the step Bug 2a blocks)
+- 081KSGS9H0008QG0R002K93MWX iter-5.4.2 ArgoCD reconciliation (downstream of self-reg)
+- 081KSGS9H0008QG0R001RR3ZXQ install log preservation (would have diagnosed Bug 2a faster — composes)
+- 081KSGS9H0008QG0R003JNSVR5 auth tension (Bug 2a is concrete instance of the interactive-login vs token-baked tension)
 
 ## Substrate-honest framing
 
 This is a continuation of the autonomous-loop physical-test fix cycle. Per Aaron's "great iteration we learned a lot" the loop is: test → bug → fix → re-flash → re-test. Bug 1 + Bug 3a + Bug 3b shipped in prior PRs this session; Bug 2 was diagnosis-dependent; the 2nd test surfaced it as two distinct sub-bugs (2a + 2b) with concrete fix paths.
 
-Per \`.claude/rules/verify-existing-substrate-before-authoring.md\`: substrate-inventory pass found B-0835 already names "gh login not respected" at Bug 2 scope; this PR extends with 2 specific sub-bugs rather than minting parallel substrate.
+Per \`.claude/rules/verify-existing-substrate-before-authoring.md\`: substrate-inventory pass found 081KSGS9H0008QG0R00120EEHM already names "gh login not respected" at Bug 2 scope; this PR extends with 2 specific sub-bugs rather than minting parallel substrate.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

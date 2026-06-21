@@ -14,7 +14,7 @@ resolved to Kestrel-grade synthesis (§5).
 
 ## 1. A room = a LinguisticSeed instance
 
-A **room** is not bespoke; it is an instance of the seed language (`src/Core/LinguisticSeed.fs`, B-0204):
+A **room** is not bespoke; it is an instance of the seed language (`src/Core/LinguisticSeed.fs`, 081KQTPYE0008QG0R0028V263Z):
 
 - **seed** — the base kernel (the carved-sentence/verb core every room starts from);
 - **extensions** — composable **extension packs** (`Pack`/`composePacks`, OCP: add a pack to extend, never

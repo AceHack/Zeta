@@ -1,6 +1,5 @@
 ---
-id: B-0035
-zetaid: 081KQ3HBZ0008QG0R003002VT6
+id: 081KQ3HBZ0008QG0R003002VT6
 priority: P3
 status: open
 title: "Heaven-on-earth fixed point" naming review — find a less-contentious term for the Maji-Messiah-Spectre-Superfluid framework's attractor / fixed-point concept; current naming carries religious-political baggage that may distract from the math
@@ -15,7 +14,7 @@ tags: [naming, vocabulary, framework-discipline, maji-messiah, superfluid-ai, at
 type: feature
 ---
 
-# B-0035 — "Heaven-on-earth fixed point" naming review (less-contentious term needed)
+# 081KQ3HBZ0008QG0R003002VT6 — "Heaven-on-earth fixed point" naming review (less-contentious term needed)
 
 ## Origin
 

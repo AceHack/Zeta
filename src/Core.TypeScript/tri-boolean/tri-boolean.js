@@ -1,4 +1,4 @@
-// Tri-boolean digital qubit -- operations (B-0944, TS / distribution).
+// Tri-boolean digital qubit -- operations (081KSV2WD0008QG0R00051XS0N, TS / distribution).
 import { T, F, N } from "./types";
 /** Construct a certain cell from a boolean. */
 export const fromBool = (b) => (b ? T : F);

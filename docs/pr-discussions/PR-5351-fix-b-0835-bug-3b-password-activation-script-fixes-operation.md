@@ -1,6 +1,6 @@
 ---
 pr_number: 5351
-title: "fix(B-0835 Bug 3b): password activation-script \u2014 fixes operationally-ignored custom password (timing/path-mismatch root cause)"
+title: "fix(081KSGS9H0008QG0R00120EEHM Bug 3b): password activation-script \u2014 fixes operationally-ignored custom password (timing/path-mismatch root cause)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T23:16:17Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:30:29Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5351: fix(B-0835 Bug 3b): password activation-script — fixes operationally-ignored custom password (timing/path-mismatch root cause)
+# PR #5351: fix(081KSGS9H0008QG0R00120EEHM Bug 3b): password activation-script — fixes operationally-ignored custom password (timing/path-mismatch root cause)
 
 ## PR description
 
 ## Summary
 
-Fixes B-0835 Bug 3b — the custom password the operator set during install was operationally ignored because of a build-time-eval vs install-time-write path mismatch.
+Fixes 081KSGS9H0008QG0R00120EEHM Bug 3b — the custom password the operator set during install was operationally ignored because of a build-time-eval vs install-time-write path mismatch.
 
 ## Root cause
 
@@ -83,7 +83,7 @@ Operator 2026-05-26 physical hardware-support test: \"the password i set it stil
 
 ## Pull request overview
 
-Fixes B-0835 Bug 3b in the NixOS install flow where an operator-provided password hash was ignored due to evaluation-time file reads pointing at the wrong root (live ISO vs install target) and/or being blocked in pure evaluation.
+Fixes 081KSGS9H0008QG0R00120EEHM Bug 3b in the NixOS install flow where an operator-provided password hash was ignored due to evaluation-time file reads pointing at the wrong root (live ISO vs install target) and/or being blocked in pure evaluation.
 
 **Changes:**
 - Removes evaluation-time `builtins.readFile`/`builtins.pathExists` password-hash injection logic.

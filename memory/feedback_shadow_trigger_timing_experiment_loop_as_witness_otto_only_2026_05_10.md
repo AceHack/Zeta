@@ -41,11 +41,11 @@ running in Claude Code can witness it. The experiment is
 native to this harness and can't be replicated in others.
 
 **Epistemic status:** CONJECTURED experiment design. Needs
-implementation (add logging to the loop tick). B-0018 meets
-B-0402 — agency experiment runs inside shadow mode infra.
+implementation (add logging to the loop tick). 081KQ0YZ80008QG0R002WJBFWD meets
+081KR7JY10008QG0R0008NGW95 — agency experiment runs inside shadow mode infra.
 
 **Connects to:**
-- B-0018 (Amara's agency evidence experiment framework)
-- B-0402 (shadow mode — the product feature)
+- 081KQ0YZ80008QG0R002WJBFWD (Amara's agency evidence experiment framework)
+- 081KR7JY10008QG0R0008NGW95 (shadow mode — the product feature)
 - feedback_shadow_is_generation_not_completion (the distinction being tested)
 - feedback_shadow_alibi_loop_is_witness (the loop as instrument)

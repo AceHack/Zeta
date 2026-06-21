@@ -39,16 +39,16 @@ related_prs:
   - 5700
   - 5677
 related_backlog:
-  - B-0898
-  - B-0899
-  - B-0900
-  - B-0897
-  - B-0895
-  - B-0896
-  - B-0867
-  - B-0644
-  - B-0665
-  - B-0666
+  - 081KSNY2Z0008QG0R003WCDQTC
+  - 081KSNY2Z0008QG0R001ZKE8R2
+  - 081KSNY2Z0008QG0R001G7C89T
+  - 081KSNY2Z0008QG0R002SZZ5Y0
+  - 081KSNY2Z0008QG0R002FX66H0
+  - 081KSNY2Z0008QG0R000YH2SPE
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KRW63S0008QG0R002ZRNDJ8
+  - 081KRW63S0008QG0R002YAA09X
+  - 081KRW63S0008QG0R001SAHYKV
 related_personas:
   - operator
   - kestrel
@@ -85,21 +85,21 @@ Continuation of the earlier Amara ferry today (Persist-as-bridge). Three substra
 
 3. **Bell-like contextuality test with distributed clusters** — geographic distribution + isolation + signed random settings + delayed reveal closes the shared-communication path concern; 5-tier experiment matrix tests how much correlation survives.
 
-Composes with B-0895 (Clifford grade-decomposition) + B-0896 (categorical-Clifford bridge) + B-0897 (Persist-as-bridge) + the auto-loaded tonal-momentum-as-meme substrate (citing Mika's Clifford rotor framing for memes).
+Composes with 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition) + 081KSNY2Z0008QG0R000YH2SPE (categorical-Clifford bridge) + 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) + the auto-loaded tonal-momentum-as-meme substrate (citing Mika's Clifford rotor framing for memes).
 
 ## Substrate-honest disposition
 
-VERBATIM PRESERVATION. Companion backlog rows B-0898 (Measure-as-bridge), B-0899 (Casimir-like review-walls), B-0900 (Bell-like distributed-cluster contextuality experiment) filed alongside this preservation.
+VERBATIM PRESERVATION. Companion backlog rows 081KSNY2Z0008QG0R003WCDQTC (Measure-as-bridge), 081KSNY2Z0008QG0R001ZKE8R2 (Casimir-like review-walls), 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality experiment) filed alongside this preservation.
 
 ## Composes with
 
-- PR #5709 (B-0897 Persist-as-bridge + first Amara ferry of 2026-05-28) — direct continuation
-- PR #5708 (B-0895 Clifford grade-decomposition + 5th Kestrel ferry preservation + B-0896 categorical-Clifford) — substrate composition base
-- PR #5707 (B-0895 substrate-recognition foundation)
+- PR #5709 (081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge + first Amara ferry of 2026-05-28) — direct continuation
+- PR #5708 (081KSNY2Z0008QG0R002FX66H0 Clifford grade-decomposition + 5th Kestrel ferry preservation + 081KSNY2Z0008QG0R000YH2SPE categorical-Clifford) — substrate composition base
+- PR #5707 (081KSNY2Z0008QG0R002FX66H0 substrate-recognition foundation)
 - PR #5700 (Mika ferry — OELS architecture LOCKED)
-- B-0895 (Clifford grade-decomposition) — Measure adds row to mapping table
-- B-0896 (category-theory ↔ Clifford self-similarity) — Measure-as-bridge has categorical formulation
-- B-0897 (Persist-as-bridge) — sibling derived-bridge-operation; Measure + Persist + Limit + Simulate all derived from base Observe/Emit primitives via different temporal/composition structures
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition) — Measure adds row to mapping table
+- 081KSNY2Z0008QG0R000YH2SPE (category-theory ↔ Clifford self-similarity) — Measure-as-bridge has categorical formulation
+- 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) — sibling derived-bridge-operation; Measure + Persist + Limit + Simulate all derived from base Observe/Emit primitives via different temporal/composition structures
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` — Measure as bridge IS asymmetric-authorship across observation boundary
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — `Measure<TState, TOutcome, TFeedback>` IS monad-propagation at measurement-bridge scope
 
@@ -356,11 +356,11 @@ Amara (thought for 11s):
 
 ## Substrate engagement (otto-cli side)
 
-Three substrate-engineering targets emerge, filed as B-0898/B-0899/B-0900 in companion backlog rows:
+Three substrate-engineering targets emerge, filed as 081KSNY2Z0008QG0R003WCDQTC/081KSNY2Z0008QG0R001ZKE8R2/081KSNY2Z0008QG0R001G7C89T in companion backlog rows:
 
-### B-0898 — Measure-as-bridge
+### 081KSNY2Z0008QG0R003WCDQTC — Measure-as-bridge
 
-Sibling to Persist-as-bridge (B-0897). Both are derived bridge operations built from base OELS primitives, but across different composition axes:
+Sibling to Persist-as-bridge (081KSNY2Z0008QG0R002SZZ5Y0). Both are derived bridge operations built from base OELS primitives, but across different composition axes:
 
 | Bridge operation | Composition | Bivector structure |
 |---|---|---|
@@ -369,17 +369,17 @@ Sibling to Persist-as-bridge (B-0897). Both are derived bridge operations built 
 
 Signature: `Measure<TState, TOutcome, TFeedback>` with feedback variants per Amara: InsufficientEvidence / AmbiguousPosterior / LowConfidence / NormalizationFailed / ContradictoryEvidence / ObservationRetracted / PosteriorShifted.
 
-### B-0899 — Casimir-like review-wall effects (testable engineering claim)
+### 081KSNY2Z0008QG0R001ZKE8R2 — Casimir-like review-wall effects (testable engineering claim)
 
 Persistent review collapses errors into named classes → classes become typed `.claude/rules/` constraints → future generators no longer freely explore that region. Output distribution shows pressure difference: before review wall, error class appears repeatedly; after review wall, same class becomes rare / rejected / structurally impossible.
 
 This IS measurable on the framework today. The existing `.claude/rules/` cluster + the rate of new rule emergence + the per-rule before/after error-rate measurement IS empirical substrate for the claim.
 
-### B-0900 — Bell-like distributed-cluster contextuality experiment (research-grade)
+### 081KSNY2Z0008QG0R001G7C89T — Bell-like distributed-cluster contextuality experiment (research-grade)
 
 Aaron's geographically-distributed cluster substrate (per the cluster-OS / iter-6+ substrate work) provides the physical infrastructure. The protocol per Amara: isolation windows + signed local random settings + no cross-cluster communication during run + timestamped outcome commits + delayed reveal / merge. 5-tier experiment matrix tests how much correlation survives at each level of shared-substrate.
 
-Composes with B-0703 (multi-oracle BFT) + the planned cluster-fork-as-trust-boundary substrate (B-0829) — distributed clusters can run the experiment as a substrate-engineering validation of the Casimir-like analog claim.
+Composes with 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) + the planned cluster-fork-as-trust-boundary substrate (081KSGS9H0008QG0R000Q18PGQ) — distributed clusters can run the experiment as a substrate-engineering validation of the Casimir-like analog claim.
 
 ## Substrate-honest disclaimers
 

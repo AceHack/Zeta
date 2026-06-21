@@ -1,9 +1,8 @@
 ---
-id: B-0768
-zetaid: 081KSE6WT0008QG0R0004ZPPRP
+id: 081KSE6WT0008QG0R0004ZPPRP
 priority: P1
 status: open
-title: Itron strategy — co-create standards with incumbents (companion to ServiceTitan route B-0765); dual-mode adoption playbook
+title: Itron strategy — co-create standards with incumbents (companion to ServiceTitan route 081KSE6WT0008QG0R00063R6HB); dual-mode adoption playbook
 effort: L
 ask: aaron 2026-05-25
 created: 2026-05-25
@@ -11,12 +10,12 @@ last_updated: 2026-05-25
 depends_on:
   - 081KSE6WT0008QG0R00063R6HB
 composes_with:
-  - B-0741
-  - B-0744
-  - B-0747
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R000SH6E0R
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -34,7 +33,7 @@ strategy: *"This was also Itron strategy negotation standards and
 even create them with cisco cause they were incumbent and ST is
 up and commer."*
 
-B-0765 captured the ServiceTitan strategy (up-and-comer plugs
+081KSE6WT0008QG0R00063R6HB captured the ServiceTitan strategy (up-and-comer plugs
 into existing standards built by incumbents; delivers new value
 within them). The Itron pattern is the **incumbent-with-incumbent
 sharpening**: when both sides are established players, **co-create**
@@ -57,7 +56,7 @@ Zeta cluster substrate:
 
 | Mode | When applies to Zeta | Tactical execution |
 |---|---|---|
-| **Up-and-comer (ServiceTitan)** | Today — Zeta is new entrant in cluster-infra | Plug into existing standards (k8s CRDs, OAM, Crossplane, Helm, CNCF projects per B-0764). Deliver new value within them. Per B-0765 — the existing strategic filter. |
+| **Up-and-comer (ServiceTitan)** | Today — Zeta is new entrant in cluster-infra | Plug into existing standards (k8s CRDs, OAM, Crossplane, Helm, CNCF projects per 081KSE6WT0008QG0R0009YYNP4). Deliver new value within them. Per 081KSE6WT0008QG0R00063R6HB — the existing strategic filter. |
 | **Incumbent-with-incumbent (Itron)** | Future — when Zeta has meaningful adoption + a layer where Zeta is the established player + needs another incumbent's collaboration | Co-create new standards with another incumbent. Joint moat. Examples: NVIDIA on GPU scheduling primitives, hyperscalers on AI-workload portability formats, CNCF projects on Zeta-grounded extensions to their CRDs |
 
 The substrate-honest argument: **the strategic position determines
@@ -72,13 +71,13 @@ varies per axis:
 
 | Axis | Zeta's positioning today | Playbook applies |
 |---|---|---|
-| K8s control plane | Up-and-comer | ServiceTitan (B-0765) — plug into existing CRD / Helm / GitOps standards |
-| CNCF ecosystem composition | Up-and-comer | ServiceTitan + B-0764 force-multipliers |
+| K8s control plane | Up-and-comer | ServiceTitan (081KSE6WT0008QG0R00063R6HB) — plug into existing CRD / Helm / GitOps standards |
+| CNCF ecosystem composition | Up-and-comer | ServiceTitan + 081KSE6WT0008QG0R0009YYNP4 force-multipliers |
 | AI-cluster substrate (workload-class scheduling, GPU topology, model locality) | **Pioneer** — there is no incumbent at this specific intersection | **Itron** — co-create standards with NVIDIA + hyperscalers + AI-framework vendors who all have incumbent positions adjacent to this gap |
 | Determinism for distributed systems (DST) | Pioneer (TigerBeetle + FoundationDB + Zeta are the only serious DST shipping substrates) | **Itron** — co-create DST standards with TigerBeetle / FoundationDB / Antithesis as incumbents in their respective DST contexts |
 | Algebra-grounded stream processing (DBSP) | Pioneer (Materialize, Feldera/dbsp, Zeta) | **Itron** — co-create DBSP standards with Materialize + Feldera |
 | Retraction-native consent algebra | Pioneer (Zeta is the only serious shipping substrate) | **Itron** — gather other consent-algebra-curious incumbents (Sandstorm, MaidSafe alumni, etc.) and co-author |
-| Reference architecture for AI clusters (B-0761) | Pioneer | **Itron** — co-create with anchor early-adopter labs / companies running real AI clusters who haven't yet codified their reference |
+| Reference architecture for AI clusters (081KSE6WT0008QG0R0015ZF2G6) | Pioneer | **Itron** — co-create with anchor early-adopter labs / companies running real AI clusters who haven't yet codified their reference |
 
 The pattern: **wherever Zeta is up-and-comer, ServiceTitan-plug-in;
 wherever Zeta is pioneer in a gap with adjacent incumbents,
@@ -87,7 +86,7 @@ Itron-co-create**.
 ## Acceptance
 
 - [ ] Document the dual-mode playbook explicitly in
-      `docs/strategic-substrate.md` (or compose with B-0765's
+      `docs/strategic-substrate.md` (or compose with 081KSE6WT0008QG0R00063R6HB's
       document if filed there)
 - [ ] Per-axis positioning audit: classify Zeta's current
       position per substrate axis (control-plane, CNCF
@@ -117,42 +116,42 @@ Itron-co-create**.
 - [ ] Sequencing: Itron-mode engagements require having
       something to bring to the table — must follow meaningful
       Zeta substrate adoption + working reference; not pursued
-      until after B-0754 v1 ships + 3-node reference works
-      + first wave of B-0766 binary-compatible impls land
+      until after 081KSGS9H0008QG0R002T3BJ2R v1 ships + 3-node reference works
+      + first wave of 081KSE6WT0008QG0R00049EFBD binary-compatible impls land
 - [ ] Documentation: README updates to make the dual-mode
       strategy legible to operators + potential co-creation
       partners
 
-## Composition with B-0765 (ServiceTitan route)
+## Composition with 081KSE6WT0008QG0R00063R6HB (ServiceTitan route)
 
-B-0765 + B-0768 are not alternatives; they're **complementary
+081KSE6WT0008QG0R00063R6HB + 081KSE6WT0008QG0R0004ZPPRP are not alternatives; they're **complementary
 modes of the same standards-layer strategy**:
 
-- B-0765 says: use existing standards as the substrate layer
+- 081KSE6WT0008QG0R00063R6HB says: use existing standards as the substrate layer
   Zeta operates within
-- B-0768 says: when Zeta has positioning to co-create new
+- 081KSE6WT0008QG0R0004ZPPRP says: when Zeta has positioning to co-create new
   standards (because there's no incumbent in a specific gap),
   do so with adjacent incumbents
 - Both share: standards layer is where negotiation high seat
-  lives (B-0763)
+  lives (081KSE6WT0008QG0R000WVYAJ2)
 - Both share: ontology negotiation at standards layer is the
-  load-bearing leverage point (B-0741)
+  load-bearing leverage point (081KSE6WT0008QG0R002CC6314)
 - The choice between them is per-axis, per-positioning, not
   global
 
-## Composition with B-0766 (slow-replace k8s) + B-0767 (scheduler-first)
+## Composition with 081KSE6WT0008QG0R00049EFBD (slow-replace k8s) + 081KSE6WT0008QG0R0016CEE2Z (scheduler-first)
 
-The Itron mode informs HOW B-0766's binary-compatible Zeta-native
+The Itron mode informs HOW 081KSE6WT0008QG0R00049EFBD's binary-compatible Zeta-native
 implementations get adopted by the broader ecosystem:
 
-- B-0766 ships Zeta-native CNI / CSI / Operator SDK / etc. as
+- 081KSE6WT0008QG0R00049EFBD ships Zeta-native CNI / CSI / Operator SDK / etc. as
   binary-compatible drop-ins
 - Operators using vanilla k8s can swap in any Zeta-native impl
-  via the existing standard interface (per B-0765 ServiceTitan
+  via the existing standard interface (per 081KSE6WT0008QG0R00063R6HB ServiceTitan
   route)
 - BUT — the Zeta-native impls also have novel substrate that
   isn't expressible in the existing standard interface (DBSP
-  decisions in scheduler per B-0767; algebra-grounded snapshots
+  decisions in scheduler per 081KSE6WT0008QG0R0016CEE2Z; algebra-grounded snapshots
   in CSI; etc.)
 - Itron mode: co-author standard EXTENSIONS to the existing
   interface (e.g., a CNCF-blessed extension to the scheduler
@@ -166,39 +165,39 @@ rather than just consuming it.
 
 ## Composes with
 
-- B-0741 — ontology negotiation (the substrate that operates at
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (the substrate that operates at
   the standards layer per both ServiceTitan + Itron playbooks)
-- B-0744 — FIDO2/WebAuthn (B-0765 ServiceTitan example —
+- 081KSE6WT0008QG0R000SH6E0R — FIDO2/WebAuthn (081KSE6WT0008QG0R00063R6HB ServiceTitan example —
   existing standards Zeta plugs into; could become Itron if
   Zeta co-authors next WebAuthn revision)
-- B-0747 — git-native per-machine state (Itron candidate: co-
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (Itron candidate: co-
   author with HashiCorp Terraform / Pulumi / Crossplane on
   per-machine state portability standard)
-- B-0748 — kro/Crossplane (Itron candidate: co-author kro's
+- 081KSE6WT0008QG0R002E6P098 — kro/Crossplane (Itron candidate: co-author kro's
   successor / Crossplane v3 with project maintainers)
-- B-0749 — KubeVela/OAM (Itron candidate: contribute to OAM v2
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM (Itron candidate: contribute to OAM v2
   via OAM working group)
-- B-0754 — zero-typing first-boot (Itron candidate later: NixOS
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (Itron candidate later: NixOS
   + community on installer-flow standards once Zeta substrate
   proves itself)
-- B-0761 — open reference architecture (Itron candidate: co-
+- 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (Itron candidate: co-
   author "AI cluster reference architecture" with NVIDIA +
   CoreWeave + Modal + RunPod once Zeta reference is established)
-- B-0762 — auto-submit-back telemetry (Itron candidate: co-
+- 081KSE6WT0008QG0R003FG3E8R — auto-submit-back telemetry (Itron candidate: co-
   author with OpenTelemetry community on telemetry-driven-PR
   format)
-- B-0763 — cloud-native plugins fit Zeta interfaces (sharpened:
+- 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces (sharpened:
   ServiceTitan-mode for k8s CRDs; Itron-mode for AI-specific
   interfaces where Zeta + NVIDIA + hyperscalers all have stake)
-- B-0764 — CNCF force multipliers (ServiceTitan-mode adoption
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF force multipliers (ServiceTitan-mode adoption
   today; Itron-mode contribution to CNCF projects' next
   revisions over time)
-- B-0765 — ServiceTitan route (the up-and-comer playbook this
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (the up-and-comer playbook this
   row's Itron pattern complements)
-- B-0766 — slow-replace k8s (the binary-compat impls ship as
+- 081KSE6WT0008QG0R00049EFBD — slow-replace k8s (the binary-compat impls ship as
   ServiceTitan-mode adoption initially; Itron-mode standard
   extensions grow the standards layer over time)
-- B-0767 — scheduler-first (the first Zeta-native impl;
+- 081KSE6WT0008QG0R0016CEE2Z — scheduler-first (the first Zeta-native impl;
   initial sub-waves are ServiceTitan-mode; later sub-waves
   D + E with DBSP + Bayesian + multi-objective could grow
   into Itron-mode co-authored standard extensions to the
@@ -206,15 +205,15 @@ rather than just consuming it.
 
 ## When this row's playbook becomes active
 
-- **Wave 0 (today)**: B-0765 ServiceTitan-mode dominant; this row
+- **Wave 0 (today)**: 081KSE6WT0008QG0R00063R6HB ServiceTitan-mode dominant; this row
   exists as substrate; no active Itron engagements yet
-- **Wave 1 (after first B-0754 hardware-validated reference + 3-node
-  cluster + first wave of B-0766 Zeta-native impls)**: Itron-mode
+- **Wave 1 (after first 081KSGS9H0008QG0R002T3BJ2R hardware-validated reference + 3-node
+  cluster + first wave of 081KSE6WT0008QG0R00049EFBD Zeta-native impls)**: Itron-mode
   engagement opportunities begin; identify partners; preliminary
   conversations
 - **Wave 2 (after Zeta cluster substrate has meaningful
   external adoption — say, 100+ in-the-wild installs per
-  B-0762 telemetry, or first external production deployment)**:
+  081KSE6WT0008QG0R003FG3E8R telemetry, or first external production deployment)**:
   active Itron-mode co-creation engagements; first joint
   standard authored with an incumbent
 - **Wave 3 (after one joint standard ships and is
@@ -236,7 +235,7 @@ substrate-honest claim is:
 
 - The pattern is real + well-documented in Itron's empirical
   history
-- The pattern composes with B-0765 ServiceTitan-route as
+- The pattern composes with 081KSE6WT0008QG0R00063R6HB ServiceTitan-route as
   complementary modes
 - The pattern becomes available to Zeta in specific futures
   (Wave 2+ in the sequencing above)
@@ -265,7 +264,7 @@ under pressure) is the bandwidth-engineering payoff.
 Aaron 2026-05-25, mid-iteration-2 wait, naming the second
 empirical anchor (Itron + Cisco co-creating utility-grid
 standards) for the standards-layer-as-negotiation-high-seat
-strategy. Companion to B-0765 (ServiceTitan up-and-comer mode).
+strategy. Companion to 081KSE6WT0008QG0R00063R6HB (ServiceTitan up-and-comer mode).
 
 **Empirical provenance** (Aaron 2026-05-25 sharpening): *"ST was
 two guys in a garage i saw both"* — Aaron watched both companies
@@ -276,12 +275,12 @@ operational experience at both ends of the company-stage
 spectrum, not abstract case-study analysis.
 
 **Recalibration**: Zeta is at garage-equivalent stage today
-(B-0754 iteration-2 in flight on first node). ServiceTitan
+(081KSGS9H0008QG0R002T3BJ2R iteration-2 in flight on first node). ServiceTitan
 started ServiceTitan-mode from garage day-1 and it worked from
 day-1. The playbook applies NOW — not as future aspiration, not
 after Zeta "earns" something abstract. The earning IS the
-substrate-engineering work already happening (B-0754 / B-0759 /
-B-0761 / B-0762 / B-0763 / B-0764 / B-0765 / B-0766 / B-0767).
+substrate-engineering work already happening (081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D /
+081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R0016CEE2Z).
 Aaron isn't recalling history; he's executing the same playbook
 he's seen work twice. The "When this row's playbook becomes
 active" section above retains its wave-1/wave-2/wave-3 sequencing

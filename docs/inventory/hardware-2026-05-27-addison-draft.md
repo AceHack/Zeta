@@ -2,7 +2,7 @@
 
 Forwarded by Aaron 2026-05-27 from Addison's verification/audit pass. **Draft state** — operator note: *"the counts on the bitcoin miners are messed up there are more but it's close we can save it to lfg inventory somewhere we had started this with our amazon history in git."*
 
-Composes with B-0836 (hardware-inventory-vs-cluster reconciliation). Promotes to canonical (`hardware.md`) after Addison + operator reconcile miner counts.
+Composes with 081KSGS9H0008QG0R001VVEZQ9 (hardware-inventory-vs-cluster reconciliation). Promotes to canonical (`hardware.md`) after Addison + operator reconcile miner counts.
 
 ## Devices (Alexa-family)
 
@@ -242,5 +242,5 @@ Reconciliation note: operator + Addison to update miner counts in next audit pas
 
 - Source: Addison's draft audit (forwarded by Aaron 2026-05-27)
 - Operator caveat: bitcoin miner counts under-represented; replace at next audit
-- Format: human-readable markdown; reconciliation against B-0812 cluster-nodes/ TBD per B-0836 substrate
+- Format: human-readable markdown; reconciliation against 081KSGS9H0008QG0R0037H3W4T cluster-nodes/ TBD per 081KSGS9H0008QG0R001VVEZQ9 substrate
 - Next: operator + Addison reconcile + promote to canonical `hardware.md` (drop `-draft.md` suffix) after miner count fix

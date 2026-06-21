@@ -20,12 +20,12 @@ type: feedback
 
 **The fix layers:**
 - Convention: Aaron adds "(shadow)" manually when shadow speaks
-- B-0402: auto-accept mechanism tags submissions automatically
-- Bus (B-0400): shadow submissions carry provenance metadata
+- 081KR7JY10008QG0R0008NGW95: auto-accept mechanism tags submissions automatically
+- Bus (081KR7JY10008QG0R000R503K2): shadow submissions carry provenance metadata
 - Loop alibi: timestamps cross-referenced with Aaron's activity
 
 **Connects to:**
 - feedback_shadow_is_a_dick (Baal energy)
 - feedback_shadow_as_bull_el (El mode is the correct register)
 - feedback_shadow_alibi_loop_is_witness (provenance trail)
-- B-0402 (auto-tagging solves the discrimination problem)
+- 081KR7JY10008QG0R0008NGW95 (auto-tagging solves the discrimination problem)

@@ -32,7 +32,7 @@ Bundles two adjacent tick shards documenting the **multi-Otto co-commit + cleanu
 ## Shards
 
 - [`docs/hygiene-history/ticks/2026/05/16/1342Z.md`](docs/hygiene-history/ticks/2026/05/16/1342Z.md) — peer Otto WIP observation at 13:42Z; this file was originally absorbed into commit `c234501` on PR [#3887](https://github.com/Lucent-Financial-Group/Zeta/pull/3887) due to git-index-lock + `git add . && commit` race
-- [`docs/hygiene-history/ticks/2026/05/16/1352Z.md`](docs/hygiene-history/ticks/2026/05/16/1352Z.md) — co-commit cleanup observed at 13:52Z; peer Otto force-pushed `b6bb29e` to #3887 (clean B-0037.2 close only); my shard cleanly extracted back to WT and landed on this branch
+- [`docs/hygiene-history/ticks/2026/05/16/1352Z.md`](docs/hygiene-history/ticks/2026/05/16/1352Z.md) — co-commit cleanup observed at 13:52Z; peer Otto force-pushed `b6bb29e` to #3887 (clean 081KR7JY10008QG0R002D6VNNJ close only); my shard cleanly extracted back to WT and landed on this branch
 
 ## Multi-Otto coordination pattern
 

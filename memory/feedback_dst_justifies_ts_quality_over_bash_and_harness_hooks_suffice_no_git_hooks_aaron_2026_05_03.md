@@ -1,6 +1,6 @@
 ---
 name: DST is the empirical quality justification for TS-over-bash; vibe-coders always have a harness so harness hooks suffice and git hooks are unnecessary (Aaron 2026-05-03)
-description: 2026-05-03; Aaron-named two architectural justifications. (1) The TS-over-bash quality preference is grounded in Deterministic Simulation Testing — proper DST is much harder in bash than TS. This is empirical substrate-quality grounding, not just preference. Composes with Otto-272 DST-everywhere + B-0156 TS standardization. (2) Vibe-coders are never without a harness of some kind (Claude Code, Codex, Cursor, etc.); harnesses provide TS runtime (bun) → harness hooks suffice for skill-bundle distribution → git hooks are unnecessary. This simplifies B-0173 (hook authoring) scope: harness hooks + CI only, NOT git hooks. The B-0173 ground-truth-recovery (PR #1280) was wrong — had 3 hook types including git hooks. Aaron 2026-05-03 verbatim *"to back up my bash is lower quality claim i offer the difficlut of proper Deterministic Simulation in bash vs ts, this is where my quality assesment comes from. i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind"* + *"ts is great"* + *"that's aweseom"*. Future-Otto: TS is canonical; harness hooks are the distribution mechanism; bash exists only for pre-install scripts where the developer/vibe-coder has nothing else.
+description: 2026-05-03; Aaron-named two architectural justifications. (1) The TS-over-bash quality preference is grounded in Deterministic Simulation Testing — proper DST is much harder in bash than TS. This is empirical substrate-quality grounding, not just preference. Composes with Otto-272 DST-everywhere + 081KQGDBJ0008QG0R000A4EZS5 TS standardization. (2) Vibe-coders are never without a harness of some kind (Claude Code, Codex, Cursor, etc.); harnesses provide TS runtime (bun) → harness hooks suffice for skill-bundle distribution → git hooks are unnecessary. This simplifies 081KQNJ500008QG0R003ZC6PK8 (hook authoring) scope: harness hooks + CI only, NOT git hooks. The 081KQNJ500008QG0R003ZC6PK8 ground-truth-recovery (PR #1280) was wrong — had 3 hook types including git hooks. Aaron 2026-05-03 verbatim *"to back up my bash is lower quality claim i offer the difficlut of proper Deterministic Simulation in bash vs ts, this is where my quality assesment comes from. i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind"* + *"ts is great"* + *"that's aweseom"*. Future-Otto: TS is canonical; harness hooks are the distribution mechanism; bash exists only for pre-install scripts where the developer/vibe-coder has nothing else.
 type: feedback
 ---
 
@@ -32,7 +32,7 @@ This is **empirical, testable substrate-quality grounding**, not just a preferen
 Composes with:
 
 - **Otto-272 DST-everywhere** — DST is the universal testing discipline; TS supports it; bash doesn't
-- **B-0156 TS standardization** — port every .sh outside install graph + every .py to TS. The DST justification is the architectural rationale
+- **081KQGDBJ0008QG0R000A4EZS5 TS standardization** — port every .sh outside install graph + every .py to TS. The DST justification is the architectural rationale
 - **The 4-shell bash-compatibility target (Otto-235)** — narrowed to: bash exists ONLY where DST isn't required (pre-install scripts before bun is available)
 
 ## Insight 2 — vibe-coders always have a harness; harness hooks suffice (git hooks are antipattern)
@@ -85,34 +85,34 @@ This memo's table covers **end-user personas** (axis 2). Internal named-agent pe
 
 So **no persona currently needs git hooks** — contributors/maintainers don't need them because the harness covers the same ground; skill-bundle users can't have them anyway. The contributor-vs-skill-bundle distinction matters for **what's possible** (this could always change in the future, so it's a useful distinction to track per Aaron 2026-05-03), but the **current conclusion is uniform**.
 
-**Conclusion**: Zeta has NO non-antipattern git-hook use case across any current persona. The persona-table is a useful future-flex point — if a future persona has different runtime availability or different security needs, the table accommodates new rows. B-0173 should be harness hooks + CI only for now; revisit if persona evolution warrants.
+**Conclusion**: Zeta has NO non-antipattern git-hook use case across any current persona. The persona-table is a useful future-flex point — if a future persona has different runtime availability or different security needs, the table accommodates new rows. 081KQNJ500008QG0R003ZC6PK8 should be harness hooks + CI only for now; revisit if persona evolution warrants.
 
-Architectural simplification for B-0173 (hook authoring) and skill-bundle distribution (B-0172):
+Architectural simplification for 081KQNJ500008QG0R003ZC6PK8 (hook authoring) and skill-bundle distribution (081KQNJ500008QG0R001VGMS5G):
 
 - **Vibe-coders always have at least one harness** (Claude Code, Codex, Cursor, Aider, Gemini-CLI, etc.)
 - **Harnesses provide TS runtime** (bun, node, etc.) as part of their installation
 - **Skill-bundle users get TS-ready environment by default**
 - **Harness hooks** (e.g., Claude Code's `.claude/settings.json` hooks field) execute commands in the harness's runtime → can call TS directly
 
-Therefore: **git hooks are unnecessary for skill-bundle distribution**. B-0173's scope simplifies to:
+Therefore: **git hooks are unnecessary for skill-bundle distribution**. 081KQNJ500008QG0R003ZC6PK8's scope simplifies to:
 
 1. ~~`tools/git/hooks/pre-commit`~~ — REMOVED. Not needed; harness hooks cover the use case
 2. ~~`tools/git/hooks/commit-msg`~~ — REMOVED. Same
 3. **Harness hooks** (Claude Code `.claude/settings.json` hooks, Codex equivalent) — call `bun tools/substrate-claim-checker/check-counts.ts` or similar
 4. **CI check on PR descriptions** (`.github/workflows/substrate-claim-checker.yml`) — still in scope; runs on the host
 
-The **B-0173 ground-truth-recovery (PR #1280)** was WRONG when it listed 3 hook types including git hooks. The correct scope is harness hooks + CI only. This memo's filing initiates the correction.
+The **081KQNJ500008QG0R003ZC6PK8 ground-truth-recovery (PR #1280)** was WRONG when it listed 3 hook types including git hooks. The correct scope is harness hooks + CI only. This memo's filing initiates the correction.
 
 Composes with:
 
-- **B-0173** (hook authoring) — scope simplified
-- **B-0172** (skill-domain plugin packaging) — packaging is harness-bundle-shaped; user always has harness
+- **081KQNJ500008QG0R003ZC6PK8** (hook authoring) — scope simplified
+- **081KQNJ500008QG0R001VGMS5G** (skill-domain plugin packaging) — packaging is harness-bundle-shaped; user always has harness
 - **Cross-disciplinary pattern adoption memo** — Aaron applies DbC (Eiffel/Meyer) at the harness-hook layer, NOT git hook layer
 - **Karpathy edge-runner framing** — vibe-coders are agentic-engineering users; agentic-engineering means harness-mediated; harness-mediated means runtime-available
 
 ## Pre-existing wrong substrate to correct
 
-The B-0173 ground-truth-recovery section in `memory/architectural-intent-guesses/2026-05-03-b-0173-hook-authoring-for-skill-creation-contracts.md` (lines 116-118) has:
+The 081KQNJ500008QG0R003ZC6PK8 ground-truth-recovery section in `memory/architectural-intent-guesses/2026-05-03-b-0173-hook-authoring-for-skill-creation-contracts.md` (lines 116-118) has:
 
 ```
 1. tools/git/hooks/pre-commit (proposed)
@@ -135,13 +135,13 @@ The correction lands in a separate PR; this memo is the substrate that justifies
 
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — skill-design rule 2 (no dynamic commands; use TS files)
 - `memory/feedback_cross_disciplinary_pattern_adoption_aaron_thinking_style_dataVault_at_skill_level_2026_05_03.md` — Aaron's cross-disciplinary pattern adoption (DbC at harness-hook layer)
-- B-0173 (hook authoring) — scope simplification per this memo
-- B-0172 (skill-domain plugin packaging) — distribution mechanism per this memo
-- B-0156 (TS standardization) — DST is the architectural rationale
+- 081KQNJ500008QG0R003ZC6PK8 (hook authoring) — scope simplification per this memo
+- 081KQNJ500008QG0R001VGMS5G (skill-domain plugin packaging) — distribution mechanism per this memo
+- 081KQGDBJ0008QG0R000A4EZS5 (TS standardization) — DST is the architectural rationale
 - Otto-272 DST-everywhere — the empirical quality property TS provides and bash doesn't
 - Otto-235 (bash compatibility 4-shell target) — narrows to "bash for pre-install only"
 - AGENTS.md "The vibe-coded hypothesis" — vibe-coding is agentic-engineering = harness-mediated by definition
 
 ## Carved sentence
 
-**"DST capability is the empirical quality justification for TS-over-bash: proper Deterministic Simulation is much harder in bash than TS. Vibe-coders are never without a harness; harness hooks suffice for skill-bundle distribution; git hooks are unnecessary. B-0173 scope simplifies to harness hooks + CI only (no git hooks). Bash exists in Zeta ONLY for pre-install scripts where DST is unavailable anyway. When justifying TS over bash, cite DST capability — that's stronger than 'bash is just lower quality.'"**
+**"DST capability is the empirical quality justification for TS-over-bash: proper Deterministic Simulation is much harder in bash than TS. Vibe-coders are never without a harness; harness hooks suffice for skill-bundle distribution; git hooks are unnecessary. 081KQNJ500008QG0R003ZC6PK8 scope simplifies to harness hooks + CI only (no git hooks). Bash exists in Zeta ONLY for pre-install scripts where DST is unavailable anyway. When justifying TS over bash, cite DST capability — that's stronger than 'bash is just lower quality.'"**

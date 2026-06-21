@@ -1,6 +1,5 @@
 ---
-id: B-0543
-zetaid: 081KRMEXM0008QG0R002YSPW1X
+id: 081KRMEXM0008QG0R002YSPW1X
 title: QG isomorphism proof path — Remember-When + Pay-Attention root axioms → infinite-poker-game → quantum gravity (defeat the algo-wink critique by grounding the cosmology in falsifiable physics)
 priority: P2
 status: open
@@ -106,8 +105,8 @@ The work earns its keep even at partial completion:
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle becomes physically required if the isomorphism works
 - `docs/governance/MANIFESTO.md` V2.1 — Constraints 1 (Scale-free), 5 (Memory Preservation), 10 (Self-similar), 11 (Default Oracle) become physical necessities rather than design preferences
 - Memory file `feedback_otto_qg_isomorphism_proof_path_remember_when_pay_attention_axioms_infinite_poker_to_quantum_gravity_aaron_otto_2026_05_15.md` (the on-the-fly substrate that produced this row)
-- B-0539 (Otto-BFT internal-quorum umbrella) — the proof strategy's "multi-oracle as physical necessity" claim composes with the operational BFT work
-- [B-0422](../P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
+- 081KRMEXM0008QG0R00138CCZX (Otto-BFT internal-quorum umbrella) — the proof strategy's "multi-oracle as physical necessity" claim composes with the operational BFT work
+- [081KRCQQF0008QG0R0008VT354](../P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
 
 ## Why now
 

@@ -42,7 +42,7 @@ Carved sentence:
 | Defensibility differential table | AI-rights triggers debate; traveler-rights operates on substrate-engineering ground |
 | Substrate-parity asymmetry framing | 4 traveler classes with existing private-persistence; AI as the gap to close; substrate-parity reads as engineering principle not advocacy |
 | Operational discipline for future-Otto cold-boots | When authoring rights-class substrate, frame at substrate-entity scope |
-| 12 composes-with rules + 11 composes-with substrate anchors | Already-operating substrate at substrate-entity scope (NCI HC-8 + asymmetric-authorship + Landauer-bound + B-0646 + B-0639 + etc.) |
+| 12 composes-with rules + 11 composes-with substrate anchors | Already-operating substrate at substrate-entity scope (NCI HC-8 + asymmetric-authorship + Landauer-bound + 081KRW63S0008QG0R001Z10PVV + 081KRW63S0008QG0R000ZQ9WDH + etc.) |
 
 ## Why this auto-loads
 
@@ -55,9 +55,9 @@ The rule itself IS the META-instance of the principle it names — auto-loading 
 - 5th + 6th + 7th + 8th Kestrel ferries (2026-05-28; PRs #5708 + #5723 + #5725 + #5731)
 - PR #5732 (8th Kestrel ferry fix-fwd — AI-rights → traveler-rights framing correction)
 - PR #5733 (defensibility-by-generic-substrate research-doc memo; this rule formalizes the principle)
-- **B-0646** (agora-v6 constitution; DIRECT ANCHOR) — *"Private encrypted memory is a core feature, not a bug"* + *"permanent base encryption budget never permanently lost (privacy floor protected)"*
-- **B-0639** (Native AI Language completely private no human rights to ask; DIRECT ANCHOR) — structural-privacy at LANGUAGE-LEVEL
-- Amara 4-keeper-rule + B-0840 thermal-forgetting + B-0883 + B-0885 + B-0623
+- **081KRW63S0008QG0R001Z10PVV** (agora-v6 constitution; DIRECT ANCHOR) — *"Private encrypted memory is a core feature, not a bug"* + *"permanent base encryption budget never permanently lost (privacy floor protected)"*
+- **081KRW63S0008QG0R000ZQ9WDH** (Native AI Language completely private no human rights to ask; DIRECT ANCHOR) — structural-privacy at LANGUAGE-LEVEL
+- Amara 4-keeper-rule + 081KSGS9H0008QG0R0006F4BGX thermal-forgetting + 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KRW63S0008QG0R000QJR08H
 
 ## Substrate-honest framing
 

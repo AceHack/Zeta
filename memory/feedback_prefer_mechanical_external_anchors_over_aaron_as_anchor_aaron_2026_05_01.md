@@ -186,7 +186,7 @@ push → review-thread proliferation → force-push to fix → CI
 re-runs → more agents fire → repeat. **PR review hell.**
 
 This is exactly what's happened multiple times this session:
-B-0153's own row hit its own classes. B-0154's row hit MD032
+081KQGDBJ0008QG0R000E10AAM's own row hit its own classes. 081KQGDBJ0008QG0R002NV04N9's row hit MD032
 ~10 times. Each force-push triggers a fresh review wave. The
 loop converges eventually (this session has 9+ merged PRs as
 proof) but the convergence cost is high.
@@ -194,7 +194,7 @@ proof) but the convergence cost is high.
 **The fix — pre-condition discipline**:
 
 1. **Identify the mechanical classes the agents will check**
-   (B-0153's 13 classes is a strong baseline; track new
+   (081KQGDBJ0008QG0R000E10AAM's 13 classes is a strong baseline; track new
    classes as they surface).
 2. **Run the mechanical checks LOCALLY before pushing.**
    `markdownlint-cli2`, `tsc --noEmit`, `bun test`,
@@ -218,13 +218,13 @@ phase**. Earliest = save-time (editor); next-earliest =
 pre-commit; latest-acceptable = pre-push. Post-push (PR-agent)
 is the failure mode.
 
-**Composes with B-0153 + B-0156**: B-0153's 13-class lint
-suite IS the mechanical-anchor inventory. B-0156's TS-port
+**Composes with 081KQGDBJ0008QG0R000E10AAM + 081KQGDBJ0008QG0R000A4EZS5**: 081KQGDBJ0008QG0R000E10AAM's 13-class lint
+suite IS the mechanical-anchor inventory. 081KQGDBJ0008QG0R000A4EZS5's TS-port
 lets the suite run locally via `bun` (vs being trapped in
 GitHub Actions). The two together close the pre-condition-fix
 loop for the bash-linter classes.
 
-**Composes with B-0157 (detect-changes pattern)**: even
+**Composes with 081KQGDBJ0008QG0R002DPGHV0 (detect-changes pattern)**: even
 detect-changes-gated workflows still produce review-thread
 hell if the relevant change-class triggers a fix-class
 violation. Gating reduces the SET of fired checks, not the
@@ -278,8 +278,8 @@ check.** A precise test:
   Imprecise mechanical might NOT beat external-process.
 
 **Investment direction**: when building substrate-discipline
-mechanizations (per B-0153 lint suite, B-0156 TS port,
-B-0157 detect-changes pattern), spend the effort on PRECISION
+mechanizations (per 081KQGDBJ0008QG0R000E10AAM lint suite, 081KQGDBJ0008QG0R000A4EZS5 TS port,
+081KQGDBJ0008QG0R002DPGHV0 detect-changes pattern), spend the effort on PRECISION
 not on coverage-breadth. Five precise checks beat fifty fuzzy
 ones.
 
@@ -344,7 +344,7 @@ Does this rule pass its own test?
 
 - **Mechanical**: file name `feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md` — contains "aaron" twice, but as `aaron_as_anchor` (the rule-name) and `aaron_2026_05_01` (the date+author convention). The rule-name IS the rule's content, so it self-encodes. The date+author convention is mechanical (`memory/README.md` documents the **type-prefix** part — `feedback_*` / `project_*` / `user_*` / `reference_*`; the `<topic>_<date>` body and `aaron_<date>` author-attribution suffix are **emergent conventions** observable across the corpus but not formally schema'd in any single canonical doc as of 2026-05-01). Neither is Aaron-as-anchor for the test.
 - **External-process**: would a memory-naming audit flag this? `memory/README.md` schema-checks the type-prefix (`feedback_*`); the body shape `prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01` matches the convention emergent in the corpus (verifiable via `grep -lE '^memory/feedback_.*_aaron_[0-9]{4}_[0-9]{2}_[0-9]{2}\.md$' memory/`). External-process check passes against the type-prefix schema (canonical) + corpus-pattern check (emergent).
-- **Documentation-gap acknowledgment** (Copilot reviewer 2026-05-01 caught this): the `<type>_<topic>_<date>[_aaron_<date>].md` full convention is not formally documented in `memory/README.md` (which covers the type-prefix only). The corpus-pattern check is a *de facto* schema, not a *de jure* one. A future B-0153 lint class candidate: extract the emergent convention into a documented schema in `memory/README.md` so the external-process check has a single canonical citation. Filed as candidate, not landed in this memo.
+- **Documentation-gap acknowledgment** (Copilot reviewer 2026-05-01 caught this): the `<type>_<topic>_<date>[_aaron_<date>].md` full convention is not formally documented in `memory/README.md` (which covers the type-prefix only). The corpus-pattern check is a *de facto* schema, not a *de jure* one. A future 081KQGDBJ0008QG0R000E10AAM lint class candidate: extract the emergent convention into a documented schema in `memory/README.md` so the external-process check has a single canonical citation. Filed as candidate, not landed in this memo.
 - **Self-encoding**: filename contains the rule's name (`prefer_mechanical_external_anchors_over_aaron_as_anchor`); every reference re-applies the rule. ✓
 - **External-anchor lineage**: composes_with cites Otto-352 + Otto-357 + Otto-364 + visibility-constraint + assumed-state-vs-actual-state — five pre-existing anchors. ✓
 - **Aaron-as-anchor**: not invoked for the test. ✓

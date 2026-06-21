@@ -9,7 +9,7 @@ open Zeta.Core
 module PS = Zeta.Core.ProbabilitySemiring
 
 // ═══════════════════════════════════════════════════════════════════
-// The NCI boundary on the exact-rational cell (B-1020) — the rational sibling of BeliefConvergence.
+// The NCI boundary on the exact-rational cell (081KTAH8Q0008QG0R001YHSSA0) — the rational sibling of BeliefConvergence.
 // NON-COERCIVE observe (fixed/state-independent likelihood = pointwise multiply) COMMUTES, so a SET of
 // evidence converges order-independently (the de Finetti / non-coercion boundary). COERCIVE revision
 // (`sharpen`, which reads the belief it updates) does NOT commute — that counterexample IS the boundary.

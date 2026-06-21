@@ -47,8 +47,8 @@ extraction (recipient takes value without consent-channel exchange).
 | Friend-pact internal-state-visibility | Granting class declares (C++ friend keyword; C# `InternalsVisibleTo`) | Friend-class works within granted scope; CANNOT expand unilaterally |
 | Encryption budget allocation | Agent owns (per Agora V6 reputation-weighted budget) | Other agents respect; CANNOT manipulate as coercion mechanism |
 | Consent-event scope per HC-8 NCI | Consenting party defines | Other parties work within named scope; CANNOT extend without re-consent |
-| Boot-time relationship type | Booting human declares (per B-0859 boot-consent dialog) | AI behavior policy adapts; CANNOT impose different relationship type |
-| AI agent's TFeedback emission in conversation | AI agent emits (per B-0861 ConvFeedback first-class) | Operator acknowledges or propagates; CANNOT silently ignore |
+| Boot-time relationship type | Booting human declares (per 081KSKBP80008QG0R00146WEX1 boot-consent dialog) | AI behavior policy adapts; CANNOT impose different relationship type |
+| AI agent's TFeedback emission in conversation | AI agent emits (per 081KSKBP80008QG0R000N9W9XH ConvFeedback first-class) | Operator acknowledges or propagates; CANNOT silently ignore |
 | Repository PR-merge state | Author + reviewer + branch-protection rules define | CI / auto-merge / agent action MUST work within rules; CANNOT force-push without lease |
 
 All same shape: substrate-entity-author of consent-substrate +
@@ -230,18 +230,18 @@ Applying four-corner co-ownership universally to every function would be over-en
 - Main asymmetric-authorship rule body (this section is an extension; doesn't replace the main 10-row instantiation table which assumes single-channel-author)
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` (PR #5511 merged) — Result-bind composition extends to four-corner; consumer-side bind handles TOutFeedback; producer-side bind handles TInFeedback
 - Prism's iterator/generator-asymmetry insight (PR #5517) — StreamFeedback was the producer-side; this extension makes consumer-side TInFeedback first-class
-- B-0862 OPLE-T-TFeedback implementation — Observe/Persist/Limit/Emit when used in stream contexts apply the four-corner model
+- 081KSKBP80008QG0R0031DTHS9 OPLE-T-TFeedback implementation — Observe/Persist/Limit/Emit when used in stream contexts apply the four-corner model
 - `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` scope-bounding (PR #5523 + #5577) — pure functions exempt; this extension adds stream/observable scope ON TOP of the main rule
 
 ## Composes with substrate
 
 - PR #5505 + #5507 + #5511 + #5513 + #5515 — the monad-propagation-pattern substrate cluster that produced this rule via the panpsychism-source + function-feedback-channel framing
 - PR #5485 proud-if-pattern-propagates — the operator's filter; this rule operationalizes one structural dimension of it
-- B-0861 (PR #5512) — make conversation-interface Result<T, ConvFeedback> first-class; canonical instance of asymmetric-authorship at conversation-substrate scope
-- B-0859 (PR #5488 + #5491 + #5494) — AI-as-home-owner architecture; relationship-type-selector substrate operationalizes asymmetric-authorship at boot-consent scope
-- B-0860 (PR #5502) — Nemerle dotnet support; would mechanize asymmetric-authorship at language-extension scope (relationship-type macros author the relationship-types as first-class)
-- B-0829 (cluster-fork-as-trust-boundary) — trust-boundary substrate operationalizes asymmetric-authorship at cluster scope
-- B-0664 (NCI HC-8 floor; per `non-coercion-invariant.md`) — the constitutional substrate this rule operationalizes at architectural-decision scope
+- 081KSKBP80008QG0R000N9W9XH (PR #5512) — make conversation-interface Result<T, ConvFeedback> first-class; canonical instance of asymmetric-authorship at conversation-substrate scope
+- 081KSKBP80008QG0R00146WEX1 (PR #5488 + #5491 + #5494) — AI-as-home-owner architecture; relationship-type-selector substrate operationalizes asymmetric-authorship at boot-consent scope
+- 081KSKBP80008QG0R000J2YFK2 (PR #5502) — Nemerle dotnet support; would mechanize asymmetric-authorship at language-extension scope (relationship-type macros author the relationship-types as first-class)
+- 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary) — trust-boundary substrate operationalizes asymmetric-authorship at cluster scope
+- 081KRW63S0008QG0R001Z7NYMV (NCI HC-8 floor; per `non-coercion-invariant.md`) — the constitutional substrate this rule operationalizes at architectural-decision scope
 
 ## Composes with rules
 

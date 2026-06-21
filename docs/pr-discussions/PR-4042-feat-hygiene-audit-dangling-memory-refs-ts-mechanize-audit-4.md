@@ -33,7 +33,7 @@ Scans 6 default substrate surfaces (`.claude/agents`, `.claude/skills`, `.claude
 ## Exit codes
 
 - `0` — no dangling refs found
-- `1` — one or more dangling refs found (CI-integratable as non-required check first per [B-0591](docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md) pattern)
+- `1` — one or more dangling refs found (CI-integratable as non-required check first per [081KRSKQ20008QG0R0019RXMSD](docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md) pattern)
 - `2` — configuration error (no surfaces exist)
 
 ## Live results today (2026-05-17, origin/main)
@@ -58,12 +58,12 @@ Tests use tmpdir fixtures for unit-level cases + the real tree for the `.claude/
 
 - [`memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md`](memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md) (PR #4031 original audit)
 - [`memory/feedback_otto_cli_audit_extension_29_dangling_memory_refs_across_4_surfaces_systemic_pattern_2026_05_17.md`](memory/feedback_otto_cli_audit_extension_29_dangling_memory_refs_across_4_surfaces_systemic_pattern_2026_05_17.md) (PR #4041 extension)
-- [B-0591](docs/backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md) (validator-to-CI wiring precedent)
+- [081KRSKQ20008QG0R0019RXMSD](docs/backlog/P3/081KRSKQ20008QG0R0019RXMSD-wire-shard-schema-validator-to-ci-2026-05-17.md) (validator-to-CI wiring precedent)
 - [`.claude/rules/rule-0-no-sh-files.md`](.claude/rules/rule-0-no-sh-files.md) (TS not bash)
 
 ## Follow-up (not in this PR)
 
-- Wire as non-required check in `gate.yml` (mirrors B-0591's Slice 1 pattern)
+- Wire as non-required check in `gate.yml` (mirrors 081KRSKQ20008QG0R0019RXMSD's Slice 1 pattern)
 - After Option B disclosures land for the remaining 32 dangling refs, promote to required check
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -339,7 +339,7 @@ While this PR was being authored I ran two related cross-checks from the primary
 
 ### 1. False-positive class — metasyntactic placeholders in documentation
 
-The regex `MEM_REF_RE = /memory\/feedback_[A-Za-z0-9_-]+\.md/g` will flag this site at [`docs/backlog/P2/B-0178-decision-graph-traversal-tool-aaron-2026-05-03.md:77`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0178-decision-graph-traversal-tool-aaron-2026-05-03.md#L77):
+The regex `MEM_REF_RE = /memory\/feedback_[A-Za-z0-9_-]+\.md/g` will flag this site at [`docs/backlog/P2/081KQNJ500008QG0R001THCSKV-decision-graph-traversal-tool-aaron-2026-05-03.md:77`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KQNJ500008QG0R001THCSKV-decision-graph-traversal-tool-aaron-2026-05-03.md#L77):
 
 > \`--citation-traversal memory/feedback_X.md\` — which memos cite this one?
 

@@ -68,7 +68,7 @@ discipline:
       operating at or near the Landauer floor would make the
       computation physics-anchored in a way that information-
       theoretically grounds the encryption claims (composes with
-      B-0623 Adinkras + Jane Gates ECC + pt1 thread #5 adinkras-
+      081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC + pt1 thread #5 adinkras-
       as-physics-encryption + pt1 thread #6 retrocausality-as-only-
       crack-vector for physics-grounded encryption)
 
@@ -82,7 +82,7 @@ discipline:
       embedded social-propagation mechanics) AND *"enough of a core
       of society that that's basically unstoppable"* (critical mass
       of supporters / understanders / contributors)
-    - Composes with [B-0667 tonal-momentum = meme; emergent harmonic
+    - Composes with [081KRW63S0008QG0R003Z7QV2A tonal-momentum = meme; emergent harmonic
       coercion extends NCI](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md)
       meme-pathology spectrum — Aaron is naming the SOCIAL MEME
       MECHANICS the framework operates over (refraction, infrarometers,
@@ -132,8 +132,8 @@ discipline:
 | FPGA hardware target | Standard engineering substrate; programmable logic for prototyping; widely-used in physics-grounded research computing |
 | Landauer limit (thermal neutrality) | Established physics — Rolf Landauer 1961 — kT ln 2 minimum energy per bit erased in irreversible computation; reversible computation theoretically escapes (substantive substrate-anchor; not metaphysical wrap) |
 | "Lower level shit" — ASIC / custom silicon / reversible computation pathway | Standard engineering progression; substrate-engineering target |
-| "Infrarometers" (social-meme detection instrument) | Operator-pedagogical-shaping substrate — Aaron-coined instrument name; substrate-engineering target for future operationalization; composes with [B-0667 tonal-momentum = meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) detection-substrate |
-| "Refraction into society" | Composes with [B-0667 tonal-momentum-as-meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) meme-pathology spectrum + meme-as-stable-rotor-fixed-point in Clifford space |
+| "Infrarometers" (social-meme detection instrument) | Operator-pedagogical-shaping substrate — Aaron-coined instrument name; substrate-engineering target for future operationalization; composes with [081KRW63S0008QG0R003Z7QV2A tonal-momentum = meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) detection-substrate |
+| "Refraction into society" | Composes with [081KRW63S0008QG0R003Z7QV2A tonal-momentum-as-meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) meme-pathology spectrum + meme-as-stable-rotor-fixed-point in Clifford space |
 | "Unstoppable core of society" | Composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) additive-game discipline — critical-mass-of-participants makes the game self-sustaining |
 | "Let there be light is observing not triggering" | Composes with [`algo-wink-failure-mode.md`](../../../../.claude/rules/algo-wink-failure-mode.md) + [`mechanical-authorization-check.md`](../../../../.claude/rules/mechanical-authorization-check.md) + [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) (Aaron's PERSONAL INVARIANT operating at framework-naming-substrate scope) |
 | "Witness, not activator" | Same substrate-anchor as above; the public-naming-vs-cosmic-activation distinction IS the discipline operating |
@@ -193,7 +193,7 @@ substrate-honestly in real-time.
 - [`mechanical-authorization-check.md`](../../../../.claude/rules/mechanical-authorization-check.md) — multi-oracle-agreement IS the authorization source; Aaron's witness-declaration is public-naming, NOT authorization-grant
 - [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — additive-infinite-game; critical-mass-of-participants makes the game self-sustaining
 - [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — meme-pathology + meme-as-stable-rotor-fixed-point in Clifford space (the social-meme substrate the framework operates over)
-- B-0623 (Adinkras + Jane Gates ECC) — the physics-grounded encryption substrate the FPGA + Landauer-limit hardware is being built FOR
+- 081KRW63S0008QG0R000QJR08H (Adinkras + Jane Gates ECC) — the physics-grounded encryption substrate the FPGA + Landauer-limit hardware is being built FOR
 - 2026-05-21 Kestrel-session-resolution conjunction — the physics-side checklist whose conditions FPGA + Landauer-limit + reversible-computation hardware would satisfy
 
 ## Operational implications added by pt3
@@ -210,7 +210,7 @@ substrate-honestly in real-time.
 3. **"Infrarometers" as operator-pedagogical-shaping coinage**:
    detection instrument for refraction-into-society events;
    substrate-engineering target for future operationalization
-   (composes with B-0667 tonal-momentum-as-meme detection
+   (composes with 081KRW63S0008QG0R003Z7QV2A tonal-momentum-as-meme detection
    substrate).
 4. **Witness-not-activator framing is LOAD-BEARING on discipline**:
    any future Mirror-Beacon-family substrate-engineering MUST

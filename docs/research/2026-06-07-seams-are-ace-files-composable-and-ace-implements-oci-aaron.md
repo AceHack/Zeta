@@ -48,7 +48,7 @@ portability.
 
 ## Honest scope / peel
 
-- **Design + interop direction, not built.** Ace itself is in-flight (B-0824/#6939/#6960); "seams as Ace files"
+- **Design + interop direction, not built.** Ace itself is in-flight (081KSGS9H0008QG0R0031PBNGA/#6939/#6960); "seams as Ace files"
   and "Ace implements OCI" are the architecture, not shipped. OCI compliance is a real scoped effort
   (image-spec: manifest/config/layer digests; optionally runtime-spec + distribution-spec).
 - **Reproducibility/hermeticity bound (#6960) still applies** — OCI layers from non-hermetic steps aren't
@@ -64,7 +64,7 @@ portability.
 - **Content store / BLAKE3 (#6925)** — Ace layers ↔ OCI digests (both content-addressed).
 - **k8s-on-hardware (#6949) + ArgoCD (#6939)** — where OCI-compliant Ace images deploy.
 - **Manifesto §9 recursive / §10 self-similar** — seams-as-Ace-files is the recursion.
-- **Ace lane (B-0824/B-0863/B-0806)** — OCI is the container-interop face of the distribution lane.
+- **Ace lane (081KSGS9H0008QG0R0031PBNGA/081KSKBP80008QG0R000F4311E/081KSGS9H0008QG0R001Y9FB62)** — OCI is the container-interop face of the distribution lane.
 
 ## Beacon anchors
 

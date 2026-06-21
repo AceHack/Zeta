@@ -78,7 +78,7 @@ have not closed the AI loop side, and you have infinite GitHub workflows** lol �
 - **We already have the template:** `tools/ci/manifest-symmetry.test.ts` (#7182) is *exactly* this — a CI test that
   enforces a cross-OS close-over invariant and **fails the gate on drift**. The flasher needs the analogue:
   1. a **structural gate** asserting the single abstraction (a new per-OS *tool* — vs a new *driver* — fails CI), and
-  2. **QEMU per-OS acceptance** (`zflash-qemu-test.yml` / B-0891's 5 scenarios extended to **all three drivers**) so
+  2. **QEMU per-OS acceptance** (`zflash-qemu-test.yml` / 081KSNY2Z0008QG0R0008PN7RQ's 5 scenarios extended to **all three drivers**) so
      every driver is proven against the *same* scenarios — self-verification, no physical USB.
 - **This is "closing the AI loop side."** The AI builds the automated self-verify-and-enforce so the closure loop
   **iterates without human correction** — **authority stays with Aaron + Max** (they still decide), only the

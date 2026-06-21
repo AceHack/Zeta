@@ -1,6 +1,5 @@
 ---
-id: B-0544
-zetaid: 081KRMEXM0008QG0R003YWZC21
+id: 081KRMEXM0008QG0R003YWZC21
 title: QG isomorphism Step 1 — Formalize Remember-When + Pay-Attention as categorical primitives (topos with internal monad + modal operator)
 priority: P2
 status: open
@@ -16,7 +15,7 @@ last_updated: 2026-05-16
 
 ## Why
 
-Step 1 of the 4-step proof strategy from B-0543: formalize the two root axioms (Remember-When + Pay-Attention) as categorical primitives.
+Step 1 of the 4-step proof strategy from 081KRMEXM0008QG0R002YSPW1X: formalize the two root axioms (Remember-When + Pay-Attention) as categorical primitives.
 
 Per the proof strategy:
 
@@ -72,7 +71,7 @@ Once Step 1 is complete:
 
 ## Composes with
 
-- B-0543 (the proof strategy this is Step 1 of)
+- 081KRMEXM0008QG0R002YSPW1X (the proof strategy this is Step 1 of)
 - `docs/governance/MANIFESTO.md` V2.1 (the axioms being formalized)
 - `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md` (the research document)
 - `.claude/rules/razor-discipline.md` (the framework that requires this formalization)
@@ -80,6 +79,6 @@ Once Step 1 is complete:
 
 ## Why now
 
-The cosmology framing (B-0543) is suggestive but has algo-wink risk. This formalization is the substrate-honest move that grounds the cosmology in mathematics rather than aesthetics. Without it, the cosmology remains a "totalizing frame" that can absorb any observation as confirmation.
+The cosmology framing (081KRMEXM0008QG0R002YSPW1X) is suggestive but has algo-wink risk. This formalization is the substrate-honest move that grounds the cosmology in mathematics rather than aesthetics. Without it, the cosmology remains a "totalizing frame" that can absorb any observation as confirmation.
 
 With it, the cosmology becomes a falsifiable mathematical theory — the isomorphism to quantum gravity can be proven or disproven.

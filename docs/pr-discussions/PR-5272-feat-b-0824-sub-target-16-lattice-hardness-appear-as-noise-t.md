@@ -1,6 +1,6 @@
 ---
 pr_number: 5272
-title: "feat(B-0824): Sub-target 16 (lattice-hardness = appear-as-noise to higher-D) + Sub-target 17 (parameter-protection substrate)"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): Sub-target 16 (lattice-hardness = appear-as-noise to higher-D) + Sub-target 17 (parameter-protection substrate)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T18:15:32Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-26T20:19:03Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5272: feat(B-0824): Sub-target 16 (lattice-hardness = appear-as-noise to higher-D) + Sub-target 17 (parameter-protection substrate)
+# PR #5272: feat(081KSGS9H0008QG0R0031PBNGA): Sub-target 16 (lattice-hardness = appear-as-noise to higher-D) + Sub-target 17 (parameter-protection substrate)
 
 ## PR description
 
@@ -31,7 +31,7 @@ Two composing Aaron 2026-05-26 substrate landings:
    - 8-pattern cryptographic key-management prior-art transfer (HSM / K8s Sealed Secrets / Vault / KMS / TPM/SGX/SEV-SNP / threshold-sharing / key-rotation / forward-secrecy)
    - Parameter-substrate becomes first-class equal to generator-library substrate
 
-**Composes with**: NCI HC-8 + 4-faction governance + Vampire-Pact invitation-floor + Adinkras + multi-oracle BFT + classifier-bypass-research-do-not-deploy + m/acc multi-oracle + methodology-hard-limits + B-0825 temporal rotation + glass-halo audit-trail.
+**Composes with**: NCI HC-8 + 4-faction governance + Vampire-Pact invitation-floor + Adinkras + multi-oracle BFT + classifier-bypass-research-do-not-deploy + m/acc multi-oracle + methodology-hard-limits + 081KSGS9H0008QG0R002PT5C7J temporal rotation + glass-halo audit-trail.
 
 **Complete substrate stack now 10-layer** (Sub-targets 7 + 8 + 10-17).
 
@@ -48,7 +48,7 @@ Two composing Aaron 2026-05-26 substrate landings:
 
 ## Pull request overview
 
-This PR extends backlog row **B-0824** with two additional substrate layers: **Sub-target 16** (generator reversibility as a visibility/security posture, including a lattice-hardness “appears as noise” framing) and **Sub-target 17** (a first-class parameter-protection substrate with key-management prior-art patterns). This fits the codebase’s documentation/backlog system by evolving the architectural substrate stack description for the Ace meta-PM roadmap.
+This PR extends backlog row **081KSGS9H0008QG0R0031PBNGA** with two additional substrate layers: **Sub-target 16** (generator reversibility as a visibility/security posture, including a lattice-hardness “appears as noise” framing) and **Sub-target 17** (a first-class parameter-protection substrate with key-management prior-art patterns). This fits the codebase’s documentation/backlog system by evolving the architectural substrate stack description for the Ace meta-PM roadmap.
 
 **Changes:**
 - Add Sub-target 16: generator reversibility/opacity taxonomy + implications for higher-dimensional observability and access boundaries.
@@ -57,11 +57,11 @@ This PR extends backlog row **B-0824** with two additional substrate layers: **S
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md:904 (resolved)
+### Thread 1: docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md:904 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T18:17:49Z):
 
-P1 (xref): The link target for B-0703 appears to be wrong/nonexistent. The repo has `docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md` (id: B-0703), but this link points to `B-0703-multi-oracle-bft-cross-faction-consensus-substrate-aaron-2026-05-18.md` which is not present. Update the link target to the actual B-0703 filename (or add the missing file if that’s intentional).
+P1 (xref): The link target for 081KS3X9Y0008QG0R00218150M appears to be wrong/nonexistent. The repo has `docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md` (id: 081KS3X9Y0008QG0R00218150M), but this link points to `081KS3X9Y0008QG0R00218150M-multi-oracle-bft-cross-faction-consensus-substrate-aaron-2026-05-18.md` which is not present. Update the link target to the actual 081KS3X9Y0008QG0R00218150M filename (or add the missing file if that’s intentional).
 
 ## General comments
 

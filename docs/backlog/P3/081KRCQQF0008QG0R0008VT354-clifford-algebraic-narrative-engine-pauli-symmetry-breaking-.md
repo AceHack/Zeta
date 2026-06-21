@@ -1,6 +1,5 @@
 ---
-id: B-0422
-zetaid: 081KRCQQF0008QG0R0008VT354
+id: 081KRCQQF0008QG0R0008VT354
 title: Clifford-algebraic narrative engine for testing the Pauli-symmetry-breaking-from-agenda-conservation prediction (research target identified by DeepSeek 2026-05-12)
 priority: P3
 status: open
@@ -15,7 +14,7 @@ composes_with:
   - memory/feedback_aaron_internal_civ_sim_evolves_via_unknown_unknowns_pauli_exclusion_for_agenda_new_actors_emerge_when_orthogonalities_cant_accommodate_2026_05_12.md
 ---
 
-# B-0422: Clifford-algebraic narrative engine for testing Pauli-symmetry-breaking falsifiability
+# 081KRCQQF0008QG0R0008VT354: Clifford-algebraic narrative engine for testing Pauli-symmetry-breaking falsifiability
 
 ## Background
 
@@ -79,7 +78,7 @@ work begins:
    - Existing civ-sim observability layer (PR #2815)
    - Theoretical-physics-expert skill (spin-statistics)
 2. **Dependency restructure**:
-   - Walk depends_on chain (B-0395 conversation interface
+   - Walk depends_on chain (081KR50HA0008QG0R0019KYAAS conversation interface
      as candidate Clifford-engine substrate; possibly other)
    - Backfill composes_with pointers (this row)
 3. **Update this row** with prior-art findings before any

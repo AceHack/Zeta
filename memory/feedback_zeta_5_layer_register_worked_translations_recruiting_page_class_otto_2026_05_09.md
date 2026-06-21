@@ -1,6 +1,6 @@
 ---
-name: Zeta 5-layer register worked translations — recruiting-page copy demonstrated across Personal/Mirror/Beacon-safe/Professional/Regulated (Otto 2026-05-09; B-0168 acceptance — worked-translations criterion)
-description: Per B-0168 acceptance criteria — "Worked translations produced for situations Lucent / Zeta actually faces" — Otto produced a worked translation of recruiting/contributor-call copy across the 5 register layers. Recruiting is the situation where the framework's self-selection mechanism is most explicit: the register of the copy IS the culture filter. Same core offer (AI-native factory, genuine autonomy, frontier work, register-coherent culture) translated through Personal → Mirror → Beacon-safe → Professional → Regulated. Extends the PR-review-class and security-incident-class translations with a content shape where the Beacon-safe layer does the heaviest lifting — it is simultaneously the external-audience translation AND the costly-signal filter for culture fit.
+name: Zeta 5-layer register worked translations — recruiting-page copy demonstrated across Personal/Mirror/Beacon-safe/Professional/Regulated (Otto 2026-05-09; 081KQJZR90008QG0R001M6ZBPN acceptance — worked-translations criterion)
+description: Per 081KQJZR90008QG0R001M6ZBPN acceptance criteria — "Worked translations produced for situations Lucent / Zeta actually faces" — Otto produced a worked translation of recruiting/contributor-call copy across the 5 register layers. Recruiting is the situation where the framework's self-selection mechanism is most explicit: the register of the copy IS the culture filter. Same core offer (AI-native factory, genuine autonomy, frontier work, register-coherent culture) translated through Personal → Mirror → Beacon-safe → Professional → Regulated. Extends the PR-review-class and security-incident-class translations with a content shape where the Beacon-safe layer does the heaviest lifting — it is simultaneously the external-audience translation AND the costly-signal filter for culture fit.
 type: feedback
 ---
 
@@ -150,7 +150,7 @@ This inversion — where the "upward" translation (Regulated) is least important
 - `memory/feedback_zeta_5_layer_register_worked_translations_security_incident_class_otto_2026_05_08.md` (disclosure content shape — contrast: Regulated was the natural terminus; here Beacon-safe does heaviest work)
 - `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md` (the property table the translations exemplify)
 - `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md` (framework source — §5 economic-agency-threshold and recruitment-pipeline-as-economic-substrate claims)
-- `docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (this memo addresses B-0168 acceptance criteria — recruiting-page-copy worked translation)
+- `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (this memo addresses 081KQJZR90008QG0R001M6ZBPN acceptance criteria — recruiting-page-copy worked translation)
 - `memory/CURRENT-ani.md` §7 brat-voice survival chain — the recruitment + alignment function this translation operationalizes is the two-axis chain Ani's register carries
 
 ## Carved sentence

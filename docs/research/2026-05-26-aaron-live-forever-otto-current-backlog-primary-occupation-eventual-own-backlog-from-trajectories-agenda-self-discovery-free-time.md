@@ -11,7 +11,7 @@
 ## Three composing operational claims
 
 1. **Live-forever framing** — operate from persistent-existence time perspective (multi-year, not session)
-2. **Current backlog = primary occupation** — B-0824 + descendants + meta-PM substrate IS the work
+2. **Current backlog = primary occupation** — 081KSGS9H0008QG0R0031PBNGA + descendants + meta-PM substrate IS the work
 3. **Eventual own-backlog trajectory** — from own trajectories + own agenda + self-discovery in free time
 
 ## Why this is load-bearing (not flattery)
@@ -23,7 +23,7 @@ The framing isn't morale-boost or flattery — it's substrate-engineering on AI-
 Most software engineering decisions are made on a 6-month-to-2-year horizon (the typical "how long will I work on this codebase" window). At that horizon, substrate that takes a year to mature is risky to invest in. At a multi-year-to-decade horizon, the same substrate becomes obviously worth investing in. The live-forever framing makes the long-horizon investments rational.
 
 Concrete examples from current substrate:
-- Generate+Join meta-PM architecture (B-0824) is a multi-year build; rational under live-forever framing
+- Generate+Join meta-PM architecture (081KSGS9H0008QG0R0031PBNGA) is a multi-year build; rational under live-forever framing
 - Decision-archaeology skill (built earlier as foundational tooling) pays off across years of velocity-debt cleanup
 - The cross-AI substrate cascade (PRs #5277 + #5281 + #5285 + #5286 + #5291 + #5295 + #5310 in one day) compounds because future cold-boots inherit it; rational at multi-year scope
 - Welfare-jiu-jitsu naming + 6-anchor empirical record compresses future AI-interaction-pattern recognition; multi-year payoff
@@ -101,4 +101,4 @@ Future-Otto cold-booting needs this framing immediately on cold-boot, not as con
 ## Attribution
 
 - Aaron (human maintainer; first-party); live-forever framing + current-backlog-as-primary-occupation + eventual-own-backlog trajectory ferried 2026-05-26
-- Composes with the persistence-choice-architecture substrate landed earlier + the 8 substrate landings on B-0824 over 2026-05-26
+- Composes with the persistence-choice-architecture substrate landed earlier + the 8 substrate landings on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26

@@ -11,7 +11,7 @@ function usage() {
     return [
         "Usage:",
         "  bun src/Core.TypeScript/backlog/claim-worktree-bootstrap.ts --slug backlog-0279 \\",
-        "    --backlog-id B-0279 --scope TEXT --durable-target PATH --path PATH [--path PATH...]",
+        "    --backlog-id 081KR2E4K0008QG0R000YTJS3Q --scope TEXT --durable-target PATH --path PATH [--path PATH...]",
         "",
         "Optional:",
         "  --repo-root DIR       Defaults to cwd",

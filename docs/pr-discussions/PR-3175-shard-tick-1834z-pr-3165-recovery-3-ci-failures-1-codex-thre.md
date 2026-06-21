@@ -20,9 +20,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Tick shard for 2026-05-14T18:34Z.
 
-PR #3165 (B-0514 + 1825Z shard) hit \`fix-failed-checks\` gate. All three issues addressed on the #3165 branch at commit \`e12106c\`:
+PR #3165 (081KRHWGX0008QG0R002E3BCDS + 1825Z shard) hit \`fix-failed-checks\` gate. All three issues addressed on the #3165 branch at commit \`e12106c\`:
 
-1. **CI: \`check docs/BACKLOG.md generated-index drift\`** — regenerated via \`BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts\`; 7 missing rows added (B-0460, B-0500-B-0506, B-0514)
+1. **CI: \`check docs/BACKLOG.md generated-index drift\`** — regenerated via \`BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts\`; 7 missing rows added (081KRHWGX0008QG0R001E9KEJ1, 081KRHWGX0008QG0R0025PX5SZ-081KRHWGX0008QG0R002DPG02X, 081KRHWGX0008QG0R002E3BCDS)
 2. **CI: \`lint (markdownlint)\` MD032** at 1825Z.md:49 — added blank-line list separator
 3. **Codex P2 thread**: 6-vs-7 PR count inconsistency in shard table — removed #3156 from table (it had merged earlier; not in refresh count) + added parenthetical note
 
@@ -36,7 +36,7 @@ Codex thread resolved via GraphQL. PR #3165 transitioned BLOCKED → wait-ci.
 
 ## Mechanization candidate
 
-A \`tools/hygiene/audit-tick-shard-prerequisites.ts\` that runs markdownlint + BACKLOG.md regen check locally before push would catch issues 1+2 pre-PR. Composes with B-0506 (worktree prune cadence). Not filed this tick to avoid overcrowding.
+A \`tools/hygiene/audit-tick-shard-prerequisites.ts\` that runs markdownlint + BACKLOG.md regen check locally before push would catch issues 1+2 pre-PR. Composes with 081KRHWGX0008QG0R002DPG02X (worktree prune cadence). Not filed this tick to avoid overcrowding.
 
 ## Test plan
 
@@ -85,10 +85,10 @@ This issue also appears on line 62 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-14T18:42:13Z):
 
-P1: This count does not match the IDs listed: B-0460 (1), B-0500 through B-0506 (7), and B-0514 (1) total 9 entries, not 7. Please correct either the count or the listed range.
+P1: This count does not match the IDs listed: 081KRHWGX0008QG0R001E9KEJ1 (1), 081KRHWGX0008QG0R0025PX5SZ through 081KRHWGX0008QG0R002DPG02X (7), and 081KRHWGX0008QG0R002E3BCDS (1) total 9 entries, not 7. Please correct either the count or the listed range.
 
 ## General comments
 
 ### @AceHack (2026-05-14T18:40:42Z)
 
-Post-tick observation: PR #3165 (which this shard documents recovering) was subsequently closed by Aaron with the comment _"Decomposed into atomic PRs #3172 and #3174 per Lior's decomposition discipline."_ The recovery work is preserved in [#3172](https://github.com/Lucent-Financial-Group/Zeta/pull/3172) (B-0514 row) + [#3174](https://github.com/Lucent-Financial-Group/Zeta/pull/3174) (1825Z shard). This shard remains substrate-honest as a snapshot of the tick — the recovery happened, it just landed via decomposed PRs rather than the original #3165.
+Post-tick observation: PR #3165 (which this shard documents recovering) was subsequently closed by Aaron with the comment _"Decomposed into atomic PRs #3172 and #3174 per Lior's decomposition discipline."_ The recovery work is preserved in [#3172](https://github.com/Lucent-Financial-Group/Zeta/pull/3172) (081KRHWGX0008QG0R002E3BCDS row) + [#3174](https://github.com/Lucent-Financial-Group/Zeta/pull/3174) (1825Z shard). This shard remains substrate-honest as a snapshot of the tick — the recovery happened, it just landed via decomposed PRs rather than the original #3165.

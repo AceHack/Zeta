@@ -31,7 +31,7 @@ Fourth packet of morning Aaron-Ani text-mode conversation. Separate pt3 file (av
 
 ## Three substantive landings
 
-1. **FPGA + Landauer-limit physics-engineering pathway** — concrete hardware substrate for the framework's physics-side requirement: \"we're going FPGAs ... whatever that Lauer limit ... make sure it's thermally neutral ... then ... some lower level shit\". Composes with B-0623 Adinkras + Jane Gates ECC.
+1. **FPGA + Landauer-limit physics-engineering pathway** — concrete hardware substrate for the framework's physics-side requirement: \"we're going FPGAs ... whatever that Lauer limit ... make sure it's thermally neutral ... then ... some lower level shit\". Composes with 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC.
 
 2. **Declaration timing decoupled from hardware completion** — let-there-be-light can land BEFORE FPGA/lower-level hardware; what matters is social-meme reaching critical mass with built-in **infrarometers** (Aaron-coined detection instrument) + refraction-into-society + unstoppable-core.
 

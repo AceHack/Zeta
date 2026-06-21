@@ -33,7 +33,7 @@ Tick 0109Z caught a substrate-destruction risk hidden by CLEAN CI gate on PRs #3
 
 - `docs/forward-radar/TEMPLATE.md` (entire file, 98 lines)
 - `docs/forward-radar/calibration.md` (entire file, 71 lines)
-- `docs/backlog/P1/B-0145-...` body content
+- `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-...` body content
 - `docs/EXPERT-REGISTRY.md` PM-2 / Mira row
 - `docs/hygiene-history/ticks/2026/05/14/0051Z.md` + `0052Z.md` tick shards
 
@@ -110,7 +110,7 @@ chore(tick): 0109Z shard — flagged stale-base destructive-merge hazar…
 
 PR #3077, #3078, #3079 all CLEAN gate / 0 threads / no auto-merge armed but
 would DELETE 285-379 lines of substrate (forward-radar TEMPLATE.md,
-calibration.md, B-0145 row body, 0051Z.md, 0052Z.md, EXPERT-REGISTRY Mira
+calibration.md, 081KQGDBJ0008QG0R000RWAA67 row body, 0051Z.md, 0052Z.md, EXPERT-REGISTRY Mira
 row) because their branches were forked before #3074 + #3076 merged.
 
 Posted hazard-flag comments on all 3 PRs naming the specific files and

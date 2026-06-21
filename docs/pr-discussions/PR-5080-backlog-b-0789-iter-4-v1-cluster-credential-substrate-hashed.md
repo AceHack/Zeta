@@ -1,6 +1,6 @@
 ---
 pr_number: 5080
-title: "backlog(B-0789): iter-4 v1 cluster credential substrate \u2014 hashedPassword + operator-ssh-keys scaffold (iter-4.2 ships zero-typing auto-inject)"
+title: "backlog(081KSGS9H0008QG0R002T3BJ2R): iter-4 v1 cluster credential substrate \u2014 hashedPassword + operator-ssh-keys scaffold (iter-4.2 ships zero-typing auto-inject)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:02:20Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:47Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5080: backlog(B-0789): iter-4 v1 cluster credential substrate — hashedPassword + operator-ssh-keys scaffold (iter-4.2 ships zero-typing auto-inject)
+# PR #5080: backlog(081KSGS9H0008QG0R002T3BJ2R): iter-4 v1 cluster credential substrate — hashedPassword + operator-ssh-keys scaffold (iter-4.2 ships zero-typing auto-inject)
 
 ## PR description
 
@@ -31,7 +31,7 @@ iter-4 v1 ships the Nix-module + per-host-import scaffolding so iter-4.2 (zflash
 - `full-ai-cluster/nixos/modules/operator-ssh-keys.nix` (new): empty stub with edit-and-rebuild workflow documented in the comment header. iter-4.2 OVERWRITES this file at install time from the boot USB
 - `full-ai-cluster/nixos/hosts/control-plane/configuration.nix`: imports the two new modules; removes the prior inline empty `authorizedKeys.keys` declaration
 - `full-ai-cluster/usb-nixos-installer/zeta-install.sh`: prints initial credentials + post-install workflow block before exit (same echo block works for both v1 manual-edit fallback path and iter-4.2 zero-typing path)
-- `docs/backlog/P1/B-0789-*.md` (new): captures iter-4 v1 acceptance (scaffolding-only) + iter-4.2 acceptance (zflash auto-inject) + iter-4.3 multi-key extension + iter-5 per-node deploy-key + iter-5+ secret-management substrate promotion paths
+- `docs/backlog/P1/081KSGS9H0008QG0R002T3BJ2R-*.md` (new): captures iter-4 v1 acceptance (scaffolding-only) + iter-4.2 acceptance (zflash auto-inject) + iter-4.3 multi-key extension + iter-5 per-node deploy-key + iter-5+ secret-management substrate promotion paths
 - `docs/BACKLOG.md`: regenerated via `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts`
 
 ## Initial password is `zeta-change-me`
@@ -40,12 +40,12 @@ Rotate immediately on first tty1 login via `passwd zeta`. Hash format: sha512cry
 
 ## Composes with
 
-- B-0754 (iter-3 zero-typing USB install — iter-4 is the credential-substrate follow-on)
-- B-0759 (first-time-CLI-user persona)
-- B-0770 (Comet Pro IP-KVM — local-console-with-password becomes load-bearing for the IP-KVM substrate)
-- B-0776 / B-0786 (simplest-first discipline)
-- B-0780 (Local Loop tier-3 substrate needs reachable clusters)
-- B-0778 (commodity hardware reference)
+- 081KSGS9H0008QG0R002T3BJ2R (iter-3 zero-typing USB install — iter-4 is the credential-substrate follow-on)
+- 081KSE6WT0008QG0R003G0Y62D (first-time-CLI-user persona)
+- 081KSE6WT0008QG0R0029S1D5Z (Comet Pro IP-KVM — local-console-with-password becomes load-bearing for the IP-KVM substrate)
+- 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000C18G5D (simplest-first discipline)
+- 081KSE6WT0008QG0R000RH1526 (Local Loop tier-3 substrate needs reachable clusters)
+- 081KSE6WT0008QG0R0004AP0ZA (commodity hardware reference)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` Shape A (hashedPassword-in-per-host-module)
 
 ## Out of scope (deferred to iter-4.2+)
@@ -61,7 +61,7 @@ Rotate immediately on first tty1 login via `passwd zeta`. Hash format: sha512cry
 
 - [x] markdownlint clean
 - [x] No tooling change (Nix module structure only); zeta-install.sh print block is the only operator-facing behavioral change
-- [x] BACKLOG.md regenerated to pick up B-0789
+- [x] BACKLOG.md regenerated to pick up 081KSGS9H0008QG0R002T3BJ2R
 - [ ] CI passes (gate workflow + CodeQL)
 
 The maintainer will NOT re-flash for v1 (per *"i can wait for 4.2"*); v1 is substrate-engineering housekeeping for the iter-4.2 PR to land cleanly on.

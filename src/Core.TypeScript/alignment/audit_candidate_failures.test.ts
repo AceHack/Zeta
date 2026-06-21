@@ -23,7 +23,7 @@ function entry(overrides: Partial<FilterGateEntry> = {}): FilterGateEntry {
     schema: "filter-gate-v1",
     timestamp: "2026-05-08T00:00:00.000Z",
     candidate: "skill:test",
-    source: "B-0058",
+    source: "081KQ3HBZ0008QG0R002S674CG",
     decision: "fail",
     rationale: "Candidate was rejected with enough context to reconstruct it",
     clauses: ["HC-1"],

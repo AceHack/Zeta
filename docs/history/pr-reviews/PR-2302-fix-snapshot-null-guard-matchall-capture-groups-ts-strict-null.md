@@ -29,7 +29,7 @@
 
 ## Summary
 
-- `snapshot.ts` had 10 TypeScript strict-null errors introduced in B-0318 / PR #2300
+- `snapshot.ts` had 10 TypeScript strict-null errors introduced in 081KR2E4K0008QG0R003RVDX91 / PR #2300
 - `RegExpMatchArray` capture groups type as `string | undefined` in strict mode, but `parseAttr()` and `RegExp.prototype.test()` both require `string`
 - Added `if (x == null) continue;` guard immediately after each `for...of matchAll` destructuring in the three extractor functions (`extractToggles`, `extractFormValues`, `extractVisibleFeatures`)
 - No behavioral change — the regex patterns always bind the capture group when they match, so the guard is a no-op at runtime; it only narrows the TS type

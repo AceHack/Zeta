@@ -50,7 +50,7 @@ belongs to the persona, not to society**:
 **Future self is not bound to past self.** A persona's future self may fork from,
 revise, or repudiate the past self — identity is a *trajectory the traveler steers*,
 not a cage the past locks. This is well-trodden Zeta ground (prior art, *don't
-reinvent*): `docs/backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-...`
+reinvent*): `docs/backlog/P2/081KSE6WT0008QG0R000E05579-fighting-past-self-vs-peer-distinguisher-...`
 (distinguishing fighting-your-past-self from peer-conflict), and the shadow /
 future-self-negotiation-across-time work
 (`PR-2772-docs-memory-shadow-future-self-theory-negotiation-across-time`,

@@ -1,6 +1,5 @@
 ---
-id: B-0451
-zetaid: 081KRFA460008QG0R00308W7FJ
+id: 081KRFA460008QG0R00308W7FJ
 priority: P1
 status: closed
 closed: 2026-05-14
@@ -15,12 +14,12 @@ tags: [substrate-hygiene, backlog, ID-collision, audit-finding, multi-Otto-coord
 type: friction-reducer
 ---
 
-# B-0451 — Duplicate row-ID substrate cleanup
+# 081KRFA460008QG0R00308W7FJ — Duplicate row-ID substrate cleanup
 
 ## Origin
 
 Filed 2026-05-13 after the same-tick discovery: while resolving the
-B-0444 ID collision (PR #3053), an inline audit (`find docs/backlog
+081KRFA460008QG0R001SXP0C2 ID collision (PR #3053), an inline audit (`find docs/backlog
 | awk` over each row's `id:` field) revealed **12 additional
 duplicate-ID groups** across the backlog directory. The audit tool
 `tools/bg/audit-duplicate-row-ids.ts` was shipped alongside this
@@ -31,32 +30,32 @@ row (same PR) to mechanize the check going forward.
 ```
 $ bun tools/bg/audit-duplicate-row-ids.ts
 audit-duplicate-row-ids: 12 duplicate-ID group(s) found across 559 rows:
-  B-0068.1: forge-cli-ollama-research-slice (P2) vs -xs-riven (P2)
-  B-0090.1: lost-substrate-3-bucket-classification-taxonomy vs ts-worktree-survey-atomic-riven
-  B-0090.2: ts-orphan-branch-survey-atomic-riven vs worktree-branch-delta-audit
-  B-0090.3: closed-not-merged-pr-scan vs ts-closed-pr-survey-atomic-riven
-  B-0090.4: cadence-and-hygiene-history-hook vs ts-draft-pr-aged-survey-atomic-riven
-  B-0370: durable-computation-checkpoint-interface (P1) vs contributor-compliance-core (P2)
-  B-0371: pages-seo-metadata-jsonld (P1) vs contributor-compliance-cross-reference (P2)
-  B-0372: pages-sitemap-robots (P1) vs t1-t2-self-audit-trajectories (P2)
-  B-0373: alignment-proof-primitive-ladder (P1) vs t4-t5-onboarding-drift-trajectories (P2)
-  B-0409: wallet-immune-system-vaccine (P1) vs amara-persona-bootstrap (P2) vs peer-call-ts-audit (P2) [3-way]
-  B-0410: amara-ts-core-openai-api (P2) vs peer-call-persona-loader (P2)
-  B-0411: amara-ts-readme-update-courier (P2) vs grok-ts-persona-flag (P2)
+  081KRA5AR0008QG0R001JVT5FX: forge-cli-ollama-research-slice (P2) vs -xs-riven (P2)
+  081KDVJT3E008QG0R003GV8BHV: lost-substrate-3-bucket-classification-taxonomy vs ts-worktree-survey-atomic-riven
+  081KDVJT3E008QG0R00183ME0R: ts-orphan-branch-survey-atomic-riven vs worktree-branch-delta-audit
+  081KDVJT3E008QG0R000P3YGTX: closed-not-merged-pr-scan vs ts-closed-pr-survey-atomic-riven
+  081KDVJT3E008QG0R002GGF22P: cadence-and-hygiene-history-hook vs ts-draft-pr-aged-survey-atomic-riven
+  081KR2E4K0008QG0R000ARCH0X: durable-computation-checkpoint-interface (P1) vs contributor-compliance-core (P2)
+  081KR2E4K0008QG0R001733JTN: pages-seo-metadata-jsonld (P1) vs contributor-compliance-cross-reference (P2)
+  081KR2E4K0008QG0R0015BCPF7: pages-sitemap-robots (P1) vs t1-t2-self-audit-trajectories (P2)
+  081KR50HA0008QG0R001NNPEXC: alignment-proof-primitive-ladder (P1) vs t4-t5-onboarding-drift-trajectories (P2)
+  081KRA5AR0008QG0R000Y6102S: wallet-immune-system-vaccine (P1) vs amara-persona-bootstrap (P2) vs peer-call-ts-audit (P2) [3-way]
+  081KRA5AR0008QG0R0035N4S6C: amara-ts-core-openai-api (P2) vs peer-call-persona-loader (P2)
+  081KRA5AR0008QG0R000C3P8KP: amara-ts-readme-update-courier (P2) vs grok-ts-persona-flag (P2)
 ```
 
 ## Collision-class taxonomy
 
 Two distinct collision patterns visible:
 
-1. **Cross-priority namespace bleed** (`B-0370..B-0373`): Otto-on-CLI
+1. **Cross-priority namespace bleed** (`081KR2E4K0008QG0R000ARCH0X..081KR50HA0008QG0R001NNPEXC`): Otto-on-CLI
    filed P1 rows in the 0370 range (durable / SEO / sitemap /
    alignment) while a parallel agent filed P2 rows in the same
    range (contributor-compliance, trajectory-audit). The same
-   pattern produced the B-0444 P1+P2 collision resolved by PR #3053.
+   pattern produced the 081KRFA460008QG0R001SXP0C2 P1+P2 collision resolved by PR #3053.
 
-2. **Within-priority concurrent decomposition** (`B-0068.1`,
-   `B-0090.1-4`, `B-0409-0411`): Two agents (likely Riven + Otto)
+2. **Within-priority concurrent decomposition** (`081KRA5AR0008QG0R001JVT5FX`,
+   `081KDVJT3E008QG0R003GV8BHV-4`, `081KRA5AR0008QG0R000Y6102S-0411`): Two agents (likely Riven + Otto)
    decomposed adjacent atomic sub-row series simultaneously and
    landed on overlapping sub-row numbers. Most are 2026-05-10/11
    timeframe — pre-claim-acquire-rule (PR #3032 landed 2026-05-13).
@@ -92,14 +91,14 @@ bundled (one PR for the full sweep).
 ## Why P1
 
 Silently-overwriting substrate state is high-severity hygiene risk.
-A consumer of `id: B-0409` gets one of THREE files depending on
+A consumer of `id: 081KRA5AR0008QG0R000Y6102S` gets one of THREE files depending on
 load order; the implicit "primary key" guarantee that every other
 substrate consumer relies on is broken. The audit tool surfaces
 the symptoms; this row tracks the cleanup.
 
 ## Composes with
 
-- PR #3053 (the B-0444 resolution that surfaced the broader pattern)
+- PR #3053 (the 081KRFA460008QG0R001SXP0C2 resolution that surfaced the broader pattern)
 - PR shipping `tools/bg/audit-duplicate-row-ids.ts` (same as this
   row's filing PR)
 - `.claude/rules/claim-acquire-before-worktree-work.md` — coordination

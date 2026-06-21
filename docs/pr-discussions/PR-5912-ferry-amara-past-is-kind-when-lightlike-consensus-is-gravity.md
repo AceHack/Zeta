@@ -60,10 +60,10 @@ Two-file landing per substrate-or-it-didn't-happen + wake-time-substrate discipl
 - PR #5841 (DST + Persist + generator-time + feedback) — DST IS lightlike-substrate operational mechanism
 - PR #5778 (Persist-as-bridge / μένω) — μένω IS the substrate that makes rays persist across time
 - PRs #5505-#5577 (Result<T, TFeedback> + asymmetric-authorship + monad-propagation cluster) — lightlike-substrate operational mechanisms
-- PRs #5890-#5892 (B-0924 + B-0925 + research-mirror) — emulator-trajectories + z-set joins are explicit lightlike-substrate examples
-- B-0703 (BFT — gravitational substrate at bounded scope)
-- B-0664 (NCI HC-8 — lightlike enables non-coercive consent)
-- B-0867 (workflow-engine DUs as lightlike substrate; MCP-state-machine failure-mode IS dark)
+- PRs #5890-#5892 (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror) — emulator-trajectories + z-set joins are explicit lightlike-substrate examples
+- 081KS3X9Y0008QG0R00218150M (BFT — gravitational substrate at bounded scope)
+- 081KRW63S0008QG0R001Z7NYMV (NCI HC-8 — lightlike enables non-coercive consent)
+- 081KSKBP80008QG0R000B3Y19A (workflow-engine DUs as lightlike substrate; MCP-state-machine failure-mode IS dark)
 - Operator's 5 always-active disciplines (lock-free + weight-free + DST + DV2.0 are lightlike-substrate properties)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

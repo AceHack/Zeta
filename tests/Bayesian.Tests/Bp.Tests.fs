@@ -8,7 +8,7 @@ open FsCheck.FSharp
 open FsCheck.Xunit
 open Zeta.Bayesian
 
-// Sum-product belief propagation to a fixed point (B-1000 slice 4):
+// Sum-product belief propagation to a fixed point (081KT2T2J0008QG0R000S7GHQ8 slice 4):
 // FactorGraph.runToFixpoint iterates passOnce until the messages stop
 // moving (per-family distance < tol) or the round cap is hit — the
 // factor-graph analog of the DBSP NestedCircuit capped LFP iteration.
@@ -66,7 +66,7 @@ let ``message distance is zero for equal messages and abs-difference otherwise``
     Bernoulli.distance (Bernoulli.create 0.3) (Bernoulli.create 0.5) |> should (equalWithin 1e-9) 0.2
 
 // ═══════════════════════════════════════════════════════════════════
-// C5 (B-1007 P1) — BP `runToFixpoint` is EXACT ON TREES and TERMINATES.
+// C5 (081KT2T2J0008QG0R000YZ3NMY P1) — BP `runToFixpoint` is EXACT ON TREES and TERMINATES.
 // Companion to the `BpExactOnTree` TLA+ spec (TLC proves the synchronous
 // schedule + termination on the abstract 3-tree). This is the FsCheck
 // half of the BP-16 cross-check: the REAL float marginal on RANDOM trees

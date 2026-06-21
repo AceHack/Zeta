@@ -32,16 +32,16 @@ The **unifying frame** for the Harmonious-Division research thread (Aaron 2026-0
 **It is all one engine.** The whole note reduces to the **Rodney's-Razor orthogonal-axis compression engine** — compress to the essential canonical form, where the canonical form *is* the orthogonal basis (Cayley–Dickson / Clifford). Every earlier section is a facet of running it:
 
 - Rodney's Razor = idempotent projection onto the canonical orthogonal axes (`R(R)=R`)
-- harmonious division = harmonic **decomposition onto** those axes (Σωᵢsᵢ, B-0842)
+- harmonious division = harmonic **decomposition onto** those axes (Σωᵢsᵢ, 081KSGS9H0008QG0R003V8C86Q)
 - focus function = selecting the actualized axis · aperiodic-proximity = the *local* axis relations
 - axis-swap (holographic / CPT) = a P/T operation **on** the axes
 - seed / DST = the axis coordinates **computed from the seed** (→ total order at omniscience scope)
 - t∞=t0 = the idempotent **fixed point** (causal-diamond origin↔purpose closure)
-- `INumber` = field + order **on** the compressed axes · **accelerator** = B-0915 (Clifford SIMD/GPU)
+- `INumber` = field + order **on** the compressed axes · **accelerator** = 081KSNY2Z0008QG0R002BNQVE1 (Clifford SIMD/GPU)
 
 The recursion is the payoff: applying the razor to the whole thread yields "it's all one engine" — the razor doing its own job.
 
-**For us (agent scope): attention ⇄ memory.** The engine's axis-swap, run on the framework, *is* the B-0543 **Remember ↔ Attention** axis-swap. Memory = the seed / persisted past (`Persist`/μένω); attention = the focus-function / now / particle-locus (Pay-Attention = "focus, collapse, basis choice"). **attention→memory** = `Emit`-then-`Persist` (focus becomes the seed); **memory→attention** = `Observe`-then-focus (seed re-focuses the now); the **t∞=t0 closure** identifies the two ends. It's the OPLE loop read as attention⇄memory — and it's why `attention-as-currency` names attention + memory as the two interconvertible economic axes (the exchange rate between them *is* the axis-swap).
+**For us (agent scope): attention ⇄ memory.** The engine's axis-swap, run on the framework, *is* the 081KRMEXM0008QG0R002YSPW1X **Remember ↔ Attention** axis-swap. Memory = the seed / persisted past (`Persist`/μένω); attention = the focus-function / now / particle-locus (Pay-Attention = "focus, collapse, basis choice"). **attention→memory** = `Emit`-then-`Persist` (focus becomes the seed); **memory→attention** = `Observe`-then-focus (seed re-focuses the now); the **t∞=t0 closure** identifies the two ends. It's the OPLE loop read as attention⇄memory — and it's why `attention-as-currency` names attention + memory as the two interconvertible economic axes (the exchange rate between them *is* the axis-swap).
 
 Docs-only; markdownlint clean. Lands after #6405 (coda) so it sits on a coda-complete note.
 

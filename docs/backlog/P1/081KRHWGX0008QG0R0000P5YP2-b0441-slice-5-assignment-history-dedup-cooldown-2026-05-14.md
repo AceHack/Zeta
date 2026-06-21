@@ -1,9 +1,8 @@
 ---
-id: B-0501
-zetaid: 081KRHWGX0008QG0R0000P5YP2
+id: 081KRHWGX0008QG0R0000P5YP2
 priority: P1
 status: closed
-title: "B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)"
+title: "081KRFA460008QG0R00229616S slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
@@ -15,11 +14,11 @@ tags: [background-service, bus, mechanization, anti-idle, history-tracking]
 type: feature
 ---
 
-# B-0441 slice 5 — assignment history dedup / cooldown
+# 081KRFA460008QG0R00229616S slice 5 — assignment history dedup / cooldown
 
 ## Origin
 
-B-0441 acceptance criterion:
+081KRFA460008QG0R00229616S acceptance criterion:
 > "Tracks assignment history to avoid re-assigning same row within short window"
 
 The current `pollOnce` publishes the same top-N ready rows on every poll cycle with no
@@ -64,7 +63,7 @@ coverage of `defaultHistoryFile()` honoring `ZETA_BUS_DIR` + new `--history-file
 and `--cooldown-min` CLI flags. REAL_ADAPTERS uses atomic-rename via
 `renameSync(tmp, path)` after `writeFileSync(tmp, ...)`. Default config resolves
 the history-file path at module-load time via `defaultHistoryFile()` honoring
-`process.env.ZETA_BUS_DIR`. B-0441 parent acceptance criterion "Tracks assignment
+`process.env.ZETA_BUS_DIR`. 081KRFA460008QG0R00229616S parent acceptance criterion "Tracks assignment
 history to avoid re-assigning same row within short window" is now satisfied.
 
 ## Design sketch
@@ -103,7 +102,7 @@ const newEntries: AssignmentHistoryEntry[] = [
 adapters.writeHistoryFile(config.historyFile, { entries: newEntries });
 ```
 
-## Why separate from slice 3 (B-0500)
+## Why separate from slice 3 (081KRHWGX0008QG0R0025PX5SZ)
 
 Slice 3 gates on queue-state (external signal: is the agent busy?).
 Slice 5 gates on publication history (internal memory: did we just assign this?).
@@ -121,11 +120,11 @@ within the race window is a minor noise issue, not a correctness bug).
 ## Dependency chain
 
 ```
-B-0441 (slices 1+2+4 shipped)
-  └─ B-0501 (THIS ROW — assignment history dedup; slice 5)
+081KRFA460008QG0R00229616S (slices 1+2+4 shipped)
+  └─ 081KRHWGX0008QG0R0000P5YP2 (THIS ROW — assignment history dedup; slice 5)
 ```
 
-Does NOT depend on B-0500 (slice 3) — both slices modify `pollOnce` independently.
+Does NOT depend on 081KRHWGX0008QG0R0025PX5SZ (slice 3) — both slices modify `pollOnce` independently.
 Coordinate merge order to avoid conflicts if both land in the same window.
 
 ## Pre-start checklist (per backlog-item-start-gate)

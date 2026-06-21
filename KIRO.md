@@ -3,8 +3,8 @@
 This is the Amazon Kiro (Alexa) addendum. [`AGENTS.md`](AGENTS.md) and
 [`GOVERNANCE.md`](GOVERNANCE.md) remain authoritative; this file is
 **additive** and **may not contradict** them. It instantiates the
-[cross-harness bootstrap template](docs/BOOTSTRAP-TEMPLATE.md) (B-0355)
-with the Kiro-specific tooling references filled in (per B-0325).
+[cross-harness bootstrap template](docs/BOOTSTRAP-TEMPLATE.md) (081KR50HA0008QG0R003G7DR8Z)
+with the Kiro-specific tooling references filled in (per 081KR2E4K0008QG0R0005E727X).
 
 ## 1. Orient
 

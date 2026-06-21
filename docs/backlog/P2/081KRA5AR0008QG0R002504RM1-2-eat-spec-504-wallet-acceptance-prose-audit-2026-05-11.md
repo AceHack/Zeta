@@ -1,9 +1,8 @@
 ---
-id: B-0074.2
-zetaid: 081KRA5AR0008QG0R002504RM1
+id: 081KRA5AR0008QG0R002504RM1
 priority: P2
 status: open
-title: EAT §504 / §21.e wallet-acceptance prose audit (B-0074 child 2, re-decomp)
+title: EAT §504 / §21.e wallet-acceptance prose audit (081KQ8P5D0008QG0R0014HJFF5 child 2, re-decomp)
 effort: S
 ask: targeted doc-audit pass on EAT spec for wallet-acceptance drift
 created: 2026-05-11
@@ -13,11 +12,11 @@ tags: [eat-spec, wallet, prose-audit, cross-doc, pr-72]
 type: friction-reducer
 ---
 
-# B-0074.2 — EAT §504 wallet-acceptance prose audit
+# 081KRA5AR0008QG0R002504RM1 — EAT §504 wallet-acceptance prose audit
 
-## Why (atomic child of B-0074, re-decomp per "assume mistakes")
+## Why (atomic child of 081KQ8P5D0008QG0R0014HJFF5, re-decomp per "assume mistakes")
 
-B-0074 remaining open item 5: EAT spec L504 P1 flags that wallet-acceptance should not appear in the resolved-gate prose for EAT §21.e (which defers wallet acceptance to real-money phase). This is a small, bounded, atomic doc consistency sweep. No code change; pure prose audit + trim if needed. TS-preferring: future can be enforced by a TS linter or spec-validator tool (see B-0051 style).
+081KQ8P5D0008QG0R0014HJFF5 remaining open item 5: EAT spec L504 P1 flags that wallet-acceptance should not appear in the resolved-gate prose for EAT §21.e (which defers wallet acceptance to real-money phase). This is a small, bounded, atomic doc consistency sweep. No code change; pure prose audit + trim if needed. TS-preferring: future can be enforced by a TS linter or spec-validator tool (see 081KQ3HBZ0008QG0R002SM3G49 style).
 
 This is the first child; independent of .3.
 
@@ -33,9 +32,9 @@ This is the first child; independent of .3.
 ## Acceptance
 
 - [ ] EAT §21.e resolved-gate prose audited and consistent (wallet-acceptance removed or justified)
-- [ ] Change includes audit trail referencing B-0074 / PR#72 cids
+- [ ] Change includes audit trail referencing 081KQ8P5D0008QG0R0014HJFF5 / PR#72 cids
 
 ## Composes with
 
-- B-0074 (parent punch-list / drift sweep)
-- B-0062 (related wallet/EAT work)
+- 081KQ8P5D0008QG0R0014HJFF5 (parent punch-list / drift sweep)
+- 081KQ8P5D0008QG0R002XFQ305 (related wallet/EAT work)

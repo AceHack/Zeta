@@ -35,7 +35,7 @@
 - **local-LLM primitive** — `tools/setup/common/local-llm.sh` (nix `--out-link` GC-rooted + `LD_LIBRARY_PATH`-clean wrapper on NixOS; binary on ubuntu; brew on mac) + `manifests/local-llm` + apt/brew + linux/macos wiring
 - **the reusable TS** — `local-llm.ts` (`chooseIndex`=choose.ts, `classify`=observe.ts; account-free, DST temp0+seed) + test + `validate-local-llm.ts`
 - **the Docker Ubuntu+NixOS install.sh test shield** (asserts the local-LLM actually works — no skip-to-green)
-- **B-0940** (Ubuntu-value eval) + **B-0941** (NixOS-native ollama; now `status: closed`)
+- **081KSV2WD0008QG0R0028NY0MV** (Ubuntu-value eval) + **081KSV2WD0008QG0R0004C8WV8** (NixOS-native ollama; now `status: closed`)
 
 ## Excluded (left off-leash to mature)
 
@@ -43,7 +43,7 @@ move-next-harness, event-store-schema, docs/accelerator, events/ runtime artifac
 
 ## Quality
 
-Applies the prior native-subagent 2nd-opinion audit's corrections + the install-graph review fixes (set-e gracefulness + nix GC-root, bash-retirement allowlist, B-0941→closed, role-ref name-attribution). **Verified:** 27 TS tests pass · shellcheck clean · bash-inventory `--enforce` OK · 0 conflicts · no experiment files leaked. local-llm.sh fixes confirmed green-with-assert (run 26686797500: `fallback=false` — the local LLM genuinely answered).
+Applies the prior native-subagent 2nd-opinion audit's corrections + the install-graph review fixes (set-e gracefulness + nix GC-root, bash-retirement allowlist, 081KSV2WD0008QG0R0004C8WV8→closed, role-ref name-attribution). **Verified:** 27 TS tests pass · shellcheck clean · bash-inventory `--enforce` OK · 0 conflicts · no experiment files leaked. local-llm.sh fixes confirmed green-with-assert (run 26686797500: `fallback=false` — the local LLM genuinely answered).
 
 Lands the sovereignty substrate: a NixOS-USB-booted machine installs the local LLM with no cloud; observe.ts/choose.ts run on-machine.
 
@@ -85,12 +85,12 @@ Lands the sovereignty substrate: a NixOS-USB-booted machine installs the local L
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6F4M45`
-- **Path**: `docs/backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
+- **Path**: `docs/backlog/P2/081KSV2WD0008QG0R0004C8WV8-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-30T15:02:38Z on `docs/backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-30T15:02:38Z on `docs/backlog/P2/081KSV2WD0008QG0R0004C8WV8-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`:4 (association: NONE)
 
   <pre>
   P1: Backlog row is marked as completed in docs/BACKLOG.md, but this row’s frontmatter still says `status: open`. `tools/backlog/generate-index.ts` only marks rows closed when status is `closed` (or `superseded-by-*`), so this will drift on the next regen.
@@ -511,7 +511,7 @@ with install.sh.' Ubuntu sibling to docker-nixos-install-sh-test:
   - manifests/apt: + zstd (ollama linux release is .tar.zst).
   - docker-ubuntu-install-sh-test.yml: direct docker build (first cut).
 
-NixOS stays primary (declarative-by-construction; B-0940); this guards the Ubuntu
+NixOS stays primary (declarative-by-construction; 081KSV2WD0008QG0R0028NY0MV); this guards the Ubuntu
 declarative-retrofit. FOLLOW-UP (Aaron's GHA-cache point): shared TS driver +
 buildx cache type=gha for both OS tests so the heavy install bakes once.
 Untestable from here (no local docker) -> iterates via CI off-leash.
@@ -570,7 +570,7 @@ NixOS build with the local-LLM additions.
 NOTE / follow-up: local-llm.sh downloads the GENERIC ollama linux binary, which
 won't run on NixOS (non-FHS) — the test will pass (local-llm.sh is graceful), but
 the local-LLM won't actually WORK on NixOS via that path. NixOS (the primary, per
-B-0940) should get ollama via nixpkgs (declarative-native), not the Ubuntu
+081KSV2WD0008QG0R0028NY0MV) should get ollama via nixpkgs (declarative-native), not the Ubuntu
 generic-binary retrofit. Tracked for a NixOS-native-ollama follow-up.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -580,12 +580,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
+- `docs/backlog/P2/081KSV2WD0008QG0R0004C8WV8-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
 
 **Message:**
 
 ```
-backlog(B-0941): NixOS-native ollama — close the hole in the shield (…
+backlog(081KSV2WD0008QG0R0004C8WV8): NixOS-native ollama — close the hole in the shield (…
 
 …test passes by SKIPPING)
 
@@ -601,7 +601,7 @@ covered. This row patches the hole, two halves both required:
   2. NixOS test ASSERTS the local-LLM works (real chooseIndex probe), fails if
      absent — graceful-skip is right for install.sh, wrong for the test.
 
-Composes B-0940 (NixOS-primary eval). Off-leash; harvests with the install-graph.
+Composes 081KSV2WD0008QG0R0028NY0MV (NixOS-primary eval). Off-leash; harvests with the install-graph.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
@@ -615,14 +615,14 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-0941): NixOS-native ollama via nix + nixos test ASSERTS local-L…
+fix(081KSV2WD0008QG0R0004C8WV8): NixOS-native ollama via nix + nixos test ASSERTS local-L…
 
 …LM (close the false-green)
 
 The hole: local-llm.sh had mac(brew)/Linux(generic-binary) branches but NO NixOS
 branch -> on NixOS it downloaded the generic glibc binary (won't run non-FHS) ->
 graceful skip -> docker-nixos test GREEN while local-LLM non-functional on the
-PRIMARY OS (the B-0941 false-green).
+PRIMARY OS (the 081KSV2WD0008QG0R0004C8WV8 false-green).
 
 Fix (two halves):
 1. local-llm.sh: detect /etc/NIXOS (same marker linux.sh already routes on) ->
@@ -653,7 +653,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-0941): nix-env-first + surface nix stderr (diagnose the suppres…
+fix(081KSV2WD0008QG0R0004C8WV8): nix-env-first + surface nix stderr (diagnose the suppres…
 
 …sed install failure)
 
@@ -679,7 +679,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-0941): nix profile install --priority 6 (resolve coreutils file…
+fix(081KSV2WD0008QG0R0004C8WV8): nix profile install --priority 6 (resolve coreutils file…
 
 …-collision) + drop broken nix-env path + SC2155
 
@@ -706,7 +706,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-0941): nix BUILD + symlink (no profile mutation) — sidestep the…
+fix(081KSV2WD0008QG0R0004C8WV8): nix BUILD + symlink (no profile mutation) — sidestep the…
 
 … coreutils collision
 
@@ -734,7 +734,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-0941): LD_LIBRARY_PATH-clean ollama wrapper (diagnosed glibc sy…
+fix(081KSV2WD0008QG0R0004C8WV8): LD_LIBRARY_PATH-clean ollama wrapper (diagnosed glibc sy…
 
 …mbol mismatch)
 
@@ -796,7 +796,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 - `.github/workflows/accelerator-local-llm-validate.yml`
 - `.github/workflows/docker-nixos-install-sh-test.yml`
 - `.github/workflows/docker-ubuntu-install-sh-test.yml`
-- `docs/backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
+- `docs/backlog/P2/081KSV2WD0008QG0R0004C8WV8-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
 - `tools/accelerator/local-llm.ts`
 - `tools/accelerator/validate-local-llm.ts`
 - `tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile`
@@ -822,7 +822,7 @@ event-store too). Brings ONLY the install-graph (17 files, +956, purely additive
 - the reusable primitive: tools/accelerator/local-llm.ts (chooseIndex=choose.ts,
   classify=observe.ts; account-free, DST temp0+seed) + its test + validate-local-llm.ts
 - the Docker Ubuntu+NixOS install.sh test shield (asserts the local-LLM actually works)
-- B-0940 (Ubuntu-value eval) + B-0941 (NixOS-native ollama; now status: closed)
+- 081KSV2WD0008QG0R0028NY0MV (Ubuntu-value eval) + 081KSV2WD0008QG0R0004C8WV8 (NixOS-native ollama; now status: closed)
 
 EXCLUDED (left off-leash on the accelerator to mature): move-next-harness,
 event-store-schema, docs/accelerator, events/ runtime artifacts, the staged
@@ -830,7 +830,7 @@ accelerator-move-next.yml (main keeps its live #6078 version).
 
 Applies the prior 2nd-opinion audit's corrections + the install-graph review fixes:
 set-e gracefulness + nix GC-root (local-llm.sh), bash-retirement allowlist entry,
-B-0941 status->closed + Resolution, role-ref name-attribution in manifests/local-llm.
+081KSV2WD0008QG0R0004C8WV8 status->closed + Resolution, role-ref name-attribution in manifests/local-llm.
 Verified: 27 TS tests pass, shellcheck clean, bash-inventory --enforce OK, 0 conflicts,
 no experiment files leaked. local-llm.sh fixes confirmed green-with-assert (run 26686797500).
 
@@ -868,7 +868,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
+- `docs/backlog/P2/081KSV2WD0008QG0R0004C8WV8-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md`
 - `tools/setup/manifests/local-llm`
 
 **Message:**
@@ -876,17 +876,17 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 fix(harvest): commit stranded install-graph review fixes
 
-The bash-retirement allowlist entry for local-llm.sh, the B-0941
+The bash-retirement allowlist entry for local-llm.sh, the 081KSV2WD0008QG0R0004C8WV8
 status->closed + Resolution, the inventory test count (13->14), and the
 manifest name-attribution were edited in the worktree but never committed
 — only the CodeQL loopback-guard commit was pushed. CI ran the pushed
 commit (which lacked them), so:
   - bash-inventory: unexpected:1 (local-llm.sh not in committed allowlist)
-  - BACKLOG-drift: committed B-0941 still `open`, BACKLOG.md reflects closed
+  - BACKLOG-drift: committed 081KSV2WD0008QG0R0004C8WV8 still `open`, BACKLOG.md reflects closed
 
 Committing the stranded fixes makes the committed tree self-consistent:
   - local-llm.sh in EXPECTED_RETAINED_SHELL + RETAINED_SHELL_CATEGORY_BY_FILE
-  - B-0941 status: closed (BACKLOG.md already matches a fresh regen)
+  - 081KSV2WD0008QG0R0004C8WV8 status: closed (BACKLOG.md already matches a fresh regen)
   - inventory test setup/bootstrap count 14 (bun test: 18 pass / 0 fail)
   - manifests/local-llm attribution -> operator (role-ref lint)
 

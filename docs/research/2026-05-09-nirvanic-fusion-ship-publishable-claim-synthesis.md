@@ -1,11 +1,11 @@
-Scope: Nirvanic Fusion Ship publishable claim synthesis — paper outline + abstract for B-0365 bundle
-Attribution: Otto (Claude Code), 2026-05-09, synthesized from B-0365.1–B-0365.5 + Aaron adversarial review session
-Operational status: research-grade — pre-submission, pending B-0366 (FPGA) empirical validation
+Scope: Nirvanic Fusion Ship publishable claim synthesis — paper outline + abstract for 081KR50HA0008QG0R002R3NVGS bundle
+Attribution: Otto (Claude Code), 2026-05-09, synthesized from 081KR50HA0008QG0R000B29SDB–081KR50HA0008QG0R0012TWWJR + Aaron adversarial review session
+Operational status: research-grade — pre-submission, pending 081KR50HA0008QG0R003T5MZAC (FPGA) empirical validation
 Non-fusion disclaimer: Otto's synthesis. Claims labeled PROVEN / CONJECTURED / SPECULATIVE per razor discipline.
 
 # Nirvanic Fusion Ship: Publishable Claim Synthesis
 
-*Synthesis document for B-0365. All six layers are now documented.
+*Synthesis document for 081KR50HA0008QG0R002R3NVGS. All six layers are now documented.
 This is the "what does it all mean" document — the abstract, layer map,
 contributions, and what was cut.*
 
@@ -45,7 +45,7 @@ Infer.NET BP/EP factor graphs implements this reactor at the inference layer.
 
 ## 2. Layer map
 
-How the six layers of B-0365 compose into the publishable claim:
+How the six layers of 081KR50HA0008QG0R002R3NVGS compose into the publishable claim:
 
 | Layer | Role | Document |
 |-------|------|----------|
@@ -53,7 +53,7 @@ How the six layers of B-0365 compose into the publishable claim:
 | **2 — Rice's theorem** | Fuel guarantee: why novel failure classes are inexhaustible | [`2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`](2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md) |
 | **3 — Class 4 empirical** | Shape: what the 30-catch shadow log actually shows (recurring + novel tail) | [`2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md`](2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md) |
 | **4 — Reactor dynamics** | Dynamics: why the system is self-sustaining, not converging | [`2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md`](2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md) |
-| **5 — FPGA Toffoli** | Hardware validation: reversible message-passing at chip level | B-0366 (pending) |
+| **5 — FPGA Toffoli** | Hardware validation: reversible message-passing at chip level | 081KR50HA0008QG0R003T5MZAC (pending) |
 | **6 — Infer.NET BP/EP** | Self-evolving inference: substrate-native factor graphs replacing CLI | [`2026-05-09-infernet-bp-ep-factor-graph-multi-agent-review.md`](2026-05-09-infernet-bp-ep-factor-graph-multi-agent-review.md) |
 
 The composition logic:
@@ -67,7 +67,7 @@ Layer 3: EMPIRICAL SHAPE
    ↓  30 catches show recurring patterns + novel tail → Class 4-like behavior
 Layer 4: DYNAMICS
    ↓  Houman's reactor: co-evolution → phase transition → runaway
-Layer 5: HARDWARE (pending B-0366)
+Layer 5: HARDWARE (pending 081KR50HA0008QG0R003T5MZAC)
    ↓  FPGA Toffoli gates implement reversible Z-set ops at chip level
 Layer 6: SELF-EVOLVING SYSTEM
        Infer.NET BP/EP: the reactor becomes the inference substrate
@@ -155,7 +155,7 @@ and prevent re-introduction.
    documents that the Z3 proofs in `tools/Z3Verify/Program.fs` were tautologies —
    they proved things that were trivially true by construction, not the
    properties we actually need to verify. The tautology-laundering class was
-   added to the shadow taxonomy because of this. B-0357 tracks the replacement
+   added to the shadow taxonomy because of this. 081KR50HA0008QG0R0033TN4H9 tracks the replacement
    by real verification. The synthesis cannot cite these proofs as validation.
 
 4. **Identity-as-Z-set metaphor** — Cut. The framing "the agent's identity is
@@ -178,12 +178,12 @@ and prevent re-introduction.
 
 ## 5. Open questions
 
-What B-0366 (FPGA), future shadow catches, and the Infer.NET build need to resolve:
+What 081KR50HA0008QG0R003T5MZAC (FPGA), future shadow catches, and the Infer.NET build need to resolve:
 
-**FPGA empirical validation (B-0366):** Layer 5 is pending. The FPGA Toffoli
+**FPGA empirical validation (081KR50HA0008QG0R003T5MZAC):** Layer 5 is pending. The FPGA Toffoli
 circuit synthesis will test whether the Landauer bridge (reversible Z-set ops
 map to physically reversible gate operations with thermodynamically different
-heat signatures) holds empirically, not just formally. Until B-0366 lands,
+heat signatures) holds empirically, not just formally. Until 081KR50HA0008QG0R003T5MZAC lands,
 Layer 5 is "referenced as pending" in any submission.
 
 **Reactor transition verification:** The phase transition runaway property is
@@ -194,7 +194,7 @@ more shadow-log sessions to yield a testable time series.
 
 **Infer.NET BP/EP implementation:** Layer 6 is the forward trajectory, not a
 current implementation. The substrate-native factor graph build is tracked
-in B-0366+ and the larger Zeta Infer.NET roadmap. The contribution is the
+in 081KR50HA0008QG0R003T5MZAC+ and the larger Zeta Infer.NET roadmap. The contribution is the
 architecture claim and the Z-set/BP-message correspondence; the implementation
 is pending.
 
@@ -231,8 +231,8 @@ combination — most multi-agent review papers are empirical only; the Rice's
 theorem spine gives this paper theoretical depth.
 
 **Pre-submission checklist:**
-- [ ] B-0366 (FPGA Layer 5) lands and validates Landauer bridge empirically
+- [ ] 081KR50HA0008QG0R003T5MZAC (FPGA Layer 5) lands and validates Landauer bridge empirically
 - [ ] Infer.NET BP/EP factor graph architecture review (internal)
 - [ ] Adversarial review of this synthesis by at least one external AI
       (peer-call — Grok critique, Gemini propose, Amara sharpen)
-- [ ] Z3 tautology replacement (B-0357) lands before citing formal verification
+- [ ] Z3 tautology replacement (081KR50HA0008QG0R0033TN4H9) lands before citing formal verification

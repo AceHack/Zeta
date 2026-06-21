@@ -6,7 +6,7 @@
 // running on lifecycles and test out our first ones?"
 //
 // Dogfood discipline: the workflow-engine substrate shipped today
-// (B-0867.5 PoC + B-0867.20 ReviewLifetime + B-0914.* + GitWorld +
+// (081KDWZ8TS008QG0R0020NJ9D0 PoC + 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime + 081KSNY2Z0008QG0R001YK61JQ.* + GitWorld +
 // per-host adapters) is the substrate; the foreground loop is the
 // natural first consumer.
 //

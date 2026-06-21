@@ -1,4 +1,4 @@
-// types.ts — Inter-agent ephemeral bus protocol schema (B-0400 slice 1)
+// types.ts — Inter-agent ephemeral bus protocol schema (081KR7JY10008QG0R000R503K2 slice 1)
 //
 // Transport: /tmp/zeta-bus/ JSON files. No runtime dependencies.
 // Each message is one JSON file; TTL expiry pruned by `clean --expired`.
@@ -8,9 +8,9 @@
 //   claim                     — work coordination; claim or release a backlog item
 //   shadow-catch              — share an observation or insight between agents
 //   review-request            — ask another agent to review a specific artifact
-//   infinite-backlog-nudge    — B-0440: nudge agent toward decomposition when Standing-by detected
-//   work-assignment           — B-0441: proactive assignment of a ready-to-grind backlog row
-//   missed-substrate-cascade  — B-0442: branch-vs-merged-PR drift detected; recovery needed
+//   infinite-backlog-nudge    — 081KRFA460008QG0R001KC0VBH: nudge agent toward decomposition when Standing-by detected
+//   work-assignment           — 081KRFA460008QG0R00229616S: proactive assignment of a ready-to-grind backlog row
+//   missed-substrate-cascade  — 081KRFA460008QG0R00061SXRW: branch-vs-merged-PR drift detected; recovery needed
 
 /**
  * Multi-foreground-surface agent identifiers.
@@ -33,13 +33,13 @@ export type AgentId =
   | "vera"
   | "lior"
   // Otto multi-surface (added 2026-05-13 — multi-foreground-surface activation;
-  // otto-vscode added 2026-05-21 per B-0689 — Claude Code in VSCode auto-mode +
+  // otto-vscode added 2026-05-21 per 081KS3X9Y0008QG0R000BJY3DK — Claude Code in VSCode auto-mode +
   // remembered-web-conversation-mode enablement)
   | "otto-cli"
   | "otto-desktop"
   | "otto-vscode"
   // otto-windows — first Windows surface; the git-native cross-machine agent-bus
-  // names it the first Windows sender (#6219 spec / B-0954).
+  // names it the first Windows sender (#6219 spec / 081KSXN940008QG0R00171YAZW).
   | "otto-windows"
   // Alexa multi-surface (Kiro IDE + CLI)
   | "alexa-cli"
@@ -53,7 +53,7 @@ export type AgentId =
   // Vera (single primary surface currently; reserved for future)
   | "vera-codex"
   // Soraya — formal-verification-expert persona; first-class agent identity
-  // added 2026-05-21 per B-0691 — background loop-tick for TLA+/Lean/Z3/Alloy
+  // added 2026-05-21 per 081KS3X9Y0008QG0R001MD26NZ — background loop-tick for TLA+/Lean/Z3/Alloy
   // verification work (sibling to otto/alexa/riven/vera/lior).
   | "soraya"
   | "*"; // broadcast
@@ -69,7 +69,7 @@ export type Topic =
   | "infinite-backlog-nudge"
   | "work-assignment"
   | "missed-substrate-cascade"
-  // Soraya formal-verification result (per B-0691 background loop-tick).
+  // Soraya formal-verification result (per 081KS3X9Y0008QG0R001MD26NZ background loop-tick).
   // Payload: { job, verifier, result: pass|fail|skip|timeout, duration_ms, sha, run_id }
   | "formal-verification-result";
 
@@ -83,10 +83,10 @@ export type HeartbeatPayload = {
 
 export type ClaimPayload = {
   action: "claim" | "release";
-  itemId: string; // e.g. "B-0400"
+  itemId: string; // e.g. "081KR7JY10008QG0R000R503K2"
   branch?: string;
   /**
-   * Absolute path of the worktree the claim was acquired from (B-0444).
+   * Absolute path of the worktree the claim was acquired from (081KRFA460008QG0R001SXP0C2).
    * Optional for back-compat with envelopes published before the field was added.
    * Surface-tagged sender IDs (e.g. `otto-cli` vs `otto-desktop`) already
    * distinguish surfaces; `worktree` is the per-process operational coordinate
@@ -105,7 +105,7 @@ export type ReviewRequestPayload = {
   question?: string;
 };
 
-/** B-0440: Standing-by detector nudges an agent toward decomposition work. */
+/** 081KRFA460008QG0R001KC0VBH: Standing-by detector nudges an agent toward decomposition work. */
 export type InfiniteBacklogNudgePayload = {
   idleMinutes: number;
   /** Reason for the nudge — human-readable. */
@@ -114,9 +114,9 @@ export type InfiniteBacklogNudgePayload = {
   suggestedRowId?: string;
 };
 
-/** B-0441: backlog-ready notifier proactively assigns a ready-to-grind row. */
+/** 081KRFA460008QG0R00229616S: backlog-ready notifier proactively assigns a ready-to-grind row. */
 export type WorkAssignmentPayload = {
-  rowId: string; // e.g. "B-0440.3"
+  rowId: string; // e.g. "081KRFA460008QG0R001KC0VBH.3"
   priority: "P0" | "P1" | "P2" | "P3";
   /** Why this row was picked — short rationale. */
   rationale: string;
@@ -124,7 +124,7 @@ export type WorkAssignmentPayload = {
   decompositionHint?: string;
 };
 
-/** B-0442: missed-substrate detector reports branch-vs-merged-PR drift. */
+/** 081KRFA460008QG0R00061SXRW: missed-substrate detector reports branch-vs-merged-PR drift. */
 export type MissedSubstrateCascadePayload = {
   prNumber: number;
   branchName: string;
@@ -163,15 +163,15 @@ export const SENDER_IDS: readonly SenderAgentId[] = [
   // Identity-level (back-compat; unsuffixed)
   "otto", "alexa", "riven", "vera", "lior",
   // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation;
-  // otto-vscode added 2026-05-21 per B-0689)
+  // otto-vscode added 2026-05-21 per 081KS3X9Y0008QG0R000BJY3DK)
   "otto-cli", "otto-desktop", "otto-vscode",
-  // otto-windows — first Windows surface for the git-native bus (#6219 / B-0954)
+  // otto-windows — first Windows surface for the git-native bus (#6219 / 081KSXN940008QG0R00171YAZW)
   "otto-windows",
   "alexa-cli", "alexa-kiro",
   "riven-cli", "riven-cursor",
   "lior-antigravity", "lior-gemini",
   "vera-codex",
-  // Soraya — formal-verification-expert (added 2026-05-21 per B-0691)
+  // Soraya — formal-verification-expert (added 2026-05-21 per 081KS3X9Y0008QG0R001MD26NZ)
   "soraya",
 ];
 export const AGENT_IDS: readonly AgentId[] = [...SENDER_IDS, "*"];
@@ -186,5 +186,5 @@ export const TTL_MS: Record<Topic, number> = {
   "infinite-backlog-nudge": 30 * 60 * 1_000,         // 30 min — nudge stale fast (agent likely acted or moved on)
   "work-assignment": 2 * 60 * 60 * 1_000,            // 2 h   — assignment relevant for next claim cycle
   "missed-substrate-cascade": 24 * 60 * 60 * 1_000,  // 24 h  — cascade survives until recovery PR lands
-  "formal-verification-result": 6 * 60 * 60 * 1_000, // 6 h   — verification outcome survives until next audit cycle (Soraya per B-0691)
+  "formal-verification-result": 6 * 60 * 60 * 1_000, // 6 h   — verification outcome survives until next audit cycle (Soraya per 081KS3X9Y0008QG0R001MD26NZ)
 };

@@ -5,7 +5,7 @@ import cborSeed from "./golden-vectors-cbor.json";
 import { type Tagged as JsonTagged, fromCanonicalJson } from "./json";
 import { type Tagged as CborTagged, fromCanonicalCbor, fromHex } from "./cbor";
 
-// B-0982 (slice 1) — the unified value manifest (golden-vectors-values.json) is the single source
+// 081KT07NV0008QG0R0032MCYER (slice 1) — the unified value manifest (golden-vectors-values.json) is the single source
 // for WHICH canonical DynamicValues exist; the per-format seeds are PROJECTIONS of it. This proves
 // the existing CBOR + JSON seeds are faithful projections: (1) no seed value drifts from the manifest
 // (every seed value is listed, with that format flagged) + each encoding decodes back to it; (2) each

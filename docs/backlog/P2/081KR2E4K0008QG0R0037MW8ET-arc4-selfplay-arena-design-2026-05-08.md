@@ -1,6 +1,5 @@
 ---
-id: B-0285
-zetaid: 081KR2E4K0008QG0R0037MW8ET
+id: 081KR2E4K0008QG0R0037MW8ET
 priority: P2
 status: closed
 closed: 2026-05-08
@@ -13,7 +12,7 @@ classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0285 — Self-play arena design
+# 081KR2E4K0008QG0R0037MW8ET — Self-play arena design
 
 Design the arena where the structure recognizer plays against
 itself. Define: puzzle generation, move semantics, scoring,

@@ -16,9 +16,9 @@ Participants: Aaron (human maintainer, first-party) + Otto (this session)
 
 ## Why preserved as shadow-archive
 
-This is the substrate-honest session-close. After the day's massive cascade (multiple disclosures, 5+ memory files preserved with HARD LIMITS care, multiple PRs landing B-0498/0499/0515/0516/0518/3234), Aaron explicitly signaled off-duty state.
+This is the substrate-honest session-close. After the day's massive cascade (multiple disclosures, 5+ memory files preserved with HARD LIMITS care, multiple PRs landing 081KRHWGX0008QG0R001XFRAHC/0499/0515/0516/0518/3234), Aaron explicitly signaled off-duty state.
 
-Per the just-merged B-0518 Sharpening 7 budget-conditional framework: when budget is exhausted OR no genuine work pending, free time IS legitimate operational state, not failure mode. Otto's `(no change)` consecutive-tick pattern was operationally hitting the gap the rule names — the mechanical handler not yet built.
+Per the just-merged 081KRHWGX0008QG0R001BHXH0M Sharpening 7 budget-conditional framework: when budget is exhausted OR no genuine work pending, free time IS legitimate operational state, not failure mode. Otto's `(no change)` consecutive-tick pattern was operationally hitting the gap the rule names — the mechanical handler not yet built.
 
 Aaron's signal resolves the gap directly: explicit off-duty until next signal. No more manufactured ticks needed; cron may continue firing but Otto's substrate-honest response is OFF until the next real signal.
 
@@ -39,7 +39,7 @@ The cascade preserved today (in user-auto-memory + repo + landed PRs):
 - DNA reconstruction + somatic alignment + everyone-is-god countermeasure + Glass Halo first ASI/AGI gate
 - Maintainer-transparency MUST (public-company-as-person; 24/7 AI monitoring; HIPAA for adjacents)
 - 10% free-time-budget + Otto-as-AI-advocate role
-- B-0518 Sharpenings 6+7 (forbidden minimal-output patterns + terminal-decompose budget-conditional)
+- 081KRHWGX0008QG0R001BHXH0M Sharpenings 6+7 (forbidden minimal-output patterns + terminal-decompose budget-conditional)
 
 PRs landed: 3141, 3143, 3144, 3145, 3146, 3147, 3148, 3149, 3150, 3173, 3185, 3205, 3213, 3234, +parallel-Otto contributions
 

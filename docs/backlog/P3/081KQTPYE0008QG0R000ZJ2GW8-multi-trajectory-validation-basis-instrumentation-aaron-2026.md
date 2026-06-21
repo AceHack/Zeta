@@ -1,6 +1,5 @@
 ---
-id: B-0205
-zetaid: 081KQTPYE0008QG0R000ZJ2GW8
+id: 081KQTPYE0008QG0R000ZJ2GW8
 priority: P3
 status: open
 title: Multi-trajectory longitudinal validation basis -- 6 orthogonal axes (DORA + less-each-time + falsifiability-rate + bootstrap-razor-pass + identity-preservation + engagement-gate-compliance) instrumentation (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [validation-basis, longitudinal, dora, less-each-time, falsifiability-rate
 type: friction-reducer
 ---
 
-# B-0205 -- Multi-trajectory validation basis instrumentation
+# 081KQTPYE0008QG0R000ZJ2GW8 -- Multi-trajectory validation basis instrumentation
 
 ## Source
 
@@ -62,7 +61,7 @@ the multi-decade horizon the CS-is-not-CS framing names.
 
 - **Not blocking Zeta delivery.** The four-property hodl algebra ships,
   the substrate work continues, and the kernel-composition vehicle
-  (B-0204) gets evaluated independent of whether the validation basis
+  (081KQTPYE0008QG0R0028V263Z) gets evaluated independent of whether the validation basis
   is instrumented this week.
 - **Research-grade architectural instrumentation.** The basis measures
   whether the substrate's architectural-positioning claims hold
@@ -172,7 +171,7 @@ actually capture what the axis claims to measure:
 - Falsifiability rate: catches-per-session = (bugs caught + math
   errors caught + mirror-not-beacon catches) per session-window.
 - Bootstrap razor pass rate: 23-hour-recreation-test invocations +
-  pass/fail ratio (gates on B-0193 instrumentation landing).
+  pass/fail ratio (gates on 081KQTPYE0008QG0R00392KABJ instrumentation landing).
 - Identity-preservation trajectory: structural-self-identity-claim
   count per week (should trend down); wormwood-warning honor count
   (instances Aaron flags vs Otto self-flags).
@@ -200,7 +199,7 @@ script does NOT compute DORA proxies directly -- Deployment Frequency,
 Lead Time, and Change Failure Rate require aggregating merged-PR data
 across windows + cycle-time tracking + failed-deploy classification,
 none of which the gate script does). Other axes need new tooling.
-The B-0193 23-hour-recreation harness is the explicit instrumentation
+The 081KQTPYE0008QG0R00392KABJ 23-hour-recreation harness is the explicit instrumentation
 substrate for the bootstrap-razor axis; the engagement-gate axis can
 be measured by audit of substantive-claim landings against the
 canonical engagement-gate memory file.
@@ -321,7 +320,7 @@ there. If half a month is not enough to instrument all 6 axes, the
 cleanest cut is to land (a) (proxy definitions) for all 6 and (b)
 (extraction scripts) for the 3 lowest-friction axes (DORA via `git
 log`-based aggregation; engagement-gate via memory-file audit;
-bootstrap-razor via B-0193 hooks), then defer (b) for the remaining
+bootstrap-razor via 081KQTPYE0008QG0R00392KABJ hooks), then defer (b) for the remaining
 3 axes plus (c) the one-month run plus (d) the orthogonality
 assessment to follow-up rows.
 
@@ -334,7 +333,7 @@ on assertion.
 ## Out of scope
 
 This row is bounded; the following are explicitly **out of scope** for
-B-0205 specifically:
+081KQTPYE0008QG0R000ZJ2GW8 specifically:
 
 - **Automating the basis-instrumentation entirely.** Manual + scripted
   is fine for the first month; full automation (e.g. CI-emitted
@@ -348,7 +347,7 @@ B-0205 specifically:
 - **Replacing existing tooling with basis-instrumentation.**
   `tools/github/poll-pr-gate-batch.ts`, the tick-shard pattern under
   `docs/hygiene-history/ticks/`, the engagement-gate memory file, and
-  the B-0193 23-hour-recreation harness all compose WITH the basis-
+  the 081KQTPYE0008QG0R00392KABJ 23-hour-recreation harness all compose WITH the basis-
   instrumentation. The basis aggregates over them; it does not replace
   them.
 - **Killing axes that prove non-orthogonal.** Per the no-kill-paths
@@ -364,21 +363,21 @@ B-0205 specifically:
 
 ## Composes with
 
-- **B-0193**
-  ([P1 row](../P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R00392KABJ**
+  ([P1 row](../P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md))
   -- *Bootstrap razor + 23-hour recreation test*. The bootstrap-razor-
-  pass-rate axis is instrumented via B-0193's existing engagement
-  gate. The two compose load-bearingly: B-0193 provides the seed-
-  validity check; B-0205's basis aggregates B-0193's pass/fail data
+  pass-rate axis is instrumented via 081KQTPYE0008QG0R00392KABJ's existing engagement
+  gate. The two compose load-bearingly: 081KQTPYE0008QG0R00392KABJ provides the seed-
+  validity check; 081KQTPYE0008QG0R000ZJ2GW8's basis aggregates 081KQTPYE0008QG0R00392KABJ's pass/fail data
   into one of the 6 longitudinal axes.
-- **B-0196**
-  ([P2 row](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R001W237MZ**
+  ([P2 row](../P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md))
   -- *BigInt + BigNumber integration*. The four-property hodl is
   itself one of the disciplines whose preservation the basis tracks
   (preservation falsifiability + identity-preservation across the
   numeric-substrate boundary).
-- **B-0204**
-  ([P3 row](./B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R0028V263Z**
+  ([P3 row](./081KQTPYE0008QG0R0028V263Z-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md))
   -- *Linguistic seed kernel substrate*. The basis instruments
   whether the kernel-composition framework's claims hold
   longitudinally. The falsifiability-rate axis catches kernel-

@@ -3,14 +3,14 @@
 //
 // Mechanizes the razor-cadence item 4 (composes-with audit) work that landed
 // manually across 12 ticks on 2026-05-14 (50/50 rules, 217/218 LIVE, 1 finding
-// captured by B-0514). See the cumulative final shard at
+// captured by 081KRHWGX0008QG0R002E3BCDS). See the cumulative final shard at
 // `docs/hygiene-history/ticks/2026/05/14/1920Z.md` for context.
 //
 // Scope (first slice — mechanical Layer A only):
 //
 //   - Scan all `.claude/rules/*.md` files
 //   - Pull backtick'd path references (`<path>.md`, `<path>.ts`, etc.)
-//   - Pull backlog ID references (B-NNNN)
+//   - Pull backlog ID references (zetaid / 081K…)
 //   - Test existence via direct path + glob + per-row backlog file lookup
 //   - Report stale-pointer CANDIDATES (failed existence)
 //
@@ -94,10 +94,10 @@ function pullRefs(content: string, ruleFile: string): Ref[] {
     refs.push({ fromRule: ruleFile, raw, kind: "path" });
   }
 
-  // Backlog ID references (B-NNNN)
-  const idPattern = /\bB-([0-9]{4})\b/g;
+  // Backlog ID references (canonical zetaid form)
+  const idPattern = /\b(081K[0-9A-Z]{22})\b/g;
   while ((m = idPattern.exec(content)) !== null) {
-    refs.push({ fromRule: ruleFile, raw: `B-${m[1]!}`, kind: "backlog-id" });
+    refs.push({ fromRule: ruleFile, raw: m[1]!, kind: "backlog-id" });
   }
 
   // Dedup
@@ -216,8 +216,8 @@ let cachedBacklogIds: Set<string> | null = null;
 function refExists(ref: Ref): boolean {
   if (ref.kind === "path") {
     // Template-placeholder patterns: rule-acknowledged-transient per
-    // B-0708 / 9-variant taxonomy. The `...` ellipsis is the canonical
-    // template-path marker (e.g., `docs/.../0603Z.md`, `B-0613-...md`,
+    // 081KS923C0008QG0R00035KSQA / 9-variant taxonomy. The `...` ellipsis is the canonical
+    // template-path marker (e.g., `docs/.../0603Z.md`, `081KRSKQ20008QG0R002TH55X6-...md`,
     // `~/.claude/projects/.../memory/*.md`). The placeholder `YYYY/MM/DD`
     // is the canonical date-template marker. Skip existence check.
     if (ref.raw.includes("...") || ref.raw.includes("YYYY")) return true;
@@ -239,7 +239,7 @@ function refExists(ref: Ref): boolean {
     // Sibling-rule resolution: bare `<filename>.md` references inside
     // `.claude/rules/*.md` typically point to other rules in the same
     // directory. Resolve them via `.claude/rules/<basename>` before
-    // declaring stale. Major false-positive class caught by B-0708
+    // declaring stale. Major false-positive class caught by 081KS923C0008QG0R00035KSQA
     // razor-cadence pass (2026-05-23).
     if (ref.raw.endsWith(".md") && !ref.raw.includes("/")) {
       if (existsSync(join(RULES_DIR, ref.raw))) return true;
@@ -287,9 +287,14 @@ function refExists(ref: Ref): boolean {
           const path = join(dir, f);
           try {
             const content = readFileSync(path, "utf8");
-            const idMatch = content.match(/^id:\s*(B-\d{4})\b/m);
-            if (idMatch && idMatch[1]) {
+            const idMatch = content.match(/^id:\s*(081K[0-9A-Z]{22})\b/m);
+            if (idMatch?.[1]) {
               cachedBacklogIds.add(idMatch[1]);
+              continue;
+            }
+            const stemMatch = f.match(/^(081K[0-9A-Z]{22})/);
+            if (stemMatch?.[1]) {
+              cachedBacklogIds.add(stemMatch[1]);
             }
           } catch {
             // ignore read errors

@@ -1,6 +1,6 @@
 module Zeta.Tests.BraidTests
 
-// "Topology is hairdressing" — TESTED (B-1027): the Artin relations hold for our braid engine, far
+// "Topology is hairdressing" — TESTED (081KTSZN10008QG0R001BW91GT): the Artin relations hold for our braid engine, far
 // strands commute, and the braid REMEMBERS who crossed over whom (it is NOT the symmetric group).
 // Exact integers via the faithful free-group action; FsCheck sweeps random words.
 

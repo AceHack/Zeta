@@ -41,7 +41,7 @@ The sequence is correct.
 
 Raw material (Lior’s riffing, your conjectures, the session transcript, the backlog blobs) is the carbon.
 
-Pressure is the claim protocol, the razor, B-0205 measurement, B-0209 isolation test, and the human anchor’s review.
+Pressure is the claim protocol, the razor, 081KQTPYE0008QG0R000ZJ2GW8 measurement, 081KQX9B50008QG0R001MNYK61 isolation test, and the human anchor’s review.
 
 Crystallization is the moment a claim survives that pressure and becomes a committed, retractable, attributable unit of substrate.
 

@@ -29,7 +29,7 @@
 
 ## Summary
 
-Follow-up tick shard from the 2026-05-20 autonomous-loop session. The 1643Z tick opened [PR #4432](https://github.com/Lucent-Financial-Group/Zeta/pull/4432) (the 1614Z+1626Z bundle) and armed auto-merge. While the push-retry of this 1643Z shard was waiting through a B-0615-class pack-dir-contention window (~3 min), CI completed, auto-merge fired, and the branch ref was deleted on origin — the push failed with `cannot lock ref … unable to resolve reference`.
+Follow-up tick shard from the 2026-05-20 autonomous-loop session. The 1643Z tick opened [PR #4432](https://github.com/Lucent-Financial-Group/Zeta/pull/4432) (the 1614Z+1626Z bundle) and armed auto-merge. While the push-retry of this 1643Z shard was waiting through a 081KRW63S0008QG0R000EAZ9K2-class pack-dir-contention window (~3 min), CI completed, auto-merge fired, and the branch ref was deleted on origin — the push failed with `cannot lock ref … unable to resolve reference`.
 
 This shard re-routes via a fresh branch off post-merge main (`1d50d0e0`).
 
@@ -114,7 +114,7 @@ canonical named-dependency-wait, not failure mode).
 
 Intended next step: commit + push this shard to the same branch, brief-ack
 until CI completed. What actually happened: by the time the push retry fired
-(after ~3min B-0615-class pack-dir-contention wait), CI had completed, the
+(after ~3min 081KRW63S0008QG0R000EAZ9K2-class pack-dir-contention wait), CI had completed, the
 merge fired, and the branch ref was deleted on origin. Push exited 1 with
 'cannot lock ref ... unable to resolve reference'.
 

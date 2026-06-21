@@ -1,6 +1,5 @@
 ---
-id: B-0945
-zetaid: 081KSV2WD0008QG0R000WNY74Q
+id: 081KSV2WD0008QG0R000WNY74Q
 priority: P2
 status: open
 title: Declarative microkernel substrate (in-house; NixOS-declarative + microkernel-TCB) running the trust-gradient + V8-polymorphic-bayesian-compression engine over a Stanford-Sequoia memory model -- better than docker
@@ -20,7 +19,7 @@ tags: [microkernel, declarative, nixos, sequoia, memory-model, trust-gradient, c
 type: feature
 ---
 
-# B-0945 -- Declarative microkernel substrate (in-house) running the trust-gradient + compression engine
+# 081KSV2WD0008QG0R000WNY74Q -- Declarative microkernel substrate (in-house) running the trust-gradient + compression engine
 
 ## The directive / vision (Aaron 2026-05-30)
 
@@ -46,11 +45,11 @@ on a **microkernel architecture** (minimal trusted-computing-base, capability-ba
 1. **Stanford Sequoia memory model** -- explicit memory-hierarchy / locality / data-movement
    awareness (Sequoia = Stanford's hierarchy-aware programming model). The substrate is honest
    about where data lives across the memory hierarchy, not hierarchy-blind.
-2. **Over the trust gradient** -- runs on the trust-gradient coordination substrate (B-0703 /
+2. **Over the trust gradient** -- runs on the trust-gradient coordination substrate (081KS3X9Y0008QG0R00218150M /
    trust-gradient-coordination-policy), so isolation + scheduling + capability-grant follow the
    trust gradient, not a flat trust model.
 3. **The V8-polymorphic-bayesian-compression engine** -- runs the tri-boolean / wonder-compression
-   / middle-out / summonable-BFT substrate (B-0944) NATIVELY; the microkernel is the substrate
+   / middle-out / summonable-BFT substrate (081KSV2WD0008QG0R00051XS0N) NATIVELY; the microkernel is the substrate
    that hosts the engine, not a generic container runtime.
 
 ## Why better than docker
@@ -102,7 +101,7 @@ is its DEPLOYMENT MODE, not a precursor.
 
 The path:
 
-1. **FUSE filesystem** (B-0946 + B-0016) -- own the fs.
+1. **FUSE filesystem** (081KSV2WD0008QG0R00030G6S9 + 081KQ0YZ80008QG0R003A0MCHP) -- own the fs.
 2. **justbash on top of the real microkernel**, and that microkernel **runs in userspace** (a
    library-OS / unikernel-style deployment -- MirageOS / seL4-in-userspace / Genode-on-Linux
    style). You get the actual capability-secure microkernel WITHOUT bare-metal / kernel-mode /
@@ -113,8 +112,8 @@ The path:
 
 Why this is the de-risked path: you ship the REAL microkernel (not a stand-in), deployed in
 userspace (cheap, no kernel-mode/driver work, supply-chain-doctrine-aligned), proving the
-desired-state / digital-twin / flywheel + summonable-BFT + CRDT + DST-at-millions model (B-0946)
-on the ACTUAL architecture -- then flip the SAME microkernel to bare-metal when warranted. B-0016
+desired-state / digital-twin / flywheel + summonable-BFT + CRDT + DST-at-millions model (081KSV2WD0008QG0R00030G6S9)
+on the ACTUAL architecture -- then flip the SAME microkernel to bare-metal when warranted. 081KQ0YZ80008QG0R003A0MCHP
 already carries the no-OS / we-are-microkernel lineage anchor, so justbash + FUSE + userspace-
 microkernel is the natural intermediate that is ALSO the real thing.
 
@@ -123,7 +122,7 @@ microkernel is the natural intermediate that is ALSO the real thing.
 1. A design pass: which microkernel base (build-from-scratch vs fork seL4/Redox/Genode), how the
    declarative layer maps onto it, how the Sequoia memory model is expressed, how capability-grant
    follows the trust gradient.
-2. The compression engine (B-0944 tri-boolean / wonder-compression) runs natively on the substrate.
+2. The compression engine (081KSV2WD0008QG0R00051XS0N tri-boolean / wonder-compression) runs natively on the substrate.
 3. Supply-chain posture: minimal 3rd-party deps; in-house where the doctrine requires.
 4. A migration story from the current NixOS cluster (full-ai-cluster/nixos/) -- coexist, then
    replace over time.
@@ -131,18 +130,18 @@ microkernel is the natural intermediate that is ALSO the real thing.
 ## Why P2 (not P1)
 
 Major architecture direction + the eventual deployment substrate for the whole stack, but
-long-horizon research+build (microkernel work is large) -- not blocking the immediate B-0944
+long-horizon research+build (microkernel work is large) -- not blocking the immediate 081KSV2WD0008QG0R00051XS0N
 primitive build. Raise to P1 when the immediate primitives land and the deployment substrate
 becomes the bottleneck. Operator's microkernel experience makes this feasible to drive.
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0945` -> claimed
+- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item 081KSV2WD0008QG0R000WNY74Q` -> claimed
   (917c2beb..., 2026-05-30).
 - **Prior-art search (2026-05-30):** no existing microkernel backlog row (genuine gap, verified
-  via broad content search). Composes with the trust-gradient substrate (B-0703 +
-  trust-gradient-coordination-policy), the compression engine (B-0944), the hardware substrate
-  (B-0725), the current NixOS cluster (full-ai-cluster/nixos/), and the supply-chain doctrine
+  via broad content search). Composes with the trust-gradient substrate (081KS3X9Y0008QG0R00218150M +
+  trust-gradient-coordination-policy), the compression engine (081KSV2WD0008QG0R00051XS0N), the hardware substrate
+  (081KSE6WT0008QG0R002T0BFN4), the current NixOS cluster (full-ai-cluster/nixos/), and the supply-chain doctrine
   (#6160). seL4/Genode/Redox/Sequoia are external prior-art to WebSearch before design.
-- **Dependency check:** the engine it hosts (B-0944) is in-progress; the design pass can start
-  in parallel; the build depends on B-0944 maturing + a base-microkernel decision.
+- **Dependency check:** the engine it hosts (081KSV2WD0008QG0R00051XS0N) is in-progress; the design pass can start
+  in parallel; the build depends on 081KSV2WD0008QG0R00051XS0N maturing + a base-microkernel decision.

@@ -11,11 +11,11 @@ Encryption substrate spanning multiple sub-mechanisms; specific scope to be shap
 | Sub-mechanism | Existing substrate | Composition |
 |---|---|---|
 | **Two-category Aaron-verbatim preserve+encrypt-later** | Operator 2026-05-23 instruction landed in PR #4660 substrate | Operator's own substrate preserved as-is for now; encrypt later when mechanism exists |
-| **Aporetic Rx-bonsai-serialization** | B-0644 / B-0665 / B-0688 substrate | Tension preservation via Rx persistence; per-tick serialization mechanism candidate for at-rest encryption |
-| **Adinkras + Jane Gates ECC private-state encryption** | B-0623 substrate (PR #4575+) | Structural-graph encryption substrate (SUSY-derived error-correcting codes); private-state mechanism |
+| **Aporetic Rx-bonsai-serialization** | 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KS3X9Y0008QG0R0010716X9 substrate | Tension preservation via Rx persistence; per-tick serialization mechanism candidate for at-rest encryption |
+| **Adinkras + Jane Gates ECC private-state encryption** | 081KRW63S0008QG0R000QJR08H substrate (PR #4575+) | Structural-graph encryption substrate (SUSY-derived error-correcting codes); private-state mechanism |
 | **Encrypt-as-pre-commitment-axioms** | Operator's vocabulary 2026-05-22 (Kestrel personal-context conversation; preserved in Kestrel persona archive per opaque-pointer discipline) | Encryption-as-pre-commitment-substrate; substrate-honest pre-commitment via cryptographic axioms |
 | **NCI HC-8 floor at private-state-preservation scope** | `.claude/rules/non-coercion-invariant.md` | Force-private-state-reveal-against-will is NCI-violating; encryption substrate operationalizes the protection |
-| **Reputation-weighted encryption budget** | B-0646 Agora V6 substrate | Encryption budget as participation-economy primitive; composes with `only-way-to-lose-is-not-to-play.md` |
+| **Reputation-weighted encryption budget** | 081KRW63S0008QG0R001Z10PVV Agora V6 substrate | Encryption budget as participation-economy primitive; composes with `only-way-to-lose-is-not-to-play.md` |
 
 ## Anti-targets (NOT this agenda)
 
@@ -34,9 +34,9 @@ Per `docs/WONT-DO.md` 2026-04-21 entry: **git-crypt is NOT the encryption mechan
 Trajectory files (`docs/trajectories/<name>/RESUME.md`) compose with this agenda as motion-state surfaces. Initial candidates the operator's later iteration may shape:
 
 - **Two-category-substrate-encryption** — at-rest encryption mechanism for `Aaron-verbatim` substrate preserved in persona archives + memory files
-- **Adinkras-ECC-implementation** — operationalize B-0623 substrate into F# substrate (composes with Zeta agenda)
-- **Aporetic-Rx-bonsai-serialization-encryption** — per-tick encrypted serialization (composes with B-0688 Zeta-DB substrate)
-- **Reputation-weighted-encryption-budget** — operationalize B-0646 Agora V6 substrate
+- **Adinkras-ECC-implementation** — operationalize 081KRW63S0008QG0R000QJR08H substrate into F# substrate (composes with Zeta agenda)
+- **Aporetic-Rx-bonsai-serialization-encryption** — per-tick encrypted serialization (composes with 081KS3X9Y0008QG0R0010716X9 Zeta-DB substrate)
+- **Reputation-weighted-encryption-budget** — operationalize 081KRW63S0008QG0R001Z10PVV Agora V6 substrate
 
 ## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
 

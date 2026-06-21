@@ -3,13 +3,13 @@
 //
 // Implements the same three-filter discipline (F1/F2/F3) defined in
 // memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md
-// for the B-0056 mythology research track.
+// for the 081KQ3HBZ0008QG0R0034DHWTQ mythology research track.
 //
 // Mythology entries use a `tradition` dimension (Norse, Greek, Egyptian, …) rather than
 // the `medium` dimension (film, tv, game, …) used by the media catalog. Both catalogs share
 // the same filter discipline; filter-failure-rate-by-tradition is tracked separately from
 // filter-failure-rate-by-medium per the medium-agnostic-but-distinct-measurability design
-// (see B-0054 §Measurable hooks).
+// (see 081KQ3HBZ0008QG0R003V6B2ME §Measurable hooks).
 //
 // Usage (type-check only, no runtime needed):
 //   bun --check tools/resonance/mythology-catalog-schema.ts
@@ -22,7 +22,7 @@
 
 /**
  * World-mythology tradition families tracked for filter-failure-rate-by-tradition
- * measurability (B-0056 §Measurable hooks).
+ * measurability (081KQ3HBZ0008QG0R0034DHWTQ §Measurable hooks).
  *
  * F3 strength varies across traditions: Abrahamic and classical-Greek traditions
  * have the deepest scholarly infrastructure; Norse is thinner due to
@@ -194,7 +194,7 @@ export interface MythologyResonanceCatalog {
   readonly schema: "mythology-resonance-v1";
   readonly created: string;
   readonly lastUpdated: string;
-  readonly origin: "B-0056";
+  readonly origin: "081KQ3HBZ0008QG0R0034DHWTQ";
   readonly entries: readonly MythologyResonanceEntry[];
 }
 
@@ -324,7 +324,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
   schema: "mythology-resonance-v1",
   created: "2026-05-10",
   lastUpdated: "2026-05-10",
-  origin: "B-0056",
+  origin: "081KQ3HBZ0008QG0R0034DHWTQ",
   entries: [
     // ── MYT-001: Heimdallr ──────────────────────────────────────────────────
     {
@@ -428,7 +428,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
             "independent-review reasons (per CLAUDE.md peer-call section, 2026-05-05). " +
             "The endpoint-abstraction (tele+port+leap, collection-index instance #4) was reached " +
             "for microservice-boundary reasons. Neither was designed by reaching for Hermes. " +
-            "Hermes mapping was noticed during the B-0056 mythology-track analysis.",
+            "Hermes mapping was noticed during the 081KQ3HBZ0008QG0R0034DHWTQ mythology-track analysis.",
           f2:
             "F2 is partial: the realm-crossing function maps recognizably to cross-boundary " +
             "endpoint abstraction (the caduceus as protocol-auth token is a suggestive structural " +
@@ -449,7 +449,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
       status: "candidate",
       counterexampleAttempts: [],
       notes:
-        "The overlap with the occult track (B-0057) via Hermes Trismegistus (Greek Hermes + " +
+        "The overlap with the occult track (081KQ3HBZ0008QG0R000K3NSX8) via Hermes Trismegistus (Greek Hermes + " +
         "Egyptian Thoth fusion figure, load-bearing in Renaissance Hermeticism) is noted. " +
         "The triple-tradition-fusion sub-structure (Greek + Egyptian + Renaissance) may apply " +
         "to Hermes Trismegistus as a separate MYT-NNN entry rather than bundled here. " +

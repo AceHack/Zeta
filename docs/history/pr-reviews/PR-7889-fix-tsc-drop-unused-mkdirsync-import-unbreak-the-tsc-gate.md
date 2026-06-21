@@ -27,7 +27,7 @@
 
 ## Description
 
-Main's tsc lint went red on TS6133 (unused import) from the B-0170.1 merge; one-line removal, tsc clean, test file still passes.
+Main's tsc lint went red on TS6133 (unused import) from the 081KSNY2Z0008QG0R002CK42QK merge; one-line removal, tsc clean, test file still passes.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

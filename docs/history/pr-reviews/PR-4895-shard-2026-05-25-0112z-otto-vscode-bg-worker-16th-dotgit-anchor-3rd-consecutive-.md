@@ -39,7 +39,7 @@
 - [x] `.claude/rules/tick-must-never-stop.md` — sentinel `47ff6934` re-armed at catch-43 fire (empty `CronList` at session start)
 - [x] `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` — post-commit canary: parent tree=55, HEAD tree=55, +1 file
 - [x] `.claude/rules/zeta-expected-branch.md` — `git branch --show-current` guard ✓ before commit
-- [x] No B-0615 silent-push-failure — remote ref `240cbe74` matches local HEAD verified via `git ls-remote`
+- [x] No 081KRW63S0008QG0R000EAZ9K2 silent-push-failure — remote ref `240cbe74` matches local HEAD verified via `git ls-remote`
 - [x] Lineage continues 2026-05-24 1607Z→2206Z + 2026-05-25 0008Z→0042Z (cross-linked in shard composes-with section)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

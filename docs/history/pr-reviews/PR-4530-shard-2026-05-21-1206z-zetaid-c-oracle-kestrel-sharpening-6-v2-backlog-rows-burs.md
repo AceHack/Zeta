@@ -27,7 +27,7 @@
 
 ## Description
 
-Tick shard documenting the 4-PR ZetaId burst arc (#4517 V1 substrate + #4519 review fixes + #4521 prior burst-close shard + #4522 C# oracle integration) + Kestrel-claude.ai sharpening trajectory + 6 P2 backlog rows + 3 publishable artifacts cluster surfaced. Composes with B-0635/B-0636/B-0644/B-0665/B-0666 Agora V6 substrate.
+Tick shard documenting the 4-PR ZetaId burst arc (#4517 V1 substrate + #4519 review fixes + #4521 prior burst-close shard + #4522 C# oracle integration) + Kestrel-claude.ai sharpening trajectory + 6 P2 backlog rows + 3 publishable artifacts cluster surfaced. Composes with 081KRW63S0008QG0R002KC5DSR/081KRW63S0008QG0R00088FYE9/081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV Agora V6 substrate.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -1,6 +1,5 @@
 ---
-id: B-0957
-zetaid: 081KSXN940008QG0R001YABTHH
+id: 081KSXN940008QG0R001YABTHH
 title: First-class labels/tags + scopes on every G-Set/Z-set entity — deferred-to-human state-label; OTel-baggage / DI-scope propagation; the metadata layer policies + decentralized identity build on
 status: open
 priority: P1
@@ -33,7 +32,7 @@ tags:
   - umbrella
 ---
 
-# B-0957 — Labels/tags + scopes as first-class metadata on every entity
+# 081KSXN940008QG0R001YABTHH — Labels/tags + scopes as first-class metadata on every entity
 
 ## Why (operator 2026-05-31)
 
@@ -85,7 +84,7 @@ trajectory, session). This is the **Tempo / trace-context leg** of the git-nativ
 
 `deferred-to-human` is a **state-label** (`state=deferred-to-human`) — the work-item twin of
 the GitHub `deferred-to-human` PR label ([`pr-triage-tiers.md`](../../../.claude/rules/pr-triage-tiers.md) Tier 5). Per the type-vs-state
-model (B-0956): it's a *state* value, not a type. (Operator 2026-05-31 prefers
+model (081KSXN940008QG0R002FWR9B2): it's a *state* value, not a type. (Operator 2026-05-31 prefers
 `deferred-to-human` over `waiting-on-human`.)
 
 ## Forward trajectory — what this sets up (operator 2026-05-31; "circling the core")
@@ -94,12 +93,12 @@ This metadata layer is the substrate the next rings build on (anticipated, not f
 
 - **Policies** — rules/predicates over `(labels × actor-identity)`, evaluated as a **fold/view**
   (a policy decision is a materialized view; cf. K8s label-selectors, **OPA/Rego** already in
-  the cluster stack, B-0776). "policies are coming next."
+  the cluster stack, 081KSE6WT0008QG0R002275NDE). "policies are coming next."
 - **Decentralized identity / zero-trust** — good-actor/bad-actor **defined at the individual
   node level** (each node runs the trust-calculus locally; no central authority) = the root of
   zero-trust identity policy. Composes with the **multi-oracle trust-gradient**
   (`useful-output-is-evidence-not-authority.md`), **NCI** consent-floor, **m-acc** multi-oracle,
-  and the **agora-v6 reputation / encryption-budget** economy (B-0646).
+  and the **agora-v6 reputation / encryption-budget** economy (081KRW63S0008QG0R001Z10PVV).
 - **Verifiable identity** — **SPIFFE/SPIRE** (workload identity / SVID) + the **AgencySignature**
   layered-actor-identity (commit-trailer attribution) + the **ZetaId** as the identity primitive:
   the "actor" in a policy is a verifiable identity; nodes attest + decide locally (zero-trust).
@@ -115,24 +114,24 @@ identity); decentralized identity makes the actor verifiable + the trust-decisio
       schema on the entity model; how they fold; how cross-ref edges (citation) are represented.
 - [ ] **Scopes / propagation**: an ambient label-context (OTel-baggage / DI-scope shape) that
       flows through the fold pipeline; events inherit enclosing-scope labels.
-- [ ] `deferred-to-human` state-label landed on the work-item model (B-0956), twinned with the
+- [ ] `deferred-to-human` state-label landed on the work-item model (081KSXN940008QG0R002FWR9B2), twinned with the
       existing GitHub PR label.
 - [ ] Labels/tags are **selectable** (label-selector / faceted query) as folds/views.
-- [ ] Forward hooks documented for policies (OPA, B-0776) + decentralized-identity/zero-trust
-      (B-0646 + SPIFFE/SPIRE + AgencySignature) — set up, not built here.
+- [ ] Forward hooks documented for policies (OPA, 081KSE6WT0008QG0R002275NDE) + decentralized-identity/zero-trust
+      (081KRW63S0008QG0R001Z10PVV + SPIFFE/SPIRE + AgencySignature) — set up, not built here.
 
 ## Composes with
 
-- **B-0668** (compositional-DBSP meta-tagged *dimensions*) — this row is the entity-metadata
-  level; B-0668 is the dimensional-frame level; they compose (dims × entity-facets)
-- **B-0956** (work-items) — the first consumer (`deferred-to-human` state-label)
+- **081KRYRGG0008QG0R0018CMFQY** (compositional-DBSP meta-tagged *dimensions*) — this row is the entity-metadata
+  level; 081KRYRGG0008QG0R0018CMFQY is the dimensional-frame level; they compose (dims × entity-facets)
+- **081KSXN940008QG0R002FWR9B2** (work-items) — the first consumer (`deferred-to-human` state-label)
 - the [DB-design ADR](../../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md) (2026-05-31) + git-native LGTM (#6289) — labels-as-folds + baggage=Tempo
-- **B-0646** (agora-v6 reputation / encryption-budget) — the trust/identity economy
-- **B-0776** (cluster stack incl. OPA) — the policy-engine anchor
-- **B-0867** (workflow engine) — labels/states on lifecycle objects
+- **081KRW63S0008QG0R001Z10PVV** (agora-v6 reputation / encryption-budget) — the trust/identity economy
+- **081KSE6WT0008QG0R002275NDE** (cluster stack incl. OPA) — the policy-engine anchor
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine) — labels/states on lifecycle objects
 - `.claude/rules/useful-output-is-evidence-not-authority.md` + `non-coercion-invariant.md` +
   `m-acc-multi-oracle-end-user-moral-invariants.md` — the local/zero-trust trust-calculus
-- KSK consent substrate (B-0245 / B-0290 / B-0293) + the AgencySignature actor-identity writeup
+- KSK consent substrate (081KQZVQW0008QG0R002Q58F6Z / 081KR2E4K0008QG0R003MJ4JK0 / 081KR2E4K0008QG0R003CPCM4V) + the AgencySignature actor-identity writeup
   — the consent + verifiable-identity precedents
 - human lineage: Ranganathan faceted classification (1933) · folksonomy · Shepard's/Garfield
   citation indexing — honored per `honor-those-that-came-before.md`

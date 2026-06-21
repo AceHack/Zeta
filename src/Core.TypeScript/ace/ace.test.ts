@@ -1998,7 +1998,7 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
   });
 });
 
-describe("ace deps subcommand (B-0821)", () => {
+describe("ace deps subcommand (081KSGS9H0008QG0R00367G209)", () => {
   test("validate with valid graph exits 0", async () => {
     const graphYaml = `
 apiVersion: zeta.lucent-financial-group.com/v1

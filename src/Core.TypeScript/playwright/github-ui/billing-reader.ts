@@ -31,7 +31,7 @@ export interface BillingReaderOptions extends GitHubSessionOptions {
 
 /**
  * Reads org-level GitHub billing/usage page and extracts Actions minutes used and limit.
- * Read-only; uses B-0317 auth + B-0318 session pattern.
+ * Read-only; uses 081KR2E4K0008QG0R0031QR36N auth + 081KR2E4K0008QG0R003RVDX91 session pattern.
  * Smallest safe slice: Actions minutes primary. Storage/packages reserved for future slices.
  */
 export async function readOrgBillingUsage(

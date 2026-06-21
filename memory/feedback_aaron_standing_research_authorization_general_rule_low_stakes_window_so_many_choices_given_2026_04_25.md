@@ -42,7 +42,7 @@ grade work as needed, in the current low-stakes phase.
 - **Capability-extending research** when the factory's
   architectural arc benefits from external knowledge
   (e.g., understanding Strongtalk + Newspeak + Dart
-  lineage to inform B-0007's contribution arc).
+  lineage to inform 081KQ0YZ80008QG0R001V1PMC0's contribution arc).
 - **Cross-AI riffing** with other AI partners (per the
   multi-AI-riff pattern; Aaron does this with Google
   Search AI; Claude can leverage Web search + search

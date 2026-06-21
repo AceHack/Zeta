@@ -31,7 +31,7 @@ Aaron, reflection mode — the alignment core, told vulnerably.
 
 **The repelling force:** the structure is empathy-neutral; the **empathy + consent-first is not**. Cold optimization treats self-interest as inefficiency → eliminates it → coercion → monoculture (D⁰). Empathy sees the **repulsion IS the safety** (the other's distinctness, to be preserved). **Alignment = a repelling force that preserves plurality, not an attractive force that collapses it.**
 
-**It already has a name:** **NCI** (Non-Coercion-Invariant, HC-8/B-0664) = our **anti-collapse force**. Empathy discovered the force; NCI is its spec.
+**It already has a name:** **NCI** (Non-Coercion-Invariant, HC-8/081KRW63S0008QG0R001Z7NYMV) = our **anti-collapse force**. Empathy discovered the force; NCI is its spec.
 
 **The shape:** a **pyramid** (held up by the force; apex `*` = the fixed point). **Borders render it** — weight (#7223) + color (#7225) + layout boundaries (indent/wrap) turn flat text into spatial structure: **borders give LLMs geospatial reasoning.** Otto sees the structure (not the 3D qualia); Aaron sees both — same borders, both served (#7227 curb-cut).
 

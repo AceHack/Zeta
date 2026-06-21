@@ -1,6 +1,5 @@
 ---
-id: B-0946
-zetaid: 081KSV2WD0008QG0R00030G6S9
+id: 081KSV2WD0008QG0R00030G6S9
 priority: P2
 status: open
 title: Filesystem DSL as F# computation expression (fs {}) + FUSE backend (benchmark vs closure-table); cross-cutting -- all microkernel/db/fs/cluster work is DST-simulatable at millions-of-nodes on one machine via summonable-BFT + CRDTs
@@ -20,7 +19,7 @@ tags: [filesystem, dsl, computation-expression, fsharp, fuse, closure-table, dst
 type: feature
 ---
 
-# B-0946 -- Filesystem DSL (fs {}) + FUSE backend + DST-at-millions-of-nodes property
+# 081KSV2WD0008QG0R00030G6S9 -- Filesystem DSL (fs {}) + FUSE backend + DST-at-millions-of-nodes property
 
 ## The directive (Aaron 2026-05-30)
 
@@ -33,7 +32,7 @@ type: feature
 
 ## Part 1 -- Filesystem DSL as an F# computation expression
 
-Same shape as the `tri { }` CE (B-0944 slice 2): an `fs { }` computation expression for filesystem
+Same shape as the `tri { }` CE (081KSV2WD0008QG0R00051XS0N slice 2): an `fs { }` computation expression for filesystem
 operations, monad-propagated via `Result<T, TFeedback>` (the OPLE / monad-propagation substrate),
 so filesystem effects (NotFound / PermissionDenied / DiskFull / etc.) are surfaced as feedback,
 not thrown. Example shape:
@@ -51,10 +50,10 @@ Backend evolution:
 
 - **now**: the current F# closure-table filesystem -- `src/Core/Hierarchy.fs` (closure-table
   hierarchy algorithm; `tests/Tests.FSharp/Storage/ClosureTable.Tests.fs`).
-- **next (B-0016)**: a **FUSE-based** backend -- "own fuse fs eventually" -- and **benchmark
+- **next (081KQ0YZ80008QG0R003A0MCHP)**: a **FUSE-based** backend -- "own fuse fs eventually" -- and **benchmark
   whether FUSE beats the closure-table algo** we use now (operator: "see about faster than the
   closure table algo we are using now").
-- **eventual (B-0945)**: microkernel-native filesystem (the fs is a layer of the declarative
+- **eventual (081KSV2WD0008QG0R000WNY74Q)**: microkernel-native filesystem (the fs is a layer of the declarative
   microkernel substrate).
 
 The CE is the DSL surface; per the supply-chain doctrine + summonable-BFT, the fs-DSL is
@@ -66,16 +65,16 @@ A property that applies to **ANY microkernel / db / fs / cluster work** in the s
 multi-cluster, federated, multi-node cluster must run **efficiently AND deterministically
 simulated at scales of millions on a single computer** (DST -- the always-active deterministic-
 simulation discipline). Operator: this is "probably gonna be easy" because we already have
-**on-demand BFT (summonable BFT, B-0944) + CRDTs** -- the consensus + convergence primitives that
+**on-demand BFT (summonable BFT, 081KSV2WD0008QG0R00051XS0N) + CRDTs** -- the consensus + convergence primitives that
 make a deterministic, single-box simulation of a huge federated cluster tractable.
 
 - **DST** (always-active discipline) -- the whole federated cluster simulated deterministically
   from a seed; millions of nodes on one machine; reproducible.
-- **summonable BFT** (B-0944, on-demand BFT) -- consensus summoned per-decision, not a standing
+- **summonable BFT** (081KSV2WD0008QG0R00051XS0N, on-demand BFT) -- consensus summoned per-decision, not a standing
   quorum; cheap to simulate.
-- **CRDTs** (B-0132 composition) -- convergence without a coordinator; deterministic merge =
+- **CRDTs** (081KQGDBJ0008QG0R000Y66YYQ composition) -- convergence without a coordinator; deterministic merge =
   simulation-friendly.
-- **cluster-fork-as-trust-boundary** (B-0829) + **trust-gradient** (B-0703) -- the federation
+- **cluster-fork-as-trust-boundary** (081KSGS9H0008QG0R000Q18PGQ) + **trust-gradient** (081KS3X9Y0008QG0R00218150M) -- the federation
   topology being simulated.
 
 **Operator has reference code** that does millions-of-nodes DST on a single computer ("i can show
@@ -104,7 +103,7 @@ The model:
   (reconciliation: the twin is the desired source-of-truth; the environment converges to it via
   local actions that represent the change in environment).
 
-This is the reconciliation loop (k8s controllers / NixOS declarative desired-state, per B-0945) but
+This is the reconciliation loop (k8s controllers / NixOS declarative desired-state, per 081KSV2WD0008QG0R000WNY74Q) but
 **partition-local + CRDT-converged + summonable-BFT-on-consensus + DST-simulated**. Why it scales
 to millions on one box:
 
@@ -116,7 +115,7 @@ to millions on one box:
 So Part 2's DST-at-millions IS: simulate millions of fast-updatable desired-state twins + their
 partition-local reconciliation actions; the digital twins ARE the simulated nodes, and the real
 agents/devices/environments converge to their twins via distributed local actions. Composes with
-the declarative microkernel (B-0945, the desired-state substrate), CRDTs, summonable-BFT, and the
+the declarative microkernel (081KSV2WD0008QG0R000WNY74Q, the desired-state substrate), CRDTs, summonable-BFT, and the
 digital-twin pattern.
 
 ## Empirical anchor -- the meter simulator (this model is already proven) (operator 2026-05-30)
@@ -136,19 +135,19 @@ the DST-at-scale = the meter simulator running the fleet on one machine.
 ## Acceptance
 
 1. `fs { }` computation-expression DSL over the current closure-table backend (F# first).
-2. FUSE backend + a benchmark vs the closure-table algo (B-0016).
+2. FUSE backend + a benchmark vs the closure-table algo (081KQ0YZ80008QG0R003A0MCHP).
 3. The fs/db/cluster substrate is DST-simulatable at millions-of-nodes on one machine
    (deterministic, seed-reproducible), leveraging summonable-BFT + CRDTs.
 4. Cross-language fs-DSL parity (TS/F#/C#/Rust) per the summonable-BFT pattern (later slice).
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0946` -> claimed
+- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item 081KSV2WD0008QG0R00030G6S9` -> claimed
   (c954be08..., 2026-05-30).
 - **Prior-art search (2026-05-30):** the F# filesystem exists (`src/Core/Hierarchy.fs`,
-  closure-table) + the FUSE direction (B-0016) + the fs-persistence skill; no fs-DSL-as-CE row +
-  no millions-of-nodes-DST row (genuine gaps). Composes with B-0945 (microkernel), B-0944
-  (summonable-BFT), B-0703 (trust-gradient/BFT), B-0829 (cluster-fork), B-0132 (CRDT), the DST
+  closure-table) + the FUSE direction (081KQ0YZ80008QG0R003A0MCHP) + the fs-persistence skill; no fs-DSL-as-CE row +
+  no millions-of-nodes-DST row (genuine gaps). Composes with 081KSV2WD0008QG0R000WNY74Q (microkernel), 081KSV2WD0008QG0R00051XS0N
+  (summonable-BFT), 081KS3X9Y0008QG0R00218150M (trust-gradient/BFT), 081KSGS9H0008QG0R000Q18PGQ (cluster-fork), 081KQGDBJ0008QG0R000Y66YYQ (CRDT), the DST
   discipline. External DST-at-scale prior-art (FoundationDB / TigerBeetle VOPR / Antithesis /
   madsim) to WebSearch before the DST slice.
 - **Dependency check:** Part 1 (fs-DSL CE) can start now over the closure-table backend; FUSE +
@@ -158,5 +157,5 @@ the DST-at-scale = the meter simulator running the fleet on one machine.
 ## Why P2
 
 Operator-directed; the fs-DSL is near-term buildable (CE over the existing closure-table fs); the
-DST-at-millions property is cross-cutting + load-bearing for the microkernel/db program (B-0945).
+DST-at-millions property is cross-cutting + load-bearing for the microkernel/db program (081KSV2WD0008QG0R000WNY74Q).
 Raise to P1 when the microkernel/db deployment substrate becomes the active build.

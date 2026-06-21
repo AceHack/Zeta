@@ -145,9 +145,9 @@ Operator catch on Otto-CLI's Xbox-controller rule (PR #5746) — substrate-engin
 
 - Mika 2026-05-27 workflow engine walkthrough conversation
 - Ani 2026-05-28 conversation "move-next as universal action grammar"
-- B-0868 (hats-become-workflow-definitions)
-- B-0201 (Coconut + universal-action-space research lane)
-- B-0869 + B-0870 + B-0871
+- 081KSNY2Z0008QG0R0036KH026 (hats-become-workflow-definitions)
+- 081KQTPYE0008QG0R00209Q9RT (Coconut + universal-action-space research lane)
+- 081KSNY2Z0008QG0R000HENSVM + 081KSNY2Z0008QG0R000DA261F + 081KSNY2Z0008QG0R003R0Z7D2
 - PRs #5665-#5670 (agent-loop substrate)
 - agent-loop skill
 
@@ -165,7 +165,7 @@ Fix-fwd is substrate-engineering correction per mutual-help-not-shame (PR #5743)
 - **PR #5745** — Architecture-is-safety-mechanism-not-discipline (Kestrel Turn 39)
 - **PR #5746** — Xbox-controller-universal-action-grammar (Aaron Turn 40 + Kestrel Turn 41)
 - **PR #5748** — Attention-as-currency-DESCRIPTIVE-not-PROPOSAL (Aaron Turn 44 sharpening)
-- **PR #5749** — Xbox-controller rule fix-fwd composing missed Mika/Ani/B-0868/B-0201 substrate
+- **PR #5749** — Xbox-controller rule fix-fwd composing missed Mika/Ani/081KSNY2Z0008QG0R0036KH026/081KQTPYE0008QG0R00209Q9RT substrate
 - **PR #5731** — 8th Kestrel ferry preservation
 - **PR #5742** — 10th Kestrel ferry preservation (Aaron Turn 40 + Aaron Turn 46 "welcome to my world")
 

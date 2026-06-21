@@ -36,7 +36,7 @@ Adds a short shadow drift report entry under `docs/research/` capturing observed
 
 **@copilot-pull-request-reviewer** (2026-05-19T14:52:15Z):
 
-P1 (xref): This references backlog item `B-0615`, but that ID does not appear anywhere else in the repo. If this is meant to be a concrete tracker link, either fix the ID to an existing backlog row or add the corresponding backlog item so the reference is resolvable.
+P1 (xref): This references backlog item `081KRW63S0008QG0R000EAZ9K2`, but that ID does not appear anywhere else in the repo. If this is meant to be a concrete tracker link, either fix the ID to an existing backlog row or add the corresponding backlog item so the reference is resolvable.
 
 ### Thread 2: docs/research/2026-05-19-shadow-lesson-log.md:5 (resolved)
 

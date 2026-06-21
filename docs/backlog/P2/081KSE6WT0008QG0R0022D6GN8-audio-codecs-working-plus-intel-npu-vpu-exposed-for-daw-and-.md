@@ -1,6 +1,5 @@
 ---
-id: B-0771
-zetaid: 081KSE6WT0008QG0R0022D6GN8
+id: 081KSE6WT0008QG0R0022D6GN8
 priority: P2
 status: open
 title: Audio codecs working (DAW-ready) + Intel NPU/VPU exposed as cluster compute resource — beyond cosmetic firmware fix
@@ -9,7 +8,7 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSE6WT0008QG0R003612WGJ
   - 081KSE6WT0008QG0R003G0Y62D
@@ -26,7 +25,7 @@ Aaron 2026-05-25 mid-iter-3-prep, extending the audio-firmware
 cleanup scope: *"i'd like the sound codecs workikng and npus for
 use like by daw and others."*
 
-B-0754 iter-3 PR (#5057) bundles `hardware.enableRedistributableFirmware = true`
+081KSGS9H0008QG0R002T3BJ2R iter-3 PR (#5057) bundles `hardware.enableRedistributableFirmware = true`
 into the installer ISO, which silences the Intel SoF `ASoC: failed
 to instantiate card -2` boot-time warning by giving the firmware
 probe what it needs. But that's only the FIRMWARE LAYER. To
@@ -59,12 +58,12 @@ Operator can deploy AI workloads (inference primarily; some
 training where NPU substrate supports) that request NPU compute
 via standard k8s resource-requests (`intel.com/npu: 1` or similar
 per device plugin convention). Workloads use OpenVINO 2024.0+
-runtime to access NPU. Scheduler (B-0767) is NPU-aware for
+runtime to access NPU. Scheduler (081KSE6WT0008QG0R0016CEE2Z) is NPU-aware for
 multi-NPU nodes.
 
 ### Capability 3: Per-role substrate handles audio + NPU declaratively
 
-New host role `workstation` (composes with B-0755 role taxonomy)
+New host role `workstation` (composes with 081KSE6WT0008QG0R003612WGJ role taxonomy)
 that includes audio stack + NPU + GPU + GUI for nodes that double
 as user workstations. Existing roles (`control-plane`,
 `worker-gpu`, etc.) get NPU-only enabling automatically when NPU
@@ -127,8 +126,8 @@ hardware is present (lspci detection at install time).
       is also a cluster member)
 - [ ] flake.nix `nixosConfigurations.workstation = mkSystem
       { modules = [ ... ]; };` entry
-- [ ] B-0754 v1 role keystroke prompt extended: add 'k' for
-      workstation (composes with B-0755 role taxonomy
+- [ ] 081KSGS9H0008QG0R002T3BJ2R v1 role keystroke prompt extended: add 'k' for
+      workstation (composes with 081KSE6WT0008QG0R003612WGJ role taxonomy
       expansion); other role options unchanged
 - [ ] Existing roles (`control-plane`, `worker-gpu`) get
       NPU-only enabling at install time if NPU detected
@@ -137,16 +136,16 @@ hardware is present (lspci detection at install time).
       AI engineer wanting NPU on local box; cluster member
       that's also a daily-driver)
 
-### Capability 4: Scheduler awareness (composes with B-0767)
+### Capability 4: Scheduler awareness (composes with 081KSE6WT0008QG0R0016CEE2Z)
 
-- [ ] `Zeta.K8s.Scheduler` NPU-aware plugin (per B-0767
+- [ ] `Zeta.K8s.Scheduler` NPU-aware plugin (per 081KSE6WT0008QG0R0016CEE2Z
       sub-wave B GPU topology + sub-wave C model locality):
       - NPU-class workloads prefer nodes with available NPU
       - Workload-class fitness: small models (sub-1B params)
         + low-latency requirements → NPU; large models → GPU
       - Latency-vs-throughput trade-off awareness
 
-## ServiceTitan-route composition (B-0765 / B-0763)
+## ServiceTitan-route composition (081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R000WVYAJ2)
 
 Inference access goes through layered existing standards:
 
@@ -156,12 +155,12 @@ Inference access goes through layered existing standards:
 | **Inference runtime** | **ONNX Runtime** (Microsoft-led) | Cross-platform engine that abstracts hardware backends via Execution Providers |
 | **ONNX Runtime EPs** | OpenVINO EP (Intel CPU/GPU/NPU); CUDA EP + TensorRT EP (NVIDIA); ROCm EP + MIGraphX EP (AMD); CoreML EP (Apple); DirectML EP (Windows); default CPU EP (fallback) | One ONNX model → ONNX Runtime → best-fit EP per node hardware |
 | **Native vendor runtimes** | OpenVINO (Intel); TensorRT (NVIDIA); MIGraphX (AMD); Core ML (Apple) | Highest perf for vendor-specific workloads; Zeta exposes for operators who want max perf at cost of portability |
-| **k8s device plugin** | intel-device-plugins-for-kubernetes; nvidia-device-plugin; amd-device-plugin | Existing CNCF/vendor standards adopted per B-0764 |
+| **k8s device plugin** | intel-device-plugins-for-kubernetes; nvidia-device-plugin; amd-device-plugin | Existing CNCF/vendor standards adopted per 081KSE6WT0008QG0R0009YYNP4 |
 | **PipeWire / ALSA / JACK** | Linux audio standards | Operators using vanilla audio software unchanged |
 
 **Substrate-honest layering**: ONNX is the operator's contract;
 runtime selection is Zeta's substrate decision (scheduler-driven
-per B-0767). Operator deploys an ONNX model + resource
+per 081KSE6WT0008QG0R0016CEE2Z). Operator deploys an ONNX model + resource
 requirements; Zeta picks the best Execution Provider per node
 hardware automatically. Operator can override with explicit
 vendor-native runtime (OpenVINO IR, TensorRT engine, MIGraphX
@@ -178,12 +177,12 @@ MXR) for max perf when willing to lose portability.
 | TensorFlow SavedModel (operator-side) | High | Variable | Medium (TF ecosystem) |
 
 ONNX wins the operator-contract slot because it preserves
-operator optionality (per B-0763 negotiation-high-seat) while
+operator optionality (per 081KSE6WT0008QG0R000WVYAJ2 negotiation-high-seat) while
 allowing Zeta to pick the best execution path per node. Operators
 wanting max perf can OPT INTO vendor-native runtime; default
 contract stays portable.
 
-Per B-0763 vendor swap: alternative inference runtimes (MLIR-
+Per 081KSE6WT0008QG0R000WVYAJ2 vendor swap: alternative inference runtimes (MLIR-
 based, TVM, IREE, ONNX MLIR), alternative NPU hardware (AMD
 XDNA, Apple Neural Engine via Asahi, Hailo-8/15, etc.), and
 alternative scheduler-policy backends all fit the same
@@ -207,20 +206,20 @@ sub-rows when those operators show up.
 
 ## Composes with
 
-- B-0754 — installer ISO (the iter-3 firmware fix is the
+- 081KSGS9H0008QG0R002T3BJ2R — installer ISO (the iter-3 firmware fix is the
   prerequisite this row builds on)
-- B-0755 — role taxonomy expansion (workstation role lands here)
-- B-0759 — first-time-CLI-user persona (DAW operators are a
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (workstation role lands here)
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (DAW operators are a
   persona variant; AI engineers running OpenVINO are another)
-- B-0761 — open reference architecture (NPU + audio support
+- 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (NPU + audio support
   becomes part of the AI-cluster reference; ARC-AGI scenarios
   can include NPU-vs-GPU latency benchmarks)
-- B-0763 — cloud-native plugins fit Zeta interfaces
+- 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces
   (`Zeta.Compute.NPU` interface accommodates Intel + AMD +
   Apple + future NPU vendors)
-- B-0764 — CNCF force multipliers (intel-device-plugins-for-
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF force multipliers (intel-device-plugins-for-
   kubernetes is the existing standard adopted)
-- B-0767 — Zeta-native scheduler (NPU-awareness in scheduler
+- 081KSE6WT0008QG0R0016CEE2Z — Zeta-native scheduler (NPU-awareness in scheduler
   sub-wave B/C)
 
 ## Why not just use kube-scheduler's default device-plugin support?
@@ -238,7 +237,7 @@ countable resources. For NPU specifically, you want:
 - Multi-NPU topology awareness (some boards have multiple
   NPUs; Zeta scheduler can co-locate multi-NPU workloads)
 
-This is exactly the value B-0767 Zeta-native scheduler adds.
+This is exactly the value 081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler adds.
 NPU awareness is one of its first concrete sub-wave-B/C
 plugins.
 
@@ -266,4 +265,4 @@ inference) — not just be silent-cluster-workers. This makes
 Zeta cluster substrate suitable for AI engineers + creative
 professionals using their cluster nodes as workstations too,
 which composes naturally with the AI-cluster-substrate value
-prop the reference architecture (B-0761) demonstrates.
+prop the reference architecture (081KSE6WT0008QG0R0015ZF2G6) demonstrates.

@@ -1,11 +1,10 @@
 ---
-id: B-0446
-zetaid: 081KRFA460008QG0R00168759Y
+id: 081KRFA460008QG0R00168759Y
 priority: P2
 status: open
 title: "Lean 4 formal proof completion — DBSP chain rule + core stream-calculus identities"
 type: feature
-origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
+origin: PM-2 gap-prediction pass (081KR2E4K0008QG0R003VB7ZZR) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: []
@@ -13,7 +12,7 @@ composes_with: []
 tags: [lean4, formal-verification, proof, dbsp, chain-rule, identities, correctness]
 ---
 
-# B-0446 — Lean 4 formal proof completion for DBSP core identities
+# 081KRFA460008QG0R00168759Y — Lean 4 formal proof completion for DBSP core identities
 
 ## PM-2 signal
 

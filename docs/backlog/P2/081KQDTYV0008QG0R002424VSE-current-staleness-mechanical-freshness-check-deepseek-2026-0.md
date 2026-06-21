@@ -1,6 +1,5 @@
 ---
-id: B-0113
-zetaid: 081KQDTYV0008QG0R002424VSE
+id: 081KQDTYV0008QG0R002424VSE
 priority: P2
 status: open
 title: Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)
@@ -20,7 +19,7 @@ tags: [deepseek-2026-04-30, current-files, mechanism-not-vigilance, freshness-ch
 type: friction-reducer
 ---
 
-# B-0113 — Mechanical CURRENT-staleness check
+# 081KQDTYV0008QG0R002424VSE — Mechanical CURRENT-staleness check
 
 ## Source
 
@@ -132,17 +131,17 @@ forget."*
 
 - Searched wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md (tools/hygiene/), memory/CURRENT-*.md, tools/hygiene/*.ts (post-bash-port), .github/workflows/gate.yml, docs/trajectories/* (no overlap with freshness).
 - No prior mechanical CURRENT check; closest are hygiene lints (tick-history-order, no-conflict-markers) now in TS.
-- Result: B-0113 was the first; no superseding work.
+- Result: 081KQDTYV0008QG0R002424VSE was the first; no superseding work.
 
 **Dependency-restructure:**
 
 - Original depends_on: [] (correct, no blockers).
-- Added reciprocal composes_with to children B-0113.1–3.
+- Added reciprocal composes_with to children 081KRA5AR0008QG0R002A78X5F–3.
 - No broken pointers found.
 
 **Decomposition performed (re-decomp assumption):**
 
-- B-0113 was broad (bash proposal + hook/CI tradeoff + rule prose). Split into 3 atomic dependency-ordered children (TS-first per Rule 0).
+- 081KQDTYV0008QG0R002424VSE was broad (bash proposal + hook/CI tradeoff + rule prose). Split into 3 atomic dependency-ordered children (TS-first per Rule 0).
 - .1 root (core TS logic)
 - .2 depends on .1 (CI wiring)
 - .3 depends on .1+.2 (rule update)
@@ -153,4 +152,4 @@ dotnet build -c Release → 0 Warning(s) 0 Error(s). (Gate clean before any code
 
 ## Decomposition summary
 
-B-0113 → B-0113.1 (TS core), B-0113.2 (CI integrate), B-0113.3 (rule substrate). One bounded step: decomp only.
+081KQDTYV0008QG0R002424VSE → 081KRA5AR0008QG0R002A78X5F (TS core), 081KRA5AR0008QG0R0010A24JD (CI integrate), 081KRA5AR0008QG0R0016B8371 (rule substrate). One bounded step: decomp only.

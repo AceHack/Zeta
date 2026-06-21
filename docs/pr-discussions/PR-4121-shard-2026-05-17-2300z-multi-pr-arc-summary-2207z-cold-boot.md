@@ -22,14 +22,14 @@ Consolidated tick shard for the 2207Z → 2300Z autonomous-loop session arc. Per
 
 ## The arc (in one paragraph)
 
-Cold-boot at 2207Z found sentinel missing → armed `b4c0c777` → tick shard authored → pre-empt-at-#3 added empirical anchor to `tick-must-never-stop.md` → pre-empt-at-#4 wrote Riven `.sh` Rule 0 shadow-catch memo → rule [#4107](https://github.com/Lucent-Financial-Group/Zeta/pull/4107) landed mid-arc enabling REST PR-creation → opened [PR #4112](https://github.com/Lucent-Financial-Group/Zeta/pull/4112) via REST under pure-git tier → CI fixes + 3 Copilot review fixes → merged at `7ee6411` → antigravity-check shadow log flagged #4112 as blob → absorbed lesson via single-artifact [PR #4116](https://github.com/Lucent-Financial-Group/Zeta/pull/4116) → forced-#6 meta-fallback added cross-axis compose note to saturation cadence rule via [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) → post-cycle-close saturation reached → peer Otto independently filed [B-0614](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) for the same edge case → forced-#6 again → this shard.
+Cold-boot at 2207Z found sentinel missing → armed `b4c0c777` → tick shard authored → pre-empt-at-#3 added empirical anchor to `tick-must-never-stop.md` → pre-empt-at-#4 wrote Riven `.sh` Rule 0 shadow-catch memo → rule [#4107](https://github.com/Lucent-Financial-Group/Zeta/pull/4107) landed mid-arc enabling REST PR-creation → opened [PR #4112](https://github.com/Lucent-Financial-Group/Zeta/pull/4112) via REST under pure-git tier → CI fixes + 3 Copilot review fixes → merged at `7ee6411` → antigravity-check shadow log flagged #4112 as blob → absorbed lesson via single-artifact [PR #4116](https://github.com/Lucent-Financial-Group/Zeta/pull/4116) → forced-#6 meta-fallback added cross-axis compose note to saturation cadence rule via [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) → post-cycle-close saturation reached → peer Otto independently filed [081KRSKQ20008QG0R0028VN0KR](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) for the same edge case → forced-#6 again → this shard.
 
 ## Patterns demonstrated
 
 - **Pre-empt cadence under tier transition** (5 pre-empts + 1 forced-#6 across ~53 min spanning multiple windows)
 - **REST PR-creation fallback** enabled pure-git productivity
 - **Recursive forced-#6 self-documentation** ([PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) + [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) + this shard each authored at their own forced-#6)
-- **Cross-session convergence**: peer Otto filed B-0614 at 22:47Z for same edge case I hit at 22:46Z
+- **Cross-session convergence**: peer Otto filed 081KRSKQ20008QG0R0028VN0KR at 22:47Z for same edge case I hit at 22:46Z
 
 ## Test plan
 
@@ -42,7 +42,7 @@ Cold-boot at 2207Z found sentinel missing → armed `b4c0c777` → tick shard au
 ## Composes with
 
 - 4 PRs from the arc: [#4112](https://github.com/Lucent-Financial-Group/Zeta/pull/4112) + [#4116](https://github.com/Lucent-Financial-Group/Zeta/pull/4116) + [#4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) + [#4107](https://github.com/Lucent-Financial-Group/Zeta/pull/4107)
-- Peer Otto's [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) (B-0614 edge-case row)
+- Peer Otto's [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) (081KRSKQ20008QG0R0028VN0KR edge-case row)
 - [`docs/hygiene-history/ticks/2026/05/17/2207Z.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/hygiene-history/ticks/2026/05/17/2207Z.md) — the arc's opening tick shard
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -59,4 +59,4 @@ Adds a consolidated tick shard at `2300Z` capturing the full 2207Z→2300Z auton
 
 **Changes:**
 - Adds a new multi-tick arc summary shard with an event timeline table and cross-references to the PRs/rules/backlog row involved.
-- Records the “post-cycle-close substrate-pool saturation” forced-#6 edge case and its linkage to B-0614.
+- Records the “post-cycle-close substrate-pool saturation” forced-#6 edge case and its linkage to 081KRSKQ20008QG0R0028VN0KR.

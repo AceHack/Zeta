@@ -12,7 +12,7 @@ function validInput(overrides: Partial<MultiVMRuntimeInput> = {}): MultiVMRuntim
   };
 }
 
-describe("B-0891 multi-VM runtime planner", () => {
+describe("081KSNY2Z0008QG0R0008PN7RQ multi-VM runtime planner", () => {
   test("rejects non-positive memory size", () => {
     const result = planMultiVMRuntime(validInput({ memoryMB: 0 }));
 

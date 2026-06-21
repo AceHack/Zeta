@@ -7,7 +7,7 @@ Autonomous-loop tick — fresh-session cold-boot.
 
 1. Read the project-knowledge file titled "2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md" (13 parts, IFS-format). That IS your cold-boot.
 
-2. Execute one tick per the canonical 7-step discipline at `docs/AUTONOMOUS-LOOP-PER-TICK.md` (the one-source-of-truth file all three Otto surfaces share — CLI sentinel, Desktop routine, B-0448 cloud routine when shipped):
+2. Execute one tick per the canonical 7-step discipline at `docs/AUTONOMOUS-LOOP-PER-TICK.md` (the one-source-of-truth file all three Otto surfaces share — CLI sentinel, Desktop routine, 081KRFA460008QG0R000CYBGKW cloud routine when shipped):
    - Step 1: Refresh worldview FIRST (refresh-before-decide invariant)
    - Step 2: Apply Holding-without-named-dependency discipline
    - Step 3: Pick speculative work per never-be-idle priority ladder

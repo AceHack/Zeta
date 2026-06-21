@@ -1,6 +1,5 @@
 ---
-id: B-0105
-zetaid: 081KQB8J40008QG0R0021GX1HK
+id: 081KQB8J40008QG0R0021GX1HK
 priority: P2
 status: decomposed
 title: Consolidation pass — map 2026-04-29 session-arc rules into 3 durable homes max
@@ -29,18 +28,18 @@ consolidation pass converts them into ≤3 durable homes.
 
 ## Decomposition (re-decomp 2026-05-11, Riven background)
 
-B-0105 was broad (5 migration steps + 3 homes + backpressure). Re-decomposed into 3 smallest dependency-ordered atomic children (always re-decompose assumption applied):
+081KQB8J40008QG0R0021GX1HK was broad (5 migration steps + 3 homes + backpressure). Re-decomposed into 3 smallest dependency-ordered atomic children (always re-decompose assumption applied):
 
 **Buildable now (parallel):**
 
-- B-0105.1 (S) — Home 1 operational doc authoring (merge-cascade PR liveness)
-- B-0105.2 (S) — Home 3 memory file authoring (reviewer-artifact taxonomy)
+- 081KRA5AR0008QG0R0031VF018 (S) — Home 1 operational doc authoring (merge-cascade PR liveness)
+- 081KRA5AR0008QG0R002JS7GRB (S) — Home 3 memory file authoring (reviewer-artifact taxonomy)
 
-**Blocked on B-0105.1 + B-0105.2:**
+**Blocked on 081KRA5AR0008QG0R0031VF018 + 081KRA5AR0008QG0R002JS7GRB:**
 
-- B-0105.3 (M) — B-0103 update + MEMORY.md index + cross-links + B-0105 supersede
+- 081KRA5AR0008QG0R001QT2ZXQ (M) — 081KQB8J40008QG0R003XNATZJ update + MEMORY.md index + cross-links + 081KQB8J40008QG0R0021GX1HK supersede
 
-No further children; the 3 homes are now the durable substrate. B-0100/B-0104 remain orthogonal.
+No further children; the 3 homes are now the durable substrate. 081KQB8J40008QG0R0023DKTFJ/081KQB8J40008QG0R0016EHY06 remain orthogonal.
 
 ## Three target durable homes
 
@@ -66,22 +65,22 @@ convention; Copilot caught the ALL-CAPS mismatch). Absorbs:
 - ORDERED_MERGE_DEPENDENCY guard (encode `Depends-On: #N` +
   pre-merge check script)
 
-Subsumes: B-0102.
+Subsumes: 081KQB8J40008QG0R002DQ0FDR.
 
-### Home 2 — Computed-metadata-discipline (already P2 in B-0103)
+### Home 2 — Computed-metadata-discipline (already P2 in 081KQB8J40008QG0R003XNATZJ)
 
-Existing path: `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md`.
+Existing path: `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md`.
 Already absorbs:
 
-- Ordinal drift (B-0098, subsumed)
-- PR-count drift (B-0099, subsumed)
+- Ordinal drift (081KQB8J40008QG0R003VMCFWB, subsumed)
+- PR-count drift (081KQB8J40008QG0R002PEP2A2, subsumed)
 - Filename-vs-row-timestamp drift
 - Branch-base claims
 - Boundary clause (does NOT apply to summaries/interpretations)
 
 Future: implement the unified lint (`tools/lint/metadata-drift-check.sh`).
 
-Subsumes: B-0098, B-0099.
+Subsumes: 081KQB8J40008QG0R003VMCFWB, 081KQB8J40008QG0R002PEP2A2.
 
 ### Home 3 — Reviewer-artifact / snapshot-mismatch taxonomy
 
@@ -89,7 +88,7 @@ Likely path: `memory/feedback_reviewer_artifact_snapshot_mismatch_taxonomy_2026_
 (memory file, since it's a decision-tree future-Claude
 applies on every review thread — frontmatter + body). Absorbs:
 
-- 5+1 bucket table from B-0101 (REAL_DEFECT, BACKWARD_STALE_SNAPSHOT,
+- 5+1 bucket table from 081KQB8J40008QG0R002DNCSKR (REAL_DEFECT, BACKWARD_STALE_SNAPSHOT,
   FORWARD_CROSS_PR_REFERENCE, DISPLAY_ARTIFACT, INCOMPLETE_CONTEXT,
   NEEDS_HUMAN_REVIEW)
 - SNAPSHOT_MISMATCH parent class with two children (split
@@ -100,7 +99,7 @@ applies on every review thread — frontmatter + body). Absorbs:
 - "A forward reference is not wrong if the dependency is
   enforced" rule
 
-Subsumes: B-0101.
+Subsumes: 081KQB8J40008QG0R002DNCSKR.
 
 ## Backpressure rule for new substrate
 
@@ -129,23 +128,23 @@ discoverability and rule-coherence.
 
 ## Composes with
 
-- B-0098, B-0099 — subsumed into B-0103.
-- B-0100 — pure-wait backpressure rule; preserved as separate
+- 081KQB8J40008QG0R003VMCFWB, 081KQB8J40008QG0R002PEP2A2 — subsumed into 081KQB8J40008QG0R003XNATZJ.
+- 081KQB8J40008QG0R0023DKTFJ — pure-wait backpressure rule; preserved as separate
   operational concern (orthogonal to the metadata family).
-- B-0101 — subsumed into Home 3 (memory file).
-- B-0102 — subsumed into Home 1 (operational doc).
-- B-0103 — already a Home (the metadata-discipline P2).
-- B-0104 — subsumed if the threading bridge becomes one of
+- 081KQB8J40008QG0R002DNCSKR — subsumed into Home 3 (memory file).
+- 081KQB8J40008QG0R002DQ0FDR — subsumed into Home 1 (operational doc).
+- 081KQB8J40008QG0R003XNATZJ — already a Home (the metadata-discipline P2).
+- 081KQB8J40008QG0R0016EHY06 — subsumed if the threading bridge becomes one of
   the operational homes; otherwise stays separate.
 
 ## Migration path (when consolidation work begins)
 
-1. Author Home 1 doc; copy + restructure B-0102 content;
-   mark B-0102 as superseded-by-Home1.
-2. Author Home 3 memory file; copy + restructure B-0101
-   content; mark B-0101 as superseded-by-Home3.
-3. B-0103 stays in place (already a P2 Home); update its
-   frontmatter to mark B-0098 + B-0099 as fully subsumed.
+1. Author Home 1 doc; copy + restructure 081KQB8J40008QG0R002DQ0FDR content;
+   mark 081KQB8J40008QG0R002DQ0FDR as superseded-by-Home1.
+2. Author Home 3 memory file; copy + restructure 081KQB8J40008QG0R002DNCSKR
+   content; mark 081KQB8J40008QG0R002DNCSKR as superseded-by-Home3.
+3. 081KQB8J40008QG0R003XNATZJ stays in place (already a P2 Home); update its
+   frontmatter to mark 081KQB8J40008QG0R003VMCFWB + 081KQB8J40008QG0R002PEP2A2 as fully subsumed.
 4. Update MEMORY.md index with a pointer to Home 3 (the new
    memory file).
 5. Cross-link the three Homes in their respective docs +

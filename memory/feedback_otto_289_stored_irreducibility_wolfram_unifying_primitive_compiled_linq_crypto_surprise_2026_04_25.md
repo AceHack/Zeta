@@ -234,7 +234,7 @@ investigations reap; and so on.
 
 This composition is **suggestive**, not proven. Worth
 formalizing in the Otto-287 Noether-direction research
-(B-0002).
+(081KQ0YZ80008QG0R002T6TM7Z).
 
 ## Falsification signals — when Otto-289 would be wrong
 
@@ -278,7 +278,7 @@ does Aaron's hypothesis fail?
 
 ## Research direction — what would formalize Otto-289
 
-Filed for future work, composing with B-0002 (Otto-287
+Filed for future work, composing with 081KQ0YZ80008QG0R002T6TM7Z (Otto-287
 Noether formalization):
 
 1. **Define "stored irreducibility" formally**. Wolfram's
@@ -301,7 +301,7 @@ Noether formalization):
    include irreducibility-conservation.
 
 A BACKLOG row is owed for "Otto-289 stored-irreducibility
-formalization research" — composing with B-0002.
+formalization research" — composing with 081KQ0YZ80008QG0R002T6TM7Z.
 
 ## What this is NOT
 
@@ -356,7 +356,7 @@ verified, Otto-288 gets an explicit revision pointing here.
 - **Otto-285** *DST tests chaos doesn't skip* — chaos is
   often computationally irreducible; testing it
   reproducibly captures stored irreducibility.
-- **B-0002 Otto-287 Noether-formalization research** —
+- **081KQ0YZ80008QG0R002T6TM7Z Otto-287 Noether-formalization research** —
   Otto-289 formalization composes with this; the
   conserved currents should include irreducibility-
   conservation.

@@ -264,9 +264,9 @@ in pitch / target-audience / disclosure context):
 | `docs/FACTORY-DISCIPLINE.md` | Governance / contributor doc | **MIXED** — line-by-line | preserve funding-chain + org-scope disclosure; reword demo-naming |
 | `docs/pitch/README.md` | **Pitch doc** | **KEEP-NAME** — pitch context, ServiceTitan is the named target | inspect for any unrelated brand-bleed; otherwise leave |
 | `docs/BACKLOG.md` | Aggregate index | **AGGREGATE** — regenerate after per-row updates | reconsider per-row first |
-| `docs/backlog/P2/B-0017-*.md` | Per-row (UI dashboard) | **PER-ROW** — depends on whether this is pitch-context or generic | inspect |
-| `docs/backlog/P2/B-0090-*.md` | Per-row (this session) | **PARTIALLY-FIXED** | already removed brand-bleed from "renamed from ServiceTitan" |
-| `docs/backlog/P3/B-0008-*.md` | Per-row (CI) | **PER-ROW** — depends on context | inspect |
+| `docs/backlog/P2/081KQ0YZ80008QG0R0003GAYYN-*.md` | Per-row (UI dashboard) | **PER-ROW** — depends on whether this is pitch-context or generic | inspect |
+| `docs/backlog/P2/081KQ8P5D0008QG0R0002TN22C-*.md` | Per-row (this session) | **PARTIALLY-FIXED** | already removed brand-bleed from "renamed from ServiceTitan" |
+| `docs/backlog/P3/081KQ0YZ80008QG0R000B6ETJS-*.md` | Per-row (CI) | **PER-ROW** — depends on context | inspect |
 | `docs/ROUND-HISTORY.md` | Historical narrative | **HISTORICAL** — preserve verbatim | no action |
 | `docs/force-multiplication-log.md` | Historical narrative | **HISTORICAL** | no action |
 | `tools/alignment/out/round-39/citations.json` | Generated artifact | **HISTORICAL** | accept |
@@ -280,7 +280,7 @@ Re-classified scope:
   but otherwise leave.
 - 1 file MIXED (FACTORY-DISCIPLINE — preserve disclosure,
   reword demo-naming).
-- 3 files PER-ROW inspection (B-0017, B-0090, B-0008).
+- 3 files PER-ROW inspection (081KQ0YZ80008QG0R0003GAYYN, 081KQ8P5D0008QG0R0002TN22C, 081KQ0YZ80008QG0R000B6ETJS).
 - 1 file BODY-REWORD (samples/FactoryDemo.Db/README.md —
   reusable sample, generic naming).
 - 1 file AGGREGATE (BACKLOG.md — regenerate after per-row).
@@ -309,9 +309,9 @@ generic / reusable contexts.
   the audit-and-rename work is reversible (rename is
   reversible; redaction is not). Default action.
 
-## Worked example for B-0090 (this session)
+## Worked example for 081KQ8P5D0008QG0R0002TN22C (this session)
 
-I just wrote B-0090 with the line:
+I just wrote 081KQ8P5D0008QG0R0002TN22C with the line:
 *"renamed from ServiceTitan"* in the rationale for marking
 the worktree branches OBSOLETE.
 
@@ -342,7 +342,7 @@ directory, demo name, public doc, or commit message:
    ServiceTitan's CRM team; saying "external UI demo" in a
    pitch doc would dilute the actual target.
 4. **Audit nearby files** when uncertain; the per-row
-   classification (per B-0091's KEEP-NAME / GENERICIZE /
+   classification (per 081KQ8P5D0008QG0R00353940P's KEEP-NAME / GENERICIZE /
    HISTORICAL-POINTER terminal states) tells you the right
    action for each file.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0033
-zetaid: 081KQ3HBZ0008QG0R0008RYCSX
+id: 081KQ3HBZ0008QG0R0008RYCSX
 priority: P2
 status: decomposed
 title: Otto-discipline hooks system — convert recurring failure-modes from language-layer substrate to harness-layer mechanism via Claude Code hooks; package as plugin (Aaron 2026-04-26 insight from "eval" hook firing)
@@ -10,31 +9,31 @@ ask: Aaron 2026-04-26 watched the Write-tool security hook fire on "eval" substr
 created: 2026-04-26
 last_updated: 2026-05-09
 status: decomposed
-decomposed_into: [B-0033.1-claude-code-hooks-ts-harness-entrypoint, B-0033.2-pre-edit-recent-read-enforcement-hook, B-0033.3-pre-bash-inline-python-heredoc-detector-hook, B-0033.4-pre-commit-directive-vocabulary-grep-hook, B-0033.5-pre-commit-dst-exempt-comment-flag-hook, B-0033.6-pre-commit-magic-number-rationale-checker-hook, B-0033.7-pre-action-bulk-resolve-justification-hook, B-0033.8-pre-commit-heartbeat-identical-row-detector-hook, B-0033.9-pre-commit-table-cellcount-conflict-marker-hook, B-0033.10-otto-discipline-hooks-claude-code-plugin-packaging]
+decomposed_into: [081KR50HA0008QG0R002B3N54S-claude-code-hooks-ts-harness-entrypoint, 081KR50HA0008QG0R0005ABWPH-pre-edit-recent-read-enforcement-hook, 081KQ3HBZ0008QG0R0008RYCSX.3-pre-bash-inline-python-heredoc-detector-hook, 081KQ3HBZ0008QG0R0008RYCSX.4-pre-commit-directive-vocabulary-grep-hook, 081KQ3HBZ0008QG0R0008RYCSX.5-pre-commit-dst-exempt-comment-flag-hook, 081KQ3HBZ0008QG0R0008RYCSX.6-pre-commit-magic-number-rationale-checker-hook, 081KQ3HBZ0008QG0R0008RYCSX.7-pre-action-bulk-resolve-justification-hook, 081KQ3HBZ0008QG0R0008RYCSX.8-pre-commit-heartbeat-identical-row-detector-hook, 081KQ3HBZ0008QG0R0008RYCSX.9-pre-commit-table-cellcount-conflict-marker-hook, 081KQ3HBZ0008QG0R0008RYCSX.10-otto-discipline-hooks-claude-code-plugin-packaging]
 depends_on: []
 composes_with: [feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_343_safety_filter_partial_alignment_map_the_divergence_helen_keller_named_entity_winks_bidirectional_signals_2026_04_26.md, feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, 081KQ3HBZ0008QG0R000ACTVA6, 081KQ3HBZ0008QG0R003B2NAA2, memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md]
 tags: [otto-341, otto-346, hooks, harness-mechanism, claude-code-plugin, substrate-as-mechanism, recurring-failure-modes, otto-discipline, mechanism-enforcement]
 type: friction-reducer
 ---
 
-# B-0033 — Otto-discipline hooks system + Claude Code plugin packaging
+# 081KQ3HBZ0008QG0R0008RYCSX — Otto-discipline hooks system + Claude Code plugin packaging
 
 ## Re-decomposition (2026-05-09, Riven background worker, one bounded step)
 
-B-0033 was too broad (L effort, 3 layers + plugin + 9+ failure modes). Re-decomposed into smallest dependency-ordered atomic child rows (assume mistakes, per rule). Children prefer TS implementation (Claude Code hooks are TS) over prose docs. One bounded step: this decomp record + child row stubs. Focused checks: dotnet build -c Release passed 0 Warning(s) 0 Error(s) before/after in worktree; no other files touched.
+081KQ3HBZ0008QG0R0008RYCSX was too broad (L effort, 3 layers + plugin + 9+ failure modes). Re-decomposed into smallest dependency-ordered atomic child rows (assume mistakes, per rule). Children prefer TS implementation (Claude Code hooks are TS) over prose docs. One bounded step: this decomp record + child row stubs. Focused checks: dotnet build -c Release passed 0 Warning(s) 0 Error(s) before/after in worktree; no other files touched.
 
 **Dependency-ordered atomic children (smallest safe slices, TS-first):**
 
-1. B-0033.1 (S, root) — Claude Code hooks TS harness entrypoint + .claude/settings.json wiring stub
-2. B-0033.2 (S, dep 1) — Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read)
-3. B-0033.3 (S, dep 1) — Pre-bash hook: inline-python3 -c / heredoc detector (Otto-346)
-4. B-0033.4 (S, dep 1) — Pre-commit hook: directive vocabulary grep (Otto-293 + B-0025)
-5. B-0033.5 (S, dep 1) — Pre-commit hook: DST-exempt comment flag (Otto-281)
-6. B-0033.6 (S, dep 1) — Pre-commit hook: magic-number-without-rationale checker (Otto-282)
-7. B-0033.7 (S, dep 1) — Pre-action GraphQL hook: bulk-resolve justification requirement
-8. B-0033.8 (S, dep 1) — Pre-commit hook: heartbeat identical-(none) row repetition detector
-9. B-0033.9 (S, dep 1) — Pre-commit hook: markdown table cell-count + conflict-marker (model B-0030)
-10. B-0033.10 (M, dep 1-9) — Package Layer-2 hooks as standalone Claude Code plugin + publish (Otto-346 good-citizenship)
+1. 081KR50HA0008QG0R002B3N54S (S, root) — Claude Code hooks TS harness entrypoint + .claude/settings.json wiring stub
+2. 081KR50HA0008QG0R0005ABWPH (S, dep 1) — Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read)
+3. 081KQ3HBZ0008QG0R0008RYCSX.3 (S, dep 1) — Pre-bash hook: inline-python3 -c / heredoc detector (Otto-346)
+4. 081KQ3HBZ0008QG0R0008RYCSX.4 (S, dep 1) — Pre-commit hook: directive vocabulary grep (Otto-293 + 081KQ0YZ80008QG0R0009EQNHP)
+5. 081KQ3HBZ0008QG0R0008RYCSX.5 (S, dep 1) — Pre-commit hook: DST-exempt comment flag (Otto-281)
+6. 081KQ3HBZ0008QG0R0008RYCSX.6 (S, dep 1) — Pre-commit hook: magic-number-without-rationale checker (Otto-282)
+7. 081KQ3HBZ0008QG0R0008RYCSX.7 (S, dep 1) — Pre-action GraphQL hook: bulk-resolve justification requirement
+8. 081KQ3HBZ0008QG0R0008RYCSX.8 (S, dep 1) — Pre-commit hook: heartbeat identical-(none) row repetition detector
+9. 081KQ3HBZ0008QG0R0008RYCSX.9 (S, dep 1) — Pre-commit hook: markdown table cell-count + conflict-marker (model 081KQ3HBZ0008QG0R000ACTVA6)
+10. 081KQ3HBZ0008QG0R0008RYCSX.10 (M, dep 1-9) — Package Layer-2 hooks as standalone Claude Code plugin + publish (Otto-346 good-citizenship)
 
 Child stubs created as placeholders; each is one-PR implementable, verifiable in isolation. This closes the "decompose before impl" + "re-decompose during build" gates.
 
@@ -56,13 +55,13 @@ The recurring failure-modes Otto-NNN substrate names but my per-instance discipl
 |---|---|
 | **Edit-without-Read** (Otto-343 recurring) | Pre-Edit hook: check file mtime; require recent Read; fail-with-guidance if file modified since Read |
 | **Inline Python heredocs** (Otto-346 violations 1-4) | Pre-bash hook: detect `python3 -c` / `python3 << ...` patterns; suggest tool extraction |
-| **Directive vocabulary** (Otto-293 + B-0025) | Pre-commit grep: "directive:" in YAML keys; "directive" in body prose |
+| **Directive vocabulary** (Otto-293 + 081KQ0YZ80008QG0R0009EQNHP) | Pre-commit grep: "directive:" in YAML keys; "directive" in body prose |
 | **DST-exempt comments** (Otto-281) | Pre-commit grep: flag as deferred bug |
 | **Magic-number-without-rationale** (Otto-282) | Pre-commit checker on numeric literals |
 | **Bulk-resolve-without-reading** (Otto-281 + earlier session catches) | Pre-action hook on GraphQL `markPullRequestReviewThreadAsResolved` mutations: require explicit per-thread justification |
 | **Heartbeat-row identical-(none) repetition** (Aaron catch this session) | Pre-commit pattern match: flag 3+ identical recent rows |
-| **Markdown table cell-count mismatch** (B-0027) | Pre-commit: check N pipes per data row in tick-history |
-| **Conflict markers in committed files** (B-0030 sibling) | Already shipped (`tools/hygiene/check-no-conflict-markers.sh`) — model for others |
+| **Markdown table cell-count mismatch** (081KQ3HBZ0008QG0R003WJ62HM) | Pre-commit: check N pipes per data row in tick-history |
+| **Conflict markers in committed files** (081KQ3HBZ0008QG0R000ACTVA6 sibling) | Already shipped (`tools/hygiene/check-no-conflict-markers.sh`) — model for others |
 
 Each is substrate-named-but-recurring. Hooks convert language-layer-discipline → mechanism-layer-enforcement.
 
@@ -253,15 +252,15 @@ This composes with Otto-345 substrate-visibility-discipline: the hook's existenc
 - Otto-346 (peer-cohort + good-citizenship; plugin-publishing IS Otto-346 at harness layer)
 - Otto-345 (substrate-tooling lineage extended)
 - Maji formal model (PR #555) — hooks enforce Trust(S_t) > Trust(W_t)
-- B-0030 (lint-with-exclusions — sibling lint discipline)
-- B-0031 (references/ rename — naming-discipline; hookable)
+- 081KQ3HBZ0008QG0R000ACTVA6 (lint-with-exclusions — sibling lint discipline)
+- 081KQ3HBZ0008QG0R003B2NAA2 (references/ rename — naming-discipline; hookable)
 - `tools/hygiene/check-tick-history-order.sh` (PR #534) — proven Layer-3 model
 - `tools/hygiene/check-no-conflict-markers.sh` (PR #539) — proven Layer-3 model
 
 ## Owed work after this row lands
 
 - Phase 1 implementation (Layer 1 + Layer 3 for 3 highest-recurrence patterns)
-- Per Otto-346 sequencing: this is post-install code; Layer 2 Claude Code hooks are part of the post-install TS-migration cluster (B-0015, B-0027, B-0028, B-0030)
+- Per Otto-346 sequencing: this is post-install code; Layer 2 Claude Code hooks are part of the post-install TS-migration cluster (081KQ0YZ80008QG0R0012002S4, 081KQ3HBZ0008QG0R003WJ62HM, 081KQ3HBZ0008QG0R0006Z5EXX, 081KQ3HBZ0008QG0R000ACTVA6)
 - Aminata adversarial review on Layer 2 hooks (per `docs/CONFLICT-RESOLUTION.md`) — does the hook design hold under threat-model scrutiny?
 
 ## Aaron's framing in his own words

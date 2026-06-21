@@ -74,7 +74,7 @@ Independent of the crypto rebind, two ordering fixes are pure flow (no binding r
 3. **Preserve→format→repersist** target creds (now crypto-valid) — implement + QEMU-validate remember-across-reformat.
 4. **Default-on:** remembering is the no-keypress default when a blob/partition is detected (#UX-Iris, #7007 model).
 
-All gated by the QEMU harness (grown from the B-0891 PoC to boot-and-assert) on the free GitHub workflows — humans
+All gated by the QEMU harness (grown from the 081KSNY2Z0008QG0R0008PN7RQ PoC to boot-and-assert) on the free GitHub workflows — humans
 only for the narrow physical surface.
 
 ## Honest scope

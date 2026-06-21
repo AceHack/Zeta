@@ -255,7 +255,7 @@ record the drift source in the PR body (or an ADR under
 `docs/DECISIONS/` if the diagnosis is non-trivial and worth
 preserving for future maintainers).
 
-## Architectural target — three-ruleset split (B-0155 Phase 1 audit)
+## Architectural target — three-ruleset split (081KQGDBJ0008QG0R0028YTDQ2 Phase 1 audit)
 
 Per the human maintainer 2026-05-01 — *"the settings that are there
 are accidental complexity not intentional, we want best practices and
@@ -341,7 +341,7 @@ Aaron 2026-05-01: *"these are nasty thats why they are legacy."*
   by concern)
 - **GitHub UI checkboxes** introduce click-ops drift that
   `github-settings-drift.yml` only catches retroactively; the
-  reconciliation script direction (Phase 2 of B-0155) makes drift
+  reconciliation script direction (Phase 2 of 081KQGDBJ0008QG0R0028YTDQ2) makes drift
   structurally impossible by reversing the flow (always edit the
   expected.json first, then apply via script)
 

@@ -1,4 +1,4 @@
-// deps.test.ts — Unit tests for dependency graph engine (B-0821)
+// deps.test.ts — Unit tests for dependency graph engine (081KSGS9H0008QG0R00367G209)
 import { expect, test, describe } from "bun:test";
 import { resolveGraph, generateFlux, generateArgoCD, parseYaml, stringifyYaml, getTargetPath, setNestedProperty, getResolvedVersion, getMigrationPhase, checkRollbackSafety, generateMigrationRunbook, } from "./deps";
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
@@ -313,7 +313,7 @@ describe("Manifest Generation", () => {
         });
     });
 });
-describe("Temporal Graph & B-0825 Features", () => {
+describe("Temporal Graph & 081KSGS9H0008QG0R002PT5C7J Features", () => {
     const nodeWithTemporalSpec = {
         chart: "postgres",
         version: {

@@ -29,15 +29,15 @@ so future readers don't overclaim.
 | Service | File | Slice status | Detection signal | Bus topic |
 |---------|------|--------------|------------------|-----------|
 | Standing-by detector | `standing-by-detector.ts` | 1+2+3+4 live | commit-history (HEAD) + PR-activity (repo) via `gh`/`git` | `infinite-backlog-nudge` |
-| Backlog-ready notifier | `backlog-ready-notifier.ts` | 1+2+3+4+5a+6 live (5.2 pending B-0460) | backlog-row scan (status + deps satisfied) | `work-assignment` |
+| Backlog-ready notifier | `backlog-ready-notifier.ts` | 1+2+3+4+5a+6 live (5.2 pending 081KRHWGX0008QG0R001E9KEJ1) | backlog-row scan (status + deps satisfied) | `work-assignment` |
 | Missed-substrate detector | `missed-substrate-detector.ts` | 1+2+3+4+5 live | merged-PR fetch via `gh`; real branch-vs-squash compare via `gh pr view --json headRefOid` + `git log <headRefOid>..origin/<branch>` (slice 3 landed 2026-05-13); auto-recovery via `--auto-recover` / `--recovery-dry-run` flags (slice 5 landed 2026-05-15) | `missed-substrate-cascade` |
-| Missed-substrate recovery (helper) | `missed-substrate-recovery.ts` | core function + adapter contract shipped 2026-05-15 (B-0503); wired into detector via `REAL_RECOVERY_ADAPTERS` (B-0504) | n/a (invoked by detector when `--auto-recover` set) | n/a (opens recovery PR directly via `gh pr create`) |
+| Missed-substrate recovery (helper) | `missed-substrate-recovery.ts` | core function + adapter contract shipped 2026-05-15 (081KRHWGX0008QG0R0027YXBTB); wired into detector via `REAL_RECOVERY_ADAPTERS` (081KRHWGX0008QG0R000PVB6FF) | n/a (invoked by detector when `--auto-recover` set) | n/a (opens recovery PR directly via `gh pr create`) |
 
 Per-service slice ordering (each service decomposes into 6 slices):
 
 - Slice 1: skeleton + no-op poll loop
 - Slice 2: real detection signal #1
-- Slice 3: real detection signal #2 (or comparator for B-0442)
+- Slice 3: real detection signal #2 (or comparator for 081KRFA460008QG0R00061SXRW)
 - Slice 4: bus-publish wiring
 - Slice 5: agent-side subscription / queue-state detection
 - Slice 6: cron registration + integration tests
@@ -46,7 +46,7 @@ Per-service slice ordering (each service decomposes into 6 slices):
 
 All services compose with:
 
-- **B-0400 bus protocol** (`tools/bus/`) — transport via `/tmp/zeta-bus/` JSON files
+- **081KR7JY10008QG0R000R503K2 bus protocol** (`tools/bus/`) — transport via `/tmp/zeta-bus/` JSON files
 - **Existing background infrastructure** — `com.zeta.claude-loop` launchd + cron heartbeat
 
 ## Adapter pattern
@@ -90,7 +90,7 @@ bun tools/bg/backlog-ready-notifier.ts --once --to vera
 - **Slice 5 for all three** — subscriber agents that react to bus envelopes (e.g., auto-claim a `work-assignment`)
 - **Slice 6 for all three** — launchd / cron registration + integration tests
 
-(B-0442 slice 3 landed 2026-05-13: real `headRefOid` vs current-branch-HEAD compare with rebase-guard via `git merge-base --is-ancestor`. The cascade detector now operationally detects the Otto-section-missed-PR-#2980-by-3-min failure class when the branch still exists on origin.)
+(081KRFA460008QG0R00061SXRW slice 3 landed 2026-05-13: real `headRefOid` vs current-branch-HEAD compare with rebase-guard via `git merge-base --is-ancestor`. The cascade detector now operationally detects the Otto-section-missed-PR-#2980-by-3-min failure class when the branch still exists on origin.)
 
 When all of those land, the architectural claim "foreground loop is
 optional" approaches operational truth. Today the claim is

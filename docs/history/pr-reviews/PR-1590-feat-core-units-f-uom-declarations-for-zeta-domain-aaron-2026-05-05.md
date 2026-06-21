@@ -50,8 +50,8 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 ## Composes with
 
-- B-0194 (capability detection) -- IBilinearOperator laws would benefit from `<weight>` typing
-- B-0189 (Q# Bayesian BP/EP runtime) -- `prob`/`pct` handles the output-boundary
+- 081KQTPYE0008QG0R001W1PS86 (capability detection) -- IBilinearOperator laws would benefit from `<weight>` typing
+- 081KQR4HQ0008QG0R002933PRR (Q# Bayesian BP/EP runtime) -- `prob`/`pct` handles the output-boundary
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -381,9 +381,9 @@ Lineage: docs/research/2026-05-05-claudeai-knights-knaves-round-table-
 harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md
 plus Aaron's same-tick UoM-examples-for-Otto forward.
 
-Composes with B-0194 (capability detection -- IBilinearOperator
+Composes with 081KQTPYE0008QG0R001W1PS86 (capability detection -- IBilinearOperator
 laws would benefit from <weight> typing on internal weight params)
-and B-0189 (Q# Bayesian BP/EP runtime -- prob/pct handles the
+and 081KQR4HQ0008QG0R002933PRR (Q# Bayesian BP/EP runtime -- prob/pct handles the
 output-boundary).
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>

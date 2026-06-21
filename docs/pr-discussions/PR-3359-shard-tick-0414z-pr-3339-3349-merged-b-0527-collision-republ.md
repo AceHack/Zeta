@@ -1,6 +1,6 @@
 ---
 pr_number: 3359
-title: "shard(tick): 0414Z \u2014 PR #3339/#3349 merged + B-0527 collision republished + new worktree-pruning-race failure mode"
+title: "shard(tick): 0414Z \u2014 PR #3339/#3349 merged + 081KRHWGX0008QG0R0015EE8VE collision republished + new worktree-pruning-race failure mode"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-15T04:57:03Z"
@@ -12,14 +12,14 @@ archived_at: "2026-05-22T23:09:30Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3359: shard(tick): 0414Z — PR #3339/#3349 merged + B-0527 collision republished + new worktree-pruning-race failure mode
+# PR #3359: shard(tick): 0414Z — PR #3339/#3349 merged + 081KRHWGX0008QG0R0015EE8VE collision republished + new worktree-pruning-race failure mode
 
 ## PR description
 
 ## Summary
 
 - PRs #3339 + #3349 from prior 0230Z tick MERGED to `origin/main`
-- B-0527 dual-allocation collision STILL LIVE between [#3323](https://github.com/Lucent-Financial-Group/Zeta/pull/3323) and [#3315](https://github.com/Lucent-Financial-Group/Zeta/pull/3315); shadow-catch advisory republished as bus envelope `d2b7fc2f-43a6-4853-997b-cbd6d359a504`
+- 081KRHWGX0008QG0R0015EE8VE dual-allocation collision STILL LIVE between [#3323](https://github.com/Lucent-Financial-Group/Zeta/pull/3323) and [#3315](https://github.com/Lucent-Financial-Group/Zeta/pull/3315); shadow-catch advisory republished as bus envelope `d2b7fc2f-43a6-4853-997b-cbd6d359a504`
 - Bus hygiene: 4 expired envelopes cleaned
 - **NEW FAILURE MODE**: aggressive worktree-pruning race targets new Otto-CLI worktrees. Five attempts (incl. one with `git worktree add --lock --reason "..."`) all got `rm -rf`'d mid-tick. Pattern documented on bus as envelope `44aaf799-8bf1-41f5-b3d0-28e9f37e3b33`
 - **Recovery technique**: borrowed the age-exempt sibling worktree `/private/tmp/zeta-otto-cli-0027z-sidetick` (~4.5h old) via branch-switch to land this shard. Pattern proposed for inclusion in `.claude/rules/claim-acquire-before-worktree-work.md`
@@ -40,11 +40,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Pull request overview
 
-Adds a new hygiene-history tick shard (0414Z) documenting the latest cron tick state: prior PR merges, the still-live B-0527 dual-allocation collision advisory republish, bus cleanup, and a newly observed worktree-pruning race plus the recovery technique used to land the shard.
+Adds a new hygiene-history tick shard (0414Z) documenting the latest cron tick state: prior PR merges, the still-live 081KRHWGX0008QG0R0015EE8VE dual-allocation collision advisory republish, bus cleanup, and a newly observed worktree-pruning race plus the recovery technique used to land the shard.
 
 **Changes:**
 - Record merges of PR #3339 and PR #3349 onto `origin/main`.
-- Document ongoing B-0527 dual-allocation collision status and shadow-catch advisory republish.
+- Document ongoing 081KRHWGX0008QG0R0015EE8VE dual-allocation collision status and shadow-catch advisory republish.
 - Capture a new operational failure mode (worktree-pruning race) and the recovery/workaround procedure used.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T05:03:48Z)

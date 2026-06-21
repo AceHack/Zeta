@@ -1,6 +1,5 @@
 ---
-id: B-0230
-zetaid: 081KQX9B50008QG0R001T7M5SK
+id: 081KQX9B50008QG0R001T7M5SK
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - Pareto frontier and tradeoff synthesis"
@@ -12,9 +11,9 @@ classification: blocked-on-research-slices
 type: feature
 ---
 
-# B-0230 - Pareto frontier and tradeoff synthesis
+# 081KQX9B50008QG0R001T7M5SK - Pareto frontier and tradeoff synthesis
 
-Synthesize the B-0147 research slices into an explicit Pareto
+Synthesize the 081KQGDBJ0008QG0R0004ACHJJ research slices into an explicit Pareto
 frontier.
 
 ## Work scope
@@ -32,4 +31,4 @@ systems earned honestly?
 - Dominated options are marked as dominated.
 - Any deliberate non-Pareto choice is labeled with the
   architectural reason.
-- The synthesis directly feeds the recommendation in B-0231.
+- The synthesis directly feeds the recommendation in 081KQX9B50008QG0R00142CANX.

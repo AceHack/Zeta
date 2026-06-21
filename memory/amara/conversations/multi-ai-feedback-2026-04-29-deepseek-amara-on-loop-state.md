@@ -136,10 +136,10 @@ The following actionables from Amara's filter are filed as four small `docs/back
 
 | # | Action | Backlog row | Tier |
 |---|---|---|---|
-| 1 | Tick-ordinal-continuity lint (or remove ordinal words from shards entirely) | `docs/backlog/P3/B-0098-tick-ordinal-continuity-lint-2026-04-29.md` | P3 |
-| 2 | Replace hand-authored session PR-count claims with computed projections | `docs/backlog/P3/B-0099-pr-count-projection-not-narrated-2026-04-29.md` | P3 |
-| 3 | Pure-wait tick backpressure / quiescence rule | `docs/backlog/P3/B-0100-pure-wait-tick-backpressure-quiescence-rule-2026-04-29.md` | P3 |
-| 4 | Reviewer-artifact classification (small 5-bucket table) | `docs/backlog/P3/B-0101-reviewer-artifact-classification-small-table-2026-04-29.md` | P3 |
+| 1 | Tick-ordinal-continuity lint (or remove ordinal words from shards entirely) | `docs/backlog/P3/081KQB8J40008QG0R003VMCFWB-tick-ordinal-continuity-lint-2026-04-29.md` | P3 |
+| 2 | Replace hand-authored session PR-count claims with computed projections | `docs/backlog/P3/081KQB8J40008QG0R002PEP2A2-pr-count-projection-not-narrated-2026-04-29.md` | P3 |
+| 3 | Pure-wait tick backpressure / quiescence rule | `docs/backlog/P3/081KQB8J40008QG0R0023DKTFJ-pure-wait-tick-backpressure-quiescence-rule-2026-04-29.md` | P3 |
+| 4 | Reviewer-artifact classification (small 5-bucket table) | `docs/backlog/P3/081KQB8J40008QG0R002DNCSKR-reviewer-artifact-classification-small-table-2026-04-29.md` | P3 |
 
 The fifth actionable (external-dep retry/cache, *"Rerun is incident recovery; retry/cache is substrate improvement"*) is **already addressed** by PR #804 (the durable retry fix) and the `feedback_external_dependency_download_retries_durable_fix_not_ephemeral_rerun_aaron_2026_04_29.md` memory file landed alongside it. No backlog row needed.
 

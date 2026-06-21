@@ -3,7 +3,7 @@
 This directory holds **per-divergence shard files** recording disagreements
 between concurrent agent loops working on shared substrate.
 
-Origin: B-0164 AC #4 (2026-05-10).
+Origin: 081KQJZR90008QG0R002GJAJ19 AC #4 (2026-05-10).
 
 ## Why divergence shards exist
 
@@ -133,5 +133,5 @@ worked example demonstrating the schema.
 
 ## Migration
 
-There is no legacy divergence surface. This directory is created fresh (B-0164
+There is no legacy divergence surface. This directory is created fresh (081KQJZR90008QG0R002GJAJ19
 AC #4, 2026-05-10). All shards from 2026-05-10 onward are written here.

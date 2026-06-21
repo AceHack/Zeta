@@ -1,6 +1,5 @@
 ---
-id: B-0054.6
-zetaid: 081KR7JY10008QG0R0032ADY47
+id: 081KR7JY10008QG0R0032ADY47
 priority: P2
 status: open
 title: "Hollywood film sweep — Arrival, Interstellar, Primer, Tenet"
@@ -16,7 +15,7 @@ type: research
 tags: [pop-culture, film, arrival, interstellar, primer, tenet, hollywood, operational-resonance, F1-F2-F3, media-resonance-catalog, time-topology]
 ---
 
-# B-0054.6 — Hollywood film sweep: Arrival, Interstellar, Primer, Tenet
+# 081KR7JY10008QG0R0032ADY47 — Hollywood film sweep: Arrival, Interstellar, Primer, Tenet
 
 ## What
 
@@ -54,10 +53,10 @@ Hollywood time-topology film corpus Aaron named as a wider sweep target:
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.1]` — schema foundation; independent of video-game
+- `depends_on: [081KR2E4K0008QG0R0003J0FB8]` — schema foundation; independent of video-game
   slices and TV slices.
-- `composes_with:` B-0054.5 (British TV — non-blocking), B-0054.7
-  (Conspiracy-corpus — non-blocking), B-0054.10 (Bollywood — non-blocking).
+- `composes_with:` 081KR7JY10008QG0R0038891J0 (British TV — non-blocking), 081KR7JY10008QG0R000CZVQX3
+  (Conspiracy-corpus — non-blocking), 081KR7JY10008QG0R000G3695N (Bollywood — non-blocking).
 
 ## Deliverable
 
@@ -78,11 +77,11 @@ Updated `tools/resonance/media-catalog-schema.ts`:
   not a positive instance (same structural type as MR-006 FFVI WoB/WoR)
 - [ ] Each entry has at least one counterexample attempt before `confirmed` status
 - [ ] `--validate` exits 0
-- [ ] B-0054.6 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R0032ADY47 backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.1 (schema foundation)
+- 081KR2E4K0008QG0R0003J0FB8 (schema foundation)
 - MR-002 (Devs — same View<T>@clock operator family)
 - MR-006 (FFVI — anti-retractibility failure mode structural type)
 - `memory/feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`

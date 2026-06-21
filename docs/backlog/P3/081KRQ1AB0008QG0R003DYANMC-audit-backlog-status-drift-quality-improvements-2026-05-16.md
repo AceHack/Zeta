@@ -1,6 +1,5 @@
 ---
-id: B-0557
-zetaid: 081KRQ1AB0008QG0R003DYANMC
+id: 081KRQ1AB0008QG0R003DYANMC
 priority: P3
 status: closed
 title: "Audit-backlog-status-drift — quality improvements per PR #3758 reviewer findings"
@@ -19,7 +18,7 @@ type: feature
 
 ## Origin
 
-Follow-up to [B-0553](B-0553-audit-backlog-status-drift-detection-2026-05-16.md). PR #3758 (the audit-tool implementation) attracted 4 additional reviewer findings on the e5e7143 commit (after the regex-order + SKIP_SECTIONS + nested-headings fixes). Each finding is valid; this row captures them as a follow-up slice rather than continuing the iteration treadmill on the original PR.
+Follow-up to [081KRQ1AB0008QG0R000QYJFZE](081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md). PR #3758 (the audit-tool implementation) attracted 4 additional reviewer findings on the e5e7143 commit (after the regex-order + SKIP_SECTIONS + nested-headings fixes). Each finding is valid; this row captures them as a follow-up slice rather than continuing the iteration treadmill on the original PR.
 
 ## The four findings
 
@@ -27,7 +26,7 @@ Follow-up to [B-0553](B-0553-audit-backlog-status-drift-detection-2026-05-16.md)
 
 > Do not skip the entire line when an inline cross-reference token appears.
 
-Current behaviour: `INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))` skips the WHOLE line. This is correct for pure cross-reference bullets like `- Composes with \`tools/x.ts\`` but is overly aggressive for mixed bullets like `- Add \`tools/new.ts\` per [B-0123] convention` — the path `tools/new.ts` is a deliverable, the `per [B-0123]` is just a citation.
+Current behaviour: `INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))` skips the WHOLE line. This is correct for pure cross-reference bullets like `- Composes with \`tools/x.ts\`` but is overly aggressive for mixed bullets like `- Add \`tools/new.ts\` per [081KQDTYV0008QG0R0022KG2KY] convention` — the path `tools/new.ts` is a deliverable, the `per [081KQDTYV0008QG0R0022KG2KY]` is just a citation.
 
 **Proposed fix**: only skip the line if the cross-ref keyword appears at the START of the bullet (after `^[\s*-]+\s+`). Mid-line cross-refs allow extraction.
 
@@ -45,7 +44,7 @@ Current behaviour: `INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))` skips 
 
 ### Finding 4 — `--check` mode for CI integration (Copilot P1, PR #3758 line 277)
 
-> B-0553 spec calls for a CI-friendly "check/enforce" mode (non-zero exit when drift candidates are found). `main()` currently always exits 0.
+> 081KRQ1AB0008QG0R000QYJFZE spec calls for a CI-friendly "check/enforce" mode (non-zero exit when drift candidates are found). `main()` currently always exits 0.
 
 **Proposed fix**: add `--check` flag. When set, `main()` returns 0 if no candidates, non-zero (e.g., 65) if any candidates. Default behaviour (detect-only) unchanged.
 
@@ -59,20 +58,20 @@ Current behaviour: `INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))` skips 
 
 ## Composes with
 
-- [B-0553](B-0553-audit-backlog-status-drift-detection-2026-05-16.md) — parent row (audit-tool spec + first-slice impl)
+- [081KRQ1AB0008QG0R000QYJFZE](081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md) — parent row (audit-tool spec + first-slice impl)
 - PR #3758 reviewer findings (verbatim references above)
 - [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) step 0 — the discipline the audit tool mechanizes
 - [`memory/feedback_substrate_drift_catch_pattern_*.md`](../../../memory/) — the discipline substrate
 
 ## Why P3
 
-Same as B-0553 — friction-reducer. Each improvement is small and additive; together they take the tool from "first slice" to "operationally robust." Not P2 because the first slice already works for the common case (30+ live candidates detected correctly). Not P4 because the findings are concrete + actionable + recent.
+Same as 081KRQ1AB0008QG0R000QYJFZE — friction-reducer. Each improvement is small and additive; together they take the tool from "first slice" to "operationally robust." Not P2 because the first slice already works for the common case (30+ live candidates detected correctly). Not P4 because the findings are concrete + actionable + recent.
 
 ## Non-goals
 
-- `--prune-claims` flag (still deferred per B-0553)
-- `--open-close-pr` flag (still deferred per B-0553)
-- Cross-row drift detection (per B-0532 — different audit)
+- `--prune-claims` flag (still deferred per 081KRQ1AB0008QG0R000QYJFZE)
+- `--open-close-pr` flag (still deferred per 081KRQ1AB0008QG0R000QYJFZE)
+- Cross-row drift detection (per 081KRMEXM0008QG0R003FZNK3E — different audit)
 - Auto-merge integration (separate concern; the tool is a detector, not an actor)
 
 ## Origin tick
@@ -92,6 +91,6 @@ All four slices shipped within the same 2026-05-16 session that filed this row:
 
 **Acceptance bullets**: every bullet in the Acceptance section has a corresponding merged PR. Verified per `.claude/rules/backlog-item-start-gate.md` step 0 partial-vs-drift discriminator.
 
-**Test count**: 16 (B-0553 first slice) → 20 (after slices 3 + 4 added 2 + 2 regression tests). All passing on main.
+**Test count**: 16 (081KRQ1AB0008QG0R000QYJFZE first slice) → 20 (after slices 3 + 4 added 2 + 2 regression tests). All passing on main.
 
 **Infrastructure-eats-itself**: this row was caught as a genuine drift candidate by the audit tool it specified. The 6-layer substrate-drift-catch infrastructure has now reached full operational closure on main.

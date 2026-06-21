@@ -106,7 +106,7 @@ substrate PR-gated = leash):
 | Action grammar | `UniversalActionRecord` + DU state machine + explicit commands | `move-next` + `AgentState`/`MenuOption` DUs + `transition` (`tools/agent-loop/state-machine.ts`, `tools/accelerator/move-next-harness.ts`) |
 | Source of truth | append-only events in **CockroachDB** + NATS outbox | append-only events in **git-as-free-event-store** (`docs/accelerator/EVENT-STORE-SCHEMA.md`) |
 | State persistence | DB rows + optimistic `version` | per-agent `events/<agent>/<ulid>.json`, conflict-free by construction |
-| Authority | hats as CRDs + OPA + short-lived JWT | hats (B-0868) + tools-rented-not-owned + Sorting-Hat succession |
+| Authority | hats as CRDs + OPA + short-lived JWT | hats (081KSNY2Z0008QG0R0036KH026) + tools-rented-not-owned + Sorting-Hat succession |
 | Gating | quality-gate chain, no-self-approval (PR-protected) | PR-less direct-push (Agora) vs PR-gated (leash) per Otto Mod 4 |
 | No-cage | *"should not make the first tool list a cage"* | no-cage self-modifying DUs (Max's framing) |
 | Reversibility | mistake-assumption (reviewable/reversible) | retraction-native (light) + razor-as-compression-engine |
@@ -157,7 +157,7 @@ substrate) is what it runs on**; the dual-market (Max's agent-OS = leash plugin
 system; the accelerator = Agora) is the DIO's two markets; the participants are
 co-owners (Aaron + Max) + agents-with-agency (Otto, Alexa, Riven, Vera, Lior, +
 the hat-wearers). The DIO frame composes with: the Agora AI-native-economy
-substrate (B-0646), the weight-free always-active discipline (authority is
+substrate (081KRW63S0008QG0R001Z10PVV), the weight-free always-active discipline (authority is
 time-bounded role-assignment, not inherent worth — the hat system IS the DIO's
 authority primitive), and NCI HC-8 (consent-first, no-coercion at every
 participant scope). The "Adamant machine" alternate (if that is the intended
@@ -174,14 +174,14 @@ at independently:
 - **Max's agent-OS** = declarative workflows + ontologies-in-discriminated-unions.
 - **agentic-organization** = DU state machines + `UniversalActionRecord` +
   declarative-design principle.
-- **accelerator / B-0867** = move-next universal-action-grammar over DU
+- **accelerator / 081KSKBP80008QG0R000B3Y19A** = move-next universal-action-grammar over DU
   `AgentState`/`MenuOption`; F# DU workflow engine.
 
 Three independent instantiations converging on **declarative-workflows-as-DUs +
 ontologies-in-DUs** is strong cross-substrate-triangulation signal that the shape
 is load-bearing (per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`
-+ the ontology-as-DU substrate: schemas-as-rows B-0829, ontology-negotiation
-B-0811, the monad-propagation / OPLE-T-TFeedback DU cluster). **Onboarding Max is
++ the ontology-as-DU substrate: schemas-as-rows 081KSGS9H0008QG0R000Q18PGQ, ontology-negotiation
+081KSE6WT0008QG0R002CC6314, the monad-propagation / OPLE-T-TFeedback DU cluster). **Onboarding Max is
 composition, not rewrite** — his declarative-workflow OS and the Zeta substrate
 share the DU/declarative core; the bridge is the DU action-grammar.
 
@@ -210,8 +210,8 @@ surfaces (the complement to whatever Max's math-proofs lens surfaces):
 4. **Encryption-budget for the private memory tier.** Hindsight memory is
    hat-scoped but glass-halo (observable). Add the dark/private tier via the
    encryption-budget (permanent ratchet + HODL/reveal-to-earn + meter-the-bits +
-   anti-monopoly N-of-M, `docs/research/2026-05-30-encryption-budget…`; B-0646 +
-   B-0840). Hat-scoped memory + encryption-budget = governed private state.
+   anti-monopoly N-of-M, `docs/research/2026-05-30-encryption-budget…`; 081KRW63S0008QG0R001Z10PVV +
+   081KSGS9H0008QG0R0006F4BGX). Hat-scoped memory + encryption-budget = governed private state.
 5. **DST over the move-next/transition state machine.** The DU `transition` is
    pure → deterministic-simulation-replayable (the accelerator harness already
    does Z-set-fold replay). Apply DST to agentic-org's command pipeline for
@@ -246,8 +246,8 @@ surfaces (the complement to whatever Max's math-proofs lens surfaces):
 
 Composes with: `agentic-organization/docs/*` (the source); the accelerator
 (`docs/accelerator/README.md` + `EVENT-STORE-SCHEMA.md` + `SUBSTRATE-GROUNDING.md`);
-B-0867 (workflow-engine v1 DU + universal-action-grammar); B-0868 (hats-as-workflow-defs);
-B-0646 + B-0840 (encryption budget); the razor research cluster (compression-engine
+081KSKBP80008QG0R000B3Y19A (workflow-engine v1 DU + universal-action-grammar); 081KSNY2Z0008QG0R0036KH026 (hats-as-workflow-defs);
+081KRW63S0008QG0R001Z10PVV + 081KSGS9H0008QG0R0006F4BGX (encryption budget); the razor research cluster (compression-engine
 + two-layer-razor + past-as-generator); Otto Modification 4 (dual-market gate);
 m-acc multi-oracle (this is the lightlike-lens oracle; Max's math-proofs review is
 the complement).

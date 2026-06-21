@@ -1,5 +1,5 @@
 /**
- * src/Core.TypeScript/observe/do-item.test.ts — Phase-1 acceptance for effectful do_item (B-0964).
+ * src/Core.TypeScript/observe/do-item.test.ts — Phase-1 acceptance for effectful do_item (081KT07NV0008QG0R001CBQ2X2).
  *
  * Proves: the observation envelope (Started→Succeeded|Failed), the injected executor port
  * (fake — no shell), the success/failure transitions, the audit tier in the
@@ -155,7 +155,7 @@ describe("executeDoItem — the observation envelope", () => {
         expect(r.feedback.durableObservations.map((f) => f.kind)).toEqual(["ActionExecutionStarted"]);
     });
 });
-describe("foldObservations — replay folds OBSERVATIONS, never re-runs (B-0964 §0 correctness)", () => {
+describe("foldObservations — replay folds OBSERVATIONS, never re-runs (081KT07NV0008QG0R001CBQ2X2 §0 correctness)", () => {
     it("replaying [Started, Succeeded] reconstructs the executed world — with NO executor", async () => {
         const world = w([item("B-1"), item("B-2")]);
         const sink = fakeObservationSink();

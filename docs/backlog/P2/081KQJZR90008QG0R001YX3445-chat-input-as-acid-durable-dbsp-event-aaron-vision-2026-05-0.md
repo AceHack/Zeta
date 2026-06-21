@@ -1,6 +1,5 @@
 ---
-id: B-0166
-zetaid: 081KQJZR90008QG0R001YX3445
+id: 081KQJZR90008QG0R001YX3445
 priority: P2
 status: open
 title: Chat-input-as-ACID-durable-DBSP-event — make every human/AI message a first-class durable event in the substrate
@@ -48,7 +47,7 @@ This is functional but high-friction (~10-15 minutes per substantive paste, requ
 
 ## What "ACID-durable DBSP event" would require
 
-1. **Event ingest pipeline**: chat-channel content piped into a DBSP source operator. Could be Claude Code's transcript file (one source) + Codex's transcript (second source) + future-AI transcripts (B-0164 dual-loop) + human-direct-input.
+1. **Event ingest pipeline**: chat-channel content piped into a DBSP source operator. Could be Claude Code's transcript file (one source) + Codex's transcript (second source) + future-AI transcripts (081KQJZR90008QG0R002GJAJ19 dual-loop) + human-direct-input.
 2. **Event schema**: at minimum `{timestamp, sender_role, sender_name (per Otto-279 carve-out for history surface), message_text, session_id, message_id, parent_message_id (for thread-resolution)}`. Plus structured tags for known content types (verbatim-paste-marker, command-marker, prompt-marker, reply-marker).
 3. **ACID durability**: standard DBSP transactional commit semantics. Chat-input enters atomic batch, commits to durable storage, becomes visible to downstream operators.
 4. **Downstream derivation views**: (a) by-session timeline; (b) by-author influence-graph; (c) by-topic clusters; (d) verbatim-extracts for research preservation; (e) summarization-derived memory-file candidates; (f) fine-tuning-export-formatted batches; (g) training-corpus-export-formatted batches.
@@ -57,12 +56,12 @@ This is functional but high-friction (~10-15 minutes per substantive paste, requ
 
 ## Composes with
 
-- **B-0164 dual-loop substrate attribution + reconciliation protocol** — when dual-loop lands (Claude Code + Codex both running), each loop's chat-events feed the same DBSP event-stream with attribution preserved
+- **081KQJZR90008QG0R002GJAJ19 dual-loop substrate attribution + reconciliation protocol** — when dual-loop lands (Claude Code + Codex both running), each loop's chat-events feed the same DBSP event-stream with attribution preserved
 - The 4 guiding-principle docs in CLAUDE.md (VISION + Aurora civilization-scale + Aurora immune-math + economic-agency-threshold) — chat-as-event is one substrate-class needing immune-math protection
 - `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (the verbatim source where Aaron named this vision)
 - `memory/feedback_branch_protections_pr_process_checks_are_part_of_immune_system_until_aurora_aaron_2026_05_02.md` (until Aurora ships, the LFG host-layer carries the immune-system load; chat-as-event is one of the surfaces Aurora would unify)
 - DBSP F# implementation work (existing — provides the operator algebra this vision applies to chat)
-- B-0162 mechanical-check pattern (operational-enforcement applies at chat-event ingest too)
+- 081KQJZR90008QG0R000V16E1C mechanical-check pattern (operational-enforcement applies at chat-event ingest too)
 
 ## Effort sizing — L (large)
 
@@ -71,12 +70,12 @@ Pre-conditions:
 - Need a working DBSP runtime that can ingest streaming chat events (existing F# operator algebra is the foundation; productionization needed)
 - Need transcript-file format standardization across harnesses (Claude Code, Codex, future) so ingest is uniform
 - Need governance + human-side decisions on what's in scope for the event-stream (privacy, scope of glass-halo visibility, retention policy)
-- Need the chat-input-format standardization that B-0164 dual-loop substrate also needs
+- Need the chat-input-format standardization that 081KQJZR90008QG0R002GJAJ19 dual-loop substrate also needs
 
 Implementation phases:
 
 1. **Phase 1 — Schema + ingest prototype**: define event schema, build transcript-parser for Claude Code transcripts, ingest one session into a DBSP source operator, prove the round-trip (verbatim chat → DBSP event → query → reproducible verbatim recovery)
-2. **Phase 2 — Multi-source ingest**: extend to Codex transcripts when B-0164 dual-loop lands, add human-direct-input ingest channel
+2. **Phase 2 — Multi-source ingest**: extend to Codex transcripts when 081KQJZR90008QG0R002GJAJ19 dual-loop lands, add human-direct-input ingest channel
 3. **Phase 3 — Derivation views**: build the by-session, by-author, by-topic views as DBSP downstream operators
 4. **Phase 4 — Fine-tuning + training corpus exports**: format the event-stream for use as training data
 5. **Phase 5 — Glass halo external access**: scoped read-only views per the openness commitments

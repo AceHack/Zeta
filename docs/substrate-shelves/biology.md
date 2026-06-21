@@ -1,21 +1,21 @@
 ---
-backlog: B-0045.1
-parent: B-0045
+backlog: 081KR50HA0008QG0R001Q071YY
+parent: 081KQ3HBZ0008QG0R0012P9EBM
 stage: 1 (reading-list scaffold)
 date: 2026-05-09
 status: catalog-only (Stage 2 resonance scan not yet applied)
-register: F1/F2/F3 + yin-yang ON (not applied at Stage 1; see Stage 2 row B-0045.2)
+register: F1/F2/F3 + yin-yang ON (not applied at Stage 1; see Stage 2 row 081KQ3HBZ0008QG0R0012P9EBM.2)
 ---
 
 # Biology — substrate shelf (Stage 1)
 
 **Stage 1 = bibliographic catalog only.** No F1/F2/F3 analysis and no yin-yang
-composition-discipline check have been applied yet. Those are Stage 2 (B-0045.2).
+composition-discipline check have been applied yet. Those are Stage 2 (081KQ3HBZ0008QG0R0012P9EBM.2).
 Every candidate listed here is a probe, not an admission. Additions are additive and
 retractibly-rewriteable.
 
-Biology is the inaugural increment of the B-0045 universal-substrate-knowledge sweep.
-See B-0045 for the full rationale: retraction-native machinery at the cellular layer,
+Biology is the inaugural increment of the 081KQ3HBZ0008QG0R0012P9EBM universal-substrate-knowledge sweep.
+See 081KQ3HBZ0008QG0R0012P9EBM for the full rationale: retraction-native machinery at the cellular layer,
 autopoiesis resonance with the factory's operator algebra, and homeostasis analogs
 for the measurable-alignment trajectory.
 
@@ -25,13 +25,13 @@ for the measurable-alignment trajectory.
 
 **Humberto Maturana + Francisco Varela** — *Autopoiesis and Cognition* (1980); *The Tree of Knowledge* (1987).
 Autopoiesis: a system that produces and maintains its own components. The self-reference
-substrate: biological cognition as structurally-coupled, not representational. B-0045
+substrate: biological cognition as structurally-coupled, not representational. 081KQ3HBZ0008QG0R0012P9EBM
 names this as a key candidate for factory-operator-algebra resonance.
 
 **Stuart Kauffman** — *The Origins of Order* (1993); *At Home in the Universe* (1995).
 Autocatalytic sets as the origin-of-life candidate; order-for-free as a complement
 to natural selection. Complex adaptive systems at the boundary between order and chaos.
-B-0045 names autocatalytic sets directly as a Stage-1 candidate.
+081KQ3HBZ0008QG0R0012P9EBM names autocatalytic sets directly as a Stage-1 candidate.
 
 **Manfred Eigen** — *Hypercycle: A Principle of Natural Self-Organization* (1979, with Schuster).
 Hypercycles as self-replicating molecular networks. Precursor to modern origin-of-life theory.
@@ -61,7 +61,7 @@ wholes: genes → chromosomes → eukaryotes → multicellularity → societies.
 involves a shift in how information is stored and transmitted. A structural account of
 biological unification moves.
 
-**Lynn Cavelier** — lineage-tracking as retraction-log. [Note: B-0045 names this candidate;
+**Lynn Cavelier** — lineage-tracking as retraction-log. [Note: 081KQ3HBZ0008QG0R0012P9EBM names this candidate;
 source identification is a Stage-2 task. Possible reference: Thomas Cavalier-Smith,
 *The Origin of Eukaryote and Archaebacterial Cells* (1987) and subsequent kingdom-level
 phylogeny revisions — known for systematic retraction and revision of eukaryote
@@ -73,7 +73,7 @@ classification.] Stage 2 to confirm exact source.
 
 **Lewis Wolpert** — *The Triumph of the Embryo* (1991); *Principles of Development* (2002, with others).
 Positional information: cells acquire identity by reading their position in the embryo.
-Fate-specification as a coordinate-assignment problem. B-0045 names this as
+Fate-specification as a coordinate-assignment problem. 081KQ3HBZ0008QG0R0012P9EBM names this as
 "operator-assignment" resonance candidate.
 
 **Conrad Hal Waddington** — *The Strategy of the Genes* (1957).
@@ -149,7 +149,7 @@ Kin selection as the mathematical mechanism for cooperative behavior.
 **Denis Noble** — *The Music of Life* (2006); *Dance to the Tune of Life* (2017).
 Systems biology reframed: genes do not program organisms; organisms use genes.
 The organicist counter to gene-centrism. Noble also rehabilitated Lamarck (epigenetic
-inheritance of acquired characters). B-0045 names Noble directly.
+inheritance of acquired characters). 081KQ3HBZ0008QG0R0012P9EBM names Noble directly.
 
 **Uri Alon** — *An Introduction to Systems Biology* (2006).
 Network motifs: the small recurring circuit patterns (feedback loops, coherent
@@ -203,7 +203,7 @@ separate from bacteria. The three-domain tree of life.
 multiple papers revising eukaryote kingdom structure.
 Systematic classification and reclassification of eukaryotes. Lineage-tracking as
 a retraction-log: each revision is a dated correction of prior classification.
-[Likely the "Lynn Cavelier" candidate in B-0045 — Stage 2 to confirm.]
+[Likely the "Lynn Cavelier" candidate in 081KQ3HBZ0008QG0R0012P9EBM — Stage 2 to confirm.]
 
 ---
 
@@ -222,13 +222,13 @@ organizing principle of the nervous system.
 
 ## Stage-2 queue note
 
-The following structural-resonance probes from B-0045 are deferred to Stage 2 (B-0045.2):
+The following structural-resonance probes from 081KQ3HBZ0008QG0R0012P9EBM are deferred to Stage 2 (081KQ3HBZ0008QG0R0012P9EBM.2):
 
 - F1/F2/F3 three-filter assessment per candidate
 - Yin-yang composition-discipline check (unification-pole vs harmonious-division-pole)
 - Candidate / confirmed / failed classification per math-safety log
 - Operational-resonance index admission decisions
 
-Stage 3 (B-0045.3) will cover trade/vocational biology crossings: agriculture, animal
+Stage 3 (081KQ3HBZ0008QG0R0012P9EBM.3) will cover trade/vocational biology crossings: agriculture, animal
 husbandry, aquaculture, veterinary medicine, food science, horticulture — practitioner
 accounts, apprenticeship curricula, and public trade-school materials.

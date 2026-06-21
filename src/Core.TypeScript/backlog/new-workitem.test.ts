@@ -28,7 +28,7 @@ test("DST: same (spec, env) replays the EXACT same id (deterministic)", () => {
 
 test("frontmatter carries id/type/state/priority/slug/title/created/cross-refs", () => {
   const m = mintWorkItem(
-    { title: "Fix the login bug", type: "bug", priority: "P1", dependsOn: ["B-0956", "B-0682"] },
+    { title: "Fix the login bug", type: "bug", priority: "P1", dependsOn: ["081KSXN940008QG0R002FWR9B2", "081KS3X9Y0008QG0R000W00V73"] },
     detEnv(),
   );
   expect(m.content).toContain(`id: ${m.zetaid}`);
@@ -38,7 +38,7 @@ test("frontmatter carries id/type/state/priority/slug/title/created/cross-refs",
   expect(m.content).toContain("slug: fix-the-login-bug");
   expect(m.content).toContain('title: "Fix the login bug"');
   expect(m.content).toContain("created: 2026-06-06T"); // ISO from FIXED_MS (2026-06-06Z)
-  expect(m.content).toContain('depends_on: ["B-0956", "B-0682"]');
+  expect(m.content).toContain('depends_on: ["081KSXN940008QG0R002FWR9B2", "081KS3X9Y0008QG0R000W00V73"]');
   expect(m.content).toContain("composes_with: []");
 });
 

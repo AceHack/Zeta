@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
-// b0267-safety-ruleset.ts — one-shot migration for B-0267.
+// b0267-safety-ruleset.ts — one-shot migration for 081KR2E4K0008QG0R002NYV33T.
 //
 // Creates "Branch Safety" ruleset with deletion + non_fast_forward +
 // required_linear_history rules, then removes those rules from the
 // "Default" ruleset. If Default ends up with no rules, deletes it.
 // After API calls succeed, re-snapshots expected.json.
 //
-// Order-independent with B-0266 — reads current Default rules and
+// Order-independent with 081KR2E4K0008QG0R001VZMQBH — reads current Default rules and
 // filters rather than assuming a specific prior state.
 //
 // Usage:
@@ -80,7 +80,7 @@ const branchSafetyPayload = {
 };
 export async function main() {
     const dryRun = process.argv.includes("--dry-run");
-    console.log("B-0267: Branch Safety ruleset migration");
+    console.log("081KR2E4K0008QG0R002NYV33T: Branch Safety ruleset migration");
     console.log("========================================");
     console.log(`Target: ${REPO_SLUG} (hardcoded — this is a one-shot migration)`);
     console.log();

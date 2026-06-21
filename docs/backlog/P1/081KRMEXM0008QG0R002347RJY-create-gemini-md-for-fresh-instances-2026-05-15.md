@@ -1,6 +1,5 @@
 ---
-id: B-0538
-zetaid: 081KRMEXM0008QG0R002347RJY
+id: 081KRMEXM0008QG0R002347RJY
 priority: P1
 status: closed
 title: "Create GEMINI.md to bootstrap fresh Antigravity/Gemini instances with factory context"

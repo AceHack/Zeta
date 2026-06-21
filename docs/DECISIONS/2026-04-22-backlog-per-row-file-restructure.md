@@ -85,7 +85,7 @@ design. The substrate already in tree:
   `docs/backlog/P1/`, `docs/backlog/P2/`, `docs/backlog/P3/`,
   with `docs/backlog/README.md` carrying the schema.
 - **One example row already migrated:**
-  `docs/backlog/P2/B-0001-example-schema-self-reference.md` —
+  `docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md` —
   proves the round-trip works.
 
 What is **not** yet in tree:
@@ -440,7 +440,7 @@ discipline fails without this restructure.
    reading order. Should we instead allocate IDs by date
    ascending so older rows get lower numbers? Aaron's call.
    (Default if no answer: newest-first within tier; matches
-   the existing single example file `B-0001-...`.)
+   the existing single example file `081KPYCJH0008QG0R003MDS51N-...`.)
 
    <!-- AceHack-side earlier framing of this question (preserved):
    ID scheme — is `<slug>-<date>.md` the right filename

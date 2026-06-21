@@ -1,6 +1,5 @@
 ---
-id: B-0054.2
-zetaid: 081KR7JY10008QG0R0018G7ZQV
+id: 081KR7JY10008QG0R0018G7ZQV
 priority: P2
 status: closed
 title: "Video-game priority tier — Brütal Legend + Final Fantasy VI/VII"
@@ -18,13 +17,13 @@ tags: [pop-culture, video-games, brutal-legend, final-fantasy, double-fine, squa
 
 ---
 
-# B-0054.2 — Video-game priority tier: Brütal Legend + Final Fantasy VI/VII
+# 081KR7JY10008QG0R0018G7ZQV — Video-game priority tier: Brütal Legend + Final Fantasy VI/VII
 
 ## What
 
 Extend `tools/resonance/media-catalog-schema.ts` with three new entries
 (MR-005 through MR-007) covering the video-game priority seeds Aaron
-explicitly marked higher-than-rest in B-0054:
+explicitly marked higher-than-rest in 081KQ3HBZ0008QG0R003V6B2ME:
 
 - **MR-005**: Brütal Legend (Double Fine / Tim Schafer, 2009)
   — world-as-artistic-substrate generative-ground mechanic
@@ -43,19 +42,19 @@ schema validation as MR-001 through MR-004.
 - wake-time-substrate: `tools/resonance/media-catalog-schema.ts` is the
   canonical accumulator for MR-NNN entries; no separate video-game catalog exists.
 - skill-router: no existing `operational-resonance` skill; phenomenon documented
-  in memory files only (same finding as B-0054.1 pre-start pass).
+  in memory files only (same finding as 081KR2E4K0008QG0R0003J0FB8 pre-start pass).
 - on-disk: no prior `tools/resonance/video-games-*` file; MR-NNN sequence
   currently ends at MR-004.
-- Otto-364: no upstream art; factory idiom is bespoke per B-0054.1.
+- Otto-364: no upstream art; factory idiom is bespoke per 081KR2E4K0008QG0R0003J0FB8.
 - lost-files: `tools/hygiene/LOST-FILES-LOCATIONS.md` — no orphaned
   video-game catalog artifacts.
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.1]` — B-0054.1 landed the schema and MR-001..004;
+- `depends_on: [081KR2E4K0008QG0R0003J0FB8]` — 081KR2E4K0008QG0R0003J0FB8 landed the schema and MR-001..004;
   this slice extends the same file.
-- `composes_with:` B-0054.3 (Mario + Genshin), B-0054.4 (Double Fine sub-thread,
-  Broken Age + Brütal Legend narrative), B-0042 (Bungie corpus) — all non-blocking.
+- `composes_with:` 081KR7JY10008QG0R001TRGC72 (Mario + Genshin), 081KR7JY10008QG0R0004KP70A (Double Fine sub-thread,
+  Broken Age + Brütal Legend narrative), 081KQ3HBZ0008QG0R002GDRFS5 (Bungie corpus) — all non-blocking.
 
 ## Deliverable
 
@@ -73,7 +72,7 @@ Updated `tools/resonance/media-catalog-schema.ts`:
 - [x] `--validate` exits 0
 - [x] MR-005 is `candidate` (F2 partial for Brütal Legend per backlog note)
 - [x] MR-006 and MR-007 are `confirmed` with non-empty counterexampleAttempts
-- [x] B-0054.2 backlog row updated to `status: closed` in resolution
+- [x] 081KR7JY10008QG0R0018G7ZQV backlog row updated to `status: closed` in resolution
 
 ## Resolution
 
@@ -85,7 +84,7 @@ MR-007 (FFVII Lifestream/Mako/Cloud-memory, confirmed — three independent F2 g
 
 ## Composes with
 
-- B-0054.1 (schema + MR-001..004 already landed)
-- B-0054.4 (Double Fine sub-thread — Brütal Legend + Broken Age)
-- B-0042 (Bungie corpus, separate priority seed)
+- 081KR2E4K0008QG0R0003J0FB8 (schema + MR-001..004 already landed)
+- 081KR7JY10008QG0R0004KP70A (Double Fine sub-thread — Brütal Legend + Broken Age)
+- 081KQ3HBZ0008QG0R002GDRFS5 (Bungie corpus, separate priority seed)
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`

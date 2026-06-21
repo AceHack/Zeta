@@ -33,17 +33,17 @@ Addresses 3 unresolved P1 Copilot threads on now-merged [PR #3636](https://githu
 
 **Threads 2 + 3** (research doc + memory file): the phrase "observer-relative non-monotonicity" introduced in PR #3636's Step 1.5 substrate contradicts the doc's own line 85 disclaimer that the non-classical move is observer-context shift, NOT non-monotonicity within a single context. The precise obstruction (correctly identified by the reviewer) is that `A` is **not a closure operator** — `p ≤ A(p)` is not assumed. Both files reworded to name the closure-operator failure as the obstruction, with an explicit note distinguishing it from non-monotonicity-within-a-context.
 
-**Thread 1** (B-0544 backlog row): `last_updated` frontmatter was not bumped on PR #3636's content edit. Schema violation per `tools/backlog/README.md:57-70`. Bumped to `2026-05-16`.
+**Thread 1** (081KRMEXM0008QG0R003YWZC21 backlog row): `last_updated` frontmatter was not bumped on PR #3636's content edit. Schema violation per `tools/backlog/README.md:57-70`. Bumped to `2026-05-16`.
 
-**Preemptive (not flagged but same class)**: B-0543 also had a content edit in [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626) without a `last_updated` bump. Same schema violation; bumped preemptively.
+**Preemptive (not flagged but same class)**: 081KRMEXM0008QG0R002YSPW1X also had a content edit in [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626) without a `last_updated` bump. Same schema violation; bumped preemptively.
 
 ## Files changed
 
 ```
 docs/research/2026-05-15-qg-isomorphism-step-1-formalize-...md  +8/-4
 memory/feedback_otto_qg_isomorphism_step_1_formalize_...md  +1/-1
-docs/backlog/P2/B-0544-...md  +1/-1 (last_updated)
-docs/backlog/P2/B-0543-...md  +1/-1 (last_updated, preemptive)
+docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-...md  +1/-1 (last_updated)
+docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-...md  +1/-1 (last_updated, preemptive)
 ```
 
 ## Test plan

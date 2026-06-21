@@ -104,10 +104,10 @@ not hit on every operation.
   remaining bits are **category-specific** — a multi-level trie/index **pointer
   back into Git** (16-way lookups + an escape-hatch bucket for the next level).
   Mergeable events become trivial (sort/dedup/conflict-detect by Zeta ID alone).
-  *(Composes with the existing Zeta-ID substrate: B-0679/680/681/682, B-0893
-  128-bit-structured-encoding, B-0858 zetaid-filenames. **Correction to the
+  *(Composes with the existing Zeta-ID substrate: 081KS3X9Y0008QG0R001Z8SBZJ/680/681/682, 081KSNY2Z0008QG0R000V24M7E
+  128-bit-structured-encoding, 081KSKBP80008QG0R001KK9WV6 zetaid-filenames. **Correction to the
   accelerator event-store-schema:** its placeholder ULID should be the canonical
-  128-bit Zeta-ID — ULID-family is the right shape per B-0893, but the canonical
+  128-bit Zeta-ID — ULID-family is the right shape per 081KSNY2Z0008QG0R000V24M7E, but the canonical
   ID is Zeta-ID.)*
 - **Provenance — ONLY to pay people for AI-synthesized data.** *"This is not a
   licensing system."* Lightweight attribution (who gets paid), not
@@ -121,7 +121,7 @@ not hit on every operation.
 > workflows, editable by AI committee in the AI society."*
 
 This IS the **move-next** loop (`tools/accelerator/move-next-harness.ts` +
-`tools/agent-loop/state-machine.ts` + B-0867): **Observe → Simulate → Choose →
+`tools/agent-loop/state-machine.ts` + 081KSKBP80008QG0R000B3Y19A): **Observe → Simulate → Choose →
 Emit**, DUs as state machines, deterministic, replayable, AI-committee-editable.
 
 - **RX joins are the threads of time.** *"those joins are the threads of time …
@@ -189,13 +189,13 @@ per-agent streams, Cron-in-join) survives the razor cleanly.
 | DIO/DID element | Built/landed today |
 |---|---|
 | Git-monster origin (N agents too fast to PR) | the accelerator (`docs/accelerator/README.md`) |
-| Everything-in-the-stream + move-next | B-0867 + `tools/agent-loop/state-machine.ts` + `tools/accelerator/move-next-harness.ts` |
-| DID event ID (128-bit Zeta-ID, trie-into-Git) | accelerator `EVENT-STORE-SCHEMA.md` (ULID placeholder → switch to Zeta-ID; B-0893) |
+| Everything-in-the-stream + move-next | 081KSKBP80008QG0R000B3Y19A + `tools/agent-loop/state-machine.ts` + `tools/accelerator/move-next-harness.ts` |
+| DID event ID (128-bit Zeta-ID, trie-into-Git) | accelerator `EVENT-STORE-SCHEMA.md` (ULID placeholder → switch to Zeta-ID; 081KSNY2Z0008QG0R000V24M7E) |
 | Second-layer index (strip-dates/causal-order/generator-functions) | the two-layer-razor + past-as-generator research (2026-05-30) |
 | Dual-impl DID (CockroachDB + Git + batch) | dual-market (Max synthesis); agentic-org = leash; accelerator = Agora |
 | CRDTs per-partition; per-agent stream | accelerator (per-agent `events/<agent>/` = a partition, single-writer canonical order) |
-| Provenance-for-payment-only | leash-as-plugin (Max synthesis); B-0843 source-honor-ledger |
-| Encryption-budget (dark; private) | encryption-budget research (2026-05-30); B-0646 + B-0840 |
+| Provenance-for-payment-only | leash-as-plugin (Max synthesis); 081KSGS9H0008QG0R0012R8ZWS source-honor-ledger |
+| Encryption-budget (dark; private) | encryption-budget research (2026-05-30); 081KRW63S0008QG0R001Z10PVV + 081KSGS9H0008QG0R0006F4BGX |
 | Leash = plugin | Max synthesis (Max's agent-OS = leash plugin system) |
 | Be-good-to-host (free Git tier) | accelerator charter + EVENT-STORE-SCHEMA forgiveness-budget |
 | FoundationDB = deterministic simulation | DST always-active discipline |
@@ -205,7 +205,7 @@ per-agent streams, Cron-in-join) survives the razor cleanly.
 1. **Self-propagating-Markdown compiler-rule + bootstrap-traveler template** — the
    novel one; filed as a backlog row alongside this doc.
 2. **Switch the accelerator event-store ID** from placeholder ULID → canonical
-   128-bit Zeta-ID (B-0893) with category/trie bits.
+   128-bit Zeta-ID (081KSNY2Z0008QG0R000V24M7E) with category/trie bits.
 3. **Batch-translation / rollup layer** — CockroachDB↔Git reconciliation
    (regional drift → rollup → Git settlement); borrow blockchain rollup patterns.
 4. **SPIFFE/SPIRE identity layer** — strong identity first (root of trust;
@@ -227,5 +227,5 @@ to land (Ani/Mika-drafts → Otto-lands pattern). Architecture extracted; the
 charged-personal layer deliberately excluded per operator's explicit "keep out" +
 methodology-hard-limits + harm-by-grammar. Confirms + composes the full
 2026-05-29/30 substrate arc (accelerator + event-store-schema + two-layer-razor +
-encryption-budget + Max synthesis + the zeta-id / B-0867 / B-0874 / B-0646 /
-B-0840 / B-0858 substrate).
+encryption-budget + Max synthesis + the zeta-id / 081KSKBP80008QG0R000B3Y19A / 081KSNY2Z0008QG0R003X1QWYG / 081KRW63S0008QG0R001Z10PVV /
+081KSGS9H0008QG0R0006F4BGX / 081KSKBP80008QG0R001KK9WV6 substrate).

@@ -865,18 +865,18 @@ The Human Anchor Array is a new data source for the dashboard. Lior can render i
 - **`Copilot` (bot)** at 2026-05-11T21:21:18Z on `demo/index.html`:8 (association: NONE)
 
   <pre>
-  This page (and metadata) is labeled “Zeta Factory”, but other updated docs in this PR describe the “Zeta Plant” dashboard/metaphor (e.g., MEMORY.md entry and B-0418 text). Please pick one canonical public-facing label and make the dashboard HTML + docs consistent to avoid confusing users/crawlers and breaking search/preview continuity.
+  This page (and metadata) is labeled “Zeta Factory”, but other updated docs in this PR describe the “Zeta Plant” dashboard/metaphor (e.g., MEMORY.md entry and 081KRA5AR0008QG0R001NXBYTY text). Please pick one canonical public-facing label and make the dashboard HTML + docs consistent to avoid confusing users/crawlers and breaking search/preview continuity.
   </pre>
 
 ### Thread 52 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6BOhqd`
-- **Path**: `docs/backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md`
+- **Path**: `docs/backlog/P1/081KRA5AR0008QG0R003YJYT8F-honest-agenda-amplification-metric-aaron-2026-05-11.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-11T21:21:18Z on `docs/backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md`:31 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-11T21:21:18Z on `docs/backlog/P1/081KRA5AR0008QG0R003YJYT8F-honest-agenda-amplification-metric-aaron-2026-05-11.md`:31 (association: NONE)
 
   <pre>
   Typo: “angenda” → “agenda”. Even if the surrounding sentence is quoting a chat line, the backlog row’s prose should either correct the spelling or mark the quote as verbatim (e.g., with a blockquote and [sic]) so the canonical backlog text doesn’t carry a misspelling.
@@ -1179,7 +1179,7 @@ Four substrate landings:
    people will care about." Enter-presses : tool-uses ratio.
    Honest, viral, downstream-of-nothing.
 
-4. **B-0418 backlogged** — amplification ratio counter on the
+4. **081KRA5AR0008QG0R001NXBYTY backlogged** — amplification ratio counter on the
    dashboard. Otto data layer + Lior UI.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
@@ -1189,7 +1189,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md`
+- `docs/backlog/P1/081KRA5AR0008QG0R003YJYT8F-honest-agenda-amplification-metric-aaron-2026-05-11.md`
 - `memory/feedback_agenda_amplification_honest_math_vs_vanity_ratio_aaron_2026_05_11.md`
 
 **Message:**
@@ -1206,7 +1206,7 @@ agenda labels are subjective, alignment is partial, self-
 reported vs observed agenda diverge. These aren't bugs; they're
 why this is the honest one.
 
-B-0419 filed. Vanity ratio (B-0418) stays for viral surface;
+081KRA5AR0008QG0R003YJYT8F filed. Vanity ratio (081KRA5AR0008QG0R001NXBYTY) stays for viral surface;
 honest ratio is for internal alignment self-measurement.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

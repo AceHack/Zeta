@@ -27,7 +27,7 @@
 
 ## Description
 
-Decision-free forward step while C/D design is pending. The **durable** observe path (encode → delta-log → `DurableObserve.step` = `Algebra.simulate` → fold, plus a crash→`ResumeAsync` recovery) now replays the canonical `tools/observe/golden-vectors.json` fixture to the TS `expectedFinalState`. Binds Bridge B to the same B-0944 cross-language conformance fixture the four oracles (TS/F#/C#/Rust) share — not just to `Algebra.fold`. 4 golden tests green.
+Decision-free forward step while C/D design is pending. The **durable** observe path (encode → delta-log → `DurableObserve.step` = `Algebra.simulate` → fold, plus a crash→`ResumeAsync` recovery) now replays the canonical `tools/observe/golden-vectors.json` fixture to the TS `expectedFinalState`. Binds Bridge B to the same 081KSV2WD0008QG0R00051XS0N cross-language conformance fixture the four oracles (TS/F#/C#/Rust) share — not just to `Algebra.fold`. 4 golden tests green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -1,6 +1,5 @@
 ---
-id: B-0915
-zetaid: 081KSNY2Z0008QG0R002BNQVE1
+id: 081KSNY2Z0008QG0R002BNQVE1
 title: CliffordWorld impl target — System.Numerics SIMD + LINQ hardware/GPU-accelerated substrate-engineering substrate (the human maintainer, 2026-05-28)
 status: open
 priority: P2
@@ -60,7 +59,7 @@ Substrate-engineering substrate decomposition:
   optimized per host architecture
 - **Composability**: LINQ expression trees ARE substrate-engineering
   substrate; lowering to GPU kernels gives composability for free
-- **Cross-substrate triangulation**: composes with B-0428 F# fork (real HKT
+- **Cross-substrate triangulation**: composes with 081KRFA460008QG0R0018SN61J F# fork (real HKT
   over Clifford planned); both layers benefit from shared SIMD/GPU substrate
 - **dotnet/infer as prior-art proof-point**: Microsoft already ships symbolic-
   probabilistic Bayesian substrate in .NET; CliffordWorld would extend the
@@ -115,15 +114,15 @@ Substrate-engineering substrate decomposition:
 **Substrate-engineering substrate FOUND (in-conversation grep + WebSearch
 2026-05-28; the human maintainer asked "did you see anything in substrate?" / "or the web?"):**
 
-In-repo substrate (TODAY's Amara ferry; PR #5709, B-0897/B-0898/B-0900):
+In-repo substrate (TODAY's Amara ferry; PR #5709, 081KSNY2Z0008QG0R002SZZ5Y0/081KSNY2Z0008QG0R003WCDQTC/081KSNY2Z0008QG0R001G7C89T):
 
 - `memory/amara/conversations/2026-05-28-amara-measure-as-bridge-infer-net-belief-update-casimir-like-review-walls-bell-contextuality-distributed-clusters-aaron-forwarded.md`
   lays down stack composition: *"Z-set = retraction-native evidence /
   Infer.NET = belief propagation / Clifford = oriented geometry / rotors
   / commitments / trajectories / Workflow circuit = time-ordered graph"*
-- Composes with B-0895 (Clifford grade-decomposition) + B-0896
-  (categorical-Clifford bridge) + B-0897 (Persist-as-bridge) + B-0898
-  (Measure-as-bridge) + B-0900 (Bell-like distributed-cluster
+- Composes with 081KSNY2Z0008QG0R002FX66H0 (Clifford grade-decomposition) + 081KSNY2Z0008QG0R000YH2SPE
+  (categorical-Clifford bridge) + 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) + 081KSNY2Z0008QG0R003WCDQTC
+  (Measure-as-bridge) + 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster
   contextuality test)
 - `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   earlier Clifford first-principles substrate
@@ -164,7 +163,7 @@ with constructive proof as rationale.
 
 **Substrate-engineering substrate-honest recognition**: the human maintainer's paper-hint
 was likely pointing at **the Amara Persist-as-bridge substrate from today's
-Amara ferry (B-0897, PR #5709)** — not (only) at the external Fauser
+Amara ferry (081KSNY2Z0008QG0R002SZZ5Y0, PR #5709)** — not (only) at the external Fauser
 Hopf-gebra papers. Both readings compose; the Persist reading is the
 operational form, the Hopf-gebra reading is the formal-mathematical form.
 
@@ -174,7 +173,7 @@ applied at substrate-engineering-substrate scope):
 | Reading | Substrate | Status |
 |---|---|---|
 | **(W) Web-formal**: Fauser Clifford Hopf-gebra antipode `m ∘ (S ⊗ id) ∘ Δ = ε·1` = mathematical retraction structure | External (arxiv q-alg/9709016, math/0011263) | Reference substrate |
-| **(P) Persist-operational**: Amara Persist-as-bridge = persistent review-feedback creating Clifford-space rotor-walls; review boundaries shape allowed output modes (Casimir-like effect); error-class collapse = retraction substrate operating in time | Already shipped (B-0897, PR #5709) | **Load-bearing operational substrate** |
+| **(P) Persist-operational**: Amara Persist-as-bridge = persistent review-feedback creating Clifford-space rotor-walls; review boundaries shape allowed output modes (Casimir-like effect); error-class collapse = retraction substrate operating in time | Already shipped (081KSNY2Z0008QG0R002SZZ5Y0, PR #5709) | **Load-bearing operational substrate** |
 | **(C) Composition**: (P) IS the operational form of what (W) formalizes mathematically | Framework substrate composition | Substrate-engineering target |
 
 **Operator-quoted Amara substrate that grounds (P)**:
@@ -195,14 +194,14 @@ The substrate-engineering substrate-recognition:
 - Future-generators no longer freely explore the collapsed region = the
   antipode's cancellation operation applied to the generation trajectory
 - Output distribution shows pressure difference (testable engineering
-  claim per B-0899 Casimir-like review-walls + B-0900 Bell-like contextuality)
+  claim per 081KSNY2Z0008QG0R001ZKE8R2 Casimir-like review-walls + 081KSNY2Z0008QG0R001G7C89T Bell-like contextuality)
 
-**Why this matters for B-0915 Slice D resolution**:
+**Why this matters for 081KSNY2Z0008QG0R002BNQVE1 Slice D resolution**:
 
 The substrate-engineering work simplifies further:
 
 - **Don't need to import** Fauser Hopf-gebra machinery into Zeta
-- **Already have** the operational antipode substrate (B-0897 Persist-as-bridge + B-0898 Measure-as-bridge + B-0899 Casimir-like walls + B-0900 Bell-like contextuality)
+- **Already have** the operational antipode substrate (081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge + 081KSNY2Z0008QG0R003WCDQTC Measure-as-bridge + 081KSNY2Z0008QG0R001ZKE8R2 Casimir-like walls + 081KSNY2Z0008QG0R001G7C89T Bell-like contextuality)
 - **Slice D.1 reformulated**: prove the Persist-as-bridge substrate IS-AN-INSTANCE-OF the Hopf antipode pattern; cite Fauser as formal-mathematical anchor; ship Persist as operational instantiation
 - **Vote ordering flip becomes constructive via Persist substrate**: the (P) reading IS the proof-of-concept that (B) fully-isomorphic holds operationally; vote ordering can flip to `[1, 0]` based on substrate the framework already ships
 
@@ -218,12 +217,12 @@ constructive through the Persist-as-bridge instantiation.
 
 **Composes additionally with**:
 
-- B-0897 Persist-as-bridge (Amara TODAY) — IS the operational substrate
-- B-0898 Measure-as-bridge (Amara TODAY) — sibling derived bridge
-- B-0899 Casimir-like review-walls (Amara TODAY) — the pressure-difference test
-- B-0900 Bell-like distributed-cluster contextuality (Amara TODAY) — empirical test
-- B-0895 Clifford grade-decomposition (substrate base)
-- B-0896 categorical-Clifford bridge (formal-mathematical bridge)
+- 081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge (Amara TODAY) — IS the operational substrate
+- 081KSNY2Z0008QG0R003WCDQTC Measure-as-bridge (Amara TODAY) — sibling derived bridge
+- 081KSNY2Z0008QG0R001ZKE8R2 Casimir-like review-walls (Amara TODAY) — the pressure-difference test
+- 081KSNY2Z0008QG0R001G7C89T Bell-like distributed-cluster contextuality (Amara TODAY) — empirical test
+- 081KSNY2Z0008QG0R002FX66H0 Clifford grade-decomposition (substrate base)
+- 081KSNY2Z0008QG0R000YH2SPE categorical-Clifford bridge (formal-mathematical bridge)
 
 If a retraction-in-Clifford paper exists + maps to DBSP's Z-set retraction
 substrate, **the (B) fully-isomorphic reading becomes constructive** and
@@ -271,7 +270,7 @@ exist OR not to construct the isomorphism, the vote ordering stays
 - PR #5776 world-hierarchy substrate (the human maintainer (2026-05-28) vote ordering)
 - PR #5775 git-world substrate (GitWorld + GitHubWorld; sibling specialization
   at the git-layer of the hierarchy)
-- B-0428 F# fork for AI safety (composes at language-runtime substrate-engineering layer)
+- 081KRFA460008QG0R0018SN61J F# fork for AI safety (composes at language-runtime substrate-engineering layer)
 
 ## Acceptance criteria
 

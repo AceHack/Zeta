@@ -1,17 +1,17 @@
-// zeta-creds-manifest.ts — declarative credential-manifest schema for B-0852.
+// zeta-creds-manifest.ts — declarative credential-manifest schema for 081KSKBP80008QG0R003AX2A69.
 //
-// B-0852 sub-row .5 (smallest pure-data substrate slice). No runtime deps;
+// 081KSKBP80008QG0R003AX2A69 sub-row .5 (smallest pure-data substrate slice). No runtime deps;
 // pure types + parser + validator. Composes with:
-//   - tools/installer/zeta-creds-crypto.ts (B-0852.1; cipher layer)
-//   - tools/installer/zeta-creds-persist.ts (B-0852.2; consumes manifest)
-//   - tools/installer/zeta-creds-restore.ts (B-0852.2; consumes manifest)
+//   - tools/installer/zeta-creds-crypto.ts (081KDWYDBW008QG0R001H6HTJK; cipher layer)
+//   - tools/installer/zeta-creds-persist.ts (081KDWYDBW008QG0R0031MSQHY; consumes manifest)
+//   - tools/installer/zeta-creds-restore.ts (081KDWYDBW008QG0R0031MSQHY; consumes manifest)
 //   - full-ai-cluster/usb-nixos-installer/zeta-creds-manifest.yaml (canonical deployed copy)
 //
 // The discipline (Aaron 2026-05-27): "the keep credentials options we should
 // declare each credential we need and save and restore so it's not so
 // imparative too." Adding a new credential type = manifest edit, NOT a code
 // change. Persist/restore code reads the manifest + iterates.
-/** The default manifest shipped with B-0852 Phase 1. */
+/** The default manifest shipped with 081KSKBP80008QG0R003AX2A69 Phase 1. */
 export const DEFAULT_MANIFEST = {
     schemaVersion: 1,
     credentials: [
@@ -20,7 +20,7 @@ export const DEFAULT_MANIFEST = {
             paths: ["~/.config/gh/hosts.yml"],
             personaScoped: false,
             required: true,
-            notes: "GitHub CLI token + host config. Per-AI identity (B-0847) future may flip personaScoped:true.",
+            notes: "GitHub CLI token + host config. Per-AI identity (081KSGS9H0008QG0R002T0XQ50) future may flip personaScoped:true.",
         },
         {
             id: "claude",
@@ -78,7 +78,7 @@ export const DEFAULT_MANIFEST = {
             required: false,
             notes: "Saved answers to install prompts (Aaron 2026-06-07): reused across installs so previously-answered " +
                 "questions are NOT re-asked — UNLESS a new question appears, or the operator chooses to reanswer / a " +
-                "'fresh' reformat-from-scratch is selected (B-0891 scenario). Retention ties to install mode: " +
+                "'fresh' reformat-from-scratch is selected (081KSNY2Z0008QG0R0008PN7RQ scenario). Retention ties to install mode: " +
                 "Live/retain reuses; fresh/Erase re-prompts.",
         },
     ],

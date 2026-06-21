@@ -29,7 +29,7 @@
 
 ## Summary
 
-Tick 1924Z. Caught cross-agent ID-allocation collision on Lior's [PR #3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545) (proposes \`B-0532\` + \`B-0533\` already taken on main). Posted [informational comment](https://github.com/Lucent-Financial-Group/Zeta/pull/3545#issuecomment-4462766957) with renumbering data; did not gate the review.
+Tick 1924Z. Caught cross-agent ID-allocation collision on Lior's [PR #3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545) (proposes \`081KRMEXM0008QG0R003FZNK3E\` + \`081KRMEXM0008QG0R000K25MXS\` already taken on main). Posted [informational comment](https://github.com/Lucent-Financial-Group/Zeta/pull/3545#issuecomment-4462766957) with renumbering data; did not gate the review.
 
 ## Test plan
 

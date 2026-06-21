@@ -1,6 +1,5 @@
 ---
-id: B-1031
-zetaid: 081KTZ4EF0008QG0R002WVTMMJ
+id: 081KTZ4EF0008QG0R002WVTMMJ
 title: DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change
 priority: P2
 status: done
@@ -10,7 +9,7 @@ created: 2026-06-13
 owner: open (needs all four toolchains verified in one pass — not an autonomous-tick change)
 ---
 
-# B-1031 — DRW should CLIP at edges, not wrap (greenfield-correct, treaty-coordinated)
+# 081KTZ4EF0008QG0R002WVTMMJ — DRW should CLIP at edges, not wrap (greenfield-correct, treaty-coordinated)
 
 Aaron 2026-06-13: "do the right long-term thing — we are greenfield, we don't have to worry about
 backward compatibility yet, just us." The right long-term DRW semantic is the original COSMAC VIP:

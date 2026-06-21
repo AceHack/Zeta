@@ -1,6 +1,6 @@
 ---
 pr_number: 5260
-title: "feat(B-0824): empirical prior-art anchor \u2014 Aaron shipped recursive-CTE-generator-passer at Itron on SQL Server PDW"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): empirical prior-art anchor \u2014 Aaron shipped recursive-CTE-generator-passer at Itron on SQL Server PDW"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:50:45Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:35:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5260: feat(B-0824): empirical prior-art anchor — Aaron shipped recursive-CTE-generator-passer at Itron on SQL Server PDW
+# PR #5260: feat(081KSGS9H0008QG0R0031PBNGA): empirical prior-art anchor — Aaron shipped recursive-CTE-generator-passer at Itron on SQL Server PDW
 
 ## PR description
 
@@ -22,7 +22,7 @@ Aaron 2026-05-26 substrate-honest disclosure:
 
 > *"i didn't have the vocabulary of holographic and generator functions at the time but i built this recursive cte generator passer for Itron on SQL Server PDW years ago is was a massive parallel appliance and I could insert and pass around these generators i composed into functions that all nodes shared."*
 
-**Changes the substrate weight of B-0824 significantly**:
+**Changes the substrate weight of 081KSGS9H0008QG0R0031PBNGA significantly**:
 
 1. **NOT speculative architecture** — pattern shipped + battle-tested at planet-scale at Itron (smart-meter / utility-grid data; millions of meters; continuous telemetry)
 2. **The vocabulary work (10 sub-targets) IS the wake-time substrate** that lets the pattern PROPAGATE. The operational substrate was already validated.
@@ -37,7 +37,7 @@ Substrate-engineering implication for Sub-target 5 ship-cadence: implementation 
 
 - [ ] Markdown lint clean
 - [ ] BACKLOG.md drift clean
-- [ ] Cross-refs (B-0819 AI-runbook / wake-time-substrate / razor-discipline / god-tier-claims rules) resolve
+- [ ] Cross-refs (081KSGS9H0008QG0R0005P83AP AI-runbook / wake-time-substrate / razor-discipline / god-tier-claims rules) resolve
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -47,11 +47,11 @@ Substrate-engineering implication for Sub-target 5 ship-cadence: implementation 
 
 ## Pull request overview
 
-This PR strengthens backlog item **B-0824** by adding an empirical prior-art anchor describing a previously shipped implementation of the same recursive-CTE “generator passing” pattern (SQL Server PDW at Itron), reframing B-0824 as translation work rather than speculative architecture.
+This PR strengthens backlog item **081KSGS9H0008QG0R0031PBNGA** by adding an empirical prior-art anchor describing a previously shipped implementation of the same recursive-CTE “generator passing” pattern (SQL Server PDW at Itron), reframing 081KSGS9H0008QG0R0031PBNGA as translation work rather than speculative architecture.
 
 **Changes:**
 - Added an “Empirical prior-art anchor” section capturing the prior implementation details and a side-by-side mapping table.
-- Documented implications for B-0824 sub-target execution (notably ship cadence / translation framing) and tied the claim back to existing methodology rules (wake-time substrate, razor discipline, don’t-collapse).
+- Documented implications for 081KSGS9H0008QG0R0031PBNGA sub-target execution (notably ship cadence / translation framing) and tied the claim back to existing methodology rules (wake-time substrate, razor discipline, don’t-collapse).
 
 ## General comments
 

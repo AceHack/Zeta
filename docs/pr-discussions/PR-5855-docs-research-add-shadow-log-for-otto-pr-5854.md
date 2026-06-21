@@ -46,4 +46,4 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 
 ### @AceHack (2026-05-28T16:06:26Z)
 
-Renamed file `shadow-log-otto-pr-5854-narration-over-action.md` → `shadow-lesson-log-otto-pr-5854-narration-over-action.md` and updated title `# Shadow Log:` → `# Shadow Lesson Log:` to match dominant pattern (~140 existing `shadow-lesson-log-*` files in docs/research/). Commit `59e26c9` landed via REST git-data API (worktree-add was ref-lock-contended; B-0615 bypass). Resolving thread + arming auto-merge.
+Renamed file `shadow-log-otto-pr-5854-narration-over-action.md` → `shadow-lesson-log-otto-pr-5854-narration-over-action.md` and updated title `# Shadow Log:` → `# Shadow Lesson Log:` to match dominant pattern (~140 existing `shadow-lesson-log-*` files in docs/research/). Commit `59e26c9` landed via REST git-data API (worktree-add was ref-lock-contended; 081KRW63S0008QG0R000EAZ9K2 bypass). Resolving thread + arming auto-merge.

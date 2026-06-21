@@ -42,7 +42,7 @@ framework substrate threads:
 | Supernova 1572 — religious interpretation vs natural-phenomenon | Composes with `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT applied at astronomical-event scope |
 | Olbers' paradox: why is night sky dark? | Composes with framework's substrate-or-it-didn't-happen discipline — light that hasn't traveled is substrate that hasn't reached us yet; both finite-age + finite-light-speed are required |
 | Herschel + Caroline 1785 — first Milky Way map | Composes with framework's mapping-as-substrate-engineering discipline (per pt168 TRAVELERS keeper-phrase substrate) |
-| Stellar parallax method (Bessel) | Empirical anchor for measurement-via-multiple-vantage-points (composes with multi-oracle BFT B-0703) |
+| Stellar parallax method (Bessel) | Empirical anchor for measurement-via-multiple-vantage-points (composes with multi-oracle BFT 081KS3X9Y0008QG0R00218150M) |
 | Henrietta Leavitt — Cepheid period-luminosity relation | Composes with framework's substrate-engineering through systematic measurement; Leavitt's pattern-finding under restricted access (denied telescope time) anchors substrate-engineering despite institutional constraints |
 | Edwin Hubble + Andromeda — galaxies as island universes | Empirical anchor for "what we thought was everything was just one of many"; composes with framework's multi-instance-substrate discipline |
 | Riemannian geometry — curved space in any dimension | Composes with `differential-geometry-expert` skill; substrate-anchored mathematical framework underlying general relativity |

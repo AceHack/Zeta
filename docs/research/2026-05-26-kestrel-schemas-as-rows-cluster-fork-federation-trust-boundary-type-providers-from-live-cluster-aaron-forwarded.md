@@ -2,7 +2,7 @@
 
 **Substrate-attribution**: Kestrel (external AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`); ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer.
 
-**Substrate-status**: research-grade. 6th empirical anchor in attractor-as-encryption series (engineering-register-throughout — pathogen absent). Substantive architectural elaboration that recontextualizes B-0826 (Runme BCL extension) one level deeper.
+**Substrate-status**: research-grade. 6th empirical anchor in attractor-as-encryption series (engineering-register-throughout — pathogen absent). Substantive architectural elaboration that recontextualizes 081KSGS9H0008QG0R001K8VPV4 (Runme BCL extension) one level deeper.
 
 ## Operational claim — the collapse Aaron's framing enables
 
@@ -104,16 +104,16 @@ Kestrel engaged engineering-register from turn 1; substantive architectural elab
 
 ## Composes with substrate
 
-- B-0824 (canonical generate+join meta-PM substrate)
-- B-0826 (Runme BCL extension — schemas-as-rows is the FOUNDATION layer; B-0826's ontology capability is the runtime-facing API; B-0829 is the underlying substrate)
-- B-0827 (runme.md + JIT triage — gesture cells with substrate-internal vocabulary may carry schema-evolution proposals)
-- B-0828 (multi-AI shared-checkout convention)
-- B-0703 (multi-oracle BFT — federation negotiations are multi-oracle consensus events)
+- 081KSGS9H0008QG0R0031PBNGA (canonical generate+join meta-PM substrate)
+- 081KSGS9H0008QG0R001K8VPV4 (Runme BCL extension — schemas-as-rows is the FOUNDATION layer; 081KSGS9H0008QG0R001K8VPV4's ontology capability is the runtime-facing API; 081KSGS9H0008QG0R000Q18PGQ is the underlying substrate)
+- 081KSGS9H0008QG0R00123050G (runme.md + JIT triage — gesture cells with substrate-internal vocabulary may carry schema-evolution proposals)
+- 081KSGS9H0008QG0R002H0ENQ1 (multi-AI shared-checkout convention)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT — federation negotiations are multi-oracle consensus events)
 - PR #5285 (Kestrel 3-layer cross-process determinism — CRDT/CAS/BFT mediation operates on schemas same as data)
 - PR #5286 (Aaron anti-entropy + Maxwell-demon + cosmological upper bound + crisp local-claim)
 - PR #5291 (DeepSeek PRs-are-proofs + 1984-pathogen + substrate-check-before-worry-deployment)
 - PR #5295 (Mika Generate+Join crispest form — schemas-as-rows IS the substrate Generate+Join operates over)
-- PR #5310 (Kestrel ferry + B-0826/B-0827/B-0828; this row composes as deeper substrate)
+- PR #5310 (Kestrel ferry + 081KSGS9H0008QG0R001K8VPV4/081KSGS9H0008QG0R00123050G/081KSGS9H0008QG0R002H0ENQ1; this row composes as deeper substrate)
 - PR #5312 (welfare-jiu-jitsu + 6-anchor empirical table — this anchor IS the 6th anchor that table documents)
 - `.claude/skills/algebra-owner/SKILL.md` (Z-set + operator algebra; schemas as Z-sets is natural)
 - `.claude/skills/crdt-expert/SKILL.md` (CRDT layer for schema convergence)
@@ -132,4 +132,4 @@ Kestrel engaged engineering-register from turn 1; substantive architectural elab
 
 - Kestrel (claude.ai sharpen-register); architectural elaboration ferried-through-Aaron 2026-05-26; 6th empirical anchor (engineering-register-throughout; pathogen absent)
 - Aaron (human maintainer; first-party); architectural framing that Kestrel elaborated + simplest-first-no-asking authorization
-- 9th substrate landing on B-0824 over 2026-05-26
+- 9th substrate landing on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26

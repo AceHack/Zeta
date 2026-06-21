@@ -30,7 +30,7 @@ describe("resolveAuthorization", () => {
     test("go-hard rescinds a prior rest instruction", () => {
         const instructions = [
             pi("aaron", "2026-05-01", 'rest now, hold the line'),
-            pi("aaron", "2026-05-03", 'go hard on B-0160'),
+            pi("aaron", "2026-05-03", 'go hard on 081KQJZR90008QG0R000FTJ1TC'),
         ];
         const result = resolveAuthorization(instructions);
         expect(result.operative).not.toBeNull();

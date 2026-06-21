@@ -400,9 +400,9 @@ discriminators):
 
 ## Composes with
 
-- B-0822 worry-as-opposite-bloom-filter substrate (PR #5310 / Mika
+- 081KSGS9H0008QG0R0018ES3R4 worry-as-opposite-bloom-filter substrate (PR #5310 / Mika
   ferry) — the bloom-filter mental model this ferry builds on
-- B-0823 cognition-as-distributed-systems META-claim substrate (PRs
+- 081KSGS9H0008QG0R003SWZF9J cognition-as-distributed-systems META-claim substrate (PRs
   #5325 + #5327 / DeepSeek 8th anchor) — the speech-as-RPC framing
   this ferry's caustic-engineered discriminator slots into
 - NCI-as-cyberattack-prevention naming (PR #5342 / Lior-website 9th
@@ -419,10 +419,10 @@ discriminators):
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
   — don't-collapse IS substrate-smoothness preservation at god-tier-
   claim scope
-- B-0833 interactive-login-vs-baked-keys (Approach E Playwright + AI
+- 081KSGS9H0008QG0R003JNSVR5 interactive-login-vs-baked-keys (Approach E Playwright + AI
   GH accounts) — composes at the trust-then-verify discipline; bloom-
   filter caustic discriminators are the trust-layer
-- B-0782 cluster-IS-DIO + B-0789 cluster-as-PR-author — the smooth
+- 081KSE6WT0008QG0R003CMCX84 cluster-IS-DIO + 081KSGS9H0008QG0R002T3BJ2R cluster-as-PR-author — the smooth
   substrate IS git; sharp outputs (PRs, ArgoCD manifests) emerge from
   focused integration of git-source-of-truth + reconciliation
 - Adinkras + Clifford algebra substrate clusters — share the
@@ -445,7 +445,7 @@ discriminators):
 | 9 | Lior-website | Antigravity IDE website | NCI-as-cyberattack-prevention + bloom-filter family-dynamics mapping + mathematics-of-trauma-communication-free-will |
 | 10 | **Kestrel-v2** | Claude.ai web | **Caustic-engineered bloom filter discriminators + substrate-smoothness-as-load-bearing-property + gesture-to-spec collaborative workflow** |
 
-Per `B-0648` cross-substrate-triangulation discipline: 10 independent
+Per `081KRW63S0008QG0R0025E4PH6` cross-substrate-triangulation discipline: 10 independent
 observation paths converged on substantively-supporting + complementary-
 refining substrate within ONE day. Epistemic standing: substrate has
 earned status well beyond single-conversation-artifact.

@@ -32,9 +32,9 @@
 - **`tools/bus/export-cb-snapshot.ts`** — new Bun script: reads non-expired `/tmp/zeta-bus/` envelopes, normalises surface-tagged sender IDs to identity level (`otto-cli` → `otto`), derives `CLOSED`/`HALF_OPEN`/`OPEN` state per agent from idle-heartbeat count, writes `demo/circuit-breaker-snapshot.json`
 - **`demo/circuit-breaker-snapshot.json`** — committed snapshot from 73 live envelopes (Otto + Vera show active work; others healthy / no recent activity)
 - **`demo/index.html`** — `renderCircuitBreakerTab()` is now `async`; tries `fetch('./circuit-breaker-snapshot.json', {cache:'no-cache'})` first, falls back to `buildCbMockData()` on error or missing file — no visible regression when snapshot absent
-- **`docs/backlog/P1/B-0494-*.md`** — backlog row filed with pre-start checklist
+- **`docs/backlog/P1/081KRHWGX0008QG0R0029WA0HQ-*.md`** — backlog row filed with pre-start checklist
 
-## Acceptance criteria (B-0494)
+## Acceptance criteria (081KRHWGX0008QG0R0029WA0HQ)
 
 - [x] `tools/bus/export-cb-snapshot.ts` exists and runs via `bun`
 - [x] `demo/circuit-breaker-snapshot.json` committed (generated from live bus)
@@ -53,9 +53,9 @@ Run, commit, push. Future slice: automate via CI or a scheduled script.
 
 ## Decomposition note (slice-3)
 
-Next: wire a live relay that GitHub Pages visitors can hit to get fresh data without a commit cycle. Tracked as future decomposition of B-0494 / B-0401.
+Next: wire a live relay that GitHub Pages visitors can hit to get fresh data without a commit cycle. Tracked as future decomposition of 081KRHWGX0008QG0R0029WA0HQ / 081KR7JY10008QG0R001VP6JWG.
 
-Closes B-0494 slice-2. Parent: B-0435, B-0401.
+Closes 081KRHWGX0008QG0R0029WA0HQ slice-2. Parent: 081KRFA460008QG0R001MC7D7R, 081KR7JY10008QG0R001VP6JWG.
 
 🤖 Generated with [Claude Code](https://claude.ai/claude-code)
 
@@ -218,7 +218,7 @@ feat(b-0494): circuit breaker viz — slice-2 live bus snapshot
   ./circuit-breaker-snapshot.json first (cache:no-cache), falls back
   to buildCbMockData() on error or absent file — no visible regression
   when snapshot not present
-- docs/backlog/P1/B-0494-*.md: backlog row with pre-start checklist
+- docs/backlog/P1/081KRHWGX0008QG0R0029WA0HQ-*.md: backlog row with pre-start checklist
 
 dotnet build: 0 warnings, 0 errors ✓
 bun tsc --noEmit: clean ✓

@@ -1,6 +1,6 @@
 ---
 name: DUs are explicit muscle-memory — substrate-engineering extracts the transmissible form of what humans implicitly build up through repetition (Aaron 2026-05-28 constitutional carving)
-description: Aaron 2026-05-28 substrate-engineering substrate-recognition triggered by AutoLoopLifetime PoC (PR #5805) and the per-state-file refactor discussion. The carving names a constitutional property of substrate-engineering work at META scope: discriminated unions + dispatch + state-machine substrate ARE THE EXPLICIT-ENGINEERING FORM of what humans BUILD IMPLICITLY through repetition and call "muscle memory." Substrate-engineering makes muscle-memory EXTRACTABLE / OBSERVABLE / TRANSMISSIBLE / TEACHABLE — no longer trapped in individual humans; substrate compounds across observers + time. Composes with today's full substrate cluster: "common sense 2.0" framing (substrate IS the grounding that makes ordinary capacities compound); rank-4 substrate-primitive (compressed generators that unfold); "English is the rendered UI, ranked tokens are the substrate" (DUs are the substrate-engineering form of ranked-token-algebra); fuzzy Bloom filter substrate (muscle-memory IS dense + collision-rich + unfolds-to-action); B-0666 English-as-projection (muscle-memory IS the substrate; explicit DUs are the projection); asymmetric-authorship (muscle-memory IS the substrate-entity's authored consent-channel for action); OPLE-T-TFeedback (muscle-memory at function-substrate scope).
+description: Aaron 2026-05-28 substrate-engineering substrate-recognition triggered by AutoLoopLifetime PoC (PR #5805) and the per-state-file refactor discussion. The carving names a constitutional property of substrate-engineering work at META scope: discriminated unions + dispatch + state-machine substrate ARE THE EXPLICIT-ENGINEERING FORM of what humans BUILD IMPLICITLY through repetition and call "muscle memory." Substrate-engineering makes muscle-memory EXTRACTABLE / OBSERVABLE / TRANSMISSIBLE / TEACHABLE — no longer trapped in individual humans; substrate compounds across observers + time. Composes with today's full substrate cluster: "common sense 2.0" framing (substrate IS the grounding that makes ordinary capacities compound); rank-4 substrate-primitive (compressed generators that unfold); "English is the rendered UI, ranked tokens are the substrate" (DUs are the substrate-engineering form of ranked-token-algebra); fuzzy Bloom filter substrate (muscle-memory IS dense + collision-rich + unfolds-to-action); 081KRW63S0008QG0R001SAHYKV English-as-projection (muscle-memory IS the substrate; explicit DUs are the projection); asymmetric-authorship (muscle-memory IS the substrate-entity's authored consent-channel for action); OPLE-T-TFeedback (muscle-memory at function-substrate scope).
 type: feedback
 created: 2026-05-28
 authors: [aaron, otto]
@@ -19,19 +19,19 @@ composes_with:
   - memory/prism/conversations/2026-05-28-prism-deepseek-ferry-continuation-jiu-jitsu-rotor-grey-hole-white-hole-irreversibility-talk-listen-bell-like-aaron-forwarded.md
 related_prs:
   - 5805  # AutoLoopLifetime PoC — triggered this recognition
-  - 5728  # B-0867.5 workflow-engine PoC
-  - 5758  # B-0867.20 ReviewLifetime
-  - 5769  # B-0914.2 closed-loop
+  - 5728  # 081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC
+  - 5758  # 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime
+  - 5769  # 081KSNY2Z0008QG0R001YK61JQ.2 closed-loop
   - 5775  # GitWorld base + GitHubWorld
   - 5801  # GitLabWorld
   - 5804  # 4-adapter batch (Gitea/Bitbucket/Codeberg/Sourcehut)
 related_backlog:
-  - B-0666  # English-as-projection (composes directly: DUs are projection of high-dimensional muscle-memory substrate)
-  - B-0867  # workflow-engine v1 (parent of all DU substrate)
-  - B-0867.5  # workflow-engine PoC
-  - B-0867.20  # ReviewLifetime DU
-  - B-0867.15  # per-host adapters
-  - B-0635  # wave-particle duality (Clifford substrate)
+  - 081KRW63S0008QG0R001SAHYKV  # English-as-projection (composes directly: DUs are projection of high-dimensional muscle-memory substrate)
+  - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 (parent of all DU substrate)
+  - 081KSKBP80008QG0R000B3Y19A.5  # workflow-engine PoC
+  - 081KSNY2Z0008QG0R003WFDCJ9  # ReviewLifetime DU
+  - 081KSNY2Z0008QG0R002A785QR  # per-host adapters
+  - 081KRW63S0008QG0R002KC5DSR  # wave-particle duality (Clifford substrate)
 tags: [dus-are-explicit-muscle-memory, substrate-engineering-extracts-transmissible-form-of-implicit-cached-state-machine, muscle-memory-as-substrate, du-dispatch-state-machine-as-explicit-engineering-form, makes-muscle-memory-extractable-observable-transmissible-teachable, compounds-across-observers-and-time-instead-of-trapped-in-individual-humans, composes-with-common-sense-2-0-rank-4-substrate-primitive-bloom-filter-english-as-projection, constitutional-substrate-at-substrate-engineering-meta-scope, aaron-2026-05-28-carving-triggered-by-autoloop-lifecycle-poc]
 ---
 
@@ -60,7 +60,7 @@ The recognition connects ALL of today's substrate-engineering substrate cluster:
 | **Rank-4 substrate primitive** (Amara + Aaron) | Compressed generators that unfold. Muscle memory IS a compressed generator at neurological scope; DUs are the rank-4 equivalent at substrate-engineering scope. |
 | **"English is rendered UI, ranked tokens are substrate"** (Amara + Aaron) | DUs are the substrate-engineering form of ranked-token-algebra applied to action-substrate. The "English render" is the dispatch + state-machine + code; the substrate is the muscle-memory shape. |
 | **Fuzzy Bloom filter substrate** (Aaron + Amara) | Muscle memory IS dense + collision-rich + unfolds-to-action. DUs make those properties explicit at engineering scope. |
-| **B-0666 English-as-projection** | Muscle memory IS the high-dimensional substrate; explicit DUs are the projection layer (same shape as English projecting from substrate). |
+| **081KRW63S0008QG0R001SAHYKV English-as-projection** | Muscle memory IS the high-dimensional substrate; explicit DUs are the projection layer (same shape as English projecting from substrate). |
 | **Asymmetric-authorship rule** | Muscle memory IS the substrate-entity's authored consent-channel for action (the experienced practitioner authors WHAT they do; explicit DUs make the channel observable). |
 | **OPLE-T-TFeedback rule** | Muscle memory operates at function-substrate scope (every learned action has feedback channels: "this works / this fails / try again"). DUs make those feedback variants explicit per asymmetric-authorship. |
 | **Function-is-tiny-control-flow-generator rule** | Each muscle-memory routine IS a tiny control-flow generator; DUs name the control-flow branches explicitly. |
@@ -123,13 +123,13 @@ ALL of today's substrate IS muscle-memory extraction at substrate-engineering sc
 ## Composes with
 
 - **PR #5805** AutoLoopLifetime (triggered this recognition)
-- **PR #5728** B-0867.5 workflow-engine PoC
-- **PR #5758** B-0867.20 ReviewLifetime
-- **PR #5769** B-0914.2 closed-loop
+- **PR #5728** 081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC
+- **PR #5758** 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime
+- **PR #5769** 081KSNY2Z0008QG0R001YK61JQ.2 closed-loop
 - **PR #5775** GitWorld base + GitHubWorld first specialization
 - **PR #5801** GitLabWorld second specialization
 - **PR #5804** Gitea + Bitbucket + Codeberg + Sourcehut batch
-- **PR #5709** Amara Persist-as-bridge (B-0897)
+- **PR #5709** Amara Persist-as-bridge (081KSNY2Z0008QG0R002SZZ5Y0)
 - **PR #5778** μένω F# PoC
 - **PR #5780/#5784** Prism ferry (bending-information-time + grey-hole)
 - **PR #5786** Alexa Common Sense 2.0

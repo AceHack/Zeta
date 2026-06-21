@@ -2,7 +2,7 @@
 
 Status: partial execution report
 Grounding backlog:
-`docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
+`docs/backlog/P2/081KQX9B50008QG0R001MNYK61-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
 Parent matrix:
 `docs/trajectories/autonomous-loop-coordination/remote-only-coordination-test-matrix.md`
 
@@ -14,7 +14,7 @@ local broadcast bus, no shared worktree, no GitHub API, and no local logs can
 discover the active claim from remote git refs alone.
 
 This is not yet the full two-participant dry run from the matrix. It is the
-single-participant preflight that proves the first half of B-0209: active work
+single-participant preflight that proves the first half of 081KQX9B50008QG0R001MNYK61: active work
 can be reconstructed from pushed git refs without a local-only coordination
 surface.
 
@@ -62,7 +62,7 @@ The active claim reconstructed from remote refs was:
 Claim: codex-autonomous-loop-remote-dry-run-20260528
 Harness: codex
 Claimed at: 2026-05-28T19:00:44Z
-Scope: Small remote-only autonomous-loop dry-run execution report grounded in B-0209.
+Scope: Small remote-only autonomous-loop dry-run execution report grounded in 081KQX9B50008QG0R001MNYK61.
 Durable target: docs/trajectories/autonomous-loop-coordination/remote-only-dry-run-2026-05-28.md
 ```
 
@@ -84,7 +84,7 @@ discover the active Codex lane and its intended path set without local
 broadcasts or GitHub. That is enough to prevent hidden local-only ownership for
 this lane.
 
-The full B-0209 pass still requires a second participant to push a disjoint
+The full 081KQX9B50008QG0R001MNYK61 pass still requires a second participant to push a disjoint
 claim, acknowledge the first claim by remote progress commit, and release both
 claims through git history.
 
@@ -97,5 +97,5 @@ claims through git history.
 5. Both claims release through commits that leave the full sequence recoverable
    from remote refs and commit history.
 
-This keeps B-0209 focused: host comments and local broadcasts may improve
+This keeps 081KQX9B50008QG0R001MNYK61 focused: host comments and local broadcasts may improve
 latency, but the coordination proof must survive without either one.

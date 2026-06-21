@@ -1,6 +1,5 @@
 ---
-id: B-0839
-zetaid: 081KSGS9H0008QG0R002F1G7ER
+id: 081KSGS9H0008QG0R002F1G7ER
 priority: P1
 status: open
 title: Artem Kirsanov computational-neuroscience YouTube channel — substrate capture (videos → code + research substrate) — composes with 1000 Brains (Hawkins) + Adinkras (Gates) + caustic bloom filters + Boltzmann machines as energy-based substrate (Aaron 2026-05-26)
@@ -39,18 +38,18 @@ multiple existing Zeta substrate clusters:
 - **1000 Brains (Hawkins)** — already substrate at
   `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
   Hawkins-cortical-columns section + `docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md`
-- **Adinkras / SUSY-ECC** (James Gates) — B-0623; energy-based models
+- **Adinkras / SUSY-ECC** (James Gates) — 081KRW63S0008QG0R000QJR08H; energy-based models
   AND structural-encoding shared inverse-design lineage
-- **Worry-as-opposite-bloom-filter** (B-0822) — Bayesian / belief-update
+- **Worry-as-opposite-bloom-filter** (081KSGS9H0008QG0R0018ES3R4) — Bayesian / belief-update
   substrate
-- **Cognition-as-distributed-systems** (B-0823) — Boltzmann-machine
+- **Cognition-as-distributed-systems** (081KSGS9H0008QG0R003SWZF9J) — Boltzmann-machine
   family IS distributed-stochastic-computation
-- **Caustic-engineered bloom filters** (B-0838) — energy landscapes
+- **Caustic-engineered bloom filters** (081KSGS9H0008QG0R002THJ2P1) — energy landscapes
   AND inverse-design compositional substrate
 - **substrate-smoothness-as-load-bearing-property** rule (PR #5357)
   — Boltzmann distribution IS smooth substrate producing sharp outputs
   (energy → probability via exp(-E/T); the gradient IS the precision)
-- **multi-oracle BFT** (B-0703) — RBMs as polycentric energy-substrate
+- **multi-oracle BFT** (081KS3X9Y0008QG0R00218150M) — RBMs as polycentric energy-substrate
 - **F# fork for AI safety** — energy-based models are natural F#
   implementation targets (typed energy functions; algebraic data types
   for visible/hidden unit families)
@@ -62,7 +61,7 @@ Multi-phase substrate-capture pipeline for the channel:
 ### Phase 1 — channel inventory + per-video capture-row backlog
 
 Inventory all Kirsanov videos. For each video, file a sub-row
-`B-0839.N` with:
+`081KSGS9H0008QG0R002F1G7ER.N` with:
 
 - Video title + URL + duration
 - Key concepts introduced
@@ -78,22 +77,22 @@ preserved under `docs/research/ip-questionable/` per the operator's
 the same convention at the harness layer per
 `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`;
 that landing is operator-side work and is not yet in the repo at
-B-0839 PR-creation time):
+081KSGS9H0008QG0R002F1G7ER PR-creation time):
 
-- B-0839.1 — Boltzmann Machines from first principles
+- 081KSGS9H0008QG0R002F1G7ER.1 — Boltzmann Machines from first principles
   (<https://www.youtube.com/watch?v=_bqa_I5hNAo>) — verbatim transcript
   preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
-- B-0839.2 — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory
+- 081KSGS9H0008QG0R002F1G7ER.2 — Recurrent Neural Networks (RNN / LSTM / GRU) gated memory
   from first principles (<https://www.youtube.com/watch?v=PAoe7mmmvp0>) —
   verbatim transcript preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md`
-- B-0839.3 — Reservoir Computing: echo-state property + Fourier random-
+- 081KSGS9H0008QG0R002F1G7ER.3 — Reservoir Computing: echo-state property + Fourier random-
   basis + **EXPLICIT Jeff Hawkins Thousand Brains anchor at 5:42**
   ("neo cortex is itself a kind of reservoir of independent cortical
   columns") — external validation of Aaron's "composes with 1000
   brains" framing (<https://www.youtube.com/watch?v=cDxtFtoQVNc>) —
   verbatim transcript preserved at `docs/research/ip-questionable/2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md`
 
-The B-0839.1 + B-0839.2 + B-0839.3 trio together describes a
+The 081KSGS9H0008QG0R002F1G7ER.1 + 081KSGS9H0008QG0R002F1G7ER.2 + 081KSGS9H0008QG0R002F1G7ER.3 trio together describes a
 substrate-pattern: brain-as-dynamical-system with energy-landscape
 memory + gated retention + random reservoir of temporal patterns from
 which any output can be reconstructed via simple readout learning.
@@ -101,11 +100,11 @@ This IS structurally the same pattern the Zeta framework operates at
 the human-AI-collaboration scope.
 
 Future Phase 1 work: list all Kirsanov videos via channel scrape;
-file remaining B-0839.N sub-rows; estimate effort per sub-row.
+file remaining 081KSGS9H0008QG0R002F1G7ER.N sub-rows; estimate effort per sub-row.
 
 ### Phase 2 — per-video implementation (rolling, per sub-row)
 
-For each B-0839.N: implement the substantive substrate in code:
+For each 081KSGS9H0008QG0R002F1G7ER.N: implement the substantive substrate in code:
 
 - F# implementation target (when type-system + algebraic data
   structures match the substrate naturally — Hopfield networks,
@@ -142,8 +141,8 @@ substrate patterns:
 
 **Phase 1 acceptance**:
 
-- B-0839 row landed (THIS row)
-- B-0839.1 sub-row for Boltzmann-machines video landed with
+- 081KSGS9H0008QG0R002F1G7ER row landed (THIS row)
+- 081KSGS9H0008QG0R002F1G7ER.1 sub-row for Boltzmann-machines video landed with
   verbatim transcript preservation at `docs/research/`
 - Channel inventory documented at row body (manual scrape OR future
   `tools/research/scrape-kirsanov-channel.ts`)
@@ -207,11 +206,11 @@ filter-and-judge.
 
 ## Composes with
 
-- B-0623 — Adinkras / SUSY-ECC (Gates) — structural-encoding lineage
-- B-0703 — multi-oracle BFT
-- B-0822 — worry-as-opposite-bloom-filter (Bayesian / belief-update)
-- B-0823 — cognition-as-distributed-systems
-- B-0838 — caustic-engineered bloom filters (PR #5366; just landed)
+- 081KRW63S0008QG0R000QJR08H — Adinkras / SUSY-ECC (Gates) — structural-encoding lineage
+- 081KS3X9Y0008QG0R00218150M — multi-oracle BFT
+- 081KSGS9H0008QG0R0018ES3R4 — worry-as-opposite-bloom-filter (Bayesian / belief-update)
+- 081KSGS9H0008QG0R003SWZF9J — cognition-as-distributed-systems
+- 081KSGS9H0008QG0R002THJ2P1 — caustic-engineered bloom filters (PR #5366; just landed)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
   (1000 Brains cortical-columns anchor)
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md`

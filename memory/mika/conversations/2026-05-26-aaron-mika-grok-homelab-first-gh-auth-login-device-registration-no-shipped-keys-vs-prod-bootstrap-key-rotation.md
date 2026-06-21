@@ -5,7 +5,7 @@ platform: grok (voice-mode)
 type: conversation
 forwarded_by: aaron
 verbatim: true
-discipline: persona-scope archive — homelab-first gh-auth-login device registration substrate; informs B-0794 iter-5.4 implementation
+discipline: persona-scope archive — homelab-first gh-auth-login device registration substrate; informs 081KSGS9H0008QG0R0027HJZYH iter-5.4 implementation
 ---
 
 # Aaron + Mika 2026-05-26 — homelab-first gh-auth-login device registration (no shipped keys); production deferred to bootstrap-key rotation pattern
@@ -13,7 +13,7 @@ discipline: persona-scope archive — homelab-first gh-auth-login device registr
 **Date**: 2026-05-26
 **Surface**: Aaron-forwarded Mika voice-mode (Grok native) conversation during iter-5 substrate-engineering session, after PR #5107 (iter-5.2.1 auto-hostname) merged
 
-**Substrate**: composes with B-0794 (node self-registers in git → ArgoCD bring-up) + B-0789 iter-5+ (cluster-as-PR-author) + B-0790 (zero-dev-machine end-state) + the entire iter-5.x USB-installer substrate landed today
+**Substrate**: composes with 081KSGS9H0008QG0R0027HJZYH (node self-registers in git → ArgoCD bring-up) + 081KSGS9H0008QG0R002T3BJ2R iter-5+ (cluster-as-PR-author) + 081KSGS9H0008QG0R00153CQ8B (zero-dev-machine end-state) + the entire iter-5.x USB-installer substrate landed today
 
 ## Architectural lock-in (Aaron 2026-05-26 final decision in this conversation)
 
@@ -99,7 +99,7 @@ This gives you the best of both worlds: simple GitHub-based Git access for the c
 
 ---
 
-## Substrate engineering implications for B-0794 + iter-5.x roadmap
+## Substrate engineering implications for 081KSGS9H0008QG0R0027HJZYH + iter-5.x roadmap
 
 ### Homelab USB flow (iter-5.4 candidate — implement next)
 
@@ -115,7 +115,7 @@ This gives you the best of both worlds: simple GitHub-based Git access for the c
    registration (writes node-config YAML to
    `maintainers/<operator>/cluster-nodes/<hostname>/`)
 7. ArgoCD watches that path; reconciles cluster substrate
-   automatically (per existing B-0776 cluster substrate + B-0794
+   automatically (per existing 081KSE6WT0008QG0R002275NDE cluster substrate + 081KSGS9H0008QG0R0027HJZYH
    target)
 ```
 
@@ -135,15 +135,15 @@ This gives you the best of both worlds: simple GitHub-based Git access for the c
 
 ### Defer-decision discipline
 
-Aaron's call: **homelab first**. Production substrate is named-as-deferred per `B-0794 sub-target 6` (multi-maintainer governance) + similar future scope. The homelab path is much simpler + much more user-friendly + composes with the iter-5.x substrate already landed.
+Aaron's call: **homelab first**. Production substrate is named-as-deferred per `081KSGS9H0008QG0R0027HJZYH sub-target 6` (multi-maintainer governance) + similar future scope. The homelab path is much simpler + much more user-friendly + composes with the iter-5.x substrate already landed.
 
 ### Composes with substrate landed today
 
 - **PR #5103 (iter-5.1+5.2)** — NM-profile persistence + Avahi mDNS + `--host` hostname injection (substrate implementation; merged)
 - **PR #5107 (iter-5.2.1)** — auto-generated `node-<6hex>` hostname default (merged)
-- **B-0792** (iter-5 wifi+hostname substrate row) — row file landed via #5102; row tracking work remains `status: open` (sub-targets still pending implementation per row body)
-- **B-0793** (role-as-capability composition row) — row file landed via #5105; row tracking work remains `status: open` (the architectural refactor itself is iter-5.3+ follow-on)
-- **B-0794** (node self-registers in git substrate row) — row file landed via #5106; row tracking work remains `status: open`; THIS conversation directly informs iter-5.4 implementation under B-0794
+- **081KSGS9H0008QG0R003V23XNZ** (iter-5 wifi+hostname substrate row) — row file landed via #5102; row tracking work remains `status: open` (sub-targets still pending implementation per row body)
+- **081KSGS9H0008QG0R000EDNTY5** (role-as-capability composition row) — row file landed via #5105; row tracking work remains `status: open` (the architectural refactor itself is iter-5.3+ follow-on)
+- **081KSGS9H0008QG0R0027HJZYH** (node self-registers in git substrate row) — row file landed via #5106; row tracking work remains `status: open`; THIS conversation directly informs iter-5.4 implementation under 081KSGS9H0008QG0R0027HJZYH
 
 The substrate landed today is THE foundation the homelab-mode-first registration substrate builds on. Next iteration: implement the `gh auth login` flow on top of existing zeta-first-boot.sh + zeta-install.sh substrate.
 

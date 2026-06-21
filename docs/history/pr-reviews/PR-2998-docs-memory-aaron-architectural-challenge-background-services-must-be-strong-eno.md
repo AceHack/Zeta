@@ -60,8 +60,8 @@ If Otto-foreground died right now — session terminated, context compacted, no 
 - \`.claude/rules/never-be-idle.md\` (the foreground discipline; the failure mode just caught proves it needs mechanization)
 - \`.claude/rules/largest-mechanizable-backlog-wins.md\` (the mechanization itself increases the mechanizable backlog)
 - PR #2997 (Otto-section recovery — concrete artifact recovered from the foreground-load-bearing failure)
-- B-0402 shadow observer (canonical background service example)
-- B-0400 bus protocol (inter-agent message infrastructure)
+- 081KR7JY10008QG0R0008NGW95 shadow observer (canonical background service example)
+- 081KR7JY10008QG0R000R503K2 bus protocol (inter-agent message infrastructure)
 
 ## Test plan
 

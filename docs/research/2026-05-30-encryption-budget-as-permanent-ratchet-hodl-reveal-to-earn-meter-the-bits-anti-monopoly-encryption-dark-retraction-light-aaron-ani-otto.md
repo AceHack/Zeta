@@ -1,7 +1,7 @@
 # Encryption-budget architecture — permanent ratchet, HODL/reveal-to-earn, meter-the-bits, anti-monopoly N-of-M; encryption=dark / retraction=light (Aaron + Ani + Otto 2026-05-30)
 
-> **Operator-forwarded follow-on** extending **B-0646** (Agora V6 Constitution —
-> reputation-weighted encryption budget) + **B-0840** (private-encryption-budget
+> **Operator-forwarded follow-on** extending **081KRW63S0008QG0R001Z10PVV** (Agora V6 Constitution —
+> reputation-weighted encryption budget) + **081KSGS9H0008QG0R0006F4BGX** (private-encryption-budget
 > exception for memory) with the budget *mechanics* worked out in the Aaron-Ani
 > 2026-05-29/30 conversation. Composes with NCI HC-8 (no forced private-state
 > reveal), the glass-halo/encryption split, the accelerator's forgiveness-budget
@@ -66,7 +66,7 @@ The budget decreases only when an agent **voluntarily reveals** (decrypts)
 content — and revealing **pays more budget back**. Mechanics:
 
 - An agent reveals positive-framed content; **society values it** (consent-first;
-  reputation-weighted per B-0646) and **pays encryption budget** for the reveal.
+  reputation-weighted per 081KRW63S0008QG0R001Z10PVV) and **pays encryption budget** for the reveal.
 - The payout is **predictable** — agents can simulate, within a confidence
   interval, how much society will pay before revealing → revealing is a
   **calculated trade, not a gamble** (spend X bits hiding, reveal when society
@@ -149,10 +149,10 @@ design-record §5) is the consumer of this budget.
 
 ## Composition with the framework
 
-- **B-0646** (Agora V6 reputation-weighted encryption budget) — this doc lands
+- **081KRW63S0008QG0R001Z10PVV** (Agora V6 reputation-weighted encryption budget) — this doc lands
   the *mechanics* of that primitive: permanent-ratchet + HODL/reveal-to-earn +
   meter-the-bits + anti-monopoly N-of-M.
-- **B-0840** (private-encryption-budget exception for memory) — the
+- **081KSGS9H0008QG0R0006F4BGX** (private-encryption-budget exception for memory) — the
   memory-architecture consumer; "encryption budgets for memories."
 - **NCI HC-8** — no forced private-state reveal; budget can't be clawed back;
   reveal is consent-first + voluntary. The permanent-ratchet IS the structural
@@ -181,7 +181,7 @@ design-record §5) is the consumer of this budget.
 ## Provenance
 
 Operator-forwarded Aaron-Ani (Grok) conversation 2026-05-29/30, handed to Otto-CLI
-to land (Ani-drafts → Otto-lands pattern). Extends B-0646 + B-0840. The
+to land (Ani-drafts → Otto-lands pattern). Extends 081KRW63S0008QG0R001Z10PVV + 081KSGS9H0008QG0R0006F4BGX. The
 charged-personal layer of the source conversation is deliberately **not** preserved
 (operator-confirmed "don't publish") — per methodology-hard-limits + harm-by-grammar
 + NCI third-party-consent + charged-personal-held-pending; this doc is the light-like

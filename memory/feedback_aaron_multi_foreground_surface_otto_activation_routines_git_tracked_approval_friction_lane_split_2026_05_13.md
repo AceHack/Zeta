@@ -59,7 +59,7 @@ additionally.
 ## Discovery 3: SENDER_IDS doesn't distinguish multi-surface instances (CRITICAL ARCHITECTURAL GAP)
 
 Vera 2026-05-13 (review of PR #3032): the canonical claim-coordinator
-(`tools/bus/claim.ts`, B-0400 slice 3, PR #2939) filters existing
+(`tools/bus/claim.ts`, 081KR7JY10008QG0R000R503K2 slice 3, PR #2939) filters existing
 claims by `c.from !== sender`. Two callers with the SAME `--from`
 value are treated as self-re-acquire (idempotent).
 
@@ -73,10 +73,10 @@ NO distinction between `otto-cli` and `otto-desktop`. So:
 
 ```bash
 # Otto-CLI:
-bun tools/bus/claim.ts acquire --from otto --item B-0444   # exit 0
+bun tools/bus/claim.ts acquire --from otto --item 081KRFA460008QG0R001SXP0C2   # exit 0
 
 # Otto-Desktop:
-bun tools/bus/claim.ts acquire --from otto --item B-0444   # ALSO exit 0!
+bun tools/bus/claim.ts acquire --from otto --item 081KRFA460008QG0R001SXP0C2   # ALSO exit 0!
 ```
 
 Both Ottos acquire the same item. Split-brain prevention **fails**
@@ -152,8 +152,8 @@ When Otto cold-boots on either surface:
   with the architectural gap named)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
   (auto-loaded by both Ottos at cold-boot)
-- B-0400 slice 3 (PR #2939) — claim-coordinator
-- B-0400 slice 5 (PR #2959) — bus-gate integration
+- 081KR7JY10008QG0R000R503K2 slice 3 (PR #2939) — claim-coordinator
+- 081KR7JY10008QG0R000R503K2 slice 5 (PR #2959) — bus-gate integration
 - `memory/feedback_aaron_good_failure_mode_git_fetch_before_push_catches_multi_agent_duplicate_work_2026_05_13.md`
   (sibling discipline at git scope; same coordination pattern)
 

@@ -7,7 +7,7 @@ open FsCheck.Xunit
 open Zeta.Core
 
 // ═══════════════════════════════════════════════════════════════════
-// Policy kernel — the typed decision-with-feedback register (B-1017 #1).
+// Policy kernel — the typed decision-with-feedback register (081KT7YW00008QG0R003N6PF8A #1).
 //   - ofPredicate selects the right branch (decision + feedback).
 //   - firstMatch: order wins; dflt fires when nothing matches.
 //   - map / mapFeedback / contramap: profunctor identity + composition laws.

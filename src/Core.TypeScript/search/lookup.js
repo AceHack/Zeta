@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// lookup.ts — B-0362
+// lookup.ts — 081KR50HA0008QG0R000239VTZ
 // Entry point: bun tools/search/lookup.ts <term...>
 // Supports multi-word AND semantics: all terms must match.
 // Run build-index.ts first to create .concept-index.json.

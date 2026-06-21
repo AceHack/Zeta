@@ -1,6 +1,5 @@
 ---
-id: B-0867.17
-zetaid: 081KSNY2Z0008QG0R000121FJ4
+id: 081KSNY2Z0008QG0R000121FJ4
 priority: P2
 status: open
 title: Push-cycle limit AS STRUCTURAL enforcement — chooseActionForLifecycle returns AbandonPr when revisionCount > N (tunable threshold)
@@ -46,7 +45,7 @@ The structural enforcement (chooseActionForLifecycle ALWAYS returns abandonment 
 ## Composes with
 
 - Existing `revisionCount` field on WorkLifecycleState (already shipped in PR #5669)
-- B-0867.16 (two-level composition) — chooseActionForLifecycle is the work-lifecycle-level decision function called by runFullLoop
+- 081KSNY2Z0008QG0R003J3PT4V (two-level composition) — chooseActionForLifecycle is the work-lifecycle-level decision function called by runFullLoop
 
 ## Substrate-honest framing
 

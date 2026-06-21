@@ -44,7 +44,7 @@ Aaron forwarded V5 after multi-AI feedback gathering on V1-V4 packets (already o
 - **Remember When + Pay Attention** primitives compose with Zeta core algebra (Z-sets, signed measures, DBSP) + \`algebra-owner\` skill + constitutional AI-team-equipment-for-memory-preservation substrate
 - **Irreducible math anchors** (Clifford/Cayley-Dickson/HKT/DBSP) compose with PR #2840 dotnet-build-as-sanity-check rule + PR #2913 HKT-MDM + PR #2914 Clifford/HKT vocabulary
 - **Razor-aware operational framing** composes with \`.claude/rules/razor-discipline.md\` + \`.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md\`
-- **Hardware independence + geographic distribution + redundant copies** composes with constitutional AI-team-financial-substrate + B-0600 family-distributed AI + B-0590 fleet replication + DePIN positive-sum
+- **Hardware independence + geographic distribution + redundant copies** composes with constitutional AI-team-financial-substrate + 081KRQ1AB0008QG0R003HCZ5YM family-distributed AI + 081KRQ1AB0008QG0R002G93CM7 fleet replication + DePIN positive-sum
 
 ## Test plan
 

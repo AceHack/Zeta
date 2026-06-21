@@ -9,7 +9,7 @@ composes_with:
   - docs/research/2026-05-07-itron-mentor-lineage-roster-aaron.md
   - docs/DECISIONS/2026-05-29-git-native-event-store-spec.md
   - docs/research/2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md
-  - B-0897 (Persist-as-bridge / μένω)
+  - 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge / μένω)
   - src/Core/Checkpoint.fs (ICheckpointReader/Writer/able/Store)
   - tools/observe/ (the 4-button universal-action-grammar controller)
 ---
@@ -153,7 +153,7 @@ later re-derived as `OrgEventStore` (cockroach impl today). The git-native ZetaI
 | `IWorkflowState` (cursor + status + domain-state + type-AQNs) | a **ZetaId-keyed git record** (`Workflow` category, id=2)                                                                             |
 | `IWorkflowStateProvider` (Memory/Table/Blob)                  | a **git-native ZetaId provider** (the `OrgEventStore` git impl; cockroach = corporate/leash, git = Agora/sovereign)                   |
 | `ResumeAsync` jump-to-`CurrentStep`                           | load the ZetaId state, reconstruct, **resume at `Indexes`** — no replay                                                               |
-| `StepStatus.Break` / `*WithCheckpoint` (persist + suspend)    | **Persist / μένω (B-0897)**: emit-suspended-state-now (write the ZetaId state) + observe-wake-later                                   |
+| `StepStatus.Break` / `*WithCheckpoint` (persist + suspend)    | **Persist / μένω (081KSNY2Z0008QG0R002SZZ5Y0)**: emit-suspended-state-now (write the ZetaId state) + observe-wake-later                                   |
 | the wake event (capability response)                          | an **incoming ZetaId event** (a `Bus`-category message) matched to the suspended workflow → `HandleResponseAsync` → resume            |
 | observe progress                                              | **Rx `Observable` = tail the workflow's ZetaId event stream** (status transitions / heartbeat)                                        |
 | type-safe `Add<>` composition (the lint)                      | **typed DUs + `tools/observe` universal action grammar** — typed-by-construction; the watchable controller is the "UI" the XML lacked |

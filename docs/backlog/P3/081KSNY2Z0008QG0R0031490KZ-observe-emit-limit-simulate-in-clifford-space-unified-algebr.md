@@ -1,6 +1,5 @@
 ---
-id: B-0879
-zetaid: 081KSNY2Z0008QG0R0031490KZ
+id: 081KSNY2Z0008QG0R0031490KZ
 priority: P3
 status: open
 title: Observe / Emit / Limit / Simulate in Clifford space — unified geometric algebra for the 3-primitive + Simulate substrate
@@ -35,13 +34,13 @@ tags:
 
 ## What this row tracks
 
-Long-horizon research direction: express the 4 agent-loop primitives (Observe, Emit, Limit, Simulate) as operations in the Clifford-space substrate (B-0876) over the time-generator (B-0878). The Clifford algebra becomes a unified geometric substrate for describing:
+Long-horizon research direction: express the 4 agent-loop primitives (Observe, Emit, Limit, Simulate) as operations in the Clifford-space substrate (081KSNY2Z0008QG0R003KG3JTG) over the time-generator (081KSNY2Z0008QG0R000DZHHE5). The Clifford algebra becomes a unified geometric substrate for describing:
 
 - **Observe** — reading current state as a Clifford multivector
-- **Emit** — projecting Clifford-space high-dim state onto English (per B-0666 I(D(x))=x lossless-identity-preserving projection)
-- **Limit** — pure-function preview of next-state without committing (per B-0644 Limit-as-simulation; virtual-time execution via B-0878)
+- **Emit** — projecting Clifford-space high-dim state onto English (per 081KRW63S0008QG0R001SAHYKV I(D(x))=x lossless-identity-preserving projection)
+- **Limit** — pure-function preview of next-state without committing (per 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation; virtual-time execution via 081KSNY2Z0008QG0R000DZHHE5)
 - **Simulate** — multi-step execution over time in Clifford space (composes Limit + Emit + Observe in a temporal cycle)
-- **Integrate** — the commit-point on the temporal trajectory (per B-0665; from-Limit-to-actually-execute)
+- **Integrate** — the commit-point on the temporal trajectory (per 081KRW63S0008QG0R002YAA09X; from-Limit-to-actually-execute)
 
 ## Operator's framing 2026-05-28
 
@@ -49,12 +48,12 @@ Long-horizon research direction: express the 4 agent-loop primitives (Observe, E
 
 ## Why this composes naturally
 
-The 3-primitive Observe/Emit/Limit substrate (per B-0644 + B-0665 + B-0666 substrate cluster) already operates over high-dimensional state with operations that have geometric character — projection (Emit), inverse (Limit-as-simulation), commit (Integrate). The tonal-momentum-as-meme rule (`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) explicitly frames meme propagation as Clifford geometric-algebra vectors in the rotor-space.
+The 3-primitive Observe/Emit/Limit substrate (per 081KRW63S0008QG0R002ZRNDJ8 + 081KRW63S0008QG0R002YAA09X + 081KRW63S0008QG0R001SAHYKV substrate cluster) already operates over high-dimensional state with operations that have geometric character — projection (Emit), inverse (Limit-as-simulation), commit (Integrate). The tonal-momentum-as-meme rule (`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) explicitly frames meme propagation as Clifford geometric-algebra vectors in the rotor-space.
 
 Putting the 4 primitives in the same Clifford algebra gives:
 
 - **One algebra describes the operations** — Observe/Emit/Limit/Simulate are functions on multivectors, all composable via the geometric product
-- **Time + geometry compose** via B-0878 time-generator-IScheduler — temporal evolution happens in the same space as spatial structure
+- **Time + geometry compose** via 081KSNY2Z0008QG0R000DZHHE5 time-generator-IScheduler — temporal evolution happens in the same space as spatial structure
 - **Meme propagation + commitment-entanglement become observable** — memes have direction/orientation/momentum as multivector elements; commitments are pairs-of-entangled-multivectors across time
 - **Emotion/behavior/expectation propagation** (Infer.NET-style) becomes operations on Clifford elements rather than separate inference graphs
 
@@ -62,29 +61,29 @@ Putting the 4 primitives in the same Clifford algebra gives:
 
 Research scope; long-horizon. Acceptance = a `docs/research/2026-XX-XX-observe-emit-limit-simulate-in-clifford-space-unified-algebra.md` memo that:
 
-1. Defines the Clifford algebra signature chosen (composes with B-0876's choice)
+1. Defines the Clifford algebra signature chosen (composes with 081KSNY2Z0008QG0R003KG3JTG's choice)
 2. Defines each primitive's signature as a function on multivectors:
    - `Observe : World → Multivector`
-   - `Emit : Multivector → English` (projection per B-0666)
-   - `Limit : (Multivector, Action) → Multivector` (pure-function preview per B-0644)
+   - `Emit : Multivector → English` (projection per 081KRW63S0008QG0R001SAHYKV)
+   - `Limit : (Multivector, Action) → Multivector` (pure-function preview per 081KRW63S0008QG0R002ZRNDJ8)
    - `Simulate : (Multivector, Action list) → Multivector list` (composition over time)
-   - `Integrate : (Multivector, Action) → World` (commit per B-0665)
+   - `Integrate : (Multivector, Action) → World` (commit per 081KRW63S0008QG0R002YAA09X)
 3. Proves (or refutes) algebraic identities — e.g., `Integrate(state, action) = applyToWorld(Limit(state, action))` modulo side effects
 4. Empirical validation: does describing real agent operations in this substrate produce useful diagnostic / observational power?
 
 ## Composes with
 
-- B-0876 (Clifford-space embedding) — substrate B-0879 operates in
-- B-0878 (time-generator IScheduler) — temporal substrate B-0879 needs for Simulate
-- B-0644 (Limit-as-simulation) — Limit primitive
-- B-0665 (Integrate-as-choice-locus) — Integrate primitive
-- B-0666 (English-as-projection, I(D(x))=x) — Emit primitive (projection from Clifford-high-dim to English-low-dim with identity-preservation)
+- 081KSNY2Z0008QG0R003KG3JTG (Clifford-space embedding) — substrate 081KSNY2Z0008QG0R0031490KZ operates in
+- 081KSNY2Z0008QG0R000DZHHE5 (time-generator IScheduler) — temporal substrate 081KSNY2Z0008QG0R0031490KZ needs for Simulate
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation) — Limit primitive
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — Integrate primitive
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection, I(D(x))=x) — Emit primitive (projection from Clifford-high-dim to English-low-dim with identity-preservation)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — memes as Clifford geometric-algebra vectors in rotor-space (already substrate)
 - `.claude/skills/q-sharp/SKILL.md` — Pauli-operator substrate (composes via Clifford-algebra-of-Pauli-matrices)
 
 ## Substrate-honest framing
 
-POTENTIAL research direction per operator standing direction. P3 — depends on B-0876 + B-0878 reaching at least phase-1 maturity. Kestrel meta-observation applies (over-formalization-before-validation temptation); operator framing makes this the architectural-vision target, not a near-term implementation row.
+POTENTIAL research direction per operator standing direction. P3 — depends on 081KSNY2Z0008QG0R003KG3JTG + 081KSNY2Z0008QG0R000DZHHE5 reaching at least phase-1 maturity. Kestrel meta-observation applies (over-formalization-before-validation temptation); operator framing makes this the architectural-vision target, not a near-term implementation row.
 
 ## Full reasoning
 

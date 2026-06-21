@@ -41,7 +41,7 @@ When `git cherry-pick` fails (conflict or other error), the repo is left in `CHE
 
 | Layer | What it catches |
 |---|---|
-| Type contract (B-0503) | adapter must handle stale-branch as success |
+| Type contract (081KRHWGX0008QG0R0027YXBTB) | adapter must handle stale-branch as success |
 | Real-adapter strategy | delete-and-recreate from base |
 | Pre-mutation gate (PR #3447) | refuse on dirty working tree |
 | Pre-delete detach (PR #3447) | handle HEAD-on-recovery-branch case |

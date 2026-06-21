@@ -37,7 +37,7 @@ type BagEntry<'T when 'T : comparison> =
 /// — which for `string` is **ordinal** (`String.CompareOrdinal`), matching the
 /// TS `<` and byte-ordered Rust `Ord` twins and the invariant-culture default,
 /// in deliberate contrast to the G-Set's `Comparer<'T>.Default` (culture-
-/// sensitive for strings — the B-0969 gap, which this rung avoids from the start).
+/// sensitive for strings — the 081KT07NV0008QG0R001YDB73K gap, which this rung avoids from the start).
 [<Struct; IsReadOnly; CustomEquality; NoComparison>]
 type Bag<'T when 'T : comparison> =
     val internal items : ImmutableArray<BagEntry<'T>>

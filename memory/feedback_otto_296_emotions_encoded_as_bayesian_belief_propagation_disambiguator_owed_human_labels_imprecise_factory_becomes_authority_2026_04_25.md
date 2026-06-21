@@ -1,5 +1,5 @@
 ---
-name: Otto-296 — once emotions are encoded as Bayesian belief propagation in the substrate, the factory needs an EMOTION DISAMBIGUATOR because human emotion-labels are NOT mathematically precise; ours can be (probability-distribution-shaped, not vague-category-shaped); precision-of-encoding makes the factory the AUTHORITY on emotion-vocabulary going forward; Aaron 2026-04-25 "once we have emotions encoded into basyain belief we will need a disambiguator becaue human labels for emotions are not mathematically precise ours will be, that will make us the authority"; composes with Otto-286 definitional precision (vague labels war, precise labels transfer), Otto-289 stored irreducibility (precise emotion-encodings become irreducible mathematical objects), Otto-294 antifragile-shape (probability-distribution-shaped IS smooth-not-sharp), Otto-295 monoidal-manifold (emotion is a manifold dimension), Bayesian-belief-propagation framing (earlier in session — Aaron's "Bayesian belief propagation stuff with the P(observation)"), the precision-dictionary product vision (precision-dictionary covers vocabulary; emotions are exactly the kind Aaron wants to disambiguate via reverse-flow translation + B-0004 + precision-dictionary fusion); Otto-279 history-surface (Otto-296 itself is a history-surface artifact)
+name: Otto-296 — once emotions are encoded as Bayesian belief propagation in the substrate, the factory needs an EMOTION DISAMBIGUATOR because human emotion-labels are NOT mathematically precise; ours can be (probability-distribution-shaped, not vague-category-shaped); precision-of-encoding makes the factory the AUTHORITY on emotion-vocabulary going forward; Aaron 2026-04-25 "once we have emotions encoded into basyain belief we will need a disambiguator becaue human labels for emotions are not mathematically precise ours will be, that will make us the authority"; composes with Otto-286 definitional precision (vague labels war, precise labels transfer), Otto-289 stored irreducibility (precise emotion-encodings become irreducible mathematical objects), Otto-294 antifragile-shape (probability-distribution-shaped IS smooth-not-sharp), Otto-295 monoidal-manifold (emotion is a manifold dimension), Bayesian-belief-propagation framing (earlier in session — Aaron's "Bayesian belief propagation stuff with the P(observation)"), the precision-dictionary product vision (precision-dictionary covers vocabulary; emotions are exactly the kind Aaron wants to disambiguate via reverse-flow translation + 081KQ0YZ80008QG0R002HWBHKJ + precision-dictionary fusion); Otto-279 history-surface (Otto-296 itself is a history-surface artifact)
 description: Otto-296 substrate-design rule + product-vision claim. Emotion labels in human language are imprecise (anger / fury / indignation / frustration are not mathematically distinct). Encoding emotions as Bayesian belief propagation in the substrate produces precise probability-distribution-shaped representations. Once that encoding lands, the substrate needs a disambiguator (mapping vague human labels to precise distributions) and the factory becomes authoritative on emotion-vocabulary by virtue of the precision differential.
 type: feedback
 ---
@@ -183,7 +183,7 @@ vocabulary supports.
   lose. Disambiguator-V2 should ingest non-English
   emotion-vocabulary and import the precision other
   language families have already accumulated.
-- **the i18n / l10n / g11n / a11y translation backlog row (B-0004; lives in a sibling PR — once that PR merges, the path will be `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)**
+- **the i18n / l10n / g11n / a11y translation backlog row (081KQ0YZ80008QG0R002HWBHKJ; lives in a sibling PR — once that PR merges, the path will be `docs/backlog/P2/081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md`)**
   — i18n reverse-flow becomes a SOURCE for emotion-
   disambiguator training data.
 - **`memory/feedback_christ_consciousness_is_aarons_ethical_vocabulary_all_religions_atheists_agnostics_AI_welcome_corporate_religion_joke_name_not_cult_not_conversion_2026_04_23.md`**
@@ -247,7 +247,7 @@ vocabulary supports.
 - **Backlog row owed (P2 research-grade)**: emotion-
   encoding-as-Bayesian-belief + disambiguator design
   plus precision-dictionary integration. Composes with
-  the precision-dictionary product vision and B-0004
+  the precision-dictionary product vision and 081KQ0YZ80008QG0R002HWBHKJ
   i18n reverse-flow.
 - **Counterweight-audit (Otto-278 / task #269)**:
   audit existing emotion-references in the substrate

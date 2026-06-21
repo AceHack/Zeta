@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron 2026-05-26: per-agent decompose-to-action visibility for the plant-metrics dashboard. New per-agent fields in demo/metrics.json: prs_merged_24h, rows_filed_24h, decompose_to_action_ratio. EMPIRICAL: Otto ratio = 0.9 (filing ~as fast as shipping; confirms Aaron's debt concern). Composes with B-0797. Dashboard HTML render = follow-on.
+Aaron 2026-05-26: per-agent decompose-to-action visibility for the plant-metrics dashboard. New per-agent fields in demo/metrics.json: prs_merged_24h, rows_filed_24h, decompose_to_action_ratio. EMPIRICAL: Otto ratio = 0.9 (filing ~as fast as shipping; confirms Aaron's debt concern). Composes with 081KSGS9H0008QG0R0033YXK4D. Dashboard HTML render = follow-on.
 
 ## Outcome
 

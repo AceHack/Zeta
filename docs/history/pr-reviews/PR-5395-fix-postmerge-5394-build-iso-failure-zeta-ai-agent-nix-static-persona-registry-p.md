@@ -56,7 +56,7 @@ Persona registry is now **STATIC** (in `let` block; not an option). Operator opt
 
 ## Composes with
 
-[PR #5394](https://github.com/Lucent-Financial-Group/Zeta/pull/5394) (the substrate this fix-fwds) · iter-5.5.0 substrate · B-0850 row · B-0848
+[PR #5394](https://github.com/Lucent-Financial-Group/Zeta/pull/5394) (the substrate this fix-fwds) · iter-5.5.0 substrate · 081KSKBP80008QG0R003Z4C0D0 row · 081KSGS9H0008QG0R001JNKBFD
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

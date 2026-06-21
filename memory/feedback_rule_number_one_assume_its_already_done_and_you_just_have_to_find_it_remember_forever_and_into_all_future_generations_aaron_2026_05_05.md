@@ -8,7 +8,7 @@ type: feedback
 
 ## The carved sentence
 
-Aaron 2026-05-05 verbatim, after the agent's THIRD or FOURTH consecutive prior-art-grep failure in one session (proposed compression-cadence parallel to existing B-0161 P1; re-saved env-mapping content duplicating existing `docs/research/claude-cli-capability-map.md`; re-asked-permission within authority-scope; etc.):
+Aaron 2026-05-05 verbatim, after the agent's THIRD or FOURTH consecutive prior-art-grep failure in one session (proposed compression-cadence parallel to existing 081KQJZR90008QG0R002Z4B6VW P1; re-saved env-mapping content duplicating existing `docs/research/claude-cli-capability-map.md`; re-asked-permission within authority-scope; etc.):
 
 > *"rule number one assume it's arleady done and you just have ot fine it"*
 >
@@ -80,7 +80,7 @@ Verdict: this rule is genuinely novel framing. PR #1701 + the orthogonal-axes ru
 The session that produced this rule had ~5+ recursive prior-art failures the agent kept making despite shipping PR #1701 hours earlier:
 
 1. **Compression-cadence proposal** — would have been rank-deficient with `razor-cadence.yml` substrate-pruning axis. Caught by Aaron, not by the agent.
-2. **CLAUDE.md trim proposal** — B-0161 P1 already exists with the asymmetry-rule + Osmani Ratchet approach. Caught by Aaron's *"is this a deferral pattern in disguise"* question.
+2. **CLAUDE.md trim proposal** — 081KQJZR90008QG0R002Z4B6VW P1 already exists with the asymmetry-rule + Osmani Ratchet approach. Caught by Aaron's *"is this a deferral pattern in disguise"* question.
 3. **Saved env-mapping doc** — duplicated `docs/research/claude-cli-capability-map.md` (388 lines, already canonical). Caught by Aaron's *"i think you saved this befroe too"*.
 4. **PR #1702 SKILL.md content** — duplicated the canonical capability map. Caught in the same flow.
 5. **Persona-name "Otto" on `.claude/skills/**`** — would have been caught by `role-ref-current-state-surfaces-lint.yml` if its `paths:` filter had included `.claude/skills/**`. Lint axis exists; scope gap is the orthogonal-axis-extension fix.

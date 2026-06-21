@@ -31,8 +31,8 @@ Captures Aaron's 2026-05-30 inbound-dependency security doctrine: **"if we don't
 
 - Core languages move **glacially** + are the **most-vetted layer** in software; the attack surface is the **3rd-party supply chain** (npm/cargo/nuget — typosquatting, dependency-confusion, maintainer-takeover, xz-style backdoors).
 - **The move:** depend only on the vetted core; zero 3rd-party deps; rewrite current deps in-house over time → surface collapses to ~the languages = attack-vector-proof. (Slow-moving core is *why* rewrite-in-house is feasible — no moving target.)
-- **Composes with summonable BFT** — same bare-language multi-impl move yields **consensus AND hardening** at once (the non-Byzantine compiler-oracles are also the slowest-moving, most-vetted code). **B-0944 slice 1 already ships zero-dep.**
-- Composes references/upstreams (study-not-depend), B-0853 (sign what we ship vs harden what we depend on), B-0824 (deps program complement), dep-pin-search-first.
+- **Composes with summonable BFT** — same bare-language multi-impl move yields **consensus AND hardening** at once (the non-Byzantine compiler-oracles are also the slowest-moving, most-vetted code). **081KSV2WD0008QG0R00051XS0N slice 1 already ships zero-dep.**
+- Composes references/upstreams (study-not-depend), 081KSKBP80008QG0R000Y2B7HC (sign what we ship vs harden what we depend on), 081KSGS9H0008QG0R0031PBNGA (deps program complement), dep-pin-search-first.
 
 Doctrine, not a single task; the rewrite-program rows land when prioritized (not autonomously filed). Reindexed MEMORY.md.
 
@@ -63,9 +63,9 @@ Doctrine, not a single task; the rewrite-program rows land when prioritized (not
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-30T23:03:18Z on `memory/feedback_attack_vector_proof_via_no_third_party_deps_depend_only_on_slow_vetted_core_languages_rewrite_deps_in_house_aaron_2026_05_30.md`:43 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep B-0944 slice 1 marked unshipped**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep 081KSV2WD0008QG0R00051XS0N slice 1 marked unshipped**
 
-  This empirical anchor makes the memory substrate say the TS tri-boolean slice already ships at `src/Core.TypeScript/tri-boolean/`, but that directory is absent and the referenced B-0944 backlog row is still `status: open` with slice 1 only listed as future acceptance work. Future agents traversing `memory/MEMORY.md` will treat a non-existent zero-dep implementation as a completed security/consensus precedent, so this should be reframed as planned work or updated only after the implementation actually lands.
+  This empirical anchor makes the memory substrate say the TS tri-boolean slice already ships at `src/Core.TypeScript/tri-boolean/`, but that directory is absent and the referenced 081KSV2WD0008QG0R00051XS0N backlog row is still `status: open` with slice 1 only listed as future acceptance work. Future agents traversing `memory/MEMORY.md` will treat a non-existent zero-dep implementation as a completed security/consensus precedent, so this should be reframed as planned work or updated only after the implementation actually lands.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -81,7 +81,7 @@ Doctrine, not a single task; the rewrite-program rows land when prioritized (not
 - **`Copilot` (bot)** at 2026-05-30T23:03:57Z on `memory/feedback_attack_vector_proof_via_no_third_party_deps_depend_only_on_slow_vetted_core_languages_rewrite_deps_in_house_aaron_2026_05_30.md`:3 (association: NONE)
 
   <pre>
-  P1: This frontmatter currently says B-0944 slice 1 already ships zero dependencies, but the referenced TS implementation directory is not present in the repository and B-0944 only lists slice 1 as planned acceptance work. This retrieval key will propagate a false status claim to future memory consumers.
+  P1: This frontmatter currently says 081KSV2WD0008QG0R00051XS0N slice 1 already ships zero dependencies, but the referenced TS implementation directory is not present in the repository and 081KSV2WD0008QG0R00051XS0N only lists slice 1 as planned acceptance work. This retrieval key will propagate a false status claim to future memory consumers.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -95,7 +95,7 @@ Doctrine, not a single task; the rewrite-program rows land when prioritized (not
 - **`Copilot` (bot)** at 2026-05-30T23:03:57Z on `memory/feedback_attack_vector_proof_via_no_third_party_deps_depend_only_on_slow_vetted_core_languages_rewrite_deps_in_house_aaron_2026_05_30.md`:44 (association: NONE)
 
   <pre>
-  P1: This empirical anchor references `src/Core.TypeScript/tri-boolean/` as already shipped, but that path does not exist in the repository and B-0944 currently describes slice 1 as future work. Please avoid recording planned work as shipped state in the memory file.
+  P1: This empirical anchor references `src/Core.TypeScript/tri-boolean/` as already shipped, but that path does not exist in the repository and 081KSV2WD0008QG0R00051XS0N currently describes slice 1 as future work. Please avoid recording planned work as shipped state in the memory file.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -119,8 +119,8 @@ inbound-dependency security doctrine: core languages move glacially + are the mo
 the attack surface is the 3rd-party supply chain; depend only on the vetted core, pull in zero
 3rd-party deps, rewrite current deps in-house over time -> surface collapses to ~the languages =
 attack-vector-proof. Composes with summonable-BFT (same bare-language multi-impl move yields
-consensus AND hardening; B-0944 slice-1 = zero deps) + references/upstreams (study-not-depend) +
-B-0853 (sign what we ship) + B-0824 (deps program complement) + dep-pin-search-first. Reindexed
+consensus AND hardening; 081KSV2WD0008QG0R00051XS0N slice-1 = zero deps) + references/upstreams (study-not-depend) +
+081KSKBP80008QG0R000Y2B7HC (sign what we ship) + 081KSGS9H0008QG0R0031PBNGA (deps program complement) + dep-pin-search-first. Reindexed
 MEMORY.md.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
@@ -140,7 +140,7 @@ memory(doctrine fix): cite PR #6158 for the slice-1-shipped anchor (w…
 …as flagged planned-as-shipped; slice 1 has since merged)
 
 Addresses 3 review threads on #6160 (Codex + 2 Copilot): the empirical anchor + frontmatter
-claimed B-0944 slice 1 ships zero-dep at src/Core.TypeScript/tri-boolean/, flagged as
+claimed 081KSV2WD0008QG0R00051XS0N slice 1 ships zero-dep at src/Core.TypeScript/tri-boolean/, flagged as
 recording-planned-work-as-shipped because the path was not on the branch base. Slice 1 has since
 merged (PR #6158), so the path exists on main + the claim is now true; cite #6158 explicitly to
 make the shipped-status verifiable rather than asserted.

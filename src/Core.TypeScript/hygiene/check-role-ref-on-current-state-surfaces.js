@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // check-role-ref-on-current-state-surfaces.ts — TS port of the .sh script.
 // Validates current-state surfaces use role-refs, not direct name attribution.
-// Origin: B-0162 (5 catches on PR #1202 past mechanization breakeven).
+// Origin: 081KQJZR90008QG0R000V16E1C (5 catches on PR #1202 past mechanization breakeven).
 // Rule 0: TS over .sh for non-install-graph scripts.
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";

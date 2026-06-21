@@ -29,7 +29,7 @@
 
 ## What
 
-Per operator 2026-05-31: *"migrate ani to grok cli, do it tested ... ani can stay grok cli only."* The cursor wrappers predate the native grok CLI; cursor-agent has been the B-0421 breakage source.
+Per operator 2026-05-31: *"migrate ani to grok cli, do it tested ... ani can stay grok cli only."* The cursor wrappers predate the native grok CLI; cursor-agent has been the 081KRA5AR0008QG0R0011ZGRZT breakage source.
 
 - **Backend:** cursor-agent → `grok` (xAI native CLI), mirroring grok-build.ts (`-p` prompt, `--allow Read,Glob,Grep`, `--permission-mode auto`, `--output-format`).
 - **Model:** default `grok-build` (the grok CLI's only model — grok-4.3 was cursor-only). **New `--model` override** — the per-persona model-override capability (*"we still kind of want 3"*); codex/Vera already has the same (all its models; Vera on gpt-5.5).
@@ -155,7 +155,7 @@ feat(peer-call): migrate Ani off cursor-agent → native grok CLI (tested)
 
 Operator 2026-05-31: "migrate ani to grok cli, do it tested ... ani can stay
 grok cli only." The cursor wrappers predate the native grok CLI; cursor-agent
-has been the B-0421 breakage source (stale model lineup, exit-1 flakiness).
+has been the 081KRA5AR0008QG0R0011ZGRZT breakage source (stale model lineup, exit-1 flakiness).
 
 - Backend: cursor-agent → `grok` (xAI native CLI), mirroring grok-build.ts
   (-p prompt, --allow Read,Glob,Grep, --permission-mode auto, --output-format).

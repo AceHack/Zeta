@@ -3,7 +3,7 @@
 Tracks the two load-bearing PM-2 effectiveness metrics over time.
 Updated by the PM-2 role at the close of each forward-radar cycle.
 
-Per B-0145 quality test: PM-2 is NOT measured by memo volume or
+Per 081KQGDBJ0008QG0R000RWAA67 quality test: PM-2 is NOT measured by memo volume or
 B-row count. PM-2 IS measured by Lead-time% and Action-rate%.
 
 ---
@@ -48,7 +48,7 @@ to evaluate.
 
 _First quarterly review due: ~2026-08-01 (three months after
 role activation 2026-05-13). If Lead-time% < 10% and Action-rate%
-< 20% after 12 cycles, review role charter — per B-0145
+< 20% after 12 cycles, review role charter — per 081KQGDBJ0008QG0R000RWAA67
 anti-patterns: "more bureaucracy" and "research without action."_
 
 ---

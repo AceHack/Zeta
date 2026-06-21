@@ -35,7 +35,7 @@ Adds a PR-preservation archive entry for PR #5275 under `docs/pr-discussions/`, 
 
 **@copilot-pull-request-reviewer** (2026-05-26T20:21:24Z):
 
-P1: The archived thread reference points at `docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md`, but there is no `B-0824` row anywhere under `docs/backlog/` in this branch. If this archive is meant to be navigable, please verify the PR/thread metadata and either regenerate the archive from GitHub or correct the referenced path so it matches the actual file that was reviewed.
+P1: The archived thread reference points at `docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md`, but there is no `081KSGS9H0008QG0R0031PBNGA` row anywhere under `docs/backlog/` in this branch. If this archive is meant to be navigable, please verify the PR/thread metadata and either regenerate the archive from GitHub or correct the referenced path so it matches the actual file that was reviewed.
 
 ## General comments
 
@@ -45,4 +45,4 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 
 ### @AceHack (2026-05-26T21:30:18Z)
 
-Verified stale-but-fresh: `B-0824-...md` exists on origin/main (sha f3cb9e7e0c3...; 147461 bytes) but the branch was forked before that merged. Per `.claude/rules/blocked-green-ci-investigate-threads.md` "Verify-also-on-stale-but-fresh-looking findings" — true at thread-filing time, self-healed after sibling merge. Resolving no-op.
+Verified stale-but-fresh: `081KSGS9H0008QG0R0031PBNGA-...md` exists on origin/main (sha f3cb9e7e0c3...; 147461 bytes) but the branch was forked before that merged. Per `.claude/rules/blocked-green-ci-investigate-threads.md` "Verify-also-on-stale-but-fresh-looking findings" — true at thread-filing time, self-healed after sibling merge. Resolving no-op.

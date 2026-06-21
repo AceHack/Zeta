@@ -38,7 +38,7 @@
 //   - working directory set to tools/tla/specs so tlapm resolves module
 //     names (and the .tlaps fingerprint dir) beside the spec.
 //   - Z3 (SMT backend) must be on PATH for the SMT obligations; the apt/
-//     brew manifests pin it (B-1009).
+//     brew manifests pin it (081KT2T2J0008QG0R001X9PWKR).
 
 import { existsSync, statSync } from "node:fs";
 import { delimiter, join } from "node:path";

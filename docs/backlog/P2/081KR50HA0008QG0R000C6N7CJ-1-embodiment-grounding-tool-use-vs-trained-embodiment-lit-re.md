@@ -1,9 +1,8 @@
 ---
-id: B-0026.1
-zetaid: 081KR50HA0008QG0R000C6N7CJ
+id: 081KR50HA0008QG0R000C6N7CJ
 priority: P2
 status: open
-title: "B-0026.1 — Lit review: tool-use-vs-trained-embodiment grounding distinction (Otto-340 structural nuance)"
+title: "081KR50HA0008QG0R000C6N7CJ — Lit review: tool-use-vs-trained-embodiment grounding distinction (Otto-340 structural nuance)"
 created: 2026-05-09
 last_updated: 2026-05-09
 parent: 081KQ0YZ80008QG0R001WZ4JE8
@@ -14,14 +13,14 @@ effort: M
 
 ---
 
-# B-0026.1 — Lit review: tool-use-vs-trained-embodiment grounding distinction
+# 081KR50HA0008QG0R000C6N7CJ — Lit review: tool-use-vs-trained-embodiment grounding distinction
 
-**Slice of:** [B-0026](B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)
+**Slice of:** [081KQ0YZ80008QG0R001WZ4JE8](081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)
 
 ## What
 
-Produce a research doc at `docs/research/B-0026.1-tool-use-vs-trained-embodiment-grounding.md` that
-cleanly answers the structurally most-important question surfaced in B-0026:
+Produce a research doc at `docs/research/081KR50HA0008QG0R000C6N7CJ-tool-use-vs-trained-embodiment-grounding.md` that
+cleanly answers the structurally most-important question surfaced in 081KQ0YZ80008QG0R001WZ4JE8:
 
 > "A language-model that has access to a sim via tools is not the same as a language-model that was
 > *trained on* sim experience. Otto-340's claim was about the latter (substrate-shaping). Tool-use via
@@ -40,16 +39,16 @@ Cover, per search-first-authority (Otto-364), current state of:
    demonstrate anything resembling grounding, or only planning over abstract action descriptions?
 4. **Sim-to-real and embodied alignment** — any Anthropic public work on embodied safety, plus RLHF-with-
    embodied-reward literature.
-5. **The Helen Keller minimum-channel hypothesis** (pointer to B-0026.6 parallel track) — does *any*
+5. **The Helen Keller minimum-channel hypothesis** (pointer to 081KR50HA0008QG0R000MRSMAB parallel track) — does *any*
    single non-linguistic channel provide meaningful grounding? Note the parallel child and avoid duplicating it.
 
 ## Deliverable
 
-`docs/research/B-0026.1-tool-use-vs-trained-embodiment-grounding.md` with:
+`docs/research/081KR50HA0008QG0R000C6N7CJ-tool-use-vs-trained-embodiment-grounding.md` with:
 
 - Section per research cluster above.
 - Clear verdict on whether tool-use-via-sim can challenge Otto-340, or whether only trained-embodiment can.
-- Platform implications for B-0026.2 (which platforms support both modes?).
+- Platform implications for 081KR50HA0008QG0R0008PPTEK (which platforms support both modes?).
 - Otto-340 status: preserved / weakened / architecture-contingent / refuted — with citations.
 
 ## Acceptance criteria
@@ -62,14 +61,14 @@ Cover, per search-first-authority (Otto-364), current state of:
 
 ## Out of scope
 
-- Platform selection (B-0026.2).
-- Any code / spike (B-0026.3+).
-- Detailed Helen Keller analysis (B-0026.6 parallel child).
+- Platform selection (081KR50HA0008QG0R0008PPTEK).
+- Any code / spike (081KR50HA0008QG0R002ZRCAF7+).
+- Detailed Helen Keller analysis (081KR50HA0008QG0R000MRSMAB parallel child).
 
 ## Pre-start checklist
 
 - Prior-art search: skill router checked (no existing embodiment-grounding skill); `docs/research/` grepped
-  for "embodiment" — no existing doc; B-0199 (ROM/gameplay embodiment analog, P3) noted as composes_with but
+  for "embodiment" — no existing doc; 081KQTPYE0008QG0R0028GRW88 (ROM/gameplay embodiment analog, P3) noted as composes_with but
   does not duplicate this lit-review slice; Otto-340 feedback file is context, not prior art.
 - Dependency check: no `depends_on` — can start immediately.
 - Rule 0: no `.sh` files; doc-only output.

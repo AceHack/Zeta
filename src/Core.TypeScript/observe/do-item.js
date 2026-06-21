@@ -1,5 +1,5 @@
 /**
- * src/Core.TypeScript/observe/do-item.ts — effectful `do_item`, Phase 1 (B-0964).
+ * src/Core.TypeScript/observe/do-item.ts — effectful `do_item`, Phase 1 (081KT07NV0008QG0R001CBQ2X2).
  *
  * `do_item` is the first action kind with a REAL side-effect (the agent actually
  * does work). The other kinds `execute` handles (`free_time`/`self_reflect`) have
@@ -26,7 +26,7 @@
  * Phase 1 (this file): the envelope + port + transition, fake executor, no dep,
  * no shell. Phase 2 wires real impls behind `CommandExecutor` (local OCI runtime —
  * podman default, swappable — for real work; just-bash in-memory for text; per
- * B-0964 §2 / §2.2 review-folded routing).
+ * 081KT07NV0008QG0R001CBQ2X2 §2 / §2.2 review-folded routing).
  * Integrating `executeDoItem` into the unified `execute`/log/sink is a follow-up
  * (Phase 1 keeps it a sibling so the existing `execute` + its tests stay green).
  *
@@ -42,7 +42,7 @@
  * Composes with (exact paths):
  *   - src/Core.TypeScript/observe/observe.ts (simulate = the single reducer; World / BacklogItem)
  *   - src/Core.TypeScript/observe/execute.ts (EventSink<E> = the durability port reused here for observations; AppendOutcome)
- *   - docs/backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md
+ *   - docs/backlog/P1/081KT07NV0008QG0R001CBQ2X2-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md (Result<T, TFeedback>)
  */
@@ -71,7 +71,7 @@ export function applyObservation(world, observation) {
 }
 /**
  * Replay the observation log. Pure fold — **no executor parameter**, so replay cannot
- * re-run the command (the B-0964 §0 correctness guarantee, enforced by the type).
+ * re-run the command (the 081KT07NV0008QG0R001CBQ2X2 §0 correctness guarantee, enforced by the type).
  */
 export function foldObservations(initial, observations) {
     return observations.reduce(applyObservation, initial);

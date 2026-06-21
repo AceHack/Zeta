@@ -1,6 +1,5 @@
 ---
-id: B-0357
-zetaid: 081KR50HA0008QG0R0033TN4H9
+id: 081KR50HA0008QG0R0033TN4H9
 priority: P1
 status: closed
 closed: 2026-05-09
@@ -17,7 +16,7 @@ type: friction-reducer
 tags: [formal-verification, z3, shadow-catch-30, agenda, trajectory]
 ---
 
-# B-0357 — Replace tautology Z3 agenda/trajectory proofs
+# 081KR50HA0008QG0R0033TN4H9 — Replace tautology Z3 agenda/trajectory proofs
 
 ## What
 
@@ -71,7 +70,7 @@ Vera (Codex) authored the original proofs (PR #2175, merged
           chain, not direct self-negation
       (3) different variable names don't change the proof — arithmetic
           structure is independent of identifier choice
-      (4) adversarial reviewer: B-0357 backlog item from shadow catch #30
+      (4) adversarial reviewer: 081KR50HA0008QG0R0033TN4H9 backlog item from shadow catch #30
 - [x] Tests updated in Z3.Laws.Tests.fs (20/20 pass)
 - [x] Old lemmas preserved as [TEACHING] comments in Program.fs
 

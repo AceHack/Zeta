@@ -29,7 +29,7 @@
 
 Pushes the corrected primitive **status** into the living `docs/PRIMITIVE-REGISTRY.md` (substrate-or-it-didn't-happen). The Event/reactive *serializable deferred execution = self-evolving sagas* line goes ⬜ → 🚧, now carrying what shipped:
 - **Bonsai-subset serializer ✅ 4/4** — the expr-tree half, TS/F#/C#/Rust byte-locked on the shared golden vectors + accumulate-mode (#6433/#6436/#6429/#6438/#6440/#6442).
-- **Resume engine 🚧 1/4** — TS reference (#6446), restore-not-replay CEK saga kernel; F#/C#/Rust ferry next (B-0976).
+- **Resume engine 🚧 1/4** — TS reference (#6446), restore-not-replay CEK saga kernel; F#/C#/Rust ferry next (081KT07NV0008QG0R003BE6MJ2).
 
 (The Comms/Bus line already read 🚧 git-native Bus (TS only) — accurate; left unchanged.)
 
@@ -86,7 +86,7 @@ Push the corrected primitive status into the living registry (substrate-or-it-di
 the Event/reactive 'serializable deferred execution = self-evolving sagas' line ⬜ → 🚧, now
 carrying the shipped state — Bonsai-subset serializer ✅ 4/4 (TS/F#/C#/Rust byte-locked +
 accumulate, #6433/#6436/#6429/#6438/#6440/#6442) and the resume engine 🚧 1/4 (TS reference
-#6446, restore-not-replay CEK kernel; F#/C#/Rust ferry next per B-0976). Bus line already
+#6446, restore-not-replay CEK kernel; F#/C#/Rust ferry next per 081KT07NV0008QG0R003BE6MJ2). Bus line already
 read 🚧 git-native Bus (TS only) — accurate; no change there.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

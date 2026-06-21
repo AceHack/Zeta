@@ -1,6 +1,5 @@
 ---
-id: B-0185
-zetaid: 081KQNJ500008QG0R002E583TF
+id: 081KQNJ500008QG0R002E583TF
 priority: P2
 status: open
 title: Delta-CRDT property tests redesign — careful single-pass design after #1426 close
@@ -17,7 +16,7 @@ tags: [c3, fscheck, delta-crdt, anti-entropy, redesign, math-proofs-assessment]
 type: friction-reducer
 ---
 
-# B-0185 — Delta-CRDT property tests redesign
+# 081KQNJ500008QG0R002E583TF — Delta-CRDT property tests redesign
 
 ## What happened
 

@@ -1,6 +1,5 @@
 ---
-id: B-0867.19
-zetaid: 081KSNY2Z0008QG0R0006492K2
+id: 081KSNY2Z0008QG0R0006492K2
 priority: P3
 status: open
 title: REST file-create auto-fast-forward on stale base — empirical verification spike (operator hypothesis 2026-05-28)
@@ -47,14 +46,14 @@ Empirical verification spike. Small investigation (1-2 hours):
   - The hypothesis
   - The test scenarios run
   - The observed behavior (with curl commands and response samples)
-  - Composability with the event-sourcing pattern (B-0867.2 / B-0874)
+  - Composability with the event-sourcing pattern (081KSNY2Z0008QG0R001K6HJ7Z / 081KSNY2Z0008QG0R003X1QWYG)
   - Failure modes if any (rate limits; ref contention; concurrent-write resolution)
-- If hypothesis holds: composes_with note added to B-0867.2 + B-0874 confirming REST-API path is preferred over git-push for event append
+- If hypothesis holds: composes_with note added to 081KSNY2Z0008QG0R001K6HJ7Z + 081KSNY2Z0008QG0R003X1QWYG confirming REST-API path is preferred over git-push for event append
 - If hypothesis fails: documentation of why, with workarounds
 
 ## Substrate-honest framing
 
-POTENTIAL spike per operator standing direction. P3 because it's a small spike; outcome informs B-0867.2 + B-0874 implementation but doesn't block them.
+POTENTIAL spike per operator standing direction. P3 because it's a small spike; outcome informs 081KSNY2Z0008QG0R001K6HJ7Z + 081KSNY2Z0008QG0R003X1QWYG implementation but doesn't block them.
 
 ## Full reasoning
 

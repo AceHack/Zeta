@@ -41,7 +41,7 @@ Deferred-PR landing under pure-git tier discipline (branch pushed when GraphQL=0
 | 12:21Z | `otto-cli-b0037.2-audit-2026-05-16-1131z` (peer MD018 branch) |
 | 12:36Z | `otto-cli-b0206-audit-2026-05-16-1207z` (bounced back) |
 
-Defense pattern (`git branch --show-current` + `git switch -c <fresh> origin/main`) 100% effective. B-0519 RCA confirmed at high cadence.
+Defense pattern (`git branch --show-current` + `git switch -c <fresh> origin/main`) 100% effective. 081KRHWGX0008QG0R001HMWM1W RCA confirmed at high cadence.
 
 ## Outcome
 

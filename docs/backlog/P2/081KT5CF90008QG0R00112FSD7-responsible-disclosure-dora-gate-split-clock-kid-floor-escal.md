@@ -1,6 +1,5 @@
 ---
-id: B-1012
-zetaid: 081KT5CF90008QG0R00112FSD7
+id: 081KT5CF90008QG0R00112FSD7
 priority: P2
 status: open
 title: "Responsible-disclosure DORA gate — split-clock metric (minimize discovery→sent, follow coordinated sent→public), hard-stop feature dev on slip, kid-floor escalation (unamendable, authorities/NCMEC, predetermined legal human-routed path) (Aaron 2026-06-03)"
@@ -40,7 +39,7 @@ Found vulnerability → **logged immediately** (an unlogged exploit never trips 
 clock starts → gate armed. The private window is correct (per the disclosure rule); it must be
 **in a pipeline moving toward sent**, not found-and-shelved.
 
-### Kid-floor escalation (composes with B-0926)
+### Kid-floor escalation (composes with 081KSRGFP0008QG0R00091PP56)
 
 An unreported exploit on the child-safety surface is a **floor matter** → strongest rails:
 
@@ -61,7 +60,7 @@ An unreported exploit on the child-safety surface is a **floor matter** → stro
 
 ## Composes with
 
-- B-0926 (constitutional kid-safety floor) — the kid-floor escalation inherits floor properties
+- 081KSRGFP0008QG0R00091PP56 (constitutional kid-safety floor) — the kid-floor escalation inherits floor properties
 - `.claude/rules/methodology-hard-limits.md` (the floor this operates above)
 - `.claude/rules/responsible-disclosure-private-window-prompt-to-vendor-never-hoard-kid-floor-escalation` (the discipline; rule landing this row implements)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (named-human legal routing)

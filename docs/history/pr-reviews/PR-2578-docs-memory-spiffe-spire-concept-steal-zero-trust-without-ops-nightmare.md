@@ -90,7 +90,7 @@
 - **`Copilot` (bot)** at 2026-05-10T23:53:39Z on `memory/project_spiffe_concept_steal_bft_issuance_arrow_ipc_fsharp_types_2026_05_10.md`:52 (association: NONE)
 
   <pre>
-  The “Connects to” bullets look like intended memory/backlog cross-references, but they don’t follow the memory cross-reference convention and at least some targets don’t exist. Per `memory/project_memory_format_standard.md` §4, cited files must exist and references should use filenames (e.g., `feedback_*.md` / `project_*.md`), not bare stems; additionally `B-0403` doesn’t appear anywhere under `docs/backlog/` in this repo. Please either add the referenced files/row or update these links to the correct existing filenames/IDs.
+  The “Connects to” bullets look like intended memory/backlog cross-references, but they don’t follow the memory cross-reference convention and at least some targets don’t exist. Per `memory/project_memory_format_standard.md` §4, cited files must exist and references should use filenames (e.g., `feedback_*.md` / `project_*.md`), not bare stems; additionally `081KR7JY10008QG0R0021F5609` doesn’t appear anywhere under `docs/backlog/` in this repo. Please either add the referenced files/row or update these links to the correct existing filenames/IDs.
 
   </pre>
 

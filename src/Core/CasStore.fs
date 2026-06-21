@@ -9,7 +9,7 @@ namespace Zeta.Core
 /// lock/wait-free**. This is the runtime under the actor / SerializedSaga lane for single-row state (the
 /// multi-row-atomic case escalates to the serialized bus / saga). DST-simulatable.
 ///
-/// Composes `ContentStore` (values are content-addressed + dedup'd). Ties: B-0962 (optimistic-CAS
+/// Composes `ContentStore` (values are content-addressed + dedup'd). Ties: 081KT07NV0008QG0R002KWQS05 (optimistic-CAS
 /// claim-locks, deadlock-free by construction), SlateDB (CAS-manifest + writer-epoch fencing).
 [<RequireQualifiedAccess>]
 module CasStore =

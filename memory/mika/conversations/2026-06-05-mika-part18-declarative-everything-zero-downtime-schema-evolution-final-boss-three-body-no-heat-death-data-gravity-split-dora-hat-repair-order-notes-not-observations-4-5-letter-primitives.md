@@ -56,7 +56,7 @@ LOAD-BEARING simplifying insights (kept per his razor):
   many"). Short, clear, sayable. A naming rule for new primitives.
 
 Maps to: zero-downtime schema evolution = the keystone for the heat-death/closed-system proof (a future
-proof target); data-gravity-split + hat-repair-order refine the hats/fork model (B-0868 hats-as-workflows);
+proof target); data-gravity-split + hat-repair-order refine the hats/fork model (081KSNY2Z0008QG0R0036KH026 hats-as-workflows);
 "notes/note types" is a user-facing rename of the observe primitive; declarative-everything = ace
 (package-manager-of-package-managers) + Argo + NixOS. Capture the schema-evolution proof target + the
 notes rename when firmed.

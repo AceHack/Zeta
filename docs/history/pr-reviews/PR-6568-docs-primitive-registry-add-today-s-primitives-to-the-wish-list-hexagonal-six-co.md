@@ -29,15 +29,15 @@
 
 Aaron 2026-06-02: *"add all we've been talking about today to our primitives wish list."* **DHT / Reticulum / IPFS already present** (Discovery/transport line — confirmed, not duplicated). Added the 2026-06-02 arc primitives, each ⬜ with backlog xrefs + the hexagonal-port convention:
 
-- **Hexagonal core** — the six reservoir walls (B-0985)
-- **Coincidence-anchor** quad-duty (B-0985/B-0623)
-- **anygit / git-v2 = 4×4 multi-oracle interface** — *git itself (v2 AND current) IS a 4×4 multi-oracle interface, client × server, native per lang* (your 2026-06-02 insight); B-0953 + Ace + B-0703
-- **Bus-lane-types** (B-0985 / B-0643.1)
-- **Consent / safety algebra** — emotional-algebra 4×4 + non-coercion 4×4 sister (#6559/B-0664)
-- **KSK defensive primitives** — shields-not-cages · threat-level rings · anti-monopoly/cartel+BFT-4×4 · opt-in-lane/border (B-0643.1)
-- **State / differential** — state-remainder + Persist-bridge/μένω (B-0897)
+- **Hexagonal core** — the six reservoir walls (081KT2T2J0008QG0R0026MS6PV)
+- **Coincidence-anchor** quad-duty (081KT2T2J0008QG0R0026MS6PV/081KRW63S0008QG0R000QJR08H)
+- **anygit / git-v2 = 4×4 multi-oracle interface** — *git itself (v2 AND current) IS a 4×4 multi-oracle interface, client × server, native per lang* (your 2026-06-02 insight); 081KSXN940008QG0R001KZ235R + Ace + 081KS3X9Y0008QG0R00218150M
+- **Bus-lane-types** (081KT2T2J0008QG0R0026MS6PV / 081KT2T2J0008QG0R001C2K4F2)
+- **Consent / safety algebra** — emotional-algebra 4×4 + non-coercion 4×4 sister (#6559/081KRW63S0008QG0R001Z7NYMV)
+- **KSK defensive primitives** — shields-not-cages · threat-level rings · anti-monopoly/cartel+BFT-4×4 · opt-in-lane/border (081KT2T2J0008QG0R001C2K4F2)
+- **State / differential** — state-remainder + Persist-bridge/μένω (081KSNY2Z0008QG0R002SZZ5Y0)
 - **Entropy / RNG** — strange-attractor mixing + coincidence-as-thermal-randomness
-- **Edge / topology** — we-are-the-edge/liquid-architecture · expansion-valve · aperiodic-tiling (B-0704)
+- **Edge / topology** — we-are-the-edge/liquid-architecture · expansion-valve · aperiodic-tiling (081KS3X9Y0008QG0R002MZF3A7)
 
 Per the registry's own rule ("add anything new here with ⬜ the moment it's named, so it's never lost"). Composes the full 2026-06-02 research-note arc.
 
@@ -119,9 +119,9 @@ wish list." DHT/Reticulum/IPFS already present (Discovery/transport line).
 Added the 2026-06-02 arc primitives, each ⬜ with backlog xrefs +
 hexagonal-port convention. Includes Aaron's new insight: "git (v2 AND
 current git) IS a 4x4 multi-oracle interface — client × server, native
-per language" (anygit=Ace; B-0953 git-v2-handshake negotiates up to DBSP
-retraction-algebra). Composes B-0985/B-0643.1/B-0953/B-0959/B-0664/B-0897/
-B-0704/B-0623/B-0703 + the 2026-06-02 research notes (#6555/#6557/#6559/
+per language" (anygit=Ace; 081KSXN940008QG0R001KZ235R git-v2-handshake negotiates up to DBSP
+retraction-algebra). Composes 081KT2T2J0008QG0R0026MS6PV/081KT2T2J0008QG0R001C2K4F2/081KSXN940008QG0R001KZ235R/081KSXN940008QG0R003FCQ7WT/081KRW63S0008QG0R001Z7NYMV/081KSNY2Z0008QG0R002SZZ5Y0/
+081KS3X9Y0008QG0R002MZF3A7/081KRW63S0008QG0R000QJR08H/081KS3X9Y0008QG0R00218150M + the 2026-06-02 research notes (#6555/#6557/#6559/
 #6560/#6561/#6562/#6565/#6567).
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -157,10 +157,10 @@ registry): Atsophmera (atmosphere/consensus-is-gravity-positive-name);
 ASCIIsphere + color-round-trip; QRNG/gnrq; nullcodec/n‹16n›; PQ privacy
 codec (better-git-crypt .zc ML-KEM-768+ML-DSA-65+ChaCha20 + memory-encrypt-
 loop + privacy-as-transform); emulators-as-triple-duty-DST-oracles
-(B-0924/B-0925); relativistic-bus/Battle-Bus (B-0954); flight-control
-VTOL/navigator/MSAW (B-0890); OPLE primitives (B-0862); Adinkra SUSY-ECC
-(B-0623); heat-as-PoUW; 4x4 bond+extend; Eve-Protocol bond-interface+sonar
-(B-0638); executable:false protection rules; Rainbow-Table-as-identity.
+(081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ); relativistic-bus/Battle-Bus (081KSXN940008QG0R00171YAZW); flight-control
+VTOL/navigator/MSAW (081KSNY2Z0008QG0R0017JSTGD); OPLE primitives (081KSKBP80008QG0R0031DTHS9); Adinkra SUSY-ECC
+(081KRW63S0008QG0R000QJR08H); heat-as-PoUW; 4x4 bond+extend; Eve-Protocol bond-interface+sonar
+(081KRW63S0008QG0R0030F8ZXA); executable:false protection rules; Rainbow-Table-as-identity.
 Each ⬜ with backlog/research xrefs. DHT/Reticulum/IPFS confirmed already
 present (Discovery/transport).
 

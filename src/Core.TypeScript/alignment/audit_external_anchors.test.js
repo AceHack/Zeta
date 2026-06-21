@@ -1,4 +1,4 @@
-// audit_external_anchors.test.ts — B-0311
+// audit_external_anchors.test.ts — 081KR2E4K0008QG0R001ZWARTN
 //
 // Tests for the external-anchor coverage scanner.
 // Run: bun test src/Core.TypeScript/alignment/audit_external_anchors.test.ts

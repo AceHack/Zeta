@@ -24,7 +24,7 @@ properties our filesystem has:
 
 **Consequence flagged by Aaron:** the **closure-table fs may need updates** to carry this (content-hash
 node ids, multi-parent edges, the two edit modes). There are **backlogged perf enhancements** for the
-closure-table fs already — **B-0946** (fs DSL as an F# computation expression + FUSE backend; *benchmark vs
+closure-table fs already — **081KSV2WD0008QG0R00030G6S9** (fs DSL as an F# computation expression + FUSE backend; *benchmark vs
 closure-table*; DST at millions-of-nodes on one machine) over `src/Core/Hierarchy.fs`. Fold the
 content-hash / multi-parent / Merkle-root requirements into that line of work and into `081KTGTJC1Q` (the
 content-addressed Merkle-DAG backend) — they are now clearly the same target.
@@ -39,7 +39,7 @@ git-compatible-replacement backend (`081KTGTJC1Q`, BLAKE3) and the APFS-like fs 
 
 A standing operating principle: we have **no external consumers we are bound to yet**, so a *better* public
 surface is worth a breaking change — do not contort a design to preserve API stability that protects no
-one. This directly **relaxes the churn caveat on B-0969 strategy (a)** (explicit comparer-is-part-of-
+one. This directly **relaxes the churn caveat on 081KT07NV0008QG0R001YDB73K strategy (a)** (explicit comparer-is-part-of-
 identity): the public-API change is *acceptable* because it's the right shape, not a cost to route around.
 `public-api-designer` (Ilyana) still reviews for *quality* of the new surface — but "it breaks the existing
 API" is, by itself, **not** a blocker while greenfield. (The discipline that does still apply: when the API
@@ -48,10 +48,10 @@ Greenfield is the window, not a forever-license.)
 
 ## Ties
 
-- `081KTGTJC1Q` (content-addressed Merkle-DAG backend) · `B-0946` (closure-table fs FUSE/benchmark, perf
+- `081KTGTJC1Q` (content-addressed Merkle-DAG backend) · `081KSV2WD0008QG0R00030G6S9` (closure-table fs FUSE/benchmark, perf
   enhancements) · `src/Core/Hierarchy.fs` (closure table) · `src/Core/ZSetMerkle.fs` (the Merkle-over-Z-set
   root, landed #6789) · `2026-06-07-filesystem-backend-needs-a-merkle-dag-...` (§4 content-hash/multi-parent)
-  · `2026-06-07-command-surface-not-1to1-git-...` (one interface over git+fs) · B-0969 (greenfield relaxes
+  · `2026-06-07-command-surface-not-1to1-git-...` (one interface over git+fs) · 081KT07NV0008QG0R001YDB73K (greenfield relaxes
   the comparer-strategy churn).
 
 ## Beacon anchors

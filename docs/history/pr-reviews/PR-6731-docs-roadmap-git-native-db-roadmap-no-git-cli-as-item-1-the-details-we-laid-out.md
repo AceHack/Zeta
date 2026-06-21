@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: save the no-git-CLI criterion as roadmap item #1 + all the details we laid out, so we don't forget. Prepends `docs/ROADMAP.md` (legacy DBSP roadmap preserved below) with: item #1 NO GIT CLI (DB replaces git; git-reach = gap detector; MCP+CLI surfaces), the 3 minimal nouns (Log codec F# reference landed #6730), the per-stream format treaty (git→YAML, fs→CBOR, MD+frontmatter treaty, **per-file-TYPE plugins open/closed**), cells/hosts, sequence, reliability, parked items. Hub→satellite design doc + B-0959.
+Aaron: save the no-git-CLI criterion as roadmap item #1 + all the details we laid out, so we don't forget. Prepends `docs/ROADMAP.md` (legacy DBSP roadmap preserved below) with: item #1 NO GIT CLI (DB replaces git; git-reach = gap detector; MCP+CLI surfaces), the 3 minimal nouns (Log codec F# reference landed #6730), the per-stream format treaty (git→YAML, fs→CBOR, MD+frontmatter treaty, **per-file-TYPE plugins open/closed**), cells/hosts, sequence, reliability, parked items. Hub→satellite design doc + 081KSXN940008QG0R003FCQ7WT.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

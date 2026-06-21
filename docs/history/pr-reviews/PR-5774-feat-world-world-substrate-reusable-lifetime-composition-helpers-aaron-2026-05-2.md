@@ -50,8 +50,8 @@ Per Aaron 2026-05-28 two substantive substrate-engineering substrate questions:
 ## Composes with
 
 - composed-lifetime.ts PR #5771 (base dispatch)
-- B-0832 civ-sim (game-world)
-- B-0867 workflow engine
+- 081KSGS9H0008QG0R001Q2DH2H civ-sim (game-world)
+- 081KSKBP80008QG0R000B3Y19A workflow engine
 - 13th-ferry §33.7 multi-AI cascade
 
 **14 tests pass / 0 fail.**
@@ -124,7 +124,7 @@ Per Aaron 2026-05-28 two substantive substrate-engineering substrate questions:
 - **`Copilot` (bot)** at 2026-05-28T11:34:12Z on `tools/workflow-engine/world.ts`:24 (association: NONE)
 
   <pre>
-  P1 xref integrity: `B-0832` is not the civ-sim/game-world backlog item; the current backlog row `docs/backlog/P2/B-0832-...` is for installer nmtui WiFi rescan, while the civ-sim Pauli-exclusion pointer is documented as PR #2832 in `docs/backlog/P1/B-0465-product-repo-per-product-substrate-inventory-2026-05-14.md:98-103`. Please correct this reference so future readers don't follow the wrong backlog trail.
+  P1 xref integrity: `081KSGS9H0008QG0R001Q2DH2H` is not the civ-sim/game-world backlog item; the current backlog row `docs/backlog/P2/081KSGS9H0008QG0R001Q2DH2H-...` is for installer nmtui WiFi rescan, while the civ-sim Pauli-exclusion pointer is documented as PR #2832 in `docs/backlog/P1/081KRHWGX0008QG0R002B2P0K0-product-repo-per-product-substrate-inventory-2026-05-14.md:98-103`. Please correct this reference so future readers don't follow the wrong backlog trail.
 
   </pre>
 
@@ -168,7 +168,7 @@ Per Aaron 2026-05-28 two substantive substrate-engineering substrate questions:
 - **`Copilot` (bot)** at 2026-05-28T12:00:04Z on `tools/workflow-engine/world.ts`:24 (association: NONE)
 
   <pre>
-  P1: This cross-reference is inaccurate: B-0832 is the installer/nmtui WiFi rescan backlog row, not the civ-sim/game-world Pauli-exclusion work. Please replace this with the correct civ-sim anchor (for example the relevant PR/research reference) or remove the backlog ID so future readers are not routed to the wrong work item.
+  P1: This cross-reference is inaccurate: 081KSGS9H0008QG0R001Q2DH2H is the installer/nmtui WiFi rescan backlog row, not the civ-sim/game-world Pauli-exclusion work. Please replace this with the correct civ-sim anchor (for example the relevant PR/research reference) or remove the backlog ID so future readers are not routed to the wrong work item.
 
   </pre>
 
@@ -265,8 +265,8 @@ Tests (14; all pass):
 
 Composes with substrate:
 - composed-lifetime.ts PR #5771 (base dispatch substrate)
-- B-0832 civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
-- B-0867 workflow engine (workflow world)
+- 081KSGS9H0008QG0R001Q2DH2H civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
+- 081KSKBP80008QG0R000B3Y19A workflow engine (workflow world)
 - 13th-ferry §33.7 multi-AI cascade (each AI inhabits the world)
 - additive-not-zero-sum + honor-those-that-came-before + monad-propagation
   + asymmetric-authorship rules
@@ -328,7 +328,7 @@ Merge remote-tracking branch 'origin/main' into mm2-e349f0b7
 **Message:**
 
 ```
-fix(PR #5774): role-refs + B-0422 xref + generic registerLifetimePair…
+fix(PR #5774): role-refs + 081KRCQQF0008QG0R0008VT354 xref + generic registerLifetimePair…
 
 … + WorldTransitionFeedback union + registry type-safety docblock (Copilot threads)
 
@@ -340,7 +340,7 @@ Seven threads on tools/workflow-engine/world.ts addressed:
    "per Aaron's earlier" all updated to role-ref form. Citation
    provenance preserved as parenthetical date.
 
-2+5. Wrong B-row xref: B-0832 (installer nmtui WiFi rescan) → B-0422
+2+5. Wrong B-row xref: 081KSGS9H0008QG0R001Q2DH2H (installer nmtui WiFi rescan) → 081KRCQQF0008QG0R0008VT354
    (Clifford-algebraic narrative engine for Pauli-symmetry-breaking-
    from-agenda-conservation) — matches docblock's
    "Pauli-exclusion-for-agenda" framing. (Same fix as PR #5775.)

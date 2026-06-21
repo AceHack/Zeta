@@ -3,13 +3,13 @@ import { choose } from "./chooser";
 describe("chooser — tiered decision cascade", () => {
     const emptyWorld = { backlog: [] };
     const workWorld = {
-        backlog: [{ id: "B-0001", title: "Fix the bug", ready: true, ambiguous: false }],
+        backlog: [{ id: "081KPYCJH0008QG0R003MDS51N", title: "Fix the bug", ready: true, ambiguous: false }],
     };
     const ambiguousWorld = {
         backlog: [
-            { id: "B-0001", title: "Fix the bug", ready: true, ambiguous: false },
-            { id: "B-0002", title: "Add feature", ready: true, ambiguous: false },
-            { id: "B-0003", title: "Refactor X", ready: true, ambiguous: false },
+            { id: "081KPYCJH0008QG0R003MDS51N", title: "Fix the bug", ready: true, ambiguous: false },
+            { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Add feature", ready: true, ambiguous: false },
+            { id: "081KQ0YZ80008QG0R001QJJTVF", title: "Refactor X", ready: true, ambiguous: false },
         ],
     };
     test("resolves at oracle tier for empty backlog (explore default)", async () => {

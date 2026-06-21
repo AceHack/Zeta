@@ -1,6 +1,5 @@
 ---
-id: B-0109
-zetaid: 081KQDTYV0008QG0R002H74QXZ
+id: 081KQDTYV0008QG0R002H74QXZ
 priority: P0
 status: closed
 closed: 2026-05-07
@@ -270,7 +269,7 @@ Three operational details to settle in the design pass:
   flagged, switch from auto-merge to manual-merge for the
   duration").
 - Replacing or vendoring degraded dependencies preemptively.
-  Vendoring discussions belong in B-0086 (TS+Bun migration)
+  Vendoring discussions belong in 081KQ8P5D0008QG0R003BFZPRC (TS+Bun migration)
   for the dependencies that ARE in-scope for vendoring.
 
 ## When this is "done"
@@ -289,11 +288,11 @@ The surface must be discoverable from CLAUDE.md and AGENTS.md
 
 ## Composes with
 
-- **B-0086** (TS+Bun migration) — dependency reduction is
+- **081KQ8P5D0008QG0R003BFZPRC** (TS+Bun migration) — dependency reduction is
   itself a dependency-status mitigation strategy. The fewer
   external runtimes, the smaller the status-tracking
   surface.
-- **B-0096** (Forbidden Pattern Quarantine) — a category of
+- **081KQB8J40008QG0R000A61G4T** (Forbidden Pattern Quarantine) — a category of
   issue worth tracking is "patterns we have used that
   external sources later flagged." Composes naturally if
   both surfaces share a vocabulary.

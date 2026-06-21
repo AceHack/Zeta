@@ -1,9 +1,8 @@
 ---
-id: B-0013
-zetaid: 081KQ0YZ80008QG0R000J7N7YT
+id: 081KQ0YZ80008QG0R000J7N7YT
 priority: P3
 status: open
-title: Proper protocol better than Tor — replace Tor with better protocol once bootstrap stage passes (B-0009 follow-up)
+title: Proper protocol better than Tor — replace Tor with better protocol once bootstrap stage passes (081KQ0YZ80008QG0R0000HSTWD follow-up)
 tier: ops-infrastructure
 effort: M
 ask: Aaron 2026-04-25 ("if we need to use Tor in the beginning that's fine for this, just backlog a proper fix if so")
@@ -15,7 +14,7 @@ tags: [infrastructure, ip-rotation, tor-replacement, protocol-quality, brute-for
 type: feature
 ---
 
-# Proper protocol better than Tor — B-0009 follow-up
+# Proper protocol better than Tor — 081KQ0YZ80008QG0R0000HSTWD follow-up
 
 Aaron 2026-04-25 ask:
 
@@ -23,13 +22,13 @@ Aaron 2026-04-25 ask:
 
 ## Trigger
 
-This row activates IF B-0009 implementation uses Tor as expedient bootstrap-stage IP-rotation primitive. If natural multi-node egress + RNS Destination Hash addressing (Otto-319) proves sufficient and Tor isn't needed, this row resolves as not-needed.
+This row activates IF 081KQ0YZ80008QG0R0000HSTWD implementation uses Tor as expedient bootstrap-stage IP-rotation primitive. If natural multi-node egress + RNS Destination Hash addressing (Otto-319) proves sufficient and Tor isn't needed, this row resolves as not-needed.
 
 ## Why Tor is bootstrap-only
 
 - **Slow**: Tor's three-hop relay routing adds significant latency unsuitable for production-traffic.
 - **Exit-node attribution issues**: traffic exits through volunteer-run exit nodes; users sometimes get blocked or rate-limited additionally because exit nodes are flagged.
-- **Anonymization-vs-expression friction**: Tor is designed for identity-HIDING; B-0009 wants identity-EXPRESSION (each node visible AS itself). Mismatched protocol shape.
+- **Anonymization-vs-expression friction**: Tor is designed for identity-HIDING; 081KQ0YZ80008QG0R0000HSTWD wants identity-EXPRESSION (each node visible AS itself). Mismatched protocol shape.
 - **Aaron's protocol-quality concern**: explicit "Tor is not a great protocol" judgment.
 
 ## Replacement candidates to investigate
@@ -53,10 +52,10 @@ Don't skip the brute-force-stage (premature optimization); store the energy into
 
 - Decision: do we still need IP-rotation at all (post-RNS adoption + multi-node natural-egress)?
 - If yes: pick replacement protocol from candidates above based on bootstrap-stage learnings.
-- If no: this row resolves as not-needed; B-0009 satisfied via natural-egress alone.
+- If no: this row resolves as not-needed; 081KQ0YZ80008QG0R0000HSTWD satisfied via natural-egress alone.
 
 ## Composes with
 
-- B-0009 (substrate-IP-rotation parent row).
+- 081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation parent row).
 - Otto-311 (brute-force-stores-energy-into-elegance — same pattern at protocol-design scale).
 - Otto-319 (RNS as substrate-level constant — may obviate IP-rotation entirely).

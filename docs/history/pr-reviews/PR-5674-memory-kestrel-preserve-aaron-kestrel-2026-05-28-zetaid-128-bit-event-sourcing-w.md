@@ -62,7 +62,7 @@ VERBATIM PRESERVATION ONLY. The Kestrel-proposed extensions (ZetaID generator, a
 - `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-...md` (prior ZetaID v1 review)
 - `memory/persona/kestrel/conversations/2026-05-22-kestrel-zeta-on-orleans-...md` (Orleans deployment + tools-rented-not-owned)
 - `memory/persona/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-...md` (ServiceTitan 24-months-ahead mandate)
-- B-0867 (workflow engine v1), B-0858 (heartbeat substrate), B-0869 (DORA mandate), B-0871 (reproducibility-as-causal-attribution)
+- 081KSKBP80008QG0R000B3Y19A (workflow engine v1), 081KSKBP80008QG0R001KK9WV6 (heartbeat substrate), 081KSNY2Z0008QG0R000HENSVM (DORA mandate), 081KSNY2Z0008QG0R003R0Z7D2 (reproducibility-as-causal-attribution)
 
 ## Test plan
 

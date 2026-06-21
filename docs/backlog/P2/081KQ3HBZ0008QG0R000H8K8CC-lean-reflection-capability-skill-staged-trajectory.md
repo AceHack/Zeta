@@ -1,6 +1,5 @@
 ---
-id: B-0050
-zetaid: 081KQ3HBZ0008QG0R000H8K8CC
+id: 081KQ3HBZ0008QG0R000H8K8CC
 priority: P2
 status: open
 title: Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)
@@ -16,7 +15,7 @@ type: friction-reducer
 
 ---
 
-# B-0050 — Lean reflection capability skill + scouting note
+# 081KQ3HBZ0008QG0R000H8K8CC — Lean reflection capability skill + scouting note
 
 ## Origin
 
@@ -28,8 +27,8 @@ Alternate reading preserved (general-purpose reflection-in-any-language); the Le
 
 Three converging pressures:
 
-1. The chain-rule proof has landed but the proofs are hand-written. As the factory scales Lean coverage (Stainback conjecture formalization, retraction-algebra homomorphisms from B-0051 isomorphism-catalog, Ceramist → Mathlib port), the ratio of boilerplate-proof to creative-proof grows. Reflection (custom tactics, macros, decision procedures) is how that ratio shrinks.
-2. The B-0051 isomorphism-catalog row proposes IF4 (Lean-formalizable-in-principle) as a gating filter. Without reflection competence, IF4 is aspirational; with it, the formalization step is mechanizable.
+1. The chain-rule proof has landed but the proofs are hand-written. As the factory scales Lean coverage (Stainback conjecture formalization, retraction-algebra homomorphisms from 081KQ3HBZ0008QG0R002SM3G49 isomorphism-catalog, Ceramist → Mathlib port), the ratio of boilerplate-proof to creative-proof grows. Reflection (custom tactics, macros, decision procedures) is how that ratio shrinks.
+2. The 081KQ3HBZ0008QG0R002SM3G49 isomorphism-catalog row proposes IF4 (Lean-formalizable-in-principle) as a gating filter. Without reflection competence, IF4 is aspirational; with it, the formalization step is mechanizable.
 3. Soraya's formal-verification routing authority will make more targeted Lean-vs-Z3-vs-TLA+ choices when she can estimate the reflection-cost of the Lean path honestly.
 
 ## Scope when landed
@@ -52,7 +51,7 @@ If Aaron meant "reflection" in the general programming sense (C#/F#/Java runtime
 
 ## Re-decomposition (2026-05-10, Riven background)
 
-Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes" rule: original 5-stage assumes linear progression; actual may interleave tactic authoring (Stage 2) with macro work (Stage 3) for Zeta algebra embedding. Smallest safe slice for this claim: B-0050.2 (tactic authoring competence) as standalone P2 row. Full re-decomp to follow in next slice.
+Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes" rule: original 5-stage assumes linear progression; actual may interleave tactic authoring (Stage 2) with macro work (Stage 3) for Zeta algebra embedding. Smallest safe slice for this claim: 081KQ3HBZ0008QG0R000H8K8CC.2 (tactic authoring competence) as standalone P2 row. Full re-decomp to follow in next slice.
 
 ## Owner / effort
 
@@ -99,4 +98,4 @@ Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes
 
 - AceHack commit: `bab4ae1`
 - `tools/lean4/Lean4/DbspChainRule.lean` — the artifact that benefits first from reflection competence
-- Composes with: B-0048 (3/4-color theorem — Stage 4 is downstream of Stage 1+ reflection competence), B-0051 (isomorphism catalog IF4 filter); chain-rule-proof-log; stainback-conjecture-fix-at-source
+- Composes with: 081KQ3HBZ0008QG0R003JCR6P8 (3/4-color theorem — Stage 4 is downstream of Stage 1+ reflection competence), 081KQ3HBZ0008QG0R002SM3G49 (isomorphism catalog IF4 filter); chain-rule-proof-log; stainback-conjecture-fix-at-source

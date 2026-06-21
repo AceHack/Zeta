@@ -1,5 +1,5 @@
 apiVersion: v2
 name: postgres
-description: Example upstream chart (B-0821); outputs declared in zeta-chart-outputs.yaml
+description: Example upstream chart (081KSGS9H0008QG0R00367G209); outputs declared in zeta-chart-outputs.yaml
 type: application
 version: 15.2.0

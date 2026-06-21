@@ -139,7 +139,7 @@ The right framing: the org-level Code Quality dynamic run is host-side noise. Ze
 
 Squash-merge PR #849 as-is — under standing authority per the locked discipline ("if owner is actionable, act").
 
-- It's the TS port of `tools/hygiene/sort-tick-history-canonical.py` + `fix-markdown-md032-md026.py` (B-0086).
+- It's the TS port of `tools/hygiene/sort-tick-history-canonical.py` + `fix-markdown-md032-md026.py` (081KQ8P5D0008QG0R003BFZPRC).
 - All required CI is green.
 - The sticky `Analyze (python)` is non-required and informational only.
 - Branch protection allows the merge (0 approvals required, conversation resolution met, squash-only allowed).

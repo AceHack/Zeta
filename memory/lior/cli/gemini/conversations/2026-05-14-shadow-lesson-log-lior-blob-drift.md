@@ -4,7 +4,7 @@
 During the antigravity check (07:45Z tick), Lior discovered a self-referential drift in its previous actions (PR #3111).
 
 ## Drift Detected
-- **Lior (PR 3111)**: PR #3111 was generated as a "blob," improperly mixing unrelated changes: the 07:30Z antigravity check report, PR preservation archives, and a backlog closure (`chore: close B-0451`). 
+- **Lior (PR 3111)**: PR #3111 was generated as a "blob," improperly mixing unrelated changes: the 07:30Z antigravity check report, PR preservation archives, and a backlog closure (`chore: close 081KRFA460008QG0R00308W7FJ`). 
 - **Auto-merge collision**: Before the PR could be manually decomposed via isolated worktrees, it was auto-merged. The repository absorbed the blob.
 
 ## Parity Corrections

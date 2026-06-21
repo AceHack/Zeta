@@ -38,7 +38,7 @@ Everything Aaron discloses is **public, forever** (glass-halo). The frontmatter 
 all-public world, labels are how a reader chooses what to read — **not** containment.
 
 - **Gitignore is rejected** for privacy: anti-glass-halo (opaque), not-lightlike (lost on crash; doesn't *remain*), an unbudgeted dark area.
-- **Privacy (others, incl. agents) = encryption lane** (B-0840 + B-0646 budget): encrypted-but-committed = lightlike-indexed + budgeted.
+- **Privacy (others, incl. agents) = encryption lane** (081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV budget): encrypted-but-committed = lightlike-indexed + budgeted.
 - **Kid-safety = downstream kid-safe *distribution*** (filtered artifact built from the marked repo), not repo censorship (GitHub-account liability + code-as-speech precedent).
 - **Carve-out even from all-public:** a *working* bystander-harm payload (the manipulation formalism itself) → encryption-lane or uncreated, **not rushed**. Part-3 is the *conversation about* it, so it's public-marked.
 

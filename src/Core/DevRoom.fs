@@ -12,7 +12,7 @@ namespace Zeta.Core
 ///
 /// Honest scope: this hangs the doors (`Salon`/`Arcade`/`BowlingAlley`/`Skadium`) and self-measures
 /// coverage. It is NOT yet the unbounded-pulled-inside, recursive-`sim` self-hosting harness (that arc is
-/// the dev-room doc + B-1022); it is the hub the future harness drives. Pure module, no classes.
+/// the dev-room doc + 081KTQD8A0008QG0R0005EFYPV); it is the hub the future harness drives. Pure module, no classes.
 [<RequireQualifiedAccess>]
 module DevRoom =
 

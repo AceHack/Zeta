@@ -116,5 +116,5 @@ fix(shadow-log): address Copilot review threads on PR #5213
 - Grammar: agent's heuristics → agents' heuristics (plural possessive, multi-agent context)
 - Link PR references #5183 and #4979 to GitHub URLs for verifiability
 
-Via REST git-data API per task instruction (B-0615 push-hang workaround).
+Via REST git-data API per task instruction (081KRW63S0008QG0R000EAZ9K2 push-hang workaround).
 ```

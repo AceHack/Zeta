@@ -33,7 +33,7 @@ Two fixes surfaced by Soraya's coverage-ratio update — she reported bifurcatio
 
 1. **Registry correction.** The `Bifurcation` row still read *"NOT yet done (Soraya BP-16): Leg B — FsCheck over a deployed split/divvy/merge in `Binding.fs` ... needs the divvy/merge ops added first."* Stale: the `Divvy` module was added to `Binding.fs` and `tests/Tests.FSharp/Formal/BifurcationCrossVerify.Tests.fs` has shipped FsCheck properties over it (Conservation, NoDoubleSpend, ExecOnlyByOwner, Face-1 convergence), wired in the fsproj, green on main. **Bifurcation was already full BP-16 (3 legs)** — the true safety-floor full-3-leg ratio is **4/4 = 1.00**, not 3/4.
 
-2. **Associativity property added.** The existing Face-1 property checked commutative + idempotent but **omitted associativity** — the exact B-0969 failure class (a tie-break that's commutative+idempotent but not associative is still not a lawful join). The Lean Bifurcation semilattice proves `L.assoc`; this adds the matching empirical witness. Confirmed green ⇒ `Divvy.merge` is a lawful join-semilattice with no associativity hole. Brings the leg to parity with the NonRegisterCollapse leg.
+2. **Associativity property added.** The existing Face-1 property checked commutative + idempotent but **omitted associativity** — the exact 081KT07NV0008QG0R001YDB73K failure class (a tie-break that's commutative+idempotent but not associative is still not a lawful join). The Lean Bifurcation semilattice proves `L.assoc`; this adds the matching empirical witness. Confirmed green ⇒ `Divvy.merge` is a lawful join-semilattice with no associativity hole. Brings the leg to parity with the NonRegisterCollapse leg.
 
 ## Verification
 `dotnet test --filter BifurcationCrossVerify` → **5 passed**. Build 0-warn.

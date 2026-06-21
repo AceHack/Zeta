@@ -55,7 +55,7 @@ heat is and no one is" — same algorithm, society scale.
 
 ## Pointers
 
-- B-1026 (filed with this doc) — the buildable surface.
+- 081KTSZN10008QG0R0003SDRWD (filed with this doc) — the buildable surface.
 - Moonshot #1 (the broadcast this board renders) · `docs/HARDWARE-CAPABILITY-MATRIX.md` (the friction
   heatmap source) · `universal/color.md` + `universal/extension.md` (honest capability + the Zork
   vocabulary) · `src/Core/Chip8Citizen.fs` + `Chip8Arcade.chooseInSociety` (the citizen-side mechanics)

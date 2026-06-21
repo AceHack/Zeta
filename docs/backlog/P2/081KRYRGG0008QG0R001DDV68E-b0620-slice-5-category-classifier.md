@@ -1,24 +1,23 @@
 ---
-id: B-0678
-zetaid: 081KRYRGG0008QG0R001DDV68E
+id: 081KRYRGG0008QG0R001DDV68E
 status: open
 priority: P2
-title: B-0620 slice 5 category classifier
+title: 081KRQ1AB0008QG0R0000AMJ5S slice 5 category classifier
 created: 2026-05-19
 last_updated: 2026-05-20
 type: feature
 composes_with:
-  - B-0620  # multi-account + multi-vendor inventory consolidation
+  - 081KRQ1AB0008QG0R0000AMJ5S  # multi-account + multi-vendor inventory consolidation
   - 081KRQ1AB0008QG0R002TZ063S  # amazon-orders-extract v3 design pass
 depends_on:
-  - 081KS1AX70008QG0R001Y9EN85 # B-0620 slice 4 consolidator script
+  - 081KS1AX70008QG0R001Y9EN85 # 081KRQ1AB0008QG0R0000AMJ5S slice 4 consolidator script
 ---
 
-# B-0678: B-0620 slice 5 category classifier
+# 081KRYRGG0008QG0R001DDV68E: 081KRQ1AB0008QG0R0000AMJ5S slice 5 category classifier
 
 ## Context
 
-This is Slice 5 peeled from the B-0620 blob.
+This is Slice 5 peeled from the 081KRQ1AB0008QG0R0000AMJ5S blob.
 It operationalizes the category classification for the consolidated inventory records.
 
 ## Scope
@@ -34,5 +33,5 @@ using the same financial substrate category split as the consolidator row.
 ## Acceptance
 
 - [ ] Classifier module implemented with mapping logic based on product keywords and categories.
-- [ ] Integrates with the consolidator script (`B-0676`).
+- [ ] Integrates with the consolidator script (`081KS1AX70008QG0R001Y9EN85`).
 - [ ] Committable hardware inventory substrate output correctly categorizes products.

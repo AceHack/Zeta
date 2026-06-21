@@ -425,8 +425,8 @@ Deno.test("Relation offer → accept → edge", () => {
 ```typescript
 Deno.test("Two rooms cannot acquire same work item", async () => {
   const coord = createFileClaimCoordinator();
-  const r1 = await coord.acquire("B-0400", "feat/x");
-  const r2 = await coord.acquire("B-0400", "feat/y");
+  const r1 = await coord.acquire("081KR7JY10008QG0R000R503K2", "feat/x");
+  const r2 = await coord.acquire("081KR7JY10008QG0R000R503K2", "feat/y");
   assertEquals(r1.outcome, "acquired");
   assertEquals(r2.outcome, "feedback");
 });

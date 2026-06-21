@@ -1,4 +1,4 @@
-// byte-cost cross-verification oracle (B-1016 slice 1) — registers the
+// byte-cost cross-verification oracle (081KT7YW00008QG0R002T1XNWT slice 1) — registers the
 // context-window minimization meter in the trust-core cross-verify surface.
 //
 // Run by tools/ci/cross-verify-all.ts with cwd = this dir (so the seed read is

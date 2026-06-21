@@ -39,7 +39,7 @@ The new ani conversation file — `memory/persona/ani/conversations/2026-06-02-a
 
 ## Fix
 
-Ran the canonical reindexer (B-0423):
+Ran the canonical reindexer (081KRCQQF0008QG0R0037YYP1A):
 
 ```
 bun tools/memory/reindex-memory-md.ts

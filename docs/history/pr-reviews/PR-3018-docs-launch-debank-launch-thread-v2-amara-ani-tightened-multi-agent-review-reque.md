@@ -45,7 +45,7 @@ Distinct from \`docs/launch/zeta-launch-thread.md\` which uses Office paper-fact
 
 - \`docs/launch/zeta-launch-thread.md\` (Twitter version)
 - PR #3016 (bus schema extension)
-- PR #3017 (B-0440.4 — first bus-publish service)
+- PR #3017 (081KRFA460008QG0R001KC0VBH.4 — first bus-publish service)
 - PR #2999 (ship-unreviewed-first discipline)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -1,6 +1,6 @@
 module Zeta.Tests.FourCornerTreatyTests
 
-// The FourCorner TREATY byte-lock (B-1022 trigger fired: "we are the consumer for our treaties — this is
+// The FourCorner TREATY byte-lock (081KTQD8A0008QG0R0005EFYPV trigger fired: "we are the consumer for our treaties — this is
 // how we know we are done; without it who knows if things are correct"). The F# oracle locks the golden
 // lines; C#/TS/Rust must produce/consume the SAME bytes.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0007
-zetaid: 081KQ0YZ80008QG0R001V1PMC0
+id: 081KQ0YZ80008QG0R001V1PMC0
 priority: P3
 status: open
 title: Contribute Bayesian inference + belief propagation primitives upstream to mainstream languages (C#, F#, TypeScript, Rust, Python, etc.)
@@ -178,12 +177,12 @@ A contribution is "good enough to ship" upstream when:
 ## Composes with
 
 - **`memory/feedback_otto_298_substrate_as_self_rewriting_bayesian_neural_architecture_directly_executable_no_llm_needed_absorb_infernet_bouncy_castle_reference_only_2026_04_25.md`**
-  — Otto-298 absorption path; B-0007 IS the
+  — Otto-298 absorption path; 081KQ0YZ80008QG0R001V1PMC0 IS the
   symbiosis-back-upstream half of Otto-298's
   Infer.NET-and-Bouncy-Castle absorption discipline.
 - **`memory/feedback_otto_301_no_software_dependencies_hardware_bootstrap_no_os_we_are_microkernel_super_long_term_decision_resolution_anchor_2026_04_25.md`**
   — Otto-301 ultimate-destination + symbiosis-with-
-  dependencies; B-0007 is the contribution-arc
+  dependencies; 081KQ0YZ80008QG0R001V1PMC0 is the contribution-arc
   operationalized.
 - **`memory/feedback_otto_300_rigor_proportional_to_blast_radius_iterate_fast_at_low_stakes_to_learn_before_high_stakes_2026_04_25.md`**
   — Otto-300 timeline-pressure; "no rush" framing

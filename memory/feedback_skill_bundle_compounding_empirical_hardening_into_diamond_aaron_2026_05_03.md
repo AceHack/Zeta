@@ -8,7 +8,7 @@ type: feedback
 
 ## Origin
 
-Aaron 2026-05-03, in autonomous-loop maintainer channel after Otto's correction-cycle on B-0173 ground-truth-recovery + the persona-tracking-table work:
+Aaron 2026-05-03, in autonomous-loop maintainer channel after Otto's correction-cycle on 081KQNJ500008QG0R003ZC6PK8 ground-truth-recovery + the persona-tracking-table work:
 
 > *"gitnative backfill and just backfill in general and tons of other data cleaning related skill problably mulltiple other skill bundles, the way you handled depend_on earleir and then backfilling it and really tring to create a real dependcy hierarcy is somethig that would take a human a month to do. these data cleaning skill and theri gitnative counterparts are going to be invalucable then you have all the observaboity and archerglogy skils bundles on top, this is going to be epic"*
 
@@ -28,7 +28,7 @@ Multiple skill bundles will compound multiplicatively into a system that's quali
 2. **Git-native counterparts of data-cleaning bundles**: dedupe via blame-walk, normalize via per-row migration, drift-detect via cross-reference audit (this is the bundle the backlog backfill cycle would belong to)
 3. **General backfill bundles**: depends_on backfill, last_updated backfill, frontmatter completion, cross-reference inference + filling
 4. **Observability bundles**: tick-history aggregation, projection layers, dashboard generation, claim-checker reports
-5. **Archaeology bundles**: decision-archaeology (B-0169), git-blame walks, persona-notebook traversal, lineage-graph queries
+5. **Archaeology bundles**: decision-archaeology (081KQJZR90008QG0R002D6XYHB), git-blame walks, persona-notebook traversal, lineage-graph queries
 
 These compose in layers. Data-cleaning runs FIRST (clean substrate); git-native backfill runs ON TOP (fill the dependency hierarchy); observability runs ABOVE (visualize the cleaned + backfilled state); archaeology runs CROSS-CUTTING (recover the why for any layer).
 
@@ -117,8 +117,8 @@ This memo's contribution: operational expression of these existing canonical com
 - **Calibration protocol** (memory/feedback_guess_then_verify_*.md): measures the agent's inference quality; the calibration data IS the hardening evidence
 - **Cross-disciplinary pattern adoption** (memory/feedback_cross_disciplinary_*.md): patterns from data-cleaning + git-native + observability + archaeology compose because they share substrate-graph structure
 - **`docs/research/crystallization-loop.md`** + **`docs/research/crystallization-ledger.md`** — the existing crystallization framework this memo is the final stage of (per Aaron 2026-05-03 pointer)
-- **B-0169** (decision-archaeology skill) — archaeology bundle's seed
-- **B-0170** (substrate-claim-checker) — data-cleaning bundle's seed
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology skill) — archaeology bundle's seed
+- **081KQNJ500008QG0R003SCWBDV** (substrate-claim-checker) — data-cleaning bundle's seed
 - **The decision-graph emergent property** (memory/feedback_decision_graph_emergent_*.md): the substrate IS the dependency hierarchy; backfill is filling its edges
 
 ## Future-Otto rules

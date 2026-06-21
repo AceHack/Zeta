@@ -1,6 +1,5 @@
 ---
-id: B-0228
-zetaid: 081KQX9B50008QG0R003GWYQR3
+id: 081KQX9B50008QG0R003GWYQR3
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - formal specification plan"
@@ -12,9 +11,9 @@ classification: blocked-on-formal-foundation-and-crdt-semantics
 type: feature
 ---
 
-# B-0228 - Timeseries formal-specification plan
+# 081KQX9B50008QG0R003GWYQR3 - Timeseries formal-specification plan
 
-Route the B-0147 formal-math requirement into specific
+Route the 081KQGDBJ0008QG0R0004ACHJJ formal-math requirement into specific
 verification tools and proof obligations.
 
 ## Work scope
@@ -32,5 +31,5 @@ storage bounds, and time-monotonicity.
   instead of inventing a parallel proof stack.
 - The plan identifies which properties are required before
   implementation and which can be validated after a prototype.
-- The output feeds B-0230 and the eventual implementation
-  rows filed by B-0231.
+- The output feeds 081KQX9B50008QG0R001T7M5SK and the eventual implementation
+  rows filed by 081KQX9B50008QG0R00142CANX.

@@ -54,7 +54,7 @@ Most AI harnesses have bun (Claude Code / Codex / Gemini CLI / Grok / Kiro/Qwen 
 
 - [x] markdownlint clean
 - [x] Tree-count canary 61
-- [x] Composes with B-0867 + B-0867.5 (already-shipped substrate)
+- [x] Composes with 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (already-shipped substrate)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

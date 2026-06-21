@@ -1,6 +1,6 @@
 /**
  * bonsai.ts — TS reference (oracle #1) for the **Bonsai-subset** expression-tree
- * serializer (B-0976 slice 1), the cross-language serialization primitive the
+ * serializer (081KT07NV0008QG0R003BE6MJ2 slice 1), the cross-language serialization primitive the
  * self-evolving-saga build needs ("serialize the deferred computation's
  * expression tree").
  *
@@ -32,7 +32,7 @@
  * F#/Rust native `Result`). Per the contract-vs-mechanism split, the internals use
  * an internal typed signal adapted to `Result` at the two boundaries. Fail-fast
  * (monadic); the accumulate-mode (RFC-9457 ProblemDetails) is the complementary
- * primitive for batch/validation, per B-0976.
+ * primitive for batch/validation, per 081KT07NV0008QG0R003BE6MJ2.
  */
 /** The serialization format version (the `v` field of the document wrapper). */
 export const BONSAI_VERSION = 1;

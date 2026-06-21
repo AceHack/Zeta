@@ -67,6 +67,6 @@ platform matrix runners), Soraya (K1 → 6×6×6 cross-OS determinism proof-room
 SoftValue / SolidGround (interfaces soft-by-default, ground-by-proof; weight-free §3; retract via
 Z-set); homoiconic interface≡proof + cached useful PoW (the hardened interface); the 6×6 treaty room
 (now 6×6×6 with the OS axis); culture-invariant-by-default (ordinal/LF/UTF-8/codepoint — the platform
-generalization; B-0969 lineage); cross-OS determinism (CRLF/path/encoding/locale/case/clock drift);
+generalization; 081KT07NV0008QG0R001YDB73K lineage); cross-OS determinism (CRLF/path/encoding/locale/case/clock drift);
 NixOS / reproducible builds (hermetic determinism); `keyring-4x4` + `keyring-dst1000.yml` (need the
 platform matrix); Max=Windows / Otto=macOS / CI=Ubuntu (the real platforms that must agree).

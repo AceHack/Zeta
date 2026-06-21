@@ -1,6 +1,5 @@
 ---
-id: B-0176
-zetaid: 081KQNJ500008QG0R0023RV2M7
+id: 081KQNJ500008QG0R0023RV2M7
 priority: P2
 status: open
 title: Substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)
@@ -74,8 +73,8 @@ Output: drift findings retain their position; false-positives marked with `sever
 
 ## Composes with
 
-- **B-0170 (substrate-claim-checker tool)**: this row extends the v0.6 severity-tier model with context-aware suppression
-- **B-0175 (substrate-retrieval-index)**: similar architecture pattern — both close gaps via in-flight context analysis (B-0175 for memo retrieval; this row for path-claim verification)
+- **081KQNJ500008QG0R003SCWBDV (substrate-claim-checker tool)**: this row extends the v0.6 severity-tier model with context-aware suppression
+- **081KQNJ500008QG0R00055XHBG (substrate-retrieval-index)**: similar architecture pattern — both close gaps via in-flight context analysis (081KQNJ500008QG0R00055XHBG for memo retrieval; this row for path-claim verification)
 - **0603Z tick shard**: documents the empirical drift sweep that motivated this row
 
 ## Why this is M-effort

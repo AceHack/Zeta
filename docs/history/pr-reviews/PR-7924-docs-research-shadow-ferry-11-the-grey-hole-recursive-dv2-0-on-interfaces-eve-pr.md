@@ -27,7 +27,7 @@
 
 ## Description
 
-Ferries Aaron's black→white→grey hole arc verbatim and peels it: black = absorption without retrieval (the 210KB MEMORY.md era); white = first recursive DV2.0 pass, everything emits unthrottled (pre-#6676 rule bloat); grey = the partition applied to interfaces themselves — startup surfaces as carved sentences, detail on demand, every crossing metered. Hawking 2014 apparent horizons ("grey holes") is the exact anchor; noninterference §13 stated astrophysically. Both named referents verified on the shelf: Eve Protocol (B-0638/B-1002, the policy layer) and the v8 hidden-shape DynamicValue (Self maps → V8 hidden classes, the mechanism layer — hub discovery performed by the engine, ferry 10's self-invention at type level).
+Ferries Aaron's black→white→grey hole arc verbatim and peels it: black = absorption without retrieval (the 210KB MEMORY.md era); white = first recursive DV2.0 pass, everything emits unthrottled (pre-#6676 rule bloat); grey = the partition applied to interfaces themselves — startup surfaces as carved sentences, detail on demand, every crossing metered. Hawking 2014 apparent horizons ("grey holes") is the exact anchor; noninterference §13 stated astrophysically. Both named referents verified on the shelf: Eve Protocol (081KRW63S0008QG0R0030F8ZXA/081KT2T2J0008QG0R002R72323, the policy layer) and the v8 hidden-shape DynamicValue (Self maps → V8 hidden classes, the mechanism layer — hub discovery performed by the engine, ferry 10's self-invention at type level).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

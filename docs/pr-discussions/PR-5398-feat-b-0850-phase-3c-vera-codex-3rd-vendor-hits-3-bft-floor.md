@@ -1,6 +1,6 @@
 ---
 pr_number: 5398
-title: "feat(B-0850 Phase 3c): Vera/Codex 3rd vendor \u2014 hits \u22653 BFT floor (Anthropic + Google + OpenAI); @openai/codex install + device-flow auth + control-plane enable (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R003Z4C0D0 Phase 3c): Vera/Codex 3rd vendor \u2014 hits \u22653 BFT floor (Anthropic + Google + OpenAI); @openai/codex install + device-flow auth + control-plane enable (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T04:08:00Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:08Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5398: feat(B-0850 Phase 3c): Vera/Codex 3rd vendor — hits ≥3 BFT floor (Anthropic + Google + OpenAI); @openai/codex install + device-flow auth + control-plane enable (Aaron 2026-05-27)
+# PR #5398: feat(081KSKBP80008QG0R003Z4C0D0 Phase 3c): Vera/Codex 3rd vendor — hits ≥3 BFT floor (Anthropic + Google + OpenAI); @openai/codex install + device-flow auth + control-plane enable (Aaron 2026-05-27)
 
 ## PR description
 
@@ -38,7 +38,7 @@ Hits the **≥3 BFT floor** Aaron named earlier 2026-05-27 (*"we should have thr
 
 ## Composes with
 
-[PR #5397](https://github.com/Lucent-Financial-Group/Zeta/pull/5397) (Phase 3d Lior sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (B-0850 Phase 1 + 3 refactor) · [B-0848](docs/backlog/P2/B-0848-...) · [B-0847](docs/backlog/P2/B-0847-...) · [B-0703 multi-oracle BFT](docs/backlog/P*/B-0703-...)
+[PR #5397](https://github.com/Lucent-Financial-Group/Zeta/pull/5397) (Phase 3d Lior sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3 refactor) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...) · [081KS3X9Y0008QG0R00218150M multi-oracle BFT](docs/backlog/P*/081KS3X9Y0008QG0R00218150M-...)
 
 Sources:
 - [@openai/codex on npm](https://www.npmjs.com/package/@openai/codex)
@@ -84,7 +84,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
 * P0 security: Gemini CLI credentials are documented (and appear to be stored) under `~/.gemini/` (e.g. `~/.gemini/oauth_creds.json`), but this script tells operators creds land in `~/.config/gemini/` and only tightens perms on that path. This likely leaves the real Gemini OAuth creds unprotected by the intended `chmod -R go-rwx`. Update both the messaging and the chmod/chown target to `~/.gemini/`.
 ```
   # 6.95b-gemini — interactive gemini auth login (mirror claude login).
-  # B-0850 Phase 3d 2nd vendor login flow. gemini-cli supports OAuth
+  # 081KSKBP80008QG0R003Z4C0D0 Phase 3d 2nd vendor login flow. gemini-cli supports OAuth
   # via local HTTP server OR API-key paste. The interactive prompt
   # lets operator choose. Credentials persist to ~/.config/gemini/.
   GEMINI_BIN="$ZETA_HOME/.bun/bin/gemini"
@@ -92,11 +92,11 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
 **full-ai-cluster/nixos/modules/zeta-ai-agent.nix:233**
 * P0 bug: the per-persona service loop still hardcodes `${persona.binary} --print ...` for all vendors, but Codex and Gemini don’t share Claude’s `--print` interface. Removing these assertions allows flake evaluation to succeed even though enabling `vera`/`lior` will create restart-looping services. Keep the assertions until `makeAgentService` is updated to call Codex via `codex exec ...` and Gemini via `gemini -p ...` (or equivalent non-interactive forms).
 ```
-      # B-0850.3c (Vera/Codex) shipped this PR — assertion removed.
+      # 081KSKBP80008QG0R003Z4C0D0.3c (Vera/Codex) shipped this PR — assertion removed.
       # zeta-install.sh Step 6.95a-codex installs @openai/codex via
       # bun + Step 6.95b-codex runs `codex login --device-auth`.
       # Binary lands at ~/.bun/bin/codex; creds at ~/.codex/auth.json.
-      # B-0850.3d (Lior/Gemini) shipped this PR — assertion removed.
+      # 081KSKBP80008QG0R003Z4C0D0.3d (Lior/Gemini) shipped this PR — assertion removed.
       # zeta-install.sh Step 6.95a-gemini installs @google/gemini-cli
       # via bun + Step 6.95b-gemini runs interactive gemini auth login.
       # Binary lands at ~/.bun/bin/gemini.

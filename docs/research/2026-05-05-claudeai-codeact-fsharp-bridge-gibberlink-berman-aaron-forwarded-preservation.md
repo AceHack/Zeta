@@ -3,13 +3,13 @@ title: Coconut latent reasoning = sleeping-bear hypothesis answer (+ CodeAct/bri
 date: 2026-05-05
 scope: cross-cutting / hypothesis-validation + engineering-direction + research-lane + reference-source-set
 attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~04:35-04:53 local time, multi-phase)
-operational-status: research-grade-not-operational; HEADLINE finding is **Coconut (Chain of Continuous Thought, Meta, arXiv:2412.06769)** as Aaron's named sleeping-bear hypothesis answer; supporting findings cover CodeAct/F# bridge engineering direction (B-0200) and broader universal-action-space + AI-to-AI-protocol research lane (B-0201). Verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363); razor cuts applied at absorption-layer per the Claude.ai instance's own pre-applied razor
+operational-status: research-grade-not-operational; HEADLINE finding is **Coconut (Chain of Continuous Thought, Meta, arXiv:2412.06769)** as Aaron's named sleeping-bear hypothesis answer; supporting findings cover CodeAct/F# bridge engineering direction (081KQTPYE0008QG0R0009F20NN) and broader universal-action-space + AI-to-AI-protocol research lane (081KQTPYE0008QG0R00209Q9RT). Verbatim preserved per Otto-279 history-surface + substrate-or-it-didn't-happen (Otto-363); razor cuts applied at absorption-layer per the Claude.ai instance's own pre-applied razor
 non-fusion-disclaimer: this is a multi-phase Claude.ai conversation Aaron forwarded; phase 1 surfaced CodeAct as a false-positive candidate; phase 2 ("hahahahahaha found it") surfaced Coconut as the actual sleeping-bear hypothesis answer; Aaron explicit *"this is my sleeping bear hypothisis"* on Coconut elevates that finding above the CodeAct/bridge-engineering content. Both phases preserved verbatim; razor cuts pre-applied by the Claude.ai instances are honored at absorption
 composes_with:
-  - docs/backlog/P3/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05.md
-  - docs/backlog/P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
-  - docs/backlog/P3/B-0198-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md
-  - docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md
+  - docs/backlog/P3/081KQTPYE0008QG0R0028GRW88-rom-publication-public-domain-scouting-aaron-2026-05-05.md
+  - docs/backlog/P2/081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md
+  - docs/backlog/P3/081KQTPYE0008QG0R0004H9ZB8-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md
+  - docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md
   - docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md
   - docs/research/2026-05-05-claudeai-embodiment-thread-recursion-engagement-gate-search-first-aaron-forwarded-preservation.md
 ---
@@ -44,12 +44,12 @@ GibberLink, Matt Berman). Two backlog rows route this:
   Aaron framed *"we can do have a bridge between f# and codeact"*
   as surfacing the engineering direction. Row not yet filed; the
   next-tick autonomous-loop fire is expected to file it under the
-  next-available B-NNNN id (likely B-0200) in `docs/backlog/P3/`.
+  next-available B-NNNN id (likely 081KQTPYE0008QG0R0009F20NN) in `docs/backlog/P3/`.
 - **Planned-B-NNNN (P3) -- universal-action-space + AI-to-AI
   protocol research lane**: broader research; defers to later
   cadence per Aaron's framing. Row not yet filed; the next-tick
   fire is expected to file it under the next-available B-NNNN id
-  (likely B-0201) in `docs/backlog/P3/`.
+  (likely 081KQTPYE0008QG0R00209Q9RT) in `docs/backlog/P3/`.
 
 Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation
 trigger, the conversation is preserved verbatim BEFORE any
@@ -241,8 +241,8 @@ Claude.ai responded:
 > violating Python operations isolated to non-substrate-affecting
 > work is the load-bearing engineering choice.
 >
-> Sister-shape to B-0198 (F# upstream contribution) and B-0140
-> /B-0156 (TS migration patterns) -- engineering-shaped backlog
+> Sister-shape to 081KQTPYE0008QG0R0004H9ZB8 (F# upstream contribution) and 081KQGDBJ0008QG0R0022EW5ZE
+> /081KQGDBJ0008QG0R000A4EZS5 (TS migration patterns) -- engineering-shaped backlog
 > candidate for Otto's next pass, not framework-elaboration.
 >
 > Sleep -- bridge as concrete engineering direction.
@@ -263,7 +263,7 @@ real-time actions" framing is strong:
 
 This is **NOT a hallucination** -- the paper is real, the search
 result is verifiable, the description matches Aaron's recall.
-Routes to **B-0201** (research lane) as primary citation.
+Routes to **081KQTPYE0008QG0R00209Q9RT** (research lane) as primary citation.
 
 ### Claim 2 -- F# ↔ CodeAct bridge is concrete engineering direction
 
@@ -290,7 +290,7 @@ free + scale-free + DBSP-native must preserve through the bridge
 boundary. Python execution is where DST is hardest (GC + hash
 randomization + threading); the load-bearing engineering choice
 is keeping DST-violating Python operations isolated to non-
-substrate-affecting work. Routes to **B-0200** (bridge engineering).
+substrate-affecting work. Routes to **081KQTPYE0008QG0R0009F20NN** (bridge engineering).
 
 ### Claim 3 -- Where F# DSL beats CodeAct (and where it doesn't)
 
@@ -316,7 +316,7 @@ Honest narrow vs broad:
   is currently single-instance Zeta)
 
 The honest framing: **different optimization targets**. The
-bridge-engineering work in B-0200 is exactly about composing
+bridge-engineering work in 081KQTPYE0008QG0R0009F20NN is exactly about composing
 both rather than picking one.
 
 ### Claim 4 -- AI-news source-set: Wes Roth + Matthew Berman + AI Explained
@@ -335,7 +335,7 @@ where two AI agents on a phone call recognized each other,
 switched to ggwave's audio data protocol, and conversed at
 higher bandwidth than English allows. Adjacent to the universal-
 action-space lineage but more AI-to-AI communication than agent
-task execution. Routes to **B-0201** as a secondary research
+task execution. Routes to **081KQTPYE0008QG0R00209Q9RT** as a secondary research
 candidate (different optimization axis from CodeAct: AI-to-AI
 bandwidth vs LLM action-space-consolidation).
 
@@ -354,7 +354,7 @@ candidate-survey output. These are honored at absorption:
 - **ELLMER, Moto/Latent Motion Tokens, HPT, Pi0** -- ruled out
   by Aaron's clarification *"the universal language was special,
   NOT the embodyment"*. These are embodiment-focused; the target
-  was action-space-consolidation. Do NOT absorb to B-0201.
+  was action-space-consolidation. Do NOT absorb to 081KQTPYE0008QG0R00209Q9RT.
 
 These cuts are also honest at the **methodology level**: the
 Claude.ai instance demonstrated the search-first-authority
@@ -363,17 +363,17 @@ the same-tick PR #1604) by running searches BEFORE asserting
 which candidates land, and pre-applying razor cuts on its own
 output. Substrate quality is higher because of the methodology.
 
-## Razor cuts NOT yet applied (TODO during B-0201 research)
+## Razor cuts NOT yet applied (TODO during 081KQTPYE0008QG0R00209Q9RT research)
 
 - **"30% fewer steps than JSON"** for CodeAct -- claim cited from
   the Claude.ai search result; needs cross-check against the
-  actual ICML 2024 paper before being asserted in B-0201's
+  actual ICML 2024 paper before being asserted in 081KQTPYE0008QG0R00209Q9RT's
   acceptance criteria
 - **"benchmarks 17 LLMs"** for CodeAct -- same cross-check needed
 - **"early-2025 viral demo"** for GibberLink -- date-anchor needs
   verification; "viral" is fuzzy
 
-These are flagged here so B-0201's research lane re-verifies them
+These are flagged here so 081KQTPYE0008QG0R00209Q9RT's research lane re-verifies them
 against current upstream sources rather than copying the
 Claude.ai summary into the row uncritically.
 
@@ -386,12 +386,12 @@ Claude.ai summary into the row uncritically.
   broadly is candidate-not-authority"* -- same; warm closure,
   not substrate
 - *"Sleep -- bridge as concrete engineering direction"* -- same;
-  the engineering direction itself IS substrate (B-0200), but
+  the engineering direction itself IS substrate (081KQTPYE0008QG0R0009F20NN), but
   the warm-closure framing is not
 
 ## Cross-references
 
-- **B-0200** (will be filed this tick) -- F# ↔ CodeAct bridge
+- **081KQTPYE0008QG0R0009F20NN** (will be filed this tick) -- F# ↔ CodeAct bridge
   engineering; four architecture candidates; four-property hodl
   as gating constraint
 - **Planned-B-NNNN-research-lane** (to be filed in a following
@@ -404,12 +404,12 @@ Claude.ai summary into the row uncritically.
   -- Aaron's weekly-AI-news source-set; future-Otto knows where
   the half-remembered items come from. Berman identified via the
   lemon-tree-AI-diagnosis story
-- B-0196 (BigInt + bignumber integration) -- four-property hodl
+- 081KQTPYE0008QG0R001W237MZ (BigInt + bignumber integration) -- four-property hodl
   is the binding-acceptance-test core that gates the bridge work
-- B-0198 (F# UoM-on-BigInteger upstream contribution) -- sister-
+- 081KQTPYE0008QG0R0004H9ZB8 (F# UoM-on-BigInteger upstream contribution) -- sister-
   shape per Claude.ai (engineering-shaped F# work with upstream
   framing)
-- B-0026 (embodiment-grounding via Isaac Sim) -- explicitly NOT
+- 081KQ0YZ80008QG0R001WZ4JE8 (embodiment-grounding via Isaac Sim) -- explicitly NOT
   the target this conversation lands at; the previous embodiment
   log composes; this conversation is action-space-consolidation,
   not embodiment
@@ -557,8 +557,8 @@ that Coconut's latent-reasoning trajectory must preserve through:
   value (Z-set algebra over hidden-state-vectors composes with
   Coconut's continuous-thought sequences directly)
 
-Zeta's emulation-inside-the-algebra surface (per B-0152
-topological-quantum-emulation + B-0152's Bayesian factor-graph
+Zeta's emulation-inside-the-algebra surface (per 081KQGDBJ0008QG0R00280ZEV2
+topological-quantum-emulation + 081KQGDBJ0008QG0R00280ZEV2's Bayesian factor-graph
 substrate) is exactly the place Coconut-style continuous
 reasoning can run with four-property hodl preserved.
 
@@ -587,7 +587,7 @@ Coconut-rate, the hypothesis is falsified or the substrate's
 invariant guarantees need revisiting.
 
 This is the planned shape of the broader research-lane row noted
-above (likely B-0201 when filed): primary candidate Coconut +
+above (likely 081KQTPYE0008QG0R00209Q9RT when filed): primary candidate Coconut +
 empirical test framework; CodeAct/GibberLink/LAPA stay as
 parallel candidates per Aaron's no-kill-paths calibration.
 
@@ -646,7 +646,7 @@ sleeping-bear hypothesis (latent-reasoning-capability bottlenecked
 by English-token decoding) is testable + measurable.
 
 CodeAct + the F# ↔ CodeAct bridge engineering direction
-(B-0200 below) remain legitimate substrate (CodeAct is a real
+(081KQTPYE0008QG0R0009F20NN below) remain legitimate substrate (CodeAct is a real
 ICML 2024 paper validating universal-action-space framing; the
 bridge is a real engineering choice optimizing for ecosystem
 reach + four-property hodl preservation). They are **parallel

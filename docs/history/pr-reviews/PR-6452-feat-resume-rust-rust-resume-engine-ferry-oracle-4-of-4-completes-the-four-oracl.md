@@ -29,7 +29,7 @@
 
 ## What
 
-Rust resume-engine ferry — **oracle #4 of 4**, completing the B-0976 resume slice: TS reference + F# (#6448, merged) + C# (#6451) + this. New `zeta-core-resume` crate that **reuses** `zeta-core-bonsai` for `Expr`/`ConstValue`/`BinOp`/`serialize`/`parse` (own-our-interface; the bonsai crate IS the port).
+Rust resume-engine ferry — **oracle #4 of 4**, completing the 081KT07NV0008QG0R003BE6MJ2 resume slice: TS reference + F# (#6448, merged) + C# (#6451) + this. New `zeta-core-resume` crate that **reuses** `zeta-core-bonsai` for `Expr`/`ConstValue`/`BinOp`/`serialize`/`parse` (own-our-interface; the bonsai crate IS the port).
 
 - Small-step **CEK machine** over the Bonsai-subset `Expr`; `Call` nodes are activities (suspension points). Pure parts evaluate inline; at an activity the machine suspends → serializable `SagaState` (continuation + pending activity). `resume` **restores** without re-invoking prior activities.
 - Result-over-throw throughout (idiomatic Rust; no panics on the wire path).

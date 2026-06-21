@@ -22,7 +22,7 @@ with a ⭐ below and add a row there.
   linear binary block codes found *inside* the adinkras of supersymmetry ("codes in the
   equations of physics"). The universe's error/erasure coding over time; the real anchor
   for our entropy-oscillation/erasure coding (vs the generic Azure-LRC analogy). Our
-  coincidence-anchor primitive (B-0623/B-0985) is already Adinkra/Gates-grounded.
+  coincidence-anchor primitive (081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV) is already Adinkra/Gates-grounded.
 - **Reticulum (RNS)** — Mark Qvist, `markqvist/Reticulum` — the cryptography-based
   overlay networking stack we close over (dep-as-oracle) for the cell/test mesh.
   Identity = X25519 + Ed25519 512-bit keyset; Destination = truncated SHA-256
@@ -59,7 +59,7 @@ with a ⭐ below and add a row there.
 - **Debezium / CDC** ⭐ — Red Hat; the `before/after/op/source/ts_ms` change-event
   envelope = a **DBSP Z-set delta** (c=+after, d=−before, u=−before+after). Anchor
   for our `DeltaLog`/`ZSet` deltas + schema-on-stream (Kafka Schema Registry ≅
-  SchemaEvolution/B-0930). Emits CloudEvents (`CloudEventsConverter`).
+  SchemaEvolution/081KSRGFP0008QG0R001Y6RTY9). Emits CloudEvents (`CloudEventsConverter`).
 - **Reaqtor / IQbservable / Nuqleon / Bonsai** ⭐ — **Bart DeSmet**
   (built for Bing; now under the .NET Foundation). Stateful
   event-processing + the **Bonsai/Nuqleon** serialized-expression-tree
@@ -150,7 +150,7 @@ with a ⭐ below and add a row there.
   Bayesian Markov-blanket) · **IEEE 754 / Kahan / ULP / significance & interval arithmetic** ·
   **Gustafson unum/posit** (= "universal number"; variable-precision numbers that track their own
   resolution — the cousin anchor) · .NET **generic math** (`INumberBase`/`IFloatingPointIeee754`) as
-  the universal-number carrier. **Our built instance = the TriBoolean Float** (B-0944; middle-out,
+  the universal-number carrier. **Our built instance = the TriBoolean Float** (081KSV2WD0008QG0R00051XS0N; middle-out,
   self-describing — the middle field decodes the ends; trits T/F/N with `measure` collapsing
   superposition = `mea` at the number scope; built + proven **4/4 cross-language** TS/F#/C#/Rust, see
   `src/Core.{FSharp,CSharp,Rust}.TriBoolean/Float*` + `src/Core.TypeScript/tri-boolean-float/` +
@@ -334,7 +334,7 @@ citation.
   probabilistic programming framework in JS with inference engines
   (enumerate, MH, HMC, particle filters, variational inference).
   Runs Node + browser. MIT-licensed. Composes with Zeta's
-  B-0914.1 TrueSkill substrate + future factor-graph-DSL work.
+  081KSNY2Z0008QG0R001YK61JQ.1 TrueSkill substrate + future factor-graph-DSL work.
   Per Aaron 2026-05-28: 'is there anything like infer.net in ts'
   → WebPPL is the closest substrate-accessible answer.
 - **videolectures.net** ⭐ — PhD-level academic ML/AI/research

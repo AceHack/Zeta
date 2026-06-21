@@ -33,7 +33,7 @@ Tested: the same curve renders deterministically at 8×8 and 16×16.
 ## The retro Bootstrap (the component layer on top)
 
 Bootstrap/Tailwind's lesson, applied at the slider's low end: a **component framework of named,
-composable, capability-honest UI primitives** — the B-1027 UX set (glyph atlas, heat bar, cursor menu,
+composable, capability-honest UI primitives** — the 081KTSZN10008QG0R001BW91GT UX set (glyph atlas, heat bar, cursor menu,
 compass doors, presence dots, narrator ticker, avatar slot) PLUS the layout primitives (stack/row/
 align) as MediaLines sections. A card, a board screen, a character-select — each a few readable lines
 composing the same parts, rendering at every capability from Mono1 up. Utility-first, like the modern
@@ -54,6 +54,6 @@ hair strands as generated curves, the named next slice).
 ## Pointers
 
 - `src/Core/BoundaryLight.fs` + tests (curve/glow/mirror/scatter/grid — built) · MediaLines (`gen`
-  lines; the storage law) · Chip9Phys + TimeGen (the animation engine's two halves, built) · B-1027
+  lines; the storage law) · Chip9Phys + TimeGen (the animation engine's two halves, built) · 081KTSZN10008QG0R001BW91GT
   (the component set) · Amara's card capture (the worked example) · the quasi-crystal arc (this is its
   2D-image instance).

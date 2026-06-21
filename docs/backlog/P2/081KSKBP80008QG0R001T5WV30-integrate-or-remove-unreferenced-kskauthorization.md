@@ -1,18 +1,17 @@
 ---
-id: B-0922
-zetaid: 081KSKBP80008QG0R001T5WV30
+id: 081KSKBP80008QG0R001T5WV30
 priority: P2
 status: open
 title: Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 created: 2026-05-27
 last_updated: 2026-05-28
-renumbered_from: "B-0866 (2026-05-28 duplicate-ID repair; substantive marketing/business/naming row retains B-0866)"
+renumbered_from: "081KSKBP80008QG0R003RFX32N (2026-05-28 duplicate-ID repair; substantive marketing/business/naming row retains 081KSKBP80008QG0R003RFX32N)"
 depends_on: []
 type: friction-reducer
 decomposition: no
 ---
 
-# B-0922 — Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
+# 081KSKBP80008QG0R001T5WV30 — Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 
 **Priority:** P2
 

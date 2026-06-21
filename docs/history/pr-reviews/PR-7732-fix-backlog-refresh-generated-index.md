@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- regenerate docs/BACKLOG.md so B-1024 through B-1028 match their per-row frontmatter
+- regenerate docs/BACKLOG.md so 081KTSZN10008QG0R00349SM6P through 081KTSZN10008QG0R001BCCTXT match their per-row frontmatter
 - closes the generated-index drift left after the new legacy backlog rows landed
 
 ## Verification

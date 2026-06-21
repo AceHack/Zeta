@@ -62,7 +62,7 @@ Both readings reinforce each other. The aperiodic-tile IS the structural-mathema
 
 **Daylight integration hooks**:
 
-- Backlog row (TBD; ID assigned at landing-time, not at this preservation): aperiodic-tile structural metaphor formalization for DBSP Z-set + multi-algebra plugin composition (could compose with B-0204 linguistic seed kernel substrate; could ground the multi-algebra-plugin-architecture concretely)
+- Backlog row (TBD; ID assigned at landing-time, not at this preservation): aperiodic-tile structural metaphor formalization for DBSP Z-set + multi-algebra plugin composition (could compose with 081KQTPYE0008QG0R0028V263Z linguistic seed kernel substrate; could ground the multi-algebra-plugin-architecture concretely)
 - Research lane: einstein/hat-tile (2023) + Penrose-tile (1974) + Wang-tile aperiodic-tiling literature → compose with categorical deep learning (Symbolica) + DBSP retraction algebra
 - VISION.md addendum: aperiodic-tile as canonical architectural-shape descriptor (vs "multi-algebra database" which Aaron previously used; aperiodic-tile is more precise)
 - Mathematical formalization: prove substrate composition IS aperiodic-tile-shape via type-system + BP/EP runtime properties

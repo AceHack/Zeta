@@ -3,7 +3,7 @@
 **Date:** 2026-06-12  
 **Author:** Lior (harness: Gemini)  
 **Status:** PROPOSED / ARCHITECTURAL REVIEW  
-**Backlog ID:** B-0883  
+**Backlog ID:** 081KSNY2Z0008QG0R002JKH50A  
 
 ---
 
@@ -11,7 +11,7 @@
 
 This document proposes the architecture for a Zeta-native, post-quantum, retraction-native, and diff-readable alternative to `git-crypt`, designated as **Better Git-Crypt**. It addresses the three fatal flaws identified during the 2026-04-21 deep-dive (`docs/research/git-crypt-deep-dive-2026-04-21.md`) that led to the original rejection of `git-crypt`:
 
-1. **No Access Revocation**: Solved via version-level key rotation and epoch boundaries (compounding with B-0840 Thermal-Forgetting).
+1. **No Access Revocation**: Solved via version-level key rotation and epoch boundaries (compounding with 081KSGS9H0008QG0R0006F4BGX Thermal-Forgetting).
 2. **Binary Diffs Break Code Review**: Solved via structured line-by-line encryption, leaving file metadata/skeletons readable while encrypting only the sensitive payloads.
 3. **No Post-Quantum Cryptography (PQC) Path**: Solved by implementing NIST-standardized lattice-based primitives (ML-KEM and ML-DSA) by default.
 
@@ -25,7 +25,7 @@ The original `git-crypt` does not support revocation: once a user possesses the 
 **Better Git-Crypt Solution:**
 * **Epoch-Gated Keys**: Time or commit-cadenced epochs dictate active key pairs. Each commit or release contains a metadata header specifying the epoch.
 * **Epoch Key Rotation**: When a user's access is revoked, a new epoch is initialized. The active encryption key is rotated using a new key exchange.
-* **Unidirectional History Isolation**: Past epochs remain locked under their respective historical keys. Combined with **B-0840 Thermal Forgetting**, the private keys for older epochs can be deliberately discarded ("forgotten") after a set retention period, rendering historical ciphertext mathematically undecryptable even if a key from a later epoch is compromised.
+* **Unidirectional History Isolation**: Past epochs remain locked under their respective historical keys. Combined with **081KSGS9H0008QG0R0006F4BGX Thermal Forgetting**, the private keys for older epochs can be deliberately discarded ("forgotten") after a set retention period, rendering historical ciphertext mathematically undecryptable even if a key from a later epoch is compromised.
 
 ### 2.2. Diff-Readable Encrypted Content
 Standard encryption turns text files into single-block binary blobs, producing useless git diffs during PR reviews.
@@ -69,16 +69,16 @@ Better Git-Crypt integrates directly with existing Zeta security and runtime pri
 
 ```mermaid
 graph TD
-    A[USB-bound ESP Credential B-0852] -->|Key Anchor| B[zflash Session Cache B-0737]
+    A[USB-bound ESP Credential 081KSKBP80008QG0R003AX2A69] -->|Key Anchor| B[zflash Session Cache 081KSE6WT0008QG0R003WZAQKV]
     B -->|Active Key| C[Better Git-Crypt CLI]
-    D[Adinkras ECC B-0623] -->|Structural Integrity| C
-    E[Thermal Forgetting B-0840] -->|Discards Revoked Keys| C
+    D[Adinkras ECC 081KRW63S0008QG0R000QJR08H] -->|Structural Integrity| C
+    E[Thermal Forgetting 081KSGS9H0008QG0R0006F4BGX] -->|Discards Revoked Keys| C
     C -->|Encrypts/Decrypts| F[Diff-Readable Repo Files]
 ```
 
-* **Adinkras ECC (B-0623)**: Provides the mathematical foundation for structural validation of diff-readable files.
-* **zflash Session Cache (B-0737)**: Temporarily holds decrypted epoch keys in memory, gated by biometric (Touch ID) or physical checks.
-* **ESP Credential (B-0852)**: Anchors key generation to physical device UUIDs.
+* **Adinkras ECC (081KRW63S0008QG0R000QJR08H)**: Provides the mathematical foundation for structural validation of diff-readable files.
+* **zflash Session Cache (081KSE6WT0008QG0R003WZAQKV)**: Temporarily holds decrypted epoch keys in memory, gated by biometric (Touch ID) or physical checks.
+* **ESP Credential (081KSKBP80008QG0R003AX2A69)**: Anchors key generation to physical device UUIDs.
 
 ---
 
@@ -86,21 +86,21 @@ graph TD
 
 Better Git-Crypt will be built in five distinct phases:
 
-### Phase 1: B-0883.1 — Library Landscape & "Swapple Lattice" Audit (P3 Spike)
+### Phase 1: 081KSNY2Z0008QG0R0037X4DP4 — Library Landscape & "Swapple Lattice" Audit (P3 Spike)
 * Audit `@noble/post-quantum` and Bouncy Castle APIs.
 * Define mathematical specifications for the "Swapple lattice" reconfiguration protocol.
 
-### Phase 2: B-0883.2 — Design Specification
+### Phase 2: 081KSNY2Z0008QG0R002ZAVMEK — Design Specification
 * Write a final design specification defining the file format layout for diff-readable encrypted files (YAML/JSON schema).
 
-### Phase 3: B-0883.3 — TS Prototype
+### Phase 3: 081KSNY2Z0008QG0R0008EJDW1 — TS Prototype
 * Build the core TypeScript CLI to encrypt and decrypt files using ML-KEM and AES-256-GCM.
 * Implement line-by-line structured encryption for YAML/JSON.
 
-### Phase 4: B-0883.4 — Key Rotation & Retraction Implementation
+### Phase 4: 081KSNY2Z0008QG0R001FN4DDB — Key Rotation & Retraction Implementation
 * Implement epoch-based key management.
 * Integrate with the `zflash` key agent to handle session-based key caching and revocation.
 
-### Phase 5: B-0883.5 — Hardening & Supply Chain Audit
+### Phase 5: 081KSNY2Z0008QG0R0020KXAPS — Hardening & Supply Chain Audit
 * Run Sonatype audits on all selected libraries.
 * Verify performance metrics and resource consumption on the build target.

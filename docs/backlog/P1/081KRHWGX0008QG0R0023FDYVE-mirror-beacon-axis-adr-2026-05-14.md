@@ -1,11 +1,10 @@
 ---
-id: B-0474
-zetaid: 081KRHWGX0008QG0R0023FDYVE
+id: 081KRHWGX0008QG0R0023FDYVE
 priority: P1
 status: open
 title: "Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)"
 type: adr
-origin: B-0426 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R0007RWSN1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R0007RWSN1
@@ -26,7 +25,7 @@ composes_with:
 
 ## Purpose
 
-Synthesize the outputs of B-0472 (classification matrix) and B-0473
+Synthesize the outputs of 081KRHWGX0008QG0R002DP6AZN (classification matrix) and 081KRHWGX0008QG0R0031EGYA7
 (promotion gate protocol) into a committed architecture decision record.
 This ADR extends the 2026-04-22 three-repo-split ADR to cover Axis 2
 (Mirror/Beacon) and becomes the canonical reference for all future
@@ -36,11 +35,11 @@ repo-split decisions on this axis.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0472 output doc reviewed (classification matrix complete)
-- [ ] B-0473 output doc reviewed (promotion gate protocol complete)
+- [ ] 081KRHWGX0008QG0R002DP6AZN output doc reviewed (classification matrix complete)
+- [ ] 081KRHWGX0008QG0R0031EGYA7 output doc reviewed (promotion gate protocol complete)
 - [ ] 2026-04-22 ADR and 2026-05-14 product-repo-split ADR reviewed
   to ensure consistent framing and no contradictions
-- [ ] Ambiguous-repo flags from B-0472 addressed
+- [ ] Ambiguous-repo flags from 081KRHWGX0008QG0R002DP6AZN addressed
 
 ## ADR structure (output doc template)
 
@@ -61,16 +60,16 @@ Required sections:
 - Precise Mirror tier definition (criteria)
 - Precise Beacon tier definition (criteria)
 - Default: all new repos start at Mirror
-- Promotion: per B-0473 gate protocol
+- Promotion: per 081KRHWGX0008QG0R0031EGYA7 gate protocol
 
 ### Decision: per-repo Axis-2 assignments
 
-- Complete two-axis matrix from B-0472
+- Complete two-axis matrix from 081KRHWGX0008QG0R002DP6AZN
 - Rationale for any ambiguous cases resolved here
 
 ### Decision: Mirror→Beacon promotion gate
 
-- Summary of B-0473 protocol (full protocol lives in the B-0473 research doc)
+- Summary of 081KRHWGX0008QG0R0031EGYA7 protocol (full protocol lives in the 081KRHWGX0008QG0R0031EGYA7 research doc)
 - Reference to the `PromotionProposal` template
 
 ### Consequences
@@ -88,26 +87,26 @@ Required sections:
 - `docs/research/2026-05-18-mirror-beacon-two-axis-classification-matrix-b0472.md`
 - `docs/research/2026-05-14-mirror-beacon-promotion-gate-protocol-b0473.md`
 
-## Closing B-0426
+## Closing 081KRFA460008QG0R0007RWSN1
 
 This ADR PR also:
 
-- Updates B-0426 status to `closed`
-- Updates B-0471/B-0472/B-0473/B-0474 to `closed`
-- Releases the `otto-cli` claim on B-0426
+- Updates 081KRFA460008QG0R0007RWSN1 status to `closed`
+- Updates 081KRHWGX0008QG0R002VV6DTS/081KRHWGX0008QG0R002DP6AZN/081KRHWGX0008QG0R0031EGYA7/081KRHWGX0008QG0R0023FDYVE to `closed`
+- Releases the `otto-cli` claim on 081KRFA460008QG0R0007RWSN1
 
 ## Definition of done
 
 - [ ] ADR written and committed at canonical path
 - [ ] Both Axis-2 decisions (definition + per-repo assignments + promotion gate)
   formally recorded
-- [ ] All ambiguous repos from B-0472 resolved with explicit reasoning
-- [ ] B-0426 closed; all 4 child rows closed
+- [ ] All ambiguous repos from 081KRHWGX0008QG0R002DP6AZN resolved with explicit reasoning
+- [ ] 081KRFA460008QG0R0007RWSN1 closed; all 4 child rows closed
 - [ ] PR merged; claim released
 
 ## Why P1
 
-- Terminal row for the B-0426 planning item
+- Terminal row for the 081KRFA460008QG0R0007RWSN1 planning item
 - Produces the durable substrate-or-it-didn't-happen artifact (committed ADR)
 - Without this, the prior-art audit + classification + protocol remain
   research-grade (Mirror tier); the ADR is what promotes them to Beacon

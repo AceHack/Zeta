@@ -1,6 +1,6 @@
 ---
 name: PR-boundary restraint validation — candidate bead promoted to full bead after PR #699 landed without conceptual scope creep (Aaron + Amara, 2026-04-29)
-description: PR #699 merged 2026-04-29T00:19:47Z carrying the round's authority-rule + Goodhart-catch-#3 + Stop-Mythology + input-is-not-directive substrate cluster. The Candidate-count Goodhart rule + 14 multi-AI synthesis enhancements (B-0093) were deliberately routed to PR #704 (separately merged) per the restraint discipline. Falsifier ("PR #699 receives new non-hard-defect conceptual payload after the restraint rule was named") did not fire. Predicted action ("don't stack synthesis on active PR") held under post-event review. Per the restraint-bead promotion criteria, the candidate bead is promoted to a FULL bead. Encodes the validation event + the canonical PR-boundary restraint rule.
+description: PR #699 merged 2026-04-29T00:19:47Z carrying the round's authority-rule + Goodhart-catch-#3 + Stop-Mythology + input-is-not-directive substrate cluster. The Candidate-count Goodhart rule + 14 multi-AI synthesis enhancements (081KQ8P5D0008QG0R003MY8246) were deliberately routed to PR #704 (separately merged) per the restraint discipline. Falsifier ("PR #699 receives new non-hard-defect conceptual payload after the restraint rule was named") did not fire. Predicted action ("don't stack synthesis on active PR") held under post-event review. Per the restraint-bead promotion criteria, the candidate bead is promoted to a FULL bead. Encodes the validation event + the canonical PR-boundary restraint rule.
 type: feedback
 ---
 
@@ -19,14 +19,14 @@ type: feedback
 - Lost-substrate cadenced trajectory
 - ServiceTitan naming + scope-of-org-access + word-choice
 - Public-company contributor compliance + 5 trajectories
-- B-0089 (Veridicality rainbow-table research)
-- B-0090 (cadenced lost-substrate audit)
-- B-0091 (ServiceTitan audit — completed in-row, 0 active rewrites)
-- B-0092 (public-company contributor compliance doc + cadences)
+- 081KQ8P5D0008QG0R003F6FNVF (Veridicality rainbow-table research)
+- 081KQ8P5D0008QG0R0002TN22C (cadenced lost-substrate audit)
+- 081KQ8P5D0008QG0R00353940P (ServiceTitan audit — completed in-row, 0 active rewrites)
+- 081KQ8P5D0008QG0R003ZF64GG (public-company contributor compliance doc + cadences)
 
 **Critically: PR #699 did NOT receive any of the multi-AI
 synthesis enhancements that surfaced after the restraint rule
-was named.** Those (Candidate-count Goodhart + B-0093's 14
+was named.** Those (Candidate-count Goodhart + 081KQ8P5D0008QG0R003MY8246's 14
 follow-up enhancements) landed via PR #704 — a separate PR.
 
 ## The bead-promotion criterion (Amara, 2026-04-28)
@@ -40,10 +40,10 @@ For this bead:
 | Element | Status |
 |---|---|
 | **Prediction** | "Don't stack synthesis follow-ups onto active validation PR; route them to a separate PR." |
-| **Action taken** | Created PR #704 for Candidate-count Goodhart + B-0093 (14 enhancements). PR #699 received only hard-defect fixes (CI/lint, threads, P1 SOX correction, B-0091 status field, MEMORY.md row updates, paired-edit, internal-consistency). |
+| **Action taken** | Created PR #704 for Candidate-count Goodhart + 081KQ8P5D0008QG0R003MY8246 (14 enhancements). PR #699 received only hard-defect fixes (CI/lint, threads, P1 SOX correction, 081KQ8P5D0008QG0R00353940P status field, MEMORY.md row updates, paired-edit, internal-consistency). |
 | **Falsifier** | "PR #699 receives new non-hard-defect conceptual payload after the restraint rule was named." |
 | **Did falsifier fire?** | **NO.** Every change to PR #699 between the rule being named and merge fell within Amara's allowed-changes list (CI/lint failures / review-thread fixes / factual-legal P1 corrections / incorrect canonical rule fixes / broken refs / paired-edit). No new concepts, no philosophical synthesis, no new backlog expansions. |
-| **Held up under post-event review?** | **YES.** Auditable via `git log origin/main..PR-699-merged-commit` — every commit message names a hard-defect category. The four B-0093 #9-#14 enhancements (added during the round) went to B-0093's body on PR #704, not PR #699. |
+| **Held up under post-event review?** | **YES.** Auditable via `git log origin/main..PR-699-merged-commit` — every commit message names a hard-defect category. The four 081KQ8P5D0008QG0R003MY8246 #9-#14 enhancements (added during the round) went to 081KQ8P5D0008QG0R003MY8246's body on PR #704, not PR #699. |
 
 **Promotion: candidate bead → FULL bead.**
 
@@ -136,7 +136,7 @@ discipline applied to scope expansion.
 - `memory/feedback_candidate_count_goodhart_raw_hits_are_not_violations_aaron_amara_2026_04_28.md`
   — the new substrate that motivated the restraint event. Was
   consciously routed to PR #704 instead of PR #699.
-- B-0093 (multi-AI synthesis enhancements) — the carrier for
+- 081KQ8P5D0008QG0R003MY8246 (multi-AI synthesis enhancements) — the carrier for
   the synthesis content that the restraint rule kept off PR #699.
 
 ## Pickup for future Otto

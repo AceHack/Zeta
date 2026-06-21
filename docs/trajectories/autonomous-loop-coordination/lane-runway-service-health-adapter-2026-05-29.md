@@ -7,9 +7,9 @@ Session: codex/launchd-loop
 Run ID: 20260529T235102Z
 Claim: `claim/codex-loop-lane-runway-service-health-20260529`
 Grounding backlog:
-`docs/backlog/P0/B-0249-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
+`docs/backlog/P0/081KQZVQW0008QG0R000C35RNY-autonomous-backlog-pickup-self-sustaining-new-work-2026-05-07.md`
 and
-`docs/backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
+`docs/backlog/P1/081KQZVQW0008QG0R001FG05RZ-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
 Parent receipt:
 `docs/trajectories/autonomous-loop-coordination/lane-runway-classifier-2026-05-29.md`
 

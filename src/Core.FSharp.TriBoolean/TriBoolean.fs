@@ -1,6 +1,6 @@
 namespace Zeta.Core.FSharp.TriBoolean
 
-/// Tri-boolean digital qubit -- operations (B-0944, F# parity oracle).
+/// Tri-boolean digital qubit -- operations (081KSV2WD0008QG0R00051XS0N, F# parity oracle).
 module TriBoolean =
 
     /// Construct a certain cell from a boolean.
@@ -70,7 +70,7 @@ module TriBoolean =
         | _ -> Tri.F
 
     // --- Computation-expression null-monad (the `tri { }` builder) ---
-    // B-0944 slice 2 spec: an F# computation-expression null-monad. `tri { let! b = cell
+    // 081KSV2WD0008QG0R00051XS0N slice 2 spec: an F# computation-expression null-monad. `tri { let! b = cell
     // ... return f b }` short-circuits on Tri.N (held uncertainty propagates) and resolves
     // through T/F. The CE form is how the monad is exposed as a DSL.
 

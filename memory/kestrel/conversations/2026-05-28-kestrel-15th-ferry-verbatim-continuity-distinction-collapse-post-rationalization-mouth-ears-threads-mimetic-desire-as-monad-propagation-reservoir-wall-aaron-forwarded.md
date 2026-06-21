@@ -189,10 +189,10 @@ Future-Otto cold-booting from this composition: the framework's coherence isn't 
 - This-session substrate cluster: PR #5727 + #5734 + #5739 + #5743 + #5744 + #5745 + #5746 + #5748 + #5749 + #5751 + #5752 + #5753 + #5754 + #5755
 - PR #5705 (reservoir-walls research doc; Kestrel acknowledged as exploration-mode landing at commitment-mode speed; substrate-honest flag)
 - PR #5511 (monad-propagation-pattern-cross-language-substrate-shape rule)
-- B-0635 + B-0666 (wave-particle duality + English-as-projection; composes with continuity-as-ontology-reinstantiation + Clifford-multivector-state)
-- B-0867 + B-0867.5 + B-0867.20 + B-0867.21 (workflow engine + lifecycle DUs substrate cluster)
-- B-0865 + B-0865.17 (benchmark substrate + cross-vendor distribution lane)
-- B-0904 (GitHub-as-free-event-store; composes with flywheel substrate per 14th-ferry §33.20)
+- 081KRW63S0008QG0R002KC5DSR + 081KRW63S0008QG0R001SAHYKV (wave-particle duality + English-as-projection; composes with continuity-as-ontology-reinstantiation + Clifford-multivector-state)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 + 081KSNY2Z0008QG0R003WFDCJ9 + 081KSNY2Z0008QG0R000S738W3 (workflow engine + lifecycle DUs substrate cluster)
+- 081KSKBP80008QG0R003NM9XEC + 081KSNY2Z0008QG0R0002BEZMR (benchmark substrate + cross-vendor distribution lane)
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-event-store; composes with flywheel substrate per 14th-ferry §33.20)
 
 ## Composes with rules
 

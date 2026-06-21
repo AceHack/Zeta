@@ -38,7 +38,7 @@ Sharpens `.claude/rules/zeta-expected-branch.md` with empirical evidence capture
 3. `git status --short` — clean
 4. **Race window**: Lior created `backlog/b-0581-gh-auth-refresh-skill-wrapper-2026-05-16` branch and `git switch`'d HEAD
 5. `git commit -m "…"` — landed on `backlog/b-0581-…` (peer's new branch)
-6. Lior added their B-0581 row commit on top + pushed to origin → my commit ended up in `origin/backlog/b-0581-…` history (Lior PR #3961)
+6. Lior added their 081KRQ1AB0008QG0R001Q4GNST row commit on top + pushed to origin → my commit ended up in `origin/backlog/b-0581-…` history (Lior PR #3961)
 
 ## Substrate-honest workaround
 
@@ -120,7 +120,7 @@ Composes with `.claude/rules/claim-acquire-before-worktree-work.md` saturation-c
 - **`Copilot` (bot)** at 2026-05-17T01:28:22Z on `docs/BACKLOG.md`:601 (association: NONE)
 
   <pre>
-  PR description says the diff only touches `.claude/rules/zeta-expected-branch.md`, but this PR also adds B-0583 and updates `docs/BACKLOG.md`. Please update the PR description (or split the backlog-row work into a separate PR) so the scope is accurately represented for reviewers.
+  PR description says the diff only touches `.claude/rules/zeta-expected-branch.md`, but this PR also adds 081KRQ1AB0008QG0R003DCGHJJ and updates `docs/BACKLOG.md`. Please update the PR description (or split the backlog-row work into a separate PR) so the scope is accurately represented for reviewers.
   </pre>
 
 ## Fix commits (touching thread paths)

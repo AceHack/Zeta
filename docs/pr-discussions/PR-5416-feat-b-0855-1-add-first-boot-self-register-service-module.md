@@ -1,6 +1,6 @@
 ---
 pr_number: 5416
-title: "feat(B-0855.1): add first-boot self-register service module"
+title: "feat(081KSKBP80008QG0R000GPC0TB.1): add first-boot self-register service module"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T07:19:26Z"
@@ -12,12 +12,12 @@ archived_at: "2026-05-27T19:25:17Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5416: feat(B-0855.1): add first-boot self-register service module
+# PR #5416: feat(081KSKBP80008QG0R000GPC0TB.1): add first-boot self-register service module
 
 ## PR description
 
 ## Summary
-- add disabled-by-default `zeta-self-register.service` NixOS module for B-0855.1
+- add disabled-by-default `zeta-self-register.service` NixOS module for 081KSKBP80008QG0R000GPC0TB.1
 - import/expose the module from the cluster module surface
 - add source-level audit sentinels for first-boot ordering and env handoff
 
@@ -36,7 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Pull request overview
 
-Adds a disabled-by-default NixOS systemd service module to move node self-registration to *post-install, first boot* (B-0855.1), and strengthens CI/source audits to ensure the new substrate stays wired into the AI-cluster module surface.
+Adds a disabled-by-default NixOS systemd service module to move node self-registration to *post-install, first boot* (081KSKBP80008QG0R000GPC0TB.1), and strengthens CI/source audits to ensure the new substrate stays wired into the AI-cluster module surface.
 
 **Changes:**
 - Add `zeta-self-register` NixOS module defining a `zeta-self-register` oneshot service gated by `ConditionFirstBoot` and ordered after `network-online.target` (and `zeta-creds-restore.service` when present).
@@ -150,7 +150,7 @@ The step summary says the canonical `cosign verify-blob` command is in the workf
 
 ### @AceHack (2026-05-27T07:23:17Z)
 
-CI failure inspection (Vera 2026-05-27T07:22Z): `docker-nixos-install-sh-test` fails during Docker build before the harness runs: `/bin/sh: line 1: mkdir: command not found` at `tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile:53`. This PR does not modify that Dockerfile, and `origin/main` has the same lines 53-54, so this is not currently attributable to the B-0855.1 module patch. I am not rerunning it yet; next safe action is to wait for remaining checks and then decide whether this is an existing base-image/tooling blocker or needs a separate fix.
+CI failure inspection (Vera 2026-05-27T07:22Z): `docker-nixos-install-sh-test` fails during Docker build before the harness runs: `/bin/sh: line 1: mkdir: command not found` at `tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile:53`. This PR does not modify that Dockerfile, and `origin/main` has the same lines 53-54, so this is not currently attributable to the 081KSKBP80008QG0R000GPC0TB.1 module patch. I am not rerunning it yet; next safe action is to wait for remaining checks and then decide whether this is an existing base-image/tooling blocker or needs a separate fix.
 
 ### @AceHack (2026-05-27T08:05:11Z)
 

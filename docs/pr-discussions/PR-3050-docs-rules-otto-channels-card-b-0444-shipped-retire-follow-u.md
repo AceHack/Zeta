@@ -1,6 +1,6 @@
 ---
 pr_number: 3050
-title: "docs(rules): otto-channels card \u2014 B-0444 shipped, retire \"follow-up gap\" framing"
+title: "docs(rules): otto-channels card \u2014 081KRFA460008QG0R001SXP0C2 shipped, retire \"follow-up gap\" framing"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T22:49:39Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-13T22:57:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3050: docs(rules): otto-channels card — B-0444 shipped, retire "follow-up gap" framing
+# PR #3050: docs(rules): otto-channels card — 081KRFA460008QG0R001SXP0C2 shipped, retire "follow-up gap" framing
 
 ## PR description
 
 ## Summary
 
-The [`otto-channels-reference-card.md`](.claude/rules/otto-channels-reference-card.md) listed B-0444 (bus claim envelope worktree field) as a "follow-up gap" in its Composes-with section. PR [#3043](https://github.com/Lucent-Financial-Group/Zeta/pull/3043) shipped that feature 2026-05-13 (merged as `5db892d`).
+The [`otto-channels-reference-card.md`](.claude/rules/otto-channels-reference-card.md) listed 081KRFA460008QG0R001SXP0C2 (bus claim envelope worktree field) as a "follow-up gap" in its Composes-with section. PR [#3043](https://github.com/Lucent-Financial-Group/Zeta/pull/3043) shipped that feature 2026-05-13 (merged as `5db892d`).
 
 Updated to reference the merged PR rather than the row's open-state framing.
 
@@ -34,25 +34,25 @@ Sibling staleness cleanup to [#3048](https://github.com/Lucent-Financial-Group/Z
 
 ## Pull request overview
 
-This docs-only PR updates the Otto channels reference card to treat B-0444/PR #3043 as merged work rather than an outstanding follow-up gap.
+This docs-only PR updates the Otto channels reference card to treat 081KRFA460008QG0R001SXP0C2/PR #3043 as merged work rather than an outstanding follow-up gap.
 
 **Changes:**
 - Marks PR #3037 as merged in the “Composes with” list.
-- Replaces the B-0444 follow-up-gap reference with PR #3043 merged on 2026-05-13.
+- Replaces the 081KRFA460008QG0R001SXP0C2 follow-up-gap reference with PR #3043 merged on 2026-05-13.
 
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **.claude/rules/otto-channels-reference-card.md:82**
-* This bare `B-0444` reference is ambiguous because the generated backlog currently contains two open rows with `id: B-0444` (the P1 getting-started guide and the P2 bus-claim-envelope row), even though the backlog schema says IDs are factory-wide unique. The previous wording included `P2`; keep that disambiguation or link the exact row until the duplicate ID is resolved.
+* This bare `081KRFA460008QG0R001SXP0C2` reference is ambiguous because the generated backlog currently contains two open rows with `id: 081KRFA460008QG0R001SXP0C2` (the P1 getting-started guide and the P2 bus-claim-envelope row), even though the backlog schema says IDs are factory-wide unique. The previous wording included `P2`; keep that disambiguation or link the exact row until the duplicate ID is resolved.
 ```
-- PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
+- PR #3043 (081KRFA460008QG0R001SXP0C2 bus claim envelope worktree field, merged 2026-05-13)
 ```
 **.claude/rules/otto-channels-reference-card.md:82**
-* The reference card now treats B-0444 as shipped, but the canonical P2 backlog row for the bus claim envelope still has `status: open` and unchecked acceptance criteria, so `docs/BACKLOG.md` continues to show this work as outstanding. If PR #3043 closed this gap, update/close that row in the same cleanup or avoid framing the backlog item itself as retired here.
+* The reference card now treats 081KRFA460008QG0R001SXP0C2 as shipped, but the canonical P2 backlog row for the bus claim envelope still has `status: open` and unchecked acceptance criteria, so `docs/BACKLOG.md` continues to show this work as outstanding. If PR #3043 closed this gap, update/close that row in the same cleanup or avoid framing the backlog item itself as retired here.
 ```
-- PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
+- PR #3043 (081KRFA460008QG0R001SXP0C2 bus claim envelope worktree field, merged 2026-05-13)
 ```
 </details>
 

@@ -1,6 +1,5 @@
 ---
-id: B-0722
-zetaid: 081KSE6WT0008QG0R002RFEC0S
+id: 081KSE6WT0008QG0R002RFEC0S
 priority: P2
 status: open
 title: "CI ephemeral cluster smoke — k3d-on-runner for every AI-cluster PR; evolve to vcluster-on-shared-host when persistent dev cluster exists"
@@ -18,7 +17,7 @@ composes_with:
   - full-ai-cluster/k8s/applications/argocd/Application.yaml
 ---
 
-# B-0722 — CI ephemeral cluster smoke (k3d-on-runner now, vcluster-on-shared-host later)
+# 081KSE6WT0008QG0R002RFEC0S — CI ephemeral cluster smoke (k3d-on-runner now, vcluster-on-shared-host later)
 
 ## Carved blade
 

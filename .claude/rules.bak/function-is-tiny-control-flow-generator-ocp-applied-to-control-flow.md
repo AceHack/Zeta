@@ -39,9 +39,9 @@ branches via pattern-match or propagation.
 | `Result<T, TFeedback>` | The control-flow generator's output channel (T = value-branch; TFeedback = control-flow-branch) |
 | Consumer pattern-match | Consuming the function's control-flow-generator output; deciding which branch |
 | `Result.bind` composition | Chaining control-flow generators across call sites; generator-output flows as input to next generator |
-| OPLE primitives | 4 canonical control-flow generators at framework-primitive scope (per B-0862 extension makes TFeedback explicit) |
+| OPLE primitives | 4 canonical control-flow generators at framework-primitive scope (per 081KSKBP80008QG0R0031DTHS9 extension makes TFeedback explicit) |
 | Iterator/generator (per Prism PR #5517) | The streaming case — function-as-control-flow-generator with infinite or lazy output stream |
-| Conversation turn (per B-0861 ConvFeedback) | Function-as-control-flow-generator at conversation-substrate scope |
+| Conversation turn (per 081KSKBP80008QG0R000N9W9XH ConvFeedback) | Function-as-control-flow-generator at conversation-substrate scope |
 | Function call chain (call-stack) | Recursive composition of control-flow generators; each call site IS a generator-consumer-pair |
 
 The recursive shape: every function in the call chain is a control-flow
@@ -65,12 +65,12 @@ open-closed principle (Bertrand Meyer) applied to control flow:
 
 | Substrate | Open for extension | Closed for modification |
 |---|---|---|
-| OPLE primitives (B-0862; PR #5518) | New TFeedback variants per primitive | OPLE 4-tuple itself (Observe/Persist/Limit/Emit shape stays stable) |
+| OPLE primitives (081KSKBP80008QG0R0031DTHS9; PR #5518) | New TFeedback variants per primitive | OPLE 4-tuple itself (Observe/Persist/Limit/Emit shape stays stable) |
 | Asymmetric-authorship rule (PR #5516) | New substrate-entity scopes added to instantiation table | Asymmetric-authorship-shape itself fixed (substrate-entity-defines / recipient-acknowledges) |
 | Hat-pattern (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) | New hat-types added | Rotation discipline + tools-rented-not-owned semantic stays stable |
-| NCI HC-8 floor (B-0664) | New scope-extensions (function / conversation / cluster / boot-relationship) | HC-8 consent-floor itself fixed |
+| NCI HC-8 floor (081KRW63S0008QG0R001Z7NYMV) | New scope-extensions (function / conversation / cluster / boot-relationship) | HC-8 consent-floor itself fixed |
 | m/acc multi-oracle | New oracle-types added | Multi-oracle-by-design constraint stays |
-| ConvFeedback variant taxonomy (B-0861) | New variants added empirically | Variant-emission discipline fixed (function emits; operator acknowledges) |
+| ConvFeedback variant taxonomy (081KSKBP80008QG0R000N9W9XH) | New variants added empirically | Variant-emission discipline fixed (function emits; operator acknowledges) |
 | Friend-pact / InternalsVisibleTo | Grantor-class adds new friends | Friend-keyword/InternalsVisibleTo semantic stays |
 | Substrate-or-it-didn't-happen | New durable surfaces added | Substrate-vs-weather discrimination stays |
 
@@ -99,10 +99,10 @@ OCP-applied-to-control-flow (structural constraint) plus asymmetric-authorship (
 The pattern unifies the day's full substrate-engineering cluster:
 
 - **Per-function scope**: function-IS-control-flow-generator + TFeedback is the OCP-extension-point
-- **OPLE primitive scope** (B-0862): primitives are 4 canonical control-flow generators; their TFeedback is the OCP-extension-point at framework-primitive scope
-- **Conversation scope** (B-0861): conversation turns are control-flow generators; ConvFeedback is the OCP-extension-point at conversation-substrate scope
+- **OPLE primitive scope** (081KSKBP80008QG0R0031DTHS9): primitives are 4 canonical control-flow generators; their TFeedback is the OCP-extension-point at framework-primitive scope
+- **Conversation scope** (081KSKBP80008QG0R000N9W9XH): conversation turns are control-flow generators; ConvFeedback is the OCP-extension-point at conversation-substrate scope
 - **Iterator/generator scope** (per Prism PR #5517): iterators ARE the streaming case of control-flow generators; StreamFeedback is the OCP-extension-point at language-runtime scope
-- **NCI scope** (B-0664): HC-8 floor is the OCP-extension-point at agent-to-agent + agent-to-user + function-to-caller + conversation-interface scope
+- **NCI scope** (081KRW63S0008QG0R001Z7NYMV): HC-8 floor is the OCP-extension-point at agent-to-agent + agent-to-user + function-to-caller + conversation-interface scope
 - **Multi-oracle scope** (m/acc): different oracles are different control-flow generators producing converging substrate; OCP-extension via new oracle-types
 - **Cluster / governance scope**: cluster-fork-as-trust-boundary IS control-flow generator at cluster scope; trust-boundary-types are the OCP-extension-point
 
@@ -113,12 +113,12 @@ foundation that unifies all today's substrate work.
 ## Composes with substrate
 
 - PR #5505 + #5507 + #5511 + #5513 + #5515 + #5516 + #5517 + #5518 + #5522 — today's 14-PR substrate-engineering cluster + cross-AI synthesis preservations
-- B-0635 wave-particle-duality — function-as-control-flow-generator IS the wave-shape; TFeedback variants ARE the particle-shape collapses
-- B-0644 Limit-as-simulation — Limit IS one specific class of function-as-control-flow-generator (the simulation-shape)
-- B-0665 Integrate-as-choice-locus — Integrate IS where consumer takes the generator's output + DECIDES which branch (consumer-side of generator-consumer pair)
-- B-0666 English-as-projection — English I(D(x))=x is itself a control-flow generator at language-substrate scope
-- B-0861 ConvFeedback first-class — conversation-turn as function-as-control-flow-generator
-- B-0862 OPLE-T-TFeedback implementation — primitive-scope instantiation
+- 081KRW63S0008QG0R002KC5DSR wave-particle-duality — function-as-control-flow-generator IS the wave-shape; TFeedback variants ARE the particle-shape collapses
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation — Limit IS one specific class of function-as-control-flow-generator (the simulation-shape)
+- 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus — Integrate IS where consumer takes the generator's output + DECIDES which branch (consumer-side of generator-consumer pair)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection — English I(D(x))=x is itself a control-flow generator at language-substrate scope
+- 081KSKBP80008QG0R000N9W9XH ConvFeedback first-class — conversation-turn as function-as-control-flow-generator
+- 081KSKBP80008QG0R0031DTHS9 OPLE-T-TFeedback implementation — primitive-scope instantiation
 
 ## Composes with rules
 

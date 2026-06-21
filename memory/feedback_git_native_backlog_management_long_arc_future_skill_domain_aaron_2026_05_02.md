@@ -14,7 +14,7 @@ Aaron 2026-05-02, in the autonomous-loop maintainer channel mid-tick, sent the f
 
 (Note: "log arc" parsed as "long arc" — composes with the largest-mechanizable-automatable-backlog-wins meta-thesis + scope-creep-is-feature + amortized-speed-Superfluid-phase-transition target.)
 
-This message landed in the same tick that Aaron's STRONG-rule corrective ("invoke specialist whenever editing in their domain") was being applied via skill-expert (Aarav) review of B-0169 (decision-archaeology). Aarav's review concluded decision-archaeology should be ONE skill with five named investigation modes, NOT five separate skills (per BP-20: split on cognitive load, not length).
+This message landed in the same tick that Aaron's STRONG-rule corrective ("invoke specialist whenever editing in their domain") was being applied via skill-expert (Aarav) review of 081KQJZR90008QG0R002D6XYHB (decision-archaeology). Aarav's review concluded decision-archaeology should be ONE skill with five named investigation modes, NOT five separate skills (per BP-20: split on cognitive load, not length).
 
 Aaron's observation **composes with Aarav's recommendation**:
 
@@ -31,7 +31,7 @@ The domain would have three classes of substrate:
 
 | Skill candidate | What it does | Status today |
 |---|---|---|
-| `decision-archaeology` | Reconstructs "why is it like this?" via layered evidence (B-0169) | In flight; PR #1244 merged the row; SKILL.md authoring deferred to skill-creator after worked examples land |
+| `decision-archaeology` | Reconstructs "why is it like this?" via layered evidence (081KQJZR90008QG0R002D6XYHB) | In flight; PR #1244 merged the row; SKILL.md authoring deferred to skill-creator after worked examples land |
 | `backlog-row-creator-with-prereq-search` | Mechanizes at-creation-time discipline: search backlog for prerequisites, populate `depends_on:` at file-time | Substrate exists as memo (`feedback_depends_on_backlog_search_discipline_at_creation_and_at_pickup_*`); not yet skill-routed |
 | `backlog-row-picker-with-prereq-search` | Mechanizes at-pickup-time discipline: when work feels like missing substrate, search backlog for the prereq | Same memo; not yet skill-routed |
 | `depends_on-relationship-analyst` | Per-row analysis filling `depends_on:` with real prerequisites (not the empty `[]` schema-completion default) | The hard-work job that PR #1246 explicitly didn't do; ongoing per natural-trigger |
@@ -83,7 +83,7 @@ When the maturity signal fires (some N future ticks, possibly months out):
 2. **The expert candidates listed above are the canonical starting set.** Backlog-architect + long-arc-strategist + relationship-analyst + closure-archaeologist as the per-judgment-surface specialization split. Architect (Kenji) keeps the integration hat.
 3. **The promotion-trigger criteria above are the gate.** Don't promote without 3+ worked examples per skill or 1+ judgment-disagreement per expert.
 4. **The composition with decision-archaeology is one-skill-per-investigation-class** (Aarav's BP-20 finding); the domain doesn't need to re-litigate that.
-5. **The relationship to existing skills** (`data-lineage-expert`, `claude-md-steward`, `skill-creator`, `skill-tune-up`, `naming-expert`) was already mapped in Aarav's review of B-0169; consult that before authoring new skill bodies.
+5. **The relationship to existing skills** (`data-lineage-expert`, `claude-md-steward`, `skill-creator`, `skill-tune-up`, `naming-expert`) was already mapped in Aarav's review of 081KQJZR90008QG0R002D6XYHB; consult that before authoring new skill bodies.
 
 ## Composes with
 
@@ -91,7 +91,7 @@ When the maturity signal fires (some N future ticks, possibly months out):
 - `memory/feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_aaron_2026_05_02.md` — the expansion-flywheel + parallel-tracks substrate is what `backlog-flywheel-mechanizer` + `parallel-tracks-dispatcher` mechanize
 - `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` — the meta-thesis the long-arc strategist's judgment surface is anchored to
 - `memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md` — the system-level optimization target the long-arc strategist optimizes for
-- `docs/backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md` — the row that triggered the just-tick skill-expert review whose findings compose into this memo
+- `docs/backlog/P1/081KQJZR90008QG0R002D6XYHB-decision-archaeology-skill-aaron-2026-05-02.md` — the row that triggered the just-tick skill-expert review whose findings compose into this memo
 - `docs/VISION.md` — terminal purpose; long-arc thesis lives in service of the intellectual-backup-of-earth scope
 - Aarav's review on PR #1244 (recorded in chat substrate; should be preserved per BP-09 ASCII rule when the SKILL.md eventually lands)
 

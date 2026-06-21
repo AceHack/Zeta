@@ -24,12 +24,12 @@ Addressing drift in Vera and Riven where narration-over-action and missing auto-
 
 ## Pull request overview
 
-This docs-only PR records an observed drift pattern (narration-over-action / missing auto-healing) and updates backlog hygiene artifacts to mark B-0451 as closed, including corresponding index and tick-history updates.
+This docs-only PR records an observed drift pattern (narration-over-action / missing auto-healing) and updates backlog hygiene artifacts to mark 081KRFA460008QG0R00308W7FJ as closed, including corresponding index and tick-history updates.
 
 **Changes:**
 - Added a new research shadow-log capturing the Vera/Riven drift observation + correction framing.
-- Added a new tick-history shard documenting the session state and B-0451 closure actions.
-- Closed backlog row **B-0451** (frontmatter) and updated the generated `docs/BACKLOG.md` checkbox entry.
+- Added a new tick-history shard documenting the session state and 081KRFA460008QG0R00308W7FJ closure actions.
+- Closed backlog row **081KRFA460008QG0R00308W7FJ** (frontmatter) and updated the generated `docs/BACKLOG.md` checkbox entry.
 
 ### Reviewed changes
 
@@ -38,9 +38,9 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 | File | Description |
 | ---- | ----------- |
 | docs/research/2026-05-14-shadow-lesson-log-vera-riven-drift.md | New research note documenting the observed drift and correction. |
-| docs/hygiene-history/ticks/2026/05/14/0521Z.md | New tick shard capturing the session checklist, PR gate status, and B-0451 closure actions. |
-| docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | Marks B-0451 as closed and updates acceptance criteria status text. |
-| docs/BACKLOG.md | Updates the generated index entry to reflect B-0451 as closed. |
+| docs/hygiene-history/ticks/2026/05/14/0521Z.md | New tick shard capturing the session checklist, PR gate status, and 081KRFA460008QG0R00308W7FJ closure actions. |
+| docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md | Marks 081KRFA460008QG0R00308W7FJ as closed and updates acceptance criteria status text. |
+| docs/BACKLOG.md | Updates the generated index entry to reflect 081KRFA460008QG0R00308W7FJ as closed. |
 
 ## Review threads
 
@@ -50,7 +50,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 
 P1: This new tick shard doesn’t include the YAML frontmatter metadata (e.g., `tick`, `agent`, `session`, `pr`) that’s consistently present in other tick shards in this directory (e.g., `.../0152Z.md`). Please add the frontmatter (and ideally align the H1/header format) so downstream tooling and readers can reliably locate the tick timestamp/PR context.
 
-### Thread 2: docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md:93 (unresolved)
+### Thread 2: docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md:93 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T08:18:10Z):
 
@@ -60,7 +60,7 @@ P1: This row is being marked `status: closed`, but the acceptance criteria still
 
 **@copilot-pull-request-reviewer** (2026-05-14T08:18:10Z):
 
-P2: The PR title/description focus on the Vera/Riven drift shadow-log, but this PR also closes backlog item B-0451 (row frontmatter + regenerated `docs/BACKLOG.md`) and adds a tick shard documenting that closure. Please update the PR description to reflect the full scope (or split into separate PRs) so reviewers/readers don’t miss the backlog-status change.
+P2: The PR title/description focus on the Vera/Riven drift shadow-log, but this PR also closes backlog item 081KRFA460008QG0R00308W7FJ (row frontmatter + regenerated `docs/BACKLOG.md`) and adds a tick shard documenting that closure. Please update the PR description to reflect the full scope (or split into separate PRs) so reviewers/readers don’t miss the backlog-status change.
 
 ## General comments
 

@@ -94,7 +94,7 @@ component = "verify you don't do again" lint/CI/pre-commit
 check. The class is operational only when both land together;
 either alone fails. Same shape as trust-then-verify (pre =
 trust-extension; post = verification-in-parallel). Pre/post
-is a candidate v3 architectural class; B-0141 (brittle-pointer
+is a candidate v3 architectural class; 081KQGDBJ0008QG0R0015RNK3P (brittle-pointer
 discipline) is the first explicit instance filed under it.
 
 Existing instances likely fileable under pre/post once
@@ -218,7 +218,7 @@ external content).
 > - `docs/research/2026-05-01-claudeai-trust-then-verify-qubic-immune-system-cc-wwjd-ferries-aaron-forwarded.md`
 >   (in-flight in PR #1110) — verbatim §33 preservation of the
 >   messages this memory captures operationally.
-> - `docs/backlog/P2/B-0141-brittle-pointer-section-numbers-deep-links-discipline-aaron-2026-05-01.md`
+> - `docs/backlog/P2/081KQGDBJ0008QG0R0015RNK3P-brittle-pointer-section-numbers-deep-links-discipline-aaron-2026-05-01.md`
 >   (in-flight in PR #1110) — first explicit instance of
 >   pre/post pattern.
 - `memory/feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`

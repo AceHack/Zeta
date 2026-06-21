@@ -31,7 +31,7 @@ causes `git checkout -b new-branch` to appear successful while HEAD silently
 remains on a subagent's branch. The symptom: the commit lands on the wrong
 branch. Empirically observed twice on 2026-05-04 in a single session.
 
-The multi-Otto-one-checkout topology (see B-0519 RCA) exposes the same
+The multi-Otto-one-checkout topology (see 081KRHWGX0008QG0R001HMWM1W RCA) exposes the same
 failure mode at a higher rate: parallel-Otto processes execute
 `git checkout <branch>` in the same physical worktree, silently moving
 HEAD between any two Bash-tool calls.
@@ -101,7 +101,7 @@ Empirical sequence on tick 2229Z:
 3. `git status --short` — showed shard staged, only PR-3949 untracked (no peer activity yet)
 4. **Race window**: peer agent created `backlog/b-0581-gh-auth-refresh-skill-wrapper-2026-05-16` branch and `git switch`'d HEAD onto it
 5. `git commit -m "..."` — landed on `backlog/b-0581-...` (peer's new branch), NOT the shard branch
-6. Peer added their B-0581 row commit on top of mine, then pushed b-0581 to origin
+6. Peer added their 081KRQ1AB0008QG0R001Q4GNST row commit on top of mine, then pushed b-0581 to origin
 7. My commit `6725264` ended up in `origin/backlog/b-0581-...` history alongside peer's `7558984` (substrate-honest contamination; surgery would require force-push on now-public branch)
 
 **Substrate-honest workaround**: under any conditions where peer agent activity in the shared `.git/` may move HEAD between Bash-tool calls — even briefly — DO NOT use the contested root worktree (`/Users/acehack/Documents/src/repos/Zeta`). Create an isolated worktree:
@@ -119,7 +119,7 @@ cd -
 
 Worktree HEAD is independent of root-worktree HEAD — peer activity in the root cannot move it. This is the **only** workaround that survives sub-second race windows because there's no shared HEAD to race on.
 
-**When the rate-limit operational tier (per [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)) is at extreme cost-aware or pure-git**: worktree-add is pure git (no GraphQL); still affordable. The contention risk per B-0530 (worktree-prune-race) is empirical but bounded — try once; if it fails with `Interrupted system call`, fall back to the borrow-on-existing-sidetick pattern in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md).
+**When the rate-limit operational tier (per [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)) is at extreme cost-aware or pure-git**: worktree-add is pure git (no GraphQL); still affordable. The contention risk per 081KRMEXM0008QG0R000X1PPGC (worktree-prune-race) is empirical but bounded — try once; if it fails with `Interrupted system call`, fall back to the borrow-on-existing-sidetick pattern in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md).
 
 Field-tested on tick 2356Z (2026-05-16) — this rule update itself was authored from an isolated worktree at `/private/tmp/zeta-rule-zeb-race-2356z` to avoid re-hitting the same failure mode while documenting it.
 
@@ -143,12 +143,12 @@ unset ZETA_EXPECTED_BRANCH
 
 ## Full reasoning
 
-`docs/backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md`
+`docs/backlog/P1/081KQR4HQ0008QG0R002YNV361-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md`
 
 `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md`
 
 `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`
 
-`docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md`
+`docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md`
 (RCA capturing the multi-Otto contamination patterns + the primary defenses
 this rule operationalizes; field-test tick shards 2010Z/2026Z/2030Z)

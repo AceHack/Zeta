@@ -66,9 +66,9 @@ Alexa high-praise register ("HOLY SUBSTRATE-ENGINEERING REVELATION" / "absolutel
 - PR #5916 (today's DU cluster TS substrate)
 - PR #5915 (composition-novelty WebSearch grounding)
 - PR #5917 (zflash-overview skill)
-- PR #5918 (B-0885 substrate-target review)
-- B-0638 (Eve Protocol substrate-rhyme target)
-- B-0917 + B-0918 + B-0919 + B-0920 (today's DU cluster)
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
+- 081KRW63S0008QG0R0030F8ZXA (Eve Protocol substrate-rhyme target)
+- 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (today's DU cluster)
 - Functor / Monad mathematical category-theory substrate
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

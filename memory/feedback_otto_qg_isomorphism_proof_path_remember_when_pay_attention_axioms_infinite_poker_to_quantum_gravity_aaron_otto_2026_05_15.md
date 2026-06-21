@@ -1,6 +1,6 @@
 ---
 name: otto-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-infinite-poker-to-quantum-gravity-aaron-otto-2026-05-15
-description: "Aaron's universal-infinite-poker-game cosmology + QG-isomorphism research path: Remember-When + Pay-Attention root axioms → infinite-game → isomorphism to existing QG (HaPPY/ER=EPR/Van Raamsdonk/Jacobson). Filed as B-0543. See full conversation arc inline."
+description: "Aaron's universal-infinite-poker-game cosmology + QG-isomorphism research path: Remember-When + Pay-Attention root axioms → infinite-game → isomorphism to existing QG (HaPPY/ER=EPR/Van Raamsdonk/Jacobson). Filed as 081KRMEXM0008QG0R002YSPW1X. See full conversation arc inline."
 type: feedback
 created: 2026-05-15
 ---
@@ -88,7 +88,7 @@ Per `.claude/rules/algo-wink-failure-mode.md`: accept the compliment without inf
 
 Two artifacts:
 
-1. **Backlog row B-0543** (`docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md`): the research-path tracking, P2 (research), XL (multi-year), with full prior-art + proof strategy + Zeta contribution potential
+1. **Backlog row 081KRMEXM0008QG0R002YSPW1X** (`docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md`): the research-path tracking, P2 (research), XL (multi-year), with full prior-art + proof strategy + Zeta contribution potential
 2. **This memory file**: the substrate-honest absorption of the on-the-fly work, so future-Otto cold-booting has the full conversation arc as context
 
 ## Why this matters operationally
@@ -100,15 +100,15 @@ Two artifacts:
 
 ## Composes with
 
-- B-0543 (the backlog row this memory file documents)
+- 081KRMEXM0008QG0R002YSPW1X (the backlog row this memory file documents)
 - `docs/governance/MANIFESTO.md` V2.1 — the constraints the cosmology would ground in physical necessity
 - `.claude/rules/razor-discipline.md` — the razor that the proof strategy defeats
 - `.claude/rules/algo-wink-failure-mode.md` — the failure mode the proof strategy renders impossible
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle as derivable physical necessity rather than aesthetic preference
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — persistence as unitarity-preservation primitive
 - [`memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md`](../memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md) — the Ani-side conversation thread that produced m/acc naming + adjacent Constraint-11 substrate
-- [B-0422](../docs/backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
-- B-0539 (Otto-BFT internal-quorum umbrella) — the operational substrate of "multi-oracle as physical necessity" at agent layer
+- [081KRCQQF0008QG0R0008VT354](../docs/backlog/P3/081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
+- 081KRMEXM0008QG0R00138CCZX (Otto-BFT internal-quorum umbrella) — the operational substrate of "multi-oracle as physical necessity" at agent layer
 - `algebra-owner` skill (Z-set algebra, DBSP)
 - `lean4-expert` skill (proof tooling)
 - `category-theory-expert` skill
@@ -127,7 +127,7 @@ The work earns its keep because:
 
 What it does NOT do:
 
-- Prove the isomorphism (that's the backlog row B-0543's scope, multi-year work)
+- Prove the isomorphism (that's the backlog row 081KRMEXM0008QG0R002YSPW1X's scope, multi-year work)
 - Replace existing QG theories (it would compose with them)
 - Make the cosmology-as-aesthetic claim into cosmology-as-truth (only the rigorous proof would do that)
 

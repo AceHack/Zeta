@@ -1,5 +1,5 @@
 # PM-2 Feature-Gap Prediction — First Research Pass
-<!-- B-0271 deliverable. Produced 2026-05-13 by Otto wearing the PM-2 skill. -->
+<!-- 081KR2E4K0008QG0R003VB7ZZR deliverable. Produced 2026-05-13 by Otto wearing the PM-2 skill. -->
 
 **PM-2 role:** proactive gap-prediction before consumer friction.
 **Sources checked:** README, TECH-RADAR, VISION, `src/Core/`, `src/Core.CSharp/`,
@@ -38,7 +38,7 @@
 - **Kill criteria:** if the Aurora pitch / factory-demo demo-path already covers this
   consumer moment, promote that as the canonical quickstart instead of creating a
   parallel doc.
-- **New backlog row:** B-0444
+- **New backlog row:** 081KRFA460008QG0R001SXP0C2
 
 ---
 
@@ -70,7 +70,7 @@
   - `dotnet build -c Release` 0 warnings.
 - **Kill criteria:** if the Aurora pitch routes exclusively through F# (no C# consumer
   target), defer to P2.
-- **New backlog row:** B-0445
+- **New backlog row:** 081KRFA460008QG0R002JQERS5
 
 ---
 
@@ -102,7 +102,7 @@
   - TECH-RADAR Lean 4 promoted to Trial.
 - **Kill criteria:** if the F* extraction path (TECH-RADAR entry) ships first and
   covers the same identities, subsume this row under that.
-- **New backlog row:** B-0446
+- **New backlog row:** 081KRFA460008QG0R00168759Y
 
 ---
 
@@ -125,7 +125,7 @@
   2. Wire semantic versioning: `Version` driven by a `VERSION` file or git tag.
   3. Add `SourceLink` (Microsoft.SourceLink.GitHub) for debugger source navigation.
 - **Why now:** the library is at a state where external interest is realistic (Aurora
-  pitch active, B-0154 GitHub Pages SEO row open). A NuGet listing with no description
+  pitch active, 081KQGDBJ0008QG0R002NV04N9 GitHub Pages SEO row open). A NuGet listing with no description
   and no tags is invisible to search and looks abandoned.
 - **Non-goals:** does not require publishing to NuGet.org yet; just ensures the metadata
   is correct for when publishing happens.
@@ -135,7 +135,7 @@
   - SourceLink verified by `dotnet pack --include-symbols`.
 - **Kill criteria:** if NuGet publishing is explicitly deferred (WONT-DO) before Aurora
   pitch, note that in the row and defer to P3.
-- **New backlog row:** B-0447
+- **New backlog row:** 081KRFA460008QG0R000EJK30F
 
 ---
 
@@ -145,12 +145,12 @@
 
 - **User / moment:** developer using an IDE (VS Code / Rider) who wants Zeta's
   shadow-mode autocomplete: the grey-text suggestion that accepts on Tab. This is
-  the killer consumer feature in B-0402. Without slices 3–5, the shadow observer
+  the killer consumer feature in 081KR7JY10008QG0R0008NGW95. Without slices 3–5, the shadow observer
   can detect key events (`outlet.ts` ✅) but cannot read IDE grey-text
   (slice 3 — osascript) or provide a stable `zeta shadow --loop` entry point
   (slice 4).
-- **Signal:** B-0431 (slice 3 — macOS grey-text detection), B-0432 (slice 4 — CLI
-  `--loop` flag), B-0433 (slice 5 — distribution / demo packaging) are all P0 and
+- **Signal:** 081KRFA460008QG0R003C00WKR (slice 3 — macOS grey-text detection), 081KRFA460008QG0R000GVCKHE (slice 4 — CLI
+  `--loop` flag), 081KRFA460008QG0R0028CR0N9 (slice 5 — distribution / demo packaging) are all P0 and
   open as of 2026-05-13. `tools/shadow/` contains the applescript
   (`detect-grey-text.applescript`) but no wiring to the shadow observer.
 - **Proposed approach:** no new row needed — rows exist. But the PM-2 finding is that
@@ -163,9 +163,9 @@
   the demo story weakens.
 - **Non-goals:** does not add new shadow-mode capabilities; just completes the existing
   design.
-- **Acceptance criteria:** B-0431 + B-0432 + B-0433 all closed by the same PR cluster.
-- **Existing rows:** B-0431, B-0432, B-0433 (no new row needed).
-- **Recommendation:** group B-0431/B-0432/B-0433 as a sprint target; treat them as
+- **Acceptance criteria:** 081KRFA460008QG0R003C00WKR + 081KRFA460008QG0R000GVCKHE + 081KRFA460008QG0R0028CR0N9 all closed by the same PR cluster.
+- **Existing rows:** 081KRFA460008QG0R003C00WKR, 081KRFA460008QG0R000GVCKHE, 081KRFA460008QG0R0028CR0N9 (no new row needed).
+- **Recommendation:** group 081KRFA460008QG0R003C00WKR/081KRFA460008QG0R000GVCKHE/081KRFA460008QG0R0028CR0N9 as a sprint target; treat them as
   blocked-together rather than individually deferrable.
 
 ---
@@ -177,15 +177,15 @@
 - **User / moment:** potential enterprise customer evaluating Zeta for master-data
   management. They ask "can I see this working against real data?" There is no running
   demo.
-- **Signal:** B-0428 (DBpedia via dotNetRDF + F# CE) was filed 2026-05-13 and is open.
+- **Signal:** 081KRFA460008QG0R0018SN61J (DBpedia via dotNetRDF + F# CE) was filed 2026-05-13 and is open.
   The VISION document names "intellectual backup of earth" as the terminal purpose.
   MDM (master data management) is the enterprise instantiation of that purpose.
   Without a demo, the thesis is not demonstrable.
-- **Proposed approach:** no new row needed — B-0428 exists and is unblocked.
+- **Proposed approach:** no new row needed — 081KRFA460008QG0R0018SN61J exists and is unblocked.
 - **Why now:** the Aurora pitch (PR #2924) references this demo. The pitch is live.
   The demo does not exist.
-- **Non-goals:** does not require the F# type provider path (that's deferred in B-0428).
-- **Existing row:** B-0428.
+- **Non-goals:** does not require the F# type provider path (that's deferred in 081KRFA460008QG0R0018SN61J).
+- **Existing row:** 081KRFA460008QG0R0018SN61J.
 
 ---
 
@@ -193,17 +193,17 @@
 
 | Gap | Type | New row | Existing row | Priority |
 |-----|------|---------|-------------|----------|
-| Getting-started guide | UX / adoption | B-0444 | — | P1 |
-| C# fluent operator surface | API surface | B-0445 | — | P1 |
-| Lean 4 formal proof completion | Verification | B-0446 | — | P2 |
-| NuGet package metadata | Discoverability | B-0447 | — | P2 |
-| Shadow CLI slices 3–5 | Feature-complete | — | B-0431, B-0432, B-0433 | P0 |
-| DBpedia / MDM demo | Demo / adoption | — | B-0428 | P1 |
+| Getting-started guide | UX / adoption | 081KRFA460008QG0R001SXP0C2 | — | P1 |
+| C# fluent operator surface | API surface | 081KRFA460008QG0R002JQERS5 | — | P1 |
+| Lean 4 formal proof completion | Verification | 081KRFA460008QG0R00168759Y | — | P2 |
+| NuGet package metadata | Discoverability | 081KRFA460008QG0R000EJK30F | — | P2 |
+| Shadow CLI slices 3–5 | Feature-complete | — | 081KRFA460008QG0R003C00WKR, 081KRFA460008QG0R000GVCKHE, 081KRFA460008QG0R0028CR0N9 | P0 |
+| DBpedia / MDM demo | Demo / adoption | — | 081KRFA460008QG0R0018SN61J | P1 |
 
 ---
 
 ## Methodology note
 
 Surface-first discipline: every gap was checked against the existing 544 backlog rows
-before filing. New rows B-0444..B-0447 were verified as net-new coverage. Gaps 5 and 6
+before filing. New rows 081KRFA460008QG0R001SXP0C2..081KRFA460008QG0R000EJK30F were verified as net-new coverage. Gaps 5 and 6
 point to existing rows rather than inflating the backlog.

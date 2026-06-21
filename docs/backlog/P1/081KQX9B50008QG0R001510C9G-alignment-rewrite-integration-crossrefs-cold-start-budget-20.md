@@ -1,6 +1,5 @@
 ---
-id: B-0223
-zetaid: 081KQX9B50008QG0R001510C9G
+id: 081KQX9B50008QG0R001510C9G
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - final integration, crossrefs, and cold-start budget"
@@ -12,9 +11,9 @@ classification: blocked-on-content-slices
 type: friction-reducer
 ---
 
-# B-0223 - Final integration and cold-start budget
+# 081KQX9B50008QG0R001510C9G - Final integration and cold-start budget
 
-Perform the final B-0003 integration pass after the content
+Perform the final 081KQ0YZ80008QG0R001QJJTVF integration pass after the content
 slices land.
 
 ## Work scope
@@ -35,5 +34,5 @@ rewrite is actually coherent.
   considered.
 - Every new load-bearing claim has a durable pointer or
   falsification hook.
-- B-0003 is updated with completion evidence or left open
+- 081KQ0YZ80008QG0R001QJJTVF is updated with completion evidence or left open
   with the exact remaining blocker.

@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: it IS literal - text is 2D (glyphs on a plane; the LLM's world), human is 3D (embodied); the Flatland perception asymmetry is literal. C. elegans = the fully-mapped-connectome anchor (B-0925). Corrected my over-hedge that called it analogy. Only the precise dimensional bookkeeping routes to the math team. Not a hierarchy of worth.
+Aaron: it IS literal - text is 2D (glyphs on a plane; the LLM's world), human is 3D (embodied); the Flatland perception asymmetry is literal. C. elegans = the fully-mapped-connectome anchor (081KSNY2Z0008QG0R00390T4DJ). Corrected my over-hedge that called it analogy. Only the precise dimensional bookkeeping routes to the math team. Not a hierarchy of worth.
 
 ## Outcome
 

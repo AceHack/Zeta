@@ -82,7 +82,7 @@ Audit `tools/**/*.py` for non-AI/ML scripts that should be
 TypeScript:
 
 - `tools/hygiene/sort-tick-history-canonical.py` — markdown
-  table sort + dedupe; no AI/ML reason; **B-0086 port candidate**.
+  table sort + dedupe; no AI/ML reason; **081KQ8P5D0008QG0R003BFZPRC port candidate**.
 - `tools/hygiene/fix-markdown-md032-md026.py` — markdown
   formatting fixes; no AI/ML reason; **also a port candidate**.
 - (Audit other `tools/**/*.py` per future review.)
@@ -130,5 +130,5 @@ When asked to write a new script:
 3. **If shell glue ≤10 lines**: bash with `set -euo pipefail` per
    Otto-235.
 4. **Existing Python tool that needs substantive changes**: file
-   a port-candidate row (e.g. B-0086 shape), evaluate whether
+   a port-candidate row (e.g. 081KQ8P5D0008QG0R003BFZPRC shape), evaluate whether
    port-now or extend-now-port-later.

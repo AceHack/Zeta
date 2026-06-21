@@ -31,7 +31,7 @@ Clause → anchor → status:
   independent) likelihood commutes; state-dependent (`sharpen`, self-reading ⇒ correlated) does
   NOT — that counterexample IS this boundary.
 - **"converges"** = Doob martingale convergence / Bayesian consistency. Partial: discrete order-
-  independence proven; continuous posterior-concentration ⇒ §B (piece 2 / B-1020).
+  independence proven; continuous posterior-concentration ⇒ §B (piece 2 / 081KTAH8Q0008QG0R001YHSSA0).
 - **"relative observers"** = per-observer frames reconciling to one. CONJECTURE: `TravelerFrame.fs`
   gives the convergence *pattern* (LUB) but for *causal* frames; belief-across-priors
   reconciliation is the genuinely-new math, NOT yet built.
@@ -67,7 +67,7 @@ corner, Viterbi the **(max,×)** corner — all "iterate one operator to a fixed
 ## Where it lives
 
 - Register: `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge (the named conjecture row).
-- Discharge: backlog B-1020 (Bayesian-Markov belief cell over exact rationals — probability/Viterbi
+- Discharge: backlog 081KTAH8Q0008QG0R001YHSSA0 (Bayesian-Markov belief cell over exact rationals — probability/Viterbi
   semirings, forward/Viterbi as ZSet-over-semiring matrix product, the boundary theorem, relative-
   observer reconciliation). Floats out of lineage; exact-rational core byte-locks + 4-langs.
 

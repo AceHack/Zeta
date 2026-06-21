@@ -1,6 +1,6 @@
 ---
 name: Distributed maintainer architecture — R Provider + SQL Server Docker (dev license free) + Postgres + any DB + bus systems local for prototyping — end users get Zeta — Zeta dotnet stored procedures (Aaron 2026-05-13)
-description: Aaron 2026-05-13 architecture-tier substrate. Factory maintainers have RICH local DB + bus toolkit (SQL Server Docker dev-license-free, Postgres, any DB or bus locally) for prototyping + strength/weakness discovery. End users get ONLY Zeta as production substrate. Distributed-maintainer-architecture pattern. Skills around these DBs compose. SQL Server stored procedures support R+Python+Java; Zeta will have dotnet (F#/C#). R Provider (fslab.org/RProvider/) named as useful F# type provider. Composes with PR #2929 storage layer + B-0428 DBpedia + Aurora pitch + algebra-owner F# substrate.
+description: Aaron 2026-05-13 architecture-tier substrate. Factory maintainers have RICH local DB + bus toolkit (SQL Server Docker dev-license-free, Postgres, any DB or bus locally) for prototyping + strength/weakness discovery. End users get ONLY Zeta as production substrate. Distributed-maintainer-architecture pattern. Skills around these DBs compose. SQL Server stored procedures support R+Python+Java; Zeta will have dotnet (F#/C#). R Provider (fslab.org/RProvider/) named as useful F# type provider. Composes with PR #2929 storage layer + 081KRFA460008QG0R0018SN61J DBpedia + Aurora pitch + algebra-owner F# substrate.
 type: feedback
 created: 2026-05-13
 ---
@@ -32,7 +32,7 @@ investigating strengths/weaknesses of design choices:
 5. **SQL Server stored procedures** support R + Python + Java
    built-in; Zeta will have dotnet (F#/C#)
 6. **R Provider for F#** named as useful F# type provider
-   (fslab.org/RProvider/) — composes with B-0428 DBpedia
+   (fslab.org/RProvider/) — composes with 081KRFA460008QG0R0018SN61J DBpedia
    substrate
 
 ## Aaron's verbatim disclosure
@@ -64,8 +64,8 @@ have minimal toolkit.
 This composes with:
 - PR #2924 (Aurora pitch — edge node runs models/policy + small
   BTC node/miner; end-user edge nodes are minimal)
-- B-0424 (Stage 1 factory split — distribution shape)
-- B-0425 (product-repo split — Zeta vs prototyping infrastructure)
+- 081KRFA460008QG0R001H98EXJ (Stage 1 factory split — distribution shape)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split — Zeta vs prototyping infrastructure)
 
 ### 2. SQL Server Docker (dev-license-free)
 
@@ -112,7 +112,7 @@ strengths into Zeta.
 
 - Aaron-named as "could be useful" 2026-05-13
 - F# type provider for R statistical computing
-- Composes with B-0428 (DBpedia F# CE Path B); B-0428 deferred
+- Composes with 081KRFA460008QG0R0018SN61J (DBpedia F# CE Path B); 081KRFA460008QG0R0018SN61J deferred
   Path A type-provider-on-FSharp.TypeProviders.SDK substrate
 - R has rich statistical + ML ecosystem
 - Maintainers can use R + F# together via this type provider
@@ -150,13 +150,13 @@ will compose with:
 - PR #2917 (vision monad Play-Doh — soft + reshapeable;
   prototyping substrate)
 - PR #2892 (KSK — typed-safety motivation for Zeta dotnet)
-- B-0424 (Stage 1 factory split — distribution shape; what
+- 081KRFA460008QG0R001H98EXJ (Stage 1 factory split — distribution shape; what
   goes in factory vs Zeta)
-- B-0425 (product-repo split — Zeta lives in its own product
+- 081KRFA460008QG0R003JQ46J4 (product-repo split — Zeta lives in its own product
   repo)
-- B-0428 (DBpedia F# CE — RProvider type-provider composes
+- 081KRFA460008QG0R0018SN61J (DBpedia F# CE — RProvider type-provider composes
   with deferred Path A)
-- B-0043 (universal company + government information substrate
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate
   — master-data storage)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
 - `.claude/rules/dv2-data-split-discipline-activated.md`
@@ -182,7 +182,7 @@ Skills targeting specific DBs/buses are allowed + welcomed:
 - `sql-server-prototyper` skill
 - `postgres-vector-pgvector` skill
 - `rabbitmq-bus-explorer` skill
-- `r-statistical-via-rprovider` skill (composes with B-0428
+- `r-statistical-via-rprovider` skill (composes with 081KRFA460008QG0R0018SN61J
   deferred Path A)
 - Any other DB/bus prototyping skill
 
@@ -198,7 +198,7 @@ Composes with:
 - Aaron's "you can't count on end users to have it" — substrate-
   honest framing
 
-### For B-0428 DBpedia Path B implementation
+### For 081KRFA460008QG0R0018SN61J DBpedia Path B implementation
 
 Path B (direct dotNetRDF + F# CE) prototyping can leverage:
 - SQL Server local instance for caching DBpedia results
@@ -265,9 +265,9 @@ distinction)
 
 PR #2917 (vision monad Play-Doh)
 
-B-0428 (DBpedia Path B — RProvider integration candidate)
+081KRFA460008QG0R0018SN61J (DBpedia Path B — RProvider integration candidate)
 
-B-0043 (universal company + government information substrate)
+081KQ3HBZ0008QG0R000Q4Y00F (universal company + government information substrate)
 
 [R Provider for F#](https://fslab.org/RProvider/)
 

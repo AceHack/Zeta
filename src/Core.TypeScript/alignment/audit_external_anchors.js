@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
-// audit_external_anchors.ts — B-0311
+// audit_external_anchors.ts — 081KR2E4K0008QG0R001ZWARTN
 // Per-concept external anchor coverage scanner.
 //
-// Loads the concept registry (B-0310), locates each concept in its
+// Loads the concept registry (081KR2E4K0008QG0R003DS2XHJ), locates each concept in its
 // source surface, and extracts external URLs from the surrounding
 // context window. Emits a coverage report mapping each concept to
 // its anchors or an "anchor-pending" marker.

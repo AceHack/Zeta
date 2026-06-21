@@ -1,6 +1,6 @@
 ---
 pr_number: 5129
-title: "backlog(B-0806 iter-7 P2): Ansible+GitOps + Crossplane composition \u2014 cross-OS declarative management for Windows + Macs"
+title: "backlog(081KSGS9H0008QG0R001Y9FB62 iter-7 P2): Ansible+GitOps + Crossplane composition \u2014 cross-OS declarative management for Windows + Macs"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T08:19:23Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-26T13:29:29Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5129: backlog(B-0806 iter-7 P2): Ansible+GitOps + Crossplane composition — cross-OS declarative management for Windows + Macs
+# PR #5129: backlog(081KSGS9H0008QG0R001Y9FB62 iter-7 P2): Ansible+GitOps + Crossplane composition — cross-OS declarative management for Windows + Macs
 
 ## PR description
 
@@ -27,7 +27,7 @@ Iter-7 capstone capturing the maintainer's 2026-05-26 substrate-engineering pull
 ```
 git (single source of truth)
 ├── k8s/applications/    → ArgoCD pulls → applies to K8s            (exists)
-├── nixos/flake.nix      → autoUpgrade pulls → nixos-rebuild switch (B-0801)
+├── nixos/flake.nix      → autoUpgrade pulls → nixos-rebuild switch (081KSGS9H0008QG0R002T6J6FS)
 ├── ansible/playbooks/   → ansible-pull cron pulls → applies to OS  (NEW — iter-7)
 └── crossplane/          → Crossplane controller pulls → external APIs (NEW — iter-7)
 ```
@@ -45,9 +45,9 @@ Pull cadence, branch model, secret handling, ansible-bootstrap, state observabil
 
 ## Composes with
 
-- B-0794 (iter-5.4 homelab gh-auth — enables host→git auth for the pull side)
-- B-0800–B-0805 (iter-6 cluster-update arc)
-- B-0805 capstone (dep-pin discipline applies to ansible collections + Crossplane providers too)
+- 081KSGS9H0008QG0R0027HJZYH (iter-5.4 homelab gh-auth — enables host→git auth for the pull side)
+- 081KSGS9H0008QG0R001EKTS5A–081KSGS9H0008QG0R002BC2ZR7 (iter-6 cluster-update arc)
+- 081KSGS9H0008QG0R002BC2ZR7 capstone (dep-pin discipline applies to ansible collections + Crossplane providers too)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

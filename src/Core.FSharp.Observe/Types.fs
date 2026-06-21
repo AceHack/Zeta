@@ -1,8 +1,8 @@
 namespace Zeta.Core.FSharp.Observe
 
-/// F# port of the observe/simulate/fold event algebra (B-0867.27) — oracle #2 of
+/// F# port of the observe/simulate/fold event algebra (081KSXN940008QG0R0033T2BQT) — oracle #2 of
 /// four (TS/F#/C#/Rust) in the cross-language-parity = non-Byzantine-BFT consensus
-/// (B-0944: "the compilers don't lie"). The types mirror the TS reference
+/// (081KSV2WD0008QG0R00051XS0N: "the compilers don't lie"). The types mirror the TS reference
 /// (src/Core.TypeScript/observe/observe.ts) so the golden-vector fixture (src/Core.TypeScript/observe/
 /// golden-vectors.json) replays identically here. Zero external dependencies.
 

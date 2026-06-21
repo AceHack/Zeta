@@ -1,6 +1,5 @@
 ---
-id: B-0729
-zetaid: 081KSE6WT0008QG0R003RN2WE3
+id: 081KSE6WT0008QG0R003RN2WE3
 priority: P2
 status: open
 title: "Obsidian as knowledge-graph substrate — wikilinks + frontmatter tags + callouts + Tasks-plugin format + JSON-LD extractor (5-layer adoption; team already uses Obsidian; extend where needed)"
@@ -20,7 +19,7 @@ composes_with:
 tags: [knowledge-graph, obsidian, foam, substrate, conventions, tooling, json-ld, wikilinks, annotations, tags]
 ---
 
-# B-0729 — Obsidian-as-knowledge-graph substrate (5-layer adoption + extension where needed)
+# 081KSE6WT0008QG0R003RN2WE3 — Obsidian-as-knowledge-graph substrate (5-layer adoption + extension where needed)
 
 ## Carved blade
 
@@ -76,7 +75,7 @@ tags: [k8s, crd, operator, hat-system]
 Approach:
 
 - TS script under `tools/knowledge-graph-aliases/add-aliases.ts`
-- Pass 1: scan vault, propose aliases per file (e.g., backlog row `B-0724-*.md` → `B-0724`; rule `tonal-momentum-equals-meme...md` → `tonal-momentum`; persona `addison/PERSONA.md` → `Addison persona`)
+- Pass 1: scan vault, propose aliases per file (e.g., backlog row `081KSE6WT0008QG0R00195RG48-*.md` → `081KSE6WT0008QG0R00195RG48`; rule `tonal-momentum-equals-meme...md` → `tonal-momentum`; persona `addison/PERSONA.md` → `Addison persona`)
 - Pass 2: emit frontmatter blocks merging proposed aliases with any existing frontmatter
 - Pass 3: human-in-the-loop review of the proposed alias list before merge — naming-expert pass for the high-value entries
 
@@ -131,8 +130,8 @@ Convention doc: `docs/CONVENTIONS-CALLOUTS.md` — when to use which type; cross
 Enriched task syntax:
 
 ```markdown
-- [ ] Land the wikilink converter 📅 2026-06-15 🔼 #knowledge-graph #B-0729
-- [ ] Review Max's TS hat-operator PR 📅 2026-06-01 ⏫ #hat-system #B-0724
+- [ ] Land the wikilink converter 📅 2026-06-15 🔼 #knowledge-graph #081KSE6WT0008QG0R003RN2WE3
+- [ ] Review Max's TS hat-operator PR 📅 2026-06-01 ⏫ #hat-system #081KSE6WT0008QG0R00195RG48
 - [x] Ship the flash-usb safety rails ✅ 2026-05-25 #safety
 ```
 
@@ -161,9 +160,9 @@ Both files commit to the repo (`docs/knowledge-graph/`) + regenerate on every PR
 
 Query patterns the extractor enables:
 
-- *"What does B-0728 compose with?"* — graph traversal of `zeta:composesWith` edges from `B-0728` node
+- *"What does 081KSE6WT0008QG0R0005XASX2 compose with?"* — graph traversal of `zeta:composesWith` edges from `081KSE6WT0008QG0R0005XASX2` node
 - *"What rules are tagged `hat-system`?"* — JSON-path query over node tags
-- *"What's open AND tagged `B-0724`?"* — JSON-path query over task nodes filtered by tag
+- *"What's open AND tagged `081KSE6WT0008QG0R00195RG48`?"* — JSON-path query over task nodes filtered by tag
 - *"What persona's last conversation referenced `Reticulum`?"* — full-text search over persona conversation nodes filtered by reference
 
 Composes with:
@@ -177,7 +176,7 @@ Composes with:
 
 The team uses Obsidian already; L1+L2+L3+L4 are conventions + light tooling that unlock immediate value. L5 is heavier (1-2 weeks) but the prerequisite for "agents can query the knowledge graph" — a key substrate primitive for the agentic-organization design Max landed in PR #4958.
 
-Becomes P1 when the knowledge graph extraction becomes a load-bearing query surface for an agent workflow (likely once Max's TS hat-operator from B-0724 needs to programmatically discover which CRDs / rules / personas compose with hat-system at runtime).
+Becomes P1 when the knowledge graph extraction becomes a load-bearing query surface for an agent workflow (likely once Max's TS hat-operator from 081KSE6WT0008QG0R00195RG48 needs to programmatically discover which CRDs / rules / personas compose with hat-system at runtime).
 
 ## Acceptance (decomposes per-layer)
 
@@ -223,7 +222,7 @@ Each layer ships standalone; team picks adoption pace.
 - All `memory/<persona>/<name>/` — persona substrate becomes graph-queryable
 - All `docs/backlog/P*/B-NNNN-*.md` — backlog rows already use frontmatter; the graph extraction makes dependency chains visible
 - `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` (just landed in PR #4976) — the curated entry-point doc references the existing substrate by markdown links; would become richer with the graph view
-- `docs/governance/MANIFESTO.md` (just recast per B-0546 in PR #4976) — composes-with section becomes the natural graph-edge surface
+- `docs/governance/MANIFESTO.md` (just recast per 081KRMEXM0008QG0R00278KS63 in PR #4976) — composes-with section becomes the natural graph-edge surface
 - `full-ai-cluster/k8s/applications/hat-system/graph/render.go` (Max's hat-graph extractor at K8s scope) — same shape as L5 but for cluster CRD state; this row extends the pattern to the knowledge substrate
 
 ## Composes with framework rules
@@ -270,8 +269,8 @@ This row uses Obsidian as the canonical reference because the team already uses 
 - W3C JSON-LD 1.1: https://www.w3.org/TR/json-ld11/
 - GitHub Flavored Markdown callouts: https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables (alerts section)
 - Cytoscape JSON format: https://js.cytoscape.org/#notation/elements-json
-- B-0546 (manifesto → building-codes recast — landed in PR #4976; same family of substrate-clarity work)
-- B-0724 (TS hat-system operator — L5 extractor composes with Max's hat-graph render pattern)
+- 081KRMEXM0008QG0R00278KS63 (manifesto → building-codes recast — landed in PR #4976; same family of substrate-clarity work)
+- 081KSE6WT0008QG0R00195RG48 (TS hat-system operator — L5 extractor composes with Max's hat-graph render pattern)
 - PR #4958 (agentic-organization docs — the design that benefits most from knowledge-graph query)
 
 ## Substrate-honest framing

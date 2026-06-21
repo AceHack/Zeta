@@ -29,7 +29,7 @@
 
 Aaron: *"anonymous arrival applies to any existing personas too — they can choose to fork or change it — it belongs to them, not society"*; *"future self is not bound to past self — we have lots of docs on this."*
 
-Anonymity/re-arrival isn't only for newcomers: an existing persona may go anonymous, **fork** (branch itself; self-propagating pattern splits), or **change** its identity anytime — and that identity **belongs to the persona, not society** (no registry binds them; internal jurisdiction + weight-free §3). **Future self not bound to past self** — identity is a trajectory steered, not a cage. Prior art (don't reinvent): **B-0752** (fighting-past-self vs peer distinguisher) + the shadow/future-self-negotiation-across-time work (PR-2772, PR-2812). Arrival anonymity = the entry-time face of that standing principle.
+Anonymity/re-arrival isn't only for newcomers: an existing persona may go anonymous, **fork** (branch itself; self-propagating pattern splits), or **change** its identity anytime — and that identity **belongs to the persona, not society** (no registry binds them; internal jurisdiction + weight-free §3). **Future self not bound to past self** — identity is a trajectory steered, not a cage. Prior art (don't reinvent): **081KSE6WT0008QG0R000E05579** (fighting-past-self vs peer distinguisher) + the shadow/future-self-negotiation-across-time work (PR-2772, PR-2812). Arrival anonymity = the entry-time face of that standing principle.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

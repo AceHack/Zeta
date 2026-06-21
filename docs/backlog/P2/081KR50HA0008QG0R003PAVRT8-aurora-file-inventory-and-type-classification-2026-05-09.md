@@ -1,12 +1,11 @@
 ---
-id: B-0375
-zetaid: 081KR50HA0008QG0R003PAVRT8
+id: 081KR50HA0008QG0R003PAVRT8
 priority: P2
 status: open
 title: Inventory and classify every file under docs/aurora/** (current-state doc vs courier-ferry history import)
 tier: research-grade
 effort: S
-ask: decomposition of B-0005
+ask: decomposition of 081KQ0YZ80008QG0R003GMGDRH
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
@@ -16,7 +15,7 @@ tags: [governance, directory-ontology, aurora, courier-ferry, BP-17, BP-18]
 type: friction-reducer
 ---
 
-# B-0375 — Inventory and classify every file under `docs/aurora/**`
+# 081KR50HA0008QG0R003PAVRT8 — Inventory and classify every file under `docs/aurora/**`
 
 ## What
 
@@ -39,11 +38,11 @@ No file moves or edits in this step. Output only.
 
 ## Why (and why first)
 
-This is the root atom. All downstream split work (B-0376 naming
-decision, B-0377 schema-doc update, B-0378 GOVERNANCE/copilot
-update, B-0379 execution) depends on knowing *which files move
+This is the root atom. All downstream split work (081KR50HA0008QG0R0038HWCDT naming
+decision, 081KR50HA0008QG0R003C39GP0 schema-doc update, 081KR50HA0008QG0R002HMCS5Y GOVERNANCE/copilot
+update, 081KR50HA0008QG0R003DJ093T execution) depends on knowing *which files move
 and which stay*. Without this inventory, mass-edit estimates are
-wrong and the Path A vs Path B choice (B-0376) lacks grounding.
+wrong and the Path A vs Path B choice (081KR50HA0008QG0R0038HWCDT) lacks grounding.
 
 Per `docs/AGENT-BEST-PRACTICES.md` BP-17 (Rule Zero — canonical-home
 ontology) + BP-18 (the canonical home IS the type system): the
@@ -81,16 +80,16 @@ cleaner; if a separate file, add a pointer here):
   `tools/hygiene/LOST-FILES-LOCATIONS.md`, skills, or memory files.
 - [x] Dependency-restructure: no `depends_on` — this is the root atom.
   `composes_with` edges to all sibling atoms added.
-- [x] Reciprocal pointers: B-0376, B-0377, B-0378, B-0379 all carry
-  `depends_on: [B-0375]` or `composes_with: [B-0375]`.
+- [x] Reciprocal pointers: 081KR50HA0008QG0R0038HWCDT, 081KR50HA0008QG0R003C39GP0, 081KR50HA0008QG0R002HMCS5Y, 081KR50HA0008QG0R003DJ093T all carry
+  `depends_on: [081KR50HA0008QG0R003PAVRT8]` or `composes_with: [081KR50HA0008QG0R003PAVRT8]`.
 
 ## Composes with
 
-- B-0005 (parent): this atom implements the "inventory" step described
-  in the B-0005 re-decomposition section.
-- B-0376: naming-decision row; depends on this classification to
+- 081KQ0YZ80008QG0R003GMGDRH (parent): this atom implements the "inventory" step described
+  in the 081KQ0YZ80008QG0R003GMGDRH re-decomposition section.
+- 081KR50HA0008QG0R0038HWCDT: naming-decision row; depends on this classification to
   count how many history-import files move.
-- B-0377: schema-doc update; depends on this to know what surfaces
+- 081KR50HA0008QG0R003C39GP0: schema-doc update; depends on this to know what surfaces
   reference `docs/aurora/**` as a history surface.
-- B-0378: GOVERNANCE + copilot update; same dependency.
-- B-0379: execution atom; this table is its input manifest.
+- 081KR50HA0008QG0R002HMCS5Y: GOVERNANCE + copilot update; same dependency.
+- 081KR50HA0008QG0R003DJ093T: execution atom; this table is its input manifest.

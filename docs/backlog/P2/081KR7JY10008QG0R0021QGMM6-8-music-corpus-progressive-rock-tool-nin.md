@@ -1,6 +1,5 @@
 ---
-id: B-0054.8
-zetaid: 081KR7JY10008QG0R0021QGMM6
+id: 081KR7JY10008QG0R0021QGMM6
 priority: P2
 status: open
 title: "Music corpus — progressive rock + Tool / Meshuggah / NIN first pass"
@@ -16,7 +15,7 @@ type: research
 tags: [pop-culture, music, progressive-rock, tool, meshuggah, nin, pink-floyd, yes, king-crimson, operational-resonance, F1-F2-F3, media-resonance-catalog]
 ---
 
-# B-0054.8 — Music corpus: progressive rock + Tool / Meshuggah / NIN first pass
+# 081KR7JY10008QG0R0021QGMM6 — Music corpus: progressive rock + Tool / Meshuggah / NIN first pass
 
 ## What
 
@@ -24,7 +23,7 @@ Extend `tools/resonance/media-catalog-schema.ts` with entries from the
 music corpus strand (Aaron: "hollywood bollywood inde, music information
 backlog"). This is the factory's first pass at the `music` medium-category.
 
-Candidates from B-0054 §Music:
+Candidates from 081KQ3HBZ0008QG0R003V6B2ME §Music:
 
 - **MR-020**: Pink Floyd — *Dark Side of the Moon* (1973)
   — concept-album substrate: the album is a unified structural argument
@@ -48,7 +47,7 @@ Candidates from B-0054 §Music:
 **Prior-art search:**
 
 - wake-time-substrate: no existing MR entries for `music` medium; the
-  `MediaMedium` type already includes `"music"` in the schema (B-0054.1).
+  `MediaMedium` type already includes `"music"` in the schema (081KR2E4K0008QG0R0003J0FB8).
 - skill-router: no `operational-resonance` skill (same as prior passes).
 - on-disk: no prior `tools/resonance/music*` file.
 - Otto-364: no upstream art.
@@ -56,9 +55,9 @@ Candidates from B-0054 §Music:
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.1]` — schema foundation; independent of video-game
+- `depends_on: [081KR2E4K0008QG0R0003J0FB8]` — schema foundation; independent of video-game
   and TV/film slices.
-- `composes_with:` B-0054.5 (British TV — Monty Python shares the
+- `composes_with:` 081KR7JY10008QG0R0038891J0 (British TV — Monty Python shares the
   comedy-as-probe register with absurdist prog-rock; non-blocking).
 
 ## Deliverable
@@ -82,10 +81,10 @@ Updated `tools/resonance/media-catalog-schema.ts`:
   demonstrates polyrhythmic superposition (not vague "polyrhythm")
 - [ ] Each entry has a counterexample attempt before `confirmed` promotion
 - [ ] `--validate` exits 0
-- [ ] B-0054.8 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R0021QGMM6 backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.1 (schema foundation — `music` medium already in schema type)
+- 081KR2E4K0008QG0R0003J0FB8 (schema foundation — `music` medium already in schema type)
 - MR-006 (FFVI WoB/WoR — same paired-dual type as NIN *The Fragile*)
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`

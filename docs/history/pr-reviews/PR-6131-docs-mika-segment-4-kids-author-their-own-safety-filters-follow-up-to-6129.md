@@ -27,7 +27,7 @@
 
 ## Description
 
-Follow-up to #6129. Kid-safety governance: AI-as-neutral-refiner loop (kid signal + AI clarity) + kids co-author their own safety filters with adult review — strengthens the kid-safety-absolute floor (B-0926). Personal operator disclosure in this segment kept out of the public surface per the substrate-honest discipline.
+Follow-up to #6129. Kid-safety governance: AI-as-neutral-refiner loop (kid signal + AI clarity) + kids co-author their own safety filters with adult review — strengthens the kid-safety-absolute floor (081KSRGFP0008QG0R00091PP56). Personal operator disclosure in this segment kept out of the public surface per the substrate-honest discipline.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -111,7 +111,7 @@ Follow-up to #6129. The kid-safety governance layer:
   asymmetric-critic-with-clarity-first.
 - Kids co-author their own protection: kids write their own safety
   filters, adults review (not top-down imposition). Strengthens the
-  constitutional kid-safety-absolute floor (B-0926) rather than
+  constitutional kid-safety-absolute floor (081KSRGFP0008QG0R00091PP56) rather than
   competing with it.
 
 Substrate-honest: segment 4 also held a deeply personal operator

@@ -37,7 +37,7 @@ Captures the operator's general meta-rule (2026-05-31): **anything numerical/alg
 
 **Whys-first** (per no-dogma): composability with generic numeric code; the interface IS the machine-checkable algebraic contract; **C# IWSAM is a forward investment for the WASM runtime** (operator: *"i love the c# IWSAM stuff ... powerful for a wasm runtime"*); cross-language-BFT parity. Own the interface per language — don't fight it (F# IWSAM trips FS3535 under TreatWarningsAsErrors). Negative case: effectful/stateful types use `Result<T,TFeedback>`/ports, not generic-math.
 
-Generalizes the B-0867.28 monoid retrofit (the don't-fight-the-language lesson) into a standing authoring discipline. Composes bcl-interface-boundary + monad-propagation + attention-as-currency UoM + the 4-language governance ADR.
+Generalizes the 081KSXN940008QG0R0002287MP monoid retrofit (the don't-fight-the-language lesson) into a standing authoring discipline. Composes bcl-interface-boundary + monad-propagation + attention-as-currency UoM + the 4-language governance ADR.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -1,6 +1,6 @@
 ---
 pr_number: 5107
-title: "feat(B-0792 iter-5.2.1): auto-generate node-<6hex> hostname default \u2014 operator can rename later via digital-twin (Aaron 2026-05-26)"
+title: "feat(081KSGS9H0008QG0R003V23XNZ iter-5.2.1): auto-generate node-<6hex> hostname default \u2014 operator can rename later via digital-twin (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T05:52:18Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-27T19:42:58Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5107: feat(B-0792 iter-5.2.1): auto-generate node-<6hex> hostname default — operator can rename later via digital-twin (Aaron 2026-05-26)
+# PR #5107: feat(081KSGS9H0008QG0R003V23XNZ iter-5.2.1): auto-generate node-<6hex> hostname default — operator can rename later via digital-twin (Aaron 2026-05-26)
 
 ## PR description
 
-Composes iter-5.2 --host mechanism with B-0794 digital-twin substrate. Zero-typing default when --host omitted: generate `node-<6hex>` via Web Crypto (24-bit entropy, ~16M names, negligible collision). Operator-named hosts take priority. Logged clearly pre-flash. Aaron 2026-05-26: 'can we have it auto generate the host name we can change later via digital twin after it self registers.'
+Composes iter-5.2 --host mechanism with 081KSGS9H0008QG0R0027HJZYH digital-twin substrate. Zero-typing default when --host omitted: generate `node-<6hex>` via Web Crypto (24-bit entropy, ~16M names, negligible collision). Operator-named hosts take priority. Logged clearly pre-flash. Aaron 2026-05-26: 'can we have it auto generate the host name we can change later via digital twin after it self registers.'
 
 ## Reviews
 
@@ -42,7 +42,7 @@ P0: The hostname is auto-generated and printed before `willInject` is finalized 
 
 **@copilot-pull-request-reviewer** (2026-05-26T05:54:49Z):
 
-This comment points operators to `maintainers/<name>/cluster-nodes/<node>/` and ArgoCD reconciliation, but that subtree doesn't exist in the repo yet (currently `maintainers/aaron/` only contains `legal-entities/`). Consider rewording to avoid a concrete path until B-0794 lands (e.g., reference the B-0794 backlog doc or say “via the digital-twin node-config in maintainers/<name>/cluster-nodes/ (once B-0794 is deployed)”).
+This comment points operators to `maintainers/<name>/cluster-nodes/<node>/` and ArgoCD reconciliation, but that subtree doesn't exist in the repo yet (currently `maintainers/aaron/` only contains `legal-entities/`). Consider rewording to avoid a concrete path until 081KSGS9H0008QG0R0027HJZYH lands (e.g., reference the 081KSGS9H0008QG0R0027HJZYH backlog doc or say “via the digital-twin node-config in maintainers/<name>/cluster-nodes/ (once 081KSGS9H0008QG0R0027HJZYH is deployed)”).
 
 ## General comments
 

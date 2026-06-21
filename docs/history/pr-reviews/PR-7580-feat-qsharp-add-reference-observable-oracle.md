@@ -30,7 +30,7 @@
 ## Summary
 - add a Q# reference oracle for the finite-resolution qubits framework: single-qubit H/Ry, modeled gates, Bell/CHSH, and interference observables
 - add a Python QDK generator plus committed `qsharp-golden.json` observable vectors and Bun tests wired into cross-verify CI
-- forward-fix current backlog hygiene drift by freezing the already-landed B-1022/B-1023 IDs and regenerating `docs/BACKLOG.md`
+- forward-fix current backlog hygiene drift by freezing the already-landed 081KTQD8A0008QG0R0005EFYPV/081KTQD8A0008QG0R0030HWMZV IDs and regenerating `docs/BACKLOG.md`
 
 ## Verification
 - `ZETA_INSTALL_QUANTUM=1 mise exec -- bash tools/setup/common/quantum.sh`

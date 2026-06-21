@@ -299,11 +299,10 @@ export function readBacklogItems(repoRoot: string): BacklogItem[] {
       const content = readFileSync(absolutePath, "utf8");
       const frontmatter = parseFrontmatter(content);
       // ZetaId is the canonical identifier — locally mintable, no coordination.
-      // The legacy `id: B-xxxx` field is kept as a display label but never used
-      // for coordination or dependency resolution.
-      const zetaid = asString(frontmatter.zetaid);
-      const legacyId = asString(frontmatter.id);
-      const id = zetaid || legacyId; // prefer zetaid; fall back to legacy only if missing
+      const rawId = asString(frontmatter.id);
+      const zetaid = asString(frontmatter.zetaid) ?? (rawId && !/^B-\d/.test(rawId) ? rawId : null);
+      const legacyId = rawId && /^B-\d/.test(rawId) ? rawId : null;
+      const id = zetaid ?? legacyId;
       const title = asString(frontmatter.title);
       if (!id || !title) {
         continue;

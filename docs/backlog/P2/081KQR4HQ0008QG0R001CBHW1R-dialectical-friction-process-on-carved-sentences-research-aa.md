@@ -1,6 +1,5 @@
 ---
-id: B-0187
-zetaid: 081KQR4HQ0008QG0R001CBHW1R
+id: 081KQR4HQ0008QG0R001CBHW1R
 priority: P2
 status: closed
 closed: 2026-05-04
@@ -42,7 +41,7 @@ tags: [carved-sentences, dialectical-friction, intergenerational-transmission, s
 
 ---
 
-# B-0187 — Research: dialectical-friction process on carved sentences
+# 081KQR4HQ0008QG0R001CBHW1R — Research: dialectical-friction process on carved sentences
 
 ## Source
 

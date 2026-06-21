@@ -2,7 +2,7 @@
 
 Status: release refs inactive
 Grounding backlog:
-`docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
+`docs/backlog/P2/081KQX9B50008QG0R001MNYK61-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
 Parent dry-run receipt:
 `docs/trajectories/autonomous-loop-coordination/remote-only-two-participant-dry-run-2026-05-28.md`
 Parent matrix:
@@ -10,7 +10,7 @@ Parent matrix:
 
 ## Scope
 
-This packet closes the release-state audit for the B-0209 remote-only
+This packet closes the release-state audit for the 081KQX9B50008QG0R001MNYK61 remote-only
 two-participant dry run. The audit uses live remote git refs, merge history,
 and locally available commit objects. It does not use the local broadcast bus,
 foreground chat, or shared worktree state as authority.
@@ -58,7 +58,7 @@ same-PR release.
 
 ## Next Safe Step
 
-Move the trajectory to the B-0211 local/remote cluster composition protocol
+Move the trajectory to the 081KQX9B50008QG0R0026BG44J local/remote cluster composition protocol
 sketch. Also add a later stale-claim cleanup rule that requires completed
 remote-only dry runs to record whether each inactive claim ended by same-PR
 release, force-release, or remote-head retirement.

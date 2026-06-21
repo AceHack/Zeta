@@ -1,12 +1,11 @@
 ---
-id: B-0384
-zetaid: 081KR50HA0008QG0R000467SWT
+id: 081KR50HA0008QG0R000467SWT
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — calculation problem as information-theoretic complexity bound (Austrian primitive #3)
 tier: research-grade
 effort: M
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K]
@@ -16,7 +15,7 @@ tags: [aurora, economics, austrian-school, quant, mathematical-rigor, calculatio
 type: research
 ---
 
-# B-0384 — Formalizability assessment: calculation problem → information-theoretic complexity bound
+# 081KR50HA0008QG0R000467SWT — Formalizability assessment: calculation problem → information-theoretic complexity bound
 
 ## What
 
@@ -96,7 +95,7 @@ established results in computer science and information theory:
   knowledge-problem extension, with their distinct claims)
 - Best-candidate formal frameworks (complexity theory, information
   theory, distributed systems)
-- Formalization type (per B-0380 vocabulary)
+- Formalization type (per 081KR50HA0008QG0R003ESW3MH vocabulary)
 - Synthesis-gap remaining
 - Verdict: this primitive may be the strongest candidate for
   a clean quant-grade formalization — the assessment should say
@@ -114,18 +113,18 @@ ls docs/aurora/ | grep calculation-problem
 - Mises 1920 and Hayek 1945 variants distinguished
 - Complexity-theory and information-theory analogs evaluated
 - Grossman-Stiglitz paradox relationship addressed
-- Verdict explicit per B-0380 vocabulary
+- Verdict explicit per 081KR50HA0008QG0R003ESW3MH vocabulary
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0381 survey provides prior-work context;
+- [x] Prior-art search: 081KR50HA0008QG0R000M4H35K survey provides prior-work context;
   no existing `docs/aurora/` note on calculation-problem formalization.
-- [x] Dependency-restructure: parallelizable with B-0382, B-0383,
-  B-0385, B-0386 after B-0380 and B-0381 complete.
+- [x] Dependency-restructure: parallelizable with 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP,
+  081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ after 081KR50HA0008QG0R003ESW3MH and 081KR50HA0008QG0R000M4H35K complete.
 
 ## Composes with
 
-- B-0023 (parent): implements primitive #3
-- B-0380, B-0381 (deps): vocabulary and prior-work context
-- B-0387 (downstream): verdict feeds synthesis ADR; this primitive
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): implements primitive #3
+- 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K (deps): vocabulary and prior-work context
+- 081KR50HA0008QG0R000M838VA (downstream): verdict feeds synthesis ADR; this primitive
   may drive the "what CAN be formalized" conclusion of the ADR

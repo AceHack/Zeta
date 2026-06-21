@@ -1,6 +1,5 @@
 ---
-id: B-0426
-zetaid: 081KRFA460008QG0R0007RWSN1
+id: 081KRFA460008QG0R0007RWSN1
 priority: P1
 status: decomposed
 title: "Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated"
@@ -40,7 +39,7 @@ Per `.claude/rules/default-to-both.md` — MULTIPLE axes can apply
 to the same repo simultaneously. Each axis serves a different
 design constraint.
 
-### Axis 1: Factory / Product / Owner-only (per B-0424 + B-0425 + PR #2905 forker-perspective META)
+### Axis 1: Factory / Product / Owner-only (per 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + PR #2905 forker-perspective META)
 
 | Category | Forkability |
 |---|---|
@@ -106,26 +105,26 @@ child rows per `.claude/rules/backlog-item-start-gate.md`:
 
 | Row | Title | Type | Depends on |
 |-----|-------|------|------------|
-| **B-0471** | Mirror/Beacon prior-art audit | research | — (first in chain; parent: B-0426) |
-| **B-0472** | Two-axis classification matrix | design | B-0471 |
-| **B-0473** | Mirror→Beacon promotion gate protocol | design | B-0471 |
-| **B-0474** | Mirror/Beacon axis ADR | adr | B-0472, B-0473 |
+| **081KRHWGX0008QG0R002VV6DTS** | Mirror/Beacon prior-art audit | research | — (first in chain; parent: 081KRFA460008QG0R0007RWSN1) |
+| **081KRHWGX0008QG0R002DP6AZN** | Two-axis classification matrix | design | 081KRHWGX0008QG0R002VV6DTS |
+| **081KRHWGX0008QG0R0031EGYA7** | Mirror→Beacon promotion gate protocol | design | 081KRHWGX0008QG0R002VV6DTS |
+| **081KRHWGX0008QG0R0023FDYVE** | Mirror/Beacon axis ADR | adr | 081KRHWGX0008QG0R002DP6AZN, 081KRHWGX0008QG0R0031EGYA7 |
 
-Dependency order: B-0471 → B-0472 (parallel with B-0473) → B-0474.
+Dependency order: 081KRHWGX0008QG0R002VV6DTS → 081KRHWGX0008QG0R002DP6AZN (parallel with 081KRHWGX0008QG0R0031EGYA7) → 081KRHWGX0008QG0R0023FDYVE.
 
-B-0474 closes this row when merged.
+081KRHWGX0008QG0R0023FDYVE closes this row when merged.
 
 ## Pre-start checklist (decomposition gate — completed 2026-05-14)
 
 Prior-art search completed per `.claude/rules/backlog-item-start-gate.md`:
 
-- [x] Otto-356 register discipline (existing; consistent with B-0426)
+- [x] Otto-356 register discipline (existing; consistent with 081KRFA460008QG0R0007RWSN1)
 - [x] `memory/feedback_aaron_repo_split_orthogonal_mirror_beacon_axis_*.md` (exists; current)
 - [x] `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md` (exists; defines promotion gate)
-- [x] `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md` (B-0425 closed; Axis-1 positions set)
+- [x] `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md` (081KRFA460008QG0R003JQ46J4 closed; Axis-1 positions set)
 - [x] `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` (Zeta/Forge/ace three-repo split context)
-- [x] B-0424 still open (Stage-1 factory repo split unblocked by this classification)
-- [x] Dependency chain: B-0471 → B-0472 ∥ B-0473 → B-0474 established
+- [x] 081KRFA460008QG0R001H98EXJ still open (Stage-1 factory repo split unblocked by this classification)
+- [x] Dependency chain: 081KRHWGX0008QG0R002VV6DTS → 081KRHWGX0008QG0R002DP6AZN ∥ 081KRHWGX0008QG0R0031EGYA7 → 081KRHWGX0008QG0R0023FDYVE established
 
 **Substrate-ready signal:** decomposition is clean; child rows are independent
 and bounded. No blockers found.
@@ -163,8 +162,8 @@ per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Composes with
 
-- B-0424 (three-repo split Stage 1)
-- B-0425 (product-repo split planning)
+- 081KRFA460008QG0R001H98EXJ (three-repo split Stage 1)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning)
 - PR #2905 (forker-perspective META-discipline)
 - PR #2909 (civsim language mirror/beacon discipline →
   governance escalation)
@@ -189,10 +188,10 @@ per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Why P1
 
-- Composes with B-0424 + B-0425 (sibling backlog rows)
+- Composes with 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 (sibling backlog rows)
 - Aaron has explicitly named the orthogonality
 - Composes with substrate cascade from this session
-- Unblocks Stage 1 Factory split (B-0424) by clarifying which
+- Unblocks Stage 1 Factory split (081KRFA460008QG0R001H98EXJ) by clarifying which
   factory repo gets Mirror vs Beacon classification
 - Strategic-substrate (per PR #2902) decisions compose with
   Mirror/Beacon governance gate

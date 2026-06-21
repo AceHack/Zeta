@@ -10,7 +10,7 @@ not revive the old Cluster G/H/I or budget-cluster port queues.
 
 ## Why this trajectory exists
 
-Per B-0086 + maintainer-channel input 2026-04-29: TypeScript on Bun is the factory's default scripting language going forward. The migration is incremental — one coherent slice at a time, each PR a measurable increment.
+Per 081KQ8P5D0008QG0R003BFZPRC + maintainer-channel input 2026-04-29: TypeScript on Bun is the factory's default scripting language going forward. The migration is incremental — one coherent slice at a time, each PR a measurable increment.
 
 Per the maintainer-channel correction via the multi-AI review surface (2026-04-29): this is the trajectory the maintainer cares about. The CodeQL host-ownership investigation was the _blocker_, not the trajectory.
 
@@ -80,11 +80,11 @@ tools/setup/doctor.sh
 tools/setup/linux.sh
 tools/setup/macos.sh
 tools/setup/common/curl-fetch.sh
-tools/setup/common/dotnet-tools.sh
-tools/setup/common/elan.sh
+tools/setup/mechanisms/from-dotnet-global.sh
+tools/setup/mechanisms/from-elan.sh
 tools/setup/common/mise.sh
 tools/setup/common/profile-edit.sh
-tools/setup/common/python-tools.sh
+tools/setup/mechanisms/from-uv-tool.sh
 tools/setup/common/shellenv.sh
 tools/setup/common/sync-prior-art.sh
 tools/setup/common/verifiers.sh
@@ -113,7 +113,7 @@ this doc.
 
 ### Bucket C — ~~Needs human decision~~ Ported (2 files)
 
-Ported to TypeScript in the B-0156 PR. Both scripts use `gh api` via
+Ported to TypeScript in the 081KQGDBJ0008QG0R000A4EZS5 PR. Both scripts use `gh api` via
 `Bun.spawn` shell-out (option (a) — keeps `gh` as the auth + HTTP layer,
 same as the bash originals).
 
@@ -181,7 +181,7 @@ tools/budget/project-runway.sh                     # ported in #902 (budget clus
 **Why this child exists**: the repo has moved beyond the older
 "Recommended next slice" queue. Live inventory now shows the peer-call, lint,
 budget, and git Bucket B scripts as `.ts` files. The former Bucket C
-GitHub-settings scripts have also been ported (B-0156).
+GitHub-settings scripts have also been ported (081KQGDBJ0008QG0R000A4EZS5).
 
 **Live verification (2026-05-11)**:
 
@@ -368,7 +368,7 @@ If any source is unavailable or known-stale, surface that as a freshness gap rat
 ## Composes with
 
 - `docs/trajectories/ci-codeql-host-ownership/INVESTIGATION.md` — #849 blocker record (linked here per the trajectory-naming correction)
-- B-0086 backlog (TS+Bun default scripting language)
+- 081KQ8P5D0008QG0R003BFZPRC backlog (TS+Bun default scripting language)
 - Otto-235 (4-shell portability target — applies to Bucket A only)
 - Task #341 (TS port + future git scripts: enforce 3-tier multi-remote design)
 - Task #350 (Otto-357 mechanized auditor — when `tools/lint/no-directives-otto-prose.sh` ports to TS, scope expansion ships in same PR)

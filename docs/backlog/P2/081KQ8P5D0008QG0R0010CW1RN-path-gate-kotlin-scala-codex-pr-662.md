@@ -1,6 +1,5 @@
 ---
-id: B-0081
-zetaid: 081KQ8P5D0008QG0R0010CW1RN
+id: 081KQ8P5D0008QG0R0010CW1RN
 priority: P2
 status: closed
 title: codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662
@@ -13,13 +12,13 @@ tags: [pr-662, codex, deferred, codeql, jvm, b-0075-sibling]
 type: feature
 ---
 
-# B-0081 — path-gate Kotlin + Scala extensions
+# 081KQ8P5D0008QG0R0010CW1RN — path-gate Kotlin + Scala extensions
 
 ## Source
 
 Codex P2 on PR #662 (.github/workflows/codeql.yml:230, posted post-merge):
 
-> The `analyze` job only runs when `path-gate` sets `code_changed=true`. The current path matcher includes `*.java` but not `*.kt` or `*.scala`. Per the JVM language preference (B-0075: Kotlin > Scala > Java), when a `.kt` or `.scala` file lands the path-gate would NOT trigger analyze, so security scanning would silently skip the new JVM code.
+> The `analyze` job only runs when `path-gate` sets `code_changed=true`. The current path matcher includes `*.java` but not `*.kt` or `*.scala`. Per the JVM language preference (081KQ8P5D0008QG0R000B5MBB4: Kotlin > Scala > Java), when a `.kt` or `.scala` file lands the path-gate would NOT trigger analyze, so security scanning would silently skip the new JVM code.
 
 ## Why valid
 
@@ -52,5 +51,5 @@ Update the comment to read "JVM surface" instead of "Java surface."
 ## Composes with
 
 - PR #662 (the parent fix that surfaced this gap)
-- B-0075 (JVM language preference Kotlin > Scala > Java — this row is the fallout the preference predicts)
-- B-0076 (Python + TypeScript disowned-runtime sweep — sibling P2 on the same path-gate)
+- 081KQ8P5D0008QG0R000B5MBB4 (JVM language preference Kotlin > Scala > Java — this row is the fallout the preference predicts)
+- 081KQ8P5D0008QG0R003G61V9V (Python + TypeScript disowned-runtime sweep — sibling P2 on the same path-gate)

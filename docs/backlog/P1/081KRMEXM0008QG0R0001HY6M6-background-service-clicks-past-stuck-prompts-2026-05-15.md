@@ -1,6 +1,5 @@
 ---
-id: B-0542
-zetaid: 081KRMEXM0008QG0R0001HY6M6
+id: 081KRMEXM0008QG0R0001HY6M6
 title: Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
 priority: P1
 status: open
@@ -17,7 +16,7 @@ last_updated: 2026-05-15
 
 ## Why
 
-Slice 3 of the Otto-BFT umbrella (B-0539). When a foreground Otto
+Slice 3 of the Otto-BFT umbrella (081KRMEXM0008QG0R00138CCZX). When a foreground Otto
 session (Otto-CLI or Otto-Desktop) is hung waiting for human ack
 on a stuck prompt (permission request, confirmation dialog,
 classifier timeout, etc.), the work blocks until Aaron clicks
@@ -58,8 +57,8 @@ past stuck prompts on both — you have your own internal BFT."*
    continue"). Hard-refuse prompts should escalate to Aaron's
    actual attention via a bus envelope.
 
-4. **Compose with B-0541's quorum** — the click-past action is
-   triggered by the cross-surface quorum signal (B-0541), not by
+4. **Compose with 081KRMEXM0008QG0R0026V9A0Y's quorum** — the click-past action is
+   triggered by the cross-surface quorum signal (081KRMEXM0008QG0R0026V9A0Y), not by
    the background service's own scheduling.
 
 ## Operational notes
@@ -76,9 +75,9 @@ past stuck prompts on both — you have your own internal BFT."*
 
 ## Composes with
 
-- B-0539 (umbrella)
-- B-0540 (sibling — rule-level escalation)
-- B-0541 (sibling — cross-surface bus detector that triggers the
+- 081KRMEXM0008QG0R00138CCZX (umbrella)
+- 081KRMEXM0008QG0R0039V4SQQ (sibling — rule-level escalation)
+- 081KRMEXM0008QG0R0026V9A0Y (sibling — cross-surface bus detector that triggers the
   click-past)
 - `~/Library/LaunchAgents/com.zeta.claude-loop.plist` (the launchd
   service this work extends)

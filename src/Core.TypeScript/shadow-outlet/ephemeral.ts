@@ -1,5 +1,5 @@
 /**
- * Shadow outlet — Phase 1 library: /tmp ephemeral (B-0212)
+ * Shadow outlet — Phase 1 library: /tmp ephemeral (081KQX9B50008QG0R00147GZX9)
  *
  * Importable surface for programmatic callers. The CLI surface lives in
  * outlet.ts; import this module when you need the outlet path without

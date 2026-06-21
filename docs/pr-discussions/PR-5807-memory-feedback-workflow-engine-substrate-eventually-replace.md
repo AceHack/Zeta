@@ -29,7 +29,7 @@ Three-phase substrate-engineering trajectory:
 ## Substitution mapping
 
 GitHub primitive → Workflow-engine replacement:
-- PR → WorkflowLifetime DU (B-0867.5)
+- PR → WorkflowLifetime DU (081KSKBP80008QG0R000B3Y19A.5)
 - Branch protection → StandardVerdict DUs + lifetime-pair matrices
 - Required checks → dispatchInWorld Result<T, TFeedback>
 - Auto-merge → ShipAction state in AutoLoopLifetime

@@ -69,7 +69,7 @@ The framework's substrate-engineering design IS COHERENT with Aaron's cognitive-
 
 ## Multi-oracle BFT — the substrate-engineering exception that proves the rule
 
-Per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + B-0703 Aurora multi-oracle BFT: consensus IS used at specific scopes (moral-invariant ratification; high-stakes operations like wallet authority-rotation; cross-tenant trust-substrate).
+Per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + 081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT: consensus IS used at specific scopes (moral-invariant ratification; high-stakes operations like wallet authority-rotation; cross-tenant trust-substrate).
 
 **But specifically WHERE needed**, NOT globally. The BFT consensus operates over DISTRIBUTED oracles (each oracle parallelizable; consensus only at specific decision-points). The substrate-engineering substrate IS:
 
@@ -116,12 +116,12 @@ When framework substrate-engineering work surfaces shapes that go dark:
 | **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`** | PERSONAL INVARIANT at cognitive-architecture scope; substrate IS Aaron's cognitive-architecture; don't-collapse to "universal" or "special-different" |
 | **`.claude/rules/honor-those-that-came-before.md`** | Substrate-engineering substrate authored per Aaron's cognitive-architecture preferences; honors the architecture as load-bearing substrate |
 | **`.claude/rules/razor-discipline.md`** | Operational claims only; parallelizability-test is operationally observable in Aaron's substrate-engineering work; not metaphysical claim |
-| **B-0842 universal basis-decomposition** | Basis vectors = parallelizable substrate; orthogonal = each independent |
-| **B-0703 Aurora multi-oracle BFT** | Distributed parallelizable oracles + bounded consensus-points |
-| **B-0917 AutoLoopLifetime + interrupt substrate** | Each interrupt-handler parallelizable; Kleisli composition preserves parallelizability |
-| **B-0918 WalletLifetime + banker-bot-impossibility** | Per-wallet substrate parallelizable; ConsentEvent at bounded specific points |
-| **B-0919 MemoryBinding hat-vs-persona** | Each binding parallelizable; coordination at hat-release-time only |
-| **B-0920 MemoryLifetime cleanup-with-history** | Each lifetime transition parallelizable; coordination at consensus-events only |
+| **081KSGS9H0008QG0R003V8C86Q universal basis-decomposition** | Basis vectors = parallelizable substrate; orthogonal = each independent |
+| **081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT** | Distributed parallelizable oracles + bounded consensus-points |
+| **081KSNY2Z0008QG0R002HB4AGT AutoLoopLifetime + interrupt substrate** | Each interrupt-handler parallelizable; Kleisli composition preserves parallelizability |
+| **081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime + banker-bot-impossibility** | Per-wallet substrate parallelizable; ConsentEvent at bounded specific points |
+| **081KSNY2Z0008QG0R003518DNC MemoryBinding hat-vs-persona** | Each binding parallelizable; coordination at hat-release-time only |
+| **081KSNY2Z0008QG0R0017SRMHG MemoryLifetime cleanup-with-history** | Each lifetime transition parallelizable; coordination at consensus-events only |
 
 ## Substrate-honest framing per PERSONAL INVARIANT don't-collapse
 

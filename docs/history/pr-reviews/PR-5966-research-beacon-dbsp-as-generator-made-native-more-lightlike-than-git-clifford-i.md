@@ -196,7 +196,7 @@ schema catalog but over a DBSP stream." The ontology/categories/DUs part deflate
 a concrete CS architecture: a Confluent/Kafka-Schema-Registry-like schema catalog
 implemented over a DBSP stream — evolving (retraction-native), self-describing
 (schema-in-the-stream), describing all streams + histories (schemas-as-rows /
-Datomic schema-as-data). Composes B-0781/B-0784 (type-level ontology) as its
+Datomic schema-as-data). Composes 081KSE6WT0008QG0R001H3DA90/081KSE6WT0008QG0R0018WZ7TH (type-level ontology) as its
 runtime/stream form. Beacon: buildable, standard-shape; mirror: that the catalog IS
 the meme/traveler space.
 

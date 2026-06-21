@@ -1,10 +1,10 @@
 module Zeta.Tests.TestLoopHostTests
 
-// SEALED-ROOM — B-1035 Reticulum-only clause: the loops in this file run sealed (no filesystem,
+// SEALED-ROOM — 081KTSZN10008QG0R002J0GE0Z Reticulum-only clause: the loops in this file run sealed (no filesystem,
 // process, network, clock, or ambient entropy). Enforced by tools/hygiene/audit-sealed-rooms.ts
 // in the gate; deliberate violations in falsifiers carry a SEAL-WAIVER line.
 
-// THE XUNIT HOST ADAPTER + the first three migrated loops (B-1035 slice 1). xUnit is demoted to
+// THE XUNIT HOST ADAPTER + the first three migrated loops (081KTSZN10008QG0R002J0GE0Z slice 1). xUnit is demoted to
 // host: one thin shim runs any ITestLoop; CI/IDE tooling unchanged. All three exemplars are
 // SEALED (no disk, no git, no tools — modeling the Reticulum-only clause before Reticulum):
 // inputs are inline; the world is built from the seed.
@@ -119,7 +119,7 @@ let ``THE BOUNDARY CATCHES THROWS: an exception in Mea becomes a named-phase Fai
     Assert.Contains("Mea threw", v.Failure |> Option.defaultValue "")
     Assert.Contains("seed 0x4", v.Replay)
 
-// ── B-1035 FINAL SLICES: the golden lock + the light, boundary-blessed; the chip9-board host ──
+// ── 081KTSZN10008QG0R002J0GE0Z FINAL SLICES: the golden lock + the light, boundary-blessed; the chip9-board host ──
 let private chip9TreatyGoldenLines =
     [ "rom\ta300603c6a02d0a860026a1cd0a8603c6a1cd0a860006a0cd0a1603cd0a16c006d183f01dcd1f601603c6a12d0a1f101d0a0"
       "plane\t1"

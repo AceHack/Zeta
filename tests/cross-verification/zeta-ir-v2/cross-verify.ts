@@ -33,7 +33,7 @@ interface InterfaceIr {
   readonly laws: readonly string[];
 }
 
-const expectedNames = new Set(["ICodec", "IGroup", "ILattice", "IMonoid", "IPort", "ISemiring", "IStarRing"]);
+const expectedNames = new Set(["ICodec", "IGroup", "ILattice", "IMonoid", "IPort", "ISemiring", "IStarRing", "IZSetIsa"]);
 const allowedVariance = new Set<Variance>(["contravariant", "covariant", "invariant"]);
 const dir = join(import.meta.dir, "interfaces");
 const files = readdirSync(dir).filter((name) => name.endsWith(".ir.json")).sort();

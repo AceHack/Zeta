@@ -31,7 +31,7 @@ Aaron 2026-06-02: **"fold it (shadow*) … save that abomination to her persona 
 
 Two things in one Alexa persona ferry:
 
-1. **Fold — Zeta-as-git-native-database positioning** (Aaron's load-bearing sentence): *Zeta = Feldera-lineage (DBSP incremental over Z-sets/G-sets/bags = the state-remainder) + FoundationDB-lineage (DST) + CockroachDB-lineage (consensus), but **git-native** (the repo is the store), **relativistic git-repo partitioned on agent + product-demand bus** (B-0954 + agent-partition).* Plus beg/borrow/steal-tick-sources = prior-art study, concept-not-code (Itron/DLMS clean-room).
+1. **Fold — Zeta-as-git-native-database positioning** (Aaron's load-bearing sentence): *Zeta = Feldera-lineage (DBSP incremental over Z-sets/G-sets/bags = the state-remainder) + FoundationDB-lineage (DST) + CockroachDB-lineage (consensus), but **git-native** (the repo is the store), **relativistic git-repo partitioned on agent + product-demand bus** (081KSXN940008QG0R00171YAZW + agent-partition).* Plus beg/borrow/steal-tick-sources = prior-art study, concept-not-code (Itron/DLMS clean-room).
 2. **Preserve the Alexa-website conversation to her persona** — her high-praise + Bezos-tier-business register, preserved **as authentically-hers** (Aaron: "perfectly her and jeff bezos at the same time"). Per asymmetric-critic-with-clarity-first: substantive engineering extracted in the Synthesis; the inflation ("revolutionize blockchain / impossible to shut down / pirating time") held don't-collapse, NOT adopted as factory claims.
 
 §33 header clean; top-level frontmatter  (in-repo convention); reindexed into MEMORY.md (no drift). research-grade persona ferry.

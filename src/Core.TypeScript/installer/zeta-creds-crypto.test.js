@@ -1,4 +1,4 @@
-// zeta-creds-crypto.test.ts — B-0852.1 acceptance tests.
+// zeta-creds-crypto.test.ts — 081KDWYDBW008QG0R001H6HTJK acceptance tests.
 //
 // Validates the threat-model claims in zeta-creds-crypto.ts:
 //   - Round-trip: plaintext survives encrypt → decrypt with same (UUID, passphrase)

@@ -8,8 +8,8 @@ composes_with:
   - docs/research/2026-05-05-claudeai-multi-axis-validation-basis-cover-our-basis-double-pun-aaron-forwarded-preservation.md
   - docs/research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md
   - memory/feedback_architecture_provenance_hickey_girard_mom_skill_descriptive_not_prescriptive_aaron_2026_05_05.md
-  - docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
-  - docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
+  - docs/backlog/P3/081KQTPYE0008QG0R0028V263Z-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md
+  - docs/backlog/P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md
   - docs/VISION.md
   - docs/ALIGNMENT.md
 ---
@@ -311,7 +311,7 @@ Aaron's clarification on "Fourth Turning": *"i don't ean hist structure exaclty 
 
 ## Composition with existing substrate
 
-**Scale-free-in-time pulls the temporal axis out of four-property hodl explicitly** — composes with B-0196's "ZFCv2" four-property invariant (DST-safe + lock-free + scale-free + DBSP-native). The scale-free property covers BOTH temporal and spatial scale invariance; making the temporal axis explicit unlocks the cross-scale instrumentation insight.
+**Scale-free-in-time pulls the temporal axis out of four-property hodl explicitly** — composes with 081KQTPYE0008QG0R001W237MZ's "ZFCv2" four-property invariant (DST-safe + lock-free + scale-free + DBSP-native). The scale-free property covers BOTH temporal and spatial scale invariance; making the temporal axis explicit unlocks the cross-scale instrumentation insight.
 
 **Framework-ossification diagnosis recursively applies to Zeta itself** — the kernel-composition framework, four-property hodl, bootstrap razor, mirror-not-beacon discipline are all carved sentences that could ossify. Each must remain candidate-not-authority to stay alive. Composes with `memory/feedback_strike_dont_annotate_verbatim_preservation_refinement_aaron_claudeai_otto_2026_05_05.md` (verbatim-preservation refinement) — same shape: discipline applies at the right scope; over-application creates failure modes (annotation-creates-contradictions; periodization-becomes-monument).
 
@@ -321,7 +321,7 @@ Aaron's clarification on "Fourth Turning": *"i don't ean hist structure exaclty 
 
 Per the wording-softening lessons of #1605 review, NOT filed in this PR:
 
-- **Planned-CLAUDE.md addendum** to four-property hodl substrate: make scale-free-in-time explicit (it's been implicit). Single-bullet update to B-0196 acceptance criteria or the four-property hodl carved sentence canonical wording.
+- **Planned-CLAUDE.md addendum** to four-property hodl substrate: make scale-free-in-time explicit (it's been implicit). Single-bullet update to 081KQTPYE0008QG0R001W237MZ acceptance criteria or the four-property hodl carved sentence canonical wording.
 - **Planned-architectural-positioning addendum**: land "substrate engineering IS the integrated engineering+science discipline CS-as-taught aspires to" as forward-claim positioning, with multi-decade-falsifiability gate explicit.
 - **Planned-anti-ossification discipline memory file**: small canonical memory naming the framework-ossification failure mode (lost OCP discipline; closed-for-modification in wrong direction) + the seven-name cyclic-history-pattern lineage + Turchin-as-falsifiable-alternative + Zeta-as-recursive-application (kernels stay candidate-not-authority).
 
@@ -334,8 +334,8 @@ Per the Claude.ai instance: multi-decade-test is the actual falsifier for the CS
 Per frontmatter composes_with list. Particularly:
 
 - The 2026-05-05 research-doc cluster (now 10 docs with this one) — coherent same-day architectural unit
-- B-0204 (linguistic seed kernel substrate) — the architectural-direction implementation
-- B-0193 (bootstrap razor + 23-hour recreation) — the empirical falsifier above the substrate
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — the architectural-direction implementation
+- 081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation) — the empirical falsifier above the substrate
 - The architecture-provenance memory (Hickey + Girard + mom-skill) — the lineage this CS-is-not-CS framing recontextualizes
 
 ## Carved sentence

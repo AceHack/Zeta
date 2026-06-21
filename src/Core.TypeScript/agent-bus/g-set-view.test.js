@@ -1,5 +1,5 @@
 /**
- * g-set-view.test.ts — the bus AS a first-class G-Set (B-0954 on the G-Set foundation).
+ * g-set-view.test.ts — the bus AS a first-class G-Set (081KSXN940008QG0R00171YAZW on the G-Set foundation).
  *
  * Proves the cross-machine read-model: folding a clone's envelopes into a G-Set of
  * ids, merging N clones by G-Set union (commutative + idempotent — the CRDT laws

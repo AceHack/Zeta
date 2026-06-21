@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-// audit-skill-description-length.ts — durable gate for B-0347 carved-sentence
+// audit-skill-description-length.ts — durable gate for 081KR50HA0008QG0R002ZNFQBZ carved-sentence
 // skill descriptions. Replicates the `/doctor` per-entry-cap check in
 // deterministic Rule-0 TS so the carved-sentence invariant survives drift.
 //
-// Origin: B-0347.4 — the carving pass shipped (all 257 descriptions ≤150 chars,
+// Origin: 081KR50HA0008QG0R002ZNFQBZ.4 — the carving pass shipped (all 257 descriptions ≤150 chars,
 // single-line, boilerplate-free as of 2026-05-29); this tool locks that in so
 // descriptions cannot silently grow back over the routing budget and get
 // dropped from the skill listing (the failure mode the row was filed against).
@@ -17,11 +17,11 @@ import { join } from "node:path";
 
 /** Hard cap: descriptions over this are dropped/truncated from the listing. */
 export const MAX_CHARS = 150;
-/** Preferred ceiling (B-0347 rule 1): over this warns but does not fail. */
+/** Preferred ceiling (081KR50HA0008QG0R002ZNFQBZ rule 1): over this warns but does not fail. */
 export const PREFERRED_CHARS = 120;
 
 /**
- * Boilerplate the carved sentence must not carry (B-0347 rules 3-5). Belongs in
+ * Boilerplate the carved sentence must not carry (081KR50HA0008QG0R002ZNFQBZ rules 3-5). Belongs in
  * the skill body, not the routing description.
  */
 export const FORBIDDEN_BOILERPLATE: { label: string; re: RegExp }[] = [
@@ -71,7 +71,7 @@ export function parseFrontmatterDescription(text: string): DescriptionField | nu
   return { value, multiline };
 }
 
-/** Apply the B-0347 carved-sentence rules to one description. */
+/** Apply the 081KR50HA0008QG0R002ZNFQBZ carved-sentence rules to one description. */
 export function auditDescription(skill: string, field: DescriptionField | null): Violation[] {
   const out: Violation[] = [];
   if (field === null) {
@@ -146,7 +146,7 @@ if (import.meta.main) {
 
   if (errors.length > 0) {
     process.stderr.write(
-      "\nPer B-0347: each skill description is one carved routing sentence " +
+      "\nPer 081KR50HA0008QG0R002ZNFQBZ: each skill description is one carved routing sentence " +
         `(≤${MAX_CHARS} chars, single-line, no "capability skill"/"owns the"/"defers to" boilerplate).\n` +
         "Over-cap descriptions get dropped from the skill listing and go invisible to cold-start agents.\n",
     );

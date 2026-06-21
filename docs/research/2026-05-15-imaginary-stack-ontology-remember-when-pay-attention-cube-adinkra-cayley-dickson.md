@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-15
 **Status:** Research seed (Aaron-directed)
-**Related:** B-0543 (Remember-When + Pay-Attention → Quantum Gravity isomorphism proof path)
+**Related:** 081KRMEXM0008QG0R002YSPW1X (Remember-When + Pay-Attention → Quantum Gravity isomorphism proof path)
 
 ## Core Move
 

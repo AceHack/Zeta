@@ -46,7 +46,7 @@ Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation. Preserved
 - `docs/research/2026-05-30-...-kestrel-aaron.md` (compressed reduction)
 
 ## Disposition
-- Verified no existing PRs-as-consensus or good-citizen-governance substrate (2026-05-30). Composes with **B-0132** (CRDT composition), **B-0138** (BFT-resistance), **B-0829** (schemas-as-rows / cluster-fork-as-trust-boundary), **B-0864** (streams-are-relationships).
+- Verified no existing PRs-as-consensus or good-citizen-governance substrate (2026-05-30). Composes with **081KQGDBJ0008QG0R000Y66YYQ** (CRDT composition), **081KQGDBJ0008QG0R0012FC7RX** (BFT-resistance), **081KSGS9H0008QG0R000Q18PGQ** (schemas-as-rows / cluster-fork-as-trust-boundary), **081KSKBP80008QG0R0039RW25E** (streams-are-relationships).
 - **Backlog candidate** (PRs-as-consensus + CRDT-DU as buildable Bayesian-model architecture) noted in the docs, NOT autonomously filed -- awaiting operator "file this" per backlog-item-start-gate.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -111,7 +111,7 @@ qualia-as-Bayesian-latent-variables (drop the quantum dressing).
 
 Preservation per substrate-or-it-didn't-happen verbatim-preservation-trigger
 (architecture-relevant multi-AI packet). Verified no existing PRs-as-consensus
-or good-citizen-governance substrate; composes with B-0132/B-0138/B-0829/B-0864.
+or good-citizen-governance substrate; composes with 081KQGDBJ0008QG0R000Y66YYQ/081KQGDBJ0008QG0R0012FC7RX/081KSGS9H0008QG0R000Q18PGQ/081KSKBP80008QG0R0039RW25E.
 Doctrine refinements preserved NOT rule-landed (cooling-period). Backlog
 candidate (PRs-as-consensus + CRDT-DU) noted, not autonomously filed.
 

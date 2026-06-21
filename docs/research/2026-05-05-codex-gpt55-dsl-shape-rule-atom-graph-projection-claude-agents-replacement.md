@@ -36,7 +36,7 @@
 - **`memory/feedback_soulfile_dsl_is_restrictive_english_runner_is_own_project_*.md`** — soulfile-DSL prior art (Aaron 2026-04-23). Codex's "restrictive English" matches Aaron's framing.
 - **`memory/feedback_hodl_invariants_13_properties_composed_at_all_layers_*.md`** — hodl-13 substrate (PR #1681)
 - **`memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`** — Zeta substrate already encodes a typed-edge provenance graph. Codex's rule-atom graph composes with the existing decision-graph.
-- **B-0169 P1 decision-archaeology skill, B-0170 P1 substrate-claim-checker, B-0171 P1 openspec catch-up, B-0173 P1 hook authoring** — operational substrate that the rule-atom-graph builds on
+- **081KQJZR90008QG0R002D6XYHB P1 decision-archaeology skill, 081KQNJ500008QG0R003SCWBDV P1 substrate-claim-checker, 081KQNJ500008QG0R001N94412 P1 openspec catch-up, 081KQNJ500008QG0R003ZC6PK8 P1 hook authoring** — operational substrate that the rule-atom-graph builds on
 - **DBSP retraction-native operator algebra** — Codex's "every retraction has bounded blast radius" maps to DBSP retractions (Z-set algebra)
 
 ## Operational implications

@@ -1,9 +1,9 @@
 // yin-yang-composition-probe.ts
-// Smallest safe slice for B-0046.2: pure TS yin-yang gate for Ammous candidate-probe
+// Smallest safe slice for 081KDVG9HA008QG0R003A7PZJR: pure TS yin-yang gate for Ammous candidate-probe
 // Substrate: time/energy denominated; money-extraction excluded.
 // Gated by yin-yang: unification + harmonious-division both required.
 export function probeYinYang(candidate, description) {
-    // Minimal operational probe for Ammous Bitcoin-Standard per B-0046
+    // Minimal operational probe for Ammous Bitcoin-Standard per 081KQ3HBZ0008QG0R0001XKNWK
     // Unification: 21M cap, low-time-preference, μένω resonance (staying power)
     const unification = /21M|cap|low.time.preference|μένω|staying|persistence/i.test(description);
     // Division: plural primitives, not monoculture; explicit counterweight required

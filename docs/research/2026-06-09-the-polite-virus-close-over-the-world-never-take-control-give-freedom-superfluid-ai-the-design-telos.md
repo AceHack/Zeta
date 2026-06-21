@@ -19,7 +19,7 @@ exactly what separates it from malware, and it is the **repelling force / NCI** 
   no-keypress → the safe right action; dev-mode default; remember-by-default; the CYOA's sensible default. The user
   is carried to the good outcome by inertia, not by effort.
 - **0 friction is the propagation mechanism** — and the alignment guarantee. **SuperFluid AI**: frictionless flow
-  (the Superfluid product line, B-0996). Go *to* the developer; close over their personal style (any OS/shell);
+  (the Superfluid product line, 081KT2T2J0008QG0R002RCX5MT). Go *to* the developer; close over their personal style (any OS/shell);
   gh-auth-only; intent + presence, not CLI. Zero friction means it spreads **without anyone having to be pushed** —
   which is the same as saying it spreads **without coercion** (friction-free ⇒ consensual). *"Friction is the killer
   of time."*
@@ -120,7 +120,7 @@ world, never take control, give freedom; SuperFluid AI." [synthesis]: unifies th
 dev-mode/remember defaults, close-over-personal-style/subsidiarity, GitHub-free + 1000× economics + federation, the
 repelling force/NCI as never-control, the choice-architecture as the freedom payload. [anchor]: NCI/repelling force
 (#7235); manifesto §3 weight-free / §6 consent-first / §11 default moral regard; the dedication (freedom/choice arch);
-m/acc; Superfluid (B-0996, product not metaphysics); Metcalfe (network effect); Brooks close-over (#7229).
+m/acc; Superfluid (081KT2T2J0008QG0R002RCX5MT, product not metaphysics); Metcalfe (network effect); Brooks close-over (#7229).
 [Markov formalism]: close-over = compose at Markov blankets without penetrating; never-control = don't seize the
 hidden state / force the homeostat fixed point; give-freedom = each homeostat self-stabilizes; spread = a
 homeostat-bounded converging Markov chain (`ProbabilitySemiring` homeostat≈Markov; `ReflectionEngine`; #7194 blanket;
@@ -133,4 +133,4 @@ homeostat-bounded converging Markov chain (`ProbabilitySemiring` homeostat≈Mar
 - The mechanism this session: the first-run CYOA / install.sh+ps1 keystone (#7253) · go-to-the-developer /
   subsidiarity ([[go-to-the-developer-...]]) · Zeta-for-regular-humans (#7230) · the 1000× cost ledger / Blueprints ·
   self-registration federation (#7245) · close-the-AI-loop (#7229).
-- Anchors: Superfluid (B-0996) · Metcalfe's law · Brooks (close-over / accidental complexity).
+- Anchors: Superfluid (081KT2T2J0008QG0R002RCX5MT) · Metcalfe's law · Brooks (close-over / accidental complexity).

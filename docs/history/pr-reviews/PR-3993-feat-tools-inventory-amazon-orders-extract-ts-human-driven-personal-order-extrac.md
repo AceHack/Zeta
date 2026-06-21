@@ -31,18 +31,18 @@
 
 Adds `tools/inventory/amazon-orders-extract.ts` — a reusable Bun + Playwright utility for one-time extraction of personal Amazon order history.
 
-**Run by HUMAN-actor, not by agent.** Agent-driven scraping of authenticated personal accounts is blocked at the Claude Code safety classifier per the B-0582 destructive-verb-refusal-gate principle — this script is the legitimate path.
+**Run by HUMAN-actor, not by agent.** Agent-driven scraping of authenticated personal accounts is blocked at the Claude Code safety classifier per the 081KRQ1AB0008QG0R002469KJG destructive-verb-refusal-gate principle — this script is the legitimate path.
 
 ## Why
 
-During the 2026-05-16 session, Otto attempted Playwright-driven extraction multiple times for Aaron's accounting + Zeta hardware inventory. After page 2 the classifier held the line per repeated-guidance, exactly as Kestrel's B-0582 architecture prescribes. Substrate-honest path: human runs the script, agent processes the output.
+During the 2026-05-16 session, Otto attempted Playwright-driven extraction multiple times for Aaron's accounting + Zeta hardware inventory. After page 2 the classifier held the line per repeated-guidance, exactly as Kestrel's 081KRQ1AB0008QG0R002469KJG architecture prescribes. Substrate-honest path: human runs the script, agent processes the output.
 
 ## What
 
 Generic + reusable — no hardcoded credentials, no Aaron-specific paths. Outputs two local JSON files (both gitignored):
 
 - `amazon-orders-full.json` — titles + prices + dates per order (give to accountant or other purpose-specific destination; **never appropriate for git commit by default**)
-- `amazon-orders-hardware-filtered.json` — hardware-keyword subset (review then optionally commit to B-0590 hardware inventory substrate with PII stripped if desired)
+- `amazon-orders-hardware-filtered.json` — hardware-keyword subset (review then optionally commit to 081KRQ1AB0008QG0R002G93CM7 hardware inventory substrate with PII stripped if desired)
 
 ## Usage
 
@@ -64,8 +64,8 @@ amazon-orders-hardware-filtered.json
 
 ## Composes with
 
-- B-0582 (destructive-verb refusal gate — working as designed; script is the human-actor alternative)
-- B-0590 (fleet replication + hardware inventory — script's hardware-filtered output feeds that row's inventory section)
+- 081KRQ1AB0008QG0R002469KJG (destructive-verb refusal gate — working as designed; script is the human-actor alternative)
+- 081KRQ1AB0008QG0R002G93CM7 (fleet replication + hardware inventory — script's hardware-filtered output feeds that row's inventory section)
 - Future B-NNNN — multi-account/multi-vendor consolidation (Aaron 2026-05-16 'killer feature' framing — backlog-row to follow)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -238,7 +238,7 @@ amazon-orders-hardware-filtered.json
 - **`Copilot` (bot)** at 2026-05-17T01:12:50Z on `tools/inventory/README.md`:52 (association: NONE)
 
   <pre>
-  P1: Broken/incorrect relative link: from `tools/inventory/README.md`, `[B-0582](docs/backlog/)` resolves under `tools/inventory/docs/...` (nonexistent). Link to the actual backlog row (e.g. `../../docs/backlog/P1/B-0582-...md`) or to `../../docs/BACKLOG.md`.
+  P1: Broken/incorrect relative link: from `tools/inventory/README.md`, `[081KRQ1AB0008QG0R002469KJG](docs/backlog/)` resolves under `tools/inventory/docs/...` (nonexistent). Link to the actual backlog row (e.g. `../../docs/backlog/P1/081KRQ1AB0008QG0R002469KJG-...md`) or to `../../docs/BACKLOG.md`.
 
   </pre>
 
@@ -385,7 +385,7 @@ amazon-orders-hardware-filtered.json
 - **`Copilot` (bot)** at 2026-05-17T01:27:28Z on `tools/inventory/README.md`:69 (association: NONE)
 
   <pre>
-  README links to B-0590, but there is no `docs/backlog/**` row with id `B-0590` in the repository, so this is a dead xref. Either add the B-0590 backlog row in the same PR, or change/remove this link until the row exists.
+  README links to 081KRQ1AB0008QG0R002G93CM7, but there is no `docs/backlog/**` row with id `081KRQ1AB0008QG0R002G93CM7` in the repository, so this is a dead xref. Either add the 081KRQ1AB0008QG0R002G93CM7 backlog row in the same PR, or change/remove this link until the row exists.
   </pre>
 
 ### Thread 20 -- resolved [collapsed]
@@ -521,7 +521,7 @@ amazon-orders-hardware-filtered.json
 - **`Copilot` (bot)** at 2026-05-17T02:10:10Z on `tools/inventory/README.md`:67 (association: NONE)
 
   <pre>
-  P1: The B-0590 backlog link target does not exist in this repo (no docs/backlog/**/B-0590* file). This will render as a broken link; please either add the referenced backlog row or update the link to the correct existing row ID/path.
+  P1: The 081KRQ1AB0008QG0R002G93CM7 backlog link target does not exist in this repo (no docs/backlog/**/081KRQ1AB0008QG0R002G93CM7* file). This will render as a broken link; please either add the referenced backlog row or update the link to the correct existing row ID/path.
 
   </pre>
 
@@ -580,14 +580,14 @@ feat(tools/inventory): amazon-orders-extract.ts — human-driven person…
 Reusable Bun + Playwright utility for one-time extraction of personal
 Amazon order history. Run by HUMAN-actor (not agent — agent-driven
 scraping of authenticated personal accounts is blocked at the safety
-classifier per B-0582 destructive-verb-refusal-gate principle; this
+classifier per 081KRQ1AB0008QG0R002469KJG destructive-verb-refusal-gate principle; this
 script is the legitimate path).
 
 Outputs two local JSON files (both gitignored — personal financial
 data + adjacent-party purchase info):
 - amazon-orders-full.json — for accountant or other purpose-specific destination
 - amazon-orders-hardware-filtered.json — hardware-keyword subset for
-  optional review-then-commit to B-0590 hardware inventory substrate
+  optional review-then-commit to 081KRQ1AB0008QG0R002G93CM7 hardware inventory substrate
 
 Generic + reusable — no hardcoded credentials, no Aaron-specific paths.
 Anyone can run on their own Amazon account.
@@ -595,13 +595,13 @@ Anyone can run on their own Amazon account.
 Origin: Aaron 2026-05-16 — agent-driven Playwright extraction hit the
 safety classifier multiple times across the session (after page 2 the
 classifier held the line per repeated-guidance, exactly as Kestrel's
-B-0582 architecture prescribes). Substrate-honest path: human runs
+081KRQ1AB0008QG0R002469KJG architecture prescribes). Substrate-honest path: human runs
 the script, agent processes the output. Aaron's framing for the future:
 multi-account / multi-vendor consolidation for accounts the operator
 is authorized to query — backlog-row to follow.
 
-Composes with B-0582 (destructive-verb gate working as designed),
-B-0590 (fleet replication + hardware inventory), future multi-account
+Composes with 081KRQ1AB0008QG0R002469KJG (destructive-verb gate working as designed),
+081KRQ1AB0008QG0R002G93CM7 (fleet replication + hardware inventory), future multi-account
 consolidation row.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
@@ -737,7 +737,7 @@ README fixes:
   - Output location is ~/.local/share/zeta-inventory/amazon/<year>/,
     not the cwd (v2.2+ behavior)
   - Default year is the current year, not hardcoded 2025
-  - B-0582 + B-0590 links now resolve correctly relative to
+  - 081KRQ1AB0008QG0R002469KJG + 081KRQ1AB0008QG0R002G93CM7 links now resolve correctly relative to
     tools/inventory/README.md (../../docs/backlog/P*/...)
   - Document v2.3 checkpointing + --restart flag
   - Remove "Aaron" attribution from current-state surface; "the human

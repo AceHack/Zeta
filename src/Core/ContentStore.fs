@@ -13,7 +13,7 @@ open System.Collections.Immutable
 ///     roots persist as **cheap branches** (the fork-from-prod / experiment-timeline substrate). Backed by
 ///     an immutable `Map`, so sharing is structural (no copy).
 ///   - **Hash-parameterized** — the content hash comes from an injected `hashOf`; XxHash128 (`MerkleHash`)
-///     today, **BLAKE3** for the tamper-evident git-replacement store (Aaron's decision; B-0969-adjacent).
+///     today, **BLAKE3** for the tamper-evident git-replacement store (Aaron's decision; 081KT07NV0008QG0R001YDB73K-adjacent).
 ///     The `ZSetMerkle` root is the natural `hashOf` for Z-set-valued nodes.
 ///
 /// This is the object/blob layer; the multi-parent closure-table DAG (folders → nodes, hardlink-shaped)

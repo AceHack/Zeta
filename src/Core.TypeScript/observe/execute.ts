@@ -37,7 +37,7 @@
  *   - src/Core.TypeScript/observe/observe.ts (simulate = the pure reducer; World / NextAction)
  *   - docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md (the event log + materialized views)
  *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md (the observe→act loop this completes)
- *   - docs/backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md (eventually-consistent git-native indexes — the read side of the same log)
+ *   - docs/backlog/P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md (eventually-consistent git-native indexes — the read side of the same log)
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md (Result<T, TFeedback>)
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md (the sink authors its outcome channel)
  *   - .claude/rules/non-coercion-invariant.md (free_time never gated)
@@ -114,7 +114,7 @@ export type AppendOutcome =
  *
  * Generic over the event type `E` (default `NextAction`, backward-compatible:
  * `EventSink` ≡ `EventSink<NextAction>`). Effectful actions log **observation** events
- * instead of the command (B-0964: replay folds observations, never re-runs commands) —
+ * instead of the command (081KT07NV0008QG0R001CBQ2X2: replay folds observations, never re-runs commands) —
  * e.g. `EventSink<ActionObservation>` for the do_item envelope. One durability-port
  * shape, parameterized by what gets logged.
  */
@@ -146,7 +146,7 @@ export type ExecuteResult =
  * Order matters: for operator actions, EFFECT FIRST (the content might be lost to
  * compaction if we append-then-effect and the effect fails). For zero-effect kinds,
  * APPEND FIRST (no effect to lose). For do_item, APPEND-STARTED-FIRST (the executor
- * contract per B-0964).
+ * contract per 081KT07NV0008QG0R001CBQ2X2).
  */
 export async function execute(
   world: World,

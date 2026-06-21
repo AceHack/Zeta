@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
-// fetch-datfile.ts -- the datfile-as-dependency half of B-0083 (tracked as
-// B-0083.1). Reads a pinned datfile manifest (tools/roms/manifests/datfiles.json),
+// fetch-datfile.ts -- the datfile-as-dependency half of 081KQ8P5D0008QG0R001590WJ3 (tracked as
+// 081KSRGFP0008QG0R003ZH6DN3). Reads a pinned datfile manifest (tools/roms/manifests/datfiles.json),
 // downloads the pinned datfile, verifies its SHA-256 against the pin, and writes
 // it to a gitignored cache so tools/roms/canonicalize.ts can consume it via
-// --datfile. This closes the B-0083 "Tooling refreshes on TOSEC datfile updates"
+// --datfile. This closes the 081KQ8P5D0008QG0R001590WJ3 "Tooling refreshes on TOSEC datfile updates"
 // + "Datfile-as-dependency (pin version + download + verify via SHA256)"
-// acceptance criteria that siblings B-0272/B-0273 did not cover.
+// acceptance criteria that siblings 081KR2E4K0008QG0R001QZDAMQ/081KR2E4K0008QG0R001JC6S3N did not cover.
 //
 // Usage:
 //   bun tools/roms/fetch-datfile.ts --list

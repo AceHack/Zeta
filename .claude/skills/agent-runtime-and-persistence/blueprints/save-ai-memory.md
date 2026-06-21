@@ -149,7 +149,7 @@ If the conversation produced currently-in-force operational changes to how this 
 
 - Branch: `feat/save-ai-memory-<ai-name>-<topic>-<date>` or `memory/preserve-<ai-name>-conversation-<date>`
 - Commit covering the §33 archive + persona-folder updates
-- `gh pr create --base main --head <branch>` with explicit `--head` per B-0519 defense
+- `gh pr create --base main --head <branch>` with explicit `--head` per 081KRHWGX0008QG0R001HMWM1W defense
 - `gh pr merge <PR#> --auto --squash` to arm
 
 ### Step 8: Verify substrate on main

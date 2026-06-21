@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- Add `tools/hygiene/review-thread-observations.ts`, a repo-native B-0164.1 caller that records loop conclusions for PR review threads.
+- Add `tools/hygiene/review-thread-observations.ts`, a repo-native 081KR7JY10008QG0R000MH7PJT caller that records loop conclusions for PR review threads.
 - Compare same-PR/same-thread observations from different loop identities and file divergence shards through the existing disagreement writer when conclusions differ.
 - Add focused tests plus a backlog progress note; release the git-native claim in the same PR branch.
 
@@ -48,7 +48,7 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0164
+Task: 081KQJZR90008QG0R002GJAJ19
 
 
 ## Outcome
@@ -217,7 +217,7 @@ Task: B-0164
 ```
 feat(hygiene): record review-thread observations
 
-Adds the B-0164.1 observation recorder that stores loop review-thread conclusions, compares them with prior observations for the same PR thread, and files a divergence shard through the existing disagreement writer when conclusions differ.
+Adds the 081KR7JY10008QG0R000MH7PJT observation recorder that stores loop review-thread conclusions, compares them with prior observations for the same PR thread, and files a divergence shard through the existing disagreement writer when conclusions differ.
 
 Proof:
 - bun test tools/hygiene/divergence-shard.test.ts tools/hygiene/review-thread-observations.test.ts
@@ -234,7 +234,7 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0164
+Task: 081KQJZR90008QG0R002GJAJ19
 ```
 
 ### `7c935c7e700c5553b552d516db88d10d0596af4b` -- 2026-06-01T11:35:40Z -- ``
@@ -266,7 +266,7 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0164
+Task: 081KQJZR90008QG0R002GJAJ19
 ```
 
 ### `49d742b71b6af5a1a8d62c3d24d471436b0ef401` -- 2026-06-01T11:39:24Z -- ``
@@ -298,7 +298,7 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0164
+Task: 081KQJZR90008QG0R002GJAJ19
 ```
 
 ### `54c938bea45b983b17503f1b485bd806aea8350c` -- 2026-06-01T11:46:11Z -- ``
@@ -328,7 +328,7 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0164
+Task: 081KQJZR90008QG0R002GJAJ19
 ```
 
 ### `9d0b22015b44e94c71caa09a0542bd5e311a89c4` -- 2026-06-01T11:51:14Z -- ``
@@ -358,5 +358,5 @@ Credential-Mode: shared
 Human-Review: not-implied-by-credential
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0164
+Task: 081KQJZR90008QG0R002GJAJ19
 ```

@@ -31,7 +31,7 @@ Deferred-PR landing under [`refresh-world-model-poll-pr-gate.md`](.claude/rules/
 
 ## Shard
 
-[`docs/hygiene-history/ticks/2026/05/16/1221Z.md`](docs/hygiene-history/ticks/2026/05/16/1221Z.md) — 1st multi-Otto contamination observation of this session (HEAD silently moved from `otto-cli-b0206-audit-2026-05-16-1207z` to `otto-cli-b0037.2-audit-2026-05-16-1131z` between ticks). B-0519 empirical anchor.
+[`docs/hygiene-history/ticks/2026/05/16/1221Z.md`](docs/hygiene-history/ticks/2026/05/16/1221Z.md) — 1st multi-Otto contamination observation of this session (HEAD silently moved from `otto-cli-b0206-audit-2026-05-16-1207z` to `otto-cli-b0037.2-audit-2026-05-16-1131z` between ticks). 081KRHWGX0008QG0R001HMWM1W empirical anchor.
 
 ## Discipline applied
 - Caught via `git branch --show-current` at tick start

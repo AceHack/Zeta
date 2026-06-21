@@ -30,7 +30,7 @@
 Tick shard for the autonomous-loop cold-boot at 02:08Z.
 
 - Cron sentinel was empty at cold-boot → re-armed (`<<autonomous-loop>>` `* * * * *`, job `8162e4ce`).
-- PR #3673 (B-0540 N≥6 counter-with-escalation sharpening) merged at 01:55:43Z.
+- PR #3673 (081KRMEXM0008QG0R0039V4SQQ N≥6 counter-with-escalation sharpening) merged at 01:55:43Z.
 - Three non-required-check drift signals remain on PR-3673 rollup (BACKLOG.md generated-index, backlog ID uniqueness, tsc tools).
 - Lior is active (3 `gemini -p Act as Lior...` processes in `ps -A`); per [codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md) new worktree creation is unsafe. Used borrow-on-existing pattern on sibling `/private/tmp/zeta-tick-2210z` per [claim-acquire-before-worktree-work.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/claim-acquire-before-worktree-work.md).
 - This is brief-ack #1 of the N=6 counter-with-escalation window; concrete substrate (this shard) qualifies as decomposition work → counter resets.
@@ -80,7 +80,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-16T02:13:56Z on `docs/hygiene-history/ticks/2026/05/16/0210Z.md`:29 (association: NONE)
 
   <pre>
-  P1: This relative link resolves to `docs/docs/backlog/...` from this shard's directory, so the B-0545 reference is broken. Either climb six levels before `docs/backlog` or, as nearby tick shards do, climb five levels and link to `backlog/P2/...` from the `docs/` directory.
+  P1: This relative link resolves to `docs/docs/backlog/...` from this shard's directory, so the 081KRMEXM0008QG0R000ARAR7P reference is broken. Either climb six levels before `docs/backlog` or, as nearby tick shards do, climb five levels and link to `backlog/P2/...` from the `docs/` directory.
 
   </pre>
 
@@ -99,7 +99,7 @@ shard(tick): 2026-05-16T02:10Z — Otto-CLI cold-boot cron-rearm + Lior…
 
 …-contention defer drift cleanup
 
-PR #3673 (B-0540 N≥6 sharpening) merged at 01:55:43Z. Three non-required-check
+PR #3673 (081KRMEXM0008QG0R0039V4SQQ N≥6 sharpening) merged at 01:55:43Z. Three non-required-check
 drift signals remain on the rollup (BACKLOG.md generated-index, backlog ID
 uniqueness, tsc tools). Lior active (3 processes incl. PID 27106 at 26+min
 CPU); per the broken-commit canary rule, worktree creation deferred. Borrow

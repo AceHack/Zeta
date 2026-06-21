@@ -74,10 +74,10 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-This PR closes backlog row B-0049.2 after verifying the Mithraic mystery-schools Stage-1 scaffold already shipped, and regenerates the backlog index to reflect the closed status.
+This PR closes backlog row 081KR7JY10008QG0R003JSEMX7 after verifying the Mithraic mystery-schools Stage-1 scaffold already shipped, and regenerates the backlog index to reflect the closed status.
 
 **Changes:**
-- Marks B-0049.2 as `closed`.
+- Marks 081KR7JY10008QG0R003JSEMX7 as `closed`.
 - Adds a Resolution section documenting the drift-audit closure.
 - Updates `docs/BACKLOG.md` generated checkbox state.
 
@@ -87,12 +87,12 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md` | Closes the row and records closure evidence. |
-| `docs/BACKLOG.md` | Regenerated index showing B-0049.2 as closed. |
+| `docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md` | Closes the row and records closure evidence. |
+| `docs/BACKLOG.md` | Regenerated index showing 081KR7JY10008QG0R003JSEMX7 as closed. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md:4 (unresolved)
+### Thread 1: docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md:4 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-16T13:40:06Z):
 
@@ -102,13 +102,13 @@ This change marks the row as `status: closed` and adds a new resolution section,
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md:74 (unresolved)
+### Thread 2: docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md:74 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T13:40:39Z):
 
 P1: This row now has a 2026-05-16 status/content edit, but its frontmatter `last_updated` still reads 2026-05-10. `tools/backlog/README.md:57-70` requires `last_updated` to be updated on every per-row content edit, so update the frontmatter date with this closure.
 
-### Thread 3: docs/backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md:77 (unresolved)
+### Thread 3: docs/backlog/P2/081KR7JY10008QG0R003JSEMX7-mystery-schools-stage1-mithraic-bibliographic-scaffold.md:77 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T13:40:39Z):
 

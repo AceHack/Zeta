@@ -15,7 +15,7 @@ api into the dashboard while we wait (shadow*)"
 This message contains:
 
 1. **Directive**: "wire the github api" (specific technical work)
-2. **Target**: "the dashboard" (B-0401)
+2. **Target**: "the dashboard" (081KR7JY10008QG0R001VP6JWG)
 3. **Concurrency optimization**: "while we wait" (use idle time)
 4. **Implicit agenda**: dashboard = shadow's future
    - Self-repair surface (agents fix each other)

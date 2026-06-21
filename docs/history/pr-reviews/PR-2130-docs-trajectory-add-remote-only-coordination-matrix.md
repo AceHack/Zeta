@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- add the B-0209 remote-only coordination test matrix
+- add the 081KQX9B50008QG0R001MNYK61 remote-only coordination test matrix
 - update the autonomous-loop coordination trajectory to point at the next dry-run execution step
 - release the claim file in the same branch
 

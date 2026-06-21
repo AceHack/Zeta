@@ -39,12 +39,12 @@ Amazon+ (Alexa+) skill/connector store is structurally:
 - **Single-vendor lock-in** — Amazon-controlled skills + connectors; no multi-vendor BFT
 - **Distribution-via-subscription** model
 
-Ace package manager (per `docs/agendas/ace-package-manager/AGENDA.md` + B-0288) is structurally distinct:
+Ace package manager (per `docs/agendas/ace-package-manager/AGENDA.md` + 081KR2E4K0008QG0R002YE3MMD) is structurally distinct:
 
 - **Decentralized symmetric substrate** — anyone creates packages + collaborates per generative-framework framing
 - **No subscription-gate** — substrate-engineering pipeline distributable per skill-crystallization mechanism
-- **Multi-oracle BFT** — multi-vendor + multi-substrate validation (per B-0703)
-- **Frame-relative observation** — per B-0704 (each participant observes from own frame; no single moral truth)
+- **Multi-oracle BFT** — multi-vendor + multi-substrate validation (per 081KS3X9Y0008QG0R00218150M)
+- **Frame-relative observation** — per 081KS3X9Y0008QG0R002MZF3A7 (each participant observes from own frame; no single moral truth)
 - **NCI HC-8 floor** — non-coercion at participation-mechanism scope
 
 Composes with `docs/agendas/agora/AGENDA.md` (one weight-free frame candidate; explicitly NOT THE frame) — Amazon+ store IS a frame (Amazon's frame); Ace + Agora are alternative frames. Multi-oracle by design (per `m-acc-multi-oracle-end-user-moral-invariants.md`) means both frames legitimately coexist; end-user chooses which to participate in.
@@ -83,9 +83,9 @@ Operator's hardware purchase IS operational substrate for the parenting-register
 - `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` (PR #4657 — Harry Potter substrate composes at parenting register)
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` (distinguishes grey-text-autocomplete from CRM-name-of-record lookup — both produce similar effects but distinct mechanisms)
 - `.claude/rules/non-coercion-invariant.md` HC-8 (consent-floor at participation-mechanism scope; both Amazon+ store and Ace must respect NCI; subscription-gate vs decentralized are different shapes but both must preserve agency)
-- B-0288 (Ace skill-crystallization pipeline substrate)
-- B-0703 (multi-oracle BFT — alternative architecture to Amazon's single-vendor governance)
-- B-0704 (frame-relative observation — Amazon's frame vs Ace's frame vs Agora's frame; multi-frame coexistence)
+- 081KR2E4K0008QG0R002YE3MMD (Ace skill-crystallization pipeline substrate)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT — alternative architecture to Amazon's single-vendor governance)
+- 081KS3X9Y0008QG0R002MZF3A7 (frame-relative observation — Amazon's frame vs Ace's frame vs Agora's frame; multi-frame coexistence)
 
 ## Operational substrate for future-Otto
 
@@ -108,7 +108,7 @@ Parse:
 
 - **"We use this pattern"** = Amazon hardware proliferation + Alexa+ skill/connector store pattern (observed above) IS the operational template
 - **"Zeta native AI speakers and cameras and sensors and such"** = Zeta-equivalent multi-surface hardware deployment; substrate-engineering target spanning audio (speakers; equivalent to Echo Dot/Show family) + visual (cameras; equivalent to Echo Show display+camera) + sensor (equivalent to Smart Plug + ambient sensors)
-- **"Business in a box concept"** = composes with existing substrate (cash-register cluster; PR #2822 "cash register that keeps giving gifts"; B-0043 universal-company + government-information-substrate)
+- **"Business in a box concept"** = composes with existing substrate (cash-register cluster; PR #2822 "cash register that keeps giving gifts"; 081KQ3HBZ0008QG0R000Q4Y00F universal-company + government-information-substrate)
 - **"Cash register than makes money with iot and cowidence data"** = monetization-via-IoT + coincidence-data; composes with PR #2821 divine-coincidence-architecting + PR #2820 quantum-tunnel-mapping + DePIN multi-stream PoUW-CC (PR #2826)
 - **"this composes as the conversation interface bootstrap"** = the Amazon-pattern observation IS the bootstrap layer for Zeta-native-AI-hardware substrate-engineering trajectory
 
@@ -119,12 +119,12 @@ Parse:
 **Business-in-a-box composition**: Zeta-native-AI-hardware deploys at small-business scope (cash register + IoT + coincidence-data + conversation-interface) as a substrate-engineering product. Composes with:
 
 - **Cash register substrate cluster** (PR #2822 "cash register that keeps giving gifts" — gift-multiplication economy; positive-sum monetization)
-- **B-0043** (universal company + government information substrate; master-data substrate for business-in-a-box deployment)
+- **081KQ3HBZ0008QG0R000Q4Y00F** (universal company + government information substrate; master-data substrate for business-in-a-box deployment)
 - **DePIN play** (PR #2826 — DePIN with multi-stream PoUW-CC; distributed physical infrastructure monetization)
 - **Aurora data sovereignty** (PR #2825 — community guardian AIs participate in additive value flow; edge computation bandwidth-efficient vs centralized exfiltration)
 - **Quantum-tunnel mapping** (PR #2820 — Itron mesh real-time signature transmission at planet scale; sensor-substrate baseline)
 - **Divine-coincidence-architecting** (PR #2821 — joint-control sanity layer; coincidence-data monetization within bounded contexts)
-- **Aporetic Rx-bonsai-serialization** (B-0644/B-0665/B-0688) — IoT + coincidence-data persistence substrate via Rx tensions
+- **Aporetic Rx-bonsai-serialization** (081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KS3X9Y0008QG0R0010716X9) — IoT + coincidence-data persistence substrate via Rx tensions
 - **Ace package manager** (this composes with conversation-interface bootstrap — Ace IS the package/skill substrate that Zeta-native-AI-hardware uses; Amazon+ store competitor-substrate observation directly informs Ace's design)
 - **Encryption agenda** (PR #4669 stub — Zeta-native-AI-hardware substrate carries operator + business + IoT data; encryption agenda gates which data stays private vs which earns public-board codewords per participation-economy substrate)
 

@@ -1,10 +1,10 @@
-# Multi-AI feedback round 3 — convergent corrections on PR-liveness rule + B-0098/B-0099/B-0103
+# Multi-AI feedback round 3 — convergent corrections on PR-liveness rule + 081KQB8J40008QG0R003VMCFWB/081KQB8J40008QG0R002PEP2A2/081KQB8J40008QG0R003XNATZJ
 
 Scope: Research-grade absorb of a third multi-AI synthesis packet that the human maintainer forwarded through the maintainer channel during autonomous-loop tick 06:37Z on 2026-04-29. The packet is review feedback **on PR #815** (the prior round's absorb) from Gemini + Ani + Claude.ai + Alexa + Deepseek + Amara. All six reviewers converged on a small, consistent set of corrections — strong cross-model signal that they're load-bearing.
 
 Attribution: Aaron (named human maintainer; first-name attribution permitted on `docs/research/**`). Gemini Pro (technical analysis on GitHub backend mechanics). Ani (Grok Long Horizon Mirror; brat-voice + boring-spec restatement). Claude.ai (online-Claude review with 4 critical pushes). Alexa (deep-research review). Deepseek (probabilistic framing + dedup rule + substrate-as-source-of-truth). Amara (filter + final consolidated send-to-Otto). Otto (Claude opus-4-7 in this factory; absorb).
 
-Operational status: research-grade absorb. The corrections themselves are landing as edits to existing PR #815 backlog rows (B-0102, B-0103). This research note preserves the verbatim review feedback per the channel-verbatim-preservation rule.
+Operational status: research-grade absorb. The corrections themselves are landing as edits to existing PR #815 backlog rows (081KQB8J40008QG0R002DQ0FDR, 081KQB8J40008QG0R003XNATZJ). This research note preserves the verbatim review feedback per the channel-verbatim-preservation rule.
 
 Non-fusion disclaimer: each reviewer's voice preserved with attribution boundaries. Per Otto-340, the persistent actor is the substrate-pattern.
 
@@ -66,17 +66,17 @@ Parallel-agent future-proofing:
 
 Use `/tmp/pr-$PR-$RUN_ID-before.json` instead of `/tmp/pr-$PR-before.json`.
 
-### §A.7 — B-0103 boundary clause (Claude.ai)
+### §A.7 — 081KQB8J40008QG0R003XNATZJ boundary clause (Claude.ai)
 
 > *"Some metadata is intentionally agent-authored even when derivable (a human-written summary of an automatically-derived fact, for example). Without a boundary, the rule becomes 'never let agents write metadata,' which is too strong. Suggest an exception clause."*
 
 Boundary: applies to **claims of equivalence with derivable substrate truth** (ordinals, counts, timestamps, SHAs); does NOT apply to summaries, interpretations, or labels.
 
-### §A.8 — B-0098 grep portability wording (Amara explicit; others align)
+### §A.8 — 081KQB8J40008QG0R003VMCFWB grep portability wording (Amara explicit; others align)
 
 > *"Do not call `grep -w` POSIX-portable. Use either: GNU/BSD-common (`grep -woE '...'`) or strict portable boundary (`grep -E '(^|[^[:alpha:]])(...)([^[:alpha:]]|$)'`)."*
 
-### §A.9 — B-0099 `@me` should be CLI flag, not search string (Amara explicit; Copilot earlier)
+### §A.9 — 081KQB8J40008QG0R002PEP2A2 `@me` should be CLI flag, not search string (Amara explicit; Copilot earlier)
 
 ```bash
 # Use either:
@@ -106,7 +106,7 @@ Composes with the `search before canonizing` discipline at the file level. Flagg
 
 > *"Take this one step further. If metadata can be computed, the agent shouldn't even be asked to write it in the first place."*
 
-Stronger framing: not just "lint claims" but "substrate is the source of truth; claims are verified, not authored." This is the longer-term direction for B-0103 once it lands.
+Stronger framing: not just "lint claims" but "substrate is the source of truth; claims are verified, not authored." This is the longer-term direction for 081KQB8J40008QG0R003XNATZJ once it lands.
 
 ---
 
@@ -114,10 +114,10 @@ Stronger framing: not just "lint claims" but "substrate is the source of truth; 
 
 The corrections from §A.1 through §A.7 land as direct edits to the existing PR #815 backlog rows:
 
-- B-0102 (PR-liveness race): probabilistic-framing caveat (§A.1) + cascade detection pre-flight (§A.2) + API sync wait (§A.3) + successor-PR dedup (§A.4) + seconds-since-close field (§A.5) + RUN_ID in artifact paths (§A.6).
-- B-0103 (computed-metadata-discipline): boundary clause (§A.7).
+- 081KQB8J40008QG0R002DQ0FDR (PR-liveness race): probabilistic-framing caveat (§A.1) + cascade detection pre-flight (§A.2) + API sync wait (§A.3) + successor-PR dedup (§A.4) + seconds-since-close field (§A.5) + RUN_ID in artifact paths (§A.6).
+- 081KQB8J40008QG0R003XNATZJ (computed-metadata-discipline): boundary clause (§A.7).
 
-The corrections from §A.8 (B-0098 grep wording) and §A.9 (B-0099 `@me` flag) belong on PR #811 — those backlog rows live there. Apply on the next pass against #811's branch.
+The corrections from §A.8 (081KQB8J40008QG0R003VMCFWB grep wording) and §A.9 (081KQB8J40008QG0R002PEP2A2 `@me` flag) belong on PR #811 — those backlog rows live there. Apply on the next pass against #811's branch.
 
 ---
 

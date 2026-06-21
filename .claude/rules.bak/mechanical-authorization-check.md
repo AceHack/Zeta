@@ -27,7 +27,7 @@ discipline (which stays as documentation).
 
 ## Skill build
 
-`docs/backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
+`docs/backlog/P0/081KQJZR90008QG0R000FTJ1TC-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
 
 ## Full reasoning
 

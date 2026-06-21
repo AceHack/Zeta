@@ -1,12 +1,11 @@
 ---
-id: B-0331
-zetaid: 081KR2E4K0008QG0R003RZFR9F
+id: 081KR2E4K0008QG0R003RZFR9F
 priority: P1
 status: closed
 title: Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 tier: foundation
 effort: M
-ask: B-0190 Step 3 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 3 decomposition
 created: 2026-05-08
 last_updated: 2026-05-09
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,17 +15,17 @@ tags: [memory, ontology, classification, audit, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0331 — Memory ontology/classification audit
+# 081KR2E4K0008QG0R003RZFR9F — Memory ontology/classification audit
 
 ## Parent
 
-B-0190 Step 3 (memory ontology / classification).
+081KQR4HQ0008QG0R001909FPT Step 3 (memory ontology / classification).
 
 ## What
 
 Audit the ~936 memory files against the four-type taxonomy
 (`user` / `feedback` / `project` / `reference`) defined in
-`memory/README.md` and standardized by B-0330. Many `feedback_*`
+`memory/README.md` and standardized by 081KR2E4K0008QG0R002VM58S4. Many `feedback_*`
 files contain content that is actually `project_*` or `user_*`.
 
 1. Build an inventory: count files by prefix vs actual
@@ -35,7 +34,7 @@ files contain content that is actually `project_*` or `user_*`.
 3. Propose renames (batch rename PR, not one-at-a-time).
 4. Update MEMORY.md index entries for renamed files.
 
-## Why depends on B-0330
+## Why depends on 081KR2E4K0008QG0R002VM58S4
 
 The format standard defines what distinguishes a feedback file
 from a project file. Without the standard, reclassification is

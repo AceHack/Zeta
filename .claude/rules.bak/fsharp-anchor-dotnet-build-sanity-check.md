@@ -99,7 +99,7 @@ When dense ontology composition arrives in cascade:
    compiler do the falsification work; don't reinvent it
 5. **Reserve external-falsifiability questions for beacon-
    tier claims** — empirical physics predictions (e.g.,
-   B-0422 Pauli-symmetry-breaking test) still need external
+   081KRCQQF0008QG0R0008VT354 Pauli-symmetry-breaking test) still need external
    anchors; type-level structural claims don't
 
 ## Composes with other rules
@@ -130,7 +130,7 @@ When dense ontology composition arrives in cascade:
   refinement)
 - PR #2832 (civ-sim Pauli-exclusion-for-agenda — F# HKT
   encoding target)
-- B-0422 (Clifford-algebraic narrative engine for
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine for
   falsifiability test)
 - `algebra-owner` skill (Z-set + Clifford + BP/EP existing
   F# substrate)

@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
 import { empty, heartbeat, merge, converge, alive, type LivenessView } from "./heartbeat-homeostat";
 
-// B-1016 "hello world" homeostasis — actors heartbeat, the CRDT-map merge converges
+// 081KT7YW00008QG0R002T1XNWT "hello world" homeostasis — actors heartbeat, the CRDT-map merge converges
 // to one fleet-liveness view regardless of order/duplicates. Homeostasis = the
 // fixpoint of per-actor-max merge over the heartbeat stream.
 

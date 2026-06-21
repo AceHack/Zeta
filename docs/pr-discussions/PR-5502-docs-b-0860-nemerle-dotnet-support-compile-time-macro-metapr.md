@@ -1,6 +1,6 @@
 ---
 pr_number: 5502
-title: "docs(B-0860): Nemerle dotnet support \u2014 compile-time macro metaprogramming complementing F# type providers (Aaron 2026-05-27)"
+title: "docs(081KSKBP80008QG0R000J2YFK2): Nemerle dotnet support \u2014 compile-time macro metaprogramming complementing F# type providers (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T16:23:51Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T17:49:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5502: docs(B-0860): Nemerle dotnet support — compile-time macro metaprogramming complementing F# type providers (Aaron 2026-05-27)
+# PR #5502: docs(081KSKBP80008QG0R000J2YFK2): Nemerle dotnet support — compile-time macro metaprogramming complementing F# type providers (Aaron 2026-05-27)
 
 ## PR description
 
 ## Summary
 
-Files B-0860 substrate-engineering target row for extending dotnet
+Files 081KSKBP80008QG0R000J2YFK2 substrate-engineering target row for extending dotnet
 metaprogramming capability beyond F# type providers + Roslyn Source
 Generators via Nemerle's compile-time macro-based syntax extension.
 
@@ -52,7 +52,7 @@ Priority: P3 (substrate-engineering target; not urgent).
 ## Test plan
 
 - [x] Markdownlint clean (no MD004 leading-+ continuations)
-- [x] No prior B-0860 row on main + no in-flight (ID-allocation
+- [x] No prior 081KSKBP80008QG0R000J2YFK2 row on main + no in-flight (ID-allocation
       discipline applied)
 - [x] Substrate-verification pass per rule before authoring
 - [ ] CI passes (auto-merge to fire on green)

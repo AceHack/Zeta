@@ -52,7 +52,7 @@ This conversation 2026-05-28 — the rule's own substrate-archeology lives in th
 
 ## Composes with
 
-11+ existing framework rules + B-0917/B-0919/B-0920/B-0703 substrate + cognitive-profile memo. See rule body for full table.
+11+ existing framework rules + 081KSNY2Z0008QG0R002HB4AGT/081KSNY2Z0008QG0R003518DNC/081KSNY2Z0008QG0R0017SRMHG/081KS3X9Y0008QG0R00218150M substrate + cognitive-profile memo. See rule body for full table.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

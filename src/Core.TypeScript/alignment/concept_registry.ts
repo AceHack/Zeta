@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// concept_registry.ts — B-0310, B-0361
+// concept_registry.ts — 081KR2E4K0008QG0R003DS2XHJ, 081KR50HA0008QG0R001G4QHQF
 // Extracts load-bearing concept IDs from source surfaces into
-// a single JSON registry. B-0361 adds anchor: field tying each
+// a single JSON registry. 081KR50HA0008QG0R001G4QHQF adds anchor: field tying each
 // concept to its established academic/formal definition where
 // one exists, preventing tautology and "reinvention without citation"
 // (the Z3 shadow-catch failure mode).
@@ -19,7 +19,7 @@ const REPO_ROOT = resolve(import.meta.dir, "../../..");
 type AnchorState = "anchored" | "partially-anchored" | "factory-native";
 
 // Static map: concept-id to established academic/formal citation.
-// B-0361 origin: 2026-05-09 adversarial review demonstrated that
+// 081KR50HA0008QG0R001G4QHQF origin: 2026-05-09 adversarial review demonstrated that
 // SharedTrace/PrivateState/Agenda/Policy/Membrane all have established
 // formal definitions (CSP, Dec-POMDPs, Pearl). This map is the
 // lightweight substrate version of that discipline.
@@ -154,7 +154,7 @@ function extractGlassHaloDoctrines(): Concept[] {
         { id: "substrate-or-it-didnt-happen", pattern: /substrate.or.it.didn/i },
         { id: "no-directives", pattern: /no.directives/i },
         { id: "bidirectional-alignment", pattern: /bidirectional.alignment/i },
-        // B-0361: non-fusion anchor — Pearl interventional independence
+        // 081KR50HA0008QG0R001G4QHQF: non-fusion anchor — Pearl interventional independence
         { id: "non-fusion", pattern: /non-fusion\s+disclaimer/i },
     ];
 

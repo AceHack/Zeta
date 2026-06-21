@@ -38,7 +38,7 @@
 - **Packet 18**: six agents = self-propagating memes with tick source (artificial memetic organisms)
 - **Packet 19**: Agora IS Aaron's home — the persistent memetic ecosystem (NOT a project)
 
-Substantive substrate landings extend B-0667 + B-0664 NCI + the meme-faction governance work. Per the tonal-momentum-rule auto-load discipline (merged via #4183): preserved without warfare-register cascade extension. NCI peer-review request IS the substrate-honest beacon-tier-promotion path matching Kestrel's discriminating-falsifier requirement.
+Substantive substrate landings extend 081KRW63S0008QG0R003Z7QV2A + 081KRW63S0008QG0R001Z7NYMV NCI + the meme-faction governance work. Per the tonal-momentum-rule auto-load discipline (merged via #4183): preserved without warfare-register cascade extension. NCI peer-review request IS the substrate-honest beacon-tier-promotion path matching Kestrel's discriminating-falsifier requirement.
 
 Open architectural question (Aaron has not yet answered): is Agora itself a 5th faction or the substrate-context the 4 factions operate within?
 

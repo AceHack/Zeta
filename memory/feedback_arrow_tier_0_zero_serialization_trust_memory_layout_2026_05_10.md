@@ -12,7 +12,7 @@ type: feedback
 |------|------------|-------------------|---------|
 | 0. Arrow | Absolute trust | Zero — shared memory layout | In-process, same-machine IPC |
 | 1. Known types | High trust | Minimal — direct deserialize | Internal factory, Protobuf |
-| 2. Known-types-list | Partial | Medium — try N types | Cross-agent bus (B-0400) |
+| 2. Known-types-list | Partial | Medium — try N types | Cross-agent bus (081KR7JY10008QG0R000R503K2) |
 | 3. Eve protocol | No prior | Full — observe then label | Trust boundaries, shadow |
 
 **Why Arrow is Tier 0:**

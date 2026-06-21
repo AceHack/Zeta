@@ -198,12 +198,12 @@ Tests 68 → **72** (added: trust-file owner-only perms + pre-existing-permissiv
 ### Thread 7 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6GABIz`
-- **Path**: `docs/backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`
+- **Path**: `docs/backlog/P2/081KT07NV0008QG0R0016XR9J1-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-06-01T03:50:50Z on `docs/backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`:80 (association: NONE)
+- **`Copilot` (bot)** at 2026-06-01T03:50:50Z on `docs/backlog/P2/081KT07NV0008QG0R0016XR9J1-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`:80 (association: NONE)
 
   <pre>
   P1: This sentence now says the rename was resolved, but the following lines still describe it as a deferred CLI-contract decision where only the help-text gloss was applied. That makes the backlog row internally contradictory after the flag rename.
@@ -211,10 +211,10 @@ Tests 68 → **72** (added: trust-file owner-only perms + pre-existing-permissiv
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-06-01T03:54:23Z on `docs/backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`:80 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-06-01T03:54:23Z on `docs/backlog/P2/081KT07NV0008QG0R0016XR9J1-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`:80 (association: MEMBER)
 
     <pre>
-    Fixed — removed the contradiction: the trailing 'deferred to the operator / help-text gloss only' clause is gone; B-0960 now consistently states the rename shipped across code + tests + docs.
+    Fixed — removed the contradiction: the trailing 'deferred to the operator / help-text gloss only' clause is gone; 081KT07NV0008QG0R0016XR9J1 now consistently states the rename shipped across code + tests + docs.
     </pre>
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -369,7 +369,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice3-authenticity-signature-verify-design.md`
-- `docs/backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`
+- `docs/backlog/P2/081KT07NV0008QG0R0016XR9J1-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`
 - `tools/ace/ace.ts`
 - `tools/ace/store.ts`
 
@@ -386,7 +386,7 @@ Operator resolved the deferred flag-naming question 2026-06-01 ("rename to
 unsigned packages (a present bad/untrusted signature is always refused). The new
 name is unambiguous. No back-compat alias (the flag shipped hours ago in #6320,
 no users). Sweep-refs across live code + tests + skill + the canonical Ace docs;
-internal field allowUnsigned -> allowNoSignature; B-0960's open-question line
+internal field allowUnsigned -> allowNoSignature; 081KT07NV0008QG0R0016XR9J1's open-question line
 marked resolved. 75 tests pass; help shows the new flag + scope gloss.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -397,7 +397,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice3-authenticity-signature-verify-design.md`
-- `docs/backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`
+- `docs/backlog/P2/081KT07NV0008QG0R0016XR9J1-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md`
 - `tools/ace/ace.ts`
 
 **Message:**
@@ -405,7 +405,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 fix(ace): canonical key_id in trust add + doc-sync unsupported-algo &…
 
-… B-0960 (review)
+… 081KT07NV0008QG0R0016XR9J1 (review)
 
 3 review findings on the rename commit:
 - Codex P2 (correctness): createPublicKey accepts a padded SPKI but re-exports the
@@ -417,7 +417,7 @@ fix(ace): canonical key_id in trust add + doc-sync unsupported-algo &…
 - Copilot P1 (doc-sync): design §6 listed only 3 verifySignature reasons; added
   the unsupported-algo case (present sig, algo != ed25519 -> hard refuse) from the
   algorithm-confusion fix.
-- Copilot P1 (doc-sync): B-0960 said the rename was resolved but a later line still
+- Copilot P1 (doc-sync): 081KT07NV0008QG0R0016XR9J1 said the rename was resolved but a later line still
   called it deferred/gloss-only; removed the contradiction.
 
 76 tests pass; tsc + markdownlint clean.

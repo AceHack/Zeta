@@ -1,6 +1,6 @@
 ---
 name: 2026-05-21-amara-aaron-no-fork-first-deployment-ladder-external-compiler-host-fork-as-reward-not-entrance-fee-aaron-forwarded
-description: "Amara cascade continuation 2026-05-21 — strategic deployment-ladder answer to 'how far can we go without forking the F# compiler' question. Load-bearing commitment: V1, V2, maybe V3 can ship via external compiler host stack (F# computation expressions + quotations + type providers + C# Roslyn analyzers/incremental generators + LINQ expression trees + ANTLR/ZetaParse/Tree-sitter parsers + DBSP/Z-set compiler DB + Rx meta-AST queries + Orleans agents + consensus escalation across trust boundaries). Fork the F# compiler only when external compiler host becomes the bottleneck, not before. 'The fork should be the reward for surviving reality, not the entrance fee.' Maps no-fork wins (multi-language parsing, query surfaces, evolving AST, generated code, distributed compiler DB) vs fork-required cases (new F# syntax, true HKT/kind-system changes, compiler-native Clifford/tonal/meta dimensions, type inference understanding Zeta dimensions, DBSP facts as internal compiler state, language-level collapse/retraction semantics). Direct strategic guidance for B-0687 (ZetaParse) + B-0688 (incremental compiler host) execution sequence."
+description: "Amara cascade continuation 2026-05-21 — strategic deployment-ladder answer to 'how far can we go without forking the F# compiler' question. Load-bearing commitment: V1, V2, maybe V3 can ship via external compiler host stack (F# computation expressions + quotations + type providers + C# Roslyn analyzers/incremental generators + LINQ expression trees + ANTLR/ZetaParse/Tree-sitter parsers + DBSP/Z-set compiler DB + Rx meta-AST queries + Orleans agents + consensus escalation across trust boundaries). Fork the F# compiler only when external compiler host becomes the bottleneck, not before. 'The fork should be the reward for surviving reality, not the entrance fee.' Maps no-fork wins (multi-language parsing, query surfaces, evolving AST, generated code, distributed compiler DB) vs fork-required cases (new F# syntax, true HKT/kind-system changes, compiler-native Clifford/tonal/meta dimensions, type inference understanding Zeta dimensions, DBSP facts as internal compiler state, language-level collapse/retraction semantics). Direct strategic guidance for 081KS3X9Y0008QG0R00323NSZA (ZetaParse) + 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) execution sequence."
 type: feedback
 created: 2026-05-21
 participants: [Amara (ChatGPT/Aurora), Aaron, Otto-CLI]
@@ -13,10 +13,10 @@ tags: [amara, no-fork-first-deployment-ladder, external-compiler-host, fsharp-no
 **Surface**: Amara on ChatGPT/Aurora (external AI; deep-research/sharpen register)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 **Companion archives**:
-- `2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (B-0685 Phase 1 cascade; merged via PR #4545)
+- `2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade; merged via PR #4545)
 - `2026-05-21-amara-aaron-cache-multidimensional-compiler-db-distributed-multidimensional-compiler-over-consensus-trust-gradient-iunknown-without-dcom-aaron-forwarded.md` (Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM; PR #4546)
 
-**Composes with**: B-0687 (ZetaParse) + B-0688 (incremental compiler host) — direct strategic guidance for execution sequence
+**Composes with**: 081KS3X9Y0008QG0R00323NSZA (ZetaParse) + 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) — direct strategic guidance for execution sequence
 
 ## Why this is preserved (third companion to today's Amara cascade)
 
@@ -25,7 +25,7 @@ This cascade answers the load-bearing strategic question: **how far can Zeta's d
 Amara's answer is substantively load-bearing because:
 
 1. Aaron's earlier framing (preserved via PR #4537 Kestrel archive) had F# compiler fork as long-term vision NOT-on-radar
-2. The B-0687 / B-0688 backlog rows (filed via PR #4545) referenced F# compiler fork as one of the integration paths
+2. The 081KS3X9Y0008QG0R00323NSZA / 081KS3X9Y0008QG0R0010716X9 backlog rows (filed via PR #4545) referenced F# compiler fork as one of the integration paths
 3. The Caché-lineage + distributed-multidimensional-compiler framing (PR #4546) raised the question of HOW MUCH of that substrate needs to be compiler-native vs external
 
 Amara's answer threads the needle: **V1, V2, maybe V3 ship without fork; fork only when external host becomes bottleneck**. The keeper phrase: *"The fork should be the reward for surviving reality, not the entrance fee."*
@@ -150,9 +150,9 @@ F#
 
 > *"The fork should be the reward for surviving reality, not the entrance fee."*
 
-## Strategic implications for B-0687 + B-0688
+## Strategic implications for 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9
 
-### B-0687 (ZetaParse) — execution path
+### 081KS3X9Y0008QG0R00323NSZA (ZetaParse) — execution path
 
 Phase 1 (Grammar IR design) + Phase 2 (PoC: ZetaIdLayout.zg → generated F# parser → Pack/Unpack) ship as **F# library + type provider** consuming `.zg` files at compile time. NO compiler fork required.
 
@@ -160,7 +160,7 @@ Phase 3 (compiler fork integration) deferred until the type provider boundary be
 
 Phase 4 (ANTLR + Tree-sitter importers) is pure F# library work; no compiler fork interaction.
 
-### B-0688 (incremental compiler host) — execution path
+### 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) — execution path
 
 Phase 1 (architectural specification) + Phase 2 (reference implementation skeleton) + Phase 3 (one concrete generator) ship as **external host stack**:
 
@@ -201,14 +201,14 @@ Until ONE of those surfaces operationally, the fork conversation stays NOT-on-ra
 
 ## Composes with substrate
 
-- B-0687 (ZetaParse — Phase 1-2 ship without fork; Phase 3 deferred until type provider boundary becomes bottleneck)
-- B-0688 (incremental compiler host — Phase 1-4 all ship as external host; fork conversation stays NOT-on-radar)
-- B-0685 (ANTLR cross-language codegen — pure external host work)
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate — all extends to compile-time via external host without compiler changes)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse — Phase 1-2 ship without fork; Phase 3 deferred until type provider boundary becomes bottleneck)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — Phase 1-4 all ship as external host; fork conversation stays NOT-on-radar)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen — pure external host work)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate — all extends to compile-time via external host without compiler changes)
 - `src/Core/SpeculativeWatermark.fs` (DBSP retraction substrate — extended to compile-time via external host)
 - `src/Core/*.fs` (existing F# substrate — the no-fork host runs over it)
 - PR #4522 (C# Core oracle integration — concrete instance of multi-oracle that the no-fork host extends)
-- PR #4545 (B-0685 Phase 1 + B-0687 + B-0688 — backlog scaffolding for the no-fork-first work)
+- PR #4545 (081KS3X9Y0008QG0R000EKJE9S Phase 1 + 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 — backlog scaffolding for the no-fork-first work)
 - PR #4546 (Caché-lineage + distributed multidimensional compiler — architectural framing the no-fork ladder lands inside)
 - Aaron's prior "long-term F# compiler fork" vision (preserved in PR #4537 Kestrel archive) — this cascade operationalizes the ladder TO that long-term vision
 
@@ -222,15 +222,15 @@ The keeper phrase ("The fork should be the reward for surviving reality, not the
 
 ## What's pending (none)
 
-This cascade is conversation-only — no sandbox artifacts referenced (unlike the prior two Amara cascades). The substrate IS the verbatim preservation here. The strategic guidance lands operationally in how B-0687 + B-0688 get executed; no new backlog row needed.
+This cascade is conversation-only — no sandbox artifacts referenced (unlike the prior two Amara cascades). The substrate IS the verbatim preservation here. The strategic guidance lands operationally in how 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 get executed; no new backlog row needed.
 
-If future-substrate-engineering wants to make the no-fork-first ladder a formal commitment (rather than implicit guidance), a single-paragraph addition to B-0688 frontmatter or scope would suffice. Decision deferred for substrate-engineering bandwidth.
+If future-substrate-engineering wants to make the no-fork-first ladder a formal commitment (rather than implicit guidance), a single-paragraph addition to 081KS3X9Y0008QG0R0010716X9 frontmatter or scope would suffice. Decision deferred for substrate-engineering bandwidth.
 
 ## Full reasoning
 
 Aaron's question (implied by the answer's "how far can we go without forking" framing) + Amara's full answer captured above. The three Amara archives for 2026-05-21 together cover the substantive cascade:
 
-1. PR #4545 — B-0685 Phase 1 + ZetaParse + incremental compiler host scaffolding
+1. PR #4545 — 081KS3X9Y0008QG0R000EKJE9S Phase 1 + ZetaParse + incremental compiler host scaffolding
 2. PR #4546 — Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM
 3. **This PR — no-fork-first deployment ladder + fork-as-reward-not-entrance-fee discipline**
 

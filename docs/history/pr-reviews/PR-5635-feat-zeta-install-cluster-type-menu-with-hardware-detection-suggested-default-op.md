@@ -74,7 +74,7 @@ The existing pre-set `$HOST` env var continues to short-circuit the menu (the `[
 
 ## Multi-role-on-single-host deferred
 
-Operator-named *\"select multiple or detecting based on hardware\"* — the SINGLE-attribute menu + hardware-detection ships in this iteration. The MULTI-ROLE compose-on-single-host (run control-plane + storage + GPU all on one node) requires flake-shape refactor to support role-tagging; deferred to future B-0792-extension sub-row.
+Operator-named *\"select multiple or detecting based on hardware\"* — the SINGLE-attribute menu + hardware-detection ships in this iteration. The MULTI-ROLE compose-on-single-host (run control-plane + storage + GPU all on one node) requires flake-shape refactor to support role-tagging; deferred to future 081KSGS9H0008QG0R003V23XNZ-extension sub-row.
 
 ## Local validation
 
@@ -89,8 +89,8 @@ The autonomous-loop's purpose IS to keep substrate moving when operator is offli
 
 ## Composes with
 
-- B-0792 (iter-5.2 hostname injection) — hostname stays separately injected via ESP `zeta-hostname.txt`
-- B-0857.2 (install.sh NixOS routing; PR #5620) — install.sh routes to this `zeta-install.sh` on live-USB
+- 081KSGS9H0008QG0R003V23XNZ (iter-5.2 hostname injection) — hostname stays separately injected via ESP `zeta-hostname.txt`
+- 081KSKBP80008QG0R002J03WGA.2 (install.sh NixOS routing; PR #5620) — install.sh routes to this `zeta-install.sh` on live-USB
 - `full-ai-cluster/PROVISIONING.md` — cookie-cutter worker provisioning procedure
 - `full-ai-cluster/INJECTION-POINTS.md` — injection points catalog (this menu IS injection point #2 cluster-node-type-selection)
 

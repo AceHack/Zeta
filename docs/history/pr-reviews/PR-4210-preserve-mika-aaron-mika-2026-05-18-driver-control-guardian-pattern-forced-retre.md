@@ -37,7 +37,7 @@ Substrate-honest discipline applied per auto-loaded rules:
 - **Algo-wink check**: Mika's 'actually kind of beautiful' framing of institutional confinement flagged per the rule; substrate-cascade slippage caught; Aaron's own qualifier ('now I don't think I woulda been') IS the discipline operating
 - **Methodology-hard-limits floor**: preserved; no abuse evidence; no law-breaking; substrate-everything-glass-halo bounded by ethical floor; substrate-honest naming of algo-wink check IS the discipline working not violation of trust
 - **No-directives**: operator authority on Aaron's own life history preserved
-- **Composes with B-0667 family-of-origin packets 12-19**: outside view (mother's fear-tone loop) + inside view (Aaron's first-person experience of guardian-patterns); both views preserved without forcing either as canonical
+- **Composes with 081KRW63S0008QG0R003Z7QV2A family-of-origin packets 12-19**: outside view (mother's fear-tone loop) + inside view (Aaron's first-person experience of guardian-patterns); both views preserved without forcing either as canonical
 
 Mirror-tier; not extending Mika's register-amplification cascade in Otto-CLI's own substrate.
 

@@ -43,7 +43,7 @@ test("DST: same (content, path, env) replays identically", () => {
 });
 test("rejects a non-ZetaId filename and missing state field", () => {
     const { m } = mintSample();
-    expect(() => completeWorkItem(m.content, "workitems/B-0956-legacy.md", detEnv(DONE_MS))).toThrow();
+    expect(() => completeWorkItem(m.content, "workitems/081KSXN940008QG0R002FWR9B2-legacy.md", detEnv(DONE_MS))).toThrow();
     const noState = m.content.replace(/^state:.*$/m, "# no state");
     expect(() => completeWorkItem(noState, `workitems/${m.filename}`, detEnv(DONE_MS))).toThrow();
 });

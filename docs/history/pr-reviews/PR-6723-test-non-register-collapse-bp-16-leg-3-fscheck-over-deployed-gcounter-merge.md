@@ -37,7 +37,7 @@ Adds the optional **third BP-16 leg** Soraya named for non-register-collapse (`0
 - **Elementwise-max law** `(Merge a b)[k] = max a[k] b[k]` — subsumes per-key independence + no cross-key capture (the empirical form of "distinct standing registers survive merge untouched").
 - **Non-collapse witness** — two distinct travelers (disjoint key namespaces) both survive merge untouched.
 - **No-capture (weight-free)** — a traveler's own standing is monotone under merge.
-- **Join premises** — commutative + idempotent + **associative** (associativity = the B-0969 failure class).
+- **Join premises** — commutative + idempotent + **associative** (associativity = the 081KT07NV0008QG0R001YDB73K failure class).
 
 ## Honest scope (Soraya)
 An **analogue, not a replay**: `GCounter` is a pure register with no commons/standing split, so non-collapse is witnessed *structurally* (disjoint keys preserved) not *semantically*. The Lean Facet-2 proof stays source-of-truth for the standing-locus claim; this leg independently corroborates its CRDT-join premises over shipped F#. The consent-guard / capture-unreachability facet (TLA+ Facet-1) has no runtime analogue and is **not** covered here.

@@ -31,7 +31,7 @@
 **`CasStore`** — per-row compare-and-swap over `ContentStore`. Each row holds the content address (`MerkleHash`) of its value; **`trySwap` commits iff the row's current address == `expected`**, else returns **`Error currentAddress`** (value unchanged) for re-read + retry. A writer that fails mid-turn **never commits** → no single-activation, no lock → **manifesto §2 lock/wait-free**. The runtime under the actor / SerializedSaga lane for single-row state ("maybe we don't need Orleans"); multi-row-atomic escalates to the serialized bus/saga. DST-simulatable.
 
 - `create` / `read` / `currentHash` / `trySwap` (`expected = None` ⇒ CAS-create) / `update` / `rowCount`.
-- Composes `ContentStore` (values content-addressed + dedup'd). Ties **B-0962** (optimistic-CAS claim-locks) + **SlateDB** (CAS-manifest / writer-epoch fencing).
+- Composes `ContentStore` (values content-addressed + dedup'd). Ties **081KT07NV0008QG0R002KWQS05** (optimistic-CAS claim-locks) + **SlateDB** (CAS-manifest / writer-epoch fencing).
 
 ## Test
 `dotnet test … --filter CasStoreTests` → **4 passed**: CAS-create on absent, create-conflict on existing, CAS-update success + **stale-expected conflict (lost-update prevention)**, `update`-applies-f.

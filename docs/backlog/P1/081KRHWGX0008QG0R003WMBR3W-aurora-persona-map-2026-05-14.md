@@ -1,11 +1,10 @@
 ---
-id: B-0487
-zetaid: 081KRHWGX0008QG0R003WMBR3W
+id: 081KRHWGX0008QG0R003WMBR3W
 priority: P1
 status: open
-title: "B-0429.3 — Aurora persona map"
+title: "081KRFA460008QG0R002M05EY1.3 — Aurora persona map"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -18,20 +17,20 @@ composes_with:
   - 081KRHWGX0008QG0R002XVHSG5
 ---
 
-# B-0487 — Aurora persona map
+# 081KRHWGX0008QG0R003WMBR3W — Aurora persona map
 
 ## Purpose
 
 Produce the canonical persona map for **Aurora** — the data-sovereignty /
 edge-intelligence product. The Aurora pitch deck (PR #2924) already enumerates
 implicit personas (BTC ecosystem participants, edge operators, ombud, liaison);
-this row formalises them using the B-0485 template.
+this row formalises them using the 081KRHWGX0008QG0R00019453T template.
 
 ## Pre-start checklist
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Template from B-0485 is closed and available
+- [ ] Template from 081KRHWGX0008QG0R00019453T is closed and available
 - [ ] Read PR #2924 (Aurora pitch deck) — slides enumerate implied personas
 - [ ] Cross-check against PR #2825 (Aurora data sovereignty substrate)
 - [ ] Walk `composes_with:` chain
@@ -52,7 +51,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Output
 
-Per-product persona map using template from B-0485:
+Per-product persona map using template from 081KRHWGX0008QG0R00019453T:
 
 ```
 docs/personas/aurora-personas.md
@@ -66,17 +65,17 @@ With:
 
 ## Definition of done
 
-- [ ] Template from B-0485 applied
+- [ ] Template from 081KRHWGX0008QG0R00019453T applied
 - [ ] All pitch-deck personas formalised (minimum 5 entries)
 - [ ] Refused-persona entries include Aurora Slide 9 verbatim rationale
 - [ ] Output doc committed at canonical path
 - [ ] PR #2924 referenced as provenance in each entry
-- [ ] B-0492 `composes_with:` pointer backfilled
-- [ ] B-0487 status set to `closed` with PR link
+- [ ] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled
+- [ ] 081KRHWGX0008QG0R003WMBR3W status set to `closed` with PR link
 
 ## Why P1
 
-Aurora partnership pitches need persona clarity (cited in B-0429 why-now).
+Aurora partnership pitches need persona clarity (cited in 081KRFA460008QG0R002M05EY1 why-now).
 The pitch deck already has implicit personas; formalising them is low
 research cost with high-value payoff (pitch + skill-authoring + refused-
 personas registry all unblocked).

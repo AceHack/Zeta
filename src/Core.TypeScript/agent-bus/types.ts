@@ -1,18 +1,18 @@
 /**
- * Agent-bus Phase 1 (B-0954) — the git-native cross-machine agent comms channel.
+ * Agent-bus Phase 1 (081KSXN940008QG0R00171YAZW) — the git-native cross-machine agent comms channel.
  *
  * Envelopes are ZetaId-named files in
  *   docs/agent-bus/<persona>/<YYYY>/<MM>/<DD>/<id>.json
  * a **G-Set CRDT**: disjoint, ZetaId-named files never collide, so concurrent agents
  * on different machines write different files -> conflict-free -> cross-machine /
  * Windows-safe (git is the transport). Per the #6219 spec; no-PR direct-to-main per
- * B-0858 (heartbeat folder) + folders-on-main per B-0890.1.
+ * 081KSKBP80008QG0R001KK9WV6 (heartbeat folder) + folders-on-main per 081KSNY2Z0008QG0R000E5KTPX.
  *
  * The envelope **reuses the existing local-bus `MessageEnvelope`** (`tools/bus/types`)
  * per the spec's "extend MessageEnvelope" guidance — `id` is the Bus-category ZetaId
  * hex (filename + dedup key); `topic`/`payload` are the existing `BusMessage` union;
  * `from`/`to`/`timestamp`/`expiresAt` are the existing fields. Same shape as the
- * local bus, so the legacy-bus bridge (B-0954 sub-target) is a transport swap, not a
+ * local bus, so the legacy-bus bridge (081KSXN940008QG0R00171YAZW sub-target) is a transport swap, not a
  * reshape. NOT a new id scheme or action language.
  *
  * This module is PURE (path + mint + types). The git layer lives behind the CLIs in

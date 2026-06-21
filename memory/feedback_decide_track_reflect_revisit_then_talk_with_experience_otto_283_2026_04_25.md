@@ -83,7 +83,7 @@ slug-date IDs? Aaron's call."*
 ✅ **Good:** *"Open question — Otto decided B-NNNN
 (reasoning: stable across renames, matches existing
 schema; revisit if filename grep-ability becomes a daily
-pain or if we hit B-9999 ceiling)."*
+pain or if we hit 081KED9T0X008QG0R003SZN0FB ceiling)."*
 
 Both versions surface the question. Only the second
 captures the decision, the why, and the falsification

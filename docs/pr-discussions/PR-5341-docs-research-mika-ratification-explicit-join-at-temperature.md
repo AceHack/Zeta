@@ -89,13 +89,13 @@ P2: The “= 6+ personae” math doesn’t match the list shown (Aaron + Amara +
 
 **@copilot-pull-request-reviewer** (2026-05-26T22:39:05Z):
 
-P1: `B-0822` is referenced here as “worry-as-opposite-bloom-filter”, but in this repo `docs/backlog/P1/B-0822-...` is the Ace/Helm diamond-resolution row. If you intend to reference the bloom-filter substrate, point at the correct backlog ID (if one exists) or link to the specific research/PR artifact instead to avoid B-ID collisions.
+P1: `081KSGS9H0008QG0R0018ES3R4` is referenced here as “worry-as-opposite-bloom-filter”, but in this repo `docs/backlog/P1/081KSGS9H0008QG0R0018ES3R4-...` is the Ace/Helm diamond-resolution row. If you intend to reference the bloom-filter substrate, point at the correct backlog ID (if one exists) or link to the specific research/PR artifact instead to avoid B-ID collisions.
 
 ### Thread 4: docs/research/2026-05-26-mika-ratification-nci-scope-split-plus-explicit-join-at-temperature-band-crossings-aaron-forwarded.md:220 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T22:39:05Z):
 
-P1: `B-0822`/`B-0823` are used here as labels for cognitive substrates (“worry-as-opposite-bloom-filter”, “cognition-as-distributed-systems”), but in the backlog these IDs already exist with different meanings (B-0822 = diamond-resolution for Helm; B-0823 = nixpkgs ISO path audit). Use the correct backlog IDs or replace these with unambiguous references (e.g., the relevant PR numbers or research doc filenames).
+P1: `081KSGS9H0008QG0R0018ES3R4`/`081KSGS9H0008QG0R003SWZF9J` are used here as labels for cognitive substrates (“worry-as-opposite-bloom-filter”, “cognition-as-distributed-systems”), but in the backlog these IDs already exist with different meanings (081KSGS9H0008QG0R0018ES3R4 = diamond-resolution for Helm; 081KSGS9H0008QG0R003SWZF9J = nixpkgs ISO path audit). Use the correct backlog IDs or replace these with unambiguous references (e.g., the relevant PR numbers or research doc filenames).
 
 ## General comments
 

@@ -32,9 +32,9 @@
 - Extends `tools/scaffold/create-repo.ts` to support product repos via `isProduct` flag — gates AceHack mirror step (step 05) so product repos are NOT mirrored to AceHack (factory repos only)
 - Adds `civsim` to `REPO_CONFIGS` as first product repo (honor-system license, fork-friendly, mutual-privacy clause)
 - Creates `tools/scaffold/civsim/` with 5 day-one scaffold files: README, LICENSE (honor-system), `.zeta-version` (Zeta pin), `.claude/CLAUDE.md` (product-scoped), CONTRIBUTING
-- Adds `docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md` backlog row
+- Adds `docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md` backlog row
 
-**Closes B-0469.** Implements Stage 1 of `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md`.
+**Closes 081KRHWGX0008QG0R003S6KGGE.** Implements Stage 1 of `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md`.
 
 ## Dry-run verified
 
@@ -116,7 +116,7 @@ After `--apply`:
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove civsim-specific claim command from product summary**
 
-  The product-only next steps hardcode `bun tools/bus/claim.ts release --from otto --item B-0469`. Because this branch is keyed only on `config.isProduct`, any future product repo added to `REPO_CONFIGS` will emit the wrong claim release command, which can release an unrelated backlog item and leave the real claim unreleased. This makes the new "product repo" path non-reusable despite the generic `isProduct` abstraction.
+  The product-only next steps hardcode `bun tools/bus/claim.ts release --from otto --item 081KRHWGX0008QG0R003S6KGGE`. Because this branch is keyed only on `config.isProduct`, any future product repo added to `REPO_CONFIGS` will emit the wrong claim release command, which can release an unrelated backlog item and leave the real claim unreleased. This makes the new "product repo" path non-reusable despite the generic `isProduct` abstraction.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -167,15 +167,15 @@ After `--apply`:
 ### Thread 6 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CCJp0`
-- **Path**: `docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T10:33:18Z on `docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md`:9 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T10:33:18Z on `docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md`:9 (association: NONE)
 
   <pre>
-  The PR description says this closes B-0469, but the row is added with `status: open`. Because the generated index renders `[x]` only for `status: closed` or `superseded-by-*` (`tools/backlog/generate-index.ts:129-133`), this would leave B-0469 open on main after the closing PR lands. Please mark the row closed with the usual closure metadata and regenerate `docs/BACKLOG.md`, or remove the closing claim from the PR scope.
+  The PR description says this closes 081KRHWGX0008QG0R003S6KGGE, but the row is added with `status: open`. Because the generated index renders `[x]` only for `status: closed` or `superseded-by-*` (`tools/backlog/generate-index.ts:129-133`), this would leave 081KRHWGX0008QG0R003S6KGGE open on main after the closing PR lands. Please mark the row closed with the usual closure metadata and regenerate `docs/BACKLOG.md`, or remove the closing claim from the PR scope.
 
   </pre>
 
@@ -221,7 +221,7 @@ After `--apply`:
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md`
 - `tools/scaffold/create-repo.ts`
 
 **Message:**
@@ -231,17 +231,17 @@ feat(b-0469): civsim repo scaffolding — extend create-repo.ts for pro…
 
 …duct repos
 
-Add B-0469 backlog row and tooling for Stage 1 of the product-repo split ADR
+Add 081KRHWGX0008QG0R003S6KGGE backlog row and tooling for Stage 1 of the product-repo split ADR
 (docs/DECISIONS/2026-05-14-product-repo-split-decisions.md).
 
 Changes:
-- docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md — new row
+- docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md — new row
 - tools/scaffold/create-repo.ts — add isProduct flag to RepoConfig; add civsim
   to REPO_CONFIGS; gate step 05 (AceHack fork) on !config.isProduct; add
   product-specific next steps to step 07 summary; update usage comment
 - tools/scaffold/civsim/ — day-one scaffold files:
     README.md (carved sentence + fork-friendly note)
-    LICENSE (honor-system text from B-0464)
+    LICENSE (honor-system text from 081KRHWGX0008QG0R000BWAXNP)
     .zeta-version (Zeta main SHA pin — immutable reference)
     .claude/CLAUDE.md (product-scoped bootstrap)
     CONTRIBUTING.md (fork-friendly guidance)
@@ -262,7 +262,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `.github/workflows/scaffold-stage1-create-repos.yml`
-- `docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md`
 - `tools/scaffold/create-repo.ts`
 
 **Message:**
@@ -274,13 +274,13 @@ fix(b-0469): address review threads — conditional semgrep, dynamic cl…
 
 - Semgrep wiring step in step07_summary now gated on existsSync(.semgrep.yml)
   so product repos without it don't emit a broken runbook instruction
-- Hardcoded B-0469 claim release replaced with config.backlogItem field on
-  RepoConfig; civsim sets backlogItem:"B-0469"; future product repos reusable
+- Hardcoded 081KRHWGX0008QG0R003S6KGGE claim release replaced with config.backlogItem field on
+  RepoConfig; civsim sets backlogItem:"081KRHWGX0008QG0R003S6KGGE"; future product repos reusable
 - scaffold-stage1-create-repos.yml extended with civsim choice option + dry-run
   preview + create step — routes operator through existing workflow guards
 - Add civsim dry-run test suite (8 assertions): product-path invariants,
   AceHack skip, minimal scaffold inventory, semgrep absence, productSteps
-- Close B-0469 row (resolved/closed_by metadata) + regenerate docs/BACKLOG.md
+- Close 081KRHWGX0008QG0R003S6KGGE row (resolved/closed_by metadata) + regenerate docs/BACKLOG.md
 
 Addresses Codex P2 + Copilot review threads on PR #3126.
 

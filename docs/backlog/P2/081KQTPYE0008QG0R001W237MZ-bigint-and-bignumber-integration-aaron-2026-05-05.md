@@ -1,6 +1,5 @@
 ---
-id: B-0196
-zetaid: 081KQTPYE0008QG0R001W237MZ
+id: 081KQTPYE0008QG0R001W237MZ
 priority: P2
 status: open
 title: BigInt + BigRational + BigDecimal + BigFloat integration -- substrate survey + per-class adoption recommendation (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [numerics, bigint, bigrational, bigdecimal, bigfloat, mpfr, dbsp, generic-
 type: friction-reducer
 ---
 
-# B-0196 -- BigInt and other big-number integration in Zeta
+# 081KQTPYE0008QG0R001W237MZ -- BigInt and other big-number integration in Zeta
 
 ## Source
 
@@ -79,7 +78,7 @@ Five concrete shapes the row covers:
    Bayesian normalization at high decimal precision).
    Currently `src/Bayesian/BayesianAggregate.fs` uses
    `double` throughout (`BetaBernoulli`, `NormalInverseGamma`,
-   `DirichletMultinomial`). Composes with B-0189 (Q#
+   `DirichletMultinomial`). Composes with 081KQR4HQ0008QG0R002933PRR (Q#
    Bayesian BP/EP runtime).
 
 3. **BigDecimal**. Arbitrary-precision decimal arithmetic
@@ -228,7 +227,7 @@ extends, or rejects)**:
    Zeta's Bayesian operating regime? Does
    normalization at high decimal precision matter?
    If yes, BigRational on the table. If no, double
-   is correct. Composes with B-0189 (Q# BP/EP
+   is correct. Composes with 081KQR4HQ0008QG0R002933PRR (Q# BP/EP
    runtime).
 
 5. **`TimeSeries.fs`** time-window arithmetic (lines
@@ -357,7 +356,7 @@ overflow. Not implemented; not specifically about
 UoM-on-BigInteger; adjacent in the broader
 "primitive-numeric-type-set is too narrow" direction.
 
-**Implication for B-0196 acceptance criterion (a)**:
+**Implication for 081KQTPYE0008QG0R001W237MZ acceptance criterion (a)**:
 the substrate-survey output should treat
 `BigInteger<weight>` as requiring either (1) a custom
 phantom-type wrapper struct (FSharp.UMX-style),
@@ -414,7 +413,7 @@ the call site; option (3) is uncertain timing.
   AND a financial-calculation site is named in
   (b) as remediation-needed.
 - **Q# / quantum-numerics** -- the Bayesian
-  numeric question composes with B-0189 (Q#
+  numeric question composes with 081KQR4HQ0008QG0R002933PRR (Q#
   BP/EP runtime) but the Q# scope is its own
   row.
 
@@ -431,25 +430,25 @@ the call site; option (3) is uncertain timing.
 
 ## Composes with
 
-- **B-0140** (TS+Bun standardization sister) --
+- **081KQGDBJ0008QG0R0022EW5ZE** (TS+Bun standardization sister) --
   parallel question on the TypeScript side: BigInt
   primitive (ES2020+) is native to TS; the
   Bun-runtime decision is whether and how to use
   it across `tools/`. Different language, same
   question shape.
-- **B-0156** (also TS+Bun standardization sister) --
+- **081KQGDBJ0008QG0R000A4EZS5** (also TS+Bun standardization sister) --
   same composition.
-- **B-0189** (Q# Bayesian BP/EP runtime research) --
+- **081KQR4HQ0008QG0R002933PRR** (Q# Bayesian BP/EP runtime research) --
   the Bayesian numeric-type decision (BigRational
   vs double) is shared substrate. Resolution of
-  B-0196 candidate (4) above informs B-0189's
+  081KQTPYE0008QG0R001W237MZ candidate (4) above informs 081KQR4HQ0008QG0R002933PRR's
   numeric foundation.
-- **B-0194** (incremental-auto dispatcher / bilinear
+- **081KQTPYE0008QG0R001W1PS86** (incremental-auto dispatcher / bilinear
   capability detection) -- the Z-set bilinear-
   product overflow risk in candidate (3) above is
-  in the same algebraic surface that B-0194's
-  dispatcher routes over. Resolution of B-0196
-  candidate (3) informs whether B-0194 needs to
+  in the same algebraic surface that 081KQTPYE0008QG0R001W1PS86's
+  dispatcher routes over. Resolution of 081KQTPYE0008QG0R001W237MZ
+  candidate (3) informs whether 081KQTPYE0008QG0R001W1PS86 needs to
   carry numeric-type discrimination.
 - **`src/Core/Units.fs`** -- the file that surfaced
   the original overflow case (PR #1590).

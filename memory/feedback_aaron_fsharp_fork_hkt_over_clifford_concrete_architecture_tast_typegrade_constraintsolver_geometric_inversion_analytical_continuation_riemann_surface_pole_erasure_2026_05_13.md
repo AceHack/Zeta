@@ -22,7 +22,7 @@ composition and continuous geometric product. Major technical
 substrate for PR #2928 F#-fork-for-AI-safety direction.
 
 **How to apply:** When designing the F# fork (per PR #2928
-deferred Path A for B-0428), use this concrete architecture
+deferred Path A for 081KRFA460008QG0R0018SN61J), use this concrete architecture
 as starting design. The Tast.fs + ConstraintSolver.fs
 modifications are the canonical entry points.
 
@@ -186,7 +186,7 @@ singularity actuator commands at compile time.
 
 ## Operational implications
 
-### For B-0428 Path A (deferred F# fork)
+### For 081KRFA460008QG0R0018SN61J Path A (deferred F# fork)
 
 Concrete starting point now exists:
 
@@ -284,10 +284,10 @@ Per Google Search AI's follow-up questions:
 - PR #2930 (distributed maintainer architecture)
 - PR #2933 (Zeta ships with skills — F# fork crystallized
   value)
-- B-0428 (DBpedia + F# fork — Path A architecture)
-- B-0429 (end-user persona mapping — F# fork serves
+- 081KRFA460008QG0R0018SN61J (DBpedia + F# fork — Path A architecture)
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping — F# fork serves
   formal-verification personas)
-- B-0043 (universal-business-templates)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`
 - `.claude/rules/methodology-hard-limits.md` (type-safety IS
   hard-limit enforcement)
@@ -319,7 +319,7 @@ When the F# fork work begins (post-current 2-person scale):
 
 This substrate is **research-grade**, NOT operational-grade
 yet. The F# fork is canonical future work; current operational
-substrate is direct dotNetRDF + F# CE (Path B per B-0428).
+substrate is direct dotNetRDF + F# CE (Path B per 081KRFA460008QG0R0018SN61J).
 
 Per `.claude/rules/wake-time-substrate.md`: research-grade
 substrate stays in memory file; operational-grade lands in

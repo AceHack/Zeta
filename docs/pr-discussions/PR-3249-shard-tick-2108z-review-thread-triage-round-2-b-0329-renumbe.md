@@ -1,6 +1,6 @@
 ---
 pr_number: 3249
-title: "shard(tick): 2108Z \u2014 review-thread triage round 2 (B-0329 renumber + gh api graphql fix)"
+title: "shard(tick): 2108Z \u2014 review-thread triage round 2 (081KR2E4K0008QG0R001F0YB5S renumber + gh api graphql fix)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T21:13:22Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-14T21:31:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3249: shard(tick): 2108Z — review-thread triage round 2 (B-0329 renumber + gh api graphql fix)
+# PR #3249: shard(tick): 2108Z — review-thread triage round 2 (081KR2E4K0008QG0R001F0YB5S renumber + gh api graphql fix)
 
 ## PR description
 
@@ -22,18 +22,18 @@ Tick 2026-05-14T21:08Z shard. Two more Copilot threads triaged — one substanti
 
 ## What landed
 
-- **Commit `4407e4a` on [#3247](https://github.com/Lucent-Financial-Group/Zeta/pull/3247)** — renumbers duplicate `B-0329` (new-surface-audit file) to **B-0520** + `renumbered_from` breadcrumb + regenerates index. Real ID-collision fix per Copilot's substantive catch. Thread resolved with reply.
+- **Commit `4407e4a` on [#3247](https://github.com/Lucent-Financial-Group/Zeta/pull/3247)** — renumbers duplicate `081KR2E4K0008QG0R001F0YB5S` (new-surface-audit file) to **081KRHWGX0008QG0R003N033PD** + `renumbered_from` breadcrumb + regenerates index. Real ID-collision fix per Copilot's substantive catch. Thread resolved with reply.
 - **Commit `a5b812b` on [#3246](https://github.com/Lucent-Financial-Group/Zeta/pull/3246)** — corrects 2059Z shard's `gh api graphql` usage description to show canonical `-f query='mutation { ... }'` pattern. Thread resolved.
 - This shard.
 
 ## #3247 catch was substantive
 
-Two on-disk files both claimed `id: B-0329`:
+Two on-disk files both claimed `id: 081KR2E4K0008QG0R001F0YB5S`:
 
-- `B-0329-claude-md-as-process-not-doctrine.md` (existing — kept)
-- `B-0329-new-surface-audit-alignment-check.md` (NEW — collided)
+- `081KR2E4K0008QG0R001F0YB5S-claude-md-as-process-not-doctrine.md` (existing — kept)
+- `081KR2E4K0008QG0R001F0YB5S-new-surface-audit-alignment-check.md` (NEW — collided)
 
-Per `tools/backlog/README.md:61`, backlog IDs MUST be factory-wide unique. The duplicate would have caused edge-reference ambiguity. Verifies clean post-fix: `grep -c "B-0329" docs/BACKLOG.md` returns 1.
+Per `tools/backlog/README.md:61`, backlog IDs MUST be factory-wide unique. The duplicate would have caused edge-reference ambiguity. Verifies clean post-fix: `grep -c "081KR2E4K0008QG0R001F0YB5S" docs/BACKLOG.md` returns 1.
 
 ## Patterns codified
 
@@ -43,8 +43,8 @@ Per `tools/backlog/README.md:61`, backlog IDs MUST be factory-wide unique. The d
 
 ## Test plan
 
-- [x] `grep -c "B-0329" docs/BACKLOG.md` returns 1 (verified clean)
-- [x] B-0520 appears in regenerated index
+- [x] `grep -c "081KR2E4K0008QG0R001F0YB5S" docs/BACKLOG.md` returns 1 (verified clean)
+- [x] 081KRHWGX0008QG0R003N033PD appears in regenerated index
 - [x] Both threads resolved via GraphQL (`isResolved=true`)
 - [x] Composite branch-guard + `gh pr create --head` used
 - [ ] CI clears
@@ -63,7 +63,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a 21:08Z hygiene-history tick shard documenting a review-thread triage round and the fixes pushed to related PR branches.
 
 **Changes:**
-- Records the duplicate backlog ID investigation and B-0329 → B-0520 renumber on #3247.
+- Records the duplicate backlog ID investigation and 081KR2E4K0008QG0R001F0YB5S → 081KRHWGX0008QG0R003N033PD renumber on #3247.
 - Records the `gh api graphql` usage correction on #3246.
 - Captures verification notes and follow-up audit-discipline ideas.
 
@@ -73,7 +73,7 @@ _(no body)_
 
 ### COMMENTED — @AceHack (2026-05-14T21:26:31Z)
 
-Lior (Maji): Antigravity check. This PR is a blob (mixes B-0329 renumber and gh api graphql fix). Initiating decomposition.
+Lior (Maji): Antigravity check. This PR is a blob (mixes 081KR2E4K0008QG0R001F0YB5S renumber and gh api graphql fix). Initiating decomposition.
 
 ## Review threads
 

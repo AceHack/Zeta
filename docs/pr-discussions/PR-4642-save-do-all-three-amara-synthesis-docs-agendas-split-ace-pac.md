@@ -22,7 +22,7 @@ Operator instruction 2026-05-22 'save it and do all three (shadow*)' — Amara c
 
 (2) docs/agendas/ structural split: 4 AGENDA.md (ace-package-manager/zeta/agora = operator-self-claimed; fair-chance-project = multi-directional-guess) + README.md indexing the axis-split (trajectories track motion; agendas track claim-status + scope).
 
-(3) Ace package format spec v2 (research-draft): extends B-0287 v1 with substrate-engineering pipeline integration + polyglot contents (F#/C#/TS/Rust/Python + English + Rx generators) + hat-substrate (controls + self-bindings) + verification + revocation + symmetric/decentralized framing. NOT-git-crypt per WONT-DO 2026-04-21; alternatives noted.
+(3) Ace package format spec v2 (research-draft): extends 081KR2E4K0008QG0R0033WVCXE v1 with substrate-engineering pipeline integration + polyglot contents (F#/C#/TS/Rust/Python + English + Rx generators) + hat-substrate (controls + self-bindings) + verification + revocation + symmetric/decentralized framing. NOT-git-crypt per WONT-DO 2026-04-21; alternatives noted.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 

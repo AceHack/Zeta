@@ -8,7 +8,7 @@ open Zeta.Core
 open Zeta.Core.Bonsai
 open Zeta.Core.Resume
 
-// Resume engine — the F# oracle (#2 of TS/F#/C#/Rust) for the B-0976 resume slice. The TS
+// Resume engine — the F# oracle (#2 of TS/F#/C#/Rust) for the 081KT07NV0008QG0R003BE6MJ2 resume slice. The TS
 // reference (src/Core.TypeScript/bonsai/resume.ts) authors the shared saga traces
 // (resume-golden.json); this proves the F# impl replays them: same ordered suspension
 // sequence + same final value (the cross-language behavioral lock), and restore-not-replay

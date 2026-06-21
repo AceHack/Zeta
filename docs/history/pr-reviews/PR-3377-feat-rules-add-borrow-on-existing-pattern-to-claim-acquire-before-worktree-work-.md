@@ -29,13 +29,13 @@
 
 ## Summary
 
-Adds a new section "Borrow-on-existing pattern — concurrent-Otto-CLI fallback" to [`.claude/rules/claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md) documenting the operational workaround for the worktree-prune-race identified in [B-0530](docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
+Adds a new section "Borrow-on-existing pattern — concurrent-Otto-CLI fallback" to [`.claude/rules/claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md) documenting the operational workaround for the worktree-prune-race identified in [081KRMEXM0008QG0R000X1PPGC](docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
 
-**Why it works**: `git switch` only updates HEAD + local index; it does NOT contend on `.git/objects/pack` the way `git worktree add`'s internal `git reset --hard` does. The B-0530 race is at shared-pack-dir scope, not branch-switch scope.
+**Why it works**: `git switch` only updates HEAD + local index; it does NOT contend on `.git/objects/pack` the way `git worktree add`'s internal `git reset --hard` does. The 081KRMEXM0008QG0R000X1PPGC race is at shared-pack-dir scope, not branch-switch scope.
 
 **Empirical validation**: 7+ successful borrows of `/private/tmp/zeta-otto-cli-0027z-sidetick` across ticks 0452Z–0710Z while peer-Otto landed 2 commits to the same worktree's original branch concurrently (`d147db0` + `cc1f430`). All work landed cleanly.
 
-Composes with [B-0530](docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — the borrow pattern is the operational workaround until the mutex mitigation in `tools/orchestrator-checks/cron-sentinel-mutex.ts` ships.
+Composes with [081KRMEXM0008QG0R000X1PPGC](docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — the borrow pattern is the operational workaround until the mutex mitigation in `tools/orchestrator-checks/cron-sentinel-mutex.ts` ships.
 
 ## Test plan
 

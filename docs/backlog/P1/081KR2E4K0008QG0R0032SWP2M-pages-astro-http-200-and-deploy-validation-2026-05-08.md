@@ -1,6 +1,5 @@
 ---
-id: B-0275
-zetaid: 081KR2E4K0008QG0R0032SWP2M
+id: 081KR2E4K0008QG0R0032SWP2M
 priority: P1
 status: open
 title: "Pages discoverability - Astro deploy validation and HTTP 200 check"
@@ -13,7 +12,7 @@ decomposition: atomic
 type: friction-reducer
 ---
 
-# B-0275 - Astro deploy validation
+# 081KR2E4K0008QG0R0032SWP2M - Astro deploy validation
 
 Validate the deployed Pages URL and codify first-live checks.
 

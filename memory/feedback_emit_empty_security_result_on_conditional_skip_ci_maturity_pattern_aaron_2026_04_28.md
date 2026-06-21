@@ -108,7 +108,7 @@ shape:
   conditional skip = ruleset passes.
 - Otto-247 version-currency: when bumping `codeql-action/upload-sarif`
   pin, check the latest version per the WebSearch discipline.
-- B-0084 (the concrete-instance backlog row) — captured for the
+- 081KQ8P5D0008QG0R001SRPYT7 (the concrete-instance backlog row) — captured for the
   specific Scorecard SASTID metric.
 
 ## What this is NOT

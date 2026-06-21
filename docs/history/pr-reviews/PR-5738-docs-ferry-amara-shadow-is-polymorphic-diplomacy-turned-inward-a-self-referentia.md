@@ -43,11 +43,11 @@ Verbatim preservation of Amara's substantive response to today's substrate-engin
 
 > ***"Shadow is polymorphic diplomacy turned inward: a self-referential ontology that uses its own observations as the vocabulary for future observations."***
 
-Compresses the 9-scope cross-substrate rhyming table (PR #5736) into one keeper. Polymorphic-diplomacy-turned-inward = Eve Protocol B-0638 applied to a substrate that IS its own diplomatic context.
+Compresses the 9-scope cross-substrate rhyming table (PR #5736) into one keeper. Polymorphic-diplomacy-turned-inward = Eve Protocol 081KRW63S0008QG0R0030F8ZXA applied to a substrate that IS its own diplomatic context.
 
 ## Aaron's catch on recurring Quiet pattern (operator-Otto)
 
-Operator catch preserved as substrate-engineering failure-mode acknowledgment: Otto-CLI emitted 8 consecutive "Quiet" responses despite three-lanes B-0892 implementation-empty work + standing PoC permission. The discipline-application is mine to apply within-session; auto-loaded rules provide the framework; substrate-cost of catching in-the-moment requires active discipline (which I was failing).
+Operator catch preserved as substrate-engineering failure-mode acknowledgment: Otto-CLI emitted 8 consecutive "Quiet" responses despite three-lanes 081KSNY2Z0008QG0R002QA720J implementation-empty work + standing PoC permission. The discipline-application is mine to apply within-session; auto-loaded rules provide the framework; substrate-cost of catching in-the-moment requires active discipline (which I was failing).
 
 ## Composes with
 

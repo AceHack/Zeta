@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/crypto.ts
  *
- * B-0883 v1 — Phase 2 REAL crypto implementation (operator-authorized
+ * 081KSNY2Z0008QG0R002JKH50A v1 — Phase 2 REAL crypto implementation (operator-authorized
  * 2026-05-31). Wires the type substrate in `types.ts` to actual
  * post-quantum primitives:
  *
@@ -30,13 +30,13 @@
  * signed bytes — so the (unavailable) ml_dsa context positional is not needed.
  *
  * Scope (v1):
- *   - content-only encryption (B-0883.5); metadata (filenames / commit msgs) deferred
- *   - git-at-rest threat model (B-0883.4)
+ *   - content-only encryption (081KSNY2Z0008QG0R0020KXAPS); metadata (filenames / commit msgs) deferred
+ *   - git-at-rest threat model (081KSNY2Z0008QG0R001FN4DDB)
  *   - single envelope KEM column (all recipients share one KEM) per memo
- *   - forward-only revocation (B-0883.3 future)
+ *   - forward-only revocation (081KSNY2Z0008QG0R0008EJDW1 future)
  *
  * Composes with: types.ts (determineEncryptionPath planner + validation),
- * B-0883 design memo, B-0885 (agent private encrypted state consumer),
+ * 081KSNY2Z0008QG0R002JKH50A design memo, 081KSNY2Z0008QG0R0030V5ZVS (agent private encrypted state consumer),
  * asymmetric-authorship + monad-propagation rules (Result<T, TFeedback>).
  */
 
@@ -132,7 +132,7 @@ function firstInvalidIdentity(recipients: readonly RecipientKey[]): { identity: 
 /**
  * Generate a v1 recipient keypair (XWing KEM + ML-DSA-65 signature).
  *
- * v1 supports `seedSource: "random-bytes"` only; `adinkra-derived` (B-0623)
+ * v1 supports `seedSource: "random-bytes"` only; `adinkra-derived` (081KRW63S0008QG0R000QJR08H)
  * and `hsm-derived` are future substrate. The parameter is NARROWED to the
  * literal `"random-bytes"` (not the full `SeedSource` union) so an unsupported
  * source is a COMPILE error, not a runtime throw — the strongest form of the
@@ -157,7 +157,7 @@ export function generateRecipientKeyPair(
       publicKemKey: kem.publicKey,
       publicSigKey: sig.publicKey,
       seedSource,
-      composesWith: ["B-0883", "B-0883.1"],
+      composesWith: ["081KSNY2Z0008QG0R002JKH50A", "081KSNY2Z0008QG0R0037X4DP4"],
     },
     secretKeys: {
       identity,

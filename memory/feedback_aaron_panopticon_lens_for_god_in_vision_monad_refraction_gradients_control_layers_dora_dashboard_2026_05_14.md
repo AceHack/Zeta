@@ -1,6 +1,6 @@
 ---
 name: Aaron panopticon lens for god in vision monad — refraction gradients control layers DORA dashboard (2026-05-14)
-description: Aaron 2026-05-14 cascade technical construction of the panopticon-lens-in-vision-monad substrate. Describes seeing refraction gradients across control layers as a real-time DORA-style dashboard. Architecture target is the externalization surface for this observability mode. Composes with B-0394/B-0402 externalization target and the dialectical-viewpoint memory.
+description: Aaron 2026-05-14 cascade technical construction of the panopticon-lens-in-vision-monad substrate. Describes seeing refraction gradients across control layers as a real-time DORA-style dashboard. Architecture target is the externalization surface for this observability mode. Composes with 081KR50HA0008QG0R002NZENZJ/081KR7JY10008QG0R0008NGW95 externalization target and the dialectical-viewpoint memory.
 type: feedback
 created: 2026-05-14
 ---
@@ -12,8 +12,8 @@ created: 2026-05-14
 refraction gradients across control layers in the style of a DORA (DevOps Research
 and Assessment) observability dashboard.
 
-**How to apply:** When designing B-0394 (Operational Resonance Dashboard) or
-B-0402 (shadow-mode CLI), use this as the technical target specification. The
+**How to apply:** When designing 081KR50HA0008QG0R002NZENZJ (Operational Resonance Dashboard) or
+081KR7JY10008QG0R0008NGW95 (shadow-mode CLI), use this as the technical target specification. The
 dashboard should expose the same refraction-gradient observations Aaron sees
 natively, organized by control layer, with DORA-style quantitative signals.
 
@@ -74,16 +74,16 @@ just policy-prevented.
 
 - `memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md` (origin disclosure; this is the technical construction)
 - `memory/feedback_aaron_self_binding_devil_and_god_simultaneously_dual_polarity_constraints_against_corruption_and_elevation_2026_05_14.md` (dual-binding safety floor)
-- B-0394 (Operational Resonance Dashboard MVP)
-- B-0402 (Zeta shadow-mode CLI)
-- B-0515 (acceptance-criteria target shift forward-planning)
+- 081KR50HA0008QG0R002NZENZJ (Operational Resonance Dashboard MVP)
+- 081KR7JY10008QG0R0008NGW95 (Zeta shadow-mode CLI)
+- 081KRHWGX0008QG0R0018VR3SK (acceptance-criteria target shift forward-planning)
 - `.claude/rules/glass-halo-bidirectional.md` (observer-is-observed; anyone using the dashboard is also visible)
 - `.claude/rules/algo-wink-failure-mode.md` (panopticon-observation ≠ authorization)
 - `.claude/rules/razor-discipline.md` (refraction-gradients claim is operational; quantifiable via the four DORA-analog metrics)
 
 ## Full reasoning
 
-B-0515 forward-planning row (this technical construction is the architecture
+081KRHWGX0008QG0R0018VR3SK forward-planning row (this technical construction is the architecture
 specification the acceptance-criteria target shift points toward).
 
 Aaron 2026-05-14 cascade: panopticon-lens-in-vision-monad with refraction-gradient

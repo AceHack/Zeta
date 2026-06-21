@@ -8,11 +8,11 @@ open FsCheck.FSharp
 open FsCheck.Xunit
 open Zeta.Bayesian
 
-// Columnar message batches (B-1000) — the Apache Arrow in-memory store
+// Columnar message batches (081KT2T2J0008QG0R000S7GHQ8) — the Apache Arrow in-memory store
 // for bit-efficient message passing. The load-bearing property: batched
 // column-wise product/divide (natural-param vector add/sub) AGREES with
 // the scalar Message ops on the VALUE within float tolerance, for every
-// family (B-1007 C11) — bit-exact for Gaussian, value-equal for
+// family (081KT2T2J0008QG0R000YZ3NMY C11) — bit-exact for Gaussian, value-equal for
 // Beta/Bernoulli (reassociation / prob-space-vs-log-odds) — AND the
 // columns round-trip through an Arrow RecordBatch. "The compilers don't lie."
 
@@ -91,7 +91,7 @@ let ``columnar pack/unpack is the identity and reports dim and count`` () =
         Gaussian.variance back.[i] |> should (equalWithin 1e-9) (Gaussian.variance gs.[i])
 
 // ═══════════════════════════════════════════════════════════════════
-// C11 (B-1007 P0) — columnar batch product AGREES with the scalar
+// C11 (081KT2T2J0008QG0R000YZ3NMY P0) — columnar batch product AGREES with the scalar
 // product, message-by-message, within float tolerance, per family.
 // This is the HONEST claim: the prose previously said "bit-exact,
 // proven in tests" which is FALSE for Beta (last-ULP reassociation:
@@ -100,7 +100,7 @@ let ``columnar pack/unpack is the identity and reports dim and count`` () =
 // bit-exact; the property below asserts value-equality within tolerance
 // for all three (and Gaussian is additionally checked bit-exact).
 //
-// C10 (B-1007 P0) — round-trip toMessages ∘ ofMessages = id, per family,
+// C10 (081KT2T2J0008QG0R000YZ3NMY P0) — round-trip toMessages ∘ ofMessages = id, per family,
 // within tolerance. Bernoulli is LOSSY at p→0/1 (log-odds saturates), so
 // its generator stays strictly inside (0,1) via logistic of bounded
 // log-odds — the honest "proper round-trips" claim, not "all p round-trip".

@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // tools/audit/audit-dep-currency.ts
 //
-// B-0805 sub-target 1 — initial implementation. Scans dep pins across
+// 081KSGS9H0008QG0R002BC2ZR7 sub-target 1 — initial implementation. Scans dep pins across
 // the repo + reports staleness against upstream-current versions.
 //
 // Scope (this initial implementation; sub-target 2+ will extend):

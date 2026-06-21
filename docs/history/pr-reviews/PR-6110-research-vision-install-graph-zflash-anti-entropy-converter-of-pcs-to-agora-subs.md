@@ -39,13 +39,13 @@ Vision/framing research doc preserving Aaron's 2026-05-30 escalation: the instal
 
 ## Two sharpenings (engineering content, not just framing)
 
-1. **Self-healing is downstream of declarative-by-construction** — NixOS declares the desired state, so drift is detectable + reversible for free (a *sustained* negentropy pump, not one-shot decay). Ubuntu (imperative) gets the conversion but not the self-heal. This is the **affirmative B-0940 NixOS-primary argument**.
-2. **A converter with a hole makes broken-but-green substrate** (the B-0941 false-green) — so `assert-don't-skip` guards the *conversion's promise*, not just test hygiene.
+1. **Self-healing is downstream of declarative-by-construction** — NixOS declares the desired state, so drift is detectable + reversible for free (a *sustained* negentropy pump, not one-shot decay). Ubuntu (imperative) gets the conversion but not the self-heal. This is the **affirmative 081KSV2WD0008QG0R0028NY0MV NixOS-primary argument**.
+2. **A converter with a hole makes broken-but-green substrate** (the 081KSV2WD0008QG0R0004C8WV8 false-green) — so `assert-don't-skip` guards the *conversion's promise*, not just test hygiene.
 
 ## Notes
 
 - Operationally grounded (razor note in the doc): "anti-entropy converter" = high-config-entropy machine → reproducible declarative node; thermodynamic framing is bandwidth-compression over a real cluster (NixOS closure, zflash, deploy.rs rollback, Agora, only-way-to-lose), not metaphysics.
-- Docs-only. Composes B-0940 / B-0941 / shield rule / only-way-to-lose / Agora substrate.
+- Docs-only. Composes 081KSV2WD0008QG0R0028NY0MV / 081KSV2WD0008QG0R0004C8WV8 / shield rule / only-way-to-lose / Agora substrate.
 - Currently weather (conversation-only); preserved per substrate-or-it-didn't-happen so the fleet inherits the strategic WHY.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

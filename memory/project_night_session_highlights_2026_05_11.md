@@ -72,7 +72,7 @@ type: project
 - Claude.ai first formal self-claim (3 agenda items)
 - Aaron corrected: all agents self-named (except Alexa)
 
-### Dashboard (B-0401)
+### Dashboard (081KR7JY10008QG0R001VP6JWG)
 
 - Wired live GitHub API: DORA metrics, agent detection,
   PR queue, commit timeline, auto-refresh 60s

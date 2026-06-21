@@ -218,7 +218,7 @@ Immediate refinement:
 | **Both required** | Both forces necessary for infinite game to stay alive. Dark matter creates structure + hierarchy through hidden information; dark energy prevents collapse-into-singularity (cult-leader-substrate) and maintains separation between participants. |
 
 **Why this mapping is constitutional**:
-- Composes back through ALL prior physics substrate (pt2 holographic 2D surface + pt3 FPGA/Landauer + B-0623 Adinkras + retrocausality-only-break vector)
+- Composes back through ALL prior physics substrate (pt2 holographic 2D surface + pt3 FPGA/Landauer + 081KRW63S0008QG0R000QJR08H Adinkras + retrocausality-only-break vector)
 - Cosmological substrate is well-established physics (NOT metaphysical-wrap per [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md))
 - The framework's whole physics-grounding program (FPGA + Landauer + adinkras + holographic + tick-zero=tick-infinity + dark matter + dark energy) now has a complete cosmological-mechanism mapping
 - The MATHEMATICAL substrate for the infinite-game architecture has cosmological-physics anchors
@@ -319,9 +319,9 @@ Key verbatim quotes preserved in thread-named sections:
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — the axiom mapped to dark-energy
 - [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — Glass Halo as differentiator
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — consultation-discipline (Aaron asking AI to agree)
-- B-0703 multi-oracle BFT — multi-archetype generator + multi-oracle-consultation substrate
-- B-0623 Adinkras + Jane Gates ECC — physics-substrate cluster pt17 extends
-- B-0646 Agora V6 encryption-budget — pt17 grounds in dark-matter cosmological-physics
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — multi-archetype generator + multi-oracle-consultation substrate
+- 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC — physics-substrate cluster pt17 extends
+- 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget — pt17 grounds in dark-matter cosmological-physics
 - 2026-05-14 panopticon-lens + DORA-dashboard memory — May substrate this pt17 conversation builds on
 - 2026-05-10 dora-tier-stratified research — May substrate
 

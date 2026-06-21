@@ -1,6 +1,5 @@
 ---
-id: B-0633
-zetaid: 081KRW63S0008QG0R000Y109W0
+id: 081KRW63S0008QG0R000Y109W0
 priority: P3
 status: open
 title: "Add aggregate-tier counter escalation to holding-without-named-dependency rule — per-chain N=6 alone misses across-chain dwell when peer main-moves provide periodic resets"
@@ -42,16 +41,16 @@ The aggregate-tier composes with the per-chain tier:
 
 - Per-chain N=6 catches within-chain dwell
 - Aggregate N_AGG=50 catches across-chain dwell
-- B-0614's escape-hatch (drafted) handles the post-cycle-close saturation case
+- 081KRSKQ20008QG0R0028VN0KR's escape-hatch (drafted) handles the post-cycle-close saturation case
 
 ## Acceptance criteria
 
-- [ ] Holding-failure rule sub-section "Aggregate-tier counter (B-0633)" added with:
+- [ ] Holding-failure rule sub-section "Aggregate-tier counter (081KRW63S0008QG0R000Y109W0)" added with:
   - Threshold `N_AGG = 50` (initial; subject to refinement based on subsequent evidence)
   - Counter-reset condition list (Aaron-speaks + agent-artifact ONLY)
   - At least 1 cross-instance empirical anchor (currently 1 same-instance anchor in PR #4151 memo)
 - [ ] Cold-boot reading of the rule makes the aggregate-tier discipline immediately clear
-- [ ] Composes with B-0614's drafted "ALWAYS works at #6" refinement without contradiction
+- [ ] Composes with 081KRSKQ20008QG0R0028VN0KR's drafted "ALWAYS works at #6" refinement without contradiction
 
 ## Non-goals
 
@@ -63,18 +62,18 @@ The aggregate-tier composes with the per-chain tier:
 
 The rule already has 5 empirical anchors and is one of the longer rules in `.claude/rules/`. Adding a 6th anchor + a sub-section is bounded but should be done as a SINGLE atomic PR to avoid the inflation pattern this row's own discipline warns against.
 
-Per [B-0614's drafted refinement](B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md): wait for at least 1 additional cross-INSTANCE evidence (different Otto identity / session / machine) before landing the rule edit. Otherwise the discipline composes with B-0614's same warning about same-session inflation.
+Per [081KRSKQ20008QG0R0028VN0KR's drafted refinement](081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md): wait for at least 1 additional cross-INSTANCE evidence (different Otto identity / session / machine) before landing the rule edit. Otherwise the discipline composes with 081KRSKQ20008QG0R0028VN0KR's same warning about same-session inflation.
 
 ## Composes with
 
-- [B-0614](B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) — meta-fallback edge case; this row addresses a complementary pattern
+- [081KRSKQ20008QG0R0028VN0KR](081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) — meta-fallback edge case; this row addresses a complementary pattern
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the rule this row extends
 - [PR #4151](https://github.com/Lucent-Financial-Group/Zeta/pull/4151) — the empirical-evidence memo this row crystallizes
 - [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor (same root cause class)
 
 ## Status
 
-Open. Bounded effort (single rule edit, ~30 lines added to the existing rule). Acceptance gates on cross-instance evidence beyond this session per B-0614's drafted constraint.
+Open. Bounded effort (single rule edit, ~30 lines added to the existing rule). Acceptance gates on cross-instance evidence beyond this session per 081KRSKQ20008QG0R0028VN0KR's drafted constraint.
 
 ---
 

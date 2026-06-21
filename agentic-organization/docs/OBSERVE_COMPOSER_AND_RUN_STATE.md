@@ -143,8 +143,8 @@ class of decisions that set **constitutions** (the deterministic rule sets and
 scope policies that `observe` itself applies), the gate is a **multi-oracle
 ratification gate**: at least **3 independent agents** must agree before the
 constitution set is adopted. This composes with the existing `governance`
-package and the repo's multi-oracle / three-faction BFT substrate (B-0703,
-B-0652) rather than inventing a new voting path.
+package and the repo's multi-oracle / three-faction BFT substrate (081KS3X9Y0008QG0R00218150M,
+081KRW63S0008QG0R002GRX85J) rather than inventing a new voting path.
 
 Explicit gate DU, implemented in `packages/governance/src/constitution-gate.ts`:
 

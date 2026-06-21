@@ -5,7 +5,7 @@
  *
  * Operator 2026-05-31 chose Option A ("collapse free modes under slot 14
  * sub-menu"); the alternative (dedicated top-level slots for the free modes) is
- * B-0867.30, to be A/B-tested against this once A/B-testing infra (B-0393) exists.
+ * 081KSXN940008QG0R000TQ04Y0, to be A/B-tested against this once A/B-testing infra (081KR50HA0008QG0R001DX165X) exists.
  * The 16 top-level directions stay FIXED (muscle-memory); only slot 14 carries the
  * free-mode sub-menu.
  *
@@ -29,7 +29,7 @@ import { T, F, N, type Tri } from "../tri-boolean/index";
 /** A rendered slot that may open a sub-menu (Option A: slot 14 -> the free modes). */
 export interface RenderedMenuSlot extends RenderedSlot {
   readonly subMenu?: readonly NextAction[];
-  /** B-0891 slice 4: first-session adventure overlay on slot 4 when nodeSession pending. */
+  /** 081KSNY2Z0008QG0R0008PN7RQ slice 4: first-session adventure overlay on slot 4 when nodeSession pending. */
   readonly firstSessionSubMenu?: readonly import("./first-session").FirstSessionAction[];
 }
 

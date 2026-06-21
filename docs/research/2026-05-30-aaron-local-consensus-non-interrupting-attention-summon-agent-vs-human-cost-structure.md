@@ -43,7 +43,7 @@ because it doesn't, it is cheap enough to be the default.
 ### It changes the *topology* of consensus, not just the cost
 
 Multi-oracle / BFT consensus is usually pictured as distributed long-lived agents
-voting over a bus (B-0703, m-acc — the **standing-governance** form). The keystone
+voting over a bus (081KS3X9Y0008QG0R00218150M, m-acc — the **standing-governance** form). The keystone
 adds the **local-transient** form: a single agent convenes a quorum *in its own
 decision context*, on demand, then dissolves it. Both are valid:
 
@@ -66,7 +66,7 @@ convenes multiple independent oracle-perspectives — the summoned LLMs) but it 
 **NOT BFT**: the summoning agent can **lie** (fabricate the quorum / misreport the
 verdicts) or **skip the summon entirely**, so it **relies on a good actor**.
 
-| Property | Local-transient (this form) | Distributed-standing BFT (B-0703) |
+| Property | Local-transient (this form) | Distributed-standing BFT (081KS3X9Y0008QG0R00218150M) |
 |---|---|---|
 | Multi-oracle (multiple perspectives) | ✓ | ✓ |
 | Byzantine-fault-tolerant (survives lying actors) | ✗ — good-actor-dependent | ✓ — no single actor controls the quorum |
@@ -81,7 +81,7 @@ fabricated quorum). **Replayable ≠ unfakeable.**
 "For now": the path to a local form WITH BFT-grade trust is making the summon
 **un-fakeable and un-skippable** — distributed independent summons + cryptographic
 attestation of the quorum + can't-skip enforcement (converging the local-transient
-form toward B-0703's distributed-standing properties). Until then, **local-summon
+form toward 081KS3X9Y0008QG0R00218150M's distributed-standing properties). Until then, **local-summon
 is a good-actor-dependent multi-oracle convenience, not a trust-minimized
 protocol** — use it as a cheap routine quorum/2nd-opinion where the convener is
 trusted (e.g. a single agent checking its own decisions), not as a consensus over
@@ -91,7 +91,7 @@ This sharpens the dual-consensus framing: **CRDT state-convergence is
 trust-minimized** (math — semilattice/DBSP group laws converge regardless of who
 pushed), but **local-summon decision-consensus is good-actor-dependent** (the
 convener can fake/skip). Different layers, different trust properties; only the
-distributed-standing form (B-0703) is BFT. Composes with `razor-discipline.md`
+distributed-standing form (081KS3X9Y0008QG0R00218150M) is BFT. Composes with `razor-discipline.md`
 (the precise claim: multi-oracle ✓, BFT ✗) + `mechanical-authorization-check.md`
 (good-actor-dependence is the gap).
 
@@ -148,7 +148,7 @@ one decision flow. The human-vs-agent contrast is the load-bearing claim.
   wrappers; the `Agent` tool is the native-subagent summon.
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle
   by design (the standing-governance form; this is the local-transient form).
-- B-0703 (multi-oracle BFT) — distributed/standing consensus; complemented by the
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) — distributed/standing consensus; complemented by the
   local/transient form here.
 - `docs/research/2026-05-30-aaron-install-graph-zflash-anti-entropy-converter-...md`
   — the reconciler/anti-entropy framing local-consensus-before-acting extends to

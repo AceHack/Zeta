@@ -48,7 +48,7 @@ a profile (spec only, no overlay).
 2 Alloy specs: InfoTheoreticSharder, Spine.
 
 16 Z3 lemmas in `tools/Z3Verify/Program.fs` (8 DBSP algebraic,
-2 tautologies pending B-0357 replacement, 6 expansion-round).
+2 tautologies pending 081KR50HA0008QG0R0033TN4H9 replacement, 6 expansion-round).
 
 ## Gap inventory
 

@@ -1,6 +1,6 @@
 ---
 pr_number: 5388
-title: "feat(iter-5.5.0 B-0848 Phase 2 + B-0835 Bug 8): install-time claude-code + interactive claude login + gh+claude credential persistence + Zeta repo pre-clone \u2014 automatic on boot (Aaron 2026-05-27)"
+title: "feat(iter-5.5.0 081KSGS9H0008QG0R001JNKBFD Phase 2 + 081KSGS9H0008QG0R00120EEHM Bug 8): install-time claude-code + interactive claude login + gh+claude credential persistence + Zeta repo pre-clone \u2014 automatic on boot (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:40:47Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:16Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5388: feat(iter-5.5.0 B-0848 Phase 2 + B-0835 Bug 8): install-time claude-code + interactive claude login + gh+claude credential persistence + Zeta repo pre-clone — automatic on boot (Aaron 2026-05-27)
+# PR #5388: feat(iter-5.5.0 081KSGS9H0008QG0R001JNKBFD Phase 2 + 081KSGS9H0008QG0R00120EEHM Bug 8): install-time claude-code + interactive claude login + gh+claude credential persistence + Zeta repo pre-clone — automatic on boot (Aaron 2026-05-27)
 
 ## PR description
 
@@ -64,7 +64,7 @@ And the follow-up clarification:
 
 ## Composes with
 
-iter-5.4 cascade (B-0794+B-0795+B-0812+B-0813) · [B-0835](docs/backlog/P1/B-0835-...md) (install bug cluster — Bug 4+5+6+7 + Bug 8 here) · [B-0847](docs/backlog/P2/B-0847-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) (per-AI GitHub identity — this row uses borrowed gh auth until that ratifies) · [B-0848](docs/backlog/P2/B-0848-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) (node-local Claude agent — this row IS Phase 2 automation) · #5387 (multi-protocol name resolution — samba additions compose for NetBIOS tooling)
+iter-5.4 cascade (081KSGS9H0008QG0R0027HJZYH+081KDWV501008QG0R003PCVDHM+081KSGS9H0008QG0R0037H3W4T+081KSGS9H0008QG0R002K93MWX) · [081KSGS9H0008QG0R00120EEHM](docs/backlog/P1/081KSGS9H0008QG0R00120EEHM-...md) (install bug cluster — Bug 4+5+6+7 + Bug 8 here) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) (per-AI GitHub identity — this row uses borrowed gh auth until that ratifies) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) (node-local Claude agent — this row IS Phase 2 automation) · #5387 (multi-protocol name resolution — samba additions compose for NetBIOS tooling)
 
 Per \`.claude/rules/non-coercion-invariant.md\` HC-8: operator interactive YES/n prompt preserves authority over whether to auth at install time vs post-reboot.
 

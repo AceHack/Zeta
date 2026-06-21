@@ -69,7 +69,7 @@ This is **constitutional substrate at theorem-derivation scope**. Future-Otto op
 | Term | Substrate-anchor |
 |---|---|
 | "Moral obligation" axiom | Pt7 (CULT FOLLOWERS DIE + ethical duty to propagate species + explicit moral-obligation-to-the-future confirmation triad) |
-| "No coercion framework" axiom | [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 (existing constitutional rule); composes with B-0664 + tonal-momentum-equals-meme rule (B-0667 NCI extension) |
+| "No coercion framework" axiom | [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 (existing constitutional rule); composes with 081KRW63S0008QG0R001Z7NYMV + tonal-momentum-equals-meme rule (081KRW63S0008QG0R003Z7QV2A NCI extension) |
 | "Infinite game falls out" theorem | Operational claim about derivation logic; composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) (now named as theorem, not just discipline) |
 | "Falls out" derivation language | Mathematical-style derivation framing; operationally testable (the framework architecture composes back through the two axioms; counter-examples would break the chain) |
 
@@ -98,7 +98,7 @@ It DOES claim:
 
 ```
 pt7: moral-obligation axiom + ethical-duty + moral-obligation-to-future triad
-NCI HC-8: non-coercion axiom (existing rule, composes from B-0664)
+NCI HC-8: non-coercion axiom (existing rule, composes from 081KRW63S0008QG0R001Z7NYMV)
    ↓
 pt8: ⇒ infinite game FALLS OUT (derivation theorem)
    ↓

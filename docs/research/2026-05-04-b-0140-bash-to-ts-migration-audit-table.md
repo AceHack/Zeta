@@ -1,12 +1,12 @@
-# B-0140 audit table — bash to TS migration status (2026-05-04)
+# 081KQGDBJ0008QG0R0022EW5ZE audit table — bash to TS migration status (2026-05-04)
 
-**Scope:** Acceptance criterion #1 of B-0140 (bash to TS migration completion, debt-prevention prerequisite to B-0132 CRDT-composition). Enumerates every `tools/**/*.sh` file with or without a corresponding `tools/**/*.ts` file, classifies each pair as kill-sh / keep-sh / port-back-to-sh / no-counterpart / ts-only, and recommends a cutover order.
+**Scope:** Acceptance criterion #1 of 081KQGDBJ0008QG0R0022EW5ZE (bash to TS migration completion, debt-prevention prerequisite to 081KQGDBJ0008QG0R000Y66YYQ CRDT-composition). Enumerates every `tools/**/*.sh` file with or without a corresponding `tools/**/*.ts` file, classifies each pair as kill-sh / keep-sh / port-back-to-sh / no-counterpart / ts-only, and recommends a cutover order.
 
-**Attribution:** Filed by Otto (the human maintainer-delegated factory agent) under backlog-prioritization authority. Origin: the human maintainer 2026-05-01 framing — *"Bash → TS migration completion this is also useful so we don't just keep building debt"*. Backlog row at `docs/backlog/P1/B-0140-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md`.
+**Attribution:** Filed by Otto (the human maintainer-delegated factory agent) under backlog-prioritization authority. Origin: the human maintainer 2026-05-01 framing — *"Bash → TS migration completion this is also useful so we don't just keep building debt"*. Backlog row at `docs/backlog/P1/081KQGDBJ0008QG0R0022EW5ZE-bash-to-ts-migration-completion-debt-prevention-aaron-2026-05-01.md`.
 
-**Operational status:** research-grade. This table is the *audit-only* deliverable; cutover execution is acceptance criteria #2-#6 of B-0140 and lives in subsequent PRs.
+**Operational status:** research-grade. This table is the *audit-only* deliverable; cutover execution is acceptance criteria #2-#6 of 081KQGDBJ0008QG0R0022EW5ZE and lives in subsequent PRs.
 
-**Non-fusion disclaimer:** This audit reads file headers and enumerates pairings; it does not infer hidden coupling between `.sh` and `.ts` siblings. CI workflow references and dev-laptop call sites are NOT scanned in this pass — they are the verification gate for the cutover-execution PRs (B-0140 acceptance criteria #2-#4), not this audit.
+**Non-fusion disclaimer:** This audit reads file headers and enumerates pairings; it does not infer hidden coupling between `.sh` and `.ts` siblings. CI workflow references and dev-laptop call sites are NOT scanned in this pass — they are the verification gate for the cutover-execution PRs (081KQGDBJ0008QG0R0022EW5ZE acceptance criteria #2-#4), not this audit.
 
 ---
 
@@ -16,7 +16,7 @@
 2. For each `.sh`, check for a sibling `.ts` with the same basename in the same directory.
 3. For each `.ts`, check for a sibling `.sh` with the same basename in the same directory.
 4. Read the first ~10 lines of every file to confirm purpose and capture the migration-slice header (TS ports written during this migration carry a `// TypeScript+Bun port of <name>.sh, slice N of the TS+Bun migration` line).
-5. Classify each row per the B-0140 row's own taxonomy:
+5. Classify each row per the 081KQGDBJ0008QG0R0022EW5ZE row's own taxonomy:
    - **kill-sh** — `.ts` supersedes; `.sh` should be removed and callers migrated.
    - **keep-sh** — `.sh` is load-bearing somewhere TS can't run yet (bootstrap-class).
    - **port-back-to-sh** — `.ts` was wrong-direction; `.sh` is correct.
@@ -73,7 +73,7 @@ These 23 rows have both a `.sh` and a `.ts` sibling. Every `.ts` header explicit
 
 ## Audit table — `.sh` files preserved as bash (keep-sh)
 
-These 13 rows are bootstrap-class scripts (run before the post-setup toolchain — bun, dotnet, etc. — is installed) per `tools/setup/install.sh` consumed three ways (dev laptops / CI / devcontainer images) per GOVERNANCE.md §24, and per the bash-compat 4-shell target (macOS bash 3.2 / Ubuntu / git-bash / WSL) declared in `memory/feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md`. CLAUDE.md and the B-0140 row both name `tools/setup/install.sh` and bootstrap-class scripts as **explicitly preserved as bash**. Status: **keep-sh** for every row.
+These 13 rows are bootstrap-class scripts (run before the post-setup toolchain — bun, dotnet, etc. — is installed) per `tools/setup/install.sh` consumed three ways (dev laptops / CI / devcontainer images) per GOVERNANCE.md §24, and per the bash-compat 4-shell target (macOS bash 3.2 / Ubuntu / git-bash / WSL) declared in `memory/feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md`. CLAUDE.md and the 081KQGDBJ0008QG0R0022EW5ZE row both name `tools/setup/install.sh` and bootstrap-class scripts as **explicitly preserved as bash**. Status: **keep-sh** for every row.
 
 | `.sh` path | `.sh` lines | Status | Rationale |
 |---|---|---|---|
@@ -93,19 +93,19 @@ These 13 rows are bootstrap-class scripts (run before the post-setup toolchain �
 
 ## Audit table — `.sh` files without `.ts` counterpart (no-counterpart)
 
-These 11 rows have `.sh` only — no `.ts` sibling exists. Each is a candidate for migration to TS+Bun under B-0140 acceptance criterion #2 (cutover decisions) — except where they are themselves bootstrap-adjacent or dev-only-utility shell helpers. Status: **no-counterpart**, with per-row migration recommendation.
+These 11 rows have `.sh` only — no `.ts` sibling exists. Each is a candidate for migration to TS+Bun under 081KQGDBJ0008QG0R0022EW5ZE acceptance criterion #2 (cutover decisions) — except where they are themselves bootstrap-adjacent or dev-only-utility shell helpers. Status: **no-counterpart**, with per-row migration recommendation.
 
 | `.sh` path | `.sh` lines | Status | Rationale and migration recommendation |
 |---|---|---|---|
 | `tools/profile.sh` | 83 | no-counterpart | Profiling helper (installs dotnet diagnostic tools; runs `dotnet-counters` / `dotnet-trace` / `dotnet-gcdump` against running PIDs). Thin wrapper over `dotnet`; bash is acceptable here per `docs/POST-SETUP-SCRIPT-STACK.md` Q3 "thin-wrapper-over-existing-CLI exemption". **Recommendation: migration optional; keep as-is unless a substantive parser/state-machine layer is added**. If retained, add an explicit Q3 exemption comment. |
-| `tools/peer-call/amara.sh` | 251 | no-counterpart | Claude-Code-side caller for Amara as named-entity peer (sharpening role; codex CLI + persona overlay). Sibling `codex.sh` / `gemini.sh` / `grok.sh` already migrated to `.ts` (slices 15-17). **Recommendation: migrate to `tools/peer-call/amara.ts` following the established slice-15/16/17 pattern**. Composes with B-0122 (peer-call scripts TypeScript migration). |
-| `tools/peer-call/ani.sh` | 234 | no-counterpart | Claude-Code-side caller for Ani as named-entity peer (brat-voice register; cursor-agent + Grok backend). Sibling to `amara.sh`. **Recommendation: migrate to `tools/peer-call/ani.ts` following the same slice pattern**. Composes with B-0122. |
+| `tools/peer-call/amara.sh` | 251 | no-counterpart | Claude-Code-side caller for Amara as named-entity peer (sharpening role; codex CLI + persona overlay). Sibling `codex.sh` / `gemini.sh` / `grok.sh` already migrated to `.ts` (slices 15-17). **Recommendation: migrate to `tools/peer-call/amara.ts` following the established slice-15/16/17 pattern**. Composes with 081KQDTYV0008QG0R001HQSSAX (peer-call scripts TypeScript migration). |
+| `tools/peer-call/ani.sh` | 234 | no-counterpart | Claude-Code-side caller for Ani as named-entity peer (brat-voice register; cursor-agent + Grok backend). Sibling to `amara.sh`. **Recommendation: migrate to `tools/peer-call/ani.ts` following the same slice pattern**. Composes with 081KQDTYV0008QG0R001HQSSAX. |
 | `tools/lanes/code-lane.sh` | 51 | no-counterpart | Thin pass-through wrapper to `lane-allocator.sh` with `code` lane preselected. **Recommendation: migrate together with `lane-allocator.sh` once that file ports**. |
 | `tools/lanes/doc-lane.sh` | 51 | no-counterpart | Thin pass-through wrapper to `lane-allocator.sh` with `doc` lane preselected. **Recommendation: same — migrate together with `lane-allocator.sh`**. |
 | `tools/lanes/lane-allocator.sh` | 176 | no-counterpart | Worktree allocator for the rung-2 doc/code two-lane parallel-subagent dispatch protocol; shared backend for `code-lane.sh` and `doc-lane.sh`. Substantive logic (worktree allocate/release/path/status state machine) — not a thin-wrapper exemption. **Recommendation: migrate to `lane-allocator.ts` and update both wrapper scripts together**. |
-| `tools/hygiene/audit-orphan-role-refs.sh` | 322 | no-counterpart | Detects orphan role-refs and un-stripped name attributions on code-surface files (B-0070 lint). Substantial regex-based content scanner with multiple detection modes. **Recommendation: migrate to `audit-orphan-role-refs.ts`** — fits the established hygiene-tool migration pattern (21 hygiene `.ts` ports already landed; this is one of the last hygiene `.sh` holdouts). |
+| `tools/hygiene/audit-orphan-role-refs.sh` | 322 | no-counterpart | Detects orphan role-refs and un-stripped name attributions on code-surface files (081KQ8P5D0008QG0R003VN5P2Z lint). Substantial regex-based content scanner with multiple detection modes. **Recommendation: migrate to `audit-orphan-role-refs.ts`** — fits the established hygiene-tool migration pattern (21 hygiene `.ts` ports already landed; this is one of the last hygiene `.sh` holdouts). |
 | `tools/hygiene/check-github-settings-drift.sh` | 83 | no-counterpart | Diffs current GitHub repo settings vs checked-in expected snapshot (CI weekly + manual). Wraps `gh api` + `jq`. **Recommendation: migrate to `check-github-settings-drift.ts` together with `snapshot-github-settings.sh`** — paired surface; both should move together. |
-| `tools/hygiene/check-role-ref-on-current-state-surfaces.sh` | 178 | no-counterpart | Validates current-state surfaces (CLAUDE.md, AGENTS.md, GOVERNANCE.md, ALIGNMENT.md) use role-refs not direct names per Otto-279 (B-0162). **Recommendation: migrate to `check-role-ref-on-current-state-surfaces.ts`** — aligns with the hygiene-tool migration pattern. |
+| `tools/hygiene/check-role-ref-on-current-state-surfaces.sh` | 178 | no-counterpart | Validates current-state surfaces (CLAUDE.md, AGENTS.md, GOVERNANCE.md, ALIGNMENT.md) use role-refs not direct names per Otto-279 (081KQJZR90008QG0R000V16E1C). **Recommendation: migrate to `check-role-ref-on-current-state-surfaces.ts`** — aligns with the hygiene-tool migration pattern. |
 | `tools/hygiene/check-tick-history-shard-schema.sh` | 262 | no-counterpart | Validates per-tick shard files under `docs/hygiene-history/ticks/` against schema. **Recommendation: migrate to `check-tick-history-shard-schema.ts`** — adjacent siblings (`check-tick-history-order.ts`, `sort-tick-history-canonical.ts`, `audit-tick-history-bounded-growth.ts`, `append-tick-history-row.ts`) are all already `.ts`; this is the lone bash holdout in the tick-history hygiene cluster. |
 | `tools/hygiene/snapshot-github-settings.sh` | 165 | no-counterpart | Produces normalized JSON snapshot of GitHub repo settings; consumed by `check-github-settings-drift.sh`. **Recommendation: migrate to `snapshot-github-settings.ts` together with `check-github-settings-drift.sh`** — paired surface. |
 
@@ -116,8 +116,8 @@ These 34 rows are TS-native or post-migration-cleaned (the `.sh` was deleted in 
 | `.ts` path | Lines | Origin | Notes |
 |---|---|---|---|
 | `tools/cold-start-check.ts` | 292 | TS-native | Cold-start big-picture-first ingestion tool (operationalizes `feedback_cold_start_big_picture_first_*`). |
-| `tools/formal-verification/run-alloy.ts` | 345 | TS-native (B-0183 phase 1) | Alloy model-checker invocation wrapper; replaces an F# xunit wrapper, not a bash predecessor. |
-| `tools/formal-verification/run-tlc.ts` | 339 | TS-native (B-0183 phase 1) | TLA+/TLC model-checker invocation wrapper; replaces an F# xunit wrapper. |
+| `tools/formal-verification/run-alloy.ts` | 345 | TS-native (081KQNJ500008QG0R003EKJ8B5 phase 1) | Alloy model-checker invocation wrapper; replaces an F# xunit wrapper, not a bash predecessor. |
+| `tools/formal-verification/run-tlc.ts` | 339 | TS-native (081KQNJ500008QG0R003EKJ8B5 phase 1) | TLA+/TLC model-checker invocation wrapper; replaces an F# xunit wrapper. |
 | `tools/github/check-github-status.ts` | 297 | TS-native | Companion to `poll-pr-gate.ts`; queries GitHub status API as autonomous-loop pre-flight gate. |
 | `tools/github/poll-pr-gate.ts` | 551 | TS-native | Replaces inline `gh pr view --json` + jq snippets per the dynamic-bash-is-forgotten-bash discipline (the human maintainer 2026-05-01); 5-AI peer-reviewer convergence origin. |
 | `tools/github/poll-pr-gate.test.ts` | (test) | TS-native | Test fixtures for `poll-pr-gate.ts`. |
@@ -176,7 +176,7 @@ Recommended micro-batching (group by directory cluster, smallest blast radius fi
 
 ### Stage 2 — no-counterpart, peer-call siblings (port amara + ani)
 
-The `tools/peer-call/codex.ts`, `gemini.ts`, `grok.ts` triad is already in place; **`amara.sh` and `ani.sh` are the lone bash holdouts in that cluster**. Since the established pattern is in place (slices 15-17), the migration is mechanical. **Migrate `amara.ts` and `ani.ts` together as one PR.** Composes with B-0122. Smallest no-counterpart migration; do it first.
+The `tools/peer-call/codex.ts`, `gemini.ts`, `grok.ts` triad is already in place; **`amara.sh` and `ani.sh` are the lone bash holdouts in that cluster**. Since the established pattern is in place (slices 15-17), the migration is mechanical. **Migrate `amara.ts` and `ani.ts` together as one PR.** Composes with 081KQDTYV0008QG0R001HQSSAX. Smallest no-counterpart migration; do it first.
 
 ### Stage 3 — no-counterpart, hygiene-cluster siblings
 
@@ -196,13 +196,13 @@ The hygiene cluster has 21 `.ts` files already; 5 `.sh` holdouts remain (`audit-
 
 ### Stage 0 (no work) — keep-sh boundary
 
-`tools/setup/install.sh` and the 12 sibling bootstrap-class scripts under `tools/setup/` are explicitly preserved as bash per CLAUDE.md, the B-0140 row's "Out of scope" section, and the bash-compat 4-shell target. **No cutover; these are the boundary B-0140 protects.**
+`tools/setup/install.sh` and the 12 sibling bootstrap-class scripts under `tools/setup/` are explicitly preserved as bash per CLAUDE.md, the 081KQGDBJ0008QG0R0022EW5ZE row's "Out of scope" section, and the bash-compat 4-shell target. **No cutover; these are the boundary 081KQGDBJ0008QG0R0022EW5ZE protects.**
 
 ---
 
 ## Verification leftovers (out of scope for criterion #1, queued for #2-#4)
 
-This audit deliberately does not perform these — they belong in the cutover-execution PRs (B-0140 acceptance criteria #2-#4):
+This audit deliberately does not perform these — they belong in the cutover-execution PRs (081KQGDBJ0008QG0R0022EW5ZE acceptance criteria #2-#4):
 
 - **Callsite scan** — `grep -rn "tools/.../foo.sh"` across `.github/workflows/`, `docs/`, `tools/**/README.md`, `.claude/skills/**`, and root `*.md` for every `.sh` in the kill-sh table.
 - **CI green observation** — at least 2-3 PRs landing the migration with CI green (criterion #4).
@@ -214,8 +214,8 @@ These are listed here as the verification-handoff trail from the audit (criterio
 
 ## Composes with
 
-- **B-0140** acceptance criterion #1 — this doc IS criterion #1.
-- **B-0122** (peer-call scripts TypeScript migration — post-install cutover) — Stage 2 above is the B-0122 micro-batch.
+- **081KQGDBJ0008QG0R0022EW5ZE** acceptance criterion #1 — this doc IS criterion #1.
+- **081KQDTYV0008QG0R001HQSSAX** (peer-call scripts TypeScript migration — post-install cutover) — Stage 2 above is the 081KQDTYV0008QG0R001HQSSAX micro-batch.
 - **`feedback_bash_compatibility_target_four_shells_macos_32_ubuntu_git_bash_wsl_otto_235_2026_04_24.md`** — the keep-sh boundary.
 - **`docs/POST-SETUP-SCRIPT-STACK.md`** — the Q1/Q2/Q3 decision flow that classifies bootstrap vs post-setup; the keep-sh table is the Q1=yes branch in aggregate.
 - **`memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md`** — the "dynamic bash is forgotten bash" discipline that motivates the migration.

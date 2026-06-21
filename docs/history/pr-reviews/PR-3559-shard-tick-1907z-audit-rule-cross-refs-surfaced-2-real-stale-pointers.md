@@ -29,7 +29,7 @@
 
 ## Summary
 
-Tick 1907Z. Ran existing audit-rule-cross-refs.ts (sibling of B-0533's scanner at substrate scope); 48 candidates → 2 genuine bugs after applying 9-variant taxonomy. Fix landed as [PR #3558](https://github.com/Lucent-Financial-Group/Zeta/pull/3558).
+Tick 1907Z. Ran existing audit-rule-cross-refs.ts (sibling of 081KRMEXM0008QG0R000K25MXS's scanner at substrate scope); 48 candidates → 2 genuine bugs after applying 9-variant taxonomy. Fix landed as [PR #3558](https://github.com/Lucent-Financial-Group/Zeta/pull/3558).
 
 ## Test plan
 

@@ -1,6 +1,6 @@
 # .github/workflows/macos-install-sh-test.yml
 #
-# macOS install.sh shield (B-0857 cross-OS install parity — the macOS lane).
+# macOS install.sh shield (081KSKBP80008QG0R002J03WGA cross-OS install parity — the macOS lane).
 # Runs tools/setup/install.sh on a real macOS runner, which dispatches to
 # macos.sh (Homebrew + brew ollama + mise toolchain + lean + jars + the
 # local-LLM model pull via mechanisms/from-ollama.sh). Completes the install-shield

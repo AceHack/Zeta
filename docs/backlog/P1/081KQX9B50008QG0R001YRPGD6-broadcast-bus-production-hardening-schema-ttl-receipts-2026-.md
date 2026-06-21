@@ -1,6 +1,5 @@
 ---
-id: B-0213
-zetaid: 081KQX9B50008QG0R001YRPGD6
+id: 081KQX9B50008QG0R001YRPGD6
 priority: P1
 status: open
 title: "Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection"
@@ -11,7 +10,7 @@ depends_on: [081KQX9B50008QG0R0031REK6V]
 type: feature
 ---
 
-# B-0213 — Broadcast bus production hardening
+# 081KQX9B50008QG0R001YRPGD6 — Broadcast bus production hardening
 
 The broadcast bus at ~/.local/share/zeta-broadcasts/ works for
 v0 coordination. Production hardening needed for multi-maintainer
@@ -30,7 +29,7 @@ and long-running autonomous operation.
 
 ## Depends on
 
-- B-0210 (local broadcast peering ask protocol, merged #1729)
+- 081KQX9B50008QG0R0031REK6V (local broadcast peering ask protocol, merged #1729)
 - Broadcast bus v0 (merged #1718)
 
 ## Constraint

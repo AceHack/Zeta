@@ -4,7 +4,7 @@ Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-2
 Last refreshed: 2026-06-20
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: none for QEMU phase-3 (S4 green); physical S6 UX + WiFi (B-0792) out-of-band.
+Current blocker: none for QEMU phase-3 (S4 green); physical S6 UX + WiFi (081KSGS9H0008QG0R003V23XNZ) out-of-band.
 Next concrete action: co-design first-login UX — [S6-UX-PLACEHOLDER.md](./S6-UX-PLACEHOLDER.md); slice 5 CODEOWNERS when teams confirmed; system mise pinned via Nix overlay (same release as `tools/setup/linux.sh`).
 
 ## Why This Exists
@@ -22,7 +22,7 @@ the local accelerator cluster. A human's only job is to plug in the USB — any
 failed node in the K8s / GPU-accelerator cluster re-images, re-joins, and
 re-credentials itself. This gives Zeta **local + free-cloud both**: the
 self-healing local accelerator cluster (owned metal, GPU compute, sovereignty)
-composing with the free GitHub-Actions cloud swarm (B-0874, zero-marginal-cost
+composing with the free GitHub-Actions cloud swarm (081KSNY2Z0008QG0R003X1QWYG, zero-marginal-cost
 because open-source). The workflow engine
 (`ts-workflow-engine-du-state-machine` trajectory) is portable across both
 substrates; usb/zflash keeps the local one alive with minimal human-in-the-loop
@@ -38,22 +38,22 @@ Shipped artifacts:
 
 Grounding backlog:
 
-- [`B-0844`](../../backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-impleme.md) — zflash agent-mode native implementation (**closed** — `--agent` in `cli.ts`)
+- [`081KSGS9H0008QG0R001EZKNCB`](../../backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-impleme.md) — zflash agent-mode native implementation (**closed** — `--agent` in `cli.ts`)
 - Workitem `081KV1PY2H308QG0R00347547K` — `zeta flash` MCP router (**done** #8104)
-- [`B-0831`](../../backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md) — CI cascade-6: slices 1–3 landed (#8126, #8129, #8139); scenarios 1 + 2 hard gate (scenario 2 green run 27602908527 after #8478 initrd virtio)
-- [`B-0835`](../../backlog/P1/B-0835-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer config bugs (hostname-not-unique, gh-auth, banner)
-- [`B-0792`](../../backlog/P1/B-0792-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md) — iter-5 WiFi-credentials injection via USB ESP (zero-typing bringup without ethernet)
-- [`B-0789`](../../backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md) — iter-4 SSH-key + hashedPassword substrate (shared seam with encryption)
+- [`081KSGS9H0008QG0R0011BC7T2`](../../backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md) — CI cascade-6: slices 1–3 landed (#8126, #8129, #8139); scenarios 1 + 2 hard gate (scenario 2 green run 27602908527 after #8478 initrd virtio)
+- [`081KSGS9H0008QG0R00120EEHM`](../../backlog/P1/081KSGS9H0008QG0R00120EEHM-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer config bugs (hostname-not-unique, gh-auth, banner)
+- [`081KSGS9H0008QG0R003V23XNZ`](../../backlog/P1/081KSGS9H0008QG0R003V23XNZ-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md) — iter-5 WiFi-credentials injection via USB ESP (zero-typing bringup without ethernet)
+- [`081KSGS9H0008QG0R002T3BJ2R`](../../backlog/P1/081KSGS9H0008QG0R002T3BJ2R-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md) — iter-4 SSH-key + hashedPassword substrate (shared seam with encryption)
 
 ## Composes with
 
-- `cluster-encryption-credential-substrate` trajectory — shares the B-0789 / B-0852 creds-on-USB seam
-- B-0846 (installer WiFi reproducibility / nixos.org timeouts / cachix mirror) + B-0832 (installer nmtui WiFi rescan) — physical-hardware-tested WiFi hardening (verify on-disk; cite once row paths confirmed)
+- `cluster-encryption-credential-substrate` trajectory — shares the 081KSGS9H0008QG0R002T3BJ2R / 081KSKBP80008QG0R003AX2A69 creds-on-USB seam
+- 081KSGS9H0008QG0R003X5Y2A5 (installer WiFi reproducibility / nixos.org timeouts / cachix mirror) + 081KSGS9H0008QG0R001Q2DH2H (installer nmtui WiFi rescan) — physical-hardware-tested WiFi hardening (verify on-disk; cite once row paths confirmed)
 
 ## Current Rule
 
 The happy path is zero-typing: flash with zflash, boot, pick role, join. Every
-manual step at the physical machine is debt — drive it toward the B-0831 CI
+manual step at the physical machine is debt — drive it toward the 081KSGS9H0008QG0R0011BC7T2 CI
 full-install path so a human never has to babysit a USB stick for a routine
 bringup.
 

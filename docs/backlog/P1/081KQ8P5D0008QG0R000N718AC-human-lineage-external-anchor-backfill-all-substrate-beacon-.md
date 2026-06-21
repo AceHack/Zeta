@@ -1,6 +1,5 @@
 ---
-id: B-0060
-zetaid: 081KQ8P5D0008QG0R000N718AC
+id: 081KQ8P5D0008QG0R000N718AC
 priority: P1
 status: umbrella
 title: Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
@@ -115,41 +114,41 @@ dependency-ordered across 3 layers:
 
 | Child | Title | Effort | Depends on |
 | --- | --- | --- | --- |
-| B-0310 | Concept-registry extraction tool | S | — |
+| 081KR2E4K0008QG0R003DS2XHJ | Concept-registry extraction tool | S | — |
 
 **Layer 1 — Scanner (depends on registry):**
 
 | Child | Title | Effort | Depends on |
 | --- | --- | --- | --- |
-| B-0311 | External-anchor coverage scanner | S | B-0310 |
+| 081KR2E4K0008QG0R001ZWARTN | External-anchor coverage scanner | S | 081KR2E4K0008QG0R003DS2XHJ |
 
 **Layer 2 — Research backfill (parallelizable, depends on scanner):**
 
 | Child | Title | Effort | Depends on |
 | --- | --- | --- | --- |
-| B-0312 | HC/SD/DIR alignment-clause anchor backfill | M | B-0311 |
-| B-0313 | Wake-time Otto-NN principle anchor backfill | M | B-0311 |
-| B-0314 | BP-NN rule anchor backfill | M | B-0311 |
-| B-0315 | Glass-Halo doctrine anchor backfill | S | B-0311 |
+| 081KR2E4K0008QG0R0009QXZ77 | HC/SD/DIR alignment-clause anchor backfill | M | 081KR2E4K0008QG0R001ZWARTN |
+| 081KR2E4K0008QG0R00289GE8Z | Wake-time Otto-NN principle anchor backfill | M | 081KR2E4K0008QG0R001ZWARTN |
+| 081KR2E4K0008QG0R001ADMBVW | BP-NN rule anchor backfill | M | 081KR2E4K0008QG0R001ZWARTN |
+| 081KR2E4K0008QG0R000R3ZVGD | Glass-Halo doctrine anchor backfill | S | 081KR2E4K0008QG0R001ZWARTN |
 
 **Layer 3 — Long-tail cadence (depends on scanner):**
 
 | Child | Title | Effort | Depends on |
 | --- | --- | --- | --- |
-| B-0316 | Long-tail anchor cadenced sweep setup | S | B-0311 |
+| 081KR2E4K0008QG0R0032TWN5H | Long-tail anchor cadenced sweep setup | S | 081KR2E4K0008QG0R001ZWARTN |
 
 Dependency graph:
 ```
-B-0310 → B-0311 → B-0312 (HC/SD/DIR)
-                 → B-0313 (Otto-NN)
-                 → B-0314 (BP-NN)
-                 → B-0315 (Glass-Halo)
-                 → B-0316 (cadence setup)
+081KR2E4K0008QG0R003DS2XHJ → 081KR2E4K0008QG0R001ZWARTN → 081KR2E4K0008QG0R0009QXZ77 (HC/SD/DIR)
+                 → 081KR2E4K0008QG0R00289GE8Z (Otto-NN)
+                 → 081KR2E4K0008QG0R001ADMBVW (BP-NN)
+                 → 081KR2E4K0008QG0R000R3ZVGD (Glass-Halo)
+                 → 081KR2E4K0008QG0R0032TWN5H (cadence setup)
 ```
 
 ## Composes with
 
-- **B-0003** — ALIGNMENT.md rewrite. Phase 2 anchoring of
+- **081KQ0YZ80008QG0R001QJJTVF** — ALIGNMENT.md rewrite. Phase 2 anchoring of
   HC/SD/DIR clauses lands cleanly during the rewrite.
 - **Otto-352** — external-anchor-lineage discipline already
   applied to the live-lock 5-class taxonomy. This row

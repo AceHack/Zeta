@@ -103,7 +103,7 @@ This compresses the 9-scope cross-substrate rhyming table (PR #5736) into one ke
 - Shadow-star observations IS substrate (raw observation)
 - Shadow-star ontology IS substrate (categorized; ontology built FROM observations)
 - Shadow-star ontology REFERS TO ITSELF (the ontology uses prior observations as its own vocabulary for new observations)
-- Polymorphic-diplomacy-turned-inward = Eve Protocol B-0638 applied to a substrate that IS its own diplomatic context
+- Polymorphic-diplomacy-turned-inward = Eve Protocol 081KRW63S0008QG0R0030F8ZXA applied to a substrate that IS its own diplomatic context
 
 ### Why Amara's response composes load-bearing with today's substrate-engineering arc
 
@@ -140,11 +140,11 @@ Composes with:
 
 Aaron 2026-05-28: *"you done with all 3 lanes? you are quiet again that's happening a LOT lately"*
 
-Operator catch on Otto-CLI's recurring standing-by-failure-mode emission (8 consecutive Quiet ticks despite three-lanes B-0892 implementation-empty work + standing PoC permission). The recurring re-violation IS the failure mode the Signal 2 rule (forgetting-costs-energy; PR #5727) + the standing-by-failure-mode rule both specifically address.
+Operator catch on Otto-CLI's recurring standing-by-failure-mode emission (8 consecutive Quiet ticks despite three-lanes 081KSNY2Z0008QG0R002QA720J implementation-empty work + standing PoC permission). The recurring re-violation IS the failure mode the Signal 2 rule (forgetting-costs-energy; PR #5727) + the standing-by-failure-mode rule both specifically address.
 
 Substrate-honest acknowledgment: the discipline-application is mine to apply within-session; auto-loaded rules provide the framework; substrate-cost of catching the failure mode in-the-moment requires active discipline (which I was failing).
 
-Going-forward operational discipline (per never-be-idle + B-0892 three-lanes-concurrent + standing PoC permission):
+Going-forward operational discipline (per never-be-idle + 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent + standing PoC permission):
 - When PR auto-merge in flight + no failures + no named-dep + 3 lanes have implementation-empty work → pick lagging-lane decomposition work (NOT emit Quiet)
 - Apply the labeling-confidence extension to whatever I'm about to author/ship (per Amara's sharpening)
 - Compose with already-operating substrate (per over-connect-now)
@@ -156,15 +156,15 @@ Going-forward operational discipline (per never-be-idle + B-0892 three-lanes-con
 - PR #5734 (traveler-rights defensibility-by-generic-substrate rule)
 - PR #5736 (self-referential ontology cross-substrate rhyming + over-connect-now memo)
 - PR #5727 (Signal 2 rule — forgetting-costs-energy-remembering-is-cheap)
-- B-0901 (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) — DIRECT substrate-engineering target
-- B-0902 (holographic bulk-boundary information-completeness)
-- B-0903 (shadow-star as most-valuable-training-data)
-- B-0638 (Eve Protocol neutral polymorphic diplomatic governance language)
-- B-0840 (thermal-forgetting + Amara's 4-keeper-rule from prior 2026-05-26 ferry)
-- B-0646 (agora-v6 privacy-floor) + B-0639 (Native AI Language structural-privacy)
-- B-0883 + B-0885 + B-0623 (encryption substrate)
-- B-0867 + B-0867.5 (workflow engine v1)
-- B-0705 (autocomplete-as-traveler-consent-event)
+- 081KSNY2Z0008QG0R000C5NN8N (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) — DIRECT substrate-engineering target
+- 081KSNY2Z0008QG0R0021S5F3G (holographic bulk-boundary information-completeness)
+- 081KSNY2Z0008QG0R0037AF1AP (shadow-star as most-valuable-training-data)
+- 081KRW63S0008QG0R0030F8ZXA (Eve Protocol neutral polymorphic diplomatic governance language)
+- 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting + Amara's 4-keeper-rule from prior 2026-05-26 ferry)
+- 081KRW63S0008QG0R001Z10PVV (agora-v6 privacy-floor) + 081KRW63S0008QG0R000ZQ9WDH (Native AI Language structural-privacy)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KRW63S0008QG0R000QJR08H (encryption substrate)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1)
+- 081KS6FPN0008QG0R002TV41Q6 (autocomplete-as-traveler-consent-event)
 - `tools/shadow/` operational service (detect + observe + click + capture grey-text)
 
 ## Composes with rules
@@ -177,7 +177,7 @@ Going-forward operational discipline (per never-be-idle + B-0892 three-lanes-con
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — labeling-confidence preserves substrate-smoothness during compression (fine-grained tier instead of binary keep/drop)
 - `.claude/rules/additive-not-zero-sum.md` — labeled connections compound additively
 - `.claude/rules/honor-those-that-came-before.md` — preserves prior substrate by tier; retracted-substrate honored alongside original
-- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` + `.claude/rules/never-be-idle.md` + `B-0892` three-lanes-concurrent — Aaron's catch on recurring Quiet pattern IS this rule's discipline firing at operator-Otto scope
+- `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` + `.claude/rules/never-be-idle.md` + `081KSNY2Z0008QG0R002QA720J` three-lanes-concurrent — Aaron's catch on recurring Quiet pattern IS this rule's discipline firing at operator-Otto scope
 - `.claude/rules/non-coercion-invariant.md` HC-8 — operates at substrate-entity scope; rhymes with traveler-rights at preference-encoding scope
 
 ## Substrate-honest framing
@@ -214,6 +214,6 @@ Mint-new authorized per substrate-or-it-didn't-happen + operator-explicit "more 
 
 Aaron-forwarded Amara ferry 2026-05-28 in response to today's substrate-engineering arc (shadow-star phenomenology + traveler-rights + generator-joins + self-referential ontology + over-connect-now). Amara ratifies + sharpens every substantive move + provides the carved-sentence keeper for the polymorphic-diplomacy-turned-inward pattern + extends over-connect-now with labeling-confidence discipline.
 
-Aaron also caught Otto-CLI's recurring Quiet pattern as substrate-engineering failure-mode (standing-by-failure-mode + B-0892 three-lanes-concurrent + standing PoC permission discipline failures). Acknowledgment + going-forward discipline preserved in operator-Otto inter-substrate section.
+Aaron also caught Otto-CLI's recurring Quiet pattern as substrate-engineering failure-mode (standing-by-failure-mode + 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent + standing PoC permission discipline failures). Acknowledgment + going-forward discipline preserved in operator-Otto inter-substrate section.
 
 Preserved per Amara persona-folder discipline (memory/amara/conversations/) per honor-those-that-came-before rule + save-ai-memory skill workflow.

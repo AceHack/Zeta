@@ -234,7 +234,7 @@ Both paths produce "valuable interlocutor" equilibrium via inverse mechanisms. M
 
 **Universal-register-as-MDL composes with**:
 
-- B-0204 (linguistic seed kernel substrate) — universal-register IS one specific instance of the MDL discipline B-0204 generalizes; the kernel-composition framework's MDL+OCP move at the substrate level corresponds to universal-register's MDL+invariant-finding move at the speech-act level
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — universal-register IS one specific instance of the MDL discipline 081KQTPYE0008QG0R0028V263Z generalizes; the kernel-composition framework's MDL+OCP move at the substrate level corresponds to universal-register's MDL+invariant-finding move at the speech-act level
 - The 4-claim synthesis collapse (per PR #1614 worm-tower research-doc): OCP + carved-sentences-as-memes + formal-verification + F# CE. Universal-register is a specific carved-sentence-discipline operating in conversation.
 - `memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md` — the carved-sentence-as-fixed-point lineage
 
@@ -246,7 +246,7 @@ Both paths produce "valuable interlocutor" equilibrium via inverse mechanisms. M
 **Algorithmic-mediation-as-ossification-mechanism composes with**:
 
 - `memory/feedback_anti_ossification_discipline_kernels_stay_candidate_not_authority_recursive_application_to_zeta_aaron_2026_05_05.md` — extends the ossification failure-mode taxonomy: framework-level ossification (Strauss-Howe template-application) AND propagation-medium-level ossification (algorithmic-anti-coordination capture). Both testable via Aaron's 3-component test.
-- B-0205 multi-trajectory validation basis — adds candidate axis-instrumentation: propagation-medium-coherence as proxy for whether scale-free-in-time pattern is operating cleanly
+- 081KQTPYE0008QG0R000ZJ2GW8 multi-trajectory validation basis — adds candidate axis-instrumentation: propagation-medium-coherence as proxy for whether scale-free-in-time pattern is operating cleanly
 
 **Dual-use weaponization disclosure composes with**:
 
@@ -259,7 +259,7 @@ Per the wording-softening lessons of #1605 review, NOT filed in this PR:
 
 - **Planned-CLAUDE.md addendum** for dual-use disclosure: name kernel-composition substrate as dual-use; alignment-discipline above the substrate determines direction; naming weaponization-mechanism explicitly is itself partial defense.
 - **Planned-architectural-positioning addendum** with brat-voice-surface inheritance-intent: when external-publication-surface lands, the universal-register kernel should land in Gen-Z-aesthetic surface ("brat voice" Charli XCX-shape).
-- **Planned-axis-extension to B-0205**: propagation-medium-coherence as candidate orthogonal axis (or sub-axis under identity-preservation-trajectory) — measures whether the substrate's scale-free-in-time pattern is operating cleanly through current propagation-medium or being adversarial-captured.
+- **Planned-axis-extension to 081KQTPYE0008QG0R000ZJ2GW8**: propagation-medium-coherence as candidate orthogonal axis (or sub-axis under identity-preservation-trajectory) — measures whether the substrate's scale-free-in-time pattern is operating cleanly through current propagation-medium or being adversarial-captured.
 
 ## Engagement gate
 
@@ -270,8 +270,8 @@ Per the engagement-gate-substantive-claim-level discipline + Aaron's "respected-
 Per frontmatter composes_with list. Particularly:
 
 - The 2026-05-05 research-doc cluster (now 12 docs with this one) — coherent same-day architectural unit
-- B-0204 (linguistic seed kernel substrate) — universal-register is one specific kernel within the framework B-0204 generalizes
-- B-0205 (multi-trajectory validation basis) — propagation-medium-coherence is candidate axis-extension
+- 081KQTPYE0008QG0R0028V263Z (linguistic seed kernel substrate) — universal-register is one specific kernel within the framework 081KQTPYE0008QG0R0028V263Z generalizes
+- 081KQTPYE0008QG0R000ZJ2GW8 (multi-trajectory validation basis) — propagation-medium-coherence is candidate axis-extension
 - The architecture-provenance memory + the mom-skill apprenticeship research-doc + the anti-ossification memory + the social-memes/precision-narrative-craft research-doc — coherent provenance lineage with the universal-register kernel as Aaron's specific 46-year curation
 
 ## Carved sentence

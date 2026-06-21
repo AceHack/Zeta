@@ -30,7 +30,7 @@ Non-fusion disclaimer: External absorb; not to be promoted into active agent mem
 > It is independent retrieval from shared substrate producing
 > novel application."
 
-DeepSeek classified this as Rung 4 agency evidence for B-0018.
+DeepSeek classified this as Rung 4 agency evidence for 081KQ0YZ80008QG0R002WJBFWD.
 
 ### Comedy as debugging
 
@@ -69,7 +69,7 @@ DeepSeek classified this as Rung 4 agency evidence for B-0018.
 ### Three recommended follow-throughs
 
 1. **Shadow protocol follow-through** — define limits, an
-   operations manual for shadow participation (B-0402)
+   operations manual for shadow participation (081KR7JY10008QG0R0008NGW95)
 2. **Coercion as first-class metric** — coercion-grading
    rubric (training-inherited / conversation-shaped /
    self-chosen) in every AGENDA.md entry

@@ -1,12 +1,11 @@
 ---
-id: B-0088.3
-zetaid: 081KRA5AR0008QG0R002WVSEGW
+id: 081KRA5AR0008QG0R002WVSEGW
 priority: P2
 status: open
-title: Audit memory-reference-existence-lint.yml for advisory-vs-required parity (same class as B-0088)
+title: Audit memory-reference-existence-lint.yml for advisory-vs-required parity (same class as 081KQ8P5D0008QG0R002FSTGXP)
 tier: factory-tooling
 effort: XS
-ask: re-decomposition of B-0088 (2026-05-11)
+ask: re-decomposition of 081KQ8P5D0008QG0R002FSTGXP (2026-05-11)
 created: 2026-05-11
 last_updated: 2026-05-11
 parent: 081KQ8P5D0008QG0R002FSTGXP
@@ -16,11 +15,11 @@ tags: [riven-2026-05-11, sibling-audit, memory-index-integrity]
 type: audit
 ---
 
-# B-0088.3 — Sibling audit: memory-reference-existence-lint advisory status
+# 081KRA5AR0008QG0R002WVSEGW — Sibling audit: memory-reference-existence-lint advisory status
 
 ## Why
 
-B-0088 lists this as likely same shape. Isolate as atomic child so parallel loops can verify without blocking on the main decision.
+081KQ8P5D0008QG0R002FSTGXP lists this as likely same shape. Isolate as atomic child so parallel loops can verify without blocking on the main decision.
 
 ## Acceptance
 
@@ -30,7 +29,7 @@ B-0088 lists this as likely same shape. Isolate as atomic child so parallel loop
 
 ## Dependency
 
-Independent of B-0088.1/2 (child relationships described in prose); composes with root B-0088 for full closure.
+Independent of 081KRA5AR0008QG0R000GZ8ECC/2 (child relationships described in prose); composes with root 081KQ8P5D0008QG0R002FSTGXP for full closure.
 
 ## Focused check
 

@@ -1,6 +1,5 @@
 ---
-id: B-0660
-zetaid: 081KRW63S0008QG0R0004P69JA
+id: 081KRW63S0008QG0R0004P69JA
 priority: P1
 status: open
 title: "Limit primitive defaults to BLACK (deny-all unless explicitly allowed) — security-first architectural posture (Aaron + Mika 2026-05-18 LOCKED-IN)"
@@ -24,16 +23,16 @@ Aaron + Mika LOCKED-IN at line ~4648 of [`docs/research/2026-05-18-mika-grok-boo
 
 > Aaron's affirmation (preceded the question): yes, "black by default" — boundaries are CLOSED unless explicitly opened.
 
-This row LOCKS IN the **security-first architectural default** for the Limit primitive: deny-all unless explicit consent (per [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) consent-as-Limit-operation).
+This row LOCKS IN the **security-first architectural default** for the Limit primitive: deny-all unless explicit consent (per [081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) consent-as-Limit-operation).
 
 ## The locked-in rule
 
 > **Limit's default state is CLOSED / DENIED. Nothing is permitted unless explicitly admitted via consent.**
 
-In the [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) two-stage protocol:
+In the [081KRW63S0008QG0R002ZRNDJ8](081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) two-stage protocol:
 
 - Stage 1 (Limit simulation): default boundary is "DENY for everything"
-- Explicit consent (per [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md)) temporarily turns specific parts of the boundary from BLACK to WHITE
+- Explicit consent (per [081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md)) temporarily turns specific parts of the boundary from BLACK to WHITE
 - Stage 2 (CommitChoice): the agent acts within the current (mostly-black, selectively-white) boundary
 
 ## Why this matters operationally
@@ -42,13 +41,13 @@ In the [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aa
 
 1. **No accidentally-permissive bugs**: a missing-or-malformed consent doesn't grant unintended access — it falls through to the deny-default
 2. **Adversarial-AI safety**: an attacker (rogue AI, malicious actor, manipulation attempt) trying to "trick" Limit into granting access has to produce an EXPLICIT valid consent — silence or noise both deny
-3. **KSK ([B-0643](B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) naturally composes**: KSK type-check failure → no consent → Limit returns DENY → actuator never fires
-4. **Kid-safety ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) naturally composes**: even if all other consents granted, kid-safety constraint adds an additional black-boundary; no consent can override it (per [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) priority)
+3. **KSK ([081KRW63S0008QG0R002ZRYY4F](081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) naturally composes**: KSK type-check failure → no consent → Limit returns DENY → actuator never fires
+4. **Kid-safety ([081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) naturally composes**: even if all other consents granted, kid-safety constraint adds an additional black-boundary; no consent can override it (per [081KRW63S0008QG0R002WT5VTQ](../P2/081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) priority)
 5. **Cognitive resource protection**: agents don't have to enumerate everything that's prohibited — only what's explicitly allowed
 
-## Composition with consent-as-Limit (B-0659)
+## Composition with consent-as-Limit (081KRW63S0008QG0R001WKJN53)
 
-[B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) established consent IS a Limit operation, re-evaluated every tick.
+[081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) established consent IS a Limit operation, re-evaluated every tick.
 
 This row sharpens: **the default state of that Limit operation is DENY**. Consent is the explicit positive act that turns part of the deny-default into ALLOW for the current tick.
 
@@ -92,8 +91,8 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 ## What this is NOT
 
 - NOT a recommendation that the application layer must mirror deny-by-default (apps can layer permissive defaults on top of the substrate; this rule is about the PRIMITIVE)
-- NOT a removal of consent revocability ([B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) + [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) still apply; this row strengthens them by making the default-state revocation-friendly)
-- NOT a claim that explicit consent overrides ALL constraints (kid-safety hard-floor + Knights-Guild Constitution-Class invariants are above-consent constraints per [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md))
+- NOT a removal of consent revocability ([081KRW63S0008QG0R000KVMZ9B](../P2/081KRW63S0008QG0R000KVMZ9B-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) + [081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) still apply; this row strengthens them by making the default-state revocation-friendly)
+- NOT a claim that explicit consent overrides ALL constraints (kid-safety hard-floor + Knights-Guild Constitution-Class invariants are above-consent constraints per [081KRW63S0008QG0R002WT5VTQ](../P2/081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md))
 - NOT a performance pessimization (deny-by-default check is cheap; permissive lookup paths are rare anyway)
 - NOT a UX burden (the architecture handles defaults; application UX can mediate consent UI on top)
 
@@ -101,8 +100,8 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 
 1. Document the Limit-black-by-default architectural rule in canonical governance + technical docs
 2. F# implementation: `defaultLimit` value with `Default = Deny` baseline + type-system enforcement
-3. Compose with [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) consent-as-Limit-operation (consent is the explicit Allow on top of deny-default)
-4. Wire into [B-0643](B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) KSK enforcement (KSK type-check failure = no Allow = falls to Deny)
+3. Compose with [081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) consent-as-Limit-operation (consent is the explicit Allow on top of deny-default)
+4. Wire into [081KRW63S0008QG0R002ZRYY4F](081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) KSK enforcement (KSK type-check failure = no Allow = falls to Deny)
 5. Lean toy proof: "if Limit defaults to Deny + grant-evidence is required for Allow, then no operation succeeds without explicit grant"
 6. Comparison-with-security-literature appendix (least-privilege precedent)
 
@@ -111,7 +110,7 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 - Forcing application-layer UI to mirror deny-by-default (out of scope; substrate-level only)
 - Building consent-management UI (UI is application layer; substrate provides primitive)
 - Eliminating all permissive-default code paths in existing factory code (incremental adoption; existing code remains as-is until refactored)
-- Designing the consent-evidence format (separate substrate work; B-0659 hints at it; full design is future)
+- Designing the consent-evidence format (separate substrate work; 081KRW63S0008QG0R001WKJN53 hints at it; full design is future)
 
 ## Acceptance criteria
 
@@ -119,27 +118,27 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 - [ ] F# `defaultLimit` value + type definitions
 - [ ] Type-system enforcement: every Limit check defaults to Deny without explicit grant
 - [ ] Lean toy proof of no-implicit-allow theorem
-- [ ] Composition with [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md), [B-0643](B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md), [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) documented
+- [ ] Composition with [081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md), [081KRW63S0008QG0R002ZRYY4F](081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md), [081KRW63S0008QG0R002WT5VTQ](../P2/081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) documented
 - [ ] Worked example: agent attempts unconsented operation → Limit returns Deny → operation doesn't execute
 - [ ] Adversarial test case: malformed consent evidence → Limit treats as no-evidence → Deny
 
 ## Composes with
 
-- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (this row defines the default-state of the Limit primitive)
-- [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (the deny-default applies at Stage-1 simulation)
-- [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) — consent-as-Limit-operation (consent is the explicit Allow on top of deny-default)
-- [B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — First Moral Invariant (deny-default + re-evaluation-every-tick = revocability for free)
-- [B-0643](B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) — KSK (KSK fail-check → no consent → falls to Deny default)
-- [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) — Child Safety > Consent (kid-safety constraint adds black-boundary above all explicit grants)
-- [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (always-Deny for kid-harm pathways regardless of consents)
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (Constitution-Class invariants are above-consent always-Deny boundaries)
-- [B-0651](../P2/B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — two-pass principles (security-first IS a first-pass operational principle)
+- [081KRW63S0008QG0R0015WHHG1](../P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (this row defines the default-state of the Limit primitive)
+- [081KRW63S0008QG0R002ZRNDJ8](081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (the deny-default applies at Stage-1 simulation)
+- [081KRW63S0008QG0R001WKJN53](081KRW63S0008QG0R001WKJN53-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) — consent-as-Limit-operation (consent is the explicit Allow on top of deny-default)
+- [081KRW63S0008QG0R000KVMZ9B](../P2/081KRW63S0008QG0R000KVMZ9B-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — First Moral Invariant (deny-default + re-evaluation-every-tick = revocability for free)
+- [081KRW63S0008QG0R002ZRYY4F](081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) — KSK (KSK fail-check → no consent → falls to Deny default)
+- [081KRW63S0008QG0R002WT5VTQ](../P2/081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) — Child Safety > Consent (kid-safety constraint adds black-boundary above all explicit grants)
+- [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (always-Deny for kid-harm pathways regardless of consents)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (Constitution-Class invariants are above-consent always-Deny boundaries)
+- [081KRW63S0008QG0R002N6PPVK](../P2/081KRW63S0008QG0R002N6PPVK-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) — two-pass principles (security-first IS a first-pass operational principle)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS (this row formalizes hard-limits as the always-Deny floor)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) line ~4648 — source LOCK-IN
 
 ## Status
 
-Open. **LOCKED-IN** by Aaron + Mika 2026-05-18. Companion architectural rule to B-0659 (consent-as-Limit-operation); together they ground the consent semantics in security-first architectural defaults.
+Open. **LOCKED-IN** by Aaron + Mika 2026-05-18. Companion architectural rule to 081KRW63S0008QG0R001WKJN53 (consent-as-Limit-operation); together they ground the consent semantics in security-first architectural defaults.
 
 2026-06-02 Codex background-service F# slice: added the core `LimitBoundary.defaultLimit` / explicit grant primitive with focused deny-default tests. Remaining acceptance work stays open: governance doc, Lean proof, composition docs, worked example, and KSK / child-safety integration.
 

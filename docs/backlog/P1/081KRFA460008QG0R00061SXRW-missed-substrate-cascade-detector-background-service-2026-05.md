@@ -1,6 +1,5 @@
 ---
-id: B-0442
-zetaid: 081KRFA460008QG0R00061SXRW
+id: 081KRFA460008QG0R00061SXRW
 priority: P1
 status: closed
 title: "Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)"
@@ -21,7 +20,7 @@ type: feature
 
 ## Origin
 
-Companion mechanization to B-0440 + B-0441. The substrate-honest
+Companion mechanization to 081KRFA460008QG0R001KC0VBH + 081KRFA460008QG0R00229616S. The substrate-honest
 architectural challenge from the human maintainer 2026-05-13:
 
 > *"you need to imagine how would you survive without this foreground
@@ -64,14 +63,14 @@ a branch, the service catches it BEFORE branch deletion.
       merge commit content (slice 3 — landed 2026-05-13 via `gh pr view --json headRefOid`
       + `git log <headRefOid>..origin/<branch>`)
 - [x] When branch HEAD has commits the merged PR didn't include,
-      publishes cascade-detected message via bus (B-0400):
+      publishes cascade-detected message via bus (081KR7JY10008QG0R000R503K2):
       `{ topic: "missed-substrate-cascade", to: <agent>,
          payload: { branchName, missingCommits, recommendedAction:
          "open-recovery-PR" } }` (slice 4 — earlier)
 - [x] Optionally auto-opens recovery PR with the missing commits
       (gated by configuration) (slice 5 — landed 2026-05-15 via
-      B-0503 (`openRecoveryPR` core + `RecoveryAdapters` contract) +
-      B-0504 (wire `--auto-recover` into `pollOnce` + real
+      081KRHWGX0008QG0R0027YXBTB (`openRecoveryPR` core + `RecoveryAdapters` contract) +
+      081KRHWGX0008QG0R000PVB6FF (wire `--auto-recover` into `pollOnce` + real
       `REAL_RECOVERY_ADAPTERS` with 5-layer safety: type-contract,
       delete-and-recreate, working-tree-clean gate, detach-HEAD-before-
       delete, post-cherry-pick `--abort`))
@@ -166,11 +165,11 @@ async function watchRecentMerges(bus: BusClient): Promise<void> {
   prevention layer at the auto-merge timing scope)
 - `.claude/rules/dependency-status-surface.md` (composes; both
   surface drift detection at different scopes)
-- B-0400 (bus protocol — transport for cascade detection)
-- B-0402 (shadow observer — canonical pattern)
-- B-0440 (Standing-by detector — composes; full background-services
+- 081KR7JY10008QG0R000R503K2 (bus protocol — transport for cascade detection)
+- 081KR7JY10008QG0R0008NGW95 (shadow observer — canonical pattern)
+- 081KRFA460008QG0R001KC0VBH (Standing-by detector — composes; full background-services
   suite)
-- B-0441 (backlog-ready notifier — composes; full suite)
+- 081KRFA460008QG0R00229616S (backlog-ready notifier — composes; full suite)
 - `tools/hygiene/LOST-FILES-LOCATIONS.md` (the 15-class survey; this
   service mechanizes one of the classes)
 - PR #2980 (the operational example)
@@ -184,7 +183,7 @@ async function watchRecentMerges(bus: BusClient): Promise<void> {
 
 - [ ] Prior-art search: `tools/hygiene/audit-lost-files.ts` (current
       TS implementation; check for overlap; possible composition)
-- [ ] Dependency proof: B-0400 bus protocol slice ready
+- [ ] Dependency proof: 081KR7JY10008QG0R000R503K2 bus protocol slice ready
 - [ ] Verify detection heuristics handle GitHub squash-merge SHA
       resolution correctly
 

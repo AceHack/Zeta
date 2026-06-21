@@ -65,7 +65,7 @@ is the same shape — a *reference*, resolved at use, never inlined:
 - **Like a dependency:** an identity anchor is a versioned, resolvable coordinate (`nostr:npub…`, `did:…`,
   `oauth:github/aaron`, `fido:credId`, `ens:aaron.eth`) the ZetaId points at; the resolver fetches/verifies it
   the way a package resolver fetches a dep. Pluggable per-scheme resolvers (cf. the per-host
-  GitHub/GitLab/Gitea adapters, B-0867.15).
+  GitHub/GitLab/Gitea adapters, 081KSNY2Z0008QG0R002A785QR).
 - **Like a secret:** the *private* half (signing keys, OAuth tokens) is **referenced, never embedded** — same
   discipline as secret-refs (and the #6913/#6915 one-way, never-leak-the-interior rule). The ZetaId holds the
   *pointer*; the secret stays in its store.

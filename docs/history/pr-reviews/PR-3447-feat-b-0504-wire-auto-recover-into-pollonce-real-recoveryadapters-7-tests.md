@@ -29,21 +29,21 @@
 
 ## Summary
 
-Closes [B-0504](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md) — wires the `openRecoveryPR` core function (B-0503) into the detector poll loop with config flags, real `spawnSync` adapters, and integration tests. With this PR, [B-0442](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P0/) slice 5 ("Optionally auto-opens recovery PR with the missing commits") is implemented end-to-end.
+Closes [081KRHWGX0008QG0R000PVB6FF](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KRHWGX0008QG0R000PVB6FF-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md) — wires the `openRecoveryPR` core function (081KRHWGX0008QG0R0027YXBTB) into the detector poll loop with config flags, real `spawnSync` adapters, and integration tests. With this PR, [081KRFA460008QG0R00061SXRW](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P0/) slice 5 ("Optionally auto-opens recovery PR with the missing commits") is implemented end-to-end.
 
 ## What lands
 
 - **DetectorConfig** gains `autoRecover` + `recoveryDryRun` (both default `false`)
 - **parseArgs**: `--auto-recover` + `--recovery-dry-run` flags (added to `KNOWN_FLAGS`)
 - **Adapters**: optional `openRecoveryPR?` (existing tests need no change)
-- **REAL_RECOVERY_ADAPTERS**: 5 production `spawnSync` wrappers honoring the B-0503 retry-safety contract (`gitCreateBranch` deletes stale local branch best-effort; `gitPush` uses `--force-with-lease`)
+- **REAL_RECOVERY_ADAPTERS**: 5 production `spawnSync` wrappers honoring the 081KRHWGX0008QG0R0027YXBTB retry-safety contract (`gitCreateBranch` deletes stale local branch best-effort; `gitPush` uses `--force-with-lease`)
 - **pollOnce**: recovery loop after cascade detection; failures don't throw (logged into `note`, poll completes)
 - **PollResult**: `recoveryAttempts` + `recoveryOpened` fields
 - **7 new tests** covering: defaults, opened, dry-run, already-exists, adapter-throw, parseArgs wiring, missing-adapter
 
-## B-0505 (remaining child)
+## 081KRHWGX0008QG0R002C038BJ (remaining child)
 
-After this PR merges, only **B-0505 (docs + B-0442 acceptance close)** remains in the B-0442 → B-0503/B-0504/B-0505 chain.
+After this PR merges, only **081KRHWGX0008QG0R002C038BJ (docs + 081KRFA460008QG0R00061SXRW acceptance close)** remains in the 081KRFA460008QG0R00061SXRW → 081KRHWGX0008QG0R0027YXBTB/081KRHWGX0008QG0R000PVB6FF/081KRHWGX0008QG0R002C038BJ chain.
 
 ## Test plan
 - [x] `bunx tsc --noEmit` clean
@@ -138,11 +138,11 @@ feat(b-0504): wire --auto-recover into pollOnce + real RecoveryAdapte…
 
 …rs + 7 tests
 
-Closes B-0504 (B-0442 slice 5b). Wires the openRecoveryPR core function
-(B-0503) into the detector poll loop with config flags, real spawnSync
+Closes 081KRHWGX0008QG0R000PVB6FF (081KRFA460008QG0R00061SXRW slice 5b). Wires the openRecoveryPR core function
+(081KRHWGX0008QG0R0027YXBTB) into the detector poll loop with config flags, real spawnSync
 adapters, and integration tests.
 
-Acceptance criteria from B-0504 row, all addressed:
+Acceptance criteria from 081KRHWGX0008QG0R000PVB6FF row, all addressed:
 
 DetectorConfig + DEFAULT_CONFIG:
   - `autoRecover: boolean` (default false)
@@ -159,13 +159,13 @@ Adapters interface extension:
 
 REAL_RECOVERY_ADAPTERS (production sub-adapters):
   - checkRecoveryPRExists — gh pr list --head ... --state open --json number
-  - gitCreateBranch — honors B-0503 retry-safety contract:
+  - gitCreateBranch — honors 081KRHWGX0008QG0R0027YXBTB retry-safety contract:
     deletes stale local branch (best-effort) then git checkout -b
   - gitCherryPick — exit code + CONFLICT-in-stderr distinguishes
     "ok" / "conflict" / "error"
-  - gitPush — --force-with-lease (B-0503 retry-safety hint)
+  - gitPush — --force-with-lease (081KRHWGX0008QG0R0027YXBTB retry-safety hint)
   - ghPrCreate — returns trimmed stdout URL or null on failure
-  REAL_ADAPTERS.openRecoveryPR composes these via the B-0503 pure
+  REAL_ADAPTERS.openRecoveryPR composes these via the 081KRHWGX0008QG0R0027YXBTB pure
   openRecoveryPR function.
 
 pollOnce extension:
@@ -197,9 +197,9 @@ Verified:
   - bun test missed-substrate-recovery.test.ts: 17 pass (baseline)
   - semgrep --config .semgrep.yml --error: 0 findings
 
-Closes the B-0442 slice 5 acceptance criterion: "Optionally auto-opens
+Closes the 081KRFA460008QG0R00061SXRW slice 5 acceptance criterion: "Optionally auto-opens
 recovery PR with the missing commits (gated by configuration)."
-B-0505 (docs + B-0442 close) is the remaining child.
+081KRHWGX0008QG0R002C038BJ (docs + 081KRFA460008QG0R00061SXRW close) is the remaining child.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -252,7 +252,7 @@ the currently-checked-out branch. If a prior recovery attempt failed
 mid-flight and left HEAD on `recovery/<prNumber>`, the delete fails
 with "cannot delete branch ... used by worktree", AND the subsequent
 `git checkout -b` also fails because the branch already exists.
-Result: retries wedge permanently, violating the B-0503 retry-safety
+Result: retries wedge permanently, violating the 081KRHWGX0008QG0R0027YXBTB retry-safety
 contract this adapter is meant to implement.
 
 Mitigation: `git checkout --detach <base>` BEFORE `git branch -D
@@ -271,7 +271,7 @@ detach-then-delete handles the clean-but-on-the-wrong-branch case.
 Test coverage: the test stub adapters in detector.test.ts don't
 exercise this real-adapter path (they inject fake behavior); the
 fix is operational in REAL_RECOVERY_ADAPTERS. End-to-end retry
-exercise lives in B-0505's eventual integration tests.
+exercise lives in 081KRHWGX0008QG0R002C038BJ's eventual integration tests.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

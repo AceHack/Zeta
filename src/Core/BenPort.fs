@@ -2,7 +2,7 @@ namespace Zeta.Core
 
 /// BenPort — **the hexagonal benchmark port: OUR interfaces and attributes; BenchmarkDotNet is
 /// an adapter behind them** (Aaron 2026-06-12: "yes on benchmark hexagonally on our interfaces
-/// and attributes and such so we depend on ours"). Same blade as the inference port (B-1033:
+/// and attributes and such so we depend on ours"). Same blade as the inference port (081KTZ4EF0008QG0R000WJGSWX:
 /// Zeta.Bayesian + Infer.NET as adapters) — Zeta code depends on THIS port only; which engine
 /// drives a case (the chip8 tick meter, the alloc meter, a BenchmarkDotNet wall-time job) is an
 /// adapter choice at the edge, never a dependency of the case.

@@ -1,6 +1,5 @@
 ---
-id: B-0530
-zetaid: 081KRMEXM0008QG0R000X1PPGC
+id: 081KRMEXM0008QG0R000X1PPGC
 priority: P3
 status: closed
 title: "Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack"
@@ -116,8 +115,8 @@ Cron-sentinel mutex is the substrate-honest first move because:
 
 ## Composes with
 
-- [B-0506 stale-worktree-prune-cadence](B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md) — sibling worktree-hygiene mechanization
-- [B-0519 multi-Otto branch-state contamination RCA](B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md) — adjacent failure-mode family; Pattern 7 (abandoned rebase state) was added 2026-05-15; this row addresses Pattern 8 (cron-tick concurrency)
+- [081KRHWGX0008QG0R002DPG02X stale-worktree-prune-cadence](081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md) — sibling worktree-hygiene mechanization
+- [081KRHWGX0008QG0R001HMWM1W multi-Otto branch-state contamination RCA](081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md) — adjacent failure-mode family; Pattern 7 (abandoned rebase state) was added 2026-05-15; this row addresses Pattern 8 (cron-tick concurrency)
 - [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md) — the discipline this row mechanizes
 
 ## Non-goals
@@ -151,4 +150,4 @@ The shipped tool [`tools/orchestrator-checks/cron-sentinel-mutex.ts`](../../../t
 
 Non-goals remain non-goals (no end-to-end serialization; no non-Otto-CLI detection; no interactive-vs-autonomous distinction).
 
-Row left open from 2026-05-15 to 2026-05-16 as substrate drift — same pattern as B-0506 (closed in PR #3733 this same session).
+Row left open from 2026-05-15 to 2026-05-16 as substrate drift — same pattern as 081KRHWGX0008QG0R002DPG02X (closed in PR #3733 this same session).

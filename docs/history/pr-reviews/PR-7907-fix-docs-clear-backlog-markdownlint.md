@@ -28,7 +28,7 @@
 ## Description
 
 ## Summary
-- Remove the extra blank line in the closed B-0821 backlog row that caused markdownlint MD012 on latest `main`.
+- Remove the extra blank line in the closed 081KSGS9H0008QG0R00367G209 backlog row that caused markdownlint MD012 on latest `main`.
 
 ## Root cause
 PR #7906 advanced `main`, and the main gate failed only on `lint (markdownlint)` because `docs/backlog/P1/081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-o.md` had two consecutive blank lines before the TL;DR heading.
@@ -45,7 +45,7 @@ Credential-Mode: shared
 Human-Review: explicit
 Human-Review-Evidence: chat
 Action-Mode: supervised
-Task: B-0821
+Task: 081KSGS9H0008QG0R00367G209
 Co-Authored-By: Codex <noreply@openai.com>
 
 

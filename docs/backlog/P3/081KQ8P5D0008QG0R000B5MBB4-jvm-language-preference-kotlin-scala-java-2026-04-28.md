@@ -1,6 +1,5 @@
 ---
-id: B-0075
-zetaid: 081KQ8P5D0008QG0R000B5MBB4
+id: 081KQ8P5D0008QG0R000B5MBB4
 priority: P3
 status: open
 title: JVM language preference — Kotlin > Scala > Java; sweep fallout when JVM code is added or rewritten
@@ -13,7 +12,7 @@ tags: [jvm, kotlin, scala, java, language-preference, alloy-runner, future-direc
 type: friction-reducer
 ---
 
-# B-0075 — JVM language preference: Kotlin > Scala > Java
+# 081KQ8P5D0008QG0R000B5MBB4 — JVM language preference: Kotlin > Scala > Java
 
 ## Source
 

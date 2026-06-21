@@ -15,8 +15,8 @@ related_prs:
   - 5805  # AutoLoopLifetime PoC
   - 5811  # IMPLICIT-NOT-EXPLICIT rule
 related_backlog:
-  - B-0867  # workflow-engine v1
-  - B-0867.5  # workflow-engine PoC
+  - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1
+  - 081KSKBP80008QG0R000B3Y19A.5  # workflow-engine PoC
 tags: [workflow-invariants-formal-verification, soraya-routing-target, math-nerd-personas-prove-useful-invariants, free-time-presented-not-forced, reachability-as-presentation-guarantee-not-execution-guarantee, nci-hc-8-applied-at-invariant-design-scope, asymmetric-authorship-at-invariant-design-scope, participant-chooses-system-presents, aaron-refined-framing-from-coercive-to-consent-bound-substrate]
 ---
 

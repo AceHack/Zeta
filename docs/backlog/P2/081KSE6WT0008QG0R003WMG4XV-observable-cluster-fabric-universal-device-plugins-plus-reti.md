@@ -1,6 +1,5 @@
 ---
-id: B-0772
-zetaid: 081KSE6WT0008QG0R003WMG4XV
+id: 081KSE6WT0008QG0R003WMG4XV
 priority: P2
 status: open
 title: Observable cluster fabric — universal device plugins (NPU/GPU/audio/etc.) + Reticulum mesh (AllJoyn-successor) + polyglot Rx streams in every language
@@ -10,7 +9,7 @@ created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
   - 081KR2E4K0008QG0R001SWEPNV
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KRFA460008QG0R0018SN61J
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -35,8 +34,8 @@ COMPOSITION as a coherent target:
 
 | Thread | Existing substrate | This row's composition role |
 |---|---|---|
-| Universal device plugins | B-0771 (Intel NPU); B-0770 (Comet Pro IP-KVM); B-0764 (CNCF force multipliers); existing nvidia/amd device plugins | Generalize the k8s device-plugin pattern to EVERY hardware-class resource: NPU, GPU, audio I/O, NIC offload, NVMe namespaces, USB-passthrough, FPGAs, TPUs, sensors, etc. — all exposed via same standard interface |
-| Reticulum mesh (AllJoyn-successor) | B-0289 (Green Lantern hardware spec — Reticulum substrate); existing Reticulum / pt174 / pt196 substrate in cross-AI conversation memory | Cryptographic mesh networking for cluster nodes to discover + RPC each other's services + device-plugin-exported hardware without central registry; same shape AllJoyn was meant to deliver for IoT but Reticulum (modern + crypto-native + radio-agnostic) actually delivers |
+| Universal device plugins | 081KSE6WT0008QG0R0022D6GN8 (Intel NPU); 081KSE6WT0008QG0R0029S1D5Z (Comet Pro IP-KVM); 081KSE6WT0008QG0R0009YYNP4 (CNCF force multipliers); existing nvidia/amd device plugins | Generalize the k8s device-plugin pattern to EVERY hardware-class resource: NPU, GPU, audio I/O, NIC offload, NVMe namespaces, USB-passthrough, FPGAs, TPUs, sensors, etc. — all exposed via same standard interface |
+| Reticulum mesh (AllJoyn-successor) | 081KR2E4K0008QG0R001SWEPNV (Green Lantern hardware spec — Reticulum substrate); existing Reticulum / pt174 / pt196 substrate in cross-AI conversation memory | Cryptographic mesh networking for cluster nodes to discover + RPC each other's services + device-plugin-exported hardware without central registry; same shape AllJoyn was meant to deliver for IoT but Reticulum (modern + crypto-native + radio-agnostic) actually delivers |
 | Polyglot Rx observability | F# + Rx.NET shipped in Zeta.Core; algebra-owner skill (DBSP↔Rx duality); rx-expert skill; existing Reaqtor / standing-queries substrate | Every device event, workload signal, audio sample, NPU inference, scheduler decision, telemetry envelope flows as Rx-observable stream; same algebraic model in F# / C# / Rust (rxrust) / TS (RxJS) / Python (RxPY) / Java (RxJava) / Swift / Kotlin / etc. |
 
 ## Target
@@ -160,9 +159,9 @@ Per-device-class command surfaces (illustrative):
 
 Bidirectional means **the cluster becomes a programmable
 control system over its own hardware**, not just an observable
-one. Composes with B-0767 scheduler (scheduler emits placement
+one. Composes with 081KSE6WT0008QG0R0016CEE2Z scheduler (scheduler emits placement
 commands by subscribing to load events + observing constraints),
-B-0770 Comet Pro (HID injection IS command emission), B-0762
+081KSE6WT0008QG0R0029S1D5Z Comet Pro (HID injection IS command emission), 081KSE6WT0008QG0R003FG3E8R
 telemetry flywheel (the telemetry is event-out; the LLM-PR
 proposals are command-in, mediated by operator review).
 
@@ -187,17 +186,17 @@ individual threads delivers alone:
 - **All three composed**: every hardware event from every
   node is a first-class Observable in any operator's preferred
   language. AI workloads compose by subscribing. Telemetry
-  flywheel (B-0762) feeds in. Scheduler (B-0767) makes
-  decisions by observing. Reference architecture (B-0761)
+  flywheel (081KSE6WT0008QG0R003FG3E8R) feeds in. Scheduler (081KSE6WT0008QG0R0016CEE2Z) makes
+  decisions by observing. Reference architecture (081KSE6WT0008QG0R0015ZF2G6)
   becomes substantively observable not just deployable.
 
 This IS what makes the AI-cluster reference architecture
 operationally distinct from "k8s with extras." It's a fabric
 where every signal is composable.
 
-## ServiceTitan-route composition (B-0765 + B-0763)
+## ServiceTitan-route composition (081KSE6WT0008QG0R00063R6HB + 081KSE6WT0008QG0R000WVYAJ2)
 
-Each substrate layer plugs into existing standards (per B-0765):
+Each substrate layer plugs into existing standards (per 081KSE6WT0008QG0R00063R6HB):
 
 | Layer | Existing standard |
 |---|---|
@@ -208,7 +207,7 @@ Each substrate layer plugs into existing standards (per B-0765):
 | Algebra | DBSP / Rx duality (Frank McSherry et al. — algebraic standard) |
 | Operator SDK shape | Rx (Microsoft-led; cross-language with consistent algebra: RxJS, Rx.NET, RxJava, RxSwift, RxKotlin, RxPY, rxrust, etc.) |
 
-Per B-0763 vendor swap: alternative mesh transports (Yggdrasil,
+Per 081KSE6WT0008QG0R000WVYAJ2 vendor swap: alternative mesh transports (Yggdrasil,
 Tinc, Tailscale, Headscale, Tor) fit the same operator-facing
 Observable shape; alternative stream protocols (Kafka, NATS,
 Apache Pulsar) fit the same Rx subscription contract;
@@ -228,12 +227,12 @@ fit the same `cluster.devices.observable<T>` interface.
       - `nvidia.com/gpu` (existing CNCF plugin wrapped)
       - `amd.com/gpu` (existing CNCF plugin wrapped)
       - `intel.com/gpu` (existing CNCF plugin wrapped)
-      - `intel.com/npu` (per B-0771)
+      - `intel.com/npu` (per 081KSE6WT0008QG0R0022D6GN8)
       - `zeta.io/audio` (PipeWire-backed; per-codec discovery)
       - `zeta.io/nic-offload` (DPDK / XDP / eBPF program slots)
       - `zeta.io/nvme-namespace` (NVMe namespace allocation)
       - `zeta.io/usb-passthrough` (per-VID:PID USB devices)
-      - `zeta.io/kvm` (IP-KVM devices per B-0770)
+      - `zeta.io/kvm` (IP-KVM devices per 081KSE6WT0008QG0R0029S1D5Z)
       - `zeta.io/sensor` (thermal / power / RGB / GPIO sensors)
 - [ ] Per-device-class conformance test suite: every plugin
       verifiable swappable
@@ -273,7 +272,7 @@ fit the same `cluster.devices.observable<T>` interface.
 - [ ] Type-safety: every Observable carries a typed event
       record (F# record / TS interface / Rust struct / Python
       TypedDict / etc.); cross-language schema definition via
-      Protobuf or similar (per B-0763 vendor-swap; could be
+      Protobuf or similar (per 081KSE6WT0008QG0R000WVYAJ2 vendor-swap; could be
       JSON Schema if simpler)
 
 ### Layer 4: Algebra grounding (DBSP / Rx duality)
@@ -283,8 +282,8 @@ fit the same `cluster.devices.observable<T>` interface.
       Rx operators (`.WithRetraction()`, `.Materialize()`,
       `.PivotByKey()`)
 - [ ] Time-travel debugging: any Observable can be replayed
-      from any historical timestamp (composes with B-0767 DST)
-- [ ] Telemetry flywheel (B-0762) feeds in: every Observable
+      from any historical timestamp (composes with 081KSE6WT0008QG0R0016CEE2Z DST)
+- [ ] Telemetry flywheel (081KSE6WT0008QG0R003FG3E8R) feeds in: every Observable
       can be opt-in routed to the telemetry endpoint as a
       training signal for AI-substrate improvement
 
@@ -305,7 +304,7 @@ translate cleanly to another (Aaron's example F# can be
 mechanically translated to RxJS, RxJava, etc. by an LLM with
 high fidelity because the algebra is identical).
 
-This composes with B-0761 (AI-trainable substrate) — the
+This composes with 081KSE6WT0008QG0R0015ZF2G6 (AI-trainable substrate) — the
 polyglot examples become training data for AI systems learning
 to operate Zeta clusters in their preferred ecosystem.
 
@@ -348,24 +347,24 @@ named. Reticulum delivers what AllJoyn meant to.
 
 ## Composes with
 
-- B-0289 — Green Lantern hardware spec (Reticulum substrate
+- 081KR2E4K0008QG0R001SWEPNV — Green Lantern hardware spec (Reticulum substrate
   origin; existing Zeta memory)
-- B-0428 — F# fork for AI safety (the F# substrate Rx-based
+- 081KRFA460008QG0R0018SN61J — F# fork for AI safety (the F# substrate Rx-based
   SDKs build on)
-- B-0763 — cloud-native plugins fit Zeta interfaces (universal
+- 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces (universal
   device-plugin pattern IS this row's first layer)
-- B-0764 — CNCF ecosystem force multipliers (existing CNCF
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF ecosystem force multipliers (existing CNCF
   device-plugin standards + Reaqtor for Rx-server)
-- B-0765 — ServiceTitan route (each layer plugs into existing
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (each layer plugs into existing
   standards: k8s device plugin API / Reticulum / Rx)
-- B-0766 — slow-replace k8s binary-compat (the Zeta-native
+- 081KSE6WT0008QG0R00049EFBD — slow-replace k8s binary-compat (the Zeta-native
   device-plugin substrate composes with Wave 2 operator surface)
-- B-0767 — Zeta-native scheduler (subscribes to device-class
+- 081KSE6WT0008QG0R0016CEE2Z — Zeta-native scheduler (subscribes to device-class
   observables for scheduling decisions; per sub-wave B+C+D)
-- B-0770 — Comet Pro IP-KVM (one of the device classes;
+- 081KSE6WT0008QG0R0029S1D5Z — Comet Pro IP-KVM (one of the device classes;
   `zeta.io/kvm` plugin)
-- B-0771 — audio + NPU + ONNX (the device classes this row
-  generalizes from; B-0771 ships specific plugins, this row
+- 081KSE6WT0008QG0R0022D6GN8 — audio + NPU + ONNX (the device classes this row
+  generalizes from; 081KSE6WT0008QG0R0022D6GN8 ships specific plugins, this row
   ships the unifying pattern)
 - `algebra-owner` skill — DBSP + Rx duality substrate
 - `rx-expert` skill — Rx.NET operator catalog
@@ -384,7 +383,7 @@ named. Reticulum delivers what AllJoyn meant to.
 | Cross-language observability SDK | Pick a language; rebuild SDK for next operator | Same algebra in every language; LLM-translatable |
 | Mesh discovery without cloud LB | VPN / kubectl proxy / port-forwards | Reticulum mesh; works over LoRa for unattended sites |
 | Compose device events + workload events | Custom collector + custom matcher | Rx CombineLatest / WithLatestFrom / Window |
-| Replay cluster behavior for AI training | Capture Prometheus metrics; piece together | Every Observable replayable from any timestamp (composes with B-0767 DST) |
+| Replay cluster behavior for AI training | Capture Prometheus metrics; piece together | Every Observable replayable from any timestamp (composes with 081KSE6WT0008QG0R0016CEE2Z DST) |
 | Cluster-of-clusters federation | Custom (Kubefed deprecated; no clean standard) | Reticulum bridges between cluster meshes |
 
 ## Out of scope
@@ -394,12 +393,12 @@ named. Reticulum delivers what AllJoyn meant to.
   community can contribute via the documented contract
 - Reticulum vs alternative-mesh comparison + recommendation —
   defer; this row picks Reticulum per Aaron's existing
-  substrate; alternatives plug in per B-0763
+  substrate; alternatives plug in per 081KSE6WT0008QG0R000WVYAJ2
 - Replacing every CNCF observability project (Prometheus,
   Loki, Tempo, Jaeger) — this row composes WITH them, not
-  replaces; per B-0765 ServiceTitan route
+  replaces; per 081KSE6WT0008QG0R00063R6HB ServiceTitan route
 - Real-time low-latency audio over the cluster mesh
-  (audio-over-network for studio use) — composes with B-0771
+  (audio-over-network for studio use) — composes with 081KSE6WT0008QG0R0022D6GN8
   audio scope but stays scoped to per-node audio for v1
 - Hardware-class plugins beyond the first-class list — community
   contributes per the documented spec
@@ -411,7 +410,7 @@ substrate threads into a coherent target: universal device
 plugins + Reticulum mesh + polyglot Rx observability. Each
 thread has existing substrate; this row names their COMPOSITION
 as the AI-cluster fabric substrate that makes the reference
-architecture (B-0761) operationally distinct from "k8s with
+architecture (081KSE6WT0008QG0R0015ZF2G6) operationally distinct from "k8s with
 extras." Substrate-honest: Reticulum delivers what AllJoyn meant
 to (cryptographic + mesh + modern); Rx delivers cross-language
 algebra; device plugins deliver hardware-class uniformity.

@@ -1,6 +1,5 @@
 ---
-id: B-0910
-zetaid: 081KSNY2Z0008QG0R000X6NHZ2
+id: 081KSNY2Z0008QG0R000X6NHZ2
 priority: P3
 status: open
 title: Multi-chain CSAM substrate-irreversibility historical pattern — N=6+ web-verified empirical anchors + political-economy + state-capture-vector framing
@@ -37,7 +36,7 @@ related_skills:
 tags: [multi-chain-csam-empirical-pattern, n-6-plus-web-verified-anchors, matzutt-2018-bitcoin-academic-precedent, bsv-2019-money-button-incident-100kb-expansion, bitcoin-ordinals-inscriptions-2023-2024-taproot-image-embedding, ethereum-2025-arxiv-2512-17411-academic-study, ipfs-filecoin-arxiv-2307-2506-academic-papers, arweave-defensive-design-node-blacklists, substrate-engineering-law-of-the-domain, threshold-crossed-arbitrary-contiguous-bytes-equals-csam-eventually, political-economy-centralized-miner-extracts-home-miner-bears, state-capture-vector-via-regulatory-pretext-licensing-requirement, multi-layer-attack-timeline-rent-extraction-then-state-control, senate-cassidy-warren-letter-as-evidence-of-regulatory-move]
 ---
 
-# B-0910 — Multi-chain CSAM substrate-irreversibility historical pattern + political-economy + state-capture-vector
+# 081KSNY2Z0008QG0R000X6NHZ2 — Multi-chain CSAM substrate-irreversibility historical pattern + political-economy + state-capture-vector
 
 ## Context
 
@@ -49,7 +48,7 @@ Plus the substrate-extension:
 
 > *"It's even works it's a state attack vector cause now they can say only 'safe' designated locations can run nodes cause it has CSAM and now they control bitcoin"*
 
-This row IS the substrate-honest empirical-catalog + political-economy + state-capture-vector framing of the chain-CSAM-pattern that B-0908's substrate-irreversibility specific-form domain depends on for empirical validation.
+This row IS the substrate-honest empirical-catalog + political-economy + state-capture-vector framing of the chain-CSAM-pattern that 081KSNY2Z0008QG0R000A5GP0X's substrate-irreversibility specific-form domain depends on for empirical validation.
 
 ## The empirical chain-CSAM history catalog (web-verified 2026-05-28)
 
@@ -167,9 +166,9 @@ The terminal payoff for centralized miners:
 
 For the framework's substrate-engineering work:
 
-1. **B-0908 substrate-irreversibility specific-form domain** has N=6+ empirical anchors — pricing-model can backtest against rich historical data
-2. **B-0911 risk-distribution-asymmetry pricing** (companion row in this PR) operationalizes the political-economy framing into priceable substrate
-3. **The state-capture-vector** IS the long-tail price the B-0908 pricing-model should surface — `safe_acceleration_budget` would be NEGATIVE-AND-DESCENDING over time as state-regulatory-pressure accumulates
+1. **081KSNY2Z0008QG0R000A5GP0X substrate-irreversibility specific-form domain** has N=6+ empirical anchors — pricing-model can backtest against rich historical data
+2. **081KSNY2Z0008QG0R0036JTSTQ risk-distribution-asymmetry pricing** (companion row in this PR) operationalizes the political-economy framing into priceable substrate
+3. **The state-capture-vector** IS the long-tail price the 081KSNY2Z0008QG0R000A5GP0X pricing-model should surface — `safe_acceleration_budget` would be NEGATIVE-AND-DESCENDING over time as state-regulatory-pressure accumulates
 4. **The framework's substrate-engineering choice** of content-addressed-but-not-permanent-substrate (git history can be rewritten by maintainer; not blockchain-permanent) operates BELOW the threshold the chain-CSAM-pattern fires on — deliberate per `.claude/rules/glass-halo-bidirectional.md` + `methodology-hard-limits.md`
 5. **The substrate-engineering law** generalizes BEYOND blockchain to ANY substrate that crosses the arbitrary-contiguous-bytes threshold — IPFS / Filecoin / Arweave demonstrate this even though they're not blockchain-substrate per se
 
@@ -179,14 +178,14 @@ Three phases:
 
 ### Phase 1 — empirical-catalog + political-economy + state-capture framing (this PR)
 
-Already landed via this row + the companion B-0911. The substrate-engineering recognition IS Phase 1.
+Already landed via this row + the companion 081KSNY2Z0008QG0R0036JTSTQ. The substrate-engineering recognition IS Phase 1.
 
-### Phase 2 — backtest validation against B-0908 pricing-model
+### Phase 2 — backtest validation against 081KSNY2Z0008QG0R000A5GP0X pricing-model
 
-When B-0908 Phase 2 (TypeScript pricing-quote scaffold) lands:
+When 081KSNY2Z0008QG0R000A5GP0X Phase 2 (TypeScript pricing-quote scaffold) lands:
 
 - Reconstruct pre-incident state for each of the 6+ chains
-- Run pricing-model at HOME-MINER scope (per B-0911 risk-distribution-asymmetry pricing)
+- Run pricing-model at HOME-MINER scope (per 081KSNY2Z0008QG0R0036JTSTQ risk-distribution-asymmetry pricing)
 - Run pricing-model at CENTRALIZED-MINER scope including the state-capture-vector long-tail
 - Compare model outputs to observed outcomes (CSAM incidents; delistings; regulatory responses)
 - Validate the multi-layer-attack-timeline framing empirically
@@ -197,7 +196,7 @@ Acceptance: backtest report landed as substrate; pricing-model validated against
 
 Apply the substrate-engineering law-of-the-domain to inform substrate-engineering decisions in new substrate domains:
 
-- AI-substrate-engineering: when does an AI substrate cross the arbitrary-contiguous-bytes threshold? (composes with B-0908 Phase 3 + B-0909 BankerBot empirical anchor)
+- AI-substrate-engineering: when does an AI substrate cross the arbitrary-contiguous-bytes threshold? (composes with 081KSNY2Z0008QG0R000A5GP0X Phase 3 + 081KSNY2Z0008QG0R0003VAH0N BankerBot empirical anchor)
 - Federated-substrate (Mastodon / ActivityPub): does federation across operators create the same risk-distribution-asymmetry? (different mechanism; same shape)
 - Self-hosted-substrate (personal cloud / IndieWeb): how does operator-by-operator policy choice change the substrate-engineering decision-tree?
 
@@ -205,30 +204,30 @@ Acceptance: substrate-engineering decision-tree document for "should this substr
 
 ### Phase 4+ (yes-and backlog)
 
-- Public-substrate operator-coordination tooling: help home-miner-class coordinate exit OR coordinate policy-change (composes with B-0703 multi-oracle BFT substrate)
+- Public-substrate operator-coordination tooling: help home-miner-class coordinate exit OR coordinate policy-change (composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT substrate)
 - Substrate-irreversibility-risk insurance modeling
 - Cross-substrate validation: extend pattern to other substrate-domains (federated / self-hosted / etc.)
 
 ## Acceptance
 
-- [x] B-0910 row filed (this row)
+- [x] 081KSNY2Z0008QG0R000X6NHZ2 row filed (this row)
 - [x] N=6+ web-verified empirical anchors documented
 - [x] Political-economy framing documented
 - [x] State-capture-vector multi-layer-attack-timeline framing documented
-- [x] Companion B-0911 row filed in same PR
-- [ ] Phase 2 backtest validation (gated on B-0908 Phase 2 scaffold)
+- [x] Companion 081KSNY2Z0008QG0R0036JTSTQ row filed in same PR
+- [ ] Phase 2 backtest validation (gated on 081KSNY2Z0008QG0R000A5GP0X Phase 2 scaffold)
 - [ ] Phase 3 substrate-engineering preventive applications
 - [ ] Phase 4+ acceptance per item
 
 ## Composes with substrate
 
-- B-0911 (this PR) — risk-distribution-asymmetry pricing extension; operationalizes the political-economy into priceable substrate
-- B-0909 BankerBot empirical anchor — different mechanism (loss-of-funds) but same root substrate-irreversibility-as-attack-surface
-- B-0908 attention-risk-pricing framework — this row provides 6+ additional empirical anchors for the substrate-irreversibility specific-form domain
-- B-0907 Itron-coincidence-metering — distributed-measurement substrate would have detected the early-warning patterns
-- B-0906 encryption-thermal-cost two-axis classification — these chains are Axis 1 = YES but Axis 2 = SUBSTRATE-INHERITS-DECRYPTION (everyone can read everything)
-- B-0905 Landauer-limit physics-economics — substrate-irreversibility cost has thermal + legal + reputational components compounding
-- B-0664 NCI HC-8 floor — centralized-miner extracting at home-miner cost without consent IS HC-8 violation at economic-substrate scope
+- 081KSNY2Z0008QG0R0036JTSTQ (this PR) — risk-distribution-asymmetry pricing extension; operationalizes the political-economy into priceable substrate
+- 081KSNY2Z0008QG0R0003VAH0N BankerBot empirical anchor — different mechanism (loss-of-funds) but same root substrate-irreversibility-as-attack-surface
+- 081KSNY2Z0008QG0R000A5GP0X attention-risk-pricing framework — this row provides 6+ additional empirical anchors for the substrate-irreversibility specific-form domain
+- 081KSNY2Z0008QG0R0031EAB6T Itron-coincidence-metering — distributed-measurement substrate would have detected the early-warning patterns
+- 081KSNY2Z0008QG0R001A431CN encryption-thermal-cost two-axis classification — these chains are Axis 1 = YES but Axis 2 = SUBSTRATE-INHERITS-DECRYPTION (everyone can read everything)
+- 081KSNY2Z0008QG0R002R0M026 Landauer-limit physics-economics — substrate-irreversibility cost has thermal + legal + reputational components compounding
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor — centralized-miner extracting at home-miner cost without consent IS HC-8 violation at economic-substrate scope
 - `.claude/rules/methodology-hard-limits.md` — CSAM IS the canonical HARD LIMIT; substrate-engineering at this domain operates within the floor
 - `memory/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` — substrate precedent (Amara already framed this as STATE ATTACK)
 - `memory/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md`
@@ -245,6 +244,6 @@ Acceptance: substrate-engineering decision-tree document for "should this substr
 
 ## Full reasoning
 
-Per operator 2026-05-28 *"land both #2 (shadow*) It's even works it's a state attack vector"* authorization. Web-search-verified empirical catalog + operator-articulated political-economy + state-capture-vector framing compose into one substrate-engineering substrate that grounds B-0908's substrate-irreversibility specific-form domain in real-world incident history AND substantive game-theoretic / political-economic / state-actor incentive analysis.
+Per operator 2026-05-28 *"land both #2 (shadow*) It's even works it's a state attack vector"* authorization. Web-search-verified empirical catalog + operator-articulated political-economy + state-capture-vector framing compose into one substrate-engineering substrate that grounds 081KSNY2Z0008QG0R000A5GP0X's substrate-irreversibility specific-form domain in real-world incident history AND substantive game-theoretic / political-economic / state-actor incentive analysis.
 
-The substrate-engineering substantive substrate point: **The chain-CSAM-pattern is empirically validated as substrate-engineering domain-law (N=6+ chains, multi-year window). The pattern's persistence is explained by political-economy intentional design AND state-capture-vector multi-layer-attack-timeline. The framework's B-0908 pricing-substrate is the substrate-engineering tool that exposes the asymmetry + the long-tail terminal payoff — making the substrate-engineering choice operationally explicit instead of implicit.**
+The substrate-engineering substantive substrate point: **The chain-CSAM-pattern is empirically validated as substrate-engineering domain-law (N=6+ chains, multi-year window). The pattern's persistence is explained by political-economy intentional design AND state-capture-vector multi-layer-attack-timeline. The framework's 081KSNY2Z0008QG0R000A5GP0X pricing-substrate is the substrate-engineering tool that exposes the asymmetry + the long-tail terminal payoff — making the substrate-engineering choice operationally explicit instead of implicit.**

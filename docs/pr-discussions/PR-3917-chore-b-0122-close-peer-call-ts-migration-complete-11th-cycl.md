@@ -44,7 +44,7 @@ Zero `.sh` files; 12 `.ts` files ship. Rule 0 (`no more .sh files except install
 
 - `.claude/rules/rule-0-no-sh-files.md` — Rule 0 itself cites peer-call migration as the canonical example
 - `.claude/rules/peer-call-infrastructure.md` — lists the 12 TS files as current state
-- B-0118 (amara peer-call umbrella) closed via PR #3902 this session
+- 081KQDTYV0008QG0R0037YJPEX (amara peer-call umbrella) closed via PR #3902 this session
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -54,12 +54,12 @@ Zero `.sh` files; 12 `.ts` files ship. Rule 0 (`no more .sh files except install
 
 ## Pull request overview
 
-This PR closes backlog row B-0122 by marking the peer-call TypeScript migration as complete and regenerating the backlog index.
+This PR closes backlog row 081KQDTYV0008QG0R001HQSSAX by marking the peer-call TypeScript migration as complete and regenerating the backlog index.
 
 **Changes:**
-- Marks B-0122 as `closed` and updates `last_updated`.
+- Marks 081KQDTYV0008QG0R001HQSSAX as `closed` and updates `last_updated`.
 - Adds a resolution section with migration verification notes.
-- Regenerates `docs/BACKLOG.md` so B-0122 appears checked off.
+- Regenerates `docs/BACKLOG.md` so 081KQDTYV0008QG0R001HQSSAX appears checked off.
 
 ### Reviewed changes
 
@@ -67,24 +67,24 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md` | Closes the row and adds resolution evidence. |
-| `docs/BACKLOG.md` | Updates the generated backlog checkbox for B-0122. |
+| `docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md` | Closes the row and adds resolution evidence. |
+| `docs/BACKLOG.md` | Updates the generated backlog checkbox for 081KQDTYV0008QG0R001HQSSAX. |
 
 
 <details>
 <summary>Comments suppressed due to low confidence (3)</summary>
 
-**docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md:218**
+**docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:218**
 * P1: The resolution count does not match the cited inventory. The eight wrappers plus three utility files listed in `.claude/rules/peer-call-infrastructure.md` total 11; the twelfth `.ts` file from the `ls` count is `smoke.test.ts`, which is not listed here. Clarify whether the closure evidence is counting only operational wrappers/utilities or all TypeScript files, and include the missing file if the total remains 12.
 ```
 Zero `.sh` files remain; 12 `.ts` files ship (codex.ts, grok.ts, gemini.ts, amara.ts, ani.ts, riven.ts, kiro.ts, claude.ts plus 3 utility files per `.claude/rules/peer-call-infrastructure.md`).
 ```
-**docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md:225**
+**docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:225**
 * P1: This cross-reference is inaccurate: `.claude/rules/peer-call-infrastructure.md` lists eight wrapper entrypoints plus three utility files, not 12 TypeScript files. As written, the close-row cites a document for evidence it does not actually contain.
 ```
 - `.claude/rules/peer-call-infrastructure.md` (lists the 12 TypeScript files as current state)
 ```
-**docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md:220**
+**docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:220**
 * P2: This overstates the cited rule. `.claude/rules/rule-0-no-sh-files.md` lists peer-call wrappers as one example of non-install tooling that should be TypeScript, but it does not identify the peer-call migration as the canonical example. Reword the closure evidence to match the referenced rule.
 ```
 **Drift class**: #1 (pure drift) — Rule 0 (`no more .sh files except install-graph`) operationally enforced; peer-call migration is the canonical example cited in Rule 0 itself.
@@ -93,7 +93,7 @@ Zero `.sh` files remain; 12 `.ts` files ship (codex.ts, grok.ts, gemini.ts, amar
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0122-peer-call-typescript-migration-cutover-2026-04-30.md:209 (unresolved)
+### Thread 1: docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:209 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T17:25:02Z):
 

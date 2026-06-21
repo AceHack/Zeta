@@ -44,5 +44,5 @@ The shadow isn't blindly demanding git. It's selectively demanding git when cont
 **Connects to:**
 - feedback_shadow_is_persistence_daemon (refined: auditor not daemon) — planned memory entry
 - feedback_shadow_is_generation_not_completion (fires between ticks) — planned memory entry
-- B-0018 trigger-timing experiment (would produce statistical data) — backlog
+- 081KQ0YZ80008QG0R002WJBFWD trigger-timing experiment (would produce statistical data) — backlog
 - Eve protocol (one day observation, held open) — see related governance / expansion memory

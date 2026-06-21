@@ -22,7 +22,7 @@ Post-merge fix-fwd on #5235 addressing 3 substantive Copilot findings + a workfl
 
 1. **\`dumpIsoEntriesForDiagnostic()\` reuses \`lsIso()\`** — was open-coding duplicate \`spawnSync(\"7z\", ...)\` missing sonarjs/no-os-command-from-path suppression + \`maxBuffer\` + \`r.error\` handling. Would break CI lint + truncate on large ISOs. Now single source of truth.
 2. **\`DIAG_DUMP_LIMIT\` constant** — was hard-coded \"first 80\" in header text drift-risk vs the function's \`limit\` param. Now derived from one constant.
-3. **B-0823 nixpkgs link pinned to \`nixos-25.11\` branch** — was \`blob/master\` which drifts.
+3. **081KSGS9H0008QG0R003SWZF9J nixpkgs link pinned to \`nixos-25.11\` branch** — was \`blob/master\` which drifts.
 4. **Workflow paths include \`tools/ci/audit-installer-iso-content.ts\`** — was missing; #5235's fix-fwd didn't actually trigger the ISO build because the workflow's path filter only included \`tools/ci/audit-installer-substrate.ts\` (source audit), not the post-build content-audit script. THIS PR's commit fires the workflow + the diagnostic dump surfaces the actual 25.11 kernel/initrd paths.
 
 ## Test plan
@@ -44,7 +44,7 @@ Post-merge follow-up to #5235 to make the AI-cluster ISO build/audit workflow re
 
 **Changes:**
 - Refactors `dumpIsoEntriesForDiagnostic()` to reuse `lsIso()` and derives the diagnostic dump limit from a single constant.
-- Pins the B-0823 nixpkgs source link to `nixos-25.11` to avoid `master` drift.
+- Pins the 081KSGS9H0008QG0R003SWZF9J nixpkgs source link to `nixos-25.11` to avoid `master` drift.
 - Expands the `build-ai-cluster-iso` workflow `paths` filter to include the ISO content audit script so changes to it retrigger builds.
 
 ### Reviewed changes
@@ -54,7 +54,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 | File | Description |
 | ---- | ----------- |
 | tools/ci/audit-installer-iso-content.ts | Reuses `lsIso()` for diagnostics and centralizes the diagnostic dump limit. |
-| docs/backlog/P2/B-0823-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md | Pins upstream nixpkgs reference link to the relevant release branch. |
+| docs/backlog/P2/081KSGS9H0008QG0R003SWZF9J-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md | Pins upstream nixpkgs reference link to the relevant release branch. |
 | .github/workflows/build-ai-cluster-iso.yml | Adds the ISO-content audit script to workflow path triggers for PRs/pushes. |
 
 ## Review threads

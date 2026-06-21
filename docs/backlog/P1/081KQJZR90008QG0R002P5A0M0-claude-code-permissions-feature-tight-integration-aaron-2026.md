@@ -1,6 +1,5 @@
 ---
-id: B-0368
-zetaid: 081KQJZR90008QG0R002P5A0M0
+id: 081KQJZR90008QG0R002P5A0M0
 priority: P1
 status: in-progress
 title: Claude Code `/permissions` feature — research current API + integrate tightly so the harness allows maximum agent freedom (Aaron 2026-05-02)
@@ -12,7 +11,7 @@ classification: buildable-now
 type: friction-reducer
 ---
 
-# B-0160 — Claude Code `/permissions` feature tight integration (Aaron 2026-05-02)
+# 081KQJZR90008QG0R002P5A0M0 — Claude Code `/permissions` feature tight integration (Aaron 2026-05-02)
 
 ## Origin
 
@@ -129,7 +128,7 @@ maintainer; no bypass attempted.
 - **`.claude/settings.local.json`**: does not exist.
 - **WebSearch (Otto-364)**: searched Claude Code permissions docs at `code.claude.com/docs/en/permissions` (2026-05-08). Documented full API: `allow`/`ask`/`deny` arrays, deny→ask→allow evaluation order, `Tool(specifier)` syntax with glob `*`, compound-command subcommand splitting, process-wrapper stripping, Read/Edit gitignore-spec patterns, settings precedence (managed > CLI > local > shared > user).
 - **Lost-files search**: no prior permission-related PRs found in closed-not-merged or orphan branches.
-- **Decision-archaeology**: B-0160 was created 2026-05-02 during the substrate-burst session. No prior ADRs or decisions on permissions integration.
+- **Decision-archaeology**: 081KQJZR90008QG0R000FTJ1TC was created 2026-05-02 during the substrate-burst session. No prior ADRs or decisions on permissions integration.
 
 ### Dependency-restructure
 

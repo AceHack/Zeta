@@ -21,13 +21,13 @@ Backing substrate:
   — loop-agent-as-PM role definition (the coordinator). Persona
   name appears in the filename only (history surface); body of
   this README uses the role-ref ("the coordinator").
-- `B-0144` — backlog row this protocol closes (acceptance
+- `081KQGDBJ0008QG0R0021E8YZV` — backlog row this protocol closes (acceptance
   criteria 1+3: worktree-isolation pattern documented + coordinator
   coordination protocol documented).
 
 Companion CI work that landed first:
 
-- **PR #1185 (B-0125)** — gate.yml `path-filter` job classifies
+- **PR #1185 (081KQGDBJ0008QG0R001MK4YPC)** — gate.yml `path-filter` job classifies
   PRs as docs-only vs code-touching and skips the F# build steps
   on docs-only PRs. The build/CI side of the lane split. This
   protocol is the **agent-dispatch side** of the same split:
@@ -173,7 +173,7 @@ git worktree remove ../zeta-doc-lane
 git worktree remove ../zeta-code-lane
 ```
 
-Allocator scripts (TBD; see B-0144 acceptance criteria #1):
+Allocator scripts (TBD; see 081KQGDBJ0008QG0R0021E8YZV acceptance criteria #1):
 
 - `tools/lanes/doc-lane.sh allocate <branch>` — allocate doc lane
 - `tools/lanes/code-lane.sh allocate <branch>` — allocate code lane

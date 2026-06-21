@@ -126,7 +126,7 @@ feat(Core): DynamicValue — the universal self-describing-payload prim…
 
 The serializer for dynamic shapes: a self-describing runtime value tree for shapes
 NOT known at compile time (the "Dynamic runtime objects / polymorphic shape" line in
-PRIMITIVE-REGISTRY; Eve-Protocol B-0638). Distinct from the static `ISerializer<'T>`
+PRIMITIVE-REGISTRY; Eve-Protocol 081KRW63S0008QG0R0030F8ZXA). Distinct from the static `ISerializer<'T>`
 seam (known types) and a NEW shape — deliberately not a generalization of the observe
 oracle's JSON-only `Json` tree.
 

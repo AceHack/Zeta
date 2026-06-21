@@ -3,7 +3,7 @@
 This is the OpenAI Codex (Vera) addendum. [`AGENTS.md`](AGENTS.md) and
 [`GOVERNANCE.md`](GOVERNANCE.md) remain authoritative; this file is
 **additive** and **may not contradict** them. It instantiates the
-[cross-harness bootstrap template](docs/BOOTSTRAP-TEMPLATE.md) (B-0355)
+[cross-harness bootstrap template](docs/BOOTSTRAP-TEMPLATE.md) (081KR50HA0008QG0R003G7DR8Z)
 with the Codex-specific tooling references filled in. The deep Codex
 host-loop mechanics live in [`.codex/AGENTS.md`](.codex/AGENTS.md)
 (Codex-owned); this root file is the cross-harness-discoverable pointer

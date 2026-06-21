@@ -45,7 +45,7 @@ The DSL + hodl + retraction-native + all-layers framing has substantial prior ar
 - **`memory/project_multiple_projects_under_construction_and_lfg_soulfile_inheritance_2026_04_23.md`** — LFG (Lucent Financial Group) is the canonical soulfile; child projects inherit.
 - **`memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`** (PR #1681 same session) — 13 hodl-invariant properties mapped to CI + upstream-contribution candidates.
 - **`memory/feedback_hodl_invariants_13_properties_composed_at_all_layers_bft_under_governance_not_hash_plus_1_aaron_2026_05_05.md`** (same session) — 13 properties composed at ALL LAYERS + BFT-under-governance.
-- **`docs/backlog/P1/B-0161-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md`** — substrate-reshelf P1 work for CLAUDE.md overshoot. The burn-down framing is the escalation of B-0161.
+- **`docs/backlog/P1/081KQJZR90008QG0R002Z4B6VW-substrate-reshelf-asymmetry-applied-to-pr-1202-overshoot-aaron-claudeai-2026-05-02.md`** — substrate-reshelf P1 work for CLAUDE.md overshoot. The burn-down framing is the escalation of 081KQJZR90008QG0R002Z4B6VW.
 
 The DSL + hodl + retraction-native composition is NOT new substrate — it is the Zeta substrate's foundational shape applied at the bootstrap-doc layer. CLAUDE.md / AGENTS.md being free-form prose is the discrepancy; bringing them under the same hodl-invariant + retraction-native discipline as the rest of the substrate is the fix.
 
@@ -114,7 +114,7 @@ When you wake and read this memory file, the pivot direction is real but the des
 
 1. Read the soulfile-DSL prior art (cited above)
 2. Read the hodl-invariant 13 properties substrate
-3. Read B-0161 P1 substrate-reshelf (the precursor work)
+3. Read 081KQJZR90008QG0R002Z4B6VW P1 substrate-reshelf (the precursor work)
 4. Sketch the DSL form for CLAUDE.md / AGENTS.md as a parallel-authoring exercise
 5. Surface the sketch for human-maintainer review BEFORE destructive action
 

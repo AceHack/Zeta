@@ -31,7 +31,7 @@
 
 Seven-section math writeup from Z-set algebra through Landauer's principle to reversible hardware, written for honest adversarial review. Every claim labeled PROVEN / CONJECTURED / SPECULATIVE with citations.
 
-The defensible chain: Z-set algebra (proven) → logical reversibility (proven, Bennett 1973) → Landauer's principle (proven, experimentally confirmed 2012) → Toffoli-gate Z-set implementation (conjectured, pending B-0366 FPGA test).
+The defensible chain: Z-set algebra (proven) → logical reversibility (proven, Bennett 1973) → Landauer's principle (proven, experimentally confirmed 2012) → Toffoli-gate Z-set implementation (conjectured, pending 081KR50HA0008QG0R003T5MZAC FPGA test).
 
 The speculative pieces (Casimir-alignment, P≈NP) are explicitly flagged as hypotheses, not findings.
 

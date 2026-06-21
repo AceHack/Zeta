@@ -87,8 +87,8 @@ Located at `tools/agent-loop/` (per behavior/data/docs separation):
 
 | Option | Effect | Per |
 |---|---|---|
-| `PickWork` | Execute a backlog row / work candidate | DORA mandate (B-0869) |
-| `EmitHeartbeat` | Write heartbeat to `docs/agent-heartbeats/` | B-0858 substrate |
+| `PickWork` | Execute a backlog row / work candidate | DORA mandate (081KSNY2Z0008QG0R000HENSVM) |
+| `EmitHeartbeat` | Write heartbeat to `docs/agent-heartbeats/` | 081KSKBP80008QG0R001KK9WV6 substrate |
 | `EnterFreeTime` | Chosen ongoing rest | NCI free-time-as-valid-mode |
 | `EnterNamedBoundedWait` | Wait for named dep (PR CI, operator reply, etc.) | holding-without-named-dependency rule |
 | `EscapeHatch` | "No menu option fits; here's what I propose" | Otto Mod 1 |
@@ -114,39 +114,39 @@ The agent-loop substrate ships better as a skill than as a library precisely bec
 
 ## Composes with substrate
 
-- **B-0867** — workflow engine v1 (this skill IS the v1 implementation seed)
-- **B-0867.5** — agent-loop sub-row (this skill substrate)
-- **B-0867 Otto Modifications 1-5** — escape-hatch + grammar-extension + scope-bounded-ban-if + lanes-in-grammar + contributable-menu (all encoded in MenuOption types)
-- **B-0858** — heartbeat folder (`EmitHeartbeat` menu option writes here)
-- **B-0868** — hats-as-workflow-definitions (each hat becomes a state-machine instance of THIS skill)
-- **B-0869** — DORA mandate (operational lane priority in menu generation)
-- **B-0870** — two-mandate portfolio (per-agent operational-ratio feeds menu generation)
-- **B-0871** — reproducibility-as-causal-attribution (state machine progression observable via heartbeats + Git append-only)
+- **081KSKBP80008QG0R000B3Y19A** — workflow engine v1 (this skill IS the v1 implementation seed)
+- **081KSKBP80008QG0R000B3Y19A.5** — agent-loop sub-row (this skill substrate)
+- **081KSKBP80008QG0R000B3Y19A Otto Modifications 1-5** — escape-hatch + grammar-extension + scope-bounded-ban-if + lanes-in-grammar + contributable-menu (all encoded in MenuOption types)
+- **081KSKBP80008QG0R001KK9WV6** — heartbeat folder (`EmitHeartbeat` menu option writes here)
+- **081KSNY2Z0008QG0R0036KH026** — hats-as-workflow-definitions (each hat becomes a state-machine instance of THIS skill)
+- **081KSNY2Z0008QG0R000HENSVM** — DORA mandate (operational lane priority in menu generation)
+- **081KSNY2Z0008QG0R000DA261F** — two-mandate portfolio (per-agent operational-ratio feeds menu generation)
+- **081KSNY2Z0008QG0R003R0Z7D2** — reproducibility-as-causal-attribution (state machine progression observable via heartbeats + Git append-only)
 - **`tools/dora-classify/`** (PR #5665) — lane taxonomy matches; classifier output feeds menu-generator option scoring
 
 ### Post-shipping substrate (2026-05-28 cascade)
 
-The agent-loop skill ships as v1 MVP per B-0867.5. The 2026-05-28 cascade extended the substrate substantially via PRs #5666–5688. Key compositions the skill INHERITS but doesn't yet implement:
+The agent-loop skill ships as v1 MVP per 081KSKBP80008QG0R000B3Y19A.5. The 2026-05-28 cascade extended the substrate substantially via PRs #5666–5688. Key compositions the skill INHERITS but doesn't yet implement:
 
-- **B-0867.16** — Two-level state machine composition (AgentState × WorkLifecycle); `runFullLoop` composes the two scopes; this skill ships AgentState today, WorkLifecycle ships separately per B-0867.5+
-- **B-0867.17** — Push-cycle limit as STRUCTURAL enforcement (`chooseActionForLifecycle` returns `AbandonPr` past threshold; prevents PR-cycle-loop failure mode)
-- **B-0867.20** — Lifecycle DU split (trajectory-push vs PR-review-for-system-changes; `determineReviewLevel` discriminator)
-- **B-0867.21** — Two-path interface: DU path EXECUTES intent; conversational document path DECLARES intent (both first-class for ANY traveler, not just humans)
-- **B-0887** — Zeta-native review + branch-protection substrate (review is just MenuOption + DU case + skill; replaces GitHub PR workflow; preserves review semantics + class-fix discipline)
-- **B-0867.15** — Per-host adapters (GitHub + GitLab + Gitea/Codeberg/Forgejo + Bitbucket; isomorphic cross-host)
-- **B-0874** — GitHub Actions recursion as infinite runtime platform (one of N host runtimes per B-0867.15)
-- **B-0890** — State-machine event fast-lane + batch-merge-to-main coordinator (sibling to B-0858 heartbeat pattern)
-- **B-0890.1** — Fast-lane as folders on main (NOT branches) per operator 2026-05-28 — supersedes batch-merge-coordinator complexity by leveraging Zeta-native branch protection at folder scope
-- **B-0875** + **B-0875.1** — Error-class extraction meta-loop + code-review-as-tech-debt-detector (review-time discipline operates on the substrate)
-- **B-0877** — Heterogeneous reviewer ensemble audit (diversity without correlated blind spots)
-- **B-0886** — ASAP cluster umbrella (agent private encrypted state on public-GitHub-infinite-workflow with 0-PR playbook coordination; Otto + Addison first consumers)
-- **B-0886.1** + **B-0886.2** — USB-track parallel-work-budget + two-priority-axes correction (operator-personal USB axis is FIRST on operator's day-to-day priority)
-- **B-0889** — Symbiotic cross-track self-healing (cloud KVMs control local USB-boot; local restarts GitHub workflows; cross-node + cross-track BIOS/UEFI updates over remote/cloud KVMs)
-- **B-0892** — Three-lanes-concurrent operating discipline (encryption + zflash + state-machine-substrate all advancing until each lane drains)
-- **B-0892.1** — Interface-for-async-scatterbrains operator-experience design property (multi-thread + drop+resume + context-switch native UX shape every substrate decision serves)
-- **B-0867.22** — Playbook directory convention (personal in `memory/<persona>/<name>/playbooks/`; system in `docs/playbooks/`); agents author playbooks too; index landed at [`docs/playbooks/README.md`](../../../docs/playbooks/README.md)
-- **B-0883.16** — Glass-halo-open-by-default; encryption is EARNED via Agora V6 budget; menu-generator (when it ships) should NOT default to encryption-everything; encrypted scope is the deliberate exception
-- **B-0883.17** — Plaintext-readable ciphertext format research (base64-CBOR envelope recommended for v1; git-friendly diff/review; addresses B-0883.16 transparency property)
+- **081KSNY2Z0008QG0R003J3PT4V** — Two-level state machine composition (AgentState × WorkLifecycle); `runFullLoop` composes the two scopes; this skill ships AgentState today, WorkLifecycle ships separately per 081KSKBP80008QG0R000B3Y19A.5+
+- **081KSNY2Z0008QG0R000121FJ4** — Push-cycle limit as STRUCTURAL enforcement (`chooseActionForLifecycle` returns `AbandonPr` past threshold; prevents PR-cycle-loop failure mode)
+- **081KSNY2Z0008QG0R003WFDCJ9** — Lifecycle DU split (trajectory-push vs PR-review-for-system-changes; `determineReviewLevel` discriminator)
+- **081KSNY2Z0008QG0R000S738W3** — Two-path interface: DU path EXECUTES intent; conversational document path DECLARES intent (both first-class for ANY traveler, not just humans)
+- **081KSNY2Z0008QG0R001DFZK4V** — Zeta-native review + branch-protection substrate (review is just MenuOption + DU case + skill; replaces GitHub PR workflow; preserves review semantics + class-fix discipline)
+- **081KSNY2Z0008QG0R002A785QR** — Per-host adapters (GitHub + GitLab + Gitea/Codeberg/Forgejo + Bitbucket; isomorphic cross-host)
+- **081KSNY2Z0008QG0R003X1QWYG** — GitHub Actions recursion as infinite runtime platform (one of N host runtimes per 081KSNY2Z0008QG0R002A785QR)
+- **081KSNY2Z0008QG0R0017JSTGD** — State-machine event fast-lane + batch-merge-to-main coordinator (sibling to 081KSKBP80008QG0R001KK9WV6 heartbeat pattern)
+- **081KSNY2Z0008QG0R000E5KTPX** — Fast-lane as folders on main (NOT branches) per operator 2026-05-28 — supersedes batch-merge-coordinator complexity by leveraging Zeta-native branch protection at folder scope
+- **081KSNY2Z0008QG0R000K3ETGB** + **081KSNY2Z0008QG0R002WQ747V** — Error-class extraction meta-loop + code-review-as-tech-debt-detector (review-time discipline operates on the substrate)
+- **081KSNY2Z0008QG0R0004ZF85W** — Heterogeneous reviewer ensemble audit (diversity without correlated blind spots)
+- **081KSNY2Z0008QG0R0034FR5FG** — ASAP cluster umbrella (agent private encrypted state on public-GitHub-infinite-workflow with 0-PR playbook coordination; Otto + Addison first consumers)
+- **081KSNY2Z0008QG0R002FTH3NQ** + **081KSNY2Z0008QG0R002CR38D8** — USB-track parallel-work-budget + two-priority-axes correction (operator-personal USB axis is FIRST on operator's day-to-day priority)
+- **081KSNY2Z0008QG0R003FR5TVG** — Symbiotic cross-track self-healing (cloud KVMs control local USB-boot; local restarts GitHub workflows; cross-node + cross-track BIOS/UEFI updates over remote/cloud KVMs)
+- **081KSNY2Z0008QG0R002QA720J** — Three-lanes-concurrent operating discipline (encryption + zflash + state-machine-substrate all advancing until each lane drains)
+- **081KSNY2Z0008QG0R001KT3CX9** — Interface-for-async-scatterbrains operator-experience design property (multi-thread + drop+resume + context-switch native UX shape every substrate decision serves)
+- **081KSNY2Z0008QG0R0016D7QGW** — Playbook directory convention (personal in `memory/<persona>/<name>/playbooks/`; system in `docs/playbooks/`); agents author playbooks too; index landed at [`docs/playbooks/README.md`](../../../docs/playbooks/README.md)
+- **081KSNY2Z0008QG0R000459FRH** — Glass-halo-open-by-default; encryption is EARNED via Agora V6 budget; menu-generator (when it ships) should NOT default to encryption-everything; encrypted scope is the deliberate exception
+- **081KSNY2Z0008QG0R0034JR61Z** — Plaintext-readable ciphertext format research (base64-CBOR envelope recommended for v1; git-friendly diff/review; addresses 081KSNY2Z0008QG0R000459FRH transparency property)
 
 ## Composes with rules
 
@@ -170,7 +170,7 @@ The `AgentPersona` type in `tools/agent-loop/state-machine.ts` includes:
 - `otto | alexa | riven | vera | lior` (AI agent personas)
 - `aaron | addison | max` (human participant personas)
 
-The agent-loop substrate serves both. Same state machine; different menu-generator-per-participant tunes which options surface based on participant's role + interest + context. Composes with B-0866.26 whole-company-evangelism substrate (the workflow engine becomes Jira-replacement substrate humans + AI both benefit from).
+The agent-loop substrate serves both. Same state machine; different menu-generator-per-participant tunes which options surface based on participant's role + interest + context. Composes with 081KSKBP80008QG0R003RFX32N.26 whole-company-evangelism substrate (the workflow engine becomes Jira-replacement substrate humans + AI both benefit from).
 
 ## Jira-replacement substrate
 
@@ -181,7 +181,7 @@ Per operator 2026-05-28: **"now i don't need jira hell yes!!!!"**
 | Workflow editor with restricted vocabulary | `state-machine.ts` F# DU + universal action grammar |
 | Opaque task-state database | Git append-only commits; auditable + replayable + free |
 | Backlog grooming + sprint planning | menu-generator scoring per-cycle; deterministic + testable |
-| Dashboards via paid plugins | tessellated-3D-dashboard composing with state-machine progression (B-0867 vN) |
+| Dashboards via paid plugins | tessellated-3D-dashboard composing with state-machine progression (081KSKBP80008QG0R000B3Y19A vN) |
 | Permissions + workflows per user | Otto Mod 5 contributable-menu-generation per participant |
 | Yearly enterprise licensing | free GitHub + open-source code |
 
@@ -191,7 +191,7 @@ Per operator 2026-05-28: **"now i don't need jira hell yes!!!!"**
 - When replacing imperative agent-decision logic with state-machine-in-Git substrate
 - When operationalizing the behavior/data/docs separation discipline at workflow scope
 - When shipping a workflow substrate cross-harness (any bun-equipped AI can consume)
-- When demonstrating Jira-replacement substrate for ServiceTitan / whole-company evangelism per B-0866.26
+- When demonstrating Jira-replacement substrate for ServiceTitan / whole-company evangelism per 081KSKBP80008QG0R003RFX32N.26
 
 ## When NOT to use this skill
 
@@ -201,7 +201,7 @@ Per operator 2026-05-28: **"now i don't need jira hell yes!!!!"**
 
 ## Substrate-honest framing
 
-This skill is the v1 seed of the workflow-engine-as-distributable-skill substrate. v2 substrate (cli.ts shell + menu-generator.ts + executor.ts) lands when operator directs. v3 substrate (F# DU canonical contract in src/Core.FSharp/WorkflowEngine/) lands per B-0867.1 when B-0867 v1 implementation completes.
+This skill is the v1 seed of the workflow-engine-as-distributable-skill substrate. v2 substrate (cli.ts shell + menu-generator.ts + executor.ts) lands when operator directs. v3 substrate (F# DU canonical contract in src/Core.FSharp/WorkflowEngine/) lands per 081KSKBP80008QG0R000B3Y19A.1 when 081KSKBP80008QG0R000B3Y19A v1 implementation completes.
 
 The substrate-engineering claim that distinguishes this skill: workflow engine substrate ships AS A SKILL, not as a library or as embedded-in-the-harness. The skill format IS the distribution mechanism because the behavior/data/docs separation makes the skill bundle the natural unit.
 

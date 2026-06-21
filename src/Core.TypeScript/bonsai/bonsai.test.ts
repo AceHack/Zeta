@@ -1,6 +1,6 @@
 /**
  * bonsai.test.ts — TS reference (oracle #1) for the Bonsai-subset serializer
- * (B-0976 slice 1).
+ * (081KT07NV0008QG0R003BE6MJ2 slice 1).
  *
  * `serialize`/`parse` return `Result<_, BonsaiFeedback>` (result over throw, matching
  * the F# oracle). Duties:

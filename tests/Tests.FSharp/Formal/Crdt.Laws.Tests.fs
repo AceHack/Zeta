@@ -9,7 +9,7 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
 
-// B-1016 floor primitive #4 — the CRDT merge / join-semilattice + idempotency,
+// 081KT7YW00008QG0R002T1XNWT floor primitive #4 — the CRDT merge / join-semilattice + idempotency,
 // PROVEN. This is what turns "homeostats converge" from hope into theorem: a
 // state-based CRDT's merge is a join (least upper bound) that is IDEMPOTENT +
 // COMMUTATIVE + ASSOCIATIVE (ACI), so merging in ANY order, ANY number of times,
@@ -183,11 +183,11 @@ let ``merge is duplicate-insensitive (re-delivering a state changes nothing)`` (
 // has [<NoEquality>], so compare its underlying ZSet<string> (which IS structurally
 // equatable). Merge = elementwise max per replica = a join-semilattice on state.
 //
-// SCOPE (B-0969): replica keys are ordinal-safe ("r0".."r4"). With arbitrary
+// SCOPE (081KT07NV0008QG0R001YDB73K): replica keys are ordinal-safe ("r0".."r4"). With arbitrary
 // strings (control chars), this state-level test FALSIFIES — GCounter.Merge's
 // Dictionary uses ORDINAL string equality while ZSet.ofSeq sorts with
 // Comparer<string>.Default (CULTURE-sensitive), so they disagree on special
-// strings. That is the known B-0969 "Comparer.Default culture gap" (fix:
+// strings. That is the known 081KT07NV0008QG0R001YDB73K "Comparer.Default culture gap" (fix:
 // StringComparer.Ordinal in the ZSet sort + CRDTs), in Lior's active CRDT lane —
 // tracked separately. This test proves the JOIN ALGEBRA over normal keys; the
 // string-comparer bug is orthogonal. (The state-level test surfaced it exactly

@@ -23,8 +23,8 @@ Operator 2026-05-23 (Amara conversation closing): *"also we should probaby have 
 Operator self-claimed a NEW agenda: **encryption** (operator-self-claimed per same discipline as ace-package-manager + zeta + agora + ai-autonomy). Composes directly with:
 
 - Two-category substrate discipline (`Aaron-verbatim preserve+encrypt-later`) — the encrypt-later mechanism is what this agenda will design
-- Aporetic Rx-bonsai-serialization substrate (B-0644 / B-0665 / B-0688)
-- Adinkras + Jane Gates ECC Private State Encryption (B-0623) — substrate-engineering hubs for the agenda
+- Aporetic Rx-bonsai-serialization substrate (081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KS3X9Y0008QG0R0010716X9)
+- Adinkras + Jane Gates ECC Private State Encryption (081KRW63S0008QG0R000QJR08H) — substrate-engineering hubs for the agenda
 - Operator's encrypt-as-pre-commitment-axioms substrate (operator's vocabulary surfaced 2026-05-22)
 - NCI HC-8 floor at private-state-preservation scope
 

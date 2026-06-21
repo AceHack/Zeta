@@ -320,9 +320,9 @@ Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 - [`default-to-both.md`](../../../../.claude/rules/default-to-both.md) — AUDITOR naming + southern-bumpkin deflation BOTH held
 - [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims preserved; metaphysical-physics framings flagged per Amara Blade 2
 - [`holding-without-named-dependency-is-standing-by-failure.md`](../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — useful-work discipline at lifetime-scope
-- B-0703 multi-oracle BFT — audit-mechanism deployment
-- B-0664 NCI canonical row
-- B-0646 Agora V6 encryption-budget — pre-commitment axioms substrate
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — audit-mechanism deployment
+- 081KRW63S0008QG0R001Z7NYMV NCI canonical row
+- 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget — pre-commitment axioms substrate
 
 ## Operational implications for future-Otto cold-boots
 

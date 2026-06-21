@@ -1,6 +1,5 @@
 ---
-id: B-0867.16
-zetaid: 081KSNY2Z0008QG0R003J3PT4V
+id: 081KSNY2Z0008QG0R003J3PT4V
 priority: P2
 status: open
 title: Two-level state machine composition — AgentState × WorkLifecycle (situation-scope × lifecycle-scope)

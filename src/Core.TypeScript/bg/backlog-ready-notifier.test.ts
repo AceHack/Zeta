@@ -64,43 +64,43 @@ function fakeAdapters(
 }
 
 const ROW_OPEN_NO_DEPS: BacklogRow = {
-  id: "B-9001",
+  id: "081KFIXT0000009001",
   priority: "P1",
   status: "open",
   dependsOn: [],
-  filename: "B-9001-test-no-deps.md",
+  filename: "081KFIXT0000009001-test-no-deps.md",
 };
 
 const ROW_OPEN_DEPS_SATISFIED: BacklogRow = {
-  id: "B-9002",
+  id: "081KFIXT0000009002",
   priority: "P1",
   status: "open",
-  dependsOn: ["B-9000"],
-  filename: "B-9002-test-deps-ok.md",
+  dependsOn: ["081KFIXT0000009000"],
+  filename: "081KFIXT0000009002-test-deps-ok.md",
 };
 
 const ROW_OPEN_DEPS_UNSATISFIED: BacklogRow = {
-  id: "B-9003",
+  id: "081KFIXT0000009003",
   priority: "P2",
   status: "open",
-  dependsOn: ["B-9999"],
-  filename: "B-9003-test-deps-pending.md",
+  dependsOn: ["081KFIXT0000009999"],
+  filename: "081KFIXT0000009003-test-deps-pending.md",
 };
 
 const ROW_CLOSED: BacklogRow = {
-  id: "B-9000",
+  id: "081KFIXT0000009000",
   priority: "P1",
   status: "closed",
   dependsOn: [],
-  filename: "B-9000-test-closed.md",
+  filename: "081KFIXT0000009000-test-closed.md",
 };
 
 const ROW_OPEN_DEPS_PENDING: BacklogRow = {
-  id: "B-9999",
+  id: "081KFIXT0000009999",
   priority: "P3",
   status: "open",
   dependsOn: [],
-  filename: "B-9999-test-pending.md",
+  filename: "081KFIXT0000009999-test-pending.md",
 };
 
 describe("backlog-ready-notifier slice 2", () => {
@@ -113,88 +113,88 @@ describe("backlog-ready-notifier slice 2", () => {
   describe("parseRow", () => {
     test("extracts id + priority + status + depends_on from frontmatter", () => {
       const content = `---
-id: B-0440
+id: 081KRFA460008QG0R001KC0VBH
 priority: P1
 status: open
 title: "Test row"
-depends_on: [B-0400, B-0402]
+depends_on: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R0008NGW95]
 ---
 
 body content`;
-      const row = parseRow(content, "B-0440-test.md");
+      const row = parseRow(content, "081KRFA460008QG0R001KC0VBH-test.md");
       expect(row).not.toBeNull();
-      expect(row?.id).toBe("B-0440");
+      expect(row?.id).toBe("081KRFA460008QG0R001KC0VBH");
       expect(row?.priority).toBe("P1");
       expect(row?.status).toBe("open");
-      expect(row?.dependsOn).toEqual(["B-0400", "B-0402"]);
+      expect(row?.dependsOn).toEqual(["081KR7JY10008QG0R000R503K2", "081KR7JY10008QG0R0008NGW95"]);
     });
 
     test("handles empty depends_on array", () => {
       const content = `---
-id: B-9001
+id: 081KFIXT0000009001
 priority: P2
 status: open
 depends_on: []
 ---`;
-      const row = parseRow(content, "B-9001.md");
+      const row = parseRow(content, "081KFIXT0000009001.md");
       expect(row?.dependsOn).toEqual([]);
     });
 
     test("handles missing depends_on field (treats as empty)", () => {
       const content = `---
-id: B-9002
+id: 081KFIXT0000009002
 priority: P3
 status: closed
 ---`;
-      const row = parseRow(content, "B-9002.md");
+      const row = parseRow(content, "081KFIXT0000009002.md");
       expect(row?.dependsOn).toEqual([]);
     });
 
     test("parses block-style depends_on YAML list", () => {
       const content = `---
-id: B-9010
+id: 081KFIXT0000009010
 priority: P1
 status: open
 depends_on:
-  - B-9000
-  - B-9001
-  - B-9002
+  - 081KFIXT0000009000
+  - 081KFIXT0000009001
+  - 081KFIXT0000009002
 ---`;
-      const row = parseRow(content, "B-9010.md");
-      expect(row?.dependsOn).toEqual(["B-9000", "B-9001", "B-9002"]);
+      const row = parseRow(content, "081KFIXT0000009010.md");
+      expect(row?.dependsOn).toEqual(["081KFIXT0000009000", "081KFIXT0000009001", "081KFIXT0000009002"]);
     });
 
     test("strips YAML inline comments from block-style depends_on", () => {
-      // Real-world example from B-0422: `- B-0395  # operational-resonance-...`
+      // Real-world example from 081KRCQQF0008QG0R0008VT354: `- 081KR50HA0008QG0R0019KYAAS  # operational-resonance-...`
       // was previously parsed as the full string (including the comment),
       // producing a false-positive dangling-dep warning.
       const content = `---
-id: B-9011
+id: 081KFIXT0000009011
 priority: P1
 status: open
 depends_on:
-  - B-0395  # operational-resonance-conversation-interface (Clifford engine)
-  - B-9001
-  - B-9002 # short trailing note
+  - 081KR50HA0008QG0R0019KYAAS  # operational-resonance-conversation-interface (Clifford engine)
+  - 081KFIXT0000009001
+  - 081KFIXT0000009002 # short trailing note
 ---`;
-      const row = parseRow(content, "B-9011.md");
-      expect(row?.dependsOn).toEqual(["B-0395", "B-9001", "B-9002"]);
+      const row = parseRow(content, "081KFIXT0000009011.md");
+      expect(row?.dependsOn).toEqual(["081KR50HA0008QG0R0019KYAAS", "081KFIXT0000009001", "081KFIXT0000009002"]);
     });
 
     test("strips YAML inline comments from inline-array depends_on", () => {
       const content = `---
-id: B-9012
+id: 081KFIXT0000009012
 priority: P1
 status: open
-depends_on: [B-0440, B-0441 # ready-to-grind notifier, B-0442]
+depends_on: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S # ready-to-grind notifier, 081KRFA460008QG0R00061SXRW]
 ---`;
-      const row = parseRow(content, "B-9012.md");
+      const row = parseRow(content, "081KFIXT0000009012.md");
       // Note: a `#` in an inline-array element terminates the list visually
       // but YAML doesn't treat `]` as commentable so this is best-effort.
       // The first two entries are clean; the third gets absorbed by the
       // comment which the parser strips. Verify the clean entries survive.
-      expect(row?.dependsOn).toContain("B-0440");
-      expect(row?.dependsOn).toContain("B-0441");
+      expect(row?.dependsOn).toContain("081KRFA460008QG0R001KC0VBH");
+      expect(row?.dependsOn).toContain("081KRFA460008QG0R00229616S");
     });
 
     test("returns null when frontmatter missing", () => {
@@ -259,7 +259,7 @@ title: only a title
       );
       expect(result.totalOpenRows).toBe(1);
       expect(result.readyRowsFound).toBe(1);
-      expect(result.candidateIds).toEqual(["B-9001"]);
+      expect(result.candidateIds).toEqual(["081KFIXT0000009001"]);
     });
 
     test("flags rows with all deps closed as ready", () => {
@@ -272,12 +272,12 @@ title: only a title
       );
       expect(result.totalOpenRows).toBe(1);
       expect(result.readyRowsFound).toBe(1);
-      expect(result.candidateIds).toEqual(["B-9002"]);
+      expect(result.candidateIds).toEqual(["081KFIXT0000009002"]);
     });
 
     test("does NOT flag a row whose dep is still open", () => {
-      // ROW_OPEN_DEPS_UNSATISFIED depends on ROW_OPEN_DEPS_PENDING (id=B-9999, status=open)
-      // So B-9003 should NOT be ready. B-9999 has no deps so IT is ready.
+      // ROW_OPEN_DEPS_UNSATISFIED depends on ROW_OPEN_DEPS_PENDING (id=081KFIXT0000009999, status=open)
+      // So 081KFIXT0000009003 should NOT be ready. 081KFIXT0000009999 has no deps so IT is ready.
       const result = pollOnce(
         DEFAULT_CONFIG,
         fakeAdapters("2026-05-13T18:00:00Z", [
@@ -287,7 +287,7 @@ title: only a title
       );
       expect(result.totalOpenRows).toBe(2);
       expect(result.readyRowsFound).toBe(1);
-      expect(result.candidateIds).toEqual(["B-9999"]);
+      expect(result.candidateIds).toEqual(["081KFIXT0000009999"]);
     });
 
     test("limits candidateIds to first 10 rows", () => {
@@ -318,34 +318,34 @@ title: only a title
 
     test("treats superseded-by-* deps as satisfied (matches generate-index)", () => {
       const supersededRow: BacklogRow = {
-        id: "B-8000",
+        id: "081KFIXT0000008000",
         priority: "P1",
-        status: "superseded-by-B-9999",
+        status: "superseded-by-081KFIXT0000009999",
         dependsOn: [],
-        filename: "B-8000.md",
+        filename: "081KFIXT0000008000.md",
       };
       const openWithSupersededDep: BacklogRow = {
-        id: "B-8001",
+        id: "081KFIXT0000008001",
         priority: "P1",
         status: "open",
-        dependsOn: ["B-8000"],
-        filename: "B-8001.md",
+        dependsOn: ["081KFIXT0000008000"],
+        filename: "081KFIXT0000008001.md",
       };
       const result = pollOnce(
         DEFAULT_CONFIG,
         fakeAdapters("2026-05-13T18:00:00Z", [supersededRow, openWithSupersededDep]),
       );
       expect(result.readyRowsFound).toBe(1);
-      expect(result.candidateIds).toEqual(["B-8001"]);
+      expect(result.candidateIds).toEqual(["081KFIXT0000008001"]);
     });
 
     test("flags dangling dep references in note", () => {
       const openWithDanglingDep: BacklogRow = {
-        id: "B-8002",
+        id: "081KFIXT0000008002",
         priority: "P2",
         status: "open",
-        dependsOn: ["B-NONEXISTENT"],
-        filename: "B-8002.md",
+        dependsOn: ["081KFIXTNONEXIST0"],
+        filename: "081KFIXT0000008002.md",
       };
       const result = pollOnce(
         DEFAULT_CONFIG,
@@ -353,7 +353,7 @@ title: only a title
       );
       expect(result.readyRowsFound).toBe(0);
       expect(result.note).toContain("dangling dep ref");
-      expect(result.note).toContain("B-NONEXISTENT");
+      expect(result.note).toContain("081KFIXTNONEXIST0");
     });
   });
 
@@ -392,7 +392,7 @@ title: only a title
       expect(captured).toHaveLength(2);
       expect(captured[0]!.from).toBe("otto");
       expect(captured[0]!.to).toBe("*");
-      expect(captured[0]!.rowId).toBe("B-9001");
+      expect(captured[0]!.rowId).toBe("081KFIXT0000009001");
       expect(captured[0]!.priority).toBe("P1");
       expect(captured[0]!.rationale).toContain("Ready-to-grind");
     });
@@ -410,7 +410,7 @@ title: only a title
     });
 
     test("does NOT publish when ALL open rows have unsatisfied deps (no readies)", () => {
-      // Only ROW_OPEN_DEPS_UNSATISFIED is in this set — its dep (B-9999)
+      // Only ROW_OPEN_DEPS_UNSATISFIED is in this set — its dep (081KFIXT0000009999)
       // isn't in the scan, so it's dangling/unsatisfied → not ready.
       const captured: FakeAssignmentCall[] = [];
       const result = pollOnce(
@@ -487,9 +487,9 @@ title: only a title
 
     test("row assigned at T=0; same row at T=15min (within 30min cooldown) → skipped", () => {
       const captured: FakeAssignmentCall[] = [];
-      // Pre-populate history with B-9001 published at T=0.
+      // Pre-populate history with 081KFIXT0000009001 published at T=0.
       const history: HistoryStore = {
-        read: { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
+        read: { entries: [{ rowId: "081KFIXT0000009001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
         written: [],
       };
       // Poll at T+15min.
@@ -502,7 +502,7 @@ title: only a title
         history,
       );
       const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
-      expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+      expect(result.skippedDueToCooldown).toEqual(["081KFIXT0000009001"]);
       expect(result.publishedEnvelopeIds).toHaveLength(0);
       expect(captured).toHaveLength(0);
       expect(result.note).toContain("skipped 1 due to cooldown");
@@ -511,7 +511,7 @@ title: only a title
     test("row assigned at T=0; same row at T=35min (after 30min cooldown) → re-assigned", () => {
       const captured: FakeAssignmentCall[] = [];
       const history: HistoryStore = {
-        read: { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
+        read: { entries: [{ rowId: "081KFIXT0000009001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
         written: [],
       };
       // Poll at T+35min — entry is expired (older than 30min cooldown).
@@ -530,7 +530,7 @@ title: only a title
       // History rewritten: pruned the stale entry, appended fresh entry.
       expect(history.written).toHaveLength(1);
       expect(history.written[0]!.entries).toEqual([
-        { rowId: "B-9001", publishedAt: "2026-05-13T18:35:00.000Z" },
+        { rowId: "081KFIXT0000009001", publishedAt: "2026-05-13T18:35:00.000Z" },
       ]);
     });
 
@@ -550,27 +550,27 @@ title: only a title
       expect(result.publishedEnvelopeIds).toHaveLength(1);
       expect(history.written).toHaveLength(1);
       expect(history.written[0]!.entries[0]).toMatchObject({
-        rowId: "B-9001",
+        rowId: "081KFIXT0000009001",
         publishedAt: "2026-05-13T18:00:00.000Z",
       });
     });
 
     test("multiple rows in cooldown → only expired rows published; skippedDueToCooldown lists skipped IDs", () => {
       const captured: FakeAssignmentCall[] = [];
-      // B-9001 published 15min ago (still in cooldown); B-9002 published 45min ago (expired).
+      // 081KFIXT0000009001 published 15min ago (still in cooldown); 081KFIXT0000009002 published 45min ago (expired).
       const history: HistoryStore = {
         read: {
           entries: [
-            { rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" },
-            { rowId: "B-9002", publishedAt: "2026-05-13T17:30:00.000Z" },
+            { rowId: "081KFIXT0000009001", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "081KFIXT0000009002", publishedAt: "2026-05-13T17:30:00.000Z" },
           ],
         },
         written: [],
       };
-      const rowB9001: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-9001" };
-      const rowB9002: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-9002" };
+      const rowB9001: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "081KFIXT0000009001" };
+      const rowB9002: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "081KFIXT0000009002" };
       const adapters = fakeAdapters(
-        "2026-05-13T18:15:00.000Z", // T+15min from B-9001; T+45min from B-9002
+        "2026-05-13T18:15:00.000Z", // T+15min from 081KFIXT0000009001; T+45min from 081KFIXT0000009002
         [rowB9001, rowB9002],
         captured,
         "",
@@ -578,9 +578,9 @@ title: only a title
         history,
       );
       const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 10, cooldownMin: 30 }, adapters);
-      expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+      expect(result.skippedDueToCooldown).toEqual(["081KFIXT0000009001"]);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
-      expect(captured.map(c => c.rowId)).toEqual(["B-9002"]);
+      expect(captured.map(c => c.rowId)).toEqual(["081KFIXT0000009002"]);
     });
 
     test("history pruning: entries older than cooldownMin removed on write", () => {
@@ -589,13 +589,13 @@ title: only a title
       const history: HistoryStore = {
         read: {
           entries: [
-            { rowId: "B-OLD", publishedAt: "2026-05-13T17:00:00.000Z" }, // 60min old (expired)
-            { rowId: "B-RECENT", publishedAt: "2026-05-13T17:50:00.000Z" }, // 10min old (kept)
+            { rowId: "081KFIXTOLD", publishedAt: "2026-05-13T17:00:00.000Z" }, // 60min old (expired)
+            { rowId: "081KFIXTRECENT", publishedAt: "2026-05-13T17:50:00.000Z" }, // 10min old (kept)
           ],
         },
         written: [],
       };
-      const rowNew: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-NEW" };
+      const rowNew: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "081KFIXTNEW" };
       const adapters = fakeAdapters(
         "2026-05-13T18:00:00.000Z",
         [rowNew],
@@ -606,12 +606,12 @@ title: only a title
       );
       const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
-      // Written history should NOT include B-OLD (pruned) but should keep B-RECENT and add B-NEW.
+      // Written history should NOT include 081KFIXTOLD (pruned) but should keep 081KFIXTRECENT and add 081KFIXTNEW.
       expect(history.written).toHaveLength(1);
       const writtenIds = history.written[0]!.entries.map(e => e.rowId);
-      expect(writtenIds).not.toContain("B-OLD");
-      expect(writtenIds).toContain("B-RECENT");
-      expect(writtenIds).toContain("B-NEW");
+      expect(writtenIds).not.toContain("081KFIXTOLD");
+      expect(writtenIds).toContain("081KFIXTRECENT");
+      expect(writtenIds).toContain("081KFIXTNEW");
     });
 
     test("--history-file and --cooldown-min flags parse correctly", () => {
@@ -635,20 +635,20 @@ title: only a title
       const history: HistoryStore = {
         read: {
           entries: [
-            { rowId: "B-COOLED-1", publishedAt: "2026-05-13T18:00:00.000Z" },
-            { rowId: "B-COOLED-2", publishedAt: "2026-05-13T18:00:00.000Z" },
-            { rowId: "B-COOLED-3", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "081KFIXTCOOLED1", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "081KFIXTCOOLED2", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "081KFIXTCOOLED3", publishedAt: "2026-05-13T18:00:00.000Z" },
           ],
         },
         written: [],
       };
       const rows: BacklogRow[] = [
-        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-1" },
-        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-2" },
-        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-3" },
-        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-1" },
-        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-2" },
-        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-3" },
+        { ...ROW_OPEN_NO_DEPS, id: "081KFIXTCOOLED1" },
+        { ...ROW_OPEN_NO_DEPS, id: "081KFIXTCOOLED2" },
+        { ...ROW_OPEN_NO_DEPS, id: "081KFIXTCOOLED3" },
+        { ...ROW_OPEN_NO_DEPS, id: "081KFIXTELIG1" },
+        { ...ROW_OPEN_NO_DEPS, id: "081KFIXTELIG2" },
+        { ...ROW_OPEN_NO_DEPS, id: "081KFIXTELIG3" },
       ];
       // Poll at T+15min — cooldown 30min still active for COOLED-* rows.
       const adapters = fakeAdapters(
@@ -661,8 +661,8 @@ title: only a title
       );
       const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 3, cooldownMin: 30 }, adapters);
       expect(result.publishedEnvelopeIds).toHaveLength(3);
-      expect(captured.map(c => c.rowId)).toEqual(["B-ELIG-1", "B-ELIG-2", "B-ELIG-3"]);
-      expect(result.skippedDueToCooldown).toEqual(["B-COOLED-1", "B-COOLED-2", "B-COOLED-3"]);
+      expect(captured.map(c => c.rowId)).toEqual(["081KFIXTELIG1", "081KFIXTELIG2", "081KFIXTELIG3"]);
+      expect(result.skippedDueToCooldown).toEqual(["081KFIXTCOOLED1", "081KFIXTCOOLED2", "081KFIXTCOOLED3"]);
     });
 
     test("readHistoryFile NOT called when noPublish: true (Copilot P1 #4449 — defer history IO)", () => {
@@ -700,17 +700,17 @@ title: only a title
     test("read-merge-write preserves concurrent peer's history entry (Codex P1 #4449)", () => {
       const captured: FakeAssignmentCall[] = [];
       // Initial read: empty (our snapshot says no prior history).
-      // Pre-write read: peer wrote B-PEER between our two reads.
-      // We're publishing B-OURS. Expect both B-PEER + B-OURS in the final write.
+      // Pre-write read: peer wrote 081KFIXTPEER between our two reads.
+      // We're publishing 081KFIXTOURS. Expect both 081KFIXTPEER + 081KFIXTOURS in the final write.
       const initialHistory: AssignmentHistory = { entries: [] };
       const peerWroteBetween: AssignmentHistory = {
-        entries: [{ rowId: "B-PEER", publishedAt: "2026-05-13T17:55:00.000Z" }],
+        entries: [{ rowId: "081KFIXTPEER", publishedAt: "2026-05-13T17:55:00.000Z" }],
       };
       let readIdx = 0;
       const writtenHistory: AssignmentHistory[] = [];
       const baseAdapters = fakeAdapters(
         "2026-05-13T18:00:00.000Z",
-        [{ ...ROW_OPEN_NO_DEPS, id: "B-OURS" }],
+        [{ ...ROW_OPEN_NO_DEPS, id: "081KFIXTOURS" }],
         captured,
       );
       const adapters: Adapters = {
@@ -727,10 +727,10 @@ title: only a title
       };
       const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
-      expect(captured[0]!.rowId).toBe("B-OURS");
+      expect(captured[0]!.rowId).toBe("081KFIXTOURS");
       expect(writtenHistory).toHaveLength(1);
       const writtenIds = writtenHistory[0]!.entries.map(e => e.rowId).sort();
-      expect(writtenIds).toEqual(["B-OURS", "B-PEER"]);
+      expect(writtenIds).toEqual(["081KFIXTOURS", "081KFIXTPEER"]);
     });
   });
 

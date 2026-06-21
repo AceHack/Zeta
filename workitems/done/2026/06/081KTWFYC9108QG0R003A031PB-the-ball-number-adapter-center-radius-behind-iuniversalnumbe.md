@@ -16,7 +16,7 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTWFYC9108QG0R003A031PB-*.md` glob. -->
 
-Migrated from the accidental legacy `B-1037` row so the item lives on the current
+Migrated from the accidental legacy `081KTSZN10008QG0R003PHDV1C` row so the item lives on the current
 ZetaId workitem surface instead of extending the frozen sequential backlog.
 
 Owner note: open; home is Core.FSharp.TriBoolean for the Tri-returning compare,

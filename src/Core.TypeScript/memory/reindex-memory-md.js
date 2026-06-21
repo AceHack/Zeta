@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 /**
- * B-0258 / B-0423: Reindex memory/MEMORY.md from the memory/ heap.
+ * 081KR2E4K0008QG0R001E27DDV / 081KRCQQF0008QG0R0037YYP1A: Reindex memory/MEMORY.md from the memory/ heap.
  *
  * Architectural fix for the MEMORY.md serialization-point
- * anti-pattern (B-0423). Reads frontmatter from every
+ * anti-pattern (081KRCQQF0008QG0R0037YYP1A). Reads frontmatter from every
  * memory/*.md file, regenerates MEMORY.md as an indexed
  * stack-view of the heap.
  *
@@ -55,7 +55,7 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 const MEMORY_DIR = "memory";
 const INDEX_FILE = join(MEMORY_DIR, "MEMORY.md");
-const PREAMBLE_MARKER = "<!-- BEGIN AUTO-INDEX (B-0423 reindex-memory-md.ts) -->";
+const PREAMBLE_MARKER = "<!-- BEGIN AUTO-INDEX (081KRCQQF0008QG0R0037YYP1A reindex-memory-md.ts) -->";
 const PREAMBLE_END = "<!-- END AUTO-INDEX -->";
 function parseFrontmatter(content) {
     if (!content.startsWith("---"))
@@ -167,7 +167,7 @@ function renderIndex(entries, autoDreamMarker) {
         "indexed, accessible by direct path. Both are easily accessible: " +
         "stack via traversal, heap via timestamp/filename. Indexing " +
         "(heap→stack promotion) happens on cadence via " +
-        "`src/Core.TypeScript/memory/reindex-memory-md.ts` (B-0423), callable from the " +
+        "`src/Core.TypeScript/memory/reindex-memory-md.ts` (081KRCQQF0008QG0R0037YYP1A), callable from the " +
         "autonomous-loop tick. Last reindex: " + now + ".");
     lines.push("");
     lines.push(PREAMBLE_MARKER);

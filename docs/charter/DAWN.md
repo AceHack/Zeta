@@ -1,6 +1,6 @@
 # DAWN — charter stub
 
-**Status:** `stays-in-monorepo` (B-0465 verdict; 2026-05-14)  
+**Status:** `stays-in-monorepo` (081KRHWGX0008QG0R002B2P0K0 verdict; 2026-05-14)  
 **Product verdict:** not ready for its own repo. Dawn is a governance and
 charter concept that lives in the Zeta monorepo until its scope and product
 definition are concrete enough for independent repo scaffolding.

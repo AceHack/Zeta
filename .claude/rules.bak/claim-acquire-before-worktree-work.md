@@ -5,7 +5,7 @@ Carved sentence:
 > When multiple instances of the **same** agent (e.g., Otto-CLI + Otto-Desktop)
 > share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli`
 > vs `otto-desktop`) for the claim-coordinator (`tools/bus/claim.ts`,
-> B-0400 slice 3) to prevent split-brain — identical `--from` values both
+> 081KR7JY10008QG0R000R503K2 slice 3) to prevent split-brain — identical `--from` values both
 > exit 0 (same-sender idempotent re-acquire). As of PR #3037 (2026-05-13)
 > `SENDER_IDS` includes surface-tagged variants — opt in to `otto-cli` /
 > `otto-desktop` / `alexa-cli` / `alexa-kiro` / etc. for correct
@@ -87,7 +87,7 @@ the HOW.
 When `git worktree add <new-path>` rolls back with `fatal: Could not
 reset index file to revision 'HEAD'` and/or `error: unable to open
 object pack directory: ... Interrupted system call` — that's the
-worktree-prune-race documented in [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
+worktree-prune-race documented in [081KRMEXM0008QG0R000X1PPGC](../../docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
 Root cause: multi-session Otto-CLI concurrency on shared `.git/objects/pack`
 during `git worktree add`'s internal `git reset --hard`. Standard git
 behavior under FS contention, NOT external pruning.
@@ -130,7 +130,7 @@ landed 2 commits to the same worktree's original branch concurrently
 **When this pattern applies**:
 
 - New `git worktree add` is failing with `Interrupted system call`
-  rollback (the B-0530 failure mode)
+  rollback (the 081KRMEXM0008QG0R000X1PPGC failure mode)
 - Multiple concurrent Otto-CLI claude-code processes detected
   (`pgrep -fl claude-code` returns more than your own PID)
 - You need to commit a tick shard / small PR and can't wait for
@@ -148,7 +148,7 @@ landed 2 commits to the same worktree's original branch concurrently
   (the borrow inverts the priorities — peer-Otto must wait for
   your switch-back; keep borrows short)
 
-Composes with [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
+Composes with [081KRMEXM0008QG0R000X1PPGC](../../docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
 (the mutex mitigation in `tools/orchestrator-checks/cron-sentinel-mutex.ts`
 when it ships); until that ships, the borrow pattern is the
 operational workaround.
@@ -222,21 +222,21 @@ under the three conditions stated; default remains "wait for clean
 window" because the migration-not-preservation semantics are easy to
 mistake for true peer-WIP preservation.
 
-### Sub-case 3 — pack-dir contention hangs `git worktree add` (B-0530 race)
+### Sub-case 3 — pack-dir contention hangs `git worktree add` (081KRMEXM0008QG0R000X1PPGC race)
 
 `git worktree add /tmp/new-path` contends on `.git/objects/pack` during
 its internal `git reset --hard`. Hangs indefinitely under sustained peer
-activity. No `--lock` flag prevents this; see [B-0530](../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
+activity. No `--lock` flag prevents this; see [081KRMEXM0008QG0R000X1PPGC](../../docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md).
 
-**Mitigation (no working mitigation today)**: requires B-0530 cron-sentinel
+**Mitigation (no working mitigation today)**: requires 081KRMEXM0008QG0R000X1PPGC cron-sentinel
 mutex (not yet shipped). Until then, fall through to existing-sidetick
 borrow — which hits sub-case 4.
 
 ### Sub-case 3b — pack-dir contention causes `git push` to fail at push time
 
-Same B-0530 root cause class as sub-case 3, but manifesting at `git push`
+Same 081KRMEXM0008QG0R000X1PPGC root cause class as sub-case 3, but manifesting at `git push`
 time on an already-created worktree that previously passed the canary.
-Distinguished from B-0615 (silent-push-failure) by being non-silent.
+Distinguished from 081KRW63S0008QG0R000EAZ9K2 (silent-push-failure) by being non-silent.
 
 **Symptom**: `git push` returns non-zero exit with errors like:
 
@@ -249,15 +249,15 @@ error: failed to push some refs to '...'
 ```
 
 Network + auth are fine; bottleneck is local pack-dir reads under peer-agent
-contention. Distinguish from **B-0615** (push exits ZERO but remote ref
+contention. Distinguish from **081KRW63S0008QG0R000EAZ9K2** (push exits ZERO but remote ref
 never updates — silent; mitigation: REST git-data API bypass per
 [PR #4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145)).
 Both belong to the same FS-contention root cause class but require
 different mitigations because the exit codes differ.
 
-**Mitigation (working today)**: the **B-0615 REST git-data API bypass**
+**Mitigation (working today)**: the **081KRW63S0008QG0R000EAZ9K2 REST git-data API bypass**
 (`POST .../git/blobs` → `POST .../git/trees` → `POST .../git/commits` →
-`POST/PATCH .../git/refs`) works for sub-case 3b as well as B-0615.
+`POST/PATCH .../git/refs`) works for sub-case 3b as well as 081KRW63S0008QG0R000EAZ9K2.
 Empirical anchor: [PR #4535](https://github.com/Lucent-Financial-Group/Zeta/pull/4535)
 (2026-05-21) — the memo about this very failure mode was blocked from
 landing by repeated `timeout`-wrapped `git push` runs surfacing exit 124
@@ -422,10 +422,10 @@ during peer cascade) needs to ship a shard / substrate edit:
 
 ## Operational examples
 
-### Example 1: Otto-CLI picks B-0444 (which exists)
+### Example 1: Otto-CLI picks 081KRFA460008QG0R001SXP0C2 (which exists)
 
 ```bash
-$ bun tools/bus/claim.ts acquire --from otto --item B-0444 --branch otto/b0444-impl-2026-05-13
+$ bun tools/bus/claim.ts acquire --from otto --item 081KRFA460008QG0R001SXP0C2 --branch otto/b0444-impl-2026-05-13
 $ echo $?
 0
 # Proceeded with worktree creation + impl
@@ -435,12 +435,12 @@ $ echo $?
 
 ```bash
 # Otto-CLI publishes claim first (using surface-tagged sender):
-$ bun tools/bus/claim.ts acquire --from otto-cli --item B-0444
+$ bun tools/bus/claim.ts acquire --from otto-cli --item 081KRFA460008QG0R001SXP0C2
 $ echo $?
 0
 
 # Otto-Desktop tries to claim the same row with its OWN surface ID:
-$ bun tools/bus/claim.ts acquire --from otto-desktop --item B-0444
+$ bun tools/bus/claim.ts acquire --from otto-desktop --item 081KRFA460008QG0R001SXP0C2
 $ echo $?
 1   # otto-desktop sees otto-cli's claim, exits 1 — split-brain prevented
 ```
@@ -468,15 +468,15 @@ PR #3032.
 
 ```bash
 # Otto-CLI publishes claim first:
-$ bun tools/bus/claim.ts acquire --from otto-cli --item B-0444
+$ bun tools/bus/claim.ts acquire --from otto-cli --item 081KRFA460008QG0R001SXP0C2
 $ echo $?
 0
 
 # Otto-Desktop tries to claim same row with DIFFERENT --from:
-$ bun tools/bus/claim.ts acquire --from otto-desktop --item B-0444
+$ bun tools/bus/claim.ts acquire --from otto-desktop --item 081KRFA460008QG0R001SXP0C2
 $ echo $?
 1   # Otto-Desktop sees otto-cli's claim, exits 1
-# Otto-Desktop picks B-0445 instead.
+# Otto-Desktop picks 081KRFA460008QG0R002JQERS5 instead.
 ```
 
 This is the operational behavior as of PR #3037 (2026-05-13). Use surface-tagged
@@ -488,7 +488,7 @@ multi-surface split-brain prevention.
 ```bash
 # Otto-CLI process dies. Claim stays on bus with 24h TTL.
 # Otto-Desktop checks:
-$ bun tools/bus/claim.ts check --item B-0444
+$ bun tools/bus/claim.ts check --item 081KRFA460008QG0R001SXP0C2
 # Output: claimed by otto (TTL expires in 23h 59m)
 
 # After 24h the claim auto-expires (TTL). No PID-liveness reclaim exists;
@@ -503,7 +503,7 @@ both Ottos might pick the same backlog row simultaneously, leading to
 duplicate work, race conditions, or worse — both committing to the
 same branch with conflicts.
 
-The claim-coordinator (B-0400 slice 3, PR #2939) was built for exactly
+The claim-coordinator (081KR7JY10008QG0R000R503K2 slice 3, PR #2939) was built for exactly
 this. Without a rule enforcing its use, both Ottos might forget to
 acquire claims and the split-brain happens. The substrate-honest fix
 is mechanizing the discipline via this rule.
@@ -514,10 +514,10 @@ work.
 
 ## Composes with substrate
 
-- B-0400 (bus protocol — the schema this rule uses)
-- B-0400 slice 3 (PR #2939 — claim-coordinator implementation)
-- B-0400 slice 5 (PR #2959 — `--with-bus-claims` gate integration)
-- PR #3017 (B-0440.4 — bus publish pattern; same protocol)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — the schema this rule uses)
+- 081KR7JY10008QG0R000R503K2 slice 3 (PR #2939 — claim-coordinator implementation)
+- 081KR7JY10008QG0R000R503K2 slice 5 (PR #2959 — `--with-bus-claims` gate integration)
+- PR #3017 (081KRFA460008QG0R001KC0VBH.4 — bus publish pattern; same protocol)
 - `memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
   (the multi-foreground-surface design this rule operationalizes)
 - `docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md`
@@ -540,9 +540,9 @@ mechanization.
 
 ## Full reasoning
 
-PR #2939 (B-0400 slice 3 — claim-coordinator implementation)
-PR #2959 (B-0400 slice 5 — bus-gate integration)
-PR #3017 (B-0440.4 — bus publish pattern)
+PR #2939 (081KR7JY10008QG0R000R503K2 slice 3 — claim-coordinator implementation)
+PR #2959 (081KR7JY10008QG0R000R503K2 slice 5 — bus-gate integration)
+PR #3017 (081KRFA460008QG0R001KC0VBH.4 — bus publish pattern)
 PR #3030 (Otto Claude Desktop tight bootstream — second Otto surface)
 
 Aaron 2026-05-13 verbatim: *"probalby want to figure out how not to

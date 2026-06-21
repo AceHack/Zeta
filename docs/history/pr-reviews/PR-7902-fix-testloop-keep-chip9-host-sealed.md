@@ -29,7 +29,7 @@
 
 ## Summary
 
-- keep the B-1035 TestLoop sealed-room host test off the repository filesystem
+- keep the 081KTSZN10008QG0R002J0GE0Z TestLoop sealed-room host test off the repository filesystem
 - preload the Chip9 treaty ROM + plane + grid as warm-cache data inside the sealed test module
 - preserve the same Chip9Board golden replay assertion while satisfying `audit-sealed-rooms.ts`
 
@@ -54,7 +54,7 @@ Credential-Mode: shared
 Human-Review: explicit
 Human-Review-Evidence: chat
 Action-Mode: supervised
-Task: B-1035
+Task: 081KTSZN10008QG0R002J0GE0Z
 Co-Authored-By: Codex <noreply@openai.com>
 
 

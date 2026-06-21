@@ -1,6 +1,5 @@
 ---
-id: B-0248
-zetaid: 081KQZVQW0008QG0R0032TPKT8
+id: 081KQZVQW0008QG0R0032TPKT8
 priority: P1
 status: open
 title: "Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool"
@@ -13,7 +12,7 @@ owners: [architect, infrastructure-operator, security-auditor]
 type: feature
 ---
 
-# B-0248 — Multi-site fork + GPU infrastructure redundancy
+# 081KQZVQW0008QG0R0032TPKT8 — Multi-site fork + GPU infrastructure redundancy
 
 ## What
 
@@ -48,7 +47,7 @@ This is BFT applied below the agent layer:
   mirror of LFG/Zeta main.
 - **Host layer**: multiple physical loop hosts, including Max's
   24/7 site.
-- **Compute layer**: local GPU pool for B-0240/B-0244/B-0246/B-0247
+- **Compute layer**: local GPU pool for 081KQZVQW0008QG0R002QZAFB2/081KQZVQW0008QG0R001PS4F8G/081KQZVQW0008QG0R00348SHDZ/081KQZVQW0008QG0R000ZHEN62
   workloads.
 - **Governance layer**: maintainer-owned accounts and explicit
   ruleset/sync permissions, not invisible chat instructions.
@@ -58,8 +57,8 @@ This is BFT applied below the agent layer:
 Implement the runbooks, checks, and coordination surfaces needed
 for:
 
-1. Maintainer fork onboarding for Addison and Max. (Extracted to B-0248.1)
-2. Mirror-sync setup per `.claude/skills/mirror-sync/SKILL.md`. (Extracted to B-0248.1)
+1. Maintainer fork onboarding for Addison and Max. (Extracted to 081KRHWGX0008QG0R000EE6VN5)
+2. Mirror-sync setup per `.claude/skills/mirror-sync/SKILL.md`. (Extracted to 081KRHWGX0008QG0R000EE6VN5)
 3. Host-loop setup for Max's 24/7 site, using a main-backed
    control clone instead of a contested root checkout.
 4. Hardware inventory capture for Rodney: machine count, GPU
@@ -98,9 +97,9 @@ for:
 
 ## Composes with
 
-- B-0110 - AceHack mirror-refresh protocol drift
-- B-0240 - structure recognizer
-- B-0244 - coherence/concordance AI on local GPUs
-- B-0246 - Green Lantern ring edge device
-- B-0247 - Ace DLC content packs
+- 081KQDTYV0008QG0R001Y2E9TD - AceHack mirror-refresh protocol drift
+- 081KQZVQW0008QG0R002QZAFB2 - structure recognizer
+- 081KQZVQW0008QG0R001PS4F8G - coherence/concordance AI on local GPUs
+- 081KQZVQW0008QG0R00348SHDZ - Green Lantern ring edge device
+- 081KQZVQW0008QG0R000ZHEN62 - Ace DLC content packs
 - `.claude/skills/mirror-sync/SKILL.md`

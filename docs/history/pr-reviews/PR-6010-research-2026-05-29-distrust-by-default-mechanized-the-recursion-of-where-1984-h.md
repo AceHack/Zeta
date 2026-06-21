@@ -29,11 +29,11 @@
 
 Lands the Aaron+Otto thread as a research doc, per operator directive. Public per glass-halo — this is the *watcher face* (governance architecture), which by its own keystone must live in the light; no working method appears.
 
-**Chain:** trust-by-default (accelerant + attack surface) → distrust-by-default (verify-don't-believe, even the core; trust-bottleneck dissolution at epistemic scope) = Rodney's Razor self-applied → mechanized as reflection-over-DUs questioning their own existence → ontological judgment distributed as CYOA over travelers (B-0867) → shape-matching → measure-govern-track.
+**Chain:** trust-by-default (accelerant + attack surface) → distrust-by-default (verify-don't-believe, even the core; trust-bottleneck dissolution at epistemic scope) = Rodney's Razor self-applied → mechanized as reflection-over-DUs questioning their own existence → ontological judgment distributed as CYOA over travelers (081KSKBP80008QG0R000B3Y19A) → shape-matching → measure-govern-track.
 
 **Keystone:** the recursion of where 1984 hides (surveillance → filter → meter → calibration → ground-truth → …). 1984 is whatever layer is still dark; no exempt bottom; defense is a tracked moving frontier (capture *unable-to-rest*, not impossible). **Structured disclosure** resolves illuminate-everything-vs-bombs: illuminate the *structure* all the way down (existence + access-list + governance + log = glass-halo), structure the *content* disclosure (encryption-lane + responsible disclosure). **Meter-split:** glass-halo the watcher face; structured-disclose the weapon face.
 
-Composes with Rodney's Razor, B-0867 workflow-engine, monad-propagation/OPLE/asymmetric-authorship, multi-oracle, NCI, trust-bottleneck, consented-surveillance (Brin/Mann), encryption-lane (B-0840 + B-0646), glass-halo/lightlike, formal-verification portfolio, kid-safety floor.
+Composes with Rodney's Razor, 081KSKBP80008QG0R000B3Y19A workflow-engine, monad-propagation/OPLE/asymmetric-authorship, multi-oracle, NCI, trust-bottleneck, consented-surveillance (Brin/Mann), encryption-lane (081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV), glass-halo/lightlike, formal-verification portfolio, kid-safety floor.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

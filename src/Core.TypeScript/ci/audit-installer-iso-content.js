@@ -84,13 +84,13 @@ const REQUIRED_ISO_PATHS = [
         rationale: "NixOS installer's read-only nix store; contains zeta-install.sh + flake + modules",
     },
 ];
-// Kernel + initrd path checks moved to any-of-family per B-0823 (2026-05-26).
+// Kernel + initrd path checks moved to any-of-family per 081KSGS9H0008QG0R003SWZF9J (2026-05-26).
 // nixpkgs 25.11 places kernel + initrd at variant paths (per-arch / store-hash
 // / etc.) instead of the legacy `boot/bzImage` + `boot/initrd` top-level
-// locations 24.11 used. Same fix-fwd pattern as B-0818 (isoName) — relax to
+// locations 24.11 used. Same fix-fwd pattern as 081KSGS9H0008QG0R00033DT02 (isoName) — relax to
 // any-of with multiple candidate paths to survive nixpkgs-channel bumps,
 // AND dump full entry list on failure for self-debugging future regressions.
-// Suffix-pattern matching (per B-0823 follow-up; empirical 25.11 paths
+// Suffix-pattern matching (per 081KSGS9H0008QG0R003SWZF9J follow-up; empirical 25.11 paths
 // confirmed via diagnostic dump on build run 26465084701):
 //
 //   kernel: boot/nix/store/<hash>-linux-<version>/bzImage
@@ -286,14 +286,14 @@ function auditIsoContent(isoPath) {
             rationale: `none of the known bootloader configs found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_BOOTLOADER_ANY.map((b) => `${b.path} (${b.rationale})`).join("; ")}`,
         });
     }
-    // Suffix-pattern match helper (B-0823 follow-up): an entry satisfies a
+    // Suffix-pattern match helper (081KSGS9H0008QG0R003SWZF9J follow-up): an entry satisfies a
     // candidate when its key starts with the candidate's prefix AND ends with
     // the candidate's suffix. Either field empty means "no constraint at that
     // end". This handles 25.11's store-hashed paths like
     // boot/nix/store/<hash>-linux-<ver>/bzImage where the hash varies per build.
     const allEntryPaths = Array.from(entryByPath.keys());
     const matchesAny = (candidates) => candidates.some((c) => allEntryPaths.some((p) => p.startsWith(c.prefix) && p.endsWith(c.suffix)));
-    // Kernel any-of check (B-0823 + 25.11 store-hashed-path follow-up):
+    // Kernel any-of check (081KSGS9H0008QG0R003SWZF9J + 25.11 store-hashed-path follow-up):
     // nixpkgs 25.11 places kernel at boot/nix/store/<hash>-linux-<ver>/bzImage
     // — exact-path lookup impossible by construction (hash varies per build).
     // Suffix-match handles both legacy (24.11 boot/bzImage) AND new (25.11
@@ -305,7 +305,7 @@ function auditIsoContent(isoPath) {
             rationale: `none of the known kernel suffix-patterns found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_KERNEL_ANY.map((k) => `${k.prefix}*${k.suffix} (${k.rationale})`).join("; ")}`,
         });
     }
-    // Initrd any-of check (B-0823 + 25.11 store-hashed-path follow-up):
+    // Initrd any-of check (081KSGS9H0008QG0R003SWZF9J + 25.11 store-hashed-path follow-up):
     // same shape as kernel-any-of above.
     if (!matchesAny(REQUIRED_INITRD_ANY)) {
         failures.push({
@@ -316,7 +316,7 @@ function auditIsoContent(isoPath) {
     }
     return failures;
 }
-// Defensive substrate addition (B-0823): when the audit fails, dump
+// Defensive substrate addition (081KSGS9H0008QG0R003SWZF9J): when the audit fails, dump
 // a sample of the actual ISO entries so future regressions self-debug.
 // Without this, the failure log shows only "[missing-path] X" with no
 // indication of what IS present. Dump first 80 entries (sorted by
@@ -381,7 +381,7 @@ function main() {
         }
     }
     process.stderr.write("\n");
-    // Diagnostic dump (B-0823) — show what's actually in the ISO so the
+    // Diagnostic dump (081KSGS9H0008QG0R003SWZF9J) — show what's actually in the ISO so the
     // candidate any-of paths can be extended next time nixpkgs shifts.
     // Derive the limit from a single constant so the header text + the
     // function call never drift apart (fix-fwd Copilot finding on #5235).

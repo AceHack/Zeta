@@ -1,9 +1,8 @@
 ---
-id: B-0521
-zetaid: 081KRHWGX0008QG0R002VD5ZNP
+id: 081KRHWGX0008QG0R002VD5ZNP
 priority: P3
 status: open
-title: Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
+title: Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from 081KQTPYE0008QG0R002Y7X5KH)
 tier: research+engineering-direction
 effort: S
 created: 2026-05-14
@@ -14,9 +13,9 @@ tags: [tinygrad, uop-ir, retract-semantics]
 type: task
 ---
 
-# B-0521 -- Tinygrad UOp rewrite walk + retract mapping
+# 081KRHWGX0008QG0R002VD5ZNP -- Tinygrad UOp rewrite walk + retract mapping
 
-This row was decomposed from B-0202.
+This row was decomposed from 081KQTPYE0008QG0R002Y7X5KH.
 
 ## Acceptance criteria
 

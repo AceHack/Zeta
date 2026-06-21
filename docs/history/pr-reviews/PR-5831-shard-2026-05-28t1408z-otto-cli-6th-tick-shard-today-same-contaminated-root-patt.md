@@ -29,7 +29,7 @@
 
 ## Summary
 
-Otto-CLI fresh cold-boot at 2026-05-28T14:08Z UTC. 6th 2026-05-28 tick shard (~3h54min gap since [#5???? 1014Z](docs/hygiene-history/ticks/2026/05/28/1014Z.md)). Visibility-signal only; no parallel substrate authored — operator-substrate-engineering arc (B-0917/B-0918/AutoLoopLifetime/workflow-engine) is heavily active on `origin/main`.
+Otto-CLI fresh cold-boot at 2026-05-28T14:08Z UTC. 6th 2026-05-28 tick shard (~3h54min gap since [#5???? 1014Z](docs/hygiene-history/ticks/2026/05/28/1014Z.md)). Visibility-signal only; no parallel substrate authored — operator-substrate-engineering arc (081KSNY2Z0008QG0R002HB4AGT/081KSNY2Z0008QG0R0036SJ3T1/AutoLoopLifetime/workflow-engine) is heavily active on `origin/main`.
 
 ## Context
 

@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Migrates Lior's background loop runner launchd daemon from Aaron's contested primary checkout to the isolated clone directory (`/Users/acehack/.local/share/zeta-lior-loop/Zeta`), aligning with Codex and Riven isolated agent loop architecture (B-0751).
+Migrates Lior's background loop runner launchd daemon from Aaron's contested primary checkout to the isolated clone directory (`/Users/acehack/.local/share/zeta-lior-loop/Zeta`), aligning with Codex and Riven isolated agent loop architecture (081KSE6WT0008QG0R003YYC9PV).
 
 ## Changes
 
@@ -32,7 +32,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 
 ## Pull request overview
 
-Updates the Gemini “Lior loop” launchd configuration to run from an isolated per-agent clone rather than the shared primary checkout, aligning the background loop runner with the isolated-workspace architecture described in B-0751.
+Updates the Gemini “Lior loop” launchd configuration to run from an isolated per-agent clone rather than the shared primary checkout, aligning the background loop runner with the isolated-workspace architecture described in 081KSE6WT0008QG0R003YYC9PV.
 
 **Changes:**
 - Point `ProgramArguments` at the tick script inside `~/.local/share/zeta-lior-loop/Zeta` instead of the primary checkout.

@@ -27,22 +27,22 @@
 
 ## Description
 
-Operator 2026-05-28 locked 7 decisions on B-0883.1 PQ library landscape audit's open questions + named the standing operating discipline.
+Operator 2026-05-28 locked 7 decisions on 081KSNY2Z0008QG0R0037X4DP4 PQ library landscape audit's open questions + named the standing operating discipline.
 
 6 rows filed:
 
 | Row | Priority | Locks |
 |---|---|---|
-| **B-0892**   | P1 | Three-lanes-concurrent operating discipline (encryption + zflash + state-machine-substrate; every idle tick wastes the infinite-choose-your-own-adventure substrate) |
-| **B-0883.2** | P2 | Multi-cipher PQ substrate (Q2: 'not just NIST'; NIST baseline + Saber + NTRU Prime + FrodoKEM hedge; parameterized envelope) |
-| **B-0887.2** | P2 | Move sonatype-guide into playbook substrate (Q3: PRs not worth vendor lockin) |
-| **B-0883.3** | P3 | Content-addressed-store substrate for retroactive revocation (Q4: future-state when threat model requires) |
-| **B-0883.4** | P3 | Side-channel scope boundary (Q7: bound to git-at-rest only; follow-up tracking) |
-| **B-0883.5** | P3 | Metadata encryption follow-up (Q5: content-only for v1; Layer 1 filename + Layer 2 commit-msg + Layer 3 dir-obfuscation deferred) |
+| **081KSNY2Z0008QG0R002QA720J**   | P1 | Three-lanes-concurrent operating discipline (encryption + zflash + state-machine-substrate; every idle tick wastes the infinite-choose-your-own-adventure substrate) |
+| **081KSNY2Z0008QG0R002ZAVMEK** | P2 | Multi-cipher PQ substrate (Q2: 'not just NIST'; NIST baseline + Saber + NTRU Prime + FrodoKEM hedge; parameterized envelope) |
+| **081KSNY2Z0008QG0R001NERKCY** | P2 | Move sonatype-guide into playbook substrate (Q3: PRs not worth vendor lockin) |
+| **081KSNY2Z0008QG0R0008EJDW1** | P3 | Content-addressed-store substrate for retroactive revocation (Q4: future-state when threat model requires) |
+| **081KSNY2Z0008QG0R001FN4DDB** | P3 | Side-channel scope boundary (Q7: bound to git-at-rest only; follow-up tracking) |
+| **081KSNY2Z0008QG0R0020KXAPS** | P3 | Metadata encryption follow-up (Q5: content-only for v1; Layer 1 filename + Layer 2 commit-msg + Layer 3 dir-obfuscation deferred) |
 
-Decisions Q1 (build) + Q6 (Adinkras-ECC integration whenever) already locked in B-0883.1 + composing rows; no new rows needed.
+Decisions Q1 (build) + Q6 (Adinkras-ECC integration whenever) already locked in 081KSNY2Z0008QG0R0037X4DP4 + composing rows; no new rows needed.
 
-Composes with the active 3-lane cluster: encryption (B-0883/.1/.2/.3/.4/.5 + B-0885) + zflash (B-0844/B-0852/B-0852.3/B-0884/B-0891/B-0737) + state-machine-substrate (B-0867/B-0867.2-21/B-0890/B-0890.1/B-0886/B-0887). BACKLOG.md regenerated.
+Composes with the active 3-lane cluster: encryption (081KSNY2Z0008QG0R002JKH50A/.1/.2/.3/.4/.5 + 081KSNY2Z0008QG0R0030V5ZVS) + zflash (081KSGS9H0008QG0R001EZKNCB/081KSKBP80008QG0R003AX2A69/081KSKBP80008QG0R003ETGS01/081KSNY2Z0008QG0R0011XCT94/081KSNY2Z0008QG0R0008PN7RQ/081KSE6WT0008QG0R003WZAQKV) + state-machine-substrate (081KSKBP80008QG0R000B3Y19A/081KSNY2Z0008QG0R001K6HJ7Z-21/081KSNY2Z0008QG0R0017JSTGD/081KSNY2Z0008QG0R000E5KTPX/081KSNY2Z0008QG0R0034FR5FG/081KSNY2Z0008QG0R001DFZK4V). BACKLOG.md regenerated.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

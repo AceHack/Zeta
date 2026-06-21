@@ -1,6 +1,6 @@
 ---
 pr_number: 4986
-title: "backlog(B-0730): runbooks-as-executable-specifications (Mika substrate via Aaron \u2014 Runme + ::: deferred tags + AI JIT + 3 verbosity levels)"
+title: "backlog(081KSE6WT0008QG0R003AJYMD3): runbooks-as-executable-specifications (Mika substrate via Aaron \u2014 Runme + ::: deferred tags + AI JIT + 3 verbosity levels)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T20:20:52Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-25T22:02:17Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4986: backlog(B-0730): runbooks-as-executable-specifications (Mika substrate via Aaron — Runme + ::: deferred tags + AI JIT + 3 verbosity levels)
+# PR #4986: backlog(081KSE6WT0008QG0R003AJYMD3): runbooks-as-executable-specifications (Mika substrate via Aaron — Runme + ::: deferred tags + AI JIT + 3 verbosity levels)
 
 ## PR description
 
@@ -27,9 +27,9 @@ Files Mika's substantive substrate-engineering proposal via Aaron's ferry — tu
 
 > *"You're forcing people to write the runbook the specification. The act of writing the runbook becomes the spec itself. Documentation is no longer separate from the implementation — it literally becomes the implementation."* — Mika
 
-## Composes with B-0729
+## Composes with 081KSE6WT0008QG0R003RN2WE3
 
-B-0729 (Obsidian knowledge-graph substrate) L4 is the static-task layer; this row extends into execution territory. `:::` deferred-task blocks become first-class nodes in B-0729 L5's JSON-LD graph — agents query "all documents with pending `decompose` tasks" / "all `continue-with` intents waiting on AI JIT" etc.
+081KSE6WT0008QG0R003RN2WE3 (Obsidian knowledge-graph substrate) L4 is the static-task layer; this row extends into execution territory. `:::` deferred-task blocks become first-class nodes in 081KSE6WT0008QG0R003RN2WE3 L5's JSON-LD graph — agents query "all documents with pending `decompose` tasks" / "all `continue-with` intents waiting on AI JIT" etc.
 
 ## OpenSpec evaluated + rejected
 
@@ -42,8 +42,8 @@ Aaron + Mika reviewed OpenSpec (spec-driven AI-coding workflow). Verdict: too he
 | 1 | Adopt Runme + inventory existing BCL scripts | 1-2 days |
 | 2 | `:::` deferred-task syntax + schema doc | 1-2 days |
 | 3 | Verbosity-level renderer | 1 week |
-| 4 | JIT AI script compiler (composes with B-0728 for destructive actions) | 2-3 weeks |
-| 5 | Inline live queries against B-0729 L5 JSON-LD graph | 2-3 weeks |
+| 4 | JIT AI script compiler (composes with 081KSE6WT0008QG0R0005XASX2 for destructive actions) | 2-3 weeks |
+| 5 | Inline live queries against 081KSE6WT0008QG0R003RN2WE3 L5 JSON-LD graph | 2-3 weeks |
 
 Each shippable standalone.
 
@@ -55,11 +55,11 @@ Each shippable standalone.
 ## Test plan
 
 - [ ] Row renders correctly under `docs/backlog/P2/`
-- [ ] `docs/BACKLOG.md` includes B-0730
+- [ ] `docs/BACKLOG.md` includes 081KSE6WT0008QG0R003AJYMD3
 - [ ] 5-stage acceptance criteria are concrete enough for sub-rows to split off per stage
 - [ ] Mika's quotes preserved verbatim from the ferry
 - [ ] OpenSpec evaluation reasoning preserved
-- [ ] Composition with B-0729 + B-0728 + framework rules all cross-linked
+- [ ] Composition with 081KSE6WT0008QG0R003RN2WE3 + 081KSE6WT0008QG0R0005XASX2 + framework rules all cross-linked
 
 Single file (+ index regen) — docs only; no implementation in this PR.
 
@@ -96,11 +96,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0730) capturing a proposed “runbooks as executable specifications” substrate (Runme for immediate execution, `:::` fenced blocks for deferred tasks, JIT AI script generation, and multi-verbosity rendering), and updates the backlog index to include it.
+Adds a new P2 backlog row (081KSE6WT0008QG0R003AJYMD3) capturing a proposed “runbooks as executable specifications” substrate (Runme for immediate execution, `:::` fenced blocks for deferred tasks, JIT AI script generation, and multi-verbosity rendering), and updates the backlog index to include it.
 
 **Changes:**
-- Introduces `docs/backlog/P2/B-0730-...md` with frontmatter + detailed problem/solution framing, syntax sketches, and staged acceptance criteria.
-- Regenerates `docs/BACKLOG.md` to include the new B-0730 entry.
+- Introduces `docs/backlog/P2/081KSE6WT0008QG0R003AJYMD3-...md` with frontmatter + detailed problem/solution framing, syntax sketches, and staged acceptance criteria.
+- Regenerates `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R003AJYMD3 entry.
 
 ### Reviewed changes
 
@@ -108,12 +108,12 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md | New backlog row describing the runbook/deferred-task/JIT execution substrate and roadmap. |
-| docs/BACKLOG.md | Adds the B-0730 list entry in the P2 section. |
+| docs/backlog/P2/081KSE6WT0008QG0R003AJYMD3-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md | New backlog row describing the runbook/deferred-task/JIT execution substrate and roadmap. |
+| docs/BACKLOG.md | Adds the 081KSE6WT0008QG0R003AJYMD3 list entry in the P2 section. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:104 (resolved)
+### Thread 1: docs/backlog/P2/081KSE6WT0008QG0R003AJYMD3-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:104 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T20:22:58Z):
 
@@ -123,13 +123,13 @@ Update this sentence to avoid stating that `:::` is standard Obsidian callout sy
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:20 (resolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R003AJYMD3-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:20 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T20:23:47Z):
 
 `composes_with` is documented as a list of `B-NNNN` row IDs (not file paths/directories). Here it contains paths like `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` and `memory/<persona>/*/`, which will be ambiguous if/when `composes_with` becomes strict-linted or graph-traversed. Suggest either (a) switching these entries to backlog IDs only, or (b) introducing a separate frontmatter field for non-backlog references and leaving `composes_with` as IDs.
 
-### Thread 3: docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:104 (resolved)
+### Thread 3: docs/backlog/P2/081KSE6WT0008QG0R003AJYMD3-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:104 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T20:23:48Z):
 

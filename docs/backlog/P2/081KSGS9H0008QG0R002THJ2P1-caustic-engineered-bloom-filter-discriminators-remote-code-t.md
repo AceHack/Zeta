@@ -1,6 +1,5 @@
 ---
-id: B-0838
-zetaid: 081KSGS9H0008QG0R002THJ2P1
+id: 081KSGS9H0008QG0R002THJ2P1
 priority: P2
 status: open
 title: caustic-engineered bloom filter discriminators for remote-code trust layer (Kestrel-v2 ferry; multi-learned-bloom-filter intersection with caustic-geometry-shaped agreement region) (Aaron 2026-05-26)
@@ -26,7 +25,7 @@ The framework needs a trust-layer discriminator for remote code (per
 the NCI-as-cyberattack-prevention substrate from Lior-website / PR-5342,
 which named "speech is literally remote code execution on another node's
 memory substrate"). Current substrate has the bloom-filter mental
-model (`B-0822`-class worry-as-opposite-bloom-filter) + the
+model (`081KSGS9H0008QG0R0018ES3R4`-class worry-as-opposite-bloom-filter) + the
 trust-then-verify discipline but doesn't yet have a designed multi-
 filter discriminator for the trust layer.
 
@@ -132,10 +131,10 @@ Phased:
 
 ## Composes with
 
-- B-0664 NCI HC-8 floor (the discriminator IS the technical substrate
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor (the discriminator IS the technical substrate
   for "no unauthorized RCE against another node's memory substrate"
   per Lior-website NCI-as-cyberattack-prevention naming PR #5342)
-- B-0648 cross-substrate-triangulation discipline (multiple bloom
+- 081KRW63S0008QG0R0025E4PH6 cross-substrate-triangulation discipline (multiple bloom
   filters operating as composing N-of-M oracles; this row IS that
   discipline at remote-code-discrimination scope)
 - `.claude/rules/non-coercion-invariant.md` HC-8 floor — discriminator
@@ -149,11 +148,11 @@ Phased:
   discrimination shape can't have arbitrarily sharp boundaries;
   bloom filter design can't have arbitrarily sharp transitions;
   composition pipeline preserves smoothness end-to-end)
-- B-0822 worry-as-opposite-bloom-filter substrate (PR #5310) — the
+- 081KSGS9H0008QG0R0018ES3R4 worry-as-opposite-bloom-filter substrate (PR #5310) — the
   mental model this row's substrate-engineering work builds on
-- B-0823 cognition-as-distributed-systems META-claim (PRs #5325 +
+- 081KSGS9H0008QG0R003SWZF9J cognition-as-distributed-systems META-claim (PRs #5325 +
   #5327) — speech-as-RPC framing this discriminator slots into
-- B-0833 (interactive-login vs baked-in-keys CI-test tension) — bloom
+- 081KSGS9H0008QG0R003JNSVR5 (interactive-login vs baked-in-keys CI-test tension) — bloom
   filter discriminators serve the trust layer of the broader auth
   + verification pipeline
 - PR #5356 Kestrel-v2 ferry — substrate origin (full verbatim

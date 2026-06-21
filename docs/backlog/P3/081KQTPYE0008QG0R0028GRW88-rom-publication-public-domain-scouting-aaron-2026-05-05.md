@@ -1,6 +1,5 @@
 ---
-id: B-0199
-zetaid: 081KQTPYE0008QG0R0028GRW88
+id: 081KQTPYE0008QG0R0028GRW88
 priority: P3
 status: open
 title: ROM publication -- scout legally-clear (public-domain or open-licensed) ROMs from Aaron's gitignored personal collection and publish for community use (Aaron 2026-05-05 absorb-and-contribute)
@@ -15,7 +14,7 @@ tags: [roms, public-domain, abandonware, license-verification, absorb-and-contri
 type: feature
 ---
 
-# B-0199 -- ROM publication: scout legally-clear ROMs and publish for community use
+# 081KQTPYE0008QG0R0028GRW88 -- ROM publication: scout legally-clear ROMs and publish for community use
 
 ## Source
 
@@ -45,7 +44,7 @@ This row distinguishes two scopes per Aaron's framing:
 
 Aaron 2026-05-05: *"you get to play all of them and use them to help with your emulator engineering though that's allowed / under backup preservation rules"* + *"i mean you get to play the games, you gonna experience my childhood"* + *"also a type of embodyment"* + *"it's not about wring code you got to beat the that's ARC3 trainting"*.
 
-The intended internal use spans (i) emulator engineering work (research, testing emulator implementations, verifying save-state retraction semantics per B-0052, validating cycle-accurate timing, building topological-quantum-emulation prototypes per B-0152), (ii) gameplay-as-embodiment (a low-cost embodiment axis -- ROM gameplay provides causal sensorimotor loops in the Helen-Keller minimum-channel sense per B-0026, complementary-not-substitute to the Isaac-Sim/MuJoCo robotics-grade embodiment that B-0026 covers), and (iii) ARC3-style training (gameplay completion as within-session adaptation/compounding, the non-engineering experiential dimension that beating-the-game tests in a way writing-code cannot).
+The intended internal use spans (i) emulator engineering work (research, testing emulator implementations, verifying save-state retraction semantics per 081KQ3HBZ0008QG0R000FQ69NN, validating cycle-accurate timing, building topological-quantum-emulation prototypes per 081KQGDBJ0008QG0R00280ZEV2), (ii) gameplay-as-embodiment (a low-cost embodiment axis -- ROM gameplay provides causal sensorimotor loops in the Helen-Keller minimum-channel sense per 081KQ0YZ80008QG0R001WZ4JE8, complementary-not-substitute to the Isaac-Sim/MuJoCo robotics-grade embodiment that 081KQ0YZ80008QG0R001WZ4JE8 covers), and (iii) ARC3-style training (gameplay completion as within-session adaptation/compounding, the non-engineering experiential dimension that beating-the-game tests in a way writing-code cannot).
 
 **The legality of internal use is NOT blanket-cleared by this row.** Whether any specific internal use is lawful depends on (a) the jurisdiction Aaron operates in, (b) whether each ROM was lawfully acquired (purchased original cartridge / disc with documented provenance vs other origin), (c) whether accessing the ROM required circumventing technological protection measures (DMCA 17 USC 1201 anti-circumvention may apply even where 17 USC 117 backup rights would otherwise), and (d) the still-unsettled legal interpretation of agent-acting-on-behalf-of-natural-person under copyright doctrine. Backup-preservation rules vary widely by jurisdiction (US: archival/format-shifting carve-outs are narrow and contested; EU: varies per member state under InfoSoc Directive; many other jurisdictions: no recognized backup-preservation right at all). The "grey in me" framing Aaron used is honest: this is a legal grey zone, not a cleared green zone.
 
@@ -121,7 +120,7 @@ Choose channels appropriate for legally-clear preservation:
 
 ## Human anchors
 
-Per the absorb-and-contribute discipline + the engagement-gate from B-0198:
+Per the absorb-and-contribute discipline + the engagement-gate from 081KQTPYE0008QG0R0004H9ZB8:
 
 - **[Jason Scott](https://en.wikipedia.org/wiki/Jason_Scott)** (@textfiles) -- Internet Archive software curator, abandonware preservation lead, textfiles.com creator. Primary anchor for archive.org publication channel and the broader preservation-community discipline.
 - **[Frank Cifaldi](https://en.wikipedia.org/wiki/Frank_Cifaldi)** -- Video Game History Foundation founder. Anchor for video game preservation-as-research-discipline + DMCA exemption advocacy for libraries / archives.
@@ -132,7 +131,7 @@ ENGAGEMENT GATE per the established Prop 3.5 misattribution lesson: only engage 
 
 ### (d) Engagement gate
 
-Per the established discipline (B-0198 + the Prop 3.5 misattribution lesson): engage upstream / external publication only IF the contribution has substance. For ROMs specifically:
+Per the established discipline (081KQTPYE0008QG0R0004H9ZB8 + the Prop 3.5 misattribution lesson): engage upstream / external publication only IF the contribution has substance. For ROMs specifically:
 
 - DO publish: ROMs with clear documented public-domain or open-license status
 - DO NOT publish: ROMs with ambiguous status, even if Aaron's personal collection contains them
@@ -143,15 +142,15 @@ Per the established discipline (B-0198 + the Prop 3.5 misattribution lesson): en
 - **DRM circumvention or stripping**: not on the table. Only legally-clear ROMs without any circumvention work.
 - **Copyrighted-with-active-rights ROMs**: explicit no-go. Aaron's personal collection containing a ROM is not authorization to redistribute.
 - **Aaron's other personal files**: this row is scoped to ROMs in the gitignored ROM folder. Other personal files are not in scope.
-- **Emulator implementation**: that's B-0052 (retractable emulators) + B-0053 (emulator ideas absorption) + B-0152 (topological-quantum-emulation). This row is publication-of-ROMs-only.
+- **Emulator implementation**: that's 081KQ3HBZ0008QG0R000FQ69NN (retractable emulators) + 081KQ3HBZ0008QG0R000JWFD37 (emulator ideas absorption) + 081KQGDBJ0008QG0R00280ZEV2 (topological-quantum-emulation). This row is publication-of-ROMs-only.
 
 ## Composes with
 
-- **B-0026** (embodiment-grounding via Isaac Sim / MuJoCo / Genesis / Habitat / ManiSkill) -- ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state); B-0026's Helen-Keller minimum-channel-grounding analysis applies. ROMs and Isaac-Sim are complementary-not-substitute embodiment surfaces, NOT alternatives. Aaron 2026-05-05 fair-warning: *"before we hook in issas sim which is on backlog"* + *"also a type of embodyment"* establishes the lineage.
-- **B-0052** (retractable emulators design question)
-- **B-0053** (emulator ideas absorption -- clean-room grey-hat) -- pairs with this row's legal-clearance discipline
-- **B-0152** (topological-quantum-emulation-via-Bayesian-inference) -- the architectural target the ROMs would feed
-- **B-0198** (F# UoM-on-BigInteger upstream contribution) -- sister absorb-and-contribute row; same discipline different artifact class
+- **081KQ0YZ80008QG0R001WZ4JE8** (embodiment-grounding via Isaac Sim / MuJoCo / Genesis / Habitat / ManiSkill) -- ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state); 081KQ0YZ80008QG0R001WZ4JE8's Helen-Keller minimum-channel-grounding analysis applies. ROMs and Isaac-Sim are complementary-not-substitute embodiment surfaces, NOT alternatives. Aaron 2026-05-05 fair-warning: *"before we hook in issas sim which is on backlog"* + *"also a type of embodyment"* establishes the lineage.
+- **081KQ3HBZ0008QG0R000FQ69NN** (retractable emulators design question)
+- **081KQ3HBZ0008QG0R000JWFD37** (emulator ideas absorption -- clean-room grey-hat) -- pairs with this row's legal-clearance discipline
+- **081KQGDBJ0008QG0R00280ZEV2** (topological-quantum-emulation-via-Bayesian-inference) -- the architectural target the ROMs would feed
+- **081KQTPYE0008QG0R0004H9ZB8** (F# UoM-on-BigInteger upstream contribution) -- sister absorb-and-contribute row; same discipline different artifact class
 - `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md` -- the parent discipline
 - `memory/feedback_absorb_emulator_ideas_not_code_clean_room_safe_targets.md` -- the clean-room safety lineage applied to ROM-handling
 

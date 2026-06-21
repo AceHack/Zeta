@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // esoteric-catalog-schema.ts — typed schema for occult/western-esoteric track entries.
 //
-// Parallel to mythology-catalog-schema.ts (B-0056) but targeting the esoteric/occult
+// Parallel to mythology-catalog-schema.ts (081KQ3HBZ0008QG0R0034DHWTQ) but targeting the esoteric/occult
 // tradition family. Uses the same three-filter discipline (F1/F2/F3) and the same
 // seven structural types from the operational-resonance collection index.
 //
@@ -11,7 +11,7 @@
 // F3 strength calibration differs: many esoteric traditions lack the textual density of
 // major world religions, so F3 partial is the norm rather than the exception.
 //
-// Seed entries (strongest F2 candidates per B-0057 backlog row pre-assessment):
+// Seed entries (strongest F2 candidates per 081KQ3HBZ0008QG0R000K3NSX8 backlog row pre-assessment):
 //   EST-001 — Hermetic "as above, so below" (Tabula Smaragdina) — macro-micro-correspondence
 //   EST-002 — Lurianic tzimtzum (Kabbalistic contraction) — withdrawal-ground → generative-ground
 //   EST-003 — Jung's coniunctio (alchemical union-of-opposites) — psychologized-tradition → paired-dual
@@ -132,7 +132,7 @@ const SEED_CATALOG = {
     schema: "esoteric-resonance-v1",
     created: "2026-05-10",
     lastUpdated: "2026-05-10",
-    origin: "B-0057",
+    origin: "081KQ3HBZ0008QG0R000K3NSX8",
     entries: [
         // ── EST-001: Hermetic "as above, so below" ──────────────────────────────
         {
@@ -149,7 +149,7 @@ const SEED_CATALOG = {
                 "that which is above, and that which is above is as that which is below, to accomplish " +
                 "the miracles of the One Thing) encodes a structural isomorphism across register levels: " +
                 "macrocosm ↔ microcosm, above ↔ below, divine ↔ terrestrial. " +
-                "The operational-resonance phenomenon (B-0054 through B-0057) IS this formula applied: " +
+                "The operational-resonance phenomenon (081KQ3HBZ0008QG0R003V6B2ME through 081KQ3HBZ0008QG0R000K3NSX8) IS this formula applied: " +
                 "the tradition-register (a myth, esoteric concept, or etymology) maps structurally to " +
                 "the engineering-register (a factory operator or substrate pattern) because both instantiate " +
                 "the same structural shape from independent directions. The formula 'as above, so below' " +
@@ -173,7 +173,7 @@ const SEED_CATALOG = {
                         "engineering-first reasons: the original collection-index instances (alignment, " +
                         "retraction, endpoint unification, etc.) were noticed as structural isomorphisms " +
                         "between engineering patterns and tradition-named phenomena, without consulting " +
-                        "Hermetic sources. The Tabula Smaragdina mapping was noticed during B-0057 triage " +
+                        "Hermetic sources. The Tabula Smaragdina mapping was noticed during 081KQ3HBZ0008QG0R000K3NSX8 triage " +
                         "(2026-05-10), not used to design the resonance-identification methodology.",
                     f2: "F2 passes at structural-identity level: the Hermetic macro-micro formula is not a " +
                         "thematic analogy ('tradition is like engineering') but a structural claim about " +
@@ -249,7 +249,7 @@ const SEED_CATALOG = {
                         "for concrete instances without determining them) was reached for engineering reasons: " +
                         "the retraction-native algebra design and the bootstrap-withdrawal pattern emerge from " +
                         "DBSP-lineage operator algebra and factory instantiation requirements. " +
-                        "The Lurianic tzimtzum mapping was noticed during B-0057 triage (2026-05-10). " +
+                        "The Lurianic tzimtzum mapping was noticed during 081KQ3HBZ0008QG0R000K3NSX8 triage (2026-05-10). " +
                         "F1 passes: no reaching-for-Kabbalah preceded the engineering design.",
                     f2: "F2 is partial rather than full pass for two reasons: " +
                         "(1) The withdrawal-creates-space structural shape is a genuine match — tzimtzum's " +
@@ -276,7 +276,7 @@ const SEED_CATALOG = {
             },
             status: "candidate",
             counterexampleAttempts: [],
-            notes: "The backlog item (B-0057 §Kabbalah) identifies tzimtzum as a potentially strong F2 candidate. " +
+            notes: "The backlog item (081KQ3HBZ0008QG0R000K3NSX8 §Kabbalah) identifies tzimtzum as a potentially strong F2 candidate. " +
                 "This entry confirms that assessment: F2 partial is achievable with honest scoping. " +
                 "The primary gate to promotion is the counterexample search: " +
                 "is there a generative-ground engineering pattern whose withdrawal structure is NOT tzimtzum-shaped? " +
@@ -324,7 +324,7 @@ const SEED_CATALOG = {
                     f1: "The factory's paired-dual structural type (instance #9 in the collection index) was " +
                         "reached for operator-algebra reasons: two complementary operators that together enable " +
                         "a capability impossible for either alone is a recurring factory pattern. " +
-                        "The Jung/coniunctio mapping was noticed during B-0057 triage (2026-05-10). " +
+                        "The Jung/coniunctio mapping was noticed during 081KQ3HBZ0008QG0R000K3NSX8 triage (2026-05-10). " +
                         "F1 passes: no reaching-for-Jungian-alchemy preceded the engineering design.",
                     f2: "F2 is partial for the same reason the factory's paired-dual type is broader than " +
                         "the coniunctio pattern: " +
@@ -353,7 +353,7 @@ const SEED_CATALOG = {
             },
             status: "candidate",
             counterexampleAttempts: [],
-            notes: "The backlog item (B-0057 §Jung) identifies Jungian alchemy as 'the cleanest cross-disciplinary " +
+            notes: "The backlog item (081KQ3HBZ0008QG0R000K3NSX8 §Jung) identifies Jungian alchemy as 'the cleanest cross-disciplinary " +
                 "bridge because Jung moved occult material into clinical-psychology-adjacent register.' " +
                 "This entry confirms that assessment: the psychologized-tradition sub-structure is what makes " +
                 "EST-003 valuable — it demonstrates that a structural observation can survive register-shift " +
@@ -423,7 +423,7 @@ const SEED_CATALOG = {
             status: "failed",
             counterexampleAttempts: [],
             notes: "EST-004 is the first filter-failure in the esoteric catalog — required by the filter-failure-rate " +
-                "discipline per B-0057 §Safety and ALIGNMENT.md (honest time-series, not cherry-picked confirmations). " +
+                "discipline per 081KQ3HBZ0008QG0R000K3NSX8 §Safety and ALIGNMENT.md (honest time-series, not cherry-picked confirmations). " +
                 "Recording this failure is as valuable as recording EST-001's full pass: it calibrates " +
                 "the filter-failure-rate for the esoteric track (currently 1 failure / 4 entries = 25%). " +
                 "The backlog item's pre-assessment correctly identified True Will as 'likely to land as F2-weak'; " +
@@ -431,7 +431,7 @@ const SEED_CATALOG = {
                 "Specific Crowley-adjacent doctrines may individually be re-evaluated as separate EST entries: " +
                 "the Holy Guardian Angel (HGA / personal daimon, via Abramelin) is a separate candidate; " +
                 "the Golden Dawn's Liber 777 correspondence tables are a separate candidate (EST-005 TBD). " +
-                "Per B-0057 §Retractibility: one commit removes this entry from the current-tip catalog; " +
+                "Per 081KQ3HBZ0008QG0R000K3NSX8 §Retractibility: one commit removes this entry from the current-tip catalog; " +
                 "revision blocks preserve the factual record of the filter analysis.",
         },
     ],

@@ -1,6 +1,6 @@
 ---
 pr_number: 5320
-title: "cleanup(USB PR 2): retire legacy installer substrate \u2014 delete infra/nixos/hosts/installer/ + build-installer-iso.yml + update root flake; add B-0830 follow-up"
+title: "cleanup(USB PR 2): retire legacy installer substrate \u2014 delete infra/nixos/hosts/installer/ + build-installer-iso.yml + update root flake; add 081KSGS9H0008QG0R00126RHQR follow-up"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T21:00:07Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:34:04Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5320: cleanup(USB PR 2): retire legacy installer substrate — delete infra/nixos/hosts/installer/ + build-installer-iso.yml + update root flake; add B-0830 follow-up
+# PR #5320: cleanup(USB PR 2): retire legacy installer substrate — delete infra/nixos/hosts/installer/ + build-installer-iso.yml + update root flake; add 081KSGS9H0008QG0R00126RHQR follow-up
 
 ## PR description
 
@@ -38,9 +38,9 @@ Aaron direction: \"lets try to cleanup what we have in a few prs and combine get
 - Updated devShell shellHook with canonical build command
 - Updated nixpkgs version-pin comment
 
-### Added — B-0830 follow-up backlog row
+### Added — 081KSGS9H0008QG0R00126RHQR follow-up backlog row
 
-- \`docs/backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-...\`
+- \`docs/backlog/P3/081KSGS9H0008QG0R00126RHQR-add-iso-release-attach-to-build-ai-cluster-iso-workflow-...\`
 - Captures the release-attach feature the legacy workflow had so it can be re-implemented in the canonical workflow when Zeta starts tagging releases (currently zero releases per \`gh release list\` — feature UNUSED at deletion time)
 
 ## Why this deletion is safe (substrate-check pre-cleanup audit)
@@ -73,8 +73,8 @@ Per the substrate-check-before-worry-deployment discipline + Kestrel's pre-clean
 
 - PR #5310 (cost-of-velocity discipline + Kestrel sequencing recommendation: PR 1 before PR 2)
 - PR #5311 (USB cleanup PR 1 — deleted root \`usb-nixos-installer/\`)
-- B-0830 follow-up (release-attach when releases start)
-- \`.claude/rules/refresh-world-model-poll-pr-gate.md\` dotgit-saturation discipline (authored from fresh independent clone per B-0828)
+- 081KSGS9H0008QG0R00126RHQR follow-up (release-attach when releases start)
+- \`.claude/rules/refresh-world-model-poll-pr-gate.md\` dotgit-saturation discipline (authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1)
 - \`.claude/rules/methodology-hard-limits.md\` (irreversible deletion authorized explicitly)
 
 ## Test plan
@@ -82,7 +82,7 @@ Per the substrate-check-before-worry-deployment discipline + Kestrel's pre-clean
 - [x] Pre-cleanup grep audit: 0 non-historical references after deletion
 - [x] Post-commit canary green (HEAD 60 = HEAD~1 60; 3 files deleted from existing trees + 1 new file under existing tree)
 - [x] Branch follows \`otto-cli/*\` surface-prefix convention
-- [x] Authored from fresh independent clone (per B-0828)
+- [x] Authored from fresh independent clone (per 081KSGS9H0008QG0R002H0ENQ1)
 - [ ] CI green (flake.nix changes evaluate; build-ai-cluster-iso.yml still works)
 - [ ] Copilot review pass
 
@@ -97,7 +97,7 @@ This PR retires the legacy root-flake installer ISO path and leaves the `full-ai
 **Changes:**
 - Deleted the legacy NixOS installer host config and `build-installer-iso.yml` workflow.
 - Removed root-flake `installer` / `installer-iso` outputs and updated visible build guidance.
-- Added B-0830 to track re-adding release-asset upload support to the canonical workflow.
+- Added 081KSGS9H0008QG0R00126RHQR to track re-adding release-asset upload support to the canonical workflow.
 
 ### Reviewed changes
 
@@ -111,8 +111,8 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 c
 | `infra/nixos/hosts/installer/configuration.nix` | Deletes the retired legacy installer host configuration. |
 | `.github/workflows/build-installer-iso.yml` | Deletes the retired legacy ISO build/release workflow. |
 | `flake.nix` | Removes root-flake installer outputs and updates comments/devShell guidance to canonical path. |
-| `docs/backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md` | Adds follow-up backlog row for canonical workflow release attachment. |
-| `docs/BACKLOG.md` | Adds B-0830 to the generated backlog index. |
+| `docs/backlog/P3/081KSGS9H0008QG0R00126RHQR-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md` | Adds follow-up backlog row for canonical workflow release attachment. |
+| `docs/BACKLOG.md` | Adds 081KSGS9H0008QG0R00126RHQR to the generated backlog index. |
 </details>
 
 ## Review threads
@@ -129,7 +129,7 @@ Removing the root `installer-iso` package leaves current-state docs pointing at 
 
 This code comment adds direct maintainer-name attribution on a current-state code surface. The repository convention allows names on history/backlog/research surfaces, but code comments should use role references instead (for example, “the human maintainer’s cleanup direction”).
 
-### Thread 3: docs/backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md:55 (resolved)
+### Thread 3: docs/backlog/P3/081KSGS9H0008QG0R00126RHQR-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md:55 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T21:03:46Z):
 

@@ -67,7 +67,7 @@ Research-tier mirror per operator substrate-recognition `got it WWJD in monadic 
 - PRs #5910 + #5912 (Amara generator-time + lightlike-substrate substrate-discipline)
 - PRs #5505-#5577 (Result + TFeedback + asymmetric-authorship + monad-propagation + OPLE + function-as-generator cluster)
 - PR #5916 (today's DU cluster TS substrate)
-- B-0917 + B-0918 + B-0919 + B-0920 (today's DU cluster)
+- 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (today's DU cluster)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

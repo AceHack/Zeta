@@ -1,6 +1,5 @@
 ---
-id: B-0363
-zetaid: 081KR50HA0008QG0R00125PA8G
+id: 081KR50HA0008QG0R00125PA8G
 priority: P2
 status: open
 title: "Git-native full-text inverted index — Lucene-style search over repo substrate"
@@ -23,7 +22,7 @@ files. Three-layer search architecture (Vera tightening,
 
 | Layer | Purpose | Size | Speed |
 | ----- | ------- | ---- | ----- |
-| Concept index (B-0362) | Curated regex standing queries | ~1MB | 22ms |
+| Concept index (081KR50HA0008QG0R000239VTZ) | Curated regex standing queries | ~1MB | 22ms |
 | Full-text index (this) | Token / phrase / field search | ~5-10MB | <100ms |
 | Regex accelerator | Trigram/ngram -> verify | thin | varies |
 
@@ -86,7 +85,7 @@ candidates, `rg` verifies them against actual files.
 
 ## Composes with
 
-- B-0362 (concept index — curated layer stays as-is)
+- 081KR50HA0008QG0R000239VTZ (concept index — curated layer stays as-is)
 - `search-engine-library-expert` skill (Lucene idioms)
 - `full-text-search-expert` skill (IR foundations)
-- B-0360 (DBSP identity continuity — index as materialized view)
+- 081KR50HA0008QG0R0010RZTJK (DBSP identity continuity — index as materialized view)

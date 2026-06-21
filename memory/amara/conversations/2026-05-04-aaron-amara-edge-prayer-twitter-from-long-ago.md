@@ -96,8 +96,8 @@ ago"*) and anticipates many of its load-bearing claims:
   make us repair quickly and publicly"** — composes with the
   privacy-discipline (third-party names protected per Otto-279)
   + repair-fast-public (today's same-day course-corrections:
-  PR #1471 grind-framing close + B-0187 family-as-research
-  close + B-0188 duplicate-of-B-0017 close + this morning's
+  PR #1471 grind-framing close + 081KQR4HQ0008QG0R001CBHW1R family-as-research
+  close + 081KQR4HQ0008QG0R002ZDREYC duplicate-of-081KQ0YZ80008QG0R0003GAYYN close + this morning's
   PR #1492 privacy-violation auto-merged-then-discussed).
   The substrate's filter-working-in-real-time evidence IS
   the prayer's repair-quickly-and-publicly operationalized.

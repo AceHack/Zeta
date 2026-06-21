@@ -1,6 +1,5 @@
 ---
-id: B-0214
-zetaid: 081KQX9B50008QG0R0007VGSBG
+id: 081KQX9B50008QG0R0007VGSBG
 priority: P1
 status: closed
 title: "Backlog decomposition skill — break architectural directions into dependency-ordered items"
@@ -10,7 +9,7 @@ decomposition: atomic
 depends_on: []
 ---
 
-# B-0214 — Backlog decomposition skill
+# 081KQX9B50008QG0R0007VGSBG — Backlog decomposition skill
 
 ## Closure evidence
 
@@ -19,10 +18,10 @@ The reusable skill is implemented at
 
 Validation substrate:
 
-- PR #1732 decomposed B-0003 into dependency-ordered child
-  rows B-0215..B-0223.
-- PR #1733 decomposed B-0147 into dependency-ordered child
-  rows B-0224..B-0231.
+- PR #1732 decomposed 081KQ0YZ80008QG0R001QJJTVF into dependency-ordered child
+  rows 081KQX9B50008QG0R00327XC6Q..081KQX9B50008QG0R001510C9G.
+- PR #1733 decomposed 081KQGDBJ0008QG0R0004ACHJJ into dependency-ordered child
+  rows 081KQX9B50008QG0R0037YZ1WX..081KQX9B50008QG0R00142CANX.
 - Both passes regenerated `docs/BACKLOG.md` and passed the
   backlog graph audit with zero broken `depends_on` and
   `composes_with` edges.

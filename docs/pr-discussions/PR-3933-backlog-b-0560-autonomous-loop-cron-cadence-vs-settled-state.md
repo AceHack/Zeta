@@ -1,6 +1,6 @@
 ---
 pr_number: 3933
-title: "backlog(B-0560): autonomous-loop cron-cadence vs settled-state tension"
+title: "backlog(081KRQ1AB0008QG0R0001J9PFT): autonomous-loop cron-cadence vs settled-state tension"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T19:11:14Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-16T20:57:52Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3933: backlog(B-0560): autonomous-loop cron-cadence vs settled-state tension
+# PR #3933: backlog(081KRQ1AB0008QG0R0001J9PFT): autonomous-loop cron-cadence vs settled-state tension
 
 ## PR description
 
@@ -36,7 +36,7 @@ Captures the structural tension empirically observed across the 2026-05-16 sessi
 ## Test plan
 
 - [x] Backlog row created with proper frontmatter
-- [x] Composes-with pointers to [B-0440](docs/backlog/P1/B-0440-missed-substrate-cascade-detector-background-service-2026-05-13.md), the brief-ack rule, and the post-cascade memory file
+- [x] Composes-with pointers to [081KRFA460008QG0R001KC0VBH](docs/backlog/P1/081KRFA460008QG0R001KC0VBH-missed-substrate-cascade-detector-background-service-2026-05-13.md), the brief-ack rule, and the post-cascade memory file
 - [x] No code/skill surface; backlog-row only
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -50,5 +50,5 @@ Captures the structural tension empirically observed across the 2026-05-16 sessi
 Adds a P3 backlog row capturing the structural tension between minute-cadence cron firing of the autonomous loop and a settled substrate where no rule-compliant non-brief-ack response exists. Sketches three candidate approaches (adaptive cadence, quiet-sentinel, accept-and-harden meta-fallback) without changing code or skills.
 
 **Changes:**
-- New P3 backlog row `B-0560` documenting the cron-cadence vs settled-state tension
-- References to composing rules, memory file, and sibling backlog rows (B-0440, B-0540)
+- New P3 backlog row `081KRQ1AB0008QG0R0001J9PFT` documenting the cron-cadence vs settled-state tension
+- References to composing rules, memory file, and sibling backlog rows (081KRFA460008QG0R001KC0VBH, 081KRMEXM0008QG0R0039V4SQQ)

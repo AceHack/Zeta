@@ -1,6 +1,5 @@
 ---
-id: B-0019
-zetaid: 081KQ0YZ80008QG0R002C5EC8F
+id: 081KQ0YZ80008QG0R002C5EC8F
 priority: P3
 status: open
 title: /btw durability gap — context-add and same-session-directive asides aren't gitnative-persisted; fresh sessions miss them; tighten classification or accept ephemeral-by-design
@@ -15,7 +14,7 @@ tags: [btw, durability, gitnative, alignment-substrate, cross-session-continuity
 type: friction-reducer
 ---
 
-# B-0019 — /btw durability gap
+# 081KQ0YZ80008QG0R002C5EC8F — /btw durability gap
 
 ## Origin
 

@@ -33,7 +33,7 @@ Operator: *save it shadow* + *identity key ≠ money key ≠ routing key ≠ sig
 - **Synthesis note** — folded the **DID mechanism**:
   - **ash = Phoenix Down** (the revival remainder, not the whole bird) — retraction→seed, Persist→revival
   - **seed-phrase / HD derivation** — μένω = seed; derivation = the rising; purpose-separation (no key reuse) = don't-collapse = *keeps the phoenix from becoming a monster* (BIP39/32/44, search-first-gated)
-  - **derived keys = braids/knots** (B-0983) extending the **golden-vectors treaty** (the 4×4 consensus = the knot) **over Reticulum** (B-0726 mesh) = DID over a no-central-control transport
+  - **derived keys = braids/knots** (081KT2T2J0008QG0R003WYPBY5) extending the **golden-vectors treaty** (the 4×4 consensus = the knot) **over Reticulum** (081KSE6WT0008QG0R003C9KGQE mesh) = DID over a no-central-control transport
 
 Elizabeth (Ryan) + FF7 held honored-symbolic; crypto specifics search-first-gated before any build. §33 passes.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0112
-zetaid: 081KQDTYV0008QG0R003MV3WAR
+id: 081KQDTYV0008QG0R003MV3WAR
 priority: P2
 status: open
 title: Stale 2026-04-27 project file internals-bleed-out cleanup
@@ -18,7 +17,7 @@ tags: [discipline-cleanup, no-copy, sibling-repos]
 type: friction-reducer
 ---
 
-# B-0112 — Stale 2026-04-27 project file internals-bleed-out cleanup
+# 081KQDTYV0008QG0R003MV3WAR — Stale 2026-04-27 project file internals-bleed-out cleanup
 
 ## What
 
@@ -44,7 +43,7 @@ mid-incident is substrate-rate-incorrect — too many in-flight PRs
 already, plus the cleanup needs careful work to extract the
 generalizable pattern findings without the specific internals.
 
-So: file as B-0112 with an explicit trigger condition. Future-Otto
+So: file as 081KQDTYV0008QG0R003MV3WAR with an explicit trigger condition. Future-Otto
 hits the trigger naturally when next touching this file or scoping
 work into the named sibling directories.
 
@@ -123,12 +122,12 @@ expert baseline cites it), promote to P1 at that point.
 
 ## Decomposition (re-decomp 2026-05-11 second pass — assume prior split mistake)
 
-B-0112 too broad; prior 3-child split had non-atomic audit. Re-decomposed into 4 smallest dependency-ordered atomic children (TS-preferring where possible per Rule 0):
+081KQDTYV0008QG0R003MV3WAR too broad; prior 3-child split had non-atomic audit. Re-decomposed into 4 smallest dependency-ordered atomic children (TS-preferring where possible per Rule 0):
 
-- B-0112.1: read-only enumeration of bleed sections (in-memory list only)
-- B-0112.1.1: commit audit report to docs/research/ as durable substrate
-- B-0112.2: per-section classification decisions + rationale (no file edits)
-- B-0112.3: execute rewrites + land closing PR
+- 081KRA5AR0008QG0R0032RZ322: read-only enumeration of bleed sections (in-memory list only)
+- 081KRA5AR0008QG0R0032RZ322.1: commit audit report to docs/research/ as durable substrate
+- 081KRA5AR0008QG0R003SBRWDZ: per-section classification decisions + rationale (no file edits)
+- 081KRA5AR0008QG0R0004HM4P3: execute rewrites + land closing PR
 
 depends_on updated to reflect finer grain; children carry atomic work. Original trigger/acceptance preserved for umbrella.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0163
-zetaid: 081KQJZR90008QG0R0025WX5ZJ
+id: 081KQJZR90008QG0R0025WX5ZJ
 priority: P3
 status: open
 title: Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-2026-04-29 ticks to legacy surface (canonical write is per-tick shards) — Otto 2026-05-02
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0163 — Retire or fix `append-tick-history-row.sh` (Otto 2026-05-02)
+# 081KQJZR90008QG0R0025WX5ZJ — Retire or fix `append-tick-history-row.sh` (Otto 2026-05-02)
 
 ## Origin
 

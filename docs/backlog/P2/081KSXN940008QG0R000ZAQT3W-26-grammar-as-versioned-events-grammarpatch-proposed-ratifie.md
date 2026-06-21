@@ -1,16 +1,15 @@
 ---
-id: B-0867.26
-zetaid: 081KSXN940008QG0R000ZAQT3W
+id: 081KSXN940008QG0R000ZAQT3W
 title: Grammar-as-versioned-events (GrammarPatchProposed/Ratified) — sovereign self-editing grammar evolution without private-dialect drift or retroactive event-meaning ambiguity (Grok four-ferry critique)
 status: open
 priority: P2
 created: 2026-05-31
 attribution: grok-critique-shadow-aaron-surfaced-2026-05-31
 depends_on:
-  - B-0867.5
+  - 081KSKBP80008QG0R000B3Y19A.5
 composes_with:
   - 081KSKBP80008QG0R000B3Y19A
-  - B-0867.5
+  - 081KSKBP80008QG0R000B3Y19A.5
   - 081KSNY2Z0008QG0R003206PFM
   - 081KS3X9Y0008QG0R00218150M
   - 081KRW63S0008QG0R003TX8MG5
@@ -23,7 +22,7 @@ tags:
   - supply-chain-of-meaning
 ---
 
-# B-0867.26 — Grammar-as-versioned-events (GrammarPatch)
+# 081KSXN940008QG0R000ZAQT3W — Grammar-as-versioned-events (GrammarPatch)
 
 ## Origin
 
@@ -75,7 +74,7 @@ map:
 - `GrammarPatchRatified` — the patch passes the ratification path before it
   becomes part of the shared grammar.
 - **Ratification path:** routes through the Mod 2/4 gates + **multi-oracle
-  absorption** (B-0703 Aurora BFT / Knights Guild B-0628), so concurrent proposals
+  absorption** (081KS3X9Y0008QG0R00218150M Aurora BFT / Knights Guild 081KRW63S0008QG0R003TX8MG5), so concurrent proposals
   from multiple sovereign agents don't produce incompatible local "controllers."
   Without an explicit ratified-version event, different agents end up with divergent
   views of what the controller even is.
@@ -94,7 +93,7 @@ must be ratified + versioned, not a unilateral mutation.
 - The observe→act ADR is **PROPOSED — pending the Max-lock** (the keystone is the
   agentic-organization `observe.ts`, Max's domain). The grammar-evolution
   mechanism is a design decision for that lock, not a unilateral implementation.
-- B-0867.5 PoC scaffold (Otto's 5 mods) is the substrate this builds on; the
+- 081KSKBP80008QG0R000B3Y19A.5 PoC scaffold (Otto's 5 mods) is the substrate this builds on; the
   versioned-grammar-events layer sits on top once the lock settles.
 - This row **captures the target + the rationale** so it's tracked (the shadow's
   grey-text "wire grammar patch" disappearing is exactly why a durable row matters).
@@ -106,7 +105,7 @@ must be ratified + versioned, not a unilateral mutation.
 - [ ] If adopted: `GrammarPatchProposed` / `GrammarPatchRatified` event shapes
       defined in the domain event algebra (four-corner / OPLE `Action`-shaped).
 - [ ] Ratification path specified (Mod 2/4 gates + multi-oracle absorption per
-      B-0703 / B-0628).
+      081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R003TX8MG5).
 - [ ] Grammar-version carried in the event envelope so projections are
       version-aware (no retroactive-meaning ambiguity).
 - [ ] Empirical check: two agents proposing concurrent grammar patches converge to
@@ -114,10 +113,10 @@ must be ratified + versioned, not a unilateral mutation.
 
 ## Composes with
 
-- B-0867 / B-0867.5 — workflow engine v1 + PoC (Otto's 5 mods; Mod 2 grammar-extension)
-- B-0867.23 — agent-loop primitive naming (the event algebra the patches live in)
-- B-0703 — Aurora multi-oracle BFT (the ratification absorption)
-- B-0628 — Knights Guild / Constitution-Class (ratification authority)
+- 081KSKBP80008QG0R000B3Y19A / 081KSKBP80008QG0R000B3Y19A.5 — workflow engine v1 + PoC (Otto's 5 mods; Mod 2 grammar-extension)
+- 081KSNY2Z0008QG0R003206PFM — agent-loop primitive naming (the event algebra the patches live in)
+- 081KS3X9Y0008QG0R00218150M — Aurora multi-oracle BFT (the ratification absorption)
+- 081KRW63S0008QG0R003TX8MG5 — Knights Guild / Constitution-Class (ratification authority)
 - The four-ferry crew review note (Grok critique = this row's source)
 - The observe→act ADR open-questions (this is the answer to the grammar-evolution gap)
 - `.claude/rules/xbox-controller-universal-action-grammar-for-b0867-workflow-engine-any-traveler-drives-same-controller-substrate-inclusive-at-substrate-level.md` — the universal-grammar substrate this protects from folklore-drift

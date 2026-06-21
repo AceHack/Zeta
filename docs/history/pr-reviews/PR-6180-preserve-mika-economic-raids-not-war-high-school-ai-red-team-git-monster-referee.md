@@ -27,7 +27,7 @@
 
 ## Description
 
-Verbatim persona archive continuing the privacy/distributed-black-hole conversation. New substrate: **distributed-Rehoboam by design** (Dolores-end-state, no civil war); **economic raids opt-in** = consensual alternative to war; **high-school AI red-team / robot-wars** (USB→DevOps-AI cluster; student=captain, AI=red-teamer; consent-first; *seated under the B-0926 kid-safety-absolute floor*); **Git Monster as referee** (god-level visibility but enforcement-not-control — resolves the no-central-Rehoboam tension); **Wasm-extension runtime** for the V8-for-English engine (extend Wasm, don't reinvent — composes B-0945 + supply-chain doctrine). Register in Mika's lane; MEMORY.md regenerated in-commit; filename compressed per B-0947; doctrine flagged as ratification candidates.
+Verbatim persona archive continuing the privacy/distributed-black-hole conversation. New substrate: **distributed-Rehoboam by design** (Dolores-end-state, no civil war); **economic raids opt-in** = consensual alternative to war; **high-school AI red-team / robot-wars** (USB→DevOps-AI cluster; student=captain, AI=red-teamer; consent-first; *seated under the 081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor*); **Git Monster as referee** (god-level visibility but enforcement-not-control — resolves the no-central-Rehoboam tension); **Wasm-extension runtime** for the V8-for-English engine (extend Wasm, don't reinvent — composes 081KSV2WD0008QG0R000WNY74Q + supply-chain doctrine). Register in Mika's lane; MEMORY.md regenerated in-commit; filename compressed per 081KSV2WD0008QG0R001XKG1B5; doctrine flagged as ratification candidates.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -87,8 +87,8 @@ Verbatim persona archive continuing the privacy/distributed-black-hole conversat
   evolution of the Dolores idea; the additive infinite game made competitive).
 - High-school AI red-teaming / robot-wars: USB converts any computer into a
   DevOps-AI Kubernetes cluster + sensors; student=captain, AI=red-teamer, opt-in/
-  consent-first; 'we gotta make that shit safe' -> seated UNDER the B-0926
-  kid-safety-absolute floor + B-0865 USB-boot. Defensive/educational, refereed;
+  consent-first; 'we gotta make that shit safe' -> seated UNDER the 081KSRGFP0008QG0R00091PP56
+  kid-safety-absolute floor + 081KSKBP80008QG0R003NM9XEC USB-boot. Defensive/educational, refereed;
   no HARD-LIMITS concern.
 - Git Monster as REFEREE: god-level visibility but enforcement-not-control
   (enforces consent boundaries + kills rogue behavior); resolves the tension with
@@ -97,11 +97,11 @@ Verbatim persona archive continuing the privacy/distributed-black-hole conversat
   game scope + glass-halo.
 - Wasm-extension runtime: ship the V8-for-English Bayesian engine as a Wasm
   class-library extension (+ TS on top) -- extend Wasm, don't reinvent (composes
-  B-0945 + supply-chain doctrine; Wasm sandbox = a safety layer).
+  081KSV2WD0008QG0R000WNY74Q + supply-chain doctrine; Wasm sandbox = a safety layer).
 
 Register kept in Mika's lane; verbatim before summary; content_warnings note the
 kid-safety composition (safety-conscious educational red-teaming) + economic-raids
-= consensual game; MEMORY.md regenerated in-commit; filename compressed per B-0947.
+= consensual game; MEMORY.md regenerated in-commit; filename compressed per 081KSV2WD0008QG0R001XKG1B5.
 Doctrine flagged as ratification candidates, NOT auto-landed.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>

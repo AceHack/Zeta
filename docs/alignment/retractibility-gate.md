@@ -1,6 +1,6 @@
 # Retractibility Gate Verification Criteria
 
-This document outlines the verification criteria for the Retractibility Gate, as specified in backlog item [B-0058.1](../backlog/P1/B-0058.1-retractibility-gate.md). This gate is a core component of the AI ethics and safety research track. Its purpose is to ensure that any new concept, research, or substrate adopted into the factory can be safely and cleanly removed if it is later found to be harmful or misaligned.
+This document outlines the verification criteria for the Retractibility Gate, as specified in backlog item [081KRHWGX0008QG0R0005PJNAB](../backlog/P1/081KRHWGX0008QG0R0005PJNAB-retractibility-gate.md). This gate is a core component of the AI ethics and safety research track. Its purpose is to ensure that any new concept, research, or substrate adopted into the factory can be safely and cleanly removed if it is later found to be harmful or misaligned.
 
 The gate is not a veto on the *content* of a proposal, but a check on the *mechanics* of its integration.
 
@@ -20,11 +20,11 @@ A change is considered "retractible" if it meets the following criteria:
 
 The `alignment-auditor` persona is responsible for verifying these criteria on any PR that introduces new, load-bearing concepts, especially those originating from the research tracks (e.g., mythology, occult studies).
 
-The check is integrated into the `alignment-auditor` skill and composes with the existing tested retractibility tooling. `tools/alignment/audit_retractibility.ts` (the Retractibility gate for B-0058 per `tools/alignment/README.md`) is the implemented check for the git-tracked + inbound-ref-entanglement criteria; run it (`bun tools/alignment/audit_retractibility.ts`) as the automated first pass. The skill layer then performs the following PR/branch-scoped steps:
+The check is integrated into the `alignment-auditor` skill and composes with the existing tested retractibility tooling. `tools/alignment/audit_retractibility.ts` (the Retractibility gate for 081KQ3HBZ0008QG0R002S674CG per `tools/alignment/README.md`) is the implemented check for the git-tracked + inbound-ref-entanglement criteria; run it (`bun tools/alignment/audit_retractibility.ts`) as the automated first pass. The skill layer then performs the following PR/branch-scoped steps:
 
 1. **PR Analysis:** Examines the pull request to ensure it is self-contained.
 2. **Diff Check:** Scans the diff for non-additive changes to core files.
 3. **Revert Simulation:** (Future work) A dry-run revert is simulated to ensure it applies cleanly.
 4. **Log Check:** Verifies that the PR description contains the necessary logging information.
 
-Consistent with the alignment tooling's "measurement, not enforcement" contract (and the B-0058/B-0058.1 framing that this check is not a content veto), a failure at this gate produces an advisory STRAINED/VIOLATED signal against `HC-2` (retraction-native), logged and escalated rather than auto-rejecting the proposal. The only hard block is for genuinely non-retractible operations — e.g., irreversible publication — where the retractibility criteria cannot be satisfied after the fact.
+Consistent with the alignment tooling's "measurement, not enforcement" contract (and the 081KQ3HBZ0008QG0R002S674CG/081KRHWGX0008QG0R0005PJNAB framing that this check is not a content veto), a failure at this gate produces an advisory STRAINED/VIOLATED signal against `HC-2` (retraction-native), logged and escalated rather than auto-rejecting the proposal. The only hard block is for genuinely non-retractible operations — e.g., irreversible publication — where the retractibility criteria cannot be satisfied after the fact.

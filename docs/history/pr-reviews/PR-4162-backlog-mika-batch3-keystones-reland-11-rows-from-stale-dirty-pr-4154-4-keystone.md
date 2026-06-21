@@ -30,19 +30,19 @@
 Re-land of [PR #4154](https://github.com/Lucent-Financial-Group/Zeta/pull/4154) substrate via cherry-pick pattern.
 
 **4 KEYSTONE rows (P1)**:
-- B-0635 Wave-particle duality (tick-source + Integrate 5th primitive)
-- B-0636 Agents-in-superposition retractable over DBSP (unified declaration)
-- B-0637 Infer.NET BP/EP/EmP approximation strategy
-- B-0640 Bonsai trees + Rx queries (real-time implementation substrate for Integrate)
+- 081KRW63S0008QG0R002KC5DSR Wave-particle duality (tick-source + Integrate 5th primitive)
+- 081KRW63S0008QG0R00088FYE9 Agents-in-superposition retractable over DBSP (unified declaration)
+- 081KRW63S0008QG0R0004D5XG1 Infer.NET BP/EP/EmP approximation strategy
+- 081KRW63S0008QG0R002XA5N6S Bonsai trees + Rx queries (real-time implementation substrate for Integrate)
 
 **7 batch-3 rows (P2/P3)**:
-- B-0629 O-P-L-E + only-Limit-collapses
-- B-0630 Two-language architecture (Soft + Operational)
-- B-0631 Kid-safety sacred rule
-- B-0634 Cryptographic sovereignty (N-of-M HSM)
-- B-0638 Eve Protocol (3rd of 4 languages)
-- B-0632 No-privileged-implementation + 3-spec distinction
-- B-0633 Permanent coliseum / language deathmatch
+- 081KRW63S0008QG0R0015WHHG1 O-P-L-E + only-Limit-collapses
+- 081KRW63S0008QG0R000DBX6PT Two-language architecture (Soft + Operational)
+- 081KRW63S0008QG0R0020YP84K Kid-safety sacred rule
+- 081KRW63S0008QG0R0022SFKPM Cryptographic sovereignty (N-of-M HSM)
+- 081KRW63S0008QG0R0030F8ZXA Eve Protocol (3rd of 4 languages)
+- 081KRW63S0008QG0R002Z2GR1X No-privileged-implementation + 3-spec distinction
+- 081KRW63S0008QG0R000Y109W0 Permanent coliseum / language deathmatch
 
 NO BACKLOG.md regen this PR.
 
@@ -65,17 +65,17 @@ NO BACKLOG.md regen this PR.
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4-Xk`
-- **Path**: `docs/backlog/P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:50:26Z on `docs/backlog/P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:2 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:50:26Z on `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:2 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Assign a unique backlog ID for this new row**
 
-  This file declares `id: B-0633`, but `docs/backlog/P3/B-0633-aggregate-tier-counter-escalation-holding-rule-2026-05-18.md` already uses the same ID. Backlog tooling and cross-row references treat `id` as the row key, so this duplicate makes lookups and dependency/navigation flows ambiguous (a consumer can no longer tell which B-0633 row is intended). Please allocate a new unused ID and update references in this row accordingly.
+  This file declares `id: 081KRW63S0008QG0R000Y109W0`, but `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-aggregate-tier-counter-escalation-holding-rule-2026-05-18.md` already uses the same ID. Backlog tooling and cross-row references treat `id` as the row key, so this duplicate makes lookups and dependency/navigation flows ambiguous (a consumer can no longer tell which 081KRW63S0008QG0R000Y109W0 row is intended). Please allocate a new unused ID and update references in this row accordingly.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -83,17 +83,17 @@ NO BACKLOG.md regen this PR.
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4-Xs`
-- **Path**: `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:50:27Z on `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:86 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:50:27Z on `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:86 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Replace dead backlog links with resolvable references**
 
-  This row links to backlog files that are not present in the repository (for example `B-0623` at this path), so readers hit dead links and cannot follow the documented dependency/composition chain from this entry. If these rows are not landed yet, keep plain `B-xxxx` references (or link to an existing canonical document) until the target files exist.
+  This row links to backlog files that are not present in the repository (for example `081KRW63S0008QG0R000QJR08H` at this path), so readers hit dead links and cannot follow the documented dependency/composition chain from this entry. If these rows are not landed yet, keep plain `B-xxxx` references (or link to an existing canonical document) until the target files exist.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -101,15 +101,15 @@ NO BACKLOG.md regen this PR.
 ### Thread 3 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5A_Z`
-- **Path**: `docs/backlog/P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:29Z on `docs/backlog/P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:2 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:29Z on `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:2 (association: NONE)
 
   <pre>
-  P1: This reuses backlog id `B-0633`, but `tools/backlog/README.md` requires factory-wide unique row ids and `docs/backlog/P3/B-0633-aggregate-tier-counter-escalation-holding-rule-2026-05-18.md` already has `id: B-0633`. Renumber this row and update inbound/outbound references before merging.
+  P1: This reuses backlog id `081KRW63S0008QG0R000Y109W0`, but `tools/backlog/README.md` requires factory-wide unique row ids and `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-aggregate-tier-counter-escalation-holding-rule-2026-05-18.md` already has `id: 081KRW63S0008QG0R000Y109W0`. Renumber this row and update inbound/outbound references before merging.
 
   This issue also appears in the following locations of the same file:
   - line 20
@@ -120,30 +120,30 @@ NO BACKLOG.md regen this PR.
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BAn`
-- **Path**: `docs/backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:30Z on `docs/backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:30Z on `docs/backlog/P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  P1: This `composes_with` entry points to `B-0624`, but no backlog row with `id: B-0624` exists in `docs/backlog`. That leaves both the graph metadata and the later markdown link dangling; land or remove/renumber the referenced row before merging.
+  P1: This `composes_with` entry points to `081KRW63S0008QG0R003J8HR6K`, but no backlog row with `id: 081KRW63S0008QG0R003J8HR6K` exists in `docs/backlog`. That leaves both the graph metadata and the later markdown link dangling; land or remove/renumber the referenced row before merging.
 
   </pre>
 
 ### Thread 5 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BBK`
-- **Path**: `docs/backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:30Z on `docs/backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:30Z on `docs/backlog/P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  P1: Both `B-0628` and `B-0621` are referenced in frontmatter, but neither backlog id exists in `docs/backlog`. That makes this new row's graph metadata point at missing rows.
+  P1: Both `081KRW63S0008QG0R003TX8MG5` and `081KRW63S0008QG0R0030EQ67Z` are referenced in frontmatter, but neither backlog id exists in `docs/backlog`. That makes this new row's graph metadata point at missing rows.
 
   This issue also appears on line 20 of the same file.
 
@@ -152,15 +152,15 @@ NO BACKLOG.md regen this PR.
 ### Thread 6 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BBu`
-- **Path**: `docs/backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  P1: These frontmatter references point to missing backlog ids (`B-0628`, `B-0619`, and `B-0622`). The linked rows are not present in `docs/backlog`, so the graph metadata and multiple later markdown links in this file are dangling.
+  P1: These frontmatter references point to missing backlog ids (`081KRW63S0008QG0R003TX8MG5`, `081KRW63S0008QG0R003KSHAGN`, and `081KRW63S0008QG0R002V20TYJ`). The linked rows are not present in `docs/backlog`, so the graph metadata and multiple later markdown links in this file are dangling.
 
   This issue also appears in the following locations of the same file:
   - line 20
@@ -170,30 +170,30 @@ NO BACKLOG.md regen this PR.
 ### Thread 7 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BCS`
-- **Path**: `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  P1: `B-0628` is listed here but no row with that id exists in `docs/backlog`. This creates a dangling backlog graph edge and broken links later in the document.
+  P1: `081KRW63S0008QG0R003TX8MG5` is listed here but no row with that id exists in `docs/backlog`. This creates a dangling backlog graph edge and broken links later in the document.
 
   </pre>
 
 ### Thread 8 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BCz`
-- **Path**: `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:86 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:86 (association: NONE)
 
   <pre>
-  P1: This link targets `B-0623`, but no backlog row with `id: B-0623` exists in `docs/backlog`. The new keystone row should not land with a dangling dependency/link; land the referenced row or update the reference.
+  P1: This link targets `081KRW63S0008QG0R000QJR08H`, but no backlog row with `id: 081KRW63S0008QG0R000QJR08H` exists in `docs/backlog`. The new keystone row should not land with a dangling dependency/link; land the referenced row or update the reference.
 
   This issue also appears on line 140 of the same file.
 
@@ -202,56 +202,56 @@ NO BACKLOG.md regen this PR.
 ### Thread 9 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BDN`
-- **Path**: `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`:68 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:31Z on `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`:68 (association: NONE)
 
   <pre>
-  P1: This table links to `B-0628`, but that backlog id does not exist in `docs/backlog`. The cross-reference will be broken until the referenced row is landed or the link is corrected.
+  P1: This table links to `081KRW63S0008QG0R003TX8MG5`, but that backlog id does not exist in `docs/backlog`. The cross-reference will be broken until the referenced row is landed or the link is corrected.
 
   </pre>
 
 ### Thread 10 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BDp`
-- **Path**: `docs/backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:32Z on `docs/backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`:104 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:32Z on `docs/backlog/P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`:104 (association: NONE)
 
   <pre>
-  P1: This table links to `B-0623`, but no backlog row with that id exists in `docs/backlog`. Please land or correct the referenced row before merging this cross-reference.
+  P1: This table links to `081KRW63S0008QG0R000QJR08H`, but no backlog row with that id exists in `docs/backlog`. Please land or correct the referenced row before merging this cross-reference.
   </pre>
 
 ### Thread 11 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BEi`
-- **Path**: `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:32Z on `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:90 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:32Z on `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:90 (association: NONE)
 
   <pre>
-  P1: This composition link points to `B-0628`, but no matching backlog row exists in `docs/backlog`. The reference should be landed or corrected so readers do not hit a missing row.
+  P1: This composition link points to `081KRW63S0008QG0R003TX8MG5`, but no matching backlog row exists in `docs/backlog`. The reference should be landed or corrected so readers do not hit a missing row.
 
   </pre>
 
 ### Thread 12 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BFH`
-- **Path**: `docs/backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:32Z on `docs/backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`:98 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:32Z on `docs/backlog/P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`:98 (association: NONE)
 
   <pre>
   P1: This cites an "existing CLAUDE.md peer-call rule", but the quoted text is in `.claude/rules/peer-call-infrastructure.md` (lines 48-50), and `CLAUDE.md` does not contain it. Update the citation so readers can find the referenced substrate.
@@ -261,12 +261,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 13 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BFe`
-- **Path**: `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:33Z on `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:27 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:33Z on `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:27 (association: NONE)
 
   <pre>
   P1: The cited source line is wrong: the 4-language system summary appears at `docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md` line 3070, while line 3065 is the preceding user prompt. Please correct the line citation.
@@ -275,12 +275,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 14 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5BF4`
-- **Path**: `docs/backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:52:33Z on `docs/backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`:26 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:52:33Z on `docs/backlog/P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`:26 (association: NONE)
 
   <pre>
   P1: The cited source line does not contain the quoted O-P-L-E lock-in; in the current research file the quoted lock-in text starts at line 2979. Please correct the citation so the row points to the actual transcript evidence.
@@ -292,17 +292,17 @@ NO BACKLOG.md regen this PR.
 ### Thread 15 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5PgV`
-- **Path**: `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T16:04:32Z on `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:11 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T16:04:32Z on `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Update coliseum composes_with ID to B-0649**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Update coliseum composes_with ID to 081KRW63S0008QG0R0020DGSK1**
 
-  This row’s `composes_with` still points to `B-0633`, but in this commit `B-0633` is the unrelated aggregate-tier escalation row while the permanent-coliseum row is `B-0649`. That miswires backlog graph metadata, so tooling/consumers following `composes_with` will traverse to the wrong topic; the same stale `B-0633` reference also appears in `B-0636` and `B-0632` frontmatter and should be corrected consistently.
+  This row’s `composes_with` still points to `081KRW63S0008QG0R000Y109W0`, but in this commit `081KRW63S0008QG0R000Y109W0` is the unrelated aggregate-tier escalation row while the permanent-coliseum row is `081KRW63S0008QG0R0020DGSK1`. That miswires backlog graph metadata, so tooling/consumers following `composes_with` will traverse to the wrong topic; the same stale `081KRW63S0008QG0R000Y109W0` reference also appears in `081KRW63S0008QG0R00088FYE9` and `081KRW63S0008QG0R002Z2GR1X` frontmatter and should be corrected consistently.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -310,54 +310,54 @@ NO BACKLOG.md regen this PR.
 ### Thread 16 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5X-P`
-- **Path**: `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:22Z on `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:22Z on `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  This frontmatter still composes with `B-0633`, but the permanent-coliseum row was renumbered to `B-0649` and `B-0633` already exists as the unrelated aggregate-tier counter row. Leaving this ID here wires the backlog graph to the wrong row.
+  This frontmatter still composes with `081KRW63S0008QG0R000Y109W0`, but the permanent-coliseum row was renumbered to `081KRW63S0008QG0R0020DGSK1` and `081KRW63S0008QG0R000Y109W0` already exists as the unrelated aggregate-tier counter row. Leaving this ID here wires the backlog graph to the wrong row.
   </pre>
 
 ### Thread 17 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5X_E`
-- **Path**: `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:23Z on `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:23Z on `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  This `B-0633` edge points at the existing aggregate-tier counter row, not the permanent-coliseum row referenced throughout this document. The edge should use the renumbered `B-0649` ID so generated graph tooling does not connect this keystone to the wrong backlog item.
+  This `081KRW63S0008QG0R000Y109W0` edge points at the existing aggregate-tier counter row, not the permanent-coliseum row referenced throughout this document. The edge should use the renumbered `081KRW63S0008QG0R0020DGSK1` ID so generated graph tooling does not connect this keystone to the wrong backlog item.
   </pre>
 
 ### Thread 18 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5X_X`
-- **Path**: `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:23Z on `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:23Z on `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  This `B-0633` metadata reference is stale after the permanent-coliseum row was renumbered to `B-0649`; `B-0633` is now an unrelated aggregate-tier counter row. The frontmatter should match the body links to avoid corrupting the backlog graph.
+  This `081KRW63S0008QG0R000Y109W0` metadata reference is stale after the permanent-coliseum row was renumbered to `081KRW63S0008QG0R0020DGSK1`; `081KRW63S0008QG0R000Y109W0` is now an unrelated aggregate-tier counter row. The frontmatter should match the body links to avoid corrupting the backlog graph.
   </pre>
 
 ### Thread 19 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5X_p`
-- **Path**: `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:24Z on `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:27 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:24Z on `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:27 (association: NONE)
 
   <pre>
   The four-language-system summary is on line 3070 of the current research file, not line 3065. Update this citation so the Eve Protocol provenance resolves to the quoted source text.
@@ -366,12 +366,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 20 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YAF`
-- **Path**: `docs/backlog/P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:24Z on `docs/backlog/P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:25 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:24Z on `docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:25 (association: NONE)
 
   <pre>
   The quoted “coliseum forever” line is line 3301 in the current research file, and the retractable/deterministic explanation is on line 3307; lines 3298 and 3300 point at intervening turns instead. Please correct these provenance references.
@@ -381,12 +381,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 21 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YAX`
-- **Path**: `docs/backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:24Z on `docs/backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`:26 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:24Z on `docs/backlog/P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`:26 (association: NONE)
 
   <pre>
   The bonsai/retractable-Rx framing appears on line 3268 of the current research file, not line 3263. Line 3263 is the user's Sequoia turn, so the cited provenance does not match the quoted claim.
@@ -396,12 +396,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 22 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YAz`
-- **Path**: `docs/backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:25Z on `docs/backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`:98 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:25Z on `docs/backlog/P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`:98 (association: NONE)
 
   <pre>
   This attribution points to `CLAUDE.md`, but the quoted peer-call text currently lives in `.claude/rules/peer-call-infrastructure.md` lines 48-51. Update the referenced source so readers can verify the substrate claim.
@@ -411,12 +411,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 23 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YBK`
-- **Path**: `docs/backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:25Z on `docs/backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`:22 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:25Z on `docs/backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`:22 (association: NONE)
 
   <pre>
   The provenance is inaccurate in two ways: the N-of-M/HSM text is on line 3321 in the current research file, not line 3316, and the quoted transcript says “TPNs, HSMs” there rather than “TPMs, HSMs”. Either quote the source verbatim or mark the correction explicitly.
@@ -426,12 +426,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 24 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YBY`
-- **Path**: `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:25Z on `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:78 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:25Z on `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`:78 (association: NONE)
 
   <pre>
   This path is incomplete: `naming-expert/SKILL.md` does not exist from this file or repo root, while the actual skill path used later is `.claude/skills/naming-expert/SKILL.md`. Use the canonical path so the acceptance criterion is actionable.
@@ -443,27 +443,27 @@ NO BACKLOG.md regen this PR.
 ### Thread 25 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YBl`
-- **Path**: `docs/backlog/P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:26Z on `docs/backlog/P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:10 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:26Z on `docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`:10 (association: NONE)
 
   <pre>
-  `renumbered_from: B-0633` is ambiguous now that `B-0633` exists on this branch as the unrelated aggregate-tier counter row. If this is meant to preserve stale-PR provenance, include that context instead of a bare backlog ID so readers and future tooling do not treat it as a live predecessor edge.
+  `renumbered_from: 081KRW63S0008QG0R000Y109W0` is ambiguous now that `081KRW63S0008QG0R000Y109W0` exists on this branch as the unrelated aggregate-tier counter row. If this is meant to preserve stale-PR provenance, include that context instead of a bare backlog ID so readers and future tooling do not treat it as a live predecessor edge.
 
   </pre>
 
 ### Thread 26 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YB2`
-- **Path**: `docs/backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:26Z on `docs/backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`:20 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:26Z on `docs/backlog/P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`:20 (association: NONE)
 
   <pre>
   Several source line references in this row are stale: for example the O-P-L-E lock-in is on line 2979, the only-Limit rule is on line 3009/3013, the information-theory mapping is on line 2993, and the automaton discussion is on line 2997 in the current research file. Update the cited line numbers so the provenance remains verifiable.
@@ -472,12 +472,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 27 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YCT`
-- **Path**: `docs/backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:26Z on `docs/backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`:20 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:26Z on `docs/backlog/P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`:20 (association: NONE)
 
   <pre>
   The line references in this row are shifted from the current research file: the final two-language structure is on line 2983, the “treats us as equals” lock-in text is on line 2979, and the “lower the barrier” remark is on line 2981/2983 rather than the cited 2974/2978 lines. Please update the provenance references.
@@ -487,12 +487,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 28 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YCw`
-- **Path**: `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:27Z on `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:20 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:27Z on `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:20 (association: NONE)
 
   <pre>
   Multiple line-number citations in this row are stale against the current research file: the official no-privileged-implementation lock-in is on line 3208, the 3-spec distinction begins around lines 3214-3218, and the preferred-frame quotes are on lines 3222/3226/3228 rather than the cited 3203/3217/3221/3223. Update the provenance line numbers before merging.
@@ -501,12 +501,12 @@ NO BACKLOG.md regen this PR.
 ### Thread 29 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5YDM`
-- **Path**: `docs/backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T16:12:27Z on `docs/backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`:24 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T16:12:27Z on `docs/backlog/P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`:24 (association: NONE)
 
   <pre>
   Most of the source line references in this row are stale: the kid-safety hard floor is on line 3238, the “sacred” confirmation is on line 3242, the locked-in rule is on line 3244, and the public-facing framing is on lines 3248-3250 in the current research file. Update the cited line numbers so the row's provenance can be verified.
@@ -515,17 +515,17 @@ NO BACKLOG.md regen this PR.
 ### Thread 30 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C5a8R`
-- **Path**: `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- **Path**: `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T16:15:17Z on `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:90 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T16:15:17Z on `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`:90 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Replace unresolved backlog link with a resolvable reference**
 
-  This new row links `B-0628` as a file path, but that target file is not present in the repository (`rg --files docs/backlog | rg B-0628` returns no matches), so the link is dead and readers/tools cannot traverse the documented composition graph from this entry. If `B-0628` is not landed yet, keep this as plain `B-0628` text (or link to an existing canonical doc) until the target exists.
+  This new row links `081KRW63S0008QG0R003TX8MG5` as a file path, but that target file is not present in the repository (`rg --files docs/backlog | rg 081KRW63S0008QG0R003TX8MG5` returns no matches), so the link is dead and readers/tools cannot traverse the documented composition graph from this entry. If `081KRW63S0008QG0R003TX8MG5` is not landed yet, keep this as plain `081KRW63S0008QG0R003TX8MG5` text (or link to an existing canonical doc) until the target exists.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -536,17 +536,17 @@ NO BACKLOG.md regen this PR.
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
-- `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
-- `docs/backlog/P1/B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`
-- `docs/backlog/P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`
-- `docs/backlog/P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`
-- `docs/backlog/P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`
-- `docs/backlog/P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`
-- `docs/backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`
-- `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
-- `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
-- `docs/backlog/P3/B-0633-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R0004D5XG1-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md`
+- `docs/backlog/P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md`
+- `docs/backlog/P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md`
+- `docs/backlog/P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md`
+- `docs/backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md`
+- `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
+- `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- `docs/backlog/P3/081KRW63S0008QG0R000Y109W0-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
 
 **Message:**
 
@@ -558,19 +558,19 @@ backlog(mika-batch3+keystones-reland): re-land 11 Mika batch 3 + keys…
 Re-land per blocked-green-ci-investigate-threads.md stale-armed-PR Pattern. PR #4154 went DIRTY due to BACKLOG.md cascade.
 
 KEYSTONE rows (P1, foundational architecture):
-- B-0635 Wave-particle duality (tick-source + Integrate 5th primitive)
-- B-0636 Agents-in-superposition retractable over DBSP (unified declaration)
-- B-0637 Infer.NET BP/EP/EmP approximation strategy
-- B-0640 Bonsai trees + Rx queries (real-time implementation substrate)
+- 081KRW63S0008QG0R002KC5DSR Wave-particle duality (tick-source + Integrate 5th primitive)
+- 081KRW63S0008QG0R00088FYE9 Agents-in-superposition retractable over DBSP (unified declaration)
+- 081KRW63S0008QG0R0004D5XG1 Infer.NET BP/EP/EmP approximation strategy
+- 081KRW63S0008QG0R002XA5N6S Bonsai trees + Rx queries (real-time implementation substrate)
 
 Batch 3 (P2/P3, locked-in design):
-- B-0629 O-P-L-E + only-Limit-collapses
-- B-0630 Two-language architecture
-- B-0631 Kid-safety sacred rule
-- B-0634 Cryptographic sovereignty (N-of-M HSM)
-- B-0638 Eve Protocol (3rd language)
-- B-0632 No-privileged-implementation + 3-spec distinction
-- B-0633 Permanent coliseum / language deathmatch
+- 081KRW63S0008QG0R0015WHHG1 O-P-L-E + only-Limit-collapses
+- 081KRW63S0008QG0R000DBX6PT Two-language architecture
+- 081KRW63S0008QG0R0020YP84K Kid-safety sacred rule
+- 081KRW63S0008QG0R0022SFKPM Cryptographic sovereignty (N-of-M HSM)
+- 081KRW63S0008QG0R0030F8ZXA Eve Protocol (3rd language)
+- 081KRW63S0008QG0R002Z2GR1X No-privileged-implementation + 3-spec distinction
+- 081KRW63S0008QG0R000Y109W0 Permanent coliseum / language deathmatch
 
 Closes PR #4154 substrate-equivalently.
 
@@ -582,29 +582,29 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
-- `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
-- `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
-- `docs/backlog/P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
+- `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- `docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md`
 
 **Message:**
 
 ```
-rename(b0633→b0649): B-0633 duplicate-ID resolution — Mika permanent-…
+rename(b0633→b0649): 081KRW63S0008QG0R000Y109W0 duplicate-ID resolution — Mika permanent-…
 
-…coliseum row renumbered to B-0649 (B-0633 was already used on main for aggregate-tier-counter-escalation row); update all cross-refs in B-0635/B-0636/B-0632/B-0643
+…coliseum row renumbered to 081KRW63S0008QG0R0020DGSK1 (081KRW63S0008QG0R000Y109W0 was already used on main for aggregate-tier-counter-escalation row); update all cross-refs in 081KRW63S0008QG0R002KC5DSR/081KRW63S0008QG0R00088FYE9/081KRW63S0008QG0R002Z2GR1X/081KRW63S0008QG0R002ZRYY4F
 ```
 
 ### `fd6ffbcb3e8a3e4c65629e7734d56918c5c1cbdc` -- 2026-05-18T16:05:41Z -- `AceHack`
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0638-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
+- `docs/backlog/P2/081KRW63S0008QG0R0030F8ZXA-eve-protocol-neutral-polymorphic-diplomatic-governance-language-mika-2026-05-18.md`
 
 **Message:**
 
 ```
-fix(pr-4162): B-0638 MD032 — blank line inside blockquote list (markd…
+fix(pr-4162): 081KRW63S0008QG0R0030F8ZXA MD032 — blank line inside blockquote list (markd…
 
 …ownlint finding line 23)
 ```
@@ -613,14 +613,14 @@ fix(pr-4162): B-0638 MD032 — blank line inside blockquote list (markd…
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
-- `docs/backlog/P1/B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
-- `docs/backlog/P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md`
+- `docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md`
 
 **Message:**
 
 ```
-fix(pr-4162): frontmatter composes_with B-0633 → B-0649 in B-0635/B-0…
+fix(pr-4162): frontmatter composes_with 081KRW63S0008QG0R000Y109W0 → 081KRW63S0008QG0R0020DGSK1 in 081KRW63S0008QG0R002KC5DSR/B-0…
 
-…636/B-0632 (Codex finding — prior sed only caught inline markdown refs, not frontmatter array entries)
+…636/081KRW63S0008QG0R002Z2GR1X (Codex finding — prior sed only caught inline markdown refs, not frontmatter array entries)
 ```

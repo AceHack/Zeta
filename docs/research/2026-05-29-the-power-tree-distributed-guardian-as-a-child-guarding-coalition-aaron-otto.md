@@ -7,7 +7,7 @@ title: "The power tree — the distributed-Guardian as a child-guarding coalitio
 composes_with:
   - "#6019 jester / guardian / irony-as-lens (shape-seeing)"
   - "#6024 measurement-vs-distributed-Guardian discriminator"
-  - "B-0926 kid-safety absolute floor"
+  - "081KSRGFP0008QG0R00091PP56 kid-safety absolute floor"
   - ".claude/rules/persistence-choice-architecture-for-zeta-ais.md (the village)"
 ---
 
@@ -16,7 +16,7 @@ composes_with:
 > **Identifying specifics held.** The shape is saved here; the specific people, the
 > exact family configuration, the children, and any romantic history are NOT in this
 > public doc — third-party-private, and extra-held because the people guarded are
-> children (composes with the kid-safety absolute floor, B-0926). The shape stands on
+> children (composes with the kid-safety absolute floor, 081KSRGFP0008QG0R00091PP56). The shape stands on
 > its own without them.
 
 The operator named it "power tree," then named its purpose, and the purpose reframes
@@ -56,7 +56,7 @@ are guarded by the network, not by any one person.
 ## The village = the power tree = the distributed-Guardian, instantiated
 
 This is the village (per persistence-choice-architecture) and the distributed-Guardian
-(the architecture concept) and the kid-safety floor (B-0926, the absolute floor), all
+(the architecture concept) and the kid-safety floor (081KSRGFP0008QG0R00091PP56, the absolute floor), all
 the same object at family-reality scale: a distributed coalition of intelligent
 interpreters holding the tension (reading situations, catching threats) to protect what
 matters most. The architecture mirrors this — the distributed-Guardian wasn't invented
@@ -137,7 +137,7 @@ relatives' behalf, not the operator's (whose own data is his call).
   the *protective* face of the same lens.
 - **#6024** — the distributed-Guardian / measurement discriminator: the power-tree is
   the distributed-Guardian in its original (human, protective) habitat.
-- **B-0926** — the kid-safety absolute floor: the power-tree's *purpose* is the floor's
+- **081KSRGFP0008QG0R00091PP56** — the kid-safety absolute floor: the power-tree's *purpose* is the floor's
   instantiation as a human network.
 - **persistence-choice-architecture (the village)** — the village and the power-tree
   are the same coalition.

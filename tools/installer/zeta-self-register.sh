@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# tools/installer/zeta-self-register.sh — B-0855.2 post-boot node self-registration.
+# tools/installer/zeta-self-register.sh — 081KDWYJVN008QG0R001XPR5X4 post-boot node self-registration.
 #
 # Runs as a first-boot systemd oneshot (see nixos/modules/zeta-self-register.nix)
 # AFTER network-online + zeta-creds-restore, so gh auth is present. Opens a PR
-# adding maintainers/<gh-user>/cluster-nodes/<host>/node.yaml (B-0813 ClusterNode).
+# adding maintainers/<gh-user>/cluster-nodes/<host>/node.yaml (081KSGS9H0008QG0R002K93MWX ClusterNode).
 #
 # WHY post-boot (not install-time, Step 6.9): a zero-typing install restores gh
 # creds on first boot via the cred-blob — AFTER the installer ran — so the
@@ -63,7 +63,7 @@ metadata:
   namespace: zeta-cluster
   annotations:
     zeta.lucent-financial-group.com/registered-at: "${TS}"
-    zeta.lucent-financial-group.com/registered-via: "B-0855.2-postboot"
+    zeta.lucent-financial-group.com/registered-via: "081KDWYJVN008QG0R001XPR5X4-postboot"
   labels:
     zeta.lucent-financial-group.com/maintainer: "${MAINTAINER}"
 spec:
@@ -89,12 +89,12 @@ git add "$NODE_PATH"
 # Guard: never push an empty commit (the Step 6.9 / node-09485d failure mode).
 if git diff --cached --quiet; then log "ERROR: nothing staged — aborting (not registering)"; exit 1; fi
 git -c user.name="${MAINTAINER}" -c user.email="${MAINTAINER}@users.noreply.github.com" \
-    commit -q -m "feat(node-register): ${HOST} self-registers (post-boot, B-0855.2)"
+    commit -q -m "feat(node-register): ${HOST} self-registers (post-boot, 081KDWYJVN008QG0R001XPR5X4)"
 log "pushing ${BRANCH}…"
 git push -u origin "$BRANCH" >/dev/null 2>&1
 PR_URL="$(gh pr create --base main --head "$BRANCH" \
   --title "feat(node-register): ${HOST} self-registers" \
-  --body "Automated post-boot self-registration of \`${HOST}\` (B-0855.2). Maintainer: @${MAINTAINER}. CPU: ${CPU:-?} · ${CORES} cores · ${MEM:-?} RAM." 2>&1 | tail -1)" || {
+  --body "Automated post-boot self-registration of \`${HOST}\` (081KDWYJVN008QG0R001XPR5X4). Maintainer: @${MAINTAINER}. CPU: ${CPU:-?} · ${CORES} cores · ${MEM:-?} RAM." 2>&1 | tail -1)" || {
     log "gh pr create failed; cleaning up branch"; git push origin --delete "$BRANCH" >/dev/null 2>&1 || true; exit 1; }
 log "registered: ${PR_URL}"
 mkdir -p "$(dirname "$MARKER")"; printf '%s\n' "$PR_URL" > "$MARKER"

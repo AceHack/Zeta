@@ -45,7 +45,7 @@ output carries its regime. "Proven to dominate" unconditionally = overclaim, fla
 | D1 | every test bounded; 0 unbounded (tick terminates in generated steps) | termination/well-formedness | refinement witness (LiquidF# trial) + **Semgrep** (ban unbounded loop in test path) | Stryker (bound exercised) | P0 | PROVABLE — enforce via Semgrep + witness, **not** TLA+ |
 | D2 | prod=test: destructive advance-tick renders **N** until ≥2-tick corroboration | safety | TLA+/TLC (no Committed with <2 corrob) | FsCheck (advance/replay SM) | P0 | PROVABLE |
 | D3 | truth-root (canonical bytes) ≠ transport-root (git hash); merges gate on truth-root | equivalence+safety | FsCheck (canonical root stable 1000×) | **Semgrep/CodeQL** (ban git-hash-as-oracle) | P0 | PROVABLE — **coverage gap**: add the Semgrep rule |
-| D4 | anti-message annihilation = Z-set retraction (+1 then −1 = identity) `ZSet.fs` | algebraic (group inverse) | **Lean** (B-0131, exists) | Z3 (QF_LIA) + FsCheck metamorphic | P0 | PROVABLE — anchored, canonical triple; **promote B-0131 first** |
+| D4 | anti-message annihilation = Z-set retraction (+1 then −1 = identity) `ZSet.fs` | algebraic (group inverse) | **Lean** (081KQGDBJ0008QG0R000D1YJCH, exists) | Z3 (QF_LIA) + FsCheck metamorphic | P0 | PROVABLE — anchored, canonical triple; **promote 081KQGDBJ0008QG0R000D1YJCH first** |
 | D5 | GVT = merge frontier: nothing rolls back past a merged tick | safety (monotone frontier) | TLA+/TLC (rollback target Phase>GVT) | Alloy bound-6 (frontier structure) | P0 | PROVABLE — legitimate TLA+ row |
 | D6 | ZetaDateTime/Phase = monotonic logical clock (Lamport/HLC: a→b ⇒ C(a)<C(b)) | algebraic (order axioms) | Z3 (`Clock.fs` says already Z3-proven; verify+gate) | Lean (HLC monotonicity) | P1 | PROVABLE — prove conformance to Lamport clock condition |
 | D7 | TrueTime interval [earliest,latest] bounds sound (commit-wait respects) | refinement (interval-containment) | Z3 (QF_LRA) | FsCheck `UncertainClock.fs` | P1 | PROVABLE — **but in DST no physical clock**: prove generated-interval invariant, PEEL physical reading |
@@ -58,7 +58,7 @@ output carries its regime. "Proven to dominate" unconditionally = overclaim, fla
 
 - **TLA+/TLC (4 legit):** C1, C2, C6, D2, D5 + temporal halves of C12/C14/K3. Safety+liveness only — *not* the default.
 - **Z3 (8):** C4, C5, C11, C13, D6, D7 + D4 arithmetic. Identities, conservation, order axioms, intervals.
-- **Lean (3):** C3, D4 (anchored, B-0131), C10 closed-form. Paper-grade theorems with a literature anchor.
+- **Lean (3):** C3, D4 (anchored, 081KQGDBJ0008QG0R000D1YJCH), C10 closed-form. Paper-grade theorems with a literature anchor.
 - **Alloy (4):** C12, C14, K3, structural half of D5. **The under-used tool the portfolio keeps skipping.**
 - **FsCheck/sim (10):** C7a, C8, C9, C10, C15, S1-corollary, K1, K2 + cross-checks. Game-theory cluster + all determinism replays.
 - **Semgrep/CodeQL (3):** D1 (unbounded-construct ban), D3 (git-hash-as-oracle ban). **Cheapest, highest leverage, currently zero coverage.**
@@ -75,9 +75,9 @@ output carries its regime. "Proven to dominate" unconditionally = overclaim, fla
 
 P0 set: C1, C2, C5, C6, C7a, D1, D2, D3, D4, D5, K1, K3 — each routed to ≥2 independent tools. **D4
 gets the canonical triple (Lean+Z3+FsCheck)** — anti-message=retraction, the cleanest, most
-load-bearing P0; **B-0131 already exists → promote first.** Coverage signal: **21 routed claims; only
+load-bearing P0; **081KQGDBJ0008QG0R000D1YJCH already exists → promote first.** Coverage signal: **21 routed claims; only
 K1 (and now K3, PR #7349) are in the gate** — the graduation gate must not pass at ~1/21. Soraya's
-recommendation to Kenji: size a round landing **D4 (B-0131), D2, K3, + the two Semgrep rules (D1, D3)**
+recommendation to Kenji: size a round landing **D4 (081KQGDBJ0008QG0R000D1YJCH), D2, K3, + the two Semgrep rules (D1, D3)**
 first — highest safety-per-effort, and they are the realmodel/crypto-gate invariants.
 
 ## Prereqs (filed, not blockers)
@@ -94,6 +94,6 @@ Popescu-Rohrlich 1994 (PR-box) + Tsirelson bound + Information Causality; Lampor
 Jefferson 1985 (Time Warp, anti-message=Z-set retraction) / Corbett 2012 (TrueTime). Code: `ZSet.fs`,
 `Clock.fs`/`UncertainClock.fs`/`CoincidenceClock.fs`/`FeedbackThrottle.fs`/`BellTest.fs`,
 `Diversity.fs`/`PrivacyEconomy.fs`, `tools/setup/persona-keys/{derive,keyset,keyring.dst1000}.*`,
-`tools/ace/canonical.ts`. Backlog: B-0131 (Lean Z-set retraction algebra — promote). Skill:
+`tools/ace/canonical.ts`. Backlog: 081KQGDBJ0008QG0R000D1YJCH (Lean Z-set retraction algebra — promote). Skill:
 `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`. Notebook:
 `memory/soraya/NOTEBOOK.md`.

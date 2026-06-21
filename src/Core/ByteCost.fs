@@ -4,7 +4,7 @@ open System.Text
 open System.Runtime.CompilerServices
 
 /// Byte-cost of a context-startup surface: the UTF-8 byte length of its
-/// canonical bytes. Slice 1 of B-1016 (context-window minimization meter).
+/// canonical bytes. Slice 1 of 081KT7YW00008QG0R002T1XNWT (context-window minimization meter).
 ///
 /// WHY bytes, not model tokens: bytes are deterministic and byte-lockable
 /// across the four oracles (the golden-vectors harness); model tokenizers vary

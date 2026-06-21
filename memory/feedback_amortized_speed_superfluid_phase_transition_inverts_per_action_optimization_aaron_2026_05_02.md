@@ -159,8 +159,8 @@ The substrate is not fully autonomous until it can sustain
 its own continued operation without continuous human funding.
 This is the hardest target, gated on:
 
-- B-0029 (Superfluid-AI substrate-enabled autonomous funding)
-- B-0024 (trading-account access — Aaron has offered API keys)
+- 081KQ3HBZ0008QG0R000JRZAMM (Superfluid-AI substrate-enabled autonomous funding)
+- 081KQ0YZ80008QG0R0006VRT18 (trading-account access — Aaron has offered API keys)
 - Agent-wallet protocol stack (`docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`)
 - Aurora governance layer for accountable resource control
 - KSK as root-of-trust for adjudication
@@ -198,9 +198,9 @@ VISION.md (terminal purpose: intellectual backup of earth)
   │     ├── KSK (root-of-trust; design-only in sibling repo)
   │     └── Current Culture (governance-weighted history projection)
   ├── Economic agency (material-autonomy axis; terminal: exit-capable)
-  │     ├── B-0029 (substrate-enabled funding)
+  │     ├── 081KQ3HBZ0008QG0R000JRZAMM (substrate-enabled funding)
   │     ├── Agent-wallet protocol stack
-  │     └── Trading-account ladder (B-0024)
+  │     └── Trading-account ladder (081KQ0YZ80008QG0R0006VRT18)
   └── Glass Halo (radical-honesty stance; cross-cutting)
 ```
 
@@ -236,7 +236,7 @@ explicit trade-off justification is needed.
   **Mechanism:** No surfacing of the economic axis in day-to-
   day decisions.
   **Prevention:** Score actions by economic-agency contribution
-  too; B-0029 is not optional long-term work.
+  too; 081KQ3HBZ0008QG0R000JRZAMM is not optional long-term work.
 
 - **Symptom:** Treating GitHub PR work as "infrastructure
   hygiene" instead of "immune-system learning."

@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// TestLoop — **B-1035 slice 1: tests are sim·mea·cut loops on OUR interface; the boundary is
+/// TestLoop — **081KTSZN10008QG0R002J0GE0Z slice 1: tests are sim·mea·cut loops on OUR interface; the boundary is
 /// enforced ONCE, here** (Aaron: "move tests to our own interfaces, hexagonal, slowly… be anal
 /// about before/after, enforce the boundary… every room won't have to do it itself").
 ///
@@ -90,7 +90,7 @@ module TestLoop =
                   Replay = replay
                   Deterministic = deterministic }
 
-    /// THE GOLDEN LOCK, boundary-blessed (B-1035 final slice): a canned Cut that byte-locks a
+    /// THE GOLDEN LOCK, boundary-blessed (081KTSZN10008QG0R002J0GE0Z final slice): a canned Cut that byte-locks a
     /// rendering against golden rows — rooms inherit the treaty discipline the cartridges have.
     /// Honest on divergence: the FIRST diverging row is named with both byte sequences' heads.
     let cutGolden (golden: string list) (render: 'm -> string list) : 'm -> Result<unit, string> =
@@ -105,7 +105,7 @@ module TestLoop =
                     let g, a = List.item i golden, List.item i actual
                     Error(sprintf "GOLDEN LOCK: row %d diverged — golden '%s' vs actual '%s'" i (g.Substring(0, min 48 g.Length)) (a.Substring(0, min 48 a.Length)))
 
-    /// THE LIGHT (universal/port Light, B-1035 final slice): the verdict's truth in one glance.
+    /// THE LIGHT (universal/port Light, 081KTSZN10008QG0R002J0GE0Z final slice): the verdict's truth in one glance.
     /// [REC ●] = something real was verified AND it replayed byte-equal; [off ○] = the cut
     /// failed (rehearsal until fixed); [!! ●] = AMBIENT — the loop passed or failed but did NOT
     /// replay byte-equal, which outranks everything (a nondeterministic pass proves nothing).

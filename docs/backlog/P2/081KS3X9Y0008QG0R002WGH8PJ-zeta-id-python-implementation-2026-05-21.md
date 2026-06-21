@@ -1,6 +1,5 @@
 ---
-id: B-0680
-zetaid: 081KS3X9Y0008QG0R002WGH8PJ
+id: 081KS3X9Y0008QG0R002WGH8PJ
 priority: P2
 status: open
 title: ZetaId V1 — Python implementation as full peer oracle
@@ -61,11 +60,11 @@ conventions, if any):
 
 ## Discipline reminders
 
-Same as B-0679 (Rust): compile-and-test-first, reserved-bit gap at 69,
+Same as 081KS3X9Y0008QG0R001Z8SBZJ (Rust): compile-and-test-first, reserved-bit gap at 69,
 no silent-zero randomness, exit non-zero on mismatch. Python's loose
 typing makes empirical verification MORE important, not less.
 
-## Why depends_on B-0679
+## Why depends_on 081KS3X9Y0008QG0R001Z8SBZJ
 
 Sequencing: Rust lands 4th, Python lands 5th. Rust's compile-time
 discipline (similar to F#/C# strictness) catches more bugs early; Python
@@ -78,12 +77,12 @@ avoids 2x rework.
 
 ## Non-goals
 
-Same as B-0679 — smart deser, CloudEvents wrapping, registry/locations.yaml
+Same as 081KS3X9Y0008QG0R001Z8SBZJ — smart deser, CloudEvents wrapping, registry/locations.yaml
 all separate B-NNNNs.
 
 ## Why P2
 
-Same reasoning as B-0679 — important for multi-oracle resilience but
+Same reasoning as 081KS3X9Y0008QG0R001Z8SBZJ — important for multi-oracle resilience but
 doesn't block V1 substrate landing. Python's ecosystem reach makes this
 high-leverage once Rust validates the spec interpretation across one more
 strict-typed language.

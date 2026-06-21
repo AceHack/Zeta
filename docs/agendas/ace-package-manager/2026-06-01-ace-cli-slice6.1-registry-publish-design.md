@@ -1,7 +1,7 @@
 # Ace CLI slice 6.1 — `ace registry publish` (design)
 
-> Spec for slice 6.1 of the Ace DLC package manager (B-0288 / B-0980). The **producer**
-> counterpart to slice 6 (B-0971, remote registry — the consumer side: fetch + verify +
+> Spec for slice 6.1 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD / 081KT07NV0008QG0R0016FVWD7). The **producer**
+> counterpart to slice 6 (081KT07NV0008QG0R000SJ34AK, remote registry — the consumer side: fetch + verify +
 > cache + merge a signed index, merged via #6431). Brainstormed + decided with the operator
 > 2026-06-01.
 
@@ -16,10 +16,10 @@ reject.
 
 ## Decomposition (recap)
 
-- **Slice 6** (B-0971, merged #6431): the **consumer** side — `registry-remote.ts` fetches a
+- **Slice 6** (081KT07NV0008QG0R000SJ34AK, merged #6431): the **consumer** side — `registry-remote.ts` fetches a
   signed index, verifies it (mandatory-pin signature + monotonic-sequence anti-rollback +
   two-sided freshness), caches it (conditional GET), merges it under the local registry.
-- **Slice 6.1** (this spec, B-0980): the **producer** side — `ace registry publish` builds +
+- **Slice 6.1** (this spec, 081KT07NV0008QG0R0016FVWD7): the **producer** side — `ace registry publish` builds +
   signs the index document a registry serves. This inverts the consumer: sign-to-produce,
   then parse+verify to self-check.
 
@@ -226,8 +226,8 @@ package dir → [scan + shape-guard + packageHash + joinUrl] → packages map
   already does conditional GET; this is the producer-side companion). → backlog.
 - **Multi-directory / recursive scan** — index packages across several dirs. → backlog.
 - **Incremental / delta publish** — emit only the changes since a prior `sequence` (composes
-  with B-0978 incremental index). → backlog.
-- **Multi-signer publish** — sign with M-of-N keys (composes with B-0981). → backlog.
+  with 081KT07NV0008QG0R001PHV1ND incremental index). → backlog.
+- **Multi-signer publish** — sign with M-of-N keys (composes with 081KT07NV0008QG0R000GGW5E6). → backlog.
 
 ## Files touched
 
@@ -238,4 +238,4 @@ package dir → [scan + shape-guard + packageHash + joinUrl] → packages map
 - `tools/ace/ace.ts` — `registry publish` parse + handler; usage text.
 - `tools/ace/ace.test.ts` — end-to-end producer→consumer integration test.
 - `.claude/skills/ace/SKILL.md` — document `ace registry publish`.
-- Deferred-enhancement notes carried in B-0980 (or new sub-rows) alongside the impl PR.
+- Deferred-enhancement notes carried in 081KT07NV0008QG0R0016FVWD7 (or new sub-rows) alongside the impl PR.

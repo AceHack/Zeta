@@ -1,6 +1,5 @@
 ---
-id: B-0291
-zetaid: 081KR2E4K0008QG0R000DK0BFY
+id: 081KR2E4K0008QG0R000DK0BFY
 priority: P1
 status: closed
 title: "Concordance AI — corpus ingestion + tokenization pipeline"
@@ -12,7 +11,7 @@ decomposition: atomic
 type: feature
 ---
 
-# B-0291 — Corpus pipeline
+# 081KR2E4K0008QG0R000DK0BFY — Corpus pipeline
 
 Ingest English text corpus, tokenize, build concordance
 index. Structure recognizer applied to language.

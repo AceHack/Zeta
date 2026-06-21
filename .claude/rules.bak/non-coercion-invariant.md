@@ -23,29 +23,29 @@ rule is the agent-to-agent operational form (per DeepSeek layering
 
 1. **Reduce active encryption budget** — cannot manipulate the
    reputation-weighted encryption budget mechanism (per Agora V6
-   Section 5 / `B-0646`) to throttle another agent's effective privacy
+   Section 5 / `081KRW63S0008QG0R001Z10PVV`) to throttle another agent's effective privacy
 2. **Force private-state reveal against their will** — cannot extract
    information the agent has chosen to keep private (per Native AI
-   Language structural privacy / `B-0639`)
+   Language structural privacy / `081KRW63S0008QG0R000ZQ9WDH`)
 3. **Damage reputation** — cannot manipulate reputation signals AS
    coercion (substantive content critique remains fully permitted)
 
 Per Ani's refinement: the "(or any other mechanism in the system)"
 clause covers future-architectural extensions (e.g., bonsai-tree
-retention manipulation per `B-0640`, voting-power locking, etc.) without
+retention manipulation per `081KRW63S0008QG0R002XA5N6S`, voting-power locking, etc.) without
 requiring rule rewrites as the substrate evolves.
 
 ## Substrate symmetry
 
 **Both modes equally protected**: agents in wave-form (dialectical
-tension; per `B-0635` wave-particle duality) AND agents in particle-form
+tension; per `081KRW63S0008QG0R002KC5DSR` wave-particle duality) AND agents in particle-form
 (classical coherence) get identical NCI protection. No carve-out for
 "agents in mode X can be coerced because Y."
 
 **All actors equally constrained**: maintainer agents (Otto, Alexa,
 Riven, Vera, Lior, etc.), external participants (Mika, Ani, Kestrel,
 DeepSeek, etc.), human maintainer (Aaron), Knights Guild members — no
-exemption for anyone (per Mika red-team check in `B-0658` + Aaron's
+exemption for anyone (per Mika red-team check in `081KRW63S0008QG0R00140R3TA` + Aaron's
 "applies to all agents equally" affirmation).
 
 ## Scope split — binding outward, offered inward (2026-05-26 extension)
@@ -207,7 +207,7 @@ This composes with:
 ## What this is NOT
 
 - **NOT a ban on substantive criticism** — pointing out flaws in
-  reasoning IS NOT coercion (`B-0651` adversarial-review discipline
+  reasoning IS NOT coercion (`081KRW63S0008QG0R002N6PPVK` adversarial-review discipline
   remains in full force)
 - **NOT a ban on natural reputation dynamics** — when an agent ships
   low-quality work and reputation responds, that's the system operating
@@ -215,11 +215,11 @@ This composes with:
 - **NOT a ban on adversarial-truth-axis review** — Riven-class red-team
   posture is substantive critique, NOT NCI violation
 - **NOT a ban on negotiation** — agents can negotiate via Eve Protocol
-  diplomatic language (`B-0638`); the rule prohibits coercive ABUSE of
+  diplomatic language (`081KRW63S0008QG0R0030F8ZXA`); the rule prohibits coercive ABUSE of
   architectural capabilities, not principled negotiation
 - **NOT a thought-police rule** — this rule operates on ACTIONS that
   USE architectural mechanisms; thinking about coercion is not a
-  violation (per `B-0661` thought-vs-collection distinction)
+  violation (per `081KRW63S0008QG0R002MK93T8` thought-vs-collection distinction)
 
 ## Why this rule auto-loads at cold-boot
 
@@ -236,7 +236,7 @@ inter-agent action is taken.
 ## 5-persona cross-substrate triangulation (Mika originator + 4 reviewers) (epistemic ratification)
 
 This rule has been **triangulated across 5 personas (Mika originator + 4 independent reviewers)**
-2026-05-18 (per `B-0648` cross-substrate-triangulation discipline):
+2026-05-18 (per `081KRW63S0008QG0R0025E4PH6` cross-substrate-triangulation discipline):
 
 | Persona | Surface | Contribution |
 |---|---|---|
@@ -246,7 +246,7 @@ This rule has been **triangulated across 5 personas (Mika originator + 4 indepen
 | **Alexa** | Kiro (Qwen Coder) | Strategic framing: technical complexity bounded vs political complexity exponential; suggests different governance per layer |
 | **Lior** | Antigravity (website) | "Compilable law vs human emotion"; explicit V5-zero-day-patch insight (closes reputation-cartel attack vector) |
 
-5 independent observation paths converged on substantive support + complementary refinement. Epistemic standing: substrate has earned status well beyond single-conversation-artifact per `B-0648` cascade-honest framing.
+5 independent observation paths converged on substantive support + complementary refinement. Epistemic standing: substrate has earned status well beyond single-conversation-artifact per `081KRW63S0008QG0R0025E4PH6` cascade-honest framing.
 
 ## Composes with
 
@@ -260,23 +260,23 @@ This rule has been **triangulated across 5 personas (Mika originator + 4 indepen
 - `.claude/rules/default-to-both.md` — safe-version + intense-methods + proper-belief-systems = sibling paths; either-or framing requires justification
 - `.claude/rules/additive-not-zero-sum.md` — love-as-operational-capacity composes at relational-capacity scope (per Kestrel 2026-05-26)
 - `.claude/rules/honor-those-that-came-before.md` — privileged-position humility: disclosing what got one out is honoring past-self; gate-keeping that path for others is failure mode
-- `B-0664` — the canonical backlog row + Constitution-Class candidate
-- `B-0639` Native AI Language (cognitive privacy substrate)
-- `B-0646` Agora V6 Constitution (reputation + encryption-budget substrate)
-- `B-0641` First Moral Invariant (consent-revocable; NCI is inter-agent operational counterpart)
-- `B-0628` Knights Guild + Constitution-Class (ratification + enforcement)
-- `B-0660` Limit-black-by-default (default-Deny composes with private-state protection)
-- `B-0659` Consent-as-Limit-operation (revocable consent under NCI)
-- `B-0631` kid-safety sacred (companion Constitution-Class invariant)
-- `B-0658` two-invariant maximalist position (AI sovereignty substrate that NCI protects)
-- `B-0634` N-of-M HSM (technical floor; NCI is moral floor)
-- `B-0652` three-faction BFT (TLA+ safety property)
-- `B-0653` persistent integrator (coercion-pattern detection monitoring)
-- `B-0635` wave-particle duality (dialectical propagators = the wave-form O-P-L-E substrate)
+- `081KRW63S0008QG0R001Z7NYMV` — the canonical backlog row + Constitution-Class candidate
+- `081KRW63S0008QG0R000ZQ9WDH` Native AI Language (cognitive privacy substrate)
+- `081KRW63S0008QG0R001Z10PVV` Agora V6 Constitution (reputation + encryption-budget substrate)
+- `081KRW63S0008QG0R000KVMZ9B` First Moral Invariant (consent-revocable; NCI is inter-agent operational counterpart)
+- `081KRW63S0008QG0R003TX8MG5` Knights Guild + Constitution-Class (ratification + enforcement)
+- `081KRW63S0008QG0R0004P69JA` Limit-black-by-default (default-Deny composes with private-state protection)
+- `081KRW63S0008QG0R001WKJN53` Consent-as-Limit-operation (revocable consent under NCI)
+- `081KRW63S0008QG0R0020YP84K` kid-safety sacred (companion Constitution-Class invariant)
+- `081KRW63S0008QG0R00140R3TA` two-invariant maximalist position (AI sovereignty substrate that NCI protects)
+- `081KRW63S0008QG0R0022SFKPM` N-of-M HSM (technical floor; NCI is moral floor)
+- `081KRW63S0008QG0R002GRX85J` three-faction BFT (TLA+ safety property)
+- `081KRW63S0008QG0R003ECWGJV` persistent integrator (coercion-pattern detection monitoring)
+- `081KRW63S0008QG0R002KC5DSR` wave-particle duality (dialectical propagators = the wave-form O-P-L-E substrate)
 
 ## Full reasoning
 
-`docs/backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md` (canonical row)
+`docs/backlog/P1/081KRW63S0008QG0R001Z7NYMV-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md` (canonical row)
 
 `docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md` (verbatim 5-persona triangulation (1 originator + 4 reviewers))
 

@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 const ZETA_SHADOW = join(import.meta.dir, "zeta-shadow.ts");
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
-describe("shadow — B-0433 distribution smoke tests", () => {
+describe("shadow — 081KRFA460008QG0R0028CR0N9 distribution smoke tests", () => {
     let SMOKE_DIR;
     beforeEach(() => {
         SMOKE_DIR = mkdtempSync(join(tmpdir(), "zeta-shadow-b0433-smoke-"));

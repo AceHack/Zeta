@@ -5,7 +5,7 @@ open FsCheck.Xunit
 open global.Xunit
 open Zeta.Core
 
-// B-1016 floor #6 — the SKETCH merge-laws (math leg), at STATE level (not the
+// 081KT7YW00008QG0R002T1XNWT floor #6 — the SKETCH merge-laws (math leg), at STATE level (not the
 // observable .Estimate — Amara's blade). InternalsVisibleTo lets us compare the
 // real register/counter arrays. Two sub-families of "mergeable aggregation":
 //   - HLL.Union     = register-wise MAX  → IDEMPOTENT join-semilattice (a CRDT).

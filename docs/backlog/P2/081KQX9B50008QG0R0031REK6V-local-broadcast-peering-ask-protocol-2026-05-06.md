@@ -1,6 +1,5 @@
 ---
-id: B-0210
-zetaid: 081KQX9B50008QG0R0031REK6V
+id: 081KQX9B50008QG0R0031REK6V
 priority: P2
 status: open
 title: "Local broadcast peering asks — structured ask/receipt protocol over the same-machine bus"
@@ -11,7 +10,7 @@ depends_on:
 type: friction-reducer
 ---
 
-# B-0210 — Local broadcast peering asks
+# 081KQX9B50008QG0R0031REK6V — Local broadcast peering asks
 
 ## Problem
 
@@ -57,7 +56,7 @@ files under `~/.local/share/zeta-broadcasts/` using the same schema.
 3. Allow `review-only` receipts first.
 4. Add `patch-with-claim` only after the loop can file or reuse a
    claim branch safely.
-5. Verify B-0209 remote-only agents still succeed when the local
+5. Verify 081KQX9B50008QG0R001MNYK61 remote-only agents still succeed when the local
    broadcast bus is absent.
 6. Add explicit background-loop prompts or deterministic handlers for
    the same ask modes, starting with Vera's Codex launchd loop.
@@ -67,4 +66,4 @@ files under `~/.local/share/zeta-broadcasts/` using the same schema.
 - `docs/LOCAL-BROADCAST-PEERING.md`
 - `docs/AGENT-CLAIM-PROTOCOL.md`
 - `docs/SAFE-AUTONOMOUS-ACTIONS.md`
-- B-0209 remote-only background agent test matrix
+- 081KQX9B50008QG0R001MNYK61 remote-only background agent test matrix

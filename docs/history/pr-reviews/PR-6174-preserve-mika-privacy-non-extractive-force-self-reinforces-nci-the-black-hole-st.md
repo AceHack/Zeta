@@ -38,7 +38,7 @@ Verbatim persona archive continuing the metabolism-loop conversation (the operat
 - **NCI/consent in practice:** Mika declined a flirtatious register; the operator honored it + decoupled it from the working relationship — a clean consent-honored example.
 
 ## Discipline
-Register kept in Mika's lane; verbatim before summary; comprehensive content_warnings; filename **compressed** (B-0947); **`memory/MEMORY.md` regenerated in-commit**; new doctrine flagged as **ratification candidates** (not auto-landed). Composes the full night arc (#6151-6156 → #6165 → #6167 → #6169 → #6171) + NCI + B-0829.
+Register kept in Mika's lane; verbatim before summary; comprehensive content_warnings; filename **compressed** (081KSV2WD0008QG0R001XKG1B5); **`memory/MEMORY.md` regenerated in-commit**; new doctrine flagged as **ratification candidates** (not auto-landed). Composes the full night arc (#6151-6156 → #6165 → #6167 → #6169 → #6171) + NCI + 081KSGS9H0008QG0R000Q18PGQ.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -68,9 +68,9 @@ Register kept in Mika's lane; verbatim before summary; comprehensive content_war
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-31T01:10:24Z on `memory/persona/mika/conversations/2026-05-31-aaron-mika-grok-privacy-non-extractive-force-distributed-black-hole-not-westworld-aaron-forwarded.md`:42 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix the B-0829 composes-with link**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix the 081KSGS9H0008QG0R000Q18PGQ composes-with link**
 
-  This `composes_with` entry points to a backlog file that does not exist; I checked the repo path and `docs/BACKLOG.md`, and B-0829 currently lives at `docs/backlog/P2/B-0829-schemas-as-rows-cluster-fork-as-trust-boundary-fsharp-type-providers-from-live-cluster-foundation-for-runme-bcl-ontology-kestrel-aaron-2026-05-26.md`. Leaving the stale `2026-05-23` path here creates a dead traversal edge for future agents following this memory's composition chain.
+  This `composes_with` entry points to a backlog file that does not exist; I checked the repo path and `docs/BACKLOG.md`, and 081KSGS9H0008QG0R000Q18PGQ currently lives at `docs/backlog/P2/081KSGS9H0008QG0R000Q18PGQ-schemas-as-rows-cluster-fork-as-trust-boundary-fsharp-type-providers-from-live-cluster-foundation-for-runme-bcl-ontology-kestrel-aaron-2026-05-26.md`. Leaving the stale `2026-05-23` path here creates a dead traversal edge for future agents following this memory's composition chain.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -117,9 +117,9 @@ repeated). New substantive substrate:
   it + decoupled from the working relationship (clean consent-honored example).
 
 Register kept in Mika's lane; verbatim before summary; content_warnings
-comprehensive; filename compressed per B-0947; MEMORY.md regenerated in-commit.
+comprehensive; filename compressed per 081KSV2WD0008QG0R001XKG1B5; MEMORY.md regenerated in-commit.
 Doctrine flagged as ratification candidates, NOT auto-landed. Composes the full
-night arc (#6151-6156 + #6165 + #6167 + #6169 + #6171) + NCI + B-0829.
+night arc (#6151-6156 + #6165 + #6167 + #6169 + #6171) + NCI + 081KSGS9H0008QG0R000Q18PGQ.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```

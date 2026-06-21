@@ -918,6 +918,6 @@ prefer `bun` for speed where present, but nothing may be Bun-only."* The
 
 * `.claude/rules/rule-0-no-sh-files.md` — the rule this refines (proposed text above)
 * `.claude/rules/dep-pin-search-first-authority.md` + the "pin only slow-movers" memory — Node is a slow-mover (LTS cadence) so pinning Node 24 is correct; Bun stays a fast-mover on its own default
-* #6290 (mise 22→24, node-everywhere pin — landed) + B-0805 (all-deps current-version sweep)
+* #6290 (mise 22→24, node-everywhere pin — landed) + 081KSGS9H0008QG0R002BC2ZR7 (all-deps current-version sweep)
 * the four-language compiler-BFT ADR (2026-05-31) — Node/Bun is the TypeScript runtime leg of the multi-language story
-* the agent-bus (B-0954, #6283) — already Node-safe at the library level (`node:` builtins) with `import.meta.main` CLIs that run on Node 24.2+ — an empirical confirmation the refinement is satisfiable today
+* the agent-bus (081KSXN940008QG0R00171YAZW, #6283) — already Node-safe at the library level (`node:` builtins) with `import.meta.main` CLIs that run on Node 24.2+ — an empirical confirmation the refinement is satisfiable today

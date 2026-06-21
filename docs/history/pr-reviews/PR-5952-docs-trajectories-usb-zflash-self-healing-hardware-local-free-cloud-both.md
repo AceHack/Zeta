@@ -27,7 +27,7 @@
 
 ## Description
 
-Folds the operator's 2026-05-29 clarification into the usb-zflash trajectory's *Why This Exists*: the USB is the **self-healing repair** mechanism for the local accelerator cluster (plug in → any failed K8s/GPU node re-images/re-joins/re-credentials itself; human's job is physical-only). Gives Zeta **local + free-cloud both** — self-healing local accelerator cluster (owned metal, sovereignty) composing with the free GitHub-Actions cloud swarm (B-0874, zero-marginal-cost because open-source); workflow engine portable across both.
+Folds the operator's 2026-05-29 clarification into the usb-zflash trajectory's *Why This Exists*: the USB is the **self-healing repair** mechanism for the local accelerator cluster (plug in → any failed K8s/GPU node re-images/re-joins/re-credentials itself; human's job is physical-only). Gives Zeta **local + free-cloud both** — self-healing local accelerator cluster (owned metal, sovereignty) composing with the free GitHub-Actions cloud swarm (081KSNY2Z0008QG0R003X1QWYG, zero-marginal-cost because open-source); workflow engine portable across both.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

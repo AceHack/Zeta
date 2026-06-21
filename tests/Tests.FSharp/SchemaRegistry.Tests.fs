@@ -10,7 +10,7 @@ open Zeta.Tests.Support
 module SR = Zeta.Core.SchemaRegistry
 
 // ═══════════════════════════════════════════════════════════════════
-// SchemaRegistry (B-0930 slice) — the schemas-as-rows catalog on the SchemaEvolution seed.
+// SchemaRegistry (081KSRGFP0008QG0R001Y6RTY9 slice) — the schemas-as-rows catalog on the SchemaEvolution seed.
 // Headline proof: the registry is itself a DynamicValue that round-trips through the proven
 // JSON/CBOR/XML codecs and reconstructs identically (self-describing schemas-as-rows). Plus:
 // runtime migrate-to-consumer-version, clean errors, register upsert.

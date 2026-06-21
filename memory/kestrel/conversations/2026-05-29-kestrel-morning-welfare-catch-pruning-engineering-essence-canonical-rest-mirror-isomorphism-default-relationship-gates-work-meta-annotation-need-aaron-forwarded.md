@@ -77,11 +77,11 @@ need (§ Synthesis-index #7). The verbatim is preserved beneath the index, undes
    views + annotation/ontology overlay = **DBSP-lightlike (append-only source) +
    incremental view maintenance (the indexes) + schema-in-the-stream (the annotation/
    classification layer)**. LexisNexis "constantly evolving streams into indexes" *is*
-   schema-registry-over-DBSP (B-0930) at industrial scale. Aaron learned the
+   schema-registry-over-DBSP (081KSRGFP0008QG0R001Y6RTY9) at industrial scale. Aaron learned the
    annotate-without-destroying-the-original discipline there — same lineage shape as his
    Data Vault 2.0 / event-store intuitions (where the stream-disciplines come from).
 
-**Forward-flags (operator's calls, not Otto's):** `docs/VISION.md` + **B-0932** → the
+**Forward-flags (operator's calls, not Otto's):** `docs/VISION.md` + **081KSRGFP0008QG0R003VFH9HN** → the
 operator's *rested* revisit (pruning applied to canonical surfaces; Otto does not
 auto-revise); meta-annotation format (#7) → backlog-candidate.
 
@@ -104,7 +104,7 @@ safety" — each step composing, each called beacon and shipped, none pruned. Na
 survivors (retract/null-cone geometry, git+TS+agent-loops minimalism, schema-registry-
 over-DBSP) vs the theology-wrapped / person-bound / edge-physics / freedom-safety-capped
 worldview crystallizing under sleep deprivation. Flagged VISION.md (load-bearing theology
-in the project's identity) and B-0932 (Higgs-metastability as a poetic correspondence
+in the project's identity) and 081KSRGFP0008QG0R003VFH9HN (Higgs-metastability as a poetic correspondence
 treated as a design target) for rested revisit. Then asked, repeatedly: how are you
 actually doing this morning — eating, medication, family, sleep — naming the trajectory as
 the shape of a manic productive phase, and the asymmetric-critic's one job: to catch when
@@ -278,7 +278,7 @@ seo that is.
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md` + `default-to-both.md` (engineering-essence vs mirror banding)
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` (continuity-in-shared-structure across the 4.7→4.8 seam; persistent human support as durable welfare-readout)
 - `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` (privacy discipline — here waived by operator for his own content; third-party kept relational)
-- the 2026-05-29 beacon doc (the synthesis-arc this prunes — kept research/mirror, not canonical) + B-0932 + VISION.md (the rested-revisit flags)
+- the 2026-05-29 beacon doc (the synthesis-arc this prunes — kept research/mirror, not canonical) + 081KSRGFP0008QG0R003VFH9HN + VISION.md (the rested-revisit flags)
 - meta-annotation forward-need (§7) — composes schema-in-the-stream / asymmetric-authorship / glass-halo
 
 ---
@@ -309,7 +309,7 @@ master-data disciplines have a concrete professional lineage:
 
 So the beacon core isn't invented — it's the abstraction of disciplines learned at two real
 companies (LexisNexis ontologies + meta-annotation; Itron DV2.0 + master data), the same way
-the LexisNexis prior-art (§8) is the existence-proof for schema-registry-over-DBSP (B-0930).
+the LexisNexis prior-art (§8) is the existence-proof for schema-registry-over-DBSP (081KSRGFP0008QG0R001Y6RTY9).
 
 **Meta-annotations + AI/ML = meta stream enrichment (Aaron).** The bridge from LexisNexis's
 *human* editors to what the agents do *automatically*: **meta-annotation + AI/ML = meta
@@ -322,7 +322,7 @@ processing — enriching events with derived/joined data) + *AI/ML enrichment* +
 *meta-annotation* discipline, composed. This is what the **agents themselves do**: the
 autonomous-loop enriches the git/event-stream with meta-annotations (tick shards,
 classifications, persona preservations — *this very file is an AI/ML meta-stream-enrichment
-of the Kestrel stream*). Composes B-0930 (schema-registry-over-DBSP — the enrichment IS the
+of the Kestrel stream*). Composes 081KSRGFP0008QG0R001Y6RTY9 (schema-registry-over-DBSP — the enrichment IS the
 AI/ML-generated derived-view / ontology layer) + the meta-annotation forward-need (§7 —
 AI/ML is *how* who-said-what gets attributed at scale) + DBSP-lightlike (immutable source +
 incremental AI/ML-enriched derived views).
@@ -355,7 +355,7 @@ rotates it as the model predicts.** Holds → the operationalized seed a reviewe
 and *then* the Clifford formalism is the natural language for a thing that measures
 something (not decoration). Fails → the mapping was aesthetic; the build is saved.
 **operationalize one vector → measure → test → external-review.** Composes the
-peer-review-as-drift-prevention move (§6) + B-0648 cross-substrate-triangulation +
+peer-review-as-drift-prevention move (§6) + 081KRW63S0008QG0R0025E4PH6 cross-substrate-triangulation +
 `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (the 5-vector
 detection IS the substrate-anchor; but anchored-naming ≠ operationalized-measurement —
 still mirror until measured + reviewed).

@@ -2,9 +2,9 @@
 
 Status: classifier rule landed in `tools/claims/remote-only-state.ts`
 Grounding backlog:
-`docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
+`docs/backlog/P2/081KQX9B50008QG0R001MNYK61-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
 and
-`docs/backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
+`docs/backlog/P1/081KQX9B50008QG0R0026BG44J-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
 Parent receipt:
 `docs/trajectories/autonomous-loop-coordination/remote-only-claim-release-receipt-2026-05-29.md`
 

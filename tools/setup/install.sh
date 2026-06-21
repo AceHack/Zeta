@@ -2,7 +2,7 @@
 #
 # tools/setup/install.sh — the one install script consumed three ways
 # (dev laptops, CI runners, devcontainer images) per GOVERNANCE.md §24,
-# plus iter-B-0857.2: NixOS-aware routing for cluster nodes.
+# plus iter-081KDWYPGV008QG0R00072K2NH: NixOS-aware routing for cluster nodes.
 #
 # Safe to run repeatedly — detect-first-install-else-update. Safe to
 # run daily to keep tools fresh.
@@ -17,14 +17,14 @@
 #   2 — intentional routing guard (NixOS live-USB environment detected;
 #       script directs operator to zeta-install.sh — this is NOT a
 #       dev-experience bug, it's the live-USB-vs-installed routing per
-#       B-0857.2 below)
+#       081KDWYPGV008QG0R00072K2NH below)
 #
 # The CI `gate.yml` workflow asserts this script completes with exit 0
 # twice in sequence in its tested environments (none of which are NixOS
 # live-USB), so exit 2 from the live-USB branch does NOT affect CI gate
 # assertions.
 #
-# B-0857.2 routing (added 2026-05-27):
+# 081KDWYPGV008QG0R00072K2NH routing (added 2026-05-27):
 #   - macOS (uname -s = Darwin)              -> setup/macos.sh
 #   - Linux non-NixOS (no /etc/NIXOS)        -> setup/linux.sh
 #   - NixOS installed (/etc/NIXOS,           -> setup/linux.sh
@@ -34,10 +34,10 @@
 #                                                rebuild handles the NixOS-side
 #                                                declarative config)
 #   - NixOS docker test harness (/etc/NIXOS  -> setup/linux.sh (treated as installed;
-#     + /.dockerenv from B-0849 docker          discriminator-2 short-circuit)
+#     + /.dockerenv from 081KSKBP80008QG0R000E3RKPK docker          discriminator-2 short-circuit)
 #     test harness)
 #   - NixOS live-USB (/etc/NIXOS + /iso OR   -> message pointing to zeta-install.sh
-#     /run/initramfs canonical installer-       (B-0857.3 will factor that body into
+#     /run/initramfs canonical installer-       (081KDWYPGV008QG0R002TP2RA9 will factor that body into
 #     ISO markers)                              a callable nixos-install-from-usb.sh;
 #                                                this routing stub lands first)
 #   - NixOS target bootstrap inside zeta-      -> setup/linux.sh via explicit
@@ -50,7 +50,7 @@
 #                                                (b2; the PowerShell graph is the
 #                                                Windows install path)
 #
-# Per B-0857 operator framing (2026-05-27): install.sh is the universal
+# Per 081KSKBP80008QG0R002J03WGA operator framing (2026-05-27): install.sh is the universal
 # Unix-like-OS install + self-update entry — "there is no distinction
 # between build machines and prod when prod can update itself." This
 # row's substrate scope is environment-routing dispatch.
@@ -72,20 +72,20 @@ case ":${MISE_TRUSTED_CONFIG_PATHS:-}:" in
   *) export MISE_TRUSTED_CONFIG_PATHS="${MISE_TRUSTED_CONFIG_PATHS:+$MISE_TRUSTED_CONFIG_PATHS:}$REPO_ROOT" ;;
 esac
 
-echo "=== Zeta install — universal Unix-like-OS entry (GOVERNANCE.md §24 + B-0857.2) ==="
+echo "=== Zeta install — universal Unix-like-OS entry (GOVERNANCE.md §24 + 081KDWYPGV008QG0R00072K2NH) ==="
 echo "Repo root: $REPO_ROOT"
 
-# Detect-NixOS-and-mode helper (B-0857.2).
+# Detect-NixOS-and-mode helper (081KDWYPGV008QG0R00072K2NH).
 #
 # Outputs one of: "nixos-live", "nixos-installed", "linux-non-nixos".
 # Caller decides routing.
 #
-# Discriminator priority (per B-0849 docker-test-harness composition):
+# Discriminator priority (per 081KSKBP80008QG0R000E3RKPK docker-test-harness composition):
 #   1. /etc/NIXOS marker → NixOS (else linux-non-nixos)
 #   2. ZETA_INSTALL_NIXOS_MODE=installed|live override for callers
 #      that intentionally run inside a live-ISO namespace while
 #      bootstrapping the installed target (zeta-install.sh Step 6.95)
-#   3. /.dockerenv → installed (Docker container, e.g., the B-0849
+#   3. /.dockerenv → installed (Docker container, e.g., the 081KSKBP80008QG0R000E3RKPK
 #      docker-nixos-install-sh-test harness, which manually creates
 #      /etc/NIXOS to exercise the NixOS userspace path; Docker uses
 #      overlayfs at root which would false-positive on the live-USB
@@ -117,7 +117,7 @@ detect_linux_flavor() {
       ;;
   esac
   # Discriminator 3: Docker container short-circuits to installed
-  # (the B-0849 harness creates /etc/NIXOS manually but is not a
+  # (the 081KSKBP80008QG0R000E3RKPK harness creates /etc/NIXOS manually but is not a
   # live USB; its overlayfs root would otherwise false-positive).
   if [ -f /.dockerenv ]; then
     echo "nixos-installed"
@@ -178,7 +178,7 @@ install.sh script again on the installed system to set up the
 runtime tooling (mise + bun + agent CLIs). The same script entry —
 different routing.
 
-B-0857.3 (follow-up sub-row) will factor zeta-install.sh into a
+081KDWYPGV008QG0R002TP2RA9 (follow-up sub-row) will factor zeta-install.sh into a
 callable nixos-install-from-usb.sh that this script can dispatch
 to directly. Until then, this stub points operators to the
 existing entry.
@@ -210,7 +210,7 @@ EOF
     if command -v cygpath >/dev/null 2>&1; then
       ps1_path="$(cygpath -w "$ps1_path")"
     fi
-    # B-0965: route-only guard — assert the git-bash -> PowerShell handoff WITHOUT running
+    # 081KT07NV0008QG0R002ZFN79J: route-only guard — assert the git-bash -> PowerShell handoff WITHOUT running
     # install.ps1 (install.ps1 itself is already shielded by docker-windows-install-ps1-test).
     # When ZETA_INSTALL_ROUTE_ONLY=1, resolve the PowerShell binary + the native -File path,
     # print the exact command line that WOULD exec, then exit 0. The gitbash-install-routing-test
@@ -256,14 +256,14 @@ esac
 
 echo
 
-# --- Provision agent loop cells (B-0248.2) ---
+# --- Provision agent loop cells (081KRQ1AB0008QG0R0014PKF49) ---
 # After deps are installed, provision the 4 system cells from the
 # cluster-cells manifest. macOS + launchd only (host-loop-bootstrap.sh).
 # Skip on CI, non-macOS Linux/Windows dev VMs, and ZETA_SKIP_CELLS=1.
 if [ "${CI:-}" != "true" ] && [ "${ZETA_SKIP_CELLS:-0}" != "1" ]; then
   if [ "$os" = "Darwin" ] && [ -f "$SETUP_DIR/host-loop-bootstrap.sh" ]; then
     echo ""
-    echo "=== Provisioning agent loop cells (B-0248.2) ==="
+    echo "=== Provisioning agent loop cells (081KRQ1AB0008QG0R0014PKF49) ==="
     bash "$SETUP_DIR/host-loop-bootstrap.sh" --skip-health-check || {
       echo "Warning: cell provisioning failed (non-fatal). Cells can be"
       echo "provisioned manually: bash tools/setup/host-loop-bootstrap.sh"

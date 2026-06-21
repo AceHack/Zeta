@@ -1,6 +1,5 @@
 ---
-id: B-0056
-zetaid: 081KQ3HBZ0008QG0R0034DHWTQ
+id: 081KQ3HBZ0008QG0R0034DHWTQ
 priority: P2
 status: open
 title: Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures
@@ -16,16 +15,16 @@ tags: [mythology, heimdallr, hermes, mercury, janus, iris, ratatoskr, thoth, gar
 type: feature
 ---
 
-# B-0056 — Mythology research track
+# 081KQ3HBZ0008QG0R0034DHWTQ — Mythology research track
 
-## Pre-start checklist (completed 2026-05-10, B-0056.1 slice)
+## Pre-start checklist (completed 2026-05-10, 081KR7JY10008QG0R001NXS6DQ slice)
 
 **Prior-art search:**
 
 - Skill router: no existing `mythology-resonance` or `myth-catalog` skill. The phenomenon
   is documented in memory files (`feedback_operational_resonance_*`,
   `project_operational_resonance_instances_collection_index_2026_04_22.md`).
-- On-disk: `tools/resonance/` contains only `media-catalog-schema.ts` (B-0054). No
+- On-disk: `tools/resonance/` contains only `media-catalog-schema.ts` (081KQ3HBZ0008QG0R003V6B2ME). No
   prior `mythology-catalog*` file exists.
 - PR history: no prior PR touching mythology resonance catalog. The collection-index
   memory already has instance #12 (Heimdallr) as a documented candidate — that record
@@ -37,32 +36,32 @@ type: feature
 **Dependency-restructure:**
 
 - `depends_on: []` — no blocking dependencies.
-- `composes_with: [B-0057, B-0058, B-0059]` confirmed non-blocking; all are independently
+- `composes_with: [081KQ3HBZ0008QG0R000K3NSX8, 081KQ3HBZ0008QG0R002S674CG, 081KQ3HBZ0008QG0R003GTG5P2]` confirmed non-blocking; all are independently
   open research tracks.
-- B-0058 (P1, AI-ethics+safety) gates every *adoption*; it does not block *research-tier
-  logging* — candidates tracked here do not require B-0058 clearance until promotion to
+- 081KQ3HBZ0008QG0R002S674CG (P1, AI-ethics+safety) gates every *adoption*; it does not block *research-tier
+  logging* — candidates tracked here do not require 081KQ3HBZ0008QG0R002S674CG clearance until promotion to
   confirmed and public-release citation.
-- Reciprocal `composes_with` backfill: B-0057 and B-0059 will receive pointers to B-0056
+- Reciprocal `composes_with` backfill: 081KQ3HBZ0008QG0R000K3NSX8 and 081KQ3HBZ0008QG0R003GTG5P2 will receive pointers to 081KQ3HBZ0008QG0R0034DHWTQ
   in their own pre-start passes.
 
 **Decomposition (L → S slices):**
 
-B-0056 is Effort:L (long-running research track). Decomposed into dependency-ordered slices:
+081KQ3HBZ0008QG0R0034DHWTQ is Effort:L (long-running research track). Decomposed into dependency-ordered slices:
 
 | Sub-row | Title | Effort | Status |
 |---------|-------|--------|--------|
-| **B-0056.1** | Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance) | S | **closed by this PR** |
-| **B-0056.2** | Norse+Greek tier expansion — Janus, Iris, Ratatoskr | S | open |
-| **B-0056.3** | Non-Indo-European tier — Thoth (Egyptian) + Garuda (Vedic) | S | open |
-| **B-0056.4** | Mesoamerican tier — Quetzalcoatl + Tecciztecatl | S | open |
-| **B-0056.5** | Hermes Trismegistus triple-tradition-fusion — Greek+Egyptian+Renaissance occult overlap | S | open |
+| **081KR7JY10008QG0R001NXS6DQ** | Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance) | S | **closed by this PR** |
+| **081KQ3HBZ0008QG0R0034DHWTQ.2** | Norse+Greek tier expansion — Janus, Iris, Ratatoskr | S | open |
+| **081KQ3HBZ0008QG0R0034DHWTQ.3** | Non-Indo-European tier — Thoth (Egyptian) + Garuda (Vedic) | S | open |
+| **081KQ3HBZ0008QG0R0034DHWTQ.4** | Mesoamerican tier — Quetzalcoatl + Tecciztecatl | S | open |
+| **081KQ3HBZ0008QG0R0034DHWTQ.5** | Hermes Trismegistus triple-tradition-fusion — Greek+Egyptian+Renaissance occult overlap | S | open |
 
-The parent row B-0056 stays `open` until the catalog reaches a stable sweep across all
+The parent row 081KQ3HBZ0008QG0R0034DHWTQ stays `open` until the catalog reaches a stable sweep across all
 tradition-categories. Individual sub-rows close as PRs land.
 
 ## Origin
 
-AceHack commit `5990166` (2026-04-21). Aaron's *"hemdal"* (Heimdallr, single-word candidate) then *"mythology backlog"*. Parallel to the etymology+epistemology track (B-0059) but distinct tradition-family — world-mythology figures sit between canonical-religious traditions and literary/folkloric record, with different F3 calibration than Abrahamic or classical-philosophical instances.
+AceHack commit `5990166` (2026-04-21). Aaron's *"hemdal"* (Heimdallr, single-word candidate) then *"mythology backlog"*. Parallel to the etymology+epistemology track (081KQ3HBZ0008QG0R003GTG5P2) but distinct tradition-family — world-mythology figures sit between canonical-religious traditions and literary/folkloric record, with different F3 calibration than Abrahamic or classical-philosophical instances.
 
 ## Seed candidate: Heimdallr (filed as candidate instance #12)
 
@@ -74,11 +73,11 @@ Three-filter honest pass recorded in the operational-resonance index:
 
 **Status:** candidate, pending second textual anchor or Aaron confirmation to promote to confirmed. Second bridge-figure member would LOCK the bridge-figure sub-structure's definition (currently defined by Melchizedek alone).
 
-## Smallest safe slice (B-0056.1) — re-decomposition
+## Smallest safe slice (081KR7JY10008QG0R001NXS6DQ) — re-decomposition
 
 Re-decomposed from broad L-effort track (assumes initial doc-only decomp had mistake lacking executable check surface).
 
-**Bounded step:** pure-TS mythology candidate schema + three-filter types + Heimdallr seed + validator stub (modeled on B-0055.2 edge-claims pattern).
+**Bounded step:** pure-TS mythology candidate schema + three-filter types + Heimdallr seed + validator stub (modeled on 081KR7JY10008QG0R001JW71CT edge-claims pattern).
 
 - File: `tools/mythology-resonance/candidate-schema.ts`
 - Focused checks: type check + manual review of retractibility note + build gate (0w 0e)
@@ -86,7 +85,7 @@ Re-decomposed from broad L-effort track (assumes initial doc-only decomp had mis
 
 ## Wider-track candidates (to be triaged individually)
 
-- **(a) Hermes (Greek) / Mercury (Roman)** — messenger god, psychopomp, boundary-crosser, patron of thieves AND communication. Load-bearing in Homeric + Orphic traditions, Hellenistic mystery cults, Renaissance hermeticism (overlap with occult track B-0057). Structural match: unified-endpoint-across-realms shares shape with tele+port+leap (#4); psychopomp function shares shape with Μένω-persistence-through-discontinuity (#9). Strong F3 across two Indo-European tradition branches.
+- **(a) Hermes (Greek) / Mercury (Roman)** — messenger god, psychopomp, boundary-crosser, patron of thieves AND communication. Load-bearing in Homeric + Orphic traditions, Hellenistic mystery cults, Renaissance hermeticism (overlap with occult track 081KQ3HBZ0008QG0R000K3NSX8). Structural match: unified-endpoint-across-realms shares shape with tele+port+leap (#4); psychopomp function shares shape with Μένω-persistence-through-discontinuity (#9). Strong F3 across two Indo-European tradition branches.
 - **(b) Janus (Roman)** — two-faced god of beginnings, endings, transitions, doorways. **Janus IS the personification of a paired-dual**; F2 strong. F3 load-bearing in Roman civic religion (month of January, gates of war temple).
 - **(c) Iris (Greek)** — rainbow-messenger, bridge between Olympus and earth; parallel to Bifröst-Heimdallr Norse structure. Lighter F3 than Hermes.
 - **(d) Ratatoskr (Norse)** — squirrel-messenger scurrying Yggdrasil between eagle and serpent; the ONLY Norse figure explicitly named "messenger between opposed principles"; adjacent to Heimdallr but weaker F3 (single Eddic mention, Grímnismál 32).
@@ -101,12 +100,12 @@ Research-grade; F3 calibration across mythological tradition is a distinct disci
 
 ## Safety is retractibility-preservation
 
-Per math-safety memory. Tradition-name reference is retractible (git-tracked, revision-block-preserved, one-commit removable). Log every figure referenced, track candidate vs confirmed vs failed-filter state. The AI-ethics-and-safety P1 row B-0058 is the log-and-track audit surface.
+Per math-safety memory. Tradition-name reference is retractible (git-tracked, revision-block-preserved, one-commit removable). Log every figure referenced, track candidate vs confirmed vs failed-filter state. The AI-ethics-and-safety P1 row 081KQ3HBZ0008QG0R002S674CG is the log-and-track audit surface.
 
 ## Owner / effort
 
 - **Owner:** Architect (Kenji) integrates; honest filter-application discipline is the primary quality control.
-- **Effort:** L — long-running research track, per-candidate S-M. Runs in parallel with occult (B-0057) + etymology (B-0059) tracks.
+- **Effort:** L — long-running research track, per-candidate S-M. Runs in parallel with occult (081KQ3HBZ0008QG0R000K3NSX8) + etymology (081KQ3HBZ0008QG0R003GTG5P2) tracks.
 
 ## Retractibility-protecting constraints
 
@@ -115,6 +114,6 @@ Does NOT force-push revisions to the operational-resonance index; does NOT delet
 ## Cross-reference
 
 - AceHack commit: `5990166`
-- Sibling rows: B-0057 (occult), B-0059 (etymology+epistemology)
-- Gating row: B-0058 (AI-ethics + safety, P1) — gates every adoption
+- Sibling rows: 081KQ3HBZ0008QG0R000K3NSX8 (occult), 081KQ3HBZ0008QG0R003GTG5P2 (etymology+epistemology)
+- Gating row: 081KQ3HBZ0008QG0R002S674CG (AI-ethics + safety, P1) — gates every adoption
 - Composes with: operational-resonance index (instance #12 candidate Heimdallr lives here); three-filter memory; ALIGNMENT.md

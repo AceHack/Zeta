@@ -163,7 +163,7 @@ When recording a bead audit:
   lineage + falsifier per the SD-9 guardrail.
 
 Composes with the broader human-lineage backfill trajectory
-(B-0060 P1) and the Aurora measurement-hygiene work
+(081KQ8P5D0008QG0R000N718AC P1) and the Aurora measurement-hygiene work
 (task #292).
 
 ### What this is NOT
@@ -367,7 +367,7 @@ Amortized precision is momentum.
 
 - The Goodhart Risk section above — dual constraint;
   both must be in force.
-- B-0060 (human-lineage external-anchor backfill) — Six
+- 081KQ8P5D0008QG0R000N718AC (human-lineage external-anchor backfill) — Six
   Sigma + Kanban are explicit anchors per Aaron's
   stop-mythology directive.
 
@@ -415,7 +415,7 @@ Critical separation to preserve:
   philosophical foundation that makes falsifier-passing
   observation count as evidence at all. Cite Popper,
   confirmation-bias literature, Bayesian update — these
-  are EXTERNAL anchors per Beacon-safe discipline (B-0060
+  are EXTERNAL anchors per Beacon-safe discipline (081KQ8P5D0008QG0R000N718AC
   human-lineage external-anchor backfill).
 - **Bead accounting (factory-local)**: the operational
   metric we use INSIDE Zeta to track validation
@@ -428,7 +428,7 @@ falsifier-passing observation matters); beads give the HOW
 metric needs no external citation; the philosophical claim
 does.
 
-### Connection to B-0060 (external human-lineage anchoring)
+### Connection to 081KQ8P5D0008QG0R000N718AC (external human-lineage anchoring)
 
 Aaron 2026-04-28T20:48Z prefatory ask: *"we are going to
 need external human lineage research and anchoring."*
@@ -445,7 +445,7 @@ machinery DOES need external lineage:
   lineage; this is factory-local heuristic. Could anchor to
   Bayesian-update over base-rate framing if needed.
 
-B-0060 (human-lineage external-anchor backfill, P1) tracks
+081KQ8P5D0008QG0R000N718AC (human-lineage external-anchor backfill, P1) tracks
 the broader trajectory of citing external scholars/literature
 across all factory substrate. The Class Validation Beads
 addition is a place where the discipline applies: external
@@ -496,7 +496,7 @@ Per the precision-language tiny-blade:
 | Class | Beads | Type |
 |---|---|---|
 | Self-Healing Metrics on Regime Change | 1 | prediction-bearing trajectory (SASTID 28/30 → 29/30) |
-| Workflow Null-Result Audit Signal | 2 | detector reuse (B-0085 + B-0087 found) |
+| Workflow Null-Result Audit Signal | 2 | detector reuse (081KQ8P5D0008QG0R003JETMEV + 081KQ8P5D0008QG0R000JHD7AB found) |
 | Scheduled Workflow Null-Result Hygiene Scan (tier-1) | 0 | named, not yet exercised post-promotion |
 | Chronological Insertion Polarity Error | 1 | mechanism-over-vigilance hook caught PR #684 chronological reversal |
 | Outdated Review-Thread Merge Gate Residue | 2 | applied PR #684 (Copilot stale thread) + PR #688/#690 (5 thread fixes) |

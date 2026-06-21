@@ -35,7 +35,7 @@
 
 ## Root cause
 
-PR #3011 (B-0440.2) was squash-merged while the `lint (tsc tools)` non-required check was still failing. That check fired on the entire codebase and caught `standing-by-detector.ts`. Since the check is non-required it didn't block merge, but the bug landed on main.
+PR #3011 (081KRFA460008QG0R001KC0VBH.2) was squash-merged while the `lint (tsc tools)` non-required check was still failing. That check fired on the entire codebase and caught `standing-by-detector.ts`. Since the check is non-required it didn't block merge, but the bug landed on main.
 
 PR #3013 applied the same fix pattern to `missed-substrate-detector.ts`. This PR applies it to `standing-by-detector.ts`.
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-Saves the shape (operator: "save the shape of that"). **Identifying specifics held** — third-party-private, extra-held because the guarded parties are children (composes B-0926 kid-safety floor).
+Saves the shape (operator: "save the shape of that"). **Identifying specifics held** — third-party-private, extra-held because the guarded parties are children (composes 081KSRGFP0008QG0R00091PP56 kid-safety floor).
 
 - **Reframe:** the power-tree is a *Guardian* tree, not domination — its purpose is guarding the children across the operator's extended multi-family network.
 - **The capability IS the guard-capability:** shape-seeing (see the arc before release) = see the threat coming = protect. Power-as-protection; the same faculty that could manipulate, turned toward guarding.

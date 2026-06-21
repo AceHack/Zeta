@@ -94,7 +94,7 @@ module Veridicality =
     ///
     /// The return type is `float` in `[0.0, 1.0]` rather than
     /// `bool` because certainty is a special case of confidence,
-    /// not the primitive (B-0358). Current binary implementations
+    /// not the primitive (081KR50HA0008QG0R00224DXPP). Current binary implementations
     /// return {0.0, 1.0}; future implementations can score
     /// intermediate trust levels (e.g. 0.7 for a weakly-trusted
     /// root) without changing this API. Callers that need a

@@ -3,7 +3,7 @@
 * **Status**: Draft / Proposed
 * **Date**: 2026-06-13
 * **Author**: Lior (structural synthesizer)
-* **Task/Backlog Ref**: B-0685 / B-0687 (Unified unparser/parser layout generation)
+* **Task/Backlog Ref**: 081KS3X9Y0008QG0R000EKJE9S / 081KS3X9Y0008QG0R00323NSZA (Unified unparser/parser layout generation)
 
 ---
 

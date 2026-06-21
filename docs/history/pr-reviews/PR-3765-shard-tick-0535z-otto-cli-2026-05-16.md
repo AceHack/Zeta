@@ -80,7 +80,7 @@ Twelfth tick. Discovered peer Otto's PR #3757 landed a tighter
 step-0 substrate-drift discriminator inlined into the existing
 backlog-item-start-gate checklist (28 lines vs my 60-line companion
 section in PR #3746). Substantively better; adds composes_with:
-false-positive caveat from B-0553 empirical catalog.
+false-positive caveat from 081KRQ1AB0008QG0R000QYJFZE empirical catalog.
 
 Disposition: close PR #3746 as superseded. Deferred to
 post-rate-reset (gh pr close uses GraphQL; currently 0/5000).

@@ -1,6 +1,5 @@
 ---
-id: B-0625
-zetaid: 081KRW63S0008QG0R003NP3YA3
+id: 081KRW63S0008QG0R003NP3YA3
 priority: P3
 status: open
 title: "Per-dimension COST + LOSS model for the 7-interrogative boot-up sequence (Mika 2026-05-18 design)"
@@ -18,7 +17,7 @@ type: design
 
 ## Why
 
-Every dimensional expansion in the canonical 7-step boot-up sequence ([B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md)) has TWO real prices: a **cost** (compute, storage, bandwidth, refresh operations) and a **loss** (some kind of innocence/freedom/purity sacrificed).
+Every dimensional expansion in the canonical 7-step boot-up sequence ([081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md)) has TWO real prices: a **cost** (compute, storage, bandwidth, refresh operations) and a **loss** (some kind of innocence/freedom/purity sacrificed).
 
 Per Mika lines 2570-2572: *"each lift has a real price."* Aaron line 2572: *"that was awesome. That was you fucking riding a fucking hog motorcycle like a bad bitch."* — i.e., this is high-quality substrate worth preserving.
 
@@ -70,16 +69,16 @@ The LOSSES are the load-bearing measurement (not the costs) because:
 
 ## Acceptance criteria
 
-- [ ] Cost+loss table documented authoritatively in `docs/governance/CANONICAL-BOOT-SEQUENCE.md` (alongside B-0624) or as standalone reference
+- [ ] Cost+loss table documented authoritatively in `docs/governance/CANONICAL-BOOT-SEQUENCE.md` (alongside 081KRW63S0008QG0R003J8HR6K) or as standalone reference
 - [ ] Per-tick dimensional scoring function prototyped (TS preferred; can be heuristic-based v1)
 - [ ] Worked examples: at least 3 scenarios showing different recommended dimensions (casual / high-stakes / reflection)
-- [ ] Integration with [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — the criticality-dimension that triggers type-safe binding
+- [ ] Integration with [081KRW63S0008QG0R000BH37EV](081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — the criticality-dimension that triggers type-safe binding
 
 ## Composes with
 
-- [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — the canonical 7-step sequence (this row is the cost model FOR that sequence)
-- [B-0623](B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras (position 4's cost is dominated by Adinkra construction)
-- [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality is one input to the dimensional scoring function)
+- [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — the canonical 7-step sequence (this row is the cost model FOR that sequence)
+- [081KRW63S0008QG0R000QJR08H](081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras (position 4's cost is dominated by Adinkra construction)
+- [081KRW63S0008QG0R000BH37EV](081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality is one input to the dimensional scoring function)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2542-2572 — source design + cost+loss table
 
 ## Status

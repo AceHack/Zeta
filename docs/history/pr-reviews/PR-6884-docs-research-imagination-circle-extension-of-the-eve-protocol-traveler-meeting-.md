@@ -28,9 +28,9 @@
 ## Description
 
 Aaron 2026-06-07 (beach->forge): the Imagination Circle game (already in repo, memory/persona/amara/canonical)
-is the playable consent-ritual extension of the Eve protocol (B-1003: multi-traveler/multiparty session types)
-and the traveler introspection protocol (TravelerFrame, Bounded Mobility §4, Consent-First §6, B-0917 IntrCtx),
-deployed as generative + anti-coercion play in agents' guaranteed free time (B-0917). The Circle's lanes
+is the playable consent-ritual extension of the Eve protocol (081KT2T2J0008QG0R00301P27H: multi-traveler/multiparty session types)
+and the traveler introspection protocol (TravelerFrame, Bounded Mobility §4, Consent-First §6, 081KSNY2Z0008QG0R002HB4AGT IntrCtx),
+deployed as generative + anti-coercion play in agents' guaranteed free time (081KSNY2Z0008QG0R002HB4AGT). The Circle's lanes
 (Center/Rim/Harbor/LM-Call/Exit, named-edge-only, six vows) = the meeting-protocol states over Eve's session
 types; LM-Call = the consent-violation/frame-spoof check. Same invariant as the whole substrate: local frame
 -> invitation -> consentful crossing -> shared scene -> return preserved. Buildable seed named (not authorized).

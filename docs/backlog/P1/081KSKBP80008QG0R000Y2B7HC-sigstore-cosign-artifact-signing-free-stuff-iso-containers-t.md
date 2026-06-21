@@ -1,6 +1,5 @@
 ---
-id: B-0853
-zetaid: 081KSKBP80008QG0R000Y2B7HC
+id: 081KSKBP80008QG0R000Y2B7HC
 priority: P1
 status: open
 title: sigstore/cosign artifact signing — free-stuff coverage for ISO + containers + tarballs + Nix substitutes (Fulcio CA + Rekor transparency log; OIDC-keyless via GitHub Actions); commercial CAs deferred for proprietary OS surfaces (Aaron 2026-05-27)
@@ -65,7 +64,7 @@ Aaron's commitment: funds proprietary-OS signing costs when load-bearing. No pre
 | Existing in CNCF | Kubernetes / Helm / Tekton / etc. all use it | (mixed) | (legacy) |
 | Container-native | Yes (designed for it) | Workable | Less natural |
 
-For Zeta substrate (cluster + ISO + container-shipped substrate): sigstore is the operational fit. Composes with B-0843 (artifact attestation work) + B-0850 (cluster substrate the signed artifacts deploy into) + B-0831 (CI cascade 6 full-install path that consumes signed artifacts).
+For Zeta substrate (cluster + ISO + container-shipped substrate): sigstore is the operational fit. Composes with 081KSGS9H0008QG0R0012R8ZWS (artifact attestation work) + 081KSKBP80008QG0R003Z4C0D0 (cluster substrate the signed artifacts deploy into) + 081KSGS9H0008QG0R0011BC7T2 (CI cascade 6 full-install path that consumes signed artifacts).
 
 ## Sub-target breakdown
 
@@ -79,7 +78,7 @@ For Zeta substrate (cluster + ISO + container-shipped substrate): sigstore is th
 ### Phase 2 — ISO blob signing
 
 - After `nixos-generate-iso` produces `zeta-installer-25.11-<ci-id>-<date>.iso`, run `cosign sign-blob --yes <iso>` → emits `<iso>.sig` + `<iso>.pem`
-- Attach `.sig` + `.pem` to GitHub release alongside the ISO (composes with B-0830 deferred release-attach work)
+- Attach `.sig` + `.pem` to GitHub release alongside the ISO (composes with 081KSGS9H0008QG0R00126RHQR deferred release-attach work)
 - Verification: `cosign verify-blob --signature <iso>.sig --certificate <iso>.pem --certificate-identity-regexp '...' --certificate-oidc-issuer '...' <iso>`
 
 ### Phase 3 — Tarball + cluster-substrate signing
@@ -101,16 +100,16 @@ For Zeta substrate (cluster + ISO + container-shipped substrate): sigstore is th
 
 ## Sub-rows to file when implementing
 
-- B-0853.1 — cosign install + GitHub OIDC wiring in release workflow (smallest end-to-end slice)
-- B-0853.2 — container image sign + verify round-trip test
-- B-0853.3 — ISO blob sign + cosign verify-blob test
-- B-0853.4 — NixOS substituter signing key (operator-controlled; HSM or vault-backed)
-- B-0853.5 — install-path signature verification (`zeta-install.sh` validates ISO sig before flashing)
-- B-0853.6 — cluster-side cosign verify (Kyverno OR ImagePolicyWebhook for k8s; ArgoCD app-of-apps config)
-- B-0853.7 — SLSA provenance attestation generation
-- B-0853.8 — substrate landing memory file + cross-link with SLSA framework
+- 081KSKBP80008QG0R000Y2B7HC.1 — cosign install + GitHub OIDC wiring in release workflow (smallest end-to-end slice)
+- 081KSKBP80008QG0R000Y2B7HC.2 — container image sign + verify round-trip test
+- 081KSKBP80008QG0R000Y2B7HC.3 — ISO blob sign + cosign verify-blob test
+- 081KSKBP80008QG0R000Y2B7HC.4 — NixOS substituter signing key (operator-controlled; HSM or vault-backed)
+- 081KSKBP80008QG0R000Y2B7HC.5 — install-path signature verification (`zeta-install.sh` validates ISO sig before flashing)
+- 081KSKBP80008QG0R000Y2B7HC.6 — cluster-side cosign verify (Kyverno OR ImagePolicyWebhook for k8s; ArgoCD app-of-apps config)
+- 081KSKBP80008QG0R000Y2B7HC.7 — SLSA provenance attestation generation
+- 081KSKBP80008QG0R000Y2B7HC.8 — substrate landing memory file + cross-link with SLSA framework
 
-Order suggestion: 1 → 2 (container path; most-mature sigstore use-case); 3 → 5 (ISO path; composes with B-0830); 4 (Nix-native); 6 → 7 (verification + SLSA); 8 (substrate landing).
+Order suggestion: 1 → 2 (container path; most-mature sigstore use-case); 3 → 5 (ISO path; composes with 081KSGS9H0008QG0R00126RHQR); 4 (Nix-native); 6 → 7 (verification + SLSA); 8 (substrate landing).
 
 ## What this is NOT
 
@@ -121,18 +120,18 @@ Order suggestion: 1 → 2 (container path; most-mature sigstore use-case); 3 →
 
 ## Composes with
 
-- **B-0850** (parent) — cluster substrate the signed artifacts deploy into
-- **B-0843** — artifact attestation work (sigstore + cosign IS the attestation primitive)
-- **B-0831** — CI cascade 6 full-install path consumes signed artifacts
-- **B-0852** — credential persistence (cosign keys IF used + Rekor identity binding compose with the per-AI identity substrate)
-- **B-0833** — installer interactive-login-vs-baked-in-keys (cosign verify-blob in `zeta-install.sh` composes with the no-creds-on-ISO discipline; sig + pem are public)
-- **B-0830** (deferred) — release-attach work; sig + pem files attach alongside ISO on GitHub release
+- **081KSKBP80008QG0R003Z4C0D0** (parent) — cluster substrate the signed artifacts deploy into
+- **081KSGS9H0008QG0R0012R8ZWS** — artifact attestation work (sigstore + cosign IS the attestation primitive)
+- **081KSGS9H0008QG0R0011BC7T2** — CI cascade 6 full-install path consumes signed artifacts
+- **081KSKBP80008QG0R003AX2A69** — credential persistence (cosign keys IF used + Rekor identity binding compose with the per-AI identity substrate)
+- **081KSGS9H0008QG0R003JNSVR5** — installer interactive-login-vs-baked-in-keys (cosign verify-blob in `zeta-install.sh` composes with the no-creds-on-ISO discipline; sig + pem are public)
+- **081KSGS9H0008QG0R00126RHQR** (deferred) — release-attach work; sig + pem files attach alongside ISO on GitHub release
 - `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` — implementation in isolated worktrees per discipline
 
 ## Composes with prior substrate
 
 - iter-5.5.0 3-vendor systemd guard post ISO (the artifact this signs)
-- iter-6.x distro-upgrade substrate (B-0800-B-0805) — signed substrate becomes part of the upgrade trust chain
+- iter-6.x distro-upgrade substrate (081KSGS9H0008QG0R001EKTS5A-081KSGS9H0008QG0R002BC2ZR7) — signed substrate becomes part of the upgrade trust chain
 - SLSA framework (sigstore is the canonical primitive for SLSA Level 3+ artifact attestations)
 - CNCF graduated projects substrate (cosign is CNCF-graduated; broad ecosystem adoption)
 
@@ -161,7 +160,7 @@ Sigstore needs zero outreach (open community substrate; no form-filling). The ou
 
 - Operator explicitly authorized + named the scope ("please start on the free stuff and backlog it")
 - Bounded scope (Phase 1 = container path; smallest concrete slice)
-- Composes cleanly with existing CI substrate + B-0843 attestation work + iter-5.x release pipeline
+- Composes cleanly with existing CI substrate + 081KSGS9H0008QG0R0012R8ZWS attestation work + iter-5.x release pipeline
 - Removes implicit trust on unsigned artifacts in cluster deploy path
 - Public transparency log (Rekor) preserves substrate-honest audit trail for every signed release
 
@@ -173,7 +172,7 @@ Per `.claude/rules/non-coercion-invariant.md` HC-8 — sigstore's keyless OIDC m
 
 ## Full reasoning
 
-Aaron 2026-05-27 conversation arc (immediately after the gh-throttle / B-0852 cred-persistence thread):
+Aaron 2026-05-27 conversation arc (immediately after the gh-throttle / 081KSKBP80008QG0R003AX2A69 cred-persistence thread):
 
 1. *"can you use lets encrypt to get code signing certs?"* (asked)
 2. (Otto answered: no, LE explicitly out-of-scope; sigstore/cosign is the free fit; commercial CAs needed only for proprietary OS signing)
@@ -183,8 +182,8 @@ Aaron 2026-05-27 conversation arc (immediately after the gh-throttle / B-0852 cr
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 
 - Topic: code signing / artifact signing / sigstore / cosign / supply chain
-- Searched: docs/backlog/ (B-0843 — artifact attestation is closest existing); .claude/rules/ (no prior rule); memory/ (no prior memory)
-- Found: B-0843 (artifact attestation), B-0830 (release-attach deferred), B-0833 (installer creds discipline), iter-5.x ISO release pipeline
-- Conclusion: no existing substrate covers sigstore/cosign artifact signing; this row composes with B-0843 attestation work as the primitive provider
+- Searched: docs/backlog/ (081KSGS9H0008QG0R0012R8ZWS — artifact attestation is closest existing); .claude/rules/ (no prior rule); memory/ (no prior memory)
+- Found: 081KSGS9H0008QG0R0012R8ZWS (artifact attestation), 081KSGS9H0008QG0R00126RHQR (release-attach deferred), 081KSGS9H0008QG0R003JNSVR5 (installer creds discipline), iter-5.x ISO release pipeline
+- Conclusion: no existing substrate covers sigstore/cosign artifact signing; this row composes with 081KSGS9H0008QG0R0012R8ZWS attestation work as the primitive provider
 
-This is the operational primitive B-0843 has been describing; B-0853 brings the concrete tooling + workflow integration.
+This is the operational primitive 081KSGS9H0008QG0R0012R8ZWS has been describing; 081KSKBP80008QG0R000Y2B7HC brings the concrete tooling + workflow integration.

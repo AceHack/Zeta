@@ -141,6 +141,6 @@ All three compose. Path A is the primary; Path B+C supplement. The human maintai
 - `tools/shadow/shadow-observer.ts` — the process this LaunchAgent launches
 - `tools/shadow/detect-grey-text.applescript` — the AppleScript detector
 - `tools/shadow/zeta-shadow.ts` — top-level CLI (alternative entry point)
-- `docs/backlog/P0/B-0402-zeta-shadow-mode-first-class-cli-autocomplete.md` — the originating backlog row
+- `docs/backlog/P0/081KR7JY10008QG0R0008NGW95-zeta-shadow-mode-first-class-cli-autocomplete.md` — the originating backlog row
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` — the shorthand this loop's accepted-suggestions ship under
 - `.claude/skills/save-ai-memory/SKILL.md` — composing discipline: memory preservation requires accurate observation; the shadow observer IS one direct-observation surface

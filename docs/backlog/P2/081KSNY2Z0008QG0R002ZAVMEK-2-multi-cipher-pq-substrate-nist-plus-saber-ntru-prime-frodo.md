@@ -1,6 +1,5 @@
 ---
-id: B-0883.2
-zetaid: 081KSNY2Z0008QG0R002ZAVMEK
+id: 081KSNY2Z0008QG0R002ZAVMEK
 priority: P2
 status: open
 title: Multi-cipher PQ substrate — NIST baseline + Saber + NTRU Prime + FrodoKEM hedge against NIST-monoculture; parameterized envelope swappable cipher
@@ -30,11 +29,11 @@ tags:
 
 > *"lattice based / post quantium crypto but not just nist"*
 
-Locks Q2 of B-0883.1 library landscape audit. NIST-standardized primitives are baseline; hedge against NIST-monoculture risk by carrying alternates from the broader lattice family. The "but not just nist" framing means operator wants algorithm DIVERSITY, not algorithm SUBSTITUTION.
+Locks Q2 of 081KSNY2Z0008QG0R0037X4DP4 library landscape audit. NIST-standardized primitives are baseline; hedge against NIST-monoculture risk by carrying alternates from the broader lattice family. The "but not just nist" framing means operator wants algorithm DIVERSITY, not algorithm SUBSTITUTION.
 
 ## What this row tracks
 
-Extend B-0883 envelope to be parameterized over KEM choice + signature choice; ship multiple cipher implementations side-by-side; recipient + envelope-version negotiate which cipher to use for any given operation.
+Extend 081KSNY2Z0008QG0R002JKH50A envelope to be parameterized over KEM choice + signature choice; ship multiple cipher implementations side-by-side; recipient + envelope-version negotiate which cipher to use for any given operation.
 
 ## Candidate algorithm set
 
@@ -48,7 +47,7 @@ Extend B-0883 envelope to be parameterized over KEM choice + signature choice; s
 | **SLH-DSA** (SPHINCS+) | Hash-based (NOT lattice) | Standardized FIPS 205 | `@noble/post-quantum` ships | Signature alternate that doesn't depend on lattice hardness at all; total family-diversity |
 | **SWOOSH** | Module-LWE NIKE | Academic 2023 (USENIX Sec 2024) | Reference impl Rust+Jasmin; no TS | Future watch-list; if standardized + TS-port lands, integrate |
 
-**Default deployment for B-0885 v1:** ML-KEM-768 + ML-DSA-65 (Noble-shipped; smallest deployment surface). Other algorithms ship as ALTERNATES that can be selected per-recipient or per-envelope.
+**Default deployment for 081KSNY2Z0008QG0R0030V5ZVS v1:** ML-KEM-768 + ML-DSA-65 (Noble-shipped; smallest deployment surface). Other algorithms ship as ALTERNATES that can be selected per-recipient or per-envelope.
 
 **Hedge architecture:** envelope format declares which KEM was used (`"alg": { "kem": "ML-KEM-768" }`). Decryptor checks supported list. Cipher swap = update declared alg + add cipher to decryptor's supported set. No structural envelope change.
 
@@ -68,17 +67,17 @@ Extend B-0883 envelope to be parameterized over KEM choice + signature choice; s
 
 ## Composition
 
-- **B-0883** (parent crypto substrate)
-- **B-0883.1** (library landscape audit — this row implements Q2's locked decision)
-- **B-0885** (agent private encrypted state — beneficiary)
+- **081KSNY2Z0008QG0R002JKH50A** (parent crypto substrate)
+- **081KSNY2Z0008QG0R0037X4DP4** (library landscape audit — this row implements Q2's locked decision)
+- **081KSNY2Z0008QG0R0030V5ZVS** (agent private encrypted state — beneficiary)
 - Future B-NNNN: when SWOOSH ships TS-native or Saber gets TS-native impl, file sibling sub-rows
 
 ## Substrate-honest framing
 
-P2 — important architectural property (hedge against NIST-monoculture) but not blocking B-0885 v1 (ships with ML-KEM-768 baseline; hedge alternates land as TS-native impls mature). The parameterized envelope IS the load-bearing piece for v1; alternates land later.
+P2 — important architectural property (hedge against NIST-monoculture) but not blocking 081KSNY2Z0008QG0R0030V5ZVS v1 (ships with ML-KEM-768 baseline; hedge alternates land as TS-native impls mature). The parameterized envelope IS the load-bearing piece for v1; alternates land later.
 
 ## Full reasoning
 
-Operator 2026-05-28 in response to B-0883.1 open questions: *"lattice based / post quantium crypto but not just nist"* — explicit hedge directive.
+Operator 2026-05-28 in response to 081KSNY2Z0008QG0R0037X4DP4 open questions: *"lattice based / post quantium crypto but not just nist"* — explicit hedge directive.
 
-Composes with B-0883.1's recommendation (Noble + XWing as v1 baseline) by adding the parameterization layer so alternates can integrate without envelope rework.
+Composes with 081KSNY2Z0008QG0R0037X4DP4's recommendation (Noble + XWing as v1 baseline) by adding the parameterization layer so alternates can integrate without envelope rework.

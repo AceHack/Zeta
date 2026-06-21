@@ -53,9 +53,9 @@ Verbatim Aaron preservation + Hawkins/Mountcastle/Friston/Hopfield/CASPaxos line
 
 - PR #5312 (welfare-jiu-jitsu carved-sentence + 6-anchor table)
 - PR #5310 (Kestrel runme + JIT + multi-AI shared-checkout)
-- PR #5314 (B-0829 schemas-as-rows + cluster-fork-as-trust-boundary architecture Hawkins anchors)
+- PR #5314 (081KSGS9H0008QG0R000Q18PGQ schemas-as-rows + cluster-fork-as-trust-boundary architecture Hawkins anchors)
 - PR #5286 (Aaron anti-entropy via parameter-and-function-selection)
-- B-0703 (multi-oracle BFT cross-faction consensus)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT cross-faction consensus)
 - DeepSeek-V3 + Mixtral + Switch Transformer + GShard + Sparsely-Gated MoE production substrate
 - `.claude/rules/agent-roster-reference-card.md` (DeepSeek's CoT+MoE register attribution)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (verbatim Aaron preservation)
@@ -68,7 +68,7 @@ Verbatim Aaron preservation + Hawkins/Mountcastle/Friston/Hopfield/CASPaxos line
 
 - Aaron (human maintainer; first-party); both Thousand Brains + MoE extension framings ferried 2026-05-26
 - Jeff Hawkins, *A Thousand Brains* (Basic Books, 2021); Vernon Mountcastle (1957 cortical column theory); Karl Friston (free-energy principle); Noam Shazeer et al. (Sparsely-Gated MoE 2017); DeepSeek (DeepSeek-V2/V3 MoE production); Mistral (Mixtral); Google (Switch Transformer + GShard)
-- Composes with the 14-PR substrate cascade on B-0824 over 2026-05-26
+- Composes with the 14-PR substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26
 
 ## Reviews
 

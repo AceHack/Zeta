@@ -1,6 +1,5 @@
 ---
-id: B-0083
-zetaid: 081KQ8P5D0008QG0R001590WJ3
+id: 081KQ8P5D0008QG0R001590WJ3
 priority: P1
 status: open
 title: Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
@@ -16,20 +15,20 @@ tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, 
 type: friction-reducer
 ---
 
-# B-0083 — Atari 2600 ROM canonical-naming + tooling
+# 081KQ8P5D0008QG0R001590WJ3 — Atari 2600 ROM canonical-naming + tooling
 
 ## Decomposition status (2026-05-29)
 
-- **B-0272** (canonical naming via TOSEC/No-Intro hash lookup) — **closed**
+- **081KR2E4K0008QG0R001QZDAMQ** (canonical naming via TOSEC/No-Intro hash lookup) — **closed**
   2026-05-16. `tools/roms/canonicalize.ts` (+ tests).
-- **B-0273** (safe/unsafe folder split) — **closed** 2026-05-29.
+- **081KR2E4K0008QG0R001JC6S3N** (safe/unsafe folder split) — **closed** 2026-05-29.
   `tools/roms/split-by-license.ts` + `roms-safe/atari/2600/` + allowlist +
   README cross-refs.
-- **B-0083.1** (datfile-as-dependency: pin + fetch + SHA-256 verify + refresh)
+- **081KSRGFP0008QG0R003ZH6DN3** (datfile-as-dependency: pin + fetch + SHA-256 verify + refresh)
   — **open**. The parent acceptance criterion #6 ("Tooling refreshes on TOSEC
   datfile updates") + the "Datfile-as-dependency" design section were not
-  covered by either earlier child; B-0083.1 builds the pin manifest +
-  fetch-and-verify tool. Parent stays open until B-0083.1's operator-fill +
+  covered by either earlier child; 081KSRGFP0008QG0R003ZH6DN3 builds the pin manifest +
+  fetch-and-verify tool. Parent stays open until 081KSRGFP0008QG0R003ZH6DN3's operator-fill +
   optional-refresh-cadence steps resolve.
 
 ## Source
@@ -84,7 +83,7 @@ boundary:
   own) live in `roms-safe/`.
 
 This split is exactly what the existing `roms/.gitignore` +
-`roms/atari/2600/README.md` license-safety-gate enforces. B-0083
+`roms/atari/2600/README.md` license-safety-gate enforces. 081KQ8P5D0008QG0R001590WJ3
 operationalizes the split by adding the safe-folder + the tooling.
 
 ## Current state (verified 2026-04-28T18:53Z)
@@ -193,7 +192,7 @@ end-goal sharpening):
 3. **Contribution-back continues** even after build-our-own lands —
    peer-maintainer status survives our own implementation.
 
-For B-0083 specifically, we're at step 1 (bridge phase). The
+For 081KQ8P5D0008QG0R001590WJ3 specifically, we're at step 1 (bridge phase). The
 preferred immediate path is dependency-first; build-our-own is
 explicitly the trajectory direction, not a panic-fallback.
 
@@ -318,7 +317,7 @@ roms-safe/                         (NEW, tracked — license-verified ROMs)
 - `roms/.gitignore` — already protects against accidental commit.
 - `roms/README.md` + `roms/atari/2600/README.md` — already
   document the license-safety gate.
-- B-0061 (monolith-to-per-row migration) — adjacent factory-
+- 081KQ8P5D0008QG0R001BH93SA (monolith-to-per-row migration) — adjacent factory-
   hygiene class.
 - Otto-247 version-currency — for datfile version handling.
 - Otto-275-YET — Aaron's explicit log-don't-implement signal

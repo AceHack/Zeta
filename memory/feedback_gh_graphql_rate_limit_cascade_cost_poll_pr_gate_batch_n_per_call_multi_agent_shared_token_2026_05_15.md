@@ -85,7 +85,7 @@ Future-Otto cold-boot in cascade-mode session:
 
 - PR #3604 / #3607 (shard PRs in flight when rate-limit hit)
 - Tick shard `docs/hygiene-history/ticks/2026/05/15/2221Z.md` (the rate-limit observation)
-- B-0440 / B-0441 / B-0500 (bus-envelope infrastructure that could carry rate-limit budget advisories)
+- 081KRFA460008QG0R001KC0VBH / 081KRFA460008QG0R00229616S / 081KRHWGX0008QG0R0025PX5SZ (bus-envelope infrastructure that could carry rate-limit budget advisories)
 
 ## Substrate-honest framing
 

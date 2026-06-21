@@ -337,7 +337,7 @@ let ``Z3 finds shared trajectory with independent persona policies`` () =
     z3ScriptHasModel "shared trajectory with independent persona policies" script
 
 
-// ── B-0373: Alignment proof primitive — CausalPower ─────────────────────
+// ── 081KR50HA0008QG0R001NNPEXC: Alignment proof primitive — CausalPower ─────────────────────
 //
 // One primitive: Policy<A>'s dependence on PrivateState<A>.
 // Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
@@ -419,7 +419,7 @@ let ``TLC model-checker is available when configured`` () =
         ()
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1007 C1 — Gaussian message product is an ABELIAN GROUP on the
+// 081KT2T2J0008QG0R000YZ3NMY C1 — Gaussian message product is an ABELIAN GROUP on the
 // natural-parameter representation (ν = μ·τ, τ = 1/σ²). product =
 // component-wise add, divide = component-wise subtract, identity =
 // One = (0,0). This is ℝ² under vector +/- — the abelian-group axioms
@@ -430,7 +430,7 @@ let ``TLC model-checker is available when configured`` () =
 // Anchor: KFL 2001 (sum-product), Minka 2001 (EP cavity = divide),
 // Wainwright-Jordan 2008 §3 (exp-family natural params = free abelian
 // group). Mirrors the Z-set abelian-group lemmas above (same property
-// class, Gaussian payload). Authored by Soraya per B-1007.
+// class, Gaussian payload). Authored by Soraya per 081KT2T2J0008QG0R000YZ3NMY.
 //
 // Float overflow (proper closure can break when τ1+τ2 overflows to ∞)
 // is invisible to QF_LRA ideal reals — that is the FsCheck side's job
@@ -505,7 +505,7 @@ let ``Z3 proves proper Gaussians are closed under product, guarded (C1)`` () =
     z3ScriptHolds "C1 proper closed under product (guarded)" script
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1007 C2 — Beta message product is an ABELIAN GROUP on the SHIFTED
+// 081KT2T2J0008QG0R000YZ3NMY C2 — Beta message product is an ABELIAN GROUP on the SHIFTED
 // natural parameters. The impl works on (α, β) directly: product =
 // α₁+α₂−1, divide = α₁−α₂+1, identity One = Beta(1,1). These ARE the
 // abelian-group axioms on the shifted naturals (n = α−1), proven here
@@ -577,7 +577,7 @@ let ``Z3 proves proper Beta prior times a likelihood stays proper, guarded (C2)`
     z3ScriptHolds "C2 Beta conjugate closure (prior x likelihood, guarded)" script
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1007 C3 — Bernoulli message product is an ABELIAN GROUP via LOG-ODDS
+// 081KT2T2J0008QG0R000YZ3NMY C3 — Bernoulli message product is an ABELIAN GROUP via LOG-ODDS
 // addition. The impl computes in probability space (t/(t+f)); that is
 // mathematically log-odds add. Here Z3 proves the LOG-ODDS model
 // (ℓ ∈ ℝ, product = ℓ_a + ℓ_b, identity One = 0, inverse = negation) is
@@ -631,7 +631,7 @@ let ``Z3 proves Bernoulli divide round-trips the product, the EP cavity (C3)`` (
         "(assert (not (= (- (+ lA lB) lB) lA)))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C3 Bernoulli cavity round-trip ((a*b)/b = a)" script
-// B-1007 C6 — BP convergence detection (`not (distance x y <= tol)`) is
+// 081KT2T2J0008QG0R000YZ3NMY C6 — BP convergence detection (`not (distance x y <= tol)`) is
 // NaN/∞-SAFE: a divergent run can never falsely report convergence. The
 // NaN/∞ cases are IEEE-754 facts, so they are proven in Z3's
 // floating-point theory (QF_FP); the finite threshold is proven in
@@ -679,7 +679,7 @@ let ``Z3 proves the finite convergence threshold has no converged-and-moved over
 
 
 // ═══════════════════════════════════════════════════════════════════
-// C13 (B-1007 P1) — the DBSP operator-inverse identities, symbolically
+// C13 (081KT2T2J0008QG0R000YZ3NMY P1) — the DBSP operator-inverse identities, symbolically
 // over the IDEAL REALS (QF_LRA). z⁻¹ (delay): (z⁻¹ x)[t] = x[t−1], x[−1]=0.
 // I (integrate): I(s)[t] = Σ_{i≤t} s[i]. D (differentiate): D(x)[t] =
 // x[t] − x[t−1] = (1 − z⁻¹)(x). The substance is the TELESCOPING:

@@ -1,6 +1,5 @@
 ---
-id: B-0403
-zetaid: 081KR7JY10008QG0R0021F5609
+id: 081KR7JY10008QG0R0021F5609
 priority: P1
 status: open
 title: "Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing"
@@ -48,7 +47,7 @@ Move from aspirational to verified requires:
 
 With 6 agents, hat switching causes disruption. Pauli exclusion
 principle constrains trajectory space per agent. Solution: expand
-society (B-0402 replication + tick procurement mechanism B-0404).
+society (081KR7JY10008QG0R0008NGW95 replication + tick procurement mechanism 081KR7JY10008QG0R003H102F0).
 
 ## Acceptance
 

@@ -1,25 +1,24 @@
 ---
-id: B-0454
-zetaid: 081KRA5AR0008QG0R003F6TA3A
+id: 081KRA5AR0008QG0R003F6TA3A
 priority: P2
 status: open
 title: Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)
 tier: factory-hygiene
 effort: S
-ask: Cadence surface per B-0092 (T3 deferred)
+ask: Cadence surface per 081KQ8P5D0008QG0R003ZF64GG (T3 deferred)
 created: 2026-05-11
 last_updated: 2026-05-14
 parent: 081KQ8P5D0008QG0R003ZF64GG
 depends_on: [081KRA5AR0008QG0R0029YWXYW]
 composes_with: [081KQ8P5D0008QG0R0002TN22C]
-renumbered_from: B-0372
-renumbered_reason: "ID collision with B-0372 P1 (pages-sitemap-robots-ai-crawler-policy). Part of the P2 contributor-compliance set renumbered as a unit: B-0370→B-0452, B-0371→B-0453, B-0372→B-0454, B-0373→B-0455. Internal depends_on B-0370 remapped to B-0452. Substrate-cleanup tracked in B-0451."
+renumbered_from: 081KR2E4K0008QG0R0015BCPF7
+renumbered_reason: "ID collision with 081KR2E4K0008QG0R0015BCPF7 P1 (pages-sitemap-robots-ai-crawler-policy). Part of the P2 contributor-compliance set renumbered as a unit: 081KR2E4K0008QG0R000ARCH0X→081KRA5AR0008QG0R0029YWXYW, 081KR2E4K0008QG0R001733JTN→081KRA5AR0008QG0R0004P7SWS, 081KR2E4K0008QG0R0015BCPF7→081KRA5AR0008QG0R003F6TA3A, 081KR50HA0008QG0R001NNPEXC→081KRA5AR0008QG0R0033TJSAF. Internal depends_on 081KR2E4K0008QG0R000ARCH0X remapped to 081KRA5AR0008QG0R0029YWXYW. Substrate-cleanup tracked in 081KRFA460008QG0R00308W7FJ."
 tags: [contributor-compliance, trajectory, T1, T2, TS, renumbered]
 decomposition: atomic
 classification: buildable-now
 ---
 
-# B-0454 — T1 + T2 trajectory encoding (renumbered from B-0372)
+# 081KRA5AR0008QG0R003F6TA3A — T1 + T2 trajectory encoding (renumbered from 081KR2E4K0008QG0R0015BCPF7)
 
 ## Scope (atomic, TS first)
 

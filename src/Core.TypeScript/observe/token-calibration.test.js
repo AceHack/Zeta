@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { estimateTokens, fitRatio } from "./token-calibration";
-// B-1016 bytes→tokens calibration — the MATH is exact and tested; the ratio
+// 081KT7YW00008QG0R002T1XNWT bytes→tokens calibration — the MATH is exact and tested; the ratio
 // constant is empirical (flagged uncalibrated until --fit with a real tokenizer).
 test("estimateTokens is exact division by the ratio", () => {
     expect(estimateTokens(380, 3.8)).toBe(100);

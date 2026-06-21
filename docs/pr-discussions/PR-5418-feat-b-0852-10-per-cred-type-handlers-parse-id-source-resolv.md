@@ -1,6 +1,6 @@
 ---
 pr_number: 5418
-title: "feat(B-0852.10): per-cred type handlers \u2014 parse <id>=<source> + resolve literal/@file/env:VAR + per-type validation (60 unit tests; pure TS)"
+title: "feat(081KSKBP80008QG0R003AX2A69.10): per-cred type handlers \u2014 parse <id>=<source> + resolve literal/@file/env:VAR + per-type validation (60 unit tests; pure TS)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T07:30:18Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:25:14Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5418: feat(B-0852.10): per-cred type handlers — parse <id>=<source> + resolve literal/@file/env:VAR + per-type validation (60 unit tests; pure TS)
+# PR #5418: feat(081KSKBP80008QG0R003AX2A69.10): per-cred type handlers — parse <id>=<source> + resolve literal/@file/env:VAR + per-type validation (60 unit tests; pure TS)
 
 ## PR description
 
 ## Summary
 
-B-0852 sub-row .10 — pure TS module composing already-merged B-0852.5 manifest schema + B-0852.1 crypto module, toward B-0852.9 zflash `--bake-cred` CLI override per Aaron 2026-05-27 CLI-override design.
+081KSKBP80008QG0R003AX2A69 sub-row .10 — pure TS module composing already-merged 081KSKBP80008QG0R003AX2A69.5 manifest schema + 081KSKBP80008QG0R003AX2A69.1 crypto module, toward 081KSKBP80008QG0R003AX2A69.9 zflash `--bake-cred` CLI override per Aaron 2026-05-27 CLI-override design.
 
 ## Three pure layers
 
@@ -56,16 +56,16 @@ Covers: arg parsing edge cases (= in value, missing =, empty id/source) + value-
 
 ## What this is NOT
 
-- NOT the zflash CLI integration (B-0852.9; consumes this module)
-- NOT the persist/restore CLIs (B-0852.2)
-- NOT a YAML manifest parser (B-0852.5 already shipped; this consumes its output)
+- NOT the zflash CLI integration (081KSKBP80008QG0R003AX2A69.9; consumes this module)
+- NOT the persist/restore CLIs (081KSKBP80008QG0R003AX2A69.2)
+- NOT a YAML manifest parser (081KSKBP80008QG0R003AX2A69.5 already shipped; this consumes its output)
 
 ## Composes with
 
-- **B-0852** parent row (CLI-override design)
-- **B-0852.5** (cred-manifest schema; landed PR #5414) — handler.id matches manifest entry id
-- **B-0852.1** (crypto module; landed PR #5411) — resolved bytes feed encrypt() in B-0852.2
-- **B-0852.9** future — zflash `--bake-cred` CLI consumes this module
+- **081KSKBP80008QG0R003AX2A69** parent row (CLI-override design)
+- **081KSKBP80008QG0R003AX2A69.5** (cred-manifest schema; landed PR #5414) — handler.id matches manifest entry id
+- **081KSKBP80008QG0R003AX2A69.1** (crypto module; landed PR #5411) — resolved bytes feed encrypt() in 081KSKBP80008QG0R003AX2A69.2
+- **081KSKBP80008QG0R003AX2A69.9** future — zflash `--bake-cred` CLI consumes this module
 - node:fs + node:os only; no third-party deps
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -76,7 +76,7 @@ Covers: arg parsing edge cases (= in value, missing =, empty id/source) + value-
 
 ## Pull request overview
 
-Adds a new pure-TS credential “bake” handler pipeline for B-0852.10, covering CLI arg parsing (`<id>=<source>`), value-source resolution (literal / `@file` / `env:VAR`), and per-credential validation, with an accompanying acceptance test suite.
+Adds a new pure-TS credential “bake” handler pipeline for 081KSKBP80008QG0R003AX2A69.10, covering CLI arg parsing (`<id>=<source>`), value-source resolution (literal / `@file` / `env:VAR`), and per-credential validation, with an accompanying acceptance test suite.
 
 **Changes:**
 - Introduces `parseBakeCredArg`, `resolveValueSource`, and `resolveBakeCred` plus a default per-cred handler registry (PAT / JSON / SSH pubkey / deferred host keys).

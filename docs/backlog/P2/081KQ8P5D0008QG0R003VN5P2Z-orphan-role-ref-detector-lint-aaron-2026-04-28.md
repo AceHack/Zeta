@@ -1,6 +1,5 @@
 ---
-id: B-0070
-zetaid: 081KQ8P5D0008QG0R003VN5P2Z
+id: 081KQ8P5D0008QG0R003VN5P2Z
 priority: P2
 status: closed
 closed: 2026-05-02
@@ -22,7 +21,7 @@ tags: [hygiene-lint, name-attribution, otto-279, current-state-surfaces]
 > wiring (soft-fail in `gate.yml`) deferred to follow-up PRs but
 > the lint script itself is shipped.
 
-# B-0070 — Orphan role-ref detector lint
+# 081KQ8P5D0008QG0R003VN5P2Z — Orphan role-ref detector lint
 
 ## Why
 

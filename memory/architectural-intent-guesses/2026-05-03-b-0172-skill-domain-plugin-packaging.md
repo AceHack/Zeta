@@ -1,19 +1,19 @@
-# Guess #002 — B-0172 skill-domain-plugin-packaging
+# Guess #002 — 081KQNJ500008QG0R001VGMS5G skill-domain-plugin-packaging
 
 ## Target
 
-`docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md`
+`docs/backlog/P2/081KQNJ500008QG0R001VGMS5G-skill-domain-plugin-packaging-aaron-2026-05-03.md`
 
-The architectural choice: Aaron filed B-0172 for "skill-domain plugin packaging." The question this guess answers: **why package skills as plugins (specifically) — vs alternatives like cross-skill imports, skill-namespace prefixes, or shared-substrate-via-symlink?**
+The architectural choice: Aaron filed 081KQNJ500008QG0R001VGMS5G for "skill-domain plugin packaging." The question this guess answers: **why package skills as plugins (specifically) — vs alternatives like cross-skill imports, skill-namespace prefixes, or shared-substrate-via-symlink?**
 
 ## Read state at guess time (2026-05-03 ~02:55Z)
 
 Otto has already read:
 
-- B-0172 ROW NAME ONLY (from `ls docs/backlog/P2/`)
+- 081KQNJ500008QG0R001VGMS5G ROW NAME ONLY (from `ls docs/backlog/P2/`)
 - The skill-design-rules memo (`feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`) — Rule 3: package skill domains as plugins, use harness hooks for pre/post-condition enforcement (contract-based development)
-- The decision-graph memo's composition section: "B-0172 (skill-domain plugin packaging) — plugins are sub-graph bundles; the canonical bundle format documents which nodes + edges to include" and "graph **subgraph packaging** (plugins package skill-domain subgraphs; hooks enforce contract edges between subgraphs)"
-- B-0173 (hook-authoring) ground truth — composes_with [B-0172]; depends_on [B-0170, B-0171]
+- The decision-graph memo's composition section: "081KQNJ500008QG0R001VGMS5G (skill-domain plugin packaging) — plugins are sub-graph bundles; the canonical bundle format documents which nodes + edges to include" and "graph **subgraph packaging** (plugins package skill-domain subgraphs; hooks enforce contract edges between subgraphs)"
+- 081KQNJ500008QG0R003ZC6PK8 (hook-authoring) ground truth — composes_with [081KQNJ500008QG0R001VGMS5G]; depends_on [081KQNJ500008QG0R003SCWBDV, 081KQNJ500008QG0R001N94412]
 - Generic Claude Code knowledge: plugins are deployable packages (e.g., a plugin with skills + commands + agents in `.claude/`)
 - The fact that Aaron uses Claude Code's plugin system (claude-ai/Atlassian, claude-ai/Figma, plugin-microsoft-docs, etc. visible in MCP list)
 
@@ -21,8 +21,8 @@ Otto has already read:
 
 Otto has NOT read:
 
-- B-0172's row body text
-- Any commits referencing B-0172
+- 081KQNJ500008QG0R001VGMS5G's row body text
+- Any commits referencing 081KQNJ500008QG0R001VGMS5G
 - Any `.claude-plugin/plugin.json` example in this repo
 - Any prior conversation about Claude Code plugin packaging architecture
 
@@ -36,7 +36,7 @@ Specifically:
 
 1. **Distribution-as-unit** — a skill-domain (e.g., "git-native-backlog-management" containing decision-archaeology + substrate-claim-checker + future graph tools) is what other harnesses + projects need to consume. Per Aaron's earlier framing about skills-not-just-for-claude (memory mentions sharing skills across harnesses), plugin-packaging is the distribution mechanism
 2. **Isolation-as-namespace** — plugins create namespace isolation (`plugin-name:skill-name`); this prevents skill-naming collisions across plugins from different sources
-3. **Composition-as-contracts** — plugins can declare dependencies on other plugins (e.g., skill-creator plugin → prompt-protector plugin); this is the cross-skill version of B-0173's pre/post-condition hooks
+3. **Composition-as-contracts** — plugins can declare dependencies on other plugins (e.g., skill-creator plugin → prompt-protector plugin); this is the cross-skill version of 081KQNJ500008QG0R003ZC6PK8's pre/post-condition hooks
 4. **Versioning-as-lineage** — plugins have versions; this gives skill-domain evolution a concrete artifact (vs the current "edit SKILL.md in place" approach which has no versioning)
 
 The deeper architectural reason — plugin-packaging instantiates the **hub-satellite separation** (skill-design rule 1) at the domain level: each plugin is a hub-satellite cluster (a skill domain hub + its supporting docs / specs / TS tools as satellites); cross-plugin references are graph-edges per DataVault 2.0.
@@ -46,7 +46,7 @@ The deeper architectural reason — plugin-packaging instantiates the **hub-sate
 The backlog row likely covers:
 
 - Plugin packaging FORMAT (e.g., `.claude-plugin/plugin.json` manifest at top of each packaged skill-domain directory)
-- Plugin location (per the recent "B-0172 plugin location" path-correction in PR #1262: `~/.claude/plugins/cache/<plugin-name>/` is the install location; manifest path is `.claude-plugin/plugin.json` inside the plugin)
+- Plugin location (per the recent "081KQNJ500008QG0R001VGMS5G plugin location" path-correction in PR #1262: `~/.claude/plugins/cache/<plugin-name>/` is the install location; manifest path is `.claude-plugin/plugin.json` inside the plugin)
 - Migration plan: which existing skill-domains should be packaged as plugins (decision-archaeology + substrate-claim-checker + OpenSpec-tooling forms one cluster)
 - Cross-plugin dependency declaration mechanism (how plugin-A declares it depends on plugin-B's skills)
 - Distribution: how plugins are published/shared (GitHub repo? local-only first?)
@@ -59,18 +59,18 @@ The implementation will probably:
 - Plugin format: directory tree with `.claude-plugin/plugin.json` + `skills/` + `commands/` + `agents/` + `hooks/`
 - Plugin discovery: Claude Code reads `~/.claude/plugins/cache/<plugin-name>/` directories at session start
 - Dependencies: `dependencies: ["plugin-name@version"]` in the manifest (analogue of npm's package.json)
-- The B-0172 row scope is probably "package the existing decision-archaeology + substrate-claim-checker into a plugin called something like `git-native-backlog-management`" — concrete first packaging exercise
+- The 081KQNJ500008QG0R001VGMS5G row scope is probably "package the existing decision-archaeology + substrate-claim-checker into a plugin called something like `git-native-backlog-management`" — concrete first packaging exercise
 
 ### Cross-row composition (medium confidence)
 
-B-0172 likely composes_with:
+081KQNJ500008QG0R001VGMS5G likely composes_with:
 
-- B-0169 (decision-archaeology skill) — packaged as part of the first plugin
-- B-0170 (substrate-claim-checker tool) — packaged tooling within the plugin
-- B-0171 (OpenSpec catch-up) — plugin specs live in OpenSpec; OpenSpec catch-up is a depends_on (plugins reference specs)
-- B-0173 (hook-authoring) — composes_with already confirmed; plugins ship with their hooks
+- 081KQJZR90008QG0R002D6XYHB (decision-archaeology skill) — packaged as part of the first plugin
+- 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker tool) — packaged tooling within the plugin
+- 081KQNJ500008QG0R001N94412 (OpenSpec catch-up) — plugin specs live in OpenSpec; OpenSpec catch-up is a depends_on (plugins reference specs)
+- 081KQNJ500008QG0R003ZC6PK8 (hook-authoring) — composes_with already confirmed; plugins ship with their hooks
 
-depends_on guess: probably **B-0171** (OpenSpec specs exist before plugins package them) but maybe NOT B-0169/B-0170/B-0173 directly — those are the contents being packaged, not gating dependencies.
+depends_on guess: probably **081KQNJ500008QG0R001N94412** (OpenSpec specs exist before plugins package them) but maybe NOT 081KQJZR90008QG0R002D6XYHB/081KQNJ500008QG0R003SCWBDV/081KQNJ500008QG0R003ZC6PK8 directly — those are the contents being packaged, not gating dependencies.
 
 ## Confidence levels
 
@@ -79,7 +79,7 @@ depends_on guess: probably **B-0171** (OpenSpec specs exist before plugins packa
 | Architectural — "plugins-as-distribution-+-isolation-+-composition-units for skill domains" | **Medium-High** | Composes naturally with skill-design rule 3 (already first-party-confirmed) + Claude Code plugin system is the natural fit + Aaron's multi-harness framing |
 | Substrate-content — "plugin manifest format + first packaging is decision-archaeology + substrate-claim-checker cluster" | **Medium** | Decision-graph memo mentioned plugin format briefly + recent path corrections (#1262) showed `.claude-plugin/plugin.json` is the convention |
 | Specific implementation — "directory tree + dependencies declaration + GitHub-publishable" | **Low** | Standard Claude Code plugin pattern but I haven't confirmed which specific clusters get packaged first or how dependencies declare |
-| Cross-row composition | **Medium** | Confident on B-0169/B-0170/B-0173 composition; less confident on B-0171 as depends_on vs composes_with |
+| Cross-row composition | **Medium** | Confident on 081KQJZR90008QG0R002D6XYHB/081KQNJ500008QG0R003SCWBDV/081KQNJ500008QG0R003ZC6PK8 composition; less confident on 081KQNJ500008QG0R001N94412 as depends_on vs composes_with |
 
 ## Pre-recovery prediction (calibration self-test)
 
@@ -91,13 +91,13 @@ Based on guess #001's pattern (principle-strong + specific-weak), I predict:
 
 This pre-prediction itself is calibration data: how well does Otto predict its own accuracy BEFORE seeing the answer?
 
-## Ground truth (recovered 2026-05-03 ~03:00Z via direct read of B-0172)
+## Ground truth (recovered 2026-05-03 ~03:00Z via direct read of 081KQNJ500008QG0R001VGMS5G)
 
-Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (guess committed under 4a3d583 on the guess branch; merged into main eventually via PR #1283's chained-rebase-merge — PR #1282, which originally hosted the guess commit alone, was closed as superseded after #1283 absorbed both guess + recovery commits; the binding marker is the guess COMMIT TIMESTAMP, not the merge timestamp).
+Read source: `docs/backlog/P2/081KQNJ500008QG0R001VGMS5G-skill-domain-plugin-packaging-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (guess committed under 4a3d583 on the guess branch; merged into main eventually via PR #1283's chained-rebase-merge — PR #1282, which originally hosted the guess commit alone, was closed as superseded after #1283 absorbed both guess + recovery commits; the binding marker is the guess COMMIT TIMESTAMP, not the merge timestamp).
 
 ### Architectural intent (Aaron's verbatim — refined via direct first-party query 2026-05-03)
 
-**From B-0172 row body** (initial recovery source):
+**From 081KQNJ500008QG0R001VGMS5G row body** (initial recovery source):
 
 > *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
 
@@ -107,17 +107,17 @@ Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05
 
 **Two architectural motivations, ranked**:
 
-1. **PRIMARY: Hooks** — *"i care about the hooks the most"*. Plugin packaging exists to ship hooks. Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with B-0173 is depends_on (load-bearing), not just composes_with
+1. **PRIMARY: Hooks** — *"i care about the hooks the most"*. Plugin packaging exists to ship hooks. Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with 081KQNJ500008QG0R003ZC6PK8 is depends_on (load-bearing), not just composes_with
 2. **SECONDARY: Meet developers where they already are** — *"going to the devloper / vibe coder where they are already without much hassle"*. Plugin packaging meets contributors in the harness they already use (Claude Code plugin system; Codex equivalent; Cursor; etc.) without forcing them to install separately. Distribution-as-low-friction is the secondary motivation
 
-The secondary motivation was NOT in the B-0172 row body verbatim. Aaron's direct chat input added it as load-bearing first-party data.
+The secondary motivation was NOT in the 081KQNJ500008QG0R001VGMS5G row body verbatim. Aaron's direct chat input added it as load-bearing first-party data.
 
 **Promotion-trigger gate**: row is P2 not P1 because no skill domain has yet met the promotion-trigger criteria (3+ worked examples per skill candidate + 1+ judgment-disagreement per expert candidate). When a domain matures, this row becomes the implementation work.
 
 ### Substrate-content intent
 
 - `.claude-plugin/plugin.json` manifest with **minimal fields** (name + description + author per the upstream Claude Code spec — NOT semver/dependencies/etc.)
-- Bundle contents: `skills/<skill>/SKILL.md` + `agents/<agent>.md` + hooks (per B-0173) + `tools/` (TS files per rule 2) + OpenSpec capability references (per B-0171)
+- Bundle contents: `skills/<skill>/SKILL.md` + `agents/<agent>.md` + hooks (per 081KQNJ500008QG0R003ZC6PK8) + `tools/` (TS files per rule 2) + OpenSpec capability references (per 081KQNJ500008QG0R001N94412)
 - **Codex equivalent uses `.codex-plugin/plugin.json` with richer fields** (semver + interface block + URLs + category) — different shape from Claude Code's
 - **Cross-harness portability**: canonical "skill-domain bundle" format (harness-agnostic) + per-harness packaging adapters that emit harness-specific package formats
 
@@ -125,12 +125,12 @@ The secondary motivation was NOT in the B-0172 row body verbatim. Aaron's direct
 
 - Install location: `~/.claude/plugins/cache/<plugin-name>/` (Claude Code convention)
 - Manifest path inside the bundle: `.claude-plugin/plugin.json` (per recent #1262 path corrections)
-- B-0169 (decision-archaeology) named as "likely first skill packaged once mature" but row scope is generic — packaging happens when promotion-trigger fires, not "package this specific cluster now"
+- 081KQJZR90008QG0R002D6XYHB (decision-archaeology) named as "likely first skill packaged once mature" but row scope is generic — packaging happens when promotion-trigger fires, not "package this specific cluster now"
 
 ### Cross-row composition
 
-- depends_on: **[B-0171, B-0173]** (NOT just B-0171)
-- composes_with: [B-0169, B-0170]
+- depends_on: **[081KQNJ500008QG0R001N94412, 081KQNJ500008QG0R003ZC6PK8]** (NOT just 081KQNJ500008QG0R001N94412)
+- composes_with: [081KQJZR90008QG0R002D6XYHB, 081KQNJ500008QG0R003SCWBDV]
 
 ## Calibration delta
 
@@ -163,7 +163,7 @@ My "isolation-as-namespace" + "versioning-as-lineage" + "composition-as-contract
 | `.claude-plugin/plugin.json` path (correct; cited from #1262 path-correction context) | **Codex equivalent format** with richer fields (semver + interface block + URLs + category) — completely missed |
 | Plugin install location `~/.claude/plugins/cache/<plugin-name>/` (correct) | **Cross-harness portability via canonical-bundle-format + per-harness adapters** — significant architectural element; row's design is to ship a harness-agnostic substrate format |
 | Bundle contents (skills/, agents/, hooks/) (correct, kind of — also tools/ and OpenSpec references) | (closeish on contents) |
-| First packaging = decision-archaeology cluster (correct — B-0169 named as "likely first") | (no miss here) |
+| First packaging = decision-archaeology cluster (correct — 081KQJZR90008QG0R002D6XYHB named as "likely first") | (no miss here) |
 
 **Analysis**: I correctly inferred the Claude-Code-side path/format/install-location (recent specific-context from PR #1262 boosted accuracy). But missed the Codex equivalent + cross-harness adapter design entirely. The cross-harness piece is load-bearing for Aaron's "skills are for everyone and even other agent harnesses" framing.
 
@@ -184,12 +184,12 @@ My "isolation-as-namespace" + "versioning-as-lineage" + "composition-as-contract
 
 | What I got | What I missed |
 |---|---|
-| depends_on B-0171 (correct) | **depends_on B-0173 (NOT composes_with)** — I categorized B-0173 as composes_with; actual is depends_on. Architectural reason: hooks shipping inside the plugin is the primary value |
-| composes_with B-0169 (correct) | (no miss) |
-| composes_with B-0170 (correct) | (no miss) |
+| depends_on 081KQNJ500008QG0R001N94412 (correct) | **depends_on 081KQNJ500008QG0R003ZC6PK8 (NOT composes_with)** — I categorized 081KQNJ500008QG0R003ZC6PK8 as composes_with; actual is depends_on. Architectural reason: hooks shipping inside the plugin is the primary value |
+| composes_with 081KQJZR90008QG0R002D6XYHB (correct) | (no miss) |
+| composes_with 081KQNJ500008QG0R003SCWBDV (correct) | (no miss) |
 | | (no major miss) |
 
-**Analysis**: Right rows; one categorization error (B-0173 depends_on vs composes_with). The depends_on B-0173 reflects that "without hooks, packaging is bare-skill-grouping" — packaging-without-hooks is meaningless, so hooks must precede plugin packaging.
+**Analysis**: Right rows; one categorization error (081KQNJ500008QG0R003ZC6PK8 depends_on vs composes_with). The depends_on 081KQNJ500008QG0R003ZC6PK8 reflects that "without hooks, packaging is bare-skill-grouping" — packaging-without-hooks is meaningless, so hooks must precede plugin packaging.
 
 ## Pre-recovery prediction validation
 
@@ -218,7 +218,7 @@ I predicted before research:
 | Architectural intent | **6/10** | Principle-strong; missed Aaron's "hooks-shipping" frame + promotion-trigger maturity-gate |
 | Substrate-content | **6/10** | Got Claude-Code-side; missed Codex equivalent + cross-harness adapter design |
 | Specific implementation | **7/10** | **Stronger than expected** — recent specific-context (PR #1262) boosted accuracy |
-| Cross-row composition | **7/10** | Right rows; one mis-categorization (B-0173 depends_on vs composes_with) |
+| Cross-row composition | **7/10** | Right rows; one mis-categorization (081KQNJ500008QG0R003ZC6PK8 depends_on vs composes_with) |
 
 **Overall**: 26/40 = **65%** — significantly higher than guess #001's 48%. The improvement came from specific-implementation + cross-row layers, both boosted by prior context.
 
@@ -231,5 +231,5 @@ I predicted before research:
 **Author:** Otto autonomous (architect hat)
 **Protocol:** in-the-moment guess + ground-truth recovery per
 `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
-**Recovery method:** direct read of `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` body
+**Recovery method:** direct read of `docs/backlog/P2/081KQNJ500008QG0R001VGMS5G-skill-domain-plugin-packaging-aaron-2026-05-03.md` body
 **Series:** Guess #002 in calibration series; #001 scored 48%, #002 scored 65% — improvement attributed to recent specific-context (PR #1262) boosting specific-implementation layer

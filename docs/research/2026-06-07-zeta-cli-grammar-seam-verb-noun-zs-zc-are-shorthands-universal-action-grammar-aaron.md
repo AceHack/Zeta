@@ -42,7 +42,7 @@ every subsystem: pick a seam, a verb, a noun-in-scope.
 - **noun = ZetaId / unique-in-scope** ties the resolver (#6916): the CLI noun is resolved the same way every
   pointer is (ZetaId exact, or unique name within the namespace). The CLI is a thin verb-layer over the
   pointer/closure substrate (#6932) — `clone`/`message`/`run` act on resolved nouns.
-- **seam = the plane/adapter** ties the per-host adapters (git/gitlab/… , B-0867.15) and the Ace
+- **seam = the plane/adapter** ties the per-host adapters (git/gitlab/… , 081KSNY2Z0008QG0R002A785QR) and the Ace
   layer-pointers (#6941): a seam is a pluggable integration point. `git`, `bus`, and the implicit-local cell are
   the first seams; more plug in (the resolver-scheme set, #6925).
 - **Familiar + learnable:** `git <verb> <noun>` and `kubectl <verb> <resource>` already trained everyone on
@@ -64,7 +64,7 @@ every subsystem: pick a seam, a verb, a noun-in-scope.
 - **zs/zc surfaces (#6956)** — now shorthands for `zeta run shell` / `zeta run cell`.
 - **Universal action grammar** (observe-16; the Xbox-controller capture) — the CLI is that grammar.
 - **ZetaId uniform pointer/resolver (#6916/#6925)** — noun = ZetaId / unique-in-scope, resolved in the namespace.
-- **Per-host adapters (B-0867.15) / Ace layer-pointers (#6941)** — seams = pluggable integration planes.
+- **Per-host adapters (081KSNY2Z0008QG0R002A785QR) / Ace layer-pointers (#6941)** — seams = pluggable integration planes.
 - **Zeta IDL (#6955, 081KTJAEMZW)** — the grammar (seams/verbs/nouns) is likely IDL-declared capability surface.
 - **Closures over state (#6932)** — verbs act on resolved nouns (closures) through a seam.
 

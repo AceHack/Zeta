@@ -1,6 +1,6 @@
 module Zeta.Tests.SwarmBoardMeshTests
 
-// B-1026 stage 3: presence over the Reticulum mesh sim — the SAME join/go/heat payloads that fold the
+// 081KTSZN10008QG0R0003SDRWD stage 3: presence over the Reticulum mesh sim — the SAME join/go/heat payloads that fold the
 // board ride as packets between announced ZetaId destinations. "Remote = there is no non-remote":
 // sitting at the bench and across the planet are the same protocol. Deterministic end-to-end (DST).
 

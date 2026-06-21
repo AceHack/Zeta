@@ -1,18 +1,17 @@
 ---
-id: B-0290
-zetaid: 081KR2E4K0008QG0R003MJ4JK0
+id: 081KR2E4K0008QG0R003MJ4JK0
 priority: P1
 status: open
 title: "Green Lantern ring — consent gate firmware design"
 created: 2026-05-08
 parent: 081KQZVQW0008QG0R00348SHDZ
 depends_on: [081KR2E4K0008QG0R001SWEPNV]
-classification: blocked-on-B-0289
+classification: blocked-on-081KR2E4K0008QG0R001SWEPNV
 decomposition: atomic
 type: feature
 ---
 
-# B-0290 — Consent gate firmware
+# 081KR2E4K0008QG0R003MJ4JK0 — Consent gate firmware
 
 Design the firmware consent gate: local inference runs,
 user confirms action via physical button/gesture before

@@ -1,6 +1,6 @@
 # full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
 #
-# Single-node k3d profile for B-0967 GitOps health checks on CI runners.
+# Single-node k3d profile for 081KSXN940008QG0R000SCP2H1 GitOps health checks on CI runners.
 # It keeps the same Cilium takeover stance and ArgoCD App-of-Apps substrate as
 # the local three-node dev profile, but drops agents, registry, host port
 # forwards, extra Cilium operator replicas, and Hubble relay/UI so the smoke

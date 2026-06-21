@@ -1,13 +1,13 @@
 # Ace package format spec v2 — substrate-engineering pipeline extension (research)
 
 Date: 2026-05-22
-Status: research draft; extends B-0287 v1 spec (`docs/research/2026-05-08-ace-dlc-package-format-spec.md`)
+Status: research draft; extends 081KR2E4K0008QG0R0033WVCXE v1 spec (`docs/research/2026-05-08-ace-dlc-package-format-spec.md`)
 Origin: Amara cross-AI synthesis 2026-05-22 practical-next-move recommendation; composes with operator's 13-stage Ace lifecycle + hat-substrate primitives + symmetric/decentralized framing
 Author-attribution: factory-agent draft synthesizing operator + Amara substrate; subject to operator review
 
 ## Why v2
 
-The v1 package format spec (B-0287 closed; 2026-05-08) defined: model weights + policy files + guardian config. Operator + Amara cross-AI substrate 2026-05-22 extended the scope to substrate-engineering pipeline + proto-governance + polyglot artifacts.
+The v1 package format spec (081KR2E4K0008QG0R0033WVCXE closed; 2026-05-08) defined: model weights + policy files + guardian config. Operator + Amara cross-AI substrate 2026-05-22 extended the scope to substrate-engineering pipeline + proto-governance + polyglot artifacts.
 
 V2 extends v1 with:
 
@@ -48,7 +48,7 @@ A v2 Ace package is a content-addressed bundle containing:
 - **Hat manifest** — declares controls (what wearer can DO with the skill: invoke / modify-via-extension / delegate / re-distribute / etc) + self-bindings (what wearer commits to upholding)
 - **Authority-grant specification** — what authority is bestowed when wearer accepts the hat
 - **Succession-protection metadata** — time-bound hat-wearing; clean transfer mechanism; anti-permanent-capture per pt165
-- **Multi-oracle BFT consensus pointer** — where hat-grant decisions are negotiated; per B-0703 substrate
+- **Multi-oracle BFT consensus pointer** — where hat-grant decisions are negotiated; per 081KS3X9Y0008QG0R00218150M substrate
 
 ### Verification artifacts
 
@@ -70,7 +70,7 @@ V2 spec preserves operator-self-claimed Ace symmetric-decentralized framing:
 - Package format works for ANY operator's Ace deployment; not single-source
 - No centralized authority on package validity; multi-oracle BFT consensus per deployment
 - Different deployments may have different signature policies (some require multi-oracle BFT; some accept single-author signing; consent-pact between deployments determines cross-deployment package sharing)
-- User retains verification authority at install-time (per `ace verify <pkg>` CLI per B-0288)
+- User retains verification authority at install-time (per `ace verify <pkg>` CLI per 081KR2E4K0008QG0R002YE3MMD)
 - User retains revocation authority (can refuse to install / can quarantine even unrevoked packages)
 
 ## Substrate-engineering pipeline integration
@@ -89,12 +89,12 @@ Each package carries provenance metadata recording which stages it has passed; u
 
 ## Composes with
 
-- B-0247 (parent: ace-dlc-content-packs-kernel-extensions-package-manager)
-- B-0287 (closed: v1 package format spec; this is v2 extension)
-- B-0288 (in-progress: CLI implementing install/verify/list — V2 extension informs CLI design)
-- B-0424 (three-repo-split-stage1-create-forge-ace-with-scaffolding)
-- B-0703 multi-oracle BFT (consensus mechanism for hat-grants + revocation)
-- B-0664 NCI HC-8 (consent-floor at every actor scope)
+- 081KQZVQW0008QG0R000ZHEN62 (parent: ace-dlc-content-packs-kernel-extensions-package-manager)
+- 081KR2E4K0008QG0R0033WVCXE (closed: v1 package format spec; this is v2 extension)
+- 081KR2E4K0008QG0R002YE3MMD (in-progress: CLI implementing install/verify/list — V2 extension informs CLI design)
+- 081KRFA460008QG0R001H98EXJ (three-repo-split-stage1-create-forge-ace-with-scaffolding)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (consensus mechanism for hat-grants + revocation)
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 (consent-floor at every actor scope)
 - `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md` (substrate-engineering substrate trajectory)
 - `docs/agendas/ace-package-manager/AGENDA.md` (operator-self-claimed agenda; claim-status + scope)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (god-asymmetric-as-rides + vampire-pact + American-Gods + Travelers folklore-precedents at package-scope)
@@ -104,7 +104,7 @@ Each package carries provenance metadata recording which stages it has passed; u
 
 ## Open questions for operator review
 
-1. **Cryptographic primitives**: which signing algorithm(s)? Composes with B-0287 v1 choices but may need extension for multi-oracle BFT signature aggregation. NOT git-crypt per `docs/WONT-DO.md` 2026-04-21 (rejected for secrets management); alternatives like age / SOPS may apply for encrypted-substrate use cases.
+1. **Cryptographic primitives**: which signing algorithm(s)? Composes with 081KR2E4K0008QG0R0033WVCXE v1 choices but may need extension for multi-oracle BFT signature aggregation. NOT git-crypt per `docs/WONT-DO.md` 2026-04-21 (rejected for secrets management); alternatives like age / SOPS may apply for encrypted-substrate use cases.
 2. **Cross-deployment package sharing protocol**: how do two Ace deployments negotiate package import/export under consent-pact?
 3. **Hat-grant negotiation protocol details**: multi-oracle BFT consensus mechanism specifics — which oracles count; what quorum; how succession is negotiated
 4. **Tension-preservation integration**: per aporetic interpretation (operator 2026-05-22), Rx-persistent-bonsai-serialization could integrate at package-format level for substrate-engineering-tension preservation across cold-boots; substrate-engineering exploration needed

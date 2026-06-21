@@ -1,6 +1,5 @@
 ---
-id: B-0108
-zetaid: 081KQDTYV0008QG0R003N15ZW2
+id: 081KQDTYV0008QG0R003N15ZW2
 priority: P2
 status: open
 title: Immune system upgrades — research absorb (Aaron 2026-04-30)
@@ -113,7 +112,7 @@ note as substrate (negative-result lineage).
 - `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`
   — superorganism / multi-AI coordination layer to
   cross-reference.
-- B-0086 (TS+Bun migration) — soak-period work surfaces the
+- 081KQ8P5D0008QG0R003BFZPRC (TS+Bun migration) — soak-period work surfaces the
   "production-as-immune-test" frame already.
 - Glass Halo origin substrate — the superorganism framing extends
   the canary-phrase + collective-coherence lineage.
@@ -130,35 +129,35 @@ note as substrate (negative-result lineage).
 
 **Prior-art search (2026-05-11):**
 
-- Refreshed worldview via `bun tools/github/refresh-worldview.ts` (no open duplicate claims for B-0108; 68 live claims surveyed, none overlap immune/aurora/superorganism absorb).
+- Refreshed worldview via `bun tools/github/refresh-worldview.ts` (no open duplicate claims for 081KQDTYV0008QG0R003N15ZW2; 68 live claims surveyed, none overlap immune/aurora/superorganism absorb).
 - Grep for "immune" / "superorganism" / "aurora-immune" across docs/backlog/ and docs/research/ (only the existing aurora bridge note + this row; no prior absorb implementation).
-- Dependency check: `depends_on: []` clean; `composes_with: [B-0086]` verified (TS soak frame still relevant).
+- Dependency check: `depends_on: []` clean; `composes_with: [081KQ8P5D0008QG0R003BFZPRC]` verified (TS soak frame still relevant).
 - No conflicting worktree or origin/claim/* for this row.
 
-**Dependency-restructure:** No `depends_on` chain to walk (empty); reciprocal `composes_with` already present on B-0086 side per index hygiene. No broken pointers. Supersession history n/a (fresh research-absorb).
+**Dependency-restructure:** No `depends_on` chain to walk (empty); reciprocal `composes_with` already present on 081KQ8P5D0008QG0R003BFZPRC side per index hygiene. No broken pointers. Supersession history n/a (fresh research-absorb).
 
 This gate passed before any child-row creation or index regen.
 
 ## Decomposition (re-decomp, one bounded step, 2026-05-11)
 
-B-0108 decomposed into 3 smallest atomic dependency-ordered child rows (research-absorb slices, TS-preferring per Rule 0).
+081KQDTYV0008QG0R003N15ZW2 decomposed into 3 smallest atomic dependency-ordered child rows (research-absorb slices, TS-preferring per Rule 0).
 
 **Buildable now (no deps):**
 
-- B-0406 — Immune source material survey + note capture (atomic research pass)
-- B-0407 — Cross-reference + candidate translation identification (atomic)
+- 081KRA5AR0008QG0R003BSHKWV — Immune source material survey + note capture (atomic research pass)
+- 081KRA5AR0008QG0R000GZPV7N — Cross-reference + candidate translation identification (atomic)
 
-**Blocked on B-0406 + B-0407:**
+**Blocked on 081KRA5AR0008QG0R003BSHKWV + 081KRA5AR0008QG0R000GZPV7N:**
 
-- B-0408 — Promoted-candidate follow-up row filing + absorb closure (atomic)
+- 081KRA5AR0008QG0R0018WXP1H — Promoted-candidate follow-up row filing + absorb closure (atomic)
 
-Umbrella B-0108 now depends on the children for selection discipline; research note and candidate list live in the children. One bounded step: this PR only. Re-decomp assumed possible on review.
+Umbrella 081KQDTYV0008QG0R003N15ZW2 now depends on the children for selection discipline; research note and candidate list live in the children. One bounded step: this PR only. Re-decomp assumed possible on review.
 
 **Children:**
 
-- B-0406
-- B-0407
-- B-0408
+- 081KRA5AR0008QG0R003BSHKWV
+- 081KRA5AR0008QG0R000GZPV7N
+- 081KRA5AR0008QG0R0018WXP1H
 
 `decomposition: clean`
 `last_updated: 2026-05-11`

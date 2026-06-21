@@ -2,9 +2,9 @@ namespace Zeta.Core
 
 open System
 
-/// **B-0976 slice — resume-not-replay snapshot for self-evolving sagas (Aaron 2026-06-01).** `DurableSaga.fs`
+/// **081KT07NV0008QG0R003BE6MJ2 slice — resume-not-replay snapshot for self-evolving sagas (Aaron 2026-06-01).** `DurableSaga.fs`
 /// recovers by FULL log replay and explicitly defers a state snapshot ("a `'TState` snapshot is a follow-up");
-/// this is that follow-up, and it is the B-0976 differentiator over the replay family (Durable Functions /
+/// this is that follow-up, and it is the 081KT07NV0008QG0R003BE6MJ2 differentiator over the replay family (Durable Functions /
 /// Temporal / Dapr Workflow).
 ///
 /// A snapshot captures both halves of a self-evolving saga:
@@ -18,7 +18,7 @@ open System
 /// riding the canonical codecs, and the `Seq` cursor is the position on the Z-set/IndexedZSet ladder.
 ///
 /// Anchors: Nuqleon/Reaqtor Bonsai (serialized expr-trees), Temporal/Durable Functions (the interface to
-/// meet, replay family we beat on pattern-evolution), B-0668 (saga compensation = Z-set retraction). This
+/// meet, replay family we beat on pattern-evolution), 081KRYRGG0008QG0R0018CMFQY (saga compensation = Z-set retraction). This
 /// slice is the snapshot + resume + pattern-swap; the Z-set-of-subtrees retraction operator for fine-grained
 /// pattern evolution is the next slice.
 [<RequireQualifiedAccess>]
@@ -45,7 +45,7 @@ module SagaSnapshot =
             Seq = s.Seq + 1L }
 
     /// **Pattern evolution** — swap the pattern (the "pattern is data" edit: retract the old expr-tree, admit
-    /// a new one). The principled operator is the Z-set retraction (B-0668: compensation = additive inverse);
+    /// a new one). The principled operator is the Z-set retraction (081KRYRGG0008QG0R0018CMFQY: compensation = additive inverse);
     /// this bounded form is a whole-pattern swap at the cursor. Both pattern AND state can now evolve.
     let evolvePattern (newPattern: Bonsai.Expr) (s: Snapshot) : Snapshot = { s with Pattern = newPattern }
 

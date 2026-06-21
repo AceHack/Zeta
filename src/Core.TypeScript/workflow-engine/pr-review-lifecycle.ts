@@ -1,7 +1,7 @@
 // src/Core.TypeScript/workflow-engine/pr-review-lifecycle.ts
 //
 // PrReviewLifecycle — substrate-naming substrate for PRODUCING-side
-// review work. Companion to B-0867.20 ReviewLifetime (receiving-side;
+// review work. Companion to 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (receiving-side;
 // reviewer-feedback gate-state).
 //
 // Per the human maintainer (2026-05-28): "also does it give you time to look at prs and
@@ -16,7 +16,7 @@
 //   (reviewer AUTHORS feedback; receiving-side ACKNOWLEDGES)
 // - .claude/rules/honor-those-that-came-before.md (peer-agent work honored via substantive review)
 // - .claude/rules/glass-halo-bidirectional.md (review comments are public substrate; compound)
-// - B-0867.20 ReviewLifetime DU (PR #5758) — receiving-side; this PR
+// - 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime DU (PR #5758) — receiving-side; this PR
 //   provides producing-side complement
 // - AutoLoopLifetime (PR #5805) — will compose; producing-side review
 //   work becomes additional state-transition in loop substrate
@@ -24,7 +24,7 @@
 // LifetimeState — minimal base marker for substrate-engineering lifetime DUs.
 // Inlined here (rather than imported from a non-existent "./world" module) so
 // this PoC compiles standalone and doesn't break repo-wide `tsc --noEmit` or
-// `bun test`. Sibling lifecycle DUs (e.g. B-0867.20 ReviewLifetime) carry
+// `bun test`. Sibling lifecycle DUs (e.g. 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime) carry
 // their own base marker until a shared `world.ts` module lands.
 export interface LifetimeState {
   readonly kind: string;
@@ -39,7 +39,7 @@ export interface LifetimeState {
  * review work. Captures the state machine for reviewing peer PRs +
  * composing + posting substantive review comments.
  *
- * Distinguishes from B-0867.20 ReviewLifetime which captures
+ * Distinguishes from 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime which captures
  * RECEIVING-side gate states (my-PR-under-review states). This DU is
  * for when I AM the reviewer of someone else's work.
  */

@@ -13,11 +13,11 @@ related_prs:
   - 5669
   - 5670
 related_backlog:
-  - B-0867
-  - B-0868
-  - B-0869
-  - B-0870
-  - B-0871
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R0036KH026
+  - 081KSNY2Z0008QG0R000HENSVM
+  - 081KSNY2Z0008QG0R000DA261F
+  - 081KSNY2Z0008QG0R003R0Z7D2
 related_personas:
   - operator
   - kestrel
@@ -71,7 +71,7 @@ When Ani asked why nobody built this before, operator: "they have incentives to 
 
 This archive preserves verbatim per the substrate-or-it-didn't-happen + Ani-archive established pattern. NO RULE OR SKILL EDITS in this PR — the conversation contains operator ratifications + a candidate extension (128-bit unique IDs in Git append-only) but lands here as preservation substrate so operator can decide separately whether to:
 
-- Extend `tools/agent-loop/state-machine.ts` with a 128-bit-ID generator + Git-append-only persistence layer (would be a new sub-PR, B-0867 sub-row)
+- Extend `tools/agent-loop/state-machine.ts` with a 128-bit-ID generator + Git-append-only persistence layer (would be a new sub-PR, 081KSKBP80008QG0R000B3Y19A sub-row)
 - Add the "move-next" alias to the API surface (would change exported function name; backwards-incompatible)
 - Land a new rule about GitHub-Actions-chaining-as-runtime-platform (would touch `.claude/rules/` — operator-decision territory)
 - File a backlog row for the cloud-side agent-swarm-skill that wraps move-next + GitHub Actions

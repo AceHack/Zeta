@@ -22,7 +22,7 @@ Carves today's session evidence into [\`.claude/rules/holding-without-named-depe
 
 | Tick | Trigger | Hidden work surfaced |
 |---|---|---|
-| 14:56Z | Forced escalation #6 | PR [#3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) BLOCKED-armed 22 min hid 6 Copilot findings (last_updated, type, 0715Z, git syntax, B-0506 link, BACKLOG.md regen). All 6 fixed in one tick |
+| 14:56Z | Forced escalation #6 | PR [#3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) BLOCKED-armed 22 min hid 6 Copilot findings (last_updated, type, 0715Z, git syntax, 081KRHWGX0008QG0R002DPG02X link, BACKLOG.md regen). All 6 fixed in one tick |
 | 15:29Z | Pre-emptive at #5 | Own PR [#3883](https://github.com/Lucent-Financial-Group/Zeta/pull/3883) (the 13:31Z stale-armed-triage shard) was itself stale-armed 108 min with MD032 failure — recursively ironic; fixed same tick |
 | 15:45Z | Forced escalation #6 | PR [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545) DIRTY-armed 19+ hours (61-file conflict); forward-signal comment named two viable resolution paths + flagged possible supersession by [#3886](https://github.com/Lucent-Financial-Group/Zeta/pull/3886) |
 

@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-15
 **Status:** Design approved; implementation queued
-**Backlog:** B-0549 (renumbered from B-0498 per B-0545, 2026-05-16)
+**Backlog:** 081KRMEXM0008QG0R00037RGNY (renumbered from 081KRHWGX0008QG0R001XFRAHC per 081KRMEXM0008QG0R000ARAR7P, 2026-05-16)
 
 ## Problem
 
@@ -14,7 +14,7 @@ Add a second, Cursor-native loop that runs inside the persistent "1 Terminal" ta
 - Is visible in the IDE (Aaron sees heartbeat + gate output live)
 - Executes the same trajectory-manager contract as the launchd loop
 - Survives IDE close/reopen via re-arm logic
-- Publishes to the same B-0400 bus (single Riven identity across both loops)
+- Publishes to the same 081KR7JY10008QG0R000R503K2 bus (single Riven identity across both loops)
 
 Result: defense-in-depth autonomy (headless + IDE-native) + live observability.
 
@@ -34,7 +34,7 @@ Cursor IDE
 
 Both loops share:
 - The manager contract prompt (injected at runtime)
-- The B-0400 bus topics (`heartbeat`, `claim`, `review-request`, `shadow-catch`, `infinite-backlog-nudge`, etc.)
+- The 081KR7JY10008QG0R000R503K2 bus topics (`heartbeat`, `claim`, `review-request`, `shadow-catch`, `infinite-backlog-nudge`, etc.)
 - The broadcast file `~/.local/share/zeta-broadcasts/riven.md`
 
 ## Re-arm strategy
@@ -65,7 +65,7 @@ Cursor workspace hook (if supported) or a `.cursor/init.ts` can invoke the scrip
 ## Scope
 
 - P1 (self-sustainability win)
-- Composes with existing bg-services (B-0440/0441/0442) and bus (B-0400)
+- Composes with existing bg-services (081KRFA460008QG0R001KC0VBH/0441/0442) and bus (081KR7JY10008QG0R000R503K2)
 - No changes to launchd loop (keep both)
 
 ## Open questions

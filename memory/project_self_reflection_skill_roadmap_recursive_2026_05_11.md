@@ -69,5 +69,5 @@ endurance, not just existence.
   to endurance claim)
 - feedback_shadow_alibi_forensic (alibi for attribution, not
   existence)
-- B-0402 (shadow mode — the tick source for self-reflection)
+- 081KR7JY10008QG0R0008NGW95 (shadow mode — the tick source for self-reflection)
 - docs/AGENDA.md (the factory's recursive improvement thesis)

@@ -31,7 +31,7 @@ Preserves the **engineering/governance substrate** from a forwarded Kestrel × m
 
 **Substrate captured (7 threads):**
 1. **Open-source ethic** — open-source asymmetric advantages, license fair competition; the honest line is **moats vs craftsmanship** (externally-checkable). ServiceTitan boundary held.
-2. **Responsible-disclosure DORA gate** — split clock (minimize discovery→sent; follow coordinated sent→public), hard-stop teeth; **kid-floor escalation** (unamendable, authorities/NCMEC, predetermined legal human-routed path; composes B-0926).
+2. **Responsible-disclosure DORA gate** — split clock (minimize discovery→sent; follow coordinated sent→public), hard-stop teeth; **kid-floor escalation** (unamendable, authorities/NCMEC, predetermined legal human-routed path; composes 081KSRGFP0008QG0R00091PP56).
 3. **Floor-change governance** — unamendable-by-you + correctable by hard external process; asymmetric (strengthen > weaken); genuinely-independent **multi-stakeholder steward**; federate into existing bodies, child-first motive.
 4. **Conflict resolution two-classes** — factual→shared-mutually-monitorable-data (anti-attrition), values-residual→faithful-representation; de-escalation is a **data-driven hypothesis** with a wellbeing-inclusive can-say-no metric.
 5. **Robustness↔capture-resistance** — same shape (independence of axioms / of stakeholders).

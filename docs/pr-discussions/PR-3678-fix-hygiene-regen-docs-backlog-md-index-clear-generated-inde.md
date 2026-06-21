@@ -22,7 +22,7 @@ Mechanical regen via \`BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts
 
 - Re-ran the BACKLOG.md generator from per-row source files
 - `bun tools/backlog/generate-index.ts --check` now exit 0 (was exit 2)
-- Diff: +16 / -1 — new rows (B-0543–B-0548 + a few others) now reflected in the index
+- Diff: +16 / -1 — new rows (081KRMEXM0008QG0R002YSPW1X–081KRQ1AB0008QG0R002DQBGZF + a few others) now reflected in the index
 
 ## Why
 
@@ -32,7 +32,7 @@ After this PR merges, the check will flip fail → pass on subsequent PRs.
 
 ## Remaining drift (next-tick candidates)
 
-- `lint (backlog ID uniqueness)` — B-0498 collision per [B-0545](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)
+- `lint (backlog ID uniqueness)` — 081KRHWGX0008QG0R001XFRAHC collision per [081KRMEXM0008QG0R000ARAR7P](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md)
 - `lint (tsc tools)` — pending investigation
 
 ## Provenance
@@ -52,8 +52,8 @@ Mechanical regeneration of `docs/BACKLOG.md` from per-row backlog files to clear
 
 **Changes:**
 - Adds recently filed P1/P2/P3 backlog rows to the generated index.
-- Updates B-0500 from open to closed in the index.
-- Leaves the known B-0498 duplicate-ID drift visible in the regenerated output.
+- Updates 081KRHWGX0008QG0R0025PX5SZ from open to closed in the index.
+- Leaves the known 081KRHWGX0008QG0R001XFRAHC duplicate-ID drift visible in the regenerated output.
 
 ## Review threads
 
@@ -61,4 +61,4 @@ Mechanical regeneration of `docs/BACKLOG.md` from per-row backlog files to clear
 
 **@copilot-pull-request-reviewer** (2026-05-16T02:18:28Z):
 
-This adds a second `B-0498` entry to the generated index while `docs/BACKLOG.md` still has the existing P2 `B-0498` entry at line 582. `tools/backlog/README.md:61` requires backlog IDs to be factory-wide unique, and `.github/workflows/gate.yml:767-791` runs the duplicate-ID lint, so merging this regenerated index still leaves readers and CI with an ambiguous `B-0498` reference.
+This adds a second `081KRHWGX0008QG0R001XFRAHC` entry to the generated index while `docs/BACKLOG.md` still has the existing P2 `081KRHWGX0008QG0R001XFRAHC` entry at line 582. `tools/backlog/README.md:61` requires backlog IDs to be factory-wide unique, and `.github/workflows/gate.yml:767-791` runs the duplicate-ID lint, so merging this regenerated index still leaves readers and CI with an ambiguous `081KRHWGX0008QG0R001XFRAHC` reference.

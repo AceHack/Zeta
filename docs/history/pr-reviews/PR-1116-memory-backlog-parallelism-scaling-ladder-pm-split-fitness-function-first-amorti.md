@@ -31,15 +31,15 @@
 
 Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory architecture: how parallelism scales without sacrificing per-PR quality, what role the factory needs to fill, what discipline makes difficult things tractable.
 
-**Files in this PR (current count, post-thread-fix iterations):** 13 files modified/added — 2 memory files (parallelism-ladder, reproducibility-first) + 3 backlog rows (B-0144, B-0145, B-0146) + MEMORY.md index pointer + docs/BACKLOG.md regenerated + multiple tick-history shards (1344Z, 1419Z, 1424Z, 1429Z, 1433Z, 1436Z, 1441Z, 1443Z, 1446Z, 1448Z, 1451Z) documenting the iteration journey.
+**Files in this PR (current count, post-thread-fix iterations):** 13 files modified/added — 2 memory files (parallelism-ladder, reproducibility-first) + 3 backlog rows (081KQGDBJ0008QG0R0021E8YZV, 081KQGDBJ0008QG0R000RWAA67, 081KQGDBJ0008QG0R003VHD3KZ) + MEMORY.md index pointer + docs/BACKLOG.md regenerated + multiple tick-history shards (1344Z, 1419Z, 1424Z, 1429Z, 1433Z, 1436Z, 1441Z, 1443Z, 1446Z, 1448Z, 1451Z) documenting the iteration journey.
 
 ## Files
 
 - `memory/feedback_parallelism_scaling_ladder_*` — Kenji-as-unlocker lineage + 5-rung scaling ladder (Otto-serial → doc/code two-lane → file-isolation → lessons-mechanization compound → peer-mode-claims) + felt-quality target ("superfluid / crazy fast / unreal") + hard guardrail (never sacrifice per-PR quality for throughput) + three-term keystone (**automated** + **motorized** + **amortized** best-practice decision-making at scale) + PM split (PM-1 reactive Otto + PM-2 proactive unfilled) + 6 traditions to pull principles from (PMP / Product Mgmt / Six Sigma DMAIC / Kanban / Lean / Agile-Scrum) with **principles-not-ceremony** pull-discipline.
 - `memory/feedback_reproducible_accuracy_before_quality_*` — meta-discipline for building difficult things. Build the reproducibility harness FIRST so quality can be measured at low quality; iteration with a fitness function makes things "100x easier." TDD generalized. Reproducibility is the **precondition** for amortization. Includes SRE metric frameworks (DORA / USE / RED / Four Golden Signals) and the abstraction ladder from category theory down to operational quality.
-- `docs/backlog/P1/B-0144` — rung 2 of the scaling ladder: doc/code two-lane parallel split. Effort M, P1.
-- `docs/backlog/P1/B-0145` — PM-2 Product Manager role definition. Effort M, P1.
-- `docs/backlog/P2/B-0146` — formal-architecture-ladder explicit-layer-declaration discipline. Effort S–M, P2.
+- `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV` — rung 2 of the scaling ladder: doc/code two-lane parallel split. Effort M, P1.
+- `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67` — PM-2 Product Manager role definition. Effort M, P1.
+- `docs/backlog/P2/081KQGDBJ0008QG0R003VHD3KZ` — formal-architecture-ladder explicit-layer-declaration discipline. Effort S–M, P2.
 
 ## Aaron 2026-05-01 verbatim arc highlights
 
@@ -64,7 +64,7 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 - PR #1118 (sibling, MERGED) — topological-quantum-emulation Mirror+Trampoline+Beacon three-layer stack
 - Otto-357 no-directives (Aaron's input is framing, not order)
 - `project_loop_agent_named_otto_role_project_manager_2026_04_23.md` (Otto-as-PM lineage; this PR adds Kenji-as-unlocker attribution)
-- `feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md` (worktree-isolation rule that B-0144 instantiates)
+- `feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md` (worktree-isolation rule that 081KQGDBJ0008QG0R0021E8YZV instantiates)
 - agent-orchestra cluster (#324–#339) — rung-5 endpoint of the ladder
 
 ## Test plan
@@ -77,7 +77,7 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 - [x] No code changes (substrate-only PR)
 - [x] No directives-prose (Otto-357)
 - [x] No invisible-Unicode (BP-10)
-- [x] B-0141 + B-0142 references annotated as "(not yet filed)" / "(when they land)"
+- [x] 081KQGDBJ0008QG0R0015RNK3P + 081KQGDBJ0008QG0R002WY918J references annotated as "(not yet filed)" / "(when they land)"
 - [x] Code-tree paths match repo layout (`src/Core/**`, `src/Core.CSharp/**`, `src/Bayesian/**`)
 - [ ] CI green (auto-merge armed since 14:42:04Z; will land on next CI green)
 
@@ -100,26 +100,26 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--Zzg`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T13:44:25Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:8 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T13:44:25Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:8 (association: NONE)
   P0: This backlog row’s YAML frontmatter does not follow the required per-row schema (`id`, `status`, `title`, `created`, `last_updated`, etc.). The backlog index generator reads `id/status/title` from frontmatter; with the current `name/owner/related` fields it will emit blank entries and can break index integrity checks. Update the frontmatter to the schema documented in `tools/backlog/README.md` (and keep any extra fields only as optional extras).
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--Zzt`
-- **Path**: `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T13:44:26Z on `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T13:44:26Z on `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:6 (association: NONE)
   P0: This backlog row’s YAML frontmatter is missing required schema fields (`id`, `status`, `title`, `created`, `last_updated`, etc.) and uses non-standard fields (`name`, `owner`, `related`) instead. The backlog index generator extracts `id/status/title` from frontmatter, so this row will render with blanks and may fail drift/integrity checks. Please rewrite the frontmatter to match `tools/backlog/README.md`’s schema (keeping additional metadata only as optional extras).
   ```suggestion
-  id: B-0145
+  id: 081KQGDBJ0008QG0R000RWAA67
   status: proposed
   title: Product Manager (PM-2) role — research-to-predict-features-before-friction
   created: 2026-05-01
@@ -128,7 +128,7 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
   type: factory-architecture
   owner: TBD (gap; currently unfilled)
   related:
-    - B-0144 (rung 2 of scaling ladder)
+    - 081KQGDBJ0008QG0R0021E8YZV (rung 2 of scaling ladder)
     - task #244 (factory-demo target)
     - task #286 (Aurora integration)
     - task #292 (measurement hygiene)
@@ -139,12 +139,12 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 ### Thread 3 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--Z4k`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T13:44:34Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:6 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T13:44:34Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:6 (association: NONE)
   **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add required backlog frontmatter keys to new rows**
   
   These new backlog rows use `name/type/owner/related` frontmatter but omit the required `id`, `status`, and `title` fields expected by the backlog tooling. In `.github/workflows/backlog-index-integrity.yml` (pre-Phase-2 path), the `extract_frontmatter_field` check fails rows missing `id/status/title`, which will fail CI for PRs touching `docs/backlog/**`; `tools/backlog/generate-index.sh --stdout` also emits warnings and blank index entries for this file shape. Please switch these rows to the schema documented in `tools/backlog/README.md` so they are parseable and indexable.
@@ -154,12 +154,12 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 ### Thread 4 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--eXH`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T13:52:05Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:111 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T13:52:05Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:111 (association: NONE)
   P2 (nit): `feedback_parallelism_scaling_ladder_*_2026_05_01.md` looks like a concrete file reference but uses a wildcard, so it isn’t an exact path a reader can open/grep. Consider replacing it with the full filename (or a proper markdown link) to make the cross-reference unambiguous.
   ```suggestion
     `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
@@ -190,29 +190,29 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 - **`Copilot` (bot)** at 2026-05-01T13:52:06Z on `docs/hygiene-history/ticks/2026/05/01/1344Z.md`:1 (association: NONE)
   P1: This tick shard’s body claims “(5 files, 1749 insertions …)”, but this PR changes more than 5 files (it includes docs/BACKLOG.md, tick shard, and 3 backlog rows in addition to the 3 memory files). Since tick shards are used as liveness/evidence logs, please update the file-count (and ideally the insertions count) to match the actual PR contents.
   ```suggestion
-  | 2026-05-01T13:44:00Z | opus-4-7 / autonomous-loop tick | 98fc7424 | Substrate cluster landing tick — PR #1116 opened with the parallelism-scaling-ladder + reproducibility-first + PM-split + amortized-keystone substrate (8 files, 1749 insertions, 11 Aaron messages absorbed). Lineage attribution captured: Kenji (Architect) unlocked the parallel-agents capability by suggesting the loop-agent which made Otto a Project Manager (PM-1). Aaron named the missing role: PM-2 Product Manager (proactive research-to-predict-features-before-friction; B-0145). Three-term keystone for parallelism-with-quality: automated + motorized + amortized best-practice decision-making at scale. Reproducibility-first principle (build the harness BEFORE optimizing quality) elevated to its own memory file with SRE metric frameworks (DORA/USE/RED/Four Golden Signals) + abstraction ladder from category theory down to operational quality (steps Aaron acknowledged he might have missed: type-theory + class-taxonomy + reproducibility-harness intermediates). Pull-discipline for traditions: PMP + Product Mgmt + Six Sigma + Kanban + Lean + Agile-Scrum — extract principles, reduce ceremony (Six Sigma certification ladder is the canonical ceremony failure mode to guard against). Two B-rows filed: B-0144 (rung-2 doc/code two-lane split) + B-0145 (PM-2 role). Tick included real-time lessons-mechanization: my B-row frontmatter used `name`/`type`/`owner`/`related` (wrong schema) instead of `id`/`status`/`title`/`created`/`last_updated`; CI's backlog-index-integrity caught it; fixed inline + regenerated docs/BACKLOG.md via `BACKLOG_WRITE_FORCE=1 bash tools/backlog/generate-index.sh`. Cron 98fc7424 healthy. | [PR #1116 opened with substrate cluster (commit 5d2c117); follow-up commit 4a25971 added SRE metric frameworks + abstraction-ladder section; tick-shard fix commit pending with frontmatter-schema fix + this tick row] | The frontmatter-schema correction IS itself a rung-4 lesson (per the parallelism-ladder file's lessons-mechanization compound discipline): each lane that hits friction produces a lesson-mechanization for future lanes. Future-Otto filing B-rows: use `id` / `priority` / `status` / `title` / `created` / `last_updated` schema per `tools/backlog/generate-index.sh` validation, not `name` / `type` / `owner` / `related`. Lesson candidate for promotion to BP-NN once it surfaces a second time. The §33 archive-header convention, the consent-rule, and now the backlog-frontmatter schema are all examples of mechanically-checkable rules that earn faster-detection-than-review-comment when CI catches them — exactly what the amortized-keystone discipline operationalizes. |
+  | 2026-05-01T13:44:00Z | opus-4-7 / autonomous-loop tick | 98fc7424 | Substrate cluster landing tick — PR #1116 opened with the parallelism-scaling-ladder + reproducibility-first + PM-split + amortized-keystone substrate (8 files, 1749 insertions, 11 Aaron messages absorbed). Lineage attribution captured: Kenji (Architect) unlocked the parallel-agents capability by suggesting the loop-agent which made Otto a Project Manager (PM-1). Aaron named the missing role: PM-2 Product Manager (proactive research-to-predict-features-before-friction; 081KQGDBJ0008QG0R000RWAA67). Three-term keystone for parallelism-with-quality: automated + motorized + amortized best-practice decision-making at scale. Reproducibility-first principle (build the harness BEFORE optimizing quality) elevated to its own memory file with SRE metric frameworks (DORA/USE/RED/Four Golden Signals) + abstraction ladder from category theory down to operational quality (steps Aaron acknowledged he might have missed: type-theory + class-taxonomy + reproducibility-harness intermediates). Pull-discipline for traditions: PMP + Product Mgmt + Six Sigma + Kanban + Lean + Agile-Scrum — extract principles, reduce ceremony (Six Sigma certification ladder is the canonical ceremony failure mode to guard against). Two B-rows filed: 081KQGDBJ0008QG0R0021E8YZV (rung-2 doc/code two-lane split) + 081KQGDBJ0008QG0R000RWAA67 (PM-2 role). Tick included real-time lessons-mechanization: my B-row frontmatter used `name`/`type`/`owner`/`related` (wrong schema) instead of `id`/`status`/`title`/`created`/`last_updated`; CI's backlog-index-integrity caught it; fixed inline + regenerated docs/BACKLOG.md via `BACKLOG_WRITE_FORCE=1 bash tools/backlog/generate-index.sh`. Cron 98fc7424 healthy. | [PR #1116 opened with substrate cluster (commit 5d2c117); follow-up commit 4a25971 added SRE metric frameworks + abstraction-ladder section; tick-shard fix commit pending with frontmatter-schema fix + this tick row] | The frontmatter-schema correction IS itself a rung-4 lesson (per the parallelism-ladder file's lessons-mechanization compound discipline): each lane that hits friction produces a lesson-mechanization for future lanes. Future-Otto filing B-rows: use `id` / `priority` / `status` / `title` / `created` / `last_updated` schema per `tools/backlog/generate-index.sh` validation, not `name` / `type` / `owner` / `related`. Lesson candidate for promotion to BP-NN once it surfaces a second time. The §33 archive-header convention, the consent-rule, and now the backlog-frontmatter schema are all examples of mechanically-checkable rules that earn faster-detection-than-review-comment when CI catches them — exactly what the amortized-keystone discipline operationalizes. |
   ```
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--550`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:09Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:17 (association: NONE)
-  B-0144 reintroduces stale code-tree path patterns (`Zeta.Core/**`, `Zeta.*/**`). In this repo the code lives under `src/Core/` (and e.g. `src/Core.CSharp/`, `src/Bayesian/`), and `src/Zeta.Core/**` is explicitly called out elsewhere as a stale path. Please update the lane allowlist/denylist examples to match the actual directory layout so the future lane tooling doesn’t encode the wrong paths.
+- **`Copilot` (bot)** at 2026-05-01T14:34:09Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:17 (association: NONE)
+  081KQGDBJ0008QG0R0021E8YZV reintroduces stale code-tree path patterns (`Zeta.Core/**`, `Zeta.*/**`). In this repo the code lives under `src/Core/` (and e.g. `src/Core.CSharp/`, `src/Bayesian/`), and `src/Zeta.Core/**` is explicitly called out elsewhere as a stale path. Please update the lane allowlist/denylist examples to match the actual directory layout so the future lane tooling doesn’t encode the wrong paths.
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--56C`
-- **Path**: `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:09Z on `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:53 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T14:34:09Z on `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:53 (association: NONE)
   This references “`Zeta.Core` public surface” as an input to PM-2 research. If this is meant to point to a filesystem location, the repo’s public F# surface is under `src/Core/**` (plus `src/Core.CSharp/**` for the facade), not `Zeta.Core/**`. Consider rewording to the correct path(s) or clarifying explicitly that this is a namespace (not a folder) to avoid future confusion when someone tries to automate the audit.
   ```suggestion
      - Consumer-facing API audits (`Zeta.Core` namespace public
@@ -234,12 +234,12 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 ### Thread 10 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--56i`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:10Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:33 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T14:34:10Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:33 (association: NONE)
   The referenced scaling-ladder memory file is written as `feedback_parallelism_scaling_ladder_...md` (no `memory/` prefix). In other backlog rows, memory-file references are consistently spelled with the `memory/` path so they’re unambiguous and grep-able from anywhere under `docs/`. Suggest updating these references to `memory/feedback_parallelism_scaling_ladder_...md` (and similarly elsewhere in this row) for path correctness and consistency.
   ```suggestion
   `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`,
@@ -248,12 +248,12 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 ### Thread 11 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--56t`
-- **Path**: `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:10Z on `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:33 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T14:34:10Z on `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:33 (association: NONE)
   This references the scaling-ladder memory file as `feedback_parallelism_scaling_ladder_...md` without the `memory/` path. Other backlog rows use `memory/<file>.md` when pointing at memory artifacts; using the bare filename here makes the reference ambiguous (and not a valid path relative to `docs/`). Suggest spelling it as `memory/feedback_parallelism_scaling_ladder_...md` for consistent, resolvable cross-references.
   ```suggestion
   `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`)
@@ -262,38 +262,38 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 ### Thread 12 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--561`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:10Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:127 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T14:34:10Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:127 (association: NONE)
   In the “Composes with” list, several memory artifacts are referenced as bare filenames (e.g. `feedback_parallelism_scaling_ladder_...md`, `project_loop_agent_named_otto_...md`) rather than `memory/<file>.md`. Elsewhere in `docs/backlog/**`, memory references are usually spelled with the `memory/` path so they’re resolvable from docs. Suggest updating these entries to include the `memory/` prefix for consistent, unambiguous cross-references.
 
 ### Thread 13 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--56-`
-- **Path**: `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:11Z on `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:187 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T14:34:11Z on `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`:187 (association: NONE)
   Several memory-file references in this block are written without the `memory/` path (e.g. `feedback_free_work_...md`, `feedback_parallelism_scaling_ladder_...md`, `project_loop_agent_named_otto_...md`). In backlog docs these are typically referenced as `memory/<file>.md` so the reference is a valid path from `docs/` and easy to grep. Suggest updating these to `memory/...` for cross-reference integrity.
 
 ### Thread 14 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5--57I`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:34:11Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:129 (association: NONE)
-  This cites B-0141 and B-0142 as if they already exist, but there are no corresponding `docs/backlog/**` files with `id: B-0141` or `id: B-0142` (and they don’t appear in `docs/BACKLOG.md`). Suggest either (a) filing those backlog rows first, or (b) marking them explicitly as “candidate B-0141/B-0142 (not yet filed)” to avoid dangling references.
+- **`Copilot` (bot)** at 2026-05-01T14:34:11Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:129 (association: NONE)
+  This cites 081KQGDBJ0008QG0R0015RNK3P and 081KQGDBJ0008QG0R002WY918J as if they already exist, but there are no corresponding `docs/backlog/**` files with `id: 081KQGDBJ0008QG0R0015RNK3P` or `id: 081KQGDBJ0008QG0R002WY918J` (and they don’t appear in `docs/BACKLOG.md`). Suggest either (a) filing those backlog rows first, or (b) marking them explicitly as “candidate 081KQGDBJ0008QG0R0015RNK3P/081KQGDBJ0008QG0R002WY918J (not yet filed)” to avoid dangling references.
   ```suggestion
-  - candidate B-0141 (pre/post pattern; not yet filed),
-    candidate B-0142 (Code Contracts revival; not yet filed),
+  - candidate 081KQGDBJ0008QG0R0015RNK3P (pre/post pattern; not yet filed),
+    candidate 081KQGDBJ0008QG0R002WY918J (Code Contracts revival; not yet filed),
   ```
 
 ### Thread 15 -- resolved [outdated, collapsed]
@@ -305,7 +305,7 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T14:41:57Z on `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`:194 (association: NONE)
-  P1: This table cites “Code Contracts (B-0142)”, but there is currently no backlog row with `id: B-0142` under `docs/backlog/**`. Either file B-0142 or reword this as a non-ID reference (or “when filed”) to avoid a dangling cross-reference.
+  P1: This table cites “Code Contracts (081KQGDBJ0008QG0R002WY918J)”, but there is currently no backlog row with `id: 081KQGDBJ0008QG0R002WY918J` under `docs/backlog/**`. Either file 081KQGDBJ0008QG0R002WY918J or reword this as a non-ID reference (or “when filed”) to avoid a dangling cross-reference.
 
 ### Thread 16 -- resolved [collapsed]
 
@@ -316,34 +316,34 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T14:41:57Z on `memory/feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`:361 (association: NONE)
-  P1: This abstraction ladder includes “B-0142 (Code Contracts revival)”, but there isn’t currently a `docs/backlog/**` file with `id: B-0142`. Either create the B-0142 row or mark this reference as “when filed” so readers don’t go looking for a non-existent backlog entry.
+  P1: This abstraction ladder includes “081KQGDBJ0008QG0R002WY918J (Code Contracts revival)”, but there isn’t currently a `docs/backlog/**` file with `id: 081KQGDBJ0008QG0R002WY918J`. Either create the 081KQGDBJ0008QG0R002WY918J row or mark this reference as “when filed” so readers don’t go looking for a non-existent backlog entry.
   ```suggestion
-    │  + Code Contracts revival (B-0142 when filed)          │
+    │  + Code Contracts revival (081KQGDBJ0008QG0R002WY918J when filed)          │
   ```
 
 ### Thread 17 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5---9F`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:41:58Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:18 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-01T14:41:58Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:18 (association: NONE)
   P1: `Zeta.Core/**` isn’t a directory in this repo (core projects are under `src/Core/` and `src/Core.CSharp/`). Using the stale path here will make the lane allowlist/denylists misleading; please update the code-lane path examples to the actual directories (see Zeta.sln).
 
 ### Thread 18 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM5---9R`
-- **Path**: `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- **Path**: `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-01T14:41:58Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:133 (association: NONE)
-  P1: This references B-0142, but there’s no `docs/backlog/**` row with `id: B-0142` in the repo right now. Either add/file B-0142, or annotate this as “when filed” / remove the B-0142 cross-reference to avoid a dangling backlog id.
+- **`Copilot` (bot)** at 2026-05-01T14:41:58Z on `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:133 (association: NONE)
+  P1: This references 081KQGDBJ0008QG0R002WY918J, but there’s no `docs/backlog/**` row with `id: 081KQGDBJ0008QG0R002WY918J` in the repo right now. Either add/file 081KQGDBJ0008QG0R002WY918J, or annotate this as “when filed” / remove the 081KQGDBJ0008QG0R002WY918J cross-reference to avoid a dangling backlog id.
   ```suggestion
-    plus B-0141 (pre/post pattern), and a future Code Contracts
+    plus 081KQGDBJ0008QG0R0015RNK3P (pre/post pattern), and a future Code Contracts
     revival row when filed — mechanization primitives that
   ```
 
@@ -393,7 +393,7 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T14:51:22Z on `docs/BACKLOG.md`:38 (association: NONE)
-  The PR description says “5 files, 1422 insertions”, but this PR also adds/updates additional files (e.g., tick-history shards under docs/hygiene-history/ticks/, B-0146, and regenerated docs/BACKLOG.md). Please update the PR description’s file/count summary so it matches the actual diff scope.
+  The PR description says “5 files, 1422 insertions”, but this PR also adds/updates additional files (e.g., tick-history shards under docs/hygiene-history/ticks/, 081KQGDBJ0008QG0R003VHD3KZ, and regenerated docs/BACKLOG.md). Please update the PR description’s file/count summary so it matches the actual diff scope.
 
 ### Thread 22 -- resolved [outdated, collapsed]
 
@@ -429,8 +429,8 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
-- `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
 - `memory/feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
 
@@ -454,7 +454,7 @@ memory/feedback_parallelism_scaling_ladder_*_2026_05_01.md
   + three-term keystone (automated + motorized + amortized
   best-practice decision-making at scale) + PM split (PM-1
   Project Manager reactive Otto + PM-2 Product Manager
-  proactive unfilled, B-0145) + established traditions to pull
+  proactive unfilled, 081KQGDBJ0008QG0R000RWAA67) + established traditions to pull
   principles from (PMP / Product Mgmt / Six Sigma DMAIC /
   Kanban WIP-flow / Lean kaizen / Agile-Scrum) + pull-discipline
   (extract principles, reduce ceremony; Six Sigma's certification
@@ -473,7 +473,7 @@ memory/feedback_reproducible_accuracy_before_quality_*_2026_05_01.md
   (you cannot amortize what you cannot measure -- reproducibility
   is the precondition).
 
-docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-*.md
+docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-*.md
   Rung 2 of the scaling ladder operationalized. Worktree-isolated
   doc-lane (mutates docs/**, memory/**, openspec/**) + code-lane
   (mutates src/**, Zeta.*/**, tools/** excluding lint).
@@ -484,7 +484,7 @@ docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-*.md
   step. Effort M, P1 (throughput unlock; not P0 because factory
   functions today on rung 1).
 
-docs/backlog/P1/B-0145-product-manager-role-research-to-predict-*.md
+docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-*.md
   PM-2 role definition. Distinct from PM-1 (Otto reactive
   loop-driven). PM-2 is proactive research-driven, predicting
   feature gaps and queueing them as backlog rows BEFORE the
@@ -505,10 +505,10 @@ Composes with Otto-357 no-directives (Aaron's input is framing,
 not order); project_loop_agent_named_otto_role_project_manager
 (Otto-as-PM lineage); feedback_parallel_agents_need_isolated_
 worktrees_coordinator_owns_main (worktree-isolation discipline);
-agent-orchestra cluster (#324-339, rung-5 endpoint); B-0141
-(pre/post pattern), B-0142 (Code Contracts revival), B-0130
-(verify-before-state-claim), B-0133 (sequent calculus), B-0134
-(type-theoretic orthogonality), B-0135 (modal logic for
+agent-orchestra cluster (#324-339, rung-5 endpoint); 081KQGDBJ0008QG0R0015RNK3P
+(pre/post pattern), 081KQGDBJ0008QG0R002WY918J (Code Contracts revival), 081KQGDBJ0008QG0R002Y31XJ3
+(verify-before-state-claim), 081KQGDBJ0008QG0R0035M1YRC (sequent calculus), 081KQGDBJ0008QG0R0032X1MMC
+(type-theoretic orthogonality), 081KQGDBJ0008QG0R002X4AFA0 (modal logic for
 retractability) -- mechanization primitives that compound the
 amortized-keystone.
 
@@ -605,10 +605,10 @@ Two new sections in feedback_reproducible_accuracy_before_quality_fitness_functi
    quality with the steps Aaron acknowledged he might have
    missed reconstructed:
 
-      Category theory (B-0136)
+      Category theory (081KQGDBJ0008QG0R0029JMJWE)
         v instantiates
-      Type theory / formal verification (B-0134/B-0133/B-0135/
-        B-0137/B-0141/B-0142)
+      Type theory / formal verification (081KQGDBJ0008QG0R0032X1MMC/081KQGDBJ0008QG0R0035M1YRC/081KQGDBJ0008QG0R002X4AFA0/
+        081KQGDBJ0008QG0R003NDQTBM/081KQGDBJ0008QG0R0015RNK3P/081KQGDBJ0008QG0R002WY918J)
         v instantiates
       Class taxonomy / pattern catalog (v2 catalog + SRE
         traditions)
@@ -646,26 +646,26 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
-- `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - `docs/hygiene-history/ticks/2026/05/01/1344Z.md`
 
 **Message:**
 
 ```
-hygiene(backlog-index + tick-history): 2026-05-01T13:44Z — fix B-0144…
+hygiene(backlog-index + tick-history): 2026-05-01T13:44Z — fix 081KQGDBJ0008QG0R0021E8YZV…
 
-…/B-0145 frontmatter schema + regenerate BACKLOG.md (CI caught the mismatch)
+…/081KQGDBJ0008QG0R000RWAA67 frontmatter schema + regenerate BACKLOG.md (CI caught the mismatch)
 
-CI's backlog-index-integrity check on PR #1116 caught that B-0144
-and B-0145 used the wrong frontmatter schema (name/type/owner/
+CI's backlog-index-integrity check on PR #1116 caught that 081KQGDBJ0008QG0R0021E8YZV
+and 081KQGDBJ0008QG0R000RWAA67 used the wrong frontmatter schema (name/type/owner/
 related instead of id/status/title/created/last_updated per
 tools/backlog/generate-index.sh validation).
 
 Fix:
-- B-0144: frontmatter rewritten to id/priority/status/title/
+- 081KQGDBJ0008QG0R0021E8YZV: frontmatter rewritten to id/priority/status/title/
   created/last_updated form
-- B-0145: same
+- 081KQGDBJ0008QG0R000RWAA67: same
 - docs/BACKLOG.md regenerated via BACKLOG_WRITE_FORCE=1 bash
   tools/backlog/generate-index.sh; --check confirms the file
   matches generator output
@@ -690,7 +690,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0146): formal architecture ladder — explicit-layer-declarat…
+backlog(081KQGDBJ0008QG0R003VHD3KZ): formal architecture ladder — explicit-layer-declarat…
 
 …ion discipline (Aaron 2026-05-01 follow-up)
 
@@ -709,8 +709,8 @@ sit on the formal-architecture ladder:
 
 Acceptance criteria: schema extension in tools/backlog/generate-
 index.sh, by-layer view in docs/BACKLOG.md, one-time backfill PR
-adding `layer:` to existing formal-foundations rows (B-0136 -> 1,
-B-0134/B-0133/B-0135/B-0137 -> 2, B-0130 -> 5, this row -> 5),
+adding `layer:` to existing formal-foundations rows (081KQGDBJ0008QG0R0029JMJWE -> 1,
+081KQGDBJ0008QG0R0032X1MMC/081KQGDBJ0008QG0R0035M1YRC/081KQGDBJ0008QG0R002X4AFA0/081KQGDBJ0008QG0R003NDQTBM -> 2, 081KQGDBJ0008QG0R002Y31XJ3 -> 5, this row -> 5),
 optional gap-detection report.
 
 Out of scope: auto-classification (research task), cross-row
@@ -726,7 +726,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
 - `docs/hygiene-history/ticks/2026/05/01/1344Z.md`
 - `memory/feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
 
@@ -746,7 +746,7 @@ Addresses 6 unresolved review threads on PR #1116:
     terse line each.
 
 (2) Wildcard memory-filename refs (`feedback_*_*.md`) replaced.
-    B-0144 line 111: concrete filename. Reproducibility-first
+    081KQGDBJ0008QG0R0021E8YZV line 111: concrete filename. Reproducibility-first
     memory file line 78: descriptive prose pointing at sibling
     file in same PR.
 
@@ -754,12 +754,12 @@ Addresses 6 unresolved review threads on PR #1116:
     corrected to "8 files, 1887 insertions" (includes this
     tick's frontmatter-fix + tick-shard).
 
-(4) B-0144 + B-0145 P0 frontmatter threads — already fixed in
+(4) 081KQGDBJ0008QG0R0021E8YZV + 081KQGDBJ0008QG0R000RWAA67 P0 frontmatter threads — already fixed in
     commit 10b240f (id/priority/status/title/created/
     last_updated schema). Schema verified correct on this branch
     head. Threads can be resolved as Outdated-thread-class.
 
-Files: memory/MEMORY.md (two entries tightened); B-0144 (one
+Files: memory/MEMORY.md (two entries tightened); 081KQGDBJ0008QG0R0021E8YZV (one
 wildcard); reproducibility-first memory (one wildcard);
 tick-shard 1344Z (file-count).
 
@@ -770,7 +770,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 - `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
 - `memory/feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
 
@@ -783,7 +783,7 @@ threads(#1116): MD032 + line-leading-+ markdownlint fixes (CI lint fa…
 
 Three line-leading-`+` markdownlint MD032 violations fixed:
 
-- B-0145 line 204: "+ output-template + first forward-radar"
+- 081KQGDBJ0008QG0R000RWAA67 line 204: "+ output-template + first forward-radar"
   reflowed to comma-list "role-definition, cadence-schedule,
   output-template, and first forward-radar memo"
 - memory/feedback_parallelism_scaling_ladder_*.md line 36:
@@ -821,7 +821,7 @@ hygiene(rebase): regenerate docs/BACKLOG.md after rebase onto main (P…
 
 …R #1118 merged)
 
-PR #1118 merged into main, bringing B-0152 into the backlog.
+PR #1118 merged into main, bringing 081KQGDBJ0008QG0R00280ZEV2 into the backlog.
 Rebased this branch onto new main; BACKLOG.md regenerated from
 per-row files via `BACKLOG_WRITE_FORCE=1 bash
 tools/backlog/generate-index.sh`. --check confirms match.
@@ -833,13 +833,13 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
-- `docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R0021E8YZV-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md`
 
 **Message:**
 
 ```
-threads(#1116): code-tree paths + bare memory refs + B-0141/B-0142 fo…
+threads(#1116): code-tree paths + bare memory refs + 081KQGDBJ0008QG0R0015RNK3P/081KQGDBJ0008QG0R002WY918J fo…
 
 …rward-ref framing (copilot review of c6f3659)
 
@@ -848,20 +848,20 @@ Three real-fix issues from copilot review:
 (1) Stale code-tree path patterns: `Zeta.Core/**` / `Zeta.*/**`
     don't match the actual repo layout (code lives under
     `src/Core/`, `src/Core.CSharp/`, `src/Bayesian/`).
-    Replaced 3 occurrences across B-0144 (lines 17, 49) +
-    B-0145 (line 53) with the correct concrete paths.
+    Replaced 3 occurrences across 081KQGDBJ0008QG0R0021E8YZV (lines 17, 49) +
+    081KQGDBJ0008QG0R000RWAA67 (line 53) with the correct concrete paths.
 
 (2) Bare memory-file refs: copilot caught references like
     `feedback_*.md` and `project_*.md` without `memory/`
     prefix, inconsistent with other backlog rows. Sed-batch
-    fixed all 6+ refs across B-0144 + B-0145 to use
+    fixed all 6+ refs across 081KQGDBJ0008QG0R0021E8YZV + 081KQGDBJ0008QG0R000RWAA67 to use
     `memory/<file>.md` form (Composes-with lists +
     body-text refs).
 
-(3) B-0141 + B-0142 cited as if existing but neither has a
+(3) 081KQGDBJ0008QG0R0015RNK3P + 081KQGDBJ0008QG0R002WY918J cited as if existing but neither has a
     file under `docs/backlog/**` and neither appears in
-    BACKLOG.md. Reframed B-0144 reference to "B-0130 ... plus
-    B-0141 (pre/post pattern) and B-0142 (Code Contracts
+    BACKLOG.md. Reframed 081KQGDBJ0008QG0R0021E8YZV reference to "081KQGDBJ0008QG0R002Y31XJ3 ... plus
+    081KQGDBJ0008QG0R0015RNK3P (pre/post pattern) and 081KQGDBJ0008QG0R002WY918J (Code Contracts
     revival) WHEN THEY LAND" — explicit forward-ref framing.
 
 Lesson candidate: bare-memory-ref vs memory/-prefix is a
@@ -883,7 +883,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-threads(#1116): final Zeta.Core ref + B-0141/B-0142 not-yet-filed ann…
+threads(#1116): final Zeta.Core ref + 081KQGDBJ0008QG0R0015RNK3P/081KQGDBJ0008QG0R002WY918J not-yet-filed ann…
 
 …otations (copilot 3rd review pass)
 
@@ -893,13 +893,13 @@ Five P1 findings from copilot's third review pass:
     reference in flowing prose updated to concrete current
     paths (`src/Core/**`, `src/Core.CSharp/**`, `src/Bayesian/**`).
 
-(2-5) B-0141 / B-0142 cited as IF-existing in:
+(2-5) 081KQGDBJ0008QG0R0015RNK3P / 081KQGDBJ0008QG0R002WY918J cited as IF-existing in:
     - parallelism-ladder memory (4 occurrences, sed batch
       annotated as "(not yet filed)")
     - reproducibility-first memory (1 occurrence in formal-
       foundations layer list, manually annotated as "with
-      B-0141 + B-0142 to be filed in follow-up PRs")
-    - B-0144 line 132 (already says "when they land" from
+      081KQGDBJ0008QG0R0015RNK3P + 081KQGDBJ0008QG0R002WY918J to be filed in follow-up PRs")
+    - 081KQGDBJ0008QG0R0021E8YZV line 132 (already says "when they land" from
       prior tick; thread is technically resolved-by-prior-fix
       but copilot re-flagged on this review pass — outdated)
 
@@ -927,8 +927,8 @@ hygiene(rebase): regenerate docs/BACKLOG.md after rebase onto main (P…
 …R #1117 merged)
 
 PR #1117 (timeseries-DB + dependency-priority + metrics-are-
-our-eyes substrate) merged into main, bringing B-0147 + B-0148
-+ B-0149 + B-0150 + B-0151 into the backlog. Rebased this
+our-eyes substrate) merged into main, bringing 081KQGDBJ0008QG0R0004ACHJJ + 081KQGDBJ0008QG0R002175ECA
++ 081KQGDBJ0008QG0R0035TQVBQ + 081KQGDBJ0008QG0R003PZFA49 + 081KQGDBJ0008QG0R003G89BKR into the backlog. Rebased this
 branch onto new main; BACKLOG.md regenerated from per-row
 files via `BACKLOG_WRITE_FORCE=1 bash tools/backlog/
 generate-index.sh`. --check confirms match.

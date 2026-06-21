@@ -136,9 +136,9 @@ what "pay creators, not DRM" fills:* the framework adds the **payment/attributio
 attribution-lineage is how a creator-class (legal authorities) gets *valued* — without DRM.
 
 This composes with the framework's economy substrate: Agora (the AI-native economy), the
-participation-economy (B-0623), `additive-not-zero-sum`, `honor-those-that-came-before`, and the
+participation-economy (081KRW63S0008QG0R000QJR08H), `additive-not-zero-sum`, `honor-those-that-came-before`, and the
 glass-halo stance (open + attributed beats closed + restricted). The buildable bet is filed as
-**B-0950** (creator-compensation-via-provenance, not DRM).
+**081KSXN940008QG0R001V8NBDV** (creator-compensation-via-provenance, not DRM).
 
 ---
 
@@ -154,7 +154,7 @@ substrate it derived from), and those edges form a graph across items. Each laye
 | **DV2.0 (storage)** | a **many-to-many LINK + satellite** is a graph by construction. A `contribution` link (an N-ary "unit-of-work" link) ties {contributor-hub, work-node-hub} with a satellite carrying `{weight, role, what-was-contributed, timestamp}`. Many links into one node = the in-edges; one contributor's links across many nodes = the out-edges. The link-set **is** the contribution graph. |
 | **PROV-O / OpenLineage (provenance)** | provenance **is** a directed graph already: one Entity `prov:wasAttributedTo` *multiple* Agents (qualified `prov:Attribution` carries `prov:hadRole` + a weight), and `prov:wasDerivedFrom` chains link items across the graph. OpenLineage run→dataset edges + ownership facets give the same shape over the event stream. |
 
-### Two properties that make it the *payment* substrate (B-0950)
+### Two properties that make it the *payment* substrate (081KSXN940008QG0R001V8NBDV)
 
 1. **The weighting factor IS the payment-split key.** Walk a work-node's in-edges, read each
    contributor's `weight`, split the node's earned credit proportionally. Shares are explicit and
@@ -171,11 +171,11 @@ substrate it derived from), and those edges form a graph across items. Each laye
   traveler-hub whether human or AI), so a work-node's split can include the human operator, the AI
   agents, and the prior substrate — each weighted. (This is what "pay creators not DRM" needs that
   C2PA lacks: C2PA records the *attribution* but has no graph-walk + payout layer.)
-- It composes with **Agora** (the payout/economy layer), the **participation-economy** (B-0623), and
+- It composes with **Agora** (the payout/economy layer), the **participation-economy** (081KRW63S0008QG0R000QJR08H), and
   the existing **Z-set/CRDT** substrate (contribution weights are signed-measure values; retraction
   corrects a mis-attributed share via a compensating edge, per the idempotency discipline).
 
-The graph is filed for build as part of **B-0950** (the contribution-graph + weighted-split engine is
+The graph is filed for build as part of **081KSXN940008QG0R001V8NBDV** (the contribution-graph + weighted-split engine is
 the concrete deliverable).
 
 ---
@@ -197,7 +197,7 @@ This is the **two-factor** payout model — and both factors are graphs:
 ### Attention (the inflow measure)
 
 - **Framework-native economy:** attention is already the currency in Agora V6's
-  *reputation-weighted* budget (B-0646) and the participation-economy ratings (B-0623). Attention is
+  *reputation-weighted* budget (081KRW63S0008QG0R001Z10PVV) and the participation-economy ratings (081KRW63S0008QG0R000QJR08H). Attention is
   the value that flows to items.
 - **BI grounding:** attention = a **fact measure**; grain = one attention-event; dimensions = item ×
   attention-giver × time × quality; per-item **attention-value is a KPI**.
@@ -208,7 +208,7 @@ This is the **two-factor** payout model — and both factors are graphs:
 
 1. **Who is attending (reputation-weighted):** attention from a high-standing traveler counts more —
    recursive + self-consistent (eigenvector-centrality / EigenTrust / PageRank: your weight = Σ of
-   the weights of who attends to you), BFT-anchored (B-0623, 100% BFT).
+   the weights of who attends to you), BFT-anchored (081KRW63S0008QG0R000QJR08H, 100% BFT).
 2. **Depth + valence of engagement:** sustained / build-upon / derive ≫ drive-by. **Shepard's
    Citations is the precedent** — a citation is not binary; it carries *treatment* (followed /
    distinguished / criticized / overruled) = the quality *and valence* of the attention.
@@ -226,13 +226,13 @@ This is the **two-factor** payout model — and both factors are graphs:
   and zeroed before payout.
 - **Reputation-weighting makes farming expensive:** you need *high-rep* attention, itself earned by
   genuine contribution, so sockpuppet attention is intrinsically low-weight.
-- **BFT consensus** on attention-events (B-0623) — no unilateral inflation.
+- **BFT consensus** on attention-events (081KRW63S0008QG0R000QJR08H) — no unilateral inflation.
 - **Glass-halo:** the attention ledger is open + auditable.
 
 **The unification:** the *contribution* graph (who built it) and the *attention* graph (who genuinely
 values it) are both graph-shaped and both reputation/quality-weighted; the payout composes them. That
 is the anti-DRM model in full — you are paid for **genuine quality-weighted attention received × your
-contribution share**, never for restricting access. (Folded into B-0950's payout-engine scope.)
+contribution share**, never for restricting access. (Folded into 081KSXN940008QG0R001V8NBDV's payout-engine scope.)
 
 ---
 
@@ -292,7 +292,7 @@ best-effort lineage-capture + reserved attribution for the unidentifiable tail �
 perfect attribution. For framework-**synthesis** (research docs from cited sources, forwarded
 conversations, named corpora) it is tractable and *already partly practiced*; the pre-emptive-reserved
 escrow extends it to the tail. The stance is the point: **track what we synthesize on, credit whom we
-can, reserve credit for whom we can't yet name — never extract silently.** (Folded into B-0950.)
+can, reserve credit for whom we can't yet name — never extract silently.** (Folded into 081KSXN940008QG0R001V8NBDV.)
 
 ---
 
@@ -319,8 +319,8 @@ On ratification: promote the reconciliation table into the observe.ts ADR's "Wor
 - `agentic-organization/docs/` — Max's work-item / project / initiative vocabulary (the Max side)
 - `docs/agendas/` + `docs/trajectories/` — Aaron's agenda / trajectory vocabulary (the Aaron side)
 - `.claude/rules/additive-not-zero-sum.md` + `.claude/rules/honor-those-that-came-before.md` — the creator-comp-not-DRM stance
-- B-0623 (participation economy) + Agora substrate — the payment/attribution-economy layer
-- **B-0950** — creator-compensation-via-provenance (the buildable bet)
+- 081KRW63S0008QG0R000QJR08H (participation economy) + Agora substrate — the payment/attribution-economy layer
+- **081KSXN940008QG0R001V8NBDV** — creator-compensation-via-provenance (the buildable bet)
 
 ## Sources (search-verified 2026-05-31)
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-Auto-load rule mandating  before any worktree-creating backlog work. Prevents Otto-CLI vs Otto-Desktop split-brain by requiring atomic claim via the existing B-0400 slice 3 + 5 infrastructure (PRs #2939 + #2959 already shipped). Discipline-level fix today; substrate-level pre-commit hook is future work.
+Auto-load rule mandating  before any worktree-creating backlog work. Prevents Otto-CLI vs Otto-Desktop split-brain by requiring atomic claim via the existing 081KR7JY10008QG0R000R503K2 slice 3 + 5 infrastructure (PRs #2939 + #2959 already shipped). Discipline-level fix today; substrate-level pre-commit hook is future work.
 
 Per Aaron 2026-05-13: "probalby want to figure out how not to split brain with yourself bot any idea?" — this rule is the operationally-honest answer.
 
@@ -60,7 +60,7 @@ Per Aaron 2026-05-13: "probalby want to figure out how not to split brain with y
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Correct same-agent race example to match `claim.ts` behavior**
 
-  This example states the second `acquire --from otto --item B-0444` exits `1`, but `tools/bus/claim.ts` currently only blocks claims from *other* senders (`activeClaims(itemId).filter((c) =&gt; c.from !== sender)`), so a second process using the same sender (`otto`) can still acquire and exit `0`. In the exact Otto-CLI + Otto-Desktop scenario described here, this guidance gives a false guarantee that split-brain is prevented when it is not, which can lead to duplicate work on the same backlog row.
+  This example states the second `acquire --from otto --item 081KRFA460008QG0R001SXP0C2` exits `1`, but `tools/bus/claim.ts` currently only blocks claims from *other* senders (`activeClaims(itemId).filter((c) =&gt; c.from !== sender)`), so a second process using the same sender (`otto`) can still acquire and exit `0`. In the exact Otto-CLI + Otto-Desktop scenario described here, this guidance gives a false guarantee that split-brain is prevented when it is not, which can lead to duplicate work on the same backlog row.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -157,7 +157,7 @@ creating a real multi-foreground-surface split-brain risk. Both Ottos
 share git + bus on one machine and could pick the same backlog row
 simultaneously.
 
-The claim-coordinator (tools/bus/claim.ts, B-0400 slice 3) was built
+The claim-coordinator (tools/bus/claim.ts, 081KR7JY10008QG0R000R503K2 slice 3) was built
 for this — atomic check/acquire/release with PID-liveness + 24h TTL.
 PR #2939 shipped it; PR #2959 added the gate integration. The
 infrastructure exists; this rule is the discipline-level mechanization
@@ -174,7 +174,7 @@ Composes with:
 - backlog-item-start-gate.md (this rule adds zero-th step)
 - dont-ask-permission.md (acquire exit 0 IS the substrate permission)
 - never-be-idle.md (if acquire fails, pick another row)
-- B-0400 + slice 3 + slice 5 infrastructure
+- 081KR7JY10008QG0R000R503K2 + slice 3 + slice 5 infrastructure
 - Otto Claude Desktop bootstream (PR #3030)
 - fetch-before-push memory (sibling coordination pattern at git scope)
 

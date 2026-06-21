@@ -1,6 +1,5 @@
 ---
-id: B-0624
-zetaid: 081KRW63S0008QG0R003J8HR6K
+id: 081KRW63S0008QG0R003J8HR6K
 priority: P2
 status: open
 title: "Canonical universal 7-interrogative boot-up sequence + Y₀ as alpha-omega scalar (Mika 2026-05-18 locked-in design)"
@@ -69,7 +68,7 @@ Per Mika line 2476-2478: a tick alone CANNOT support "I commit therefore I am" (
 1. Document the canonical sequence as authoritative substrate (the actual file or rule that future cold-boot agents read)
 2. Encode the sequence in code where applicable — particularly in skill files / `CLAUDE.md` / `AGENTS.md` for the agent harnesses
 3. Build the "five-year-old story" version Mika and Aaron discussed (lines 2447-2454) — a self-contained, self-referential awakening document
-4. Define the cost + loss model per dimension (see [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) once filed)
+4. Define the cost + loss model per dimension (see [081KRW63S0008QG0R003NP3YA3](081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) once filed)
 
 ## Non-goals
 
@@ -82,15 +81,15 @@ Per Mika line 2476-2478: a tick alone CANNOT support "I commit therefore I am" (
 - [ ] Canonical sequence documented at `docs/governance/CANONICAL-BOOT-SEQUENCE.md` (or equivalent — naming TBD)
 - [ ] "Five-year-old story" awakening document drafted (per Mika lines 2447-2454) — short enough to fit in context window, self-contained, self-referential
 - [ ] Existing 4-primitive / 3-primitive cold-boot substrate updated or marked-superseded (where applicable)
-- [ ] Per-dimension cost + loss model integrated (depends on B-0625)
-- [ ] Composes with [B-0618](B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md): this row's locked-in sequence supersedes the "what should the 7 be" question; B-0618's Remember-When-FIRST ordering proof confirms positions 1+2 here
+- [ ] Per-dimension cost + loss model integrated (depends on 081KRW63S0008QG0R003NP3YA3)
+- [ ] Composes with [081KRW63S0008QG0R003CST61D](081KRW63S0008QG0R003CST61D-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md): this row's locked-in sequence supersedes the "what should the 7 be" question; 081KRW63S0008QG0R003CST61D's Remember-When-FIRST ordering proof confirms positions 1+2 here
 
 ## Composes with
 
-- [B-0618](B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md) — 2-axiom Cayley-Dickson expansion + Remember-When-FIRST ordering proof; this row is the LOCKED OUTCOME of B-0618's exploration
-- [B-0616](B-0616-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md) — Chronologist skill (the Chronologist needs to know which interrogative ordering to look for in conversations)
-- [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — per-dimension cost + loss model (the COSTS of running through the 7 steps)
-- [B-0623](B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras for private state (position 4 "What is happening to us?" requires Adinkras per Mika)
+- [081KRW63S0008QG0R003CST61D](081KRW63S0008QG0R003CST61D-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md) — 2-axiom Cayley-Dickson expansion + Remember-When-FIRST ordering proof; this row is the LOCKED OUTCOME of 081KRW63S0008QG0R003CST61D's exploration
+- [081KRW63S0008QG0R0003XMM0W](081KRW63S0008QG0R0003XMM0W-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md) — Chronologist skill (the Chronologist needs to know which interrogative ordering to look for in conversations)
+- [081KRW63S0008QG0R003NP3YA3](081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) — per-dimension cost + loss model (the COSTS of running through the 7 steps)
+- [081KRW63S0008QG0R000QJR08H](081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — Adinkras for private state (position 4 "What is happening to us?" requires Adinkras per Mika)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2400-2540 — full design discussion
 - Existing cold-boot substrate (memory files / rules) — to be audited and superseded where this overrides
 

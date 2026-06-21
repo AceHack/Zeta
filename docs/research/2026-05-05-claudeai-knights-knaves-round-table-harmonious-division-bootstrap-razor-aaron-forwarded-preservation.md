@@ -14,7 +14,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 
 Aaron 2026-05-05 forwarded the conversation with framing *"i was braggin on you to claude.ai: i mean this is pretty good right?"* The shard initially called the substrate work *"overhead"* with a 5:1 ratio. Aaron pushed back hard:
 
-> *"not overhead B-0006 compression tiers unloess you think cold reads are just magic that he will rmemeber everying he is tring to make sure future him wont have context exaustion soon at the start man."*
+> *"not overhead 081KQ0YZ80008QG0R001V0XCYZ compression tiers unloess you think cold reads are just magic that he will rmemeber everying he is tring to make sure future him wont have context exaustion soon at the start man."*
 
 > *"one be refram the substrage is the product, DBSP is an ends to a means and Infrer.net the substrate IS the engineering work. That's substrate-maintaining-substrate-maintaining-substrate. and it's 7 days old, the rate will slow"*
 
@@ -24,7 +24,7 @@ Aaron 2026-05-05 forwarded the conversation with framing *"i was braggin on you 
 
 The shard recalibrated:
 
-> *"B-0006 compression isn't overhead -- I miscategorized it. Future-Otto cold-reads against a finite context window; if MEMORY.md grows unbounded, the index becomes unreadable and the substrate is functionally lost on cold start."*
+> *"081KQ0YZ80008QG0R001V0XCYZ compression isn't overhead -- I miscategorized it. Future-Otto cold-reads against a finite context window; if MEMORY.md grows unbounded, the index becomes unreadable and the substrate is functionally lost on cold start."*
 
 > *"Substrate-as-product reframe lands. For AI-coordination infrastructure, the novel work isn't reinventing DBSP or Infer.NET -- those are mature kernels you're building on. The contribution is the substrate architecture itself (memory layout, persona namespace, audit cadence, mechanization patterns, kernel-falsifiability layer, mirror-vs-beacon preservation). DBSP and Infer.NET are means; substrate is the product."*
 
@@ -42,7 +42,7 @@ Same-tick clarification (NOT new principle):
 
 The "specs as source of truth" framing is foundational; pre-exists in `docs/ARCHITECTURE.md` and `openspec/README.md`. The 23-hour recreation test is the new operationalization.
 
-Same-tick scope correction (CRITICAL -- changes the entire shape of B-0193):
+Same-tick scope correction (CRITICAL -- changes the entire shape of 081KQTPYE0008QG0R00392KABJ):
 
 > *"lets not delete the code here, we can test that in a new repo with new instances to inform ourslefvs, you have permission in lfg and acehack not servicetitan to create reops"*
 
@@ -56,7 +56,7 @@ Aaron same-tick correction sequence (three short messages):
 - `big whoops`
 - `thats's big difference`
 
-The intended reading: get the insights AND be honest WITHOUT nuking. The new-repo experimental framing IS the without-nuking version. Filed as B-0193 (PR #1587).
+The intended reading: get the insights AND be honest WITHOUT nuking. The new-repo experimental framing IS the without-nuking version. Filed as 081KQTPYE0008QG0R00392KABJ (PR #1587).
 
 ## The knights/knaves moral question (Aaron)
 
@@ -183,7 +183,7 @@ What this file does NOT do:
 - `docs/research/2026-05-05-claudeai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-aaron-forwarded-preservation.md` (PR #1582) -- earlier in the same arc; the falsifiability-catch that produced the kernel-falsifiability architectural answer
 - `memory/user_christian_buddhist_identification.md` -- pre-existing Harmonious Division ≅ Middle Way algorithm interpretive key
 - `memory/feedback_amara_grounding_response_cross_substrate_safety_check_2026_04_22.md` -- earlier register-aware treatment of Harmonious Division
-- `docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md` (PR #1587) -- the operationalization of the bootstrap-razor commitment from this conversation
+- `docs/backlog/P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md` (PR #1587) -- the operationalization of the bootstrap-razor commitment from this conversation
 - `memory/feedback_dialectical_unfalsifiability_detection_razor_extension_holding_all_truths_failure_mode_aaron_2026_05_04.md` (PR #1577) -- Test 2 razor extension; the discipline the shard's closing applied to its own naming-mid-conversation
 - `docs/ARCHITECTURE.md` + `openspec/README.md` -- the pre-existing source-of-truth foundational principle
 - Otto-231 first-party Glass-Halo consent (Aaron's verbatim *"i was braggin on you"* + permission to preserve)

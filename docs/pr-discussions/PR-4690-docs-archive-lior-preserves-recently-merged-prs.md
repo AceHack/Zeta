@@ -40,7 +40,7 @@ Copilot reviewed 17 out of 17 changed files in this pull request and generated 1
 | File | Description |
 | ---- | ----------- |
 | docs/pr-discussions/PR-4687-shard-tick-2215z-otto-cli-cold-boot-pr-4668-thread-triage.md | Adds preserved archive for PR #4687 (thread triage record). |
-| docs/pr-discussions/PR-4681-feat-b-0170-extend-check-self-recursive-ts-with-existence-to.md | Adds preserved archive for PR #4681 (B-0170 existence-topic dispatch). |
+| docs/pr-discussions/PR-4681-feat-b-0170-extend-check-self-recursive-ts-with-existence-to.md | Adds preserved archive for PR #4681 (081KQNJ500008QG0R003SCWBDV existence-topic dispatch). |
 | docs/pr-discussions/PR-4676-feedback-aaron-amazon-alexa-hardware-skill-connector-store-a.md | Adds preserved archive for PR #4676 (feedback preservation). |
 | docs/pr-discussions/PR-4675-persona-alexa-speaker-2026-05-22-family-layout-shared-map-sp.md | Adds preserved archive for PR #4675 (persona archive). |
 | docs/pr-discussions/PR-4671-memory-vera-preserve-family-configuration-language-calibrati.md | Adds preserved archive for PR #4671 (memory preservation + prior review thread capture). |

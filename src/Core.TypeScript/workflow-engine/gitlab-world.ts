@@ -1,9 +1,9 @@
 // src/Core.TypeScript/workflow-engine/gitlab-world.ts
 //
-// B-0867.15 — GitLabWorld per-host adapter PoC.
+// 081KSNY2Z0008QG0R002A785QR — GitLabWorld per-host adapter PoC.
 //
 // Aaron 2026-05-28 lane-status framing: workflow-engine substrate Lane 2
-// (GitHub accelerator/workflow). B-0867.15 names per-host adapters
+// (GitHub accelerator/workflow). 081KSNY2Z0008QG0R002A785QR names per-host adapters
 // extending PR #5775's GitWorld → GitHubWorld specialization hierarchy
 // to GitLab + Gitea + Bitbucket + Codeberg + Sourcehut.
 //
@@ -16,7 +16,7 @@
 // Composes with:
 // - PR #5775 git-world.ts (GitWorld base + GitHubWorld first specialization)
 // - PR #5776 world-hierarchy.ts (Clifford → DBSP → Git → forge-specific)
-// - B-0867.15 backlog row (per-host adapters target)
+// - 081KSNY2Z0008QG0R002A785QR backlog row (per-host adapters target)
 // - .claude/rules/asymmetric-authorship (per-forge feedback variants substrate-entity-authored)
 // - .claude/rules/monad-propagation (Result<T, GitLabFeedback> shape)
 
@@ -110,7 +110,7 @@ export function gitLabRateLimitTier(remaining: number): GitLabRateLimitTier {
  * GitLabWorld — specialization of GitWorld for GitLab forge.
  *
  * Per Aaron 2026-05-28 lane-status framing (Lane 2 GitHub accelerator):
- * B-0867.15 names per-host adapters as extension target. GitLabWorld is
+ * 081KSNY2Z0008QG0R002A785QR names per-host adapters as extension target. GitLabWorld is
  * the first concrete adapter beyond GitHubWorld; demonstrates the
  * pattern that GiteaWorld + BitbucketWorld + CodebergWorld + SourcehutWorld
  * follow.

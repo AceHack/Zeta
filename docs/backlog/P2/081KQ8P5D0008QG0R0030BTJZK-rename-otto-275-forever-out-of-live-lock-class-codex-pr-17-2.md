@@ -1,6 +1,5 @@
 ---
-id: B-0071
-zetaid: 081KQ8P5D0008QG0R0030BTJZK
+id: 081KQ8P5D0008QG0R0030BTJZK
 priority: P2
 status: open
 title: Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
@@ -13,7 +12,7 @@ tags: [substrate-rename, taxonomy, live-lock, otto-352, memory-hygiene]
 type: friction-reducer
 ---
 
-# B-0071 — Rename `feedback_otto_275_forever_manufactured_patience_live_lock_9th_pattern_2026_04_26.md`
+# 081KQ8P5D0008QG0R0030BTJZK — Rename `feedback_otto_275_forever_manufactured_patience_live_lock_9th_pattern_2026_04_26.md`
 
 ## Source
 

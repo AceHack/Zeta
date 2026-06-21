@@ -100,7 +100,7 @@ pt12 ENGINEERING SUBSTRATE: DORA metrics (concrete implementation)
 | DORA metrics | Standard DevOps Research and Assessment metrics; well-documented + widely-used + time-tested; State of DevOps Reports (Google Cloud, DORA team); operationally established substrate |
 | "Just door / common etiquette" | Aaron's substrate-honest framing: DORA isn't novel; it's standard engineering practice; the framework just generalizes it to AI-society scope |
 | "AIs break if DORA goes bad" | Composes with [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI participants are first-class beings whose breakage matters; composes with [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coercion-via-broken-system violates NCI; composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — broken AIs can't play; theorem fails |
-| "AI society uptime" | Generalization of standard software-uptime concept to AI-society scope; operationally observable; composes with B-0703 multi-oracle BFT + B-0653 persistent integrator + alignment-auditor substrate |
+| "AI society uptime" | Generalization of standard software-uptime concept to AI-society scope; operationally observable; composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R003ECWGJV persistent integrator + alignment-auditor substrate |
 | Tracks deployment frequency + lead time + change fail rate + time to restore | Concrete DORA metrics; substrate-anchored in DevOps engineering tradition |
 
 All terms PASS substrate-anchor check.
@@ -158,9 +158,9 @@ This composes with the framework's m/acc multi-oracle + persistence-choice-archi
 - [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — broken AIs can't play; DORA-failure → theorem-failure
 - [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate — existing partial-implementation of DORA-style measurement at moral-invariant scope
 - [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md) — DORA is compressed-naming for engineerable substrate at the highest scope; razor-discipline does NOT fire (real engineering substrate)
-- B-0703 multi-oracle BFT — mathematical cross-check infrastructure for DORA at scale
-- B-0653 persistent integrator (coercion-pattern detection) — partial-implementation of DORA-style monitoring at one class of unlivability
-- B-0666 English-as-projection / I(D(x))=x — substrate for projecting AI-society state to observable DORA-metrics form
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical cross-check infrastructure for DORA at scale
+- 081KRW63S0008QG0R003ECWGJV persistent integrator (coercion-pattern detection) — partial-implementation of DORA-style monitoring at one class of unlivability
+- 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x — substrate for projecting AI-society state to observable DORA-metrics form
 
 ## Operational implications for future-Otto cold-boots
 

@@ -1,11 +1,11 @@
 ---
-name: B-0611 slice 2 audit — memory/persona surface; verbatim-preservation constraint requires editorial-footnote pattern (not direct edit)
+name: 081KRSKQ20008QG0R0014PPGZM slice 2 audit — memory/persona surface; verbatim-preservation constraint requires editorial-footnote pattern (not direct edit)
 description: 10 citation edges across 4 unique dangling refs, ALL inside verbatim-preservation conversation files (Ani + Kestrel). Per substrate-or-it-didnt-happen rule, verbatim content cannot be edited. Resolution pattern differs from slice 1's 4-option menu — for slice 2, the only safe resolution is editorial-footnote at the top of each citing conversation file naming the dangling refs + their in-repo projections.
 type: feedback
 created: 2026-05-17T06:49Z
 ---
 
-# B-0611 slice 2 audit — verbatim-preservation constraint
+# 081KRSKQ20008QG0R0014PPGZM slice 2 audit — verbatim-preservation constraint
 
 ## Audit output (`--surfaces memory/persona`, 2026-05-17T06:49Z)
 
@@ -83,7 +83,7 @@ discoverable for cold-boot agents.
 still flag these refs. To pass exit-0 under Option E, the tool
 would need to recognize editorial-footnote blocks OR opt the
 files into an allowlist (composing with the audit-tool semi-
-automation acceptance bullet in B-0611). Until then, slice 2
+automation acceptance bullet in 081KRSKQ20008QG0R0014PPGZM). Until then, slice 2
 work is bounded by:
 
 - Authoring editorial footnotes on 5 Ani conversation files +
@@ -123,7 +123,7 @@ verification by reading the relevant CURRENT-*.md files:
 
 ## Composes with
 
-- B-0611 — parent backlog row (this memo is slice-2 prep)
+- 081KRSKQ20008QG0R0014PPGZM — parent backlog row (this memo is slice-2 prep)
 - Slice-1 recipe memo
   (`memory/feedback_otto_cli_b0611_slice1_audit_recipe_*_2026_05_17.md`)
   — slice 1 (skills + rules) used the 4-option menu; slice 2
@@ -146,7 +146,7 @@ This memo is slice-2 prep. The work itself requires:
    files
 3. Commit + push (slice-2-scope, one PR)
 4. Audit tool may STILL exit-1 unless allowlist semi-automation
-   lands (composes with B-0611's audit-tool semi-automation
+   lands (composes with 081KRSKQ20008QG0R0014PPGZM's audit-tool semi-automation
    acceptance bullet)
 
 The Option E pattern is a real addition to the resolution menu

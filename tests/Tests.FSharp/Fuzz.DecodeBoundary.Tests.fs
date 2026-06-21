@@ -9,17 +9,17 @@ open FsCheck.Xunit
 open Zeta.Core
 
 // ═══════════════════════════════════════════════════════════════════
-// B-1018 — serializer hostile-input safety: the `from*` decode boundary fuzz harness.
+// 081KT7YW00008QG0R0019J8FSX — serializer hostile-input safety: the `from*` decode boundary fuzz harness.
 // Existing proofs cover CORRECTNESS ON VALID input (round-trip / injectivity / canonicality).
 // This is SAFETY ON HOSTILE input — where memory-safe-language CVEs live (DoS, signature
-// bypass). The leg proven here is DECODE TOTALITY (B-1018 leg 1, empirical): every `from*`
+// bypass). The leg proven here is DECODE TOTALITY (081KT7YW00008QG0R0019J8FSX leg 1, empirical): every `from*`
 // decoder terminates and returns `Result` on EVERY input — never throws, never hangs, never
 // OOMs — for random bytes/strings AND for hand-crafted pre-allocation bombs.
 //
 // SCOPE: this is the in-process FsCheck harness (the space proof + valid-input FsCheck don't
 // reach). Coverage-guided out-of-process fuzzing (SharpFuzz/AFL, crash-isolated for the
 // stack-overflow-on-deep-nesting class) + cross-oracle DIFFERENTIAL fuzzing are the heavier
-// follow-up legs noted in B-1018. Depths here are kept conservative so a real decoder bug
+// follow-up legs noted in 081KT7YW00008QG0R0019J8FSX. Depths here are kept conservative so a real decoder bug
 // surfaces as a clean test failure, not a process-killing crash that takes down the suite.
 // ═══════════════════════════════════════════════════════════════════
 

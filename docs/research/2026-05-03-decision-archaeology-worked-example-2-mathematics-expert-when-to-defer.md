@@ -1,12 +1,12 @@
 # Decision-archaeology worked example #2 — the mathematics-expert "When to defer" pattern
 
-> Scope: worked example for the proposed `decision-archaeology` skill (B-0169).
+> Scope: worked example for the proposed `decision-archaeology` skill (081KQJZR90008QG0R002D6XYHB).
 > Attribution: Otto autonomous (the `architect` hat) authored from on-repo
 > evidence; original-decision attribution to the human maintainer per
 > `git blame` on `.claude/skills/mathematics-expert/SKILL.md`.
 > Operational status: research-grade — input to skill-creator's eventual
 > SKILL.md authoring per Aarav's hybrid (b)+(c) routing recommendation
-> on B-0169. Not normative discipline; demonstrative.
+> on 081KQJZR90008QG0R002D6XYHB. Not normative discipline; demonstrative.
 > Non-fusion disclaimer: the procedure walked here is generic
 > decision-archaeology; the substrate paths cited
 > (`.claude/skills/`, `docs/DECISIONS/`, `memory/<persona>/`) are
@@ -28,7 +28,7 @@ notebook (Aarav's), not in commits or docs proper.
 
 ## Why this is a good worked example #2
 
-Aarav's review of B-0169 named this case as one of the 3 worked-example
+Aarav's review of 081KQJZR90008QG0R002D6XYHB named this case as one of the 3 worked-example
 seeds. Three properties make it complementary to worked example #1
 (double-hop abandonment, supersession-archaeology mode):
 
@@ -423,7 +423,7 @@ For the eventual `decision-archaeology` SKILL.md body:
 
 ## Composes with
 
-- **B-0169** — the row this is a worked example for. References this
+- **081KQJZR90008QG0R002D6XYHB** — the row this is a worked example for. References this
   artifact via the `worked-example-seeds` section.
 - **`docs/research/2026-05-02-decision-archaeology-worked-example-1-double-hop-abandonment.md`** —
   worked example #1; pair-companion. Together demonstrate two distinct

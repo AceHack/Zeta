@@ -45,22 +45,22 @@ backlog work:
 ```
 Backlog row B-NNNN
   → decomposed children (sub-tickets, slices, edge cases)
-    → slice-by-slice grind (per Vera's B-0400 multi-slice
+    → slice-by-slice grind (per Vera's 081KR7JY10008QG0R000R503K2 multi-slice
       pattern: slice 1 → slice 2 → ... → slice N)
       → emergent edge cases (Copilot/Codex findings;
         substrate-consistency audits; new error classes)
-        → new backlog rows (CodeQL alerts → B-0430; smoke
+        → new backlog rows (CodeQL alerts → 081KRFA460008QG0R0022THSDJ; smoke
           test gaps → acceptance criterion 4; etc.)
           → back to top of cascade
 ```
 
 Empirical evidence this session (2026-05-13):
 
-- B-0421 closure surfaced B-0430 (CodeQL insecure-tmp-file
+- 081KRA5AR0008QG0R0011ZGRZT closure surfaced 081KRFA460008QG0R0022THSDJ (CodeQL insecure-tmp-file
   across all 8 wrappers)
-- B-0421 acceptance #4 (smoke test) surfaced future acceptance
-  criteria for B-0430
-- B-0402 (Dharma button / shadow observer) decomposed into
+- 081KRA5AR0008QG0R0011ZGRZT acceptance #4 (smoke test) surfaced future acceptance
+  criteria for 081KRFA460008QG0R0022THSDJ
+- 081KR7JY10008QG0R0008NGW95 (Dharma button / shadow observer) decomposed into
   slice 1 (polling loop) via PR #2973; future slices forthcoming
 - Each PR's Copilot review cascade surfaced 3-7 findings,
   each potentially a new edge case substrate

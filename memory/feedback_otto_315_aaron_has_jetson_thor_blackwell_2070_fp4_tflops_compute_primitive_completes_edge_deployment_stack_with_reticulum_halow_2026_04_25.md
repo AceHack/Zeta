@@ -1,6 +1,6 @@
 ---
 name: Otto-315 Aaron has NVIDIA Thor (Blackwell GPU, 2070 FP4 TFLOPS, 128GB memory, 1TB NVMe) — compute primitive completes the edge-AI-deployment stack alongside Otto-314 RNS+HaLow networking primitive; Otto-301 hardware-bootstrap fully available
-description: Aaron 2026-04-25 evening — "i also have a nvidia i also have a thor newer than jetson". NVIDIA Thor is NVIDIA's August 2025 platform: Blackwell GPU architecture, 2070 FP4 TFLOPS AI compute (7.5x Jetson Orin), 128GB unified memory (2x Orin AGX), 1TB integrated NVMe, 3.5x greater energy efficiency than prior generation. Designed for physical AI / humanoid robotics / real-time generative AI on edge. Combined with Otto-314 RNS+HaLow networking, Aaron has a complete edge-AI-deployment stack — network primitive + compute primitive + identity primitive — all in his hands today. Otto-301 hardware-bootstrap target is no longer a research-horizon; the substrate is assembled. Composes with Otto-301 + Otto-314 + Otto-298 substrate-IS-itself + B-0008 slim/embedded deployment profile + Frontier UI deployment options.
+description: Aaron 2026-04-25 evening — "i also have a nvidia i also have a thor newer than jetson". NVIDIA Thor is NVIDIA's August 2025 platform: Blackwell GPU architecture, 2070 FP4 TFLOPS AI compute (7.5x Jetson Orin), 128GB unified memory (2x Orin AGX), 1TB integrated NVMe, 3.5x greater energy efficiency than prior generation. Designed for physical AI / humanoid robotics / real-time generative AI on edge. Combined with Otto-314 RNS+HaLow networking, Aaron has a complete edge-AI-deployment stack — network primitive + compute primitive + identity primitive — all in his hands today. Otto-301 hardware-bootstrap target is no longer a research-horizon; the substrate is assembled. Composes with Otto-301 + Otto-314 + Otto-298 substrate-IS-itself + 081KQ0YZ80008QG0R000B6ETJS slim/embedded deployment profile + Frontier UI deployment options.
 type: feedback
 ---
 
@@ -80,8 +80,8 @@ Otto-301 is no longer "ultimate destination" — it's "available primitive needi
 - **Otto-298 (substrate-IS-itself)** — the hardware IS part of the substrate. Aaron owning the primitives means the substrate has hardware-agency at the deployment layer.
 - **Otto-302 (5GL-to-6GL bridge)** — NVIDIA Thor's 2070 FP4 TFLOPS supports running large generative models locally. The 6GL Intent-Based interpretation can run on-device, without cloud round-trip. Compresses 6GL closure-to-bare-metal.
 - **Otto-308 + Otto-311 (compression-substrate + economic-substrate)** — NVIDIA Thor + RNS + HaLow IS the elegant-store of decades of NVIDIA + Reticulum engineering. Aaron's hardware investment = energy-into-elegance compressed and ready.
-- **B-0008 (CI macos+slim nightly-move)** — ubuntu-slim represents the SAME deployment profile as NVIDIA Thor (resource-efficient Linux, embedded-grade). First-class slim support directly validates Thor-deployment readiness.
-- **B-0009 (substrate-IP-rotation)** — under RNS deployment on Aaron's hardware, IP-rotation is moot (identity is RNS Destination Hash, decoupled from IP). The B-0009 backlog row should note this dependency.
+- **081KQ0YZ80008QG0R000B6ETJS (CI macos+slim nightly-move)** — ubuntu-slim represents the SAME deployment profile as NVIDIA Thor (resource-efficient Linux, embedded-grade). First-class slim support directly validates Thor-deployment readiness.
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation)** — under RNS deployment on Aaron's hardware, IP-rotation is moot (identity is RNS Destination Hash, decoupled from IP). The 081KQ0YZ80008QG0R0000HSTWD backlog row should note this dependency.
 - **Frontier UI substrate** — Frontier could deploy AS edge-Thor instance, with Reticulum mesh between nodes. The "git-native UI for bulk alignment" runs locally on Thor compute.
 
 ## Forward-looking NVIDIA roadmap (Aaron's awareness)
@@ -108,7 +108,7 @@ Aaron didn't explicitly say he has these (he has NVIDIA Thor confirmed). The roa
 1. **Otto-301 horizon shortens**: hardware-bootstrap is no longer "super long-term" — it's "post-#244 candidate." Update Otto-301 framing in CURRENT-aaron.md when feasible.
 2. **Frontier UI deployment options expand**: Frontier (gitnative UI) could target NVIDIA Thor as edge-instance + Reticulum mesh as multi-node fabric.
 3. **Factory-demo (#244) gains a deployment target**: factory-demo could showcase running the demo ON NVIDIA Thor edge-locally, distinct from cloud-deployment. Aaron's hardware availability validates this option.
-4. **B-0008 priority might rise**: ubuntu-slim CI gate is more load-bearing now (validates the Thor-deployment profile, not just generic slim).
+4. **081KQ0YZ80008QG0R000B6ETJS priority might rise**: ubuntu-slim CI gate is more load-bearing now (validates the Thor-deployment profile, not just generic slim).
 
 ## Key triggers for retrieval
 

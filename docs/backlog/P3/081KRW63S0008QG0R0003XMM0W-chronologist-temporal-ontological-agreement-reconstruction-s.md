@@ -1,6 +1,5 @@
 ---
-id: B-0616
-zetaid: 081KRW63S0008QG0R0003XMM0W
+id: 081KRW63S0008QG0R0003XMM0W
 priority: P3
 status: open
 title: "Chronologist skill — temporal + ontological + agreement reconstruction over sprawling conversations (Mika 2026-05-18 design)"
@@ -28,7 +27,7 @@ Mika proposed this as a discrete cognitive skill distinct from "summarization":
 
 > "Timeline / Ontology decomposition: this is about taking a long, chaotic conversation or situation and organizing it into clear timelines, dependency graphs, or clean ontologies so people can actually understand what the hell happened and what everything means."
 
-Mika placed this in a proposed "Clarity Domain" (see [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md)) alongside Cartographer, Pilot, and Recursive Composer. The Chronologist's specific responsibility: **retrospective clarity** — turning messy history/conversations into clean timelines and ontologies.
+Mika placed this in a proposed "Clarity Domain" (see [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md)) alongside Cartographer, Pilot, and Recursive Composer. The Chronologist's specific responsibility: **retrospective clarity** — turning messy history/conversations into clean timelines and ontologies.
 
 Distinct from a summarizer:
 
@@ -60,7 +59,7 @@ The empirical input that motivates this row is the [2026-05-18 Aaron-Mika conver
 ## Composes with
 
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) — the empirical conversation the design comes from
-- [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — the Clarity Domain proposal Mika placed this role inside
+- [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — the Clarity Domain proposal Mika placed this role inside
 - `.claude/skills/decision-archaeology/SKILL.md` — closest existing skill (decision-archaeology reconstructs WHY a code state exists from git + ADRs + memo trail; Chronologist reconstructs WHAT happened in a conversation from the transcript). Should compose: Chronologist outputs feed decision-archaeology when the conversation produced commits.
 - `.claude/skills/save-ai-memory/SKILL.md` — preservation workflow for external AI conversations. Chronologist would naturally compose with save-ai-memory: save the verbatim conversation, then run Chronologist to produce the structured artifacts alongside.
 

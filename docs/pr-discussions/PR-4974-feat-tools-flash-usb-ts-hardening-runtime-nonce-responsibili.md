@@ -99,7 +99,7 @@ _(no body)_
 
 **@AceHack** (2026-05-25T19:25:48Z):
 
-Acknowledged — the path-scoped rule IS redundant from the permissions.allow standpoint (Bash(bun *) already matches). Keeping it because: (a) the auto-mode classifier's prior block message explicitly said 'add a Bash permission rule' — that classifier layer appears to look for SPECIFIC pre-vetted rules vs broad wildcards; (b) self-documenting for reviewers ('this script is explicitly permitted' is more legible than 'falls under bun *'); (c) future-proof if Bash(bun *) ever gets narrowed. The redundancy is by design, not oversight. Worth a CONTRIBUTING note though — filed as part of B-0728's pattern docs.
+Acknowledged — the path-scoped rule IS redundant from the permissions.allow standpoint (Bash(bun *) already matches). Keeping it because: (a) the auto-mode classifier's prior block message explicitly said 'add a Bash permission rule' — that classifier layer appears to look for SPECIFIC pre-vetted rules vs broad wildcards; (b) self-documenting for reviewers ('this script is explicitly permitted' is more legible than 'falls under bun *'); (c) future-proof if Bash(bun *) ever gets narrowed. The redundancy is by design, not oversight. Worth a CONTRIBUTING note though — filed as part of 081KSE6WT0008QG0R0005XASX2's pattern docs.
 
 ### Thread 2: full-ai-cluster/tools/flash-usb.ts:296 (resolved)
 

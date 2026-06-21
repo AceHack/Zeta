@@ -3,7 +3,7 @@
  * TS parity oracle; mirrors src/Core/FourCorner.fs (the F# oracle that LOCKED the treaty bytes) and
  * src/Core.CSharp/FourCornerOwnership.cs. Descends from the ORIGINAL FourCornerOwnership in
  * src/Core.TypeScript/workflow-engine/types.ts — this is its treaty-codec-bearing core sibling (the tools→src
- * graduation, B-1022). `tInFeedback` is co-owned — both sides contribute — "each is backpressure from
+ * graduation, 081KTQD8A0008QG0R0005EFYPV). `tInFeedback` is co-owned — both sides contribute — "each is backpressure from
  * the other's perspective".
  *
  * TREATY: toLine/ofLine is the canonical text wire form for the string-quad instantiation; this oracle

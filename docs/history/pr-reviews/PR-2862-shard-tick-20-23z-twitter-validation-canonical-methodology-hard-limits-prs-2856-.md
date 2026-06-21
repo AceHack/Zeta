@@ -100,5 +100,5 @@ shard(tick): 20:23Z — late-cycle cascade (Twitter validation + canoni…
 **Message:**
 
 ```
-fix(B-2862): markdownlint MD032 — add blank line before numbered list
+fix(081KE0HDSA008QG0R003S1DD99): markdownlint MD032 — add blank line before numbered list
 ```

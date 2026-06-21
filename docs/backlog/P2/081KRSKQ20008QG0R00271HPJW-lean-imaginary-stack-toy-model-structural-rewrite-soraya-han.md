@@ -1,6 +1,5 @@
 ---
-id: B-0612
-zetaid: 081KRSKQ20008QG0R00271HPJW
+id: 081KRSKQ20008QG0R00271HPJW
 priority: P2
 status: open
 title: "Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)"
@@ -18,7 +17,7 @@ type: research
 
 ## Parent
 
-[B-0584](B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) (the Imaginary Stack Step-1 row this rewrite addresses) and [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) (the QG isomorphism proof path).
+[081KRQ1AB0008QG0R001YAF3TR](081KRQ1AB0008QG0R001YAF3TR-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) (the Imaginary Stack Step-1 row this rewrite addresses) and [081KRMEXM0008QG0R002YSPW1X](081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) (the QG isomorphism proof path).
 
 ## Why
 
@@ -82,7 +81,7 @@ A Lean 4 toy model that:
 ## Non-goals
 
 - Completing the proof of Lemma 1 (sorry-in-proof position is acceptable)
-- Adinkra layer (future row, B-0584 non-goals)
+- Adinkra layer (future row, 081KRQ1AB0008QG0R001YAF3TR non-goals)
 - ZMod 17 → general `ZMod n` parameterization (research-grade; pick one for now)
 
 ## Routing
@@ -95,8 +94,8 @@ Per [`.claude/skills/formal-verification-expert/SKILL.md`](../../../.claude/skil
 
 ## Composes with
 
-- B-0584 (parent — Imaginary Stack Step-1 decomposition)
-- B-0543 (grandparent — QG isomorphism proof path)
+- 081KRQ1AB0008QG0R001YAF3TR (parent — Imaginary Stack Step-1 decomposition)
+- 081KRMEXM0008QG0R002YSPW1X (grandparent — QG isomorphism proof path)
 - PR #4059 (the shipping PR for the original Riven sketch + the 21+ review threads documenting these findings)
 - PR #4040 (Riven's handoff conversation — merged 2026-05-17)
 - PR #4043 (Soraya's expanded-scope invariants)

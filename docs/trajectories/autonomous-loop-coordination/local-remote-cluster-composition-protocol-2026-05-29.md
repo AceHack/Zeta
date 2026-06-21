@@ -2,9 +2,9 @@
 
 Status: protocol sketch
 Grounding backlog:
-`docs/backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
+`docs/backlog/P1/081KQX9B50008QG0R0026BG44J-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
 and
-`docs/backlog/P1/B-0211.1-fractal-bft-protocol-doc-2026-05-19.md`
+`docs/backlog/P1/081KRYRGG0008QG0R001JVJV0K-fractal-bft-protocol-doc-2026-05-19.md`
 Parent matrix:
 `docs/trajectories/autonomous-loop-coordination/remote-only-coordination-test-matrix.md`
 Parent receipt:
@@ -12,14 +12,14 @@ Parent receipt:
 
 ## Scope
 
-This packet is the first B-0211.1 protocol sketch for composing a local
+This packet is the first 081KRYRGG0008QG0R001JVJV0K protocol sketch for composing a local
 odd-node maintainer cluster with remote git-native claim refs. It is a
 coordination contract, not a runner implementation and not a new consensus
 proof.
 
-B-0209 proved the minimum remote-only substrate: a participant can discover
+081KQX9B50008QG0R001MNYK61 proved the minimum remote-only substrate: a participant can discover
 claim ownership, expected files, progress, and release state from remote git
-refs without relying on the local broadcast bus. B-0211 adds the local layer:
+refs without relying on the local broadcast bus. 081KQX9B50008QG0R0026BG44J adds the local layer:
 each maintainer may have a local cluster with faster local signals, but that
 cluster must still compose with remote participants through the same claim
 protocol.
@@ -116,7 +116,7 @@ it.
 
 - No runner behavior changes in this packet.
 - No new host dependency.
-- No formal BFT proof beyond the existing B-0211 backlog claim.
+- No formal BFT proof beyond the existing 081KQX9B50008QG0R0026BG44J backlog claim.
 - No claim that local broadcast is authoritative across maintainers.
 - No merge gate change; PR checks and reviews remain the merge authority.
 

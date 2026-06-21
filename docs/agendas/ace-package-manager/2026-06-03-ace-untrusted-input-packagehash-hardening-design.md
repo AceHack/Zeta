@@ -1,6 +1,6 @@
 # Ace — untrusted-input `packageHash` hardening (design)
 
-> Trust-core hardening follow-up for the Ace package manager (B-0288), surfaced by the
+> Trust-core hardening follow-up for the Ace package manager (081KR2E4K0008QG0R002YE3MMD), surfaced by the
 > 8.1/8.2 final reviews and confirmed against current `origin/main` 2026-06-03. The
 > `packageHash` primitive (8.2) throws (via `canonicalBytes` → `toTagged`) on a malformed
 > field — a non-safe-integer (e.g. a float) or a lone UTF-16 surrogate. `resolve.ts`'s

@@ -30,39 +30,39 @@ function fakeAdapters(nowIso, rows, capturedCalls = [], gitLogStr = "", ghPrList
     };
 }
 const ROW_OPEN_NO_DEPS = {
-    id: "B-9001",
+    id: "081KEBGPMB008QG0R0034HV56E",
     priority: "P1",
     status: "open",
     dependsOn: [],
-    filename: "B-9001-test-no-deps.md",
+    filename: "081KEBGPMB008QG0R0034HV56E-test-no-deps.md",
 };
 const ROW_OPEN_DEPS_SATISFIED = {
-    id: "B-9002",
+    id: "081KEBGREY008QG0R00008DC9Q",
     priority: "P1",
     status: "open",
-    dependsOn: ["B-9000"],
-    filename: "B-9002-test-deps-ok.md",
+    dependsOn: ["081KEBGMSR008QG0R0024EAQ09"],
+    filename: "081KEBGREY008QG0R00008DC9Q-test-deps-ok.md",
 };
 const ROW_OPEN_DEPS_UNSATISFIED = {
-    id: "B-9003",
+    id: "081KEBGT9H008QG0R00005MST8",
     priority: "P2",
     status: "open",
-    dependsOn: ["B-9999"],
-    filename: "B-9003-test-deps-pending.md",
+    dependsOn: ["081KED9T0X008QG0R003SZN0FB"],
+    filename: "081KEBGT9H008QG0R00005MST8-test-deps-pending.md",
 };
 const ROW_CLOSED = {
-    id: "B-9000",
+    id: "081KEBGMSR008QG0R0024EAQ09",
     priority: "P1",
     status: "closed",
     dependsOn: [],
-    filename: "B-9000-test-closed.md",
+    filename: "081KEBGMSR008QG0R0024EAQ09-test-closed.md",
 };
 const ROW_OPEN_DEPS_PENDING = {
-    id: "B-9999",
+    id: "081KED9T0X008QG0R003SZN0FB",
     priority: "P3",
     status: "open",
     dependsOn: [],
-    filename: "B-9999-test-pending.md",
+    filename: "081KED9T0X008QG0R003SZN0FB-test-pending.md",
 };
 describe("backlog-ready-notifier slice 2", () => {
     test("default config has sensible poll interval and backlog dir", () => {
@@ -73,83 +73,83 @@ describe("backlog-ready-notifier slice 2", () => {
     describe("parseRow", () => {
         test("extracts id + priority + status + depends_on from frontmatter", () => {
             const content = `---
-id: B-0440
+id: 081KRFA460008QG0R001KC0VBH
 priority: P1
 status: open
 title: "Test row"
-depends_on: [B-0400, B-0402]
+depends_on: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R0008NGW95]
 ---
 
 body content`;
-            const row = parseRow(content, "B-0440-test.md");
+            const row = parseRow(content, "081KRFA460008QG0R001KC0VBH-test.md");
             expect(row).not.toBeNull();
-            expect(row?.id).toBe("B-0440");
+            expect(row?.id).toBe("081KRFA460008QG0R001KC0VBH");
             expect(row?.priority).toBe("P1");
             expect(row?.status).toBe("open");
-            expect(row?.dependsOn).toEqual(["B-0400", "B-0402"]);
+            expect(row?.dependsOn).toEqual(["081KR7JY10008QG0R000R503K2", "081KR7JY10008QG0R0008NGW95"]);
         });
         test("handles empty depends_on array", () => {
             const content = `---
-id: B-9001
+id: 081KEBGPMB008QG0R0034HV56E
 priority: P2
 status: open
 depends_on: []
 ---`;
-            const row = parseRow(content, "B-9001.md");
+            const row = parseRow(content, "081KEBGPMB008QG0R0034HV56E.md");
             expect(row?.dependsOn).toEqual([]);
         });
         test("handles missing depends_on field (treats as empty)", () => {
             const content = `---
-id: B-9002
+id: 081KEBGREY008QG0R00008DC9Q
 priority: P3
 status: closed
 ---`;
-            const row = parseRow(content, "B-9002.md");
+            const row = parseRow(content, "081KEBGREY008QG0R00008DC9Q.md");
             expect(row?.dependsOn).toEqual([]);
         });
         test("parses block-style depends_on YAML list", () => {
             const content = `---
-id: B-9010
+id: 081KEBH73P008QG0R002W9ZQWE
 priority: P1
 status: open
 depends_on:
-  - B-9000
-  - B-9001
-  - B-9002
+  - 081KEBGMSR008QG0R0024EAQ09
+  - 081KEBGPMB008QG0R0034HV56E
+  - 081KEBGREY008QG0R00008DC9Q
 ---`;
-            const row = parseRow(content, "B-9010.md");
-            expect(row?.dependsOn).toEqual(["B-9000", "B-9001", "B-9002"]);
+            const row = parseRow(content, "081KEBH73P008QG0R002W9ZQWE.md");
+            expect(row?.dependsOn).toEqual(["081KEBGMSR008QG0R0024EAQ09", "081KEBGPMB008QG0R0034HV56E", "081KEBGREY008QG0R00008DC9Q"]);
         });
         test("strips YAML inline comments from block-style depends_on", () => {
-            // Real-world example from B-0422: `- B-0395  # operational-resonance-...`
+            // Real-world example from 081KRCQQF0008QG0R0008VT354: `- 081KR50HA0008QG0R0019KYAAS  # operational-resonance-...`
             // was previously parsed as the full string (including the comment),
             // producing a false-positive dangling-dep warning.
             const content = `---
-id: B-9011
+id: 081KEBH8Y9008QG0R002W3XAZD
 priority: P1
 status: open
 depends_on:
-  - B-0395  # operational-resonance-conversation-interface (Clifford engine)
-  - B-9001
-  - B-9002 # short trailing note
+  - 081KR50HA0008QG0R0019KYAAS  # operational-resonance-conversation-interface (Clifford engine)
+  - 081KEBGPMB008QG0R0034HV56E
+  - 081KEBGREY008QG0R00008DC9Q # short trailing note
 ---`;
-            const row = parseRow(content, "B-9011.md");
-            expect(row?.dependsOn).toEqual(["B-0395", "B-9001", "B-9002"]);
+            const row = parseRow(content, "081KEBH8Y9008QG0R002W3XAZD.md");
+            expect(row?.dependsOn).toEqual(["081KR50HA0008QG0R0019KYAAS", "081KEBGPMB008QG0R0034HV56E", "081KEBGREY008QG0R00008DC9Q"]);
         });
         test("strips YAML inline comments from inline-array depends_on", () => {
             const content = `---
-id: B-9012
+id: 081KEBHARW008QG0R001KM88CP
 priority: P1
 status: open
-depends_on: [B-0440, B-0441 # ready-to-grind notifier, B-0442]
+depends_on: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S # ready-to-grind notifier, 081KRFA460008QG0R00061SXRW]
 ---`;
-            const row = parseRow(content, "B-9012.md");
+            const row = parseRow(content, "081KEBHARW008QG0R001KM88CP.md");
             // Note: a `#` in an inline-array element terminates the list visually
             // but YAML doesn't treat `]` as commentable so this is best-effort.
             // The first two entries are clean; the third gets absorbed by the
             // comment which the parser strips. Verify the clean entries survive.
-            expect(row?.dependsOn).toContain("B-0440");
-            expect(row?.dependsOn).toContain("B-0441");
+            expect(row?.dependsOn).toContain("081KRFA460008QG0R001KC0VBH");
+            expect(row?.dependsOn).toContain("081KRFA460008QG0R00229616S");
         });
         test("returns null when frontmatter missing", () => {
             expect(parseRow("no frontmatter here", "x.md")).toBeNull();
@@ -201,7 +201,7 @@ title: only a title
             const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS]));
             expect(result.totalOpenRows).toBe(1);
             expect(result.readyRowsFound).toBe(1);
-            expect(result.candidateIds).toEqual(["B-9001"]);
+            expect(result.candidateIds).toEqual(["081KEBGPMB008QG0R0034HV56E"]);
         });
         test("flags rows with all deps closed as ready", () => {
             const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [
@@ -210,18 +210,18 @@ title: only a title
             ]));
             expect(result.totalOpenRows).toBe(1);
             expect(result.readyRowsFound).toBe(1);
-            expect(result.candidateIds).toEqual(["B-9002"]);
+            expect(result.candidateIds).toEqual(["081KEBGREY008QG0R00008DC9Q"]);
         });
         test("does NOT flag a row whose dep is still open", () => {
-            // ROW_OPEN_DEPS_UNSATISFIED depends on ROW_OPEN_DEPS_PENDING (id=B-9999, status=open)
-            // So B-9003 should NOT be ready. B-9999 has no deps so IT is ready.
+            // ROW_OPEN_DEPS_UNSATISFIED depends on ROW_OPEN_DEPS_PENDING (id=081KED9T0X008QG0R003SZN0FB, status=open)
+            // So 081KEBGT9H008QG0R00005MST8 should NOT be ready. 081KED9T0X008QG0R003SZN0FB has no deps so IT is ready.
             const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [
                 ROW_OPEN_DEPS_UNSATISFIED,
                 ROW_OPEN_DEPS_PENDING,
             ]));
             expect(result.totalOpenRows).toBe(2);
             expect(result.readyRowsFound).toBe(1);
-            expect(result.candidateIds).toEqual(["B-9999"]);
+            expect(result.candidateIds).toEqual(["081KED9T0X008QG0R003SZN0FB"]);
         });
         test("limits candidateIds to first 10 rows", () => {
             const rows = Array.from({ length: 15 }, (_, i) => ({
@@ -243,30 +243,30 @@ title: only a title
         });
         test("treats superseded-by-* deps as satisfied (matches generate-index)", () => {
             const supersededRow = {
-                id: "B-8000",
+                id: "081KE9QDR0008QG0R0015V3B44",
                 priority: "P1",
-                status: "superseded-by-B-9999",
+                status: "superseded-by-081KED9T0X008QG0R003SZN0FB",
                 dependsOn: [],
-                filename: "B-8000.md",
+                filename: "081KE9QDR0008QG0R0015V3B44.md",
             };
             const openWithSupersededDep = {
-                id: "B-8001",
+                id: "081KE9QFJK008QG0R001G6GN9V",
                 priority: "P1",
                 status: "open",
-                dependsOn: ["B-8000"],
-                filename: "B-8001.md",
+                dependsOn: ["081KE9QDR0008QG0R0015V3B44"],
+                filename: "081KE9QFJK008QG0R001G6GN9V.md",
             };
             const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [supersededRow, openWithSupersededDep]));
             expect(result.readyRowsFound).toBe(1);
-            expect(result.candidateIds).toEqual(["B-8001"]);
+            expect(result.candidateIds).toEqual(["081KE9QFJK008QG0R001G6GN9V"]);
         });
         test("flags dangling dep references in note", () => {
             const openWithDanglingDep = {
-                id: "B-8002",
+                id: "081KE9QHD6008QG0R002CS3SVR",
                 priority: "P2",
                 status: "open",
                 dependsOn: ["B-NONEXISTENT"],
-                filename: "B-8002.md",
+                filename: "081KE9QHD6008QG0R002CS3SVR.md",
             };
             const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [openWithDanglingDep]));
             expect(result.readyRowsFound).toBe(0);
@@ -299,7 +299,7 @@ title: only a title
             expect(captured).toHaveLength(2);
             expect(captured[0].from).toBe("otto");
             expect(captured[0].to).toBe("*");
-            expect(captured[0].rowId).toBe("B-9001");
+            expect(captured[0].rowId).toBe("081KEBGPMB008QG0R0034HV56E");
             expect(captured[0].priority).toBe("P1");
             expect(captured[0].rationale).toContain("Ready-to-grind");
         });
@@ -312,7 +312,7 @@ title: only a title
             expect(result.note).toContain("publish skipped");
         });
         test("does NOT publish when ALL open rows have unsatisfied deps (no readies)", () => {
-            // Only ROW_OPEN_DEPS_UNSATISFIED is in this set — its dep (B-9999)
+            // Only ROW_OPEN_DEPS_UNSATISFIED is in this set — its dep (081KED9T0X008QG0R003SZN0FB)
             // isn't in the scan, so it's dangling/unsatisfied → not ready.
             const captured = [];
             const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_DEPS_UNSATISFIED], captured));
@@ -377,15 +377,15 @@ title: only a title
         });
         test("row assigned at T=0; same row at T=15min (within 30min cooldown) → skipped", () => {
             const captured = [];
-            // Pre-populate history with B-9001 published at T=0.
+            // Pre-populate history with 081KEBGPMB008QG0R0034HV56E published at T=0.
             const history = {
-                read: { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
+                read: { entries: [{ rowId: "081KEBGPMB008QG0R0034HV56E", publishedAt: "2026-05-13T18:00:00.000Z" }] },
                 written: [],
             };
             // Poll at T+15min.
             const adapters = fakeAdapters("2026-05-13T18:15:00.000Z", [ROW_OPEN_NO_DEPS], captured, "", "", history);
             const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
-            expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+            expect(result.skippedDueToCooldown).toEqual(["081KEBGPMB008QG0R0034HV56E"]);
             expect(result.publishedEnvelopeIds).toHaveLength(0);
             expect(captured).toHaveLength(0);
             expect(result.note).toContain("skipped 1 due to cooldown");
@@ -393,7 +393,7 @@ title: only a title
         test("row assigned at T=0; same row at T=35min (after 30min cooldown) → re-assigned", () => {
             const captured = [];
             const history = {
-                read: { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
+                read: { entries: [{ rowId: "081KEBGPMB008QG0R0034HV56E", publishedAt: "2026-05-13T18:00:00.000Z" }] },
                 written: [],
             };
             // Poll at T+35min — entry is expired (older than 30min cooldown).
@@ -405,7 +405,7 @@ title: only a title
             // History rewritten: pruned the stale entry, appended fresh entry.
             expect(history.written).toHaveLength(1);
             expect(history.written[0].entries).toEqual([
-                { rowId: "B-9001", publishedAt: "2026-05-13T18:35:00.000Z" },
+                { rowId: "081KEBGPMB008QG0R0034HV56E", publishedAt: "2026-05-13T18:35:00.000Z" },
             ]);
         });
         test("history file absent → first assignment proceeds normally and writes history", () => {
@@ -417,30 +417,30 @@ title: only a title
             expect(result.publishedEnvelopeIds).toHaveLength(1);
             expect(history.written).toHaveLength(1);
             expect(history.written[0].entries[0]).toMatchObject({
-                rowId: "B-9001",
+                rowId: "081KEBGPMB008QG0R0034HV56E",
                 publishedAt: "2026-05-13T18:00:00.000Z",
             });
         });
         test("multiple rows in cooldown → only expired rows published; skippedDueToCooldown lists skipped IDs", () => {
             const captured = [];
-            // B-9001 published 15min ago (still in cooldown); B-9002 published 45min ago (expired).
+            // 081KEBGPMB008QG0R0034HV56E published 15min ago (still in cooldown); 081KEBGREY008QG0R00008DC9Q published 45min ago (expired).
             const history = {
                 read: {
                     entries: [
-                        { rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" },
-                        { rowId: "B-9002", publishedAt: "2026-05-13T17:30:00.000Z" },
+                        { rowId: "081KEBGPMB008QG0R0034HV56E", publishedAt: "2026-05-13T18:00:00.000Z" },
+                        { rowId: "081KEBGREY008QG0R00008DC9Q", publishedAt: "2026-05-13T17:30:00.000Z" },
                     ],
                 },
                 written: [],
             };
-            const rowB9001 = { ...ROW_OPEN_NO_DEPS, id: "B-9001" };
-            const rowB9002 = { ...ROW_OPEN_NO_DEPS, id: "B-9002" };
-            const adapters = fakeAdapters("2026-05-13T18:15:00.000Z", // T+15min from B-9001; T+45min from B-9002
+            const rowB9001 = { ...ROW_OPEN_NO_DEPS, id: "081KEBGPMB008QG0R0034HV56E" };
+            const rowB9002 = { ...ROW_OPEN_NO_DEPS, id: "081KEBGREY008QG0R00008DC9Q" };
+            const adapters = fakeAdapters("2026-05-13T18:15:00.000Z", // T+15min from 081KEBGPMB008QG0R0034HV56E; T+45min from 081KEBGREY008QG0R00008DC9Q
             [rowB9001, rowB9002], captured, "", "", history);
             const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 10, cooldownMin: 30 }, adapters);
-            expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+            expect(result.skippedDueToCooldown).toEqual(["081KEBGPMB008QG0R0034HV56E"]);
             expect(result.publishedEnvelopeIds).toHaveLength(1);
-            expect(captured.map(c => c.rowId)).toEqual(["B-9002"]);
+            expect(captured.map(c => c.rowId)).toEqual(["081KEBGREY008QG0R00008DC9Q"]);
         });
         test("history pruning: entries older than cooldownMin removed on write", () => {
             const captured = [];

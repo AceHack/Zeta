@@ -29,7 +29,7 @@
 
 ## What
 
-Byte-locks the resume STATE wire across the four oracles. The resume slice (B-0976) was
+Byte-locks the resume STATE wire across the four oracles. The resume slice (081KT07NV0008QG0R003BE6MJ2) was
 byte-locked on suspension `fn`+`args` + final value, but the persisted `SagaState` bytes
 were only behaviorally verified (per-oracle round-trip). This adds **`expectedStateAtSuspension`**
 to `resume-golden.json` — the exact canonical `serializeState()` bytes the TS reference emits
@@ -118,7 +118,7 @@ feat(resume): byte-lock the resume STATE wire — expectedStateAtSuspen…
 
 …sion golden (TS foundation)
 
-The resume slice (B-0976) was byte-locked on suspension fn+args + final value, but
+The resume slice (081KT07NV0008QG0R003BE6MJ2) was byte-locked on suspension fn+args + final value, but
 NOT on the persisted SagaState bytes — only behavioral + per-oracle round-trip. This
 adds `expectedStateAtSuspension` to resume-golden.json: the exact canonical
 serializeState() bytes the TS reference emits at each suspension, in order. The TS

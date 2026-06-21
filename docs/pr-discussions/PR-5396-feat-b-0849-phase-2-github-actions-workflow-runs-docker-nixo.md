@@ -1,6 +1,6 @@
 ---
 pr_number: 5396
-title: "feat(B-0849 Phase 2): GitHub Actions workflow runs Docker NixOS install.sh test on PRs touching install substrate"
+title: "feat(081KSKBP80008QG0R000E3RKPK Phase 2): GitHub Actions workflow runs Docker NixOS install.sh test on PRs touching install substrate"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T04:02:36Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:27:10Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5396: feat(B-0849 Phase 2): GitHub Actions workflow runs Docker NixOS install.sh test on PRs touching install substrate
+# PR #5396: feat(081KSKBP80008QG0R000E3RKPK Phase 2): GitHub Actions workflow runs Docker NixOS install.sh test on PRs touching install substrate
 
 ## PR description
 
 ## Summary
 
-Wires the Docker harness from B-0849 Phase 1 ([PR #5393](https://github.com/Lucent-Financial-Group/Zeta/pull/5393)) into CI so install.sh / linux.sh / mise.sh bugs are caught at PR time vs reboot time.
+Wires the Docker harness from 081KSKBP80008QG0R000E3RKPK Phase 1 ([PR #5393](https://github.com/Lucent-Financial-Group/Zeta/pull/5393)) into CI so install.sh / linux.sh / mise.sh bugs are caught at PR time vs reboot time.
 
 ## Path triggers
 
@@ -43,7 +43,7 @@ Wires the Docker harness from B-0849 Phase 1 ([PR #5393](https://github.com/Luce
 
 ## Composes with
 
-[PR #5393](https://github.com/Lucent-Financial-Group/Zeta/pull/5393) (B-0849 Phase 1 — the Dockerfile + TS wrapper) · B-0831 cascade #5 QEMU complementary · iter-5.5.0 substrate · [B-0835](docs/backlog/P1/B-0835-...) install bug cluster
+[PR #5393](https://github.com/Lucent-Financial-Group/Zeta/pull/5393) (081KSKBP80008QG0R000E3RKPK Phase 1 — the Dockerfile + TS wrapper) · 081KSGS9H0008QG0R0011BC7T2 cascade #5 QEMU complementary · iter-5.5.0 substrate · [081KSGS9H0008QG0R00120EEHM](docs/backlog/P1/081KSGS9H0008QG0R00120EEHM-...) install bug cluster
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

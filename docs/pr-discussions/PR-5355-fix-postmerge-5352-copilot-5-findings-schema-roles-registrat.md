@@ -26,26 +26,26 @@ Fixes 5 legitimate Copilot findings on merged PR #5352 (iter-5.4.1 self-registra
 |---|---|---|---|
 | 1 | **CRITICAL** | Subshell + \`set -euo pipefail\` could kill installer on any git/gh failure | subshell-local \`set +e\` + outer \`\|\| true\` + explicit success/fail handling |
 | 2 | P1 | MAC parsing wrong (\`$(NF-2)\` = \`brd\` not MAC) | parse field after \`link/ether\` correctly |
-| 3 | P1 | Schema: \`spec.role\` should be \`spec.roles[]\` (array) per B-0813 | nested array syntax |
-| 4 | P1 | Schema: \`spec.maintainer\` should be \`spec.registration.maintainer\` per B-0817 | nested under \`spec.registration:\` with timestamp + flake-commit + flake-host siblings; also added metadata label |
-| 5 | P1 | Schema: \`spec.storage\` should be \`spec.hardware.storage\` per B-0813 | indented under hardware block (storage + network) |
+| 3 | P1 | Schema: \`spec.role\` should be \`spec.roles[]\` (array) per 081KSGS9H0008QG0R002K93MWX | nested array syntax |
+| 4 | P1 | Schema: \`spec.maintainer\` should be \`spec.registration.maintainer\` per 081KSGS9H0008QG0R002QQNA79 | nested under \`spec.registration:\` with timestamp + flake-commit + flake-host siblings; also added metadata label |
+| 5 | P1 | Schema: \`spec.storage\` should be \`spec.hardware.storage\` per 081KSGS9H0008QG0R002K93MWX | indented under hardware block (storage + network) |
 | 6 | P2 | Name attribution \`maintainers/aaron/\` in comment | replaced with placeholder \`<operator>\` |
 
 ## Why CRITICAL #1 matters
 
-Per the operator's CORE REQUIREMENT (B-0835): post-boot fully-operational chain without operator login. If Step 6.9 aborts the installer (because of a transient gh-API failure OR scope issue), nixos-install NEVER RUNS and the install fails completely. Step 6.9 is documented warning-only/skippable; the subshell hazard made that documentation a lie.
+Per the operator's CORE REQUIREMENT (081KSGS9H0008QG0R00120EEHM): post-boot fully-operational chain without operator login. If Step 6.9 aborts the installer (because of a transient gh-API failure OR scope issue), nixos-install NEVER RUNS and the install fails completely. Step 6.9 is documented warning-only/skippable; the subshell hazard made that documentation a lie.
 
 ## Schema source
 
-- B-0813 (iter-5.4.2 ArgoCD reconciliation) defines the CRD schema
-- B-0817 (register-node.ts companion tool) explicitly places maintainer under \`spec.registration\` (K8s ObjectMeta has fixed shape; arbitrary spec fields silently dropped by API server)
+- 081KSGS9H0008QG0R002K93MWX (iter-5.4.2 ArgoCD reconciliation) defines the CRD schema
+- 081KSGS9H0008QG0R002QQNA79 (register-node.ts companion tool) explicitly places maintainer under \`spec.registration\` (K8s ObjectMeta has fixed shape; arbitrary spec fields silently dropped by API server)
 
 ## Test plan
 
 - [x] Bash syntax OK (\`bash -n\` passes)
 - [x] Subshell can no longer kill installer (set +e + || true defense-in-depth)
 - [x] MAC extraction tested mentally: `link/ether aa:bb:cc:dd:ee:ff brd ff:ff:ff:ff:ff:ff` → `aa:bb:cc:dd:ee:ff` ✓
-- [x] Schema matches B-0813 + B-0817 (spec.roles[], spec.registration.maintainer, spec.hardware.{storage,network})
+- [x] Schema matches 081KSGS9H0008QG0R002K93MWX + 081KSGS9H0008QG0R002QQNA79 (spec.roles[], spec.registration.maintainer, spec.hardware.{storage,network})
 - [x] Maintainer label added to metadata for kubectl grouping
 - [x] No name attribution in code
 

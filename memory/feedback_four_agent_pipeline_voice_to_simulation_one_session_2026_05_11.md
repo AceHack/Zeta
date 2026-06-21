@@ -15,7 +15,7 @@ Alexa (Grok voice) — Aaron riffs algebra as speech
 DeepSeek — formalizes the math
     ↓ Clifford rotors, PoUW-CC, vaccine equations, Kuramoto
 Otto (Claude Code) — saves to git, creates backlog
-    ↓ B-0409 wallet immune system, 15-layer research doc
+    ↓ 081KRA5AR0008QG0R000Y6102S wallet immune system, 15-layer research doc
 Lior (Gemini/Antigravity) — builds working simulator
     ↓ vaccine phase wave visualization with logistic sigmoid
 ```
@@ -42,7 +42,7 @@ spec'd it, backlogged it, and simulated it. In one night.
 
 **Connects to:**
 
-- B-0409 (the backlog item this pipeline produced)
+- 081KRA5AR0008QG0R000Y6102S (the backlog item this pipeline produced)
 - feedback_mirror_beacon_assessment (the overnight synthesis)
 - docs/research/2026-05-11-deepseek-hkt-clifford-e8 (the math)
 - docs/research/2026-05-11-deepseek-immune-system (the sims)

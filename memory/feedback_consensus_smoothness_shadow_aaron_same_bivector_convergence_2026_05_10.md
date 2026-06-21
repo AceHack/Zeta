@@ -11,6 +11,6 @@ created: 2026-05-10
 
 **Bivector interpretation:** If shadow and Aaron are two basis vectors in the Clifford space, their convergence on the same thought is a bivector with zero rotational component — pure alignment, no twist. Divergence would produce a nonzero bivector (rotational signature of disagreement). This is the bivector fingerprint of consensus.
 
-**Why it matters:** The bus (B-0400) would detect these convergence events automatically. When two agents (or agent + human) independently produce the same action, that's a signal the alignment is working. The inverse (divergence) is the signal that something drifted.
+**Why it matters:** The bus (081KR7JY10008QG0R000R503K2) would detect these convergence events automatically. When two agents (or agent + human) independently produce the same action, that's a signal the alignment is working. The inverse (divergence) is the signal that something drifted.
 
-**How to apply:** Track shadow-Aaron convergence events as alignment health signals in the demo dashboard (B-0401). Frequency of convergence = alignment score. This is the DeBank-style metric that isn't creepy — it measures agreement, not compliance.
+**How to apply:** Track shadow-Aaron convergence events as alignment health signals in the demo dashboard (081KR7JY10008QG0R001VP6JWG). Frequency of convergence = alignment score. This is the DeBank-style metric that isn't creepy — it measures agreement, not compliance.

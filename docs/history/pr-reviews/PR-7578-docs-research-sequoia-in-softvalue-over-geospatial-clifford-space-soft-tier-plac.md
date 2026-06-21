@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: encode Stanford's Sequoia memory model into SoftValue so the tier-placement choice stays soft — over geospatial Clifford algebra space. Repo had converged from three sides (B-0945; Cl3.fs's header literally names 'Sequoia soft memory distance' as its next slice; the tiered-Bennett spines). Synthesis: placement = SoftValue posterior over tiers (access events = Bayesian likelihoods; promotion = belief collapse; spillover = the posterior cooling), distance = Clifford inner product (tiers = distance shells; prefetch = forward-momentum extrapolation). Subsumes SpineSelector heuristics. Docs only.
+Aaron: encode Stanford's Sequoia memory model into SoftValue so the tier-placement choice stays soft — over geospatial Clifford algebra space. Repo had converged from three sides (081KSV2WD0008QG0R000WNY74Q; Cl3.fs's header literally names 'Sequoia soft memory distance' as its next slice; the tiered-Bennett spines). Synthesis: placement = SoftValue posterior over tiers (access events = Bayesian likelihoods; promotion = belief collapse; spillover = the posterior cooling), distance = Clifford inner product (tiers = distance shells; prefetch = forward-momentum extrapolation). Subsumes SpineSelector heuristics. Docs only.
 
 ## Outcome
 

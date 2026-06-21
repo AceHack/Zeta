@@ -1,6 +1,5 @@
 ---
-id: B-0179
-zetaid: 081KQNJ500008QG0R000S68KDE
+id: 081KQNJ500008QG0R000S68KDE
 priority: P2
 status: open
 title: Fix SpineAsyncProtocol.tla counterexample (blocks B1 → A CI registration; depth-9 trace dump on TLC run)
@@ -45,6 +44,6 @@ Pre-existing failure surfaced by verify-then-claim sweep, not a new regression. 
 
 ## Composes with
 
-- B-0180 (CircuitRegistration config bug — sibling B1 issue)
-- B-0181 (SpineMergeInvariants counterexample — sibling B1 issue)
+- 081KQNJ500008QG0R0001QHA1J (CircuitRegistration config bug — sibling B1 issue)
+- 081KQNJ500008QG0R003DMVGZB (SpineMergeInvariants counterexample — sibling B1 issue)
 - The closure of B1 → A in the math-proofs honest assessment requires all 3 sibling fixes to land

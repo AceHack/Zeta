@@ -104,9 +104,9 @@ Plus the new 5th:
 
 The trust-gradient coordination policy applies directly to:
 
-- **B-0688** incremental compiler host (compiler-fact consensus decisions per tier)
-- **B-0635 / B-0644 / B-0665 / B-0666** (Agora V6 — trust-gradient IS Integrate-as-choice-locus at distributed-systems scope)
-- **B-0683** tier-deferred causality (facts in superposition of coordination tiers)
+- **081KS3X9Y0008QG0R0010716X9** incremental compiler host (compiler-fact consensus decisions per tier)
+- **081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV** (Agora V6 — trust-gradient IS Integrate-as-choice-locus at distributed-systems scope)
+- **081KS3X9Y0008QG0R0006MQXA4** tier-deferred causality (facts in superposition of coordination tiers)
 - **`src/Core/Crdt/*`** existing CRDT substrate (algebra tier; trust-gradient names when escalation is needed)
 - **`src/Core/Consensus.fs`** existing consensus substrate (CASPaxos/CASRaft tier)
 
@@ -124,7 +124,7 @@ The trust-gradient coordination policy applies directly to:
 
 - PR #4546 (Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM) — the trust-gradient framing this cascade refines
 - PR #4545 + PR #4547 (full Amara 2026-05-21 cluster)
-- B-0635 / B-0644 / B-0665 / B-0666 / B-0683 / B-0687 / B-0688
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV / 081KS3X9Y0008QG0R0006MQXA4 / 081KS3X9Y0008QG0R00323NSZA / 081KS3X9Y0008QG0R0010716X9
 
 ## Test plan
 

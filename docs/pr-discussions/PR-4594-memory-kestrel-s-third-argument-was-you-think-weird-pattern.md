@@ -103,7 +103,7 @@ The `## Composes with` section uses wildcard placeholders (`*_`) instead of conc
 
 **@copilot-pull-request-reviewer** (2026-05-22T01:18:43Z):
 
-`tools/hygiene/validate-memory-schema.ts` (B-0335) expects `feedback` memories to include the literal markers `Why:` and `How to apply:` in the body; this file currently has neither, so it will be reported as schema drift (at least a warning) and is less machine-retrievable. Add short `**Why:**` and `**How to apply:**` sections near the top.
+`tools/hygiene/validate-memory-schema.ts` (081KR2E4K0008QG0R000M01QVM) expects `feedback` memories to include the literal markers `Why:` and `How to apply:` in the body; this file currently has neither, so it will be reported as schema drift (at least a warning) and is less machine-retrievable. Add short `**Why:**` and `**How to apply:**` sections near the top.
 
 ### Thread 3: memory/MEMORY.md:11 (unresolved)
 

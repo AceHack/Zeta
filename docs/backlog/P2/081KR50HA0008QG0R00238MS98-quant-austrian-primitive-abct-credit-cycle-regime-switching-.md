@@ -1,12 +1,11 @@
 ---
-id: B-0385
-zetaid: 081KR50HA0008QG0R00238MS98
+id: 081KR50HA0008QG0R00238MS98
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — ABCT as credit-cycle stochastic process with regime-switching (Austrian primitive #4)
 tier: research-grade
 effort: M
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K]
@@ -17,7 +16,7 @@ type: research
 
 ---
 
-# B-0385 — Formalizability assessment: ABCT → credit-cycle stochastic process with regime-switching
+# 081KR50HA0008QG0R00238MS98 — Formalizability assessment: ABCT → credit-cycle stochastic process with regime-switching
 
 ## What
 
@@ -88,8 +87,8 @@ Credit cycles and regime-switching are well-developed in quant finance:
    not point-in-time prediction.) Or does the stochastic framing
    vacuously make any theory unfalsifiable?
 
-4. What is the relationship between B-0383 (capital-structure
-   formalization) and B-0385 (ABCT)? ABCT requires the capital-
+4. What is the relationship between 081KR50HA0008QG0R003Z3V6VP (capital-structure
+   formalization) and 081KR50HA0008QG0R00238MS98 (ABCT)? ABCT requires the capital-
    structure formalization as a substrate — this row formalizes the
    *dynamics* that the capital-structure row formalized the *structure* for.
 
@@ -98,10 +97,10 @@ Credit cycles and regime-switching are well-developed in quant finance:
 `docs/aurora/YYYY-MM-DD-primitive-abct.md` with:
 
 - Statement of ABCT (Mises / Hayek variants; Garrison's diagrammatic
-  treatment as bridge to B-0383)
+  treatment as bridge to 081KR50HA0008QG0R003Z3V6VP)
 - Best-candidate quant formalization (regime-switching, jump-diffusion)
 - Observable distinguishing implications vs. Minsky, Bernanke-Gertler
-- Formalization type (per B-0380 vocabulary)
+- Formalization type (per 081KR50HA0008QG0R003ESW3MH vocabulary)
 - How timing-prediction failures are handled in the formal model
 - Synthesis-gap remaining
 - Verdict
@@ -123,18 +122,18 @@ ls docs/aurora/ | grep abct
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0381 survey provides prior-work context;
+- [x] Prior-art search: 081KR50HA0008QG0R000M4H35K survey provides prior-work context;
   no existing `docs/aurora/` note on ABCT formalization.
-- [x] Dependency-restructure: depends on B-0383 for the capital-structure
-  substrate but parallelizable if B-0383 assessment is in progress —
-  add explicit depends_on on B-0383 if the implementer determines the
+- [x] Dependency-restructure: depends on 081KR50HA0008QG0R003Z3V6VP for the capital-structure
+  substrate but parallelizable if 081KR50HA0008QG0R003Z3V6VP assessment is in progress —
+  add explicit depends_on on 081KR50HA0008QG0R003Z3V6VP if the implementer determines the
   capital-structure formalization choice gates the ABCT formalization
   choice. Currently marked as parallelizable with `composes_with`.
 
 ## Composes with
 
-- B-0023 (parent): implements primitive #4
-- B-0380, B-0381 (deps): vocabulary and prior-work context
-- B-0383 (strong coupling): capital-structure primitive is the
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): implements primitive #4
+- 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K (deps): vocabulary and prior-work context
+- 081KR50HA0008QG0R003Z3V6VP (strong coupling): capital-structure primitive is the
   structural substrate that ABCT cycle dynamics layer on top of
-- B-0387 (downstream): verdict feeds synthesis ADR
+- 081KR50HA0008QG0R000M838VA (downstream): verdict feeds synthesis ADR

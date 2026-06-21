@@ -27,10 +27,10 @@ odd-promote fold). Port to C#/Rust/TS and prove identical roots.
 
 - Port `ZSetMerkle.rootWith` to C# (`src/Core.CSharp.*`), Rust (`src/Core.Rust*`/oracle), TS
   (`src/Core.TypeScript/*`): same canonical leaf encoding + same fold; hash-parameterized (XxHash128 to
-  match F# default today; structure must accept BLAKE3 later per the B-0969-adjacent decision).
+  match F# default today; structure must accept BLAKE3 later per the 081KT07NV0008QG0R001YDB73K-adjacent decision).
 - **Golden vectors = hex-in-JSON** (NOT binary — `.claude/rules/no-binary-in-proof-lineage.md`): a shared
   `golden-vectors-zset-merkle.json` of (input Z-set entries) → (root hex), replayed identically by all four.
-- Canonical order = ORDINAL key bytes (codepoint/UTF-8 byte order) — the same collation treaty as B-0969;
+- Canonical order = ORDINAL key bytes (codepoint/UTF-8 byte order) — the same collation treaty as 081KT07NV0008QG0R001YDB73K;
   include NON-ASCII keys so the byte-consensus actually exercises ordinal.
 
 ## Acceptance
@@ -41,5 +41,5 @@ the reference; vectors checked in + cross-verify test green in each language.
 ## Anchors
 
 - `src/Core/ZSetMerkle.fs` (F# reference) · `src/Core/Merkle.fs` (MerkleHash/XxHash128) · 081KTGTJC1Q ·
-  B-0969 (ordinal collation = the key order) · no-binary-in-proof-lineage rule (hex-in-JSON) · B-0959
+  081KT07NV0008QG0R001YDB73K (ordinal collation = the key order) · no-binary-in-proof-lineage rule (hex-in-JSON) · 081KSXN940008QG0R003FCQ7WT
   (4-oracle master checklist).

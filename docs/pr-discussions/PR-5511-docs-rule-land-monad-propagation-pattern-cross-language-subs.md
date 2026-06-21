@@ -84,7 +84,7 @@ This wrapped blockquote line starts with `+`, which Markdown treats as a list ma
 
 **@copilot-pull-request-reviewer** (2026-05-27T16:55:14Z):
 
-This claims the new substrate was identified through grep, but the rule body does not include the required inline substrate-inventory audit trail from `verify-existing-substrate-before-authoring.md` (what was searched, top hits, and conclusion). Add that audit trail and include the existing SQL NULL/Maybe recursive-CTE substrate hits such as B-0824 and `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md`, which cover the same monad/recursive-CTE pattern.
+This claims the new substrate was identified through grep, but the rule body does not include the required inline substrate-inventory audit trail from `verify-existing-substrate-before-authoring.md` (what was searched, top hits, and conclusion). Add that audit trail and include the existing SQL NULL/Maybe recursive-CTE substrate hits such as 081KSGS9H0008QG0R0031PBNGA and `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md`, which cover the same monad/recursive-CTE pattern.
 
 ## General comments
 

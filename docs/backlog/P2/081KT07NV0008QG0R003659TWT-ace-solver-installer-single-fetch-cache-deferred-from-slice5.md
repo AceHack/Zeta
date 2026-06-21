@@ -1,6 +1,5 @@
 ---
-id: B-0972
-zetaid: 081KT07NV0008QG0R003659TWT
+id: 081KT07NV0008QG0R003659TWT
 priority: P2
 status: open
 title: Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)
@@ -20,7 +19,7 @@ Slice 5.2 chose a **clean two-phase split** (operator 2026-06-01): the solver fe
 candidate packages to read their transitive deps, then slice-5.1's `resolve()` re-fetches
 to verify + install. Each package is therefore fetched up to twice. Registry reads are
 local/content-addressed so the double-read is cheap, but it is wasted work for remote
-registries (B-0971) and large graphs.
+registries (081KT07NV0008QG0R000SJ34AK) and large graphs.
 
 This row tracks threading a **fetch cache** (solver's fetched + verified packages handed
 to the installer) so each package version is fetched exactly once.
@@ -43,5 +42,5 @@ Operator: *"everything we skipped lets slice off for further enhancements."*
 ## Composes with
 
 - Slice 5.2 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.2-semver-solver-design.md`
-- B-0971 (remote registry — where the double-fetch actually costs)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R000SJ34AK (remote registry — where the double-fetch actually costs)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)

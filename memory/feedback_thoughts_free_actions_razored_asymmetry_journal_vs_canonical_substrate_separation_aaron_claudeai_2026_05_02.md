@@ -95,7 +95,7 @@ just landed via ALIGNMENT.md renegotiation).
   format breaks index generators. Coordination required, but
   this is more about API-stability than razor-grading.
 
-**Bifurcation of B-0161 reshelf scope:** B-0161 (substrate
+**Bifurcation of 081KQJZR90008QG0R002Z4B6VW reshelf scope:** 081KQJZR90008QG0R002Z4B6VW (substrate
 reshelf for PR #1202) had two components:
 
 - **Memory reshelf** (journal vs canonical taxonomy, possible

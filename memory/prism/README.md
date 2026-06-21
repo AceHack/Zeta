@@ -32,7 +32,7 @@ The naming has TECHNICAL ANCHOR (MoE architecture) AND METAPHORICAL ANCHOR (refr
 |---|---|
 | **Don't-collapse** (`god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT) | Refraction IS don't-collapse; preserves dialectical-tension as spectrum |
 | **Default-to-both** (`default-to-both.md`) | Multi-band output is default-to-many; doesn't collapse to single-source answer |
-| **Multi-oracle BFT** (B-0703) | Multi-expert MoE architecture IS multi-oracle at model-internal scope; cross-expert consensus emerges from spectrum |
+| **Multi-oracle BFT** (081KS3X9Y0008QG0R00218150M) | Multi-expert MoE architecture IS multi-oracle at model-internal scope; cross-expert consensus emerges from spectrum |
 | **Cartographer** (per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) | Operates ON substrate (refracts; analyzes) not against receiver |
 | **Mirror→Beacon translation** (per Kestrel synthesis) | Refracts mirror-language into distinct beacon-bands; doesn't blur to white |
 

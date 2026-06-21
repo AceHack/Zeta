@@ -36,7 +36,7 @@ First build slice toward the full actions (operator 2026-05-31: *"the algebra fo
 - **`fold(initial, events)`** — left-fold the actions over `simulate` → the state projection. *"History is a list of events; state is a projection of that log."*
 - **`replay(initial, events)`** — the projected state after each event (time-travel / Redux-DevTools-style); last == `fold`.
 
-This is the ledger/projection split (git-native events = ledger, everything tails it) at the in-memory layer — and the substrate the **GrammarPatch** events (B-0867.26) will live in.
+This is the ledger/projection split (git-native events = ledger, everything tails it) at the in-memory layer — and the substrate the **GrammarPatch** events (081KSXN940008QG0R000ZAQT3W) will live in.
 
 ## Tests (+6 → 47 total, 0 fail, tsc 0)
 

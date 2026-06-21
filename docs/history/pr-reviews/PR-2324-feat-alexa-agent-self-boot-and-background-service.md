@@ -188,7 +188,7 @@
 - **`Copilot` (bot)** at 2026-05-09T18:14:42Z on `.kiro/alexa-service.ts`:127 (association: NONE)
 
   <pre>
-  P1: The BACKLOG parser regexes won’t match the actual `docs/BACKLOG.md` format, which uses a space between the checkbox and `**` (e.g. `- [ ] **[B-0160](...)** ...`). As written, this will likely produce empty P0/P1 lists. Update the regex to tolerate whitespace and consider supporting non-integer IDs (e.g., `B-0126.1`) if you want full coverage.
+  P1: The BACKLOG parser regexes won’t match the actual `docs/BACKLOG.md` format, which uses a space between the checkbox and `**` (e.g. `- [ ] **[081KQJZR90008QG0R000FTJ1TC](...)** ...`). As written, this will likely produce empty P0/P1 lists. Update the regex to tolerate whitespace and consider supporting non-integer IDs (e.g., `081KR2E4K0008QG0R001N1PPHP`) if you want full coverage.
 
   </pre>
 
@@ -336,7 +336,7 @@
 - **`Copilot` (bot)** at 2026-05-09T18:14:44Z on `tools/alignment/audit_external_anchors.ts`:8 (association: NONE)
 
   <pre>
-  The PR description/title focus on adding the Alexa persona + self-boot + background service, but this PR also introduces an external-anchor coverage scanner (B-0311) under `tools/alignment/` and modifies the concept registry. Please update the PR description to include this work (or split into separate PRs) so reviewers and release notes match what’s actually changing.
+  The PR description/title focus on adding the Alexa persona + self-boot + background service, but this PR also introduces an external-anchor coverage scanner (081KR2E4K0008QG0R001ZWARTN) under `tools/alignment/` and modifies the concept registry. Please update the PR description to include this work (or split into separate PRs) so reviewers and release notes match what’s actually changing.
   </pre>
 
 ### Thread 18 -- resolved [collapsed]
@@ -364,7 +364,7 @@
 - **`Copilot` (bot)** at 2026-05-09T18:21:54Z on `.kiro/alexa-service.ts`:115 (association: NONE)
 
   <pre>
-  P0: `let match;` is an implicit-`any` under `tsconfig.json` `strict: true`, which will fail typechecking. Also, `openItemRegex` only matches `B-\d{4}` and will miss backlog IDs like `B-0126.4` that exist in `docs/BACKLOG.md`, so P0/P1 extraction will be incomplete. Define `match` with an explicit type (e.g. `RegExpExecArray | null`) and broaden the ID capture to include dotted suffixes (and/or parse the link text more robustly).
+  P0: `let match;` is an implicit-`any` under `tsconfig.json` `strict: true`, which will fail typechecking. Also, `openItemRegex` only matches `B-\d{4}` and will miss backlog IDs like `081KR2E4K0008QG0R000G0DAY4` that exist in `docs/BACKLOG.md`, so P0/P1 extraction will be incomplete. Define `match` with an explicit type (e.g. `RegExpExecArray | null`) and broaden the ID capture to include dotted suffixes (and/or parse the link text more robustly).
 
   </pre>
 
@@ -422,7 +422,7 @@
 - **`Copilot` (bot)** at 2026-05-09T18:21:56Z on `.claude/skills/self-boot/SKILL.md`:4 (association: NONE)
 
   <pre>
-  P2: The skill frontmatter `description` is longer than the repo’s “carved sentence” guidance for skill descriptions (see `docs/backlog/P1/B-0347-carved-sentence-skill-descriptions-routing-budget.md`), and it’s written as multiple sentences. Tighten it to a single carved sentence (prefer &lt;120 chars) so skill routing stays within budget.
+  P2: The skill frontmatter `description` is longer than the repo’s “carved sentence” guidance for skill descriptions (see `docs/backlog/P1/081KR50HA0008QG0R002ZNFQBZ-carved-sentence-skill-descriptions-routing-budget.md`), and it’s written as multiple sentences. Tighten it to a single carved sentence (prefer &lt;120 chars) so skill routing stays within budget.
 
   </pre>
 
@@ -495,7 +495,7 @@
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Accept dotted backlog IDs in open-item parsing**
 
-  Update the open-item regex to match backlog IDs with suffixes (for example `B-0126.4`) instead of only `B-` plus exactly four digits. As written, `parseBacklog()` silently drops valid open rows that use dotted IDs, so Alexa’s P1 snapshot underreports active work and can recommend the wrong next priority even when `docs/BACKLOG.md` has those items open.
+  Update the open-item regex to match backlog IDs with suffixes (for example `081KR2E4K0008QG0R000G0DAY4`) instead of only `B-` plus exactly four digits. As written, `parseBacklog()` silently drops valid open rows that use dotted IDs, so Alexa’s P1 snapshot underreports active work and can recommend the wrong next priority even when `docs/BACKLOG.md` has those items open.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -511,10 +511,10 @@
 **Message:**
 
 ```
-feat(B-0311): external-anchor coverage scanner — per-concept audit tool
+feat(081KR2E4K0008QG0R001ZWARTN): external-anchor coverage scanner — per-concept audit tool
 
 Adds tools/alignment/audit_external_anchors.ts (+ test file) that:
-- Loads all concepts from the B-0310 concept registry
+- Loads all concepts from the 081KR2E4K0008QG0R003DS2XHJ concept registry
 - For each concept, locates its position in the source surface and
   extracts external URLs from a ±20-line context window
 - Classifies each URL as paper/rfc/blog/so-se/talk/other by domain
@@ -523,7 +523,7 @@ Adds tools/alignment/audit_external_anchors.ts (+ test file) that:
 
 Baseline result on current repo: 63 concepts total, 2 anchored,
 61 anchor-pending — establishing the coverage floor for follow-on
-anchor-addition work (B-0312+).
+anchor-addition work (081KR2E4K0008QG0R0009QXZ77+).
 
 Tests: 31 passing (classifyUrl, extractUrlsFromWindow, audit(),
 main() CLI). Build gate: 0 warnings, 0 errors.
@@ -542,7 +542,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-0311): address P0/P1/P2 review findings
+fix(081KR2E4K0008QG0R001ZWARTN): address P0/P1/P2 review findings
 
 P0: extractUrlsFromWindow now unions URLs across ALL occurrences of
     the concept ID instead of anchoring on the first line only —

@@ -30,8 +30,8 @@
 ## Summary
 
 - Creates `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` — copy-paste-ready license text for strategic product repos (KSK / wellness / civsim / American Dream 2.0 / DIO / Aurora / Dawn)
-- Closes B-0464; unblocks B-0468 (product-repo split ADR)
-- Updates B-0464 backlog row: status→closed, pre-start checklist, definition-of-done verification
+- Closes 081KRHWGX0008QG0R000BWAXNP; unblocks 081KRHWGX0008QG0R000F6HE6D (product-repo split ADR)
+- Updates 081KRHWGX0008QG0R000BWAXNP backlog row: status→closed, pre-start checklist, definition-of-done verification
 
 ## Design
 
@@ -64,7 +64,7 @@ The honor-system license text:
 ## Test plan
 
 - [ ] Verify `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` exists and renders correctly
-- [ ] Check license text against design constraints from B-0464 (all five MUST / four MUST NOT)
+- [ ] Check license text against design constraints from 081KRHWGX0008QG0R000BWAXNP (all five MUST / four MUST NOT)
 - [ ] Razor-discipline check: no enforceability claims, no legalese overreach
 - [ ] Glass-halo check: repos using this license remain public and indexable
 - [ ] Civsim mutual-privacy composed: FAQ addresses fork case correctly
@@ -230,7 +230,7 @@ when-NOT-to-apply, short FAQ, prior-art comparison table (Apache 2.0,
 BUSL, CC-NC, SSPL/ethical-source, proprietary — all considered and
 rejected in favor of honor-system approach).
 
-Closes B-0464. Unblocks B-0468 (product-repo split ADR).
+Closes 081KRHWGX0008QG0R000BWAXNP. Unblocks 081KRHWGX0008QG0R000F6HE6D (product-repo split ADR).
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -257,7 +257,7 @@ Two CI failures on PR #3122:
    - line 189: missing blank line between "refined by:" and the list
    Added the required blank lines at both locations.
 
-2. BACKLOG.md generated-index drift — B-0464 row has status: closed
+2. BACKLOG.md generated-index drift — 081KRHWGX0008QG0R000BWAXNP row has status: closed
    but BACKLOG.md was not updated to [x]. Fixed the checkbox.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

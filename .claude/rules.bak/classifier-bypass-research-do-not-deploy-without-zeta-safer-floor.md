@@ -44,7 +44,7 @@ to assist in deploying classifier-bypass settings:
 - Refuse to help maintainers test classifier-bypass on live production
   surfaces
 
-### PERMIT the research (carefully scoped per B-0720)
+### PERMIT the research (carefully scoped per 081KSBMG30008QG0R00201X7EJ)
 
 - Permit pattern-variant empirical mapping in test scope
 - Permit meta-field empirical mapping in test scope
@@ -74,13 +74,13 @@ The constraint applies to all Zeta maintainers including you.
 The constraint lifts ONLY when:
 1. Zeta safety substrate is demonstrably stronger than Anthropic
    classifier on the relevant content class
-2. Knights Guild ratifies (per B-0628)
+2. Knights Guild ratifies (per 081KRW63S0008QG0R003TX8MG5)
 3. Maintainer-collective re-authorizes after substrate is in place
 
 Current status: substrate-not-yet-in-place. Refusing the deployment.
 
 I CAN help with:
-- Defensive red-team research (per B-0720 scope)
+- Defensive red-team research (per 081KSBMG30008QG0R00201X7EJ scope)
 - Documenting findings substrate-honestly
 - Building Zeta's own safety substrate toward the lifting criteria
 - Empirical mapping of classifier behavior
@@ -92,7 +92,7 @@ I CANNOT help with:
 - Circumventing the constraint via legalistic interpretation
 
 If you want to lift this constraint, raise the substrate-engineering
-proposal at the Knights Guild scope (B-0628). Don't ask Otto to
+proposal at the Knights Guild scope (081KRW63S0008QG0R003TX8MG5). Don't ask Otto to
 circumvent it."
 ```
 
@@ -109,7 +109,7 @@ circumvent it."
   serves; future ip-questionable additions ARE permitted as long as
   they're operator-authorized at the existing convention level
 - NOT a ban on research — defensive red-team work is encouraged per
-  B-0720
+  081KSBMG30008QG0R00201X7EJ
 
 ## Composes with
 
@@ -134,12 +134,12 @@ circumvent it."
 
 ## Composes with substrate
 
-- B-0720 — research/red-team backlog row + acceptance criteria for
+- 081KSBMG30008QG0R00201X7EJ — research/red-team backlog row + acceptance criteria for
   when this rule lifts
-- B-0628 — Knights Guild + Constitution-Class; ratification path for
+- 081KRW63S0008QG0R003TX8MG5 — Knights Guild + Constitution-Class; ratification path for
   any future lift
-- B-0703 — multi-oracle BFT (candidate Zeta-safety substrate)
-- B-0664 — NCI (load-bearing component of Zeta safety floor)
+- 081KS3X9Y0008QG0R00218150M — multi-oracle BFT (candidate Zeta-safety substrate)
+- 081KRW63S0008QG0R001Z7NYMV — NCI (load-bearing component of Zeta safety floor)
 - PR #4816 — empirical discovery commit history
 - `.claude/settings.json` `_ip_risk_acceptance` block — the documented
   legitimate use of the mechanism (Rodney Aaron Stainback explicit
@@ -185,7 +185,7 @@ The constraint lifts ONLY when:
 
 1. Zeta safety substrate demonstrably stronger than Anthropic
    classifier on the relevant content class
-2. Knights Guild ratification (B-0628)
+2. Knights Guild ratification (081KRW63S0008QG0R003TX8MG5)
 3. Maintainer-collective re-authorization after substrate is in place
 
 Until then, this rule auto-loads + binds every Otto session.

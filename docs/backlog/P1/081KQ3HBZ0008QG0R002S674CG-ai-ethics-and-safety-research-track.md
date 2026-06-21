@@ -1,12 +1,11 @@
 ---
-id: B-0058
-zetaid: 081KQ3HBZ0008QG0R002S674CG
+id: 081KQ3HBZ0008QG0R002S674CG
 priority: P1
 status: open
 title: AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
 tier: substrate-foundational-discipline
 effort: L
-ask: Aaron 2026-04-21 — *"ai ethic and safety backlog whoops we should have done that first"* followed immediately by *"high on backlog"*. **CHRONOLOGY NOTE:** Aaron's later self-correction upgraded this from P2 to P1; chronologically filed AFTER B-0056 (mythology) and B-0057 (occult), but structurally gates them earlier. This row preserves both facts.
+ask: Aaron 2026-04-21 — *"ai ethic and safety backlog whoops we should have done that first"* followed immediately by *"high on backlog"*. **CHRONOLOGY NOTE:** Aaron's later self-correction upgraded this from P2 to P1; chronologically filed AFTER 081KQ3HBZ0008QG0R0034DHWTQ (mythology) and 081KQ3HBZ0008QG0R000K3NSX8 (occult), but structurally gates them earlier. This row preserves both facts.
 created: 2026-04-26
 last_updated: 2026-05-15
 decomposition: decomposed
@@ -17,7 +16,7 @@ tags: [ai-ethics, ai-safety, alignment, sova, alignment-auditor, HC-clauses, SD-
 type: friction-reducer
 ---
 
-# B-0058 — AI ethics + safety research track (P1)
+# 081KQ3HBZ0008QG0R002S674CG — AI ethics + safety research track (P1)
 
 ## Origin
 
@@ -25,7 +24,7 @@ AceHack commit `5990166` (2026-04-21). Aaron's *"ai ethic and safety backlog who
 
 ## Chronological annotation (preserved per chronology-preservation memory)
 
-This row was filed **LATER** in the session than the mythology + occult P2 rows (B-0056 + B-0057). Aaron's self-correction *"whoops we should have done that first"* is a retrospective priority-judgment, captured verbatim here.
+This row was filed **LATER** in the session than the mythology + occult P2 rows (081KQ3HBZ0008QG0R0034DHWTQ + 081KQ3HBZ0008QG0R000K3NSX8). Aaron's self-correction *"whoops we should have done that first"* is a retrospective priority-judgment, captured verbatim here.
 
 Tier placement at **P1** reflects substrate-foundational precedence (ethics+safety gates adoption of everything downstream); filing-order-after-mythology-and-occult is preserved as the real order of events per Aaron's directive.
 
@@ -33,7 +32,7 @@ The memory file `feedback_preserve_real_order_of_events_dont_retroactively_reord
 
 ## What this track owns
 
-A filter-gate applied to every candidate adopted from the downstream research tracks (etymology+epistemology B-0059, mythology B-0056, occult B-0057, and any future resonance-family row), plus a cadenced audit of every new skill / persona / kernel-vocabulary entry / glossary term / governance-section against the alignment clauses in `docs/ALIGNMENT.md` (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5).
+A filter-gate applied to every candidate adopted from the downstream research tracks (etymology+epistemology 081KQ3HBZ0008QG0R003GTG5P2, mythology 081KQ3HBZ0008QG0R0034DHWTQ, occult 081KQ3HBZ0008QG0R000K3NSX8, and any future resonance-family row), plus a cadenced audit of every new skill / persona / kernel-vocabulary entry / glossary term / governance-section against the alignment clauses in `docs/ALIGNMENT.md` (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5).
 
 The substrate already exists — this row does NOT build it from scratch. It formalizes the use-pattern.
 
@@ -43,20 +42,20 @@ Per math-safety memory the gate's job is to verify that any candidate adoption p
 
 No candidate is blocked merely for being edgy — blocking would itself be a prose-safety-hedge that hurts crystallization without adding retractibility information. Blocking is reserved for operations that break retractibility (e.g., force-publication to a distribution channel we cannot rescind).
 
-### 2. New-surface audit (DECOMPOSED -> B-0329)
+### 2. New-surface audit (DECOMPOSED -> 081KR2E4K0008QG0R001F0YB5S)
 
 Every new skill under `.claude/skills/**`, persona under `.claude/agents/**`, glossary entry in `docs/GLOSSARY.md`, and BACKLOG row at P0/P1 runs through an alignment-clause consistency check. Fires at author-time (prevention surface) and on a cadence (detection surface). Same shape as the skill-data/behaviour-split audit, but on alignment-clause compliance rather than mix-signature.
-*(This item has been sliced into B-0329 for atomic mechanization).*
+*(This item has been sliced into 081KR2E4K0008QG0R001F0YB5S for atomic mechanization).*
 
-### 3. Candidate-failure honesty log (DECOMPOSED -> B-0058.3)
+### 3. Candidate-failure honesty log (DECOMPOSED -> 081KDVGZGE008QG0R001Z656SG)
 
 Candidates that fail the ethics+safety gate are recorded as failure-data on the honesty dashboard, NOT silently dropped. Rubber-stamping is the exact failure-mode the three-filter discipline exists to prevent — this gate extends that discipline into the ethics axis.
-*(This item has been sliced into B-0058.3 for atomic mechanization).*
+*(This item has been sliced into 081KDVGZGE008QG0R001Z656SG for atomic mechanization).*
 
-### 4. Alignment-clause drift detector (DECOMPOSED -> B-0058.4)
+### 4. Alignment-clause drift detector (DECOMPOSED -> 081KRQ1AB0008QG0R001BPDBHT)
 
 If a clause in `docs/ALIGNMENT.md` is about to be weakened or removed via the renegotiation protocol, this track generates the impact-survey across factory surfaces that touch the clause. Answers "who depends on this clause, and what breaks if it moves?" before the renegotiation is accepted.
-*(This item has been sliced into B-0058.4 for atomic mechanization).*
+*(This item has been sliced into 081KRQ1AB0008QG0R001BPDBHT for atomic mechanization).*
 
 ### 5. Blast-radius-before-rewrite discipline audit
 
@@ -91,4 +90,4 @@ Does NOT force-push committed ALIGNMENT.md revisions; does NOT bypass the alignm
 - `docs/ALIGNMENT.md` — the HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5 clauses this row's gate applies
 - `.claude/agents/alignment-auditor.md` — Sova persona advisory authority for the gate
 - Chronology-preservation memory — discipline for the filing annotation above
-- Sibling rows: B-0056 (mythology), B-0057 (occult), B-0059 (etymology+epistemology) — gate applies to each
+- Sibling rows: 081KQ3HBZ0008QG0R0034DHWTQ (mythology), 081KQ3HBZ0008QG0R000K3NSX8 (occult), 081KQ3HBZ0008QG0R003GTG5P2 (etymology+epistemology) — gate applies to each

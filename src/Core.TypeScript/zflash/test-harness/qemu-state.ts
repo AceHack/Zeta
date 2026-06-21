@@ -11,7 +11,7 @@ import {
 } from "./serial-markers";
 
 /**
- * B-0891 scenario 3 QEMU state-preservation primitives.
+ * 081KSNY2Z0008QG0R0008PN7RQ scenario 3 QEMU state-preservation primitives.
  *
  * This file defines the qemu-img snapshot/restart sequence and the
  * serial-marker lifecycle gates that keep QEMU boot phases bounded without
@@ -223,7 +223,7 @@ export {
 /** Restart phase markers: zflash USB retention when boot image provided; else installed-OS cred-restore. */
 export function restartRetentionSerialMarkers(bootImagePath?: string): readonly string[] {
   if (bootImagePath !== undefined) {
-    // CI proves cred retention during reinstall (B-0891 ESP copy + picker skip) without
+    // CI proves cred retention during reinstall (081KSNY2Z0008QG0R0008PN7RQ ESP copy + picker skip) without
     // waiting for post-reboot installed-OS zeta-creds-restore in the same QEMU session.
     return B0891_RETENTION_USB_SERIAL_MARKERS;
   }
@@ -646,7 +646,7 @@ function runManagedCommandUntilSerialMarkers(
         stderr:
           `terminal marker observed before required serial markers: ${terminalFailureMarker}; ` +
           `still waiting for ${stopCondition.successMarkers.join(", ")}. ` +
-          `If install is progressing on tty1 only, ensure zeta-first-boot mirrors to /dev/ttyS0 (B-0891).`,
+          `If install is progressing on tty1 only, ensure zeta-first-boot mirrors to /dev/ttyS0 (081KSNY2Z0008QG0R0008PN7RQ).`,
       };
     }
 

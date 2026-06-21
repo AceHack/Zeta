@@ -305,7 +305,7 @@ approval before Phase 0b.
 - The repo deploys Pages via a **GitHub Action**: `.github/workflows/pages-deploy.yml`
   (`actions/upload-pages-artifact@v3` → `actions/deploy-pages@v4`).
 - **Important caveat 1**: that workflow is **`workflow_dispatch` only** (manual). Its own header
-  comment (scaffold B-0274) says the `push: main` auto-trigger was intentionally removed because the
+  comment (scaffold 081KR2E4K0008QG0R003VN9WC8) says the `push: main` auto-trigger was intentionally removed because the
   Astro build substrate doesn't exist yet.
 - **Important caveat 2 (verified)**: there is **no `build` script and no Astro dependency** in the root
   `package.json`. The workflow's `bun run build` → upload `./dist` step would currently fail — so the

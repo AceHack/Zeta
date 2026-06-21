@@ -29,14 +29,14 @@
 
 ## Summary
 - Add a structured schema contract for the local `~/.local/share/zeta-broadcasts` markdown bus.
-- Define default TTL/staleness handling and read-receipt shape for B-0213 before runner wiring.
+- Define default TTL/staleness handling and read-receipt shape for 081KQX9B50008QG0R001YRPGD6 before runner wiring.
 - Release the Codex claim file in this PR branch per the git-native claim protocol.
 
 ## Tests
 - `bun test tools/broadcast-local/schema.test.ts`
 - `git diff --check origin/main...HEAD`
 
-B-0213 slice: schema/TTL/receipts only; ask/offer matching, priority interrupt behavior, conflict detection, and history remain follow-up wiring work.
+081KQX9B50008QG0R001YRPGD6 slice: schema/TTL/receipts only; ask/offer matching, priority interrupt behavior, conflict detection, and history remain follow-up wiring work.
 
 ## Outcome
 

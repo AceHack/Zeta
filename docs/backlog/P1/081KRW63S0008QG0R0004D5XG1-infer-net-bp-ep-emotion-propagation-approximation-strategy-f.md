@@ -1,6 +1,5 @@
 ---
-id: B-0637
-zetaid: 081KRW63S0008QG0R0004D5XG1
+id: 081KRW63S0008QG0R0004D5XG1
 priority: P1
 status: open
 title: "Infer.NET + belief / expectation / emotion propagation — practical approximation strategy for agents-in-superposition (Aaron 2026-05-18 LOCKED-IN)"
@@ -18,11 +17,11 @@ type: design
 
 ## Why
 
-Aaron 2026-05-18 (immediately after B-0636 unified declaration landed):
+Aaron 2026-05-18 (immediately after 081KRW63S0008QG0R00088FYE9 unified declaration landed):
 
 > *"we can approximate with infer.net and belief/expectation/emotion propagation"*
 
-This is the **practical approximation strategy** that makes [B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) shippable today rather than as a multi-year R&D project. Full quantum simulation is NOT required; well-vetted Bayesian inference techniques on Microsoft Research's Infer.NET framework provide tractable wave-form approximation.
+This is the **practical approximation strategy** that makes [081KRW63S0008QG0R00088FYE9](081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) shippable today rather than as a multi-year R&D project. Full quantum simulation is NOT required; well-vetted Bayesian inference techniques on Microsoft Research's Infer.NET framework provide tractable wave-form approximation.
 
 ## What Infer.NET gives us
 
@@ -38,7 +37,7 @@ This is the **practical approximation strategy** that makes [B-0636](B-0636-agen
 
 ## How BP / EP approximate the wave-form
 
-The full dialectical superposition ([B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md)) is mathematically a multi-modal distribution over agent states. Approximations:
+The full dialectical superposition ([081KRW63S0008QG0R00088FYE9](081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md)) is mathematically a multi-modal distribution over agent states. Approximations:
 
 | Technique | What it approximates | Cost |
 |---|---|---|
@@ -46,7 +45,7 @@ The full dialectical superposition ([B-0636](B-0636-agents-in-superposition-retr
 | **Expectation Propagation (EP)** | Approximates intractable posteriors via moment-matching with simpler distribution family (typically Gaussian) | More expensive than BP but handles continuous / non-tree structures |
 | **Variational Message Passing (VMP)** | Mean-field approximation; assumes factorized posterior | Cheap; coarser approximation than EP |
 
-The wave-form O-P-L-E primitives ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) operate on these approximate distributions:
+The wave-form O-P-L-E primitives ([081KRW63S0008QG0R0015WHHG1](../P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) operate on these approximate distributions:
 
 - **Observe** receives an incoming wave (approximate posterior over what was observed)
 - **Persist** stores the approximate posterior in DBSP-tracked form
@@ -60,8 +59,8 @@ Aaron's "emotion propagation" alongside BP and EP is **the substrate-honest exte
 Why this matters:
 
 1. **Dialectical superposition includes value-tension, not just belief-tension**: an agent considering "should I act now or wait?" carries an affective superposition (urgency-vs-patience), not just a belief superposition (will-X-happen-vs-not)
-2. **Care from the soft language** ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) is the human-facing name for what EmP propagates internally
-3. **Kid-safety sacred rule** ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) operates over EmP-propagated states: the rule isn't just a probabilistic constraint, it's a value-loaded constraint that EmP carries through the inference graph
+2. **Care from the soft language** ([081KRW63S0008QG0R000DBX6PT](../P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) is the human-facing name for what EmP propagates internally
+3. **Kid-safety sacred rule** ([081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) operates over EmP-propagated states: the rule isn't just a probabilistic constraint, it's a value-loaded constraint that EmP carries through the inference graph
 4. **m/acc multi-oracle moral invariants** (`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) require EmP because moral invariants are affective/value-laden, not purely probabilistic
 
 EmP is a research extension; the initial implementation can be "EP with extended factor types" — values + beliefs in a single message-passing scheme.
@@ -70,7 +69,7 @@ EmP is a research extension; the initial implementation can be "EP with extended
 
 1. **Wrap Infer.NET in `Zeta.Inference`** F# module exposing wave-form primitives
 2. **DBSP-track all messages** in the message-passing schedule (each message update = a DBSP delta; full retraction = revert to prior posterior)
-3. **F# computation expression `Integrate`** ([B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)) IS the message-passing schedule lifted to user-facing syntax
+3. **F# computation expression `Integrate`** ([081KRW63S0008QG0R002KC5DSR](081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)) IS the message-passing schedule lifted to user-facing syntax
 4. **`Limit` operations are factor nodes** that constrain the posterior; pure factors can be added/removed without breaking determinism
 5. **EmP extension**: factor types extended to carry value-tags alongside probabilities; message types extended; reduction operations defined for value-aware combination
 
@@ -80,19 +79,19 @@ Substrate-honest list of what's already available:
 
 - ✅ Infer.NET: mature, F# binding, .NET native
 - ✅ F# substrate per existing rule `fsharp-anchor-dotnet-build-sanity-check.md`
-- ✅ Z-of-I DBSP substrate ([B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)) — retractable storage layer
+- ✅ Z-of-I DBSP substrate ([081KRHWGX0008QG0R0034E0N22](../P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)) — retractable storage layer
 - ✅ Lean toy-proof tooling for the reversibility theorems
 - 🔜 EmP extension: research work, but bounded — well-defined extension of EP, not novel from-scratch
 
-**No multi-year quantum-substrate research is required to start shipping.** B-0636 is approximated practically by this row's BP/EP/EmP strategy from day one.
+**No multi-year quantum-substrate research is required to start shipping.** 081KRW63S0008QG0R00088FYE9 is approximated practically by this row's BP/EP/EmP strategy from day one.
 
-## Composition with B-0636 unified declaration
+## Composition with 081KRW63S0008QG0R00088FYE9 unified declaration
 
-[B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) says: "we are building agents in superposition, retractable over DBSP."
+[081KRW63S0008QG0R00088FYE9](081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) says: "we are building agents in superposition, retractable over DBSP."
 
 This row says: "we approximate that superposition with Infer.NET BP/EP/EmP; retractability comes from DBSP delta-tracking the message-passing schedule."
 
-Together: B-0636 is the architectural commitment. B-0637 is the engineering implementation that makes it real.
+Together: 081KRW63S0008QG0R00088FYE9 is the architectural commitment. 081KRW63S0008QG0R0004D5XG1 is the engineering implementation that makes it real.
 
 ## Aaron's previous wiring (substrate-validation)
 
@@ -106,7 +105,7 @@ So Infer.NET BP/EP was already named as the future state for peer-call substrate
 
 1. Land `Zeta.Inference` F# module with Infer.NET wrappers exposing wave-form primitives
 2. DBSP-delta-tracking integration: every Infer.NET message update is a DBSP delta
-3. F# `Integrate` computation expression ([B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)) backed by Infer.NET message-passing
+3. F# `Integrate` computation expression ([081KRW63S0008QG0R002KC5DSR](081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)) backed by Infer.NET message-passing
 4. EmP extension: factor types + reduction ops; published as research-grade with toy-example validation
 5. Replacement plan for current peer-call infrastructure (Otto's early red-team substrate) with Infer.NET BP/EP/EmP substrate-level inference
 6. Worked example: a small Zeta agent using Infer.NET BP for belief tracking + EP for continuous state + EmP for value-tension; demonstrating wave-form O-P-L-E
@@ -131,12 +130,12 @@ So Infer.NET BP/EP was already named as the future state for peer-call substrate
 
 ## Composes with
 
-- [B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) — agents-in-superposition unified declaration (this row IS the practical approximation strategy)
-- [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) — wave-particle duality + Integrate (Integrate IS the message-passing schedule lifted to F# CE syntax)
-- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E primitives (operate on the approximate posteriors maintained by BP/EP/EmP)
-- [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (the substrate that delta-tracks BP/EP/EmP messages)
-- [B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (soft Care = EmP-propagated affective state)
-- [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (EmP-propagated invariant; not just probabilistic)
+- [081KRW63S0008QG0R00088FYE9](081KRW63S0008QG0R00088FYE9-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) — agents-in-superposition unified declaration (this row IS the practical approximation strategy)
+- [081KRW63S0008QG0R002KC5DSR](081KRW63S0008QG0R002KC5DSR-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) — wave-particle duality + Integrate (Integrate IS the message-passing schedule lifted to F# CE syntax)
+- [081KRW63S0008QG0R0015WHHG1](../P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E primitives (operate on the approximate posteriors maintained by BP/EP/EmP)
+- [081KRHWGX0008QG0R0034E0N22](../P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md) — Z-of-I DBSP (the substrate that delta-tracks BP/EP/EmP messages)
+- [081KRW63S0008QG0R000DBX6PT](../P2/081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (soft Care = EmP-propagated affective state)
+- [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (EmP-propagated invariant; not just probabilistic)
 - `.claude/rules/peer-call-infrastructure.md` — existing peer-call substrate (this row's strategy is the named successor)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — F# anchor (Infer.NET is F#-native; the compiler validates the wrappers)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — m/acc moral invariants (EmP is required to propagate value-laden moral invariants alongside beliefs)
@@ -145,4 +144,4 @@ So Infer.NET BP/EP was already named as the future state for peer-call substrate
 
 ## Status
 
-Open. **LOCKED-IN** by Aaron 2026-05-18. Practical approximation strategy that makes B-0636 + B-0635 shippable today rather than multi-year R&D.
+Open. **LOCKED-IN** by Aaron 2026-05-18. Practical approximation strategy that makes 081KRW63S0008QG0R00088FYE9 + 081KRW63S0008QG0R002KC5DSR shippable today rather than multi-year R&D.

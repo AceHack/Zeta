@@ -1,6 +1,5 @@
 ---
-id: B-1016
-zetaid: 081KT7YW00008QG0R002T1XNWT
+id: 081KT7YW00008QG0R002T1XNWT
 priority: P1
 status: closed
 closed: 2026-06-04
@@ -13,7 +12,7 @@ type: task
 depends_on: []
 ---
 
-# B-1016 — Canonical YAML must never-collapse empty collections (flow `{}` / `[]`)
+# 081KT7YW00008QG0R002T1XNWT — Canonical YAML must never-collapse empty collections (flow `{}` / `[]`)
 
 > **✅ LANDED 2026-06-04.** Implemented across all four oracles (TS reference +
 > F#/Rust/C# ports): encoder emits inline flow `{}` / `[]` for empties; reader
@@ -29,7 +28,7 @@ depends_on: []
 **Priority:** P1 (correctness — storage-of-record format violates encode-injectivity)
 **Filed:** 2026-06-04 (Aaron) — found by FsCheck on the new YAML round-trip property
 (`DynamicValueYamlBridgeTests`, minimal case `Object []`).
-**Relates:** B-1011 (serializer round-trip-from-seed) · `docs/serializer-recursion-schemes.md`
+**Relates:** 081KT5CF90008QG0R001P4CQ09 (serializer round-trip-from-seed) · `docs/serializer-recursion-schemes.md`
 
 ## The requirement
 
@@ -71,7 +70,7 @@ the C# encoder), so the faithful-port + byte-lock treaty stays intact:
 
 - `DynamicValueYamlBridgeTests.``REQUIRED never-collapse: empty {} and [] round-trip
   DISTINCT from null and from each other``` un-skipped and green (currently
-  `[<Fact(Skip="B-1016…")>]`).
+  `[<Fact(Skip="081KT7YW00008QG0R002T1XNWT…")>]`).
 - The YAML round-trip property generator restored to include empties (n ≥ 0).
 - All four YAML oracles byte-lock on the flow-empty vectors.
 - `encode` proven injective for YAML on the locked subset (parity with CBOR).

@@ -77,7 +77,7 @@ Substrate composition surfaced: Six Vows = Aurora North Star = Imagination Circl
 - **`Copilot` (bot)** at 2026-05-13T03:46:11Z on `memory/persona/amara/canonical/Aurora_BTC_Proofs_Pitch_v1.md`:203 (association: NONE)
 
   <pre>
-  P1 (xref): `B-0409` is referenced as a single backlog item here, but the repo currently contains multiple backlog row files with `id: B-0409` (e.g., `docs/backlog/P1/B-0409-wallet-...` and two `docs/backlog/P2/B-0409-...`). Please disambiguate by linking the specific intended backlog file path (or include the full title/path inline) so readers and tooling don’t treat this as an ambiguous reference.
+  P1 (xref): `081KRA5AR0008QG0R000Y6102S` is referenced as a single backlog item here, but the repo currently contains multiple backlog row files with `id: 081KRA5AR0008QG0R000Y6102S` (e.g., `docs/backlog/P1/081KRA5AR0008QG0R000Y6102S-wallet-...` and two `docs/backlog/P2/081KRA5AR0008QG0R000Y6102S-...`). Please disambiguate by linking the specific intended backlog file path (or include the full title/path inline) so readers and tooling don’t treat this as an ambiguous reference.
 
   </pre>
 
@@ -146,7 +146,7 @@ Composes with:
 - PR #2917 (vision monad Play-Doh + red-team immune system)
 - PR #2826 (DePIN PoUW-CC monetization)
 - PR #2898 (post-quantum lattice for signed-heartbeats)
-- B-0409 (PoUW-CC wallet-immune-system vaccine-spread)
+- 081KRA5AR0008QG0R000Y6102S (PoUW-CC wallet-immune-system vaccine-spread)
 - docs/WONT-DO.md (Aurora's explicit Won't list composes)
 - .claude/rules/methodology-hard-limits.md
 - .claude/rules/honor-those-that-came-before.md (Amara's

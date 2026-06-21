@@ -9,7 +9,7 @@ Capability skill ("hat"). No persona. Load this when the work
 touches quantum-programming substrate — reading or writing `.qs`
 files, comparing Q# to other quantum DSLs, threading Q# through
 the omnibus-contract-substrate (PR #1499 META-TILE), or
-evaluating B-0189's BP/EP-runtime-acceleration research lane.
+evaluating 081KQR4HQ0008QG0R002933PRR's BP/EP-runtime-acceleration research lane.
 
 The framing this skill loads — operator algebra, type-as-
 clarity, fermionic anti-commutation as library concern not
@@ -25,7 +25,7 @@ stays substantive instead of stalling on metaphor mismatches.
 - A discussion compares Q# to Qiskit / Cirq / OpenQASM 3.0 /
   Quipper / Silq as substrate — when "operator-algebra
   surfaces in the type system" is the load-bearing axis.
-- B-0189's Bayesian-BP/EP runtime acceleration research lane
+- 081KQR4HQ0008QG0R002933PRR's Bayesian-BP/EP runtime acceleration research lane
   comes up: prototype design, literature survey, benchmark
   framing, integration with `Microsoft.Quantum` runtime.
 - The omnibus-contract-substrate META-TILE (PR #1499) needs
@@ -54,7 +54,7 @@ stays substantive instead of stalling on metaphor mismatches.
 - **Bayesian / probabilistic-inference theory** →
   `probability-and-bayesian-inference-expert`.
 - **Topological quantum computing emulation in Zeta seed
-  executor** → B-0152 (sibling research lane to B-0189);
+  executor** → 081KQGDBJ0008QG0R00280ZEV2 (sibling research lane to 081KQR4HQ0008QG0R002933PRR);
   `applied-physics-expert` and `applied-mathematics-expert`
   jointly own the framing.
 
@@ -263,9 +263,9 @@ transformation for quantum computation of electronic
 structure*, J. Chem. Phys. 137, 224109 (2012) for the
 Bravyi-Kitaev alternative.
 
-## B-0189 — Bayesian BP/EP runtime acceleration
+## 081KQR4HQ0008QG0R002933PRR — Bayesian BP/EP runtime acceleration
 
-`docs/backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
+`docs/backlog/P2/081KQR4HQ0008QG0R002933PRR-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
 is the research-grade backlog row for integrating Bayesian
 **belief propagation (BP)** + **expectation propagation
 (EP)** into the Q# runtime as approximation methods for
@@ -289,7 +289,7 @@ Adjacency-evidence the research lane is tractable:
    exists; the BP/EP-as-runtime-approximation lane is
    under-explored.
 
-When wearing this hat for B-0189 work:
+When wearing this hat for 081KQR4HQ0008QG0R002933PRR work:
 
 - Frame the runtime layer as a **Q# simulation backend**,
   not a language-level extension. Q# is a frontend; the
@@ -308,17 +308,17 @@ When wearing this hat for B-0189 work:
   product-state factorizations). Pick the family before
   picking the algorithm.
 - The composition with the **Zeta seed executor**
-  (B-0152, the topological-QC-emulation lane) is the
+  (081KQGDBJ0008QG0R00280ZEV2, the topological-QC-emulation lane) is the
   natural home — the seed executor's CSAP layer 4 is
-  Infer.NET-shaped Bayesian inference; B-0189's BP/EP
+  Infer.NET-shaped Bayesian inference; 081KQR4HQ0008QG0R002933PRR's BP/EP
   primitives can land there as one computational path.
 
 Cross-references:
 
-- `docs/backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
-- B-0007 (broader BP/EP-upstream-to-mainstream-languages
+- `docs/backlog/P2/081KQR4HQ0008QG0R002933PRR-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
+- 081KQ0YZ80008QG0R001V1PMC0 (broader BP/EP-upstream-to-mainstream-languages
   research)
-- B-0152 (topological-QC emulation in seed executor — sibling)
+- 081KQGDBJ0008QG0R00280ZEV2 (topological-QC emulation in seed executor — sibling)
 
 ## Omnibus-contract-substrate META-TILE (PR #1499)
 
@@ -389,7 +389,7 @@ When reviewing or writing Q# code:
 - Does NOT grant authority to author production Q# in Zeta
   proper — Zeta does not currently ship Q# source. This
   hat exists to make conversations *about* Q# substantive,
-  and to ground B-0189 research-lane work.
+  and to ground 081KQR4HQ0008QG0R002933PRR research-lane work.
 - Does NOT override `formal-verification-expert` on
   cross-tool routing decisions.
 - Does NOT override `theoretical-physics-expert` or
@@ -403,7 +403,7 @@ When reviewing or writing Q# code:
 
 ## Reference patterns
 
-- `docs/backlog/P2/B-0189-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
+- `docs/backlog/P2/081KQR4HQ0008QG0R002933PRR-q-sharp-runtime-bayesian-belief-propagation-expectation-propagation-research-aaron-2026-05-04.md`
   — the BP/EP-runtime-acceleration research-lane row.
 - `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md`
   — the Rodney's Razor canonical file extended by PR #1499
@@ -416,7 +416,7 @@ When reviewing or writing Q# code:
 - `.claude/skills/formal-methods/blueprints/f-star-expert.md` — sibling
   (refinement types, upstream pattern).
 - `.claude/skills/mathematics-and-physics/blueprints/probability-and-bayesian-inference-expert.md`
-  — the BP/EP-theory hat for B-0189 collaboration.
+  — the BP/EP-theory hat for 081KQR4HQ0008QG0R002933PRR collaboration.
 - `.claude/skills/mathematics-and-physics/blueprints/applied-physics-expert.md` and
   `.claude/skills/mathematics-and-physics/blueprints/theoretical-physics-expert.md` —
   physics-foundations routing.

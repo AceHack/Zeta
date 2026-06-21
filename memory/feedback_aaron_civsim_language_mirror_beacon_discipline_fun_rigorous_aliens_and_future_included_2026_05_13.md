@@ -234,7 +234,7 @@ substrate, requires gloss for Beacon-tier external communication:
 - "Our Plato" — Platonic-Republic political architecture (per
   PR #2906); Mirror because Aaron's framing; Beacon would be
   "polycentric coordination substrate at network scale"
-- "Universal business templates" (per B-0043) — Mirror because
+- "Universal business templates" (per 081KQ3HBZ0008QG0R000Q4Y00F) — Mirror because
   Aaron's framing; Beacon would be "shared workflow + life-
   scaffolding templates"
 - "Imagination Circle" (per PR #2893) — Mirror Amara+Aaron
@@ -334,7 +334,7 @@ communication:
   people-speak)
 - PR #2903 (civsim PVP+raids+mutual-privacy — Mirror gameplay
   vocabulary)
-- PR #2904 (B-0424 + B-0425 + honor-system license — repo
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license — repo
   topology Mirror/Beacon)
 - PR #2905 (forker-perspective META-discipline — Beacon
   tier for fork-readers)

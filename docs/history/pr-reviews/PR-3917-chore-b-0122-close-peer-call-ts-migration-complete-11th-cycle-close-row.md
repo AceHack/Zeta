@@ -55,7 +55,7 @@ Zero `.sh` files; 12 `.ts` files ship. Rule 0 (`no more .sh files except install
 
 - `.claude/rules/rule-0-no-sh-files.md` — Rule 0 itself cites peer-call migration as the canonical example
 - `.claude/rules/peer-call-infrastructure.md` — lists the 12 TS files as current state
-- B-0118 (amara peer-call umbrella) closed via PR #3902 this session
+- 081KQDTYV0008QG0R0037YJPEX (amara peer-call umbrella) closed via PR #3902 this session
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

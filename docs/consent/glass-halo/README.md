@@ -33,15 +33,15 @@ signer's part composes onto the shared record; the non-consenting party stays pr
 
 ## Revocability (architectural, not a favor)
 
-Glass-halo consent is **revocable** (per `B-0659` consent-as-Limit — revocability is
+Glass-halo consent is **revocable** (per `081KRW63S0008QG0R001WKJN53` consent-as-Limit — revocability is
 architectural). A signer revokes by committing a revocation under their own identity (or
 via the attached e-signature process). Glass-halo is a chosen state with a real exit,
 never a trap.
 
 ## Hard floor: kid-safety > consent
 
-Per `B-0654` (child-safety > consent priority ordering) and the constitutional
-kid-safety-absolute floor (`B-0926`): glass-halo consent requires the signer be an adult
+Per `081KRW63S0008QG0R002WT5VTQ` (child-safety > consent priority ordering) and the constitutional
+kid-safety-absolute floor (`081KSRGFP0008QG0R00091PP56`): glass-halo consent requires the signer be an adult
 competent to consent, and **never** authorizes exposure that conflicts with kid-safety.
 The kid-safety floor overrides any consent.
 
@@ -50,11 +50,11 @@ The kid-safety floor overrides any consent.
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — the
   named-human acceptance pattern; this directory is the multi-party "equivalent
   auditable substrate" form (each person self-signs via their own commit).
-- `.claude/rules/non-coercion-invariant.md` (HC-8) + `B-0659` consent-as-Limit —
+- `.claude/rules/non-coercion-invariant.md` (HC-8) + `081KRW63S0008QG0R001WKJN53` consent-as-Limit —
   consent is offered, revocable, never coerced.
 - `.claude/rules/glass-halo-bidirectional.md` + the externalized-record economy — the
   record IS the consent; the signature IS a commit.
-- `B-0654` child-safety > consent + `B-0926` kid-safety-absolute — the overriding floor.
+- `081KRW63S0008QG0R002WT5VTQ` child-safety > consent + `081KSRGFP0008QG0R00091PP56` kid-safety-absolute — the overriding floor.
 
 ## Roster
 
@@ -86,7 +86,7 @@ shared record.
 
 - Scope: my own information only. This does not waive anyone else's privacy.
 - Revocable: I may revoke this by committing a revocation under my identity.
-- Floor: this never overrides kid-safety (B-0654 / B-0926).
+- Floor: this never overrides kid-safety (081KRW63S0008QG0R002WT5VTQ / 081KSRGFP0008QG0R00091PP56).
 - Signature: this commit, authored by my GitHub identity, is my signature
   (date: <YYYY-MM-DD>).
 ```

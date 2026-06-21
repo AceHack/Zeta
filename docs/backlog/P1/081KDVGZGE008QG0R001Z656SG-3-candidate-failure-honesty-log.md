@@ -1,6 +1,5 @@
 ---
-id: B-0058.3
-zetaid: 081KDVGZGE008QG0R001Z656SG
+id: 081KDVGZGE008QG0R001Z656SG
 priority: P1
 status: closed
 closed: 2026-05-27
@@ -11,11 +10,11 @@ effort: S
 parent: 081KQ3HBZ0008QG0R002S674CG
 ---
 
-# B-0058.3 — Candidate-failure honesty log
+# 081KDVGZGE008QG0R001Z656SG — Candidate-failure honesty log
 
 ## Origin
 
-Decomposed from B-0058 item 3.
+Decomposed from 081KQ3HBZ0008QG0R002S674CG item 3.
 
 ## Scope
 

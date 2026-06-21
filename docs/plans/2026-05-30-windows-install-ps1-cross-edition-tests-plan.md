@@ -108,7 +108,7 @@ $RepoRoot = (Resolve-Path "$PSScriptRoot\..\..").Path
 function Have($c) { [bool](Get-Command $c -ErrorAction SilentlyContinue) }
 
 # 1. scoop (user-mode; no admin). Download-then-exec (NOT pipe-to-shell) — mirrors macos.sh's
-# Homebrew B-0063 pattern: fetch to a temp .ps1, verify non-empty, run the local file.
+# Homebrew 081KQ8P5D0008QG0R001DMK8JD pattern: fetch to a temp .ps1, verify non-empty, run the local file.
 if (-not (Have scoop)) {
   $scoopTmp = Join-Path $env:TEMP "scoop-install-$([guid]::NewGuid()).ps1"
   try {

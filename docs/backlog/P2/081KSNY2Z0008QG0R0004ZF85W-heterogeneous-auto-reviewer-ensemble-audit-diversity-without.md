@@ -1,6 +1,5 @@
 ---
-id: B-0877
-zetaid: 081KSNY2Z0008QG0R0004ZF85W
+id: 081KSNY2Z0008QG0R0004ZF85W
 priority: P2
 status: open
 title: Heterogeneous auto-reviewer ensemble audit — diversity without correlated blind spots (multi-model + static analysis + formal tools + specialized prompts)
@@ -46,7 +45,7 @@ Per Kestrel 2026-05-28: *"The auto-reviewers need to be diverse enough that they
   - Identified gaps: failure-mode classes with no reviewer; failure-mode classes covered by only one reviewer of same family
 - Audit report at `docs/research/2026-XX-XX-auto-reviewer-ensemble-diversity-audit.md`
 - Proposals (if gaps found) for additions: new reviewer types, prompting variations on existing models for specialization
-- Composes with B-0875 (error-class extraction) — known error classes from extraction inform what reviewers SHOULD cover
+- Composes with 081KSNY2Z0008QG0R000K3ETGB (error-class extraction) — known error classes from extraction inform what reviewers SHOULD cover
 
 ## Substrate-honest framing
 

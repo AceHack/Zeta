@@ -127,7 +127,7 @@ disagreement), BP-10 (ASCII-only). Grows but bounded.
 
 - **Round:** 44 (in-flight)
 - **Current branch:** claim/b0311-external-anchor-coverage-scanner-2026-05-09
-- **Active P0 items:** B-0160 (mechanical-authorization-check-skill)
+- **Active P0 items:** 081KQJZR90008QG0R000FTJ1TC (mechanical-authorization-check-skill)
 - **Active P1 items:** Multiple alignment/substrate-quality items
 - **Factory status:** Building autonomous-backlog-pickup capability
   across loops (Otto, Vera, Riven, Lior, Ani, Alexa)

@@ -1,4 +1,4 @@
-// missed-substrate-detector.ts — B-0442 slice 3+4: real branch-vs-squash comparator
+// missed-substrate-detector.ts — 081KRFA460008QG0R00061SXRW slice 3+4: real branch-vs-squash comparator
 //
 // Background service that detects branch-vs-merged-PR drift: commits landing
 // on a feature branch AFTER its parent PR squash-merged. Slice 4 shipped the
@@ -20,7 +20,7 @@
 //      commit-count + merge-age.
 //
 // Run: bun tools/bg/missed-substrate-detector.ts [--once] [--poll-min N] [--lookback-min N] [--fetch-limit N] [--no-publish] [--agent NAME] [--to NAME]
-// Compose with: B-0442 + B-0400 (bus) + B-0440 / B-0441 (companion services).
+// Compose with: 081KRFA460008QG0R00061SXRW + 081KR7JY10008QG0R000R503K2 (bus) + 081KRFA460008QG0R001KC0VBH / 081KRFA460008QG0R00229616S (companion services).
 
 import { spawnSync } from "node:child_process";
 import { publish } from "../bus/bus";
@@ -39,10 +39,10 @@ export type DetectorConfig = {
   noPublish: boolean;
   fromAgent: SenderAgentId;
   toAgent: AgentId;
-  /** Slice 5b (B-0504): when true, pollOnce calls openRecoveryPR for each
+  /** Slice 5b (081KRHWGX0008QG0R000PVB6FF): when true, pollOnce calls openRecoveryPR for each
    *  CascadeFinding after detecting cascades. Default false. */
   autoRecover: boolean;
-  /** Slice 5b (B-0504): when true AND autoRecover is true, recovery runs
+  /** Slice 5b (081KRHWGX0008QG0R000PVB6FF): when true AND autoRecover is true, recovery runs
    *  in dry-run mode (no git mutations; log intent only). Default false. */
   recoveryDryRun: boolean;
 };
@@ -83,10 +83,10 @@ export type PollResult = {
   fetchStatus: "ok" | "gh-error";
   fetchTruncated: boolean;
   publishedEnvelopeIds: string[];
-  /** Slice 5b (B-0504): count of findings for which openRecoveryPR was
+  /** Slice 5b (081KRHWGX0008QG0R000PVB6FF): count of findings for which openRecoveryPR was
    *  attempted. 0 when config.autoRecover=false or adapter missing. */
   recoveryAttempts: number;
-  /** Slice 5b (B-0504): count of openRecoveryPR results with status="opened". */
+  /** Slice 5b (081KRHWGX0008QG0R000PVB6FF): count of openRecoveryPR results with status="opened". */
   recoveryOpened: number;
   note: string;
 };
@@ -108,7 +108,7 @@ export type Adapters = {
     finding: CascadeFinding,
   ) => MessageEnvelope;
   /**
-   * Slice 5b (B-0504): optional recovery adapter. When provided AND
+   * Slice 5b (081KRHWGX0008QG0R000PVB6FF): optional recovery adapter. When provided AND
    * `config.autoRecover === true`, `pollOnce` invokes this for each
    * `CascadeFinding` after detection. Optional (`?`) so existing tests
    * that don't exercise the recovery path don't need to provide it;
@@ -259,8 +259,8 @@ const REAL_ADAPTERS: Adapters = {
         urgency: finding.urgency,
       },
     }),
-  // Slice 5b (B-0504): production recovery adapter. Composes the pure
-  // `openRecoveryPR` core function (B-0503) with real spawnSync wrappers
+  // Slice 5b (081KRHWGX0008QG0R000PVB6FF): production recovery adapter. Composes the pure
+  // `openRecoveryPR` core function (081KRHWGX0008QG0R0027YXBTB) with real spawnSync wrappers
   // for each git/gh sub-operation. See `REAL_RECOVERY_ADAPTERS` below for
   // the sub-adapter implementations + their security validation.
   //
@@ -286,7 +286,7 @@ const REAL_ADAPTERS: Adapters = {
 };
 
 /**
- * Slice 5b (B-0504): pre-mutation safety check. Returns true if `git
+ * Slice 5b (081KRHWGX0008QG0R000PVB6FF): pre-mutation safety check. Returns true if `git
  * status --porcelain` reports no modified/untracked/deleted files in
  * the current checkout. Used as the gate before `REAL_ADAPTERS.openRecoveryPR`
  * runs any mutating sub-adapter — see the comment block on that adapter
@@ -304,15 +304,15 @@ function isWorkingTreeClean(): boolean {
 }
 
 /**
- * Slice 5b (B-0504): real production sub-adapters for openRecoveryPR.
+ * Slice 5b (081KRHWGX0008QG0R000PVB6FF): real production sub-adapters for openRecoveryPR.
  *
  * Each adapter wraps a `spawnSync` call with args-as-array (no shell, no
- * injection). Per the B-0503 security note + the `compareBranchToMerged`
+ * injection). Per the 081KRHWGX0008QG0R0027YXBTB security note + the `compareBranchToMerged`
  * pattern, branch names and commit SHAs from `CascadeFinding` are
  * already validated by `realCascadeDetector` (allow-list regex); these
  * adapters trust the validated inputs.
  *
- * `gitCreateBranch` honors the B-0503 retry-safety contract: if the local
+ * `gitCreateBranch` honors the 081KRHWGX0008QG0R0027YXBTB retry-safety contract: if the local
  * branch already exists (from a prior partial-failure attempt), it deletes
  * and recreates from `base` so the recovery retry doesn't wedge.
  */
@@ -333,7 +333,7 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     }
   },
   gitCreateBranch: (branch: string, base: string) => {
-    // Retry-safety per the B-0503 RecoveryAdapters.gitCreateBranch contract:
+    // Retry-safety per the 081KRHWGX0008QG0R0027YXBTB RecoveryAdapters.gitCreateBranch contract:
     // if the local branch already exists (prior partial-failure recovery
     // attempt), delete it before recreating from `base`.
     //
@@ -391,7 +391,7 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     return "error";
   },
   gitPush: (branch: string) => {
-    // --force-with-lease honors the B-0503 retry-safety hint: a prior
+    // --force-with-lease honors the 081KRHWGX0008QG0R0027YXBTB retry-safety hint: a prior
     // attempt may have pushed an incomplete branch; --force-with-lease
     // overwrites only if the remote matches what we last fetched (safer
     // than --force).
@@ -578,7 +578,7 @@ export function pollOnce(
     }
   }
 
-  // Slice 5b (B-0504): recovery loop. Runs only when `config.autoRecover`
+  // Slice 5b (081KRHWGX0008QG0R000PVB6FF): recovery loop. Runs only when `config.autoRecover`
   // is true AND the optional `openRecoveryPR` adapter is provided. Recovery
   // failures (adapter throws) are logged into recoveryNotes and do NOT
   // throw — the poll cycle completes successfully even when individual

@@ -28,14 +28,14 @@
 ## Description
 
 ## Summary
-Claim + one bounded step for B-0314 slice 9.
+Claim + one bounded step for 081KR2E4K0008QG0R001ADMBVW slice 9.
 - Re-decomposed remaining BP-23–28 per 'assume decomposition mistakes' rule; this claim bounds to smallest safe slice (BP-23/24/25).
 - Dedicated worktree + pushed claim branch (no root checkout touched).
 - Claim file landed as durable substrate.
 - Focused check: `dotnet build -c Release` → 0 Warning(s) 0 Error(s) (gate passed in both root and worktree).
 
 ## Why
-B-0314 is broad (28 rules, 10 slices); re-decomp ensures velocity over stability and one-step-at-a-time.
+081KR2E4K0008QG0R001ADMBVW is broad (28 rules, 10 slices); re-decomp ensures velocity over stability and one-step-at-a-time.
 
 ## Checks
 - Build gate: passed (0/0)
@@ -141,5 +141,5 @@ Co-authored-by: Cursor <cursoragent@cursor.com>
 **Message:**
 
 ```
-fix(B-0314): markdownlint errors in slice 9 claim file
+fix(081KR2E4K0008QG0R001ADMBVW): markdownlint errors in slice 9 claim file
 ```

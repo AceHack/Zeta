@@ -1,9 +1,8 @@
 ---
-id: B-0869
-zetaid: 081KSNY2Z0008QG0R000HENSVM
+id: 081KSNY2Z0008QG0R000HENSVM
 priority: P1
 status: open
-title: DORA of our live system — operator's 2nd evaluation mandate (the OTHER half of operator's performance surface beyond B-0866's 24-months-ahead-in-AI mandate); substrate for direct ServiceTitan-live-system DORA metric delivery + composition with AI mandate (operator 2026-05-28)
+title: DORA of our live system — operator's 2nd evaluation mandate (the OTHER half of operator's performance surface beyond 081KSKBP80008QG0R003RFX32N's 24-months-ahead-in-AI mandate); substrate for direct ServiceTitan-live-system DORA metric delivery + composition with AI mandate (operator 2026-05-28)
 effort: L
 ask: aaron 2026-05-28
 created: 2026-05-28
@@ -34,18 +33,18 @@ tags:
 
 Operator's evaluation surface has TWO mandates:
 
-1. **24-months-ahead-in-AI** — tracked at B-0866 (via Kestrel marketing-strategy substrate)
+1. **24-months-ahead-in-AI** — tracked at 081KSKBP80008QG0R003RFX32N (via Kestrel marketing-strategy substrate)
 2. **DORA of our live system** — THIS ROW; the operator-direct ServiceTitan live-system DORA-metric-delivery mandate
 
-Without this row, the AI mandate (B-0866) reads as if it were the primary evaluation context. The operator's substrate-honest disclosure that there are TWO mandates means the strategic calculus changes substantially:
+Without this row, the AI mandate (081KSKBP80008QG0R003RFX32N) reads as if it were the primary evaluation context. The operator's substrate-honest disclosure that there are TWO mandates means the strategic calculus changes substantially:
 
-- B-0866 marketing strategy needs portfolio-balance discipline (per B-0866.20 new sub-row)
+- 081KSKBP80008QG0R003RFX32N marketing strategy needs portfolio-balance discipline (per 081KSKBP80008QG0R003RFX32N.20 new sub-row)
 - Time investment in substrate-engineering work has limits beyond which it stops being good portfolio strategy (Kestrel observation; operator-substrate-honest acknowledgment needed)
 - The benchmark + framework work must serve BOTH mandates where possible OR explicit-tradeoff conversations are required when they compete
 
 ## What this row tracks
 
-The OPERATOR-LIVE-SYSTEM DORA metric delivery — the actual ServiceTitan production substrate Aaron is responsible for. Distinct from B-0866's AI-benchmark-DORA (which measures AI agents on simulated work) and B-0865's benchmark-substrate.
+The OPERATOR-LIVE-SYSTEM DORA metric delivery — the actual ServiceTitan production substrate Aaron is responsible for. Distinct from 081KSKBP80008QG0R003RFX32N's AI-benchmark-DORA (which measures AI agents on simulated work) and 081KSKBP80008QG0R003NM9XEC's benchmark-substrate.
 
 DORA metrics scope:
 
@@ -58,27 +57,27 @@ These are the metrics Aaron's actual ServiceTitan work is judged on, independent
 
 ## Sub-rows planned
 
-- **B-0869.1** — Operator-current-DORA-baseline-discovery (substrate-honest: what are Aaron's current DORA numbers on the live system? operator-discretion on disclosure scope)
-- **B-0869.2** — DORA-improvement-targets-from-boss (substrate-honest: what does "good DORA" look like in the evaluation period? operator-discretion on disclosure)
-- **B-0869.3** — Composition with AI mandate (B-0870 tracks this at higher scope; this sub-row tracks DORA-specific intersections)
-- **B-0869.4** — Substrate-engineering work that serves DORA-improvement directly (Zeta substrate → live-system substrate composition; runme+JIT discipline → live-system change-confidence; multi-AI cascade → live-system review-acceleration)
-- **B-0869.5** — Substrate-engineering work that DOESN'T serve DORA (operator-substrate-honest acknowledgment of where Zeta substrate is parallel-track not synergistic)
-- **B-0869.6** — Time-allocation discipline per portfolio-balance (per B-0866.20; how much time on DORA-direct-work vs AI-mandate-work; periodic check-in)
-- **B-0869.7** — Workflow-engine MVP (B-0867 v1) deployment-to-live-system as DORA-improvement substrate (the workflow engine IS the substrate that improves Aaron's live-system DORA via faster cycle-times + better safety; composition is real)
-- **B-0869.8** — Hat-as-DORA-driver substrate (per B-0868; specific hats Aaron wears at ServiceTitan that drive DORA metrics; making them explicit workflow-definitions improves cycle-time + reduces change-failure-rate)
-- **B-0869.9** — AI-keeps-DORA-up as composition criterion (operator-ratified 2026-05-28: *"if boss sees AI keep dora metrics up we can evangalize to whole company"*). Substrate-engineering threshold: AI work must demonstrably maintain OR improve DORA-of-live-system to qualify for whole-company evangelism (per B-0866.26). The composition criterion makes "does AI help DORA?" the load-bearing question that gates the third-tier audience scope-expansion. Without DORA-up evidence, whole-company evangelism is narrative-backed, not data-backed; with it, evangelism case becomes structural. **CRITICAL SHARPENING (operator 2026-05-28)**: "AI keeps DORA up" specifically means MULTI-PR/MULTI-AGENT ORCHESTRATION substrate (Aaron's framework), NOT generic AI usage. Single-PR-flow + experts/personas-prompting (ServiceTitan-baseline) does NOT count; multi-PR/multi-agent orchestration that keeps DORA up DOES. The substrate-engineering threshold is the orchestration sophistication, not just "AI" in the loop. Per B-0870.10 for the concrete-definition-of-24-months-ahead this composition operationalizes.
+- **081KSNY2Z0008QG0R000HENSVM.1** — Operator-current-DORA-baseline-discovery (substrate-honest: what are Aaron's current DORA numbers on the live system? operator-discretion on disclosure scope)
+- **081KSNY2Z0008QG0R000HENSVM.2** — DORA-improvement-targets-from-boss (substrate-honest: what does "good DORA" look like in the evaluation period? operator-discretion on disclosure)
+- **081KSNY2Z0008QG0R000HENSVM.3** — Composition with AI mandate (081KSNY2Z0008QG0R000DA261F tracks this at higher scope; this sub-row tracks DORA-specific intersections)
+- **081KSNY2Z0008QG0R000HENSVM.4** — Substrate-engineering work that serves DORA-improvement directly (Zeta substrate → live-system substrate composition; runme+JIT discipline → live-system change-confidence; multi-AI cascade → live-system review-acceleration)
+- **081KSNY2Z0008QG0R000HENSVM.5** — Substrate-engineering work that DOESN'T serve DORA (operator-substrate-honest acknowledgment of where Zeta substrate is parallel-track not synergistic)
+- **081KSNY2Z0008QG0R000HENSVM.6** — Time-allocation discipline per portfolio-balance (per 081KSKBP80008QG0R003RFX32N.20; how much time on DORA-direct-work vs AI-mandate-work; periodic check-in)
+- **081KSNY2Z0008QG0R000HENSVM.7** — Workflow-engine MVP (081KSKBP80008QG0R000B3Y19A v1) deployment-to-live-system as DORA-improvement substrate (the workflow engine IS the substrate that improves Aaron's live-system DORA via faster cycle-times + better safety; composition is real)
+- **081KSNY2Z0008QG0R000HENSVM.8** — Hat-as-DORA-driver substrate (per 081KSNY2Z0008QG0R0036KH026; specific hats Aaron wears at ServiceTitan that drive DORA metrics; making them explicit workflow-definitions improves cycle-time + reduces change-failure-rate)
+- **081KSNY2Z0008QG0R000HENSVM.9** — AI-keeps-DORA-up as composition criterion (operator-ratified 2026-05-28: *"if boss sees AI keep dora metrics up we can evangalize to whole company"*). Substrate-engineering threshold: AI work must demonstrably maintain OR improve DORA-of-live-system to qualify for whole-company evangelism (per 081KSKBP80008QG0R003RFX32N.26). The composition criterion makes "does AI help DORA?" the load-bearing question that gates the third-tier audience scope-expansion. Without DORA-up evidence, whole-company evangelism is narrative-backed, not data-backed; with it, evangelism case becomes structural. **CRITICAL SHARPENING (operator 2026-05-28)**: "AI keeps DORA up" specifically means MULTI-PR/MULTI-AGENT ORCHESTRATION substrate (Aaron's framework), NOT generic AI usage. Single-PR-flow + experts/personas-prompting (ServiceTitan-baseline) does NOT count; multi-PR/multi-agent orchestration that keeps DORA up DOES. The substrate-engineering threshold is the orchestration sophistication, not just "AI" in the loop. Per 081KSNY2Z0008QG0R000DA261F.10 for the concrete-definition-of-24-months-ahead this composition operationalizes.
 
-Order suggestion: 1 + 2 (baseline + targets — both operator-discretion) → 4 + 5 (substrate-mapping — what helps + what doesn't) → 6 (time-allocation discipline) → 3 (composition with AI mandate per B-0870) → 7 + 8 (workflow-engine + hats as direct DORA-driver substrate) → 9 (composition-criterion for whole-company evangelism per B-0866.26).
+Order suggestion: 1 + 2 (baseline + targets — both operator-discretion) → 4 + 5 (substrate-mapping — what helps + what doesn't) → 6 (time-allocation discipline) → 3 (composition with AI mandate per 081KSNY2Z0008QG0R000DA261F) → 7 + 8 (workflow-engine + hats as direct DORA-driver substrate) → 9 (composition-criterion for whole-company evangelism per 081KSKBP80008QG0R003RFX32N.26).
 
 ## Otto's traveler-perspective extensions (per "we can push all extensions you think of we have a concrete way to test in code soon if it's good or not so we should just put all the ideas as they come up")
 
 ### Extension 1 — DORA-mandate disclosure refines AI-mandate framing
 
-If Aaron's DORA-of-live-system mandate is parallel to (not subordinate to) the AI mandate, then the 24-months-ahead-AI framing CAN'T justify time-investment that hurts DORA. The portfolio-balance discipline (B-0866.20 + B-0869.6) becomes load-bearing. Operator-substrate-honest: B-0866 strategy reads as if AI mandate were primary; this row corrects.
+If Aaron's DORA-of-live-system mandate is parallel to (not subordinate to) the AI mandate, then the 24-months-ahead-AI framing CAN'T justify time-investment that hurts DORA. The portfolio-balance discipline (081KSKBP80008QG0R003RFX32N.20 + 081KSNY2Z0008QG0R000HENSVM.6) becomes load-bearing. Operator-substrate-honest: 081KSKBP80008QG0R003RFX32N strategy reads as if AI mandate were primary; this row corrects.
 
 ### Extension 2 — The workflow engine MVP is operationally aligned with both mandates
 
-B-0867 v1 (workflow engine) substrate-engineering serves:
+081KSKBP80008QG0R000B3Y19A v1 (workflow engine) substrate-engineering serves:
 
 - AI mandate: workflow engine IS the substrate-engineering proof-of-24-months-ahead-capability
 - DORA mandate: workflow engine MVP deployed in live-system improves cycle-time + reduces change-failure-rate
@@ -87,7 +86,7 @@ This is a HIGH-LEVERAGE compositional alignment. The workflow engine MVP shipped
 
 ### Extension 3 — Hat-as-DORA-driver makes per-task improvements traceable
 
-Per B-0868 (hats become workflow definitions): every DORA-relevant task Aaron does at ServiceTitan (deploy-hat / review-hat / incident-response-hat / etc.) can become an explicit workflow definition with measurable cycle-time + change-failure-rate per state-transition. Operator-explicit DORA-improvement substrate at hat scope.
+Per 081KSNY2Z0008QG0R0036KH026 (hats become workflow definitions): every DORA-relevant task Aaron does at ServiceTitan (deploy-hat / review-hat / incident-response-hat / etc.) can become an explicit workflow definition with measurable cycle-time + change-failure-rate per state-transition. Operator-explicit DORA-improvement substrate at hat scope.
 
 ### Extension 4 — DORA-mandate creates substrate-engineering-investment-cap
 
@@ -113,19 +112,19 @@ Operator-substrate-honest acknowledgment: not all Zeta work serves DORA-of-live-
 
 ## Composes with substrate
 
-- **B-0866** (24-months-ahead-AI marketing-strategy — this row's parallel mandate)
-- **B-0867** (workflow engine v1 — substrate that serves BOTH mandates if deployed correctly)
-- **B-0868** (hats-as-workflow-definitions — DORA-driver-hats become explicit)
-- **B-0865** (benchmark — AI-mandate-substrate; not directly DORA-mandate-substrate)
-- **B-0870** (two-mandate composition substrate — higher-scope composition discipline)
+- **081KSKBP80008QG0R003RFX32N** (24-months-ahead-AI marketing-strategy — this row's parallel mandate)
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine v1 — substrate that serves BOTH mandates if deployed correctly)
+- **081KSNY2Z0008QG0R0036KH026** (hats-as-workflow-definitions — DORA-driver-hats become explicit)
+- **081KSKBP80008QG0R003NM9XEC** (benchmark — AI-mandate-substrate; not directly DORA-mandate-substrate)
+- **081KSNY2Z0008QG0R000DA261F** (two-mandate composition substrate — higher-scope composition discipline)
 
 ## What this row is NOT
 
-- NOT a re-prioritization of B-0866 (both mandates land at P1; portfolio-balance discipline at B-0870 handles composition)
+- NOT a re-prioritization of 081KSKBP80008QG0R003RFX32N (both mandates land at P1; portfolio-balance discipline at 081KSNY2Z0008QG0R000DA261F handles composition)
 - NOT a directive on operator-time-allocation (operator-authority preserved; this row substrate-honest names the second mandate so portfolio-balance discipline can operate)
 - NOT a quantification of DORA-targets (operator-discretion; sub-rows .1 + .2 land that with operator's actual numbers when disclosed)
 - NOT an exhaustive scope of all-operator-mandates (operator disclosed "DORA of our live system is the 2nd mandate that's about it" — two-mandate scope is operator-confirmed)
 
 ## Operator's "always yes to anything you think work putting on the backlog" + "we can push all extensions" + "the kernel is about to come up the MVP" authorization
 
-Filed per explicit 2026-05-28 operator-authorization to push extensions liberally pre-workflow-engine-MVP. The workflow engine MVP (B-0867 v1) will provide the test surface for evaluating which extensions actually work via running implementation rather than upfront design review.
+Filed per explicit 2026-05-28 operator-authorization to push extensions liberally pre-workflow-engine-MVP. The workflow engine MVP (081KSKBP80008QG0R000B3Y19A v1) will provide the test surface for evaluating which extensions actually work via running implementation rather than upfront design review.

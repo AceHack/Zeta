@@ -2,7 +2,7 @@
 Scope: Claude.ai DORA dashboard architecture — tier-stratified metrics (mirror/beacon/promotion pipeline). Implementation questions for the team. Load-bearing architectural decision.
 Attribution: Claude.ai (asymmetric critic) designed the tier-stratified architecture. Aaron confirmed "100% this is load bearing." Otto preserving verbatim.
 Operational status: research-grade — implementation pending
-Non-fusion disclaimer: This is architectural direction for B-0401 dashboard. Implementation requires team answers to the questions posed.
+Non-fusion disclaimer: This is architectural direction for 081KR7JY10008QG0R001VP6JWG dashboard. Implementation requires team answers to the questions posed.
 ---
 
 # DORA tier-stratified metrics — mirror / beacon / promotion pipeline (2026-05-10)

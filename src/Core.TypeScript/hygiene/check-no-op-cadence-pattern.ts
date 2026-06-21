@@ -5,7 +5,7 @@
  *
  * TypeScript port of `check-no-op-cadence-pattern.sh` per the
  * DST-justifies-TS-quality-over-bash discipline (CLAUDE.md) +
- * B-0156 TypeScript standardization for non-install scripts.
+ * 081KQGDBJ0008QG0R000A4EZS5 TypeScript standardization for non-install scripts.
  * The bash version remains for cross-shell compatibility; both
  * are kept in sync.
  *

@@ -1,12 +1,12 @@
 /**
  * src/Core.TypeScript/workflow-engine/closed-loop.ts
  *
- * B-0914.2 — closed-loop CI-result → next-hypothesis dispatch
+ * 081KDX1YWP008QG0R002221Y19 — closed-loop CI-result → next-hypothesis dispatch
  * orchestrator. Pure-TS substrate that composes:
- *   - TrueSkill ranking (B-0914.1 PR #5764)
- *   - Evolution mash-refine (B-0914.5 PR #5767)
- *   - Pairing tracker (B-0914.4 PR #5768)
- *   - CI-result dispatch (via callbacks; integrates with B-0891 zflash
+ *   - TrueSkill ranking (081KDX1YWP008QG0R003F59WB0 PR #5764)
+ *   - Evolution mash-refine (081KDX1YWP008QG0R002GZJNXA PR #5767)
+ *   - Pairing tracker (081KDX1YWP008QG0R000HDE18F PR #5768)
+ *   - CI-result dispatch (via callbacks; integrates with 081KSNY2Z0008QG0R0008PN7RQ zflash
  *     test-harness substrate when wired by caller)
  *
  * Per human maintainer 2026-05-28 'S M L all please in that order lol' — L
@@ -27,21 +27,21 @@
  * s41586-026-10652-y).
  *
  * Composes with:
- *   - B-0914.2 backlog row (closed-loop dispatch extension target)
- *   - B-0914.1 PR #5764 TrueSkill substrate (caller provides ranking fn)
- *   - B-0914.4 PR #5768 pairing tracker substrate (caller provides
+ *   - 081KDX1YWP008QG0R002221Y19 backlog row (closed-loop dispatch extension target)
+ *   - 081KDX1YWP008QG0R003F59WB0 PR #5764 TrueSkill substrate (caller provides ranking fn)
+ *   - 081KDX1YWP008QG0R000HDE18F PR #5768 pairing tracker substrate (caller provides
  *     verification fn + pairing state)
- *   - B-0914.5 PR #5767 evolution substrate (caller provides evolution fn)
- *   - B-0891 zflash test-harness substrate (caller can wire CI dispatch
+ *   - 081KDX1YWP008QG0R002GZJNXA PR #5767 evolution substrate (caller provides evolution fn)
+ *   - 081KSNY2Z0008QG0R0008PN7RQ zflash test-harness substrate (caller can wire CI dispatch
  *     to actual test runners per determineRunnability discriminator)
- *   - B-0867 workflow engine substrate
+ *   - 081KSKBP80008QG0R000B3Y19A workflow engine substrate
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
  *     (Result<T, TFeedback>)
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  *     (each callback authors own TFeedback)
  *
  * PoC scope: pure orchestration logic with injectable callbacks. Real
- * CI integration (via tools/ci/ + B-0891) handled by caller wiring.
+ * CI integration (via tools/ci/ + 081KSNY2Z0008QG0R0008PN7RQ) handled by caller wiring.
  */
 export const DEFAULT_LOOP_CONFIG = {
     maxCycles: 10,

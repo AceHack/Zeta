@@ -197,7 +197,7 @@ module Chip8Cow =
                 let sprite = rd (int f.I + row) f
                 for col in 0..7 do
                     if (sprite >>> (7 - col)) &&& 1uy = 1uy then
-                        // COSMAC VIP edge semantics (B-1031): the ORIGIN wraps (ox/oy above), but
+                        // COSMAC VIP edge semantics (081KTZ4EF0008QG0R002WVTMMJ): the ORIGIN wraps (ox/oy above), but
                         // pixels CLIP at the right/bottom edge — they are not wrapped around. A
                         // clipped pixel is never written AND never collision-checked (VF counts
                         // collisions only on drawn pixels — Kira's review condition, free here).

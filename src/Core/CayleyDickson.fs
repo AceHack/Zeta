@@ -1,7 +1,7 @@
 namespace Zeta.Core
 
 /// Cayley–Dickson doubling — the structural primitive underlying the
-/// "imaginary stack" design captured in the B-0623 trajectory. Given any
+/// "imaginary stack" design captured in the 081KRW63S0008QG0R000QJR08H trajectory. Given any
 /// algebra `A` with addition, negation,
 /// multiplication, and conjugation, the doubled algebra `Doubled<'A>`
 /// consists of pairs `(a, b)` with
@@ -17,8 +17,8 @@ namespace Zeta.Core
 ///     ℍ → 𝕆        — Quaternion → Octonion; loses associativity
 ///     𝕆 → 𝕊        — Octonion → Sedenion; loses alternativity + division algebra
 ///
-/// This is the substrate B-0623 names as the carrier of the "imaginary
-/// direction" in the cognitive boot sequence; Adinkras (B-0623 follow-up
+/// This is the substrate 081KRW63S0008QG0R000QJR08H names as the carrier of the "imaginary
+/// direction" in the cognitive boot sequence; Adinkras (081KRW63S0008QG0R000QJR08H follow-up
 /// PRs) decorate this structure with colored-edge ECC information. The
 /// doubling primitive is the load-bearing object; specific levels
 /// (Complex, Quaternion, Octonion) are derived type aliases.

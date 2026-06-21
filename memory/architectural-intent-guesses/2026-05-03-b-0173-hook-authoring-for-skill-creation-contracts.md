@@ -1,10 +1,10 @@
-# Guess #001 — B-0173 hook-authoring-for-skill-creation-contracts
+# Guess #001 — 081KQNJ500008QG0R003ZC6PK8 hook-authoring-for-skill-creation-contracts
 
 ## Target
 
-`docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md`
+`docs/backlog/P1/081KQNJ500008QG0R003ZC6PK8-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md`
 
-The architectural choice: Aaron filed B-0173 for a "hook-authoring"
+The architectural choice: Aaron filed 081KQNJ500008QG0R003ZC6PK8 for a "hook-authoring"
 backlog row in the context of skill-creation contracts. The question
 this guess answers: **what is Aaron's architectural intent for using
 hooks (specifically) — vs alternatives like CI workflows, manual
@@ -14,7 +14,7 @@ review, or in-skill-body validation?**
 
 Otto has already read (in this session or via prior ticks):
 
-- The B-0173 ROW NAME ONLY (from `ls docs/backlog/P1/`)
+- The 081KQNJ500008QG0R003ZC6PK8 ROW NAME ONLY (from `ls docs/backlog/P1/`)
 - The skill-design-rules memo
   (`feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`)
   — Aaron's skill-design rule 2: no dynamic commands in skills, use TS
@@ -23,17 +23,17 @@ Otto has already read (in this session or via prior ticks):
   enforcement (contract-based development)
 - The decision-graph emergent property memo
   (`feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`)
-  — names B-0173 as "edge-property checks at commit / merge time" + as
+  — names 081KQNJ500008QG0R003ZC6PK8 as "edge-property checks at commit / merge time" + as
   "edge-implementation discipline"
-- The substrate-claim-checker (B-0170, shipped) — which is the kind of
+- The substrate-claim-checker (081KQNJ500008QG0R003SCWBDV, shipped) — which is the kind of
   TS tool Aaron's rule 2 wants
 
 ## Research deliberately AVOIDED
 
 Otto has NOT read:
 
-- The B-0173 row body text (only the title from `ls`)
-- Any commits referencing B-0173
+- The 081KQNJ500008QG0R003ZC6PK8 row body text (only the title from `ls`)
+- Any commits referencing 081KQNJ500008QG0R003ZC6PK8
 - Any persona notebooks discussing hook-authoring
 - Any prior conversation about Claude Code hooks specifically
 
@@ -73,7 +73,7 @@ The hook will likely be:
   tools/) — concretely something like `tools/git/hooks/skill-creation-contract-check.ts`
   (NOTE: I'm guessing the path here; the decision-graph memo cited
   `tools/git/hooks/` so I'm using that)
-- Composes with substrate-claim-checker (B-0170) — runs the same
+- Composes with substrate-claim-checker (081KQNJ500008QG0R003SCWBDV) — runs the same
   count-drift / existence-drift / etc. checks on the skill body that
   the standalone CLI tool would
 - May also enforce: carved-sentence presence, frontmatter completeness,
@@ -99,9 +99,9 @@ The hook will probably:
 | Substrate-content — "TS file under tools/git/hooks/" | **Medium** | Decision-graph memo cited the path; rule 2 forces TS; but the specific filename + scope is inferred not confirmed |
 | Specific — "Claude Code settings.json + stdin protocol" | **Low** | Standard Claude Code hook shape but I haven't confirmed the specific event names or payload schema for this hook type |
 
-## Ground truth (recovered 2026-05-03 ~02:50Z via direct read of B-0173)
+## Ground truth (recovered 2026-05-03 ~02:50Z via direct read of 081KQNJ500008QG0R003ZC6PK8)
 
-Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (PR #1279 merged onto main).
+Read source: `docs/backlog/P1/081KQNJ500008QG0R003ZC6PK8-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` (full body) — protocol-permitted only after the guess commit landed (PR #1279 merged onto main).
 
 ### Architectural intent (Aaron's verbatim)
 
@@ -111,11 +111,11 @@ Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts
 
 ### Substrate-content intent (CORRECTED 2026-05-03 — Aaron clarified harness-hooks-only after initial recovery)
 
-**Initial recovery (PR #1280) was wrong.** The B-0173 row body lists 3 hook integrations including 2 git hooks; my recovery section reproduced that. **Aaron 2026-05-03 clarification** (see `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`): vibe-coders always have a harness; harness hooks suffice; git hooks are antipattern in this scope. **Corrected scope is harness hooks + CI only, NOT git hooks.**
+**Initial recovery (PR #1280) was wrong.** The 081KQNJ500008QG0R003ZC6PK8 row body lists 3 hook integrations including 2 git hooks; my recovery section reproduced that. **Aaron 2026-05-03 clarification** (see `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`): vibe-coders always have a harness; harness hooks suffice; git hooks are antipattern in this scope. **Corrected scope is harness hooks + CI only, NOT git hooks.**
 
-**Two hook integrations** (CORRECTED, NOT three) — actual deliverables of B-0173 going forward:
+**Two hook integrations** (CORRECTED, NOT three) — actual deliverables of 081KQNJ500008QG0R003ZC6PK8 going forward:
 
-1. **Harness hooks** *(proposed; new in correction)* — Claude Code's `.claude/settings.json` hooks FIELD (the file `.claude/settings.json` itself already exists on main with an `enabledPlugins` field, but the `hooks` field is not yet present/defined — adding the field is part of B-0173 deliverables), with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
+1. **Harness hooks** *(proposed; new in correction)* — Claude Code's `.claude/settings.json` hooks FIELD (the file `.claude/settings.json` itself already exists on main with an `enabledPlugins` field, but the `hooks` field is not yet present/defined — adding the field is part of 081KQNJ500008QG0R003ZC6PK8 deliverables), with parallel mechanisms for Codex / Cursor / etc.; called via the harness's runtime; TS-canonical
 2. **`.github/workflows/substrate-claim-checker.yml`** *(proposed)* — CI check on PR descriptions (host-authored; runs on PR creation)
 
 **Removed from scope** (the original recovery had these as "proposed" too; Aaron's clarification removes them entirely):
@@ -123,16 +123,16 @@ Read source: `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts
 - ~~`tools/git/hooks/pre-commit`~~ — Harness fires on pre-tool-use (Edit/Write) before content lands; covers the same use case
 - ~~`tools/git/hooks/commit-msg`~~ — Harness fires on pre-Bash-tool-use when command is `git commit`; covers the same use case
 
-As of correction time (2026-05-03), the `hooks` field in `.claude/settings.json` is not yet populated, and `.github/workflows/substrate-claim-checker.yml` does not exist on main. Both are B-0173 row deliverables. **Do NOT implement git hooks for B-0173** — that's the wrong shape per Aaron's clarification.
+As of correction time (2026-05-03), the `hooks` field in `.claude/settings.json` is not yet populated, and `.github/workflows/substrate-claim-checker.yml` does not exist on main. Both are 081KQNJ500008QG0R003ZC6PK8 row deliverables. **Do NOT implement git hooks for 081KQNJ500008QG0R003ZC6PK8** — that's the wrong shape per Aaron's clarification.
 
-depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up — contracts live in specs)]**
+depends_on: **[081KQNJ500008QG0R003SCWBDV (substrate-claim-checker tool) + 081KQNJ500008QG0R001N94412 (OpenSpec catch-up — contracts live in specs)]**
 
 ### Specific implementation intent (CORRECTED)
 
 - **Harness hooks** (per Claude Code's `.claude/settings.json` hooks field), NOT git hooks. Same goes for Codex / Cursor equivalents
 - TS-canonical (per Aaron's skill-design rule 2 + DST justification): `bun tools/substrate-claim-checker/check-counts.ts <staged-files>` is invoked directly by the harness
-- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature) — env var **not yet recognized** by `tools/substrate-claim-checker/check-counts.ts` v0.4.4 OR v0.5; would be added as part of B-0173 implementation
-- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->` — markers **not yet recognized** by v0.5; would be added as part of B-0173 implementation (or B-0170 v1+)
+- Strict vs warn mode via `SUBSTRATE_CLAIM_CHECKER_MODE` env var (warn for v0.x rollout; strict once mature) — env var **not yet recognized** by `tools/substrate-claim-checker/check-counts.ts` v0.4.4 OR v0.5; would be added as part of 081KQNJ500008QG0R003ZC6PK8 implementation
+- Per-check-type opt-out via comment markers: `<!-- substrate-claim-checker: skip-count-drift -->` — markers **not yet recognized** by v0.5; would be added as part of 081KQNJ500008QG0R003ZC6PK8 implementation (or 081KQNJ500008QG0R003SCWBDV v1+)
 - Performance target: <2 seconds per pre-tool-use trigger
 
 ## Calibration delta
@@ -155,7 +155,7 @@ depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up
 | `tools/git/hooks/` path (correct; cited from decision-graph memo) | **Multi-hook architecture** — three hooks (pre-commit + commit-msg + CI workflow), not one |
 | pre-commit hook fires on staged content (correct) | **commit-msg hook** is its own surface (commit message text validation; pre-commit can't see this) |
 | TS implementation (close — TS is the underlying tool; hooks are bash wrapping TS) | **CI workflow on PR descriptions** — host-authored content; different timing from git hooks |
-| Composes with substrate-claim-checker (B-0170) (correct) | (no miss here) |
+| Composes with substrate-claim-checker (081KQNJ500008QG0R003SCWBDV) (correct) | (no miss here) |
 | | **Hook scope** — validates ALL staged content (memos, docs, config), not just `.claude/skills/*/SKILL.md` |
 
 **Analysis**: My substrate-content guess was too narrow. I assumed one hook focused on skill-files; ground truth has three hooks covering staged content / commit message / PR description. The fact-claim surface has three timing windows; each needs its own hook. I missed the multi-hook architecture entirely.
@@ -176,10 +176,10 @@ depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up
 
 | What I got | What I missed |
 |---|---|
-| Composition with B-0170 (substrate-claim-checker) — implicit in my guess | **B-0171 (OpenSpec catch-up) as depends_on** — Aaron explicitly named OpenSpec as the contract source (*"hooks enforce contracts; contracts live in OpenSpec capabilities"*) |
-| | I knew B-0171 existed as a sibling but didn't see it as the load-bearing contract source |
+| Composition with 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker) — implicit in my guess | **081KQNJ500008QG0R001N94412 (OpenSpec catch-up) as depends_on** — Aaron explicitly named OpenSpec as the contract source (*"hooks enforce contracts; contracts live in OpenSpec capabilities"*) |
+| | I knew 081KQNJ500008QG0R001N94412 existed as a sibling but didn't see it as the load-bearing contract source |
 
-**Analysis**: I had the substrate-content piece (substrate-claim-checker integration) but missed the spec-source piece (OpenSpec). Without specs, hooks have no contracts to enforce — that's the architectural reason for B-0173's depends_on B-0171. My guess implicitly assumed substrate-claim-checker provides the contracts, but actually substrate-claim-checker is the **enforcement engine** while OpenSpec provides the **contracts being enforced**. Two different layers.
+**Analysis**: I had the substrate-content piece (substrate-claim-checker integration) but missed the spec-source piece (OpenSpec). Without specs, hooks have no contracts to enforce — that's the architectural reason for 081KQNJ500008QG0R003ZC6PK8's depends_on 081KQNJ500008QG0R001N94412. My guess implicitly assumed substrate-claim-checker provides the contracts, but actually substrate-claim-checker is the **enforcement engine** while OpenSpec provides the **contracts being enforced**. Two different layers.
 
 ## Summary
 
@@ -190,13 +190,13 @@ depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up
 | Architectural intent | **6/10** | Got periphery (separation, harness-native); missed primary DbC/OpenSpec frame |
 | Substrate-content | **5/10** | Got 1 of 3 hooks; right path; missed multi-hook architecture |
 | Specific implementation | **3/10** | Wrong hook system; missed mode-switch + opt-out granularity |
-| Cross-row composition | **5/10** | Got B-0170 implicit; missed B-0171 explicit |
+| Cross-row composition | **5/10** | Got 081KQNJ500008QG0R003SCWBDV implicit; missed 081KQNJ500008QG0R001N94412 explicit |
 
 **Overall**: Inference was strong on **principles** (separation of concerns; harness-native; composition) and weak on **specifics** (which hook system; which timing windows; which contract source). My self-reported confidence was well-calibrated — high-confidence layer scored highest; low-confidence layer scored lowest.
 
 **Pattern observation**: My inference defaults to *generalization-from-principle* rather than *specific-mechanism-recall*. For substrate-content + implementation specifics, principle-based inference is unreliable; specific-mechanism-research is needed.
 
-**Useful for cross-model retroactive replay**: this calibration data point is now reproducible — give another model B-0173's row title only + the same prior-substrate context, see how their guess compares. The fact that I missed the contract-based-development frame is a genuine inference-failure that other models can be tested against.
+**Useful for cross-model retroactive replay**: this calibration data point is now reproducible — give another model 081KQNJ500008QG0R003ZC6PK8's row title only + the same prior-substrate context, see how their guess compares. The fact that I missed the contract-based-development frame is a genuine inference-failure that other models can be tested against.
 
 ---
 
@@ -205,4 +205,4 @@ depends_on: **[B-0170 (substrate-claim-checker tool) + B-0171 (OpenSpec catch-up
 **Author:** Otto autonomous (architect hat)
 **Protocol:** in-the-moment guess + ground-truth recovery per
 `memory/feedback_guess_then_verify_architectural_intent_calibration_protocol_aaron_2026_05_03.md`
-**Recovery method:** direct read of `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` body
+**Recovery method:** direct read of `docs/backlog/P1/081KQNJ500008QG0R003ZC6PK8-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` body

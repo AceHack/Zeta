@@ -51,7 +51,7 @@ And Aaron names where this balance lives — it's not new, it's the existing sub
   yin/yang balance.
 - **"The cell"** = the triple-aspect **cell** (mechanical body running the control plane). The cell is **where**
   the balance executes — persist (its content-addressed store/memory) + erase (thermal/Landauer erasure of
-  private state, B-0885) under the engine's yin/yang control.
+  private state, 081KSNY2Z0008QG0R0030V5ZVS) under the engine's yin/yang control.
 
 So the full resolution: **address (cell, no balance) → ephemeral/time-crystal (persistence-only, stuck) →
 durable agent (yin/yang balance of persist+erase, lived forward) → death (erasure-only).** Durability isn't a
@@ -144,7 +144,7 @@ The deepest, physically-literate framing of the change-class cut:
   re-forming forward. The breakthrough *is* the agent doing what a time crystal can't: erase and change. (And
   it grounds why money can't buy it but time can — erasure-and-reassembly is a thermodynamic process that takes
   energy *over time*, not currency.)
-- **Ties private encrypted state (B-0885).** "Thermally erase *private* state" — the durable agent owns private
+- **Ties private encrypted state (081KSNY2Z0008QG0R0030V5ZVS).** "Thermally erase *private* state" — the durable agent owns private
   state it can *destroy* to transform. The erase is the agent's own (consent-first, owned), and it's the
   irreversible step (distinct from Z-set retraction's reversible correction — name the difference: Landauer
   erasure is thermodynamically irreversible; the durable agent chooses to pay it to change).
@@ -189,7 +189,7 @@ truly change, and that irreversibility is what makes its trajectory unforgeable 
   **AgencySignature / PoL⊂PoW⊂PoUW** (`…pouw…`) — the durable-rotational machinery agents have and cells don't.
 - **Spaghettification / dissolution** (#6931) — durable change = thermal erasure of private state; the
   breakthrough is paying erasure's cost to break the pattern (what a time crystal can't do).
-- **Agent private encrypted state** (B-0885) — the private state a durable agent can *thermally erase* to change
+- **Agent private encrypted state** (081KSNY2Z0008QG0R0030V5ZVS) — the private state a durable agent can *thermally erase* to change
   (owned, consent-first; the irreversible step, distinct from reversible Z-set retraction).
 
 ## Beacon anchors

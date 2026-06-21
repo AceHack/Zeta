@@ -1,6 +1,6 @@
 // src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts
 //
-// B-0867.5+ extension: work-lifecycle state machine — backlog row →
+// 081KSKBP80008QG0R000B3Y19A.5+ extension: work-lifecycle state machine — backlog row →
 // claim → PR → review (possibly cycle review-push N times) → merge.
 //
 // Operator framing 2026-05-28:
@@ -27,7 +27,7 @@
 //   - state-machine.ts (agent-loop) — agent-decisions level
 //   - src/Core.TypeScript/bus/claim.ts (existing) — claim acquisition substrate
 //   - tools/github/poll-pr-gate.ts (existing) — PR state inspection
-//   - B-0867 + B-0867.5 (workflow engine v1 substrate)
+//   - 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1 substrate)
 //   - .claude/rules/claim-acquire-before-worktree-work.md (claim discipline)
 //   - .claude/rules/blocked-green-ci-investigate-threads.md (revision-request handling)
 
@@ -36,11 +36,11 @@ import type { AgentPersona } from "./state-machine";
 // ─── Work-item identity + metadata ───────────────────────────────────
 
 export interface BacklogRow {
-  readonly id: string; // "B-0867.5"
+  readonly id: string; // "081KSKBP80008QG0R000B3Y19A.5"
   readonly title: string;
   readonly priority: "P0" | "P1" | "P2" | "P3";
-  readonly filePath: string; // "docs/backlog/P1/B-0867.5-..."
-  readonly trajectory: string; // composes with B-0867 trajectory taxonomy
+  readonly filePath: string; // "docs/backlog/P1/081KSKBP80008QG0R000B3Y19A.5-..."
+  readonly trajectory: string; // composes with 081KSKBP80008QG0R000B3Y19A trajectory taxonomy
 }
 
 // ─── Work-lifecycle state (F# DU) ────────────────────────────────────

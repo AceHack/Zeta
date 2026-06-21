@@ -1,5 +1,5 @@
 /**
- * Eval-set fixture regression tests for substrate-claim-checker (B-0170).
+ * Eval-set fixture regression tests for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV).
  *
  * Each test runs an existing `check-*.ts` against a frozen historical
  * drift fixture under `fixtures/` and asserts that the checker still
@@ -96,7 +96,7 @@ describe("eval-set fixtures / path-form drift", () => {
     // (path-form drift: fully-qualified vs bare paths in adjacent ADR citations,
     // path-form sub-class #6 of the 7-class list). This fixture covers the
     // sub-class via a synthetic exemplar; instance #15's literal substance
-    // is captured in a follow-on fixture (B-0170.4.1).
+    // is captured in a follow-on fixture (081KQNJ500008QG0R003SCWBDV.4.1).
     expect(finding.line).toBe(28);
     expect(finding.resolvedPath).toBe(
       "src/Core.TypeScript/substrate-claim-checker/check-counts.ts",

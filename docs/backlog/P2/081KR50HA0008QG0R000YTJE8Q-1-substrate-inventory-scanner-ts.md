@@ -1,9 +1,8 @@
 ---
-id: B-0004.1
-zetaid: 081KR50HA0008QG0R000YTJE8Q
+id: 081KR50HA0008QG0R000YTJE8Q
 priority: P2
 status: open
-title: "B-0004.1 — TS substrate inventory scanner for translatable content surfaces"
+title: "081KR50HA0008QG0R000YTJE8Q — TS substrate inventory scanner for translatable content surfaces"
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
@@ -14,9 +13,9 @@ effort: S
 
 ---
 
-# B-0004.1 — TS substrate inventory scanner for translatable content surfaces
+# 081KR50HA0008QG0R000YTJE8Q — TS substrate inventory scanner for translatable content surfaces
 
-**Slice of:** [B-0004](B-0004-translate-repo-to-other-human-languages.md)
+**Slice of:** [081KQ0YZ80008QG0R002HWBHKJ](081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md)
 
 ## What
 
@@ -34,7 +33,7 @@ Include a `--focused` mode that only scans P0 surfaces (CLAUDE.md, AGENTS.md, AL
 
 ## Why
 
-B-0004 is L-effort and broad. First atomic step must produce a machine-readable map so subsequent children (glossary anchoring, drift lint, per-language pilots) have concrete targets instead of guessing. Per "largest mechanizable backlog" and "search-first authority", the inventory is the substrate claim.
+081KQ0YZ80008QG0R002HWBHKJ is L-effort and broad. First atomic step must produce a machine-readable map so subsequent children (glossary anchoring, drift lint, per-language pilots) have concrete targets instead of guessing. Per "largest mechanizable backlog" and "search-first authority", the inventory is the substrate claim.
 
 ## Acceptance criteria
 
@@ -46,9 +45,9 @@ B-0004 is L-effort and broad. First atomic step must produce a machine-readable 
 
 ## Out of scope (for later children)
 
-- Actual translation or glossary extraction (B-0004.2).
-- Pipeline / AI translation (B-0004.3).
-- First language pilot (B-0004.4).
+- Actual translation or glossary extraction (081KR50HA0008QG0R002TN3JX2).
+- Pipeline / AI translation (081KR7JY10008QG0R000EGAPAN).
+- First language pilot (081KR7JY10008QG0R000D7JTBB).
 - Memory persona notebooks (separate child after core).
 
 ## Focused checks performed (included in PR body)

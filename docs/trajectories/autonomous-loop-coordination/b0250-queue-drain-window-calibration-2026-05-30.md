@@ -1,8 +1,8 @@
-# B-0250 Queue-Drain Window Calibration - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Queue-Drain Window Calibration - 2026-05-30
 
 ## Status
 
-This packet inspects the remaining live B-0250 Codex/Otto adjacency windows
+This packet inspects the remaining live 081KQZVQW0008QG0R001FG05RZ Codex/Otto adjacency windows
 after merge-burst clustering and merged-PR author labels landed.
 
 ## Live Observation
@@ -32,7 +32,7 @@ coincidence window after the author-label and merge-burst clustering patches.
 
 ## Calibration Verdict
 
-The remaining top B-0250 warning is a queue-drain adjacency pattern, not
+The remaining top 081KQZVQW0008QG0R001FG05RZ warning is a queue-drain adjacency pattern, not
 evidence of a current shared-upstream incident.
 
 The five-minute window is still broad enough to connect adjacent Codex/Otto

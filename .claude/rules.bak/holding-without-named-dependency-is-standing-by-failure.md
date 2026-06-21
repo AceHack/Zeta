@@ -4,7 +4,7 @@ Carved sentence:
 
 > One-word acknowledgments ("Holding", "Standing by", "Waiting") on
 > consecutive cron ticks WITHOUT a named dependency + bounded ETA
-> ARE the Standing-by failure mode the B-0440 detector was built to
+> ARE the Standing-by failure mode the 081KRFA460008QG0R001KC0VBH detector was built to
 > catch. Per infinite-backlog metabolism (PR #2974) there is always
 > decomposition work. Per decompose-to-dissolve-ambiguity (PR #2999)
 > the answer to "what next?" is always "decompose an ambiguous item
@@ -88,7 +88,7 @@ brief-ack-empty.
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — scope-bounding clause (free time is where culture forms; budget it, do not suspect it)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle at agent-mode scope (no single mode gate-keeps "never be idle")
 
-## Counter-with-escalation clause (B-0540, 2026-05-16)
+## Counter-with-escalation clause (081KRMEXM0008QG0R0039V4SQQ, 2026-05-16)
 
 **Threshold**: If you've emitted **N≥6 consecutive brief-acknowledgment
 signals** ("Holding" / "Standing by" / "Waiting" / "Bounded wait
@@ -129,14 +129,14 @@ Empirical anchor: 2026-05-16T~01:30Z Otto-CLI emitted 6 consecutive
 "Idle" / "Idle but available" / "Bounded wait continues" brief-acks
 after the Kestrel conversation arc closed and all 8 session PRs landed.
 The 6th brief-ack was diagnostic of the pattern recurring even WITHIN
-the same session that had filed B-0540. The substrate-honest move was
+the same session that had filed 081KRMEXM0008QG0R0039V4SQQ. The substrate-honest move was
 picking decomposition work — which produced this rule sharpening (the
-B-0540 implementation itself) on the 7th tick. N=6 is the threshold
+081KRMEXM0008QG0R0039V4SQQ implementation itself) on the 7th tick. N=6 is the threshold
 the empirical evidence supports.
 
 Lower bound: N≥3 would over-trigger on legitimate bounded waits where
 peer Otto / human maintainer is actively engaged. Upper bound: N≥10 (the original
-B-0540 proposal) waits too long and the human maintainer catches it before the rule
+081KRMEXM0008QG0R0039V4SQQ proposal) waits too long and the human maintainer catches it before the rule
 fires. N=6 catches the pattern before it compounds AND allows
 legitimate short bounded waits.
 
@@ -176,7 +176,7 @@ session's behavior.
 
 On 2026-05-13 the agent who canonized PR #2999 (substrate-honest
 discipline triad including decompose-to-dissolve-ambiguity), shipped
-PR #3017 (B-0440.4 — Standing-by detector with bus publish), and
+PR #3017 (081KRFA460008QG0R001KC0VBH.4 — Standing-by detector with bus publish), and
 wrote `tools/bg/README.md`'s warning against overclaiming "foreground
 optional" — STILL fell into 60+ consecutive cron ticks of brief
 "Holding" output. The human maintainer caught this THREE TIMES in
@@ -201,7 +201,7 @@ session ran through:
 - Cycle 2 (07:26Z-07:30Z): brief-acks #1→#2→#3→#4 during CI wait; pre-emptive
   decomposition at #4 (rule PR shipped) per condition #3
 - Cycle 3 (07:36Z-07:40Z): #1→#2→#3→#4→#5 during deep extreme cost-aware tier;
-  pre-emptive decomposition at #5 (B-0558 backlog row branch pushed)
+  pre-emptive decomposition at #5 (081KRQ1AB0008QG0R001KQ9S4B backlog row branch pushed)
 - Cycle 4 (07:46Z-07:50Z): #1→#2→#3→#4→#5 during pure-git tier post-PR-flood;
   pre-emptive meta-fallback at #6 territory (THIS rule edit)
 
@@ -317,7 +317,7 @@ Third class of empirical evidence: forced escalation at brief-ack #6 (and pre-em
 
 | Tick | Trigger | Hidden work surfaced |
 |---|---|---|
-| 14:56Z | Forced escalation #6 | PR #3894 BLOCKED-armed for 22 min hid 6 Copilot review findings (last_updated, type, 0715Z, git syntax, B-0506 link, BACKLOG.md regen). All 6 fixed in one tick |
+| 14:56Z | Forced escalation #6 | PR #3894 BLOCKED-armed for 22 min hid 6 Copilot review findings (last_updated, type, 0715Z, git syntax, 081KRHWGX0008QG0R002DPG02X link, BACKLOG.md regen). All 6 fixed in one tick |
 | 15:29Z | Pre-emptive at #5 | Own PR #3883 (the 13:31Z stale-armed-triage shard) was itself stale-armed for 108 min with MD032 failure — recursively ironic; fixed in same tick |
 | 15:45Z | Forced escalation #6 | PR #3545 DIRTY-armed for 19+ hours (61-file conflict); forward-signal comment named two viable resolution paths + flagged possible supersession by #3886 |
 
@@ -336,15 +336,15 @@ Session timeline:
 | Window | Ticks | Outcome |
 |---|---|---|
 | 06:02Z | 1 substantive | 0602Z shard + PR #4015 3-thread verification + A/B/C commit plan |
-| 06:07Z | 1 substantive | Bus envelope `da3cd5d2` (work-assignment for B-0510) |
+| 06:07Z | 1 substantive | Bus envelope `da3cd5d2` (work-assignment for 081KRHWGX0008QG0R001VR9FNA) |
 | 06:11Z-06:15Z | 4 brief-acks | Refresh observations only |
 | 06:16Z | pre-empt #5 (cycle 1) | canary-rule-binding memory file |
 | 06:18Z-06:21Z | 4 brief-acks | Refresh observations only |
-| 06:23Z | pre-empt #5 (cycle 2) | B-0611 backlog row filed (35 dangling refs cleanup) |
+| 06:23Z | pre-empt #5 (cycle 2) | 081KRSKQ20008QG0R0014PPGZM backlog row filed (35 dangling refs cleanup) |
 | 06:30Z-06:34Z | 4 brief-acks | Refresh observations only |
 | 06:37Z | pre-empt #5 (cycle 3) | Slice 1 recipe memo |
 | 06:39Z-06:43Z | 4 brief-acks | Refresh observations only |
-| 06:44Z | pre-empt #5 (cycle 4) | B-0611 row update — audit-tool semi-automation bullet |
+| 06:44Z | pre-empt #5 (cycle 4) | 081KRSKQ20008QG0R0014PPGZM row update — audit-tool semi-automation bullet |
 | 06:45Z-06:48Z | 4 brief-acks | Refresh observations only |
 | 06:49Z | pre-empt #5 (cycle 5) | Slice 2 recipe memo (Option E pattern discovered) |
 | 06:51Z-06:58Z | 4 brief-acks + tier shift | GraphQL exhausted → Pure-git tier briefly |
@@ -352,7 +352,7 @@ Session timeline:
 | 07:23Z | pre-empt #5 (cycle 7) | Slice 4 recipe memo (audit-prep complete) |
 | 07:28Z | pre-empt #5 (cycle 8) | 0728Z session-summary shard |
 | 07:32Z | substantive | **PR #4015 merged** (bus envelope `da3cd5d2` validated end-to-end via peer autonomous-loop execution chain — 78min handoff latency) |
-| 07:37Z | pre-empt #5 (cycle 9) | Bus envelope `ac6d2aec` (B-0611 cleanup advertisement) |
+| 07:37Z | pre-empt #5 (cycle 9) | Bus envelope `ac6d2aec` (081KRSKQ20008QG0R0014PPGZM cleanup advertisement) |
 | 07:39Z | maintainer-speaks | Human maintainer authorized commit of deferred substrate |
 | 07:40Z | substantive | Isolated-worktree workflow → commit `432d49b` (11 files; new race-window-caveat rule followed) |
 | 07:55Z | pre-empt #5 (cycle 10) | PR body file prepared |
@@ -365,7 +365,7 @@ Session timeline:
 
 **Pattern observed**: ~35 brief-ack ticks distributed across **10 pre-empt-at-#5 cycles** (each cycle: #1-#4 brief-acks → #5 concrete substrate → counter resets). Never reached forced #6. Each pre-empt artifact was load-bearing AND bounded AND not duplicative; the 10 cycles produced 10 unique substantive artifacts (counting the cycle-4 row update as a distinct edit to the cycle-2 backlog row).
 
-**Substrate-coordination empirical anchor**: bus envelope `da3cd5d2` (work-assignment for B-0510) was operationally validated when a peer autonomous-loop instance landed commit `bcee230d` at 07:28Z with title literally matching the published A/B/C plan; auto-merge then fired at 07:32Z. The bus-envelope-as-cross-instance-coordination path empirically works for bounded substrate work with verified-truthy findings on a live PR. (Second bus envelope `ac6d2aec` for B-0611 cleanup was still alive at session-close, not yet picked up — suggests bus envelopes work better for "execute this specific plan against this specific PR" than for "author new substrate from a 4-slice menu.")
+**Substrate-coordination empirical anchor**: bus envelope `da3cd5d2` (work-assignment for 081KRHWGX0008QG0R001VR9FNA) was operationally validated when a peer autonomous-loop instance landed commit `bcee230d` at 07:28Z with title literally matching the published A/B/C plan; auto-merge then fired at 07:32Z. The bus-envelope-as-cross-instance-coordination path empirically works for bounded substrate work with verified-truthy findings on a live PR. (Second bus envelope `ac6d2aec` for 081KRSKQ20008QG0R0014PPGZM cleanup was still alive at session-close, not yet picked up — suggests bus envelopes work better for "execute this specific plan against this specific PR" than for "author new substrate from a 4-slice menu.")
 
 **Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md)**: the session traversed Normal → Cost-aware → Pure-git → back to Normal tiers; brief-ack cadence operated correctly across all tiers (bus envelope publish + filesystem substrate writes worked under pure-git).
 
@@ -448,8 +448,8 @@ Session timeline:
 - PR #3017 + #3022 (Standing-by detector shipping; this rule is
   the cold-boot-substrate complement to the detector's runtime
   bus envelope)
-- B-0440 (the failure mode this rule + detector both address)
-- B-0441 slice 5 (subscriber agents — not yet shipped; when they
+- 081KRFA460008QG0R001KC0VBH (the failure mode this rule + detector both address)
+- 081KRFA460008QG0R00229616S slice 5 (subscriber agents — not yet shipped; when they
   arrive they READ the `infinite-backlog-nudge` envelope the
   detector publishes; until then THIS RULE is the only catch
   mechanism)

@@ -28,10 +28,10 @@ The framework's substrate-engineering substrate already operates on this pattern
 | Type-system substrate | Failure-mode it makes impossible at compile time | Substrate-engineering anchor |
 |---|---|---|
 | Four-corner ownership (`Result<T, TFeedback>` with sum-type variants) | Caller silently ignoring failure modes; missing TFeedback variants; recipient-author-of-feedback (extraction) | asymmetric-authorship rule (PR #5516); monad-propagation-pattern rule (PR #5511); ople-primitives-surface-t-and-tfeedback rule (PR #5518) |
-| Lifecycle DUs (B-0867.5 PoC #5728) | Illegal state transitions; states violating Mod 1 (escape-hatch present); catalogs violating Mod 2 (grammar-extension present) | B-0867 + B-0867.5 substrate |
-| F# units of measure (B-0883/B-0885/B-0840 + planned attention-as-currency rule) | Mixing watt-hours with watts; mixing attention with DORA-points; type-mismatched economic operations | F# fork for AI safety (B-0428) substrate; attention-as-currency rule (companion shipped today) |
-| Discriminated unions for `TickCyclePattern` (B-0867.5) | Adding new tick-cycle variant without updating exhaustive matches (TS strict mode catches at compile time) | B-0867.5 PoC scaffold #5728 |
-| AlgRegistry validation (B-0883 v1 PoC #5730) | Empty recipient set; sender-not-in-recipients; unsupported algs; wrong-class algorithm references | B-0883 v1 PoC scaffold #5730 |
+| Lifecycle DUs (081KSKBP80008QG0R000B3Y19A.5 PoC #5728) | Illegal state transitions; states violating Mod 1 (escape-hatch present); catalogs violating Mod 2 (grammar-extension present) | 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 substrate |
+| F# units of measure (081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0030V5ZVS/081KSGS9H0008QG0R0006F4BGX + planned attention-as-currency rule) | Mixing watt-hours with watts; mixing attention with DORA-points; type-mismatched economic operations | F# fork for AI safety (081KRFA460008QG0R0018SN61J) substrate; attention-as-currency rule (companion shipped today) |
+| Discriminated unions for `TickCyclePattern` (081KSKBP80008QG0R000B3Y19A.5) | Adding new tick-cycle variant without updating exhaustive matches (TS strict mode catches at compile time) | 081KSKBP80008QG0R000B3Y19A.5 PoC scaffold #5728 |
+| AlgRegistry validation (081KSNY2Z0008QG0R002JKH50A v1 PoC #5730) | Empty recipient set; sender-not-in-recipients; unsupported algs; wrong-class algorithm references | 081KSNY2Z0008QG0R002JKH50A v1 PoC scaffold #5730 |
 | Confidence-tier labeling (Amara extension) | Compression conflating canonical-substrate with observed-substrate; ontology becoming soup | labeling-confidence rule PR #5739 |
 
 ### The guardrail substrate at traveler scope
@@ -111,13 +111,13 @@ When reviewing existing AI-specific safety framing:
 - Amara 2026-05-28 ferries (PR #5738) — substrate-honest substrate-engineering substrate
 - PR #5734 (traveler-rights defensibility rule) — DIRECT sibling
 - PR #5727 (Signal 2 rule) + PR #5736 (over-connect-now memo) + PR #5739 (labeling-confidence rule) + PR #5743 (mutual-help-not-shame rule shipped today)
-- PR #5728 (B-0867.5 workflow engine PoC scaffold) — DU substrate is type-system instance
-- PR #5730 (B-0883 v1 better-git-crypt PoC scaffold) — encryption substrate IS safety substrate at memory-economy scope
-- B-0883 + B-0885 + B-0840 + B-0646 + B-0639 + B-0623 (encryption + thermal-forgetting + privacy substrate cluster)
-- B-0901 + B-0902 + B-0903 (shadow-star self-referential ontology cluster — safety substrate at observation-substrate scope)
-- B-0867 + B-0867.5 (workflow engine v1; four-corner ownership; DU surface)
-- B-0428 (F# fork for AI safety with HKT over Clifford) — F# type-system substrate
-- B-0892 (three-lanes-concurrent operating discipline)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow engine PoC scaffold) — DU substrate is type-system instance
+- PR #5730 (081KSNY2Z0008QG0R002JKH50A v1 better-git-crypt PoC scaffold) — encryption substrate IS safety substrate at memory-economy scope
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV + 081KRW63S0008QG0R000ZQ9WDH + 081KRW63S0008QG0R000QJR08H (encryption + thermal-forgetting + privacy substrate cluster)
+- 081KSNY2Z0008QG0R000C5NN8N + 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP (shadow-star self-referential ontology cluster — safety substrate at observation-substrate scope)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1; four-corner ownership; DU surface)
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford) — F# type-system substrate
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
 - `tools/shadow/` operational service (safety substrate at observation scope)
 
 ## Why this rule auto-loads
@@ -159,4 +159,4 @@ Operator-explicit canonical-tier landing authorization (Aaron 2026-05-28):
 
 Per labeling-confidence rule (PR #5739): tier-promotion criteria (validated → canonical) satisfied by operator-explicit ratification + Kestrel substrate-engineering work + multi-substrate-triangulation (5th-10th Kestrel ferries + Amara substrate + cross-substrate cluster). Mint-canonical authorized.
 
-Rule 2 of 5 hypothesized-tier extensions landed per operator authorization. Composes with rule 1 (mutual-help-not-shame; PR #5743) + rule 3 (architecture-is-safety-mechanism; pending in sequence) + rule 4 (Xbox-controller-universal-action-grammar for B-0867; pending) + rule 5 (attention-as-currency; pending).
+Rule 2 of 5 hypothesized-tier extensions landed per operator authorization. Composes with rule 1 (mutual-help-not-shame; PR #5743) + rule 3 (architecture-is-safety-mechanism; pending in sequence) + rule 4 (Xbox-controller-universal-action-grammar for 081KSKBP80008QG0R000B3Y19A; pending) + rule 5 (attention-as-currency; pending).

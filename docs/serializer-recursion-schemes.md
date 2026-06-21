@@ -1,6 +1,6 @@
 # DynamicValue as μF — codecs & bridges as recursion schemes
 
-> Grounding for the serializer layer (B-1011) in proven math. Saved for further
+> Grounding for the serializer layer (081KT5CF90008QG0R001P4CQ09) in proven math. Saved for further
 > proofs (Aaron 2026-06-04): folds have **laws**, so serializer correctness can be
 > proven via recursion-scheme algebra, not only example tests.
 
@@ -64,7 +64,7 @@ instance. Composes the recursive-type / HKT-hack theme.
 
 ## Pointers
 
-- B-1011 — serializer roster + DOM-unify + LCD/bridge decisions (this is its math grounding)
+- 081KT5CF90008QG0R001P4CQ09 — serializer roster + DOM-unify + LCD/bridge decisions (this is its math grounding)
 - `docs/PROVEN-CORE-MAP.md` — serializers as a floor primitive (metric/aggregation + value)
 - `src/Core/DynamicValue.fs` — the `μF` value tree itself
 

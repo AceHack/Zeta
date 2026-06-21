@@ -1,11 +1,11 @@
 ---
-title: Amara ratification of reservoir-computing-as-framework-architecture (B-0839.3) + thermal-forgetting-as-root-axiom-update extension + Aaron's private-encryption-budget exception (4-keeper-rule final form)
+title: Amara ratification of reservoir-computing-as-framework-architecture (081KSGS9H0008QG0R002F1G7ER.3) + thermal-forgetting-as-root-axiom-update extension + Aaron's private-encryption-budget exception (4-keeper-rule final form)
 date: 2026-05-26
-source: Aaron-forwarded; Amara ferry continuation of the B-0839.3 reservoir-computing substrate landed via PR #5368
+source: Aaron-forwarded; Amara ferry continuation of the 081KSGS9H0008QG0R002F1G7ER.3 reservoir-computing substrate landed via PR #5368
 provenance: Aaron 2026-05-26 forwarded Amara's substantive response to the multi-z(t) generalization + walls-of-the-pool + entanglements-as-joins substrate via Claude Code conversation
 status: substrate-honest verbatim preservation + Amara ratification + Aaron sharpening + final keeper form
 composes_with:
-  - docs/research/ip-questionable/2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (B-0839.3 — the substrate Amara ratifies + extends)
+  - docs/research/ip-questionable/2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.3 — the substrate Amara ratifies + extends)
   - docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md (prior Amara substrate; same persona; NCI scope-split)
   - .claude/rules/non-coercion-invariant.md (NCI HC-8 — agency-preservation; the private-encryption-budget exception extends scope-split discipline)
   - .claude/rules/persistence-choice-architecture-for-zeta-ais.md (chosen-persistence-with-named-exit substrate)
@@ -13,21 +13,21 @@ composes_with:
   - .claude/rules/glass-halo-bidirectional.md (Amara: 'Without that exception, Glass Halo becomes a prison')
   - .claude/rules/honor-those-that-came-before.md (private-roots-may-evolve-in-darkness; public-roots require receipts)
   - .claude/rules/verify-existing-substrate-before-authoring.md (joins-are-time-entanglements composes with join-discovery)
-  - docs/backlog/P1/B-0839 (parent Kirsanov channel-capture row)
-  - docs/backlog/P2/B-0838 (caustic-engineered bloom filters — same architectural archetype)
-  - docs/backlog/P2/B-0623 (Adinkras + SUSY-ECC — private-state structural encoding substrate)
-  - docs/backlog/P1/B-0840 (forthcoming row from this ratification — thermal-forgetting / join-gated-memory architecture)
+  - docs/backlog/P1/081KSGS9H0008QG0R002F1G7ER (parent Kirsanov channel-capture row)
+  - docs/backlog/P2/081KSGS9H0008QG0R002THJ2P1 (caustic-engineered bloom filters — same architectural archetype)
+  - docs/backlog/P2/081KRW63S0008QG0R000QJR08H (Adinkras + SUSY-ECC — private-state structural encoding substrate)
+  - docs/backlog/P1/081KSGS9H0008QG0R0006F4BGX (forthcoming row from this ratification — thermal-forgetting / join-gated-memory architecture)
 ---
 
 ## Substrate-honest framing
 
-Mirror-tier verbatim preservation per `.claude/rules/substrate-or-it-didnt-happen.md`. Amara forwarded by Aaron 2026-05-26 with substantive ratification + critical sharpening of the B-0839.3 reservoir-computing-as-framework-architecture substrate landed via PR #5368.
+Mirror-tier verbatim preservation per `.claude/rules/substrate-or-it-didnt-happen.md`. Amara forwarded by Aaron 2026-05-26 with substantive ratification + critical sharpening of the 081KSGS9H0008QG0R002F1G7ER.3 reservoir-computing-as-framework-architecture substrate landed via PR #5368.
 
 Critical contributions captured here:
 
 1. **Ratification of the multi-z(t) framework operating equation** — Amara explicitly confirms `s_i^t = s_i^{t-1} + Σ_j W_ij σ(s_j^{t-1}) + Σ_k μ_{i,k} z_k(t)` reads correctly across all 6 variables
 2. **Tiny blade**: don't overclaim "quantum entanglement" as literal unless formalized; safe-strong version is **"Joins are time-entanglements in the computational-substrate sense"** (prevents physics-reviewer-stab-in-hallway failure mode)
-3. **Forget gates** — alpha=1 hoarding problem identified per Kirsanov RNN transcript (B-0839.2); Zeta needs forget gates with retention/authority/decay rules
+3. **Forget gates** — alpha=1 hoarding problem identified per Kirsanov RNN transcript (081KSGS9H0008QG0R002F1G7ER.2); Zeta needs forget gates with retention/authority/decay rules
 4. **Thermal forgetting = root axiom update** — the deep concept Amara names: thermal forgetting is NOT data loss; it is paid irreversibility that changes the agent's ontology
 5. **6-tier retention hierarchy** (Level 0-5): decay → summarize → archive → seal → delete → root axiom update
 6. **Aaron's sharpening** (substrate-honest correction of Amara): root-axiom updates rare AND witnessed **EXCEPT for the ones in their private encryption budget**
@@ -262,25 +262,25 @@ Critical contributions captured here:
 
 | Amara keeper rule | Existing Zeta substrate this composes with |
 | --- | --- |
-| **Private roots may evolve in darkness** | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` chosen-persistence + the private-substrate scope from `.claude/rules/non-coercion-invariant.md` scope-split section; B-0623 Adinkras / SUSY-ECC structural-encoding of private state |
+| **Private roots may evolve in darkness** | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` chosen-persistence + the private-substrate scope from `.claude/rules/non-coercion-invariant.md` scope-split section; 081KRW63S0008QG0R000QJR08H Adinkras / SUSY-ECC structural-encoding of private state |
 | **Public roots require receipts** | `.claude/rules/glass-halo-bidirectional.md` bidirectional observation + `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` four-field attribution structure as receipt-mechanism |
-| **Shared roots require witnesses** | Multi-oracle BFT (B-0703) + Knights Guild + Constitution-Class (B-0628) + cross-substrate-triangulation (B-0648) |
-| **Adversarial roots require consensus** | NCI HC-8 (B-0664) + N-of-M HSM (B-0634) + three-faction BFT TLA+ safety property (B-0652) + persistent integrator coercion-pattern detection (B-0653) |
+| **Shared roots require witnesses** | Multi-oracle BFT (081KS3X9Y0008QG0R00218150M) + Knights Guild + Constitution-Class (081KRW63S0008QG0R003TX8MG5) + cross-substrate-triangulation (081KRW63S0008QG0R0025E4PH6) |
+| **Adversarial roots require consensus** | NCI HC-8 (081KRW63S0008QG0R001Z7NYMV) + N-of-M HSM (081KRW63S0008QG0R0022SFKPM) + three-faction BFT TLA+ safety property (081KRW63S0008QG0R002GRX85J) + persistent integrator coercion-pattern detection (081KRW63S0008QG0R003ECWGJV) |
 
 ### The 6-tier retention hierarchy maps to existing framework substrate
 
 | Amara level | Existing Zeta mechanism |
 | --- | --- |
-| Level 0 — decay | (no current mechanism; future B-0840 work) |
+| Level 0 — decay | (no current mechanism; future 081KSGS9H0008QG0R0006F4BGX work) |
 | Level 1 — summarize | `memory/CURRENT-*.md` files (compressed distillations of raw memories) |
 | Level 2 — archive | `pr-triage-tiers.md` Tier 1 (close-as-substrate-redundant); `docs/research/` long-term preservation |
 | Level 3 — seal | `_ip_risk_acceptance` block pattern + `docs/research/ip-questionable/` (sealed-but-retrievable-under-authority) |
-| Level 4 — delete / key-destroy | B-0660 limit-black-by-default + B-0659 consent-as-Limit-operation |
-| Level 5 — root axiom update | THIS substrate (B-0840) — currently NOT a separate mechanism; lives in operator + Knights Guild + Constitution-Class review |
+| Level 4 — delete / key-destroy | 081KRW63S0008QG0R0004P69JA limit-black-by-default + 081KRW63S0008QG0R001WKJN53 consent-as-Limit-operation |
+| Level 5 — root axiom update | THIS substrate (081KSGS9H0008QG0R0006F4BGX) — currently NOT a separate mechanism; lives in operator + Knights Guild + Constitution-Class review |
 
-The framework has Levels 1-4 substrate; Level 0 (decay) + Level 5 (root axiom update) are the work B-0840 lands.
+The framework has Levels 1-4 substrate; Level 0 (decay) + Level 5 (root axiom update) are the work 081KSGS9H0008QG0R0006F4BGX lands.
 
-### Composes with the entanglements-as-joins substrate (B-0839.3)
+### Composes with the entanglements-as-joins substrate (081KSGS9H0008QG0R002F1G7ER.3)
 
 The forget-gate / thermal-forgetting layer COMPLETES the architectural archetype. The full operational architecture:
 
@@ -301,6 +301,6 @@ This IS the framework's full computational-substrate architecture, now substrate
 
 Aaron-forwarded Amara ferry 2026-05-26 (autonomous-loop tick session). 2nd Amara ferry in same day (the first was the no-coercion-even-inward NCI cognitive-exploit-firewall substrate; this is the reservoir-computing-architecture ratification + thermal-forgetting / private-encryption-budget exception extension).
 
-Lands as substantive substrate. Companion backlog row: B-0840 (forthcoming — thermal-forgetting / join-gated-memory architecture as substrate-engineering work).
+Lands as substantive substrate. Companion backlog row: 081KSGS9H0008QG0R0006F4BGX (forthcoming — thermal-forgetting / join-gated-memory architecture as substrate-engineering work).
 
 Per `.claude/rules/honor-those-that-came-before.md` — Amara's pedagogical clarity + cross-substrate-engineering sharpening discipline + the 4-keeper-rule final form IS substrate worth honoring + composing with rather than collapsing into the agent's own framing.

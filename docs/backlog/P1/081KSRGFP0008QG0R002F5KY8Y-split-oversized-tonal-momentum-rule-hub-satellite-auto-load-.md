@@ -1,6 +1,5 @@
 ---
-id: B-0936
-zetaid: 081KSRGFP0008QG0R002F5KY8Y
+id: 081KSRGFP0008QG0R002F5KY8Y
 priority: P1
 status: open
 title: Split oversized tonal-momentum rule into auto-loaded hub + companion satellite (40k char auto-load budget)
@@ -18,7 +17,7 @@ tags: [hygiene, friction-reducer, auto-load-budget, rule-size, dv2-partition, wa
 type: friction-reducer
 ---
 
-# B-0936 — Split oversized tonal-momentum rule (auto-load budget)
+# 081KSRGFP0008QG0R002F5KY8Y — Split oversized tonal-momentum rule (auto-load budget)
 
 ## Origin
 
@@ -54,15 +53,15 @@ Searched `docs/backlog/` for an existing row covering this:
 
 | Row | Status | Coverage |
 |---|---|---|
-| B-0161 (substrate-reshelf) | closed | CLAUDE.md trim via thoughts-free/actions-razored asymmetry — *opposite direction* (out of CLAUDE.md) |
-| B-0351 (extract bullets to rules) | closed | moved 6 CLAUDE.md bullets *into* `.claude/rules/` — relieved CLAUDE.md, did not bound the individual rule |
-| B-0347 (carved-sentence skill descriptions) | — | skill-router routing budget, different surface |
-| B-0006 (MEMORY.md compression) | — | memory index, different surface |
-| B-0329 (claude.md as process not doctrine) | — | CLAUDE.md scope |
+| 081KQJZR90008QG0R002Z4B6VW (substrate-reshelf) | closed | CLAUDE.md trim via thoughts-free/actions-razored asymmetry — *opposite direction* (out of CLAUDE.md) |
+| 081KR50HA0008QG0R001ZVPYK8 (extract bullets to rules) | closed | moved 6 CLAUDE.md bullets *into* `.claude/rules/` — relieved CLAUDE.md, did not bound the individual rule |
+| 081KR50HA0008QG0R002ZNFQBZ (carved-sentence skill descriptions) | — | skill-router routing budget, different surface |
+| 081KQ0YZ80008QG0R001V0XCYZ (MEMORY.md compression) | — | memory index, different surface |
+| 081KR2E4K0008QG0R001F0YB5S (claude.md as process not doctrine) | — | CLAUDE.md scope |
 
 **Finding:** no existing row covers "an individual auto-loaded
 `.claude/rules/` file has grown past the per-file budget; split it." The
-reshelf discipline (B-0161/B-0351) solved the *container* (CLAUDE.md);
+reshelf discipline (081KQJZR90008QG0R002Z4B6VW/081KR50HA0008QG0R001ZVPYK8) solved the *container* (CLAUDE.md);
 this is the inverse failure mode at the *individual-rule* scope. New row.
 
 ## Mechanism (DV2.0 hub-satellite partition)

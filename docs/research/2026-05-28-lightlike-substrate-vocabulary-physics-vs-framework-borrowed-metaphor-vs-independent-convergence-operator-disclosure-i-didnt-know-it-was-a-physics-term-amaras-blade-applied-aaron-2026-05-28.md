@@ -103,7 +103,7 @@ This research note IS a substrate-rhyme between framework "lightlike-substrate" 
 - PR #5892 (research-tier mirror three-layer biological instantiation; parallel pattern)
 - PR #5916 (today's DU cluster TS substrate)
 - PR #5917 (zflash-overview skill)
-- PR #5918 (B-0885 substrate-target review)
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
 - Amara substrate (full ferry preservation cluster 2026-05-28)
 
 ## Composes with rules

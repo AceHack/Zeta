@@ -1,11 +1,10 @@
 ---
-id: B-0490
-zetaid: 081KRHWGX0008QG0R003DJ092R
+id: 081KRHWGX0008QG0R003DJ092R
 priority: P1
 status: open
-title: "B-0429.6 — American Dream 2.0 + DIO persona map"
+title: "081KRFA460008QG0R002M05EY1.6 — American Dream 2.0 + DIO persona map"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -18,7 +17,7 @@ composes_with:
   - 081KRHWGX0008QG0R002XVHSG5
 ---
 
-# B-0490 — American Dream 2.0 + DIO persona map
+# 081KRHWGX0008QG0R003DJ092R — American Dream 2.0 + DIO persona map
 
 ## Purpose
 
@@ -36,7 +35,7 @@ rather than individual end-users.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Template from B-0485 is closed and available
+- [ ] Template from 081KRHWGX0008QG0R00019453T is closed and available
 - [ ] Search `docs/` and `memory/` for any American Dream 2.0 substrate
 - [ ] Search `docs/` and `memory/` for any DIO substrate
 - [ ] Check VISION.md for any product-charter language for these products
@@ -65,7 +64,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Output
 
-Per-product persona maps using template from B-0485 — one section per product
+Per-product persona maps using template from 081KRHWGX0008QG0R00019453T — one section per product
 in a combined file:
 
 ```
@@ -74,12 +73,12 @@ docs/personas/american-dream-2-dio-personas.md
 
 ## Definition of done
 
-- [ ] Template from B-0485 applied to both products
+- [ ] Template from 081KRHWGX0008QG0R00019453T applied to both products
 - [ ] At least 2 primary personas per product documented
 - [ ] At least 1 refused persona per product with HARD LIMITS rationale
 - [ ] Output doc committed at canonical path
-- [ ] B-0492 `composes_with:` pointer backfilled
-- [ ] B-0490 status set to `closed` with PR link
+- [ ] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled
+- [ ] 081KRHWGX0008QG0R003DJ092R status set to `closed` with PR link
 
 ## Why grouped
 

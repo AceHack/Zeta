@@ -1,6 +1,6 @@
 ---
 pr_number: 5020
-title: "rule(B-0750)+backlog: agent worktree hygiene \u2014 never hold main + never step on operator + cleanup on PR merge"
+title: "rule(081KSE6WT0008QG0R003YYC9PV)+backlog: agent worktree hygiene \u2014 never hold main + never step on operator + cleanup on PR merge"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T22:48:49Z"
@@ -12,19 +12,19 @@ archived_at: "2026-05-27T19:48:06Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5020: rule(B-0750)+backlog: agent worktree hygiene — never hold main + never step on operator + cleanup on PR merge
+# PR #5020: rule(081KSE6WT0008QG0R003YYC9PV)+backlog: agent worktree hygiene — never hold main + never step on operator + cleanup on PR merge
 
 ## PR description
 
 Operator 2026-05-25: 'we need to fix this mess yall always stepping on each other and me constantly'.
 
-Empirical anchor: 37 agent worktrees mass-cleaned same session (B-0728→B-0749 cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
+Empirical anchor: 37 agent worktrees mass-cleaned same session (081KSE6WT0008QG0R0005XASX2→081KSE6WT0008QG0R001RG4FXD cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
 
 Ships:
 - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md (auto-loads at cold-boot)
-- B-0750 backlog row with 5 mechanization scope items
+- 081KSE6WT0008QG0R003YYC9PV backlog row with 5 mechanization scope items
 
-Composes with B-0530 cron-sentinel-mutex + B-0751 per-agent-clones architecture (sibling; B-0751 supersedes the worktree-pool scope item).
+Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + 081KSE6WT0008QG0R003YYC9PV per-agent-clones architecture (sibling; 081KSE6WT0008QG0R003YYC9PV supersedes the worktree-pool scope item).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -34,12 +34,12 @@ Composes with B-0530 cron-sentinel-mutex + B-0751 per-agent-clones architecture 
 
 ## Pull request overview
 
-This PR lands an operational rule under `.claude/rules/` to prevent multi-agent git worktree contention (especially blocking `main` and interfering with the operator’s primary checkout), and it records the follow-on mechanization targets as a new backlog row (B-0750) with an index entry in `docs/BACKLOG.md`.
+This PR lands an operational rule under `.claude/rules/` to prevent multi-agent git worktree contention (especially blocking `main` and interfering with the operator’s primary checkout), and it records the follow-on mechanization targets as a new backlog row (081KSE6WT0008QG0R003YYC9PV) with an index entry in `docs/BACKLOG.md`.
 
 **Changes:**
 - Add a new auto-loaded rule: “Agent worktree hygiene — never hold `main`, never step on operator, clean up after PR merge”.
-- Add a new P2 backlog row (B-0750) describing mechanization scope items (cleanup tooling, worktree pool, PR-merge cleanup hook, etc.).
-- Add B-0750 to the main backlog index.
+- Add a new P2 backlog row (081KSE6WT0008QG0R003YYC9PV) describing mechanization scope items (cleanup tooling, worktree pool, PR-merge cleanup hook, etc.).
+- Add 081KSE6WT0008QG0R003YYC9PV to the main backlog index.
 
 ### Reviewed changes
 
@@ -47,8 +47,8 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | New backlog row capturing the worktree hygiene problem statement + mechanization scope/acceptance criteria. |
-| `docs/BACKLOG.md` | Adds B-0750 to the P2 backlog index. |
+| `docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | New backlog row capturing the worktree hygiene problem statement + mechanization scope/acceptance criteria. |
+| `docs/BACKLOG.md` | Adds 081KSE6WT0008QG0R003YYC9PV to the P2 backlog index. |
 | `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` | New operational rule documenting required agent worktree discipline and concrete audit/cleanup commands. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T00:51:40Z)
@@ -101,25 +101,25 @@ This rule references “PR #4530 / saturation-ceiling sub-cases” but provides 
 
 Fixed in 018adea1: added direct PR URL plus cross-pointer to claim-acquire-before-worktree-work.md saturation-ceiling sub-cases for the durable in-repo anchor.
 
-### Thread 3: docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:66 (resolved)
+### Thread 3: docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:66 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T22:52:33Z):
 
-Scope item 2 (“Worktree-pool primitive”) appears to overlap heavily with the already-open backlog row **B-0558** (worktree-pool primitive per Otto identity, composes with B-0530). To reduce backlog drift, this row should either (a) explicitly compose with / supersede B-0558 and describe what’s new here, or (b) narrow Scope item 2 to the delta that isn’t already covered by B-0558.
+Scope item 2 (“Worktree-pool primitive”) appears to overlap heavily with the already-open backlog row **081KRQ1AB0008QG0R001KQ9S4B** (worktree-pool primitive per Otto identity, composes with 081KRMEXM0008QG0R000X1PPGC). To reduce backlog drift, this row should either (a) explicitly compose with / supersede 081KRQ1AB0008QG0R001KQ9S4B and describe what’s new here, or (b) narrow Scope item 2 to the delta that isn’t already covered by 081KRQ1AB0008QG0R001KQ9S4B.
 
 **@AceHack** (2026-05-26T00:52:41Z):
 
-Fixed in 018adea1: Scope item 2 now explicitly composes-with-or-supersedes B-0558 (existing Otto-only worktree-pool row at docs/backlog/P3/B-0558-...md). Delta named as multi-agent generalization (Otto + Alexa + Riven + Vera + Lior + future).
+Fixed in 018adea1: Scope item 2 now explicitly composes-with-or-supersedes 081KRQ1AB0008QG0R001KQ9S4B (existing Otto-only worktree-pool row at docs/backlog/P3/081KRQ1AB0008QG0R001KQ9S4B-...md). Delta named as multi-agent generalization (Otto + Alexa + Riven + Vera + Lior + future).
 
-### Thread 4: docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:66 (resolved)
+### Thread 4: docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:66 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T22:52:34Z):
 
-PR description mentions a sibling “B-0751 per-agent-clones architecture” that supersedes the worktree-pool scope item, but this PR doesn’t add any B-0751 row and this backlog row still lists a worktree-pool primitive as in-scope. Either add/mention B-0751 here (and mark the pool item superseded/deferred), or drop the B-0751 supersedes claim from the PR description to keep description vs shipped artifacts consistent.
+PR description mentions a sibling “081KSE6WT0008QG0R003YYC9PV per-agent-clones architecture” that supersedes the worktree-pool scope item, but this PR doesn’t add any 081KSE6WT0008QG0R003YYC9PV row and this backlog row still lists a worktree-pool primitive as in-scope. Either add/mention 081KSE6WT0008QG0R003YYC9PV here (and mark the pool item superseded/deferred), or drop the 081KSE6WT0008QG0R003YYC9PV supersedes claim from the PR description to keep description vs shipped artifacts consistent.
 
 **@AceHack** (2026-05-26T00:52:43Z):
 
-Fixed in 018adea1: B-0751 (per-agent-clones architecture) named in Scope item 2 as potential superseder, and added to Composes-with-backlog-substrate section with substrate-honest framing that the row may not yet exist on main but if filed separately retires Scope item 2.
+Fixed in 018adea1: 081KSE6WT0008QG0R003YYC9PV (per-agent-clones architecture) named in Scope item 2 as potential superseder, and added to Composes-with-backlog-substrate section with substrate-honest framing that the row may not yet exist on main but if filed separately retires Scope item 2.
 
 ### Thread 5: .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md:68 (resolved)
 
@@ -157,23 +157,23 @@ P2: Inline reference `holding-without-named-dependency-is-standing-by-failure` i
 
 P1 (codebase convention): This `.claude/rules/**` file introduces persona/contributor names in narrative prose (e.g., “Otto-VSCode”, “Lior”, “Riven”, “Vera”). Per the repo’s “No name attribution in code, docs, or skills” operational rule (docs/AGENT-BEST-PRACTICES.md:671-686), current-state surfaces like rules should use role references or neutral identifiers instead.
 
-### Thread 11: docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:81 (resolved)
+### Thread 11: docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:81 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T00:51:39Z):
 
 P1: This backlog row includes the operator’s absolute local checkout path with username (`/Users/acehack/...`). Even on history surfaces, this is machine-specific and potentially sensitive; consider redacting to a placeholder (e.g., `<OPERATOR_PRIMARY_CHECKOUT>`) or `~/.../Zeta` while keeping the invariant being enforced (don’t create worktrees under operator checkout).
 
-### Thread 12: docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:66 (resolved)
+### Thread 12: docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:66 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T00:51:39Z):
 
-P2: PR description says a sibling B-0751 “supersedes the worktree-pool scope item”, but this backlog row still lists “Scope item 2 — Worktree-pool primitive” without noting supersession. Either add the superseded-by note here (or drop the scope item) or adjust the PR description so they don’t contradict.
+P2: PR description says a sibling 081KSE6WT0008QG0R003YYC9PV “supersedes the worktree-pool scope item”, but this backlog row still lists “Scope item 2 — Worktree-pool primitive” without noting supersession. Either add the superseded-by note here (or drop the scope item) or adjust the PR description so they don’t contradict.
 
-### Thread 13: docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:14 (unresolved)
+### Thread 13: docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md:14 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T01:04:51Z):
 
-P1 (codebase convention / xref integrity): This row lists `B-0751` in `composes_with`, but there is no `docs/backlog/**` row with `id: B-0751` in the repo, so this becomes a dangling cross-reference. Either land the B-0751 row in the same PR, or remove `B-0751` from `composes_with` and refer to it as a not-yet-filed / external PR-only concept (with a concrete URL) to keep the backlog graph navigable.
+P1 (codebase convention / xref integrity): This row lists `081KSE6WT0008QG0R003YYC9PV` in `composes_with`, but there is no `docs/backlog/**` row with `id: 081KSE6WT0008QG0R003YYC9PV` in the repo, so this becomes a dangling cross-reference. Either land the 081KSE6WT0008QG0R003YYC9PV row in the same PR, or remove `081KSE6WT0008QG0R003YYC9PV` from `composes_with` and refer to it as a not-yet-filed / external PR-only concept (with a concrete URL) to keep the backlog graph navigable.
 
 ### Thread 14: .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md:213 (unresolved)
 

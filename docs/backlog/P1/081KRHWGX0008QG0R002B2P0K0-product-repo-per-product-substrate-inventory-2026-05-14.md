@@ -1,11 +1,10 @@
 ---
-id: B-0465
-zetaid: 081KRHWGX0008QG0R002B2P0K0
+id: 081KRHWGX0008QG0R002B2P0K0
 priority: P1
 status: closed
 title: "Per-product substrate inventory — 7 product candidates; repo-ready evaluation"
 type: research
-origin: B-0425 decomposition (Otto 2026-05-14)
+origin: 081KRFA460008QG0R003JQ46J4 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 closed_by: PR that merges this row update
@@ -23,17 +22,17 @@ composes_with:
 
 1. **Prior-art search** — Searched skill router (no "product-substrate-inventory" skill exists; new work); grepped memory/ and docs/ for all 7 product terms (ksk, civsim, wellness, american dream, DIO, aurora, dawn); checked docs/backlog/ for existing rows. Surfaces searched: memory/*.md, docs/research/*.md, docs/backlog/*.md.
 
-2. **Dependency-restructure** — No `depends_on:` chain (this row has none). Verified B-0466 and B-0467 both correctly list B-0465 as dependency. B-0468 lists B-0465. All reciprocal pointers confirmed correct.
+2. **Dependency-restructure** — No `depends_on:` chain (this row has none). Verified 081KRHWGX0008QG0R003XHCEXT and 081KRHWGX0008QG0R00394BM1G both correctly list 081KRHWGX0008QG0R002B2P0K0 as dependency. 081KRHWGX0008QG0R000F6HE6D lists 081KRHWGX0008QG0R002B2P0K0. All reciprocal pointers confirmed correct.
 
 3. **Output produced** — `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md`
 
 ---
 
-# B-0465 — Per-product substrate inventory: 7 candidates, repo-ready evaluation
+# 081KRHWGX0008QG0R002B2P0K0 — Per-product substrate inventory: 7 candidates, repo-ready evaluation
 
 ## What this row does
 
-For each of the 7 product candidates named in B-0425, produce a **substrate
+For each of the 7 product candidates named in 081KRFA460008QG0R003JQ46J4, produce a **substrate
 inventory and repo-readiness verdict**:
 
 1. KSK (Kinetic Safeguard Kernel)
@@ -49,12 +48,12 @@ tool code), assess whether it warrants its own repo now vs later vs stays-in-mon
 
 ## Why this is its own atomic row
 
-The ADR (B-0468) and naming review (B-0466) both depend on knowing which products
-are repo-ready. Until this inventory exists, B-0468 cannot be grounded in evidence.
+The ADR (081KRHWGX0008QG0R000F6HE6D) and naming review (081KRHWGX0008QG0R003XHCEXT) both depend on knowing which products
+are repo-ready. Until this inventory exists, 081KRHWGX0008QG0R000F6HE6D cannot be grounded in evidence.
 The inventory is pure research — no write operations needed outside the output
 summary document.
 
-This also satisfies B-0425's explicit pre-start checklist item:
+This also satisfies 081KRFA460008QG0R003JQ46J4's explicit pre-start checklist item:
 > "Prior-art-search — verify each product has substrate established to justify
 > its own repo (not just an idea-sized substrate)"
 
@@ -140,13 +139,13 @@ A new file: `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md`
 Structure:
 
 ```
-# Product-repo substrate inventory (B-0425)
+# Product-repo substrate inventory (081KRFA460008QG0R003JQ46J4)
 
 ## KSK
 Substrate depth: [shallow/medium/deep]
 Repo-ready: [now / later / stays-in-monorepo]
 Evidence: [pointers to memory files + PRs]
-Notes: [anything notable for B-0466 or B-0468]
+Notes: [anything notable for 081KRHWGX0008QG0R003XHCEXT or 081KRHWGX0008QG0R000F6HE6D]
 
 ## Wellness
 ...
@@ -173,14 +172,14 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - All 7 products evaluated with evidence pointers
 - Each has a "repo-ready: now/later/stays" verdict with rationale
 - Summary table present
-- B-0468 can proceed with this as its evidence base
+- 081KRHWGX0008QG0R000F6HE6D can proceed with this as its evidence base
 
 ## Dependency graph position
 
 ```
-B-0465 (this row) ──→ B-0466 (naming-expert review)
-B-0465 (this row) ──→ B-0467 (cross-repo glue mechanism design)
-B-0465 (this row) ──→ B-0468 (ADR)
+081KRHWGX0008QG0R002B2P0K0 (this row) ──→ 081KRHWGX0008QG0R003XHCEXT (naming-expert review)
+081KRHWGX0008QG0R002B2P0K0 (this row) ──→ 081KRHWGX0008QG0R00394BM1G (cross-repo glue mechanism design)
+081KRHWGX0008QG0R002B2P0K0 (this row) ──→ 081KRHWGX0008QG0R000F6HE6D (ADR)
 ```
 
-No blockers. Can start immediately after B-0425 decomposition PR merges.
+No blockers. Can start immediately after 081KRFA460008QG0R003JQ46J4 decomposition PR merges.

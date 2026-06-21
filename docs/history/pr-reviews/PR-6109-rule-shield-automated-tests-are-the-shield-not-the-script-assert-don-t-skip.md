@@ -43,12 +43,12 @@ Two composing claims Aaron surfaced over the install.sh cross-OS Docker test mat
 
 ## Empirical anchor
 
-`docker-nixos-install-sh-test` goes green while the local-LLM primitive is non-functional on the **primary** OS (generic ollama binary won't run non-FHS → graceful skip → green). Carved from that. Tracked as B-0941 (off-leash on the accelerator branch).
+`docker-nixos-install-sh-test` goes green while the local-LLM primitive is non-functional on the **primary** OS (generic ollama binary won't run non-FHS → graceful skip → green). Carved from that. Tracked as 081KSV2WD0008QG0R0004C8WV8 (off-leash on the accelerator branch).
 
 ## Notes
 
 - Lean by design (fleet-wide context cost).
-- Install.sh anchors (B-0940/B-0941/docker matrix) are plain-text refs pending harvest to main; the principle stands alone. `.claude/rules/*.md` cross-refs resolve on main.
+- Install.sh anchors (081KSV2WD0008QG0R0028NY0MV/081KSV2WD0008QG0R0004C8WV8/docker matrix) are plain-text refs pending harvest to main; the principle stands alone. `.claude/rules/*.md` cross-refs resolve on main.
 - Docs-only; auto-loads per `wake-time-substrate` (rules in `.claude/rules/` need no CLAUDE.md pointer).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

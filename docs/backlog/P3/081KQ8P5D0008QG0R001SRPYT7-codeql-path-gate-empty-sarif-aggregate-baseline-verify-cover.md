@@ -1,6 +1,5 @@
 ---
-id: B-0084
-zetaid: 081KQ8P5D0008QG0R001SRPYT7
+id: 081KQ8P5D0008QG0R001SRPYT7
 priority: P3
 status: mostly-implemented-verify-coverage
 title: Verify CodeQL path-gate empty-SARIF aggregate-baseline covers all matrix languages (already implemented, verify-only scope)
@@ -13,7 +12,7 @@ depends_on: []
 tags: [aaron-2026-04-28, scorecard, sastid, codeql, path-gate, do-the-right-long-term-thing, mostly-implemented, verify-only, P3-downgraded-from-P1-on-finding-already-done]
 ---
 
-# B-0084 — CodeQL path-gate emit-empty-SARIF for Scorecard SAST coverage
+# 081KQ8P5D0008QG0R001SRPYT7 — CodeQL path-gate emit-empty-SARIF for Scorecard SAST coverage
 
 ## Source
 
@@ -70,7 +69,7 @@ captured durably as substrate (see
 so future security-tool workflows inherit the pattern. The specific
 codeql.yml work is DONE; the timing-artifact resolves on its own.
 
-What remains in scope for B-0084:
+What remains in scope for 081KQ8P5D0008QG0R001SRPYT7:
 
 - Verify the path-gate aggregate-baseline covers ALL matrix languages
   (currently: actions + csharp + python + java-kotlin + javascript-

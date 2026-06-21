@@ -1,6 +1,6 @@
 ---
 name: Memory-file format standard — frontmatter, filenames, section headers, composes-with integrity
-description: Canonical format standard for all memory files under memory/. Defines the required and optional frontmatter fields, the filename convention (type-prefix + topic + optional-attribution + optional-date), the recommended section headers per memory type, and the composes-with chain integrity rule. This file is the schema that B-0335 validation tooling enforces mechanically. Consistent with the auto-memory spec in CLAUDE.md. B-0330 deliverable.
+description: Canonical format standard for all memory files under memory/. Defines the required and optional frontmatter fields, the filename convention (type-prefix + topic + optional-attribution + optional-date), the recommended section headers per memory type, and the composes-with chain integrity rule. This file is the schema that 081KR2E4K0008QG0R000M01QVM validation tooling enforces mechanically. Consistent with the auto-memory spec in CLAUDE.md. 081KR2E4K0008QG0R002VM58S4 deliverable.
 type: project
 created: 2026-05-09
 ---
@@ -10,7 +10,7 @@ created: 2026-05-09
 This document defines the canonical format for all memory
 files under `memory/`. It codifies the conventions that
 evolved organically across ~930 files and aligns them with
-the auto-memory spec in CLAUDE.md. B-0335 (validation
+the auto-memory spec in CLAUDE.md. 081KR2E4K0008QG0R000M01QVM (validation
 tooling) enforces this standard mechanically.
 
 ## 1 Frontmatter shape
@@ -97,7 +97,7 @@ delimited by `---` lines.
   match the snake_case filename convention).
 - Placed at the end of the filename, before `.md`.
 - Recommended for all new files. Existing files without
-  dates are not required to be renamed (that is B-0331
+  dates are not required to be renamed (that is 081KR2E4K0008QG0R003RZFR9F
   scope).
 
 ### Filename rules
@@ -215,7 +215,7 @@ Each entry in `MEMORY.md` follows the pattern:
 - The hook should be distinct enough to decide relevance
   without reading the file.
 
-**Heap-state-acceptable (B-0423):** a new memory file does **not**
+**Heap-state-acceptable (081KRCQQF0008QG0R0037YYP1A):** a new memory file does **not**
 require a same-PR MEMORY.md paired-edit. Files without an index
 entry are in **heap** state — valid and accessible by direct path.
 `tools/memory/reindex-memory-md.ts` promotes heap files to the
@@ -266,7 +266,7 @@ Three existing files validated against this standard:
 - Composes-with: References `reference_autodream_feature.md`
   in description. File exists. **PASS.**
 
-### 6.4 Heap-state validation (B-0423)
+### 6.4 Heap-state validation (081KRCQQF0008QG0R0037YYP1A)
 
 Under the heap-state-acceptable model, a memory file does not
 require a MEMORY.md paired-edit. The reindexer
@@ -275,16 +275,16 @@ frontmatter block at all**. Files with frontmatter but missing
 individual fields fall back to safe defaults rather than being
 skipped:
 
-| Field | Behavior when missing | B-0335 enforcement |
+| Field | Behavior when missing | 081KR2E4K0008QG0R000M01QVM enforcement |
 |---|---|---|
 | `name:` | Falls back to filename (without `.md`) | Error — enforced |
 | `description:` | Falls back to `"(no description)"` | Error — enforced |
-| `type:` | Not used by reindexer; B-0335 `--fix` auto-infers from filename prefix | Error — enforced |
-| `created:` | Falls back to date extracted from filename, or `"0000-00-00"` | Not enforced by B-0335 |
+| `type:` | Not used by reindexer; 081KR2E4K0008QG0R000M01QVM `--fix` auto-infers from filename prefix | Error — enforced |
+| `created:` | Falls back to date extracted from filename, or `"0000-00-00"` | Not enforced by 081KR2E4K0008QG0R000M01QVM |
 
 Best practice: include all four fields so the index entry is
 useful. Files with missing `name`, `description`, or `type`
-will be flagged as errors by B-0335 validation
+will be flagged as errors by 081KR2E4K0008QG0R000M01QVM validation
 (`tools/hygiene/validate-memory-schema.ts --enforce`). The
 `created` field is not yet mechanically enforced but strongly
 recommended for correct newest-first sort order.
@@ -292,9 +292,9 @@ recommended for correct newest-first sort order.
 ## 7 Scope and boundaries
 
 - This standard defines the FORMAT. It does not require
-  rewriting existing files (that is B-0331 scope).
+  rewriting existing files (that is 081KR2E4K0008QG0R003RZFR9F scope).
 - New memory files SHOULD conform. Existing files are
   conformant if they meet the required-fields check; the
   recommended headers are advisory for existing files.
-- B-0335 validation tooling enforces the required fields
+- 081KR2E4K0008QG0R000M01QVM validation tooling enforces the required fields
   and filename-prefix-matches-type rule mechanically.

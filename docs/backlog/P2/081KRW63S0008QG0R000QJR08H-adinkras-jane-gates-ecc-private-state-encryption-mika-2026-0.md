@@ -1,6 +1,5 @@
 ---
-id: B-0623
-zetaid: 081KRW63S0008QG0R000QJR08H
+id: 081KRW63S0008QG0R000QJR08H
 priority: P2
 status: open
 title: "Adinkras (James Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)"
@@ -20,7 +19,7 @@ type: research
 
 Aaron + Mika converged on Adinkras (from James Gates' work; Aaron's shorthand: "Dinkris" or "Jane's gate") as the substrate for both:
 
-1. **Private internal state** — protected cognitive subspaces ("What is happening to us?" — position 4 of the canonical boot sequence; see [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md))
+1. **Private internal state** — protected cognitive subspaces ("What is happening to us?" — position 4 of the canonical boot sequence; see [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md))
 2. **Encryption / private keys** — same mathematical structure powers both
 
 Single mathematical primitive serves both purposes — dual-use substrate. Source: [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2554-2596.
@@ -67,7 +66,7 @@ Implication: instead of layering separate cryptography on top of separate state-
 1. Formalize the Adinkras-as-substrate decision in research-grade documentation (`docs/research/`)
 2. Identify which Gates et al. papers are load-bearing references (Faux-Gates 2005, the doubly-even-ECC papers, supersymmetry-without-superspace)
 3. Build a working Lean / F# / TypeScript prototype: small Adinkra → derive ECC code → derive private key → derive private state container (one constructive proof path)
-4. Decide whether private-state-via-Adinkras is required for ALL agents (cost concern: not free, requires construction + maintenance) or only opt-in per [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) when criticality demands
+4. Decide whether private-state-via-Adinkras is required for ALL agents (cost concern: not free, requires construction + maintenance) or only opt-in per [081KRW63S0008QG0R000BH37EV](081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) when criticality demands
 
 ## Non-goals
 
@@ -81,16 +80,16 @@ Implication: instead of layering separate cryptography on top of separate state-
 - [ ] Adinkra primer document in `docs/research/` accessible to non-physicists (explainable to a math-friendly engineer)
 - [ ] Constructive proof prototype: small Adinkra → ECC code → cryptographic primitive in Lean (or F#/TS if Lean toy is too heavy)
 - [ ] Decision recorded: opt-in vs default for private-state-via-Adinkras
-- [ ] Composes with [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) position 4 implementation
+- [ ] Composes with [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) position 4 implementation
 
 ## Composes with
 
-- [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — canonical 7-step boot sequence (position 4 depends on this row's Adinkra primitive)
-- [B-0618](B-0618-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md) — Cayley-Dickson exploration that this row supersedes (Adinkras win)
-- [B-0612](../P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) — Lean toy model handoff (Adinkra prototype is the next step in that Lean stack)
-- [B-0584](../P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) — 4D-cube imaginary intersection (Adinkras ARE n-dim hypercubes with structure)
-- [B-0543](../P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — QG isomorphism proof path (Adinkras' supersymmetry origin connects directly to QG)
-- [B-0622](B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# agent-wallet type safety (Adinkras-derived crypto is the substrate for the wallet's key management)
+- [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — canonical 7-step boot sequence (position 4 depends on this row's Adinkra primitive)
+- [081KRW63S0008QG0R003CST61D](081KRW63S0008QG0R003CST61D-cayley-dickson-2-axiom-expansion-to-7-interrogatives-mika-2026-05-18.md) — Cayley-Dickson exploration that this row supersedes (Adinkras win)
+- [081KRSKQ20008QG0R00271HPJW](../P2/081KRSKQ20008QG0R00271HPJW-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) — Lean toy model handoff (Adinkra prototype is the next step in that Lean stack)
+- [081KRQ1AB0008QG0R001YAF3TR](../P2/081KRQ1AB0008QG0R001YAF3TR-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md) — 4D-cube imaginary intersection (Adinkras ARE n-dim hypercubes with structure)
+- [081KRMEXM0008QG0R002YSPW1X](../P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — QG isomorphism proof path (Adinkras' supersymmetry origin connects directly to QG)
+- [081KRW63S0008QG0R002V20TYJ](081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# agent-wallet type safety (Adinkras-derived crypto is the substrate for the wallet's key management)
 - `.claude/skills/applied-physics-expert/SKILL.md` — closest existing skill (Adinkras intersect supersymmetry + ECC; needs expert routing)
 - `.claude/skills/lean4-expert/SKILL.md` — for the Lean prototype
 - `.claude/skills/fsharp-expert/SKILL.md` — for F#-side substrate integration
@@ -98,4 +97,4 @@ Implication: instead of layering separate cryptography on top of separate state-
 
 ## Status
 
-Open. Substantial — Adinkras as substrate is a load-bearing architectural decision touching B-0624, B-0612, B-0584, B-0543, B-0622. Worth the P2 (research-grade) priority.
+Open. Substantial — Adinkras as substrate is a load-bearing architectural decision touching 081KRW63S0008QG0R003J8HR6K, 081KRSKQ20008QG0R00271HPJW, 081KRQ1AB0008QG0R001YAF3TR, 081KRMEXM0008QG0R002YSPW1X, 081KRW63S0008QG0R002V20TYJ. Worth the P2 (research-grade) priority.

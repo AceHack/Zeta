@@ -1,6 +1,5 @@
 ---
-id: B-0539
-zetaid: 081KRMEXM0008QG0R00138CCZX
+id: 081KRMEXM0008QG0R00138CCZX
 title: Otto-BFT — internal-quorum self-recovery across 3 Otto surfaces (Standing-by escalation + cross-surface detector + background-service prompt-clicker)
 priority: P1
 status: open
@@ -54,14 +53,14 @@ Build internal BFT across the 3 Otto surfaces so that:
 
 This umbrella row decomposes to 3 slices (each its own backlog row):
 
-- **B-0540** — Standing-by counter-with-escalation in the rule
+- **081KRMEXM0008QG0R0039V4SQQ** — Standing-by counter-with-escalation in the rule
   itself (if N consecutive brief-acknowledgment signals without
   a named dependency, escalate to picking real decomposition work
   even if small)
-- **B-0541** — Cross-surface bus-detector building on PR #3017
+- **081KRMEXM0008QG0R0026V9A0Y** — Cross-surface bus-detector building on PR #3017
   (if Otto-Desktop AND Otto-CLI both emit "no work to do" in
   the same window, publish escalation envelope to bus)
-- **B-0542** — Background-service unblocks stuck prompts on
+- **081KRMEXM0008QG0R0001HY6M6** — Background-service unblocks stuck prompts on
   foreground Otto-CLI / Otto-Desktop (the launchd `claude-loop`
   service detects when a foreground Otto is hung waiting for
   human ack and clicks past it; the third surface is the

@@ -53,7 +53,7 @@ Multi-incident substrate corpus for future Zeta vendor-management AI. Expands ea
 
 ## Future-Zeta-vendor-management-AI design notes
 
-Customer-side / Vendor-side / Platform-side AI roles. Composes with persistence-choice + Knights Guild + m/acc-multi-oracle + NCI + B-0700 continuous-loop substrate.
+Customer-side / Vendor-side / Platform-side AI roles. Composes with persistence-choice + Knights Guild + m/acc-multi-oracle + NCI + 081KRSKQ20008QG0R00367828S continuous-loop substrate.
 
 ## §33 compliance
 
@@ -90,12 +90,12 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EVw8L`
-- **Path**: `docs/backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`
+- **Path**: `docs/backlog/P2/081KS923C0008QG0R002RH3EH8-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T22:51:52Z on `docs/backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`:4 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T22:51:52Z on `docs/backlog/P2/081KS923C0008QG0R002RH3EH8-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`:4 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Preserve open backlog item instead of deleting its row**
@@ -130,7 +130,7 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 - **`Copilot` (bot)** at 2026-05-23T22:52:57Z on `docs/research/2026-05-23-amazon-support-routing-without-resolution-empirical-anchor-7-transfer-chain-aaron-forwarded.md`:12 (association: NONE)
 
   <pre>
-  This doc references backlog item B-0700 multiple times, but there is no B-0700 row present in `docs/backlog/**` and it was removed from `docs/BACKLOG.md` in this PR. Please update these references to the correct existing backlog ID (or remove the ID reference if it no longer exists) so cross-references stay resolvable.
+  This doc references backlog item 081KRSKQ20008QG0R00367828S multiple times, but there is no 081KRSKQ20008QG0R00367828S row present in `docs/backlog/**` and it was removed from `docs/BACKLOG.md` in this PR. Please update these references to the correct existing backlog ID (or remove the ID reference if it no longer exists) so cross-references stay resolvable.
   </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
@@ -222,7 +222,7 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 - **`Copilot` (bot)** at 2026-05-23T23:02:36Z on `docs/research/2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md`:242 (association: NONE)
 
   <pre>
-  This section references “B-0700 (Soraya continuous-loop substrate with bus escalation)” but there is no corresponding backlog row/file in the repo (and it is not listed in docs/BACKLOG.md). Please replace this with a resolvable reference (e.g., link to the correct B-NNNN row) or remove the ID to avoid a dangling cross-reference.
+  This section references “081KRSKQ20008QG0R00367828S (Soraya continuous-loop substrate with bus escalation)” but there is no corresponding backlog row/file in the repo (and it is not listed in docs/BACKLOG.md). Please replace this with a resolvable reference (e.g., link to the correct B-NNNN row) or remove the ID to avoid a dangling cross-reference.
 
   </pre>
 
@@ -237,9 +237,9 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T23:06:38Z on `docs/BACKLOG.md`:680 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep B-0713 tracked until its registry work lands**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep 081KS923C0008QG0R002RH3EH8 tracked until its registry work lands**
 
-  This change removes the `B-0713` index row from `docs/BACKLOG.md` and deletes `docs/backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`, but the deleted row is still `status: open` and the acceptance criteria it tracks (registering `ImaginaryStack/ToyModel` in `docs/research/verification-registry.md` and cross-linking `tools/lean4/README.md`) are not implemented in this commit. Deleting an unresolved row makes that known verification-drift task invisible to backlog tooling and future rounds, increasing the chance the gap is silently dropped instead of being closed/superseded with traceability.
+  This change removes the `081KS923C0008QG0R002RH3EH8` index row from `docs/BACKLOG.md` and deletes `docs/backlog/P2/081KS923C0008QG0R002RH3EH8-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md`, but the deleted row is still `status: open` and the acceptance criteria it tracks (registering `ImaginaryStack/ToyModel` in `docs/research/verification-registry.md` and cross-linking `tools/lean4/README.md`) are not implemented in this commit. Deleting an unresolved row makes that known verification-drift task invisible to backlog tooling and future rounds, increasing the chance the gap is silently dropped instead of being closed/superseded with traceability.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -303,7 +303,7 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 - **`Copilot` (bot)** at 2026-05-23T23:15:49Z on `docs/research/2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-business-development-substrate-aaron-forwarded.md`:349 (association: NONE)
 
   <pre>
-  This file references “B-0700 (Soraya continuous-loop substrate with bus escalation)”, but there is no corresponding backlog row file in docs/backlog (no `id: B-0700` found). Please either add the missing B-0700 backlog row in this PR or change this reference to an existing, resolvable backlog ID/link.
+  This file references “081KRSKQ20008QG0R00367828S (Soraya continuous-loop substrate with bus escalation)”, but there is no corresponding backlog row file in docs/backlog (no `id: 081KRSKQ20008QG0R00367828S` found). Please either add the missing 081KRSKQ20008QG0R00367828S backlog row in this PR or change this reference to an existing, resolvable backlog ID/link.
 
   </pre>
 
@@ -320,11 +320,11 @@ Renamed from \`amazon-support-routing-without-resolution-empirical-anchor-7-tran
 ```
 docs(research): Amazon vendor-management failure-mode corpus (rebased…
 
-… onto current main with B-0713 + B-0714)
+… onto current main with 081KS923C0008QG0R002RH3EH8 + 081KS923C0008QG0R000ECG5EC)
 
-Rebases PR #4784 onto current main (which now has B-0713 + B-0714 from
+Rebases PR #4784 onto current main (which now has 081KS923C0008QG0R002RH3EH8 + 081KS923C0008QG0R000ECG5EC from
 sibling Soraya rounds 50+51). Previous branch base predated those
-merges, causing a phantom-deletion conflict on B-0713.
+merges, causing a phantom-deletion conflict on 081KS923C0008QG0R002RH3EH8.
 
 Tree = current main + only the new comprehensive corpus file
 (2026-05-23-amazon-vendor-management-failure-mode-corpus-multi-incident-
@@ -410,13 +410,13 @@ fix(research): address Copilot+Codex review findings on Amazon corpus
 - Source header: 5 incidents -> 4 incidents (4b is sub-section of 4)
 - Scope: 5 contacts Aug 2025 -> 3 contacts (multiple agents per contact)
 - Participants: add Komal (post-Manimod transfer agent)
-- Remove B-0700 reference (no such backlog row on main)
+- Remove 081KRSKQ20008QG0R00367828S reference (no such backlog row on main)
 - Update all internal 5-incident counts to match body enumeration
 
 Verified via direct file inspection: body enumerates Incident 1, 2, 3, 4
 (plus 4b sub-section); Contact 1, 2, 3 in Incident 1 only.
 
-Pushed via REST git-data API bypass per B-0615 push-hang mitigation
+Pushed via REST git-data API bypass per 081KRW63S0008QG0R000EAZ9K2 push-hang mitigation
 (PR #4145 worked example).
 
 Co-Authored-By: Claude <noreply@anthropic.com>

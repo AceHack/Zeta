@@ -27,7 +27,7 @@
 
 ## Description
 
-Decomposes B-0248 by peeling off the maintainer fork onboarding and mirror-sync scope into B-0248.1.
+Decomposes 081KQZVQW0008QG0R0032TPKT8 by peeling off the maintainer fork onboarding and mirror-sync scope into 081KRHWGX0008QG0R000EE6VN5.
 
 ## Outcome
 
@@ -46,12 +46,12 @@ Decomposes B-0248 by peeling off the maintainer fork onboarding and mirror-sync 
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CMq--`
-- **Path**: `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T21:48:13Z on `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T21:48:13Z on `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`:6 (association: NONE)
 
   <pre>
   Frontmatter is missing the required `last_updated` field. Per `tools/backlog/README.md`, `last_updated` is required and should be set (typically equal to `created` on first landing) and updated on every subsequent edit.
@@ -60,21 +60,21 @@ Decomposes B-0248 by peeling off the maintainer fork onboarding and mirror-sync 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-14T22:01:17Z on `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`:6 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-14T22:01:17Z on `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`:6 (association: MEMBER)
 
     <pre>
-    Fixed in the latest commit: added `last_updated: 2026-05-14` to B-0248.1 frontmatter.
+    Fixed in the latest commit: added `last_updated: 2026-05-14` to 081KRHWGX0008QG0R000EE6VN5 frontmatter.
     </pre>
 
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CMq_R`
-- **Path**: `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- **Path**: `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T21:48:14Z on `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:60 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T21:48:14Z on `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:60 (association: NONE)
 
   <pre>
   This edit changes the row content but the row’s `last_updated` frontmatter value was not bumped. Please update `last_updated` to the date of this change to match the per-row schema in `tools/backlog/README.md` ("Updated on every content edit").
@@ -82,36 +82,36 @@ Decomposes B-0248 by peeling off the maintainer fork onboarding and mirror-sync 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-14T22:01:19Z on `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:60 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-14T22:01:19Z on `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:60 (association: MEMBER)
 
     <pre>
-    Fixed in the latest commit: bumped `last_updated` in B-0248 from 2026-05-07 to 2026-05-14.
+    Fixed in the latest commit: bumped `last_updated` in 081KQZVQW0008QG0R0032TPKT8 from 2026-05-07 to 2026-05-14.
     </pre>
 
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CMrlu`
-- **Path**: `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-14T21:49:02Z on `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`:12 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-14T21:49:02Z on `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`:12 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Record the decomposed-parent link in B-0248.1 frontmatter**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Record the decomposed-parent link in 081KRHWGX0008QG0R000EE6VN5 frontmatter**
 
-  This row is described as the first extracted slice of `B-0248`, but it does not set a `parent` field, so the decomposition is only in prose and not machine-readable. The backlog selector groups children via `frontmatter.parent` (`tools/backlog/autonomous-pickup.ts`) to enforce decomposed-parent blocking; without this link, automation cannot treat `B-0248.1` as an active child of `B-0248`, which can lead to duplicate or out-of-order pickup decisions.
+  This row is described as the first extracted slice of `081KQZVQW0008QG0R0032TPKT8`, but it does not set a `parent` field, so the decomposition is only in prose and not machine-readable. The backlog selector groups children via `frontmatter.parent` (`tools/backlog/autonomous-pickup.ts`) to enforce decomposed-parent blocking; without this link, automation cannot treat `081KRHWGX0008QG0R000EE6VN5` as an active child of `081KQZVQW0008QG0R0032TPKT8`, which can lead to duplicate or out-of-order pickup decisions.
 
   Useful? React with 👍 / 👎.
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-14T22:01:20Z on `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`:12 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-14T22:01:20Z on `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`:12 (association: MEMBER)
 
     <pre>
-    Fixed in the latest commit: added `parent: B-0248` to B-0248.1 frontmatter for machine-readable decomposition tracking.
+    Fixed in the latest commit: added `parent: 081KQZVQW0008QG0R0032TPKT8` to 081KRHWGX0008QG0R000EE6VN5 frontmatter for machine-readable decomposition tracking.
     </pre>
 
 ## Fix commits (touching thread paths)
@@ -120,21 +120,21 @@ Decomposes B-0248 by peeling off the maintainer fork onboarding and mirror-sync 
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
-- `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`
 
 **Message:**
 
 ```
-chore(b-0248): decompose B-0248 layer 1 - fork onboarding
+chore(b-0248): decompose 081KQZVQW0008QG0R0032TPKT8 layer 1 - fork onboarding
 ```
 
 ### `dae1876b67eed2856ccc7bd0d0ea3860472b39b9` -- 2026-05-14T22:00:43Z -- `AceHack`
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
-- `docs/backlog/P1/B-0248.1-maintainer-fork-onboarding.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R000EE6VN5-maintainer-fork-onboarding.md`
 
 **Message:**
 
@@ -143,10 +143,10 @@ fix(b-0248.1): add last_updated+parent frontmatter, blank lines aroun…
 
 …d headings, regenerate BACKLOG.md
 
-- Add last_updated: 2026-05-14 and parent: B-0248 to B-0248.1 frontmatter
-- Bump last_updated in B-0248 (2026-05-07 → 2026-05-14)
+- Add last_updated: 2026-05-14 and parent: 081KQZVQW0008QG0R0032TPKT8 to 081KRHWGX0008QG0R000EE6VN5 frontmatter
+- Bump last_updated in 081KQZVQW0008QG0R0032TPKT8 (2026-05-07 → 2026-05-14)
 - Add blank lines after ## What, ## Scope, ## Acceptance criteria (MD022/MD032 fixes)
-- Regenerate docs/BACKLOG.md to include B-0248.1 and B-0461 entries
+- Regenerate docs/BACKLOG.md to include 081KRHWGX0008QG0R000EE6VN5 and 081KRHWGX0008QG0R000JMEYBH entries
 
 Fixes markdownlint (required) and BACKLOG.md drift (non-required) CI checks.
 Addresses copilot/codex review threads on PR #3268.

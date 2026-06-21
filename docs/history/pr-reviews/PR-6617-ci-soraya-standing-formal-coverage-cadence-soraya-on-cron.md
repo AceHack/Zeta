@@ -29,7 +29,7 @@
 
 ## What
 
-Aaron 2026-06-02: **"soraya on cron."** The repo is formal-proof-first and far behind on the math — Soraya (formal-verification-expert) must work the B-1007 backlog on a **standing cadence**, not one-shot. Harness crons don't persist across sessions, so this is the durable mechanism (same pattern as `razor-cadence.yml` / B-0192).
+Aaron 2026-06-02: **"soraya on cron."** The repo is formal-proof-first and far behind on the math — Soraya (formal-verification-expert) must work the 081KT2T2J0008QG0R000YZ3NMY backlog on a **standing cadence**, not one-shot. Harness crons don't persist across sessions, so this is the durable mechanism (same pattern as `razor-cadence.yml` / 081KQR4HQ0008QG0R001GAD29A).
 
 - **`.github/workflows/soraya-formal-coverage-cadence.yml`** — fires daily (09:37 UTC, off-the-hour to dodge the GHA cron thundering-herd) + on `workflow_dispatch`. Opens/updates a **`formal-coverage`-labelled tracking issue** carrying the C1→C14 routing checklist. A GH Action can't dispatch the Soraya subagent (she's a Claude agent, not a CI script), so the workflow maintains the visible **backlog issue**; the wake-time agent picks it up, dispatches Soraya for the next open proof, and lands the PR (**CI runs FsCheck/Z3 = proof execution**). The trigger ages and stays visible; the discipline doesn't depend on agent-remembering-to-check.
 - **`tools/soraya-formal-coverage/issue-body-template.md`** — Soraya's full C1→C14 routing (P0/P1/P2, tool-per-item, anchors) + the standing operating rules: strict order, ≥2-tools-on-P0, **disagreement-is-the-finding**, canonical-needs-the-lineage-edge, wrong-tool guards, and the **z3-in-CI green-by-skip gap**. C1 pre-checked (#6616).
@@ -38,7 +38,7 @@ Aaron 2026-06-02: **"soraya on cron."** The repo is formal-proof-first and far b
 
 Safe-pattern compliant: the only untrusted input is the `workflow_dispatch` `note`, routed via `NOTE_INPUT` env + quoted, appended into the markdown body (never shell-interpreted) — mirrors razor-cadence's stance. markdownlint clean; YAML parses; `actions/checkout` SHA-pinned (v6.0.2) to match repo convention.
 
-Composes: B-1007, the formal-proof-first rule, assert-don't-skip, razor-cadence/B-0192.
+Composes: 081KT2T2J0008QG0R000YZ3NMY, the formal-proof-first rule, assert-don't-skip, razor-cadence/081KQR4HQ0008QG0R001GAD29A.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -131,9 +131,9 @@ Composes: B-1007, the formal-proof-first rule, assert-don't-skip, razor-cadence/
 ci(soraya): standing formal-coverage cadence — "soraya on cron" (Aaron)
 
 Aaron 2026-06-02: "soraya on cron." The repo is formal-proof-first and far behind on
-the math; Soraya (formal-verification-expert) must work the B-1007 backlog on a
+the math; Soraya (formal-verification-expert) must work the 081KT2T2J0008QG0R000YZ3NMY backlog on a
 STANDING cadence, not one-shot. Harness crons don't persist across sessions, so this
-is the durable mechanism (same pattern as razor-cadence.yml / B-0192): a scheduled
+is the durable mechanism (same pattern as razor-cadence.yml / 081KQR4HQ0008QG0R001GAD29A): a scheduled
 GitHub Actions workflow fires daily (09:37 UTC, off-the-hour) and opens/updates a
 "formal-coverage"-labelled tracking issue carrying the C1-C14 routing checklist.
 
@@ -153,7 +153,7 @@ Safe-pattern compliant: only untrusted input is the workflow_dispatch `note`, ro
 via NOTE_INPUT env + quoted, appended to markdown (never shell-interpreted). Mirrors
 razor-cadence's security stance. markdownlint clean; yaml parses.
 
-Composes: B-1007, formal-proof-first rule, assert-don't-skip, razor-cadence/B-0192.
+Composes: 081KT2T2J0008QG0R000YZ3NMY, formal-proof-first rule, assert-don't-skip, razor-cadence/081KQR4HQ0008QG0R001GAD29A.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
@@ -179,7 +179,7 @@ ci(soraya): preserve checklist state on recurring runs + fix z3-insta…
 - z3-install claim (Copilot): corrected — the z3 CLI is NOT installed in any workflow
   (it appears only in a stryker comment; Microsoft.Z3 NuGet is pinned but the harness
   shells to the CLI). Template now states this accurately. (Same wrong claim in the
-  merged B-1009 row gets a separate correction.)
+  merged 081KT2T2J0008QG0R001X9PWKR row gets a separate correction.)
 - P1 header (Copilot): 'primarily one tool (C13 cross-checks Z3 ∧ FsCheck)' — C13 is
   a two-tool item; header no longer implies P1 forbids cross-checks.
 

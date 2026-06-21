@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
 import { analyzeTrend, byHarness, type TrendRecord } from "./context-cost-trend";
 
-// B-1016 DORA trend store — the pure trend-analysis core (I/O edge exercised by CLI).
+// 081KT7YW00008QG0R002T1XNWT DORA trend store — the pure trend-analysis core (I/O edge exercised by CLI).
 
 const rec = (ts: string, harness: string, bytes: number): TrendRecord => ({ ts, harness, bytes, estTokens: Math.round(bytes / 3.8) });
 

@@ -45,7 +45,7 @@ Each doubling: each existing axis becomes its own cross-pair.
 
 ## Empirical observations (9 framework substrate-engineering work-threads surface Cayley-Dickson patterns)
 
-B-0842 universal basis-decomposition + Imaginary Stack Ontology + B-0623 Adinkras + Clifford algebra mapping + Q# Pauli/quaternion substrate + B-0635 wave-particle duality + B-0666 English-as-projection + Pilot-wave-MWI-hybrid (PR #5842) + DST-omniscience (PR #5841).
+081KSGS9H0008QG0R003V8C86Q universal basis-decomposition + Imaginary Stack Ontology + 081KRW63S0008QG0R000QJR08H Adinkras + Clifford algebra mapping + Q# Pauli/quaternion substrate + 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R001SAHYKV English-as-projection + Pilot-wave-MWI-hybrid (PR #5842) + DST-omniscience (PR #5841).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

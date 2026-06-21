@@ -27,7 +27,7 @@
 
 ## Description
 
-Folds the Brunnian proof, Goertzel, TS quantum lane (B-1029 Lior / B-1030), the anyon picture (causality forced the layout), the Kitaev chain (study-marked), and THE ATOM (ratified at a glance) into the reload point. Catalog = 13. Docs only.
+Folds the Brunnian proof, Goertzel, TS quantum lane (081KTWJ1R0008QG0R001ZBWKTR Lior / 081KTWJ1R0008QG0R000JJDPFZ), the anyon picture (causality forced the layout), the Kitaev chain (study-marked), and THE ATOM (ratified at a glance) into the reload point. Catalog = 13. Docs only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

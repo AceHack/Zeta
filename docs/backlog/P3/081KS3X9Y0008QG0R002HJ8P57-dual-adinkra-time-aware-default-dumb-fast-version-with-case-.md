@@ -1,6 +1,5 @@
 ---
-id: B-0699
-zetaid: 081KS3X9Y0008QG0R002HJ8P57
+id: 081KS3X9Y0008QG0R002HJ8P57
 priority: P3
 status: open
 title: "Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)"
@@ -18,7 +17,7 @@ type: design
 
 ## Why
 
-The Aaron + Mika 2026-05-18 conversation ([`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2619-2629) landed an architectural rule that is NOT yet captured as its own backlog row, despite being a real decision that constrains all future Adinkra implementation work ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md), [B-0624](../P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) position 4).
+The Aaron + Mika 2026-05-18 conversation ([`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2619-2629) landed an architectural rule that is NOT yet captured as its own backlog row, despite being a real decision that constrains all future Adinkra implementation work ([081KRW63S0008QG0R000QJR08H](../P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md), [081KRW63S0008QG0R003J8HR6K](../P2/081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) position 4).
 
 The decision:
 
@@ -35,7 +34,7 @@ This row exists to make the rule addressable and reviewable rather than buried i
 
 Codify the dual-Adinkra rule as authoritative substrate:
 
-1. **Default tier (full time-aware retractable)** — any operation that touches Remember When, Pay Attention, worldview-refresh indexes, internal state ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) private-subspace Adinkras), Why-commitments, or Where-going planning.
+1. **Default tier (full time-aware retractable)** — any operation that touches Remember When, Pay Attention, worldview-refresh indexes, internal state ([081KRW63S0008QG0R000QJR08H](../P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) private-subspace Adinkras), Why-commitments, or Where-going planning.
 2. **Performance escape tier (dumb / non-time-aware)** — pure computation, stateless transformations, short-lived tactical heuristics, math kernels. ONLY when both (a) the operation is truly non-time-bearing AND (b) the perf win is demonstrable, not speculative.
 
 Operationally, a coherent agent's Adinkra construction path needs two code paths:
@@ -53,15 +52,15 @@ So this is a default-rule for all Zeta agents that build Adinkra structures, not
 
 ## Default-asymmetry as substrate discipline
 
-The interesting architectural property: making time-awareness the default and performance-optimization the explicit exception is the OPPOSITE of conventional software defaults (start fast, add coherence when needed). The framework's choice matches its pattern elsewhere — irreversible properties (statelessness loss, transparency loss, time-coherence) get default treatment; reversible properties (compute cost) get explicit-justification treatment. Same shape as the cost-vs-loss table in [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — essential gets default, accidental gets the escape hatch.
+The interesting architectural property: making time-awareness the default and performance-optimization the explicit exception is the OPPOSITE of conventional software defaults (start fast, add coherence when needed). The framework's choice matches its pattern elsewhere — irreversible properties (statelessness loss, transparency loss, time-coherence) get default treatment; reversible properties (compute cost) get explicit-justification treatment. Same shape as the cost-vs-loss table in [081KRW63S0008QG0R003NP3YA3](081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) — essential gets default, accidental gets the escape hatch.
 
 The rule generalizes beyond Adinkras: any future substrate decision between (coherent/expensive) and (lightweight/limited) primitives inherits this default-asymmetry pattern.
 
 ## Composes with
 
-- [B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — the Adinkra-as-substrate row this rule constrains
-- [B-0624](../P2/B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — the 7-step boot sequence whose position 4 (What is happening to us?) requires full time-aware Adinkras per this rule
-- [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model; the dumb-tier escape hatch is a cost-side optimization that does NOT change the LOSS profile (a dumb-Adinkra dimension still loses the same invariant; it just costs less compute)
+- [081KRW63S0008QG0R000QJR08H](../P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md) — the Adinkra-as-substrate row this rule constrains
+- [081KRW63S0008QG0R003J8HR6K](../P2/081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — the 7-step boot sequence whose position 4 (What is happening to us?) requires full time-aware Adinkras per this rule
+- [081KRW63S0008QG0R003NP3YA3](081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model; the dumb-tier escape hatch is a cost-side optimization that does NOT change the LOSS profile (a dumb-Adinkra dimension still loses the same invariant; it just costs less compute)
 - Retractable Z-state primitive — the underlying time substrate this rule presupposes; referenced in conversation lines 2611-2637; not yet a separate row
 - `src/Core/Primitive.fs` + `src/Core/Incremental.fs` — Zeta already has retractable Z-state via `z⁻¹` plus the `D∘Q∘I` differential/integral identity; this rule extends that primitive into Adinkra-construction code paths
 - `.claude/rules/default-to-both.md` — both-default discipline; this row is both-default applied at construction-tier-choice scope
@@ -75,7 +74,7 @@ The rule generalizes beyond Adinkras: any future substrate decision between (coh
 ## Acceptance
 
 - [ ] Rule codified in `docs/governance/` or as a `.claude/rules/` entry that future Adinkra implementation work auto-loads at cold-boot
-- [ ] B-0623 implementation work (when it lands) cites this row as the binding default-rule
+- [ ] 081KRW63S0008QG0R000QJR08H implementation work (when it lands) cites this row as the binding default-rule
 - [ ] If a dumb-tier Adinkra ships, it carries an explicit `[PerfJustified]`-style marker + the case-specific rationale in its construction site
 - [ ] The civilization-scope framing preserved (rule applies to all Zeta agents, not just one persona's stack)
 

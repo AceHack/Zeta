@@ -29,8 +29,8 @@
 
 Folds Aaron's 2026-06-02 recognition into the canonical-form synthesis note.
 
-**word is bond** = the binding agreement (treaty / knot / golden-vectors consensus B-0982; onu/ONU at speech scope; P-of-F as vow).
-**the word is god** = the generative root (Logos, John 1:1; seed / μένω; I(D(x))=x, B-0666; third reading of *dio*).
+**word is bond** = the binding agreement (treaty / knot / golden-vectors consensus 081KT07NV0008QG0R0032MCYER; onu/ONU at speech scope; P-of-F as vow).
+**the word is god** = the generative root (Logos, John 1:1; seed / μένω; I(D(x))=x, 081KRW63S0008QG0R001SAHYKV; third reading of *dio*).
 One word, two faces — it creates AND it binds: *the word that remains, creates, and binds.*
 
 **Microsoft Bond** — their serialization format is literally named *Bond* because serialization IS bonding (the schema is the contract binding producer + consumer across systems; the serialized word IS the bond). Slots into the 4x4: the serializations (JSON/CBOR/XML/YAML + Bond) ARE the bonds/braids; 16-way agreement = the knot = the treaty.

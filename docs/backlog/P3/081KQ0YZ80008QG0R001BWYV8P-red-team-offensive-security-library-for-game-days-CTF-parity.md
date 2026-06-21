@@ -1,6 +1,5 @@
 ---
-id: B-0014
-zetaid: 081KQ0YZ80008QG0R001BWYV8P
+id: 081KQ0YZ80008QG0R001BWYV8P
 priority: P3
 status: open
 title: Red-team / offensive-security library for game-days + CTF — code, tools, skills so red-team exercises aren't one-sided against blue-team-heavy factory
@@ -53,7 +52,7 @@ This work is offensive-security RESEARCH AND EXERCISE capability, not malicious 
 4. **Audit trail**: all red-team exercises logged; results archived for blue-team learning.
 5. **No external deployment**: tools never leave the factory's authorized scope. Game-day scenarios stay in CTF/training environments.
 
-Same pattern as B-0009 (responsible-bypass-with-honest-naming): own the capability, document the responsible-use, don't sanitize the language.
+Same pattern as 081KQ0YZ80008QG0R0000HSTWD (responsible-bypass-with-honest-naming): own the capability, document the responsible-use, don't sanitize the language.
 
 ## Why low priority
 
@@ -65,13 +64,13 @@ Same pattern as B-0009 (responsible-bypass-with-honest-naming): own the capabili
 
 - Decision-point reached: factory matures enough to need symmetric red-team capability.
 - Red-team library scope defined (categorical capability list).
-- Responsible-use framework documented (matching B-0009 honest-naming + responsible-use pattern).
+- Responsible-use framework documented (matching 081KQ0YZ80008QG0R0000HSTWD honest-naming + responsible-use pattern).
 - Initial red-team skills shipped under isolated-Claude-instance discipline.
 - First game-day exercise run; defensive-feedback-loop validates.
 
 ## Composes with
 
-- B-0009 (responsible-bypass framing — same honesty-with-responsibility pattern).
+- 081KQ0YZ80008QG0R0000HSTWD (responsible-bypass framing — same honesty-with-responsibility pattern).
 - AGENTS.md isolated-Claude-instance discipline (red-team skills must isolate).
 - Aminata threat-model substrate, Mateo CVE work, Nazar runtime ops, Nadia agent-layer (defensive symmetry partners).
 - Otto-292 catch-layer (red-team work informs new catch-classes).

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { kiroExecutor, buildDoItemSpec } from "./kiro-executor";
 const SAMPLE_ITEM = {
-    id: "B-0170",
+    id: "081KQNJ500008QG0R003SCWBDV",
     title: "Substrate-claim-checker TS tool",
     ready: true,
     ambiguous: false,
@@ -37,7 +37,7 @@ describe("buildDoItemSpec", () => {
             agentId: "alexa",
         });
         expect(gated).toBe(false);
-        expect(spec.script).toContain("B-0170");
+        expect(spec.script).toContain("081KQNJ500008QG0R003SCWBDV");
         expect(spec.script).toContain("claim/");
         expect(spec.script).toContain("alexa");
         expect(spec.script).toContain("git fetch origin main");

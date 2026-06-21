@@ -1,6 +1,6 @@
 ---
 pr_number: 5420
-title: "docs(B-0854.1): zeta-install.sh step-state-machine inventory \u2014 Phase 0 substrate for Ace migration trajectory (14 sub-steps; 12 declarative-input categories; substrate-anchor for B-0852/0853/0855/0856 cross-refs)"
+title: "docs(081KSKBP80008QG0R002VRN56K.1): zeta-install.sh step-state-machine inventory \u2014 Phase 0 substrate for Ace migration trajectory (14 sub-steps; 12 declarative-input categories; substrate-anchor for 081KSKBP80008QG0R003AX2A69/0853/0855/0856 cross-refs)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T07:34:33Z"
@@ -12,42 +12,42 @@ archived_at: "2026-05-27T19:25:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5420: docs(B-0854.1): zeta-install.sh step-state-machine inventory — Phase 0 substrate for Ace migration trajectory (14 sub-steps; 12 declarative-input categories; substrate-anchor for B-0852/0853/0855/0856 cross-refs)
+# PR #5420: docs(081KSKBP80008QG0R002VRN56K.1): zeta-install.sh step-state-machine inventory — Phase 0 substrate for Ace migration trajectory (14 sub-steps; 12 declarative-input categories; substrate-anchor for 081KSKBP80008QG0R003AX2A69/0853/0855/0856 cross-refs)
 
 ## PR description
 
 ## Summary
 
-B-0854 sub-row .1 — Phase 0 substrate for the Ace migration trajectory. Pure analysis; no code change; doesn't touch ISO substrate.
+081KSKBP80008QG0R002VRN56K sub-row .1 — Phase 0 substrate for the Ace migration trajectory. Pure analysis; no code change; doesn't touch ISO substrate.
 
-Documents the EXISTING imperative bash state-machine in \`zeta-install.sh\` (1,352 lines on origin/main \`70596a8db\`) so the B-0854 Phase 2 declarative-Ace-manifest schema can express the same surface without losing any step's behavior.
+Documents the EXISTING imperative bash state-machine in \`zeta-install.sh\` (1,352 lines on origin/main \`70596a8db\`) so the 081KSKBP80008QG0R002VRN56K Phase 2 declarative-Ace-manifest schema can express the same surface without losing any step's behavior.
 
 ## What's inventoried
 
 | Category | Count | Purpose |
 |---|---|---|
 | Sub-steps documented | 14 (Steps 1, 2, 3, 4, 5, 6, 6.5, 6.55, 6.6, 6.7, 6.8, 6.9, 6.95, 7) | inputs/outputs/side-effects/failure-modes/declarative-equivalent per step |
-| Operator-prompt accumulation | 7 today → 1 passphrase post-B-0852 | informs B-0852 phase-split UX claim |
-| Idempotency surface rows | Per-step yes/no/partial | informs B-0855 architectural-fix scope |
-| Declarative-input categories | 12 | informs B-0854 Phase 2 manifest schema |
-| Files-generated table | 9 files → mapped to B-0852.5 manifest entries | identifies 3 candidate-expansion items |
+| Operator-prompt accumulation | 7 today → 1 passphrase post-081KSKBP80008QG0R003AX2A69 | informs 081KSKBP80008QG0R003AX2A69 phase-split UX claim |
+| Idempotency surface rows | Per-step yes/no/partial | informs 081KSKBP80008QG0R000GPC0TB architectural-fix scope |
+| Declarative-input categories | 12 | informs 081KSKBP80008QG0R002VRN56K Phase 2 manifest schema |
+| Files-generated table | 9 files → mapped to 081KSKBP80008QG0R003AX2A69.5 manifest entries | identifies 3 candidate-expansion items |
 
 ## Composes with already-landed substrate
 
-- **B-0852** + sub-rows (cred persistence) — PR #5403/#5411/#5414
-- **B-0853.1** (cosign signing) — PR #5417 + fix-fwd #5419
-- **B-0855** (self-register architectural fix) — PR #5412
-- **B-0856** Path A (deferred /tmp coordination) — PR #5413
-- **B-0854** parent (Ace migration trajectory) — PR #5405
+- **081KSKBP80008QG0R003AX2A69** + sub-rows (cred persistence) — PR #5403/#5411/#5414
+- **081KSKBP80008QG0R000Y2B7HC.1** (cosign signing) — PR #5417 + fix-fwd #5419
+- **081KSKBP80008QG0R000GPC0TB** (self-register architectural fix) — PR #5412
+- **081KSKBP80008QG0R000TQC624** Path A (deferred /tmp coordination) — PR #5413
+- **081KSKBP80008QG0R002VRN56K** parent (Ace migration trajectory) — PR #5405
 
 ## Next phases (NOT this row's scope)
 
-- B-0854.2: ship \`package.json\` + \`bunfig.toml\` + \`bun.lock\` stub at Zeta repo root (mirrors \`../scratch\` + \`../SQLSharp\`)
-- B-0854.3: Ace manifest schema covering the 12 categories
-- B-0854.4: author \`ace.yaml\` (or equivalent) for Zeta at repo root
-- B-0854.5: live-USB Ace bootstrap
-- B-0854.6: \`ace install zeta\` smoke test against fresh USB
-- B-0854.7-8: zeta-install.sh thin-bootstrap reduction → retirement
+- 081KSKBP80008QG0R002VRN56K.2: ship \`package.json\` + \`bunfig.toml\` + \`bun.lock\` stub at Zeta repo root (mirrors \`../scratch\` + \`../SQLSharp\`)
+- 081KSKBP80008QG0R002VRN56K.3: Ace manifest schema covering the 12 categories
+- 081KSKBP80008QG0R002VRN56K.4: author \`ace.yaml\` (or equivalent) for Zeta at repo root
+- 081KSKBP80008QG0R002VRN56K.5: live-USB Ace bootstrap
+- 081KSKBP80008QG0R002VRN56K.6: \`ace install zeta\` smoke test against fresh USB
+- 081KSKBP80008QG0R002VRN56K.7-8: zeta-install.sh thin-bootstrap reduction → retirement
 
 ## Test plan
 
@@ -63,7 +63,7 @@ Documents the EXISTING imperative bash state-machine in \`zeta-install.sh\` (1,3
 
 ## Pull request overview
 
-This PR adds a Phase 0 documentation substrate for B-0854.1 by inventorying the existing `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step/state-machine so later Ace-manifest work can mirror the current imperative behavior.
+This PR adds a Phase 0 documentation substrate for 081KSKBP80008QG0R002VRN56K.1 by inventorying the existing `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step/state-machine so later Ace-manifest work can mirror the current imperative behavior.
 
 **Changes:**
 - Introduces a new installer inventory document capturing step inputs/outputs/side-effects/failure modes and proposed declarative equivalents.

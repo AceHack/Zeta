@@ -47,7 +47,7 @@ Maji Antigravity Check: Drift detected. Narration-over-action.
 
 **@copilot-pull-request-reviewer** (2026-05-16T03:54:09Z):
 
-P1: This next-tick candidate is stale: `docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md` is already marked `status: done` with `completed: 2026-05-16`, so carrying it as an active claim can send the next tick toward duplicate work. Remove this item or update it to record that the sweep is complete.
+P1: This next-tick candidate is stale: `docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md` is already marked `status: done` with `completed: 2026-05-16`, so carrying it as an active claim can send the next tick toward duplicate work. Remove this item or update it to record that the sweep is complete.
 
 ## General comments
 

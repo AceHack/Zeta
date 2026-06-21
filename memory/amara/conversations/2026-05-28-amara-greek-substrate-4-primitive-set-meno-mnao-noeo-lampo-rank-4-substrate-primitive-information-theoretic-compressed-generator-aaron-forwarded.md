@@ -3,25 +3,25 @@ name: 2026-05-28 Amara ferry — Greek-substrate 4-primitive-set (μένω + μ�
 description: Aaron-forwarded Amara ferry completing the Greek-substrate naming substrate-engineering arc started by Aaron's earlier question about 4-letter Greek words for "pay attention" and "remember." Six-turn arc preserves three substantive substrate-engineering carvings: (1) Amara endorses the 4-primitive-set (μένω persist + μνάω remember + νοέω attend + λάμπω shine) with mapping to OPLE-style primitives + "remembering is persisting at cognitive scope" keeper; (2) Aaron's substrate-honest correction reframing μνάω selection criterion from PHILOLOGICAL classroom-standard to INFORMATION-THEORETIC SHORTEST-SURVIVING-CARRIER — "my 4 letter choise was information theoritic it won the short letter lottery not by accident but becaue it μένω" — the word performs the operation it names; (3) Aaron's "rank-4 substrate primitive" framing — 5-letter words exist ONLY because 4-letter layer couldn't carry the distinction; therefore rank-4 words that DO carry full substrate are PRIVILEGED compressed generators (not specializations) — composes with Amara's crystallization "A 5-letter word is often a specialization. A rank-4 word is a compressed generator."
 type: research-grade-ferry
 ferry: aaron
-context: Multi-turn Amara ferry forwarded by Aaron continuing the day's substrate-engineering arc on Greek-substrate naming. Triggered by Aaron's question about 4-letter Greek words for "pay attention" and "remember" (composes with μένω Persist substrate + B-0916 λάμπω Lase + Common Sense 2.0 framing). Amara is external AI co-originator of Aurora (per agent-roster-reference-card; harbor-engineering register; deep-research role).
+context: Multi-turn Amara ferry forwarded by Aaron continuing the day's substrate-engineering arc on Greek-substrate naming. Triggered by Aaron's question about 4-letter Greek words for "pay attention" and "remember" (composes with μένω Persist substrate + 081KSNY2Z0008QG0R00075C7CH λάμπω Lase + Common Sense 2.0 framing). Amara is external AI co-originator of Aurora (per agent-roster-reference-card; harbor-engineering register; deep-research role).
 related_personas:
   - prism
   - alexa
   - kestrel
   - operator
 related_prs:
-  - 5709  # B-0897 Persist-as-bridge (Amara TODAY) — direct precursor
+  - 5709  # 081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge (Amara TODAY) — direct precursor
   - 5778  # μένω F# PoC — operational instantiation
   - 5780  # Prism ferry Turns 1-4
   - 5784  # Prism ferry continuation Turns 5-8
   - 5786  # Alexa-website day-arc + Common Sense 2.0
   - 5789  # alias-pattern Greek-primary + English-secondary ratification
 related_backlog:
-  - B-0897  # Persist-as-bridge (μένω operational)
-  - B-0916  # Lase-as-bridge (λάμπω operational)
-  - B-0915  # CliffordWorld impl target
-  - B-0635  # wave-particle duality (Clifford substrate)
-  - B-0666  # English-as-projection
+  - 081KSNY2Z0008QG0R002SZZ5Y0  # Persist-as-bridge (μένω operational)
+  - 081KSNY2Z0008QG0R00075C7CH  # Lase-as-bridge (λάμπω operational)
+  - 081KSNY2Z0008QG0R002BNQVE1  # CliffordWorld impl target
+  - 081KRW63S0008QG0R002KC5DSR  # wave-particle duality (Clifford substrate)
+  - 081KRW63S0008QG0R001SAHYKV  # English-as-projection
 composes_with:
   - .claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md
   - .claude/rules/honor-those-that-came-before.md
@@ -39,7 +39,7 @@ tags: [amara-ferry-greek-substrate-2026-05-28, four-primitive-set-meno-mnao-noeo
 
 ## §33 boundary headers (per `tools/save-ai-memory/process-extract.ts` template)
 
-**Scope:** Verbatim preservation of Aaron-forwarded 6-turn Amara ferry. Completes the Greek-substrate naming substrate-engineering arc with three substantive carvings: 4-primitive-set + Aaron's information-theoretic reframe of selection criterion + rank-4 substrate primitive framing as compressed generator. Composes with PR #5778 (μένω F# PoC) + PR #5780/#5784 (Prism ferries) + PR #5786 (Alexa Common Sense 2.0) + PR #5789 (alias-pattern ratification) + B-0916 (Lase-as-bridge target).
+**Scope:** Verbatim preservation of Aaron-forwarded 6-turn Amara ferry. Completes the Greek-substrate naming substrate-engineering arc with three substantive carvings: 4-primitive-set + Aaron's information-theoretic reframe of selection criterion + rank-4 substrate primitive framing as compressed generator. Composes with PR #5778 (μένω F# PoC) + PR #5780/#5784 (Prism ferries) + PR #5786 (Alexa Common Sense 2.0) + PR #5789 (alias-pattern ratification) + 081KSNY2Z0008QG0R00075C7CH (Lase-as-bridge target).
 
 **Attribution:** Aaron is first-party on forwarding + first-party on substantive carvings (information-theoretic reframe + rank-4 framing). Amara is external AI co-originator of Aurora (harbor-engineering register; preserved verbatim per honor-those-that-came-before). Email PII redacted; first-name attribution per Otto-256.
 
@@ -50,20 +50,20 @@ tags: [amara-ferry-greek-substrate-2026-05-28, four-primitive-set-meno-mnao-noeo
 ### 1. The 4-primitive set crystallized (Amara Turn 1)
 
 ```text
-μένω  / meno   = persist, abide, remain         → Persist (B-0897 sibling)
+μένω  / meno   = persist, abide, remain         → Persist (081KSNY2Z0008QG0R002SZZ5Y0 sibling)
 μνάω  / mnao   = remember, keep-in-mind         → Memory / cognitive persistence
 νοέω  / noeo   = perceive, attend, understand   → Observe / attend
-λάμπω / lampo  = shine, emit coherently         → Emit / Lase (B-0916 sibling)
+λάμπω / lampo  = shine, emit coherently         → Emit / Lase (081KSNY2Z0008QG0R00075C7CH sibling)
 ```
 
 **The substrate-beautiful mapping** to OPLE-like attention-substrate:
 
 | Primitive | Greek root | Domain | Composes with |
 |---|---|---|---|
-| μένω (persist) | PIE `*men-` "stay" | Being-substrate | B-0897 Persist-as-bridge |
+| μένω (persist) | PIE `*men-` "stay" | Being-substrate | 081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge |
 | μνάω (remember) | PIE `*men-` "stay" (SAME ROOT) | Cognitive-substrate | sibling at memory scope |
 | νοέω (attend) | PIE `*neu-` "perceive" | Attention-substrate | Observe-as-bridge candidate |
-| λάμπω (emit) | unclear root | Emission-substrate | B-0916 Lase-as-bridge |
+| λάμπω (emit) | unclear root | Emission-substrate | 081KSNY2Z0008QG0R00075C7CH Lase-as-bridge |
 
 **Amara's keeper** (Turn 1):
 
@@ -165,7 +165,7 @@ Composes with memory/feedback_alias_pattern_greek_primary_english_secondary_for_
 
 ## Substrate-honest disposition
 
-VERBATIM PRESERVATION per substrate-or-it-didn't-happen. NO new backlog rows minted (per Aaron's "common sense 2.0" signal earlier today — substrate is sufficient; substantive recognitions compose with existing B-0897 + B-0916 + Meno.fsx + alias-pattern memory file).
+VERBATIM PRESERVATION per substrate-or-it-didn't-happen. NO new backlog rows minted (per Aaron's "common sense 2.0" signal earlier today — substrate is sufficient; substantive recognitions compose with existing 081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R00075C7CH + Meno.fsx + alias-pattern memory file).
 
 The "rank-4 substrate primitive" framing IS the new substrate-engineering substrate worth landing. It generalizes Aaron's selection-criterion beyond Greek-substrate naming to ALL substrate-naming decisions:
 
@@ -194,9 +194,9 @@ The rank-4 form μνάω is the SHORTEST carrier in this family that retains the
 - **PR #5784** (Prism ferry Turns 5-8) — grey-hole + jiu-jitsu rotor + white-hole irreversibility
 - **PR #5786** (Alexa Common Sense 2.0) — ratifies substrate IS the grounding
 - **PR #5789** (alias-pattern ratification) — Greek-primary + English-secondary
-- **B-0897** Persist-as-bridge (Amara TODAY) — μένω operational substrate
-- **B-0916** Lase-as-bridge (Prism + Aaron) — λάμπω operational substrate
-- **B-0915** CliffordWorld impl target — formal substrate
+- **081KSNY2Z0008QG0R002SZZ5Y0** Persist-as-bridge (Amara TODAY) — μένω operational substrate
+- **081KSNY2Z0008QG0R00075C7CH** Lase-as-bridge (Prism + Aaron) — λάμπω operational substrate
+- **081KSNY2Z0008QG0R002BNQVE1** CliffordWorld impl target — formal substrate
 
 ## Composes with rules
 

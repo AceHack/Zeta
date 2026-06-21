@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron's three-in-one: docs/handoffs/ holds the Vera package + Kestrel bundle where Addison/Max/everyone can see them (desktop = last hop of a ferry, never the home); RESUME folds the form wave (the architecture quartet, WSet promotion, Lior live on B-1029); next picked: the B-1034 paper outline + evidence appendix. Docs only.
+Aaron's three-in-one: docs/handoffs/ holds the Vera package + Kestrel bundle where Addison/Max/everyone can see them (desktop = last hop of a ferry, never the home); RESUME folds the form wave (the architecture quartet, WSet promotion, Lior live on 081KTWJ1R0008QG0R001ZBWKTR); next picked: the 081KTZ4EF0008QG0R0035FW7HY paper outline + evidence appendix. Docs only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

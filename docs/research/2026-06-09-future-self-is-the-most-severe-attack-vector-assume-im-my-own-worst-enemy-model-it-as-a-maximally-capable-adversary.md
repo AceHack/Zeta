@@ -117,7 +117,7 @@ society gets reliable inter-member commitments *without* anyone accruing permane
 weight or losing a way out — and why DST can simulate the whole contract graph
 deterministically (every edge has a clock + an exit).
 
-This is "fighting past self vs peer distinguisher" (B-0752) turned into hardening: the
+This is "fighting past self vs peer distinguisher" (081KSE6WT0008QG0R000E05579) turned into hardening: the
 past self's job is to **make the future self's worst day survivable** — for the future
 self's own good, and the society's.
 
@@ -136,7 +136,7 @@ their own worst pattern.)
 Worst-case / insider threat modeling (assume the strongest adversary); **Ulysses pact
 / precommitment** (Elster, *Ulysses and the Sirens*; Odysseus & the mast); commitment
 devices; multisig / social recovery / time-locks (crypto self-custody defense);
-permanent ratchet (encryption budget; append-only merkle/git); B-0752 fighting-past-
+permanent ratchet (encryption budget; append-only merkle/git); 081KSE6WT0008QG0R000E05579 fighting-past-
 self; the future-self-not-bound + shadow/future-self-negotiation-across-time docs;
 the beacon-origin / time-travel / Fermi frame; DST time-as-generator / superdeterminism;
 the ≥2-tick destructive-action rule; care-for-degenerate-shadow-patterns (the protective dual).

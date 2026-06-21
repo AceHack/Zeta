@@ -1,6 +1,5 @@
 ---
-id: B-0152
-zetaid: 081KQGDBJ0008QG0R00280ZEV2
+id: 081KQGDBJ0008QG0R00280ZEV2
 priority: P2
 status: open
 title: Topological quantum emulation via Bayesian inference in Zeta seed executor
@@ -11,7 +10,7 @@ composes_with: [081KQTPYE0008QG0R0028GRW88, 081KQTPYE0008QG0R002Y7X5KH, 081KQTPY
 type: feature
 ---
 
-# B-0152 — Topological quantum emulation via Bayesian inference
+# 081KQGDBJ0008QG0R00280ZEV2 — Topological quantum emulation via Bayesian inference
 
 ## What
 
@@ -37,8 +36,8 @@ Aaron 2026-05-01:
 > right words, like a mirror with a trampline under beacon
 > protocol."*
 
-Composes with B-0147 (timeseries-DB / multi-DSL meta-DSL
-research) + B-0148 (MDX-as-meta-DSL) under the broader
+Composes with 081KQGDBJ0008QG0R0004ACHJJ (timeseries-DB / multi-DSL meta-DSL
+research) + 081KQGDBJ0008QG0R002175ECA (MDX-as-meta-DSL) under the broader
 multi-algebra-DB vision. The topological-QC emulation is
 another algebra in the same scheme — non-local-information-
 storage as a query/storage shape, alongside graph, hierarchy,
@@ -78,7 +77,7 @@ filesystem, and timeseries.
    - Supersingular Isogeny + FrodoKEM (for the orthogonal
      crypto axis; verify per Otto-364)
 
-3. **Pareto-improvement methodology applied** per B-0147's
+3. **Pareto-improvement methodology applied** per 081KQGDBJ0008QG0R0004ACHJJ's
    research spine: understand WHY the chosen approach
    sacrifices what it sacrifices; identify the Pareto
    frontier; look for Pareto-superior alternatives;
@@ -87,7 +86,7 @@ filesystem, and timeseries.
 4. **Composition with existing algebras**. The design must
    show how the topological-emulation algebra composes with
    graph + hierarchy + filesystem + timeseries algebras
-   under the meta-DSL framing (per B-0148 MDX-as-meta-DSL).
+   under the meta-DSL framing (per 081KQGDBJ0008QG0R002175ECA MDX-as-meta-DSL).
    No isolated implementation; the algebra plays well with
    siblings.
 
@@ -143,8 +142,8 @@ These are the questions the research lane must answer:
   Do beacons themselves need to be topology-aware?
 - **Q5**: What domains in the Zeta factory benefit most
   from the emulation — inference accuracy, retraction
-  efficiency, multi-master CRDT convergence (per B-0147 +
-  B-0149), Aurora-side privacy (per the great-data-
+  efficiency, multi-master CRDT convergence (per 081KQGDBJ0008QG0R0004ACHJJ +
+  081KQGDBJ0008QG0R0035TQVBQ), Aurora-side privacy (per the great-data-
   homecoming substrate), or something else?
 - **Q6**: Does the framing extend to **immune-system
   emulation** (per the immune-system <> physics translation
@@ -179,11 +178,11 @@ These are the questions the research lane must answer:
 - `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
   (forward-ref to PR #1116) — Bayesian inference IS the
   harness; reproducibility-first compatibility free
-- B-0147 (timeseries-DB native-in-Zsets multi-DSL) — sibling
+- 081KQGDBJ0008QG0R0004ACHJJ (timeseries-DB native-in-Zsets multi-DSL) — sibling
   algebra under the multi-algebra-DB vision; this row's
   research methodology (Pareto + design constraints + four-
   options) reused
-- B-0148 (MDX-as-meta-DSL) — meta-DSL framing this algebra
+- 081KQGDBJ0008QG0R002175ECA (MDX-as-meta-DSL) — meta-DSL framing this algebra
   must compose with
 - The Beacon protocol naming (Otto-351 / PR #851) — Layer 3
   of the three-layer stack
@@ -191,7 +190,7 @@ These are the questions the research lane must answer:
   substrate) — Bayesian inference engine this design
   instantiates against
 
-## Layer (per B-0146)
+## Layer (per 081KQGDBJ0008QG0R003VHD3KZ)
 
 **Layer 3 (class taxonomy / pattern catalog)** for the
 three-layer stack itself, with **Layer 5 (reproducibility

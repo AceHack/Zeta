@@ -10,7 +10,7 @@ namespace Zeta.Core
 /// directed) ⇒ a compass **N S E W = {1, i, −1, −i} = C₄ = `i`-rotation** (the harmonic four-corner phase;
 /// why Cayley-Dickson is everywhere). `TInFeedback` is **co-owned — both sides contribute** — which is
 /// "each is backpressure from the other's perspective" (frame-relative, no absolute backpressure). The
-/// fusion target (B-1022): the `ISR` arrow's feedback channel becomes this object. Pure record, no classes.
+/// fusion target (081KTQD8A0008QG0R0005EFYPV): the `ISR` arrow's feedback channel becomes this object. Pure record, no classes.
 [<RequireQualifiedAccess>]
 module FourCorner =
 
@@ -51,7 +51,7 @@ module FourCorner =
     let hasFeedback (o: FourCornerOwnership<'TIn, 'TOut, 'TOutFeedback, 'TInFeedback>) : bool =
         o.TOutFeedback.IsSome || o.TInFeedback.IsSome
 
-    // ── The TREATY codec (B-1022 trigger FIRED: "we are the consumer for our treaties") ──
+    // ── The TREATY codec (081KTQD8A0008QG0R0005EFYPV trigger FIRED: "we are the consumer for our treaties") ──
     // Canonical text-line wire form for the string-quad instantiation (the operator-channel shape).
     // The F# oracle locks these bytes first; C#/TS/Rust conform to the same golden lines. Format:
     //   fourcorner1<TAB>esc(tIn)<TAB>opt<TAB>opt<TAB>opt   where opt = "-" (None) | "+" + esc(value)

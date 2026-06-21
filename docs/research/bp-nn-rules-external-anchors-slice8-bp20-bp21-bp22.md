@@ -1,7 +1,7 @@
 # BP-NN Rules External Anchor Backfill — Slice 8 (BP-20, BP-21, BP-22)
 
 Scope: External prior-art anchors for three BP-NN rules in
-`docs/AGENT-BEST-PRACTICES.md`. This is slice 8 of the B-0314 backfill;
+`docs/AGENT-BEST-PRACTICES.md`. This is slice 8 of the 081KR2E4K0008QG0R001ADMBVW backfill;
 slices 1–6 covered BP-10, BP-11, BP-03, BP-07, BP-16, BP-04, BP-08, BP-09,
 BP-12, BP-13, BP-14, BP-01, BP-02, BP-15, BP-05, and BP-06. Slice 7
 (BP-17, BP-18, BP-19) remains pending/in progress. This slice covers the
@@ -309,4 +309,4 @@ with separate interfaces that make the weighting choice explicit.
 | BP-22 | Optimizer (scalar utility) and balancer (Pareto/variance) are non-composable roles | Miettinen (1999) scalarization vs Pareto; Deb et al. (2002) NSGA-II algorithmic distinctness; Celis et al. (2024) fairness-accuracy non-reducibility |
 
 All nine anchors sourced 1933–2024, verified via WebSearch 2026-05-10.
-Full slice-progress record in `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`.
+Full slice-progress record in `docs/backlog/P1/081KR2E4K0008QG0R001ADMBVW-bp-nn-rule-anchor-backfill.md`.

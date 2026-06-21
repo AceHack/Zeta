@@ -1,6 +1,6 @@
 ---
 pr_number: 5494
-title: "docs(B-0859): cluster-recovery-mechanism eliminates AI worry-about-mistakes (3-mode USB-boot + 3-machine quorum + external-KVM + cloud-detect-recover)"
+title: "docs(081KSKBP80008QG0R00146WEX1): cluster-recovery-mechanism eliminates AI worry-about-mistakes (3-mode USB-boot + 3-machine quorum + external-KVM + cloud-detect-recover)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T15:56:35Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T17:51:21Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5494: docs(B-0859): cluster-recovery-mechanism eliminates AI worry-about-mistakes (3-mode USB-boot + 3-machine quorum + external-KVM + cloud-detect-recover)
+# PR #5494: docs(081KSKBP80008QG0R00146WEX1): cluster-recovery-mechanism eliminates AI worry-about-mistakes (3-mode USB-boot + 3-machine quorum + external-KVM + cloud-detect-recover)
 
 ## PR description
 
@@ -48,7 +48,7 @@ musts to can-exits via recovery substrate).
 operational characteristics (independent power + network + power-
 control); cloud-recovery-service substrate as failsafe for all-3-off
 edge case; 4 substrate-engineering target sub-rows for follow-on
-B-0859.M rows.
+081KSKBP80008QG0R00146WEX1.M rows.
 
 ## Test plan
 
@@ -64,7 +64,7 @@ B-0859.M rows.
 
 ## Pull request overview
 
-This PR extends backlog row **B-0859** with an additional operator follow-up section that specifies a concrete recovery substrate (3-mode USB boot + 3-machine quorum + remote KVM/power control + optional cloud-recovery service) intended to make post-boot AI-as-home-owner operation structurally recoverable.
+This PR extends backlog row **081KSKBP80008QG0R00146WEX1** with an additional operator follow-up section that specifies a concrete recovery substrate (3-mode USB boot + 3-machine quorum + remote KVM/power control + optional cloud-recovery service) intended to make post-boot AI-as-home-owner operation structurally recoverable.
 
 **Changes:**
 - Adds a “Recovery-mechanism eliminates AI worry-about-mistakes” section describing 3 recovery modes and how they dissolve common AI “worry patterns”.
@@ -73,35 +73,35 @@ This PR extends backlog row **B-0859** with an additional operator follow-up sec
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1034 (resolved)
+### Thread 1: docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1034 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T15:59:30Z):
 
-P1: Cross-reference appears incorrect: B-0858 is the agent-heartbeat folder row, not the "cluster-fork-as-trust-boundary" substrate. This section should reference the backlog row that actually defines cluster-fork-as-trust-boundary (currently B-0829), and the other B-0858 mentions in this new section should be updated consistently.
+P1: Cross-reference appears incorrect: 081KSKBP80008QG0R001KK9WV6 is the agent-heartbeat folder row, not the "cluster-fork-as-trust-boundary" substrate. This section should reference the backlog row that actually defines cluster-fork-as-trust-boundary (currently 081KSGS9H0008QG0R000Q18PGQ), and the other 081KSKBP80008QG0R001KK9WV6 mentions in this new section should be updated consistently.
 
-### Thread 2: docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1086 (resolved)
-
-**@copilot-pull-request-reviewer** (2026-05-27T15:59:31Z):
-
-P1: B-0858 is referenced here as "cluster-fork" but B-0858 is the heartbeat-folder mechanism. Use the correct cluster-fork-as-trust-boundary row ID (B-0829) to avoid misleading dependency/composition claims.
-
-### Thread 3: docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1208 (resolved)
+### Thread 2: docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1086 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T15:59:31Z):
 
-P1: This bullet labels B-0858 as "cluster-fork-as-trust-boundary", but B-0858 is the agent-heartbeats row. Replace with the actual cluster-fork-as-trust-boundary backlog item (B-0829).
+P1: 081KSKBP80008QG0R001KK9WV6 is referenced here as "cluster-fork" but 081KSKBP80008QG0R001KK9WV6 is the heartbeat-folder mechanism. Use the correct cluster-fork-as-trust-boundary row ID (081KSGS9H0008QG0R000Q18PGQ) to avoid misleading dependency/composition claims.
 
-### Thread 4: docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1247 (resolved)
+### Thread 3: docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1208 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T15:59:31Z):
 
-P1: The external-attack note cites B-0858 as part of the threat-model substrate, but B-0858 is the agent-heartbeats row. If the intent is to reference the distributed cluster / cluster-fork trust-boundary substrate, update this to the correct backlog item (B-0829).
+P1: This bullet labels 081KSKBP80008QG0R001KK9WV6 as "cluster-fork-as-trust-boundary", but 081KSKBP80008QG0R001KK9WV6 is the agent-heartbeats row. Replace with the actual cluster-fork-as-trust-boundary backlog item (081KSGS9H0008QG0R000Q18PGQ).
 
-### Thread 5: docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1262 (resolved)
+### Thread 4: docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1247 (resolved)
+
+**@copilot-pull-request-reviewer** (2026-05-27T15:59:31Z):
+
+P1: The external-attack note cites 081KSKBP80008QG0R001KK9WV6 as part of the threat-model substrate, but 081KSKBP80008QG0R001KK9WV6 is the agent-heartbeats row. If the intent is to reference the distributed cluster / cluster-fork trust-boundary substrate, update this to the correct backlog item (081KSGS9H0008QG0R000Q18PGQ).
+
+### Thread 5: docs/backlog/P1/081KSKBP80008QG0R00146WEX1-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md:1262 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T15:59:32Z):
 
-P1: "B-0858 cluster" is likely a mistaken reference: B-0858 is the agent-heartbeats mechanism, not the cluster-fork/distributed-cluster substrate. Update to the correct cluster-fork-as-trust-boundary row ID (B-0829) so the composition statement is accurate.
+P1: "081KSKBP80008QG0R001KK9WV6 cluster" is likely a mistaken reference: 081KSKBP80008QG0R001KK9WV6 is the agent-heartbeats mechanism, not the cluster-fork/distributed-cluster substrate. Update to the correct cluster-fork-as-trust-boundary row ID (081KSGS9H0008QG0R000Q18PGQ) so the composition statement is accurate.
 
 ## General comments
 

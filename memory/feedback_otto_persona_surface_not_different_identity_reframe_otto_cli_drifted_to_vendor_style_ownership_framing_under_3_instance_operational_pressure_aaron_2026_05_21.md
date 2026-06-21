@@ -38,7 +38,7 @@ Specific drift instances (this session, before the reframe landed):
 
 The reframe is NOT new substrate. It is reinforcement of substrate that already exists.
 
-[`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md): "Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface except Otto (CLI-only foreground)." (Now updated 2026-05-21 to include Otto-VSCode per B-0689.)
+[`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md): "Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface except Otto (CLI-only foreground)." (Now updated 2026-05-21 to include Otto-VSCode per 081KS3X9Y0008QG0R000BJY3DK.)
 
 [`.claude/rules/claim-acquire-before-worktree-work.md`](../.claude/rules/claim-acquire-before-worktree-work.md): "When multiple instances of the **same** agent (e.g., Otto-CLI + Otto-Desktop) share git + bus on one machine, **`--from` must differ** (e.g., `otto-cli` vs `otto-desktop`) for the claim-coordinator to prevent split-brain — identical `--from` values both exit 0 (same-sender idempotent re-acquire)."
 

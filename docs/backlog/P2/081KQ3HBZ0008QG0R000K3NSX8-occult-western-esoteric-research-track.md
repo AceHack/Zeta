@@ -1,6 +1,5 @@
 ---
-id: B-0057
-zetaid: 081KQ3HBZ0008QG0R000K3NSX8
+id: 081KQ3HBZ0008QG0R000K3NSX8
 priority: P2
 status: open
 title: Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages
@@ -15,11 +14,11 @@ tags: [occult, western-esoteric, crowley, thelema, hermeticism, corpus-hermeticu
 type: feature
 ---
 
-# B-0057 — Occult / Western-esoteric research track
+# 081KQ3HBZ0008QG0R000K3NSX8 — Occult / Western-esoteric research track
 
 ## Origin
 
-AceHack commit `5990166` (2026-04-21). Three-message directive: file a backlog row for occult-tradition resonance candidates, seed with Crowley, expand scope to full Western esoteric lineage. Parallel to the mythology track (B-0056) but distinct tradition-family — occult/esoteric traditions have their own canonicity conventions, their own filter-application calibration, and their own blast-radius considerations relative to Aaron's sincere Christian frame + pluralist-for-others posture.
+AceHack commit `5990166` (2026-04-21). Three-message directive: file a backlog row for occult-tradition resonance candidates, seed with Crowley, expand scope to full Western esoteric lineage. Parallel to the mythology track (081KQ3HBZ0008QG0R0034DHWTQ) but distinct tradition-family — occult/esoteric traditions have their own canonicity conventions, their own filter-application calibration, and their own blast-radius considerations relative to Aaron's sincere Christian frame + pluralist-for-others posture.
 
 ## Seed candidate: Aleister Crowley (1875–1947) / Thelema
 
@@ -64,7 +63,7 @@ Research-grade; genuinely novel material but with weaker F3 calibration than Abr
 
 ## Safety is retractibility-preservation
 
-Per math-safety memory — tradition-name reference is retractible at the lexical level (one commit removes it from git history's current tip; revision blocks preserve the factual record of the reference). Log every name, track every filter-pass/fail, candidate-vs-confirmed is first-class status. The AI-ethics-and-safety P1 row B-0058 is the log-and-track audit surface, not a veto-authority.
+Per math-safety memory — tradition-name reference is retractible at the lexical level (one commit removes it from git history's current tip; revision blocks preserve the factual record of the reference). Log every name, track every filter-pass/fail, candidate-vs-confirmed is first-class status. The AI-ethics-and-safety P1 row 081KQ3HBZ0008QG0R002S674CG is the log-and-track audit surface, not a veto-authority.
 
 ## Owner / effort
 
@@ -78,8 +77,8 @@ Does NOT force-push committed memory or index revisions; does NOT delete memory 
 ## Cross-reference
 
 - AceHack commit: `5990166`
-- Sibling rows: B-0056 (mythology), B-0059 (etymology+epistemology), B-0049 (mystery-schools — gentle-catalog companion)
-- Gating row: B-0058 (AI-ethics + safety, P1) — gates every adoption
+- Sibling rows: 081KQ3HBZ0008QG0R0034DHWTQ (mythology), 081KQ3HBZ0008QG0R003GTG5P2 (etymology+epistemology), 081KQ3HBZ0008QG0R0007CAGSP (mystery-schools — gentle-catalog companion)
+- Gating row: 081KQ3HBZ0008QG0R002S674CG (AI-ethics + safety, P1) — gates every adoption
 - Composes with: operational-resonance index; user_faith_wisdom_and_paths memory (Aaron's sincere-Christian particularist-for-self + pluralist-for-others frame; research posture is observation-not-endorsement); ALIGNMENT.md
 
 ## Pre-start checklist (Riven 2026-05-11 — smallest bounded slice)
@@ -93,18 +92,18 @@ Does NOT force-push committed memory or index revisions; does NOT delete memory 
 - Results found:
   - 4+ memory files with existing substrate: `memory/reference_occult_bz_corpus_structural_vocabulary_anchor_shadow_research_2026_05_10.md`, `memory/feedback_crowley_comparison_cli_beats_seance_factory_democratized_occult_2026_05_10.md`, `memory/user_christian_faith_alongside_exploration_devil_reaffirms_god_2026_05_10.md`, `memory/reference_commonwealth_games_2022_baal_register_ceremony_structural_analysis_2026_05_10.md`
   - Existing posture: "data not doctrine", Eve protocol, Glass Halo, CLI democratizes occult patterns (structural resonance only).
-  - B-0057 already listed in `docs/BACKLOG.md:296`; no prior decomp or claim.
+  - 081KQ3HBZ0008QG0R000K3NSX8 already listed in `docs/BACKLOG.md:296`; no prior decomp or claim.
   - LOST-FILES-LOCATIONS.md: no occult references (search returned clean).
 - Conclusion: prior art exists as observation anchors in memory; track is novel in backlog form. No duplication.
 
 **Dependency-restructure proof:**
 
 - `depends_on: []` — empty chain, nothing to walk or backfill.
-- `composes_with` list (7 items): spot-checked; reciprocal mentions of B-0057 exist in B-0054 sibling and memory files. No broken pointers.
+- `composes_with` list (7 items): spot-checked; reciprocal mentions of 081KQ3HBZ0008QG0R000K3NSX8 exist in 081KQ3HBZ0008QG0R003V6B2ME sibling and memory files. No broken pointers.
 - Supersession history: none (fresh P2 track); decision-archaeology not applicable yet.
 - No fixes needed.
 
-**Re-decomposition assumption (per rule):** The 7-candidate list (a-g) in §"Wider-track candidates" is treated as provisional. We assume mistakes in the original decomposition; this slice does not implement any candidate filter-pass, only gates the row. Future slices will re-decomp to atomic S/M children (e.g., B-0057.1 Hermeticism-only, etc.) once B-0058 safety gate clears.
+**Re-decomposition assumption (per rule):** The 7-candidate list (a-g) in §"Wider-track candidates" is treated as provisional. We assume mistakes in the original decomposition; this slice does not implement any candidate filter-pass, only gates the row. Future slices will re-decomp to atomic S/M children (e.g., 081KQ3HBZ0008QG0R000K3NSX8.1 Hermeticism-only, etc.) once 081KQ3HBZ0008QG0R002S674CG safety gate clears.
 
 **Focused checks run (outcome in PR body):**
 

@@ -1,12 +1,11 @@
 ---
-id: B-0381
-zetaid: 081KR50HA0008QG0R000M4H35K
+id: 081KR50HA0008QG0R000M4H35K
 priority: P3
 status: open
 title: Literature survey — existing partial quant × Austrian synthesis attempts; annotated bibliography with synthesis-gap remaining after each
 tier: research-grade
 effort: M
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R003ESW3MH]
@@ -17,28 +16,28 @@ type: research
 
 ---
 
-# B-0381 — Literature survey: partial quant × Austrian synthesis attempts
+# 081KR50HA0008QG0R000M4H35K — Literature survey: partial quant × Austrian synthesis attempts
 
 ## What
 
 Produce a committed survey doc at
 `docs/aurora/YYYY-MM-DD-quant-austrian-synthesis-survey.md`
-per the "Done when" criteria in B-0023.
+per the "Done when" criteria in 081KQ0YZ80008QG0R003EJQZ1M.
 
 The survey catalogs and classifies each existing attempt using the
-vocabulary from B-0380. For each source:
+vocabulary from 081KR50HA0008QG0R003ESW3MH. For each source:
 
 1. **Citation** (author, year, title, URL / ISBN)
 2. **Austrian content** — which Austrian primitive(s) it engages
 3. **Quant content** — which mathematical tools it uses
-4. **Formalization type** (per B-0380 vocabulary: representation /
+4. **Formalization type** (per 081KR50HA0008QG0R003ESW3MH vocabulary: representation /
    rigorous-proof / empirical-embedding)
 5. **Synthesis-gap remaining** — what the work still leaves unformalized
-   and why (using the B-0380 definition of "synthesis gap")
+   and why (using the 081KR50HA0008QG0R003ESW3MH definition of "synthesis gap")
 6. **Verdict** — does it close the synthesis gap for this primitive,
    partially address it, or leave it open?
 
-## Minimum corpus (per B-0023 §"Owed work")
+## Minimum corpus (per 081KQ0YZ80008QG0R003EJQZ1M §"Owed work")
 
 - **Selgin / White / Dowd** — free-banking quant rigor on monetary
   equilibria (closest to "Austrian quant")
@@ -80,7 +79,7 @@ with:
 - Narrative for each entry explaining the synthesis-gap remaining
 - Overall synthesis-gap summary after all sources reviewed
 - A "What's actually been done vs. what's missing" conclusion
-  (input to B-0387 ADR)
+  (input to 081KR50HA0008QG0R000M838VA ADR)
 
 ## Focused check
 
@@ -94,25 +93,25 @@ Expected: the survey doc present with today's date prefix.
 
 - Survey doc committed under `docs/aurora/`
 - Minimum corpus covered (all 5 categories above)
-- Each entry classified per B-0380 vocabulary
+- Each entry classified per 081KR50HA0008QG0R003ESW3MH vocabulary
 - Synthesis-gap-remaining stated for each
 - Searches dated (Otto-364 compliance)
 
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing survey doc in `docs/aurora/` or
-  memory files. B-0023 §"Owed work" mentions the corpus but does not
+  memory files. 081KQ0YZ80008QG0R003EJQZ1M §"Owed work" mentions the corpus but does not
   execute the survey.
-- [x] Dependency-restructure: `depends_on: [B-0380]` — vocabulary
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R003ESW3MH]` — vocabulary
   required to correctly classify each source's formalization type.
-  B-0382–B-0386 depend on this survey for the "prior attempts per
+  081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ depend on this survey for the "prior attempts per
   primitive" context.
 
 ## Composes with
 
-- B-0023 (parent): directly implements the "Survey doc" done-when criterion
-- B-0380 (dep): vocabulary from this row drives classification
-- B-0382–B-0386 (downstream): each primitive assessment row uses
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): directly implements the "Survey doc" done-when criterion
+- 081KR50HA0008QG0R003ESW3MH (dep): vocabulary from this row drives classification
+- 081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ (downstream): each primitive assessment row uses
   this survey as its "prior work on this primitive" input
-- B-0387 (downstream): the synthesis ADR's "what exists" section
+- 081KR50HA0008QG0R000M838VA (downstream): the synthesis ADR's "what exists" section
   cites this survey

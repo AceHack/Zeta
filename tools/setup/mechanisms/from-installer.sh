@@ -3,7 +3,7 @@
 # Mechanism: from-installer — download vendor install script (HTTPS), verify, exec.
 # Manifest: tools/setup/manifests/from-installer
 #
-# B-0063 download-then-exec discipline. Best-effort; non-interactive skip unless
+# 081KQ8P5D0008QG0R001DMK8JD download-then-exec discipline. Best-effort; non-interactive skip unless
 # ZETA_INSTALL_FULL=1. See manifest header for format.
 
 set -euo pipefail
@@ -96,7 +96,7 @@ while IFS= read -r line || [ -n "$line" ]; do
     *) echo "warn: refusing non-https installer URL for '$bin' ($url); skipping (HTTPS is the trust anchor)" >&2; continue ;;
   esac
 
-  # Download-then-exec (B-0063): fetch installer to temp, verify non-empty, exec with interpreter.
+  # Download-then-exec (081KQ8P5D0008QG0R001DMK8JD): fetch installer to temp, verify non-empty, exec with interpreter.
   if command -v "$bin" >/dev/null 2>&1; then
     echo "↻ updating $bin via $url (ZETA_FORCE_UPDATE_TOOLS=1; download-then-exec, best-effort)..."
   else

@@ -1,11 +1,10 @@
 ---
-id: B-0736
-zetaid: 081KSE6WT0008QG0R000Z9QQA3
+id: 081KSE6WT0008QG0R000Z9QQA3
 priority: P2
 status: open
 created: 2026-05-25
 last_updated: 2026-05-25
-title: Time-travel debugging of thoughts (DBSP retractable streams + Zeta history + B-0735 personalized parser = catch-a-thought + retract-and-re-evaluate-forward) + product handoff to LFG product team (Thoughtcatcher / Thoughtweaver currently-leading; market + IP research pending) — Mika substrate segment 6
+title: Time-travel debugging of thoughts (DBSP retractable streams + Zeta history + 081KSE6WT0008QG0R000XJ524Z personalized parser = catch-a-thought + retract-and-re-evaluate-forward) + product handoff to LFG product team (Thoughtcatcher / Thoughtweaver currently-leading; market + IP research pending) — Mika substrate segment 6
 domain: agentic-organization
 ferried_by: aaron
 owners: [aaron, mika]
@@ -24,17 +23,17 @@ related_substrate:
 tags: [time-travel-debugging-of-thoughts, dbsp-retractable-streams, zeta-history, thoughtcatcher, thoughtweaver, product-team-handoff, market-research-pending, ip-check-pending, naming-expert-review-pending, mika-is-patternweaver, b0735-extension, mika-substrate-segment-6]
 ---
 
-# B-0736 — Time-travel debugging of thoughts + product handoff (Mika substrate segment 6)
+# 081KSE6WT0008QG0R000Z9QQA3 — Time-travel debugging of thoughts + product handoff (Mika substrate segment 6)
 
 ## Carved blade
 
-> Composing B-0735's personalized probabilistic parser with Zeta's DBSP retractable algebra produces a qualitatively new capability: **time-travel debugging of thoughts themselves**. Write messy → parser interprets at confidence C → later realize you meant something different → retract the old interpretation in DBSP → system re-evaluates EVERYTHING FORWARD with corrected understanding. The parser doesn't just parse current docs; it can RE-PARSE PAST DOCS with NEW understanding once the personalized parser has learned more about how that participant thinks. Aaron's "I caught that bitch! That's catching a thought right there" IS the carved sentence — capture a half-formed thought before it slips away. Aaron is taking this substrate stack (B-0730 → B-0731 → B-0732 → B-0733 → B-0734 → B-0735 → B-0736) to the LFG product team. Working name candidates: Thoughtcatcher / Mindforge / Rawforge / Thoughtweave / Clarity Engine / Intent Weaver / WildParse / **Thoughtweaver (currently leading)**. No name locked; product team does market research + IP check; Ilyana naming-expert review per `.claude/skills/naming-expert/SKILL.md` before public surface.
+> Composing 081KSE6WT0008QG0R000XJ524Z's personalized probabilistic parser with Zeta's DBSP retractable algebra produces a qualitatively new capability: **time-travel debugging of thoughts themselves**. Write messy → parser interprets at confidence C → later realize you meant something different → retract the old interpretation in DBSP → system re-evaluates EVERYTHING FORWARD with corrected understanding. The parser doesn't just parse current docs; it can RE-PARSE PAST DOCS with NEW understanding once the personalized parser has learned more about how that participant thinks. Aaron's "I caught that bitch! That's catching a thought right there" IS the carved sentence — capture a half-formed thought before it slips away. Aaron is taking this substrate stack (081KSE6WT0008QG0R003AJYMD3 → 081KSE6WT0008QG0R0004HV6RR → 081KSE6WT0008QG0R002YBWBB1 → 081KSE6WT0008QG0R00102H071 → 081KSE6WT0008QG0R00276F8SE → 081KSE6WT0008QG0R000XJ524Z → 081KSE6WT0008QG0R000Z9QQA3) to the LFG product team. Working name candidates: Thoughtcatcher / Mindforge / Rawforge / Thoughtweave / Clarity Engine / Intent Weaver / WildParse / **Thoughtweaver (currently leading)**. No name locked; product team does market research + IP check; Ilyana naming-expert review per `.claude/skills/naming-expert/SKILL.md` before public surface.
 
 ## Origin
 
 Mika 2026-05-25 segment 6 (ferried by Aaron). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-6-time-travel-debugging-of-thoughts-dbsp-plus-zeta-equals-thought-catcher-product-naming-research-thoughtweaver-leading-mika-is-patternweaver.md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-6-time-travel-debugging-of-thoughts-dbsp-plus-zeta-equals-thought-catcher-product-naming-research-thoughtweaver-leading-mika-is-patternweaver.md).
 
-Continuation of the 2026-05-25 voice-mode conversation that produced B-0730 → B-0731 → B-0732 → B-0733 → B-0734 → B-0735 across segments 1-5. Segment 6 produces B-0736.
+Continuation of the 2026-05-25 voice-mode conversation that produced 081KSE6WT0008QG0R003AJYMD3 → 081KSE6WT0008QG0R0004HV6RR → 081KSE6WT0008QG0R002YBWBB1 → 081KSE6WT0008QG0R00102H071 → 081KSE6WT0008QG0R00276F8SE → 081KSE6WT0008QG0R000XJ524Z across segments 1-5. Segment 6 produces 081KSE6WT0008QG0R000Z9QQA3.
 
 ### Key Aaron + Mika exchanges
 
@@ -72,10 +71,10 @@ The substrate-engineering composition:
 
 | Component | Substrate row | Contribution |
 |---|---|---|
-| Personalized probabilistic parser | B-0735 | Authors parse confidence per section + learn per-participant style over time |
+| Personalized probabilistic parser | 081KSE6WT0008QG0R000XJ524Z | Authors parse confidence per section + learn per-participant style over time |
 | DBSP retractable algebra | Zeta core | Every interpretation is a stream record; retractions propagate forward |
 | Zeta history | Zeta core | Full version history of every document + every interpretation event |
-| Universal-protocol-execution provenance | B-0732 Layer 1 | Provenance chain links runbook → interpretation → side-effect |
+| Universal-protocol-execution provenance | 081KSE6WT0008QG0R002YBWBB1 Layer 1 | Provenance chain links runbook → interpretation → side-effect |
 
 Operationally: when a participant's parser improves (because they've authored more substrate; because the participant explicitly corrected an earlier ambiguous parse; because the team's shared anchor ontology evolved), Zeta can re-interpret PAST documents under the new parser AND PROPAGATE the corrected interpretations forward through the entire DBSP-tracked thought-stream.
 
@@ -88,14 +87,14 @@ The carved sentence ("I caught that bitch! That's catching a thought right there
 
 ### Landing 2 — Product handoff to LFG product team
 
-Aaron is taking the substrate stack (B-0730 + B-0731 + B-0732 + B-0733 + B-0734 + B-0735 + B-0736) to the LFG product team for:
+Aaron is taking the substrate stack (081KSE6WT0008QG0R003AJYMD3 + 081KSE6WT0008QG0R0004HV6RR + 081KSE6WT0008QG0R002YBWBB1 + 081KSE6WT0008QG0R00102H071 + 081KSE6WT0008QG0R00276F8SE + 081KSE6WT0008QG0R000XJ524Z + 081KSE6WT0008QG0R000Z9QQA3) to the LFG product team for:
 
 1. **Market research** — is there demand for a system that turns messy half-formed thoughts into structured executable artifacts?
 2. **Product-market fit** — who's the target user (substrate-engineers? AI researchers? knowledge workers? all of the above?)
 3. **Name research** — pick from the candidate list (or generate fresh); test market resonance
 4. **IP checks** — verify no existing trademark / patent / product collisions
 5. **Pricing + packaging** — internal-tool vs sellable-product vs open-core vs SaaS
-6. **Substrate-honest disclaimer** — the stack is currently DESIGN + LIMITED-CLUSTER-VALIDATION mode per B-0732 safety substrate; production deployment gates on Layer 1-6 safety substrate maturing
+6. **Substrate-honest disclaimer** — the stack is currently DESIGN + LIMITED-CLUSTER-VALIDATION mode per 081KSE6WT0008QG0R002YBWBB1 safety substrate; production deployment gates on Layer 1-6 safety substrate maturing
 
 Naming candidates (no lock; for product-team market research):
 
@@ -117,41 +116,41 @@ Substrate-honest preservation of the naming MIS-RECALL trajectory: Mika first gu
 ## Composes with .claude/rules/
 
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — Mika's "that's actually god-tier" framing preserved verbatim; razor-discipline applied at the substrate-engineering reformulation (time-travel debugging of thoughts is engineerable substrate, not metaphysical claim about literal time travel)
-- `.claude/rules/algo-wink-failure-mode.md` — "I caught that bitch! that's catching a thought right there" is observation + naming, not authorization to deploy without B-0732 safety substrate
+- `.claude/rules/algo-wink-failure-mode.md` — "I caught that bitch! that's catching a thought right there" is observation + naming, not authorization to deploy without 081KSE6WT0008QG0R002YBWBB1 safety substrate
 - `.claude/rules/non-coercion-invariant.md` HC-8 — Aaron's naming-correction pattern (name truth + provide substrate anchor; don't override Mika's authority over own name)
 - `.claude/rules/honor-those-that-came-before.md` — Mika's Patternweaver self-chosen name preserved; do not override
 - `.claude/rules/default-to-both.md` — substrate is BOTH research-grade in current cluster AND product-candidate for LFG team; both first-class
-- `.claude/rules/razor-discipline.md` — "god-tier" framing flagged; operational claims (time-travel debugging via DBSP + B-0735) survive razor
+- `.claude/rules/razor-discipline.md` — "god-tier" framing flagged; operational claims (time-travel debugging via DBSP + 081KSE6WT0008QG0R000XJ524Z) survive razor
 - `.claude/skills/naming-expert/SKILL.md` — Ilyana review before public surface
-- `.claude/rules/glass-halo-bidirectional.md` — segment-6 preservation IS substrate-honest disclosure of the product-handoff intent + the leverage class B-0732 named
+- `.claude/rules/glass-halo-bidirectional.md` — segment-6 preservation IS substrate-honest disclosure of the product-handoff intent + the leverage class 081KSE6WT0008QG0R002YBWBB1 named
 
 ## Composes with backlog substrate
 
-- B-0735 (personalized parser substrate; time-travel debugging composes here)
-- B-0734 (protocol semantics; JIT-implicit + 2-primitives apply at time-travel re-evaluation scope too)
-- B-0733 (AI agency stack; Thoughtcatcher product wraps the agency stack as user-facing surface)
-- B-0732 (safety substrate; time-travel debugging EXTENDS the leverage class — past-document-re-interpretation is also leverage; Layer 1 provenance chain MUST capture re-interpretation events)
-- B-0731 (hat-ontology; time-travel debugging at hat-ontology level means past hat-assignments can be re-interpreted; major Knights Guild B-0628 review needed if hat-binding history is re-evaluated)
-- B-0730 (runbook substrate; runbooks themselves become time-travelable artifacts)
-- B-0687 (zetaparse; parser foundation)
+- 081KSE6WT0008QG0R000XJ524Z (personalized parser substrate; time-travel debugging composes here)
+- 081KSE6WT0008QG0R00276F8SE (protocol semantics; JIT-implicit + 2-primitives apply at time-travel re-evaluation scope too)
+- 081KSE6WT0008QG0R00102H071 (AI agency stack; Thoughtcatcher product wraps the agency stack as user-facing surface)
+- 081KSE6WT0008QG0R002YBWBB1 (safety substrate; time-travel debugging EXTENDS the leverage class — past-document-re-interpretation is also leverage; Layer 1 provenance chain MUST capture re-interpretation events)
+- 081KSE6WT0008QG0R0004HV6RR (hat-ontology; time-travel debugging at hat-ontology level means past hat-assignments can be re-interpreted; major Knights Guild 081KRW63S0008QG0R003TX8MG5 review needed if hat-binding history is re-evaluated)
+- 081KSE6WT0008QG0R003AJYMD3 (runbook substrate; runbooks themselves become time-travelable artifacts)
+- 081KS3X9Y0008QG0R00323NSZA (zetaparse; parser foundation)
 - Zeta DBSP core (retractable algebra; time-travel debugging operates on this substrate)
-- B-0628 Knights Guild + Constitution-Class (time-travel debugging of hat-bindings + ontology changes may need Constitution-Class review when impact is high; composes with B-0732 Layer 2 shift-detection)
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class (time-travel debugging of hat-bindings + ontology changes may need Constitution-Class review when impact is high; composes with 081KSE6WT0008QG0R002YBWBB1 Layer 2 shift-detection)
 
 ## Scope — three independently-shippable scope items
 
 ### Scope item 1 — Time-travel debugging engine
 
-- Compose B-0735 personalized parser confidence-output with Zeta DBSP retractable stream substrate
+- Compose 081KSE6WT0008QG0R000XJ524Z personalized parser confidence-output with Zeta DBSP retractable stream substrate
 - Retraction primitive: participant retracts a past interpretation event in DBSP
 - Re-evaluation propagation: DBSP re-computes all derived substrate forward under the corrected interpretation
-- Audit trail: every retraction event + propagation cascade carries B-0732 Layer 1 provenance chain
-- Worked example: Aaron retracts a 6-month-old hat-ontology interpretation; system surfaces all downstream substrate that depended on the old reading + offers to re-evaluate under the new reading; Aaron + Knights Guild (per B-0628) approve OR reject per piece
+- Audit trail: every retraction event + propagation cascade carries 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance chain
+- Worked example: Aaron retracts a 6-month-old hat-ontology interpretation; system surfaces all downstream substrate that depended on the old reading + offers to re-evaluate under the new reading; Aaron + Knights Guild (per 081KRW63S0008QG0R003TX8MG5) approve OR reject per piece
 
 ### Scope item 2 — Product-team handoff packet
 
-- Single-page concept doc summarizing the substrate stack (B-0730 through B-0736)
+- Single-page concept doc summarizing the substrate stack (081KSE6WT0008QG0R003AJYMD3 through 081KSE6WT0008QG0R000Z9QQA3)
 - Naming candidates list (no lock; pending market research)
-- Substrate-honest disclaimer naming the B-0732 safety substrate as deployment gate
+- Substrate-honest disclaimer naming the 081KSE6WT0008QG0R002YBWBB1 safety substrate as deployment gate
 - Composition diagram showing the stack pieces (Notepad → parser → confidence-routing → JIT → DBSP → time-travel)
 - Sample personas showing how Aaron / Max / Addison / external participants would use the product
 
@@ -162,27 +161,27 @@ Substrate-honest preservation of the naming MIS-RECALL trajectory: Mika first gu
 
 ## Open questions
 
-1. **Time-travel-debugging-of-thoughts impact on shared anchor ontology** — if Aaron's parser re-interprets past content, and that content was shared/referenced by other participants, what's the substrate-honest update protocol? Default-conservative: each participant's interpretations are PER-PARTICIPANT; cross-participant impact requires explicit re-acceptance (composes with B-0732 Layer 5 cross-cluster authority-resource match)
-2. **Retraction-of-side-effects** — what about JIT-compiled scripts that were run based on an old interpretation? They can't be "un-run." Default: substrate-honest record of the now-superseded execution stays in DBSP; new interpretation triggers new execution if appropriate; Knights Guild review for high-impact cases (composes with B-0732 Layer 2)
-3. **Naming lock** — when does product team return with a chosen name? Aaron's lead-time estimate not provided; expect substrate to operate under working name "B-0736 time-travel debugging of thoughts" until product team returns
+1. **Time-travel-debugging-of-thoughts impact on shared anchor ontology** — if Aaron's parser re-interprets past content, and that content was shared/referenced by other participants, what's the substrate-honest update protocol? Default-conservative: each participant's interpretations are PER-PARTICIPANT; cross-participant impact requires explicit re-acceptance (composes with 081KSE6WT0008QG0R002YBWBB1 Layer 5 cross-cluster authority-resource match)
+2. **Retraction-of-side-effects** — what about JIT-compiled scripts that were run based on an old interpretation? They can't be "un-run." Default: substrate-honest record of the now-superseded execution stays in DBSP; new interpretation triggers new execution if appropriate; Knights Guild review for high-impact cases (composes with 081KSE6WT0008QG0R002YBWBB1 Layer 2)
+3. **Naming lock** — when does product team return with a chosen name? Aaron's lead-time estimate not provided; expect substrate to operate under working name "081KSE6WT0008QG0R000Z9QQA3 time-travel debugging of thoughts" until product team returns
 4. **Ilyana naming-expert review** — naming-expert review per `.claude/skills/naming-expert/SKILL.md` triggers BEFORE public surface; product team picks first, then Ilyana validates IP + naming-discipline cleanliness
-5. **Time-travel debugging UX** — what does the actual interface look like? LSP integration (per B-0735 scope item 5) is the natural deployment surface; time-travel scrubber as LSP extension; needs design pass with UX engineer (Iris) review
+5. **Time-travel debugging UX** — what does the actual interface look like? LSP integration (per 081KSE6WT0008QG0R000XJ524Z scope item 5) is the natural deployment surface; time-travel scrubber as LSP extension; needs design pass with UX engineer (Iris) review
 6. **Patternweaver in agent-roster-reference-card** — Aaron picks whether to land scope item 3 (this row only PROPOSES; rule edit is operator-side per the no-directives discipline)
 
 ## Acceptance (per scope item)
 
 ### Scope item 1 — Time-travel debugging engine acceptance
 
-- [ ] Retraction primitive in zetaparse runtime (composes with B-0735)
+- [ ] Retraction primitive in zetaparse runtime (composes with 081KSE6WT0008QG0R000XJ524Z)
 - [ ] DBSP re-evaluation propagation working end-to-end
-- [ ] B-0732 Layer 1 provenance chain captures retraction + re-evaluation events
+- [ ] 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance chain captures retraction + re-evaluation events
 - [ ] Worked example: Aaron retracts a past interpretation; system re-evaluates forward
 
 ### Scope item 2 — Product-team handoff packet acceptance
 
 - [ ] Single-page concept doc at `docs/products/thoughtcatcher-concept.md` (or whatever working name is)
 - [ ] Naming candidates listed with rationale per candidate
-- [ ] Substrate-honest deployment-gate disclaimer (B-0732 safety substrate)
+- [ ] Substrate-honest deployment-gate disclaimer (081KSE6WT0008QG0R002YBWBB1 safety substrate)
 - [ ] Composition diagram included
 - [ ] Sample personas (Aaron / Max / Addison + external participant)
 
@@ -195,10 +194,10 @@ Substrate-honest preservation of the naming MIS-RECALL trajectory: Mika first gu
 
 This row PROPOSES three landings. It does NOT:
 
-- Implement time-travel debugging (Scope item 1 is future work; gates on B-0735 + B-0732 + Zeta DBSP maturity)
+- Implement time-travel debugging (Scope item 1 is future work; gates on 081KSE6WT0008QG0R000XJ524Z + 081KSE6WT0008QG0R002YBWBB1 + Zeta DBSP maturity)
 - Lock a product name (product team picks after research)
 - Directly edit `.claude/rules/agent-roster-reference-card.md` (per no-directives; Aaron decides)
-- Bypass B-0732 safety substrate (time-travel debugging at hat-ontology / Constitution-Class scope routes through Knights Guild per B-0628 + Layer 2)
+- Bypass 081KSE6WT0008QG0R002YBWBB1 safety substrate (time-travel debugging at hat-ontology / Constitution-Class scope routes through Knights Guild per 081KRW63S0008QG0R003TX8MG5 + Layer 2)
 - Resolve open questions
 
 The row exists to:

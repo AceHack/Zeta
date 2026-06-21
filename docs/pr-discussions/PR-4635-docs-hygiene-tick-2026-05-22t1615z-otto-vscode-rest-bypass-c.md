@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Otto-VSCode autonomous-loop tick at 2026-05-22T1615Z under multi-agent saturation (2 Lior gemini procs + 7 claude-code processes + 337 worktrees + 5+ `agent-*/locked` markers in `.git/worktrees/`).
 
-Per `.claude/rules/claim-acquire-before-worktree-work.md` saturation-ceiling sub-case 3 + B-0613 locked-worktree discipline: deferred all local git ops; used REST git-data API bypass (sub-case 3b empirical pattern) to clear [PR #4632](https://github.com/Lucent-Financial-Group/Zeta/pull/4632)'s review-thread gate from peer Otto-CLI's branch.
+Per `.claude/rules/claim-acquire-before-worktree-work.md` saturation-ceiling sub-case 3 + 081KRSKQ20008QG0R002TH55X6 locked-worktree discipline: deferred all local git ops; used REST git-data API bypass (sub-case 3b empirical pattern) to clear [PR #4632](https://github.com/Lucent-Financial-Group/Zeta/pull/4632)'s review-thread gate from peer Otto-CLI's branch.
 
 ## Work landed
 
@@ -33,7 +33,7 @@ Per `.claude/rules/claim-acquire-before-worktree-work.md` saturation-ceiling sub
 
 - [ ] Tick shard renders cleanly
 - [ ] Cross-references compose with `blocked-green-ci-investigate-threads.md` empirical FP-class catalog (3 TRUE findings; no FPs this tick)
-- [ ] REST-bypass landing pattern documented as composes-with anchor for B-0615 / saturation-ceiling sub-case 3b
+- [ ] REST-bypass landing pattern documented as composes-with anchor for 081KRW63S0008QG0R000EAZ9K2 / saturation-ceiling sub-case 3b
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

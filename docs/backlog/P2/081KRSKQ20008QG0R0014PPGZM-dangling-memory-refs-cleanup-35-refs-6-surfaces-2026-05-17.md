@@ -1,6 +1,5 @@
 ---
-id: B-0611
-zetaid: 081KRSKQ20008QG0R0014PPGZM
+id: 081KRSKQ20008QG0R0014PPGZM
 title: Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
 status: open
 priority: P2

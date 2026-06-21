@@ -15,7 +15,7 @@ namespace Zeta.Core
 /// JSON-like tree. Reproducing it would need a reserved value-key; out of scope — DynamicValue is the
 /// canonical substrate and its document model is leaf-xor-object, so `data` returns 0 / 1 / 10 only.)
 ///
-/// **Ordinal subscript collation (B-0969).** `$ORDER`/`$QUERY` iterate children in ordinal key order
+/// **Ordinal subscript collation (081KT07NV0008QG0R001YDB73K).** `$ORDER`/`$QUERY` iterate children in ordinal key order
 /// (`StringComparer.Ordinal` via F# string `compare`), independent of `Object` insertion order — DST-stable,
 /// 4-language-portable. Pure/immutable: every verb returns a new `DynamicValue`.
 ///

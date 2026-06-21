@@ -1,6 +1,5 @@
 ---
-id: B-0209
-zetaid: 081KQX9B50008QG0R001MNYK61
+id: 081KQX9B50008QG0R001MNYK61
 priority: P2
 status: open
 title: "Remote-only background agent test matrix — prove claim coordination without local broadcast"
@@ -14,7 +13,7 @@ depends_on:
 type: friction-reducer
 ---
 
-# B-0209 — Remote-only background agent test matrix
+# 081KQX9B50008QG0R001MNYK61 — Remote-only background agent test matrix
 
 ## Problem
 
@@ -89,10 +88,10 @@ practical while leaving the self-sufficiency route open.
 
 This composes with the longer hardware and microkernel backlog:
 
-- B-0016 carries the "no software dependencies / hardware bootstrap /
+- 081KQ0YZ80008QG0R003A0MCHP carries the "no software dependencies / hardware bootstrap /
   microkernel" arc.
-- B-0068 carries the local-model, hardware-aware scouting lane.
-- B-0202 carries the one-symbolic-IR-to-all-hardware kernel-layer
+- 081KQ8P5D0008QG0R002E1G72J carries the local-model, hardware-aware scouting lane.
+- 081KQTPYE0008QG0R002Y7X5KH carries the one-symbolic-IR-to-all-hardware kernel-layer
   direction.
 
 The immediate task is modest: prove remote-only coordination without

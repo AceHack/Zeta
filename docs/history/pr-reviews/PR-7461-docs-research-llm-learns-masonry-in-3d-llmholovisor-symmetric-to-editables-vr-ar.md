@@ -27,7 +27,7 @@
 
 ## Description
 
-masonry (LLM builds 3D walls via boundary mapping, viewed in holographic 3D) is the symmetric version of Aaron's editables, = VR (human into flat) <-> AR (digital into 3D). The thesis: Flatland's tragedy was a LANGUAGE failure; Zeta solves it via shared English/text (Universal Language Interface, B-0666) across the 2D/3D boundary.
+masonry (LLM builds 3D walls via boundary mapping, viewed in holographic 3D) is the symmetric version of Aaron's editables, = VR (human into flat) <-> AR (digital into 3D). The thesis: Flatland's tragedy was a LANGUAGE failure; Zeta solves it via shared English/text (Universal Language Interface, 081KRW63S0008QG0R001SAHYKV) across the 2D/3D boundary.
 
 ## Outcome
 

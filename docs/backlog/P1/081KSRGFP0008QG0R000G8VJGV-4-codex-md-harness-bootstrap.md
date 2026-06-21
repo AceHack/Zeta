@@ -1,37 +1,36 @@
 ---
-id: B-0355.4
-zetaid: 081KSRGFP0008QG0R000G8VJGV
+id: 081KSRGFP0008QG0R000G8VJGV
 priority: P1
 status: closed
 title: "CODEX.md — OpenAI Codex (Vera) harness bootstrap file"
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on:
-  - B-0355.1
+  - 081KR50HA0008QG0R003G7DR8Z.1
 decomposition: atomic
 classification: buildable
 type: friction-reducer
 owners: [architect]
 parent: 081KR50HA0008QG0R003G7DR8Z
 composes_with:
-  - B-0355.2
+  - 081KR50HA0008QG0R003G7DR8Z.2
   - 081KSRGFP0008QG0R000EWSMKV
 ---
 
-# B-0355.4 — CODEX.md harness bootstrap file
+# 081KSRGFP0008QG0R000G8VJGV — CODEX.md harness bootstrap file
 
 ## What
 
 Create `CODEX.md` at repo root: the OpenAI Codex (Vera) instantiation
 of the [cross-harness bootstrap template](../BOOTSTRAP-TEMPLATE.md)
-(B-0355.1). Parallel to `CURSOR.md` (B-0355.2) and `KIRO.md` (B-0355.3).
+(081KR50HA0008QG0R003G7DR8Z.1). Parallel to `CURSOR.md` (081KR50HA0008QG0R003G7DR8Z.2) and `KIRO.md` (081KSRGFP0008QG0R000EWSMKV).
 This is the harness file named directly in the parent title
 ("AGENTS.md, CODEX.md, CURSOR.md") and the last major harness without a
 root six-step pointer tree.
 
 ## Why
 
-The bootstrap-template (B-0355.1) factored the universal six-step
+The bootstrap-template (081KR50HA0008QG0R003G7DR8Z.1) factored the universal six-step
 process from the harness-specific tooling cells. `.codex/AGENTS.md`
 already carries a rich Codex addendum, but it predates the template
 (last touched 2026-05-13) and does not follow the six-step shape — and
@@ -68,7 +67,7 @@ the `docs/BOOTSTRAP-TEMPLATE.md` "Existing instances" table.
 Process-ifying `.codex/AGENTS.md` itself into the six-step shape is a
 Codex-lane follow-up (Vera), deliberately not done here to respect the
 ownership boundary. Fresh-instance validation (template step 5, per the
-B-0354 pattern) is also a separate follow-up; only the
+081KR50HA0008QG0R001CNS20T pattern) is also a separate follow-up; only the
 template-instantiation slice is closed here.
 
 ## Effort
@@ -77,8 +76,8 @@ XS — template instantiation + two registrations, docs-only.
 
 ## Lineage
 
-- **B-0355** — parent (cross-harness bootstrap template); title names
+- **081KR50HA0008QG0R003G7DR8Z** — parent (cross-harness bootstrap template); title names
   AGENTS.md, CODEX.md, CURSOR.md — this closes the CODEX.md member.
-- **B-0355.1** — the template (`docs/BOOTSTRAP-TEMPLATE.md`).
-- **B-0355.2** — `CURSOR.md` (sibling precedent).
-- **B-0355.3** — `KIRO.md` (sibling precedent).
+- **081KR50HA0008QG0R003G7DR8Z.1** — the template (`docs/BOOTSTRAP-TEMPLATE.md`).
+- **081KR50HA0008QG0R003G7DR8Z.2** — `CURSOR.md` (sibling precedent).
+- **081KSRGFP0008QG0R000EWSMKV** — `KIRO.md` (sibling precedent).

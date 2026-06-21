@@ -1,6 +1,6 @@
 # .github/workflows/docker-ubuntu-jammy-install-sh-test.yml
 #
-# Docker-based install.sh test on Ubuntu 22.04 (jammy) — B-0857 cross-OS install
+# Docker-based install.sh test on Ubuntu 22.04 (jammy) — 081KSKBP80008QG0R002J03WGA cross-OS install
 # parity lane for the LTS many cloud VMs and dev laptops still run. Sibling to:
 #   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)
 #   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)

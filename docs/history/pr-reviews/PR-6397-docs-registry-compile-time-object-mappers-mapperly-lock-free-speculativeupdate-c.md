@@ -175,7 +175,7 @@ blocked/tiled into child levels, explicit vertical data movement; algorithm
 portable, machine-mapping (blocking) a separate tunable layer (one-algorithm-
 many-mappings, same shape as the four-oracle model + DST). Composes scale-free +
 the FPGA-to-policy keystone (node-local→cluster→policy = a memory-level tree) +
-algebra-ladder blocked folds + B-0202 tinygrad UOp IR + performance-engineer +
+algebra-ladder blocked folds + 081KQTPYE0008QG0R002Y7X5KH tinygrad UOp IR + performance-engineer +
 Landauer/FPGA. Cross-lang: own a hierarchy port (level tree + task/map/fold across
 levels + copyDown/copyUp); per-machine blocking is the tunable adapter. Public
 academic research (Fatahalian/Aiken/Dally/Hanrahan, SC'06 + PPoPP'07). markdownlint clean.

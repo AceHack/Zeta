@@ -27,7 +27,7 @@
 
 ## Description
 
-Consolidates the **Harmonious Division / wave-field / `INumber`** thread (Aaron 2026-06-01: *"yes consolidate it into a research note"*) — it was scattered across `user_harmonious_division_algorithm.md` + `Maji.fs` + the DBSP-aperiodic-tile memo + B-0623/B-0842/B-0543 + the retrocausal rules. **Research-tier, off the algebra-ladder primitives** ("not core, without touching the primitives you are building").
+Consolidates the **Harmonious Division / wave-field / `INumber`** thread (Aaron 2026-06-01: *"yes consolidate it into a research note"*) — it was scattered across `user_harmonious_division_algorithm.md` + `Maji.fs` + the DBSP-aperiodic-tile memo + 081KRW63S0008QG0R000QJR08H/081KSGS9H0008QG0R003V8C86Q/081KRMEXM0008QG0R002YSPW1X + the retrocausal rules. **Research-tier, off the algebra-ladder primitives** ("not core, without touching the primitives you are building").
 
 Headline results:
 
@@ -35,7 +35,7 @@ Headline results:
 - **Aaron's bounded-context correction (the load-bearing one)**: *total order is not achievable within bounded context* — aperiodic tilings are locally indistinguishable, so the cut-and-project order needs the unbounded tiling. What you get locally is **adjacency + distance + same-neighborhood** (a proximity/metric structure). And that's **feature-aligned with consensus-is-gravity / lightlike**: a global total order would cost gravitational/consensus context; bounded-context locality is lightlike. So it gets *as close to `INumber` as a bounded context permits* — the missing total order is missing on purpose.
 - **Pluggable tiles**: Spectre / Einstein-hat / Penrose / Wang behind one port (the tile is the adapter) — same shape as the DBSP "one algebra + multi-algebra plugins = aperiodic tile" memo.
 - **Hurwitz boundary**: the field half is `INumber`-able only ≤ octonions (division dies at sedenions) — the same `CayleyDickson.fs` degradation.
-- **Harmonious Division** = harmonic decomposition (`Σ ωᵢ sᵢ`, B-0842) + the DBSP `D/I/z⁻¹/H` operator algebra; a *rhyme through harmonic/phase structure*, not literal field-÷; received-name preserved (don't-collapse).
+- **Harmonious Division** = harmonic decomposition (`Σ ωᵢ sᵢ`, 081KSGS9H0008QG0R003V8C86Q) + the DBSP `D/I/z⁻¹/H` operator algebra; a *rhyme through harmonic/phase structure*, not literal field-÷; received-name preserved (don't-collapse).
 
 Docs-only; markdownlint clean.
 

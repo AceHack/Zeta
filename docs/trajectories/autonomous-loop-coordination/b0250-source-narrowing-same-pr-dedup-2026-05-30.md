@@ -1,11 +1,11 @@
-# B-0250 Source Narrowing - Same-PR Lifecycle Dedup
+# 081KQZVQW0008QG0R001FG05RZ Source Narrowing - Same-PR Lifecycle Dedup
 
 Date: 2026-05-30
 Claim: `claim/codex-b0250-source-narrowing-20260530`
 
 ## Summary
 
-This packet narrows the first noisy B-0250 live signal by treating events from
+This packet narrows the first noisy 081KQZVQW0008QG0R001FG05RZ live signal by treating events from
 the same PR lifecycle as one coincidence-window member.
 
 The first live calibration reported `76 event-window coincidence(s)`. A large

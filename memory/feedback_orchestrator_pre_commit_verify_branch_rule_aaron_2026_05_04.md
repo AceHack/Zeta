@@ -6,14 +6,14 @@ type: feedback
 
 ## The recurrence
 
-Aaron 2026-05-04 ~22:50Z, after I committed B-0190 to the wrong branch:
+Aaron 2026-05-04 ~22:50Z, after I committed 081KQR4HQ0008QG0R001909FPT to the wrong branch:
 
 > *"so how do we avoid it next time in future you too?"*
 
 The hazard recurred ~2 hours after PR #1551 (concurrency-lessons-cluster) encoded Lesson 2 ("orchestrator stays on main cleanly while subagents run; defensive `git checkout main && git restore .` before any commit"). The substrate-level rule was correct; the operationalization failed because:
 
 1. I ran the defensive hygiene (`git checkout main && git restore . && git pull --ff-only`).
-2. I then ran `git checkout -b backlog/B-0190-...` thinking I was branching off main.
+2. I then ran `git checkout -b backlog/081KQR4HQ0008QG0R001909FPT-...` thinking I was branching off main.
 3. Git reported "Switched to a new branch 'backlog/...'" — looked successful.
 4. I committed.
 5. Git reported the commit landed on `fix/memory-md-tier-48-aaron-2026-05-04` instead.
@@ -75,7 +75,7 @@ The verify-after-each-step pattern is the substrate fix. Skipping verify is the 
 
 ## The carrier-IS-message
 
-This file lands AFTER the recurrence has been cleaned up (B-0190 force-pushed to correct branch). The cleanup was possible because the defensive hygiene's PR #1551 substrate gave me the diagnostic frame ("orchestrator-CWD-bleed-over") even though it failed to PREVENT the issue. The strengthened rule lands as the next-iteration substrate so future-Otto runs the verify step automatically.
+This file lands AFTER the recurrence has been cleaned up (081KQR4HQ0008QG0R001909FPT force-pushed to correct branch). The cleanup was possible because the defensive hygiene's PR #1551 substrate gave me the diagnostic frame ("orchestrator-CWD-bleed-over") even though it failed to PREVENT the issue. The strengthened rule lands as the next-iteration substrate so future-Otto runs the verify step automatically.
 
 ## The carved sentence
 

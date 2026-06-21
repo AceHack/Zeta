@@ -29,7 +29,7 @@
 
 ## Summary
 
-1h 03m cascade from 1531Z → 1634Z. PRs [#3897](https://github.com/Lucent-Financial-Group/Zeta/pull/3897) (B-0462), [#3898](https://github.com/Lucent-Financial-Group/Zeta/pull/3898) (1535Z shard), [#3900](https://github.com/Lucent-Financial-Group/Zeta/pull/3900) (1547Z shard), [#3903](https://github.com/Lucent-Financial-Group/Zeta/pull/3903) (1610Z + path-depth table) all merged. [PR #3906](https://github.com/Lucent-Financial-Group/Zeta/pull/3906) (fix-1547z-on-main) auto-merging cleanly.
+1h 03m cascade from 1531Z → 1634Z. PRs [#3897](https://github.com/Lucent-Financial-Group/Zeta/pull/3897) (081KRA5AR0008QG0R0019Q33F7), [#3898](https://github.com/Lucent-Financial-Group/Zeta/pull/3898) (1535Z shard), [#3900](https://github.com/Lucent-Financial-Group/Zeta/pull/3900) (1547Z shard), [#3903](https://github.com/Lucent-Financial-Group/Zeta/pull/3903) (1610Z + path-depth table) all merged. [PR #3906](https://github.com/Lucent-Financial-Group/Zeta/pull/3906) (fix-1547z-on-main) auto-merging cleanly.
 
 ## Substrate-honest lessons documented
 

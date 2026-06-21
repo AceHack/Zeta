@@ -36,7 +36,7 @@ L1 — economic oracle         (payouts; incentives; useful-work market demand;
 L2 — protocol oracle         (fork behavior; selfish-mining indicators; difficulty effects;
                               for AI: prompt-injection signature detection; translation-step audit)
 L3 — social/governance       (operator statements; community response;
-                              exchange/miner behavior; reviewer ensemble per B-0877)
+                              exchange/miner behavior; reviewer ensemble per 081KSNY2Z0008QG0R0004ZF85W)
 L4 — multi-oracle BFT absorb (only after independent oracles agree does
                               utility influence policy / routing / trust limits /
                               acceleration budget / irreversible action)
@@ -111,14 +111,14 @@ When operator / agent / framework encounters a useful capability proposing to in
 - **Amara 8th ferry rainbow-table correction** (`memory/project_amara_8th_ferry_physics_analogies_semantic_indexing_bullshit_detector_cutting_edge_gaps_pending_absorb_otto_95_2026_04_23.md`) — semantic-canonicalization + LSH + HNSW + product quantization
 - **Maji informal substrate** (`docs/research/2026-05-02-aaron-altered-state-docs-16-year-deep-maji-empirical-grounding-primary-sources.md` + multiple shadow-lesson-logs) — 16-year-deep operator-substrate
 
-## Composes with today's B-0908-B-0912 pricing-arc substrate
+## Composes with today's 081KSNY2Z0008QG0R000A5GP0X-081KSNY2Z0008QG0R003FBQ2RS pricing-arc substrate
 
-- B-0908 attention-risk-pricing framework — pricing layer for utility-laundering-attack-risk
-- B-0909 BankerBot AccelerationRiskQuote — empirical anchor for translation-laundering instance
-- B-0910 multi-chain CSAM catalog — empirical anchor for substrate-irreversibility specific-form domain
-- B-0911 risk-distribution-asymmetry + state-capture-timeline pricing dimensions — quantifies utility-laundering's economic asymmetry + long-tail
-- B-0912 bridge row — surfaces the connection between today's pricing arc + pre-existing substrate
-- B-0895 Clifford grade-decomposition — pre-existing Z-set Clifford immune-system IS Clifford-shaped
+- 081KSNY2Z0008QG0R000A5GP0X attention-risk-pricing framework — pricing layer for utility-laundering-attack-risk
+- 081KSNY2Z0008QG0R0003VAH0N BankerBot AccelerationRiskQuote — empirical anchor for translation-laundering instance
+- 081KSNY2Z0008QG0R000X6NHZ2 multi-chain CSAM catalog — empirical anchor for substrate-irreversibility specific-form domain
+- 081KSNY2Z0008QG0R0036JTSTQ risk-distribution-asymmetry + state-capture-timeline pricing dimensions — quantifies utility-laundering's economic asymmetry + long-tail
+- 081KSNY2Z0008QG0R003FBQ2RS bridge row — surfaces the connection between today's pricing arc + pre-existing substrate
+- 081KSNY2Z0008QG0R002FX66H0 Clifford grade-decomposition — pre-existing Z-set Clifford immune-system IS Clifford-shaped
 
 ## Composes with framework rules
 
@@ -139,13 +139,13 @@ The rule operationalizes substantial pre-existing substrate (PoUW-CC + Veridical
 
 ## Composition with the framework's substrate-engineering arc
 
-Today's B-0908-B-0911 attention-risk-pricing arc + B-0912 bridge + this rule = substrate-engineering substrate operating at multiple scales:
+Today's 081KSNY2Z0008QG0R000A5GP0X-081KSNY2Z0008QG0R0036JTSTQ attention-risk-pricing arc + 081KSNY2Z0008QG0R003FBQ2RS bridge + this rule = substrate-engineering substrate operating at multiple scales:
 
-- **Per-tick scope**: pricing-quote on substrate-engineering choice (B-0908)
-- **Per-incident scope**: empirical-anchor backtesting (B-0909 BankerBot; B-0910 chain-CSAM)
+- **Per-tick scope**: pricing-quote on substrate-engineering choice (081KSNY2Z0008QG0R000A5GP0X)
+- **Per-incident scope**: empirical-anchor backtesting (081KSNY2Z0008QG0R0003VAH0N BankerBot; 081KSNY2Z0008QG0R000X6NHZ2 chain-CSAM)
 - **Per-decision scope**: trust-gradient L0-L4 absorption + PoUW-CC 5-factor gate (this rule)
 - **Per-domain scope**: substrate-engineering-honest pricing across AI-acceleration / substrate-irreversibility / financial-substrate / utility-laundering-future-variants
-- **Per-substrate-engineering-arc scope**: composes pre-existing immune-system + today's pricing-arc into unified substrate (B-0912 bridge)
+- **Per-substrate-engineering-arc scope**: composes pre-existing immune-system + today's pricing-arc into unified substrate (081KSNY2Z0008QG0R003FBQ2RS bridge)
 
 ## Full reasoning
 

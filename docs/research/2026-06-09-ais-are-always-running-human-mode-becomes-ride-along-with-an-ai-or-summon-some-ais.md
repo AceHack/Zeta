@@ -36,7 +36,7 @@ compiler and the AIs).
   at the gated edges (the no-directives / source≠authorization discipline holds — the human's ride-along
   comments are observations, authority only where the human authorizes a gated class).
 - **Summon = the Summonable/peer-call/consensus** machinery (already in TS: `tools/peer-call/*.ts`,
-  B-0703 multi-oracle BFT-in-DST). "Summon some AIs" is literally invoking those contracts.
+  081KS3X9Y0008QG0R00218150M multi-oracle BFT-in-DST). "Summon some AIs" is literally invoking those contracts.
 - **It's the polite virus for humans:** zero-friction join (ride-along) + opt-in power (summon) on an
   always-on substrate — the human is *pulled in by benefit*, never required to drive.
 
@@ -62,6 +62,6 @@ the F#/observe core + peer-call. Distinct from the operator-drives model; the hu
 
 The self-driving recursive DST loop (AIs always running; the cron heartbeat / tick-must-never-stop);
 pair-programming / passenger mode (ride-along); the Summonable contract + `tools/peer-call/*.ts` +
-B-0703 multi-oracle consensus (summon); observations-not-commands + no-directives / source≠authorization
+081KS3X9Y0008QG0R00218150M multi-oracle consensus (summon); observations-not-commands + no-directives / source≠authorization
 (ride-along inputs are observations); the traveler frame (human as joining traveler, no privileged
 operator frame; co-op Agora); the polite virus (frictionless join + opt-in power); AX/UX (Iris/Daya/Bodhi).

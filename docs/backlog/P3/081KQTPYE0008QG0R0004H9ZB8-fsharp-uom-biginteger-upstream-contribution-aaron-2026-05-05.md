@@ -1,6 +1,5 @@
 ---
-id: B-0198
-zetaid: 081KQTPYE0008QG0R0004H9ZB8
+id: 081KQTPYE0008QG0R0004H9ZB8
 priority: P3
 status: open
 title: F# UoM-on-BigInteger upstream contribution -- comment on fslang-suggestions/831 + optional RFC pre-draft (Aaron 2026-05-05 absorb-and-contribute)
@@ -15,7 +14,7 @@ tags: [fsharp, units-of-measure, biginteger, upstream-contribution, absorb-and-c
 type: feature
 ---
 
-# B-0198 -- F# UoM-on-BigInteger upstream contribution
+# 081KQTPYE0008QG0R0004H9ZB8 -- F# UoM-on-BigInteger upstream contribution
 
 ## Source
 
@@ -25,7 +24,7 @@ natively extend to `System.Numerics.BigInteger`:
 > *"but no implementation. do they need help we are good neighbors
 > and citizens of github and our dependencies"*
 
-The verification is documented in B-0196 acceptance criterion (d)
+The verification is documented in 081KQTPYE0008QG0R001W237MZ acceptance criterion (d)
 landing 2026-05-05. The relevant upstream surfaces:
 
 - [Microsoft Learn: Units of Measure](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/units-of-measure) -- canonical doc
@@ -34,7 +33,7 @@ landing 2026-05-05. The relevant upstream surfaces:
 
 ## Why P3 not P2
 
-- **Not blocking Zeta**: per B-0196 verification, the in-language workarounds (custom phantom-type wrapper struct, or paired `<weight>`-tagged unit-1 value) are sufficient for B-0196's per-class adoption decision. Native UoM-on-BigInteger is nice-to-have, not load-bearing.
+- **Not blocking Zeta**: per 081KQTPYE0008QG0R001W237MZ verification, the in-language workarounds (custom phantom-type wrapper struct, or paired `<weight>`-tagged unit-1 value) are sufficient for 081KQTPYE0008QG0R001W237MZ's per-class adoption decision. Native UoM-on-BigInteger is nice-to-have, not load-bearing.
 - **Citizenship work, not survival work**: per `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md` -- when we depend on community work AND identify a gap that affects us, contributing back is the discipline. Doesn't accelerate Zeta's shipping; advances the ecosystem.
 - **Bounded scope per option**: the lightweight option is a single comment on an existing thread; the heavier option is a single RFC pre-draft.
 
@@ -46,7 +45,7 @@ A single comment thread-reply that surfaces Zeta's use case as evidence-of-deman
 
 - **Use case**: `BigInteger<weight>` for incremental-view-maintenance (DBSP) Z-set algebra where signed weight aggregation can exceed int64 in long-running heavy-multiplicity streams
 - **Specific shape needed**: arithmetic operators (`+`, `-`, `*`, `Checked.*`) and comparisons preserving the `<measure>` tag through BigInteger arithmetic
-- **Why it matters**: the four-property hodl invariant (DST-safe + lock-free + scale-free + DBSP-native) requires scale-free arithmetic; without `BigInteger<weight>`, downstream consumers must either give up UoM safety (option 2 in B-0196) or write custom wrapper structs (option 1 in B-0196). Both are friction; native support resolves it.
+- **Why it matters**: the four-property hodl invariant (DST-safe + lock-free + scale-free + DBSP-native) requires scale-free arithmetic; without `BigInteger<weight>`, downstream consumers must either give up UoM safety (option 2 in 081KQTPYE0008QG0R001W237MZ) or write custom wrapper structs (option 1 in 081KQTPYE0008QG0R001W237MZ). Both are friction; native support resolves it.
 - **What we are NOT asking for**: implementation timing, prioritization, or any specific shape -- just signaling that the gap is felt downstream.
 
 Costs nothing. Signals upstream that the discussion has at least one production-shaped use case behind it.
@@ -80,7 +79,7 @@ Verification preconditions (same shape as #1591):
 
 ## Composes with
 
-- **B-0196** (BigInt + bignumber integration) -- the parent row this contribution is downstream of
+- **081KQTPYE0008QG0R001W237MZ** (BigInt + bignumber integration) -- the parent row this contribution is downstream of
 - **PR #1591** (F# RFC pre-draft for existential-quantification-in-type-tests) -- pattern to follow for Option 2
 - `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md` -- the discipline this row instantiates
 - `docs/research/2026-05-05-claudeai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-aaron-forwarded-preservation.md` -- the dialectical-unfalsifiability discipline that gates engagement

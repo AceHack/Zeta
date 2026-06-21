@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
-// zeta-creds-persist.ts — write encrypted cred-blob to ESP. B-0852.2b CLI.
+// zeta-creds-persist.ts — write encrypted cred-blob to ESP. 081KSKBP80008QG0R003AX2A69.2b CLI.
 //
 // Reads --bake-cred args + per-cred handler validation + crypto encrypt +
 // envelope serialize → writes to --output (e.g., /esp/zeta-creds.enc).
 //
 // Composes:
-//   - tools/installer/zeta-creds-crypto.ts (B-0852.1; encrypt)
-//   - tools/installer/zeta-creds-manifest.ts (B-0852.5; cred catalog)
-//   - tools/installer/zeta-cred-handlers.ts (B-0852.10; parse + validate args)
-//   - tools/installer/zeta-creds-envelope.ts (B-0852.2a; wire format + bundle)
+//   - tools/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; encrypt)
+//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; cred catalog)
+//   - tools/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; parse + validate args)
+//   - tools/installer/zeta-creds-envelope.ts (081KSKBP80008QG0R003AX2A69.2a; wire format + bundle)
 //
 // Usage:
 //   bun tools/installer/zeta-creds-persist.ts \
@@ -20,11 +20,11 @@
 //
 // Interactive passphrase prompts are NOT implemented in this CLI — caller
 // must supply --passphrase-file or --passphrase-env. Interactive prompting
-// is the wrapping NixOS module's responsibility (B-0852.4).
+// is the wrapping NixOS module's responsibility (081KSKBP80008QG0R002XBRGN8).
 //
 // Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over
 // own creds; passphrase NEVER logged; --bake-cred error messages redact
-// value-source contents per B-0852.10 P0 security discipline.
+// value-source contents per 081KSKBP80008QG0R003AX2A69.10 P0 security discipline.
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { encrypt } from "./zeta-creds-crypto";

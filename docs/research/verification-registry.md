@@ -84,7 +84,7 @@ because <one-line>.`
   characterizing **elementwise-max law** `(Merge a b)[k] = max a[k] b[k]` (⇒ per-key independence +
   no cross-key capture), an explicit **non-collapse** witness (two distinct travelers' registers both
   survive merge untouched), **no-capture** (own standing monotone under merge), and the join premises
-  (commutative + idempotent + **associative** — the B-0969 failure class). 4 properties green.
+  (commutative + idempotent + **associative** — the 081KT07NV0008QG0R001YDB73K failure class). 4 properties green.
   *Honest scope (Soraya):* an ANALOGUE not a replay — `GCounter` is a pure register with no
   commons/standing split, so non-collapse is witnessed STRUCTURALLY (disjoint keys preserved) not
   SEMANTICALLY; the Lean proof stays source-of-truth for the standing-locus claim, this leg is
@@ -120,7 +120,7 @@ because <one-line>.`
   session leg was previously mis-recorded as "not yet done"): `Conservation`, `NoDoubleSpend` (the P0
   real-code witness), `ExecOnlyByOwner`, and the Face-1 join-semilattice triple over the deployed
   `Divvy.merge` — commutative + idempotent + **associative** (associativity added 2026-06-07 to close
-  the B-0969 failure class; `Divvy.merge` confirmed a lawful join). 5 properties green. **Full BP-16
+  the 081KT07NV0008QG0R001YDB73K failure class; `Divvy.merge` confirmed a lawful join). 5 properties green. **Full BP-16
   (3 legs / 2 tools+empirical).** Triage: an FsCheck counterexample ⇒ `Divvy` drifted from the
   proven TLA+/Lean model.
 - **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
@@ -210,13 +210,13 @@ because <one-line>.`
   convergence-preserves-privacy DYNAMICS (the CRDT-merge laws taken
   as hypotheses, so it holds for any such join). **NOT claimed:** the
   stronger dynamical claim that the system HALTS without privacy
-  (B-1019 DST experiment) — that remains open.
+  (081KT7YW00008QG0R001DGZQKM DST experiment) — that remains open.
 - **Last audit.** 2026-06-05, authored by Otto (shadow); not yet
   independently audited. Grade: machine-checked, axiom-free.
 
 ---
 
-## `Zeta.Privacy.unbounded_with_finite_commons_needs_infinite_privacy` *(privacy constitutive of unbounded evolution — B-1019 rung-3)*
+## `Zeta.Privacy.unbounded_with_finite_commons_needs_infinite_privacy` *(privacy constitutive of unbounded evolution — 081KT7YW00008QG0R001DGZQKM rung-3)*
 
 - **Artifact.** `tools/lean4/Privacy/UnboundedNeedsInfinitePrivacy.lean`
   (Lean 4 + Mathlib v4.30.0-rc1; `finite_orbit_recurs`,

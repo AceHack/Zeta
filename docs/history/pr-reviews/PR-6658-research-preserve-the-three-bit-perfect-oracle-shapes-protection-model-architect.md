@@ -36,7 +36,7 @@ Preserves the maintainer's direct architecture framing (2026-06-03) organizing Z
 
 **Protection at every inflection:** DST + 4 languages + persisted-seed verification of the 3 oracles + Rx-join of the homeostates + math proof on multiple intellectual towers (no single point of math failure).
 
-Mints **no new primitive** — Arrow + the eve-polymorphic deserialization-security is already **B-1001**; this note is the unifying taxonomy + cross-references (B-1001/B-1002/B-0976/B-0930/B-1006/B-1011, the 4-lang-BFT governance, the rx-fold DB design, the multi-tower / formal-proof-first substrate). Could fold into PRIMITIVE-REGISTRY as a follow-up if wanted. research-grade headers, MD049-clean, canary 67.
+Mints **no new primitive** — Arrow + the eve-polymorphic deserialization-security is already **081KT2T2J0008QG0R000VG204F**; this note is the unifying taxonomy + cross-references (081KT2T2J0008QG0R000VG204F/081KT2T2J0008QG0R002R72323/081KT07NV0008QG0R003BE6MJ2/081KSRGFP0008QG0R001Y6RTY9/081KT2T2J0008QG0R0008TFHJT/081KT5CF90008QG0R001P4CQ09, the 4-lang-BFT governance, the rx-fold DB design, the multi-tower / formal-proof-first substrate). Could fold into PRIMITIVE-REGISTRY as a follow-up if wanted. research-grade headers, MD049-clean, canary 67.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

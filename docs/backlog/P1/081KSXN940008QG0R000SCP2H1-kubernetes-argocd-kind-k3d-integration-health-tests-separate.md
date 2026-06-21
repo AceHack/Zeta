@@ -1,6 +1,5 @@
 ---
-id: B-0967
-zetaid: 081KSXN940008QG0R000SCP2H1
+id: 081KSXN940008QG0R000SCP2H1
 priority: P1
 status: closed
 closed: 2026-06-13
@@ -10,7 +9,7 @@ effort: M
 ask: aaron 2026-05-31
 created: 2026-05-31
 last_updated: 2026-06-13
-renumbered_from: "B-0951; B-0952; B-0953; B-0957; B-0958; B-0959 (2026-06-01 merge collision repairs; origin/main retains B-0953 Git-V2 row, B-0957 labels/tags row, B-0958 observe-loop row, and B-0959 sovereign distributed-DB row); B-0961 (2026-06-01 claim/main duplicate-ID repair; origin/main retains B-0961 ZetaId taxonomy row); B-0966 (2026-06-01 claim/main duplicate-ID repair; origin/main retains B-0966 Ace store row)"
+renumbered_from: "081KSXN940008QG0R000R76H45; 081KSXN940008QG0R002528JS9; 081KSXN940008QG0R001KZ235R; 081KSXN940008QG0R001YABTHH; 081KSXN940008QG0R001A4WWX4; 081KSXN940008QG0R003FCQ7WT (2026-06-01 merge collision repairs; origin/main retains 081KSXN940008QG0R001KZ235R Git-V2 row, 081KSXN940008QG0R001YABTHH labels/tags row, 081KSXN940008QG0R001A4WWX4 observe-loop row, and 081KSXN940008QG0R003FCQ7WT sovereign distributed-DB row); 081KSXN940008QG0R000JZVFXX (2026-06-01 claim/main duplicate-ID repair; origin/main retains 081KSXN940008QG0R000JZVFXX ZetaId taxonomy row); 081KT07NV0008QG0R001HKPJW6 (2026-06-01 claim/main duplicate-ID repair; origin/main retains 081KT07NV0008QG0R001HKPJW6 Ace store row)"
 depends_on:
   - 081KSE6WT0008QG0R000YYH3DY
   - 081KSGS9H0008QG0R0027HJZYH
@@ -39,7 +38,7 @@ tags:
 > **Deferred:** `--scope full` (Longhorn/Cilium/Vault/SPIRE stack), drift-repair check,
 > hat-system Gatekeeper `policies/**` on kind — see follow-on workitems below.
 
-# B-0967 -- Kubernetes + ArgoCD integration health tests via kind/k3d
+# 081KSXN940008QG0R000SCP2H1 -- Kubernetes + ArgoCD integration health tests via kind/k3d
 
 ## Operator framing 2026-05-31
 
@@ -55,7 +54,7 @@ And then explicitly assigned this as a separate backlog/lane:
 > "carve out backlog or another lane for the k8s argocd stuff but all that
 > should be testing with like kind/k3d or something like that"
 
-This row creates that lane. B-0891 remains focused on zflash, boot, QEMU
+This row creates that lane. 081KSNY2Z0008QG0R0008PN7RQ remains focused on zflash, boot, QEMU
 retention/no-retention semantics, and one agent-start smoke path. Kubernetes
 and ArgoCD get their own local-cluster integration harness.
 
@@ -158,7 +157,7 @@ The helper CLIs now keep the desired-state source canonical (shell wrappers reti
 
 The older `full-ai-cluster/dev-cluster/*.sh` wrappers were removed ([#8078](https://github.com/Lucent-Financial-Group/Zeta/pull/8078)).
 
-The Podman lane reuses the repo-wide B-0964 OCI runtime selector:
+The Podman lane reuses the repo-wide 081KT07NV0008QG0R001CBQ2X2 OCI runtime selector:
 `ZETA_CONTAINER_RUNTIME=podman` selects Podman. The older
 `CONTAINER_RUNTIME` spelling is intentionally not an alias; stale callers fail
 fast instead of silently selecting the wrong runtime.
@@ -168,10 +167,10 @@ Docker-only because its profile depends on Docker-network and k3d registry
 behavior; the Podman-standard lane runs through kind until a k3d/Podman profile
 is proven separately.
 
-The USB/ISO zflash reformat-retention proof remains in B-0891. Its first
+The USB/ISO zflash reformat-retention proof remains in 081KSNY2Z0008QG0R0008PN7RQ. Its first
 cluster-health consumption should be narrow, but the intended installed-system
 target is a full Kubernetes cluster with the complete default ArgoCD stack.
-B-0967 owns proving that full ArgoCD graph outside the ISO first, so the
+081KSXN940008QG0R000SCP2H1 owns proving that full ArgoCD graph outside the ISO first, so the
 USB/ISO lane can later assert the same default stack bootstraps after install
 without muddying installer failures with chart/dependency failures.
 
@@ -208,7 +207,7 @@ full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --wait=false` succeeds
   Podman VM is blocked by the 2 GiB Podman machine budget causing Kubernetes
   API timeouts under Argo/app reconciliation load.
 - The harness was aligned with the repo-wide OCI runtime swap convention after
-  comparing against the B-0964 `do_item` substrate: `ZETA_CONTAINER_RUNTIME` is
+  comparing against the 081KT07NV0008QG0R001CBQ2X2 `do_item` substrate: `ZETA_CONTAINER_RUNTIME` is
   now the only environment switch, stale `CONTAINER_RUNTIME` callers fail fast,
   and `--runtime` remains available for explicit one-off runs.
 
@@ -233,7 +232,7 @@ is:
 ## Follow-on workitems (2026-06-13)
 
 Parent row closed at included-scope proof; remaining ladder rungs filed as
-ZetaId workitems (B-NNNN series closed per B-0956):
+ZetaId workitems (B-NNNN series closed per 081KSXN940008QG0R002FWR9B2):
 
 | ZetaId | Title |
 |--------|-------|
@@ -261,7 +260,7 @@ The next slices should keep the same failure-attribution boundary:
 ## Out of scope
 
 - USB flashing, ISO boot, zflash credential retention, and QEMU disk snapshot
-  behavior. Those remain B-0891/B-0831 surfaces.
+  behavior. Those remain 081KSNY2Z0008QG0R0008PN7RQ/081KSGS9H0008QG0R0011BC7T2 surfaces.
 - Physical biometric verification. Operator hardware testing covers Touch ID or
   platform biometric behavior; this lane may use test auth-state markers only.
 - Production high-availability proofs. The local cluster proves GitOps health,
@@ -271,14 +270,14 @@ The next slices should keep the same failure-attribution boundary:
 
 ## Composition
 
-- **B-0742** is the reference k8s local stack / distributable PoC umbrella.
-- **B-0776** identifies ArgoCD as part of the simplest-first cluster substrate.
-- **B-0794** covers node self-registration leading to ArgoCD full bring-up.
-- **B-0813** covers ArgoCD watching the cluster-nodes tree.
-- **B-0831** remains the QEMU full-install and cluster-auto-join cascade.
-- **B-0891** remains the USB/ISO zflash acceptance lane. It should consume a
+- **081KSE6WT0008QG0R000YYH3DY** is the reference k8s local stack / distributable PoC umbrella.
+- **081KSE6WT0008QG0R002275NDE** identifies ArgoCD as part of the simplest-first cluster substrate.
+- **081KSGS9H0008QG0R0027HJZYH** covers node self-registration leading to ArgoCD full bring-up.
+- **081KSGS9H0008QG0R002K93MWX** covers ArgoCD watching the cluster-nodes tree.
+- **081KSGS9H0008QG0R0011BC7T2** remains the QEMU full-install and cluster-auto-join cascade.
+- **081KSNY2Z0008QG0R0008PN7RQ** remains the USB/ISO zflash acceptance lane. It should consume a
   narrow smoke first, then graduate to proving the installed ISO/USB default
-  brings up the full Kubernetes + ArgoCD stack after B-0967 proves that stack
+  brings up the full Kubernetes + ArgoCD stack after 081KSXN940008QG0R000SCP2H1 proves that stack
   outside the installer.
 
 ## Substrate-honest framing

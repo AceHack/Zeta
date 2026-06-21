@@ -29,7 +29,7 @@
 
 ## Summary
 
-- Decomposes B-0436 (Hamiltonian-to-git visualization, effort L) into two atomic children: B-0495 (static scaffold, S — implemented here) and B-0496 (live GitHub API fetch, M — next slice)
+- Decomposes 081KRFA460008QG0R0009TXX5S (Hamiltonian-to-git visualization, effort L) into two atomic children: 081KRHWGX0008QG0R001RHSSHT (static scaffold, S — implemented here) and 081KRHWGX0008QG0R002GTT8CX (live GitHub API fetch, M — next slice)
 - Adds a 6th **"Hamiltonian ▸"** tab to `demo/index.html` with a Canvas-based phase-space plot of 14 mock trajectory points
 - Each point is a commit mapped to `(time index, files-changed energy proxy)`; connected via quadratic Bezier spline with gradient stroke
 
@@ -38,9 +38,9 @@
 | File | Change |
 |------|--------|
 | `demo/index.html` | +268 lines: new tab button, HTML panel, canvas, JS `renderHamiltonianTab()` + `htDrawCanvas()` functions |
-| `docs/backlog/P1/B-0436-*.md` | `children: [B-0495, B-0496]` added |
-| `docs/backlog/P1/B-0495-*.md` | New — slice-1 row (closed by this PR) |
-| `docs/backlog/P1/B-0496-*.md` | New — slice-2 row (live GitHub API, open) |
+| `docs/backlog/P1/081KRFA460008QG0R0009TXX5S-*.md` | `children: [081KRHWGX0008QG0R001RHSSHT, 081KRHWGX0008QG0R002GTT8CX]` added |
+| `docs/backlog/P1/081KRHWGX0008QG0R001RHSSHT-*.md` | New — slice-1 row (closed by this PR) |
+| `docs/backlog/P1/081KRHWGX0008QG0R002GTT8CX-*.md` | New — slice-2 row (live GitHub API, open) |
 | `docs/hygiene-history/ticks/2026/05/14/1350Z.md` | Tick shard |
 
 ## Visual features
@@ -68,11 +68,11 @@ Build succeeded.
 - [x] DOM-only rendering — no innerHTML template strings, zero XSS surface ✓
 - [x] Lazy-loaded on first tab open (idempotent `window._hamiltonianLoaded` flag) ✓
 - [x] `dotnet build -c Release` → 0 warnings, 0 errors ✓
-- [x] Claim acquired: otto-cli / B-0436 (b556487f) ✓
+- [x] Claim acquired: otto-cli / 081KRFA460008QG0R0009TXX5S (b556487f) ✓
 
 ## Next slice
 
-B-0496 will replace `htBuildMockPoints()` with a live fetch from `GET /repos/Lucent-Financial-Group/Zeta/commits` (mirrors the `loadAlignmentTab()` lazy-load pattern) with graceful fallback to mock on 403/429.
+081KRHWGX0008QG0R002GTT8CX will replace `htBuildMockPoints()` with a live fetch from `GET /repos/Lucent-Financial-Group/Zeta/commits` (mirrors the `loadAlignmentTab()` lazy-load pattern) with graceful fallback to mock on 403/429.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -93,27 +93,27 @@ B-0496 will replace `htBuildMockPoints()` with a live fetch from `GET /repos/Luc
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CFHPX`
-- **Path**: `docs/backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R001RHSSHT-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T13:48:49Z on `docs/backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`:9 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T13:48:49Z on `docs/backlog/P1/081KRHWGX0008QG0R001RHSSHT-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`:9 (association: NONE)
 
   <pre>
-  B-0495 is described as implemented/closed in this PR, but the row frontmatter still says `status: open` and there’s no `closed`/`closed_reason` metadata like other closed P1 demo slices. Please mark this row closed (and add the close metadata) so the backlog index reflects that slice-1 shipped.
+  081KRHWGX0008QG0R001RHSSHT is described as implemented/closed in this PR, but the row frontmatter still says `status: open` and there’s no `closed`/`closed_reason` metadata like other closed P1 demo slices. Please mark this row closed (and add the close metadata) so the backlog index reflects that slice-1 shipped.
 
   </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CFHQj`
-- **Path**: `docs/backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R0009TXX5S-demo-hamiltonian-to-git-visualization-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T13:48:50Z on `docs/backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md`:13 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T13:48:50Z on `docs/backlog/P1/081KRFA460008QG0R0009TXX5S-demo-hamiltonian-to-git-visualization-2026-05-13.md`:13 (association: NONE)
 
   <pre>
   This row’s `last_updated` should be bumped when editing content (adding `children`). Please update `last_updated` to 2026-05-14 so it stays consistent with the backlog schema rules.
@@ -155,17 +155,17 @@ B-0496 will replace `htBuildMockPoints()` with a live fetch from `GET /repos/Luc
 **Touched files (intersect with thread paths):**
 
 - `demo/index.html`
-- `docs/backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md`
-- `docs/backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`
+- `docs/backlog/P1/081KRFA460008QG0R0009TXX5S-demo-hamiltonian-to-git-visualization-2026-05-13.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R001RHSSHT-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`
 
 **Message:**
 
 ```
 feat(b-0495): Hamiltonian viz — slice-1 static phase-space scaffold
 
-Decomposes B-0436 (effort L) into two atomic children:
-- B-0495 (S): static panel scaffold — implemented here
-- B-0496 (M): live GitHub API commit fetch → trajectory (next)
+Decomposes 081KRFA460008QG0R0009TXX5S (effort L) into two atomic children:
+- 081KRHWGX0008QG0R001RHSSHT (S): static panel scaffold — implemented here
+- 081KRHWGX0008QG0R002GTT8CX (M): live GitHub API commit fetch → trajectory (next)
 
 Adds a 6th "Hamiltonian ▸" tab to demo/index.html:
 - Canvas-based 2D phase-space plot (900×360, responsive)
@@ -177,7 +177,7 @@ Adds a 6th "Hamiltonian ▸" tab to demo/index.html:
 - DOM-only rendering — no innerHTML, zero XSS surface
 - dotnet build -c Release → 0 warnings, 0 errors ✓
 
-Closes B-0495. Leaves B-0496 (live fetch) and B-0436 open.
+Closes 081KRHWGX0008QG0R001RHSSHT. Leaves 081KRHWGX0008QG0R002GTT8CX (live fetch) and 081KRFA460008QG0R0009TXX5S open.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -187,16 +187,16 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `demo/index.html`
-- `docs/backlog/P1/B-0436-demo-hamiltonian-to-git-visualization-2026-05-13.md`
-- `docs/backlog/P1/B-0495-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`
+- `docs/backlog/P1/081KRFA460008QG0R0009TXX5S-demo-hamiltonian-to-git-visualization-2026-05-13.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R001RHSSHT-hamiltonian-viz-slice-1-static-scaffold-2026-05-14.md`
 
 **Message:**
 
 ```
 fix(review): address copilot review findings on PR #3135
 
-- B-0495: mark status closed + add closed/closed_by metadata
-- B-0436: bump last_updated to 2026-05-14 after children edit
+- 081KRHWGX0008QG0R001RHSSHT: mark status closed + add closed/closed_by metadata
+- 081KRFA460008QG0R0009TXX5S: bump last_updated to 2026-05-14 after children edit
 - demo/index.html: fix trajectory rendering to pass through actual
   data points (lineTo instead of midpoint quadratic Bezier)
 - demo/index.html: add canvas fallback text + aria-describedby for

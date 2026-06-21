@@ -1,6 +1,5 @@
 ---
-id: B-0058.1
-zetaid: 081KRHWGX0008QG0R0005PJNAB
+id: 081KRHWGX0008QG0R0005PJNAB
 parent: 081KQ3HBZ0008QG0R002S674CG
 priority: P1
 status: open
@@ -14,11 +13,11 @@ tags: [ai-ethics, safety, retractibility, alignment]
 type: friction-reducer
 ---
 
-# B-0058.1 — Retractibility-and-log check
+# 081KRHWGX0008QG0R0005PJNAB — Retractibility-and-log check
 
 ## The Drift
 
-Extracted from B-0058 umbrella. This implements the first check: verifying that any candidate adoption preserves retractibility.
+Extracted from 081KQ3HBZ0008QG0R002S674CG umbrella. This implements the first check: verifying that any candidate adoption preserves retractibility.
 
 ## Core Mandate
 

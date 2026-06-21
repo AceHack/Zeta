@@ -1,13 +1,12 @@
 ---
-id: B-0464
-zetaid: 081KRHWGX0008QG0R000BWAXNP
+id: 081KRHWGX0008QG0R000BWAXNP
 priority: P1
 status: closed
 closed: 2026-05-14
 closed_by: "PR #3122 — docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md"
 title: "Draft honor-system 'please don't fork' license language for product repos"
 type: design
-origin: B-0425 decomposition (Otto 2026-05-14)
+origin: 081KRFA460008QG0R003JQ46J4 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
@@ -19,7 +18,7 @@ composes_with:
   - .claude/rules/razor-discipline.md
 ---
 
-# B-0464 — Draft honor-system "please don't fork" license language for product repos
+# 081KRHWGX0008QG0R000BWAXNP — Draft honor-system "please don't fork" license language for product repos
 
 ## What this row does
 
@@ -30,14 +29,14 @@ consistent before any product repo is scaffolded.
 
 ## Why this is its own atomic row
 
-License text is independent of which products actually get repos (B-0465) and what
-their final names are (B-0466). It can be authored as soon as the design constraints
-are clear — which they are (per Aaron's 2026-05-13 framing in B-0425).
+License text is independent of which products actually get repos (081KRHWGX0008QG0R002B2P0K0) and what
+their final names are (081KRHWGX0008QG0R003XHCEXT). It can be authored as soon as the design constraints
+are clear — which they are (per Aaron's 2026-05-13 framing in 081KRFA460008QG0R003JQ46J4).
 
-Separating this prevents B-0468 (ADR) from being blocked on a 7-product research
+Separating this prevents 081KRHWGX0008QG0R000F6HE6D (ADR) from being blocked on a 7-product research
 pass when the license language itself has zero such dependency.
 
-## Design constraints (from B-0425 + memory)
+## Design constraints (from 081KRFA460008QG0R003JQ46J4 + memory)
 
 Per Aaron 2026-05-13:
 > *"so anytihgn you don't want them to fork specifically you have in a repo can
@@ -99,10 +98,10 @@ Contents:
 ## Dependency graph position
 
 ```
-B-0464 (this row) ──→ B-0468 (ADR — product-repo split decisions)
+081KRHWGX0008QG0R000BWAXNP (this row) ──→ 081KRHWGX0008QG0R000F6HE6D (ADR — product-repo split decisions)
 ```
 
-No blockers. Can start immediately after B-0425 decomposition PR merges.
+No blockers. Can start immediately after 081KRFA460008QG0R003JQ46J4 decomposition PR merges.
 
 ## Pre-start checklist (backlog-item-start-gate)
 
@@ -116,8 +115,8 @@ No blockers. Can start immediately after B-0425 decomposition PR merges.
 **Dependency check:**
 
 - `depends_on: []` — no dependencies; all design constraints available in memory files
-- B-0468 (ADR) depends on this row; this row unblocks it
-- B-0465 (per-product substrate inventory) and B-0466 (naming-expert review) are siblings, not blockers
+- 081KRHWGX0008QG0R000F6HE6D (ADR) depends on this row; this row unblocks it
+- 081KRHWGX0008QG0R002B2P0K0 (per-product substrate inventory) and 081KRHWGX0008QG0R003XHCEXT (naming-expert review) are siblings, not blockers
 
 **Dependency structure verified; no blockers. Row started and completed 2026-05-14.**
 

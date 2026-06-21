@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // zeta-creds-picker.ts — interactive picker at install/setup time.
 //
-// B-0852.3a (operator 2026-05-27 device-flow-at-setup framing).
+// 081KSKBP80008QG0R003AX2A69.3a (operator 2026-05-27 device-flow-at-setup framing).
 //
 // For each cred in DEFAULT_MANIFEST, prompts operator:
 //   [b]ake-in now / [d]efer to device-flow at runtime / [s]kip
@@ -11,9 +11,9 @@
 // Then invokes zeta-creds-persist with the collected --bake-cred args.
 //
 // Composes:
-//   - tools/installer/zeta-creds-manifest.ts (B-0852.5; iteration source)
-//   - tools/installer/zeta-cred-handlers.ts (B-0852.10; per-cred source validation)
-//   - tools/installer/zeta-creds-persist.ts (B-0852.2b; downstream consumer)
+//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; iteration source)
+//   - tools/installer/zeta-cred-handlers.ts (081KSKBP80008QG0R003AX2A69.10; per-cred source validation)
+//   - tools/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2b; downstream consumer)
 //
 // Usage (called from zeta-install.sh Step 6.95-picker or operator terminal):
 //   bun tools/installer/zeta-creds-picker.ts \
@@ -136,7 +136,7 @@ export async function runPicker(
   persona: string | null,
 ): Promise<string[]> {
   const bakeArgs: string[] = [];
-  console.log("\n=== Credential picker (B-0852.3a setup-time integration) ===");
+  console.log("\n=== Credential picker (081KSKBP80008QG0R003AX2A69.3a setup-time integration) ===");
   console.log("For each declared credential: bake-in NOW, defer to device-flow at runtime, or skip.");
   if (persona) console.log(`Persona: ${persona} (persona-scoped creds will use this slot).\n`);
   else console.log("No --persona; only global creds will accept bake.\n");

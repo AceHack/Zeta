@@ -1,6 +1,5 @@
 ---
-id: B-1015
-zetaid: 081KT5CF90008QG0R000KYNZGF
+id: 081KT5CF90008QG0R000KYNZGF
 priority: P3
 status: open
 title: "Jurisdiction-relative federated sovereignty — relative geospatial borders + per-jurisdiction OPA (recognized external identities + exchange policies) + mutual-permission (intersection) cross-jurisdiction exchange + Nexus meta-jurisdiction (Zeta as peer sovereign, non-central by supported structural+interoperable forkability); legal vetting per jurisdiction (Aaron 2026-06-03)"
@@ -22,7 +21,7 @@ Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-so
 
 ## Why
 
-Borders are the canonical **values-residual** conflict (B-1014): everyone has the same
+Borders are the canonical **values-residual** conflict (081KT5CF90008QG0R002NFJM72): everyone has the same
 data and still disagrees on *legitimacy*, so shared data can't resolve it, and there is
 **no globally-agreed border set**. The honest answer is to **faithfully represent the
 disagreement** — jurisdiction-relative — rather than pick a side via a single global truth.
@@ -59,8 +58,8 @@ disagreement** — jurisdiction-relative — rather than pick a side via a singl
 
 ## Composes with
 
-- B-0764 (CNCF ecosystem incl. OPA as force-multiplier behind Zeta interfaces)
-- B-0684 (clock/protocol negotiation stack) — protocol negotiation lineage
-- B-1014 (conflict-resolution two-classes — borders = the values-residual class)
+- 081KSE6WT0008QG0R0009YYNP4 (CNCF ecosystem incl. OPA as force-multiplier behind Zeta interfaces)
+- 081KS3X9Y0008QG0R003MMEAC7 (clock/protocol negotiation stack) — protocol negotiation lineage
+- 081KT5CF90008QG0R002NFJM72 (conflict-resolution two-classes — borders = the values-residual class)
 - `.claude/rules/must-paired-with-can-exit-pattern.md` (forkable/non-central Nexus)
 - `.claude/rules/non-coercion-invariant.md` (mutual-permission exchange)

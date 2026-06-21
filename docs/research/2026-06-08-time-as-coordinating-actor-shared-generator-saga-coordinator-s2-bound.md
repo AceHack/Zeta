@@ -33,7 +33,7 @@ says exactly how far it reaches.
   deterministically, the steps need a shared order — and the deterministic clock provides it.
 - Our compensation is the **Z-set retraction** (the `−1` = `e^{iπ}`): the misprediction rollback. It lands
   at the right place *because time coordinated the order*. The clock-as-actor is what makes
-  **"restore, don't replay"** sound (B-0640 self-evolving sagas).
+  **"restore, don't replay"** sound (081KRW63S0008QG0R002XA5N6S self-evolving sagas).
 
 ### Why `SoftEmu`'s correlations hold (and exactly how far)
 

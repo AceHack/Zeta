@@ -103,13 +103,13 @@
     },
     {
       "number": 5110,
-      "title": "feat(B-0421): tools/peer-call/grok-build.ts — native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)",
+      "title": "feat(081KRA5AR0008QG0R0011ZGRZT): tools/peer-call/grok-build.ts — native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)",
       "createdAgo": "25m ago",
       "state": "open"
     },
     {
       "number": 5046,
-      "title": "fix(backlog): add missing index entry for B-0753 from PR #5025",
+      "title": "fix(backlog): add missing index entry for 081KSE6WT0008QG0R003BCQEKW from PR #5025",
       "createdAgo": "6h ago",
       "state": "open"
     },
@@ -127,7 +127,7 @@
     },
     {
       "number": 5038,
-      "title": "backlog(B-0760): USB as repair tool for any node — identity preservation + no-disruption-at-3+-nodes invariant",
+      "title": "backlog(081KSE6WT0008QG0R003WG0V6P): USB as repair tool for any node — identity preservation + no-disruption-at-3+-nodes invariant",
       "createdAgo": "6h ago",
       "state": "open"
     },
@@ -145,7 +145,7 @@
     },
     {
       "number": 5032,
-      "title": "backlog(B-0758): USB-persistent OS — unRAID-style zero-internal-disk support",
+      "title": "backlog(081KSE6WT0008QG0R00021PPX1): USB-persistent OS — unRAID-style zero-internal-disk support",
       "createdAgo": "7h ago",
       "state": "open"
     },
@@ -157,19 +157,19 @@
     },
     {
       "number": 5114,
-      "title": "backlog(B-0797 P2) + per-tick: local user-scope memory ↔ git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26)",
+      "title": "backlog(081KSGS9H0008QG0R0033YXK4D P2) + per-tick: local user-scope memory ↔ git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26)",
       "mergedAgo": "4m ago",
       "state": "merged"
     },
     {
       "number": 5112,
-      "title": "preserve(mika) + backlog(B-0796 P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples)",
+      "title": "preserve(mika) + backlog(081KSGS9H0008QG0R002F04ECB P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples)",
       "mergedAgo": "6m ago",
       "state": "merged"
     },
     {
       "number": 5113,
-      "title": "fix(B-0792 iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)",
+      "title": "fix(081KSGS9H0008QG0R003V23XNZ iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)",
       "mergedAgo": "8m ago",
       "state": "merged"
     },
@@ -189,21 +189,21 @@
   "recent_commits": [
     {
       "sha": "089acfd",
-      "message": "backlog(B-0797 P2) + per-tick(Step 3): local user-scope memory ↔ in-repo git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26) (#5114)",
+      "message": "backlog(081KSGS9H0008QG0R0033YXK4D P2) + per-tick(Step 3): local user-scope memory ↔ in-repo git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26) (#5114)",
       "agent": "Lior",
       "date": "2026-05-26T06:42:15Z",
       "dateAgo": "4m ago"
     },
     {
       "sha": "1c0a4a4",
-      "message": "preserve(mika) + backlog(B-0796 P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples) (#5112)",
+      "message": "preserve(mika) + backlog(081KSGS9H0008QG0R002F04ECB P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples) (#5112)",
       "agent": "Otto",
       "date": "2026-05-26T06:39:55Z",
       "dateAgo": "6m ago"
     },
     {
       "sha": "7d19b95",
-      "message": "fix(B-0792 iter-5.2.2): move hostname auto-gen from flash-time to install-time + login-banner shows hostname pre-login (Aaron 2026-05-26) (#5113)",
+      "message": "fix(081KSGS9H0008QG0R003V23XNZ iter-5.2.2): move hostname auto-gen from flash-time to install-time + login-banner shows hostname pre-login (Aaron 2026-05-26) (#5113)",
       "agent": "Lior",
       "date": "2026-05-26T06:37:59Z",
       "dateAgo": "8m ago"
@@ -231,21 +231,21 @@
     },
     {
       "sha": "7c3e919",
-      "message": "preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs B-0794 iter-5.4) (#5108)",
+      "message": "preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs 081KSGS9H0008QG0R0027HJZYH iter-5.4) (#5108)",
       "agent": "Otto",
       "date": "2026-05-26T06:12:10Z",
       "dateAgo": "34m ago"
     },
     {
       "sha": "f96ccec",
-      "message": "feat(B-0792 iter-5.2.1): auto-generate node-<6hex> hostname default — operator can rename later via digital-twin (Aaron 2026-05-26) (#5107)",
+      "message": "feat(081KSGS9H0008QG0R003V23XNZ iter-5.2.1): auto-generate node-<6hex> hostname default — operator can rename later via digital-twin (Aaron 2026-05-26) (#5107)",
       "agent": "Otto",
       "date": "2026-05-26T06:03:05Z",
       "dateAgo": "43m ago"
     },
     {
       "sha": "9c1258b",
-      "message": "backlog(B-0793 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26) (#5105)",
+      "message": "backlog(081KSGS9H0008QG0R000EDNTY5 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26) (#5105)",
       "agent": "Lior",
       "date": "2026-05-26T05:59:27Z",
       "dateAgo": "47m ago"
@@ -259,35 +259,35 @@
     },
     {
       "sha": "6ee3a29",
-      "message": "feat(B-0792 iter-5.1+5.2): self-contained USB — NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26) (#5103)",
+      "message": "feat(081KSGS9H0008QG0R003V23XNZ iter-5.1+5.2): self-contained USB — NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26) (#5103)",
       "agent": "Otto",
       "date": "2026-05-26T05:51:04Z",
       "dateAgo": "55m ago"
     },
     {
       "sha": "68d5b1c",
-      "message": "backlog(B-0794 P1): node self-registers in git under maintainers/<name>/cluster-nodes/<node>/ → ArgoCD picks up → full K8s + apps/charts bring-up; GitOps-native cluster substrate from install moment (Aaron 2026-05-26) (#5106)",
+      "message": "backlog(081KSGS9H0008QG0R0027HJZYH P1): node self-registers in git under maintainers/<name>/cluster-nodes/<node>/ → ArgoCD picks up → full K8s + apps/charts bring-up; GitOps-native cluster substrate from install moment (Aaron 2026-05-26) (#5106)",
       "agent": "Lior",
       "date": "2026-05-26T05:49:08Z",
       "dateAgo": "57m ago"
     },
     {
       "sha": "f77bd77",
-      "message": "backlog(B-0792 P1): iter-5 wifi-credentials injection via USB ESP — homelab persona has NO ethernet; cluster must \"remember the wifi on setup\" (#5102)",
+      "message": "backlog(081KSGS9H0008QG0R003V23XNZ P1): iter-5 wifi-credentials injection via USB ESP — homelab persona has NO ethernet; cluster must \"remember the wifi on setup\" (#5102)",
       "agent": "Lior",
       "date": "2026-05-26T05:40:42Z",
       "dateAgo": "1h ago"
     },
     {
       "sha": "401f65c",
-      "message": "backlog(B-0791 P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex — IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction) (#5101)",
+      "message": "backlog(081KSGS9H0008QG0R002T3QMFD P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex — IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction) (#5101)",
       "agent": "Otto",
       "date": "2026-05-26T05:34:09Z",
       "dateAgo": "1h ago"
     },
     {
       "sha": "797a691",
-      "message": "backlog(B-0778): re-land curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger (#5100)",
+      "message": "backlog(081KSE6WT0008QG0R0004AP0ZA): re-land curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger (#5100)",
       "agent": "Otto",
       "date": "2026-05-26T05:24:17Z",
       "dateAgo": "1h ago"
@@ -301,28 +301,28 @@
     },
     {
       "sha": "dbd851c",
-      "message": "fix(B-0789 iter-4.4 fixfwd): 0xEF MBR partition type detection + mount_msdos fallback for NixOS isohybrid post-dd ESP (#5099)",
+      "message": "fix(081KSGS9H0008QG0R002T3BJ2R iter-4.4 fixfwd): 0xEF MBR partition type detection + mount_msdos fallback for NixOS isohybrid post-dd ESP (#5099)",
       "agent": "Lior",
       "date": "2026-05-26T05:21:01Z",
       "dateAgo": "1h ago"
     },
     {
       "sha": "5db3c93",
-      "message": "backlog(B-0776 P1): re-land simplest-first plugin sequence — Redis KV first, then NATS / CockroachDB / Temporal / Orleans / OPA, etc. (#5098)",
+      "message": "backlog(081KSE6WT0008QG0R002275NDE P1): re-land simplest-first plugin sequence — Redis KV first, then NATS / CockroachDB / Temporal / Orleans / OPA, etc. (#5098)",
       "agent": "Otto",
       "date": "2026-05-26T05:18:37Z",
       "dateAgo": "1h ago"
     },
     {
       "sha": "f1982e1",
-      "message": "backlog(B-0790): two-persona clarification + Mika substrate batch composes_with (#5097)",
+      "message": "backlog(081KSGS9H0008QG0R00153CQ8B): two-persona clarification + Mika substrate batch composes_with (#5097)",
       "agent": "Lior",
       "date": "2026-05-26T05:07:03Z",
       "dateAgo": "1h ago"
     },
     {
       "sha": "3fae46d",
-      "message": "fix(B-0789 iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2) (#5093)",
+      "message": "fix(081KSGS9H0008QG0R002T3BJ2R iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2) (#5093)",
       "agent": "Otto",
       "date": "2026-05-26T05:06:27Z",
       "dateAgo": "1h ago"

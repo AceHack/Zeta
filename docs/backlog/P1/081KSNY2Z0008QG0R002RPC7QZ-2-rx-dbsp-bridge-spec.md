@@ -1,6 +1,5 @@
 ---
-id: B-0668.2
-zetaid: 081KSNY2Z0008QG0R002RPC7QZ
+id: 081KSNY2Z0008QG0R002RPC7QZ
 priority: P1
 status: open
 title: "Compositional DBSP frame architecture: Rx-DBSP Bridge Specification"
@@ -16,7 +15,7 @@ tags: [dbsp, fsharp, rx, bridge-spec]
 
 ## Rx-DBSP Bridge Specification
 
-This backlog item is a decomposition of [B-0668](B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md).
+This backlog item is a decomposition of [081KRYRGG0008QG0R0018CMFQY](081KRYRGG0008QG0R0018CMFQY-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md).
 
 ### Problem
 

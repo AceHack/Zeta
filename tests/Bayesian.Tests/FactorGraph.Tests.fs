@@ -4,7 +4,7 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Bayesian
 
-// The factor graph (B-1000 slice 3) — the bipartite data structure
+// The factor graph (081KT2T2J0008QG0R000S7GHQ8 slice 3) — the bipartite data structure
 // inference runs on. These tests exercise the topology + the single
 // sum-product round (passOnce/passRounds) + the two factor rules
 // (prior, equality), grounded on slice 2's message algebra. The

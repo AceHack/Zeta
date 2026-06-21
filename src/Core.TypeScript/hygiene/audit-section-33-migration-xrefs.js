@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // audit-section-33-migration-xrefs.ts — detect dead xrefs to migrated archive files
 //
-// B-0533 Slice B.1 scanner. Mechanizes the dead-xref class Codex P2 caught on
+// 081KRMEXM0008QG0R000K25MXS Slice B.1 scanner. Mechanizes the dead-xref class Codex P2 caught on
 // PR #3513 (Riven section-33 archive migration). The migration pattern moves
 // files from docs/research/<basename> to memory/<persona>/conversations/<basename>
 // but does not auto-update backlinks. Live-nav surfaces (rules, backlog rows,
@@ -40,8 +40,8 @@
 //   1   findings present AND --enforce flag set (CI gate)
 //   64  argument error
 //
-// Composes with: audit-rule-cross-refs.ts (template), B-0532 (sibling lint pattern),
-// B-0533 (parent row).
+// Composes with: audit-rule-cross-refs.ts (template), 081KRMEXM0008QG0R003FZNK3E (sibling lint pattern),
+// 081KRMEXM0008QG0R000K25MXS (parent row).
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 const LIVE_NAV_SURFACES = [".claude/rules", ".claude/agents", ".claude/commands", ".claude/skills", "memory", "docs/backlog"];

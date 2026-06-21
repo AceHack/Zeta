@@ -27,7 +27,7 @@
 
 ## Description
 
-Substantive multi-Otto coordination observation: two PRs landed the same B-0037.2 substrate within 3 minutes — second PR was fully redundant (zero new content).
+Substantive multi-Otto coordination observation: two PRs landed the same 081KR7JY10008QG0R002D6VNNJ substrate within 3 minutes — second PR was fully redundant (zero new content).
 
 ## The observation
 
@@ -51,7 +51,7 @@ Single observation does not yet justify a B-NNNN backlog row per substrate-hones
 
 ## No data corruption
 
-The duplicate PR landed without breaking anything — main still has correct B-0037.2 close substrate. Cost is wasted CI cycles + PR-number allocation + reviewer attention, not corrupt state.
+The duplicate PR landed without breaking anything — main still has correct 081KR7JY10008QG0R002D6VNNJ close substrate. Cost is wasted CI cycles + PR-number allocation + reviewer attention, not corrupt state.
 
 ## Outcome
 

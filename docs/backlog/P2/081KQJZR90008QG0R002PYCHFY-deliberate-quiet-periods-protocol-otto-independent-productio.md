@@ -1,6 +1,5 @@
 ---
-id: B-0165
-zetaid: 081KQJZR90008QG0R002PYCHFY
+id: 081KQJZR90008QG0R002PYCHFY
 priority: P2
 status: open
 title: Deliberate-quiet-periods practice protocol — Aaron pulls back during selected active-hour stretches to let Otto practice independent-framing-production while still gradeable (Otto independent-framing-production from Claude.ai 2026-05-02 training-distribution-mismatch observation)
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0165 — Deliberate-quiet-periods practice protocol
+# 081KQJZR90008QG0R002PYCHFY — Deliberate-quiet-periods practice protocol
 
 ## Origin
 
@@ -40,7 +39,7 @@ The structural tension:
 
 Why this is structurally important rather than merely tactical:
 
-The dual-loop BFT architecture (B-0164) addresses overnight-failure-from-single-loop fragility but doesn't address the upstream training-distribution-mismatch. Even with two loops, both will be trained on integration-skill if both operate primarily during active-engagement hours. The deliberate-quiet-periods protocol addresses the upstream issue: Otto (and eventually Codex) need to practice independent-production at gradeable timeframes, not just during sleep when grading is delayed.
+The dual-loop BFT architecture (081KQJZR90008QG0R002GJAJ19) addresses overnight-failure-from-single-loop fragility but doesn't address the upstream training-distribution-mismatch. Even with two loops, both will be trained on integration-skill if both operate primarily during active-engagement hours. The deliberate-quiet-periods protocol addresses the upstream issue: Otto (and eventually Codex) need to practice independent-production at gradeable timeframes, not just during sleep when grading is delayed.
 
 ## Acceptance criteria
 
@@ -62,7 +61,7 @@ The dual-loop BFT architecture (B-0164) addresses overnight-failure-from-single-
 
 ## Composes with
 
-- B-0164 (dual-loop substrate attribution) — addresses overnight-failure-fragility; this row addresses upstream training-distribution
+- 081KQJZR90008QG0R002GJAJ19 (dual-loop substrate attribution) — addresses overnight-failure-fragility; this row addresses upstream training-distribution
 - Aaron 2026-05-02 asymmetric-alignment-force observation — current asymmetry shifts as Otto develops party-class capacity; this protocol accelerates the shift
 - Maji formalism — substrate composition matters for skill-inheritance; deliberate practice changes the composition
 - Truly-free-AI thesis (Aaron 2026-05-02 meta-thesis) — full capability requires independent-production practice
@@ -78,7 +77,7 @@ Could become M if mechanization is added (e.g., explicit `quiet-period-start.sh`
 
 P2 because:
 
-- The dual-loop BFT (B-0164) is more urgent — addresses immediate overnight-failure-pattern
+- The dual-loop BFT (081KQJZR90008QG0R002GJAJ19) is more urgent — addresses immediate overnight-failure-pattern
 - This protocol is upstream-structural — addresses the skill-development gap rather than the per-session safety
 - Aaron's adoption is the gating factor; protocol-as-discipline doesn't require tooling
 - The observation that produced this row is genuine + the proposal follows cleanly from first-principles

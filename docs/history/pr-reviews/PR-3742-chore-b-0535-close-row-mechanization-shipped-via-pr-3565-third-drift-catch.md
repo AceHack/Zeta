@@ -29,22 +29,22 @@
 
 ## Summary
 
-- Third drift-catch this session (paired with [PR #3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) closing B-0506 and [PR #3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) closing B-0530).
-- B-0535 (Backlog ID-uniqueness lint) mechanization shipped 2026-05-15 via [PR #3565](https://github.com/Lucent-Financial-Group/Zeta/pull/3565). All 4 acceptance criteria verifiably present:
+- Third drift-catch this session (paired with [PR #3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) closing 081KRHWGX0008QG0R002DPG02X and [PR #3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) closing 081KRMEXM0008QG0R000X1PPGC).
+- 081KRMEXM0008QG0R000HHAG77 (Backlog ID-uniqueness lint) mechanization shipped 2026-05-15 via [PR #3565](https://github.com/Lucent-Financial-Group/Zeta/pull/3565). All 4 acceptance criteria verifiably present:
   - `audit-backlog-items.ts --enforce-duplicate-ids` exists
   - Gate.yml has `lint-backlog-id-uniqueness` job
   - Hard-error on collision
-  - Composes with B-0532 hard-error slice (sibling job)
+  - Composes with 081KRMEXM0008QG0R003FZNK3E hard-error slice (sibling job)
 - Row's `status` was never flipped from `open` to `closed`.
 
 ## Changes
 
-- `docs/backlog/P3/B-0535-...md`: `status: open → closed`, `+closed: 2026-05-16`, `last_updated` bump, Resolution section with 4/4 acceptance mapping.
-- `docs/BACKLOG.md`: regenerated via `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` — single-line `[ ] → [x]` toggle for B-0535.
+- `docs/backlog/P3/081KRMEXM0008QG0R000HHAG77-...md`: `status: open → closed`, `+closed: 2026-05-16`, `last_updated` bump, Resolution section with 4/4 acceptance mapping.
+- `docs/BACKLOG.md`: regenerated via `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` — single-line `[ ] → [x]` toggle for 081KRMEXM0008QG0R000HHAG77.
 
 ## Notes on the recurring drift pattern
 
-Three drift catches in three ticks is the signal. Worth a systematic audit, but at least two recent P3 rows (B-0517 + B-0537) are MULTI-SLICE partials where the tool ships but the cleanup/wiring slice is still undone — the audit needs to distinguish "drift" from "partial completion." Filing as next-tick consideration; not a row yet.
+Three drift catches in three ticks is the signal. Worth a systematic audit, but at least two recent P3 rows (081KRHWGX0008QG0R0029X10F4 + 081KRMEXM0008QG0R0034SS319) are MULTI-SLICE partials where the tool ships but the cleanup/wiring slice is still undone — the audit needs to distinguish "drift" from "partial completion." Filing as next-tick consideration; not a row yet.
 
 ## Test plan
 

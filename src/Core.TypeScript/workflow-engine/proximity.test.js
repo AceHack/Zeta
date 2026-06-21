@@ -1,11 +1,11 @@
 /**
  * src/Core.TypeScript/workflow-engine/proximity.test.ts
  *
- * B-0914.6 — invariant tests for proximity-dedup substrate.
+ * 081KDX1YWP008QG0R000B091D7 — invariant tests for proximity-dedup substrate.
  */
 import { describe, expect, it } from "bun:test";
 import { clusterByCanonical, clusterBySimilarity, defaultTokenize, jaccardSimilarity, uniqueRepresentatives, } from "./proximity";
-describe("B-0914.6 proximity-dedup substrate", () => {
+describe("081KDX1YWP008QG0R000B091D7 proximity-dedup substrate", () => {
     it("clusterByCanonical groups items with same canonical form", () => {
         const corpus = [
             { mechanism: "ER-stress", drugCandidate: "cur-6", evidence: 0.8 },

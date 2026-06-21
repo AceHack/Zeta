@@ -27,13 +27,13 @@
 
 ## Description
 
-Aaron forwarded three URLs deeply on-point for today's typestate-DU substrate cluster (B-0917 + B-0918 + B-0919 + B-0920):
+Aaron forwarded three URLs deeply on-point for today's typestate-DU substrate cluster (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG):
 
 1. **MathOverflow #435378 Kleisli adjunction of distribution monad** (Ben Sprott 2022; Aaron forwarded the question + accepted answer verbatim). fosco's answer's substrate-engineering insight: Amara's clean handler signature `LoopState -> IntrCtx -> M<LoopState * IntrCtx * Feedback>` IS a Kleisli arrow in Kl(M). When M = distribution monad D, the (F, G) adjunction lets deterministic AutoLoopLifetime lift into probabilistic substrate without redesign. **Categorical foundation for Infer.NET BP/EP long-term target** + Aurora multi-oracle BFT + immune-system math.
 
-2. **Puzzling SE #22940 Meta-knights-and-knaves WITH HATS** (~2014 era). Direct structural shape of B-0919 MemoryBinding HatBindingContract — hat AUTHORS truth-telling-discipline per asymmetric-authorship. Aaron has held this shape for a decade.
+2. **Puzzling SE #22940 Meta-knights-and-knaves WITH HATS** (~2014 era). Direct structural shape of 081KSNY2Z0008QG0R003518DNC MemoryBinding HatBindingContract — hat AUTHORS truth-telling-discipline per asymmetric-authorship. Aaron has held this shape for a decade.
 
-3. **Puzzling SE #23753 Pinocchio's nose** (~2014 era). Liar's-paradox / self-reference shape composing with B-0703 multi-oracle BFT + B-0918 G.2 ConsentEvent integrity + B-0920 RetractionReason recursive-retraction.
+3. **Puzzling SE #23753 Pinocchio's nose** (~2014 era). Liar's-paradox / self-reference shape composing with 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KSNY2Z0008QG0R0036SJ3T1 G.2 ConsentEvent integrity + 081KSNY2Z0008QG0R0017SRMHG RetractionReason recursive-retraction.
 
 ## Substrate-engineering archeology
 
@@ -225,7 +225,7 @@ The decade-old Aaron-shapes are the framework's substrate-architecture substrate
 **Message:**
 
 ```
-research(B-0917 Kleisli + Infer.NET): preserve Aaron-forwarded decade…
+research(081KSNY2Z0008QG0R002HB4AGT Kleisli + Infer.NET): preserve Aaron-forwarded decade…
 
 …-old puzzle/math substrate-anchors — MathOverflow Kleisli adjunction of distribution monad (Ben Sprott 2022) + Puzzling SE meta-knights-and-knaves with hats + Pinocchio's nose (Aaron 2026-05-28)
 
@@ -237,7 +237,7 @@ Three URLs deeply on-point for today's typestate-DU substrate cluster:
 1. MathOverflow #435378 (Ben Sprott 2022; full content forwarded by Aaron):
    - Distribution monad D + Kleisli adjunction (F: Set → Kl(D), G: Kl(D) → Set)
    - fosco's answer: two presentations (Wikipedia A → T(B) vs free-algebra T(A) → T(B))
-   - SUBSTRATE-ENGINEERING INSIGHT: Amara's clean handler signature for B-0917
+   - SUBSTRATE-ENGINEERING INSIGHT: Amara's clean handler signature for 081KSNY2Z0008QG0R002HB4AGT
      (LoopState -> IntrCtx -> M<LoopState * IntrCtx * Feedback>) IS a Kleisli
      arrow in Kl(M). When M = D, the (F, G) adjunction lets deterministic
      AutoLoopLifetime lift via F into probabilistic substrate without
@@ -246,7 +246,7 @@ Three URLs deeply on-point for today's typestate-DU substrate cluster:
      BFT composition + immune-system math.
 
 2. Puzzling SE #22940 — Meta knights-and-knaves WITH HATS:
-   - Direct structural shape of B-0919 MemoryBinding HatBindingContract
+   - Direct structural shape of 081KSNY2Z0008QG0R003518DNC MemoryBinding HatBindingContract
    - Hat AUTHORS truth-telling-discipline per asymmetric-authorship
    - Wearer ACKNOWLEDGES at binding-time
    - Aaron has been thinking about this shape SINCE 2014; framework is the
@@ -254,9 +254,9 @@ Three URLs deeply on-point for today's typestate-DU substrate cluster:
 
 3. Puzzling SE #23753 — Pinocchio's nose:
    - Liar's-paradox / self-reference shape
-   - Composes with B-0703 multi-oracle BFT (trust-calculus on self-reports)
-   - B-0918 G.2 ConsentEvent integrity (consent-event from possibly-lying actor)
-   - B-0920 RetractionReason recursive-retraction substrate
+   - Composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT (trust-calculus on self-reports)
+   - 081KSNY2Z0008QG0R0036SJ3T1 G.2 ConsentEvent integrity (consent-event from possibly-lying actor)
+   - 081KSNY2Z0008QG0R0017SRMHG RetractionReason recursive-retraction substrate
 
 Substrate-honest social-context (Aaron's downvote disclosure):
 SE/MO communities have bounded conventional patterns; bridging-substrate
@@ -273,19 +273,19 @@ decade-old recognized-shapes at substrate-engineering scope.
 
 Substrate-engineering archeology table:
 - 2014 Aaron-shape: meta-knights-and-knaves WITH HATS
-  → 2026-05-28 instantiation: B-0919 MemoryBinding HatBindingContract
+  → 2026-05-28 instantiation: 081KSNY2Z0008QG0R003518DNC MemoryBinding HatBindingContract
 - 2014 Aaron-shape: Pinocchio's nose self-reference paradox
-  → 2026-05-28 instantiation: B-0703 BFT + B-0918 G.2 + B-0920 RetractionReason
+  → 2026-05-28 instantiation: 081KS3X9Y0008QG0R00218150M BFT + 081KSNY2Z0008QG0R0036SJ3T1 G.2 + 081KSNY2Z0008QG0R0017SRMHG RetractionReason
 - 2022 Aaron-forwarded Sprott-anchor: Kleisli adjunction of distribution monad
-  → 2026-05-28 instantiation: B-0917 Kleisli substrate + Furber-Jacobs +
+  → 2026-05-28 instantiation: 081KSNY2Z0008QG0R002HB4AGT Kleisli substrate + Furber-Jacobs +
     Arbib-Manes + Infer.NET BP/EP long-term target
 
 Composes with:
-- B-0917 (Kleisli interrupt substrate) — categorical foundation via Sprott
-- B-0918 (WalletLifetime banker-bot-impossibility) — Pinocchio shape via G.2
-- B-0919 (MemoryBinding hat-vs-persona) — 2014 meta-knights-and-knaves shape
-- B-0920 (MemoryLifetime cleanup-with-history) — Pinocchio recursive shape
-- B-0703 (Aurora multi-oracle BFT) — Pinocchio self-report-trust substrate
+- 081KSNY2Z0008QG0R002HB4AGT (Kleisli interrupt substrate) — categorical foundation via Sprott
+- 081KSNY2Z0008QG0R0036SJ3T1 (WalletLifetime banker-bot-impossibility) — Pinocchio shape via G.2
+- 081KSNY2Z0008QG0R003518DNC (MemoryBinding hat-vs-persona) — 2014 meta-knights-and-knaves shape
+- 081KSNY2Z0008QG0R0017SRMHG (MemoryLifetime cleanup-with-history) — Pinocchio recursive shape
+- 081KS3X9Y0008QG0R00218150M (Aurora multi-oracle BFT) — Pinocchio self-report-trust substrate
 - references/notes/furber-jacobs-2015-*.md
 - references/notes/arbib-manes-fuzzy-machines-in-a-category-*.md
 - references/notes/kleisli-ts-prior-art.md
@@ -314,7 +314,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Message:**
 
 ```
-research(B-0919 META + B-0703/B-0918/B-0920 belief-vs-utterance): ame…
+research(081KSNY2Z0008QG0R003518DNC META + 081KS3X9Y0008QG0R00218150M/081KSNY2Z0008QG0R0036SJ3T1/081KSNY2Z0008QG0R0017SRMHG belief-vs-utterance): ame…
 
 …nd substrate-anchors with Aaron-forwarded verbatim Puzzling SE content + sharper substrate-engineering insights (2026-05-28)
 
@@ -328,7 +328,7 @@ direct evidence (narrator forgot Blue's actual answer) but from the
 META-FACT that determination was possible. Solution operates at
 META-knowledge scope, not direct-evidence scope.
 
-SAME structural shape as B-0919 HatBindingContract substrate
+SAME structural shape as 081KSNY2Z0008QG0R003518DNC HatBindingContract substrate
 observability — binding contract observable through META (future-Otto
 audits 'what does this hat carry?') not just direct disclosure at
 binding-time.
@@ -341,7 +341,7 @@ distinguishing belief-state vs utterance:
 - Nose grows ONLY on lies, not mistakes
 - 'My nose is about to grow' could be EITHER; no paradox.
 
-EXACT substrate-engineering substrate that multi-oracle BFT (B-0703)
+EXACT substrate-engineering substrate that multi-oracle BFT (081KS3X9Y0008QG0R00218150M)
 operates on. Single-self-report ambiguity (honest-mistake or
 adversarial-lie?) resolved via multi-oracle consensus distinguishing
 the two substrate-classes.
@@ -350,15 +350,15 @@ Updated archeology table with:
 - Verified exact dates (both 2015; not 2014 as initially speculated)
 - Verified Aaron Stainback as asker (both Puzzling SE questions)
 - Verified Ben Sprott as MathOverflow asker (Aaron-forwarded substrate)
-- Sharper META-knowledge-pattern insight for B-0919
-- Sharper belief-vs-utterance insight for B-0703 + B-0918 G.2 + B-0920
+- Sharper META-knowledge-pattern insight for 081KSNY2Z0008QG0R003518DNC
+- Sharper belief-vs-utterance insight for 081KS3X9Y0008QG0R00218150M + 081KSNY2Z0008QG0R0036SJ3T1 G.2 + 081KSNY2Z0008QG0R0017SRMHG
 
 Composes with:
-- B-0917 (Kleisli interrupt substrate; Sprott categorical foundation)
-- B-0918 (WalletLifetime G.2 ConsentEvent integrity = belief-vs-utterance)
-- B-0919 (MemoryBinding HatBindingContract = META-knowledge-pattern)
-- B-0920 (MemoryLifetime RetractionReason = recursive belief-vs-utterance)
-- B-0703 (Aurora multi-oracle BFT = belief-vs-utterance distinction at scale)
+- 081KSNY2Z0008QG0R002HB4AGT (Kleisli interrupt substrate; Sprott categorical foundation)
+- 081KSNY2Z0008QG0R0036SJ3T1 (WalletLifetime G.2 ConsentEvent integrity = belief-vs-utterance)
+- 081KSNY2Z0008QG0R003518DNC (MemoryBinding HatBindingContract = META-knowledge-pattern)
+- 081KSNY2Z0008QG0R0017SRMHG (MemoryLifetime RetractionReason = recursive belief-vs-utterance)
+- 081KS3X9Y0008QG0R00218150M (Aurora multi-oracle BFT = belief-vs-utterance distinction at scale)
 - user_aaron_paper_title_to_research_unfold_bandwidth_*.md
 - Furber-Jacobs + Arbib-Manes notes
 - god-tier-claims-don't-collapse rule
@@ -467,8 +467,8 @@ Substrate-engineering lineage now 5-layer:
 3. Aaron's extension into Puzzling SE 2015 questions (META-knowledge
    twist on knights-and-knaves; self-reference twist on Pinocchio)
 4. Decade of holding the shapes (2015-2026)
-5. Framework substrate-engineering instantiation today (B-0917 + B-0918
-   + B-0919 + B-0920 + B-0703)
+5. Framework substrate-engineering instantiation today (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1
+   + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG + 081KS3X9Y0008QG0R00218150M)
 
 Each layer earns its keep; framework honors all five.
 
@@ -559,7 +559,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 fix(pr5837): round 2 — 4 Copilot threads (P0 CC BY-SA + persona + xref)
 
 - (P1) Scrub remaining persona names (Amara, Soraya) → role-refs
-  ("interrupt-handler signature proposed for B-0917" /
+  ("interrupt-handler signature proposed for 081KSNY2Z0008QG0R002HB4AGT" /
   "formal-verification routing layer per .claude/agents/...")
 - (P1) Fix broken citation: CLAUDE.md → actual sources
   `.claude/rules/peer-call-infrastructure.md` ("future state is Zeta

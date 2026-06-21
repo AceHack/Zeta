@@ -22,12 +22,12 @@ open Zeta.Core
 // not SEMANTICALLY (no deployed commons-vs-standing partition exists to merge). The Lean proof stays
 // the source of truth for the standing-locus claim; this leg is independent-instrument corroboration
 // of its CRDT-join PREMISES over shipped F#. Triage: a counterexample ⇒ GCounter.Merge drifted from
-// the join-semilattice law the Lean `non_collapse` rests on (B-0969 is the live precedent — ordinal
+// the join-semilattice law the Lean `non_collapse` rests on (081KT07NV0008QG0R001YDB73K is the live precedent — ordinal
 // vs culture-sensitive sort once broke max-merge ASSOCIATIVITY on special keys).
 //
-// The bare ACI semilattice laws on GCounter STATE also live in Crdt.Laws.Tests.fs (the B-1016
+// The bare ACI semilattice laws on GCounter STATE also live in Crdt.Laws.Tests.fs (the 081KT7YW00008QG0R002T1XNWT
 // floor); they are restated here so this BP-16 leg is a self-contained witness of `non_collapse`'s
-// premises, and (d) associativity is kept per Soraya as the exact B-0969 failure class.
+// premises, and (d) associativity is kept per Soraya as the exact 081KT07NV0008QG0R001YDB73K failure class.
 // ═══════════════════════════════════════════════════════════════════
 
 /// Ordinal-safe replica key in a small shared namespace (collisions AND distinct keys).
@@ -79,7 +79,7 @@ let ``No-capture: a traveler's own standing never decreases under merge (weight-
     a.Counts |> Seq.forall (fun e -> m.Counts.[e.Key] >= e.Weight)
 
 // ── (c)+(d) THE JOIN-SEMILATTICE PREMISES the Lean convergence rests on: commutative + idempotent
-//    + ASSOCIATIVE over per-replica STATE (not just .Value). Associativity is the B-0969 class. ──
+//    + ASSOCIATIVE over per-replica STATE (not just .Value). Associativity is the 081KT07NV0008QG0R001YDB73K class. ──
 [<Property>]
 let ``Join premises: GCounter.Merge is commutative, idempotent, associative over per-replica state`` (ops: (int * int) list) =
     let a = build ops (fun i -> i % 3 = 0)

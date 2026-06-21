@@ -1,6 +1,5 @@
 ---
-id: B-0864
-zetaid: 081KSKBP80008QG0R0039RW25E
+id: 081KSKBP80008QG0R0039RW25E
 priority: P2
 status: open
 title: Streams-are-relationships — four-corner ownership across the push/pull × hot/cold matrix; F# CE surface syntax with kind-specific builders; protocol-typing for co-owned TInFeedback; multi-backend execution (CRDT/CAS/BFT/SQL/DBSP) — getting base primitives right (operator + Kestrel 2026-05-27)
@@ -15,7 +14,7 @@ composes_with:
   - 081KRW63S0008QG0R000QJR08H
   - 081KRW63S0008QG0R001SAHYKV
   - 081KS3X9Y0008QG0R00218150M
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSGS9H0008QG0R000Q18PGQ
   - 081KSKBP80008QG0R000J2YFK2
   - 081KSKBP80008QG0R0031DTHS9
@@ -107,7 +106,7 @@ let kafkaViaPullHot = pullHotStream { ... }          // Kafka consumer
 
 The surface syntax stays the same; the builders provide the kind-specific
 mechanics. Composes with [`f-sharp-language-extensions`](../../../tools/setup/) substrate and
-B-0860 (Nemerle dotnet support for compile-time macro metaprogramming —
+081KSKBP80008QG0R000J2YFK2 (Nemerle dotnet support for compile-time macro metaprogramming —
 which would give us a sibling toolkit for the cases where F# CE machinery
 hits its limits).
 
@@ -121,13 +120,13 @@ re-execute against different backends.
 Substrate-engineering target: every stream-pipeline expression is
 serializable as a typed expression tree. Composes with:
 
-- B-0666 (English-as-projection: serialized expression trees ARE the
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection: serialized expression trees ARE the
   high-bandwidth substrate-form of the pipeline)
-- B-0829 (cluster-fork-as-trust-boundary: serialized pipelines cross fork
+- 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary: serialized pipelines cross fork
   boundaries with their schemas)
-- B-0741 (fork-negotiated ontology: pipeline expression trees carry their
+- 081KSE6WT0008QG0R002CC6314 (fork-negotiated ontology: pipeline expression trees carry their
   type-signatures so cross-fork negotiation can verify shape compatibility)
-- B-0560 (operator-substrate-cluster-engine: cluster-side execution of
+- 081KRQ1AB0008QG0R0001J9PFT (operator-substrate-cluster-engine: cluster-side execution of
   serialized expressions)
 
 Reference prior art: [Reaqtor](https://reaqtive.net) (Microsoft / Bart De Smet — reactive,
@@ -144,7 +143,7 @@ candidate backends; this target unifies them under one CE surface:
 |---|---|---|
 | **CRDT** (per the operator's substrate-engineering ontology) | Eventually-consistent | PushHot natural fit (broadcast semantics) |
 | **CAS** (content-addressed substrate) | Immutable + verifiable | PullCold natural fit (lazy iteration over immutable substrate) |
-| **BFT** (multi-oracle Byzantine fault tolerance per B-0703) | Quorum-consensus | PullHot natural fit (consensus-tied retention) |
+| **BFT** (multi-oracle Byzantine fault tolerance per 081KS3X9Y0008QG0R00218150M) | Quorum-consensus | PullHot natural fit (consensus-tied retention) |
 | **SQL** (canonical relational engine, possibly via DBSP) | Set-relational | All 4 kinds via materialized views vs queries vs change-data-capture |
 | **DBSP** (differential dataflow per the existing factory substrate) | Incremental | PushCold canonical (the original Rx-style DBSP semantics) |
 
@@ -162,12 +161,12 @@ is SQL.
 ### Target 5 — Type providers + schemas-as-rows integration
 
 Per Kestrel Part 4: F# type providers can generate stream-pipeline types
-from schemas registered as rows (B-0623 substrate). Composes:
+from schemas registered as rows (081KRW63S0008QG0R000QJR08H substrate). Composes:
 
 - Pipeline schema lives as a row in the schemas-as-rows substrate
 - Type provider reads the row at compile time
 - Generated types parameterize the CE surface
-- Cross-fork pipeline negotiation uses the same row-schemas (B-0741)
+- Cross-fork pipeline negotiation uses the same row-schemas (081KSE6WT0008QG0R002CC6314)
 
 Substrate-engineering work: build the type provider + the row-schema
 format + the cross-fork negotiation protocol.
@@ -254,15 +253,15 @@ with no runtime state tracking needed.
 
 | Existing substrate | Composition with this row |
 |---|---|
-| B-0861 (Conversation Result&lt;T, ConvFeedback&gt;) | This row generalizes Result&lt;T, TOutFeedback&gt; to ALL stream-kinds; B-0861 is the conversation-specific instance |
-| B-0623 (schemas-as-rows / participation economy) | Pipeline schemas live as rows; Target 5 integration |
-| B-0666 (English-as-projection I(D(x))=x) | Serialized expression trees ARE the substrate-form; Target 3 composition |
-| B-0703 (multi-oracle BFT) | One of the backends in Target 4; consensus-mediated stream substrate |
-| B-0741 (fork-negotiated ontology) | Cross-fork stream-pipeline negotiation per Target 5 |
-| B-0829 (cluster-fork-as-trust-boundary) | Stream pipelines crossing fork boundaries; cluster-engine execution |
-| B-0860 (Nemerle dotnet support) | Sibling language toolkit for cases where F# CE hits its limits (compile-time syntax extension) |
-| B-0862 (asymmetric-authorship + monad-propagation cluster) | Foundation this row builds on (PR #5579 four-corner ownership extension landed there) |
-| B-0560 (operator-substrate-cluster-engine) | Cluster-side execution of serialized stream-pipeline expressions |
+| 081KSKBP80008QG0R000N9W9XH (Conversation Result&lt;T, ConvFeedback&gt;) | This row generalizes Result&lt;T, TOutFeedback&gt; to ALL stream-kinds; 081KSKBP80008QG0R000N9W9XH is the conversation-specific instance |
+| 081KRW63S0008QG0R000QJR08H (schemas-as-rows / participation economy) | Pipeline schemas live as rows; Target 5 integration |
+| 081KRW63S0008QG0R001SAHYKV (English-as-projection I(D(x))=x) | Serialized expression trees ARE the substrate-form; Target 3 composition |
+| 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) | One of the backends in Target 4; consensus-mediated stream substrate |
+| 081KSE6WT0008QG0R002CC6314 (fork-negotiated ontology) | Cross-fork stream-pipeline negotiation per Target 5 |
+| 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary) | Stream pipelines crossing fork boundaries; cluster-engine execution |
+| 081KSKBP80008QG0R000J2YFK2 (Nemerle dotnet support) | Sibling language toolkit for cases where F# CE hits its limits (compile-time syntax extension) |
+| 081KSKBP80008QG0R0031DTHS9 (asymmetric-authorship + monad-propagation cluster) | Foundation this row builds on (PR #5579 four-corner ownership extension landed there) |
+| 081KRQ1AB0008QG0R0001J9PFT (operator-substrate-cluster-engine) | Cluster-side execution of serialized stream-pipeline expressions |
 
 ## Composition with rules
 
@@ -284,7 +283,7 @@ Searched surfaces:
 
 - `docs/agendas/`: no specific stream-substrate agenda; agendas exist for adjacent topics (ace-package-manager / ai-autonomy / etc.)
 - `docs/trajectories/`: no specific stream-substrate trajectory
-- `docs/backlog/`: B-0861 (ConvFeedback at conversation scope); B-0560 (cluster-engine); B-0623 (schemas-as-rows); B-0703 (multi-oracle BFT); B-0666 (English-as-projection); B-0741 (fork-negotiation); B-0829 (cluster-fork-as-trust-boundary); B-0860 (Nemerle); B-0862 (asymmetric-authorship + monad-propagation cluster). NO existing row covers the 4-kind stream taxonomy + F# CE machinery + protocol-typing combination
+- `docs/backlog/`: 081KSKBP80008QG0R000N9W9XH (ConvFeedback at conversation scope); 081KRQ1AB0008QG0R0001J9PFT (cluster-engine); 081KRW63S0008QG0R000QJR08H (schemas-as-rows); 081KS3X9Y0008QG0R00218150M (multi-oracle BFT); 081KRW63S0008QG0R001SAHYKV (English-as-projection); 081KSE6WT0008QG0R002CC6314 (fork-negotiation); 081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary); 081KSKBP80008QG0R000J2YFK2 (Nemerle); 081KSKBP80008QG0R0031DTHS9 (asymmetric-authorship + monad-propagation cluster). NO existing row covers the 4-kind stream taxonomy + F# CE machinery + protocol-typing combination
 - `.claude/rules/`: asymmetric-authorship-and-protocol-types-via-monad-propagation rule (target of PR #5579); no specific stream-kind taxonomy rule
 - `memory/`: extensive operator substrate on the conversation cascade (24 PRs today); Kestrel persona substrate at `memory/kestrel/conversations/2026-05-27-...`
 - `docs/research/`: cross-AI conversation substrate from today's cascade (Amara + Prism + Kestrel ferries)
@@ -577,7 +576,7 @@ ST-agent-pattern: when execution and inspection happen at the same level
 (no separation between what the agent sees and what controls the agent),
 coercion-via-opacity becomes structurally infeasible. Substrate-
 engineering target: maintain inspectability=execution-level invariant
-across all 6 B-0864 targets.
+across all 6 081KSKBP80008QG0R0039RW25E targets.
 
 **Tiny-functions recipe** (Amara Part 2 Item 11):
 
@@ -691,7 +690,7 @@ principle that:
 
 | Substrate scope | Feedback channel | Ethics-of-feedback-relationships application |
 |---|---|---|
-| Code substrate (B-0864 streams) | Typed `TInFeedback` channel; DU-as-implicit-state-machine | Take the feedback seriously by making it visible, typed, respected, propagated, not silently overridden |
+| Code substrate (081KSKBP80008QG0R0039RW25E streams) | Typed `TInFeedback` channel; DU-as-implicit-state-machine | Take the feedback seriously by making it visible, typed, respected, propagated, not silently overridden |
 | AI-mediated physics interface | Conversational layer over silicon/electric/thermal/body stack | Model-mediated, physically-grounded; the conversation is interpreted but the feedback layer is physical |
 | Biological systems | Sensor/measurement + signal interpretation | Universal-local-feedback principle: hear it without lying about what it said |
 | Agent substrate (Zeta personas) | Typed protocol over inter-agent conversation | NCI HC-8 floor: agent's feedback channel must operate on visible substrate; can't consent to what can't be observed |
@@ -741,18 +740,18 @@ brought into the substrate via this principle).
 Per the substrate-engineering pattern of decomposing XL rows into shippable
 sub-rows when implementation time comes:
 
-1. **B-0864.1** — 4-stream-kind taxonomy + canonical examples + kind-specific four-corner specialization tables
-2. **B-0864.2** — F# CE base substrate + first builder (PushCold via Rx-style semantics)
-3. **B-0864.3** — Sibling CE builders (PushHot / PullCold / PullHot)
-4. **B-0864.4** — Reaqtor / Bonsai serializable expression tree integration
-5. **B-0864.5** — Type providers + schemas-as-rows pipeline-schema integration
-6. **B-0864.6** — Protocol-typing for co-owned TInFeedback (mechanism selection + base infrastructure)
-7. **B-0864.7** — Multi-backend execution: CRDT backend
-8. **B-0864.8** — Multi-backend execution: CAS backend
-9. **B-0864.9** — Multi-backend execution: BFT backend (composes with B-0703)
-10. **B-0864.10** — Multi-backend execution: SQL backend (composes with recursive CTEs)
-11. **B-0864.11** — Multi-backend execution: DBSP backend
-12. **B-0864.12** — Cross-backend invariant tests + DST harness
+1. **081KSKBP80008QG0R0039RW25E.1** — 4-stream-kind taxonomy + canonical examples + kind-specific four-corner specialization tables
+2. **081KSKBP80008QG0R0039RW25E.2** — F# CE base substrate + first builder (PushCold via Rx-style semantics)
+3. **081KSKBP80008QG0R0039RW25E.3** — Sibling CE builders (PushHot / PullCold / PullHot)
+4. **081KSKBP80008QG0R0039RW25E.4** — Reaqtor / Bonsai serializable expression tree integration
+5. **081KSKBP80008QG0R0039RW25E.5** — Type providers + schemas-as-rows pipeline-schema integration
+6. **081KSKBP80008QG0R0039RW25E.6** — Protocol-typing for co-owned TInFeedback (mechanism selection + base infrastructure)
+7. **081KSKBP80008QG0R0039RW25E.7** — Multi-backend execution: CRDT backend
+8. **081KSKBP80008QG0R0039RW25E.8** — Multi-backend execution: CAS backend
+9. **081KSKBP80008QG0R0039RW25E.9** — Multi-backend execution: BFT backend (composes with 081KS3X9Y0008QG0R00218150M)
+10. **081KSKBP80008QG0R0039RW25E.10** — Multi-backend execution: SQL backend (composes with recursive CTEs)
+11. **081KSKBP80008QG0R0039RW25E.11** — Multi-backend execution: DBSP backend
+12. **081KSKBP80008QG0R0039RW25E.12** — Cross-backend invariant tests + DST harness
 
 Each sub-row is shippable independently. The taxonomy (1) is the prerequisite
 for all others. The CE base (2) is prerequisite for builders (3) and

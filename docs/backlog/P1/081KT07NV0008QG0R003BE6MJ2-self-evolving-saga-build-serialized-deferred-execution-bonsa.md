@@ -1,6 +1,5 @@
 ---
-id: B-0976
-zetaid: 081KT07NV0008QG0R003BE6MJ2
+id: 081KT07NV0008QG0R003BE6MJ2
 priority: P1
 status: open
 title: "Self-evolving saga build — serialized deferred execution (Bonsai expr-tree + closure state), resume-not-replay, Temporal-grade interface, rides the Z-set/IndexedZSet ladder (Aaron 2026-06-01)"
@@ -38,7 +37,7 @@ on a retraction-native (Z-set / IndexedZSet) stream:
   but **non-determinism in the body is fine** (we snapshot the value).
 - **the pattern is data** — the serialized expr-tree can be edited in flight
   (retract a sub-tree, add another); the ℤ **retraction IS the pattern-evolution
-  operator** (B-0668: *"saga compensation = retraction = additive inverse in
+  operator** (081KRYRGG0008QG0R0018CMFQY: *"saga compensation = retraction = additive inverse in
   Z-set algebra"* — this core already exists there; this row builds it). Both
   pattern AND state evolve — the superset the replay family structurally can't do.
 
@@ -62,17 +61,17 @@ not a dependency.
 
 ## Context = OTel context = IntrCtx — and F# may not need AsyncLocal (Kleisli)
 
-The saga **context** (state hangs off it) is the **OTel context** = **B-0917
+The saga **context** (state hangs off it) is the **OTel context** = **081KSNY2Z0008QG0R002HB4AGT
 IntrCtx** (the 5-context Kleisli propagation: memetic / prompt / trust / log /
 otel). It carries identity + small hot state; the heavy serialized payload is
 keyed off it in the store. Per-language propagation:
 
 - **C# / TS — ambient `AsyncLocal` / `Activity.Current`** in-process; W3C
-  `traceparent` + baggage cross-process (B-0957 scope-propagation, B-0872
+  `traceparent` + baggage cross-process (081KSXN940008QG0R001YABTHH scope-propagation, 081KSNY2Z0008QG0R000ZNRFCE
   ZetaID + trace-id).
 - **F# — may NOT need AsyncLocal (Aaron 2026-06-01: "f# might not need async
   local we have Kleisli arrows if it works").** Kleisli arrows thread the context
-  **explicitly** through the monadic bind (B-0917 Kleisli context-propagation +
+  **explicitly** through the monadic bind (081KSNY2Z0008QG0R002HB4AGT Kleisli context-propagation +
   the monad-propagation rule), so the context is a typed value, not hidden
   ambient state — cleaner, DST-friendly (no hidden mutable ambient), composable.
   **Hypothesis to validate:** if Kleisli context-threading is ergonomic enough
@@ -82,13 +81,13 @@ keyed off it in the store. Per-language propagation:
 
 ## Runtime — Dapr Actors carrier; per-partition + cross-partition-join mediator
 
-- **Dapr** is the planned runtime (already deployed, B-0785). **Dapr Actors**
+- **Dapr** is the planned runtime (already deployed, 081KSE6WT0008QG0R000R8CPFX). **Dapr Actors**
   (Orleans-lineage virtual actors) = the mediator **carrier** (+ the
   Durable-Entities primitive); **Dapr Workflow** (`durabletask-go`, replay
   family) = conformance oracle, NOT the self-evolving engine. Ride Dapr Actors as
   runtime/carrier + saga-**resume** for the looser constraints + self-evolution.
 - **Per-partition** sagas (each shard / key-group / Orleans-grain = agent, per
-  B-0706 grain identity = agent identity) + **cross-partition joins** (the
+  081KS6FPN0008QG0R003Y3MCVE grain identity = agent identity) + **cross-partition joins** (the
   bilinear `join` spanning shards is itself a saga) **run via an agent mediator
   whose tick stream is the carrier, holding both sides local for the CALM linear
   merge-join, with mitigation/compensation factors inside the saga** (compensate /
@@ -97,7 +96,7 @@ keyed off it in the store. Per-language propagation:
 ## `observe.ts` generic saga combinator
 
 A single generic combinator in `observe.ts` lifts **any lifecycle-DU workflow**
-(B-0867) to a self-evolving saga: `serialize(Rx) + serialize(state)`. DU = legal
+(081KSKBP80008QG0R000B3Y19A) to a self-evolving saga: `serialize(Rx) + serialize(state)`. DU = legal
 transitions (compile-time); Bonsai = serialized-mutable pattern (runtime); tick
 stream = carrier; ℤ retraction = evolution + compensation.
 
@@ -137,7 +136,7 @@ container where one exists):
   (`{type, title, status?, detail, instance?, errors}`), adapt to .NET's
   `ValidationProblemDetails` at the C# seam; a `BonsaiFeedback list` maps straight
   onto the `errors` map via the `where` keys. Complementary primitive for the family
-  + the git-native bus (B-0954) — build when scheduled; **saved here so the
+  + the git-native bus (081KSXN940008QG0R00171YAZW) — build when scheduled; **saved here so the
   hexagonal isn't forgotten** (the operator 2026-06-01).
 
 ## Acceptance / decomposition (slices)
@@ -180,31 +179,31 @@ container where one exists):
 
 ## Composes with (the existing durable-execution cluster)
 
-- [B-0251](../P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md) — durable-computation stack (Temporal/Reaqtor/Orleans/Bonsai) research.
-- [B-0668](../P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md) / [B-0668.1](../P1/B-0668.1-fsharp-k8s-mapping.md) — our-own durabletask fork; **saga compensation = retraction = Z-set inverse** (the core).
-- [B-0640](../P1/B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — Bonsai trees + Rx (Integrate impl substrate).
-- [B-0706](../P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md) — zeta-on-Orleans (grain = agent identity).
-- [B-0917](../P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md) — Kleisli context-propagation (otel + log).
-- [B-0957](../P1/B-0957-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md) — scope propagation via OTel-baggage / DI-scope.
-- [B-0872](../P2/B-0872-otel-trace-id-composition-with-zetaid-baggage-propagation-kestrel-2026-05-28.md) — OTel trace-ID + ZetaID.
-- [B-0867](../P1/B-0867-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) — DU workflow engine v1 (the generic-saga input).
-- B-0785 / B-0776 / B-0764 (Dapr/Temporal/Orleans cluster substrate) · B-0777 `Zeta.Actors` · B-0040 actor-model lens · B-0253 Orleans interloop messaging · B-0883 (encryption for private saga state).
+- [081KQZVQW0008QG0R000PPQ3MH](../P1/081KQZVQW0008QG0R000PPQ3MH-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md) — durable-computation stack (Temporal/Reaqtor/Orleans/Bonsai) research.
+- [081KRYRGG0008QG0R0018CMFQY](../P1/081KRYRGG0008QG0R0018CMFQY-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md) / [081KSNY2Z0008QG0R001TMM2HY](../P1/081KSNY2Z0008QG0R001TMM2HY-fsharp-k8s-mapping.md) — our-own durabletask fork; **saga compensation = retraction = Z-set inverse** (the core).
+- [081KRW63S0008QG0R002XA5N6S](../P1/081KRW63S0008QG0R002XA5N6S-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — Bonsai trees + Rx (Integrate impl substrate).
+- [081KS6FPN0008QG0R003Y3MCVE](../P1/081KS6FPN0008QG0R003Y3MCVE-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md) — zeta-on-Orleans (grain = agent identity).
+- [081KSNY2Z0008QG0R002HB4AGT](../P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md) — Kleisli context-propagation (otel + log).
+- [081KSXN940008QG0R001YABTHH](../P1/081KSXN940008QG0R001YABTHH-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md) — scope propagation via OTel-baggage / DI-scope.
+- [081KSNY2Z0008QG0R000ZNRFCE](../P2/081KSNY2Z0008QG0R000ZNRFCE-otel-trace-id-composition-with-zetaid-baggage-propagation-kestrel-2026-05-28.md) — OTel trace-ID + ZetaID.
+- [081KSKBP80008QG0R000B3Y19A](../P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) — DU workflow engine v1 (the generic-saga input).
+- 081KSE6WT0008QG0R000R8CPFX / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R0009YYNP4 (Dapr/Temporal/Orleans cluster substrate) · 081KSE6WT0008QG0R000JSJ3SR `Zeta.Actors` · 081KQ3HBZ0008QG0R000RP1WDN actor-model lens · 081KQZVQW0008QG0R000W4B8KT Orleans interloop messaging · 081KSNY2Z0008QG0R002JKH50A (encryption for private saga state).
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
 - **Prior-art search:** the research note (2026-06-01) + the durable-execution
-  cluster above (B-0251/B-0640/B-0668/B-0706/B-0917) + Nuqleon Bonsai + DF /
+  cluster above (081KQZVQW0008QG0R000PPQ3MH/081KRW63S0008QG0R002XA5N6S/081KRYRGG0008QG0R0018CMFQY/081KS6FPN0008QG0R003Y3MCVE/081KSNY2Z0008QG0R002HB4AGT) + Nuqleon Bonsai + DF /
   Temporal / Dapr Workflow (search-first, 2026-06-01). Cross-verified the
-  Z-set-retraction core already lives in B-0668.
-- **Dependency check:** depends_on B-0640 (Bonsai/Rx) + B-0668 (durabletask
-  fork / Z-set retraction) + B-0917 (Kleisli context). The algebra ladder
+  Z-set-retraction core already lives in 081KRYRGG0008QG0R0018CMFQY.
+- **Dependency check:** depends_on 081KRW63S0008QG0R002XA5N6S (Bonsai/Rx) + 081KRYRGG0008QG0R0018CMFQY (durabletask
+  fork / Z-set retraction) + 081KSNY2Z0008QG0R002HB4AGT (Kleisli context). The algebra ladder
   (G-Set ⊂ Bag ⊂ Z-set ⊂ IndexedZSet) is 4/4 (the carrier is ready).
 
 ## Substrate-honest framing
 
 This is the **build** row (design tier); the operator drives slice scheduling.
-It crystallizes — does not mint — the durable-execution cluster: B-0251 research
-→ B-0668 durabletask-fork-with-Z-set-retraction → B-0706 Orleans-deployment, plus
+It crystallizes — does not mint — the durable-execution cluster: 081KQZVQW0008QG0R000PPQ3MH research
+→ 081KRYRGG0008QG0R0018CMFQY durabletask-fork-with-Z-set-retraction → 081KS6FPN0008QG0R003Y3MCVE Orleans-deployment, plus
 Dapr runtime + Temporal-interface-target + OTel-context unification + the
 resume-not-replay + self-evolution extension. Itron-coupled prototypes stay
 concept-not-code; the replay pattern referenced is the public DTF model.

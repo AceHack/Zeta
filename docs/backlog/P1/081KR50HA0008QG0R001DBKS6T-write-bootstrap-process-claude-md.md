@@ -1,6 +1,5 @@
 ---
-id: B-0353
-zetaid: 081KR50HA0008QG0R001DBKS6T
+id: 081KR50HA0008QG0R001DBKS6T
 priority: P1
 status: closed
 closed: 2026-05-10
@@ -20,7 +19,7 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0353 — Write bootstrap-process CLAUDE.md
+# 081KR50HA0008QG0R001DBKS6T — Write bootstrap-process CLAUDE.md
 
 ## What
 

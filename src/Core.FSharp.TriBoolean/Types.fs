@@ -1,6 +1,6 @@
 namespace Zeta.Core.FSharp.TriBoolean
 
-/// Tri-boolean core primitive -- the digital qubit cell (B-0944).
+/// Tri-boolean core primitive -- the digital qubit cell (081KSV2WD0008QG0R00051XS0N).
 ///
 /// Three-valued state: True | False | N. The N case is the HELD living-uncertainty
 /// (superposition) state -- a discriminated-union case, NOT .NET/F# `null`. It is never

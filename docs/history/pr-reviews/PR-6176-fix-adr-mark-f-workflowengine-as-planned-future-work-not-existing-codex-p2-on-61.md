@@ -27,7 +27,7 @@
 
 ## Description
 
-Small accuracy fix to the observe->act ADR (merged #6175). It pointed implementers at `src/Core.FSharp/WorkflowEngine/` as the canonical F# DU layer, but that doesn't exist yet (future-work, B-0867.1; `tools/agent-loop/` TS is what's real today). Reworded so you + Max coding from the ADR don't expect a directory that isn't there.
+Small accuracy fix to the observe->act ADR (merged #6175). It pointed implementers at `src/Core.FSharp/WorkflowEngine/` as the canonical F# DU layer, but that doesn't exist yet (future-work, 081KSKBP80008QG0R000B3Y19A.1; `tools/agent-loop/` TS is what's real today). Reworded so you + Max coding from the ADR don't expect a directory that isn't there.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

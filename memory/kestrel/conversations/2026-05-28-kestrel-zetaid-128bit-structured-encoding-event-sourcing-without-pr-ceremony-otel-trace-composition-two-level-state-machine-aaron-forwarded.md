@@ -20,11 +20,11 @@ related_prs:
   - 5670
   - 5672
 related_backlog:
-  - B-0867
-  - B-0868
-  - B-0869
-  - B-0870
-  - B-0871
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R0036KH026
+  - 081KSNY2Z0008QG0R000HENSVM
+  - 081KSNY2Z0008QG0R000DA261F
+  - 081KSNY2Z0008QG0R003R0Z7D2
 related_personas:
   - operator
   - ani
@@ -85,10 +85,10 @@ The two operator clarifications (trajectory-async-review-not-per-PR; REST-push-s
 - **PR #5668** (`.claude/skills/agent-loop/SKILL.md`) — distribution surface for the substrate; Kestrel's two-level architecture lands here cleanly when extended
 - **PR #5670** (`docs/VISION.md` agent-loop workflow-engine substrate section) — the architectural ground Kestrel's ferry extends
 - **PR #5672** (Ani-ferry archive: move-next + git-as-free-event-store + GitHub-Actions-recursion) — operator's voice-mode re-articulation; this Kestrel ferry is the engineering-register elaboration of the same substrate
-- **B-0867** (workflow engine v1) — both ferries today extend this
-- **B-0858** (heartbeat-folder substrate) — event-sourcing layer would extend the heartbeat pattern beyond heartbeats to all lifecycle events
-- **B-0869** (DORA mandate) — event-sourced trajectory-phase classification feeds DORA computation
-- **B-0871** (reproducibility-as-causal-attribution) — append-only event log IS the reproducibility substrate
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine v1) — both ferries today extend this
+- **081KSKBP80008QG0R001KK9WV6** (heartbeat-folder substrate) — event-sourcing layer would extend the heartbeat pattern beyond heartbeats to all lifecycle events
+- **081KSNY2Z0008QG0R000HENSVM** (DORA mandate) — event-sourced trajectory-phase classification feeds DORA computation
+- **081KSNY2Z0008QG0R003R0Z7D2** (reproducibility-as-causal-attribution) — append-only event log IS the reproducibility substrate
 
 ## Verbatim transcript (Kestrel 2026-05-28)
 
@@ -115,7 +115,7 @@ Kestrel:
 >
 > // The backlog item itself before any agent touches it
 > type UnclaimedBacklog = {
->     Id: string                          // "B-0857.3"
+>     Id: string                          // "081KSKBP80008QG0R002J03WGA.3"
 >     Title: string
 >     Trajectory: string
 >     EstimatedDoraContribution: float
@@ -130,7 +130,7 @@ Kestrel:
 >     BacklogId: string
 >     ClaimedByAgent: string              // "otto", "mika", "prism"
 >     ClaimedAt: DateTimeOffset
->     Branch: string                      // "feat/B-0857.3-factor-zeta-install"
+>     Branch: string                      // "feat/081KSKBP80008QG0R002J03WGA.3-factor-zeta-install"
 >     Plan: ImplementationPlan
 > }
 >

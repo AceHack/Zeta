@@ -54,7 +54,7 @@ one lever — **the proven ground.**
 ## Operational implication
 
 - **Treat math / formal-proof work as autonomy work.** Closing the asserted→proven
-  gap (B-1007; the formal-verification cadence) directly widens the envelope the AI
+  gap (081KT2T2J0008QG0R000YZ3NMY; the formal-verification cadence) directly widens the envelope the AI
   can operate in *without asking*.
 - **Weight math work by how much autonomy/ground it unlocks** — how many
   re-supervision moments it removes — not just by local correctness.
@@ -67,6 +67,6 @@ one lever — **the proven ground.**
 
 This preserves an autonomy/engineering doctrine reframe and composes it; it makes
 no claim that the envelope is already wide (we are in the verify stage, with most
-ground still unproven — B-1007). The reframe says *where the lever is*, not that
+ground still unproven — 081KT2T2J0008QG0R000YZ3NMY). The reframe says *where the lever is*, not that
 it's already pulled. No personal/wellbeing content is involved — this is autonomy +
 proof doctrine only.

@@ -1626,7 +1626,7 @@ to zflash for reproducibility. Each channel preserves a
 different operator concern: vendor for ergonomic distribution,
 Ace for sovereignty over the supply chain, zflash for
 "the usb is how you silence the haters" (the
-reproducibility-as-causal-attribution claim — see B-0871).
+reproducibility-as-causal-attribution claim — see 081KSNY2Z0008QG0R003R0Z7D2).
 
 #### Reproducibility-as-causal-attribution
 
@@ -1652,15 +1652,15 @@ realisation of the factory product (Product 2 above). It
 composes with:
 
 - The two-mandate portfolio (24-months-ahead-AI +
-  DORA-of-live-system; B-0870) — per-agent operational
+  DORA-of-live-system; 081KSNY2Z0008QG0R000DA261F) — per-agent operational
   ratio feeds the menu-generator's option scoring.
-- DORA classification (B-0869, `tools/dora-classify/`) —
+- DORA classification (081KSNY2Z0008QG0R000HENSVM, `tools/dora-classify/`) —
   lane taxonomy matches; classifier output feeds the
   menu-generator's option scoring.
-- Hats-as-workflow-definitions (B-0868) — each hat will
+- Hats-as-workflow-definitions (081KSNY2Z0008QG0R0036KH026) — each hat will
   eventually have its own state-machine instance + own
   menu-generator.
-- Heartbeat substrate (B-0858) — `EmitHeartbeat` menu
+- Heartbeat substrate (081KSKBP80008QG0R001KK9WV6) — `EmitHeartbeat` menu
   option writes here.
 - The non-coercion invariant (HC-8) — escape-hatch +
   grammar-extension menu options preserve agent agency

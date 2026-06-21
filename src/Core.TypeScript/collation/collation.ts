@@ -1,5 +1,5 @@
 /**
- * collation.ts — Database-style named collation selection for TypeScript (B-0969).
+ * collation.ts — Database-style named collation selection for TypeScript (081KT07NV0008QG0R001YDB73K).
  * Maps database collation name strings to their corresponding string comparator functions.
  */
 

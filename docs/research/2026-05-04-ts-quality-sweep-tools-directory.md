@@ -5,7 +5,7 @@
 Three axes covered: (1) the strict `tsc --noEmit` typecheck, (2) ESLint /
 SonarJS / typescript-eslint findings, (3) cross-file consistency patterns
 (imports, shebangs, error handling, type-vs-interface, dead code,
-copy-paste). Composes with the B-0140 bash → TS migration audit at
+copy-paste). Composes with the 081KQGDBJ0008QG0R0022EW5ZE bash → TS migration audit at
 `docs/research/2026-05-04-b-0140-bash-to-ts-migration-audit-table.md`,
 which classified each `.ts` as kill-sh / ts-only / etc. but did **not**
 score code quality of the `.ts` files themselves; this audit is the
@@ -13,7 +13,7 @@ quality counterpart to that migration-status enumeration.
 
 **Attribution:** Filed by Otto (the human maintainer-delegated factory
 agent) under autonomous-loop quality-sweep authority. Origin: same-tick
-pairing with the recently-merged B-0140 audit — the migration-status
+pairing with the recently-merged 081KQGDBJ0008QG0R0022EW5ZE audit — the migration-status
 table left the question *"is the post-migration TS substrate clean?"*
 unanswered. Maintainer 2026-05-04 framing in this session was *F# / TS
 work* generally; this is the TS half.
@@ -38,7 +38,7 @@ not *production-impact* severity.
 ## 1. Headline numbers
 
 - **Total `.ts` files audited:** 56 (matches `find tools -name "*.ts"
-  -not -path "*/.lake/*" -type f`; the B-0140 table reports 57 because
+  -not -path "*/.lake/*" -type f`; the 081KQGDBJ0008QG0R0022EW5ZE table reports 57 because
   it counted prior to a single-file delta — the 56-file set is the
   current branch-tip).
 - **`bun tsc --noEmit` (strict mode):** **0 errors, 0 warnings.** Clean.
@@ -236,7 +236,7 @@ This is one of the load-bearing scripts referenced from CLAUDE.md
 
 ### 4.8 `tools/pr-preservation/archive-pr.ts` (14 errors)
 
-Largest file in the audit (806 lines per B-0140 table) — replaced an
+Largest file in the audit (806 lines per 081KQGDBJ0008QG0R0022EW5ZE table) — replaced an
 embedded ~400-line Python block during the bash → TS port:
 
 - **Lines 559, 661:** `cognitive-complexity` 19 / 20 (threshold 15) —
@@ -400,7 +400,7 @@ collapse the duplication.
   259) — should share the constant with `poll-pr-gate.ts`.
 - **Observation:** no shared `tools/_lib/spawn.ts` or similar; each
   script declares its own. Not a defect — but a candidate for
-  consolidation if a `tools/_lib/` is introduced (B-0140-adjacent
+  consolidation if a `tools/_lib/` is introduced (081KQGDBJ0008QG0R0022EW5ZE-adjacent
   cleanup, not in scope here).
 
 ### 5.7 Peer-call boilerplate duplication
@@ -454,11 +454,11 @@ findings in one move.
 
 ---
 
-## 6. Cross-reference vs B-0140 audit
+## 6. Cross-reference vs 081KQGDBJ0008QG0R0022EW5ZE audit
 
-Mapping of the 18 ESLint-flagged files to the B-0140 classification:
+Mapping of the 18 ESLint-flagged files to the 081KQGDBJ0008QG0R0022EW5ZE classification:
 
-| File | B-0140 class | ESLint errors | Note |
+| File | 081KQGDBJ0008QG0R0022EW5ZE class | ESLint errors | Note |
 |---|---|---|---|
 | `tools/substrate-claim-checker/check-existence.test.ts` | ts-only | 53 | TS-native; not part of bash → TS migration |
 | `tools/substrate-claim-checker/check-existence.ts` | ts-only | 20 | TS-native |
@@ -487,7 +487,7 @@ ports are mostly in the same shape because the port preserved the
 bash-script's per-line logic 1:1, occasionally carrying forward
 flagged regex shapes from the bash original.
 
-The B-0140 migration table classified migration *status* (kill-sh /
+The 081KQGDBJ0008QG0R0022EW5ZE migration table classified migration *status* (kill-sh /
 keep-sh / etc.) but did not measure migration *quality*. This audit
 shows the post-migration TS code is largely clean (38 of 56 files
 zero-finding) with concentrated debt in 5 files.
@@ -579,7 +579,7 @@ findings-eliminated-per-line-changed and risk profile.
 - **Concurrency:** none observed. The audit is read-only / synchronous
   per script per `spawnSync`; no `Promise.all` parallelism issues
   surfaced. No shared mutable state between files.
-- **Composes with B-0140:** the migration-status table answered
+- **Composes with 081KQGDBJ0008QG0R0022EW5ZE:** the migration-status table answered
   *"is the .sh / .ts pairing right?"*; this audit answers
   *"is the resulting TS substrate clean?"* — and the answer is
   *"clean except for 5 hot-spot files; the rest of the migration
@@ -587,7 +587,7 @@ findings-eliminated-per-line-changed and risk profile.
 
 Origin lineage:
 
-- B-0140 audit (the migration-status companion):
+- 081KQGDBJ0008QG0R0022EW5ZE audit (the migration-status companion):
   `docs/research/2026-05-04-b-0140-bash-to-ts-migration-audit-table.md`.
 - Root tsconfig:
   `/Users/acehack/Documents/src/repos/Zeta/tsconfig.json`

@@ -1,6 +1,6 @@
 # Kleisli prior-art in TypeScript — candidate libraries (the human maintainer (2026-05-28) scouting)
 
-Substrate-honest scouting for B-0917 (interrupt-substrate in monad space) when TS-side impl arrives. Not a selection; not an endorsement; not maintenance-state-verified.
+Substrate-honest scouting for 081KSNY2Z0008QG0R002HB4AGT (interrupt-substrate in monad space) when TS-side impl arrives. Not a selection; not an endorsement; not maintenance-state-verified.
 
 ## Three candidates the human maintainer surfaced 2026-05-28
 
@@ -12,11 +12,11 @@ Substrate-honest scouting for B-0917 (interrupt-substrate in monad space) when T
 
 ## When to consult
 
-Before authoring Kleisli substrate in TS scope (e.g., extending `src/Core.TypeScript/workflow-engine/` with Kleisli-shaped interrupt-context composition per B-0917 Slice E):
+Before authoring Kleisli substrate in TS scope (e.g., extending `src/Core.TypeScript/workflow-engine/` with Kleisli-shaped interrupt-context composition per 081KSNY2Z0008QG0R002HB4AGT Slice E):
 
 1. WebSearch each library for current maintenance + version per `.claude/rules/dep-pin-search-first-authority.md`
 2. Check fp-ts ecosystem state generally (fp-ts went through significant API changes in v2 → v3; ecosystem libraries may or may not have followed)
-3. Verify Kleisli semantics match B-0917 substrate-target (bifunctor IO vs monadic Kleisli vs general arrows)
+3. Verify Kleisli semantics match 081KSNY2Z0008QG0R002HB4AGT substrate-target (bifunctor IO vs monadic Kleisli vs general arrows)
 4. If both libraries unsuitable: substrate-honest reasoning for authoring own
 5. If kleisli-ts adoptable: composes with operator's `proud-if-pattern-propagates` filter — would the propagation be substrate-engineering proud?
 
@@ -48,7 +48,7 @@ Composes with `monad-propagation-pattern-cross-language-substrate-shape.md` cros
 
 ## Composes with
 
-- B-0917 — primary substrate-target this notes file supports
+- 081KSNY2Z0008QG0R002HB4AGT — primary substrate-target this notes file supports
 - `.claude/rules/dep-pin-search-first-authority.md` — discipline for impl-time library-version assertion
 - `.claude/rules/verify-existing-substrate-before-authoring.md` — prior-art before parallel-authoring
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Kleisli IS instance of monad-propagation pattern

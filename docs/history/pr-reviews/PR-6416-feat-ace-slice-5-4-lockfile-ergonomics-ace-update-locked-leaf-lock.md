@@ -27,7 +27,7 @@
 
 ## Description
 
-## Ace slice 5.4 — lockfile ergonomics (B-0973 / B-0974 / B-0975)
+## Ace slice 5.4 — lockfile ergonomics (081KT07NV0008QG0R002GV3MXW / 081KT07NV0008QG0R0028AAV0E / 081KT07NV0008QG0R003VDHWWG)
 
 Builds on slice 5.3 (lockfile `--frozen`/`--lockfile`, merged #6410). All
 **additive** — no solver change, no lock-format change (`format_version`
@@ -36,14 +36,14 @@ stays `1`). Spec #6412 (+ preflight fix-forward #6414, merged); plan
 
 ### What ships
 
-1. **`ace update <root>`** (B-0973 core) — re-solve within ranges + rewrite
+1. **`ace update <root>`** (081KT07NV0008QG0R002GV3MXW core) — re-solve within ranges + rewrite
    `./ace.lock`, **lock-only** (never extracts / `installPackage`). Runs the
    **same integrity preflight as install** (content_hash + store-key
    collision + `validatePackagePaths` over the resolved graph) **before**
    writing the lock; lock write failure is a **hard error** (the whole point
    of `update` is the lock). Leaf root → writes a leaf lock.
 
-2. **`ace install --locked`** (B-0974) — solve fresh, build the lockfile,
+2. **`ace install --locked`** (081KT07NV0008QG0R0028AAV0E) — solve fresh, build the lockfile,
    compare against the on-disk lock via `lockfilesEqual`; **drift → refuse
    installing nothing** (`run ace update`); match → proceed through the
    existing preflight + extract. Mutually exclusive with `--frozen`
@@ -51,7 +51,7 @@ stays `1`). Spec #6412 (+ preflight fix-forward #6414, merged); plan
    lock matches a fresh solve*; `--frozen` *replays the lock
    registry-independently*.
 
-3. **Leaf-install lockfiles** (B-0975 leaf piece) — leaf (no-dep) installs
+3. **Leaf-install lockfiles** (081KT07NV0008QG0R003VDHWWG leaf piece) — leaf (no-dep) installs
    now write a `buildLeafLockfile` (`nodes: []`); `--frozen` leaf reads +
    drift-gates the root; `--locked` leaf compares. Default leaf write is a
    warning (install already succeeded), matching the graph path.
@@ -76,8 +76,8 @@ shipped to the spec on main via **#6414**.
 
 ### Deferred (backlog)
 
-B-0973 `--package <name>` single-bump · B-0975 alphabetical node ordering +
-partial-merge · B-0971 remote registry (slice 6) · B-0972 single-fetch cache.
+081KT07NV0008QG0R002GV3MXW `--package <name>` single-bump · 081KT07NV0008QG0R003VDHWWG alphabetical node ordering +
+partial-merge · 081KT07NV0008QG0R000SJ34AK remote registry (slice 6) · 081KT07NV0008QG0R003659TWT single-fetch cache.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

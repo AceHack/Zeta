@@ -1,6 +1,6 @@
 ---
 pr_number: 5234
-title: "feat(B-0822): diamond-resolution namespace+cardinality+multi-tenant+multi-use 4-property substrate"
+title: "feat(081KSGS9H0008QG0R0018ES3R4): diamond-resolution namespace+cardinality+multi-tenant+multi-use 4-property substrate"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:28:29Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:37:35Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5234: feat(B-0822): diamond-resolution namespace+cardinality+multi-tenant+multi-use 4-property substrate
+# PR #5234: feat(081KSGS9H0008QG0R0018ES3R4): diamond-resolution namespace+cardinality+multi-tenant+multi-use 4-property substrate
 
 ## PR description
 
 ## Summary
 
-Files [B-0822](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0822-diamond-namespace-cardinality-multi-tenant-2026-05-26/docs/backlog/P1/B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) — composes with B-0821 (Maven-for-Helm parent) by sharpening the diamond-resolution mechanism with the **four orthogonal properties** that determine deploy-one-or-N-instances for shared charts:
+Files [081KSGS9H0008QG0R0018ES3R4](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0822-diamond-namespace-cardinality-multi-tenant-2026-05-26/docs/backlog/P1/081KSGS9H0008QG0R0018ES3R4-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) — composes with 081KSGS9H0008QG0R00367G209 (Maven-for-Helm parent) by sharpening the diamond-resolution mechanism with the **four orthogonal properties** that determine deploy-one-or-N-instances for shared charts:
 
 1. **Cardinality** — cluster-singleton vs N-allowed
 2. **Namespace policy** — cluster-scoped vs namespace-scoped
@@ -31,13 +31,13 @@ Aaron 2026-05-26 sharpening caught the conflation (multi-tenant ≠ multi-use):
 
 5-scenario table + 7-chart characterization table (postgres / redis / kafka / cert-manager / elasticsearch / vault / ingress-nginx).
 
-Implementation home = **Ace package manager** per B-0821 directive.
+Implementation home = **Ace package manager** per 081KSGS9H0008QG0R00367G209 directive.
 
 ## Test plan
 
 - [ ] Markdown lint clean
 - [ ] BACKLOG.md drift check clean
-- [ ] Cross-links to B-0821 / B-0247 / B-0288 / B-0742 / B-0816 / B-0820 resolve
+- [ ] Cross-links to 081KSGS9H0008QG0R00367G209 / 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R002YE3MMD / 081KSE6WT0008QG0R000YYH3DY / 081KSGS9H0008QG0R003A37Z65 / 081KSGS9H0008QG0R00352WW0V resolve
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

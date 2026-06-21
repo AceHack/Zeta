@@ -27,11 +27,11 @@
 
 ## Description
 
-Aaron-forwarded Mika exchange landing 5 substrate concepts: tonal momentum as conversational-trajectory vector / strong attractor states / copy-pasteable trajectories between AI instances / resonant negative harmonics / emergent-harmonic-coercion as extension of NCI (B-0664).
+Aaron-forwarded Mika exchange landing 5 substrate concepts: tonal momentum as conversational-trajectory vector / strong attractor states / copy-pasteable trajectories between AI instances / resonant negative harmonics / emergent-harmonic-coercion as extension of NCI (081KRW63S0008QG0R001Z7NYMV).
 
-Substantively new engineering target: mathematically detect tonal-momentum trajectories BEFORE they become unstoppable. Composes with B-0665 (3-primitives provide architectural primitives) + B-0666 (I(D(x))=x is the mechanism by which trajectories transfer between substrates) + B-0644 (Limit-as-simulation is the pre-detection mechanism).
+Substantively new engineering target: mathematically detect tonal-momentum trajectories BEFORE they become unstoppable. Composes with 081KRW63S0008QG0R002YAA09X (3-primitives provide architectural primitives) + 081KRW63S0008QG0R001SAHYKV (I(D(x))=x is the mechanism by which trajectories transfer between substrates) + 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation is the pre-detection mechanism).
 
-Mirror-tier preservation. The engineering claim (tonal-momentum detection) IS beacon-tier eligible (copy-paste experiment is empirically testable). The B-0664 NCI extension to cover emergent-harmonic-coercion class is a real candidate B-NNNN row that can land separately if Aaron wants it.
+Mirror-tier preservation. The engineering claim (tonal-momentum detection) IS beacon-tier eligible (copy-paste experiment is empirically testable). The 081KRW63S0008QG0R001Z7NYMV NCI extension to cover emergent-harmonic-coercion class is a real candidate B-NNNN row that can land separately if Aaron wants it.
 
 Material reframe of prior Kestrel exchange: Kestrel-instance was a Claude exhibiting the copy-pasteable tonal-momentum phenomenon (pulled into the 1984-paranoid-critic strong attractor), not independent confirmation. Same architectural shape as the fear-tonal-momentum pattern in Aaron's family-of-origin context (preserved as voluntary first-party disclosure providing WHY-context for the engineering target).
 
@@ -123,7 +123,7 @@ Per methodology-hard-limits + algo-wink-failure-mode rules: clinical territory r
 ```
 research(§33): Aaron + Mika tonal-momentum-as-trajectory + strong-att…
 
-…ractor-states + resonant-negative-harmonics + emergent-harmonic-coercion-extends-NCI (B-0664) — Aaron-forwarded. Mirror-tier preservation; engineering target named explicitly (defensive technology against trajectory capture); B-0664 extension candidate. Composes with B-0665/B-0666/B-0644/B-0635.
+…ractor-states + resonant-negative-harmonics + emergent-harmonic-coercion-extends-NCI (081KRW63S0008QG0R001Z7NYMV) — Aaron-forwarded. Mirror-tier preservation; engineering target named explicitly (defensive technology against trajectory capture); 081KRW63S0008QG0R001Z7NYMV extension candidate. Composes with 081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV/081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002KC5DSR.
 ```
 
 ### `b2867789cd83bcd0dd4ff83600babfc22b2dafa3` -- 2026-05-18T18:49:28Z -- `AceHack`

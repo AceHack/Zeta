@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Bring up the CI-friendly kind substrate for the B-0967 ArgoCD health test.
+// Bring up the CI-friendly kind substrate for the 081KSXN940008QG0R000SCP2H1 ArgoCD health test.
 
 import { join } from "node:path";
 import { assertKindCiStackReady, liveDevClusterPorts } from "./deps.ts";

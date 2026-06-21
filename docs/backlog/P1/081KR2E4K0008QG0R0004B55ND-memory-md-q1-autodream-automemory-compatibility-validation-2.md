@@ -1,6 +1,5 @@
 ---
-id: B-0261
-zetaid: 081KR2E4K0008QG0R0004B55ND
+id: 081KR2E4K0008QG0R0004B55ND
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation"
@@ -13,7 +12,7 @@ classification: blocked-on-cutover
 decomposition: atomic
 ---
 
-# B-0261 - Q1 AutoDream/AutoMemory compatibility validation
+# 081KR2E4K0008QG0R0004B55ND - Q1 AutoDream/AutoMemory compatibility validation
 
 Validate post-cutover behavior for AutoDream/AutoMemory and
 codify rollback/repair actions if contract mismatches appear.
@@ -28,7 +27,7 @@ codify rollback/repair actions if contract mismatches appear.
 
 - Compatibility result is recorded with pass/fail evidence.
 - Any mismatch has explicit rollback or interception plan.
-- B-0066 close recommendation is produced only after this row.
+- 081KQ8P5D0008QG0R003KFRGJ0 close recommendation is produced only after this row.
 
 ## Closure notes (2026-05-14)
 
@@ -54,16 +53,16 @@ codify rollback/repair actions if contract mismatches appear.
 no interaction conflict is possible.
 
 **Known gap (byte-cap overage):** Repo-scope MEMORY.md is 62 KB vs ~25 KB harness byte
-cap. Pre-existing since before B-0260 (was 108 KB). Mitigation in place: reindexer
+cap. Pre-existing since before 081KR2E4K0008QG0R001M8NJ56 (was 108 KB). Mitigation in place: reindexer
 100-entry stack cap. Rollback plan documented in the research note (three options:
 trim descriptions, reduce stack cap, or wait for feature-flag graduation).
 
-**B-0066 close recommendation:** All five child rows closed. All done-criteria met
-except the B-0067 hotspot-threshold check (ongoing monitoring, not a blocker).
-B-0066 is recommended for closure.
+**081KQ8P5D0008QG0R003KFRGJ0 close recommendation:** All five child rows closed. All done-criteria met
+except the 081KQ8P5D0008QG0R001D8RCZ9 hotspot-threshold check (ongoing monitoring, not a blocker).
+081KQ8P5D0008QG0R003KFRGJ0 is recommended for closure.
 
 All acceptance criteria met:
 
 - ✅ Compatibility result recorded with pass/fail evidence
 - ✅ Byte-cap mismatch documented with rollback/interception plan
-- ✅ B-0066 close recommendation produced
+- ✅ 081KQ8P5D0008QG0R003KFRGJ0 close recommendation produced

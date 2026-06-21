@@ -22,7 +22,7 @@ type DynamicValueType =
 /// A self-describing runtime value tree for shapes that are NOT known at compile
 /// time (the "Dynamic runtime objects / polymorphic shape" line in
 /// `docs/PRIMITIVE-REGISTRY.md`; the Eve-Protocol polymorphic-diplomacy
-/// primitive, B-0638). Distinct from the static `ISerializer<'T>` seam in
+/// primitive, 081KRW63S0008QG0R0030F8ZXA). Distinct from the static `ISerializer<'T>` seam in
 /// `Serializer.fs` (which is for types known at compile time) and a NEW shape —
 /// deliberately not a generalization of the observe oracle's `Json` tree.
 ///
@@ -790,7 +790,7 @@ module DynamicValue =
     /// int64 precision is preserved by parsing the number token as text,
     /// never via a float. Surfaced as data via `Result`, never thrown. Mirrors the TS/C#/Rust decoder.
     let fromCanonicalJson (json: string) : Result<DynamicValue, DecodeError> =
-        // Totality (B-1018): a null input is not an exception — treat it as empty (no value),
+        // Totality (081KT7YW00008QG0R0019J8FSX): a null input is not an exception — treat it as empty (no value),
         // which takes the clean-Error path. The decoder returns Result on EVERY input.
         // (`System.Object.ReferenceEquals` — the module-local `isNull` is DynamicValue→bool.)
         let json = if System.Object.ReferenceEquals(json, null) then "" else json
@@ -1159,7 +1159,7 @@ module DynamicValue =
     /// insignificant whitespace, leading zeros) as `DecodeError.NonCanonical`. Surfaced as
     /// data via `Result`, never thrown. Mirrors the TS decoder.
     let fromCanonicalXml (xml: string) : Result<DynamicValue, DecodeError> =
-        // Totality (B-1018): a null input is not an exception — treat it as empty (no value),
+        // Totality (081KT7YW00008QG0R0019J8FSX): a null input is not an exception — treat it as empty (no value),
         // which takes the clean-Error path. The decoder returns Result on EVERY input.
         // (`System.Object.ReferenceEquals` — the module-local `isNull` is DynamicValue→bool.)
         let xml = if System.Object.ReferenceEquals(xml, null) then "" else xml

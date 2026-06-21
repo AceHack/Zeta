@@ -1,6 +1,5 @@
 ---
-id: B-0114
-zetaid: 081KQDTYV0008QG0R003QD8YTE
+id: 081KQDTYV0008QG0R003QD8YTE
 priority: P2
 status: open
 title: Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)
@@ -17,7 +16,7 @@ tags: [alexa-2026-04-30, peer-review-finding, factory-hygiene, mechanism-not-vig
 type: friction-reducer
 ---
 
-# B-0114 — Three quality-gate improvements (Alexa peer review 2026-04-30)
+# 081KQDTYV0008QG0R003QD8YTE — Three quality-gate improvements (Alexa peer review 2026-04-30)
 
 ## Source
 
@@ -154,9 +153,9 @@ optimization, no correctness impact.
 
 ## Composes with
 
-- **B-0113 (CURRENT-staleness mechanical check)** — same
-  mechanism-not-vigilance pattern, different surface. B-0113
-  watches CURRENT-file freshness; B-0114 watches lint+links+
+- **081KQDTYV0008QG0R002424VSE (CURRENT-staleness mechanical check)** — same
+  mechanism-not-vigilance pattern, different surface. 081KQDTYV0008QG0R002424VSE
+  watches CURRENT-file freshness; 081KQDTYV0008QG0R003QD8YTE watches lint+links+
   thread-resolution efficiency. Could share infrastructure
   (script-style hygiene checks under `tools/hygiene/`).
 - **Otto-341 lint-suppression discipline** — the response to
@@ -196,23 +195,23 @@ Original 3-subitem framing was too coarse (mistake assumed per "always re-decomp
 
 **Buildable now (no deps, S-effort each):**
 
-- B-0409 — TS pre-push hook entrypoint (skeleton + --no-verify discipline)
-- B-0410 — Memory path regex extractor + resolver (iterative-broaden, allowlist)
+- 081KRA5AR0008QG0R000Y6102S — TS pre-push hook entrypoint (skeleton + --no-verify discipline)
+- 081KRA5AR0008QG0R0035N4S6C — Memory path regex extractor + resolver (iterative-broaden, allowlist)
 
-**Blocked on B-0409:**
+**Blocked on 081KRA5AR0008QG0R000Y6102S:**
 
-- B-0411 — Port/integrate 3 hygiene lints (markdown, conflict-markers, tick-order) into pre-push TS hook
+- 081KRA5AR0008QG0R000C3P8KP — Port/integrate 3 hygiene lints (markdown, conflict-markers, tick-order) into pre-push TS hook
 
-**Blocked on B-0410:**
+**Blocked on 081KRA5AR0008QG0R0035N4S6C:**
 
-- B-0412 — Full memory-link checker CLI (walk memory/**, report format, exit-nonzero)
+- 081KRA5AR0008QG0R000YZMXNM — Full memory-link checker CLI (walk memory/**, report format, exit-nonzero)
 
-**Blocked on B-0409 + B-0410:**
+**Blocked on 081KRA5AR0008QG0R000Y6102S + 081KRA5AR0008QG0R0035N4S6C:**
 
-- B-0413 — Batched thread resolver TS helper (aliased GraphQL, PR# filter)
+- 081KRA5AR0008QG0R003DVPANH — Batched thread resolver TS helper (aliased GraphQL, PR# filter)
 
-**Blocked on B-0409 + B-0411 + B-0412 + B-0413:**
+**Blocked on 081KRA5AR0008QG0R000Y6102S + 081KRA5AR0008QG0R000C3P8KP + 081KRA5AR0008QG0R000YZMXNM + 081KRA5AR0008QG0R003DVPANH:**
 
-- B-0414 — Setup integration + BACKLOG.md index update + claim close (meta)
+- 081KRA5AR0008QG0R0021SSM9R — Setup integration + BACKLOG.md index update + claim close (meta)
 
 This decomposition is the single bounded step. Implementation of children follows in subsequent PRs.

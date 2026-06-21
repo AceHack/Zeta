@@ -446,9 +446,9 @@ GPT-5.5's actual overnight behaviour.
   a chance instead"* — confirms the target is GPT-5.5
   under Codex CLI, not generic "any non-Opus harness."
 - Aaron 2026-05-02 ~12:46Z verification: lane-split work
-  Aaron asked about IS landed — PR #1185 (B-0125, CI
+  Aaron asked about IS landed — PR #1185 (081KQGDBJ0008QG0R001MK4YPC, CI
   path-filter skipping F#/dotnet on docs-only PRs,
-  merged 2026-05-02 00:58Z) + PR #1189 (B-0144, rung-2
+  merged 2026-05-02 00:58Z) + PR #1189 (081KQGDBJ0008QG0R0021E8YZV, rung-2
   doc/code two-lane parallel-subagent dispatch protocol,
   merged 2026-05-02 01:40Z). Both landed early in
   Aaron's rest before the no-op drift began.

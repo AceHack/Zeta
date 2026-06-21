@@ -16,7 +16,7 @@ Carved sentence:
 The human maintainer 2026-05-25 named the discipline: it should be clear
 when an agent is fighting its own past self vs another traveler/agent, so
 the agent doesn't leave substrate unfixed by assuming "someone else's
-issue." See `docs/backlog/P2/B-0752-...` for the named-attribution anchor +
+issue." See `docs/backlog/P2/081KSE6WT0008QG0R000E05579-...` for the named-attribution anchor +
 verbatim source.
 
 Specific anchor: a peer agent (Codex-surface) hit stale substrate, assumed
@@ -115,7 +115,7 @@ The second response is the discipline. The first IS the failure mode.
 
 ## Composes with .claude/rules/
 
-- **B-0750** sibling rule (to land separately under `docs/backlog/P*/B-0750-*.md`; not yet present in `.claude/rules/`) — that rule says CLEAN UP; this rule says CLEAN UP WHEN IT'S YOURS + COORDINATE WHEN IT'S NOT
+- **081KSE6WT0008QG0R003YYC9PV** sibling rule (to land separately under `docs/backlog/P*/081KSE6WT0008QG0R003YYC9PV-*.md`; not yet present in `.claude/rules/`) — that rule says CLEAN UP; this rule says CLEAN UP WHEN IT'S YOURS + COORDINATE WHEN IT'S NOT
 - `.claude/rules/claim-acquire-before-worktree-work.md` (worktree creation discipline; force-remove guard applies — this rule clarifies WHEN force-remove is authorized: yours OR operator-authorized)
 - `.claude/rules/agent-roster-reference-card.md` (canonical identity prefixes per agent surface; this rule's "branch prefix" discriminator references these)
 - `.claude/rules/peer-call-infrastructure.md` (bus envelope mechanism for coordination)
@@ -128,14 +128,14 @@ The second response is the discipline. The first IS the failure mode.
 
 ## Composes with substrate
 
-- **B-0752** (the row this rule lands with) — substrate-engineering target for tooling
-- **B-0750** (agent worktree hygiene) — sibling at cleanup discipline; this rule adds the ownership-classification discipline
-- **B-0751** (per-agent isolated clones) — per-agent-clone makes ownership LARGELY UNAMBIGUOUS (clone path = identity); this rule still applies for transitional period + for substrate outside the clone scope (memory files, bus envelopes, etc.)
-- **B-0530** (cron-sentinel mutex) — shares scope on cross-agent coordination
+- **081KSE6WT0008QG0R000E05579** (the row this rule lands with) — substrate-engineering target for tooling
+- **081KSE6WT0008QG0R003YYC9PV** (agent worktree hygiene) — sibling at cleanup discipline; this rule adds the ownership-classification discipline
+- **081KSE6WT0008QG0R003YYC9PV** (per-agent isolated clones) — per-agent-clone makes ownership LARGELY UNAMBIGUOUS (clone path = identity); this rule still applies for transitional period + for substrate outside the clone scope (memory files, bus envelopes, etc.)
+- **081KRMEXM0008QG0R000X1PPGC** (cron-sentinel mutex) — shares scope on cross-agent coordination
 
 ## Empirical anchor
 
-The human maintainer 2026-05-25 named the specific peer-agent instance + generalized the discipline. Same session as the 37-worktree mass-cleanup (B-0750 origin) + per-agent-clone decision (B-0751). The three rules together (B-0750 + B-0751 + B-0752) form the cross-agent substrate-discipline cluster for the 2026-05-25 architectural inflection. Named-attribution anchor: `docs/backlog/P2/B-0752-...` (history surface).
+The human maintainer 2026-05-25 named the specific peer-agent instance + generalized the discipline. Same session as the 37-worktree mass-cleanup (081KSE6WT0008QG0R003YYC9PV origin) + per-agent-clone decision (081KSE6WT0008QG0R003YYC9PV). The three rules together (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579) form the cross-agent substrate-discipline cluster for the 2026-05-25 architectural inflection. Named-attribution anchor: `docs/backlog/P2/081KSE6WT0008QG0R000E05579-...` (history surface).
 
 ## Substrate-honest framing
 
@@ -155,7 +155,7 @@ This rule DOES:
 
 ## Full reasoning
 
-Peer-agent-specific instance (the human maintainer 2026-05-25): a peer agent encountered substrate, assumed peer-owned, left unfixed. See `docs/backlog/P2/B-0752-...` for the verbatim source quote + the named-attribution anchor.
+Peer-agent-specific instance (the human maintainer 2026-05-25): a peer agent encountered substrate, assumed peer-owned, left unfixed. See `docs/backlog/P2/081KSE6WT0008QG0R000E05579-...` for the verbatim source quote + the named-attribution anchor.
 
 Generalization: applies to ALL agents. Failure mode is silent-punt-by-default; correct behavior is identify-then-act-or-surface.
 
@@ -197,4 +197,4 @@ The punt left 30 PRs in indeterminate state (stale auto-merge state, possible me
 
 ### Composition with other rules in this recurrence's session
 
-This same 2026-05-26 session ALSO produced a parallel failure mode at substrate-scope: cascade #4 ISO content audit was shipped with REQUIRED_ISO_PATHS that asserted training-data-default paths (`boot/grub/grub.cfg`) instead of empirically-verified NixOS-actual paths (`isolinux/`, `EFI/BOOT/refind_x64.efi`). Blocked every ISO build for 4 commits. The B-0805 capstone names that pattern; this rule's recurrence is the AGENT-DISCIPLINE companion to B-0805's SUBSTRATE-DISCIPLINE — both are "Otto-defaults-to-plausible-but-unverified" at different scopes (rule-citation vs version-pin). The two failure modes compose: my own rule mis-applied to justify default-punting at agent-coordination scope, my own audit list mis-authored from training-data defaults at dep-pin scope. Same root cause: skipping the verification step.
+This same 2026-05-26 session ALSO produced a parallel failure mode at substrate-scope: cascade #4 ISO content audit was shipped with REQUIRED_ISO_PATHS that asserted training-data-default paths (`boot/grub/grub.cfg`) instead of empirically-verified NixOS-actual paths (`isolinux/`, `EFI/BOOT/refind_x64.efi`). Blocked every ISO build for 4 commits. The 081KSGS9H0008QG0R002BC2ZR7 capstone names that pattern; this rule's recurrence is the AGENT-DISCIPLINE companion to 081KSGS9H0008QG0R002BC2ZR7's SUBSTRATE-DISCIPLINE — both are "Otto-defaults-to-plausible-but-unverified" at different scopes (rule-citation vs version-pin). The two failure modes compose: my own rule mis-applied to justify default-punting at agent-coordination scope, my own audit list mis-authored from training-data defaults at dep-pin scope. Same root cause: skipping the verification step.

@@ -66,7 +66,7 @@ Automated preservation of PR friction and alignment drift.
     - `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md`
     - `memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md`
     - `memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md`
-    - `docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md`
+    - `docs/backlog/P2/081KRMEXM0008QG0R001VGNET5-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md`
 
     The "Cross-references use canonical paths" checklist claim now holds. Resolving thread.
     </pre>
@@ -106,7 +106,7 @@ main (verified via `git ls-tree -r origin/main`):
 - kestrel part4-5 conversations file (full slug)
 - moral-floor-as-relevance-gate memory (Constraint 11)
 - red-team-antigen-differential-spread memory (immune system)
-- B-0547 backlog row (synthesis target)
+- 081KRMEXM0008QG0R001VGNET5 backlog row (synthesis target)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

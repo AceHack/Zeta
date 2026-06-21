@@ -421,9 +421,9 @@ outside CD and inside Clifford") — reflects DEEPER substrate-structure
 non-self-referentiality makes inside-position meaningful + necessary).
 
 Composes with framework self-reference substrate:
-- B-0666 English-as-projection / I(D(x))=x keystone (self-ref at
+- 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x keystone (self-ref at
   language scope)
-- B-0623 Adinkras Gates SUSY-ECC (error-correcting via self-reference
+- 081KRW63S0008QG0R000QJR08H Adinkras Gates SUSY-ECC (error-correcting via self-reference
   of substrate)
 - Recursive types in F# / type-theory
 - DST-omniscience (PR #5841): self-reference IS computational omniscience

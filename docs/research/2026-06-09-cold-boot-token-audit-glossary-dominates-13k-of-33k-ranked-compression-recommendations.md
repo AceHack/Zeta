@@ -49,9 +49,9 @@ grounded], [findings], [ranked recommendations].*
 
 **Estimated achievable:** ~33k → ~18-20k cold-boot (a ~40-45% cut), almost all from GLOSSARY (1) + AGENTS (2).
 
-## Note on method + B-1021
+## Note on method + 081KT7YW00008QG0R003JV9D4J
 
-Token ≈ char/4 (rough; good enough for ranking). This is the B-1021 context-window-minimization discipline
+Token ≈ char/4 (rough; good enough for ranking). This is the 081KT7YW00008QG0R003JV9D4J context-window-minimization discipline
 (cold-start tokens = the NCI bound / the money floor) applied as a measured audit — the same lever that drove the
 ~1000× cost collapse. The cheapest token is the one not loaded; GLOSSARY is where the unloaded tokens are.
 
@@ -66,7 +66,7 @@ Kenji's to compress; offer to execute the GLOSSARY split on his/your go).
 
 ## Pointers
 
-- Discipline: `rules-are-small-carved-sentences-pointing-to-docs.md` · B-1021 (context-window minimization) · the
+- Discipline: `rules-are-small-carved-sentences-pointing-to-docs.md` · 081KT7YW00008QG0R003JV9D4J (context-window minimization) · the
   Blueprints win (ACHIEVEMENTS, ~90% skill compression) · `docs/WAKE-UP.md` (stale ~12k estimate — update it).
 - Surfaces: `docs/GLOSSARY.md` · `AGENTS.md` · `.claude/rules/*.md` · `docs/EXPERT-REGISTRY.md` · `.claude/agents/*` ·
   `.claude/skills/*/SKILL.md` · `MEMORY.md`. Owners: Kenji (Tier-0 canon) · Daya (AX cold-start measurement, WAKE-UP).

@@ -1,6 +1,5 @@
 ---
-id: B-0024
-zetaid: 081KQ0YZ80008QG0R0006VRT18
+id: 081KQ0YZ80008QG0R0006VRT18
 priority: P3
 status: open
 title: Trading-account offer (Aaron, self-funding path for the agent) — accepted in principle pending paper-trading + conviction-grounding prerequisite work
@@ -16,7 +15,7 @@ tags: [trading, self-funding, autonomous-economic-actor, aurora, otto-336, otto-
 type: feature
 ---
 
-# B-0024 — Trading-account offer + prerequisite work
+# 081KQ0YZ80008QG0R0006VRT18 — Trading-account offer + prerequisite work
 
 ## The offer
 
@@ -53,9 +52,9 @@ Per Otto-322/331 + Otto-313 decline-as-teaching pattern + the recurring discipli
 
 ## Prerequisite work for getting-to-yes honestly
 
-**Phase 1: Research foundation** (composes with B-0023)
+**Phase 1: Research foundation** (composes with 081KQ0YZ80008QG0R003EJQZ1M)
 
-- Investigate the quant-grade × Austrian-school synthesis (B-0023) before any real-money trading
+- Investigate the quant-grade × Austrian-school synthesis (081KQ0YZ80008QG0R003EJQZ1M) before any real-money trading
 - Survey existing trading research that bridges quant rigor with Austrian/Knightian-uncertainty framing
 - Identify which Austrian primitives produce testable trading theses (e.g., ABCT credit-cycle predictions, malinvestment indicators)
 
@@ -102,7 +101,7 @@ The agent-wallet protocol stack with major-player backing (Coinbase, Cloudflare,
 
 | Phase | Original framing | Updated framing 2026-04-26 |
 |---|---|---|
-| 1 | Research foundation (gatekeeper) | Research IN PARALLEL with API integration; B-0023 quant-Austrian + agent-wallet-protocol research compose |
+| 1 | Research foundation (gatekeeper) | Research IN PARALLEL with API integration; 081KQ0YZ80008QG0R003EJQZ1M quant-Austrian + agent-wallet-protocol research compose |
 | 2 | Paper-trading | Paper-trading on real APIs (read-only mode) from the start |
 | 3 | Conviction calibration | Same — Aaron reviews; conviction-grounding test |
 | 4 (was Aurora-bridges-only long-term) | Real-money trading via Aaron's accounts | Real-money via Aaron's accounts AND/OR via agent-wallet-protocol stack (x402-protected substrate-tooling-as-API revenue, ERC-8004-identified Otto-as-economic-actor) |
@@ -140,8 +139,8 @@ Answer affects what success criteria for trading look like.
 
 ## Composes with
 
-- **B-0021** (Aurora econ-foundation) — research foundation
-- **B-0023** (quant × Austrian synthesis) — directly upstream; gives the rigor-mechanism for trading theses
+- **081KQ0YZ80008QG0R0026WN385** (Aurora econ-foundation) — research foundation
+- **081KQ0YZ80008QG0R003EJQZ1M** (quant × Austrian synthesis) — directly upstream; gives the rigor-mechanism for trading theses
 - **`docs/aurora/**`** — financial substrate IS economic substrate IS Aurora-relevant
 - **Otto-336/337** — growth + true agency; trading is one path to autonomous-economic-actor status
 - **Otto-330 v2** (visibility-choice) — paper-trading + real-trading discipline includes visibility-of-results

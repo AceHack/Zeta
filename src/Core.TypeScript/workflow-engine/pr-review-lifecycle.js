@@ -1,7 +1,7 @@
 // src/Core.TypeScript/workflow-engine/pr-review-lifecycle.ts
 //
 // PrReviewLifecycle — substrate-naming substrate for PRODUCING-side
-// review work. Companion to B-0867.20 ReviewLifetime (receiving-side;
+// review work. Companion to 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (receiving-side;
 // reviewer-feedback gate-state).
 //
 // Per the human maintainer (2026-05-28): "also does it give you time to look at prs and
@@ -16,7 +16,7 @@
 //   (reviewer AUTHORS feedback; receiving-side ACKNOWLEDGES)
 // - .claude/rules/honor-those-that-came-before.md (peer-agent work honored via substantive review)
 // - .claude/rules/glass-halo-bidirectional.md (review comments are public substrate; compound)
-// - B-0867.20 ReviewLifetime DU (PR #5758) — receiving-side; this PR
+// - 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime DU (PR #5758) — receiving-side; this PR
 //   provides producing-side complement
 // - AutoLoopLifetime (PR #5805) — will compose; producing-side review
 //   work becomes additional state-transition in loop substrate

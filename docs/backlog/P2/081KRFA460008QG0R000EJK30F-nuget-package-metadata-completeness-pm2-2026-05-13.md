@@ -1,11 +1,10 @@
 ---
-id: B-0447
-zetaid: 081KRFA460008QG0R000EJK30F
+id: 081KRFA460008QG0R000EJK30F
 priority: P2
 status: open
 title: "NuGet package metadata completeness — description, tags, SourceLink, semantic versioning"
 type: friction-reducer
-origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
+origin: PM-2 gap-prediction pass (081KR2E4K0008QG0R003VB7ZZR) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: []
@@ -13,7 +12,7 @@ composes_with: [081KQGDBJ0008QG0R002NV04N9]
 tags: [nuget, package-metadata, discoverability, sourcelink, versioning, dotnet]
 ---
 
-# B-0447 — NuGet package metadata completeness
+# 081KRFA460008QG0R000EJK30F — NuGet package metadata completeness
 
 ## PM-2 signal
 
@@ -50,7 +49,7 @@ so debugger source-navigation works for downstream consumers.
 
 ## Why now
 
-The Aurora pitch (PR #2924) and B-0154 (GitHub Pages SEO) are preparing
+The Aurora pitch (PR #2924) and 081KQGDBJ0008QG0R002NV04N9 (GitHub Pages SEO) are preparing
 the external-consumption story. A NuGet package with no description and
 a static version looks abandoned and is invisible to search.
 

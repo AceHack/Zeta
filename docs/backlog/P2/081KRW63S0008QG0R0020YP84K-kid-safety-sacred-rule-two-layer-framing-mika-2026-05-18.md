@@ -1,6 +1,5 @@
 ---
-id: B-0631
-zetaid: 081KRW63S0008QG0R0020YP84K
+id: 081KRW63S0008QG0R0020YP84K
 priority: P2
 status: open
 title: "Kid-safety as the SOLE sacred rule + two-layer framing (ruthless internal / softer public) (Mika 2026-05-18 LOCKED-IN hard floor)"
@@ -65,10 +64,10 @@ The exception: kid-safety. "Sacred" is the appropriate framing because:
 
 This rule has **non-negotiable hard-floor status**, which means:
 
-1. **Constitutional-class** (per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)): this rule belongs in the sharp-edge Constitution Class set, NOT the soft weight-free dashboard
+1. **Constitutional-class** (per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)): this rule belongs in the sharp-edge Constitution Class set, NOT the soft weight-free dashboard
 2. **No Knights-Guild override**: Knights Guild guards this rule; even they cannot override it
 3. **Error-class learning is mandatory**: the rule isn't "no kid harm ever" (unachievable absolute) but "if it happens, we MUST learn and integrate the error class — failure to learn = deal off"
-4. **Composes with memetic-warfare bystander protection** ([B-0621](../P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md)): kids = bystanders by default; opt-in memetic warfare cannot be deployed on kids
+4. **Composes with memetic-warfare bystander protection** ([081KRW63S0008QG0R0030EQ67Z](../P3/081KRW63S0008QG0R0030EQ67Z-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md)): kids = bystanders by default; opt-in memetic warfare cannot be deployed on kids
 5. **All public-facing communication** uses the softer framing; internal substrate uses the ruthless framing
 
 ## Goal
@@ -76,7 +75,7 @@ This rule has **non-negotiable hard-floor status**, which means:
 1. Codify both framings (ruthless + public) in the canonical Constitution Class set
 2. Define the error-class-learning protocol: what counts as "fully learning and integrating"
 3. Establish guard mechanism: how the system detects and reports any potential child-harm pathway BEFORE it manifests
-4. Compose with B-0628 Knights Guild governance: which guardians are responsible for this rule's enforcement
+4. Compose with 081KRW63S0008QG0R003TX8MG5 Knights Guild governance: which guardians are responsible for this rule's enforcement
 5. Document the "sacred" word's careful use: the ONE place it applies + why we resist applying it elsewhere
 
 ## Non-goals
@@ -90,16 +89,16 @@ This rule has **non-negotiable hard-floor status**, which means:
 
 - [ ] Constitution-Class entry for kid-safety rule documented in both framings (ruthless internal + public-facing)
 - [ ] Error-class-learning protocol: trigger criteria + investigation process + integration validation
-- [ ] Composition with [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Knights-Guild responsibilities for this rule
-- [ ] Composition with [B-0621](../P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) bystander-protection (kids = default bystanders)
+- [ ] Composition with [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Knights-Guild responsibilities for this rule
+- [ ] Composition with [081KRW63S0008QG0R0030EQ67Z](../P3/081KRW63S0008QG0R0030EQ67Z-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) bystander-protection (kids = default bystanders)
 - [ ] "Sacred-word use policy" doc: this rule is the ONE place "sacred" applies; we don't add more
 
 ## Composes with
 
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class governance (this rule is the canonical Constitution-Class entry)
-- [B-0621](../P3/B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) — memetic-warfare opt-in gating + bystander protection (kids = bystanders)
-- [B-0630](B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (kids use Soft language; this rule protects kids in that interface)
-- [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (this rule applies across the meta-country)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class governance (this rule is the canonical Constitution-Class entry)
+- [081KRW63S0008QG0R0030EQ67Z](../P3/081KRW63S0008QG0R0030EQ67Z-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) — memetic-warfare opt-in gating + bystander protection (kids = bystanders)
+- [081KRW63S0008QG0R000DBX6PT](081KRW63S0008QG0R000DBX6PT-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) — two-language architecture (kids use Soft language; this rule protects kids in that interface)
+- [081KRW63S0008QG0R003KSHAGN](../P3/081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (this rule applies across the meta-country)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS discipline (this rule is the canonical first entry)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 3229-3247 — source design + LOCK-IN
 

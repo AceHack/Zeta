@@ -1,6 +1,5 @@
 ---
-id: B-0846
-zetaid: 081KSGS9H0008QG0R003X5Y2A5
+id: 081KSGS9H0008QG0R003X5Y2A5
 priority: P2
 status: open
 title: installer WiFi-reproducibility — cache.nixos.org timeouts hang nixos-install on same N derivations; closure-baking into ISO + extra-substituters + Cachix mirror for reproducible-over-WiFi target (Aaron 2026-05-26)
@@ -88,7 +87,7 @@ Once the cluster is up:
 3. Subsequent node-adds + iterations pull from local LAN at gigabit instead of WiFi-to-CDN
 4. Closes the home-lab reproducibility loop: cluster self-serves its own derivations
 
-This depends on B-0831 cascade #6 + the cluster being operational; sequencing matters.
+This depends on 081KSGS9H0008QG0R0011BC7T2 cascade #6 + the cluster being operational; sequencing matters.
 
 ## Acceptance
 
@@ -114,16 +113,16 @@ This depends on B-0831 cascade #6 + the cluster being operational; sequencing ma
 
 ## Composes with
 
-- B-0831 cascade #6 (CI testing infrastructure — Phase 1 closure-baking test belongs in CI)
-- B-0832 (nmtui WiFi rescan — operator's first networking touchpoint)
-- B-0833 (gh auth — closure-baking eliminates gh download from install path; doesn't help with auth itself)
-- B-0834 (preserve install log — diagnostic surface for future cache timeouts)
-- B-0835 (Bug 1 + Bug 3b — install completes; this row makes install RESILIENT)
+- 081KSGS9H0008QG0R0011BC7T2 cascade #6 (CI testing infrastructure — Phase 1 closure-baking test belongs in CI)
+- 081KSGS9H0008QG0R001Q2DH2H (nmtui WiFi rescan — operator's first networking touchpoint)
+- 081KSGS9H0008QG0R003JNSVR5 (gh auth — closure-baking eliminates gh download from install path; doesn't help with auth itself)
+- 081KSGS9H0008QG0R001RR3ZXQ (preserve install log — diagnostic surface for future cache timeouts)
+- 081KSGS9H0008QG0R00120EEHM (Bug 1 + Bug 3b — install completes; this row makes install RESILIENT)
 - `.claude/rules/dep-pin-search-first-authority.md` — Phase 2 substituter list MUST WebSearch + verify current cachix.org URLs + pubkeys at implementation time
 
 ## Bounded-fix shipped today (different PR scope)
 
-This same PR (B-0846 row authored here) ALSO ships the bounded mitigation in `full-ai-cluster/usb-nixos-installer/zeta-install.sh`:
+This same PR (081KSGS9H0008QG0R003X5Y2A5 row authored here) ALSO ships the bounded mitigation in `full-ai-cluster/usb-nixos-installer/zeta-install.sh`:
 
 - `--fallback` so nix builds-from-source when substitute download fails
 - `--option connect-timeout 10` so dead substituters drop fast (vs default 0=infinity)
@@ -150,8 +149,8 @@ The "same 5 files twice in 300s" empirical anchor is what makes this a structura
 
 Sub-rows likely needed:
 
-- B-0846.1: Phase 1 closure-baking implementation + ISO size tradeoff documentation
-- B-0846.2: Phase 2 nix-community.cachix.org substituter addition + pubkey verification (WebSearch per dep-pin rule at implementation time)
-- B-0846.3: Phase 3 home-lab attic/harmonia mirror (depends on cluster operational)
+- 081KSGS9H0008QG0R003X5Y2A5.1: Phase 1 closure-baking implementation + ISO size tradeoff documentation
+- 081KSGS9H0008QG0R003X5Y2A5.2: Phase 2 nix-community.cachix.org substituter addition + pubkey verification (WebSearch per dep-pin rule at implementation time)
+- 081KSGS9H0008QG0R003X5Y2A5.3: Phase 3 home-lab attic/harmonia mirror (depends on cluster operational)
 
 To be filed as the row matures + Phase 1 is implementable.

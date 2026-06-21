@@ -7,7 +7,7 @@ slug: local-first-crdt-primitives-on-z-set-lww-register-or-set-rga
 title: "Local-first CRDT primitives on Z-set (LWW-Register/OR-Set/RGA) + PSI as a private Z-set intersection"
 created: 2026-06-07T13:35:24.930Z
 depends_on: []
-composes_with: ["B-0959"]
+composes_with: ["081KSXN940008QG0R003FCQ7WT"]
 ---
 
 # Local-first CRDT primitives on Z-set (LWW-Register/OR-Set/RGA) + PSI as a private Z-set intersection
@@ -38,7 +38,7 @@ merge). The local-first community relies on a few more:
 - **PSI (private set intersection)** as a PRIVATE Z-set intersection over the PQ `.zc` privacy transform —
   find joins without revealing plaintext.
 
-Each as a Z-set/Bag-shaped primitive with the 4-lang byte-lock + golden vectors (B-0959). Full prior-art:
+Each as a Z-set/Bag-shaped primitive with the 4-lang byte-lock + golden vectors (081KSXN940008QG0R003FCQ7WT). Full prior-art:
 `docs/research/ip-questionable/2026-06-07-catherine-nimisha-privacy-first-...md`.
 
 ## Acceptance
@@ -50,4 +50,4 @@ local-first/CRDT Beacon entries.
 ## Anchors
 
 - CRDTs (Shapiro 2011) · local-first (Ink & Switch 2019) · `GSet`/`GCounter`/`Bag`/`ZSet` · `.zc` privacy
-  transform (B-0883/B-0982) · B-0959 (4-oracle checklist) · manifesto §6 consent-first.
+  transform (081KSNY2Z0008QG0R002JKH50A/081KT07NV0008QG0R0032MCYER) · 081KSXN940008QG0R003FCQ7WT (4-oracle checklist) · manifesto §6 consent-first.

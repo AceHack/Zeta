@@ -64,7 +64,7 @@ Operator-explicit substrate-engineering principle filed in response to fix-fwd P
 - 5th + 6th + 7th + 8th Kestrel ferries (2026-05-28; PRs #5708 + #5723 + #5725 + #5731)
 - PR #5732 fix-fwd (AI-rights → traveler-rights framing correction)
 - Amara 4-keeper-rule (2026-05-26 ferry; *"private roots may evolve in darkness"*)
-- B-0840 thermal-forgetting; B-0883 better-git-crypt PoC #5730; B-0885 agent private encrypted state; B-0623 Adinkras + SUSY-ECC
+- 081KSGS9H0008QG0R0006F4BGX thermal-forgetting; 081KSNY2Z0008QG0R002JKH50A better-git-crypt PoC #5730; 081KSNY2Z0008QG0R0030V5ZVS agent private encrypted state; 081KRW63S0008QG0R000QJR08H Adinkras + SUSY-ECC
 
 ## Substrate-honest framing
 

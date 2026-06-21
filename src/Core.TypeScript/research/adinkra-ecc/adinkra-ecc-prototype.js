@@ -1,6 +1,6 @@
 // tools/research/adinkra-ecc/adinkra-ecc-prototype.ts
 //
-// B-0623 acceptance #3 — "one constructive proof path: small Adinkra → ECC code →
+// 081KRW63S0008QG0R000QJR08H acceptance #3 — "one constructive proof path: small Adinkra → ECC code →
 // cryptographic primitive." Toy scale, test-guarded.
 //
 // The primer (docs/research/2026-05-21-adinkra-primer-for-non-physicists-zeta-substrate-context.md)
@@ -13,7 +13,7 @@
 // code AND give it ECC error-resistance), and derives a deterministic key-seed
 // from it (the "code → key" path). The point is the constructive proof that ONE
 // structure yields both the ECC (protect-from-errors) and key material
-// (protect-from-being-seen) — B-0623's dual-use claim, at toy scale.
+// (protect-from-being-seen) — 081KRW63S0008QG0R000QJR08H's dual-use claim, at toy scale.
 //
 // SUBSTRATE-HONESTY (per the primer's razor note): deriving key MATERIAL from the
 // code is a deterministic construction; turning it into a production key needs a

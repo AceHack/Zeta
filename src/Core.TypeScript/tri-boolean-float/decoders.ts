@@ -1,4 +1,4 @@
-// Tri-boolean float -- decoder-semantics EXPLORATION (B-0944 slice 5, "try a few designs").
+// Tri-boolean float -- decoder-semantics EXPLORATION (081KSV2WD0008QG0R00051XS0N slice 5, "try a few designs").
 //
 // The operator ratified v0 = radix-point + unsigned, AND asked to "try a few different designs
 // unless it's obviously right." It is NOT obviously right (genuine tradeoff), so this module

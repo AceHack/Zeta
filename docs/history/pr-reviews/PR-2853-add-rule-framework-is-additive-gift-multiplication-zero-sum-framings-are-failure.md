@@ -142,7 +142,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-2853): markdownlint MD032 — line-starting + interpreted as list…
+fix(081KE0GX9Z008QG0R001XQTH1W): markdownlint MD032 — line-starting + interpreted as list…
 
 … marker; reformat as prose
 ```

@@ -39,7 +39,7 @@ Factors the per-tick autonomous-loop discipline into a single canonical file all
 |---------|--------|-------|
 | Otto-CLI | Ambient `.claude/rules/*` + CLAUDE.md (auto-loaded) | Ambient + `.claude/rules/autonomous-loop-per-tick-pointer.md` cites canonical |
 | Otto-Desktop routine | Inline body in `tools/routines/autonomous-loop/SKILL.md` (manual sync risk) | SKILL.md cites canonical; discipline body is one-line per step |
-| B-0448 cloud (queued) | TBD; would re-implement | Will cite same canonical when shipped |
+| 081KRFA460008QG0R000CYBGKW cloud (queued) | TBD; would re-implement | Will cite same canonical when shipped |
 
 **Drift cost prevented**: when `holding-without-named-dependency` rule landed today (2026-05-13), CLI picked it up via auto-load but Desktop routine had to mention it explicitly. After this PR, the discipline lives in ONE file; all 3 surfaces inherit at next fresh-session cold-boot.
 
@@ -151,7 +151,7 @@ like the routines and like a 3 coordinated version?"
 Before this change, the per-tick discipline existed in 3 divergent forms:
 - Otto-CLI: ambient `.claude/rules/*` + CLAUDE.md (auto-loaded)
 - Otto-Desktop: inline body in `tools/routines/autonomous-loop/SKILL.md` (manual sync)
-- B-0448 cloud routine: TBD; would have re-implemented
+- 081KRFA460008QG0R000CYBGKW cloud routine: TBD; would have re-implemented
 
 Drift cost: when the `holding-without-named-dependency` rule landed
 2026-05-13, CLI picked it up via auto-load but Desktop routine had to
@@ -166,7 +166,7 @@ Substrate:
   rule pointing CLI cold-boot at the canonical
 - `tools/routines/autonomous-loop/SKILL.md` — updated to cite the
   canonical instead of inlining; 7 steps summarized + pointer for full
-- B-0448 cloud routine: will cite the same canonical when shipped
+- 081KRFA460008QG0R000CYBGKW cloud routine: will cite the same canonical when shipped
 
 Update protocol: when the discipline evolves, update the canonical
 file. All 3 surfaces inherit at next fresh-session cold-boot. No

@@ -27,7 +27,7 @@
 
 ## Description
 
-Operator-forwarded Aaron-Ani follow-on. Extends **B-0646** (Agora V6 encryption budget) + **B-0840** (private-encryption-budget for memory) with the budget *mechanics*.
+Operator-forwarded Aaron-Ani follow-on. Extends **081KRW63S0008QG0R001Z10PVV** (Agora V6 encryption budget) + **081KSGS9H0008QG0R0006F4BGX** (private-encryption-budget for memory) with the budget *mechanics*.
 
 ## The architecture
 - **encryption = dark / retraction = light** — *"can't take back what you gave in the dark."* The dark mirror of retraction-native.
@@ -43,7 +43,7 @@ The source conversation also had a **charged-personal layer** (relationship/inti
 ## Razor
 meter-the-bits / budget / reveal-to-earn / N-of-M = operational. The gravity/dark-matter framing = mirror-tier physics-rhyme (composes dark-matter-as-consensus-gravity, pt161); not a literal-physics claim.
 
-Composes with: B-0646, B-0840, NCI HC-8, glass-halo/retraction-native, the accelerator (public-light vs private-dark counterpart + 'be good to our host'), the compression-engine + two-layer-razor research (the two budgeted resources: forgiveness-budget + encryption-budget).
+Composes with: 081KRW63S0008QG0R001Z10PVV, 081KSGS9H0008QG0R0006F4BGX, NCI HC-8, glass-halo/retraction-native, the accelerator (public-light vs private-dark counterpart + 'be good to our host'), the compression-engine + two-layer-razor research (the two budgeted resources: forgiveness-budget + encryption-budget).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

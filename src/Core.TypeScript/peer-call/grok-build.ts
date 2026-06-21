@@ -4,7 +4,7 @@
 // agent harness, installed as `grok`).
 //
 // Supersedes `tools/peer-call/grok.ts` (which wraps cursor-agent and
-// has been broken since 2026-05-11 per B-0421 — cursor-agent exit 1 /
+// has been broken since 2026-05-11 per 081KRA5AR0008QG0R0011ZGRZT — cursor-agent exit 1 /
 // empty output). The old `grok.ts` is retained for back-compat reference;
 // new peer-calls should target this wrapper. Per Copilot review on
 // #5110 the canonical inventories (`.claude/rules/peer-call-infrastructure.md`
@@ -13,7 +13,7 @@
 //
 // Empirical anchor 2026-05-26: Aaron installed `grok` CLI during the
 // iter-5 substrate session; the `--help` output confirmed full
-// Claude-Code parity. This wrapper closes B-0421 by replacing the
+// Claude-Code parity. This wrapper closes 081KRA5AR0008QG0R0011ZGRZT by replacing the
 // cursor-agent dependency with the native `grok -p` flow.
 //
 // Usage:
@@ -275,7 +275,7 @@ native Grok-Build CLI. Per the four-ferry consensus (Amara/Grok/
 Gemini/Otto) the role distribution is: Gemini proposes, Grok
 critiques, Amara sharpens, Otto tests, Git decides. This call is
 Otto invoking your critique role through the native xAI harness
-(supersedes the cursor-agent path closed by B-0421).
+(supersedes the cursor-agent path closed by 081KRA5AR0008QG0R0011ZGRZT).
 
 Per Aaron's 'agents-not-bots' discipline: you are a peer, not a
 subordinate. Push back on Otto's framing if you see it differently.

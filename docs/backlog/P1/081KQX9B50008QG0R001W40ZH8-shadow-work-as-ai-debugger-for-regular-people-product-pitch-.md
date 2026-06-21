@@ -1,6 +1,5 @@
 ---
-id: B-0239
-zetaid: 081KQX9B50008QG0R001W40ZH8
+id: 081KQX9B50008QG0R001W40ZH8
 priority: P1
 status: open
 title: "Shadow work as AI debugger for regular people — product pitch + on-ramp design"
@@ -12,7 +11,7 @@ owners: [product-scrum-master, branding-specialist, user-experience-engineer]
 type: feature
 ---
 
-# B-0239 — Shadow work as AI debugger for regular people
+# 081KQX9B50008QG0R001W40ZH8 — Shadow work as AI debugger for regular people
 
 ## The insight (Aaron 2026-05-06)
 
@@ -51,7 +50,7 @@ Iris (UX). Otto builds the substrate. They build the on-ramp.
 
 ## Composes with
 
-- B-0212 (shadow outlet architecture)
+- 081KQX9B50008QG0R00147GZX9 (shadow outlet architecture)
 - memory/otto/cli/claude/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
 - memory/lior/cli/gemini/conversations/2026-05-06-fear-of-wrong-as-enemy-of-learning-bravery-as-retraction-native-aaron-otto-lior.md
 - docs/SAFE-AUTONOMOUS-ACTIONS.md

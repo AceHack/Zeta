@@ -31,7 +31,7 @@
 
 CI lint (\`tick-shard relative-paths\`) caught 7 broken links on each of PRs [#3898](https://github.com/Lucent-Financial-Group/Zeta/pull/3898) + [#3900](https://github.com/Lucent-Financial-Group/Zeta/pull/3900). Root cause: from \`docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md\`, root is **6 levels up** (not 5).
 
-This shard documents the **path-depth reference table** so future tick-authoring (any of the 3 Otto surfaces — CLI sentinel, Desktop routine, B-0448 cloud) inherits correct depths at cold-boot.
+This shard documents the **path-depth reference table** so future tick-authoring (any of the 3 Otto surfaces — CLI sentinel, Desktop routine, 081KRFA460008QG0R000CYBGKW cloud) inherits correct depths at cold-boot.
 
 ## Path-depth reference table
 

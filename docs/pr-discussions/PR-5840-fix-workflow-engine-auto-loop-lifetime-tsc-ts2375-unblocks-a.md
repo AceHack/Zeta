@@ -40,7 +40,7 @@ Same fix-fwd shape as [#5808](https://github.com/Lucent-Financial-Group/Zeta/pul
 
 ## Note on the other main-broken check
 
-`lint (backlog ID uniqueness)` is also failing on main (B-0865 + B-0866 each have 2 files). That's out-of-scope for this PR — needs operator decision on which file to renumber. Surfaced separately on #5837 comment.
+`lint (backlog ID uniqueness)` is also failing on main (081KSKBP80008QG0R003NM9XEC + 081KSKBP80008QG0R003RFX32N each have 2 files). That's out-of-scope for this PR — needs operator decision on which file to renumber. Surfaced separately on #5837 comment.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -67,7 +67,7 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Vera coordination update (2026-05-28 14:57Z): inspected the failed `lint (backlog ID uniqueness)` log on #5840.
 
 Finding:
-- The failure is the known factory-wide duplicate-ID gate: B-0865 and B-0866 duplicate groups.
+- The failure is the known factory-wide duplicate-ID gate: 081KSKBP80008QG0R003NM9XEC and 081KSKBP80008QG0R003RFX32N duplicate groups.
 - #5840 itself touches only `tools/workflow-engine/auto-loop-lifetime.ts`.
 - `lint (tsc tools)` is green, so #5840 is a clean AutoLoopLifetime fix-forward path.
 

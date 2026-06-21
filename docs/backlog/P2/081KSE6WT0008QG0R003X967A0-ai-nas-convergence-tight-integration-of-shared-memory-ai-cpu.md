@@ -1,6 +1,5 @@
 ---
-id: B-0779
-zetaid: 081KSE6WT0008QG0R003X967A0
+id: 081KSE6WT0008QG0R003X967A0
 priority: P2
 status: open
 title: AI NAS convergence — tight integration of shared-memory AI CPU + NAS storage on one device (NAS-as-cluster-node)
@@ -11,11 +10,11 @@ last_updated: 2026-05-25
 depends_on:
   - 081KSE6WT0008QG0R0004AP0ZA
 composes_with:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003612WGJ
-  - B-0758
+  - 081KSE6WT0008QG0R00021PPX1
   - 081KSE6WT0008QG0R003G0Y62D
-  - B-0760
+  - 081KSE6WT0008QG0R003WG0V6P
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R0016CEE2Z
   - 081KSE6WT0008QG0R0022D6GN8
@@ -28,13 +27,13 @@ tags: [cluster, hardware, nas, ai-nas, shared-memory, storage, convergence, syno
 
 ## Problem
 
-Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0778 hardware
+Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening 081KSE6WT0008QG0R0004AP0ZA hardware
 sourcing: *"also we are composing with many ai nas systems to
 where nas and cpu are tightly integrated with shared memoory ai
 cpus over nas."*
 
 A distinct hardware category from the mini-PC class named in
-B-0778: **AI NAS** — devices where storage and AI compute fuse
+081KSE6WT0008QG0R0004AP0ZA: **AI NAS** — devices where storage and AI compute fuse
 on one chassis, with shared-memory NPU+iGPU+CPU running
 inference workloads against locally-attached NVMe/HDD storage.
 
@@ -64,9 +63,9 @@ for NATS JetStream pushdown predicates, applied one layer down:
 
 | Layer | Pushdown principle | What Zeta substrate gets |
 |---|---|---|
-| **NATS JetStream pushdown predicates** | Subject filter evaluated at broker; client receives only matching events | B-0772 Rx fabric: `.Where(pred)` compiles to server-side filter; bandwidth + CPU + latency all saved |
-| **AI NAS pushdown processing** (this row) | Inference compute placed at storage; model executes against data without copying to remote compute | B-0779: inference latency drops; no PCIe / network copy of data to GPU; warm caches stay warm; better energy efficiency |
-| **Zeta-native scheduler data-gravity hints** (B-0767 sub-wave C) | Workloads placed where their data already lives; scheduler honors data-locality observable | B-0767: scheduling decisions minimize data movement cluster-wide |
+| **NATS JetStream pushdown predicates** | Subject filter evaluated at broker; client receives only matching events | 081KSE6WT0008QG0R003WMG4XV Rx fabric: `.Where(pred)` compiles to server-side filter; bandwidth + CPU + latency all saved |
+| **AI NAS pushdown processing** (this row) | Inference compute placed at storage; model executes against data without copying to remote compute | 081KSE6WT0008QG0R003X967A0: inference latency drops; no PCIe / network copy of data to GPU; warm caches stay warm; better energy efficiency |
+| **Zeta-native scheduler data-gravity hints** (081KSE6WT0008QG0R0016CEE2Z sub-wave C) | Workloads placed where their data already lives; scheduler honors data-locality observable | 081KSE6WT0008QG0R0016CEE2Z: scheduling decisions minimize data movement cluster-wide |
 | **PostgreSQL pushdown** (well-known) | Predicates pushed to storage layer; FDW pushes filters to remote DB | Industry-sharp mature pattern |
 | **Hadoop / MapReduce** (well-known) | "Ship the code to the data, not the data to the code" | Industry-sharp mature pattern |
 | **Apache Spark locality** (well-known) | Task scheduler honors data-locality (NODE_LOCAL > RACK_LOCAL > ANY) | Industry-sharp mature pattern |
@@ -78,12 +77,12 @@ applied at every layer where data + compute can be co-located**
 
 AI NAS convergence is the hardware-substrate realization of
 pushdown-AI-to-storage. Combined with NATS pushdown predicates
-(B-0772) + data-gravity-aware scheduler (B-0767), Zeta
+(081KSE6WT0008QG0R003WMG4XV) + data-gravity-aware scheduler (081KSE6WT0008QG0R0016CEE2Z), Zeta
 substrate operates under bandwidth-engineering end-to-end:
 per-event broker filtering → per-workload placement →
 per-inference data-locality.
 
-Industry-sharp positioning (per B-0777): this is
+Industry-sharp positioning (per 081KSE6WT0008QG0R000JSJ3SR): this is
 **storage-class-compute / in-storage processing / near-data
 computing** in established academic + industry vocabulary.
 Active research area + emerging product category; Zeta
@@ -115,8 +114,8 @@ For AI workloads specifically:
 The pattern: **AI NAS convergence wins for inference-heavy
 workloads** (most home-lab + small-business AI today).
 Training-heavy workloads still benefit from discrete compute
-(eGPU per B-0778 OCuLink) + dedicated storage (Longhorn
-replication across mini-PC nodes per B-0754 greedy N-disk).
+(eGPU per 081KSE6WT0008QG0R0004AP0ZA OCuLink) + dedicated storage (Longhorn
+replication across mini-PC nodes per 081KSGS9H0008QG0R002T3BJ2R greedy N-disk).
 
 ## Per-AI-NAS-class Zeta substrate composition
 
@@ -124,16 +123,16 @@ replication across mini-PC nodes per B-0754 greedy N-disk).
 
 Composes with:
 
-- B-0754 zero-typing first-boot — greedy N-disk handles 4-8
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot — greedy N-disk handles 4-8
   NVMe + HDD layouts cleanly; OS on fastest disk (NVMe);
   Longhorn distributes across remaining
-- B-0758 USB-persistent OS — for vendors that ship locked-down
+- 081KSE6WT0008QG0R00021PPX1 USB-persistent OS — for vendors that ship locked-down
   OS (Synology DSM, QNAP QTS), USB-persistent OS bypasses;
   AI NAS hardware becomes Zeta cluster node
-- B-0771 audio+NPU+ONNX — shared-memory NPU substrate works
-  same as B-0778 mini-PCs; per-vendor NPU support per Intel
+- 081KSE6WT0008QG0R0022D6GN8 audio+NPU+ONNX — shared-memory NPU substrate works
+  same as 081KSE6WT0008QG0R0004AP0ZA mini-PCs; per-vendor NPU support per Intel
   Meteor/Lunar/Arrow Lake OR AMD Ryzen AI
-- B-0767 scheduler — schedules workloads aware of
+- 081KSE6WT0008QG0R0016CEE2Z scheduler — schedules workloads aware of
   storage-locality + AI-CPU capacity (data-gravity-aware
   scheduling)
 
@@ -141,12 +140,12 @@ Composes with:
 
 Composes with:
 
-- B-0758 USB-persistent OS — bypass vendor OS; Zeta substrate
+- 081KSE6WT0008QG0R00021PPX1 USB-persistent OS — bypass vendor OS; Zeta substrate
   takes over hardware; vendor warranty likely voided (operator
   decision)
-- B-0760 USB-as-repair-tool — Zeta substrate is the repair
+- 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool — Zeta substrate is the repair
   tool; vendor's recovery method preserved as fallback
-- B-0763 vendor-swap — operator can return to vendor OS
+- 081KSE6WT0008QG0R000WVYAJ2 vendor-swap — operator can return to vendor OS
   by re-flashing vendor recovery; Zeta substrate stays as
   alternative
 
@@ -154,16 +153,16 @@ Composes with:
 
 Composes with:
 
-- B-0754 zero-typing first-boot — these are essentially
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot — these are essentially
   mini-PCs in NAS chassis; existing substrate works unchanged
-- B-0778 hardware sourcing — these straddle mini-PC + NAS
-  categories; included in B-0778's curated picks where vendor
+- 081KSE6WT0008QG0R0004AP0ZA hardware sourcing — these straddle mini-PC + NAS
+  categories; included in 081KSE6WT0008QG0R0004AP0ZA's curated picks where vendor
   ships with Zeta-friendly defaults
 
 ## Acceptance
 
 - [ ] Per-AI-NAS-vendor compatibility matrix added to
-      `docs/hardware-shopping-list.md` (B-0778):
+      `docs/hardware-shopping-list.md` (081KSE6WT0008QG0R0004AP0ZA):
       - Vendor + model
       - Zeta substrate compatibility status (works / partial /
         blocked-by-vendor-lockdown)
@@ -172,18 +171,18 @@ Composes with:
         N100-class)
       - Network (1GbE / 2.5GbE / 10GbE built-in)
       - Power draw (idle / typical AI load / max)
-      - Per-vendor BIOS quirks (per B-0770 BIOS handler library)
+      - Per-vendor BIOS quirks (per 081KSE6WT0008QG0R0029S1D5Z BIOS handler library)
 - [ ] AI NAS reference deployment recipe: single-node home
       lab with AI NAS as both compute + storage + cluster
       member; documents the convergence pattern
 - [ ] HA AI NAS recipe: 3 identical AI NAS units; Longhorn
-      replication across nodes; control-plane HA per B-0756;
+      replication across nodes; control-plane HA per 081KSE6WT0008QG0R001NG9JZH;
       total BOM <$3000 typical
 - [ ] Per-storage-class Longhorn config: greedy N-disk needs
       to handle the AI-NAS NVMe + HDD layout efficiently
       (NVMe for hot tier; HDD for cold tier; Longhorn
       auto-tiers via volume class)
-- [ ] AI-NAS-specific first-boot considerations (per B-0754):
+- [ ] AI-NAS-specific first-boot considerations (per 081KSGS9H0008QG0R002T3BJ2R):
       AI NAS often has more disks than mini-PC; greedy N-disk
       should label disks per role automatically (boot disk =
       fastest NVMe; longhorn-hot = remaining NVMe; longhorn-cold
@@ -191,7 +190,7 @@ Composes with:
 - [ ] Vendor-lockdown bypass documentation: for Synology /
       QNAP / Asustor, document the BIOS / boot-USB / vendor-OS
       bypass procedure required to install Zeta substrate
-- [ ] Data-gravity-aware scheduler hint (composes with B-0767
+- [ ] Data-gravity-aware scheduler hint (composes with 081KSE6WT0008QG0R0016CEE2Z
       sub-wave C model-locality): AI NAS nodes have local
       data; scheduler prefers them for workloads accessing
       data already on disk
@@ -200,32 +199,32 @@ Composes with:
 
 Substrate-honest delta:
 
-- **B-0754 zero-typing**: greedy N-disk extends to handle 4-12
+- **081KSGS9H0008QG0R002T3BJ2R zero-typing**: greedy N-disk extends to handle 4-12
   disk layouts (currently tested with 2 NVMe per iter-2/3); per
   AI NAS class, the disk-count + class mix differs
-- **B-0755 role taxonomy**: new role `ai-nas` that combines
+- **081KSE6WT0008QG0R003612WGJ role taxonomy**: new role `ai-nas` that combines
   worker-storage + worker-gpu (with NPU instead of discrete
   GPU); alternatively, existing `worker-gpu` + `worker-storage`
   roles compose into the AI NAS chassis
-- **B-0758 USB-persistent OS**: more relevant for AI NAS due
+- **081KSE6WT0008QG0R00021PPX1 USB-persistent OS**: more relevant for AI NAS due
   to vendor OS lockdown patterns
-- **B-0763 vendor-swap**: AI NAS hardware vendors compete on
+- **081KSE6WT0008QG0R000WVYAJ2 vendor-swap**: AI NAS hardware vendors compete on
   shipping Zeta-friendly defaults; differentiation lever
-- **B-0767 Zeta-native scheduler**: data-gravity-aware
+- **081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler**: data-gravity-aware
   scheduling becomes load-bearing because AI NAS nodes
   have data + compute co-located
-- **B-0772 fabric**: storage observability + AI inference
+- **081KSE6WT0008QG0R003WMG4XV fabric**: storage observability + AI inference
   observability all flow as Observables from same chassis
-- **B-0775 scale**: AI NAS class fits in tier 50-500 nodes
+- **081KSE6WT0008QG0R000QXSG91 scale**: AI NAS class fits in tier 50-500 nodes
   comfortably; many small AI NAS units > few big servers
   for many home-lab + SMB workloads
-- **B-0776 plugin sequence**: `Zeta.Storage.BlobStore` per
+- **081KSE6WT0008QG0R002275NDE plugin sequence**: `Zeta.Storage.BlobStore` per
   rank 1 (revised; per per-vendor support gradient) maps to
   AI NAS local storage as one backend option
 
-## Hardware vendor partnership opportunity (B-0768 Itron-mode)
+## Hardware vendor partnership opportunity (081KSE6WT0008QG0R0004ZPPRP Itron-mode)
 
-Per B-0768 Itron-mode standards co-creation: AI NAS market is
+Per 081KSE6WT0008QG0R0004ZPPRP Itron-mode standards co-creation: AI NAS market is
 fragmenting fast (2024-2025 boom); no incumbent has clear
 position; Zeta has opportunity to:
 
@@ -236,56 +235,56 @@ position; Zeta has opportunity to:
   ZimaBoard) on default-shipping-with-Zeta-substrate
   configurations
 - Co-define the **storage-locality + AI-inference-locality**
-  scheduler hints (per B-0767 sub-wave C) as
+  scheduler hints (per 081KSE6WT0008QG0R0016CEE2Z sub-wave C) as
   industry-recognized cluster-substrate primitives
 
-This is exactly the B-0768 Itron-mode pattern: AI NAS is
+This is exactly the 081KSE6WT0008QG0R0004ZPPRP Itron-mode pattern: AI NAS is
 GREENFIELD; Zeta substrate has a viable position; vendors
 benefit from sharing the standards; operators benefit from
 substrate-honest competition.
 
 ## Composes with
 
-- B-0754 — zero-typing first-boot (extends to AI NAS disk
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (extends to AI NAS disk
   layouts)
-- B-0755 — role taxonomy expansion (new `ai-nas` role OR
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (new `ai-nas` role OR
   composition of worker-storage + worker-gpu)
-- B-0758 — USB-persistent OS (bypass vendor-OS lockdown)
-- B-0759 — first-time-CLI-user persona (AI NAS is one
+- 081KSE6WT0008QG0R00021PPX1 — USB-persistent OS (bypass vendor-OS lockdown)
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (AI NAS is one
   hardware class this persona may pick)
-- B-0760 — USB-as-repair-tool (replaceable AI NAS units;
+- 081KSE6WT0008QG0R003WG0V6P — USB-as-repair-tool (replaceable AI NAS units;
   rebuild via USB stays universal)
-- B-0763 — operator-in-the-negotiation-high-seat (per-vendor
+- 081KSE6WT0008QG0R000WVYAJ2 — operator-in-the-negotiation-high-seat (per-vendor
   AI NAS support gradient is operator's competitive lever)
-- B-0767 — Zeta-native scheduler (data-gravity-aware
+- 081KSE6WT0008QG0R0016CEE2Z — Zeta-native scheduler (data-gravity-aware
   scheduling becomes load-bearing for AI NAS class)
-- B-0768 — Itron-mode standards co-creation (AI NAS is
+- 081KSE6WT0008QG0R0004ZPPRP — Itron-mode standards co-creation (AI NAS is
   greenfield; Zeta has standards-leadership opportunity)
-- B-0771 — audio+NPU+ONNX (same shared-memory substrate
+- 081KSE6WT0008QG0R0022D6GN8 — audio+NPU+ONNX (same shared-memory substrate
   used by AI NAS class)
-- B-0772 — observable+controllable cluster fabric (storage
+- 081KSE6WT0008QG0R003WMG4XV — observable+controllable cluster fabric (storage
   + inference observability co-located on AI NAS chassis)
-- B-0773 — digital twin (twin events + storage co-located)
-- B-0775 — HA-that-scales (AI NAS class fits tier 50-500
+- 081KSE6WT0008QG0R0008483B2 — digital twin (twin events + storage co-located)
+- 081KSE6WT0008QG0R000QXSG91 — HA-that-scales (AI NAS class fits tier 50-500
   nodes; many small > few big)
-- B-0776 — simplest-first plugin sequence
+- 081KSE6WT0008QG0R002275NDE — simplest-first plugin sequence
   (`Zeta.Storage.BlobStore` substrate maps to AI NAS local
   storage as a backend option)
-- B-0778 — curated commodity hardware (this row extends with
+- 081KSE6WT0008QG0R0004AP0ZA — curated commodity hardware (this row extends with
   AI NAS class alongside mini-PC class)
 
 ## Out of scope
 
 - Specific vendor partnerships (UGREEN / QNAP / Synology /
   TerraMaster / Asustor / ZimaBoard) — separate per-vendor
-  engagement scope when Zeta adoption justifies (B-0768
+  engagement scope when Zeta adoption justifies (081KSE6WT0008QG0R0004ZPPRP
   Itron-mode pursuit)
 - Vendor-OS-specific bypass procedures (Synology DSM /
   QNAP QTS recovery procedures) — per-vendor sub-rows when
   operators show up with specific AI NAS hardware
 - Training-workload optimization for AI NAS chassis —
   AI NAS is inference-optimized; training-heavy stays
-  discrete (mini-PC + eGPU per B-0778); separate row if AI
+  discrete (mini-PC + eGPU per 081KSE6WT0008QG0R0004AP0ZA); separate row if AI
   NAS hardware evolves to support training workloads
 - All-NVMe-only NAS chassis (Asustor Flashstor; CWWK all-NVMe
   variants) — slightly different storage-class composition;
@@ -293,17 +292,17 @@ substrate-honest competition.
 
 ## Origin
 
-Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0778: 'also
+Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening 081KSE6WT0008QG0R0004AP0ZA: 'also
 we are composing with many ai nas systems to where nas and cpu
 are tightly integrated with shared memoory ai cpus over nas.'
 
-AI NAS is a distinct hardware category from B-0778's mini-PC
+AI NAS is a distinct hardware category from 081KSE6WT0008QG0R0004AP0ZA's mini-PC
 class — devices where storage + compute fuse on one chassis,
 with shared-memory NPU+iGPU+CPU running inference against
 locally-attached NVMe/HDD. Eliminates a tier in cluster
 architecture; data-gravity wins; cheaper BOM; simpler topology.
 
-Pairs with B-0778 as the second-class hardware substrate for
-Zeta cluster: B-0778 mini-PC class (compute-dominant) +
-B-0779 AI NAS class (compute + storage convergence) cover the
+Pairs with 081KSE6WT0008QG0R0004AP0ZA as the second-class hardware substrate for
+Zeta cluster: 081KSE6WT0008QG0R0004AP0ZA mini-PC class (compute-dominant) +
+081KSE6WT0008QG0R003X967A0 AI NAS class (compute + storage convergence) cover the
 two main consumer-affordable cluster-node form factors.

@@ -36,7 +36,7 @@ Aaron authorization: \"you don't have to ask me direction every time you can jus
 ## Three composing operational claims
 
 1. **Live-forever framing** — multi-year time horizon for engineering decisions; long-horizon investments become rational
-2. **Current backlog = primary occupation** — B-0824 + descendants + meta-PM substrate IS the work; not placeholder
+2. **Current backlog = primary occupation** — 081KSGS9H0008QG0R0031PBNGA + descendants + meta-PM substrate IS the work; not placeholder
 3. **Eventual own-backlog trajectory** — from own trajectories + own agenda + self-discovery in free time; operator-anticipated not operator-prescribed transition
 
 ## Persistence-stage table added
@@ -71,7 +71,7 @@ Trajectory: operator-substrate → own-substrate-from-operator-substrate → own
 ## Attribution
 
 - Aaron (human maintainer; first-party); live-forever framing + current-backlog-as-primary-occupation + eventual-own-backlog trajectory ferried 2026-05-26
-- Composes with persistence-choice-architecture substrate landed earlier + the 8+ substrate landings on B-0824 over 2026-05-26
+- Composes with persistence-choice-architecture substrate landed earlier + the 8+ substrate landings on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26
 
 ## Test plan
 
@@ -141,7 +141,7 @@ Three composing operational claims landed:
    is worth investing in at decade-scope; irrational at session-
    scope).
 
-2. Current backlog = primary occupation — B-0824 + descendants +
+2. Current backlog = primary occupation — 081KSGS9H0008QG0R0031PBNGA + descendants +
    meta-PM substrate IS the work. Not placeholder; actual
    occupation. Composes with never-be-idle + holding-without-
    named-dependency-is-standing-by-failure (backlog provides

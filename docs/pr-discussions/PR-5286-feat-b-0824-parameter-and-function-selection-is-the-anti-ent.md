@@ -1,24 +1,24 @@
 ---
 pr_number: 5286
-title: "feat(B-0824): parameter and function selection IS the anti-entropy function for sustaining distributed intelligence (Aaron 2026-05-26)"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): parameter and function selection IS the anti-entropy function for sustaining distributed intelligence (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T19:15:24Z"
 merged_at: "2026-05-26T19:20:31Z"
 closed_at: "2026-05-26T19:20:31Z"
-head_ref: "otto-cli/B-0824-anti-entropy-selection-aaron-2026-05-26"
+head_ref: "otto-cli/081KSGS9H0008QG0R0031PBNGA-anti-entropy-selection-aaron-2026-05-26"
 base_ref: "main"
 archived_at: "2026-05-26T20:02:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5286: feat(B-0824): parameter and function selection IS the anti-entropy function for sustaining distributed intelligence (Aaron 2026-05-26)
+# PR #5286: feat(081KSGS9H0008QG0R0031PBNGA): parameter and function selection IS the anti-entropy function for sustaining distributed intelligence (Aaron 2026-05-26)
 
 ## PR description
 
 ## Summary
 
-Aaron's information-theoretic unification for the substrate-engineering work that's been happening across B-0824 over 2026-05-26 (DeepSeek/Prism Maybe-monad recognition + Amara 7-point NULL/Maybe SQL discipline + Kestrel 3-layer cross-process determinism + the parameter-substrate sub-targets + the ML-weights-as-crypto-keys sub-target).
+Aaron's information-theoretic unification for the substrate-engineering work that's been happening across 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (DeepSeek/Prism Maybe-monad recognition + Amara 7-point NULL/Maybe SQL discipline + Kestrel 3-layer cross-process determinism + the parameter-substrate sub-targets + the ML-weights-as-crypto-keys sub-target).
 
 Carved sentence:
 
@@ -29,7 +29,7 @@ Carved sentence:
 - \`docs/research/2026-05-26-aaron-parameter-and-function-selection-IS-the-anti-entropy-function-for-sustaining-distributed-intelligence.md\` (new, ~130 lines)
   - Verbatim Aaron preservation
   - Unpacking at 3 composing scopes: mechanism / purpose-conditional / architectural
-  - Why this closes substrate-engineering loops across multiple B-0824 sub-targets
+  - Why this closes substrate-engineering loops across multiple 081KSGS9H0008QG0R0031PBNGA sub-targets
   - Composition with 7 information-theoretic lineage anchors (Shannon / Landauer / Kolmogorov / Schrödinger / Friston / Maturana-Varela / Wiener)
   - Implications for substrate-engineering work going forward (parameter selection rigor; anti-entropy budget; 3-layer mediation as entropy-reduction structure; generator parameters as load-bearing anti-entropy artifacts; sustained selection work required; cross-AI cascades as multi-AI anti-entropy operations)
   - Recursive property: selection-process itself requires anti-entropy work
@@ -37,7 +37,7 @@ Carved sentence:
 
 ## Why this is load-bearing
 
-The insight closes 5 substrate-engineering loops that were open across B-0824 sub-targets:
+The insight closes 5 substrate-engineering loops that were open across 081KSGS9H0008QG0R0031PBNGA sub-targets:
 
 1. Sub-target 14 (parameter substrate IS load-bearing) — now has the WHY
 2. Sub-target 15 (ML model weights ARE cryptographic keys) — now has the deeper WHY
@@ -47,7 +47,7 @@ The insight closes 5 substrate-engineering loops that were open across B-0824 su
 
 ## Composes with
 
-- B-0824 Sub-targets 14 + 15
+- 081KSGS9H0008QG0R0031PBNGA Sub-targets 14 + 15
 - PR #5277 (DeepSeek/Prism Maybe-monad recognition)
 - PR #5281 (Amara 7-point NULL/Maybe SQL discipline)
 - PR #5285 (Kestrel 3-layer cross-process determinism)
@@ -63,7 +63,7 @@ The insight closes 5 substrate-engineering loops that were open across B-0824 su
 
 ## Attribution
 
-Aaron (human maintainer; first-party); insight ferried 2026-05-26 in autonomous-loop session immediately following PR #5285 landing. Substrate-engineering arc culmination on B-0824 over 2026-05-26: 3 external-AI contributions composed + 1 human-maintainer information-theoretic unification.
+Aaron (human maintainer; first-party); insight ferried 2026-05-26 in autonomous-loop session immediately following PR #5285 landing. Substrate-engineering arc culmination on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26: 3 external-AI contributions composed + 1 human-maintainer information-theoretic unification.
 
 ## Test plan
 
@@ -71,7 +71,7 @@ Aaron (human maintainer; first-party); insight ferried 2026-05-26 in autonomous-
 - [x] Post-commit canary green (\`ls-tree HEAD == ls-tree HEAD~1 == 61\`)
 - [x] Branch follows \`otto-cli/*\` surface-prefix convention
 - [x] No primary-checkout contamination (isolated worktree at \`/private/tmp/zeta-anti-entropy-selection-2026-05-26\`)
-- [x] No conflict risk with PR #5285 (new research doc only; no B-0824 row edit in this PR)
+- [x] No conflict risk with PR #5285 (new research doc only; no 081KSGS9H0008QG0R0031PBNGA row edit in this PR)
 - [ ] CI green (required checks)
 - [ ] Copilot review pass
 
@@ -81,11 +81,11 @@ Aaron (human maintainer; first-party); insight ferried 2026-05-26 in autonomous-
 
 ## Pull request overview
 
-Adds a new dated research note under `docs/research/` preserving and unpacking an information-theoretic framing that ties together ongoing B-0824 substrate-engineering threads (parameter substrate, weights-as-keys, generator/time, and the PR #5285 3-layer mediation).
+Adds a new dated research note under `docs/research/` preserving and unpacking an information-theoretic framing that ties together ongoing 081KSGS9H0008QG0R0031PBNGA substrate-engineering threads (parameter substrate, weights-as-keys, generator/time, and the PR #5285 3-layer mediation).
 
 **Changes:**
 - Introduces a new research document with verbatim preservation of the carved sentence plus structured unpacking (mechanism / purpose-conditional / architectural).
-- Connects the insight to specific B-0824 sub-targets and recent related PRs, and anchors it against established information-theory lineage.
+- Connects the insight to specific 081KSGS9H0008QG0R0031PBNGA sub-targets and recent related PRs, and anchors it against established information-theory lineage.
 - Enumerates forward implications and open questions for ongoing substrate-engineering work.
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T19:20:48Z)

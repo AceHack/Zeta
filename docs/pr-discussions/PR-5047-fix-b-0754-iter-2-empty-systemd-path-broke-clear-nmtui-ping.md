@@ -1,6 +1,6 @@
 ---
 pr_number: 5047
-title: "fix(B-0754 iter-2): empty systemd PATH broke clear+nmtui+ping+systemctl on real hardware"
+title: "fix(081KSGS9H0008QG0R002T3BJ2R iter-2): empty systemd PATH broke clear+nmtui+ping+systemctl on real hardware"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T00:10:32Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:46:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5047: fix(B-0754 iter-2): empty systemd PATH broke clear+nmtui+ping+systemctl on real hardware
+# PR #5047: fix(081KSGS9H0008QG0R002T3BJ2R iter-2): empty systemd PATH broke clear+nmtui+ping+systemctl on real hardware
 
 ## PR description
 
@@ -56,9 +56,9 @@ Even if the systemd Environment is overridden by some future change, these two f
 
 ## Composes with
 
-- B-0759 first-time-CLI-user persona — drop-to-shell with recovery hints worked exactly as designed; the persona-aligned error path was substrate-honest
-- B-0760 USB-as-repair-tool — same systemd-PATH discipline applies to every command the repair flow will invoke
-- B-0761 reference architecture — this is iteration N of N for the AI-native cluster-bootstrap reference; bandwidth payoff across every future install
+- 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona — drop-to-shell with recovery hints worked exactly as designed; the persona-aligned error path was substrate-honest
+- 081KSE6WT0008QG0R003WG0V6P USB-as-repair-tool — same systemd-PATH discipline applies to every command the repair flow will invoke
+- 081KSE6WT0008QG0R0015ZF2G6 reference architecture — this is iteration N of N for the AI-native cluster-bootstrap reference; bandwidth payoff across every future install
 
 ## Test plan
 

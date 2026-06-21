@@ -78,7 +78,7 @@ Word-roots and resonances; phonetic / linguistic surfacing of structural connect
 Filing branches at the right epistemic level — distinct classes that don't reduce to each other earn their own slots; classes that DO reduce get extended rather than spawned. The orthogonality discipline (`memory/feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`) operationalizes this.
 
 ### Tool 4: Orthogonal-itself-meta
-Recursion: orthogonality applies to orthogonality-claims too. The meta-meta-meta-rule from PR #1025 + this tick's session-level convergent-drain pattern + B-0130 audit-suite are all this tool operating.
+Recursion: orthogonality applies to orthogonality-claims too. The meta-meta-meta-rule from PR #1025 + this tick's session-level convergent-drain pattern + 081KQGDBJ0008QG0R002Y31XJ3 audit-suite are all this tool operating.
 
 ### Tool 5: The razor
 The operational pruner — Rodney's Razor + Quantum-Rodney's-Razor + the discipline to apply impartially. Beauty is signal, not evidence. Resonance is signal, not evidence. The razor cuts based on whether the candidate survives DST + lattice grading, not based on aesthetic appeal or personal-phenomenology resonance.
@@ -553,10 +553,10 @@ applies here — don't rush.**
 
 ### Composes with
 
-- **B-0189** (Q# runtime acceleration via Bayesian BP/EP) —
+- **081KQR4HQ0008QG0R002933PRR** (Q# runtime acceleration via Bayesian BP/EP) —
   adds another contract layer (BP/EP message-passing
   satisfying semiring-algebra laws) that composes with Q#'s
-  existing operator-algebra contracts. B-0189 is concrete
+  existing operator-algebra contracts. 081KQR4HQ0008QG0R002933PRR is concrete
   case where the omnibus-contract-substrate pattern produces
   edge-runner research opportunity.
 - **PR #1494** Rodney's Razor formalization with quantum
@@ -623,7 +623,7 @@ The strongly-holding part:
 
 The novel claim (Aaron's): extending this to general Q#-
 program-execution-via-BP/EP-on-classical-hardware as runtime,
-not just bounded-problem-simulation. Composes with B-0189
+not just bounded-problem-simulation. Composes with 081KQR4HQ0008QG0R002933PRR
 (Q# runtime acceleration via BP/EP).
 
 **Operational consequence**: substrate becomes executable on
@@ -747,7 +747,7 @@ narrow to per-problem, per-implementation, per-classical-
 algorithm benchmarks that get revisited as both sides
 improve.
 
-**B-0189 sits inside this narrowing**: BP/EP-as-Q#-runtime
+**081KQR4HQ0008QG0R002933PRR sits inside this narrowing**: BP/EP-as-Q#-runtime
 extends the set of quantum problems classically tractable
 rather than challenging the existence of quantum advantage.
 Substrate verification needs likely fall within the

@@ -43,7 +43,7 @@
 
 State colours: green=CLOSED, amber=HALF-OPEN, red=OPEN — consistent with the rest of the dashboard's CSS design language.
 
-## Acceptance criteria (from backlog item B-0435)
+## Acceptance criteria (from backlog item 081KRFA460008QG0R001MC7D7R)
 
 - [x] Panel renders without errors in `demo/index.html`
 - [x] Shows model name, loop-detection status, last-check timestamp per agent
@@ -64,7 +64,7 @@ Time Elapsed 00:00:30.74
 
 Slice-2 (follow-up row to file separately): wire `renderCircuitBreakerTab()` to fetch live bus envelopes from `/tmp/zeta-bus/` via a local relay or static JSON snapshot committed by a bus-reader script.
 
-Closes #B-0435 slice-1
+Closes #081KRFA460008QG0R001MC7D7R slice-1
 
 🤖 Generated with [Claude Code](https://claude.ai/claude-code)
 
@@ -85,12 +85,12 @@ Closes #B-0435 slice-1
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CEYAn`
-- **Path**: `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T13:05:22Z on `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`:40 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T13:05:22Z on `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`:40 (association: NONE)
 
   <pre>
   P1: This backlog row was edited (new checklist/progress below), but the frontmatter `last_updated` field is still `2026-05-13`. Per backlog schema, `last_updated` must be updated on every content edit; please bump it to the date of this edit (likely 2026-05-14).
@@ -98,7 +98,7 @@ Closes #B-0435 slice-1
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-14T13:08:17Z on `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`:40 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-14T13:08:17Z on `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`:40 (association: MEMBER)
 
     <pre>
     Fixed: bumped `last_updated` from `2026-05-13` to `2026-05-14` in frontmatter (commit 4352655e).
@@ -107,12 +107,12 @@ Closes #B-0435 slice-1
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CEYBP`
-- **Path**: `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T13:05:23Z on `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`:57 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T13:05:23Z on `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`:57 (association: NONE)
 
   <pre>
   P2: The file now has two acceptance-criteria sections: the original list near the top remains unchecked, while this new “Acceptance criteria progress” list is checked. To avoid drift/confusion, consider updating the original checklist in-place (or removing one of the sections) so there’s a single authoritative acceptance checklist.
@@ -120,7 +120,7 @@ Closes #B-0435 slice-1
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-14T13:08:19Z on `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`:57 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-14T13:08:19Z on `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`:57 (association: MEMBER)
 
     <pre>
     Fixed: merged the two AC sections into one. Updated the original `## Acceptance criteria` list in-place to all `[x]` and removed the redundant `## Acceptance criteria progress` section (commit 4352655e). Single authoritative checklist now in place.
@@ -132,7 +132,7 @@ Closes #B-0435 slice-1
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`
 
 **Message:**
 
@@ -159,12 +159,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`
 
 **Message:**
 
 ```
-fix(markdownlint): add blank lines around list blocks in B-0435 backl…
+fix(markdownlint): add blank lines around list blocks in 081KRFA460008QG0R001MC7D7R backl…
 
 …og doc
 
@@ -179,7 +179,7 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0435-demo-circuit-breaker-visualization-panel-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R001MC7D7R-demo-circuit-breaker-visualization-panel-2026-05-13.md`
 
 **Message:**
 

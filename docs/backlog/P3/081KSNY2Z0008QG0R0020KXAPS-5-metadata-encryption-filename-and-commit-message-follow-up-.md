@@ -1,9 +1,8 @@
 ---
-id: B-0883.5
-zetaid: 081KSNY2Z0008QG0R0020KXAPS
+id: 081KSNY2Z0008QG0R0020KXAPS
 priority: P3
 status: open
-title: Metadata encryption follow-up — filename + commit-message encryption; deferred from B-0883 v1 (content-only) per operator 2026-05-28
+title: Metadata encryption follow-up — filename + commit-message encryption; deferred from 081KSNY2Z0008QG0R002JKH50A v1 (content-only) per operator 2026-05-28
 effort: L
 ask: aaron 2026-05-28 (Q5 decision locked: "just content right now we can think about filename and such later")
 created: 2026-05-28
@@ -29,11 +28,11 @@ tags:
 
 > *"just content right now we can think about filename and such later and decompose it into backlog"*
 
-Locks Q5 of B-0883.1 library landscape audit. **Content-encryption only for v1.** Metadata encryption deferred to this follow-up row.
+Locks Q5 of 081KSNY2Z0008QG0R0037X4DP4 library landscape audit. **Content-encryption only for v1.** Metadata encryption deferred to this follow-up row.
 
 ## What metadata leaks in v1
 
-With content-only encryption (B-0883 v1), the following STILL LEAK to anyone with git-read access:
+With content-only encryption (081KSNY2Z0008QG0R002JKH50A v1), the following STILL LEAK to anyone with git-read access:
 
 1. **Filenames** — `docs/agent-state/otto/2026/05/28/event-0a3f.json.enc` reveals the path, persona, date, and event-id pattern
 2. **Directory structure** — repo layout is visible; `.zeta-private/` directories are obvious
@@ -43,7 +42,7 @@ With content-only encryption (B-0883 v1), the following STILL LEAK to anyone wit
 6. **File sizes** — ciphertext length often correlates to plaintext length (modulo block-cipher padding)
 7. **Commit graph topology** — branching + merging patterns leak workflow shape
 
-For Otto's private state (B-0885), most of this is acceptable v1 — Otto's existence is public-known; the content is what needs protection. Multi-recipient cases or sensitive-workflow cases would care more.
+For Otto's private state (081KSNY2Z0008QG0R0030V5ZVS), most of this is acceptable v1 — Otto's existence is public-known; the content is what needs protection. Multi-recipient cases or sensitive-workflow cases would care more.
 
 ## Three encryption layers for full metadata protection
 
@@ -67,16 +66,16 @@ For Otto's private state (B-0885), most of this is acceptable v1 — Otto's exis
 
 ## What this row tracks
 
-Design + implement Layer 1 (filename encryption) as the primary v2 follow-up to B-0883 content-only v1. Layer 2 (commit-message encryption) is its own sibling row. Layer 3 (full directory obfuscation) is even-further-out (likely composes with B-0883.3 content-addressed-store substrate).
+Design + implement Layer 1 (filename encryption) as the primary v2 follow-up to 081KSNY2Z0008QG0R002JKH50A content-only v1. Layer 2 (commit-message encryption) is its own sibling row. Layer 3 (full directory obfuscation) is even-further-out (likely composes with 081KSNY2Z0008QG0R0008EJDW1 content-addressed-store substrate).
 
 ## Acceptance criteria (Layer 1 — filename encryption)
 
 - `tools/crypto/better-git-crypt/filename-encryption.ts` — encrypted-manifest pattern (`dir.enc` is encrypted JSON manifest of `{realname → cipher_hash}`)
 - Git `clean` filter writes encrypted manifest + ciphertext per file (named by hash)
 - Git `smudge` filter reads manifest + decrypts to recover filenames + content
-- Git `textconv` filter (per B-0883 v1 design) extended to handle filename-encrypted dirs
+- Git `textconv` filter (per 081KSNY2Z0008QG0R002JKH50A v1 design) extended to handle filename-encrypted dirs
 - Tests cover: round-trip with filenames preserved; encrypted-dir survives `git rm`/`git mv` (content-level moves; filename changes within encrypted dir are opaque to git)
-- Composes with B-0883's recipient-set substrate (filename encryption uses same recipient keys)
+- Composes with 081KSNY2Z0008QG0R002JKH50A's recipient-set substrate (filename encryption uses same recipient keys)
 - README documents Layer 1 + how it composes with Layer 2 (when authored separately)
 
 ## Sibling rows (deferred until activated)
@@ -88,9 +87,9 @@ These ROWS will get specific B-NNNN numbers when activated. Today: just this Lay
 
 ## Composition
 
-- **B-0883** (parent crypto substrate; content-only v1)
-- **B-0883.3** (content-addressed-store substrate — when that lands, full-metadata path opens via Option A there)
-- **B-0885** (agent private encrypted state — beneficiary)
+- **081KSNY2Z0008QG0R002JKH50A** (parent crypto substrate; content-only v1)
+- **081KSNY2Z0008QG0R0008EJDW1** (content-addressed-store substrate — when that lands, full-metadata path opens via Option A there)
+- **081KSNY2Z0008QG0R0030V5ZVS** (agent private encrypted state — beneficiary)
 
 ## Substrate-honest framing
 
@@ -102,4 +101,4 @@ Activation triggers: multi-recipient substrate where filename reveals sensitive 
 
 Operator 2026-05-28: *"just content right now we can think about filename and such later and decompose it into backlog"* — explicit defer to follow-up row.
 
-The bound is substrate-honest: ship B-0883 v1 with content-only for ASAP B-0885 delivery; Layer 1 follows when scope requires.
+The bound is substrate-honest: ship 081KSNY2Z0008QG0R002JKH50A v1 with content-only for ASAP 081KSNY2Z0008QG0R0030V5ZVS delivery; Layer 1 follows when scope requires.

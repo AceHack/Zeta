@@ -1,6 +1,6 @@
 ---
 pr_number: 3074
-title: "feat(pm2): add Mira to EXPERT-REGISTRY + forward-radar scaffold (B-0145)"
+title: "feat(pm2): add Mira to EXPERT-REGISTRY + forward-radar scaffold (081KQGDBJ0008QG0R000RWAA67)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T00:22:35Z"
@@ -12,22 +12,22 @@ archived_at: "2026-05-14T08:25:42Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3074: feat(pm2): add Mira to EXPERT-REGISTRY + forward-radar scaffold (B-0145)
+# PR #3074: feat(pm2): add Mira to EXPERT-REGISTRY + forward-radar scaffold (081KQGDBJ0008QG0R000RWAA67)
 
 ## PR description
 
 ## Summary
 
-- **EXPERT-REGISTRY.md**: adds PM-2 persona **Mira** to the current-roster table (AC 1 of B-0145)
+- **EXPERT-REGISTRY.md**: adds PM-2 persona **Mira** to the current-roster table (AC 1 of 081KQGDBJ0008QG0R000RWAA67)
 - **docs/forward-radar/TEMPLATE.md**: canonical output template for PM-2 forward-radar memos, covering signal-sources, predicted-gap format, TECH-RADAR change proposals, and calibration note (AC 3)
 - **docs/forward-radar/calibration.md**: Lead-time% + Action-rate% tracking table with metric definitions and quarterly review discipline (AC 5)
-- **B-0145 row**: pre-start checklist added per backlog-item-start-gate rule
+- **081KQGDBJ0008QG0R000RWAA67 row**: pre-start checklist added per backlog-item-start-gate rule
 
 ## Context
 
-B-0145 had two children already closed:
-- B-0270 (closed): `.claude/skills/product-manager/SKILL.md` + `.claude/agents/pm2.md` (persona: Mira)
-- B-0271 (closed): first research pass doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` (6 gaps → B-0450, B-0445, B-0446, B-0447, B-0431-433, B-0428)
+081KQGDBJ0008QG0R000RWAA67 had two children already closed:
+- 081KR2E4K0008QG0R0035RG9G6 (closed): `.claude/skills/product-manager/SKILL.md` + `.claude/agents/pm2.md` (persona: Mira)
+- 081KR2E4K0008QG0R003VB7ZZR (closed): first research pass doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` (6 gaps → 081KRFA460008QG0R001QFS6EV, 081KRFA460008QG0R002JQERS5, 081KRFA460008QG0R00168759Y, 081KRFA460008QG0R000EJK30F, 081KRFA460008QG0R003C00WKR-433, 081KRFA460008QG0R0018SN61J)
 
 This PR closes the three remaining gaps: EXPERT-REGISTRY entry, forward-radar directory scaffold, calibration tracker.
 
@@ -36,7 +36,7 @@ This PR closes the three remaining gaps: EXPERT-REGISTRY entry, forward-radar di
 - `git status` before commit: clean worktree
 - 4 files changed: 177 insertions, 0 deletions
 - No `.ts` or `.fs` code changes → build gate N/A (docs-only slice)
-- Claim held: `otto-cli B-0145 feat/pm2-forward-radar-b0145-2026-05-13`
+- Claim held: `otto-cli 081KQGDBJ0008QG0R000RWAA67 feat/pm2-forward-radar-b0145-2026-05-13`
 
 ## AC coverage
 
@@ -45,14 +45,14 @@ This PR closes the three remaining gaps: EXPERT-REGISTRY entry, forward-radar di
 | AC 1 — EXPERT-REGISTRY.md row for Mira (PM-2) | ✅ | `docs/EXPERT-REGISTRY.md` row added |
 | AC 2 — weekly Sunday UTC cadence documented | ✅ | TEMPLATE.md header: "default: weekly, Sundays UTC" |
 | AC 3 — `docs/forward-radar/TEMPLATE.md` | ✅ | File created this PR |
-| AC 4 — first forward-radar memo | ✅ | B-0271 closed; research doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` |
+| AC 4 — first forward-radar memo | ✅ | 081KR2E4K0008QG0R003VB7ZZR closed; research doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` |
 | AC 5 — `docs/forward-radar/calibration.md` | ✅ | File created this PR |
 
 ## Test plan
 
 - [ ] Verify `docs/EXPERT-REGISTRY.md` table renders correctly (Mira row distinct from existing rows)
 - [ ] Verify `docs/forward-radar/TEMPLATE.md` matches format used in PM-2 SKILL.md output shape
-- [ ] Verify `docs/forward-radar/calibration.md` metric definitions match B-0145 quality test section
+- [ ] Verify `docs/forward-radar/calibration.md` metric definitions match 081KQGDBJ0008QG0R000RWAA67 quality test section
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -87,13 +87,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Docs-only slice that closes the three remaining open acceptance criteria of B-0145 (PM-2 role activation): registers the new PM-2 persona in the expert roster, and scaffolds the forward-radar output directory with a memo template and a calibration tracker. The pre-existing work (B-0270 skill+agent, B-0271 first research pass) is already merged; this PR is the connective tissue.
+Docs-only slice that closes the three remaining open acceptance criteria of 081KQGDBJ0008QG0R000RWAA67 (PM-2 role activation): registers the new PM-2 persona in the expert roster, and scaffolds the forward-radar output directory with a memo template and a calibration tracker. The pre-existing work (081KR2E4K0008QG0R0035RG9G6 skill+agent, 081KR2E4K0008QG0R003VB7ZZR first research pass) is already merged; this PR is the connective tissue.
 
 **Changes:**
 - Add the **Mira** (PM-2) row to `docs/EXPERT-REGISTRY.md`.
 - Create `docs/forward-radar/TEMPLATE.md` (canonical memo template, weekly Sundays-UTC cadence).
 - Create `docs/forward-radar/calibration.md` (Lead-time% / Action-rate% tracker, quarterly review note).
-- Append a pre-start checklist section to the B-0145 backlog row.
+- Append a pre-start checklist section to the 081KQGDBJ0008QG0R000RWAA67 backlog row.
 
 ### Reviewed changes
 
@@ -104,7 +104,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 | docs/EXPERT-REGISTRY.md | Adds PM-2 / Mira row to the current-roster table; consistent with adjacent rows. |
 | docs/forward-radar/TEMPLATE.md | New canonical memo template; uses persona-name attribution on a current-state surface (Otto-279 finding). |
 | docs/forward-radar/calibration.md | New metrics tracker; persona-name and human-maintainer attribution on a current-state surface (Otto-279 finding). |
-| docs/backlog/P1/B-0145-…-2026-05-01.md | Adds pre-start checklist; `last_updated` frontmatter not bumped. |
+| docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-…-2026-05-01.md | Adds pre-start checklist; `last_updated` frontmatter not bumped. |
 
 
 <details>
@@ -178,7 +178,7 @@ This issue also appears on line 49 of the same file.
 
 Direct persona-name attribution on a current-state surface: "PM-2 / Mira" (line 3), "author: pm2 (Mira)" (line 17), "Mira predicts, Otto delivers" (line 51), and "Updated by Mira" (calibration.md line 4). `docs/forward-radar/TEMPLATE.md` is a current-state public-prose surface — it is not in the closed list of history surfaces and not in the roster-mapping carve-out (which only covers `.github/copilot-instructions.md`, `AGENTS.md`, `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`). Rewrite to role-refs (e.g., "the PM-2 role", "author: pm2"). The persona-to-role mapping for Mira is already established in `docs/EXPERT-REGISTRY.md`, so readers can resolve the name from there.
 
-### Thread 4: docs/backlog/P1/B-0145-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md:16 (resolved)
+### Thread 4: docs/backlog/P1/081KQGDBJ0008QG0R000RWAA67-product-manager-role-research-to-predict-features-before-friction-aaron-2026-05-01.md:16 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T00:24:46Z):
 

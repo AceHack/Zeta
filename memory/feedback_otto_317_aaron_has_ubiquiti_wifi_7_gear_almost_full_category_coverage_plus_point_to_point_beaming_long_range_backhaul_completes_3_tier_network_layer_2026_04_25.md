@@ -48,7 +48,7 @@ Aaron 2026-04-25 evening, after Otto-316 compute fleet:
 - **Otto-314 (RNS+HaLow)** — extends the network primitive across all 3 tiers, not just HaLow Sub-1GHz.
 - **Otto-315 (NVIDIA Thor)** — compute connects via WiFi 7 to the high-bandwidth indoor tier.
 - **Otto-316 (compute fleet)** — fleet connects via UniFi switches + WiFi 7; site-to-site via beaming.
-- **B-0009 (substrate-IP-rotation)** — even more moot now: 3 physical tiers + RNS logical layer means the "visible IP" question becomes "which tier carries this packet" and identity stays RNS-Hash regardless.
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation)** — even more moot now: 3 physical tiers + RNS logical layer means the "visible IP" question becomes "which tier carries this packet" and identity stays RNS-Hash regardless.
 
 ## What this memory does NOT claim
 

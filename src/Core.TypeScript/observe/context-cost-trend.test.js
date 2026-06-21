@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { analyzeTrend, byHarness } from "./context-cost-trend";
-// B-1016 DORA trend store — the pure trend-analysis core (I/O edge exercised by CLI).
+// 081KT7YW00008QG0R002T1XNWT DORA trend store — the pure trend-analysis core (I/O edge exercised by CLI).
 const rec = (ts, harness, bytes) => ({ ts, harness, bytes, estTokens: Math.round(bytes / 3.8) });
 test("analyzeTrend detects growth (drift up)", () => {
     const v = analyzeTrend([rec("2026-06-01T00:00:00Z", "h", 1000), rec("2026-06-04T00:00:00Z", "h", 1200)]);

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// complete-workitem.ts — move a work-item to done (B-0956 lifecycle = folder).
+// complete-workitem.ts — move a work-item to done (081KSXN940008QG0R002FWR9B2 lifecycle = folder).
 //
 // Completing a work-item:
 //   1. updates frontmatter: state → done, adds `completed: <ISO datetime>` (precise;

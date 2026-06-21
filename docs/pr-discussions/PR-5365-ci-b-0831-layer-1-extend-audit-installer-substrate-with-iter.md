@@ -1,6 +1,6 @@
 ---
 pr_number: 5365
-title: "ci(B-0831 layer-1): extend audit-installer-substrate with iter-5.4 sentinels"
+title: "ci(081KSGS9H0008QG0R0011BC7T2 layer-1): extend audit-installer-substrate with iter-5.4 sentinels"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T00:41:12Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5365: ci(B-0831 layer-1): extend audit-installer-substrate with iter-5.4 sentinels
+# PR #5365: ci(081KSGS9H0008QG0R0011BC7T2 layer-1): extend audit-installer-substrate with iter-5.4 sentinels
 
 ## PR description
 
@@ -26,8 +26,8 @@ The 4-layer plan:
 |---|---|---|---|
 | **Layer 1 (THIS PR)** | Source-level sentinel audit | Seconds | Substrate regression (text-level) |
 | Layer 2 (next PR) | Behavioral test with mock \`gh\` shim on PATH | ~1s | Conditional-logic regression |
-| Layer 3 ([B-0833](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0833-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md) Approach A) | Mock GH device-code endpoint | ~10s | Real interactive-login flow without humans |
-| Layer 4 ([B-0831](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0831-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-routine-human-physical-usb-test-aaron-2026-05-26.md) cascade #6) | QEMU full-install + cluster auto-join | Minutes | End-to-end including reboot + ArgoCD |
+| Layer 3 ([081KSGS9H0008QG0R003JNSVR5](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KSGS9H0008QG0R003JNSVR5-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md) Approach A) | Mock GH device-code endpoint | ~10s | Real interactive-login flow without humans |
+| Layer 4 ([081KSGS9H0008QG0R0011BC7T2](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-routine-human-physical-usb-test-aaron-2026-05-26.md) cascade #6) | QEMU full-install + cluster auto-join | Minutes | End-to-end including reboot + ArgoCD |
 
 ## What this PR adds
 
@@ -72,8 +72,8 @@ Runs in the existing \`build-ai-cluster-iso.yml\` workflow on every PR touching 
 
 - PR #5364 (Bug 2a + 2b fixes — this audit catches removal)
 - PR #5352 (iter-5.4.1 Copilot YAML schema findings — this audit catches regression)
-- B-0831 (cascade #6 full-install QEMU; this is layer 1)
-- B-0833 (interactive-login vs baked-in-keys; layer 3 of cascade)
+- 081KSGS9H0008QG0R0011BC7T2 (cascade #6 full-install QEMU; this is layer 1)
+- 081KSGS9H0008QG0R003JNSVR5 (interactive-login vs baked-in-keys; layer 3 of cascade)
 
 ## Substrate-honest framing
 

@@ -36,7 +36,7 @@ The keystone reframes the whole review: cross-repo-join-as-**saga**, **per-agent
 
 Same disciplines (asymmetric-critic-with-clarity-first): engineering substance kept, escalating-credential register flagged — and this time **corrected by Kestrel itself**. Aaron signalled "more to come"; further turns append to this doc.
 
-Composes with #6478 (first ferry doc), B-0954 (agent-bus), the cross-repo-join saga, the 4-oracle DST conformance, and the Bonsai-upstream-vs-ours finding settled this session.
+Composes with #6478 (first ferry doc), 081KSXN940008QG0R00171YAZW (agent-bus), the cross-repo-join saga, the 4-oracle DST conformance, and the Bonsai-upstream-vs-ours finding settled this session.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

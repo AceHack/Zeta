@@ -1,6 +1,5 @@
 ---
-id: B-0254
-zetaid: 081KQZVQW0008QG0R000JJVA4E
+id: 081KQZVQW0008QG0R000JJVA4E
 priority: P2
 status: open
 title: "Posterior quorum triangulation over existing Bayesian DBSP substrate"
@@ -15,7 +14,7 @@ tags: [infer-net, bayesian-inference, belief-propagation, expectation-propagatio
 type: feature
 ---
 
-# B-0254 - Posterior quorum triangulation over existing Bayesian substrate
+# 081KQZVQW0008QG0R000JJVA4E - Posterior quorum triangulation over existing Bayesian substrate
 
 ## Source
 
@@ -82,12 +81,12 @@ historical and mathematical anchor for richer posterior semantics.
   `BayesianRateOp` DBSP emission.
 - `docs/research/proof-tool-coverage.md` and the Lean/TLA+/Z3/FsCheck surfaces
   already define how empirical tests and formal proofs split work in Zeta.
-- B-0189 tracks BP/EP as a Q# runtime acceleration research lane.
-- B-0007 tracks broader Bayesian inference and belief propagation primitives.
-- B-0240 tracks the shape-indexed structure recognizer.
-- B-0250 tracks coincidence detection via Rx join.
-- B-0251 tracks durable computation and replay.
-- B-0253 tracks Orleans grain/silo inter-loop messaging.
+- 081KQR4HQ0008QG0R002933PRR tracks BP/EP as a Q# runtime acceleration research lane.
+- 081KQ0YZ80008QG0R001V1PMC0 tracks broader Bayesian inference and belief propagation primitives.
+- 081KQZVQW0008QG0R002QZAFB2 tracks the shape-indexed structure recognizer.
+- 081KQZVQW0008QG0R001FG05RZ tracks coincidence detection via Rx join.
+- 081KQZVQW0008QG0R000PPQ3MH tracks durable computation and replay.
+- 081KQZVQW0008QG0R000W4B8KT tracks Orleans grain/silo inter-loop messaging.
 
 ## Candidate design
 
@@ -110,7 +109,7 @@ The output is a posterior over:
 ## Non-goals
 
 - Do not add literal Infer.NET to the hot path.
-- Do not duplicate B-0007 or B-0189.
+- Do not duplicate 081KQ0YZ80008QG0R001V1PMC0 or 081KQR4HQ0008QG0R002933PRR.
 - Do not replace existing `Zeta.Bayesian` conjugate-prior operators.
 - Do not treat agreement as proof. Agreement is evidence; the posterior must
   preserve uncertainty and tail risk.
@@ -136,15 +135,15 @@ The output is a posterior over:
 ## Why P2
 
 This is research-grade and important, but not the next hot-path implementation
-step. It depends on B-0253's Orleans/grain messaging shape before it can become
-live infrastructure, and it composes with B-0251's durable replay work. The
+step. It depends on 081KQZVQW0008QG0R000W4B8KT's Orleans/grain messaging shape before it can become
+live infrastructure, and it composes with 081KQZVQW0008QG0R000PPQ3MH's durable replay work. The
 right first move is offline research and archived-PR evaluation.
 
 ## Composes with
 
-- B-0007 - upstream Bayesian inference and belief propagation primitives.
-- B-0189 - BP/EP research lane for Q# runtime acceleration.
-- B-0240 - structure recognizer.
-- B-0250 - coincidence detection / Rx join.
-- B-0251 - durable computation and replay.
-- B-0253 - real-time inter-loop Orleans grain messaging.
+- 081KQ0YZ80008QG0R001V1PMC0 - upstream Bayesian inference and belief propagation primitives.
+- 081KQR4HQ0008QG0R002933PRR - BP/EP research lane for Q# runtime acceleration.
+- 081KQZVQW0008QG0R002QZAFB2 - structure recognizer.
+- 081KQZVQW0008QG0R001FG05RZ - coincidence detection / Rx join.
+- 081KQZVQW0008QG0R000PPQ3MH - durable computation and replay.
+- 081KQZVQW0008QG0R000W4B8KT - real-time inter-loop Orleans grain messaging.

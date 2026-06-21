@@ -50,4 +50,4 @@ Resolved Copilot field-consistency thread on lines 84-88. Pushed clarifying sent
 - Finite-field reading (matches ℤ/pℤ convention on line 56): `‖·‖` = Hamming distance over the chosen basis, ε = 0 exact
 - ℝ-analytic reading (matches orthonormal basis on line 17): `‖·‖` = Euclidean norm, ε small real constant
 
-Lemma statement unchanged; bridging sentence added so the ambient field/metric is consistent. Commit `01bceb06` via REST git-data API bypass (multi-agent saturation; per [B-0615](https://github.com/Lucent-Financial-Group/Zeta/issues?q=B-0615) + [PR #4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145)).
+Lemma statement unchanged; bridging sentence added so the ambient field/metric is consistent. Commit `01bceb06` via REST git-data API bypass (multi-agent saturation; per [081KRW63S0008QG0R000EAZ9K2](https://github.com/Lucent-Financial-Group/Zeta/issues?q=081KRW63S0008QG0R000EAZ9K2) + [PR #4145](https://github.com/Lucent-Financial-Group/Zeta/pull/4145)).

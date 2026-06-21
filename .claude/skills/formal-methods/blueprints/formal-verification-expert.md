@@ -266,7 +266,7 @@ the `architect` reads it before sizing the round.
 - `openspec/specs/*/spec.md` — behavioural specs she routes from
 - `memory/soraya/NOTEBOOK.md` — her notebook
   (current-round targets + portfolio metric +
-  **Trigger Recognition Log section** per B-0719 routing decision:
+  **Trigger Recognition Log section** per 081KSBMG30008QG0R000WJ9FMP routing decision:
   substrate for trigger-fired-but-row-not-filed events lands here;
   3000-word cap, pruned every third invocation, ASCII only per
   BP-09 / BP-10)

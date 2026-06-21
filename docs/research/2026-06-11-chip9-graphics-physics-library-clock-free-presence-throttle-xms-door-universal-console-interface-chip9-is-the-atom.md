@@ -17,7 +17,7 @@ Aaron 2026-06-11:
    (a 64×32 screen simulated on ~4M×2M sub-pixels). The simulation is always far finer than any pixel
    shows; the renderer downsamples. Tested concretely: two bodies in sub-pixel contact that whole
    pixels would round onto the same cell — the sim sees what the display cannot. Exact ⇒ a TREATY
-   surface (byte-locked trajectories on every oracle/architecture — the physics rides the B-1025
+   surface (byte-locked trajectories on every oracle/architecture — the physics rides the 081KTSZN10008QG0R000VZHRQ4
    fan-out).
 2. **Clock-free — speed is nobody's business.** `step` advances SIMULATION time by exact dt; tested:
    8 × (1/8 tick) ≡ 1 tick to the bit. Headless rooms run at max machine speed.

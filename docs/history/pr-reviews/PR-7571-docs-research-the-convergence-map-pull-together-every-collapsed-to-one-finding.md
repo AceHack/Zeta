@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: 'a bunch of our shapes collapsed to one — did we pull that together?' We hadn't — each collapse was its own doc. This is the map: 8 distinct collapses (WeightedSet; the four-corner harmonic arrow fusion B-1022; NSEW=C4=i; rooms=μops/decompile-to-RISC; room=seed→BigFloat plateau; four doors→DevRoom; Feynman root; attention) + the grand collapse (one finite-resolution qubit register) + honest in-code status (WeightedSet/DevRoom/FourCorner done; the arrow fusion B-1022 still fragments = next). Docs only.
+Aaron: 'a bunch of our shapes collapsed to one — did we pull that together?' We hadn't — each collapse was its own doc. This is the map: 8 distinct collapses (WeightedSet; the four-corner harmonic arrow fusion 081KTQD8A0008QG0R0005EFYPV; NSEW=C4=i; rooms=μops/decompile-to-RISC; room=seed→BigFloat plateau; four doors→DevRoom; Feynman root; attention) + the grand collapse (one finite-resolution qubit register) + honest in-code status (WeightedSet/DevRoom/FourCorner done; the arrow fusion 081KTQD8A0008QG0R0005EFYPV still fragments = next). Docs only.
 
 ## Outcome
 

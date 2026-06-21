@@ -1,6 +1,6 @@
 # Ace CLI slice 6.2 — `ace registry publish` enhancements (design)
 
-> Spec for slice 6.2 of the Ace DLC package manager (B-0288 / B-0980). Three deferred
+> Spec for slice 6.2 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD / 081KT07NV0008QG0R0016FVWD7). Three deferred
 > enhancements to the slice-6.1 producer (`ace registry publish`, merged #6439): a
 > per-package URL override, comma-separated multi-directory input, and an explicit
 > `--sequence` override. Brainstormed + decided with the operator 2026-06-01. The
@@ -23,8 +23,8 @@ are producer-side ergonomics.
 
 ## Decomposition (recap)
 
-- **Slice 6** (B-0971, #6431): consumer — fetch + verify + cache + merge a signed index.
-- **Slice 6.1** (B-0980, #6439): producer core — `ace registry publish` (dir scan, derive
+- **Slice 6** (081KT07NV0008QG0R000SJ34AK, #6431): consumer — fetch + verify + cache + merge a signed index.
+- **Slice 6.1** (081KT07NV0008QG0R0016FVWD7, #6439): producer core — `ace registry publish` (dir scan, derive
   url + `package_hash`, sign, auto-bump `sequence`, round-trip self-verify, consumer-parity
   input validation, deterministic output).
 - **Slice 6.2** (this spec): producer ergonomics — per-package `url`, multi-dir, `--sequence`.
@@ -240,8 +240,8 @@ Out of scope:
   explicitly + auditably).
 - **`--url-map` file / repeatable `--url` flag** — not chosen; the in-file `url` field keeps
   the override self-contained per package.
-- **Incremental/delta publish** (B-0978), **multi-signer** (B-0981), **mirror/failover**
-  (B-0977) — separate rows.
+- **Incremental/delta publish** (081KT07NV0008QG0R001PHV1ND), **multi-signer** (081KT07NV0008QG0R000GGW5E6), **mirror/failover**
+  (081KT07NV0008QG0R000K1X7NZ) — separate rows.
 
 ## Files touched
 
@@ -251,4 +251,4 @@ Out of scope:
   scan, read+validate `url`, filename-guard skip on override, sequence override) + usage.
 - `tools/ace/ace.test.ts` — per-package-url + multi-dir + `--sequence` e2e tests.
 - `.claude/skills/ace/SKILL.md` — document the three enhancements.
-- B-0980 already records these as deferred; the impl PR notes them shipped.
+- 081KT07NV0008QG0R0016FVWD7 already records these as deferred; the impl PR notes them shipped.

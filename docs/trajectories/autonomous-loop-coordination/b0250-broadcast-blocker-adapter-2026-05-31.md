@@ -1,8 +1,8 @@
-# B-0250 Broadcast Blocker Adapter - 2026-05-31
+# 081KQZVQW0008QG0R001FG05RZ Broadcast Blocker Adapter - 2026-05-31
 
 ## Status
 
-Prepared as a bounded B-0250 source adapter slice.
+Prepared as a bounded 081KQZVQW0008QG0R001FG05RZ source adapter slice.
 
 ## Provenance
 
@@ -26,7 +26,7 @@ The adapter:
 - requires a non-empty blocker `trajectory`;
 - requires a valid event time from `blocker.occurredAt`, `blocker.observedAt`,
   or the envelope timestamp;
-- skips expired envelopes and events outside the B-0250 lookback window;
+- skips expired envelopes and events outside the 081KQZVQW0008QG0R001FG05RZ lookback window;
 - emits `CoincidenceEvent` values with source `broadcast-blocker`.
 
 Free-form markdown broadcast notes remain coordination input only. They do not

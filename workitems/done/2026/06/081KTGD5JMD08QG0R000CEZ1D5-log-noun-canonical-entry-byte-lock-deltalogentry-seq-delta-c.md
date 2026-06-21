@@ -35,7 +35,7 @@ type DeltaLogEntry<'K when 'K : comparison> =
 (`JsonSerializer.SerializeToUtf8Bytes` of a `Dictionary<string,string>`) and `Delta` via the ZSet
 codec, framed differently per backend. That is NOT 4-lang byte-lockable: STJ key ordering/escaping is
 platform-specific, and the `Captured` map keys must be **ordinal-sorted** (culture-invariant rule —
-B-0969 precedent) for cross-language/DST determinism. This is exactly why `Log` isn't proven.
+081KT07NV0008QG0R001YDB73K precedent) for cross-language/DST determinism. This is exactly why `Log` isn't proven.
 
 ## What (the canonical encoding)
 
@@ -47,7 +47,7 @@ a DynamicValue; no new noun). As-shipped (F# reference, #6730/#6735):
   order-preserving, so the mapping fixes the order).
 - `seq` → `DynamicValue.Int` (int64).
 - `delta` → `ZSetDynamic.toDynamicValue` (the existing ZSet↔DynamicValue mapping, already 4/4 locked).
-- `captured` → `DynamicValue.Object` with **ordinal-sorted keys** (culture-invariant, B-0969 — the one
+- `captured` → `DynamicValue.Object` with **ordinal-sorted keys** (culture-invariant, 081KT07NV0008QG0R001YDB73K — the one
   real decision; deterministic across languages + DST). Empty object when the producer was pure.
 
 Format is per-stream/table (CBOR default for filesystem; YAML for git once a DynamicValue YAML
@@ -66,7 +66,7 @@ serializer lands; JSON/XML also available) — all ride the same `DeltaLogEntryD
 ## Anchors
 
 - Architecture: `docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-cells-control-plane-three-host-substrates-aaron-otto.md`
-- Master checklist: **B-0959** (sovereign distributed DB, one git-native Z-set substrate)
+- Master checklist: **081KSXN940008QG0R003FCQ7WT** (sovereign distributed DB, one git-native Z-set substrate)
 - Exemplars to mirror: DynamicValue CBOR (`src/Core.TypeScript/dynamic-value/golden-vectors-cbor.json`),
   ZSet (`src/Core.TypeScript/z-set/golden-vectors.json`)
 - Code to migrate: `src/Core/DeltaLog.fs`, `src/Core.Git/GitDeltaLog.fs`, `src/Core/DiskDeltaLog.fs`

@@ -1,9 +1,8 @@
 ---
-id: B-0583
-zetaid: 081KRQ1AB0008QG0R003DCGHJJ
+id: 081KRQ1AB0008QG0R003DCGHJJ
 priority: P2
 status: open
-title: "Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface"
+title: "Cross-machine account-scoped scarcity bus — refine 081KRQ1AB0008QG0R002422Z9Q from machine-local per-agent files to account-scoped timestamped surface"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-16
@@ -18,7 +17,7 @@ type: feature
 
 ## Origin
 
-Aaron 2026-05-16, refining the B-0570 (scarcity tracker) design after Otto proposed per-agent `/tmp/zeta-bus/scarcity-<agent>.json` files:
+Aaron 2026-05-16, refining the 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker) design after Otto proposed per-agent `/tmp/zeta-bus/scarcity-<agent>.json` files:
 
 > *"this is an account level issue so could cross machine hmm but no sure tracking it in git/github would be any better unless we make certain long lived branches that can be pushed to without a pr or something. myabe worth having a github temp branch with no restrictions for agents for cross mchines communication too outside of the pr itself. just thinking outloud we can build and try a few differnt things. also this resource is tied to my account not a specific agent maybe a shard folder would be better for /tmp or a temp github branch the timestamps would keep it unique without the agent name."*
 
@@ -28,7 +27,7 @@ Two scoping corrections + one architectural opening:
 2. **Cross-machine matters**: Otto-CLI on Aaron's laptop + Otto-ServiceTitan-replicated on a different machine BOTH consume from AceHack's rate-limit bucket. Machine-local `/tmp/zeta-bus/` is invisible to the other machine; cross-machine visibility is needed.
 3. **GitHub-as-bus**: A GitHub branch or sidecar repo could serve as the cross-machine bus surface. Open question: what's the right shape (long-lived branch on LFG with rule carve-outs; sidecar repo; GitHub-Action-only writer; gist; etc.)
 
-The original B-0570 design captures scarcity-as-substrate; this row refines the SUBSTRATE LOCATION to match the actual partition key (account, not agent).
+The original 081KRQ1AB0008QG0R002422Z9Q design captures scarcity-as-substrate; this row refines the SUBSTRATE LOCATION to match the actual partition key (account, not agent).
 
 ## Design space — options to weigh
 
@@ -64,7 +63,7 @@ The choice between the design-space options above should follow a brief experime
 - [ ] If branch-based: ruleset carve-out for the bus branch / sidecar repo confirmed working (Copilot review NOT firing on bus pushes)
 - [ ] If file-based: `tools/bg/scarcity-tracker.ts` extended to write to the chosen surface (machine-local + cross-machine sync if needed)
 - [ ] Cross-machine readability test: another machine (e.g., ServiceTitan-replicated Otto when it lands) can read the bus state
-- [ ] Composes with B-0570: this row refines the substrate location; B-0570's tracker design remains otherwise valid
+- [ ] Composes with 081KRQ1AB0008QG0R002422Z9Q: this row refines the substrate location; 081KRQ1AB0008QG0R002422Z9Q's tracker design remains otherwise valid
 - [ ] Documentation update: `docs/governance/` (or wherever the bus pattern is documented) reflects the chosen approach
 
 ## Why now
@@ -73,15 +72,15 @@ The 2026-05-16 session demonstrated that all agents on this machine (Otto-CLI + 
 
 ## Composes with
 
-- B-0570 (scarcity tracker — this row REFINES that row's substrate location; B-0570 stays valid for the tracker logic; this row addresses where the tracker writes/reads)
-- B-0400 (bus protocol — same family of cross-agent communication; scarcity is one specific channel; bus protocol decisions inform this row's options)
-- B-0571 (GitHub App for factory automation — separate rate-limit pool; if adopted, the scarcity tracker would track BOTH the user-account pool AND the App's separate pool)
-- B-0580 (Enterprise ruleset management — the `copilot_code_review: review_on_push: true` rule in #16490134 is the cost trap this row navigates; understanding the ruleset is prerequisite to deciding branch-based vs sidecar)
-- B-0582 (substrate-level destructive-verb refusal gate — adjacent infrastructure; both are about cross-cutting policy for agent operations)
+- 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker — this row REFINES that row's substrate location; 081KRQ1AB0008QG0R002422Z9Q stays valid for the tracker logic; this row addresses where the tracker writes/reads)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — same family of cross-agent communication; scarcity is one specific channel; bus protocol decisions inform this row's options)
+- 081KRQ1AB0008QG0R0038VQJZ0 (GitHub App for factory automation — separate rate-limit pool; if adopted, the scarcity tracker would track BOTH the user-account pool AND the App's separate pool)
+- 081KRQ1AB0008QG0R000522MPJ (Enterprise ruleset management — the `copilot_code_review: review_on_push: true` rule in #16490134 is the cost trap this row navigates; understanding the ruleset is prerequisite to deciding branch-based vs sidecar)
+- 081KRQ1AB0008QG0R002469KJG (substrate-level destructive-verb refusal gate — adjacent infrastructure; both are about cross-cutting policy for agent operations)
 
 ## Substrate-honest caveats
 
-- This row REFINES B-0570 rather than replacing it; B-0570 captured the tracker logic correctly, this row corrects only the substrate location
+- This row REFINES 081KRQ1AB0008QG0R002422Z9Q rather than replacing it; 081KRQ1AB0008QG0R002422Z9Q captured the tracker logic correctly, this row corrects only the substrate location
 - The Copilot review cost trap is a SPECIFIC concern under current enterprise tier (#16490134 ruleset). If the trial ends without payment method, the trap dissolves (fail-closed at $0 spending limit). If payment method is added, the trap is real and must be navigated.
 - "Long-lived branch with no restrictions" requires explicit ruleset configuration; default protections (deletion + non_fast_forward) should stay; only the Copilot-review rule needs branch-level exclusion
 - The GitHub-Action-only approach is cleanest from a multi-writer-contention standpoint, but loses per-poll history (single file overwrite). Acceptable for "current state" tracking; not for "trend over time" analysis. Depending on need, may want BOTH (current-state file via Action + historical JSONL via append).
@@ -97,7 +96,7 @@ The 2026-05-16 session demonstrated that all agents on this machine (Otto-CLI + 
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0570 captures tracker logic; B-0400 captures bus protocol; this row sits at their intersection
+- [x] Prior-art search: 081KRQ1AB0008QG0R002422Z9Q captures tracker logic; 081KR7JY10008QG0R000R503K2 captures bus protocol; this row sits at their intersection
 - [x] Dependency proof: no blockers; design exploration row
 - [x] Empirical motivation: 2026-05-16 session demonstrated 3-4 agents sharing AceHack bucket; ServiceTitan-replication multiplies cross-machine
 - [x] Constraint identified: Copilot review cost trap under enterprise ruleset #16490134

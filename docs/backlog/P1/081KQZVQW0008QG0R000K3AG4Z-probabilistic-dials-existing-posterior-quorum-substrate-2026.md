@@ -1,6 +1,5 @@
 ---
-id: B-0255
-zetaid: 081KQZVQW0008QG0R000K3AG4Z
+id: 081KQZVQW0008QG0R000K3AG4Z
 priority: P1
 status: open
 title: "Probabilistic dials over existing posterior quorum substrate"
@@ -14,13 +13,13 @@ tags: [trajectory, bayesian-inference, posterior-quorum, dials]
 type: feature
 ---
 
-# B-0255 - Probabilistic dials over existing posterior quorum substrate
+# 081KQZVQW0008QG0R000K3AG4Z - Probabilistic dials over existing posterior quorum substrate
 
 ## What
 
 Turn the orthogonal dials (Certainty / Friction / Space) into marginal
 posteriors over the existing Bayesian DBSP substrate and the posterior-quorum
-work tracked by B-0254.
+work tracked by 081KQZVQW0008QG0R000JJVA4E.
 
 This row does not claim Infer.NET, BP/EP, or Bayesian operators are missing.
 They are already present as backlog/research anchors and F# substrate. The
@@ -29,7 +28,7 @@ erasing uncertainty.
 
 ## Why
 
-The current dials are useful but hand-shaped. Once B-0254 defines the
+The current dials are useful but hand-shaped. Once 081KQZVQW0008QG0R000JJVA4E defines the
 posterior-quorum layer, each dial should become a named marginal or projection
 of that posterior:
 
@@ -41,9 +40,9 @@ of that posterior:
 
 ## How
 
-- B-0250 standing queries provide the evidence stream.
-- B-0251 durable replay makes the evidence stream reproducible.
-- B-0254 defines the posterior quorum over agent observations and git evidence.
+- 081KQZVQW0008QG0R001FG05RZ standing queries provide the evidence stream.
+- 081KQZVQW0008QG0R000PPQ3MH durable replay makes the evidence stream reproducible.
+- 081KQZVQW0008QG0R000JJVA4E defines the posterior quorum over agent observations and git evidence.
 - This row maps posterior outputs to dial semantics and dashboard/action gates.
 - The fusion equation becomes a statement about expected learning gain under
   uncertainty.
@@ -51,21 +50,21 @@ of that posterior:
 ## Acceptance
 
 - [ ] Each dial is defined as a marginal, projection, or calibrated summary of
-      the B-0254 posterior quorum.
+      the 081KQZVQW0008QG0R000JJVA4E posterior quorum.
 - [ ] The design cites `src/Bayesian/BayesianAggregate.fs` and
       `tests/Bayesian.Tests/BayesianTests.fs` as existing substrate.
 - [ ] The design preserves uncertainty; point estimates cannot replace "I
       don't know" when variance remains high.
-- [ ] Standing queries (B-0250) provide the evidence stream feeding the dials.
-- [ ] Durable replay (B-0251) can reproduce a historical dial reading.
+- [ ] Standing queries (081KQZVQW0008QG0R001FG05RZ) provide the evidence stream feeding the dials.
+- [ ] Durable replay (081KQZVQW0008QG0R000PPQ3MH) can reproduce a historical dial reading.
 
 ## Composes with
 
-- B-0254 - posterior quorum triangulation over existing Bayesian DBSP substrate
-- B-0251 - durable computation stack
-- B-0250 - standing queries
-- B-0249 - autonomous backlog runner
-- B-0244 - coherence AI
+- 081KQZVQW0008QG0R000JJVA4E - posterior quorum triangulation over existing Bayesian DBSP substrate
+- 081KQZVQW0008QG0R000PPQ3MH - durable computation stack
+- 081KQZVQW0008QG0R001FG05RZ - standing queries
+- 081KQZVQW0008QG0R000C35RNY - autonomous backlog runner
+- 081KQZVQW0008QG0R001PS4F8G - coherence AI
 
 ## Carved
 

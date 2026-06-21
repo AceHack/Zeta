@@ -1,6 +1,6 @@
 ---
 pr_number: 3057
-title: "fix(backlog): resolve B-0068.1 ID collision \u2014 renumber Aaron-attributed row \u2192 B-0068.4"
+title: "fix(backlog): resolve 081KRA5AR0008QG0R001JVT5FX ID collision \u2014 renumber Aaron-attributed row \u2192 081KR7JY10008QG0R0025F6QVP"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-13T23:10:51Z"
@@ -12,30 +12,30 @@ archived_at: "2026-05-14T00:20:11Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3057: fix(backlog): resolve B-0068.1 ID collision — renumber Aaron-attributed row → B-0068.4
+# PR #3057: fix(backlog): resolve 081KRA5AR0008QG0R001JVT5FX ID collision — renumber Aaron-attributed row → 081KR7JY10008QG0R0025F6QVP
 
 ## PR description
 
 ## Summary
 
-First per-collision cleanup from the B-0451 sweep (12 duplicate-ID groups surfaced by [`tools/bg/audit-duplicate-row-ids.ts`](tools/bg/audit-duplicate-row-ids.ts) in [#3056](https://github.com/Lucent-Financial-Group/Zeta/pull/3056)).
+First per-collision cleanup from the 081KRFA460008QG0R00308W7FJ sweep (12 duplicate-ID groups surfaced by [`tools/bg/audit-duplicate-row-ids.ts`](tools/bg/audit-duplicate-row-ids.ts) in [#3056](https://github.com/Lucent-Financial-Group/Zeta/pull/3056)).
 
 ## The collision
 
 | File | Filed | Scope |
 |---|---|---|
-| `B-0068.1-forge-cli-ollama-research-slice-aaron-2026-05-10.md` | 2026-05-10 ([#2430](https://github.com/Lucent-Financial-Group/Zeta/pull/2430)) | Forge CLI + Ollama harness integration research slice |
-| `B-0068.1-forge-cli-ollama-research-xs-riven-2026-05-11.md` | 2026-05-11 ([#2650](https://github.com/Lucent-Financial-Group/Zeta/pull/2650)) | Forge CLI + Ollama bridge research pass (WebSearch + capability matrix, XS) |
+| `081KRA5AR0008QG0R001JVT5FX-forge-cli-ollama-research-slice-aaron-2026-05-10.md` | 2026-05-10 ([#2430](https://github.com/Lucent-Financial-Group/Zeta/pull/2430)) | Forge CLI + Ollama harness integration research slice |
+| `081KRA5AR0008QG0R001JVT5FX-forge-cli-ollama-research-xs-riven-2026-05-11.md` | 2026-05-11 ([#2650](https://github.com/Lucent-Financial-Group/Zeta/pull/2650)) | Forge CLI + Ollama bridge research pass (WebSearch + capability matrix, XS) |
 
 ## Resolution
 
 Per the per-collision resolution rule (keep the row with external references):
 
-- The [B-0068 parent row's body](docs/backlog/P2/B-0068-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md) describes Riven's scope ("B-0068.1 (XS, P2, root): Forge CLI + Ollama bridge research (WebSearch + matrix). Unblocks B-0068.3.")
-- Sibling rows `B-0068.2` and `B-0068.3` reference "B-0068.1" in `depends_on` / `composes_with` — semantically referring to Riven's atomic XS series
+- The [081KQ8P5D0008QG0R002E1G72J parent row's body](docs/backlog/P2/081KQ8P5D0008QG0R002E1G72J-local-ai-trajectory-forge-ollama-direct-integration-aaron-2026-04-28.md) describes Riven's scope ("081KRA5AR0008QG0R001JVT5FX (XS, P2, root): Forge CLI + Ollama bridge research (WebSearch + matrix). Unblocks 081KRA5AR0008QG0R001BTRYN0.")
+- Sibling rows `081KRA5AR0008QG0R002TPJ4NC` and `081KRA5AR0008QG0R001BTRYN0` reference "081KRA5AR0008QG0R001JVT5FX" in `depends_on` / `composes_with` — semantically referring to Riven's atomic XS series
 - Aaron's row has **no external references** (verified via `grep`)
 
-→ Keep Riven's row at B-0068.1; renumber Aaron's to next-free **B-0068.4** with `renumbered_from: B-0068.1` + reason recorded.
+→ Keep Riven's row at 081KRA5AR0008QG0R001JVT5FX; renumber Aaron's to next-free **081KR7JY10008QG0R0025F6QVP** with `renumbered_from: 081KRA5AR0008QG0R001JVT5FX` + reason recorded.
 
 This bends "first-merged-wins" in favor of the external-references rule, matching [#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053)'s precedent.
 
@@ -64,12 +64,12 @@ Once #3056 (the audit tool) merges, future Otto can verify via `bun tools/bg/aud
 
 ## Pull request overview
 
-Resolves a duplicate backlog-row ID collision by renumbering the Aaron-authored `B-0068.1` row to `B-0068.4`, keeping the externally-referenced `B-0068.1` row intact, and updating the generated backlog index accordingly.
+Resolves a duplicate backlog-row ID collision by renumbering the Aaron-authored `081KRA5AR0008QG0R001JVT5FX` row to `081KR7JY10008QG0R0025F6QVP`, keeping the externally-referenced `081KRA5AR0008QG0R001JVT5FX` row intact, and updating the generated backlog index accordingly.
 
 **Changes:**
-- Renumbered the per-row file frontmatter from `id: B-0068.1` to `id: B-0068.4`, recording `renumbered_from` / `renumbered_reason` and updating `last_updated`.
+- Renumbered the per-row file frontmatter from `id: 081KRA5AR0008QG0R001JVT5FX` to `id: 081KR7JY10008QG0R0025F6QVP`, recording `renumbered_from` / `renumbered_reason` and updating `last_updated`.
 - Updated the row’s H1 header to reflect the new ID and renumber provenance.
-- Regenerated `docs/BACKLOG.md` to replace the old `B-0068.1` entry with `B-0068.4`.
+- Regenerated `docs/BACKLOG.md` to replace the old `081KRA5AR0008QG0R001JVT5FX` entry with `081KR7JY10008QG0R0025F6QVP`.
 
 ### Reviewed changes
 
@@ -77,17 +77,17 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md | Updates row ID + renumber provenance metadata for the collision fix. |
-| docs/BACKLOG.md | Regenerated index reflecting the new `B-0068.4` row ID. |
+| docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md | Updates row ID + renumber provenance metadata for the collision fix. |
+| docs/BACKLOG.md | Regenerated index reflecting the new `081KR7JY10008QG0R0025F6QVP` row ID. |
 
 
 <details>
 <summary>Comments suppressed due to low confidence (3)</summary>
 
-**docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:5**
-* The row title still says "B-0068 child 1" even though this row is now B-0068.4 and B-0068.1 already exists. This is likely to confuse readers of docs/BACKLOG.md; consider updating the title to avoid implying it's the first child (e.g., reference the renumber or describe the scope without a child-number).
-**docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:8**
-* This child row doesn’t declare `parent: B-0068`, unlike the other B-0068.* siblings (e.g., docs/backlog/P2/B-0068.1-…:6, B-0068.2-…:6, B-0068.3-…:6) and many other dotted IDs (e.g., docs/backlog/P2/B-0054.1-…:9). Adding `parent: B-0068` would make the relationship machine-readable and keep frontmatter consistent.
-**docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:11**
-* `renumbered_reason` says this cleanup is "tracked in B-0451", but there is no B-0451 backlog row in this branch, and B-0451 is referenced elsewhere as a different planned item (docs/backlog/P1/B-0449-…:136-138). To avoid a dangling/ambiguous reference, consider linking to the concrete tracking row path (once it exists) or referencing the PR/issue that tracks the cleanup instead of the bare ID.
+**docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md:5**
+* The row title still says "081KQ8P5D0008QG0R002E1G72J child 1" even though this row is now 081KR7JY10008QG0R0025F6QVP and 081KRA5AR0008QG0R001JVT5FX already exists. This is likely to confuse readers of docs/BACKLOG.md; consider updating the title to avoid implying it's the first child (e.g., reference the renumber or describe the scope without a child-number).
+**docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md:8**
+* This child row doesn’t declare `parent: 081KQ8P5D0008QG0R002E1G72J`, unlike the other 081KQ8P5D0008QG0R002E1G72J.* siblings (e.g., docs/backlog/P2/081KRA5AR0008QG0R001JVT5FX-…:6, 081KRA5AR0008QG0R002TPJ4NC-…:6, 081KRA5AR0008QG0R001BTRYN0-…:6) and many other dotted IDs (e.g., docs/backlog/P2/081KR2E4K0008QG0R0003J0FB8-…:9). Adding `parent: 081KQ8P5D0008QG0R002E1G72J` would make the relationship machine-readable and keep frontmatter consistent.
+**docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md:11**
+* `renumbered_reason` says this cleanup is "tracked in 081KRFA460008QG0R00308W7FJ", but there is no 081KRFA460008QG0R00308W7FJ backlog row in this branch, and 081KRFA460008QG0R00308W7FJ is referenced elsewhere as a different planned item (docs/backlog/P1/081KRFA460008QG0R002DG8KPZ-…:136-138). To avoid a dangling/ambiguous reference, consider linking to the concrete tracking row path (once it exists) or referencing the PR/issue that tracks the cleanup instead of the bare ID.
 </details>

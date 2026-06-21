@@ -1,4 +1,4 @@
-# B-0250 Broadcast Blocker Live-Output Calibration - 2026-05-31
+# 081KQZVQW0008QG0R001FG05RZ Broadcast Blocker Live-Output Calibration - 2026-05-31
 
 ## Status
 
@@ -47,7 +47,7 @@ incident-grade debug surface or the warning-grade coincidence debug surface.
 That is the expected result for the current local environment: the adapter only
 converts fresh structured JSON bus envelopes with explicit blocker fields. The
 human-readable markdown broadcasts remain coordination input for agents, but do
-not become B-0250 event evidence.
+not become 081KQZVQW0008QG0R001FG05RZ event evidence.
 
 ## Decision
 

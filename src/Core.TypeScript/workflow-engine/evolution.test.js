@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/evolution.test.ts
  *
- * B-0914.5 — invariant tests for pure-TS evolution agent.
+ * 081KDX1YWP008QG0R002GZJNXA — invariant tests for pure-TS evolution agent.
  *
  * Run via: bun test src/Core.TypeScript/workflow-engine/evolution.test.ts
  */
@@ -13,7 +13,7 @@ const survivor = (id, substrate, skill) => ({
     conservativeSkill: skill,
     composesWith: [`source-${id}`],
 });
-describe("B-0914.5 evolution agent substrate (mash + refine)", () => {
+describe("081KDX1YWP008QG0R002GZJNXA evolution agent substrate (mash + refine)", () => {
     it("simple-merge: top survivor's substrate as base + fills gaps from next", () => {
         const top = survivor("h1", { mechanism: "ER-stress-inhibition", drugCandidate: "cur-6", evidence: 0.8 }, 30);
         const next = survivor("h2", { mechanism: "kinase-inhibition", pathway: "PI3K-mTOR", evidence: 0.6 }, 20);
@@ -114,7 +114,7 @@ describe("B-0914.5 evolution agent substrate (mash + refine)", () => {
         // composesWith includes source attributions + the evolution row
         expect(variant.composesWith).toContain("source-a");
         expect(variant.composesWith).toContain("source-b");
-        expect(variant.composesWith).toContain("B-0914.5");
+        expect(variant.composesWith).toContain("081KDX1YWP008QG0R002GZJNXA");
     });
     it("evolveTopN slices top-N from sorted survivors", () => {
         const survivors = [

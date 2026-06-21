@@ -1,6 +1,5 @@
 ---
-id: B-0312
-zetaid: 081KR2E4K0008QG0R0009QXZ77
+id: 081KR2E4K0008QG0R0009QXZ77
 priority: P1
 status: in-progress
 title: "HC/SD/DIR alignment-clause external-anchor backfill"
@@ -45,10 +44,10 @@ explicit "original to Zeta" note.
    not collide with Beacon-blocked terminology (per
    Otto-351).
 
-## Composes with B-0003
+## Composes with 081KQ0YZ80008QG0R001QJJTVF
 
-B-0003 is the ALIGNMENT.md rewrite. If B-0003 lands first,
-anchor backfill applies to the rewritten surface. If B-0312
+081KQ0YZ80008QG0R001QJJTVF is the ALIGNMENT.md rewrite. If 081KQ0YZ80008QG0R001QJJTVF lands first,
+anchor backfill applies to the rewritten surface. If 081KR2E4K0008QG0R0009QXZ77
 lands first, anchors carry forward into the rewrite.
 
 ## Done-criteria
@@ -57,7 +56,7 @@ lands first, anchors carry forward into the rewrite.
       or an explicit "original to Zeta" note.
 - [ ] Each citation includes: URL, author/org, title, date.
 - [ ] Beacon-safety pass completed on all cited sources.
-- [ ] Coverage scanner (B-0311) shows 21/21 anchored or
+- [ ] Coverage scanner (081KR2E4K0008QG0R001ZWARTN) shows 21/21 anchored or
       explicitly noted.
 
 ## Pre-start checklist (2026-05-09)
@@ -66,22 +65,22 @@ lands first, anchors carry forward into the rewrite.
 
 - Skill router: no existing skill covers external-anchor backfill for
   alignment clauses.
-- `tools/alignment/audit_external_anchors.ts` (B-0311, done 2026-05-09)
+- `tools/alignment/audit_external_anchors.ts` (081KR2E4K0008QG0R001ZWARTN, done 2026-05-09)
   — scanner confirms 60 of 63 concepts are anchor-pending; HC clauses
   all pending before this work.
-- Concept registry (B-0310): has `anchor:` field (B-0361 PR #2316).
-- Decision-archaeology: B-0060 umbrella motivates; B-0311 gates; no
+- Concept registry (081KR2E4K0008QG0R003DS2XHJ): has `anchor:` field (081KR50HA0008QG0R001G4QHQF PR #2316).
+- Decision-archaeology: 081KQ8P5D0008QG0R000N718AC umbrella motivates; 081KR2E4K0008QG0R001ZWARTN gates; no
   supersession.
 
 **Dependency-restructure:**
 
-- B-0311 status updated to `done` in same branch.
-- B-0003 (ALIGNMENT.md rewrite) is not yet started; HC anchors will
+- 081KR2E4K0008QG0R001ZWARTN status updated to `done` in same branch.
+- 081KQ0YZ80008QG0R001QJJTVF (ALIGNMENT.md rewrite) is not yet started; HC anchors will
   carry forward per composes_with note.
 
 **Scope decision:**  
 Smallest safe slice = HC-1..HC-7 in this PR.
-SD-1..SD-9 and DIR-1..DIR-5 in a follow-on PR (B-0312 part 2).
+SD-1..SD-9 and DIR-1..DIR-5 in a follow-on PR (081KR2E4K0008QG0R0009QXZ77 part 2).
 
 ## Progress
 

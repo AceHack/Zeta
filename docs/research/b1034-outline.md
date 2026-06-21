@@ -1,4 +1,4 @@
-# B-1034 outline — The Oracle Stack (experience report)
+# 081KTZ4EF0008QG0R0035FW7HY outline — The Oracle Stack (experience report)
 
 Status: OUTLINE (the math-team claims review runs on this; Aaron decides venue + authorship).
 Evidence: `b1034-evidence-appendix.md` (generated — 298 signed commits in the window; re-run

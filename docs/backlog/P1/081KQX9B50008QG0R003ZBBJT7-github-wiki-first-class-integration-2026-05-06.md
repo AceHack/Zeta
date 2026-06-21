@@ -1,6 +1,5 @@
 ---
-id: B-0237
-zetaid: 081KQX9B50008QG0R003ZBBJT7
+id: 081KQX9B50008QG0R003ZBBJT7
 priority: P1
 status: open
 title: "GitHub Wiki first-class integration after Pages launch"
@@ -15,7 +14,7 @@ owners: [docs, architect]
 type: friction-reducer
 ---
 
-# B-0237 - GitHub Wiki first-class integration
+# 081KQX9B50008QG0R003ZBBJT7 - GitHub Wiki first-class integration
 
 Split the GitHub Wiki lane from the Pages lane so Pages can
 ship first and Wiki can become a deliberate second surface.

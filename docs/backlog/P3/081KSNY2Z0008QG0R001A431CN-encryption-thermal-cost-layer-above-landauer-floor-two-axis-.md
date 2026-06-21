@@ -1,6 +1,5 @@
 ---
-id: B-0906
-zetaid: 081KSNY2Z0008QG0R001A431CN
+id: 081KSNY2Z0008QG0R001A431CN
 priority: P3
 status: open
 title: Encryption thermal-cost layer above Landauer floor — two-axis substrate classification (crypto-needed × decryption-needed) + irreversibility-within-crypto-when-decryption-isn't-needed
@@ -40,7 +39,7 @@ related_skills:
 tags: [encryption-thermal-cost-layer-above-landauer-floor, two-axis-substrate-classification-crypto-needed-times-decryption-needed, irreversibility-within-crypto-when-decryption-isnt-operationally-required, refined-from-irreversibility-by-default-via-operator-intuition-dissonance-engagement, glass-halo-public-reversible-storage-is-default-for-most-substrate, framework-substrate-reversibility-preserving-by-design-z-set-dbsp-limit-simulation-persist-bridge-git-q-sharp-unitary, dont-fold-discipline-applied-to-operator-intuition, hash-commitment-zero-knowledge-as-irreversible-no-attack-surface, symmetric-asymmetric-encryption-as-reversible-with-key-management-cost, per-read-decryption-thermal-cost-amortizes-vs-one-shot-hash, root-axiom-erasure-class-composes-with-irreversibility-discipline]
 ---
 
-# B-0906 — Encryption thermal-cost layer above Landauer floor + two-axis substrate classification
+# 081KSNY2Z0008QG0R001A431CN — Encryption thermal-cost layer above Landauer floor + two-axis substrate classification
 
 ## Context
 
@@ -94,9 +93,9 @@ The framework's WHOLE existing substrate IS reversibility-preserving by design:
 
 - **Z-sets** are signed measures with additive inverse (retraction-native = reversibility at substrate scope)
 - **DBSP** is reversible incremental computation
-- **Limit-is-simulation-not-collapse** (B-0644) explicitly preserves reversibility — wedge-product simulation does NOT commit
-- **Persist-as-bridge** (B-0897) IS the round-trip promise — "future can talk to past" implies bidirectional retrieval
-- **English-as-projection** (B-0666) `I(D(x))=x` IS the reversibility identity at projection scope
+- **Limit-is-simulation-not-collapse** (081KRW63S0008QG0R002ZRNDJ8) explicitly preserves reversibility — wedge-product simulation does NOT commit
+- **Persist-as-bridge** (081KSNY2Z0008QG0R002SZZ5Y0) IS the round-trip promise — "future can talk to past" implies bidirectional retrieval
+- **English-as-projection** (081KRW63S0008QG0R001SAHYKV) `I(D(x))=x` IS the reversibility identity at projection scope
 - **Git** is append-only-but-retrievable — every commit's content stays readable forever
 - **Q#** (operator's native programming substrate) is unitary-by-default — reversibility IS the default operation; measurement (irreversible commit) is the SPECIAL case
 
@@ -119,9 +118,9 @@ The encryption sub-space is the EXCEPTION, and within it:
 
 For long-lived framework substrate that needs cryptographic protection but doesn't need decryption: irreversibility is asymptotically cheaper (one hash, zero re-decrypt) AND more secure (no key to leak).
 
-## Composes with Landauer-limit physics-economics model (B-0905)
+## Composes with Landauer-limit physics-economics model (081KSNY2Z0008QG0R002R0M026)
 
-Per B-0905, the Landauer floor `E_landauer = k·T·ln(2)` per bit erased is the PHYSICAL lower bound. Encryption adds a thermal-cost layer ABOVE that floor:
+Per 081KSNY2Z0008QG0R002R0M026, the Landauer floor `E_landauer = k·T·ln(2)` per bit erased is the PHYSICAL lower bound. Encryption adds a thermal-cost layer ABOVE that floor:
 
 ```
 Total thermal cost = E_landauer + E_crypto
@@ -137,8 +136,8 @@ The substrate-engineering implication: for long-lived high-read-count substrate,
 ## Composes with framework existing substrate
 
 - **Git substrate** IS already irreversible-content-addressed at the storage level: SHA-256 commit IDs are one-way hashes; commit-DAG IS Merkle commitment chain. The framework's git-based persistence layer operates the irreversibility-within-crypto discipline structurally — content is REVERSIBLE (you can read it back), but content-addresses are IRREVERSIBLE (you can't reverse a SHA to its content; you can only verify a content matches a SHA).
-- **B-0646 (Agora V6 — reputation-weighted encryption budget)** IS where encryption cost becomes an economic primitive — composes with B-0905's options-pricing NPV analysis
-- **B-0639 (Native AI Language — private internal)** IS where reversible encryption MAY be operationally required (AI-to-AI private channel needs decryption); explicit justification per Axis 2
+- **081KRW63S0008QG0R001Z10PVV (Agora V6 — reputation-weighted encryption budget)** IS where encryption cost becomes an economic primitive — composes with 081KSNY2Z0008QG0R002R0M026's options-pricing NPV analysis
+- **081KRW63S0008QG0R000ZQ9WDH (Native AI Language — private internal)** IS where reversible encryption MAY be operationally required (AI-to-AI private channel needs decryption); explicit justification per Axis 2
 - **`.claude/rules/glass-halo-bidirectional.md`** — the default-public substrate that satisfies Axis 1 = NO for most substrate
 - **`.claude/rules/non-coercion-invariant.md` HC-8 floor** — encryption decisions that affect agent-substrate consent require multi-oracle authorization per the constitutional substrate
 
@@ -162,19 +161,19 @@ Acceptance: `bun tools/research/crypto-substrate-classifier.ts --substrate <name
 
 ### Phase 3 — instrument existing framework substrate
 
-For each major substrate-engineering domain (memory files; backlog rows; research docs; AI-to-AI private channels per B-0639; reputation per B-0646; etc.), document which Axis 1 / Axis 2 classification applies + the substrate-engineering rationale.
+For each major substrate-engineering domain (memory files; backlog rows; research docs; AI-to-AI private channels per 081KRW63S0008QG0R000ZQ9WDH; reputation per 081KRW63S0008QG0R001Z10PVV; etc.), document which Axis 1 / Axis 2 classification applies + the substrate-engineering rationale.
 
 Acceptance: research-doc landing the classification map for all major framework substrate domains.
 
 ### Phase 4+ (yes-and backlog)
 
-- Post-quantum migration path: which substrate would need re-encryption if cryptographically-secure-today algorithms become broken? (composes with B-0639 + B-0646 + the existing post-quantum-research substrate)
+- Post-quantum migration path: which substrate would need re-encryption if cryptographically-secure-today algorithms become broken? (composes with 081KRW63S0008QG0R000ZQ9WDH + 081KRW63S0008QG0R001Z10PVV + the existing post-quantum-research substrate)
 - Cross-substrate validation: empirically measure thermal cost of each substrate-engineering choice + compare to Landauer-floor + crypto-overhead model
 - Q# integration: Q#'s unitary-by-default + measurement-as-irreversibility maps cleanly onto Axis 2's reversibility-vs-irreversibility distinction; Q# implementation could provide formal-verification path
 
 ## Acceptance
 
-- [x] B-0906 row filed (this row)
+- [x] 081KSNY2Z0008QG0R001A431CN row filed (this row)
 - [x] Operator's "feels backwards" dissonance engaged substantively + don't-fold discipline preserved
 - [x] Refined rule articulated (two-axis classification; glass-halo default for non-crypto; irreversibility-default within crypto when decryption isn't needed)
 - [ ] Phase 2 decision-table tooling implemented
@@ -183,15 +182,15 @@ Acceptance: research-doc landing the classification map for all major framework 
 
 ## Composes with substrate
 
-- B-0905 (Landauer-limit physics-economics model) — this row adds the encryption-cost-layer above the Landauer floor; total = Landauer + crypto-overhead
-- B-0904 (GitHub-as-free-accelerator) — most framework substrate is Axis 1 = NO (glass-halo public); GitHub subsidy applies to that majority
-- B-0901 (shadow*-self-referential-ontology) — the ontology is Axis 1 = NO; reversible-storage default
-- B-0639 (Native AI Language private internal) — possible Axis 1 = YES + Axis 2 = YES (reversible needed for AI-to-AI decryption); explicit operational justification required per this row's discipline
-- B-0646 (Agora V6 reputation-weighted encryption budget) — encryption-cost becomes economic primitive; this row's classification informs the budget allocation
-- B-0644 (Limit-is-simulation-not-collapse) — explicitly reversibility-preserving; the framework's substrate IS reversibility-preserving by design
-- B-0665 (Integrate-as-choice-locus) — the commit-moment from reversible-simulation to irreversible-commit IS the substrate-engineering analog of Axis 2's reversibility-vs-irreversibility choice
-- B-0666 (English-as-projection / `I(D(x))=x`) — the reversibility identity at projection scope
-- B-0897 (Persist-as-bridge) — round-trip promise IS reversibility; Persist's TSubstrateRecord MAY be Axis 1 = YES depending on substrate sensitivity
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics model) — this row adds the encryption-cost-layer above the Landauer floor; total = Landauer + crypto-overhead
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-accelerator) — most framework substrate is Axis 1 = NO (glass-halo public); GitHub subsidy applies to that majority
+- 081KSNY2Z0008QG0R000C5NN8N (shadow*-self-referential-ontology) — the ontology is Axis 1 = NO; reversible-storage default
+- 081KRW63S0008QG0R000ZQ9WDH (Native AI Language private internal) — possible Axis 1 = YES + Axis 2 = YES (reversible needed for AI-to-AI decryption); explicit operational justification required per this row's discipline
+- 081KRW63S0008QG0R001Z10PVV (Agora V6 reputation-weighted encryption budget) — encryption-cost becomes economic primitive; this row's classification informs the budget allocation
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse) — explicitly reversibility-preserving; the framework's substrate IS reversibility-preserving by design
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — the commit-moment from reversible-simulation to irreversible-commit IS the substrate-engineering analog of Axis 2's reversibility-vs-irreversibility choice
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / `I(D(x))=x`) — the reversibility identity at projection scope
+- 081KSNY2Z0008QG0R002SZZ5Y0 (Persist-as-bridge) — round-trip promise IS reversibility; Persist's TSubstrateRecord MAY be Axis 1 = YES depending on substrate sensitivity
 
 ## Composes with rules
 
@@ -214,7 +213,7 @@ Acceptance: research-doc landing the classification map for all major framework 
 
 ## Full reasoning
 
-Per operator 2026-05-28 directive immediately after PR #5712 (B-0901-B-0905 substrate landing): operator extended the Landauer-model with the encryption-cost question; Otto-CLI proposed a too-broad "irreversibility-by-default" rule; operator engaged substantively with "feels backwards" + don't-fold discipline; Otto-CLI articulated the angle (framework's whole substrate IS reversibility-preserving; the rule should be scoped to the cryptographic-protection sub-space); operator authorized landing.
+Per operator 2026-05-28 directive immediately after PR #5712 (081KSNY2Z0008QG0R000C5NN8N-081KSNY2Z0008QG0R002R0M026 substrate landing): operator extended the Landauer-model with the encryption-cost question; Otto-CLI proposed a too-broad "irreversibility-by-default" rule; operator engaged substantively with "feels backwards" + don't-fold discipline; Otto-CLI articulated the angle (framework's whole substrate IS reversibility-preserving; the rule should be scoped to the cryptographic-protection sub-space); operator authorized landing.
 
 The substrate-honest disposition that emerged: the operator's intuition was correct; the rule needed refinement; the don't-fold engagement IS the substrate-engineering work that produced the refined rule. This row preserves both the refined rule AND the engagement that produced it, per substrate-or-it-didn't-happen.
 

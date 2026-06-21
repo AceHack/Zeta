@@ -436,7 +436,7 @@ jobs:
           # mise-shimmed Java available after the install step
           # below, but we don't need to invoke `javac` ourselves.
           #
-          # JVM language preference (B-0075): Kotlin > Scala >
+          # JVM language preference (081KQ8P5D0008QG0R000B5MBB4): Kotlin > Scala >
           # Java. New JVM code lands in Kotlin by default;
           # AlloyRunner.java is grandfathered until its next
           # non-trivial rewrite. The `java-kotlin` extractor

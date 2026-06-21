@@ -41,7 +41,7 @@ permissions:
   # environments. `contents: read` is the baseline for
   # `actions/checkout`.
   #
-  # NOTE (B-0087, 2026-05-03): the previous `administration: read`
+  # NOTE (081KQ8P5D0008QG0R000JHD7AB, 2026-05-03): the previous `administration: read`
   # entry was an invalid permission scope — actionlint and GitHub
   # both reject it. `administration` is NOT a GITHUB_TOKEN scope;
   # admin-level reads (rulesets, branch protection,
@@ -54,7 +54,7 @@ permissions:
   # been workflow-startup-failing on every push/cron for the entire
   # history of LFG main); the drift detector script will return
   # 403 on admin-only endpoints when run under GITHUB_TOKEN, but
-  # that is a SEPARATE issue (option B/C in B-0087) requiring
+  # that is a SEPARATE issue (option B/C in 081KQ8P5D0008QG0R000JHD7AB) requiring
   # maintainer action to configure DRIFT_DETECTOR_PAT secret. This
   # commit fixes only the startup-failure half.
   contents: read

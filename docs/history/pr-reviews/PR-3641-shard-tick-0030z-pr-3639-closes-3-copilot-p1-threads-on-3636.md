@@ -29,7 +29,7 @@
 
 ## Summary
 
-- Landed [PR #3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) — closure-operator precision (replacing my own "observer-relative non-monotonicity" misnomer from PR #3636 with the precise obstruction) + `last_updated` schema bookkeeping on B-0544 (Copilot-flagged) and B-0543 (preemptive, same class)
+- Landed [PR #3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) — closure-operator precision (replacing my own "observer-relative non-monotonicity" misnomer from PR #3636 with the precise obstruction) + `last_updated` schema bookkeeping on 081KRMEXM0008QG0R003YWZC21 (Copilot-flagged) and 081KRMEXM0008QG0R002YSPW1X (preemptive, same class)
 - Documents the Copilot-catches-on-just-merged-PR meta-loop as an operational pattern
 
 ## Test plan

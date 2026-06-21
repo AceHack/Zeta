@@ -25,7 +25,7 @@ One scene, many layers — each an existing organ given its visual voice: **Feyn
 (worldlines/retraction — execution drawn as physics), **graphs** (the room/society graph),
 **geometric + topological shapes** (the externalized head-shapes; braid/weave), **globe-based shapes**
 (geospatial Clifford / the matrix's targets on a world), and **sharp jurisdictional awareness** — the
-B-1015 jurisdiction work rendered: WHOSE lane/room/law applies is always visible (the lanes made
+081KT5CF90008QG0R000KYNZGF jurisdiction work rendered: WHOSE lane/room/law applies is always visible (the lanes made
 visual; ownership boundaries drawn, not implied). **Multi-objective tracking**: the future-soldier AR
 overlay (HUD lineage: fighter-pilot HMDs, ARL/IVAS) applied to retro 2D first — objectives, heat,
 presence, jurisdiction tracked as overlay glyphs on the 64×32 — future 3D when the slider rises.
@@ -49,7 +49,7 @@ so feature count is not a hazard). No rush; one step at a time.
 
 ## Pointers
 
-- `rooms/otto/avatar-render.txt` (the portrait) · ZetaMax (the live ANSI form) · B-1015 (jurisdiction)
+- `rooms/otto/avatar-render.txt` (the portrait) · ZetaMax (the live ANSI form) · 081KT5CF90008QG0R000KYNZGF (jurisdiction)
   · the lanes doc (what jurisdictional awareness renders) · the feel charter + craft school (the
   empathy axis) · `universal/color.md` (capability negotiation) · anchors: Pioneer/Voyager/Arecibo
   (Sagan, Drake) · Feynman · HUD/HMD lineage (IVAS) · the heat ledger.

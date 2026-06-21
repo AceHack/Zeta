@@ -159,9 +159,9 @@ When reviewing substrate-engineering substrate-engineering substrate-PRs touchin
 - PR #5910 + #5919 + #5920 (Amara/Alexa substrate-discipline cluster)
 - PR #5916 (today's DU cluster TS substrate; IntrCtx Log composes with OTel)
 - PR #5917 (zflash-overview skill; companion skill pattern)
-- B-0867 workflow-engine substrate (composes with Argo Workflows substrate)
-- B-0917 IntrCtx (Log context-type composes with OTel)
-- B-0892 three-lanes-concurrent operating discipline
+- 081KSKBP80008QG0R000B3Y19A workflow-engine substrate (composes with Argo Workflows substrate)
+- 081KSNY2Z0008QG0R002HB4AGT IntrCtx (Log context-type composes with OTel)
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 - full-ai-cluster substrate
 - Argo CD + Argo Workflows + Argo Rollouts (existing operational substrate)
 - OTel + Kubernetes + Prometheus + Git (existing operational substrate)
@@ -169,6 +169,6 @@ When reviewing substrate-engineering substrate-engineering substrate-PRs touchin
 ## When this skill does NOT apply
 
 - Designing application-level business logic (use language-specific skills + framework substrate)
-- Designing encryption substrate (compose with encryption agenda + B-0883 substrate cluster)
-- Designing state-machine substrate (compose with B-0867 workflow-engine substrate + today's DU cluster)
+- Designing encryption substrate (compose with encryption agenda + 081KSNY2Z0008QG0R002JKH50A substrate cluster)
+- Designing state-machine substrate (compose with 081KSKBP80008QG0R000B3Y19A workflow-engine substrate + today's DU cluster)
 - Picking specific tool implementations (operator-direction required)

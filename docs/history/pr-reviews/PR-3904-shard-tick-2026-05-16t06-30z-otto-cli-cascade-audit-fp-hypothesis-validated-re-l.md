@@ -34,7 +34,7 @@ Re-lands [PR #3779](https://github.com/Lucent-Financial-Group/Zeta/pull/3779)'s 
 #3779 was auto-merge-armed 569 min (~9.5 hr) but blocked by two CI failures:
 
 1. **\`lint (markdownlint)\`** — MD032 on \`0630Z.md:47\` (real lint issue; fixed in this re-land via blank line after \"Given:\")
-2. **\`lint (tsc tools)\`** — TS2532 at \`tools/hygiene/audit-backlog-status-drift.ts:104:24\`. This file did NOT exist in #3779's diff (only \`0630Z.md\` was touched); the tsc error was a side-effect of #3779's branch predating the B-0557 slices 2-4 evolution of that file (#3788, #3790, #3809, #3815, #3821). Re-land from current main bypasses the stale-branch side-effect
+2. **\`lint (tsc tools)\`** — TS2532 at \`tools/hygiene/audit-backlog-status-drift.ts:104:24\`. This file did NOT exist in #3779's diff (only \`0630Z.md\` was touched); the tsc error was a side-effect of #3779's branch predating the 081KRQ1AB0008QG0R003DYANMC slices 2-4 evolution of that file (#3788, #3790, #3809, #3815, #3821). Re-land from current main bypasses the stale-branch side-effect
 
 Server-side rebase wasn't attempted because #3779 (06:30Z, 9.5 hr stale) almost certainly has compounded conflicts beyond the listed CI failures.
 

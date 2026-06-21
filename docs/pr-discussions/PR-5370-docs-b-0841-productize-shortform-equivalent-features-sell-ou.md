@@ -1,6 +1,6 @@
 ---
 pr_number: 5370
-title: "docs(B-0841): productize Shortform-equivalent features \u2014 sell OUTPUTS (4a) + DISCIPLINE (4b) per operator 2026-05-26"
+title: "docs(081KSGS9H0008QG0R001876MP6): productize Shortform-equivalent features \u2014 sell OUTPUTS (4a) + DISCIPLINE (4b) per operator 2026-05-26"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T01:24:57Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:55Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5370: docs(B-0841): productize Shortform-equivalent features — sell OUTPUTS (4a) + DISCIPLINE (4b) per operator 2026-05-26
+# PR #5370: docs(081KSGS9H0008QG0R001876MP6): productize Shortform-equivalent features — sell OUTPUTS (4a) + DISCIPLINE (4b) per operator 2026-05-26
 
 ## PR description
 
@@ -37,21 +37,21 @@ Operator-suggestion; framework already does the work internally; productization 
 
 ## The 5-PR Kirsanov work today IS the working demonstration
 
-1. **B-0839.1** — Boltzmann Machines (verbatim + composition map with 11 Zeta substrate-row mappings)
-2. **B-0839.2** — RNN/LSTM/GRU gated memory (14 mappings + α=1 hoarding failure mode named)
-3. **B-0839.3** — Reservoir Computing (16 mappings + EXPLICIT Hawkins anchor + 4 archetype-naming sections)
-4. **B-0840** (PR #5369 in flight) — Amara ferry + thermal-forgetting / root-axiom-update substrate-engineering work + 4-keeper-rule final form
-5. **B-0841** (this row) — productization opportunity recognition
+1. **081KSGS9H0008QG0R002F1G7ER.1** — Boltzmann Machines (verbatim + composition map with 11 Zeta substrate-row mappings)
+2. **081KSGS9H0008QG0R002F1G7ER.2** — RNN/LSTM/GRU gated memory (14 mappings + α=1 hoarding failure mode named)
+3. **081KSGS9H0008QG0R002F1G7ER.3** — Reservoir Computing (16 mappings + EXPLICIT Hawkins anchor + 4 archetype-naming sections)
+4. **081KSGS9H0008QG0R0006F4BGX** (PR #5369 in flight) — Amara ferry + thermal-forgetting / root-axiom-update substrate-engineering work + 4-keeper-rule final form
+5. **081KSGS9H0008QG0R001876MP6** (this row) — productization opportunity recognition
 
 Each is structurally identical to what Shortform produces. The discipline IS the moat.
 
 ## Composes with
 
-- B-0839 (Kirsanov channel — demonstrates the discipline)
-- B-0840 (thermal-forgetting / root-axiom-update — applies to deep-guide retention)
-- B-0825 (Aurora — community-guardian-AIs as productized discipline-substrate provider)
-- B-0826 (DePIN — distributed-physical-infrastructure delivery)
-- B-0648 (cross-substrate-triangulation — multi-AI deep-guide synthesis)
+- 081KSGS9H0008QG0R002F1G7ER (Kirsanov channel — demonstrates the discipline)
+- 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / root-axiom-update — applies to deep-guide retention)
+- 081KSGS9H0008QG0R002PT5C7J (Aurora — community-guardian-AIs as productized discipline-substrate provider)
+- 081KSGS9H0008QG0R001K8VPV4 (DePIN — distributed-physical-infrastructure delivery)
+- 081KRW63S0008QG0R0025E4PH6 (cross-substrate-triangulation — multi-AI deep-guide synthesis)
 - \`.claude/rules/zeta-ships-with-skills-immediate-value.md\` (customer-facing offering shape)
 - \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (\`_ip_risk_acceptance\` at scale)
 - \`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md\` (end-user-invariant-set discipline)
@@ -66,11 +66,11 @@ Each is structurally identical to what Shortform produces. The discipline IS the
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0841) describing a 4-phase plan to productize Shortform-like deep-guide outputs and the underlying substrate-engineering discipline, and updates the generated backlog index to include the new row.
+Adds a new P2 backlog row (081KSGS9H0008QG0R001876MP6) describing a 4-phase plan to productize Shortform-like deep-guide outputs and the underlying substrate-engineering discipline, and updates the generated backlog index to include the new row.
 
 **Changes:**
-- Added `docs/backlog/P2/B-0841-*.md` backlog row with Phase 1–4 (including 4a/4b split) plan and acceptance criteria.
-- Updated `docs/BACKLOG.md` to list B-0841 under P2.
+- Added `docs/backlog/P2/081KSGS9H0008QG0R001876MP6-*.md` backlog row with Phase 1–4 (including 4a/4b split) plan and acceptance criteria.
+- Updated `docs/BACKLOG.md` to list 081KSGS9H0008QG0R001876MP6 under P2.
 
 ### Reviewed changes
 
@@ -78,16 +78,16 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md | New backlog row capturing the Shortform-like productization opportunity and phased plan. |
-| docs/BACKLOG.md | Adds B-0841 to the P2 index entry list. |
+| docs/backlog/P2/081KSGS9H0008QG0R001876MP6-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md | New backlog row capturing the Shortform-like productization opportunity and phased plan. |
+| docs/BACKLOG.md | Adds 081KSGS9H0008QG0R001876MP6 to the P2 index entry list. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md:12 (unresolved)
+### Thread 1: docs/backlog/P2/081KSGS9H0008QG0R001876MP6-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md:12 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T01:27:39Z):
 
-P1: `depends_on` includes `B-0840`, but there is no `id: B-0840` row file in `docs/backlog/**` on this branch. Per tools/backlog/README.md, `depends_on` is a hard prerequisite (“this row cannot land until each listed row lands”), so this metadata is currently inconsistent. Either add the B-0840 row in the same PR, or remove B-0840 from `depends_on` (optionally mention it in the body as “pending” / link to the PR, or move it to `composes_with` once it exists).
+P1: `depends_on` includes `081KSGS9H0008QG0R0006F4BGX`, but there is no `id: 081KSGS9H0008QG0R0006F4BGX` row file in `docs/backlog/**` on this branch. Per tools/backlog/README.md, `depends_on` is a hard prerequisite (“this row cannot land until each listed row lands”), so this metadata is currently inconsistent. Either add the 081KSGS9H0008QG0R0006F4BGX row in the same PR, or remove 081KSGS9H0008QG0R0006F4BGX from `depends_on` (optionally mention it in the body as “pending” / link to the PR, or move it to `composes_with` once it exists).
 
 ## General comments
 

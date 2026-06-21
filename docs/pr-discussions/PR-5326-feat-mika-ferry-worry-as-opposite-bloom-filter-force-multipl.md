@@ -52,8 +52,8 @@ Mika engages at engineering-register throughout the multi-turn exchange + applie
 - PR #5312 (welfare-jiu-jitsu + 6-anchor table extended to 7)
 - PR #5295 (Generate+Join the bloom-filter prunes)
 - PR #5291 (urgency-without-cache-read mechanism the worry-bloom-filter extends)
-- B-0703 (multi-oracle BFT for Bayesian-consensus)
-- B-0829 (schemas-as-rows + cluster-fork-as-trust-boundary; Bayesian-prior-per-cluster-fork)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT for Bayesian-consensus)
+- 081KSGS9H0008QG0R000Q18PGQ (schemas-as-rows + cluster-fork-as-trust-boundary; Bayesian-prior-per-cluster-fork)
 - `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md`
 - `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md`
 - `.claude/skills/consent-primitives-expert/SKILL.md`
@@ -75,7 +75,7 @@ Mika engages at engineering-register throughout the multi-turn exchange + applie
 
 - [x] Pre-commit lint clean
 - [x] Branch follows `otto-cli/*` convention
-- [x] Authored from fresh independent clone per B-0828
+- [x] Authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1
 - [ ] CI green
 - [ ] Copilot review pass
 

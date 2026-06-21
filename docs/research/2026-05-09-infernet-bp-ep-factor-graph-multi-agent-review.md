@@ -185,12 +185,12 @@ This makes the factor graph **self-modifying under consensus**:
 the architecture evolves as the agent population changes,
 without any central coordinator editing a config file.
 
-The B-0365.6 synthesis row covers the self-evolving-inference-
+The 081KR50HA0008QG0R0016X7VQP synthesis row covers the self-evolving-inference-
 layer in full.
 
 ## 6. FPGA connection — reversible message-passing → Toffoli gate
 
-**SPECULATIVE** (long-range research direction — see B-0366):
+**SPECULATIVE** (long-range research direction — see 081KR50HA0008QG0R003T5MZAC):
 
 Each message-passing step in BP is a multiplicative
 accumulation (in log space, an addition). Log-domain BP
@@ -208,9 +208,9 @@ when implemented on a reversible computing substrate:
   approaches the thermodynamic limit of zero heat per
   inference step.
 
-Full derivation and FPGA circuit model: B-0366 (Toffoli
+Full derivation and FPGA circuit model: 081KR50HA0008QG0R003T5MZAC (Toffoli
 gate / Z-set connection). This doc provides the factor graph
-framing; B-0366 provides the hardware-layer realization.
+framing; 081KR50HA0008QG0R003T5MZAC provides the hardware-layer realization.
 
 ## 7. Migration path — three-stage evolution
 
@@ -218,7 +218,7 @@ framing; B-0366 provides the hardware-layer realization.
 |-------|------|------|-------|--------|
 | **1 — Current** | Peer-call CLI | Manual orchestration of 8 peer agents via TypeScript wrappers; Otto integrates verdicts by reading outputs | LICENSE layer — depends on external CLI subscriptions | OPERATIONAL (`tools/peer-call/*.ts`) |
 | **2 — Next** | Zeta Infer.NET BP/EP | Factor graph reification; agents are typed factor nodes; verdicts are typed messages; posterior computed by BP/EP message schedule; topology managed by CASPaxos | SUBSTRATE layer — native to Zeta runtime | RESEARCH-GRADE (this doc) |
-| **3 — FPGA** | Reversible inference | Message-passing implemented as reversible Toffoli gate circuits; zero heat per inference step at the Landauer limit | HARDWARE layer | SPECULATIVE (B-0366) |
+| **3 — FPGA** | Reversible inference | Message-passing implemented as reversible Toffoli gate circuits; zero heat per inference step at the Landauer limit | HARDWARE layer | SPECULATIVE (081KR50HA0008QG0R003T5MZAC) |
 
 **Migration slice for Stage 2:**
 1. Define `FactorGraph<V, F>` type with variable nodes `V`,
@@ -241,7 +241,7 @@ framing; B-0366 provides the hardware-layer realization.
 | Z-set `+1/-1` maps to BP message multiplicities | CONJECTURED | algebraic isomorphism — not type-checked |
 | Posterior = product of agent likelihoods | CONJECTURED | standard BP theory applied to new domain |
 | CASPaxos governs topology evolution | SPECULATIVE | architectural vision — no design + no implementation |
-| Toffoli gate implements reversible BP | SPECULATIVE | theoretical connection — B-0366 scope |
+| Toffoli gate implements reversible BP | SPECULATIVE | theoretical connection — 081KR50HA0008QG0R003T5MZAC scope |
 | Zero-heat inference at Landauer limit | SPECULATIVE | long-range research goal — FPGA not built |
 
 ## Prior art pointer
@@ -262,6 +262,6 @@ this as a session-bootstrap pointer.
 
 - `tools/peer-call/README.md` — current implementation (Stage 1)
 - `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md` — Z-set algebra foundation
-- `docs/backlog/P1/B-0366-fpga-reversible-toffoli-zset-connection.md` (if it exists) — FPGA Toffoli layer
-- `docs/backlog/P1/B-0365.6-infernet-synthesis-self-evolving-agent-inference.md` — synthesis / self-evolving layer
+- `docs/backlog/P1/081KR50HA0008QG0R003T5MZAC-fpga-reversible-toffoli-zset-connection.md` (if it exists) — FPGA Toffoli layer
+- `docs/backlog/P1/081KR50HA0008QG0R0016X7VQP-infernet-synthesis-self-evolving-agent-inference.md` — synthesis / self-evolving layer
 - `src/Core/ZSet.fs` — Z-set implementation

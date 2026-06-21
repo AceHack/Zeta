@@ -1,6 +1,5 @@
 ---
-id: B-0200
-zetaid: 081KQTPYE0008QG0R0009F20NN
+id: 081KQTPYE0008QG0R0009F20NN
 priority: P3
 status: open
 title: F# <-> CodeAct bridge engineering -- four candidate architectures gated by four-property hodl invariant (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [fsharp, codeact, bridge-engineering, four-property-hodl, dst, retraction-
 type: feature
 ---
 
-# B-0200 -- F# <-> CodeAct bridge engineering
+# 081KQTPYE0008QG0R0009F20NN -- F# <-> CodeAct bridge engineering
 
 ## Source
 
@@ -84,12 +83,12 @@ based on observed execution feedback IS the agent loop.
 ## Where F# DSL beats CodeAct (four-property hodl axes)
 
 The four-property hodl invariant is the Zeta-canonical filter:
-DST-safe + lock-free + scale-free + DBSP-native (per B-0196).
+DST-safe + lock-free + scale-free + DBSP-native (per 081KQTPYE0008QG0R001W237MZ).
 F# DSL beats CodeAct on each axis:
 
 1. **Compile-time UoM (units-of-measure)** -- F# carries
    dimensional safety into the type system at zero runtime cost
-   (per B-0196 + B-0198). Python has no equivalent surface;
+   (per 081KQTPYE0008QG0R001W237MZ + 081KQTPYE0008QG0R0004H9ZB8). Python has no equivalent surface;
    `pint` and similar libraries are runtime checks at best.
 2. **Retraction-native semantics** -- the F# operator algebra
    composes cleanly with Z-set-style retraction semantics
@@ -265,25 +264,25 @@ the boundary IS the firewall.
    *Falsifier*: build break, runtime error in the round-trip
    path, or hodl-property test fails or flakes.
 
-3. **Sister-shape cross-reference to B-0198**.
+3. **Sister-shape cross-reference to 081KQTPYE0008QG0R0004H9ZB8**.
    *Verifier*: this row's engineering-shape (research-grade
    discovery -> verification preconditions -> engagement-gate
    -> upstream-or-internal landing) matches the shape used in
-   B-0198 (F# UoM upstream contribution); deviations are named
+   081KQTPYE0008QG0R0004H9ZB8 (F# UoM upstream contribution); deviations are named
    and justified.
    *Pass*: a "shape comparison" subsection naming each of the
-   B-0198 phases and how this row's instantiation matches or
+   081KQTPYE0008QG0R0004H9ZB8 phases and how this row's instantiation matches or
    deviates.
-   *Falsifier*: ad-hoc shape that ignores the B-0198 sister
+   *Falsifier*: ad-hoc shape that ignores the 081KQTPYE0008QG0R0004H9ZB8 sister
    pattern without explicit justification.
 
-4. **Composability check with B-0196 four-property hodl test
+4. **Composability check with 081KQTPYE0008QG0R001W237MZ four-property hodl test
    suite**.
    *Verifier*: any PoC produced under criterion (2) lands a
-   test row that runs inside the B-0196 four-property hodl
-   gate (or the B-0196 follow-on test suite once that exists).
+   test row that runs inside the 081KQTPYE0008QG0R001W237MZ four-property hodl
+   gate (or the 081KQTPYE0008QG0R001W237MZ follow-on test suite once that exists).
    *Pass*: PoC test row appears in the same test runner as
-   B-0196's hodl tests; CI green.
+   081KQTPYE0008QG0R001W237MZ's hodl tests; CI green.
    *Falsifier*: PoC tests live in a separate runner that does
    not enforce the four-property gate.
 
@@ -303,19 +302,19 @@ the boundary IS the firewall.
 
 ## Composes with
 
-- [B-0196](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md)
+- [081KQTPYE0008QG0R001W237MZ](../P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md)
   -- the four-property hodl gate this row's PoCs feed back
   into; canonical reference for the hodl invariant.
-- [B-0198](B-0198-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md)
+- [081KQTPYE0008QG0R0004H9ZB8](081KQTPYE0008QG0R0004H9ZB8-fsharp-uom-biginteger-upstream-contribution-aaron-2026-05-05.md)
   -- sister-shape upstream contribution row; the engineering
   shape (research-grade -> verification-preconditions ->
   engagement-gate -> upstream-or-internal landing) is the
   template this row follows.
-- [B-0152](B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)
+- [081KQGDBJ0008QG0R00280ZEV2](081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md)
   -- Bayesian-inference substrate the bridge ultimately runs
   on; the agent-orchestration loop on the Python side is one
   consumer of that substrate.
-- [B-0026](../P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)
+- [081KQ0YZ80008QG0R001WZ4JE8](../P2/081KQ0YZ80008QG0R001WZ4JE8-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md)
   -- embodiment-grounding parallel axis; CodeAct's
   universal-action-space is one shape of agent grounding,
   embodiment work is another, the two are parallel not
@@ -337,7 +336,7 @@ this row that means:
 - A speculative "we should bridge F# and CodeAct" comment
   posted upstream WITHOUT a PoC is the failure mode this gate
   guards against (per the Prop 3.5 misattribution worked
-  example referenced in B-0198).
+  example referenced in 081KQTPYE0008QG0R0004H9ZB8).
 - Internal landing (Zeta-only PoC, Zeta-only test suite, no
   upstream engagement) is fully in-scope at any point and does
   NOT require the engagement gate to clear.

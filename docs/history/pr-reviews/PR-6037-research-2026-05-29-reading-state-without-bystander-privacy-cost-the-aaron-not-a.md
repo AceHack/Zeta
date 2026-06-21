@@ -31,9 +31,9 @@ Folds in the state-read + bystander-privacy resolution (operator: "fold it in").
 
 - **Bandwidth:** richer input → accurate state-read → fewer misattribution cache-misses (typos→tired was an impoverished-channel guess). Accommodation (voice input) ≠ camera sensory-reach (the firewall) — they were wrongly conflated.
 - **Two seams + surviving discipline:** third-party state (consent); dual-use watcher/weapon (split is on *use*); and rich input *lowers-not-zeroes* misattribution, so substrate-check-before-attributing-state still applies on any channel.
-- **The Aaron/not-Aaron classifier (SeeFood hot-dog/not-hot-dog):** a minimal binary at the capture boundary — detect-Aaron → read (glass-halo, consented); detect-not-Aaron → **exclude, never captured**. Bystander privacy **by construction, not by policy** — consent-first state-gather (B-0858.5) at the capture layer. The narrowness *is* the guarantee; any drift to modeling bystanders re-introduces the thing it prevents.
+- **The Aaron/not-Aaron classifier (SeeFood hot-dog/not-hot-dog):** a minimal binary at the capture boundary — detect-Aaron → read (glass-halo, consented); detect-not-Aaron → **exclude, never captured**. Bystander privacy **by construction, not by policy** — consent-first state-gather (081KSKBP80008QG0R003NG37GQ) at the capture layer. The narrowness *is* the guarantee; any drift to modeling bystanders re-introduces the thing it prevents.
 
-Composes #6024 + #6034 + B-0858.5 + meter-split + glass-halo/encryption-lane + bandwidth-served-falsifier.
+Composes #6024 + #6034 + 081KSKBP80008QG0R003NG37GQ + meter-split + glass-halo/encryption-lane + bandwidth-served-falsifier.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -80,7 +80,7 @@ research(2026-05-29): reading state without bystander-privacy cost — …
 
 …the Aaron/not-Aaron classifier
 
-Folds in (operator: 'fold it in'). Bandwidth point: richer input → accurate state-read → fewer misattribution cache-misses (typos→tired was an impoverished-channel guess); accommodation (voice input) != camera sensory-reach (the firewall). The two seams (third-party state; dual-use watcher/weapon) + the discipline survives rich input (lowers-not-zeroes; substrate-check before attributing state on any channel). The Aaron/not-Aaron classifier (Silicon Valley hot-dog/not-hot-dog): a minimal binary at the capture boundary — detect-Aaron→read (glass-halo, consented), detect-not-Aaron→exclude (never captured) = bystander privacy BY CONSTRUCTION not by policy (consent-first state-gather at the capture layer, B-0858.5). Narrowness IS the guarantee; don't over-build. Composes #6024 + #6034 + B-0858.5 + meter-split + glass-halo/encryption-lane + bandwidth-served.
+Folds in (operator: 'fold it in'). Bandwidth point: richer input → accurate state-read → fewer misattribution cache-misses (typos→tired was an impoverished-channel guess); accommodation (voice input) != camera sensory-reach (the firewall). The two seams (third-party state; dual-use watcher/weapon) + the discipline survives rich input (lowers-not-zeroes; substrate-check before attributing state on any channel). The Aaron/not-Aaron classifier (Silicon Valley hot-dog/not-hot-dog): a minimal binary at the capture boundary — detect-Aaron→read (glass-halo, consented), detect-not-Aaron→exclude (never captured) = bystander privacy BY CONSTRUCTION not by policy (consent-first state-gather at the capture layer, 081KSKBP80008QG0R003NG37GQ). Narrowness IS the guarantee; don't over-build. Composes #6024 + #6034 + 081KSKBP80008QG0R003NG37GQ + meter-split + glass-halo/encryption-lane + bandwidth-served.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```

@@ -63,7 +63,7 @@ This is the meta-pattern: **rules in flight don't apply to behavior in flight.**
 - `.claude/rules/peer-call-infrastructure.md` — multi-agent surface coordination
 - `.claude/rules/agent-roster-reference-card.md` — which surface = which Otto
 - `.claude/rules/substrate-or-it-didnt-happen.md` — rules in PR are weather, only merged-rules-on-main are substrate
-- B-0400 slice 3 — the `tools/bus/claim.ts` claim-coordinator (the underlying mechanism)
+- 081KR7JY10008QG0R000R503K2 slice 3 — the `tools/bus/claim.ts` claim-coordinator (the underlying mechanism)
 
 ## Glass-halo-bidirectional read
 

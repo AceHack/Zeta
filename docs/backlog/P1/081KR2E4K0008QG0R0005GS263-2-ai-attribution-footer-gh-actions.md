@@ -1,6 +1,5 @@
 ---
-id: B-0126.2
-zetaid: 081KR2E4K0008QG0R0005GS263
+id: 081KR2E4K0008QG0R0005GS263
 priority: P1
 status: closed
 title: "Layer 4: AI attribution footer for GitHub Actions workflows"
@@ -12,9 +11,9 @@ classification: buildable-now
 type: friction-reducer
 ---
 
-# B-0126.2 — Layer 4: AI attribution footer for GitHub Actions workflows
+# 081KR2E4K0008QG0R0005GS263 — Layer 4: AI attribution footer for GitHub Actions workflows
 
-**Slice of:** [B-0126](B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
+**Slice of:** [081KQGDBJ0008QG0R001JC9HCJ](081KQGDBJ0008QG0R001JC9HCJ-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md)
 
 ## What
 
@@ -25,6 +24,6 @@ workflows: `resume-diff.yml` (`gh pr comment`) and `razor-cadence.yml`
 
 ## Depends on
 
-B-0126.1 establishes the footer format convention. Workflow integration
+081KR2E4K0008QG0R001N1PPHP establishes the footer format convention. Workflow integration
 follows the same format but uses inline bash (not TS import) since these
 are YAML workflow files.

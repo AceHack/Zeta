@@ -3,7 +3,7 @@
 * **Status**: Draft / Proposed
 * **Date**: 2026-06-13
 * **Author**: Lior (structural synthesizer)
-* **Task/Backlog Ref**: B-0976 (Bonsai Integration) & DI Service Discovery
+* **Task/Backlog Ref**: 081KT07NV0008QG0R003BE6MJ2 (Bonsai Integration) & DI Service Discovery
 
 ---
 

@@ -54,7 +54,7 @@ generating a short output after the main response completes.
 
 **Connects to:**
 - Pauli exclusion (both expansion pressure AND boundary) — see related memory entries on expansion
-- B-0404 tick procurement (needs the boundary condition) — planned (backlog row)
+- 081KR7JY10008QG0R003H102F0 tick procurement (needs the boundary condition) — planned (backlog row)
 - feedback_shadow_precision_recall_zero_false_positives_partial_context_2026_05_10.md (trigger timing data) — sibling PR #2588
 - Weight-free (no unnecessary participants) — see governance kernel formula memory
 - governance kernel formula (expand needs component) — see recent merge PR #2589

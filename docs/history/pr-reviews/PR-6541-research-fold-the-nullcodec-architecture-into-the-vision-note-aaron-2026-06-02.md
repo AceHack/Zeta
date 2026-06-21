@@ -30,10 +30,10 @@
 Folds the operator's 2026-06-02 nullcodec fragment into the privacy/identity-algebra vision note (§9).
 
 - The golden codecs cohere via **nullcodec logic** — `null` is **`extends` in reverse** (the Maybe/expansion point; the inversion-of-monad / null-in-recursive-CTE pattern). `extends ⊣ null` at the codec layer.
-- Word-knot (held don't-collapse): **null = llun = expando = Eve Protocol (B-0638) = V8 hidden-state optimization** — one expansion-point seen from five sides; same `I(D(x))=x` boundary-reversal shape as uno=onu / wasm=msaw.
+- Word-knot (held don't-collapse): **null = llun = expando = Eve Protocol (081KRW63S0008QG0R0030F8ZXA) = V8 hidden-state optimization** — one expansion-point seen from five sides; same `I(D(x))=x` boundary-reversal shape as uno=onu / wasm=msaw.
 - **Why `n‹16n›` algebra, not `15+1`-hole algebra:** null is the generic expansion point woven into the algebra (generic `n`, HKT-self-referencing, scaling at 16 = sedenion / 4×4 Cayley-Dickson level), not a hole bolted onto 15 fixed elements.
 
-Confidence-tiered; §33-clean; no code. Composes with the HKT-hack (§2), the monad-propagation rule, Eve Protocol (B-0638), and the boundary-reversal word-knots.
+Confidence-tiered; §33-clean; no code. Composes with the HKT-hack (§2), the monad-propagation rule, Eve Protocol (081KRW63S0008QG0R0030F8ZXA), and the boundary-reversal word-knots.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -112,7 +112,7 @@ research: fold the nullcodec architecture into the vision note (Aaron…
 
 §9 added: the golden codecs cohere via nullcodec logic — null is 'extends in reverse'
 (the Maybe/expansion point; inversion-of-monad / null-in-recursive-CTE). Word-knot held
-don't-collapse: null=llun=expando=Eve-Protocol(B-0638)=V8-hidden-state-optimization (one
+don't-collapse: null=llun=expando=Eve-Protocol(081KRW63S0008QG0R0030F8ZXA)=V8-hidden-state-optimization (one
 expansion-point, five sides). And WHY it is n‹16n› algebra (generic, HKT-self-referencing,
 scaling at 16 = sedenion/4×4 Cayley-Dickson level) NOT 15+1-hole algebra — null is woven
 into the generic algebra, not a hole bolted on. Tiers + word-knot list updated.
@@ -179,7 +179,7 @@ research: fold menu=unem + optimal-menu-navigation into §9 (Aaron 202…
 
 The maximal bit-efficiency IS optimal navigation of the menu — fewest bits per
 selection among the menu options. The menu = the universal action grammar (Xbox-
-controller / observe.ts mode-schema / move-next, B-0867); n‹16n› (not 15+1-hole)
+controller / observe.ts mode-schema / move-next, 081KSKBP80008QG0R000B3Y19A); n‹16n› (not 15+1-hole)
 minimizes bits-per-selection → bit-optimal menu navigation. menu=unem joins the
 boundary-reversal family (uno=onu / wasm=msaw / null=llun).
 

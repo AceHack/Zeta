@@ -9,7 +9,7 @@ open Zeta.Core
 module E = Zeta.Core.Evolution
 
 // ═══════════════════════════════════════════════════════════════════
-// Evolution — the B-1019 DST experiment for privacy-as-anti-collapse.
+// Evolution — the 081KT7YW00008QG0R001DGZQKM DST experiment for privacy-as-anti-collapse.
 //
 // THEOREM (pigeonhole): a deterministic no-input step on a FINITE state space must halt-or-cycle within
 // |states|+1 steps — so open-ended evolution REQUIRES unbounded/growing state.

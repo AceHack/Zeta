@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // context-cost-trend.ts — the persisted DORA trend store for context-window cost
-// (B-1016 over-time leg). `--check`/`--kpi` in context-cost.ts are point-in-time;
+// (081KT7YW00008QG0R002T1XNWT over-time leg). `--check`/`--kpi` in context-cost.ts are point-in-time;
 // this APPENDS each measurement to an append-only series so drift over TIME is
 // visible — the DORA cost trend.
 //

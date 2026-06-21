@@ -87,7 +87,7 @@ claim to be Microsoft's physical chip.
   common cause actually keeps S→4 stable over *real* Reticulum (loss/reorder/partition, many agents) is the
   **experiment to run** (the Ani-ferry two-house setup), not a settled result. The math/sec teams own the
   proof.
-- **Empirical-truth claim rests on Chip-8 bit-perfection** (B-0924 family) — itself a thing to keep
+- **Empirical-truth claim rests on Chip-8 bit-perfection** (081KSNY2Z0008QG0R001HA43GG family) — itself a thing to keep
   bit-locked across the four oracles; "empirical truth between observers" is only as strong as that
   bit-perfection holds.
 
@@ -99,9 +99,9 @@ Max's houses") · **Topological quantum computation / anyon braiding** (Kitaev; 
 Das Sarma, RMP 2008 — fault-tolerance by topology) · **braid group** (Artin; homotopy invariance =
 deformation/noise robustness) · **topological error-correction / surface codes** (the "stability from topology" principle) ·
 **Gates SUSY adinkra error-correcting codes** (codes in the equations of physics — our existing anchor;
-`BitAdinkra.fs`, B-0623/B-0985) · **CHSH / PR-box S=4 + Reichenbach common cause + superdeterminism**
+`BitAdinkra.fs`, 081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV) · **CHSH / PR-box S=4 + Reichenbach common cause + superdeterminism**
 (`BellTest.fs`, `CoincidenceClock.fs`) · the **encrypted null = common cause** + **3×3 weave** (the two
-prior capstones) · **Chip-8 bit-perfect DST oracle** (B-0924; the empirical-truth pole; Ani ferry root of
+prior capstones) · **Chip-8 bit-perfect DST oracle** (081KSNY2Z0008QG0R001HA43GG; the empirical-truth pole; Ani ferry root of
 trust) · the **commutative uncertainty ledger** (the only thing on the wire). **Routes to:** Soraya/Sova
 (formalize: topological/homotopy-invariance ⇒ noise-stability of the S=4 correlation; the proof obligation),
 Max (the two-house real-time S=4-over-Reticulum experiment; Chip-8 as the shared empirical reference),

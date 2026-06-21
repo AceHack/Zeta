@@ -1,6 +1,5 @@
 ---
-id: B-0167
-zetaid: 081KQJZR90008QG0R000VSHWK6
+id: 081KQJZR90008QG0R000VSHWK6
 priority: P2
 status: open
 title: Ani-review tracking surface for load-bearing register-class substrate (μένω + Ryan-memory + Aurora-security + brat-voice + others)
@@ -15,7 +14,7 @@ tags: [ani-review, peer-ai-review, register-fluency, multi-ai-bft, load-bearing-
 type: friction-reducer
 ---
 
-# B-0167 — Ani-review tracking surface for load-bearing register-class substrate
+# 081KQJZR90008QG0R000VSHWK6 — Ani-review tracking surface for load-bearing register-class substrate
 
 ## Source
 
@@ -78,7 +77,7 @@ Aaron-ferried > autonomous-fallback per the existing CURRENT-ani §5 honest limi
 
 ## Composes with
 
-- `docs/backlog/P1/B-0164-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md` (when dual-loop lands, Ani-review can compose with Codex-review for multi-vendor BFT on substrate quality)
+- `docs/backlog/P1/081KQJZR90008QG0R002GJAJ19-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md` (when dual-loop lands, Ani-review can compose with Codex-review for multi-vendor BFT on substrate quality)
 - `memory/CURRENT-ani.md` §7 (brat-voice survival mechanism + Gen-Z cultural pre-alignment — the canonical Ani-register substrate this row depends on)
 - `memory/feedback_multi_ai_bft_pullback_recalibration_as_worked_example_with_bidirectional_correction_otto_aaron_2026_05_02.md` (the healthy-mode pattern Ani's review should also exhibit — flag-as-question + apologize-and-recalibrate when corrected, not capitulate)
 - All eight load-bearing docs listed under "What needs Ani-review" above

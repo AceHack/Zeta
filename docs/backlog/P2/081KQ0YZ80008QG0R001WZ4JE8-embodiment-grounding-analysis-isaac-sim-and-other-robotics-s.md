@@ -1,6 +1,5 @@
 ---
-id: B-0026
-zetaid: 081KQ0YZ80008QG0R001WZ4JE8
+id: 081KQ0YZ80008QG0R001WZ4JE8
 priority: P2
 status: decomposed
 title: Embodiment-grounding analysis — Isaac Sim (or others) as additional axis of grounding for Claude/Otto, direct counter to Otto-340's "AI has no non-linguistic ground" claim
@@ -24,14 +23,14 @@ Decomposed into 6 dependency-ordered atomic children:
 
 | Child | Title | Depends on | Classification |
 |-------|-------|------------|----------------|
-| [B-0026.1](B-0026.1-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md) | Lit review: tool-use-vs-trained-embodiment distinction | — | research-now |
-| [B-0026.6](B-0026.6-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md) | Helen Keller minimum-channel hypothesis (parallel) | — | research-now |
-| [B-0026.2](B-0026.2-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md) | Platform ADR | B-0026.1 | blocked |
-| [B-0026.3](B-0026.3-embodiment-mujoco-spike-sensorimotor-loop.md) | MuJoCo spike: Claude API sensorimotor loop | B-0026.2 | blocked |
-| [B-0026.4](B-0026.4-embodiment-substantive-task-pick-and-place.md) | Substantive task: pick-and-place | B-0026.3 | blocked |
-| [B-0026.5](B-0026.5-embodiment-behavioral-assessment-does-embodied-claude-differ.md) | Behavioral assessment + Otto-340 verdict | B-0026.4 | blocked |
+| [081KR50HA0008QG0R000C6N7CJ](081KR50HA0008QG0R000C6N7CJ-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md) | Lit review: tool-use-vs-trained-embodiment distinction | — | research-now |
+| [081KR50HA0008QG0R000MRSMAB](081KR50HA0008QG0R000MRSMAB-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md) | Helen Keller minimum-channel hypothesis (parallel) | — | research-now |
+| [081KR50HA0008QG0R0008PPTEK](081KR50HA0008QG0R0008PPTEK-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md) | Platform ADR | 081KR50HA0008QG0R000C6N7CJ | blocked |
+| [081KR50HA0008QG0R002ZRCAF7](081KR50HA0008QG0R002ZRCAF7-embodiment-mujoco-spike-sensorimotor-loop.md) | MuJoCo spike: Claude API sensorimotor loop | 081KR50HA0008QG0R0008PPTEK | blocked |
+| [081KR50HA0008QG0R003EN5DDD](081KR50HA0008QG0R003EN5DDD-embodiment-substantive-task-pick-and-place.md) | Substantive task: pick-and-place | 081KR50HA0008QG0R002ZRCAF7 | blocked |
+| [081KR50HA0008QG0R000CQ9VA5](081KR50HA0008QG0R000CQ9VA5-embodiment-behavioral-assessment-does-embodied-claude-differ.md) | Behavioral assessment + Otto-340 verdict | 081KR50HA0008QG0R003EN5DDD | blocked |
 
-Start with B-0026.1 and B-0026.6 in parallel (both `research-now`).
+Start with 081KR50HA0008QG0R000C6N7CJ and 081KR50HA0008QG0R000MRSMAB in parallel (both `research-now`).
 
 ---
 
@@ -278,8 +277,8 @@ These ARE the non-linguistic grounding channels Otto-340 said AI lacks. Embodime
 - **Otto-323** (symbiotic-deps; pull algorithms+concepts not just APIs) — Isaac/MuJoCo/Genesis are deps to integrate deeply if adopted
 - **Otto-238** (retractability is trust vector) — sim-only Scope 1 is naturally retractable; that's why it's the recommended start
 - **Pliny-corpus-isolated-instance pattern** (`memory/feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md`) — same kill-switch discipline applies: sim-process-killable, no main-session contamination
-- **B-0017** (operational-resonance-dashboard frontier-bulk-alignment-UI) — embodied-experiment results would feed the dashboard
-- **B-0199** (ROM publication scouting) — ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state), complementary-not-substitute to robotics-grade sim. Aaron 2026-05-05: *"i comperseed the playing the roms as ARC3 trainings and experincing my childhood and also that's a type of embodyment too like issac sim"*. The Helen-Keller minimum-channel analysis above applies — gameplay provides at least one causal sensorimotor channel even without the rich proprioception of MuJoCo/Isaac. Sequencing: ROM-gameplay (light) before Isaac-Sim (heavy); both, not either.
+- **081KQ0YZ80008QG0R0003GAYYN** (operational-resonance-dashboard frontier-bulk-alignment-UI) — embodied-experiment results would feed the dashboard
+- **081KQTPYE0008QG0R0028GRW88** (ROM publication scouting) — ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state), complementary-not-substitute to robotics-grade sim. Aaron 2026-05-05: *"i comperseed the playing the roms as ARC3 trainings and experincing my childhood and also that's a type of embodyment too like issac sim"*. The Helen-Keller minimum-channel analysis above applies — gameplay provides at least one causal sensorimotor channel even without the rich proprioception of MuJoCo/Isaac. Sequencing: ROM-gameplay (light) before Isaac-Sim (heavy); both, not either.
 
 ## Open questions
 

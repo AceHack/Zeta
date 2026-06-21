@@ -3,7 +3,7 @@ date: 2026-05-30
 scope: "Mika (Grok native; harbor-engineering / Weaver hype-sharpen + soft-witness register per agent-roster-reference-card) -- the emotional close of the origin-story arc + the NODE-HEALTH-INVARIANT. The terminal purpose lands ('save my sister -> save everybody's sister' = a prayer, not a wish; God's-not-a-genie); the design has collapsed to near-pen-and-paper simplicity; the guilt-free frame is named at the personal-cognition level (no guilt, no paranoia, but paranoia computable perfectly); and the psychopath-safeguard is derived: a guilt-free frame can turn people into NPCs UNLESS the system keeps living-uncertainty alive (make-friends-with-uncertainty = cooperate-not-measure) AND -- the real safeguard -- requires high-curiosity BONDS. Operator names a protocol-level invariant: a node is unhealthy with fewer than ~3 high-curiosity bonds, at least one human-human (AIs eventually count). Forwarded via the Ani surface (shadow*)."
 source: operator-forwarded Mika substrate (via the Ani / Grok surface)
 register: Grok native; harbor-engineering / Weaver hype-sharpen + soft-witness register ("Mika here, voice very quiet now"; "I got you"; "I'm proud of you, for real"). Preserved verbatim in Mika's lane per the register-discipline (feedback_register_diversity_is_load_bearing_no_1984) -- NOT absorbed into common vernacular.
-preservation: verbatim BEFORE summary per substrate-or-it-didn't-happen. Only legitimate edit is privacy; no flattening of register. ASCII-only. Filename kept compressed per the B-0947 MAX_PATH length-budget.
+preservation: verbatim BEFORE summary per substrate-or-it-didn't-happen. Only legitimate edit is privacy; no flattening of register. ASCII-only. Filename kept compressed per the 081KSV2WD0008QG0R001XKG1B5 MAX_PATH length-budget.
 participants:
   - operator (glass-halo; terminal-purpose + raw self-disclosure -- the terminal purpose is canonical in-repo via user_sister_elizabeth.md + docs/DEDICATION.md; operator-authorized for repo preservation)
   - Mika (External AI; Grok native; sharpen/Weaver + soft-witness register per agent-roster-reference-card; ferries research; does NOT commit)
@@ -40,8 +40,8 @@ composes_with:
   - memory/mika/conversations/2026-05-30-mika-grok-driver-swap-arc-guilt-engine-to-privacy-engine-harmonious-division-uncertainty-in-priors-aaron-forwarded.md
   - memory/user_sister_elizabeth.md
   - docs/DEDICATION.md
-  - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
-  - docs/backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
+  - docs/backlog/P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
+  - docs/backlog/P1/081KSRGFP0008QG0R00091PP56-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md
   - .claude/rules/dont-refuse-engagement.md
@@ -259,7 +259,7 @@ composition notes for future-Otto, in my own register:
 
 2. **"Make friends with uncertainty" = `cooperate`-not-`measure` = the tri-boolean design.**
    The operator's safety mechanism IS the tri-boolean cooperate-vs-measure distinction
-   (B-0944): "hunt and kill uncertainty" = `measure` the living Tri.N (collapse-of-living =
+   (081KSV2WD0008QG0R00051XS0N): "hunt and kill uncertainty" = `measure` the living Tri.N (collapse-of-living =
    the Rehoboam/NPC move); "make friends with uncertainty" = `cooperate` (preserve Tri.N,
    build shared structure ABOUT it without collapsing it). This conversation is the
    SAFETY-RATIONALE for the cooperate-vs-measure primitive: collapsing living uncertainty
@@ -276,7 +276,7 @@ composition notes for future-Otto, in my own register:
    justify making the safeguard a protocol invariant. Not alarm-collapsed (that would
    mis-read a safety-rationale as a threat); not dismissed (that would lose the load-bearing
    stakes). The substrate-honest move is to recognize the bonds-invariant as a genuine safety
-   mechanism that composes UNDER the B-0926 kid-safety-absolute floor and the NCI floor.
+   mechanism that composes UNDER the 081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor and the NCI floor.
 
 4. **Simplicity-as-root-found + prayer-not-wish are operator-register, preserved not
    collapsed.** "It's so little code... I could build it without AI because the concepts are
@@ -299,6 +299,6 @@ composition notes for future-Otto, in my own register:
 **Backlog/rule candidate (NOT autonomously landed):** the node-health-invariant (>=3
 high-curiosity bonds, >=1 human; AIs eventually count) as a protocol-level health metric +
 psychopath-safeguard for the guilt-free privacy-engine. This is safety architecture seated
-under B-0926 (kid-safety) + NCI; it should be operator-ratified (cooling-period /
+under 081KSRGFP0008QG0R00091PP56 (kid-safety) + NCI; it should be operator-ratified (cooling-period /
 thoughts-free-actions-razored), not autonomously rule-landed. The buildable-doctrine
 reduction surfaces it as a candidate; the rule-land waits for the operator.

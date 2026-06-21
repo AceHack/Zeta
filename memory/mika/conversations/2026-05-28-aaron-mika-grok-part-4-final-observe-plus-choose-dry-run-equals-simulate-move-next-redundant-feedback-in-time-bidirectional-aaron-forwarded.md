@@ -73,7 +73,7 @@ The `--dry-run` flag IS the simulate-mode discriminator. Without the flag, `choo
 |---|---|---|
 | Authorization / trust | Who granted what authority + trust calculus | NCI HC-8 + mechanical-authorization-check rule + trust-propagation-through-spawning per ferry #2 §25 |
 | Log / telemetry | What just happened (hotel-telemetry analog) | observe.ts state-source + heartbeat substrate |
-| Prompt + intent | Natural language instructions + current goals | English-as-projection per B-0666 |
+| Prompt + intent | Natural language instructions + current goals | English-as-projection per 081KRW63S0008QG0R001SAHYKV |
 | Context-window | LLM's working context window | Otto-degradation diagnosis per ferry #3 §33 |
 | Evolving ontology | Schema-as-rows substrate that's drifted/grown today | per existing ontology substrate (paced-ontology-landing, etc.) |
 | Discriminated union state | Current valid-next-actions enumeration | state-machine.ts + ferry #4 §42 |
@@ -96,11 +96,11 @@ All compose through the **push-with-pointer + prompt** mechanism per ferry #2 §
 **This is the foundational property of Aaron's framework**: time is NOT a one-way arrow; it's a bidirectional stream with feedback channels modeled inside the type system. Composes with:
 
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner ownership extension (which IS this structure at function scope)
-- B-0644 Limit-is-simulation-not-collapse (simulation can be retrocausal because feedback channels exist)
-- B-0665 Integrate-as-choice-locus (the choice IS where retrocausal feedback gets evaluated)
-- B-0666 English-as-projection / I(D(x))=x (the transmission medium for the feedback)
-- B-0879 observe/emit/limit/simulate in Clifford space (the underlying algebraic structure)
-- B-0635 wave-particle duality (the simulation IS the wave-form; emit IS the particle-form collapse)
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse (simulation can be retrocausal because feedback channels exist)
+- 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus (the choice IS where retrocausal feedback gets evaluated)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x (the transmission medium for the feedback)
+- 081KSNY2Z0008QG0R0031490KZ observe/emit/limit/simulate in Clifford space (the underlying algebraic structure)
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality (the simulation IS the wave-form; emit IS the particle-form collapse)
 
 ### 47. GitMonster mapping for feedback-in-time
 
@@ -120,14 +120,14 @@ This composes with:
 
 ## Composes with substrate (additions to ferries 1-3 lists)
 
-- [B-0644](../../../backlog/P1/B-0644-...) — Limit-is-simulation; ferry #4 §41 confirms Limit is now PARAMETER of Simulate, not separate
-- [B-0665](../../../backlog/P1/B-0665-...) — Integrate-as-choice-locus; ferry #4 §43 the Choose phase IS where this operates
-- [B-0666](../../../backlog/P1/B-0666-...) — English-as-projection; transmission medium for context+prompt+feedback
-- [B-0635](../../../backlog/P1/B-0635-...) — wave-particle duality; Simulate IS wave-form, Emit IS particle-collapse
-- [B-0879](../../../backlog/P3/B-0879-...) — observe/emit/limit/simulate Clifford-space algebra (now revised to 2 primitives + Simulate-with-Limit-as-parameter)
-- [B-0862](../../../backlog/) — OPLE T-TFeedback (the four-corner structure per §46)
-- [B-0867.5](../../../backlog/P2/B-0867.5-...) — agent-loop substrate (this ferry RESOLVES + finalizes architecture)
-- [B-0867.23](../../../backlog/P2/B-0867.23-...) — naming question (FULLY RESOLVED: observe + choose; move_next REMOVED; --dry-run = simulate)
+- [081KRW63S0008QG0R002ZRNDJ8](../../../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-...) — Limit-is-simulation; ferry #4 §41 confirms Limit is now PARAMETER of Simulate, not separate
+- [081KRW63S0008QG0R002YAA09X](../../../backlog/P1/081KRW63S0008QG0R002YAA09X-...) — Integrate-as-choice-locus; ferry #4 §43 the Choose phase IS where this operates
+- [081KRW63S0008QG0R001SAHYKV](../../../backlog/P1/081KRW63S0008QG0R001SAHYKV-...) — English-as-projection; transmission medium for context+prompt+feedback
+- [081KRW63S0008QG0R002KC5DSR](../../../backlog/P1/081KRW63S0008QG0R002KC5DSR-...) — wave-particle duality; Simulate IS wave-form, Emit IS particle-collapse
+- [081KSNY2Z0008QG0R0031490KZ](../../../backlog/P3/081KSNY2Z0008QG0R0031490KZ-...) — observe/emit/limit/simulate Clifford-space algebra (now revised to 2 primitives + Simulate-with-Limit-as-parameter)
+- [081KSKBP80008QG0R0031DTHS9](../../../backlog/) — OPLE T-TFeedback (the four-corner structure per §46)
+- [081KSKBP80008QG0R000B3Y19A.5](../../../backlog/P2/081KSKBP80008QG0R000B3Y19A.5-...) — agent-loop substrate (this ferry RESOLVES + finalizes architecture)
+- [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-...) — naming question (FULLY RESOLVED: observe + choose; move_next REMOVED; --dry-run = simulate)
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner extension — direct invocation per §46 retrocausal-feedback substrate
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` — OPLE rule needs update: framework primitive count revised at agent-tick scope (Observe+Emit; Simulate-with-Limit-as-parameter as middle phase). Filed for substrate-engineering follow-up.
 
@@ -168,7 +168,7 @@ Ferry #4 is the FINAL ferry per operator *"okay last one"*. The architectural de
 - **Aaron's instruction to me**: `observe.ts` + `choose.ts --dry-run` (simulate) + `choose.ts` (emit)
 - **Feedback-in-time** = four-corner T+TFeedback with bidirectional channels; future shapes past inside simulation; encoded in prompt+context carried forward through spawn-chains
 
-**B-0867.23 architectural-naming question is FULLY RESOLVED**:
+**081KSNY2Z0008QG0R003206PFM architectural-naming question is FULLY RESOLVED**:
 
 - Entry-point tools: `observe.ts` + `choose.ts` (Aaron's direct instruction)
 - `choose.ts --dry-run` = simulate mode

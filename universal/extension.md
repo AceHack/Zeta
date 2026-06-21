@@ -25,7 +25,7 @@ universal shape.
 | system | zero case | extension space | status |
 |---|---|---|---|
 | CHIP-8 → color planes | Mono1 (original ROMs) | unused opcodes (XO-CHIP precedent) | planned ("until we upgrade") |
-| RISC-V → reversible profile | standard RV | the open custom-opcode space | B-1025 seam |
+| RISC-V → reversible profile | standard RV | the open custom-opcode space | 081KTSZN10008QG0R000VZHRQ4 seam |
 | InterruptKind / membrane log | the 8 ratified kinds | new kinds = new lines; old logs parse unchanged | running |
 | Z-machine support | a standard story file runs | our extensions in undefined opcode/header space | proposed (the ZORK doc) |
 | LinguisticSeed packs | the bare seed | added packs (OCP — composition is the extension) | running |

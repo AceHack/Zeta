@@ -21,7 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Tick shards for 0003Z + 0004Z, capturing the close of the Manifesto V2 cascade.
 
 - **PR [#3306](https://github.com/Lucent-Financial-Group/Zeta/pull/3306) merged** at 2026-05-15T00:02:58Z (squash `54f8bc4a1602`) — first repo-durable Manifesto V2 substrate in Zeta
-- Sanity-check verified all substrate landed on main (MANIFESTO.md role-refs version, B-0524 + B-0525 backlog rows, prior tick shards)
+- Sanity-check verified all substrate landed on main (MANIFESTO.md role-refs version, 081KRHWGX0008QG0R0007FG84X + 081KRHWGX0008QG0R0016T9408 backlog rows, prior tick shards)
 - Ani-attribution clarification + decision-archaeology assist for the maintainer
 - PR queue post-merge: zero Otto-CLI open PRs; all remaining open PRs in Lior's lane
 

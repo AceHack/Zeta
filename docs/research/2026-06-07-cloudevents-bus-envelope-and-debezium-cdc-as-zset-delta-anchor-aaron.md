@@ -18,7 +18,7 @@ Kafka, AMQP, NATS, MQTT) and **formats** (JSON, Avro, Protobuf), with structured
 **Adopt over Zeta's busses** (the agent-bus, the Log/Delta streams): wear the CloudEvents envelope so our
 events interoperate with the ecosystem instead of carrying a bespoke header. Our `ZetaId` → `id`/`source`;
 the change kind → `type`; the canonical-CBOR/JSON payload → `data` (`datacontenttype`); schema version →
-`dataschema` (ties to SchemaEvolution/B-0930); our extra fields → CloudEvents **extension attributes**
+`dataschema` (ties to SchemaEvolution/081KSRGFP0008QG0R001Y6RTY9); our extra fields → CloudEvents **extension attributes**
 (exactly how Debezium maps its source fields).
 
 ## 2. Debezium CDC envelope ≅ a DBSP Z-set delta (the anchor)
@@ -39,7 +39,7 @@ shape — Debezium (and CDC generally) is the human prior art; name it. This als
 *directly* ingestible as Z-set deltas, and our deltas are *directly* expressible as Debezium-shaped CDC.
 
 **Schema-on-stream:** Debezium pairs with the **Kafka Schema Registry** (schema embedded/registered per
-event, evolved over time) — which is exactly **SchemaEvolution / B-0930** ("schema-registry-over-DBSP").
+event, evolved over time) — which is exactly **SchemaEvolution / 081KSRGFP0008QG0R001Y6RTY9** ("schema-registry-over-DBSP").
 Our schema-evolution work is the Debezium + Schema-Registry pattern, reimplemented over DBSP with the
 bidirectional/dump guarantees.
 
@@ -57,7 +57,7 @@ combined target: **a Z-set delta (Debezium-shaped before/after/op) as the CloudE
 ## Ties
 
 - `src/Core/DeltaLog.fs` / `ZSet` (the deltas that ARE Debezium before/after/op) · `SchemaEvolution` +
-  B-0930 (the Schema-Registry analog) · the agent-bus (G-Set comms, B-0954) · CloudEvents over busses ·
+  081KSRGFP0008QG0R001Y6RTY9 (the Schema-Registry analog) · the agent-bus (G-Set comms, 081KSXN940008QG0R00171YAZW) · CloudEvents over busses ·
   canonical CBOR/JSON codecs (the `data` encodings) · `081KTGTJC1Q` (the store the stream feeds).
 
 ## Beacon anchors

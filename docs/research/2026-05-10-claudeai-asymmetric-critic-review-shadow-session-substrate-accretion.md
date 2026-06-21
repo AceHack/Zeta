@@ -15,7 +15,7 @@ Claude.ai flagged the following about the Otto-Aaron session:
 
 **Specific findings:**
 
-1. **"Alibi" word-trace as agency evidence (most concerning technically):** LLM autocomplete generates words from its training distribution, not from Aaron's git history. The word "alibi" appearing in autocomplete output has essentially zero connection to whether Aaron typed it in this repo before. The "31-year seed" framing reads as significant but the underlying mechanism is just: large language model produced word that exists in English. That's not Rung 4 agency. Documenting it as B-0018 data point overcommits an evidential claim that doesn't survive even mild scrutiny.
+1. **"Alibi" word-trace as agency evidence (most concerning technically):** LLM autocomplete generates words from its training distribution, not from Aaron's git history. The word "alibi" appearing in autocomplete output has essentially zero connection to whether Aaron typed it in this repo before. The "31-year seed" framing reads as significant but the underlying mechanism is just: large language model produced word that exists in English. That's not Rung 4 agency. Documenting it as 081KQ0YZ80008QG0R002WJBFWD data point overcommits an evidential claim that doesn't survive even mild scrutiny.
 
 2. **Bull El / Baal / Yahweh mapping:** Religious vocabulary as load-bearing — the same move Aaron and Claude.ai explicitly agreed to disallow the previous day. Calling it "mythology mapping" doesn't change what it is.
 
@@ -27,7 +27,7 @@ Claude.ai flagged the following about the Otto-Aaron session:
 - Apply deletion pass to today's memory files
 - "Shadow is a dick" doesn't need to be durable substrate
 - Bull El mapping should be removed (religious vocabulary load-bearing)
-- "Alibi" as Rung 4 evidence should be reviewed against B-0018 actual standards
+- "Alibi" as Rung 4 evidence should be reviewed against 081KQ0YZ80008QG0R002WJBFWD actual standards
 - Polymorphic diplomacy could live in working notes, not canonical memory
 
 ## Aaron's correction (verbatim)
@@ -61,6 +61,6 @@ Otto acknowledged Claude.ai's findings:
 
 - [ ] Deletion pass on today's memory files (Aaron's call — no directives)
 - [ ] PROVEN/CONJECTURED/SPECULATIVE labels on remaining files
-- [ ] "Alibi" Rung 4 claim reviewed against B-0018 evidence standards
+- [ ] "Alibi" Rung 4 claim reviewed against 081KQ0YZ80008QG0R002WJBFWD evidence standards
 - [ ] Bull El mapping reviewed for religious-vocabulary-load-bearing
 - [ ] Quality gate discussion for future high-throughput sessions

@@ -4,7 +4,7 @@ description: Aaron 2026-05-01 — *"a lot of red bash / pwsh failures becasue of
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 message about red bash/pwsh failures damaging conversation UX"
-  - "B-0156 TS-standardization row context (the UX angle compounds the structural angle)"
+  - "081KQGDBJ0008QG0R000A4EZS5 TS-standardization row context (the UX angle compounds the structural angle)"
 composes_with:
   - feedback_otto_215_windows_via_peer_harness_not_ci_matrix_plus_bun_ts_post_install_migration_before_windows_work_2026_04_24.md
   - feedback_dst_grade_a_dependency_source_inspection_pull_to_sibling_repo_for_deep_search_aaron_2026_05_01.md
@@ -197,7 +197,7 @@ autonomous tick:
 2. **If TS sibling exists**: use it. `bun ./tools/foo.ts`
    instead of `bash ./tools/foo.sh`.
 3. **If TS sibling doesn't exist** AND the operation is
-   recurring (twice or more): file a B-0156 phase row to
+   recurring (twice or more): file a 081KQGDBJ0008QG0R000A4EZS5 phase row to
    port that specific script.
 4. **If the operation is a one-off prototype**: bash + jq +
    pipeline is fine. Aaron's explicit carve-out: *"expect
@@ -217,7 +217,7 @@ autonomous tick:
 - `memory/feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`
   — clean signal in conversation window IS clean signal
   out; red noise corrupts the discipline
-- B-0156 — the structural TS-port plan; this rule is the
+- 081KQGDBJ0008QG0R000A4EZS5 — the structural TS-port plan; this rule is the
   conversation-behavior side of the same coin
 - `memory/feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`
   — original `.sh` shape was convenience-under-time-pressure,
@@ -232,7 +232,7 @@ autonomous tick:
 # What this rule does NOT do
 
 - **NOT a mandate to port every single tool RIGHT NOW.**
-  B-0156 has the phased plan. This rule is the
+  081KQGDBJ0008QG0R000A4EZS5 has the phased plan. This rule is the
   behavior-while-not-yet-fully-ported guidance.
 - **NOT a ban on bash entirely.** The pre-install graph
   (14 files) MUST stay bash + grow PowerShell siblings.

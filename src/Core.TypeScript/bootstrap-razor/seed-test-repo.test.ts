@@ -127,7 +127,7 @@ describe("buildCreateRepoRequest", () => {
         name: "zeta-recreation-experiment",
         private: true,
         auto_init: false,
-        description: "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
+        description: "081KQTPYE0008QG0R00392KABJ bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
       },
     });
   });
@@ -746,14 +746,14 @@ describe("parseSeedTreeResponse", () => {
 });
 
 describe("seedCommitMessage", () => {
-  test("subject names the file count, body cites the manifest + B-0193/B-0343 lineage", () => {
+  test("subject names the file count, body cites the manifest + 081KQTPYE0008QG0R00392KABJ/081KR2E4K0008QG0R002JW751Y lineage", () => {
     const message = seedCommitMessage(7);
     const [subject, ...rest] = message.split("\n");
-    expect(subject).toBe("chore(B-0343): seed bootstrap-razor recreation test repo (7 files)");
+    expect(subject).toBe("chore(081KR2E4K0008QG0R002JW751Y): seed bootstrap-razor recreation test repo (7 files)");
     const body = rest.join("\n");
     expect(body).toContain("docs/bootstrap-razor/SEED-MANIFEST.md");
-    expect(body).toContain("B-0193");
-    expect(body).toContain("B-0343");
+    expect(body).toContain("081KQTPYE0008QG0R00392KABJ");
+    expect(body).toContain("081KR2E4K0008QG0R002JW751Y");
   });
 
   test("pluralizes the count noun (1 file vs N files)", () => {
@@ -795,7 +795,7 @@ describe("parseSeedCommitResponse", () => {
   const created = {
     sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
     url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
-    message: "chore(B-0343): seed bootstrap-razor recreation test repo (3 files)",
+    message: "chore(081KR2E4K0008QG0R002JW751Y): seed bootstrap-razor recreation test repo (3 files)",
     tree: { sha: "827efc6d56897b048c772eb4087f854f46256132", url: "https://api.github.com/..." },
     parents: [{ sha: "cd8274d15fa3ae2ab983129fb037999f264ba9a7", url: "https://api.github.com/..." }],
   };

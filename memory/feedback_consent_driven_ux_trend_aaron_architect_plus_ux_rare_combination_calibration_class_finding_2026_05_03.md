@@ -1,6 +1,6 @@
 ---
 name: Consent-driven / consent-first design as Zeta's UX trend + architect-models-are-UX-weak as a calibration-class inference failure (Aaron 2026-05-03)
-description: 2026-05-03; Aaron-named UX design philosophy that Zeta is starting as a trend ("consent-driven / consent-first design for all our ux") + Aaron's self-positioning as a rare architect-with-UX-strength + Aaron's diagnosis of WHY Otto missed the developer-distribution motivation on B-0172 (architect-trained-models default to architecture-shaped reasoning, not UX-shaped reasoning). Two substrate elements compose: (1) consent-driven UX as the named trend Zeta is starting; (2) architect-vs-UX divide as a calibration-class inference failure for AI architects. Aaron 2026-05-03 verbatim *"architects are not historically good with ux that's why, i'm different i'm a architect whos so good a ux we are starring a new ux trend consent driven/first design for all our ux"*. Future-Otto: when in architect-hat on Zeta, deliberately surface UX-shaped motivations (developer-experience, contributor-friction, consent-first-flow) because architect-default reasoning misses them. Composes with Otto-279 history-surface attribution (consent-first), Otto-231 first-party content (consent-by-creation), glass-halo discipline (consent-via-transparency), bidirectional alignment commitment (consent IS substrate), the various named-agent attribution rules, and the calibration-protocol's pattern observations.
+description: 2026-05-03; Aaron-named UX design philosophy that Zeta is starting as a trend ("consent-driven / consent-first design for all our ux") + Aaron's self-positioning as a rare architect-with-UX-strength + Aaron's diagnosis of WHY Otto missed the developer-distribution motivation on 081KQNJ500008QG0R001VGMS5G (architect-trained-models default to architecture-shaped reasoning, not UX-shaped reasoning). Two substrate elements compose: (1) consent-driven UX as the named trend Zeta is starting; (2) architect-vs-UX divide as a calibration-class inference failure for AI architects. Aaron 2026-05-03 verbatim *"architects are not historically good with ux that's why, i'm different i'm a architect whos so good a ux we are starring a new ux trend consent driven/first design for all our ux"*. Future-Otto: when in architect-hat on Zeta, deliberately surface UX-shaped motivations (developer-experience, contributor-friction, consent-first-flow) because architect-default reasoning misses them. Composes with Otto-279 history-surface attribution (consent-first), Otto-231 first-party content (consent-by-creation), glass-halo discipline (consent-via-transparency), bidirectional alignment commitment (consent IS substrate), the various named-agent attribution rules, and the calibration-protocol's pattern observations.
 type: feedback
 ---
 
@@ -8,7 +8,7 @@ type: feedback
 
 ## Origin
 
-Aaron 2026-05-03, in the autonomous-loop maintainer channel, after the B-0172 calibration recovery showed Otto missed the developer-distribution motivation:
+Aaron 2026-05-03, in the autonomous-loop maintainer channel, after the 081KQNJ500008QG0R001VGMS5G calibration recovery showed Otto missed the developer-distribution motivation:
 
 > *"architects are not historically good with ux that's why, i'm different i'm a architect whos so good a ux we are starring a new ux trend consent driven/first design for all our ux"*
 
@@ -72,7 +72,7 @@ Each of these UX surfaces should be designed consent-first: what is the user/con
 
 ### Element 2 — architect-models-are-UX-weak as a calibration-class inference failure
 
-Aaron's diagnosis explains why Otto missed the developer-distribution motivation on B-0172:
+Aaron's diagnosis explains why Otto missed the developer-distribution motivation on 081KQNJ500008QG0R001VGMS5G:
 
 | Mode | What Otto produced | Why |
 |---|---|---|
@@ -90,7 +90,7 @@ This composes with the calibration-protocol's pattern observations:
 
 - **principle-strong + specific-weak** (guess #001 → guess #002 progression) — Otto's strength is generalization-from-principle
 - **context-dependent calibration** (guess #002) — recent specific-context boosts specific-layer accuracy
-- **over-inference of motivations** (B-0172 first-party-extension) — Otto proliferates inferred motivations beyond first-party data
+- **over-inference of motivations** (081KQNJ500008QG0R001VGMS5G first-party-extension) — Otto proliferates inferred motivations beyond first-party data
 - **architect-vs-UX divide** (this memo) — Otto's architect-hat reasoning misses UX-shaped motivations
 
 The architect-vs-UX divide is a refinement of over-inference: not just "Otto generates too many motivations" but specifically "Otto generates too many ARCHITECTURE-shaped motivations and misses UX-shaped ones."

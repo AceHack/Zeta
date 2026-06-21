@@ -1,6 +1,6 @@
 // src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts
 //
-// B-0867.5+ extension: work-lifecycle state machine — backlog row →
+// 081KDWZ8TS008QG0R0020NJ9D0+ extension: work-lifecycle state machine — backlog row →
 // claim → PR → review (possibly cycle review-push N times) → merge.
 //
 // Operator framing 2026-05-28:
@@ -27,7 +27,7 @@
 //   - state-machine.ts (agent-loop) — agent-decisions level
 //   - src/Core.TypeScript/bus/claim.ts (existing) — claim acquisition substrate
 //   - tools/github/poll-pr-gate.ts (existing) — PR state inspection
-//   - B-0867 + B-0867.5 (workflow engine v1 substrate)
+//   - 081KSKBP80008QG0R000B3Y19A + 081KDWZ8TS008QG0R0020NJ9D0 (workflow engine v1 substrate)
 //   - .claude/rules/claim-acquire-before-worktree-work.md (claim discipline)
 //   - .claude/rules/blocked-green-ci-investigate-threads.md (revision-request handling)
 function ok(state) {

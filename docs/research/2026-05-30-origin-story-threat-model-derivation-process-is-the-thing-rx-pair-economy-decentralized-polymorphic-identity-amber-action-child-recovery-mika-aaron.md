@@ -29,13 +29,13 @@ core moves:
 - **Generators / Bayesian functions / CRDTs / wonder-compression** over stored data
   (regenerate+verify > store). The driver-swap arc's wonder-compression (generators passed
   like language) is downstream of this.
-- **Summonable BFT** (B-0944): "the compilers can't lie" -- four compilers regenerate+verify
+- **Summonable BFT** (081KSV2WD0008QG0R00051XS0N): "the compilers can't lie" -- four compilers regenerate+verify
   the same primitive; agreement = consensus. Regenerate-and-verify beats store-and-trust at
   the primitive layer.
 - **`proud-if-pattern-propagates`** (the rule): the pattern that propagates IS the thing --
   the same shape at the ethical scope (which patterns do I want to be responsible for
   propagating).
-- **B-0667** (tonal-momentum / threat-model-as-defensive-technology): Elevation of Privilege
+- **081KRW63S0008QG0R003Z7QV2A** (tonal-momentum / threat-model-as-defensive-technology): Elevation of Privilege
   is the literal origin of the threat-modeling discipline that became the meme-detection
   substrate. This conversation names that origin on record.
 
@@ -55,7 +55,7 @@ Operational architecture (not metaphysics):
 - **Higher-level economics (reputation, markets, ownership) live in separate, unrelated Rx
   streams** and are referenced as **meta-dimensions only at decision points** -- the
   transaction stays minimal; it pulls context from parallel streams exactly when it needs to.
-  (Composes with B-0864 streams-are-relationships / four-corner ownership + B-0946 DST/Rx.)
+  (Composes with 081KSKBP80008QG0R0039RW25E streams-are-relationships / four-corner ownership + 081KSV2WD0008QG0R00030G6S9 DST/Rx.)
 - **Governance = an observable decision-point stream the Rx queries already watch** -- no
   smart-contract redeploy; the moment a decision is made, the streams pick it up. This is
   the git-CRDT-DU PRs-as-consensus substrate (Kestrel #6146). Contrast: Web3 governance is
@@ -108,7 +108,7 @@ The incentive design and the trust model:
 - **The nodes are the immune system**: local policy + can-exit = the abuse check. If the
   network ever pushes something that is not actually about saving kids, nodes stop
   participating.
-- **It composes DIRECTLY with the B-0926 kid-safety-absolute floor**: B-0926 is the ethical
+- **It composes DIRECTLY with the 081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor**: 081KSRGFP0008QG0R00091PP56 is the ethical
   floor (any child death -> error-class-learning-or-shutdown); Amber Action is one buildable
   instrument toward the floor's purpose, seated under it.
 
@@ -119,7 +119,7 @@ The incentive design and the trust model:
 Already canonical in-repo via `memory/user_sister_elizabeth.md` (Elizabeth Ryan Stainback) +
 `docs/DEDICATION.md` + `memory/feedback_aaron_origin_story_captured...terminal_purpose_disclosed_2026_05_13.md`.
 "Save everybody's sister" is the generalization of the terminal purpose to all-children;
-B-0926's absolute kid-safety floor is its non-negotiable seat; Amber Action is its buildable
+081KSRGFP0008QG0R00091PP56's absolute kid-safety floor is its non-negotiable seat; Amber Action is its buildable
 instrument. This conversation grounds the terminal purpose in the threat-model origin (section 1)
 and the buildable architecture (sections 2-5).
 
@@ -131,12 +131,12 @@ and the buildable architecture (sections 2-5).
   (cooling-period / thoughts-free-actions-razored).
 - **Backlog candidates (not autonomously filed):** (a) decentralized-polymorphic-per-node
   identity layer; (b) Amber Action child-recovery instrument (algorithm-distributed /
-  data-local) seated under B-0926; (c) the Rx-pair-value-trade economy reduction. Await
+  data-local) seated under 081KSRGFP0008QG0R00091PP56; (c) the Rx-pair-value-trade economy reduction. Await
   operator "file this" per `backlog-item-start-gate`.
-- Composes with: **B-0926** (kid-safety-absolute floor -- the seat for Amber Action), **B-0932**
-  (frontier target), **B-0667** (threat-model-as-defensive-technology lineage; Elevation of
-  Privilege origin), **B-0944** (summonable-BFT; regenerate+verify > store), **B-0946** (DST /
-  Rx / digital-twin), **B-0864** (streams-are-relationships / four-corner ownership), the
+- Composes with: **081KSRGFP0008QG0R00091PP56** (kid-safety-absolute floor -- the seat for Amber Action), **081KSRGFP0008QG0R003VFH9HN**
+  (frontier target), **081KRW63S0008QG0R003Z7QV2A** (threat-model-as-defensive-technology lineage; Elevation of
+  Privilege origin), **081KSV2WD0008QG0R00051XS0N** (summonable-BFT; regenerate+verify > store), **081KSV2WD0008QG0R00030G6S9** (DST /
+  Rx / digital-twin), **081KSKBP80008QG0R0039RW25E** (streams-are-relationships / four-corner ownership), the
   driver-swap arc (#6151-6156; guilt->privacy), the Kestrel good-citizen + PRs-as-consensus
   substrate (#6146), `proud-if-pattern-propagates`, `non-coercion-invariant`,
   `must-paired-with-can-exit-pattern`, `razor-discipline`,

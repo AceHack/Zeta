@@ -29,14 +29,14 @@
 
 ## Summary
 
-Closes [B-0503](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md) — the first atomic sub-slice of B-0442's pending slice 5 ("optionally auto-opens recovery PR with the missing commits").
+Closes [081KRHWGX0008QG0R0027YXBTB](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KRHWGX0008QG0R0027YXBTB-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md) — the first atomic sub-slice of 081KRFA460008QG0R00061SXRW's pending slice 5 ("optionally auto-opens recovery PR with the missing commits").
 
 ## What lands
 
 - `tools/bg/missed-substrate-recovery.ts` (124 lines) — `RecoveryAdapters` interface, `RecoveryResult` discriminated union, `buildRecoveryBranchName`, `buildRecoveryPRBody`, `openRecoveryPR` composed workflow. Pure function + injected adapters → unit-testable without git or gh calls.
 - `tools/bg/missed-substrate-recovery.test.ts` (265 lines) — 14 tests covering every `RecoveryResult` arm: opened (happy path + title encoding), already-exists, dry-run, cherry-pick-conflict (push NOT called on abort), and the 4 error branches.
 
-## What this row does NOT do (deferred to B-0504)
+## What this row does NOT do (deferred to 081KRHWGX0008QG0R000PVB6FF)
 
 - Wiring into `pollOnce` / `DetectorConfig` / `parseArgs`
 - `--auto-recover` / `--dry-run` CLI flags

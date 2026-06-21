@@ -2,7 +2,7 @@
 /**
  * tools/openspec/inventory.ts (v0.2.0)
  *
- * Phase 1 mechanization for B-0171: scans openspec/specs/ and src/Core/
+ * Phase 1 mechanization for 081KQNJ500008QG0R001N94412: scans openspec/specs/ and src/Core/
  * to produce a structured gap report — which code modules have specs,
  * which don't, and which specs have no matching code module.
  *

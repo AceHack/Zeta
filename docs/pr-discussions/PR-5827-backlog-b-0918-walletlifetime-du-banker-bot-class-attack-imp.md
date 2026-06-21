@@ -1,6 +1,6 @@
 ---
 pr_number: 5827
-title: "backlog(B-0918): WalletLifetime DU + banker-bot-class-attack-impossibility via B-0917 F.5 + Soraya formal verification (Aaron 2026-05-28; orphan re-land from PR #5816 post-merge)"
+title: "backlog(081KSNY2Z0008QG0R0036SJ3T1): WalletLifetime DU + banker-bot-class-attack-impossibility via 081KSNY2Z0008QG0R002HB4AGT F.5 + Soraya formal verification (Aaron 2026-05-28; orphan re-land from PR #5816 post-merge)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T13:59:40Z"
@@ -12,21 +12,21 @@ archived_at: "2026-05-28T14:11:58Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5827: backlog(B-0918): WalletLifetime DU + banker-bot-class-attack-impossibility via B-0917 F.5 + Soraya formal verification (Aaron 2026-05-28; orphan re-land from PR #5816 post-merge)
+# PR #5827: backlog(081KSNY2Z0008QG0R0036SJ3T1): WalletLifetime DU + banker-bot-class-attack-impossibility via 081KSNY2Z0008QG0R002HB4AGT F.5 + Soraya formal verification (Aaron 2026-05-28; orphan re-land from PR #5816 post-merge)
 
 ## PR description
 
-Aaron 2026-05-28 substrate-recognition during PR #5816 review of B-0917 Slice F.5 (Amara's no-silent-context-loss target):
+Aaron 2026-05-28 substrate-recognition during PR #5816 review of 081KSNY2Z0008QG0R002HB4AGT Slice F.5 (Amara's no-silent-context-loss target):
 
 > *'soyra can now prove banker bot class attack is not possible in our workflow system if we design the wallet lifetime right'*
 
-Orphan re-land — B-0918 commit `8ac3aefd6` was pushed to PR #5816 branch AFTER auto-merge fired at 13:56Z (which merged through commit `fadf26814`). Cherry-picked onto fresh branch off main per agent-worktree-hygiene + claim-acquire discipline.
+Orphan re-land — 081KSNY2Z0008QG0R0036SJ3T1 commit `8ac3aefd6` was pushed to PR #5816 branch AFTER auto-merge fired at 13:56Z (which merged through commit `fadf26814`). Cherry-picked onto fresh branch off main per agent-worktree-hygiene + claim-acquire discipline.
 
 ## What this row derives
 
 **banker-bot-class-attack-impossibility** as composition theorem of:
 
-- B-0917 F.5 invariant (no silent IntrCtx state-drift; Amara's Soraya target)
+- 081KSNY2Z0008QG0R002HB4AGT F.5 invariant (no silent IntrCtx state-drift; Amara's Soraya target)
 - WalletLifetime DU (9 explicit variants per IMPLICIT-NOT-EXPLICIT rule; AuditTrail + ConsentEvent fields per asymmetric-authorship)
 - IntrCtx Wallet component (optional; only when financial substrate in scope)
 - NCI HC-8 floor (wallet AUTHORS state-evolution; consumer cannot coerce)
@@ -40,7 +40,7 @@ Per `bandwidth-served-falsifier` rule: the substrate-target eliminates the subst
 
 ## Substrate-honest framing
 
-Aaron's 'IF we design the wallet lifetime right' is load-bearing. B-0918 is substrate-engineering substrate-target naming what 'right' means. Only covers the SPECIFIC attack-class operating via silent state-drift; phishing / social-eng / key-theft operate at different scopes.
+Aaron's 'IF we design the wallet lifetime right' is load-bearing. 081KSNY2Z0008QG0R0036SJ3T1 is substrate-engineering substrate-target naming what 'right' means. Only covers the SPECIFIC attack-class operating via silent state-drift; phishing / social-eng / key-theft operate at different scopes.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

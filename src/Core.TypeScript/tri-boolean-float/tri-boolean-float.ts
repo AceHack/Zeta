@@ -1,5 +1,5 @@
-// Tri-boolean floating point -- v0 operations (B-0944 slice 5, TS reference / distribution).
-// PROPOSED v0; see ./types.ts + the spec doc. Reuses the digital-qubit cell (B-0944).
+// Tri-boolean floating point -- v0 operations (081KSV2WD0008QG0R00051XS0N slice 5, TS reference / distribution).
+// PROPOSED v0; see ./types.ts + the spec doc. Reuses the digital-qubit cell (081KSV2WD0008QG0R00051XS0N).
 
 import { type Tri, T, F, N } from "../tri-boolean";
 import { type FloatShape, type TriFloat, type DecodeResult, type EncodeResult, DEFAULT_SHAPE } from "./types";

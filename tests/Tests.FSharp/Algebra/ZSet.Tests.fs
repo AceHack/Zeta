@@ -419,11 +419,11 @@ let ``(+) is NOT idempotent: a + a doubles every weight (Z-set, not G-Set)`` () 
     (a + a) |> zToList |> should equal [ ("a", 2L); ("b", -6L) ]
 
 
-// ───────────── C14 (B-1007 P1): earn-its-keep auto-prune ─────────────
+// ───────────── C14 (081KT2T2J0008QG0R000YZ3NMY P1): earn-its-keep auto-prune ─────────────
 // The ±1 Z-set ABELIAN GROUP laws (assoc / commut / Zero-identity /
 // negation-inverse / double-neg / sub) are already proven in the "Group
 // axioms" section above — C14 does NOT duplicate them. C14's remaining
-// half is the EARN-ITS-KEEP AUTO-PRUNE (B-1006): a key whose weights sum
+// half is the EARN-ITS-KEEP AUTO-PRUNE (081KT2T2J0008QG0R0008TFHJT): a key whose weights sum
 // to 0 is dropped (it didn't earn its keep; ZSet `(+)` at Algebra.fs:81
 // stores only `s <> 0L`), and that physical prune PRESERVES SEMANTICS.
 // Two FsCheck laws over SmallZSetArb:
@@ -452,17 +452,17 @@ let ``C14 auto-prune preserves semantics: lookup is an additive homomorphism (dr
     let sum = ZSet.add a b
     keys |> Seq.forall (fun k -> ZSet.lookup k sum = ZSet.lookup k a + ZSet.lookup k b)
 
-// ─── B-0969: Z-set key ordering is ORDINAL (binary collation), not culture-sensitive ───
+// ─── 081KT07NV0008QG0R001YDB73K: Z-set key ordering is ORDINAL (binary collation), not culture-sensitive ───
 // Default collation = Collation.binary via KeyComparerCache. 'B'(0x42) < 'a'(0x61), so the canonical
 // sorted run orders uppercase before lowercase — the cross-language byte-consensus order (C#/Rust/TS).
 [<Fact>]
-let ``ofSeq orders string keys ordinally (B-0969 binary collation, not culture-sensitive)`` () =
+let ``ofSeq orders string keys ordinally (081KT07NV0008QG0R001YDB73K binary collation, not culture-sensitive)`` () =
     let z = ZSet.ofSeq [ "a", 1L; "B", 1L; "C", 1L; "b", 1L ]
     let keys = z |> Seq.map (fun e -> e.Key) |> Seq.toArray
     Assert.Equal<string[]>([| "B"; "C"; "a"; "b" |], keys)
 
 [<Fact>]
-let ``lookup finds string keys under ordinal ordering (B-0969)`` () =
+let ``lookup finds string keys under ordinal ordering (081KT07NV0008QG0R001YDB73K)`` () =
     let z = ZSet.ofSeq [ "Apple", 3L; "apple", 5L ]
     // distinct ordinal keys (cap A vs lowercase a) must not collide
     Assert.Equal(3L, ZSet.lookup "Apple" z)

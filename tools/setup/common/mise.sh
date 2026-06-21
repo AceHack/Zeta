@@ -16,7 +16,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 # .mise.toml — v2026.3.18+ only). Env works on all supported mise versions.
 export MISE_PYTHON_GITHUB_ATTESTATIONS="${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"
 
-# DST-boundary resilience (B-0943): GitHub releases / python-build-standalone CDN
+# DST-boundary resilience (081KSV2WD0008QG0R002A3QJ5Q): GitHub releases / python-build-standalone CDN
 # 5xx flakes are outside the deterministic boundary — bounded retries belong here.
 # mise defaults to 3 internal HTTP retries (~200ms–15s backoff); too tight for
 # multi-minute GitHub outages. CI gate.yml + install_with_retry below add outer

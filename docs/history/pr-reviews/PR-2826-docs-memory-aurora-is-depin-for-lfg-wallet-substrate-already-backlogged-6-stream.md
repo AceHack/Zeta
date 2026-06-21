@@ -34,9 +34,9 @@ as a **DePIN (Decentralized Physical Infrastructure Network)
 play for LFG**. Every DePIN property satisfied.
 
 **Wallet infrastructure ALREADY designed + backlogged:**
-- B-0062 (wallet v0 build-out spec — P0)
-- B-0074-series (wallet acceptance + bond ledger)
-- B-0409 (wallet-immune-system + vaccine-spread + PoUW-CC — P1)
+- 081KQ8P5D0008QG0R002XFQ305 (wallet v0 build-out spec — P0)
+- 081KQ8P5D0008QG0R0014HJFF5-series (wallet acceptance + bond ledger)
+- 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC — P1)
 
 **Six PoUW-CC monetization streams** (extends PR #2825 quad):
 1. Algorithm push-down (Zeta → Community)
@@ -55,7 +55,7 @@ monetization + data-coincidence-value + guardian AI authority
 
 - PR #2820-#2825 (today's cascade)
 - LFG topology + soulfile inheritance
-- All wallet backlog rows (B-0062, B-0074-series, B-0409)
+- All wallet backlog rows (081KQ8P5D0008QG0R002XFQ305, 081KQ8P5D0008QG0R0014HJFF5-series, 081KRA5AR0008QG0R000Y6102S)
 - Patent → BFT → Nakamoto trajectory
 - Trust-then-verify + anti-cult substrate
 

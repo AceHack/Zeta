@@ -37,7 +37,7 @@ spec:
     namespace: hat-system
   ignoreDifferences:
     # K8s 1.35+ populates status.terminatingReplicas before OpenAPI catches up;
-    # ArgoCD structured merge diff then fails with ComparisonError (B-0967 CI).
+    # ArgoCD structured merge diff then fails with ComparisonError (081KSXN940008QG0R000SCP2H1 CI).
     - group: apps
       kind: Deployment
       jqPathExpressions:

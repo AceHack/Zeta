@@ -30,16 +30,16 @@
 ## Summary
 
 - PR [#3361](https://github.com/Lucent-Financial-Group/Zeta/pull/3361) (0503Z shard) MERGED → `21299d5`
-- PR [#3362](https://github.com/Lucent-Financial-Group/Zeta/pull/3362) (B-0529 backlog row) MERGED → `c6f2620`
+- PR [#3362](https://github.com/Lucent-Financial-Group/Zeta/pull/3362) (081KRMEXM0008QG0R002HBY56V backlog row) MERGED → `c6f2620`
 - PR #3363 (0517Z shard) still in CI, auto-merge armed
 - **Worktree-prune-race investigation**: 4 standard agent loops cleared (Lior, Riven, Codex/Vera, Copilot) + `tools/lanes/lane-allocator.ts` + git `worktree prune` + git `gc.pruneexpire`. Source untraced; narrowed candidate list documented.
-- B-0527 collision unchanged; restraint discipline maintained (no third advisory republish).
+- 081KRHWGX0008QG0R0015EE8VE collision unchanged; restraint discipline maintained (no third advisory republish).
 
 ## Test plan
 
 - [x] `bun tools/hygiene/check-tick-history-shard-schema.ts` → 0 violations
 - [x] `bun x markdownlint-cli2` → 0 violations
-- [x] Pipe-row first line + H1-rich body (hybrid pattern per B-0529)
+- [x] Pipe-row first line + H1-rich body (hybrid pattern per 081KRMEXM0008QG0R002HBY56V)
 - [x] Linked rule refs to full `.claude/rules/...` paths
 - [ ] CI required checks pass on PR
 - [ ] Auto-merge fires after CI green

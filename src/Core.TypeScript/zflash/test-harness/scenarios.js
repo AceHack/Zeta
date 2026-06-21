@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/zflash/test-harness/scenarios.ts
  *
- * B-0891 — zflash "done" acceptance criteria + QEMU test harness
+ * 081KSNY2Z0008QG0R0008PN7RQ — zflash "done" acceptance criteria + QEMU test harness
  *
  * Declarative definitions for the 5-scenario test matrix the operator
  * named as the acceptance criteria for zflash "done":
@@ -14,7 +14,7 @@
  *
  * PoC scope: declarative scenario definitions + dispatcher contract +
  * status field for partial implementation. Scenarios 1 + 2 can compose
- * with existing `src/Core.TypeScript/ci/qemu-full-install-test.ts` (B-0831 Slice 1)
+ * with existing `src/Core.TypeScript/ci/qemu-full-install-test.ts` (081KSGS9H0008QG0R0011BC7T2 Slice 1)
  * substrate today; scenarios 3-5 require state-preservation between QEMU
  * boots which the existing harness does not have — marked as
  * "scaffolded" pending implementation.
@@ -65,8 +65,8 @@ export const SCENARIOS = [
         ],
         composesWith: [
             "src/Core.TypeScript/ci/qemu-full-install-test.ts",
-            "B-0831 (CI cascade-6 cluster-auto-join)",
-            "B-0590 (fleet replication 20 machines)",
+            "081KSGS9H0008QG0R0011BC7T2 (CI cascade-6 cluster-auto-join)",
+            "081KRQ1AB0008QG0R002G93CM7 (fleet replication 20 machines)",
         ],
         gates: ["reformat-with-retention", "cluster-joining"],
         notes: "qemu-full-install-test.ts waits for ZETA CLUSTER NODE INSTALL COMPLETE then phase-2 login on the installed disk. USB/ISO scope is zflash + boot + one agent start path; Kubernetes/ArgoCD health belongs in an orthogonal integration lane rather than this harness.",
@@ -79,15 +79,15 @@ export const SCENARIOS = [
         acceptanceCriteria: [
             "re-bake USB with existing operator-chosen credentials preserved",
             "same cluster/node identity is retained when retention mode is selected",
-            "Touch ID pairing per B-0737 preserved (no re-pair required)",
-            "passphrase per B-0852 preserved (no re-enter required)",
+            "Touch ID pairing per 081KSE6WT0008QG0R003WZAQKV preserved (no re-pair required)",
+            "passphrase per 081KSKBP80008QG0R003AX2A69 preserved (no re-enter required)",
             "UUID-bound keys preserved across re-bake",
             "existing cluster recognizes the re-baked USB",
         ],
         composesWith: [
-            "B-0737 (Touch ID + PAM + ISO-auto-discovery)",
-            "B-0852 (USB-bound credential substrate)",
-            "B-0852.3 (cred-picker integration)",
+            "081KSE6WT0008QG0R003WZAQKV (Touch ID + PAM + ISO-auto-discovery)",
+            "081KSKBP80008QG0R003AX2A69 (USB-bound credential substrate)",
+            "081KSKBP80008QG0R003ETGS01 (cred-picker integration)",
         ],
         gates: ["reformat-from-scratch"],
         notes: "Requires state-preservation between QEMU boots (TPM-equivalent or persisted KV store on virtual disk). Existing qemu-full-install-test.ts does NOT have this; QEMU snapshot/restart logic deferred to follow-up. PoC defines the contract; implementation work pending.",
@@ -105,9 +105,9 @@ export const SCENARIOS = [
             "both paths supported + tested",
         ],
         composesWith: [
-            "B-0737 (Touch ID + PAM)",
-            "B-0852 (USB-bound credential substrate)",
-            "B-0884 (PQ git-crypt + zflash integration — future PQ-credential path)",
+            "081KSE6WT0008QG0R003WZAQKV (Touch ID + PAM)",
+            "081KSKBP80008QG0R003AX2A69 (USB-bound credential substrate)",
+            "081KSNY2Z0008QG0R0011XCT94 (PQ git-crypt + zflash integration — future PQ-credential path)",
         ],
         gates: ["cluster-joining"],
         notes: "Dual-path test: same starting state, two operator choices. Requires test-harness path-fork support. PoC defines the contract.",
@@ -120,14 +120,14 @@ export const SCENARIOS = [
         acceptanceCriteria: [
             "new node boots from USB",
             "joins existing running cluster cleanly",
-            "gets credentials provisioned per B-0852.3 cred-picker integration",
+            "gets credentials provisioned per 081KSKBP80008QG0R003ETGS01 cred-picker integration",
             "appears in cluster state within bounded time",
         ],
         composesWith: [
-            "B-0831 (CI cascade-6 cluster-auto-join)",
-            "B-0852.3 (cred-picker integration)",
-            "B-0590 (fleet replication 20 machines)",
-            "B-0889 (symbiotic cross-track self-healing)",
+            "081KSGS9H0008QG0R0011BC7T2 (CI cascade-6 cluster-auto-join)",
+            "081KSKBP80008QG0R003ETGS01 (cred-picker integration)",
+            "081KRQ1AB0008QG0R002G93CM7 (fleet replication 20 machines)",
+            "081KSNY2Z0008QG0R003FR5TVG (symbiotic cross-track self-healing)",
         ],
         gates: [],
         notes: "Requires multi-VM QEMU orchestration (one existing cluster VM + one joining VM). Existing harness is single-VM; multi-VM orchestration deferred to follow-up. PoC defines the contract.",
@@ -244,7 +244,7 @@ export function computeRunnableSet(scenarios = SCENARIOS) {
  */
 export function validateScenarios(scenarios) {
     if (scenarios.length !== 5) {
-        throw new Error(`expected exactly 5 scenarios per B-0891 matrix; got ${scenarios.length}`);
+        throw new Error(`expected exactly 5 scenarios per 081KSNY2Z0008QG0R0008PN7RQ matrix; got ${scenarios.length}`);
     }
     const ids = new Set();
     const orders = new Set();

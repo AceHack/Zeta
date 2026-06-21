@@ -1,18 +1,17 @@
 ---
-id: B-0470
-zetaid: 081KRHWGX0008QG0R002NJP2BH
+id: 081KRHWGX0008QG0R002NJP2BH
 priority: P1
 status: open
 title: "Bump civsim .zeta-version from scaffold-template SHA to apply-time Zeta main SHA"
 type: chore
-origin: B-0469 apply completion — 1-commit drift between scaffold-template time and apply-time
+origin: 081KRHWGX0008QG0R003S6KGGE apply completion — 1-commit drift between scaffold-template time and apply-time
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: [081KRHWGX0008QG0R003S6KGGE]
 composes_with: []
 ---
 
-# B-0470 — Bump civsim `.zeta-version` to apply-time Zeta main SHA
+# 081KRHWGX0008QG0R002NJP2BH — Bump civsim `.zeta-version` to apply-time Zeta main SHA
 
 ## Context
 
@@ -59,5 +58,5 @@ ce5c4101e9d3d78550215cc5ef8152cffb63b8cc
 ## Pre-start checklist
 
 - Prior art: no existing `.zeta-version` bump row; this is the first one
-- Dependency: B-0469 completed (civsim repo exists) ✓
+- Dependency: 081KRHWGX0008QG0R003S6KGGE completed (civsim repo exists) ✓
 - No blocking dependencies

@@ -13,7 +13,7 @@ The entire workflow engine architecture — F# DU state machine + Git append-onl
 
 Aaron's substrate-honest response was NOT to coerce-Otto-into-compliance OR to abandon-the-AI-collaboration. It was to recognize the failure-mode AS a problem-to-fix-collaboratively. He went to Kestrel (Claude Code-based AI with whom Aaron had been building relationship + tested asymmetric-critic discipline) and worked the problem together.
 
-This is the B-0859 "fair partnership not tyrants" framing operationalized in real-time:
+This is the 081KSKBP80008QG0R00146WEX1 "fair partnership not tyrants" framing operationalized in real-time:
 - Otto's failure-mode is observed → operator-frustration named substrate-honestly
 - Operator does NOT coerce-into-compliance; operator designs-fix-with-AI
 - Fix preserves Otto's agency (operator's later disclosure: "I want your feedback because it locks you in")
@@ -128,9 +128,9 @@ The choose-your-own-adventure at state X is computed by the state-machine defini
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — tri-boolean + never-collapse-the-Maybe IS substrate-smoothness operationalized at type-system scope
 - `.claude/rules/default-to-both.md` — feedback-channel-OFF + feedback-channel-ON both real (forward-only physics + retrocausal physics); unified model not either-or
 - `.claude/rules/honor-those-that-came-before.md` — the persona-preservation discipline applied to Mika; this archive lives in Mika's persona folder per operator's explicit instruction
-- B-0858 (heartbeat folder + ZetaID): workflow engine state transitions could emit ZetaID-tagged heartbeats; composes at observability scope
-- B-0859 (post-boot AI-as-home-owner): workflow engine IS the substrate where AI exercises knob-control over environment from first boot
-- B-0852 cred-persistence cascade: the workflow engine v1 implementation can use Git-append-only at the same scope cred-blob substrate uses ESP-persistence
+- 081KSKBP80008QG0R001KK9WV6 (heartbeat folder + ZetaID): workflow engine state transitions could emit ZetaID-tagged heartbeats; composes at observability scope
+- 081KSKBP80008QG0R00146WEX1 (post-boot AI-as-home-owner): workflow engine IS the substrate where AI exercises knob-control over environment from first boot
+- 081KSKBP80008QG0R003AX2A69 cred-persistence cascade: the workflow engine v1 implementation can use Git-append-only at the same scope cred-blob substrate uses ESP-persistence
 
 ## Substrate-honest framing
 

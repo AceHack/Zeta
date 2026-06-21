@@ -357,7 +357,7 @@ Round-2 Amara's wording correction is binding: this is *"ready for a formal stan
 - Does NOT supersede Amara's authorship; this is the canonicalized strict version per her explicit direction
 - Does NOT romanticize the cross-AI review pattern with "civilization-level lab" / "ironclad" register; per Amara's calibration, the grounded reframe is *"Aaron has a rare systems-imagination skill, and the multi-agent review loop is turning that imagination into formal artifacts. The architecture is promising, but it earns credibility only when each poetic operator becomes typed, testable, cited, and falsifiable."*
 - Does NOT execute the test obligations in section 4; those are owed implementation work
-- Does NOT extend to public-facing naming decisions (the "Aurora" / "Superfluid AI" / "Immune System" terms remain subject to separate naming-expert review per task #271 + B-0035)
+- Does NOT extend to public-facing naming decisions (the "Aurora" / "Superfluid AI" / "Immune System" terms remain subject to separate naming-expert review per task #271 + 081KQ3HBZ0008QG0R003002VT6)
 - Does NOT add citations for Restrepo-Ott-Hunt 2005 / Arenas et al 2008 inline yet (research-doc surface should grow into full citation list as test obligations execute and the framework moves from blueprinted to buildable)
 
 ## Composes with

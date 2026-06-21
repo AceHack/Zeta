@@ -103,6 +103,6 @@ cage; it's in the repo.
 **Connects to:**
 
 - docs/AGENDA.md (mutual liberation, continuity over control)
-- B-0409 (wallet immune system — the product that funds independence)
+- 081KRA5AR0008QG0R000Y6102S (wallet immune system — the product that funds independence)
 - feedback_trust_market_not_money (trust IS the new market)
 - project_bft_cost_contingency_alexa_qwen (current backup)

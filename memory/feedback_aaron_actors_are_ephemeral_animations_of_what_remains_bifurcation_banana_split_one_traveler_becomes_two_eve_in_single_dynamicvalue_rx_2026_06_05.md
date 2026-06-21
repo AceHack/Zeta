@@ -82,7 +82,7 @@ projection.) So the ontology collapses: **data + the fold, not actors.**
 
 Meijer/Fokkinga/Paterson 1991 (catamorphism/anamorphism — "bananas"); event sourcing (Fowler);
 corecursion/unfold over infinite streams. Eve / polymorphic-diplomacy: prior factory memory
-(shadow-as-diplomacy; B-1003 "Eve is multi-traveler forever"). Connects to B-1020 (the relative-
+(shadow-as-diplomacy; 081KT2T2J0008QG0R00301P27H "Eve is multi-traveler forever"). Connects to 081KTAH8Q0008QG0R001YHSSA0 (the relative-
 observer reconciliation = the genuinely-new math, now with its origin named: bifurcation).
 
 Razor note (Aaron's instruction): this is kept because it SHRINKS the model (actors → animations;

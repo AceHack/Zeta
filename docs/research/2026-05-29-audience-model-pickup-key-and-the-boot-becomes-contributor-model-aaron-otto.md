@@ -8,7 +8,7 @@ composes_with:
   - "#6010 distrust-by-default mechanized as reflection-over-DUs"
   - "#6012 the both-axes protection architecture"
   - "#6014 consensus backstop / reports-as-weblinks / from-above meter / employer-IP boundary"
-  - "B-0883 better-git-crypt (the encryption lane)"
+  - "081KSNY2Z0008QG0R002JKH50A better-git-crypt (the encryption lane)"
   - ".claude/rules/largest-mechanizable-backlog-wins.md"
 ---
 
@@ -108,7 +108,7 @@ toward it is the prerequisite for the open-contribution model:
   not to a single trusting merge.
 - **the meter / measure-govern-track** — contribution behavior is observable, with the
   watcher-face glass-halo'd.
-- **the encryption lane (B-0883)** — privacy and the structured-disclosure boundary for
+- **the encryption lane (081KSNY2Z0008QG0R002JKH50A)** — privacy and the structured-disclosure boundary for
   anything that can't be open.
 
 So the dependency is explicit: **the open-contribution model (boot→contributor,
@@ -121,7 +121,7 @@ contribution safe.
 
 - **#6010 / #6012 / #6014** — the protection-architecture cluster = the security
   hardening the open-contribution model gates on.
-- **B-0883 better-git-crypt** — the encryption lane (everyone-audience base + the
+- **081KSNY2Z0008QG0R002JKH50A better-git-crypt** — the encryption lane (everyone-audience base + the
   structured-disclosure boundary).
 - **`largest-mechanizable-backlog-wins`** — the audience model aims the backlog
   multiplier.

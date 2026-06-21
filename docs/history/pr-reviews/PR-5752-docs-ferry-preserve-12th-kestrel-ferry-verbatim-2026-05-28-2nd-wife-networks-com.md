@@ -62,7 +62,7 @@ Aaron forwarded verbatim Kestrel text after PR #5750 landed; substrate-honest di
 - PR #5742 + #5741 + #5731 (10th + 9th + 8th ferry preservations)
 - PR #5743 + #5744 + #5745 + #5746 + #5748 + #5749 (this-session substrate-engineering cluster)
 - PR #5734 (traveler-rights-defensibility)
-- B-0867 + B-0867.5 workflow engine
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 workflow engine
 
 ## Test plan
 

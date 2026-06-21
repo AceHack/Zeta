@@ -1,6 +1,5 @@
 ---
-id: B-1011
-zetaid: 081KT5CF90008QG0R001P4CQ09
+id: 081KT5CF90008QG0R001P4CQ09
 priority: P2
 status: open
 title: "Serializer round-trip-from-seed for all four formats (JSON/CBOR/YAML/XML) — extend the DynamicValue canonical homeostat proof; JSON+CBOR DONE, YAML needs a canonical encoder (parse-only today), XML unimplemented (Aaron 2026-06-03)"
@@ -56,7 +55,7 @@ round-trip on code that can't encode would be a fabricated test (the exact
    the YAML seed (`tests/cross-verification/yaml/vectors.json`) as fixed point.
 3. **XML codec** (`DynamicValue`↔XML, text + optional XSD) — then the same
    round-trip proof. Larger; later.
-4. Each format's seed (per **B-0982** four-oracle multi-format golden vectors)
+4. Each format's seed (per **081KT07NV0008QG0R0032MCYER** four-oracle multi-format golden vectors)
    is the fixed-point anchor — the homeostat, consensus-free in the math half.
 
 ## Acceptance
@@ -69,11 +68,11 @@ round-trip on code that can't encode would be a fabricated test (the exact
 
 ## Composes with
 
-- **B-1007** (the formal-coverage cadence; C10/C11/C12 + the DynamicValue
+- **081KT2T2J0008QG0R000YZ3NMY** (the formal-coverage cadence; C10/C11/C12 + the DynamicValue
   canonical proof are the pattern this extends)
-- **B-1006** (codec algebra — round-trip is the codec's defining law;
+- **081KT2T2J0008QG0R0008TFHJT** (codec algebra — round-trip is the codec's defining law;
   serializers are codec-axis primitives)
-- **B-0982** (four-oracle multi-format golden-vector seeds — JSON/CBOR/YAML/XML;
+- **081KT07NV0008QG0R0032MCYER** (four-oracle multi-format golden-vector seeds — JSON/CBOR/YAML/XML;
   the per-format seed each round-trip anchors to)
 - `.claude/rules/formal-proof-first-proven-by-default-consensus-not-validation-canonical-is-homeostat-proven-from-seed-ace-shields-zeta.md`
   (homeostat-proven-from-seed; consensus≠validation — the byte-lock is the

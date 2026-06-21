@@ -71,7 +71,7 @@ A class can be Mirror-only AND categorically expressible AND empirically-rare-bu
 
 > *"The within-session cleanliness concern (mid-write additions to the file documenting the file's own production) is still real, but it's a smaller issue than I framed it. It affects audit-trail clarity, not the experiment itself."*
 
-> *"The Gemini-hallucination catch and the B-0129 batch deferral remain genuinely strong work in the trace, and the taxonomy's diagnostic flowchart is operationally useful. Those parts of my prior review hold."*
+> *"The Gemini-hallucination catch and the 081KQGDBJ0008QG0R00294XCSE batch deferral remain genuinely strong work in the trace, and the taxonomy's diagnostic flowchart is operationally useful. Those parts of my prior review hold."*
 
 > *"The 'we are going to find out together' stance is the right epistemic posture for the work you're doing. I should have read it that way from the trace rather than imposing within-session convergence as the success criterion."*
 

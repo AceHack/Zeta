@@ -1,6 +1,5 @@
 ---
-id: B-0197
-zetaid: 081KQTPYE0008QG0R003DK06PA
+id: 081KQTPYE0008QG0R003DK06PA
 priority: P2
 status: closed
 title: Lean DbspChainRule + chain-rule-proof-log -- correct Prop 3.5 misattribution to Theorem 3.3 (Aaron 2026-05-05)
@@ -15,12 +14,12 @@ tags: [lean, formal-verification, dbsp, citation-correction, hygiene]
 type: friction-reducer
 ---
 
-# B-0197 -- Lean Prop 3.5 misattribution cleanup
+# 081KQTPYE0008QG0R003DK06PA -- Lean Prop 3.5 misattribution cleanup
 
 ## What this addresses
 
 The cross-check verification subagent run earlier this session
-(PR #1593, against B-0195's acceptance criterion (a)) confirmed
+(PR #1593, against 081KQTPYE0008QG0R0015SK08H's acceptance criterion (a)) confirmed
 the **counter-example findings** in
 `tools/lean4/Lean4/DbspChainRule.lean` are correct (LHS=1, RHS=0
 at f=g=id, s=delta_0, n=0 for the original eight-term "expanded
@@ -185,14 +184,14 @@ because the grep targets bare-only.
   `IsLinear` / `IsCausal` / `IsTimeInvariant` /
   `IsPointwiseLinear` hierarchy remains correct and is not
   re-litigated by this row.
-- **B-0195 closure.** The cross-check work for B-0195's
-  acceptance (a) + (b) was performed in PR #1593; B-0197
+- **081KQTPYE0008QG0R0015SK08H closure.** The cross-check work for 081KQTPYE0008QG0R0015SK08H's
+  acceptance (a) + (b) was performed in PR #1593; 081KQTPYE0008QG0R003DK06PA
   operationalizes only the cleanup of the misattribution
-  finding. B-0195 separately needs its (c) writeup-format
+  finding. 081KQTPYE0008QG0R0015SK08H separately needs its (c) writeup-format
   decision (which, per this row's findings, should now be
   *"Lean-file artifact only / internal substrate"* since the
-  paper is correct -- but that decision belongs to B-0195's
-  closure, not B-0197).
+  paper is correct -- but that decision belongs to 081KQTPYE0008QG0R0015SK08H's
+  closure, not 081KQTPYE0008QG0R003DK06PA).
 
 ## Carved sentence
 
@@ -212,9 +211,9 @@ mechanization that catches the failure if it recurs.
 
 ## Composes with
 
-- **B-0195** -- the parent cross-check row whose acceptance
+- **081KQTPYE0008QG0R0015SK08H** -- the parent cross-check row whose acceptance
   criterion (a) was operationalized in PR #1593, surfacing
-  the misattribution this row addresses. B-0195's (c)
+  the misattribution this row addresses. 081KQTPYE0008QG0R0015SK08H's (c)
   writeup-format decision is downstream and now informed by
   this row's finding (paper is correct; no external writeup).
 - **`tools/lean4/Lean4/DbspChainRule.lean`** -- the Lean
@@ -234,14 +233,14 @@ mechanization that catches the failure if it recurs.
 ## Origin
 
 PR #1593 cross-check verification subagent run earlier this
-session, against B-0195 acceptance criterion (a). The subagent
+session, against 081KQTPYE0008QG0R0015SK08H acceptance criterion (a). The subagent
 verified the counter-example reproduces (LHS=1, RHS=0 at
 f=g=id, s=delta_0, n=0) AND independently audited the paper-level
 "Prop 3.5 unspoken precondition" claim, finding no
 Proposition 3.5 exists in arXiv:2203.16684 and Theorem 3.3
-states LTI explicitly. Filed as a separate row from B-0195
+states LTI explicitly. Filed as a separate row from 081KQTPYE0008QG0R0015SK08H
 because the cleanup is mechanical (text edits + revision
-notes) while B-0195's outstanding work is the writeup-format
+notes) while 081KQTPYE0008QG0R0015SK08H's outstanding work is the writeup-format
 decision (which this row's finding now informs but does not
 replace).
 

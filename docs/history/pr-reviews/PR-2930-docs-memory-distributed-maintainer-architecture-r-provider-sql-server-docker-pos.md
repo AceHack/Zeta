@@ -33,7 +33,7 @@ Maintainer toolkit: SQL Server Docker (dev-license-free) + Postgres + any DB + a
 
 Operational flow: prototype in existing DB/bus → find strengths/weaknesses → port strengths to Zeta → Zeta inherits R&D insights.
 
-R Provider (fslab.org/RProvider/) named as useful F# type provider — composes with B-0428 deferred Path A.
+R Provider (fslab.org/RProvider/) named as useful F# type provider — composes with 081KRFA460008QG0R0018SN61J deferred Path A.
 
 Authorization: Aaron 2026-05-13 grants maintainer use of any local DB/bus system; skills around them compose with factory skill catalog.
 
@@ -78,7 +78,7 @@ Authorization: Aaron 2026-05-13 grants maintainer use of any local DB/bus system
 - **`Copilot` (bot)** at 2026-05-13T04:27:05Z on `memory/feedback_aaron_distributed_maintainer_architecture_r_provider_sql_server_docker_dev_license_free_postgres_any_db_bus_local_prototyping_end_users_get_zeta_dotnet_stored_procedures_2026_05_13.md`:5 (association: NONE)
 
   <pre>
-  P1: `B-0428` is referenced as a composing backlog item here, but there is no `docs/backlog/**` row with `id: B-0428` in this repo. Please add the backlog row or change the reference to the correct existing backlog ID.
+  P1: `081KRFA460008QG0R0018SN61J` is referenced as a composing backlog item here, but there is no `docs/backlog/**` row with `id: 081KRFA460008QG0R0018SN61J` in this repo. Please add the backlog row or change the reference to the correct existing backlog ID.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -132,7 +132,7 @@ Z-set/Clifford/BP/EP algebra + real-HKT-over-Clifford after
 F#-compiler-fork-for-AI-safety.
 
 R Provider (fslab.org/RProvider/) named as useful F# type
-provider — composes with B-0428 deferred Path A type-provider
+provider — composes with 081KRFA460008QG0R0018SN61J deferred Path A type-provider
 substrate.
 
 Authorization: Aaron 2026-05-13 grants maintainer use of any
@@ -145,10 +145,10 @@ Composes with:
 - PR #2924 (Aurora pitch — edge node + maintainer distinction)
 - PR #2917 (vision monad Play-Doh)
 - PR #2892 (KSK typed-safety motivation)
-- B-0424 (Stage 1 factory split)
-- B-0425 (product-repo split)
-- B-0428 (DBpedia F# CE Path B)
-- B-0043 (universal company + government info substrate)
+- 081KRFA460008QG0R001H98EXJ (Stage 1 factory split)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split)
+- 081KRFA460008QG0R0018SN61J (DBpedia F# CE Path B)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government info substrate)
 - algebra-owner skill (Z-set + Clifford + BP/EP F#)
 - DBSP substrate
 

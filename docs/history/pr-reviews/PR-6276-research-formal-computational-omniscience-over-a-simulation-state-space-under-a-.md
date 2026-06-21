@@ -33,7 +33,7 @@ Operator-requested ("we need the formal analysis"). The rigorous backing for the
 - **Terminology hinge** — distinguishes from epistemic-logic **logical omniscience** (the infeasible idealization). A *deterministic simulator* makes a **bounded** omniscience **computationally feasible**: the state-space is a computable function of the seed.
 - **Formal definition (O1–O5)** — determinism, replayability, counterfactual reachability, incremental queryability (DBSP/Z-sets), bidirectional navigation.
 - **Achieved by others (prior art):** **Checkers/Chinook** (Schaeffer 2007 — every position's value, binary-exhaustive); **FoundationDB DST** (Flow + seeded determinism + BUGGIFY, trillion-CPU-hour state-space); **DBSP** (Budiu et al. PVLDB 2023 — retraction algebra over Z-sets).
-- **Two regimes** (operator's distinction): **binary-exhaustive** (checkers — enumerate every state's win/loss/draw) vs **probabilistic-Bayesian** (this framework — a **posterior over the state-space** via Bayesian inference, NOT enumeration; the worm-colony B-0925 is the inference engine; Bayesian update composes with DBSP retraction algebra).
+- **Two regimes** (operator's distinction): **binary-exhaustive** (checkers — enumerate every state's win/loss/draw) vs **probabilistic-Bayesian** (this framework — a **posterior over the state-space** via Bayesian inference, NOT enumeration; the worm-colony 081KSNY2Z0008QG0R00390T4DJ is the inference engine; Bayesian update composes with DBSP retraction algebra).
 - **Bound** — domain/determinism/exploration/cost-bounded (why "omniscience" is honest, not inflated).
 - **Has vs needs** — substrate-honest not-yet-done-here.
 - **Claim + falsifier** — same-seed replay-equivalence (the golden-vectors test) IS the CI falsifier → operationally checkable → not god-tier.
@@ -168,11 +168,11 @@ Operator-requested formal analysis. Rigorous backing for the DST-omniscience rul
   DBSP (Budiu et al. PVLDB 2023, retraction algebra).
 - TWO REGIMES (operator correction): binary-exhaustive (checkers — enumerate every
   position's win/loss/draw) vs probabilistic-Bayesian (this framework — posterior
-  over the state-space via Bayesian inference, NOT enumeration; worm-colony B-0925
+  over the state-space via Bayesian inference, NOT enumeration; worm-colony 081KSNY2Z0008QG0R00390T4DJ
   is the inference engine; Bayesian update composes with DBSP retraction algebra).
 - Bound (why honest not inflated): domain/determinism/exploration/cost-bounded.
-- Has-vs-needs (not-yet-done-here): observe-fold algebra + DST discipline + B-0917/
-  B-0924/B-0925 vs full-DST-coverage + DBSP-view-layer + trajectory-query interface.
+- Has-vs-needs (not-yet-done-here): observe-fold algebra + DST discipline + 081KSNY2Z0008QG0R002HB4AGT/
+  081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ vs full-DST-coverage + DBSP-view-layer + trajectory-query interface.
 - Claim + falsifier: same-seed replay-equivalence (golden-vectors) IS the CI-test
   falsifier -> operationally checkable -> not god-tier.
 - Verification path routed to the formal-verification expert (TLA+/Lean/FsCheck).

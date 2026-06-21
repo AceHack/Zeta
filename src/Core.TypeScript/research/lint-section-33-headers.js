@@ -31,8 +31,8 @@
 // and ATX-heading (`## Scope`) variants. List-form (`- **Scope:** ...`) is NOT
 // accepted; §33 archive labels must appear as top-level lines.
 //
-// Closes Task #26 (mirror-tier mechanization candidate; complements B-0533
-// dead-xref sweep + B-0663 backlog-frontmatter lint).
+// Closes Task #26 (mirror-tier mechanization candidate; complements 081KRMEXM0008QG0R000K25MXS
+// dead-xref sweep + 081KRW63S0008QG0R000488SY1 backlog-frontmatter lint).
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 // Accept three legitimate markdown variants for each required label:

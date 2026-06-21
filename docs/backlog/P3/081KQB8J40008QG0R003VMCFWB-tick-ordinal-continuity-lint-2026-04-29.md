@@ -1,6 +1,5 @@
 ---
-id: B-0098
-zetaid: 081KQB8J40008QG0R003VMCFWB
+id: 081KQB8J40008QG0R003VMCFWB
 priority: P3
 status: open
 title: Tick-ordinal-continuity lint — ordinals are computed, not narrated
@@ -87,7 +86,7 @@ stay for a few more rounds.
 
 - `memory/feedback_bare_main_ambiguity_automation_discipline_explicit_refs_required_amara_2026_04_29.md`
   — same class (computed > narrated metadata).
-- B-0099 (PR-count projection) — sibling action item from the same
+- 081KQB8J40008QG0R002PEP2A2 (PR-count projection) — sibling action item from the same
   packet.
 
 ## Why P3 (research-grade, not blocking)

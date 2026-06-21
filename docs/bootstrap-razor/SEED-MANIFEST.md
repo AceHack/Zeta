@@ -1,7 +1,7 @@
 # Seed Manifest — Bootstrap Razor Test Repo
 
 The minimal file set that seeds the test repo for the 23-hour
-recreation experiment (B-0193). A fresh-context agent starts
+recreation experiment (081KQTPYE0008QG0R00392KABJ). A fresh-context agent starts
 with ONLY these files and attempts to recreate the codebase.
 
 ## Design decisions
@@ -78,7 +78,7 @@ exclude:
   - src/**/*.cs
   - tests/**/*.fs
 
-  # Memory — per B-0339 categories 1/3/4 (KEEP/EXEMPT)
+  # Memory — per 081KR2E4K0008QG0R000W3W6C1 categories 1/3/4 (KEEP/EXEMPT)
   - memory/**
 
   # Factory tooling — derivative of specs
@@ -100,7 +100,7 @@ exclude:
 
 ## Metrics
 
-Per B-0340 (spec audit):
+Per 081KR2E4K0008QG0R001BRHAPK (spec audit):
 
 | What's seeded | Count |
 | ------------- | ----- |
@@ -113,6 +113,6 @@ Per B-0340 (spec audit):
 
 The recreation experiment measures: from these 47 files, how
 much of the 81-module `src/Core/` can a fresh agent recreate
-in 23 hours? The spec audit (B-0340) showed 37% coverage —
+in 23 hours? The spec audit (081KR2E4K0008QG0R001BRHAPK) showed 37% coverage —
 the experiment tests whether that 37% is sufficient to
 bootstrap the other 63%.

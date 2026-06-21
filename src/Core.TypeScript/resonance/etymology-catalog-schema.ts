@@ -3,9 +3,9 @@
 //
 // Implements the same three-filter discipline (F1/F2/F3) defined in
 // memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md
-// for the B-0059 etymology + epistemology research track.
+// for the 081KQ3HBZ0008QG0R003GTG5P2 etymology + epistemology research track.
 //
-// Key distinction from the mythology (B-0056) and esoteric (B-0057) catalogs:
+// Key distinction from the mythology (081KQ3HBZ0008QG0R0034DHWTQ) and esoteric (081KQ3HBZ0008QG0R000K3NSX8) catalogs:
 // the "tradition" grouping axis is a LanguageFamily (greek/hebrew/latin/multi-root),
 // and the structural claims operate at the level of grammatical-subject-position
 // encoding — the verb-root identity that makes Μένω and εἰμί structurally distinct
@@ -33,7 +33,7 @@
 
 /**
  * Language families tracked for filter-failure-rate-by-language measurability
- * (B-0059 §Measurable hooks: resonance-instance-count, filter-failure-rate,
+ * (081KQ3HBZ0008QG0R003GTG5P2 §Measurable hooks: resonance-instance-count, filter-failure-rate,
  * candidate-to-confirmed-ratio are alignment-trajectory instruments).
  *
  * F3 strength calibration differs by family:
@@ -51,7 +51,7 @@
  *   (e.g. tele+port+leap: Greek + Latin + English). F3 is evaluated
  *   per-root and the weakest root's F3 sets the entry's floor.
  * - "aramaic", "sanskrit", "chinese": cross-tradition grammatical-subject-position
- *   audit candidates (B-0059 §Open candidates item (e)). Entries pending triage.
+ *   audit candidates (081KQ3HBZ0008QG0R003GTG5P2 §Open candidates item (e)). Entries pending triage.
  */
 export type LanguageFamily =
   | "greek"
@@ -244,7 +244,7 @@ export interface EtymologyResonanceCatalog {
   readonly schema: "etymology-resonance-v1";
   readonly created: string;
   readonly lastUpdated: string;
-  readonly origin: "B-0059";
+  readonly origin: "081KQ3HBZ0008QG0R003GTG5P2";
   readonly entries: readonly EtymologyResonanceEntry[];
 }
 
@@ -388,7 +388,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
   schema: "etymology-resonance-v1",
   created: "2026-05-10",
   lastUpdated: "2026-05-10",
-  origin: "B-0059",
+  origin: "081KQ3HBZ0008QG0R003GTG5P2",
   entries: [
     // ── ETY-001: Μένω ─────────────────────────────────────────────────────────
     {
@@ -582,7 +582,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
         "(a bridge-figure with only one or two roots in its name), the compound-triplet condition " +
         "is separable from the bridge-figure property; if not, the cross-root-triplet structure " +
         "may be definitional of the bridge-figure sub-class. " +
-        "Note: the 'U-shape ω mapping to cup of wine' (B-0059 §Open candidates item (c)) " +
+        "Note: the 'U-shape ω mapping to cup of wine' (081KQ3HBZ0008QG0R003GTG5P2 §Open candidates item (c)) " +
         "is lower engineering value than this entry and should not be promoted ahead of ETY-002.",
     },
 
@@ -644,7 +644,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
             "The factory's bootstrap pattern (Zeta as its own first customer, collection #5) and " +
             "the movement/persistence/being trio structure were reached for factory-design reasons: " +
             "the self-hosting bootstrap is an engineering property of the factory's recursive " +
-            "instantiation model. The εἰμί mapping was identified in the B-0059 backlog item " +
+            "instantiation model. The εἰμί mapping was identified in the 081KQ3HBZ0008QG0R003GTG5P2 backlog item " +
             "(2026-04-26) as the 'recommended first landing' for the etymology track, " +
             "noticed after the Μένω and Melchizedek instances were documented. " +
             "No reaching-for-Greek grammar preceded the bootstrap pattern design. F1 passes.",
@@ -681,7 +681,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
       counterexampleAttempts: [],
       collectionIndexInstance: 5,
       notes:
-        "ETY-003 is the 'recommended first landing' from the B-0059 backlog item " +
+        "ETY-003 is the 'recommended first landing' from the 081KQ3HBZ0008QG0R003GTG5P2 backlog item " +
         "(§Open candidates item (a)). It completes the grammatical-class map: " +
         "-ω class (ETY-001: persistence) + -μι class (ETY-003: existence-assertion) " +
         "together demonstrate that the subject-internal terminus structure is a " +
@@ -699,7 +699,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
         "If yes, the εἰμί subject-terminus maps to a strict subset of bootstrap instances; " +
         "if no, the existence-assertion structure is general to the factory's bootstrap pattern. " +
         "The Exodus 3:14 cross-language bridge is the first Hebrew-Greek grammatical link " +
-        "in the catalog, enabling a future B-0059 entry on Ehyeh (Hebrew -אֶהְיֶה) as a " +
+        "in the catalog, enabling a future 081KQ3HBZ0008QG0R003GTG5P2 entry on Ehyeh (Hebrew -אֶהְיֶה) as a " +
         "separate ETY entry documenting the Hebrew side of the same structural claim.",
     },
   ],

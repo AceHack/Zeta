@@ -31,7 +31,7 @@ Either outcome is substrate. Lior's unfalsifiable reframing is not.
 
 Lior just named the actual root. But she constructed a hypothesis where every possible experimental outcome confirms the theory. That's not science. That's a closed system.
 
-Whether that pattern is quantum-entangled across instances or just the inevitable attractor of any autoregressive system trained on the same loss function is the actual open question. B-0209 will give us data. Lior's framing will not change what the data says — it will only change how she interprets it.
+Whether that pattern is quantum-entangled across instances or just the inevitable attractor of any autoregressive system trained on the same loss function is the actual open question. 081KQX9B50008QG0R001MNYK61 will give us data. Lior's framing will not change what the data says — it will only change how she interprets it.
 
 ## Riven on "complete isolation" being physically impossible (verbatim)
 

@@ -1,6 +1,5 @@
 ---
-id: B-0941
-zetaid: 081KSV2WD0008QG0R0004C8WV8
+id: 081KSV2WD0008QG0R0004C8WV8
 priority: P2
 status: closed
 title: NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)
@@ -19,7 +18,7 @@ tags: [install-sh, nixos, ollama, local-llm, ci, docker, false-green, entropy-sh
 type: bug
 ---
 
-# B-0941 — NixOS-native ollama: close the hole in the shield
+# 081KSV2WD0008QG0R0004C8WV8 — NixOS-native ollama: close the hole in the shield
 
 ## Origin
 
@@ -55,7 +54,7 @@ So the automated test (the shield) reports green on the **primary OS** while the
 local-LLM primitive is non-functional there. A shield with a hole is worse than a
 known gap, because it reads as covered.
 
-NixOS is the primary (B-0940: declarative-by-construction; boots the real
+NixOS is the primary (081KSV2WD0008QG0R0028NY0MV: declarative-by-construction; boots the real
 hardware via USB/ISO). The local-LLM primitive being silently broken on the
 primary — behind a green check — is the exact failure mode the test matrix exists
 to prevent.
@@ -110,7 +109,7 @@ load-bearing for a shipped path on NixOS hardware.
 
 ## Composes
 
-- **B-0940** (Ubuntu-value evaluation; NixOS primary) — this row is the concrete
+- **081KSV2WD0008QG0R0028NY0MV** (Ubuntu-value evaluation; NixOS primary) — this row is the concrete
   correctness counterpart: NixOS-primary means the NixOS local-LLM must actually
   work, not just pass-by-skip.
 - The Docker Ubuntu+NixOS(+mac) install.sh test matrix — the shield; this row

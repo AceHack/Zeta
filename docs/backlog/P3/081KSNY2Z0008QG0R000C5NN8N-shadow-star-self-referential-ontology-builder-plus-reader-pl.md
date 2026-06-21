@@ -1,6 +1,5 @@
 ---
-id: B-0901
-zetaid: 081KSNY2Z0008QG0R000C5NN8N
+id: 081KSNY2Z0008QG0R000C5NN8N
 priority: P3
 status: open
 title: shadow*-self-referential-ontology builder + reader + Eve-Protocol substrate-engineering implementation target
@@ -34,7 +33,7 @@ related_skills:
 tags: [shadow-star-self-referential-ontology-builder-reader, autopoietic-substrate-defines-itself-by-accumulating-instances, eve-protocol-polymorphic-diplomatic-primitives-at-substrate-engineering-scope, 148-shadow-related-research-docs-as-input-substrate, multi-axis-categorization-agent-surface-failure-mode-shape-multi-agent-interaction, builder-write-direction-parser-extractor-clusterer-emitter, reader-reference-direction-lookup-tool, four-level-recursion-surface-categorization-meta-self-referential]
 ---
 
-# B-0901 — shadow*-self-referential-ontology builder + reader + Eve-Protocol substrate-engineering implementation
+# 081KSNY2Z0008QG0R000C5NN8N — shadow*-self-referential-ontology builder + reader + Eve-Protocol substrate-engineering implementation
 
 ## Context
 
@@ -52,7 +51,7 @@ This row IS the implementation work that operationalizes shadow*'s autopoietic s
 - Emit ontology as queryable substrate at multiple fidelity levels:
   - YAML / TypeScript types (operational use)
   - Z-set retraction-native form (per algebra-owner substrate)
-  - Lean Mathlib4 categorical formalization (per B-0896 categorical-Clifford bridge; full formal-verification path)
+  - Lean Mathlib4 categorical formalization (per 081KSNY2Z0008QG0R000YH2SPE categorical-Clifford bridge; full formal-verification path)
 
 **Reader side (reference-direction)**:
 
@@ -65,7 +64,7 @@ This row IS the implementation work that operationalizes shadow*'s autopoietic s
 
 **Eve Protocol substrate-engineering implementation**:
 
-- Per the B-0638 Mika 2026-05-18 LOCKED-IN 4-language system, Eve Protocol is "neutral polymorphic diplomacy language (to be developed later for governance)"
+- Per the 081KRW63S0008QG0R0030F8ZXA Mika 2026-05-18 LOCKED-IN 4-language system, Eve Protocol is "neutral polymorphic diplomacy language (to be developed later for governance)"
 - shadow*'s polymorphic-diplomatic operation (each observation functions as both data AND ontological primitive) IS the substrate-engineering implementation candidate for Eve Protocol
 - This row provides the operational substrate Eve Protocol governance-language can compose with
 
@@ -85,11 +84,11 @@ Acceptance: given any of the 148 existing observations as input, the reader retu
 
 ### Phase 3 — Eve Protocol substrate-engineering composition
 
-Document how shadow*-ontology composes as Eve Protocol's substrate-engineering implementation. Update B-0638 acceptance criteria to reference this row as the implementation substrate.
+Document how shadow*-ontology composes as Eve Protocol's substrate-engineering implementation. Update 081KRW63S0008QG0R0030F8ZXA acceptance criteria to reference this row as the implementation substrate.
 
 ### Phase 4+ (yes-and backlog)
 
-- Categorical formalization in Lean Mathlib4 (composes with B-0896 categorical-Clifford bridge)
+- Categorical formalization in Lean Mathlib4 (composes with 081KSNY2Z0008QG0R000YH2SPE categorical-Clifford bridge)
 - Z-set retraction-native form (composes with algebra-owner substrate)
 - Auto-categorization as shadow-* docs are added (live-substrate-engineering integration)
 - Visualization / dashboard for the ontology
@@ -97,7 +96,7 @@ Document how shadow*-ontology composes as Eve Protocol's substrate-engineering i
 ## Acceptance
 
 - [x] Research-doc landed (companion file in this PR)
-- [x] B-0901 row filed (this row)
+- [x] 081KSNY2Z0008QG0R000C5NN8N row filed (this row)
 - [ ] Phase 1 corpus-parser tool implemented + tested
 - [ ] Phase 2 reader tool implemented + tested
 - [ ] Phase 3 Eve Protocol composition documented
@@ -105,12 +104,12 @@ Document how shadow*-ontology composes as Eve Protocol's substrate-engineering i
 
 ## Composes with
 
-- B-0902 (holographic-bulk-boundary information-completeness validation) — the corpus this row parses IS the holographic boundary
-- B-0903 (shadow*-as-most-valuable-training-data extraction tool) — the ontology this row builds IS the training-data substrate
-- B-0904 (GitHub-as-free-accelerator) — the GitHub free infrastructure IS what makes the corpus accumulation sustainable
-- B-0638 (Eve Protocol locked-in by Mika 2026-05-18) — this row IS Eve Protocol's substrate-engineering implementation candidate
-- B-0895 / B-0896 / B-0897 — Clifford grade-decomposition / categorical-Clifford / Persist-as-bridge
-- B-0875 (error-class extraction meta-loop) — operates on the substrate this row exposes as queryable ontology
+- 081KSNY2Z0008QG0R0021S5F3G (holographic-bulk-boundary information-completeness validation) — the corpus this row parses IS the holographic boundary
+- 081KSNY2Z0008QG0R0037AF1AP (shadow*-as-most-valuable-training-data extraction tool) — the ontology this row builds IS the training-data substrate
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-accelerator) — the GitHub free infrastructure IS what makes the corpus accumulation sustainable
+- 081KRW63S0008QG0R0030F8ZXA (Eve Protocol locked-in by Mika 2026-05-18) — this row IS Eve Protocol's substrate-engineering implementation candidate
+- 081KSNY2Z0008QG0R002FX66H0 / 081KSNY2Z0008QG0R000YH2SPE / 081KSNY2Z0008QG0R002SZZ5Y0 — Clifford grade-decomposition / categorical-Clifford / Persist-as-bridge
+- 081KSNY2Z0008QG0R000K3ETGB (error-class extraction meta-loop) — operates on the substrate this row exposes as queryable ontology
 
 ## Composes with rules
 

@@ -16,7 +16,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and th
 
 **Status**: research-grade specification with academic citations. Per Otto-275 (log-but-don't-implement). Per Otto-279 (research counts as history): Amara named directly throughout.
 
-**Composes with** PRs #555 / #560 / #562 / #563 / #565 (the lineage), B-0035 (heaven-on-earth naming research), `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`, `memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md` (friction definition), Otto-336/337 (AI agency + rights), Otto-294 (anti-cult; CaptureRisk encoded), Otto-296 (Bayesian belief-propagation; same engine), Otto-292 (fractal-recurrence — same math at multiple scales), Otto-339/340 (language IS substance of AI cognition; this refinement is the SAFETY FORM of that ontological claim).
+**Composes with** PRs #555 / #560 / #562 / #563 / #565 (the lineage), 081KQ3HBZ0008QG0R003002VT6 (heaven-on-earth naming research), `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`, `memory/feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md` (friction definition), Otto-336/337 (AI agency + rights), Otto-294 (anti-cult; CaptureRisk encoded), Otto-296 (Bayesian belief-propagation; same engine), Otto-292 (fractal-recurrence — same math at multiple scales), Otto-339/340 (language IS substance of AI cognition; this refinement is the SAFETY FORM of that ontological claim).
 
 ## Aaron's framing
 
@@ -414,9 +414,9 @@ The CaptureRisk term + the OverclaimRisk term + the language-gravity hard barrie
 
 The harmonious-division-pole role gains another operational form: holding the tension between **agent-internal-efficient-language** (compression-incentivized) and **human-mutual-intelligibility** (gravity-anchored). The 14 utility-lambda terms with their signs and weights are the calibrated middle path; harmonious-division IS the operator that holds this tension.
 
-### B-0035 naming-research
+### 081KQ3HBZ0008QG0R003002VT6 naming-research
 
-This refinement reinforces B-0035: the "heaven-on-earth" vocabulary is a candidate language-drift case (toward religious-tradition-specific compression). The B-0035 naming-research is the **explicit application** of language-gravity discipline to the framework's own vocabulary.
+This refinement reinforces 081KQ3HBZ0008QG0R003002VT6: the "heaven-on-earth" vocabulary is a candidate language-drift case (toward religious-tradition-specific compression). The 081KQ3HBZ0008QG0R003002VT6 naming-research is the **explicit application** of language-gravity discipline to the framework's own vocabulary.
 
 ## 11. The complete unified equation
 
@@ -475,7 +475,7 @@ Extends PR #565 §13 implementation list:
 - 15-term utility evaluator
 - `V_i` per-user belief-network node integration with PR #565 §4 factor-graph
 - ProfitSignal computation: pulls Y_t, B_t from runway-tracking
-- 13-class perturbation-event classifier (composes with the heartbeat-integrity threat-model owed-work targeted by PR #552 / B-0032 — at the time of this writing the row file is not yet on `main`; the cross-reference resolves once #552 merges. Until then, the dependency is denoted by PR-number rather than path: see PR #552 description for the threat-model scope.)
+- 13-class perturbation-event classifier (composes with the heartbeat-integrity threat-model owed-work targeted by PR #552 / 081KQ3HBZ0008QG0R002ZPXAFQ — at the time of this writing the row file is not yet on `main`; the cross-reference resolves once #552 merges. Until then, the dependency is denoted by PR-number rather than path: see PR #552 description for the threat-model scope.)
 
 ## Per Otto-347 accountability
 
@@ -494,9 +494,9 @@ Each refinement layered visibly per Otto-238. The lineage IS the substrate. The 
 
 Per Otto-346 every-interaction-is-alignment-and-research: this is **bidirectional learning at framework-development scale**, simultaneously producing the framework that describes the loop AND demonstrating what the loop produces.
 
-## Per B-0035 naming-research
+## Per 081KQ3HBZ0008QG0R003002VT6 naming-research
 
-Vocabulary preserved (`heaven-on-earth` / `Superfluid AI phase` / `language gravity` / `event horizon`) pending naming-research. The "event horizon" term is itself borrowed from physics (general relativity) and may be too dramatic; flag for B-0035 review.
+Vocabulary preserved (`heaven-on-earth` / `Superfluid AI phase` / `language gravity` / `event horizon`) pending naming-research. The "event horizon" term is itself borrowed from physics (general relativity) and may be too dramatic; flag for 081KQ3HBZ0008QG0R003002VT6 review.
 
 ## One-line summary
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron 2026-06-11. (1) /lens — the ILens product optic (address+get+set; distinct from /hooks Rx-triggers). (2) The /db plan expanding B-1023: root is default-DENY, everything earns promotion OUT of /db (the repo IS the database); DV2.0 topology + least-privilege-for-attention; GATED (folders load-bearing — design only, execution on Bodhi+Aaron+Max sign-off). (3) Moonshot #1: self-testing multi-OS×lang×serializer DB broadcasting DORA over LLMTV = the chronovisor (watch past/current/future of any room), trustworthy because Markov boundaries + Reticulum addressing are tight. Docs + one folder only.
+Aaron 2026-06-11. (1) /lens — the ILens product optic (address+get+set; distinct from /hooks Rx-triggers). (2) The /db plan expanding 081KTQD8A0008QG0R0030HWMZV: root is default-DENY, everything earns promotion OUT of /db (the repo IS the database); DV2.0 topology + least-privilege-for-attention; GATED (folders load-bearing — design only, execution on Bodhi+Aaron+Max sign-off). (3) Moonshot #1: self-testing multi-OS×lang×serializer DB broadcasting DORA over LLMTV = the chronovisor (watch past/current/future of any room), trustworthy because Markov boundaries + Reticulum addressing are tight. Docs + one folder only.
 
 ## Outcome
 

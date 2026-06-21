@@ -75,7 +75,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-16T02:56:42Z on `docs/hygiene-history/ticks/2026/05/16/0252Z.md`:96 (association: NONE)
 
   <pre>
-  P1: The next-tick guidance computes the B-0545 claim expiry as roughly one hour after a 01:44Z claim, but the claim rule says bus claim envelopes have a 24h TTL by default. This would send the next tick to treat an active claim as expired about 23 hours too early, risking duplicate work on the same backlog row.
+  P1: The next-tick guidance computes the 081KRMEXM0008QG0R000ARAR7P claim expiry as roughly one hour after a 01:44Z claim, but the claim rule says bus claim envelopes have a 24h TTL by default. This would send the next tick to treat an active claim as expired about 23 hours too early, risking duplicate work on the same backlog row.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]

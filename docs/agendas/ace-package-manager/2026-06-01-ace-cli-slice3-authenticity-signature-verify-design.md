@@ -18,7 +18,7 @@ was loud, not a green-by-skip. **Slice 3 closes that gap.**
 
 Per the distribution design §5: the skills store is an **untrusted distribution
 surface**, so signature-verify must run **at install time**, not just `list` time.
-B-0288's acceptance criteria call for "content-addressed, **signed** packages" +
+081KR2E4K0008QG0R002YE3MMD's acceptance criteria call for "content-addressed, **signed** packages" +
 "signature verification on install." Slice 2 gave content-addressing + integrity;
 slice 3 gives **authenticity** — proof a package came from a holder of a trusted
 private key, not just that its bytes match their own self-declared hash (a hash the
@@ -181,7 +181,7 @@ where the OS honors it.)
   not implemented here).
 - **Revocation / rotation** — no CRL/expiry in this slice (a compromised key is
   removed by editing the trust store). Tracked for 3.1.
-- **Guardian-AI oversight** (B-0288 AC) — not in this slice.
+- **Guardian-AI oversight** (081KR2E4K0008QG0R002YE3MMD AC) — not in this slice.
 
 ## 9. Testing
 
@@ -219,11 +219,11 @@ where the OS honors it.)
   package, so slice 3 keeps it verbatim (signer reuses the same fn — §3); making it
   canonical is a separate, back-compat-breaking change deferred here.
 - Key rotation / revocation / expiry.
-- Guardian-AI oversight (B-0288 AC).
+- Guardian-AI oversight (081KR2E4K0008QG0R002YE3MMD AC).
 - Interop with `minisign` / `sigstore`/`cosign` signature formats (this slice uses
   our own compact Ed25519-over-canonical-manifest format).
 - Standalone `bunx`/bare-machine bootstrap; the bus↔Ace shared-fold-engine refactor
-  (#6284 / B-0867.27).
+  (#6284 / 081KSXN940008QG0R0033T2BQT).
 
 ## Plan shape (4 tasks, subagent-driven like slices 1–2)
 

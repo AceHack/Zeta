@@ -1,4 +1,4 @@
-# B-0250 Compact Debug Surface Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Compact Debug Surface Receipt - 2026-05-30
 
 ## Status
 
@@ -7,7 +7,7 @@ Landed in claim branch `claim/codex-b0250-debug-surface-20260530`.
 ## Change
 
 The factory health monitor now emits a bounded `coincidence-debug` signal when
-B-0250 event-window coincidences are present. The debug signal keeps the
+081KQZVQW0008QG0R001FG05RZ event-window coincidences are present. The debug signal keeps the
 existing count signal intact and adds a compact list of the first few windows:
 window range, capped trajectory set, and capped `trajectory:event-id` members.
 
@@ -28,6 +28,6 @@ add a fuller source-specific report.
 
 ## Next Slice
 
-Use the compact window lines to decide whether the next B-0250 step should tune
+Use the compact window lines to decide whether the next 081KQZVQW0008QG0R001FG05RZ step should tune
 an existing source, add local dirty-worktree events, or split lifecycle events
 into separate correlation classes.

@@ -51,7 +51,7 @@ The same agent who canonized PR #2999 + shipped PR #3017 + wrote the README warn
 - `no-op-cadence-failure-mode.md` (multi-hour scope)
 - `encoding-rules-without-mechanizing.md` (rationale)
 - PRs #2974 + #2999 + #3017 + #3022 (canonical substrate)
-- B-0441 slice 5 (subscriber agents — runtime catch; this rule is cold-boot complement)
+- 081KRFA460008QG0R00229616S slice 5 (subscriber agents — runtime catch; this rule is cold-boot complement)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

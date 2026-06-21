@@ -39,7 +39,7 @@
 - [x] Worktree freshness canary clean (ls-tree=56, status=0, isolated worktree on `origin/main`-tracking shard branch)
 - [x] Pre-commit branch guard via `git branch --show-current` (`zeta-expected-branch.md`)
 - [x] Post-commit tree canary (HEAD~1=56, HEAD=56; per `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`)
-- [x] Push verified: local SHA `8b6e3e24b` == remote SHA (no B-0615 silent-push-failure)
+- [x] Push verified: local SHA `8b6e3e24b` == remote SHA (no 081KRW63S0008QG0R000EAZ9K2 silent-push-failure)
 - [x] Docs-only (no source code touched); CodeQL "no source seen" expected and benign
 - [x] BACKLOG.md generated-index drift not relevant (no backlog row touched)
 

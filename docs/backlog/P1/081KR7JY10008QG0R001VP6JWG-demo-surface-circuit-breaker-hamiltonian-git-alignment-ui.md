@@ -1,6 +1,5 @@
 ---
-id: B-0401
-zetaid: 081KR7JY10008QG0R001VP6JWG
+id: 081KR7JY10008QG0R001VP6JWG
 priority: P1
 status: open
 title: "Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration"
@@ -22,30 +21,30 @@ type: feature
 
 - `tools/hygiene/LOST-FILES-LOCATIONS.md` — no orphan alignment-UI files found
 - `demo/index.html` — existing dashboard with 3 tabs (Agent Array, Anchors, External); no alignment tab; confirmed prior art for the CSS/JS architecture this work extends
-- `docs/backlog/P2/B-0017-operational-resonance-dashboard-*.md` — B-0017 is open P2; B-0401 is the P1 vehicle that ships B-0017 components
-- `docs/backlog/P1/B-0154-github-pages-*.md` — B-0154 is open; its children (B-0232..B-0237) are the hosting surface; B-0401 slice-1 produces HTML/JS for that surface
-- B-0400 — confirmed closed (2026-05-13); dependency satisfied
+- `docs/backlog/P2/081KQ0YZ80008QG0R0003GAYYN-operational-resonance-dashboard-*.md` — 081KQ0YZ80008QG0R0003GAYYN is open P2; 081KR7JY10008QG0R001VP6JWG is the P1 vehicle that ships 081KQ0YZ80008QG0R0003GAYYN components
+- `docs/backlog/P1/081KQGDBJ0008QG0R002NV04N9-github-pages-*.md` — 081KQGDBJ0008QG0R002NV04N9 is open; its children (081KQX9B50008QG0R001J6ARGX..081KQX9B50008QG0R003ZBBJT7) are the hosting surface; 081KR7JY10008QG0R001VP6JWG slice-1 produces HTML/JS for that surface
+- 081KR7JY10008QG0R000R503K2 — confirmed closed (2026-05-13); dependency satisfied
 
 **Dependency check:**
 
-- `depends_on: [B-0400]` — B-0400 is closed ✓
+- `depends_on: [081KR7JY10008QG0R000R503K2]` — 081KR7JY10008QG0R000R503K2 is closed ✓
 - No circular dependencies; `composes_with` are open items, not blockers
 
 **Decomposition into atomic child rows:**
 
 | Row | Slice | Status | Branch |
 |-----|-------|--------|--------|
-| B-0434 | Alignment invariant dashboard tab (HC/SD/DIR clause coverage panel in `demo/index.html`) | shipped → PR | feat/b-0401-demo-alignment-tab-slice-1 |
-| B-0435 | Circuit breaker visualization panel (mock data → live bus data) | open | — |
-| B-0436 | Hamiltonian-to-git visualization (git history → phase-space rendering) | open | — |
-| B-0437 | UX-of-math panel (bivector fingerprints, partial-credit scoring) | open | — |
+| 081KRFA460008QG0R0005DWKBG | Alignment invariant dashboard tab (HC/SD/DIR clause coverage panel in `demo/index.html`) | shipped → PR | feat/b-0401-demo-alignment-tab-slice-1 |
+| 081KRFA460008QG0R001MC7D7R | Circuit breaker visualization panel (mock data → live bus data) | open | — |
+| 081KRFA460008QG0R0009TXX5S | Hamiltonian-to-git visualization (git history → phase-space rendering) | open | — |
+| 081KRFA460008QG0R001JTAPZW | UX-of-math panel (bivector fingerprints, partial-credit scoring) | open | — |
 
 # Demo surface — circuit breaker + Hamiltonian-to-git + alignment UI
 
 ## Origin
 
-Aaron 2026-05-10: combine existing demo/UI backlog (B-0017 Operational
-Resonance Dashboard, B-0188 bulk review UI) with:
+Aaron 2026-05-10: combine existing demo/UI backlog (081KQ0YZ80008QG0R0003GAYYN Operational
+Resonance Dashboard, 081KQR4HQ0008QG0R002ZDREYC bulk review UI) with:
 
 1. **AI circuit breaker** — cross-model loop detection (Riven overflow +
    Alexa Plus antichrist loop), deployable pattern for enterprise AI
@@ -71,9 +70,9 @@ Resonance Dashboard, B-0188 bulk review UI) with:
 - Git commit graph rendered as Hamiltonian trajectories
 - Accelerated timeframes visible as compressed phase-space regions
 - PR merge = wavefunction collapse visualization
-- Ephemeral bus messages = superposition state (B-0400)
+- Ephemeral bus messages = superposition state (081KR7JY10008QG0R000R503K2)
 
-### 3. Alignment invariant dashboard (B-0017 integration)
+### 3. Alignment invariant dashboard (081KQ0YZ80008QG0R0003GAYYN integration)
 
 - 21 HC/SD/DIR clauses with per-commit coverage signals
 - Glass Halo transparency: all agent activity visible
@@ -109,10 +108,10 @@ from there.
 
 ## Composes with
 
-- **B-0017** — Operational Resonance Dashboard (the umbrella UI)
-- **B-0400** — Inter-agent bus (circuit breaker is a bus service)
-- **B-0064** — GitHub Playwright integration (UI mutation capability)
-- **B-0154** — GitHub Pages (hosting surface)
+- **081KQ0YZ80008QG0R0003GAYYN** — Operational Resonance Dashboard (the umbrella UI)
+- **081KR7JY10008QG0R000R503K2** — Inter-agent bus (circuit breaker is a bus service)
+- **081KQ8P5D0008QG0R0010FP5SY** — GitHub Playwright integration (UI mutation capability)
+- **081KQGDBJ0008QG0R002NV04N9** — GitHub Pages (hosting surface)
 - **Amazon Alexa conversation** — `memory/alexa/ide/kiro/conversations/2026-05-10-aaron-amazon-alexa-hamiltonian-git-mapping-accelerated-timeframes-verbatim-backup.md`
 
 ## Acceptance

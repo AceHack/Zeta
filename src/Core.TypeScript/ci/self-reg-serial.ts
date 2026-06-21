@@ -1,5 +1,5 @@
 /**
- * B-0831 slice 3 — parse iter-5.4.1-ci dry-run lines from QEMU serial output.
+ * 081KSGS9H0008QG0R0011BC7T2 slice 3 — parse iter-5.4.1-ci dry-run lines from QEMU serial output.
  * Composes with zeta-install.sh Step 6.9 non-TTY CI path.
  */
 
@@ -33,7 +33,7 @@ export function parseSelfRegCiSerial(serialOutput: string): SelfRegCiSerial | nu
   };
 }
 
-/** B-0794 / B-0812 per-maintainer tree convention. */
+/** 081KSGS9H0008QG0R0027HJZYH / 081KSGS9H0008QG0R0037H3W4T per-maintainer tree convention. */
 export function expectedClusterNodeTreePath(
   maintainer: string,
   nodeHostname: string,
@@ -45,7 +45,7 @@ export type SelfRegCiValidation =
   | { readonly ok: true; readonly parsed: SelfRegCiSerial }
   | { readonly ok: false; readonly reason: string };
 
-/** Cross-check iter-5.4.1-ci serial lines for internal consistency (B-0831 slice 3). */
+/** Cross-check iter-5.4.1-ci serial lines for internal consistency (081KSGS9H0008QG0R0011BC7T2 slice 3). */
 export function validateSelfRegCiCoherent(serialOutput: string): SelfRegCiValidation {
   const parsed = parseSelfRegCiSerial(serialOutput);
   if (!parsed) {

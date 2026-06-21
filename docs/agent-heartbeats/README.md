@@ -172,4 +172,4 @@ Heartbeat <hex> from agent <persona> at <ISO>.
 - CLAUDE.md "Heartbeat-via-commit" bullet (PR #5451) — discipline-level statement
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — the rule this folder mechanizes
 - `.claude/rules/agent-roster-reference-card.md` — persona-name canonical roster
-- B-0858 backlog row — the substrate-engineering parent
+- 081KSKBP80008QG0R001KK9WV6 backlog row — the substrate-engineering parent

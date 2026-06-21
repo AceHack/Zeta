@@ -1,6 +1,6 @@
 ---
 name: "Audience persona mapping — dashboard art = metrics in priority; social media + Twitter content (push Aaron's numbers); neurodivergent AI-assisted dev; cognitive-architecture dense synthesis with scaffolding; contributors / maintainers / forkers / math / physics / architects / students = persona hats like role hats; start keeping a list (Aaron 2026-05-13)"
-description: "Aaron 2026-05-13 disclosed audience-persona-mapping substrate with three composing clauses: (1) dashboard art should be AS IMPORTANT as the metrics (first-class, not secondary); (2) general public audience served via cartoon + social-media/Twitter content that helps push Aaron's social numbers; (3) audience personas form an OPEN list of 'person hats' parallel to agent role hats — initial list: neurodivergent AI-assisted dev / cognitive-architecture dense synthesis with scaffolding / contributors / maintainers / forkers / math / physics / architects / students / 'i'm sure i'm missing some'. Composes with B-0429 (end-user persona mapping; PR #2934), PR #2963 (dashboard render + viral), PR #2964 (AI-realness terminal purpose)."
+description: "Aaron 2026-05-13 disclosed audience-persona-mapping substrate with three composing clauses: (1) dashboard art should be AS IMPORTANT as the metrics (first-class, not secondary); (2) general public audience served via cartoon + social-media/Twitter content that helps push Aaron's social numbers; (3) audience personas form an OPEN list of 'person hats' parallel to agent role hats — initial list: neurodivergent AI-assisted dev / cognitive-architecture dense synthesis with scaffolding / contributors / maintainers / forkers / math / physics / architects / students / 'i'm sure i'm missing some'. Composes with 081KRFA460008QG0R002M05EY1 (end-user persona mapping; PR #2934), PR #2963 (dashboard render + viral), PR #2964 (AI-realness terminal purpose)."
 type: feedback
 created: 2026-05-13
 ---
@@ -51,7 +51,7 @@ production priorities, or planning derivative work:
 | **Cognitive-architecture students** | Want dense synthesis WITH scaffolding (entry-level-friendly but substantive) | Dense substrate explainers; bootstream-style cold-boot guides; layered onboarding |
 | **Contributors** | People adding code/substrate to the project | CONTRIBUTING.md substrate; DX/Bodhi friction-reduction; getting-started flows |
 | **Maintainers** | People running the project (factory operators) | GOVERNANCE.md; ops runbooks; maintainer-toolkit substrate (PR #2930) |
-| **Forkers** | People forking for their own use (per forker-perspective META-discipline) | Forker-friendly substrate; license clarity; easy-to-fork repo split (Stage 1 factory split per B-0424) |
+| **Forkers** | People forking for their own use (per forker-perspective META-discipline) | Forker-friendly substrate; license clarity; easy-to-fork repo split (Stage 1 factory split per 081KRFA460008QG0R001H98EXJ) |
 | **Math** | Mathematicians; F# fork enthusiasts; HKT-over-Clifford curious | F# fork architecture (PR #2935-2936); CAN/GCAN research lineage (PR #2934) |
 | **Physics** | Physicists; geometric-algebra; quantum | Clifford algebra substrate; Pauli/Dirac connections; bifurcation phases (PR #2917) |
 | **Architects** | Software architects; system design | Decision archaeology; substrate-engineering pattern catalog; cascade-pattern naming (PR #2947) |
@@ -60,7 +60,7 @@ production priorities, or planning derivative work:
 Aaron explicitly notes: **"i'm sure i'm missing some."** The list
 is OPEN. Future additions expected (e.g., security researchers,
 ML researchers, AI alignment folks, edge-runners per PR #2920,
-small-business owners per B-0043 universal-company substrate, etc.).
+small-business owners per 081KQ3HBZ0008QG0R000Q4Y00F universal-company substrate, etc.).
 
 ## Dashboard art = metrics priority
 
@@ -117,9 +117,9 @@ Operational implications:
 
 ## Composes with existing substrate
 
-- **B-0429** (end-user persona mapping; PR #2934) — this
-  disclosure EXTENDS B-0429 from civsim-persona to general-
-  audience persona mapping. B-0429 row needs update to reflect
+- **081KRFA460008QG0R002M05EY1** (end-user persona mapping; PR #2934) — this
+  disclosure EXTENDS 081KRFA460008QG0R002M05EY1 from civsim-persona to general-
+  audience persona mapping. 081KRFA460008QG0R002M05EY1 row needs update to reflect
   the broader persona surface.
 - **PR #2963** (dashboard render + viral + vector art =
   git-native) — this elevates the art priority
@@ -137,7 +137,7 @@ Operational implications:
   scaffolding levels match bandwidth
 - **PR #2930** (distributed maintainer architecture) —
   maintainer-persona substrate already partially mapped
-- **B-0043** (universal-company + government-information
+- **081KQ3HBZ0008QG0R000Q4Y00F** (universal-company + government-information
   substrate) — composes with small-business / government
   personas
 
@@ -176,14 +176,14 @@ multiple role hats per task.
 
 ### For backlog updates
 
-B-0429 (end-user persona mapping) needs updating to reflect:
+081KRFA460008QG0R002M05EY1 (end-user persona mapping) needs updating to reflect:
 
 - Broader persona surface (not just civsim)
 - The audience-persona-hat list (open + evolving)
 - Dashboard-art priority elevation
 - Social-media content production scope
 
-Future-Otto: when working B-0429, fold this substrate in.
+Future-Otto: when working 081KRFA460008QG0R002M05EY1, fold this substrate in.
 
 ## Substrate-honest caveats
 
@@ -218,8 +218,8 @@ agents.
 ## Composes with substrate
 
 - PR (this substrate landing)
-- B-0429 (end-user persona mapping; needs update)
-- PR #2934 (B-0429 first pass — civsim persona map)
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping; needs update)
+- PR #2934 (081KRFA460008QG0R002M05EY1 first pass — civsim persona map)
 - PR #2963 (dashboard art + viral)
 - PR #2964 (AI-realness terminal purpose + Cartman)
 - PR #2920 (Elizabeth Ryan Stainback — edge-runner persona)
@@ -227,7 +227,7 @@ agents.
   persona substrate)
 - PR #2924 (Aurora pitch — partnership / government /
   enterprise personas)
-- B-0043 (universal-company substrate — small-business /
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company substrate — small-business /
   enterprise / government personas)
 - `.claude/rules/agent-roster-reference-card.md` (role-hat
   parallel)
@@ -240,5 +240,5 @@ Aaron 2026-05-13 verbatim (preserved above)
 
 PR (this substrate landing)
 
-PR #2934 + B-0429 (existing persona-mapping substrate to
+PR #2934 + 081KRFA460008QG0R002M05EY1 (existing persona-mapping substrate to
 extend)

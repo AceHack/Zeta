@@ -37,7 +37,7 @@ Cross-session feedback memory documenting the ~2-hour fresh-cold-boot Otto-CLI s
 |---|---|---|
 | #3808 (CLOSED) | empirical evidence (tick shard) | substantively captured in #3818 |
 | #3812 | operational mitigations (claim-acquire rule body) | OPEN, fix pushed |
-| #3817 | structural-fix tracking (B-0558 worktree-pool primitive) | OPEN, DIRTY |
+| #3817 | structural-fix tracking (081KRQ1AB0008QG0R001KQ9S4B worktree-pool primitive) | OPEN, DIRTY |
 | **#3818** | **recursive meta-fallback (holding-discipline rule + sub-case 5 + pure-git tier)** | **MERGED ✓** |
 
 ## NEW substrate captured in this memory
@@ -52,7 +52,7 @@ Cross-session feedback memory documenting the ~2-hour fresh-cold-boot Otto-CLI s
 
 - [x] Memory file follows the `feedback_*.md` naming convention with frontmatter (name/description/type/created)
 - [x] MEMORY.md reindexed via `tools/memory/reindex-memory-md.ts` (commit `edd3f26`)
-- [x] Composes_with edges connect: #3812, #3817, #3818, B-0530, B-0558, refresh-world-model-poll-pr-gate.md, holding-without-named-dependency-is-standing-by-failure.md, claim-acquire-before-worktree-work.md
+- [x] Composes_with edges connect: #3812, #3817, #3818, 081KRMEXM0008QG0R000X1PPGC, 081KRQ1AB0008QG0R001KQ9S4B, refresh-world-model-poll-pr-gate.md, holding-without-named-dependency-is-standing-by-failure.md, claim-acquire-before-worktree-work.md
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

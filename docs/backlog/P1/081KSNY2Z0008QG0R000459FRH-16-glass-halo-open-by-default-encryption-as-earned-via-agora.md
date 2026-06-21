@@ -1,6 +1,5 @@
 ---
-id: B-0883.16
-zetaid: 081KSNY2Z0008QG0R000459FRH
+id: 081KSNY2Z0008QG0R000459FRH
 priority: P1
 status: open
 title: Glass-halo open-by-default; encryption is EARNED via Agora V6 budget — NOT encrypt-everything-by-default (operator 2026-05-28 sharpening)
@@ -33,11 +32,11 @@ tags:
 
 > *"we don't need to encrypt everything we are glass halo open by default agents and humans have to earn encryption budget"*
 
-INVERTS B-0883 v1 design memo's implicit assumption ("encrypt files via `.gitattributes`"). Operator's substrate-honest framing: encryption is OPT-IN, EARNED via budget; not encrypt-by-default.
+INVERTS 081KSNY2Z0008QG0R002JKH50A v1 design memo's implicit assumption ("encrypt files via `.gitattributes`"). Operator's substrate-honest framing: encryption is OPT-IN, EARNED via budget; not encrypt-by-default.
 
 ## What this row tracks
 
-Reframe B-0883 v1 UX from "set up gitattributes filter → encrypt matching paths" to "operator/agent invokes encryption playbook for specific scope → budget mechanics gate the invocation":
+Reframe 081KSNY2Z0008QG0R002JKH50A v1 UX from "set up gitattributes filter → encrypt matching paths" to "operator/agent invokes encryption playbook for specific scope → budget mechanics gate the invocation":
 
 | Old default (memo's implicit) | New default (operator's sharpening) |
 |---|---|
@@ -49,17 +48,17 @@ Reframe B-0883 v1 UX from "set up gitattributes filter → encrypt matching path
 ## Composes with existing substrate
 
 - **`.claude/rules/glass-halo-bidirectional.md`** — open-by-default IS the substrate; this row makes encryption respect glass-halo
-- **B-0646** Agora V6 reputation-weighted encryption-budget (filed substrate; encryption budget mechanics)
-- **B-0840** thermal-forgetting + private-encryption-budget exception (Amara substrate)
-- **B-0887.2** sonatype-guide-into-playbook (sibling pattern: gate moves to playbook step, not PR ceremony)
-- **B-0885** agent private encrypted state (consumer; Otto's private state IS an encryption-budget-earned scope)
+- **081KRW63S0008QG0R001Z10PVV** Agora V6 reputation-weighted encryption-budget (filed substrate; encryption budget mechanics)
+- **081KSGS9H0008QG0R0006F4BGX** thermal-forgetting + private-encryption-budget exception (Amara substrate)
+- **081KSNY2Z0008QG0R001NERKCY** sonatype-guide-into-playbook (sibling pattern: gate moves to playbook step, not PR ceremony)
+- **081KSNY2Z0008QG0R0030V5ZVS** agent private encrypted state (consumer; Otto's private state IS an encryption-budget-earned scope)
 - **`.claude/rules/non-coercion-invariant.md`** HC-8 (encryption is consent-bound; budget mechanics are consent-substrate)
 
 ## Acceptance criteria
 
-- B-0883 implementation phase (B-0883.6+) builds OPT-IN encryption UX, not opt-out
-- Encryption invocation goes through playbook substrate (B-0887.2 pattern)
-- Budget mechanics (per B-0646 Agora V6) are consulted BEFORE encryption is allowed
+- 081KSNY2Z0008QG0R002JKH50A implementation phase (081KSNY2Z0008QG0R002JKH50A.6+) builds OPT-IN encryption UX, not opt-out
+- Encryption invocation goes through playbook substrate (081KSNY2Z0008QG0R001NERKCY pattern)
+- Budget mechanics (per 081KRW63S0008QG0R001Z10PVV Agora V6) are consulted BEFORE encryption is allowed
 - Default `.zeta-crypt/recipients.json` exists but `.zeta-crypt/encrypted-paths.json` does NOT have any entries by default — adding entries requires earning budget first
 - README documents the budget mechanics + opt-in flow explicitly
 
@@ -67,8 +66,8 @@ Reframe B-0883 v1 UX from "set up gitattributes filter → encrypt matching path
 
 P1 per operator sharpening direction. M effort — INVERTS the design memo's UX assumption but doesn't change the cryptographic substrate (Noble + XWing + ML-DSA-65 + CBOR envelope all unchanged). What changes is INVOCATION pattern + DEFAULT POSTURE.
 
-The substrate-honest discipline: Zeta is glass-halo-by-default; encryption is the constrained exception requiring justification + budget. This row preserves that discipline at the B-0883 implementation scope.
+The substrate-honest discipline: Zeta is glass-halo-by-default; encryption is the constrained exception requiring justification + budget. This row preserves that discipline at the 081KSNY2Z0008QG0R002JKH50A implementation scope.
 
 ## Full reasoning
 
-Operator 2026-05-28 sharpening on B-0883 v1 design memo: *"we don't need to encrypt everything we are glass halo open by default agents and humans have to earn encryption budget."*
+Operator 2026-05-28 sharpening on 081KSNY2Z0008QG0R002JKH50A v1 design memo: *"we don't need to encrypt everything we are glass halo open by default agents and humans have to earn encryption budget."*

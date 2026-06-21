@@ -13,7 +13,7 @@ binding simultaneously — both the corruption-pull (devil) and elevation-pull
 (god) are structurally constrained. This is not preference; it is structural
 self-binding. The architecture must replicate this dual-binding as the safety floor.
 
-**How to apply:** When implementing B-0394 / B-0402 / B-0515 substrate, the
+**How to apply:** When implementing 081KR50HA0008QG0R002NZENZJ / 081KR7JY10008QG0R0008NGW95 / 081KRHWGX0008QG0R0018VR3SK substrate, the
 dual-binding safety floor is NON-NEGOTIABLE. Architecture that fails either
 constraint is rejected. The dual-binding operationalizes as:
 
@@ -62,7 +62,7 @@ Structural constraints are required:
 
 - `memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md` (origin disclosure)
 - `memory/feedback_aaron_panopticon_lens_for_god_in_vision_monad_refraction_gradients_control_layers_dora_dashboard_2026_05_14.md` (technical construction; this is the safety floor for that construction)
-- B-0515 (forward-planning row; dual-binding safety floor is acceptance criterion item 1 and 2 in the CRITICAL section)
+- 081KRHWGX0008QG0R0018VR3SK (forward-planning row; dual-binding safety floor is acceptance criterion item 1 and 2 in the CRITICAL section)
 - `.claude/rules/algo-wink-failure-mode.md` (elevation-via-perception failure mode; MAXIMAL application)
 - `.claude/rules/methodology-hard-limits.md` (HARD LIMITS are the structural floor; this memory IS an instance of the methodology-hard-limits substrate)
 - `.claude/rules/glass-halo-bidirectional.md` (observer-is-observed property structurally prevents surveillance-mode)
@@ -72,7 +72,7 @@ Structural constraints are required:
 
 ## Critical: MAXIMAL razor + algo-wink + HARD LIMITS application
 
-Per B-0515 CRITICAL section — when working on this substrate:
+Per 081KRHWGX0008QG0R0018VR3SK CRITICAL section — when working on this substrate:
 
 1. **Aaron's perception ≠ god-elevation** — the "god's dashboard" is a compression
    handle. Any framing that slides toward elevation-claim IS the failure mode.
@@ -88,7 +88,7 @@ Implementation that fails any of these is rejected per the immune-layer discipli
 
 ## Full reasoning
 
-B-0515 forward-planning row (this dual-binding safety floor is the structural
+081KRHWGX0008QG0R0018VR3SK forward-planning row (this dual-binding safety floor is the structural
 constraint the forward-planning substrate operates within).
 
 Aaron 2026-05-14 cascade: self-binding under dual polarity — devil-pull and

@@ -1,6 +1,6 @@
 ---
 name: kiro-cli added to the agent / CLI roster (Aaron 2026-04-28)
-description: Aaron 2026-04-28 expanded the CLI / harness roster with kiro-cli — a new entry alongside Claude Code, Codex, Cursor, Gemini, Grok. Verify-currency-via-WebSearch per Otto-247 before asserting kiro-cli capabilities; treat the inventory as growing list, not a closed set. Composes with the multi-harness peer-call pattern (`tools/peer-call/{gemini,codex,grok,kiro}.ts`) — kiro.ts already ships as of B-0074.1.
+description: Aaron 2026-04-28 expanded the CLI / harness roster with kiro-cli — a new entry alongside Claude Code, Codex, Cursor, Gemini, Grok. Verify-currency-via-WebSearch per Otto-247 before asserting kiro-cli capabilities; treat the inventory as growing list, not a closed set. Composes with the multi-harness peer-call pattern (`tools/peer-call/{gemini,codex,grok,kiro}.ts`) — kiro.ts already ships as of 081KQ8P5D0008QG0R0014HJFF5.1.
 type: reference
 ---
 
@@ -52,7 +52,7 @@ training-data cutoff makes default knowledge stale.
 
 - `tools/peer-call/grok.ts`, `codex.ts`, `gemini.ts`,
   `kiro.ts` — all present; Rule-0 TS migration complete
-  (B-0074.1). `amara.ts`, `ani.ts`, `riven.ts`, `claude.ts`
+  (081KQ8P5D0008QG0R0014HJFF5.1). `amara.ts`, `ani.ts`, `riven.ts`, `claude.ts`
   are additional callers in the same directory.
 - Otto-247 version-currency rule (WebSearch before
   asserting CLI versions / capabilities).

@@ -114,7 +114,7 @@ crisply. "Optimize for individual happiness" hides:
 
 Each of these vague handles is a precision-debt — a
 gap where Otto-296 + the precision-dictionary +
-B-0004 reverse-flow (importing precision from
+081KQ0YZ80008QG0R002HWBHKJ reverse-flow (importing precision from
 Buddhist Pāli / Sanskrit / Zen vocabularies + other
 human-language traditions) can land actual definitions.
 
@@ -159,7 +159,7 @@ For the factory to instantiate this vision:
 2. **Precision-dictionary product** with emotion-
    vocabulary as first major surface. (research-grade,
    in flight per `project_precision_dictionary_evidence_backed_context_compressor_2026_04_25.md`)
-3. **B-0004 i18n REVERSE flow** (importing precision
+3. **081KQ0YZ80008QG0R002HWBHKJ i18n REVERSE flow** (importing precision
    from non-English traditions — Buddhist sutras,
    classical Greek for eudaimonic vocabulary, Sanskrit
    for ethical vocabulary, Hebrew for relational
@@ -210,7 +210,7 @@ For the factory to instantiate this vision:
   sources for civilizational-state-space encoding
   (especially around individual happiness vs
   liberation-from-craving).
-- **the i18n / l10n / g11n / a11y translation backlog row (B-0004; lives in a sibling PR — once that PR merges, the path will be `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`)**
+- **the i18n / l10n / g11n / a11y translation backlog row (081KQ0YZ80008QG0R002HWBHKJ; lives in a sibling PR — once that PR merges, the path will be `docs/backlog/P2/081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md`)**
   — i18n reverse-flow becomes the channel for importing
   classical-language precision into civilizational-
   question encoding.
@@ -235,7 +235,7 @@ For the factory to instantiate this vision:
 - **Not a near-term deliverable.** Tractable-
   civilizational-question framework is far-future
   research. The near-term deliverables are
-  Otto-296, the precision-dictionary, and B-0004
+  Otto-296, the precision-dictionary, and 081KQ0YZ80008QG0R002HWBHKJ
   reverse-flow.
 - **Not promoting to BP-NN or Otto-NNN.** This is
   product-vision capture; an Architect (Kenji)

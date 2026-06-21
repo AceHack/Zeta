@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// concordance.ts — B-0291 + B-0292 slice
+// concordance.ts — 081KR2E4K0008QG0R000DK0BFY + 081KR2E4K0008QG0R001ZZ5XXF slice
 // Text → tokens → concordance index. Structure recognizer stub.
 
 import { readFileSync, existsSync } from "node:fs";
@@ -109,7 +109,7 @@ if (import.meta.main) {
 
 export { buildConcordance, tokenize };
 
-// B-0292 re-decomposed smallest safe slice (assumed prior decomp too broad):
+// 081KR2E4K0008QG0R001ZZ5XXF re-decomposed smallest safe slice (assumed prior decomp too broad):
 // Typed surface only + no-op stub. GPU-ready comment. Pure TS, zero deps.
 // Next slice will add concrete pattern logic + local inference wiring.
 interface StructurePattern {

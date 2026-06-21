@@ -1,6 +1,5 @@
 ---
-id: B-0692
-zetaid: 081KS3X9Y0008QG0R001D454ZK
+id: 081KS3X9Y0008QG0R001D454ZK
 priority: P2
 status: open
 title: Push-based hot-path — IPushOperator<'T> + per-entry callback bridged at materialize boundaries (Otto-VSCode 8-PR campaign PR #6)
@@ -118,11 +117,11 @@ The push-pattern itself isn't novel — Reactive Extensions (Rx) operates this w
 
 ## Composes with substrate
 
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate — push-pattern preserves operational primitives)
-- B-0688 (incremental compiler host — push-pattern composes with codegen at segment boundaries)
-- B-0693 (PR #7 morsel-based execution — push-pattern + morsel-pattern together = full hot-path optimization)
-- B-0694 (PR #8 standing-query codegen — codegen emits push-segment-fused IL)
-- B-0687 (ZetaParse — parser-substrate operators may benefit from push-pattern for streaming parse)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate — push-pattern preserves operational primitives)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — push-pattern composes with codegen at segment boundaries)
+- 081KS3X9Y0008QG0R003Y2X2T0 (PR #7 morsel-based execution — push-pattern + morsel-pattern together = full hot-path optimization)
+- 081KS3X9Y0008QG0R000J4SFTS (PR #8 standing-query codegen — codegen emits push-segment-fused IL)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse — parser-substrate operators may benefit from push-pattern for streaming parse)
 - PR #4558 (capability tags — IsPushable is sibling to IsLinear/IsBilinear/IsSink)
 - PR #4560 (sink-terminality — sinks are segment-terminators by definition)
 - PR #4566 (FusionEngine — Phase 2 extends it with push-segment detection)

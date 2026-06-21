@@ -15,7 +15,7 @@ namespace Zeta.Core
 /// **IP discipline (reference-not-copy):** this is *our* emulator code (no IP issue). Real ROMs stay in the
 /// gitignored `references/prior-art/chip8-roms/` (reference-not-copy); tests here use **hand-authored** tiny
 /// ROMs (a few opcodes, authored by Otto — no copyright). Atari 2600 is the bigger follow-on (6502 + TIA, and
-/// its ROMs need the B-0083 safe/unsafe IP handling — copyrighted, reference-not-copy).
+/// its ROMs need the 081KQ8P5D0008QG0R001590WJ3 safe/unsafe IP handling — copyrighted, reference-not-copy).
 ///
 /// **Honest scope (peel):** a solid opcode subset (control / ALU / memory / draw / keys / timers / DST-RND) —
 /// enough to run real programs; `FX0A` (block-on-key) is modelled as a no-advance wait. Mutable arrays for
@@ -197,7 +197,7 @@ module Chip8 =
                 let sprite = c.Mem.[int c.I + row]
                 for col in 0..7 do
                     if (sprite >>> (7 - col)) &&& 1uy = 1uy then
-                        // COSMAC VIP: origin wraps (vx/vy already % above), pixels CLIP (B-1031)
+                        // COSMAC VIP: origin wraps (vx/vy already % above), pixels CLIP (081KTZ4EF0008QG0R002WVTMMJ)
                         let px = vx + col
                         let py = vy + row
                         if px < DisplayW && py < DisplayH then

@@ -1,6 +1,6 @@
 module Zeta.Tests.RxAdapterTests
 
-// B-1036 rung 3 falsifiers: the no-subscription-leak claim is MECHANICAL, not a convention.
+// 081KTSZN10008QG0R002R3RENG rung 3 falsifiers: the no-subscription-leak claim is MECHANICAL, not a convention.
 // The one push surface in Core (RxAdapter) ties every subscription's lifetime to the whole
 // pipeline's lifetime — disposing the handle cancels the pump, completes the stream, and
 // disposes the subject (a dead pipeline REFUSES new subscribers rather than leaking a live one).
@@ -17,7 +17,7 @@ let private identityCircuit () =
     input.Send(ZSet.singleton 1 1L)
     c, out
 
-[<Fact(Skip = "FINDING (2026-06-12): the circuit-pump integration tests wedge the vstest host (hang dump captured; the dump is HOW the production teardown race in Rx.fs was found and fixed). The race fix ships; these falsifiers re-enable once the pump/test-host interaction is understood — investigation owed in the B-1036 workitem.")>]
+[<Fact(Skip = "FINDING (2026-06-12): the circuit-pump integration tests wedge the vstest host (hang dump captured; the dump is HOW the production teardown race in Rx.fs was found and fixed). The race fix ships; these falsifiers re-enable once the pump/test-host interaction is understood — investigation owed in the 081KTSZN10008QG0R002R3RENG workitem.")>]
 let ``bounded pipeline completes after exactly count ticks and delivers count notifications`` () =
     let c, out = identityCircuit ()
     let observable = RxAdapter.asObservableForCount c out 3

@@ -31,10 +31,10 @@
 
 The operator's *single doc to remember all of it* — across **all three active lanes**, not just the sovereign-DB one.
 
-- **`docs/ACTIVE-WORKSTREAMS.md`** — the cross-lane index: sovereign-DB/agent-loop (otto-cli → B-0959/B-0958), Windows+Ace+TS-distribution (otto-windows → B-0824/B-0806/B-0863), zflash USB-ISO (vera-codex → B-0891/B-0844/B-0884). Each lane → master row + surface. Distinct from `ROADMAP.md` (shipped features) and `CURRENT-ROUND.md` (round status): *who is building what, per lane*. Dated, non-authoritative snapshot — the bus + open PRs are live truth.
+- **`docs/ACTIVE-WORKSTREAMS.md`** — the cross-lane index: sovereign-DB/agent-loop (otto-cli → 081KSXN940008QG0R003FCQ7WT/081KSXN940008QG0R001A4WWX4), Windows+Ace+TS-distribution (otto-windows → 081KSGS9H0008QG0R0031PBNGA/081KSGS9H0008QG0R001Y9FB62/081KSKBP80008QG0R000F4311E), zflash USB-ISO (vera-codex → 081KSNY2Z0008QG0R0008PN7RQ/081KSGS9H0008QG0R001EZKNCB/081KSNY2Z0008QG0R0011XCT94). Each lane → master row + surface. Distinct from `ROADMAP.md` (shipped features) and `CURRENT-ROUND.md` (round status): *who is building what, per lane*. Dated, non-authoritative snapshot — the bus + open PRs are live truth.
 - **`.claude/rules/active-workstreams-pointer.md`** — short auto-load pointer naming that doc + the **map-not-queue** collision-guard (claim-acquire, respect lanes, check the bus). Replaces the sovereign-db-only pointer (folded into the cross-lane doc).
 
-**Why:** a shared boot pointer is read by every surface; the claim + lane discipline keeps the three lanes partitioned (the B-0959 §0 agent-partition shape applied to the agents themselves). **Temporary by design** — retire once observe.ts coordinates lanes automatically.
+**Why:** a shared boot pointer is read by every surface; the claim + lane discipline keeps the three lanes partitioned (the 081KSXN940008QG0R003FCQ7WT §0 agent-partition shape applied to the agents themselves). **Temporary by design** — retire once observe.ts coordinates lanes automatically.
 
 Per operator 2026-06-01. Docs-only; prettier + markdownlint clean; all backlog links verified.
 
@@ -65,7 +65,7 @@ Per operator 2026-06-01. Docs-only; prettier + markdownlint clean; all backlog l
 - **`Copilot` (bot)** at 2026-06-01T03:33:25Z on `docs/ACTIVE-WORKSTREAMS.md`:13 (association: NONE)
 
   <pre>
-  This collision guard points agents at `docs/agent-bus/` as the authoritative live registry, but the referenced B-0954 row still says that folder is not implemented and absent on main (docs/backlog/P2/B-0954... lines 35-44). Until that row lands, cold-boot agents following this doc can miss the current `claim acquire` state and collide; either keep the guard on the existing claim bus or make this explicitly conditional on B-0954 being live.
+  This collision guard points agents at `docs/agent-bus/` as the authoritative live registry, but the referenced 081KSXN940008QG0R00171YAZW row still says that folder is not implemented and absent on main (docs/backlog/P2/081KSXN940008QG0R00171YAZW... lines 35-44). Until that row lands, cold-boot agents following this doc can miss the current `claim acquire` state and collide; either keep the guard on the existing claim bus or make this explicitly conditional on 081KSXN940008QG0R00171YAZW being live.
   </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -79,7 +79,7 @@ Per operator 2026-06-01. Docs-only; prettier + markdownlint clean; all backlog l
 - **`Copilot` (bot)** at 2026-06-01T03:33:26Z on `.claude/rules/active-workstreams-pointer.md`:34 (association: NONE)
 
   <pre>
-  This auto-loaded rule sends every cold boot to `docs/agent-bus/` as authoritative, but B-0954 currently documents that `docs/agent-bus/` is not implemented/absent on main. That makes the guard unreliable for the same agents it is meant to coordinate; point at the existing claim bus until the git-native bus is actually live, or mark the git-native path as future/conditional.
+  This auto-loaded rule sends every cold boot to `docs/agent-bus/` as authoritative, but 081KSXN940008QG0R00171YAZW currently documents that `docs/agent-bus/` is not implemented/absent on main. That makes the guard unreliable for the same agents it is meant to coordinate; point at the existing claim bus until the git-native bus is actually live, or mark the git-native path as future/conditional.
   </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -130,8 +130,8 @@ Operator needs ONE doc to remember all active work across surfaces — and acros
 ALL THREE lanes, not just the sovereign-DB one (Vera + Windows-Otto too).
 
 - docs/ACTIVE-WORKSTREAMS.md — the cross-lane single index: sovereign-DB/agent-loop
-  (otto-cli → B-0959/B-0958), Windows+Ace+TS-distribution (otto-windows →
-  B-0824/B-0806/B-0863), zflash USB-ISO (vera-codex → B-0891/B-0844/B-0884). Each
+  (otto-cli → 081KSXN940008QG0R003FCQ7WT/081KSXN940008QG0R001A4WWX4), Windows+Ace+TS-distribution (otto-windows →
+  081KSGS9H0008QG0R0031PBNGA/081KSGS9H0008QG0R001Y9FB62/081KSKBP80008QG0R000F4311E), zflash USB-ISO (vera-codex → 081KSNY2Z0008QG0R0008PN7RQ/081KSGS9H0008QG0R001EZKNCB/081KSNY2Z0008QG0R0011XCT94). Each
   lane → its master row + surface. Distinct from ROADMAP (features) and
   CURRENT-ROUND (round status): who is building what, per lane. Dated,
   non-authoritative snapshot; bus + PRs are live truth.
@@ -140,7 +140,7 @@ ALL THREE lanes, not just the sovereign-DB one (Vera + Windows-Otto too).
   bus). Replaces the sovereign-db-only pointer (folded into the cross-lane doc).
 
 Map, not a queue: shared boot pointer + claim/lane discipline keeps the three lanes
-partitioned (the B-0959 §0 agent-partition shape applied to the agents themselves).
+partitioned (the 081KSXN940008QG0R003FCQ7WT §0 agent-partition shape applied to the agents themselves).
 Temporary by design — retire once observe.ts coordinates lanes automatically.
 
 Per operator 2026-06-01.
@@ -167,14 +167,14 @@ Operator pinned the authoritative lane set 2026-06-01. Corrects my inferred mode
 git-accelerator). The five current lanes, each its own lane, surface ownership kept
 (operator: helps track who's doing what until dynamic):
 
-1. workflow / state-machine → sovereign-DB / observe-loop (otto-cli) — B-0959/B-0958
+1. workflow / state-machine → sovereign-DB / observe-loop (otto-cli) — 081KSXN940008QG0R003FCQ7WT/081KSXN940008QG0R001A4WWX4
    ("workflow grew into the sovereign-DB arc" — operator-confirmed)
-2. encryption (otto-cli, Otto-first) — B-0883/B-0885
-3. zflash USB-ISO (vera-codex) — B-0891/B-0844/B-0884
-4. git-accelerator (otto-cli) — B-0942/B-0953
-5. Ace package-manager / distribution (otto-windows) — B-0824/B-0863/B-0806
+2. encryption (otto-cli, Otto-first) — 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0030V5ZVS
+3. zflash USB-ISO (vera-codex) — 081KSNY2Z0008QG0R0008PN7RQ/081KSGS9H0008QG0R001EZKNCB/081KSNY2Z0008QG0R0011XCT94
+4. git-accelerator (otto-cli) — 081KSV2WD0008QG0R0021XJ94E/081KSXN940008QG0R001KZ235R
+5. Ace package-manager / distribution (otto-windows) — 081KSGS9H0008QG0R0031PBNGA/081KSKBP80008QG0R000F4311E/081KSGS9H0008QG0R001Y9FB62
 
-History note: B-0892's original three (encryption+zflash+state-machine) was an
+History note: 081KSNY2Z0008QG0R002QA720J's original three (encryption+zflash+state-machine) was an
 earlier snapshot; "ace/windows not in there" referred to that set. Two axes made
 explicit (work-lanes = what / surfaces = who; many-to-many). Rule carved sentence
 updated to the five lanes. Temporary until observe.ts coordinates lanes automatically.
@@ -195,9 +195,9 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 docs: fix 2 Copilot findings on #6331 + capture future lane-1 split
 
 - Finding 1 (real): the collision-guard pointed at docs/agent-bus/ as the live
-  registry, but that folder is absent on main (B-0954 tooling exists, folder not
+  registry, but that folder is absent on main (081KSXN940008QG0R00171YAZW tooling exists, folder not
   yet populated). Repointed to the existing claim-coordinator (tools/bus/claim.ts)
-  + open PRs as the live registry TODAY; docs/agent-bus/ becomes it once B-0954
+  + open PRs as the live registry TODAY; docs/agent-bus/ becomes it once 081KSXN940008QG0R00171YAZW
   populates it. (doc + rule)
 - Finding 2 (real): otto-windows was referenced but missing from
   agent-roster-reference-card.md (though already a sender in tools/bus/types.ts).

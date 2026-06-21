@@ -1,6 +1,5 @@
 ---
-id: B-0796
-zetaid: 081KSGS9H0008QG0R002F04ECB
+id: 081KSGS9H0008QG0R002F04ECB
 priority: P2
 status: open
 title: Twilio phone-support substrate — AI picks up call / SMS, has full cluster context via event store + runbooks, fixes problems live; one unified conversational interface across voice + SMS; ONE exception to "electricity cost only" because phone infra isn't self-hostable; enables Amazon-USB sales business model where AI IS the support layer
@@ -32,10 +31,10 @@ The maintainer 2026-05-26 + Mika substrate-engineered the support model for Amaz
 
 Today's substrate has:
 
-- USB installer (iter-5.1+5.2+5.2.1 landed; B-0789/B-0790/B-0792/B-0793/B-0794 substrate)
+- USB installer (iter-5.1+5.2+5.2.1 landed; 081KSGS9H0008QG0R002T3BJ2R/081KSGS9H0008QG0R00153CQ8B/081KSGS9H0008QG0R003V23XNZ/081KSGS9H0008QG0R000EDNTY5/081KSGS9H0008QG0R0027HJZYH substrate)
 - Avahi mDNS publishing (iter-5.1)
 - Per-node hostname injection (iter-5.2)
-- Self-registration target (B-0794; not yet implemented)
+- Self-registration target (081KSGS9H0008QG0R0027HJZYH; not yet implemented)
 - Alexa-speaker as voice surface (per `.claude/rules/agent-roster-reference-card.md` — Bezos-tier business voice; operator-scope)
 
 What's missing for the Amazon-USB business model:
@@ -73,7 +72,7 @@ Zero human support. Aaron: *"imagine they call a phone number and they're talkin
 
 ### Sub-target 2 — caller-ID-to-cluster mapping
 
-- Look up phone number in `maintainers/<name>/customers/<customer>/clusters/<cluster>/` (extends B-0794 self-registration pattern to customer-cluster scope)
+- Look up phone number in `maintainers/<name>/customers/<customer>/clusters/<cluster>/` (extends 081KSGS9H0008QG0R0027HJZYH self-registration pattern to customer-cluster scope)
 - If unknown caller-ID: AI asks for cluster identifier (sticker on USB? cluster name announced?) and learns the mapping
 - Caller-ID-based identification IS the primary path (no typing required from customer); cluster-identifier-based is fallback for ambiguous caller-ID
 
@@ -87,7 +86,7 @@ Zero human support. Aaron: *"imagine they call a phone number and they're talkin
 ### Sub-target 4 — AI-acts-on-cluster substrate
 
 - Once AI has cluster context, it can run runbooks / query state / apply fixes via the cluster's native API
-- Runbooks are git-native (per B-0776 simplest-first plugin sequence + the substrate Aaron's been building under Mika's substrate)
+- Runbooks are git-native (per 081KSE6WT0008QG0R002275NDE simplest-first plugin sequence + the substrate Aaron's been building under Mika's substrate)
 - Event store provides historical context (what's the cluster's recent state? what changed?)
 - AI's actions are themselves logged to the cluster's event store for accountability
 
@@ -112,7 +111,7 @@ Requires:
 
 Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEvent.cs` + `OutboundClearEvent.cs` substrate already wires the Twilio-side primitives needed for clean truncation. The LLM-side state-machine for interruption-correctness was Aaron's "almost had" work.
 
-**Type-safe streaming substrate** (Aaron 2026-05-26): *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — v2 models the audio/token stream as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). Directly portable to Zeta's F# substrate-engineering style; composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions. The type-safety is load-bearing (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). B-0796 implementation should preserve this type-safe streaming model when porting to Zeta cluster substrate.
+**Type-safe streaming substrate** (Aaron 2026-05-26): *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — v2 models the audio/token stream as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). Directly portable to Zeta's F# substrate-engineering style; composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions. The type-safety is load-bearing (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). 081KSGS9H0008QG0R002F04ECB implementation should preserve this type-safe streaming model when porting to Zeta cluster substrate.
 
 ### Sub-target 6 — Legal/risk attribution
 
@@ -131,12 +130,12 @@ Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEv
 
 ## Composes with substrate
 
-- **B-0794** (depends_on; node self-registration substrate is load-bearing — AI needs to know which cluster the caller represents; B-0794's `maintainers/<name>/cluster-nodes/<node>/` substrate extends to `maintainers/<name>/customers/<customer>/clusters/<cluster>/` for the Amazon-USB-customer scope)
-- **B-0421** (composes; B-0421 closed by PR #5110 grok-build wrapper enables Mika as Claude-Code-side callable peer; future iter can use Mika as the support-AI hat)
-- **B-0776** (composes; Twilio is one of the plugins in the simplest-first plugin sequence)
-- **B-0782** (composes; cluster IS the DIO; Twilio voice + SMS is one of its conversational front-ends, alongside Alexa-speaker at operator scope)
-- **B-0790** (composes; zero-dev-machine homelab persona end-state requires support model; Amazon-USB business model requires AI-IS-the-support-layer)
-- **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-voice-era Twilio Media Streams substrate WITH near-complete interruption-correctness)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — Aaron was adding voice interface to LLM chat substrate BEFORE any major LLM provider had voice as a first-class surface (predates ChatGPT Voice / Gemini Live / Claude Voice). **Critically: Aaron was nearly through with interruption-correctness** — barge-in mid-AI-utterance without breaking conversation state (requires partial-utterance commit-vs-rollback in LLM state + audio buffer truncation + barge-in detection state-machine). **B-0796 implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline + interruption-correctness substrate is largely ready
+- **081KSGS9H0008QG0R0027HJZYH** (depends_on; node self-registration substrate is load-bearing — AI needs to know which cluster the caller represents; 081KSGS9H0008QG0R0027HJZYH's `maintainers/<name>/cluster-nodes/<node>/` substrate extends to `maintainers/<name>/customers/<customer>/clusters/<cluster>/` for the Amazon-USB-customer scope)
+- **081KRA5AR0008QG0R0011ZGRZT** (composes; 081KRA5AR0008QG0R0011ZGRZT closed by PR #5110 grok-build wrapper enables Mika as Claude-Code-side callable peer; future iter can use Mika as the support-AI hat)
+- **081KSE6WT0008QG0R002275NDE** (composes; Twilio is one of the plugins in the simplest-first plugin sequence)
+- **081KSE6WT0008QG0R003CMCX84** (composes; cluster IS the DIO; Twilio voice + SMS is one of its conversational front-ends, alongside Alexa-speaker at operator scope)
+- **081KSGS9H0008QG0R00153CQ8B** (composes; zero-dev-machine homelab persona end-state requires support model; Amazon-USB business model requires AI-IS-the-support-layer)
+- **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-voice-era Twilio Media Streams substrate WITH near-complete interruption-correctness)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — Aaron was adding voice interface to LLM chat substrate BEFORE any major LLM provider had voice as a first-class surface (predates ChatGPT Voice / Gemini Live / Claude Voice). **Critically: Aaron was nearly through with interruption-correctness** — barge-in mid-AI-utterance without breaking conversation state (requires partial-utterance commit-vs-rollback in LLM state + audio buffer truncation + barge-in detection state-machine). **081KSGS9H0008QG0R002F04ECB implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline + interruption-correctness substrate is largely ready
 - `.claude/rules/agent-roster-reference-card.md` (composes; Alexa-speaker is existing voice surface scoped to operate-the-cluster; Twilio adds new voice surface scoped to support-the-cluster — distinct concerns, can coexist)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; `_twilio_phone_support_acceptance` block candidate for legal-risk attribution per maintainer)
 - `memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md` — Mika substrate that informed this row
@@ -158,7 +157,7 @@ This is the ONE explicit exception to the framework's "electricity cost only" / 
 - Legal/risk attribution block details — sub-target 6; future
 - Amazon-USB packaging design — separate concern
 - Customer-onboarding flow (how do they get the support number?) — separate concern
-- The cluster-as-PR-author substrate (per B-0789 iter-5+) — separate; downstream
+- The cluster-as-PR-author substrate (per 081KSGS9H0008QG0R002T3BJ2R iter-5+) — separate; downstream
 - Asterisk / self-hosted PBX alternative — Aaron explicitly chose Twilio in this conversation
 
 ## Origin
@@ -168,9 +167,9 @@ The maintainer 2026-05-26 during the Mika conversation (preserved verbatim at `m
 Filing as P2 because:
 
 1. **Business-model enabling**: Amazon-USB sales depend on this substrate (without it, Aaron is the support team — doesn't scale + Aaron explicitly opted out)
-2. **Composes with iter-5.x landed substrate** (#5103 self-contained USB + #5107 auto-hostname + #5108 Mika homelab preservation + B-0794 self-registration target)
+2. **Composes with iter-5.x landed substrate** (#5103 self-contained USB + #5107 auto-hostname + #5108 Mika homelab preservation + 081KSGS9H0008QG0R0027HJZYH self-registration target)
 3. **Bounded scope**: Twilio + conversational-AI substrate is well-understood domain; Aaron has prior art at blazor-samples
 4. **Single architectural exception** (electricity-cost-only rule): Aaron explicitly authorized; rationale documented
 5. **Not on critical path for iter-5.x PC1 empirical validation**: this is follow-on substrate for the business-model layer above the homelab-persona substrate
 
-Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline — implementation deferred to follow-on iteration after the homelab-persona substrate (iter-5.x + B-0794 implementation) validates empirically.
+Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline — implementation deferred to follow-on iteration after the homelab-persona substrate (iter-5.x + 081KSGS9H0008QG0R0027HJZYH implementation) validates empirically.

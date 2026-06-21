@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// SwarmBoardAnsi — **the ANSI/BBS render binding of the swarm board** (B-1026 stage; the feel
+/// SwarmBoardAnsi — **the ANSI/BBS render binding of the swarm board** (081KTSZN10008QG0R0003SDRWD stage; the feel
 /// charter's dress code: "text-first, terminal-native; ANSI/CP437 is the dress code" — the
 /// pre-internet BBS door-game look, "like claude code", for Max and Addison).
 ///

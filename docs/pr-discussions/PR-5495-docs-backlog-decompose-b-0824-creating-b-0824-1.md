@@ -1,6 +1,6 @@
 ---
 pr_number: 5495
-title: "docs(backlog): Decompose B-0824, creating B-0824.1"
+title: "docs(backlog): Decompose 081KSGS9H0008QG0R0031PBNGA, creating 081KSKBP80008QG0R002513Q0B"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T15:56:48Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:22:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5495: docs(backlog): Decompose B-0824, creating B-0824.1
+# PR #5495: docs(backlog): Decompose 081KSGS9H0008QG0R0031PBNGA, creating 081KSKBP80008QG0R002513Q0B
 
 ## General comments
 

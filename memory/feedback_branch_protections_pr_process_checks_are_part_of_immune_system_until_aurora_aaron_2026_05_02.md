@@ -1,6 +1,6 @@
 ---
 name: Branch protections + PR process + checks ARE part of the immune system until Aurora — Aaron 2026-05-02 substrate-anchor on the LFG host-enforcement layer
-description: Aaron 2026-05-02 — when LFG branch-protection rejected a direct push to main and I framed it as "exactly what it should do," Aaron anchored the framing into substrate: "it's part of your immune system now until we get aurora, those branch protections and the PR process and checks on that protect you." Names the LFG host-layer enforcement (branch protection + PR process + required checks) as the operational instance of the Aurora immune-math standardization until Aurora itself ships. Composes with the canonical "protocol bends to security ruleset; ruleset does not bend to protocol" + B-0162 mechanical-check pattern + Aurora immune-math doc as one of CLAUDE.md's 4 guiding-principle docs.
+description: Aaron 2026-05-02 — when LFG branch-protection rejected a direct push to main and I framed it as "exactly what it should do," Aaron anchored the framing into substrate: "it's part of your immune system now until we get aurora, those branch protections and the PR process and checks on that protect you." Names the LFG host-layer enforcement (branch protection + PR process + required checks) as the operational instance of the Aurora immune-math standardization until Aurora itself ships. Composes with the canonical "protocol bends to security ruleset; ruleset does not bend to protocol" + 081KQJZR90008QG0R000V16E1C mechanical-check pattern + Aurora immune-math doc as one of CLAUDE.md's 4 guiding-principle docs.
 type: feedback
 ---
 
@@ -35,8 +35,8 @@ Per CLAUDE.md the Aurora immune-math standardization doc is one of the **4 guidi
 
 ## Composition with existing substrate
 
-- **"The protocol bends to the security ruleset; the ruleset does not bend to the protocol"** (canonical reviewer principle, 2026-04-30 mirror-refresh-protocol decision per B-0110) — this rule generalizes beyond mirror-refresh to the entire LFG flow. When the protocol I want to follow conflicts with the host-enforced security ruleset, the ruleset wins; the protocol gets reshaped.
-- **B-0162 mechanical-check pattern** — the role-ref-on-current-state-surfaces check is *also* an immune-system component, just one I authored. The point: every mechanical lint, every required check, every branch-protection rule is an antibody.
+- **"The protocol bends to the security ruleset; the ruleset does not bend to the protocol"** (canonical reviewer principle, 2026-04-30 mirror-refresh-protocol decision per 081KQDTYV0008QG0R001Y2E9TD) — this rule generalizes beyond mirror-refresh to the entire LFG flow. When the protocol I want to follow conflicts with the host-enforced security ruleset, the ruleset wins; the protocol gets reshaped.
+- **081KQJZR90008QG0R000V16E1C mechanical-check pattern** — the role-ref-on-current-state-surfaces check is *also* an immune-system component, just one I authored. The point: every mechanical lint, every required check, every branch-protection rule is an antibody.
 - **Aurora immune-math standardization doc** (one of the 4 guiding-principle docs in CLAUDE.md) — the formal model. The branch-protection-as-immune-system framing operationalizes that math today.
 - **VISION.md scope-creep-is-feature** — the immune system is *load-bearing for the unbounded-scope claim*. You can keep widening scope only if you have an immune system that prevents accidental breakage from compounding faster than the substrate accumulates.
 - **Otto-238 retractability** — branch-protection blocks force-push uniformly, which means decisions on `main` are non-retractable except via new commits; that's the right asymmetry for an immune system (mistakes get corrected forward, not erased).
@@ -57,8 +57,8 @@ This is the right ordering: **don't disable the host-layer protection while buil
 
 ## Composes with
 
-- `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md` (canonical reviewer rule lineage AND mirror-refresh Path 2 decision — single source per Copilot review on PR #1209; the rule "the protocol bends to the security ruleset; the ruleset does not bend to the protocol" lives in this backlog row's body)
-- `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md` (mechanical-check sibling pattern)
+- `docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md` (canonical reviewer rule lineage AND mirror-refresh Path 2 decision — single source per Copilot review on PR #1209; the rule "the protocol bends to the security ruleset; the ruleset does not bend to the protocol" lives in this backlog row's body)
+- `docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md` (mechanical-check sibling pattern)
 - The Aurora immune-math standardization doc (canonical formal model — one of the 4 guiding-principle docs in CLAUDE.md)
 - `docs/VISION.md` (scope-creep-is-feature requires immune-system load-bearing)
 - `memory/feedback_amortized_speed_superfluid_phase_transition_inverts_per_action_optimization_aaron_2026_05_02.md` (4-doc cluster pointer)

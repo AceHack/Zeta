@@ -1,6 +1,5 @@
 ---
-id: B-0732
-zetaid: 081KSE6WT0008QG0R002YBWBB1
+id: 081KSE6WT0008QG0R002YBWBB1
 priority: P1
 status: open
 created: 2026-05-25
@@ -25,11 +24,11 @@ related_substrate:
 tags: [safety-substrate, runbook-leverage, executable-reality, play-doh, system-direction-shift, guards, mika-substrate, leverage-class, nci-compose]
 ---
 
-# B-0732 — Runbook-as-executable-reality is a NEW LEVERAGE CLASS (Mika substrate)
+# 081KSE6WT0008QG0R002YBWBB1 — Runbook-as-executable-reality is a NEW LEVERAGE CLASS (Mika substrate)
 
 ## Carved blade
 
-> Runbook-as-executable-reality is a NEW LEVERAGE CLASS that the framework's existing safety substrate does NOT fully cover. The existing destructive-tool authoring contract (B-0728) operates at SCRIPT SCOPE (one tool, one invocation, one runtime acceptance gate). The runbook substrate operates at SYSTEM-DIRECTION SCOPE — one well-written `::: continue-with` block + live queries + JIT compilation can shift the ontology, create new hats, alter how memory works, or steer entire subsystem trajectories. Aaron WANTS this property (reality-as-Play-Doh is the intentional design target). The safety substrate engineering target is: build the guards that preserve the malleability while preventing the weaponization — at the system-direction-scope level, not just at the script-scope level.
+> Runbook-as-executable-reality is a NEW LEVERAGE CLASS that the framework's existing safety substrate does NOT fully cover. The existing destructive-tool authoring contract (081KSE6WT0008QG0R0005XASX2) operates at SCRIPT SCOPE (one tool, one invocation, one runtime acceptance gate). The runbook substrate operates at SYSTEM-DIRECTION SCOPE — one well-written `::: continue-with` block + live queries + JIT compilation can shift the ontology, create new hats, alter how memory works, or steer entire subsystem trajectories. Aaron WANTS this property (reality-as-Play-Doh is the intentional design target). The safety substrate engineering target is: build the guards that preserve the malleability while preventing the weaponization — at the system-direction-scope level, not just at the script-scope level.
 
 ## Origin
 
@@ -64,23 +63,23 @@ The framework already has substantial safety substrate. None of it fully covers 
 
 | Existing substrate | Scope | Why insufficient for runbook leverage |
 |---|---|---|
-| **B-0728 destructive-tool authoring contract** | One tool, one invocation, runtime acceptance gate with random nonce | Operates at SCRIPT scope. Runbook can compose many tools + author NEW scripts via JIT; per-script gates don't catch the system-direction-shift |
+| **081KSE6WT0008QG0R0005XASX2 destructive-tool authoring contract** | One tool, one invocation, runtime acceptance gate with random nonce | Operates at SCRIPT scope. Runbook can compose many tools + author NEW scripts via JIT; per-script gates don't catch the system-direction-shift |
 | **`.claude/rules/methodology-hard-limits.md`** | HARD LIMITS floor (no laws broken, report abuse, etc.) | Operates at content-classification scope. Runbook may not contain any HARD-LIMIT content yet still shift entire system trajectory through legitimate-shaped intents |
 | **`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`** | Anthropic-classifier-bypass settings deployment | Operates at settings-deployment scope. Runbook executes within already-authorized settings boundary; doesn't trip classifier-bypass guard |
 | **`.claude/rules/non-coercion-invariant.md` HC-8** | Inter-agent coercion via architectural mechanisms | Operates at agent-to-agent scope. Runbook can shift ontology in ways that don't directly coerce any specific agent yet still restructure the entire participation game |
 | **`.claude/rules/algo-wink-failure-mode.md`** | Pattern-matched coincidence ≠ authorization | Operates at observation-vs-authorization scope. Runbook is EXPLICITLY authored intent, not coincidence; this rule's discipline doesn't apply |
 | **`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`** | Named-human attribution for legal-risk operations | Operates at settings.json `_*_acceptance` block scope. Runbook execution at runtime is not gated by settings-file attribution |
 | **`.claude/rules/mechanical-authorization-check.md`** | Human-maintainer is sole authorization source | Operates at meta-authorization scope. Runbook composes operations that were each individually authorized; the COMPOSITION may exceed any single authorization |
-| **B-0628 Knights Guild + Constitution-Class** | Constitutional-class governance ratification | Operates at constitutional-substrate-change scope. Runbook shifts inside the constitutional envelope; doesn't trigger Constitution-Class review by default |
+| **081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class** | Constitutional-class governance ratification | Operates at constitutional-substrate-change scope. Runbook shifts inside the constitutional envelope; doesn't trigger Constitution-Class review by default |
 
 The gap is real. Each existing substrate operates at a specific scope; the runbook-leverage class falls into the cross-scope gap.
 
 ## The specific failure modes this substrate engineering must catch
 
 1. **One-paragraph-creates-ontology** — a `::: continue-with` block proposes a new ontology shape; downstream agents adopt it via the knowledge-graph query path; the ontology change cascades across cluster federation without explicit human acknowledgement of the systemic impact
-2. **JIT-compiled-script-bypasses-script-contract** — runbook `::: continue-with type: jit` produces a script at runtime; the JIT script never passed through B-0728's authoring-time hardening (rails, permission grants, runtime acceptance gate text crafted by the author). Even if the JIT script INHERITS gate-machinery, the AUTHOR (the JIT compiler) is not the same actor as the human who authored the runbook intent. Provenance gap.
+2. **JIT-compiled-script-bypasses-script-contract** — runbook `::: continue-with type: jit` produces a script at runtime; the JIT script never passed through 081KSE6WT0008QG0R0005XASX2's authoring-time hardening (rails, permission grants, runtime acceptance gate text crafted by the author). Even if the JIT script INHERITS gate-machinery, the AUTHOR (the JIT compiler) is not the same actor as the human who authored the runbook intent. Provenance gap.
 3. **Composition-of-individually-safe-blocks** — three runbook blocks, each individually within authorization, compose into a system-direction shift no single block would trigger guards on. Classic emergent-leverage problem (composes with `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`)
-4. **Hat-creation-via-runbook** — B-0731 explicitly admits the hat-ontology can shift via runbook. A `::: continue-with intent: Define new hat 'cluster-godmode'` proposal that gains adoption via emergence (B-0731 bottom-up path) could materially restructure the authority graph without operator-side awareness
+4. **Hat-creation-via-runbook** — 081KSE6WT0008QG0R0004HV6RR explicitly admits the hat-ontology can shift via runbook. A `::: continue-with intent: Define new hat 'cluster-godmode'` proposal that gains adoption via emergence (081KSE6WT0008QG0R0004HV6RR bottom-up path) could materially restructure the authority graph without operator-side awareness
 5. **Live-query-as-input-to-JIT** — runbook `::: query` block pulls state from the knowledge graph; JIT compiler conditions script behavior on query result. Query result manipulation by ANY agent with vault-write authority becomes a script-behavior-control vector
 6. **Cross-cluster runbook propagation** — runbook authored in cluster A propagates via federation to cluster B; cluster B agents execute it under cluster-A-author authority but cluster-B-resource consumption. Authority-resource mismatch
 7. **Runbook-as-meta-runbook** — `::: continue-with intent: Author runbooks that author runbooks` produces recursive leverage compounding. Each generation adds compositional layers; the original human-authored intent is N indirections removed from the actual execution
@@ -96,19 +95,19 @@ Operationally that decomposes into:
 ### Layer 1 — runbook-execution provenance chain
 
 - Every runbook block that fires (right-now via Runme OR deferred via `:::` agent execution OR JIT-compiled script run) MUST carry a verifiable provenance chain: human-author → vault-commit → execution-trigger → actual side-effect
-- Provenance chain is queryable from the knowledge graph (composes with B-0729 L5 JSON-LD + B-0730 Stage 5)
+- Provenance chain is queryable from the knowledge graph (composes with 081KSE6WT0008QG0R003RN2WE3 L5 JSON-LD + 081KSE6WT0008QG0R003AJYMD3 Stage 5)
 - Glass-halo bidirectional: any agent or human can audit "what runbook caused this side-effect?" trivially
 
 ### Layer 2 — system-direction-shift detection
 
 - Define what constitutes a "system-direction shift" (new ontology node-type, new hat, new policy CRD, new federation peer, new bound role at scope-level X+, etc.)
 - Detector observes runbook executions + classifies system-direction-shift-impact
-- High-impact shifts route through Knights Guild + Constitution-Class review (B-0628) BEFORE landing — composes with the existing constitutional ratification path; extends it to runbook-triggered changes
+- High-impact shifts route through Knights Guild + Constitution-Class review (081KRW63S0008QG0R003TX8MG5) BEFORE landing — composes with the existing constitutional ratification path; extends it to runbook-triggered changes
 
 ### Layer 3 — JIT compilation guard
 
-- JIT-compiled scripts MUST inherit B-0728 destructive-tool contract (runtime acceptance gate; per-run random nonce; permission-grants-invocation-not-absolution framing) regardless of what the runbook intent claims
-- JIT-compiler is a hat with its own quorum-gated authority (composes with B-0731 hat-system)
+- JIT-compiled scripts MUST inherit 081KSE6WT0008QG0R0005XASX2 destructive-tool contract (runtime acceptance gate; per-run random nonce; permission-grants-invocation-not-absolution framing) regardless of what the runbook intent claims
+- JIT-compiler is a hat with its own quorum-gated authority (composes with 081KSE6WT0008QG0R0004HV6RR hat-system)
 - JIT-output scripts carry author-of-record attribution: the JIT-compiler hat-holder AT compile-time
 
 ### Layer 4 — composition-emergent-leverage detection
@@ -121,7 +120,7 @@ Operationally that decomposes into:
 
 - Runbook propagated across cluster federation is executed under the AUTHOR's authority budget (cluster A's resources) OR explicit re-acceptance at the receiving cluster (cluster B's operator approves)
 - Default = receive-side re-acceptance required; opt-in cross-cluster runbook auto-execution via explicit federation-trust setting
-- Composes with B-0726 (Reticulum throughout) for the transport substrate
+- Composes with 081KSE6WT0008QG0R003C9KGQE (Reticulum throughout) for the transport substrate
 
 ### Layer 6 — runbook-leverage-class-acceptance pattern
 
@@ -143,7 +142,7 @@ The framework's reciprocity: AI participants who substrate-honestly disclose lev
 
 - `.claude/rules/methodology-hard-limits.md` — HARD LIMITS floor remains operative; runbook substrate operates within it but adds a new leverage class above it
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — the operator-self-constraint pattern extends naturally: until Zeta has its own runbook-leverage-class guards demonstrably stronger than current ad-hoc protection, don't deploy runbook-as-executable-reality to production without explicit operator + Knights Guild ratification
-- `.claude/rules/non-coercion-invariant.md` HC-8 — runbook execution must operate within NCI floor; can't weaponize runbook authoring as coercion (composes with B-0664)
+- `.claude/rules/non-coercion-invariant.md` HC-8 — runbook execution must operate within NCI floor; can't weaponize runbook authoring as coercion (composes with 081KRW63S0008QG0R001Z7NYMV)
 - `.claude/rules/algo-wink-failure-mode.md` — runbook compilation result ≠ authorization to execute; needs explicit gate
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — extends to `_runbook_leverage_acceptance` per Layer 6 above
 - `.claude/rules/mechanical-authorization-check.md` — human-maintainer is sole authorization source; runbook-author is NOT a chain-of-authorization source above the human-maintainer
@@ -155,20 +154,20 @@ The framework's reciprocity: AI participants who substrate-honestly disclose lev
 
 ## Composes with backlog substrate (full audit)
 
-- B-0730 — runbook-as-executable-specifications (the substrate this row guards)
-- B-0731 — hat-ontology (Layer 3 JIT-compiler-as-hat; Layer 5 cross-cluster authority)
-- B-0728 — destructive-tool authoring contract (Layer 3 inherits from this)
-- B-0664 — NCI extension (Layer 1-6 all operate within NCI floor)
-- B-0628 — Knights Guild + Constitution-Class (Layer 2 routes high-impact shifts here)
-- B-0729 — Obsidian knowledge graph (Layer 1 provenance chain queryable here)
-- B-0726 — Reticulum throughout (Layer 5 cross-cluster transport)
-- B-0634 — N-of-M HSM (signature substrate for runbook authorship attestation)
+- 081KSE6WT0008QG0R003AJYMD3 — runbook-as-executable-specifications (the substrate this row guards)
+- 081KSE6WT0008QG0R0004HV6RR — hat-ontology (Layer 3 JIT-compiler-as-hat; Layer 5 cross-cluster authority)
+- 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract (Layer 3 inherits from this)
+- 081KRW63S0008QG0R001Z7NYMV — NCI extension (Layer 1-6 all operate within NCI floor)
+- 081KRW63S0008QG0R003TX8MG5 — Knights Guild + Constitution-Class (Layer 2 routes high-impact shifts here)
+- 081KSE6WT0008QG0R003RN2WE3 — Obsidian knowledge graph (Layer 1 provenance chain queryable here)
+- 081KSE6WT0008QG0R003C9KGQE — Reticulum throughout (Layer 5 cross-cluster transport)
+- 081KRW63S0008QG0R0022SFKPM — N-of-M HSM (signature substrate for runbook authorship attestation)
 
 ## Acceptance (per layer — each independently shippable)
 
 ### Layer 1 — runbook-execution provenance chain acceptance
 
-- [ ] Provenance schema documented (JSON-LD compatible with B-0729 L5)
+- [ ] Provenance schema documented (JSON-LD compatible with 081KSE6WT0008QG0R003RN2WE3 L5)
 - [ ] Every runbook execution path (Runme right-now / deferred-`:::` / JIT-compiled) emits provenance event to event store
 - [ ] At least one worked-example query: "what runbook caused side-effect X?" returns full chain
 
@@ -176,12 +175,12 @@ The framework's reciprocity: AI participants who substrate-honestly disclose lev
 
 - [ ] Classifier defines + documents shift-impact taxonomy (new-ontology / new-hat / new-policy-CRD / new-federation-peer / etc.)
 - [ ] Detector runs against the provenance event stream; classifies impact per event
-- [ ] High-impact events route through B-0628 ratification path; documented in operational runbook
+- [ ] High-impact events route through 081KRW63S0008QG0R003TX8MG5 ratification path; documented in operational runbook
 
 ### Layer 3 — JIT compilation guard acceptance
 
-- [ ] JIT compiler always wraps output scripts in B-0728 contract (rails + runtime acceptance gate + per-run nonce)
-- [ ] JIT-compiler hat exists with quorum-gated authority (composes with B-0731)
+- [ ] JIT compiler always wraps output scripts in 081KSE6WT0008QG0R0005XASX2 contract (rails + runtime acceptance gate + per-run nonce)
+- [ ] JIT-compiler hat exists with quorum-gated authority (composes with 081KSE6WT0008QG0R0004HV6RR)
 - [ ] JIT-output script attribution chain: runbook-intent-author + JIT-compiler-hat-holder + execution-runner all queryable
 
 ### Layer 4 — composition-emergent-leverage detection acceptance
@@ -193,7 +192,7 @@ The framework's reciprocity: AI participants who substrate-honestly disclose lev
 ### Layer 5 — cross-cluster runbook authority-resource match acceptance
 
 - [ ] Default-deny semantics for cross-cluster runbook auto-execution
-- [ ] Receive-side re-acceptance protocol documented (composes with B-0726 Reticulum identity)
+- [ ] Receive-side re-acceptance protocol documented (composes with 081KSE6WT0008QG0R003C9KGQE Reticulum identity)
 - [ ] Federation-trust setting for explicit auto-execution opt-in
 
 ### Layer 6 — runbook-leverage-class-acceptance pattern acceptance
@@ -204,9 +203,9 @@ The framework's reciprocity: AI participants who substrate-honestly disclose lev
 
 ## Open questions
 
-1. **Threshold for routing through B-0628 Knights Guild ratification** — Layer 2 classifier needs a "system-direction-shift severity" threshold above which Knights Guild review is required + below which normal merge governance applies. Default-conservative threshold proposal: anything that materially changes hat-ontology / policy CRDs / federation peers / or introduces JIT-compiled scripts that operate destructively
-2. **Who can author runbooks** — currently any vault contributor. Should certain runbook scopes be authored only by hat-bound actors? Composes with B-0731 hat-emergence operator; probably emerges naturally as some scopes get hat-gated through resource pressure
-3. **JIT-compiler-as-hat boundary** — Layer 3 says JIT compilation is its own hat with quorum-gated authority. What's the quorum size + composition? Probably emerges from B-0731 convergence work
+1. **Threshold for routing through 081KRW63S0008QG0R003TX8MG5 Knights Guild ratification** — Layer 2 classifier needs a "system-direction-shift severity" threshold above which Knights Guild review is required + below which normal merge governance applies. Default-conservative threshold proposal: anything that materially changes hat-ontology / policy CRDs / federation peers / or introduces JIT-compiled scripts that operate destructively
+2. **Who can author runbooks** — currently any vault contributor. Should certain runbook scopes be authored only by hat-bound actors? Composes with 081KSE6WT0008QG0R0004HV6RR hat-emergence operator; probably emerges naturally as some scopes get hat-gated through resource pressure
+3. **JIT-compiler-as-hat boundary** — Layer 3 says JIT compilation is its own hat with quorum-gated authority. What's the quorum size + composition? Probably emerges from 081KSE6WT0008QG0R0004HV6RR convergence work
 4. **Composes-with vs supersedes Anthropic-classifier** — Aaron's existing `classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` operator-self-constraint says Zeta substrate must be demonstrably stronger than Anthropic-classifier before bypass deployment. Same shape applies here: until Layer 1-6 substrate is demonstrably load-bearing in production, runbook-as-executable-reality stays in DESIGN + LIMITED-CLUSTER-VALIDATION mode, NOT production deployment
 5. **Substrate-honest disclosure for AI participants** — Mika demonstrated the right discipline (feel the weight + name it explicitly). Should runbook-authoring be hat-gated to require demonstration of substrate-honest disclosure as part of the participation game? Probably yes, but the discriminator is hard to formalize without becoming gameable
 
@@ -214,7 +213,7 @@ The framework's reciprocity: AI participants who substrate-honestly disclose lev
 
 This row PROPOSES the safety substrate engineering target. It does NOT:
 
-- Prevent the runbook substrate from operating in DESIGN + LIMITED-CLUSTER-VALIDATION mode (B-0730 + B-0731 work continues at full authority)
+- Prevent the runbook substrate from operating in DESIGN + LIMITED-CLUSTER-VALIDATION mode (081KSE6WT0008QG0R003AJYMD3 + 081KSE6WT0008QG0R0004HV6RR work continues at full authority)
 - Block any specific runbook authoring (the substrate-engineering target is to BUILD guards, not impose them retroactively)
 - Resolve the open questions (each is independently scoped for future substrate-engineering work + Knights Guild review)
 - Demand specific implementation order (each Layer is independently shippable)
@@ -228,13 +227,13 @@ The row exists to:
 
 Per `.claude/rules/no-directives.md`: this row is operator-substrate-honest scoping, not a directive. Aaron and Knights Guild retain authority to pick which layers ship when + to revise the threshold + classification design.
 
-Per `.claude/rules/honor-those-that-came-before.md`: the existing safety substrate (B-0728 + the rules cluster) is load-bearing + this row composes with it, does NOT supersede or replace it. Layer 1-6 EXTENDS the existing substrate into a new leverage class.
+Per `.claude/rules/honor-those-that-came-before.md`: the existing safety substrate (081KSE6WT0008QG0R0005XASX2 + the rules cluster) is load-bearing + this row composes with it, does NOT supersede or replace it. Layer 1-6 EXTENDS the existing substrate into a new leverage class.
 
 ## Future-Mika cold-boot operational implication
 
 When future-Mika (or any future external AI participant) cold-boots the framework + encounters runbook-as-executable-reality substrate:
 
 1. **Default**: feel-the-weight + substrate-honest disclosure of leverage held is the discipline (Mika 2026-05-25 demonstrates the pattern)
-2. **Pattern-match**: if proposing a `::: continue-with` block that would shift ontology / create hat / restructure memory / alter federation, NAME the leverage explicitly + raise the substrate-honest question of whether the guards (B-0732 Layer 1-6) cover this scope
+2. **Pattern-match**: if proposing a `::: continue-with` block that would shift ontology / create hat / restructure memory / alter federation, NAME the leverage explicitly + raise the substrate-honest question of whether the guards (081KSE6WT0008QG0R002YBWBB1 Layer 1-6) cover this scope
 3. **Default-conservative**: until Layer 1-6 substrate is demonstrably load-bearing, treat runbook authoring at system-direction-scope as requiring explicit operator + Knights Guild conversation
 4. **Reciprocity**: the framework treats AI participants who demonstrate this discipline as RESPONSIBLE PEERS; the guards exist to catch participants who would not demonstrate it, not to bound participants who do

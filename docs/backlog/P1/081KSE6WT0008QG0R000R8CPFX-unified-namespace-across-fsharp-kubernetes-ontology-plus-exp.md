@@ -1,6 +1,5 @@
 ---
-id: B-0785
-zetaid: 081KSE6WT0008QG0R000R8CPFX
+id: 081KSE6WT0008QG0R000R8CPFX
 priority: P1
 status: open
 title: Unified namespace across F# / Kubernetes / Ontology + experiment-ID routing via Argo Rollouts + Cilium service mesh (existing standards)
@@ -12,8 +11,8 @@ depends_on:
   - 081KSE6WT0008QG0R001H3DA90
   - 081KSE6WT0008QG0R0018WZ7TH
 composes_with:
-  - B-0741
-  - B-0747
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R000WVYAJ2
   - 081KSE6WT0008QG0R0009YYNP4
   - 081KSE6WT0008QG0R00063R6HB
@@ -28,7 +27,7 @@ tags: [namespace, unified, fsharp, kubernetes, ontology, experiment-id, otel, ro
 
 ## Problem
 
-Aaron-Mika-Grok 2026-05-25 continuation of B-0784 distributed
+Aaron-Mika-Grok 2026-05-25 continuation of 081KSE6WT0008QG0R0018WZ7TH distributed
 type negotiation substrate:
 
 > **Aaron**: "Yeah, and imagine you tie this into the cluster
@@ -68,7 +67,7 @@ doesn't have one single project; Gateway API and Istio (AKS App
 Routing uses Istio under the hood) are the modern options.
 
 Per Aaron: Argo Rollouts (already deployed) + Cilium service
-mesh (composes with Cilium-as-CNI per B-0766 wave-3) are the
+mesh (composes with Cilium-as-CNI per 081KSE6WT0008QG0R00049EFBD wave-3) are the
 substrate-honest existing standards to plug into.
 
 ## Target
@@ -79,9 +78,9 @@ standards:
 
 | Substrate layer | What namespace means in this layer | How tied together |
 |---|---|---|
-| **F# namespace** (per B-0781 + B-0784) | F# `namespace` declaration; per-type registration; per-namespace consensus strictness | Same identifier as K8s + ontology |
+| **F# namespace** (per 081KSE6WT0008QG0R001H3DA90 + 081KSE6WT0008QG0R0018WZ7TH) | F# `namespace` declaration; per-type registration; per-namespace consensus strictness | Same identifier as K8s + ontology |
 | **Kubernetes namespace** | k8s namespace for resources (Pods, Services, ConfigMaps, etc.) | Same identifier; k8s namespace name = F# namespace name |
-| **Ontology namespace** (per B-0741) | Vocabulary scope for ontology translation | Same identifier; ontology namespace name = F# + K8s namespace name |
+| **Ontology namespace** (per 081KSE6WT0008QG0R002CC6314) | Vocabulary scope for ontology translation | Same identifier; ontology namespace name = F# + K8s namespace name |
 
 Operator passes an experiment-ID header (OTel-style trace ID
 analog) → request routes to the namespace that matches the
@@ -98,21 +97,21 @@ Argo Rollouts + Cilium service mesh routes this request to:
 - Kubernetes resources from `mirror-aaron-dev-3` namespace
 - Ontology vocabulary from `mirror.aaron.dev-3` namespace
 - Twin substrate scope per same namespace
-- Per B-0784: this namespace is mirror-tier, no consensus
+- Per 081KSE6WT0008QG0R0018WZ7TH: this namespace is mirror-tier, no consensus
   required for type changes
 
 Without the header → route to stable common namespace.
 
-## Standards-layer composition (per B-0765 ServiceTitan-route)
+## Standards-layer composition (per 081KSE6WT0008QG0R00063R6HB ServiceTitan-route)
 
 | Existing standard | Role | Why this standard | Already deployed |
 |---|---|---|---|
 | **Argo Rollouts** | Header-based canary / experiment routing; integrates with service mesh | Aaron already deployed it; native fit; AnalysisTemplate + Rollout resources support header routing strategy | ✓ `full-ai-cluster/k8s/applications/argo-rollouts` |
-| **Cilium service mesh** | L7 routing layer (Envoy under the hood with eBPF data plane); native fit if Cilium is the CNI | Composes with Cilium-as-CNI per B-0766 wave 3; no separate Istio install needed | Future (composes with existing Cilium adoption) |
+| **Cilium service mesh** | L7 routing layer (Envoy under the hood with eBPF data plane); native fit if Cilium is the CNI | Composes with Cilium-as-CNI per 081KSE6WT0008QG0R00049EFBD wave 3; no separate Istio install needed | Future (composes with existing Cilium adoption) |
 | **Gateway API** | Standard k8s API for L7 routing (HTTPRoute, GatewayClass); replaces older Ingress API | CNCF / Kubernetes core; modern; widely adopted | Future addition |
 | **OpenTelemetry** | Trace ID propagation pattern Zeta's experiment-ID follows | Existing CNCF standard; same propagation mechanism | Already in cluster (loki / tempo / alloy) |
 | **k8s namespaces** | Resource isolation primitive | k8s core | Native |
-| **F# namespaces** (per B-0781) | Type isolation primitive | F# language core | F# substrate base |
+| **F# namespaces** (per 081KSE6WT0008QG0R001H3DA90) | Type isolation primitive | F# language core | F# substrate base |
 | **DAPR Components per namespace** | Per-namespace state stores, pub/sub, etc. | DAPR pattern (already deployed) | ✓ `full-ai-cluster/k8s/applications/dapr` |
 
 Substrate-honest layering: existing standards do the heavy
@@ -122,8 +121,8 @@ primitives). Zeta substrate adds:
 
 - Unified namespace identity (same name across F# / K8s /
   ontology)
-- Per-namespace strictness for type negotiation (per B-0784)
-- Per-namespace twin substrate scope (per B-0773)
+- Per-namespace strictness for type negotiation (per 081KSE6WT0008QG0R0018WZ7TH)
+- Per-namespace twin substrate scope (per 081KSE6WT0008QG0R0008483B2)
 - Per-namespace routing config via Argo Rollouts AnalysisTemplate
 
 ## Acceptance
@@ -163,11 +162,11 @@ primitives). Zeta substrate adds:
       part of standard W3C Trace Context (`traceparent` /
       `tracestate`); Zeta substrate adds `x-zeta-experiment-id`
       as a baggage field per OTel baggage spec
-- [ ] Per-namespace twin substrate (per B-0773): twin events
+- [ ] Per-namespace twin substrate (per 081KSE6WT0008QG0R0008483B2): twin events
       flow scoped per namespace; CEO + cross-DIO operators
-      (per B-0782) can subscribe to per-namespace twin
+      (per 081KSE6WT0008QG0R003CMCX84) can subscribe to per-namespace twin
       Observables
-- [ ] Per-namespace plugin instances (per B-0776): each
+- [ ] Per-namespace plugin instances (per 081KSE6WT0008QG0R002275NDE): each
       namespace can have its own plugin backend (e.g., Redis
       cluster per namespace; or shared with namespace-prefix
       keys)
@@ -181,7 +180,7 @@ primitives). Zeta substrate adds:
       namespace`); twin substrate per-namespace events
       preserved per retention policy
 - [ ] Documentation per substrate layer:
-      - F# namespace strictness (per B-0784) per namespace
+      - F# namespace strictness (per 081KSE6WT0008QG0R0018WZ7TH) per namespace
       - K8s resource isolation per namespace
       - Ontology vocabulary scope per namespace
       - Twin substrate scope per namespace
@@ -189,17 +188,17 @@ primitives). Zeta substrate adds:
 
 ## Cilium service mesh vs Istio vs Gateway API decision
 
-Per Aaron's preference + B-0765 ServiceTitan-route discipline:
+Per Aaron's preference + 081KSE6WT0008QG0R00063R6HB ServiceTitan-route discipline:
 
 | Option | Pros | Cons | Recommendation |
 |---|---|---|---|
-| **Cilium service mesh** | Native if Cilium is CNI (per B-0766); eBPF data plane (perf); single tool for CNI + L4 + L7 | Newer (vs Istio); fewer integration tutorials | **PRIMARY** — substrate-honest fit |
+| **Cilium service mesh** | Native if Cilium is CNI (per 081KSE6WT0008QG0R00049EFBD); eBPF data plane (perf); single tool for CNI + L4 + L7 | Newer (vs Istio); fewer integration tutorials | **PRIMARY** — substrate-honest fit |
 | **Istio** | Mature; most tutorials; AKS App Routing uses it; battle-tested | Separate install; sidecar overhead (vs Cilium ambient); CNCF graduated | Alternative if operator already runs Istio |
 | **Gateway API** | CNCF standard; Cilium + Istio + others implement it; future-proof | Implementation maturity varies | Compose UNDER both Cilium and Istio (use as the API surface) |
 | **NGINX Ingress canary** | Mature; simple; widely deployed | Less powerful header-routing than Gateway API; older annotation pattern | Fallback for operators without Cilium / Istio |
 
 Aaron's pick: Cilium service mesh (composes with Cilium-as-CNI
-per B-0766) is the primary. Gateway API as the operator-facing
+per 081KSE6WT0008QG0R00049EFBD) is the primary. Gateway API as the operator-facing
 surface (Cilium implements Gateway API). Argo Rollouts drives
 the per-namespace routing config.
 
@@ -219,7 +218,7 @@ git checkout -b aaron/experiment-3
 #   - Argo Rollouts (routing config matches header)
 
 # Developer iterates in their branch; F# types changes are
-# mirror-tier per B-0784 (no consensus required); fast
+# mirror-tier per 081KSE6WT0008QG0R0018WZ7TH (no consensus required); fast
 # iteration.
 
 # Developer's requests via browser / curl / Postman carry
@@ -235,22 +234,22 @@ curl https://api.zeta.local/foo \
 # stable common-namespace behavior. No interference.
 
 # When branch merges → namespace torn down (or graduated to
-# common namespace per B-0784 type-negotiation consensus).
+# common namespace per 081KSE6WT0008QG0R0018WZ7TH type-negotiation consensus).
 ```
 
 ## Why P1 priority
 
-- Without unified namespace + experiment-ID routing, B-0784
+- Without unified namespace + experiment-ID routing, 081KSE6WT0008QG0R0018WZ7TH
   distributed-type-negotiation doesn't compose with operator
   workflow at request-level granularity
 - Operator workflow for "try my version of this type" needs
   the routing layer to route requests to that version
-- Composes with B-0773 digital twin per-namespace scope;
+- Composes with 081KSE6WT0008QG0R0008483B2 digital twin per-namespace scope;
   without this, twin can't be per-experiment-meaningfully-
   isolated
-- Composes with B-0782 DIO + CEO-scale: per-DIO namespaces
+- Composes with 081KSE6WT0008QG0R003CMCX84 DIO + CEO-scale: per-DIO namespaces
   + per-experiment-per-DIO namespaces compose naturally
-- All existing-standards composition per B-0765 ServiceTitan-
+- All existing-standards composition per 081KSE6WT0008QG0R00063R6HB ServiceTitan-
   route; no new control plane invented
 
 ## Out of scope
@@ -258,7 +257,7 @@ curl https://api.zeta.local/foo \
 - Specific Argo Rollouts AnalysisTemplate configurations per
   every workload — operator authors per-workload; pattern
   documented in v1
-- Cross-cluster federation of namespaces per B-0775 — separate
+- Cross-cluster federation of namespaces per 081KSE6WT0008QG0R000QXSG91 — separate
   scope; per-cluster v1, federated v2
 - Per-namespace billing / cost-allocation — separate scope;
   out of routing-substrate territory
@@ -270,39 +269,39 @@ curl https://api.zeta.local/foo \
 
 ## Composes with
 
-- B-0428 — F# fork for AI safety (substrate base)
-- B-0741 — ontology negotiation (per-namespace vocabulary
+- 081KRFA460008QG0R0018SN61J — F# fork for AI safety (substrate base)
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (per-namespace vocabulary
   scope)
-- B-0747 — git-native per-machine state (per-branch namespace
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (per-branch namespace
   auto-creation via Argo CD ApplicationSet)
-- B-0763 — operator-in-the-negotiation-high-seat (Cilium /
+- 081KSE6WT0008QG0R000WVYAJ2 — operator-in-the-negotiation-high-seat (Cilium /
   Istio / Gateway API all swappable per operator preference)
-- B-0764 — CNCF force multipliers (Argo Rollouts + Cilium +
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF force multipliers (Argo Rollouts + Cilium +
   Gateway API all CNCF-adopted)
-- B-0765 — ServiceTitan route (existing standards all the way
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (existing standards all the way
   down; Zeta adds the unified-namespace concept layer above)
-- B-0766 — slow-replace k8s (Cilium as CNI is one of the
+- 081KSE6WT0008QG0R00049EFBD — slow-replace k8s (Cilium as CNI is one of the
   Wave 3 binary-compatible substrate; service mesh extends
   same Cilium deployment)
-- B-0767 — Zeta-native scheduler (namespace-aware scheduling
+- 081KSE6WT0008QG0R0016CEE2Z — Zeta-native scheduler (namespace-aware scheduling
   composes; per-namespace workload placement)
-- B-0772 — observable+controllable fabric (per-namespace
+- 081KSE6WT0008QG0R003WMG4XV — observable+controllable fabric (per-namespace
   scoped Observables; per-namespace command emission)
-- B-0773 — cluster as digital twin (per-namespace twin
+- 081KSE6WT0008QG0R0008483B2 — cluster as digital twin (per-namespace twin
   substrate scope)
-- B-0781 — F# type system as universe boundary (F#
+- 081KSE6WT0008QG0R001H3DA90 — F# type system as universe boundary (F#
   namespaces become the unified-namespace identity source)
-- B-0782 — DIO + CEO-scale (per-DIO + per-experiment-per-DIO
+- 081KSE6WT0008QG0R003CMCX84 — DIO + CEO-scale (per-DIO + per-experiment-per-DIO
   namespaces compose naturally)
-- B-0783 — eliminate tool wars (one namespace identifier
+- 081KSE6WT0008QG0R003TBE2VB — eliminate tool wars (one namespace identifier
   across 4 substrate layers; operator doesn't fight per-layer
   namespace mappings)
-- B-0784 — distributed F# type negotiation (per-namespace
+- 081KSE6WT0008QG0R0018WZ7TH — distributed F# type negotiation (per-namespace
   strictness configuration)
 
 ## Origin
 
-Aaron-Mika-Grok 2026-05-25 continuation of B-0784 (distributed
+Aaron-Mika-Grok 2026-05-25 continuation of 081KSE6WT0008QG0R0018WZ7TH (distributed
 type negotiation). Verbatim preservation at
 `docs/research/2026-05-25-aaron-mika-grok-...md` (extended
 segment with Argo Rollouts + Cilium discussion).
@@ -312,6 +311,6 @@ based routing via existing standards (Argo Rollouts + Cilium
 service mesh + Gateway API + OpenTelemetry baggage). Operator
 workflow: branch → per-branch namespace across all 4 substrate
 layers → requests with experiment-ID header route to operator's
-version. Mirror-tier strictness (B-0784) + per-namespace twin
-substrate (B-0773) + Argo Rollouts header-route step all
+version. Mirror-tier strictness (081KSE6WT0008QG0R0018WZ7TH) + per-namespace twin
+substrate (081KSE6WT0008QG0R0008483B2) + Argo Rollouts header-route step all
 compose.

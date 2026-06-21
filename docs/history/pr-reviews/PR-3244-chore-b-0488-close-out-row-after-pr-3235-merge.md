@@ -29,18 +29,18 @@
 
 ## Summary
 
-Closes out [B-0488](docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md) after the substantive work landed via [#3235](https://github.com/Lucent-Financial-Group/Zeta/pull/3235).
+Closes out [081KRHWGX0008QG0R001HDK688](docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md) after the substantive work landed via [#3235](https://github.com/Lucent-Financial-Group/Zeta/pull/3235).
 
 ## Changes (metadata only)
 
 - `status`: `in-progress` → `closed`
 - `closed_by`: `"PR #3235 (2026-05-14)"` (frontmatter field added)
 - All 6 Definition-of-done checkboxes ticked with specifics:
-  - Template from B-0485 applied
+  - Template from 081KRHWGX0008QG0R00019453T applied
   - Grey-hat / ethical-researcher framing folded into `ksk-security-engineer` (per glossary's "small bit of code that gets disproportionate review" framing)
   - 2 refused personas (R1 `ksk-refused-weapons-control` + R2 `ksk-refused-apt-operator`) with HARD LIMITS rationale
   - Output doc at `docs/personas/ksk-personas.md`
-  - B-0492 `composes_with` pointer was already in place (verified — see B-0492 frontmatter line 23)
+  - 081KRHWGX0008QG0R000WGP5AQ `composes_with` pointer was already in place (verified — see 081KRHWGX0008QG0R000WGP5AQ frontmatter line 23)
   - Row status closed with PR link
 
 Pure metadata + checkbox-tick row close-out. No behavioural changes.

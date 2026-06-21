@@ -1,6 +1,6 @@
 ---
 pr_number: 5471
-title: "feat(B-0858.4): merge-heartbeats-to-main tool \u2014 periodic squash-merge from agent-heartbeats \u2192 main (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R001KK9WV6.4): merge-heartbeats-to-main tool \u2014 periodic squash-merge from agent-heartbeats \u2192 main (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T14:18:58Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T17:54:39Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5471: feat(B-0858.4): merge-heartbeats-to-main tool — periodic squash-merge from agent-heartbeats → main (Aaron 2026-05-27)
+# PR #5471: feat(081KSKBP80008QG0R001KK9WV6.4): merge-heartbeats-to-main tool — periodic squash-merge from agent-heartbeats → main (Aaron 2026-05-27)
 
 ## PR description
 

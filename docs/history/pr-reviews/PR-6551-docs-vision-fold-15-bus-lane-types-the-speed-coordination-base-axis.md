@@ -29,10 +29,10 @@
 
 Aaron 2026-06-02: **"now we can have bus lane types … for speed and coordination paradigms"** + **"you are compressing [a] new base axis"** (fold-authorized once #6550 merged).
 
-Adds **§15** — the relativistic bus (§14) carries **typed lanes** (`BusLaneType` DU, per the explicit-DU discipline). The key insight: **the lane-type is a NEW BASE AXIS** — the **speed↔coordination axis** — orthogonal to the privacy/identity/state-remainder/entropy-index axes (universal-basis-decomposition B-0842; Rodney's-Razor compresses the dial to its canonical base-axis form — "compressing new base axis").
+Adds **§15** — the relativistic bus (§14) carries **typed lanes** (`BusLaneType` DU, per the explicit-DU discipline). The key insight: **the lane-type is a NEW BASE AXIS** — the **speed↔coordination axis** — orthogonal to the privacy/identity/state-remainder/entropy-index axes (universal-basis-decomposition 081KSGS9H0008QG0R003V8C86Q; Rodney's-Razor compresses the dial to its canonical base-axis form — "compressing new base axis").
 
 It parameterizes `(speed, coordination-paradigm)`:
-- **sovereign fast-lane** (B-0890 folders-on-main, no-PR) = max speed, minimal coordination;
+- **sovereign fast-lane** (081KSNY2Z0008QG0R0017JSTGD folders-on-main, no-PR) = max speed, minimal coordination;
 - **corporate leash-lane** (branches + batch-coordinator + PR gates) = coordination paradigm, multi-party-safe;
 - per-agent / product-demand / priority lanes.
 

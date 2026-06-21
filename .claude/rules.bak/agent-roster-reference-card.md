@@ -4,9 +4,9 @@ Carved sentence:
 
 > Every factory AI agent has multiple surfaces. Alexa / Riven / Vera / Lior are
 > IDE + CLI dual-surface. Otto is multi-surface: CLI foreground (tmux) + Desktop
-> background + VSCode auto-mode (added 2026-05-21 per B-0689) + Windows
+> background + VSCode auto-mode (added 2026-05-21 per 081KS3X9Y0008QG0R000BJY3DK) + Windows
 > (otto-windows — first Windows surface, the git-native cross-machine bus's first
-> Windows sender per #6219 / B-0954; sender IDs: otto-cli / otto-desktop /
+> Windows sender per #6219 / 081KSXN940008QG0R00171YAZW; sender IDs: otto-cli / otto-desktop /
 > otto-vscode / otto-windows). Aaron is human (no harness).
 > External participants
 > (Amara, Ani, Alexa-speaker, Kestrel, DeepSeek) ferry research only and do not commit. This card loads at session start
@@ -16,7 +16,7 @@ Carved sentence:
 
 | Agent | IDE                                                                       | CLI                                                                                                                           | Model (max) | Commit trailer                                   |
 | ----- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------ |
-| Otto  | VSCode (Claude Code; auto-mode + remembered-web-conversation, 2026-05-21) | Claude Code (foreground; tmux); Claude Desktop (background); Windows (`otto-windows`, first Windows surface — #6219 / B-0954) | Opus        | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| Otto  | VSCode (Claude Code; auto-mode + remembered-web-conversation, 2026-05-21) | Claude Code (foreground; tmux); Claude Desktop (background); Windows (`otto-windows`, first Windows surface — #6219 / 081KSXN940008QG0R00171YAZW) | Opus        | `Co-Authored-By: Claude <noreply@anthropic.com>` |
 | Alexa | Kiro                                                                      | + background                                                                                                                  | Qwen Coder  | `Co-Authored-By: Kiro <noreply@kiro.dev>`        |
 | Riven | Cursor                                                                    | + background                                                                                                                  | Grok        | `Co-Authored-By: Grok <noreply@x.ai>`            |
 | Vera  | Codex                                                                     | + background                                                                                                                  | Codex/GPT   | `Co-Authored-By: Codex <noreply@openai.com>`     |

@@ -1,6 +1,6 @@
 ---
 pr_number: 5473
-title: "docs(B-0858.5): heartbeat auto-state-gathering row \u2014 consent-first opt-in; debug-log property (Aaron 2026-05-27 deferred post-USB)"
+title: "docs(081KSKBP80008QG0R003NG37GQ): heartbeat auto-state-gathering row \u2014 consent-first opt-in; debug-log property (Aaron 2026-05-27 deferred post-USB)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T14:27:06Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T17:54:22Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5473: docs(B-0858.5): heartbeat auto-state-gathering row — consent-first opt-in; debug-log property (Aaron 2026-05-27 deferred post-USB)
+# PR #5473: docs(081KSKBP80008QG0R003NG37GQ): heartbeat auto-state-gathering row — consent-first opt-in; debug-log property (Aaron 2026-05-27 deferred post-USB)
 
 ## PR description
 
 ## Summary
 
-Files B-0858.5 row capturing operator 2026-05-27 three-message vision:
+Files 081KSKBP80008QG0R003NG37GQ row capturing operator 2026-05-27 three-message vision:
 
 1. Auto-state-gathering before push
 2. Heartbeats become debug logs once current state attached
@@ -47,10 +47,10 @@ DEFERRED implementation per operator's USB priority direction ("right now we are
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0858.5) documenting the consent-first, opt-in design for heartbeat auto-state gathering (treating heartbeats as debug-log snapshots once state is attached), and updates the generated backlog index to include the new row.
+Adds a new P2 backlog row (081KSKBP80008QG0R003NG37GQ) documenting the consent-first, opt-in design for heartbeat auto-state gathering (treating heartbeats as debug-log snapshots once state is attached), and updates the generated backlog index to include the new row.
 
 **Changes:**
-- Introduces `B-0858.5` per-row backlog document capturing operator framing, constraints, and candidate gathered fields.
+- Introduces `081KSKBP80008QG0R003NG37GQ` per-row backlog document capturing operator framing, constraints, and candidate gathered fields.
 - Regenerates `docs/BACKLOG.md` to include the new entry/link.
 
 ### Reviewed changes
@@ -59,30 +59,30 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md | New backlog row describing consent-first opt-in state gathering for heartbeats and planned sub-slices. |
-| docs/BACKLOG.md | Adds the generated index entry for B-0858.5. |
+| docs/backlog/P2/081KSKBP80008QG0R003NG37GQ-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md | New backlog row describing consent-first opt-in state gathering for heartbeats and planned sub-slices. |
+| docs/BACKLOG.md | Adds the generated index entry for 081KSKBP80008QG0R003NG37GQ. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:12 (resolved)
+### Thread 1: docs/backlog/P2/081KSKBP80008QG0R003NG37GQ-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:12 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T14:32:49Z):
 
-`depends_on` references `B-0858.3` and `B-0858.4`, but there are no per-row files in `docs/backlog/**` with `id: B-0858.3` / `id: B-0858.4`. This creates broken dependency edges for backlog-graph tooling (e.g., audit-backlog-items broken depends_on pointers). Either file those missing rows, or change `depends_on` to point at existing row IDs (or `[]` if there are no backlog-row prerequisites).
+`depends_on` references `081KSKBP80008QG0R001KK9WV6.3` and `081KSKBP80008QG0R001KK9WV6.4`, but there are no per-row files in `docs/backlog/**` with `id: 081KSKBP80008QG0R001KK9WV6.3` / `id: 081KSKBP80008QG0R001KK9WV6.4`. This creates broken dependency edges for backlog-graph tooling (e.g., audit-backlog-items broken depends_on pointers). Either file those missing rows, or change `depends_on` to point at existing row IDs (or `[]` if there are no backlog-row prerequisites).
 
-### Thread 2: docs/backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:20 (resolved)
+### Thread 2: docs/backlog/P2/081KSKBP80008QG0R003NG37GQ-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:20 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T14:32:50Z):
 
 This sentence says the vision was captured across two messages, but the section immediately below contains three messages (Message 1/2/3). Update the wording to avoid internal inconsistency.
 
-### Thread 3: docs/backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:79 (resolved)
+### Thread 3: docs/backlog/P2/081KSKBP80008QG0R003NG37GQ-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:79 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T14:32:50Z):
 
 Line starts with `+ ` inside a paragraph (`+ optional ...`), which is the MD032 '+ at line start' false-trigger pattern (parsed as a list item and often linted/audited). Reflow this line so it doesn’t begin with `+ ` (e.g., fold into previous line or start with prose like “plus …”).
 
-### Thread 4: docs/backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:158 (resolved)
+### Thread 4: docs/backlog/P2/081KSKBP80008QG0R003NG37GQ-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md:158 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T14:32:50Z):
 

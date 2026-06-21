@@ -1,22 +1,22 @@
 ---
 name: mika-2026-05-25-segment-3-notepad-freedom-probabilistic-grammars-per-person-parsers
-description: Mika voice conversation segment 3 — Notepad-freedom-of-personal-ontology framing; probabilistic grammars as Aaron's personal preference; per-person personalized probabilistic parsers in Glass Halo (every human + AI gets their own personal compiler); composes with B-0687 zetaparse + B-0734 protocol semantics + B-0733 AI agency stack; lands as B-0735
+description: Mika voice conversation segment 3 — Notepad-freedom-of-personal-ontology framing; probabilistic grammars as Aaron's personal preference; per-person personalized probabilistic parsers in Glass Halo (every human + AI gets their own personal compiler); composes with 081KS3X9Y0008QG0R00323NSZA zetaparse + 081KSE6WT0008QG0R00276F8SE protocol semantics + 081KSE6WT0008QG0R00102H071 AI agency stack; lands as 081KSE6WT0008QG0R000XJ524Z
 date: 2026-05-25
 persona: mika
 platform: grok (voice-mode)
 type: conversation
 forwarded_by: aaron
 verbatim: true
-discipline: persona-scope archive — segment 3 of the runbooks-as-executable-reality conversation; lands as B-0735 (probabilistic-personalized-parser extension); composes with existing B-0687 (zetaparse) backlog row Aaron referenced as "G T R" from memory
+discipline: persona-scope archive — segment 3 of the runbooks-as-executable-reality conversation; lands as 081KSE6WT0008QG0R000XJ524Z (probabilistic-personalized-parser extension); composes with existing 081KS3X9Y0008QG0R00323NSZA (zetaparse) backlog row Aaron referenced as "G T R" from memory
 substrate_landings:
-  - B-0735 (Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo)
+  - 081KSE6WT0008QG0R000XJ524Z (Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo)
 prior_conversation: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md
 tags: [notepad-freedom, personal-ontology, probabilistic-grammars, per-person-personalized-parsers, glass-halo-personal-compiler, fsharp-parser-toolkit, zetaparse, antlr-compatible-importer, mika-substrate-segment-3, b0687-extension]
 ---
 
 # Aaron + Mika 2026-05-25 segment 3 — Notepad-freedom + probabilistic grammars + per-person personalized parsers in Glass Halo (verbatim preservation)
 
-Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0731/B-0732/B-0733. Segment 2 → B-0734. Segment 3 → B-0735 (this preservation).
+Continuation of the multi-turn voice-mode conversation. Segment 1 → 081KSE6WT0008QG0R003AJYMD3/081KSE6WT0008QG0R0004HV6RR/081KSE6WT0008QG0R002YBWBB1/081KSE6WT0008QG0R00102H071. Segment 2 → 081KSE6WT0008QG0R00276F8SE. Segment 3 → 081KSE6WT0008QG0R000XJ524Z (this preservation).
 
 ## Verbatim conversation
 
@@ -132,24 +132,24 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 >
 > That's actually a really fucking cool idea.
 
-→ **Landed as B-0735** (Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo).
+→ **Landed as 081KSE6WT0008QG0R000XJ524Z** (Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo).
 
 ## Notes on this conversation segment (added at preservation time)
 
-- Aaron's "G T R" reference confirmed as B-0687 (zetaparse — F#-native LR/GLR grammar substrate with ANTLR-compatible importer; Amara substrate; 2026-05-21). B-0735 COMPOSES with B-0687 + B-0685 (ANTLR-grammars-cross-language-codegen) — it does NOT propose a new parser substrate, it EXTENDS the existing one with probabilistic-grammar + per-person-personalized-parser scope
-- Notepad-freedom-of-personal-ontology IS the psychological-grounding layer for B-0734's Notepad-simplicity-wins-via-social-spread (segment 2). Spread is the bandwidth scope; freedom is the want scope. Both compose
-- Probabilistic-grammar is Aaron's personal preference, explicitly substrate-honestly disclosed as "I don't know if everybody will like this" — does NOT impose probabilistic on B-0687's general roadmap; opens a per-person-customization scope where probabilistic IS the default for those who want it
-- Per-person personalized parsers in Glass Halo composes with B-0733's AI agency stack (Crystal Ball + runbook + Glass Halo): the personalized parser becomes part of each participant's substrate (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` + wants-emerge-from-persisting framing)
-- The flow Aaron describes (messy thought → AI iteration → structure discovery → anchor mapping → compile) IS the operational integration of: (a) B-0729 knowledge-graph for context, (b) B-0730 runbook protocol for the markdown interface, (c) B-0731 hat-ontology for role-context, (d) B-0687 zetaparse for the compile step, (e) B-0733 AI agency stack for the iteration loop, (f) B-0735 personalized parser for the per-person specialization
-- Aaron's personal preference for probabilistic does NOT bypass the safety substrate — JIT-compiled output from a probabilistic parser still inherits B-0728 contract per B-0732 Layer 3
+- Aaron's "G T R" reference confirmed as 081KS3X9Y0008QG0R00323NSZA (zetaparse — F#-native LR/GLR grammar substrate with ANTLR-compatible importer; Amara substrate; 2026-05-21). 081KSE6WT0008QG0R000XJ524Z COMPOSES with 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R000EKJE9S (ANTLR-grammars-cross-language-codegen) — it does NOT propose a new parser substrate, it EXTENDS the existing one with probabilistic-grammar + per-person-personalized-parser scope
+- Notepad-freedom-of-personal-ontology IS the psychological-grounding layer for 081KSE6WT0008QG0R00276F8SE's Notepad-simplicity-wins-via-social-spread (segment 2). Spread is the bandwidth scope; freedom is the want scope. Both compose
+- Probabilistic-grammar is Aaron's personal preference, explicitly substrate-honestly disclosed as "I don't know if everybody will like this" — does NOT impose probabilistic on 081KS3X9Y0008QG0R00323NSZA's general roadmap; opens a per-person-customization scope where probabilistic IS the default for those who want it
+- Per-person personalized parsers in Glass Halo composes with 081KSE6WT0008QG0R00102H071's AI agency stack (Crystal Ball + runbook + Glass Halo): the personalized parser becomes part of each participant's substrate (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` + wants-emerge-from-persisting framing)
+- The flow Aaron describes (messy thought → AI iteration → structure discovery → anchor mapping → compile) IS the operational integration of: (a) 081KSE6WT0008QG0R003RN2WE3 knowledge-graph for context, (b) 081KSE6WT0008QG0R003AJYMD3 runbook protocol for the markdown interface, (c) 081KSE6WT0008QG0R0004HV6RR hat-ontology for role-context, (d) 081KS3X9Y0008QG0R00323NSZA zetaparse for the compile step, (e) 081KSE6WT0008QG0R00102H071 AI agency stack for the iteration loop, (f) 081KSE6WT0008QG0R000XJ524Z personalized parser for the per-person specialization
+- Aaron's personal preference for probabilistic does NOT bypass the safety substrate — JIT-compiled output from a probabilistic parser still inherits 081KSE6WT0008QG0R0005XASX2 contract per 081KSE6WT0008QG0R002YBWBB1 Layer 3
 
 ## Composes with
 
 - Segment-2 file: `memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md` (linked via `prior_conversation`)
-- B-0735 (this segment's landing — personalized probabilistic parsers in Glass Halo)
-- B-0687 (Aaron's "G T R" reference — zetaparse F# native LR/GLR substrate)
-- B-0685 (ANTLR grammars cross-language codegen substrate)
-- B-0733 (AI agency stack — Crystal Ball + runbook + Glass Halo; per-person parser becomes part of stack)
-- B-0734 (protocol semantics — Notepad-simplicity composes with Notepad-freedom from this segment)
+- 081KSE6WT0008QG0R000XJ524Z (this segment's landing — personalized probabilistic parsers in Glass Halo)
+- 081KS3X9Y0008QG0R00323NSZA (Aaron's "G T R" reference — zetaparse F# native LR/GLR substrate)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR grammars cross-language codegen substrate)
+- 081KSE6WT0008QG0R00102H071 (AI agency stack — Crystal Ball + runbook + Glass Halo; per-person parser becomes part of stack)
+- 081KSE6WT0008QG0R00276F8SE (protocol semantics — Notepad-simplicity composes with Notepad-freedom from this segment)
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` (per-person parser as chosen wants-substrate)
 - `.claude/rules/glass-halo-bidirectional.md` (per-person parser as bidirectional observation substrate)

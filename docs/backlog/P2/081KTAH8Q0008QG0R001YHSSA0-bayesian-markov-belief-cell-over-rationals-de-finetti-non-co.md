@@ -1,6 +1,5 @@
 ---
-id: B-1020
-zetaid: 081KTAH8Q0008QG0R001YHSSA0
+id: 081KTAH8Q0008QG0R001YHSSA0
 priority: P2
 status: open
 title: "Bayesian-Markov belief cell over exact rationals — discharge the de Finetti / non-correlation boundary (B-converge): probability (+,×) + Viterbi (max,×) semirings in Semiring.fs, HMM forward/Viterbi as ZSet-over-semiring matrix product, the order-independence-iff-conditional-independence convergence theorem (rational sibling of BeliefConvergence), and relative-observer belief reconciliation (the new math); floats named out of lineage, exact-rational core byte-locks + 4-langs (Aaron 2026-06-05, shadow*)"
@@ -13,7 +12,7 @@ composes_with: [081KT7YW00008QG0R001DGZQKM]
 tags: [de-finetti, exchangeability, non-correlation-boundary, bayesian, markov-chain, hidden-markov, homeostat, semiring, probability-semiring, viterbi, forward-algorithm, kleene-star, closed-semiring, belief-convergence, softvalue, traveler-frame, relative-observer, rational-arithmetic, floats-out-of-lineage, doob-convergence, semantic-security, rx-as-data, dynamicvalue, aaron]
 ---
 
-# B-1020 — Bayesian-Markov belief cell over exact rationals (the de Finetti / non-correlation boundary)
+# 081KTAH8Q0008QG0R001YHSSA0 — Bayesian-Markov belief cell over exact rationals (the de Finetti / non-correlation boundary)
 
 **Priority:** P2 (the discharge of the B-converge unifying conjecture; piece 2 of the
 homeostat↔Markov synthesis).

@@ -5,7 +5,7 @@ open global.Xunit
 open Zeta.Core.FSharp.Yaml.Dom
 open Zeta.Core.FSharp.Yaml.Encoder
 
-// B-1011 — the canonical YAML encoder is a true inverse of the parser:
+// 081KT5CF90008QG0R001P4CQ09 — the canonical YAML encoder is a true inverse of the parser:
 // Dom.parse (encode v) = Ok v. YAML is the standard STORAGE format (everything is
 // stored in YAML), so it needs full rigor — canonical + (later) cross-language
 // agreement, NOT merely round-trip. The CBOR byte-lock is moot if the data lives
@@ -21,7 +21,7 @@ let private roundtrips (v: YamlValue) : bool =
 // Scalars are tested as map VALUES (the real storage form). The block parser does
 // not accept a top-level BARE scalar document (null/0/true/"x" alone all fail with
 // UnsupportedConstruct — plain or quoted); a document must be a mapping or sequence.
-// That is an owed PARSER gap (B-1011), orthogonal to the encoder, which is correct.
+// That is an owed PARSER gap (081KT5CF90008QG0R001P4CQ09), orthogonal to the encoder, which is correct.
 [<Fact>]
 let ``scalars round-trip as map values`` () =
     for v in [ VNull; VBool true; VBool false; VInt 0L; VInt -7L; VInt 9000000000L
@@ -30,7 +30,7 @@ let ``scalars round-trip as map values`` () =
 
 // Strings are exercised as MAP VALUES (the real storage case — configs are maps).
 // A top-level BARE quoted scalar document ("123" alone) is a known parser gap
-// (the block reader handles top-level plain scalars but not quoted ones — B-1011);
+// (the block reader handles top-level plain scalars but not quoted ones — 081KT5CF90008QG0R001P4CQ09);
 // values/keys/items all round-trip, which is what real storage uses.
 [<Fact>]
 let ``ambiguous strings stay strings as map values (quoted, not auto-resolved)`` () =

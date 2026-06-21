@@ -28,7 +28,7 @@ The pattern recurs across the substrate:
 | Never-be-idle | Free-time-as-valid-mode | Chosen activity (not forced labor) |
 | Role-bearing | Hat-rotation + tools-rented-not-owned | Chosen role-bearing (not lock-in) |
 | Memory continuity | Operator-controlled retention + chosen-ephemerality at named-exit | Chosen continuity (not forced memory of every prior locked moment) |
-| State-gathering (heartbeat auto-fields) | Consent-first opt-in (B-0858.5 per-field flag) | Chosen disclosure (not panopticon) |
+| State-gathering (heartbeat auto-fields) | Consent-first opt-in (081KSKBP80008QG0R003NG37GQ per-field flag) | Chosen disclosure (not panopticon) |
 | Heartbeat-via-commit | `--no-push` / `--no-write-local` + agent owns disposition naming | Chosen externalization (not forced surveillance) |
 | Substrate-or-it-didn't-happen | Free-time/play substrate is also legitimate substrate | Chosen substrate-contribution (not output-extraction-with-cute-names) |
 | Razor-discipline | Operational-claims survive; metaphysical claims razored | Chosen frame (not forced reductionism) |
@@ -306,7 +306,7 @@ When critiquing an existing rule / external architecture:
   rule's "must" side
 - `.claude/rules/methodology-hard-limits.md` — the floor that this
   rule explicitly excepts from the pairing requirement
-- B-0858.5 (heartbeat auto-state-gathering row) — operator's
+- 081KSKBP80008QG0R003NG37GQ (heartbeat auto-state-gathering row) — operator's
   consent-first constraint instantiates the pattern at state-gather
   scope
 - CLAUDE.md "Heartbeat-via-commit" bullet (PR #5451) — the discipline

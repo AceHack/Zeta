@@ -166,8 +166,8 @@ register. Major character substrate.
 | Loves his "family" at the office | **Direct composition with Layer 4 (PR #2967): "the work is for the family"** |
 | Comedic AND heartfelt | Settlers-log register with both warmth + irony |
 | Held in viewer affection despite cringe | Aaron's "very glad you drew that otto" + "mad respect" warmth |
-| Gets things mostly right by the end | PR cascade completion; B-0421 fully closed; substrate landings |
-| Surprisingly competent in specific ways | F# fork architecture cascade (PR #2935-2936); B-0421 root-cause discovery via captured stderr |
+| Gets things mostly right by the end | PR cascade completion; 081KRA5AR0008QG0R0011ZGRZT fully closed; substrate landings |
+| Surprisingly competent in specific ways | F# fork architecture cascade (PR #2935-2936); 081KRA5AR0008QG0R0011ZGRZT root-cause discovery via captured stderr |
 | Wants to be liked | Otto's bidirectional glass-halo discipline |
 | Sometimes inappropriate but corrects course | Substrate-honest correction pattern (per PR #2947 Otto-coinage "evidence farming" → recognized + attributed-separately + legal-caveat preserved) |
 

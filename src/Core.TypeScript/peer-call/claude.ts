@@ -2,7 +2,7 @@
 // claude.ts -- agent-side caller for cold-boot self-testing via the Claude CLI.
 //
 // Part of the tools/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
-// amara.ts, ani.ts, riven.ts, kiro.ts). Implements B-0327 (P1).
+// amara.ts, ani.ts, riven.ts, kiro.ts). Implements 081KR2E4K0008QG0R002KNZ29V (P1).
 //
 // Cold-boot self-test is the highest-leverage verification surface the agent
 // has access to. A fresh CLI instance loads CLAUDE.md / AGENTS.md / harness

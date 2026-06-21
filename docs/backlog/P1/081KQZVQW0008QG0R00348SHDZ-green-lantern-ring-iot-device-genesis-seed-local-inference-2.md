@@ -1,6 +1,5 @@
 ---
-id: B-0246
-zetaid: 081KQZVQW0008QG0R00348SHDZ
+id: 081KQZVQW0008QG0R00348SHDZ
 priority: P1
 status: open
 title: "Green Lantern ring — IoT wearable running Genesis Seed with local inference + consent gating"
@@ -13,7 +12,7 @@ owners: [architect, product-scrum-master, user-experience-engineer]
 type: feature
 ---
 
-# B-0246 — Green Lantern ring: IoT wearable Genesis Seed
+# 081KQZVQW0008QG0R00348SHDZ — Green Lantern ring: IoT wearable Genesis Seed
 
 ## What
 
@@ -50,9 +49,9 @@ no central controller).
 
 ## Composes with
 
-- B-0240 (structure recognizer) — runs on-ring
-- B-0242 (WebSocket F# port) — ring communication
-- B-0244 (coherence AI on GPUs) — ring queries GPU server
-- B-0245 (consent-first + KSK) — ring's operating mode
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — runs on-ring
+- 081KQZVQW0008QG0R001CQPQ0E (WebSocket F# port) — ring communication
+- 081KQZVQW0008QG0R001PS4F8G (coherence AI on GPUs) — ring queries GPU server
+- 081KQZVQW0008QG0R002Q58F6Z (consent-first + KSK) — ring's operating mode
 - Ace package manager — distributes ring firmware DLCs
 - Genesis Seed — the ring's boot prompt

@@ -1,10 +1,10 @@
 # Ace CLI slice 5.4 — lockfile ergonomics (design)
 
-> Spec for slice 5.4 of the Ace DLC package manager (B-0288). Builds directly on
+> Spec for slice 5.4 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD). Builds directly on
 > slice 5.3 (lockfile: `tools/ace/lockfile.ts` + `ace install --frozen`/`--lockfile`,
 > merged #6400 spec + #6410 impl). Brainstormed + decided with the operator 2026-06-01.
-> Bundles three slice-5.3 deferral rows — B-0973 (`ace update`), B-0974
-> (`ace install --locked`), B-0975 (lockfile ergonomics) — at the scope locked below.
+> Bundles three slice-5.3 deferral rows — 081KT07NV0008QG0R002GV3MXW (`ace update`), 081KT07NV0008QG0R0028AAV0E
+> (`ace install --locked`), 081KT07NV0008QG0R003VDHWWG (lockfile ergonomics) — at the scope locked below.
 
 ## Goal
 
@@ -28,11 +28,11 @@ artifacts).
    deterministic solve/resolve), so **alphabetical node ordering is dropped** from
    this slice — it is purely cosmetic and would push graph-rebuild/format-migration
    complexity into the security-critical `--frozen` replay path. Stays deferred
-   (B-0975). If the format is ever bumped it should be for substantive metadata, not
+   (081KT07NV0008QG0R003VDHWWG). If the format is ever bumped it should be for substantive metadata, not
    diff-prettiness.
 2. **`ace update` is a FULL re-solve, lock-only.** No `--package <name>` single-bump
    and no partial-merge primitive this slice — those need solver "pin-all-but-one"
-   support that earns its own work. Stays deferred (B-0973 `--package`, B-0975
+   support that earns its own work. Stays deferred (081KT07NV0008QG0R002GV3MXW `--package`, 081KT07NV0008QG0R003VDHWWG
    partial-merge). Full re-solve within the declared ranges is the meaningful
    capability.
 3. **Three features in scope, all additive** (no solver change, no format change):
@@ -169,12 +169,12 @@ install --frozen leaf: read root → verify → read lock → root-drift gate �
 
 ## Scope / YAGNI — deferred (rows stay open)
 
-- **Alphabetical node ordering** (B-0975) — cosmetic; would complicate the `--frozen`
+- **Alphabetical node ordering** (081KT07NV0008QG0R003VDHWWG) — cosmetic; would complicate the `--frozen`
   replay path; deferred.
-- **`ace update --package <name>` + partial-merge** (B-0973 / B-0975) — needs solver
+- **`ace update --package <name>` + partial-merge** (081KT07NV0008QG0R002GV3MXW / 081KT07NV0008QG0R003VDHWWG) — needs solver
   pin-all-but-one support; deferred to its own slice.
-- **B-0972 single-fetch cache** — unrelated perf; composes better with remote
-  registry (B-0971).
+- **081KT07NV0008QG0R003659TWT single-fetch cache** — unrelated perf; composes better with remote
+  registry (081KT07NV0008QG0R000SJ34AK).
 
 ## Files touched
 

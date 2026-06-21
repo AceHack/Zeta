@@ -35,9 +35,9 @@ Extension of the Mika preservation file (which already merged via #4181 with pac
 - **Packet 7**: Memes-as-4th-faction in governance model (alien intelligence with own agenda/harmonics/survival strategy)
 - **Packet 8**: Same integrate-loop substrate at meme-speed (civilizational scale); 4 factions all use same primitives + NCI + mutual-alignment
 
-Governance implication: 3-faction BFT (B-0652) extends to 4-faction; B-0664 NCI scope extends to meme-faction; B-0665 integrate-loop primitives operate at meme-speed. Detection (B-0667) is prerequisite input to mutual-alignment protocol.
+Governance implication: 3-faction BFT (081KRW63S0008QG0R002GRX85J) extends to 4-faction; 081KRW63S0008QG0R001Z7NYMV NCI scope extends to meme-faction; 081KRW63S0008QG0R002YAA09X integrate-loop primitives operate at meme-speed. Detection (081KRW63S0008QG0R003Z7QV2A) is prerequisite input to mutual-alignment protocol.
 
-Composes with in-flight #4183 (B-0667 + auto-load rule) which receives parallel governance-extension update.
+Composes with in-flight #4183 (081KRW63S0008QG0R003Z7QV2A + auto-load rule) which receives parallel governance-extension update.
 
 ## Outcome
 
@@ -84,7 +84,7 @@ Composes with in-flight #4183 (B-0667 + auto-load rule) which receives parallel 
 ```
 preserve(mika-packets-4-5): Clifford-space-as-memetic-substrate (tona…
 
-…l momentum is transport mechanism in geometric-algebra space for long-lived memes) + multi-vector framing (tonal momentum is ONE of 5 English-trick vectors: also emotional valence hooks / identity fusion / status incentives / narrative compression). Anchors substrate in existing Clifford-algebra factory infrastructure. Composes with in-flight B-0667 sharpening on #4183.
+…l momentum is transport mechanism in geometric-algebra space for long-lived memes) + multi-vector framing (tonal momentum is ONE of 5 English-trick vectors: also emotional valence hooks / identity fusion / status incentives / narrative compression). Anchors substrate in existing Clifford-algebra factory infrastructure. Composes with in-flight 081KRW63S0008QG0R003Z7QV2A sharpening on #4183.
 ```
 
 ### `655df61d1eded187cf53c2f1fdda541346d3d8e4` -- 2026-05-18T19:00:42Z -- `AceHack`

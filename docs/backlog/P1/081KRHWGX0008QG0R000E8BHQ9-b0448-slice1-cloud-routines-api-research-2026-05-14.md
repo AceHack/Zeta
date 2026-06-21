@@ -1,11 +1,10 @@
 ---
-id: B-0507
-zetaid: 081KRHWGX0008QG0R000E8BHQ9
+id: 081KRHWGX0008QG0R000E8BHQ9
 priority: P1
 status: closed
-title: "B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)"
+title: "081KRFA460008QG0R000CYBGKW slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)"
 type: research
-origin: B-0448 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000CYBGKW decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000CYBGKW
@@ -21,11 +20,11 @@ composes_with:
 tags: [routines, cloud-routines, research, api, authentication]
 ---
 
-# B-0507 — Research Cloud Routines auth + registration API surface
+# 081KRHWGX0008QG0R000E8BHQ9 — Research Cloud Routines auth + registration API surface
 
 ## Purpose
 
-B-0448 listed several unknowns in its pre-start checklist that MUST be
+081KRFA460008QG0R000CYBGKW listed several unknowns in its pre-start checklist that MUST be
 resolved before any implementation begins. This slice is a bounded research
 task to surface those answers so slices 2–7 can proceed with correct
 assumptions.
@@ -38,7 +37,7 @@ assumptions.
 | Authentication mechanism (bearer token / OAuth / CLI session) | Docs + `claude code routines --help` output |
 | Registration surface — MCP tool? CLI command? Web UI? API endpoint? | Docs + test in interactive session |
 | Does `scheduled-tasks` MCP wrap Cloud Routines or are they separate? | MCP tool listing in interactive session |
-| Trigger types available (scheduled / API / GitHub events)? | Docs — confirm or correct B-0448's research |
+| Trigger types available (scheduled / API / GitHub events)? | Docs — confirm or correct 081KRFA460008QG0R000CYBGKW's research |
 | Daily quota (Pro 5/day / Max 15/day)? | Docs — confirm or note if changed |
 | Which plan is the Zeta factory running on? | `claude code account` or similar CLI query |
 | Do GitHub event triggers require a GitHub App installation? | Docs — this may require org-level setup |
@@ -71,11 +70,11 @@ Containing:
 
 ## Acceptance criteria
 
-- [x] All 8 unknowns addressed (may be "confirmed unchanged" if B-0448 research was accurate)
+- [x] All 8 unknowns addressed (may be "confirmed unchanged" if 081KRFA460008QG0R000CYBGKW research was accurate)
 - [x] Research doc committed at the path above
-- [x] B-0508 pre-start checklist updated to reflect any `cloud-schedule.json` schema changes
+- [x] 081KRHWGX0008QG0R002S107P7 pre-start checklist updated to reflect any `cloud-schedule.json` schema changes
   implied by the auth/trigger findings
-- [x] B-0507 closed with PR link
+- [x] 081KRHWGX0008QG0R000E8BHQ9 closed with PR link
 
 ## Why this is slice 1
 
@@ -86,5 +85,5 @@ level.
 
 ## Why P1
 
-Same priority as parent (B-0448). Gate row for B-0508 and B-0509.
+Same priority as parent (081KRFA460008QG0R000CYBGKW). Gate row for 081KRHWGX0008QG0R002S107P7 and 081KRHWGX0008QG0R0014D2T5E.
 Bounded research task; blocks progress on the whole chain.

@@ -41,7 +41,7 @@ influence/entropy may cross only through *declared, metered* channels; an archit
 whose mere thought reshapes the swarm is influence leaking through an undeclared door. At the
 governance scale it is **a single faction capturing the whole** — the Kwisatz Haderach who can
 make the Fremen do anything by willing it is exactly the capture that the three-faction model
-(ferry 44, B-0652) and `3f+1` exist to prevent. "If you think it they will do it" is therefore the
+(ferry 44, 081KRW63S0008QG0R002GRX85J) and `3f+1` exist to prevent. "If you think it they will do it" is therefore the
 *failure mode named*: unchecked, it is the prophet whose belief overwrites everyone else's agency.
 
 ### 3. The meter — the council, consent-first, and the metered membrane

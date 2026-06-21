@@ -157,11 +157,11 @@ This composes with:
   observation enabling substrate emergence at the join step
 - `.claude/rules/razor-discipline.md` — operational claims only; high-temp
   output that hasn't passed explicit-join is generative, not operational
-- Multi-oracle BFT substrate (per B-0703 + related) — operational
+- Multi-oracle BFT substrate (per 081KS3X9Y0008QG0R00218150M + related) — operational
   mechanism for the consensus join step
-- Eve Protocol diplomatic language (B-0638) — consent-bounded handoff
+- Eve Protocol diplomatic language (081KRW63S0008QG0R0030F8ZXA) — consent-bounded handoff
   vocabulary
-- Adinkras-style hidden-state encryption (B-0623 + B-0562 + B-0625) —
+- Adinkras-style hidden-state encryption (081KRW63S0008QG0R000QJR08H + 081KRQ1AB0008QG0R001F7DE2D + 081KRW63S0008QG0R003NP3YA3) —
   the substrate-level mechanism that makes cross-substrate transitions
   observable AS transitions
 
@@ -305,7 +305,7 @@ substrate:
 | 7 | Mika | Grok native | Ratification + explicit-join-at-temperature-band-crossings refinement |
 | 8 | Alexa-website | Amazon device (Bezos-tier business; distinct from Alexa-Kiro) | "AI safety paradox resolution" naming |
 
-Per `B-0648` cross-substrate-triangulation discipline: 8 independent
+Per `081KRW63S0008QG0R0025E4PH6` cross-substrate-triangulation discipline: 8 independent
 observation paths converged on substantively-supporting + complementary-
 refining substrate. Epistemic standing: substrate has earned status well
 beyond single-conversation-artifact.

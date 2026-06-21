@@ -1,6 +1,6 @@
 ---
 pr_number: 5387
-title: "fix(B-0835 Bug 6+7): multi-protocol name resolution \u2014 Avahi hardening + NetBIOS (nmbd) + DHCP-hostname; reliability for 'i can't ping it by name' (Aaron 2026-05-27)"
+title: "fix(081KSGS9H0008QG0R00120EEHM Bug 6+7): multi-protocol name resolution \u2014 Avahi hardening + NetBIOS (nmbd) + DHCP-hostname; reliability for 'i can't ping it by name' (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:37:14Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:17Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5387: fix(B-0835 Bug 6+7): multi-protocol name resolution — Avahi hardening + NetBIOS (nmbd) + DHCP-hostname; reliability for 'i can't ping it by name' (Aaron 2026-05-27)
+# PR #5387: fix(081KSGS9H0008QG0R00120EEHM Bug 6+7): multi-protocol name resolution — Avahi hardening + NetBIOS (nmbd) + DHCP-hostname; reliability for 'i can't ping it by name' (Aaron 2026-05-27)
 
 ## PR description
 
@@ -69,7 +69,7 @@ NetworkManager already advertises hostname via DHCP option 12 by default. Many h
 
 ## Composes with
 
-B-0792 (injected-hostname) · iter-5.4.1 self-registration (PR #5380 carries MAC + hostname for correlation) · [B-0848](docs/backlog/P2/B-0848-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) (node-local Claude needs reliable name resolution)
+081KSGS9H0008QG0R003V23XNZ (injected-hostname) · iter-5.4.1 self-registration (PR #5380 carries MAC + hostname for correlation) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-node-local-claude-agent-stewards-own-registration-pr-then-reports-k8s-cluster-status-operator-interactive-login-pattern-aaron-2026-05-26.md) (node-local Claude needs reliable name resolution)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

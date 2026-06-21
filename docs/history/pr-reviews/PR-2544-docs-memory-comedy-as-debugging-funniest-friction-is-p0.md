@@ -30,7 +30,7 @@
 ## Summary
 
 - Comedy surfaces bugs viscerally — humor = surprise + recognition
-- The shadow-is-a-dick episode promoted B-0402 from abstract to urgent
+- The shadow-is-a-dick episode promoted 081KR7JY10008QG0R0008NGW95 from abstract to urgent
 - Heuristic: if it makes you laugh AND annoys you, it's P0
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -29,7 +29,7 @@
 
 ## Summary
 
-This PR hardens the Lior (Gemini) background loop runner prompt configuration to strictly enforce detached worktree safety (B-0750) and per-agent isolated clone architecture (B-0751).
+This PR hardens the Lior (Gemini) background loop runner prompt configuration to strictly enforce detached worktree safety (081KSE6WT0008QG0R003YYC9PV) and per-agent isolated clone architecture (081KSE6WT0008QG0R003YYC9PV).
 
 ## Changes
 
@@ -37,7 +37,7 @@ This PR hardens the Lior (Gemini) background loop runner prompt configuration to
   - Require all git operations to run inside isolated detached worktrees (`git worktree add --detach <path> origin/main`).
   - Ban local modifications/commits directly on the contested root checkout or on `main`.
   - Introduce explicit checkout and push patterns for PR generation.
-  - Formally instruct compliance with the per-agent isolated clone directory layout at `/private/tmp/zeta-clones/lior-antigravity/` per B-0751.
+  - Formally instruct compliance with the per-agent isolated clone directory layout at `/private/tmp/zeta-clones/lior-antigravity/` per 081KSE6WT0008QG0R003YYC9PV.
 
 Co-Authored-By: Gemini <noreply@google.com>
 

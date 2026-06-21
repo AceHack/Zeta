@@ -1,8 +1,8 @@
-# B-0250 Merge-Burst Clustering - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Merge-Burst Clustering - 2026-05-30
 
 ## Status
 
-This packet narrows the remaining B-0250 merged-PR coincidence noise by
+This packet narrows the remaining 081KQZVQW0008QG0R001FG05RZ merged-PR coincidence noise by
 clustering tightly adjacent merged PR observations from the same merge burst.
 
 ## Context
@@ -23,7 +23,7 @@ cross-trajectory coincidence evidence.
   merged PRs are separated by no more than two minutes.
 
 This keeps same-PR lifecycle dedup intact while allowing adjacent merge-burst
-PRs to count as one observation for B-0250 coincidence windows.
+PRs to count as one observation for 081KQZVQW0008QG0R001FG05RZ coincidence windows.
 
 ## Verification
 

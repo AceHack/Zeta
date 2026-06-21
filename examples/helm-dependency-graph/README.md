@@ -1,4 +1,4 @@
-# Helm dependency-graph example (B-0821)
+# Helm dependency-graph example (081KSGS9H0008QG0R00367G209)
 
 Canonical **my-app → postgres** chart pair demonstrating Maven-for-Helm variable flow.
 

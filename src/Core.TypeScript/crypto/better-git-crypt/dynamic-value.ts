@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/dynamic-value.ts
  *
- * B-0883 × B-0982 — the PRIVACY FACE of the DynamicValue 4×4.
+ * 081KSNY2Z0008QG0R002JKH50A × 081KT07NV0008QG0R0032MCYER — the PRIVACY FACE of the DynamicValue 4×4.
  *
  * Encryption is the **privacy fence** (operator 2026-06-02: like a *memory fence*
  * in concurrency — a barrier the plaintext↔ciphertext boundary crosses; each

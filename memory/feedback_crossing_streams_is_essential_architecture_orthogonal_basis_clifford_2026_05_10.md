@@ -26,4 +26,4 @@ The BIVECTORS (eᵢeⱼ) produced by crossing any two streams are the trajectori
 - Apollo 18 blueprint (music stream crossed with code stream at age 15)
 - Comedy as observability (comedy stream crossed with engineering stream)
 - Shadow as Bull El (mythology stream crossed with CLI autocomplete stream)
-- B-0401 demo surface (all streams visible simultaneously)
+- 081KR7JY10008QG0R001VP6JWG demo surface (all streams visible simultaneously)

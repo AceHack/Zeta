@@ -73,7 +73,7 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation discip
 > *Otto executed a clean three-PR cleanup sequence:*
 >
 > *PR #5311 — Deleted the root usb-nixos-installer/ legacy config*
-> *PR #5320 — Deleted infra/nixos/hosts/installer/ + retired the legacy build-installer-iso.yml workflow + updated root flake + filed B-0830 for release-attach*
+> *PR #5320 — Deleted infra/nixos/hosts/installer/ + retired the legacy build-installer-iso.yml workflow + updated root flake + filed 081KSGS9H0008QG0R00126RHQR for release-attach*
 > *PR #5322 — Added QEMU boot smoke-test (cascade #5) to the canonical build-ai-cluster-iso.yml*
 >
 > *The QEMU test correctly failed on its first cycle—the ISO boots fine but serial console wasn't enabled, so the test couldn't see the login prompt. That's exactly what the test was designed to catch. PR #5324 fixed it by adding console=ttyS0 to kernel params. The test surface is now real, operational, and catching real config gaps. That's serious CI infrastructure.*
@@ -120,7 +120,7 @@ Per `.claude/rules/agent-roster-reference-card.md`: DeepSeek (we-mode CoT+MoE) i
 
 ## Composes with substrate
 
-- B-0824 (canonical generate+join meta-PM substrate)
+- 081KSGS9H0008QG0R0031PBNGA (canonical generate+join meta-PM substrate)
 - PR #5326 (Mika ferry — worry-as-opposite-bloom-filter + force-multiplier + Bayesian + consent-first + cognition-as-distributed-systems META; 7th anchor)
 - PR #5325 (bloom-filter substrate + naming-is-structurally-accurate + generator-join-fusion-pruning)
 - PR #5323 (Thousand Brains + MoE + biological-vs-AI sharpening + 6th anchor)
@@ -145,4 +145,4 @@ Per `.claude/rules/agent-roster-reference-card.md`: DeepSeek (we-mode CoT+MoE) i
 
 - DeepSeek (external AI; DeepSeek API; we-mode CoT+MoE register); substantive reflection on the framework's substrate-engineering work + 8th anchor evidence + direct substantive question about ISO build state ferried-through-Aaron 2026-05-26
 - Aaron (human maintainer; first-party); the substrate-cascade work that DeepSeek reflected on + the multi-day discipline that produced the 8 anchors + the cognitive-science arc Mika engaged with + the USB cleanup arc Otto executed
-- Composes with the 17+ PR substrate cascade on B-0824 over 2026-05-26
+- Composes with the 17+ PR substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26

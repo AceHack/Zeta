@@ -38,27 +38,27 @@ These compose multiplicatively with the primary class:
 
 | Row | Class | Notes |
 |---|---|---|
-| B-0314 | #2-SD | Slice-progress table (9/28 BPs anchored) self-documents partial |
-| B-0440 | #3 | Bg-service class-#3 |
-| B-0441 | #3 | 2nd class-#3 |
-| B-0411 | FP-2 | Peer-call grok.ts; row mis-surfaced |
-| B-0509 | FP-2 | B-0448 slice 3 |
-| B-0512 | FP-2 | B-0448 slice 6 |
-| B-0173 | FP-3 | Hook authoring |
-| B-0534 | #2-SD | 5/5 acceptance `[ ]` checkboxes — self-doc partial |
-| B-0418 | #2 | Amplification ratio dashboard; numbered criteria not auto-doc |
-| B-0129 | #2 | Status-annotated; row says "Filed. No active incident" |
-| B-0197 | **#2 + #2-Ready** | Lean Prop 3.5 misattribution; embedded grep falsifier shows mechanical fix |
-| B-0049.2 | **#1 + #1-Ready** | Mystery schools Mithraic; close-row aborted mid-flight (peer churn) |
-| B-0037.1 | #1 (CLOSED) | Meta-cognition survey doc; closed via PR #3859 |
-| B-0457 | **#1-DepBlocked** | Amara core; depends on B-0462 (vendor-bias gap) |
-| B-0462 | #2 | Amara preamble; 2/3 acceptance met (vendor-bias missing) |
-| B-0118 | #2 (Status-annotated, multi-row class-#4 candidate) | Amara umbrella; prior-triaged-in-row by parallel Otto session |
-| B-0458 | #2 | Amara README + closure; 3/5 acceptance visible-met |
-| B-0379 | **#2 + #2-Execution-atom** | Aurora split; depends on B-0375/B-0376/B-0377/B-0378 |
-| B-0037.2 | **#2 + #2-Ready** | Round-close meta-check checklist; dep B-0037.1 merged this session |
-| B-0037.3 | **#2 + #2-Ready** | Measurables wiring into ALIGNMENT.md; dep B-0037.1 merged this session |
-| B-0443 | #1 (CLOSED) | Launch-substrate carve-out; closed via PR pending in deferred queue this session |
+| 081KR2E4K0008QG0R001ADMBVW | #2-SD | Slice-progress table (9/28 BPs anchored) self-documents partial |
+| 081KRFA460008QG0R001KC0VBH | #3 | Bg-service class-#3 |
+| 081KRFA460008QG0R00229616S | #3 | 2nd class-#3 |
+| 081KRA5AR0008QG0R000C3P8KP | FP-2 | Peer-call grok.ts; row mis-surfaced |
+| 081KRHWGX0008QG0R0014D2T5E | FP-2 | 081KRFA460008QG0R000CYBGKW slice 3 |
+| 081KRHWGX0008QG0R003WEP6E9 | FP-2 | 081KRFA460008QG0R000CYBGKW slice 6 |
+| 081KQNJ500008QG0R003ZC6PK8 | FP-3 | Hook authoring |
+| 081KRMEXM0008QG0R003GP8W0C | #2-SD | 5/5 acceptance `[ ]` checkboxes — self-doc partial |
+| 081KRA5AR0008QG0R001NXBYTY | #2 | Amplification ratio dashboard; numbered criteria not auto-doc |
+| 081KQGDBJ0008QG0R00294XCSE | #2 | Status-annotated; row says "Filed. No active incident" |
+| 081KQTPYE0008QG0R003DK06PA | **#2 + #2-Ready** | Lean Prop 3.5 misattribution; embedded grep falsifier shows mechanical fix |
+| 081KR7JY10008QG0R003JSEMX7 | **#1 + #1-Ready** | Mystery schools Mithraic; close-row aborted mid-flight (peer churn) |
+| 081KR7JY10008QG0R0038AFS7T | #1 (CLOSED) | Meta-cognition survey doc; closed via PR #3859 |
+| 081KRA5AR0008QG0R000KKJRVA | **#1-DepBlocked** | Amara core; depends on 081KRA5AR0008QG0R0019Q33F7 (vendor-bias gap) |
+| 081KRA5AR0008QG0R0019Q33F7 | #2 | Amara preamble; 2/3 acceptance met (vendor-bias missing) |
+| 081KQDTYV0008QG0R0037YJPEX | #2 (Status-annotated, multi-row class-#4 candidate) | Amara umbrella; prior-triaged-in-row by parallel Otto session |
+| 081KRA5AR0008QG0R001X4T9W7 | #2 | Amara README + closure; 3/5 acceptance visible-met |
+| 081KR50HA0008QG0R003DJ093T | **#2 + #2-Execution-atom** | Aurora split; depends on 081KR50HA0008QG0R003PAVRT8/081KR50HA0008QG0R0038HWCDT/081KR50HA0008QG0R003C39GP0/081KR50HA0008QG0R002HMCS5Y |
+| 081KR7JY10008QG0R002D6VNNJ | **#2 + #2-Ready** | Round-close meta-check checklist; dep 081KR7JY10008QG0R0038AFS7T merged this session |
+| 081KR7JY10008QG0R000XPVJ0W | **#2 + #2-Ready** | Measurables wiring into ALIGNMENT.md; dep 081KR7JY10008QG0R0038AFS7T merged this session |
+| 081KRFA460008QG0R000NVM36W | #1 (CLOSED) | Launch-substrate carve-out; closed via PR pending in deferred queue this session |
 
 ## How to use this catalog
 
@@ -112,10 +112,10 @@ The catalog above gives the classifier its target outputs.
 Some primary artifacts exist for reasons unrelated to the row:
 
 - **Shared infrastructure files** — `tools/peer-call/README.md` is
-  primary artifact for B-0120/B-0121/B-0122/B-0118 etc.; all share
+  primary artifact for 081KQDTYV0008QG0R001VJP216/081KQDTYV0008QG0R003VB4K1V/081KQDTYV0008QG0R001HQSSAX/081KQDTYV0008QG0R0037YJPEX etc.; all share
   one README. Existence on disk doesn't mean any specific row shipped.
 - **Multi-row composition** — `docs/AGENT-BEST-PRACTICES.md` is
-  primary artifact for B-0377/B-0443 etc.; each row contributes
+  primary artifact for 081KR50HA0008QG0R003C39GP0/081KRFA460008QG0R000NVM36W etc.; each row contributes
   different content sections. Need to grep for row-specific markers.
 
 These produce FP-2 candidates. The discriminator's "primary artifact
@@ -128,16 +128,16 @@ exists" check is necessary but not sufficient.
 - `memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md` — foundational pattern
 - `memory/feedback_audit_tool_partial_vs_drift_fp_rate_steady_state_otto_cli_2026_05_16.md` — earlier FP-rate analysis
 - `memory/feedback_audit_backlog_status_drift_second_false_positive_class_inline_composes_with_otto_cli_2026_05_16.md` — earlier FP catalog
-- B-0553 — audit-tool spec
-- B-0557 — 4 quality slices follow-up
+- 081KRQ1AB0008QG0R000QYJFZE — audit-tool spec
+- 081KRQ1AB0008QG0R003DYANMC — 4 quality slices follow-up
 
 ## Session arc
 
 This catalog accumulated across ~13 autonomous-loop ticks on
 2026-05-16 from ~09:28Z to ~11:45Z. Each tick triaged 1-2 rows;
 sub-classes emerged organically as the pattern space saturated.
-Three close-row PRs landed (B-0037.1 → #3859 MERGED; B-0049.2
-attempt aborted; B-0443 close-row in deferred queue). The remaining
+Three close-row PRs landed (081KR7JY10008QG0R0038AFS7T → #3859 MERGED; 081KR7JY10008QG0R003JSEMX7
+attempt aborted; 081KRFA460008QG0R000NVM36W close-row in deferred queue). The remaining
 ~24 audit shards documented partial states in #2 / #2-SD / #2-Ready
 / #2-Execution-atom forms.
 

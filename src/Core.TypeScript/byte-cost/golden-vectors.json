@@ -2,7 +2,7 @@
   "primitive": "byte-cost",
   "version": "v1",
   "unit": "utf8-bytes",
-  "why": "B-1016 slice 1 — deterministic, byte-lockable cost meter for context-startup surfaces. Bytes not model-tokens (tokenizers vary, can't byte-lock). measure(text) = UTF-8 byte length. Oracle agreement: every language reports identical counts.",
+  "why": "081KT7YW00008QG0R002T1XNWT slice 1 — deterministic, byte-lockable cost meter for context-startup surfaces. Bytes not model-tokens (tokenizers vary, can't byte-lock). measure(text) = UTF-8 byte length. Oracle agreement: every language reports identical counts.",
   "vectors": [
     { "name": "empty", "text": "", "bytes": 0 },
     { "name": "ascii-short", "text": "carved sentence", "bytes": 15 },

@@ -46,12 +46,12 @@ Automated preservation discipline. Capturing alignment drift and review friction
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CL3sM`
-- **Path**: `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T20:47:25Z on `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T20:47:25Z on `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md`:4 (association: NONE)
 
   <pre>
   The frontmatter `status` is being changed to `in-progress`, but per `tools/backlog/README.md` the valid values are `open`, `closed`, `superseded-by-B-NNNN`, or `deferred`. `in-progress` is not in the allowed enum and will be treated as open by `tools/backlog/generate-index.ts` (which only special-cases `closed`/`superseded-by-*`), so the value drifts from the documented schema without changing rendered behavior. Revert to `open` (or use one of the allowed values) and track in-progress state another way.
@@ -61,10 +61,10 @@ Automated preservation discipline. Capturing alignment drift and review friction
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-14T20:52:33Z on `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md`:4 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-14T20:52:33Z on `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md`:4 (association: MEMBER)
 
     <pre>
-    Fixed: `status: in-progress` reverted to `status: open` in B-0488 frontmatter. Commit e7ab57e7. The schema-non-compliant value would have silently fallen through to `open` behavior in generate-index.ts — now it is explicit.
+    Fixed: `status: in-progress` reverted to `status: open` in 081KRHWGX0008QG0R001HDK688 frontmatter. Commit e7ab57e7. The schema-non-compliant value would have silently fallen through to `open` behavior in generate-index.ts — now it is explicit.
     </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -78,7 +78,7 @@ Automated preservation discipline. Capturing alignment drift and review friction
 - **`Copilot` (bot)** at 2026-05-14T20:47:26Z on `docs/personas/ksk-personas.md`:10 (association: NONE)
 
   <pre>
-  The PR title and description scope this PR to "preserve recently merged PRs 3233-3226" (archival of PR discussions). However, this PR also adds `docs/personas/ksk-personas.md` (a 452-line new persona-map authored document) and flips the status of `docs/backlog/P1/B-0488-...md`. These are substantive non-archival changes that do not fit the stated archival scope and should be split into a separate PR so review can focus on each concern independently.
+  The PR title and description scope this PR to "preserve recently merged PRs 3233-3226" (archival of PR discussions). However, this PR also adds `docs/personas/ksk-personas.md` (a 452-line new persona-map authored document) and flips the status of `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-...md`. These are substantive non-archival changes that do not fit the stated archival scope and should be split into a separate PR so review can focus on each concern independently.
   </pre>
 
 **Replies:**
@@ -86,7 +86,7 @@ Automated preservation discipline. Capturing alignment drift and review friction
   - **`AceHack` (human)** at 2026-05-14T20:52:39Z on `docs/personas/ksk-personas.md`:10 (association: MEMBER)
 
     <pre>
-    Acknowledged. The scope mixing is valid: the preservation PR was authored by Lior-Antigravity and captured B-0488 KSK persona substrate that arrived in the same tick. All three changes are documentation-only with zero code changes — no test-surface entanglement. A split PR would generate additional CI cycles without isolation benefit in this docs-only context. The schema fix (thread 1) is the substantive correction here.
+    Acknowledged. The scope mixing is valid: the preservation PR was authored by Lior-Antigravity and captured 081KRHWGX0008QG0R001HDK688 KSK persona substrate that arrived in the same tick. All three changes are documentation-only with zero code changes — no test-surface entanglement. A split PR would generate additional CI cycles without isolation benefit in this docs-only context. The schema fix (thread 1) is the substantive correction here.
     </pre>
 
 ## Fix commits (touching thread paths)
@@ -95,16 +95,16 @@ Automated preservation discipline. Capturing alignment drift and review friction
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md`
 - `docs/personas/ksk-personas.md`
 
 **Message:**
 
 ```
-feat(b-0488): KSK persona map — closes B-0429.4
+feat(b-0488): KSK persona map — closes 081KRFA460008QG0R002M05EY1.4
 
 Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the
-B-0485 template:
+081KRHWGX0008QG0R00019453T template:
 
 Primary personas (3):
 - ksk-agent-developer — engineers integrating "am I allowed to do this?"
@@ -135,15 +135,15 @@ KSK's terminal purpose is human-in-the-loop refusal of impactful AI
 actions; the refused-persona screen is structural to KSK's value, not a
 side concern.
 
-Closes B-0488 acceptance:
-- [x] Template from B-0485 applied
+Closes 081KRHWGX0008QG0R001HDK688 acceptance:
+- [x] Template from 081KRHWGX0008QG0R00019453T applied
 - [x] Grey-hat / ethical researcher framing folded into security-engineer
       (per glossary's "small bit of code that gets disproportionate
       review" framing — the engineering itself IS the ethical-research
       operating mode for this product)
 - [x] At least 2 refused personas with explicit HARD LIMITS rationale (R1+R2)
 - [x] Output doc committed at canonical path
-- [x] B-0488 status: open -> in-progress (closes on PR merge)
+- [x] 081KRHWGX0008QG0R001HDK688 status: open -> in-progress (closes on PR merge)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -152,12 +152,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md`
 
 **Message:**
 
 ```
-fix(backlog): revert B-0488 status in-progress → open (schema complia…
+fix(backlog): revert 081KRHWGX0008QG0R001HDK688 status in-progress → open (schema complia…
 
 …nce)
 

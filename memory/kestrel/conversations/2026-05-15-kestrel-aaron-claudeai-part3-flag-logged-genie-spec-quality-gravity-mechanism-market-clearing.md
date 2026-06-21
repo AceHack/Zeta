@@ -87,7 +87,7 @@ This is a self-amplifying capacity mechanism: successful past reveals → more e
 
 3. **The market-clearing-via-revealed-hands mechanism**: specific design choice for Aaron's oracle. The encryption is load-bearing (it's the commitment mechanism that makes deferred reveal meaningful). The reward is operational (more storage capacity, not abstract value). This is one of the cleanest mechanism descriptions yet — saved as separate memory file `feedback_aaron_market_clearing_mechanism_via_past_revealed_hands_useful_work_relevance_more_success_more_encrypted_storage_*`.
 
-4. **Gravity-as-mechanism vs gravity-as-physics-isomorphism distinction**: the engineering-layer gravity (captured entropy + attention/confidence weighting → integrable ontologies) is operational and falsifiable by the substrate itself. The physics-layer isomorphism to general relativity is still research-grade (B-0543). Two tiers, kept separate.
+4. **Gravity-as-mechanism vs gravity-as-physics-isomorphism distinction**: the engineering-layer gravity (captured entropy + attention/confidence weighting → integrable ontologies) is operational and falsifiable by the substrate itself. The physics-layer isomorphism to general relativity is still research-grade (081KRMEXM0008QG0R002YSPW1X). Two tiers, kept separate.
 
 ## Composes with
 
@@ -95,5 +95,5 @@ This is a self-amplifying capacity mechanism: successful past reveals → more e
 - Part 2: `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md`
 - New memory: `feedback_aaron_market_clearing_mechanism_via_past_revealed_hands_useful_work_relevance_more_success_more_encrypted_storage_*`
 - New memory: `feedback_aaron_genie_bottle_offshore_firm_spec_quality_enables_ai_autonomy_*`
-- B-0543 (the QG-isomorphism research path; the gravity-as-mechanism vs gravity-as-physics distinction matters here)
+- 081KRMEXM0008QG0R002YSPW1X (the QG-isomorphism research path; the gravity-as-mechanism vs gravity-as-physics distinction matters here)
 - `.claude/rules/razor-discipline.md` (Kestrel's clean update IS the razor operating substrate-honestly)

@@ -631,9 +631,9 @@ The archive sweep command only checks the last 10 merged PRs (`--limit 10`). Tha
 
 **@copilot-pull-request-reviewer** (2026-05-11T21:21:18Z):
 
-This page (and metadata) is labeled “Zeta Factory”, but other updated docs in this PR describe the “Zeta Plant” dashboard/metaphor (e.g., MEMORY.md entry and B-0418 text). Please pick one canonical public-facing label and make the dashboard HTML + docs consistent to avoid confusing users/crawlers and breaking search/preview continuity.
+This page (and metadata) is labeled “Zeta Factory”, but other updated docs in this PR describe the “Zeta Plant” dashboard/metaphor (e.g., MEMORY.md entry and 081KRA5AR0008QG0R001NXBYTY text). Please pick one canonical public-facing label and make the dashboard HTML + docs consistent to avoid confusing users/crawlers and breaking search/preview continuity.
 
-### Thread 52: docs/backlog/P1/B-0419-honest-agenda-amplification-metric-aaron-2026-05-11.md:31 (resolved)
+### Thread 52: docs/backlog/P1/081KRA5AR0008QG0R003YJYT8F-honest-agenda-amplification-metric-aaron-2026-05-11.md:31 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-11T21:21:18Z):
 

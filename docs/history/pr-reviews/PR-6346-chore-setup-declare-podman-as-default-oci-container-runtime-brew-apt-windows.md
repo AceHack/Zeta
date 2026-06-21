@@ -29,7 +29,7 @@
 
 ## What
 
-Declares **podman** as the default OCI container runtime across all three platform manifests, for the effectful `do_item` executor's real-work tier (B-0964 §2 — "the first time the item needs real tools, stop simulating").
+Declares **podman** as the default OCI container runtime across all three platform manifests, for the effectful `do_item` executor's real-work tier (081KT07NV0008QG0R001CBQ2X2 §2 — "the first time the item needs real tools, stop simulating").
 
 | Manifest | Line |
 |---|---|
@@ -52,7 +52,7 @@ OCI-standard, **Apache-2.0, $0, rootless, daemonless**. The executor reads `ZETA
 
 ## Follow-up (same session)
 
-Fold the OCI-abstraction + compose-at-infra into B-0964 §2 + preserve the docker/podman huddle verbatim in a review doc.
+Fold the OCI-abstraction + compose-at-infra into 081KT07NV0008QG0R001CBQ2X2 §2 + preserve the docker/podman huddle verbatim in a review doc.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -175,7 +175,7 @@ chore(setup): declare podman as the default OCI container runtime (br…
 
 …ew/apt/windows)
 
-The effectful do_item executor (B-0964 §2) needs a real container surface for
+The effectful do_item executor (081KT07NV0008QG0R001CBQ2X2 §2) needs a real container surface for
 the 'first time the item needs real tools, stop simulating' tier. Per the
 docker-vs-podman huddle (gemini+grok+amara, 2026-06-01) podman is the DEFAULT:
 Apache-2.0, $0, rootless, daemonless. The executor reads ZETA_CONTAINER_RUNTIME
@@ -189,7 +189,7 @@ test stays green, 3/3):
   - windows: podman winget=RedHat.Podman  (WSL2 machine; scoop primary)
 
 Version unpinned (fast-mover CLI; brew/scoop default) per pin-only-slow-movers.
-Folding the OCI-abstraction + compose-at-infra into B-0964 §2 + preserving the
+Folding the OCI-abstraction + compose-at-infra into 081KT07NV0008QG0R001CBQ2X2 §2 + preserving the
 docker/podman huddle verbatim is the immediate follow-up.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -213,7 +213,7 @@ chore(setup): trim podman manifest comments to current-state + declar…
 Folds the manifest review:
 - Copilot: keep manifests minimal/current-state — drop AI-peer names, drop the
   not-yet-implemented ZETA_CONTAINER_RUNTIME assertion + 'Phase-2 lazily' future-
-  claims; point to B-0964 §2 for rationale. Fix dep-pin-search-first ->
+  claims; point to 081KT07NV0008QG0R001CBQ2X2 §2 for rationale. Fix dep-pin-search-first ->
   dep-pin-search-first-authority (canonical rule name).
 - Codex P2 (apt): linux.sh installs with --no-install-recommends, which skips
   podman's Recommends — declare uidmap + slirp4netns + fuse-overlayfs so podman

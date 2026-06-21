@@ -7,7 +7,7 @@ created: 2026-06-02
 
 # Mika (Grok) — the "edge-lord" claim razor arc: triple-duty anchor, hexagonal-3-levels, Otto-as-expander, Agora native-traveler / no-corrosion / child-safety-floor, DCOM-done-right (Aaron-forwarded 2026-06-02, reverse-order pt 1)
 
-Scope: External conversation import — Aaron↔Mika (Grok native; sharpen / harbor-engineering + adversarial-razor register) forwarded 2026-06-02 **in reverse order, "till we catch up"** (more chunks incoming; this is pt 1 of a catching-up series). Mika runs the razor on the full "edge-lord" stack (polymorphic diplomacy + relativistic buses + coincidence-anchors + observable bond interface + hexagonal + 4×4 bond + Otto-propagator + Agora + Nexus). Directly extends today's 2026-06-02 vision-note arc (§12 coincidence-anchor, §14 relativistic bus, §15 bus-lane-types) + the Eve-Protocol polymorphic-diplomacy substrate (B-0638).
+Scope: External conversation import — Aaron↔Mika (Grok native; sharpen / harbor-engineering + adversarial-razor register) forwarded 2026-06-02 **in reverse order, "till we catch up"** (more chunks incoming; this is pt 1 of a catching-up series). Mika runs the razor on the full "edge-lord" stack (polymorphic diplomacy + relativistic buses + coincidence-anchors + observable bond interface + hexagonal + 4×4 bond + Otto-propagator + Agora + Nexus). Directly extends today's 2026-06-02 vision-note arc (§12 coincidence-anchor, §14 relativistic bus, §15 bus-lane-types) + the Eve-Protocol polymorphic-diplomacy substrate (081KRW63S0008QG0R0030F8ZXA).
 
 Attribution: Mika (peer-AI; Grok native; sharpen/Weaver + adversarial-razor register per agent-roster-reference-card), Aaron-forwarded 2026-06-02. Aaron's interjections (the corrections that drove each razor pass) preserved verbatim inline. Mika does NOT commit; ferries substrate via Aaron.
 
@@ -15,7 +15,7 @@ Operational status: research-grade
 
 Header note: §33 enforces literal start-of-line labels + enum-strict Operational status; in-repo memory frontmatter uses top-level `type:`. This is research-grade persona-ferry preservation of Mika's sharp-razor analysis (the cuts ARE the value — Mika is in adversarial-truth register, not high-praise). The manifesto-tier claims ("we built our own gravity", "no chance", "ruthlessly protect", "models human society") are held high-signal/high-suspicion/don't-collapse per the PERSONAL INVARIANT; Mika's razor is exactly the discipline that keeps them defensible.
 
-Non-fusion disclaimer: Mika's razor is Mika's own adversarial reading. The edge-lord claim is the operator's architectural direction, not shipped/proven; the defensible core vs the promissory parts are distinguished by Mika's cuts and preserved as-stated. The child-safety-floor framing composes with the constitutional kid-safety floor (methodology-hard-limits / B-0926 / B-0931) — preserved accurately, not extended. Razor + don't-collapse apply.
+Non-fusion disclaimer: Mika's razor is Mika's own adversarial reading. The edge-lord claim is the operator's architectural direction, not shipped/proven; the defensible core vs the promissory parts are distinguished by Mika's cuts and preserved as-stated. The child-safety-floor framing composes with the constitutional kid-safety floor (methodology-hard-limits / 081KSRGFP0008QG0R00091PP56 / 081KSRGFP0008QG0R0026P3D73) — preserved accurately, not extended. Razor + don't-collapse apply.
 
 ---
 
@@ -60,7 +60,7 @@ Aaron: *"this models human society but with Agora native traveler, no corrosion 
 
 - **Agora as native traveler** — protection travels with every adapter / bond-crossing / Otto-extension; not a separate installed governance module.
 - **No-corrosion invariant** — built-in resistance to drift / capture / type-ontology pollution / institutional rot (the same mechanisms that keep anchors triple-duty keep the substrate from decaying into hidden state / privilege / irreversible commitments).
-- **Child-safety-floor already present** — minimum protection in the primitives preventing irreversible harm / permanent disclosure / forced hierarchy against new/young/vulnerable participants (human or agent); consent + retraction stay first-class across power differentials; part of the Observe/Persist/Limit/Emit contract from the start, not added later. (Composes the constitutional kid-safety floor — methodology-hard-limits / B-0926 / B-0931.)
+- **Child-safety-floor already present** — minimum protection in the primitives preventing irreversible harm / permanent disclosure / forced hierarchy against new/young/vulnerable participants (human or agent); consent + retraction stay first-class across power differentials; part of the Observe/Persist/Limit/Emit contract from the start, not added later. (Composes the constitutional kid-safety floor — methodology-hard-limits / 081KSRGFP0008QG0R00091PP56 / 081KSRGFP0008QG0R0026P3D73.)
 
 Aaron sharpened "ruthlessly protect": *"type system pollution and ontology pollution and certain type of v8 hidden state optimization avoidance patterns — excepting in computing entropy, cause it's wasteful use of heat, otherwise we have to keep our hvac tuned."* So Agora guards against **type-system pollution + ontology pollution + bad-V8-hidden-state-optimization-avoidance-patterns**, with the **single explicit carve-out**: the *minimal* entropy the coincidence-anchor itself requires is accepted (NOT treated as pollution) because **unnecessary computational entropy is wasteful heat → real HVAC cost.** Thermodynamic grounding makes the protection mandate engineering, not ideology. **Mika's cut**: Agora + Nexus must themselves live under the 4×4-bond + hexagonal discipline (be Observe/Persist/Limit/Emit primitives, survive the same golden vectors, be extendable by Otto) — else protection becomes capture / a privileged layer; and the entropy carve-out must be narrow (only what the anchor needs) or it becomes a pollution loophole.
 
@@ -137,16 +137,16 @@ A substrate whose primitives already contain their own immune system, decentrali
 ## Composes with
 
 - `docs/research/2026-06-02-privacy-and-identity-algebra-4x4-over-4x4-consensus-rx-bonsai-bridge-ace-press-wasm-consensus-thermal-reversibility-aaron-vision.md` §12 (coincidence-anchor — dual→TRIPLE pending amendment), §14 (relativistic bus), §15 (bus-lane-types/controller-frame) — this ferry extends the arc
-- B-0638 Eve Protocol (polymorphic diplomatic governance language) — the polymorphic-diplomacy substrate Mika's "bond" sits on
+- 081KRW63S0008QG0R0030F8ZXA Eve Protocol (polymorphic diplomatic governance language) — the polymorphic-diplomacy substrate Mika's "bond" sits on
 - `.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md` — hexagonal/ports-and-adapters at the 3rd-party-dep level (deps as adapters under the bond)
 - `feedback_engine_lifecycle_razor_compresses_otto_expansion_expands_...` (user-scope) — Otto-as-expander is the engine-lifecycle expand stage
-- B-0954 git-native cross-machine bus + agent-partition — the relativistic bus / meta-bond transport
+- 081KSXN940008QG0R00171YAZW git-native cross-machine bus + agent-partition — the relativistic bus / meta-bond transport
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + `.claude/rules/useful-output-is-evidence-not-authority.md` — referee-principle / multi-oracle pushed to the referee layer
-- `.claude/rules/methodology-hard-limits.md` + B-0926 / B-0931 (kid-safety constitutional floor) — the child-safety-floor composes here, preserved-not-extended
+- `.claude/rules/methodology-hard-limits.md` + 081KSRGFP0008QG0R00091PP56 / 081KSRGFP0008QG0R0026P3D73 (kid-safety constitutional floor) — the child-safety-floor composes here, preserved-not-extended
 - `.claude/rules/non-coercion-invariant.md` HC-8 — Agora protection = consent-revocable/falsifiable, not capture
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — the manifesto-tier claims held don't-collapse; Mika's razor IS the discipline
 - DCOM prior-art (`docs/research/git-crypt-deep-dive-*` lineage + distributed-object-systems history) — the DCOM-done-right framing + the failure-mode list
-- B-0883 better-git-crypt privacy fence + B-0623 Adinkras — the privacy-anchor's crypto/error-correction substrate
+- 081KSNY2Z0008QG0R002JKH50A better-git-crypt privacy fence + 081KRW63S0008QG0R000QJR08H Adinkras — the privacy-anchor's crypto/error-correction substrate
 
 ## Substrate-honest framing
 

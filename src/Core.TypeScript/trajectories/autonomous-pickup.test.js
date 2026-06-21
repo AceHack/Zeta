@@ -23,16 +23,16 @@ describe("selectNextTrajectory", () => {
             packet({
                 slug: "factory-trajectory-surface",
                 title: "Factory Trajectory Surface",
-                nextAction: "alignment measurement trajectory, grounded in B-0205",
-                childCandidates: ["alignment measurement trajectory, grounded in B-0205"],
-                backlogRefs: ["B-0205"],
+                nextAction: "alignment measurement trajectory, grounded in 081KQTPYE0008QG0R000ZJ2GW8",
+                childCandidates: ["alignment measurement trajectory, grounded in 081KQTPYE0008QG0R000ZJ2GW8"],
+                backlogRefs: ["081KQTPYE0008QG0R000ZJ2GW8"],
             }),
         ], []);
         expect(selection.status).toBe("selected");
         expect(selection.action).toBe("create-child-packet");
         expect(selection.executionPrompt).toContain("Create exactly one child trajectory packet");
         expect(selection.executionPrompt).toContain("Trajectory is number one");
-        expect(selection.executionPrompt).toContain("B-0205");
+        expect(selection.executionPrompt).toContain("081KQTPYE0008QG0R000ZJ2GW8");
     });
     test("routes broad follow-up text to decomposition", () => {
         const selection = selectNextTrajectory([
@@ -115,16 +115,16 @@ describe("selectNextTrajectory", () => {
             packet({
                 slug: "autonomous-backlog-pickup",
                 title: "stale closed action",
-                nextAction: "Finish the PR-publication executor path for B-0280",
-                childCandidates: ["PR-publication executor completion, grounded in B-0280"],
-                actionBacklogRefs: ["B-0280"],
-                closedActionBacklogRefs: ["B-0280"],
+                nextAction: "Finish the PR-publication executor path for 081KR2E4K0008QG0R0022RVRCZ",
+                childCandidates: ["PR-publication executor completion, grounded in 081KR2E4K0008QG0R0022RVRCZ"],
+                actionBacklogRefs: ["081KR2E4K0008QG0R0022RVRCZ"],
+                closedActionBacklogRefs: ["081KR2E4K0008QG0R0022RVRCZ"],
             }),
             packet({ slug: "typescript-bun-migration", title: "fallback" }),
         ], []);
         expect(selection.status).toBe("selected");
         expect(selection.selected?.slug).toBe("typescript-bun-migration");
-        expect(selection.blocked[0]?.reason).toBe("action backlog refs already closed: B-0280");
+        expect(selection.blocked[0]?.reason).toBe("action backlog refs already closed: 081KR2E4K0008QG0R0022RVRCZ");
     });
     test("skips closed child candidates before selecting the prompt target", () => {
         const selection = selectNextTrajectory([
@@ -133,16 +133,16 @@ describe("selectNextTrajectory", () => {
                 title: "mixed child candidates",
                 nextAction: "Create the next viable child packet",
                 childCandidates: [
-                    "PR-publication executor completion, grounded in B-0280",
-                    "Queue-health continuation, grounded in B-0281",
+                    "PR-publication executor completion, grounded in 081KR2E4K0008QG0R0022RVRCZ",
+                    "Queue-health continuation, grounded in 081KR2E4K0008QG0R002FSPPQR",
                 ],
-                actionBacklogRefs: ["B-0280", "B-0281"],
-                closedActionBacklogRefs: ["B-0280"],
+                actionBacklogRefs: ["081KR2E4K0008QG0R0022RVRCZ", "081KR2E4K0008QG0R002FSPPQR"],
+                closedActionBacklogRefs: ["081KR2E4K0008QG0R0022RVRCZ"],
             }),
         ], []);
         expect(selection.status).toBe("selected");
         expect(selection.action).toBe("create-child-packet");
-        expect(selection.executionPrompt).toContain("First child candidate: Queue-health continuation, grounded in B-0281");
+        expect(selection.executionPrompt).toContain("First child candidate: Queue-health continuation, grounded in 081KR2E4K0008QG0R002FSPPQR");
         expect(selection.executionPrompt).not.toContain("First child candidate: PR-publication executor completion");
     });
 });
@@ -185,17 +185,17 @@ describe("readTrajectoryPackets", () => {
                 "",
                 "Status: active child packet",
                 "Current blocker: none",
-                "Next concrete action: finish the PR-publication executor path for B-0280.",
+                "Next concrete action: finish the PR-publication executor path for 081KR2E4K0008QG0R0022RVRCZ.",
                 "",
                 "## Next Child Packets",
                 "",
-                "- PR-publication executor completion, grounded in B-0280",
+                "- PR-publication executor completion, grounded in 081KR2E4K0008QG0R0022RVRCZ",
             ].join("\n"));
-            writeFileSync(join(backlogDir, "B-0280-autonomous-backlog-pr-publication-and-automerge.md"), ["---", "id: B-0280", "status: closed", "---", "", "# B-0280"].join("\n"));
+            writeFileSync(join(backlogDir, "081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge.md"), ["---", "id: 081KR2E4K0008QG0R0022RVRCZ", "status: closed", "---", "", "# 081KR2E4K0008QG0R0022RVRCZ"].join("\n"));
             const packets = readTrajectoryPackets(repoRoot);
             expect(packets).toHaveLength(1);
-            expect(packets[0]?.actionBacklogRefs).toEqual(["B-0280"]);
-            expect(packets[0]?.closedActionBacklogRefs).toEqual(["B-0280"]);
+            expect(packets[0]?.actionBacklogRefs).toEqual(["081KR2E4K0008QG0R0022RVRCZ"]);
+            expect(packets[0]?.closedActionBacklogRefs).toEqual(["081KR2E4K0008QG0R0022RVRCZ"]);
         }
         finally {
             rmSync(repoRoot, { recursive: true, force: true });
@@ -213,13 +213,13 @@ describe("readTrajectoryPackets", () => {
                 "",
                 "Status: active child packet",
                 "Current blocker: none",
-                "Next concrete action: continue the superseded lane for B-0282.",
+                "Next concrete action: continue the superseded lane for 081KR2E4K0008QG0R000J2CKKW.",
             ].join("\n"));
-            writeFileSync(join(backlogDir, "B-0282-superseded-row.md"), ["---", "id: B-0282", "status: superseded-by-B-0283", "---", "", "# B-0282"].join("\n"));
+            writeFileSync(join(backlogDir, "081KR2E4K0008QG0R000J2CKKW-superseded-row.md"), ["---", "id: 081KR2E4K0008QG0R000J2CKKW", "status: superseded-by-081KR2E4K0008QG0R000JW0DZB", "---", "", "# 081KR2E4K0008QG0R000J2CKKW"].join("\n"));
             const packets = readTrajectoryPackets(repoRoot);
             expect(packets).toHaveLength(1);
-            expect(packets[0]?.actionBacklogRefs).toEqual(["B-0282"]);
-            expect(packets[0]?.closedActionBacklogRefs).toEqual(["B-0282"]);
+            expect(packets[0]?.actionBacklogRefs).toEqual(["081KR2E4K0008QG0R000J2CKKW"]);
+            expect(packets[0]?.closedActionBacklogRefs).toEqual(["081KR2E4K0008QG0R000J2CKKW"]);
         }
         finally {
             rmSync(repoRoot, { recursive: true, force: true });

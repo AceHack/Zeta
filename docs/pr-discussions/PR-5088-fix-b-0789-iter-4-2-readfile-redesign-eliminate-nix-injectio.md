@@ -1,6 +1,6 @@
 ---
 pr_number: 5088
-title: "fix(B-0789 iter-4.2): readFile redesign \u2014 eliminate Nix-injection class entirely (closes residual ${...} antiquotation vector from #5086)"
+title: "fix(081KSGS9H0008QG0R002T3BJ2R iter-4.2): readFile redesign \u2014 eliminate Nix-injection class entirely (closes residual ${...} antiquotation vector from #5086)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:32:42Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:40Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5088: fix(B-0789 iter-4.2): readFile redesign — eliminate Nix-injection class entirely (closes residual ${...} antiquotation vector from #5086)
+# PR #5088: fix(081KSGS9H0008QG0R002T3BJ2R iter-4.2): readFile redesign — eliminate Nix-injection class entirely (closes residual ${...} antiquotation vector from #5086)
 
 ## PR description
 
@@ -109,7 +109,7 @@ These warning strings still refer to `operator-ssh-keys.nix`, but the probe now 
 
 **@copilot-pull-request-reviewer** (2026-05-26T04:36:33Z):
 
-This module comment references `maintainers/aaron/legal-entities/inventory.md`, which is a maintainer-specific path/name leaking into a reusable module comment. If you need a pointer, prefer a stable doc/backlog reference (e.g., the relevant B-0789 backlog entry) rather than a person-specific path.
+This module comment references `maintainers/aaron/legal-entities/inventory.md`, which is a maintainer-specific path/name leaking into a reusable module comment. If you need a pointer, prefer a stable doc/backlog reference (e.g., the relevant 081KSGS9H0008QG0R002T3BJ2R backlog entry) rather than a person-specific path.
 
 ## General comments
 

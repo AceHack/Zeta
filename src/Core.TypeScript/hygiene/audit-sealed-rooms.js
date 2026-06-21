@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-// audit-sealed-rooms.ts — B-1035 Reticulum-only enforcement, the LINT half.
+// audit-sealed-rooms.ts — 081KTSZN10008QG0R002J0GE0Z Reticulum-only enforcement, the LINT half.
 //
-// THE CLAUSE (Aaron, B-1035): "at no point do our tests need to interact with hdd or git or tool
+// THE CLAUSE (Aaron, 081KTSZN10008QG0R002J0GE0Z): "at no point do our tests need to interact with hdd or git or tool
 // or anything other than reticulum… it will force us to have cache loaded in the room at
 // startup." The runtime half is THE DOUBLE-RUN CHECK in TestLoop.run (ambient ENTROPY is a
 // mechanical failure); this audit is the AMBIENT-CHANNEL half: .NET has no reliable in-process
@@ -87,7 +87,7 @@ function inspect(path) {
 }
 walk(root);
 if (findings.length > 0) {
-    console.error(`FAIL: ${findings.length} ambient-channel token(s) inside SEALED-ROOM files (B-1035 Reticulum-only clause):`);
+    console.error(`FAIL: ${findings.length} ambient-channel token(s) inside SEALED-ROOM files (081KTSZN10008QG0R002J0GE0Z Reticulum-only clause):`);
     for (const f of findings)
         console.error("  " + f);
     process.exit(1);

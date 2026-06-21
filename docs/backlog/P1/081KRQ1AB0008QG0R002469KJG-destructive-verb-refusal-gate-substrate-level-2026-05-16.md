@@ -1,6 +1,5 @@
 ---
-id: B-0582
-zetaid: 081KRQ1AB0008QG0R002469KJG
+id: 081KRQ1AB0008QG0R002469KJG
 priority: P1
 status: open
 title: "Substrate-level destructive-verb refusal gate — mechanical pre-call abort, forkable, enterprise-extensible (Kestrel layer-one)"
@@ -76,11 +75,11 @@ This is a P1 because: until the gate exists, every broad-scope grant is one bad 
 
 ## Composes with
 
-- B-0570 (scarcity tracker — same family of substrate-level enforcement)
-- B-0571 (GitHub App for factory automation — production alternative; the gate applies regardless of token type)
-- B-0572 (LFG GitHub tier decision — Enterprise tier enables more enterprise-level rulesets that COULD overlap with this gate; the substrate gate is the layer below the enterprise rulesets, applied to Otto's intent before the API call)
-- B-0580 (Enterprise ruleset management — Kestrel's enterprise ruleset #16490134 already covers `deletion` + `non_fast_forward` at the GitHub-server side; this gate covers the SAME verbs at the loop-execution side, before the call leaves Otto's machine)
-- B-0581 (gh-auth-refresh wrapper skill — adjacent infrastructure; both are about putting governance in code rather than human discipline)
+- 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker — same family of substrate-level enforcement)
+- 081KRQ1AB0008QG0R0038VQJZ0 (GitHub App for factory automation — production alternative; the gate applies regardless of token type)
+- 081KRQ1AB0008QG0R000GZEMCR (LFG GitHub tier decision — Enterprise tier enables more enterprise-level rulesets that COULD overlap with this gate; the substrate gate is the layer below the enterprise rulesets, applied to Otto's intent before the API call)
+- 081KRQ1AB0008QG0R000522MPJ (Enterprise ruleset management — Kestrel's enterprise ruleset #16490134 already covers `deletion` + `non_fast_forward` at the GitHub-server side; this gate covers the SAME verbs at the loop-execution side, before the call leaves Otto's machine)
+- 081KRQ1AB0008QG0R001Q4GNST (gh-auth-refresh wrapper skill — adjacent infrastructure; both are about putting governance in code rather than human discipline)
 - `.claude/rules/methodology-hard-limits.md` (moral framing; this row is the mechanical enforcement that backs it)
 - `.claude/rules/glass-halo-bidirectional.md` (visibility of refusal events — every gate abort gets logged so the operator can see when the gate fires and why)
 

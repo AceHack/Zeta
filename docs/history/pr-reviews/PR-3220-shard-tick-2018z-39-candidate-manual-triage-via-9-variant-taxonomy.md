@@ -29,7 +29,7 @@
 
 Ran the audit-rule-cross-refs tool ([PR #3202](https://github.com/Lucent-Financial-Group/Zeta/pull/3202)) + applied the 9-variant taxonomy manually to all 39 candidates.
 
-**Result**: 37 healthy variants + 2 entries pointing at the 1 real defect ([B-0514](docs/backlog/P3/B-0514-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md), already captured).
+**Result**: 37 healthy variants + 2 entries pointing at the 1 real defect ([081KRHWGX0008QG0R002E3BCDS](docs/backlog/P3/081KRHWGX0008QG0R002E3BCDS-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md), already captured).
 
 **False-positive rate**: 38/39 = 97% — Layer A is high-recall + low-precision; Layer B semantic classification is genuinely load-bearing. The 9-variant taxonomy was the right artifact.
 

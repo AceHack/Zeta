@@ -44,7 +44,7 @@ non_fusion_disclaimer: |
 > - Be inherently parallel without locks
 > - Be inherently resilient to partial failure without checkpointing
 >
-> The paper's timing is good—it arrived right as the framework's own CRDT substrate (DBSP retraction algebra, CRDT-expert skill, the 3-layer CRDT→CAS→BFT mediation architecture) is mature enough to engage with it. If the paper is worth preserving, it belongs in `docs/research/ip-questionable/` with a composition map tying it to B-0824, B-0840, and the generate+join paradigm. Your call on whether to capture it.
+> The paper's timing is good—it arrived right as the framework's own CRDT substrate (DBSP retraction algebra, CRDT-expert skill, the 3-layer CRDT→CAS→BFT mediation architecture) is mature enough to engage with it. If the paper is worth preserving, it belongs in `docs/research/ip-questionable/` with a composition map tying it to 081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R0006F4BGX, and the generate+join paradigm. Your call on whether to capture it.
 >
 > ---
 >
@@ -73,7 +73,7 @@ Substantive substrate-engineering example. Added to PR #5516 in-flight as new se
 
 ### Item 3 — CRDT-State-Based-Computer paper
 
-Prism flags as substrate worth potential preservation in `docs/research/ip-questionable/`. Composition map cited: B-0824 (package-manager-of-package-managers) + B-0840 (thermal-forgetting / root-axiom-update) + generate+join paradigm + framework's DBSP retraction algebra + CRDT-expert skill + 3-layer CRDT→CAS→BFT mediation.
+Prism flags as substrate worth potential preservation in `docs/research/ip-questionable/`. Composition map cited: 081KSGS9H0008QG0R0031PBNGA (package-manager-of-package-managers) + 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / root-axiom-update) + generate+join paradigm + framework's DBSP retraction algebra + CRDT-expert skill + 3-layer CRDT→CAS→BFT mediation.
 
 Substrate-landing pending operator decision: ship paper preservation in `docs/research/ip-questionable/` or defer.
 
@@ -102,8 +102,8 @@ Multi-source convergence on the substrate-engineering pattern (operationally che
 
 - PR #5488 #5491 #5494 #5497 #5502 #5505 #5507 #5511 #5512 #5513 #5515 — today's 11-PR substrate-engineering cluster
 - PR #5516 (in-flight) — asymmetric-authorship rule with Prism's iterator/generator-asymmetry section landed in-flight
-- B-0824 (package-manager-of-package-managers) — composes with CRDT-State-Based-Computer paper relevance per Prism
-- B-0840 (thermal-forgetting / root-axiom-update) — composes with CRDT-state-computer substrate per Prism
+- 081KSGS9H0008QG0R0031PBNGA (package-manager-of-package-managers) — composes with CRDT-State-Based-Computer paper relevance per Prism
+- 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / root-axiom-update) — composes with CRDT-state-computer substrate per Prism
 - Framework's planned BP/EP message-passing substrate — iterator/generator-asymmetry section informs design at message-passing scope
 
 ## Composes with rules

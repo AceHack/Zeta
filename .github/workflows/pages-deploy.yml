@@ -1,6 +1,6 @@
 name: Deploy to GitHub Pages
 
-# Scaffold (B-0274): manual-dispatch only until the Astro build substrate
+# Scaffold (081KR2E4K0008QG0R003VN9WC8): manual-dispatch only until the Astro build substrate
 # (package.json `build` script + Astro dependency) lands. The auto-trigger
 # on `push: main` is intentionally omitted so the not-yet-buildable scaffold
 # does not fail on every merge to main. Re-enable the push trigger when the

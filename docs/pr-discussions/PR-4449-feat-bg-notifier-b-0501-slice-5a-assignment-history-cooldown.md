@@ -1,6 +1,6 @@
 ---
 pr_number: 4449
-title: "feat(bg-notifier): B-0501 slice 5a \u2014 assignment-history cooldown gate"
+title: "feat(bg-notifier): 081KRHWGX0008QG0R0000P5YP2 slice 5a \u2014 assignment-history cooldown gate"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-20T19:49:23Z"
@@ -12,24 +12,24 @@ archived_at: "2026-05-21T01:14:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4449: feat(bg-notifier): B-0501 slice 5a — assignment-history cooldown gate
+# PR #4449: feat(bg-notifier): 081KRHWGX0008QG0R0000P5YP2 slice 5a — assignment-history cooldown gate
 
 ## PR description
 
 ## Summary
 
-Closes B-0501 (B-0441 slice 5a). Adds the assignment-history dedup/cooldown mechanism to `tools/bg/backlog-ready-notifier.ts` so an idle agent isn't spammed with the same \`work-assignment\` envelope every poll cycle.
+Closes 081KRHWGX0008QG0R0000P5YP2 (081KRFA460008QG0R00229616S slice 5a). Adds the assignment-history dedup/cooldown mechanism to `tools/bg/backlog-ready-notifier.ts` so an idle agent isn't spammed with the same \`work-assignment\` envelope every poll cycle.
 
 - \`NotifierConfig\` gains \`historyFile\` + \`cooldownMin\`; default historyFile resolves via new \`defaultHistoryFile()\` honoring \`ZETA_BUS_DIR\`
 - \`PollResult\` gains \`skippedDueToCooldown: string[]\`
-- \`Adapters\` gains \`readHistoryFile\` + \`writeHistoryFile\`; REAL_ADAPTERS uses atomic-rename (\`writeFileSync\` to \`.tmp\` + \`renameSync\`) per B-0501 atomic-write note
+- \`Adapters\` gains \`readHistoryFile\` + \`writeHistoryFile\`; REAL_ADAPTERS uses atomic-rename (\`writeFileSync\` to \`.tmp\` + \`renameSync\`) per 081KRHWGX0008QG0R0000P5YP2 atomic-write note
 - \`pollOnce\` reads history → computes active-cooldown set → partitions \`toAssign\` into publishing vs skipped → writes pruned+appended history atomically when publishes occurred
 - \`parseArgs\` gains \`--history-file\` and \`--cooldown-min\` flags
 
 ## Test plan
 
 - [x] 8 new tests added, 45 total (37 baseline + 8 new); all pass
-- [x] Tests cover all 5 acceptance bullets from B-0501:
+- [x] Tests cover all 5 acceptance bullets from 081KRHWGX0008QG0R0000P5YP2:
   - T=0 + T=15min (within 30min cooldown) → skipped ✓
   - T=0 + T=35min (after 30min cooldown) → re-assigned ✓
   - History absent → first assignment proceeds + writes history ✓
@@ -39,7 +39,7 @@ Closes B-0501 (B-0441 slice 5a). Adds the assignment-history dedup/cooldown mech
 - [x] Claim acquired (\`7152b349\`) before starting per \`.claude/rules/claim-acquire-before-worktree-work.md\`
 - [x] Isolated FETCH_HEAD-anchored worktree under Lior contention per canary rule
 - [x] Explicit-SHA push (\`<sha>:refs/heads/<branch>\`) per race-resistant pattern
-- [x] B-0501 closed; B-0441 parent acceptance bullet checked off
+- [x] 081KRHWGX0008QG0R0000P5YP2 closed; 081KRFA460008QG0R00229616S parent acceptance bullet checked off
 - [x] BACKLOG.md regenerated via \`BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts\`
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -84,7 +84,7 @@ Adds an assignment-history “cooldown” mechanism to the backlog ready-to-grin
 **Changes:**
 - Extend `NotifierConfig`/`PollResult` and `Adapters` to support a persisted assignment history file and a cooldown window.
 - Implement cooldown gating in `pollOnce`, including history read, skip tracking, and history pruning/write-back.
-- Add targeted tests for cooldown behavior and CLI parsing; close out B-0501/B-0441 checklist items in docs.
+- Add targeted tests for cooldown behavior and CLI parsing; close out 081KRHWGX0008QG0R0000P5YP2/081KRFA460008QG0R00229616S checklist items in docs.
 
 ### Reviewed changes
 
@@ -97,9 +97,9 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 | ---- | ----------- |
 | tools/bg/backlog-ready-notifier.ts | Implements cooldown gate + history persistence hooks and CLI flags. |
 | tools/bg/backlog-ready-notifier.test.ts | Adds 8 tests covering cooldown behavior, pruning, and arg parsing. |
-| docs/backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md | Marks B-0501 closed and documents the shipped resolution. |
-| docs/backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md | Checks off the slice-5a acceptance bullet as shipped. |
-| docs/BACKLOG.md | Regenerates index entry to reflect B-0501 as closed. |
+| docs/backlog/P1/081KRHWGX0008QG0R0000P5YP2-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md | Marks 081KRHWGX0008QG0R0000P5YP2 closed and documents the shipped resolution. |
+| docs/backlog/P1/081KRFA460008QG0R00229616S-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md | Checks off the slice-5a acceptance bullet as shipped. |
+| docs/BACKLOG.md | Regenerates index entry to reflect 081KRHWGX0008QG0R0000P5YP2 as closed. |
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T19:57:57Z)

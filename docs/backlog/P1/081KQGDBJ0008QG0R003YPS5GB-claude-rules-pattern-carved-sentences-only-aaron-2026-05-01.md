@@ -1,6 +1,5 @@
 ---
-id: B-0158
-zetaid: 081KQGDBJ0008QG0R003YPS5GB
+id: 081KQGDBJ0008QG0R003YPS5GB
 priority: P1
 status: open
 title: Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint (Aaron 2026-05-01)
@@ -17,7 +16,7 @@ depends_on:
 type: friction-reducer
 ---
 
-# B-0158 — Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint
+# 081KQGDBJ0008QG0R003YPS5GB — Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint
 
 ## Outcomes solved
 
@@ -139,7 +138,7 @@ constraint is our addition.
    verifies every `.claude/rules/<rule>.md` body is
    ≤ N sentences (N to be determined; candidate: 3
    carved-sentence claims max per rule). Linter is a
-   B-0153 lint-class candidate.
+   081KQGDBJ0008QG0R000E10AAM lint-class candidate.
 
 ## Phase 2 — bulk migration (P2)
 
@@ -171,10 +170,10 @@ source.
 
 ## Composes with
 
-- B-0006 — MEMORY.md compression pass (sibling
+- 081KQ0YZ80008QG0R001V0XCYZ — MEMORY.md compression pass (sibling
   cleanup; both serve the broader compression
   discipline)
-- B-0153 — pre-commit lint suite (Phase 1's
+- 081KQGDBJ0008QG0R000E10AAM — pre-commit lint suite (Phase 1's
   carved-sentences-linter is a candidate class)
 - `memory/feedback_otto_buddy_spin_up_when_waiting_aaron_2026_05_01.md`
   — goldfish-ontology fix; lazy-loaded rules make

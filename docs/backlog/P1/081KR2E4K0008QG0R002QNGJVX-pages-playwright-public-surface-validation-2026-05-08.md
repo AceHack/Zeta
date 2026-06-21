@@ -1,6 +1,5 @@
 ---
-id: B-0297
-zetaid: 081KR2E4K0008QG0R002QNGJVX
+id: 081KR2E4K0008QG0R002QNGJVX
 priority: P1
 status: open
 title: "Pages discoverability - Playwright public surface validation"
@@ -14,7 +13,7 @@ owners: [qa, docs]
 type: friction-reducer
 ---
 
-# B-0297 - Pages Playwright validation
+# 081KR2E4K0008QG0R002QNGJVX - Pages Playwright validation
 
 Add browser-level validation for the published GitHub Pages
 surface so discovery regressions fail in automation instead of

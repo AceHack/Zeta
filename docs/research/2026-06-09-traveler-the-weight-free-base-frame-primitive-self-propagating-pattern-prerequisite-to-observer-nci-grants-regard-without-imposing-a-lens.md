@@ -170,7 +170,7 @@ So A–F is the shape alphabet; the society/seed vocabulary spells words in it.
 ## Pointers
 
 - Seed kernel entry: `docs/SEED-VOCABULARY.md` (`traveler`; persona/actor/cell; the A–F line).
-- NCI / repelling force / diversity floor: `docs/SEED-VOCABULARY.md`; the NCI = HC-8 / B-0664 lineage.
+- NCI / repelling force / diversity floor: `docs/SEED-VOCABULARY.md`; the NCI = HC-8 / 081KRW63S0008QG0R001Z7NYMV lineage.
 - §3 weight-free, §11 Default Oracle, Multi-Oracle Principle: `docs/governance/MANIFESTO.md`.
 - observer's two operations: `docs/research/2026-06-09-the-epistemology-thread-was-the-2x2-cube-remember-when-x-pay-attention-the-observers-two-operations.md`.
 - Anchors: self-replicating patterns (Conway's Life gliders/spaceships; von Neumann self-reproducing automata; Dawkins' replicator); category theory (functors-as-lenses; no imposed terminal object / objective).

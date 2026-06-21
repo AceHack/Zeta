@@ -270,7 +270,7 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
     });
 });
 // ─────────────────────────────────────────────────────────────────────
-// Slice 5b (B-0504): auto-recover wiring
+// Slice 5b (081KRHWGX0008QG0R000PVB6FF): auto-recover wiring
 // ─────────────────────────────────────────────────────────────────────
 describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
     // Helper: build a CascadeFinding for tests

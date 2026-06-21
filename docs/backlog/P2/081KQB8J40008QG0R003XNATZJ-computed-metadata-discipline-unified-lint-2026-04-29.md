@@ -1,9 +1,8 @@
 ---
-id: B-0103
-zetaid: 081KQB8J40008QG0R003XNATZJ
+id: 081KQB8J40008QG0R003XNATZJ
 priority: P2
 status: open
-title: Computed-metadata-discipline — unified lint consolidating B-0098 + B-0099 + filename-timestamp drift
+title: Computed-metadata-discipline — unified lint consolidating 081KQB8J40008QG0R003VMCFWB + 081KQB8J40008QG0R002PEP2A2 + filename-timestamp drift
 tier: factory-hygiene
 effort: M
 ask: Multi-AI synthesis packet 2026-04-29 (Amara filter — promote individual P3 metadata-drift items to single P2)
@@ -22,9 +21,9 @@ same failure class — agent-authored metadata that drifted from
 derived truth:
 
 1. **Tick-ordinal drift** — shard prose claims "twenty-second tick"
-   but file order says twenty-first (B-0098).
+   but file order says twenty-first (081KQB8J40008QG0R003VMCFWB).
 2. **PR-count drift** — shard prose claims "30 PRs total this
-   session arc" but git log says 28 (B-0099).
+   session arc" but git log says 28 (081KQB8J40008QG0R002PEP2A2).
 3. **Shard-filename-vs-row-timestamp drift** — a shard
    filename timestamp and its row timestamp diverged
    (caught by Codex P1 on PR #809; the specific shard was
@@ -143,9 +142,9 @@ but doesn't unblock anything currently broken.
 
 ## Composes with
 
-- B-0098 (tick-ordinal-continuity lint) — subsumed.
-- B-0099 (PR-count-projection-not-narrated) — subsumed.
-- B-0102 (PR-liveness race) — sibling agent-asserted-state
+- 081KQB8J40008QG0R003VMCFWB (tick-ordinal-continuity lint) — subsumed.
+- 081KQB8J40008QG0R002PEP2A2 (PR-count-projection-not-narrated) — subsumed.
+- 081KQB8J40008QG0R002DQ0FDR (PR-liveness race) — sibling agent-asserted-state
   discipline.
 - `memory/feedback_bare_main_ambiguity_automation_discipline_explicit_refs_required_amara_2026_04_29.md`
   — same computed-vs-narrated rule at the git-ref layer.
@@ -157,7 +156,7 @@ When this P2 lands as active work:
 1. Implement the single `tools/lint/metadata-drift-check.sh`
    covering all 3+ sub-classes.
 2. Wire into `.github/workflows/gate.yml` (or sibling).
-3. Mark B-0098 + B-0099 as superseded-by-B-0103 in their
+3. Mark 081KQB8J40008QG0R003VMCFWB + 081KQB8J40008QG0R002PEP2A2 as superseded-by-081KQB8J40008QG0R003XNATZJ in their
    frontmatter.
 4. Remove ordinal-word + PR-count-prose from existing tick
    shards if the lint catches them as drift candidates.

@@ -94,7 +94,7 @@ Both have a role; conflating them is the failure mode.
 
 ## How to apply
 
-- B-0418 (vanity counter) stays as a P1 viral metric
+- 081KRA5AR0008QG0R001NXBYTY (vanity counter) stays as a P1 viral metric
 - A separate backlog row should track the honest version —
   agenda-tagged commits + per-action alignment scoring
 - The honest version is downstream of the agenda transparency

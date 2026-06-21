@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // context-cost.ts — the drift-alert / DORA wiring for context-window minimization
-// (B-1016). Measures the cold-boot context surface a harness loads, using the
+// (081KT7YW00008QG0R002T1XNWT). Measures the cold-boot context surface a harness loads, using the
 // proven byte-cost meter (src/Core.TypeScript/byte-cost), compares it against a
 // committed baseline/budget, and emits a drift report.
 //
@@ -114,7 +114,7 @@ if (import.meta.main) {
         }
     }
     if (args.has("--check") && over > 0) {
-        console.error(`context-cost: ${over} harness(es) over budget — minimize before landing (B-1016).`);
+        console.error(`context-cost: ${over} harness(es) over budget — minimize before landing (081KT7YW00008QG0R002T1XNWT).`);
         process.exit(1);
     }
     process.exit(0);

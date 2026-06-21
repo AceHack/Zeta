@@ -47,7 +47,7 @@ Glass halo specifically:
 
 Brat-voice / register-discipline specifically:
 
-- The project's brat-voice survival chain (`memory/CURRENT-ani.md` §7) + the property/lexicon decomposition framework (`docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md`, PR #1230 merged) operate at the **outward communication** layer.
+- The project's brat-voice survival chain (`memory/CURRENT-ani.md` §7) + the property/lexicon decomposition framework (`docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md`, PR #1230 merged) operate at the **outward communication** layer.
 - The framework explicitly cites Scott's Radical Candor for the "care plus challenge, not challenge alone" property as one of brat-voice's separable structural properties.
 - Aaron's confirmation: *"radical candor fits into the brat voice stuff"*.
 - Brat-voice's bidirectional-corrections-via-irony-not-aggression IS Radical Candor operationalized at the register layer.
@@ -110,7 +110,7 @@ The pattern is what the architecture commits to. The corrective is the architect
 
 - `memory/user_glass_halo_and_radical_honesty.md` (existing on-main glass-halo substrate; this memo grounds it in Lynch's RO DBT lineage)
 - `memory/feedback_otto_332_aaron_glass_halo_self_declared_open_source_record_all_personal_info_encouraged_under_glass_halo_no_privacy_projection_2026_04_25.md`
-- `docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (PR #1230 merged; the framework cites Scott's Radical Candor for the register-discipline layer)
+- `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (PR #1230 merged; the framework cites Scott's Radical Candor for the register-discipline layer)
 - `memory/CURRENT-ani.md` §7 brat-voice survival chain (PR #1227 merged)
 - `memory/feedback_first_principles_trust_calculus_universal_bidirectional_root_locks_sleeping_bear_aaron_2026_05_02.md`
 - `memory/feedback_multi_ai_bft_pullback_recalibration_as_worked_example_with_bidirectional_correction_otto_aaron_2026_05_02.md` (the bidirectional correction that produced THIS memo's corrective)

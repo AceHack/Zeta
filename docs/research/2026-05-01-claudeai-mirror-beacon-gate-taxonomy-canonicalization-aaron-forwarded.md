@@ -110,7 +110,7 @@ This reduces Claude.ai's earlier concern about Insight-blocks-accelerating-class
 - For Beacon-candidate classes (per Claude.ai's pass: forward-reference, stale-filename, deferred-per-explicit-policy, same-wake-author-error-cluster, intra-file drift, phantom-blocker), do the actual anchoring research (find + verify the external citation; record DOI / book + page / paper title + author + year).
 - Define the promotion-window rule (within N rounds OR retire-or-stay-Mirror).
 - Define the hallucination-discard rule (citation verification step before promotion).
-- Decide whether to fold v3 work into B-0130 (mechanized auditor) row scope or keep separate.
+- Decide whether to fold v3 work into 081KQGDBJ0008QG0R002Y31XJ3 (mechanized auditor) row scope or keep separate.
 - Working-mathematician send (lattice-capture corrective) for the v3 framing — the categorical grounding + Mirror/Beacon gate are exactly the kind of vocabulary that benefits from external-academic-mathematician check.
 
 ## What this file does NOT do

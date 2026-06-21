@@ -1,6 +1,5 @@
 ---
-id: B-0547
-zetaid: 081KRMEXM0008QG0R001VGNET5
+id: 081KRMEXM0008QG0R001VGNET5
 title: Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 priority: P2
 status: open
@@ -99,9 +98,9 @@ Each stage earns its keep. The POC stage alone (recursive HKT working in fork) a
 
 ## Composes with
 
-- B-0543 (QG-isomorphism — the cosmology framing composes; HKT-over-Clifford is the algebraic substrate for both the cosmology and the federation)
-- B-0546 (manifesto → building-codes — the building codes specify WHAT; this row specifies the HOW at the compiler-verified level)
-- B-0539 (Otto-BFT internal-quorum — agent-scope precursor of cross-trust BFT antigen propagation)
+- 081KRMEXM0008QG0R002YSPW1X (QG-isomorphism — the cosmology framing composes; HKT-over-Clifford is the algebraic substrate for both the cosmology and the federation)
+- 081KRMEXM0008QG0R00278KS63 (manifesto → building-codes — the building codes specify WHAT; this row specifies the HOW at the compiler-verified level)
+- 081KRMEXM0008QG0R00138CCZX (Otto-BFT internal-quorum — agent-scope precursor of cross-trust BFT antigen propagation)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (the discipline this row mechanizes)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (DV2.0 partition is natural HKT instance)
 - `.claude/rules/zeta-ships-with-skills-immediate-value.md` (skills ship now; F# crystallization later — this row IS the F# crystallization path)

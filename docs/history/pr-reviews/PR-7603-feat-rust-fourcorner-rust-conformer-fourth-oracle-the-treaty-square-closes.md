@@ -27,7 +27,7 @@
 
 ## Description
 
-Final rung: zeta-four-corner crate (per-primitive pattern), identical escape algorithm, clippy-clean, cargo test 4/4 replaying the same shared golden via the house CARGO_MANIFEST_DIR walk. FOUR independent oracles (F#/C#/TS/Rust) now produce byte-identical FourCorner treaty lines — the first complete treaty of 'everything ends up treaty-ratified, little by little.' B-1022's fired trigger fully discharged.
+Final rung: zeta-four-corner crate (per-primitive pattern), identical escape algorithm, clippy-clean, cargo test 4/4 replaying the same shared golden via the house CARGO_MANIFEST_DIR walk. FOUR independent oracles (F#/C#/TS/Rust) now produce byte-identical FourCorner treaty lines — the first complete treaty of 'everything ends up treaty-ratified, little by little.' 081KTQD8A0008QG0R0005EFYPV's fired trigger fully discharged.
 
 ## Outcome
 

@@ -1,10 +1,10 @@
 ---
-backlog: B-0049.1
-parent: B-0049
+backlog: 081KR50HA0008QG0R00257PHRR
+parent: 081KQ3HBZ0008QG0R0007CAGSP
 stage: 1 (bibliographic scaffold — Eleusinian family)
 date: 2026-05-09
 status: catalog-only (Stage 2+ resonance scan intentionally NOT applied)
-register: CATALOG-ONLY — filters F1/F2/F3 OFF per B-0049 register discipline
+register: CATALOG-ONLY — filters F1/F2/F3 OFF per 081KQ3HBZ0008QG0R0007CAGSP register discipline
 ---
 
 # Mystery Schools — Eleusinian Tradition (Stage 1 catalog)

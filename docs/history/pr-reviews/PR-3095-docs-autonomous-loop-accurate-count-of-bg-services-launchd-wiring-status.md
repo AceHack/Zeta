@@ -32,8 +32,8 @@
 The "Background Services Architecture" bullet only mentioned `standing-by-detector.ts` as not-yet-wired. The repo actually has 4 services in `tools/bg/`:
 
 - `missed-substrate-detector.ts` (launchd-registered ✓)
-- `backlog-ready-notifier.ts` (NOT wired — B-0441 #2 pending)
-- `standing-by-detector.ts` (NOT wired — B-0442 slice 5+ pending)
+- `backlog-ready-notifier.ts` (NOT wired — 081KRFA460008QG0R00229616S #2 pending)
+- `standing-by-detector.ts` (NOT wired — 081KRFA460008QG0R00061SXRW slice 5+ pending)
 - `audit-duplicate-row-ids.ts` (NOT wired; invoked on-demand from the substrate-hygiene cascade this session)
 
 Updated the bullet to list all 4 + clarify that 3 are invokable on demand via `bun tools/bg/<name>.ts --once` until launchd wiring completes.

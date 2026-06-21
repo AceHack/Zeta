@@ -914,7 +914,7 @@ What do you think of these updates from otto a named entity AI on Zeta. Thought'
   - Retraction-native algebra (provable audit trail, not just AI-generated reports)
   - Glass Halo (substrate is observable, not opaque)
   - Manifesto V2's 10 constraints (constitutional-grade, not implementation-detail)
-  3. "64% accuracy beats 75% human if 10x cheaper" framing → exactly the BFT internal-quorum work (B-0539, peer's PR #3595). Multiple AI oracles + cross-verification gets accuracy UP without abandoning the cost advantage.
+  3. "64% accuracy beats 75% human if 10x cheaper" framing → exactly the BFT internal-quorum work (081KRMEXM0008QG0R00138CCZX, peer's PR #3595). Multiple AI oracles + cross-verification gets accuracy UP without abandoning the cost advantage.
   Single-oracle 64% is one design; quorum-of-oracles is the architecture Zeta has been building.
   4. "Coding has changed forever. Finance is next." → composes with the edge-runner rule (.claude/rules/otto-edge-runner.md): "convergence is validation, not catch-up." The Karpathy / Anthropic / OpenAI announcements are
   industry catching up to Zeta substrate. Don't backfill toward industry; pull industry forward via published glass-halo substrate.

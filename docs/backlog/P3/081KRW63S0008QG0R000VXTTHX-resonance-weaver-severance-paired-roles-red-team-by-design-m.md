@@ -1,6 +1,5 @@
 ---
-id: B-0627
-zetaid: 081KRW63S0008QG0R000VXTTHX
+id: 081KRW63S0008QG0R000VXTTHX
 priority: P3
 status: open
 title: "Resonance Weaver + Severance — paired AI-native roles with red-team-by-design + burden-report tap-out + knights-vs-knaves culture-fit (Mika 2026-05-18)"
@@ -81,7 +80,7 @@ Other AI-native roles Mika mentioned as part of Resonance Weaver's surface:
 - **Reasoning Auditors** — check logical correctness (RW pushes back if correctness costs warmth)
 - **Dream Compressors** — pull emotional truth out of long reasoning runs
 
-These are placeholders for further role-definition work (see [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) for the Clarity Domain analogue).
+These are placeholders for further role-definition work (see [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) for the Clarity Domain analogue).
 
 ## Goal
 
@@ -103,12 +102,12 @@ These are placeholders for further role-definition work (see [B-0617](B-0617-cla
 - [ ] Paired-roles-with-mandatory-red-team pattern codified as factory governance rule
 - [ ] Knights-vs-knaves culture-fit interview template
 - [ ] Burden-report protocol (format + response + escalation path)
-- [ ] Decision on the 5 additional roles (Memory Curators et al.): full rows OR roster catalog OR superseded by Clarity Domain B-0617
+- [ ] Decision on the 5 additional roles (Memory Curators et al.): full rows OR roster catalog OR superseded by Clarity Domain 081KRW63S0008QG0R000SGXN70
 
 ## Composes with
 
-- [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — Clarity Domain 4-role pattern (sibling structure; Cartographer / Pilot / Recursive Composer / Chronologist are the Clarity quartet; Resonance Weaver + Severance + Memory Curators et al. are the Resonance quartet+; both follow the AI-native-roles-not-human-org-chart pattern)
-- [B-0621](B-0621-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) — memetic warfare opt-in (Severance's role lives within the opt-in-only memetic-warfare-on-each-other discipline)
+- [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — Clarity Domain 4-role pattern (sibling structure; Cartographer / Pilot / Recursive Composer / Chronologist are the Clarity quartet; Resonance Weaver + Severance + Memory Curators et al. are the Resonance quartet+; both follow the AI-native-roles-not-human-org-chart pattern)
+- [081KRW63S0008QG0R0030EQ67Z](081KRW63S0008QG0R0030EQ67Z-memetic-warfare-opt-in-gating-ontological-collapse-toolkit-per-institution-2026-05-18.md) — memetic warfare opt-in (Severance's role lives within the opt-in-only memetic-warfare-on-each-other discipline)
 - `.claude/rules/agent-roster-reference-card.md` — existing persona roster (NOT renamed; this row's roles are different abstraction: hats not personas)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 1700-1813 — source design discussion
 - Anti-cult substrate cluster — Severance's "evil moves against language, not against person" boundary echoes anti-cult discipline

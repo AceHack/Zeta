@@ -33,7 +33,7 @@ cycle-accurate FPGA emulation. The audit says we're clean, and WHY:
 - **Sub-pixel cells map to CRT reality** — a real CRT pixel IS sub-structured (RGB phosphor triads,
   beam spot, persistence); our 32-bit cell is the honest digital cousin (and the uncertainty field can
   carry PERSISTENCE — phosphor decay as confidence decay: the soft side predicting what the beam left).
-- **FPGA = the B-1025 Verilog rung, already on the ladder** — and the fidelity bar is named by its
+- **FPGA = the 081KTSZN10008QG0R000VZHRQ4 Verilog rung, already on the ladder** — and the fidelity bar is named by its
   champion: **MiSTer** (cycle-accurate FPGA re-implementation of old hardware). Our clock-free math +
   TimeGen generated time is FPGA-friendly BY construction (a pixel clock is just another clock
   generator; fix16 is synthesizable arithmetic; no floats on the hot path). Aaron HAS FPGAs — the
@@ -50,5 +50,5 @@ filter chains) · phosphor persistence physics · Park identicons (the viz linea
 ## Pointers
 
 - `src/Core/PixelLens.fs` + tests (the cell + lenses) · `BoundaryLight.glow` (the phosphor kernel) ·
-  GeneratorRegistry (where crt.* land) · B-1025 (the Verilog rung; hardware in hand) ·
+  GeneratorRegistry (where crt.* land) · 081KTSZN10008QG0R000VZHRQ4 (the Verilog rung; hardware in hand) ·
   `universal/color.md` (capability honesty governs CRT bindings too).

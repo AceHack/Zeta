@@ -27,7 +27,7 @@
 
 ## Description
 
-Design spec for **slice 7** (revocation/quarantine; B-0288, lifecycle stage 12). Brainstormed + decided with the operator 2026-06-01 (`go for it`).
+Design spec for **slice 7** (revocation/quarantine; 081KR2E4K0008QG0R002YE3MMD, lifecycle stage 12). Brainstormed + decided with the operator 2026-06-01 (`go for it`).
 
 - **Two states**: `revoked` (permanent hard-refuse) + `quarantined` (soft-refuse, `--allow-quarantined` override), as two sibling maps in the signed index.
 - **format_version 2**: marks live in the signed content (inherit signature + anti-rollback + freshness); a v1-only consumer fails-closed on a v2 index. Plain publish stays v1.

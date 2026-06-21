@@ -1,13 +1,13 @@
 // src/Core.TypeScript/workflow-engine/gitea-world.ts
 //
-// B-0867.15 — GiteaWorld per-host adapter.
+// 081KSNY2Z0008QG0R002A785QR — GiteaWorld per-host adapter.
 //
 // Gitea is GitHub-API-compatible by design (originally a Gogs fork; now
 // independent). Lifetime variants closely mirror GitHub's PR/review-thread
 // shape. Adds Gitea Actions (GitHub-Actions-compatible YAML) substrate.
 //
 // Composes with PR #5775 (GitWorld base) + PR #5801 (GitLabWorld first
-// extension) + B-0867.15 (per-host adapters target).
+// extension) + 081KSNY2Z0008QG0R002A785QR (per-host adapters target).
 import { registerLifetimePair } from "./world.js";
 import {} from "./git-world.js";
 export function giteaRateLimitTier(remaining) {

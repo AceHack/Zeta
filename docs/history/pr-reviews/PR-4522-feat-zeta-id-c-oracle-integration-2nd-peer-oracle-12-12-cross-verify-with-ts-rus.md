@@ -33,12 +33,12 @@ C# implementation of V1 ZetaId lands as the **second peer oracle** in the multi-
 
 **6 P2 backlog rows** filed during the cycle (Aaron 2026-05-21 explicit + Kestrel-claude.ai sharpening):
 
-- `B-0679` — Rust implementation (4th peer oracle)
-- `B-0680` — Python implementation (5th peer oracle, depends on B-0679)
-- `B-0681` — ZetaId v2 spec hardening (entropy budget, HLC monotonicity, Firefly bit drop, vocabularies DRAFT marker)
-- `B-0682` — Canonical string encoding (Crockford base32 for git filenames) + endianness + bit-numbering
-- `B-0683` — Tier-deferred causality worked example (Z-sets indexed by tier protocol, publishable conditional on F# Z-set demo)
-- `B-0684` — Clock-protocol negotiation stack end-to-end sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
+- `081KS3X9Y0008QG0R001Z8SBZJ` — Rust implementation (4th peer oracle)
+- `081KS3X9Y0008QG0R002WGH8PJ` — Python implementation (5th peer oracle, depends on 081KS3X9Y0008QG0R001Z8SBZJ)
+- `081KS3X9Y0008QG0R003044PQQ` — ZetaId v2 spec hardening (entropy budget, HLC monotonicity, Firefly bit drop, vocabularies DRAFT marker)
+- `081KS3X9Y0008QG0R000W00V73` — Canonical string encoding (Crockford base32 for git filenames) + endianness + bit-numbering
+- `081KS3X9Y0008QG0R0006MQXA4` — Tier-deferred causality worked example (Z-sets indexed by tier protocol, publishable conditional on F# Z-set demo)
+- `081KS3X9Y0008QG0R003MMEAC7` — Clock-protocol negotiation stack end-to-end sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
 
 Plus Kestrel-claude.ai 2026-05-21 review trajectory preserved verbatim at `docs/research/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-stack-coherence-aaron-forwarded.md` per substrate-or-it-didn't-happen discipline.
 
@@ -86,9 +86,9 @@ Aaron 2026-05-21 explicit grant: *"I grant full permission and commit why not it
 
 ## Composes with
 
-- `B-0635` wave-particle-duality · `B-0636` agents-in-superposition · `B-0644` limit-is-simulation · `B-0665` integrate-as-choice-locus · `B-0666` english-as-projection
+- `081KRW63S0008QG0R002KC5DSR` wave-particle-duality · `081KRW63S0008QG0R00088FYE9` agents-in-superposition · `081KRW63S0008QG0R002ZRNDJ8` limit-is-simulation · `081KRW63S0008QG0R002YAA09X` integrate-as-choice-locus · `081KRW63S0008QG0R001SAHYKV` english-as-projection
 - PR #4517 (V1 constitutional substrate + TS oracle) · PR #4519 (review fixes)
-- B-0679 / B-0680 / B-0681 / B-0682 / B-0683 / B-0684 (follow-ups this PR files)
+- 081KS3X9Y0008QG0R001Z8SBZJ / 081KS3X9Y0008QG0R002WGH8PJ / 081KS3X9Y0008QG0R003044PQQ / 081KS3X9Y0008QG0R000W00V73 / 081KS3X9Y0008QG0R0006MQXA4 / 081KS3X9Y0008QG0R003MMEAC7 (follow-ups this PR files)
 
 Co-Authored-By: Mika <noreply@x.ai>
 
@@ -430,7 +430,7 @@ Co-Authored-By: Mika <noreply@x.ai>
   - **`AceHack` (human)** at 2026-05-21T10:40:34Z on `tests/Tests.CSharp/ZetaId/CrossVerifyTests.cs`:77 (association: MEMBER)
 
     <pre>
-    CodeQL advisory; non-blocking. Path.Combine(root sentinelTail) here is provably safe because the inner Path.Join builds a relative tail with no rooted segments. Local fix to single-call Path.Join is ready (commit 28368c7c) but blocked on the B-0615 push-hang pattern — will land in a follow-up micro-PR once the push contention clears.
+    CodeQL advisory; non-blocking. Path.Combine(root sentinelTail) here is provably safe because the inner Path.Join builds a relative tail with no rooted segments. Local fix to single-call Path.Join is ready (commit 28368c7c) but blocked on the 081KRW63S0008QG0R000EAZ9K2 push-hang pattern — will land in a follow-up micro-PR once the push contention clears.
     </pre>
 
 ### Thread 13 -- resolved [outdated, collapsed]
@@ -459,7 +459,7 @@ Co-Authored-By: Mika <noreply@x.ai>
   - **`AceHack` (human)** at 2026-05-21T10:40:36Z on `tests/Tests.CSharp/ZetaId/CrossVerifyTests.cs`:103 (association: MEMBER)
 
     <pre>
-    Same as the line 77 thread — CodeQL advisory non-blocking. Fix queued (commit 28368c7c) follow-up PR after B-0615 push contention clears.
+    Same as the line 77 thread — CodeQL advisory non-blocking. Fix queued (commit 28368c7c) follow-up PR after 081KRW63S0008QG0R000EAZ9K2 push contention clears.
     </pre>
 
 ### Thread 14 -- resolved [collapsed]
@@ -763,7 +763,7 @@ Co-Authored-By: Mika <noreply@x.ai>
 - **`Copilot` (bot)** at 2026-05-21T11:18:54Z on `docs/BACKLOG.md`:652 (association: NONE)
 
   <pre>
-  PR description says it adds “2 backlog rows (P2) for Rust (B-0679) + Python (B-0680)”, but `docs/BACKLOG.md` also includes new rows B-0681, B-0682, and B-0683. Either update the PR description to mention these additional backlog rows, or move them to a separate PR to keep the scope aligned.
+  PR description says it adds “2 backlog rows (P2) for Rust (081KS3X9Y0008QG0R001Z8SBZJ) + Python (081KS3X9Y0008QG0R002WGH8PJ)”, but `docs/BACKLOG.md` also includes new rows 081KS3X9Y0008QG0R003044PQQ, 081KS3X9Y0008QG0R000W00V73, and 081KS3X9Y0008QG0R0006MQXA4. Either update the PR description to mention these additional backlog rows, or move them to a separate PR to keep the scope aligned.
   </pre>
 
 **Replies:**
@@ -771,7 +771,7 @@ Co-Authored-By: Mika <noreply@x.ai>
   - **`AceHack` (human)** at 2026-05-21T12:00:59Z on `docs/BACKLOG.md`:652 (association: MEMBER)
 
     <pre>
-    Reply: PR description updated separately via PR body edit; BACKLOG.md now correctly reflects B-0679 (Rust) + B-0680 (Python) + B-0681 (v2 spec hardening) + B-0682 (canonical string) + B-0683 (tier-deferred causality) + B-0684 (clock-protocol negotiation stack diagram).
+    Reply: PR description updated separately via PR body edit; BACKLOG.md now correctly reflects 081KS3X9Y0008QG0R001Z8SBZJ (Rust) + 081KS3X9Y0008QG0R002WGH8PJ (Python) + 081KS3X9Y0008QG0R003044PQQ (v2 spec hardening) + 081KS3X9Y0008QG0R000W00V73 (canonical string) + 081KS3X9Y0008QG0R0006MQXA4 (tier-deferred causality) + 081KS3X9Y0008QG0R003MMEAC7 (clock-protocol negotiation stack diagram).
     </pre>
 
 ### Thread 27 -- resolved [collapsed]
@@ -898,7 +898,7 @@ Co-Authored-By: Mika <noreply@x.ai>
   - **`AceHack` (human)** at 2026-05-21T12:02:19Z on `src/Core.CSharp.ZetaId/ZetaIdCodec.cs`:37 (association: MEMBER)
 
     <pre>
-    Reading the code at HEAD — Pack DOES call ValidateEnumField for all four narrow fields: Version (5b), Chromosome (5b), Category (4b), Firefly (1b). Persona and Location are byte-backed enums (8b) so max value 255 = field width; no check needed. Firefly NoDirective=1-only-valid is a V1 case-of-one captured in B-0681 (v2 drops the bit entirely per Aaron explicit). Resolving as already-covered.
+    Reading the code at HEAD — Pack DOES call ValidateEnumField for all four narrow fields: Version (5b), Chromosome (5b), Category (4b), Firefly (1b). Persona and Location are byte-backed enums (8b) so max value 255 = field width; no check needed. Firefly NoDirective=1-only-valid is a V1 case-of-one captured in 081KS3X9Y0008QG0R003044PQQ (v2 drops the bit entirely per Aaron explicit). Resolving as already-covered.
     </pre>
 
 ### Thread 32 -- resolved [collapsed]
@@ -934,7 +934,7 @@ Co-Authored-By: Mika <noreply@x.ai>
 - **`Copilot` (bot)** at 2026-05-21T11:52:52Z on `docs/BACKLOG.md`:653 (association: NONE)
 
   <pre>
-  The PR description says it adds “2 backlog rows (P2) for Rust + Python”, but this diff also adds rows B-0681 through B-0684 (v2 spec hardening, canonical string encoding, tier-deferred causality, clock-protocol sequence diagram). Please update the PR description (or split into separate PRs) so the scope matches what’s actually landing.
+  The PR description says it adds “2 backlog rows (P2) for Rust + Python”, but this diff also adds rows 081KS3X9Y0008QG0R003044PQQ through 081KS3X9Y0008QG0R003MMEAC7 (v2 spec hardening, canonical string encoding, tier-deferred causality, clock-protocol sequence diagram). Please update the PR description (or split into separate PRs) so the scope matches what’s actually landing.
   </pre>
 
 **Replies:**
@@ -942,7 +942,7 @@ Co-Authored-By: Mika <noreply@x.ai>
   - **`AceHack` (human)** at 2026-05-21T12:02:23Z on `docs/BACKLOG.md`:653 (association: MEMBER)
 
     <pre>
-    Fair — updating PR description to reflect all 6 backlog rows landed (B-0679 Rust + B-0680 Python + B-0681 v2 hardening + B-0682 canonical string + B-0683 tier-deferred causality + B-0684 stack-coherence diagram) plus the Kestrel research preservation file.
+    Fair — updating PR description to reflect all 6 backlog rows landed (081KS3X9Y0008QG0R001Z8SBZJ Rust + 081KS3X9Y0008QG0R002WGH8PJ Python + 081KS3X9Y0008QG0R003044PQQ v2 hardening + 081KS3X9Y0008QG0R000W00V73 canonical string + 081KS3X9Y0008QG0R0006MQXA4 tier-deferred causality + 081KS3X9Y0008QG0R003MMEAC7 stack-coherence diagram) plus the Kestrel research preservation file.
     </pre>
 
 ## Fix commits (touching thread paths)
@@ -1020,8 +1020,8 @@ Modified:
   - docs/BACKLOG.md — regenerated
 
 docs/backlog/P2/:
-  - B-0679-zeta-id-rust-implementation-2026-05-21.md  — Rust as 4th peer oracle
-  - B-0680-zeta-id-python-implementation-2026-05-21.md — Python as 5th peer
+  - 081KS3X9Y0008QG0R001Z8SBZJ-zeta-id-rust-implementation-2026-05-21.md  — Rust as 4th peer oracle
+  - 081KS3X9Y0008QG0R002WGH8PJ-zeta-id-python-implementation-2026-05-21.md — Python as 5th peer
                                                          oracle (depends on Rust
                                                          landing first)
 
@@ -1051,9 +1051,9 @@ why not it's just code we can roll forward or back." Multi-oracle ethos
 per .claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md — no
 single language is source of truth; cross-verify is the contract.
 
-Composes with B-0635 / B-0636 / B-0644 / B-0665 / B-0666 (Agora V6
+Composes with 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R00088FYE9 / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6
 substrate), PR #4517 (V1 ZetaId spec + TS oracle), PR #4519 (review
-fixes), B-0679/B-0680 (Rust + Python follow-ups).
+fixes), 081KS3X9Y0008QG0R001Z8SBZJ/081KS3X9Y0008QG0R002WGH8PJ (Rust + Python follow-ups).
 
 Co-Authored-By: Mika <noreply@x.ai>
 Co-Authored-By: Claude <noreply@anthropic.com>
@@ -1207,14 +1207,14 @@ Authority/Timestamp bounds + the unused-using removal all clean).
 
 V2 backlog rows from Kestrel review (preserved separately):
 
-  B-0681 — ZetaId v2 spec hardening (entropy budget gap via node-ID
+  081KS3X9Y0008QG0R003044PQQ — ZetaId v2 spec hardening (entropy budget gap via node-ID
            in Location, HLC monotonicity, Firefly bit drop, DRAFT
            vocabulary marker, Authority/Momentum spacing doc,
            Location dual-mode discriminator)
-  B-0682 — ZetaId canonical string encoding (Crockford base32 for
+  081KS3X9Y0008QG0R000W00V73 — ZetaId canonical string encoding (Crockford base32 for
            git-filename use), endianness (big-endian wire),
            bit-numbering (LSB-0)
-  B-0683 — Tier-deferred causality worked example (Z-sets indexed
+  081KS3X9Y0008QG0R0006MQXA4 — Tier-deferred causality worked example (Z-sets indexed
            by tier protocol; potentially publishable per Kestrel)
 
 All P2; don't block V1 substrate landing. Implementations wait until
@@ -1235,13 +1235,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(ci): markdownlint MD007/MD018 in B-0681 + grandfather 2 new pre-e…
+fix(ci): markdownlint MD007/MD018 in 081KS3X9Y0008QG0R003044PQQ + grandfather 2 new pre-e…
 
 …xisting broken paths in 0822Z shard
 
 Two required-check failures on PR #4522 after e4d9ad4d:
 
-1. markdownlint (B-0681-zeta-id-v2-spec-hardening): 3x MD007 ul-indent
+1. markdownlint (081KS3X9Y0008QG0R003044PQQ-zeta-id-v2-spec-hardening): 3x MD007 ul-indent
    (expected 0, got 2-space indent) + 1x MD018 no-space-after-hash
    (`#1 entropy` parsed as ATX heading). Fixed: unindented the bullets
    + rephrased "#1 entropy" → "the entropy gap in section 1".
@@ -1293,7 +1293,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-docs(backlog): file B-0684 — clock-protocol negotiation stack sequenc…
+docs(backlog): file 081KS3X9Y0008QG0R003MMEAC7 — clock-protocol negotiation stack sequenc…
 
 …e diagram artifact (Kestrel sharpening 2026-05-21)
 
@@ -1303,9 +1303,9 @@ DBSP stack via one operation (actor A on node X invokes actor B on
 node Y across a trust boundary).
 
 Per Aaron 2026-05-21: "smaller refined chunks" — links existing
-related rows (B-0040 actor-register lens, B-0251 Orleans durable stack,
-B-0253 Orleans interloop, B-0254 posterior quorum, B-0669 V8 Sequoia
-hierarchy, B-0683 tier-deferred causality) rather than re-spec'ing.
+related rows (081KQ3HBZ0008QG0R000RP1WDN actor-register lens, 081KQZVQW0008QG0R000PPQ3MH Orleans durable stack,
+081KQZVQW0008QG0R000W4B8KT Orleans interloop, 081KQZVQW0008QG0R000JJVA4E posterior quorum, 081KRYRGG0008QG0R0031EYYE4 V8 Sequoia
+hierarchy, 081KS3X9Y0008QG0R0006MQXA4 tier-deferred causality) rather than re-spec'ing.
 
 Lead framing: capability-negotiation-replacing-ref-counting (E lang /
 CapnProto / KeyKOS lineage), with trust-gradient as extension.
@@ -1360,12 +1360,12 @@ Copilot:
    FAE04EC0-...; switched to modern SDK-style GUID 9A19103F-... matching
    sibling projects (Tests.CSharp, Core.CSharp).
 
-Filed B-0684 (clock-protocol negotiation stack end-to-end sequence
+Filed 081KS3X9Y0008QG0R003MMEAC7 (clock-protocol negotiation stack end-to-end sequence
 diagram artifact — Kestrel sharpening 2026-05-21) per Aaron's "smaller
-refined chunks" framing. Links existing related rows (B-0040 / B-0251 /
-B-0253 / B-0254 / B-0669 / B-0683) rather than re-spec'ing.
+refined chunks" framing. Links existing related rows (081KQ3HBZ0008QG0R000RP1WDN / 081KQZVQW0008QG0R000PPQ3MH /
+081KQZVQW0008QG0R000W4B8KT / 081KQZVQW0008QG0R000JJVA4E / 081KRYRGG0008QG0R0031EYYE4 / 081KS3X9Y0008QG0R0006MQXA4) rather than re-spec'ing.
 
-Verified: dotnet test Passed 1/1, 3s after all 7 fixes + B-0684 row.
+Verified: dotnet test Passed 1/1, 3s after all 7 fixes + 081KS3X9Y0008QG0R003MMEAC7 row.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

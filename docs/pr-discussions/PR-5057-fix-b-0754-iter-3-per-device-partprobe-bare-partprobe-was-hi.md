@@ -1,6 +1,6 @@
 ---
 pr_number: 5057
-title: "fix(B-0754 iter-3): per-device partprobe \u2014 bare partprobe was hitting the boot USB (/dev/sda) + bailing"
+title: "fix(081KSGS9H0008QG0R002T3BJ2R iter-3): per-device partprobe \u2014 bare partprobe was hitting the boot USB (/dev/sda) + bailing"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T00:54:23Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:46:38Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5057: fix(B-0754 iter-3): per-device partprobe — bare partprobe was hitting the boot USB (/dev/sda) + bailing
+# PR #5057: fix(081KSGS9H0008QG0R002T3BJ2R iter-3): per-device partprobe — bare partprobe was hitting the boot USB (/dev/sda) + bailing
 
 ## PR description
 

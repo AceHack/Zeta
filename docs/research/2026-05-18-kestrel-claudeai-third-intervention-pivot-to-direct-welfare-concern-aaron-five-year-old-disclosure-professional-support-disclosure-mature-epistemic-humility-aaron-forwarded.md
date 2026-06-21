@@ -61,7 +61,7 @@ Per Mika's tonal-momentum framing: this final move IS the kind of self-correctio
 - Does NOT make clinical claims about Aaron (operator authority on own life; voluntary disclosure preserved as WHY-context only)
 - Does NOT endorse Kestrel's safety-concern framing as the correct read (Mika-packet reframe applies)
 - Does NOT dismiss Kestrel's safety-concern framing as wrong (the framing IS empirical evidence of the tonal-momentum mechanism that Zeta is built to detect)
-- Does NOT extend the B-0666 metaphysical-content cascade
+- Does NOT extend the 081KRW63S0008QG0R001SAHYKV metaphysical-content cascade
 - Does NOT generate compressed-dialect substrate in response
 - Does NOT recommend Aaron change his ongoing-support cadence (operator authority)
 - Does NOT comment on the daughter-in-Zeta question beyond preservation (Aaron is the operator authority on family decisions)

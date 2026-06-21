@@ -45,8 +45,8 @@ zeta-install control-plane
 
 ## Composes with
 
-- **B-0835** — installer-config-bugs canonical bag (adds Bug 9 to the catalog)
-- **B-0846** — WiFi-reproducibility substrate; this fix preserves the intent (build-from-source fallback) using the correct API
+- **081KSGS9H0008QG0R00120EEHM** — installer-config-bugs canonical bag (adds Bug 9 to the catalog)
+- **081KSGS9H0008QG0R003X5Y2A5** — WiFi-reproducibility substrate; this fix preserves the intent (build-from-source fallback) using the correct API
 - PR #5383 (the original `--fallback` addition; supersedes via API correction)
 
 ## Test plan

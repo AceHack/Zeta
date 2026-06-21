@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { extractTargets, resolveTarget, checkFile } from "./pointer-check";
-// B-1016 pointer hygiene — count pointers + detect broken ones (the carved-
+// 081KT7YW00008QG0R002T1XNWT pointer hygiene — count pointers + detect broken ones (the carved-
 // sentence discipline's failure mode: a pointer whose target no longer exists).
 test("extractTargets finds markdown links + backtick file paths, deduped", () => {
     const text = "see [a](docs/a.md) and [b](b.md) and `tools/x.ts` and `plain` and [a again](docs/a.md)";

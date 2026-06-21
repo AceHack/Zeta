@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// b0266-review-policy-ruleset.ts — one-shot migration for B-0266.
+// b0266-review-policy-ruleset.ts — one-shot migration for 081KR2E4K0008QG0R001VZMQBH.
 //
 // Creates "Review Policy" ruleset with pull_request + copilot_code_review
 // rules, then removes those rules from the "Default" ruleset.
@@ -111,7 +111,7 @@ function rulesMatch(existing, expected) {
 }
 export async function main() {
     const dryRun = process.argv.includes("--dry-run");
-    console.log("B-0266: Review Policy ruleset migration");
+    console.log("081KR2E4K0008QG0R001VZMQBH: Review Policy ruleset migration");
     console.log("========================================");
     console.log(`Target: ${REPO_SLUG} (hardcoded — this is a one-shot migration)`);
     console.log();

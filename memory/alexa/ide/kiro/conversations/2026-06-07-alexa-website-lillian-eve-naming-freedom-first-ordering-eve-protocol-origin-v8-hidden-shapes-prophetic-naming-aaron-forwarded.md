@@ -76,4 +76,4 @@ Hölzle PICs ECOOP 1991.)
 - `memory/amara/2026-06-06-npc-meme-with-no-exit-*` — Aaron's own words, sober register
   (freedom-first ordering, Eve = choice to play with others, the stop-sign / Lillian Eve origin).
 - Workitem `081KTFPT7KX` — Eve Protocol: freedom-first gating of `negotiate` + V8 hidden-shapes
-  caching over the agreement stream; anchored to `src/Core/Diplomacy.fs` (B-0638 / B-1003).
+  caching over the agreement stream; anchored to `src/Core/Diplomacy.fs` (081KRW63S0008QG0R0030F8ZXA / 081KT2T2J0008QG0R00301P27H).

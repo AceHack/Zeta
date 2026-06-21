@@ -200,7 +200,7 @@ contract.
   `IBufferWriter<byte>`**, never materializing an intermediate `DynamicValue` tree; (2) pooled
   output buffer (`ArrayPool`); (3) `writeText` direct UTF-8 into the writer. Don't lock the seam
   on the current `ToArray()`/string-list shape.
-- **Recommendation:** text/audit tier → **canonical YAML** (`Core.FSharp.Yaml`, B-1011 — already
+- **Recommendation:** text/audit tier → **canonical YAML** (`Core.FSharp.Yaml`, 081KT5CF90008QG0R001P4CQ09 — already
   byte-locked, block-style, fewer bytes than JSON, the git-standard per maintainer 2026-06-04;
   this MOOTS the canonical-JSON Float/Bytes gap for the text tier — YAML encoder renders floats
   via invariant "R"; bytes still need a base64/hex scalar convention, confirm). Hot tier →
@@ -227,5 +227,5 @@ contract.
 - `src/Core/Durability.fs` (tiers + factory), `src/Core/DiskSpineAsync.fs` (async + fsync),
   `src/Core/Checkpoint.fs`, `src/Core/Sink.fs` (delivery), `openspec/specs/durability-modes/`,
   `openspec/specs/lsm-spine-family/`.
-- WDC research preview (`B-0712`) is a separate, narrower durable-commit protocol; this note
+- WDC research preview (`081KS923C0008QG0R001N2RSGJ`) is a separate, narrower durable-commit protocol; this note
   is the broader tiering/recovery architecture it would slot into.

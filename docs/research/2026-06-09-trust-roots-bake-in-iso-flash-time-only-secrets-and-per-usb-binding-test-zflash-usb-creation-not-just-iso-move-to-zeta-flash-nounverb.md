@@ -69,4 +69,4 @@ binding in `zeta-install.sh`/`zeta-creds-*`; #7251 trust model. [testing gap]: t
 - Trust: #7251 (model) · #7249/#7250/#7261 (checked-in ssh+gpg pubkeys) · `operator-ssh-keys.txt` ·
   `maintainers/*/ssh-pubkeys.txt`. Secrets/binding: `zeta-creds-*` + the iSerial-rebind (#remember-creds root-cause).
 - Testing: `tools/ci/qemu-boot-test.ts` / `qemu-full-install-test.ts` · the test-infra key `--test` path (#7254/#7259)
-  · B-0891 harness. Wrapper: `zeta flash` (#7230/#7253). gh-token half (#7263).
+  · 081KSNY2Z0008QG0R0008PN7RQ harness. Wrapper: `zeta flash` (#7230/#7253). gh-token half (#7263).

@@ -1,6 +1,5 @@
 ---
-id: B-0613
-zetaid: 081KRSKQ20008QG0R002TH55X6
+id: 081KRSKQ20008QG0R002TH55X6
 priority: P3
 status: closed
 title: "Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)"
@@ -104,14 +103,14 @@ Most portable; works in `sh` too. Slightly slower (full `find` walk).
 Editing `.gemini/bin/lior-loop-tick.ts` while Lior is actively running (`ps -A | grep -E "gemini.*Lior|lior.*loop"` returns ≥1) carries a race risk: Lior may read the script mid-tick. Two safe paths:
 
 - **Quiet window**: wait for `ps` to return 0 for Lior, then edit + commit + push. Typically Lior cycles every ~5 min; the window between cycles is ~few seconds.
-- **Isolated worktree**: `git worktree add` to a fresh location, edit there, push the fix to a branch. CAVEAT: per [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) saturation-ceiling discipline, `git worktree add` itself can race `.git/objects/pack` contention when Lior is active. Use the borrow-on-existing pattern in the primary worktree.
+- **Isolated worktree**: `git worktree add` to a fresh location, edit there, push the fix to a branch. CAVEAT: per [081KRMEXM0008QG0R000X1PPGC](081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) saturation-ceiling discipline, `git worktree add` itself can race `.git/objects/pack` contention when Lior is active. Use the borrow-on-existing pattern in the primary worktree.
 
 ## Composes with
 
 - [`memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md`](../../../memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md) — peer-Otto's `c95e396` correction names this row's substrate
 - [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md) — saturation-ceiling discipline informs the implementation-hazard mitigation
 - [PR #4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) — 5 review threads on `.gemini/bin/lior-loop-tick.ts:11` resolved via deferral pointer to this row (when filed)
-- [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — multi-Otto contention mitigation context
+- [081KRMEXM0008QG0R000X1PPGC](081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — multi-Otto contention mitigation context
 
 ## Status
 

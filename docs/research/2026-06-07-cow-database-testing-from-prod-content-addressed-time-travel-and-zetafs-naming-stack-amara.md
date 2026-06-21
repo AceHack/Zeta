@@ -60,11 +60,11 @@ Test types: migration rehearsal · agent rehearsal (let agents act, inspect delt
 rehearsal (verify compensation/retraction) · load-ish testing (fork the shape) · bug repro (fork at the
 offending root, shrink the command sequence). **"Prod becomes the seed, not the victim."**
 
-## 3. Blade — this REQUIRES full determinism (B-0969 gets more urgent)
+## 3. Blade — this REQUIRES full determinism (081KT07NV0008QG0R001YDB73K gets more urgent)
 
 The whole capability collapses if the same fork can produce **different roots**. So every nondeterminism
-source must be **declared or virtualized**: collation (B-0969), serialization, **clocks**, **randomness**,
-culture, hardware secrets, and external side effects. This is why B-0969 + the determinism contract
+source must be **declared or virtualized**: collation (081KT07NV0008QG0R001YDB73K), serialization, **clocks**, **randomness**,
+culture, hardware secrets, and external side effects. This is why 081KT07NV0008QG0R001YDB73K + the determinism contract
 (`081KTGEVV75`) are load-bearing for this — and why the safety law's "clocks/secrets/outbound redirected
 into the fork boundary" is not just safety but *determinism*. Same seed + same root ⇒ same R'.
 
@@ -97,8 +97,8 @@ the determinism work landing first. Genuinely powerful, genuinely not yet real.
 
 ## Ties
 
-- `081KTGTJC1Q` (content-addressed Merkle-DAG backend) · `src/Core/ZSetMerkle.fs` · `B-0969` (determinism
-  prerequisite) · `081KTGEVV75` (determinism contract) · `B-0946` (closure-table fs / FUSE) ·
+- `081KTGTJC1Q` (content-addressed Merkle-DAG backend) · `src/Core/ZSetMerkle.fs` · `081KT07NV0008QG0R001YDB73K` (determinism
+  prerequisite) · `081KTGEVV75` (determinism contract) · `081KSV2WD0008QG0R00030G6S9` (closure-table fs / FUSE) ·
   `2026-06-07-filesystem-backend-needs-a-merkle-dag-...` (the substrate) · DST (manifesto §7 — replay).
 
 ## Beacon anchors

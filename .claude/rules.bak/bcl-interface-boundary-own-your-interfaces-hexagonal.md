@@ -123,7 +123,7 @@ ecosystem you draw from (composes [`honor-those-that-came-before.md`](honor-thos
 
 ## Empirical anchor
 
-The Rust observe oracle (B-0867.27 / B-0867.29, PRs #6255 + #6257): `Json` +
+The Rust observe oracle (081KSXN940008QG0R0033T2BQT / 081KSXN940008QG0R003ZJN0DH, PRs #6255 + #6257): `Json` +
 `JsonParser` are our ports; `ZetaJsonParser` is our own zero-dep parser (production
 default); `SerdeJsonParser` (feature `serde`) is the **adapter** — serde (3rd-party,
 provenance-vetted + ecosystem-ubiquitous → SOFT-qualifying) conforms to our
@@ -131,7 +131,7 @@ provenance-vetted + ecosystem-ubiquitous → SOFT-qualifying) conforms to our
 names a serde type, so the crate never depends on serde's *interface* — only its
 implementation, behind our port. We went *beyond* SOFT (HARD): our own parser is the
 default + serde is the wrapped optional adapter, used to differentially test ours
-("not flying blind") and as a drop-in for serde-using consumers. B-0867.29 tracks
+("not flying blind") and as a drop-in for serde-using consumers. 081KSXN940008QG0R003ZJN0DH tracks
 splitting the serde adapter into a separate crate so the core graph is truly empty —
 the HARD version made literal.
 

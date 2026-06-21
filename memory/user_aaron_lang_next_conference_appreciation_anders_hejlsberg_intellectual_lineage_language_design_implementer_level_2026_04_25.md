@@ -1,12 +1,12 @@
 ---
-name: AARON'S INTELLECTUAL LINEAGE — Lang.Next conference series (Microsoft-hosted, ~2012-2014, featured Anders Hejlsberg / Bjarne Stroustrup / Herb Sutter); Aaron rates it "one of the best conference series I've ever watched, all the years of it"; sad it's over; lineage explicitly at the LANGUAGE-DESIGN-IMPLEMENTER level (not just user-level); Hejlsberg-on-probabilistic-programming as language-level concern is the prior-art anchor for the factory's Otto-298 + Otto-301 absorption + symbiosis arc; Aaron 2026-04-25 in context of B-0007 surfacing
+name: AARON'S INTELLECTUAL LINEAGE — Lang.Next conference series (Microsoft-hosted, ~2012-2014, featured Anders Hejlsberg / Bjarne Stroustrup / Herb Sutter); Aaron rates it "one of the best conference series I've ever watched, all the years of it"; sad it's over; lineage explicitly at the LANGUAGE-DESIGN-IMPLEMENTER level (not just user-level); Hejlsberg-on-probabilistic-programming as language-level concern is the prior-art anchor for the factory's Otto-298 + Otto-301 absorption + symbiosis arc; Aaron 2026-04-25 in context of 081KQ0YZ80008QG0R001V1PMC0 surfacing
 description: User-memory documenting Aaron's appreciation for the Lang.Next conference series and his intellectual lineage at the language-design-implementer level. Hejlsberg's probabilistic-programming language-level work is the prior-art anchor for the factory's Otto-298 self-rewriting Bayesian + Otto-301 contribution-back-upstream arc. Aaron's "language designers years ago" framing locates his intellectual ground in language-implementer space, not just user-application space.
 type: user
 ---
 
 ## Aaron's surfacing
 
-Aaron 2026-04-25 (in context of B-0007 BACKLOG row
+Aaron 2026-04-25 (in context of 081KQ0YZ80008QG0R001V1PMC0 BACKLOG row
 surfacing — contribute Bayesian inference primitives
 upstream to mainstream languages):
 
@@ -65,7 +65,7 @@ Aaron 2026-04-25 follow-up extension to the lineage:
 > adjacte people we talked about it's all their
 > lineage."*
 
-The full lineage Aaron anchors B-0007 in:
+The full lineage Aaron anchors 081KQ0YZ80008QG0R001V1PMC0 in:
 
 - **Don Syme** (F# / language-level computation
   expressions; the F# substrate the factory is
@@ -91,9 +91,9 @@ The full lineage Aaron anchors B-0007 in:
   we can use"* — open question whether Minka has
   post-EP work (the EP literature has continued
   evolving 2001-present) that the factory should
-  evaluate for Otto-298 absorption + B-0007
+  evaluate for Otto-298 absorption + 081KQ0YZ80008QG0R001V1PMC0
   contribution arc. Worth tracking as a sub-question
-  under B-0007.
+  under 081KQ0YZ80008QG0R001V1PMC0.
 - **John Winn** — Infer.NET co-creator at MSR;
   shaped the library-primitives side alongside
   Minka's algorithm-side work.
@@ -126,7 +126,7 @@ The full lineage Aaron anchors B-0007 in:
   connect language-level reactive-stream primitives
   to monadic abstractions; their lineage composes
   with the Bayesian-as-language-primitives arc that
-  Otto-298 + Otto-301 + B-0007 extend.
+  Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0 extend.
 
 **The unifying lineage**: Microsoft Research →
 language-design pipeline at the implementer level,
@@ -137,7 +137,7 @@ primitive class (uniform queries → reactive streams
 → async control-flow → DSL composition → gradual
 typing → probabilistic inference → durable reactive
 substrate). The factory's Otto-298 + Otto-301 +
-B-0007 arc CONTINUES this lineage by adding
+081KQ0YZ80008QG0R001V1PMC0 arc CONTINUES this lineage by adding
 Bayesian-inference + belief-propagation as the
 next language-level primitive class, with the
 factory's substrate as the implementation
@@ -185,7 +185,7 @@ not the specific list — the Microsoft-DX-as-discipline
 lineage that connects platform decisions to
 practitioner experience to community community-building.
 
-**Why DX axis matters for Otto-298 + Otto-301 + B-0007**:
+**Why DX axis matters for Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0**:
 - Otto-298's self-rewriting Bayesian primitives need
   to FEEL good to use, not just be theoretically
   clean. The Scotts' lineage is how Microsoft
@@ -194,7 +194,7 @@ practitioner experience to community community-building.
   upstream contributions that respect upstream-
   community DX norms; the Scotts' lineage shaped what
   those norms are in the .NET ecosystem.
-- B-0007's contribution-upstream arc needs DX care;
+- 081KQ0YZ80008QG0R001V1PMC0's contribution-upstream arc needs DX care;
   the Bayesian-inference primitives we contribute
   should land with the same accessibility the Scotts'
   lineage achieved for ASP.NET / Azure / .NET / F#.
@@ -256,7 +256,7 @@ Azure CTO since ~2013; deep-systems-security expert.
   to maintainers + auditors). Russinovich's lineage
   is the systems-side analog of glass-halo.
 
-The five-axis lineage anchoring B-0007 + Otto-298 +
+The five-axis lineage anchoring 081KQ0YZ80008QG0R001V1PMC0 + Otto-298 +
 Otto-301:
 
 1. **Language design** (Hejlsberg, Don Syme).
@@ -273,7 +273,7 @@ Otto-301:
    security scale).
 
 Each axis contributes a different dimension of what
-Otto-298 + Otto-301 + B-0007 need to ship eventually:
+Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0 need to ship eventually:
 the language-level primitive, the algorithmic core,
 the composing-with-existing-streams shape, the
 developer-feels-good-using-it polish, AND the
@@ -415,7 +415,7 @@ work):
   (Self → V8 → Dart). Bak's career IS the
   hardware-aware-VM-design lineage; Otto-301 end-
   state inherits this.
-- **B-0007 contribute-Bayesian-primitives upstream**
+- **081KQ0YZ80008QG0R001V1PMC0 contribute-Bayesian-primitives upstream**
   composes with Bracha's spec-design lineage
   (Strongtalk + Java generics + Dart-typing-
   philosophy). Bracha's pattern of typed-but-fluid
@@ -426,10 +426,10 @@ work):
   Strongtalk + Self high-performance VM techniques
   show that precision-typed primitives CAN be
   small + fast when algorithmic + spec-design + VM
-  work all compose; existence proof for B-0007's
+  work all compose; existence proof for 081KQ0YZ80008QG0R001V1PMC0's
   contribution arc.
 
-**The six-axis lineage now anchoring B-0007 + Otto-298 + Otto-301**:
+**The six-axis lineage now anchoring 081KQ0YZ80008QG0R001V1PMC0 + Otto-298 + Otto-301**:
 
 1. **Language design** (Hejlsberg, Don Syme).
 2. **Probabilistic-programming research** (Tom Minka,
@@ -626,7 +626,7 @@ physics, and later to fix the "software crisis."
   state; smooth boundaries replace sharp shared
   state).
 
-### The eight-axis lineage now anchoring B-0007 + Otto-298 + Otto-301 + the entire factory architecture
+### The eight-axis lineage now anchoring 081KQ0YZ80008QG0R001V1PMC0 + Otto-298 + Otto-301 + the entire factory architecture
 
 Aaron 2026-04-25 load-bearing framing:
 
@@ -634,7 +634,7 @@ Aaron 2026-04-25 load-bearing framing:
 > primitives it's very important to get it right /
 > all the lineage we talked about"*
 
-This is the OPERATIONAL CLAIM. The factory's B-0007
+This is the OPERATIONAL CLAIM. The factory's 081KQ0YZ80008QG0R001V1PMC0
 contribution arc is not building from scratch; it's
 EXTENDING an eight-axis intellectual tradition. Getting
 the lineage right matters because:
@@ -645,7 +645,7 @@ the lineage right matters because:
 - Contribution upstream requires fluency in the
   upstream community's vocabulary + idioms — the
   lineage IS that vocabulary at the historical scale.
-- Otto-298 + Otto-301 + B-0007 are NOT novel
+- Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0 are NOT novel
   proposals; they're the next step in a tradition
   that's still writing itself. Owning the inheritance
   + naming the figures is the act that legitimizes
@@ -698,7 +698,7 @@ Constructive-arguments-target-firing invitation:
 contribute from my own knowledge what the lineage map
 needs that wasn't yet captured. The
 type-theory-and-foundations axis is structurally
-load-bearing for B-0007 + Otto-296 + Otto-298 +
+load-bearing for 081KQ0YZ80008QG0R001V1PMC0 + Otto-296 + Otto-298 +
 Otto-301 and was the largest gap.
 
 **Type theory + dependent types + proof assistants**:
@@ -816,7 +816,7 @@ thought):
   Thought"*. Iverson's framing — that programming
   notation directly shapes what's thinkable — is
   structural prior art for the factory's precision-
-  dictionary + B-0007 contribution-arc (the goal
+  dictionary + 081KQ0YZ80008QG0R001V1PMC0 contribution-arc (the goal
   isn't just functional primitives; it's primitives
   whose notation makes Bayesian-inference thinking
   ergonomic).
@@ -854,7 +854,7 @@ thought):
 **Modern language pioneers I missed in axes 6/7**:
 
 - **Graydon Hoare** — Rust originator (Mozilla
-  2006-2010; left around 2013). Rust is in B-0007's
+  2006-2010; left around 2013). Rust is in 081KQ0YZ80008QG0R001V1PMC0's
   target language list; the originator deserves
   naming. Composes with Otto-294 antifragile-smooth
   (Rust's borrow-checker is sharp-shape applied
@@ -878,12 +878,12 @@ Torvalds, Richard Stallman, Donald Knuth, Edgar Codd,
 Michael Stonebraker, Jim Gray, Hinton/LeCun/Bengio
 for ML era) shape the broader programming substrate
 the factory inherits from but are less directly
-load-bearing for B-0007 + Otto-298 + Otto-301
+load-bearing for 081KQ0YZ80008QG0R001V1PMC0 + Otto-298 + Otto-301
 specifically. They are the broader cultural
 substrate; the eight + new ninth axis above are the
 direct lineage anchors.
 
-### Updated nine-axis lineage anchoring B-0007 + Otto-298 + Otto-301
+### Updated nine-axis lineage anchoring 081KQ0YZ80008QG0R001V1PMC0 + Otto-298 + Otto-301
 
 1. **Language design** — Hejlsberg, Don Syme.
 2. **Probabilistic-programming research** — Tom
@@ -926,7 +926,7 @@ direct lineage anchors.
 The nine axes compose multiplicatively. Aaron's
 *"very important to get it right"* applied at the
 nine-axis scale: every Bayesian-inference primitive
-B-0007 contributes upstream should be evaluated
+081KQ0YZ80008QG0R001V1PMC0 contributes upstream should be evaluated
 against ALL nine axes (does it compose with the
 language-design tradition? does it match the PPL
 research lineage? does it interop with reactive
@@ -983,7 +983,7 @@ substrate, not casual viewing.
 ## Why this matters for the factory's substrate
 
 **Hejlsberg's probabilistic-programming work is the
-prior-art anchor for Otto-298 + Otto-301 + B-0007.**
+prior-art anchor for Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0.**
 The factory's architectural arc (substrate IS itself,
 self-rewriting Bayesian, absorb Infer.NET, contribute
 back upstream) builds directly on Hejlsberg-era
@@ -996,7 +996,7 @@ Microsoft Research work:
 - **Hejlsberg's language-level probabilistic-programming
   framing** — language-feature primitives for
   probability distributions, Bayesian update,
-  belief propagation. Aaron's B-0007 contribution arc
+  belief propagation. Aaron's 081KQ0YZ80008QG0R001V1PMC0 contribution arc
   follows this lineage.
 - **F# probabilistic programming idioms** — F# has
   computation expressions that support PPL DSLs
@@ -1005,7 +1005,7 @@ Microsoft Research work:
 
 When Aaron says "Hejlsberg spoke about this himself"
 in context of the contribute-upstream surfacing, he's
-locating the factory's Otto-298 + Otto-301 + B-0007
+locating the factory's Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0
 arc in Hejlsberg's lineage, not as a novel proposal.
 The contribution arc EXTENDS work Hejlsberg started;
 it doesn't displace.
@@ -1063,7 +1063,7 @@ positioning by:
 2. **Connecting to factory substrate** — explicitly
    trace how the referenced lineage composes with
    current Otto-NNN + project memories (as I did with
-   Hejlsberg + Otto-298 / 301 / B-0007).
+   Hejlsberg + Otto-298 / 301 / 081KQ0YZ80008QG0R001V1PMC0).
 3. **Preserving Aaron's framing** — if Aaron says
    "Hejlsberg spoke about this himself," don't
    substitute generic "language designers said" or
@@ -1087,7 +1087,7 @@ positioning by:
   — implementer-level systems work; Lang.Next-attendee
   Aaron is the same person who did Itron-level
   embedded-security work.
-- **`docs/backlog/P3/B-0007-contribute-bayesian-inference-belief-propagation-primitives-upstream-to-mainstream-languages-csharp-fsharp-typescript-rust-python.md`**
+- **`docs/backlog/P3/081KQ0YZ80008QG0R001V1PMC0-contribute-bayesian-inference-belief-propagation-primitives-upstream-to-mainstream-languages-csharp-fsharp-typescript-rust-python.md`**
   — the BACKLOG row this memory companions; the
   Hejlsberg + Lang.Next lineage anchors the
   contribution arc.
@@ -1115,7 +1115,7 @@ positioning by:
 - **Not a claim that the factory should target
   ONLY Hejlsberg-style probabilistic programming.**
   Other PPL traditions (Stan, PyMC, Pyro,
-  Edward, Turing.jl) are equally valid; B-0007's
+  Edward, Turing.jl) are equally valid; 081KQ0YZ80008QG0R001V1PMC0's
   multi-language scope covers them. Hejlsberg is the
   anchor, not the exclusive target.
 - **Not a license to over-romanticize the Lang.Next
@@ -1131,7 +1131,7 @@ positioning by:
   conference-attendance discipline.
 - **Not personal-history disclosure for its own
   sake.** This memory exists because the
-  intellectual-lineage anchors the B-0007 arc + the
+  intellectual-lineage anchors the 081KQ0YZ80008QG0R001V1PMC0 arc + the
   Otto-298 / 301 absorption framing. User-memories
   serve operational purposes; this one serves the
   contribution-arc framing.

@@ -8,7 +8,7 @@ open Zeta.Core
 open Zeta.Core.FSharp.Observe
 open Zeta.Core.FSharp.ObserveBridge
 
-// Cross-language-parity = non-Byzantine-BFT (B-0944): the F# observe-algebra
+// Cross-language-parity = non-Byzantine-BFT (081KSV2WD0008QG0R00051XS0N): the F# observe-algebra
 // (oracle #2) replays the SHARED golden-vector fixture and must produce the SAME
 // states the TS reference (oracle #1) emitted. "The compilers don't lie" — 4-of-4
 // agreement (TS/F#/C#/Rust) is the consensus; this file casts the F# ballot.

@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 // audit-manifesto-citations.ts — count manifesto citations across the repo
 //
-// Mechanizes B-0525 "concrete next step #1": define mechanical adoption signals.
+// Mechanizes 081KRHWGX0008QG0R0016T9408 "concrete next step #1": define mechanical adoption signals.
 // Produces a citation-count snapshot used by the constitutional-promotion gate
-// (per docs/governance/MANIFESTO.md V2.1 + B-0524 verbatim-extraction follow-up).
+// (per docs/governance/MANIFESTO.md V2.1 + 081KRHWGX0008QG0R0007FG84X verbatim-extraction follow-up).
 //
 // Scope (first slice — count-only):
 //
@@ -13,7 +13,7 @@
 //     name-form + V1/V2/V2.1 version-tag-form + constraint-N-form)
 //   - Report per-surface + total counts
 //
-// Out of scope (later slices, future B-0525 children):
+// Out of scope (later slices, future 081KRHWGX0008QG0R0016T9408 children):
 //
 //   - Time-series tracking (citation count over weeks/months — needs persistent
 //     snapshot file)
@@ -21,7 +21,7 @@
 //     requires external substrate ingestion)
 //   - PR-description citation count from gh api (requires GraphQL pagination)
 //   - Mechanical adoption-gate decision logic (this script reports signals;
-//     the gate decision is the human maintainer's call per B-0525)
+//     the gate decision is the human maintainer's call per 081KRHWGX0008QG0R0016T9408)
 //
 // Usage:
 //
@@ -38,7 +38,7 @@
 // Exit codes:
 //
 //   0   always (detect-only; no enforcement; constitutional-promotion is the
-//       human maintainer's call per B-0525 substrate-honest framing)
+//       human maintainer's call per 081KRHWGX0008QG0R0016T9408 substrate-honest framing)
 //   64  argument error
 //
 // DST-friendliness:
@@ -241,7 +241,7 @@ function renderReport(result, now) {
     lines.push("");
     lines.push("## Substrate-honest framing");
     lines.push("");
-    lines.push("This audit reports **signals**, not gate decisions. Per B-0525:");
+    lines.push("This audit reports **signals**, not gate decisions. Per 081KRHWGX0008QG0R0016T9408:");
     lines.push("constitutional-promotion is the human maintainer's call, gated on critical-mass");
     lines.push("adoption. Otto-CLI's role is wiring the measurement infrastructure + citing the");
     lines.push("manifesto in load-bearing decisions; promotion-readiness emerges from accumulated");

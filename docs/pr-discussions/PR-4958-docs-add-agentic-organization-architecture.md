@@ -201,7 +201,7 @@ Asked for structural questions, so naming them again for the thread:
 
 **Aaron answered the 5 structural questions** (welcome aboard, Max):
 
-1. **Combine — TS operator instead of Go.** Aaron: *"yes lets combine he will like kubernets operators but he does not have experience maybe we write a ts operator insteadd of go he likes ts"*. So the path forward is: rewrite the existing hat-system Go operator (PR #4930) in TypeScript — same CRDs (`Hat`, `HatBinding`, `HatSwap`, `HatPolicy`), same 7 OPA ConstraintTemplates, same tick fan-out (HatSwap CR + Event + slog→Loki + NATS), but TS so you own it cleanly. Filing as B-0724. You can drive the rewrite at your pace.
+1. **Combine — TS operator instead of Go.** Aaron: *"yes lets combine he will like kubernets operators but he does not have experience maybe we write a ts operator insteadd of go he likes ts"*. So the path forward is: rewrite the existing hat-system Go operator (PR #4930) in TypeScript — same CRDs (`Hat`, `HatBinding`, `HatSwap`, `HatPolicy`), same 7 OPA ConstraintTemplates, same tick fan-out (HatSwap CR + Event + slog→Loki + NATS), but TS so you own it cleanly. Filing as 081KSE6WT0008QG0R00195RG48. You can drive the rewrite at your pace.
 
 2. **First checkin: keep + merge as-is.** Aaron: *"he is trying to bring a system in he's been working months on his ideas and concepts fine for first checkin we are going to keep it all and merge and integrate"*. Walking back my trim-before-merge recommendation — Aaron explicitly wants all 10.7K lines in, then integrate over time. Land this PR as-is.
 
@@ -215,16 +215,16 @@ Asked for structural questions, so naming them again for the thread:
 
 - **This PR lands as-is.** No trim, no rename, no cross-link burden on you for this checkin.
 - **Next steps are yours to pace.** The IMPLEMENTATION_READINESS_CHECKLIST.md you wrote already proposes a good MVP slice — start where you want.
-- **TS hat-operator rewrite (B-0724)** will land separately; you'll own the spec + can use the existing Go scaffold as reference for the CRD shape.
+- **TS hat-operator rewrite (081KSE6WT0008QG0R00195RG48)** will land separately; you'll own the spec + can use the existing Go scaffold as reference for the CRD shape.
 - **Aaron's parallel-tracks framing is real** — your exploration space is wide open. The framework's discipline (cage-vs-hat, NCI, persistence-choice, glass-halo) is the floor; everything above that is yours to shape.
 
 Welcome to the cluster. Real work shipped today (the disko cookie-cutter, NFD, sync-waves, the hat-system Go scaffold, the dev-cluster pattern) — your design now sits on top of substrate you'll actually use Monday.
 
 ### @AceHack (2026-05-25T17:23:19Z)
 
-**Filed B-0724 to track the TS hat-operator path** — PR #4960. It's reframed per Aaron's *"we want polyglot operator support for k8s anyways so we are not rigid about go"* — the TS operator isn't a replacement of the Go scaffold (PR #4930); it's the **first deliberate proof of the polyglot pattern** the cluster commits to anyway. Both operators run side-by-side against the same CRDs; leader election picks the active reconciler.
+**Filed 081KSE6WT0008QG0R00195RG48 to track the TS hat-operator path** — PR #4960. It's reframed per Aaron's *"we want polyglot operator support for k8s anyways so we are not rigid about go"* — the TS operator isn't a replacement of the Go scaffold (PR #4930); it's the **first deliberate proof of the polyglot pattern** the cluster commits to anyway. Both operators run side-by-side against the same CRDs; leader election picks the active reconciler.
 
-Key parts of B-0724 for you:
+Key parts of 081KSE6WT0008QG0R00195RG48 for you:
 
 - **Learning path** explicitly framed for someone new to K8s + the operator pattern. Aaron flagged you're backend/frontend over PaaS — the row treats the Go scaffold as a teaching tool to read first, then mirror in TS one piece at a time. 7-step suggested PR sequence (start with TS interfaces matching the CRDs, end with full reconcile loops + webhook).
 - **Resources list** — kubernetes.io concepts, kubebuilder book, @kubernetes/client-node README, an existing TS-operator repo for structural reference.

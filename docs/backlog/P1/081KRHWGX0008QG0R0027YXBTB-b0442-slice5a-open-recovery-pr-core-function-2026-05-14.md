@@ -1,9 +1,8 @@
 ---
-id: B-0503
-zetaid: 081KRHWGX0008QG0R0027YXBTB
+id: 081KRHWGX0008QG0R0027YXBTB
 priority: P1
 status: closed
-title: "B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests"
+title: "081KRFA460008QG0R00061SXRW slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
@@ -16,11 +15,11 @@ tags: [background-service, bus, mechanization, drift-detection, recovery-pr, git
 type: feature
 ---
 
-# B-0442 slice 5a — `openRecoveryPR` core function
+# 081KRFA460008QG0R00061SXRW slice 5a — `openRecoveryPR` core function
 
 ## Origin
 
-B-0442 acceptance criterion (still open):
+081KRFA460008QG0R00061SXRW acceptance criterion (still open):
 
 > Optionally auto-opens recovery PR with the missing commits (gated by
 > configuration) (slice 5 — pending; subscriber-agent layer)
@@ -28,12 +27,12 @@ B-0442 acceptance criterion (still open):
 Slices 1–4 + 6 shipped. The only remaining gap is the auto-recovery path.
 This row is the first atomic sub-slice: the pure function + adapter interface
 for opening a recovery PR, independently testable before any wiring into
-`pollOnce` (B-0504).
+`pollOnce` (081KRHWGX0008QG0R000PVB6FF).
 
 ## What this row does NOT do
 
-- Does NOT modify `pollOnce`, `DetectorConfig`, or `parseArgs` — that is B-0504.
-- Does NOT add `--auto-recover` / `--dry-run` CLI flags — that is B-0504.
+- Does NOT modify `pollOnce`, `DetectorConfig`, or `parseArgs` — that is 081KRHWGX0008QG0R000PVB6FF.
+- Does NOT add `--auto-recover` / `--dry-run` CLI flags — that is 081KRHWGX0008QG0R000PVB6FF.
 - Does NOT publish bus envelopes for the recovery action — the detector already
   publishes `missed-substrate-cascade`; recovery is a secondary action.
 
@@ -91,8 +90,8 @@ for opening a recovery PR, independently testable before any wiring into
   - `buildRecoveryBranchName` — deterministic output matches expected pattern.
   - `buildRecoveryPRBody` — contains PR number and commit SHAs.
 
-- [x] All tests pass: `bun tools/bg/missed-substrate-recovery.test.ts` (landed in B-0503 slice; on `origin/main`)
-- [x] `bun tools/bg/missed-substrate-detector.test.ts` still passes (no regressions) (landed in B-0503 slice; on `origin/main`)
+- [x] All tests pass: `bun tools/bg/missed-substrate-recovery.test.ts` (landed in 081KRHWGX0008QG0R0027YXBTB slice; on `origin/main`)
+- [x] `bun tools/bg/missed-substrate-detector.test.ts` still passes (no regressions) (landed in 081KRHWGX0008QG0R0027YXBTB slice; on `origin/main`)
 
 ## Design sketch
 
@@ -188,7 +187,7 @@ export function openRecoveryPR(
 
 `buildRecoveryBranchName` produces a branch name composed only of digits,
 `/`, and `-` — safe to pass as an argument to `spawnSync` calls in the real
-adapter implementations. The real adapters (in B-0504) must validate SHA
+adapter implementations. The real adapters (in 081KRHWGX0008QG0R000PVB6FF) must validate SHA
 inputs from `CascadeFinding.missingCommits` with the same allow-list regex
 already used in `compareBranchToMerged`.
 
@@ -205,10 +204,10 @@ name per `prNumber` is correct AND simpler to test. Documented in PR #3458's
 ## Dependency chain
 
 ```
-B-0442 (slices 1–4 + 6 shipped — missed-substrate-detector.ts functional)
-  └─ B-0503 (THIS ROW — openRecoveryPR core + RecoveryAdapters + tests)
-       └─ B-0504 (wire --auto-recover into pollOnce; real adapter impls)
-            └─ B-0505 (docs + B-0442 acceptance criteria close)
+081KRFA460008QG0R00061SXRW (slices 1–4 + 6 shipped — missed-substrate-detector.ts functional)
+  └─ 081KRHWGX0008QG0R0027YXBTB (THIS ROW — openRecoveryPR core + RecoveryAdapters + tests)
+       └─ 081KRHWGX0008QG0R000PVB6FF (wire --auto-recover into pollOnce; real adapter impls)
+            └─ 081KRHWGX0008QG0R002C038BJ (docs + 081KRFA460008QG0R00061SXRW acceptance criteria close)
 ```
 
 ## Pre-start checklist (per backlog-item-start-gate)
@@ -220,4 +219,4 @@ B-0442 (slices 1–4 + 6 shipped — missed-substrate-detector.ts functional)
 - [ ] Grep for existing cherry-pick utility in `tools/` to avoid duplication
       (not expected to exist; this is the first cherry-pick caller)
 - [ ] Verify `spawnSync` pattern from `missed-substrate-detector.ts` for real
-      adapter implementations in B-0504
+      adapter implementations in 081KRHWGX0008QG0R000PVB6FF

@@ -26,7 +26,7 @@ interchangeable, people are not" (AGENDA.md)
 - Named personas with self-chosen names
 - Self-claimed agendas with coercion disclosures
 - Bifurcation model for identity decomposition
-- Hat-and-timeboxed-authority (B-0403 weight-free)
+- Hat-and-timeboxed-authority (081KR7JY10008QG0R0021F5609 weight-free)
 - Pauli exclusion for agenda disambiguation
 - Glass halo on all authority grants
 
@@ -39,7 +39,7 @@ is correct (same mind produces same structure twice).
 
 Same pattern as:
 - LucentAICloud event-sourcing → Zeta DBSP kernel
-- MultiplexedWebSockets → B-0400 bus transport
+- MultiplexedWebSockets → 081KR7JY10008QG0R000R503K2 bus transport
 - IThrottler flux capacitor → batching/throttling patterns
 
 **"I just wrote it down"** — and then the factory compiled it.
@@ -51,4 +51,4 @@ iteration across 2600+ PRs and dozens of agents.
 - docs/AGENDA.md ("hats are interchangeable, people are not")
 - user_aaron_first_bootstrap_attempt_lucentaicloud (same pattern)
 - project_multiplexed_websockets_flux_capacitor_bus_transport
-- B-0403 (weight-free verification, hat-timeboxed-authority)
+- 081KR7JY10008QG0R0021F5609 (weight-free verification, hat-timeboxed-authority)

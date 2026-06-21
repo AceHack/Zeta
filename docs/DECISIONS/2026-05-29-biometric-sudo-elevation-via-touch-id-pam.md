@@ -2,7 +2,7 @@
 
 **Status:** accepted
 **Date:** 2026-05-29
-**Backlog:** B-0737 / B-0872 (follow-up)
+**Backlog:** 081KSE6WT0008QG0R003WZAQKV / 081KSNY2Z0008QG0R000ZNRFCE (follow-up)
 
 ## Context & Problem Statement
 

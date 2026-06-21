@@ -32,7 +32,7 @@ Two things, both maintainer-directed this session.
 **G-Set → Tier-1.** C# #6363 merged, so G-Set is genuinely 4/4 — promoted from the in-progress table to the Tier-1/2 stable base (next to ZetaId/Observe/TriBoolean). Bag updated to TS-reference-in-flight (#6364).
 
 **Wish-list captures** ("so we don't forget what we want" — all ⬜ wished, additive):
-- **Discovery / transport** (decentralized): Nostr · DHT · IPFS · Reticulum-over-IP · Reticulum-over-mesh · 802.11ah HaLow — multi-channel by design; xref'd to existing backlog (Reticulum B-0704/B-0726/B-0772; Green Lantern + HaLow B-0246/B-0289/B-0290).
+- **Discovery / transport** (decentralized): Nostr · DHT · IPFS · Reticulum-over-IP · Reticulum-over-mesh · 802.11ah HaLow — multi-channel by design; xref'd to existing backlog (Reticulum 081KS3X9Y0008QG0R002MZF3A7/081KSE6WT0008QG0R003C9KGQE/081KSE6WT0008QG0R003WMG4XV; Green Lantern + HaLow 081KQZVQW0008QG0R00348SHDZ/081KR2E4K0008QG0R001SWEPNV/081KR2E4K0008QG0R003MJ4JK0).
 - **Observability**: structured logging · OTel/metrics · benchmarking — modeled on .NET `System.Diagnostics.Metrics` (`Meter`-anchored, tagged). The nice composition: `Counter<T>`≈Bag-fold, `UpDownCounter<T>`≈Z-set/PN-Counter-fold, `Histogram<T>`≈Bag-over-buckets — instruments as **folds over the algebra ladder**, which is exactly the database-design ADR's "metrics = Bag-fold view of the event log."
 - **Test framework**: cross-lang assert/property/golden-vector harness.
 - **Consensus** (furthest-out, gated): gossip/Raft/Paxos — deferred until composable with CAS/idempotency (not specialized per-case). Captures the CAP-per-layer framing: per-agent G-Set/Bag/Z-set stay AP/coordination-free (CALM); CP only at the **federated** git-merge/claim boundary (`git push` is the truth-machine; not central — each agent has own repos/busses/mains).
@@ -94,7 +94,7 @@ alongside ZetaId/Observe/TriBoolean. Bag updated to TS-reference-in-flight (#636
 Wish-list captures the maintainer named (so they're never lost), all ⬜ wished:
 - Discovery / transport (decentralized): Nostr, DHT, IPFS, Reticulum-over-IP/-mesh,
   802.11ah Wi-Fi HaLow — multi-channel by design; xref'd to existing backlog
-  (Reticulum B-0704/B-0726/B-0772; Green Lantern + HaLow B-0246/B-0289/B-0290).
+  (Reticulum 081KS3X9Y0008QG0R002MZF3A7/081KSE6WT0008QG0R003C9KGQE/081KSE6WT0008QG0R003WMG4XV; Green Lantern + HaLow 081KQZVQW0008QG0R00348SHDZ/081KR2E4K0008QG0R001SWEPNV/081KR2E4K0008QG0R003MJ4JK0).
 - Observability: structured logging, OTel/metrics (the .NET System.Diagnostics.Metrics
   Meter model — Counter≈Bag-fold, UpDownCounter≈Z-set/PN-Counter-fold, Histogram≈
   Bag-over-buckets; instruments as folds over the algebra, not bolt-on), benchmarking.

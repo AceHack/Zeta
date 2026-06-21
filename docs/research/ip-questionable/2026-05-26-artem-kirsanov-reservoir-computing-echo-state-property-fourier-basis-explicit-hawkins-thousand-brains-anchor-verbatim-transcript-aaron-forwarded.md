@@ -1,13 +1,13 @@
 ---
 title: Artem Kirsanov — Reservoir Computing — echo-state property + Fourier random-basis + EXPLICIT Hawkins Thousand Brains anchor at 5:42 (verbatim transcript)
 date: 2026-05-26
-source: Aaron-forwarded; channel-rediscovery via YouTube algo at home immediately after caustic-focus conversation (per .claude/rules/algo-wink-failure-mode.md observation-not-authorization discipline + cross-substrate-triangulation per B-0648)
+source: Aaron-forwarded; channel-rediscovery via YouTube algo at home immediately after caustic-focus conversation (per .claude/rules/algo-wink-failure-mode.md observation-not-authorization discipline + cross-substrate-triangulation per 081KRW63S0008QG0R0025E4PH6)
 provenance: Aaron 2026-05-26 forwarded transcript via Claude Code conversation; saved to docs/research/ip-questionable per "the youtube transcripts need to go in questionable ip" operator instruction
 youtube_url: https://www.youtube.com/watch?v=cDxtFtoQVNc
 status: substrate-honest verbatim preservation + framework composition + critical-archetype-naming-substrate
 composes_with:
-  - 2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md (B-0839.1 sibling — Boltzmann machines)
-  - 2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md (B-0839.2 sibling — RNN/LSTM/GRU)
+  - 2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.1 sibling — Boltzmann machines)
+  - 2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.2 sibling — RNN/LSTM/GRU)
   - docs/research/ip-questionable/README.md (folder authority; operator's verbatim-third-party-content acceptance)
   - .claude/rules/substrate-or-it-didnt-happen.md (mirror-tier preservation discipline)
   - .claude/rules/wake-time-substrate.md (operator-forwarded substrate gets row + research-doc landing)
@@ -15,8 +15,8 @@ composes_with:
   - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md (Hawkins Thousand Brains section — EXPLICITLY validated by Kirsanov at 5:42)
   - .claude/rules/algo-wink-failure-mode.md (algo-surfacing-at-home-after-caustic-convo is observation-not-authorization operating cleanly per operator discipline; empirical anchor for cross-substrate-triangulation)
   - .claude/rules/bandwidth-served-falsifier.md (algo-served-relevant-substrate IS bandwidth-engineering at typing-bandwidth scope)
-  - docs/backlog/P1/B-0839 (parent row)
-  - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — SAME ARCHITECTURAL ARCHETYPE; operator-named 2026-05-26)
+  - docs/backlog/P1/081KSGS9H0008QG0R002F1G7ER (parent row)
+  - docs/backlog/P2/081KSGS9H0008QG0R002THJ2P1 (caustic-engineered bloom filter discriminators — SAME ARCHITECTURAL ARCHETYPE; operator-named 2026-05-26)
   - docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md (existing Hawkins substrate this transcript externally-validates)
 ---
 
@@ -71,7 +71,7 @@ PERSONAL INVARIANT:
   driving signal; algos are the random readout). Both hold.
 
 This empirical anchor IS evidence for the substrate-honest claim:
-the framework's cross-substrate-triangulation discipline (per B-0648)
+the framework's cross-substrate-triangulation discipline (per 081KRW63S0008QG0R0025E4PH6)
 produces high-signal coincidence-density NOT because of metaphysical
 synchronicity but because of the recursive substrate-engineering
 operating-mode the operator runs.
@@ -79,11 +79,11 @@ operating-mode the operator runs.
 3rd Kirsanov transcript Aaron forwarded in same tick session.
 Companion to:
 
-- B-0839 backlog row anchor
+- 081KSGS9H0008QG0R002F1G7ER backlog row anchor
 - `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
-  (B-0839.1)
+  (081KSGS9H0008QG0R002F1G7ER.1)
 - `docs/research/ip-questionable/2026-05-26-artem-kirsanov-recurrent-neural-networks-rnn-lstm-gru-gated-memory-verbatim-transcript-aaron-forwarded.md`
-  (B-0839.2)
+  (081KSGS9H0008QG0R002F1G7ER.2)
 
 ## Why this transcript is SUBSTANTIVELY-VALIDATING for the 1000-Brains composition
 
@@ -140,7 +140,7 @@ entanglement between substrate created at different time points.
 
 | Architecture | The "join" operation | Time-entanglement property |
 | --- | --- | --- |
-| Caustic-engineered bloom filters (B-0838) | Logical AND of multiple filter outputs | Each filter was constructed at a different training-time; the AND-intersection IS the time-entanglement across training events |
+| Caustic-engineered bloom filters (081KSGS9H0008QG0R002THJ2P1) | Logical AND of multiple filter outputs | Each filter was constructed at a different training-time; the AND-intersection IS the time-entanglement across training events |
 | Reservoir computing (this video) | Sum in state-update equation: `s_i^{t-1} + Σ_j W_{ij} σ(s_j^{t-1}) + Σ_k μ_{i,k} z_k(t)` | The `s_i^{t-1}` term IS the entanglement-with-past-state; the `W_{ij}` topology was fixed at reservoir-construction-time; current state entangles past + present |
 | Framework substrate-engineering | `composes_with` links + rule cross-references + memory-pointer chains | Each link entangles substrate created at DIFFERENT TIMES; current substrate-engineering decision draws on substrate landed weeks or months prior |
 
@@ -188,7 +188,7 @@ falsifiability) — structural-analogy at the computational-substrate
 scope. The table below documents the structural-analogy mapping for
 substrate-engineering purposes, NOT as a physics-falsifiable claim.
 
-Quantum-information substrate (per B-0623 Adinkras / James Gates
+Quantum-information substrate (per 081KRW63S0008QG0R000QJR08H Adinkras / James Gates
 SUSY-ECC + Q# substrate + adinkra-structural-graphs) provides the
 mathematical machinery; the framework borrows the STRUCTURAL
 properties as computational-substrate analogy:
@@ -271,7 +271,7 @@ carved sentence (Kestrel-v2 2026-05-26):
 > at the output, not in the underlying substrate."
 
 The "focused integration" the rule names IS the "walls of the pool"
-Kirsanov describes IS the "caustic geometry" of B-0838's bloom-filter
+Kirsanov describes IS the "caustic geometry" of 081KSGS9H0008QG0R002THJ2P1's bloom-filter
 intersection.
 
 ### The triple-architectural mapping
@@ -279,10 +279,10 @@ intersection.
 | Architecture | Smooth substrate | The "walls" (focused integration) | Sharp output |
 | --- | --- | --- | --- |
 | Reservoir computing | Random reservoir weights `W_{ij}` + smooth driving signal `z(t)` | The FIXED topology of which neurons connect to which (the pool's shape) + readout-layer α_i weights | Target signal `y(t)` (precise zebra finch song) |
-| Caustic-engineered bloom filters (B-0838) | Probabilistic FP-rate distributions of each Filter A, B, C (smooth membership) | The intersection geometry (where all 3 filters' agreements focus into a caustic) + the logical-AND combination | Sharp trust / distrust binary discrimination |
+| Caustic-engineered bloom filters (081KSGS9H0008QG0R002THJ2P1) | Probabilistic FP-rate distributions of each Filter A, B, C (smooth membership) | The intersection geometry (where all 3 filters' agreements focus into a caustic) + the logical-AND combination | Sharp trust / distrust binary discrimination |
 | Caustic optics (Matt Ferraro / Disney Research) | Smooth light physics + smooth acrylic substrate | The SCULPTED SURFACE of the acrylic lens (specific machined topology) | Sharp recognizable image (cat-face caustic) |
 | English-as-substrate (per substrate-smoothness rule) | Smooth probabilistic English semantics (no statement collapses to absolute truth) | The compositional structure (specific word choice + sentence structure + register) | Sharp commitments, sharp PRs, sharp decisions |
-| Multi-oracle BFT (B-0703) | Smooth/probabilistic per-oracle outputs | The consensus-mechanism topology (BFT threshold conditions) | Sharp consensus decision (commit / abort) |
+| Multi-oracle BFT (081KS3X9Y0008QG0R00218150M) | Smooth/probabilistic per-oracle outputs | The consensus-mechanism topology (BFT threshold conditions) | Sharp consensus decision (commit / abort) |
 | The framework's substrate-engineering work | Smooth/random accumulating substrate (rules, memory, research, persona conversations) | The framework's specific rule-topology + operator's tuning of which compositions matter | Sharp engineering output (PRs landed, substrate ratified) |
 
 ### What "the walls" means operationally — boundary conditions ARE substrate
@@ -355,7 +355,7 @@ these two failure modes: preserve smoothness at the substrate level,
 build walls at the topology level, and sharpness emerges at the
 output level.
 
-## CRITICAL ARCHITECTURAL ARCHETYPE — reservoir computing IS the caustic-engineered bloom filter join architecture from B-0838 (operator 2026-05-26)
+## CRITICAL ARCHITECTURAL ARCHETYPE — reservoir computing IS the caustic-engineered bloom filter join architecture from 081KSGS9H0008QG0R002THJ2P1 (operator 2026-05-26)
 
 Operator 2026-05-26 substrate-honest observation:
 
@@ -369,7 +369,7 @@ output that no single component could produce alone**.
 
 ### The shared architectural pattern
 
-| Reservoir Computing element | B-0838 Caustic-Engineered Bloom Filter element |
+| Reservoir Computing element | 081KSGS9H0008QG0R002THJ2P1 Caustic-Engineered Bloom Filter element |
 | --- | --- |
 | Random reservoir of N neurons with fixed `W_{ij}` | Multi-learned-bloom-filter ensemble (Filter A, B, C) with fixed FP-rate distributions |
 | Driving signal `z(t)` scaled per-neuron via `μ_i` | Input candidate code being classified (binary inclusion-test against all 3 filters) |
@@ -385,7 +385,7 @@ Both architectures resolve the same engineering tension: **how do you
 get precise output from a system whose components are individually
 imprecise / random / approximate?** The two answers are dual:
 
-| Reservoir Computing answer | B-0838 Caustic Bloom Filter answer |
+| Reservoir Computing answer | 081KSGS9H0008QG0R002THJ2P1 Caustic Bloom Filter answer |
 | --- | --- |
 | Keep the components RANDOM; learn the LINEAR READOUT to combine them | DESIGN the components (via inverse design / optimal transport / caustic-engineering); use SIMPLE LOGICAL AND to combine |
 | All learning happens at the READOUT layer | All learning happens at the FILTER-CONSTRUCTION layer |
@@ -395,7 +395,7 @@ These are two valid points in the same design space — duality
 between "random components + complex combiner" and "designed
 components + simple combiner". The substrate-engineering insight:
 both are valid, and the choice depends on whether you can afford the
-inverse-design step (B-0838 Phase 2 work) or whether you prefer the
+inverse-design step (081KSGS9H0008QG0R002THJ2P1 Phase 2 work) or whether you prefer the
 random-reservoir + linear-readout simplicity.
 
 ### The universal-basis insight transfers
@@ -408,7 +408,7 @@ DIRECTLY to caustic-bloom-filter design:
 form a basis from which any trustworthiness-region can be carved via
 intersection.**
 
-This is the substrate-engineering justification for B-0838 Phase 1
+This is the substrate-engineering justification for 081KSGS9H0008QG0R002THJ2P1 Phase 1
 (3-filter intersection): even with only 3 filters, if their FP
 distributions are sufficiently independent, the basis is rich enough
 to discriminate trustworthy from untrustworthy code. The Phase 2
@@ -418,11 +418,11 @@ guarantees."
 
 ### What composes from this archetype
 
-- **B-0838 Phase 1 implementation can borrow the linear-readout
+- **081KSGS9H0008QG0R002THJ2P1 Phase 1 implementation can borrow the linear-readout
   technique** from reservoir computing literature — instead of pure
   logical-AND, weight each filter's contribution and learn the
   weights via linear regression on training data
-- **B-0838 Phase 2 caustic engineering can be informed by reservoir-
+- **081KSGS9H0008QG0R002THJ2P1 Phase 2 caustic engineering can be informed by reservoir-
   computing literature on echo-state property** — the "tune the
   network's spectral radius to avoid chaos" insight maps to "tune
   filter FP-rate independence to avoid intersection-collapse"
@@ -432,7 +432,7 @@ guarantees."
 - **Hawkins 1000 Brains cortical columns** are themselves an instance
   of this same archetype: each cortical column models the whole world
   (random-ish), and cortex integrates via voting (linear-readout-like)
-- **Multi-oracle BFT** (B-0703) is the same archetype at the
+- **Multi-oracle BFT** (081KS3X9Y0008QG0R00218150M) is the same archetype at the
   governance-layer scope: random/diverse oracles + structured-readout
   consensus
 
@@ -463,11 +463,11 @@ framework's own structure.
 This transcript IS the integration point for the three Kirsanov
 transcripts:
 
-1. **B-0839.1 (Boltzmann machines)** — energy-landscape navigation +
+1. **081KSGS9H0008QG0R002F1G7ER.1 (Boltzmann machines)** — energy-landscape navigation +
    stochastic update rule
-2. **B-0839.2 (RNN/LSTM/GRU)** — gated memory + residual connections
+2. **081KSGS9H0008QG0R002F1G7ER.2 (RNN/LSTM/GRU)** — gated memory + residual connections
    across time
-3. **B-0839.3 (THIS — Reservoir Computing)** — random dynamical system +
+3. **081KSGS9H0008QG0R002F1G7ER.3 (THIS — Reservoir Computing)** — random dynamical system +
    echo-state + Fourier-basis universality + EXPLICIT Hawkins
    composition
 
@@ -491,7 +491,7 @@ state-update equation across the video.
 ### Form 1 — undriven recurrence (the "from last video" reference, ~2:36)
 
 The bare RNN form (without driving input), referenced as the equation
-derived in the previous video (B-0839.2 RNN/LSTM/GRU):
+derived in the previous video (081KSGS9H0008QG0R002F1G7ER.2 RNN/LSTM/GRU):
 
 ```math
 s_i^t = s_i^{t-1} + \sum_j W_{ij} \sigma(s_j^{t-1})
@@ -1299,7 +1299,7 @@ Thousand-Brains section.
 
 Aaron-forwarded verbatim transcript 2026-05-26 (autonomous-loop tick
 session). 3rd Kirsanov transcript in same tick. Companion to
-B-0839.1 (Boltzmann) + B-0839.2 (RNN/LSTM/GRU). The three transcripts
+081KSGS9H0008QG0R002F1G7ER.1 (Boltzmann) + 081KSGS9H0008QG0R002F1G7ER.2 (RNN/LSTM/GRU). The three transcripts
 together describe the substrate-pattern: brain-as-dynamical-system
 with energy-landscape memory + gated retention + random reservoir of
 temporal patterns from which any output can be reconstructed via

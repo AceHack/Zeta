@@ -1,6 +1,6 @@
-# `src/Core.TypeScript/zflash/test-harness/` — B-0891 5-scenario test harness (PoC scaffold)
+# `src/Core.TypeScript/zflash/test-harness/` — 081KSNY2Z0008QG0R0008PN7RQ 5-scenario test harness (PoC scaffold)
 
-PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU test matrix the operator named in [B-0891](../../../../docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md).
+PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU test matrix the operator named in [081KSNY2Z0008QG0R0008PN7RQ](../../../../docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md).
 
 ## Scope
 
@@ -19,7 +19,7 @@ Operator clarification, 2026-05-31: this harness proves USB/ISO behavior,
 not Kubernetes or ArgoCD health. The USB lane should cover zflash, boot,
 retention/no-retention semantics, and one agent start path via retained
 auth or local-LLM/no-account mode. Kubernetes and ArgoCD require their own
-cluster integration tests outside B-0891. Touch ID/biometric retention is
+cluster integration tests outside 081KSNY2Z0008QG0R0008PN7RQ. Touch ID/biometric retention is
 represented by preserved auth-state markers here and remains
 operator-collaborative physical testing. Zeta is intentionally baked into
 the image; external contributor flows are future work. Target architecture
@@ -30,10 +30,10 @@ assumptions include both x86_64 and ARM64/aarch64 hardware.
 | #   | Scenario                                  | Status                 | Composes-with                                                                                                    |
 | --- | ----------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | 1   | Initial format (USB-bake from zero)       | composes-with-existing | `tools/ci/qemu-boot-test.ts` + `tools/ci/audit-installer-iso-content.ts`                                         |
-| 2   | Initial boot + agent start path           | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (B-0831 Slice 1); K8s/ArgoCD health is external integration coverage        |
-| 3   | Reformat WITH key + selection retention   | scaffolded             | B-0737 Touch ID + B-0852 USB-bound creds; same cluster/node identity retained (requires QEMU state preservation) |
-| 4   | Reformat from scratch (wipe + fresh keys) | scaffolded             | B-0852 USB-bound creds + B-0884 PQ git-crypt; new cluster/node identity (requires test-harness path-fork)        |
-| 5   | Cluster joining (new node)                | scaffolded             | B-0831 cluster-auto-join + B-0852.3 cred-picker (requires multi-VM QEMU orchestration)                           |
+| 2   | Initial boot + agent start path           | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (081KSGS9H0008QG0R0011BC7T2 Slice 1); K8s/ArgoCD health is external integration coverage        |
+| 3   | Reformat WITH key + selection retention   | scaffolded             | 081KSE6WT0008QG0R003WZAQKV Touch ID + 081KSKBP80008QG0R003AX2A69 USB-bound creds; same cluster/node identity retained (requires QEMU state preservation) |
+| 4   | Reformat from scratch (wipe + fresh keys) | scaffolded             | 081KSKBP80008QG0R003AX2A69 USB-bound creds + 081KSNY2Z0008QG0R0011XCT94 PQ git-crypt; new cluster/node identity (requires test-harness path-fork)        |
+| 5   | Cluster joining (new node)                | scaffolded             | 081KSGS9H0008QG0R0011BC7T2 cluster-auto-join + 081KSKBP80008QG0R003ETGS01 cred-picker (requires multi-VM QEMU orchestration)                           |
 
 ## CLI
 
@@ -153,7 +153,7 @@ When a scenario transitions to composes-with-existing:
 
 ## Composes-with substrate
 
-- [`tools/ci/qemu-full-install-test.ts`](../../../../tools/ci/qemu-full-install-test.ts) — B-0831 Slice 1 starter; existing QEMU full-install harness
+- [`tools/ci/qemu-full-install-test.ts`](../../../../tools/ci/qemu-full-install-test.ts) — 081KSGS9H0008QG0R0011BC7T2 Slice 1 starter; existing QEMU full-install harness
 - [`tools/ci/qemu-boot-test.ts`](../../../../tools/ci/qemu-boot-test.ts) — cascade #5 boot smoke-test
 - [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 disk bootstrap + snapshot/restart command planner
 - [`path-fork.ts`](path-fork.ts) — scenario 4 migrate-vs-fresh path-fork command planner
@@ -162,17 +162,17 @@ When a scenario transitions to composes-with-existing:
 - [`src/Core.TypeScript/zflash/lib.ts`](../lib.ts) — library substrate
 - [`docs/runbooks/zflash-end-to-end.md`](../../../../docs/runbooks/zflash-end-to-end.md) — operator-facing runbook
 - [`docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md`](../../../../docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md) — CP-1..CP-6 critical-path sequence
-- [B-0891](../../../../docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md) — backlog row this PoC implements
-- [B-0892](../../../../docs/backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-.md) — zflash lane this advances
+- [081KSNY2Z0008QG0R0008PN7RQ](../../../../docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md) — backlog row this PoC implements
+- [081KSNY2Z0008QG0R002QA720J](../../../../docs/backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-.md) — zflash lane this advances
 
-## CI acceptance matrix (B-0891)
+## CI acceptance matrix (081KSNY2Z0008QG0R0008PN7RQ)
 
 | Scenario          | Where it runs                              | Notes                                                                                                                 |
 | ----------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
 | 1 initial-format  | every `build-ai-cluster-iso` PR            | `audit-installer-iso-content` + `zflash-file-backed --test` + `qemu-boot-test --usb-image`                            |
 | 2 boot-cluster-up | push / `workflow_dispatch` on ISO workflow | delegates to `qemu-full-install-test.ts`                                                                              |
 | 3 retention       | `workflow_dispatch` on ISO workflow        | `ZFLASH_QEMU_RETENTION_EXECUTE=1`; auto-bakes boot image when ISO exists                                              |
-| 4 path-fork       | `workflow_dispatch` on ISO workflow        | `ZFLASH_QEMU_PATH_FORK_EXECUTE=1` + bootstrap; fork boots stop on B-0891 markers only (one full install in bootstrap) |
+| 4 path-fork       | `workflow_dispatch` on ISO workflow        | `ZFLASH_QEMU_PATH_FORK_EXECUTE=1` + bootstrap; fork boots stop on 081KSNY2Z0008QG0R0008PN7RQ markers only (one full install in bootstrap) |
 | 5 cluster-join    | skipped in harness                         | multi-VM orchestration pending                                                                                        |
 
 Dry-run + unit invariants: `.github/workflows/zflash-qemu-test.yml` on every harness-touching PR.
@@ -188,6 +188,6 @@ bun src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts \
 
 ## Operator-collaborative testing
 
-Per B-0891 framing, USB-side validation (after QEMU green) is operator-collaborative: physical USB confirms QEMU-validated behavior survives real hardware; operator demos at work need physical USB; KVM substrate enables remote USB-boot tests.
+Per 081KSNY2Z0008QG0R0008PN7RQ framing, USB-side validation (after QEMU green) is operator-collaborative: physical USB confirms QEMU-validated behavior survives real hardware; operator demos at work need physical USB; KVM substrate enables remote USB-boot tests.
 
 The harness ships QEMU-side iteration; operator handles physical-USB validation in parallel.

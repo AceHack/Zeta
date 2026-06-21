@@ -67,7 +67,7 @@ that ships as its OWN cartridge. Pick one, open its cartridge, watch it draw its
 READ its generator, CHANGE a number, SEE it again. When one clicks for you, you've learned the
 structure it encodes — that's the whole pedagogy in one file.
 
-## 4. Then build YOUR machine (B-1028 — the staged road)
+## 4. Then build YOUR machine (081KTSZN10008QG0R001BCCTXT — the staged road)
 
 The CHIP-9 playbook, which you watched work end-to-end, replayed on YOUR home turf (Hennessy's MIPS):
 

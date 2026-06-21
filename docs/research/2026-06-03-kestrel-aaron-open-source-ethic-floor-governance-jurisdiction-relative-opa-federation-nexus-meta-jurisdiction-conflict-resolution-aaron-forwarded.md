@@ -13,7 +13,7 @@ operator). Aaron = courier forwarding 2026-06-03. Per `GOVERNANCE.md §33`.
 Operational status: research-grade — engineering/governance substrate (not
 operational policy). Several pieces are rule/backlog **candidates OFFERED, not
 minted** (the doctrine-level ones are the maintainer's to direct; the
-constitutional/floor ones compose with B-0926).
+constitutional/floor ones compose with 081KSRGFP0008QG0R00091PP56).
 
 Non-fusion disclaimer: Otto preserves the conversation's engineering/governance
 content + the maintainer's exact formulations of the design claims, NOT a claim of
@@ -79,14 +79,14 @@ Two clocks (the load-bearing distinction):
 Honest logging arms the gate (an unlogged exploit never trips the metric).
 
 **Kid-floor escalation:** an unreported exploit on the child-safety surface is a
-**floor matter** (composes with `B-0926`) → strongest rails: the gate is
+**floor matter** (composes with `081KSRGFP0008QG0R00091PP56`) → strongest rails: the gate is
 **unamendable** (fixed thresholds, non-removable hard-stop); the discovery→sent
 clock is tighter; disclosure may route to **authorities / NCMEC**, not just the
 vendor (mandatory-reporting obligations ordinary vulns lack); the escalation path
 is **predetermined + legally-vetted + human-routed**, fired automatically on
 categorization, not improvised per-incident. Legal counsel defines the path.
 **Backlog candidate (OFFERED):** responsible-disclosure DORA gate (split-clock,
-kid-floor escalation) — composes with B-0926.
+kid-floor escalation) — composes with 081KSRGFP0008QG0R00091PP56.
 
 ## 3. Floor-change governance — unamendable-by-you, correctable by hard external process
 
@@ -117,7 +117,7 @@ protection; the existence of the process is the correctability.
   strategy depends on.
 
 Composes with: `human-audit-and-legal-risk-acceptance-pattern-in-settings.md`,
-`must-paired-with-can-exit-pattern.md`, `B-0926`. **Backlog candidate (OFFERED):**
+`must-paired-with-can-exit-pattern.md`, `081KSRGFP0008QG0R00091PP56`. **Backlog candidate (OFFERED):**
 floor-change governance (asymmetric process + multi-stakeholder steward + federate).
 
 ## 4. Conflict resolution — two classes; de-escalation is a data-driven hypothesis
@@ -188,8 +188,8 @@ Generalized to **federated sovereignty as policy-as-code**:
   strict-liability). The architecture is general; each jurisdiction's policy
   *content* needs lawyers.
 
-Composes with: `B-0764` (CNCF/OPA force-multipliers), `non-coercion-invariant.md`,
-`B-0684` (protocol negotiation). **Backlog candidate (OFFERED):**
+Composes with: `081KSE6WT0008QG0R0009YYNP4` (CNCF/OPA force-multipliers), `non-coercion-invariant.md`,
+`081KS3X9Y0008QG0R003MMEAC7` (protocol negotiation). **Backlog candidate (OFFERED):**
 jurisdiction-relative geospatial + OPA federation + mutual-permission exchange.
 
 ## 7. Nexus — Zeta's meta-jurisdiction, made non-central by supported structural forkability

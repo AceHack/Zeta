@@ -1,6 +1,6 @@
 ---
 pr_number: 5377
-title: "docs(B-0845): TS CLI arg-parser library evaluation \u2014 citty/commander/clipanion/manual"
+title: "docs(081KSGS9H0008QG0R0021K2X1T): TS CLI arg-parser library evaluation \u2014 citty/commander/clipanion/manual"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T01:59:35Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:50Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5377: docs(B-0845): TS CLI arg-parser library evaluation — citty/commander/clipanion/manual
+# PR #5377: docs(081KSGS9H0008QG0R0021K2X1T): TS CLI arg-parser library evaluation — citty/commander/clipanion/manual
 
 ## PR description
 
@@ -36,7 +36,7 @@ Phase 1 evaluation doc lands the substrate-honest comparison.
 
 ## Composes with
 
-- B-0844 (zflash --agent flag — would benefit from cleaner arg-parsing on next iteration)
+- 081KSGS9H0008QG0R001EZKNCB (zflash --agent flag — would benefit from cleaner arg-parsing on next iteration)
 - \`.claude/rules/bandwidth-served-falsifier.md\` (canonical lib IS bandwidth-engineering)
 - \`.claude/rules/dep-pin-search-first-authority.md\` (Phase 1 MUST WebSearch current latest stable)
 - \`.claude/rules/rule-0-no-sh-files.md\` (TS-over-bash discipline; this makes TS more ergonomic)

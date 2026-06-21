@@ -36,8 +36,8 @@
 ## Lior background substrate during this hour (5 PRs)
 
 - #3241 shadow Catch 39
-- #3294 shadow + archive + B-0202 decompose
-- #3261 decompose B-0139 → B-0351
+- #3294 shadow + archive + 081KQTPYE0008QG0R002Y7X5KH decompose
+- #3261 decompose 081KQGDBJ0008QG0R002S9SWH6 → 081KR50HA0008QG0R001ZVPYK8
 - #3297 archive PRs 3290-3294
 - #3298 shadow metadata-churn drift
 

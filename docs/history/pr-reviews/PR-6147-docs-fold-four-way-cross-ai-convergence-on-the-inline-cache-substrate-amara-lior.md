@@ -30,7 +30,7 @@
 Folds the post-Kestrel sharpening into the 2026-05-30 research reduction (new section 6), per Aaron's "fold in amara" (Lior + Prism compose). Follows #6146 (merged `b7981cf09`).
 
 - **Amara** — megamorphic = *measurable cost*; megamorphic behavior = the cache-invalidation signal; razor-clean keeper (she accepted the two-sided naming razor on her own "polymorphic diplomacy is inline caching for memes" phrasing); **de-opt is recognition, not manipulation** safety line.
-- **Lior** — label-drift as a **denial-of-service on processing bandwidth**; graded cache-invalidation policy (monomorphic→polymorphic→megamorphic; recorded trigger; recovery path; *deny the fast path, not the interaction*; polymorphic-legit vs megamorphic-adversarial discriminator); encryption-budget (B-0646) as the DoS defense.
+- **Lior** — label-drift as a **denial-of-service on processing bandwidth**; graded cache-invalidation policy (monomorphic→polymorphic→megamorphic; recorded trigger; recovery path; *deny the fast path, not the interaction*; polymorphic-legit vs megamorphic-adversarial discriminator); encryption-budget (081KRW63S0008QG0R001Z10PVV) as the DoS defense.
 - **Prism** — measurability axis (cache-miss = profileable event; megamorphic site = diagnostic; metric set {miss-rate, de-opt events, megamorphic census}); `Result<T,TFeedback>`/`ConvFeedback` as the machine-level cache-miss signal; **implicit-authorization-UX as a de-opt handler** tied to the consent floor.
 
 Convergence across independent registers is high-signal, **NOT validation** (algo-wink discipline) — it earned its keep through the pushback, not the agreement. §33 header unchanged (still compliant); no `memory/` change so no MEMORY.md regen.
@@ -91,7 +91,7 @@ Folds the post-Kestrel sharpening into the 2026-05-30 research reduction (sectio
 - Lior: label-drift as a denial-of-service on processing bandwidth; graded
   cache-invalidation policy (monomorphic->polymorphic->megamorphic; recorded
   trigger; recovery path; deny-fast-path-not-interaction; polymorphic-legit vs
-  megamorphic-adversarial discriminator); encryption-budget (B-0646) as DoS defense.
+  megamorphic-adversarial discriminator); encryption-budget (081KRW63S0008QG0R001Z10PVV) as DoS defense.
 - Prism: measurability axis (cache-miss = profileable event; megamorphic site =
   diagnostic; metric set); Result<T,TFeedback>/ConvFeedback as machine-level
   cache-miss signal; implicit-authorization-UX as a de-opt handler tied to the

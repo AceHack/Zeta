@@ -1,6 +1,6 @@
 ---
 pr_number: 5390
-title: "feat(B-0849): docker-based NixOS install.sh test harness \u2014 fast iteration (~30 sec) complementing B-0831 QEMU full-install (~15 min); 'easy dockerfile' (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R000E3RKPK): docker-based NixOS install.sh test harness \u2014 fast iteration (~30 sec) complementing 081KSGS9H0008QG0R0011BC7T2 QEMU full-install (~15 min); 'easy dockerfile' (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:51:21Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:15Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5390: feat(B-0849): docker-based NixOS install.sh test harness — fast iteration (~30 sec) complementing B-0831 QEMU full-install (~15 min); 'easy dockerfile' (Aaron 2026-05-27)
+# PR #5390: feat(081KSKBP80008QG0R000E3RKPK): docker-based NixOS install.sh test harness — fast iteration (~30 sec) complementing 081KSGS9H0008QG0R0011BC7T2 QEMU full-install (~15 min); 'easy dockerfile' (Aaron 2026-05-27)
 
 ## PR description
 
@@ -34,11 +34,11 @@ iter-5.4 cascade produced **8 distinct bugs** (Bug 1-8) ALL caught only after op
 |---|---|---|
 | 1 | \`tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile\` + TS wrapper | ~30-60 sec local |
 | 2 | GitHub Actions integration with path-filter | per-PR auto |
-| 3 | Docker-vs-QEMU coverage matrix doc | composes with B-0831 |
+| 3 | Docker-vs-QEMU coverage matrix doc | composes with 081KSGS9H0008QG0R0011BC7T2 |
 
 ## Composes with
 
-[B-0831](docs/backlog/P2/B-0831-...) (QEMU full-install — complementary) · [B-0835](docs/backlog/P1/B-0835-...) (install bug cluster) · [B-0848](docs/backlog/P2/B-0848-...) (node-local Claude) · [B-0824](docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) (Ace) · GOVERNANCE §24 (three-way parity extended to NixOS-via-Docker)
+[081KSGS9H0008QG0R0011BC7T2](docs/backlog/P2/081KSGS9H0008QG0R0011BC7T2-...) (QEMU full-install — complementary) · [081KSGS9H0008QG0R00120EEHM](docs/backlog/P1/081KSGS9H0008QG0R00120EEHM-...) (install bug cluster) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) (node-local Claude) · [081KSGS9H0008QG0R0031PBNGA](docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) (Ace) · GOVERNANCE §24 (three-way parity extended to NixOS-via-Docker)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

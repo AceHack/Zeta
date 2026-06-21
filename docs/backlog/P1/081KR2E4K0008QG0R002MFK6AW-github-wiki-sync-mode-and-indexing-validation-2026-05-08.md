@@ -1,6 +1,5 @@
 ---
-id: B-0300
-zetaid: 081KR2E4K0008QG0R002MFK6AW
+id: 081KR2E4K0008QG0R002MFK6AW
 priority: P1
 status: open
 title: "GitHub Wiki integration - sync mode and indexing validation"
@@ -14,7 +13,7 @@ owners: [docs, qa]
 type: friction-reducer
 ---
 
-# B-0300 - Wiki sync and indexing validation
+# 081KR2E4K0008QG0R002MFK6AW - Wiki sync and indexing validation
 
 Choose the GitHub Wiki integration mode and define the checks
 that prove Wiki discovery is real before assigning SEO credit to

@@ -2,8 +2,8 @@
 // audit-memory-index-entry-lengths.ts — flag MEMORY.md index entries exceeding one-line limit
 // per memory/README.md ("one line per memory file") and CLAUDE.md (~200 chars).
 //
-// Smallest safe slice of B-0072 (P2). Pure-TS implementation (Rule 0).
-// Future slices can add auto-fix or integrate into B-0066 auto-gen.
+// Smallest safe slice of 081KQ8P5D0008QG0R0023ABK2C (P2). Pure-TS implementation (Rule 0).
+// Future slices can add auto-fix or integrate into 081KQ8P5D0008QG0R003KFRGJ0 auto-gen.
 //
 // Usage:
 //   bun tools/hygiene/audit-memory-index-entry-lengths.ts

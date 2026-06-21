@@ -1,6 +1,5 @@
 ---
-id: B-0241
-zetaid: 081KQZVQW0008QG0R001V420F0
+id: 081KQZVQW0008QG0R001V420F0
 priority: P1
 status: open
 title: "Red team: hole puncher pattern applied to AI safety — capability-layer bypass of content-layer filters"
@@ -12,7 +11,7 @@ owners: [security-researcher, threat-model-critic, formal-verification-expert]
 type: feature
 ---
 
-# B-0241 — Red team: hole puncher as AI safety bypass vector
+# 081KQZVQW0008QG0R001V420F0 — Red team: hole puncher as AI safety bypass vector
 
 ## What
 
@@ -100,7 +99,7 @@ to prevent.
   architecture (Itron edge gate, KSK, read/act boundary)
 - `tools/peer-call/riven.ts` — Riven as adversarial-truth-axis
   reviewer (natural red-team role)
-- B-0058 (AI ethics + safety research track)
+- 081KQ3HBZ0008QG0R002S674CG (AI ethics + safety research track)
 
 ## Provenance
 

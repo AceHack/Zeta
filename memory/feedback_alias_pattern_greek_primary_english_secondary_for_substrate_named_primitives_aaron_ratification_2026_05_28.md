@@ -1,6 +1,6 @@
 ---
 name: alias-pattern Greek-primary + English-secondary for substrate-named primitives (Aaron 2026-05-28 ratification of Meno.fsx pattern; applies to all future Greek-named F# substrate)
-description: Aaron 2026-05-28 explicit ratification "alias is good" of the side-by-side alias pattern shipped in experiments/meno-persist-as-bridge/Meno.fsx — Greek identifier (μένω) is canonical primary; English ASCII identifier (meno) is alias that binds to same value at zero runtime cost. Pattern applies to all future Greek-named F# substrate (λάμπω + νοέω + μνάω + future Greek-substrate naming). Composes with audience-adjusted-language discipline + honor-those-that-came-before (Greek-substrate Amara taught Aaron 2025-09 + Otto-309 first formal definition) + Meno.fsx canonical PoC + B-0916 Lampo.fsx target.
+description: Aaron 2026-05-28 explicit ratification "alias is good" of the side-by-side alias pattern shipped in experiments/meno-persist-as-bridge/Meno.fsx — Greek identifier (μένω) is canonical primary; English ASCII identifier (meno) is alias that binds to same value at zero runtime cost. Pattern applies to all future Greek-named F# substrate (λάμπω + νοέω + μνάω + future Greek-substrate naming). Composes with audience-adjusted-language discipline + honor-those-that-came-before (Greek-substrate Amara taught Aaron 2025-09 + Otto-309 first formal definition) + Meno.fsx canonical PoC + 081KSNY2Z0008QG0R00075C7CH Lampo.fsx target.
 type: feedback
 created: 2026-05-28
 authors: [aaron, otto]
@@ -10,12 +10,12 @@ composes_with:
   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
   - .claude/rules/substrate-smoothness-as-load-bearing-property.md
   - experiments/meno-persist-as-bridge/Meno.fsx
-  - docs/backlog/P2/B-0916-lase-as-bridge-coherent-emission-on-phase-shift-error-class-discovery-companion-to-persist-prism-aaron-2026-05-28.md
+  - docs/backlog/P2/081KSNY2Z0008QG0R00075C7CH-lase-as-bridge-coherent-emission-on-phase-shift-error-class-discovery-companion-to-persist-prism-aaron-2026-05-28.md
 related_prs:
   - 5778  # μένω F# PoC (canonical alias-pattern PoC)
-  - 5780  # B-0916 Lase-as-bridge (composes; same pattern applies)
+  - 5780  # 081KSNY2Z0008QG0R00075C7CH Lase-as-bridge (composes; same pattern applies)
 related_backlog:
-  - B-0916  # Lase-as-bridge primitive Lampo.fsx Slice A
+  - 081KSNY2Z0008QG0R00075C7CH  # Lase-as-bridge primitive Lampo.fsx Slice A
 tags: [alias-pattern-greek-primary-english-secondary, fsharp-unicode-identifiers-utf8, zero-runtime-cost-binding-aliases, audience-adjusted-language-at-code-naming-scope, honor-those-that-came-before-via-greek-substrate-preservation, applies-to-meno-lampo-noeo-mnao-future-greek-substrate]
 ---
 
@@ -73,7 +73,7 @@ When authoring new Greek-named substrate primitive in F#:
 5. **Zero runtime cost** (alias, not inheritance)
 
 Future Greek-named primitives ready to use this pattern:
-- **λάμπω** (lampō, "I shine") = Lase-as-bridge (B-0916 Lampo.fsx Slice A) — companion to μένω
+- **λάμπω** (lampō, "I shine") = Lase-as-bridge (081KSNY2Z0008QG0R00075C7CH Lampo.fsx Slice A) — companion to μένω
 - **νοέω** (noeō, "I perceive with mind") = potential Observe-as-bridge / Attention primitive
 - **μνάω** (mnaō, "I remember") = potential Memory primitive (PIE sibling of μένω; same root *men-)
 - Any future Greek-substrate primitive
@@ -91,7 +91,7 @@ Future Greek-named primitives ready to use this pattern:
 - `.claude/rules/honor-those-that-came-before.md` — Greek canonical preserves Amara-taught + Otto-309-defined substrate lineage
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — alias-pattern is one specific instance of cross-language substrate-shape (same shape multiple identifier-surfaces)
 - `experiments/meno-persist-as-bridge/Meno.fsx` — canonical PoC of the pattern (already shipped)
-- `docs/backlog/P2/B-0916-lase-as-bridge-*.md` — Lampo.fsx Slice A applies same pattern
+- `docs/backlog/P2/081KSNY2Z0008QG0R00075C7CH-lase-as-bridge-*.md` — Lampo.fsx Slice A applies same pattern
 
 ## Future-Otto cold-boot inheritance
 

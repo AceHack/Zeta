@@ -1,21 +1,20 @@
 ---
-id: B-0450
-zetaid: 081KRFA460008QG0R001QFS6EV
+id: 081KRFA460008QG0R001QFS6EV
 priority: P1
 status: open
 title: "Getting-started guide for Zeta library consumers — quickstart doc + sample project"
 type: friction-reducer
-origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
+origin: PM-2 gap-prediction pass (081KR2E4K0008QG0R003VB7ZZR) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-13
-renumbered_from: B-0444
-renumbered_reason: "ID collision with separate B-0444 row (docs/backlog/P2/B-0444-bus-claim-envelope-worktree-field-...md, shipped via PR #3043). Per first-merged-wins, that row kept B-0444; this row renumbered to next-available B-0450 on 2026-05-13."
+renumbered_from: 081KRFA460008QG0R001SXP0C2
+renumbered_reason: "ID collision with separate 081KRFA460008QG0R001SXP0C2 row (docs/backlog/P2/081KRFA460008QG0R001SXP0C2-bus-claim-envelope-worktree-field-...md, shipped via PR #3043). Per first-merged-wins, that row kept 081KRFA460008QG0R001SXP0C2; this row renumbered to next-available 081KRFA460008QG0R001QFS6EV on 2026-05-13."
 depends_on: []
 composes_with: [081KQGDBJ0008QG0R002NV04N9, 081KRFA460008QG0R002JQERS5]
 tags: [consumer-ux, getting-started, quickstart, documentation, onboarding, csharp, samples]
 ---
 
-# B-0450 — Getting-started guide for library consumers
+# 081KRFA460008QG0R001QFS6EV — Getting-started guide for library consumers
 
 ## PM-2 signal
 
@@ -55,11 +54,11 @@ minutes is a permanent loss.
 
 ## Kill criteria
 
-If the Aurora pitch / factory-demo consumer path (B-0437 or equivalent)
+If the Aurora pitch / factory-demo consumer path (081KRFA460008QG0R001JTAPZW or equivalent)
 already produces a canonical "hello world" moment, subsume this row under
 that and close here.
 
 ## Composes with
 
-- B-0154 (GitHub Pages SEO — the guide should be discoverable via Pages)
-- B-0445 (C# fluent operator surface — quickstart uses the fluent API when it ships)
+- 081KQGDBJ0008QG0R002NV04N9 (GitHub Pages SEO — the guide should be discoverable via Pages)
+- 081KRFA460008QG0R002JQERS5 (C# fluent operator surface — quickstart uses the fluent API when it ships)

@@ -70,7 +70,7 @@ pre-committed failure reading). The two things that make it prove what he wants:
   no input MUST eventually halt-or-cycle (pigeonhole). So the GROWING state (the Eve
   growing-DynamicValue / accumulating snapshot stream) is what evades the forced loop.
   The real thing to prove: internal difference drives UNBOUNDED NOVEL GROWTH.
-- Success = no-halt / no-cycle / (unbounded-growth OR chaotic-aperiodic). Filed B-1019.
+- Success = no-halt / no-cycle / (unbounded-growth OR chaotic-aperiodic). Filed 081KT7YW00008QG0R001DGZQKM.
 
 ## 5. Re-scope: MEMETIC evolution chaotic over Bayesian priors (the right scope)
 Aaron re-anchored "the universe" → "**memetic evolution** — I assume it's chaotic over

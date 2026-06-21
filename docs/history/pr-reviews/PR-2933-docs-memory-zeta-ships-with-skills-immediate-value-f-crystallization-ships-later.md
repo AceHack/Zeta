@@ -191,8 +191,8 @@ Composes with:
 - PR #2917 (vision monad Play-Doh — soft + reshapeable)
 - PR #2898 (non-glass-halo encryption — operates over either
   text or binary)
-- B-0428 (DBpedia Path B storage shape applies)
-- B-0043 (universal-business-templates storage substrate)
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B storage shape applies)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates storage substrate)
 - algebra-owner skill (Z-set + Clifford + BP/EP F#)
 - DBSP substrate (event-sourcing + retraction-native algebra)
 - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
@@ -259,8 +259,8 @@ Composes with:
 - PR #2924 (Aurora pitch)
 - PR #2917 (vision monad Play-Doh — bounded scope)
 - PR #2913 (HKT-MDM universality — F# crystallization target)
-- B-0428 (DBpedia Path B can be skill-shipped first)
-- B-0043 (universal company + government info substrate)
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B can be skill-shipped first)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal company + government info substrate)
 - .claude/rules/skill-router-as-substrate-inventory.md
 - .claude/rules/never-be-idle.md
 - .claude/rules/additive-not-zero-sum.md

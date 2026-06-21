@@ -6,7 +6,7 @@
 // progress. Produces a structured JSON report suitable for the
 // autonomous loop's tick-decision.
 //
-// This is the "detect" half of detect-trigger-repair (B-0250).
+// This is the "detect" half of detect-trigger-repair (081KQZVQW0008QG0R001FG05RZ).
 import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";

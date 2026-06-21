@@ -1,6 +1,5 @@
 ---
-id: B-0978
-zetaid: 081KT07NV0008QG0R001PHV1ND
+id: 081KT07NV0008QG0R001PHV1ND
 priority: P3
 status: open
 title: Ace registry incremental/paginated index — delta updates + range requests (deferred from slice 6)
@@ -16,7 +15,7 @@ tags: [ace, package-manager, registry, remote, scaling, deferred-enhancement, sl
 
 ## What this row proposes
 
-Slice 6 (B-0971, shipped via #6431) fetches the **entire** registry index as one signed
+Slice 6 (081KT07NV0008QG0R000SJ34AK, shipped via #6431) fetches the **entire** registry index as one signed
 JSON document every revalidation (conditional GET: a 304 skips the body, a 200 re-downloads
 the whole index). That is fine for a small/medium catalog but does not scale to a large
 registry where the full index is many MB. This row tracks an **incremental/paginated
@@ -43,6 +42,6 @@ Operator: *"everything we skipped lets slice off for further enhancements."*
 
 ## Composes with
 
-- B-0971 (Ace remote registry — the slice this defers from)
-- B-0979 (TUF role separation — snapshot/timestamp roles interact with incremental fetch)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R000SJ34AK (Ace remote registry — the slice this defers from)
+- 081KT07NV0008QG0R001K340B3 (TUF role separation — snapshot/timestamp roles interact with incremental fetch)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)

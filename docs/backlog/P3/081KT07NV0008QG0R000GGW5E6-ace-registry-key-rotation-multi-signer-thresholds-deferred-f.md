@@ -1,6 +1,5 @@
 ---
-id: B-0981
-zetaid: 081KT07NV0008QG0R000GGW5E6
+id: 081KT07NV0008QG0R000GGW5E6
 priority: P3
 status: open
 title: Ace registry per-registry key rotation + multi-signer thresholds (deferred from slice 6)
@@ -16,7 +15,7 @@ tags: [ace, package-manager, registry, remote, security, key-rotation, deferred-
 
 ## What this row proposes
 
-Slice 6 (B-0971, shipped via #6431) pins each remote registry to a **single** ed25519
+Slice 6 (081KT07NV0008QG0R000SJ34AK, shipped via #6431) pins each remote registry to a **single** ed25519
 `key_id`: the index `signature.key_id` must equal the pinned key AND be in the trust store.
 There is no story for **rotating** that key (a compromised/expired registry key requires a
 manual `ace registry remote rm` + re-`add` with the new key, with no continuity), and no
@@ -43,6 +42,6 @@ further enhancements."*
 
 ## Composes with
 
-- B-0971 (Ace remote registry — single-key pin this extends)
-- B-0979 (full TUF role separation — root role owns rotation; this is the focused subset)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R000SJ34AK (Ace remote registry — single-key pin this extends)
+- 081KT07NV0008QG0R001K340B3 (full TUF role separation — root role owns rotation; this is the focused subset)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)

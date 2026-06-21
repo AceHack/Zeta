@@ -1,6 +1,5 @@
 ---
-id: B-0694
-zetaid: 081KS3X9Y0008QG0R000J4SFTS
+id: 081KS3X9Y0008QG0R000J4SFTS
 priority: P2
 status: open
 title: Standing-query codegen — IIncrementalGenerator that rewrites circuit expressions to fused IL (Otto-VSCode 8-PR campaign PR #8 — the capstone)
@@ -30,7 +29,7 @@ This is the **Reaqtor architecture applied to DBSP**. Reaqtor / RxJS-codegen / M
 PRs 1-7 substrate gets you capability-aware fusion at the runtime layer:
 
 - Capability tags identify what can fuse (PR #4558)
-- FusionEngine rewrites the DAG into push-segments + morsel-segments (PR #4566 + B-0692 + B-0693)
+- FusionEngine rewrites the DAG into push-segments + morsel-segments (PR #4566 + 081KS3X9Y0008QG0R001D454ZK + 081KS3X9Y0008QG0R003Y2X2T0)
 - IncrementalAuto dispatcher applies the right rewrite per operator capability (PR #4564)
 
 But the FUSED OPERATORS still go through the virtual dispatch + Op<'T>.Value materialize/read boundaries at segment ends. The compiler doesn't see across operator-boundary calls; can't eliminate the segment-end allocation that PRs 1-7 leave behind.
@@ -63,7 +62,7 @@ Per-incremental-compile cost: codegen runs ONCE when the circuit DAG changes (su
 
 ### Phase 3 — F# Type Provider integration (F# side for F# circuits)
 
-- Type Provider at a new directory (proposed: `src/Core.FSharp.Codegen/` — **TO BE CREATED** by this PR; mirrors B-0687 ZetaParse Type Provider pattern)
+- Type Provider at a new directory (proposed: `src/Core.FSharp.Codegen/` — **TO BE CREATED** by this PR; mirrors 081KS3X9Y0008QG0R00323NSZA ZetaParse Type Provider pattern)
 - Consumes `.circuit` description files OR runtime `CircuitExpr` values
 - Generates compile-time F# types + functions for circuit segments
 - Composes with F# computation expressions (existing Zeta DBSP CE pattern)
@@ -79,8 +78,8 @@ Per-incremental-compile cost: codegen runs ONCE when the circuit DAG changes (su
 
 - BenchmarkDotNet job at `bench/Benchmarks/StandingQueryCodegenBench.fs`:
   - Materialize-baseline (3-op chain)
-  - Push-based (B-0692)
-  - Morsel-based (B-0693)
+  - Push-based (081KS3X9Y0008QG0R001D454ZK)
+  - Morsel-based (081KS3X9Y0008QG0R003Y2X2T0)
   - Codegen-based (this row; THIS PR's win)
 
 - Allocation: codegen expected to allocate 0× per-tick on hot path (Span<T> stack-allocated all the way)
@@ -119,7 +118,7 @@ Per-incremental-compile cost: codegen runs ONCE when the circuit DAG changes (su
 
 This is **research-grade architectural substrate at the upper bound of Otto-VSCode's 8-PR campaign scope**. ~500+ lines per the original sizing estimate; realistically more. The capstone PR for the entire algebra-capability-system trajectory.
 
-Aaron's Reaqtor-applied-to-DBSP insight is the unifying frame: capability tags (PR #4558) + sink-terminality (PR #4560) + checkBilinear (PR #4563) + IncrementalAuto (PR #4564) + FusionEngine (PR #4566) + push-based (B-0692) + morsel-based (B-0693) ALL feed into this PR's codegen step. The capability system isn't fully realized until codegen consumes the tags to emit optimal IL.
+Aaron's Reaqtor-applied-to-DBSP insight is the unifying frame: capability tags (PR #4558) + sink-terminality (PR #4560) + checkBilinear (PR #4563) + IncrementalAuto (PR #4564) + FusionEngine (PR #4566) + push-based (081KS3X9Y0008QG0R001D454ZK) + morsel-based (081KS3X9Y0008QG0R003Y2X2T0) ALL feed into this PR's codegen step. The capability system isn't fully realized until codegen consumes the tags to emit optimal IL.
 
 The pattern itself draws on substantial prior art:
 
@@ -141,11 +140,11 @@ The Zeta contribution is composing these into a unified standing-query codegen p
 
 ## Composes with substrate
 
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 — codegen preserves operational primitives at segment scope)
-- B-0688 (incremental compiler host — codegen IS the host's output substrate)
-- B-0687 (ZetaParse — codegen Type Provider mirrors the ZetaParse Type Provider pattern)
-- B-0692 (PR #6 push-based — codegen emits push-segment-fused IL)
-- B-0693 (PR #7 morsel-based — codegen emits morsel-segment-fused IL)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 — codegen preserves operational primitives at segment scope)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — codegen IS the host's output substrate)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse — codegen Type Provider mirrors the ZetaParse Type Provider pattern)
+- 081KS3X9Y0008QG0R001D454ZK (PR #6 push-based — codegen emits push-segment-fused IL)
+- 081KS3X9Y0008QG0R003Y2X2T0 (PR #7 morsel-based — codegen emits morsel-segment-fused IL)
 - PRs 1-5 substrate (capability tags + sink-terminality + checkBilinear + IncrementalAuto + FusionEngine — all consumed by codegen)
 - Reaqtor / Materialize / Feldera / Velox / Photon (external prior art)
 

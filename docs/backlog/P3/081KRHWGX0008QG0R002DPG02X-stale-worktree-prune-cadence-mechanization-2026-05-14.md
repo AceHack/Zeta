@@ -1,6 +1,5 @@
 ---
-id: B-0506
-zetaid: 081KRHWGX0008QG0R002DPG02X
+id: 081KRHWGX0008QG0R002DPG02X
 priority: P3
 status: closed
 title: "Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`"
@@ -51,8 +50,8 @@ Wire into:
 
 ## Composes with
 
-- B-0400 (bus protocol — multi-Otto coordination context where this pattern manifests)
-- B-0444 (bus claim envelope `worktree` field — sibling discipline for claim observability)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — multi-Otto coordination context where this pattern manifests)
+- 081KRFA460008QG0R001SXP0C2 (bus claim envelope `worktree` field — sibling discipline for claim observability)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (the discipline this friction-reducer supports)
 - `.claude/rules/encoding-rules-without-mechanizing.md` (the failure mode this row addresses)
 
@@ -70,7 +69,7 @@ This is a P3 friction-reducer, not a P0 substrate gap. The cleanup is straightfo
 
 ## Resolution (2026-05-16)
 
-Mechanization shipped 2026-05-14 via **PR #3225** (`feat(B-0506): mechanize stale-worktree audit — audit-stale-worktrees.ts (clean branch)`, merged).
+Mechanization shipped 2026-05-14 via **PR #3225** (`feat(081KRHWGX0008QG0R002DPG02X): mechanize stale-worktree audit — audit-stale-worktrees.ts (clean branch)`, merged).
 
 The shipped tool [`tools/hygiene/audit-stale-worktrees.ts`](../../../tools/hygiene/audit-stale-worktrees.ts) implements every behavior named in "Proposed mechanization" above:
 
@@ -83,6 +82,6 @@ The shipped tool [`tools/hygiene/audit-stale-worktrees.ts`](../../../tools/hygie
 | Exit codes (0 / 64 / 128) | shipped |
 | DST-friendly (only timestamp non-deterministic) | shipped |
 
-Phase 2 (GHA cron wire-up + per-Otto-process worktree isolation) is **out of scope** per the tool's own header comment and would compose with `factory-hygiene-audit-cadence.yml` if/when needed; that's a separate row, not a B-0506 obligation.
+Phase 2 (GHA cron wire-up + per-Otto-process worktree isolation) is **out of scope** per the tool's own header comment and would compose with `factory-hygiene-audit-cadence.yml` if/when needed; that's a separate row, not a 081KRHWGX0008QG0R002DPG02X obligation.
 
 Row left open from 2026-05-14 to 2026-05-16 due to substrate drift — the mechanization PR landed but this row was never marked closed. Caught this tick by Otto-CLI 2026-05-16T04:19Z while picking a P3 friction-reducer; tried to claim+implement, discovered the tool already existed at the proposed path. Closing instead.

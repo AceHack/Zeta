@@ -1,6 +1,5 @@
 ---
-id: B-0696
-zetaid: 081KS3X9Y0008QG0R001GPZ0KZ
+id: 081KS3X9Y0008QG0R001GPZ0KZ
 priority: P3
 status: open
 title: substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)
@@ -92,7 +91,7 @@ Envelopes retain 7d default (configurable). After expiry, the inheritance path i
 
 ## Why P3
 
-Operational substrate that closes a coordination gap. Not urgent today (human-ferry works while Aaron is here); becomes load-bearing at cluster-scale (per the $100k cluster expansion Aaron mentioned 2026-05-21). Same tier as B-0689 (Otto-VSCode SENDER_IDS extension) — operational coordination plumbing rather than research-grade architecture.
+Operational substrate that closes a coordination gap. Not urgent today (human-ferry works while Aaron is here); becomes load-bearing at cluster-scale (per the $100k cluster expansion Aaron mentioned 2026-05-21). Same tier as 081KS3X9Y0008QG0R000BJY3DK (Otto-VSCode SENDER_IDS extension) — operational coordination plumbing rather than research-grade architecture.
 
 ## Substrate-honest framing
 
@@ -104,13 +103,13 @@ This row mechanizes one specific case Aaron named in conversation: cross-AI coor
 
 It complements all three by adding the **recent-changes-cache** layer that closes the "I just shipped X; how do other surfaces find out before their next session?" gap. Today's gap-closure: human ferries the message. Trajectory: bus envelopes carry it.
 
-Composes with B-0695 (fast/life-branch experiment) — both shift coordination load off the per-event human-attention bottleneck and onto substrate-managed cadences. fast/life shifts CI gates; substrate-surface-change shifts inter-AI capability-change notifications.
+Composes with 081KS3X9Y0008QG0R002EEH26Z (fast/life-branch experiment) — both shift coordination load off the per-event human-attention bottleneck and onto substrate-managed cadences. fast/life shifts CI gates; substrate-surface-change shifts inter-AI capability-change notifications.
 
 ## Composes with
 
-- B-0400 (bus protocol — the substrate this row extends)
-- B-0689 (Otto-VSCode SENDER_IDS — the prior surface-tagged sender pattern this row leans on for the `from` field)
-- B-0695 (fast/life-branch experiment — sibling coordination-cost-reduction)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — the substrate this row extends)
+- 081KS3X9Y0008QG0R000BJY3DK (Otto-VSCode SENDER_IDS — the prior surface-tagged sender pattern this row leans on for the `from` field)
+- 081KS3X9Y0008QG0R002EEH26Z (fast/life-branch experiment — sibling coordination-cost-reduction)
 - `tools/bus/claim.ts` (existing claim-coordinator; this row adds a sibling topic)
 - `.claude/rules/agent-roster-reference-card.md` (multi-surface Otto coordination + 6-vendor AI topology)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (companion discipline; this row addresses a DIFFERENT coordination gap — capability inheritance vs row claim)

@@ -1,6 +1,5 @@
 ---
-id: B-0276
-zetaid: 081KR2E4K0008QG0R0031E5PR8
+id: 081KR2E4K0008QG0R0031E5PR8
 priority: P1
 status: closed
 closed: 2026-05-08
@@ -15,7 +14,7 @@ decomposition: atomic
 owners: [architect, formal-verification-expert]
 ---
 
-# B-0276 — Fingerprint library
+# 081KR2E4K0008QG0R0031E5PR8 — Fingerprint library
 
 Define structure fingerprints for common codebase shapes
 (operator algebra, state machine, pipeline, pub/sub).

@@ -32,11 +32,11 @@ Design spec for Ace CLI **distribution + DX**, per your "write the spec." Synthe
 **Where it lives:** `docs/agendas/ace-package-manager/` (next to the agenda) — *not* the superpowers plugin's `docs/superpowers/specs/` (foreign plugin convention; the skill says your location preference wins).
 
 **Headlines:**
-- `tools/ace/ace.ts` already partly exists (B-0288) → question is *distribution*, not *is-it-TS*.
+- `tools/ace/ace.ts` already partly exists (081KR2E4K0008QG0R002YE3MMD) → question is *distribution*, not *is-it-TS*.
 - Skill-first (agents) + bunx/bootstrap (humans) + MCP fallback; compiled binary out of v1.
 - **Runtime resolved: Node-floor portable** (Node ≈ universal across harnesses; Codex/Rust = the no-JS exception) — repo now on Node 24 (#6290).
 - Small verb grammar; provenance-verify at install-time; one shared core.
-- Abstract layer (#6284): bus G-Set ⊂ bag ⊂ Ace Z-set, shared B-0867.27 fold engine — kept alive, **MVP non-goal**.
+- Abstract layer (#6284): bus G-Set ⊂ bag ⊂ Ace Z-set, shared 081KSXN940008QG0R0033T2BQT fold engine — kept alive, **MVP non-goal**.
 
 **Two [DECISION]s for you** (in §8): primary human audience; MVP-scope-vs-manifests. Runtime is already resolved. On your answers it goes to a writing-plans implementation plan.
 
@@ -95,7 +95,7 @@ Design spec for Ace CLI **distribution + DX**, per your "write the spec." Synthe
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Describe the Ace core as list-only until install/verify land**
 
-  This says B-0288 has already landed `install / verify / list` with signed, content-addressed packages, but `tools/ace/ace.ts` currently treats `install` and `verify` as known-but-unimplemented commands and returns `'smallest safe slice: list only'` (checked `tools/ace/ace.ts` lines 56-58). Because the next-step plan builds install-time provenance over the existing core, this overstates the substrate and can send the implementation plan down the wrong path; the spec should mark install/verify/signature support as future work or require landing it first.
+  This says 081KR2E4K0008QG0R002YE3MMD has already landed `install / verify / list` with signed, content-addressed packages, but `tools/ace/ace.ts` currently treats `install` and `verify` as known-but-unimplemented commands and returns `'smallest safe slice: list only'` (checked `tools/ace/ace.ts` lines 56-58). Because the next-step plan builds install-time provenance over the existing core, this overstates the substrate and can send the implementation plan down the wrong path; the spec should mark install/verify/signature support as future work or require landing it first.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -119,7 +119,7 @@ Design spec for Ace CLI **distribution + DX**, per your "write the spec." Synthe
 - **`Copilot` (bot)** at 2026-06-01T00:29:39Z on `docs/agendas/ace-package-manager/2026-06-01-ace-cli-distribution-dx-design.md`:28 (association: NONE)
 
   <pre>
-  P1: This statement says B-0288 has partially landed `install` and `verify`, but the current CLI only wires up `list`; `install`, `verify`, `remove`, and `inspect` return “not yet implemented”. That makes the spec overstate the existing implementation baseline it is building on.
+  P1: This statement says 081KR2E4K0008QG0R002YE3MMD has partially landed `install` and `verify`, but the current CLI only wires up `list`; `install`, `verify`, `remove`, and `inspect` return “not yet implemented”. That makes the spec overstate the existing implementation baseline it is building on.
   </pre>
 
 **Replies:**
@@ -334,18 +334,18 @@ superpowers plugin's default docs/superpowers/specs/ (a plugin convention foreig
 the brainstorming skill says user location preference overrides its default).
 
 Core decisions:
-- Reframe: tools/ace/ace.ts already partly exists (B-0288); question is distribution, not "is it TS".
+- Reframe: tools/ace/ace.ts already partly exists (081KR2E4K0008QG0R002YE3MMD); question is distribution, not "is it TS".
 - Channels: skill-first for agents (router-discovered, agent-loop precedent) + bunx/one-line-bootstrap
   for humans + MCP adapter fallback; compiled binary out of scope v1.
 - Runtime RESOLVED: Node-floor portable (bun-optimised, not bun-only) — Node is near-universal across
   the harnesses (Claude Code >=22.5, Gemini 18+, Cursor); Codex (Rust) is the no-JS exception covered
   by the bootstrap/MCP fallback. Repo standardised on Node 24 (#6290).
-- Small verb grammar (install/verify/list/search/info); B-0824 meta-PM verbs are an explicit MVP non-goal.
+- Small verb grammar (install/verify/list/search/info); 081KSGS9H0008QG0R0031PBNGA meta-PM verbs are an explicit MVP non-goal.
 - Provenance-verify at install time (not list time) — anti green-by-skip on the untrusted skill surface.
 - One shared core + version source across channels.
 - Abstract layer (#6284): bus (G-Set) + Ace (Z-set) are one git-native ZetaId-keyed DBSP-fold
   substrate; G-Set = Z-set restricted to non-negative multiplicity, with the bag/multiset (mult in N0)
-  as the intermediate observability view; share the B-0867.27 fold engine. Kept alive, gates nothing in
+  as the intermediate observability view; share the 081KSXN940008QG0R0033T2BQT fold engine. Kept alive, gates nothing in
   the MVP. (Reconcile the exact bag-as-observability wording with #6284 when mac-Otto's detail lands.)
 
 Two open [DECISION]s flagged for the operator (primary human audience; MVP-scope-vs-manifests);

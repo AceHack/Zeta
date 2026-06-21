@@ -1,6 +1,5 @@
 ---
-id: B-0202
-zetaid: 081KQTPYE0008QG0R002Y7X5KH
+id: 081KQTPYE0008QG0R002Y7X5KH
 priority: P3
 status: open
 title: Tinygrad UOp IR as kernel-layer model for Zeta's emulator dispatch + retract semantics -- substrate-engineering composition claim (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [tinygrad, uop-ir, mu-ops, kernel-layer, universal-ir, multi-backend, cuda
 type: feature
 ---
 
-# B-0202 -- Tinygrad UOp IR as kernel-layer model
+# 081KQTPYE0008QG0R002Y7X5KH -- Tinygrad UOp IR as kernel-layer model
 
 ## Source
 
@@ -62,7 +61,7 @@ evidence):
 Full verbatim research-doc preservation will land at
 `memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
 once sibling PR #1610 merges; until then, the link target lives on
-that PR's branch. (Same softening pattern as B-0201's research-doc
+that PR's branch. (Same softening pattern as 081KQTPYE0008QG0R00209Q9RT's research-doc
 reference to PR #1605.)
 
 The **substrate-engineering composition claim** (one IR -> many
@@ -72,7 +71,7 @@ tinygrad is the half-remembered paper -- Aaron disconfirmed that
 identification same-tick. Per Aaron's 2026-05-05 no-kill-paths framing
 *"all of it's good we don't want to abandon any paths"*, the OTHER
 candidates surfaced in the same conversation lineage (Coconut at
-B-0201, CodeAct/F# bridge at B-0200, plus Symbolica, GibberLink, LAPA)
+081KQTPYE0008QG0R00209Q9RT, CodeAct/F# bridge at 081KQTPYE0008QG0R0009F20NN, plus Symbolica, GibberLink, LAPA)
 stay alive as parallel research lanes; tinygrad remains a parallel
 candidate too on substrate-engineering merits.
 
@@ -93,7 +92,7 @@ This row is **research-and-engineering-direction**, not survival work:
   work: read the source, walk one rewrite manually, write out the
   isomorphism (or document its impossibility) for one non-trivial
   operator, and run the result against the four-property hodl test
-  suite (B-0196). That bound is what makes P3 the right priority --
+  suite (081KQTPYE0008QG0R001W237MZ). That bound is what makes P3 the right priority --
   P2-promotion is available via the renegotiation protocol if the
   substance-test exposes a delivery-blocking implication, not by
   default.
@@ -195,12 +194,12 @@ Zeta wants for its own kernel layer eventually. **Four substrates
 should compose with UOp-shape**, each tracked by an existing backlog
 row:
 
-- **Emulator dispatch (B-0052 retractable-emulators-design-question /
-  B-0053 emulator-ideas-absorption)** -- if Zeta's emulators dispatch
+- **Emulator dispatch (081KQ3HBZ0008QG0R000FQ69NN retractable-emulators-design-question /
+  081KQ3HBZ0008QG0R000JWFD37 emulator-ideas-absorption)** -- if Zeta's emulators dispatch
   through ONE symbolic op-graph rather than per-backend bespoke code,
   the engineering surface collapses dramatically. UOp + PatternMatcher
   is the existing-engineering-shape worth absorbing.
-- **Retraction (B-0052 retractable-emulators-design-question)** --
+- **Retraction (081KQ3HBZ0008QG0R000FQ69NN retractable-emulators-design-question)** --
   retract semantics over a graph-rewrite IR is structurally close to
   signed-delta arithmetic over the IR's value space. The retract
   primitive could land as one or two PatternMatcher rules rather than
@@ -210,7 +209,7 @@ row:
   reduces to *"same UOp graph, same input, same renderer, same
   compiler -> same binary -> same output."* This is a far cleaner DST
   story than per-backend replay.
-- **Topological-quantum-emulation (B-0152
+- **Topological-quantum-emulation (081KQGDBJ0008QG0R00280ZEV2
   emulation-inside-the-algebra)** -- the substrate that needs to run
   on whatever hardware happens to be present. UOp's one-IR-many-
   backends shape is the natural carrier; the question (open-research,
@@ -304,7 +303,7 @@ hand-wave alignment.
 
 ## Acceptance criteria
 
-(a) **[DECOMPOSED to B-0521] Read the source + walk one rewrite manually + map to Zeta retract semantics.** Verifier: a memo (committed under
+(a) **[DECOMPOSED to 081KRHWGX0008QG0R002VD5ZNP] Read the source + walk one rewrite manually + map to Zeta retract semantics.** Verifier: a memo (committed under
 `docs/research/`) walking through one ALU rewrite from
 [`tinygrad/uop/ops.py`](https://github.com/tinygrad/tinygrad/blob/master/tinygrad/uop/ops.py)
 plus [`tinygrad/codegen/simplify.py`](https://github.com/tinygrad/tinygrad/blob/master/tinygrad/codegen/simplify.py)
@@ -326,7 +325,7 @@ Zeta's existing Z-set algebra without translation layers. Fail-
 falsifier: the isomorphism cannot be written down, OR it can be
 written down but breaks the four-property hodl somewhere; document
 where and why specifically, since a clean break is itself a research
-finding (composes with B-0196 four-property hodl test suite).
+finding (composes with 081KQTPYE0008QG0R001W237MZ four-property hodl test suite).
 
 (c) **Engagement gate per
 [`memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md`](../../../memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md):
@@ -342,10 +341,10 @@ sustained collaboration; document it and adjust this row's scope
 accordingly (downgrade to read-only research, or pause the engagement
 lane entirely).
 
-(d) **Composability check with B-0196 four-property hodl test
+(d) **Composability check with 081KQTPYE0008QG0R001W237MZ four-property hodl test
 suite.** Verifier: run UOp graph fragments through Zeta's existing
 test framework (the test suite that validates DST-safe / lock-free /
-scale-free / DBSP-native invariants per B-0196). Pass: the invariants
+scale-free / DBSP-native invariants per 081KQTPYE0008QG0R001W237MZ). Pass: the invariants
 hold under the test framework. Fail-falsifier: one or more invariants
 fail; document which, under what input shape, and propose either a
 fix to the IR-Zeta-bridge or a falsification of the original
@@ -354,7 +353,7 @@ fix to the IR-Zeta-bridge or a falsification of the original
 ## The "basic but correct" lesson
 
 Tinygrad's stated philosophy aligns with Zeta's bootstrap-razor
-discipline (B-0193 lineage). *"Correct-and-fast over principled-and-
+discipline (081KQTPYE0008QG0R00392KABJ lineage). *"Correct-and-fast over principled-and-
 clean"* is the same shape as Zeta's *"specs-over-implementation"* +
 *"razor-discipline"* combo (per
 [`memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md`](../../../memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md)).
@@ -401,7 +400,7 @@ question, not a pre-committed answer.
 
 ## Out of scope
 
-This row is bounded; the following are **out of scope** for B-0202:
+This row is bounded; the following are **out of scope** for 081KQTPYE0008QG0R002Y7X5KH:
 
 - **Replacing Zeta's existing F# kernel layer with tinygrad.** This
   row is research-and-evaluation, not migration. Migration would be
@@ -421,23 +420,23 @@ This row is bounded; the following are **out of scope** for B-0202:
 
 Explicit composition map (mirrors frontmatter `composes_with`):
 
-- **B-0052** -- *retractable-emulators-design-question*. UOp IR is the
+- **081KQ3HBZ0008QG0R000FQ69NN** -- *retractable-emulators-design-question*. UOp IR is the
   candidate kernel substrate for retract operations; the substance-test
   (b) is specifically the retract-semantics-over-UOp question.
-- **B-0053** -- *emulator-ideas-absorption (clean-room grey-hat)*. UOp
+- **081KQ3HBZ0008QG0R000JWFD37** -- *emulator-ideas-absorption (clean-room grey-hat)*. UOp
   PatternMatcher is the engineering-shape worth absorbing into the
   emulator surface; this row is the absorption-direction memo.
-- **B-0152** -- *topological-quantum-emulation via Bayesian inference,
+- **081KQGDBJ0008QG0R00280ZEV2** -- *topological-quantum-emulation via Bayesian inference,
   Zeta seed executor*. The substrate that UOp could run on with hodl
   preserved -- emulation-inside-the-algebra needs a hardware-agnostic
   IR layer, and one-IR-many-backends is the candidate shape.
-- **B-0196** -- *BigInt + bignumber integration / four-property hodl
+- **081KQTPYE0008QG0R001W237MZ** -- *BigInt + bignumber integration / four-property hodl
   gate*. The composability check (acceptance criterion (d)) runs against
-  B-0196's test framework; the four-property hodl is the gate.
-- **B-0026** -- *embodiment grounding*. UOp's hardware-agnostic property
+  081KQTPYE0008QG0R001W237MZ's test framework; the four-property hodl is the gate.
+- **081KQ0YZ80008QG0R001WZ4JE8** -- *embodiment grounding*. UOp's hardware-agnostic property
   composes with embodiment substrates that need to run on varied
   hardware (robotics-sim, edge devices, heterogeneous accelerators).
-- **B-0199** -- *ROM publication public-domain scouting*. ROM emulator
+- **081KQTPYE0008QG0R0028GRW88** -- *ROM publication public-domain scouting*. ROM emulator
   engineering benefits from one-IR-many-backends shape; if Zeta lands
   ROM emulators, the UOp-substrate question composes directly with the
   ROM-emulator engineering lane.

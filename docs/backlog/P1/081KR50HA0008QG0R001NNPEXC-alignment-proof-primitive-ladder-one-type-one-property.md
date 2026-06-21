@@ -1,6 +1,5 @@
 ---
-id: B-0373
-zetaid: 081KR50HA0008QG0R001NNPEXC
+id: 081KR50HA0008QG0R001NNPEXC
 priority: P1
 status: closed
 closed: 2026-05-09
@@ -17,7 +16,7 @@ type: research-to-code
 tags: [alignment, formal-verification, control-theory, shield-synthesis, causal-independence]
 ---
 
-# B-0362 — Alignment proof primitive ladder
+# 081KR50HA0008QG0R001NNPEXC — Alignment proof primitive ladder
 
 ## What
 
@@ -141,10 +140,10 @@ it into optimistic proof language.
 
 ## Composes with
 
-- B-0357 (replace tautology Z3 agenda/trajectory proofs)
-- B-0360 (DBSP identity continuity via D/I views)
-- B-0211 (fractal BFT architecture)
-- B-0164 (dual-loop attribution/reconciliation)
+- 081KR50HA0008QG0R0033TN4H9 (replace tautology Z3 agenda/trajectory proofs)
+- 081KR50HA0008QG0R0010RZTJK (DBSP identity continuity via D/I views)
+- 081KQX9B50008QG0R0026BG44J (fractal BFT architecture)
+- 081KQJZR90008QG0R002GJAJ19 (dual-loop attribution/reconciliation)
 - `tools/Z3Verify/Program.fs`
 - `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`
 - `src/Core/SignalQuality.fs`

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * B-0402 Slice 1: Shadow observer — polling loop + Glass Halo attribution.
+ * 081KR7JY10008QG0R0008NGW95 Slice 1: Shadow observer — polling loop + Glass Halo attribution.
  *
  * Watches the Claude Code CLI for grey text (autocomplete suggestions)
  * and auto-accepts after a configurable delay if no human keystroke

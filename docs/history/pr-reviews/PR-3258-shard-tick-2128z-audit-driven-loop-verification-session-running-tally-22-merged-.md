@@ -49,7 +49,7 @@ Tick 2026-05-14T21:28Z shard. End-to-end verification that the audit-driven loop
 All three ID-integrity classes report 0 issues. End-to-end loop closed:
 
 1. **Tick 2113Z** ([#3250](https://github.com/Lucent-Financial-Group/Zeta/pull/3250)) — added duplicate-ID audit class
-2. **Tick 2123Z** ([#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253)) — fixed the broken-composes_with finding it surfaced (filed B-0461)
+2. **Tick 2123Z** ([#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253)) — fixed the broken-composes_with finding it surfaced (filed 081KRHWGX0008QG0R000JMEYBH)
 3. **Tick 2128Z** (this) — verified main reports 0 across all three classes
 
 ## Session running tally: 22 merged + 1 wait-ci
@@ -82,7 +82,7 @@ Plus [#3256](https://github.com/Lucent-Financial-Group/Zeta/pull/3256) (shard 21
 
 ## Prior-tick PRs merged this batch
 
-- [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253) → `54236b4` (B-0461 filing)
+- [#3253](https://github.com/Lucent-Financial-Group/Zeta/pull/3253) → `54236b4` (081KRHWGX0008QG0R000JMEYBH filing)
 
 ## Test plan
 
@@ -154,7 +154,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-14T21:33:17Z on `docs/hygiene-history/ticks/2026/05/14/2128Z.md`:108 (association: NONE)
 
   <pre>
-  This is written as a path, but `docs/backlog/P3/B-0519-*.md` is not an actual file, so the cross-reference is not navigable. There is a single concrete matching row (`docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md`); use that filename instead so future readers can jump to the cited substrate.
+  This is written as a path, but `docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-*.md` is not an actual file, so the cross-reference is not navigable. There is a single concrete matching row (`docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md`); use that filename instead so future readers can jump to the cited substrate.
 
   </pre>
 
@@ -199,7 +199,7 @@ Session running tally: 22 merged + 1 wait-ci across multiple lanes:
 - BACKLOG regen (1) + audit hygiene (2) + audit-driven filing (1)
 - Tick shards (10)
 
-Prior-tick: #3253 (B-0461 filing) MERGED as 54236b4.
+Prior-tick: #3253 (081KRHWGX0008QG0R000JMEYBH filing) MERGED as 54236b4.
 
 Cron sentinel 12fb713e armed; recurring.
 
@@ -215,13 +215,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(shard-2128Z): correct tick-shard count 9→10 and use exact B-0519 …
+fix(shard-2128Z): correct tick-shard count 9→10 and use exact 081KRHWGX0008QG0R001HMWM1W …
 
 …filename
 
 - Tick shards row listed 10 PRs but count said 9; total 22 is only correct
   with count=10 (5+1+10+2+1+2+1=22)
-- Replace B-0519-*.md glob with exact filename so cross-reference is navigable
+- Replace 081KRHWGX0008QG0R001HMWM1W-*.md glob with exact filename so cross-reference is navigable
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

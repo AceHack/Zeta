@@ -1,6 +1,6 @@
 ---
 pr_number: 4047
-title: "test(B-0156): co-located tests for check-tick-history-shard-schema.ts (9 tests)"
+title: "test(081KQGDBJ0008QG0R000A4EZS5): co-located tests for check-tick-history-shard-schema.ts (9 tests)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T08:01:10Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-17T10:19:26Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4047: test(B-0156): co-located tests for check-tick-history-shard-schema.ts (9 tests)
+# PR #4047: test(081KQGDBJ0008QG0R000A4EZS5): co-located tests for check-tick-history-shard-schema.ts (9 tests)
 
 ## PR description
 
 ## Summary
 
-Smallest bounded slice of B-0156 — addresses acceptance criterion 2 ("each
+Smallest bounded slice of 081KQGDBJ0008QG0R000A4EZS5 — addresses acceptance criterion 2 ("each
 TS sibling has at least one bun test covering its primary entry path") for
 the Phase 2 schema port at `tools/hygiene/check-tick-history-shard-schema.ts`.
 The `.sh` original was retired in PR #1986; the `.ts` had no co-located test.
@@ -37,12 +37,12 @@ The `.sh` original was retired in PR #1986; the `.ts` had no co-located test.
 
 ## Why
 
-The B-0156 row's audit shows all 6 non-install `.sh` files now have
+The 081KQGDBJ0008QG0R000A4EZS5 row's audit shows all 6 non-install `.sh` files now have
 working `.ts` siblings (Phase 5 sweep done), but criterion 2 (test
 coverage) was unverified for the 3 hygiene ports. The schema port is
 the smallest (~5KB) and has the most testable surface (per-shard
 validator returning structured `ScanResult`). This PR ships exactly
-one bounded step toward closing B-0156.
+one bounded step toward closing 081KQGDBJ0008QG0R000A4EZS5.
 
 ## Checks
 
@@ -54,7 +54,7 @@ one bounded step toward closing B-0156.
 - `bun tools/hygiene/check-tick-history-shard-schema.ts`: production
   CLI runs unchanged; pre-existing repo shard violations preserved
 
-## B-0156 status after this PR
+## 081KQGDBJ0008QG0R000A4EZS5 status after this PR
 
 The row's audit baseline (3 remaining `.sh` files) is now stale — the
 re-verification command in the row's self-test section shows zero

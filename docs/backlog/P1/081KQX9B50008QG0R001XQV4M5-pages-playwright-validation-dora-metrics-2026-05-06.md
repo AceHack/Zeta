@@ -1,6 +1,5 @@
 ---
-id: B-0236
-zetaid: 081KQX9B50008QG0R001XQV4M5
+id: 081KQX9B50008QG0R001XQV4M5
 priority: P1
 status: open
 title: "GitHub Pages discoverability - Playwright validation and DORA metrics"
@@ -15,7 +14,7 @@ owners: [qa, observability]
 type: friction-reducer
 ---
 
-# B-0236 - Pages validation and DORA metrics
+# 081KQX9B50008QG0R001XQV4M5 - Pages validation and DORA metrics
 
 Add the validation and measurement layer for the Pages
 frontend deployment lane.

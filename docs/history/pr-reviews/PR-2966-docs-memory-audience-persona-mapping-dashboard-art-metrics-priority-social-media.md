@@ -51,7 +51,7 @@ Aaron 2026-05-13 disclosed audience-strategy substrate extending the dashboard/c
 
 ## Composes with
 
-- B-0429 (end-user persona mapping; PR #2934 — this extends from civsim to broader audience)
+- 081KRFA460008QG0R002M05EY1 (end-user persona mapping; PR #2934 — this extends from civsim to broader audience)
 - PR #2963 (dashboard render + viral + vector art = git-native — this elevates art priority)
 - PR #2964 (AI-realness terminal purpose + Cartman — Aaron as persona-hat composes)
 - PR #2920 (Elizabeth Ryan Stainback — edge-runner persona)

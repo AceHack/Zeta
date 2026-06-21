@@ -27,7 +27,7 @@
 
 ## Description
 
-The 3 P0s dead: n^1.5 refuses instead of fabricating a bug; interior-zero costs refuse; preasymptotic spans refuse; Loglinear nameable; Tighter advisory <32×. Ben.allocBytes = .NET's one deterministic APM hook (replay-equal, tested). ComplexityRegistry searchable on BOTH axes (time AND space — independent budgets, asserted). db/capabilities + db/emus/chip8 ledgers seeded (what to inject, where). B-1040: PerfView GUI is Windows-only; its TraceEvent engine + dotnet-trace collection are not. 3034 green.
+The 3 P0s dead: n^1.5 refuses instead of fabricating a bug; interior-zero costs refuse; preasymptotic spans refuse; Loglinear nameable; Tighter advisory <32×. Ben.allocBytes = .NET's one deterministic APM hook (replay-equal, tested). ComplexityRegistry searchable on BOTH axes (time AND space — independent budgets, asserted). db/capabilities + db/emus/chip8 ledgers seeded (what to inject, where). 081KTSZN10008QG0R002NMN8P7: PerfView GUI is Windows-only; its TraceEvent engine + dotnet-trace collection are not. 3034 green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -30,12 +30,12 @@
 ## Summary
 
 - preserve Alexa's DLC/product-research-loop feedback as research-grade external review signal
-- backlink the absorb from B-0247 so the Ace DLC backlog points to the review
+- backlink the absorb from 081KQZVQW0008QG0R000ZHEN62 so the Ace DLC backlog points to the review
 - keep guardrails explicit: praise is not evidence, the ring is likely after a first software DLC, and ARC-AGI-3 is validation/marketing rather than the sustaining business model
 
 ## Checks
 
-- PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bunx markdownlint-cli2 memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md docs/backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md
+- PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bunx markdownlint-cli2 memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md docs/backlog/P1/081KQZVQW0008QG0R000ZHEN62-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md
 - git diff --check
 - PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bun tools/hygiene/check-archive-header-section33.ts memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md
 

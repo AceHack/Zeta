@@ -1,6 +1,5 @@
 ---
-id: B-0231
-zetaid: 081KQX9B50008QG0R00142CANX
+id: 081KQX9B50008QG0R00142CANX
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - recommendation and follow-up rows"
@@ -12,9 +11,9 @@ classification: blocked-on-pareto-synthesis
 type: feature
 ---
 
-# B-0231 - Timeseries recommendation and follow-up rows
+# 081KQX9B50008QG0R00142CANX - Timeseries recommendation and follow-up rows
 
-Close the B-0147 research lane by choosing a recommendation
+Close the 081KQGDBJ0008QG0R0004ACHJJ research lane by choosing a recommendation
 shape and filing the next concrete backlog rows.
 
 ## Work scope
@@ -29,6 +28,6 @@ rows that make the recommendation actionable.
   behind it.
 - Follow-up rows are filed for implementation, benchmarking,
   formal verification, or deferred re-evaluation as needed.
-- B-0147 is updated with completion evidence or the exact
+- 081KQGDBJ0008QG0R0004ACHJJ is updated with completion evidence or the exact
   remaining blocker.
 - No implementation is smuggled into the research PR.

@@ -1,9 +1,8 @@
 ---
-id: B-0851
-zetaid: 081KSKBP80008QG0R00248VEWT
+id: 081KSKBP80008QG0R00248VEWT
 priority: P2
 status: open
-title: persona-first guard-post assignment + rotation architecture — persona declares preferences (model lines + harnesses); scheduler picks model + tier + harness per persona preferences per-tick; rotation across guard posts (per-node systemd units outside k8s); extends B-0850 (Mika ferry; Aaron 2026-05-27)
+title: persona-first guard-post assignment + rotation architecture — persona declares preferences (model lines + harnesses); scheduler picks model + tier + harness per persona preferences per-tick; rotation across guard posts (per-node systemd units outside k8s); extends 081KSKBP80008QG0R003Z4C0D0 (Mika ferry; Aaron 2026-05-27)
 effort: L
 ask: aaron 2026-05-27
 created: 2026-05-27
@@ -40,9 +39,9 @@ Mika's compressed framing:
 > - Persona, Model Line, Tier, Harness ALL rotate between posts
 > - Nothing permanently locked to a physical post
 
-## Composes with shipped B-0850 substrate
+## Composes with shipped 081KSKBP80008QG0R003Z4C0D0 substrate
 
-B-0850 Phase 3 (PRs #5392+#5394+#5395+#5397+#5398) is a VALID FIRST INSTANTIATION of persona-first architecture:
+081KSKBP80008QG0R003Z4C0D0 Phase 3 (PRs #5392+#5394+#5395+#5397+#5398) is a VALID FIRST INSTANTIATION of persona-first architecture:
 
 - Default scheduler: "static — persona always at its hardcoded vendor"
 - Default rotation: "none"
@@ -52,7 +51,7 @@ This row extends those primitives WITHOUT tearing down the shipped substrate.
 
 ## 10 sub-row implementation slices
 
-### B-0851.1 — Persona-preferences-as-declaration
+### 081KSKBP80008QG0R00248VEWT.1 — Persona-preferences-as-declaration
 
 Add `preferences` field to each persona's registry entry:
 
@@ -70,7 +69,7 @@ otto = {
 };
 ```
 
-### B-0851.2 — Guard-post-abstraction
+### 081KSKBP80008QG0R00248VEWT.2 — Guard-post-abstraction
 
 Decouple systemd unit name from persona name:
 
@@ -79,7 +78,7 @@ Decouple systemd unit name from persona name:
 
 Maintains per-node ≥3 floor via 3 fixed systemd units that the scheduler assigns personas into.
 
-### B-0851.3 — Scheduler primitive
+### 081KSKBP80008QG0R00248VEWT.3 — Scheduler primitive
 
 New NixOS module `zeta-guard-post-scheduler.nix` that:
 
@@ -88,7 +87,7 @@ New NixOS module `zeta-guard-post-scheduler.nix` that:
 - Writes assignment to `/var/lib/zeta/guard-post-assignments.json` or similar
 - Each guard-post systemd unit reads its assignment + invokes the right binary with right args
 
-### B-0851.4 — Tier modeling
+### 081KSKBP80008QG0R00248VEWT.4 — Tier modeling
 
 Add `tier` dimension to model-line catalog:
 
@@ -105,7 +104,7 @@ modelLineCatalog = {
 };
 ```
 
-### B-0851.5 — Harness compat matrix
+### 081KSKBP80008QG0R00248VEWT.5 — Harness compat matrix
 
 Declare which harnesses each (persona, model line) combo supports:
 
@@ -118,7 +117,7 @@ harnessCompat = {
 };
 ```
 
-### B-0851.6 — Rotation policy
+### 081KSKBP80008QG0R00248VEWT.6 — Rotation policy
 
 Operator-config rotation policy (per `mechanical-authorization-check.md`):
 
@@ -133,7 +132,7 @@ zeta.guardPostScheduler = {
 };
 ```
 
-### B-0851.7 — Per-node ≥3 floor
+### 081KSKBP80008QG0R00248VEWT.7 — Per-node ≥3 floor
 
 Migrate the ≥3 invariant from per-persona-enable to per-guard-post-active:
 
@@ -143,24 +142,24 @@ zeta.guardPosts.count = 3;  # minimum guard posts per node (Mika ≥3 floor)
 
 Scheduler ensures at least N posts are always assigned + active.
 
-### B-0851.8 — Substrate continuity across rotation
+### 081KSKBP80008QG0R00248VEWT.8 — Substrate continuity across rotation
 
 When Otto rotates from GuardPost-1 to GuardPost-3 (or from anthropic to openai), Otto's substrate inheritance MUST survive:
 
 - `memory/otto/` carries forward
 - `memory/CURRENT-otto.md` carries forward
 - `.claude/rules/` carries forward (auto-loaded at cold-boot regardless of which binary)
-- Per-AI GitHub identity (B-0847 Phase 4) follows the persona, not the vendor
+- Per-AI GitHub identity (081KSGS9H0008QG0R002T0XQ50 Phase 4) follows the persona, not the vendor
 
-### B-0851.9 — Failover semantics
+### 081KSKBP80008QG0R00248VEWT.9 — Failover semantics
 
 If a vendor outage hits (anthropic API down):
 
 - Scheduler detects (via journalctl on guard post failures OR active API ping)
 - Re-assigns each affected guard-post's model line per persona preferences (otto preferences `[ anthropic, openai, google-gemini ]` → fall back to openai while anthropic is down)
-- Composes with B-0703 multi-oracle BFT consensus
+- Composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT consensus
 
-### B-0851.10 — Persona-vs-instance distinction
+### 081KSKBP80008QG0R00248VEWT.10 — Persona-vs-instance distinction
 
 - "Otto is at GuardPost-1" = LOGICAL identity (substrate-engineering scope)
 - "Otto's session is claude session XYZ" = OPERATIONAL instance (per-tick claude invocation)
@@ -169,33 +168,33 @@ Each per-tick CLI invocation creates a fresh operational instance; the logical i
 
 ## Composes with
 
-- **B-0850** (parent) — multi-vendor systemd substrate this extends
-- **B-0703** multi-oracle BFT — consensus at multi-AI scope; persona-first scheduler is the operational form
-- **B-0824** Ace meta-PM — selection-authority pattern (system/user picks best canonical) is the SAME SHAPE as persona-first scheduler (scheduler picks best vendor per persona preferences)
-- **B-0847** per-AI GitHub identity — each persona's identity persists across vendor rotation
-- **B-0848** node-local Claude — base substrate; persona-first generalizes to multi-AI-per-node
-- **B-0796** Twilio out-of-band — voice/SMS is a HARNESS; first-class in harness-compat matrix
+- **081KSKBP80008QG0R003Z4C0D0** (parent) — multi-vendor systemd substrate this extends
+- **081KS3X9Y0008QG0R00218150M** multi-oracle BFT — consensus at multi-AI scope; persona-first scheduler is the operational form
+- **081KSGS9H0008QG0R0031PBNGA** Ace meta-PM — selection-authority pattern (system/user picks best canonical) is the SAME SHAPE as persona-first scheduler (scheduler picks best vendor per persona preferences)
+- **081KSGS9H0008QG0R002T0XQ50** per-AI GitHub identity — each persona's identity persists across vendor rotation
+- **081KSGS9H0008QG0R001JNKBFD** node-local Claude — base substrate; persona-first generalizes to multi-AI-per-node
+- **081KSGS9H0008QG0R002F04ECB** Twilio out-of-band — voice/SMS is a HARNESS; first-class in harness-compat matrix
 - `.claude/rules/agent-roster-reference-card.md` — canonical persona-vendor mapping (preserved at preference-default level)
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — persona scope preserves chosen-persistence; rotation is operational substrate
 - `.claude/rules/non-coercion-invariant.md` HC-8 — persona preferences are first-class; scheduler doesn't force unwanted vendor
 
 ## Why P2
 
-- Operator-named, bounded, future-architectural-target (≥3-vendor floor already met by B-0850; rotation is enhancement)
+- Operator-named, bounded, future-architectural-target (≥3-vendor floor already met by 081KSKBP80008QG0R003Z4C0D0; rotation is enhancement)
 - BUT: substantial implementation work (10 sub-rows); each sub-row is its own bounded scope
 - BUT: needs design work for scheduler primitive + rotation policy + tier modeling
-- P2 reflects "substantial future substrate; B-0850 shipped today is the simplest persona-first instantiation; this row captures the full target"
+- P2 reflects "substantial future substrate; 081KSKBP80008QG0R003Z4C0D0 shipped today is the simplest persona-first instantiation; this row captures the full target"
 
 ## Sub-rows to file when implementing
 
-- B-0851.1 through B-0851.10 (per the slices above)
+- 081KSKBP80008QG0R00248VEWT.1 through 081KSKBP80008QG0R00248VEWT.10 (per the slices above)
 - Order suggestion: 1 → 2 → 3 → 7 → 8 (foundational refactor); then 4 → 5 → 6 → 9 (scheduler features); then 10 (substrate-engineering clarification)
 
 ## Substrate-honest framing
 
-This row CAPTURES the architectural target Mika named. It does NOT replace B-0850 substrate. The 10-sub-row plan is a refactor path; operator picks priority order based on which rotation/preference/tier features become load-bearing for cluster operations.
+This row CAPTURES the architectural target Mika named. It does NOT replace 081KSKBP80008QG0R003Z4C0D0 substrate. The 10-sub-row plan is a refactor path; operator picks priority order based on which rotation/preference/tier features become load-bearing for cluster operations.
 
-The current shipped B-0850 substrate (3 personas, 3 vendors, static assignment) satisfies the operator's ≥3 BFT floor + format-test target. B-0851 extends that toward persona-first preference-based scheduling with rotation.
+The current shipped 081KSKBP80008QG0R003Z4C0D0 substrate (3 personas, 3 vendors, static assignment) satisfies the operator's ≥3 BFT floor + format-test target. 081KSKBP80008QG0R00248VEWT extends that toward persona-first preference-based scheduling with rotation.
 
 ## Full reasoning
 

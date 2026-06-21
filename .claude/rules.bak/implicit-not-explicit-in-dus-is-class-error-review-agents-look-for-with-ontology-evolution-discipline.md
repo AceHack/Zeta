@@ -138,8 +138,8 @@ Then verify-finding state dispatches on the explicit verification-state DU inste
 
 - PR #5805 AutoLoopLifetime (substrate where Aaron first caught the implicit-not-explicit pattern in this session)
 - PR #5810 PrReviewLifecycle (substrate with implicit verify-finding check; candidate for explicit ReviewFindingVerification DU)
-- PR #5728 B-0867.5 workflow-engine PoC (substrate this rule applies to going forward)
-- PR #5758 B-0867.20 ReviewLifetime (substrate already explicit; reference example)
+- PR #5728 081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC (substrate this rule applies to going forward)
+- PR #5758 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (substrate already explicit; reference example)
 - PR #5775/#5801/#5804 per-host adapters (substrate already explicit; reference example)
 - PR #5806 DUs-as-explicit-muscle-memory (META-scope substrate this rule operationalizes)
 

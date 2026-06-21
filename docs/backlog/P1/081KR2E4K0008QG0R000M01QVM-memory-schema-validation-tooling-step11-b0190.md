@@ -1,12 +1,11 @@
 ---
-id: B-0335
-zetaid: 081KR2E4K0008QG0R000M01QVM
+id: 081KR2E4K0008QG0R000M01QVM
 priority: P1
 status: closed
 title: Memory schema validation tooling — TS linter enforcing format standard mechanically
 tier: foundation
 effort: M
-ask: B-0190 Step 11 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 11 decomposition
 created: 2026-05-08
 last_updated: 2026-05-09
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,16 +15,16 @@ tags: [memory, validation, tooling, linter, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0335 — Memory schema validation tooling
+# 081KR2E4K0008QG0R000M01QVM — Memory schema validation tooling
 
 ## Parent
 
-B-0190 Step 11 (memory schema validation tooling).
+081KQR4HQ0008QG0R001909FPT Step 11 (memory schema validation tooling).
 
 ## What
 
 Build a TS linter/validator (`tools/hygiene/validate-memory-schema.ts`)
-that mechanically enforces the format standard defined by B-0330:
+that mechanically enforces the format standard defined by 081KR2E4K0008QG0R002VM58S4:
 
 1. **Frontmatter validation** — required fields present, types
    correct, `type:` field matches filename prefix.
@@ -39,7 +38,7 @@ that mechanically enforces the format standard defined by B-0330:
 5. **MEMORY.md coverage** — every file under `memory/` that
    matches `*_*.md` has an entry in MEMORY.md (and vice versa).
 
-## Why depends on B-0330
+## Why depends on 081KR2E4K0008QG0R002VM58S4
 
 The validator enforces the standard. Without the standard, there
 is nothing to validate against.
@@ -65,4 +64,4 @@ frontmatter parsing, multi-check pipeline, optional auto-fix.
   pattern.
 - `tools/hygiene/audit-memory-index-duplicates.ts` — index
   validation pattern.
-- B-0330 output — the schema to enforce.
+- 081KR2E4K0008QG0R002VM58S4 output — the schema to enforce.

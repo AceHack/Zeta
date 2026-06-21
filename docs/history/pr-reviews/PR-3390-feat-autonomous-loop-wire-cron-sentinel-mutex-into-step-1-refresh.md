@@ -53,11 +53,11 @@ Per the file's existing role, this update propagates to:
 
 - Otto-CLI (auto-loaded next cold-boot)
 - Otto-Desktop routine (cites `docs/AUTONOMOUS-LOOP-PER-TICK.md` from `tools/routines/autonomous-loop/SKILL.md`)
-- B-0448 cloud routine (when shipped — will cite this file)
+- 081KRFA460008QG0R000CYBGKW cloud routine (when shipped — will cite this file)
 
 ## Composes with
 
-- [PR #3370](https://github.com/Lucent-Financial-Group/Zeta/pull/3370) — worktree-prune-race root cause + B-0519 Pattern 8
+- [PR #3370](https://github.com/Lucent-Financial-Group/Zeta/pull/3370) — worktree-prune-race root cause + 081KRHWGX0008QG0R001HMWM1W Pattern 8
 - [PR #3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375) — mutex implementation
 - [PR #3377](https://github.com/Lucent-Financial-Group/Zeta/pull/3377) — borrow-on-existing pattern (alternative under peer contention)
 - [PR #3386](https://github.com/Lucent-Financial-Group/Zeta/pull/3386) — bulk rule-link depth fix on affected shards
@@ -207,16 +207,16 @@ Added to docs/AUTONOMOUS-LOOP-PER-TICK.md Step 1 (Refresh):
 
 Per the 3-surface canonical convergence, this update propagates to
 Otto-CLI (auto-loaded next cold-boot), Otto-Desktop routine (cites
-this file), and B-0448 cloud routine (when shipped — will cite this
+this file), and 081KRFA460008QG0R000CYBGKW cloud routine (when shipped — will cite this
 file).
 
 The discipline is ADVISORY, not a hard gate: the mutex reports
-state, the tick body decides. Matches the design of B-0530 (the
+state, the tick body decides. Matches the design of 081KRMEXM0008QG0R000X1PPGC (the
 mutex is a diagnostic returning structured MutexResult, not a
 process gate).
 
 Composes with:
-  - PR #3370 (worktree-prune-race root cause + B-0519 Pattern 8)
+  - PR #3370 (worktree-prune-race root cause + 081KRHWGX0008QG0R001HMWM1W Pattern 8)
   - PR #3375 (mutex implementation)
   - PR #3377 (borrow-on-existing pattern — alternative when peer
     contention is encountered)

@@ -52,9 +52,9 @@ Same shape as Amara's OTel/K8s/Argo tightening: lightlike-property applies to PA
 
 - Clifford algebra (rotors as normalized tensors)
 - Cayley-Dickson (nested-cross algebra)
-- CAN/GCAN equivariant layers (B-0428)
+- CAN/GCAN equivariant layers (081KRFA460008QG0R0018SN61J)
 - Z-set substrate (algebra-owner skill)
-- Adinkras-ECC substrate (B-0623; Mika)
+- Adinkras-ECC substrate (081KRW63S0008QG0R000QJR08H; Mika)
 
 ## Operational rule (carved)
 

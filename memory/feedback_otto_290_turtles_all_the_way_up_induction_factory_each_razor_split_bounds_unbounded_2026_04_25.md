@@ -170,7 +170,7 @@ substantial substrate cluster:
 - Bidirectional alignment substrate
 - Otto-287 Noether research direction
 - Aaron's turtles-down user-methodology
-- Multiple BACKLOG rows (B-0002 Noether, B-0003 ALIGNMENT.md
+- Multiple BACKLOG rows (081KQ0YZ80008QG0R002T6TM7Z Noether, 081KQ0YZ80008QG0R001QJJTVF ALIGNMENT.md
   rewrite)
 - Multiple PRs landed (~10 merged, several still in flight)
 

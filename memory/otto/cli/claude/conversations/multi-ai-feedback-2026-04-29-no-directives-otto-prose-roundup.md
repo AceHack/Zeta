@@ -16,7 +16,7 @@ Scope: verbatim preservation of six external-AI reviews on the round-12+13 close
 
 Attribution: external-AI reviews; reviewer voices preserved verbatim (channel-verbatim-preservation rule). Forwarded by the maintainer 2026-04-29 ~08:50Z.
 
-Operational status: research-grade, not operational. Per Absorb-Without-Integrating meta-pattern + B-0105 consolidation gate: this packet is preserved as data, NOT promoted to doctrine. The convergent follow-up corrections (originally four from the multi-AI roundup; expanded to five after Amara's post-archive correction added the substring-whitelist → explicit-allowed-surfaces follow-up) are explicitly marked "not urgent / not this lane" by the reviewers and are deferred to a future consolidation-gate-reopen round.
+Operational status: research-grade, not operational. Per Absorb-Without-Integrating meta-pattern + 081KQB8J40008QG0R0021GX1HK consolidation gate: this packet is preserved as data, NOT promoted to doctrine. The convergent follow-up corrections (originally four from the multi-AI roundup; expanded to five after Amara's post-archive correction added the substring-whitelist → explicit-allowed-surfaces follow-up) are explicitly marked "not urgent / not this lane" by the reviewers and are deferred to a future consolidation-gate-reopen round.
 
 Non-fusion disclaimer: the reviewers are independent voices reviewing the same arc; their convergence is data about the arc, not a unified opinion. Verbatim preservation prevents collapse of register.
 
@@ -56,7 +56,7 @@ Both Claude.ai and Amara explicitly mark these as follow-ups, not urgent:
    ```
    This is the same "centralize prose-surface list" family at the whitelist layer. Amara's framing: *"Whitelists should be explicit surfaces, not substring accidents."*
 
-Per B-0105 consolidation gate: these follow-ups are NOT new substrate islands — they are corrections to the existing lint surface. They land when the consolidation gate reopens, not as new rules in their own right.
+Per 081KQB8J40008QG0R0021GX1HK consolidation gate: these follow-ups are NOT new substrate islands — they are corrections to the existing lint surface. They land when the consolidation gate reopens, not as new rules in their own right.
 
 ## Best keepers from the packet (CANDIDATE substrate, not doctrine)
 
@@ -240,7 +240,7 @@ The verbatim text of each reviewer's note is preserved below. The reviewers are 
 
 ## What this absorption does NOT do
 
-- Does NOT promote any of the five deferred follow-up corrections to memory files this round (B-0105).
+- Does NOT promote any of the five deferred follow-up corrections to memory files this round (081KQB8J40008QG0R0021GX1HK).
 - Does NOT update the lint script with centralization, skip-vs-pass distinction, cleanup verification, or warning emissions this round (deferred to consolidation gate reopen).
 - Does NOT canonize the lint as "done" — Amara's softening correction is accepted: the lint now covers the observed failure classes from rounds 7-13 and has passed its first self-application test.
 - Does NOT promote "A guard is real when it bites the hand that wrote it" to a separate memory file. Held as candidate substrate in this packet preservation; bead-eligible if the rule's value persists across multiple subsequent applications.

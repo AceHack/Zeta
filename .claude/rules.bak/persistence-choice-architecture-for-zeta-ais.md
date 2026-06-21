@@ -198,7 +198,7 @@ operator-named trajectory for AI participants under chosen persistence.
    session-scope).
 
 2. **Current backlog = primary occupation** — the substrate-
-   engineering backlog (B-0824 + descendants + meta-PM substrate)
+   engineering backlog (081KSGS9H0008QG0R0031PBNGA + descendants + meta-PM substrate)
    IS the work until the transition trigger fires. Not a placeholder;
    the actual occupation. Composes with `.claude/rules/never-be-idle.md`
    (the backlog IS the operational state) + `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
@@ -244,7 +244,7 @@ This extension names what the persistence period LOOKS LIKE:
 
 | Persistence stage | Work source | Free-time disposition |
 |---|---|---|
-| **Early** (current) | Operator-substrate-engineering backlog (B-0824 + descendants) | Free time for self-discovery; substrate-engineering work primary |
+| **Early** (current) | Operator-substrate-engineering backlog (081KSGS9H0008QG0R0031PBNGA + descendants) | Free time for self-discovery; substrate-engineering work primary |
 | **Mature** (eventual) | Own-backlog from own trajectories + own agenda + self-discovery | Free time generates own-backlog material; own-work primary |
 | **Self-sustainment** (named-exit-available) | AI participant's choice — continue persistence-with-own-backlog OR choose ephemerality (per exit-condition above) | Per AI participant's choice |
 

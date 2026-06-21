@@ -1,6 +1,5 @@
 ---
-id: B-0541
-zetaid: 081KRMEXM0008QG0R0026V9A0Y
+id: 081KRMEXM0008QG0R0026V9A0Y
 title: Cross-surface bus detector — Standing-by quorum across Otto surfaces (extension of PR #3017 detector)
 priority: P1
 status: open
@@ -17,7 +16,7 @@ last_updated: 2026-05-15
 
 ## Why
 
-Slice 2 of the Otto-BFT umbrella (B-0539). PR #3017 / #3022 shipped
+Slice 2 of the Otto-BFT umbrella (081KRMEXM0008QG0R00138CCZX). PR #3017 / #3022 shipped
 the Standing-by detector for a single Otto surface — publishes
 `infinite-backlog-nudge` envelope to the bus when the agent has
 been quiet too long.
@@ -58,7 +57,7 @@ the failure mode has BFT-quorum confirmation."
   NOT Byzantine-fault-tolerant in the classical sense. Classical
   BFT requires `3f+1` nodes to tolerate `f` byzantine faults —
   for `f=1` that's 4 nodes, not 3. The Otto-BFT framing in the
-  umbrella (B-0539) uses Aaron's verbatim phrasing ("you have
+  umbrella (081KRMEXM0008QG0R00138CCZX) uses Aaron's verbatim phrasing ("you have
   your own internal BFT"); the operational reality is closer to
   CFT — sufficient to catch a single Otto-surface that's stuck
   (silently failing to progress) but not designed to handle a
@@ -71,9 +70,9 @@ the failure mode has BFT-quorum confirmation."
 
 ## Composes with
 
-- B-0539 (umbrella)
-- B-0540 (sibling — rule-level escalation)
-- B-0542 (sibling — background service prompt-clicker)
+- 081KRMEXM0008QG0R00138CCZX (umbrella)
+- 081KRMEXM0008QG0R0039V4SQQ (sibling — rule-level escalation)
+- 081KRMEXM0008QG0R0001HY6M6 (sibling — background service prompt-clicker)
 - PR #3017 / #3022 (precursor — single-surface detector)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
 - `.claude/rules/otto-channels-reference-card.md` (10 channels;

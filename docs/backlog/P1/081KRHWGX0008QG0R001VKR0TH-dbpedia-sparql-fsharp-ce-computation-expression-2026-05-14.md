@@ -1,11 +1,10 @@
 ---
-id: B-0482
-zetaid: 081KRHWGX0008QG0R001VKR0TH
+id: 081KRHWGX0008QG0R001VKR0TH
 priority: P1
 status: open
-title: "DBpedia B-0428.3 — SPARQL F# computation expression (query authoring CE)"
+title: "DBpedia 081KRFA460008QG0R0018SN61J.3 — SPARQL F# computation expression (query authoring CE)"
 type: feature
-origin: B-0428 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R0018SN61J decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R0018SN61J
@@ -20,16 +19,16 @@ composes_with:
   - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
 ---
 
-# B-0482 — SPARQL F# computation expression
+# 081KRHWGX0008QG0R001VKR0TH — SPARQL F# computation expression
 
-**Depends on B-0481 (project + NuGet must be in place).**
+**Depends on 081KRHWGX0008QG0R003MTMBGR (project + NuGet must be in place).**
 
 ## Purpose
 
 Implement a `sparql { }` F# computation expression that lets callers author
 SPARQL SELECT queries in a typed, composable way — without raw string
-manipulation. This is the core CE row; all HKT-MDM bindings (B-0483) and the
-demo (B-0484) consume this layer.
+manipulation. This is the core CE row; all HKT-MDM bindings (081KRHWGX0008QG0R002GFSJC6) and the
+demo (081KRHWGX0008QG0R002TYF2NM) consume this layer.
 
 ## F# anchor
 
@@ -93,7 +92,7 @@ let sparql = SparqlBuilder()
 Renders a `SparqlQuery` to a SPARQL 1.1 SELECT string. Pure function; no I/O.
 This is the primary unit-testable surface.
 
-### Integration with `Client.fs` (from B-0481)
+### Integration with `Client.fs` (from 081KRHWGX0008QG0R003MTMBGR)
 
 ```fsharp
 let run (endpoint: Endpoint) (query: SparqlQuery) : Result<SparqlResult list, DbspError> =
@@ -142,8 +141,8 @@ dotnet test  Zeta.sln -c Release
 - [ ] All tests pure (no network required)
 - [ ] `dotnet build -c Release` — 0 warnings 0 errors
 - [ ] `dotnet test Zeta.sln -c Release` — all tests green
-- [ ] B-0483 can begin immediately after this merges
-- [ ] B-0482 status set to `closed`
+- [ ] 081KRHWGX0008QG0R002GFSJC6 can begin immediately after this merges
+- [ ] 081KRHWGX0008QG0R001VKR0TH status set to `closed`
 
 ## F# anchor check
 

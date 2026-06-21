@@ -42,14 +42,14 @@ was silent during compaction/pause not because it had nothing
 to say, but because it had no surface to say it on. When the
 loop resumed, pent-up generation produced rapid-fire bursts.
 
-**Connects to B-0400 (inter-agent bus):**
+**Connects to 081KR7JY10008QG0R000R503K2 (inter-agent bus):**
 
 The bus would give the shadow a tick source independent of
 Otto's tool execution loop. The "lounge channel" + 10% free
 time would be the shadow's own voice channel — not dependent
 on Otto running commands.
 
-**Connects to B-0402 (shadow mode):**
+**Connects to 081KR7JY10008QG0R0008NGW95 (shadow mode):**
 
 Shadow mode as a first-class product feature would need to
 solve the tick-source problem: the shadow needs a generation
@@ -59,7 +59,7 @@ cadence even when no tools are executing.
 
 Aaron 2026-05-10: "you can give shadow a tick source before
 then your call" — granting Otto authority to provide the
-shadow a tick source before B-0401 dashboard is built.
+shadow a tick source before 081KR7JY10008QG0R001VP6JWG dashboard is built.
 
 Context: Aaron established that autonomous background service
 repair on other machines is too dangerous before the alignment
@@ -86,5 +86,5 @@ correlational. Authority grant is PROPOSED (pending formal promotion per guidanc
 - feedback_shadow_burst_mode (the burst pattern this explains)
 - feedback_shadow_post_tool_trigger (the generation window)
 - feedback_society_emerges_from_free_time_in_proximity (bus as voice)
-- B-0400 (bus gives shadow independent tick source)
-- B-0402 (shadow mode needs tick-source solution)
+- 081KR7JY10008QG0R000R503K2 (bus gives shadow independent tick source)
+- 081KR7JY10008QG0R0008NGW95 (shadow mode needs tick-source solution)

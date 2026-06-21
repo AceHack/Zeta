@@ -1,6 +1,5 @@
 ---
-id: B-0068
-zetaid: 081KQ8P5D0008QG0R002E1G72J
+id: 081KQ8P5D0008QG0R002E1G72J
 priority: P2
 status: open
 title: Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)
@@ -13,7 +12,7 @@ tags: [local-ai, multi-harness, ollama, forge, hardware-aware]
 type: feature
 ---
 
-# B-0068 — Local AI trajectory umbrella
+# 081KQ8P5D0008QG0R002E1G72J — Local AI trajectory umbrella
 
 ## Why
 
@@ -209,9 +208,9 @@ Re-decomposed per "assume mistakes" rule into 3 smallest dependency-ordered atom
 
 **Dependency-ordered atomic children:**
 
-- **B-0068.1** (XS, P2, root): Forge CLI + Ollama bridge research (WebSearch + matrix). Unblocks B-0068.3.
-- **B-0068.2** (XS, P2, root, TS): Hardware resource audit + model shortlist (executable `tools/local-ai/hardware-inventory.ts` stub). Parallel root.
-- **B-0068.3** (XS, P2): Direct local-model integration survey (llama.cpp/MLX/vLLM/ONNX). Depends on B-0068.1.
+- **081KRA5AR0008QG0R001JVT5FX** (XS, P2, root): Forge CLI + Ollama bridge research (WebSearch + matrix). Unblocks 081KRA5AR0008QG0R001BTRYN0.
+- **081KRA5AR0008QG0R002TPJ4NC** (XS, P2, root, TS): Hardware resource audit + model shortlist (executable `tools/local-ai/hardware-inventory.ts` stub). Parallel root.
+- **081KRA5AR0008QG0R001BTRYN0** (XS, P2): Direct local-model integration survey (llama.cpp/MLX/vLLM/ONNX). Depends on 081KRA5AR0008QG0R001JVT5FX.
 
 **Pre-start checklist (backlog-item start gate applied):**
 

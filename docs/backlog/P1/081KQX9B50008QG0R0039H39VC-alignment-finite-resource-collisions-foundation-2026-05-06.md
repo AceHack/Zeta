@@ -1,6 +1,5 @@
 ---
-id: B-0216
-zetaid: 081KQX9B50008QG0R0039H39VC
+id: 081KQX9B50008QG0R0039H39VC
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - finite-resource collisions foundation"
@@ -12,11 +11,11 @@ classification: blocked-on-survey-and-noether-foundation
 type: friction-reducer
 ---
 
-# B-0216 - Finite-resource collisions foundation
+# 081KQX9B50008QG0R0039H39VC - Finite-resource collisions foundation
 
-Promote the finite-resource-collisions framing from B-0003
+Promote the finite-resource-collisions framing from 081KQ0YZ80008QG0R001QJJTVF
 into the top-level foundation of `docs/ALIGNMENT.md`, after
-B-0215 has mapped the existing document.
+081KQX9B50008QG0R00327XC6Q has mapped the existing document.
 
 ## Work scope
 
@@ -30,7 +29,7 @@ claim must remain testable against that resource frame.
 
 - `docs/ALIGNMENT.md` names finite-resource collisions near
   the top of the document.
-- The section points to the relevant B-0002 /
+- The section points to the relevant 081KQ0YZ80008QG0R002T6TM7Z /
   Noether-formalization substrate for depth.
 - The framing is operational: it identifies what a reviewer
   can count, falsify, or revisit.

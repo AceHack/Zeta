@@ -8,7 +8,7 @@
 In plain English: **PSD means no composition of similarities can ever produce a negative
 self-similarity** — you can sum, multiply, scale, and re-index similarities forever and the result is
 still an honest similarity. That is why three independently-built things converged on this one shape
-(Aaron 2026-06-11): the salon's soft tie (Jaccard/min-max), the seed language (B-0204 carved-sentence
+(Aaron 2026-06-11): the salon's soft tie (Jaccard/min-max), the seed language (081KQTPYE0008QG0R0028V263Z carved-sentence
 kernels), and conformal memory distance (the Gaussian over `d² = −2(P·Q)`) — *ties, meanings, and
 distances are all the same object*. Rooms, memories, and similarities speak one mathematics.
 
@@ -20,7 +20,7 @@ The six closure operations — each provably PSD-preserving (Mercer 1909; the Sc
 `product` (Schur/Hadamard); `scale c` (c ≥ 0); plus `pullback g` (re-indexing).
 
 Compositions outside the closure cannot be expressed, so they cannot break PSD — **OCP as a theorem**
-(B-0204). Extension packs (`Pack`/`composePacks`) grow a seed by ADDING kernels, never editing.
+(081KQTPYE0008QG0R0028V263Z). Extension packs (`Pack`/`composePacks`) grow a seed by ADDING kernels, never editing.
 
 ## The proof is the CLOSURE; the Gram witness is a regression CHECK (Math Razor 2026-06-11)
 
@@ -38,7 +38,7 @@ caught the same day: `dot` must zero-extend ragged vectors, not min-truncate, or
 - **Outside the treaty (named, not hidden):** float-valued kernels (RBF/`exp`, FP dot products) —
   transcendentals and FP summation order are libm/codegen-dependent and do NOT byte-lock across
   oracles. They conform by per-oracle witness with tolerance; they never enter a golden-vector lock.
-  (The corpus precedent: B-1020 floats-named-out-of-lineage; `ProbabilitySemiring` going ℚ.)
+  (The corpus precedent: 081KTAH8Q0008QG0R001YHSSA0 floats-named-out-of-lineage; `ProbabilitySemiring` going ℚ.)
 
 >**Declared vocabulary (anti-tribal-knowledge, Aaron 2026-06-11: "tribal knowledge is bad — unless you
 >declare the tribe").** This interface deliberately adopts three load-bearing terms; they are DECLARED
@@ -52,4 +52,4 @@ Reference implementation: [`src/Core/LinguisticSeed.fs`](../src/Core/LinguisticS
 `kernel { }` CE — the CE is an F# vehicle, NOT part of this universal shape) · instances:
 [`src/Core/Salon.fs`](../src/Core/Salon.fs) (`jaccardKernel`/`seedPack`),
 [`src/Core/ConformalGA.fs`](../src/Core/ConformalGA.fs) (`rbfKernel`/`memoryPack`).
-See [`universal/README.md`](README.md) and `docs/backlog/P3/B-0204-*.md` (the originating synthesis).
+See [`universal/README.md`](README.md) and `docs/backlog/P3/081KQTPYE0008QG0R0028V263Z-*.md` (the originating synthesis).

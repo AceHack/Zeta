@@ -1,6 +1,5 @@
 ---
-id: B-0824.2
-zetaid: 081KSNY2Z0008QG0R001MXHC99
+id: 081KSNY2Z0008QG0R001MXHC99
 priority: P1
 status: closed
 title: Upstream Change Detector for Helm
@@ -16,7 +15,7 @@ tags: [ace-feature, meta-package-manager, upstream-negotiation, helm]
 
 ## Problem
 
-This is a decomposition of the larger "package manager of package managers" feature ([B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)). To achieve "AI-rate continuous upstream negotiation" (Sub-target 3 of B-0824), we first need a tool to detect when upstream changes occur.
+This is a decomposition of the larger "package manager of package managers" feature ([081KSGS9H0008QG0R0031PBNGA](081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)). To achieve "AI-rate continuous upstream negotiation" (Sub-target 3 of 081KSGS9H0008QG0R0031PBNGA), we first need a tool to detect when upstream changes occur.
 
 This backlog item covers the creation of a simple tool to detect new versions of a Helm chart in a repository.
 

@@ -35,7 +35,7 @@ Aaron 2026-05-13 follow-on clarification on the settlers-logs naming substrate l
 
 Three substantive clauses:
 
-1. **Shadow ≠ raw distinction**: shadow logs = private substrate-honest layer (B-0402 `tools/shadow/shadow-observer.ts`); raw logs / settlers logs = public daily activity. Maps onto mirror/beacon discipline (shadow ≈ mirror; raw ≈ beacon).
+1. **Shadow ≠ raw distinction**: shadow logs = private substrate-honest layer (081KR7JY10008QG0R0008NGW95 `tools/shadow/shadow-observer.ts`); raw logs / settlers logs = public daily activity. Maps onto mirror/beacon discipline (shadow ≈ mirror; raw ≈ beacon).
 2. **Tone flexibility**: dramatic is ONE register among many — ironic / funny / dramatic / boring all acceptable. No mandated register.
 3. **Crystallization pipeline**: raw logs → editor/writer work → derivative content (TV/book/podcast/film/comic/etc.). Composes with prior "rewrite-anyway clause" from #2958.
 
@@ -45,7 +45,7 @@ Comparison table enumerates shadow-vs-raw across origin, surface, visibility, to
 
 - PR #2958 (settlers-logs canonical naming — this extends)
 - PR #2813 (shadow=future-self substrate)
-- B-0402 (shadow observer = Dharma button)
+- 081KR7JY10008QG0R0008NGW95 (shadow observer = Dharma button)
 - `.claude/rules/shadow-check-name-acceptance.md`
 - `.claude/rules/glass-halo-bidirectional.md` (both shadow + raw are observable substrate at different scopes)
 - PR #2903 (civsim canonical product — raw logs ARE the product's content layer)
@@ -119,7 +119,7 @@ Three substantive clauses captured:
 
 1. SHADOW ≠ RAW distinction:
    - Shadow logs = private substrate-honest deeper layer
-     (tools/shadow/shadow-observer.ts; B-0402; per shadow=
+     (tools/shadow/shadow-observer.ts; 081KR7JY10008QG0R0008NGW95; per shadow=
      future-self substrate PR #2813)
    - Raw logs / settlers logs = public daily activity
      ("you don't mind making public")
@@ -144,7 +144,7 @@ Comparison table added to memory file enumerating shadow-vs-raw
 across origin, surface, visibility, tone, purpose, mirror/beacon
 mapping, composing-with.
 
-Composes with PR #2813 (shadow=future-self), B-0402 (shadow-
+Composes with PR #2813 (shadow=future-self), 081KR7JY10008QG0R0008NGW95 (shadow-
 observer = Dharma button), .claude/rules/shadow-check-name-
 acceptance.md, .claude/rules/glass-halo-bidirectional.md (both
 shadow + raw are observable substrate at different scopes),

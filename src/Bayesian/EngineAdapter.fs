@@ -2,7 +2,7 @@ namespace Zeta.Bayesian
 
 open Zeta.Core.Abstractions
 
-/// ADAPTER A of the hexagonal inference port (B-1033): OUR engine (FactorGraph + Gaussian
+/// ADAPTER A of the hexagonal inference port (081KTZ4EF0008QG0R000WJGSWX): OUR engine (FactorGraph + Gaussian
 /// messages) behind the `IInferenceEngine` interface WE own. Deterministic by construction —
 /// `FactorGraph.passOnce` walks factors in id order, no ambient entropy anywhere (the
 /// determinism lint fences Core; this module inherits the discipline). Adapter B (dotnet/infer,

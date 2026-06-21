@@ -1,12 +1,11 @@
 ---
-id: B-0342
-zetaid: 081KR2E4K0008QG0R00322TP58
+id: 081KR2E4K0008QG0R00322TP58
 priority: P1
 status: closed
 title: Recreation success metrics — evaluation rubric for the 23-hour test
 tier: foundation
 effort: S
-ask: B-0193 decomposition — AC 6 (falsifies the regenerable claim; needs measurable criteria)
+ask: 081KQTPYE0008QG0R00392KABJ decomposition — AC 6 (falsifies the regenerable claim; needs measurable criteria)
 created: 2026-05-08
 last_updated: 2026-05-10
 parent: 081KQTPYE0008QG0R00392KABJ
@@ -16,16 +15,16 @@ tags: [bootstrap-razor, metrics, evaluation, falsifiability, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0342 — Recreation success metrics
+# 081KR2E4K0008QG0R00322TP58 — Recreation success metrics
 
 ## Parent
 
-B-0193 (bootstrap razor + 23-hour recreation test).
+081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation test).
 
 ## What
 
 Define what "equivalent operational substrate" means so the
-experiment (B-0344) produces observable, interpretable
+experiment (081KR2E4K0008QG0R0035HNPG1) produces observable, interpretable
 findings rather than subjective impressions.
 
 ## Dimensions to measure
@@ -50,7 +49,7 @@ findings rather than subjective impressions.
    dimension with pass/fail/partial thresholds.
 2. Metrics are automatable where possible (build gate, test
    count, API surface diff).
-3. The rubric is citable by B-0344 and B-0345.
+3. The rubric is citable by 081KR2E4K0008QG0R0035HNPG1 and 081KR2E4K0008QG0R003KQKYTJ.
 
 ## Effort
 
@@ -61,14 +60,14 @@ S — design document, no code.
 **Prior-art search:**
 
 - Searched `.claude/skills/`, `.claude/agents/`, `docs/bootstrap-razor/` — no existing SUCCESS-METRICS.md
-- B-0339 (KEEP-VS-CUT.md) closed and citable; SEED-MANIFEST.md and SPEC-AUDIT.md reviewed for baseline numbers
-- B-0340 provides the 81-module / 37%-coverage baseline used in the rubric
+- 081KR2E4K0008QG0R000W3W6C1 (KEEP-VS-CUT.md) closed and citable; SEED-MANIFEST.md and SPEC-AUDIT.md reviewed for baseline numbers
+- 081KR2E4K0008QG0R001BRHAPK provides the 81-module / 37%-coverage baseline used in the rubric
 - No prior metrics rubric exists for this experiment line
 
 **Dependency check:**
 
-- B-0339 (depends_on): closed ✓
-- B-0343 (seeding script): open — seeding script; the Dim 3 API-surface comparator (`compare-api-surface.ts`) is a separate B-0344 prerequisite, not B-0343
-- B-0344 (cites this rubric): open — cannot start until this item closes
+- 081KR2E4K0008QG0R000W3W6C1 (depends_on): closed ✓
+- 081KR2E4K0008QG0R002JW751Y (seeding script): open — seeding script; the Dim 3 API-surface comparator (`compare-api-surface.ts`) is a separate 081KR2E4K0008QG0R0035HNPG1 prerequisite, not 081KR2E4K0008QG0R002JW751Y
+- 081KR2E4K0008QG0R0035HNPG1 (cites this rubric): open — cannot start until this item closes
 
-**Deliverable:** `docs/bootstrap-razor/SUCCESS-METRICS.md` — 5 dimensions with numeric thresholds, weighted formula, citable by B-0344 and B-0345.
+**Deliverable:** `docs/bootstrap-razor/SUCCESS-METRICS.md` — 5 dimensions with numeric thresholds, weighted formula, citable by 081KR2E4K0008QG0R0035HNPG1 and 081KR2E4K0008QG0R003KQKYTJ.

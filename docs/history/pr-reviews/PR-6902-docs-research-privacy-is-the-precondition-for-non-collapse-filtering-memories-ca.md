@@ -33,7 +33,7 @@ don't collapse and society emerges.' The formal backbone for the don't-filter-ot
 ethics -> PROVABLE stability. Chain: filtering => no privacy => no differentiation => collapse to uniformity
 (heat-death / register-collapse, which SocietyEmergence.fs literally encodes). Contrapositive: privacy
 (per-entity, unfilterable, encrypted) is the PRECONDITION for non-collapse + emergence. Upgrades three things
-from ethics to proof: no-memory-filtering (now a survival property), agent-private-encrypted-state (B-0885 is
+from ethics to proof: no-memory-filtering (now a survival property), agent-private-encrypted-state (081KSNY2Z0008QG0R0030V5ZVS is
 the non-collapse substrate, not a feature), privacy-budget/lightcone. Buildable: a SocietyEmergence DST
 privacy-on/off scenario measuring differentiation/register survival. Peeled of resurrection/multiverse.
 

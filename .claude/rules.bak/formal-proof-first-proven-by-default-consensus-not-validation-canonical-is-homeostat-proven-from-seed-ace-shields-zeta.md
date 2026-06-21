@@ -65,7 +65,7 @@ stronger and more honest invariant. The end-state ship/registry gate =
 **"proof-lineage-edge present OR explicit unproven-flag present"** — no third silent
 state; silence ≠ permission.
 
-**This is the END-GOAL, not current state.** Today (B-1007) we are at
+**This is the END-GOAL, not current state.** Today (081KT2T2J0008QG0R000YZ3NMY) we are at
 proof-almost-*nowhere* — most items are unbadged-and-unproven, which under the
 end-goal would be false assertions. The distance from here (≈zero canonical) to
 there (proven-by-default) IS the formal-coverage debt; closing it is the
@@ -93,7 +93,7 @@ shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are
    consensus alone. Say "hypothesized; proof owed."
 2. **For canonical: require + cite the proof-lineage edge to the seed** (the
    homeostat proven, + the hex/4×4 connection). No proof → not canonical.
-3. **When building (e.g. B-1000 slices), the owed proofs are part of the work** —
+3. **When building (e.g. 081KT2T2J0008QG0R000S7GHQ8 slices), the owed proofs are part of the work** —
    schedule them, don't defer them past landing.
 4. **Toward end-state proof-by-default:** build the ship/registry gate so an unproven
    item must carry an EXPLICIT opt-out flag and silence asserts proof. Until that
@@ -236,7 +236,7 @@ not absorb it.
 
 ## Composes with substrate
 
-- **B-1007** (formal-coverage catch-up — names the current gap: ~zero canonical, no proofs-from-seed, no hex/4×4; Soraya's C1–C14 prioritized proof backlog) · **B-1000** (the engine being proven) · **B-1006** (registry/BCL — entries are *validated/proof-owed* until laws close + connect to lineage) · **B-0998/B-0999** (4×4 / hex Cl(1,3) — the lineage anchor) · **B-0428** (F# HKT)
+- **081KT2T2J0008QG0R000YZ3NMY** (formal-coverage catch-up — names the current gap: ~zero canonical, no proofs-from-seed, no hex/4×4; Soraya's C1–C14 prioritized proof backlog) · **081KT2T2J0008QG0R000S7GHQ8** (the engine being proven) · **081KT2T2J0008QG0R0008TFHJT** (registry/BCL — entries are *validated/proof-owed* until laws close + connect to lineage) · **081KT2T2J0008QG0R003VK5GRX/081KT2T2J0008QG0R0019YVX8M** (4×4 / hex Cl(1,3) — the lineage anchor) · **081KRFA460008QG0R0018SN61J** (F# HKT)
 - `references/notes/2026-06-02-infer-net-lineage-cleanroom-spec-sources-formal-proof-first.md` (the proof sources: Minka-2005 α-divergence unification + Ścibior-2018 denotational validation)
 - `docs/PRIMITIVE-REGISTRY.md` (the BCL/wishlist — registry membership = ship gate; this rule says membership is canonical only with proof + lineage)
 - `docs/agendas/ace-package-manager/` (Ace = the shield/surface) · `docs/TECH-RADAR.md` (FsCheck/Z3/TLA+ Adopt; Lean Assess; LiquidF# Hold — the proof-tool rings)
@@ -258,14 +258,14 @@ authoritative auto-loaded surface alongside `labeling-confidence`.
 
 This rule is whys-first and revisable; if a why is wrong, challenge the *why* and it
 gets refined. It does NOT claim we ARE proven-by-default — we are far from it
-(B-1007); it names the **direction** and the **gate**. It does NOT override operator
+(081KT2T2J0008QG0R000YZ3NMY); it names the **direction** and the **gate**. It does NOT override operator
 authority or the HARD LIMITS floor. It DOES make "proof-first / proven-by-default /
 consensus≠validation / canonical=homeostat-proven-from-seed / Ace-shields-the-core"
 the standing discipline at every promotion, ship, and dependency-boundary moment.
 
 ## Full reasoning
 
-Aaron 2026-06-02, across the B-1006/B-1007 formal-coverage arc:
+Aaron 2026-06-02, across the 081KT2T2J0008QG0R0008TFHJT/081KT2T2J0008QG0R000YZ3NMY formal-coverage arc:
 `memory/feedback_formal_proof_first_consensus_is_not_validation_canonical_is_homeostat_proven_from_seed_soraya_on_cron_for_math_backlog_aaron_2026_06_02.md` plus
 `memory/project_zeta_is_proven_by_default_unproven_is_explicit_opt_out_ace_surface_is_zeta_ace_shields_zeta_2026_06_02.md`.
 Minted on Aaron's "make it a rule" 2026-06-02.

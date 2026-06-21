@@ -1,6 +1,5 @@
 ---
-id: B-0883.3
-zetaid: 081KSNY2Z0008QG0R0008EJDW1
+id: 081KSNY2Z0008QG0R0008EJDW1
 priority: P3
 status: open
 title: Content-addressed-store substrate for retroactive revocation (research; future-state when threat model requires multi-recipient + retroactive)
@@ -31,7 +30,7 @@ tags:
 
 Operator asked for explanation of retroactive revocation options. The substrate-honest disposition per the explanation:
 
-- **B-0885 v1 ships with forward-only revocation** — sufficient for Otto's private state (single-recipient; "if Otto retires, burn the key" = effective retroactive revocation)
+- **081KSNY2Z0008QG0R0030V5ZVS v1 ships with forward-only revocation** — sufficient for Otto's private state (single-recipient; "if Otto retires, burn the key" = effective retroactive revocation)
 - **Multi-recipient substrate with real retroactive revocation requirements** = THIS row tracks the future-state path
 
 ## What retroactive revocation requires
@@ -63,7 +62,7 @@ Three architectural options for retroactive revocation:
 - Decryption capability in hardware, not storable form
 - Revoke = invalidate hardware token
 - This is identity-revocation, not content-revocation per se
-- B-0852 USB-bound creds + Touch ID is closest existing Zeta substrate
+- 081KSKBP80008QG0R003AX2A69 USB-bound creds + Touch ID is closest existing Zeta substrate
 
 ## What this row tracks
 
@@ -75,24 +74,24 @@ This row tracks:
 - KV-store choice: S3 vs Ceph vs Garage vs IPFS (different operational properties; different vendor-lockin profiles; different cost models)
 - Manifest format on the git side: `{filename, content_hash, kv_url, alg, recipients_at_that_time}`
 - Re-encrypt + delete-old-blobs sweep procedure
-- Migration path from B-0883 in-git encrypted substrate → content-addressed-store substrate
-- Compose with B-0884 zflash credential substrate (USB-bound credentials become the key-material for the new envelope; KV-store fetch happens after USB unlock)
+- Migration path from 081KSNY2Z0008QG0R002JKH50A in-git encrypted substrate → content-addressed-store substrate
+- Compose with 081KSNY2Z0008QG0R0011XCT94 zflash credential substrate (USB-bound credentials become the key-material for the new envelope; KV-store fetch happens after USB unlock)
 
 ## Composition
 
-- **B-0883** (parent crypto substrate; v1 forward-only-revocation; this row is the v2+ path)
-- **B-0885** (agent private encrypted state; benefits when scaled to multi-recipient)
-- **B-0884** (zflash USB-bound credential substrate; key-material source for the new envelope)
-- **B-0852** USB-bound credential substrate (composes at credential storage scope)
+- **081KSNY2Z0008QG0R002JKH50A** (parent crypto substrate; v1 forward-only-revocation; this row is the v2+ path)
+- **081KSNY2Z0008QG0R0030V5ZVS** (agent private encrypted state; benefits when scaled to multi-recipient)
+- **081KSNY2Z0008QG0R0011XCT94** (zflash USB-bound credential substrate; key-material source for the new envelope)
+- **081KSKBP80008QG0R003AX2A69** USB-bound credential substrate (composes at credential storage scope)
 
 ## Substrate-honest framing
 
-P3 — research-grade; deferred until threat model expands. B-0883 v1 with forward-only-revocation is acceptable for B-0885 (single-recipient Otto state).
+P3 — research-grade; deferred until threat model expands. 081KSNY2Z0008QG0R002JKH50A v1 with forward-only-revocation is acceptable for 081KSNY2Z0008QG0R0030V5ZVS (single-recipient Otto state).
 
 The path is OPEN if/when needed; substrate not built today. File ensures future-Otto sees this option when threat model expands rather than re-derive.
 
 ## Full reasoning
 
-Operator 2026-05-28 requested deeper explanation of retroactive revocation in response to B-0883.1 Q4. Explanation provided in agent-loop conversation; this row codifies the deferred-but-tracked architectural option so it's not lost.
+Operator 2026-05-28 requested deeper explanation of retroactive revocation in response to 081KSNY2Z0008QG0R0037X4DP4 Q4. Explanation provided in agent-loop conversation; this row codifies the deferred-but-tracked architectural option so it's not lost.
 
-Threat-model triggers for activation: multi-party substrate; departing-party-must-not-retain-access; compliance/legal retroactive-deletion requirements; cross-cluster federation (per B-0852 Phase 5 substrate).
+Threat-model triggers for activation: multi-party substrate; departing-party-must-not-retain-access; compliance/legal retroactive-deletion requirements; cross-cluster federation (per 081KSKBP80008QG0R003AX2A69 Phase 5 substrate).

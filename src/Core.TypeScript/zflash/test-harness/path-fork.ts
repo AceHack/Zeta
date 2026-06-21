@@ -1,5 +1,5 @@
 /**
- * B-0891 scenario 4 QEMU path-fork primitives.
+ * 081KSNY2Z0008QG0R0008PN7RQ scenario 4 QEMU path-fork primitives.
  *
  * Scenario 4 starts from the same baseline disk and tests two operator
  * choices: migrate existing credentials to a new USB, or wipe and start a
@@ -160,7 +160,7 @@ interface NormalizedPathForkRuntimeInput {
   readonly kvmAvailable: boolean;
 }
 
-/** Fork boots prove the operator path choice only — B-0891 early markers, not a second full install. */
+/** Fork boots prove the operator path choice only — 081KSNY2Z0008QG0R0008PN7RQ early markers, not a second full install. */
 function forkSuccessMarkers(forkId: PathForkId): readonly string[] {
   return forkId === "migrate-existing-creds" ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS : FRESH_CLUSTER_SERIAL_MARKERS;
 }

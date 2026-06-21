@@ -1,4 +1,4 @@
-# B-0250 Loop-Run Claim Gate Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Loop-Run Claim Gate Receipt - 2026-05-30
 
 ## Status
 
@@ -19,7 +19,7 @@ event is emitted, so the retained events remain diagnosable.
 
 The compact debug surface showed a `codex+otto` coincidence window where the
 Codex loop-run event was caused by global open-PR churn, not Codex-owned work.
-That made peer-lane PR activity look like Codex source evidence in the B-0250
+That made peer-lane PR activity look like Codex source evidence in the 081KQZVQW0008QG0R001FG05RZ
 event join.
 
 Claim-count movement is the narrower signal for Codex loop ownership. Generic

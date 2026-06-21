@@ -1,6 +1,5 @@
 ---
-id: B-0867.20
-zetaid: 081KSNY2Z0008QG0R003WFDCJ9
+id: 081KSNY2Z0008QG0R003WFDCJ9
 priority: P1
 status: open
 title: Lifecycle DU split — trajectory-push vs pr-review-for-system-changes (determineReviewLevel discriminator)
@@ -54,7 +53,7 @@ function determineReviewLevel(work: WorkItem): "trajectory-push" | "pr-review" {
 
 > *"even in my setup i want ever non state machine to go through pr review cause we have bunches of agenst that auto review and then we find error classes and save the error classes as rules so we don't make them again."*
 
-State-machine events = direct push (no ceremony); system changes (code, rules, framework) = full PR review with heterogeneous reviewer ensemble (per B-0877) feeding error-class extraction (per B-0875).
+State-machine events = direct push (no ceremony); system changes (code, rules, framework) = full PR review with heterogeneous reviewer ensemble (per 081KSNY2Z0008QG0R0004ZF85W) feeding error-class extraction (per 081KSNY2Z0008QG0R000K3ETGB).
 
 ## Acceptance criteria
 
@@ -65,9 +64,9 @@ State-machine events = direct push (no ceremony); system changes (code, rules, f
 
 ## Composes with
 
-- B-0867.16 (two-level state machine composition) — the AgentState × WorkLifecycle composition uses this discriminator
-- B-0867.2 (event-sourcing layer) — trajectory-push writes go to `agent-events/{trajectory}/` branches
-- B-0873 (trajectory-async-review surface) — reviews trajectory branches; PR review pipeline handles system-change branches
+- 081KSNY2Z0008QG0R003J3PT4V (two-level state machine composition) — the AgentState × WorkLifecycle composition uses this discriminator
+- 081KSNY2Z0008QG0R001K6HJ7Z (event-sourcing layer) — trajectory-push writes go to `agent-events/{trajectory}/` branches
+- 081KSNY2Z0008QG0R000F0C5V0 (trajectory-async-review surface) — reviews trajectory branches; PR review pipeline handles system-change branches
 
 ## Substrate-honest framing
 

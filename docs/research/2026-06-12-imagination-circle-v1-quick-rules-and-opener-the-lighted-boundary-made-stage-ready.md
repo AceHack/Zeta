@@ -70,7 +70,7 @@ Water, deep breath, quick check-in: *"Anything to repair or revisit?"*
 The ruleset is the factory's own membrane discipline written for a room of humans:
 
 - **"If you can't name it, you can't use it"** is the Eve Protocol's named-register diplomacy
-  (B-0638: every boundary crossing declared, negotiated, booked) applied to rhetorical moves —
+  (081KRW63S0008QG0R0030F8ZXA: every boundary crossing declared, negotiated, booked) applied to rhetorical moves —
   and it is noninterference (§13) at conversation scale: influence enters only through declared
   channels. An unnamed Edge move is an ambient-entropy leak; naming it makes it a metered
   crossing.

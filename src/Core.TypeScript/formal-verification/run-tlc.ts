@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // run-tlc.ts — TS wrapper for TLA+/TLC model-checker invocation.
 //
-// Phase 1 of B-0183: replace `tests/Tests.FSharp/Formal/
+// Phase 1 of 081KQNJ500008QG0R003EKJ8B5: replace `tests/Tests.FSharp/Formal/
 // Tlc.Runner.Tests.fs` with a direct shell wrapper. The F# version
 // was an xunit-test wrapper around shelling out to TLC; no F#
 // operator-algebra logic was involved. This TS file is the natural

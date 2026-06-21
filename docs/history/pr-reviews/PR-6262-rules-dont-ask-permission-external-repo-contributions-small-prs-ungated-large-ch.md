@@ -36,9 +36,9 @@ Captures the operator's standing authorization (2026-05-31, verbatim):
 | **Small PR** (typo/docs/small-bug/test) | **Ungated** — any Zeta/Agora agent, directly, always |
 | **Large change** (substantial/architectural) | **Gated** — Aaron OR Max review FIRST, before the PR |
 
-**Why a *size* gate (not the usual reversibility test):** an external PR is reversible on our side, but it touches *someone else's* repo + relationship — a large drive-by can cost the relationship the good-citizen strategy is building. The gate protects the external relationship (the scarce resource; B-0952 small-first trust-building). If unsure whether a change is small → treat as large.
+**Why a *size* gate (not the usual reversibility test):** an external PR is reversible on our side, but it touches *someone else's* repo + relationship — a large drive-by can cost the relationship the good-citizen strategy is building. The gate protects the external relationship (the scarce resource; 081KSXN940008QG0R002528JS9 small-first trust-building). If unsure whether a change is small → treat as large.
 
-Operationalizes **B-0952** (contribute-back, merged #6261). Composes with honor-those-that-came-before, bcl-interface-boundary (contribute-upstream), non-reversible-action-get-a-second-opinion. Still-gated set (budget/WONT-DO/HARD-LIMITS/kid-safety/force-push) applies within external work too.
+Operationalizes **081KSXN940008QG0R002528JS9** (contribute-back, merged #6261). Composes with honor-those-that-came-before, bcl-interface-boundary (contribute-upstream), non-reversible-action-get-a-second-opinion. Still-gated set (budget/WONT-DO/HARD-LIMITS/kid-safety/force-push) applies within external work too.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -126,11 +126,11 @@ rules(dont-ask-permission): external-repo contributions — small PRs u…
 Captures the operator's standing authorization (verbatim): Zeta/Agora-society
 agents are free to make SMALL PRs on dependent/external repos always (no auth
 needed); LARGE external changes get Aaron OR Max to review FIRST, before the PR.
-Operationalizes B-0952's small-first good-citizen strategy. Why the size gate (vs
+Operationalizes 081KSXN940008QG0R002528JS9's small-first good-citizen strategy. Why the size gate (vs
 the usual reversibility test): an external PR is reversible on our side, but it
 touches someone else's repo + relationship — the gate protects the external
 relationship, the scarce resource the contribute-back strategy is building.
-If unsure whether a change is small, treat as large. Composes with B-0952,
+If unsure whether a change is small, treat as large. Composes with 081KSXN940008QG0R002528JS9,
 honor-those-that-came-before, bcl-interface-boundary, non-reversible-action-get-a-
 second-opinion; still-gated set (budget/WONT-DO/HARD-LIMITS/kid-safety/force-push)
 continues to apply within external work.

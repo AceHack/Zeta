@@ -1,6 +1,6 @@
 ---
 pr_number: 3949
-title: "feat(B-0156): Phase 6 .py policy CI gate \u2014 no-python-files lint"
+title: "feat(081KQGDBJ0008QG0R000A4EZS5): Phase 6 .py policy CI gate \u2014 no-python-files lint"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T21:59:09Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-16T23:29:08Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3949: feat(B-0156): Phase 6 .py policy CI gate — no-python-files lint
+# PR #3949: feat(081KQGDBJ0008QG0R000A4EZS5): Phase 6 .py policy CI gate — no-python-files lint
 
 ## PR description
 
 ## Summary
 
-Smallest safe slice of [B-0156](../backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md) (TypeScript standardization). Closes Phase 6 — `.py` policy CI enforcement.
+Smallest safe slice of [081KQGDBJ0008QG0R000A4EZS5](../backlog/P1/081KQGDBJ0008QG0R000A4EZS5-typescript-standardization-non-install-scripts-aaron-2026-05-01.md) (TypeScript standardization). Closes Phase 6 — `.py` policy CI enforcement.
 
 Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all six named non-install `.sh` files already ported to `.ts` and deleted; `tools/profile.ts`, `tools/peer-call/amara.ts`, `tools/peer-call/ani.ts`, `tools/hygiene/{snapshot,check}-github-settings.ts`, `tools/hygiene/check-tick-history-shard-schema.ts` all exist). Phase 6 (`.py` policy enforcement) was the only outstanding acceptance bullet.
 
@@ -49,7 +49,7 @@ Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all 
 
 ## Composes with
 
-- B-0156 acceptance criterion 4 (`.py` policy lint added to gate.yml)
+- 081KQGDBJ0008QG0R000A4EZS5 acceptance criterion 4 (`.py` policy lint added to gate.yml)
 - Rule 0 (TS over bash for non-install scripts) — implementation IS TS, not the inline `find` bash the row had drafted
 - `no-empty-dirs.ts` template — same allowlist + hard-exclude + posix-rel + bun-test patterns
 
@@ -61,7 +61,7 @@ Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all 
 
 ## Pull request overview
 
-Adds a Bun/TypeScript CI lint gate for B-0156 Phase 6 to prevent first-party `.py` files outside approved exclusions/allowlist.
+Adds a Bun/TypeScript CI lint gate for 081KQGDBJ0008QG0R000A4EZS5 Phase 6 to prevent first-party `.py` files outside approved exclusions/allowlist.
 
 **Changes:**
 - Adds `no-python-files` lint tool, allowlist, and Bun tests.
@@ -81,7 +81,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 6 c
 | `tools/lint/no-python-files.test.ts` | Adds unit tests for lint outcomes and exclusions. |
 | `tools/lint/no-python-files.allowlist` | Documents the explicit allowed `.py` path list. |
 | `.github/workflows/gate.yml` | Adds the CI job that runs the new lint. |
-| `docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md` | Marks Phase 6 complete and updates status details. |
+| `docs/backlog/P1/081KQGDBJ0008QG0R000A4EZS5-typescript-standardization-non-install-scripts-aaron-2026-05-01.md` | Marks Phase 6 complete and updates status details. |
 | `docs/hygiene-history/ticks/2026/05/16/2157Z.md` | Records the implementation tick for this phase. |
 </details>
 

@@ -1,6 +1,5 @@
 ---
-id: B-0420
-zetaid: 081KRA5AR0008QG0R00351NG81
+id: 081KRA5AR0008QG0R00351NG81
 priority: P2
 status: closed
 closed: 2026-05-11
@@ -13,7 +12,7 @@ composes_with: []
 type: friction-reducer
 ---
 
-# B-0420 — CLOSED: Not a real bug
+# 081KRA5AR0008QG0R00351NG81 — CLOSED: Not a real bug
 
 ## Original hypothesis (incorrect)
 

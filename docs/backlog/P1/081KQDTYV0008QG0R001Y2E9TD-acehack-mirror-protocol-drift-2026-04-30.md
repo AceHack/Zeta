@@ -1,6 +1,5 @@
 ---
-id: B-0110
-zetaid: 081KQDTYV0008QG0R001Y2E9TD
+id: 081KQDTYV0008QG0R001Y2E9TD
 priority: P1
 status: closed
 closed: 2026-05-07
@@ -187,13 +186,13 @@ class of mutation, not the autonomous-action class.
 
 ## Composes with
 
-- **B-0109** (landing in PR #912 alongside this row at
-  `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`;
+- **081KQDTYV0008QG0R002H74QXZ** (landing in PR #912 alongside this row at
+  `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`;
   cross-reference resolves on merge) — dependency-status
   surface. AceHack mirror-refresh is a sub-case of
   "dependencies we depend on for canonical factory state";
   the drift here is doctrine-vs-host, parallel to the
-  GitHub-incident class B-0109 covers.
+  GitHub-incident class 081KQDTYV0008QG0R002H74QXZ covers.
 - `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`
   — the 2026-04-29 framing this row references.
 - `memory/feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md`

@@ -1,6 +1,5 @@
 ---
-id: B-0310
-zetaid: 081KR2E4K0008QG0R003DS2XHJ
+id: 081KR2E4K0008QG0R003DS2XHJ
 priority: P1
 status: closed
 title: "Concept-registry extraction tool — canonical inventory of load-bearing concepts"
@@ -21,7 +20,7 @@ Build `tools/alignment/concept_registry.ts` — extracts the
 canonical list of load-bearing concept IDs from their source
 surfaces into a single JSON registry. The registry is the
 machine-readable input to all downstream coverage-gap and
-anchoring work under B-0060.
+anchoring work under 081KQ8P5D0008QG0R000N718AC.
 
 ## Concept classes to extract
 
@@ -60,7 +59,7 @@ anchoring work under B-0060.
 }
 ```
 
-> `anchor` is optional (B-0361). When present it records the human-lineage anchor for the concept (e.g. a Pearl citation). Omit for concepts with no declared anchor.
+> `anchor` is optional (081KR50HA0008QG0R001G4QHQF). When present it records the human-lineage anchor for the concept (e.g. a Pearl citation). Omit for concepts with no declared anchor.
 
 ## Done-criteria
 

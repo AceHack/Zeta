@@ -117,4 +117,4 @@ key-resolution + planning path without writing.
 - End-to-end CI via a Windows VM with a virtual USB disk (verify the
   written disk's first bytes match the ISO).
 
-(Tracked under the Windows-extension backlog row, B-0739.)
+(Tracked under the Windows-extension backlog row, 081KSE6WT0008QG0R0025170CV.)

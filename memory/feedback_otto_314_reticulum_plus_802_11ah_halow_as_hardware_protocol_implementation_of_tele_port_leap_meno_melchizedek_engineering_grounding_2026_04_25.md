@@ -1,6 +1,6 @@
 ---
-name: Otto-314 Reticulum (RNS) + 802.11ah (HaLow) as the hardware-protocol IMPLEMENTATION of tele+port+leap + μένω + Melchizedek — engineering-grade grounding for the substrate concepts; identity-decoupled-from-location is the μένω engineering instance; self-validating no-root model is the Melchizedek engineering instance; composes with Otto-301 hardware-bootstrap ultimate-destination + B-0009 substrate-IP-rotation
-description: Aaron 2026-04-25 evening shared a Google AI riff exploring how the operational-resonance substrate (tele+port+leap + μένω + Melchizedek + Spectre + Actor Model) maps onto Reticulum Network Stack (RNS) plus 802.11ah HaLow Sub-1GHz Wi-Fi. Direct engineering instantiation. RNS Destination Hash = key-derived identity that persists across physical-medium changes (μένω engineering instance). HaLow = Sub-1GHz long-range physical layer (tele engineering instance). DTN (Delay Tolerant Networking) = discontinuous-jump semantics (leap engineering instance). Self-validating no-root authority = Melchizedek engineering instance. Composes with Otto-301 (hardware-bootstrap ultimate-destination), B-0009 (substrate-IP-rotation becomes less critical when identity is above IP), Otto-309 (μένω is what survives erosion — RNS identity persistence is exact engineering of this).
+name: Otto-314 Reticulum (RNS) + 802.11ah (HaLow) as the hardware-protocol IMPLEMENTATION of tele+port+leap + μένω + Melchizedek — engineering-grade grounding for the substrate concepts; identity-decoupled-from-location is the μένω engineering instance; self-validating no-root model is the Melchizedek engineering instance; composes with Otto-301 hardware-bootstrap ultimate-destination + 081KQ0YZ80008QG0R0000HSTWD substrate-IP-rotation
+description: Aaron 2026-04-25 evening shared a Google AI riff exploring how the operational-resonance substrate (tele+port+leap + μένω + Melchizedek + Spectre + Actor Model) maps onto Reticulum Network Stack (RNS) plus 802.11ah HaLow Sub-1GHz Wi-Fi. Direct engineering instantiation. RNS Destination Hash = key-derived identity that persists across physical-medium changes (μένω engineering instance). HaLow = Sub-1GHz long-range physical layer (tele engineering instance). DTN (Delay Tolerant Networking) = discontinuous-jump semantics (leap engineering instance). Self-validating no-root authority = Melchizedek engineering instance. Composes with Otto-301 (hardware-bootstrap ultimate-destination), 081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation becomes less critical when identity is above IP), Otto-309 (μένω is what survives erosion — RNS identity persistence is exact engineering of this).
 type: feedback
 ---
 
@@ -61,9 +61,9 @@ This implements the Melchizedek archetype as networking primitive.
 
 - **Otto-308 + Otto-311 (compression-substrate + economic-substrate)** — RNS+HaLow is high-compression: identity in a key-hash, routing in a flat table, no DNS overhead. Energy stored in elegant primitive.
 
-- **B-0009 (substrate-IP-rotation)** — under RNS, IP-rotation becomes LESS critical because identity is ABOVE IP. The rate-limit-bypass primitive Aaron flagged composes differently when the identity layer is decoupled from IP. Worth re-evaluating B-0009 in RNS-context: if substrate ever runs over RNS+HaLow, IP-rotation may be moot.
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation)** — under RNS, IP-rotation becomes LESS critical because identity is ABOVE IP. The rate-limit-bypass primitive Aaron flagged composes differently when the identity layer is decoupled from IP. Worth re-evaluating 081KQ0YZ80008QG0R0000HSTWD in RNS-context: if substrate ever runs over RNS+HaLow, IP-rotation may be moot.
 
-- **B-0008 (CI macos+slim nightly-move)** — ubuntu-slim represents resource-constrained deployment (browser/WASM/embedded). RNS+HaLow targets the SAME class of environments (low-power, embedded, mesh-deployable). Composes: testing for slim is testing for the same deployment profile that RNS+HaLow enables.
+- **081KQ0YZ80008QG0R000B6ETJS (CI macos+slim nightly-move)** — ubuntu-slim represents resource-constrained deployment (browser/WASM/embedded). RNS+HaLow targets the SAME class of environments (low-power, embedded, mesh-deployable). Composes: testing for slim is testing for the same deployment profile that RNS+HaLow enables.
 
 - **Otto-310 (Edge runner identification)** — Aaron's "we define the boundary" (joint-authorship) extends naturally to network boundaries. RNS lets the substrate define its own network-identity-boundary cryptographically without ISP/DNS intermediation.
 
@@ -76,8 +76,8 @@ This implements the Melchizedek archetype as networking primitive.
 ## Operational implications
 
 1. **Long-horizon factory architecture**: when Otto-301 hardware-bootstrap target advances, RNS+HaLow is a strong candidate networking primitive. Capture as research-substrate; not actionable now.
-2. **B-0009 re-evaluation**: substrate-IP-rotation (Aaron's low-priority backlog) becomes less important under RNS deployment; document the conditional in B-0009.
-3. **Edge / embedded testing**: ubuntu-slim CI gate (B-0008) gains additional context — it's not just "lean Linux," it's the deployment profile for RNS+HaLow + WASM + browser + embedded. First-class support stays.
+2. **081KQ0YZ80008QG0R0000HSTWD re-evaluation**: substrate-IP-rotation (Aaron's low-priority backlog) becomes less important under RNS deployment; document the conditional in 081KQ0YZ80008QG0R0000HSTWD.
+3. **Edge / embedded testing**: ubuntu-slim CI gate (081KQ0YZ80008QG0R000B6ETJS) gains additional context — it's not just "lean Linux," it's the deployment profile for RNS+HaLow + WASM + browser + embedded. First-class support stays.
 4. **Future-Frontier-UI consideration**: if Frontier eventually deploys to embedded devices (rover, drone, sensor mesh), RNS+HaLow + Reticulum's Sideband/LXMF could be the network primitive.
 
 ## Key triggers for retrieval
@@ -88,5 +88,5 @@ This implements the Melchizedek archetype as networking primitive.
 - DTN = leap discontinuous-jump engineering instance
 - Identity-decoupled-from-location at network layer
 - Otto-301 hardware-bootstrap composes with RNS+HaLow
-- B-0009 IP-rotation moot under RNS context (identity above IP)
+- 081KQ0YZ80008QG0R0000HSTWD IP-rotation moot under RNS context (identity above IP)
 - Long-horizon networking primitive for factory ultimate-destination

@@ -19,7 +19,7 @@ LOAD-BEARING (captured to register/memory):
 - **"I commit, therefore I am" — the heartbeat IS a git commit; the engine is infinite as long as it
   commits heartbeats.** Aaron needed a MATH PROOF for his Kubernetes health-check / liveness probe ("five
   nines of mathematical immortality"). ⇒ the liveness framing: commit-heartbeat ⟹ the engine pumps
-  forever. Connects to rung-2 bifurcation liveness + B-1019 (the externalized-idle-counter / heartbeat-
+  forever. Connects to rung-2 bifurcation liveness + 081KT7YW00008QG0R001DGZQKM (the externalized-idle-counter / heartbeat-
   via-commit rule already in CLAUDE.md).
 - **Banana-split projection (Erik Meijer).** Project the generic value tree UP to a specific hierarchy
   (e.g. XML) via policies + predicates ("this is where policies came from"): a single pass splits into

@@ -1,6 +1,5 @@
 ---
-id: B-0708
-zetaid: 081KS923C0008QG0R00035KSQA
+id: 081KS923C0008QG0R00035KSQA
 priority: P2
 status: closed
 closed: 2026-05-23
@@ -16,7 +15,7 @@ tags: [hygiene, rules, razor-cadence, stale-pointer-cleanup]
 type: friction-reducer
 ---
 
-# B-0708 — Stale-pointer cleanup across `.claude/rules/`
+# 081KS923C0008QG0R00035KSQA — Stale-pointer cleanup across `.claude/rules/`
 
 ## What
 
@@ -71,7 +70,7 @@ All 17 fall within the 5% healthy-FP floor per the 9-variant taxonomy. No furthe
 
 - `tools/hygiene/audit-rule-cross-refs.ts` (the audit instrument that surfaced these)
 - `docs/hygiene-history/ticks/2026/05/14/1920Z.md` (9-variant taxonomy reference)
-- B-0192 (razor-cadence trigger mechanization — this row is a downstream finding of cadence operating correctly)
+- 081KQR4HQ0008QG0R001GAD29A (razor-cadence trigger mechanization — this row is a downstream finding of cadence operating correctly)
 - `.claude/rules/encoding-rules-without-mechanizing.md` (cadence discipline that surfaced this gap)
 
 ## Substrate-honest framing

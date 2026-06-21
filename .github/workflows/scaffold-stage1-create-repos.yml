@@ -1,6 +1,6 @@
 name: scaffold-stage1-create-repos
 
-# B-0424.2 / B-0469 — Stage 1 of the three-repo split: create LFG/Forge, LFG/ace,
+# 081KRFA460008QG0R001H98EXJ.2 / 081KRHWGX0008QG0R003S6KGGE — Stage 1 of the three-repo split: create LFG/Forge, LFG/ace,
 # and product repos (LFG/civsim) with the full best-practice checklist from
 # docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md and
 # docs/DECISIONS/2026-05-14-product-repo-split-decisions.md.
@@ -188,5 +188,5 @@ jobs:
           echo "After verifying the repos, update the relevant ADR and backlog rows:"
           echo "  docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md"
           echo "  docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
-          echo "  docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md"
-          echo "  docs/backlog/P1/B-0469-civsim-repo-scaffolding-2026-05-14.md"
+          echo "  docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md"
+          echo "  docs/backlog/P1/081KRHWGX0008QG0R003S6KGGE-civsim-repo-scaffolding-2026-05-14.md"

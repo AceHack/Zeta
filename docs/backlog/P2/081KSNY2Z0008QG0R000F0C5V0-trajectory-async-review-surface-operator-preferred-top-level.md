@@ -1,6 +1,5 @@
 ---
-id: B-0873
-zetaid: 081KSNY2Z0008QG0R000F0C5V0
+id: 081KSNY2Z0008QG0R000F0C5V0
 priority: P2
 status: open
 title: Trajectory-async-review surface — operator's preferred top-level lens for own-Zeta deployment (not PR-per-deploy)
@@ -44,7 +43,7 @@ A review surface that operates at TRAJECTORY scope (not per-PR, not per-event) f
   - `summarizeTrajectory(trajectoryId, sinceIso)` — produces a trajectory-shape summary (phase progression, claims-vs-merges, DORA-curve, key events) suitable for async review
   - `listActiveTrajectories({sortBy: "recency" | "dora-contribution" | "uncertainty"})` — operator's at-a-glance dashboard
 - CLI wrapper: `bun src/Core.TypeScript/workflow-engine/agent-loop/trajectory-review.ts --since 1week` produces markdown report
-- Composes with event-sourced trajectory phase classification (B-0867.18) — phase is derived from events; the review surface reads the derivation
+- Composes with event-sourced trajectory phase classification (081KSNY2Z0008QG0R0027CDD11) — phase is derived from events; the review surface reads the derivation
 - README documents the asymmetry between enterprise-PR-per-deploy and operator-trajectory-async-review modes
 
 ## Scope

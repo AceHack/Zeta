@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // audit_clause_coverage.ts — alignment-clause coverage audit.
 //
-// B-0058: new-surface alignment-clause consistency check.
+// 081KQ3HBZ0008QG0R002S674CG: new-surface alignment-clause consistency check.
 // Scans .claude/skills/*/SKILL.md, .claude/agents/*.md, and
 // docs/backlog/P0/*.md + docs/backlog/P1/*.md for references to
 // alignment clauses (HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5) from

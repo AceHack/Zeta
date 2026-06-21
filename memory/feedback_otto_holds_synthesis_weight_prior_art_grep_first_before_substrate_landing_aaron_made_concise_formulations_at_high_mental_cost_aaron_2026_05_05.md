@@ -109,7 +109,7 @@ This composes with:
 - `memory/feedback_verify_target_exists_before_deferring.md` — verify-before-deferring (CLAUDE.md bullet) — this discipline extends the verify-discipline to prior-art-search-before-substrate-landing
 - `memory/feedback_frank_frisbee_taught_dst_over_retractible_surfaces_before_dbsp_had_a_name_duplicate_yourself_mentor_southern_redneck_register_aaron_2026_05_05.md` (PR #1697) — duplicate-yourself mentor-discipline (Otto-as-Aaron-duplicate carrying-synthesis-weight)
 - `memory/feedback_lectio_divina_multi_angle_light_bible_reading_discipline_oracles_different_lenses_and_scopes_amara_aaron_2026_05_05.md` (PR #1700) — Aaron's "50% of tonight is re-deriving Amara's prior-work" correction; this memory's prior-art-grep discipline IS the mechanization-fix for that
-- `docs/backlog/P3/B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md` — orthogonal-trajectory tracking; Otto should track these proactively
+- `docs/backlog/P3/081KQTPYE0008QG0R000ZJ2GW8-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md` — orthogonal-trajectory tracking; Otto should track these proactively
 - `memory/feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_aaron_2026_05_02.md` — skill-flywheel; decision-archeology is one of the skills Otto should use proactively
 - `.claude/hooks/verify-branch-pretooluse.ts` — existing harness-hook substrate; the mechanization candidate for this discipline composes with this shape (PreToolUse on Write/Edit/MultiEdit for memory/feedback_*.md files; runs prior-art-grep before allowing substrate-landing)
 

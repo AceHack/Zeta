@@ -1,6 +1,5 @@
 ---
-id: B-0822
-zetaid: 081KSGS9H0008QG0R0018ES3R4
+id: 081KSGS9H0008QG0R0018ES3R4
 priority: P1
 status: open
 title: diamond-resolution namespace + cardinality + multi-tenant-awareness — three orthogonal properties on shared charts that determine whether the Maven-for-Helm graph deploys ONE shared instance or N per-consumer instances; substrate-engineering target for Ace package manager's chart-graph resolver (Aaron 2026-05-26)
@@ -21,7 +20,7 @@ tags: [ace-feature, dependency-graph, helm, diamond-resolution, namespace-policy
 
 ## Problem
 
-[B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) names the C++ diamond / multiple-inheritance problem for Helm umbrella charts + cites Maven's `<dependencyManagement>` + Linux package managers' `Provides:` as prior art for the resolution-primitive layer. Aaron 2026-05-26 sharpened with the third dimension:
+[081KSGS9H0008QG0R00367G209](081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) names the C++ diamond / multiple-inheritance problem for Helm umbrella charts + cites Maven's `<dependencyManagement>` + Linux package managers' `Provides:` as prior art for the resolution-primitive layer. Aaron 2026-05-26 sharpened with the third dimension:
 
 > *"many charts declare their dependencies but then what do you do when two charts have the same dependency, do you deploy one or two versions of the dependency and it's project dependent on if the dependency uses namespaces for multi use or it's built in a single namespace (most of the time)"*
 
@@ -95,11 +94,11 @@ The decision is **chart-author property** + **operator-deployment-policy** + **c
 
 ## How the chart-graph resolver decides
 
-The Ace dependency-graph resolver (per B-0821) needs to know each shared chart's archetype to compute the right diamond-resolution policy. Three inputs:
+The Ace dependency-graph resolver (per 081KSGS9H0008QG0R00367G209) needs to know each shared chart's archetype to compute the right diamond-resolution policy. Three inputs:
 
 ### Input 1 — chart-declared property (the chart author's claim)
 
-Charts declare their archetype via the typed-output substrate (B-0821 Sub-target 3). Recommended via `zeta-chart-outputs.yaml`:
+Charts declare their archetype via the typed-output substrate (081KSGS9H0008QG0R00367G209 Sub-target 3). Recommended via `zeta-chart-outputs.yaml`:
 
 ```yaml
 # alongside Chart.yaml for upstream charts (Zeta-side wrapper file);
@@ -144,23 +143,23 @@ When two umbrella charts depend on the SAME shared chart, Ace's resolver:
 2. **Reads operator policy** for that chart in this cluster (Input 2)
 3. **Resolves to per-archetype policy**:
    - **Cluster-singleton**: pick THE owner; rewrite both umbrellas' consumption to reference owner; fail if neither umbrella designated as owner (operator MUST designate)
-   - **Multi-tenant-aware + shared mode**: pick THE owner; rewrite both umbrellas to consume by tenant-id; generate per-tenant credentials/configs/topics; wire connection strings via variable-passing (B-0821)
+   - **Multi-tenant-aware + shared mode**: pick THE owner; rewrite both umbrellas to consume by tenant-id; generate per-tenant credentials/configs/topics; wire connection strings via variable-passing (081KSGS9H0008QG0R00367G209)
    - **Single-tenant + namespace-isolated + per-namespace mode**: keep both instances; each in own namespace; no cross-rewriting
    - **Cost-bound-shared mode**: same as multi-tenant-aware but operator explicitly opts into cost-sharing tradeoff
 
-The resolver's output IS the engine-specific config (B-0820 derivability-asymmetry): for ArgoCD, sync-wave-annotated Applications with the right ownership references; for Flux, `dependsOn` + `valuesFrom` arrays pointing at the right shared resources.
+The resolver's output IS the engine-specific config (081KSGS9H0008QG0R00352WW0V derivability-asymmetry): for ArgoCD, sync-wave-annotated Applications with the right ownership references; for Flux, `dependsOn` + `valuesFrom` arrays pointing at the right shared resources.
 
-## Composes with B-0821 sub-targets — what changes / adds
+## Composes with 081KSGS9H0008QG0R00367G209 sub-targets — what changes / adds
 
-B-0821 Sub-target 1 (named-dependency-graph spec) extends with archetype declaration per Input 1 above.
+081KSGS9H0008QG0R00367G209 Sub-target 1 (named-dependency-graph spec) extends with archetype declaration per Input 1 above.
 
-B-0821 Sub-target 2 (graph → engine-specific config emitter) extends with per-archetype diamond-resolution per Input 3 above.
+081KSGS9H0008QG0R00367G209 Sub-target 2 (graph → engine-specific config emitter) extends with per-archetype diamond-resolution per Input 3 above.
 
-B-0821 Sub-target 3 (typed output resolution) extends to include tenant-id outputs (e.g., postgres shared-instance emits `database-name` + `connection-url` + `password-secret-ref` per consumer) — variable-passing flows tenant-scoped values, not just chart-scoped.
+081KSGS9H0008QG0R00367G209 Sub-target 3 (typed output resolution) extends to include tenant-id outputs (e.g., postgres shared-instance emits `database-name` + `connection-url` + `password-secret-ref` per consumer) — variable-passing flows tenant-scoped values, not just chart-scoped.
 
 NEW sub-targets specific to this row:
 
-### Sub-target B-0822.1 — archetype detection from upstream charts
+### Sub-target 081KSGS9H0008QG0R0018ES3R4.1 — archetype detection from upstream charts
 
 Most upstream charts (Bitnami, ArtifactHub, Argo, etc.) don't ship `zeta-chart-outputs.yaml`. Ace needs:
 
@@ -168,7 +167,7 @@ Most upstream charts (Bitnami, ArtifactHub, Argo, etc.) don't ship `zeta-chart-o
 - Heuristics to detect archetype from chart contents (CRDs declared → likely cluster-singleton; helm values include `tenants:` array → likely multi-tenant-aware; etc.)
 - Manual override for operator-known specifics
 
-### Sub-target B-0822.2 — namespace-policy enforcement
+### Sub-target 081KSGS9H0008QG0R0018ES3R4.2 — namespace-policy enforcement
 
 Diamond-resolution decisions affect which namespace each instance lives in:
 
@@ -178,7 +177,7 @@ Diamond-resolution decisions affect which namespace each instance lives in:
 
 Resolver emits the per-instance namespace into engine-specific config; namespace conflicts surface as validation errors before deploy.
 
-### Sub-target B-0822.3 — secret + connection-string flow per tenant
+### Sub-target 081KSGS9H0008QG0R0018ES3R4.3 — secret + connection-string flow per tenant
 
 When N consumers share a multi-tenant-aware chart, each tenant needs:
 
@@ -188,13 +187,13 @@ When N consumers share a multi-tenant-aware chart, each tenant needs:
 
 Ace must generate these per consumer + wire them via the variable-passing substrate. Today this is operator-manual; the resolver formalizes it.
 
-### Sub-target B-0822.4 — diamond-conflict surfacing UX
+### Sub-target 081KSGS9H0008QG0R0018ES3R4.4 — diamond-conflict surfacing UX
 
 When the diamond can't be resolved (both umbrellas declared owner; archetype mismatch; cardinality violation), surface conflict via `ace deps validate <app>` with explicit conflict messages + suggested resolutions. Operator-facing DX, not just engine output.
 
-### Sub-target B-0822.5 — multi-cluster cardinality scope
+### Sub-target 081KSGS9H0008QG0R0018ES3R4.5 — multi-cluster cardinality scope
 
-Cluster-singleton at SINGLE-cluster scope becomes "1 per cluster, N across clusters" at multi-cluster scope. The resolver's cardinality logic extends to multi-cluster awareness when [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) Sub-target 5 (multi-cluster variable flow) lands.
+Cluster-singleton at SINGLE-cluster scope becomes "1 per cluster, N across clusters" at multi-cluster scope. The resolver's cardinality logic extends to multi-cluster awareness when [081KSGS9H0008QG0R00352WW0V](../P2/081KSGS9H0008QG0R00352WW0V-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) Sub-target 5 (multi-cluster variable flow) lands.
 
 ## Acceptance
 
@@ -208,20 +207,20 @@ Cluster-singleton at SINGLE-cluster scope becomes "1 per cluster, N across clust
 
 ## Composes with
 
-- **[B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md)** — parent dependency-graph substrate; THIS row extends the diamond-resolution layer with the namespace+cardinality+multi-tenant dimension
-- **[B-0247](B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** + **[B-0288](B-0288-ace-dlc-package-manager-cli-2026-05-08.md)** + **[B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** — Ace package manager (implementation home per B-0821)
-- **[B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point; the diamond-resolution operates ON the Helm chart layer
-- **[B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)** — derivability-asymmetry + multi-cluster scope (Sub-target B-0822.5 extends to multi-cluster cardinality)
+- **[081KSGS9H0008QG0R00367G209](081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md)** — parent dependency-graph substrate; THIS row extends the diamond-resolution layer with the namespace+cardinality+multi-tenant dimension
+- **[081KQZVQW0008QG0R000ZHEN62](081KQZVQW0008QG0R000ZHEN62-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** + **[081KR2E4K0008QG0R002YE3MMD](081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md)** + **[081KSE6WT0008QG0R000YYH3DY](../P2/081KSE6WT0008QG0R000YYH3DY-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md)** — Ace package manager (implementation home per 081KSGS9H0008QG0R00367G209)
+- **[081KSGS9H0008QG0R003A37Z65](081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point; the diamond-resolution operates ON the Helm chart layer
+- **[081KSGS9H0008QG0R00352WW0V](../P2/081KSGS9H0008QG0R00352WW0V-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)** — derivability-asymmetry + multi-cluster scope (Sub-target 081KSGS9H0008QG0R0018ES3R4.5 extends to multi-cluster cardinality)
 
 ## Out of scope (this row)
 
 - Implementation of any specific shared chart's multi-tenant setup (each chart's tenant model differs — postgres has databases, kafka has topics; deferred to per-chart sub-rows when substrate matures)
-- Multi-cluster cardinality scope (B-0822.5 names it; reserved for follow-on per B-0820 Sub-target 5 dependency)
+- Multi-cluster cardinality scope (081KSGS9H0008QG0R0018ES3R4.5 names it; reserved for follow-on per 081KSGS9H0008QG0R00352WW0V Sub-target 5 dependency)
 - Auto-migration of existing operator-manual shared-chart setups to the resolver-managed model
 
 ## Origin
 
-Aaron 2026-05-26 sharpening of the C++ diamond framing from B-0821:
+Aaron 2026-05-26 sharpening of the C++ diamond framing from 081KSGS9H0008QG0R00367G209:
 
 > *"many charts declare their dependencies but then what do you do when two charts have the same dependency, do you deploy one or two versions of the dependency and it's project dependent on if the dependency uses namespaces for multi use or it's built in a single namespace (most of the time)"*
 
@@ -231,14 +230,14 @@ Filed as P1 because:
 
 1. Without diamond-resolution policies per archetype, the dependency-graph layer can't make the operator's most common decision (one vs N instances)
 2. Real-world Helm operators hit this every cluster bring-up (shared postgres? shared redis? per-app or platform?); high-leverage substrate
-3. Composes with B-0821 — the Maven-for-Helm slot isn't fillable without this dimension
-4. Ace-as-implementation-home (per B-0821 directive) makes this another Ace feature; consistent with the Ace-as-Zeta-package-manager strategic positioning
+3. Composes with 081KSGS9H0008QG0R00367G209 — the Maven-for-Helm slot isn't fillable without this dimension
+4. Ace-as-implementation-home (per 081KSGS9H0008QG0R00367G209 directive) makes this another Ace feature; consistent with the Ace-as-Zeta-package-manager strategic positioning
 
 ## Substrate-inventory pass
 
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `rg "multi-tenant\|cluster-singleton\|namespace-isolated" docs/backlog/` → no prior row on this specific dimension
-- `gh pr list --state all --search "B-0822"` → no in-flight collision
-- ID B-0822 next-free per `git ls-tree origin/main` (highest = B-0821 from #5230 merged 3daa5624c)
-- Composes with B-0821 (parent); not parallel-shape
+- `gh pr list --state all --search "081KSGS9H0008QG0R0018ES3R4"` → no in-flight collision
+- ID 081KSGS9H0008QG0R0018ES3R4 next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R00367G209 from #5230 merged 3daa5624c)
+- Composes with 081KSGS9H0008QG0R00367G209 (parent); not parallel-shape

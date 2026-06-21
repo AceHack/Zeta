@@ -1,6 +1,6 @@
 ---
 pr_number: 5454
-title: "docs(B-0852.4): NixOS module boot-time cred-restore from ESP \u2014 gates end-to-end USB test (Aaron 2026-05-27 USB push)"
+title: "docs(081KSKBP80008QG0R002XBRGN8): NixOS module boot-time cred-restore from ESP \u2014 gates end-to-end USB test (Aaron 2026-05-27 USB push)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T13:42:04Z"
@@ -12,15 +12,15 @@ archived_at: "2026-05-27T19:23:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5454: docs(B-0852.4): NixOS module boot-time cred-restore from ESP — gates end-to-end USB test (Aaron 2026-05-27 USB push)
+# PR #5454: docs(081KSKBP80008QG0R002XBRGN8): NixOS module boot-time cred-restore from ESP — gates end-to-end USB test (Aaron 2026-05-27 USB push)
 
 ## PR description
 
 ## Summary
 
-Files B-0852.4 row capturing the boot-time companion to B-0852.3a picker (PR #5450).
+Files 081KSKBP80008QG0R002XBRGN8 row capturing the boot-time companion to 081KSKBP80008QG0R003AX2A69.3a picker (PR #5450).
 
-**Why this gates the USB test**: picker writes blob → reboot → without B-0852.4 the blob is ignored. With B-0852.4: full persist → restore → use chain on real USB hardware.
+**Why this gates the USB test**: picker writes blob → reboot → without 081KSKBP80008QG0R002XBRGN8 the blob is ignored. With 081KSKBP80008QG0R002XBRGN8: full persist → restore → use chain on real USB hardware.
 
 ## Sub-rows
 

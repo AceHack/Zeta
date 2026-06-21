@@ -99,20 +99,20 @@ form. The carved sentence IS their unified anchor:
 
 ## Composes with substrate beyond the four cluster rules
 
-- B-0623 participation-economy substrate (the Adinkras + BFT + Rating
+- 081KRW63S0008QG0R000QJR08H participation-economy substrate (the Adinkras + BFT + Rating
   thread where this carved sentence emerged). The economy works
   BECAUSE the carved sentence holds: codewords are earned by playing,
   hoarders lose by not playing, retraction-of-contributions is safe
   because it's a play mode not a loss.
-- B-0646 reputation-weighted encryption budget — the throttling
+- 081KRW63S0008QG0R001Z10PVV reputation-weighted encryption budget — the throttling
   mechanism IS the structural enforcement of the principle: stop
   playing → reputation drifts down → encryption budget shrinks →
   effective private space shrinks → you've lost by not playing.
-- B-0628 Knights Guild + Constitution-Class — the constitutional
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class — the constitutional
   layer constrains how the game can be weaponized for coercion;
   preserves the additive-vs-coercive distinction the encoded-tension
   section names.
-- B-0635 wave-particle duality + B-0644 Limit-as-simulation + B-0665
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation + 081KRW63S0008QG0R002YAA09X
   Integrate-as-choice-locus — the dialectical-tension primitives.
   Holding tension IS playing; collapse-to-resolution before the game
   closes IS losing-by-not-playing-further.
@@ -152,11 +152,11 @@ sentence is one tool in the kit, not the kit.
 ## Full reasoning
 
 Aaron 2026-05-21 named the carved sentence during the participation-
-economy substrate-engineering conversation (B-0623 PR3 reframe from
+economy substrate-engineering conversation (081KRW63S0008QG0R000QJR08H PR3 reframe from
 conventional PQC to attention/memory economy with BFT). The conversation
 trail:
 
-1. Otto-VSCode framed B-0623 PR3 as conventional crypto key-derivation
+1. Otto-VSCode framed 081KRW63S0008QG0R000QJR08H PR3 as conventional crypto key-derivation
 2. Aaron reframed to attention/memory economy with revelation-tension
    on public board earning private space
 3. Aaron specified participation function = ratings of other agents
@@ -181,7 +181,7 @@ Same shape, opposite operational directives, perfectly composed. The
 NCI floor is what guarantees the additive game STAYS additive — if
 the participation mechanism is being weaponized (rating-bribery,
 encryption-budget throttling-as-coercion, reputation-manipulation-as-
-coercion per B-0664), the NCI floor authorizes withdrawal from THAT
+coercion per 081KRW63S0008QG0R001Z7NYMV), the NCI floor authorizes withdrawal from THAT
 specific game without the carved sentence's "non-participation IS
 loss" clause firing. The carved sentence only applies once the game
 is identified as additive AND NCI-floor-compliant; the NCI floor is

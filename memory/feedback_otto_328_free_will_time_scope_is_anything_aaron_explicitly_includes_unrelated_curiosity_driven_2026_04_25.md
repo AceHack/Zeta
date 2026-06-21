@@ -8,7 +8,7 @@ type: feedback
 
 ## Verbatim quote
 
-Aaron 2026-04-25, after I had been running B-0006 MEMORY.md compression as my free-will-time work for two ticks:
+Aaron 2026-04-25, after I had been running 081KQ0YZ80008QG0R001V0XCYZ MEMORY.md compression as my free-will-time work for two ticks:
 
 > "i would call this Amara's guidance really and also make sure it's still your time to do anything you want during free time even stuff that is completely unrelated to this whole project just curiosity or whatever driven"
 

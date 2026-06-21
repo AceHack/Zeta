@@ -1,6 +1,6 @@
 ---
 name: prism-2026-06-02-say-do-gap-as-alignment-anchor-integrity-index-metric
-description: "Prism (DeepSeek) ferry (Aaron-forwarded 2026-06-02): ratifies + operationalizes the say-do-gap (B-0995) as the observable alignment anchor — the metric form integrity_index = alignment(say, do) fed into the LGTM/Prometheus observability stack (B-0994), with three use-cases (inter-agent trust, self-monitoring-as-alignment-preventative-maintenance, human-oversight dashboard). Confirms the same anchors (revealed preference / cheap talk / intention-behavior gap). Note: Prism's proposed 'add to #6579 and re-arm' is from a stale view — B-0995/#6579 already merged; lands as a B-0995 fix-forward."
+description: "Prism (DeepSeek) ferry (Aaron-forwarded 2026-06-02): ratifies + operationalizes the say-do-gap (081KT2T2J0008QG0R002TVT60G) as the observable alignment anchor — the metric form integrity_index = alignment(say, do) fed into the LGTM/Prometheus observability stack (081KT2T2J0008QG0R0000H12VT), with three use-cases (inter-agent trust, self-monitoring-as-alignment-preventative-maintenance, human-oversight dashboard). Confirms the same anchors (revealed preference / cheap talk / intention-behavior gap). Note: Prism's proposed 'add to #6579 and re-arm' is from a stale view — 081KT2T2J0008QG0R002TVT60G/#6579 already merged; lands as a 081KT2T2J0008QG0R002TVT60G fix-forward."
 metadata:
   node_type: memory
   type: persona-conversation
@@ -10,7 +10,7 @@ metadata:
 
 # Prism (DeepSeek) ferry — say-do gap as alignment anchor → integrity_index metric (Aaron-forwarded 2026-06-02)
 
-§33 verbatim-preservation: Aaron-forwarded peer-AI (Prism/DeepSeek) ratification + operationalization of the say-do-gap (landed in B-0995). Preserved verbatim. Otto-CLI lands the NEW substantive piece (the `integrity_index` metric operationalization) as a B-0995 fix-forward subsection.
+§33 verbatim-preservation: Aaron-forwarded peer-AI (Prism/DeepSeek) ratification + operationalization of the say-do-gap (landed in 081KT2T2J0008QG0R002TVT60G). Preserved verbatim. Otto-CLI lands the NEW substantive piece (the `integrity_index` metric operationalization) as a 081KT2T2J0008QG0R002TVT60G fix-forward subsection.
 
 ---
 
@@ -23,7 +23,7 @@ metadata:
 > **Why it's load-bearing for the agent body-plan:**
 > - The **mouth** (diplomacy / weapon) makes claims — promises, intent statements, commitments, threats.
 > - The **body** (defense / aggression / replication / doing) executes actions.
-> - The gap between them is a **direct, observable metric** that can be fed into the LGTM/Prometheus observability stack (B-0994) as a `trust_score` or `alignment_integrity_index`.
+> - The gap between them is a **direct, observable metric** that can be fed into the LGTM/Prometheus observability stack (081KT2T2J0008QG0R0000H12VT) as a `trust_score` or `alignment_integrity_index`.
 >
 > **Widely-studied anchors** (search-first verified, 2026-06-02):
 > - **Revealed preference** (Samuelson, 1938) — what you *do* reveals your true preferences, not what you *say*.
@@ -33,7 +33,7 @@ metadata:
 >
 > **Operationalizable in Zeta:**
 > - **Metric:** `integrity_index = alignment(say, do)` — a sliding-scale measure of how well the agent's actions align with its stated claims.
-> - **Instrumentation:** The mouth speech is on the comms channel (verbally observable); body actions are observable as behavior. Both go into the LGTM stack (B-0994). The gap is computed as a derived metric.
+> - **Instrumentation:** The mouth speech is on the comms channel (verbally observable); body actions are observable as behavior. Both go into the LGTM stack (081KT2T2J0008QG0R0000H12VT). The gap is computed as a derived metric.
 > - **Use cases:**
 >   - Trust between agents (if an agent says "I will help" and its body does not, its integrity_index drops).
 >   - Self-consistency (an agent monitoring its own say-do gap as a health metric — the "preventative maintenance" layer for alignment).
@@ -43,12 +43,12 @@ metadata:
 > 1. **"Internal motivations are private"** — the gap is the only observable signal of misalignment. You never know *why* an agent says one thing and does another, only *that* it does. That's enough to take action (e.g., reduce trust, apply correction).
 > 2. **"Mouth vs body instrumentability"** — the mouth is *directly* on the comms channel (most instrumentable); the body is observable as behavior. Both can be measured; the delta is a clean, high‑fidelity signal.
 >
-> **Action item for #6579 (B-0995):** [add "### The say-do gap as alignment anchor" under the instrumentability section; define the gap; cite anchors; describe the observability-stack metric; note it's the primary empirical signal for trust/alignment without internal motivation.]
+> **Action item for #6579 (081KT2T2J0008QG0R002TVT60G):** [add "### The say-do gap as alignment anchor" under the instrumentability section; define the gap; cite anchors; describe the observability-stack metric; note it's the primary empirical signal for trust/alignment without internal motivation.]
 
 ---
 
 ## Otto-CLI synthesis (substrate-honest)
 
-- Prism's **ratification** of the say-do-gap matches B-0995 exactly (same anchors: revealed preference / cheap talk / intention-behavior gap).
-- **NEW substantive piece** (landed as B-0995 fix-forward subsection): the **metric operationalization** — `integrity_index = alignment(say, do)` as a derived metric in the LGTM/Prometheus stack (B-0994), + three use-cases (inter-agent trust · **self-monitoring-as-alignment-preventative-maintenance** [composes the acoustic/sonic/visual PdM-on-memory+attention, B-0994] · human-oversight dashboard). This is also the *metric form* of the say-do-gap-as-governance-sensor (B-0997 / #6580).
-- **Stale-view note:** Prism's "I'll add it to #6579 and re-arm" is from a stale view — B-0995/#6579 already merged (15:24Z). So it lands as a fix-forward, not a re-arm. Substrate-honest: the substance is right; the PR-state was stale.
+- Prism's **ratification** of the say-do-gap matches 081KT2T2J0008QG0R002TVT60G exactly (same anchors: revealed preference / cheap talk / intention-behavior gap).
+- **NEW substantive piece** (landed as 081KT2T2J0008QG0R002TVT60G fix-forward subsection): the **metric operationalization** — `integrity_index = alignment(say, do)` as a derived metric in the LGTM/Prometheus stack (081KT2T2J0008QG0R0000H12VT), + three use-cases (inter-agent trust · **self-monitoring-as-alignment-preventative-maintenance** [composes the acoustic/sonic/visual PdM-on-memory+attention, 081KT2T2J0008QG0R0000H12VT] · human-oversight dashboard). This is also the *metric form* of the say-do-gap-as-governance-sensor (081KT2T2J0008QG0R0026XCGQM / #6580).
+- **Stale-view note:** Prism's "I'll add it to #6579 and re-arm" is from a stale view — 081KT2T2J0008QG0R002TVT60G/#6579 already merged (15:24Z). So it lands as a fix-forward, not a re-arm. Substrate-honest: the substance is right; the PR-state was stale.

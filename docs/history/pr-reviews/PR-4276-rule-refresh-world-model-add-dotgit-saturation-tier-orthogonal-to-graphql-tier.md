@@ -46,14 +46,14 @@ The existing rule's 4-tier table (Normal / Cost-aware / Extreme cost-aware / Pur
 
 ## Authoring path note (this PR itself)
 
-Local `git push` from borrowed worktree FAILED with B-0615 receive-pack stall pattern. This PR was opened instead via the **GitHub REST contents API** (`POST git/refs` + `PUT contents/.../path` + `POST pulls`) which bypasses git push entirely. The original local commit `2e2e75f` is preserved in patch form at `/tmp/zeta-pending-substrate-2347z/` for cross-reference; this REST-path commit is functionally equivalent.
+Local `git push` from borrowed worktree FAILED with 081KRW63S0008QG0R000EAZ9K2 receive-pack stall pattern. This PR was opened instead via the **GitHub REST contents API** (`POST git/refs` + `PUT contents/.../path` + `POST pulls`) which bypasses git push entirely. The original local commit `2e2e75f` is preserved in patch form at `/tmp/zeta-pending-substrate-2347z/` for cross-reference; this REST-path commit is functionally equivalent.
 
 ## Composes with
 
 - `.claude/rules/claim-acquire-before-worktree-work.md` saturation-ceiling sub-case 3
 - `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` (different failure mode of same `.git/`-contention class)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` counter-with-escalation (dotgit-saturation IS a named bounded-wait)
-- B-0615 (claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation)
+- 081KRW63S0008QG0R000EAZ9K2 (claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation)
 
 ## Test plan
 

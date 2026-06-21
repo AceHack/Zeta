@@ -1,4 +1,4 @@
-// zeta-creds-picker.test.ts — B-0852.3a picker tests.
+// zeta-creds-picker.test.ts — 081KSKBP80008QG0R003AX2A69.3a picker tests.
 //
 // Tests parseArgs (pure) + runPicker (against a mock readline-like interface).
 import { describe, expect, it } from "bun:test";

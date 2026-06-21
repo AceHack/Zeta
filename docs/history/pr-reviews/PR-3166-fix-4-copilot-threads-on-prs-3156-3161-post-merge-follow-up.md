@@ -29,11 +29,11 @@
 
 ## Summary
 
-Both #3156 (B-0506 row) and #3161 (1822Z shard) auto-merged before Copilot's review threads could be addressed — autoMerge is armed once CI passes, and Copilot's findings were advisory (not \`required_conversation_resolution\`). Fixing the 4 findings on main as a small follow-up.
+Both #3156 (081KRHWGX0008QG0R002DPG02X row) and #3161 (1822Z shard) auto-merged before Copilot's review threads could be addressed — autoMerge is armed once CI passes, and Copilot's findings were advisory (not \`required_conversation_resolution\`). Fixing the 4 findings on main as a small follow-up.
 
 ## Findings + fixes
 
-**PR #3156 (B-0506 \`docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md\`)**:
+**PR #3156 (081KRHWGX0008QG0R002DPG02X \`docs/backlog/P3/081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md\`)**:
 
 1. Frontmatter \`type: feature\` vs body "P3 friction-reducer" — changed \`type: feature\` → \`type: chore\` (matches the \`chore(backlog)\` commit prefix; resolves semantic mismatch)
 2. \`Composes with\` listed bare filenames (\`claim-acquire-before-worktree-work.md\`, \`encoding-rules-without-mechanizing.md\`) — added full \`.claude/rules/\` paths for unambiguous nav
@@ -51,8 +51,8 @@ The 4 threads on the merged PRs will be resolved via GraphQL \`resolveReviewThre
 
 ## Test plan
 
-- [x] B-0506 frontmatter aligns with commit prefix
-- [x] B-0506 Composes-with paths are full + navigable
+- [x] 081KRHWGX0008QG0R002DPG02X frontmatter aligns with commit prefix
+- [x] 081KRHWGX0008QG0R002DPG02X Composes-with paths are full + navigable
 - [x] 1822Z shard count is internally consistent
 - [x] Grammar nit fixed
 

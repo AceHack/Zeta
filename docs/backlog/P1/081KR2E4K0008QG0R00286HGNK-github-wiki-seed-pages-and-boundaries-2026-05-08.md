@@ -1,6 +1,5 @@
 ---
-id: B-0299
-zetaid: 081KR2E4K0008QG0R00286HGNK
+id: 081KR2E4K0008QG0R00286HGNK
 priority: P1
 status: open
 title: "GitHub Wiki integration - seed pages and Pages/Wiki boundaries"
@@ -14,7 +13,7 @@ owners: [docs, architect]
 type: friction-reducer
 ---
 
-# B-0299 - Wiki seed pages and boundaries
+# 081KR2E4K0008QG0R00286HGNK - Wiki seed pages and boundaries
 
 Name the initial GitHub Wiki pages and define what belongs on
 the Wiki versus the primary GitHub Pages surface.

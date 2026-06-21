@@ -43,9 +43,9 @@ The root-level \`usb-nixos-installer/\` was the first installer substrate in the
 
 The canonical AI-cluster substrate at \`full-ai-cluster/usb-nixos-installer/\` supersedes it. The canonical version has the SAME content PLUS:
 - \`zeta-install.sh\` (zero-typing install helper)
-- \`zeta-first-boot.sh\` (first-boot service substrate per B-0754)
+- \`zeta-first-boot.sh\` (first-boot service substrate per 081KSGS9H0008QG0R002T3BJ2R)
 - \`flake.lock\` (reproducible build pin)
-- 290-line installer configuration.nix with hardware-firmware enable (B-0754 iter-3) + SSH-key + hashed-password substrate (B-0789 iter-4) + WiFi credential injection (B-0792 iter-5)
+- 290-line installer configuration.nix with hardware-firmware enable (081KSGS9H0008QG0R002T3BJ2R iter-3) + SSH-key + hashed-password substrate (081KSGS9H0008QG0R002T3BJ2R iter-4) + WiFi credential injection (081KSGS9H0008QG0R003V23XNZ iter-5)
 - Larger module ecosystem in \`full-ai-cluster/nixos/modules/\`
 
 ## Why this deletion is safe (substrate-check pre-cleanup audit)
@@ -59,9 +59,9 @@ Per the substrate-check-before-worry-deployment discipline (PR #5291) + Kestrel'
 2. **NOT referenced by tools/ci/audit-installer-substrate.ts** (audits only \`full-ai-cluster/usb-nixos-installer/*\` paths)
 
 3. **4 doc references in backlog/PR-discussion files are HISTORICAL** (describe past substrate state; remain accurate after deletion):
-   - \`docs/backlog/P3/B-0725\` (polyglot-accelerator-hardware-shape)
-   - \`docs/backlog/P1/B-0793\` (role-as-capability-composition)
-   - \`docs/backlog/P1/B-0789\` (iter4-ssh-key-and-hashedpassword)
+   - \`docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4\` (polyglot-accelerator-hardware-shape)
+   - \`docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5\` (role-as-capability-composition)
+   - \`docs/backlog/P1/081KSGS9H0008QG0R002T3BJ2R\` (iter4-ssh-key-and-hashedpassword)
    - \`docs/pr-discussions/PR-5028\` (b-0754-zero-typing-usb-install)
 
    None of these would be broken by deletion; they describe past state which remains true historically.
@@ -77,12 +77,12 @@ Future contributors investigating \"why does/did \`usb-nixos-installer/\` exist?
 
 ## Authored from fresh independent clone
 
-Per Aaron's destructive-git-on-isolated-copies authorization: \"you ahve destruct git authorzation you own your own isolated copies\". The shared checkout at \`/Users/acehack/Documents/src/repos/Zeta\` hit pack corruption mid-session; PR authored from fresh independent clone at \`/private/tmp/zeta-clone-2026-05-26\` (per the B-0828 multi-AI-shared-checkout-convention proposal landing in PR #5310).
+Per Aaron's destructive-git-on-isolated-copies authorization: \"you ahve destruct git authorzation you own your own isolated copies\". The shared checkout at \`/Users/acehack/Documents/src/repos/Zeta\` hit pack corruption mid-session; PR authored from fresh independent clone at \`/private/tmp/zeta-clone-2026-05-26\` (per the 081KSGS9H0008QG0R002H0ENQ1 multi-AI-shared-checkout-convention proposal landing in PR #5310).
 
 ## Composes with
 
-- PR #5310 (Kestrel ferry preservation + B-0826 + B-0827 + B-0828; the cleanup-discipline substrate this PR operates against)
-- B-0824 (canonical generate+join meta-PM substrate the canonical installer composes with)
+- PR #5310 (Kestrel ferry preservation + 081KSGS9H0008QG0R001K8VPV4 + 081KSGS9H0008QG0R00123050G + 081KSGS9H0008QG0R002H0ENQ1; the cleanup-discipline substrate this PR operates against)
+- 081KSGS9H0008QG0R0031PBNGA (canonical generate+join meta-PM substrate the canonical installer composes with)
 - \`.claude/rules/substrate-or-it-didnt-happen.md\` (decision-archaeology pointer in commit message)
 - \`.claude/rules/honor-those-that-came-before.md\` (preserves WHY-this-path-existed before retirement)
 - \`.claude/rules/methodology-hard-limits.md\` (irreversible deletion authorized by operator explicitly)

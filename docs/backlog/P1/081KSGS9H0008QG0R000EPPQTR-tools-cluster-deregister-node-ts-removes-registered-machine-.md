@@ -1,9 +1,8 @@
 ---
-id: B-0814
-zetaid: 081KSGS9H0008QG0R000EPPQTR
+id: 081KSGS9H0008QG0R000EPPQTR
 priority: P1
 status: open
-title: tools/cluster/deregister-node.ts — TS tool that removes a registered machine from git via PR (sibling inverse to iter-5.4.1 self-registration; cluster operators iterate fast in homelab; B-0814)
+title: tools/cluster/deregister-node.ts — TS tool that removes a registered machine from git via PR (sibling inverse to iter-5.4.1 self-registration; cluster operators iterate fast in homelab; 081KSGS9H0008QG0R000EPPQTR)
 effort: S
 ask: aaron 2026-05-26
 created: 2026-05-26
@@ -19,7 +18,7 @@ tags: [cluster-tooling, deregister, gitops, gh-auth, ts-rule-0-compliant, iter-5
 
 ## Problem
 
-iter-5.4.1 (B-0812) registers a machine into git at `maintainers/<operator>/cluster-nodes/<hostname>/`. There is no companion tool to REMOVE a machine from that tree. The maintainer 2026-05-26: *"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"*.
+iter-5.4.1 (081KSGS9H0008QG0R0037H3W4T) registers a machine into git at `maintainers/<operator>/cluster-nodes/<hostname>/`. There is no companion tool to REMOVE a machine from that tree. The maintainer 2026-05-26: *"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"*.
 
 Without a deregister tool, removing a machine requires:
 
@@ -58,7 +57,7 @@ Before any destructive op: `git ls-tree -d origin/main maintainers/<op>/cluster-
 
 ### Sub-target 3 — temp worktree (don't touch operator's primary checkout)
 
-Per Aaron 2026-05-25 "B-0751 primary checkout is SHARED VIEW + FOR HUMAN; agents NEVER touch it" — the tool creates a `mktemp -d` worktree, does the work there, cleans up. Composes with the worktree-hygiene rule landed earlier.
+Per Aaron 2026-05-25 "081KSE6WT0008QG0R003YYC9PV primary checkout is SHARED VIEW + FOR HUMAN; agents NEVER touch it" — the tool creates a `mktemp -d` worktree, does the work there, cleans up. Composes with the worktree-hygiene rule landed earlier.
 
 ### Sub-target 4 — commit + push + PR
 
@@ -85,10 +84,10 @@ Per Aaron 2026-05-25 "B-0751 primary checkout is SHARED VIEW + FOR HUMAN; agents
 
 ## Composes with
 
-- **[B-0794](B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — parent cluster-bring-up substrate
-- **[B-0812](B-0812-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-builds-on-iter-5-4-0-gh-auth-foothold-aaron-2026-05-26.md)** — iter-5.4.1 self-registration; this is the inverse
-- **[B-0813](B-0813-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — iter-5.4.2 ArgoCD reconciler; deregistration relies on the reconciler's `selfHeal + prune` policy to clean up K8s state on PR-merge
-- **[B-0815](../P2/B-0815-cluster-node-registration-heartbeat-expiration-pattern-physical-sync-design-aaron-2026-05-26.md)** — heartbeat/expiration design; this tool is the manual path; B-0815 is the automatic-staleness path
+- **[081KSGS9H0008QG0R0027HJZYH](081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — parent cluster-bring-up substrate
+- **[081KSGS9H0008QG0R0037H3W4T](081KSGS9H0008QG0R0037H3W4T-iter-5-4-1-self-registration-commit-push-to-maintainers-cluster-nodes-builds-on-iter-5-4-0-gh-auth-foothold-aaron-2026-05-26.md)** — iter-5.4.1 self-registration; this is the inverse
+- **[081KSGS9H0008QG0R002K93MWX](081KSGS9H0008QG0R002K93MWX-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — iter-5.4.2 ArgoCD reconciler; deregistration relies on the reconciler's `selfHeal + prune` policy to clean up K8s state on PR-merge
+- **[081KSGS9H0008QG0R000JVGZKG](../P2/081KSGS9H0008QG0R000JVGZKG-cluster-node-registration-heartbeat-expiration-pattern-physical-sync-design-aaron-2026-05-26.md)** — heartbeat/expiration design; this tool is the manual path; 081KSGS9H0008QG0R000JVGZKG is the automatic-staleness path
 
 ## Substrate-inventory pass
 
@@ -96,7 +95,7 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 
 - `grep -rlF "deregister-node"` → none on main; safe
 - `tools/cluster/` directory does NOT yet exist; PR creates it
-- ID B-0814 next-free per `git ls-tree origin/main` (highest = B-0813 in flight via PR #5212)
+- ID 081KSGS9H0008QG0R000EPPQTR next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R002K93MWX in flight via PR #5212)
 
 ## Origin
 

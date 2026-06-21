@@ -65,21 +65,21 @@ back to:
   gradient maintains itself — it is a *sustained* negentropy pump, not a one-shot
   conversion that decays.
 - **Ubuntu (imperative)** has no canonical target state — config is accreted, not
-  declared. install.sh can *convert* it (the B-0940 retrofit: "make Ubuntu behave
+  declared. install.sh can *convert* it (the 081KSV2WD0008QG0R0028NY0MV retrofit: "make Ubuntu behave
   like NixOS") but cannot *self-heal* it the same way, because there is nothing to
   roll back *to*.
 
-This **sharpens the B-0940 NixOS-primary argument, affirmatively**: NixOS is
+This **sharpens the 081KSV2WD0008QG0R0028NY0MV NixOS-primary argument, affirmatively**: NixOS is
 primary not merely because it is declarative, but because declarative-by-
 construction is what turns the converter into a self-maintaining negentropy pump.
 The imperative retrofit gets the *conversion*; only the declarative substrate gets
-the *self-healing*. (See B-0801 autoupgrade, B-0803 deploy.rs auto-rollback,
-B-0804 distro-upgrade canary — the operational machinery of the self-heal.)
+the *self-healing*. (See 081KSGS9H0008QG0R002T6J6FS autoupgrade, 081KSGS9H0008QG0R00280HHA7 deploy.rs auto-rollback,
+081KSGS9H0008QG0R0034ZYYR8 distro-upgrade canary — the operational machinery of the self-heal.)
 
 ### The converter reframes the shield's job
 
 A converter *with a hole* converts some PCs into **broken substrate that reads as
-aligned** — green check, dead capability (the B-0941 false-green: NixOS install
+aligned** — green check, dead capability (the 081KSV2WD0008QG0R0004C8WV8 false-green: NixOS install
 goes green while the local-LLM is non-functional). So `assert-don't-skip`
 (`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`) is not just
 test hygiene — it is the guarantee that the conversion actually produces *aligned*
@@ -95,9 +95,9 @@ a bandwidth-efficient thermodynamic handle (per `bandwidth-served-falsifier` +
 | Metaphor | Operational claim | Anchor |
 |---|---|---|
 | "thermal noise → resource" | unmanaged/high-config-entropy machine → reproducible declarative node doing aligned work | NixOS closure; install.sh; zflash USB/ISO |
-| "self-heal" | drift → atomic rollback to known-good generation | NixOS generations; deploy.rs auto-rollback (B-0803) |
+| "self-heal" | drift → atomic rollback to known-good generation | NixOS generations; deploy.rs auto-rollback (081KSGS9H0008QG0R00280HHA7) |
 | "joins Agora by booting" | new node enters the participation economy by reaching the declared state | Agora society substrate; only-way-to-lose |
-| "shield with a hole" | false-green: control passes without exercising the guarantee | shield/assert-don't-skip rule; B-0941 |
+| "shield with a hole" | false-green: control passes without exercising the guarantee | shield/assert-don't-skip rule; 081KSV2WD0008QG0R0004C8WV8 |
 
 The thermodynamic framing is compression, not metaphysics — it earns its keep by
 handling the install-graph + zflash + NixOS-rollback + Agora-onramp cluster under
@@ -105,10 +105,10 @@ one handle.
 
 ## Composes with
 
-- **B-0940** — NixOS-primary / Ubuntu-value evaluation; this framing is the
+- **081KSV2WD0008QG0R0028NY0MV** — NixOS-primary / Ubuntu-value evaluation; this framing is the
   affirmative why (declarative-by-construction ⇒ self-healing converter; imperative
   retrofit ⇒ converter-only).
-- **B-0941** — the false-green hole; the converter framing makes the stakes
+- **081KSV2WD0008QG0R0004C8WV8** — the false-green hole; the converter framing makes the stakes
   concrete (a hole converts PCs into broken-but-green substrate).
 - `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` — the shield
   that guards the conversion's promise.
@@ -117,7 +117,7 @@ one handle.
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — Agora
   = the AI-native society/economy the converted node joins (Heartland/Country).
 - zflash (USB/ISO flasher) + `full-ai-cluster/nixos/` (the declarative closure
-  that boots real hardware) + B-0801/B-0803/B-0804 (the self-heal machinery).
+  that boots real hardware) + 081KSGS9H0008QG0R002T6J6FS/081KSGS9H0008QG0R00280HHA7/081KSGS9H0008QG0R0034ZYYR8 (the self-heal machinery).
 
 ## Why preserved here
 

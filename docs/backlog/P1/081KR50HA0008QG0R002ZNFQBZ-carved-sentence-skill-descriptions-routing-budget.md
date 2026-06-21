@@ -1,6 +1,5 @@
 ---
-id: B-0347
-zetaid: 081KR50HA0008QG0R002ZNFQBZ
+id: 081KR50HA0008QG0R002ZNFQBZ
 priority: P1
 status: open
 title: "Carved-sentence skill descriptions — fit 200+ skills into routing budget"
@@ -16,7 +15,7 @@ type: friction-reducer
 tags: [skill-routing, context-budget, carved-sentence]
 ---
 
-# B-0347 — Carved-sentence skill descriptions
+# 081KR50HA0008QG0R002ZNFQBZ — Carved-sentence skill descriptions
 
 ## Problem
 
@@ -76,7 +75,7 @@ description: Elasticsearch / OpenSearch — shards, ILM,
   gate (descriptions can no longer silently regrow past the cap).
 - [ ] Routing quality verified: spot-check 10 skills by
   asking the router and confirming correct match
-  — still open (B-0347.4 router-verification sub-step).
+  — still open (081KR50HA0008QG0R002ZNFQBZ.4 router-verification sub-step).
 
 ## Immediate mitigation (done)
 
@@ -86,14 +85,14 @@ a band-aid — the structural fix is shorter descriptions.
 
 ## Composes with
 
-- B-0161 (CLAUDE.md trim) — same context-budget pressure
+- 081KQJZR90008QG0R002Z4B6VW (CLAUDE.md trim) — same context-budget pressure
 - The skill-router-as-substrate-inventory CLAUDE.md bullet
 - `skill-tune-up` and `skill-improver` — they can execute
   the carving pass
 
 ## Re-decomposition (pass 2, 2026-05-29 — substrate-drift-aware)
 
-Pass-1 split the row into 4 carve-by-category children (B-0347.1-.4).
+Pass-1 split the row into 4 carve-by-category children (081KR50HA0008QG0R002ZNFQBZ.1-.4).
 Twenty days later the carving has *shipped* — 257/257 descriptions are
 ≤150 chars, single-line, boilerplate-free — so the pass-1 children are
 substrate-drift, not live work. Re-decomposed against the *actual*
@@ -101,26 +100,26 @@ remaining state per `backlog-item-start-gate.md` Step 0:
 
 ### Pass-1 children — disposition
 
-- **B-0347.1-.3 (carve infra / reviewer / data-AI by category)** —
+- **081KR50HA0008QG0R002ZNFQBZ.1-.3 (carve infra / reviewer / data-AI by category)** —
   SUPERSEDED-as-shipped. The carving completed via batch PRs (#2266,
   #2298, #6020, #6023, …) rather than separate child files; no child
   row files were ever created for `.1-.3` and none are needed now.
-- **B-0347.4 (carve remaining + router verification + audit gate)** —
+- **081KR50HA0008QG0R002ZNFQBZ.4 (carve remaining + router verification + audit gate)** —
   SHIPPED for the carve + audit-gate half via PR #6029
   (`tools/hygiene/audit-skill-description-length.ts` + test). The
-  router-verification sub-step is carried forward as B-0347.5 below.
+  router-verification sub-step is carried forward as 081KSRGFP0008QG0R0037CJXA8 below.
 
 ### Pass-2 children — live remaining work (dependency-ordered)
 
-- **B-0347.5** (P1, buildable-now) — Router-quality verification:
+- **081KSRGFP0008QG0R0037CJXA8** (P1, buildable-now) — Router-quality verification:
   spot-check ≥10 carved descriptions via the router. Closes the only
-  open acceptance criterion (#4). **Umbrella `depends_on: [B-0347.5]`
+  open acceptance criterion (#4). **Umbrella `depends_on: [081KSRGFP0008QG0R0037CJXA8]`
   — closure blocks here.**
-- **B-0347.6** (P2, buildable-now) — CI-wire the audit gate so the cap
+- **081KSRGFP0008QG0R00059AM3C** (P2, buildable-now) — CI-wire the audit gate so the cap
   is *enforced*, not just checkable (precedent:
   `role-ref-current-state-surfaces-lint.yml`). Robustness-hardening on
   the shipped tool; does not block umbrella closure.
-- **B-0347.7** (P3, buildable-now) — Tighten the 127 descriptions in
+- **081KSRGFP0008QG0R002SV9GGY** (P3, buildable-now) — Tighten the 127 descriptions in
   the 120-150 band to the ≤120 *preferred* target (rule 1). Advisory
   polish; the hard ≤150 cap is already met + gated; does not block
   umbrella closure and may outlive it.
@@ -128,7 +127,7 @@ remaining state per `backlog-item-start-gate.md` Step 0:
 Each child: one PR, focused check (audit tool run / router spot-check /
 workflow validate), no skill-body changes.
 
-## Status (2026-05-29) — B-0347.4 audit-gate slice landed
+## Status (2026-05-29) — 081KR50HA0008QG0R002ZNFQBZ.4 audit-gate slice landed
 
 Substrate-drift discriminator (per `backlog-item-start-gate.md`
 Step 0): the bulk carving artifacts already shipped in the 20 days
@@ -149,12 +148,12 @@ descriptions); fixed with a line-based parser + a regression test.
 
 Remaining (NOT in this slice):
 
-- **B-0347.4 router-verification** — spot-check 10 skills via the
+- **081KR50HA0008QG0R002ZNFQBZ.4 router-verification** — spot-check 10 skills via the
   router (acceptance #4); still open.
 - **CI wiring** — add a `.github/workflows/` lint that runs the
   audit (precedent: `role-ref-current-state-surfaces-lint.yml`);
   next bounded step.
-- **B-0347.1-.3 ≤120 tightening** — 127 descriptions sit in the
+- **081KR50HA0008QG0R002ZNFQBZ.1-.3 ≤120 tightening** — 127 descriptions sit in the
   120-150 band (rule 1 *preferred* ≤120). Advisory (warnings, not
   errors); optional carve-tighter pass, low priority since the
   hard cap is met.

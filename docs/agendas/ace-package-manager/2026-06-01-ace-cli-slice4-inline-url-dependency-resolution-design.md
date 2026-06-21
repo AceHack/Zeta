@@ -5,7 +5,7 @@
 - **Status:** approved (the human maintainer 2026-06-01) — spec for implementation
 - **Builds on:** slice 1 (content-addressed store), slice 2 (content-hash integrity), slice 3 (Ed25519 authenticity)
 - **Agenda:** `docs/agendas/ace-package-manager/AGENDA.md` (lifecycle stages distribute → discover → verify → grow)
-- **Backlog:** B-0288
+- **Backlog:** 081KR2E4K0008QG0R002YE3MMD
 
 ## Goal
 

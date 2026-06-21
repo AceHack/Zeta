@@ -106,7 +106,7 @@ green). The as-built confirms the treaty's *principle* with concrete numbers:
 
 - `Core.Blake3.Blake3Hasher` / `IContentHasher` (the 128-bit ContentAddress path) · `ZSetMerkle` /
   `ContentStore` (consume the 128-bit address) · ZetaId (the typed-word lineage — version/category/payload)
-  · umbrella `081KTH323AK` (4-lang catch-up) · B-0959 (4-oracle checklist) · the no-binary-in-proof-lineage
+  · umbrella `081KTH323AK` (4-lang catch-up) · 081KSXN940008QG0R003FCQ7WT (4-oracle checklist) · the no-binary-in-proof-lineage
   rule (full digest in golden vectors as hex).
 
 ## Beacon anchors

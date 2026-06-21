@@ -374,7 +374,7 @@ Aaron 2026-06-02: 'combines with our perfect navigator + altitude controls, we
 have hvac agent controls now in agora ecosystem fast lane'. The atmosphere has a
 cockpit: navigator=heading (menu=unem/observe.ts move-next), altitude=MSAW (the
 msaw anchor was always the altitude control — safety floor), HVAC=atmosphere
-regulation — already shipped in the B-0890 fast lane. msaw fold pays off.
+regulation — already shipped in the 081KSNY2Z0008QG0R0017JSTGD fast lane. msaw fold pays off.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

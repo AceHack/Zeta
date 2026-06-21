@@ -35,7 +35,7 @@
 - Adds `tests/Core.CSharp.Tests/` with 6 round-trip tests; corrects weight assertions (GroupBySumOp emits weight 1L per group)
 - Configures the test project to match `Tests.CSharp` conventions (LangVersion, NoWarn xUnit1051, GlobalUsings)
 
-Closes B-0445.
+Closes 081KRFA460008QG0R002JQERS5.
 
 ## Test plan
 

@@ -1,6 +1,6 @@
 ---
 pr_number: 4595
-title: "tick(1208Z): orphaned-branch verification \u2014 B-0623 Adinkras+ECC not-yet-rescued, in active decomposition"
+title: "tick(1208Z): orphaned-branch verification \u2014 081KRW63S0008QG0R000QJR08H Adinkras+ECC not-yet-rescued, in active decomposition"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-22T12:13:33Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-22T13:20:25Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4595: tick(1208Z): orphaned-branch verification — B-0623 Adinkras+ECC not-yet-rescued, in active decomposition
+# PR #4595: tick(1208Z): orphaned-branch verification — 081KRW63S0008QG0R000QJR08H Adinkras+ECC not-yet-rescued, in active decomposition
 
 ## PR description
 
@@ -22,7 +22,7 @@ Fresh cold-boot Otto-CLI autonomous-loop tick during 3-proc Lior saturation. Roo
 
 One new commit landed on `otto/2012z-...` after the 0149Z triage:
 
-- `81243c5d1` (2026-05-22T01:26Z) — `feat(B-0623): implement Adinkras and Jane Gates ECC Private State Encryption`
+- `81243c5d1` (2026-05-22T01:26Z) — `feat(081KRW63S0008QG0R000QJR08H): implement Adinkras and Jane Gates ECC Private State Encryption`
   - `src/Core/BinaryCode.fs` (+386 lines)
   - `tests/Tests.FSharp/Algebra/Adinkra.Tests.fs` (+152 lines)
 
@@ -30,7 +30,7 @@ One new commit landed on `otto/2012z-...` after the 0149Z triage:
 
 - `git ls-tree origin/main src/Core/BinaryCode.fs` returns empty → file is NOT on main
 - `git diff origin/main..81243c5d1 -- src/Core/BinaryCode.fs | wc -l` = 392 lines → genuine unique substrate
-- B-0623 is in active peer-agent decomposition:
+- 081KRW63S0008QG0R000QJR08H is in active peer-agent decomposition:
   - [#4587](https://github.com/Lucent-Financial-Group/Zeta/pull/4587) — Cayley-Dickson doubling primitive (merged)
   - [#4582](https://github.com/Lucent-Financial-Group/Zeta/pull/4582) — dual-Adinkra time-aware-default (merged)
   - [#4584](https://github.com/Lucent-Financial-Group/Zeta/pull/4584) — Adinkra primer (merged)
@@ -82,7 +82,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds a new hygiene-history tick shard documenting an orphaned-branch verification for a fresh cold-boot session, recording that a large B-0623 “Adinkras + ECC” commit exists on a stale `otto/2012z-...` branch but should not be re-landed because B-0623 is already being decomposed into incremental PR slices on `origin/main`.
+Adds a new hygiene-history tick shard documenting an orphaned-branch verification for a fresh cold-boot session, recording that a large 081KRW63S0008QG0R000QJR08H “Adinkras + ECC” commit exists on a stale `otto/2012z-...` branch but should not be re-landed because 081KRW63S0008QG0R000QJR08H is already being decomposed into incremental PR slices on `origin/main`.
 
 **Changes:**
 - Adds tick shard `1208Z` capturing the verification outcome and “substrate-honest non-action” disposition.

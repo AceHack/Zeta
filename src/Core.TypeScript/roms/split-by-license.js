@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // split-by-license.ts -- split ROM files into a tracked safe directory and an
-// untracked unsafe directory based on an allowlist manifest. Part of B-0273.
+// untracked unsafe directory based on an allowlist manifest. Part of 081KR2E4K0008QG0R001JC6S3N.
 //
 // Usage:
 //   bun tools/roms/split-by-license.ts --rom-dir <dir> --safe-dir <dir> --unsafe-dir <dir> --allowlist <path>
@@ -9,7 +9,7 @@
 // Output (default dry-run): JSON array of { file, classification, moved }.
 // --apply: actually moves files. Default is report-only because the failure
 // mode (silently moving the wrong file across the legal safe/unsafe boundary)
-// has the "legal blast radius" framing of B-0083 -- so moves are opt-in,
+// has the "legal blast radius" framing of 081KQ8P5D0008QG0R001590WJ3 -- so moves are opt-in,
 // mirroring the sibling tools/roms/canonicalize.ts --apply discipline.
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync } from "node:fs";
 import { extname, join } from "node:path";
@@ -56,7 +56,7 @@ export function isSafeFilename(name) {
 }
 // Parse an allowlist manifest: one bare filename per line, blank lines and
 // `#` comment lines ignored. Comments carry the per-ROM license citation
-// required by B-0083 acceptance criteria; the parser drops them so they do
+// required by 081KQ8P5D0008QG0R001590WJ3 acceptance criteria; the parser drops them so they do
 // not affect matching.
 export function parseAllowlist(content) {
     const names = new Set();

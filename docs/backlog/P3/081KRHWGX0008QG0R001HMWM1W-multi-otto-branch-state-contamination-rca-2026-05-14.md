@@ -1,6 +1,5 @@
 ---
-id: B-0519
-zetaid: 081KRHWGX0008QG0R001HMWM1W
+id: 081KRHWGX0008QG0R001HMWM1W
 priority: P3
 status: open
 title: "Multi-Otto branch-state contamination — RCA + mechanization candidate"
@@ -26,9 +25,9 @@ Documented in shards:
 - `1834Z.md` — branch-name collision on `shard/tick-1834Z-...`
 - `1851Z.md` — local branch confusion at commit time
 - `1856Z.md` — multi-Otto branch-state untangle procedure documented
-- `1905Z.md` — parallel-Otto carried over `B-0515` file
+- `1905Z.md` — parallel-Otto carried over `081KRHWGX0008QG0R0018VR3SK` file
 - `1908Z.md` — `git checkout -f origin/main` workaround
-- `1927Z.md` — B-0516 → B-0517 renumber due to parallel-Otto ID collision
+- `1927Z.md` — 081KRHWGX0008QG0R001BPYWTT → 081KRHWGX0008QG0R0029X10F4 renumber due to parallel-Otto ID collision
 
 ## RCA hypotheses
 
@@ -36,7 +35,7 @@ Documented in shards:
 
 2. **Stash auto-pop hazard**: long-lived prior-session stashes occasionally auto-popped during routine `git stash push <untracked>` workflows, introducing conflict markers in unrelated files (caught in 1817Z shard).
 
-3. **Worktree directory mismatch**: stale `/private/tmp/zeta-*` worktree directories deleted from disk but their `.git/worktrees/<name>/` admin entries persist; `git checkout <branch>` fails with "branch already used by worktree at <missing-path>." B-0506 captured the prune-cadence mechanization.
+3. **Worktree directory mismatch**: stale `/private/tmp/zeta-*` worktree directories deleted from disk but their `.git/worktrees/<name>/` admin entries persist; `git checkout <branch>` fails with "branch already used by worktree at <missing-path>." 081KRHWGX0008QG0R002DPG02X captured the prune-cadence mechanization.
 
 4. **Implicit branch switching**: `git reset --hard origin/<remote>` doesn't switch to a local branch of the same name; it resets the CURRENT branch to the remote's commit. Commits go to whichever local branch HEAD points at.
 
@@ -137,10 +136,10 @@ Field-test trail:
   (peer-Otto cleared 7 candidates; multi-session was the missed one)
 - Root cause shard: `docs/hygiene-history/ticks/2026/05/15/0615Z.md`
   (PID-level diagnostic landed in PR #3370)
-- Mechanization row: [B-0530 cron-sentinel-mutex](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
+- Mechanization row: [081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex](081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md)
   (P3, effort S, filed 2026-05-15)
 
-Mechanization candidate (see B-0530 for full detail): `pgrep -fl
+Mechanization candidate (see 081KRMEXM0008QG0R000X1PPGC for full detail): `pgrep -fl
 claude-code.*Otto` at the top of `<<autonomous-loop>>`; if a peer
 Otto-CLI process is detected, bus-publish a "deferred" envelope and
 exit cleanly.
@@ -199,7 +198,7 @@ that owns it is the only party that can responsibly resume or abort.
 
 ### Substantial
 
-Per-Otto-process git worktree isolation. Each Otto session gets a dedicated `/private/tmp/zeta-<session-id>/` worktree that's never touched by other processes. Already partially-implemented in some shards (the `--worktree` field on bus claim envelopes per B-0444) but not consistently used by Otto-CLI sessions.
+Per-Otto-process git worktree isolation. Each Otto session gets a dedicated `/private/tmp/zeta-<session-id>/` worktree that's never touched by other processes. Already partially-implemented in some shards (the `--worktree` field on bus claim envelopes per 081KRFA460008QG0R001SXP0C2) but not consistently used by Otto-CLI sessions.
 
 ### Out-of-scope here
 
@@ -207,9 +206,9 @@ Full multi-Otto orchestrator that allocates work + worktrees + branch names with
 
 ## Composes with
 
-- B-0400 (bus protocol — coordination substrate)
-- B-0444 (bus claim envelope worktree field — sibling discipline)
-- B-0506 (worktree prune cadence — clears stale entries)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — coordination substrate)
+- 081KRFA460008QG0R001SXP0C2 (bus claim envelope worktree field — sibling discipline)
+- 081KRHWGX0008QG0R002DPG02X (worktree prune cadence — clears stale entries)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (the discipline this RCA supports)
 - `.claude/hooks/verify-branch-pretooluse.ts` (existing pre-commit branch verifier)
 

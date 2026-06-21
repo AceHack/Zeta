@@ -1,6 +1,5 @@
 ---
-id: B-0298
-zetaid: 081KR2E4K0008QG0R000260AAZ
+id: 081KR2E4K0008QG0R000260AAZ
 priority: P1
 status: open
 title: "Pages discoverability - frontend DORA metric definitions"
@@ -14,7 +13,7 @@ owners: [observability, qa]
 type: friction-reducer
 ---
 
-# B-0298 - Pages frontend DORA metrics
+# 081KR2E4K0008QG0R000260AAZ - Pages frontend DORA metrics
 
 Define the DORA measurement layer for the GitHub Pages
 deployment path without creating a second observability

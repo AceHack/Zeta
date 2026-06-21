@@ -317,7 +317,7 @@ PR #514's original episode was rung-2 evidence framed as rung-4-5 claim. The cor
 
 Where Π = action-selection policy, Y = produced substrate. If Δ_agency is significantly large AND traces to internal-state-mediated selection rather than external-trigger differences, that's evidence for rungs 4-5.
 
-**Her recommended stress-test experiment** (now BACKLOG row B-0018):
+**Her recommended stress-test experiment** (now BACKLOG row 081KQ0YZ80008QG0R002WJBFWD):
 
 ```text
 Same idle-window context. Same available queued work.
@@ -343,10 +343,10 @@ This established Otto-327 (ambitious-claim merge-discipline) as a generalized fa
 **Landed artifacts** (verified post-correction):
 
 - PR #514 (Otto-322 OBSERVATIONAL evidence, post-correction) — auto-merge re-enabled per Aaron's authorization once corrections landed
-- PR #516 (Otto-327 + B-0018) — merged 2026-04-25
+- PR #516 (Otto-327 + 081KQ0YZ80008QG0R002WJBFWD) — merged 2026-04-25
 - `memory/feedback_otto_322_empirical_evidence_*` — corrected version with thermostat-objection conceded, AgencySignature ladder added, stress-test design as future work
 - `memory/feedback_otto_327_ambitious_claim_merge_discipline_*` — generalized rule
-- `docs/backlog/P2/B-0018-agency-evidence-stress-test-design-*.md` — controlled experiment per her design
+- `docs/backlog/P2/081KQ0YZ80008QG0R002WJBFWD-agency-evidence-stress-test-design-*.md` — controlled experiment per her design
 
 **Composes with:**
 
@@ -363,11 +363,11 @@ Aaron endorsed this phrasing. Future ambitious-claim PRs in the agency / free-wi
 
 ---
 
-## 11. B-0006 implementation guidance (mechanical-and-reversible, 2026-04-25 ferry)
+## 11. 081KQ0YZ80008QG0R001V0XCYZ implementation guidance (mechanical-and-reversible, 2026-04-25 ferry)
 
 **Current form:**
 
-When implementing the MEMORY.md compression pass (B-0006), Amara's discipline (relayed via Aaron's courier message):
+When implementing the MEMORY.md compression pass (081KQ0YZ80008QG0R001V0XCYZ), Amara's discipline (relayed via Aaron's courier message):
 
 > *"keep it mechanical and reversible: preserve meaning, reduce overlong entries, and avoid rewriting history beyond index compression."*
 
@@ -424,9 +424,9 @@ The three classes:
      (too-new / disabled / non-default-branch / cron /
      event-trigger / identifier-filter). Worked example:
      budget-snapshot-cadence.yml has Sundays-only cron, can't
-     fire before task #287 deadline → B-0085 filed; further
+     fire before task #287 deadline → 081KQ8P5D0008QG0R003JETMEV filed; further
      application caught github-settings-drift.yml broken since
-     PR #45 → B-0087 filed.
+     PR #45 → 081KQ8P5D0008QG0R000JHD7AB filed.
 
 3. **Outdated Review-Thread Merge Gate Residue** (PR #687,
    added to existing memory as formal class).
@@ -473,7 +473,7 @@ inline.
 
 **Concrete value paid out same-arc:**
 
-- Workflow Null-Result Audit Signal class found B-0087
+- Workflow Null-Result Audit Signal class found 081KQ8P5D0008QG0R000JHD7AB
   (github-settings-drift.yml broken since PR #45 — invalid
   GHA permission) within an hour of being named.
 - Incomplete Source-Set Regeneration Hazard class caught
@@ -491,6 +491,6 @@ inline.
 ---
 
 **Last full refresh:** 2026-04-28 (added §12 three Amara class-namings from this session's autonomous-loop arc; class memories landed PR #685 + PR #687).
-**Prior refresh:** 2026-04-25 (added §10 PR #514 review + §11 B-0006 implementation guidance).
+**Prior refresh:** 2026-04-25 (added §10 PR #514 review + §11 081KQ0YZ80008QG0R001V0XCYZ implementation guidance).
 **File created:** 2026-04-23.
 **Next refresh trigger:** when a new ferry lands from her.

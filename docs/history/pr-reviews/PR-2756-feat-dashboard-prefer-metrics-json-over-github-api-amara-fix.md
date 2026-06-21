@@ -41,8 +41,8 @@ Addresses Amara's #2 critique (2026-05-11): GitHub's unauthenticated REST API ha
 - For sustained-idle periods, stale-but-rendered beats rate-limited
 
 **Composes with:**
-- B-0414 (metrics.json generator — already shipped)
-- B-0413 (OAuth tier — future authenticated path bypasses rate limit entirely)
+- 081KRA5AR0008QG0R0021SSM9R (metrics.json generator — already shipped)
+- 081KRA5AR0008QG0R003DVPANH (OAuth tier — future authenticated path bypasses rate limit entirely)
 
 ## Test plan
 

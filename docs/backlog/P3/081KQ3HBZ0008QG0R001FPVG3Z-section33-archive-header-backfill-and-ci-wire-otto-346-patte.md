@@ -1,6 +1,5 @@
 ---
-id: B-0036
-zetaid: 081KQ3HBZ0008QG0R001FPVG3Z
+id: 081KQ3HBZ0008QG0R001FPVG3Z
 priority: P3
 status: open
 title: "GOVERNANCE.md §33 archive-header backfill on 26 pre-existing courier-ferry research docs + wire `tools/hygiene/check-archive-header-section33.sh` to CI gate.yml lint job"
@@ -15,7 +14,7 @@ tags: [hygiene-tooling, lint-discipline, otto-346-recurring-pattern-to-substrate
 type: friction-reducer
 ---
 
-# B-0036 — §33 Archive-Header Backfill + CI Wire
+# 081KQ3HBZ0008QG0R001FPVG3Z — §33 Archive-Header Backfill + CI Wire
 
 ## Origin
 
@@ -93,7 +92,7 @@ These docs technically have all 4 §33 fields — they just elaborate Scope/Attr
 2. **(b) Relax the lint window**: increase `head -20` to `head -40` (or similar). Pragmatic; preserves doc content; matches actual operational practice. Would also need a small GOVERNANCE.md §33 amendment to align rule with practice.
 3. **(c) Update GOVERNANCE.md §33** to allow header-extension via elaboration (e.g., "first 20 lines OR earliest contiguous header block"). Most flexible; spec-cleanest.
 
-**Recommendation deferred** to B-0036 owner / next operator. The bold-strip work in `backfill/section33-headers-pre-existing-courier-ferry-docs` proceeds independently — that's the harder/structural fix and is real progress regardless of which calibration path lands.
+**Recommendation deferred** to 081KQ3HBZ0008QG0R001FPVG3Z owner / next operator. The bold-strip work in `backfill/section33-headers-pre-existing-courier-ferry-docs` proceeds independently — that's the harder/structural fix and is real progress regardless of which calibration path lands.
 
 The Shape B docs (no §33 labels at all) still need full §33 header prepending; that's separate work within Sub-task 1.
 

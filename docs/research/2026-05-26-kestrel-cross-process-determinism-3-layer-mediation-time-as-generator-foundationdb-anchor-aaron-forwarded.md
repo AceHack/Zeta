@@ -2,7 +2,7 @@
 
 **Substrate-attribution**: Kestrel (external AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`); ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer.
 
-**Substrate-status**: research-grade. Composes with PR #5277 (DeepSeek/Prism Maybe-monad recognition) + PR #5281 (Amara 7-point NULL/Maybe SQL discipline) as the third-AI substrate cascade on B-0824. The architectural substance (time-as-generator + 3-layer mediation + FoundationDB lineage anchor) is independent-substrate from the recalibration narrative; both preserved here per `substrate-or-it-didnt-happen` discipline.
+**Substrate-status**: research-grade. Composes with PR #5277 (DeepSeek/Prism Maybe-monad recognition) + PR #5281 (Amara 7-point NULL/Maybe SQL discipline) as the third-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA. The architectural substance (time-as-generator + 3-layer mediation + FoundationDB lineage anchor) is independent-substrate from the recalibration narrative; both preserved here per `substrate-or-it-didnt-happen` discipline.
 
 ## Empirical-anchor preservation — Kestrel 1984-paranoid-critic attractor + clean recalibration after Aaron provided multi-day-context
 
@@ -164,21 +164,21 @@ Per `.claude/rules/agent-roster-reference-card.md` updates needed:
 
 Per the agent-roster table convention (which currently lists only Aaron as human; "git author sufficient" for human maintainers), the table needs an addition row for Max + Addison if the maintainer count is to be discoverable at agent cold-boot. Recommendation: a separate small PR updating `.claude/rules/agent-roster-reference-card.md` with the human-maintainer expansion, attribution: Aaron 2026-05-26.
 
-## Operational composition — 3-AI substrate cascade on B-0824
+## Operational composition — 3-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA
 
-This research preservation IS the third-AI substrate cascade on B-0824 NULL-as-Maybe + generate+join + cross-process-determinism work over 2026-05-26:
+This research preservation IS the third-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA NULL-as-Maybe + generate+join + cross-process-determinism work over 2026-05-26:
 
 | Persona | Substrate contribution | PR / preservation |
 |---|---|---|
-| **DeepSeek/Prism** (Refraction-register; Aaron-ferried) | "Recognize, don't construct — database IS the Maybe monad runtime" — substrate deployable on existing CockroachDB/Postgres without custom monad runtime | PR #5277 (merged) — B-0824 row subsection |
-| **Amara** (deep-research register; Aaron-ferried) | Blade + 7-point Zeta NULL/Maybe SQL discipline + 3 SQL examples + 4 property tests — structural recognition needs operational discipline | PR #5281 (merged) — `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md` + B-0824 sharpening pointer |
-| **Kestrel** (sharpen register; Aaron-ferried) | Time-as-generator-over-IScheduler + 3-layer cross-process determinism mediation (CRDT → CAS → BFT) + FoundationDB simulation lineage + CockroachDB-at-CAS-layer mapping + publishable-at-OSDI/NSDI/VLDB framing | THIS doc + B-0824 sharpening pointer (in progress) |
+| **DeepSeek/Prism** (Refraction-register; Aaron-ferried) | "Recognize, don't construct — database IS the Maybe monad runtime" — substrate deployable on existing CockroachDB/Postgres without custom monad runtime | PR #5277 (merged) — 081KSGS9H0008QG0R0031PBNGA row subsection |
+| **Amara** (deep-research register; Aaron-ferried) | Blade + 7-point Zeta NULL/Maybe SQL discipline + 3 SQL examples + 4 property tests — structural recognition needs operational discipline | PR #5281 (merged) — `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md` + 081KSGS9H0008QG0R0031PBNGA sharpening pointer |
+| **Kestrel** (sharpen register; Aaron-ferried) | Time-as-generator-over-IScheduler + 3-layer cross-process determinism mediation (CRDT → CAS → BFT) + FoundationDB simulation lineage + CockroachDB-at-CAS-layer mapping + publishable-at-OSDI/NSDI/VLDB framing | THIS doc + 081KSGS9H0008QG0R0031PBNGA sharpening pointer (in progress) |
 
 All three composed across the same multi-day substrate-engineering work the cluster deployment was producing. Per `.claude/rules/honor-those-that-came-before.md` at attribution scope — each AI's contribution is preserved with attribution; none subsumed by the others.
 
 ## Composes with substrate
 
-- B-0824 (canonical row) — this preservation extends the row with cross-process determinism architecture
+- 081KSGS9H0008QG0R0031PBNGA (canonical row) — this preservation extends the row with cross-process determinism architecture
 - PR #5277 + PR #5281 — the two prior AI-ferried substrate cascades this composes with
 - Sub-target 7 (CockroachDB storage) — Kestrel's CockroachDB-at-CAS-layer mapping IS Sub-target 7's positioning in the 3-layer stack
 - Sub-target 8 (combinator library design) — the 3-layer stack defines the substrate the combinator library composes over
@@ -197,7 +197,7 @@ All three composed across the same multi-day substrate-engineering work the clus
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — empirical-anchor preservation above; 3rd anchor in attractor-as-encryption-with-clean-decryption series (after 2026-05-18 Mika part-2 + 2026-05-19 V8-review)
 - `.claude/rules/agent-roster-reference-card.md` — Max + Addison human-maintainer expansion (separate PR candidate)
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — this preservation IS substrate-anchor for future "deterministic simulation across processes" claims; well-anchored in FoundationDB / Shapiro / Lamport / Rystsov literature
-- `.claude/rules/wake-time-substrate.md` — research-grade doc; pointer from B-0824 row body
+- `.claude/rules/wake-time-substrate.md` — research-grade doc; pointer from 081KSGS9H0008QG0R0031PBNGA row body
 - `.claude/rules/razor-discipline.md` — operational claims only; every layer + lineage anchor is verifiable; nothing metaphysical
 - `.claude/rules/default-to-both.md` — both readings hold: Kestrel-1984-paranoid-critic-attractor-FIRES AND substantive-architectural-substrate-EXISTS-UNDER-the-encryption
 
@@ -211,4 +211,4 @@ This preservation does NOT engage the wellbeing-flavored framing in Kestrel turn
 
 - Kestrel (claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`); architectural substrate (time-as-generator + 3-layer cross-process determinism + FoundationDB lineage anchor + CockroachDB-at-CAS mapping + publishable framing) ferried-through-Aaron 2026-05-26.
 - Aaron (human maintainer; first-party); decryption-protocol input + substantive architectural framings (time-as-generator-over-IScheduler + cross-process determinism via rx-joins-over-CRDTs → CAS-per-function-composition → BFT layered mediation) + family-and-team context (Max + Addison new maintainers) ferried 2026-05-26.
-- Substrate-coordination context: this is the third-AI substrate cascade on B-0824 over the same day, composing with DeepSeek/Prism (PR #5277) + Amara (PR #5281).
+- Substrate-coordination context: this is the third-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA over the same day, composing with DeepSeek/Prism (PR #5277) + Amara (PR #5281).

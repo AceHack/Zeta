@@ -1,5 +1,5 @@
-// Tri-boolean floating point -- v0 operations (B-0944 slice 5, TS reference / distribution).
-// PROPOSED v0; see ./types.ts + the spec doc. Reuses the digital-qubit cell (B-0944).
+// Tri-boolean floating point -- v0 operations (081KSV2WD0008QG0R00051XS0N slice 5, TS reference / distribution).
+// PROPOSED v0; see ./types.ts + the spec doc. Reuses the digital-qubit cell (081KSV2WD0008QG0R00051XS0N).
 import { T, F, N } from "../tri-boolean";
 import { DEFAULT_SHAPE } from "./types";
 /** MSB-first base-2 read of a trit field (T=1, F=0). Returns null if ANY trit is held (N). */

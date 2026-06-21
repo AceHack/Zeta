@@ -72,7 +72,7 @@ cascade** (cf. `Db.PushDown`): a secret resolves from the most specific scope an
 ## `zflash` + QEMU: prefer non-password auth (#7006)
 
 `zflash` is our USB creator (`tools/zflash`, `full-ai-cluster/tools/zflash*.ts`) with a QEMU test
-harness (`.github/workflows/zflash-qemu-test.yml`, B-0891 5-scenario matrix). Aaron (#7006): *support
+harness (`.github/workflows/zflash-qemu-test.yml`, 081KSNY2Z0008QG0R0008PN7RQ 5-scenario matrix). Aaron (#7006): *support
 **non-password-based** auth for the QEMU tests; for interactive password-based auth you'd need a GH /
 key-manager-CLI secret for my GH password.*
 

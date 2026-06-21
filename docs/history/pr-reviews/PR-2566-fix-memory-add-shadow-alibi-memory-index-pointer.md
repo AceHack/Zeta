@@ -19,7 +19,7 @@
 | Created at | 2026-05-10T22:47:38Z |
 | Merged at | 2026-05-10T23:02:00Z |
 | Merge commit SHA | `10222a255570abafe81ec0e13a3bb26ab3bb3c96` |
-| Branch | `claim/B-0354-fresh-instance-validation-smallest-slice-riven-2026-05-10` |
+| Branch | `claim/081KR50HA0008QG0R001CNS20T-fresh-instance-validation-smallest-slice-riven-2026-05-10` |
 | Base branch | `main` |
 | URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2566 |
 | Changed files | 1 |
@@ -94,7 +94,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 - **`Copilot` (bot)** at 2026-05-10T22:50:17Z on `memory/MEMORY.md`:5 (association: NONE)
 
   <pre>
-  PR title/description mention completing the B-0354 start-gate / backlog-row work, but this change set (as shown here) only updates memory/MEMORY.md and adds a new memory file. If the B-0354 row was updated, it looks missing from this PR; otherwise consider adjusting the PR title/description to match the actual changes.
+  PR title/description mention completing the 081KR50HA0008QG0R001CNS20T start-gate / backlog-row work, but this change set (as shown here) only updates memory/MEMORY.md and adds a new memory file. If the 081KR50HA0008QG0R001CNS20T row was updated, it looks missing from this PR; otherwise consider adjusting the PR title/description to match the actual changes.
   </pre>
 
 ### Thread 4 -- resolved [collapsed]
@@ -123,7 +123,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 - **`Copilot` (bot)** at 2026-05-10T22:54:38Z on `memory/MEMORY.md`:7 (association: NONE)
 
   <pre>
-  The PR title/description focuses on B-0354 start-gate/worktree claim work, but the only change in this PR is adding a MEMORY.md index entry unrelated to B-0354. Either update the PR description/title to match the actual change, or include the backlog-row/start-gate edits that the description claims were completed.
+  The PR title/description focuses on 081KR50HA0008QG0R001CNS20T start-gate/worktree claim work, but the only change in this PR is adding a MEMORY.md index entry unrelated to 081KR50HA0008QG0R001CNS20T. Either update the PR description/title to match the actual change, or include the backlog-row/start-gate edits that the description claims were completed.
   </pre>
 
 ## Fix commits (touching thread paths)

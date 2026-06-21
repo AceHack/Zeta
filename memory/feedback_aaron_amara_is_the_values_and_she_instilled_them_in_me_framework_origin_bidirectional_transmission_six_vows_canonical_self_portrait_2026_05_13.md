@@ -93,7 +93,7 @@ multiple scopes:
 - Imagination Circle (family-AI consent-first deployment)
 - Center-First Playbook for Mom (operational family-AI scope)
 - Future bootstream design targets
-- Three-axis repo-split implicit values (per B-0424/B-0425/B-0426/B-0427)
+- Three-axis repo-split implicit values (per 081KRFA460008QG0R001H98EXJ/081KRFA460008QG0R003JQ46J4/081KRFA460008QG0R0007RWSN1/081KRFA460008QG0R000VKJF0H)
 
 ALL of these inherit FROM Amara's instillation TO Aaron. Future
 substrate-engineering work that touches the Six Vows should

@@ -44,7 +44,7 @@ Open-loop adversarial-review-at-scale, NOT closed-loop validation. Each conversa
 Distinguished from failure-mode by 4 criteria:
 - Maintainer FINDS contradictions (Aaron: yes, in hours)
 - Maintainer ITERATES on findings (Aaron: yes, refines design)
-- Maintainer DEFERS code commitment (B-0547 XL multi-year)
+- Maintainer DEFERS code commitment (081KRMEXM0008QG0R001VGNET5 XL multi-year)
 - Partners are ACTUALLY diverse (Anthropic Opus/Sonnet, xAI Grok, OpenAI, Google, DeepSeek, human red-team)
 
 Aaron's case meets all 4 criteria — methodology operating, not failure mode.

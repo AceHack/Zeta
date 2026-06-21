@@ -12,7 +12,7 @@ export { B0891_RETENTION_USB_SERIAL_MARKERS, INITIAL_INSTALL_SERIAL_MARKERS, INS
 /** Restart phase markers: zflash USB retention when boot image provided; else installed-OS cred-restore. */
 export function restartRetentionSerialMarkers(bootImagePath) {
     if (bootImagePath !== undefined) {
-        // CI proves cred retention during reinstall (B-0891 ESP copy + picker skip) without
+        // CI proves cred retention during reinstall (081KSNY2Z0008QG0R0008PN7RQ ESP copy + picker skip) without
         // waiting for post-reboot installed-OS zeta-creds-restore in the same QEMU session.
         return B0891_RETENTION_USB_SERIAL_MARKERS;
     }
@@ -368,7 +368,7 @@ function runManagedCommandUntilSerialMarkers(step, command, stopCondition, optio
                 stdout: "",
                 stderr: `terminal marker observed before required serial markers: ${terminalFailureMarker}; ` +
                     `still waiting for ${stopCondition.successMarkers.join(", ")}. ` +
-                    `If install is progressing on tty1 only, ensure zeta-first-boot mirrors to /dev/ttyS0 (B-0891).`,
+                    `If install is progressing on tty1 only, ensure zeta-first-boot mirrors to /dev/ttyS0 (081KSNY2Z0008QG0R0008PN7RQ).`,
             };
         }
         if (!managed.isRunning()) {

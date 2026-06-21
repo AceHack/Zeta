@@ -300,7 +300,7 @@ Addresses 2 real reviewer findings on PR #4914:
    tools/hygiene/check-tick-history-shard-schema.ts requires a 6-column
    pipe-row first. Prepended the canonical pipe-row carrying ISO timestamp,
    model id, cron sentinel, body summary, PR ref, and observation. H1 body
-   preserved below (hybrid format per B-0529 Recommendation Option 3).
+   preserved below (hybrid format per 081KRMEXM0008QG0R002HBY56V Recommendation Option 3).
 
 2. P2 Codex + Copilot — arithmetic discrepancy: shard reported "105 staged
    full-ai-cluster/* additions" but the verification table later reported

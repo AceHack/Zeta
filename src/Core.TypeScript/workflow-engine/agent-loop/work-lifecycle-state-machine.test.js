@@ -3,7 +3,7 @@
 // Unit tests for the pure-logic exports of work-lifecycle-state-machine.ts.
 import { describe, expect, test } from "bun:test";
 import { applyTransition, isTerminal, leadTimeSeconds, revisionCount, } from "./work-lifecycle-state-machine";
-function row(id = "B-0867.5") {
+function row(id = "081KDWZ8TS008QG0R0020NJ9D0") {
     return {
         id,
         title: "Agent-loop MVP",

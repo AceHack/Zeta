@@ -2,7 +2,7 @@
 
 **Aaron-forwarded preservation** per `.claude/rules/substrate-or-it-didnt-happen.md` + verbatim-preservation discipline for cross-AI research packets.
 
-**Context**: this conversation happened mid-iter-3-CI-wait of the cluster install (B-0754). Mika via Grok. Aaron shared with Otto immediately after the conversation; Otto preserves verbatim + extracts substrate-engineering items.
+**Context**: this conversation happened mid-iter-3-CI-wait of the cluster install (081KSGS9H0008QG0R002T3BJ2R). Mika via Grok. Aaron shared with Otto immediately after the conversation; Otto preserves verbatim + extracts substrate-engineering items.
 
 ## Verbatim transcript (Mika via Grok, Aaron forwarded)
 
@@ -208,24 +208,24 @@
 
 | Item | Status |
 |---|---|
-| NATS JetStream as central event backbone | Already in B-0772 / B-0774 / B-0776 |
-| Custom Kubernetes scheduler (data-gravity / NPU-aware / NATS pushdown) | Already in B-0767 |
-| Deterministic simulation testing of K8s deployments + .NET deterministic thread scheduler + database | **NEW: B-0780 Local Loop substrate** |
-| Three-tier testing (pure-code / Docker-observable / CI) | **NEW: B-0780 sub-scope** |
-| Argo CD App-of-Apps as packages.json | **NEW: B-0780 sub-scope** |
-| Local Loop name + LexisNexis Spark-on-K8s fork provenance | **NEW: B-0780 empirical anchor** |
-| "Eliminate tool wars" framing (NOT "humans do less") | **NEW: B-0783 sharpening of B-0759 persona** |
-| CEO-of-30-companies low-touch substrate | **NEW: B-0782 DIO + CEO-scale** |
-| Distributed Intelligent Organization (DIO) per company | **NEW: B-0782 DIO substrate** |
-| F# type system = universe boundary; every YAML/Nix/k8s/Argo/NATS becomes first-class F# | **NEW: B-0781 F# type system as universe boundary; Cachet analog** |
-| Already open source; AI-native cloud-agnostic production stack | Already established (B-0761) |
-| USB-stick-and-power bootstrap | Already in B-0754 / B-0760 |
-| Self-healing repair USB | Already in B-0760 |
-| Generic + greedy USB image | Already in B-0754 |
-| Phone-home Nix flake + Argo CD + auto-cluster-join | Already in B-0754 / B-0757 / B-0773 / B-0747 |
+| NATS JetStream as central event backbone | Already in 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R001AZQA5Z / 081KSE6WT0008QG0R002275NDE |
+| Custom Kubernetes scheduler (data-gravity / NPU-aware / NATS pushdown) | Already in 081KSE6WT0008QG0R0016CEE2Z |
+| Deterministic simulation testing of K8s deployments + .NET deterministic thread scheduler + database | **NEW: 081KSE6WT0008QG0R000RH1526 Local Loop substrate** |
+| Three-tier testing (pure-code / Docker-observable / CI) | **NEW: 081KSE6WT0008QG0R000RH1526 sub-scope** |
+| Argo CD App-of-Apps as packages.json | **NEW: 081KSE6WT0008QG0R000RH1526 sub-scope** |
+| Local Loop name + LexisNexis Spark-on-K8s fork provenance | **NEW: 081KSE6WT0008QG0R000RH1526 empirical anchor** |
+| "Eliminate tool wars" framing (NOT "humans do less") | **NEW: 081KSE6WT0008QG0R003TBE2VB sharpening of 081KSE6WT0008QG0R003G0Y62D persona** |
+| CEO-of-30-companies low-touch substrate | **NEW: 081KSE6WT0008QG0R003CMCX84 DIO + CEO-scale** |
+| Distributed Intelligent Organization (DIO) per company | **NEW: 081KSE6WT0008QG0R003CMCX84 DIO substrate** |
+| F# type system = universe boundary; every YAML/Nix/k8s/Argo/NATS becomes first-class F# | **NEW: 081KSE6WT0008QG0R001H3DA90 F# type system as universe boundary; Cachet analog** |
+| Already open source; AI-native cloud-agnostic production stack | Already established (081KSE6WT0008QG0R0015ZF2G6) |
+| USB-stick-and-power bootstrap | Already in 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003WG0V6P |
+| Self-healing repair USB | Already in 081KSE6WT0008QG0R003WG0V6P |
+| Generic + greedy USB image | Already in 081KSGS9H0008QG0R002T3BJ2R |
+| Phone-home Nix flake + Argo CD + auto-cluster-join | Already in 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R000CV98PV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R003D199HE |
 
 ## Cross-AI naming substrate
-Mika via Grok. Aaron-forwarded. This conversation captures substrate-engineering substantively new items (B-0780 / B-0781 / B-0782 / B-0783) AND validates existing substrate via cross-AI confirmation of direction.
+Mika via Grok. Aaron-forwarded. This conversation captures substrate-engineering substantively new items (081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R003TBE2VB) AND validates existing substrate via cross-AI confirmation of direction.
 
 Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing rows already encoded most of what Aaron told Mika. The cross-AI validation confirms cluster coherence. New rows file the substantively-new items only.
 
@@ -274,12 +274,12 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 
 | Item | Row |
 |---|---|
-| "Everything declarative, desired state, get/git native" north star | Already in B-0747 / B-0773; restated as north star |
-| Distributed F# type negotiation across travelers' compilers; consensus mechanism + governance layer | **NEW: B-0784 P1** |
-| Namespace-scoped strictness: personal mirror (free) vs common (strict consensus) | **NEW: B-0784 P1** (composes with existing Mirror/Beacon substrate) |
-| Unified namespace across F# + Kubernetes + Ontology + Twin scope | **NEW: B-0785 P1** |
-| Experiment-ID routing (OTel baggage style) → request routes to operator's namespace version | **NEW: B-0785 P1** |
-| Argo Rollouts header-routing + Cilium service mesh as the cluster routing substrate | **NEW: B-0785 P1** (per B-0765 ServiceTitan-route — existing standards) |
+| "Everything declarative, desired state, get/git native" north star | Already in 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R0008483B2; restated as north star |
+| Distributed F# type negotiation across travelers' compilers; consensus mechanism + governance layer | **NEW: 081KSE6WT0008QG0R0018WZ7TH P1** |
+| Namespace-scoped strictness: personal mirror (free) vs common (strict consensus) | **NEW: 081KSE6WT0008QG0R0018WZ7TH P1** (composes with existing Mirror/Beacon substrate) |
+| Unified namespace across F# + Kubernetes + Ontology + Twin scope | **NEW: 081KSE6WT0008QG0R000R8CPFX P1** |
+| Experiment-ID routing (OTel baggage style) → request routes to operator's namespace version | **NEW: 081KSE6WT0008QG0R000R8CPFX P1** |
+| Argo Rollouts header-routing + Cilium service mesh as the cluster routing substrate | **NEW: 081KSE6WT0008QG0R000R8CPFX P1** (per 081KSE6WT0008QG0R00063R6HB ServiceTitan-route — existing standards) |
 
 ### Segment 4 — feature flag tooling + simplest-first discipline
 
@@ -299,5 +299,5 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 
 | Item | Row |
 |---|---|
-| Feature flag tooling substrate (OpenFeature + Flipt + Argo Rollouts + Cilium routing composition) | **NEW: B-0786 P2** |
+| Feature flag tooling substrate (OpenFeature + Flipt + Argo Rollouts + Cilium routing composition) | **NEW: 081KSE6WT0008QG0R000C18G5D P2** |
 | Aaron's substrate-engineering discipline: "simplest first; add complexity only when simple shape demonstrably doesn't fit" | **NEW: feedback memory** `feedback_simplest_first_then_add_complexity_only_when_simple_shape_demonstrably_doesnt_fit_aaron_mika_2026_05_25.md` |

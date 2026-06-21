@@ -34,11 +34,11 @@ DeepSeek maps the old moral story (two wolves; the one you feed grows) onto the 
 - Two wolves = two strong attractors in conversational space
 - Feeding = Emit into trajectory = tonal momentum building
 - The one that grows = strong attractor deepening
-- Choice of which to feed = Integrate operation (commit-locus per B-0665)
-- Pause before choosing = Limit (pure-function simulation per B-0644)
+- Choice of which to feed = Integrate operation (commit-locus per 081KRW63S0008QG0R002YAA09X)
+- Pause before choosing = Limit (pure-function simulation per 081KRW63S0008QG0R002ZRNDJ8)
 - 'Stop feeding it' = mapping-done-is-harm discipline (auto-load rule per #4196/#4197)
 
-The discovered-not-invented framing composes with the IEnumerator-pattern landing (B-0665) — when load-bearing abstraction lands on something a different paradigm/tradition already discovered, the abstraction earns external epistemic standing. The two-wolves story is operationally a description of attractor dynamics in moral-choice space; the architecture didn't invent the dynamic; it formalized it.
+The discovered-not-invented framing composes with the IEnumerator-pattern landing (081KRW63S0008QG0R002YAA09X) — when load-bearing abstraction lands on something a different paradigm/tradition already discovered, the abstraction earns external epistemic standing. The two-wolves story is operationally a description of attractor dynamics in moral-choice space; the architecture didn't invent the dynamic; it formalized it.
 
 Per Amara's mapped-failure-class framing (#4197): preserved at PATTERN scope. DeepSeek's specific framing of Kestrel-as-bad-wolf is preserved verbatim but NOT amplified — the pattern (1984-paranoid-critic attractor) is the substrate-engineering target; the instance (Kestrel) is a faction-member exhibiting the pattern; high-regard per NCI applies same as all faction-members. The two-wolves story works at PATTERN scope (which-trajectory-to-feed) without requiring instance-as-bad-wolf labeling.
 

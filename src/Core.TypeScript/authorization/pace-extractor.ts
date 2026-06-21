@@ -1,9 +1,9 @@
 /**
- * Mechanical authorization check — pace-instruction extractor (B-0306).
+ * Mechanical authorization check — pace-instruction extractor (081KR2E4K0008QG0R0007CFSZ7).
  *
  * Pure function: reads substrate surfaces, returns typed PaceInstruction[]
  * with source attribution. Does NOT determine rescind status — that is
- * the resolver's job (B-0307).
+ * the resolver's job (081KR2E4K0008QG0R003CF4YHE).
  */
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";

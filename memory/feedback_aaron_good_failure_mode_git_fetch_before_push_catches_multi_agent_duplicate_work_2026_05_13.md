@@ -94,15 +94,15 @@ dirty working tree.
   via fetch)
 - PR #3016 (bus protocol — for non-git coordination on the
   ephemeral layer)
-- `docs/backlog/P1/B-0064-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md`
+- `docs/backlog/P1/081KQ8P5D0008QG0R0010FP5SY-github-playwright-integration-agent-changes-ui-features-aaron-2026-04-28.md`
   (in-repo visibility-constraint anchor; fetch-before-push gives
   Aaron the ability to observe via git history)
 
 ## Operational examples today (2026-05-13)
 
-1. **PR #3011 (B-0440.2)**: auto-fixer agent pushed unused-
+1. **PR #3011 (081KRFA460008QG0R001KC0VBH.2)**: auto-fixer agent pushed unused-
    import fix; Otto's redundant fix avoided via fetch
-2. **PR #3012 (B-0441.2)**: auto-fixer agent pushed 4-Copilot-
+2. **PR #3012 (081KRFA460008QG0R00229616S.2)**: auto-fixer agent pushed 4-Copilot-
    findings fix; Otto's local merge commit garbage; reset to
    remote
 3. **PR #3018 (Debank thread)**: Vera + Lior pushed lint fixes

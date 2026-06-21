@@ -2,12 +2,12 @@
 
 **Status:** Accepted
 **Date:** 2026-05-26
-**Backlog:** B-0786
+**Backlog:** 081KSE6WT0008QG0R000C18G5D
 **Scope:** Decision substrate only; no implementation in this slice.
 
 ## Context
 
-B-0786 records the feature-flags substrate shape for the B-0776
+081KSE6WT0008QG0R000C18G5D records the feature-flags substrate shape for the 081KSE6WT0008QG0R002275NDE
 plugin sequence. The operator requirement is deliberately small:
 open-source tooling, lowest operational overhead first, and a path
 to add heavier backends only after the simple backend fails an
@@ -65,5 +65,5 @@ Costs:
 - Add `docs/plugins/zeta-feature-flags.md` with persona ontology maps
   and rollout examples.
 - Implement the F# provider interface and OpenFeature adapter in the
-  B-0776 plugin sequence.
+  081KSE6WT0008QG0R002275NDE plugin sequence.
 - Add conformance tests that every future backend must pass.

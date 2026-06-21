@@ -1,6 +1,5 @@
 ---
-id: B-0226
-zetaid: 081KQX9B50008QG0R0028P9BMR
+id: 081KQX9B50008QG0R0028P9BMR
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - cardinality-adaptive storage"
@@ -12,9 +11,9 @@ classification: blocked-on-algebra-fit
 type: feature
 ---
 
-# B-0226 - Cardinality-adaptive storage research
+# 081KQX9B50008QG0R0028P9BMR - Cardinality-adaptive storage research
 
-Split the cardinality question out of the B-0147 blob and
+Split the cardinality question out of the 081KQGDBJ0008QG0R0004ACHJJ blob and
 research it directly.
 
 ## Work scope
@@ -33,4 +32,4 @@ and single high-cardinality-first storage designs.
 - The analysis identifies which option preserves the
   Prometheus fast path and which option best supports
   Aurora-style high-cardinality event streams.
-- The result feeds the Pareto synthesis in B-0230.
+- The result feeds the Pareto synthesis in 081KQX9B50008QG0R001T7M5SK.

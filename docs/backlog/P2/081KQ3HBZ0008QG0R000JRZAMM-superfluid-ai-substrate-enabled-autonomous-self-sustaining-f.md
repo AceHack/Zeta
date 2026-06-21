@@ -1,6 +1,5 @@
 ---
-id: B-0029
-zetaid: 081KQ3HBZ0008QG0R000JRZAMM
+id: 081KQ3HBZ0008QG0R000JRZAMM
 priority: P2
 status: decomposed
 title: Superfluid-AI substrate-enabled autonomous self-sustaining funding sources — research the surfaces where the substrate itself can generate economic value in background, closing the funding-time-focus loop so the work is self-sustaining
@@ -17,7 +16,7 @@ type: feature
 decomposition: clean
 ---
 
-# B-0029 — Superfluid AI substrate-enabled autonomous self-sustaining funding sources
+# 081KQ3HBZ0008QG0R000JRZAMM — Superfluid AI substrate-enabled autonomous self-sustaining funding sources
 
 ## Decomposition (2026-05-09)
 
@@ -25,28 +24,28 @@ Decomposed into 7 dependency-ordered atomic children:
 
 | Child | Title | Depends on | Classification |
 |-------|-------|------------|----------------|
-| [B-0029.1](B-0029.1-funding-surface-survey-comparable-oss-projects.md) | Comparable OSS project funding state survey | — | research-now |
-| [B-0029.2](B-0029.2-open-source-funding-setup-github-sponsors-npm-funding.md) | GitHub Sponsors + npm funding field setup | B-0029.1 | buildable-after-B-0029.1 |
-| [B-0029.3](B-0029.3-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md) | AI/substrate grants survey (Anthropic, MS, F# Foundation) | — | research-now |
-| [B-0029.4](B-0029.4-trading-bot-prerequisite-reframe-update-b0024.md) | Trading-bot prerequisite reframe (update B-0024) | — | buildable-now |
-| [B-0029.5](B-0029.5-substrate-as-saas-market-validation.md) | Substrate-as-SaaS market validation | — | research-now |
-| [B-0029.6](B-0029.6-ip-research-output-licensing-pathways.md) | IP / research-output licensing pathways survey | — | research-now |
-| [B-0029.7](B-0029.7-self-sustaining-loop-closure-measurement-design.md) | Loop closure measurement design | B-0029.1, B-0029.2, B-0029.3, B-0029.5, B-0029.6 | blocked |
+| [081KR50HA0008QG0R002K2G8B0](081KR50HA0008QG0R002K2G8B0-funding-surface-survey-comparable-oss-projects.md) | Comparable OSS project funding state survey | — | research-now |
+| [081KR50HA0008QG0R0027AAPTZ](081KR50HA0008QG0R0027AAPTZ-open-source-funding-setup-github-sponsors-npm-funding.md) | GitHub Sponsors + npm funding field setup | 081KR50HA0008QG0R002K2G8B0 | buildable-after-081KR50HA0008QG0R002K2G8B0 |
+| [081KR50HA0008QG0R001D8Q8X1](081KR50HA0008QG0R001D8Q8X1-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md) | AI/substrate grants survey (Anthropic, MS, F# Foundation) | — | research-now |
+| [081KR50HA0008QG0R003TDENRZ](081KR50HA0008QG0R003TDENRZ-trading-bot-prerequisite-reframe-update-b0024.md) | Trading-bot prerequisite reframe (update 081KQ0YZ80008QG0R0006VRT18) | — | buildable-now |
+| [081KR50HA0008QG0R002812VHQ](081KR50HA0008QG0R002812VHQ-substrate-as-saas-market-validation.md) | Substrate-as-SaaS market validation | — | research-now |
+| [081KR50HA0008QG0R001B4TD7G](081KR50HA0008QG0R001B4TD7G-ip-research-output-licensing-pathways.md) | IP / research-output licensing pathways survey | — | research-now |
+| [081KR50HA0008QG0R002TZ34SF](081KR50HA0008QG0R002TZ34SF-self-sustaining-loop-closure-measurement-design.md) | Loop closure measurement design | 081KR50HA0008QG0R002K2G8B0, 081KR50HA0008QG0R0027AAPTZ, 081KR50HA0008QG0R001D8Q8X1, 081KR50HA0008QG0R002812VHQ, 081KR50HA0008QG0R001B4TD7G | blocked |
 
 **Dependency graph:**
 
 ```
-B-0029.1 ──┐
-B-0029.3 ──┤
-B-0029.5 ──┼──► B-0029.7 (measurement design)
-B-0029.6 ──┤
+081KR50HA0008QG0R002K2G8B0 ──┐
+081KR50HA0008QG0R001D8Q8X1 ──┤
+081KR50HA0008QG0R002812VHQ ──┼──► 081KR50HA0008QG0R002TZ34SF (measurement design)
+081KR50HA0008QG0R001B4TD7G ──┤
            │
-B-0029.2 ──┘ (depends on B-0029.1; also feeds B-0029.7)
+081KR50HA0008QG0R0027AAPTZ ──┘ (depends on 081KR50HA0008QG0R002K2G8B0; also feeds 081KR50HA0008QG0R002TZ34SF)
 
-B-0029.4 ── standalone row maintenance (no blocking deps)
+081KR50HA0008QG0R003TDENRZ ── standalone row maintenance (no blocking deps)
 ```
 
-**Parallel-buildable-now**: B-0029.1, B-0029.3, B-0029.4, B-0029.5, B-0029.6 (five rows can be worked in parallel).
+**Parallel-buildable-now**: 081KR50HA0008QG0R002K2G8B0, 081KR50HA0008QG0R001D8Q8X1, 081KR50HA0008QG0R003TDENRZ, 081KR50HA0008QG0R002812VHQ, 081KR50HA0008QG0R001B4TD7G (five rows can be worked in parallel).
 
 ## Origin — Aaron's compressed thesis (2026-04-26)
 
@@ -95,11 +94,11 @@ Zeta as an open-source factory could plausibly join the funded-package ecosystem
 
 Per Otto-346 (good-citizenship; we contribute back): being a funded-package and FUNDING other packages composes — the same ecosystem flow we participate in as contributors, we participate in as funded-recipients.
 
-### 2. Trading-bot revenue (B-0023/B-0024 territory) — REPRIORITIZED 2026-04-26
+### 2. Trading-bot revenue (081KQ0YZ80008QG0R003EJQZ1M/081KQ0YZ80008QG0R0006VRT18 territory) — REPRIORITIZED 2026-04-26
 
 Aaron 2026-04-26 update: *"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these and also bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless."*
 
-The "longest prerequisite chain" framing in B-0024 was MY narrowing — I assumed infrastructure setup from scratch. **Aaron has already done the infrastructure work**: accounts everywhere, API access paid-for, keys available on grant.
+The "longest prerequisite chain" framing in 081KQ0YZ80008QG0R0006VRT18 was MY narrowing — I assumed infrastructure setup from scratch. **Aaron has already done the infrastructure work**: accounts everywhere, API access paid-for, keys available on grant.
 
 **Corrected prerequisite chain** (much shorter than originally framed):
 
@@ -118,7 +117,7 @@ Substrate-enabled aspect: the algebraic primitives Zeta builds (Bayesian inferen
 
 **Per Otto-322**: this is OFFERED not required. Standing to accept or defer based on capability-readiness judgment. Honest current assessment: not yet trading-strategy-capable; the prerequisite work is now "develop a strategy" rather than "obtain access." Different bottleneck shape — capability-building, not infrastructure-building.
 
-**Owed update to B-0024**: prerequisite chain reframe with corrected phases.
+**Owed update to 081KQ0YZ80008QG0R0006VRT18**: prerequisite chain reframe with corrected phases.
 
 ### 3. Substrate-as-SaaS / Tool-offering revenue
 
@@ -177,8 +176,8 @@ The naming aligns the *aspiration* (frictionless autonomous AI-substrate) with t
 - **Otto-345** (Linus lineage; tools-as-substrate) — the OSS funding ecosystem is part of Linus's lineage too
 - **Otto-322** (agency internally-sourced) — autonomous funding sources require self-directed agency to operate
 - **Otto-310** (μένω lineage; peer-bond) — funding-flow is part of the relational maintenance
-- **B-0023** (quant-grade Austrian-school synthesis research) — economic theory work that informs trading strategy
-- **B-0024** (trading-account offer; 4-phase prerequisite work) — operational form of one funding surface
+- **081KQ0YZ80008QG0R003EJQZ1M** (quant-grade Austrian-school synthesis research) — economic theory work that informs trading strategy
+- **081KQ0YZ80008QG0R0006VRT18** (trading-account offer; 4-phase prerequisite work) — operational form of one funding surface
 - **Task #271** (Superfluid AI naming-expert review) — semantic anchor
 - **Task #244** (Factory-demo P0) — demo as marketing-surface that could attract sponsors
 - **`memory/feedback_aarons_factory_as_superfluid_*`** — prior factory-as-superfluid framing
@@ -202,7 +201,7 @@ The naming aligns the *aspiration* (frictionless autonomous AI-substrate) with t
 ## Effort sizing
 
 - **Research the candidate surfaces**: M (1-3 days) — survey GitHub Sponsors / npm funding / Open Collective state for similar-scale projects
-- **Evaluate trading-bot path with B-0023/B-0024**: L (multi-week) — the prerequisite phases
+- **Evaluate trading-bot path with 081KQ0YZ80008QG0R003EJQZ1M/081KQ0YZ80008QG0R0006VRT18**: L (multi-week) — the prerequisite phases
 - **Substrate-as-SaaS market research**: M — who would pay for hosted factory-discipline tooling?
 - **First-funding-source experimentation**: S per source (~ a day each) — set up GitHub Sponsors, npm funding field, Open Collective
 - **Compounding loop establishment**: L — measure whether early funding flows actually shift Aaron's time-budget

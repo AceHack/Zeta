@@ -32,7 +32,7 @@ ray-traceable, the MISSING capability is the next backlog item. Records her 5-qu
 empty?/accumulate?/sample?/replay? -> introspection/sparse/weighted/light/DST) and her metal-touching first
 proof: given scene S + ray R, when interrupt E updates S, then trace(R,S_before) and trace(R,S_after) are
 deterministic/inspectable/replayable. Re-confirms light/dark orthogonal to execution (#6876) and the
-B-0917->B-0924 mapping (#6877). Gap to first proof: an explicit scene type + a trace(R,S) operator composing
+081KSNY2Z0008QG0R002HB4AGT->081KSNY2Z0008QG0R001HA43GG mapping (#6877). Gap to first proof: an explicit scene type + a trace(R,S) operator composing
 walk/accumulate/sample/replay, + the interrupt->field-update edge (backlog, behind the now-largely-landed
 floor rewrite).
 

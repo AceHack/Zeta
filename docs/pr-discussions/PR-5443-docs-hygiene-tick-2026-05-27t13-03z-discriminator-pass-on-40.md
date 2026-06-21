@@ -82,4 +82,4 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 
 ### @AceHack (2026-05-27T15:11:31Z)
 
-All 3 markdownlint MD004 findings addressed in `cc2e2a93` (REST git-data API bypass per B-0615): lines 18, 38, 108 rewritten from `+ ` to `plus ` so no continuation line begins with `+` under `-` bullets. Resolving threads.
+All 3 markdownlint MD004 findings addressed in `cc2e2a93` (REST git-data API bypass per 081KRW63S0008QG0R000EAZ9K2): lines 18, 38, 108 rewritten from `+ ` to `plus ` so no continuation line begins with `+` under `-` bullets. Resolving threads.

@@ -1,6 +1,6 @@
 # /db — the repo *is* the database; root is the standard handful; everything earns promotion out of /db
 
-Aaron 2026-06-11 (expanding [B-1023](../backlog/P2/B-1023-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md)):
+Aaron 2026-06-11 (expanding [081KTQD8A0008QG0R0030HWMZV](../backlog/P2/081KTQD8A0008QG0R0030HWMZV-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md)):
 
 > "We need a plan to make Max happy — push this into a `/db` folder or something over time and clean up
 > root. **Everything at root has to earn its promotion out of `/db`** other than `/src`, `/tests`,
@@ -10,7 +10,7 @@ Aaron 2026-06-11 (expanding [B-1023](../backlog/P2/B-1023-root-declutter-for-dx-
 > is Reticulum… and it knows its boundaries because our Markov boundaries and network knowledge are super
 > tight."
 
-This reframes B-1023 from "tidy the root for Max" to a **first principle**: the repo is not a project with
+This reframes 081KTQD8A0008QG0R0030HWMZV from "tidy the root for Max" to a **first principle**: the repo is not a project with
 a database in it — **the repo IS the database**. So the topology should say so.
 
 ## The principle: default-deny at root, earn promotion out of /db
@@ -35,7 +35,7 @@ is an audience-universal, tooling-anchored concern, not factory substrate:
 | Earns root | Why (the criterion) |
 |---|---|
 | `src/` `tests/` `docs/` | the universal source/test/doc handful |
-| `tools/` | the host-bootstrap shield (install.sh closes over deps *before* our source — B-1022); pre-source by definition |
+| `tools/` | the host-bootstrap shield (install.sh closes over deps *before* our source — 081KTQD8A0008QG0R0005EFYPV); pre-source by definition |
 | `.github/` `.claude/` `*.sln` `*.json` (build/lock) `README` `LICENSE` `.gitignore` `CLAUDE.md` `AGENTS.md` `GOVERNANCE.md` | tooling/CI/governance anchors the toolchain or a fresh reader hits first |
 
 **Everything else → `/db`.** The current root has ~80 entries — the single letters `a`…`z`, the greek
@@ -52,7 +52,7 @@ in the database."
 Folders are **load-bearing** here — the startup MerkleDAG, CI workflows, install scripts, skills, and
 rules all reference root paths by name. Moving ~75 trees one segment deeper is a **mechanical
 path-rewrite sweep across the whole repo + CI-green proof**, and it's semi-reversible. So this plan is the
-*design*; execution stays gated on **Aaron + Max sign-off and a Bodhi DX audit** (B-1023's acceptance
+*design*; execution stays gated on **Aaron + Max sign-off and a Bodhi DX audit** (081KTQD8A0008QG0R0030HWMZV's acceptance
 gate is unchanged). Nothing moves in this PR.
 
 ## The staged migration (when signed off)
@@ -68,12 +68,12 @@ Do it **incrementally** ("over time" — Aaron), lowest-risk first, each stage i
 4. **Leave a tombstone** for any path external tools hardcode (a symlink or a `db/README.md` map) until
    the references are all chased — no silent breakage.
 5. **Max-test the result**: a fresh clone's first `ls` reads as "a normal project + one `db/`," which is
-   exactly the friction B-1023 opened on.
+   exactly the friction 081KTQD8A0008QG0R0030HWMZV opened on.
 
 ## Pointers
 
-- [B-1023](../backlog/P2/B-1023-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md) — the DX finding this plan operationalizes (acceptance gate unchanged: Bodhi audit + Aaron/Max sign-off).
+- [081KTQD8A0008QG0R0030HWMZV](../backlog/P2/081KTQD8A0008QG0R0030HWMZV-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md) — the DX finding this plan operationalizes (acceptance gate unchanged: Bodhi audit + Aaron/Max sign-off).
 - `.claude/rules/dv2-data-split-discipline-activated.md` — DV2.0 (root=hub, /db=satellite) is the lens.
-- B-1022 — `tools/` is the pre-source host shield (why it earns root, not /db).
-- B-0424..0427 — repo-split / DV2.0 topology lineage.
+- 081KTQD8A0008QG0R0005EFYPV — `tools/` is the pre-source host shield (why it earns root, not /db).
+- 081KRFA460008QG0R001H98EXJ..0427 — repo-split / DV2.0 topology lineage.
 - the folders-are-load-bearing convention (the startup MerkleDAG) — why this is gated.

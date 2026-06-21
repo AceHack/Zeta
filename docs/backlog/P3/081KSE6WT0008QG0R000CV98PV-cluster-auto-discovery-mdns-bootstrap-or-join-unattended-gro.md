@@ -1,14 +1,13 @@
 ---
-id: B-0757
-zetaid: 081KSE6WT0008QG0R000CV98PV
+id: 081KSE6WT0008QG0R000CV98PV
 title: Cluster auto-discovery — mDNS bootstrap-or-join so 1st/2nd/3rd/Nth USB self-organizes into a growing cluster unattended
 status: open
 priority: P3
 size: L
 created: 2026-05-25
 authors: [aaron, otto-cli]
-composes_with: [B-0754, 081KSE6WT0008QG0R003612WGJ, 081KSE6WT0008QG0R001NG9JZH]
-depends_on: [B-0754, 081KSE6WT0008QG0R001NG9JZH]
+composes_with: [081KSGS9H0008QG0R002T3BJ2R, 081KSE6WT0008QG0R003612WGJ, 081KSE6WT0008QG0R001NG9JZH]
+depends_on: [081KSGS9H0008QG0R002T3BJ2R, 081KSE6WT0008QG0R001NG9JZH]
 labels: [cluster, mdns, k3s, bootstrap, ux]
 ---
 
@@ -18,7 +17,7 @@ Aaron 2026-05-25: *"can we make this auto matic as i add and others
 create their own clusers so 1, 2, 3, 4, etc... are all setup correctly
 unattended unless you interrupt?"*
 
-Current B-0754 v1 flow assumes the operator knows their role at
+Current 081KSGS9H0008QG0R002T3BJ2R v1 flow assumes the operator knows their role at
 boot time. For a growing cluster:
 
 - 1st USB: needs `--cluster-init` (bootstrap)
@@ -27,7 +26,7 @@ boot time. For a growing cluster:
 - Nth USB: depends on cluster state, not on flash-time choice
 
 Requiring the operator to know which node is which scales badly
-and breaks the zero-typing experience that B-0754 set up.
+and breaks the zero-typing experience that 081KSGS9H0008QG0R002T3BJ2R set up.
 
 ## Target
 
@@ -56,8 +55,8 @@ self-organizes into the right role:
       - `lsblk -d -o NAME,TRAN | grep nvme | wc -l` → disk count
       - role priority: control-plane (if 1st) > worker-gpu (if nvidia)
         > worker-storage (if 4+ disks) > worker-cpu (else)
-- [ ] Operator-interrupt keystroke prompt extended (per B-0755 +
-      B-0756 role expansions): override auto-pick with any role
+- [ ] Operator-interrupt keystroke prompt extended (per 081KSE6WT0008QG0R003612WGJ +
+      081KSE6WT0008QG0R001NG9JZH role expansions): override auto-pick with any role
 - [ ] Token distribution security: for home-lab v1, ship token
       via mDNS TXT (acceptable since the cluster network is trusted);
       for prod v2, use SOPS/age preshared at flash time
@@ -65,17 +64,17 @@ self-organizes into the right role:
       `/etc/zeta-cluster.conf` so subsequent reboots don't re-probe
 - [ ] PROVISIONING.md updated: "boot Nth USB → boot, walk away"
       as the canonical flow
-- [ ] B-0754 v1 zeta-first-boot.sh extended to call discovery
+- [ ] 081KSGS9H0008QG0R002T3BJ2R v1 zeta-first-boot.sh extended to call discovery
       before showing the role prompt; auto-pick + 10-sec override
       window remains
 
 ## Composes with
 
-- B-0754 — zero-typing first-boot (this row extends the first-boot
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (this row extends the first-boot
   flow with discovery)
-- B-0755 — role taxonomy expansion (the roles discovery can pick
+- 081KSE6WT0008QG0R003612WGJ — role taxonomy expansion (the roles discovery can pick
   among)
-- B-0756 — HA control-plane (the join-as-HA-control-plane option
+- 081KSE6WT0008QG0R001NG9JZH — HA control-plane (the join-as-HA-control-plane option
   needs the multi-master substrate)
 - `avahi` NixOS module — mDNS publish/discover infrastructure
 
@@ -97,5 +96,5 @@ self-organizes into the right role:
 
 ## Origin
 
-Aaron 2026-05-25, immediately after the B-0756 HA-control-plane
+Aaron 2026-05-25, immediately after the 081KSE6WT0008QG0R001NG9JZH HA-control-plane
 file, surveying the unattended-growth UX.

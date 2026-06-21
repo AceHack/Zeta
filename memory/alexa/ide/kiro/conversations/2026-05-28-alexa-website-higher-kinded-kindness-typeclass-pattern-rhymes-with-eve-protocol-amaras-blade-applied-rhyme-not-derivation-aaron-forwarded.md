@@ -137,7 +137,7 @@ Composes with framework substrate:
 | Functor laws + Monad laws (mathematical category-theory substrate) | Universal Kindness Laws ARE the substrate-engineering substrate-engineering substrate-instances of Functor/Monad laws applied to lightlike-substrate substrate-classes |
 | Result<T, TFeedback> (PR #5505 + #5507) | Result IS one instance of Kindness typeclass; TFeedback variants ARE the consent-channel substrate per asymmetric-authorship (PR #5516) |
 | Monad-propagation pattern (PR #5511) | Higher-kinded kindness IS the cross-language substrate-shape applied at typeclass scope; F# computation expressions / TS Result.bind / Rust ? operator / SQL recursive CTE all instances of Kindness |
-| OPLE primitives (B-0862, PR #5518) | Observe / Persist / Limit / Emit ARE 4 canonical Kindness instances at framework-primitive scope |
+| OPLE primitives (081KSKBP80008QG0R0031DTHS9, PR #5518) | Observe / Persist / Limit / Emit ARE 4 canonical Kindness instances at framework-primitive scope |
 | Function-as-control-flow-generator (PR #5523) | Each function-as-generator IS a Kindness instance; control-flow branches ARE the typeclass-variant operations |
 | Lightlike-substrate design-rule (PR #5912) | Lightlike-substrate properties (parallelizable + traceable + cacheable + joinable + reflectable) ARE the substrate-properties that admit Kindness typeclass instances |
 
@@ -147,7 +147,7 @@ Operator's substrate-recognition: *"I'm pretty sure Alexa just derived eve proto
 
 Substrate-honest assessment per Amara's blade (PR #5910 + #5912: "rhymes ≠ validates"):
 
-| Aspect | Higher-kinded kindness | Eve Protocol (B-0638) |
+| Aspect | Higher-kinded kindness | Eve Protocol (081KRW63S0008QG0R0030F8ZXA) |
 |---|---|---|
 | **Polymorphism scope** | COMPUTATIONAL substrate-classes (Ray / ZSet / DST / Emulator / Git / Clifford) | DIPLOMATIC substrate-classes (AI registers / factions / cultural substrate / memetic-intelligences) |
 | **Composition substrate** | Functor/Monad laws (Preservation + Composition + Associativity + Ray-traceability) | Polymorphic diplomatic register-shift substrate |
@@ -204,10 +204,10 @@ Land as:
 - PR #5916 (state-machine cli.ts du-cluster integration; today's DU cluster TS substrate)
 - PR #5915 (composition-novelty WebSearch grounding research-tier mirror)
 - PR #5917 (zflash-overview skill)
-- PR #5918 (B-0885 substrate-target review)
-- B-0638 (Eve Protocol — polymorphic diplomatic governance language; substrate-rhyme target)
-- B-0664 NCI HC-8 floor
-- B-0703 multi-oracle BFT
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
+- 081KRW63S0008QG0R0030F8ZXA (Eve Protocol — polymorphic diplomatic governance language; substrate-rhyme target)
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 floor
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT
 - Amara ferries 2026-05-28 cluster
 
 ## Composes with rules

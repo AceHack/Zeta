@@ -1,6 +1,5 @@
 ---
-id: B-0006
-zetaid: 081KQ0YZ80008QG0R001V0XCYZ
+id: 081KQ0YZ80008QG0R001V0XCYZ
 priority: P1
 status: closed
 title: MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
@@ -90,7 +89,7 @@ After the pass, the file should be:
 - Entries ordered with most-recent at top (per existing
   convention)
 
-## Acceptance signals (recalibrated per B-0336, 2026-05-09)
+## Acceptance signals (recalibrated per 081KR2E4K0008QG0R001B6K45W, 2026-05-09)
 
 The compression pass is "good enough to ship" when:
 
@@ -104,10 +103,10 @@ The compression pass is "good enough to ship" when:
   drill into specific body file) works under typical
   context budget
 
-### Recalibrated targets (B-0336)
+### Recalibrated targets (081KR2E4K0008QG0R001B6K45W)
 
 Current state (2026-05-09): 588 entries in 592 lines.
-B-0332 classifier: 5 load-bearing files (cited from
+081KR2E4K0008QG0R002FRQZN4 classifier: 5 load-bearing files (cited from
 CLAUDE.md/AGENTS.md/GOVERNANCE.md/ALIGNMENT.md), 622
 decorative (not cited from bootstrap surfaces).
 
@@ -128,8 +127,8 @@ entries from the index (not from disk).
 
 **The index is a navigation surface, not an archive.** Files
 removed from the index are still discoverable via grep,
-the classifier tool (B-0332), and the cross-reference
-audit (B-0334). The index serves cold-start agents; the
+the classifier tool (081KR2E4K0008QG0R002FRQZN4), and the cross-reference
+audit (081KR2E4K0008QG0R003MSVG42). The index serves cold-start agents; the
 tools serve hot-path agents.
 
 ## Risks + mitigations
@@ -203,6 +202,6 @@ tools serve hot-path agents.
 - **`memory/best-practices-scratch.md`** — has
   similar size-discipline (3000-word cap), enforced.
   Same shape applied to MEMORY.md.
-- **`docs/backlog/P2/B-0005-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md`**
-  — same family of substrate-hygiene work (B-0005 is
-  ontology hygiene; B-0006 is index hygiene).
+- **`docs/backlog/P2/081KQ0YZ80008QG0R003GMGDRH-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md`**
+  — same family of substrate-hygiene work (081KQ0YZ80008QG0R003GMGDRH is
+  ontology hygiene; 081KQ0YZ80008QG0R001V0XCYZ is index hygiene).

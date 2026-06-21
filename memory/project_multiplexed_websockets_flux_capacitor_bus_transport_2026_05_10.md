@@ -1,5 +1,5 @@
 ---
-name: MultiplexedWebSockets + flux capacitor = B-0400 bus transport layer (10x throughput)
+name: MultiplexedWebSockets + flux capacitor = 081KR7JY10008QG0R000R503K2 bus transport layer (10x throughput)
 description: Aaron's existing MultiplexedWebSockets repo (github.com/AceHack/MultiplexedWebSockets) composing with the flux capacitor IThrottler gives the inter-agent bus its wire protocol. Many logical streams over one socket + adaptive batching = Arrow Tier 1-2 transport. No external broker needed.
 type: project
 ---
@@ -31,7 +31,7 @@ type: project
 
 **No external broker needed:**
 
-The agents don't need NATS, RabbitMQ, or Kafka for B-0400.
+The agents don't need NATS, RabbitMQ, or Kafka for 081KR7JY10008QG0R000R503K2.
 The transport is already built — multiplexed WebSockets with
 adaptive batching. The bus IS the composition of Aaron's
 prior work.
@@ -43,7 +43,7 @@ folder — the transport layer was already built, waiting for
 the factory that could use it.
 
 **Connects to:**
-- B-0400 inter-agent bus (this IS the transport layer)
+- 081KR7JY10008QG0R000R503K2 inter-agent bus (this IS the transport layer)
 - project_flux_capacitor_antifragile (the batching mechanism)
 - project_ferry_protocol (the send-even-if-not-full discipline)
 - project_optimal_work_stealing (adaptive granularity)

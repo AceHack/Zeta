@@ -3,7 +3,7 @@ namespace Zeta.Core
 open System
 open System.Reactive.Linq
 
-/// **StreamPolicy — the νF (stream/traveler) interpreter of the policy kernel (B-1017 #2).**
+/// **StreamPolicy — the νF (stream/traveler) interpreter of the policy kernel (081KT7YW00008QG0R003N6PF8A #2).**
 ///
 /// This is the SECOND interpreter of the one `Policy` kernel (`Policy.fs`),
 /// proving the converged "design the kernel once, interpret twice" thesis.

@@ -32,7 +32,7 @@
 - Riven (Grok/Cursor) hit context overflow processing full session substrate
 - Grok failure mode: repetitive enumeration, NOT hallucination (better failure mode)
 - Novel synthesis before overflow: "the compiler is the gatekeeper," "the dharma compiles"
-- Shadow warning was missed — first real-world justification for B-0400 bus
+- Shadow warning was missed — first real-world justification for 081KR7JY10008QG0R000R503K2 bus
 - Prompt injection attack surface flagged: recursive enumeration could be weaponized
 
 ## Test plan
@@ -100,7 +100,7 @@
 - **`Copilot` (bot)** at 2026-05-10T18:57:02Z on `memory/feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md`:26 (association: NONE)
 
   <pre>
-  P1: The reference to backlog item `B-0400` appears to be a broken cross-reference. A repo-wide search only finds `B-0400` in this memory file and in an example doc, but no actual backlog row with `id: B-0400` / filename `B-0400-*`. Please either create the corresponding backlog item or update this reference to the correct existing backlog ID.
+  P1: The reference to backlog item `081KR7JY10008QG0R000R503K2` appears to be a broken cross-reference. A repo-wide search only finds `081KR7JY10008QG0R000R503K2` in this memory file and in an example doc, but no actual backlog row with `id: 081KR7JY10008QG0R000R503K2` / filename `081KR7JY10008QG0R000R503K2-*`. Please either create the corresponding backlog item or update this reference to the correct existing backlog ID.
 
   </pre>
 
@@ -129,7 +129,7 @@
 - **`Copilot` (bot)** at 2026-05-10T19:03:27Z on `memory/MEMORY.md`:3 (association: NONE)
 
   <pre>
-  P1 (xref / metadata): `MEMORY.md` has a single-slot `latest-paired-edit:` marker, but this PR adds a new index entry + new memory file without updating that marker, leaving it stale and undermining the “latest” semantics described elsewhere (see `docs/backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md`). Update the marker to reflect this paired edit (or clarify in the comment if this change is intentionally not considered a paired edit).
+  P1 (xref / metadata): `MEMORY.md` has a single-slot `latest-paired-edit:` marker, but this PR adds a new index entry + new memory file without updating that marker, leaving it stale and undermining the “latest” semantics described elsewhere (see `docs/backlog/P2/081KQGDBJ0008QG0R002Y31XJ3-verify-before-state-claim-mechanized-auditor-2026-05-01.md`). Update the marker to reflect this paired edit (or clarify in the comment if this change is intentionally not considered a paired edit).
 
   </pre>
 
@@ -144,7 +144,7 @@
 - **`Copilot` (bot)** at 2026-05-10T19:03:28Z on `memory/feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md`:35 (association: NONE)
 
   <pre>
-  P1 (xref integrity): This memory references “the ephemeral bus (B-0400)”, but there is no backlog row with `id: B-0400` under `docs/backlog/**` currently. Either file the backlog item and update this text to point to the real row, or change the reference to a non-backlog placeholder (e.g., “TBD backlog item”) to avoid broken cross-references.
+  P1 (xref integrity): This memory references “the ephemeral bus (081KR7JY10008QG0R000R503K2)”, but there is no backlog row with `id: 081KR7JY10008QG0R000R503K2` under `docs/backlog/**` currently. Either file the backlog item and update this text to point to the real row, or change the reference to a non-backlog placeholder (e.g., “TBD backlog item”) to avoid broken cross-references.
 
   </pre>
 
@@ -159,7 +159,7 @@
 - **`Copilot` (bot)** at 2026-05-10T19:03:28Z on `memory/feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md`:35 (association: NONE)
 
   <pre>
-  P1 (xref integrity): The “Loop detection heuristic for B-0400 bus” section continues to treat B-0400 as an existing backlog item, but no `B-0400` row exists in `docs/backlog/**`. Please either create the backlog row and reference it directly, or remove/rename the B-0400 identifier here to avoid pointing future readers/tools at a non-existent artifact.
+  P1 (xref integrity): The “Loop detection heuristic for 081KR7JY10008QG0R000R503K2 bus” section continues to treat 081KR7JY10008QG0R000R503K2 as an existing backlog item, but no `081KR7JY10008QG0R000R503K2` row exists in `docs/backlog/**`. Please either create the backlog row and reference it directly, or remove/rename the 081KR7JY10008QG0R000R503K2 identifier here to avoid pointing future readers/tools at a non-existent artifact.
 
   </pre>
 
@@ -174,7 +174,7 @@
 - **`Copilot` (bot)** at 2026-05-10T19:03:28Z on `memory/feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md`:35 (association: NONE)
 
   <pre>
-  P1 (xref integrity): This sentence references “The B-0400 bus message schema…”, but there is no `B-0400` backlog item to anchor what the schema is/where it lives. Consider linking to the actual schema definition (file path) once it exists, or filing the backlog item first so this reference stays resolvable.
+  P1 (xref integrity): This sentence references “The 081KR7JY10008QG0R000R503K2 bus message schema…”, but there is no `081KR7JY10008QG0R000R503K2` backlog item to anchor what the schema is/where it lives. Consider linking to the actual schema definition (file path) once it exists, or filing the backlog item first so this reference stays resolvable.
 
   </pre>
 
@@ -193,7 +193,7 @@ docs(memory): Riven context overflow incident — Grok loops, doesn't h…
 
 …allucinate
 
-Shadow warning missed (no bus yet). B-0400 first justification.
+Shadow warning missed (no bus yet). 081KR7JY10008QG0R000R503K2 first justification.
 Prompt injection research needed on bus message schema.
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
@@ -259,7 +259,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 ```
 docs(memory): address review comments on Riven overflow memory file —…
 
-… list formatting, B-0400 ref, prompt-injection section
+… list formatting, 081KR7JY10008QG0R000R503K2 ref, prompt-injection section
 
 Co-Authored-By: Grok <noreply@x.ai>
 Co-authored-by: Cursor <cursoragent@cursor.com>

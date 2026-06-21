@@ -1,6 +1,5 @@
 ---
-id: B-0686
-zetaid: 081KS3X9Y0008QG0R003R74B20
+id: 081KS3X9Y0008QG0R003R74B20
 priority: P3
 status: open
 title: Tick-shard immutability CI gate — block PRs modifying historical shards after grace period
@@ -61,7 +60,7 @@ Logic:
 - [`docs/hygiene-history/ticks/README.md`](../../hygiene-history/ticks/README.md) — Event-Sourcing immutability doc
 - [`tools/hygiene/AUDIT-LIFECYCLE.md`](../../../tools/hygiene/AUDIT-LIFECYCLE.md) — staged-rollout pattern this row instantiates
 - [`tools/hygiene/audit-tick-shard-relative-paths.ts`](../../../tools/hygiene/audit-tick-shard-relative-paths.ts) — sibling audit tool; same authoring template
-- [B-0530](./B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — multi-Otto coordination; the same substrate-engineering layer
+- [081KRMEXM0008QG0R000X1PPGC](./081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — multi-Otto coordination; the same substrate-engineering layer
 
 ## Substrate-honest caveat
 

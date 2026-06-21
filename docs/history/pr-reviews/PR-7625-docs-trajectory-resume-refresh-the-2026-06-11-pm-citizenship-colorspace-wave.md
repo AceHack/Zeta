@@ -27,7 +27,7 @@
 
 ## Description
 
-Reload-point hygiene: folds #7613..#7624 into the trajectory RESUME (PSD theorems, citizenship quartet, colorspace correction, universal/color.md, /saves /futures /lens, Moonshot #1, B-1024 + capability matrix); names the next buildable (QEMU slice 1) and the parked /db gate. Docs only.
+Reload-point hygiene: folds #7613..#7624 into the trajectory RESUME (PSD theorems, citizenship quartet, colorspace correction, universal/color.md, /saves /futures /lens, Moonshot #1, 081KTSZN10008QG0R00349SM6P + capability matrix); names the next buildable (QEMU slice 1) and the parked /db gate. Docs only.
 
 ## Outcome
 

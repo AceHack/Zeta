@@ -115,7 +115,7 @@ jobs:
         env:
           GH_EVENT: ${{ github.event_name }}
 
-  # F# / .NET path filter for build-and-test step-gating (B-0125).
+  # F# / .NET path filter for build-and-test step-gating (081KQGDBJ0008QG0R001MK4YPC).
   #
   # PR docs-only PRs (touching only docs/**, memory/**, openspec/**,
   # *.md at root, etc.) do NOT need to run F# install + dotnet build
@@ -302,7 +302,7 @@ jobs:
         os: ${{ fromJson(needs.matrix-setup.outputs.os) }}
     runs-on: ${{ matrix.os }}
 
-    # Path-filter step-gating (B-0125 / 2026-05-02): when the PR
+    # Path-filter step-gating (081KQGDBJ0008QG0R001MK4YPC / 2026-05-02): when the PR
     # touches only docs/memory/openspec/etc., the heavy F# install +
     # dotnet build + dotnet test steps below are skipped. The job
     # itself still runs (status check name reports green) so
@@ -323,7 +323,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - name: Path-filter result (B-0125)
+      - name: Path-filter result (081KQGDBJ0008QG0R001MK4YPC)
         shell: bash
         env:
           CODE_PATH: ${{ needs.path-filter.outputs.code }}
@@ -415,7 +415,7 @@ jobs:
         # see green. This step is the visible signal that the F# build
         # was skipped intentionally.
         if: needs.path-filter.outputs.code != 'true'
-        run: echo "build-and-test skipped on docs-only PR (B-0125 path-filter)."
+        run: echo "build-and-test skipped on docs-only PR (081KQGDBJ0008QG0R001MK4YPC path-filter)."
 
   lint:
     # Semgrep runs every rule in `.semgrep.yml` — 14+ custom rules
@@ -877,7 +877,7 @@ jobs:
     # discipline at the structural layer: agents and humans cannot
     # land courier-ferry imports without the §33 header anymore.
     #
-    # B-0036 Sub-task 2 — wire the lint to gate.yml after Sub-task 1
+    # 081KQ3HBZ0008QG0R001FPVG3Z Sub-task 2 — wire the lint to gate.yml after Sub-task 1
     # backfilled all pre-existing violations to 0.
     name: lint (archive header §33)
     timeout-minutes: 5
@@ -915,14 +915,14 @@ jobs:
     # docs/backlog/, repo-root *.md) still references docs/research/<basename>
     # where <basename> has been migrated to memory/persona/<persona>/conversations/.
     #
-    # Sibling of lint-archive-header-section33 (B-0036): same shape, different
+    # Sibling of lint-archive-header-section33 (081KQ3HBZ0008QG0R001FPVG3Z): same shape, different
     # failure-class. The §33 migration pattern moves files but does not
     # auto-update backlinks; without this lint, dead xrefs accumulate silently
     # (empirical baseline 2026-05-15 before cleanup: 10 dead xrefs across 6 files;
     # full discovery: PR #3513 → Codex P2 → narrow fix PR #3529 → scanner
     # PR #3548 → baseline cleanup PR #3552).
     #
-    # B-0533 Slice B.3 + B.4 — wire the scanner to gate.yml in --enforce mode
+    # 081KRMEXM0008QG0R000K25MXS Slice B.3 + B.4 — wire the scanner to gate.yml in --enforce mode
     # after PR #3552 backfilled all pre-existing violations to 0.
     name: lint (§33 migration xrefs)
     timeout-minutes: 5
@@ -985,14 +985,14 @@ jobs:
   lint-backlog-id-uniqueness:
     # Fail if any B-NNNN ID is claimed by more than one backlog row file.
     # Cross-agent ID-allocation collisions (Otto-CLI vs Otto-Desktop on
-    # B-0444 2026-05-13; Lior vs Otto-CLI on B-0532+B-0533 2026-05-15) cost
+    # 081KRFA460008QG0R001SXP0C2 2026-05-13; Lior vs Otto-CLI on 081KRMEXM0008QG0R003FZNK3E+081KRMEXM0008QG0R000K25MXS 2026-05-15) cost
     # ~15 min coordination effort each at observed ~20% rate. The
     # duplicate-ID detection logic was added to audit-backlog-items.ts
-    # 2026-05-14 (PR #3249, Copilot caught two files claiming B-0329 on
+    # 2026-05-14 (PR #3249, Copilot caught two files claiming 081KR2E4K0008QG0R001F0YB5S on
     # PR #3247) but ran detect-only — this job is the CI gate that turns
     # codified-but-not-enforced into a control.
     #
-    # B-0535 — sibling of lint-section-33-migration-xrefs + lint-archive-
+    # 081KRMEXM0008QG0R000HHAG77 — sibling of lint-section-33-migration-xrefs + lint-archive-
     # header-section33: catch-once-then-lint pattern at ID-allocation scope.
     name: lint (backlog ID uniqueness)
     timeout-minutes: 5
@@ -1014,9 +1014,9 @@ jobs:
       - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
         run: bun src/Core.TypeScript/hygiene/audit-dangling-symlinks.ts
 
-      # B-1035 Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
+      # 081KTSZN10008QG0R002J0GE0Z Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
-      - name: Run audit-sealed-rooms (B-1035 Reticulum-only lint half)
+      - name: Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)
         run: bun src/Core.TypeScript/hygiene/audit-sealed-rooms.ts
 
   lint-backlog-parent-child-status:
@@ -1024,15 +1024,15 @@ jobs:
     # landed/superseded/merged/done/superseded-by-*) while a declared
     # `child` in its `children:` list is still `status: open`. Empirical
     # anchor: PR #3518 (2026-05-15) shipped a row-status flip closing
-    # parent B-0442 without closing children B-0504 + B-0505. Caught by
+    # parent 081KRFA460008QG0R00061SXRW without closing children 081KRHWGX0008QG0R000PVB6FF + 081KRHWGX0008QG0R002C038BJ. Caught by
     # Codex + Copilot review (P1 + P2) but took 4 thread cycles to fully
     # resolve.
     #
-    # B-0532 hard-error slice — sibling of lint-backlog-id-uniqueness +
+    # 081KRMEXM0008QG0R003FZNK3E hard-error slice — sibling of lint-backlog-id-uniqueness +
     # lint-section-33-migration-xrefs + lint-archive-header-section33.
     # Soft-warning case (all children closed but parent open) + bidirectional
     # consistency (parent.children ↔ child.parent) deferred to follow-up
-    # slices per B-0532's full acceptance criteria.
+    # slices per 081KRMEXM0008QG0R003FZNK3E's full acceptance criteria.
     name: lint (backlog parent-child status)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
@@ -1131,7 +1131,7 @@ jobs:
   lint-typescript:
     # The TypeScript member of the per-language lint family (lint (F#) / (C#) /
     # (Go) / (Python) / (Rust) / (TS)). Strict typecheck on every TypeScript file
-    # via `tsc --noEmit -p tsconfig.json`. Round 35 static-analysis expansion per B-0106:
+    # via `tsc --noEmit -p tsconfig.json`. Round 35 static-analysis expansion per 081KQDTYV0008QG0R000XFYDTT:
     # ESLint with typed-linting catches *most* TS issues but not all
     # assignability narrowings. Slice 9 (PR #882) shipped a real
     # TS2322 (`Type 'string' is not assignable to type "head" | ...`)

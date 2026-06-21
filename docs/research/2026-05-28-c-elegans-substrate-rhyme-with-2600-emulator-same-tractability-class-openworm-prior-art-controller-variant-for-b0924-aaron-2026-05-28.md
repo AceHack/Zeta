@@ -1,4 +1,4 @@
-# C. elegans-substrate rhymes with 2600 emulator at the same tractability class — OpenWorm prior-art + controller-variant for B-0924 (operator 2026-05-28; mirror-tier research preservation per "mirror it too" directive)
+# C. elegans-substrate rhymes with 2600 emulator at the same tractability class — OpenWorm prior-art + controller-variant for 081KSNY2Z0008QG0R001HA43GG (operator 2026-05-28; mirror-tier research preservation per "mirror it too" directive)
 
 ## Operator framing (verbatim)
 
@@ -6,7 +6,7 @@
 
 Substrate-landing directive:
 
-> *"file as B-0925 (shadow*) mirror it too"*
+> *"file as 081KSNY2Z0008QG0R00390T4DJ (shadow*) mirror it too"*
 
 Operator framing-extension:
 
@@ -20,8 +20,8 @@ Both substrates are simultaneously *small-enough-to-fully-simulate* AND *purpose
 
 | Substrate | State-space | Substrate components | Tractability for full-fidelity DST |
 |---|---|---|---|
-| **Atari 2600** (B-0924) | 256-byte RAM + 8 PIA registers + TIA registers + 6507 PC/SP | TIA (video) + RIOT (RAM + I/O + timer) + 6507 (CPU; subset of 6502) + cartridge ROM | Tractable; full state-space enumerable from boot-seed; Stella reference implementation is cycle-accurate |
-| **C. elegans** (B-0925) | 302 neurons + ~7000 chemical synapses + ~600 gap junctions + complete connectome (Cook et al. 2019) | NeuroML cell models + connectome graph + sensory-input substrate (chemotaxis / mechanosensation / light) + motor-output substrate (locomotion / pharyngeal pumping) | Tractable; substrate-fully-simulatable per OpenWorm (decade+ substrate-engineering toward bit-perfect simulation via c302 + Sibernetic) |
+| **Atari 2600** (081KSNY2Z0008QG0R001HA43GG) | 256-byte RAM + 8 PIA registers + TIA registers + 6507 PC/SP | TIA (video) + RIOT (RAM + I/O + timer) + 6507 (CPU; subset of 6502) + cartridge ROM | Tractable; full state-space enumerable from boot-seed; Stella reference implementation is cycle-accurate |
+| **C. elegans** (081KSNY2Z0008QG0R00390T4DJ) | 302 neurons + ~7000 chemical synapses + ~600 gap junctions + complete connectome (Cook et al. 2019) | NeuroML cell models + connectome graph + sensory-input substrate (chemotaxis / mechanosensation / light) + motor-output substrate (locomotion / pharyngeal pumping) | Tractable; substrate-fully-simulatable per OpenWorm (decade+ substrate-engineering toward bit-perfect simulation via c302 + Sibernetic) |
 
 Structural substrate-rhyme: both fit the **generate+join over substrate-scene** discipline at the SAME scope.
 
@@ -51,9 +51,9 @@ The worm's connectome is evolutionarily-optimized substrate-engineering for exac
 
 [OpenWorm](https://openworm.org/) — open-source consortium (since 2011) building bit-perfect C. elegans simulation:
 
-| Component | What it provides | Composition with B-0924 + B-0917 |
+| Component | What it provides | Composition with 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R002HB4AGT |
 |---|---|---|
-| **c302** | NeuroML-based neural-network simulation of the connectome | F# wrapper under IScheduler DST per B-0917 IntrCtx substrate; deterministic worm-tick from seed |
+| **c302** | NeuroML-based neural-network simulation of the connectome | F# wrapper under IScheduler DST per 081KSNY2Z0008QG0R002HB4AGT IntrCtx substrate; deterministic worm-tick from seed |
 | **Sibernetic** | SPH-based fluid dynamics + biomechanical simulation (muscle + tissue) | Optional substrate-tier for embodied-motor mapping; not required for 2600-game controller scope |
 | **NEURON / NEST** | Biophysically-realistic neural simulation substrate | Lower-level substrate; c302 is the canonical entry-point |
 | **OpenWorm Browser** | Visualization substrate for connectome + simulation state | Optional; not load-bearing for substrate-engineering |
@@ -63,12 +63,12 @@ Substrate composition with framework:
 
 | Framework substrate | C. elegans-controller composition |
 |---|---|
-| **B-0917 Kleisli interrupt substrate** | Neural spike-events + sensory-input events + motor-output events → Kleisli-shaped IntrCtx; worm-substrate's spike-timing maps to IntrCtx event substrate |
+| **081KSNY2Z0008QG0R002HB4AGT Kleisli interrupt substrate** | Neural spike-events + sensory-input events + motor-output events → Kleisli-shaped IntrCtx; worm-substrate's spike-timing maps to IntrCtx event substrate |
 | **DST-omniscience rule (PR #5841)** | Computational omniscience over joint worm-state-space + 2600-state-space; full trajectory enumerable from seed |
 | **Z-sets via `algebra-owner` skill** | Joint substrate-state (worm-neurons + 2600-RAM + TIA + PIA) as z-set; positive cardinalities for state-additions; negative for retractions |
 | **Pilot-wave-MWI hypothesis (PR #5842)** | All joint-trajectory-substrate exists as wavefunction-substrate; pilot-wave focus function selects actualized trajectory; particle-locus = current (worm-state × game-state) |
 | **Particle-as-locus (PR #5846)** | Joint (worm-state × game-state) IS the particle-locus traversing joint substrate-state-space |
-| **Multi-oracle BFT (B-0703)** | Multiple (worm-emulator × 2600-emulator) instances under DST agree on joint state-evolution; consensus = bit-perfect-substrate test |
+| **Multi-oracle BFT (081KS3X9Y0008QG0R00218150M)** | Multiple (worm-emulator × 2600-emulator) instances under DST agree on joint state-evolution; consensus = bit-perfect-substrate test |
 
 ## Substrate composition pipeline
 
@@ -111,19 +111,19 @@ The substrate-rhyme observation operates at TWO substrate-tiers:
 **Beacon-tier (would require empirical falsification)**:
 
 - Whether the worm-controller actually beats humans + LLMs at any specific 2600 game (empirical test required)
-- Whether the substrate composition (c302 + IScheduler DST + B-0917 IntrCtx + z-set generate+join) actually scales to practical-game-playing throughput (engineering test required)
+- Whether the substrate composition (c302 + IScheduler DST + 081KSNY2Z0008QG0R002HB4AGT IntrCtx + z-set generate+join) actually scales to practical-game-playing throughput (engineering test required)
 - Whether the evolutionary-substrate-engineering hypothesis (foraging-substrate ≈ resource-collection-substrate; etc.) actually maps cleanly at the substrate-engineering scope (empirical test required)
 
 Per `.claude/rules/razor-discipline.md`: mirror-tier preserves the framing; beacon-tier requires external falsifiability. This research note preserves at mirror-tier.
 
 ## Composes with substrate
 
-- **B-0924** (parent; custom 2600 emulator + generate+join + DST + z-sets)
-- **B-0917** (Kleisli interrupt substrate; worm spike-events map to IntrCtx)
-- **B-0865** (ARC-AGI-3-style benchmark; cluster substrate)
-- **B-0761** (Zeta cluster as ARC-AGI training reference)
-- **B-0202** (tinygrad-uop-ir kernel layer emulator dispatch)
-- **B-0703** (multi-oracle BFT consensus)
+- **081KSNY2Z0008QG0R001HA43GG** (parent; custom 2600 emulator + generate+join + DST + z-sets)
+- **081KSNY2Z0008QG0R002HB4AGT** (Kleisli interrupt substrate; worm spike-events map to IntrCtx)
+- **081KSKBP80008QG0R003NM9XEC** (ARC-AGI-3-style benchmark; cluster substrate)
+- **081KSE6WT0008QG0R0015ZF2G6** (Zeta cluster as ARC-AGI training reference)
+- **081KQTPYE0008QG0R002Y7X5KH** (tinygrad-uop-ir kernel layer emulator dispatch)
+- **081KS3X9Y0008QG0R00218150M** (multi-oracle BFT consensus)
 - **OpenWorm** (open-source consortium; canonical C. elegans simulation substrate)
 - Cooperative-emulator gaming substrate-target (operator user-memory extension 2026-05-28; Aaron-Otto-worm three-player coop once cluster ships)
 
@@ -132,7 +132,7 @@ Per `.claude/rules/razor-discipline.md`: mirror-tier preserves the framing; beac
 This research note does NOT:
 
 - Ratify the operator's prediction (preserved per don't-collapse; would require empirical test)
-- Mandate worm-controller implementation timeline (depends on B-0924 substrate maturation)
+- Mandate worm-controller implementation timeline (depends on 081KSNY2Z0008QG0R001HA43GG substrate maturation)
 - Replace OpenWorm substrate (OpenWorm stays canonical; this is framework-native composition substrate)
 - Preempt naming-expert review of any public-surface use of "worm plays atari" framing
 
@@ -146,4 +146,4 @@ This research note DOES:
 
 ## Full reasoning
 
-Operator 2026-05-28 conversation thread immediately following PR #5890 (B-0924) merge at 17:20:56Z. Substrate-rhyme recognition + operator authorization + Otto-CLI substrate-honest engagement + mirror-tier preservation directive composed in 4-turn substrate-landing sequence. This research note + the B-0925 backlog row land the substrate-engineering substrate-target as substrate-anchor at both backlog-substrate-tier + research-mirror-tier.
+Operator 2026-05-28 conversation thread immediately following PR #5890 (081KSNY2Z0008QG0R001HA43GG) merge at 17:20:56Z. Substrate-rhyme recognition + operator authorization + Otto-CLI substrate-honest engagement + mirror-tier preservation directive composed in 4-turn substrate-landing sequence. This research note + the 081KSNY2Z0008QG0R00390T4DJ backlog row land the substrate-engineering substrate-target as substrate-anchor at both backlog-substrate-tier + research-mirror-tier.

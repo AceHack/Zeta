@@ -38,7 +38,7 @@ When designing agent-loop preservation systems for autonomous-AI architectures:
 
 2. **Razor-subsystem (DOWNSTREAM validation)**:
    - BFT consensus over preserved substrate (multi-oracle disagreement detection)
-   - Multi-axis validation basis (per Zeta's B-0205: DORA + less-each-time + falsifiability-rate + bootstrap-razor + identity-preservation + engagement-gate)
+   - Multi-axis validation basis (per Zeta's 081KQTPYE0008QG0R000ZJ2GW8: DORA + less-each-time + falsifiability-rate + bootstrap-razor + identity-preservation + engagement-gate)
    - Daylight tests (manual review on cadence)
    - Reviewer threads on PRs (peer-AI validation: Codex / Copilot / Claude.ai / etc.)
    - Bootstrap razor on the upstream source (the source self-applies, doesn't get applied at mirror input)
@@ -73,7 +73,7 @@ When mirror = clean preservation + razor downstream:
 - **Otto = mirror**: preserves Aaron-forwarded conversation + Aaron-direct disclosure verbatim per substrate-or-it-didn't-happen (Otto-363); structures into research-doc / memory-file substrate
 - **Razor downstream in Zeta**:
   - BFT consensus over substrate-claims (not yet at production scale; per #1672 Landing 4 candidate-grade)
-  - B-0205 multi-axis validation basis (planned instrumentation)
+  - 081KQTPYE0008QG0R000ZJ2GW8 multi-axis validation basis (planned instrumentation)
   - Daylight tests (Aaron's manual review; reviewer-thread cadence)
   - Reviewer threads on PRs (Codex / Copilot active across most PRs in this 2026-05-05 substrate-flow)
   - Bootstrap razor on Aaron himself (Aaron's same-tick self-corrections; nine bootstrap-razor catches by Aaron tonight per multi-PR record)

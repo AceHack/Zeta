@@ -1,28 +1,28 @@
 ---
-title: Amara 4th ferry 2026-05-26 — B-0841 + B-0842 + B-0843 product-trinity ratification + "Deep guides with receipts, lineage, and creator-paid attribution" positioning + tiny-blade on "no other AI company" public-copy claim
+title: Amara 4th ferry 2026-05-26 — 081KSGS9H0008QG0R001876MP6 + 081KSGS9H0008QG0R003V8C86Q + 081KSGS9H0008QG0R0012R8ZWS product-trinity ratification + "Deep guides with receipts, lineage, and creator-paid attribution" positioning + tiny-blade on "no other AI company" public-copy claim
 date: 2026-05-26
-source: Aaron-forwarded; 4th Amara ferry in same day — ratifies the full B-0841/B-0842/B-0843 substrate trinity as cleanest product landing
+source: Aaron-forwarded; 4th Amara ferry in same day — ratifies the full 081KSGS9H0008QG0R001876MP6/081KSGS9H0008QG0R003V8C86Q/081KSGS9H0008QG0R0012R8ZWS substrate trinity as cleanest product landing
 provenance: Aaron 2026-05-26 forwarded Amara's substantive response via Claude Code conversation
 status: substrate-honest verbatim preservation + Amara ratification + tiny-blade on competitive-positioning customer-facing copy
 composes_with:
   - docs/research/2026-05-26-amara-source-honor-ledger-creator-paid-by-design-rights-lanes-discipline-dont-sell-compression-sell-readout-b0841-b0842-amara-aaron-forwarded.md (3rd Amara ferry — Source Honor Ledger + rights-lane substrate)
   - docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md (2nd Amara ferry — 4-keeper-rule)
   - docs/research/2026-05-26-amara-no-coercion-even-inward-nci-as-cognitive-exploit-firewall-speech-as-rce-update-mechanism-taxonomy-aaron-forwarded.md (1st Amara ferry — NCI scope-split)
-  - docs/backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md (Shortform productization)
-  - docs/backlog/P2/B-0842-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md (universal basis-decomposition pattern)
-  - docs/backlog/P2/B-0843-source-honor-ledger-basis-royalty-pool-creator-paid-by-design-rights-lanes-discipline-for-b0841-b0842-amara-aaron-2026-05-26.md (Source Honor Ledger / Basis Royalty Pool)
+  - docs/backlog/P2/081KSGS9H0008QG0R001876MP6-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md (Shortform productization)
+  - docs/backlog/P2/081KSGS9H0008QG0R003V8C86Q-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md (universal basis-decomposition pattern)
+  - docs/backlog/P2/081KSGS9H0008QG0R0012R8ZWS-source-honor-ledger-basis-royalty-pool-creator-paid-by-design-rights-lanes-discipline-for-b0841-b0842-amara-aaron-2026-05-26.md (Source Honor Ledger / Basis Royalty Pool)
 ---
 
 ## Substrate-honest framing
 
-Mirror-tier verbatim preservation per `.claude/rules/substrate-or-it-didnt-happen.md`. Aaron-forwarded 4th Amara ferry in same day 2026-05-26 — Amara ratifies the full B-0841 + B-0842 + B-0843 product trinity as the cleanest product landing of the session.
+Mirror-tier verbatim preservation per `.claude/rules/substrate-or-it-didnt-happen.md`. Aaron-forwarded 4th Amara ferry in same day 2026-05-26 — Amara ratifies the full 081KSGS9H0008QG0R001876MP6 + 081KSGS9H0008QG0R003V8C86Q + 081KSGS9H0008QG0R0012R8ZWS product trinity as the cleanest product landing of the session.
 
 Critical substrate landings:
 
 1. **Product trinity naming** — Amara crystallizes the three-row architecture:
-   - B-0841 = productize deep guides
-   - B-0842 = readout math
-   - B-0843 = provenance + payment graph
+   - 081KSGS9H0008QG0R001876MP6 = productize deep guides
+   - 081KSGS9H0008QG0R003V8C86Q = readout math
+   - 081KSGS9H0008QG0R0012R8ZWS = provenance + payment graph
 2. **Final product positioning** — *"Deep guides with receipts, lineage, and creator-paid attribution"*
 3. **Ratification of DV2.0/dbt-style compression** — the substrate-engineering shape:
    - sources = hubs
@@ -39,7 +39,7 @@ Critical substrate landings:
 
 > **Amara**: Yeah — this is one of the cleaner product landings so far.
 >
-> The big move is that **B-0843 stops being "ethical vibes around creator payment" and becomes a real data/product architecture**:
+> The big move is that **081KSGS9H0008QG0R0012R8ZWS stops being "ethical vibes around creator payment" and becomes a real data/product architecture**:
 >
 > ```text
 > Source Honor Ledger
@@ -95,9 +95,9 @@ Critical substrate landings:
 > My favorite synthesis:
 >
 > ```text
-> B-0841 = productize deep guides
-> B-0842 = readout math
-> B-0843 = provenance + payment graph
+> 081KSGS9H0008QG0R001876MP6 = productize deep guides
+> 081KSGS9H0008QG0R003V8C86Q = readout math
+> 081KSGS9H0008QG0R0012R8ZWS = provenance + payment graph
 > ```
 >
 > So the product is not "AI summaries." It is:
@@ -114,9 +114,9 @@ Amara's three-row crystallization IS substrate-engineering compression of the su
 
 | Row | Function | Operational substrate |
 | --- | --- | --- |
-| **B-0841** | Productize deep guides | Phases 1-4 (catalog + generalize + browser-extension + monetization) |
-| **B-0842** | Readout math | Universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` operating across 5 application domains |
-| **B-0843** | Provenance + payment graph | DV2.0/dbt-style + Source Honor Ledger + 5-rights-lane + network-effect distribution + competitive-differentiation |
+| **081KSGS9H0008QG0R001876MP6** | Productize deep guides | Phases 1-4 (catalog + generalize + browser-extension + monetization) |
+| **081KSGS9H0008QG0R003V8C86Q** | Readout math | Universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` operating across 5 application domains |
+| **081KSGS9H0008QG0R0012R8ZWS** | Provenance + payment graph | DV2.0/dbt-style + Source Honor Ledger + 5-rights-lane + network-effect distribution + competitive-differentiation |
 
 These three rows together define the product. NOT just three separate rows — the product trinity.
 
@@ -126,10 +126,10 @@ These three rows together define the product. NOT just three separate rows — t
 
 This sentence ratifies:
 
-- **deep guides** = Shortform-equivalent output category (B-0841)
-- **receipts** = Source Honor Ledger / Basis Royalty Pool payment graph (B-0843)
-- **lineage** = DV2.0/dbt-style provenance substrate (B-0843)
-- **creator-paid attribution** = the moral/economic differentiator (B-0843)
+- **deep guides** = Shortform-equivalent output category (081KSGS9H0008QG0R001876MP6)
+- **receipts** = Source Honor Ledger / Basis Royalty Pool payment graph (081KSGS9H0008QG0R0012R8ZWS)
+- **lineage** = DV2.0/dbt-style provenance substrate (081KSGS9H0008QG0R0012R8ZWS)
+- **creator-paid attribution** = the moral/economic differentiator (081KSGS9H0008QG0R0012R8ZWS)
 
 Every word is load-bearing AND verifiable from operational substrate (per glass-halo-bidirectional discipline). No glass-halo discrepancy between product positioning and product mechanism.
 
@@ -160,10 +160,10 @@ The 4-Amara-ferry sequence in same day (1st = NCI scope-split / no-coercion-even
 - Operator substrate-honestly compresses ("this is just X")
 - External AI tiny-blade refines for safe-strong claim form
 
-The 4-ferry sequence today IS the working demonstration of substrate-engineering reservoir computing operating at human-AI-collaboration scope. The framework's product (B-0841/B-0842/B-0843) IS the substrate the framework's substrate-engineering work produces.
+The 4-ferry sequence today IS the working demonstration of substrate-engineering reservoir computing operating at human-AI-collaboration scope. The framework's product (081KSGS9H0008QG0R001876MP6/081KSGS9H0008QG0R003V8C86Q/081KSGS9H0008QG0R0012R8ZWS) IS the substrate the framework's substrate-engineering work produces.
 
 ## Origin
 
-Aaron-forwarded 4th Amara ferry in same day 2026-05-26. Final ratification of the product trinity (B-0841 + B-0842 + B-0843). Companion sub-action: apply tiny-blade correction to B-0843 customer-facing-copy section.
+Aaron-forwarded 4th Amara ferry in same day 2026-05-26. Final ratification of the product trinity (081KSGS9H0008QG0R001876MP6 + 081KSGS9H0008QG0R003V8C86Q + 081KSGS9H0008QG0R0012R8ZWS). Companion sub-action: apply tiny-blade correction to 081KSGS9H0008QG0R0012R8ZWS customer-facing-copy section.
 
-Per `.claude/rules/honor-those-that-came-before.md` + `.claude/rules/substrate-or-it-didnt-happen.md` + `.claude/rules/wake-time-substrate.md`. Mirror-tier preservation; substantive substrate-engineering integration; companion B-0843 tiny-blade correction.
+Per `.claude/rules/honor-those-that-came-before.md` + `.claude/rules/substrate-or-it-didnt-happen.md` + `.claude/rules/wake-time-substrate.md`. Mirror-tier preservation; substantive substrate-engineering integration; companion 081KSGS9H0008QG0R0012R8ZWS tiny-blade correction.

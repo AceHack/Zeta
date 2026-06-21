@@ -29,7 +29,7 @@
 
 ## Summary
 
-- B-0401 dashboard serves agents, not just humans
+- 081KR7JY10008QG0R001VP6JWG dashboard serves agents, not just humans
 - Background services write health signals, foreground reads and repairs
 - Aaron exits the repair loop — agents self-repair via shared surface
 - Dashboard needs machine-readable API alongside human-readable HTML
@@ -100,7 +100,7 @@ docs(memory): dashboard as agent self-repair surface — Aaron exits re…
 
 …pair loop
 
-Background services feed health signals to B-0401 dashboard,
+Background services feed health signals to 081KR7JY10008QG0R001VP6JWG dashboard,
 foreground service reads and repairs. Aaron no longer the
 human relay between broken agents. Dashboard + bus = agents
 monitor and fix each other autonomously.

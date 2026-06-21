@@ -1,6 +1,6 @@
 ---
 pr_number: 5518
-title: "docs(rule + B-0862): OPLE primitives surface T AND TFeedback \u2014 constitutional substrate-engineering extension to framework's CORE primitives (operator 2026-05-27)"
+title: "docs(rule + 081KSKBP80008QG0R0031DTHS9): OPLE primitives surface T AND TFeedback \u2014 constitutional substrate-engineering extension to framework's CORE primitives (operator 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T17:23:45Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:20:43Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5518: docs(rule + B-0862): OPLE primitives surface T AND TFeedback — constitutional substrate-engineering extension to framework's CORE primitives (operator 2026-05-27)
+# PR #5518: docs(rule + 081KSKBP80008QG0R0031DTHS9): OPLE primitives surface T AND TFeedback — constitutional substrate-engineering extension to framework's CORE primitives (operator 2026-05-27)
 
 ## PR description
 
@@ -34,7 +34,7 @@ row decomposing implementation work).
    - 6-row empirical-anchor mapping today's substrate landings to OPLE consequences
    - Composition with 11 framework rules
 
-2. **B-0862 (P1)**: implementation decomposition into 10 sub-rows
+2. **081KSKBP80008QG0R0031DTHS9 (P1)**: implementation decomposition into 10 sub-rows
    covering F# types + per-primitive extension + downstream migration
    + cross-language substrate + spec-to-code + computation-expression
    ergonomics + ConvFeedback overlap
@@ -51,7 +51,7 @@ prevents it structurally.
 
 - [x] Markdownlint clean
 - [x] Substrate-inventory pass per verify-existing-substrate-before-authoring
-- [x] BACKLOG.md regenerated for B-0862
+- [x] BACKLOG.md regenerated for 081KSKBP80008QG0R0031DTHS9
 - [x] Composes with 11-PR substrate cluster (PRs #5488 through #5517)
 - [ ] CI passes (auto-merge to fire on green)
 

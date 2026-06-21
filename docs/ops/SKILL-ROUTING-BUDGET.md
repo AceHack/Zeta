@@ -90,6 +90,6 @@ harnesses need their own equivalent tuning.
 
 ## Tracked at
 
-- B-0347 (carved-sentence skill descriptions)
+- 081KR50HA0008QG0R002ZNFQBZ (carved-sentence skill descriptions)
 - `skillListingBudgetFraction` raised to 0.02 as immediate
   mitigation (2026-05-09)

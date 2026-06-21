@@ -1,20 +1,20 @@
-# Product-repo naming review (B-0466)
+# Product-repo naming review (081KRHWGX0008QG0R003XHCEXT)
 
 **Author:** Otto (2026-05-14T0952Z)  
-**Closes:** B-0466  
-**Unblocks:** B-0468  
-**Feeds from:** B-0465 (per-product substrate inventory)  
+**Closes:** 081KRHWGX0008QG0R003XHCEXT  
+**Unblocks:** 081KRHWGX0008QG0R000F6HE6D  
+**Feeds from:** 081KRHWGX0008QG0R002B2P0K0 (per-product substrate inventory)  
 **Search date:** 2026-05-14 (Otto-364 search-first-authority applied)
 
 ---
 
 ## Scope
 
-Only products with B-0465 verdict `now` need an **approved** slug before B-0468.  
+Only products with 081KRHWGX0008QG0R002B2P0K0 verdict `now` need an **approved** slug before 081KRHWGX0008QG0R000F6HE6D.  
 Products with verdict `later` get **provisional** slugs (re-review at repo-creation time).  
 `stays-in-monorepo` products need no slug.
 
-| Product | B-0465 verdict | Slug status needed |
+| Product | 081KRHWGX0008QG0R002B2P0K0 verdict | Slug status needed |
 |---------|---------------|-------------------|
 | Civsim | **now** | Approved |
 | KSK | later | Provisional |
@@ -186,7 +186,7 @@ No significant technical naming collisions exist. The existing GitHub repos are 
 
 ## Wellness
 
-**Status:** Slug TBD pending product definition (B-0465 verdict: `later`)
+**Status:** Slug TBD pending product definition (081KRHWGX0008QG0R002B2P0K0 verdict: `later`)
 
 **Pre-review notes:** The unqualified `wellness` slug has very high namespace collision risk — many wellness apps, products, and frameworks use this name. When the product scope narrows (wellness-DAO governance app vs. wearable app vs. self-modification tool), a qualified slug such as `lf-wellness` or a more specific name should be evaluated. **Do not use bare `wellness` as a slug.**
 
@@ -194,14 +194,14 @@ No significant technical naming collisions exist. The existing GitHub repos are 
 
 ## Dawn
 
-**Status:** `stays-in-monorepo` (B-0465 verdict). No repo slug needed.  
+**Status:** `stays-in-monorepo` (081KRHWGX0008QG0R002B2P0K0 verdict). No repo slug needed.  
 Dawn is a governance/charter document; recommended home is `docs/charter/DAWN.md` in the Zeta repo.
 
 ---
 
 ## Summary table — approved and provisional slugs
 
-| Product | B-0465 verdict | Recommended slug | Status | Notes |
+| Product | 081KRHWGX0008QG0R002B2P0K0 verdict | Recommended slug | Status | Notes |
 |---------|---------------|-----------------|--------|-------|
 | **Civsim** | **now** | **`civsim`** | **✅ Approved** | No significant collisions; established in substrate |
 | KSK | later | `lf-ksk` | Provisional ⚠️ | KSK = Kommando Spezialkräfte + NIST Key Signing Key |
@@ -216,11 +216,11 @@ Dawn is a governance/charter document; recommended home is `docs/charter/DAWN.md
 ## Dependency graph position
 
 ```
-B-0465 ──→ B-0466 (this row) ──→ B-0468 (ADR)
+081KRHWGX0008QG0R002B2P0K0 ──→ 081KRHWGX0008QG0R003XHCEXT (this row) ──→ 081KRHWGX0008QG0R000F6HE6D (ADR)
 ```
 
-The one approved slug (`civsim`) is available for immediate use in B-0468.  
-Provisional slugs for `later` products do not block B-0468.
+The one approved slug (`civsim`) is available for immediate use in 081KRHWGX0008QG0R000F6HE6D.  
+Provisional slugs for `later` products do not block 081KRHWGX0008QG0R000F6HE6D.
 
 ---
 

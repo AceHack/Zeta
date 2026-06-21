@@ -212,7 +212,7 @@ function tallyTouches(window: string): readonly FileTally[] {
     "--pretty=format:",
     "--name-only",
   ]);
-  const lines = raw.split("\n").filter((s) => s.length > 0); // excludes blank lines per B-0074 stale-item resolution for B-0067 log-line scoring
+  const lines = raw.split("\n").filter((s) => s.length > 0); // excludes blank lines per 081KQ8P5D0008QG0R0014HJFF5 stale-item resolution for 081KQ8P5D0008QG0R001D8RCZ9 log-line scoring
   const filtered = lines.filter(
     (f) => !EXCLUDED_PREFIXES.some((p) => f.startsWith(p)),
   );

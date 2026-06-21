@@ -1,6 +1,5 @@
 ---
-id: B-0496
-zetaid: 081KRHWGX0008QG0R002GTT8CX
+id: 081KRHWGX0008QG0R002GTT8CX
 priority: P1
 status: open
 title: "Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory"
@@ -15,11 +14,11 @@ tags: [demo, hamiltonian, git, phase-space, alignment-ui, github-pages, html, js
 type: feature
 ---
 
-# B-0496 — Hamiltonian viz slice-2: live GitHub API commit fetch
+# 081KRHWGX0008QG0R002GTT8CX — Hamiltonian viz slice-2: live GitHub API commit fetch
 
 ## What
 
-Replace B-0495's mock data with live commit data fetched from
+Replace 081KRHWGX0008QG0R001RHSSHT's mock data with live commit data fetched from
 `/repos/{owner}/{repo}/commits` via GitHub API. Map each commit to a
 phase-space point: x = commit date (normalized), y = number of changed
 files (energy proxy). Render with the same canvas from slice-1.
@@ -33,5 +32,5 @@ files (energy proxy). Render with the same canvas from slice-1.
 
 ## Pre-start checklist
 
-- Prior-art: depends on B-0495 being closed.
+- Prior-art: depends on 081KRHWGX0008QG0R001RHSSHT being closed.
 - API pattern: mirrors `loadAlignmentTab()` lazy-load pattern.

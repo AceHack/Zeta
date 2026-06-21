@@ -27,7 +27,7 @@ type DbFeedback =
     | InvalidOperation of message: string
 
 
-/// **Ref-aware Delta Log interface — provides first-class DB verbs for ref operations (B-0956 / 081KTGPC2XP).**
+/// **Ref-aware Delta Log interface — provides first-class DB verbs for ref operations (081KSXN940008QG0R002FWR9B2).**
 /// Extends IDeltaLog to support git-ref branching, checking out, resetting, remote syncing, and status queries.
 type IRefDeltaLog<'K when 'K : comparison> =
     inherit IDeltaLog<'K>

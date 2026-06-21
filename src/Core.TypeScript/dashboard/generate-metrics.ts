@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * B-0414: Generate demo/metrics.json from GitHub API.
+ * 081KRA5AR0008QG0R0021SSM9R: Generate demo/metrics.json from GitHub API.
  *
  * Called by the autonomous loop on each tick. Produces a static
  * JSON file that both the HTML dashboard and agents can read

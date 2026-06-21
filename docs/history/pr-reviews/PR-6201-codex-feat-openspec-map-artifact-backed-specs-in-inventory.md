@@ -49,7 +49,7 @@ Credential-Mode: shared
 Human-Review: none
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0171
+Task: 081KQNJ500008QG0R001N94412
 Co-Authored-By: Codex <noreply@openai.com>
 
 ## Outcome
@@ -116,7 +116,7 @@ Credential-Mode: shared
 Human-Review: none
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0171
+Task: 081KQNJ500008QG0R001N94412
 Co-Authored-By: Codex <noreply@openai.com>
 ```
 
@@ -146,6 +146,6 @@ Credential-Mode: shared
 Human-Review: none
 Human-Review-Evidence: none
 Action-Mode: autonomous-fail-open
-Task: B-0171
+Task: 081KQNJ500008QG0R001N94412
 Co-Authored-By: Codex <noreply@openai.com>
 ```

@@ -62,7 +62,7 @@ describe("auditDescription", () => {
         expect(v[0].severity).toBe("error");
     });
 });
-describe("auditSkillsDir — live invariant (B-0347 acceptance #1/#2)", () => {
+describe("auditSkillsDir — live invariant (081KR50HA0008QG0R002ZNFQBZ acceptance #1/#2)", () => {
     test("every shipped skill description is within the routing budget", () => {
         const root = process.cwd().replace(/\/tools\/hygiene$/, "");
         const { checked, violations } = auditSkillsDir(join(root, ".claude/skills"));

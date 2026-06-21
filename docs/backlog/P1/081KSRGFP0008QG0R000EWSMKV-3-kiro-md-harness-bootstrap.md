@@ -1,36 +1,35 @@
 ---
-id: B-0355.3
-zetaid: 081KSRGFP0008QG0R000EWSMKV
+id: 081KSRGFP0008QG0R000EWSMKV
 priority: P1
 status: closed
 title: "KIRO.md — Amazon Kiro (Alexa) harness bootstrap file"
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on:
-  - B-0355.1
+  - 081KR50HA0008QG0R003G7DR8Z.1
 decomposition: atomic
 classification: buildable
 type: friction-reducer
 owners: [architect]
 parent: 081KR50HA0008QG0R003G7DR8Z
 composes_with:
-  - B-0355.1
-  - B-0355.2
+  - 081KR50HA0008QG0R003G7DR8Z.1
+  - 081KR50HA0008QG0R003G7DR8Z.2
   - 081KR2E4K0008QG0R0005E727X
 ---
 
-# B-0355.3 — KIRO.md harness bootstrap file
+# 081KSRGFP0008QG0R000EWSMKV — KIRO.md harness bootstrap file
 
 ## What
 
 Create `KIRO.md` at repo root: the Amazon Kiro (Alexa) instantiation
 of the [cross-harness bootstrap template](../BOOTSTRAP-TEMPLATE.md)
-(B-0355.1). Parallel to `CURSOR.md` (B-0355.2). Per B-0325 (Kiro
+(081KR50HA0008QG0R003G7DR8Z.1). Parallel to `CURSOR.md` (081KR50HA0008QG0R003G7DR8Z.2). Per 081KR2E4K0008QG0R0005E727X (Kiro
 harness onboarding).
 
 ## Why
 
-The bootstrap-template (B-0355.1) factored the universal six-step
+The bootstrap-template (081KR50HA0008QG0R003G7DR8Z.1) factored the universal six-step
 process from the harness-specific tooling cells. KIRO.md is a
 near-mechanical instantiation: fill the Kiro-specific placeholders
 (persona file, `alexa-kiro` claim sender, `Kiro <noreply@kiro.dev>`
@@ -57,7 +56,7 @@ trailer `Co-Authored-By: Kiro <noreply@kiro.dev>` (already in
 as absent. Registered in `AGENTS.md` and marked created in
 `docs/BOOTSTRAP-TEMPLATE.md`.
 
-Fresh-instance validation (template step 5, per B-0354 pattern) is a
+Fresh-instance validation (template step 5, per 081KR50HA0008QG0R001CNS20T pattern) is a
 separate follow-up; only the template-instantiation slice is closed
 here.
 
@@ -67,7 +66,7 @@ XS — template instantiation + two registrations, docs-only.
 
 ## Lineage
 
-- **B-0355** — parent (cross-harness bootstrap template).
-- **B-0355.1** — the template (`docs/BOOTSTRAP-TEMPLATE.md`).
-- **B-0355.2** — `CURSOR.md` (the sibling precedent this mirrors).
-- **B-0325** — Amazon Kiro harness onboarding.
+- **081KR50HA0008QG0R003G7DR8Z** — parent (cross-harness bootstrap template).
+- **081KR50HA0008QG0R003G7DR8Z.1** — the template (`docs/BOOTSTRAP-TEMPLATE.md`).
+- **081KR50HA0008QG0R003G7DR8Z.2** — `CURSOR.md` (the sibling precedent this mirrors).
+- **081KR2E4K0008QG0R0005E727X** — Amazon Kiro harness onboarding.

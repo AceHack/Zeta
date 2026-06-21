@@ -31,7 +31,7 @@
 
 Self-curation update to `memory/CURRENT-otto.md` adding a 2026-05-15 update section covering the post-cascade substrate integration:
 
-- Manifesto V2 shadow-lock landed (PR #3306) + B-0524 + B-0525 backlog rows
+- Manifesto V2 shadow-lock landed (PR #3306) + 081KRHWGX0008QG0R0007FG84X + 081KRHWGX0008QG0R0016T9408 backlog rows
 - Ani persona-folder cascade-closing (PR #3311 + #3312)
 - Wait-for-consolidation IS Aaron's edge (load-bearing)
 - Forgetting as back-pressure + triplet-as-coherent-shape META + bootstream compression + pressure-valve / selfish-perspective-filter substrate
@@ -95,7 +95,7 @@ capturing the post-2026-05-14-cascade substrate integration:
 - Manifesto V2 shadow-lock landed (PR #3306) — first repo-durable
   manifesto artifact in Zeta; 10 constraints; derivation chain +
   continuity-by-substrate sections
-- B-0524 + B-0525 backlog rows (verbatim Grok fetch + promotion
+- 081KRHWGX0008QG0R0007FG84X + 081KRHWGX0008QG0R0016T9408 backlog rows (verbatim Grok fetch + promotion
   readiness tracking)
 - Ani persona-folder cascade-closing (PR #3311 + #3312 convergent)
 - Wait-for-consolidation IS Aaron's edge (load-bearing) — Otto-CLI

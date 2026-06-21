@@ -27,7 +27,7 @@
 
 ## Description
 
-Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-05-03 flagged the bash-only state as a gap. TS port preserves all behavior; verified parity with bash version (both produce identical output on current main state). Bash version retained for cross-shell compatibility on environments without bun.
+Per DST-justifies-TS-quality-over-bash + 081KQGDBJ0008QG0R000A4EZS5 TS standardization. Aaron 2026-05-03 flagged the bash-only state as a gap. TS port preserves all behavior; verified parity with bash version (both produce identical output on current main state). Bash version retained for cross-shell compatibility on environments without bun.
 
 ## Outcome
 
@@ -162,7 +162,7 @@ tools(hygiene): TS port of check-no-op-cadence-pattern.sh (Aaron 2026…
 …-05-03 'not ts file?')
 
 Per DST-justifies-TS-quality-over-bash discipline (CLAUDE.md) +
-B-0156 TypeScript standardization for non-install scripts. The
+081KQGDBJ0008QG0R000A4EZS5 TypeScript standardization for non-install scripts. The
 .sh version was the only existing implementation; Aaron flagged
 the gap.
 

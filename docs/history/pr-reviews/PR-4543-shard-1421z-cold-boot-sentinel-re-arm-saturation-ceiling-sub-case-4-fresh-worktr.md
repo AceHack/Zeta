@@ -31,7 +31,7 @@
 
 - Fresh cold-boot autonomous-loop tick at 14:21Z found `CronList` empty; re-armed sentinel `0a1bdd60` per catch-43 discipline
 - Documents new empirical anchor for [`.claude/rules/claim-acquire-before-worktree-work.md`](../blob/main/.claude/rules/claim-acquire-before-worktree-work.md) saturation-ceiling **sub-case 4 extension**: FRESH worktrees (not just stale sideticks) get pruned by Lior cleanup within seconds of `git worktree add` completing
-- Borrow-on-existing pattern validated as fallback; B-0615 silent-push-failure hit twice from sidetick; landed via REST git-data API bypass (PR #4145 worked-example pattern)
+- Borrow-on-existing pattern validated as fallback; 081KRW63S0008QG0R000EAZ9K2 silent-push-failure hit twice from sidetick; landed via REST git-data API bypass (PR #4145 worked-example pattern)
 
 ## Test plan
 

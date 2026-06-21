@@ -1,6 +1,5 @@
 ---
-id: B-0423.1
-zetaid: 081KRFA460008QG0R0006Q6BWP
+id: 081KRFA460008QG0R0006Q6BWP
 priority: P1
 class: substrate-architecture
 status: closed
@@ -17,7 +16,7 @@ tier: factory-tooling
 authors: [otto]
 ---
 
-# B-0423.1 — Extend reindex-memory-md.ts test coverage
+# 081KRFA460008QG0R0006Q6BWP — Extend reindex-memory-md.ts test coverage
 
 ## Carved sentence
 
@@ -29,14 +28,14 @@ authors: [otto]
 ## Context
 
 `tools/memory/reindex-memory-md.ts` was implemented as part of the
-B-0423 architectural fix. Its test file
+081KRCQQF0008QG0R0037YYP1A architectural fix. Its test file
 (`tools/memory/reindex-memory-md.test.ts`) currently only covers
 `parseFrontmatter`. The two functions that constitute the reindex
 pipeline — `collectEntries` (scans memory/ directory and parses
 frontmatter) and `renderIndex` (renders the MEMORY.md stack view from
 entries) — have no tests.
 
-B-0423.3 (loop wiring) and B-0423.4 (CI relaxation) both depend on
+081KRFA460008QG0R0034C2W0E (loop wiring) and 081KRFA460008QG0R0035NKRHG (CI relaxation) both depend on
 the reindexer being trustworthy. This slice validates the tool before
 those slices land.
 
@@ -77,13 +76,13 @@ without CWD manipulation.
 
 ## Why P1 (not P2)
 
-This slice gates B-0423.3 (loop wiring) and B-0423.4 (CI relaxation).
+This slice gates 081KRFA460008QG0R0034C2W0E (loop wiring) and 081KRFA460008QG0R0035NKRHG (CI relaxation).
 Without adequate test coverage, rolling out the heap architecture
 carries undefined risk for the reindexer's correctness. Completing
 this first is cheap and removes that risk.
 
 ## Composes with
 
-- B-0423 (parent; this is slice 1 of 5)
-- B-0423.3 (loop wiring depends on this slice's confidence signal)
-- B-0423.4 (CI relaxation depends on trustworthy reindexer)
+- 081KRCQQF0008QG0R0037YYP1A (parent; this is slice 1 of 5)
+- 081KRFA460008QG0R0034C2W0E (loop wiring depends on this slice's confidence signal)
+- 081KRFA460008QG0R0035NKRHG (CI relaxation depends on trustworthy reindexer)

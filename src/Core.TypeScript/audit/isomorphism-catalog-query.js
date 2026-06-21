@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 // isomorphism-catalog-query.ts — pure-TS forward-index query helper for the
-// B-0051 isomorphism/homomorphism catalog v0.
+// 081KQ3HBZ0008QG0R002SM3G49 isomorphism/homomorphism catalog v0.
 //
 // Provides typed IF-filter structures and a minimal operator-preservation
 // validator stub. Read-only, no IO, no mutation. Composes with the
 // isomorphism-catalog.md forward index.
 //
-// This is B-0051.2 smallest safe slice (re-decomposed from parent B-0051
+// This is 081KDVGJP9008QG0R002YXMRBA smallest safe slice (re-decomposed from parent 081KQ3HBZ0008QG0R002SM3G49
 // during build; original decomposition assumed no code surface was needed
 // for the filters — mistake corrected by landing executable substrate).
 //

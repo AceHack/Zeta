@@ -92,7 +92,7 @@ landed seeds (`ZSetMerkle` + `Collation`). Powerful direction; not yet real.
 
 - `2026-06-07-cow-database-testing-from-prod-...` (the testing half; same COW/Merkle-DAG substrate + same
   outbox/saga boundary) · `081KTGTJC1Q` (Merkle-DAG store) · `081KTGXPTQ` (COW testing workitem) ·
-  app-as-DynamicValue + plugin-as-data (schema/migration/index/plugin as values) · B-0969 + `081KTGEVV75`
+  app-as-DynamicValue + plugin-as-data (schema/migration/index/plugin as values) · 081KT07NV0008QG0R001YDB73K + `081KTGEVV75`
   (determinism — same-fork-same-root) · the formal-verification portfolio (Soraya — the schema-proof).
 
 ## Beacon anchors

@@ -1,6 +1,5 @@
 ---
-id: B-0534
-zetaid: 081KRMEXM0008QG0R003GP8W0C
+id: 081KRMEXM0008QG0R003GP8W0C
 priority: P2
 status: open
 title: "backlog-ready-notifier reads stale local working-tree files → publishes work-assignment envelopes for closed rows"
@@ -18,9 +17,9 @@ type: bug
 
 ## Origin
 
-Surfaced 2026-05-15T18:18Z. Running `bun tools/bg/backlog-ready-notifier.ts --once` from the primary worktree returned ready-candidate IDs including `B-0442` and `B-0503`, both of which were closed earlier in the same session via [PR #3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (`627e797` on main).
+Surfaced 2026-05-15T18:18Z. Running `bun tools/bg/backlog-ready-notifier.ts --once` from the primary worktree returned ready-candidate IDs including `081KRFA460008QG0R00061SXRW` and `081KRHWGX0008QG0R0027YXBTB`, both of which were closed earlier in the same session via [PR #3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (`627e797` on main).
 
-Root cause: the notifier reads YAML frontmatter from local working-tree files. The primary worktree was on peer Otto-CLI's branch `feat/persona-vera-migrate-conversations-otto-cli-2026-05-15`, which doesn't contain my B-0442/B-0503 closure commits. The local files therefore showed `status: open`, even though `origin/main` correctly shows `status: closed`.
+Root cause: the notifier reads YAML frontmatter from local working-tree files. The primary worktree was on peer Otto-CLI's branch `feat/persona-vera-migrate-conversations-otto-cli-2026-05-15`, which doesn't contain my 081KRFA460008QG0R00061SXRW/081KRHWGX0008QG0R0027YXBTB closure commits. The local files therefore showed `status: open`, even though `origin/main` correctly shows `status: closed`.
 
 The notifier filtered by `status === "open"` correctly. The bug is the source of truth: **local working tree under multi-Otto branch contention is not a reliable view of what's actually open on main**.
 
@@ -45,15 +44,15 @@ Three already-merged rows were published as work-assignments at the observed tic
 
 ## Composes with
 
-- [B-0441](../P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md) (the notifier this row fixes)
-- [B-0442](../P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md) (closed by PR #3518; surfaced this bug)
-- [B-0532](../P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (related: backlog-state consistency under multi-Otto contention)
+- [081KRFA460008QG0R00229616S](../P1/081KRFA460008QG0R00229616S-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md) (the notifier this row fixes)
+- [081KRFA460008QG0R00061SXRW](../P1/081KRFA460008QG0R00061SXRW-missed-substrate-cascade-detector-background-service-2026-05-13.md) (closed by PR #3518; surfaced this bug)
+- [081KRMEXM0008QG0R003FZNK3E](../P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (related: backlog-state consistency under multi-Otto contention)
 - [`.claude/rules/refresh-before-decide.md`](../../../.claude/rules/refresh-before-decide.md) (the discipline this row mechanizes for the notifier)
 - [`.claude/rules/otto-channels-reference-card.md`](../../../.claude/rules/otto-channels-reference-card.md) (ID-allocation section: "the local working tree may be on a stale HEAD ... gives misleading 'what's free' answers" — same failure mode, different scope)
 
 ## Why P2
 
-Real bug with concrete failure mode (false-positive work-assignments for closed rows). Not P1 because: the failure mode is detectable + recoverable on the receiver side (agent picks up B-0442, sees the row is `closed` in their own checkout if fresh, declines the work); the bus-envelope TTL is 2h so stale assignments expire on their own; no production-critical path depends on the notifier today (it's advisory only). Bumping to P1 if peer agents start acting on the false-positive envelopes without re-verifying.
+Real bug with concrete failure mode (false-positive work-assignments for closed rows). Not P1 because: the failure mode is detectable + recoverable on the receiver side (agent picks up 081KRFA460008QG0R00061SXRW, sees the row is `closed` in their own checkout if fresh, declines the work); the bus-envelope TTL is 2h so stale assignments expire on their own; no production-critical path depends on the notifier today (it's advisory only). Bumping to P1 if peer agents start acting on the false-positive envelopes without re-verifying.
 
 ## Pre-start checklist
 

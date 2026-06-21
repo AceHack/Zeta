@@ -1,6 +1,6 @@
 ---
 pr_number: 5113
-title: "fix(B-0792 iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)"
+title: "fix(081KSGS9H0008QG0R003V23XNZ iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T06:34:47Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:42:53Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5113: fix(B-0792 iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)
+# PR #5113: fix(081KSGS9H0008QG0R003V23XNZ iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)
 
 ## PR description
 

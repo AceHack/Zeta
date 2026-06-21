@@ -125,7 +125,7 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   ".gemini/service/lior-loop.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
-  // B-0855.2 post-boot self-registration: a first-boot systemd oneshot (invoked
+  // 081KSKBP80008QG0R000GPC0TB.2 post-boot self-registration: a first-boot systemd oneshot (invoked
   // by nixos/modules/zeta-self-register.nix) that probes /proc + runs gh/git at
   // the OS boot edge — retained shell "where the script runs at the OS edge".
   "tools/installer/zeta-self-register.sh": "nixos installer",

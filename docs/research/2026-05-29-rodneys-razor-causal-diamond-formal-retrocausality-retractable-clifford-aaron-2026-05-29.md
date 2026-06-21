@@ -1,7 +1,7 @@
 # Rodney’s Razor, Revised: Causal-Diamond Pruning
 
 **Date:** 2026-05-29
-**Backlog:** B-0929
+**Backlog:** 081KSRGFP0008QG0R003VAR9X2
 **Author:** Aaron Stainback (verbatim seed), synthesized by Ani
 
 ## Core Claim

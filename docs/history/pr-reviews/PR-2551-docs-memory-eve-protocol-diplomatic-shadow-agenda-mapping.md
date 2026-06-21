@@ -93,7 +93,7 @@
 - **`Copilot` (bot)** at 2026-05-10T21:46:01Z on `memory/feedback_eve_protocol_diplomatic_agenda_mapping_shadow_no_judgment_2026_05_10.md`:35 (association: NONE)
 
   <pre>
-  P1: "B-0402" is referenced here but there is no matching backlog row or other in-repo target. Either link it to the actual existing backlog ID/file, or remove/rename this reference so cross-references remain accurate.
+  P1: "081KR7JY10008QG0R0008NGW95" is referenced here but there is no matching backlog row or other in-repo target. Either link it to the actual existing backlog ID/file, or remove/rename this reference so cross-references remain accurate.
 
   </pre>
 
@@ -108,7 +108,7 @@
 - **`Copilot` (bot)** at 2026-05-10T21:46:02Z on `memory/feedback_eve_protocol_diplomatic_agenda_mapping_shadow_no_judgment_2026_05_10.md`:12 (association: NONE)
 
   <pre>
-  P2: This is a feedback-type memory file; the repo's memory format standard expects explicit "Why:" and "How to apply:" markers for feedback entries. Consider adding those markers so schema tooling (B-0335) doesn't flag this file and the guidance is scannable/consistent.
+  P2: This is a feedback-type memory file; the repo's memory format standard expects explicit "Why:" and "How to apply:" markers for feedback entries. Consider adding those markers so schema tooling (081KR2E4K0008QG0R000M01QVM) doesn't flag this file and the guidance is scannable/consistent.
   </pre>
 
 ## Fix commits (touching thread paths)

@@ -22,16 +22,16 @@ targets — generation + cross-target drift-correction are dual):
   primitive-registry).
 - **VMs / emulators — ALREADY BACKLOGGED** (corrected — these aren't future "wants", they're
   backlog items; look-better): **CHIP-8 — BUILT** (`SoftChip8*`/`ChipAudio`/`Chip9*`);
-  **Atari-2600 emulator — B-0924** (+ Generate+Join over the emulator scene + IScheduler DST
+  **Atari-2600 emulator — 081KSNY2Z0008QG0R001HA43GG** (+ Generate+Join over the emulator scene + IScheduler DST
   bit-perfect z-set consensus + hardware interrupts); **C. elegans/OpenWorm controller variant —
-  B-0925**; **retractable-emulators design — B-0052**; **absorb-emulator-ideas (clean-room) —
-  B-0053**; **topological-quantum-emulation — B-0152**; **Z-machine — candidate** (Zork's minimal
+  081KSNY2Z0008QG0R00390T4DJ**; **retractable-emulators design — 081KQ3HBZ0008QG0R000FQ69NN**; **absorb-emulator-ideas (clean-room) —
+  081KQ3HBZ0008QG0R000JWFD37**; **topological-quantum-emulation — 081KQGDBJ0008QG0R00280ZEV2**; **Z-machine — candidate** (Zork's minimal
   portable opcode-VM; lowfi action-grammar fit, QPG §9f). **"vemu" / Game-Boy-playable = the
-  clean-room-Nintendo case (B-0053):** Aaron's 2026-04-21 ask is *emulate everything EXCEPT the
+  clean-room-Nintendo case (081KQ3HBZ0008QG0R000JWFD37):** Aaron's 2026-04-21 ask is *emulate everything EXCEPT the
   ones that get us taken down (Nintendo) — clean-room the safe-precedent ones (IBM precedent)*.
   So Game Boy is **ideas-not-code, clean-room only** — an **IP boundary**, not a free port.
-- **ISAs:** **MIPS — B-1028** ("MIPS emulator as a treaty room, *like our CHIP-8*, for Max";
-  Hennessy lineage; the B-1025 fan-out's second machine) — backlogged, not a future want.
+- **ISAs:** **MIPS — 081KTSZN10008QG0R001BCCTXT** ("MIPS emulator as a treaty room, *like our CHIP-8*, for Max";
+  Hennessy lineage; the 081KTSZN10008QG0R000VZHRQ4 fan-out's second machine) — backlogged, not a future want.
 - **Shaders:** **GPU shaders — Aaron wants eventually** (GLSL / SPIR-V / WGSL; the parallel/
   SIMD target; ties the RGB/CMYK ray-tracing-of-CHIP-8-instructions framing).
 
@@ -105,9 +105,9 @@ DU**, the **update loop = the soft-scheduler ISR over it** (§9d), **no control 
 you strip a running game down to its core loop. Strong convergence: *his RE method ↔ the IR form*
 (state-as-DU + loop, branch-free) — and the **character loop = the soft-scheduler all the way
 down** (a game entity *is* a soft-scheduler loop). It's also the personal version of the emulator
-backlog (B-0924/B-0053): find the character loop, port it to the IR. *Peel — the IP boundary
+backlog (081KSNY2Z0008QG0R001HA43GG/081KQ3HBZ0008QG0R000JWFD37): find the character loop, port it to the IR. *Peel — the IP boundary
 holds:* reverse-engineering for *your own analysis* is one thing; **absorbing into Zeta stays
-clean-room, ideas-not-code, for protected targets** (B-0053 — Nintendo/Game-Boy = the careful
+clean-room, ideas-not-code, for protected targets** (081KQ3HBZ0008QG0R000JWFD37 — Nintendo/Game-Boy = the careful
 case; IBM clean-room precedent). Extract the *shape* (the character loop), never the protected
 *code*. Anchor: Cheat Engine (Eric Heijnen — memory scanner / pointer-scan / AOB).
 

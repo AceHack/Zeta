@@ -1,6 +1,5 @@
 ---
-id: B-0221
-zetaid: 081KQX9B50008QG0R0008KHHZR
+id: 081KQX9B50008QG0R0008KHHZR
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - authority delegation and idle-PR collaboration substrate"
@@ -13,7 +12,7 @@ classification: blocked-on-bidirectional-and-rigor-clauses
 type: friction-reducer
 ---
 
-# B-0221 - Authority delegation and idle-PR substrate
+# 081KQX9B50008QG0R0008KHHZR - Authority delegation and idle-PR substrate
 
 Integrate the authority-delegation and idle-PR collaboration
 lessons into `docs/ALIGNMENT.md` after the bidirectional and

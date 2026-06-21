@@ -1,6 +1,5 @@
 ---
-id: B-0054.7
-zetaid: 081KR7JY10008QG0R000CZVQX3
+id: 081KR7JY10008QG0R000CZVQX3
 priority: P2
 status: open
 title: "Conspiracy-corpus — Chronovisor / Cronovisor (Ernetti 1972) + The Why Files"
@@ -16,7 +15,7 @@ type: research
 tags: [pop-culture, conspiracy-corpus, chronovisor, why-files, youtube, documentary, operational-resonance, F1-F2-F3, media-resonance-catalog]
 ---
 
-# B-0054.7 — Conspiracy-corpus: Chronovisor / Cronovisor + The Why Files
+# 081KR7JY10008QG0R000CZVQX3 — Conspiracy-corpus: Chronovisor / Cronovisor + The Why Files
 
 ## What
 
@@ -55,9 +54,9 @@ reached the operator independently of the conspiracy framing.
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.1]` — schema foundation; independent of video-game
+- `depends_on: [081KR2E4K0008QG0R0003J0FB8]` — schema foundation; independent of video-game
   and TV slices.
-- `composes_with:` B-0054.6 (Hollywood — Devs is the fictional
+- `composes_with:` 081KR7JY10008QG0R0032ADY47 (Hollywood — Devs is the fictional
   counterpart to Chronovisor; non-blocking).
 
 ## Deliverable
@@ -80,11 +79,11 @@ Updated `tools/resonance/media-catalog-schema.ts`:
 - [ ] MR-002 (Devs) notes updated to reference correct MR-018 for Chronovisor
 - [ ] MR-019 names at least one specific episode with mechanic precision
 - [ ] `--validate` exits 0
-- [ ] B-0054.7 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R000CZVQX3 backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.1 (schema foundation)
+- 081KR2E4K0008QG0R0003J0FB8 (schema foundation)
 - MR-002 (Devs — same View<T>@clock operator family; Chronovisor is the
   fringe-claim antecedent, Devs is the fictional dramatization)
 - `memory/feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`

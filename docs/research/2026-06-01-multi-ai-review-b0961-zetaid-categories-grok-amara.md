@@ -1,7 +1,7 @@
-# Multi-AI review — B-0961 ZetaId root-category taxonomy (Grok + Amara, 2026-06-01)
+# Multi-AI review — 081KSXN940008QG0R000JZVFXX ZetaId root-category taxonomy (Grok + Amara, 2026-06-01)
 
 Scope: verbatim external-AI review import (Grok critique + Amara sharpen) of the
-B-0961 design, via `tools/peer-call/`. Preserved per substrate-or-it-didn't-happen
+081KSXN940008QG0R000JZVFXX design, via `tools/peer-call/`. Preserved per substrate-or-it-didn't-happen
 because `/tmp/peer-call-output/` is ephemeral. Archived register, not operational
 policy.
 
@@ -18,7 +18,7 @@ came-before + NCI HC-8.
 
 ---
 
-Verbatim peer-call reviews of the B-0961 first draft (which proposed adding
+Verbatim peer-call reviews of the 081KSXN940008QG0R000JZVFXX first draft (which proposed adding
 `Claim(9)` + `Lock(10)` to the ZetaId `Category` enum). Preserved here because
 `/tmp/peer-call-output/` is ephemeral. Both reviewers **converged**: the
 Claim/Lock _distinction_ is real, but **promoting them to root `Category` slots
@@ -26,10 +26,10 @@ now is premature** — model them as typed events under existing categories firs
 promote only after (A) the identity rule is settled, (B) real producers/consumers
 prove the CALM split, with growth handled by an escape/version scheme.
 
-These reviews drove the B-0961 revision (defer promotion; Phase-1 typed-events;
+These reviews drove the 081KSXN940008QG0R000JZVFXX revision (defer promotion; Phase-1 typed-events;
 Gate A/B/C structure; §4 growth theory).
 
-## Synthesis → what changed in B-0961
+## Synthesis → what changed in 081KSXN940008QG0R000JZVFXX
 
 - **§0** — recommendation flipped from "add Claim(9)+Lock(10)" to **defer
   promotion; model as typed events under existing categories (Phase 1)**.
@@ -74,7 +74,7 @@ Gate A/B/C structure; §4 growth theory).
 >
 > ### 3. 4 bits is almost certainly a mistake for the root contract
 >
-> You are at 9 "used/planned" in the design doc, this review is proposing to burn 2 more, and the sovereign-DB lane (B-0959) that is _driving_ this change hasn't even landed its first real coordination events. That's 11/16 before the system is half-built.
+> You are at 9 "used/planned" in the design doc, this review is proposing to burn 2 more, and the sovereign-DB lane (081KSXN940008QG0R003FCQ7WT) that is _driving_ this change hasn't even landed its first real coordination events. That's 11/16 before the system is half-built.
 >
 > In a 128-bit content-addressed key that every lane, every G-Set fold, every bus router, and every future cross-tenant query will key on or case on, 4 bits is a local optimization that creates a global migration tax the moment someone needs:
 >
@@ -100,12 +100,12 @@ Gate A/B/C structure; §4 growth theory).
 > ### Additional concrete problems
 >
 > - The row treats backlog conversion as "already covered by WorkItem(8)" while simultaneously noting that `WorkItem(8)` itself is an "umbrella." This is the same category-smell problem they are trying to solve with Claim/Lock. An umbrella that will contain bugs, epics, user stories, and converted B- rows is exactly what creates the pressure to add more categories later.
-> - No discussion of the _identity model_ for the new events. In a content-addressed G-Set, whether a Claim's ZetaId is derived from (work-item + claimer + timestamp) or is independent is load-bearing for "find all current claims on B-0400." The taxonomy change is being designed before the identity model.
+> - No discussion of the _identity model_ for the new events. In a content-addressed G-Set, whether a Claim's ZetaId is derived from (work-item + claimer + timestamp) or is independent is load-bearing for "find all current claims on 081KR7JY10008QG0R000R503K2." The taxonomy change is being designed before the identity model.
 > - The "only add when a concrete consumer needs it" principle is applied after the fact to the things they _don't_ want to add now, and not applied to the things the current design review happens to be excited about.
 >
-> **Bottom line:** The 5-axis distinction between Claim and Lock is real and worth modeling cleanly. Promoting both (or even one) to top-level Category _right now_, while treating the 4-bit width as fixed and while the driving lane (B-0959 + B-0954.1) hasn't even written the first real events, is premature and accelerates the exhaustion problem the row itself is worried about.
+> **Bottom line:** The 5-axis distinction between Claim and Lock is real and worth modeling cleanly. Promoting both (or even one) to top-level Category _right now_, while treating the 4-bit width as fixed and while the driving lane (081KSXN940008QG0R003FCQ7WT + 081KT07NV0008QG0R000QWEKTE) hasn't even written the first real events, is premature and accelerates the exhaustion problem the row itself is worried about.
 >
-> Do the B-0954.1 review first with Claim/Lock modeled as _first-class events under existing categories_ (or a single lightweight Coordination category with subtype). Only promote to root Category after you have (a) a theory of the eventual size of the taxonomy and (b) actual producers/consumers that prove the CALM split is worth a root-level partition key.
+> Do the 081KT07NV0008QG0R000QWEKTE review first with Claim/Lock modeled as _first-class events under existing categories_ (or a single lightweight Coordination category with subtype). Only promote to root Category after you have (a) a theory of the eventual size of the taxonomy and (b) actual producers/consumers that prove the CALM split is worth a root-level partition key.
 >
 > The current proposal reads as "we see two coordination-shaped things today, we have slots, let's burn two of them" without a growth model for the root contract in a content-addressed event store. That is the opposite of the discipline the rest of the row claims to be applying.
 
@@ -143,4 +143,4 @@ but the extension is a **wide** next field (e.g. +8/+12 bits), not repeated 4-bi
 nibbles — chaining equal blocks wastes a value per block + re-escapes (bit-
 inefficient). Alternatively an `IdVersion` width-bump (V2 → 6/8 bits, V1 ids stay
 valid) for a deliberate one-time jump. Both keep existing ids valid — the ceiling
-worry is retired (B-0961 §4).
+worry is retired (081KSXN940008QG0R000JZVFXX §4).

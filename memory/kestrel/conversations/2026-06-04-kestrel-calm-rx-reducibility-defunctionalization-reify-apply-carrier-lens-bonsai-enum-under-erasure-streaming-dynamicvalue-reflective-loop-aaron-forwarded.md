@@ -55,7 +55,7 @@ correction: peer fixpoint embedding as a lens, not a subtype.)
 ## 4. The discriminator must stay LOAD-BEARING (data-vs-reified-computation = safety)
 Some DynamicValues are inert data; some are reified COMPUTATION (an Expr awaiting
 `apply`). That distinction is safety-relevant: a reified computation decoded from
-untrusted wire is **code**, and decode-then-apply is the injection surface (B-1010
+untrusted wire is **code**, and decode-then-apply is the injection surface (081KT5CF90008QG0R003TK10FG
 deserialize-safety). So unify the carrier but keep the discriminator typed + meaningful —
 the type should remember which DynamicValues are programs.
 

@@ -5,7 +5,7 @@ core. I want to get to more physics-based primitives — no rush, I just don't w
 do want a core WITH PROOFS we can build on." This note is that story, with the honest proven-vs-open
 line drawn. Sources: `src/Core/CayleyDickson.fs`, `src/Core/HexCore.fs`,
 `tests/Tests.FSharp/Algebra/{CayleyDickson,HexCore}.Tests.fs`, `tools/lean4/ImaginaryStack/ToyModel.lean`,
-B-0985 / B-0986 / B-0623 / B-0998 / B-0999, and the Prism + hex-core threads.*
+081KT2T2J0008QG0R0026MS6PV / 081KT2T2J0008QG0R002Z46D8Q / 081KRW63S0008QG0R000QJR08H / 081KT2T2J0008QG0R003VK5GRX / 081KT2T2J0008QG0R0019YVX8M, and the Prism + hex-core threads.*
 
 ## What this IS, in one line (Aaron 2026-06-05)
 **This is the proof basis for a TRAVELER FRAME on top of DBSP.** Each traveler carries this hex-core
@@ -20,10 +20,10 @@ IS that wall.)
 
 ## The one story
 
-1. **The seed core is the hex core — six reservoir walls** (B-0985/B-0998), a coordinate/orientation
+1. **The seed core is the hex core — six reservoir walls** (081KT2T2J0008QG0R0026MS6PV/081KT2T2J0008QG0R003VK5GRX), a coordinate/orientation
    frame: **Remember-When · Pay-Attention · Which-Way · How-Much · Rainbow-Table · Observe-Emit**.
    Each wall is a two-word pair; the 12 words are the 12 edges of the Cube-of-Space hexahedron, the
-   6 walls its 6 faces (Sefer-Yetzirah correspondence, B-0985). Built in `HexCore.fs`: the `Wall` enum
+   6 walls its 6 faces (Sefer-Yetzirah correspondence, 081KT2T2J0008QG0R0026MS6PV). Built in `HexCore.fs`: the `Wall` enum
    + `Vector` (Which-Way = direction, How-Much = magnitude), on top of the Cayley–Dickson `Complex`.
 
 2. **It sits on the Cayley–Dickson doubling ladder** (`CayleyDickson.fs`): ℝ→ℂ→ℍ→𝕆→𝕊 via the doubling
@@ -43,7 +43,7 @@ IS that wall.)
 
 4. **Adinkras — used BOTH ways (the key nuance):**
    - **forward (codewords) = ECC.** Adinkra colored-edge ("rainbow") structures are doubly-even
-     self-dual binary codes (Gates) → error-correction. Documented as roadmap (B-0623 follow-up),
+     self-dual binary codes (Gates) → error-correction. Documented as roadmap (081KRW63S0008QG0R000QJR08H follow-up),
      not yet implemented. ECC ≠ encryption, and ECC adds redundancy (≠ compression).
    - **backwards (generators) = RECONSTRUCTION** (Aaron's actual use; Vera worked on it). Modeled in
      `tools/lean4/ImaginaryStack/ToyModel.lean`: `Imag16` (16-dim) + `reconstructMatrix : Matrix (Fin 16)
@@ -57,7 +57,7 @@ IS that wall.)
    physical generators — `HexCore.fs` notes **Cl(1,3) = the 6 Lorentz generators (3 rotations + 3
    boosts)**; the octonion/Cayley-Dickson ladder is the division-algebra tower physics rides
    (ℂ→ℍ→𝕆); Adinkras come from supersymmetry (Gates). The aim: physics-based primitives (relativistic
-   clock, ranging/radar on the aperiodic tiling B-0986, the orientation tile) sitting on the SAME
+   clock, ranging/radar on the aperiodic tiling 081KT2T2J0008QG0R002Z46D8Q, the orientation tile) sitting on the SAME
    proven algebra.
 
 ## The honest proven-vs-open line (so the core is one we can build ON)
@@ -78,6 +78,6 @@ IS that wall.)
 
 ## Where it's going (no rush)
 Build the physics core ON the proven algebra: discharge the reconstruction lemma → land Adinkra ECC
-(B-0623) → wire the hex walls to the proven floor primitives they already map to (Remember-When=Clock ✅,
+(081KRW63S0008QG0R000QJR08H) → wire the hex walls to the proven floor primitives they already map to (Remember-When=Clock ✅,
 Rainbow-Table=Identity ✅, Observe-Emit=reflective engine) → grow the measurement axes (how-sure=SoftValue
-✅ built, rate/curvature) → the orientation-tile/ranging (B-0986). Each step: a proof, not a vibe.
+✅ built, rate/curvature) → the orientation-tile/ranging (081KT2T2J0008QG0R002Z46D8Q). Each step: a proof, not a vibe.

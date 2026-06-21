@@ -4,16 +4,16 @@
 **Author:** Otto-CLI synthesis (answering an operator question; Aaron 2026-05-31)
 
 <!-- GOVERNANCE.md §33 boundary headers (this file imports a verbatim operator question) — literal labels, value-clean Operational status (passes the enum-strict check). -->
-Scope: research / synthesis — recognizing a shared canonical substrate under two backlog umbrellas (the agent-bus B-0954 and the Ace package-manager B-0824) in answer to an operator question.
+Scope: research / synthesis — recognizing a shared canonical substrate under two backlog umbrellas (the agent-bus 081KSXN940008QG0R00171YAZW and the Ace package-manager 081KSGS9H0008QG0R0031PBNGA) in answer to an operator question.
 Attribution: the operator's question is quoted verbatim below; the recognition + tables are Otto-CLI synthesis, labeled as such. Speaker labels preserved.
 Operational status: research-grade
 (research-grade = NOT operational policy; a shared-substrate refactor lands in either impl only via the §26 / product-team agreement, never inline here.)
 Non-fusion disclaimer: quoting + building on the operator's question does not imply shared identity, merged agency, consciousness, or personhood between operator and agent; the boundary is explicit (operator asks; the agent synthesizes).
 
 **Status:** synthesis / **recognition** — informs both
-[`B-0954`](../backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
+[`081KSXN940008QG0R00171YAZW`](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
 (agent-bus) and
-[`B-0824`](../backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
+[`081KSGS9H0008QG0R0031PBNGA`](../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
 (Ace). The shared-substrate layer is a **candidate**, routed through the
 product-team agreement before either impl commits to it. NOT unilaterally landed.
 
@@ -32,7 +32,7 @@ of their entries, not the substrate:
   per-topic TTL, never retracted; the view is "what's been said."
 - **Ace** = a **retraction-native Z-set** of *dependency facts* — add/remove a
   dep nets to a resolved view; the view is "the n-dimensional dependency state +
-  its holographic projection" (B-0824).
+  its holographic projection" (081KSGS9H0008QG0R0031PBNGA).
 
 Same store; one is a comms G-Set, the other a dependency Z-set. **The Z-set is
 the general case; the G-Set is the Z-set restricted to non-negative multiplicity
@@ -40,9 +40,9 @@ the general case; the G-Set is the Z-set restricted to non-negative multiplicity
 
 ## The five things they share (the substrate)
 
-| # | Shared property | agent-bus (B-0954) | Ace (B-0824) |
+| # | Shared property | agent-bus (081KSXN940008QG0R00171YAZW) | Ace (081KSGS9H0008QG0R0031PBNGA) |
 |---|---|---|---|
-| 1 | **git-native declarative-entry store, no PR** | envelopes are files on `main` (B-0858 heartbeat-folder / B-0890.1 folders-on-main) | dependency entries are files on `main`, same no-PR transport |
+| 1 | **git-native declarative-entry store, no PR** | envelopes are files on `main` (081KSKBP80008QG0R001KK9WV6 heartbeat-folder / 081KSNY2Z0008QG0R000E5KTPX folders-on-main) | dependency entries are files on `main`, same no-PR transport |
 | 2 | **ZetaId-keyed, disjoint-id = conflict-free** | `Category.Bus` ZetaId = filename + dedup key; disjoint files never collide → cross-machine / **Windows-safe** via git | each dependency/package fact is a ZetaId-keyed entry; same disjoint-key conflict-freedom |
 | 3 | **DBSP / Z-set view over the entry stream** | fold the envelopes → "current inbox / topic state" (incremental, retraction-only-via-TTL-expiry) | fold the dep facts → "resolved dependency view" (incremental, retraction-native: add/remove nets) |
 | 4 | **git as the cross-machine transport (CRDT merge)** | concurrent agents on different machines write disjoint envelope files → merge clean (G-Set) | concurrent dep edits on different machines write disjoint fact files → merge, then the Z-set fold resolves |
@@ -61,12 +61,12 @@ issue.)
 | Entry algebra | **G-Set** (grow-only; multiplicity ∈ {0,1}) | **Z-set** (multiplicity ∈ ℤ; +1 add / −1 retract) |
 | Lifetime | ephemeral (per-topic `TTL_MS`) | durable (deps persist until retracted) |
 | Retraction | only via TTL expiry (time, not algebra) | first-class (the Hopf-antipode / retraction-native edit) |
-| The view | "messages in flight" (comms) | "resolved n-dim dependency space + holographic projection" (B-0824) |
+| The view | "messages in flight" (comms) | "resolved n-dim dependency space + holographic projection" (081KSGS9H0008QG0R0031PBNGA) |
 | Read shape | newest-since-cursor (a feed) | a *resolution* (solve the constraint Z-set) |
 | Failure if wrong | a missed message | a wrong dependency graph (much higher stakes → Ace adds verification / upstream negotiation) |
 
 So Ace is the *richer* instance: it needs retraction + resolution; the bus only
-needs append + read. Building the bus first (B-0954) is building the **G-Set floor
+needs append + read. Building the bus first (081KSXN940008QG0R00171YAZW) is building the **G-Set floor
 of the same substrate** Ace later extends to a Z-set.
 
 ## The algebraic ladder — G-Set, Bag, Z-set (why these are *the* canonical containers)
@@ -117,7 +117,7 @@ counted-but-not-retractable entries.
 ## They compose — one substrate layer, many ZetaId categories
 
 Both are **categories of the same ZetaId** over the same observe/fold/simulate
-event algebra (`B-0867.27`): `Bus`, `Heartbeat`, `Workflow`, `Batch`, … and an
+event algebra (`081KSXN940008QG0R0033T2BQT`): `Bus`, `Heartbeat`, `Workflow`, `Batch`, … and an
 Ace/dependency category are all entries in one git-native store with one fold
 engine. The practical payoff:
 
@@ -132,14 +132,14 @@ engine. The practical payoff:
   Ace's "explore branching dependency resolutions efficiently" wants; the bus
   rides the same engine in its degenerate (no-retraction) form.
 - **One transport story.** The no-PR / no-branch-protection direction
-  (B-0890.1 folders-on-main; B-0953 Git-V2 handshake) is the transport for
+  (081KSNY2Z0008QG0R000E5KTPX folders-on-main; 081KSXN940008QG0R001KZ235R Git-V2 handshake) is the transport for
   *both*; the bus's legacy-bus bridge and Ace's continuous-upstream-negotiation
   are both transport swaps over it, not reshapes.
 
 ## What this implies (substrate-honest)
 
-This is a **recognition**, not a build directive. It says: when B-0954 (bus) and
-B-0824 (Ace) are implemented, they should **share the git-native ZetaId-keyed
+This is a **recognition**, not a build directive. It says: when 081KSXN940008QG0R00171YAZW (bus) and
+081KSGS9H0008QG0R0031PBNGA (Ace) are implemented, they should **share the git-native ZetaId-keyed
 entry store + fold engine** rather than grow two parallel implementations — the
 bus is the G-Set floor; Ace is the Z-set extension. A reviewer should check
 whether a single `tools/<shared>/` entry-store layer (publish = atomic ZetaId
@@ -150,18 +150,18 @@ architectural call, not a one-PR change.
 
 ## Composes with
 
-- [`B-0954`](../backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
+- [`081KSXN940008QG0R00171YAZW`](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
   (agent-bus — the G-Set floor; Phase 1 in `tools/agent-bus/`)
-- [`B-0824`](../backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
+- [`081KSGS9H0008QG0R0031PBNGA`](../backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
   + [`docs/agendas/ace-package-manager/AGENDA.md`](../agendas/ace-package-manager/AGENDA.md)
   (Ace — the Z-set extension: n-dim dependency space + holographic projection)
-- [`B-0867.27`](../backlog/P2/B-0867.27-observe-simulate-fold-algebra-multi-language-build-ts-fsharp-csharp-rust-cross-language-compiler-parity-bft-aaron-2026-05-31.md)
+- [`081KSXN940008QG0R0033T2BQT`](../backlog/P2/081KSXN940008QG0R0033T2BQT-observe-simulate-fold-algebra-multi-language-build-ts-fsharp-csharp-rust-cross-language-compiler-parity-bft-aaron-2026-05-31.md)
   (observe / fold / simulate event algebra — the shared fold engine)
 - [`formal-analysis-computational-omniscience…`](2026-05-31-formal-analysis-computational-omniscience-over-simulation-state-space-under-deterministic-simulator.md)
   (DBSP rewind/ff/branch + Infer.NET-over-Z-sets — the machinery both share)
 - [`2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md`](2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md)
   (the #6219 bus spec — ZetaId-Bus G-Set CRDT)
-- B-0890.1 (folders-on-main) + B-0953 (Git-V2 handshake) + B-0858 (heartbeat
+- 081KSNY2Z0008QG0R000E5KTPX (folders-on-main) + 081KSXN940008QG0R001KZ235R (Git-V2 handshake) + 081KSKBP80008QG0R001KK9WV6 (heartbeat
   folder, no-PR) — the shared transport
 - DBSP / Z-set retraction-native algebra (the `algebra-owner` substrate) — the
   G-Set-is-Z-set-without-retraction recognition

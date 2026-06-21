@@ -1,7 +1,7 @@
 /**
- * Mechanical authorization check — source-filter + recency resolver (B-0307).
+ * Mechanical authorization check — source-filter + recency resolver (081KR2E4K0008QG0R003CF4YHE).
  *
- * Pure function: given PaceInstruction[] from B-0306's extractor,
+ * Pure function: given PaceInstruction[] from 081KR2E4K0008QG0R0007CFSZ7's extractor,
  * applies source-filter → recency-filter → returns the single
  * operative authorization. No file I/O.
  */

@@ -9,7 +9,7 @@ open Zeta.Core
 module PS = Zeta.Core.ProbabilitySemiring
 
 // ═══════════════════════════════════════════════════════════════════
-// ProbabilitySemiring math leg (B-1020, the NCI discharge piece 2) — the exact-rational probability
+// ProbabilitySemiring math leg (081KTAH8Q0008QG0R001YHSSA0, the NCI discharge piece 2) — the exact-rational probability
 // (+,×) and Viterbi (max,×) semirings + forward/Viterbi inference. All exact ℚ (no floats), so these
 // laws + the worked vectors are the byte-lockable core the C#/TS/Rust oracles will cross-verify.
 // ═══════════════════════════════════════════════════════════════════

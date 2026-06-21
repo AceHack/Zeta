@@ -36,7 +36,7 @@
 | Rules audited | **50/50 (100%)** |
 | Testable cross-refs LIVE | **217/218 (99.5%)** |
 | Rule-acknowledged-not-exists (healthy) | 5 |
-| Stale pointers found | 1 (captured by B-0514) |
+| Stale pointers found | 1 (captured by 081KRHWGX0008QG0R002E3BCDS) |
 
 ## 9-variant reference-classification taxonomy (load-bearing artifact)
 
@@ -56,11 +56,11 @@ Without semantic classification, ~10% of refs would falsely report as stale.
 
 ## Mechanization candidate
 
-`tools/hygiene/audit-rule-cross-refs.ts` encoding the 9-variant taxonomy. Composes with B-0506 (worktree prune cadence) as a factory-hygiene CI cron.
+`tools/hygiene/audit-rule-cross-refs.ts` encoding the 9-variant taxonomy. Composes with 081KRHWGX0008QG0R002DPG02X (worktree prune cadence) as a factory-hygiene CI cron.
 
 ## Single finding
 
-[B-0514](docs/backlog/P3/B-0514-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md): `feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md` referenced from 3 places but never authored.
+[081KRHWGX0008QG0R002E3BCDS](docs/backlog/P3/081KRHWGX0008QG0R002E3BCDS-author-missing-wwjd-grey-honest-memory-file-2026-05-14.md): `feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md` referenced from 3 places but never authored.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

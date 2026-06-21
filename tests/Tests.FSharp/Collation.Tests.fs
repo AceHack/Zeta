@@ -4,7 +4,7 @@ open System
 open global.Xunit
 open Zeta.Core
 
-// DB-style collation selection (B-0969). The shipped default is BINARY code-point order; the bug fix is
+// DB-style collation selection (081KT07NV0008QG0R001YDB73K). The shipped default is BINARY code-point order; the bug fix is
 // that forKey<string> resolves to that treaty comparer, never the culture-sensitive
 // Comparer<string>.Default.
 
@@ -27,7 +27,7 @@ let ``catalog name lookup is itself case-insensitive`` () =
     Assert.Same(Collation.binary, Collation.byNameOrDefault "BINARY")
 
 [<Fact>]
-let ``forKey string is binary code-point order, not culture-sensitive (the B-0969 fix)`` () =
+let ``forKey string is binary code-point order, not culture-sensitive (the 081KT07NV0008QG0R001YDB73K fix)`` () =
     let c = Collation.forKey<string> ()
     // binary: 'B'(66) < 'a'(97) => "B" sorts before "a". Culture-sensitive would put "a" first.
     Assert.True(c.Compare("B", "a") < 0)

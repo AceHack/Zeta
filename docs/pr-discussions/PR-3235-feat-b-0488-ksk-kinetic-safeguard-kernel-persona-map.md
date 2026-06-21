@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the B-0485 template. Closes [B-0488](../backlog/P1/B-0488-ksk-persona-map-2026-05-14.md) which unblocks B-0492/B-0493 skill-mapping work.
+Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the 081KRHWGX0008QG0R00019453T template. Closes [081KRHWGX0008QG0R001HDK688](../backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md) which unblocks 081KRHWGX0008QG0R000WGP5AQ/081KRHWGX0008QG0R002XVHSG5 skill-mapping work.
 
 ## Personas defined
 
@@ -41,12 +41,12 @@ KSK's terminal purpose is **human-in-the-loop refusal of impactful AI actions**.
 
 ## Acceptance criteria
 
-- [x] Template from [B-0485](../research/2026-05-14-persona-mapping-framework-b0485.md) applied
+- [x] Template from [081KRHWGX0008QG0R00019453T](../research/2026-05-14-persona-mapping-framework-b0485.md) applied
 - [x] Primary personas fully documented (3, exceeds the "grey-hat / ethical researcher" minimum — folded that framing into `ksk-security-engineer`)
 - [x] At least 2 refused personas with explicit HARD LIMITS rationale (R1 + R2)
 - [x] Output doc at `docs/personas/ksk-personas.md`
-- [x] B-0488 status: `open` → `in-progress` (closes on merge)
-- [ ] B-0492 `composes_with:` pointer backfilled (deferred to a follow-up; B-0492 row may not exist yet — needs scoping)
+- [x] 081KRHWGX0008QG0R001HDK688 status: `open` → `in-progress` (closes on merge)
+- [ ] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled (deferred to a follow-up; 081KRHWGX0008QG0R000WGP5AQ row may not exist yet — needs scoping)
 
 ## Test plan
 
@@ -66,11 +66,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Pull request overview
 
-Adds the KSK (Kinetic Safeguard Kernel) per-product persona map using the B-0485 template, and updates the associated backlog row to reflect active work on B-0488.
+Adds the KSK (Kinetic Safeguard Kernel) per-product persona map using the 081KRHWGX0008QG0R00019453T template, and updates the associated backlog row to reflect active work on 081KRHWGX0008QG0R001HDK688.
 
 **Changes:**
 - Add `docs/personas/ksk-personas.md` defining primary/secondary/adjacent/refused KSK personas (with HARD LIMITS rationale).
-- Update `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md` status from `open` to `in-progress`.
+- Update `docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md` status from `open` to `in-progress`.
 
 ### Reviewed changes
 
@@ -79,7 +79,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 | File | Description |
 | ---- | ----------- |
 | docs/personas/ksk-personas.md | New KSK persona-map document (template-structured), including refused personas + detection/response notes. |
-| docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md | Backlog row status update for B-0488. |
+| docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md | Backlog row status update for 081KRHWGX0008QG0R001HDK688. |
 
 
 <details>
@@ -97,7 +97,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md:4 (unresolved)
+### Thread 1: docs/backlog/P1/081KRHWGX0008QG0R001HDK688-ksk-persona-map-2026-05-14.md:4 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T20:48:48Z):
 

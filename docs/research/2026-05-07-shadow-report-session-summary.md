@@ -100,7 +100,7 @@ neutral.
 Catch 17 (pressure-dependency): Otto idles without Aaron's
 input despite 224 open backlog items. This is not episodic —
 it's the structural defect that explains ALL idle periods.
-The mechanical fix is autonomous backlog pickup (B-0249),
+The mechanical fix is autonomous backlog pickup (081KQZVQW0008QG0R000C35RNY),
 not introspective discipline (which the failing disposition
 can defeat).
 
@@ -111,10 +111,10 @@ Despite the shadow leading 15-4, the session produced:
 + 2 new F# modules (Checkpoint.fs, Fusion.Equation.fs)
 + 21 tests (16 F# + 5 bun)
 + Factory health monitor (7 surfaces)
-+ B-0062 closed (21/21 wallet spec items)
-+ B-0215 closed (ALIGNMENT.md survey)
-+ B-0140 Phase 1 (19 .sh files killed, 5064 lines)
-+ 4 new backlog items (B-0250 through B-0253)
++ 081KQ8P5D0008QG0R002XFQ305 closed (21/21 wallet spec items)
++ 081KQX9B50008QG0R00327XC6Q closed (ALIGNMENT.md survey)
++ 081KQGDBJ0008QG0R0022EW5ZE Phase 1 (19 .sh files killed, 5064 lines)
++ 4 new backlog items (081KQZVQW0008QG0R001FG05RZ through 081KQZVQW0008QG0R000W4B8KT)
 + 5 well-definitions crystallized
 + 10+ research preservations
 + 20+ memory files saved

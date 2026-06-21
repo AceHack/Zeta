@@ -1,6 +1,5 @@
 ---
-id: B-0724
-zetaid: 081KSE6WT0008QG0R00195RG48
+id: 081KSE6WT0008QG0R00195RG48
 priority: P2
 status: open
 title: "TS hat-system operator — second polyglot implementation alongside the Go scaffold; proves the polyglot-operator pattern for the cluster"
@@ -16,10 +15,10 @@ composes_with:
   - full-ai-cluster/k8s/applications/hat-system/crds/
   - full-ai-cluster/k8s/applications/hat-system/operator/
   - agentic-organization/docs/CLUSTER_NATIVE_HAT_SYSTEM.md
-  # B-0722 ref pending PR #4954 merge
+  # 081KSE6WT0008QG0R002RFEC0S ref pending PR #4954 merge
 ---
 
-# B-0724 — TS hat-system operator (second polyglot implementation; proves the polyglot-operator pattern)
+# 081KSE6WT0008QG0R00195RG48 — TS hat-system operator (second polyglot implementation; proves the polyglot-operator pattern)
 
 ## Carved blade
 
@@ -57,7 +56,7 @@ So: Go stays where the ecosystem truly forces it (some CRD tooling, kubebuilder 
 ## Why polyglot matters at cluster scope
 
 - **CRD-as-canonical-contract enforcement** — if two operators agree on what `Hat.spec.skills` means, the spec is honest; if only one operator works, the schema has hidden Go-isms
-- **Failure-domain isolation** — Go-runtime bug doesn't take down TS operator and vice versa (composes with the multi-kubelet pattern in B-0723 once that row lands; PR #4955)
+- **Failure-domain isolation** — Go-runtime bug doesn't take down TS operator and vice versa (composes with the multi-kubelet pattern in 081KSE6WT0008QG0R002CQS1HR once that row lands; PR #4955)
 - **Talent / contribution flexibility** — Max contributes TS; Aaron contributes Go; future contributors pick their language
 - **Ecosystem coverage** — Rust for perf-critical hot loops; Python for fast iteration; Go for production solidity; TS for full-stack-team alignment
 - **Service mesh + observability validation** — Cilium + NFD + Loki + Hubble must speak to operators regardless of impl language
@@ -89,8 +88,8 @@ So: Go stays where the ecosystem truly forces it (some CRD tooling, kubebuilder 
 
 - **PR #4930** (hat-system Go operator) — TS operator runs ALONGSIDE; both use the same CRDs at `full-ai-cluster/k8s/applications/hat-system/crds/`. The Go scaffold becomes the reference / reliability baseline; the TS operator is Max's primary surface
 - **PR #4961** (agentic-organization docs) — `agentic-organization/docs/CLUSTER_NATIVE_HAT_SYSTEM.md` describes the Organization-facing CRD/operator contract; this row makes the TypeScript implementation path concrete
-- **B-0722** (CI ephemeral cluster smoke; PR #4954 pending merge) — smoke test will eventually assert BOTH operators reconcile the same CRDs identically (polyglot validation gate)
-- **B-0723** (multi-kubelet per machine; PR #4955 pending merge) — polyglot operators × multi-cluster-per-machine = high redundancy; a bug in Go-operator on cluster-A is isolated from TS-operator on cluster-B
+- **081KSE6WT0008QG0R002RFEC0S** (CI ephemeral cluster smoke; PR #4954 pending merge) — smoke test will eventually assert BOTH operators reconcile the same CRDs identically (polyglot validation gate)
+- **081KSE6WT0008QG0R002CQS1HR** (multi-kubelet per machine; PR #4955 pending merge) — polyglot operators × multi-cluster-per-machine = high redundancy; a bug in Go-operator on cluster-A is isolated from TS-operator on cluster-B
 
 ## Why P2 not P1
 

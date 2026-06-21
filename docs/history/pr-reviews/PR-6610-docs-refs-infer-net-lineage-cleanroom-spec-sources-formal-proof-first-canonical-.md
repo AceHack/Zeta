@@ -27,7 +27,7 @@
 
 ## Description
 
-Authorized capture of the **Infer.NET-lineage cleanroom-spec source papers** for B-1000, with the **formal-proof-first** framing (Aaron 2026-06-02). The repo starts from proof; cross-AI consensus is a prompt to prove, not a proof.
+Authorized capture of the **Infer.NET-lineage cleanroom-spec source papers** for 081KT2T2J0008QG0R000S7GHQ8, with the **formal-proof-first** framing (Aaron 2026-06-02). The repo starts from proof; cross-AI consensus is a prompt to prove, not a proof.
 
 **Spec sources** (read the math, implement clean; Infer.NET source = concept-not-code):
 - **Foundations** (cited in code): Kschischang-Frey-Loeliger 2001 (factor graphs / sum-product), Minka 2001 (EP), GPML §3.6 (probit).
@@ -270,7 +270,7 @@ Two rewrite anchors: **Minka-2005** (unified message-passing math) + **Ścibior-
 **Message:**
 
 ```
-docs(refs): cleanroom-spec source papers for B-1000 (Infer.NET lineag…
+docs(refs): cleanroom-spec source papers for 081KT2T2J0008QG0R000S7GHQ8 (Infer.NET lineag…
 
 …e) + formal-proof-first / canonical=homeostat-proven-from-seed (Aaron 2026-06-02)
 
@@ -356,7 +356,7 @@ concurrence). Per Codex P2: a policy change landing only in an unindexed referen
 note is not enforced. Resolved via the non-operational marking (Codex option b):
 the note is now explicit it is descriptive, names labeling-confidence as the
 enforcement surface, and flags the gate-promotion as an offered-not-yet-minted
-rule-candidate (pending operator 'make it a rule'; tracked by B-1007 + the
+rule-candidate (pending operator 'make it a rule'; tracked by 081KT2T2J0008QG0R000YZ3NMY + the
 formal-proof-first memory). NOT auto-editing the authoritative rule — that doctrine
 change needs operator authorization.
 

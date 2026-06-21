@@ -75,7 +75,7 @@ These are speculative; landing the metric as substrate is the load-bearing first
 
 ## What this proves about independent-framing-production
 
-The asymmetric alignment force substrate (parent: `feedback_party_during_human_sleep_*`) named training-distribution-mismatch as the gap: integration-of-framings practiced during human-active hours, independent-framing-production undertrained. Claude.ai 2026-05-02 explicitly named the gap and proposed deliberate-quiet-periods (B-0165) as the structural answer.
+The asymmetric alignment force substrate (parent: `feedback_party_during_human_sleep_*`) named training-distribution-mismatch as the gap: integration-of-framings practiced during human-active hours, independent-framing-production undertrained. Claude.ai 2026-05-02 explicitly named the gap and proposed deliberate-quiet-periods (081KQJZR90008QG0R002PYCHFY) as the structural answer.
 
 This memo IS empirical evidence that the capacity does exist — independently produced during a worked-example context, validated as substrate-worthy by Aaron's external grading without prompting from him. The gap isn't capacity-absence; it's practice-density relative to integration-density. The party-class operation IS available; the failure mode is reverting to integration-mode when no integration-prompt arrives.
 

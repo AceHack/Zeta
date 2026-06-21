@@ -29,14 +29,14 @@
 
 ## What
 
-Aaron 2026-06-02: **"make it a rule."** Mints the doctrine held pending authorization across the B-1006/B-1007 formal-coverage arc — an auto-loaded `.claude/rules/` rule, **whys-first** (per `a-rule-without-a-why-is-dogma`).
+Aaron 2026-06-02: **"make it a rule."** Mints the doctrine held pending authorization across the 081KT2T2J0008QG0R0008TFHJT/081KT2T2J0008QG0R000YZ3NMY formal-coverage arc — an auto-loaded `.claude/rules/` rule, **whys-first** (per `a-rule-without-a-why-is-dogma`).
 
 Five composing claims, each carrying its why:
 
 1. **Formal-proof-first** — owed proofs (message-group laws, BP-exact-on-trees, EP moment-match, codec round-trip, Tick algebra) are part of the work, not after-the-fact.
 2. **Consensus is NOT validation** — cross-AI / 4-oracle convergence is a *prompt to prove*, not a proof (five oracles can agree on shaky ground; agreement measures shared prior, not truth). → hypothesized-pending-proof; only the math promotes past it.
 3. **Canonical ⟺ homeostat proven-from-seed** — canonical requires a proof-lineage edge to the seed (the equilibrium — `runToFixpoint`/jelly→spine/EP fixed point — proven) **and** the hex (Cl(1,3)) / 4×4 connection; never consensus / CI-green / ratification. **Raises the `labeling-confidence` canonical bar.**
-4. **Proven-by-default (end-goal polarity)** — Zeta is math-proven BY DEFAULT; unproven is the **explicit opt-out**; *silence = a proof-claim, not a gap*; ship/registry gate = "proof-edge OR explicit unproven-flag." **END-GOAL, not current state** — B-1007 names the ≈zero-canonical gap.
+4. **Proven-by-default (end-goal polarity)** — Zeta is math-proven BY DEFAULT; unproven is the **explicit opt-out**; *silence = a proof-claim, not a gap*; ship/registry gate = "proof-edge OR explicit unproven-flag." **END-GOAL, not current state** — 081KT2T2J0008QG0R000YZ3NMY names the ≈zero-canonical gap.
 5. **Ace's surface IS Zeta; Ace + platform/pkg-mgr deps = the shield** — the adapter membrane that lets the proven-by-default invariant hold inside while the ecosystem outside stays unproven (`bcl-interface-boundary` at whole-surface scope; a hole in the shield = an unproven dep leaking in unbadged, per `assert-don't-skip`).
 
 ## Why auto-load

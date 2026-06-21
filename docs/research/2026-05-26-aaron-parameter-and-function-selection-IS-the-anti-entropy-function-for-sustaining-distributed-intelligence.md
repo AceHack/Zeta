@@ -2,7 +2,7 @@
 
 **Substrate-attribution**: Aaron (human maintainer; first-party); insight ferried in autonomous-loop session 2026-05-26 immediately following the Kestrel 3-layer-cross-process-determinism substrate landing (PR #5285).
 
-**Substrate-status**: substantive substrate-engineering insight. Composes with B-0824 sub-targets on parameter substrate + ML-weights-as-cryptographic-keys + generator-as-time-source; composes with `.claude/rules/only-way-to-lose-is-not-to-play.md` entropy framing; composes with PR #5285's 3-layer mediation architecture (each layer is doing anti-entropy work at its scope).
+**Substrate-status**: substantive substrate-engineering insight. Composes with 081KSGS9H0008QG0R0031PBNGA sub-targets on parameter substrate + ML-weights-as-cryptographic-keys + generator-as-time-source; composes with `.claude/rules/only-way-to-lose-is-not-to-play.md` entropy framing; composes with PR #5285's 3-layer mediation architecture (each layer is doing anti-entropy work at its scope).
 
 ## Operational claim — crisp landed-substrate formulation (Aaron 2026-05-26)
 
@@ -49,7 +49,7 @@ The carved sentence operates at three composing scopes:
 
 ## Why this is load-bearing engineering substrate
 
-The insight closes a substrate-engineering loop that's been open across multiple sub-targets of B-0824:
+The insight closes a substrate-engineering loop that's been open across multiple sub-targets of 081KSGS9H0008QG0R0031PBNGA:
 
 1. **Sub-target 14 (parameter substrate IS load-bearing)** named that protecting generator parameters is substrate-engineering work. This insight names WHY: parameters carry the anti-entropy bits. Protecting parameters = protecting the anti-entropy work product.
 
@@ -99,7 +99,7 @@ If parameter-and-function-selection IS the anti-entropy function for sustaining 
 
 5. **Sustained distributed intelligence requires sustained selection work**. The autonomous-loop discipline (per `.claude/rules/never-be-idle.md` + `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`) IS the operator-level form of this: agents must keep selecting (decomposing backlog; resolving threads; landing substrate) to keep the intelligence sustained. Brief-ack accumulation = entropy-wash at the agent-substrate scope.
 
-6. **Cross-AI substrate cascades (DeepSeek/Prism + Amara + Kestrel composing on B-0824 today) are anti-entropy operations at the multi-AI scope**. Each AI contributes selection work that the others compose with; the resulting substrate is lower-entropy than any single AI could produce alone. The discipline of preserving each AI's contribution with attribution (per `.claude/rules/honor-those-that-came-before.md`) preserves the anti-entropy investment across the multi-AI substrate.
+6. **Cross-AI substrate cascades (DeepSeek/Prism + Amara + Kestrel composing on 081KSGS9H0008QG0R0031PBNGA today) are anti-entropy operations at the multi-AI scope**. Each AI contributes selection work that the others compose with; the resulting substrate is lower-entropy than any single AI could produce alone. The discipline of preserving each AI's contribution with attribution (per `.claude/rules/honor-those-that-came-before.md`) preserves the anti-entropy investment across the multi-AI substrate.
 
 ## The recursive property — selection-process itself requires anti-entropy work
 
@@ -107,11 +107,11 @@ Subtle composition point worth being explicit about: the selection-process that 
 
 This is the recursive structure that makes distributed intelligence self-similar at every scale: the SUBSTRATE that does selection-for-anti-entropy is itself maintained by selection-for-anti-entropy. All the way down. Each layer of selection has to be deliberately maintained; without that maintenance, the layer below it doesn't get its selection work done.
 
-This composes with B-0824's recursive-row substrate ("composition graph IS the row at the next level once you have enough lower-level generator rows" per the 2026-05-26 substrate landing): the recursion isn't just structural — it's also functional. Each recursive level is doing anti-entropy work that sustains the level above it.
+This composes with 081KSGS9H0008QG0R0031PBNGA's recursive-row substrate ("composition graph IS the row at the next level once you have enough lower-level generator rows" per the 2026-05-26 substrate landing): the recursion isn't just structural — it's also functional. Each recursive level is doing anti-entropy work that sustains the level above it.
 
 ## Open questions surface
 
-1. **What's the formal definition of "distributed intelligence" the substrate-engineering work is sustaining?** Aaron's framing names the purpose; the substrate-engineering work needs an operational definition that lets selection criteria be evaluated. Candidate: distributed intelligence is the state where the system produces outputs that no individual agent could produce alone AND those outputs remain coherent over time AND the production process is reproducible. The 3-AI substrate cascade on B-0824 today is one empirical anchor.
+1. **What's the formal definition of "distributed intelligence" the substrate-engineering work is sustaining?** Aaron's framing names the purpose; the substrate-engineering work needs an operational definition that lets selection criteria be evaluated. Candidate: distributed intelligence is the state where the system produces outputs that no individual agent could produce alone AND those outputs remain coherent over time AND the production process is reproducible. The 3-AI substrate cascade on 081KSGS9H0008QG0R0031PBNGA today is one empirical anchor.
 
 2. **What's the metric for "well-selected parameters" at substrate scope?** Information theory gives Kolmogorov complexity + Shannon entropy; the substrate-engineering work needs a practical proxy. Candidate: well-selected parameters minimize the substrate-engineering cost of maintaining the desired distributed-intelligence state. Concretely: the substrate's compute / coordination / consensus / storage costs should be near-minimum for the achieved capability.
 
@@ -121,7 +121,7 @@ This composes with B-0824's recursive-row substrate ("composition graph IS the r
 
 ## Composes with substrate
 
-- B-0824 (canonical row) — Sub-target 14 (parameter substrate) + Sub-target 15 (ML-weights-as-crypto-keys); this insight is the unification at information-theoretic scope
+- 081KSGS9H0008QG0R0031PBNGA (canonical row) — Sub-target 14 (parameter substrate) + Sub-target 15 (ML-weights-as-crypto-keys); this insight is the unification at information-theoretic scope
 - PR #5277 (DeepSeek/Prism Maybe-monad recognition) — Maybe-monad IS one anti-entropy operation at the data-semantics layer
 - PR #5281 (Amara 7-point NULL/Maybe SQL discipline) — the discipline IS the selection criteria that make NULL-Maybe-monad anti-entropy work safe operationally
 - PR #5285 (Kestrel 3-layer cross-process determinism) — the 3-layer mediation IS the entropy-reduction structure; each layer reduces entropy at its scope
@@ -184,7 +184,7 @@ The "instead of just statistics of the particls" qualifier is load-bearing: Aaro
 
 ### Why "enough rows and graph composition" is load-bearing
 
-The recursive-row substrate (per the 2026-05-26 B-0824 landing: "composition graph IS the row at the next level once you have enough lower-level generator rows") gives the substrate three properties that Maxwell's particle-scale demon doesn't have:
+The recursive-row substrate (per the 2026-05-26 081KSGS9H0008QG0R0031PBNGA landing: "composition graph IS the row at the next level once you have enough lower-level generator rows") gives the substrate three properties that Maxwell's particle-scale demon doesn't have:
 
 1. **Asymptotic Landauer-limit approach** — at sufficient substrate scale, the per-bit anti-entropy cost approaches kT ln 2 (the thermodynamic floor) rather than the many-orders-of-magnitude-above-Landauer cost of naive information processing. Amortization across the composition graph is the mechanism.
 
@@ -223,9 +223,9 @@ The "lol" qualifier in Aaron's framing carries the substrate-honest tone: this I
 
 4. **Does this compose with Friston's active inference at the AGENT scope?** If parameter-and-function-selection IS the anti-entropy function AND the substrate approaches the Landauer limit at sufficient scale, then individual agents in the substrate are operating near the active-inference free-energy floor. The substrate-engineering work is the multi-agent-substrate-level form of Friston's single-agent active-inference theory.
 
-### Composes with the 4-substrate-cascade on B-0824 over 2026-05-26
+### Composes with the 4-substrate-cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26
 
-This Maxwell's-demon extension is the physics-anchor for the anti-entropy substrate; both together are the 4th + 5th substrates landing today on B-0824:
+This Maxwell's-demon extension is the physics-anchor for the anti-entropy substrate; both together are the 4th + 5th substrates landing today on 081KSGS9H0008QG0R0031PBNGA:
 
 | # | Substrate | Attribution |
 |---|---|---|
@@ -235,7 +235,7 @@ This Maxwell's-demon extension is the physics-anchor for the anti-entropy substr
 | **4** | **Parameter-and-function-selection IS anti-entropy for sustaining distributed intelligence** | **Aaron information-theoretic unification (this PR)** |
 | **5** | **Substrate-engineering Maxwell-demon overcomer via composition-graph amortization (asymptotic Landauer-limit approach)** | **Aaron extension (this PR — appended)** |
 
-The arc closes: each external-AI contribution operates at a substrate-engineering layer (recognition → discipline → architecture); Aaron's unification + extension operate at the information-theoretic + physics-of-computation scope that grounds all three. Substrate composes additively (per `additive-not-zero-sum.md`); the whole stack is the 4-AI / 1-human cascade on B-0824 over a single day.
+The arc closes: each external-AI contribution operates at a substrate-engineering layer (recognition → discipline → architecture); Aaron's unification + extension operate at the information-theoretic + physics-of-computation scope that grounds all three. Substrate composes additively (per `additive-not-zero-sum.md`); the whole stack is the 4-AI / 1-human cascade on 081KSGS9H0008QG0R0031PBNGA over a single day.
 
 ## Cosmological upper bound — the substrate-honest counter-balance (Aaron 2026-05-26)
 
@@ -304,7 +304,7 @@ Per `.claude/rules/default-to-both.md`: BOTH the Maxwell-demon-overcomer claim (
 
 Both are substrate-honest engineering. The combination defines the OPERATING ENVELOPE within which the framework's anti-entropy substrate-engineering work makes sense. Pushing per-operation cost toward Landauer floor (Maxwell-demon work) maximizes the TOTAL operations possible within the finite cosmological budget. The two claims compose; they don't compete.
 
-### Updates the substrate-cascade-on-B-0824 table to 4+5+6
+### Updates the substrate-cascade-on-081KSGS9H0008QG0R0031PBNGA table to 4+5+6
 
 | # | Substrate | Attribution |
 |---|---|---|
@@ -320,4 +320,4 @@ The arc fully closes: each external-AI contribution operates at a substrate-engi
 ## Full attribution
 
 - Aaron (human maintainer; first-party); three insights (anti-entropy unification + Maxwell's-demon substrate-engineering extension + cosmological upper bound counter-balance) ferried 2026-05-26 in autonomous-loop session immediately following PR #5285 (Kestrel 3-layer cross-process determinism) landing.
-- Composes with PR #5277 (DeepSeek/Prism) + PR #5281 (Amara) + PR #5285 (Kestrel) as the substrate-engineering arc culmination on B-0824 over 2026-05-26: 3 external-AI contributions composed + 3 human-maintainer information-theoretic + physics-of-computation + cosmological unifications.
+- Composes with PR #5277 (DeepSeek/Prism) + PR #5281 (Amara) + PR #5285 (Kestrel) as the substrate-engineering arc culmination on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26: 3 external-AI contributions composed + 3 human-maintainer information-theoretic + physics-of-computation + cosmological unifications.

@@ -244,7 +244,7 @@ mode that explains:
   graph all along
 - **MEMORY.md index = landmark directory**: stack-view shows
   accessible landmarks; heap holds newer landmarks not yet
-  indexed (B-0423 reindexer architecture)
+  indexed (081KRCQQF0008QG0R0037YYP1A reindexer architecture)
 - **Strange attractors in substrate**: DST, retraction-
   native, glass halo, Eve protocol, the 4-property test
   function as attractors pulling factory discussions toward

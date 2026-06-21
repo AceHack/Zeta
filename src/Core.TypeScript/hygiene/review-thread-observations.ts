@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// review-thread-observations.ts — live caller for B-0164.1 review-thread
+// review-thread-observations.ts — live caller for 081KR7JY10008QG0R000MH7PJT review-thread
 // disagreement preservation.
 //
 // This is the operational bridge below a full GitHub review workflow: record

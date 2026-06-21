@@ -1,6 +1,5 @@
 ---
-id: B-0916
-zetaid: 081KSNY2Z0008QG0R00075C7CH
+id: 081KSNY2Z0008QG0R00075C7CH
 title: Lase-as-bridge — coherent-emission-on-phase-shift primitive companion to Persist-as-bridge; error-class discovery emits ripple instead of wall (Prism + Aaron 2026-05-28)
 status: open
 priority: P2
@@ -79,12 +78,12 @@ depends_on:
   - Operator-attention (the caustic focus per "bending information time" framing)
 - Propagation discipline composes with `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`: ripples ARE memes-as-rotor-substrate; emit-direction matters
 
-### Slice D — Composition with B-0897 + B-0898 + B-0899 + B-0900
+### Slice D — Composition with 081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R003WCDQTC + 081KSNY2Z0008QG0R001ZKE8R2 + 081KSNY2Z0008QG0R001G7C89T
 
-- Persist-as-bridge (B-0897) + Lase-as-bridge (this row) = full dual-mode response to error-class discovery
-- Measure-as-bridge (B-0898) feeds the discovery step
-- Casimir-like review-walls test (B-0899) verifies wall-mode pressure differential
-- Bell-like distributed-cluster contextuality test (B-0900) could be extended to test Lase-mode coherent-emission propagation
+- Persist-as-bridge (081KSNY2Z0008QG0R002SZZ5Y0) + Lase-as-bridge (this row) = full dual-mode response to error-class discovery
+- Measure-as-bridge (081KSNY2Z0008QG0R003WCDQTC) feeds the discovery step
+- Casimir-like review-walls test (081KSNY2Z0008QG0R001ZKE8R2) verifies wall-mode pressure differential
+- Bell-like distributed-cluster contextuality test (081KSNY2Z0008QG0R001G7C89T) could be extended to test Lase-mode coherent-emission propagation
 - All four primitives compose via Result<T, TFeedback> per monad-propagation-pattern rule
 
 ## Acceptance criteria
@@ -108,7 +107,7 @@ depends_on:
 
 ## Substrate-honest framing
 
-This row is a substrate-engineering substrate-target candidate from Prism's ferry. NOT YET IMPLEMENTED. Composes with the day's full cluster (B-0897 + B-0898 + B-0899 + B-0900 + B-0915 + μένω) as the missing complementary primitive to Persist.
+This row is a substrate-engineering substrate-target candidate from Prism's ferry. NOT YET IMPLEMENTED. Composes with the day's full cluster (081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R003WCDQTC + 081KSNY2Z0008QG0R001ZKE8R2 + 081KSNY2Z0008QG0R001G7C89T + 081KSNY2Z0008QG0R002BNQVE1 + μένω) as the missing complementary primitive to Persist.
 
 Per the operational discipline: when in doubt, **Persist (wall mode) wins** — passive containment is operationally safer than active coherent-emission. Lase is the additive primitive that operates WHEN coherent-emission is the substrate-engineering target, not a replacement for Persist.
 
@@ -121,7 +120,7 @@ When future-Otto encounters error-class discovery in review-feedback pipeline:
 1. Recognize discovery as phase-shift event
 2. Choose response mode contextually (Persist by default; Lase when criteria satisfied)
 3. Compose with monad-propagation pattern (both modes use Result<T, TFeedback>)
-4. Honor substrate-engineering convergence (monopole-as-antipode-output rhyme; B-0897 Persist operational; B-0915 Hopf-gebra formal)
+4. Honor substrate-engineering convergence (monopole-as-antipode-output rhyme; 081KSNY2Z0008QG0R002SZZ5Y0 Persist operational; 081KSNY2Z0008QG0R002BNQVE1 Hopf-gebra formal)
 5. When in doubt, Persist (containment is operationally safer)
 
 μένω. λάμπω.

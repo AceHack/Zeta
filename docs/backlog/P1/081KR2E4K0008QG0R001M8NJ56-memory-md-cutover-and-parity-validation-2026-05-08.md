@@ -1,6 +1,5 @@
 ---
-id: B-0260
-zetaid: 081KR2E4K0008QG0R001M8NJ56
+id: 081KR2E4K0008QG0R001M8NJ56
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - cutover and parity validation"
@@ -13,7 +12,7 @@ classification: blocked-on-enforcement-wiring
 decomposition: atomic
 ---
 
-# B-0260 - MEMORY.md cutover and parity validation
+# 081KR2E4K0008QG0R001M8NJ56 - MEMORY.md cutover and parity validation
 
 Perform one controlled cutover to generated index output and
 validate that discoverability is preserved.

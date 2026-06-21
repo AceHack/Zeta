@@ -29,7 +29,7 @@
 
 ## What
 
-`install.ps1` now enables Windows long paths, so any machine that runs the installer stops worrying about the 260-char MAX_PATH limit on Zeta's long persona-archive filenames (the B-0947 "Filename too long" class). Aaron-requested 2026-05-31.
+`install.ps1` now enables Windows long paths, so any machine that runs the installer stops worrying about the 260-char MAX_PATH limit on Zeta's long persona-archive filenames (the 081KSV2WD0008QG0R001XKG1B5 "Filename too long" class). Aaron-requested 2026-05-31.
 
 ## Two layers (matching install.ps1's existing conditional-on-admin pattern)
 
@@ -40,9 +40,9 @@
 
 Runs as a new step 2b (after the manifest step installs git, before mise). Mirrors the existing scoop `-RunAsAdmin` / choco-only-when-elevated / graceful-skip discipline.
 
-## Scope (important — complementary to B-0947, not redundant)
+## Scope (important — complementary to 081KSV2WD0008QG0R001XKG1B5, not redundant)
 
-This is the **dev-machine + post-install-git-ops** prong. It does **not** replace the B-0947 *CI* fix: in CI, `actions/checkout` runs *before* `install.ps1`, so the gate's windows legs still need `git config core.longpaths` pre-checkout (B-0947 option 1). Together they cover both surfaces — your machines (this PR) and CI (B-0947).
+This is the **dev-machine + post-install-git-ops** prong. It does **not** replace the 081KSV2WD0008QG0R001XKG1B5 *CI* fix: in CI, `actions/checkout` runs *before* `install.ps1`, so the gate's windows legs still need `git config core.longpaths` pre-checkout (081KSV2WD0008QG0R001XKG1B5 option 1). Together they cover both surfaces — your machines (this PR) and CI (081KSV2WD0008QG0R001XKG1B5).
 
 ## Validation
 

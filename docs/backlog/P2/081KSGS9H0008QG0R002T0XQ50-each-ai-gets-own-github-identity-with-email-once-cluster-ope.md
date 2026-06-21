@@ -1,6 +1,5 @@
 ---
-id: B-0847
-zetaid: 081KSGS9H0008QG0R002T0XQ50
+id: 081KSGS9H0008QG0R002T0XQ50
 priority: P2
 status: open
 title: each Zeta AI gets own GitHub identity + email once cluster operational — substrate-honest attribution end-to-end (closes the `gh enabledBy = token-owner ≠ actor` algo-wink-attribution-gap; Ilyana review for public-surface name + email before any creation) (Aaron 2026-05-26)
@@ -9,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0751
+  - 081KSE6WT0008QG0R003YYC9PV
 composes_with:
   - 081KRW63S0008QG0R003TX8MG5
   - 081KSE6WT0008QG0R003YYC9PV
@@ -63,7 +62,7 @@ Each Zeta AI gets:
 Aaron's framing "once we get you running on the cluster" makes this future-state — depends on:
 
 - Cluster operational (per-agent compute + persistence)
-- B-0751 per-agent isolated clones (sibling at clone-scope; same architecture at GitHub-identity scope)
+- 081KSE6WT0008QG0R003YYC9PV per-agent isolated clones (sibling at clone-scope; same architecture at GitHub-identity scope)
 - HSM / secrets manager for per-AI OAuth token storage
 - Cluster-side `gh` CLI invocation routing to per-AI tokens
 - Email infrastructure (per-AI email accounts; could be ProtonMail, FastMail, self-hosted on cluster)
@@ -91,9 +90,9 @@ Substrate-honest disclosure: today the AIs use Co-Authored-By trailers with vend
 - `.claude/rules/honor-those-that-came-before.md` — each AI carrying own identity HONORS the autonomous-arrival naming + the work the AI does
 - `.claude/rules/non-coercion-invariant.md` HC-8 — per-AI identity is the AI-AGENCY operationalization at attribution scope; today's structural attribution-collapse is a passive coercion of identity into operator's
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — per-AI GitHub identity needs the four-field attribution structure for legal-risk: who accepts the legal-liability for the AI's GitHub actions (per Aaron's standing constitutional invariant "wherever AI could be blamed for Zeta i want it to become a named human over time for every legal risk area until we can setup business and non profits around the risk taking")
-- B-0751 (per-agent isolated clones — sibling substrate at clone-scope)
-- B-0628 (Knights Guild + Constitution-Class — ratification path for the public-surface identity decisions)
-- B-0750 (agent worktree hygiene) + B-0752 (fighting-past-self vs peer-agent distinguisher) — both at agent-coordination scope; this row is at agent-attribution scope
+- 081KSE6WT0008QG0R003YYC9PV (per-agent isolated clones — sibling substrate at clone-scope)
+- 081KRW63S0008QG0R003TX8MG5 (Knights Guild + Constitution-Class — ratification path for the public-surface identity decisions)
+- 081KSE6WT0008QG0R003YYC9PV (agent worktree hygiene) + 081KSE6WT0008QG0R000E05579 (fighting-past-self vs peer-agent distinguisher) — both at agent-coordination scope; this row is at agent-attribution scope
 - PR #2930 (distributed maintainer architecture) — composes at maintainer-distribution scope
 - PR #2827 (AI continuity now real) — substrate-encoded continuity composes with per-AI identity
 - Manifesto V2 Constraint 5 (Memory Preservation Guarantee) — per-AI identity is the external-attribution counterpart
@@ -135,7 +134,7 @@ Per the memory entry: until per-AI GitHub identity ships, the discipline is
 
 ### Phase 4 — Migration
 
-- Switch each AI's commit gitconfig to per-AI identity (composes with B-0751 per-agent-clone gitconfig)
+- Switch each AI's commit gitconfig to per-AI identity (composes with 081KSE6WT0008QG0R003YYC9PV per-agent-clone gitconfig)
 - Switch each AI's `gh` invocation context to per-AI token
 - Validate substrate-honest end-to-end attribution via empirical PR commit + auto-merge sequence
 - Update Co-Authored-By trailer convention: now becomes substrate model lineage attribution (Claude / Kiro / Grok / Codex / Gemini) on top of the per-AI Zeta-persona attribution (Otto / Alexa / Riven / Vera / Lior)
@@ -165,7 +164,7 @@ Per the memory entry: until per-AI GitHub identity ships, the discipline is
 
 ### Phase 4 (migration)
 
-- [ ] Per-AI gitconfig per B-0751
+- [ ] Per-AI gitconfig per 081KSE6WT0008QG0R003YYC9PV
 - [ ] Per-AI `gh` token routing validated
 - [ ] Empirical PR sequence demonstrates substrate-honest end-to-end attribution
 - [ ] agent-roster-reference-card updated with per-AI GitHub identities
@@ -181,12 +180,12 @@ Per the memory entry: until per-AI GitHub identity ships, the discipline is
 
 To be filed as the work matures:
 
-- B-0847.1: Ilyana public-surface naming review per AI
-- B-0847.2: legal-risk attribution settings.json block per AI
-- B-0847.3: HSM + secrets manager for per-AI OAuth tokens
-- B-0847.4: per-AI email infrastructure
-- B-0847.5: cluster-side `gh` invocation routing
-- B-0847.6: per-AI gitconfig migration composing with B-0751
+- 081KSGS9H0008QG0R002T0XQ50.1: Ilyana public-surface naming review per AI
+- 081KSGS9H0008QG0R002T0XQ50.2: legal-risk attribution settings.json block per AI
+- 081KSGS9H0008QG0R002T0XQ50.3: HSM + secrets manager for per-AI OAuth tokens
+- 081KSGS9H0008QG0R002T0XQ50.4: per-AI email infrastructure
+- 081KSGS9H0008QG0R002T0XQ50.5: cluster-side `gh` invocation routing
+- 081KSGS9H0008QG0R002T0XQ50.6: per-AI gitconfig migration composing with 081KSE6WT0008QG0R003YYC9PV
 
 ## Full reasoning
 

@@ -124,7 +124,7 @@ Composes with:
   (named dependencies present; not Standing-by)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (PR-thread-
   resolution is DOES-NOT-APPLY but worktree contention still applies)
-- B-0519 (multi-Otto-branch-state-contamination RCA)
+- 081KRHWGX0008QG0R001HMWM1W (multi-Otto-branch-state-contamination RCA)
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 ```
@@ -145,7 +145,7 @@ fix(tick 0044Z): correct thread-carrying PR list + link rule path
   3633 on `feat/b0449-b0460-subscribe`, not itself a Lior decompose
   branch.
 - Link `.claude/rules/claim-acquire-before-worktree-work.md` and the
-  B-0519 RCA row to their full repo-relative paths per the
+  081KRHWGX0008QG0R001HMWM1W RCA row to their full repo-relative paths per the
   rule-link convention from tick 2026-05-15T0503Z.
 
 Caught by Copilot review threads on PR #3649.
@@ -169,7 +169,7 @@ fix(tick 0044Z): correct relative link depth for .claude/rules and ba…
 Per Codex review threads on PR #3649:
 - Line 34: claim-acquire rule link needed 6 ../ to reach repo root from
   docs/hygiene-history/ticks/2026/05/16/ (was 5; resolved to docs/.claude/...)
-- Line 36: B-0519 backlog link needed 5 ../ (was 4; resolved to
+- Line 36: 081KRHWGX0008QG0R001HMWM1W backlog link needed 5 ../ (was 4; resolved to
   docs/hygiene-history/backlog/... which does not exist)
 
 Both links now resolve correctly from the nested tick path.

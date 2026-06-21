@@ -21,8 +21,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 The "Background Services Architecture" bullet only mentioned `standing-by-detector.ts` as not-yet-wired. The repo actually has 4 services in `tools/bg/`:
 
 - `missed-substrate-detector.ts` (launchd-registered ✓)
-- `backlog-ready-notifier.ts` (NOT wired — B-0441 #2 pending)
-- `standing-by-detector.ts` (NOT wired — B-0442 slice 5+ pending)
+- `backlog-ready-notifier.ts` (NOT wired — 081KRFA460008QG0R00229616S #2 pending)
+- `standing-by-detector.ts` (NOT wired — 081KRFA460008QG0R00061SXRW slice 5+ pending)
 - `audit-duplicate-row-ids.ts` (NOT wired; invoked on-demand from the substrate-hygiene cascade this session)
 
 Updated the bullet to list all 4 + clarify that 3 are invokable on demand via `bun tools/bg/<name>.ts --once` until launchd wiring completes.
@@ -83,7 +83,7 @@ Updates `docs/AUTONOMOUS-LOOP.md` to accurately describe the current set of back
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep launchd-status note scoped to actual bg daemons**
 
-This sentence now treats `audit-duplicate-row-ids.ts` as one of the launchd-pending background daemons, but that script is a one-shot backlog audit utility (tracked under B-0451) rather than part of the B-0440/B-0441/B-0442 daemon set; `tools/bg/README.md` also defines the current background-service set as the three detector/notifier daemons only. Grouping the audit script under the same “not yet wired to launchd” status (and tying it to B-0441/B-0442 pending work) makes the operational status inaccurate for readers trying to understand what still needs launchd wiring.
+This sentence now treats `audit-duplicate-row-ids.ts` as one of the launchd-pending background daemons, but that script is a one-shot backlog audit utility (tracked under 081KRFA460008QG0R00308W7FJ) rather than part of the 081KRFA460008QG0R001KC0VBH/081KRFA460008QG0R00229616S/081KRFA460008QG0R00061SXRW daemon set; `tools/bg/README.md` also defines the current background-service set as the three detector/notifier daemons only. Grouping the audit script under the same “not yet wired to launchd” status (and tying it to 081KRFA460008QG0R00229616S/081KRFA460008QG0R00061SXRW pending work) makes the operational status inaccurate for readers trying to understand what still needs launchd wiring.
 
 Useful? React with 👍 / 👎.
 

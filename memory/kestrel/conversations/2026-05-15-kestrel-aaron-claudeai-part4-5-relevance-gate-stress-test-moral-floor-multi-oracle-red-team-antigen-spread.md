@@ -125,6 +125,6 @@ Each level moves capture-resistance to its most defensible location. The final r
 - New: `feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_*.md`
 - New: `feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_*.md`
 - Prior: `feedback_aaron_market_clearing_mechanism_via_past_revealed_hands_useful_work_relevance_more_success_more_encrypted_storage_*.md`
-- B-0543 (QG-isomorphism — the moral floor + multi-oracle + immune-system answers all compose with the cosmology mapping)
+- 081KRMEXM0008QG0R002YSPW1X (QG-isomorphism — the moral floor + multi-oracle + immune-system answers all compose with the cosmology mapping)
 - `docs/governance/MANIFESTO.md` Constraints 5 (Memory Preservation), 6 (Consent-First), 11 (Default Oracle) — the moral floor is operationalized through these
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle is structural; Constraint 11 is DEFAULT not REQUIRED)

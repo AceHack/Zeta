@@ -1,6 +1,6 @@
 module Zeta.Tests.FourCornerFusionTests
 
-// B-1022 fusion, executed per Rodney's Razor: **fusion by instantiation, not refactor.**
+// 081KTQD8A0008QG0R0005EFYPV fusion, executed per Rodney's Razor: **fusion by instantiation, not refactor.**
 // Proves the four-corner harmonic Kleisli arrow already composes from the existing pieces:
 //   ISR<Corners, Corners> (the arrow) × SoftScheduler.Handler<Corners> (the tick) ×
 //   FourCorner.withOut/withInFeedback (the corners filling) × IsrLift.ofPolicy (the decision-arrow).

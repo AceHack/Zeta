@@ -55,7 +55,7 @@ different operations with different concurrency profiles and different relations
 ## Honest scope (peel)
 
 A **design note**, not code — pins the vocabulary so the eventual module is built with the right names and the
-right concurrency profile (zip wait-free, join gated). The transport/networked side stays gated (B-1002); this
+right concurrency profile (zip wait-free, join gated). The transport/networked side stays gated (081KT2T2J0008QG0R002R72323); this
 is the *local timeline algebra* over the zset event stream. The "play emulators with DST time" framing is real
 and buildable (it's event-sourcing + save-states + deterministic replay), not exotic — `rr` and every
 save-state emulator already do rewind/fast-forward; the novelty here is only the *unified* fork/zip/join/
@@ -65,7 +65,7 @@ converge algebra over the one stream with the interrupt as the DST time source.
 
 Fokkinga 1990 (Banana Split Law); Rx `zip`/`join`/`groupJoin`; CALM / `Reconcile.fs` (converge); event
 sourcing + `rr` + save-states (rewind/ff); manifesto §2 (wait-free), §7 (DST). Internal: `CoincidenceClock`,
-`BellTest`, `SymmetricEndurance`; B-1002 (gated transport). Aaron's settled distinction 2026-06-08.
+`BellTest`, `SymmetricEndurance`; 081KT2T2J0008QG0R002R72323 (gated transport). Aaron's settled distinction 2026-06-08.
 
 ## Rx-operator realization + homoiconic over the interfaces we own (Aaron 2026-06-08)
 
@@ -94,7 +94,7 @@ Rx interface **we own** (`bcl-interface-boundary` — own the port, adapt the ba
 the **`IQbservable` / Reaqtor lineage** already gestured at in `Rx.fs` (`RxAdapter`): Bart De Smet's
 expression-tree-*queryable* Rx — queries as inspectable/serializable trees — with **System.Reactive as one
 backend** (others: our own DBSP `Stream<ZSet>` runtime, the DoP-knobbed ferry). Because the ops are data:
-- the timeline program is **serializable** (Bonsai — B-0640) and **DST-replayable**;
+- the timeline program is **serializable** (Bonsai — 081KRW63S0008QG0R002XA5N6S) and **DST-replayable**;
 - it is **meta-homoiconic** — the program is itself an event on the same zset stream, so a *timeline-ops
   program* can be forked/joined/rewound like any other timeline (the meta-boundary is homoiconic);
 - `fork`/`zip`/`join`/`converge` are DU cases / Bonsai nodes, given meaning by an interpreter over the owned
@@ -103,7 +103,7 @@ backend** (others: our own DBSP `Stream<ZSet>` runtime, the DoP-knobbed ferry). 
 
 So: the four-op algebra is a **homoiconic query over our owned Rx port**, not a pile of functions — Rx
 operators are the *reference semantics*, Bonsai/DynamicValue is the *homoiconic representation*, and we own
-the interface so backends (System.Reactive / DBSP / ferry) swap underneath. Composes B-0640 (Bonsai+Rx) +
+the interface so backends (System.Reactive / DBSP / ferry) swap underneath. Composes 081KRW63S0008QG0R002XA5N6S (Bonsai+Rx) +
 `Rx.fs`/`RxAdapter` (IQbservable/Reaqtor) + `StoredProc` (native-vs-interpreted).
 
 ## What it unlocks: LINQ over generator functions (Aaron 2026-06-08)

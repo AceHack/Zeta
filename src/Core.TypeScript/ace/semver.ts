@@ -1,4 +1,4 @@
-// Pure semver subset for Ace slice 5.2 (no pre-release / build-metadata / unions / hyphen — see B-0970).
+// Pure semver subset for Ace slice 5.2 (no pre-release / build-metadata / unions / hyphen — see 081KT07NV0008QG0R002WK9064).
 export interface Version { readonly major: number; readonly minor: number; readonly patch: number }
 export type Comparator = { readonly op: ">=" | "<=" | ">" | "<" | "="; readonly v: Version };
 // A Range is a conjunction (AND) of comparators. `*` / `x` → empty conjunction (matches all).

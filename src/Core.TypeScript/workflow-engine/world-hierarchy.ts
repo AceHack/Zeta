@@ -24,7 +24,7 @@
 //       increments + retractions); Git ⊂ both equivalently
 //
 // Both readings hold until the algebraic-substrate work resolves it.
-// Composes with B-0635 wave-particle duality + B-0666 English-as-projection
+// Composes with 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R001SAHYKV English-as-projection
 // + multiple Kestrel ferries naming Clifford as canonical substrate-engineering
 // substrate.
 //
@@ -106,7 +106,7 @@ export type DBSPCliffordRelationship =
        *
        * Substrate-engineering substrate-engineering work starts with the
        * primary; falls to the secondary if/when algebraic substrate proves
-       * them equivalent. See B-0915 for impl substrate that resolves this.
+       * them equivalent. See 081KSNY2Z0008QG0R002BNQVE1 for impl substrate that resolves this.
        */
       voteOrdering?: ReadonlyArray<number>;
     };
@@ -126,8 +126,8 @@ export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
   // If a retraction-in-Clifford paper exists + maps to DBSP's Z-set retraction
   // substrate, the (B) fully-isomorphic reading becomes constructive and the
   // vote ordering may flip. Preserved as substrate-engineering input without
-  // collapsing — paper-existence verification + reading is B-0915 substrate-
-  // engineering work. See B-0915 Slice D acceptance criterion.
+  // collapsing — paper-existence verification + reading is 081KSNY2Z0008QG0R002BNQVE1 substrate-
+  // engineering work. See 081KSNY2Z0008QG0R002BNQVE1 Slice D acceptance criterion.
   voteOrdering: [0, 1],
 };
 
@@ -252,8 +252,8 @@ export function annotateHierarchy<W extends World>(world: W, algebra: SubstrateA
  * (2026-05-28) vote.
  *
  * NOT YET IMPLEMENTED. Substrate-engineering substrate-engineering target.
- * Composes with B-0635 wave-particle duality (Clifford multivector substrate)
- * + B-0666 English-as-projection + multiple Kestrel ferry preservations.
+ * Composes with 081KRW63S0008QG0R002KC5DSR wave-particle duality (Clifford multivector substrate)
+ * + 081KRW63S0008QG0R001SAHYKV English-as-projection + multiple Kestrel ferry preservations.
  *
  * When shipped: geometric-algebra substrate (multivector + grade-projection
  * + geometric-product) IS the canonical world substrate; DBSPWorld is a

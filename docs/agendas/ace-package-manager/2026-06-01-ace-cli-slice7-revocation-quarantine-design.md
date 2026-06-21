@@ -1,6 +1,6 @@
 # Ace CLI slice 7 — revocation / quarantine (design)
 
-> Spec for slice 7 of the Ace DLC package manager (B-0288). Lifecycle stage 12
+> Spec for slice 7 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD). Lifecycle stage 12
 > (revoke/quarantine). A registry can mark a published package version **revoked** (permanent
 > hard-refuse) or **quarantined** (soft-refuse, override-able); consumers refuse to
 > resolve/install marked versions. Built on the slice-6 signed registry. Brainstormed +
@@ -21,8 +21,8 @@ cannot be "un-seen" by serving an older index (anti-rollback forbids it).
 
 ## Decomposition (recap)
 
-- **Slice 6** (B-0971, #6431): consumer — fetch + verify + cache + merge a signed index.
-- **Slice 6.1** (B-0980, #6439): producer core — `ace registry publish` (build + sign).
+- **Slice 6** (081KT07NV0008QG0R000SJ34AK, #6431): consumer — fetch + verify + cache + merge a signed index.
+- **Slice 6.1** (081KT07NV0008QG0R0016FVWD7, #6439): producer core — `ace registry publish` (build + sign).
 - **Slice 6.2** (#6462): producer ergonomics — per-package url, multi-dir, `--sequence`.
 - **Slice 7** (this spec): revocation + quarantine — producer marks; consumer enforces.
 
@@ -226,7 +226,7 @@ Out of scope:
 
 - **`unrevoke`** — revocation is permanent by design.
 - **Separate CRL at its own URL** — the in-index list suffices; a standalone revocation feed
-  composes later with TUF roles (B-0979).
+  composes later with TUF roles (081KT07NV0008QG0R001K340B3).
 - **Time-boxed auto-expiry of quarantine** — quarantine is cleared explicitly via
   `unquarantine`.
 - **Version-range marks** (revoke `<2.0.0`) — exact `name@version` only for now.

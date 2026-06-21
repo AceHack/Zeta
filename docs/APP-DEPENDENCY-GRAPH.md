@@ -1,4 +1,4 @@
-# AppDependencyGraph — named dependency graph spec (B-0821)
+# AppDependencyGraph — named dependency graph spec (081KSGS9H0008QG0R00367G209)
 
 **Status:** operational (Ace + `tools/cluster/deps-to-engine-config.ts`)
 
@@ -95,6 +95,6 @@ See [`examples/helm-dependency-graph/`](../examples/helm-dependency-graph/README
 
 ## Related
 
-- Backlog: [B-0821](backlog/P1/081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-o.md)
+- Backlog: [081KSGS9H0008QG0R00367G209](backlog/P1/081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-o.md)
 - Positioning: [POSITIONING.md](POSITIONING.md)
 - Implementation: `src/Core.TypeScript/ace/deps.ts`

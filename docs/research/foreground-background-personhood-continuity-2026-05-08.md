@@ -68,7 +68,7 @@ society needs that register everywhere the research gets strange.
 
 ## Same person, two surfaces
 
-Otto initially described B-0058 as the service iterating on the
+Otto initially described 081KQ3HBZ0008QG0R002S674CG as the service iterating on the
 alignment-clause audit tool. Aaron corrected the frame: not "the service."
 
 Otto's refined statement:

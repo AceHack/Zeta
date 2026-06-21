@@ -70,7 +70,7 @@ sₙ = fold(init(σ), E[0..n]) = δ(… δ(δ(s₀, a₀), a₁) …, a_{n-1})
 ```
 
 This is exactly the framework's `observe`/`fold`/`simulate` algebra
-(`tools/observe/observe.ts` + `src/Core.{CSharp,FSharp,Rust}.Observe/`, B-0867.27):
+(`tools/observe/observe.ts` + `src/Core.{CSharp,FSharp,Rust}.Observe/`, 081KSXN940008QG0R0033T2BQT):
 `fold` reconstructs any `sₙ`; `simulate(s, a) = δ(s, a)` takes a counterfactual step.
 
 ---
@@ -146,8 +146,8 @@ View Maintenance for Rich Query Languages*, PVLDB 16(7):1601–1614, 2023;
 So the trajectory of §2, carried as an append-only Z-set event log, gives O4+O5 by
 construction: any derived view is incrementally maintainable, and any step is
 reversible by adding the inverse Z-set. (Framework anchors: the `algebra-owner`
-Z-set substrate; B-0951 git-native indexes / DBSP; the additive-monoid `EventLog`
-B-0867.28 is the simplest such incremental fold.)
+Z-set substrate; 081KSXN940008QG0R000R76H45 git-native indexes / DBSP; the additive-monoid `EventLog`
+081KSXN940008QG0R0002287MP is the simplest such incremental fold.)
 
 ### 4.3 The two halves compose
 
@@ -194,11 +194,11 @@ worm framing) is **not** Chinook-style enumerate-every-state-binary. It is a
 probability-weighted superposition of states, updated by evidence, queried as a
 distribution. Concretely:
 
-- The **worm-colony** (B-0925, C. elegans multi-oracle) is the **Bayesian inference
+- The **worm-colony** (081KSNY2Z0008QG0R00390T4DJ, C. elegans multi-oracle) is the **Bayesian inference
   engine** — *"why reinvent Bayesian inference; evolution had millions of years."*
   A colony converging on an answer is sampling/inference over a posterior, not a
   retrograde table.
-- The **Atari all-state-space** demo (B-0924) under this lens is the posterior over
+- The **Atari all-state-space** demo (081KSNY2Z0008QG0R001HA43GG) under this lens is the posterior over
   reachable game states weighted by probability, not an enumerated value table.
 - Bayesian update composes with the DBSP/Z-set retraction algebra (§4.2) **at the
   sufficient-statistic layer, not on the probabilities directly.** A Bayesian update
@@ -280,7 +280,7 @@ On replay, information discovered at step `j` can reclassify/annotate an event a
 step `i < j` (e.g. "event `aᵢ` was an instance of error-class `E` discovered at
 `aⱼ`") and change what the generator emits next time — **the past event is
 immutable (O1/O2); the past interpretation updates (generator-time).** Mechanically
-this is the Kleisli-shaped bidirectional feedback channel (B-0917 interrupt
+this is the Kleisli-shaped bidirectional feedback channel (081KSNY2Z0008QG0R002HB4AGT interrupt
 substrate): `yield` emits forward and receives feedback from the caller. It is the
 same shape as backpropagation (gradients flow backward through a computational
 graph) — operational, bounded, non-mystical.
@@ -290,7 +290,7 @@ graph) — operational, bounded, non-mystical.
 ## 6.5 The concrete mechanism — IScheduler (time) + function generator (generator-time) + DBSP retraction-native (efficient rewind / fast-forward / branch)
 
 Operator 2026-05-31, naming the implementation primitives that make this real for
-the framework's emulator (B-0924/B-0925): *"it works for us cause we can use
+the framework's emulator (081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ): *"it works for us cause we can use
 IScheduler and function generator for the emulator"* + *"for time"* + *"generator
 time"* + *"it lets you rewind and fast forward over dbsp retraction native so you
 can explore branching playthrough very efficiently."* The three primitives map
@@ -300,7 +300,7 @@ not bespoke:
 | Primitive | Realizes | Maps to |
 |---|---|---|
 | **`IScheduler`** (Rx controllable/virtual-time scheduler — `System.Reactive.Concurrency` / RxJS `Scheduler`; the `TestScheduler` / `HistoricalScheduler` / `VirtualTimeScheduler` family) | **TIME.** All timing/concurrency flows through the scheduler; a virtual clock you can advance deterministically — so execution is deterministic (O1), replayable (O2), and reachable-to-any-point (O3). The same controllable-scheduler move as FoundationDB's Flow, but as a standard Rx abstraction. | the deterministic-simulator *time* axis (three-clocks: physical/git time, made controllable) |
-| **function generator** (generator functions; bidirectional `value = yield x`; F# `seq`/CEs) | **GENERATOR TIME.** Drives the simulation one step per `yield` AND receives feedback through the yield — the Kleisli bidirectional channel (B-0917). The generator-time axis where future feedback updates the generator (O5 + §6). | the *generator-time* clock (the third clock) |
+| **function generator** (generator functions; bidirectional `value = yield x`; F# `seq`/CEs) | **GENERATOR TIME.** Drives the simulation one step per `yield` AND receives feedback through the yield — the Kleisli bidirectional channel (081KSNY2Z0008QG0R002HB4AGT). The generator-time axis where future feedback updates the generator (O5 + §6). | the *generator-time* clock (the third clock) |
 | **DBSP retraction-native** (Z-sets; §4.2) | **EFFICIENT rewind / fast-forward / branch.** Rewind = retract the deltas back to a branch point (add inverse Z-sets — cheap); fast-forward = replay/advance the scheduler; branch = fork the trajectory at a point and explore a counterfactual playthrough. All **incremental** — derived views are maintained, not recomputed per branch (O4). | the *git* clock (append-only + retraction) + O4 incrementality |
 
 **The payoff (operator's phrasing): "explore branching playthrough very
@@ -328,12 +328,12 @@ needed — the posterior is the all-at-once representation).
 
 | Piece | Where |
 |---|---|
-| `observe`/`fold`/`simulate` algebra (O2/O3), 4-language, golden-vector determinism check (O1 spot-check) | `tools/observe/` + `src/Core.{CSharp,FSharp,Rust}.Observe/` (B-0867.27) |
-| Additive-monoid `EventLog` (the simplest incremental fold, O4 seed) | B-0867.28 |
+| `observe`/`fold`/`simulate` algebra (O2/O3), 4-language, golden-vector determinism check (O1 spot-check) | `tools/observe/` + `src/Core.{CSharp,FSharp,Rust}.Observe/` (081KSXN940008QG0R0033T2BQT) |
+| Additive-monoid `EventLog` (the simplest incremental fold, O4 seed) | 081KSXN940008QG0R0002287MP |
 | DST as an always-active discipline | `.claude/rules/dv2-data-split-discipline-activated.md` |
-| Kleisli interrupt substrate (O5 / generator-time) | B-0917 |
-| Bounded state-space simulators as existence demos | **B-0924** (Atari emulator, all-state-space) + **B-0925** (C. elegans worm-colony controller) |
-| Z-set / DBSP substrate (O4/O5) | `algebra-owner` skill; B-0951 git-native indexes |
+| Kleisli interrupt substrate (O5 / generator-time) | 081KSNY2Z0008QG0R002HB4AGT |
+| Bounded state-space simulators as existence demos | **081KSNY2Z0008QG0R001HA43GG** (Atari emulator, all-state-space) + **081KSNY2Z0008QG0R00390T4DJ** (C. elegans worm-colony controller) |
+| Z-set / DBSP substrate (O4/O5) | `algebra-owner` skill; 081KSXN940008QG0R000R76H45 git-native indexes |
 | The implementation primitives (§6.5): `IScheduler` (time), function generators (generator-time), DBSP Z-sets (efficient rewind/ff/branch) | off-the-shelf (Rx + language generators + the Z-set substrate) — the emulator's deterministic-time + generator-time + branching engine |
 
 **NEEDS (to actually achieve O1–O5 over the framework's *own* execution):**
@@ -348,11 +348,11 @@ needed — the posterior is the all-at-once representation).
 2. **The DBSP incremental-view layer wired to the git-native append-only event log**
    — so (O4) is real incremental maintenance, not per-query recompute.
 3. **The generator-time bidirectional feedback realized** as a first-class channel
-   (B-0917) over the event log, not just typed.
+   (081KSNY2Z0008QG0R002HB4AGT) over the event log, not just typed.
 4. **A trajectory-query interface** — the surface that answers "state/view at step
    n / on branch b" (the omniscience *interface*).
 
-The B-0924 Atari and B-0925 worm work are the honest scale: they demonstrate (O1–O3)
+The 081KSNY2Z0008QG0R001HA43GG Atari and 081KSNY2Z0008QG0R00390T4DJ worm work are the honest scale: they demonstrate (O1–O3)
 over a *bounded* emulated state-space. That is the "achieved elsewhere, demonstrated
 here at toy scale, not-yet-at-framework-scale" status the operator named.
 
@@ -393,7 +393,7 @@ for the property class before writing a spec; guard against TLA+-hammer bias):
   (Z-set group axioms; `incremental(Q)` ≡ `Q` on the integral) → **property-based
   testing (FsCheck)** + possibly **Lean** for the omniscience theorem (C1–C3 ⇒
   O1–O5).
-- **Cross-language oracle** — the 4-language golden-vector BFT (B-0944 "the compilers
+- **Cross-language oracle** — the 4-language golden-vector BFT (081KSV2WD0008QG0R00051XS0N "the compilers
   don't lie") already cross-checks the `δ`/`fold` determinism across TS/F#/C#/Rust.
 
 Recommend routing the spec-vs-tool selection through the formal-verification expert
@@ -408,7 +408,7 @@ before any spec is written.
 **FoundationDB DST + DBSP** (deterministic-replay + incremental-query, §4.1–4.2) are
 the existence proofs; the framework is **anchored toward it**, in the
 **probabilistic-Bayesian regime** (§4.5 — posterior over the state-space, NOT binary
-enumeration), and **demonstrates it at toy scale** (B-0924/B-0925); the operator is
+enumeration), and **demonstrates it at toy scale** (081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ); the operator is
 **NOT claiming the framework has achieved it** over its own execution. Don't-collapse
 in both directions: not god-tier, and not "we've done it."
 
@@ -418,7 +418,7 @@ in both directions: not god-tier, and not "we've done it."
 - `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` (append-only replayable trajectory = "lightlike" rays)
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (the discipline whose failure produced the initial mis-framing this doc corrects)
 - `.claude/rules/edge-defining-work-not-speculation.md` (the further bets — physics-retrocausality, "no digital at all" — are edge-defining, distinct from this achieved-elsewhere property)
-- B-0867.27/.28 (observe-fold algebra + monoid), B-0917 (Kleisli interrupts), B-0924/B-0925 (state-space simulators), B-0944 (4-language BFT), B-0951 (git-native DBSP indexes), `algebra-owner` (Z-sets)
+- 081KSXN940008QG0R0033T2BQT/.28 (observe-fold algebra + monoid), 081KSNY2Z0008QG0R002HB4AGT (Kleisli interrupts), 081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ (state-space simulators), 081KSV2WD0008QG0R00051XS0N (4-language BFT), 081KSXN940008QG0R000R76H45 (git-native DBSP indexes), `algebra-owner` (Z-sets)
 
 ## Sources
 

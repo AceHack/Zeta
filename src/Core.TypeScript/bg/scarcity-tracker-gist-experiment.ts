@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * B-0583 Slice 1: Gist Append-Only Scarcity Bus Experiment
+ * 081KRQ1AB0008QG0R003DCGHJJ Slice 1: Gist Append-Only Scarcity Bus Experiment
  * 
  * This script tests the feasibility of using a GitHub Gist as an append-only
  * cross-machine scarcity bus. It writes the current timestamp and a dummy 

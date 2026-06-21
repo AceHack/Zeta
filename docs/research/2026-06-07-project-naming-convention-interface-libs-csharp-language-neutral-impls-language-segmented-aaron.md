@@ -18,7 +18,7 @@ Two project classes, two naming families:
 
 ## Why implementations don't share code
 
-The 4-language oracle discipline (B-0959) requires each language to implement a primitive **independently**
+The 4-language oracle discipline (081KSXN940008QG0R003FCQ7WT) requires each language to implement a primitive **independently**
 and prove byte-identical results via hex-in-JSON golden vectors. Shared code would defeat the cross-check —
 a bug in shared code can't be caught by agreement. So `Core.FSharp.Blake3` and `Core.CSharp.Blake3` are
 *separate projects with separate code*, agreeing only at the wire (golden vectors), both implementing the
@@ -57,5 +57,5 @@ The honest test: **does this project's variation come from *language* or from *b
   supports *consuming* variant types but not *declaring* variance — hence C# as the canonical .NET contract
   language. · **Hexagonal architecture / ports & adapters** (Alistair Cockburn) — the port (neutral
   contract) vs adapter (language/backend impl) split this convention encodes. · **4-oracle byte-lock** (ours,
-  B-0959) — why impls stay independent/unshared. · Ties: the `Core.FSharp.Sha256` family (the convention
+  081KSXN940008QG0R003FCQ7WT) — why impls stay independent/unshared. · Ties: the `Core.FSharp.Sha256` family (the convention
   already followed), `Core.Git`/`Core.FSharp.Git`, `Core.Blake3`/`Core.FSharp.Blake3`.

@@ -1,6 +1,5 @@
 ---
-id: B-0082
-zetaid: 081KQ8P5D0008QG0R0032HWBYK
+id: 081KQ8P5D0008QG0R0032HWBYK
 priority: P2
 status: open
 title: docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs
@@ -13,7 +12,7 @@ tags: [pr-671, copilot, deferred, glossary, persona-attribution, otto-279]
 type: friction-reducer
 ---
 
-# B-0082 — GLOSSARY persona-name attribution → role-ref conversion
+# 081KQ8P5D0008QG0R0032HWBYK — GLOSSARY persona-name attribution → role-ref conversion
 
 ## Source
 

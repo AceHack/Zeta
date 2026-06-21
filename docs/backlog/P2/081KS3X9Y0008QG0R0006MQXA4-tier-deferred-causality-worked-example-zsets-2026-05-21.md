@@ -1,6 +1,5 @@
 ---
-id: B-0683
-zetaid: 081KS3X9Y0008QG0R0006MQXA4
+id: 081KS3X9Y0008QG0R0006MQXA4
 priority: P2
 status: open
 title: Tier-deferred causality worked example — 2-tier Z-set composition demonstrating different observable orderings
@@ -73,7 +72,7 @@ If Phase 1 demonstrates the algebra works:
   AI-safety-adjacent track
 
 Composes with Riak DVV substrate, Aaron's CRDT library in F#, HLC
-(B-0681), and the broader Agora V6 architecture (B-0665 integrate-as-
+(081KS3X9Y0008QG0R003044PQQ), and the broader Agora V6 architecture (081KRW63S0008QG0R002YAA09X integrate-as-
 choice-locus is the read-time tier-selection mechanism).
 
 ## Acceptance
@@ -106,14 +105,14 @@ Phase 2 scope.
 
 ## Composes with
 
-- B-0635 (wave-particle duality)
-- B-0644 (Limit-as-simulation — tier-views can be Limit-mode
+- 081KRW63S0008QG0R002KC5DSR (wave-particle duality)
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation — tier-views can be Limit-mode
   speculations before Integrate commits)
-- B-0665 (Integrate-as-choice-locus — read-time tier selection IS
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus — read-time tier selection IS
   the Integrate)
-- B-0666 (English-as-projection — different tier views project to
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection — different tier views project to
   different English narrations of "what happened")
-- B-0681 (ZetaId v2 HLC — provides one of the tier protocols)
+- 081KS3X9Y0008QG0R003044PQQ (ZetaId v2 HLC — provides one of the tier protocols)
 - Riak DVV (external substrate, cited)
 - Lamport 1978 logical clocks (external substrate, cited)
 - Aaron's CRDT library + DBSP infrastructure

@@ -12,7 +12,7 @@
 
 ## The repo already converged on this from three sides (look-don't-infer)
 
-1. **B-0945** — the standing Sequoia item: the declarative microkernel substrate runs the trust-gradient +
+1. **081KSV2WD0008QG0R000WNY74Q** — the standing Sequoia item: the declarative microkernel substrate runs the trust-gradient +
    compression engine **over a Stanford-Sequoia memory model** ("explicit memory-hierarchy / locality /
    data-movement awareness ... the substrate is honest"). Better-than-docker because the hierarchy is
    first-class, not hidden.
@@ -58,16 +58,16 @@ Fatahalian, Horn, Knight et al., *Sequoia: Programming the Memory Hierarchy* (St
 memory-hierarchy locality (Hennessy & Patterson) · ARC (Megiddo & Modha 2003) / adaptive cache policies
 (the heuristic ancestors of Bayesian placement) · Hestenes — geometric algebra; conformal GA (points as
 null vectors, distance as inner product) · the Giry/probability-monad lineage already under `SoftValue` ·
-B-0945 (the standing Sequoia item) · the tiered-Bennett heat doc. **Peel:** Sequoia's task-tree mapping +
+081KSV2WD0008QG0R000WNY74Q (the standing Sequoia item) · the tiered-Bennett heat doc. **Peel:** Sequoia's task-tree mapping +
 Cl3 `distSq` + SoftValue Bayesian observe/resolve all exist; the *composition* (placement-as-SoftValue
 over conformal-GA distance with access-events-as-likelihoods) is the build — the conformal embedding is
 explicitly the "next slice" flagged in `Cl3.fs`, not yet written.
 
 ## Ties / routing
 
-`...heat-is-the-branch-space-limiter-...md` §tiered-Bennett (what gets placed) · B-0945 (the substrate
+`...heat-is-the-branch-space-limiter-...md` §tiered-Bennett (what gets placed) · 081KSV2WD0008QG0R000WNY74Q (the substrate
 this runs in) · `src/Core/Cl3.fs` (the metric; the flagged next slice) · `src/Core/SoftValue.fs`
 (observe/resolve = the placement engine) · `src/Core/SpineSelector.fs` (the heuristic ancestor to
 subsume) · `...finite-resolution-qubits-framework-...md` (placement-as-superposition fits the qubit
 register). **Routes to:** Aaron (drives), Core (the conformal-GA slice + SoftValue placement type),
-Naledi (bench vs SpineSelector heuristics), B-0945 owners.
+Naledi (bench vs SpineSelector heuristics), 081KSV2WD0008QG0R000WNY74Q owners.

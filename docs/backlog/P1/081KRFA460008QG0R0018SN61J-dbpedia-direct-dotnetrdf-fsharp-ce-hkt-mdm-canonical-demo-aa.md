@@ -1,6 +1,5 @@
 ---
-id: B-0428
-zetaid: 081KRFA460008QG0R0018SN61J
+id: 081KRFA460008QG0R0018SN61J
 priority: P1
 status: decomposed
 title: "DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)"
@@ -47,7 +46,7 @@ dotNetRDF or RDFSharp the hard one we wait and do with fork"*.
 - Composes with existing F# CE substrate in the codebase
 - Demonstrates HKT-MDM (PR #2913) at internet scale via real
   human-curated master data
-- Unblocks B-0043 (universal-business-templates) canonical
+- Unblocks 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates) canonical
   demo
 - Aurora pitch (PR #2924) gets a working demonstration
 
@@ -116,7 +115,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
      safety properties
 
 2. **Dependency restructure** — walk composes_with chain:
-   - B-0043 (universal-business-templates — Path B IS the
+   - 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates — Path B IS the
      canonical demo for this)
    - PR #2913 (HKT-MDM universality)
    - PR #2924 (Aurora pitch master-data scope)
@@ -149,13 +148,13 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - Working F# CE for SPARQL querying DBpedia
 - Demo project showing master-data ontology binding
 - Test coverage at query + HKT-binding scope
-- Composes with B-0043 universal-business-templates substrate
+- Composes with 081KQ3HBZ0008QG0R000Q4Y00F universal-business-templates substrate
 - ADR recording the dotNetRDF-vs-RDFSharp choice + future-Path-A-
   after-F#-fork transition plan
 
 ## Why P1
 
-- Composes with B-0043 (universal-business-templates already
+- Composes with 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates already
   backlogged)
 - Strategic-substrate (per PR #2902 Otto strategic encryption
   authority) — DBpedia demo is HIGH-VISIBILITY factory work
@@ -184,22 +183,22 @@ child rows:
 
 | Row | Title | Type | Depends on |
 |-----|-------|------|------------|
-| [B-0480](B-0480-dbpedia-library-choice-adr-prior-art-audit-2026-05-14.md) | Library-choice ADR + prior-art audit | research (gate) | — |
-| [B-0481](B-0481-dbpedia-fsharp-project-scaffold-nuget-connectivity-2026-05-14.md) | F# project scaffold + NuGet + connectivity smoke | feature | B-0480 |
-| [B-0482](B-0482-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md) | SPARQL F# computation expression | feature | B-0481 |
-| [B-0483](B-0483-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md) | HKT-MDM entity bindings + DV2.0 hub-satellite | feature | B-0482 |
-| [B-0484](B-0484-dbpedia-end-to-end-demo-project-2026-05-14.md) | End-to-end demo project (closes B-0428) | feature | B-0483 |
+| [081KRHWGX0008QG0R00187PQGZ](081KRHWGX0008QG0R00187PQGZ-dbpedia-library-choice-adr-prior-art-audit-2026-05-14.md) | Library-choice ADR + prior-art audit | research (gate) | — |
+| [081KRHWGX0008QG0R003MTMBGR](081KRHWGX0008QG0R003MTMBGR-dbpedia-fsharp-project-scaffold-nuget-connectivity-2026-05-14.md) | F# project scaffold + NuGet + connectivity smoke | feature | 081KRHWGX0008QG0R00187PQGZ |
+| [081KRHWGX0008QG0R001VKR0TH](081KRHWGX0008QG0R001VKR0TH-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md) | SPARQL F# computation expression | feature | 081KRHWGX0008QG0R003MTMBGR |
+| [081KRHWGX0008QG0R002GFSJC6](081KRHWGX0008QG0R002GFSJC6-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md) | HKT-MDM entity bindings + DV2.0 hub-satellite | feature | 081KRHWGX0008QG0R001VKR0TH |
+| [081KRHWGX0008QG0R002TYF2NM](081KRHWGX0008QG0R002TYF2NM-dbpedia-end-to-end-demo-project-2026-05-14.md) | End-to-end demo project (closes 081KRFA460008QG0R0018SN61J) | feature | 081KRHWGX0008QG0R002GFSJC6 |
 
-**Work on B-0480 first.** All subsequent rows depend on the library-choice ADR.
+**Work on 081KRHWGX0008QG0R00187PQGZ first.** All subsequent rows depend on the library-choice ADR.
 
 ## Composes with
 
-- B-0043 (universal-company-government-information-substrate)
-- B-0427 (Axis 3 — Code/English split; this is Code-side
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate)
+- 081KRFA460008QG0R000VKJF0H (Axis 3 — Code/English split; this is Code-side
   substrate)
-- B-0426 (Axis 2 — Mirror/Beacon; this is Beacon-tier as it
+- 081KRFA460008QG0R0007RWSN1 (Axis 2 — Mirror/Beacon; this is Beacon-tier as it
   ships)
-- B-0424 (Stage 1 factory split — Path B lives in Forge or
+- 081KRFA460008QG0R001H98EXJ (Stage 1 factory split — Path B lives in Forge or
   Zeta?)
 - PR #2913 / PR #2914 / PR #2915 / PR #2917 / PR #2924
 - PR #2892 (KSK — typed-safety motivation composes)

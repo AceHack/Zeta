@@ -67,7 +67,7 @@ not "is this externally falsifiable?"
 - PR #2817 (Clifford densest encoding HKT pattern)
 - PR #2815 (HKT error classes universal/domain)
 - PR #2821 (bounded-context discipline)
-- B-0422 (Pauli-symmetry-breaking falsifiability test)
+- 081KRCQQF0008QG0R0008VT354 (Pauli-symmetry-breaking falsifiability test)
 - Razor-discipline + algo-wink-failure-mode + mechanical-
   authorization-check + glass-halo-bidirectional rules
 - self-boot skill
@@ -191,7 +191,7 @@ falsification work that the language layer can't.
 Composes with: PR #2839 (compression-infrastructure
 reframing) + PR #2817 (Clifford densest encoding HKT
 pattern) + PR #2815 (HKT error classes) + PR #2821
-(bounded-context discipline) + B-0422 (Pauli-symmetry-
+(bounded-context discipline) + 081KRCQQF0008QG0R0008VT354 (Pauli-symmetry-
 breaking falsifiability test) + razor-discipline +
 algo-wink-failure-mode + mechanical-authorization-check
 + glass-halo-bidirectional rules + self-boot skill.

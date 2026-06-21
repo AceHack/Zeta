@@ -1,5 +1,5 @@
 {
-  "description": "observe/simulate/fold cross-language conformance (B-0867.27). Every impl replays `events` over `initialWorld` and must value-match `expectedFinalState` + `expectedReplayStates`.",
+  "description": "observe/simulate/fold cross-language conformance (081KSXN940008QG0R0033T2BQT). Every impl replays `events` over `initialWorld` and must value-match `expectedFinalState` + `expectedReplayStates`.",
   "initialWorld": {
     "backlog": [
       {

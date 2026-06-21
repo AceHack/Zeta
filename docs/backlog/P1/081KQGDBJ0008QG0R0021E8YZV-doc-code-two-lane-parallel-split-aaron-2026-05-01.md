@@ -1,6 +1,5 @@
 ---
-id: B-0144
-zetaid: 081KQGDBJ0008QG0R0021E8YZV
+id: 081KQGDBJ0008QG0R0021E8YZV
 priority: P1
 status: closed
 closed: 2026-05-02
@@ -19,12 +18,12 @@ depends_on: []
 > Allocator scripts shipped via `tools/lanes/{lane-allocator,doc-lane,code-lane}.sh`
 > closing acceptance criterion #1 implementation. The CI/build
 > side of the lane split landed earlier in the same session via
-> PR #1185 (B-0125 path-filter — F# build steps skip on docs-only
+> PR #1185 (081KQGDBJ0008QG0R001MK4YPC path-filter — F# build steps skip on docs-only
 > PRs). Acceptance criterion #4 (first demonstrated dry-run) and
 > #5 (lessons-mechanization step) remain as open-ended follow-ups
 > — those are operational rather than implementation-substrate.
 
-# B-0144 — Doc/code two-lane parallel split
+# 081KQGDBJ0008QG0R0021E8YZV — Doc/code two-lane parallel split
 
 ## What
 
@@ -145,8 +144,8 @@ disjoint mechanized-best-practice toolchains.
 - `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`
   — the agent-orchestra design (rung 5; this row's
   long-term endpoint)
-- B-0130 (verify-before-state-claim mechanized auditor),
-  plus B-0141 (pre/post pattern) and B-0142 (Code Contracts
+- 081KQGDBJ0008QG0R002Y31XJ3 (verify-before-state-claim mechanized auditor),
+  plus 081KQGDBJ0008QG0R0015RNK3P (pre/post pattern) and 081KQGDBJ0008QG0R002WY918J (Code Contracts
   revival) when they land — mechanization primitives that
   compound the rung-4
   lessons-to-reduce-friction discipline

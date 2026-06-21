@@ -31,7 +31,7 @@ Recovery shard for the 3-tick autonomous-loop session.
 
 ## Session summary
 
-5 PRs merged: #3722 + #3729 + #3733 + #3734 + #3737. Two substrate drift catches (B-0506 + B-0530). One Copilot P1 markdown fix.
+5 PRs merged: #3722 + #3729 + #3733 + #3734 + #3737. Two substrate drift catches (081KRHWGX0008QG0R002DPG02X + 081KRMEXM0008QG0R000X1PPGC). One Copilot P1 markdown fix.
 
 ## Lior contention named
 

@@ -34,11 +34,11 @@ Captures the operator **why** behind shields-detect-not-block as substrate (not 
 **The value-add — resolving a latent tension** (assert-don't-skip vs detect-not-block) into a 3-part synthesis:
 - **ASSERT** — real detection, no skip-to-green (a green-by-skip detects nothing).
 - **NON-BLOCK** — non-required; doesn't gate forward progress.
-- **VISIBLE** — drift surfaced when it fires (B-0947 "silently-red" is the *visibility* hole — fixed by surfacing, not by blocking).
+- **VISIBLE** — drift surfaced when it fires (081KSV2WD0008QG0R001XKG1B5 "silently-red" is the *visibility* hole — fixed by surfacing, not by blocking).
 
 **Gate line:** gate on *end-user* friction (reaches user broken / data loss / security / kid-safety); detect-don't-gate on *developer-time* friction (cross-OS drift / lint / style). HARD LIMITS remain non-negotiable gates.
 
-Composes with MEASURE-FIRST · FrictionTelemetry · B-0890.1/B-0953/B-0954 (the no-PR transport this justifies) · B-0947.
+Composes with MEASURE-FIRST · FrictionTelemetry · 081KSNY2Z0008QG0R000E5KTPX/081KSXN940008QG0R001KZ235R/081KSXN940008QG0R00171YAZW (the no-PR transport this justifies) · 081KSV2WD0008QG0R001XKG1B5.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -118,7 +118,7 @@ Composes with MEASURE-FIRST · FrictionTelemetry · B-0890.1/B-0953/B-0954 (the 
 - **`Copilot` (bot)** at 2026-05-31T23:59:14Z on `docs/research/2026-05-31-shields-detect-drift-not-block-developer-friction-not-end-user-friction-aaron.md`:70 (association: NONE)
 
   <pre>
-  Cross-reference integrity: this doc references backlog item `B-0954` ("agent-bus") but that ID does not exist anywhere else in the repo. Either add the corresponding backlog row (and ideally link it here), or change this reference to an existing artifact (e.g., the agent-bus spec doc) so readers aren't sent to a dead ID.
+  Cross-reference integrity: this doc references backlog item `081KSXN940008QG0R00171YAZW` ("agent-bus") but that ID does not exist anywhere else in the repo. Either add the corresponding backlog row (and ideally link it here), or change this reference to an existing artifact (e.g., the agent-bus spec doc) so readers aren't sent to a dead ID.
   </pre>
 
 ### Thread 5 -- resolved [collapsed]
@@ -132,7 +132,7 @@ Composes with MEASURE-FIRST · FrictionTelemetry · B-0890.1/B-0953/B-0954 (the 
 - **`Copilot` (bot)** at 2026-05-31T23:59:14Z on `docs/research/2026-05-31-shields-detect-drift-not-block-developer-friction-not-end-user-friction-aaron.md`:116 (association: NONE)
 
   <pre>
-  `B-0954` is referenced here as the "git-native agent-bus" but there is no backlog row (or any other mention) for `B-0954` in the repo. Please either create the missing backlog item and link it, or replace `B-0954` with a link to the existing agent-bus spec doc so the reference is resolvable.
+  `081KSXN940008QG0R00171YAZW` is referenced here as the "git-native agent-bus" but there is no backlog row (or any other mention) for `081KSXN940008QG0R00171YAZW` in the repo. Please either create the missing backlog item and link it, or replace `081KSXN940008QG0R00171YAZW` with a link to the existing agent-bus spec doc so the reference is resolvable.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -157,14 +157,14 @@ detect-dont-block. Cadence varies; non-blocking is the invariant.
 
 Resolves the latent tension with automated-tests-are-the-shield (assert-dont-skip)
 into a 3-part synthesis: ASSERT (real detection, no skip-to-green) + NON-BLOCK
-(non-required) + VISIBLE (drift surfaced when it fires; B-0947 silently-red is the
+(non-required) + VISIBLE (drift surfaced when it fires; 081KSV2WD0008QG0R001XKG1B5 silently-red is the
 visibility hole, fixed by surfacing not blocking). Gate line: gate on end-user
 friction (reaches-user-broken / data-loss / security / kid-safety), detect-dont-gate
 on developer-time friction (cross-OS drift / lint / style).
 
 Candidate refinement to the shield rule — routed through product-team agreement, NOT
 unilaterally landed in the auto-loaded rule (doctrine-process). Composes with
-MEASURE-FIRST, FrictionTelemetry, B-0890.1/B-0953/B-0954, B-0947, HARD LIMITS.
+MEASURE-FIRST, FrictionTelemetry, 081KSNY2Z0008QG0R000E5KTPX/081KSXN940008QG0R001KZ235R/081KSXN940008QG0R00171YAZW, 081KSV2WD0008QG0R001XKG1B5, HARD LIMITS.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

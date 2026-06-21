@@ -1,9 +1,8 @@
 ---
-id: B-0854
-zetaid: 081KSKBP80008QG0R002VRN56K
+id: 081KSKBP80008QG0R002VRN56K
 priority: P1
 status: open
-title: zeta-install.sh → `ace install zeta` migration trajectory — declarative `package.json`-style Ace manifest in Zeta repo (like `../scratch` and `../SQLSharp` already do); composes with B-0288 Ace CLI + B-0824 meta-PM + B-0816 ArgoCD-maximization + B-0742 distributable-POC pattern (Aaron 2026-05-27)
+title: zeta-install.sh → `ace install zeta` migration trajectory — declarative `package.json`-style Ace manifest in Zeta repo (like `../scratch` and `../SQLSharp` already do); composes with 081KR2E4K0008QG0R002YE3MMD Ace CLI + 081KSGS9H0008QG0R0031PBNGA meta-PM + 081KSGS9H0008QG0R003A37Z65 ArgoCD-maximization + 081KSE6WT0008QG0R000YYH3DY distributable-POC pattern (Aaron 2026-05-27)
 effort: L
 ask: aaron 2026-05-27
 created: 2026-05-27
@@ -42,18 +41,18 @@ The substrate-engineering shape: Zeta should have an equivalent declarative mani
 
 Aaron's memory is correct about the BROADER Ace cluster being backlogged. The specific "zeta installs itself via ace install zeta" migration was NOT yet filed as its own row. Existing cluster substrate this row composes with:
 
-- **B-0288** (parent) — Ace DLC package manager CLI; status: in-progress; provides `ace install <pkg>` primitive
-- **B-0824** — Ace as package-manager-of-package-managers; N-D dependency space; generate+join paradigm
-- **B-0816** — Architectural principle: maximize ArgoCD scope; minimize NixOS native lock-in (this migration IS that principle applied to install scope)
-- **B-0742** — k8s-local-stack as Ace's distributable POC; hats-as-negotiated-fork-structure
-- **B-0821** — Zeta as dependency-graph + variable-passing layer on top of Helm
-- **B-0822** — diamond-resolution-namespace-cardinality (multi-tenant 3rd dimension of dep-resolution)
-- **B-0777** — industry-sharp-categories + per-persona ontology + Ace negotiation
-- **B-0247** — original Ace lineage row
+- **081KR2E4K0008QG0R002YE3MMD** (parent) — Ace DLC package manager CLI; status: in-progress; provides `ace install <pkg>` primitive
+- **081KSGS9H0008QG0R0031PBNGA** — Ace as package-manager-of-package-managers; N-D dependency space; generate+join paradigm
+- **081KSGS9H0008QG0R003A37Z65** — Architectural principle: maximize ArgoCD scope; minimize NixOS native lock-in (this migration IS that principle applied to install scope)
+- **081KSE6WT0008QG0R000YYH3DY** — k8s-local-stack as Ace's distributable POC; hats-as-negotiated-fork-structure
+- **081KSGS9H0008QG0R00367G209** — Zeta as dependency-graph + variable-passing layer on top of Helm
+- **081KSGS9H0008QG0R0018ES3R4** — diamond-resolution-namespace-cardinality (multi-tenant 3rd dimension of dep-resolution)
+- **081KSE6WT0008QG0R000JSJ3SR** — industry-sharp-categories + per-persona ontology + Ace negotiation
+- **081KQZVQW0008QG0R000ZHEN62** — original Ace lineage row
 - `docs/agendas/ace-package-manager/AGENDA.md` — 13-stage lifecycle (OPERATOR-SELF-CLAIMED 2026-05-22)
 - `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md`
 
-This row is the OPERATIONAL bridge between "Ace exists as a CLI" (B-0288) + "Ace as meta-architecture" (B-0824) and "Ace can install Zeta itself" (this row). Without it, the Ace cluster builds primitives but doesn't dogfood them at the bootstrap scope.
+This row is the OPERATIONAL bridge between "Ace exists as a CLI" (081KR2E4K0008QG0R002YE3MMD) + "Ace as meta-architecture" (081KSGS9H0008QG0R0031PBNGA) and "Ace can install Zeta itself" (this row). Without it, the Ace cluster builds primitives but doesn't dogfood them at the bootstrap scope.
 
 ## Reference shape from `../scratch` and `../SQLSharp`
 
@@ -90,7 +89,7 @@ The declarative manifest names: package name + package manager + engine constrai
 - Document existing `zeta-install.sh` step-by-step state-machine
 - Identify which steps are pure-Nix (delegate to flake), which are imperative-bash (translate to Ace package scripts), which are operator-prompted (translate to Ace manifest options)
 - Design Zeta's Ace manifest shape (likely `ace.yaml` or `ace-package.json` or similar)
-- Identify dependency on B-0288 features (which CLI commands must exist for the manifest to work)
+- Identify dependency on 081KR2E4K0008QG0R002YE3MMD features (which CLI commands must exist for the manifest to work)
 - File sub-row plan for Phase 1+
 
 ### Phase 1 — Add manifest stub to Zeta repo
@@ -105,13 +104,13 @@ The declarative manifest names: package name + package manager + engine constrai
 
 - Defines Zeta as an Ace package (name, version, dependencies, install-steps, post-install)
 - Install-steps reference the existing `zeta-install.sh` step-state-machine but EXPRESSED DECLARATIVELY
-- B-0288 CLI must support whatever this manifest needs
+- 081KR2E4K0008QG0R002YE3MMD CLI must support whatever this manifest needs
 
 ### Phase 3 — `ace install zeta` works from a fresh USB
 
 - Live USB boots → Ace CLI present in live overlay → `ace install zeta` runs the declarative install
 - Existing `zeta-install.sh` becomes a thin bootstrap that does `curl ... | ace install zeta` OR `nix run github:.../ace -- install zeta`
-- Composes with B-0852 (cred persistence) + B-0853 (sigstore verify of the Ace-fetched manifest)
+- Composes with 081KSKBP80008QG0R003AX2A69 (cred persistence) + 081KSKBP80008QG0R000Y2B7HC (sigstore verify of the Ace-fetched manifest)
 
 ### Phase 4 — `zeta-install.sh` retires
 
@@ -119,44 +118,44 @@ The declarative manifest names: package name + package manager + engine constrai
 - `zeta-install.sh` either deleted OR reduced to "exec ace install zeta with these env vars"
 - Per Rule 0 (`.claude/rules/rule-0-no-sh-files.md`) — preserves the install-graph carve-out shape, just shrinks it
 
-### Phase 5 — Zeta as distributable Ace POC (compose with B-0742)
+### Phase 5 — Zeta as distributable Ace POC (compose with 081KSE6WT0008QG0R000YYH3DY)
 
-- Zeta becomes the second canonical "Ace distributes this" example (k8s-local-stack is B-0742's named first POC)
+- Zeta becomes the second canonical "Ace distributes this" example (k8s-local-stack is 081KSE6WT0008QG0R000YYH3DY's named first POC)
 - Validates Ace's distributability at substrate-engineering scope; dogfooding loop closes
 
 ## Sub-rows to file when implementing
 
-- B-0854.1 — `zeta-install.sh` step-state-machine inventory + declarative-conversion gap analysis
-- B-0854.2 — `package.json` + `bunfig.toml` + `bun.lock` stub at Zeta repo root (Phase 1 ship)
-- B-0854.3 — Ace manifest schema design (collaborate with B-0288 implementation; what's the manifest shape?)
-- B-0854.4 — `ace.yaml` (or equivalent) for Zeta at repo root
-- B-0854.5 — live-USB Ace bootstrap (Ace CLI present before zeta install runs)
-- B-0854.6 — `ace install zeta` smoke test against fresh USB + fresh PC
-- B-0854.7 — `zeta-install.sh` reduction to thin-bootstrap wrapper
-- B-0854.8 — `zeta-install.sh` full retirement (substrate-honest about Rule 0 carve-out shrink)
-- B-0854.9 — substrate landing memo + Ace agenda update + B-0742-style "Zeta is Ace POC #2" note
+- 081KSKBP80008QG0R002VRN56K.1 — `zeta-install.sh` step-state-machine inventory + declarative-conversion gap analysis
+- 081KSKBP80008QG0R002VRN56K.2 — `package.json` + `bunfig.toml` + `bun.lock` stub at Zeta repo root (Phase 1 ship)
+- 081KSKBP80008QG0R002VRN56K.3 — Ace manifest schema design (collaborate with 081KR2E4K0008QG0R002YE3MMD implementation; what's the manifest shape?)
+- 081KSKBP80008QG0R002VRN56K.4 — `ace.yaml` (or equivalent) for Zeta at repo root
+- 081KSKBP80008QG0R002VRN56K.5 — live-USB Ace bootstrap (Ace CLI present before zeta install runs)
+- 081KSKBP80008QG0R002VRN56K.6 — `ace install zeta` smoke test against fresh USB + fresh PC
+- 081KSKBP80008QG0R002VRN56K.7 — `zeta-install.sh` reduction to thin-bootstrap wrapper
+- 081KSKBP80008QG0R002VRN56K.8 — `zeta-install.sh` full retirement (substrate-honest about Rule 0 carve-out shrink)
+- 081KSKBP80008QG0R002VRN56K.9 — substrate landing memo + Ace agenda update + 081KSE6WT0008QG0R000YYH3DY-style "Zeta is Ace POC #2" note
 
 Order suggestion: 0 → 1 → 2 (foundational; Phase 0 + Phase 1 = smallest substrate slice; closes the loop with operator); 3 → 4 (schema + manifest); 5 → 6 (end-to-end USB test); 7 → 8 (zeta-install.sh retirement); 9 (substrate landing).
 
 ## What this is NOT
 
 - NOT a Rule 0 violation — install-graph carve-out preserved; Phase 4 may eventually delete `zeta-install.sh` but only AFTER `ace install zeta` is the canonical entrypoint
-- NOT a B-0288 replacement — this row consumes B-0288's CLI primitive; doesn't compete with it
+- NOT a 081KR2E4K0008QG0R002YE3MMD replacement — this row consumes 081KR2E4K0008QG0R002YE3MMD's CLI primitive; doesn't compete with it
 - NOT a near-term operational change to current `zeta-install.sh` — that file continues working through Phases 0-3
 - NOT a commitment to a specific manifest schema today — Phase 0 designs it; Phase 1+ implements
 
 ## Composes with
 
-- **B-0288** (parent dep) — provides `ace install <pkg>` primitive this row consumes
-- **B-0824** — meta-PM architecture; this row dogfoods at bootstrap scope
-- **B-0816** — minimize NixOS native lock-in; declarative-Ace-manifest reduces NixOS-specific surface
-- **B-0742** — Ace's distributable POC pattern; Zeta becomes POC #2
-- **B-0821** — Zeta-as-dependency-graph-on-Helm; this row extends the dependency-graph thinking to install-graph
-- **B-0822** — diamond-resolution-namespace-cardinality; multi-tenant install dimensions
-- **B-0777** — industry-sharp-categories + Ace negotiation; manifest schema design surface
-- **B-0247** — original Ace lineage
-- **B-0852** — cred persistence; composes at first-boot scope (Ace-driven install respects the same cred-persistence flow)
-- **B-0853** — sigstore artifact signing; composes at manifest-fetch scope (Ace verifies the manifest's signature before installing)
+- **081KR2E4K0008QG0R002YE3MMD** (parent dep) — provides `ace install <pkg>` primitive this row consumes
+- **081KSGS9H0008QG0R0031PBNGA** — meta-PM architecture; this row dogfoods at bootstrap scope
+- **081KSGS9H0008QG0R003A37Z65** — minimize NixOS native lock-in; declarative-Ace-manifest reduces NixOS-specific surface
+- **081KSE6WT0008QG0R000YYH3DY** — Ace's distributable POC pattern; Zeta becomes POC #2
+- **081KSGS9H0008QG0R00367G209** — Zeta-as-dependency-graph-on-Helm; this row extends the dependency-graph thinking to install-graph
+- **081KSGS9H0008QG0R0018ES3R4** — diamond-resolution-namespace-cardinality; multi-tenant install dimensions
+- **081KSE6WT0008QG0R000JSJ3SR** — industry-sharp-categories + Ace negotiation; manifest schema design surface
+- **081KQZVQW0008QG0R000ZHEN62** — original Ace lineage
+- **081KSKBP80008QG0R003AX2A69** — cred persistence; composes at first-boot scope (Ace-driven install respects the same cred-persistence flow)
+- **081KSKBP80008QG0R000Y2B7HC** — sigstore artifact signing; composes at manifest-fetch scope (Ace verifies the manifest's signature before installing)
 - `docs/agendas/ace-package-manager/AGENDA.md` — operator-self-claimed 13-stage lifecycle
 - `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md`
 - `.claude/rules/rule-0-no-sh-files.md` — install-graph carve-out preserved
@@ -171,16 +170,16 @@ Order suggestion: 0 → 1 → 2 (foundational; Phase 0 + Phase 1 = smallest subs
 ## Why P1
 
 - Operator explicitly named the trajectory + the reference shape (`../scratch`, `../SQLSharp`)
-- Composes with substantial existing Ace cluster substrate (B-0288 + 0824 + 0816 + 0742 + 0777 + 0821 + 0822 + 0247)
+- Composes with substantial existing Ace cluster substrate (081KR2E4K0008QG0R002YE3MMD + 0824 + 0816 + 0742 + 0777 + 0821 + 0822 + 0247)
 - Bounded scope (Phase 0 + Phase 1 is the smallest substrate slice; can ship in 1-2 rounds)
 - Dogfooding: closes the "Ace exists as CLI" → "Ace installs Zeta itself" loop
-- Self-sustaining cluster substrate (B-0852 family) composes naturally on top of Ace-driven install
+- Self-sustaining cluster substrate (081KSKBP80008QG0R003AX2A69 family) composes naturally on top of Ace-driven install
 
 ## Substrate-honest framing
 
 This row is the OPERATIONAL bridge between existing Ace primitives + Aaron's named trajectory. It does NOT:
 
-- Re-engineer Ace itself (B-0288 + B-0824 do that)
+- Re-engineer Ace itself (081KR2E4K0008QG0R002YE3MMD + 081KSGS9H0008QG0R0031PBNGA do that)
 - Commit to a specific manifest schema today (Phase 0 designs it deliberately)
 - Force migration on a specific timeline (Phases 0-1 are the immediate slice; later phases ship as Ace + Zeta substrate matures)
 
@@ -202,6 +201,6 @@ Aaron 2026-05-27 conversation arc (verbatim):
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 
 - Topic: zeta install via ace / ace install zeta / declarative install manifest / scratch + SQLSharp pattern
-- Searched: docs/backlog/ (B-0288 / 0742 / 0777 / 0816 / 0821 / 0822 / 0824 / 0247 = existing Ace cluster); docs/agendas/ace-package-manager/ (13-stage lifecycle); docs/trajectories/ace-package-manager-skill-crystallization-pipeline/; memory/ (Trinity-of-repos + TS-DI-SQLSharp-anchor)
+- Searched: docs/backlog/ (081KR2E4K0008QG0R002YE3MMD / 0742 / 0777 / 0816 / 0821 / 0822 / 0824 / 0247 = existing Ace cluster); docs/agendas/ace-package-manager/ (13-stage lifecycle); docs/trajectories/ace-package-manager-skill-crystallization-pipeline/; memory/ (Trinity-of-repos + TS-DI-SQLSharp-anchor)
 - Found: existing Ace cluster covers the architecture + the CLI but does NOT explicitly name "Zeta installs itself via Ace" migration
 - Conclusion: this row is the OPERATIONAL bridge; composes with existing substrate; not redundant; bounded scope

@@ -39,7 +39,7 @@ Concretizes the **SerializedSaga** lane (cells-as-geodes) into a **cursor discip
 | location transparency | bus address (ZetaId) = grain identity |
 | durability + replay | git log = history; **pointer + log ⇒ state** (DST-replayable) |
 
-**No retraction (deliberate):** undo = a compensating message (saga), never a Z-set `−1` — the complement of the retraction-native Z-set/CRDT **CommutativeView** lane. Composes with **Loom** + **B-0976** (Bonsai resume-not-replay grain behavior). Research doc + backlog item. Docs only.
+**No retraction (deliberate):** undo = a compensating message (saga), never a Z-set `−1` — the complement of the retraction-native Z-set/CRDT **CommutativeView** lane. Composes with **Loom** + **081KT07NV0008QG0R003BE6MJ2** (Bonsai resume-not-replay grain behavior). Research doc + backlog item. Docs only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

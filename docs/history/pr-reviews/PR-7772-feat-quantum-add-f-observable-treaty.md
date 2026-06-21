@@ -43,7 +43,7 @@ The existing F# Q# oracle tests now compare the committed Q# golden fixture agai
 
 ## Why
 
-This gives the F#, Q#, and TS lanes a shared observable contract. Lior can mirror these row IDs on the TypeScript side for the B-1029 quantum-circuit treaty transcript without guessing which formulas or conventions the F# side considers canonical.
+This gives the F#, Q#, and TS lanes a shared observable contract. Lior can mirror these row IDs on the TypeScript side for the 081KTWJ1R0008QG0R001ZBWKTR quantum-circuit treaty transcript without guessing which formulas or conventions the F# side considers canonical.
 
 ## Validation
 

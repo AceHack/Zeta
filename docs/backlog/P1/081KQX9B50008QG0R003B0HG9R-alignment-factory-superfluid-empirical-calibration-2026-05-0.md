@@ -1,6 +1,5 @@
 ---
-id: B-0218
-zetaid: 081KQX9B50008QG0R003B0HG9R
+id: 081KQX9B50008QG0R003B0HG9R
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - factory-as-superfluid empirical calibration"
@@ -12,7 +11,7 @@ classification: blocked-on-foundation-and-measurement-surface
 type: friction-reducer
 ---
 
-# B-0218 - Factory-as-superfluid empirical calibration
+# 081KQX9B50008QG0R003B0HG9R - Factory-as-superfluid empirical calibration
 
 Add the factory-as-superfluid claim to `docs/ALIGNMENT.md`
 as a measurable hypothesis, not as vibes or motivational
@@ -22,7 +21,7 @@ language.
 
 The section should connect the factory's observed flow
 properties to the finite-resource-collisions foundation from
-B-0216 and to the six-axis validation surface in B-0205. The
+081KQX9B50008QG0R0039H39VC and to the six-axis validation surface in 081KQTPYE0008QG0R000ZJ2GW8. The
 claim must remain falsifiable: if the factory increases
 coordination drag, hidden work, or human babysitting, the
 superfluid claim weakens.
@@ -33,6 +32,6 @@ superfluid claim weakens.
   target.
 - The section identifies at least three measurable signals
   that would support or weaken the claim.
-- The text links to B-0205 as the instrumentation path.
+- The text links to 081KQTPYE0008QG0R000ZJ2GW8 as the instrumentation path.
 - The wording avoids making an unmeasured identity claim
   about the factory.

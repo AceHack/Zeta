@@ -6,7 +6,7 @@
  * where a memo declaring itself to be ABOUT a drift sub-class then
  * violates that same discipline within its own body.
  *
- * Per the verify-then-claim memo's 7-class taxonomy (B-0170):
+ * Per the verify-then-claim memo's 7-class taxonomy (081KQNJ500008QG0R003SCWBDV):
  *   "the memo about drift contains its own drift"
  *
  * Mechanism is operationally honest — no heuristic topic detection.
@@ -32,7 +32,7 @@
  *
  * Adding additional topics (path-forms, cross-surface, convention)
  * is a 1-line dispatch each; deferred to follow-up slices per
- * B-0170 done-criteria to keep slices bounded.
+ * 081KQNJ500008QG0R003SCWBDV done-criteria to keep slices bounded.
  *
  * Usage:
  *   bun tools/substrate-claim-checker/check-self-recursive.ts <file>

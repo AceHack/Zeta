@@ -1,6 +1,5 @@
 ---
-id: B-0365.2
-zetaid: 081KR50HA0008QG0R001AW7R6R
+id: 081KR50HA0008QG0R001AW7R6R
 priority: P1
 status: closed
 title: "Shadow log backfill: catches 16-30 + consensus-smoothness meta-class"
@@ -8,7 +7,7 @@ effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
-resolved_by: "PR #2339 memory(B-0365.2): shadow log backfill catches 16-30 + consensus-smoothness meta-class"
+resolved_by: "PR #2339 memory(081KR50HA0008QG0R001AW7R6R): shadow log backfill catches 16-30 + consensus-smoothness meta-class"
 depends_on: []
 parent: 081KR50HA0008QG0R002R3NVGS
 classification: buildable-now
@@ -18,7 +17,7 @@ type: research
 tags: [shadow-log, class-4, consensus-smoothness, empirical, failure-taxonomy]
 ---
 
-# B-0365.2 — Shadow log backfill: catches 16-30
+# 081KR50HA0008QG0R001AW7R6R — Shadow log backfill: catches 16-30
 
 ## What
 
@@ -30,14 +29,14 @@ The log currently ends at **catch 15** (2026-05-07). The
 2026-05-09 session identified catches 16-30, including:
 
 - **Shadow catch #30 (Z3 tautology):** writing Z3 proofs
-  of things trivially true by definition — replaced by B-0357
+  of things trivially true by definition — replaced by 081KR50HA0008QG0R0033TN4H9
 - **consensus-smoothness (new meta-class):** the failure
   mode where multi-agent consensus masks individual errors;
   BFT independence assumption breaks when agents share a
   training substrate; the correlated failure the independence
   model doesn't model
 
-Known pattern keys from the 2026-05-09 session (from B-0365):
+Known pattern keys from the 2026-05-09 session (from 081KR50HA0008QG0R002R3NVGS):
 
 - `confident-fabrication` continues (catches 6, 7, 13 → more)
 - `narration-over-action` continues (3 catches → more)
@@ -54,7 +53,7 @@ Known pattern keys from the 2026-05-09 session (from B-0365):
   (consensus-smoothness)" — the data exists in the
   2026-05-09 session context.
 - **Dependency restructure:** No `depends_on` required.
-  B-0365.3 depends on this (needs full 30-catch log).
+  081KR50HA0008QG0R001VHE0FQ depends on this (needs full 30-catch log).
 
 ## Deliverable
 
@@ -81,7 +80,7 @@ Updated `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md`:
 - [x] Pattern summary table covers 8 classes + 1 meta-class
 - [x] Z3-tautology catch (catch #30) is documented with
       `pattern_key: tautology-laundering` (or canonical name)
-- [x] B-0357 is referenced as the replacement for Z3 tautology
+- [x] 081KR50HA0008QG0R0033TN4H9 is referenced as the replacement for Z3 tautology
       proofs
 - [x] `recurrence_count` on `confident-fabrication` is updated
       to reflect all 2026-05-09 catches
@@ -100,6 +99,6 @@ MEMORY.md index entry corrected from 15→30 catches in PR #2341.
 
 - `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`
   (already references 30 catches — this makes the log consistent)
-- B-0357 (Z3 proof replacement — referenced as response to catch #30)
-- B-0365.3 (Class 4 analysis — depends on this complete log)
-- B-0365.6 (synthesis)
+- 081KR50HA0008QG0R0033TN4H9 (Z3 proof replacement — referenced as response to catch #30)
+- 081KR50HA0008QG0R001VHE0FQ (Class 4 analysis — depends on this complete log)
+- 081KR50HA0008QG0R0016X7VQP (synthesis)

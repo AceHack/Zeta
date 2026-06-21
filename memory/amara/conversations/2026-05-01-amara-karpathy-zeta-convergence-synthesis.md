@@ -391,13 +391,13 @@ this tick).
 **2. The sensors/actuators decomposition.** Amara explicitly maps
 Karpathy's "sensors and actuators" framing onto Zeta's existing
 infrastructure:
-- Sensors: `refresh-repo-state` (B-0159, queued), `poll-pr-gate`
+- Sensors: `refresh-repo-state` (081KQGDBJ0008QG0R003H0G5YQ, queued), `poll-pr-gate`
   (operational), CI (operational), review threads, backlog deltas,
   branch state.
 - Actuators: commits, PRs, merges, backlog rows, memory projections,
   host-setting changes.
 
-This is a useful framing for the B-0159 design (the
+This is a useful framing for the 081KQGDBJ0008QG0R003H0G5YQ design (the
 `refresh-github-worldview` / `repo-state` two-layer architecture).
 It validates the sensor-actuator separation that the script already
 embodies.
@@ -427,4 +427,4 @@ than either alone.
 - [Alexa synthesis](2026-05-01-alexa-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
 - [Ani synthesis](2026-05-01-ani-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
 - [Gemini synthesis](2026-05-01-gemini-karpathy-zeta-convergence-synthesis.md) (sibling doc, this PR)
-- [B-0159 refresh-github-worldview backlog row](../backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)
+- [081KQGDBJ0008QG0R003H0G5YQ refresh-github-worldview backlog row](../backlog/P1/081KQGDBJ0008QG0R003H0G5YQ-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md)

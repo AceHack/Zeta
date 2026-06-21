@@ -108,4 +108,4 @@ Two claims and a laugh, each placed honestly:
 - The five dispatch records: REPORTs #1–#4 + dispatch #5 in flight
 - Anchors: inline caching (Deutsch–Schiffman 1984, Smalltalk — the ancestor of V8's hidden
   classes) · stare decisis (the legal name for verdict-caching; distinguishable-not-relitigable
-  is precisely "named move to reopen") · B-0638 (Eve Protocol)
+  is precisely "named move to reopen") · 081KRW63S0008QG0R0030F8ZXA (Eve Protocol)

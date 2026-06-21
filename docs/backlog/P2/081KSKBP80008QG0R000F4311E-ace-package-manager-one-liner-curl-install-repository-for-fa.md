@@ -1,6 +1,5 @@
 ---
-id: B-0863
-zetaid: 081KSKBP80008QG0R000F4311E
+id: 081KSKBP80008QG0R000F4311E
 priority: P2
 status: open
 title: Ace package manager — one-liner `curl ... | bash` install repository for fast-moving tools that update faster than Homebrew can keep up; hermes-agent as canonical example (operator 2026-05-27)
@@ -26,8 +25,8 @@ manifest:
 
 ## What this row proposes
 
-Add to the Ace package manager substrate (per B-0288 Ace package
-manager substrate; B-0824 package-manager-of-package-managers): a
+Add to the Ace package manager substrate (per 081KR2E4K0008QG0R002YE3MMD Ace package
+manager substrate; 081KSGS9H0008QG0R0031PBNGA package-manager-of-package-managers): a
 repository of one-liner `curl -fsSL <url> | bash` install commands
 for tools that update faster than Homebrew can keep up with.
 
@@ -90,11 +89,11 @@ formula update.
 
 ## Composes with substrate
 
-- **B-0288** Ace package manager substrate — this row decomposes one substrate-engineering target within the broader Ace package manager
-- **B-0824** package-manager-of-package-managers — Ace one-liner registry IS one substrate-engineering instance of the broader package-manager-of-package-managers pattern
-- **B-0840** thermal-forgetting / root-axiom-update — fast-moving tools NEED the one-liner pattern because Homebrew's curation cadence is too slow for forgetting
-- **B-0805** all-deps-current-version-audit — composes at substrate-engineering scope; this row's one-liner pattern is one mechanism for keeping deps current
-- **B-0860** Nemerle dotnet support — composes at language-extension scope; one-liner-install pattern could mechanize Nemerle install too
+- **081KR2E4K0008QG0R002YE3MMD** Ace package manager substrate — this row decomposes one substrate-engineering target within the broader Ace package manager
+- **081KSGS9H0008QG0R0031PBNGA** package-manager-of-package-managers — Ace one-liner registry IS one substrate-engineering instance of the broader package-manager-of-package-managers pattern
+- **081KSGS9H0008QG0R0006F4BGX** thermal-forgetting / root-axiom-update — fast-moving tools NEED the one-liner pattern because Homebrew's curation cadence is too slow for forgetting
+- **081KSGS9H0008QG0R002BC2ZR7** all-deps-current-version-audit — composes at substrate-engineering scope; this row's one-liner pattern is one mechanism for keeping deps current
+- **081KSKBP80008QG0R000J2YFK2** Nemerle dotnet support — composes at language-extension scope; one-liner-install pattern could mechanize Nemerle install too
 - **PR #5547** hermes-agent brew addition — short-term install path; this row's one-liner pattern is medium-term substrate-engineering target
 - **`tools/setup/install.sh`** — the existing install graph that this substrate-engineering target extends with one-liner pattern
 
@@ -106,20 +105,20 @@ formula update.
 - `.claude/rules/non-coercion-invariant.md` HC-8 — one-liner runs upstream install.sh which can do anything; trust-assumption MUST be explicit + per-vendor + operator-vetted
 - `.claude/rules/methodology-hard-limits.md` HARD LIMITS — one-liner pattern doesn't bypass operator authority + signed-binary verification + supply-chain-security discipline; vendor-attribution + URL verification + vendor-key-pinning all apply
 - `.claude/rules/honor-those-that-came-before.md` — one-liner pattern honors upstream vendors' install-script tradition (typical OSS install pattern is `curl ... | bash` from vendor's site)
-- `.claude/rules/wake-time-substrate.md` — Ace one-liner pattern doesn't currently exist; this row + B-0288 + future implementation rows land it
+- `.claude/rules/wake-time-substrate.md` — Ace one-liner pattern doesn't currently exist; this row + 081KR2E4K0008QG0R002YE3MMD + future implementation rows land it
 
 ## Substrate-engineering decomposition
 
 Possible sub-rows for future implementation:
 
-1. **B-0863.1** — Ace one-liner registry schema design (YAML/JSON format; vendor + URL + verify-pattern + trust-assumption)
-2. **B-0863.2** — `tools/ace/install.ts` (or similar) one-liner-runner with trust-verification + curl-fetch + bash-exec
-3. **B-0863.3** — Initial registry population: hermes-agent + 5-10 other fast-moving tools the framework substrate-engineering work uses
-4. **B-0863.4** — Brew-vs-one-liner fallback discipline: prefer brew formula if current; fall back to one-liner if Homebrew lag is detected
-5. **B-0863.5** — Vendor-key-pinning + trust-substrate: each one-liner registry entry includes vendor public key for signature verification (where vendor provides signed install scripts)
-6. **B-0863.6** — Integration with `tools/setup/install.sh`: Ace one-liner-runner becomes Step N in the install graph, called after brew + mise + custom-installs
+1. **081KSKBP80008QG0R000F4311E.1** — Ace one-liner registry schema design (YAML/JSON format; vendor + URL + verify-pattern + trust-assumption)
+2. **081KSKBP80008QG0R000F4311E.2** — `tools/ace/install.ts` (or similar) one-liner-runner with trust-verification + curl-fetch + bash-exec
+3. **081KSKBP80008QG0R000F4311E.3** — Initial registry population: hermes-agent + 5-10 other fast-moving tools the framework substrate-engineering work uses
+4. **081KSKBP80008QG0R000F4311E.4** — Brew-vs-one-liner fallback discipline: prefer brew formula if current; fall back to one-liner if Homebrew lag is detected
+5. **081KSKBP80008QG0R000F4311E.5** — Vendor-key-pinning + trust-substrate: each one-liner registry entry includes vendor public key for signature verification (where vendor provides signed install scripts)
+6. **081KSKBP80008QG0R000F4311E.6** — Integration with `tools/setup/install.sh`: Ace one-liner-runner becomes Step N in the install graph, called after brew + mise + custom-installs
 
-Each becomes sub-row at `docs/backlog/P*/B-0863.M-...md` per the subdecimal scheme.
+Each becomes sub-row at `docs/backlog/P*/081KSKBP80008QG0R000F4311E.M-...md` per the subdecimal scheme.
 
 ## What this row is NOT
 
@@ -134,7 +133,7 @@ Per operator 2026-05-27 refinement:
 
 > *"they can still be declarative mappings to the oneliners like the rest of our ace package manger backlog"*
 
-The one-liner registry entries are NOT opaque shell-out commands. They are DECLARATIVE MAPPINGS that fit into Ace's broader declarative-mapping discipline (per B-0288 Ace package manager substrate + B-0824 package-manager-of-package-managers).
+The one-liner registry entries are NOT opaque shell-out commands. They are DECLARATIVE MAPPINGS that fit into Ace's broader declarative-mapping discipline (per 081KR2E4K0008QG0R002YE3MMD Ace package manager substrate + 081KSGS9H0008QG0R0031PBNGA package-manager-of-package-managers).
 
 ### Declarative-mapping schema (sketched)
 
@@ -171,7 +170,7 @@ The framework's substrate-engineering discipline is consistent across substrate 
 |---|---|
 | F# Result<T, TFeedback> | Discriminated-union TFeedback variants (declared in type signature) |
 | OPLE primitives | T-and-TFeedback at primitive scope (PR #5518) |
-| ConvFeedback variants | Discriminated-union conversation-substrate signals (B-0861) |
+| ConvFeedback variants | Discriminated-union conversation-substrate signals (081KSKBP80008QG0R000N9W9XH) |
 | Brew manifest | Plain text (declared package names) |
 | `.mise.toml` runtime pins | TOML declarative-mapping (tool + version) |
 | Ace one-liner registry (THIS row) | YAML/JSON declarative-mapping (name + vendor + install_methods) |
@@ -185,7 +184,7 @@ The Ace one-liner registry is declarative-mapping; the one-liner URL is a value 
 ## What this row IS
 
 - Substrate-engineering target for handling fast-moving tools that update faster than Homebrew can keep up
-- Composition with B-0288 Ace package manager substrate at the substrate-engineering scope
+- Composition with 081KR2E4K0008QG0R002YE3MMD Ace package manager substrate at the substrate-engineering scope
 - Six-component decomposition for incremental implementation
 - Canonical first instance: hermes-agent (added to brew manifest in PR #5547; will compose with one-liner pattern when Ace substrate ships)
 
@@ -195,7 +194,7 @@ Grep-substrate-inventory pass:
 
 - `docs/agendas/`: no Ace one-liner-install agenda
 - `docs/trajectories/`: no Ace one-liner trajectory
-- `docs/backlog/`: B-0288 Ace package manager substrate exists; no prior one-liner-install row
+- `docs/backlog/`: 081KR2E4K0008QG0R002YE3MMD Ace package manager substrate exists; no prior one-liner-install row
 - `.claude/rules/`: no rule names this pattern
 - `.claude/skills/`: 0 hits
 - `memory/`: 0 hits on Ace one-liner pattern
@@ -226,11 +225,11 @@ Operator 2026-05-27 conversation thread:
 - Proposed pattern: Ace one-liner registry; vendor-curated; fallback discipline; verification pattern
 - Hermes-agent named as canonical first instance for the pattern
 
-Composes with B-0288 Ace package manager + B-0824 package-manager-of-
+Composes with 081KR2E4K0008QG0R002YE3MMD Ace package manager + 081KSGS9H0008QG0R0031PBNGA package-manager-of-
 package-managers + today's substrate-engineering arc (the day's
 substrate-engineering work informs HOW Ace one-liner pattern should
 compose with substrate-engineering discipline).
 
-This row lands the substrate-engineering target; B-0863.M sub-rows
+This row lands the substrate-engineering target; 081KSKBP80008QG0R000F4311E.M sub-rows
 decompose into incremental implementation when the substrate-engineering
 work earns its keep.

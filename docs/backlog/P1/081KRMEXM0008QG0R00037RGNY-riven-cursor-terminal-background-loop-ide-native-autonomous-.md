@@ -1,6 +1,5 @@
 ---
-id: B-0549
-zetaid: 081KRMEXM0008QG0R00037RGNY
+id: 081KRMEXM0008QG0R00037RGNY
 priority: P1
 status: open
 title: "Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract"
@@ -8,8 +7,8 @@ tier: agent-infrastructure
 effort: M
 created: 2026-05-15
 last_updated: 2026-05-16
-renumbered_from: B-0498
-renumbered_per: B-0545
+renumbered_from: 081KRHWGX0008QG0R001XFRAHC
+renumbered_per: 081KRMEXM0008QG0R000ARAR7P
 decomposition: dirty
 children: [081KRQ1AB0008QG0R003WPKZ69]
 depends_on: [081KR7JY10008QG0R000R503K2]
@@ -145,9 +144,9 @@ Or a `.cursor/init.sh` hook (if Cursor supports workspace init scripts) that che
 
 ## Composes with
 
-- B-0400 (bus protocol) — shared transport
-- B-0440/0441/0442 (bg-services) — same nudge/assignment/cascade topics
-- B-0497 (Lior launchd integration) — dual-loop pattern precedent
+- 081KR7JY10008QG0R000R503K2 (bus protocol) — shared transport
+- 081KRFA460008QG0R001KC0VBH/0441/0442 (bg-services) — same nudge/assignment/cascade topics
+- 081KRHWGX0008QG0R003NT6DY9 (Lior launchd integration) — dual-loop pattern precedent
 
 ## Status
 
@@ -155,20 +154,20 @@ Open. Design approved by Aaron 2026-05-15. Implementation queued for next autono
 
 ## Renumber history
 
-This row was originally filed as **B-0498** on 2026-05-15. The ID collided with a pre-existing P2 row (`B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md`, dated 2026-05-14). Per the `b0451_per_collision_renumber_procedure` memory and B-0545's filed-correction surface, first-merged-wins applies: the 2026-05-14 algebra row keeps B-0498, and this row renumbers.
+This row was originally filed as **081KRHWGX0008QG0R001XFRAHC** on 2026-05-15. The ID collided with a pre-existing P2 row (`081KRHWGX0008QG0R001XFRAHC-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14.md`, dated 2026-05-14). Per the `b0451_per_collision_renumber_procedure` memory and 081KRMEXM0008QG0R000ARAR7P's filed-correction surface, first-merged-wins applies: the 2026-05-14 algebra row keeps 081KRHWGX0008QG0R001XFRAHC, and this row renumbers.
 
-Renumber target was chosen by re-running `refresh-before-decide.md` at ID-allocation scope: B-0545 originally noted B-0546 as next-free, but between filing (2026-05-15T22:55Z) and execution (2026-05-16T01:53Z), B-0546/B-0547/B-0548 were claimed. Next-free at execution time was **B-0549**.
+Renumber target was chosen by re-running `refresh-before-decide.md` at ID-allocation scope: 081KRMEXM0008QG0R000ARAR7P originally noted 081KRMEXM0008QG0R00278KS63 as next-free, but between filing (2026-05-15T22:55Z) and execution (2026-05-16T01:53Z), 081KRMEXM0008QG0R00278KS63/081KRMEXM0008QG0R001VGNET5/081KRQ1AB0008QG0R002DQBGZF were claimed. Next-free at execution time was **081KRMEXM0008QG0R00037RGNY**.
 
-**Immutable historical references that still quote `B-0498` in the Riven sense:**
+**Immutable historical references that still quote `081KRHWGX0008QG0R001XFRAHC` in the Riven sense:**
 
-- PR #3603 (merged) — `feat(riven): Riven cursor-terminal loop scaffold [B-0498] (decomposed)` — merged-PR title, historical record only.
+- PR #3603 (merged) — `feat(riven): Riven cursor-terminal loop scaffold [081KRHWGX0008QG0R001XFRAHC] (decomposed)` — merged-PR title, historical record only.
 - `docs/hygiene-history/ticks/2026/05/15/2217Z.md` — tick shard, immutable per `tick-shards-are-immutable` discipline.
-- `docs/pr-discussions/PR-3619-*` — PR-discussion archive of the B-0545 filing PR, references the Riven B-0498 in the renumber-target context. Historical record.
+- `docs/pr-discussions/PR-3619-*` — PR-discussion archive of the 081KRMEXM0008QG0R000ARAR7P filing PR, references the Riven 081KRHWGX0008QG0R001XFRAHC in the renumber-target context. Historical record.
 
-These artifacts are NOT edited. Readers encountering `B-0498` in the Riven sense should resolve to this row (B-0549) via the `renumbered_from: B-0498` frontmatter.
+These artifacts are NOT edited. Readers encountering `081KRHWGX0008QG0R001XFRAHC` in the Riven sense should resolve to this row (081KRMEXM0008QG0R00037RGNY) via the `renumbered_from: 081KRHWGX0008QG0R001XFRAHC` frontmatter.
 
 **Composes with:**
 
 - `memory/feedback_b0451_per_collision_renumber_procedure_external_references_rule_trumps_first_merged_2026_05_14.md` (the renumber rule)
-- B-0545 (the filed-correction surface)
+- 081KRMEXM0008QG0R000ARAR7P (the filed-correction surface)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (ID allocation discipline that the original collision violated)

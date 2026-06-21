@@ -1,6 +1,5 @@
 ---
-id: B-0128
-zetaid: 081KQGDBJ0008QG0R001AJ20MX
+id: 081KQGDBJ0008QG0R001AJ20MX
 priority: P2
 status: open
 title: General git content scrubber — design + decision-criteria + mechanism for any-class leak cleanup
@@ -10,9 +9,9 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0128 — General git content scrubber: design + decision-criteria + mechanism for any-class leak cleanup
+# 081KQGDBJ0008QG0R001AJ20MX — General git content scrubber: design + decision-criteria + mechanism for any-class leak cleanup
 
-**Priority:** P2 (future-defensive; the generalized parent of B-0127. Leak-type-agnostic. Designed when first non-sibling-repo case lands.)
+**Priority:** P2 (future-defensive; the generalized parent of 081KQGDBJ0008QG0R002NCWCRD. Leak-type-agnostic. Designed when first non-sibling-repo case lands.)
 
 **Filed:** 2026-05-01
 
@@ -22,12 +21,12 @@ type: friction-reducer
 
 ## Why this exists
 
-B-0127 covers one specific leak-class (sibling-repo internals). The factory's generalize-everything discipline says: design the *general* pattern, then specific cases become applications of the general. This row is the parent generalization; B-0127 becomes the seed worked-example.
+081KQGDBJ0008QG0R002NCWCRD covers one specific leak-class (sibling-repo internals). The factory's generalize-everything discipline says: design the *general* pattern, then specific cases become applications of the general. This row is the parent generalization; 081KQGDBJ0008QG0R002NCWCRD becomes the seed worked-example.
 
 Leak classes the general scrubber must cover:
 
 1. **Secrets/credentials/tokens** — API keys, passwords, OAuth tokens, signing keys accidentally committed. Most common case in industry; mature tooling exists (TruffleHog, Gitleaks, GitGuardian, BFG Repo-Cleaner, `git filter-repo`).
-2. **Sibling-repo internals** — the case B-0127 covers. Names, identifiers, architectural details from related projects.
+2. **Sibling-repo internals** — the case 081KQGDBJ0008QG0R002NCWCRD covers. Names, identifiers, architectural details from related projects.
 3. **PII / personal data** — names, addresses, email addresses, phone numbers committed against consent. GDPR/CCPA implications.
 4. **Confidential / NDA-class content** — customer-specific information, contract terms, embargoed product details.
 5. **Trademark / copyright issues** — third-party trademarks used without authorization, copyrighted content quoted past fair-use.
@@ -94,13 +93,13 @@ Out of design scope for this row but seeded:
 
 ## Why P2
 
-- **Not blocking critical-path.** Same as B-0127. Prevention layer is the parent rules; this is cure layer.
+- **Not blocking critical-path.** Same as 081KQGDBJ0008QG0R002NCWCRD. Prevention layer is the parent rules; this is cure layer.
 - **Generalization adds real future value.** A general scrubber covers all seven leak classes from one design pass; per-class-only scrubbers are duplicate work.
 - **Higher than P3 because secret-leak-class is real industry risk.** The factory will eventually have a credentials-leak incident (every project does). When it happens, having the design ready turns hours of "what do we do" into minutes of "follow the playbook."
 
 ## Why not P1
 
-- **No active general-class incident.** B-0127 had a specific incident (sibling-repo leak landed on main); this row's class is broader, no instance has fired beyond the sibling-repo one.
+- **No active general-class incident.** 081KQGDBJ0008QG0R002NCWCRD had a specific incident (sibling-repo leak landed on main); this row's class is broader, no instance has fired beyond the sibling-repo one.
 - **Design without instances risks over-engineering.** P2 invites this row to wait for a second leak-class incident (likely a secret-leak when CI gets new tooling, or PII-leak when first user data flows through a demo) to inform the design with two real cases instead of one.
 
 ## Acceptance criteria
@@ -112,8 +111,8 @@ When this row is implemented:
 3. **Mechanism playbook documented** — file-level / branch-level / history-rewrite / mirror-aware paths with explicit safety rails per CLAUDE.md "force-push to LFG main is forbidden."
 4. **Tooling survey current** — live-search verified (per CLAUDE.md search-first authority) at implementation time; tools cited with dates.
 5. **Audit-trail-preservation rule documented** — every scrub leaves a record; the record does not re-leak.
-6. **B-0127 reframed as worked-example** — its content stays valid as the sibling-repo-class application; the general scrubber design references it as seed evidence.
-7. **Generalize-everything discipline honored** — the general design stands without sibling-repo-specifics bleeding into the general layer; sibling-repo-specifics live in B-0127, not here.
+6. **081KQGDBJ0008QG0R002NCWCRD reframed as worked-example** — its content stays valid as the sibling-repo-class application; the general scrubber design references it as seed evidence.
+7. **Generalize-everything discipline honored** — the general design stands without sibling-repo-specifics bleeding into the general layer; sibling-repo-specifics live in 081KQGDBJ0008QG0R002NCWCRD, not here.
 
 ## Out of scope
 
@@ -126,7 +125,7 @@ When this row is implemented:
 
 - `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`
   — the parent prevention rule for the sibling-repo leak class. The general scrubber generalizes the cure side; the per-class prevention rules are independent.
-- [B-0127 (sibling-repo leak scrub-process)](B-0127-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md) — the seed worked-example. B-0127's content is the sibling-repo class application of this general design.
+- [081KQGDBJ0008QG0R002NCWCRD (sibling-repo leak scrub-process)](081KQGDBJ0008QG0R002NCWCRD-sibling-repo-leak-scrub-process-when-it-matters-aaron-2026-05-01.md) — the seed worked-example. 081KQGDBJ0008QG0R002NCWCRD's content is the sibling-repo class application of this general design.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — substrate must be reachable + indexed. Audit-trail-preservation requirement is the substrate-form of "you scrubbed something, but the scrub itself becomes substrate."
 - Task #318 (`docs/ops` taxonomy) — implementation may live in `docs/ops/runbooks/` or `docs/ops/patterns/`.
@@ -135,7 +134,7 @@ When this row is implemented:
 
 ## How to apply (when implementing this row)
 
-The implementer reads the parent rules, B-0127 (the seed example), this row, and live-searches the current state of `git filter-repo` / BFG / GitHub guidance / GitLab guidance. The implementer writes fresh — no copying from prior incident-write-ups; generalize the pattern; sibling-repo-specifics stay in B-0127.
+The implementer reads the parent rules, 081KQGDBJ0008QG0R002NCWCRD (the seed example), this row, and live-searches the current state of `git filter-repo` / BFG / GitHub guidance / GitLab guidance. The implementer writes fresh — no copying from prior incident-write-ups; generalize the pattern; sibling-repo-specifics stay in 081KQGDBJ0008QG0R002NCWCRD.
 
 The implementer asks Aaron explicitly before exercising any history-rewrite path on protected branches; the design surfaces the question even when the answer is "not now."
 
@@ -145,4 +144,4 @@ The implementer asks Aaron explicitly before exercising any history-rewrite path
 
 ## Verify-before-deferring note
 
-B-0127 (the seed example) is verified to exist on the branch `backlog/B-0127-sibling-repo-leak-scrub-process-aaron-2026-05-01` (PR #1012 open). The parent prevention rule at `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` is verified (236 lines, 2026-04-30). The deferral is valid: prevention layer is working; general cure layer can be designed when a second leak class arrives.
+081KQGDBJ0008QG0R002NCWCRD (the seed example) is verified to exist on the branch `backlog/081KQGDBJ0008QG0R002NCWCRD-sibling-repo-leak-scrub-process-aaron-2026-05-01` (PR #1012 open). The parent prevention rule at `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` is verified (236 lines, 2026-04-30). The deferral is valid: prevention layer is working; general cure layer can be designed when a second leak class arrives.

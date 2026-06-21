@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // add-pipe-row-header.ts — backfill validator-compliant pipe-row first
 // line to tick shards that currently start with H1 (or any non-pipe
-// content). Implements B-0529 Option 3 ("hybrid"): pipe-row first line
+// content). Implements 081KRMEXM0008QG0R002HBY56V Option 3 ("hybrid"): pipe-row first line
 // + H1-rich body below.
 //
 // The pipe-row schema (per `docs/hygiene-history/ticks/README.md`):
@@ -14,7 +14,7 @@
 // archaeologically reconstructing claims.
 //
 // Validator: `tools/hygiene/check-tick-history-shard-schema.ts`
-// Backlog row: `docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`
+// Backlog row: `docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`
 // Rule 0: TypeScript (no .sh) per `.claude/rules/rule-0-no-sh-files.md`.
 //
 // Usage:

@@ -9,7 +9,7 @@ Grounding:
 - `docs/research/2026-06-14-zeta-language-ir-compiler-v2-capability-interface-principle-fsharp-host-csharp-contracts-self-hosting-futamura.md` (§5 north star, §7 Futamura)
 - `docs/DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md` (the 4-oracle compiler-BFT + golden-vectors-as-oracle)
 - `src/Core/AdinkraCode.fs` (`l=gen` Faces 1+2 PROVEN; **Face 3 = the open capstone, §B**)
-- B-0982 / B-0867.27 (four-oracle multi-format golden-vector seeds — the harness to extend)
+- 081KT07NV0008QG0R0032MCYER / 081KSXN940008QG0R0033T2BQT (four-oracle multi-format golden-vector seeds — the harness to extend)
 
 ## Why this exists
 
@@ -97,7 +97,7 @@ instance of **Face 3** (the §B capstone), and it maps onto the phases above:
 
 - **The multi-language generator itself is in-flight** — today `gen/` emits CHIP-8 asm + reified
   types from F#. This trajectory is the *test* spec; the generator build is the dependency.
-- **Byte-lock is on the canonical encoding**, not raw source (UTF-16 vs UTF-8 divergence, B-0969) —
+- **Byte-lock is on the canonical encoding**, not raw source (UTF-16 vs UTF-8 divergence, 081KT07NV0008QG0R001YDB73K) —
   pretty-print is a normalized layer; the *artifact* is what's locked.
 - **Bootstrap/Trusting-Trust:** the first generator's trust is bootstrapped, not proven from inside —
   name the bootstrap pair (F# host + one clean-room oracle).

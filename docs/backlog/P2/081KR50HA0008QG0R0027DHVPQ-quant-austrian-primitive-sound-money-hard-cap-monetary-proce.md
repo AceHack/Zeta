@@ -1,12 +1,11 @@
 ---
-id: B-0386
-zetaid: 081KR50HA0008QG0R0027DHVPQ
+id: 081KR50HA0008QG0R0027DHVPQ
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)
 tier: research-grade
 effort: M
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K]
@@ -16,7 +15,7 @@ tags: [aurora, economics, austrian-school, quant, mathematical-rigor, sound-mone
 type: research
 ---
 
-# B-0386 — Formalizability assessment: sound-money → monetary-aggregate process with hard-cap constraint
+# 081KR50HA0008QG0R0027DHVPQ — Formalizability assessment: sound-money → monetary-aggregate process with hard-cap constraint
 
 ## What
 
@@ -57,7 +56,7 @@ The hard-cap constraint is structurally novel from the quant perspective:
   history for a widely-used currency
 - Saifedean's **stock-to-flow model** (S2F) is an empirical-embedding
   attempt: log-log regression of S2F ratio vs. price. This is
-  empirical-embedding (B-0380 type), not rigorous-proof formalization.
+  empirical-embedding (081KR50HA0008QG0R003ESW3MH type), not rigorous-proof formalization.
 - **Commodity money models** (gold standard era economics, Barro 1979,
   Bordo & Kydland 1992): supply driven by extraction economics
   (not political authority); these have quant treatments
@@ -72,11 +71,11 @@ The hard-cap constraint is structurally novel from the quant perspective:
 
 2. What are the formal welfare implications of a hard-cap monetary
    process vs. a discretionary monetary process under ABCT dynamics
-   (B-0385)? Is there a formal social-welfare comparison, or only
+   (081KR50HA0008QG0R00238MS98)? Is there a formal social-welfare comparison, or only
    a mechanism comparison?
 
 3. Saifedean's S2F model: does it constitute formalization in the
-   B-0380 sense, or is it a predictive model that happens to use
+   081KR50HA0008QG0R003ESW3MH sense, or is it a predictive model that happens to use
    a quantitative variable without deriving the mechanism from
    Austrian foundations? (Important: this is a classification
    question, not a truth-of-S2F question — the verdict on S2F's
@@ -95,8 +94,8 @@ The hard-cap constraint is structurally novel from the quant perspective:
   Rothbard / Saifedean variants with their distinct claims)
 - Formal definition candidate for "sound money process"
 - Welfare-comparison framework (formal if possible, mechanical if not)
-- Saifedean S2F classified per B-0380 vocabulary (classification
-  is load-bearing for B-0381 survey)
+- Saifedean S2F classified per 081KR50HA0008QG0R003ESW3MH vocabulary (classification
+  is load-bearing for 081KR50HA0008QG0R000M4H35K survey)
 - Bitcoin-as-natural-experiment: falsifiable predictions
 - Synthesis-gap remaining
 - Verdict
@@ -112,27 +111,27 @@ ls docs/aurora/ | grep sound-money
 - Research note committed under `docs/aurora/`
 - Mises / Rothbard / Saifedean variants covered
 - Formal definition of "sound money process" attempted
-- S2F classified per B-0380 vocabulary
+- S2F classified per 081KR50HA0008QG0R003ESW3MH vocabulary
 - Bitcoin natural-experiment falsifiable predictions stated
 - Verdict explicit
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0381 survey provides prior-work context;
-  B-0022 (Bitcoin Standard research track, composes_with in B-0023)
+- [x] Prior-art search: 081KR50HA0008QG0R000M4H35K survey provides prior-work context;
+  081KQ0YZ80008QG0R003JJHKPR (Bitcoin Standard research track, composes_with in 081KQ0YZ80008QG0R003EJQZ1M)
   may have relevant substrate — check before starting.
   No existing `docs/aurora/` note on sound-money formalization.
-- [x] Dependency-restructure: parallelizable with B-0382, B-0383,
-  B-0384, B-0385. Check B-0022 for existing Bitcoin/sound-money
+- [x] Dependency-restructure: parallelizable with 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP,
+  081KR50HA0008QG0R000467SWT, 081KR50HA0008QG0R00238MS98. Check 081KQ0YZ80008QG0R003JJHKPR for existing Bitcoin/sound-money
   substrate that should be cited here.
 
 ## Composes with
 
-- B-0023 (parent): implements primitive #5
-- B-0380, B-0381 (deps): vocabulary and prior-work context
-- B-0022 (B-0023 §composes_with): Saifedean / Bitcoin Standard
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): implements primitive #5
+- 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K (deps): vocabulary and prior-work context
+- 081KQ0YZ80008QG0R003JJHKPR (081KQ0YZ80008QG0R003EJQZ1M §composes_with): Saifedean / Bitcoin Standard
   substrate; sound-money formalization depends on that research track
-- B-0385 (coupling): ABCT assessment explains WHY sound money matters
+- 081KR50HA0008QG0R00238MS98 (coupling): ABCT assessment explains WHY sound money matters
   mechanistically; this row formalizes the monetary-process property
   that prevents the ABCT distortion mechanism
-- B-0387 (downstream): verdict feeds synthesis ADR
+- 081KR50HA0008QG0R000M838VA (downstream): verdict feeds synthesis ADR

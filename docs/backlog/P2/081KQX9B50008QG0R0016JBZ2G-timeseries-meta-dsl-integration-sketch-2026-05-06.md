@@ -1,6 +1,5 @@
 ---
-id: B-0229
-zetaid: 081KQX9B50008QG0R0016JBZ2G
+id: 081KQX9B50008QG0R0016JBZ2G
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - meta-DSL integration sketch"
@@ -12,7 +11,7 @@ classification: blocked-on-mdx-and-crdt-semantics
 type: feature
 ---
 
-# B-0229 - Timeseries meta-DSL integration sketch
+# 081KQX9B50008QG0R0016JBZ2G - Timeseries meta-DSL integration sketch
 
 Sketch how the timeseries algebra plugs into the unified
 meta-DSL alongside graph, hierarchy, filesystem, and other
@@ -29,6 +28,6 @@ optimization opportunities.
 
 - The sketch names the timeseries primitives exposed to the
   DSL.
-- The design composes with B-0148's MDX/meta-DSL framing.
+- The design composes with 081KQGDBJ0008QG0R002175ECA's MDX/meta-DSL framing.
 - CRDT modes remain visible enough to be formally specified.
 - The sketch distinguishes DSL surface from storage backend.

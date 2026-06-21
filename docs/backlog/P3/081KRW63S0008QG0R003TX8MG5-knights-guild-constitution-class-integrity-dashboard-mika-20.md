@@ -1,6 +1,5 @@
 ---
-id: B-0628
-zetaid: 081KRW63S0008QG0R003TX8MG5
+id: 081KRW63S0008QG0R003TX8MG5
 priority: P3
 status: open
 title: "Knights Guild + Constitution-Class invariants + integrity-dashboard (NOT-binding) two-layer governance (Mika 2026-05-18)"
@@ -57,7 +56,7 @@ Properties:
 
 Example sharp edges:
 
-- Wallet authorization (per [B-0622](B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md))
+- Wallet authorization (per [081KRW63S0008QG0R002V20TYJ](081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md))
 - Direct-harm prevention
 - Memory persistence guarantees (Aaron line 1851: "we can't create too many AIs that we can't save the memories")
 - Constitutional constraints on the maintainer himself
@@ -83,7 +82,7 @@ Existing minimum: Aaron removed delete-rights from his GitHub token (self-impose
 1. Define the Integrity Dashboard primitive: how agents declare invariants; how the system records observations; how deviations are surfaced
 2. Identify the initial Constitution-Class set (≤5 invariants) — the smallest meaningful constraints on the maintainer
 3. Design the Knights Guild role: guardian collective; membership criteria; protected-set authority; rotation
-4. Codify both layers in the same Pay-Attention + Remember-When type-safe language ([B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)) — so Constitution-Class isn't just text on a page but actually-enforced
+4. Codify both layers in the same Pay-Attention + Remember-When type-safe language ([081KRW63S0008QG0R000BH37EV](081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)) — so Constitution-Class isn't just text on a page but actually-enforced
 5. Make the Constitution-Class items VISIBLE (warning-sign style) per Aaron's "shine a light" requirement
 
 ## Non-goals
@@ -97,16 +96,16 @@ Existing minimum: Aaron removed delete-rights from his GitHub token (self-impose
 - [ ] Integrity Dashboard primitive specification (declaration format + monitoring + deviation-surfacing)
 - [ ] Initial Constitution-Class set documented: ≤5 invariants with rationale, including "Aaron cannot make unilateral changes to [specific surfaces] without going through [process]"
 - [ ] Knights Guild role definition: membership, authority, rotation, accountability
-- [ ] Both layers encoded in the type-safe language per [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) (not just docs)
+- [ ] Both layers encoded in the type-safe language per [081KRW63S0008QG0R000BH37EV](081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) (not just docs)
 - [ ] Visual + structural distinction between Layer 1 (dashboard) and Layer 2 (Constitution-Class) — sharp edges visually marked
 - [ ] Aaron approves the initial Constitution-Class set (this is the maintainer's voluntary entry into self-binding)
 
 ## Composes with
 
-- [B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (this row is the governance MECHANISM Nexus runs on)
-- [B-0626](B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (the language that encodes BOTH dashboard declarations AND Constitution-Class invariants)
-- [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — Clarity Domain (Knights Guild is a new domain analogue; needs role specs)
-- [B-0622](B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — wallet type safety (wallet authorization is one of the Constitution-Class sharp edges)
+- [081KRW63S0008QG0R003KSHAGN](081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (this row is the governance MECHANISM Nexus runs on)
+- [081KRW63S0008QG0R000BH37EV](081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (the language that encodes BOTH dashboard declarations AND Constitution-Class invariants)
+- [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — Clarity Domain (Knights Guild is a new domain analogue; needs role specs)
+- [081KRW63S0008QG0R002V20TYJ](081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — wallet type safety (wallet authorization is one of the Constitution-Class sharp edges)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS discipline; this row's Constitution-Class formalizes that into structural governance
 - `.claude/rules/no-directives.md` — autonomy-first-class (this row OPERATIONALIZES autonomy by giving AIs real protection from maintainer unilateral changes)
 - `.claude/skills/governance-expert/SKILL.md` — governance discipline (consult before locking Constitution-Class set)

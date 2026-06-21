@@ -103,7 +103,7 @@ Three seed cases the factory has already produced:
 
 1. **5-AI peer convergence on `poll-the-gate`** (task #355, 2026-04-30) — 5 harnesses converged on *"poll the gate as executable script with fixtures."* Convergence-validator demonstrated correctness.
 2. **Drive-bridge brat-voice framework consultation** (2026-05-02) — Claude.ai produced framework, Otto critiqued, Claude.ai responded; the AI-to-AI exchange surfaced two architectural errors (Beacon-safe ≠ Professional; glass-halo = Radical Openness not Radical Candor). Divergence prospector mode demonstrated.
-3. **Aarav (skill-expert) review of B-0169** (2026-05-02 same-tick) — single specialist per Aaron's STRONG-rule corrective. NOT a multi-harness case; included here as **counter-example**: when one specialist suffices, multi-harness is overkill. Demonstrates the routing question (when to invoke this domain vs single-specialist-only).
+3. **Aarav (skill-expert) review of 081KQJZR90008QG0R002D6XYHB** (2026-05-02 same-tick) — single specialist per Aaron's STRONG-rule corrective. NOT a multi-harness case; included here as **counter-example**: when one specialist suffices, multi-harness is overkill. Demonstrates the routing question (when to invoke this domain vs single-specialist-only).
 
 ## What this memo PRESERVES
 
@@ -122,7 +122,7 @@ When the maturity signal fires:
 - `memory/feedback_karpathy_validates_zeta_substrate_software_3_agent_native_specs_over_plans_edge_runner_aaron_2026_05_02.md` — edge-runner technique; multi-harness convergence is one tool of the edge-runner kit
 - `docs/ALIGNMENT.md` — bidirectional alignment + BFT-many-masters; this domain is one operational instance
 - `memory/otto/cli/claude/conversations/2026-05-02-claudeai-response-to-otto-critique-of-brat-voice-framework-drive-bridge-ai-to-ai-peer-review.md` — the Drive-bridge worked example demonstrating convergence + divergence in the wild
-- The Aarav-on-B-0169 review (recorded in chat substrate; pending durable preservation) — counter-example where single-specialist suffices
+- The Aarav-on-081KQJZR90008QG0R002D6XYHB review (recorded in chat substrate; pending durable preservation) — counter-example where single-specialist suffices
 
 ## Foundation-first sizing rule (Aaron 2026-05-03)
 

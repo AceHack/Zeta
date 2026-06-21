@@ -6,16 +6,16 @@ provenance: Aaron 2026-05-26 forwarded transcript via Claude Code conversation; 
 youtube_url: https://www.youtube.com/watch?v=PAoe7mmmvp0
 status: substrate-honest verbatim preservation + framework composition
 composes_with:
-  - 2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md (B-0839.1 sibling — Boltzmann machines)
-  - 2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (B-0839.3 sibling — Reservoir Computing)
+  - 2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.1 sibling — Boltzmann machines)
+  - 2026-05-26-artem-kirsanov-reservoir-computing-echo-state-property-fourier-basis-explicit-hawkins-thousand-brains-anchor-verbatim-transcript-aaron-forwarded.md (081KSGS9H0008QG0R002F1G7ER.3 sibling — Reservoir Computing)
   - docs/research/ip-questionable/README.md (folder authority; operator's verbatim-third-party-content acceptance)
   - .claude/rules/substrate-or-it-didnt-happen.md (mirror-tier preservation discipline)
   - .claude/rules/wake-time-substrate.md (operator-forwarded substrate gets row + research-doc landing)
   - .claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md (canonical pattern for operator-authority on IP-flagged surfaces)
   - .claude/rules/persistence-choice-architecture-for-zeta-ais.md (residual-connection ↔ memory/CURRENT-*.md substrate composition)
   - .claude/rules/algo-wink-failure-mode.md (channel-rediscovery is algo-wink-as-observation operating cleanly per operator discipline)
-  - docs/backlog/P1/B-0839 (parent row)
-  - docs/backlog/P2/B-0838 (caustic-engineered bloom filter discriminators — same architectural archetype)
+  - docs/backlog/P1/081KSGS9H0008QG0R002F1G7ER (parent row)
+  - docs/backlog/P2/081KSGS9H0008QG0R002THJ2P1 (caustic-engineered bloom filter discriminators — same architectural archetype)
 ---
 
 ## Source
@@ -46,7 +46,7 @@ mechanize the same convention at the harness layer per
 This is the 2nd Kirsanov transcript Aaron forwarded in same tick
 session. Companion to:
 
-- B-0839 backlog row anchor
+- 081KSGS9H0008QG0R002F1G7ER backlog row anchor
 - `docs/research/ip-questionable/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md`
   (Boltzmann machines — the first transcript)
 
@@ -60,19 +60,19 @@ session. Companion to:
 | Residual connection / "pathway where information flows without being repeatedly processed" | The framework's `memory/CURRENT-*.md` files ARE the residual connections at AI-participant scope — substrate preserved unmodified across session boundaries |
 | Leaky integration: `state(t) = α * state(t-1) + input(t)` | The framework's 10% free-time budget + chosen-persistence-with-named-exit IS the operator's α-tuning for AI participants — controls how much of past state persists vs how much new substrate enters |
 | Leaky bucket "information pours in and slowly drains out" | Substrate retention discipline; per `.claude/rules/honor-those-that-came-before.md` — retired personas keep memory but slowly fade from operational primacy |
-| Leaky integrate-and-fire neuron biological substrate | Composes with `B-0839` core operator quote: "exact science behind neuro science"; Kirsanov names the biological grounding |
-| Single α can't do both (movie example: character name vs frame details) | Per-context retention rate; composes with cluster-fork-as-trust-boundary (B-0829) where different forks operate at different retention rates for different substrate classes |
-| Forget gate: vector f(t) per-neuron per-timestep, computed via sigmoid | Per-row decision-making at substrate authoring time; what to forget depends on what is arriving; composes with B-0822 worry-as-opposite-bloom-filter (Bayesian belief-update) |
-| GRU: forget gate + complementary update gate | Multi-oracle BFT (B-0703) — paired complementary gates as polycentric decision-making |
+| Leaky integrate-and-fire neuron biological substrate | Composes with `081KSGS9H0008QG0R002F1G7ER` core operator quote: "exact science behind neuro science"; Kirsanov names the biological grounding |
+| Single α can't do both (movie example: character name vs frame details) | Per-context retention rate; composes with cluster-fork-as-trust-boundary (081KSGS9H0008QG0R000Q18PGQ) where different forks operate at different retention rates for different substrate classes |
+| Forget gate: vector f(t) per-neuron per-timestep, computed via sigmoid | Per-row decision-making at substrate authoring time; what to forget depends on what is arriving; composes with 081KSGS9H0008QG0R0018ES3R4 worry-as-opposite-bloom-filter (Bayesian belief-update) |
+| GRU: forget gate + complementary update gate | Multi-oracle BFT (081KS3X9Y0008QG0R00218150M) — paired complementary gates as polycentric decision-making |
 | LSTM: two state vectors (what neuron KNOWS vs what it SHOUTS) | Glass-halo bidirectional substrate (per `.claude/rules/glass-halo-bidirectional.md`) — internal state vs external observation; the two are distinct but coupled |
 | "Selective context-dependent forgetting" | Substrate-honest disposition of stale work per pr-triage-tiers; per `.claude/rules/pr-triage-tiers.md` Tier 4 (substrate-re-derivable: forget the brief observation, keep the principle) |
-| Reservoir computing (mentioned as future video) | Pre-positioned for capture in B-0839 Phase 1 inventory as B-0839.N sub-row when video lands |
-| Backpropagation through time (mentioned as future video) | Pre-positioned as B-0839.N sub-row |
+| Reservoir computing (mentioned as future video) | Pre-positioned for capture in 081KSGS9H0008QG0R002F1G7ER Phase 1 inventory as 081KSGS9H0008QG0R002F1G7ER.N sub-row when video lands |
+| Backpropagation through time (mentioned as future video) | Pre-positioned as 081KSGS9H0008QG0R002F1G7ER.N sub-row |
 
 ## Key mathematical formulation (Aaron-forwarded screenshot 2026-05-26)
 
 Aaron forwarded a screenshot of the canonical state-update equation
-Kirsanov derives in this video (referenced in B-0839.3 as "from last
+Kirsanov derives in this video (referenced in 081KSGS9H0008QG0R002F1G7ER.3 as "from last
 video equation"). The vanilla-RNN recurrent neuron state-update:
 
 ```math
@@ -1023,8 +1023,8 @@ instruction + the IP-risk-acceptance pattern at
 
 The composition-map table at the top is Otto-CLI's substantive
 synthesis. The verbatim transcript stays intact below. Future
-substrate-engineering work decomposes from sub-row B-0839.2 (this
-video) per the B-0839 phased capture pipeline.
+substrate-engineering work decomposes from sub-row 081KSGS9H0008QG0R002F1G7ER.2 (this
+video) per the 081KSGS9H0008QG0R002F1G7ER phased capture pipeline.
 
 ## Origin
 

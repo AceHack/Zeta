@@ -7,7 +7,7 @@ slug: evolution-extension-bidirectional-schema-migration-proof-par
 title: "Evolution extension: bidirectional schema migration proof + parallel experiment-timelines (merge contract) + reindex-as-proven-projection"
 created: 2026-06-07T11:50:29.445Z
 depends_on: []
-composes_with: ["B-0930", "081KTGTJC1Q08QG0R002VCB55A", "081KTGXPTQ008QG0R0024H5RNW"]
+composes_with: ["081KSRGFP0008QG0R001Y6RTY9", "081KTGTJC1Q08QG0R002VCB55A", "081KTGXPTQ008QG0R0024H5RNW"]
 ---
 
 # Evolution extension: bidirectional schema migration proof + parallel experiment-timelines (merge contract) + reindex-as-proven-projection
@@ -18,11 +18,11 @@ composes_with: ["B-0930", "081KTGTJC1Q08QG0R002VCB55A", "081KTGXPTQ008QG0R0024H5
 
 ## Purpose
 
-Extend the EXISTING "Evolution" proof (`src/Core/SchemaEvolution.fs`, B-0930 — forward-only migration
+Extend the EXISTING "Evolution" proof (`src/Core/SchemaEvolution.fs`, 081KSRGFP0008QG0R001Y6RTY9 — forward-only migration
 algebra + forward/backward compat, 8 tests) into the full capability Amara + Aaron worked through
 2026-06-07. Full design: `docs/research/2026-06-07-evolution-schema-and-index-as-proven-projections-...`.
 
-> Disambiguation: `SchemaEvolution.fs` (B-0930, schema) — NOT `Evolution.fs` (B-1019, privacy DST).
+> Disambiguation: `SchemaEvolution.fs` (081KSRGFP0008QG0R001Y6RTY9, schema) — NOT `Evolution.fs` (081KT7YW00008QG0R001DGZQKM, privacy DST).
 
 ## Three extensions (each a proof obligation, not a runbook)
 
@@ -84,7 +84,7 @@ index where `full == incremental` is proven (over DBSP). Each composes with the 
 
 ## Anchors
 
-- src/Core/SchemaEvolution.fs + B-0930 (the start) · DBSP (`IndexedZSet`/`Aggregate`/`Residuated` —
-  full==incremental) · Z-set retraction · B-0829 (schemas-as-rows/fork) · 081KTGTJC1Q (COW store) ·
-  081KTGXPTQ (COW testing) · B-0969 + 081KTGEVV75 (determinism) · Soraya (formal portfolio). Beacon: DBSP,
+- src/Core/SchemaEvolution.fs + 081KSRGFP0008QG0R001Y6RTY9 (the start) · DBSP (`IndexedZSet`/`Aggregate`/`Residuated` —
+  full==incremental) · Z-set retraction · 081KSGS9H0008QG0R000Q18PGQ (schemas-as-rows/fork) · 081KTGTJC1Q (COW store) ·
+  081KTGXPTQ (COW testing) · 081KT07NV0008QG0R001YDB73K + 081KTGEVV75 (determinism) · Soraya (formal portfolio). Beacon: DBSP,
   expand/contract (Sato/Fowler), gh-ost/pt-osc, event-sourcing upcasting, Dolt/Neon, DDIA derived data.

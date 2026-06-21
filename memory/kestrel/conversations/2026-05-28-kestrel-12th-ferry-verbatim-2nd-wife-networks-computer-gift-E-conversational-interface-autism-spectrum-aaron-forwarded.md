@@ -238,7 +238,7 @@ Aaron-explicit adoption of Otto-CLI carved sentence. Substrate-engineering valid
 - PR #5746 + PR #5749 — Xbox-controller universal-action-grammar + fix-fwd
 - PR #5748 — attention-as-currency DESCRIPTIVE-not-PROPOSAL
 - PR #5734 — traveler-rights-defensibility-by-generic-substrate
-- B-0867 + B-0867.5 workflow engine substrate
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 workflow engine substrate
 - `tools/shadow/` operational service (the shadow-star detection-and-observation substrate)
 
 ## Composes with rules

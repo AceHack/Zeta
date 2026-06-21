@@ -5,8 +5,8 @@
  * One language-neutral scenario (an initial world + an event log covering every
  * NextAction kind) that EVERY implementation of the observe/simulate/fold algebra
  * must reproduce: replay the event log over the initial world → the same projected
- * state. This is the "make them agree" contract for B-0867.27 (TS/F#/C#/Rust),
- * the runtime-DST half of the B-0944 cross-language-parity pattern (the
+ * state. This is the "make them agree" contract for 081KSXN940008QG0R0033T2BQT (TS/F#/C#/Rust),
+ * the runtime-DST half of the 081KSV2WD0008QG0R00051XS0N cross-language-parity pattern (the
  * compiler-parity half is each language compiling the same closed sum-type +
  * exhaustive reducer).
  *
@@ -60,7 +60,7 @@ export const GOLDEN_EVENTS = [
 /** Compute the fixture from the canonical scenario via the reference fold/replay. */
 export function generateGoldenVectors() {
     return {
-        description: "observe/simulate/fold cross-language conformance (B-0867.27). Every impl replays `events` over " +
+        description: "observe/simulate/fold cross-language conformance (081KSXN940008QG0R0033T2BQT). Every impl replays `events` over " +
             "`initialWorld` and must value-match `expectedFinalState` + `expectedReplayStates`.",
         initialWorld: GOLDEN_INITIAL,
         events: GOLDEN_EVENTS,

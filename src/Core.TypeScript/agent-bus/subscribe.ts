@@ -1,5 +1,5 @@
 /**
- * Agent-bus Phase 1 (B-0954) — subscribe.
+ * Agent-bus Phase 1 (081KSXN940008QG0R00171YAZW) — subscribe.
  *
  * `readEnvelopesSince` is PURE (read a folder; filter by a COMPOUND `(timestamp, id)`
  * cursor; sort). The CLI (`import.meta.main`) does the cross-machine read **from

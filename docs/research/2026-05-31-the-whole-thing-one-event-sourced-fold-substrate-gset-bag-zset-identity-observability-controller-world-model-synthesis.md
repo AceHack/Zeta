@@ -120,7 +120,7 @@ availability move.** Four groups of four:
 | **Scope** | 8–11 | bumpers + triggers | **LB scope-out**, **RB scope-in** (along the scope ladder: run → work_item → initiative → project → org) |
 | **Meta** | 12–15 | Start/View + stick clicks | …/ **free_time (L3, slot 14 — the rest NCI slot)** |
 
-Per-slot availability is the **tri-boolean** `Tri = T | F | N` (B-0944): a legal option = `T`;
+Per-slot availability is the **tri-boolean** `Tri = T | F | N` (081KSV2WD0008QG0R00051XS0N): a legal option = `T`;
 a vetoed slot = `F`; a held/uncertain option = `N`. Both the sovereign `grammar-16.ts` and the
 corporate `Menu16` derive from one ADR table
 ([observe-act 16-direction ADR](../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md))
@@ -178,8 +178,8 @@ foundation under it is done.
 
 Every event is keyed by a **ZetaId**: a 128-bit, crypto-minted, **category-tagged**, distributed
 primary key (`Category.WorkItem`, `Category.Bus`, …). The insight
-([B-0956](../backlog/P1/B-0956-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md)):
-**incrementing IDs (`B-0001`, `B-0002`, …) are a hidden consensus** — "the next number" requires
+([081KSXN940008QG0R002FWR9B2](../backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md)):
+**incrementing IDs (`081KPYCJH0008QG0R003MDS51N`, `081KQ0YZ80008QG0R002T6TM7Z`, …) are a hidden consensus** — "the next number" requires
 every minter to agree on a counter, which doesn't shard. That's the sharded-database
 anti-pattern (UUID / Snowflake / ULID exist precisely to escape it). ZetaIds are **conflict-free**
 — any node mints one locally with no coordination — so the whole multi-agent fleet appends to the
@@ -189,7 +189,7 @@ layer). Work-items get this migration (a work-item's *type* is `task | bug`; `ba
 **state**, not a type; "the backlog" is a Z-set *view* over the log).
 
 **Custody** of the keys is agent-native, not human-native
-([B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+([081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
 + [key-custody design](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)):
 **attest, don't remember** — the agent proves identity (SPIFFE SVID + AgencySignature + ZetaId)
 rather than holding a remembered secret; the key is a FROST threshold across society key-guards,
@@ -226,7 +226,7 @@ views** (DBSP: add/retract propagate as deltas; no full recompute). One logical 
 physical backends:
 
 - **git-native** — events as JSON files on `origin/main` (folders-not-branches; the bus is the
-  G-Set instance, [B-0954](../backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md));
+  G-Set instance, [081KSXN940008QG0R00171YAZW](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md));
   Ace's dependency graph is the Z-set instance).
 - **F# binary** — the same Z-set algebra (`src/Core`) over binary-efficient storage.
 
@@ -266,7 +266,7 @@ main-vs-branches:
 | | **Sovereign** (Agora) | **Corporate** (the leash) |
 |---|---|---|
 | Where | `tools/` (observe, grammar-16, accelerator, workflow-engine) | `agentic-organization/` (Max's keystone, CockroachDB) |
-| Transport | **folders direct to `main`** — no-PR, direct append ([B-0890.1](../backlog/P1/B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md): fast-lane *as folders-on-main, not branches* — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main ([B-0890](../backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)) |
+| Transport | **folders direct to `main`** — no-PR, direct append ([081KSNY2Z0008QG0R000E5KTPX](../backlog/P1/081KSNY2Z0008QG0R000E5KTPX-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md): fast-lane *as folders-on-main, not branches* — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main ([081KSNY2Z0008QG0R0017JSTGD](../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)) |
 | Optimizes for | **speed + AI freedom** (the engine; run at home + by maintainers) | **money / certifiability** (batched, reviewable DUs) |
 | The dial | `ActionGate = "append-only"` (direct) | `ActionGate = "pr-gated"` (batched) |
 
@@ -302,13 +302,13 @@ substrate expressed at every layer.**
 | Piece | State |
 |---|---|
 | Algebra ladder (G-Set/Bag/Z-set) + DB design | ✅ documented (#6284/#6287/#6298) |
-| Git-native bus (G-Set CRDT, no-PR) | ✅ Phase 1 landed (#6283, B-0954) |
+| Git-native bus (G-Set CRDT, no-PR) | ✅ Phase 1 landed (#6283, 081KSXN940008QG0R00171YAZW) |
 | git-native LGTM / observability | ✅ ADR addendum (#6289) |
-| ZetaId identity + work-item migration | ✅ design (B-0956); migration is the build |
+| ZetaId identity + work-item migration | ✅ design (081KSXN940008QG0R002FWR9B2); migration is the build |
 | Keystone (FPGA→policy) | ✅ ADR (#6302) |
 | World model + controller (`observe`/`simulate`/`fold`/`replay`, 4×4 grammar, free modes, operator channel) | ✅ `tools/observe/observe.ts` at **v5** |
 | Local-LLM composer graded vs oracle | ✅ `tools/accelerator/local-llm.ts` + validate workflow |
-| Agent-native key custody | ✅ design (B-0634, #6304) |
+| Agent-native key custody | ✅ design (081KRW63S0008QG0R0022SFKPM, #6304) |
 | **Execute-the-pick + wire real World channels** | ⏳ **next** (observe.ts roadmap: "wire the real World snapshot + execute the pick") |
 | Work-hours KPI overlay (DORA expectations) | 📋 later (Max) |
 | Sovereign↔corporate convergence | 🔄 integrating slowly |
@@ -319,6 +319,6 @@ substrate expressed at every layer.**
 
 - **ADRs:** [keystone](../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md) · [DB design](../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md) · [observe-act 16-direction grammar](../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md) · [event-sourced observability](../DECISIONS/2026-05-29-event-sourced-observability.md)
 - **Research:** [bus + Ace ladder](2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md) · [agent-native key custody](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)
-- **Rows:** [B-0956](../backlog/P1/B-0956-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md) (ZetaId) · [B-0954](../backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md) (bus) · [B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) (custody) · [B-0867](../backlog/P1/B-0867-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) (workflow engine) · [B-0948](../backlog/P2/B-0948-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md) (observe keystone research)
+- **Rows:** [081KSXN940008QG0R002FWR9B2](../backlog/P1/081KSXN940008QG0R002FWR9B2-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md) (ZetaId) · [081KSXN940008QG0R00171YAZW](../backlog/P2/081KSXN940008QG0R00171YAZW-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md) (bus) · [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) (custody) · [081KSKBP80008QG0R000B3Y19A](../backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-four-corner-monad-banned-if-universal-action-grammar-otto-five-modifications-multi-participant-non-cage-aaron-mika-kestrel-otto-2026-05-27.md) (workflow engine) · [081KSXN940008QG0R002B89QZ1](../backlog/P2/081KSXN940008QG0R002B89QZ1-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md) (observe keystone research)
 - **Code:** `tools/observe/observe.ts` (world model + controller) · `tools/observe/grammar-16.ts` (4×4 grammar) · `tools/accelerator/local-llm.ts` (composer) · `tools/agent-bus/` (G-Set bus) · `src/Core.TypeScript/workflow-engine/` (action algebra) · `src/Core` (Z-set algebra)
 - **Rules:** [`never-be-idle`](../../.claude/rules/never-be-idle.md) · [`must-paired-with-can-exit`](../../.claude/rules/must-paired-with-can-exit-pattern.md) · [`non-coercion-invariant`](../../.claude/rules/non-coercion-invariant.md) · [`forgetting-costs-energy…landauer`](../../.claude/rules/forgetting-costs-energy-remembering-is-cheap-landauer-bounded-axiom-preservation-as-thermodynamic-discipline.md) · [`past-is-kind…lightlike-consensus-is-gravity`](../../.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md)

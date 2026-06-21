@@ -36,7 +36,7 @@ Design ADR the operator asked for — the lint-autofix workflow (#6393) implies 
 - leans **Option 5 (hybrid)**: mechanical step commits the heal back + emits a git-native bus *review observation*; the **intelligence** step is a separate agent-in-Actions workflow (accelerator / local-LLM) that consumes the bus record and handles what mechanical can't — the two compose through one seam (the bus record).
 - 4 explicit **open questions for Max**: emission target (bus vs folder), review-record schema, intelligence-step runtime, and whether to add an `AUTOFIX_TOKEN` secret now vs accept nudge-by-loop (since gates are being removed anyway).
 
-Composes with the **B-0938** PR-review-friction ADR (that *measures* friction; this *reduces a class* + structures the emission the monitor consumes), B-0954 (git-native bus), and the accelerator/local-LLM substrate. markdownlint clean. No code — design only.
+Composes with the **081KSRGFP0008QG0R000J9Y634** PR-review-friction ADR (that *measures* friction; this *reduces a class* + structures the emission the monitor consumes), 081KSXN940008QG0R00171YAZW (git-native bus), and the accelerator/local-LLM substrate. markdownlint clean. No code — design only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -125,7 +125,7 @@ Streamlined-MADR; 5 options; leans Option 5 (hybrid: mechanical commit-back +
 bus emission; intelligence as a separate agent-in-Actions step composing through
 one bus record) but held PROPOSED, open for Max with 4 explicit questions
 (emission target, record schema, intelligence runtime, AUTOFIX_TOKEN re-trigger).
-Composes with the B-0938 PR-review-friction ADR (measures friction; this reduces
+Composes with the 081KSRGFP0008QG0R000J9Y634 PR-review-friction ADR (measures friction; this reduces
 a class + structures the emission the monitor consumes). markdownlint clean.
 ```
 

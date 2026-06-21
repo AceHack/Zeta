@@ -1,6 +1,5 @@
 ---
-id: B-0874
-zetaid: 081KSNY2Z0008QG0R003X1QWYG
+id: 081KSNY2Z0008QG0R003X1QWYG
 priority: P1
 status: open
 title: GitHub Actions recursion as infinite runtime platform — no-PR swarm-mode for agent-loop substrate (Microsoft-subsidizes-OSS hack)
@@ -59,10 +58,10 @@ Turn GitHub Actions into an infinite recursive compute platform for the agent-lo
   - Invokes `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` for `move-next` decision
   - Appends new event to Git via direct push (no PR)
   - Triggers next workflow run via `workflow_dispatch` API
-- Bounded-iteration safety (per Kestrel's push-cycle-limit B-0867.17 framing) — workflows include a max-recursion-depth + abandonment-condition guard
+- Bounded-iteration safety (per Kestrel's push-cycle-limit 081KSNY2Z0008QG0R000121FJ4 framing) — workflows include a max-recursion-depth + abandonment-condition guard
 - Skill distribution: `.claude/skills/agent-loop-swarm/SKILL.md` wraps the swarm-spawn so any GitHub-authenticated agent can invoke it
 - Documentation: rate-limit analysis showing GraphQL vs REST vs Git differential
-- Composes with B-0893 (ZetaID generator) — events use ZetaIDs as primary keys; no merge conflicts via unique filenames
+- Composes with 081KSNY2Z0008QG0R000V24M7E (ZetaID generator) — events use ZetaIDs as primary keys; no merge conflicts via unique filenames
 
 ## Sequencing
 

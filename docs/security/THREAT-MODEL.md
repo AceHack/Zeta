@@ -448,10 +448,10 @@ but a live second attack surface for every vector below — with weaker controls
 than LFG; see scoping note on AceHack at the end of this section).
 
 Attack surface typed as *versioned* discriminated union — not a completeness
-claim: `tools/security/heartbeat-attack-vectors.ts` (B-0032.1, PR #2390).
+claim: `tools/security/heartbeat-attack-vectors.ts` (081KQ3HBZ0008QG0R002ZPXAFQ.1, PR #2390).
 "Exhaustive" in TypeScript means all *declared* variants are handled; it does
 not mean all real-world attack classes are declared. Six vectors tracked as of
-B-0032.3 Aminata review (2026-05-10).
+081KR7JY10008QG0R002PKC6B0 Aminata review (2026-05-10).
 
 | Vector | STRIDE | Surface | Impact | Mitigation | Tier gap |
 |---|---|---|---|---|---|
@@ -459,7 +459,7 @@ B-0032.3 Aminata review (2026-05-10).
 | **Force-push attack** | Tampering + Repudiation | Admin-override bypass of `force-push: false` | History rewritten; poison enters canonical history | `non_fast_forward` ruleset (enforced on LFG) + signed commits | T3: admin bypass remains a gap; no immutable-history guarantee at host level |
 | **Insider threat** | Tampering + Repudiation | Authorized contributor submits poisoned PR | Hard-to-detect poison passes review gate | Review gate + per-commit-attestation | **T2+ gap (AH-1):** at bus-factor 1, review gate = maintainer = insider threat; gate defends T0/T1 only; T2+ requires a second independent reviewer (deferred). Unicode smuggling (invisible-Unicode class) is a sub-class of semantic poison the review gate cannot catch visually. |
 | **Supply-chain** | Tampering + Spoofing | Compromised CI runner with `main`-write permissions | CI-injected poison bypasses human review; cache-poison (Khan class) that affects the CI runner performing heartbeat writes inherits heartbeat-specific blast radius | SLSA L2+ + Sigstore + runner-attestation + signing infrastructure (Otto-346 design intent — **not yet shipped**) | T3: SLSA L2 not shipped; runner attestation deferred; no operational signing today |
-| **Direct-to-main bypass** | Tampering | Task #276 low-gate-without-threat-model path | Review gate removed; all other vectors amplified | This row (B-0032) + Otto-346 sequencing; task #276 BLOCKED on B-0032 close | — (this is the gate, not a residual gap) |
+| **Direct-to-main bypass** | Tampering | Task #276 low-gate-without-threat-model path | Review gate removed; all other vectors amplified | This row (081KQ3HBZ0008QG0R002ZPXAFQ) + Otto-346 sequencing; task #276 BLOCKED on 081KQ3HBZ0008QG0R002ZPXAFQ close | — (this is the gate, not a residual gap) |
 | **Content injection** | Tampering + Elevation of Privilege | Heartbeat file body / frontmatter via any write path | AI state-vector shift via crafted natural language, directive text, or invisible-Unicode payload — syntactically valid, passes schema lint | Semantic-diff-lint + outlier-detection on content + invisible-Unicode gate | **T3 gap (AH-2):** no deployed semantic lint today; this is the primary named threat (cognition-poisoning) with no operational defence |
 
 **AceHack scoping note (AH-3):** All six vectors apply per-fork. AceHack/main
@@ -507,7 +507,7 @@ If task #276 (tick-history direct-to-main) ever ships, minimum controls required
 ### Adversarial review record
 
 The **threat-model-critic** completed adversarial review of this section
-(B-0032.3, 2026-05-10). Ten findings (AH-1..AH-10): 3 critical, 6 important,
+(081KR7JY10008QG0R002PKC6B0, 2026-05-10). Ten findings (AH-1..AH-10): 3 critical, 6 important,
 1 watch — all absorbed into this section above. Follow the escalation path in
 `docs/CONFLICT-RESOLUTION.md` for re-audit cadence.
 

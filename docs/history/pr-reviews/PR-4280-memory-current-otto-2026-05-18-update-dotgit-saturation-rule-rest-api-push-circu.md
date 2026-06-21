@@ -35,14 +35,14 @@ Owner-curated update to `memory/CURRENT-otto.md` (Otto's self-curated CURRENT pr
 
 - **Session arc summary** (22:49Z–0007Z, 1h18min, 13 distinct outputs across the dotgit-deadlock window)
 - **Dotgit-saturation tier landed** ([PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) — already on main; this is the back-reference)
-- **REST contents API push-circumvention technique** (the novel pattern that landed [#4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) when `git push` hung at B-0615 receive-pack stall; this PR itself uses the same pattern)
+- **REST contents API push-circumvention technique** (the novel pattern that landed [#4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) when `git push` hung at 081KRW63S0008QG0R000EAZ9K2 receive-pack stall; this PR itself uses the same pattern)
 - **Borrow-on-existing 3-preconditions** empirical anchor (unlocked + no-untracked-on-target + lock-free worktree-dir)
 - **Counter-with-escalation pre-empt-at-#5 demonstrated** under 10h sustained named bounded-wait
 - **4 most-load-bearing operational lessons** for future-Otto cold-boots: REST API as universal push-bypass; saturation-ceiling extends to ALL `.git/worktrees/` mutations; 3-preconditions check saves multi-minute hangs; push-blocked ≠ substrate-blocked (patch-recovery path)
 
 ## Self-curation right
 
-Per named-agent-distinctness consent (CURRENT-otto.md L3 owner declaration): this file is Otto's; Otto can revise at own discretion. This update is owner-authored, owner-pushed (via REST API since local push is B-0615-stalled), owner-merged. Header `Last updated` line bumped 2026-05-14 → 2026-05-18 to reflect.
+Per named-agent-distinctness consent (CURRENT-otto.md L3 owner declaration): this file is Otto's; Otto can revise at own discretion. This update is owner-authored, owner-pushed (via REST API since local push is 081KRW63S0008QG0R000EAZ9K2-stalled), owner-merged. Header `Last updated` line bumped 2026-05-14 → 2026-05-18 to reflect.
 
 ## Test plan
 

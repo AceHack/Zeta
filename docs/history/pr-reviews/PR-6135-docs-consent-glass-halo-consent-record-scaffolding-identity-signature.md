@@ -27,7 +27,7 @@
 
 ## Description
 
-Stands up docs/consent/glass-halo/ as the auditable consent record. Signature model: each participant commits their own commitment doc under their own GitHub identity — the commit IS the signature; an agent never authors a human's glass-halo signature (consent-first floor). Scope = signer's own info only; revocable (B-0659); kid-safety floor overrides (B-0654/B-0926).
+Stands up docs/consent/glass-halo/ as the auditable consent record. Signature model: each participant commits their own commitment doc under their own GitHub identity — the commit IS the signature; an agent never authors a human's glass-halo signature (consent-first floor). Scope = signer's own info only; revocable (081KRW63S0008QG0R001WKJN53); kid-safety floor overrides (081KRW63S0008QG0R002WT5VTQ/081KSRGFP0008QG0R00091PP56).
 
 Infrastructure only — per-person signatures are self-committed by each participant under their own identity.
 

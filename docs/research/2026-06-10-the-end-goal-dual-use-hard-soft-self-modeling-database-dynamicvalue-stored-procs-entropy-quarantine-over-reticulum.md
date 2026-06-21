@@ -67,6 +67,6 @@ invariant.
 `...finite-resolution-qubits-framework-...` (the execution model) · `...heat-...-landauer-bennett-...`
 (the reversible/tiered storage identity) · `...sequoia-...-soft-tier-placement.md` (the memory engine) ·
 `...room-equals-seed-...` (rooms-as-sign-off) · `...boundary-flow-...` (the membranes/four corners) ·
-B-1022 (the fused arrow) · B-0945 (the substrate it deploys on) · PRIMITIVE-REGISTRY (self-evolving sagas
+081KTQD8A0008QG0R0005EFYPV (the fused arrow) · 081KSV2WD0008QG0R000WNY74Q (the substrate it deploys on) · PRIMITIVE-REGISTRY (self-evolving sagas
 = the stored-proc thread). **Routes to:** Kenji/Kai (VISION.md integration), Soraya/Sova (formalize the
 noninterference invariant), Vera (Q# reference oracle), Max (entropy lineage), Aaron (the product).

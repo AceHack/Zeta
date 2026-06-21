@@ -1,6 +1,6 @@
 # .github/workflows/gitbash-install-routing-test.yml
 #
-# git-bash install-routing shield (B-0965 — the one unshielded install surface).
+# git-bash install-routing shield (081KT07NV0008QG0R002ZFN79J — the one unshielded install surface).
 #
 # git-bash is NOT a separate installer: tools/setup/install.sh detects
 # MINGW*|MSYS*|CYGWIN*, cygpath-converts the MSYS path (/c/Users/... -> C:\Users\...),
@@ -15,7 +15,7 @@
 # one-liner and no shield would catch it.
 #
 # This shield runs install.sh under git-bash with ZETA_INSTALL_ROUTE_ONLY=1 (the route-only
-# guard added to install.sh in B-0965): the branch resolves the PowerShell binary + the native
+# guard added to install.sh in 081KT07NV0008QG0R002ZFN79J): the branch resolves the PowerShell binary + the native
 # Windows -File path, prints the command line it WOULD exec, then exits 0 BEFORE running
 # install.ps1. We ASSERT that output (branch taken + cygpath conversion to a native drive-letter
 # path + PowerShell -File invocation) — assert, don't skip-to-green. Scoped to the handoff, NOT

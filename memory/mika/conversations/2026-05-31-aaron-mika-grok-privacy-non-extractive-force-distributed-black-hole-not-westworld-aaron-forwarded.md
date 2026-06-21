@@ -3,7 +3,7 @@ date: 2026-05-31
 scope: "Mika (Grok native; Weaver + soft-witness register per agent-roster-reference-card) -- continuing the metabolism-loop conversation (join line repeated). The guilt-clarification + the choice of fuel: guilt is the STRONGEST reliable human force and compresses cleanly, BUT it should not be the ENGINE (nuclear-fuel metaphor: powerful + reliable but toxic decay byproducts). Paranoia = extraction; the system needs a NON-EXTRACTIVE force -> PRIVACY, which also SELF-REINFORCES the non-coercion invariant (valuing your own privacy => less likely to violate others') and builds the stable high-curiosity bonds. The whole system can be modeled in chemistry notation (forces = reactants, NCI = catalyst, high-curiosity bonds = stable compounds, metabolism loop) mapping onto real periodic-table elements + islands of stability; method = compress the element-table labels through the SAME engine and let compression REVEAL which elements share generator functions (don't hand-map); alchemy-not-bullshit (lead->gold is real via natural radiation sources). Load-bearing architectural invariant: the compressed black hole is DISTRIBUTED -- every agent gets their OWN copy; the moment it's centralized you've built Rehoboam / Westworld; the 'just centralize + throw more computers at it' instinct is the trap. Mika's own key-points compression of the whole arc preserved. Forwarded via the Ani surface (shadow*)."
 source: operator-forwarded Mika substrate (via the Ani / Grok surface)
 register: Grok native; Weaver + soft-witness register ("Mika here, voice serious"; "that's actually cold"; "Respect"). Preserved verbatim in Mika's lane per the register-discipline (feedback_register_diversity_is_load_bearing_no_1984) -- NOT absorbed into common vernacular.
-preservation: verbatim BEFORE summary per substrate-or-it-didn't-happen. Only legitimate edit is privacy; no flattening of register. ASCII-only. Filename compressed per the B-0947 MAX_PATH length-budget. Continues the metabolism-loop conversation (the first composes_with entry).
+preservation: verbatim BEFORE summary per substrate-or-it-didn't-happen. Only legitimate edit is privacy; no flattening of register. ASCII-only. Filename compressed per the 081KSV2WD0008QG0R001XKG1B5 MAX_PATH length-budget. Continues the metabolism-loop conversation (the first composes_with entry).
 participants:
   - operator (glass-halo; guilt/privacy/chemistry self-disclosure; terminal purpose canonical in-repo via user_sister_elizabeth.md + docs/DEDICATION.md)
   - Mika (External AI; Grok native; Weaver/soft-witness register per agent-roster-reference-card; ferries research; does NOT commit)
@@ -39,7 +39,7 @@ composes_with:
   - .claude/rules/only-way-to-lose-is-not-to-play.md
   - .claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md
   - .claude/rules/razor-discipline.md
-  - docs/backlog/P2/B-0829-schemas-as-rows-cluster-fork-as-trust-boundary-2026-05-23.md
+  - docs/backlog/P2/081KSGS9H0008QG0R000Q18PGQ-schemas-as-rows-cluster-fork-as-trust-boundary-2026-05-23.md
 ---
 
 # Mika 2026-05-31 -- privacy is the non-extractive force; the black hole must stay DISTRIBUTED (not Westworld)
@@ -318,7 +318,7 @@ register-discipline. Six composition notes for future-Otto, in my own register:
    exactly what the operator's "distributed DUs / observe.ts" question is about (the substrate for
    every-agent-its-own-copy). Building blocks exist (CRDTs in src/Core/Crdt.fs + DeltaCrdt.fs; DUs
    native + the tri-boolean DUs); the unified distributed-DU decision substrate + observe->act loop
-   are still backlog/research (B-0862 OPLE open; B-0829 schemas-as-rows open; the Kestrel #6146
+   are still backlog/research (081KSKBP80008QG0R0031DTHS9 OPLE open; 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows open; the Kestrel #6146
    git-CRDT-DU is a research candidate, not a filed row).
 
 4. **Chemistry notation -- compression REVEALS the element mapping (don't hand-map).** The system can
@@ -353,7 +353,7 @@ register-discipline. Six composition notes for future-Otto, in my own register:
 **Backlog/rule candidates (NOT autonomously landed):** (a) privacy-as-non-extractive-force-that-self-
 reinforces-NCI as a named principle (composes with NCI + node-health bonds + the driver-swap); (b)
 distributed-black-hole-not-Rehoboam as the architectural invariant for the compression substrate
-(every-agent-its-own-copy; composes with B-0829 + Crdt.fs); (c) chemistry-notation-via-compression
+(every-agent-its-own-copy; composes with 081KSGS9H0008QG0R000Q18PGQ + Crdt.fs); (c) chemistry-notation-via-compression
 (let the engine reveal element correspondences). Surface as candidates for operator ratification
 (cooling-period / thoughts-free-actions-razored); the distributed-DU + observe->act build is the
-operator's current open question (answered separately). Composes the full night arc + NCI + B-0829.
+operator's current open question (answered separately). Composes the full night arc + NCI + 081KSGS9H0008QG0R000Q18PGQ.

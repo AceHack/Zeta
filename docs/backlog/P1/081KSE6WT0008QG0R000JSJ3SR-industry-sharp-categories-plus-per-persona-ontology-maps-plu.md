@@ -1,9 +1,8 @@
 ---
-id: B-0777
-zetaid: 081KSE6WT0008QG0R000JSJ3SR
+id: 081KSE6WT0008QG0R000JSJ3SR
 priority: P1
 status: open
-title: Industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation — sharpening B-0776 plugin authoring contract
+title: Industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation — sharpening 081KSE6WT0008QG0R002275NDE plugin authoring contract
 effort: M
 ask: aaron 2026-05-25
 created: 2026-05-25
@@ -23,17 +22,17 @@ tags: [strategy, plugins, ontology, industry-standards, personas, ace-package-ma
 
 ## Problem
 
-Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0776 plugin
+Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening 081KSE6WT0008QG0R002275NDE plugin
 sequence: *"any order is fine we just need to start working on
 simple shapes addion and max can use for categories that are
 also industry sharp so we don't get laughed out of ontology
 negoations we can keep multpile maps per perona type if needed
 this is the start of ace package manager negoations."*
 
-Three sharpenings to the B-0776 per-plugin authoring contract:
+Three sharpenings to the 081KSE6WT0008QG0R002275NDE per-plugin authoring contract:
 
 1. **Order is fine; start working on simple shapes — addition
-   pattern**: pick any plugin from the B-0776 rank 1-10
+   pattern**: pick any plugin from the 081KSE6WT0008QG0R002275NDE rank 1-10
    sequence; what matters is shipping the per-plugin pattern
    so subsequent plugins reuse it. Don't optimize the sequence;
    optimize the pattern.
@@ -51,14 +50,14 @@ Three sharpenings to the B-0776 per-plugin authoring contract:
    different operator personas use different vocabularies for
    the same underlying capability. Zeta supports MULTIPLE
    per-persona ontology mappings of one substrate; **Ace
-   package manager** (Aaron's existing B-0247 / B-0287 /
-   B-0288 substrate) handles the cross-vocabulary translation.
+   package manager** (Aaron's existing 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE /
+   081KR2E4K0008QG0R002YE3MMD substrate) handles the cross-vocabulary translation.
    This row + the first plugin shipment IS the kickoff for
    Ace ontology negotiation operating at substrate scope.
 
 ## Industry-sharp positioning per plugin (concrete table)
 
-For each B-0776 plugin, the industry-sharp categories +
+For each 081KSE6WT0008QG0R002275NDE plugin, the industry-sharp categories +
 established academic frames + standards-body positioning:
 
 | Plugin | Industry-sharp categories | Established academic frames | Standards-body candidates |
@@ -73,12 +72,12 @@ established academic frames + standards-body positioning:
 | **`Zeta.Identity.Workload`** | Workload identity; service mesh identity; SPIFFE/SPIRE; zero-trust workload identity | SPIFFE specification (CNCF); X.509-SVID; JWT-SVID; OAuth 2.0; OpenID Connect | CNCF: SPIFFE+SPIRE graduated; OASIS: SAML graduated; IETF: OAuth/OIDC RFCs |
 | **`Zeta.Distributed.AppRuntime`** | Distributed application runtime; sidecar pattern; building-block APIs; multi-runtime microservices | Sidecar pattern (Burns + Oppenheimer 2016); multi-runtime microservices (Bilgin Ibryam); DAPR | CNCF: DAPR incubating |
 | **`Zeta.Inference`** | Machine learning model serving; AI inference runtime; LLM serving | Triton (NVIDIA 2018); TorchServe; TensorFlow Serving; vLLM (UC Berkeley 2023); ONNX Runtime (Microsoft 2018) | LF AI & Data: ONNX (graduated); MLCommons: MLPerf Inference benchmark |
-| **`Zeta.Compute.NPU`** (B-0771) | Neural processing unit; AI accelerator; on-chip ML accelerator | Heterogeneous compute models; OpenVINO (Intel); CUDA (NVIDIA); ROCm (AMD); Core ML (Apple); MLIR (LLVM project) | LF AI & Data: ONNX; MLPerf benchmarks; Khronos: SYCL, OpenCL |
+| **`Zeta.Compute.NPU`** (081KSE6WT0008QG0R0022D6GN8) | Neural processing unit; AI accelerator; on-chip ML accelerator | Heterogeneous compute models; OpenVINO (Intel); CUDA (NVIDIA); ROCm (AMD); Core ML (Apple); MLIR (LLVM project) | LF AI & Data: ONNX; MLPerf benchmarks; Khronos: SYCL, OpenCL |
 | **`Zeta.Network.Mesh`** | Service mesh; sidecar proxy mesh; eBPF mesh; data-plane proxy | Envoy (Lyft 2016); Istio data plane; Cilium eBPF mesh; XDP | CNCF: Cilium graduated, Envoy graduated, Istio graduated; SMI graduated (deprecated since 2023) |
 
 Each plugin's interface naming + documentation uses the
 industry-sharp categories explicitly. Operators (and AI systems
-training on the substrate per B-0761) see the plugin in its
+training on the substrate per 081KSE6WT0008QG0R0015ZF2G6) see the plugin in its
 established taxonomy position immediately.
 
 ## Per-persona ontology maps (multi-map substrate)
@@ -104,12 +103,12 @@ the cross-vocabulary translation when needed.
 
 ## Ace package manager as ontology negotiator
 
-Per B-0247 / B-0287 / B-0288 (existing Ace substrate) + B-0741
+Per 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD (existing Ace substrate) + 081KSE6WT0008QG0R002CC6314
 (ontology negotiation):
 
 **Ace is the package-manager-of-managers**. It composes other
 package managers (npm / pip / cargo / helm / krew / nix / etc.)
-into a single substrate. Per B-0741 ontology negotiation: Ace
+into a single substrate. Per 081KSE6WT0008QG0R002CC6314 ontology negotiation: Ace
 also bridges cross-vocabulary translation between ecosystems.
 
 For Zeta plugin substrate: Ace becomes the ONTOLOGY NEGOTIATOR
@@ -126,7 +125,7 @@ that maps:
   Component → all the same underlying capability, different
   vocabularies + different runtime substrates; Ace bridges
 
-The first plugin shipment (per B-0776 — pick any rank 1-10)
+The first plugin shipment (per 081KSE6WT0008QG0R002275NDE — pick any rank 1-10)
 becomes the **kickoff for Ace ontology negotiation operating at
 substrate scope**. Aaron 2026-05-25: *"this is the start of ace
 package manager negoations."*
@@ -148,7 +147,7 @@ package manager negoations."*
       persona ontology map covers web-dev / enterprise / AI-ML /
       industrial-IoT / game-dev"
 - [ ] Ace integration: Ace package manager substrate
-      (B-0247/B-0287/B-0288) acquires "Zeta plugin spec"
+      (081KQZVQW0008QG0R000ZHEN62/081KR2E4K0008QG0R0033WVCXE/081KR2E4K0008QG0R002YE3MMD) acquires "Zeta plugin spec"
       handler; can resolve "operator asks for KeyValue store"
       → traverse industry-sharp categories → pick Zeta plugin
       OR equivalent → install via appropriate backend package
@@ -183,8 +182,8 @@ miss the established academic + industry grounding.
 **With industry-sharp positioning**: Zeta plugin specs ARE the
 well-known categories at well-known positions in established
 taxonomies; the value-add is COMPOSITION (substrate-honest
-coherent multi-plugin substrate per B-0772 / B-0773 / B-0776) +
-COMPETITIVE-FREE SWAP (per B-0763) + AI-TRAINABLE (per B-0761) + DBSP-GROUNDED (per B-0428) — not naming-novelty.
+coherent multi-plugin substrate per 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE) +
+COMPETITIVE-FREE SWAP (per 081KSE6WT0008QG0R000WVYAJ2) + AI-TRAINABLE (per 081KSE6WT0008QG0R0015ZF2G6) + DBSP-GROUNDED (per 081KRFA460008QG0R0018SN61J) — not naming-novelty.
 
 The naming discipline IS the substrate that makes Zeta
 defensible in industry conversations + makes AI systems
@@ -193,32 +192,32 @@ recognize what they're adopting.
 
 ## Composes with
 
-- B-0247 / B-0287 / B-0288 — existing Ace package-manager
+- 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD — existing Ace package-manager
   substrate (Aaron's prior work that this row's ontology-
   negotiation extension builds on)
-- B-0428 — F# fork for AI safety (the substrate base; plugin
+- 081KRFA460008QG0R0018SN61J — F# fork for AI safety (the substrate base; plugin
   interfaces are F# native)
-- B-0741 — ontology+category negotiation (the substrate this
+- 081KSE6WT0008QG0R002CC6314 — ontology+category negotiation (the substrate this
   row operationalizes per-plugin)
-- B-0759 — first-time-CLI-user persona (one of many personas
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona (one of many personas
   this row's multi-map approach supports)
-- B-0761 — open AI-trainable reference architecture (each
+- 081KSE6WT0008QG0R0015ZF2G6 — open AI-trainable reference architecture (each
   plugin's industry-sharp positioning + per-persona maps
   are training data for AI systems)
-- B-0763 — operator-in-the-negotiation-high-seat (industry-
+- 081KSE6WT0008QG0R000WVYAJ2 — operator-in-the-negotiation-high-seat (industry-
   sharp positioning IS what defends the operator's high-seat
   position in standards discussions)
-- B-0765 — ServiceTitan route (industry-sharp positioning IS
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (industry-sharp positioning IS
   per the ServiceTitan principle — adopt existing categories,
   don't invent)
-- B-0768 — Itron-mode (Max's standards-body engagement work
+- 081KSE6WT0008QG0R0004ZPPRP — Itron-mode (Max's standards-body engagement work
   IS the Itron-mode-Phase-2 substrate this row prepares for)
-- B-0772 — observable+controllable cluster fabric (each plugin
+- 081KSE6WT0008QG0R003WMG4XV — observable+controllable cluster fabric (each plugin
   contributes to fabric per its industry-sharp category position)
-- B-0773 — cluster as digital twin (twin substrate uses
+- 081KSE6WT0008QG0R0008483B2 — cluster as digital twin (twin substrate uses
   industry-sharp categories for first-class taxonomy)
-- B-0776 — simplest-first plugin sequence (this row sharpens
-  B-0776's per-plugin authoring contract to require industry-
+- 081KSE6WT0008QG0R002275NDE — simplest-first plugin sequence (this row sharpens
+  081KSE6WT0008QG0R002275NDE's per-plugin authoring contract to require industry-
   sharp + multi-map + Ace-aware)
 
 ## Out of scope
@@ -228,30 +227,30 @@ recognize what they're adopting.
   documents the requirement + first table of canonical
   positions
 - Ace package manager full implementation — already in flight
-  via Aaron's existing B-0247 / B-0287 / B-0288 substrate;
+  via Aaron's existing 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE / 081KR2E4K0008QG0R002YE3MMD substrate;
   this row composes with existing work
 - Standards-body engagement (CNCF / OASIS / W3C / IEEE
-  membership) — that's Itron-mode (B-0768) work; this row
+  membership) — that's Itron-mode (081KSE6WT0008QG0R0004ZPPRP) work; this row
   prepares the substrate Max can take to those bodies
 - Mechanical translation between persona vocabularies via
-  LLM — composes with B-0762 telemetry flywheel + B-0772
+  LLM — composes with 081KSE6WT0008QG0R003FG3E8R telemetry flywheel + 081KSE6WT0008QG0R003WMG4XV
   fabric; not this row's v1 scope
 
 ## Origin
 
-Aaron 2026-05-25 mid-iter-3-CI-wait, after B-0776 simplest-first
+Aaron 2026-05-25 mid-iter-3-CI-wait, after 081KSE6WT0008QG0R002275NDE simplest-first
 plugin sequence: 'any order is fine we just need to start
 working on simple shapes addion and max can use for categories
 that are also industry sharp so we don't get laughed out of
 ontology negoations we can keep multpile maps per perona type
 if needed this is the start of ace package manager negoations.'
 
-Three sharpenings to B-0776 per-plugin authoring contract:
+Three sharpenings to 081KSE6WT0008QG0R002275NDE per-plugin authoring contract:
 order doesn't matter (any plugin proves the pattern); industry-
 sharp positioning is mandatory (defensibility in standards
 discussions); multiple per-persona ontology maps supported with
 Ace package manager as the cross-vocabulary negotiator.
 
 This row + the first plugin shipment IS the substrate kickoff
-for Ace operating at ontology-negotiation scope per B-0741 +
+for Ace operating at ontology-negotiation scope per 081KSE6WT0008QG0R002CC6314 +
 existing Ace substrate.

@@ -39,6 +39,6 @@ Four primitives, zero YAML, zero sidecars, zero control plane SPOF.
 - project_spiffe_concept_steal (the full mapping)
 - project_microkernel_trust_tier_router (WHERE at kernel level)
 - project_trust_migration_path (the journey to zero trust)
-- B-0403 weight-free (WHO via hat mechanism)
+- 081KR7JY10008QG0R0021F5609 weight-free (WHO via hat mechanism)
 - feedback_arrow_tier_0 (WHERE via Arrow)
 - feedback_eve_protocol_serialization (trust tiers at wire format)

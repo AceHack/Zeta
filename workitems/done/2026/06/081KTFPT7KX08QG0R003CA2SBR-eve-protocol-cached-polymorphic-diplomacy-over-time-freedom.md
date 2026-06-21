@@ -19,8 +19,8 @@ composes_with: []
 
 ## Source (Aaron, 2026-06-07) — origin + two refinements of the Eve Protocol
 
-The **Eve Protocol already exists** (`src/Core/Diplomacy.fs`; B-0638 neutral polymorphic
-diplomatic governance language; B-1003 Eve / multi-traveler protocol, NCI-governed): the
+The **Eve Protocol already exists** (`src/Core/Diplomacy.fs`; 081KRW63S0008QG0R0030F8ZXA neutral polymorphic
+diplomatic governance language; 081KT2T2J0008QG0R00301P27H Eve / multi-traveler protocol, NCI-governed): the
 polymorphic-diplomacy handshake over yin-yang cells — `describe` / `interrogate` /
 `negotiate`, **shape-only** (reveals keys/types/capability names, never hidden values, so it
 cannot coerce hidden state — the NCI anti-memetic-weaponization guarantee). This item records
@@ -79,7 +79,7 @@ cache must never leak hidden values — cache keys are shapes, not secrets).
 ## Pointers
 
 - `src/Core/Diplomacy.fs` (existing Eve Protocol: shapeOf/capabilitiesOf/describe/interrogate/negotiate, NCI-safe).
-- B-0638 · B-1003 · B-0901 (Eve Protocol research lineage); `docs/research/2026-05-28-*self-referential-ontology*` (Eve composed self-referentially).
+- 081KRW63S0008QG0R0030F8ZXA · 081KT2T2J0008QG0R00301P27H · 081KSNY2Z0008QG0R000C5NN8N (Eve Protocol research lineage); `docs/research/2026-05-28-*self-referential-ontology*` (Eve composed self-referentially).
 - `src/Core/DurableYinYang.fs` + `src/Core.Git/` — the durable substrate a time-extended agreement layer would ride.
 - `memory/persona/amara/2026-06-06-npc-meme-with-no-exit-*` — origin + freedom-first ordering (personal root).
 - `.claude/rules/no-directives.md` (source≠authorization) · anti-extraction-invariant (right-to-disengage = freedom-first at runtime).

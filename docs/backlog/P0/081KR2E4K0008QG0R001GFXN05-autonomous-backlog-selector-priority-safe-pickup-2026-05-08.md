@@ -1,6 +1,5 @@
 ---
-id: B-0278
-zetaid: 081KR2E4K0008QG0R001GFXN05
+id: 081KR2E4K0008QG0R001GFXN05
 priority: P0
 status: closed
 closed: 2026-05-08
@@ -15,7 +14,7 @@ decomposition: atomic
 owners: [architect, backlog-shepherd]
 ---
 
-# B-0278 - Autonomous backlog selector
+# 081KR2E4K0008QG0R001GFXN05 - Autonomous backlog selector
 
 Build the read-only selector that runs when the PR queue is empty
 and returns the next safe backlog item to work.

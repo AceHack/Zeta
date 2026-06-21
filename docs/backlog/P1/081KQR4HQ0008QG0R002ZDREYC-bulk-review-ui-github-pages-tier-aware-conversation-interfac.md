@@ -1,11 +1,10 @@
 ---
-id: B-0188
-zetaid: 081KQR4HQ0008QG0R002ZDREYC
+id: 081KQR4HQ0008QG0R002ZDREYC
 priority: P1
 status: closed
 closed: 2026-05-04
-closed_by: "duplicate-of-B-0017 — same-day reviewer-flag (PR #1482) caught that B-0017 (Operational Resonance Dashboard, the bulk-alignment UI within Frontier) already exists for this scope; Aaron's 2026-05-04 architectural extension (GitHub Pages host + tier-aware groupings + conversation interface + local AI paths) folded into B-0017 as 'Aaron 2026-05-04 architectural extension' section; lineage memory file (`feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`) repointed at B-0017"
-title: Bulk-review UI in GitHub Pages — tier-aware + conversation interface + local AI (Aaron 2026-05-04) — CLOSED as duplicate of B-0017
+closed_by: "duplicate-of-081KQ0YZ80008QG0R0003GAYYN — same-day reviewer-flag (PR #1482) caught that 081KQ0YZ80008QG0R0003GAYYN (Operational Resonance Dashboard, the bulk-alignment UI within Frontier) already exists for this scope; Aaron's 2026-05-04 architectural extension (GitHub Pages host + tier-aware groupings + conversation interface + local AI paths) folded into 081KQ0YZ80008QG0R0003GAYYN as 'Aaron 2026-05-04 architectural extension' section; lineage memory file (`feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`) repointed at 081KQ0YZ80008QG0R0003GAYYN"
+title: Bulk-review UI in GitHub Pages — tier-aware + conversation interface + local AI (Aaron 2026-05-04) — CLOSED as duplicate of 081KQ0YZ80008QG0R0003GAYYN
 tier: factory-tooling
 effort: L
 ask: Aaron 2026-05-04 architectural direction
@@ -17,7 +16,7 @@ tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-in
 ---
 
 > **Closed 2026-05-04 same-day — duplicate.** PR #1482 review
-> caught that B-0017 (Operational Resonance Dashboard — the
+> caught that 081KQ0YZ80008QG0R0003GAYYN (Operational Resonance Dashboard — the
 > bulk-alignment UI within Frontier; Aaron 2026-04-25) already
 > exists for this exact scope: maintainer-review UI for bulk
 > architectural-level alignment.
@@ -25,8 +24,8 @@ tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-in
 > Aaron 2026-05-04's architectural extension (GitHub Pages as
 > host + tier-aware bulk-grouping + conversation interface +
 > local AI paths) was substantive **direction-of-future-work for
-> B-0017**, not a separate row. The extension has been folded
-> into B-0017 under the "Aaron 2026-05-04 architectural
+> 081KQ0YZ80008QG0R0003GAYYN**, not a separate row. The extension has been folded
+> into 081KQ0YZ80008QG0R0003GAYYN under the "Aaron 2026-05-04 architectural
 > extension" section, preserving the verbatim quotes and the
 > two-implementation-path framing (browser-LLM bridge vs Zeta-
 > native Bayesian inference seed executor).
@@ -34,21 +33,21 @@ tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-in
 > The lineage memory file
 > `memory/feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`
 > documents the reasoning + verbatim Aaron quotes; it now
-> references B-0017 (not B-0188) as the canonical row.
+> references 081KQ0YZ80008QG0R0003GAYYN (not 081KQR4HQ0008QG0R002ZDREYC) as the canonical row.
 >
 > **Lesson encoded** — the three quality bars on the backlog
 > flywheel (growth + completion + non-noise-when-pulled) require
 > *router-as-inventory before authoring* (per CLAUDE.md skill-
 > router-as-substrate-inventory rule). When a new architectural
 > direction surfaces, search existing backlog rows for prior
-> art before creating new rows. B-0017's existence was findable
+> art before creating new rows. 081KQ0YZ80008QG0R0003GAYYN's existence was findable
 > via "bulk-alignment ui" / "bulk-review ui" / "operational
 > resonance dashboard" — failure mode was authoring without the
 > prior-art search.
 
 ---
 
-# B-0188 — Bulk-review UI in GitHub Pages (CLOSED — see B-0017)
+# 081KQR4HQ0008QG0R002ZDREYC — Bulk-review UI in GitHub Pages (CLOSED — see 081KQ0YZ80008QG0R0003GAYYN)
 
 ## Source
 
@@ -126,7 +125,7 @@ local/browser-based AI (no paid-API cost).
 
 ## Composes with
 
-- `B-0154` (GitHub Pages SEO/discoverability) — adjacent
+- `081KQGDBJ0008QG0R002NV04N9` (GitHub Pages SEO/discoverability) — adjacent
   infrastructure; could share build pipeline; different
   audience (external readers vs. internal maintainer-review).
 - `memory/feedback_bulk_review_ui_in_github_pages_tier_aware_conversation_interface_local_ai_aaron_2026_05_04.md`

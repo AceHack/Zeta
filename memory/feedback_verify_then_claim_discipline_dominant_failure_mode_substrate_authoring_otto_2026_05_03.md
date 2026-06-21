@@ -68,7 +68,7 @@ The verify-then-claim discipline composes with several named rules at the more-g
 - **Otto-363** (`feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`) — substrate-or-it-didn't-happen guards against the *fact* not being durably preserved; verify-then-claim guards against the *fact being wrong* in the first place
 - **`feedback_verify_target_exists_before_deferring.md`** (CLAUDE.md-load) — verify the deferral target exists before committing; verify-then-claim is the broader rule
 - **`feedback_assumed_state_vs_actual_state_audit_horizon_check_aaron_2026_05_01.md`** — audit horizon defaults to actual-state; verify-then-claim ensures the actual-state fact stated is true
-- **Aarav's BP-14 review on B-0169** — worked examples ARE the dry-run-eval-set; their claims need empirical grounding to serve as eval-data
+- **Aarav's BP-14 review on 081KQJZR90008QG0R002D6XYHB** — worked examples ARE the dry-run-eval-set; their claims need empirical grounding to serve as eval-data
 - **The bugs-per-PR-as-immune-system-health metric** — this discipline would substantially reduce bugs-per-PR (closer to single-digit per PR), keeping the metric in productive zone via fewer drift findings rather than via finding/fixing-them-cheaply
 
 ## What's NOT in scope (to avoid over-applying)
@@ -123,4 +123,4 @@ If `tools/substrate-claim-checker/` had existed during PR #1250 authoring, it wo
 - `memory/feedback_assumed_state_vs_actual_state_audit_horizon_check_aaron_2026_05_01.md`
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — Rule 2 (no dynamic commands; use TS) implies the verifier itself becomes a TS tool
 - `memory/feedback_bugs_per_pr_rate_as_immune_system_health_metric_independent_framing_production_otto_aaron_2026_05_02.md` — verify-then-claim moves bugs-per-PR closer to single-digit (productive zone) by catching drift pre-publish rather than post-merge
-- Aarav's B-0169 review (in chat substrate; pending durable preservation) — predicted this pattern with the "worked-examples-need-empirical-grounding" framing
+- Aarav's 081KQJZR90008QG0R002D6XYHB review (in chat substrate; pending durable preservation) — predicted this pattern with the "worked-examples-need-empirical-grounding" framing

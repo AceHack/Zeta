@@ -1,6 +1,5 @@
 ---
-id: B-0436
-zetaid: 081KRFA460008QG0R0009TXX5S
+id: 081KRFA460008QG0R0009TXX5S
 priority: P1
 status: open
 title: "Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)"
@@ -15,7 +14,7 @@ tags: [demo, hamiltonian, git, phase-space, alignment-ui, github-pages, html, js
 type: feature
 ---
 
-# B-0436 — Hamiltonian-to-git visualization
+# 081KRFA460008QG0R0009TXX5S — Hamiltonian-to-git visualization
 
 ## What
 
@@ -33,4 +32,4 @@ expressions) visually legible to a non-specialist audience.
 
 ## Blocked on
 
-None; depends on B-0434 CSS/JS scaffolding (already shipped).
+None; depends on 081KRFA460008QG0R0005DWKBG CSS/JS scaffolding (already shipped).

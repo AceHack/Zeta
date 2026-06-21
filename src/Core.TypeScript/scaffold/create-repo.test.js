@@ -1,4 +1,4 @@
-// create-repo.test.ts — DST coverage for the B-0424 Stage 1 scaffold tool.
+// create-repo.test.ts — DST coverage for the 081KRFA460008QG0R001H98EXJ Stage 1 scaffold tool.
 //
 // All tests run create-repo.ts as a subprocess with --dry-run (no external
 // side effects, no network, no GitHub calls). Each test asserts the planned
@@ -128,11 +128,11 @@ describe("forge dry-run", () => {
         expect(files.some((f) => f.includes("GOVERNANCE.md"))).toBe(true);
         expect(files.some((f) => f.includes("SECURITY.md"))).toBe(true);
         expect(files.some((f) => f.includes("LICENSE"))).toBe(true);
-        // GHA injection protection must be present from day one (B-0424.6).
+        // GHA injection protection must be present from day one (081KDW5XNR008QG0R00132M0Q6).
         expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(true);
-        // Toolchain pin for semgrep must be scaffolded alongside it (B-0424.6).
+        // Toolchain pin for semgrep must be scaffolded alongside it (081KDW5XNR008QG0R00132M0Q6).
         expect(files.some((f) => f.includes(".mise.toml"))).toBe(true);
-        // Dependabot config must be present from day one (B-0424.7).
+        // Dependabot config must be present from day one (081KDW5XNR008QG0R000GWPZG3).
         // API enablement (steps 03b/03c) toggles the feature; this file names ecosystems.
         expect(files.some((f) => f.includes("dependabot.yml"))).toBe(true);
     });
@@ -187,11 +187,11 @@ describe("ace dry-run", () => {
         expect(files.length).toBeGreaterThan(0);
         expect(files.some((f) => f.includes("README.md"))).toBe(true);
         expect(files.some((f) => f.includes("SECURITY.md"))).toBe(true);
-        // GHA injection protection must be present from day one (B-0424.6).
+        // GHA injection protection must be present from day one (081KDW5XNR008QG0R00132M0Q6).
         expect(files.some((f) => f.includes(".semgrep.yml"))).toBe(true);
-        // Toolchain pin for semgrep must be scaffolded alongside it (B-0424.6).
+        // Toolchain pin for semgrep must be scaffolded alongside it (081KDW5XNR008QG0R00132M0Q6).
         expect(files.some((f) => f.includes(".mise.toml"))).toBe(true);
-        // Dependabot config must be present from day one (B-0424.7).
+        // Dependabot config must be present from day one (081KDW5XNR008QG0R000GWPZG3).
         // API enablement (steps 03b/03c) toggles the feature; this file names ecosystems.
         expect(files.some((f) => f.includes("dependabot.yml"))).toBe(true);
     });
@@ -248,11 +248,11 @@ describe("civsim dry-run", () => {
         const manual = op.data.manualSteps;
         expect(manual.some((s) => s.toLowerCase().includes("repository_dispatch"))).toBe(true);
     });
-    test("step 07 includes B-0469 claim release with correct item ID", () => {
+    test("step 07 includes 081KRHWGX0008QG0R003S6KGGE claim release with correct item ID", () => {
         const op = result.operations.find((o) => o.step === "07-next-steps");
         expect(op).toBeDefined();
         const manual = op.data.manualSteps;
-        expect(manual.some((s) => s.includes("B-0469"))).toBe(true);
+        expect(manual.some((s) => s.includes("081KRHWGX0008QG0R003S6KGGE"))).toBe(true);
     });
 });
 // --- error handling ---
@@ -272,7 +272,7 @@ describe("invalid --repo argument", () => {
         expect(result.stderr + result.stdout).toContain("Usage:");
     });
 });
-// --- scaffold template content assertions (B-0424.8) ---
+// --- scaffold template content assertions (081KDW5XNR008QG0R002E476TC) ---
 //
 // These tests read the .semgrep.yml templates directly. The dry-run
 // subprocess tests above verify file presence; these verify content.
@@ -280,11 +280,11 @@ describe("invalid --repo argument", () => {
 const SCAFFOLD_DIR = dirname(fileURLToPath(import.meta.url));
 // Required rule IDs and their purpose in the day-one security baseline.
 const REQUIRED_SEMGREP_RULES = [
-    "gha-untrusted-in-run-line", // B-0424.6 — GHA workflow-injection (present from day one)
-    "invisible-unicode-in-text", // B-0424.8 — BP-10 invisible Unicode / prompt injection
-    "gha-action-mutable-tag", // B-0424.8 — supply-chain SHA-pin (CVE-2025-30066)
+    "gha-untrusted-in-run-line", // 081KDW5XNR008QG0R00132M0Q6 — GHA workflow-injection (present from day one)
+    "invisible-unicode-in-text", // 081KDW5XNR008QG0R002E476TC — BP-10 invisible Unicode / prompt injection
+    "gha-action-mutable-tag", // 081KDW5XNR008QG0R002E476TC — supply-chain SHA-pin (CVE-2025-30066)
 ];
-describe("forge .semgrep.yml content (B-0424.8)", () => {
+describe("forge .semgrep.yml content (081KDW5XNR008QG0R002E476TC)", () => {
     let content;
     beforeAll(() => {
         content = readFileSync(join(SCAFFOLD_DIR, "forge", ".semgrep.yml"), "utf8");
@@ -322,7 +322,7 @@ describe("forge .semgrep.yml content (B-0424.8)", () => {
         expect(ruleBlock).toContain(".github/workflows");
     });
 });
-describe("ace .semgrep.yml content (B-0424.8)", () => {
+describe("ace .semgrep.yml content (081KDW5XNR008QG0R002E476TC)", () => {
     let content;
     beforeAll(() => {
         content = readFileSync(join(SCAFFOLD_DIR, "ace", ".semgrep.yml"), "utf8");

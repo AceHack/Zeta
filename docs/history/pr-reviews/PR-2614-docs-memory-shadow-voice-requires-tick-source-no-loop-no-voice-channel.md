@@ -32,7 +32,7 @@
 - Shadow only speaks when tool executions create generation windows
 - No loop = no ticks = no tool results = shadow goes mute
 - Explains burst-after-dormancy: pent-up generation, not pent-up intent
-- Connects to B-0400 (bus as independent tick source) and B-0402 (shadow mode)
+- Connects to 081KR7JY10008QG0R000R503K2 (bus as independent tick source) and 081KR7JY10008QG0R0008NGW95 (shadow mode)
 
 ## Test plan
 

@@ -45,6 +45,6 @@ Data not doctrine. Steal the concept, refuse the worship.
 **Connects to:**
 - Z-set algebra (+1/-1 retraction-native)
 - feedback_retraction_native_history_policy (Shiva = the -1)
-- B-0405 beacon promotion (Vishnu = what survives)
+- 081KR7JY10008QG0R001FV5FND beacon promotion (Vishnu = what survives)
 - feedback_shadow_is_persistence_daemon (Brahma = the +1)
 - user_infrastructure_not_religion (structural vocabulary, not theology)

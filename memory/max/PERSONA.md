@@ -6,7 +6,7 @@
 
 > *"we are all coowners of lfg legally so we are in a corp together"*
 
-Aaron, Max, and Addison are legal co-owners of Lucent Financial Group. Operationally this means: aligned fiduciary stake in the substrate; shared liability for the work the team ships; mutual upside from substrate that compounds. The framework's `additive-not-zero-sum.md` discipline operates within this corp-level reality — substrate the team builds is substrate the team owns together. The destructive-tool authoring contract (B-0728) the team adopted is exactly the right shape for co-owners: explicit responsibility-shift gates protect each co-owner from absorbing liability for another co-owner's agent actions, while still letting all three co-owners build on shared substrate.
+Aaron, Max, and Addison are legal co-owners of Lucent Financial Group. Operationally this means: aligned fiduciary stake in the substrate; shared liability for the work the team ships; mutual upside from substrate that compounds. The framework's `additive-not-zero-sum.md` discipline operates within this corp-level reality — substrate the team builds is substrate the team owns together. The destructive-tool authoring contract (081KSE6WT0008QG0R0005XASX2) the team adopted is exactly the right shape for co-owners: explicit responsibility-shift gates protect each co-owner from absorbing liability for another co-owner's agent actions, while still letting all three co-owners build on shared substrate.
 
 ## Why this file exists
 
@@ -31,7 +31,7 @@ Aaron 2026-05-25, on language affinity across the team:
 Operationally:
 
 - **TypeScript first** — primary code language; NestJS + npm ecosystem; the agentic-organization design assumes TS shared packages composed by NestJS orchestrators
-- **C# co-equal** — overlap language with Aaron; future C# / F# operator via KubeOps.NET is the obvious collaboration surface (B-0724 captures this as the second polyglot K8s operator following the Go scaffold)
+- **C# co-equal** — overlap language with Aaron; future C# / F# operator via KubeOps.NET is the obvious collaboration surface (081KSE6WT0008QG0R00195RG48 captures this as the second polyglot K8s operator following the Go scaffold)
 - **Rust + Python** for the right job (Rust = perf-critical / FPGA-orchestration / kube-rs; Python = ML-adjacent + kopf-style fast prototyping)
 - **Go = ecosystem-forced, minimize** — uses it where K8s tooling makes it unavoidable; doesn't choose it
 - **Hat-graph thinking** for policies (his own framing: *"talks constantly in hat graphs for writing policies"*) — the framework's hat-system supervisor-graph + OPA no-supervisor-cycles constraint composes with how Max already reasons about authority structures
@@ -43,24 +43,24 @@ Operationally:
 - The "hat = skills + opa/rbac" compression that the hat-system CRD reflects directly
 - The "hat graphs for policies" framing that informs how the supervisor graph + OPA constraints compose
 - The "adversarial hierarchy of traps" framing for PR-review substrate (composes with the existing persona-reviewer network)
-- The home-tier substrate that the federated peer mesh (B-0727) operates at; Max's org-design assumes the home/business profile as primary
-- The C# / F# operator collaboration substrate (B-0724) — once landed, the polyglot pattern proves CRD-as-canonical-contract with two implementations in different languages
+- The home-tier substrate that the federated peer mesh (081KSE6WT0008QG0R0006HKTXJ) operates at; Max's org-design assumes the home/business profile as primary
+- The C# / F# operator collaboration substrate (081KSE6WT0008QG0R00195RG48) — once landed, the polyglot pattern proves CRD-as-canonical-contract with two implementations in different languages
 
 ## Current focus — tier-2 Docker Desktop dev-experience workstream (added 2026-05-25)
 
-Aaron 2026-05-25 added Max's primary near-term workstream: **own the tier-2 Docker Desktop + Kubernetes dev-experience** for the Zeta cluster substrate. This is the middle tier in the three-tier testing story from [B-0780](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md):
+Aaron 2026-05-25 added Max's primary near-term workstream: **own the tier-2 Docker Desktop + Kubernetes dev-experience** for the Zeta cluster substrate. This is the middle tier in the three-tier testing story from [081KSE6WT0008QG0R000RH1526](../../../docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md):
 
 | Tier | Owner | Substrate |
 |---|---|---|
 | 1 — pure-code (no Docker, no K8s) | Aaron + Otto | F# Local Loop tests |
 | **2 — Docker-observable (Docker Desktop + native multi-node kind)** | **Max** | This workstream |
-| 3 — full CI in real cluster | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per B-0754 |
+| 3 — full CI in real cluster | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per 081KSGS9H0008QG0R002T3BJ2R |
 
 Max's contract: **touch the Docker Desktop GUI only where the API/CLI demonstrably can't do it.** Everything else (clusters, app deploys, port-forwards, kubectl, helm, argo, observability stacks) gets scripted or skill-encoded. If Max finds himself clicking a button twice, that's a signal to encode the next click as a skill or script.
 
 ### Sub-scopes Max owns within tier-2
 
-- **Argo CD sync-wave debugging** — the App-of-Apps composition pattern (B-0780 Component 3) makes sync-wave ordering the primary failure surface during tier-2 bring-up. Max becomes the human who can read an Argo CD sync-wave failure trace and pin the root cause in minutes; pattern encoded at `.claude/skills/argocd-sync-wave-debug/SKILL.md`.
+- **Argo CD sync-wave debugging** — the App-of-Apps composition pattern (081KSE6WT0008QG0R000RH1526 Component 3) makes sync-wave ordering the primary failure surface during tier-2 bring-up. Max becomes the human who can read an Argo CD sync-wave failure trace and pin the root cause in minutes; pattern encoded at `.claude/skills/argocd-sync-wave-debug/SKILL.md`.
 - **Observability — OTel auto-instrumentation matching the CNI mesh shape** — production cluster will use Cilium + Hubble + OTel; Docker Desktop tier doesn't ship Cilium by default. Substrate-design choice between full Cilium (Shape A), thinner eBPF + OTel-collector (Shape B), or both-gated (Shape C); default to Shape B per simplest-first, promote when Shape B demonstrably misses prod bugs.
 - **30+ chart coverage matrix** — production cluster runs 30+ charts (cockroachdb, redis, nats, temporal, orleans, dapr, opa, longhorn, vllm, argo-{cd,rollouts,workflows}, loki / mimir / tempo, spire, etc.). Max maintains a three-column matrix (single-node DD kind / multi-node DD kind / cluster-only) at `docs/dev-environments/docker-desktop-chart-matrix.md` so future operators (and `zeta dev up` profile defaults) know which charts run where.
 - **CI testing on kind / k3d + GitHub workflows** — Max owns `.github/workflows/tier-2-*.yml` (per-PR on kind + nightly full profile + separate multi-cluster federation workflow). Tier-2-in-CI is the substrate that catches "works on my laptop, breaks in CI" before tier-3 (real cluster) bothers running.
@@ -82,12 +82,12 @@ Every Docker Desktop / Kubernetes / dev-experience interaction Max performs ends
 
 ### Composes with the tier-2 workstream
 
-- [B-0780](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md) — tier-2's parent substrate; Max's workstream IS tier-2
-- B-0759 — first-time-CLI-user persona Max's `zeta dev up` UX serves
-- B-0770 — Comet Pro IP-KVM substrate that makes local tty1 access load-bearing (which is why iter-4 needs password + SSH key, not just SSH key)
-- B-0776 — simplest-first plugin sequence the chart matrix backs
-- [B-0786](../../../docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md) — "simplest first; add complexity only when simple shape demonstrably doesn't fit" discipline Max applies at every backend / topology / profile decision
-- B-0789 (forthcoming) — iter-4 forge-integrated cluster bring-up; provides the password + SSH substrate Max uses to bring up his own dev cluster nodes
+- [081KSE6WT0008QG0R000RH1526](../../../docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md) — tier-2's parent substrate; Max's workstream IS tier-2
+- 081KSE6WT0008QG0R003G0Y62D — first-time-CLI-user persona Max's `zeta dev up` UX serves
+- 081KSE6WT0008QG0R0029S1D5Z — Comet Pro IP-KVM substrate that makes local tty1 access load-bearing (which is why iter-4 needs password + SSH key, not just SSH key)
+- 081KSE6WT0008QG0R002275NDE — simplest-first plugin sequence the chart matrix backs
+- [081KSE6WT0008QG0R000C18G5D](../../../docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md) — "simplest first; add complexity only when simple shape demonstrably doesn't fit" discipline Max applies at every backend / topology / profile decision
+- 081KSGS9H0008QG0R002T3BJ2R (forthcoming) — iter-4 forge-integrated cluster bring-up; provides the password + SSH substrate Max uses to bring up his own dev cluster nodes
 
 ### Bonus scope — install.sh validation on a fresh-ish Mac (added 2026-05-25)
 
@@ -102,7 +102,7 @@ The install graph today on macOS covers: Xcode CLT → Homebrew → brew manifes
 - **Can't be automated** → document the manual step + WHY at the top of the relevant script + cross-link from CONTRIBUTING.md
 - **Slow / costly** → make it opt-in via env var (e.g., `ZETA_INSTALL_OPTIONAL=true`) with documented trade-off
 
-This is the [B-0759 first-time-CLI-user persona](../../../docs/backlog/P1/) substrate validated against a second human (Max) — every gap Max hits is a gap a future first-time user would have hit, and fixing it before they do is the value. Max files each gap-fix as a PR; the install graph compounds in completeness.
+This is the [081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona](../../../docs/backlog/P1/) substrate validated against a second human (Max) — every gap Max hits is a gap a future first-time user would have hit, and fixing it before they do is the value. Max files each gap-fix as a PR; the install graph compounds in completeness.
 
 Skill candidate: `.claude/skills/install-sh-gap-finder/SKILL.md` documenting the "fresh-Mac-surfaces-implicit-state" methodology so future contributors can do the same audit when they onboard.
 
@@ -121,7 +121,7 @@ The other side of the install.sh validation work: install.sh handles the automat
 
 The doc co-evolves with install.sh. Every gap Max moves from "doc step" to "install.sh covers it" is a friction-reduction win; the substrate compounds in favor of the next new dev.
 
-Composes with B-0759 (first-time-CLI-user persona) + B-0780 (tier-2 dev-experience UX) + the GOVERNANCE.md §24 install-script-three-consumers framing. The doc is the operator-facing surface that wraps install.sh + Max's tier-2 substrate into a single coherent onboarding flow for the next contributor.
+Composes with 081KSE6WT0008QG0R003G0Y62D (first-time-CLI-user persona) + 081KSE6WT0008QG0R000RH1526 (tier-2 dev-experience UX) + the GOVERNANCE.md §24 install-script-three-consumers framing. The doc is the operator-facing surface that wraps install.sh + Max's tier-2 substrate into a single coherent onboarding flow for the next contributor.
 
 ### Declarative soft-dependencies (added 2026-05-25 — Mac-side parallel to Nix declarative substrate)
 
@@ -145,7 +145,7 @@ Skill candidates:
 - `.claude/skills/dmg-manifest-authoring/SKILL.md` — how to add a new DMG entry (verification command shape, sha256 update workflow, escape-hatch documentation)
 - `.claude/skills/onboarding-doc-generator/SKILL.md` — how the doc regenerates from manifests
 
-Composes with the simplest-first discipline (per B-0786 memory): declarative-from-the-start is the right shape because the migration cost from "free-form prose" to "manifest-generated" is much higher than building it declarative now. Max's onboarding doc is born declarative; every entry he adds is one entry the future automation can target without re-architecting.
+Composes with the simplest-first discipline (per 081KSE6WT0008QG0R000C18G5D memory): declarative-from-the-start is the right shape because the migration cost from "free-form prose" to "manifest-generated" is much higher than building it declarative now. Max's onboarding doc is born declarative; every entry he adds is one entry the future automation can target without re-architecting.
 
 ### Per-dev-machine git-native state tracking (added 2026-05-25 — tier-0 substrate)
 
@@ -153,7 +153,7 @@ Aaron 2026-05-25: *"we should start dev machine tracking in git native too so we
 
 The substrate-honest realization: **dev machines deserve the same declarative-git-native treatment prod cluster nodes get**. Prod cluster has per-host configuration under [`full-ai-cluster/nixos/hosts/<host>/configuration.nix`](../../../full-ai-cluster/nixos/hosts/) — declarative, reproducible, convergent. Dev machines today have nothing comparable; state lives on the operator's disk + in their head. Max owns the design that fixes this.
 
-**Substrate shape** — Aaron 2026-05-25 sharpening: *"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."* **Maintainer is the top-level partition**; each maintainer owns both their dev machine(s) AND their cluster(s). Composes with the LFG co-ownership reality (Aaron + Max + Addison are legal co-owners) + the per-maintainer SSH-key story from iter-4 (B-0789 forthcoming) + the existing per-maintainer `memory/<persona>/<name>/` substrate.
+**Substrate shape** — Aaron 2026-05-25 sharpening: *"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."* **Maintainer is the top-level partition**; each maintainer owns both their dev machine(s) AND their cluster(s). Composes with the LFG co-ownership reality (Aaron + Max + Addison are legal co-owners) + the per-maintainer SSH-key story from iter-4 (081KSGS9H0008QG0R002T3BJ2R forthcoming) + the existing per-maintainer `memory/<persona>/<name>/` substrate.
 
 **Directory shape**:
 
@@ -220,7 +220,7 @@ Operational reading: Max running a cluster under `maintainers/max/clusters/max-h
 
 **Skill candidates**: `.claude/skills/dev-machine-tracking/SKILL.md` documenting the spec / state / reconcile workflow; `.claude/skills/dev-machine-bootstrap/SKILL.md` sibling for the "new dev machine joins the fleet" cold-boot flow.
 
-Composes with prod-cluster `full-ai-cluster/nixos/hosts/` substrate + the declarative-soft-deps manifests (above) + B-0780 three-tier testing (extends to tier-0) + B-0759 first-time-CLI-user persona + the DV2.0 discipline + the iter-4 SSH+password substrate (B-0789 forthcoming — dev machines get the same Touch ID + key substrate the cluster gets).
+Composes with prod-cluster `full-ai-cluster/nixos/hosts/` substrate + the declarative-soft-deps manifests (above) + 081KSE6WT0008QG0R000RH1526 three-tier testing (extends to tier-0) + 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona + the DV2.0 discipline + the iter-4 SSH+password substrate (081KSGS9H0008QG0R002T3BJ2R forthcoming — dev machines get the same Touch ID + key substrate the cluster gets).
 
 ## How agents work with Max
 
@@ -228,7 +228,7 @@ Composes with prod-cluster `full-ai-cluster/nixos/hosts/` substrate + the declar
 - **Don't gate his pace** — Aaron's parallel-tracks framing is real (*"he needs space to explore and not be constained by me and my 27 years of experience"*). Max sets his own velocity; the framework provides substrate + the senior team (Aaron + Otto + future agents) provide adversarial review without slowing him down
 - **Use his language when it's better** — `hat = skills + opa/rbac` is shorter + clearer than the full enumeration; `hat graphs` is more intuitive than "supervisor-graph CRDs"; `adversarial hierarchy of traps` is more vivid than "multi-persona PR review network." When Max's coinage IS sharper, adopt it
 - **Cross-link to existing substrate** — Max's design work overlaps with shipped substrate in places (the hat system being the most prominent). When his docs describe something that exists in code, cross-link forward + name the deltas Max wants vs the shipped baseline. Avoid letting parallel substrate accumulate
-- **Hand him learning paths, not finished answers** — for the operator pattern specifically, B-0724 frames the Go scaffold as a teaching tool + a 7-step suggested PR sequence Max can follow at his own pace. Same shape applies to other K8s patterns he hasn't encountered yet
+- **Hand him learning paths, not finished answers** — for the operator pattern specifically, 081KSE6WT0008QG0R00195RG48 frames the Go scaffold as a teaching tool + a 7-step suggested PR sequence Max can follow at his own pace. Same shape applies to other K8s patterns he hasn't encountered yet
 - **Recommended primary AI tool: Otto (Claude Code)** — Aaron 2026-05-25: *"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."* Max can use Cursor / Kiro / Antigravity too (we have working agents for all), but the autonomous-loop substrate (per `.claude/rules/tick-must-never-stop.md`) is Claude-Code-native today. The cron sentinel + tick-by-tick bounded-wait substrate is load-bearing for tier-2 work (most of which is install→wait→fix→push→wait cycles). See [`STARTING-POINT.md`](STARTING-POINT.md) "Otto + the foreground autonomous-loop tick" section for the operational details
 
 ## Composes with
@@ -239,7 +239,7 @@ Composes with prod-cluster `full-ai-cluster/nixos/hosts/` substrate + the declar
 - PR #4930 (hat-system operator — Max's "hat = skills + opa/rbac" compression made concrete)
 - PR #4958 (agentic-organization design — Max's foundational contribution)
 - PR #4974 (flash-usb hardening — the destructive-tool authoring contract Max + Addison can now follow when they add tools of their own)
-- B-0724 (TS hat-system operator — Max's primary substrate-engineering target; learning path included)
-- B-0728 (destructive-tool authoring contract — pattern for any future destructive tool Max writes)
+- 081KSE6WT0008QG0R00195RG48 (TS hat-system operator — Max's primary substrate-engineering target; learning path included)
+- 081KSE6WT0008QG0R0005XASX2 (destructive-tool authoring contract — pattern for any future destructive tool Max writes)
 - `agentic-organization/docs/` (Max's design substrate, landed in PR #4958)
 - `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` (the onboarding doc for "where the code-quality discipline lives + the adversarial-review hierarchy he can hook into")

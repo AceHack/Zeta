@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// audit-descriptions.ts — smallest safe slice for B-0347
+// audit-descriptions.ts — smallest safe slice for 081KR50HA0008QG0R002ZNFQBZ
 // Scans .claude/skills/*/SKILL.md frontmatter descriptions and reports
 // those exceeding the 120-char routing budget target.
 // This is the bounded first step: diagnostic tool only, no mutation.
@@ -61,7 +61,7 @@ function main() {
     droppedEstimate,
     maxLen: Math.max(...reports.map(r => r.descLen)),
     sampleExceeding: exceeding.slice(0, 5).map(r => ({ name: r.name, len: r.descLen, sample: r.sample })),
-    note: "B-0347 smallest slice: audit tool. Next slice: carve + re-run.",
+    note: "081KR50HA0008QG0R002ZNFQBZ smallest slice: audit tool. Next slice: carve + re-run.",
   }, null, 2));
 }
 

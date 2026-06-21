@@ -1,9 +1,8 @@
 ---
-id: B-0714
-zetaid: 081KS923C0008QG0R000ECG5EC
+id: 081KS923C0008QG0R000ECG5EC
 priority: P2
 status: open
-title: "Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap"
+title: "Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from 081KS923C0008QG0R0032VJZPF registry gap"
 created: 2026-05-23
 last_updated: 2026-05-23
 classification: buildable-now
@@ -20,11 +19,11 @@ composes_with:
   - docs/backlog/P2/081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
 ---
 
-# B-0714 — Author 3 missing TLA+ `.cfg` files (Soraya round-51 hand-off)
+# 081KS923C0008QG0R000ECG5EC — Author 3 missing TLA+ `.cfg` files (Soraya round-51 hand-off)
 
 ## Origin
 
-Soraya's sixth autonomous routing tick (2026-05-23 — round 51, after rounds 47-48 substrate-honest holds + round 49 duplicate-of-B-0709 hold + round 50 filed as B-0713 PR #4783 MERGED).
+Soraya's sixth autonomous routing tick (2026-05-23 — round 51, after rounds 47-48 substrate-honest holds + round 49 duplicate-of-081KS923C0008QG0R0032VJZPF hold + round 50 filed as 081KS923C0008QG0R002RH3EH8 PR #4783 MERGED).
 
 ## Finding
 
@@ -38,11 +37,11 @@ Three TLA+ specs exist in `tools/tla/specs/` BUT have **no companion `.cfg` file
 
 TLA+ specs without `.cfg` files are **invisible to CI gate** — TLC cannot be invoked without `SPECIFICATION` + `INVARIANT` blocks + bounded constants in a `.cfg`. The specs look like coverage but provide zero runtime verification.
 
-## Distinct from B-0709
+## Distinct from 081KS923C0008QG0R0032VJZPF
 
-B-0709's body enumerates "11 unregistered specs" at the **registry-coverage axis** (Class 0 drift in `verification-registry.md`). This row is the **runnability axis**: a spec can be registered yet still unrunnable for lack of `.cfg`. The two axes compose; neither subsumes the other.
+081KS923C0008QG0R0032VJZPF's body enumerates "11 unregistered specs" at the **registry-coverage axis** (Class 0 drift in `verification-registry.md`). This row is the **runnability axis**: a spec can be registered yet still unrunnable for lack of `.cfg`. The two axes compose; neither subsumes the other.
 
-After B-0709 + B-0714 both land: 3 new TLA+ specs enter CI gate, +3 numerator on the portfolio metric, denominator stable, ratio improves.
+After 081KS923C0008QG0R0032VJZPF + 081KS923C0008QG0R000ECG5EC both land: 3 new TLA+ specs enter CI gate, +3 numerator on the portfolio metric, denominator stable, ratio improves.
 
 ## Routing decision (Soraya)
 
@@ -68,7 +67,7 @@ Routing table row "state-machine safety invariant" + "concurrency race" both poi
    - `DictionaryStripedCAS.cfg` — SPECIFICATION Spec; INVARIANT Safety; bounded constants Stripes=3, Keys=4, Writers=2
 2. CI wiring step to add the three new specs to the TLC gate job (alongside existing `.cfg` set)
 3. Each `.cfg` validated to TLC-run cleanly locally (`tools/tla/tla2tools.jar` against pinned Java)
-4. After B-0709 registry rows land, this row's `.cfg` work makes those three specs **gate-eligible + portfolio-numerator-incrementing**
+4. After 081KS923C0008QG0R0032VJZPF registry rows land, this row's `.cfg` work makes those three specs **gate-eligible + portfolio-numerator-incrementing**
 
 ## Effort
 
@@ -80,7 +79,7 @@ S each, total ≈ M (one evening). Assignee: kenji.
 - [`tools/tla/specs/ConsistentHashRebalance.tla`](../../../tools/tla/specs/ConsistentHashRebalance.tla) — target needing `.cfg` (63 LOC)
 - [`tools/tla/specs/DictionaryStripedCAS.tla`](../../../tools/tla/specs/DictionaryStripedCAS.tla) — target needing `.cfg` (59 LOC)
 - [`tools/tla/specs/OperatorLifecycleRace.cfg`](../../../tools/tla/specs/OperatorLifecycleRace.cfg) — existing peer `.cfg` for shape reference
-- [`docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md`](B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md) — composes-with: registry rows must also land; B-0709 + B-0714 together close both axes (registry + runnability) for these specs
+- [`docs/backlog/P2/081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md`](081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md) — composes-with: registry rows must also land; 081KS923C0008QG0R0032VJZPF + 081KS923C0008QG0R000ECG5EC together close both axes (registry + runnability) for these specs
 - `memory/soraya/NOTEBOOK.md` round-51 entry (pending append)
 
 ## Substrate-honest framing

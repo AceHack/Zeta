@@ -1,6 +1,5 @@
 ---
-id: B-0529
-zetaid: 081KRMEXM0008QG0R002HBY56V
+id: 081KRMEXM0008QG0R002HBY56V
 priority: P2
 status: open
 title: Tick-shard schema validator vs current practice drift
@@ -12,7 +11,7 @@ type: friction-reducer
 decomposition: atomic
 ---
 
-# B-0529 — Tick-shard schema validator vs current practice drift
+# 081KRMEXM0008QG0R002HBY56V — Tick-shard schema validator vs current practice drift
 
 **Priority:** P2 (non-blocking; validator is not wired to CI).
 **Filed:** 2026-05-15.

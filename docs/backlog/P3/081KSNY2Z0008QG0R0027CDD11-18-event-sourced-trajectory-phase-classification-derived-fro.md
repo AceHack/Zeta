@@ -1,6 +1,5 @@
 ---
-id: B-0867.18
-zetaid: 081KSNY2Z0008QG0R0027CDD11
+id: 081KSNY2Z0008QG0R0027CDD11
 priority: P3
 status: open
 title: Event-sourced trajectory phase classification — setup/execution/maturation/sunset derived from event log (no separate state tracking)
@@ -55,8 +54,8 @@ function classifyTrajectoryPhase(trajectory: string): TrajectoryPhase {
 - Default window = 7 days; tunable
 - Returns phase derived purely from event log (no separate state file)
 - Tests cover: each phase boundary case; empty trajectory; phase-transition under accumulating events
-- Composes with B-0867.2 (event-sourcing layer) — depends on `readEventsForTrajectory`
-- Composes with B-0873 (trajectory-async-review surface) — the review surface reads phase via this classifier
+- Composes with 081KSNY2Z0008QG0R001K6HJ7Z (event-sourcing layer) — depends on `readEventsForTrajectory`
+- Composes with 081KSNY2Z0008QG0R000F0C5V0 (trajectory-async-review surface) — the review surface reads phase via this classifier
 
 ## Substrate-honest framing
 

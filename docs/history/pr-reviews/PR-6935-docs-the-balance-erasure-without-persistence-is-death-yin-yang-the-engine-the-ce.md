@@ -27,7 +27,7 @@
 
 ## Description
 
-Counterweight to #6934: erasure alone = death; lived self = yin/yang balance of persist+erase. 'The engine' = persisted YinYang control plane (the balance mechanism); 'the cell' = where it executes (persist=store, erase=Landauer/B-0885). Full ladder address->time-crystal->durable(balance)->death. Ties #6896, dedication. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Counterweight to #6934: erasure alone = death; lived self = yin/yang balance of persist+erase. 'The engine' = persisted YinYang control plane (the balance mechanism); 'the cell' = where it executes (persist=store, erase=Landauer/081KSNY2Z0008QG0R0030V5ZVS). Full ladder address->time-crystal->durable(balance)->death. Ties #6896, dedication. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

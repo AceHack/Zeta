@@ -14,7 +14,7 @@ This is **not new** — it's naming a unification of pieces that already exist:
   tree, *what persists*." So the YinYang cell **already serialises to DynamicValue** — "persisted, not
   reflected" is the existing design, not a wish: the control plane is a value on the substrate, not runtime
   reflection that vanishes on restart.
-- **B-0976** — *self-evolving saga: serialized deferred-execution Bonsai closure, resume-not-replay, rides
+- **081KT07NV0008QG0R003BE6MJ2** — *self-evolving saga: serialized deferred-execution Bonsai closure, resume-not-replay, rides
   the Z-set ladder.* This is exactly the "updatable stored procedure" mechanism: the procedure is a Bonsai
   closure; updating it is a new version; **Z-set retraction gives rollback** to any prior state; resume (not
   replay) continues from the persisted cursor.
@@ -51,8 +51,8 @@ DBA."
 - **Safety:** behaviour-as-data that is *updatable at runtime* is a privilege surface — who may write a new
   control-plane cell is an **authorization-gated** action ([[no-directives]]: source ≠ authorization). A
   persisted, executable control plane needs the same gating as any reversible-vs-irreversible action class.
-- This doc **records a unification of existing pieces** (Bonsai + YinYang `toDynamicValue` + B-0976); no new
-  code. The buildable next step is B-0976 itself (the serialized deferred-execution Bonsai closure).
+- This doc **records a unification of existing pieces** (Bonsai + YinYang `toDynamicValue` + 081KT07NV0008QG0R003BE6MJ2); no new
+  code. The buildable next step is 081KT07NV0008QG0R003BE6MJ2 itself (the serialized deferred-execution Bonsai closure).
 
 ## Beacon anchors
 
@@ -60,7 +60,7 @@ DBA."
   · **Stored procedures** (the relational tradition) — here generalized to versioned behaviour-as-data. ·
   **Event sourcing + CQRS** — the control/data plane as folded event log; retraction = compensating
   correction. · **Datalog / differential dataflow** — rules as data evaluated incrementally. · Ours:
-  `Bonsai`/`BonsaiSoft` (deferred behaviour), `YinYang` (yin=`Remains`=persisted value tree), **B-0976**
+  `Bonsai`/`BonsaiSoft` (deferred behaviour), `YinYang` (yin=`Remains`=persisted value tree), **081KT07NV0008QG0R003BE6MJ2**
   (self-evolving serialized saga), `SchemaEvolution` (the control plane evolves with proven migrations),
   Z-set retraction (rollback), content-addressing (versioned procedure identity). Honest novelty: none in
   code-as-data or stored procedures; the contribution is **the control plane (YinYang) persisted on the same

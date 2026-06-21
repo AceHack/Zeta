@@ -33,7 +33,7 @@ SDK: MCP IS stateful (Streamable HTTP Mcp-Session-Id sessions, resumable); offic
 Streamable HTTP ONLY; WebSocket/gRPC are non-standard (custom-client-only). So don't switch to gRPC for
 statefulness (already have it). Resolution = two faces: external MCP (Streamable HTTP on ASP.NET generic
 host via ModelContextProtocol.AspNetCore, standard clients) vs cell<->cell (the Zeta bus — git-native
-B-0954 / multiplewebsocket / gRPC; P2P, which MCP is NOT). Bridge: MCP tool handlers dispatch onto the cell
+081KSXN940008QG0R00171YAZW / multiplewebsocket / gRPC; P2P, which MCP is NOT). Bridge: MCP tool handlers dispatch onto the cell
 bus ('MCP can call remote cells'); one host, three faces. Migrate hand-rolled stdio zeta-mcp to SDK = backlog.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

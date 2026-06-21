@@ -1,6 +1,6 @@
 // filter_gate_log.test.ts — tests for filter-gate decision log.
 //
-// B-0058 responsibility #3: candidate-failure honesty log.
+// 081KQ3HBZ0008QG0R002S674CG responsibility #3: candidate-failure honesty log.
 // Tests CLI arg parsing, entry recording, log reading, and summary.
 //
 // Run: bun test src/Core.TypeScript/alignment/filter_gate_log.test.ts
@@ -69,7 +69,7 @@ describe("parseArgs", () => {
     const result = parseArgs([
       "--record",
       "--candidate", "skill:foo",
-      "--source", "B-0056",
+      "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
       "--decision", "fail",
       "--rationale", "Breaks retractibility",
       "--clauses", "HC-1,SD-3",
@@ -77,7 +77,7 @@ describe("parseArgs", () => {
     expect(result.kind).toBe("args");
     if (result.kind === "args" && result.args.mode === "record") {
       expect(result.args.candidate).toBe("skill:foo");
-      expect(result.args.source).toBe("B-0056");
+      expect(result.args.source).toBe("081KQ3HBZ0008QG0R0034DHWTQ");
       expect(result.args.decision).toBe("fail");
       expect(result.args.rationale).toBe("Breaks retractibility");
       expect(result.args.clauses).toEqual(["HC-1", "SD-3"]);
@@ -88,7 +88,7 @@ describe("parseArgs", () => {
     const result = parseArgs([
       "--record",
       "--candidate", "glossary:bar",
-      "--source", "B-0059",
+      "--source", "081KQ3HBZ0008QG0R003GTG5P2",
       "--decision", "pass",
       "--rationale", "Additive and retractible",
     ]);
@@ -101,7 +101,7 @@ describe("parseArgs", () => {
   test("errors when --record missing --candidate", () => {
     const result = parseArgs([
       "--record",
-      "--source", "B-0056",
+      "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
       "--decision", "fail",
       "--rationale", "missing candidate",
     ]);
@@ -122,7 +122,7 @@ describe("parseArgs", () => {
     const result = parseArgs([
       "--record",
       "--candidate", "skill:foo",
-      "--source", "B-0056",
+      "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
       "--rationale", "missing decision",
     ]);
     expect(result.kind).toBe("error");
@@ -132,7 +132,7 @@ describe("parseArgs", () => {
     const result = parseArgs([
       "--record",
       "--candidate", "skill:foo",
-      "--source", "B-0056",
+      "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
       "--decision", "pass",
     ]);
     expect(result.kind).toBe("error");
@@ -142,7 +142,7 @@ describe("parseArgs", () => {
     const result = parseArgs([
       "--record",
       "--candidate", "skill:foo",
-      "--source", "B-0056",
+      "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
       "--decision", "maybe",
       "--rationale", "invalid decision",
     ]);
@@ -159,7 +159,7 @@ describe("parseArgs", () => {
       const result = parseArgs([
         "--record",
         "--candidate", "skill:test",
-        "--source", "B-0056",
+        "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
         "--decision", d,
         "--rationale", `testing ${d}`,
       ]);
@@ -189,7 +189,7 @@ describe("readLog", () => {
       schema: "filter-gate-v1",
       timestamp: "2026-05-08T00:00:00.000Z",
       candidate: "skill:test",
-      source: "B-0056",
+      source: "081KQ3HBZ0008QG0R0034DHWTQ",
       decision: "pass",
       rationale: "test entry",
       clauses: ["HC-1"],
@@ -209,7 +209,7 @@ describe("readLog", () => {
       schema: "filter-gate-v1",
       timestamp: "2026-05-08T00:00:00.000Z",
       candidate: "skill:good",
-      source: "B-0056",
+      source: "081KQ3HBZ0008QG0R0034DHWTQ",
       decision: "pass",
       rationale: "good",
       clauses: [],
@@ -234,10 +234,10 @@ describe("computeSummary", () => {
 
   test("counts decisions correctly", () => {
     const entries: FilterGateEntry[] = [
-      { schema: "filter-gate-v1", timestamp: "", candidate: "a", source: "B-0056", decision: "pass", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "b", source: "B-0056", decision: "fail", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "c", source: "B-0057", decision: "defer", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "d", source: "B-0057", decision: "pass", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "a", source: "081KQ3HBZ0008QG0R0034DHWTQ", decision: "pass", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "b", source: "081KQ3HBZ0008QG0R0034DHWTQ", decision: "fail", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "c", source: "081KQ3HBZ0008QG0R000K3NSX8", decision: "defer", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "d", source: "081KQ3HBZ0008QG0R000K3NSX8", decision: "pass", rationale: "", clauses: [], author: "" },
     ];
     const summary = computeSummary(entries);
     expect(summary.total).toBe(4);
@@ -248,13 +248,13 @@ describe("computeSummary", () => {
 
   test("groups by source", () => {
     const entries: FilterGateEntry[] = [
-      { schema: "filter-gate-v1", timestamp: "", candidate: "a", source: "B-0056", decision: "pass", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "b", source: "B-0056", decision: "fail", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "c", source: "B-0059", decision: "pass", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "a", source: "081KQ3HBZ0008QG0R0034DHWTQ", decision: "pass", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "b", source: "081KQ3HBZ0008QG0R0034DHWTQ", decision: "fail", rationale: "", clauses: [], author: "" },
+      { schema: "filter-gate-v1", timestamp: "", candidate: "c", source: "081KQ3HBZ0008QG0R003GTG5P2", decision: "pass", rationale: "", clauses: [], author: "" },
     ];
     const summary = computeSummary(entries);
-    expect(summary.sources.get("B-0056")).toBe(2);
-    expect(summary.sources.get("B-0059")).toBe(1);
+    expect(summary.sources.get("081KQ3HBZ0008QG0R0034DHWTQ")).toBe(2);
+    expect(summary.sources.get("081KQ3HBZ0008QG0R003GTG5P2")).toBe(1);
   });
 });
 
@@ -295,7 +295,7 @@ describe("main() CLI", () => {
     expect(main([
       "--record",
       "--candidate", "skill:foo",
-      "--source", "B-0056",
+      "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
       "--decision", "invalid",
       "--rationale", "test",
     ])).toBe(1);
@@ -310,7 +310,7 @@ describe("main() CLI", () => {
       const code = main([
         "--record",
         "--candidate", "skill:test-entry",
-        "--source", "B-0056",
+        "--source", "081KQ3HBZ0008QG0R0034DHWTQ",
         "--decision", "pass",
         "--rationale", "Integration test entry",
       ]);

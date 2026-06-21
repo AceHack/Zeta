@@ -472,7 +472,7 @@ describe("factory-health-monitor", () => {
         new Map([
           [
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "docs(B-0347): carve skill descriptions\n\nCo-authored-by: Otto-CLI (Claude) <noreply@anthropic.com>",
+            "docs(081KR50HA0008QG0R002ZNFQBZ): carve skill descriptions\n\nCo-authored-by: Otto-CLI (Claude) <noreply@anthropic.com>",
           ],
           [
             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",

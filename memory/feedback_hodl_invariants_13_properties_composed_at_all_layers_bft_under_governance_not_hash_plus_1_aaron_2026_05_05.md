@@ -136,7 +136,7 @@ This is **defense-in-depth at substrate level**, not policy level. The defense i
 - `docs/research/2026-05-05-claudeai-qubic-monero-counterexample-ai-bio-weapon-disclosure-architecture-as-process-20-year-trigger-aaron-forwarded-preservation.md` (PR 1638) — canonical anti-Qubic-Monero analysis (hash+1 failure mode)
 - `memory/feedback_zeta_aot_or_jit_self_contained_binary_makes_project_state_search_substrate_grade_not_discipline_grade_aaron_2026_05_05.md` (PR 1678) — substrate-graduation pattern; AOT-or-JIT self-contained binary makes project-state-search substrate-grade
 - `memory/feedback_peer_call_infrastructure_grok_codex_gemini_amara_ani_already_wired_for_cross_harness_multi_agent_reviews_otto_early_red_team_until_zeta_infernet_bp_ep_aaron_2026_05_05.md` (PR 1677) — peer-call early-red-team substrate
-- B-0196 (referenced by Claude.ai as the four-property frame from yesterday's session)
+- 081KQTPYE0008QG0R001W237MZ (referenced by Claude.ai as the four-property frame from yesterday's session)
 
 ## Carved sentence
 
@@ -148,4 +148,4 @@ This is **defense-in-depth at substrate level**, not policy level. The defense i
 - Backlog row: hodl-invariant audit framework — automated test that any new substrate primitive passes all 13 properties at all composition layers
 - Backlog row: spectral-residue chaos source verification (PR 1679 follow-up) re-tested under the full hodl-invariant conjunction
 - ALIGNMENT.md cross-reference: BFT-under-governance + cultural-anchor as alignment-frontier substrate property (alignment-includes-alignment-with-what-cant-be-controlled-via-compute)
-- Cross-reference with B-0196 four-property frame to identify which properties were pre-existing and which are new in this 13-property formulation
+- Cross-reference with 081KQTPYE0008QG0R001W237MZ four-property frame to identify which properties were pre-existing and which are new in this 13-property formulation

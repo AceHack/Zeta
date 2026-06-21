@@ -34,7 +34,7 @@ Because the artifact carries the tick *plus* the runner's boundary + residual un
 
 That second thing **is** a production tick. So running a test **advances the same world model** a
 production run does — it reduces (or bounds) uncertainty about that actor's boundary. Test and prod
-differ only in **actor/scope**, not in kind. (This is B-0857 "build machines = prod when prod can
+differ only in **actor/scope**, not in kind. (This is 081KSKBP80008QG0R002J03WGA "build machines = prod when prod can
 update itself," extended one step: **test = prod**, because a saved test-tick is a prod observation.)
 
 ## 3. The artifact: tick + actor-boundary + uncertainty
@@ -114,7 +114,7 @@ measure), the F# core (test-tick artifact), and the keyring/treaty build (its 10
 ## Anchors / ties
 
 DST (deterministic simulation testing — FoundationDB / Will Wilson); record-replay / golden /
-property-based testing as production observations; B-0857 build=prod ("no distinction… when prod can
+property-based testing as production observations; 081KSKBP80008QG0R002J03WGA build=prod ("no distinction… when prod can
 update itself") extended to **test=prod**; the Markov boundary / cell closure (total boundary space);
 SoftValue / uncertainty reduction; provenance / AgencySignature (the actor who ran it); truth-root ≠
 transport-root + tests-are-ticks (Amara's ferry); the 1000×-retest done-bar.

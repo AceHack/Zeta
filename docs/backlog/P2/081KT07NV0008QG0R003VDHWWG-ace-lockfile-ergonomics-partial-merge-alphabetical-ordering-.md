@@ -1,6 +1,5 @@
 ---
-id: B-0975
-zetaid: 081KT07NV0008QG0R003VDHWWG
+id: 081KT07NV0008QG0R003VDHWWG
 priority: P2
 status: open
 title: Ace lockfile ergonomics — partial-merge, alphabetical ordering, leaf-install lock (deferred from slice 5.3)
@@ -20,7 +19,7 @@ Three small lockfile ergonomics deferred from slice 5.3 (which keeps the lock mi
 full-graph, install-ordered, written only for dependency installs):
 
 1. **Partial-merge** — add/bump one dependency without a full re-solve, holding the rest of
-   the lock pinned (the primitive `ace update --package <name>` (B-0973) builds on).
+   the lock pinned (the primitive `ace update --package <name>` (081KT07NV0008QG0R002GV3MXW) builds on).
 2. **Alphabetical ordering** — emit `nodes` sorted by name with the install order
    re-derived at `--frozen` time (cleaner diffs), instead of slice-5.3's
    deterministic-install-order serialization.
@@ -47,8 +46,8 @@ guarantee. Operator: *"everything we skipped lets slice off for further enhancem
 ## Composes with
 
 - Slice 5.3 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
-- B-0973 (`ace update` — consumes the partial-merge primitive)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R002GV3MXW (`ace update` — consumes the partial-merge primitive)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)
 
 ## Progress — leaf-install lock shipped by #6416 (slice 5.4)
 
@@ -58,5 +57,5 @@ Item #3 (leaf-install lock) landed in slice 5.4: `buildLeafLockfile(root)` →
 `ace update` on a leaf writes it too.
 
 **Still deferred** (row stays open): #1 partial-merge (the single-package-bump primitive
-B-0973 `--package` builds on) and #2 alphabetical node ordering with re-derived install
+081KT07NV0008QG0R002GV3MXW `--package` builds on) and #2 alphabetical node ordering with re-derived install
 order. The lock format is unchanged (`format_version: 1`, deterministic install order).

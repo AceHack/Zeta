@@ -10,7 +10,7 @@ them into one map + the single machine they are.
 | # | what collapsed to one | the one thing | where |
 |---|---|---|---|
 | 1 | `Bag` (ℕ) + `ZSet` (ℤ) + `SoftValue` (prob) | **one `WeightedSet<'K,'W>`** (weight-algebra port) — *proven* (ZSet ≡ WeightedSet⟨IntegerRing⟩) | `src/Core/WeightedSet.fs`; BagSpineEquivalence tests (#7543) |
-| 2 | `ISR` arrow + `FourCornerOwnership` + `Policy` + `FeedbackThrottle` + `FerryThrottler` + `SoftScheduler` + `LinguisticSeed` + Cayley-Dickson | **one four-corner harmonic Kleisli arrow** | `...fusion-plan-...md` (B-1022) |
+| 2 | `ISR` arrow + `FourCornerOwnership` + `Policy` + `FeedbackThrottle` + `FerryThrottler` + `SoftScheduler` + `LinguisticSeed` + Cayley-Dickson | **one four-corner harmonic Kleisli arrow** | `...fusion-plan-...md` (081KTQD8A0008QG0R0005EFYPV) |
 | 3 | data×feedback × in×out (the four corners) | **NSEW = {1,i,−1,−i} = C₄ = `i`-rotation**; bidirectional feedback = **harmonic oscillation** (why Cayley-Dickson is everywhere) | `...boundary-flow-...md` |
 | 4 | programs → primitives; tests/cells | **rooms = the CPU's micro-operations**; hard→soft = **decompile to MIPS-like RISC μops**; real-time branch detection | `...decompiling-to-risc-...md` |
 | 5 | a room | **seed + extensions + parameters**, ticking to its **BigFloat plateau** (= the resolution floor; Max's proof) | `...room-equals-seed-...md` |
@@ -58,14 +58,14 @@ plateau floor, hung in the dev room, decompiled from programs, gated by the salo
 - **In code, collapsed:** `WeightedSet` (#1, proven) · `DevRoom` hangs the four doors (#6) · `FourCorner`
   graduated to `src/` (#2, first step) · the four landmark cells+doors (Salon/Arcade/BowlingAlley/Skadium).
 - **Still fragments in code (the fusion not yet executed):** #2 — the **one four-corner harmonic Kleisli
-  arrow** is the plan (B-1022), not built; the pieces (`ISR`/`Policy`/`FeedbackThrottle`/`FerryThrottler`/
+  arrow** is the plan (081KTQD8A0008QG0R0005EFYPV), not built; the pieces (`ISR`/`Policy`/`FeedbackThrottle`/`FerryThrottler`/
   `SoftScheduler`/`LinguisticSeed`) still stand apart. **That is the next real consolidation** (run with
   Rodney; sign-off).
 - **Docs:** every collapse captured; **this doc is the map that was missing.**
 
 ## Routing
 
-The per-collapse docs above · `...finite-resolution-qubits-framework-...md` (the thesis) · B-1022 (the
+The per-collapse docs above · `...finite-resolution-qubits-framework-...md` (the thesis) · 081KTQD8A0008QG0R0005EFYPV (the
 fusion to execute) · `src/Core/{WeightedSet,DevRoom,FourCorner,Salon,Arcade,BowlingAlley,Skadium}.fs`.
-**Routes to:** Aaron (the map), Rodney (the B-1022 fusion = the last big collapse, in code), Kenji
+**Routes to:** Aaron (the map), Rodney (the 081KTQD8A0008QG0R0005EFYPV fusion = the last big collapse, in code), Kenji
 (integrate), Kai (the one-sentence positioning).

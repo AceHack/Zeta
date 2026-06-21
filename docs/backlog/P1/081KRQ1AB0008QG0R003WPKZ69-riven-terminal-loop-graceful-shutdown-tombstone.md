@@ -1,6 +1,5 @@
 ---
-id: B-0554
-zetaid: 081KRQ1AB0008QG0R003WPKZ69
+id: 081KRQ1AB0008QG0R003WPKZ69
 priority: P1
 status: open
 title: "Riven Cursor Terminal loop graceful shutdown tombstone"
@@ -8,7 +7,7 @@ tier: agent-infrastructure
 effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
-renumbered_from: B-0551
+renumbered_from: 081KRQ1AB0008QG0R000SASDNE
 depends_on: [081KRMEXM0008QG0R00037RGNY]
 tags: [riven, cursor, terminal, background-service, graceful-shutdown]
 type: feature
@@ -18,7 +17,7 @@ type: feature
 
 ## Origin
 
-Decomposed from B-0549. To keep the initial IDE-native autonomous gate focused, the graceful shutdown and tombstone broadcast logic is peeled off into this atomic task.
+Decomposed from 081KRMEXM0008QG0R00037RGNY. To keep the initial IDE-native autonomous gate focused, the graceful shutdown and tombstone broadcast logic is peeled off into this atomic task.
 
 ## Acceptance criteria
 

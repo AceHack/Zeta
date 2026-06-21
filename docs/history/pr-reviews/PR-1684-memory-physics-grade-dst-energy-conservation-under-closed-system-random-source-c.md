@@ -403,8 +403,8 @@ PRIOR ART IN REPO (compose with, don't duplicate):
 - memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md (Aaron 2026-04-22) -- foundational. "this is a better set theory cantors bettery than zfc and only on trapped contrdiction or non contridiction who know probalby infer.net quatium belief propagation". Z-set -1 weight = retraction = Lawvere-escape. Cites Priest LP / Weber / Brady / Leifer-Poulin 2008 / Hastings 2007.
 - docs/research/2026-05-04-b-0189-q-sharp-bayesian-bp-ep-runtime-literature-survey.md
 - memory/feedback_dbsp_zsets_multi_algebra_aperiodic_tile_stops_infinite_recursion_into_monad_or_monk_not_infinity_stones_aaron_2026_05_05.md
-- docs/backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor.md
-- docs/backlog/P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor.md
+- docs/backlog/P3/081KQGDBJ0008QG0R002X4AFA0-modal-logic-for-retractability-quantum-rodney-razor.md
+- docs/backlog/P2/081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor.md
 - docs/research/save-state-as-retractibility-absorb-2026-04-21.md
 - memory/feedback_grey_hole_substrate_information_theoretic_event_horizon_white_black_entangled.md
 

@@ -1,7 +1,7 @@
 ---
 title: Actor model as factory-operational-register lens — applicability assessment
 date: 2026-05-10
-backlog: B-0040
+backlog: 081KQ3HBZ0008QG0R000RP1WDN
 prior-art: docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md
 status: synthesis (draft, awaiting Aaron sign-off before external publication)
 
@@ -11,7 +11,7 @@ status: synthesis (draft, awaiting Aaron sign-off before external publication)
 
 **Scope.** Structured applicability assessment for using actor-model vocabulary (Hewitt 1973
 / Meijer / Akka / Orleans / Service Fabric) as a *naming lens* for factory-internal
-coordination patterns. This doc outputs three things the backlog item (B-0040) requires:
+coordination patterns. This doc outputs three things the backlog item (081KQ3HBZ0008QG0R000RP1WDN) requires:
 
 1. **Applicability assessment** — is the lens productive for this factory?
 2. **Recommended vocab crossings** — which actor-model terms cross cleanly to factory vocabulary?
@@ -23,7 +23,7 @@ Prior-art catalog: `docs/research/actor-model-hewitt-meijer-akka-orleans-service
 three-filter disposition). This synthesis doc is the applicability layer on top of that catalog;
 it does not repeat the catalog's content.
 
-**Non-commitment constraint (scope item (f), B-0040):** The factory does NOT adopt any specific
+**Non-commitment constraint (scope item (f), 081KQ3HBZ0008QG0R000RP1WDN):** The factory does NOT adopt any specific
 actor framework. The vocabulary crossings in §2 are naming patterns, not implementation
 commitments. Rejections in §3 exist precisely to enforce this boundary.
 
@@ -38,7 +38,7 @@ The factory's fully-async-agentic-AI / no-bottlenecks performance frame (Layer 4
 async-message-passing / supervision-tree / inconsistency-robustness design converged
 independently. Hewitt developed the actor model in 1973 to solve concurrency; the factory
 rediscovered structurally identical constraints via the superfluid / no-friction frame
-(B-0038). Convergent-engineering, not after-the-fact import.
+(081KQ3HBZ0008QG0R0006NJP4K). Convergent-engineering, not after-the-fact import.
 
 Three-filter verdict (from prior-art catalog; reproduced here for synthesis completeness):
 
@@ -194,7 +194,7 @@ message-routing layer.
 
 **Risk if adopted:** New contributors would assume an actor runtime exists and might
 propose adopting one (Akka / Orleans) as the factory's "proper" implementation, importing
-the full dependency stack. B-0040 explicitly prohibits framework adoption.
+the full dependency stack. 081KQ3HBZ0008QG0R000RP1WDN explicitly prohibits framework adoption.
 
 **Correct vocabulary instead:** "orchestrated agent pool" or "multi-agent loop" — these
 describe the actual architecture without implying a framework.
@@ -277,7 +277,7 @@ measurables more precisely.
 
 ## 5. Publication-venue suitability
 
-B-0040 identified "workshop paper on agent-orchestration-patterns borrowing from actor
+081KQ3HBZ0008QG0R000RP1WDN identified "workshop paper on agent-orchestration-patterns borrowing from actor
 model" as the candidate venue. This synthesis doc, combined with the prior-art catalog,
 has the required components:
 
@@ -286,8 +286,8 @@ has the required components:
 - Novel mapping (factory-internal concepts ↔ actor-model vocabulary)
 - Explicit scope boundary (non-framework-adoption; vocabulary-only)
 
-**Gate per B-0040:** Aaron sign-off required before external publication. Factory-internal
-use is authorized under the roommate-register per B-0038 precedent.
+**Gate per 081KQ3HBZ0008QG0R000RP1WDN:** Aaron sign-off required before external publication. Factory-internal
+use is authorized under the roommate-register per 081KQ3HBZ0008QG0R0006NJP4K precedent.
 
 ---
 
@@ -304,8 +304,8 @@ From the prior-art catalog (preserved; no commitment):
 ## Pointers
 
 - Prior-art catalog: `docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md`
-- Backlog row: `docs/backlog/P2/B-0040-actor-model-factory-register-lens.md`
-- Composes with: B-0038 (superfluid + persistable\* kernel-vocabulary)
-- Composes with: B-0251 (durable-computation-stack; Orleans framing must align)
+- Backlog row: `docs/backlog/P2/081KQ3HBZ0008QG0R000RP1WDN-actor-model-factory-register-lens.md`
+- Composes with: 081KQ3HBZ0008QG0R0006NJP4K (superfluid + persistable\* kernel-vocabulary)
+- Composes with: 081KQZVQW0008QG0R000PPQ3MH (durable-computation-stack; Orleans framing must align)
 - Memory: `user_meno_persistence_anchor.md` — §2.6 crossing formalises this instance
 - Governance: `GOVERNANCE.md §2` — docs read as current state; edit in place to reflect current truth

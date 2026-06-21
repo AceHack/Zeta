@@ -1,6 +1,6 @@
 ---
 pr_number: 3653
-title: "backlog(B-0548): QG isomorphism Step 1.5 \u2014 construct strength \u03b8:M(\u03a9)\u2192\u03a9 + A-lifting \u00c3:Zeta\u2192Zeta"
+title: "backlog(081KRQ1AB0008QG0R002DQBGZF): QG isomorphism Step 1.5 \u2014 construct strength \u03b8:M(\u03a9)\u2192\u03a9 + A-lifting \u00c3:Zeta\u2192Zeta"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T00:56:02Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-16T01:00:18Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3653: backlog(B-0548): QG isomorphism Step 1.5 — construct strength θ:M(Ω)→Ω + A-lifting Ã:Zeta→Zeta
+# PR #3653: backlog(081KRQ1AB0008QG0R002DQBGZF): QG isomorphism Step 1.5 — construct strength θ:M(Ω)→Ω + A-lifting Ã:Zeta→Zeta
 
 ## PR description
 
@@ -36,22 +36,22 @@ This row scopes the open Step 1.5 research with:
 
 ## ID allocation
 
-- B-0548 chosen after `refresh-before-decide` check
-- Latest on `origin/main`: B-0547
-- In-flight PRs scanned: no claim on B-0548
+- 081KRQ1AB0008QG0R002DQBGZF chosen after `refresh-before-decide` check
+- Latest on `origin/main`: 081KRMEXM0008QG0R001VGNET5
+- In-flight PRs scanned: no claim on 081KRQ1AB0008QG0R002DQBGZF
 - No `last_updated` bumps on existing rows (new file only; no content edits to other rows)
 
 ## Composes with
 
-- [B-0543](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) (proof-strategy umbrella)
-- [B-0544](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md) (parent Step 1 row)
+- [081KRMEXM0008QG0R002YSPW1X](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) (proof-strategy umbrella)
+- [081KRMEXM0008QG0R003YWZC21](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md) (parent Step 1 row)
 - The full PR chain that produced the substrate-honest formulation: [#3614](https://github.com/Lucent-Financial-Group/Zeta/pull/3614) → [#3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626) → [#3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636) → [#3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) → [#3646](https://github.com/Lucent-Financial-Group/Zeta/pull/3646) → [#3650](https://github.com/Lucent-Financial-Group/Zeta/pull/3650)
 
 ## Test plan
 
 - [x] Local markdownlint-cli2 passes
 - [x] Pre/post-commit ls-tree canary clean (53/53 root)
-- [x] ID allocation verified against `origin/main` + in-flight PRs (B-0548 free)
+- [x] ID allocation verified against `origin/main` + in-flight PRs (081KRQ1AB0008QG0R002DQBGZF free)
 - [ ] CI green (docs-only)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -62,8 +62,8 @@ This row scopes the open Step 1.5 research with:
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0548) scoping the deferred Step 1.5 research from the PR #3614 chain: constructing a strength `θ:M(Ω)→Ω` and/or A-lifting `Ã:Zeta→Zeta` so the M/A coherence laws become type-correct.
+Adds a new P2 backlog row (081KRQ1AB0008QG0R002DQBGZF) scoping the deferred Step 1.5 research from the PR #3614 chain: constructing a strength `θ:M(Ω)→Ω` and/or A-lifting `Ã:Zeta→Zeta` so the M/A coherence laws become type-correct.
 
 **Changes:**
-- New docs/backlog/P2 row file with frontmatter (id, P2, depends_on B-0544, composes_with B-0543)
+- New docs/backlog/P2 row file with frontmatter (id, P2, depends_on 081KRMEXM0008QG0R003YWZC21, composes_with 081KRMEXM0008QG0R002YSPW1X)
 - Documents 3 resolution paths, the closure-operator obstruction, acceptance criteria, prior art

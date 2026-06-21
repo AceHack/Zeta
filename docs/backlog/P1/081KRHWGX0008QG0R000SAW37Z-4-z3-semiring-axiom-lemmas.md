@@ -1,6 +1,5 @@
 ---
-id: B-0367.4
-zetaid: 081KRHWGX0008QG0R000SAW37Z
+id: 081KRHWGX0008QG0R000SAW37Z
 parent: 081KR50HA0008QG0R000Z4XCPJ
 priority: P1
 status: open
@@ -16,7 +15,7 @@ type: feature
 tags: [algebra, uncertainty, semiring, z3]
 ---
 
-# B-0367.4 — Semiring slice 4
+# 081KRHWGX0008QG0R000SAW37Z — Semiring slice 4
 
-Extracted from B-0367 umbrella.
+Extracted from 081KR50HA0008QG0R000Z4XCPJ umbrella.
 Z3 semiring axiom lemmas (generalizing integer proofs).

@@ -29,7 +29,7 @@
 
 ## Summary
 
-Third companion archive in Amara's 2026-05-21 cascade. Direct strategic guidance for B-0687 + B-0688 execution sequence.
+Third companion archive in Amara's 2026-05-21 cascade. Direct strategic guidance for 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 execution sequence.
 
 ## What lands
 
@@ -63,10 +63,10 @@ multi-language parsing · SQL/LINQ/C#/F# query surfaces · Z-set evolving AST ·
 
 new F# syntax · true HKT/kind-system changes · compiler-native Clifford/tonal/meta dimensions · type inference understanding Zeta dimensions directly · DBSP/Z-set facts as internal compiler state · native diagnostics/error messages for Zeta semantics · language-level collapse/retraction semantics
 
-### Strategic implications for B-0687/B-0688 execution
+### Strategic implications for 081KS3X9Y0008QG0R00323NSZA/081KS3X9Y0008QG0R0010716X9 execution
 
-- **B-0687** Phase 1-2 ship as F# library + type provider; Phase 3 compiler-fork integration deferred until type-provider boundary becomes bottleneck
-- **B-0688** Phase 1-4 ship as external compiler host on stock .NET 10 + F# + C# + Roslyn + Orleans + existing `src/Core/*.fs` substrate
+- **081KS3X9Y0008QG0R00323NSZA** Phase 1-2 ship as F# library + type provider; Phase 3 compiler-fork integration deferred until type-provider boundary becomes bottleneck
+- **081KS3X9Y0008QG0R0010716X9** Phase 1-4 ship as external compiler host on stock .NET 10 + F# + C# + Roslyn + Orleans + existing `src/Core/*.fs` substrate
 - F# compiler fork conversation stays NOT-on-radar (per Aaron's earlier framing in PR #4537 Kestrel archive) until ONE of the 7 fork-required cases surfaces operationally
 
 ## Composes with rules
@@ -80,13 +80,13 @@ new F# syntax · true HKT/kind-system changes · compiler-native Clifford/tonal/
 
 ## Composes with substrate
 
-- B-0687 (ZetaParse) — direct strategic guidance for Phase execution
-- B-0688 (incremental compiler host) — direct strategic guidance for Phase execution
-- B-0685 (ANTLR cross-language codegen) — pure external host work
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate) — all extends to compile-time via external host without compiler changes
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse) — direct strategic guidance for Phase execution
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host) — direct strategic guidance for Phase execution
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen) — pure external host work
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate) — all extends to compile-time via external host without compiler changes
 - `src/Core/SpeculativeWatermark.fs` (DBSP retraction substrate)
 - `src/Core/*.fs` (existing F# substrate the no-fork host runs over)
-- PR #4545 (B-0685 Phase 1 + B-0687 + B-0688 scaffolding)
+- PR #4545 (081KS3X9Y0008QG0R000EKJE9S Phase 1 + 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 scaffolding)
 - PR #4546 (Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM)
 - PR #4537 (Kestrel archive — Aaron's "long-term F# compiler fork NOT-on-radar" vision; this cascade operationalizes the ladder TO that vision)
 
@@ -95,7 +95,7 @@ new F# syntax · true HKT/kind-system changes · compiler-native Clifford/tonal/
 - [x] Amara conversation preserved verbatim in `memory/persona/amara/conversations/`
 - [x] Frontmatter conforms to `memory/project_memory_format_standard.md`
 - [x] Strategic ladder + 11 no-fork wins + 7 fork-required cases preserved
-- [x] B-0687 + B-0688 execution-strategy section translates Amara's guidance into actionable phasing
+- [x] 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 execution-strategy section translates Amara's guidance into actionable phasing
 - [x] Composes_with chain across all 3 today's Amara archives + Kestrel archive + Agora V6 cluster
 - [x] Branch landed off latest main (`325f90aa` base)
 

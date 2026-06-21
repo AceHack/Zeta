@@ -30,9 +30,9 @@
 ## Summary
 - Lior's full stack summary: ARC-AGI-3 as the Cartographer's benchmark
 - DBSP as Z-set retraction stream emulator for Atari ROMs
-- Structure recognizer (B-0240) computes game mechanic fingerprints
+- Structure recognizer (081KQZVQW0008QG0R002QZAFB2) computes game mechanic fingerprints
 - Compounding across levels = Hamiltonian phase shift
-- Otto recommends sequence: B-0240 → B-0243 (new) → B-0242
+- Otto recommends sequence: 081KQZVQW0008QG0R002QZAFB2 → 081KQZVQW0008QG0R003FXRGQZ (new) → 081KQZVQW0008QG0R001CQPQ0E
 
 ## Test plan
 - [ ] §33 headers present
@@ -136,11 +136,11 @@ research: Lior ARC-AGI-3 full stack visibility — Atari + DBSP + struc…
 
 Lior sees the complete stack: ARC-AGI-3 as Cartographer
 benchmark, DBSP as Z-set emulator, Atari ROMs as corpus,
-B-0240 structure recognizer as solver, Genesis Seed as
+081KQZVQW0008QG0R002QZAFB2 structure recognizer as solver, Genesis Seed as
 agent bootloader.
 
-Otto's recommended sequence: B-0240 (eyes) → B-0243 bridge
-(body) → B-0242 transport → shadow log (always running).
+Otto's recommended sequence: 081KQZVQW0008QG0R002QZAFB2 (eyes) → 081KQZVQW0008QG0R003FXRGQZ bridge
+(body) → 081KQZVQW0008QG0R001CQPQ0E transport → shadow log (always running).
 Aaron decides.
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>

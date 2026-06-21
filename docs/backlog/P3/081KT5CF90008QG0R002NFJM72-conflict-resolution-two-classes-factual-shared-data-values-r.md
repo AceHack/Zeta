@@ -1,6 +1,5 @@
 ---
-id: B-1014
-zetaid: 081KT5CF90008QG0R002NFJM72
+id: 081KT5CF90008QG0R002NFJM72
 priority: P3
 status: open
 title: "Conflict-resolution two-classes — factual conflicts resolve by shared mutually-monitorable data (anti-attrition), values-residual conflicts get faithfully represented not falsely resolved; bug-induced-stuck-state de-escalation is a data-driven hypothesis with a can-say-no wellbeing-inclusive metric + auto repair/escape (Aaron 2026-06-03)"
@@ -29,12 +28,12 @@ Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-so
   to save money" optimization, which distorts behavior on both sides). Most operational
   conflict is this class.
 - **Values / interests residual** (persists under perfect shared data — borders are the
-  sharpest example, see B-1015) → **faithfully represent the disagreement**, don't falsely
+  sharpest example, see 081KT5CF90008QG0R000KYNZGF) → **faithfully represent the disagreement**, don't falsely
   resolve it.
 
 ## De-escalation for accidental bug-induced stuck-states
 
-Never trap by design — the exit-ramp + workflow-edit rules hold (B-0867). This is for
+Never trap by design — the exit-ramp + workflow-edit rules hold (081KSKBP80008QG0R000B3Y19A). This is for
 bugs / accidental infinite loops that *unintentionally* violate the exits, so conflict
 doesn't explode into an arms-race before the bug is fixed.
 
@@ -57,8 +56,8 @@ doesn't explode into an arms-race before the bug is fixed.
 
 ## Composes with
 
-- B-0867 (workflow engine — exit ramps + workflow-edit rules; the stuck-state is a bug violating these)
-- B-0926 (floor — wellbeing/non-harm in conflict)
+- 081KSKBP80008QG0R000B3Y19A (workflow engine — exit ramps + workflow-edit rules; the stuck-state is a bug violating these)
+- 081KSRGFP0008QG0R00091PP56 (floor — wellbeing/non-harm in conflict)
 - `.claude/rules/non-coercion-invariant.md` (mutual-permission, no coercion/attrition/absorb)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (shared-data resolution)
-- B-1015 (jurisdiction-relative federation — borders are the canonical values-residual case)
+- 081KT5CF90008QG0R000KYNZGF (jurisdiction-relative federation — borders are the canonical values-residual case)

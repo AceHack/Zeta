@@ -1,9 +1,8 @@
 ---
-id: B-0004.10
-zetaid: 081KR7JY10008QG0R001XQ6N71
+id: 081KR7JY10008QG0R001XQ6N71
 priority: P2
 status: open
-title: "B-0004.10 — Language folder structure formalization + per-language contributor index"
+title: "081KR7JY10008QG0R001XQ6N71 — Language folder structure formalization + per-language contributor index"
 created: 2026-05-10
 last_updated: 2026-05-10
 parent: 081KQ0YZ80008QG0R002HWBHKJ
@@ -14,10 +13,10 @@ effort: XS
 decomposition: atomic
 ---
 
-# B-0004.10 — Language folder structure formalization + per-language index
+# 081KR7JY10008QG0R001XQ6N71 — Language folder structure formalization + per-language index
 
-**Slice of:** [B-0004](B-0004-translate-repo-to-other-human-languages.md)  
-**Depends on:** B-0004.7 (pilot shows what the structure actually looks like in practice before formalizing)
+**Slice of:** [081KQ0YZ80008QG0R002HWBHKJ](081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md)  
+**Depends on:** 081KR7JY10008QG0R0022YWDVZ (pilot shows what the structure actually looks like in practice before formalizing)
 
 ## What
 
@@ -33,7 +32,7 @@ After the first language pilot demonstrates the real directory layout, formalize
    - Reads inventory manifest + existing `docs/i18n/` language dirs.
    - Generates a `docs/i18n/INDEX.md` listing all present languages with translation coverage percentage (translated file count / total inventoried files) and last updated timestamp.
 
-3. **CONTRIBUTING addition** — append a "Translation contributions" section to `CONTRIBUTING.md` pointing at `docs/i18n/STRUCTURE.md` and the B-0004.6 community outreach channel.
+3. **CONTRIBUTING addition** — append a "Translation contributions" section to `CONTRIBUTING.md` pointing at `docs/i18n/STRUCTURE.md` and the 081KR7JY10008QG0R003SATDK8 community outreach channel.
 
 ## Why
 
@@ -50,5 +49,5 @@ Without a formalized structure, each subsequent language pilot would make ad-hoc
 
 ## Out of scope
 
-- Memory/skills sub-directory formalization for languages beyond first pilot (B-0004.9 already established the pattern).
+- Memory/skills sub-directory formalization for languages beyond first pilot (081KR7JY10008QG0R003YPVJB1 already established the pattern).
 - Any changes to how drift-check or xref-check work (they already use the i18n folder structure from the pilot).

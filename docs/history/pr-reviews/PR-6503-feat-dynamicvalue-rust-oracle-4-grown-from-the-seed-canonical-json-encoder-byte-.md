@@ -34,7 +34,7 @@
 - **`tests/cross_verify.rs`** — loads the 31 seed vectors, builds the value from the tagged form, asserts `to_canonical_json() == json`. Green. `serde_json` is **dev-only** (production core is zero-dep), matching `Core.Rust.{Observe,Algebra}`.
 
 ## Verification + an honest CI note
-Verified **locally**: `cargo test` green + `RUSTFLAGS='-D warnings'` clean. **Rust is NOT in the CI build-and-test matrix** (`gate.yml` runs `dotnet build/test Zeta.sln` only) — so, like every existing `Core.Rust.*` oracle, this is **locally cargo-verified, not CI-gated**. The CI-gated oracles are TS (bun) + F#/C# (dotnet). Flagging it because B-0944's "4-language compiler-BFT" lists Rust as oracle #4 yet CI never exercises it — a known property of the current setup, surfaced here for awareness (a follow-up could wire cargo into the gate, or it stays maintainer/local-verified by design).
+Verified **locally**: `cargo test` green + `RUSTFLAGS='-D warnings'` clean. **Rust is NOT in the CI build-and-test matrix** (`gate.yml` runs `dotnet build/test Zeta.sln` only) — so, like every existing `Core.Rust.*` oracle, this is **locally cargo-verified, not CI-gated**. The CI-gated oracles are TS (bun) + F#/C# (dotnet). Flagging it because 081KSV2WD0008QG0R00051XS0N's "4-language compiler-BFT" lists Rust as oracle #4 yet CI never exercises it — a known property of the current setup, surfaced here for awareness (a follow-up could wire cargo into the gate, or it stays maintainer/local-verified by design).
 
 Next: the **decode** side across all langs (precision-safe int64 tokenizer — where JSON's Int/Float number ambiguity actually bites), then Float/Bytes via CBOR (or tagged-JSON) if called.
 

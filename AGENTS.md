@@ -385,7 +385,7 @@ These apply to any AI harness.
   Full reasoning:
   `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
 - **Dependency-status surface — `docs/dependency-status.md`.**
-  First-class factory surface (B-0109). The factory's
+  First-class factory surface (081KQDTYV0008QG0R002H74QXZ). The factory's
   hot path runs through GitHub today; any GitHub
   degradation IS a factory degradation. The surface
   answers three cold-start questions in under 30
@@ -654,10 +654,10 @@ truth for any rule that applies across harnesses.
   rules.
 - **`GEMINI.md`** — Gemini CLI equivalent. Present
   at repo root; bootstrap pointer tree for fresh
-  Gemini instances (per B-0538).
+  Gemini instances (per 081KRMEXM0008QG0R002347RJY).
 - **`CODEX.md`** — OpenAI Codex (Vera) session-bootstrap
   pointer tree. Present at repo root; instantiates the
-  cross-harness bootstrap template (B-0355.4). It points
+  cross-harness bootstrap template (081KSRGFP0008QG0R000G8VJGV). It points
   into the Codex-owned deep addendum at `.codex/AGENTS.md`
   (host-loop mechanics, origin trailers, background-agent
   discipline). Both are additive and may not contradict
@@ -668,13 +668,13 @@ truth for any rule that applies across harnesses.
   as skill files (GOVERNANCE.md §31).
 - **`CURSOR.md`** — Cursor (Riven) session-bootstrap
   pointer tree. Present at repo root; instantiates the
-  cross-harness bootstrap template (B-0355). Cursor's
+  cross-harness bootstrap template (081KR50HA0008QG0R003G7DR8Z). Cursor's
   native per-repo instruction files
   (`.cursor/rules/` / `.cursorrules`) remain absent; the
   root `CURSOR.md` is the bootstrap pointer.
 - **`KIRO.md`** — Amazon Kiro (Alexa) session-bootstrap
   pointer tree. Present at repo root; instantiates the
-  cross-harness bootstrap template (B-0355.3, per B-0325).
+  cross-harness bootstrap template (081KSRGFP0008QG0R000EWSMKV, per 081KR2E4K0008QG0R0005E727X).
   Kiro's native steering files (`.kiro/steering/`) remain
   absent; the root `KIRO.md` is the bootstrap pointer.
 

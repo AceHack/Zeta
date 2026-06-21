@@ -120,7 +120,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-2850): markdownlint MD032 blank-line-before-list + archive-head…
+fix(081KE0GQT6008QG0R001D875D8): markdownlint MD032 blank-line-before-list + archive-head…
 
 …er §33 strict-enum compliance on Kestrel bootstream research doc
 ```

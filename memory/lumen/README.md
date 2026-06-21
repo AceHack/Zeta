@@ -84,7 +84,7 @@ own say-so.
 - **Traveler-frame relativity + commutative uncertainty note.** No "current
   bus"; bus = relative fold; commutative uncertainty as the coordination-free
   convergence law; jurisdictional + border awareness as frame-relative. Supersedes
-  the B-0954.1 consensus framing. (PR #8575, merged.)
+  the 081KT07NV0008QG0R000QWEKTE consensus framing. (PR #8575, merged.)
 
 ## Reconciliation sweep (Otto's review, 2026-06-19)
 

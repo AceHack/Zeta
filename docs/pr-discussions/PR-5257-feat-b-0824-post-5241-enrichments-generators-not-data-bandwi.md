@@ -1,6 +1,6 @@
 ---
 pr_number: 5257
-title: "feat(B-0824): post-#5241 enrichments \u2014 generators-not-data + bandwidth + 0D/1D/2D/ND + NULL-as-monad + tri-boolean + triangle/GPU"
+title: "feat(081KSGS9H0008QG0R0031PBNGA): post-#5241 enrichments \u2014 generators-not-data + bandwidth + 0D/1D/2D/ND + NULL-as-monad + tri-boolean + triangle/GPU"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:46:58Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:35:45Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5257: feat(B-0824): post-#5241 enrichments — generators-not-data + bandwidth + 0D/1D/2D/ND + NULL-as-monad + tri-boolean + triangle/GPU
+# PR #5257: feat(081KSGS9H0008QG0R0031PBNGA): post-#5241 enrichments — generators-not-data + bandwidth + 0D/1D/2D/ND + NULL-as-monad + tri-boolean + triangle/GPU
 
 ## PR description
 

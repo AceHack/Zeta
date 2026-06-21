@@ -1,6 +1,5 @@
 ---
-id: B-0949
-zetaid: 081KSV2WD0008QG0R002K85NP0
+id: 081KSV2WD0008QG0R002K85NP0
 priority: P3
 status: open
 title: Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently
@@ -17,7 +16,7 @@ tags: [core-primitive, tri-boolean, floating-point, fromvalue, performance, dos-
 type: bug
 ---
 
-# B-0949 — Tri-boolean float `FromValue` mode-search hangs for wide decoders
+# 081KSV2WD0008QG0R002K85NP0 — Tri-boolean float `FromValue` mode-search hangs for wide decoders
 
 ## The finding (Codex P2 on PR #6186, 2026-05-30)
 
@@ -83,10 +82,10 @@ mode-search hang separately.
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- **Prior-art search (2026-05-30):** the mode-search lives in B-0944 slice 5 pt2 (`FromValue` in
+- **Prior-art search (2026-05-30):** the mode-search lives in 081KSV2WD0008QG0R00051XS0N slice 5 pt2 (`FromValue` in
   each `Core.*.TriBoolean` float). No existing row covers the wide-decoder hang. Composes with the
   slice-6 conformance harness (the BFT ballot) where the wide-shape vector belongs.
-- **Dependency check:** depends on B-0944 slice 5 pt2 (the float impls — F#/C#/Rust merged via
+- **Dependency check:** depends on 081KSV2WD0008QG0R00051XS0N slice 5 pt2 (the float impls — F#/C#/Rust merged via
   #6183/#6184+#6186/#6185). Slice 6 (conformance harness) is the natural home for the wide-shape
   parity vector.
 - **Empirical anchor:** Codex P2 thread on [PR #6186](https://github.com/Lucent-Financial-Group/Zeta/pull/6186).

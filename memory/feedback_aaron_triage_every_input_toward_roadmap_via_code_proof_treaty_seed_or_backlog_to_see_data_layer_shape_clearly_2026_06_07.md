@@ -25,4 +25,4 @@ the format/plugin treaty, the cells. Anything not converting to one of the four 
 backlog). If it's backlog, ask "does this clarify the data-layer shape?" — if not, it's probably not
 worth a row. Capture faithfully (glass-halo for vision/personal); convert to channel for build-relevant.
 
-Ties: `docs/ROADMAP.md` (the don't-forget hub), the two-plane DB design doc, B-0959.
+Ties: `docs/ROADMAP.md` (the don't-forget hub), the two-plane DB design doc, 081KSXN940008QG0R003FCQ7WT.

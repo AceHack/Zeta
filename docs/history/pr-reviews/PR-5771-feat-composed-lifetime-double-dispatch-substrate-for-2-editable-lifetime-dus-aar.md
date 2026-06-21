@@ -40,9 +40,9 @@ Per Aaron 2026-05-28: 'how can we do double dispatch in this system, when you co
 
 ## Composes with
 
-- B-0867.20 PR #5758 (rename target: lifetime DU split)
-- B-0914.2 PR #5769 closed-loop (composed-lifetime dispatch via callback)
-- B-0914.4 PR #5768 pairing tracker
+- 081KSNY2Z0008QG0R003WFDCJ9 PR #5758 (rename target: lifetime DU split)
+- 081KSNY2Z0008QG0R001YK61JQ.2 PR #5769 closed-loop (composed-lifetime dispatch via callback)
+- 081KSNY2Z0008QG0R001YK61JQ.4 PR #5768 pairing tracker
 - Mod 2 grammar-extension + substrate-smoothness + asymmetric-authorship
 
 ## Test plan

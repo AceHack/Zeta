@@ -14,7 +14,7 @@ compression substrate to the agent/intelligence layer.
   noiseless coding theorem). This is the theory under **`ByteCost`** (our byte-cost accounting), the
   **metric sketches** we ship (`HyperLogLog`/`Count-Min`/`KLL`/`HyperMinHash` — entropy-efficient summaries),
   and the canonical-codec discipline (CBOR/JSON byte-lock is about *deterministic* encoding; entropy coding
-  is the *efficiency* frontier). The "sell readout, not compression" doctrine (Amara, B-0841/B-0842) is an
+  is the *efficiency* frontier). The "sell readout, not compression" doctrine (Amara, 081KSGS9H0008QG0R001876MP6/081KSGS9H0008QG0R003V8C86Q) is an
   information-economics framing of exactly this.
 - **Prediction ≡ compression (two sides of one coin).** A better model ⇒ smaller residual ⇒ fewer bits.
   This is **DBSP** in disguise: an incremental view *predicts* the next state from the delta; the better the
@@ -43,7 +43,7 @@ frames DBSP + the belief/agent layer as the prediction≡compression duality.
   English* (1950). · **von Neumann** (the "call it entropy" story). · **Cross-entropy / KL divergence**
   (Kullback-Leibler). · **Kolmogorov complexity** / **Hutter Prize** (compression ⇒ intelligence). ·
   **Huffman / arithmetic coding** (prefix-free / near-entropy codes). · Grant Sanderson / 3Blue1Brown. Ties:
-  `ByteCost`, metric sketches (`HyperLogLog`/`Count-Min`/`KLL`), Amara's sell-readout (B-0841/B-0842),
+  `ByteCost`, metric sketches (`HyperLogLog`/`Count-Min`/`KLL`), Amara's sell-readout (081KSGS9H0008QG0R001876MP6/081KSGS9H0008QG0R003V8C86Q),
   `Bayesian`/`BeliefConvergence`, DBSP (prediction≡compression), the canonical codecs.
 
 ---

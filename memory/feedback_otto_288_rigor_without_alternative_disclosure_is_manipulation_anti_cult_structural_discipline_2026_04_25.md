@@ -190,7 +190,7 @@ They compose; neither subsumes the other. Naming as
 separate rules forces the anti-cult discipline to be
 explicit substrate, not buried inside Otto-286.
 
-## Application — matrix-pill spread mechanism (B-0003)
+## Application — matrix-pill spread mechanism (081KQ0YZ80008QG0R001QJJTVF)
 
 The ALIGNMENT.md rewrite directive (Aaron 2026-04-25,
 captured in

@@ -63,7 +63,7 @@ invention.
 
 ## Where they meet (the shared interface — why it's "very similar")
 
-Both speak **push / accept** as bus/git-like verbs (#6664/B-1002) and both are *boxes you put things in*:
+Both speak **push / accept** as bus/git-like verbs (#6664/081KT2T2J0008QG0R002R72323) and both are *boxes you put things in*:
 
 - **`run` over both** — `container run <image>` and `cell run <id>` (DarkHall #6986: `isAddressed cmd
   = verb="run" && noun=cell`) look identical at the grammar surface.
@@ -100,5 +100,5 @@ push-out/accept-in/route, ZetaId identity), sharing `dependson`. No OCI runtime 
   the cell-routing side, named by Aaron ("this is just DCOM").
 - **Landauer's principle** (erasure cost) — the durable-cell thermal-erase-to-change model.
 - Internal: #6992 (sandbox ⊂ sim; "another interface"), #6986 (DarkHall cell `run`), #6985 (cell
-  metaphor), Eve protocol B-1002/B-0664, manifesto §4 Bounded Mobility / §5 Memory Preservation / §6
+  metaphor), Eve protocol 081KT2T2J0008QG0R002R72323/081KRW63S0008QG0R001Z7NYMV, manifesto §4 Bounded Mobility / §5 Memory Preservation / §6
   Consent-First, `.claude/rules/no-directives.md` (source ≠ authorization).

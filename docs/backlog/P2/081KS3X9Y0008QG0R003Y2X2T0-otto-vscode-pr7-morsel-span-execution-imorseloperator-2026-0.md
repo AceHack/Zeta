@@ -1,6 +1,5 @@
 ---
-id: B-0693
-zetaid: 081KS3X9Y0008QG0R003Y2X2T0
+id: 081KS3X9Y0008QG0R003Y2X2T0
 priority: P2
 status: open
 title: Morsel/span-based execution — IMorselOperator + cache-sized chunked processing (Otto-VSCode 8-PR campaign PR #7)
@@ -19,11 +18,11 @@ type: research
 
 ## Context
 
-Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21 PR #7. Depends on PR #6 (push-based hot-path; tracked at B-0692) — morsel-execution is the next-tier optimization that composes with push-pattern.
+Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21 PR #7. Depends on PR #6 (push-based hot-path; tracked at 081KS3X9Y0008QG0R001D454ZK) — morsel-execution is the next-tier optimization that composes with push-pattern.
 
 ## The architectural problem
 
-Even with push-based fusion (per B-0692), per-entry callbacks have function-call overhead. For tight inner loops over large Z-sets, processing entries one-at-a-time leaves cache + SIMD performance on the table. Modern columnar databases (DuckDB, Velox, Photon, Polars) batch process entries in "morsels" — cache-sized chunks (typically 4KB-64KB; matches L1/L2 cache line groups) — which:
+Even with push-based fusion (per 081KS3X9Y0008QG0R001D454ZK), per-entry callbacks have function-call overhead. For tight inner loops over large Z-sets, processing entries one-at-a-time leaves cache + SIMD performance on the table. Modern columnar databases (DuckDB, Velox, Photon, Polars) batch process entries in "morsels" — cache-sized chunks (typically 4KB-64KB; matches L1/L2 cache line groups) — which:
 
 - Amortizes function-call overhead across N entries per call
 - Enables SIMD-vectorized predicate / projection / arithmetic
@@ -45,14 +44,14 @@ The intermediate "chunk" becomes a stack-allocated `Span<ZEntry<'T>>` from a poo
 
 ### Phase 1 — `IMorselOperator<'T>` interface + morsel-buffer pool
 
-- Define `IMorselOperator<'T>` interface alongside `Op<'T>` (currently in `src/Core/Circuit.fs`; co-located with `IPushOperator<'T>` from B-0692)
+- Define `IMorselOperator<'T>` interface alongside `Op<'T>` (currently in `src/Core/Circuit.fs`; co-located with `IPushOperator<'T>` from 081KS3X9Y0008QG0R001D454ZK)
 - Add `IsMorselCapable: bool` capability flag to Op<'T> (composes with PR #4558 pattern)
 - Morsel-buffer pool: pooled `ArrayPool<ZEntry<'T>>` per-thread with chunk size = L1/L2-cache-aware (default 4KB / `sizeof<ZEntry<'T>>` = N entries per morsel)
 - MorselAdapter wraps both materialize-style and push-style operators
 
 ### Phase 2 — Morsel-segment detection in FusionEngine
 
-Extend FusionEngine (per PR #4566 + Phase 2 of B-0692):
+Extend FusionEngine (per PR #4566 + Phase 2 of 081KS3X9Y0008QG0R001D454ZK):
 
 - Sequence of `IsLinear AND IsPushable AND IsMorselCapable` operators is a morsel-segment candidate
 - Morsel-segment supersedes push-segment when ALL operators in chain support morsels
@@ -69,7 +68,7 @@ Extend FusionEngine (per PR #4566 + Phase 2 of B-0692):
 
 - BenchmarkDotNet job at `bench/Benchmarks/MorselExecutionBench.fs`:
   - Materialize-baseline (3-op chain)
-  - Push-based (3-op chain; per B-0692)
+  - Push-based (3-op chain; per 081KS3X9Y0008QG0R001D454ZK)
   - Morsel-based (3-op chain; this row)
 
 - Allocation: expected morsel allocates 1× per segment (matches push-based)
@@ -101,7 +100,7 @@ Extend FusionEngine (per PR #4566 + Phase 2 of B-0692):
 
 ## Substrate-honest framing
 
-This is research-grade architectural substrate following the well-trodden columnar-execution path. The Zeta contribution is composing morsel-execution with the segmented-push pattern (B-0692) and the DBSP retraction-native algebra: morsel-execution preserves Z-set semantics within a segment; materialize boundaries at segment ends preserve the algebra-level discipline.
+This is research-grade architectural substrate following the well-trodden columnar-execution path. The Zeta contribution is composing morsel-execution with the segmented-push pattern (081KS3X9Y0008QG0R001D454ZK) and the DBSP retraction-native algebra: morsel-execution preserves Z-set semantics within a segment; materialize boundaries at segment ends preserve the algebra-level discipline.
 
 The pattern itself isn't novel — DuckDB / Velox / Photon / Polars all do columnar-morsel execution. Zeta's contribution is the DBSP-segment-aware version + the capability-tag-driven segment detection.
 
@@ -113,10 +112,10 @@ The pattern itself isn't novel — DuckDB / Velox / Photon / Polars all do colum
 
 ## Composes with substrate
 
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 — morsel-pattern preserves operational primitives within segments)
-- B-0688 (incremental compiler host — codegen emits morsel-fused IL at hot segments)
-- B-0692 (PR #6 push-based — morsel-pattern is the next-tier optimization above push)
-- B-0694 (PR #8 standing-query codegen — codegen emits morsel-segment-fused IL)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 — morsel-pattern preserves operational primitives within segments)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — codegen emits morsel-fused IL at hot segments)
+- 081KS3X9Y0008QG0R001D454ZK (PR #6 push-based — morsel-pattern is the next-tier optimization above push)
+- 081KS3X9Y0008QG0R000J4SFTS (PR #8 standing-query codegen — codegen emits morsel-segment-fused IL)
 - PR #4558 (capability tags — IsMorselCapable sibling to IsLinear/IsBilinear/IsSink/IsPushable)
 - PR #4566 (FusionEngine — Phase 2 extends with morsel-segment detection)
 - DuckDB / Velox / Photon / Polars columnar-execution literature (external prior-art reference)
@@ -125,7 +124,7 @@ The pattern itself isn't novel — DuckDB / Velox / Photon / Polars all do colum
 
 Substantive architectural substrate; not blocking V1; high value (SIMD + cache-locality unlocks throughput tier above push-based); bounded by Otto-VSCode's 8-PR campaign sizing (~350 lines).
 
-Depends on B-0692 (push-based) landing first — morsel-pattern composes with push-pattern, not replaces it.
+Depends on 081KS3X9Y0008QG0R001D454ZK (push-based) landing first — morsel-pattern composes with push-pattern, not replaces it.
 
 ## Origin
 

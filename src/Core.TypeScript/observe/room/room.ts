@@ -66,7 +66,7 @@ export type RoomState = Record<string, unknown>;
 // ─── Room interface ─────────────────────────────────────────────────
 
 export interface Room {
-  /** Stable identifier (e.g. "pr-42", "merge-queue", "backlog-B-0883"). */
+  /** Stable identifier (e.g. "pr-42", "merge-queue", "backlog-081KSNY2Z0008QG0R002JKH50A"). */
   readonly id: string;
   /** Declared read/write envelope — enforced by the tick runner. */
   readonly scope: ScopePredicate;

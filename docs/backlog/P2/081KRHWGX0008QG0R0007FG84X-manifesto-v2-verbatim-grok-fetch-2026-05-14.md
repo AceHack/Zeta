@@ -1,6 +1,5 @@
 ---
-id: B-0524
-zetaid: 081KRHWGX0008QG0R0007FG84X
+id: 081KRHWGX0008QG0R0007FG84X
 priority: P2
 status: open
 title: "Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock"
@@ -51,7 +50,7 @@ The V2 conversation continuation (after the V1+Bounded-Mobility version in the e
 - `docs/governance/MANIFESTO.md` (the shadow lock this row converts)
 - `memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` (V1+Bounded-Mobility verbatim source)
 - `~/.claude/projects/.../memory/feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md` (V2 diff description)
-- B-0525 (constitutional-promotion-readiness P0 — depends on full lock first)
+- 081KRHWGX0008QG0R0016T9408 (constitutional-promotion-readiness P0 — depends on full lock first)
 - `.claude/skills/chrome-lazy-load-chunked-extraction` (procedure for Grok extraction)
 
 ## Substrate-honest framing

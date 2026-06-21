@@ -1,6 +1,6 @@
 ---
 pr_number: 5424
-title: "docs(B-0857): Turn 4/5/6 framing \u2014 install.sh \u2248 Ace + homelab-to-enterprise spectrum + attack-surface tempered (Aaron 2026-05-27 follow-up to #5423)"
+title: "docs(081KSKBP80008QG0R002J03WGA): Turn 4/5/6 framing \u2014 install.sh \u2248 Ace + homelab-to-enterprise spectrum + attack-surface tempered (Aaron 2026-05-27 follow-up to #5423)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T07:59:18Z"
@@ -12,15 +12,15 @@ archived_at: "2026-05-27T19:25:10Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5424: docs(B-0857): Turn 4/5/6 framing — install.sh ≈ Ace + homelab-to-enterprise spectrum + attack-surface tempered (Aaron 2026-05-27 follow-up to #5423)
+# PR #5424: docs(081KSKBP80008QG0R002J03WGA): Turn 4/5/6 framing — install.sh ≈ Ace + homelab-to-enterprise spectrum + attack-surface tempered (Aaron 2026-05-27 follow-up to #5423)
 
 ## PR description
 
 ## Summary
 
-Three operator-framing extensions to B-0857 row body, follow-up to merged PR #5423 (which carried Turns 1/2/3):
+Three operator-framing extensions to 081KSKBP80008QG0R002J03WGA row body, follow-up to merged PR #5423 (which carried Turns 1/2/3):
 
-- **Turn 4**: install.sh ≈ Ace; they're entangled — same substrate at different naming scopes (B-0857 imperative-bash scope = B-0854 declarative-Ace scope)
+- **Turn 4**: install.sh ≈ Ace; they're entangled — same substrate at different naming scopes (081KSKBP80008QG0R002J03WGA imperative-bash scope = 081KSKBP80008QG0R002VRN56K declarative-Ace scope)
 - **Turn 5**: build-is-prod operates on a homelab-edge → enterprise-restrictive SPECTRUM; start MAXIMALLY UNIFIED first, scale back for enterprise later
 - **Turn 6**: largest attack-surface concern (more deps on every node) is tempered by internal-access precondition (network + box); threat operates at post-perimeter-breach scope, not perimeter-breach scope
 
@@ -30,7 +30,7 @@ PR #5423 merged at \`7f6900a48\` carrying Turns 1/2/3 + operational scope. These
 
 ## Substrate-honest framing
 
-No implementation work; framing extensions only. B-0857 remains P2 deferred per the separation-of-concerns discipline operator named 2026-05-27 (\"deferring of working on backlog is a seperate conerns of recording backlog item exist\").
+No implementation work; framing extensions only. 081KSKBP80008QG0R002J03WGA remains P2 deferred per the separation-of-concerns discipline operator named 2026-05-27 (\"deferring of working on backlog is a seperate conerns of recording backlog item exist\").
 
 ## Test plan
 
@@ -49,7 +49,7 @@ No implementation work; framing extensions only. B-0857 remains P2 deferred per 
 
 ## Pull request overview
 
-Updates backlog row **B-0857** with additional operator-framing “Turns 4/5/6” to clarify the relationship between `install.sh` and Ace, articulate a homelab→enterprise posture spectrum for “build-is-prod,” and scope the primary security concern (attack surface) as post-perimeter-breach.
+Updates backlog row **081KSKBP80008QG0R002J03WGA** with additional operator-framing “Turns 4/5/6” to clarify the relationship between `install.sh` and Ace, articulate a homelab→enterprise posture spectrum for “build-is-prod,” and scope the primary security concern (attack surface) as post-perimeter-breach.
 
 **Changes:**
 - Add **Turn 4** framing: `install.sh` and Ace as the same substrate at different naming scopes.

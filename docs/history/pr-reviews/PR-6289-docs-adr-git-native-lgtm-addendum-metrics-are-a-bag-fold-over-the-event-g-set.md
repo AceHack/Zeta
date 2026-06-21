@@ -29,7 +29,7 @@
 
 Saves the **git-native observability / "LGTM for git-native"** insight as a dated addendum to the existing **event-sourced-observability ADR** (`docs/DECISIONS/2026-05-29-event-sourced-observability.md`) — extending its Option 2 decision, not changing it (per verify-existing-substrate: the ADR is the canonical home; the `lightlike-observability-discipline` skill + friction-monitoring ADR already exist and are cross-linked).
 
-The insight: once telemetry is a ZetaId-keyed append-only **event G-Set** (same paradigm as the agent-bus B-0954), the whole **Grafana LGTM stack is folds over that one store**:
+The insight: once telemetry is a ZetaId-keyed append-only **event G-Set** (same paradigm as the agent-bus 081KSXN940008QG0R00171YAZW), the whole **Grafana LGTM stack is folds over that one store**:
 
 | LGTM | git-native |
 |---|---|
@@ -70,7 +70,7 @@ The insight: once telemetry is a ZetaId-keyed append-only **event G-Set** (same 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Don't describe the unimplemented bus as concrete**
 
-  This ADR addendum now treats B-0954 as “the concrete event G-Set,” but the B-0954 backlog entry in `docs/backlog/P2/...B-0954...md` explicitly says the git-native bus is “spec'd + categorized but not implemented” and that `docs/agent-bus/` plus publish/subscribe tooling do not exist. For readers using this accepted ADR to implement observability, this turns a planned dependency into an apparent existing substrate, so the composition should be marked as future/planned or tied to the research spec/backlog item until the bus folder/tooling lands.
+  This ADR addendum now treats 081KSXN940008QG0R00171YAZW as “the concrete event G-Set,” but the 081KSXN940008QG0R00171YAZW backlog entry in `docs/backlog/P2/...081KSXN940008QG0R00171YAZW...md` explicitly says the git-native bus is “spec'd + categorized but not implemented” and that `docs/agent-bus/` plus publish/subscribe tooling do not exist. For readers using this accepted ADR to implement observability, this turns a planned dependency into an apparent existing substrate, so the composition should be marked as future/planned or tied to the research spec/backlog item until the bus folder/tooling lands.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -86,7 +86,7 @@ The insight: once telemetry is a ZetaId-keyed append-only **event G-Set** (same 
 - **`Copilot` (bot)** at 2026-06-01T00:22:42Z on `docs/DECISIONS/2026-05-29-event-sourced-observability.md`:46 (association: NONE)
 
   <pre>
-  This sentence reads as if `docs/agent-bus/` (and the friction log under `docs/observability/`) already exist as concrete substrates. In the current tree, neither directory exists, and B-0954 explicitly notes `docs/agent-bus/` is not yet created; consider wording this as the *planned/target* location to avoid sending readers on a dead-end path.
+  This sentence reads as if `docs/agent-bus/` (and the friction log under `docs/observability/`) already exist as concrete substrates. In the current tree, neither directory exists, and 081KSXN940008QG0R00171YAZW explicitly notes `docs/agent-bus/` is not yet created; consider wording this as the *planned/target* location to avoid sending readers on a dead-end path.
   </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -125,7 +125,7 @@ Bag-fold (group-by key -> count). A metric IS a Bag (middle rung of the G-Set/Ba
 ladder); you fold counts on read, not store them. Four differentiators over the rejected
 Prometheus stack: exact (not sampled), time-travel (fold as-of any commit), cross-machine-
 correct (read origin/main, CRDT union), ray-traceable (count -> source events). Storage
-knob: Bag-as-fold (default) vs G-Counter cells (high-frequency). Cross-links B-0954 bus +
+knob: Bag-as-fold (default) vs G-Counter cells (high-frequency). Cross-links 081KSXN940008QG0R00171YAZW bus +
 the bus<->Ace ladder + lightlike-observability skill + friction-monitoring ADR + DORA/
 FrictionTelemetry + shields-detect-not-block.
 
@@ -141,12 +141,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-docs(adr): frame the agent-bus as in-flight (B-0954 Phase 1, #6283), …
+docs(adr): frame the agent-bus as in-flight (081KSXN940008QG0R00171YAZW Phase 1, #6283), …
 
 …not landed-concrete (Codex #6289)
 
-B-0954 is spec'd + Phase-1-in-flight, not merged; the addendum overstated it as 'the
-concrete event G-Set.' Reworded to 'in-flight agent-bus (B-0954, Phase 1 landing in
+081KSXN940008QG0R00171YAZW is spec'd + Phase-1-in-flight, not merged; the addendum overstated it as 'the
+concrete event G-Set.' Reworded to 'in-flight agent-bus (081KSXN940008QG0R00171YAZW, Phase 1 landing in
 #6283)' / 'the event G-Set this builds on' — accurate at write-time.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

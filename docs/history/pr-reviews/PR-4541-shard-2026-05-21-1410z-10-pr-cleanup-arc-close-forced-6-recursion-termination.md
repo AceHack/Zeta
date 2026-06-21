@@ -35,7 +35,7 @@ Documents the 1019Z → 1410Z (~3h) cleanup-arc closure as a per-tick shard.
 - **Audit baseline**: 39 entries (19 active) → 0
 - **Audit tool**: gained `stripInlineCodeSpans` + 8-test test suite (no prior tests)
 - **Codex P1 catch**: mid-arc immutability-discipline catch → substrate-honest pivot to compatibility-artifact pattern (#4534)
-- **B-0686 follow-up**: backlog row filed for substrate-engineering CI gate proposal (#4539)
+- **081KS3X9Y0008QG0R003R74B20 follow-up**: backlog row filed for substrate-engineering CI gate proposal (#4539)
 
 ## Forced-#6 recursion-termination
 
@@ -109,7 +109,7 @@ Documents the 1019Z → 1410Z (~3h) cleanup arc closure:
 - Audit baseline: 39 entries (19 active) → 0
 - Audit tool gained stripInlineCodeSpans + 8-test test suite
 - Codex P1 mid-arc catch → substrate-honest pivot to compatibility-artifact
-- B-0686 backlog row filed for substrate-engineering follow-up
+- 081KS3X9Y0008QG0R003R74B20 backlog row filed for substrate-engineering follow-up
 
 Forced-#6 recursion-termination per holding-without-named-dependency rule:
 post-arc holding hit brief-ack #5 with explicit non-pre-empt (available

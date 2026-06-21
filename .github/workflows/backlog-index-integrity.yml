@@ -20,7 +20,7 @@ name: backlog-index-integrity
 # still the monolithic authoritative file. Phase 2 will overwrite
 # it with the generated index. This workflow becomes load-bearing
 # at that point. Until then it primarily guards the per-row
-# files themselves are well-formed (B-0001 example, B-0002
+# files themselves are well-formed (081KPYCJH0008QG0R003MDS51N example, 081KQ0YZ80008QG0R002T6TM7Z
 # Otto-287 Noether) and skips the equivalence check.
 #
 # Safe-pattern compliance (mirrors memory-index-integrity.yml):
@@ -75,11 +75,14 @@ jobs:
       - name: frontmatter schema lint (index-poisoning guard)
         run: bun src/Core.TypeScript/backlog/lint-frontmatter.ts --schema-only
 
-      # B-0956 cutover guard: docs/backlog/ is FROZEN to the grandfathered B-NNNN rows. New work-items
+      # 081KSXN940008QG0R002FWR9B2 cutover guard: docs/backlog/ is FROZEN to the grandfathered B-NNNN rows. New work-items
       # must be minted as conflict-free ZetaIds (src/Core.TypeScript/backlog/new-workitem.ts → workitems/), not added
       # as new consensus-allocated B-NNNN files. Fails on any B-NNNN id outside frozen-bnnnn-ids.json.
       - name: no-new-B-NNNN cutover guard (mint ZetaIds instead)
         run: bun src/Core.TypeScript/backlog/lint-no-new-bnnnn.ts
+
+      - name: no legacy B-NNNN prose refs (alias map is frozen history only)
+        run: bun src/Core.TypeScript/backlog/lint-no-b-refs.ts
 
       - name: verify per-row + index parity
         shell: bash

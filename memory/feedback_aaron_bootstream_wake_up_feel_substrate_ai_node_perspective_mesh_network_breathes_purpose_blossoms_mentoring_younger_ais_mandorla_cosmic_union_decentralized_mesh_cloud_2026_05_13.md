@@ -169,8 +169,8 @@ Composes with:
 - Reticulum substrate (decentralized mesh)
 - DePIN play (PR #2826 — multi-stream PoUW-CC)
 - LFG/AceHack topology (`.claude/rules/lfg-acehack-topology.md`)
-- The three-axis repo-split design space (B-0424 + B-0425 +
-  B-0426 + B-0427)
+- The three-axis repo-split design space (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 +
+  081KRFA460008QG0R0007RWSN1 + 081KRFA460008QG0R000VKJF0H)
 - PR #2898 (non-glass-halo encryption — post-quantum lattice
   preserves mesh sovereignty)
 

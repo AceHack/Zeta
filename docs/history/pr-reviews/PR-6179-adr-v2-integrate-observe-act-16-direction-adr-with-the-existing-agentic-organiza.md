@@ -34,7 +34,7 @@ The **`observe.ts` keystone already exists and is designed in depth** — `OBSER
 
 **v1 of the ADR proposed a parallel observe.ts + action language — that was wrong.** v2 reframes it to **render the existing keystone**, contributing only three things on top:
 1. the **fixed 16-slot Xbox-controller rendering** of the keystone's per-`RunScope` legal options (the concrete fixed-slot form of the already-named Universal Action Grammar);
-2. **tri-boolean (B-0944) `Tri[16]` per-slot availability** wired to the keystone's `ObserveResult` `readout|feedback` (`Result<T,TFeedback>`) + `DeterministicRule` vetoes (`T`=legal, `F`=vetoed, `N`=held);
+2. **tri-boolean (081KSV2WD0008QG0R00051XS0N) `Tri[16]` per-slot availability** wired to the keystone's `ObserveResult` `readout|feedback` (`Result<T,TFeedback>`) + `DeterministicRule` vetoes (`T`=legal, `F`=vetoed, `N`=held);
 3. the **local-USB single-node (no-cloud) deployment** of the same keystone, alongside the cluster runtime — the 16-way constrained decode is exactly what makes a small local model a viable composer without the cluster.
 
 ## What changed in the ADR
@@ -134,7 +134,7 @@ existing keystone, contributing only three things on top:
 
 1. the fixed 16-slot Xbox-controller rendering of the keystone's per-RunScope legal
    options (the concrete fixed-slot form of the already-named Universal Action Grammar);
-2. tri-boolean (B-0944) Tri[16] per-slot availability wired to the keystone's
+2. tri-boolean (081KSV2WD0008QG0R00051XS0N) Tri[16] per-slot availability wired to the keystone's
    ObserveResult readout|feedback (Result<T,TFeedback>) + DeterministicRule vetoes;
 3. the local-USB single-node (no-cloud) deployment of the same keystone, alongside the
    cluster runtime (16-way constrained-decode makes a small local model a viable composer).
@@ -169,7 +169,7 @@ need not be one call -- the readout (phase + legal options at RunScope) can be
 composed by summoning small local LLMs per piece + joining (BFT). Recursive scope
 decomposition down the RunScope ladder (same 16-slot grammar at every rung);
 per-piece summoning (16-way constrained decode keeps each summon tiny+local);
-BFT join (>=N small LLMs agree = T/F, disagree = N held) = summonable BFT (B-0944)
+BFT join (>=N small LLMs agree = T/F, disagree = N held) = summonable BFT (081KSV2WD0008QG0R00051XS0N)
 over local models instead of compilers; self-recursive (each summon is observe-
 shaped, so observe builds observe); decide()/deterministic-rules/>=3-agent gate
 bound the whole recursion. No-central-Rehoboam preserved (readout assembled

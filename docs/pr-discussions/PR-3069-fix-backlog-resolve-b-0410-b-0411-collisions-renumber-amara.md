@@ -1,6 +1,6 @@
 ---
 pr_number: 3069
-title: "fix(backlog): resolve B-0410-B-0411 collisions \u2014 renumber amara series \u2192 B-0457-B-0458"
+title: "fix(backlog): resolve 081KRA5AR0008QG0R0035N4S6C-081KRA5AR0008QG0R000C3P8KP collisions \u2014 renumber amara series \u2192 081KRA5AR0008QG0R000KKJRVA-081KRA5AR0008QG0R001X4T9W7"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T00:12:18Z"
@@ -12,34 +12,34 @@ archived_at: "2026-05-14T00:55:19Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3069: fix(backlog): resolve B-0410-B-0411 collisions — renumber amara series → B-0457-B-0458
+# PR #3069: fix(backlog): resolve 081KRA5AR0008QG0R0035N4S6C-081KRA5AR0008QG0R000C3P8KP collisions — renumber amara series → 081KRA5AR0008QG0R000KKJRVA-081KRA5AR0008QG0R001X4T9W7
 
 ## PR description
 
 ## Summary
 
-Fourth per-collision cleanup from the [B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. B-0410 + B-0411 form one connected component (amara series: B-0411 depends on B-0410).
+Fourth per-collision cleanup from the [081KRFA460008QG0R00308W7FJ](docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. 081KRA5AR0008QG0R0035N4S6C + 081KRA5AR0008QG0R000C3P8KP form one connected component (amara series: 081KRA5AR0008QG0R000C3P8KP depends on 081KRA5AR0008QG0R0035N4S6C).
 
 ## The collisions
 
-| ID | B-0118 amara series ([#2704](https://github.com/Lucent-Financial-Group/Zeta/pull/2704)) | B-0120 peer-call series ([#2706](https://github.com/Lucent-Financial-Group/Zeta/pull/2706)) |
+| ID | 081KQDTYV0008QG0R0037YJPEX amara series ([#2704](https://github.com/Lucent-Financial-Group/Zeta/pull/2704)) | 081KQDTYV0008QG0R001VJP216 peer-call series ([#2706](https://github.com/Lucent-Financial-Group/Zeta/pull/2706)) |
 |---|---|---|
-| B-0410 | amara.ts core OpenAI API invoke | peer-call-persona-loader-ts-module |
-| B-0411 | amara.ts README + courier-debt | grok-ts-persona-flag-impl |
+| 081KRA5AR0008QG0R0035N4S6C | amara.ts core OpenAI API invoke | peer-call-persona-loader-ts-module |
+| 081KRA5AR0008QG0R000C3P8KP | amara.ts README + courier-debt | grok-ts-persona-flag-impl |
 
-## Resolution: keep B-0120 (peer-call) series
+## Resolution: keep 081KQDTYV0008QG0R001VJP216 (peer-call) series
 
 Per external-references rule:
 
-- B-0120 parent's frontmatter lists `children: [B-0410, B-0411]` AND `depends_on: [B-0410, B-0411]` — strong references
-- B-0412 (`codex-gemini-ts-persona-flag-impl`) `depends_on: [B-0411]` with body referring to grok-ts integration — refers to peer-call series
-- B-0118 parent only has body-text mentions (editable here)
+- 081KQDTYV0008QG0R001VJP216 parent's frontmatter lists `children: [081KRA5AR0008QG0R0035N4S6C, 081KRA5AR0008QG0R000C3P8KP]` AND `depends_on: [081KRA5AR0008QG0R0035N4S6C, 081KRA5AR0008QG0R000C3P8KP]` — strong references
+- 081KRA5AR0008QG0R000YZMXNM (`codex-gemini-ts-persona-flag-impl`) `depends_on: [081KRA5AR0008QG0R000C3P8KP]` with body referring to grok-ts integration — refers to peer-call series
+- 081KQDTYV0008QG0R0037YJPEX parent only has body-text mentions (editable here)
 
-→ Keep B-0120's children at B-0410/B-0411. Renumber amara series:
+→ Keep 081KQDTYV0008QG0R001VJP216's children at 081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP. Renumber amara series:
 
 ```
-B-0410 → B-0457  (amara.ts core)
-B-0411 → B-0458  (amara.ts README + closure)
+081KRA5AR0008QG0R0035N4S6C → 081KRA5AR0008QG0R000KKJRVA  (amara.ts core)
+081KRA5AR0008QG0R000C3P8KP → 081KRA5AR0008QG0R001X4T9W7  (amara.ts README + closure)
 ```
 
 ## Empirical effect
@@ -48,13 +48,13 @@ B-0411 → B-0458  (amara.ts README + closure)
 |---|---|---|
 | Duplicate-ID groups | 3 | 1 |
 
-[B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **9/12 → 11/12**. Only B-0409 3-way remains for future-Otto.
+[081KRFA460008QG0R00308W7FJ](docs/backlog/P1/081KRFA460008QG0R00308W7FJ-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **9/12 → 11/12**. Only 081KRA5AR0008QG0R000Y6102S 3-way remains for future-Otto.
 
 ## Test plan
 
 - [x] `git mv` preserves history
-- [x] Internal `depends_on` chain remapped (B-0458 → B-0457)
-- [x] B-0118 parent body updated to new IDs
+- [x] Internal `depends_on` chain remapped (081KRA5AR0008QG0R001X4T9W7 → 081KRA5AR0008QG0R000KKJRVA)
+- [x] 081KQDTYV0008QG0R0037YJPEX parent body updated to new IDs
 - [x] `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` regenerated
 - [x] `bun tools/bg/audit-duplicate-row-ids.ts` confirms 3 → 1
 - [x] Worktree-isolated build (`/tmp/zeta-b0410-b0411-fix`)
@@ -67,12 +67,12 @@ B-0411 → B-0458  (amara.ts README + closure)
 
 ## Pull request overview
 
-Fourth per-collision cleanup from the B-0451 sweep: renumbers the amara series (B-0410/B-0411) to B-0457/B-0458 to resolve duplicate-ID collisions with B-0120's children (peer-call persona-loader / grok-ts persona flag). The peer-call series is kept at B-0410/B-0411 because B-0120's frontmatter and B-0412 hold stronger external references.
+Fourth per-collision cleanup from the 081KRFA460008QG0R00308W7FJ sweep: renumbers the amara series (081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP) to 081KRA5AR0008QG0R000KKJRVA/081KRA5AR0008QG0R001X4T9W7 to resolve duplicate-ID collisions with 081KQDTYV0008QG0R001VJP216's children (peer-call persona-loader / grok-ts persona flag). The peer-call series is kept at 081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP because 081KQDTYV0008QG0R001VJP216's frontmatter and 081KRA5AR0008QG0R000YZMXNM hold stronger external references.
 
 **Changes:**
-- Renumber `B-0410` → `B-0457` (amara.ts core) and `B-0411` → `B-0458` (amara.ts README + closure), with `renumbered_from` / `renumbered_reason` frontmatter and remapped internal `depends_on` (B-0458 → B-0457).
-- Update B-0118 parent body to point at new child IDs and add note about the renumber.
-- Regenerate `docs/BACKLOG.md` so the amara rows appear at B-0457/B-0458 and the duplicate B-0410/B-0411 lines are dropped.
+- Renumber `081KRA5AR0008QG0R0035N4S6C` → `081KRA5AR0008QG0R000KKJRVA` (amara.ts core) and `081KRA5AR0008QG0R000C3P8KP` → `081KRA5AR0008QG0R001X4T9W7` (amara.ts README + closure), with `renumbered_from` / `renumbered_reason` frontmatter and remapped internal `depends_on` (081KRA5AR0008QG0R001X4T9W7 → 081KRA5AR0008QG0R000KKJRVA).
+- Update 081KQDTYV0008QG0R0037YJPEX parent body to point at new child IDs and add note about the renumber.
+- Regenerate `docs/BACKLOG.md` so the amara rows appear at 081KRA5AR0008QG0R000KKJRVA/081KRA5AR0008QG0R001X4T9W7 and the duplicate 081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP lines are dropped.
 
 ### Reviewed changes
 
@@ -80,7 +80,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md | Renames id to B-0457, bumps last_updated, adds renumbered_from/reason and tag. |
-| docs/backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md | Renames id to B-0458, remaps depends_on/composes_with to B-0457, adds renumber metadata. |
-| docs/backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md | Updates parent index/status notes to reference new child IDs. |
-| docs/BACKLOG.md | Removes old B-0410/B-0411 amara entries; adds B-0457/B-0458 entries. |
+| docs/backlog/P2/081KRA5AR0008QG0R000KKJRVA-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md | Renames id to 081KRA5AR0008QG0R000KKJRVA, bumps last_updated, adds renumbered_from/reason and tag. |
+| docs/backlog/P2/081KRA5AR0008QG0R001X4T9W7-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md | Renames id to 081KRA5AR0008QG0R001X4T9W7, remaps depends_on/composes_with to 081KRA5AR0008QG0R000KKJRVA, adds renumber metadata. |
+| docs/backlog/P2/081KQDTYV0008QG0R0037YJPEX-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md | Updates parent index/status notes to reference new child IDs. |
+| docs/BACKLOG.md | Removes old 081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP amara entries; adds 081KRA5AR0008QG0R000KKJRVA/081KRA5AR0008QG0R001X4T9W7 entries. |

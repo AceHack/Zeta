@@ -1,6 +1,5 @@
 ---
-id: B-0234
-zetaid: 081KQX9B50008QG0R0004N4HNK
+id: 081KQX9B50008QG0R0004N4HNK
 priority: P1
 status: open
 title: "GitHub Pages discoverability - SEO metadata, sitemap, robots, and AI crawler access"
@@ -14,7 +13,7 @@ children: [081KR2E4K0008QG0R0028VW6B3, 081KR2E4K0008QG0R0037MW8ET]
 type: friction-reducer
 ---
 
-# B-0234 - SEO metadata and crawler access
+# 081KQX9B50008QG0R0004N4HNK - SEO metadata and crawler access
 
 Make the Pages site legible to search engines, link-preview
 surfaces, and AI-agent crawlers.
@@ -37,6 +36,6 @@ allow-listing.
 
 ## Decomposition
 
-- `B-0284` owns per-page SEO metadata, canonical URLs, social
+- `081KR2E4K0008QG0R0028VW6B3` owns per-page SEO metadata, canonical URLs, social
   preview cards, and JSON-LD.
-- `B-0285` owns sitemap, robots, and AI-agent crawler policy.
+- `081KR2E4K0008QG0R0037MW8ET` owns sitemap, robots, and AI-agent crawler policy.

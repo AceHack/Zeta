@@ -1,6 +1,5 @@
 ---
-id: B-0021
-zetaid: 081KQ0YZ80008QG0R0026WN385
+id: 081KQ0YZ80008QG0R0026WN385
 priority: P2
 status: open
 title: Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331
@@ -20,7 +19,7 @@ tags: [aurora, economics, austrian-school, anti-deception, world-modeling, align
 type: feature
 ---
 
-# B-0021 — Aurora econ-foundation: rigorous-why, Austrian-school candidate
+# 081KQ0YZ80008QG0R0026WN385 — Aurora econ-foundation: rigorous-why, Austrian-school candidate
 
 ## Origin
 
@@ -154,14 +153,14 @@ Could grow to XL if Aurora's econ-substrate ends up requiring full mathematical 
 
 ## Children (decomposed 2026-05-10)
 
-This item is decomposed into 5 atomic, dependency-ordered child rows. B-0021 is now a tracking/parent row; work happens in the children.
+This item is decomposed into 5 atomic, dependency-ordered child rows. 081KQ0YZ80008QG0R0026WN385 is now a tracking/parent row; work happens in the children.
 
 | Row | Priority | Dir | Title | Depends on |
 |-----|----------|-----|-------|------------|
-| [B-0021.1](../P3/B-0021.1-aurora-econ-foundation-controlled-vocabulary-extraction.md) | P3 | P3/ | Controlled-vocabulary extraction (Otto-286 precision pass) | — |
-| [B-0021.2](../P3/B-0021.2-aurora-econ-austrian-strengths-survey-rodney-razor-pass.md) | P3 | P3/ | Austrian strengths survey + Rodney's Razor pass | B-0021.1 |
-| [B-0021.3](../P3/B-0021.3-aurora-econ-austrian-weakness-audit-falsification-criteria.md) | P3 | P3/ | Honest weakness audit + falsification-criteria catalog | B-0021.1, B-0021.2 |
-| [B-0021.4](../P3/B-0021.4-aurora-econ-cross-school-definitional-bridge.md) | P3 | P3/ | Cross-school definitional bridge (Austrian vs Post-Keynesian vs complexity) | B-0021.2, B-0021.3 |
-| [B-0021.5](B-0021.5-aurora-econ-primitive-identification-adr.md) | P2 | P2/ | Aurora econ-primitive identification + ADR (final synthesis) | B-0021.4 |
+| [081KR7JY10008QG0R001SG89MX](../P3/081KR7JY10008QG0R001SG89MX-aurora-econ-foundation-controlled-vocabulary-extraction.md) | P3 | P3/ | Controlled-vocabulary extraction (Otto-286 precision pass) | — |
+| [081KR7JY10008QG0R001RR02BP](../P3/081KR7JY10008QG0R001RR02BP-aurora-econ-austrian-strengths-survey-rodney-razor-pass.md) | P3 | P3/ | Austrian strengths survey + Rodney's Razor pass | 081KR7JY10008QG0R001SG89MX |
+| [081KR7JY10008QG0R0038QNJP0](../P3/081KR7JY10008QG0R0038QNJP0-aurora-econ-austrian-weakness-audit-falsification-criteria.md) | P3 | P3/ | Honest weakness audit + falsification-criteria catalog | 081KR7JY10008QG0R001SG89MX, 081KR7JY10008QG0R001RR02BP |
+| [081KR7JY10008QG0R0032QYPW5](../P3/081KR7JY10008QG0R0032QYPW5-aurora-econ-cross-school-definitional-bridge.md) | P3 | P3/ | Cross-school definitional bridge (Austrian vs Post-Keynesian vs complexity) | 081KR7JY10008QG0R001RR02BP, 081KR7JY10008QG0R0038QNJP0 |
+| [081KR7JY10008QG0R003TK4ZA7](081KR7JY10008QG0R003TK4ZA7-aurora-econ-primitive-identification-adr.md) | P2 | P2/ | Aurora econ-primitive identification + ADR (final synthesis) | 081KR7JY10008QG0R0032QYPW5 |
 
-**Dependency graph**: B-0021.1 → B-0021.2 → B-0021.3 → B-0021.4 → B-0021.5 (linear chain; no parallelism until B-0021.3 completes).
+**Dependency graph**: 081KR7JY10008QG0R001SG89MX → 081KR7JY10008QG0R001RR02BP → 081KR7JY10008QG0R0038QNJP0 → 081KR7JY10008QG0R0032QYPW5 → 081KR7JY10008QG0R003TK4ZA7 (linear chain; no parallelism until 081KR7JY10008QG0R0038QNJP0 completes).

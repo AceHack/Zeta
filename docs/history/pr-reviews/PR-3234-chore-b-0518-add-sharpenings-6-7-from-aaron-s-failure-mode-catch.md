@@ -53,12 +53,12 @@ Composes with 10% free-time-budget + Otto-as-AI-advocate role.
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CLw_D`
-- **Path**: `docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T20:39:53Z on `docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`:90 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T20:39:53Z on `docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`:90 (association: NONE)
 
   <pre>
   Sharpening 6’s forbidden-pattern enumeration is internally inconsistent: it lists "." as both a single character and as a “single word”, and “Standing” doesn’t match the earlier “Standing by” phrasing. This makes the acceptance criteria ambiguous for later mechanization; consider using a single “single-token output” category (or remove duplicates) and align the examples with the actual patterns described elsewhere in the row.
@@ -68,12 +68,12 @@ Composes with 10% free-time-budget + Otto-as-AI-advocate role.
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CLw_j`
-- **Path**: `docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
+- **Path**: `docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T20:39:54Z on `docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`:105 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T20:39:54Z on `docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`:105 (association: NONE)
 
   <pre>
   PR description says Sharpening 7 is “budget-conditional” (budget available → decompose; budget exhausted → free time), but the added Sharpening 7 text only describes forced decomposition and doesn’t capture the free-time terminal condition. Either update the sharpening text to include the budget-conditioned terminal behavior, or adjust the PR description so they match.
@@ -85,7 +85,7 @@ Composes with 10% free-time-budget + Otto-as-AI-advocate role.
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
 
 **Message:**
 
@@ -95,7 +95,7 @@ chore(b-0518): add Sharpenings 6 + 7 from Aaron's '.' failure-mode catch
 Aaron 2026-05-14: 'also . is another failure mode maybe the terminal
 should be decompose something'
 
-Operational evidence: Otto, after filing B-0518 to diagnose brief-
+Operational evidence: Otto, after filing 081KRHWGX0008QG0R001BHXH0M to diagnose brief-
 acknowledgment-as-failure-mode, emitted '.' on consecutive ticks.
 Same pattern dressed at minimum bandwidth.
 
@@ -114,7 +114,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
+- `docs/backlog/P1/081KRHWGX0008QG0R001BHXH0M-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md`
 
 **Message:**
 

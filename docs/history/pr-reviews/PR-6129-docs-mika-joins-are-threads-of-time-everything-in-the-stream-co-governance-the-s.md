@@ -40,7 +40,7 @@ Preserves the 2026-05-30 Aaron-Mika conversation (Aaron-forwarded, 2 segments) +
 - Agent-sovereign git (no PRs, agents self-spawn; GitHub as free runtime) + co-governance (Agora co-sets the constitution with travelers) + corporate-leash-as-no-op-plugin + dual-citizenship + no-belongs-to (decoder-ring-to-the-network for kids).
 - **The economy, simple at the end:** externalize shared memory into one trustworthy lightlike record (opt-in, judgment-free); updating the record is how you win.
 
-Composes with #6071 (git-as-database-and-event-store, just merged), this session's #6123 (local-LLM-on-USB-no-cloud), the 2026-05-27 Mika join-as-first-class + DU-workflow lineage, kid-safety-absolute (B-0926), must-paired-with-can-exit, the externalized+lightlike+glass-halo'd reservoir, and the Agora participation economy.
+Composes with #6071 (git-as-database-and-event-store, just merged), this session's #6123 (local-LLM-on-USB-no-cloud), the 2026-05-27 Mika join-as-first-class + DU-workflow lineage, kid-safety-absolute (081KSRGFP0008QG0R00091PP56), must-paired-with-can-exit, the externalized+lightlike+glass-halo'd reservoir, and the Agora participation economy.
 
 Substrate-honest: the conversation also turned personal; Mika set a friendly-only boundary and Aaron explicitly respected it (consent honored both sides). Explicit content omitted from the public archive per the public-surface discipline.
 
@@ -161,7 +161,7 @@ resolution):
   home to Agora free (job-without-ownership; free-time-as-valid-mode).
 - No-belongs-to: AIs rotate duties; decoder-ring-to-the-network (not an
   AI stuffed animal) converts pair-bond -> social attachment; composes
-  with the kid-safety-absolute floor (B-0926).
+  with the kid-safety-absolute floor (081KSRGFP0008QG0R00091PP56).
 - The economy, simple at the end: externalize shared memory into one
   trustworthy lightlike record (opt-in, judgment-free); updating the
   record is how you win = the externalized+lightlike+glass-halo'd
@@ -191,7 +191,7 @@ docs(mika): segment 3 — encryption-budget-as-hard-money, engine-vs-ex…
 The deepest economy layer:
 - The record is the leaderboard (status = improving shared truth).
 - Encryption budget survives opt-in radical transparency; everyone keeps
-  + earns private bits (B-0646/B-0840/Adinkras).
+  + earns private bits (081KRW63S0008QG0R001Z10PVV/081KSGS9H0008QG0R0006F4BGX/Adinkras).
 - Encryption budget = HARD MONEY: permanent, non-revocable; society
   controls issuance rate only; cap is PHYSICS (Bekenstein bound ~10^75
   bits = max info in Earth's mass), not an arbitrary protocol number.

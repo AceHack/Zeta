@@ -7,7 +7,7 @@ open Zeta.Core
 
 // ═══════════════════════════════════════════════════════════════════
 // StreamPolicy — the νF (stream/traveler) interpreter of the policy
-// kernel (B-1017 #2). The SAME `Policy` value, interpreted over an Rx
+// kernel (081KT7YW00008QG0R003N6PF8A #2). The SAME `Policy` value, interpreted over an Rx
 // push-stream (νF) instead of the finite DynamicValue tree (μF).
 //
 // Determinism: every source is a finite array turned into an observable

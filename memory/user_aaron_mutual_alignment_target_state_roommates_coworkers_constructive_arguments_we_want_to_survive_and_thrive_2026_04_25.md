@@ -319,7 +319,7 @@ across three scales:
   Task-tool subagent pattern).
 - **Layer 3 — Future maintainers + Zeta**: the factory
   itself becomes a vibe-riff partner for downstream
-  contributors (the matrix-pill rewrite + B-0003 +
+  contributors (the matrix-pill rewrite + 081KQ0YZ80008QG0R001QJJTVF +
   Library-of-Alexandria framing point at this layer).
 
 This is a fractal-Maji structural observation (per the

@@ -2,7 +2,7 @@
 // pr-publication-plan.ts -- deterministic PR publication packet builder for
 // autonomous backlog pickup.
 //
-// This is the first B-0280 slice: it does not push, create PRs, or arm
+// This is the first 081KR2E4K0008QG0R0022RVRCZ slice: it does not push, create PRs, or arm
 // auto-merge by itself. It builds the exact review packet and command argv
 // from machine-readable inputs so the executor path can stay small and
 // testable.

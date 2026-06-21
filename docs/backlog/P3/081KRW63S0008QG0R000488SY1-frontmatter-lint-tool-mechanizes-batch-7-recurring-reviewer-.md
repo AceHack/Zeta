@@ -1,6 +1,5 @@
 ---
-id: B-0663
-zetaid: 081KRW63S0008QG0R000488SY1
+id: 081KRW63S0008QG0R000488SY1
 priority: P3
 status: closed
 title: "tools/backlog/lint-frontmatter.ts — pre-push frontmatter discipline lint that mechanizes batch-7 recurring reviewer findings (Otto-CLI 2026-05-18)"
@@ -60,14 +59,14 @@ Output format: `<file>:<line>:<col> [<priority>] check <N>: <message>`.
 
 Tested against batch-7 rows shipped this session:
 
-- B-0661 (P1): caught 2 findings (composes_with omits B-0639 + B-0660 cross-dir prefix wrong)
-- B-0662 (P2): caught 1 finding (composes_with omits B-0644)
+- 081KRW63S0008QG0R002MK93T8 (P1): caught 2 findings (composes_with omits 081KRW63S0008QG0R000ZQ9WDH + 081KRW63S0008QG0R0004P69JA cross-dir prefix wrong)
+- 081KRW63S0008QG0R0009MCJ4T (P2): caught 1 finding (composes_with omits 081KRW63S0008QG0R002ZRNDJ8)
 
 These are EXACTLY the class of findings Copilot/Codex caught manually on the prior PRs. The tool detects them mechanically without round-trip to reviewer-tools.
 
 ## Composes with
 
-- [B-0650](B-0650-rest-push-delete-rename-extension-mechanizes-id-renumber-pattern-otto-cli-2026-05-18.md) — sibling tooling extension (rest-push.ts --delete/--rename); both mechanize patterns that previously required manual + inline workarounds
+- [081KRW63S0008QG0R003377JG9](081KRW63S0008QG0R003377JG9-rest-push-delete-rename-extension-mechanizes-id-renumber-pattern-otto-cli-2026-05-18.md) — sibling tooling extension (rest-push.ts --delete/--rename); both mechanize patterns that previously required manual + inline workarounds
 - `tools/backlog/README.md` — schema source-of-truth
 - `tools/backlog/generate-index.ts` — read-only counterpart for index regen
 - `tools/hygiene/audit-backlog-items.ts` — factory-wide invariants (this row scoped to per-row frontmatter discipline)

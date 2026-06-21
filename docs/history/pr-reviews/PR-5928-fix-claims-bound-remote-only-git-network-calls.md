@@ -47,7 +47,7 @@ Credential-Mode: operator-authorized
 Human-Review: pre-merge-pending
 Human-Review-Evidence: vera-desktop-loop-2026-05-28T20:06:17Z
 Action-Mode: substrate-implementation
-Task: B-0209
+Task: 081KQX9B50008QG0R001MNYK61
 
 Co-Authored-By: Codex <noreply@openai.com>
 

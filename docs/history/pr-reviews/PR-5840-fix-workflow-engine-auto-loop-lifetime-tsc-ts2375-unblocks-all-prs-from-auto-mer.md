@@ -51,7 +51,7 @@ Same fix-fwd shape as [#5808](https://github.com/Lucent-Financial-Group/Zeta/pul
 
 ## Note on the other main-broken check
 
-`lint (backlog ID uniqueness)` is also failing on main (B-0865 + B-0866 each have 2 files). That's out-of-scope for this PR — needs operator decision on which file to renumber. Surfaced separately on #5837 comment.
+`lint (backlog ID uniqueness)` is also failing on main (081KSKBP80008QG0R003NM9XEC + 081KSKBP80008QG0R003RFX32N each have 2 files). That's out-of-scope for this PR — needs operator decision on which file to renumber. Surfaced separately on #5837 comment.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

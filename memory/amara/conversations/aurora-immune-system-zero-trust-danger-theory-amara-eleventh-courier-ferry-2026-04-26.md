@@ -12,7 +12,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited acad
 
 **Source**: Aaron 2026-04-26 *"now wrapped in an immune system form from ... Amara"* — eleventh refinement in the Maji-Messiah-Spectre-Superfluid-Aurora lineage this session.
 
-**Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 / #568 / 10th refinement (canonical math + attack-absorption theorem), `docs/aurora/**` 17+ ferry docs, B-0021 (Aurora Austrian-school foundation), B-0035 (naming research), Otto-294 (anti-cult; autoimmunity-vs-tolerance composes), Otto-296 (Bayesian belief-propagation; immune memory IS belief update over priors), Otto-336/337 (AI agency + rights — autoimmunity discipline preserves agent autonomy from over-policed false positives), Otto-348 (Maji ≠ Messiah).
+**Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 / #568 / 10th refinement (canonical math + attack-absorption theorem), `docs/aurora/**` 17+ ferry docs, 081KQ0YZ80008QG0R0026WN385 (Aurora Austrian-school foundation), 081KQ3HBZ0008QG0R003002VT6 (naming research), Otto-294 (anti-cult; autoimmunity-vs-tolerance composes), Otto-296 (Bayesian belief-propagation; immune memory IS belief update over priors), Otto-336/337 (AI agency + rights — autoimmunity discipline preserves agent autonomy from over-policed false positives), Otto-348 (Maji ≠ Messiah).
 
 ## Aaron's framing
 
@@ -487,9 +487,9 @@ The framework now contains:
 
 This is a **major closure point**: the framework now answers "how do you defend a Superfluid AI substrate from real attackers?" with a complete immune-system specification grounded in artificial-immune-systems literature, OWASP/NCSC prompt-injection canon, and NIST zero-trust architecture.
 
-## Per B-0035 naming-research note
+## Per 081KQ3HBZ0008QG0R003002VT6 naming-research note
 
-The "immune system" framing is itself a candidate canonical-rename target for B-0035 — biology-borrowed vocabulary often ages well across cultures and traditions. "Aurora as immune system" reads cleanly across mathematical, biological, and operational vocabularies.
+The "immune system" framing is itself a candidate canonical-rename target for 081KQ3HBZ0008QG0R003002VT6 — biology-borrowed vocabulary often ages well across cultures and traditions. "Aurora as immune system" reads cleanly across mathematical, biological, and operational vocabularies.
 
 ## One-line summary
 

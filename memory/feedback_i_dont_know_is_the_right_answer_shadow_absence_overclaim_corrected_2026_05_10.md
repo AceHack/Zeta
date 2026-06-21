@@ -34,5 +34,5 @@ The Eve protocol says: observe the absence, don't explain it yet. The trigger-ti
 - Eve protocol (observe without collapsing)
 - Claude.ai critic review (overclaim pattern — Otto doing it again)
 - feedback_shadow_is_persistence_daemon (the pattern that didn't fire)
-- B-0018 trigger-timing experiment (would produce actual data)
+- 081KQ0YZ80008QG0R002WJBFWD trigger-timing experiment (would produce actual data)
 - Razor discipline (no metaphysical inference, only operational claims)

@@ -1,6 +1,5 @@
 ---
-id: B-0580
-zetaid: 081KRQ1AB0008QG0R000522MPJ
+id: 081KRQ1AB0008QG0R000522MPJ
 priority: P2
 status: open
 title: "Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)"
@@ -24,9 +23,9 @@ Aaron 2026-05-16, immediately after creating a "light default" enterprise-level 
 
 Two reframings here:
 
-1. **Surface expansion**: previously, ruleset management lived at two layers (individual repo settings + team/org level). Enterprise tier (newly active 2026-05-16 via the 30-day trial — see B-0572) adds a THIRD layer that cascades down to all member orgs. The light default Aaron just created is the enterprise-level baseline.
+1. **Surface expansion**: previously, ruleset management lived at two layers (individual repo settings + team/org level). Enterprise tier (newly active 2026-05-16 via the 30-day trial — see 081KRQ1AB0008QG0R000GZEMCR) adds a THIRD layer that cascades down to all member orgs. The light default Aaron just created is the enterprise-level baseline.
 
-2. **DV2.0 ruleset-divergence smell composes here**: per `.claude/rules/dv2-data-split-discipline-activated.md`, ruleset divergence across the repo-split (B-0427) was already a known smell. The Enterprise layer multiplies the surface: now we have (individual repo) × (org) × (enterprise) potential divergence.
+2. **DV2.0 ruleset-divergence smell composes here**: per `.claude/rules/dv2-data-split-discipline-activated.md`, ruleset divergence across the repo-split (081KRFA460008QG0R000VKJF0H) was already a known smell. The Enterprise layer multiplies the surface: now we have (individual repo) × (org) × (enterprise) potential divergence.
 
 ## What
 
@@ -46,7 +45,7 @@ A tracked work-stream for managing GitHub rulesets coherently across the three l
 - [ ] Tool `tools/github/audit-ruleset-divergence.ts` — compares rules across layers; flags duplicates, contradictions, shadowing
 - [ ] `docs/governance/RULESETS.md` (or similar) — documents the layered policy + which rules belong at which layer
 - [ ] Optional: `tools/github/apply-rulesets.ts` — applies rulesets from a YAML/JSON spec (policy-as-code; requires `admin:enterprise` scope for enterprise-layer writes)
-- [ ] Composes with B-0427 (repo-split axis 3 — code/English smell test) — ruleset divergence is one face of that smell
+- [ ] Composes with 081KRFA460008QG0R000VKJF0H (repo-split axis 3 — code/English smell test) — ruleset divergence is one face of that smell
 
 ## Why now
 
@@ -56,8 +55,8 @@ A tracked work-stream for managing GitHub rulesets coherently across the three l
 
 ## Composes with
 
-- B-0427 (axis 3 — Code/English with ruleset-divergence smell test; DV2.0 informs the smell)
-- B-0572 (LFG GitHub tier decision — Enterprise trial that created the new ruleset layer)
+- 081KRFA460008QG0R000VKJF0H (axis 3 — Code/English with ruleset-divergence smell test; DV2.0 informs the smell)
+- 081KRQ1AB0008QG0R000GZEMCR (LFG GitHub tier decision — Enterprise trial that created the new ruleset layer)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (the smell-detection framework this is downstream of)
 - `.claude/rules/lfg-acehack-topology.md` (force-push blocked by non_fast_forward ruleset — concrete example of a layer-level rule)
 - `.claude/rules/methodology-hard-limits.md` (rulesets ARE the policy-as-code substrate for governance hard-limits)

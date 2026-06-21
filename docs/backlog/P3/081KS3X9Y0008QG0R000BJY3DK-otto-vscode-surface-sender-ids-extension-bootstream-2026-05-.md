@@ -1,6 +1,5 @@
 ---
-id: B-0689
-zetaid: 081KS3X9Y0008QG0R000BJY3DK
+id: 081KS3X9Y0008QG0R000BJY3DK
 priority: P3
 status: open
 title: Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
@@ -21,7 +20,7 @@ type: operational
 
 Aaron 2026-05-21: VSCode just enabled auto-mode + web-conversation-mode-that-can-be-remembered. This makes VSCode a viable third foreground surface for Otto (alongside Otto-CLI in tmux + Otto-Desktop in Claude Desktop).
 
-Per `.claude/rules/claim-acquire-before-worktree-work.md`: when multiple instances of the same agent share git + bus on one machine, `--from` must differ for the claim-coordinator (`tools/bus/claim.ts`, B-0400 slice 3) to prevent split-brain. PR #3037 (2026-05-13) extended SENDER_IDS with surface-tagged variants — `otto-cli`, `otto-desktop`, etc. The same extension is needed for `otto-vscode` to prevent split-brain when the VSCode surface claims backlog rows alongside the other two Otto surfaces.
+Per `.claude/rules/claim-acquire-before-worktree-work.md`: when multiple instances of the same agent share git + bus on one machine, `--from` must differ for the claim-coordinator (`tools/bus/claim.ts`, 081KR7JY10008QG0R000R503K2 slice 3) to prevent split-brain. PR #3037 (2026-05-13) extended SENDER_IDS with surface-tagged variants — `otto-cli`, `otto-desktop`, etc. The same extension is needed for `otto-vscode` to prevent split-brain when the VSCode surface claims backlog rows alongside the other two Otto surfaces.
 
 ## Scope (small + bounded)
 
@@ -73,7 +72,7 @@ The Otto-VSCode third-surface addition composes with the broader multi-surface c
 
 ## Composes with
 
-- B-0400 (bus protocol — the claim coordinator substrate this row extends)
+- 081KR7JY10008QG0R000R503K2 (bus protocol — the claim coordinator substrate this row extends)
 - PR #3030 (Otto-Desktop tight bootstream — precedent template)
 - PR #3037 (SENDER_IDS schema extension for otto-cli/otto-desktop — the substrate this row extends)
 - PR #4553 (agent-roster card update for Lior's Antigravity IDE + Gemini 3.5 — sibling cold-boot rule update)

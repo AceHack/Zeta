@@ -27,7 +27,7 @@
 
 ## Description
 
-B-0858.4 conflict-free merge cycle.
+081KSKBP80008QG0R001KK9WV6.4 conflict-free merge cycle.
 
 Heartbeats live at `docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid-hex>.md` paths; no overlap with other repo work; ZetaID-unique filenames prevent internal conflicts. Auto-merge armed with squash to keep main history linear (one merge commit per cycle, not per heartbeat).
 

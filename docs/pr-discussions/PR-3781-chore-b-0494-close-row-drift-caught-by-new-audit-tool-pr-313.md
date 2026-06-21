@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-First real-world use of `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop shipped via PR #3758/#3777). Audit flagged B-0494; manual per-acceptance verification confirmed pure-drift (all 6 acceptance criteria shipped via PR #3134).
+First real-world use of `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop shipped via PR #3758/#3777). Audit flagged 081KRHWGX0008QG0R0029WA0HQ; manual per-acceptance verification confirmed pure-drift (all 6 acceptance criteria shipped via PR #3134).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -26,10 +26,10 @@ First real-world use of `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto
 
 ## Pull request overview
 
-Closes backlog row B-0494 as substrate drift after manual verification that all acceptance criteria were shipped via merged PR #3134. The row is marked `status: closed`, dated, and a Resolution section is appended; `docs/BACKLOG.md` is regenerated to reflect the closure.
+Closes backlog row 081KRHWGX0008QG0R0029WA0HQ as substrate drift after manual verification that all acceptance criteria were shipped via merged PR #3134. The row is marked `status: closed`, dated, and a Resolution section is appended; `docs/BACKLOG.md` is regenerated to reflect the closure.
 
 **Changes:**
-- Flip `B-0494` frontmatter to `status: closed`, bump `last_updated`, add `closed: 2026-05-16`
+- Flip `081KRHWGX0008QG0R0029WA0HQ` frontmatter to `status: closed`, bump `last_updated`, add `closed: 2026-05-16`
 - Append Resolution section with per-acceptance verification table
 - Update `docs/BACKLOG.md` index entry to checked
 
@@ -39,7 +39,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md | Close row, document resolution and audit-tool provenance |
+| docs/backlog/P1/081KRHWGX0008QG0R0029WA0HQ-circuit-breaker-live-bus-snapshot-2026-05-14.md | Close row, document resolution and audit-tool provenance |
 | docs/BACKLOG.md | Reflect closed status in the generated index |
 
 ## General comments

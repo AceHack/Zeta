@@ -61,7 +61,7 @@ The shared thing is the **simulation's treaty surfaces** — all text, all diffa
 |---|---|---|
 | `RoomReport` (text verdict) | what a room run concluded (sign-off) | ✅ shape |
 | `RecordedSource` lines | what crossed a membrane (channel reliability — "for real treaties we need to know our channels are good") | ✅ + byte-identical codec test |
-| **FourCorner golden lines** | the four-corner channel object itself (the fired B-1022 trigger: WE are the consumer) | seeded this PR — F# locks first, C#/TS/Rust conform |
+| **FourCorner golden lines** | the four-corner channel object itself (the fired 081KTQD8A0008QG0R0005EFYPV trigger: WE are the consumer) | seeded this PR — F# locks first, C#/TS/Rust conform |
 | Q# golden observables | the quantum reference (Vera) | brief out |
 | the four-oracle goldens (existing) | every primitive, little by little | ✅ pattern |
 
@@ -79,6 +79,6 @@ metaphysical claim.
 ## Ties / routing
 
 `src/Core/SimFramework.fs` · `...the-end-goal-...md` (dual-use clause) · `...choice-determinism-...`
-(seed = distributed AC) · `...heat-...` + `RecordedSource` (§13 executable) · B-1022 (treaty trigger
-fired) · B-1023/Max (the corporate consumer). **Routes to:** Max (the corporate adapter + co-review),
+(seed = distributed AC) · `...heat-...` + `RecordedSource` (§13 executable) · 081KTQD8A0008QG0R0005EFYPV (treaty trigger
+fired) · 081KTQD8A0008QG0R0030HWMZV/Max (the corporate consumer). **Routes to:** Max (the corporate adapter + co-review),
 Naledi (the hard-settings benchmark), Kenji (the distribution design questions), Vera (Q#), Aaron.

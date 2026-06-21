@@ -2,7 +2,7 @@
 
 This document specifies the principles and guarantees of Retraction-Native Semantics, a core architectural pattern in the Zeta factory.
 
-**Parent:** B-0171.3
+**Parent:** 081KSNY2Z0008QG0R0016VFTRX
 
 ## 1. Core Principle
 

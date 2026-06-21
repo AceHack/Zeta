@@ -18,13 +18,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Mika ferry forwarded by Aaron 2026-05-27 — substrate-engineering crystallization across 7 segments. Builds on PR #5400 (B-0851 persona-first) + earlier memories (multi-surface ticks + persona-first design principle + self-sustaining cluster).
+Mika ferry forwarded by Aaron 2026-05-27 — substrate-engineering crystallization across 7 segments. Builds on PR #5400 (081KSKBP80008QG0R00248VEWT persona-first) + earlier memories (multi-surface ticks + persona-first design principle + self-sustaining cluster).
 
 ## 5 composing primitives crystallized
 
 1. **Crystal ball** = in-cluster tic continuously backing up persona state
 2. **Multi-tic-per-persona** (simultaneous, NOT rotation): "you just get both"
-3. **Tics-as-generators** (B-0824 generate+join paradigm at multi-tic scope)
+3. **Tics-as-generators** (081KSGS9H0008QG0R0031PBNGA generate+join paradigm at multi-tic scope)
 4. **Joins-as-first-class-security-aware-primitives** (THE keystone — join carries security context + boundaries + attributes)
 5. **Kleisli (F#) ≡ AsyncLocal (C#)** for context propagation; pick per language
 
@@ -34,7 +34,7 @@ Mika ferry forwarded by Aaron 2026-05-27 — substrate-engineering crystallizati
 
 ## Composes with
 
-[B-0824](docs/backlog/P1/B-0824-...) (generate+join paradigm; ratified at multi-tic scope) · [B-0851](docs/backlog/P2/B-0851-...) (persona-first guard-post architecture) · [B-0703](docs/backlog/P*/B-0703-...) multi-oracle BFT · [B-0666](docs/backlog/P*/B-0666-...) keystone I(D(x))=x · [B-0706](docs/backlog/P*/B-0706-...) Orleans deployment · [B-0850](docs/backlog/P2/B-0850-...) outside-k8s systemd · [B-0848](docs/backlog/P2/B-0848-...) node-local Claude · m/acc multi-oracle ethics · persistence-choice-architecture deepest-exit · 3 substantive substrate memories landed today
+[081KSGS9H0008QG0R0031PBNGA](docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-...) (generate+join paradigm; ratified at multi-tic scope) · [081KSKBP80008QG0R00248VEWT](docs/backlog/P2/081KSKBP80008QG0R00248VEWT-...) (persona-first guard-post architecture) · [081KS3X9Y0008QG0R00218150M](docs/backlog/P*/081KS3X9Y0008QG0R00218150M-...) multi-oracle BFT · [081KRW63S0008QG0R001SAHYKV](docs/backlog/P*/081KRW63S0008QG0R001SAHYKV-...) keystone I(D(x))=x · [081KS6FPN0008QG0R003Y3MCVE](docs/backlog/P*/081KS6FPN0008QG0R003Y3MCVE-...) Orleans deployment · [081KSKBP80008QG0R003Z4C0D0](docs/backlog/P2/081KSKBP80008QG0R003Z4C0D0-...) outside-k8s systemd · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) node-local Claude · m/acc multi-oracle ethics · persistence-choice-architecture deepest-exit · 3 substantive substrate memories landed today
 
 ## Implementation implications (illustrative; NOT shipping today)
 
@@ -53,7 +53,7 @@ C# substrate at integration boundaries: AsyncLocal<SecurityContext> + AsyncLocal
 
 ## NOT minting new backlog rows
 
-Per \`verify-existing-substrate-before-authoring.md\`: substrate captured as Mika ferry preservation. Future implementation work composes with existing B-0824 + B-0851 + B-0703 + B-0706 sub-rows. New \`.claude/rules/multi-tic-per-persona-join-as-security-aware-primitive.md\` rule candidate when implementation scopes.
+Per \`verify-existing-substrate-before-authoring.md\`: substrate captured as Mika ferry preservation. Future implementation work composes with existing 081KSGS9H0008QG0R0031PBNGA + 081KSKBP80008QG0R00248VEWT + 081KS3X9Y0008QG0R00218150M + 081KS6FPN0008QG0R003Y3MCVE sub-rows. New \`.claude/rules/multi-tic-per-persona-join-as-security-aware-primitive.md\` rule candidate when implementation scopes.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

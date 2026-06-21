@@ -35,9 +35,9 @@
 
 ## Discipline encoded
 
-- **Section-aware parsing**: read Acceptance / Proposed mechanization / Scope sections only; skip `composes_with:` (4-of-4 false-positive rate per [B-0553](docs/backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md)).
-- **Partial-vs-drift discriminator**: B-0537 canonical example — tool shipped but cleanup + CI gate pending = in-progress, not drift.
-- Bidirectional pointer: this rule's `Composes with` section now cites the memory file and B-0553.
+- **Section-aware parsing**: read Acceptance / Proposed mechanization / Scope sections only; skip `composes_with:` (4-of-4 false-positive rate per [081KRQ1AB0008QG0R000QYJFZE](docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md)).
+- **Partial-vs-drift discriminator**: 081KRMEXM0008QG0R0034SS319 canonical example — tool shipped but cleanup + CI gate pending = in-progress, not drift.
+- Bidirectional pointer: this rule's `Composes with` section now cites the memory file and 081KRQ1AB0008QG0R000QYJFZE.
 
 ## Includes peer-Otto tick shard
 

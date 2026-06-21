@@ -46,9 +46,9 @@ This PR adds a hygiene-history tick shard documenting the 02:13Z Otto-CLI work a
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0213Z.md:28**
-* This relative link goes up to `docs/` and then appends `docs/backlog/...`, so it resolves as `docs/docs/backlog/...` instead of the existing B-0545 row. From this tick directory, the link should target the `backlog/` subtree under `docs/`, not a nested `docs/` directory.
+* This relative link goes up to `docs/` and then appends `docs/backlog/...`, so it resolves as `docs/docs/backlog/...` instead of the existing 081KRMEXM0008QG0R000ARAR7P row. From this tick directory, the link should target the `backlog/` subtree under `docs/`, not a nested `docs/` directory.
 ```
-| `lint (backlog ID uniqueness)` | still ❌ — B-0498 collision | scoped at [B-0545](../../../../../docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md), needs renumber-sweep coordination |
+| `lint (backlog ID uniqueness)` | still ❌ — 081KRHWGX0008QG0R001XFRAHC collision | scoped at [081KRMEXM0008QG0R000ARAR7P](../../../../../docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md), needs renumber-sweep coordination |
 ```
 **docs/hygiene-history/ticks/2026/05/16/0213Z.md:35**
 * This relative link only climbs to `docs/`, so it resolves under `docs/.claude/rules/...`; the existing rule file is at the repository root under `.claude/rules/...`. The link needs one more `..` segment or another root-relative form to avoid landing broken.

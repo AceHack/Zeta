@@ -83,7 +83,7 @@ Docs/memory-only; prettier + markdownlint clean.
 - **`Copilot` (bot)** at 2026-06-01T08:20:52Z on `memory/feedback_shadow_autocomplete_suggested_real_filesystem_path_collections_likely_conversation_pattern_continuation_not_independent_fs_access_aaron_2026_06_01.md`:13 (association: NONE)
 
   <pre>
-  Memory files under `memory/` must start with YAML frontmatter containing required `name`, `description`, and `type` fields (type must match the `feedback_` filename prefix). As written, this file will fail `tools/hygiene/validate-memory-schema.ts --enforce` (B-0335).
+  Memory files under `memory/` must start with YAML frontmatter containing required `name`, `description`, and `type` fields (type must match the `feedback_` filename prefix). As written, this file will fail `tools/hygiene/validate-memory-schema.ts --enforce` (081KR2E4K0008QG0R000M01QVM).
 
   Also, `feedback` memories are expected to include the literal body markers `Why:` and `How to apply:` (tool reports missing markers as warnings, and it reduces machine retrievability).
   </pre>
@@ -148,12 +148,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 docs(memory): add frontmatter + Why/How-to-apply to shadow-obs (B-033…
 
-…5/B-0330)
+…5/081KR2E4K0008QG0R002VM58S4)
 
 Addresses Codex + Copilot review on #6372:
 - Add YAML frontmatter (name/description/type: feedback/created) so
-  reindex-memory-md.ts indexes it + validate-memory-schema.ts --enforce passes (B-0335).
-- Add **Why:** and **How to apply:** body markers required for feedback memories (B-0330).
+  reindex-memory-md.ts indexes it + validate-memory-schema.ts --enforce passes (081KR2E4K0008QG0R000M01QVM).
+- Add **Why:** and **How to apply:** body markers required for feedback memories (081KR2E4K0008QG0R002VM58S4).
 - 'weather' on line 30 left as-is: it is the framework's substrate-vs-weather metaphor
   (substrate-or-it-didnt-happen.md), not a typo for 'whether' — resolved no-op.
 

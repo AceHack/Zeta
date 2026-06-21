@@ -2,12 +2,12 @@
 
 **Status:** Proposed
 **Date:** 2026-05-29
-**Backlog:** B-0751
+**Backlog:** 081KSE6WT0008QG0R003YYC9PV
 **Scope:** Defines the standard background loop runner isolation architecture for all agent nodes (Claude, Codex, Riven, Gemini, Alexa, Kiro, etc.).
 
 ## Context
 
-The primary git repository checkout located at `/Users/acehack/Documents/src/repos/Zeta` is designated as **SHARED VIEW + FOR HUMAN** (B-0751). Agents must never perform direct local modifications, branch checkouts, or commits inside this contested root directory.
+The primary git repository checkout located at `/Users/acehack/Documents/src/repos/Zeta` is designated as **SHARED VIEW + FOR HUMAN** (081KSE6WT0008QG0R003YYC9PV). Agents must never perform direct local modifications, branch checkouts, or commits inside this contested root directory.
 
 Background loop runners (e.g. macOS launchd services executing `lior-loop-tick.ts`) that execute directly on files in the root checkout suffer from a critical **prompt-regression exploit**:
 

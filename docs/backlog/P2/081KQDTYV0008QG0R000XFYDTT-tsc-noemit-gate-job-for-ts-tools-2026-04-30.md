@@ -1,12 +1,11 @@
 ---
-id: B-0106
-zetaid: 081KQDTYV0008QG0R000XFYDTT
+id: 081KQDTYV0008QG0R000XFYDTT
 priority: P2
 status: closed
 title: Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI
 tier: factory-hygiene
 effort: S
-ask: Aaron 2026-04-29 (B-0086 trajectory) — found via slice-9 #882 post-merge audit on 2026-04-30
+ask: Aaron 2026-04-29 (081KQ8P5D0008QG0R003BFZPRC trajectory) — found via slice-9 #882 post-merge audit on 2026-04-30
 created: 2026-04-30
 last_updated: 2026-05-02
 depends_on: []
@@ -47,14 +46,14 @@ all assignability narrowings — the slice-9 example was a
 error that survived eslint strictTypeChecked + sonarjs but failed
 plain `tsc --noEmit`.
 
-Per the B-0086 (TS+Bun migration) trajectory, the script surface
+Per the 081KQ8P5D0008QG0R003BFZPRC (TS+Bun migration) trajectory, the script surface
 under `tools/` is growing — 32 ported files as of slice-11 + more
 to come. Without a CI tsc gate, this class of error will recur
 silently.
 
 ## Composes with
 
-- **B-0086** — TS+Bun migration trajectory; the more we port, the
+- **081KQ8P5D0008QG0R003BFZPRC** — TS+Bun migration trajectory; the more we port, the
   more important this gate becomes.
 - **The "lint (semgrep)" pattern** — semgrep was added in round 30
   for the same reason: 14 codified rules but 0 gated builds. Same

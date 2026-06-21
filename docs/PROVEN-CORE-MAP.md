@@ -22,10 +22,10 @@
   CONVERGES (runToFixpoint/LUB) to one fleet-liveness view regardless of order or
   duplicates — that convergence IS homeostasis. Connects the proven primitives
   (CRDT merge + clock/versionstamp + actor addresses); rides heartbeat-via-commit.
-- **Leg order pivot:** 4-ser is gated on B-1011 (CBOR/YAML/XML serializers not all
+- **Leg order pivot:** 4-ser is gated on 081KT5CF90008QG0R001P4CQ09 (CBOR/YAML/XML serializers not all
   built — G-Set has JSON only), so the ungated **homeostat-tie was done first** as
   the payoff demo. Remaining G-Set legs: ~~4-ser~~ ✅ DONE (29c1ffe4), Arrow, Bonsai.
-- **G-Set × 4-ser leg ✅ LANDED (2026-06-04, 29c1ffe4):** B-1011's serializers
+- **G-Set × 4-ser leg ✅ LANDED (2026-06-04, 29c1ffe4):** 081KT5CF90008QG0R001P4CQ09's serializers
   unblocked it — `tests/Tests.FSharp/GSet.FourSer.Tests.fs` proves a G-Set value's
   canonical DynamicValue (ascending Array) round-trips through JSON+CBOR+YAML+XML and
   all four recover the SAME G-Set (FsCheck over GSet<int64> + fixed cases). The CRDT/
@@ -38,11 +38,11 @@
 - **4-ser progress (2026-06-04): all four value-tree serializers DONE + 4-language
   BYTE-LOCKED** — JSON + CBOR + YAML + XML. Each produces byte-identical canonical
   output across F#+TS+C#+Rust (golden-vector byte-lock per oracle). YAML is the
-  storage of record (canonical encoder + B-1016 never-collapse for empty `{}`/`[]`);
+  storage of record (canonical encoder + 081KT7YW00008QG0R002T1XNWT never-collapse for empty `{}`/`[]`);
   XML is the typed-element codec (`<null/>`/`<bool>`/…/`<float>`/`<bytes>`/`<obj><e
   k=..>..</e></obj>`, now **TOTAL 8/8** like CBOR — Float=16-hex IEEE-754 f64 bits,
   Bytes=lowercase hex; never-collapse free via distinct element names — 5 distinct
-  empties; golden-vectors-xml.json = 47-vector treaty). (Serializer doctrine: B-1011
+  empties; golden-vectors-xml.json = 47-vector treaty). (Serializer doctrine: 081KT5CF90008QG0R001P4CQ09
   — all four legs done + total-or-documented-partial; remaining: Arrow-as-serializer.)
 - **Format-agreement matrix (value-tree) PROVEN across all four (2026-06-04):**
   JSON + CBOR + YAML + XML all recover the SAME DynamicValue on the locked shapes
@@ -268,7 +268,7 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
 `tools/lean4/Privacy/IdentityForcesPrivacy.lean` — necessity (`distinctness_forces_private`: under public
 convergence, distinct behavior ⇒ distinct private; Leibniz) + dynamics (`commons_converges`,
 `private_is_persistent_locus`: consensus can't erase private differentiation). Halting experiment:
-`src/Core/Evolution.fs` (B-1019) — the pigeonhole bound PROVEN (finite+deterministic+no-input ⇒ halt-or-cycle,
+`src/Core/Evolution.fs` (081KT7YW00008QG0R001DGZQKM) — the pigeonhole bound PROVEN (finite+deterministic+no-input ⇒ halt-or-cycle,
 so growth requires the differentiation engine) + the differentiation-evolves / collapse-halts DST harness.
 Open (honest): the universal "halts without privacy" claim is empirical, not a theorem.
 
@@ -330,9 +330,9 @@ not every recursion).
 
 ## Time is a family, not one clock (no global causal order)
 
-The clock is an injectable family behind `IScheduler` (B-0684 negotiation stack);
+The clock is an injectable family behind `IScheduler` (081KS3X9Y0008QG0R003MMEAC7 negotiation stack);
 **there is no global causal order — relativistic**: each agent = its own git repo
-= its own frame; frames connect only through **bus repos over Rx joins** (B-0907).
+= its own frame; frames connect only through **bus repos over Rx joins** (081KSNY2Z0008QG0R0031EAB6T).
 
 - clock TYPES: FDB versionstamp (total, single-shard) · CockroachDB HLC
   (uncertainty interval) · generator-time + retrocausality (three-clocks).
@@ -346,7 +346,7 @@ The clock is an injectable family behind `IScheduler` (B-0684 negotiation stack)
 - **Prove one primitive at a time, from the seed.** Foundation-first; don't build
   atop unproven ground (verify-stage, not expand-stage).
 - **Validated ≠ proven.** 4-oracle consensus is a prompt to prove, not a proof
-  (B-1007). Canonical = homeostat proven from the seed.
+  (081KT2T2J0008QG0R000YZ3NMY). Canonical = homeostat proven from the seed.
 - **Search-last, not excluded** (Amara's blade): a proof shows code-matches-spec,
   not that the spec was the right intent — so proven code drops to the BOTTOM of
   the suspect list, it does not vanish from it.
@@ -367,7 +367,7 @@ External formal review surfaced 5 gaps; status:
    (Lean-tier) still open. G-Counter state-merge also FsCheck-validated.
 3. **Sketch dimensionality** — ✅ fixed: Bloom `MergeFrom` now guards both m AND
    k (CMS already guarded depth/width/seed); mismatch throws (tested).
-4. **Bayesian BP/EP metric scale-sensitivity** — ✅ routed to B-1007 (Soraya
+4. **Bayesian BP/EP metric scale-sensitivity** — ✅ routed to 081KT2T2J0008QG0R000YZ3NMY (Soraya
    cadence): max-abs-diff on natural params is scale-dependent; fix = KL-divergence
    or magnitude-scaled tolerance.
 5. **ZetaId ordering caveat** — partially: proven within a version (Version is the
@@ -376,7 +376,7 @@ External formal review surfaced 5 gaps; status:
 
 ## Relation to the larger primitives wishlist
 
-[`docs/PRIMITIVE-REGISTRY.md`](PRIMITIVE-REGISTRY.md) (tracked by **B-0959**) is
+[`docs/PRIMITIVE-REGISTRY.md`](PRIMITIVE-REGISTRY.md) (tracked by **081KSXN940008QG0R003FCQ7WT**) is
 the full cross-language **wishlist** + the **4-lang-consensus** status view — the
 "4-lang" leg of the PROVEN bar. THIS map is the complementary **math / proof-leg**
 view over the floor. They connect, not fork: `PROVEN = (4-lang from the registry)
@@ -386,8 +386,8 @@ there's a full proof chain (sequencing is the agent's call).
 
 ## Pointers
 
-- B-1016 (context-window minimization — the program this map serves)
-- `docs/PRIMITIVE-REGISTRY.md` + B-0959 (the larger wishlist / 4-lang status view)
-- B-0684 (clock-protocol-negotiation-stack) · B-0683 (deferred-causality / Z-sets)
-- B-0907 (Rx temporal joins / bus) · B-0924 (IScheduler DST)
-- B-1007 (asserted→proven gap; the formal-coverage ledger)
+- 081KT7YW00008QG0R002T1XNWT (context-window minimization — the program this map serves)
+- `docs/PRIMITIVE-REGISTRY.md` + 081KSXN940008QG0R003FCQ7WT (the larger wishlist / 4-lang status view)
+- 081KS3X9Y0008QG0R003MMEAC7 (clock-protocol-negotiation-stack) · 081KS3X9Y0008QG0R0006MQXA4 (deferred-causality / Z-sets)
+- 081KSNY2Z0008QG0R0031EAB6T (Rx temporal joins / bus) · 081KSNY2Z0008QG0R001HA43GG (IScheduler DST)
+- 081KT2T2J0008QG0R000YZ3NMY (asserted→proven gap; the formal-coverage ledger)

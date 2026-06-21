@@ -1,12 +1,11 @@
 ---
-id: B-0332
-zetaid: 081KR2E4K0008QG0R002FRQZN4
+id: 081KR2E4K0008QG0R002FRQZN4
 priority: P1
 status: closed
 title: Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces
 tier: foundation
 effort: S
-ask: B-0190 Step 7 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 7 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,11 +15,11 @@ tags: [memory, classification, load-bearing, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0332 — Memory load-bearing-vs-decorative classifier
+# 081KR2E4K0008QG0R002FRQZN4 — Memory load-bearing-vs-decorative classifier
 
 ## Parent
 
-B-0190 Step 7 (memory load-bearing-vs-decorative classification).
+081KQR4HQ0008QG0R001909FPT Step 7 (memory load-bearing-vs-decorative classification).
 
 ## What
 

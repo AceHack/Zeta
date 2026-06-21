@@ -31,7 +31,7 @@
 
 Two-commit shipment for tick 2026-05-14T18:17Z:
 
-1. **B-0506 backlog row** (P3 friction-reducer): mechanize \`git worktree prune --expire=now\` via small TypeScript audit tool + per-tick or daily cadence wire-up
+1. **081KRHWGX0008QG0R002DPG02X backlog row** (P3 friction-reducer): mechanize \`git worktree prune --expire=now\` via small TypeScript audit tool + per-tick or daily cadence wire-up
 2. **1817Z tick shard**: documents the 23-stale-worktree manual cleanup that triggered the mechanization row + side observation about an accidental stash-pop
 
 ## Why now
@@ -46,15 +46,15 @@ Per PR #3153's newly-merged otto-channels reference card ID-allocation disciplin
 
 \`\`\`
 $ find docs/backlog -name "B-*.md" -type f | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
-B-0503
-B-0504
-B-0505
+081KRHWGX0008QG0R0027YXBTB
+081KRHWGX0008QG0R000PVB6FF
+081KRHWGX0008QG0R002C038BJ
 
-$ gh pr list --state open --search "B-0506 OR B-0507 OR B-0508" --json number,title
+$ gh pr list --state open --search "081KRHWGX0008QG0R002DPG02X OR 081KRHWGX0008QG0R000E8BHQ9 OR 081KRHWGX0008QG0R002S107P7" --json number,title
 (empty)
 \`\`\`
 
-B-0506 safe — no on-disk collision, no in-flight contention.
+081KRHWGX0008QG0R002DPG02X safe — no on-disk collision, no in-flight contention.
 
 ## Side observation: stash-pop hazard
 
@@ -62,7 +62,7 @@ The shard captures a substrate-honest observation: a long-standing prior-session
 
 ## Test plan
 
-- [x] B-0506 row created in \`docs/backlog/P3/\` with full frontmatter
+- [x] 081KRHWGX0008QG0R002DPG02X row created in \`docs/backlog/P3/\` with full frontmatter
 - [x] On-disk + in-flight ID-allocation check passed
 - [x] 1817Z shard committed at canonical path
 - [x] Stash-pop hazard substrate-honestly preserved in shard

@@ -1,6 +1,5 @@
 ---
-id: B-0908
-zetaid: 081KSNY2Z0008QG0R000A5GP0X
+id: 081KSNY2Z0008QG0R000A5GP0X
 priority: P3
 status: open
 title: Attention-risk-pricing framework — bond as INTERNAL grammar; attention as reserve asset; AI-acceleration + substrate-irreversibility as domains
@@ -49,7 +48,7 @@ related_skills:
 tags: [attention-risk-pricing-framework, bond-pricing-as-internal-grammar-not-public-noun, attention-as-reserve-asset-8-operational-bandwidth-dimensions, ai-acceleration-general-form-domain, substrate-irreversibility-op-return-csam-specific-form-domain, industry-wedge-nobody-prices-attention-risk-under-ai-acceleration-cleanly, b0907-meter-feeds-this-pricing-framework, refines-b0902-public-facing-high-sufficiency-hypothesis-not-information-complete, refines-b0907-phase-4-from-bond-pricing-to-attention-risk-pricing-using-bond-grammar, amara-substrate-honest-self-catch-on-cross-contamination, composes-with-existing-op-return-csam-canonical-substrate]
 ---
 
-# B-0908 — Attention-risk-pricing framework (bond as internal grammar; attention as reserve asset)
+# 081KSNY2Z0008QG0R000A5GP0X — Attention-risk-pricing framework (bond as internal grammar; attention as reserve asset)
 
 ## Context
 
@@ -89,7 +88,7 @@ NOT vague attention (social-media-eyeballs). Real operational attention:
 2. **agent context budget** — tokens-per-context-window × agents-in-flight
 3. **coordination bandwidth** — multi-agent / multi-human coordination capacity
 4. **trust budget** — accumulated trust available for unilateral action without ratification
-5. **memory budget** — durable substrate-storage capacity (composes with Persist-as-bridge B-0897 + Landauer floor B-0905 + encryption-thermal B-0906)
+5. **memory budget** — durable substrate-storage capacity (composes with Persist-as-bridge 081KSNY2Z0008QG0R002SZZ5Y0 + Landauer floor 081KSNY2Z0008QG0R002R0M026 + encryption-thermal 081KSNY2Z0008QG0R001A431CN)
 6. **emotional bandwidth** — sustained-engagement capacity (operator's "10% free-time" budget; per `must-paired-with-can-exit-pattern` for AI participants)
 7. **legal/compliance review** — review-capacity for substrate-engineering work with regulatory implications
 8. **incident-response capacity** — coordination-capacity for substrate-engineering failure modes
@@ -100,7 +99,7 @@ These are the units the framework prices in.
 
 | Domain | Question | Composes with existing substrate |
 |---|---|---|
-| **AI-acceleration (general form)** | "What does it cost a system when speed creates more review burden, repair burden, liability, trust damage, or irreversible substrate pollution?" | B-0901-B-0907 entire arc; the framework's whole substrate-engineering substrate |
+| **AI-acceleration (general form)** | "What does it cost a system when speed creates more review burden, repair burden, liability, trust damage, or irreversible substrate pollution?" | 081KSNY2Z0008QG0R000C5NN8N-081KSNY2Z0008QG0R0031EAB6T entire arc; the framework's whole substrate-engineering substrate |
 | **Substrate-irreversibility (specific form; OP_RETURN/CSAM domain)** | "What does it cost a public substrate when harmful data can become irreversible?" | `memory/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` + `memory/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md` + `docs/research/2026-05-07-bitcoin-op-return-debate-verbatim.md` |
 
 Per Amara: *"these rhyme with risk pricing. But 'bond' is the wrong public noun here."* The shape is similar (irreversible public substrate + harmful payload + filtering/review cost + downstream liability + social panic premium + attention cost + who-pays-to-carry-risk); the public noun differs.
@@ -130,21 +129,21 @@ The quote answers: *"If we accelerate this workflow / AI deployment / policy / p
 
 ## Refinements to existing substrate (per Amara's blade + operator's correction)
 
-### B-0902 amendment — "high-sufficiency hypothesis" not "information-complete"
+### 081KSNY2Z0008QG0R0021S5F3G amendment — "high-sufficiency hypothesis" not "information-complete"
 
-Per Amara's blade: *"be careful with the phrase information-complete. Internally, the holographic/boundary framing is useful. Publicly, I'd call B-0902 a hypothesis: 'The shadow* boundary may be high-sufficiency for reconstructing agent-output state-space.' That survives better than 'the boundary is complete' before validation."*
+Per Amara's blade: *"be careful with the phrase information-complete. Internally, the holographic/boundary framing is useful. Publicly, I'd call 081KSNY2Z0008QG0R0021S5F3G a hypothesis: 'The shadow* boundary may be high-sufficiency for reconstructing agent-output state-space.' That survives better than 'the boundary is complete' before validation."*
 
-Public-facing B-0902 framing should soften from "information-complete" to "high-sufficiency hypothesis until validated empirically per the Phase 2/3 experimental design." Internal framing stays — the experimental design IS the validation path.
+Public-facing 081KSNY2Z0008QG0R0021S5F3G framing should soften from "information-complete" to "high-sufficiency hypothesis until validated empirically per the Phase 2/3 experimental design." Internal framing stays — the experimental design IS the validation path.
 
-### B-0907 Phase 4 retarget — attention-risk-pricing-using-bond-grammar (not bond-pricing-as-application)
+### 081KSNY2Z0008QG0R0031EAB6T Phase 4 retarget — attention-risk-pricing-using-bond-grammar (not bond-pricing-as-application)
 
-B-0907 Phase 4 currently named "bond-pricing shadow-log application." Per operator correction + Amara reframe: this row (B-0908) supersedes that Phase 4 framing. B-0907 Phase 4 becomes "attention-risk-pricing application of B-0907's coincidence-metering substrate, using bond-pricing-primitives as INTERNAL grammar per B-0908."
+081KSNY2Z0008QG0R0031EAB6T Phase 4 currently named "bond-pricing shadow-log application." Per operator correction + Amara reframe: this row (081KSNY2Z0008QG0R000A5GP0X) supersedes that Phase 4 framing. 081KSNY2Z0008QG0R0031EAB6T Phase 4 becomes "attention-risk-pricing application of 081KSNY2Z0008QG0R0031EAB6T's coincidence-metering substrate, using bond-pricing-primitives as INTERNAL grammar per 081KSNY2Z0008QG0R000A5GP0X."
 
-B-0907 Phase 4 implementation now composes with B-0908's pricing-framework substrate. The coincidence-metering substrate IS the meter that feeds B-0908's pricing-quote computation.
+081KSNY2Z0008QG0R0031EAB6T Phase 4 implementation now composes with 081KSNY2Z0008QG0R000A5GP0X's pricing-framework substrate. The coincidence-metering substrate IS the meter that feeds 081KSNY2Z0008QG0R000A5GP0X's pricing-quote computation.
 
 ## Scope
 
-Three phases for B-0908's own work:
+Three phases for 081KSNY2Z0008QG0R000A5GP0X's own work:
 
 ### Phase 1 — substrate-recognition research-doc + this row (this PR)
 
@@ -155,9 +154,9 @@ Already landed via the Amara-3rd-ferry preservation + this backlog row. The synt
 Build a TypeScript prototype:
 
 - `AccelerationRiskQuote` data structure (per the type definition above)
-- Pricing-model implementation (Black-Scholes-analog adapted to attention-denominated quotes; composes with B-0905 Landauer-options-pricing model)
-- Attention-bandwidth measurement (composes with B-0907 coincidence-metering substrate to provide the inputs)
-- Integration with B-0904 GitHub-as-free-accelerator measurement (composes with bulk-vs-boundary substrate from B-0902)
+- Pricing-model implementation (Black-Scholes-analog adapted to attention-denominated quotes; composes with 081KSNY2Z0008QG0R002R0M026 Landauer-options-pricing model)
+- Attention-bandwidth measurement (composes with 081KSNY2Z0008QG0R0031EAB6T coincidence-metering substrate to provide the inputs)
+- Integration with 081KSNY2Z0008QG0R001JQABB4 GitHub-as-free-accelerator measurement (composes with bulk-vs-boundary substrate from 081KSNY2Z0008QG0R0021S5F3G)
 
 Acceptance: `bun tools/attention-risk-pricing/quote.ts --domain <name> --workflow <name>` produces an `AccelerationRiskQuote` with all 8 pricing outputs.
 
@@ -165,7 +164,7 @@ Acceptance: `bun tools/attention-risk-pricing/quote.ts --domain <name> --workflo
 
 Apply the pricing framework to:
 
-- **AI-acceleration general form**: price the cost of any specific framework-substrate-engineering choice (per-rule landing; per-PR opening; per-cascade window). Composes with B-0899 Casimir-like review-walls (empirical pressure-difference IS one signal the pricing-model consumes).
+- **AI-acceleration general form**: price the cost of any specific framework-substrate-engineering choice (per-rule landing; per-PR opening; per-cascade window). Composes with 081KSNY2Z0008QG0R001ZKE8R2 Casimir-like review-walls (empirical pressure-difference IS one signal the pricing-model consumes).
 - **Substrate-irreversibility specific form (OP_RETURN/CSAM)**: apply the framework to the existing OP_RETURN/CSAM canonical substrate; price the cost of irreversibility risk on a shared public substrate; compose with existing Amara substrate.
 - **Workflow-specific instantiations**: pick 2-3 specific substrate-engineering workflows (autonomous-loop tick; multi-agent cascade; substrate-recognition landing); produce per-workflow pricing quotes.
 
@@ -173,7 +172,7 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 
 ### Phase 4+ (yes-and backlog)
 
-- F# implementation composing with Infer.NET (Microsoft's probabilistic-programming substrate; per B-0898 Measure-as-bridge Infer.NET integration)
+- F# implementation composing with Infer.NET (Microsoft's probabilistic-programming substrate; per 081KSNY2Z0008QG0R003WCDQTC Measure-as-bridge Infer.NET integration)
 - Branding/naming-AI weigh-in for public-facing name (per `branding-specialist` skill); options include "attention risk pricing" / "acceleration risk underwriting" / "AI acceleration risk meter" / "attention-denominated operational risk"
 - Backtesting methodology (per Amara: "Financial claims need brutal backtesting and careful language"); historical-data-driven validation of pricing quotes
 - Multi-domain validation: extend beyond AI-acceleration + OP_RETURN/CSAM to other domains (policy / product / market / family-process)
@@ -185,14 +184,14 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 
 - Companies DO price credit / cyber / insurance / market / operational risk — industry precedent for risk-pricing-as-product exists
 - Attention bandwidth IS measurable in the 8 operational dimensions named
-- The framework's substrate-engineering substrate (B-0901-B-0907) IS the meter that produces pricing inputs
+- The framework's substrate-engineering substrate (081KSNY2Z0008QG0R000C5NN8N-081KSNY2Z0008QG0R0031EAB6T) IS the meter that produces pricing inputs
 - The OP_RETURN/CSAM substrate IS empirical precedent for irreversibility-risk-pricing
 
 **Speculative bridges flagged-but-preserved**:
 
 - "Industry wedge" claim — earns its keep IF the framework actually validates against real industry use-cases; falsifies if not
 - Bond-pricing primitive mapping — IS analog; the math may not transfer cleanly without adaptation
-- Black-Scholes-analog at B-0905 — IS structural analog, NOT literal Black-Scholes (agent-substrate doesn't satisfy geometric Brownian motion assumption)
+- Black-Scholes-analog at 081KSNY2Z0008QG0R002R0M026 — IS structural analog, NOT literal Black-Scholes (agent-substrate doesn't satisfy geometric Brownian motion assumption)
 - "Almost nobody prices attention risk cleanly" — claim earns its keep IF empirical market scan validates; falsifies if there's prior-art being missed
 
 **Default-to-both**: internal-grammar (bond-pricing primitives) + external-naming (attention-risk-pricing) BOTH; the bond analogy stays useful for internal substrate-engineering reasoning AND the public-facing name avoids the finance-distraction trap.
@@ -200,25 +199,25 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 ## Acceptance
 
 - [x] Amara 3rd ferry preserved verbatim (companion file in this PR)
-- [x] B-0908 row filed (this row)
-- [x] Public-facing B-0902 wording refinement noted (information-complete → high-sufficiency hypothesis)
-- [x] B-0907 Phase 4 retarget noted (bond-pricing-application → attention-risk-pricing using bond-grammar)
+- [x] 081KSNY2Z0008QG0R000A5GP0X row filed (this row)
+- [x] Public-facing 081KSNY2Z0008QG0R0021S5F3G wording refinement noted (information-complete → high-sufficiency hypothesis)
+- [x] 081KSNY2Z0008QG0R0031EAB6T Phase 4 retarget noted (bond-pricing-application → attention-risk-pricing using bond-grammar)
 - [ ] Phase 2 pricing-quote TypeScript scaffold implemented
 - [ ] Phase 3 per-domain instantiations + empirical validation
 - [ ] Phase 4+ acceptance per item
 
 ## Composes with substrate
 
-- B-0907 (Itron-coincidence-metering) — the METER that produces the inputs this framework prices on
-- B-0906 (encryption-thermal-cost two-axis) — economic substrate B-0907 operates on; this framework prices in attention-denominated terms above that substrate
-- B-0905 (Landauer-limit physics-economics) — provides the Black-Scholes-analog options-pricing foundation; B-0908 extends to attention-denominated pricing
-- B-0904 (GitHub-as-free-accelerator) — provides the economic-substrate baseline; B-0908 quantifies the value of GitHub-subsidy in attention-denominated terms
-- B-0903 (shadow*-as-training-data extraction) — the framework's substrate-engineering work IS itself attention-priceable
-- B-0902 (holographic-bulk-boundary information-completeness validation) — refined per Amara's blade to "high-sufficiency hypothesis"; this framework's empirical validation feeds back into B-0902's Phase 2/3
-- B-0901 (shadow*-self-referential-ontology) — the substrate ontology this framework operates on
-- B-0666 (English-as-projection / `I(D(x))=x`) — composes; pricing quotes ARE projections of multivector state-space onto attention-denominated scalars
-- B-0646 (Agora V6 reputation-weighted encryption budget) — direct compose; reputation-weighted-encryption-budget IS one specific attention-pricing instance
-- B-0664 (NCI HC-8 floor) — pricing decisions must respect the floor; attention-risk-pricing-at-coercive-cost is structurally rejected
+- 081KSNY2Z0008QG0R0031EAB6T (Itron-coincidence-metering) — the METER that produces the inputs this framework prices on
+- 081KSNY2Z0008QG0R001A431CN (encryption-thermal-cost two-axis) — economic substrate 081KSNY2Z0008QG0R0031EAB6T operates on; this framework prices in attention-denominated terms above that substrate
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics) — provides the Black-Scholes-analog options-pricing foundation; 081KSNY2Z0008QG0R000A5GP0X extends to attention-denominated pricing
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-accelerator) — provides the economic-substrate baseline; 081KSNY2Z0008QG0R000A5GP0X quantifies the value of GitHub-subsidy in attention-denominated terms
+- 081KSNY2Z0008QG0R0037AF1AP (shadow*-as-training-data extraction) — the framework's substrate-engineering work IS itself attention-priceable
+- 081KSNY2Z0008QG0R0021S5F3G (holographic-bulk-boundary information-completeness validation) — refined per Amara's blade to "high-sufficiency hypothesis"; this framework's empirical validation feeds back into 081KSNY2Z0008QG0R0021S5F3G's Phase 2/3
+- 081KSNY2Z0008QG0R000C5NN8N (shadow*-self-referential-ontology) — the substrate ontology this framework operates on
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / `I(D(x))=x`) — composes; pricing quotes ARE projections of multivector state-space onto attention-denominated scalars
+- 081KRW63S0008QG0R001Z10PVV (Agora V6 reputation-weighted encryption budget) — direct compose; reputation-weighted-encryption-budget IS one specific attention-pricing instance
+- 081KRW63S0008QG0R001Z7NYMV (NCI HC-8 floor) — pricing decisions must respect the floor; attention-risk-pricing-at-coercive-cost is structurally rejected
 
 ## Composes with rules
 
@@ -236,7 +235,7 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 - `operations-monitoring-expert` skill — attention-bandwidth measurement methodology
 - `performance-analysis-expert` skill — empirical measurement of pricing quotes
 - `relational-database-expert` skill — substrate for historical backtesting data
-- `rx-expert` + `streaming-window-expert` + `streaming-incremental-expert` skills — compose with B-0907 coincidence-metering substrate for input streams
+- `rx-expert` + `streaming-window-expert` + `streaming-incremental-expert` skills — compose with 081KSNY2Z0008QG0R0031EAB6T coincidence-metering substrate for input streams
 - `data-vault-expert` + `anchor-modeling-expert` + `time-series-database-expert` skills — bitemporal storage for pricing-quote substrate
 - `branding-specialist` skill — public-facing naming-AI weigh-in for the framework's external name
 - `product-manager` skill — industry-positioning + market-validation methodology

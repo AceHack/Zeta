@@ -1,6 +1,5 @@
 ---
-id: B-0251
-zetaid: 081KQZVQW0008QG0R000PPQ3MH
+id: 081KQZVQW0008QG0R000PPQ3MH
 priority: P1
 status: open
 title: "Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage"

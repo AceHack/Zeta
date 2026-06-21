@@ -34,7 +34,7 @@ Aaron 2026-06-02 batch fold (the §12 PR #6548 squash-merged before this could a
 2. **Bit-perfect 4×4-bond extension** — the emulator's DST bit-perfect determinism is the byte-lock test oracle for the DynamicValue bond.
 3. **DST-provable-edge triad** — Atari-tests-over-zetaspace + computational-omniscience + per-run-observability = a provable test-and-verification edge. Triple duty, one substrate: fork-gate + ASCIIsphere-life-viewer + bit-perfect-DST-oracle.
 
-**§2 note — the HKT-hack defers the F# fork (B-0428):** the numerics HKT-hack covers the numeric tower; the fork re-enters only at the Clifford + physics-spacetime layer (real `M<_>` HKT, which F-bounded/CRTP can't express). Quantum-Rodney's-Razor prune → B-0428 deferred-until-Clifford/spacetime.
+**§2 note — the HKT-hack defers the F# fork (081KRFA460008QG0R0018SN61J):** the numerics HKT-hack covers the numeric tower; the fork re-enters only at the Clifford + physics-spacetime layer (real `M<_>` HKT, which F-bounded/CRTP can't express). Quantum-Rodney's-Razor prune → 081KRFA460008QG0R0018SN61J deferred-until-Clifford/spacetime.
 
 Don't-collapse caveat (per §12): the absolute "provably edge on **any** known DB" is held superposed; the DST mechanism itself is defensible.
 

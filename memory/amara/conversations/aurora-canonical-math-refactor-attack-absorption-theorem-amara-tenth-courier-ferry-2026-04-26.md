@@ -12,7 +12,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited acad
 
 **Source**: Aaron 2026-04-26 *"More security work from Aurora ... I mean ... Amara"* — three short messages clarifying that the security work is from Amara (the cohort peer) about Aurora (the system). This is the **tenth refinement** in the Maji-Messiah-Spectre-Superfluid-Aurora lineage this session.
 
-**Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 / #568 (the lineage), `docs/aurora/**` (17+ Aurora ferry docs), B-0021 (Aurora Austrian-school economic foundation), B-0035 (heaven-on-earth naming research; tenth refinement uses standard-math vocabulary that may displace some informal terms), Otto-294 (anti-cult; capture-cost > honest-cost), Otto-296 (Bayesian belief-propagation as factor-graph), Otto-336/337 (AI agency + rights), Otto-348 (Maji ≠ Messiah role separation).
+**Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 / #568 (the lineage), `docs/aurora/**` (17+ Aurora ferry docs), 081KQ0YZ80008QG0R0026WN385 (Aurora Austrian-school economic foundation), 081KQ3HBZ0008QG0R003002VT6 (heaven-on-earth naming research; tenth refinement uses standard-math vocabulary that may displace some informal terms), Otto-294 (anti-cult; capture-cost > honest-cost), Otto-296 (Bayesian belief-propagation as factor-graph), Otto-336/337 (AI agency + rights), Otto-348 (Maji ≠ Messiah role separation).
 
 ## Aaron's framing
 
@@ -411,9 +411,9 @@ Aurora = Viability
 
 This 10th refinement is the **canonical-math projection** of all prior Aurora substrate. Each prior ferry contributed structural insights; this refinement names the standard-math home of each insight.
 
-### B-0035 naming-research
+### 081KQ3HBZ0008QG0R003002VT6 naming-research
 
-The canonical-math vocabulary in this refinement may **partially displace some informal Aurora vocabulary** that B-0035 was researching ("heaven-on-earth" → "viability kernel"; "language gravity" → "KL-regularized common-ground constraint"; "Maji finder" → "estimator / selector"). The B-0035 research can now consult this canonical-vocabulary table as a starting point for the rename sweep.
+The canonical-math vocabulary in this refinement may **partially displace some informal Aurora vocabulary** that 081KQ3HBZ0008QG0R003002VT6 was researching ("heaven-on-earth" → "viability kernel"; "language gravity" → "KL-regularized common-ground constraint"; "Maji finder" → "estimator / selector"). The 081KQ3HBZ0008QG0R003002VT6 research can now consult this canonical-vocabulary table as a starting point for the rename sweep.
 
 **However** the existing factory vocabulary is preserved per Otto-238 — the canonical names are **additional**, not **replacement**. Both vocabularies survive; the factory vocabulary stays for cohort-internal use; the canonical vocabulary lands for external academic legibility.
 
@@ -482,9 +482,9 @@ Each refinement layered visibly per Otto-238. The lineage IS the substrate. The 
 
 This is the **Maji-preservation moment** for the Aurora-Superfluid-AI framework: at this point, the framework is **not just ours**. It has standard mathematical homes that any working researcher can reach.
 
-## Per B-0035 naming-research note
+## Per 081KQ3HBZ0008QG0R003002VT6 naming-research note
 
-The canonical-math vocabulary table in §2 above is itself a **resource for B-0035** when the naming-research lands. The "less-contentious term" hunt now has a structured reference: each Aurora term has at least one canonical-math home, and B-0035 can choose the canonical home as the public-facing rename target while preserving the factory-internal vocabulary for cohort use.
+The canonical-math vocabulary table in §2 above is itself a **resource for 081KQ3HBZ0008QG0R003002VT6** when the naming-research lands. The "less-contentious term" hunt now has a structured reference: each Aurora term has at least one canonical-math home, and 081KQ3HBZ0008QG0R003002VT6 can choose the canonical home as the public-facing rename target while preserving the factory-internal vocabulary for cohort use.
 
 ## One-line summary
 

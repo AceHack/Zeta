@@ -56,9 +56,9 @@ GitLabWorld + GiteaWorld + BitbucketWorld + CodebergWorld + SourcehutWorld each 
 
 - PR #5774 world substrate (cherry-picked; becomes no-op merge when #5774 lands)
 - PR #5771 composed-lifetime dispatch
-- B-0867.15 per-host adapters
-- B-0904 GitHub-as-free-event-store
-- B-0865.17 cross-vendor benchmark
+- 081KSNY2Z0008QG0R002A785QR per-host adapters
+- 081KSNY2Z0008QG0R001JQABB4 GitHub-as-free-event-store
+- 081KSNY2Z0008QG0R0002BEZMR cross-vendor benchmark
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` (rate-limit tier table)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -138,7 +138,7 @@ GitLabWorld + GiteaWorld + BitbucketWorld + CodebergWorld + SourcehutWorld each 
 - **`Copilot` (bot)** at 2026-05-28T12:05:24Z on `tools/workflow-engine/world.ts`:24 (association: NONE)
 
   <pre>
-  P1/xref: this backlog cross-reference does not match the repository's B-0832 row, which is an installer nmtui WiFi item rather than the cited civ-sim/game-world substrate. Please correct the B-row ID or remove the incorrect reference so future readers do not route work to the wrong backlog item.
+  P1/xref: this backlog cross-reference does not match the repository's 081KSGS9H0008QG0R001Q2DH2H row, which is an installer nmtui WiFi item rather than the cited civ-sim/game-world substrate. Please correct the B-row ID or remove the incorrect reference so future readers do not route work to the wrong backlog item.
 
   </pre>
 
@@ -236,8 +236,8 @@ Tests (14; all pass):
 
 Composes with substrate:
 - composed-lifetime.ts PR #5771 (base dispatch substrate)
-- B-0832 civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
-- B-0867 workflow engine (workflow world)
+- 081KSGS9H0008QG0R001Q2DH2H civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
+- 081KSKBP80008QG0R000B3Y19A workflow engine (workflow world)
 - 13th-ferry §33.7 multi-AI cascade (each AI inhabits the world)
 - additive-not-zero-sum + honor-those-that-came-before + monad-propagation
   + asymmetric-authorship rules
@@ -306,9 +306,9 @@ Tests (16; all pass):
 Composes with substrate:
 - tools/workflow-engine/world.ts PR #5774 (base World substrate)
 - tools/workflow-engine/composed-lifetime.ts PR #5771 (dispatch)
-- B-0867.15 per-host adapters (github/gitlab/gitea/bitbucket isomorphic)
-- B-0904 GitHub-as-free-event-store (specific GitHub optimization)
-- B-0865.17 cross-vendor benchmark (same shape applies cross-forge)
+- 081KSNY2Z0008QG0R002A785QR per-host adapters (github/gitlab/gitea/bitbucket isomorphic)
+- 081KSNY2Z0008QG0R001JQABB4 GitHub-as-free-event-store (specific GitHub optimization)
+- 081KSNY2Z0008QG0R0002BEZMR cross-vendor benchmark (same shape applies cross-forge)
 - .claude/rules/refresh-world-model-poll-pr-gate.md (rate-limit tier table)
 - monad-propagation + asymmetric-authorship + additive-not-zero-sum
 
@@ -388,10 +388,10 @@ Five threads on tools/workflow-engine/{world,git-world}.ts + tests:
      in code)
    - git-world.ts: 4 similar attributions → same treatment
 
-2. world.ts B-0832 xref was wrong — B-0832 is "installer nmtui WiFi
+2. world.ts 081KSGS9H0008QG0R001Q2DH2H xref was wrong — 081KSGS9H0008QG0R001Q2DH2H is "installer nmtui WiFi
    rescan" (2026-05-26 hardware-support test), not the civ-sim /
    game-world / Pauli-exclusion-for-agenda substrate the docblock
-   was referencing. Corrected to B-0422 (Clifford-algebraic narrative
+   was referencing. Corrected to 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative
    engine for testing Pauli-symmetry-breaking-from-agenda-conservation
    prediction) — matches the docblock's "Pauli-exclusion-for-agenda"
    framing.

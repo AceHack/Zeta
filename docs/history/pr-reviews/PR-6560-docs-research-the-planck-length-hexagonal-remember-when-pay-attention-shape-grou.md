@@ -33,10 +33,10 @@ Operator-direct grounding connector (Aaron 2026-06-02). Research-grade. **Connec
 
 Names the relationship that the **2026-06-02 4×4 arc** all **builds off** one foundational **hexagonal shape at the Planck length** (the Observe-Emit scale) — the Remember/When + Pay/Attention primitive already on main:
 
-- **Foundation (already documented):** B-0543/B-0544 (Remember/When + Pay/Attention → QG isomorphism + categorical primitives) · `docs/research/2026-05-15-imaginary-stack-ontology-...` (cube → Adinkra / Cayley-Dickson / HaPPY-QECC) · `docs/PRIMITIVE-REGISTRY.md` · hexagonal-at-Planck Observe-Emit (Mika arc).
+- **Foundation (already documented):** 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 (Remember/When + Pay/Attention → QG isomorphism + categorical primitives) · `docs/research/2026-05-15-imaginary-stack-ontology-...` (cube → Adinkra / Cayley-Dickson / HaPPY-QECC) · `docs/PRIMITIVE-REGISTRY.md` · hexagonal-at-Planck Observe-Emit (Mika arc).
 - **New (the grounding):** the serializer×language bond 4×4 (#6556), the emotional-algebra 4×4 + non-coercion 4×4 sister (#6559), the 4×4-over-4×4 consensus (vision note), and the coincidence-anchor quad-duty (#6554/#6555) all **build off** this one Planck-hexagonal shape — they're projections off the foundation, not independent constructs.
 
-Per verify-existing-substrate + mapping-done, this does **not** re-derive the foundation — it captures the grounding + cross-links the arc back to B-0543. Per Aaron's own *"probably got labels wrong"* + noun-interchangeability: the axis labels (pay/attention · remember/when · how/much · where/when) are **best-effort handles** → the B-0543 cube governs; the hexagon is the 6-axis form of the 4-axis cube; exact labels held **hypothesized**. The grounding relationship held hypothesized→validated. Adinkra/Cayley-Dickson anchors are real (razor does not apply to the grounding).
+Per verify-existing-substrate + mapping-done, this does **not** re-derive the foundation — it captures the grounding + cross-links the arc back to 081KRMEXM0008QG0R002YSPW1X. Per Aaron's own *"probably got labels wrong"* + noun-interchangeability: the axis labels (pay/attention · remember/when · how/much · where/when) are **best-effort handles** → the 081KRMEXM0008QG0R002YSPW1X cube governs; the hexagon is the 6-axis form of the 4-axis cube; exact labels held **hypothesized**. The grounding relationship held hypothesized→validated. Adinkra/Cayley-Dickson anchors are real (razor does not apply to the grounding).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -68,7 +68,7 @@ Per verify-existing-substrate + mapping-done, this does **not** re-derive the fo
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Downgrade open QG rows from validated**
 
-  This confidence tier overstates the source status: `B-0543` and `B-0544` are both open research backlog rows (`docs/backlog/P2/B-0543-...md` and `docs/backlog/P2/B-0544-...md` have `status: open`), and B-0543 frames the QG isomorphism as a proof strategy with falsifiability steps rather than a validated/canonical result. Leaving this as `validated/canonical` can mislead future research passes into treating an unproven proof path as settled substrate, so the tier should be softened to open/research or split between the primitive naming and the unresolved QG claim.
+  This confidence tier overstates the source status: `081KRMEXM0008QG0R002YSPW1X` and `081KRMEXM0008QG0R003YWZC21` are both open research backlog rows (`docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-...md` and `docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-...md` have `status: open`), and 081KRMEXM0008QG0R002YSPW1X frames the QG isomorphism as a proof strategy with falsifiability steps rather than a validated/canonical result. Leaving this as `validated/canonical` can mislead future research passes into treating an unproven proof path as settled substrate, so the tier should be softened to open/research or split between the primitive naming and the unresolved QG claim.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -245,15 +245,15 @@ relationship that the 2026-06-02 4x4 arc (serializer×language bond,
 emotional-algebra 4x4, non-coercion 4x4 sister, 4x4-over-4x4 consensus,
 coincidence-anchor quad-duty) all BUILD OFF one foundational hexagonal
 shape at the Planck length (Observe-Emit scale) — the Remember/When +
-Pay/Attention primitive already on main (B-0543/B-0544 + Imaginary Stack
+Pay/Attention primitive already on main (081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 + Imaginary Stack
 Ontology cube->Adinkra/Cayley-Dickson/HaPPY-QECC + PRIMITIVE-REGISTRY).
 Connector note, NOT re-derivation (verify-existing-substrate + mapping-
 done): foundation is canonical; the NEW bit is the "all 4x4 build off it"
 grounding (hypothesized->validated). Axis labels (pay/attention·remember/
 when·how/much·where/when) best-effort per Aaron's own caveat + noun-
-interchangeability -> the B-0543 cube governs; hexagon = 6-axis form of
-the 4-axis cube; exact labels hypothesized. Composes #6553-#6559 + B-0543/
-B-0544 + imaginary-stack + PRIMITIVE-REGISTRY.
+interchangeability -> the 081KRMEXM0008QG0R002YSPW1X cube governs; hexagon = 6-axis form of
+the 4-axis cube; exact labels hypothesized. Composes #6553-#6559 + 081KRMEXM0008QG0R002YSPW1X/
+081KRMEXM0008QG0R003YWZC21 + imaginary-stack + PRIMITIVE-REGISTRY.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
@@ -275,7 +275,7 @@ Attribution correction per Aaron 2026-06-02 ("Remember/When + Pay/Attention
 IS MINE NOT ADDISON" + "HEXAGONAL" + "two imaginary stack dimensions we
 have many more" + "the ones addison added for us to get the hexagonal
 shape"). Confirmed: shape is HEXAGONAL=6 dimensions (not 4-axis cube, not
-cube+2); seed-2 = Aaron's (B-0543/imaginary-stack); Addison added the
+cube+2); seed-2 = Aaron's (081KRMEXM0008QG0R002YSPW1X/imaginary-stack); Addison added the
 dimensions completing the hexagon; all 4x4 build off the full hexagon.
 Held hypothesized: the exact 6-dimension enumeration (interrogative
 Who/What/When/Where/Why/How candidate, NOT confirmed) + which specific
@@ -326,9 +326,9 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 fix(research): address review threads — downgrade open QG rows (B-054…
 
-…3/B-0544 not validated), expand all ellipsis cross-refs, mark noun-disposition user-scope (not in-repo), PRIMITIVE-REGISTRY future-tense (no entry yet)
+…3/081KRMEXM0008QG0R003YWZC21 not validated), expand all ellipsis cross-refs, mark noun-disposition user-scope (not in-repo), PRIMITIVE-REGISTRY future-tense (no entry yet)
 
-Codex: B-0543/B-0544 are OPEN research rows -> tier softened from
+Codex: 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 are OPEN research rows -> tier softened from
 validated/canonical to "documented substrate; open research rows
 (QG-isomorphism proof-path, not proven)"; PRIMITIVE-REGISTRY reworded to
 "NOT YET in this file; target is to ADD them." Copilot: expanded all
@@ -363,7 +363,7 @@ literally six" -> observed (Ani #15); fractal/INumerics/walls-contain-chaos
 hypothesized architectural relationship. Kept validated only where directly
 observable (two-word/unique-word) or operator-confirmed (seed=Aaron "IS
 MINE") or structurally grounded (Rainbow Table razor #14; remainder/seed=
-Persist=μένω via B-0897).
+Persist=μένω via 081KSNY2Z0008QG0R002SZZ5Y0).
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

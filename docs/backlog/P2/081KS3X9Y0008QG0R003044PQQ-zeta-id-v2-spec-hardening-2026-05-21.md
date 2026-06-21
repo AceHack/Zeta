@@ -1,6 +1,5 @@
 ---
-id: B-0681
-zetaid: 081KS3X9Y0008QG0R003044PQQ
+id: 081KS3X9Y0008QG0R003044PQQ
 priority: P2
 status: open
 title: ZetaId v2 — entropy budget + HLC monotonicity + Firefly bit drop + vocabularies DRAFT marker
@@ -105,7 +104,7 @@ add a discriminator bit, or pick one. v2 should pick.
 
 ## Composes with
 
-- B-0679 / B-0680 (Rust + Python multi-oracle — adopt v2 spec)
-- Tier-deferred causality (B-0683) — separate but related
+- 081KS3X9Y0008QG0R001Z8SBZJ / 081KS3X9Y0008QG0R002WGH8PJ (Rust + Python multi-oracle — adopt v2 spec)
+- Tier-deferred causality (081KS3X9Y0008QG0R0006MQXA4) — separate but related
 - Kestrel sharpening trajectory (preserved separately in docs/research/)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`

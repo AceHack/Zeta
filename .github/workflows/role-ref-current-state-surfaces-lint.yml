@@ -9,7 +9,7 @@ name: role-ref-current-state-surfaces-lint
 # docs/hygiene-history/**, commit messages); current-state
 # surfaces use role-refs ('the maintainer', 'the architect').
 #
-# Why this CI wiring exists (B-0162; recurring failure mode
+# Why this CI wiring exists (081KQJZR90008QG0R000V16E1C; recurring failure mode
 # past mechanization breakeven): the role-ref convention
 # failure mode has recurred across many PRs in 2026-04 / 2026-
 # 05. Each catch costs ~5-10 minutes thread-resolution work.
@@ -32,7 +32,7 @@ name: role-ref-current-state-surfaces-lint
 # See:
 #   - src/Core.TypeScript/hygiene/check-role-ref-on-current-state-surfaces.ts
 #   - docs/AGENT-BEST-PRACTICES.md Otto-279 carve-out
-#   - docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md
+#   - docs/backlog/P1/081KQJZR90008QG0R000V16E1C-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md
 
 on:
   pull_request:

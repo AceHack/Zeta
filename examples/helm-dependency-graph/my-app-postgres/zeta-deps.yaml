@@ -1,4 +1,4 @@
-# Canonical AppDependencyGraph example (B-0821 acceptance).
+# Canonical AppDependencyGraph example (081KSGS9H0008QG0R00367G209 acceptance).
 # my-app depends on postgres; postgres connection-url flows into my-app database.url.
 apiVersion: zeta.lucent-financial-group.com/v1
 kind: AppDependencyGraph

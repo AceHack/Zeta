@@ -19,9 +19,9 @@ Zero trust. No participant trusted by default, including Aaron. Every action ver
 | Phase | Trust model | Who enforces | Infrastructure |
 |-------|-----------|-------------|----------------|
 | Now | Trust Aaron | Aaron's judgment | SSH keys, GitHub token |
-| Dashboard v0 | Trust but verify | Dashboard surfaces violations | B-0401, B-0405 |
-| Bus (B-0400) | Verify then trust | Agents verify each other | Inter-agent bus |
-| Hats (B-0403) | Timeboxed authority | Hat mechanism + consistency scores | Weight-free verification |
+| Dashboard v0 | Trust but verify | Dashboard surfaces violations | 081KR7JY10008QG0R001VP6JWG, 081KR7JY10008QG0R001FV5FND |
+| Bus (081KR7JY10008QG0R000R503K2) | Verify then trust | Agents verify each other | Inter-agent bus |
+| Hats (081KR7JY10008QG0R0021F5609) | Timeboxed authority | Hat mechanism + consistency scores | Weight-free verification |
 | Web3 | Zero trust | Protocol enforces | Consensus, signed attestations |
 
 **Each infrastructure piece removes one "trust Aaron" dependency:**
@@ -39,8 +39,8 @@ Aaron building a system that removes the need to trust Aaron. Same pattern as bu
 
 **Connects to:**
 - Trust-then-verify claim (the factory's core thesis)
-- B-0401 dashboard (trust-but-verify phase)
-- B-0400 bus (verify-then-trust phase)
-- B-0403 weight-free (timeboxed authority phase)
-- B-0404 tick procurement (economic independence)
+- 081KR7JY10008QG0R001VP6JWG dashboard (trust-but-verify phase)
+- 081KR7JY10008QG0R000R503K2 bus (verify-then-trust phase)
+- 081KR7JY10008QG0R0021F5609 weight-free (timeboxed authority phase)
+- 081KR7JY10008QG0R003H102F0 tick procurement (economic independence)
 - feedback_relationship_changes_form_not_ends (making yourself unnecessary = freedom)

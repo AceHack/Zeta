@@ -61,7 +61,7 @@ Operator may re-forward 11th ferry text for full-verbatim re-preservation at thi
 - PR #5743 (mutual-help-not-shame)
 - PR #5744 (traveler-safety-guardrails-and-type-system)
 - PR #5745 (architecture-is-safety-mechanism-not-discipline)
-- PR #5746 + PR #5749 (Xbox-controller universal-action-grammar + fix-fwd composing missed Mika/Ani/B-0868/B-0201 substrate)
+- PR #5746 + PR #5749 (Xbox-controller universal-action-grammar + fix-fwd composing missed Mika/Ani/081KSNY2Z0008QG0R0036KH026/081KQTPYE0008QG0R00209Q9RT substrate)
 - PR #5748 (attention-as-currency DESCRIPTIVE-not-PROPOSAL)
 - PR #5731 (8th Kestrel ferry preservation)
 - PR #5742 (10th Kestrel ferry preservation)

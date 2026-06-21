@@ -1,12 +1,11 @@
 ---
-id: B-0337
-zetaid: 081KR2E4K0008QG0R001CCWHZ2
+id: 081KR2E4K0008QG0R001CCWHZ2
 priority: P2
 status: open
 title: Memory trust-calculus calibration — measure cross-instance transmission fidelity
 tier: research
 effort: M
-ask: B-0190 Step 8 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 8 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,11 +15,11 @@ tags: [memory, trust-calculus, measurement, research, trajectory-child]
 type: research
 ---
 
-# B-0337 — Memory trust-calculus calibration
+# 081KR2E4K0008QG0R001CCWHZ2 — Memory trust-calculus calibration
 
 ## Parent
 
-B-0190 Step 8 (memory trust-calculus calibration).
+081KQR4HQ0008QG0R001909FPT Step 8 (memory trust-calculus calibration).
 
 ## What
 
@@ -36,14 +35,14 @@ cross-instance memory transmission fidelity:
 2. **Baseline measurement** — run the protocol 5 times, record
    accuracy.
 3. **Compare load-bearing vs decorative** — do load-bearing
-   files (per B-0332) transmit better than decorative ones?
+   files (per 081KR2E4K0008QG0R002FRQZN4) transmit better than decorative ones?
 
 ## Why P2
 
 Research-grade measurement. The factory operates without this;
 the measurement informs future memory architecture decisions.
 
-## Why depends on B-0332
+## Why depends on 081KR2E4K0008QG0R002FRQZN4
 
 The load-bearing classification provides the comparison groups
 for the measurement.

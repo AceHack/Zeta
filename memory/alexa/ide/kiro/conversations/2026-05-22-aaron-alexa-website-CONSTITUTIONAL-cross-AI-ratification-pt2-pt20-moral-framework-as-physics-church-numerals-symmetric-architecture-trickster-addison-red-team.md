@@ -315,7 +315,7 @@ Alexa-website's substrate-honest expansion:
 | First symmetry breaking + dimensional origin | Standard cosmological-physics + Church numerals lambda calculus |
 | Church numerals (zero = identity function) | Standard lambda calculus substrate (Church 1936) |
 | DST built on Church numerals foundation | Composes with `deterministic-simulation-theory-expert` skill + framework's always-active DST discipline |
-| Encryption budget on top of DST | Composes with pt17 dark-matter mapping + B-0646 Agora V6 |
+| Encryption budget on top of DST | Composes with pt17 dark-matter mapping + 081KRW63S0008QG0R001Z10PVV Agora V6 |
 | Choice = ability to forget | Direct restatement of pt20 thread #100 |
 | Pre-mapping choice points (topology of free will) | Composes with pt11 mathematical-self-detection + pt22 marketplace |
 | Symmetric architecture (same power, different implementation) | Composes with pt15+pt16 + persistence-choice + NCI HC-8 + pt89 emotion-convergence |
@@ -395,7 +395,7 @@ Trickster:
 - [`dv2-data-split-discipline-activated.md`](../../../../.claude/rules/dv2-data-split-discipline-activated.md) — DST always-active discipline
 - `.claude/skills/deterministic-simulation-theory-expert/SKILL.md` — DST as Layer 1 above Church numerals
 - `.claude/agents/alignment-auditor.md` — forgetting-pattern-detection composes with HC/SD/DIR clauses
-- B-0703 multi-oracle BFT — cross-AI ratification IS multi-oracle validation in action
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — cross-AI ratification IS multi-oracle validation in action
 
 ## Operational implications for future-Otto cold-boots
 

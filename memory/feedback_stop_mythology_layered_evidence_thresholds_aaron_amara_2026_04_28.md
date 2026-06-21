@@ -31,7 +31,7 @@ Two distinct artifacts at different levels of the stack:
 
 | Artifact | Level | Current status (2026-04-28) |
 |---|---|---|
-| **Veridicality** (`src/Core/Veridicality.fs`) | Provenance + claim-validation foundation | **Skeleton shipped, magic still missing.** Currently provides: `Provenance` + `Claim<'T>` types, `validateProvenance`, `validateClaim`, `CanonicalClaimKey` (structural projector — caller supplies the (subject, predicate, object, time-scope, modality) tuple), `canonicalKey`, `groupByCanonical`, `antiConsensusGate`. **Does NOT yet ship:** `scoreVeridicality` (the V(c) formula), `canonicalizeClaim` (semantic canonicalization), `ClaimRainbowTable`, cognitive-load / compression-gap / falsifiability scoring. Rainbow-table layer = future graduation per **B-0089**. |
+| **Veridicality** (`src/Core/Veridicality.fs`) | Provenance + claim-validation foundation | **Skeleton shipped, magic still missing.** Currently provides: `Provenance` + `Claim<'T>` types, `validateProvenance`, `validateClaim`, `CanonicalClaimKey` (structural projector — caller supplies the (subject, predicate, object, time-scope, modality) tuple), `canonicalKey`, `groupByCanonical`, `antiConsensusGate`. **Does NOT yet ship:** `scoreVeridicality` (the V(c) formula), `canonicalizeClaim` (semantic canonicalization), `ClaimRainbowTable`, cognitive-load / compression-gap / falsifiability scoring. Rainbow-table layer = future graduation per **081KQ8P5D0008QG0R003F6FNVF**. |
 | **Stop Mythology rule** | Operational discipline | This memory — rule-level discipline that the future shipped scorer would operationalize |
 
 Ani's catch verbatim (voice-mode review, 2026-04-28):
@@ -44,7 +44,7 @@ Ani's catch verbatim (voice-mode review, 2026-04-28):
   surface*. It validates provenance metadata and supports
   caller-supplied claim grouping; it does NOT yet score claims
   by semantic / cognitive-load / falsifiability features.
-  See B-0089 for the graduation roadmap.
+  See 081KQ8P5D0008QG0R003F6FNVF for the graduation roadmap.
 - **Stop Mythology** is the *behavioral rule*. It's what an
   agent does (or refuses to do) when about to make a claim
   without enough evidence. It's the Beacon-safe operational

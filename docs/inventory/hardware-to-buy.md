@@ -2,7 +2,7 @@
 
 The buy-side companion to the owned-inventory draft
 ([`hardware-2026-05-27-addison-draft.md`](hardware-2026-05-27-addison-draft.md)). Backs
-[B-0836](../backlog/P1/B-0836-hardware-inventory-vs-cluster-reconciliation-gap-analysis-buying-decisions-aaron-2026-05-26.md)
+[081KSGS9H0008QG0R001VVEZQ9](../backlog/P1/081KSGS9H0008QG0R001VVEZQ9-hardware-inventory-vs-cluster-reconciliation-gap-analysis-buying-decisions-aaron-2026-05-26.md)
 ("we will know what and how we need to expand so we are not buying willy nilly anymore").
 
 **Prices are ballpark (verified via WebSearch 2026-05-31); confirm at purchase** — hardware
@@ -23,9 +23,9 @@ Trellis / IceStorm) and Gowin (Project Apicula) — all driven by the open
 **Yosys + nextpnr + openFPGALoader** toolchain. **Xilinx Artix-7 (Alchitry Au, Arty) is only
 *partially* open** (Project X-Ray) and needs proprietary Vivado for the clean path — so it is
 **deprioritized** despite bigger logic, unless we later need the Artix capacity. This is also the
-right fabric for [B-0366](../backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)
+right fabric for [081KR50HA0008QG0R003T5MZAC](../backlog/P1/081KRA5AR0008QG0R002X77BEB-toffoli-circuit-type-wire-map-formal-model.md)
 (Toffoli-Z-set reversible ops — generate fabric config from circuits) and
-[B-0725](../backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md)
+[081KSE6WT0008QG0R002T0BFN4](../backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md)
 (polyglot-accelerator hardware shape).
 
 > **"Modify config at runtime" — honest scope:** ECP5/Gowin open tooling gives fast **whole-
@@ -42,7 +42,7 @@ right fabric for [B-0366](../backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map
 | [ULX3S 85F](https://www.crowdsupply.com/radiona/ulx3s) | ECP5 LFE5U-85F | 84k | Trellis/Yosys/nextpnr (full) | **workhorse** — biggest open ECP5; WiFi+SD+display; OTA + SD runtime bitstream | ~$155 | 4 | ~$620 |
 | ULX3S 12F | ECP5 LFE5U-12F | 12k | full | cheaper variant for distributed/edge nodes | ~$99 | 2 | ~$198 |
 | [ColorLight 5A-75B](https://www.weigu.lu/other_projects/fpga/fpga_ecp5_5a75b/index.html) | ECP5 LFE5U-25 | 24k | Trellis (full) | dirt-cheap fleet (repurposed LED board); great for parallel experiments | ~$35 | 2 | ~$70 |
-| [Tang Nano 20K](https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/) | Gowin GW2A | 20k | Apicula/Yosys/nextpnr (full) | **vendor diversity** (different silicon, different open project) — B-0634's diverse-failure-modes axis applied to FPGA | ~$40 | 2 | ~$80 |
+| [Tang Nano 20K](https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/) | Gowin GW2A | 20k | Apicula/Yosys/nextpnr (full) | **vendor diversity** (different silicon, different open project) — 081KRW63S0008QG0R0022SFKPM's diverse-failure-modes axis applied to FPGA | ~$40 | 2 | ~$80 |
 | iCEBreaker | iCE40 UP5K | 5.3k | IceStorm (the *cleanest*/oldest fully-open) | reference baseline; smallest, most-trusted open flow | ~$70 | 1 | ~$70 |
 
 **Total: ~11 boards, ~$1,038.** To use the full "few thousand" budget for more serious reversible-
@@ -58,20 +58,20 @@ needs the Artix capacity/DDR3 that ECP5 can't give; it breaks the open-toolchain
 
 ---
 
-## 2. Agent-native key storage (HSM / TPM) — backs B-0634 custody design
+## 2. Agent-native key storage (HSM / TPM) — backs 081KRW63S0008QG0R0022SFKPM custody design
 
 Buys for the [agent-native key-custody design](../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)
-([B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)).
+([081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)).
 The design needs **per-guard hardware roots** (HSM/TPM, key never leaves chip) under a **FROST
 threshold coordinator** across guards. Diversity (multiple vendors / open + closed) is a *feature*
-per B-0634's "diverse failure modes" axis.
+per 081KRW63S0008QG0R0022SFKPM's "diverse failure modes" axis.
 
 ### Tier 0 — already owned (use first, $0)
 
 - **TPM 2.0** in the mini-PCs / Start9 servers (fTPM or discrete) — free per-machine sealing root;
   good enough to seal each guard's FROST *share*. **Start here for the PoC.**
 - Hardware wallets already owned (Coldcard MK4/Q, Trezor, Ledger Nano S Plus, Jade Plus) — these
-  are *Bitcoin-signing* devices; useful for the **wallet/financial** sharp-edge (B-0622), less so
+  are *Bitcoin-signing* devices; useful for the **wallet/financial** sharp-edge (081KRW63S0008QG0R002V20TYJ), less so
   for general agent key custody. Note as adjacent, not the primary custody hardware.
 
 ### Tier 1 — discrete HSMs (the buy list; one per guard, diversify vendors)

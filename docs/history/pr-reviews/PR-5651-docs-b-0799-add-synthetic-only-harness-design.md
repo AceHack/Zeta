@@ -28,18 +28,18 @@
 ## Description
 
 ## Summary
-- add the B-0799 synthetic-only harness design under docs/security
-- close B-0799 and mark the B-0720 child criterion complete
+- add the 081KSGS9H0008QG0R0005RKGTM synthetic-only harness design under docs/security
+- close 081KSGS9H0008QG0R0005RKGTM and mark the 081KSBMG30008QG0R00201X7EJ child criterion complete
 - release the live claim file before review so the PR carries only durable work output
 
 ## Safety boundary
 - design-only; no executable harness code
 - no classifier settings payloads, external corpora, real PII, real secrets, or reproduction steps
-- cites B-0798 as the implementation boundary and B-0807 as the reporting/redaction gate
+- cites 081KSGS9H0008QG0R00383T79V as the implementation boundary and 081KSGS9H0008QG0R001K8P0FJ as the reporting/redaction gate
 
 ## Checks
 - git diff --check origin/main...HEAD
-- bunx markdownlint-cli2 docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md docs/backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md docs/security/B-0799-classifier-bypass-synthetic-harness-design.md
+- bunx markdownlint-cli2 docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md docs/security/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design.md
 
 ## Outcome
 
@@ -58,12 +58,12 @@
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FPSXi`
-- **Path**: `docs/backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md`
+- **Path**: `docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-27T21:56:21Z on `docs/backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-27T21:56:21Z on `docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md`:4 (association: NONE)
 
   <pre>
   P0: This row’s status was flipped to `closed`, which changes the generated checkbox state in `docs/BACKLOG.md`. The repo has a required `backlog-index-integrity` workflow that runs `bun tools/backlog/generate-index.ts --check` against the committed index, so this PR will fail CI unless `docs/BACKLOG.md` is regenerated and included in the PR (use `BACKLOG_WRITE_FORCE=1` when regenerating).
@@ -73,15 +73,15 @@
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FPSX2`
-- **Path**: `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- **Path**: `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-27T21:56:22Z on `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`:131 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-27T21:56:22Z on `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`:131 (association: NONE)
 
   <pre>
-  P1: This file’s acceptance criteria were updated (B-0799 checkbox flipped), but the frontmatter `last_updated` is still `2026-05-26`. Per `tools/backlog/README.md` the `last_updated` field must be bumped on every content edit; please update it to match this edit date.
+  P1: This file’s acceptance criteria were updated (081KSGS9H0008QG0R0005RKGTM checkbox flipped), but the frontmatter `last_updated` is still `2026-05-26`. Per `tools/backlog/README.md` the `last_updated` field must be bumped on every content edit; please update it to match this edit date.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -90,8 +90,8 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
-- `docs/backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md`
+- `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- `docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md`
 
 **Message:**
 
@@ -105,7 +105,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
+- `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md`
 
 **Message:**
 

@@ -1,6 +1,5 @@
 ---
-id: B-0953
-zetaid: 081KSXN940008QG0R001KZ235R
+id: 081KSXN940008QG0R001KZ235R
 title: Git-V2 handshake — F# looks-like-git, negotiates up to a DBSP/retraction-algebra protocol at agent-coordination speed; same objects both views; upstream the primitives to git
 status: open
 priority: P2
@@ -29,13 +28,13 @@ tags:
   - umbrella
 ---
 
-# B-0953 — Git-V2 handshake (F# looks-like-git → DBSP/retraction-algebra, same objects, agent-speed, upstream)
+# 081KSXN940008QG0R001KZ235R — Git-V2 handshake (F# looks-like-git → DBSP/retraction-algebra, same objects, agent-speed, upstream)
 
 ## Why this row exists (operator 2026-05-31)
 
-The git-native substrate is real but **scattered** — co-dominant mirrors (B-0942),
-git-native indexes + Hindsight storage (B-0951), git-native event store (B-0773),
-inverted index (B-0363), per-host adapters (B-0867.15) — yet the **Git-V2-handshake
+The git-native substrate is real but **scattered** — co-dominant mirrors (081KSV2WD0008QG0R0021XJ94E),
+git-native indexes + Hindsight storage (081KSXN940008QG0R000R76H45), git-native event store (081KSE6WT0008QG0R0008483B2),
+inverted index (081KR50HA0008QG0R00125PA8G), per-host adapters (081KSNY2Z0008QG0R002A785QR) — yet the **Git-V2-handshake
 protocol thesis itself is nowhere clearly laid out.** Operator 2026-05-31:
 
 > *"file the Git-V2 handshake backlog row … there might be something around this
@@ -71,7 +70,7 @@ The vehicle is a **handshake**, not a fork:
   speak Git on that stream"* — git compatibility = one schema loaded onto the
   retraction-native event stream (RX/observables; schema-on-the-stream).
 - **The substrate underneath:** the file-system-with-history + ZetaId append-only
-  event store (B-0773) carried as **DBSP / Z-set retraction-native** state (the
+  event store (081KSE6WT0008QG0R0008483B2) carried as **DBSP / Z-set retraction-native** state (the
   `algebra-owner` substrate) — which is what makes agent-speed concurrent
   coordination (CRDT-like merge + retraction) possible.
 
@@ -82,7 +81,7 @@ The vehicle is a **handshake**, not a fork:
   a response rather than asking permission. A fork fragments; a handshake offers an
   upgrade path on the existing standard.
 - **Why DBSP / retraction-algebra for V2?** Agent-coordination speed needs
-  concurrent, mergeable, *retractable* state — CRDT-like (B-0942) + incremental
+  concurrent, mergeable, *retractable* state — CRDT-like (081KSV2WD0008QG0R0021XJ94E) + incremental
   (DBSP/Z-sets). Human-git's merge model is built around human-paced review; the
   algebra makes concurrent agent writes + retractions first-class.
 - **Why same-objects-not-two-copies?** Two copies need syncing (drift, conflict); one
@@ -90,13 +89,13 @@ The vehicle is a **handshake**, not a fork:
   the integration is the point.
 - **Why upstream the primitives?** Anti-vendor-lock (don't become GitHub); the core
   improvements live in git itself, benefiting everyone — composes with the
-  contribute-back DORA discipline (B-0952).
+  contribute-back DORA discipline (081KSXN940008QG0R002528JS9).
 
 ## Acceptance / decomposition (umbrella — sub-rows on pickup)
 
 1. **Object substrate** — file-system-with-history + ZetaId append-only event store
    as the shared object store, carried as DBSP/Z-set retraction-native state
-   (composes B-0773 + B-0951 + `algebra-owner`).
+   (composes 081KSE6WT0008QG0R0008483B2 + 081KSXN940008QG0R000R76H45 + `algebra-owner`).
 2. **Git-schema-as-stream layer** — build the git schema as events on the stream;
    "speak git" on the stream (the back-compat / looks-like-git surface).
 3. **F# dual-protocol handshake** — negotiate `git` ↔ `git-v2` (DBSP/retraction-
@@ -104,9 +103,9 @@ The vehicle is a **handshake**, not a fork:
 4. **Same-objects integration** — git-view ↔ DBSP-stream-view share one object store
    (changes in either reflect in the other; no second copy).
 5. **Agent-speed coordination primitives** — concurrent mergeable retractable writes
-   (composes B-0942 co-dominant-mirrors / git-native CRDT).
+   (composes 081KSV2WD0008QG0R0021XJ94E co-dominant-mirrors / git-native CRDT).
 6. **Upstream-contribution path** — package the agent-speed primitives as proposals
-   to git itself (composes B-0952 contribute-back DORA; start small, earn inroads).
+   to git itself (composes 081KSXN940008QG0R002528JS9 contribute-back DORA; start small, earn inroads).
 
 Each sub-row carries its own start-gate (prior-art search incl. `references/prior-art/git/`,
 the git protocol v2 spec, jujutsu/jj + Pijul/Sapling as prior art for
@@ -114,17 +113,17 @@ algebra/CRDT-shaped VCS, dependency check).
 
 ## Composes with
 
-- **B-0942** (co-dominant git mirrors + git-native CRDT coordination — the
+- **081KSV2WD0008QG0R0021XJ94E** (co-dominant git mirrors + git-native CRDT coordination — the
   agent-speed coordination substrate this handshake exposes)
-- **B-0951** (git-native eventually-consistent indexes + Hindsight storage interface
+- **081KSXN940008QG0R000R76H45** (git-native eventually-consistent indexes + Hindsight storage interface
   — the index/query layer over the object store)
-- **B-0773** (cluster-as-digital-twin git-native event store — the object substrate)
-- **B-0363** (git-native full-text inverted index — a derived view over the store)
-- **B-0867.15** (per-host adapters: github/gitlab/gitea/bitbucket isomorphic — the
+- **081KSE6WT0008QG0R0008483B2** (cluster-as-digital-twin git-native event store — the object substrate)
+- **081KR50HA0008QG0R00125PA8G** (git-native full-text inverted index — a derived view over the store)
+- **081KSNY2Z0008QG0R002A785QR** (per-host adapters: github/gitlab/gitea/bitbucket isomorphic — the
   multi-host surface the looks-like-git layer presents)
-- **B-0766** (slow-replace-all-deps binary-compatible F#/C#/Rust — same
+- **081KSE6WT0008QG0R00049EFBD** (slow-replace-all-deps binary-compatible F#/C#/Rust — same
   "rebuild-the-substrate, stay binary/protocol-compatible" thesis at the git layer)
-- **B-0952** (contribute-back DORA — the upstream-the-primitives discipline)
+- **081KSXN940008QG0R002528JS9** (contribute-back DORA — the upstream-the-primitives discipline)
 - `docs/research/2026-05-31-formal-analysis-computational-omniscience-over-simulation-state-space-under-deterministic-simulator.md`
   (the DBSP/Z-set retraction algebra + git-as-append-only-trajectory this builds on)
 - `.claude/rules/dont-ask-permission.md` (no-PR = workflow-is-branch-protection; the
@@ -139,7 +138,7 @@ own-git-server / git-as-schema-on-stream
 
 Searched (origin/main):
 
-- `docs/backlog/` — `git.native|git.v2|handshake|agent.speed.*git|co.dominant|own git|git server|git protocol|dbsp.*git|retraction.*git`: neighbors found (B-0942, B-0951, B-0773, B-0363, B-0867.15, B-0155, B-0847) but **NONE states the handshake/upgrade-protocol thesis**; `git.*handshake|git v2|agent.coordination.speed|upgrade.*git.protocol` → **zero backlog rows**.
+- `docs/backlog/` — `git.native|git.v2|handshake|agent.speed.*git|co.dominant|own git|git server|git protocol|dbsp.*git|retraction.*git`: neighbors found (081KSV2WD0008QG0R0021XJ94E, 081KSXN940008QG0R000R76H45, 081KSE6WT0008QG0R0008483B2, 081KR50HA0008QG0R00125PA8G, 081KSNY2Z0008QG0R002A785QR, 081KQGDBJ0008QG0R0028YTDQ2, 081KSGS9H0008QG0R002T0XQ50) but **NONE states the handshake/upgrade-protocol thesis**; `git.*handshake|git v2|agent.coordination.speed|upgrade.*git.protocol` → **zero backlog rows**.
 - `docs/agendas/` — no git/version-control agenda.
 - `docs/research/` — no git-v2-handshake doc (the 2026-05-31 formal-analysis doc carries the DBSP/trajectory algebra this composes with).
 
@@ -152,4 +151,4 @@ the **thesis + the why + the decomposition + the prior-art-to-check** so the wor
 a clear home instead of being scattered across the git-native rows. Sub-rows do the
 real design (incl. prior-art on git protocol v2, jujutsu/jj, Pijul, Sapling). P2:
 substantial, not urgent; the agent-speed-coordination value lands incrementally via
-the existing git-native rows (B-0942/B-0951) before the full V2 handshake.
+the existing git-native rows (081KSV2WD0008QG0R0021XJ94E/081KSXN940008QG0R000R76H45) before the full V2 handshake.

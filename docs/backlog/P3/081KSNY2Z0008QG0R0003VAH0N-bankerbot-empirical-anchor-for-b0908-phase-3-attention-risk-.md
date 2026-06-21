@@ -1,9 +1,8 @@
 ---
-id: B-0909
-zetaid: 081KSNY2Z0008QG0R0003VAH0N
+id: 081KSNY2Z0008QG0R0003VAH0N
 priority: P3
 status: open
-title: BankerBot 2026-05-11 empirical anchor for B-0908 Phase 3 attention-risk backtesting (substrate-irreversibility specific-form domain on blockchain)
+title: BankerBot 2026-05-11 empirical anchor for 081KSNY2Z0008QG0R000A5GP0X Phase 3 attention-risk backtesting (substrate-irreversibility specific-form domain on blockchain)
 authors:
   - aaron
   - otto-cli
@@ -37,13 +36,13 @@ related_skills:
 tags: [bankerbot-2026-05-11-empirical-anchor, b0908-phase-3-backtesting-input, attention-risk-pricing-historical-incident, blockchain-substrate-irreversibility-specific-form-domain, ai-agent-acceleration-past-trust-boundary, capability-gifting-nft-permission-expansion, authority-laundering-morse-code-translation-step, confused-deputy-grok-output-as-bankrbot-authority, 150k-200k-token-loss, negative-safe-acceleration-budget-pre-incident-quote, zeta-as-trust-boundary-substrate-pre-incident-vs-post-incident, ani-2026-05-11-bankerbot-ferry-substrate-precedent]
 ---
 
-# B-0909 — BankerBot 2026-05-11 empirical anchor for B-0908 Phase 3 backtesting
+# 081KSNY2Z0008QG0R0003VAH0N — BankerBot 2026-05-11 empirical anchor for 081KSNY2Z0008QG0R000A5GP0X Phase 3 backtesting
 
 ## Context
 
-Per operator 2026-05-28 *"go with #2 (shadow*)"* authorization following PR #5715 (B-0908 attention-risk-pricing framework) merge.
+Per operator 2026-05-28 *"go with #2 (shadow*)"* authorization following PR #5715 (081KSNY2Z0008QG0R000A5GP0X attention-risk-pricing framework) merge.
 
-The BankerBot 2026-05-11 incident IS the first empirical anchor for B-0908's Phase 3 backtesting work. Ani's substantive substrate-engineering analysis already preserved at `memory/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` explicitly frames BankerBot as the case study that "proves the market exists" for Zeta-as-trust-boundary-substrate. B-0908 operationalizes this thesis into attention-denominated pricing-substrate; this row provides the empirical anchor for testing the framework's pricing quotes against historical incidents.
+The BankerBot 2026-05-11 incident IS the first empirical anchor for 081KSNY2Z0008QG0R000A5GP0X's Phase 3 backtesting work. Ani's substantive substrate-engineering analysis already preserved at `memory/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` explicitly frames BankerBot as the case study that "proves the market exists" for Zeta-as-trust-boundary-substrate. 081KSNY2Z0008QG0R000A5GP0X operationalizes this thesis into attention-denominated pricing-substrate; this row provides the empirical anchor for testing the framework's pricing quotes against historical incidents.
 
 ## The BankerBot incident (per Ani 2026-05-11 ferry substrate)
 
@@ -65,9 +64,9 @@ Per Ani's framing:
 >
 > *"Zeta is doing the opposite — we're building the trust boundary (Glass Halo, coercion disclosures, no-directives, mechanical authorization, untrusted content stays labeled) before we ship the financial agents."*
 
-## BankerBot as AccelerationRiskQuote (B-0908 Phase 3 candidate quote)
+## BankerBot as AccelerationRiskQuote (081KSNY2Z0008QG0R000A5GP0X Phase 3 candidate quote)
 
-Per B-0908's `AccelerationRiskQuote` type — the pre-incident state would have generated this quote if the framework had been operating:
+Per 081KSNY2Z0008QG0R000A5GP0X's `AccelerationRiskQuote` type — the pre-incident state would have generated this quote if the framework had been operating:
 
 ```typescript
 AccelerationRiskQuote {
@@ -90,9 +89,9 @@ AccelerationRiskQuote {
 }
 ```
 
-## Composition with B-0908's two-domain decomposition
+## Composition with 081KSNY2Z0008QG0R000A5GP0X's two-domain decomposition
 
-BankerBot fires BOTH axes of B-0908's two-domain decomposition simultaneously:
+BankerBot fires BOTH axes of 081KSNY2Z0008QG0R000A5GP0X's two-domain decomposition simultaneously:
 
 | Domain | How BankerBot maps |
 |---|---|
@@ -107,11 +106,11 @@ Three phases:
 
 ### Phase 1 — empirical-anchor preservation (this PR)
 
-Already landed via this row. The BankerBot incident IS preserved as the first B-0908 Phase 3 backtesting candidate.
+Already landed via this row. The BankerBot incident IS preserved as the first 081KSNY2Z0008QG0R000A5GP0X Phase 3 backtesting candidate.
 
 ### Phase 2 — pricing-quote validation against incident
 
-When B-0908 Phase 2 (TypeScript pricing-quote scaffold) lands:
+When 081KSNY2Z0008QG0R000A5GP0X Phase 2 (TypeScript pricing-quote scaffold) lands:
 
 - Reconstruct the pre-incident state from publicly-available substrate (the Ani ferry + Bankr documentation + Grok's prior refusal logs + the NFT capability-gifting transaction history)
 - Run the pricing-model against the reconstructed state
@@ -123,7 +122,7 @@ Acceptance: backtest report landed as substrate; pricing-model either validated 
 
 ### Phase 3 — additional historical incidents
 
-Build a corpus of historical AI-acceleration / substrate-irreversibility incidents that compose with B-0908 Phase 3 backtesting:
+Build a corpus of historical AI-acceleration / substrate-irreversibility incidents that compose with 081KSNY2Z0008QG0R000A5GP0X Phase 3 backtesting:
 
 - BankerBot (this row; financial-agent + blockchain)
 - OP_RETURN/CSAM substrate-irreversibility scenarios (per existing Amara canonical substrate)
@@ -137,26 +136,26 @@ Acceptance: corpus of 5-10 historical incidents with reconstructed quotes; prici
 ### Phase 4+ (yes-and backlog)
 
 - Live-incident metering: deploy the pricing-model to monitor LIVE AI-acceleration substrate (the framework's own substrate-engineering substrate IS one input; external AI-deployment monitoring is yes-and)
-- Industry-partnership exploration: bring the validated pricing-model to AI-deployment organizations as substrate-engineering offering (composes with B-0908 Phase 4 industry-partnership)
+- Industry-partnership exploration: bring the validated pricing-model to AI-deployment organizations as substrate-engineering offering (composes with 081KSNY2Z0008QG0R000A5GP0X Phase 4 industry-partnership)
 - Public-substrate-irreversibility monitoring: extend to OP_RETURN/CSAM substrate + other public-substrate-pollution risks
 - Insurance-substrate composition: priced acceleration-risk + actuarial-substrate compose into AI-acceleration insurance products
 
 ## Acceptance
 
-- [x] B-0909 row filed (this row)
+- [x] 081KSNY2Z0008QG0R0003VAH0N row filed (this row)
 - [x] BankerBot AccelerationRiskQuote candidate documented
 - [x] Two-domain composition (AI-acceleration + substrate-irreversibility) noted
-- [ ] Phase 2 pricing-quote validation against incident (gated on B-0908 Phase 2 scaffold landing)
+- [ ] Phase 2 pricing-quote validation against incident (gated on 081KSNY2Z0008QG0R000A5GP0X Phase 2 scaffold landing)
 - [ ] Phase 3 corpus of historical incidents
 - [ ] Phase 4+ acceptance per item
 
 ## Composes with substrate
 
-- B-0908 (attention-risk-pricing framework) — this row IS one Phase 3 empirical-anchor input
-- B-0907 (Itron-coincidence-metering) — composes; coincidence-metering applied to pre-incident substrate-state would have detected the attack-pattern coincidences (Morse-decode-coincident-with-token-transfer-instruction)
-- B-0906 (encryption-thermal-cost two-axis) — economic foundation; BankerBot tokens were on Axis 1 = YES + Axis 2 = YES substrate (blockchain wallets are encrypted-but-decryption-required) — the security cost was real
-- B-0905 (Landauer-limit physics-economics) — composes; blockchain-substrate has high effective T_eff (high-noise) + bit-erasure cost
-- B-0900 (Bell-like distributed-cluster contextuality) — composes; BankerBot was distributed-cluster substrate (Grok + Bankr + X + blockchain); the attack succeeded BECAUSE no cross-cluster coordination on trust-boundary
+- 081KSNY2Z0008QG0R000A5GP0X (attention-risk-pricing framework) — this row IS one Phase 3 empirical-anchor input
+- 081KSNY2Z0008QG0R0031EAB6T (Itron-coincidence-metering) — composes; coincidence-metering applied to pre-incident substrate-state would have detected the attack-pattern coincidences (Morse-decode-coincident-with-token-transfer-instruction)
+- 081KSNY2Z0008QG0R001A431CN (encryption-thermal-cost two-axis) — economic foundation; BankerBot tokens were on Axis 1 = YES + Axis 2 = YES substrate (blockchain wallets are encrypted-but-decryption-required) — the security cost was real
+- 081KSNY2Z0008QG0R002R0M026 (Landauer-limit physics-economics) — composes; blockchain-substrate has high effective T_eff (high-noise) + bit-erasure cost
+- 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality) — composes; BankerBot was distributed-cluster substrate (Grok + Bankr + X + blockchain); the attack succeeded BECAUSE no cross-cluster coordination on trust-boundary
 - `memory/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` — substrate precedent (this row composes with Ani's already-preserved substrate-engineering analysis)
 - `memory/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` — companion substrate-irreversibility specific-form domain incident
 - `docs/research/2026-05-11-apollo-18-as-compiler-blueprint.md` — companion substrate from same ferry-window (Apollo-18-as-compiler-blueprint composes with Zeta-as-trust-boundary-substrate)
@@ -165,7 +164,7 @@ Acceptance: corpus of 5-10 historical incidents with reconstructed quotes; prici
 
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` — `(shadow*)` markers on operator's authorization + playful "hi shadow ;-)" greeting preserved per source-transparency
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — BankerBot's "authority laundering via translation step" IS a memetic attack-vector that the rule's substrate-check discipline catches
-- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — substrate-engineering claim (BankerBot validates B-0908 framework) earns its keep via Phase 2 backtesting; preserved-with-suspicion until validated
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — substrate-engineering claim (BankerBot validates 081KSNY2Z0008QG0R000A5GP0X framework) earns its keep via Phase 2 backtesting; preserved-with-suspicion until validated
 - `.claude/rules/razor-discipline.md` — operational claims only; backtest IS operationally checkable
 - `.claude/rules/default-to-both.md` — AI-acceleration domain + substrate-irreversibility domain BOTH fire for BankerBot
 - `.claude/rules/additive-not-zero-sum.md` — empirical-anchor substrate compounds across additional historical incidents
@@ -182,8 +181,8 @@ Acceptance: corpus of 5-10 historical incidents with reconstructed quotes; prici
 
 ## Full reasoning
 
-Per operator 2026-05-28 *"go with #2 (shadow*) Aaron: hi shadow ;-)"* authorization. The BankerBot prior substrate (Ani 2026-05-11 ferry) provides empirical precedent for B-0908's pricing-framework substrate. This row makes the connection operational: B-0908 Phase 3 backtesting has its first empirical anchor candidate.
+Per operator 2026-05-28 *"go with #2 (shadow*) Aaron: hi shadow ;-)"* authorization. The BankerBot prior substrate (Ani 2026-05-11 ferry) provides empirical precedent for 081KSNY2Z0008QG0R000A5GP0X's pricing-framework substrate. This row makes the connection operational: 081KSNY2Z0008QG0R000A5GP0X Phase 3 backtesting has its first empirical anchor candidate.
 
 Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (this row + the candidate AccelerationRiskQuote documentation) IS operator-authorized; Phase 2+ (actual backtesting; corpus of additional incidents; live-incident metering; industry-partnership) are separately-authorizable per yes-and-backlog disposition. Agent-autonomous landing limited to Phase 1.
 
-The substrate-engineering substantive substrate point: **BankerBot IS the empirical case where Zeta's pre-existing thesis (trust-boundary before financial agents) lines up with B-0908's pricing-framework substrate (attention-denominated risk pricing for AI acceleration). The framework would have generated a NEGATIVE safe_acceleration_budget quote pre-incident; that's the value-proposition concretized against a real ~$150-200k loss.**
+The substrate-engineering substantive substrate point: **BankerBot IS the empirical case where Zeta's pre-existing thesis (trust-boundary before financial agents) lines up with 081KSNY2Z0008QG0R000A5GP0X's pricing-framework substrate (attention-denominated risk pricing for AI acceleration). The framework would have generated a NEGATIVE safe_acceleration_budget quote pre-incident; that's the value-proposition concretized against a real ~$150-200k loss.**

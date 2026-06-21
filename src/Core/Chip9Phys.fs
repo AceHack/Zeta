@@ -7,7 +7,7 @@ namespace Zeta.Core
 ///
 /// Design laws (each from a standing discipline):
 /// - **Fixed-point 16.16, no floats** — exact, byte-lockable, culture-invariant: the physics is a
-///   TREATY surface (the same trajectory on every oracle, every architecture — the B-1025 fan-out
+///   TREATY surface (the same trajectory on every oracle, every architecture — the 081KTSZN10008QG0R000VZHRQ4 fan-out
 ///   carries it). 16.16 gives sub-pixel precision ×65536 on a 64×32 screen: positions live on a
 ///   4,194,304 × 2,097,152 sub-pixel grid — "super high quality on tiny things" is exactly this:
 ///   the SIMULATION is far finer than the DISPLAY, and the renderer downsamples.

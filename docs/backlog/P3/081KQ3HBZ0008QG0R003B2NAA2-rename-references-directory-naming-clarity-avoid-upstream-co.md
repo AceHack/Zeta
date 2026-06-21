@@ -1,6 +1,5 @@
 ---
-id: B-0031
-zetaid: 081KQ3HBZ0008QG0R003B2NAA2
+id: 081KQ3HBZ0008QG0R003B2NAA2
 priority: P3
 status: open
 title: Rename `references/` directory — Aaron 2026-04-26 noted "upstream" naming was randomly chosen and collides with git-semantic meaning; rectify before language-wars/confusion compound
@@ -15,7 +14,7 @@ tags: [naming-clarity, glossary, git-semantic-collision, vocabulary-discipline, 
 type: friction-reducer
 ---
 
-# B-0031 — rectify "upstream" colloquial vs git-semantic naming around references/
+# 081KQ3HBZ0008QG0R003B2NAA2 — rectify "upstream" colloquial vs git-semantic naming around references/
 
 ## Origin — Aaron 2026-04-26
 
@@ -56,11 +55,11 @@ Aaron's catch is preventive-discipline: **rectify before the language-war compou
 ## Composes with prior
 
 - **Otto-346** (dependency symbiosis; upstream-contribution discipline) — uses "upstream" in the OSS-contribution sense (canonical repos like bcgit/bc-csharp); the colloquial conflation contaminates the precision Otto-346 requires
-- **B-0010** (memory-index-conventions doc) — sibling naming-discipline backlog row
+- **081KQ0YZ80008QG0R00264RY8Z** (memory-index-conventions doc) — sibling naming-discipline backlog row
 - **`docs/GLOSSARY.md`** — the right home for the formal distinction
 - **Otto-339** (anywhere-means-anywhere) — vocabulary precision applies to directory/file/concept naming
 - **Otto-286** (definitional precision changes future without war) — Aaron's *exact* phrase here is "to avoid wars/confusion"; this is preventive Otto-286 application
-- **B-0030** (lint-with-exclusions tool) — paired concern from the same Aaron message; the lint tool needs to know which directories to exclude AND those directories need clear names
+- **081KQ3HBZ0008QG0R000ACTVA6** (lint-with-exclusions tool) — paired concern from the same Aaron message; the lint tool needs to know which directories to exclude AND those directories need clear names
 
 ## Programming-language-as-religious-choice connection (Aaron's framing)
 
@@ -99,4 +98,4 @@ When sweep happens, files most likely to need updates:
 - `docs/POST-SETUP-SCRIPT-STACK.md` (mentions upstream in OSS-contribution sense — git-aligned, keep)
 - `references/` README or similar (defines what's there)
 - Otto-NNN substrate referring to "upstream" — most uses are Otto-346-style git-correct contribution sense, but audit each
-- BACKLOG rows (B-0007 Bayesian primitives upstream — git-correct, keep)
+- BACKLOG rows (081KQ0YZ80008QG0R001V1PMC0 Bayesian primitives upstream — git-correct, keep)

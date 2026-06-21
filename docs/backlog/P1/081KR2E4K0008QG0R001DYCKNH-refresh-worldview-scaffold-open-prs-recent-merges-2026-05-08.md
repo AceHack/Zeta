@@ -1,6 +1,5 @@
 ---
-id: B-0262
-zetaid: 081KR2E4K0008QG0R001DYCKNH
+id: 081KR2E4K0008QG0R001DYCKNH
 priority: P1
 status: closed
 title: "refresh-worldview scaffold - open-PR list + recent-merges query"
@@ -13,9 +12,9 @@ classification: buildable-now
 decomposition: atomic
 ---
 
-# B-0262 - refresh-worldview scaffold
+# 081KR2E4K0008QG0R001DYCKNH - refresh-worldview scaffold
 
-First child of B-0159. Create `tools/refresh-github-worldview/refresh.ts`
+First child of 081KQGDBJ0008QG0R003H0G5YQ. Create `tools/refresh-github-worldview/refresh.ts`
 with two queries:
 
 1. Full open-PR list (`gh pr list --state open --json`)

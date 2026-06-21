@@ -1,6 +1,5 @@
 ---
-id: B-0117
-zetaid: 081KQDTYV0008QG0R0015BFCBH
+id: 081KQDTYV0008QG0R0015BFCBH
 priority: P2
 status: closed
 closed: 2026-05-02
@@ -28,7 +27,7 @@ tags: [ani-2026-04-30, deepseek-2026-04-30, cold-start, tooling, mechanism-not-v
 > one open follow-up — Bun is cross-platform but only smoke-tested
 > on macOS in this PR.
 
-# B-0117 — tools/cold-start-check.ts (cold-start checklist executable)
+# 081KQDTYV0008QG0R0015BFCBH — tools/cold-start-check.ts (cold-start checklist executable)
 
 ## Source
 

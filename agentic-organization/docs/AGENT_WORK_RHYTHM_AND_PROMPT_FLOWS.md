@@ -117,8 +117,8 @@ Prompt flows are reusable deterministic pipelines that hats can execute. They ar
 
 They should also be the first practical host for the repo's universal-action-space work. The repo does not yet contain one canonical Universal Action Grammar specification, but it has adjacent prior art:
 
-- `docs/backlog/P3/B-0200-fsharp-codeact-bridge-engineering-aaron-2026-05-05.md` frames CodeAct as executable Python in a unified action space, while preserving Zeta's stronger F# DSL for DST-safe, retraction-native, scale-free, DBSP-native work.
-- `docs/backlog/P3/B-0201-coconut-universal-action-space-research-lane-aaron-2026-05-05.md` keeps the broader universal-action-space research lane alive across CodeAct, Coconut, GibberLink, and LAPA.
+- `docs/backlog/P3/081KQTPYE0008QG0R0009F20NN-fsharp-codeact-bridge-engineering-aaron-2026-05-05.md` frames CodeAct as executable Python in a unified action space, while preserving Zeta's stronger F# DSL for DST-safe, retraction-native, scale-free, DBSP-native work.
+- `docs/backlog/P3/081KQTPYE0008QG0R00209Q9RT-coconut-universal-action-space-research-lane-aaron-2026-05-05.md` keeps the broader universal-action-space research lane alive across CodeAct, Coconut, GibberLink, and LAPA.
 - `docs/SAFE-AUTONOMOUS-ACTIONS.md` defines a bounded, reversible action set with explicit preconditions, undo paths, logging, and one-action-per-tick discipline.
 - `docs/research/2026-04-26-action-mode-classification-correction-and-self-provenance-accountability-framing.md` defines action-mode classification and provenance/accountability framing.
 

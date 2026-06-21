@@ -35,7 +35,7 @@ The tension dissolves once you separate the **external-tool face** from the **ce
 | face | who talks | transport | statefulness | where `multiplewebsocket` fits |
 |---|---|---|---|---|
 | **External MCP** (our tools callable by Claude/others; we call other MCP servers) | standard MCP clients/servers | **Streamable HTTP** (+ stdio for local) on the ASP.NET generic host via `ModelContextProtocol.AspNetCore` | yes — `Mcp-Session-Id` sessions | ✗ — standard clients won't speak it |
-| **Cell ↔ cell** ("be a cell, callable by remote cells, call remote cells") | Zeta cells (peers) | the **Zeta bus** — git-native (B-0954) / Reticulum / a **custom WebSocket** | yes — bidirectional, **peer-to-peer**, durable | ✓ — this is exactly its role |
+| **Cell ↔ cell** ("be a cell, callable by remote cells, call remote cells") | Zeta cells (peers) | the **Zeta bus** — git-native (081KSXN940008QG0R00171YAZW) / Reticulum / a **custom WebSocket** | yes — bidirectional, **peer-to-peer**, durable | ✓ — this is exactly its role |
 
 So: **MCP is the outward tool API; the cell mesh is our own protocol.** Don't model cell↔cell as MCP — MCP is
 client-server (not P2P), so a cell *mesh* is a poor fit for it. Use Streamable HTTP for the MCP face (stateful,
@@ -50,7 +50,7 @@ And the same process can be a cell on the bus *and* an MCP server *and* an MCP c
    local). This gives stateful sessions with standard clients. Migrate the hand-rolled `zeta-mcp` to the SDK.
    **Do not** put MCP on WebSocket/gRPC — you'd lose standard-client interop for no statefulness gain.
 2. **Cell↔cell face → the Zeta bus, NOT MCP.** `multiplewebsocket` is a legitimate **custom transport for
-   the cell mesh** (bidirectional, P2P, stateful) — pair it with / compare it to the git-native bus (B-0954)
+   the cell mesh** (bidirectional, P2P, stateful) — pair it with / compare it to the git-native bus (081KSXN940008QG0R00171YAZW)
    and the Orleans-cursor/SerializedSaga + CommutativeView lanes. gRPC is also a fine cell-bus option.
 3. **Bridge them:** MCP tool handlers invoke the cell bus → "MCP can call remote cells"; remote cells reply
    over the bus. One host, three faces (cell / MCP-server / MCP-client).
@@ -61,7 +61,7 @@ And the same process can be a cell on the bus *and* an MCP server *and* an MCP c
   it as the cell-bus transport — flagged, not assumed.
 - Migrating `zeta-mcp` to the SDK + Streamable HTTP is a real build (DI, hosting, session store, tool
   re-registration) — backlog, not a drive-by.
-- Whether the cell bus is git-native (B-0954) vs WebSocket vs gRPC is a separate decision (the bus already
+- Whether the cell bus is git-native (081KSXN940008QG0R00171YAZW) vs WebSocket vs gRPC is a separate decision (the bus already
   has design weight on the git-native side); this doc only says *cell↔cell ≠ MCP*.
 
 ## Beacon anchors
@@ -69,7 +69,7 @@ And the same process can be a cell on the bus *and* an MCP server *and* an MCP c
 - **MCP spec 2025-11-25** — Transports (stdio, Streamable HTTP, `Mcp-Session-Id`, resumability, custom-
   transport clause). · **`ModelContextProtocol` / `ModelContextProtocol.AspNetCore`** (official C# SDK). ·
   **JSON-RPC 2.0** (the substrate that makes custom transports possible). · **gRPC-for-MCP** (Google Cloud,
-  in-dev pluggable transport). · Ties (ours): B-0954 git-native agent bus, the Orleans-cursor / SerializedSaga
+  in-dev pluggable transport). · Ties (ours): 081KSXN940008QG0R00171YAZW git-native agent bus, the Orleans-cursor / SerializedSaga
   + CommutativeView coordination lanes, Reticulum routing, `tools/zeta-mcp`. Honest novelty: none in MCP; the
   contribution is the **two-faces split** — MCP (client-server, Streamable HTTP, external tools) over the
   **cell bus** (P2P, custom transport, internal mesh), bridged in one host.

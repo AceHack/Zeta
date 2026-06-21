@@ -18,12 +18,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- Slices B-0424.1–B-0424.8 (PRs #2994, #2996, #3003, #3019, #3025, #3026, #3027, #3028) are all merged
+- Slices 081KRFA460008QG0R001H98EXJ.1–081KRFA460008QG0R001H98EXJ.8 (PRs #2994, #2996, #3003, #3019, #3025, #3026, #3027, #3028) are all merged
 - Tests: **30/30 pass** (`bun test tools/scaffold/create-repo.ts`)
 - Dry-run verified 2026-05-14: 12 operations planned for both `forge` and `ace` — no errors
-- B-0424 status updated `open` → `in-progress`; completed-slices table and `--apply` execution instructions added
+- 081KRFA460008QG0R001H98EXJ status updated `open` → `in-progress`; completed-slices table and `--apply` execution instructions added
 
-## What's left (for full B-0424 closure)
+## What's left (for full 081KRFA460008QG0R001H98EXJ closure)
 
 The only remaining step is running `--apply` to actually create the GitHub repos — an irreversible external action that requires Aaron's explicit review. The dry-run shows exactly what will happen before he decides.
 
@@ -49,11 +49,11 @@ After `--apply`, six manual follow-ups remain (documented in the updated backlog
 
 ## Pull request overview
 
-Documentation-only backlog update for B-0424, marking Stage 1 scaffold work as partially complete and documenting the remaining repo-creation execution step.
+Documentation-only backlog update for 081KRFA460008QG0R001H98EXJ, marking Stage 1 scaffold work as partially complete and documenting the remaining repo-creation execution step.
 
 **Changes:**
-- Updates B-0424 frontmatter metadata and status.
-- Adds a completed-slices table for B-0424.1–B-0424.8.
+- Updates 081KRFA460008QG0R001H98EXJ frontmatter metadata and status.
+- Adds a completed-slices table for 081KRFA460008QG0R001H98EXJ.1–081KRFA460008QG0R001H98EXJ.8.
 - Documents dry-run verification, `--apply` commands, and post-apply manual follow-ups.
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-14T08:17:27Z)
@@ -64,19 +64,19 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 c
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md:4 (resolved)
+### Thread 1: docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md:4 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T08:12:20Z):
 
 P1: `in-progress` is not a valid backlog frontmatter status per `tools/backlog/README.md:63`, which only permits `open`, `closed`, `superseded-by-B-NNNN`, or `deferred`. This row will no longer conform to the documented schema; keep it `open` or add/update schema/tooling support for this new state in the same PR.
 
-### Thread 2: docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md:108 (resolved)
+### Thread 2: docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md:108 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T08:12:20Z):
 
-P1: This tells the operator to run the irreversible `--apply` commands locally, bypassing the `scaffold-stage1-create-repos` workflow that was added as the safe apply entrypoint with actor allowlisting, a `CONFIRM` gate, PAT-secret handling, and concurrency protection. Since the row itself calls B-0424.2 the safe apply entrypoint, the next-step instructions should route through that workflow (or explicitly justify why these controls are being bypassed).
+P1: This tells the operator to run the irreversible `--apply` commands locally, bypassing the `scaffold-stage1-create-repos` workflow that was added as the safe apply entrypoint with actor allowlisting, a `CONFIRM` gate, PAT-secret handling, and concurrency protection. Since the row itself calls 081KRFA460008QG0R001H98EXJ.2 the safe apply entrypoint, the next-step instructions should route through that workflow (or explicitly justify why these controls are being bypassed).
 
-### Thread 3: docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md:79 (unresolved)
+### Thread 3: docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md:79 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T08:17:27Z):
 

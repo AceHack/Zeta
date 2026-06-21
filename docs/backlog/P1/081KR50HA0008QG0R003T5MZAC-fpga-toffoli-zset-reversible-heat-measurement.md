@@ -1,6 +1,5 @@
 ---
-id: B-0366
-zetaid: 081KR50HA0008QG0R003T5MZAC
+id: 081KR50HA0008QG0R003T5MZAC
 priority: P1
 status: open
 title: "FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation"
@@ -16,7 +15,7 @@ type: feature
 tags: [fpga, reversible-computing, toffoli, landauer, zset, therm-free, hardware]
 ---
 
-# B-0366 — FPGA Toffoli-gate Z-set test
+# 081KR50HA0008QG0R003T5MZAC — FPGA Toffoli-gate Z-set test
 
 ## What
 
@@ -108,7 +107,7 @@ this gate count. Both would be useful findings.
 
 ## Composes with
 
-- B-0365 (Nirvanic Fusion Ship bundle — this is Layer 5:
+- 081KR50HA0008QG0R002R3NVGS (Nirvanic Fusion Ship bundle — this is Layer 5:
   hardware validation)
-- B-0364 (policy relocation — same DBSP operations)
+- 081KR50HA0008QG0R00096ZEYA (policy relocation — same DBSP operations)
 - Commit 6995215 (Casimir research doc)

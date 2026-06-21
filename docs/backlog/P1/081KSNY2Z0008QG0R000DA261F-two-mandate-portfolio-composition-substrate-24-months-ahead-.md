@@ -1,9 +1,8 @@
 ---
-id: B-0870
-zetaid: 081KSNY2Z0008QG0R000DA261F
+id: 081KSNY2Z0008QG0R000DA261F
 priority: P1
 status: open
-title: Two-mandate portfolio composition substrate — operator's two evaluation mandates (24-months-ahead-AI per B-0866 + DORA-of-live-system per B-0869) compose into a single time-allocation portfolio; substrate for periodic check-in + composition-discipline + tradeoff-handling when mandates compete (operator 2026-05-28)
+title: Two-mandate portfolio composition substrate — operator's two evaluation mandates (24-months-ahead-AI per 081KSKBP80008QG0R003RFX32N + DORA-of-live-system per 081KSNY2Z0008QG0R000HENSVM) compose into a single time-allocation portfolio; substrate for periodic check-in + composition-discipline + tradeoff-handling when mandates compete (operator 2026-05-28)
 effort: M
 ask: aaron 2026-05-28
 created: 2026-05-28
@@ -35,8 +34,8 @@ tags:
 
 Operator has TWO explicit evaluation mandates:
 
-1. **24-months-ahead-in-AI** — B-0866 substrate (Kestrel marketing-strategy ferry + Otto extensions)
-2. **DORA of our live system** — B-0869 substrate (operator-direct ServiceTitan live-system DORA delivery)
+1. **24-months-ahead-in-AI** — 081KSKBP80008QG0R003RFX32N substrate (Kestrel marketing-strategy ferry + Otto extensions)
+2. **DORA of our live system** — 081KSNY2Z0008QG0R000HENSVM substrate (operator-direct ServiceTitan live-system DORA delivery)
 
 These compose into operator's full performance-evaluation portfolio. The composition is non-trivial:
 
@@ -53,23 +52,23 @@ This row tracks the substrate-engineering discipline for navigating the two-mand
 
 1. **Compose-or-compete discriminator** — for each substrate-engineering activity, name explicitly: does this serve BOTH mandates / ONLY one / COMPETE between them?
 2. **High-leverage compositional alignment identification** — work that serves BOTH mandates simultaneously (workflow engine MVP is the canonical example) gets priority over single-mandate work
-3. **Periodic boss check-in cadence** — explicit portfolio-balance conversations (per Kestrel observation; per B-0866.18 + B-0869.6) at regular intervals
+3. **Periodic boss check-in cadence** — explicit portfolio-balance conversations (per Kestrel observation; per 081KSKBP80008QG0R003RFX32N.18 + 081KSNY2Z0008QG0R000HENSVM.6) at regular intervals
 4. **Tradeoff-conversation framework** — when mandates compete, explicit conversation with boss about which to prioritize when (not silent re-allocation)
 5. **Substrate-engineering-investment-cap awareness** — Kestrel observation: "at or past the point" where additional substrate-engineering investment doesn't increase AI-mandate-performance but reduces DORA-mandate-attention
 6. **Mandate-evolution tracking** — mandates can change over evaluation period; substrate to surface shifts before they show up in evaluations
 
 ## Sub-rows planned
 
-- **B-0870.1** — Compose-or-compete discriminator applied to current substrate-engineering inventory (which Zeta work serves both / only-AI / only-DORA / competes; substrate-honest mapping)
-- **B-0870.2** — Workflow engine MVP (B-0867 v1) deployment as canonical compositional substrate (serves both mandates simultaneously; highest-leverage substrate to ship; portfolio-optimal)
-- **B-0870.3** — Periodic boss check-in cadence formalization (quarterly? monthly? per-evaluation-cycle? operator-discretion; cadence-discipline reduces evaluation-surprise risk)
-- **B-0870.4** — Tradeoff-conversation framework substrate (when mandates compete, explicit conversation script + decision-recording substrate; prevents silent-reallocation failure mode)
-- **B-0870.5** — Substrate-engineering-investment-cap awareness (per Kestrel observation; explicit acknowledgment that cap exists; revised post-workflow-engine-MVP-landing)
-- **B-0870.6** — Mandate-evolution tracking substrate (mandates change; surface shifts; integrate with boss-check-in-cadence)
-- **B-0870.7** — Workflow-engine pre-review action as portfolio-check (when shipping substrate, workflow engine state machine offers "check-portfolio-balance" action; integrates portfolio-discipline into per-task workflow)
-- **B-0870.8** — Hats as portfolio-balance-aware substrate (per B-0868: each hat declares which mandate it serves; portfolio-balance becomes visible at hat-wear-time)
-- **B-0870.9** — Boss check-in cadence as whole-company-evangelism staging-ground (operator-ratified 2026-05-28: boss check-in becomes the staging-ground where AI-keeping-DORA-up evidence accumulates BEFORE whole-company evangelism per B-0866.26). Promotes B-0870.3 from personal-evaluation-alignment scope to organizational-AI-evangelism-staging scope.
-- **B-0870.10** — 24-months-ahead-IS-multi-PR/multi-agent-orchestration concrete definition (operator-substrate-disclosure 2026-05-28: *"ai keeps dora metrics up is the 24 moths ahead framing becuase rest of company is working on single pr flows not multi pr / agent orchestran, they just added experts / personas and very simple stuff"*). What "24-months-ahead" CONCRETELY MEANS for ServiceTitan: multi-PR/multi-agent orchestration with substrate-engineering disciplines. ServiceTitan-baseline: single-PR-flows + experts/personas-prompting (simple stuff). Aaron's framework substrate is THE 24-months-ahead-substrate because it IS the multi-PR/multi-agent orchestration substrate. The DORA-up CRITERION is specifically about multi-PR/multi-agent-orchestration-keeping-DORA-up, not generic AI-helps-DORA.
+- **081KSNY2Z0008QG0R000DA261F.1** — Compose-or-compete discriminator applied to current substrate-engineering inventory (which Zeta work serves both / only-AI / only-DORA / competes; substrate-honest mapping)
+- **081KSNY2Z0008QG0R000DA261F.2** — Workflow engine MVP (081KSKBP80008QG0R000B3Y19A v1) deployment as canonical compositional substrate (serves both mandates simultaneously; highest-leverage substrate to ship; portfolio-optimal)
+- **081KSNY2Z0008QG0R000DA261F.3** — Periodic boss check-in cadence formalization (quarterly? monthly? per-evaluation-cycle? operator-discretion; cadence-discipline reduces evaluation-surprise risk)
+- **081KSNY2Z0008QG0R000DA261F.4** — Tradeoff-conversation framework substrate (when mandates compete, explicit conversation script + decision-recording substrate; prevents silent-reallocation failure mode)
+- **081KSNY2Z0008QG0R000DA261F.5** — Substrate-engineering-investment-cap awareness (per Kestrel observation; explicit acknowledgment that cap exists; revised post-workflow-engine-MVP-landing)
+- **081KSNY2Z0008QG0R000DA261F.6** — Mandate-evolution tracking substrate (mandates change; surface shifts; integrate with boss-check-in-cadence)
+- **081KSNY2Z0008QG0R000DA261F.7** — Workflow-engine pre-review action as portfolio-check (when shipping substrate, workflow engine state machine offers "check-portfolio-balance" action; integrates portfolio-discipline into per-task workflow)
+- **081KSNY2Z0008QG0R000DA261F.8** — Hats as portfolio-balance-aware substrate (per 081KSNY2Z0008QG0R0036KH026: each hat declares which mandate it serves; portfolio-balance becomes visible at hat-wear-time)
+- **081KSNY2Z0008QG0R000DA261F.9** — Boss check-in cadence as whole-company-evangelism staging-ground (operator-ratified 2026-05-28: boss check-in becomes the staging-ground where AI-keeping-DORA-up evidence accumulates BEFORE whole-company evangelism per 081KSKBP80008QG0R003RFX32N.26). Promotes 081KSNY2Z0008QG0R000DA261F.3 from personal-evaluation-alignment scope to organizational-AI-evangelism-staging scope.
+- **081KSNY2Z0008QG0R000DA261F.10** — 24-months-ahead-IS-multi-PR/multi-agent-orchestration concrete definition (operator-substrate-disclosure 2026-05-28: *"ai keeps dora metrics up is the 24 moths ahead framing becuase rest of company is working on single pr flows not multi pr / agent orchestran, they just added experts / personas and very simple stuff"*). What "24-months-ahead" CONCRETELY MEANS for ServiceTitan: multi-PR/multi-agent orchestration with substrate-engineering disciplines. ServiceTitan-baseline: single-PR-flows + experts/personas-prompting (simple stuff). Aaron's framework substrate is THE 24-months-ahead-substrate because it IS the multi-PR/multi-agent orchestration substrate. The DORA-up CRITERION is specifically about multi-PR/multi-agent-orchestration-keeping-DORA-up, not generic AI-helps-DORA.
 
 Order suggestion: 1 (current-inventory mapping) → 2 (workflow engine MVP as compositional substrate) → 3 (boss check-in cadence) → 4 (tradeoff framework) → 5 (cap-awareness) → 7 + 8 (workflow-engine + hats integration) → 9 + 10 (whole-company-evangelism scope-tier + 24-months-ahead-concrete-definition) → 6 (evolution tracking).
 
@@ -77,38 +76,38 @@ Order suggestion: 1 (current-inventory mapping) → 2 (workflow engine MVP as co
 
 ### Extension 1 — The two-mandate frame relieves the AI-mandate-as-totalizing pressure
 
-If operator only had the 24-months-ahead-AI mandate, all substrate-engineering work would be evaluated against it exclusively. The DORA-mandate-disclosure (B-0869) creates a parallel evaluation surface that constrains AI-mandate-substrate-engineering investment.
+If operator only had the 24-months-ahead-AI mandate, all substrate-engineering work would be evaluated against it exclusively. The DORA-mandate-disclosure (081KSNY2Z0008QG0R000HENSVM) creates a parallel evaluation surface that constrains AI-mandate-substrate-engineering investment.
 
 Substrate-engineering-honest: this is HEALTHY. The constraint forces the substrate-engineering work to demonstrate compositional value rather than just AI-mandate-only value. Substrate that survives "does this serve BOTH mandates" pressure is higher-quality substrate than substrate that survives only "does this serve AI mandate" pressure.
 
 ### Extension 2 — Workflow engine MVP is portfolio-optimal substrate per multiple criteria
 
-B-0867 v1 serves:
+081KSKBP80008QG0R000B3Y19A v1 serves:
 
 - AI mandate (workflow engine IS substrate-engineering proof-of-24-months-ahead-capability per Kestrel observation)
 - DORA mandate (workflow engine MVP deployed in live-system improves cycle-time + reduces change-failure-rate)
 - Multi-participant scope (operator + Addison + Max + Otto + E)
 - Easy-cleanup-of-substrate-dups (operator 2026-05-28: "we are about to have easy mode for cleanup too")
 
-That's quadruple-composition. The workflow engine MVP is the highest-leverage shippable substrate by multiple-mandate-criteria simultaneously. Operator-substrate-honest: ship B-0867 v1 first; let it become the portfolio-balance substrate-infrastructure for everything else.
+That's quadruple-composition. The workflow engine MVP is the highest-leverage shippable substrate by multiple-mandate-criteria simultaneously. Operator-substrate-honest: ship 081KSKBP80008QG0R000B3Y19A v1 first; let it become the portfolio-balance substrate-infrastructure for everything else.
 
 ### Extension 3 — Boss check-in cadence is itself portfolio-aware substrate
 
-Per Kestrel + Extension 5 from B-0869: the periodic boss check-in IS itself an action that serves BOTH mandates simultaneously (alignment with boss expectations across mandates; signal of professional-maturity; opportunity for boss-revision-of-mandates-without-losing-face). Cadence-discipline is portfolio-aware substrate, not just AI-mandate-substrate.
+Per Kestrel + Extension 5 from 081KSNY2Z0008QG0R000HENSVM: the periodic boss check-in IS itself an action that serves BOTH mandates simultaneously (alignment with boss expectations across mandates; signal of professional-maturity; opportunity for boss-revision-of-mandates-without-losing-face). Cadence-discipline is portfolio-aware substrate, not just AI-mandate-substrate.
 
 ### Extension 4 — Compose-or-compete discriminator should land in workflow engine grammar
 
 When operator (or any participant) takes on a new task in the workflow engine state machine, the menu should offer "declare-compose-or-compete" annotation. The task self-classifies as: serves-both-mandates / only-AI / only-DORA / competes. Portfolio-balance becomes VISIBLE at task-wear-time rather than discovered-in-retrospect.
 
-Composes with B-0870.7 (workflow-engine pre-review action) + B-0870.8 (hats as portfolio-aware substrate).
+Composes with 081KSNY2Z0008QG0R000DA261F.7 (workflow-engine pre-review action) + 081KSNY2Z0008QG0R000DA261F.8 (hats as portfolio-aware substrate).
 
 ### Extension 5 — The substrate-engineering-investment-cap shifts post-workflow-engine-MVP
 
 Pre-MVP: substrate-engineering investment has HIGH overhead per substrate-unit (each new substrate piece requires its own preservation + backlog row + commit + PR cycle).
 
-Post-MVP: substrate-engineering investment has LOW overhead per substrate-unit (hats-as-workflow-definitions per B-0868 make substrate composable + append-only state-updates make commits cheap).
+Post-MVP: substrate-engineering investment has LOW overhead per substrate-unit (hats-as-workflow-definitions per 081KSNY2Z0008QG0R0036KH026 make substrate composable + append-only state-updates make commits cheap).
 
-Therefore the cap operator is "at or past" pre-MVP may be substantially HIGHER post-MVP. The cap-awareness substrate (B-0870.5) needs to re-evaluate after MVP lands. Decision-deferral signal-gate: MVP-landing date.
+Therefore the cap operator is "at or past" pre-MVP may be substantially HIGHER post-MVP. The cap-awareness substrate (081KSNY2Z0008QG0R000DA261F.5) needs to re-evaluate after MVP lands. Decision-deferral signal-gate: MVP-landing date.
 
 ### Extension 6 — Two-mandate composition substrate IS multi-oracle-BFT applied at operator-evaluation scope
 
@@ -131,11 +130,11 @@ Operator's 2026-05-28 framing: "we can push all extensions you think of we have 
 
 ## Composes with substrate
 
-- **B-0866** (24-months-ahead-AI marketing-strategy)
-- **B-0869** (DORA-of-live-system mandate)
-- **B-0867** (workflow engine v1 — portfolio-optimal-compositional-substrate)
-- **B-0868** (hats-as-workflow-definitions — hats declare which mandate they serve)
-- **B-0865** (benchmark — primarily AI-mandate-substrate)
+- **081KSKBP80008QG0R003RFX32N** (24-months-ahead-AI marketing-strategy)
+- **081KSNY2Z0008QG0R000HENSVM** (DORA-of-live-system mandate)
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine v1 — portfolio-optimal-compositional-substrate)
+- **081KSNY2Z0008QG0R0036KH026** (hats-as-workflow-definitions — hats declare which mandate they serve)
+- **081KSKBP80008QG0R003NM9XEC** (benchmark — primarily AI-mandate-substrate)
 
 ## What this row is NOT
 

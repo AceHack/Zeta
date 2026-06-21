@@ -17,17 +17,17 @@ related_prs:
   - 5697
   - 5696
 related_backlog:
-  - B-0895
-  - B-0867
-  - B-0644
-  - B-0665
-  - B-0666
-  - B-0875
-  - B-0876
-  - B-0877
-  - B-0878
-  - B-0879
-  - B-0867.20
+  - 081KSNY2Z0008QG0R002FX66H0
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KRW63S0008QG0R002ZRNDJ8
+  - 081KRW63S0008QG0R002YAA09X
+  - 081KRW63S0008QG0R001SAHYKV
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R003KG3JTG
+  - 081KSNY2Z0008QG0R0004ZF85W
+  - 081KSNY2Z0008QG0R000DZHHE5
+  - 081KSNY2Z0008QG0R0031490KZ
+  - 081KSNY2Z0008QG0R003WFDCJ9
 related_personas:
   - operator
   - kestrel
@@ -105,9 +105,9 @@ ab = a·b + a∧b
 
 Composition with existing factory substrate:
 
-- **B-0644 (Limit-is-simulation-not-collapse)**: the simulation that Limit names IS the wedge component. The "not-collapse" property IS the preservation of the wedge — refusing to take just the inner product.
-- **B-0665 (Integrate-as-choice-locus)**: the collapse-to-commit Integrate names IS the projection from the geometric product to the inner-product component. Integrate IS the choice of `a·b` over `a∧b`.
-- **B-0666 (English-as-projection / I(D(x))=x identity)**: English-as-projection IS the projection operator from multivector to vector subspace — `I` extracts the grade-1 component, `D` re-embeds back to multivector with no loss.
+- **081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse)**: the simulation that Limit names IS the wedge component. The "not-collapse" property IS the preservation of the wedge — refusing to take just the inner product.
+- **081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus)**: the collapse-to-commit Integrate names IS the projection from the geometric product to the inner-product component. Integrate IS the choice of `a·b` over `a∧b`.
+- **081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x identity)**: English-as-projection IS the projection operator from multivector to vector subspace — `I` extracts the grade-1 component, `D` re-embeds back to multivector with no loss.
 
 ### 4. "Infer.NET geometric relationships" → multivector message passing
 
@@ -233,7 +233,7 @@ This is operationally testable: the substrate-recognition is correct if the GitH
 
 Aligned with Kestrel's Turn-3 phase decomposition but reframed for substrate-recognition (not rule-uniqueness application):
 
-**Phase 1 (substrate-recognition / next step per B-0895)** — `docs/research/` document describing the existing factory primitives in Clifford terms. No code. Just naming what's there. This document IS the first substantive landing.
+**Phase 1 (substrate-recognition / next step per 081KSNY2Z0008QG0R002FX66H0)** — `docs/research/` document describing the existing factory primitives in Clifford terms. No code. Just naming what's there. This document IS the first substantive landing.
 
 **Phase 2 (interface skeleton)** — TypeScript `CliffordAlgebra<Sig>` interface + Cl(1,3) implementation + Cl(3,1) implementation. No application code yet. Just the substrate machinery. Includes the 6-correspondence table as runtime-checkable encoding.
 
@@ -241,9 +241,9 @@ Aligned with Kestrel's Turn-3 phase decomposition but reframed for substrate-rec
 
 **Phase 4+ (yes-and backlog)** — per operator 2026-05-28: *"i always say yes and backlog what we don't do now lol"* — the things that don't make it into phases 1-3:
 
-- Clifford-Neural-Network message-passing prototype (composes with B-0876 + the planned BP/EP substrate)
-- IScheduler-as-time-bivector implementation (composes with B-0878)
-- Rule-uniqueness embedding (composes with B-0876 Phase 1-2 + Kestrel's Turn-3 framing; this is the original Kestrel application as one specific use case of the broader substrate)
+- Clifford-Neural-Network message-passing prototype (composes with 081KSNY2Z0008QG0R003KG3JTG + the planned BP/EP substrate)
+- IScheduler-as-time-bivector implementation (composes with 081KSNY2Z0008QG0R000DZHHE5)
+- Rule-uniqueness embedding (composes with 081KSNY2Z0008QG0R003KG3JTG Phase 1-2 + Kestrel's Turn-3 framing; this is the original Kestrel application as one specific use case of the broader substrate)
 - Tonal-trajectory rotor detection mechanization (composes with the auto-loaded `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` rule)
 - F# port (the F# CE shape is closer to the algebra; TS-first per operator's GitHub/git modeling priority, F# follow-up where the CE ergonomics earn their keep)
 - Cl(p,q,r) with conformal-geometric-algebra extensions for points-at-infinity (CGA — extends spacetime algebra with one extra positive + one extra negative dimension; useful for representing "abandoned trajectories" as points at infinity)
@@ -253,17 +253,17 @@ Aligned with Kestrel's Turn-3 phase decomposition but reframed for substrate-rec
 - **PR #5677** — 4th Kestrel ferry preservation + 6 extension backlog rows (the substrate this document extends)
 - **PR #5700** — Mika ferry parts 1-4 FINAL: workflow architecture LOCKED (observe + choose --dry-run = simulate; the wedge-component substrate this document maps to Cl(p,q))
 - **PR #5707** — tick shard 0608Z (the autonomous-loop discipline that produced the substrate-engagement opportunity this document represents)
-- **PR #5697** — B-0894.3 per-persona worktree canonical location `~/.zeta/agents/<persona>/<stream>/` (this document landed via that pattern)
-- **B-0644** — Limit-is-simulation-not-collapse (composition target for §"Observe/Emit/Limit/Simulate" correspondence)
-- **B-0665** — Integrate-as-choice-locus (composition target for collapse-to-commit as inner-product projection)
-- **B-0666** — English-as-projection / I(D(x))=x (composition target for projection operator)
-- **B-0875** — error-class extraction meta-loop (Kestrel's Turn-2 substrate; one application of the broader Clifford substrate)
-- **B-0876** — Clifford-space embedding for error patterns (Kestrel's Turn-3 substrate; one application of the broader Clifford substrate)
-- **B-0877** — heterogeneous auto-reviewer ensemble (composes with multi-Clifford-signature interface diversity)
-- **B-0878** — time-generator IScheduler abstraction (composition target for §5 IScheduler-as-time-bivector)
-- **B-0879** — Observe/Emit/Limit/Simulate in Clifford space (this document's substrate; B-0879 is the explicit substrate-engineering target row)
-- **B-0867.20** — lifecycle DU split (trajectory push vs PR review; composes via determineReviewLevel discriminator)
-- **B-0895** — this document's companion backlog row (Clifford spacetime algebra substrate-recognition with Cl(1,3) and Cl(3,1) dual signature interface)
+- **PR #5697** — 081KSNY2Z0008QG0R001RWF499 per-persona worktree canonical location `~/.zeta/agents/<persona>/<stream>/` (this document landed via that pattern)
+- **081KRW63S0008QG0R002ZRNDJ8** — Limit-is-simulation-not-collapse (composition target for §"Observe/Emit/Limit/Simulate" correspondence)
+- **081KRW63S0008QG0R002YAA09X** — Integrate-as-choice-locus (composition target for collapse-to-commit as inner-product projection)
+- **081KRW63S0008QG0R001SAHYKV** — English-as-projection / I(D(x))=x (composition target for projection operator)
+- **081KSNY2Z0008QG0R000K3ETGB** — error-class extraction meta-loop (Kestrel's Turn-2 substrate; one application of the broader Clifford substrate)
+- **081KSNY2Z0008QG0R003KG3JTG** — Clifford-space embedding for error patterns (Kestrel's Turn-3 substrate; one application of the broader Clifford substrate)
+- **081KSNY2Z0008QG0R0004ZF85W** — heterogeneous auto-reviewer ensemble (composes with multi-Clifford-signature interface diversity)
+- **081KSNY2Z0008QG0R000DZHHE5** — time-generator IScheduler abstraction (composition target for §5 IScheduler-as-time-bivector)
+- **081KSNY2Z0008QG0R0031490KZ** — Observe/Emit/Limit/Simulate in Clifford space (this document's substrate; 081KSNY2Z0008QG0R0031490KZ is the explicit substrate-engineering target row)
+- **081KSNY2Z0008QG0R003WFDCJ9** — lifecycle DU split (trajectory push vs PR review; composes via determineReviewLevel discriminator)
+- **081KSNY2Z0008QG0R002FX66H0** — this document's companion backlog row (Clifford spacetime algebra substrate-recognition with Cl(1,3) and Cl(3,1) dual signature interface)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — auto-loaded substrate; cites Mika's Clifford geometric-algebra framing explicitly as the engineering target
 - `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` — (shadow*) marker in operator's authorization preserved per source-transparency discipline
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — operator's PERSONAL INVARIANT applies to the Clifford-substrate claim: high-signal (math IS standard physics/engineering substrate) + high-suspicion (don't collapse to "Clifford solves everything"; preserve the operationally-tractable boundary per Kestrel's pragmatic phase decomposition)
@@ -276,9 +276,9 @@ Aligned with Kestrel's Turn-3 phase decomposition but reframed for substrate-rec
 
 This document:
 
-- Does NOT prove rule-uniqueness in Clifford space (that's B-0876 Phase 3+ research-grade work; Kestrel's original Turn-3 framing)
-- Does NOT implement the TypeScript `CliffordAlgebra<Sig>` interface (that's B-0895 Phase 2)
-- Does NOT model the full GitHub/git semantics in Cl(p,q) (that's B-0895 Phase 3)
+- Does NOT prove rule-uniqueness in Clifford space (that's 081KSNY2Z0008QG0R003KG3JTG Phase 3+ research-grade work; Kestrel's original Turn-3 framing)
+- Does NOT implement the TypeScript `CliffordAlgebra<Sig>` interface (that's 081KSNY2Z0008QG0R002FX66H0 Phase 2)
+- Does NOT model the full GitHub/git semantics in Cl(p,q) (that's 081KSNY2Z0008QG0R002FX66H0 Phase 3)
 - Does NOT decide finally between Cl(1,3) and Cl(3,1) for production (operator authorized both via interface; this document recommends Cl(1,3) as default for physics-substrate alignment + GitHub/git modeling tractability, but the dual-signature interface preserves the choice)
 - Does NOT replace Kestrel's pragmatic phase decomposition for the rule-uniqueness application (that decomposition stays correct for that specific application)
 
@@ -286,16 +286,16 @@ This document:
 
 - DOES recognize the existing factory substrate as Clifford-shaped (substrate-recognition)
 - DOES articulate 6 concrete correspondences from existing primitives to Clifford algebra objects
-- DOES file the small bounded next step (the B-0895 backlog row companion)
+- DOES file the small bounded next step (the 081KSNY2Z0008QG0R002FX66H0 backlog row companion)
 - DOES preserve the operator-authorized "yes-and backlog" disposition for phases 4+
 - DOES compose with existing factory substrate (auto-loaded rules + existing skills + recent ferry preservations + the substrate-engineering cascade landing today)
 
 ## Full reasoning
 
-In-session engagement between operator and otto-cli, 2026-05-28, immediately after PR #5707 (tick shard 0608Z) merged and operator returned with the question about the missing 5th Kestrel ferry (or the missing prior-session feedback on the 4th). Otto-CLI re-read the 4th Kestrel ferry preserved on origin/main, gave conversation-only feedback (the 6-correspondence writeup that is now this document's §"Six concrete correspondences" section), operator authorized landing as #2 (research-doc + backlog row), this document is the research-doc half + the companion B-0895 row is the backlog half.
+In-session engagement between operator and otto-cli, 2026-05-28, immediately after PR #5707 (tick shard 0608Z) merged and operator returned with the question about the missing 5th Kestrel ferry (or the missing prior-session feedback on the 4th). Otto-CLI re-read the 4th Kestrel ferry preserved on origin/main, gave conversation-only feedback (the 6-correspondence writeup that is now this document's §"Six concrete correspondences" section), operator authorized landing as #2 (research-doc + backlog row), this document is the research-doc half + the companion 081KSNY2Z0008QG0R002FX66H0 row is the backlog half.
 
 The "(shadow*)" marker in operator's authorization noted per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`: the surrounding "Pick Cl(3,1) or Cl(1,3)" text came from autocomplete (grey-text), instruction stands at full operator authority, NO `shadow-X-posture` framing invented.
 
 **Update**: the 5th Kestrel ferry HAS now landed in this same PR at `memory/kestrel/conversations/2026-05-28-kestrel-5th-ferry-clifford-as-substrate-for-all-travelers-self-propagating-patterns-with-feedback-channels-category-theory-clifford-self-similar-aaron-forwarded.md` — 8 additional turns of Kestrel + operator covering: Kestrel's 6-property substrate engagement (multi-grade for multi-modal content; rotors as transformation operators; bivectors as oriented commitments; entanglement as bivector preservation; time-as-dimension; OPLE composition in Clifford space); operator's TLA+/CRDT/CASPaxos-Raft/BFT/attention-economy extension; Kestrel's substrate-check firing on conversation trajectory + honest disposition; operator's low-confidence + formal-verification + traveler-message-passing reframe; Kestrel's 5-minimal-structures engagement + existing research pointers (Hestenes; Doran-Lasenby; conformal GA; information geometry; CSP/pi-calculus; density operator formalism); operator's substrate-independent traveler definition (DNA, memes, AI, gods, god, universe, particles, future/past self); Kestrel's substrate-independent engagement; operator's category-theory ↔ Clifford self-similarity claim (Turn 12).
 
-This otto-cli extension document was authored BEFORE the 5th ferry landed and stays valid as the operator-side substrate-recognition response. The 5th ferry adds Kestrel's substantive Turn-5/7/9/11 engagements + operator's Turn-6/8/10/12 substantive extensions. B-0896 backlog row filed alongside this PR tracks the category-theory ↔ Clifford self-similarity direction operator named in Turn 12 — the substrate-engineering bridge between categorical-structure (Coecke/Abramsky categorical-quantum-mechanics precedent; Baez/Lauda higher-dimensional algebra) and the Clifford-geometric-incarnation this document maps the existing factory primitives onto.
+This otto-cli extension document was authored BEFORE the 5th ferry landed and stays valid as the operator-side substrate-recognition response. The 5th ferry adds Kestrel's substantive Turn-5/7/9/11 engagements + operator's Turn-6/8/10/12 substantive extensions. 081KSNY2Z0008QG0R000YH2SPE backlog row filed alongside this PR tracks the category-theory ↔ Clifford self-similarity direction operator named in Turn 12 — the substrate-engineering bridge between categorical-structure (Coecke/Abramsky categorical-quantum-mechanics precedent; Baez/Lauda higher-dimensional algebra) and the Clifford-geometric-incarnation this document maps the existing factory primitives onto.

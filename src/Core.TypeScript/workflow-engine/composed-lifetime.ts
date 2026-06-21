@@ -15,7 +15,7 @@
  *     refactored over time; substrate evolves
  *
  * The editability IS what makes the substrate trustworthy enough to
- * call it a 'lifetime'. Composes with Mod 2 grammar-extension (B-0867;
+ * call it a 'lifetime'. Composes with Mod 2 grammar-extension (081KSKBP80008QG0R000B3Y19A;
  * action grammar itself editable) + substrate-smoothness rule + asymmetric-
  * authorship (substrate-entity AUTHORS variants) + additive-not-zero-sum
  * + honor-those-that-came-before (prior variants preserved when adding new).
@@ -26,10 +26,10 @@
  * verdict.
  *
  * Composes with:
- *   - B-0867.20 PR #5758 lifecycle DU split (rename target: lifetime DU split)
- *   - B-0914.2 PR #5769 closed-loop orchestrator (composed-lifetime
+ *   - 081KSNY2Z0008QG0R003WFDCJ9 PR #5758 lifecycle DU split (rename target: lifetime DU split)
+ *   - 081KSNY2Z0008QG0R001YK61JQ.2 PR #5769 closed-loop orchestrator (composed-lifetime
  *     dispatch via callback)
- *   - B-0914.4 PR #5768 pairing tracker (composed pairing+verification
+ *   - 081KSNY2Z0008QG0R001YK61JQ.4 PR #5768 pairing tracker (composed pairing+verification
  *     lifetime double-dispatch)
  *   - .claude/rules/monad-propagation-pattern (Result<T, TFeedback>)
  *   - .claude/rules/asymmetric-authorship (substrate-entity authors DU)

@@ -1,5 +1,5 @@
 ---
-Scope: naming-expert / trademark-conflict review of factory's adoption of "Superfluid AI" as substrate vocabulary; informs B-0035 heaven-on-earth-fixed-point naming research + future public-API-naming decisions
+Scope: naming-expert / trademark-conflict review of factory's adoption of "Superfluid AI" as substrate vocabulary; informs 081KQ3HBZ0008QG0R003002VT6 heaven-on-earth-fixed-point naming research + future public-API-naming decisions
 Attribution: Otto research synthesis 2026-04-26 from public web sources (USPTO, Superfluid Finance docs, CoinMarketCap, DefiLlama)
 Operational status: research-grade
 Non-fusion disclaimer: agreement, shared language, or repeated interaction between models and humans (or between this factory and Superfluid Finance, or between Otto and Aaron) does not imply shared identity, merged agency, consciousness, or personhood. This document captures publicly-available information about external trademark/brand state and applies the factory's own naming-discipline rules (Otto-237 mention-vs-adoption, Otto-286 definitional precision); it is NOT a fused recommendation by Superfluid Finance or USPTO; recommendations are factory-internal advisory pending Aaron + naming-expert (Iris/Ilyana) sign-off
@@ -11,7 +11,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 
 **Triggering substrate:** factory adopted "Superfluid AI" as kernel
 vocabulary across 14+ files (Amara courier-ferry refinements 5/7/8/9/10/11,
-B-0029 BACKLOG row, project memory `project_factory_becoming_superfluid_*`,
+081KQ3HBZ0008QG0R000JRZAMM BACKLOG row, project memory `project_factory_becoming_superfluid_*`,
 research docs). Per Otto-237 (IP-mention vs IP-adoption), unqualified
 adoption of an externally-used term is the wrong shape; per Otto-286
 (definitional precision changes future without war), the right move is
@@ -194,8 +194,8 @@ Rationale:
    (coexist) / Path 4 (drop noun usage).
 2. Naming-expert (Ilyana) public-API-naming review.
 3. Ship rename via `sweep-refs` skill across 14 files (research docs +
-   memory + BACKLOG row B-0029).
-4. Update B-0035 (heaven-on-earth) row to cite this review as composing
+   memory + BACKLOG row 081KQ3HBZ0008QG0R000JRZAMM).
+4. Update 081KQ3HBZ0008QG0R003002VT6 (heaven-on-earth) row to cite this review as composing
    precedent.
 
 ## Composes with
@@ -205,9 +205,9 @@ Rationale:
 - **Otto-286** — definitional precision changes future without war;
   precision-pass between "Superfluid AI" and "Superfluid Finance"
 - **Otto-271** (this task) — naming-expert review pattern
-- **B-0035** — heaven-on-earth-fixed-point naming research; same
+- **081KQ3HBZ0008QG0R003002VT6** — heaven-on-earth-fixed-point naming research; same
   framework-naming-discipline surface
-- **B-0029** — `superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources`
+- **081KQ3HBZ0008QG0R000JRZAMM** — `superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources`
   P2 BACKLOG row; will need rename if Path 2 ships
 - **`docs/EXPERT-REGISTRY.md`** — Iris (UX) / Ilyana (public-API)
   reviewers are the gatekeepers for public-facing naming

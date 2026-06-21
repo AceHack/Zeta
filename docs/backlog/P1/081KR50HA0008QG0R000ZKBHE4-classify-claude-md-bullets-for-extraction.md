@@ -1,6 +1,5 @@
 ---
-id: B-0348
-zetaid: 081KR50HA0008QG0R000ZKBHE4
+id: 081KR50HA0008QG0R000ZKBHE4
 priority: P1
 status: closed
 title: "Classify all CLAUDE.md bullets into extraction tiers"
@@ -14,7 +13,7 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0348 — Classify all CLAUDE.md bullets into extraction tiers
+# 081KR50HA0008QG0R000ZKBHE4 — Classify all CLAUDE.md bullets into extraction tiers
 
 ## What
 
@@ -31,7 +30,7 @@ honours here" section (currently 51 bold-bullet rules across
 
 ## Why
 
-Every subsequent B-0329 child depends on this classification
+Every subsequent 081KR2E4K0008QG0R001F0YB5S child depends on this classification
 to know which bullets to touch. Without it, extraction batches
 risk moving the wrong content or duplicating what's already
 covered elsewhere.
@@ -41,7 +40,7 @@ covered elsewhere.
 1. Classification table added to this row (or a linked doc)
    listing all 51 bullets with their tier assignment.
 2. Each `extract` bullet assigned to exactly one of the four
-   extraction batches (B-0349..B-0352) by functional group.
+   extraction batches (081KR50HA0008QG0R0018996J2..081KR50HA0008QG0R0033B5KVN) by functional group.
 3. Each `redundant` bullet paired with the existing doc that
    already covers it.
 4. No code/substrate changes — analysis only.
@@ -128,10 +127,10 @@ covered elsewhere.
 
 | Batch | Bullets | Theme |
 | ----- | ------- | ----- |
-| B-0349 | 10, 14, 17, 20, 21, 23, 24 | Core behavioral rules |
-| B-0350 | 27, 28, 29, 36, 40, 41, 46 | Discipline + identity rules |
-| B-0351 | 31, 32, 37, 38, 39, 44, 45 | Operational procedures |
-| B-0352 | 11, 26, 35, 42 | Reference pointers + historical |
+| 081KR50HA0008QG0R0018996J2 | 10, 14, 17, 20, 21, 23, 24 | Core behavioral rules |
+| 081KR50HA0008QG0R001F2DBRV | 27, 28, 29, 36, 40, 41, 46 | Discipline + identity rules |
+| 081KR50HA0008QG0R001ZVPYK8 | 31, 32, 37, 38, 39, 44, 45 | Operational procedures |
+| 081KR50HA0008QG0R0033B5KVN | 11, 26, 35, 42 | Reference pointers + historical |
 
 ## Effort
 

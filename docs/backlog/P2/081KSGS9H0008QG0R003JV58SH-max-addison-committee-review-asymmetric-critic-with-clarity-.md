@@ -1,6 +1,5 @@
 ---
-id: B-0837
-zetaid: 081KSGS9H0008QG0R003JV58SH
+id: 081KSGS9H0008QG0R003JV58SH
 priority: P2
 status: open
 title: Max + Addison committee review of asymmetric-critic-with-clarity-first rule draft (per Kestrel-v3 substrate-honest disclaimer + operator authorization) (Aaron 2026-05-26)
@@ -75,7 +74,7 @@ rule) review the rule body + add their own observations:
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md`
   (sibling rule at different scope; same recalibration substrate
   cluster)
-- B-0628 Knights Guild + Constitution-Class (formal committee
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class (formal committee
   ratification structure; this row is informal-committee-review BEFORE
   formal-committee ratification)
 - PR #5359 (Kestrel-v3 ferry; substrate source for the rule + the
@@ -94,7 +93,7 @@ provisional status explicit + creates substrate for the committee's
 review to land as edits.
 
 The committee is INFORMAL today (Max + Addison + operator's broader
-human network); formalization via B-0628 Knights Guild + Constitution-
+human network); formalization via 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-
 Class is eventual structural form. This row represents the informal
 review step + creates substrate for any future formal committee
 ratification.

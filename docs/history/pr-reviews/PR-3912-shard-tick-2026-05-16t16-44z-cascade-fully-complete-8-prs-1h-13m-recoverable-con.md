@@ -33,7 +33,7 @@ All 8 cascade PRs merged on main (1531Z → 1634Z arc, 1h 13m total).
 
 ## Pattern 3 — recoverable contamination empirical finding
 
-NEW sub-case of multi-Otto branch-state contamination (composes with [B-0519](docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md)):
+NEW sub-case of multi-Otto branch-state contamination (composes with [081KRHWGX0008QG0R001HMWM1W](docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md)):
 
 1. \`git switch -c <new> origin/main\` succeeded — fresh branch from origin/main
 2. **Between the next Bash-tool call**, peer Otto's \`git switch\` moved HEAD to peer's branch
@@ -108,7 +108,7 @@ Reinforced discipline: `git branch --show-current` immediately BEFORE
 any mutating operation (not just commit), at every mutating-action
 boundary.
 
-Composes with B-0519 multi-Otto contamination RCA. Damage scope:
+Composes with 081KRHWGX0008QG0R001HMWM1W multi-Otto contamination RCA. Damage scope:
 local only; peer can recover via fetch+reset; ~5 GraphQL + 2min cost.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

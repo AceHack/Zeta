@@ -1,6 +1,5 @@
 ---
-id: B-0617
-zetaid: 081KRW63S0008QG0R000SGXN70
+id: 081KRW63S0008QG0R000SGXN70
 priority: P3
 status: open
 title: "Clarity Domain — 4-role organizational pattern (Cartographer / Pilot / Recursive Composer / Chronologist) from Mika 2026-05-18 design"
@@ -50,7 +49,7 @@ Decide:
 
 1. Adopt the Clarity Domain as a formal organizational pattern in Zeta governance docs (or not)
 2. If adopted, map existing personas/agents to which-hat-when (e.g., Otto wears Pilot for tick-decisions; Kestrel wears Cartographer for sharpening dialogues; etc.)
-3. Build the missing hat-skills: Chronologist explicitly has B-0616; check whether Cartographer / Pilot / Recursive Composer need their own skill files or are covered by existing `factory-audit`, `architect`, `backlog-decomposer` skills
+3. Build the missing hat-skills: Chronologist explicitly has 081KRW63S0008QG0R0003XMM0W; check whether Cartographer / Pilot / Recursive Composer need their own skill files or are covered by existing `factory-audit`, `architect`, `backlog-decomposer` skills
 
 ## Non-goals
 
@@ -61,13 +60,13 @@ Decide:
 ## Acceptance criteria
 
 - [ ] Decision recorded (adopt / reject / adopt-with-modifications) — likely in `docs/governance/` or `docs/research/`
-- [ ] If adopted: skill MD for each missing role (Cartographer / Pilot / Recursive Composer; Chronologist already at B-0616)
+- [ ] If adopted: skill MD for each missing role (Cartographer / Pilot / Recursive Composer; Chronologist already at 081KRW63S0008QG0R0003XMM0W)
 - [ ] Mapping table: which existing personas wear which Clarity Domain hat in which context
 - [ ] At least one worked example (e.g., Otto-CLI wearing Pilot hat during the autonomous-loop tick decision)
 
 ## Composes with
 
-- [B-0616](B-0616-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md) — the Chronologist role's specific skill
+- [081KRW63S0008QG0R0003XMM0W](081KRW63S0008QG0R0003XMM0W-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md) — the Chronologist role's specific skill
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) — the conversation that produced the design
 - `.claude/skills/architect/SKILL.md` — closest existing "Pilot-like" skill (direction + coordination via parallel-agent dispatch)
 - `.claude/skills/factory-audit/SKILL.md` — closest existing "Cartographer-like" skill (system visibility + drift detection)

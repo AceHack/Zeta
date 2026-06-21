@@ -1,11 +1,10 @@
 ---
-id: B-1021
-zetaid: 081KT7YW00008QG0R003JV9D4J
+id: 081KT7YW00008QG0R003JV9D4J
 priority: P0
 status: in-progress
 title: Context-window minimization as our most rigorous proof (NCI-bound; token-meter to DORA)
-renumbered_from: B-1016
-renumbered_reason: "B-1016 collided with the landed canonical-YAML never-collapse item (referenced as B-1016 in all 4 YAML serializers' code); per Aaron 2026-06-06 option B, the money-floor row took the new id"
+renumbered_from: 081KT7YW00008QG0R002T1XNWT
+renumbered_reason: "081KT7YW00008QG0R002T1XNWT collided with the landed canonical-YAML never-collapse item (referenced as 081KT7YW00008QG0R002T1XNWT in all 4 YAML serializers' code); per Aaron 2026-06-06 option B, the money-floor row took the new id"
 tier: money-floor
 effort: M
 ask: maintainer Aaron 2026-06-04
@@ -15,7 +14,7 @@ type: task
 depends_on: []
 ---
 
-# B-1021 — Context-window minimization as our most rigorous proof (NCI-bound; token-meter → DORA)
+# 081KT7YW00008QG0R003JV9D4J — Context-window minimization as our most rigorous proof (NCI-bound; token-meter → DORA)
 
 **P0 · money-floor · 2026-06-04 · Aaron**
 
@@ -209,7 +208,7 @@ algebras + drift-alert + DORA wiring + orthogonality proof are later slices.
   startup surfaces (PR #6683).
 - `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md` — the
   standing discipline that keeps surfaces lean.
-- B-1007 — asserted→proven algebra gap (the proof machinery this reuses).
-- B-1011 — serializer round-trip (the serialization half).
+- 081KT2T2J0008QG0R000YZ3NMY — asserted→proven algebra gap (the proof machinery this reuses).
+- 081KT5CF90008QG0R001P4CQ09 — serializer round-trip (the serialization half).
 - NCI / `must-paired-with-can-exit` / measure-first-before-restricting — the
   non-coercion constraint and the measurement discipline.

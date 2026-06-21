@@ -27,7 +27,7 @@ Adds two explicit narrow permission patterns to `.claude/settings.json`:
 
 Functionally redundant with the existing `Bash(bun *)` wildcard, but explicit narrow patterns serve as:
 
-1. **Audit-trail documentation** in `settings.json` showing which specific destructive-op scripts are operator-authorized (matches B-0728's destructive-tool authoring contract header convention)
+1. **Audit-trail documentation** in `settings.json` showing which specific destructive-op scripts are operator-authorized (matches 081KSE6WT0008QG0R0005XASX2's destructive-tool authoring contract header convention)
 2. **Auto-classifier-friendly** — narrow explicit patterns are less likely to trigger conservative-default-deny under stricter classifier modes
 3. **Knights-Guild-reviewable** authorization perimeter visible at a glance instead of inferred from a wildcard
 
@@ -37,8 +37,8 @@ Aaron made the edit himself in a worktree I opened for him (operator-side work p
 
 ## Composes with
 
-- B-0728 (destructive-tool authoring contract — header convention this matches)
-- B-0737 (the zflash tooling these permissions authorize; PR #4997)
+- 081KSE6WT0008QG0R0005XASX2 (destructive-tool authoring contract — header convention this matches)
+- 081KSE6WT0008QG0R003WZAQKV (the zflash tooling these permissions authorize; PR #4997)
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` (operator-side settings.json edit; agent commits operator-authored content)
 
 ## Test plan
@@ -73,4 +73,4 @@ P1: These newly added allowlist entries reference `full-ai-cluster/tools/zflash.
 
 ### @AceHack (2026-05-25T22:12:13Z)
 
-Verified Copilot finding: `zflash.ts` + `zflash-setup.ts` aren't on this branch — they land in companion [PR #4997 (B-0737)](https://github.com/Lucent-Financial-Group/Zeta/pull/4997). PR description names this explicitly as the forward-looking authorization pattern. Resolving no-op.
+Verified Copilot finding: `zflash.ts` + `zflash-setup.ts` aren't on this branch — they land in companion [PR #4997 (081KSE6WT0008QG0R003WZAQKV)](https://github.com/Lucent-Financial-Group/Zeta/pull/4997). PR description names this explicitly as the forward-looking authorization pattern. Resolving no-op.

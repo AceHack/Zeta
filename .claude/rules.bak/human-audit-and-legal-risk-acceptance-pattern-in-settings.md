@@ -250,8 +250,8 @@ posture.
   IS first-class operative authorization for the scope it covers
 - [`classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`](classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md)
   — companion rule covering research-scope discipline
-- B-0720 — companion research scope per safety substrate work
-- B-0628 — Knights Guild + Constitution-Class governance for
+- 081KSBMG30008QG0R00201X7EJ — companion research scope per safety substrate work
+- 081KRW63S0008QG0R003TX8MG5 — Knights Guild + Constitution-Class governance for
   pattern-extension review
 - PR #4816 — canonical first-use empirical anchor
 

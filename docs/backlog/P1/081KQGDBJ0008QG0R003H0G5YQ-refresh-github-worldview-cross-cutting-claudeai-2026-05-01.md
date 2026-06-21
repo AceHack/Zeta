@@ -1,6 +1,5 @@
 ---
-id: B-0159
-zetaid: 081KQGDBJ0008QG0R003H0G5YQ
+id: 081KQGDBJ0008QG0R003H0G5YQ
 priority: P1
 status: closed
 title: refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)
@@ -14,7 +13,7 @@ children: [081KR2E4K0008QG0R001DYCKNH, 081KR2E4K0008QG0R000HG2CAT, 081KR2E4K0008
 type: friction-reducer
 ---
 
-# B-0159 — `refresh-github-worldview` cross-cutting refresh script (Claude.ai 2026-05-01)
+# 081KQGDBJ0008QG0R003H0G5YQ — `refresh-github-worldview` cross-cutting refresh script (Claude.ai 2026-05-01)
 
 **Origin:** Claude.ai feedback packet 2026-05-01 — full lineage in [memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md](../../../memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) and the maintainer-relayed Claude.ai-2 follow-up calibrating against Otto's running state.
 
@@ -377,7 +376,7 @@ git log --oneline --diff-filter=A --since="<last-refresh-timestamp>" -- docs/bac
 ```
 
 Don't trust frontmatter `created:` / `last_updated:` fields — that's
-B-0098-class metadata-drift waiting to happen.
+081KQB8J40008QG0R003VMCFWB-class metadata-drift waiting to happen.
 
 ### Recent merges from other harnesses — concrete query
 
@@ -458,25 +457,25 @@ Don't context-switch this tick to start implementation — file and flow.
 
 Closed as **multi-slice-children-all-closed drift sub-class** per the row-close gate triage in [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) step 0 (PR #3757).
 
-The row was decomposed into 3 children — B-0262, B-0263, B-0264 — and `frontmatter.children` declares the parent-child relationship. Verification 2026-05-16T07:09Z:
+The row was decomposed into 3 children — 081KR2E4K0008QG0R001DYCKNH, 081KR2E4K0008QG0R000HG2CAT, 081KR2E4K0008QG0R001H9W2HQ — and `frontmatter.children` declares the parent-child relationship. Verification 2026-05-16T07:09Z:
 
 ```bash
-for B in B-0262 B-0263 B-0264; do
+for B in 081KR2E4K0008QG0R001DYCKNH 081KR2E4K0008QG0R000HG2CAT 081KR2E4K0008QG0R001H9W2HQ; do
   S=$(grep -E '^status:' docs/backlog/**/$B-*.md | awk '{print $2}')
   echo "$B status: $S"
 done
-# B-0262 status: closed
-# B-0263 status: closed
-# B-0264 status: closed
+# 081KR2E4K0008QG0R001DYCKNH status: closed
+# 081KR2E4K0008QG0R000HG2CAT status: closed
+# 081KR2E4K0008QG0R001H9W2HQ status: closed
 ```
 
 All 3 children closed → umbrella closes per the multi-slice-with-sub-rows handling in the row-close gate. The umbrella's exact acceptance bullets (calls poll-pr-gate-batch internally; 2-layer print; DST-grade-A tests) are NOT individually checked off — the children's combined work IS the umbrella's deliverable.
 
 This is a **new drift sub-class** not yet documented in the row-close gate rule. The taxonomy now spans 4 classes:
 
-1. **Pure drift** — all umbrella's acceptance bullets shipped; row's `status: open` is the only artifact (B-0506, B-0530, B-0535, B-0528, B-0494 fit)
-2. **Partial completion** — tool ships but content-judgment slice undone (B-0517 Phase 1, B-0537 Slice A fit)
+1. **Pure drift** — all umbrella's acceptance bullets shipped; row's `status: open` is the only artifact (081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R000HHAG77, 081KRMEXM0008QG0R000T0A28T, 081KRHWGX0008QG0R0029WA0HQ fit)
+2. **Partial completion** — tool ships but content-judgment slice undone (081KRHWGX0008QG0R0029X10F4 Phase 1, 081KRMEXM0008QG0R0034SS319 Slice A fit)
 3. **Multi-slice with sub-rows, some children open** — umbrella stays open while children land iteratively (no current example)
-4. **Multi-slice with sub-rows, ALL children closed** — umbrella closeable (B-0159 — this row)
+4. **Multi-slice with sub-rows, ALL children closed** — umbrella closeable (081KQGDBJ0008QG0R003H0G5YQ — this row)
 
 Audit anchor: 2026-05-16T07:09Z Otto-CLI; surfaced via `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop's PR #3758) flagging `tools/refresh-github-worldview/refresh.ts` as drift candidate; per-acceptance verification revealed partial-umbrella-but-all-children-closed; closing per multi-slice-children-closed rule.

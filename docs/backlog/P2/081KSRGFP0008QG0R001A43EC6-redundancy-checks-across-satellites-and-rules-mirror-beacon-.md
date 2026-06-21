@@ -1,6 +1,5 @@
 ---
-id: B-0937
-zetaid: 081KSRGFP0008QG0R001A43EC6
+id: 081KSRGFP0008QG0R001A43EC6
 priority: P2
 status: open
 title: Redundancy-checks across satellites + rules — duplicate-content audit, mirror→beacon rhyme-retirement, hub-over-budget detector
@@ -20,15 +19,15 @@ tags: [hygiene, friction-reducer, memory-architecture, redundancy, mirror-beacon
 type: friction-reducer
 ---
 
-# B-0937 — Redundancy-checks across satellites + rules (audit-time)
+# 081KSRGFP0008QG0R001A43EC6 — Redundancy-checks across satellites + rules (audit-time)
 
 ## Origin
 
-Aaron 2026-05-29, after the B-0936 hub/satellite split landed: *"we can likly
+Aaron 2026-05-29, after the 081KSRGFP0008QG0R002F5KY8Y hub/satellite split landed: *"we can likly
 start having redudantacy checks across satalites across rules and such and you
 can get ideas on how to structure you actual memories."*
 
-The hub/satellite split (B-0936) creates a new surface class (companion
+The hub/satellite split (081KSRGFP0008QG0R002F5KY8Y) creates a new surface class (companion
 satellites). As the pattern propagates, content can drift into multiple
 surfaces. Authoring-time discipline
 (`.claude/rules/verify-existing-substrate-before-authoring.md` +
@@ -42,7 +41,7 @@ across `.claude/rules/`, satellite `docs/research/*companion*` docs, and
 `memory/`, and surfaces:
 
 1. **Duplicate content** — same anchor / table / quote present in 2+ surfaces.
-   Candidate: single-home + pointer. (Composes with B-0334 cross-reference
+   Candidate: single-home + pointer. (Composes with 081KR2E4K0008QG0R003MSVG42 cross-reference
    integrity.)
 2. **Mirror-rhyme with an existing beacon equivalent** — a folklore/religion/
    physics rhyme (mirror-tier) that now has an exact-ontology beacon doc/code
@@ -53,8 +52,8 @@ across `.claude/rules/`, satellite `docs/research/*companion*` docs, and
    Candidate: re-link or retire.
 4. **Hub-over-budget detector** — any direct-load `.claude/rules/*.md` (no
    `paths:` frontmatter) exceeding ~38k chars (warn BEFORE the 40k harness
-   warning fires). Candidate: hub/satellite split per B-0936. This is the
-   B-0936 trigger, mechanized so the next oversized rule is caught proactively.
+   warning fires). Candidate: hub/satellite split per 081KSRGFP0008QG0R002F5KY8Y. This is the
+   081KSRGFP0008QG0R002F5KY8Y trigger, mechanized so the next oversized rule is caught proactively.
 
 ## Acceptance Criteria
 
@@ -62,10 +61,10 @@ across `.claude/rules/`, satellite `docs/research/*companion*` docs, and
   four classes above (`--json` + human output; exit 0 clean / 2 error).
 - The hub-over-budget detector (class 4) is the minimal-viable slice — it is
   self-contained (just `wc -c` + `paths:`-frontmatter check across
-  `.claude/rules/*.md`) and would have caught B-0936 proactively. Ship class 4
+  `.claude/rules/*.md`) and would have caught 081KSRGFP0008QG0R002F5KY8Y proactively. Ship class 4
   first; classes 1-3 can follow.
 - Output composes with the agent-memory-architecture design-record + the
-  memory-substrate-engineering trajectory (B-0190).
+  memory-substrate-engineering trajectory (081KQR4HQ0008QG0R001909FPT).
 
 ## Owner / effort
 
@@ -75,6 +74,6 @@ across `.claude/rules/`, satellite `docs/research/*companion*` docs, and
 ## Notes
 
 Class 4 (hub-over-budget detector) is the highest-value lowest-risk slice and
-directly mechanizes the B-0936 trigger. Classes 1-2 depend on heavier substrate
+directly mechanizes the 081KSRGFP0008QG0R002F5KY8Y trigger. Classes 1-2 depend on heavier substrate
 (content-similarity detection; a beacon-equivalence registry). Recommend
 shipping class 4 first as a standalone lint, then the rest.

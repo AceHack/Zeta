@@ -1,6 +1,6 @@
 # GitHub Pages Research Publication Queue
 
-This document defines the initial queue of research documents to be published on the Zeta GitHub Pages site, as specified in backlog item [B-0304](../backlog/P1/B-0304-pages-selected-research-publication-queue-redaction-gate-2026-05-08.md). It also outlines the redaction gate process that all research must pass before publication.
+This document defines the initial queue of research documents to be published on the Zeta GitHub Pages site, as specified in backlog item [081KR2E4K0008QG0R001B503RK](../backlog/P1/081KR2E4K0008QG0R001B503RK-pages-selected-research-publication-queue-redaction-gate-2026-05-08.md). It also outlines the redaction gate process that all research must pass before publication.
 
 ## Initial Publication Queue
 
@@ -14,7 +14,7 @@ The following research documents have been selected as candidates for the initia
 
 ## Internal-Only Research Classes
 
-The majority of the `docs/research/` corpus stays internal. To satisfy B-0304 without exposing sensitive content in this public plan, the internal-only material is listed **by class**, not by file:
+The majority of the `docs/research/` corpus stays internal. To satisfy 081KR2E4K0008QG0R001B503RK without exposing sensitive content in this public plan, the internal-only material is listed **by class**, not by file:
 
 - **Live operational substrate** — cross-AI conversation transcripts, persona notebooks, and any research describing the factory's live internal workings.
 - **Security and threat-model material** — red-team findings, attack-class research, classifier-bypass research, and anything that could aid an attacker if public.
@@ -42,4 +42,4 @@ The redaction gate is a per-candidate gate, **not** a site-wide launch blocker:
 
 - **Incremental publication.** Research candidates are published one at a time as each clears the redaction gate. The queue does not need to be fully cleared before the site launches.
 - **No cross-page coupling.** Failing or deferring any single research candidate must **not** block the landing page, the [VISION.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/VISION.md), [ALIGNMENT.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md), or glossary pages. Those pages publish independently of the research queue.
-- **Composition with metadata and sitemap.** Each published research page composes with the page-metadata decisions (B-0284) and the sitemap decisions (B-0285): once a candidate clears the gate it receives metadata and is added to the sitemap; candidates still pending redaction are omitted from the sitemap rather than published as broken entries.
+- **Composition with metadata and sitemap.** Each published research page composes with the page-metadata decisions (081KR2E4K0008QG0R0028VW6B3) and the sitemap decisions (081KR2E4K0008QG0R0037MW8ET): once a candidate clears the gate it receives metadata and is added to the sitemap; candidates still pending redaction are omitted from the sitemap rather than published as broken entries.

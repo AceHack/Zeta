@@ -1,4 +1,4 @@
-// glass — the shared GLASS-SIDE discipline for every pro(file) lane (B-1039; Aaron 2026-06-11:
+// glass — the shared GLASS-SIDE discipline for every pro(file) lane (081KTSZN10008QG0R001F0B5A6; Aaron 2026-06-11:
 // "glass-side only no wall clock in the room" + "lets move to src"). A lane NEVER enters the
 // room: it attaches a dotnet diagnostics tool (EventPipe IPC) to a pid from OUTSIDE — zero
 // syscalls injected into the observed loop, the Reticulum-only seal intact, the red light on

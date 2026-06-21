@@ -40,7 +40,7 @@ Single tick-history row added:
 **13:41:52Z** — autonomous-loop tick documenting:
 
 1. **Task #276 (direct-to-main tick-history) gating discovery** — confirmed
-   gated on B-0032 heartbeat-file-integrity threat-model review. Filed
+   gated on 081KQ3HBZ0008QG0R002ZPXAFQ heartbeat-file-integrity threat-model review. Filed
    as understanding, not work; would skip the discipline if implemented
    today.
 

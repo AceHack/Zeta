@@ -1,4 +1,4 @@
-// Smallest safe slice of B-0057: pure-TS occult-resonance-candidate schema + 1 bounded seed (Hermetic "as above, so below" — strongest F2 structural match noted in backlog)
+// Smallest safe slice of 081KQ3HBZ0008QG0R000K3NSX8: pure-TS occult-resonance-candidate schema + 1 bounded seed (Hermetic "as above, so below" — strongest F2 structural match noted in backlog)
 // Re-decomposed: original row treated entire track as atomic; mistake was under-estimating filter-calibration surface. Slice is schema + validator stub only (no full catalog, no docs changes, no F# surface).
 // One bounded step: type + seed + stub. Retractible at lexical level.
 
@@ -23,11 +23,11 @@ export const hermeticSeed: OccultResonanceCandidate = {
   f2StructuralNotSuperficial: true,
   f3TraditionNameLoadBearing: true,
   verdict: 'candidate',
-  notes: 'Strongest F2 noted in B-0057 origin; F3 holds within Western esoteric lineage. Passes honest three-filter per backlog. Retractible reference.'
+  notes: 'Strongest F2 noted in 081KQ3HBZ0008QG0R000K3NSX8 origin; F3 holds within Western esoteric lineage. Passes honest three-filter per backlog. Retractible reference.'
 };
 
 export function validateOccultCandidate(c: OccultResonanceCandidate): boolean {
-  // stub validator — real impl would cross-check against ALIGNMENT.md retractibility + B-0058 safety log
+  // stub validator — real impl would cross-check against ALIGNMENT.md retractibility + 081KQ3HBZ0008QG0R002S674CG safety log
   return c.f1EngineeringFirst && c.f2StructuralNotSuperficial && c.f3TraditionNameLoadBearing;
 }
 

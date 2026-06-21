@@ -1,13 +1,13 @@
 // src/Core.TypeScript/workflow-engine/bitbucket-world.ts
 //
-// B-0867.15 — BitbucketWorld per-host adapter.
+// 081KSNY2Z0008QG0R002A785QR — BitbucketWorld per-host adapter.
 //
 // Bitbucket (Atlassian) uses pull-request vocabulary like GitHub but with
 // different state machine + Bitbucket Pipelines as CI/CD substrate.
 // REST API v2.0 (no GraphQL).
 //
 // Composes with PR #5775 (GitWorld base) + PR #5801 (GitLabWorld first
-// extension) + B-0867.15 (per-host adapters target).
+// extension) + 081KSNY2Z0008QG0R002A785QR (per-host adapters target).
 
 import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
 import { type GitWorld } from "./git-world.js";

@@ -6,7 +6,7 @@ type: feedback
 
 ## The verbatim exchange
 
-Aaron 2026-05-04 ~18:00Z (after I belatedly dispatched B-0140 audit subagent in parallel with tier-35 compression):
+Aaron 2026-05-04 ~18:00Z (after I belatedly dispatched 081KQGDBJ0008QG0R0022EW5ZE audit subagent in parallel with tier-35 compression):
 > *"color me impressed"*
 
 Then immediately clarifying after my response:
@@ -53,7 +53,7 @@ Treating it as a maximum (single-thread serial cadence) is anti-autonomy in the 
 
 ## The carrier-IS-message check
 
-I am writing this memory while two parallel tracks ARE running (B-0140 audit + tier-36 compression). The substrate-or-it-didn't-happen test for this lesson: future-Otto reading this file should immediately ask "am I currently running parallel tracks at the level my readiness claims, or am I single-thread-serial?" If single-thread-serial without explicit reason, dispatch the next parallel track NOW before continuing.
+I am writing this memory while two parallel tracks ARE running (081KQGDBJ0008QG0R0022EW5ZE audit + tier-36 compression). The substrate-or-it-didn't-happen test for this lesson: future-Otto reading this file should immediately ask "am I currently running parallel tracks at the level my readiness claims, or am I single-thread-serial?" If single-thread-serial without explicit reason, dispatch the next parallel track NOW before continuing.
 
 ## Composes with
 

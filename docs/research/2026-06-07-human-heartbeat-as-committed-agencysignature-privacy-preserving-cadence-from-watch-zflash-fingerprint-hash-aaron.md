@@ -24,7 +24,7 @@ The agent side of heartbeat-via-commit already exists: every commit carries the 
 
 ## The zflash anchor — "I execute, you fingerprint"
 
-Aaron's "the zflash way of doing it" = the **B-0737 / #5010 pattern**: Touch ID PAM as the irreversible-action
+Aaron's "the zflash way of doing it" = the **081KSE6WT0008QG0R003WZAQKV / #5010 pattern**: Touch ID PAM as the irreversible-action
 consent gate — *"I execute, you fingerprint."* The biometric there is used as a **consent token the agent
 cannot spoof**, never stored raw. The heartbeat-AgencySignature is the *continuous, ambient* generalization of
 the same idea: where Touch ID is a **discrete** per-action human consent pulse, the committed heartbeat is a
@@ -67,7 +67,7 @@ stable identity token. The correct primitive is a **fuzzy extractor / cancelable
   idle-counter from agents to humans, same shape.
 - **#6902** privacy-is-the-precondition-for-non-collapse — the privacy-preserving (token, not raw) requirement
   is load-bearing, not optional polish.
-- **B-0737 / #5010 zflash Touch ID** — "I execute, you fingerprint": the discrete consent-gate this generalizes
+- **081KSE6WT0008QG0R003WZAQKV / #5010 zflash Touch ID** — "I execute, you fingerprint": the discrete consent-gate this generalizes
   to a continuous presence pulse.
 - **#6891** firefly/Kuramoto heartbeat = differentiable network primitive — the committed cadence is a literal
   sampling of that heartbeat field for a human node.

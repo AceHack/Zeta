@@ -64,7 +64,7 @@ Composes with Amara event-sourcing framework ('databases are cache snapshots of 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Align path ordering with corrected DBpedia rollout plan**
 
-  This section flips the rollout order (`Path A` now, `Path B` deferred), which contradicts both the same file’s later “corrected ordering” (`Path B` now, `Path A` deferred) and the newly added backlog row B-0428. Because this document is used as operational memory, the inconsistency can send follow-on work down the wrong implementation track (type-provider first instead of direct API first).
+  This section flips the rollout order (`Path A` now, `Path B` deferred), which contradicts both the same file’s later “corrected ordering” (`Path B` now, `Path A` deferred) and the newly added backlog row 081KRFA460008QG0R0018SN61J. Because this document is used as operational memory, the inconsistency can send follow-on work down the wrong implementation track (type-provider first instead of direct API first).
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -106,15 +106,15 @@ Composes with Amara event-sourcing framework ('databases are cache snapshots of 
 ### Thread 4 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6BoaVF`
-- **Path**: `docs/backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R0018SN61J-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-13T04:17:00Z on `docs/backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`:44 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-13T04:17:00Z on `docs/backlog/P1/081KRFA460008QG0R0018SN61J-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`:44 (association: NONE)
 
   <pre>
-  P1: B-0043 is referenced here as “universal-business-templates”, but the actual backlog row title is “Universal company + government information substrate” (docs/backlog/P3/B-0043-...). Please align the label (or explicitly call “universal business templates” a concept within B-0043) to avoid broken mental links when navigating the backlog.
+  P1: 081KQ3HBZ0008QG0R000Q4Y00F is referenced here as “universal-business-templates”, but the actual backlog row title is “Universal company + government information substrate” (docs/backlog/P3/081KQ3HBZ0008QG0R000Q4Y00F-...). Please align the label (or explicitly call “universal business templates” a concept within 081KQ3HBZ0008QG0R000Q4Y00F) to avoid broken mental links when navigating the backlog.
 
   This issue also appears in the following locations of the same file:
   - line 111
@@ -135,7 +135,7 @@ Composes with Amara event-sourcing framework ('databases are cache snapshots of 
 ```
 docs(memory + backlog): DBpedia is free master data — F# type provide…
 
-…r archived — resurrect for HKT-MDM canonical demo + B-0428 — fork F# compiler for AI safety with real HKT over Clifford (Aaron 2026-05-13)
+…r archived — resurrect for HKT-MDM canonical demo + 081KRFA460008QG0R0018SN61J — fork F# compiler for AI safety with real HKT over Clifford (Aaron 2026-05-13)
 
 Aaron 2026-05-13 two-message disclosure:
 1. 'dude is there still a free f# type provider for this?
@@ -149,7 +149,7 @@ Two artifacts landing:
 1. memory/feedback_aaron_dbpedia_*.md — strategic substrate
    linking DBpedia + F# type providers + HKT-MDM + F# compiler
    fork plans
-2. docs/backlog/P1/B-0428-resurrect-fsharp-dbpedia-type-provider-as-hkt-mdm-canonical-demo-*.md
+2. docs/backlog/P1/081KRFA460008QG0R0018SN61J-resurrect-fsharp-dbpedia-type-provider-as-hkt-mdm-canonical-demo-*.md
    — P1 backlog row for Path A (type provider resurrection
    NOW)
 
@@ -170,7 +170,7 @@ F# compiler fork strategic substrate:
 - HARD LIMITS discipline composition
 
 Composes with:
-- B-0043 (universal-business-templates — DBpedia type
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates — DBpedia type
   provider IS the canonical demo)
 - PR #2913 (HKT-MDM universality)
 - PR #2914 (Clifford/HKT vocabulary)
@@ -196,13 +196,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R0018SN61J-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`
 - `memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md`
 
 **Message:**
 
 ```
-fix(B-0428 + memory): correct Path B vs Path A ordering — Aaron 2026-…
+fix(081KRFA460008QG0R0018SN61J + memory): correct Path B vs Path A ordering — Aaron 2026-…
 
 …05-13: 'i said it backwards the first one after f# fork'
 
@@ -216,7 +216,7 @@ Corrected ordering:
   — high effort, waits for F#-compiler-fork-for-AI-safety with
   real HKT over Clifford
 
-B-0428 re-scoped from Path A to Path B (direct API). Type-
+081KRFA460008QG0R0018SN61J re-scoped from Path A to Path B (direct API). Type-
 provider row will open separately when F# fork matures.
 
 Don Syme's FSharp.TypeProviders.SDK
@@ -233,7 +233,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0428-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R0018SN61J-dbpedia-direct-dotnetrdf-fsharp-ce-hkt-mdm-canonical-demo-aaron-2026-05-13.md`
 
 **Message:**
 
@@ -243,9 +243,9 @@ fix(#2928): markdownlint MD032 + MD018 + MEMORY.md paired entry for D…
 …Bpedia memory file
 
 Three failures resolved:
-1. MD032 (blanks-around-lists) on B-0428 line 30 — added blank
+1. MD032 (blanks-around-lists) on 081KRFA460008QG0R0018SN61J line 30 — added blank
    line before list after 'Corrected ordering:' paragraph
-2. MD018 (no-space-after-hash) on B-0428 line 88 — '#2913' at
+2. MD018 (no-space-after-hash) on 081KRFA460008QG0R0018SN61J line 88 — '#2913' at
    line start parsed as heading marker; escaped as '\#2913'
 3. check memory/MEMORY.md paired edit — added entry for the new
    DBpedia memory file at newest-first position
@@ -300,8 +300,8 @@ Composes with:
 - PR #2917 (vision monad Play-Doh — soft + reshapeable)
 - PR #2898 (non-glass-halo encryption — operates over either
   text or binary)
-- B-0428 (DBpedia Path B storage shape applies)
-- B-0043 (universal-business-templates storage substrate)
+- 081KRFA460008QG0R0018SN61J (DBpedia Path B storage shape applies)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates storage substrate)
 - algebra-owner skill (Z-set + Clifford + BP/EP F#)
 - DBSP substrate (event-sourcing + retraction-native algebra)
 - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
@@ -391,7 +391,7 @@ Pattern: USE git's advanced features:
 - Git pack files for performance preserving readable source
 - Git merge for substrate reconciliation
 - Git rebase/cherry-pick for event-stream restructuring
-- Git submodules for sub-substrate composition (B-0424)
+- Git submodules for sub-substrate composition (081KRFA460008QG0R001H98EXJ)
 - Git LFS for binary attachments
 
 DV2.0 composition (PR #2915):
@@ -452,7 +452,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(#2929 threads): B-0043 canonical title + remove broken docs/resea…
+fix(#2929 threads): 081KQ3HBZ0008QG0R000Q4Y00F canonical title + remove broken docs/resea…
 
 …rch/* cross-reference (deferred file)
 

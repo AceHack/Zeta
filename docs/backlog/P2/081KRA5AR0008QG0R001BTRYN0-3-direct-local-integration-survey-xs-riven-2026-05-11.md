@@ -1,11 +1,10 @@
 ---
-id: B-0068.3
-zetaid: 081KRA5AR0008QG0R001BTRYN0
+id: 081KRA5AR0008QG0R001BTRYN0
 priority: P2
 status: open
 title: Direct local-model integration alternatives survey (llama.cpp/MLX/vLLM, XS)
 parent: 081KQ8P5D0008QG0R002E1G72J
-ask: B-0068 decomposition — smallest atomic research slice for path 3
+ask: 081KQ8P5D0008QG0R002E1G72J decomposition — smallest atomic research slice for path 3
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: [081KRA5AR0008QG0R001JVT5FX]
@@ -15,18 +14,18 @@ type: research
 effort: XS
 ---
 
-# B-0068.3 — Direct integration survey (XS)
+# 081KRA5AR0008QG0R001BTRYN0 — Direct integration survey (XS)
 
 ## What this slice delivers
 
 - WebSearch + peer-call ferry for latest llama.cpp F# bindings, MLX status on macOS, vLLM/SGLang perf on local, ONNX/GGUF .NET options.
 - Comparison table: latency, RAM, cross-platform (4-shell), glue-code surface.
 - Points to future B-00xx impl children.
-- Depends on B-0068.1 findings for Ollama baseline.
+- Depends on 081KRA5AR0008QG0R001JVT5FX findings for Ollama baseline.
 
 ## Dependency order
 
-Blocked on B-0068.1 research currency.
+Blocked on 081KRA5AR0008QG0R001JVT5FX research currency.
 
 ## Pre-start
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-**Slice 2c** — the Server-Core Docker test for `install.ps1`, the Windows-Server coverage surface (B-0857 parity). Consumes Slice 2b's smoke in `--mode container`.
+**Slice 2c** — the Server-Core Docker test for `install.ps1`, the Windows-Server coverage surface (081KSKBP80008QG0R002J03WGA parity). Consumes Slice 2b's smoke in `--mode container`.
 
 - **`install.ps1`**: detects the admin context → passes `-RunAsAdmin` to the scoop bootstrap (a Windows container runs as ContainerAdministrator; scoop refuses admin by default). Real cross-context improvement — the non-admin desktop path is unchanged.
 - **Dockerfile** (`servercore:ltsc2022`, `# escape=` backtick, one chained RUN so install.ps1's in-process PATH carries to the smoke assertion).

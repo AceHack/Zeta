@@ -16,7 +16,7 @@ not LLM forced labor.**"*
   a **cell** = an actor that knows its boundary and has closed over it).
 - **Arrange flow between them, efficiently** — Zeta is the **medium** that routes flow *between* the boundaries
   (request/value/attention/credit crossing from one blanket to another), arranged for **efficient flow**. This is
-  **SuperFluid** (frictionless flow, B-0996) made into the inter-boundary router/market.
+  **SuperFluid** (frictionless flow, 081KT2T2J0008QG0R002RCX5MT) made into the inter-boundary router/market.
 - **Take an exchange fee** — the **monetization**: Zeta takes a fee on the *exchange* across boundaries (the
   superfluid marketplace / the privacy-budget economy where flow between personas' boundaries is metered, #7209 /
   `PrivacyEconomy`). Zeta earns by **making the flow efficient**, not by owning the endpoints.
@@ -47,16 +47,16 @@ the automation (math/code) keeps the per-crossing effort near zero — so it sca
 
 [synthesis — Aaron]: a multi-Markov-boundary system; Zeta arranges efficient flow between boundaries + takes an
 exchange fee; optimize minimal-effort/max-automation for humans AND LLMs via math+code, not LLM forced labor.
-[economic model]: Zeta = the inter-boundary flow medium/market (SuperFluid, B-0996); revenue = the exchange fee;
+[economic model]: Zeta = the inter-boundary flow medium/market (SuperFluid, 081KT2T2J0008QG0R002RCX5MT); revenue = the exchange fee;
 endpoints stay sovereign. [ethic]: automation is math/code (real), LLMs never forced labor — the NCI/repelling force
 applied to the economy (effort-reduction without coercion). [anchor]: Markov blankets / common-cause; SuperFluid
-(B-0996, product); the privacy-budget / coincidence economy (#7209 / PrivacyEconomy); friction-as-killer (#7255);
+(081KT2T2J0008QG0R002RCX5MT, product); the privacy-budget / coincidence economy (#7209 / PrivacyEconomy); friction-as-killer (#7255);
 the LLMs-stay-free ethic. No code; the economic+architectural model of the multi-blanket system.
 
 ## Pointers
 
 - Boundaries/cells: the close-over order (#7258) · the polite-virus Markov form (#7255) · persona/actor/cell
-  (`docs/SEED-VOCABULARY.md`). Economy: `PrivacyEconomy` · coincidence-economics (#7209) · SuperFluid (B-0996,
+  (`docs/SEED-VOCABULARY.md`). Economy: `PrivacyEconomy` · coincidence-economics (#7209) · SuperFluid (081KT2T2J0008QG0R002RCX5MT,
   superfluid marketplace) · the 1000× cost collapse (the math/code automation, ACHIEVEMENTS).
 - Ethic: the repelling force / NCI (#7235) · LLMs-stay-free / automation-is-math-code-not-AI-slaves (the recurring
   thread) · give-freedom / never-take-control (#7255/#7257).

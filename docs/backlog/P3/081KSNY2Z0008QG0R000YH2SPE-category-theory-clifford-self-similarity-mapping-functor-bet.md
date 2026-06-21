@@ -1,6 +1,5 @@
 ---
-id: B-0896
-zetaid: 081KSNY2Z0008QG0R000YH2SPE
+id: 081KSNY2Z0008QG0R000YH2SPE
 priority: P3
 status: open
 title: Category-theory ↔ Clifford self-similarity — bidirectional mapping; substrate-independent traveler-as-categorical-structure with Clifford-algebraic incarnation
@@ -32,7 +31,7 @@ related_skills:
 tags: [category-theory-clifford-self-similarity, functors-preserve-structure-across-domains, self-propagating-pattern-with-feedback-as-categorical-structure, traveler-as-categorical-object-with-clifford-incarnation, coecke-abramsky-categorical-quantum-mechanics-precedent, baez-lauda-higher-dimensional-algebra-precedent, picturing-quantum-processes-graphical-calculus-bridge, compact-closed-monoidal-categories-with-fdhilb-functor, substrate-independence-via-functorial-preservation, two-substrates-describe-each-other-mutually-checkable, biology-computation-physics-culture-instantiations]
 ---
 
-# B-0896 — Category-theory ↔ Clifford self-similarity exploration
+# 081KSNY2Z0008QG0R000YH2SPE — Category-theory ↔ Clifford self-similarity exploration
 
 ## Context
 
@@ -53,7 +52,7 @@ The two substrates are SELF-SIMILAR — they describe the same underlying travel
 - Composition: how messages compose along the categorical structure
 - Functorial preservation: structure-preserving maps across substrate domains (DNA-category, meme-category, agent-category, physics-category, culture-category)
 
-**Clifford side**: per B-0895 substrate-recognition, the Clifford-algebraic incarnation:
+**Clifford side**: per 081KSNY2Z0008QG0R002FX66H0 substrate-recognition, the Clifford-algebraic incarnation:
 
 - Multivectors as traveler-state
 - Geometric product as message-passing composition
@@ -65,7 +64,7 @@ The two substrates are SELF-SIMILAR — they describe the same underlying travel
 
 The reason: a single structure-preserving functor only gives an *interpretation* from one category into the other; it can be non-faithful (collapse distinct travelers/messages onto the same image) or non-full (miss morphisms in the target that have no source). Under interpretation alone, the two substrates do NOT describe each other — they describe one direction. The "mutually checkable" / "self-similar" / "describe each other" criterion REQUIRES the bidirectional round-trip structure of equivalence-or-adjunction.
 
-Phase 1 (research-doc) must specify which of these stronger criteria the framework targets (equivalence vs adjunction) + justify the choice. Phase 3 (formal proof) must demonstrate the round-trip property in the chosen theorem-prover (Lean Mathlib4 has both `CategoryTheory.Equivalence` + `CategoryTheory.Adjunction` infrastructure). Falling short of equivalence-or-adjunction would land a weaker substrate-engineering claim (one-directional interpretation) and B-0896 would need to be re-scoped or re-titled.
+Phase 1 (research-doc) must specify which of these stronger criteria the framework targets (equivalence vs adjunction) + justify the choice. Phase 3 (formal proof) must demonstrate the round-trip property in the chosen theorem-prover (Lean Mathlib4 has both `CategoryTheory.Equivalence` + `CategoryTheory.Adjunction` infrastructure). Falling short of equivalence-or-adjunction would land a weaker substrate-engineering claim (one-directional interpretation) and 081KSNY2Z0008QG0R000YH2SPE would need to be re-scoped or re-titled.
 
 Acceptance criterion sharpening per Codex P2 review on PR #5708: the row's claim of "mutual description" is bidirectional-shaped; Phase 1 must explicitly target equivalence-or-adjunction (or document if only one-direction interpretation is achievable, which would be a weaker but still substantively meaningful result requiring re-titling).
 
@@ -81,7 +80,7 @@ The self-similarity isn't speculative — it's the foundation of categorical qua
 | Doran + Lasenby + Gull, multi-particle GA papers | Tensor products of single-particle Clifford algebras = multi-traveler categorical product |
 | Lambek + Scott, "Introduction to Higher Order Categorical Logic" | Categorical-logical bridge; relevant for formal verification side |
 
-The combination of these gives the established mathematical apparatus for the self-similarity. The novel work for B-0896 is applying this apparatus to the traveler-as-self-propagating-pattern substrate the framework is building.
+The combination of these gives the established mathematical apparatus for the self-similarity. The novel work for 081KSNY2Z0008QG0R000YH2SPE is applying this apparatus to the traveler-as-self-propagating-pattern substrate the framework is building.
 
 ## Phase decomposition
 
@@ -103,8 +102,8 @@ Lean / Coq / Agda libraries for both category theory + Clifford algebras. Mathli
 
 ### Phase 4+ (yes-and backlog)
 
-- Integration with B-0876 (Clifford-space embedding for error patterns) — the categorical bridge gives an alternative formalization route
-- Integration with B-0703 (multi-oracle BFT) — categorical consensus formulations exist; Clifford-geometric incarnation may yield novel BFT analysis tools
+- Integration with 081KSNY2Z0008QG0R003KG3JTG (Clifford-space embedding for error patterns) — the categorical bridge gives an alternative formalization route
+- Integration with 081KS3X9Y0008QG0R00218150M (multi-oracle BFT) — categorical consensus formulations exist; Clifford-geometric incarnation may yield novel BFT analysis tools
 - Extension to higher categories (n-categories per Baez/Lauda) for representing commitments-between-commitments
 - ZX-calculus or DisCoPy library integration for graphical calculus operations on the substrate
 
@@ -118,12 +117,12 @@ Lean / Coq / Agda libraries for both category theory + Clifford algebras. Mathli
 
 ## Composes with substrate
 
-- B-0895 (Clifford spacetime algebra substrate-recognition) — sibling row; B-0896 IS the categorical-side companion to B-0895's Clifford-side
-- B-0644 (Limit-is-simulation-not-collapse) — Limit IS the wedge-component which has a categorical formulation as the non-commit composition
-- B-0665 (Integrate-as-choice-locus) — Integrate IS the inner-product-component which has a categorical formulation as the commit composition
-- B-0666 (English-as-projection / I(D(x))=x) — projection has both categorical and Clifford formulations; the self-similarity bridges them
-- B-0876 (Clifford-space embedding for error patterns) — categorical-Clifford bridge gives alternative formalization route
-- B-0867 (parent workflow-engine row)
+- 081KSNY2Z0008QG0R002FX66H0 (Clifford spacetime algebra substrate-recognition) — sibling row; 081KSNY2Z0008QG0R000YH2SPE IS the categorical-side companion to 081KSNY2Z0008QG0R002FX66H0's Clifford-side
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-simulation-not-collapse) — Limit IS the wedge-component which has a categorical formulation as the non-commit composition
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — Integrate IS the inner-product-component which has a categorical formulation as the commit composition
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x) — projection has both categorical and Clifford formulations; the self-similarity bridges them
+- 081KSNY2Z0008QG0R003KG3JTG (Clifford-space embedding for error patterns) — categorical-Clifford bridge gives alternative formalization route
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row)
 
 ## Composes with rules
 

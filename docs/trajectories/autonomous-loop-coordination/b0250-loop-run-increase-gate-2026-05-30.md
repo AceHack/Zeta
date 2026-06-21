@@ -1,4 +1,4 @@
-# B-0250 Loop-Run Increase Gate Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Loop-Run Increase Gate Receipt - 2026-05-30
 
 ## Status
 
@@ -13,7 +13,7 @@ when the heartbeat snapshots adjacent to a forward-gate completion show the
 global claim count increasing.
 
 Claim-count decreases remain visible in the runner log and claim cleanup
-surfaces, but they no longer create B-0250 Codex coincidence events.
+surfaces, but they no longer create 081KQZVQW0008QG0R001FG05RZ Codex coincidence events.
 
 ## Why
 

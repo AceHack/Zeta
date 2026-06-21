@@ -57,7 +57,7 @@ The pattern: **separate fast-moving content (knowledge) from slow-changing struc
 - Verbatim citations of papers (those go in references)
 - Anything that changes when the *knowledge* changes but the *procedure* doesn't
 
-### For future skills (B-0169, the multi-harness skills, the backlog flywheel skills)
+### For future skills (081KQJZR90008QG0R002D6XYHB, the multi-harness skills, the backlog flywheel skills)
 
 When skill-creator authors a SKILL.md:
 
@@ -92,7 +92,7 @@ This rule doesn't supersede; it makes explicit a separation that's already parti
 - **`docs/research/` placement convention** — research artifacts already live here as satellite content; this rule names the architectural reason.
 - **`memory/feedback_*` files** — these are satellite-shaped substrate that future skills will reference. Renaming to make this explicit isn't necessary; the directory + filename convention already does the work.
 - **The two future-skill-domain memos** (`feedback_git_native_backlog_management_long_arc_future_skill_domain_*` + `feedback_multi_harness_alignment_convergence_design_future_skill_domain_*`) — both already follow this shape implicitly: the memos enumerate skill candidates (hubs) + tooling (links/hubs) but defer the per-skill SKILL.md authoring (hub) to skill-creator after worked examples (satellites) land.
-- **Decision-archaeology B-0169** — Aarav's hybrid (b)+(c) routing recommendation already implies this rule: 2-3 worked examples in `docs/research/` (satellites) BEFORE skill-creator authors SKILL.md (hub).
+- **Decision-archaeology 081KQJZR90008QG0R002D6XYHB** — Aarav's hybrid (b)+(c) routing recommendation already implies this rule: 2-3 worked examples in `docs/research/` (satellites) BEFORE skill-creator authors SKILL.md (hub).
 - **Karpathy edge-runner framing** + Aaron's *"specs over plans"* validation — specs ARE hub-shaped (carved imperatives); plans are satellite-shaped (per-execution detail).
 
 ## What "we should make sure we remember for everything from now on" means
@@ -128,7 +128,7 @@ This generalizes the existing rule from `memory/feedback_prefer_ts_scripts_over_
 
 ### Worked example: decision-archaeology procedure
 
-The decision-archaeology skill body (B-0169 future SKILL.md) has 11 procedure layers. Under this rule:
+The decision-archaeology skill body (081KQJZR90008QG0R002D6XYHB future SKILL.md) has 11 procedure layers. Under this rule:
 
 | Layer | Currently bash example | Should become |
 |---|---|---|

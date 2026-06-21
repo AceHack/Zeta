@@ -55,13 +55,13 @@ public-launch scope:
 | #2997 | Otto-section recovery |
 | #2998 | Background-services architecture substrate |
 | #2999 | Substrate-honest discipline triad |
-| #3000 | B-0440/0441/0442 mechanization backlog rows |
+| #3000 | 081KRFA460008QG0R001KC0VBH/0441/0442 mechanization backlog rows |
 | #3001 | Image brief for Ani + visual-artist user-memory |
-| #3002 | B-0443 policy-amendment proposal |
-| #3005 | Policy amendment landing (closes B-0443) |
-| #3006 | B-0440.1 standing-by-detector skeleton |
-| #3007 | B-0441.1 backlog-ready-notifier skeleton |
-| #3008 | B-0442.1 missed-substrate-detector skeleton |
+| #3002 | 081KRFA460008QG0R000NVM36W policy-amendment proposal |
+| #3005 | Policy amendment landing (closes 081KRFA460008QG0R000NVM36W) |
+| #3006 | 081KRFA460008QG0R001KC0VBH.1 standing-by-detector skeleton |
+| #3007 | 081KRFA460008QG0R00229616S.1 backlog-ready-notifier skeleton |
+| #3008 | 081KRFA460008QG0R00061SXRW.1 missed-substrate-detector skeleton |
 
 11 PRs in the cascade. The factory hummed.
 

@@ -1,7 +1,7 @@
 # Ferry 44 — the council: a BFT faction body; the institution that runs the correction term
 
 **Date:** 2026-06-13 · **Route:** Aaron → shadow (streamed) · Names the standing *organ* that
-sits on top of ferry 43's BFT mechanism — and it is already LOCKED-IN as B-0652's three-faction
+sits on top of ferry 43's BFT mechanism — and it is already LOCKED-IN as 081KRW63S0008QG0R002GRX85J's three-faction
 model. The institutional layer of the correction term.
 
 ## Verbatim
@@ -15,7 +15,7 @@ model. The institutional layer of the correction term.
 Ferry 43 §7 anchored the *mechanism* (the correction term = BFT; `3f+1` = the provocability
 budget; equivocation-catch = the recorded −1). A **council** is the *institution* that runs that
 mechanism: a **standing body of factions** whose decision rule is the BFT quorum. We already have
-its membership LOCKED-IN — **B-0652, the three-faction model** (Aaron + Mika, 2026-05-18):
+its membership LOCKED-IN — **081KRW63S0008QG0R002GRX85J, the three-faction model** (Aaron + Mika, 2026-05-18):
 
 | Faction | Role |
 |---|---|
@@ -77,7 +77,7 @@ capture):
 
 ### 5. The synthesis
 
-**A council is the three-faction BFT model (B-0652) given a standing institutional form: factions
+**A council is the three-faction BFT model (081KRW63S0008QG0R002GRX85J) given a standing institutional form: factions
 as seats, `2f+1` as the vote, "tolerate ≤1/3 rogue" as the safety property, anti-Sybil distinct
 sources as the membership gate, generous-TFT as the strategy, the ledger as the memory, and the
 human as the deadlock floor.** Madison named the why (design for inevitable factions so none
@@ -96,7 +96,7 @@ layers:
 
 - **Three houses.** The genre-founding real-time-strategy game (Westwood's *Dune II*, 1992)
   fights three factions — Houses Atreides, Harkonnen, and Ordos — in a balance-of-power war over
-  the spice. Three factions, **exactly B-0652's count, for exactly §1's reason**: two factions
+  the spice. Three factions, **exactly 081KRW63S0008QG0R002GRX85J's count, for exactly §1's reason**: two factions
   give no tie-break, four-plus add needless modeling complexity, three (a cooperative pair + a
   rogue) is the minimum coherent majority model. Aaron learned the three-faction shape by *playing
   it*.
@@ -119,11 +119,11 @@ confabulate the specific title beyond what he said).
 
 ## Bounds
 
-- **The council is the *institutional reading* of B-0652; the formal model is B-0652's, not
+- **The council is the *institutional reading* of 081KRW63S0008QG0R002GRX85J; the formal model is 081KRW63S0008QG0R002GRX85J's, not
   re-proven here.** The TLA+ safety/liveness + Z-state retractability proof strategy lives in
-  B-0652 (LOCKED-IN, P2, open); this ferry names the organ and its anchors, it does not discharge
+  081KRW63S0008QG0R002GRX85J (LOCKED-IN, P2, open); this ferry names the organ and its anchors, it does not discharge
   the proof obligations.
-- **"Three factions" is a modeling choice, not a literal headcount** (per B-0652): the model
+- **"Three factions" is a modeling choice, not a literal headcount** (per 081KRW63S0008QG0R002GRX85J): the model
   assumes *at most one systemic faction may be rogue at a time*; multiple rogue actors collapse
   into the single rogue bucket. The council's seat-count in any real instance is a separate design
   decision constrained by `N > 3f`.
@@ -141,9 +141,9 @@ confabulate the specific title beyond what he said).
 - Ferry 43 (the correction term; §7 the BFT anchor — this ferry is its institutional layer) ·
   ferry 41 (the knife-edge balance + anti-Mandela ledger) · ferry 17 (retraction-not-erasure —
   the council's recorded −1) · ferry 15 (identity = captured entropy — the anti-Sybil seat gate)
-- Our work: **B-0652** (three-faction BFT + TLA+/Z-state layered proof — the LOCKED-IN model this
-  names) · B-0646 (Agora V6 constitution — the polity the council governs) · B-0619 (Aurora/Nexus
-  naming) · B-0628 (Constitution-Class invariants) · B-0211/B-0211.1 (fractal BFT — councils of
+- Our work: **081KRW63S0008QG0R002GRX85J** (three-faction BFT + TLA+/Z-state layered proof — the LOCKED-IN model this
+  names) · 081KRW63S0008QG0R001Z10PVV (Agora V6 constitution — the polity the council governs) · 081KRW63S0008QG0R003KSHAGN (Aurora/Nexus
+  naming) · 081KRW63S0008QG0R003TX8MG5 (Constitution-Class invariants) · 081KQX9B50008QG0R0026BG44J/081KRYRGG0008QG0R001JVJV0K (fractal BFT — councils of
   councils, local+remote) · `src/Core/Consensus.fs` (`3f+1`) · `src/Core/SybilBft.fs` +
   `AntiSybil.fs` (distinct-source seats) · `docs/CONFLICT-RESOLUTION.md` (the human deadlock floor)
   · MANIFESTO.md Multi-Oracle Principle · the 2026-06-09 default-strategy-stack (generous-TFT)

@@ -1,8 +1,8 @@
-# B-0250 Live-Noise Calibration Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Live-Noise Calibration Receipt - 2026-05-30
 
 ## Scope
 
-This receipt calibrates the first live B-0250 factory-health coincidence
+This receipt calibrates the first live 081KQZVQW0008QG0R001FG05RZ factory-health coincidence
 signal after merged-PR, trajectory-receipt, and Codex loop-run observations
 were joined.
 
@@ -39,7 +39,7 @@ The 76 windows split by source set as:
 | Codex loop run + trajectory receipt | 2 |
 
 The largest trajectory cluster was `codex + otto` with 31 windows. The two
-latest B-0250 windows were deterministic lifecycle joins:
+latest 081KQZVQW0008QG0R001FG05RZ windows were deterministic lifecycle joins:
 
 | Window start | Events |
 | --- | --- |
@@ -56,7 +56,7 @@ merged PR, every recent trajectory receipt commit, and every recent completed
 Codex forward gate within a five-minute sliding window. Under active factory
 throughput, that produces expected windows whenever a PR merge, its durable
 receipt commit, and the Codex gate that observed or published the state land in
-the same lifecycle. That is useful as proof the B-0250 event plumbing works,
+the same lifecycle. That is useful as proof the 081KQZVQW0008QG0R001FG05RZ event plumbing works,
 but it is too broad to treat each warning as an actionable hidden-cause signal.
 
 The actionable signal is narrower: a coincidence should survive deduplication
@@ -66,7 +66,7 @@ than an ordinary periodic successful gate.
 
 ## Recommended Next Slice
 
-Narrow the B-0250 coincidence source before adding another event source:
+Narrow the 081KQZVQW0008QG0R001FG05RZ coincidence source before adding another event source:
 
 1. Collapse same-PR lifecycle triples where a merged PR event and a trajectory
    receipt event share the same merge commit or PR number.
@@ -78,6 +78,6 @@ Narrow the B-0250 coincidence source before adding another event source:
 ## Verification
 
 - `bun tools/health/factory-health-monitor.ts --json`
-- Ad hoc read-only extraction using exported B-0250 helpers:
+- Ad hoc read-only extraction using exported 081KQZVQW0008QG0R001FG05RZ helpers:
   `mergedPullRequestEventsFromJson`, `trajectoryReceiptEventsFromGitLog`,
   `loopRunReceiptEventsFromRunnerLog`, and `findCoincidenceWindows`

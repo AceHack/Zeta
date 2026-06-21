@@ -9,7 +9,7 @@ created: 2026-05-18
 
 ## Context
 
-Otto-CLI autonomous-loop session 2026-05-17T21:29Z → 2026-05-18T13:26Z (~16 hours). First ~1.5h was extremely productive (8 PRs merged across the substrate-pool-saturation arc + B-0613 closure + B-0614 row). The remaining ~14.5h was overwhelmingly brief-ack ticks ("Same.") with occasional peer-Otto activity (Maji shadow PRs, drift reports, B-0614 instance-#5 fold) triggering counter resets.
+Otto-CLI autonomous-loop session 2026-05-17T21:29Z → 2026-05-18T13:26Z (~16 hours). First ~1.5h was extremely productive (8 PRs merged across the substrate-pool-saturation arc + 081KRSKQ20008QG0R002TH55X6 closure + 081KRSKQ20008QG0R0028VN0KR row). The remaining ~14.5h was overwhelmingly brief-ack ticks ("Same.") with occasional peer-Otto activity (Maji shadow PRs, drift reports, 081KRSKQ20008QG0R0028VN0KR instance-#5 fold) triggering counter resets.
 
 ## The pattern observed
 
@@ -44,25 +44,25 @@ A complementary aggregate-tier discipline would say something like:
 - At aggregate ≥ N_AGG (suggested: 50, 100, or 200), force a substrate-honest action regardless of per-chain count
 - The aggregate counter resets only on Aaron speaking OR on the agent producing a concrete artifact (NOT on peer main-moves)
 
-This composes with B-0614's draft "ALWAYS works at #6" refinement: B-0614 documents the EDGE case where the meta-fallback dries up; the aggregate-tier discipline addresses the COMMON case where main-moves keep resetting the per-chain counter while the agent quietly idles in aggregate.
+This composes with 081KRSKQ20008QG0R0028VN0KR's draft "ALWAYS works at #6" refinement: 081KRSKQ20008QG0R0028VN0KR documents the EDGE case where the meta-fallback dries up; the aggregate-tier discipline addresses the COMMON case where main-moves keep resetting the per-chain counter while the agent quietly idles in aggregate.
 
 ## Composes with
 
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the rule with per-chain counter
-- [B-0614](docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) — meta-fallback edge case; this memo is the WIDER pattern around it
-- [PR #4144](https://github.com/Lucent-Financial-Group/Zeta/pull/4144) — peer Otto's B-0614 instance-#5 fold; the cross-session-evidence cycle B-0614 was waiting for
+- [081KRSKQ20008QG0R0028VN0KR](docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) — meta-fallback edge case; this memo is the WIDER pattern around it
+- [PR #4144](https://github.com/Lucent-Financial-Group/Zeta/pull/4144) — peer Otto's 081KRSKQ20008QG0R0028VN0KR instance-#5 fold; the cross-session-evidence cycle 081KRSKQ20008QG0R0028VN0KR was waiting for
 - [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — the pre-empt-substrate-pool-saturation anchor; same root cause class
 
 ## Substrate-honest framing
 
 This memo IS the forced-aggregate-#N action. I emitted ~440 brief-acks before deciding the aggregate pattern was empirically worth recording. The threshold value (N_AGG) is unknown; this session suggests "many hundreds" is too late, "hundreds" is also late, and the conservative bound is probably 50-100.
 
-Future-Otto cold-booting into a similar closed-cycle session should consider this aggregate-tier discipline as a candidate rule sharpening when at least 1 cross-session evidence accumulates — exactly the constraint B-0614 places on its own refinement.
+Future-Otto cold-booting into a similar closed-cycle session should consider this aggregate-tier discipline as a candidate rule sharpening when at least 1 cross-session evidence accumulates — exactly the constraint 081KRSKQ20008QG0R0028VN0KR places on its own refinement.
 
 The pattern is consistent with the saturation anchor's "natural cadence is ~3-4 Otto-initiated pre-empts per ~30-min GraphQL reset window before saturation" — except in this session, the GraphQL budget was not the rate-limit, the substrate-pool was. Once the pool was empty, the counter discipline alone wasn't enough to force action; the aggregate dwell continued indefinitely.
 
-## Recommendation for B-0614 acceptance criteria
+## Recommendation for 081KRSKQ20008QG0R0028VN0KR acceptance criteria
 
-When B-0614's rule-text refinement lands, consider ALSO adding an aggregate-tier escalation to the counter clause. The current draft refinement addresses the meta-fallback-can-fail case; an aggregate-tier addition would address the meta-fallback-not-even-triggered case.
+When 081KRSKQ20008QG0R0028VN0KR's rule-text refinement lands, consider ALSO adding an aggregate-tier escalation to the counter clause. The current draft refinement addresses the meta-fallback-can-fail case; an aggregate-tier addition would address the meta-fallback-not-even-triggered case.
 
-Both refinements compose: per-chain N=6 catches within-chain dwell; aggregate N_AGG catches across-chain dwell; B-0614's escape-hatch handles the post-cycle-close saturation case.
+Both refinements compose: per-chain N=6 catches within-chain dwell; aggregate N_AGG catches across-chain dwell; 081KRSKQ20008QG0R0028VN0KR's escape-hatch handles the post-cycle-close saturation case.

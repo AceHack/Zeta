@@ -1,4 +1,4 @@
-// deps.ts — Dependency-graph and variable-passing engine (B-0821)
+// deps.ts — Dependency-graph and variable-passing engine (081KSGS9H0008QG0R00367G209)
 //
 // Sits above Helm and below Flux/ArgoCD. Resolves dependency graphs,
 // calculates topo-sort & sync-waves, and generates manifests with variable-flow bindings.

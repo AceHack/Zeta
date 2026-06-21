@@ -1,6 +1,5 @@
 ---
-id: B-0560
-zetaid: 081KRQ1AB0008QG0R0001J9PFT
+id: 081KRQ1AB0008QG0R0001J9PFT
 priority: P3
 status: open
 title: "Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence"
@@ -98,9 +97,9 @@ substrate-engineering-not-backlog-burning observation from 1657Z).
 
 ## Composition
 
-- [B-0440](../P1/B-0440-missed-substrate-cascade-detector-background-service-2026-05-13.md)
+- [081KRFA460008QG0R001KC0VBH](../P1/081KRFA460008QG0R001KC0VBH-missed-substrate-cascade-detector-background-service-2026-05-13.md)
   (Standing-by detector — sibling structural mechanism)
-- [B-0540](../P3/B-0540-rule-sharpening-pre-emptive-decomposition-at-n4-2026-05-16.md)
+- [081KRMEXM0008QG0R0039V4SQQ](../P3/081KRMEXM0008QG0R0039V4SQQ-rule-sharpening-pre-emptive-decomposition-at-n4-2026-05-16.md)
   if exists, OR the rule's own N=6 clause
 - [`holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
 - [`feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md`](../../../memory/feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md)

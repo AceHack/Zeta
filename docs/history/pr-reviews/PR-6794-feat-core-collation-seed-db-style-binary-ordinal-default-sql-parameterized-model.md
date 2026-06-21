@@ -27,12 +27,12 @@
 
 ## Description
 
-## What — B-0969 slice-1 foundation
+## What — 081KT07NV0008QG0R001YDB73K slice-1 foundation
 The **stable collation seed** (Aaron confirmed it survives "all the parameters") + the SQL-Server parameterized-model design direction.
 
-- **`src/Core/Collation.fs`** — DB-style collation selection: shipped default **`binary`** (`StringComparer.Ordinal`, codepoint/byte order); named catalog (`binary`/`ordinal`/`ordinal-ci`/`invariant`/`invariant-ci`, name lookup case-insensitive); **`forKey<'T>`** resolves string→Ordinal (the B-0969 fix — never culture-sensitive `Comparer<string>.Default`) else `Comparer<'T>.Default`. **5 tests** green.
+- **`src/Core/Collation.fs`** — DB-style collation selection: shipped default **`binary`** (`StringComparer.Ordinal`, codepoint/byte order); named catalog (`binary`/`ordinal`/`ordinal-ci`/`invariant`/`invariant-ci`, name lookup case-insensitive); **`forKey<'T>`** resolves string→Ordinal (the 081KT07NV0008QG0R001YDB73K fix — never culture-sensitive `Comparer<string>.Default`) else `Comparer<'T>.Default`. **5 tests** green.
 - **Design capture** — collation = the SQL-Server parameterized model (locale + code page + sensitivity flags `_CI/_CS/_AI/_AS/_KI/_KS/_WI/_WS/_VSS/_BIN/_UTF8`), selectable at **server/database/column/query** levels. Our analog: shipped default → cell default → value carries it (strategy (a)) → per-op override `ofSeqWith`. The binary/ordinal seed is a fixed point; flags/locales refine the catalog over time. Mismatched-collation merge = error to surface, not silent reinterpret.
-- B-0969 updated with the landed seed + design pointer.
+- 081KT07NV0008QG0R001YDB73K updated with the landed seed + design pointer.
 
 Seed is **additive** (no existing API touched). The primitive rewiring (G-Set → Z-set carrying a collation) is the next slices, with Ilyana/Naledi/Soraya review.
 

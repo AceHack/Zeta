@@ -50,7 +50,7 @@ No backlog row at this scope — substrate-anchor for future substrate-engineeri
 |---|---|
 | **Individual** | c302 connectome (Cook et al. 2019; 302 neurons fully mapped) |
 | **Collective** | Tower-superorganism (Perez & Ding 2025; dozens-of-worms coordinated dispersal) |
-| **Formal** | Aurora multi-oracle BFT immune-math + B-0703 three-faction BFT + B-0664 NCI HC-8 |
+| **Formal** | Aurora multi-oracle BFT immune-math + 081KS3X9Y0008QG0R00218150M three-faction BFT + 081KRW63S0008QG0R001Z7NYMV NCI HC-8 |
 
 The framework's multi-oracle BFT formal-math has — uniquely in known biological substrate — a complete-substrate instantiation across ALL THREE substrate-layers simultaneously at the SAME tractability scope.
 
@@ -67,13 +67,13 @@ Single research note at `docs/research/2026-05-28-c-elegans-tower-superorganism-
 
 ## Composes-with
 
-- B-0925 (per-individual C. elegans controller variant)
-- B-0924 (custom 2600 emulator + generate+join)
-- B-0917 (Kleisli interrupt substrate)
-- B-0703 (three-faction BFT)
-- B-0664 (NCI HC-8 floor)
-- B-0644 (Limit-as-simulation) + B-0665 (Integrate-as-choice-locus)
-- B-0865, B-0761 (ARC-AGI-3 cluster substrate)
+- 081KSNY2Z0008QG0R00390T4DJ (per-individual C. elegans controller variant)
+- 081KSNY2Z0008QG0R001HA43GG (custom 2600 emulator + generate+join)
+- 081KSNY2Z0008QG0R002HB4AGT (Kleisli interrupt substrate)
+- 081KS3X9Y0008QG0R00218150M (three-faction BFT)
+- 081KRW63S0008QG0R001Z7NYMV (NCI HC-8 floor)
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation) + 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus)
+- 081KSKBP80008QG0R003NM9XEC, 081KSE6WT0008QG0R0015ZF2G6 (ARC-AGI-3 cluster substrate)
 - Aurora immune-math substrate
 - Tonal-momentum substrate
 - OpenWorm + Perez & Ding (2025)

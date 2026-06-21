@@ -2,9 +2,9 @@
 
 **Status:** Accepted  
 **Author:** Otto (2026-05-14T0955Z)  
-**Closes:** B-0467  
-**Unblocks:** B-0468  
-**Composes with:** [2026-04-22 three-repo-split ADR](2026-04-22-three-repo-split-zeta-forge-ace.md), B-0424, B-0425, B-0426
+**Closes:** 081KRHWGX0008QG0R00394BM1G  
+**Unblocks:** 081KRHWGX0008QG0R000F6HE6D  
+**Composes with:** [2026-04-22 three-repo-split ADR](2026-04-22-three-repo-split-zeta-forge-ace.md), 081KRFA460008QG0R001H98EXJ, 081KRFA460008QG0R003JQ46J4, 081KRFA460008QG0R0007RWSN1
 
 ---
 
@@ -12,7 +12,7 @@
 
 The three-repo split (Zeta + Forge + ace) uses **peer repos with bidirectional cross-referencing** to handle the Ouroboros bootstrap cycle. Product repos (civsim, KSK, wellness, etc.) have a fundamentally different relationship: they are **consumers** of the factory-infrastructure trio, not peers within it.
 
-Product repos need answers to five questions before B-0468 can close and civsim can be scaffolded:
+Product repos need answers to five questions before 081KRHWGX0008QG0R000F6HE6D can close and civsim can be scaffolded:
 
 1. **Version pinning** — how does a product repo track which Zeta/Forge version it uses?
 2. **CI update triggers** — when Zeta ships a breaking change, what signal reaches product repos?
@@ -24,13 +24,13 @@ Product repos need answers to five questions before B-0468 can close and civsim 
 
 ## Options evaluated
 
-### Option A — Version-pin files (matches existing B-0424 Zeta ↔ Forge pattern)
+### Option A — Version-pin files (matches existing 081KRFA460008QG0R001H98EXJ Zeta ↔ Forge pattern)
 
 Each product repo carries a `.zeta-version` file containing a pinned git SHA or semver tag. The product repo's CI reads the pin during install. Forge CI emits a `repository_dispatch` event to known product repos when a new Zeta release is tagged.
 
 **Pros:**
 
-- Consistent with the existing B-0424 pattern already designed for peer repos
+- Consistent with the existing 081KRFA460008QG0R001H98EXJ pattern already designed for peer repos
 - No new tooling required; pattern is operational today
 - Works with any CI runner regardless of package manager
 - Atomic: pin file is a single-file source of truth
@@ -60,7 +60,7 @@ Products consume Zeta via the published NuGet packages (`Zeta.Core`, `Zeta.Core.
 - Requires a NuGet publish cadence for Zeta — packages must be tagged and published on release
 - Product repos cannot track unreleased/edge Zeta features between tagged releases
 - "Snapshot" development (active feature development across Zeta + product simultaneously) requires pre-release NuGet packages, adding release-engineering overhead
-- Zeta's current NuGet publish cadence is not yet formally defined (B-0424 deferred NuGet as Stage 2)
+- Zeta's current NuGet publish cadence is not yet formally defined (081KRFA460008QG0R001H98EXJ deferred NuGet as Stage 2)
 
 ---
 
@@ -77,7 +77,7 @@ Once `ace` ships its version-management tooling, `ace pull zeta@<ver>` becomes t
 
 **Cons:**
 
-- `ace` does not exist yet — Stage 3 of B-0424 is a multi-year deferred item
+- `ace` does not exist yet — Stage 3 of 081KRFA460008QG0R001H98EXJ is a multi-year deferred item
 - Cannot block product repo scaffolding on ace's availability
 
 ---
@@ -119,7 +119,7 @@ KSK has actuator-control CI requirements that differ from a standard software re
 - **Hardware CI**: NVIDIA Thor + DGX Spark integration testing cannot run on standard GitHub Actions runners. Recommend a **self-hosted runner** for hardware integration tests, with standard runners for software-unit tests.
 - **Strategic encryption**: KSK actuator-command substrate falls under Aaron's strategic-encryption authority grant (PR #2902). The `.zeta-version` pin file should include a checksum verification step before strategic-encrypted payloads are built.
 - **Stage 1 + attestation**: `.zeta-version` pin file + SLSA attestation on the Zeta SHA for the actuator-control build path.
-- **Gate before scaffolding**: B-0467 glue mechanism (this ADR) + a strategic-encryption scope decision for KSK (pending dedicated B-04xx row) must both complete before KSK repo is created.
+- **Gate before scaffolding**: 081KRHWGX0008QG0R00394BM1G glue mechanism (this ADR) + a strategic-encryption scope decision for KSK (pending dedicated B-04xx row) must both complete before KSK repo is created.
 
 ### Aurora (Option A or B depending on scope; large scope warning)
 
@@ -195,6 +195,6 @@ When `ace` Stage 3 ships:
 ## Dependency graph position
 
 ```
-B-0465 ──→ B-0467 (this row) ──→ B-0468 (ADR)
-B-0424 ──→ B-0467 (this row)
+081KRHWGX0008QG0R002B2P0K0 ──→ 081KRHWGX0008QG0R00394BM1G (this row) ──→ 081KRHWGX0008QG0R000F6HE6D (ADR)
+081KRFA460008QG0R001H98EXJ ──→ 081KRHWGX0008QG0R00394BM1G (this row)
 ```

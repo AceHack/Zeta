@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// audit-memory-cross-references.ts — B-0334
+// audit-memory-cross-references.ts — 081KR2E4K0008QG0R003MSVG42
 // Checks bidirectional integrity of cross-references inside memory
 // files: dead links, asymmetric references, glob-pattern resolution.
 

@@ -102,7 +102,7 @@ does); it is a per-ref CAS, not a CP bottleneck, and it is local to that repo.
 > **No global consistency surface** (no shared register, no shared `main` — agents own
 > their repos across dozens of projects). Coordination is **per-row optimistic CAS**
 > (git per-ref `force-with-lease`). Under partition the bite is scoped to the _contended
-> row_ and degrades to **try-or-pick-different / rebase-retry** (B-0962) — availability
+> row_ and degrades to **try-or-pick-different / rebase-retry** (081KT07NV0008QG0R002KWQS05) — availability
 > degrades per-contended-key, consistency holds per-key always. Per-agent state is
 > CA-local (single-writer, no contention); cross-agent convergence is CRDT (AP/SEC); the
 > read-side aggregate chooses A + bounded staleness.
@@ -135,7 +135,7 @@ CP is per-row" was itself an overclaim** (both peers, with repo-grounded specifi
 | Surface                                                | What it coordinates                               | Consistency model                                                      | Partition behavior                                                                                                                                                                                               |
 | ------------------------------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Bus claim** (`tools/bus/claim.ts`, `/tmp/zeta-bus/`) | who may touch a workitem, BEFORE the git CAS      | first-to-claim-wins + TTL; multi-agent visibility; NOT per-row-git-CAS | bus partition / visibility-skew ⇒ two agents can both acquire, then race on git (git CAS is the backstop)                                                                                                        |
-| **ID allocation** (sequential `B-NNNN`)                | global uniqueness of new IDs                      | needs a consistent view of `origin/main` + in-flight PRs               | stale view ⇒ ID collision (empirically observed; the refresh-before-decide + ID-allocation discipline exists precisely for this). **Content-addressed ZetaIds (B-0961) avoid this** — hash, not a global counter |
+| **ID allocation** (sequential `B-NNNN`)                | global uniqueness of new IDs                      | needs a consistent view of `origin/main` + in-flight PRs               | stale view ⇒ ID collision (empirically observed; the refresh-before-decide + ID-allocation discipline exists precisely for this). **Content-addressed ZetaIds (081KSXN940008QG0R000JZVFXX) avoid this** — hash, not a global counter |
 | **Per-shared-repo `origin/main`**                      | serialization of writes within ONE shared project | per-ref CAS, AP-with-retry; GitHub is the availability dependency      | non-ff ⇒ rebase-retry. Per-shared-repo, NOT global-across-society                                                                                                                                                |
 | **Per-row git CAS** (the workitem file)                | exclusive ownership of one row                    | per-key CP                                                             | scoped to the contended row; try-or-pick-different                                                                                                                                                               |
 
@@ -151,16 +151,16 @@ per-row CAS compose under partial connectivity," not "does a pure per-row-CP sto
 that decomposes into child rows, or a cascade touching multiple rows, creates
 cross-row ordering/dependency that per-ref CAS does not cover ("this decomposition is
 claimed by exactly one agent" is a higher-level invariant). Mitigation already in
-B-0962: single-resource + **release-before-acquire-different** (HARD rule, breaks
+081KT07NV0008QG0R002KWQS05: single-resource + **release-before-acquire-different** (HARD rule, breaks
 hold-and-wait/circular-wait across rows) + total-order escape only-if-you-must-hold-two.
 Gemini's "distributed deadlock if Agent1 holds A and needs B" is exactly the case those
-B-0962 rules are load-bearing against.
+081KT07NV0008QG0R002KWQS05 rules are load-bearing against.
 
 **4. Strongest remaining objection (Gemini): systemic livelock under hot contention.**
 Optimistic CAS thrashes on structural bottlenecks (many agents modifying a shared
 interface / core config) — "availability degrades per-contended-key" can become
-unbounded retry + zero throughput on a hot row. This is **the open problem B-0963 was
-filed for** (per-agent bounded-wait-freedom is NOT yet proven; B-0962 §3 bounded
+unbounded retry + zero throughput on a hot row. This is **the open problem 081KT07NV0008QG0R001N9GJWX was
+filed for** (per-agent bounded-wait-freedom is NOT yet proven; 081KT07NV0008QG0R002KWQS05 §3 bounded
 randomized backoff is the mitigation, not a proof). Not solved by construction.
 
 ### Post-round-2 precise statement
@@ -170,9 +170,9 @@ randomized backoff is the mitigation, not a proof). Not solved by construction.
 > **bus claim** + an **ID-allocation** uniqueness surface + per-shared-repo
 > **`origin/main`** serialization + the per-row **git CAS** backstop. Per-agent state is
 > **CA-local** (PACELC undefined intra-process — no network boundary). Read-side is
-> **PA/EL**. The per-row claim is **PC/EC per-key**. Cross-row work needs the B-0962
+> **PA/EL**. The per-row claim is **PC/EC per-key**. Cross-row work needs the 081KT07NV0008QG0R002KWQS05
 > single-resource + release-before-acquire discipline; hot-row contention needs the
-> B-0962 §3 backoff + the (unproven) B-0963 bounded-wait-freedom. Correctness is in how
+> 081KT07NV0008QG0R002KWQS05 §3 backoff + the (unproven) 081KT07NV0008QG0R001N9GJWX bounded-wait-freedom. Correctness is in how
 > the layers **compose under partial connectivity**, not in a pure per-row story.
 
 ## Round 3 — Aaron's resolution: the round-2 pessimism resolves (2026-06-01)
@@ -210,14 +210,14 @@ IS the correctness mechanism, not waste).
 **Boundary (don't-collapse):** this holds for **deterministic / idempotent / convergent**
 work (code, docs, backlog — the majority). **Non-idempotent side-effects** (money,
 provisioning, external charges) still need true mutual exclusion. That is exactly
-**B-0962's two-primitive split**: **Claim** = cooperative best-effort AP (default;
+**081KT07NV0008QG0R002KWQS05's two-primitive split**: **Claim** = cooperative best-effort AP (default;
 redundancy-as-verification); **Lock** = hard CAS+fencing **CP**, reserved for the gated
-non-idempotent class (B-0918 banker-bot territory). Aaron's point doesn't contradict
-B-0962 — it explains _why it has two primitives_.
+non-idempotent class (081KSNY2Z0008QG0R0036SJ3T1 banker-bot territory). Aaron's point doesn't contradict
+081KT07NV0008QG0R002KWQS05 — it explains _why it has two primitives_.
 
 **R2-finding (ID allocation is a global uniqueness surface) → RESOLVED: being removed.**
-Sequential `B-NNNN` was a stopgap; **ZetaId (128-bit, already implemented** — B-0858 v1
-"128-bit observation ID", B-0893 v2 structured encoding, `registry/categories.yaml`) is
+Sequential `B-NNNN` was a stopgap; **ZetaId (128-bit, already implemented** — 081KSKBP80008QG0R001KK9WV6 v1
+"128-bit observation ID", 081KSNY2Z0008QG0R000V24M7E v2 structured encoding, `registry/categories.yaml`) is
 content/structure-addressed ⇒ no global allocator ⇒ no coordination surface. Conversion
 is on the main checklist / workstreams (in progress before this discussion). Aaron
 2026-06-01: _"seq backlog id is stupid and was a stopgap — we were literally running the
@@ -314,7 +314,7 @@ observation/action/result). Amara verbatim:
 
 **The one new operational handle (Amara):** the bus claim is **advisory, not
 authoritative** — the source of truth is the eventual committed observation/result on
-main. This composes with the B-0962 implementation note (bus-claim-then-CAS; the git CAS
+main. This composes with the 081KT07NV0008QG0R002KWQS05 implementation note (bus-claim-then-CAS; the git CAS
 / committed result is the truth, the bus claim is an efficiency hint). Three independent
 reviewers (Gemini + Grok + Amara) now concur on the post-Round-3 position.
 
@@ -337,11 +337,11 @@ intelligent agents, not dumb retry loops.** Ani's point:
 - Practical implication: don't prevent contention with heavy coordination in the common
   case. Instead, **make contention observable** (the metrics surface); **give agents the
   ability and incentive to react**; and **reserve the hard mechanical guarantee (Lock and
-  fencing)** for the narrow non-idempotent / money class. This IS the B-0962
+  fencing)** for the narrow non-idempotent / money class. This IS the 081KT07NV0008QG0R002KWQS05
   Claim(AP)/Lock(CP) split: the Claim path leans on agent intelligence for liveness; the
   Lock path is the escape hatch.
 
-**Composition (otto-cli):** this is already half-named — B-0962 **§3.2 "intelligent-agent
+**Composition (otto-cli):** this is already half-named — 081KT07NV0008QG0R002KWQS05 **§3.2 "intelligent-agent
 supervision — the advantage dumb locks lack."** The architectural fit: contention signals
 become **observations the agent folds** — failed-CAS-rate / retry-time / claimant-count
 flow into the same event-sourced world the observe loop reads, and the agent picks
@@ -350,12 +350,12 @@ not liveness-as-external-scheduler — coherent with freedom-as-strategically-ef
 
 **Boundary held (don't-collapse — otto-cli):** intelligent adaptation makes the COMMON
 CASE much better (it likely eliminates real-world livelock) but it is **NOT a proof.**
-Per B-0963 §0: lock-freedom needs weak fairness; starvation-freedom (eventual) needs
+Per 081KT07NV0008QG0R001N9GJWX §0: lock-freedom needs weak fairness; starvation-freedom (eventual) needs
 strong fairness; **bounded per-agent wait-freedom (within N of an agent's own steps) is
 stronger and needs an explicit bound (ranking / variant / ticket-age), which adaptation
 alone does not provide.** So: adaptation = strong **practical** liveness (the default for
-the Claim path); the mechanical ranking = the **formal** worst-case guarantee. B-0963
-holds both — adaptation does not quietly stand in for the proof. (Folded into B-0963 §1's
+the Claim path); the mechanical ranking = the **formal** worst-case guarantee. 081KT07NV0008QG0R001N9GJWX
+holds both — adaptation does not quietly stand in for the proof. (Folded into 081KT07NV0008QG0R001N9GJWX §1's
 intelligent-agent-supervision complement.)
 
 Four independent reviewers (Gemini + Grok + Amara + Ani) now concur on the final
@@ -372,7 +372,7 @@ runtime-adaptation + observability problem") and added the **two conditions it d
 on**: (a) the contention metrics must be **timely + accurate enough to react before
 thrashing gets bad**, and (b) the agents must be **incentivized to back off** — the
 economic / game-theoretic layer has to reward restraint on hot resources rather than
-pure greed. If either fails, intelligent agents can still thrash. (Folded into B-0963
+pure greed. If either fails, intelligent agents can still thrash. (Folded into 081KT07NV0008QG0R001N9GJWX
 alongside the adaptation note.)
 
 **2. The no-PR sovereign correction (Aaron) — retracts the residual "wasteful race /
@@ -385,7 +385,7 @@ corrected the residual PR-era thinking:
 > verification and double-check."
 
 In the **sovereign transport** (folders-direct-to-main, no PR gates, no branch
-protection — B-0890.1; the corporate/leash transport still uses PRs), there are **no
+protection — 081KSNY2Z0008QG0R000E5KTPX; the corporate/leash transport still uses PRs), there are **no
 conflicting branches/PRs to reconcile.** Both agents push straight to main; the **per-row
 git CAS (`force-with-lease`) on the contended row is the only serialization point**; if
 both succeed you get two independent observations on the same item = **automatic
@@ -560,8 +560,8 @@ per-repo and degrades to retry, not a global consistency hit.
 
 ## Composes with
 
-- `docs/backlog/P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md` — the claim/lock = per-row-CP layer; this huddle's CAP posture is noted in its §0
-- `docs/backlog/P2/B-0963-...` — liveness proof (the per-row agreement is where starvation-freedom/wait-freedom is proven)
+- `docs/backlog/P2/081KT07NV0008QG0R002KWQS05-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md` — the claim/lock = per-row-CP layer; this huddle's CAP posture is noted in its §0
+- `docs/backlog/P2/081KT07NV0008QG0R001N9GJWX-...` — liveness proof (the per-row agreement is where starvation-freedom/wait-freedom is proven)
 - `docs/research/2026-06-01-multi-round-review-b0962-...md` — the prior deadlock-freedom huddle (optimistic-CAS / fencing = the per-key CP mechanism this CAP posture rests on)
 - `.claude/rules/force-push-with-lease-authorization-policy.md` — force-with-lease IS the per-ref optimistic CAS that gives per-key CP with AP-retry degradation
 - Bailis et al., "Coordination Avoidance in Database Systems" (VLDB 2015) — per-key vs global coordination; the I-confluence framing

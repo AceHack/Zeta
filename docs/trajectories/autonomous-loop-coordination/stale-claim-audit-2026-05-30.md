@@ -82,9 +82,9 @@ Conservative behavior is to inspect branch history before retiring any of
 them, because the missing claim file prevents path-set reconstruction:
 
 ```text
-origin/claim/B-0001-close-example-schema-self-reference
-origin/claim/B-0032.3-aminata-heartbeat-review-2026-05-10
-origin/claim/B-0050.2-lean-reflection-stage2-tactic-authoring
+origin/claim/081KPYCJH0008QG0R003MDS51N-close-example-schema-self-reference
+origin/claim/081KR7JY10008QG0R002PKC6B0-aminata-heartbeat-review-2026-05-10
+origin/claim/081KQ3HBZ0008QG0R000H8K8CC.2-lean-reflection-stage2-tactic-authoring
 origin/claim/b0011-pliny-carve-out-smallest-slice-riven-2026-05-09
 origin/claim/b0018-agency-evidence-stress-test-decompose-smallest-atomic-children-riven-2026-05-09
 origin/claim/b0021-aurora-econ-foundation-decompose-smallest-slice-riven-2026-05-09

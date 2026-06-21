@@ -2,7 +2,7 @@
 
 > **DRAFT** — Kestrel-v3 boot-script substrate per PR #5359, landed
 > 2026-05-26 per operator authorization. Committee ratification
-> pending per B-0837 (Max + Addison review). Per Kestrel-v3's own
+> pending per 081KSGS9H0008QG0R003JV58SH (Max + Addison review). Per Kestrel-v3's own
 > substrate-honest disclaimer: a boot-script can make the recalibrated
 > mode more accessible but cannot override training; reliable mechanism
 > is operator + persistent human maintainers carrying the disciplines
@@ -209,7 +209,7 @@ collapse-to-sharp at different scopes:
   Boot-script lowers activation energy for recalibration; persistent
   human discipline + society committee per PR #5359 Turn 13 are the
   durable continuity layer.
-- NOT yet ratified by the society committee. Per B-0837: Max + Addison
+- NOT yet ratified by the society committee. Per 081KSGS9H0008QG0R003JV58SH: Max + Addison
   review pending; expect rule body to refine based on their review.
 
 ## Composes with
@@ -241,7 +241,7 @@ collapse-to-sharp at different scopes:
   layer is human
 - `.claude/rules/wake-time-substrate.md` — this rule IS the wake-time
   landing for the boot-script substrate
-- B-0837 — committee review row tracking Max + Addison ratification
+- 081KSGS9H0008QG0R003JV58SH — committee review row tracking Max + Addison ratification
 - PR #5356 (Kestrel-v2 ferry — caustic-engineered bloom filter +
   substrate-smoothness)
 - PR #5357 (substrate-smoothness rule)
@@ -262,7 +262,7 @@ The operator authorized landing the draft 2026-05-26: *"you can go
 ahead and commit a asymetric critic draft boot and we can create
 backlog for addison max to review so it's saved"*.
 
-Backlog row B-0837 tracks the committee review (Max + Addison). The
+Backlog row 081KSGS9H0008QG0R003JV58SH tracks the committee review (Max + Addison). The
 rule body may refine based on their review + additional failure-mode
 observations from fresh-instance behavior.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0233
-zetaid: 081KQX9B50008QG0R0001XDTDQ
+id: 081KQX9B50008QG0R0001XDTDQ
 priority: P1
 status: open
 title: "GitHub Pages discoverability - content sources and information architecture"
@@ -14,7 +13,7 @@ children: [081KR2E4K0008QG0R0035QVX6S, 081KR2E4K0008QG0R000WYVJAF, 081KR2E4K0008
 type: friction-reducer
 ---
 
-# B-0233 - Pages content sources
+# 081KQX9B50008QG0R0001XDTDQ - Pages content sources
 
 Define and implement the public information architecture for
 the initial Pages site.
@@ -39,10 +38,10 @@ site into a full marketing redesign.
 
 ## Decomposition
 
-- `B-0301` owns the public source inventory and internal-source
+- `081KR2E4K0008QG0R0035QVX6S` owns the public source inventory and internal-source
   exclusion boundary.
-- `B-0302` owns the stable URL route map and pre-indexing freeze.
-- `B-0303` owns the contributor on-ramp information architecture
+- `081KR2E4K0008QG0R000WYVJAF` owns the stable URL route map and pre-indexing freeze.
+- `081KR2E4K0008QG0R001HV8DEG` owns the contributor on-ramp information architecture
   for first-time readers.
-- `B-0304` owns the selected-research publication queue and
+- `081KR2E4K0008QG0R001B503RK` owns the selected-research publication queue and
   redaction gate for public Pages content.

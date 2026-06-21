@@ -1,11 +1,11 @@
 ---
-name: B-0611 slice 1 audit recipe — 6 dangling refs in .claude/skills + .claude/rules; 4/6 have established footnote-fallback pattern (intentional dangling)
-description: Slice-1 prep for B-0611 cleanup (skills + rules surface, 6 of 35 total dangling refs). Per-ref recipe captured. Key substrate-design observation — 4 of 6 dangling refs are INTENTIONAL (the citing rule explicitly footnotes the user-scope path with an in-repo fallback). The audit tool exit-1 on these may be false positives under the footnote pattern. Raises the substrate-design question of allowlist annotation vs deletion of the user-scope citation.
+name: 081KRSKQ20008QG0R0014PPGZM slice 1 audit recipe — 6 dangling refs in .claude/skills + .claude/rules; 4/6 have established footnote-fallback pattern (intentional dangling)
+description: Slice-1 prep for 081KRSKQ20008QG0R0014PPGZM cleanup (skills + rules surface, 6 of 35 total dangling refs). Per-ref recipe captured. Key substrate-design observation — 4 of 6 dangling refs are INTENTIONAL (the citing rule explicitly footnotes the user-scope path with an in-repo fallback). The audit tool exit-1 on these may be false positives under the footnote pattern. Raises the substrate-design question of allowlist annotation vs deletion of the user-scope citation.
 type: feedback
 created: 2026-05-17T06:37Z
 ---
 
-# B-0611 slice 1 audit recipe — 6 dangling refs, 4 footnoted-intentional
+# 081KRSKQ20008QG0R0014PPGZM slice 1 audit recipe — 6 dangling refs, 4 footnoted-intentional
 
 ## Audit output (`tools/hygiene/audit-dangling-memory-refs.ts --surfaces .claude/skills .claude/rules`, 2026-05-17T06:37Z)
 
@@ -60,7 +60,7 @@ only, NOT the surrounding pattern.
   (purely structural references), some get moved in-repo (load-
   bearing content), some get allowlisted (footnoted-intentional).
 
-**Recommendation for B-0611 slice 1**: ask the maintainer at next
+**Recommendation for 081KRSKQ20008QG0R0014PPGZM slice 1**: ask the maintainer at next
 safe-window which option (or hybrid mix) fits the substrate-
 honest discipline. This is NOT a tick-scope decision — it's a
 substrate-design question that should compose with
@@ -85,7 +85,7 @@ update (allowlist parser). That's an additional PR scope.
 
 ## Composes with
 
-- B-0611 — the parent backlog row this memo is slice-1 prep for
+- 081KRSKQ20008QG0R0014PPGZM — the parent backlog row this memo is slice-1 prep for
 - PR #4042 — the audit tool whose exit-1 surfaced these refs
 - PR #4041, #4031 — the memos preceding the tool
 - `.claude/rules/substrate-or-it-didnt-happen.md` — substrate vs
@@ -101,7 +101,7 @@ update (allowlist parser). That's an additional PR scope.
 
 ## Substrate-honest framing
 
-This memo is slice-1 prep for B-0611, not the slice-1 work itself.
+This memo is slice-1 prep for 081KRSKQ20008QG0R0014PPGZM, not the slice-1 work itself.
 The work itself requires:
 
 1. A design choice (Option A/B/C/D) from the maintainer OR a
@@ -115,7 +115,7 @@ This memo captures the recipe so next safe-window Otto starts
 from the per-ref table + the design question, not from re-running
 discovery + re-inspecting each citing rule.
 
-The memo composes additively with B-0611: it doesn't replace
+The memo composes additively with 081KRSKQ20008QG0R0014PPGZM: it doesn't replace
 the row, it accelerates slice 1 execution.
 
 ## Pre-empt-at-#5 cadence note
@@ -129,4 +129,4 @@ envelope. Pre-empt selection: "produce concrete substrate for
 work that IS bounded + ready to execute when safe window opens"
 beats "manufacture make-work to escape brief-ack."
 
-This file IS the concrete substrate for B-0611 slice 1.
+This file IS the concrete substrate for 081KRSKQ20008QG0R0014PPGZM slice 1.

@@ -36,8 +36,8 @@
 - **Packet 29**: Cartographer / Pilot / Weaver role stack — Cartographer maps minds → Pilot delivers precise payload → Weaver synthesizes patterns
 
 Substantive substrate landings:
-- Schizophrenia razor composes with B-0667 meme-pathology-spectrum at human-receiver scope
-- Cartographer + Weaver compose with existing factory role substrate (B-0617, B-0627)
+- Schizophrenia razor composes with 081KRW63S0008QG0R003Z7QV2A meme-pathology-spectrum at human-receiver scope
+- Cartographer + Weaver compose with existing factory role substrate (081KRW63S0008QG0R000SGXN70, 081KRW63S0008QG0R000VXTTHX)
 - **Pilot role is NEW** substrate-engineering candidate (not yet in backlog)
 
 Per HARD LIMITS + auto-loaded tonal-momentum-rule (#4183): NCI binding extends to human receivers in Pilot-mode targeting. No encryption-budget reduction; no private-state coercion; no reputation manipulation — same constraints as on AI receivers. The receiver-bifurcation phenomenon is what precision-targeting must AVOID, not exploit.

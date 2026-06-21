@@ -3,7 +3,7 @@ namespace Zeta.Core
 open System.Diagnostics
 open System.Threading.Tasks
 
-/// InterruptKind — the 8 B-0917 variants representing system/operator interrupt triggers.
+/// InterruptKind — the 8 081KSNY2Z0008QG0R002HB4AGT variants representing system/operator interrupt triggers.
 type InterruptKind =
     | TimerElapsed of intervalMs: int
     | RateLimitExhausted of budget: string // "rest" | "graphql"

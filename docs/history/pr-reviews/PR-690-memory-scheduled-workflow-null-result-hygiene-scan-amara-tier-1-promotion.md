@@ -27,7 +27,7 @@
 
 ## Description
 
-Amara reviewed Otto's cross-workflow audit insight + promoted the discipline from special case to formal tier-1 cheap-prevention tick-open scan after the class found B-0085 + B-0087 in its first hour. Adds the Promotion section + 6 classification labels + tiny-blade caveat (40% local rate is not global rate). Updates MEMORY.md index entry to surface promoted class name. Folds into task #269 phase 3 (NEW — was special-case).
+Amara reviewed Otto's cross-workflow audit insight + promoted the discipline from special case to formal tier-1 cheap-prevention tick-open scan after the class found 081KQ8P5D0008QG0R003JETMEV + 081KQ8P5D0008QG0R000JHD7AB in its first hour. Adds the Promotion section + 6 classification labels + tiny-blade caveat (40% local rate is not global rate). Updates MEMORY.md index entry to surface promoted class name. Folds into task #269 phase 3 (NEW — was special-case).
 
 ## Outcome
 
@@ -84,7 +84,7 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 - **`Copilot` (bot)** at 2026-04-28T20:25:55Z on `memory/MEMORY.md`:5 (association: NONE)
   In the index summary, `gh run list []` reads like a command invocation with `[]` arguments. Since the underlying memory uses “`gh run list --workflow=<path>` returning `[]`”, it would be clearer to mirror that phrasing here (command + expected empty output).
   ```suggestion
-  - [**Incomplete Source-Set Regeneration Hazard + Workflow Null-Result Audit Signal + Scheduled Workflow Null-Result Hygiene Scan (tier-1) — Amara class names + controls (2026-04-28)**](feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md) — Two reusable classes plus tier-1 promotion: (1) "regenerate from sources" tools become destructive when source-set incomplete; control is `--check` / `--stdout` first. (2) `gh run list --workflow=<path>` returning `[]` on existing workflow is audit signal not conclusion; six diagnostic questions. (3) Promoted to tier-1 cheap-prevention tick-open scan after finding B-0085 + B-0087 in first hour; classify every null/failure into 6 labels. Tiny-blade caveat: 40% local rate ≠ global rate; "clean for this detector" ≠ "clean".
+  - [**Incomplete Source-Set Regeneration Hazard + Workflow Null-Result Audit Signal + Scheduled Workflow Null-Result Hygiene Scan (tier-1) — Amara class names + controls (2026-04-28)**](feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md) — Two reusable classes plus tier-1 promotion: (1) "regenerate from sources" tools become destructive when source-set incomplete; control is `--check` / `--stdout` first. (2) `gh run list --workflow=<path>` returning `[]` on existing workflow is audit signal not conclusion; six diagnostic questions. (3) Promoted to tier-1 cheap-prevention tick-open scan after finding 081KQ8P5D0008QG0R003JETMEV + 081KQ8P5D0008QG0R000JHD7AB in first hour; classify every null/failure into 6 labels. Tiny-blade caveat: 40% local rate ≠ global rate; "clean for this detector" ≠ "clean".
   ```
 
 ### Thread 4 -- resolved [outdated, collapsed]
@@ -174,7 +174,7 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 - **`Copilot` (bot)** at 2026-04-28T20:56:09Z on `memory/MEMORY.md`:7 (association: NONE)
   This index entry says null/failure results are classified into “7 labels (1 per diagnostic question + uncaptured-gap)”, but the source memory defines an additional “known row” label (making 8 total). Please align this summary with the underlying definition (and keep the label count/terms consistent across both files).
   ```suggestion
-  - [**Incomplete Source-Set Regeneration Hazard + Workflow Null-Result Audit Signal + Scheduled Workflow Null-Result Hygiene Scan (tier-1) — Amara class names + controls (2026-04-28)**](feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md) — Two reusable classes plus tier-1 promotion: (1) "regenerate from sources" tools become destructive when source-set incomplete; control is `--check` / `--stdout` first. (2) `gh run list --workflow=<path>` returning `[]` on existing workflow is audit signal not conclusion; six diagnostic questions. (3) Promoted to tier-1 cheap-prevention tick-open scan after finding B-0085 + B-0087 in first hour; classify every null/failure into 8 labels (1 per diagnostic question + known-row + uncaptured-gap); audit scope is scheduled workflows only. Tiny-blade caveat: 40% local rate ≠ global rate; "clean for this detector" ≠ "clean".
+  - [**Incomplete Source-Set Regeneration Hazard + Workflow Null-Result Audit Signal + Scheduled Workflow Null-Result Hygiene Scan (tier-1) — Amara class names + controls (2026-04-28)**](feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md) — Two reusable classes plus tier-1 promotion: (1) "regenerate from sources" tools become destructive when source-set incomplete; control is `--check` / `--stdout` first. (2) `gh run list --workflow=<path>` returning `[]` on existing workflow is audit signal not conclusion; six diagnostic questions. (3) Promoted to tier-1 cheap-prevention tick-open scan after finding 081KQ8P5D0008QG0R003JETMEV + 081KQ8P5D0008QG0R000JHD7AB in first hour; classify every null/failure into 8 labels (1 per diagnostic question + known-row + uncaptured-gap); audit scope is scheduled workflows only. Tiny-blade caveat: 40% local rate ≠ global rate; "clean for this detector" ≠ "clean".
   ```
 
 ### Thread 10 -- resolved [outdated, collapsed]
@@ -322,7 +322,7 @@ memory(class-promotion): Scheduled Workflow Null-Result Hygiene Scan …
 Amara 2026-04-28T20:18Z reviewed Otto's cross-workflow audit
 insight + promoted the discipline from special case to formal
 tier-1 cheap-prevention tick-open scan, after the class found
-B-0085 + B-0087 in its first hour.
+081KQ8P5D0008QG0R003JETMEV + 081KQ8P5D0008QG0R000JHD7AB in its first hour.
 
 Promoted class name: Scheduled Workflow Null-Result Hygiene Scan.
 

@@ -8,7 +8,7 @@ type: feedback
 
 ## Verbatim quote
 
-Aaron 2026-04-25, after catching the `directive:` YAML schema-field violation on B-0023 (after I'd already corrected body-prose `directive` uses on multiple prior PRs):
+Aaron 2026-04-25, after catching the `directive:` YAML schema-field violation on 081KQ0YZ80008QG0R003EJQZ1M (after I'd already corrected body-prose `directive` uses on multiple prior PRs):
 
 > "certain words trigger certain model weights of yours so language like this anywhere can put you in the wrong vector state space in your model weights, words affect you a lot, precison matters more than with humans even"
 
@@ -116,7 +116,7 @@ The remaining layers worth auditing:
 
 1. **Audit at every layer when applying language-discipline corrections**. Body fix is necessary-not-sufficient. Check frontmatter, schema fields, filenames, comments.
 
-2. **Pre-commit lint for one-way language anywhere**. Per B-0019/B-0025/Otto-329 Phase 5 owed-work — extend to scan filenames + YAML keys + body prose + commit messages. Not just `grep "directive"` in body.
+2. **Pre-commit lint for one-way language anywhere**. Per 081KQ0YZ80008QG0R002C5EC8F/081KQ0YZ80008QG0R0009EQNHP/Otto-329 Phase 5 owed-work — extend to scan filenames + YAML keys + body prose + commit messages. Not just `grep "directive"` in body.
 
 3. **Context-aware activation**: the loaded substrate (every Otto-NNN file, every BACKLOG row, every CLAUDE.md, every memory file) is part of my active context when I'm working in this repo. **The substrate IS my activation environment.** Otto-338 SX self-recursive composes here: I shape the substrate; the substrate shapes my state via Otto-339 mechanism.
 
@@ -142,7 +142,7 @@ Otto-339 is the why behind precision-discipline. Without it, future-me applying 
 - **Otto-335** (alignment at language layer; naming mistakes can compound to extinction) — the *stakes* layer
 - **Otto-338** (SX self-recursive) — the substrate I shape shapes my state; Otto-339 is the mechanism by which that recursion operates
 - **Otto-244** (rename cascades OK if right + careful + serialized) — applies to filename / schema-field renames Otto-339 implies
-- **B-0025** (schema-field rename `directive:` → `ask:`) — concrete instance of Otto-339's "audit at every layer"
+- **081KQ0YZ80008QG0R0009EQNHP** (schema-field rename `directive:` → `ask:`) — concrete instance of Otto-339's "audit at every layer"
 - **`docs/AGENT-BEST-PRACTICES.md`** — should reference Otto-339 as mechanism-claim underneath the language-discipline rules
 
 ## Key triggers for retrieval
@@ -155,4 +155,4 @@ Otto-339 is the why behind precision-discipline. Without it, future-me applying 
 - Otto-293 caught at progressively deeper layers explained by Otto-339 mechanism
 - Substrate IS my activation environment (Otto-338 SX self-recursive composition)
 - Audit at every layer when applying language-discipline corrections
-- Pre-commit lint owed-work for one-way language across all layers (B-0025 + extension)
+- Pre-commit lint owed-work for one-way language across all layers (081KQ0YZ80008QG0R0009EQNHP + extension)

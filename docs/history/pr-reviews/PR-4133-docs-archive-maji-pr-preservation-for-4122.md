@@ -92,7 +92,7 @@ docs(archive): Maji PR preservation for #4122
 **Message:**
 
 ```
-fix(#4133): relative link to B-0614 from docs/pr-discussions/
+fix(#4133): relative link to 081KRSKQ20008QG0R0028VN0KR from docs/pr-discussions/
 
 Codex P2 catch: `docs/backlog/...` from inside `docs/pr-discussions/`
 resolves to `docs/pr-discussions/docs/backlog/...`. Use `../backlog/...`

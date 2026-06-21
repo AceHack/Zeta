@@ -1,13 +1,13 @@
 namespace Zeta.Core
 
-/// LinguisticSeed — the kernel-substrate seed as an F# computation expression (B-0204, Aaron 2026-06-10:
+/// LinguisticSeed — the kernel-substrate seed as an F# computation expression (081KQTPYE0008QG0R0028V263Z, Aaron 2026-06-10:
 /// "linguistic seed in F# computation expressions and their language-kernel extension packs that are
 /// composable ... this is the start of that").
 ///
 /// A **carved sentence = a kernel** (MDL two-part code: the sentence is the model, the application
 /// context the residual). The seed language grows by **composing Mercer-closed kernels** via composable
 /// **extension packs** — **OCP**: open for extension (add a pack), closed for modification (existing
-/// packs/kernels are never edited). The mathematical payoff (B-0204's "discipline becomes a theorem"):
+/// packs/kernels are never edited). The mathematical payoff (081KQTPYE0008QG0R0028V263Z's "discipline becomes a theorem"):
 /// every kernel built here is **PSD by construction** because ONLY Mercer-closure operations are
 /// exposed (sum, Schur product, nonneg scale, constant≥0, feature map, pullback) and each preserves PSD.
 /// Compositions outside the closure can't be expressed, so they can't break PSD.

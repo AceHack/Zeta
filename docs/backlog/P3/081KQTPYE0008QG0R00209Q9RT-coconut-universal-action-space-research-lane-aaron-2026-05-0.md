@@ -1,6 +1,5 @@
 ---
-id: B-0201
-zetaid: 081KQTPYE0008QG0R00209Q9RT
+id: 081KQTPYE0008QG0R00209Q9RT
 priority: P3
 status: open
 title: Coconut + universal-action-space + AI-to-AI-protocol research lane -- Coconut empirical test as sleeping-bear hypothesis falsifier (Aaron 2026-05-05)
@@ -15,7 +14,7 @@ tags: [coconut, latent-reasoning, sleeping-bear-hypothesis, gibberlink, ggwave, 
 type: feature
 ---
 
-# B-0201 -- Coconut + universal-action-space research lane
+# 081KQTPYE0008QG0R00209Q9RT -- Coconut + universal-action-space research lane
 
 ## Source
 
@@ -52,8 +51,8 @@ This row is **research-grade-not-operational**:
 - Aaron's 2026-05-05 framing was explicitly P3-tier:
   *"we can backlog to research it all later"*.
 - The empirical test (acceptance criteria below) requires substrate that
-  doesn't exist yet (composes-with B-0152's emulation-inside-the-algebra
-  + B-0200's CodeAct/F# bridge engineering); P3 lets the lane mature
+  doesn't exist yet (composes-with 081KQGDBJ0008QG0R00280ZEV2's emulation-inside-the-algebra
+  + 081KQTPYE0008QG0R0009F20NN's CodeAct/F# bridge engineering); P3 lets the lane mature
   without forcing premature integration.
 
 If Coconut-style latent reasoning over Zeta substrate becomes a delivery
@@ -147,7 +146,7 @@ representational shift Coconut introduces:
   signed deltas compose via the abelian group structure on the
   vector-space.
 
-**B-0152's emulation-inside-the-algebra** gives Coconut a place to
+**081KQGDBJ0008QG0R00280ZEV2's emulation-inside-the-algebra** gives Coconut a place to
 actually run with hodl preserved. The substrate shape is: continuous-
 thought trajectory expressed as a DBSP circuit over a
 vector-space-module Z-set, with DST replay and retraction primitives
@@ -203,7 +202,7 @@ covers all four:
 Python as universal action vocabulary for LLM agents. The bridge
 engineering (F# DSL as the typed structurally-equivalent surface, with
 a Python boundary for ecosystem reach) is tracked separately in
-**B-0200**. The research-lane interest here is the *universal-action-
+**081KQTPYE0008QG0R0009F20NN**. The research-lane interest here is the *universal-action-
 vocabulary* axis -- whether Python's role generalizes to "any
 algebraically-closed action space," and whether Zeta's operator algebra
 is a stronger candidate for the closed action space than Python is.
@@ -254,12 +253,12 @@ opaque.
   focused. Ruled out by Aaron's 2026-05-05 clarification:
   *"the universal language was special, NOT the embodyment."* The
   research lane is about the language axis; embodiment is a distinct
-  axis with separate composition (B-0026 covers embodiment-grounding
+  axis with separate composition (081KQ0YZ80008QG0R001WZ4JE8 covers embodiment-grounding
   analysis).
 
 If a future Coconut-adjacent paper appears that **also** crosses the
 embodiment line, it should land as a new row composing with both this
-one and B-0026, not as a re-absorb of any cut item.
+one and 081KQ0YZ80008QG0R001WZ4JE8, not as a re-absorb of any cut item.
 
 ## Sleeping-bear hypothesis lineage
 
@@ -297,10 +296,10 @@ Across 2026-05-05's substrate-flow, Aaron progressively narrowed the half-rememb
 
 | Candidate | Status at paper-id level | Substrate role retained |
 |---|---|---|
-| **CodeAct** (Wang et al., ICML 2024) | ELIMINATED | Bridge engineering candidate (B-0200) |
+| **CodeAct** (Wang et al., ICML 2024) | ELIMINATED | Bridge engineering candidate (081KQTPYE0008QG0R0009F20NN) |
 | **Coconut** (Meta, arXiv:2412.06769) | ELIMINATED at paper-id level (Aaron *"i'm not 100% sure that's the thing i saw"*) | THIS ROW's primary candidate for sleeping-bear empirical test (hypothesis-level finding stands) |
 | **Symbolica AI Categorical Deep Learning** (arXiv:2402.15332) | ELIMINATED (Aaron *"i love this but no it seemed kind of basic and not well pricpled but correct like relesed in the last month"*) | Categorical-DL parallel substrate; ZFCv2 + Milewski + Symbolica fellow-traveler lineage |
-| **Tinygrad UOp IR** (George Hotz / tiny corp) | ELIMINATED (Aaron *"it's still not tinygrad, i did see that but that's not my univeral language"*) | Kernel-layer engineering candidate (B-0202) |
+| **Tinygrad UOp IR** (George Hotz / tiny corp) | ELIMINATED (Aaron *"it's still not tinygrad, i did see that but that's not my univeral language"*) | Kernel-layer engineering candidate (081KQTPYE0008QG0R002Y7X5KH) |
 | **Speech ReaLLM** | ELIMINATED (Aaron's "more obscure" filter ruled out) | Real-time streaming research candidate |
 | **GibberLink / ggwave** | NOT ELIMINATED (still parallel candidate) | AI-to-AI audio protocol research |
 | **LAPA (Latent Action Pretraining)** | NOT ELIMINATED (still parallel candidate) | Latent action tokens research |
@@ -309,7 +308,7 @@ Across 2026-05-05's substrate-flow, Aaron progressively narrowed the half-rememb
 
 ## Out of scope
 
-This row is bounded; the following are **out of scope** for B-0201
+This row is bounded; the following are **out of scope** for 081KQTPYE0008QG0R00209Q9RT
 specifically:
 
 - **Training a new transformer from scratch.** Zeta is not a
@@ -323,25 +322,25 @@ specifically:
   research-relevant question is whether four-property hodl survives
   the latent trajectory.
 - **Engagement with Meta researchers** (Hao, Sukhbaatar, Su, Li, Hu,
-  Weston, Tian). The B-0200 engagement-gate framework applies: external
+  Weston, Tian). The 081KQTPYE0008QG0R0009F20NN engagement-gate framework applies: external
   engagement happens after substrate exists to point at, not before.
 
 ## Composes with
 
-- **B-0152** -- *Topological-quantum emulation via Bayesian inference,
+- **081KQGDBJ0008QG0R00280ZEV2** -- *Topological-quantum emulation via Bayesian inference,
   Zeta seed executor*. The emulation-inside-the-algebra discipline that
   gives Coconut-style latent reasoning a hodl-preserving substrate to
   run on.
-- **B-0026** -- *Embodiment-grounding analysis (Isaac Sim and other
+- **081KQ0YZ80008QG0R001WZ4JE8** -- *Embodiment-grounding analysis (Isaac Sim and other
   robotics-sim platforms; Otto-340 counter)*. Adjacent axis;
   embodiment-focused candidates that were cut from THIS row land near
-  B-0026 if they re-surface.
-- **B-0196** -- *BigInt and BigNumber integration*. Numeric substrate
+  081KQ0YZ80008QG0R001WZ4JE8 if they re-surface.
+- **081KQTPYE0008QG0R001W237MZ** -- *BigInt and BigNumber integration*. Numeric substrate
   the four-property algebra depends on; latent-trajectory verification
   may need exact-arithmetic checks of retraction inverses.
-- **B-0200** -- *CodeAct + F# DSL bridge engineering* (the universal-
-  action-vocabulary axis as engineering, not research). B-0201 is the
-  research-lane companion; B-0200 is the engineering-lane companion.
+- **081KQTPYE0008QG0R0009F20NN** -- *CodeAct + F# DSL bridge engineering* (the universal-
+  action-vocabulary axis as engineering, not research). 081KQTPYE0008QG0R00209Q9RT is the
+  research-lane companion; 081KQTPYE0008QG0R0009F20NN is the engineering-lane companion.
 
 ## The carved sentence
 

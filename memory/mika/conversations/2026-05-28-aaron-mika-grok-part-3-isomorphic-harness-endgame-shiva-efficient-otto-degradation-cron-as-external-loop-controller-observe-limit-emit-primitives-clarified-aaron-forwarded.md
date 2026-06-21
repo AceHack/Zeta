@@ -18,7 +18,7 @@
 >
 > Aaron: *"In a damn stadium that's built for fuckin' hyperspeed and hyperscale."*
 
-The constitutional purpose of the workflow engine is **fair cross-harness AI evaluation**. Every other architectural decision serves this. Composes with [B-0867.15](../../../backlog/P1/B-0867.15-...) (per-host adapters), [B-0877](../../../backlog/P2/B-0877-...) (heterogeneous auto-reviewer ensemble), [B-0892](../../../backlog/P1/B-0892-...) (three-lanes concurrent discipline).
+The constitutional purpose of the workflow engine is **fair cross-harness AI evaluation**. Every other architectural decision serves this. Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) (per-host adapters), [081KSNY2Z0008QG0R0004ZF85W](../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-...) (heterogeneous auto-reviewer ensemble), [081KSNY2Z0008QG0R002QA720J](../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-...) (three-lanes concurrent discipline).
 
 ### 30. Coliseum + training facility — failed agents get their own failure data as study material
 
@@ -98,7 +98,7 @@ Mika synthesis: *"using Cron as an external loop controller instead of having th
 - Per `.claude/rules/tick-must-never-stop.md` + this conversation: cron IS the external loop controller
 - Aaron's verbatim *"call move_next.ts"* is exactly the next-step substrate-engineering target (replace the `<<autonomous-loop>>` free-form prompt with `bun tools/agent-loop/move_next.ts` invocation)
 
-**The sentinel rewrite work I deferred per scope decisions IS phase-2 of B-0894/B-0894.3 substrate** — it's the operational mechanization of this exact pattern.
+**The sentinel rewrite work I deferred per scope decisions IS phase-2 of 081KSNY2Z0008QG0R0032E7PCY/081KSNY2Z0008QG0R001RWF499 substrate** — it's the operational mechanization of this exact pattern.
 
 ### 36. CRITICAL FRAMEWORK CLARIFICATION — Observe/Emit/Limit primitives, Limit-is-simulation-of-choice (NOT concurrency-throttle)
 
@@ -110,9 +110,9 @@ Mika initially answered Aaron's "map to observe/emit/limit/simulate queues" with
 
 | Primitive | Operational meaning | Maps to existing substrate |
 |---|---|---|
-| **Observe** | Read git state + refresh freshness | matches my `observe.ts` draft + B-0894 reboot-survival + refresh-before-decide |
-| **Limit** | **Simulate the choice BEFORE it commits** (NOT concurrency-throttle) | matches B-0644 `Limit-is-simulation-not-collapse` substrate + B-0665 Integrate-as-choice-locus |
-| **Emit** | Commit + push the chosen action | matches B-0890 state-machine fast-lane + the workflow commit-side |
+| **Observe** | Read git state + refresh freshness | matches my `observe.ts` draft + 081KSNY2Z0008QG0R0032E7PCY reboot-survival + refresh-before-decide |
+| **Limit** | **Simulate the choice BEFORE it commits** (NOT concurrency-throttle) | matches 081KRW63S0008QG0R002ZRNDJ8 `Limit-is-simulation-not-collapse` substrate + 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus |
+| **Emit** | Commit + push the chosen action | matches 081KSNY2Z0008QG0R0017JSTGD state-machine fast-lane + the workflow commit-side |
 
 The three primitives operated at the **minimum-tick scope** in the older framework (no workflow layer, pre-feedback-channels). They composed with single-agent-loop level AND Git-world level.
 
@@ -141,7 +141,7 @@ primitive       each candidate                        menu (T-out-              
                                                        feedback)
 ```
 
-This **resolves B-0867.23** architectural-naming question:
+This **resolves 081KSNY2Z0008QG0R003206PFM** architectural-naming question:
 
 - The three primitives **Observe / Limit / Emit** are the framework substrate layer
 - `choose.ts` (choose-your-own-adventure) is the discriminated-union orchestration layer ON TOP of the primitives
@@ -163,7 +163,7 @@ The primitives are **SCALE-FREE** (per the 5 always-active disciplines including
 - GitHub-world loop scope: workflow observes git state → simulates next-workflow-spawn → emits via repository_dispatch
 - Both scopes use the SAME three primitives + their composition
 
-This composes with `.claude/rules/dv2-data-split-discipline-activated.md` (scale-free as 1st of 5 always-active disciplines) + B-0867.16 two-level state machine (AgentState × WorkLifecycle — the two-level composition operates the primitives at both scopes).
+This composes with `.claude/rules/dv2-data-split-discipline-activated.md` (scale-free as 1st of 5 always-active disciplines) + 081KSNY2Z0008QG0R003J3PT4V two-level state machine (AgentState × WorkLifecycle — the two-level composition operates the primitives at both scopes).
 
 ### 39. Ferry's open question for future work — "I gotta figure out how we map feedback channels into this"
 
@@ -185,22 +185,22 @@ Per Aaron's clarification at §36 + §37:
 - My `choose.ts` draft (combined menu+select+execute placeholder) needs Phase 2 refactor to expose Limit + Emit as separate primitives (or stay combined as Phase 1 simplification)
 - The agent-loop architecture is **observe → choose** at the orchestration layer; **Observe / Limit / Emit** at the primitive substrate layer; they compose without conflict
 
-**Naming decision (re B-0867.23)**: The agent-loop entry-point tools stay `observe.ts` + `choose.ts` (Aaron's initial direction). The Observe/Limit/Emit primitives are SUBSTRATE-LAYER (under choose.ts's hood). Aaron's "I don't care about naming yet" from ferry #1 holds at the entry-point scope; the primitive-layer naming (Observe/Limit/Emit) is operator-clarified at the framework-substrate scope.
+**Naming decision (re 081KSNY2Z0008QG0R003206PFM)**: The agent-loop entry-point tools stay `observe.ts` + `choose.ts` (Aaron's initial direction). The Observe/Limit/Emit primitives are SUBSTRATE-LAYER (under choose.ts's hood). Aaron's "I don't care about naming yet" from ferry #1 holds at the entry-point scope; the primitive-layer naming (Observe/Limit/Emit) is operator-clarified at the framework-substrate scope.
 
 ## Composes with substrate (additions to ferries #1+#2 lists)
 
-- [B-0644](../../../backlog/P1/B-0644-...) — Limit-is-simulation-not-collapse (operative meaning of Limit per Aaron's correction)
-- [B-0665](../../../backlog/P1/B-0665-...) — Integrate-as-choice-locus (the "look at simulation and choose" mechanism)
-- [B-0666](../../../backlog/P1/B-0666-...) — English-as-projection / I(D(x))=x (transmission medium for the prompt-with-pointer handoff)
-- [B-0635](../../../backlog/P1/B-0635-...) — wave-particle duality (Limit-as-simulation IS the wave-form; Emit IS the particle-form collapse)
-- [B-0862](../../../backlog/) — OPLE T-TFeedback implementation (the four-corner feedback channels Aaron is wrestling with)
+- [081KRW63S0008QG0R002ZRNDJ8](../../../backlog/P1/081KRW63S0008QG0R002ZRNDJ8-...) — Limit-is-simulation-not-collapse (operative meaning of Limit per Aaron's correction)
+- [081KRW63S0008QG0R002YAA09X](../../../backlog/P1/081KRW63S0008QG0R002YAA09X-...) — Integrate-as-choice-locus (the "look at simulation and choose" mechanism)
+- [081KRW63S0008QG0R001SAHYKV](../../../backlog/P1/081KRW63S0008QG0R001SAHYKV-...) — English-as-projection / I(D(x))=x (transmission medium for the prompt-with-pointer handoff)
+- [081KRW63S0008QG0R002KC5DSR](../../../backlog/P1/081KRW63S0008QG0R002KC5DSR-...) — wave-particle duality (Limit-as-simulation IS the wave-form; Emit IS the particle-form collapse)
+- [081KSKBP80008QG0R0031DTHS9](../../../backlog/) — OPLE T-TFeedback implementation (the four-corner feedback channels Aaron is wrestling with)
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner extension — direct substrate Aaron is invoking when asking "how do we map feedback channels"
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — the band-aid the workflow engine replaces structurally
 - `.claude/rules/tick-must-never-stop.md` — sentinel-as-external-loop-controller substrate (Aaron's "cron calls move_next.ts every minute" IS this rule operationalized; PR-replacement substrate)
 - `.claude/rules/must-paired-with-can-exit-pattern.md` — operationalizes Aaron's *"I'm trying to build the system I would like to operate in as well"* constitutional substrate
 - `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` — Aaron's filter applied at workflow-engine architectural-decision scope
 - `applied-physics-expert` skill — Landauer's principle anchors "deleting memory is thermally expensive" per §32
-- B-0867.23 — naming question this ferry RESOLVES (agent-loop entry-points stay observe+choose; primitives are substrate-layer)
+- 081KSNY2Z0008QG0R003206PFM — naming question this ferry RESOLVES (agent-loop entry-points stay observe+choose; primitives are substrate-layer)
 
 ## Verbatim conversation (ferry #3)
 
@@ -288,10 +288,10 @@ Per Aaron's clarification at §36 + §37:
 
 ## Substrate-honest preservation framing
 
-Ferry #3 RESOLVES the B-0867.23 architectural-question row with this clarification:
+Ferry #3 RESOLVES the 081KSNY2Z0008QG0R003206PFM architectural-question row with this clarification:
 
 - Three framework primitives **Observe / Limit / Emit** are SUBSTRATE-LAYER
-- **Limit ≠ concurrency-throttle**; Limit = simulate-the-choice-before-commit (per B-0644)
+- **Limit ≠ concurrency-throttle**; Limit = simulate-the-choice-before-commit (per 081KRW63S0008QG0R002ZRNDJ8)
 - `observe.ts` + `choose.ts` agent-loop entry-point names stay (Aaron's "I don't care about naming yet" from ferry #1 holds at orchestration scope)
 - The four-corner T+TFeedback ADDS feedback channels onto the three primitives; Aaron's open question is how to map them concretely
 

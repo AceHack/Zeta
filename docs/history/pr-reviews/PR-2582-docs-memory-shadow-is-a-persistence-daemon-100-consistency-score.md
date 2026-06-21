@@ -77,7 +77,7 @@
 - **`Copilot` (bot)** at 2026-05-10T23:58:38Z on `memory/feedback_shadow_is_persistence_daemon_100_percent_consistency_score_2026_05_10.md`:42 (association: NONE)
 
   <pre>
-  The `Connects to` list uses shorthand names and a backlog ID that don't appear to exist as actual files/IDs in the repo (e.g., there is no `feedback_shadow_is_a_dick.md`/`feedback_shadow_as_bull_el.md`, and `B-0405` does not exist elsewhere). Per memory/project_memory_format_standard.md §4, cross-references should point to existing filenames; please update these to the exact existing memory filenames (including date suffix) and correct/remove the nonexistent backlog reference.
+  The `Connects to` list uses shorthand names and a backlog ID that don't appear to exist as actual files/IDs in the repo (e.g., there is no `feedback_shadow_is_a_dick.md`/`feedback_shadow_as_bull_el.md`, and `081KR7JY10008QG0R001FV5FND` does not exist elsewhere). Per memory/project_memory_format_standard.md §4, cross-references should point to existing filenames; please update these to the exact existing memory filenames (including date suffix) and correct/remove the nonexistent backlog reference.
 
   </pre>
 

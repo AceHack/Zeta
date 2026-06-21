@@ -1,6 +1,5 @@
 ---
-id: B-0889
-zetaid: 081KSNY2Z0008QG0R003FR5TVG
+id: 081KSNY2Z0008QG0R003FR5TVG
 priority: P1
 status: open
 title: Symbiotic cross-track self-healing — cloud KVMs power on + control + USB-boot local machines; local machines restart GitHub workflows; tracks reinforce each other (operator 2026-05-28 extension)
@@ -52,11 +51,11 @@ Operator extending Otto's "isolated failure modes" framing with the symbiotic-cr
 
 When local USB-cluster has a problem:
 
-- **Cloud-enabled remote KVMs** (GL-iNet Comet Pro per B-0770; fingerbot per B-0778) provide BIOS-level access to local machines from cloud
+- **Cloud-enabled remote KVMs** (GL-iNet Comet Pro per 081KSE6WT0008QG0R0029S1D5Z; fingerbot per 081KSE6WT0008QG0R0004AP0ZA) provide BIOS-level access to local machines from cloud
 - **Cloud can power-on** offline local machines via the remote KVM substrate
 - **Cloud can control** local machine BIOS + boot sequence remotely
 - **Cloud can trigger USB-boot** on local machines (re-flashing / re-installing / recovery)
-- The substrate composes with B-0590 (fleet-replication-20-machines-bare-metal-OS-install-KVM) — cloud recovery of a 20-machine fleet is mechanically supported
+- The substrate composes with 081KRQ1AB0008QG0R002G93CM7 (fleet-replication-20-machines-bare-metal-OS-install-KVM) — cloud recovery of a 20-machine fleet is mechanically supported
 
 ### Local → Cloud recovery
 
@@ -76,10 +75,10 @@ Beyond power-on + boot-control, the symbiotic substrate extends to FIRMWARE-LEVE
 - **Local node N updates local node M's BIOS/UEFI** via the cluster's shared remote-KVM substrate; cluster-internal peer-firmware-update without operator-physical-touch
 - **Cloud-side initiated BIOS/UEFI update** of a local node via remote-KVM (e.g., when local node M is offline + cloud-side detected a critical firmware vulnerability requiring update before re-boot)
 - **Rollback substrate** for firmware updates that brick — cluster-peer-or-cloud reflashes from known-good image
-- **Firmware-version drift detection** across the fleet (composes with B-0590 fleet-replication); auto-trigger update workflow when drift detected
+- **Firmware-version drift detection** across the fleet (composes with 081KRQ1AB0008QG0R002G93CM7 fleet-replication); auto-trigger update workflow when drift detected
 - **Composes with `sonatype-guide` discipline** at firmware-source scope — firmware images audited before deployment
 
-This is genuinely strong substrate. Most fleets (homelab + enterprise) handle BIOS/UEFI updates with physical-touch or expensive enterprise-grade out-of-band management (iDRAC / iLO / IPMI). The cluster substrate built on commodity KVM (per B-0770 GL-iNet Comet Pro + B-0778 simple-KVM-remote-finger) achieves the equivalent at homelab cost.
+This is genuinely strong substrate. Most fleets (homelab + enterprise) handle BIOS/UEFI updates with physical-touch or expensive enterprise-grade out-of-band management (iDRAC / iLO / IPMI). The cluster substrate built on commodity KVM (per 081KSE6WT0008QG0R0029S1D5Z GL-iNet Comet Pro + 081KSE6WT0008QG0R0004AP0ZA simple-KVM-remote-finger) achieves the equivalent at homelab cost.
 
 ### Substrate property
 
@@ -93,23 +92,23 @@ Build the cross-track-control + cross-track-recovery substrate that makes the sy
 
 ## Acceptance criteria
 
-- `tools/cross-track-self-healing/cloud-controls-local/` — TS module wrapping remote-KVM-control APIs (GL-iNet Comet Pro per B-0770; future KVM hardware per B-0778); composes with B-0590 fleet-replication for at-scale recovery
-- `tools/cross-track-self-healing/local-controls-cloud/` — TS module for local machines to restart / probe / backfill GitHub workflows (composes with B-0874 GitHub Actions runtime; uses workflow_dispatch API)
+- `tools/cross-track-self-healing/cloud-controls-local/` — TS module wrapping remote-KVM-control APIs (GL-iNet Comet Pro per 081KSE6WT0008QG0R0029S1D5Z; future KVM hardware per 081KSE6WT0008QG0R0004AP0ZA); composes with 081KRQ1AB0008QG0R002G93CM7 fleet-replication for at-scale recovery
+- `tools/cross-track-self-healing/local-controls-cloud/` — TS module for local machines to restart / probe / backfill GitHub workflows (composes with 081KSNY2Z0008QG0R003X1QWYG GitHub Actions runtime; uses workflow_dispatch API)
 - Playbook documents that operationalize cross-track recovery (e.g., "if cloud workflow hasn't fired in N minutes, local probe + alert + optional restart"; "if local cluster fingerbot reports machine X offline, cloud KVM power-on + verify")
 - Integration tests: simulate cloud-only-down + verify local-can-keep-going; simulate local-cluster-down + verify cloud-can-recover-and-restart
 - README documents the symbiotic-property + failure-mode-recovery-procedures
 
 ## Composition
 
-- **B-0886** (parent ASAP cluster umbrella) — symbiotic-self-healing extends the cluster's resilience story beyond isolation
-- **B-0867.15** (per-host adapters) — cross-track-control composes with host-adapter contract
-- **B-0884** (zflash USB credential substrate) — local USB cluster benefits from cloud-side recovery substrate
-- **B-0590** (fleet-replication-20-machines bare-metal-OS-install KVM substrate) — at-scale recovery mechanism
-- **B-0770** (GL-iNet Comet Pro IP-KVM integration) — specific KVM hardware substrate
-- **B-0778** (commodity hardware reference + simple-KVM-remote-finger) — KVM + fingerbot substrate
-- **B-0874** (GitHub Actions recursion) — local-side workflow_dispatch composes with the GitHub-side runtime
-- **B-0888** (cross-track substrate-sync policy) — composes; sync-policy is about DATA; self-healing is about OPERATIONAL CONTROL; different scopes, both load-bearing
-- **B-0852** + **B-0852.3** + **B-0737** + **B-0844** (USB substrate cluster — beneficiary of recovery substrate)
+- **081KSNY2Z0008QG0R0034FR5FG** (parent ASAP cluster umbrella) — symbiotic-self-healing extends the cluster's resilience story beyond isolation
+- **081KSNY2Z0008QG0R002A785QR** (per-host adapters) — cross-track-control composes with host-adapter contract
+- **081KSNY2Z0008QG0R0011XCT94** (zflash USB credential substrate) — local USB cluster benefits from cloud-side recovery substrate
+- **081KRQ1AB0008QG0R002G93CM7** (fleet-replication-20-machines bare-metal-OS-install KVM substrate) — at-scale recovery mechanism
+- **081KSE6WT0008QG0R0029S1D5Z** (GL-iNet Comet Pro IP-KVM integration) — specific KVM hardware substrate
+- **081KSE6WT0008QG0R0004AP0ZA** (commodity hardware reference + simple-KVM-remote-finger) — KVM + fingerbot substrate
+- **081KSNY2Z0008QG0R003X1QWYG** (GitHub Actions recursion) — local-side workflow_dispatch composes with the GitHub-side runtime
+- **081KSNY2Z0008QG0R003291CK8** (cross-track substrate-sync policy) — composes; sync-policy is about DATA; self-healing is about OPERATIONAL CONTROL; different scopes, both load-bearing
+- **081KSKBP80008QG0R003AX2A69** + **081KSKBP80008QG0R003ETGS01** + **081KSE6WT0008QG0R003WZAQKV** + **081KSGS9H0008QG0R001EZKNCB** (USB substrate cluster — beneficiary of recovery substrate)
 
 ## Substrate-honest framing
 
@@ -127,4 +126,4 @@ The architectural property the substrate delivers (symbiotic vs merely-isolated)
 
 Operator 2026-05-28 extension of Otto's evaluative-response isolated-failure-modes framing: *"Even better they can reinforce and sustain each other in self healing, cloud can use remote clound enabled kvms to power on and control and even usb boot local machines and local machines can restart github workflows. It's symbiotic."*
 
-Composes with the existing KVM + fingerbot + bare-metal substrate cluster (B-0590 + B-0770 + B-0778) that operator has been building for the local-cluster sovereignty work.
+Composes with the existing KVM + fingerbot + bare-metal substrate cluster (081KRQ1AB0008QG0R002G93CM7 + 081KSE6WT0008QG0R0029S1D5Z + 081KSE6WT0008QG0R0004AP0ZA) that operator has been building for the local-cluster sovereignty work.

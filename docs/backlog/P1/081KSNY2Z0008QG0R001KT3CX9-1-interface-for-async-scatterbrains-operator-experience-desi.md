@@ -1,6 +1,5 @@
 ---
-id: B-0892.1
-zetaid: 081KSNY2Z0008QG0R001KT3CX9
+id: 081KSNY2Z0008QG0R001KT3CX9
 priority: P1
 status: open
 title: Interface for async scatterbrains — operator-experience design property; multi-thread + drop+resume + context-switch native; load-bearing for ADHD-compatible operation (operator 2026-05-28 self-naming)
@@ -50,18 +49,18 @@ Documents the operator-experience design property as substrate so it informs eve
 | Design choice | How it serves async-scatterbrain interface |
 |---|---|
 | Multi-PR/multi-agent orchestration | Operator drops a PR mid-review, agents continue; operator picks back up days later from event log |
-| Playbook substrate (B-0867.21 conversational documents) | Operator writes intent in fragments; agents pick up + execute; operator returns to refine; no "must finish in one sitting" |
-| Three-lanes-concurrent (B-0892) | No single linear queue; lanes rotate; operator attention can pivot lane without losing the others |
-| Fast-lane folders on main (B-0890.1) | No long-lived branches to manage; just append; resume any time |
-| Trajectory-async-review (B-0873) | Review happens on operator's schedule, not interrupt-driven |
-| Glass-halo by default (B-0883.16 sharpening) | Operator can see the substrate state instantly without decryption ceremony |
-| Per-host adapter isomorphism (B-0867.15) | Operator can pick up from any host (GitHub/GitLab/Gitea/Bitbucket); cluster substrate doesn't care |
-| Symbiotic cross-track self-healing (B-0889) | Operator doesn't have to track "did the cloud or local fail?" — substrate self-heals across tracks |
+| Playbook substrate (081KSNY2Z0008QG0R000S738W3 conversational documents) | Operator writes intent in fragments; agents pick up + execute; operator returns to refine; no "must finish in one sitting" |
+| Three-lanes-concurrent (081KSNY2Z0008QG0R002QA720J) | No single linear queue; lanes rotate; operator attention can pivot lane without losing the others |
+| Fast-lane folders on main (081KSNY2Z0008QG0R000E5KTPX) | No long-lived branches to manage; just append; resume any time |
+| Trajectory-async-review (081KSNY2Z0008QG0R000F0C5V0) | Review happens on operator's schedule, not interrupt-driven |
+| Glass-halo by default (081KSNY2Z0008QG0R000459FRH sharpening) | Operator can see the substrate state instantly without decryption ceremony |
+| Per-host adapter isomorphism (081KSNY2Z0008QG0R002A785QR) | Operator can pick up from any host (GitHub/GitLab/Gitea/Bitbucket); cluster substrate doesn't care |
+| Symbiotic cross-track self-healing (081KSNY2Z0008QG0R003FR5TVG) | Operator doesn't have to track "did the cloud or local fail?" — substrate self-heals across tracks |
 | Otto + Addison + Max + Aaron multi-participant scope | Operator-personal axis composes with others'-axes; never single-user lock-in |
 
 ## Composition with Addison neurodivergent-accessible substrate
 
-B-0867 row body explicitly notes: *"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"* + *"it's going to lock my daughter Addison and me and max into almost the same workflow"*. The neurodivergent-accessibility framing is constitutional to the workflow engine.
+081KSKBP80008QG0R000B3Y19A row body explicitly notes: *"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"* + *"it's going to lock my daughter Addison and me and max into almost the same workflow"*. The neurodivergent-accessibility framing is constitutional to the workflow engine.
 
 This row extends that framing: the substrate isn't ONLY accommodating neurodivergent users — it's specifically shaped for ASYNC-SCATTERBRAIN operation, which OVERLAPS with neurodivergent-accessibility but extends to anyone whose thinking shape benefits from explicit-menu + multi-thread + drop-resume native UX.
 
@@ -83,7 +82,7 @@ Good-pattern signals (DO these):
 - Multi-thread / multi-lane / multi-PR substrate that operator can drop + resume
 - Explicit-menu (per agent-loop substrate) so operator picks rather than remembers
 - Glass-halo state visibility so operator catches up by glancing not by re-deriving
-- Async-review surface (B-0873) so operator schedules attention rather than reacting
+- Async-review surface (081KSNY2Z0008QG0R000F0C5V0) so operator schedules attention rather than reacting
 - Persistence substrate (per persistence-choice-architecture rule) so agents survive operator's attention gaps
 - Cross-track + cross-host isomorphism so operator works from wherever convenient
 
@@ -110,4 +109,4 @@ The phrasing "async scatterbrains like me lol :)" is operator's substrate-honest
 
 Operator 2026-05-28: *"We are building the interface for async scatterbrains like me lol :)"*
 
-Composes with Addison neurodivergent-accessible substrate (B-0867 body) + the broader multi-participant scope of the workflow engine. This row makes the operator-experience design property explicit + first-class.
+Composes with Addison neurodivergent-accessible substrate (081KSKBP80008QG0R000B3Y19A body) + the broader multi-participant scope of the workflow engine. This row makes the operator-experience design property explicit + first-class.

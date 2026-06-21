@@ -1,6 +1,5 @@
 ---
-id: B-0797
-zetaid: 081KSGS9H0008QG0R0033YXK4D
+id: 081KSGS9H0008QG0R0033YXK4D
 priority: P2
 status: open
 title: Local user-scope memory ↔ in-repo git-memory delta audit + migrate substrate-to-git as autonomous-loop sometimes-task — Otto-CLI background service uses idle ticks to audit ~/.claude/projects/<slug>/memory/ vs in-repo memory/ + migrates substantive substrate via PRs; token-bounded; substrate-honest classification per file
@@ -111,9 +110,9 @@ For the empirically-known recent batch (2026-05-25 files surfaced above): priori
 
 ## Composes with substrate
 
-- **B-0782** (composes; cluster IS the DIO; substrate-persistence across maintainers + agents is load-bearing; local-only memory breaks the DIO substrate)
-- **B-0790** (composes; zero-dev-machine homelab persona end-state; operator's local Mac is conversational interface, not work substrate; substrate that lives only on the conversational-interface Mac is brittle)
-- **B-0794** (composes; node self-registration substrate uses same pattern — local node writes substrate to git via per-node git-auth; this row is the operator-Mac analog)
+- **081KSE6WT0008QG0R003CMCX84** (composes; cluster IS the DIO; substrate-persistence across maintainers + agents is load-bearing; local-only memory breaks the DIO substrate)
+- **081KSGS9H0008QG0R00153CQ8B** (composes; zero-dev-machine homelab persona end-state; operator's local Mac is conversational interface, not work substrate; substrate that lives only on the conversational-interface Mac is brittle)
+- **081KSGS9H0008QG0R0027HJZYH** (composes; node self-registration substrate uses same pattern — local node writes substrate to git via per-node git-auth; this row is the operator-Mac analog)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (composes; local-only memory IS substrate-that-didn't-happen at cross-Otto / cross-maintainer scope; this row operationalizes the discipline at memory-sync scope)
 - `.claude/rules/never-be-idle.md` (composes; sometimes-task fits the idle-tick fallback ladder)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (composes; memory-sync IS legitimate decomposition work; counts as counter-reset)

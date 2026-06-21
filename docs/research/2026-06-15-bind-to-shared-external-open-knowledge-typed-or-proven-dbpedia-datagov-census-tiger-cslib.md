@@ -39,7 +39,7 @@ different domain and mechanism.
 Binding **Census + TIGER/Line** gives the substrate **jurisdictional awareness**:
 which jurisdiction/frame a thing falls in (district, precinct, county, ZIP). That is
 the data backbone of **frame-relative identity** (recognition is jurisdiction-relative
-— register identity row; borders/policies B-1015) and of the **geospatial routing**
+— register identity row; borders/policies 081KT5CF90008QG0R000KYNZGF) and of the **geospatial routing**
 already in the register (geohash/geocache "neighborhood, not exact address";
 address→segment→district via TIGER linear referencing). So this isn't just data
 ingest — it's the **external ground truth** the identity/routing layer stands on.

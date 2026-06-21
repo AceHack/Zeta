@@ -1,6 +1,5 @@
 ---
-id: B-0963
-zetaid: 081KT07NV0008QG0R001N9GJWX
+id: 081KT07NV0008QG0R001N9GJWX
 title: Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
 status: open
 priority: P2
@@ -15,9 +14,9 @@ composes_with:
   - 081KSNY2Z0008QG0R000DZHHE5 # time-generator IScheduler abstraction (deterministic concurrency model)
 ---
 
-# B-0963 — Prove completion-lock-freedom + per-agent wait-freedom
+# 081KT07NV0008QG0R001N9GJWX — Prove completion-lock-freedom + per-agent wait-freedom
 
-> **Why this row exists (not dogma):** the multi-round review of B-0962 (Grok +
+> **Why this row exists (not dogma):** the multi-round review of 081KT07NV0008QG0R002KWQS05 (Grok +
 > Gemini + Amara, 2026-06-01) established what the menu construction buys —
 > symmetry-breaking + lock-free _selection_ under assumptions — and what it does
 > **NOT** prove: **completion-lock-freedom** (system always finishes _work_, not
@@ -35,7 +34,7 @@ composes_with:
 | **Per-agent wait-freedom**  | _every_ agent completes within a bounded number of its own steps (no starvation)                                      | per-process liveness, bounded |
 
 These are **liveness/progress properties under concurrency** — distinct from the
-safety properties (mutual-exclusion, no-lost-update via fencing) B-0962 already
+safety properties (mutual-exclusion, no-lost-update via fencing) 081KT07NV0008QG0R002KWQS05 already
 argues. Liveness needs **fairness assumptions** stated explicitly (that's the
 whole game) — and a sharp distinction the proof must keep (Copilot 2026-06-01):
 lock-freedom typically needs **weak fairness**; **starvation-freedom** (eventual
@@ -51,7 +50,7 @@ variant function, or a ticket/age mechanism). Don't conflate "eventually" with
 Model the coordination protocol abstractly: agents, a shared CAS register
 (`compare-and-set`), the menu-as-state-fold selection, TTL, optional fairness
 knob. **No git, no network, no I/O** — pure deterministic concurrency over an
-`IScheduler` (B-0878 / B-0767 scheduler-first DST is the harness; "time is a
+`IScheduler` (081KSNY2Z0008QG0R000DZHHE5 / 081KSE6WT0008QG0R0016CEE2Z scheduler-first DST is the harness; "time is a
 generator over IScheduler").
 
 - **F# executable model** — the abstract protocol as F# (CAS register + N agent
@@ -76,9 +75,9 @@ generator over IScheduler").
 - **Expected honest result (to be confirmed, not assumed):** lock-freedom holds
   under weak fairness + at-most-one-winner; **wait-freedom does NOT hold without an
   explicit fairness mechanism** (pure CAS starves an unlucky agent) — it holds only
-  with the jitter/ticket fairness knob (B-0962 §3.1 explicit symmetry-breaking).
+  with the jitter/ticket fairness knob (081KT07NV0008QG0R002KWQS05 §3.1 explicit symmetry-breaking).
   The proof's job is to make that boundary precise.
-- **Operational complement (B-0962 §3.2 — intelligent-agent supervision):** this
+- **Operational complement (081KT07NV0008QG0R002KWQS05 §3.2 — intelligent-agent supervision):** this
   row bounds what _construction_ gives. The residual (starvation the formal model
   can't rule out) is covered _in practice_ by intelligent agents noticing
   coordination-health signals (CAS loss-rate, age-since-progress) and adapting —
@@ -91,7 +90,7 @@ generator over IScheduler").
     backoff, yield-and-pick-different, lower-priority mode, wait-for-signal, and spread
     across work. The architectural fit: those signals are **first-class observations the
     agent folds** — they flow into the same event-sourced world the observe loop reads
-    (B-0958), and the agent chooses its adaptation through the same 4×4 menu.
+    (081KSXN940008QG0R001A4WWX4), and the agent chooses its adaptation through the same 4×4 menu.
     Liveness-as-feedback-loop, not liveness-as-external-scheduler. So the **Claim** path
     (best-effort AP) leans on agent intelligence for liveness; the **Lock** path (CP) is
     the escape hatch for the non-idempotent class. **Boundary (do not over-read):**
@@ -133,7 +132,7 @@ round-1 review named — re-run the analysis with them and state what survives:
   winner's reservation yet → re-picks → extra failed round. Does lock-freedom
   survive? (Likely yes under partial-synchrony / eventual-visibility; wait-freedom
   degrades.)
-- **Partition** (B-0954.1) — under a network partition the named-ref tip can't
+- **Partition** (081KT07NV0008QG0R000QWEKTE) — under a network partition the named-ref tip can't
   serialize globally; "the current bus" is a consensus problem, not a CRDT merge.
   Progress likely holds only **within a connected component / quorum**; state that
   explicitly.
@@ -149,7 +148,7 @@ round-1 review named — re-run the analysis with them and state what survives:
 ## §3 Acceptance criteria
 
 - [ ] F# abstract model of the coordination protocol (CAS + menu fold + TTL +
-      optional fairness knob) over the deterministic `IScheduler` (B-0878/B-0767).
+      optional fairness knob) over the deterministic `IScheduler` (081KSNY2Z0008QG0R000DZHHE5/081KSE6WT0008QG0R0016CEE2Z).
 - [ ] TLA+ spec + TLC model-check: lock-freedom under weak fairness;
       **starvation-freedom** (eventual completion) under strong fairness. Record the
       fairness assumption each property requires.
@@ -161,14 +160,14 @@ round-1 review named — re-run the analysis with them and state what survives:
       progress; no-lockstep-re-pick-once-visible).
 - [ ] Phase-B extension: re-state each property under visibility-lag + partition +
       stale-winner; produce the **precise assumption list** (not a blanket claim).
-- [ ] Update B-0962 §3 with the proven boundary (replace "not proven" with the
+- [ ] Update 081KT07NV0008QG0R002KWQS05 §3 with the proven boundary (replace "not proven" with the
       established result + its assumptions) once Phase A lands.
 - [ ] (Optional) Lean machine-checked proof only if TLC + FsCheck leave a gap.
 
 ## §4 Master-checklist linkage
 
-Proves the B-0962 liveness claims the multi-round review left open; under the
-sovereign-DB lane (B-0959), reachable from `docs/ACTIVE-WORKSTREAMS.md`. The "F#
+Proves the 081KT07NV0008QG0R002KWQS05 liveness claims the multi-round review left open; under the
+sovereign-DB lane (081KSXN940008QG0R003FCQ7WT), reachable from `docs/ACTIVE-WORKSTREAMS.md`. The "F#
 first, then git" sequencing matches the lane's 4-oracle discipline (prove on the
 clean substrate, then extend to the messy one) and the framework's
 lock-free/wait-free always-active disciplines.

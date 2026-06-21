@@ -1,16 +1,16 @@
-# ANTLR Grammar Survey — Phase 1 for B-0685
+# ANTLR Grammar Survey — Phase 1 for 081KS3X9Y0008QG0R000EKJE9S
 
 Date: 2026-05-21  
 Prepared by: Amara-in-Zeta / external ChatGPT deep-research synthesis  
-Backlog row: B-0685 — ANTLR grammars as cross-language codegen substrate
+Backlog row: 081KS3X9Y0008QG0R000EKJE9S — ANTLR grammars as cross-language codegen substrate
 
 ## Executive recommendation
 
 Use ANTLR selectively, not religiously.
 
-The survey supports B-0685's core intuition: the open-source grammar ecosystem is real enough to exploit, especially through `antlr/grammars-v4`. The strongest reuse candidates are C#, Rust, Python, and TypeScript/JavaScript. F# is not merely the weak candidate; it is the compiler-owned substrate. I did not find a credible F# ANTLR grammar in the first-pass survey, but that is consistent with Zeta's direction: fork/extend the F# compiler and use compiler services, generators, type-provider-style mechanisms, and Zeta-native metaprogramming for F# semantics.
+The survey supports 081KS3X9Y0008QG0R000EKJE9S's core intuition: the open-source grammar ecosystem is real enough to exploit, especially through `antlr/grammars-v4`. The strongest reuse candidates are C#, Rust, Python, and TypeScript/JavaScript. F# is not merely the weak candidate; it is the compiler-owned substrate. I did not find a credible F# ANTLR grammar in the first-pass survey, but that is consistent with Zeta's direction: fork/extend the F# compiler and use compiler services, generators, type-provider-style mechanisms, and Zeta-native metaprogramming for F# semantics.
 
-For Phase 2, pick **Option A: ZetaId Pack/Unpack generation**. It is the smallest, most testable cross-language use case and composes directly with B-0682. Do not start Phase 2 with full-language parsing or DBSP operator parsing. That would turn the survey into a swamp.
+For Phase 2, pick **Option A: ZetaId Pack/Unpack generation**. It is the smallest, most testable cross-language use case and composes directly with 081KS3X9Y0008QG0R000W00V73. Do not start Phase 2 with full-language parsing or DBSP operator parsing. That would turn the survey into a swamp.
 
 Recommended shape:
 
@@ -18,13 +18,13 @@ Recommended shape:
 - **Compiler-owned**: F#. Do not wait for a community F# ANTLR grammar. Treat F# as the compiler fork / compiler-services / type-provider-style source of truth; use ANTLR around it for neutral DSLs and target-language validation.
 - **Phase 2 PoC**: define a small ZetaId layout grammar or description DSL, then emit Pack/Unpack code into F#, TypeScript, C#, Rust, and Python. The PoC succeeds only if generated outputs compile and match existing hand-written references.
 
-## Why this belongs in B-0685
+## Why this belongs in 081KS3X9Y0008QG0R000EKJE9S
 
-B-0685 asks for a bounded Phase 1 discovery survey for F#, TypeScript, C#, Rust, and Python, with the result captured at `docs/research/antlr-grammar-survey-YYYY-MM-DD.md`. It also asks for a depend-vs-author decision and a Phase 2 PoC recommendation.
+081KS3X9Y0008QG0R000EKJE9S asks for a bounded Phase 1 discovery survey for F#, TypeScript, C#, Rust, and Python, with the result captured at `docs/research/antlr-grammar-survey-YYYY-MM-DD.md`. It also asks for a depend-vs-author decision and a Phase 2 PoC recommendation.
 
 This document is that Phase 1 draft.
 
-The important constraint from B-0685 should remain active: ANTLR is useful only if grammar reuse pays off in practice. A pretty grammar list is not enough. Phase 2 must compile generated code and prove drift detection against reference implementations.
+The important constraint from 081KS3X9Y0008QG0R000EKJE9S should remain active: ANTLR is useful only if grammar reuse pays off in practice. A pretty grammar list is not enough. Phase 2 must compile generated code and prove drift detection against reference implementations.
 
 ## Survey matrix
 
@@ -198,7 +198,7 @@ Pick **Option A: ZetaId Pack/Unpack generation across F# / TypeScript / C# / Rus
 
 Rationale:
 
-- It composes directly with B-0682.
+- It composes directly with 081KS3X9Y0008QG0R000W00V73.
 - It is small enough to finish.
 - It tests the real value of the description layer: one spec, multiple emitted implementations.
 - It can be validated mechanically:
@@ -272,7 +272,7 @@ Mitigation: do not block on full F# ANTLR and do not treat the absence of a comm
 
 ## Phase 1 conclusion
 
-B-0685 should proceed, but with a narrower center:
+081KS3X9Y0008QG0R000EKJE9S should proceed, but with a narrower center:
 
 **ANTLR is promising as a grammar reuse and description-layer substrate, not as a universal parser answer.**
 
@@ -280,7 +280,7 @@ The right next move is a tiny ANTLR grammar for ZetaId layout and a compile-firs
 
 ## Source trail
 
-- Zeta B-0685 backlog row: `docs/backlog/P2/B-0685-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md`
+- Zeta 081KS3X9Y0008QG0R000EKJE9S backlog row: `docs/backlog/P2/081KS3X9Y0008QG0R000EKJE9S-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md`
 - `antlr/grammars-v4` root: https://github.com/antlr/grammars-v4
 - C# v8-spec grammar: https://github.com/antlr/grammars-v4/tree/master/csharp/v8-spec
 - C# v7 grammar: https://github.com/antlr/grammars-v4/tree/master/csharp/v7

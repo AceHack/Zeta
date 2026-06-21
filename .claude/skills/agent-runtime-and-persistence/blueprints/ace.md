@@ -1,7 +1,7 @@
 ---
 name: ace
 description: Ace DLC package manager — list/install/verify content-addressed packages in ~/.ace store. Run via bun.
-record_source: "B-0288 + ace-package-manager agenda; distribution per 2026-06-01 design"
+record_source: "081KR2E4K0008QG0R002YE3MMD + ace-package-manager agenda; distribution per 2026-06-01 design"
 load_datetime: "2026-06-01"
 last_updated: "2026-06-01"
 status: active
@@ -71,7 +71,7 @@ Supported range subset:
 - Wildcard `*` or `x`
 - Space-AND ranges `>=1.0.0 <2.0.0`
 
-Deferred to B-0970: `||` (OR ranges), hyphen ranges (`1.0.0 - 2.0.0`), pre-release tags.
+Deferred to 081KT07NV0008QG0R002WK9064: `||` (OR ranges), hyphen ranges (`1.0.0 - 2.0.0`), pre-release tags.
 
 Inline edges stay exact-pinned by `package_hash` and are never registry-routed. An
 unsatisfiable range (no registry version matches any constraint) refuses with exit 1 and
@@ -136,7 +136,7 @@ Exit codes: `0` ok · `64` usage error · `65` invalid package JSON · `1` refus
 - Distribution + DX design: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-distribution-dx-design.md`
 - Authenticity design: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice3-authenticity-signature-verify-design.md`
 - Agenda: `docs/agendas/ace-package-manager/AGENDA.md`
-- The bus↔Ace one-substrate synthesis: PR #6284 (G-Set ⊂ bag ⊂ Z-set; shared B-0867.27 fold engine)
+- The bus↔Ace one-substrate synthesis: PR #6284 (G-Set ⊂ bag ⊂ Z-set; shared 081KSXN940008QG0R0033T2BQT fold engine)
 
 ## Remote registries (slice 6)
 

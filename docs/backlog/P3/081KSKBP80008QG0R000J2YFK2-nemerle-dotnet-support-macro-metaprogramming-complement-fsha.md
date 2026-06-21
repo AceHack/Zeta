@@ -1,6 +1,5 @@
 ---
-id: B-0860
-zetaid: 081KSKBP80008QG0R000J2YFK2
+id: 081KSKBP80008QG0R000J2YFK2
 priority: P3
 status: open
 title: Nemerle support for dotnet substrate — compile-time macro metaprogramming complementing F# type providers; enables language-native relationship-type-inference substrate (Aaron 2026-05-27)
@@ -69,8 +68,8 @@ In Nemerle macros: discipline-into-language; first-class extension.
 
 ## Why this composes with the framework's substrate-engineering work
 
-- **B-0428 (F# fork for AI safety)** — extends dotnet substrate-engineering toolkit; Nemerle would be sibling to F# fork, not replacement. F#-fork-for-AI-safety addresses type-safety substrate; Nemerle would address language-extension substrate
-- **B-0829 (cluster-fork-as-trust-boundary)** — relationship-type-inference is the substrate that enables trust-boundary-types as first-class compile-time constructs (cluster-forks ARE namespaces in the relationship-type analogy)
+- **081KRFA460008QG0R0018SN61J (F# fork for AI safety)** — extends dotnet substrate-engineering toolkit; Nemerle would be sibling to F# fork, not replacement. F#-fork-for-AI-safety addresses type-safety substrate; Nemerle would address language-extension substrate
+- **081KSGS9H0008QG0R000Q18PGQ (cluster-fork-as-trust-boundary)** — relationship-type-inference is the substrate that enables trust-boundary-types as first-class compile-time constructs (cluster-forks ARE namespaces in the relationship-type analogy)
 - **Existing F# substrate** — F#'s type providers + computation expressions cover type-generation; Nemerle covers syntax-extension; both compose
 - **Roslyn Source Generators** — C#'s answer is coarser; Nemerle's macro substrate is finer-grained
 
@@ -114,13 +113,13 @@ Possible decomposition for future implementation:
 4. **CI substrate for Nemerle** — markdownlint-style + lint + build + test for Nemerle code
 5. **Documentation + skill** — `.claude/skills/nemerle-expert/SKILL.md` capturing Nemerle expertise for future-Otto cold-boots
 
-Each becomes a sub-row at `docs/backlog/P*/B-0860.M-...md` per the subdecimal scheme when implementation-time comes.
+Each becomes a sub-row at `docs/backlog/P*/081KSKBP80008QG0R000J2YFK2.M-...md` per the subdecimal scheme when implementation-time comes.
 
 ## What this row is NOT
 
 - NOT replacement of F# as primary dotnet substrate (F# stays primary)
 - NOT mandate that all framework code go through Nemerle (only metaprogramming-heavy substrate)
-- NOT lock-in to JetBrains (Nemerle is open-source; community-maintained; framework support would be community-substrate not vendor-substrate per B-0857 vendor-disintermediation discipline)
+- NOT lock-in to JetBrains (Nemerle is open-source; community-maintained; framework support would be community-substrate not vendor-substrate per 081KSKBP80008QG0R002J03WGA vendor-disintermediation discipline)
 - NOT immediate implementation priority (P3 — substrate-engineering target for when the metaprogramming surface becomes load-bearing on framework work)
 
 ## What this row IS

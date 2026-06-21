@@ -16,7 +16,7 @@ complete a checklist directly on the row body:
    - Read the row's **Acceptance** / **Proposed mechanization** /
      **Scope** sections (NOT `composes_with:` cross-refs — those
      are false-positive prone per the empirical catalog in
-     [B-0553](../../docs/backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md))
+     [081KRQ1AB0008QG0R000QYJFZE](../../docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md))
    - Existence-check every primary-artifact path on disk
    - **If all primary artifacts exist AND every acceptance bullet
      has a corresponding merged PR** → row is drift, not work.
@@ -26,7 +26,7 @@ complete a checklist directly on the row body:
      gate steps.
    - **If artifacts exist but some acceptance bullets are
      pending** → row is in-progress, NOT drift. Leave it open,
-     proceed with normal gate steps. (Canonical example: B-0537 —
+     proceed with normal gate steps. (Canonical example: 081KRMEXM0008QG0R0034SS319 —
      `audit-memory-index-entry-lengths.ts` shipped, but the row's
      "cleanup of 100 long entries + CI gate at --max 150" had
      not. Closing it would have hidden in-progress work.)
@@ -58,7 +58,7 @@ complete a checklist directly on the row body:
    - Walk `depends_on:` chain.
    - Backfill reciprocal `composes_with:` pointers.
    - Reconstruct supersession history via decision-archaeology
-     procedure (B-0169 P1).
+     procedure (081KQJZR90008QG0R002D6XYHB P1).
    - Fix broken pointers.
 
 3. **Update the row** with a "Pre-start checklist" section
@@ -133,10 +133,10 @@ rescue work.
 
 ## Composes with
 
-- B-0169 (decision-archaeology procedure)
-- B-0170 (substrate-claim-checker validates the proof)
-- B-0173 (hook authoring — mechanization candidate)
-- B-0553 (substrate-drift auditor — mechanizes step 0 across all open rows)
+- 081KQJZR90008QG0R002D6XYHB (decision-archaeology procedure)
+- 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker validates the proof)
+- 081KQNJ500008QG0R003ZC6PK8 (hook authoring — mechanization candidate)
+- 081KRQ1AB0008QG0R000QYJFZE (substrate-drift auditor — mechanizes step 0 across all open rows)
 - [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](../../memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md) — step 0 origin substrate
 - [`.claude/rules/wake-time-substrate.md`](wake-time-substrate.md) — the discipline this rule extension lands
 - [`.claude/rules/honor-those-that-came-before.md`](honor-those-that-came-before.md) — orphaned-branch triage discriminator composes; verifying substrate-on-main IS the honor at orphaned-commit scope

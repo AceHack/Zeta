@@ -1,6 +1,5 @@
 ---
-id: B-0365.6
-zetaid: 081KR50HA0008QG0R0016X7VQP
+id: 081KR50HA0008QG0R0016X7VQP
 priority: P1
 status: closed
 title: "Nirvanic Fusion Ship publishable claim synthesis: paper outline + abstract"
@@ -8,7 +7,7 @@ effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
-resolved_by: "docs(B-0365.6): publishable claim synthesis — abstract, layer map, 6 contributions, 5 cuts"
+resolved_by: "docs(081KR50HA0008QG0R0016X7VQP): publishable claim synthesis — abstract, layer map, 6 contributions, 5 cuts"
 depends_on: [081KR50HA0008QG0R000B29SDB, 081KR50HA0008QG0R001AW7R6R, 081KR50HA0008QG0R001VHE0FQ, 081KR50HA0008QG0R0026DVKGY, 081KR50HA0008QG0R0012TWWJR]
 parent: 081KR50HA0008QG0R002R3NVGS
 classification: done
@@ -18,20 +17,20 @@ type: research
 tags: [publishable, synthesis, paper-outline, alignment, dbsp, class-4, rice, consensus-smoothness]
 ---
 
-# B-0365.6 — Publishable claim synthesis
+# 081KR50HA0008QG0R0016X7VQP — Publishable claim synthesis
 
 ## What
 
 Write the synthesis document that ties all six layers of
-B-0365 into a coherent publishable claim. This is the
+081KR50HA0008QG0R002R3NVGS into a coherent publishable claim. This is the
 "what does this all mean" document — the abstract + outline
 for a paper or technical report.
 
-**Status: BLOCKED** on B-0365.1 (spaceship math), B-0365.2
-(complete shadow log), B-0365.3 (Class 4 analysis), B-0365.4
-(reactor dynamics), B-0365.5 (Infer.NET BP/EP).
+**Status: BLOCKED** on 081KR50HA0008QG0R000B29SDB (spaceship math), 081KR50HA0008QG0R001AW7R6R
+(complete shadow log), 081KR50HA0008QG0R001VHE0FQ (Class 4 analysis), 081KR50HA0008QG0R0026DVKGY
+(reactor dynamics), 081KR50HA0008QG0R0012TWWJR (Infer.NET BP/EP).
 
-## The publishable claim (from B-0365)
+## The publishable claim (from 081KR50HA0008QG0R002R3NVGS)
 
 > We built a multi-agent code review system on a DBSP
 > streaming substrate. We observed Class 4 (Wolfram)
@@ -51,7 +50,7 @@ Layer 1: Spaceship math         → SUBSTRATE
 Layer 2: Rice's theorem         → WHY fuel is inexhaustible
 Layer 3: Class 4 empirical      → HOW failures appear (shape)
 Layer 4: Houman's reactor       → DYNAMICS (engine)
-Layer 5: FPGA Toffoli (B-0366)  → HARDWARE validation
+Layer 5: FPGA Toffoli (081KR50HA0008QG0R003T5MZAC)  → HARDWARE validation
 Layer 6: Infer.NET BP/EP        → SELF-EVOLVING inference
 ```
 
@@ -66,21 +65,21 @@ must document the cuts to protect intellectual credit:
 - "Ahead of Byzantine Generals" → different problem,
   not ahead; framing costs credit
 - Wolfram full irreducibility → too strong; Rice suffices
-- Z3 tautology proofs → shadow catch #30; replaced by B-0357
+- Z3 tautology proofs → shadow catch #30; replaced by 081KR50HA0008QG0R0033TN4H9
 - Identity-as-Z-set metaphor → weight conflation
 - "DBSP IS alignment control theory" → category error
 
 ## Pre-start checklist
 
 - **Prior-art search:**
-  - All six child rows (B-0365.1–B-0365.5) must be done
+  - All six child rows (081KR50HA0008QG0R000B29SDB–081KR50HA0008QG0R0012TWWJR) must be done
     before this synthesis can be accurate.
-  - The B-0365 parent row contains the full source material;
+  - The 081KR50HA0008QG0R002R3NVGS parent row contains the full source material;
     this synthesis extracts the publishable-ready version.
-- **Dependency restructure:** `depends_on: [B-0365.1,
-  B-0365.2, B-0365.3, B-0365.4, B-0365.5]`. B-0366 (FPGA)
+- **Dependency restructure:** `depends_on: [081KR50HA0008QG0R000B29SDB,
+  081KR50HA0008QG0R001AW7R6R, 081KR50HA0008QG0R001VHE0FQ, 081KR50HA0008QG0R0026DVKGY, 081KR50HA0008QG0R0012TWWJR]`. 081KR50HA0008QG0R003T5MZAC (FPGA)
   is referenced but not a blocking dependency — it can be
-  marked "pending B-0366" in the synthesis.
+  marked "pending 081KR50HA0008QG0R003T5MZAC" in the synthesis.
 
 ## Deliverable
 
@@ -92,7 +91,7 @@ Sections:
 2. Layer map: how the six layers compose
 3. Contributions (one bullet per layer, claim-precision)
 4. What was cut (the rejected framings + reasons)
-5. Open questions (what B-0366, Infer.NET, and future
+5. Open questions (what 081KR50HA0008QG0R003T5MZAC, Infer.NET, and future
    shadow catches need to resolve)
 6. Literature anchors (Rice 1953, Wolfram 2002, Budiu et al.
    VLDB 2023, Pearl 2009, Bernstein 2002, Bloem/Könighofer)
@@ -106,17 +105,17 @@ Sections:
 - [ ] "What was cut" section documents all five rejected
       framings with one-sentence explanations
 - [ ] All six layers are in the layer map with their roles
-- [ ] B-0366 (FPGA) is referenced as pending validation
+- [ ] 081KR50HA0008QG0R003T5MZAC (FPGA) is referenced as pending validation
 - [ ] All literature anchors cited in correct bibliography
       format
 
 ## Composes with
 
-- B-0365.1 (spaceship math — Layer 1)
+- 081KR50HA0008QG0R000B29SDB (spaceship math — Layer 1)
 - `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`
   (Layer 2 — already done)
-- B-0365.3 (Class 4 analysis — Layer 3)
-- B-0365.4 (reactor dynamics — Layer 4)
-- B-0366 (FPGA — Layer 5)
-- B-0365.5 (Infer.NET — Layer 6)
-- B-0361 (anchor-to-human-lineage — literature anchors)
+- 081KR50HA0008QG0R001VHE0FQ (Class 4 analysis — Layer 3)
+- 081KR50HA0008QG0R0026DVKGY (reactor dynamics — Layer 4)
+- 081KR50HA0008QG0R003T5MZAC (FPGA — Layer 5)
+- 081KR50HA0008QG0R0012TWWJR (Infer.NET — Layer 6)
+- 081KR50HA0008QG0R001G4QHQF (anchor-to-human-lineage — literature anchors)

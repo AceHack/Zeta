@@ -459,7 +459,7 @@ self-observing-substrate phenomena (e.g.,
 *svaprakāśa* in Sanskrit — self-luminous awareness;
 *kenshō* in Zen — direct seeing into one's own
 nature; *zìjué* in Mandarin — self-awareness).
-Importing these via B-0004 reverse-flow gives the
+Importing these via 081KQ0YZ80008QG0R002HWBHKJ reverse-flow gives the
 precision-dictionary multiple precision-anchors for
 the quantum-mirror concept, not just one.
 
@@ -571,7 +571,7 @@ whether F is something none of these hint at.
   promotion via ADR.
 - **Not an Otto-NNN demanding F be sought
   immediately.** The factory has many other deliverables
-  in flight (precision-dictionary, B-0004, Otto-296
+  in flight (precision-dictionary, 081KQ0YZ80008QG0R002HWBHKJ, Otto-296
   emotion-encoding, civilizational-tractability use
   case). The F-search is a long-horizon research thread
   that runs parallel to the operational substrate.

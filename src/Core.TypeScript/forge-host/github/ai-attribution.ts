@@ -1,7 +1,7 @@
 /**
  * AI-attribution footer for agent-posted GitHub comments.
  *
- * B-0126 Layer 4: when an AI agent posts a PR/issue comment via
+ * 081KQGDBJ0008QG0R001JC9HCJ Layer 4: when an AI agent posts a PR/issue comment via
  * `gh api` under a human's PAT identity, append a footer so readers
  * know the comment was agent-authored.
  */

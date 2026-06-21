@@ -1,21 +1,20 @@
 ---
-id: B-0028
-zetaid: 081KQ3HBZ0008QG0R0006Z5EXX
+id: 081KQ3HBZ0008QG0R0006Z5EXX
 priority: P3
 status: open
-title: Extract `tools/git/pr-state-summary.ts` (TypeScript) — gh-CLI-plus-JSON-parse pattern that I keep writing inline (Otto-346 application; per B-0015 P2 priority, target is TypeScript not Python or bash)
+title: Extract `tools/git/pr-state-summary.ts` (TypeScript) — gh-CLI-plus-JSON-parse pattern that I keep writing inline (Otto-346 application; per 081KQ0YZ80008QG0R0012002S4 P2 priority, target is TypeScript not Python or bash)
 tier: hygiene-tooling
 effort: S
-ask: Aaron 2026-04-26 catch — *"also more dymanic python smell"* — pointed at my inline `python3 -c "import json,sys..."` to parse `gh pr view --json` output. Same Otto-346 pattern (recurring dynamic Python = signal of missing substrate primitive); per Aaron's prior TS-migration priority bump (B-0015 P2), the proper home is TypeScript via Bun, not Python, not bash.
+ask: Aaron 2026-04-26 catch — *"also more dymanic python smell"* — pointed at my inline `python3 -c "import json,sys..."` to parse `gh pr view --json` output. Same Otto-346 pattern (recurring dynamic Python = signal of missing substrate primitive); per Aaron's prior TS-migration priority bump (081KQ0YZ80008QG0R0012002S4 P2), the proper home is TypeScript via Bun, not Python, not bash.
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
 composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, 081KQ0YZ80008QG0R0012002S4, 081KQ3HBZ0008QG0R003WJ62HM, tools/hygiene/sort-tick-history-canonical.py, tools/hygiene/fix-markdown-md032-md026.py]
-tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, gh-cli, json-parsing, typescript, ts-migration, B-0015-sibling]
+tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, gh-cli, json-parsing, typescript, ts-migration, 081KQ0YZ80008QG0R0012002S4-sibling]
 type: friction-reducer
 ---
 
-# B-0028 — extract gh-PR-state-summary tool (TypeScript)
+# 081KQ3HBZ0008QG0R0006Z5EXX — extract gh-PR-state-summary tool (TypeScript)
 
 ## Origin — Aaron 2026-04-26 catch
 
@@ -53,11 +52,11 @@ This is the SAME Otto-346 pattern I named earlier this session and shipped two t
 
 - `tools/hygiene/sort-tick-history-canonical.py` (PR #541) — sibling extraction (Python interim)
 - `tools/hygiene/fix-markdown-md032-md026.py` (PR #542) — sibling extraction (Python interim)
-- This is the THIRD recurring-pattern extraction this session; the cumulative count IS the signal that B-0015 (P2 TS migration) needs to actually start shipping
+- This is the THIRD recurring-pattern extraction this session; the cumulative count IS the signal that 081KQ0YZ80008QG0R0012002S4 (P2 TS migration) needs to actually start shipping
 
 ## Why TypeScript, not Python
 
-Per Aaron's 2026-04-26 priority bump on B-0015 (P3 → P2):
+Per Aaron's 2026-04-26 priority bump on 081KQ0YZ80008QG0R0012002S4 (P3 → P2):
 
 > *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol ... our post install code"*
 
@@ -70,7 +69,7 @@ This tool is POST-install (developer machine + CI runner already have Bun). Type
 
 ## First-migration candidate suitability
 
-**Strong candidate for first POST-install bun+TS migration** (sibling to B-0027, alternative to B-0015's batch-resolve-pr-threads.sh):
+**Strong candidate for first POST-install bun+TS migration** (sibling to 081KQ3HBZ0008QG0R003WJ62HM, alternative to 081KQ0YZ80008QG0R0012002S4's batch-resolve-pr-threads.sh):
 
 Pros:
 
@@ -80,11 +79,11 @@ Pros:
 - Establishes precedent for TS sibling-migration guardrail unblock
 - Composes with #541 and #542 patterns (same architectural shape)
 
-Vs B-0015 (batch-resolve-pr-threads.sh, 390 lines bash with discipline already encoded): bigger but discipline-preserving translation.
+Vs 081KQ0YZ80008QG0R0012002S4 (batch-resolve-pr-threads.sh, 390 lines bash with discipline already encoded): bigger but discipline-preserving translation.
 
-Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but B-0028 is *immediately useful* for the live drain-cadence Aaron + I are operating in, while B-0027 is reactive-only.
+Vs 081KQ3HBZ0008QG0R003WJ62HM (markdown-table-cell-count fix tool, not yet built): similar size, but 081KQ3HBZ0008QG0R0006Z5EXX is *immediately useful* for the live drain-cadence Aaron + I are operating in, while 081KQ3HBZ0008QG0R003WJ62HM is reactive-only.
 
-**Recommendation**: B-0028 might be the right first POST-install TS migration because:
+**Recommendation**: 081KQ3HBZ0008QG0R0006Z5EXX might be the right first POST-install TS migration because:
 
 1. Smallest scope
 2. Highest recurrence rate (I use this daily during drain operations)
@@ -103,7 +102,7 @@ Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but
 
 1. PR #541 — sort-tick-history-canonical (extracted)
 2. PR #542 — fix-markdown-md032-md026 (extracted)
-3. **B-0028 (this row)** — gh-pr-state-summary (owed)
+3. **081KQ3HBZ0008QG0R0006Z5EXX (this row)** — gh-pr-state-summary (owed)
 
 The pattern Aaron is catching is real and recurring. Per Otto-341 + Otto-346 honest application: each new instance is a fresh test of the discipline. The *cumulative count* of these catches IS data — three instances of the same pattern in one session is enough signal to move the TS-migration priority from "queued" to "actively starting first sibling."
 
@@ -116,8 +115,8 @@ The pattern Aaron is catching is real and recurring. Per Otto-341 + Otto-346 hon
 
 ## Composes with
 
-- **B-0015** (TS-migration P2; this row's TS target follows from that priority)
-- **B-0027** (markdown-table-cell-count tool; sibling extraction owed from same pattern)
+- **081KQ0YZ80008QG0R0012002S4** (TS-migration P2; this row's TS target follows from that priority)
+- **081KQ3HBZ0008QG0R003WJ62HM** (markdown-table-cell-count tool; sibling extraction owed from same pattern)
 - **Otto-346** (recurring-pattern absorption; this is the THIRD instance this session)
 - **Otto-341** (mechanism over discipline; tools absorb the recurring pattern)
 - **Otto-345** (Linus → git → tools-as-substrate; sibling lineage one layer down)
@@ -128,9 +127,9 @@ The pattern Aaron is catching is real and recurring. Per Otto-341 + Otto-346 hon
 
 The cumulative TS-migration owed-work this session has reached:
 
-- B-0015 batch-resolve-pr-threads.sh → TS (P2)
-- B-0027 markdown-table-cell-count tool → TS (P3)
-- B-0028 gh-pr-state-summary tool → TS (P3, this row)
+- 081KQ0YZ80008QG0R0012002S4 batch-resolve-pr-threads.sh → TS (P2)
+- 081KQ3HBZ0008QG0R003WJ62HM markdown-table-cell-count tool → TS (P3)
+- 081KQ3HBZ0008QG0R0006Z5EXX gh-pr-state-summary tool → TS (P3, this row)
 - Plus eventual rewrites of #541 sort-tick-history-canonical.py + #542 fix-markdown-md032-md026.py
 
 That's a five-tool batch for the post-install TS migration. When the first one lands, the sibling-migration guardrail unblocks the rest. Per Aaron 2026-04-26 priority bump, the TS migration moving from "queued" to "actively starting first sibling" is the right structural unblock.

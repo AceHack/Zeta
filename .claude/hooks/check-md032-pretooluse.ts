@@ -16,7 +16,7 @@
 // Wired via .claude/settings.json PreToolUse matcher:"Bash".
 // See .claude/hooks/README.md for configuration.
 //
-// Implements B-0456 acceptance criterion #4: wire the MD032
+// Implements 081KRHWGX0008QG0R000JEBCWZ acceptance criterion #4: wire the MD032
 // helper into the pre-commit harness hook.
 
 import { spawnSync } from "node:child_process";

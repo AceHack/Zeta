@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron's correction (this session): the B-NNNN series was supposed to be closed long ago and AIs kept minting (I minted B-1036..40 myself). The existing toll-booth lint failed two ways: the bump procedure became routine (5 consecutive grandfather commits) and id-less B-named files passed silently. Post-sweep (zero B-named files), the check tightens to a wall: any B-named file under docs/backlog/ or workitems/ fails, no frontmatter consultation, no bump path. Falsifier verified.
+Aaron's correction (this session): the B-NNNN series was supposed to be closed long ago and AIs kept minting (I minted 081KTSZN10008QG0R002R3RENG..40 myself). The existing toll-booth lint failed two ways: the bump procedure became routine (5 consecutive grandfather commits) and id-less B-named files passed silently. Post-sweep (zero B-named files), the check tightens to a wall: any B-named file under docs/backlog/ or workitems/ fails, no frontmatter consultation, no bump path. Falsifier verified.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

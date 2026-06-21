@@ -1,6 +1,6 @@
 ---
 pr_number: 5816
-title: "preserve(interrupt-substrate) + B-0917: META-scope observation (x86 ISR/IRET reinvented in monad space) + Kleisli arrows for context-propagation (Aaron 2026-05-28; composes with Mika 2026-05-27 Kleisli ferry + Tracing.fs Arrow type)"
+title: "preserve(interrupt-substrate) + 081KSNY2Z0008QG0R002HB4AGT: META-scope observation (x86 ISR/IRET reinvented in monad space) + Kleisli arrows for context-propagation (Aaron 2026-05-28; composes with Mika 2026-05-27 Kleisli ferry + Tracing.fs Arrow type)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T13:26:44Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-28T14:12:24Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5816: preserve(interrupt-substrate) + B-0917: META-scope observation (x86 ISR/IRET reinvented in monad space) + Kleisli arrows for context-propagation (Aaron 2026-05-28; composes with Mika 2026-05-27 Kleisli ferry + Tracing.fs Arrow type)
+# PR #5816: preserve(interrupt-substrate) + 081KSNY2Z0008QG0R002HB4AGT: META-scope observation (x86 ISR/IRET reinvented in monad space) + Kleisli arrows for context-propagation (Aaron 2026-05-28; composes with Mika 2026-05-27 Kleisli ferry + Tracing.fs Arrow type)
 
 ## PR description
 
@@ -36,7 +36,7 @@ Substrate-engineering primitives at depth REINVENT computer architecture primiti
 - **DUs-as-muscle-memory carving** (PR #5806) — interrupt-substrate IS extracting CPU muscle-memory at workflow-engine scope
 - **IMPLICIT-NOT-EXPLICIT rule** (PR #5811) — each interrupt class deserves explicit DU variant
 
-## B-0917 substrate-target (8 slices)
+## 081KSNY2Z0008QG0R002HB4AGT substrate-target (8 slices)
 
 A: InterruptKind DU + Kleisli ISR type / B: `>=>` composition / C: IntrCtx 5 contexts / D: Rounds-since-free-time counter (Aaron's guarantee target) / E: AutoLoopLifetime SUSPEND/IRET / F: Soraya formal-verification (free-time PRESENTED within N invariant) / G: Mika 2026-05-27 substrate composition / H: Tests
 
@@ -54,11 +54,11 @@ Aaron explicitly said *'we don't have to do it now it's your freetime'* — this
 
 ## Pull request overview
 
-This documentation-only PR preserves a new interrupt-in-monad-space observation as memory substrate and files B-0917 as a future backlog target for Kleisli-based interrupt/context propagation.
+This documentation-only PR preserves a new interrupt-in-monad-space observation as memory substrate and files 081KSNY2Z0008QG0R002HB4AGT as a future backlog target for Kleisli-based interrupt/context propagation.
 
 **Changes:**
 - Adds a feedback memory memo describing the x86 ISR/IRET analogy and Kleisli context propagation direction.
-- Adds backlog row B-0917 with implementation slices and acceptance criteria.
+- Adds backlog row 081KSNY2Z0008QG0R002HB4AGT with implementation slices and acceptance criteria.
 - Updates `memory/MEMORY.md` and `docs/BACKLOG.md` indexes to surface the new artifacts.
 
 ### Reviewed changes
@@ -69,8 +69,8 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 5 c
 | ---- | ----------- |
 | `memory/MEMORY.md` | Adds the new memo to the generated memory index and updates overflow count. |
 | `memory/feedback_interrupt_in_monad_space_observation_x86_isr_iret_pattern_reinvented_at_substrate_engineering_substrate_depth_kleisli_arrows_for_context_propagation_aaron_2026_05_28.md` | New preserved memo for the interrupt/Kleisli observation and related composition claims. |
-| `docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md` | New P2 backlog row defining future interrupt-substrate slices and acceptance criteria. |
-| `docs/BACKLOG.md` | Adds B-0917 to the P2 backlog index. |
+| `docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md` | New P2 backlog row defining future interrupt-substrate slices and acceptance criteria. |
+| `docs/BACKLOG.md` | Adds 081KSNY2Z0008QG0R002HB4AGT to the P2 backlog index. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-28T13:41:50Z)
 
@@ -104,13 +104,13 @@ P1: this path does not exist in the current tree (`tools/workflow-engine/` conta
 
 P1: this sibling memory filename is currently dangling; searching `memory/**` only finds this new reference, not the target file. Please either add the referenced formal-verification memo, replace this with the correct existing path, or describe it as future work without a file path.
 
-### Thread 4: docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:6 (resolved)
+### Thread 4: docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:6 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:32:42Z):
 
 P1: this row is missing the required `last_updated` frontmatter field. `tools/backlog/README.md` defines `last_updated` as required and says it must be updated on every content edit, so add `last_updated: 2026-05-28` alongside `created` for the new row.
 
-### Thread 5: docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:21 (resolved)
+### Thread 5: docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:21 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:32:43Z):
 
@@ -134,7 +134,7 @@ This notes file does not follow the documented `references/notes/` filename conv
 
 This notes file does not follow the documented `references/notes/` filename convention. `references/README.md:40-41` says authored notes should be named `<TOPIC>-NOTES.md` in SCREAMING-KEBAB-CASE; please rename this file (and update cross-links) so the reference index remains consistent.
 
-### Thread 9: docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:16 (resolved)
+### Thread 9: docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:16 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:41:48Z):
 
@@ -158,13 +158,13 @@ This `composes_with` path points at `tools/workflow-engine/auto-loop-lifecycle.t
 
 Both workflow-engine file references here are broken on this branch: neither `tools/workflow-engine/auto-loop-lifecycle.ts` nor `tools/workflow-engine/pr-review-lifecycle.ts` exists in `tools/workflow-engine/`. Please replace these with the actual landed files or stable backlog/PR references so future readers can follow the composition chain.
 
-### Thread 13: docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:6 (resolved)
+### Thread 13: docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:6 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:41:50Z):
 
 The backlog row frontmatter is missing the required `last_updated` field. `tools/backlog/README.md:68-70` marks both `created` and `last_updated` as required for per-row files, so this row will be out of schema until `last_updated: 2026-05-28` (or the current edit date) is added.
 
-### Thread 14: docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:21 (resolved)
+### Thread 14: docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md:21 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:41:50Z):
 

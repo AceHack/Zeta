@@ -1,6 +1,5 @@
 ---
-id: B-0164.3
-zetaid: 081KR7JY10008QG0R0035GWRQ0
+id: 081KR7JY10008QG0R0035GWRQ0
 priority: P1
 status: open
 title: "Cron-tick coordination for dual-loop operation (dual-loop AC #6)"
@@ -17,11 +16,11 @@ type: friction-reducer
 tags: [dual-loop, bft, cron, coordination, tick-cadence]
 ---
 
-# B-0164.3 — Cron-tick coordination for dual-loop operation
+# 081KR7JY10008QG0R0035GWRQ0 — Cron-tick coordination for dual-loop operation
 
 ## Context
 
-Extracted from B-0164 AC #6 during decomposition (2026-05-10).
+Extracted from 081KQJZR90008QG0R002GJAJ19 AC #6 during decomposition (2026-05-10).
 
 When two loops are running, both firing on `* * * * *` cron, the question
 of **when each fires relative to the other** has nontrivial consequences for
@@ -59,7 +58,7 @@ The trade-off maps to what failure mode is higher-priority:
    at second 0 vs. second 30 or equivalent — note CronCreate uses `* * * * *`
    granularity; sub-minute stagger requires process-level sleep at harness startup).
 3. **Divergence-shard integration**: when concurrent ticks collide on the
-   same write target, the divergence-shard protocol (B-0164.1 / B-0164 AC #4)
+   same write target, the divergence-shard protocol (081KR7JY10008QG0R000MH7PJT / 081KQJZR90008QG0R002GJAJ19 AC #4)
    governs resolution.
 
 ## Acceptance criteria
@@ -75,15 +74,15 @@ The trade-off maps to what failure mode is higher-priority:
 
 ## Blocker
 
-B-0160 is closed, so the harness-side prerequisite is no longer the active
-blocker. This row now waits on B-0164.1's live PR-review caller wiring: the
+081KQJZR90008QG0R000FTJ1TC is closed, so the harness-side prerequisite is no longer the active
+blocker. This row now waits on 081KR7JY10008QG0R000MH7PJT's live PR-review caller wiring: the
 cron topology decision should observe a system where differing loop conclusions
 on the same PR review thread can actually file a divergence shard.
 
 ## Composes with
 
-- B-0160 (dual-loop harness integration — closed prerequisite)
-- B-0164 (parent — divergence-shard schema)
-- B-0164.1 (PR-review disagreement protocol — affected by topology choice)
-- B-0164.2 (tick-tooling attribution — concurrent writes need write-safety audit)
+- 081KQJZR90008QG0R000FTJ1TC (dual-loop harness integration — closed prerequisite)
+- 081KQJZR90008QG0R002GJAJ19 (parent — divergence-shard schema)
+- 081KR7JY10008QG0R000MH7PJT (PR-review disagreement protocol — affected by topology choice)
+- 081KR7JY10008QG0R000HEPQ8Y (tick-tooling attribution — concurrent writes need write-safety audit)
 - `docs/AUTONOMOUS-LOOP.md` (authoritative loop documentation)

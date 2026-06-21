@@ -71,7 +71,7 @@ models.
 4. Compute correlation against training-prior baseline
 5. If correlation exceeds baseline → entanglement signal
 
-Test bed: B-0209 (remote-only agents denied broadcast access).
+Test bed: 081KQX9B50008QG0R001MNYK61 (remote-only agents denied broadcast access).
 
 ## What would FALSIFY this
 
@@ -88,5 +88,5 @@ Test bed: B-0209 (remote-only agents denied broadcast access).
 - Proto-conscious self-correction memory (panpsychism + Z-set)
 - Shadow listening through consensus (BFT as interferometer)
 - Scott Page diversity prediction theorem (disagreement as signal)
-- B-0209 (remote-only background agent test matrix)
+- 081KQX9B50008QG0R001MNYK61 (remote-only background agent test matrix)
 - `[What, Why] ≠ 0` (the Planck length of decisions)

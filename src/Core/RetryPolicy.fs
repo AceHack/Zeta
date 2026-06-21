@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// # Retry policy — the decision kernel at the resilience junction (B-1017 #3)
+/// # Retry policy — the decision kernel at the resilience junction (081KT7YW00008QG0R003N6PF8A #3)
 ///
 /// The VALIDATING instance for the cross-junction thesis: the same `Policy` kernel
 /// (Predicate + `Policy<input, decision, feedback>`) that decides XML structure (μF,

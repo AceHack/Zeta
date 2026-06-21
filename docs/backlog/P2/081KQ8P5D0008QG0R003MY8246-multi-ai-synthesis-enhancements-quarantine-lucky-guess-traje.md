@@ -1,6 +1,5 @@
 ---
-id: B-0093
-zetaid: 081KQ8P5D0008QG0R003MY8246
+id: 081KQ8P5D0008QG0R003MY8246
 priority: P2
 status: open
 title: Multi-AI synthesis enhancements — mechanical quarantine + lucky-guess protocol + trajectory owners + lattice convergence + scanner self-destruct prevention (post-PR-#699 follow-ups)
@@ -21,7 +20,7 @@ type: friction-reducer
 status: decomposed
 ---
 
-# B-0093 — Multi-AI synthesis enhancements (post-PR-#699 follow-ups)
+# 081KQ8P5D0008QG0R003MY8246 — Multi-AI synthesis enhancements (post-PR-#699 follow-ups)
 
 ## Source
 
@@ -31,7 +30,7 @@ This row tracks those enhancements as separate scoped tasks, each landable as a 
 
 ## Decomposition (re-decomp 2026-05-11, assume prior split mistakes)
 
-B-0093 decomposed into 4 smallest dependency-ordered atomic children (B-0093.1–B-0093.4) + 4 research/memory follow-ups (lattice #6, bead #7, beacon #8, unsolicited/lucky as combined in .3). Prior breakdown treated enhancements as independent doc updates; re-decomp assumes mistakes and converts mechanical ones to TS-preferring code slices per Rule 0 (TS over bash/docs). Dependency order: quarantine (base surface) → scanner (uses quarantine) → inference firewall (uses scanner) → trajectory table (uses prior). Lattice/bead/beacon remain M/S research or memory and deferred as separate children.
+081KQ8P5D0008QG0R003MY8246 decomposed into 4 smallest dependency-ordered atomic children (081KDVJZK7008QG0R001379Y14–081KDVJZK7008QG0R0020PEAJG) + 4 research/memory follow-ups (lattice #6, bead #7, beacon #8, unsolicited/lucky as combined in .3). Prior breakdown treated enhancements as independent doc updates; re-decomp assumes mistakes and converts mechanical ones to TS-preferring code slices per Rule 0 (TS over bash/docs). Dependency order: quarantine (base surface) → scanner (uses quarantine) → inference firewall (uses scanner) → trajectory table (uses prior). Lattice/bead/beacon remain M/S research or memory and deferred as separate children.
 
 ### Historical Per-enhancement breakdown (pre-re-decomp)
 
@@ -49,17 +48,17 @@ B-0093 decomposed into 4 smallest dependency-ordered atomic children (B-0093.1�
 
 ### 2. Scanner self-destruct prevention (Gemini + Claude.ai both flagged)
 
-**Issue:** The B-0092 compliance scanner regex (`rg -n "\binsider\b|\bprivileged\b|..."`) will flag the rule-definition files themselves (CONTRIBUTOR-COMPLIANCE.md, the rule-memory files, glossary entries). Without explicit allowlist, the scanner Goodharts itself.
+**Issue:** The 081KQ8P5D0008QG0R003ZF64GG compliance scanner regex (`rg -n "\binsider\b|\bprivileged\b|..."`) will flag the rule-definition files themselves (CONTRIBUTOR-COMPLIANCE.md, the rule-memory files, glossary entries). Without explicit allowlist, the scanner Goodharts itself.
 
 **Proposed fix:**
 
 - Path-based allowlist for rule-definition files (`--glob '!**/CONTRIBUTOR-COMPLIANCE.md'`, etc.)
 - OR `<!-- compliance-term-definition-ok -->` bypass comment for rule-definition lines (NOT for ad-hoc usage)
-- Explicit "where bypass is allowed" rule in B-0092
+- Explicit "where bypass is allowed" rule in 081KQ8P5D0008QG0R003ZF64GG
 
 **Composes with:** the Candidate-count Goodhart rule (`memory/feedback_candidate_count_goodhart_raw_hits_are_not_violations_aaron_amara_2026_04_28.md`) — the scanner's acceptance criterion is "all hits classified," not "zero hits."
 
-**Effort:** S — scanner config + B-0092 update
+**Effort:** S — scanner config + 081KQ8P5D0008QG0R003ZF64GG update
 
 ### 3. "Lucky guess" protocol (Gemini-flagged)
 
@@ -87,11 +86,11 @@ B-0093 decomposed into 4 smallest dependency-ordered atomic children (B-0093.1�
 
 ### 5. Trajectory owners + triggers + recording surfaces (Claude.ai-flagged)
 
-**Issue:** B-0092's 5 trajectories list cadences but don't name owners, triggers, or recording surfaces. Without those, trajectories drift into "should happen" rather than "happens."
+**Issue:** 081KQ8P5D0008QG0R003ZF64GG's 5 trajectories list cadences but don't name owners, triggers, or recording surfaces. Without those, trajectories drift into "should happen" rather than "happens."
 
 **Proposed fix:**
 
-Add a table to B-0092 trajectory section:
+Add a table to 081KQ8P5D0008QG0R003ZF64GG trajectory section:
 
 | Trajectory | Owner | Trigger | Recording surface |
 |---|---|---|---|
@@ -102,7 +101,7 @@ Add a table to B-0092 trajectory section:
 | Onboarding briefing | Aaron / repo maintainers | new contributor with public-company employer | acknowledgement record |
 | Drift retrospective | Otto + reviewer | compliance drift caught | memory + backlog row if repeated |
 
-**Effort:** S — B-0092 update
+**Effort:** S — 081KQ8P5D0008QG0R003ZF64GG update
 
 ### 6. Lattice convergence criterion (Claude.ai-flagged)
 
@@ -136,7 +135,7 @@ For each of the 3 deferred candidates, write an explicit one-line evidence-or-de
 
 ```text
 Lost-Substrate Recovery:
-  defer bead audit until B-0090 runs again on a later cadence.
+  defer bead audit until 081KQ8P5D0008QG0R0002TN22C runs again on a later cadence.
 
 Public-Company Compliance:
   defer independent bead until scanner/checklist/quarantine
@@ -168,7 +167,7 @@ Memory file: `feedback_beacon_promotion_load_bearing_rules_earn_external_anchors
 - [ ] No enhancement reopens PR #699
 - [ ] Mechanical quarantine actually mechanical (not just advisory)
 - [ ] Scanner self-destruct prevention verified by smoke-test (run scanner on rule-definition files; ALLOW class hits)
-- [ ] Trajectory owners table lands in B-0092
+- [ ] Trajectory owners table lands in 081KQ8P5D0008QG0R003ZF64GG
 - [ ] Lattice convergence section lands in metric-ladder memory (or deferred to research with explicit reason)
 
 ## Why P2
@@ -179,9 +178,9 @@ These are valuable enhancements but not blocking. PR #699 substrate functions to
 
 - **`memory/feedback_candidate_count_goodhart_raw_hits_are_not_violations_aaron_amara_2026_04_28.md`** — the headline rule from this synthesis; encoded immediately alongside this row.
 - PR #699 (memory cluster) — substrate this row's enhancements layer on top of.
-- B-0090 (cadenced lost-substrate audit) — Trajectory #5 (drift retrospective) cadence.
-- B-0091 (ServiceTitan audit) — completed; the candidate-count rule's worked-example origin.
-- B-0092 (public-company contributor compliance) — receives enhancements 1, 2, 3, 4, 5.
+- 081KQ8P5D0008QG0R0002TN22C (cadenced lost-substrate audit) — Trajectory #5 (drift retrospective) cadence.
+- 081KQ8P5D0008QG0R00353940P (ServiceTitan audit) — completed; the candidate-count rule's worked-example origin.
+- 081KQ8P5D0008QG0R003ZF64GG (public-company contributor compliance) — receives enhancements 1, 2, 3, 4, 5.
 
 ## What this row does NOT do
 

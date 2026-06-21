@@ -5,7 +5,7 @@
  *
  * Human-driven only — not agent-invocable. Agent-driven scraping of
  * authenticated personal accounts is refused at the safety-classifier
- * layer per B-0582 (destructive-verb-refusal-gate). The legitimate
+ * layer per 081KRQ1AB0008QG0R002469KJG (destructive-verb-refusal-gate). The legitimate
  * path is the operator running this script in their own session.
  *
  * v2.3 changes vs v2.2:

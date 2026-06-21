@@ -1,6 +1,6 @@
 name: soraya-formal-coverage-cadence
 
-# Standing cadence for the formal-coverage backlog (B-1007). Fires whether
+# Standing cadence for the formal-coverage backlog (081KT2T2J0008QG0R000YZ3NMY). Fires whether
 # or not any AI is running; opens or updates a tracking issue with a
 # "formal-coverage" label that any wake-time agent can grep for as a
 # cold-start check, then dispatch Soraya (the formal-verification-expert)
@@ -12,7 +12,7 @@ name: soraya-formal-coverage-cadence
 # Soraya must work the asserted-in-prose -> proven-from-seed gap on a
 # STANDING cadence, not one-shot. Harness crons don't persist across
 # sessions, so this GitHub Actions schedule is the durable mechanism (same
-# pattern as razor-cadence.yml / B-0192): the workflow fires whether or not
+# pattern as razor-cadence.yml / 081KQR4HQ0008QG0R001GAD29A): the workflow fires whether or not
 # any AI exists; the next wake-time agent picks up the artifact + dispatches
 # Soraya. The trigger ages and stays visible; the discipline does not depend
 # on agent-remembering-to-check.
@@ -24,13 +24,13 @@ name: soraya-formal-coverage-cadence
 # proof execution).
 #
 # Composes with:
-#  - B-1007 (the formal-coverage catch-up row + Soraya's C1-C14 audit).
+#  - 081KT2T2J0008QG0R000YZ3NMY (the formal-coverage catch-up row + Soraya's C1-C14 audit).
 #  - .claude/rules/formal-proof-first-...-ace-shields-zeta.md (the doctrine:
 #    consensus != validation; canonical = homeostat-proven-from-seed).
 #  - .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md
 #    (a proof that self-skips in CI is a hole; the checklist tracks
 #    enforced-not-skipped).
-#  - razor-cadence.yml / B-0192 (the cadence mechanization pattern).
+#  - razor-cadence.yml / 081KQR4HQ0008QG0R001GAD29A (the cadence mechanization pattern).
 #
 # Out of scope: the proof content (the FsCheck/Z3/TLA+ artefacts) is
 # authored by Soraya per dispatch; this workflow surfaces the visible

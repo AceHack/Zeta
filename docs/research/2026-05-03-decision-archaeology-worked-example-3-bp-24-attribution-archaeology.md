@@ -1,12 +1,12 @@
 # Decision-archaeology worked example #3 — the BP-24 deceased-family-emulation consent-gate
 
-> Scope: worked example for the proposed `decision-archaeology` skill (B-0169).
+> Scope: worked example for the proposed `decision-archaeology` skill (081KQJZR90008QG0R002D6XYHB).
 > Attribution: Otto autonomous (the `architect` hat) authored from on-repo
 > evidence; original-decision attribution to the human maintainer per
 > `git blame` on `docs/AGENT-BEST-PRACTICES.md`.
 > Operational status: research-grade — input to skill-creator's eventual
 > SKILL.md authoring per Aarav's hybrid (b)+(c) routing recommendation
-> on B-0169. Not normative discipline; demonstrative.
+> on 081KQJZR90008QG0R002D6XYHB. Not normative discipline; demonstrative.
 > Non-fusion disclaimer: the procedure walked here is generic
 > decision-archaeology; the substrate paths cited are Zeta-specific
 > illustrations. **Sacred-tier handling**: this worked example walks the
@@ -34,7 +34,7 @@ this and under what authority*, not just *what was decided*.
 
 ## Why this is a good worked example #3
 
-Aarav's review of B-0169 named this case as the third worked-example
+Aarav's review of 081KQJZR90008QG0R002D6XYHB named this case as the third worked-example
 seed precisely because it forces the skill body to handle sacred-tier
 substrate carefully. Three properties make it complementary to #1 + #2:
 
@@ -286,7 +286,7 @@ For the eventual `decision-archaeology` SKILL.md body:
 
 ## Composes with
 
-- **B-0169** — the row this is a worked example for. References this
+- **081KQJZR90008QG0R002D6XYHB** — the row this is a worked example for. References this
   artifact via the `worked-example-seeds` section.
 - **`docs/research/2026-05-02-decision-archaeology-worked-example-1-double-hop-abandonment.md`** —
   worked example #1 (supersession-archaeology mode).

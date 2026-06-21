@@ -1,6 +1,5 @@
 ---
-id: B-0171
-zetaid: 081KQNJ500008QG0R001N94412
+id: 081KQNJ500008QG0R001N94412
 priority: P1
 status: open
 title: OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")
@@ -52,7 +51,7 @@ surface is `tools/openspec/inventory.ts`, and the latest focused run reports:
 - Inventory gate: PASS under the current default gate.
 - Strict unmapped-spec gate: PASS with `--fail-on-unmapped-specs`.
 
-This means the next B-0171 slice is no longer "prove OpenSpec is empty." The
+This means the next 081KQNJ500008QG0R001N94412 slice is no longer "prove OpenSpec is empty." The
 work is now reconciliation: continue mapping artifact-backed capabilities,
 decide which open child rows are already satisfied by existing specs, and add
 one bounded capability mapping or child-row correction per PR. Avoid touching
@@ -60,10 +59,10 @@ one bounded capability mapping or child-row correction per PR. Avoid touching
 
 The current child-row sequence is:
 
-- `B-0171.1` - author the Z-Set Algebra spec.
-- `B-0171.2` - author the Tick-History Schema spec.
-- `B-0171.3` - author the Retraction-Native Semantics spec.
-- `B-0171.4` - author the Backlog Row Schema spec.
+- `081KSNY2Z0008QG0R003YZ3JXC` - author the Z-Set Algebra spec.
+- `081KSNY2Z0008QG0R000XVGWA8` - author the Tick-History Schema spec.
+- `081KSNY2Z0008QG0R0016VFTRX` - author the Retraction-Native Semantics spec.
+- `081KSXN940008QG0R003DWYYA6` - author the Backlog Row Schema spec.
 
 The parent row is marked `decomposition: decomposed` so autonomous pickup can
 descend into the open atomic child rows instead of repeatedly selecting the
@@ -103,8 +102,8 @@ The _"if we deleted everything but OpenSpec, the project would be lost"_ test is
 ## Why this matters now
 
 - Multiple just-landed memos (`feedback_skills_as_carved_sentences_*`, `feedback_multi_harness_alignment_convergence_*`, `feedback_git_native_backlog_management_*`, `feedback_verify_then_claim_*`) reference OpenSpec as the long-term canonical surface. Each adds substrate that should eventually have spec backing.
-- The substrate-claim-checker tool (B-0170) v1+ work for hook integration depends on contract-based development, which depends on specs being current.
-- Plugin packaging (B-0172) depends on specs as the contract carriers.
+- The substrate-claim-checker tool (081KQNJ500008QG0R003SCWBDV) v1+ work for hook integration depends on contract-based development, which depends on specs being current.
+- Plugin packaging (081KQNJ500008QG0R001VGMS5G) depends on specs as the contract carriers.
 
 ## Out of scope
 
@@ -114,11 +113,11 @@ The _"if we deleted everything but OpenSpec, the project would be lost"_ test is
 
 ## Composes with
 
-- **B-0058** (AI ethics + safety research track) — alignment specs are one class of OpenSpec capability that needs catch-up
-- **B-0169** (decision-archaeology skill) — once specs are current, `docs/DECISIONS/` ADRs cross-reference specs; decision-archaeology composes naturally
-- **B-0170** (substrate-claim-checker TS tool) — v1+ hook integration depends on specs as contract carriers
-- **B-0172** (skill-domain plugin packaging) — skill domains expose contracts; contracts live in specs
-- **B-0173** (hook authoring for skill-creation contracts) — pre/post-conditions are spec-encoded; hooks read them
+- **081KQ3HBZ0008QG0R002S674CG** (AI ethics + safety research track) — alignment specs are one class of OpenSpec capability that needs catch-up
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology skill) — once specs are current, `docs/DECISIONS/` ADRs cross-reference specs; decision-archaeology composes naturally
+- **081KQNJ500008QG0R003SCWBDV** (substrate-claim-checker TS tool) — v1+ hook integration depends on specs as contract carriers
+- **081KQNJ500008QG0R001VGMS5G** (skill-domain plugin packaging) — skill domains expose contracts; contracts live in specs
+- **081KQNJ500008QG0R003ZC6PK8** (hook authoring for skill-creation contracts) — pre/post-conditions are spec-encoded; hooks read them
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — the memo naming this catch-up as load-bearing
 - `openspec/README.md` — the canonical-intent doc; reading order is OpenSpec first per the future state
 - `memory/feedback_rule_number_two_assume_its_on_backlog_and_find_it_with_all_dependencies_and_updates_and_clean_up_the_dependson_chain_aaron_2026_05_05.md` — Rule #2 (assume-it's-on-backlog + walk depends_on); OpenSpec catch-up IS the spec-side analogue (assume the contract already exists, find it, walk its composes-with chain).

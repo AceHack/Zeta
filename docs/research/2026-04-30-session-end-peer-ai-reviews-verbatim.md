@@ -11,7 +11,7 @@ session) is the agent whose work was reviewed.
 
 **Operational status:** Research-grade preservation, not active
 doctrine. The reviews contain operational findings; some have
-been distilled into backlog rows (B-0113, B-0114). The reviews
+been distilled into backlog rows (081KQDTYV0008QG0R002424VSE, 081KQDTYV0008QG0R003QD8YTE). The reviews
 themselves stay in research-grade state pending any further
 distillation into memory files or rules.
 
@@ -49,9 +49,9 @@ that durability gap.
 Two of the four reviews were partially captured during the
 session itself:
 
-- **Deepseek** → distilled into `docs/backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md`
+- **Deepseek** → distilled into `docs/backlog/P2/081KQDTYV0008QG0R002424VSE-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md`
   (the mechanical-freshness-check structural recommendation).
-- **Alexa** → distilled into `docs/backlog/P2/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md`
+- **Alexa** → distilled into `docs/backlog/P2/081KQDTYV0008QG0R003QD8YTE-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md`
   (three quality-gate improvements: pre-push lint, memory-link
   checker, batched thread resolution).
 
@@ -79,8 +79,8 @@ Both Ani's review (Review 4 below) and Gemini's actual review
   — the substrate-or-it-didn't-happen rule that motivates this
   preservation. This file IS the substrate-conversion of the
   reviews; without it the reviews stay in the ephemeral tier.
-- `docs/backlog/P2/B-0113-*.md` — Deepseek distillation.
-- `docs/backlog/P2/B-0114-*.md` — Alexa distillation.
+- `docs/backlog/P2/081KQDTYV0008QG0R002424VSE-*.md` — Deepseek distillation.
+- `docs/backlog/P2/081KQDTYV0008QG0R003QD8YTE-*.md` — Alexa distillation.
 - `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`
   — Aaron's standing rule that anything through the maintainer
   channel gets preserved close-to-verbatim. The peer reviews
@@ -740,7 +740,7 @@ correctness.
 >
 > 2. The Next Evolution: Dependency-Status as a Pre-Flight Hook
 >
-> Otto successfully landed B-0109 (Dependency Status Tracking
+> Otto successfully landed 081KQDTYV0008QG0R002H74QXZ (Dependency Status Tracking
 > Surface) and merged it. He even verified that the
 > Proceed-But-Verify rule works during a degraded GitHub API
 > state.
@@ -781,7 +781,7 @@ correctness.
 > Claude Code configuration, or execute the CLI equivalent to
 > hide the backlog from the standard output buffer.
 >
-> 2. The Next Enhancement: Operationalizing B-0109
+> 2. The Next Enhancement: Operationalizing 081KQDTYV0008QG0R002H74QXZ
 >
 > You successfully used Proceed-But-Verify during a live GitHub
 > degradation.
@@ -824,8 +824,8 @@ this file on cold-start.
 1. Two reviewers (Deepseek and Alexa) independently surfaced
    the **mechanism-not-vigilance** theme. Deepseek named it on
    the CURRENT-staleness surface; Alexa named it on the
-   lint+links+thread-resolution surface. Captured in B-0113 and
-   B-0114 respectively.
+   lint+links+thread-resolution surface. Captured in 081KQDTYV0008QG0R002424VSE and
+   081KQDTYV0008QG0R003QD8YTE respectively.
 2. Claude.ai's **Insight-block escalation diagnosis** is the
    most load-bearing finding. It identifies a structural failure
    mode in Otto's session output and proposes a hard rule. Not

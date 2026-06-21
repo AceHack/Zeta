@@ -31,7 +31,7 @@ Empirical observation memo from Otto-CLI autonomous-loop session 2026-05-17T21:2
 
 ## Pattern
 
-First ~1.5h: 8 PRs merged (B-0613 close, B-0614 row, 3 rule anchors, arc shards).
+First ~1.5h: 8 PRs merged (081KRSKQ20008QG0R002TH55X6 close, 081KRSKQ20008QG0R0028VN0KR row, 3 rule anchors, arc shards).
 
 Remaining ~14.5h: ~440 brief-acks across ~4 counter-reset chains. Each chain individually stayed under N=6 because peer Otto's main-moves (Maji shadow PRs at ~30-60 min cadence) reset the per-chain counter to 0. The per-chain N=6 counter caught within-chain dwell but missed across-chain aggregate dwell.
 
@@ -43,12 +43,12 @@ An aggregate-tier escalation that:
 - Triggers at N_AGG threshold (50/100/200 — unknown ideal; conservative 50-100)
 - Resets ONLY on Aaron speaking OR agent-produced concrete artifact (NOT on peer main-moves)
 
-This composes with [B-0614](docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)'s draft refinement: B-0614 addresses meta-fallback-can-fail; aggregate-tier would address meta-fallback-not-even-triggered.
+This composes with [081KRSKQ20008QG0R0028VN0KR](docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)'s draft refinement: 081KRSKQ20008QG0R0028VN0KR addresses meta-fallback-can-fail; aggregate-tier would address meta-fallback-not-even-triggered.
 
 ## Composes with
 
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the per-chain rule
-- [PR #4144](https://github.com/Lucent-Financial-Group/Zeta/pull/4144) — peer Otto's B-0614 instance-#5 fold (cross-session evidence cycle B-0614 was waiting for)
+- [PR #4144](https://github.com/Lucent-Financial-Group/Zeta/pull/4144) — peer Otto's 081KRSKQ20008QG0R0028VN0KR instance-#5 fold (cross-session evidence cycle 081KRSKQ20008QG0R0028VN0KR was waiting for)
 - [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor
 
 ## Substrate-honest framing

@@ -1,6 +1,6 @@
 ---
 pr_number: 3900
-title: "shard(tick): 2026-05-16T15:47Z \u2014 B-0462 cascade landed (PR #3897 MERGED); peer-contamination caught by branch-discipline"
+title: "shard(tick): 2026-05-16T15:47Z \u2014 081KRA5AR0008QG0R0019Q33F7 cascade landed (PR #3897 MERGED); peer-contamination caught by branch-discipline"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T15:57:22Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-16T16:20:06Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3900: shard(tick): 2026-05-16T15:47Z — B-0462 cascade landed (PR #3897 MERGED); peer-contamination caught by branch-discipline
+# PR #3900: shard(tick): 2026-05-16T15:47Z — 081KRA5AR0008QG0R0019Q33F7 cascade landed (PR #3897 MERGED); peer-contamination caught by branch-discipline
 
 ## PR description
 
 ## Summary
 
-Cascade chain from 1531Z commit → 1535Z PR-open → 1547Z merged confirmation. [PR #3897](https://github.com/Lucent-Financial-Group/Zeta/pull/3897) (B-0462 7th cycle close-row) landed at `4443c09`. [PR #3898](https://github.com/Lucent-Financial-Group/Zeta/pull/3898) (1535Z tick shard) still auto-merging cleanly.
+Cascade chain from 1531Z commit → 1535Z PR-open → 1547Z merged confirmation. [PR #3897](https://github.com/Lucent-Financial-Group/Zeta/pull/3897) (081KRA5AR0008QG0R0019Q33F7 7th cycle close-row) landed at `4443c09`. [PR #3898](https://github.com/Lucent-Financial-Group/Zeta/pull/3898) (1535Z tick shard) still auto-merging cleanly.
 
 **Peer-contamination caught:** `git branch --show-current` at tick start reported peer Otto-CLI's branch (`otto-cli-b0457-close-2026-05-16-1542z`), not mine. The branch-discipline (not the env-var hook) made the silent HEAD-shift visible BEFORE any mutating operation. Recovered via `git switch -c` (no worktree-add pack-contention).
 
@@ -41,7 +41,7 @@ Rate-limit: 565 → ~555 GraphQL; 10min to reset. Extreme cost-aware tier contin
 
 ## Pull request overview
 
-Adds a new hygiene-history tick shard documenting the 15:47Z cascade confirmation for B-0462 and capturing a branch-discipline catch of peer worktree contamination.
+Adds a new hygiene-history tick shard documenting the 15:47Z cascade confirmation for 081KRA5AR0008QG0R0019Q33F7 and capturing a branch-discipline catch of peer worktree contamination.
 
 **Changes:**
 - Adds tick shard `1547Z.md` with refresh state, cascade confirmation, and peer-contamination observation.
@@ -54,7 +54,7 @@ Adds a new hygiene-history tick shard documenting the 15:47Z cascade confirmatio
 
 **@copilot-pull-request-reviewer** (2026-05-16T16:00:00Z):
 
-The relative link to the B-0519 backlog row is off by one directory level from this tick shard’s location, so it won’t resolve correctly in GitHub’s renderer. From `docs/hygiene-history/ticks/2026/05/16/`, you need to go up 5 levels to reach `docs/` before `backlog/P3/...` (see similar linking patterns in nearby tick shards like `0415Z.md`).
+The relative link to the 081KRHWGX0008QG0R001HMWM1W backlog row is off by one directory level from this tick shard’s location, so it won’t resolve correctly in GitHub’s renderer. From `docs/hygiene-history/ticks/2026/05/16/`, you need to go up 5 levels to reach `docs/` before `backlog/P3/...` (see similar linking patterns in nearby tick shards like `0415Z.md`).
 
 ### Thread 2: docs/hygiene-history/ticks/2026/05/16/1547Z.md:51 (unresolved)
 

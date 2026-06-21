@@ -1,6 +1,5 @@
 ---
-id: B-0272
-zetaid: 081KR2E4K0008QG0R001QZDAMQ
+id: 081KR2E4K0008QG0R001QZDAMQ
 priority: P1
 status: closed
 title: "Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup"
@@ -14,7 +13,7 @@ decomposition: atomic
 type: friction-reducer
 ---
 
-# B-0272 — ROM canonical naming
+# 081KR2E4K0008QG0R001QZDAMQ — ROM canonical naming
 
 Hash each ROM file, look up in TOSEC/No-Intro DAT files,
 rename to canonical form. TS script at tools/roms/.
@@ -23,9 +22,9 @@ rename to canonical form. TS script at tools/roms/.
 
 - [x] Prior-art search: checked `tools/roms/` (empty), grepped for
   TOSEC/No-Intro/canonicalize across repo (no existing TS tooling),
-  read parent B-0083 algorithm section and tooling design.
-- [x] Dependency walk: parent B-0083 (decomposed umbrella),
-  sibling B-0273 (depends on this item), no other deps.
+  read parent 081KQ8P5D0008QG0R001590WJ3 algorithm section and tooling design.
+- [x] Dependency walk: parent 081KQ8P5D0008QG0R001590WJ3 (decomposed umbrella),
+  sibling 081KR2E4K0008QG0R001JC6S3N (depends on this item), no other deps.
 - [x] Datfile format: Logiqx XML used by both TOSEC and No-Intro;
   `<rom name="..." sha1="..." />` is the match surface.
 
@@ -53,4 +52,4 @@ Provenance:
 
 Row left open from 2026-05-09 to 2026-05-16 (7 days). Caught by `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto-Desktop's PR #3758) flagging `tools/roms/canonicalize.ts` as drift candidate; per-acceptance-criterion verification confirmed pure-drift.
 
-This is the **10th pure-drift close** of the session-resume sequence (B-0272 follows B-0506, B-0530, B-0535, B-0494, B-0159, B-0528, B-0045.1, B-0046.1, B-0049.1).
+This is the **10th pure-drift close** of the session-resume sequence (081KR2E4K0008QG0R001QZDAMQ follows 081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R000HHAG77, 081KRHWGX0008QG0R0029WA0HQ, 081KQGDBJ0008QG0R003H0G5YQ, 081KRMEXM0008QG0R000T0A28T, 081KR50HA0008QG0R001Q071YY, 081KR7JY10008QG0R0018VG28R, 081KR50HA0008QG0R00257PHRR).

@@ -731,8 +731,8 @@ Phase 4: review.
 
 - EAT packet: `docs/research/economic-agency-threshold-2026-04-27.md`
 - Agent-wallet protocol stack: `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`
-- B-0024: `docs/backlog/P3/B-0024-trading-account-offer-aaron-self-funding-path-prerequisite-paper-trading-and-thesis-grounding.md`
-- B-0029: `docs/backlog/P2/B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md`
+- 081KQ0YZ80008QG0R0006VRT18: `docs/backlog/P3/081KQ0YZ80008QG0R0006VRT18-trading-account-offer-aaron-self-funding-path-prerequisite-paper-trading-and-thesis-grounding.md`
+- 081KQ3HBZ0008QG0R000JRZAMM: `docs/backlog/P2/081KQ3HBZ0008QG0R000JRZAMM-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md`
 - KSK design: `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md` + sibling repo `Lucent-Financial-Group/lucent-ksk`
 - INTENTIONAL-DEBT ledger: `docs/INTENTIONAL-DEBT.md` (per GOVERNANCE.md §11)
 - Glass halo: `docs/ALIGNMENT.md` lines 71+94+119

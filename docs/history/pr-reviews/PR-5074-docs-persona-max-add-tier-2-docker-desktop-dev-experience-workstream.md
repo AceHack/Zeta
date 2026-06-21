@@ -35,7 +35,7 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 
 ## Workstream scope (added to PERSONA.md + STARTING-POINT.md)
 
-- **Tier-2 in the three-tier testing story** (B-0780): middle tier between Aaron+Otto's pure-code F# Local Loop (tier-1) and the full real cluster (tier-3 already shipping per B-0754)
+- **Tier-2 in the three-tier testing story** (081KSE6WT0008QG0R000RH1526): middle tier between Aaron+Otto's pure-code F# Local Loop (tier-1) and the full real cluster (tier-3 already shipping per 081KSGS9H0008QG0R002T3BJ2R)
 - **Sub-scopes**: Argo CD sync-wave debugging; OTel observability matching CNI mesh shape; 30+ chart coverage matrix; CI testing on kind/k3d + GitHub workflows; `zeta dev up` developer-facing surface
 - **Topology**: Docker Desktop ships native multi-node kind (1–10 node slider; default 3 for consensus-quorum testing); multi-cluster federation lives in CI, not always-on locally
 - **Touch ID / biometrics**: Max gets the zflash Touch ID + PAM pattern for all privileged macOS operations; never types passwords for admin
@@ -52,7 +52,7 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 
 - [x] markdownlint clean
 - [x] No new files (only edits to existing persona files)
-- [x] Cross-references resolve (B-0780, B-0759, B-0770, B-0776, B-0786, zflash-setup.ts, zeta-install.sh, .claude/rules/*)
+- [x] Cross-references resolve (081KSE6WT0008QG0R000RH1526, 081KSE6WT0008QG0R003G0Y62D, 081KSE6WT0008QG0R0029S1D5Z, 081KSE6WT0008QG0R002275NDE, 081KSE6WT0008QG0R000C18G5D, zflash-setup.ts, zeta-install.sh, .claude/rules/*)
 - [ ] CI passes (gate workflow + CodeQL)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

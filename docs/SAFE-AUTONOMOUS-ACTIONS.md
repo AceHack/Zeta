@@ -72,4 +72,4 @@ New actions are proposed via PR with:
 - `.claude/bin/claude-forward-tick.ts` (Otto)
 - `.codex/bin/codex-loop-tick.ts` (Vera)
 - `.cursor/bin/riven-loop-tick.ts` (Riven)
-- `tools/shadow-outlet/outlet.ts` — shadow outlet CLI (B-0212 Phase 1)
+- `tools/shadow-outlet/outlet.ts` — shadow outlet CLI (081KQX9B50008QG0R00147GZX9 Phase 1)

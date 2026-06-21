@@ -63,7 +63,7 @@ to it requires Architect / human sign-off.
 - **Git Operations** — the substrate layer. Degradation here
   affects push, fetch, force-push semantics.
 - **Issues** — used for the dependency-status incident log
-  pattern (per B-0109's design).
+  pattern (per 081KQDTYV0008QG0R002H74QXZ's design).
 
 ## Freshness-check rule (loop + investigation integration)
 
@@ -174,12 +174,12 @@ the underlying state actually clears.
 
 ## Composes with
 
-- `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`
+- `docs/backlog/P0/081KQDTYV0008QG0R002H74QXZ-dependency-status-tracking-surface-2026-04-30.md`
   — the broader dependency-status tracking surface this
   reference is the first concrete piece of. Other dependencies
   (Anthropic, OpenAI, Google) get their own reference entries
   when their status sources are wired in; the design pass for
-  the full surface lives in B-0109.
+  the full surface lives in 081KQDTYV0008QG0R002H74QXZ.
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
   (landing in PR #911 alongside this reference) — the
   poll-the-gate rule that names the gate-state shape and

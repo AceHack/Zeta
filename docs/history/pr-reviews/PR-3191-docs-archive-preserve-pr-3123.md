@@ -31,7 +31,7 @@ Preservation bundle for three related artifacts produced in the same Lior sessio
 
 1. **PR 3123 archive** — `docs/research/2026-05-14-lior-pr-3123-archive.md` (or equivalent): preservation of the Lior antigravity check discipline around PR 3123.
 2. **Tick shard 1846Z** — `docs/hygiene-history/ticks/2026/05/14/1846Z.md`: Lior antigravity loop tick capturing CI infra-flake (mise rate-limit) observation and razor-cadence batch 5 audit (22/22 LIVE + 3 correctly-cleared, cumulative 134/135 testable refs LIVE).
-3. **B-0515 backlog row** — `docs/backlog/P3/B-0515-architecture-as-externalization-of-aarons-dialectical-perception-dashboard-target-shift-2026-05-14.md`: forward-planning row for architecture-as-externalization work.
+3. **081KRHWGX0008QG0R0018VR3SK backlog row** — `docs/backlog/P3/081KRHWGX0008QG0R0018VR3SK-architecture-as-externalization-of-aarons-dialectical-perception-dashboard-target-shift-2026-05-14.md`: forward-planning row for architecture-as-externalization work.
 
 All three belong to the same Lior antigravity check session. The original PR title reflects the primary preservation target; description now expanded per reviewer feedback.
 
@@ -60,7 +60,7 @@ All three belong to the same Lior antigravity check session. The original PR tit
 - **`Copilot` (bot)** at 2026-05-14T19:07:51Z on `docs/hygiene-history/ticks/2026/05/14/1846Z.md`:3 (association: NONE)
 
   <pre>
-  The PR title and description state the purpose is to "preserve PR 3123," but this PR also includes a new hygiene-history tick shard (`docs/hygiene-history/ticks/2026/05/14/1846Z.md`) and a new P3 backlog row (`docs/backlog/P3/B-0515-...md`) that are unrelated to PR 3123 preservation. Either the description should be expanded to cover these additional artifacts, or these files should be split into separate PRs so the archive PR remains scoped to its stated purpose.
+  The PR title and description state the purpose is to "preserve PR 3123," but this PR also includes a new hygiene-history tick shard (`docs/hygiene-history/ticks/2026/05/14/1846Z.md`) and a new P3 backlog row (`docs/backlog/P3/081KRHWGX0008QG0R0018VR3SK-...md`) that are unrelated to PR 3123 preservation. Either the description should be expanded to cover these additional artifacts, or these files should be split into separate PRs so the archive PR remains scoped to its stated purpose.
   </pre>
 
 ### Thread 2 -- resolved [collapsed]

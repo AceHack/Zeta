@@ -54,7 +54,7 @@ A new section **"### The agent-loop workflow-engine substrate (2026-05-28 substr
 - PR #5667 — `PressPause` + `EnterOpenEndedExploration` per operator cascade
 - PR #5668 — `.claude/skills/agent-loop/SKILL.md` for cross-harness distribution
 - PR #5669 — `tools/agent-loop/work-lifecycle-state-machine.ts` 11-state DU
-- B-0867 (workflow engine v1), B-0868 (hats-as-workflow-definitions), B-0869 (DORA mandate), B-0870 (two-mandate portfolio composition), B-0871 (reproducibility-as-causal-attribution)
+- 081KSKBP80008QG0R000B3Y19A (workflow engine v1), 081KSNY2Z0008QG0R0036KH026 (hats-as-workflow-definitions), 081KSNY2Z0008QG0R000HENSVM (DORA mandate), 081KSNY2Z0008QG0R000DA261F (two-mandate portfolio composition), 081KSNY2Z0008QG0R003R0Z7D2 (reproducibility-as-causal-attribution)
 
 ## Substrate-honest framing
 

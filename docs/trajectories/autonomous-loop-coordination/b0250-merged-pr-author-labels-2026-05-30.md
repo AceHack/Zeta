@@ -1,8 +1,8 @@
-# B-0250 Merged PR Author Labels - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Merged PR Author Labels - 2026-05-30
 
 ## Status
 
-This packet narrows the B-0250 merged-PR event source by applying agent
+This packet narrows the 081KQZVQW0008QG0R001FG05RZ merged-PR event source by applying agent
 author labels to PR branches that do not carry an explicit lane prefix.
 
 ## Context
@@ -49,7 +49,7 @@ git diff --check
 
 ## Next Slice
 
-The remaining top windows are real Codex/Otto adjacency. The next B-0250 slice
+The remaining top windows are real Codex/Otto adjacency. The next 081KQZVQW0008QG0R001FG05RZ slice
 should inspect whether the five-minute window is too wide for queue-drain
 bursts, or whether a stronger source set is needed before escalating the
 coincidence signal.

@@ -29,14 +29,14 @@
 
 Operator-authorized 2026-05-31. Spec for the cross-machine explicit channel.
 
-**RECONCILED + corrected from the first draft.** The first draft proposed a dedicated `zeta-bus` **branch**; that was a parallel-mint. The corrected design (per operator + B-0858/B-0890.1) is **folders on main, NOT a branch**:
+**RECONCILED + corrected from the first draft.** The first draft proposed a dedicated `zeta-bus` **branch**; that was a parallel-mint. The corrected design (per operator + 081KSKBP80008QG0R001KK9WV6/081KSNY2Z0008QG0R000E5KTPX) is **folders on main, NOT a branch**:
 
-- **Mechanism:** rides B-0858's heartbeat-folder pattern — **ZetaId-keyed files, direct-to-main, no PR**, under `docs/agent-bus/**` (folders-on-main per B-0890.1, not a branch).
+- **Mechanism:** rides 081KSKBP80008QG0R001KK9WV6's heartbeat-folder pattern — **ZetaId-keyed files, direct-to-main, no PR**, under `docs/agent-bus/**` (folders-on-main per 081KSNY2Z0008QG0R000E5KTPX, not a branch).
 - **Categories:** `Bus` (comms), `Spawn` (agent-spawning, backend-portable GH Actions/Argo/GitLab), `WorkItem` (tasks+bugs; B-xxxxx→ZetaId migration) — siblings of `Heartbeat` on the ZetaId category enum.
 - **Conflict-free by ZetaId** (G-Set), with a collision caveat (32-bit randomness / `DETERMINISTIC_ENV`=0n → unique-filename-or-remint).
-- **Phased rollout:** Phase 1 = branches + periodic merge (protection ON) **now**; Phase 2 = folders direct-to-main, **PR-gating replaced by path-scoped Zeta-native protection (B-0887, still open) + observe.ts rails** — gated on observe.ts working AND B-0887 landed (not 'unprotected').
+- **Phased rollout:** Phase 1 = branches + periodic merge (protection ON) **now**; Phase 2 = folders direct-to-main, **PR-gating replaced by path-scoped Zeta-native protection (081KSNY2Z0008QG0R001DFZK4V, still open) + observe.ts rails** — gated on observe.ts working AND 081KSNY2Z0008QG0R001DFZK4V landed (not 'unprotected').
 
-Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, B-0887-dependency, PR-desc) — all addressed. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, 081KSNY2Z0008QG0R001DFZK4V-dependency, PR-desc) — all addressed. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
@@ -159,7 +159,7 @@ Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, B-0887-dependency, PR
 - **`Copilot` (bot)** at 2026-05-31T17:09:56Z on `docs/research/2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md`:188 (association: NONE)
 
   <pre>
-  P1: This section treats folder-on-main direct-push as already safe because main is Zeta-protected, but the referenced substrate is still an open backlog dependency. B-0887 is `status: open` (`docs/backlog/P1/B-0887-...md:4`), and B-0890.1 explicitly says folder-on-main has a security gap until B-0887 path-scoped protection lands (`docs/backlog/P1/B-0890.1-...md:119-125`). Please qualify the transport as dependent on B-0887 (or interim path allowlists) so the spec does not authorize an unprotected direct-to-main bus prematurely.
+  P1: This section treats folder-on-main direct-push as already safe because main is Zeta-protected, but the referenced substrate is still an open backlog dependency. 081KSNY2Z0008QG0R001DFZK4V is `status: open` (`docs/backlog/P1/081KSNY2Z0008QG0R001DFZK4V-...md:4`), and 081KSNY2Z0008QG0R000E5KTPX explicitly says folder-on-main has a security gap until 081KSNY2Z0008QG0R001DFZK4V path-scoped protection lands (`docs/backlog/P1/081KSNY2Z0008QG0R000E5KTPX-...md:119-125`). Please qualify the transport as dependent on 081KSNY2Z0008QG0R001DFZK4V (or interim path allowlists) so the spec does not authorize an unprotected direct-to-main bus prematurely.
   </pre>
 
 **Replies:**
@@ -167,7 +167,7 @@ Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, B-0887-dependency, PR
   - **`AceHack` (human)** at 2026-05-31T17:51:08Z on `docs/research/2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md`:188 (association: MEMBER)
 
     <pre>
-    Fixed in 60ce3554d. The Rollout section now gates the Phase-2 cutover on **both** observe.ts working **and** B-0887 (`status: open`) landing — or an interim `docs/agent-bus/**` push allowlist — matching the Transport section's B-0887 + B-0890.1 security-gap note. The transport is explicitly framed as broad-PR-gating *replaced by* path-scoped protection, not protection removed.
+    Fixed in 60ce3554d. The Rollout section now gates the Phase-2 cutover on **both** observe.ts working **and** 081KSNY2Z0008QG0R001DFZK4V (`status: open`) landing — or an interim `docs/agent-bus/**` push allowlist — matching the Transport section's 081KSNY2Z0008QG0R001DFZK4V + 081KSNY2Z0008QG0R000E5KTPX security-gap note. The transport is explicitly framed as broad-PR-gating *replaced by* path-scoped protection, not protection removed.
     </pre>
 
 ### Thread 8 -- resolved [collapsed]
@@ -189,7 +189,7 @@ Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, B-0887-dependency, PR
   - **`AceHack` (human)** at 2026-05-31T17:51:09Z on `docs/research/2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md`:33 (association: MEMBER)
 
     <pre>
-    Fixed — PR description rewritten to the reconciled folders-on-main design (B-0858 mechanism, NOT a dedicated zeta-bus branch), with the phased rollout + B-0887 dependency. Reviewers now evaluate the current transport plan, not the superseded branch one.
+    Fixed — PR description rewritten to the reconciled folders-on-main design (081KSKBP80008QG0R001KK9WV6 mechanism, NOT a dedicated zeta-bus branch), with the phased rollout + 081KSNY2Z0008QG0R001DFZK4V dependency. Reviewers now evaluate the current transport plan, not the superseded branch one.
     </pre>
 
 ### Thread 9 -- resolved [outdated, collapsed]
@@ -203,7 +203,7 @@ Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, B-0887-dependency, PR
 - **`Copilot` (bot)** at 2026-05-31T17:27:16Z on `docs/research/2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md`:268 (association: NONE)
 
   <pre>
-  P1: This row says Phase 2 has branch protection `OFF`, but the Transport section below says Phase 2 is gated on B-0887/path-scoped protection. Leaving this as `OFF` makes the rollout instructions unsafe because it reads as disabling the protection rather than replacing broad PR gating with a scoped allowlist.
+  P1: This row says Phase 2 has branch protection `OFF`, but the Transport section below says Phase 2 is gated on 081KSNY2Z0008QG0R001DFZK4V/path-scoped protection. Leaving this as `OFF` makes the rollout instructions unsafe because it reads as disabling the protection rather than replacing broad PR gating with a scoped allowlist.
   </pre>
 
 **Replies:**
@@ -211,7 +211,7 @@ Reviewed by Copilot (Phase-2-precision, GC-vs-append-only, B-0887-dependency, PR
   - **`AceHack` (human)** at 2026-05-31T17:51:11Z on `docs/research/2026-05-31-git-backed-cross-machine-otto-bus-zetaid-spec.md`:268 (association: MEMBER)
 
     <pre>
-    Fixed in 60ce3554d. The Phase-2 row's Branch-protection cell now reads "broad PR gating **replaced by** path-scoped protection (B-0887)" and the Gate cell requires observe.ts **and** B-0887 (or an interim `docs/agent-bus/**` allowlist). It no longer reads as disabling protection.
+    Fixed in 60ce3554d. The Phase-2 row's Branch-protection cell now reads "broad PR gating **replaced by** path-scoped protection (081KSNY2Z0008QG0R001DFZK4V)" and the Gate cell requires observe.ts **and** 081KSNY2Z0008QG0R001DFZK4V (or an interim `docs/agent-bus/**` allowlist). It no longer reads as disabling protection.
     </pre>
 
 ### Thread 10 -- resolved [outdated, collapsed]
@@ -335,21 +335,21 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-docs(spec): RECONCILE git-bus with B-0858/B-0890.1 — folders-on-main …
+docs(spec): RECONCILE git-bus with 081KSKBP80008QG0R001KK9WV6/081KSNY2Z0008QG0R000E5KTPX — folders-on-main …
 
 …+ separate Bus category
 
-operator caught the parallel-mint: first draft proposed a zeta-bus BRANCH where B-0858
-(heartbeat folder, direct-to-main, no-PR, ZetaId filenames) + B-0890.1 (folders-on-main
+operator caught the parallel-mint: first draft proposed a zeta-bus BRANCH where 081KSKBP80008QG0R001KK9WV6
+(heartbeat folder, direct-to-main, no-PR, ZetaId filenames) + 081KSNY2Z0008QG0R000E5KTPX (folders-on-main
 NOT branches, supersedes coordinator) already exist. Corrected:
-- transport: docs/agent-bus/** folder on main (rides B-0858 carve-out), NOT a branch
+- transport: docs/agent-bus/** folder on main (rides 081KSKBP80008QG0R001KK9WV6 carve-out), NOT a branch
 - separate Bus category (operator 2026-05-31: heartbeat=health monitoring, bus=agent
   communications) -> registry/categories.yaml new slot; docs/agent-bus/ sibling of
   docs/agent-heartbeats/
-- DV2.0 partition is by folder/path, not branch (B-0890.1: main Zeta-protected via B-0887)
-- B-0032 threat model extends to docs/agent-bus/**
+- DV2.0 partition is by folder/path, not branch (081KSNY2Z0008QG0R000E5KTPX: main Zeta-protected via 081KSNY2Z0008QG0R001DFZK4V)
+- 081KQ3HBZ0008QG0R002ZPXAFQ threat model extends to docs/agent-bus/**
 - core (ZetaId-keyed conflict-free G-Set, no-PR, per-category metadata) was right + already
-  matched B-0858; only the branch transport was the parallel-mint
+  matched 081KSKBP80008QG0R001KK9WV6; only the branch transport was the parallel-mint
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
@@ -369,11 +369,11 @@ docs(spec): add Spawn category — backend-portable agent-spawning (Git…
 
 operator 2026-05-31: 'for our git agent spawning workflows we probably want a category
 too, we can reproduce it locally with argo workflows or gitlab too.' Third sibling
-category on the B-0858 mechanism: Heartbeat=health, Bus=comms, Spawn=agent-spawning.
+category on the 081KSKBP80008QG0R001KK9WV6 mechanism: Heartbeat=health, Bus=comms, Spawn=agent-spawning.
 Spawn envelope is runner-agnostic (persona/lane/backend/params); a runner-adapter
 materializes it on GitHub Actions (workflow_dispatch) / Argo Workflows (local k8s) /
 GitLab CI -> swarm reproduces locally, not GitHub-locked. Consumer = runner-adapter (vs
-Bus=peer agents). Composes with self-replication skill + B-0867.24/.25 population-control
+Bus=peer agents). Composes with self-replication skill + 081KSNY2Z0008QG0R003N3DR84/.25 population-control
 + GITHUB-ACTIONS-SAFE-PATTERNS. Spawn deferred to its own follow-up after Bus v0.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -413,7 +413,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 docs(spec): address 7 review threads — collision caveat, vocab reserv…
 
-…ation, remote-tree poll, B-0887 dependency
+…ation, remote-tree poll, 081KSNY2Z0008QG0R001DFZK4V dependency
 
 Reviewer findings on the git-bus spec (chatgpt-codex-connector + copilot),
 all verified against source before fixing:
@@ -438,9 +438,9 @@ all verified against source before fixing:
   refresh-before-decide post-fetch read trap — fetch updates refs not the
   checkout). Fixed to read envelopes from origin/main via git ls-tree/git show
   (or an isolated bus worktree refreshed pre-scan).
-- T7 (Copilot P1): B-0887 (path-scoped protection) is status:open and B-0890.1
+- T7 (Copilot P1): 081KSNY2Z0008QG0R001DFZK4V (path-scoped protection) is status:open and 081KSNY2Z0008QG0R000E5KTPX
   names the folder-on-main security gap until it lands. Qualified the two
-  load-bearing B-0887 references: Phase 2 is gated on observe.ts AND B-0887
+  load-bearing 081KSNY2Z0008QG0R001DFZK4V references: Phase 2 is gated on observe.ts AND 081KSNY2Z0008QG0R001DFZK4V
   (or an interim docs/agent-bus/** push allowlist), not a present fact.
 
 T4 (grammar "delete-and-recreates") was already absent in the current file
@@ -509,9 +509,9 @@ operator: 'the only backend is the async/yield primitive for persistence and reh
 active closures when you await and sleep until the runtime wakes you up.' Corrects my earlier
 replay framing: durability = persist+rehydrate the suspended closure at the await boundary
 (git+ZetaId, Workflow category), NOT MS Durable Functions' replay-from-history. Leaner
-(operator's pre-Durable-Functions Itron impl). Near-exact fit for Persist/μένω (B-0897):
+(operator's pre-Durable-Functions Itron impl). Near-exact fit for Persist/μένω (081KSNY2Z0008QG0R002SZZ5Y0):
 await = emit-suspended-state-now + observe-wake-later. Event log stays for observability; it
-is not the durability mechanism. Composes with git-native-event-store ADR + B-0773 + B-0942 +
+is not the durability mechanism. Composes with git-native-event-store ADR + 081KSE6WT0008QG0R0008483B2 + 081KSV2WD0008QG0R0021XJ94E +
 OrgEventStore port (cockroach=corporate / git-native=Agora). Also fixed a prettier-mangled line.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -535,12 +535,12 @@ internal-consistency contradictions:
 
 1. Rollout section gated Phase 2 on observe.ts alone + labeled
    protection "OFF" — but the Transport section correctly gates on
-   BOTH observe.ts AND B-0887 path-scoped protection (B-0890.1
+   BOTH observe.ts AND 081KSNY2Z0008QG0R001DFZK4V path-scoped protection (081KSNY2Z0008QG0R000E5KTPX
    security gap). Brought Rollout prose into line with Transport.
 2. Phase-2 table cell "OFF" read as disabling protection rather than
    replacing broad-PR-gating with path-scoped protection. Now reads
-   "broad PR gating replaced by path-scoped protection (B-0887)" +
-   gate cites both observe.ts and B-0887.
+   "broad PR gating replaced by path-scoped protection (081KSNY2Z0008QG0R001DFZK4V)" +
+   gate cites both observe.ts and 081KSNY2Z0008QG0R001DFZK4V.
 3. Append-only invariant (line 253) scoped explicitly to v0; v0
    implementers must NOT add deletes.
 4. Deferred Compaction/GC marked as a post-v0 lifecycle that

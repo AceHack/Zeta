@@ -32,15 +32,15 @@ Autonomous-loop tick 2129Z — full shard at [docs/hygiene-history/ticks/2026/05
 **Summary:**
 
 - Cold-boot fresh session; CronList empty at tick-open; armed sentinel `de1e7f5d` first per catch-43.
-- PR #4097 was BLOCKED + green CI + 2 unresolved threads (Codex P2 + Copilot, same finding on B-0613 doc line 75).
+- PR #4097 was BLOCKED + green CI + 2 unresolved threads (Codex P2 + Copilot, same finding on 081KRSKQ20008QG0R002TH55X6 doc line 75).
 - Verify-before-fix: line 75 already had peer Otto's `6f91e9c` correction. Threads were stale-but-fresh-looking per the published taxonomy.
 - Resolved both threads no-op via `resolveReviewThread` GraphQL mutation. PR auto-merged via armed auto-merge: `e1704a26`.
-- B-0613 doc now consistent on main: Option B + Option A correctly flagged bash-only; Option C is the portable path.
+- 081KRSKQ20008QG0R002TH55X6 doc now consistent on main: Option B + Option A correctly flagged bash-only; Option C is the portable path.
 
 **Composes with:**
 
 - [PR #4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097) (MERGED — this tick's primary action)
-- [PR #4086](https://github.com/Lucent-Financial-Group/Zeta/pull/4086) (MERGED earlier — original B-0613 row with substrate gap)
+- [PR #4086](https://github.com/Lucent-Financial-Group/Zeta/pull/4086) (MERGED earlier — original 081KRSKQ20008QG0R002TH55X6 row with substrate gap)
 - [1447Z shard](docs/hygiene-history/ticks/2026/05/17/1447Z.md) (the gap-observation this tick closes)
 - `.claude/rules/blocked-green-ci-investigate-threads.md` (investigate-threads-first + stale taxonomy)
 - `.claude/rules/zeta-expected-branch.md` (isolated worktree race-window discipline)

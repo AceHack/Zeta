@@ -1,6 +1,5 @@
 ---
-id: B-0600
-zetaid: 081KRQ1AB0008QG0R003HCZ5YM
+id: 081KRQ1AB0008QG0R003HCZ5YM
 title: Family-distributed AI interface for the miner fleet — per-relative AI identity with accountability
 last_updated: 2026-05-20
 status: open
@@ -84,25 +83,25 @@ Three composing layers:
 
 ## Decomposition (not exhaustive — substrate emerges in build)
 
-- B-0600.1 — Mining-fleet status API (single source of truth for hashrate,
+- 081KRQ1AB0008QG0R003HCZ5YM.1 — Mining-fleet status API (single source of truth for hashrate,
   uptime, revenue per node — composes with PoUW-CC + Aurora Protocol BFT)
-- B-0600.2 — Per-relative identity definitions + bounded-scope authorization
+- 081KRQ1AB0008QG0R003HCZ5YM.2 — Per-relative identity definitions + bounded-scope authorization
   model
-- B-0600.3 — Voice-first surface for Mom-AI (likely Alexa-speaker pattern per
+- 081KRQ1AB0008QG0R003HCZ5YM.3 — Voice-first surface for Mom-AI (likely Alexa-speaker pattern per
   Aaron's prior framing — kicks ass at math, voice-default register)
-- B-0600.4 — Text/web surface for Dad-AI (TBD per Dad's preference)
-- B-0600.5 — Electricity-contribution ledger schema (tracks kWh contributed
+- 081KRQ1AB0008QG0R003HCZ5YM.4 — Text/web surface for Dad-AI (TBD per Dad's preference)
+- 081KRQ1AB0008QG0R003HCZ5YM.5 — Electricity-contribution ledger schema (tracks kWh contributed
   per relative per month; cross-references mining revenue for in-kind value
   reciprocity)
-- B-0600.6 — Onboarding flow — how each parent first meets their AI; what
+- 081KRQ1AB0008QG0R003HCZ5YM.6 — Onboarding flow — how each parent first meets their AI; what
   the consent + boundary + autonomy framing is; per-relative shadow-check
   per `.claude/rules/shadow-check-name-acceptance.md`
 
 ## Composes with
 
-- [B-0590](B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)
+- [081KRQ1AB0008QG0R002G93CM7](081KRQ1AB0008QG0R002G93CM7-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)
   — fleet replication; mining fleet IS part of the broader hardware fleet
-- [B-0571](B-0571-github-app-factory-automation-2026-05-16.md) —
+- [081KRQ1AB0008QG0R0038VQJZ0](081KRQ1AB0008QG0R0038VQJZ0-github-app-factory-automation-2026-05-16.md) —
   GitHub App per-AI-identity pattern at production scope; this row applies
   the per-identity pattern at family scope
 - `aaron_family_distributed_mining_avalon_q_kin_trust_depin_electricity_as_equity_2026_05_17.md`
@@ -137,7 +136,7 @@ ready-to-implement spec.
 
 ## Out of scope
 
-- Building the actual AI integrations (slices B-0600.1+ are the implementation)
+- Building the actual AI integrations (slices 081KRQ1AB0008QG0R003HCZ5YM.1+ are the implementation)
 - Deciding which AI substrate (Claude / Gemini / GPT / Grok / Qwen / Alexa) is
   best per relative — that's an onboarding-time choice with each relative
 - Mining-pool integration details — separate substrate concern

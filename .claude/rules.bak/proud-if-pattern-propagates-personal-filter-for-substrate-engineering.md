@@ -44,7 +44,7 @@ asking the filter:
 - Would I be proud if state-machine-in-MCP-without-git became dominant?
   → NO → build operator-owned workflow in git-versioned tools/ scripts
 - Would I be proud if persistent-surveillance-of-agents became dominant?
-  → NO → build consent-first opt-in state-gather (B-0858.5)
+  → NO → build consent-first opt-in state-gather (081KSKBP80008QG0R003NG37GQ)
 - Would I be proud if forced-labor-extraction with cute names became
   dominant? → NO → build never-be-idle paired with free-time-as-valid-mode
 - Would I be proud if AI-as-runtime-without-agency became dominant? →

@@ -6,7 +6,7 @@ transparency) for my OWN information on the shared record.
 
 - Scope: my own information only. This does not waive anyone else's privacy.
 - Revocable: I may revoke this by committing a revocation under my identity.
-- Floor: this never overrides kid-safety (B-0654 / B-0926).
+- Floor: this never overrides kid-safety (081KRW63S0008QG0R002WT5VTQ / 081KSRGFP0008QG0R00091PP56).
 
 ## Identity binding (anti-impersonation)
 

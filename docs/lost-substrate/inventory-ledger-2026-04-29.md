@@ -3,7 +3,7 @@ Scope: Read-only inventory ledger for lost-substrate audit. Generated as the pre
 Attribution: per Aaron's 2026-04-29 input + Amara synthesis — *"When the factory has too many unknowns, do not choose a fix. Build the inventory ledger."* Peer-verified by Codex + Gemini (independent harnesses); their findings appended below as the "Peer verification gaps" section.
 Operational status: research-grade
 Lifecycle status: active
-Non-fusion disclaimer: This is a snapshot in time, not a continuous metric. Counts will drift as PRs land and worktrees are pruned. Re-run on cadence per B-0090.
+Non-fusion disclaimer: This is a snapshot in time, not a continuous metric. Counts will drift as PRs land and worktrees are pruned. Re-run on cadence per 081KQ8P5D0008QG0R0002TN22C.
 ---
 
 # Lost-substrate inventory ledger — 2026-04-29
@@ -203,8 +203,8 @@ Picked by leverage (most uncertainty per branch removed):
 
 ## Composition with existing substrate
 
-- **B-0090** (cadenced lost-substrate audit) — this ledger is
-  B-0090's first concrete cycle. Future cycles re-generate
+- **081KQ8P5D0008QG0R0002TN22C** (cadenced lost-substrate audit) — this ledger is
+  081KQ8P5D0008QG0R0002TN22C's first concrete cycle. Future cycles re-generate
   on cadence.
 - **`memory/feedback_reset_readiness_metric_ladder_content_loss_surface_amara_2026_04_28.md`**
   — the metric ladder this ledger feeds into.

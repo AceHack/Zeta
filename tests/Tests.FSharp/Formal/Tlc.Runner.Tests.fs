@@ -345,7 +345,7 @@ let ``TLC validates SpineMergeInvariants`` () =
 
 [<Fact>]
 let ``TLC validates BpExactOnTree`` () =
-    // B-1007 C5 — sum-product BP runToFixpoint is EXACT ON TREES and
+    // 081KT2T2J0008QG0R000YZ3NMY C5 — sum-product BP runToFixpoint is EXACT ON TREES and
     // TERMINATES under the bounded round cap. Models the synchronous
     // passOnce schedule (FactorGraph.fs:124-191) on the 3-variable tree
     // (path 0—1—2: equality factors {0,1}+{1,2}, prior on each). Tracks

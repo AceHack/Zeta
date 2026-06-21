@@ -1,6 +1,5 @@
 ---
-id: B-0116
-zetaid: 081KQDTYV0008QG0R002C97QMC
+id: 081KQDTYV0008QG0R002C97QMC
 priority: P3
 status: open
 title: tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)
@@ -17,7 +16,7 @@ tags: [deepseek-2026-04-30, zsh, gh-cli, jq, friction-reduction, peer-review-fin
 type: friction-reducer
 ---
 
-# B-0116 — tools/gh-jq-safe.sh wrapper (zsh quoting friction)
+# 081KQDTYV0008QG0R002C97QMC — tools/gh-jq-safe.sh wrapper (zsh quoting friction)
 
 ## Source
 
@@ -82,5 +81,5 @@ session for 3 consecutive sessions, promote to P2.
 ## Composes with
 
 - `tools/github/poll-pr-gate.ts` (sibling tool; same surface)
-- TS+Bun discipline (B-0106, the TS-port pattern)
+- TS+Bun discipline (081KQDTYV0008QG0R000XFYDTT, the TS-port pattern)
 - Bash-compatibility target (Otto-235)

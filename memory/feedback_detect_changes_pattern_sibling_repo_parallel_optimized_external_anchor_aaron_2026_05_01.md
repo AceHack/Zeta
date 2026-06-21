@@ -1,6 +1,6 @@
 ---
 name: detect-changes pattern + fine-grained workflow split — sibling-repo parallel-optimized external anchor — Aaron 2026-05-01
-description: Aaron 2026-05-01 *"../no-copy-only-learning-agents-insight is the best repo in github i've seen setup to be parallel, it's not perfect but it's pretty good."* — external-anchor pointing at sibling repo's parallel-optimization patterns. Seven load-bearing patterns identified via direct inspection: (1) `detect-changes.yaml` workflow that emits per-change-class outputs (`mfe-src-changed`, `backend-src-changed`, etc.); (2) fine-grained workflow split (42 workflows, one concern each, vs our ~15 monolithic); (3) test parallelism at script level (bash + PowerShell pair); (4) 5 concern-aligned rulesets empirically validating B-0155 architecture; (5) branch protection effectively empty (zero contexts, all migrated to rulesets); (6) sibling uses Wiki not Pages — Aaron's prior Jekyll-on-Pages was workaround-not-preference (*"bun is probably enough"*); (7) AGENTS.md learning-discipline convergence. The pattern's core insight is that PRs only run workflows their changes need — backend-only PR doesn't trigger MFE workflows. Massive parallel-PR-friendliness because CI churn drops to zero across unrelated changes.
+description: Aaron 2026-05-01 *"../no-copy-only-learning-agents-insight is the best repo in github i've seen setup to be parallel, it's not perfect but it's pretty good."* — external-anchor pointing at sibling repo's parallel-optimization patterns. Seven load-bearing patterns identified via direct inspection: (1) `detect-changes.yaml` workflow that emits per-change-class outputs (`mfe-src-changed`, `backend-src-changed`, etc.); (2) fine-grained workflow split (42 workflows, one concern each, vs our ~15 monolithic); (3) test parallelism at script level (bash + PowerShell pair); (4) 5 concern-aligned rulesets empirically validating 081KQGDBJ0008QG0R0028YTDQ2 architecture; (5) branch protection effectively empty (zero contexts, all migrated to rulesets); (6) sibling uses Wiki not Pages — Aaron's prior Jekyll-on-Pages was workaround-not-preference (*"bun is probably enough"*); (7) AGENTS.md learning-discipline convergence. The pattern's core insight is that PRs only run workflows their changes need — backend-only PR doesn't trigger MFE workflows. Massive parallel-PR-friendliness because CI churn drops to zero across unrelated changes.
 type: feedback
 caused_by:
   - "Aaron 2026-05-01 message naming `../no-copy-only-learning-agents-insight` as the best parallel-optimized repo he's seen on GitHub"
@@ -94,7 +94,7 @@ Each workflow:
 inside; `lint.yml` runs all linters in matrix. When any
 matrix-leg fails the whole gate fails. Aaron's
 `splitting-rulesets-so-you-could-have-multiple-smaller`
-direction (per B-0155) is the ruleset analogue of this
+direction (per 081KQGDBJ0008QG0R0028YTDQ2) is the ruleset analogue of this
 workflow-splitting pattern.
 
 ## Pattern 3 — Test parallelism at script level (bash + PS1 pair)
@@ -110,7 +110,7 @@ in parallel from the script level, not just from CI matrix.
 This means local development gets parallel test execution
 too — not just CI.
 
-## Pattern 4 — Multiple concern-aligned rulesets (B-0155 architecture validated)
+## Pattern 4 — Multiple concern-aligned rulesets (081KQGDBJ0008QG0R0028YTDQ2 architecture validated)
 
 Aaron 2026-05-01 follow-up: *"you should be able to use the gh
 cli i think to see it's setting in read only mode too"* + *"on
@@ -127,7 +127,7 @@ concern-aligned rulesets**:
 5. `deployment/* branch protection` (evaluate-mode) —
    deployment-branch concern
 
-This is **exactly the B-0155 architectural target**: multiple
+This is **exactly the 081KQGDBJ0008QG0R0028YTDQ2 architectural target**: multiple
 smaller concern-aligned rulesets, all always-on (or staged-on
 via `evaluate` mode for new rules). The sibling repo has done this in
 production at scale. Empirical validation that the split-into-
@@ -137,7 +137,7 @@ The `evaluate` enforcement mode is a pattern we don't yet
 exploit: rulesets in `evaluate` mode don't block merges but
 DO record what would have been blocked, letting you stage a
 new ruleset rule's introduction with zero blast-risk before
-flipping to `active`. Composes with B-0155's three-ruleset
+flipping to `active`. Composes with 081KQGDBJ0008QG0R0028YTDQ2's three-ruleset
 split: each new rule could ship via `evaluate` → observe →
 `active` rollout.
 
@@ -154,7 +154,7 @@ the sibling repo's `gh api .../branches/master/protection` shows:
 protection into rulesets.** Branch protection is effectively
 inert; the rulesets carry the policy.
 
-This is the B-0155 Phase-3-cleanup endpoint: minimized branch
+This is the 081KQGDBJ0008QG0R0028YTDQ2 Phase-3-cleanup endpoint: minimized branch
 protection. the sibling repo is the empirical proof that the migration
 works — they're operating at production scale with branch
 protection as a thin shim.
@@ -183,15 +183,15 @@ become viable:
 - **Bun-native templating** — minimal, can build incrementally
   from existing `docs/**.md` markdown
 
-This sharpens B-0154's static-site-generator choice: Jekyll
+This sharpens 081KQGDBJ0008QG0R002NV04N9's static-site-generator choice: Jekyll
 was the default candidate, but post-bun-on-PATH the TS-native
 options (Astro / Vitepress) deserve evaluation. Composes with
-B-0156's TS-preference (Pages should follow the same TS-default
+081KQGDBJ0008QG0R000A4EZS5's TS-preference (Pages should follow the same TS-default
 trajectory the rest of the codebase is on).
 
 Click-vs-decision framing applies again: "Pages-with-Jekyll
 in past projects" was a click (workaround), not a decision.
-The B-0154 decision is open.
+The 081KQGDBJ0008QG0R002NV04N9 decision is open.
 
 ## Pattern 7 — AGENTS.md learning-discipline (composing patterns)
 
@@ -215,8 +215,8 @@ validates our substrate.
 
 # How to apply
 
-For B-0155 (ruleset-split refactor) + B-0153 (lint suite) +
-B-0156 (TS port) — the detect-changes pattern composes:
+For 081KQGDBJ0008QG0R0028YTDQ2 (ruleset-split refactor) + 081KQGDBJ0008QG0R000E10AAM (lint suite) +
+081KQGDBJ0008QG0R000A4EZS5 (TS port) — the detect-changes pattern composes:
 
 1. **Phase 1 — port `gate.yml` outputs into `detect-changes` shape**:
    emit per-class outputs (`memory-changed`, `code-changed`,
@@ -225,7 +225,7 @@ B-0156 (TS port) — the detect-changes pattern composes:
    `pr_memory-lint.yaml`, `pr_tools-typecheck.yaml`,
    `pr_code-build.yaml`, `pr_code-test.yaml`,
    `pr_docs-markdownlint.yaml`, etc.
-3. **Phase 3 — update CI-gate ruleset** (B-0155 Ruleset 3) to
+3. **Phase 3 — update CI-gate ruleset** (081KQGDBJ0008QG0R0028YTDQ2 Ruleset 3) to
    require only the workflows that emit `*-changed: true`
    for a given PR. This is GitHub-API-side conditional
    required checks; the host doesn't natively support
@@ -234,19 +234,19 @@ B-0156 (TS port) — the detect-changes pattern composes:
    `*-changed` output is false but still report SUCCESS so
    the required-check is satisfied.
 4. **Phase 4 — extend the bash+PS1 parallelism pattern** to
-   our test execution (composes with B-0156 TS port for the
+   our test execution (composes with 081KQGDBJ0008QG0R000A4EZS5 TS port for the
    bash side; PowerShell side is task #305).
 
 # Composes with
 
-- B-0155 (ruleset-split refactor) — workflow splitting at
+- 081KQGDBJ0008QG0R0028YTDQ2 (ruleset-split refactor) — workflow splitting at
   the ruleset level is the architectural twin of workflow
   splitting at the GitHub Actions level
-- B-0156 (TS standardization) — many of the per-concern
+- 081KQGDBJ0008QG0R000A4EZS5 (TS standardization) — many of the per-concern
   TS scripts could be invoked from per-concern workflows
-- B-0153 (pre-commit lint suite) — local pre-commit catches
+- 081KQGDBJ0008QG0R000E10AAM (pre-commit lint suite) — local pre-commit catches
   the same things detect-changes-gated workflows do at CI
-- B-0154 (Pages + Wiki) — Pages-deploy workflow should be
+- 081KQGDBJ0008QG0R002NV04N9 (Pages + Wiki) — Pages-deploy workflow should be
   detect-changes-gated (only run when Pages content
   changes)
 - task #305 (install.ps1 for Windows) — the bash+PS1
@@ -303,7 +303,7 @@ direction of validation.)
 - **NOT 42 workflows immediately** — phased adoption. Start
   with the highest-value split (memory lints / code build /
   docs lints).
-- **NOT a replacement for B-0155's ruleset-split** —
+- **NOT a replacement for 081KQGDBJ0008QG0R0028YTDQ2's ruleset-split** —
   workflow-split + ruleset-split compose; both are required
   for full parallel-friendliness. Workflow-split alone
   doesn't change which checks are *required*; ruleset-split

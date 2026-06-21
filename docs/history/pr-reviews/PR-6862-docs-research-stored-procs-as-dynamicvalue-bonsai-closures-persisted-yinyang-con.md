@@ -29,13 +29,13 @@
 
 Aaron 2026-06-07: 'our stored procs are DynamicValue too, so updatable' + 'this is the yin/yang engine
 persisted instead of reflected.' Grounded: not new — unifies existing pieces. Bonsai/BonsaiSoft
-(behaviour-as-data), YinYang.fs toDynamicValue (yin=Remains=what persists), B-0976 (self-evolving saga:
+(behaviour-as-data), YinYang.fs toDynamicValue (yin=Remains=what persists), 081KT07NV0008QG0R003BE6MJ2 (self-evolving saga:
 Bonsai closure resume-not-replay, Z-set retraction=rollback). Real claim = ONE substrate: control plane
 (YinYang) persisted/versioned/evolved by the same DynamicValue+Z-set+content-addressing+SchemaEvolution
 machinery as the data plane. Peeled Alexa's 'self-modifying autonomous no-DBA' hype: persistence makes it
 updatable/versioned/durable/replayable, NOT self-learning; evolution is explicit human-in-the-loop versions
 (Aaron: 'I'm the best human at it' — amplify, not replace); runtime-updatable executable control plane is
-an authorization-gated privilege surface. No new code; buildable next = B-0976.
+an authorization-gated privilege surface. No new code; buildable next = 081KT07NV0008QG0R003BE6MJ2.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 

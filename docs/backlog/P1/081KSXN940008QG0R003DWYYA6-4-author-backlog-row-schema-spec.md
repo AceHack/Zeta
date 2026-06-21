@@ -1,6 +1,5 @@
 ---
-id: B-0171.4
-zetaid: 081KSXN940008QG0R003DWYYA6
+id: 081KSXN940008QG0R003DWYYA6
 priority: P1
 status: open
 title: "OpenSpec catch-up - author Backlog Row Schema spec"
@@ -14,10 +13,10 @@ owners: [codex]
 type: spec-authoring
 ---
 
-# B-0171.4 - Author Backlog Row Schema spec
+# 081KSXN940008QG0R003DWYYA6 - Author Backlog Row Schema spec
 
 This task implements the next bounded decomposition slice from the OpenSpec
-catch-up project (B-0171). It creates a formal specification for the backlog
+catch-up project (081KQNJ500008QG0R001N94412). It creates a formal specification for the backlog
 row schema and generated index contract.
 
 ## Scope

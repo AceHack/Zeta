@@ -193,8 +193,8 @@ Engineering requirement:
 Existing framework substrate IS partial self-detection:
 - alignment-auditor (per-commit + multi-round signals)
 - Glass Halo (observability enabler)
-- B-0703 multi-oracle BFT (mathematical cross-check)
-- B-0653 persistent integrator (coercion-pattern detection)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical cross-check)
+- 081KRW63S0008QG0R003ECWGJV persistent integrator (coercion-pattern detection)
 - DBSP retraction-native (in-game observability math substrate)
 
 Pt11 names the FULL requirement: extend self-detection coverage

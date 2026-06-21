@@ -1,6 +1,5 @@
 ---
-id: B-0537
-zetaid: 081KRMEXM0008QG0R0034SS319
+id: 081KRMEXM0008QG0R0034SS319
 priority: P3
 status: open
 title: "memory/MEMORY.md index-entry length cleanup (100 long entries) + CI gate"
@@ -22,7 +21,7 @@ Per the auto-memory system prompt convention ("Keep index entries to one line, u
 
 **Empirical baseline 2026-05-15 (tick 2031Z)**: scanner reports **100 long entries** in `memory/MEMORY.md` (110 total lines), with lengths ranging 150–759 chars. Audit exits 0 (detect-only); no CI gate.
 
-This is the same pattern as B-0535 (duplicate-ID detection logic existed but wasn't gated) — the detection tool predates the CI wiring.
+This is the same pattern as 081KRMEXM0008QG0R000HHAG77 (duplicate-ID detection logic existed but wasn't gated) — the detection tool predates the CI wiring.
 
 ## Two-slice plan
 
@@ -40,7 +39,7 @@ Detail content moves INTO the linked topic file (the index is supposed to be a o
 
 ### Slice B — CI gate wiring
 
-Use the existing `--enforce` flag in `audit-memory-index-entry-lengths.ts` (exits code 2 on violations). Wire into `.github/workflows/gate.yml` as `lint-memory-index-entry-lengths` job with `--enforce --max 150` to match the canonical 150-char standard. Same pattern as B-0535's lint-backlog-id-uniqueness.
+Use the existing `--enforce` flag in `audit-memory-index-entry-lengths.ts` (exits code 2 on violations). Wire into `.github/workflows/gate.yml` as `lint-memory-index-entry-lengths` job with `--enforce --max 150` to match the canonical 150-char standard. Same pattern as 081KRMEXM0008QG0R000HHAG77's lint-backlog-id-uniqueness.
 
 Sequence: Slice A first (clean baseline) → Slice B (enforce). Trying to gate-first would block every PR touching MEMORY.md.
 
@@ -51,7 +50,7 @@ Sequence: Slice A first (clean baseline) → Slice B (enforce). Trying to gate-f
 
 ## Composes with
 
-- [B-0535](B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md) — same catch-once-then-lint pattern (detection exists, wiring missing)
-- [B-0536](B-0536-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md) — same substrate-honest residual pattern from today's audit-driven session
+- [081KRMEXM0008QG0R000HHAG77](081KRMEXM0008QG0R000HHAG77-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md) — same catch-once-then-lint pattern (detection exists, wiring missing)
+- [081KRMEXM0008QG0R001BH94PS](081KRMEXM0008QG0R001BH94PS-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md) — same substrate-honest residual pattern from today's audit-driven session
 - `tools/hygiene/audit-memory-index-entry-lengths.ts` — the detection tool
 - auto-memory system prompt convention + `memory/project_memory_format_standard.md` — "Keep index entries to one line, under ~150 chars"

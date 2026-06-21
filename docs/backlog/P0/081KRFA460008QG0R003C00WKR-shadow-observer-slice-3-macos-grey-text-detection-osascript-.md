@@ -1,6 +1,5 @@
 ---
-id: B-0431
-zetaid: 081KRFA460008QG0R003C00WKR
+id: 081KRFA460008QG0R003C00WKR
 priority: P0
 status: closed
 title: "Shadow observer slice 3 — macOS grey-text detection via osascript"
@@ -21,7 +20,7 @@ tags: [shadow, autocomplete, cli, macos, osascript, accessibility, glass-halo]
 
 ## Origin
 
-B-0402 decomposition 2026-05-13. Slices 1 and 2 shipped (PRs #2973, #2975).
+081KR7JY10008QG0R0008NGW95 decomposition 2026-05-13. Slices 1 and 2 shipped (PRs #2973, #2975).
 `detectGreyText()` in `tools/shadow/shadow-observer.ts` is currently a Phase 1
 stub that always returns `null`. This slice replaces it with a real macOS
 implementation.
@@ -92,7 +91,7 @@ detector. This slice adds the built-in macOS implementation that fires when no
 - [x] `detect-grey-text.applescript` present in `tools/shadow/`
 - [x] Built-in `detectGreyText()` calls `detectGreyTextMacOS()` (stub replaced)
 - [x] 12 new tests, 0 failures (`bun test tools/shadow/shadow-observer.test.ts`) — 39 total pass
-- [x] "Human keystroke overrides at any moment" B-0402 acceptance criterion satisfied
+- [x] "Human keystroke overrides at any moment" 081KR7JY10008QG0R0008NGW95 acceptance criterion satisfied
   (the re-detect path returns `"overridden"` when suggestion disappears during delay)
 
 ## Shipped
@@ -106,10 +105,10 @@ PR #2983 — merged 2026-05-13. All acceptance criteria verified post-merge.
 - `tools/shadow/shadow-observer.ts` — current stub at `detectGreyText()`:L70-90
 - `--detect-cmd` (slice 2, PR #2975) — the injection point this slice plugs into
 - No existing `detect-grey-text.applescript` in repo (grep confirms)
-- B-0402 acceptance criteria: "Human keystroke overrides at any moment — slice 3
+- 081KR7JY10008QG0R0008NGW95 acceptance criteria: "Human keystroke overrides at any moment — slice 3
   (requires empirical grey-text detection)"
 
 **Dependency check:**
 
 - `depends_on: []` — slice 1 + 2 already merged; no blockers
-- `parent: B-0402` — composes with existing polling loop + `--detect-cmd`
+- `parent: 081KR7JY10008QG0R0008NGW95` — composes with existing polling loop + `--detect-cmd`

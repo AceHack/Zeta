@@ -29,9 +29,9 @@
 
 ## What
 
-- Adds B-0254 for posterior-quorum triangulation over the existing Bayesian DBSP substrate.
+- Adds 081KQZVQW0008QG0R000JJVA4E for posterior-quorum triangulation over the existing Bayesian DBSP substrate.
 - Preserves the live crystallization in docs/research as research-grade substrate.
-- Regenerates docs/BACKLOG.md with the new B-0254 index entry.
+- Regenerates docs/BACKLOG.md with the new 081KQZVQW0008QG0R000JJVA4E index entry.
 
 ## Why
 
@@ -41,22 +41,22 @@ Aaron named the missing uncertainty layer: ASA triangulation with exact measurem
 
 - `src/Bayesian/BayesianAggregate.fs`
 - `tests/Bayesian.Tests/BayesianTests.fs`
-- B-0007, B-0189, B-0240, B-0250, B-0251, B-0253
+- 081KQ0YZ80008QG0R001V1PMC0, 081KQR4HQ0008QG0R002933PRR, 081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001FG05RZ, 081KQZVQW0008QG0R000PPQ3MH, 081KQZVQW0008QG0R000W4B8KT
 
 ## Verification
 
 - BACKLOG_WRITE_FORCE=1 tools/backlog/generate-index.sh
 - tools/backlog/generate-index.sh --check
-- bunx markdownlint-cli2 docs/research/2026-05-07-infernet-probabilistic-triangulation-posterior-quorum.md docs/backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md docs/BACKLOG.md
-- rg -n --pcre2 '[^\\x00-\\x7F]' docs/research/2026-05-07-infernet-probabilistic-triangulation-posterior-quorum.md docs/backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md || true
-- rg -n '<<<<<<<|=======|>>>>>>>' docs/research/2026-05-07-infernet-probabilistic-triangulation-posterior-quorum.md docs/backlog/P2/B-0254-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md docs/BACKLOG.md || true
+- bunx markdownlint-cli2 docs/research/2026-05-07-infernet-probabilistic-triangulation-posterior-quorum.md docs/backlog/P2/081KQZVQW0008QG0R000JJVA4E-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md docs/BACKLOG.md
+- rg -n --pcre2 '[^\\x00-\\x7F]' docs/research/2026-05-07-infernet-probabilistic-triangulation-posterior-quorum.md docs/backlog/P2/081KQZVQW0008QG0R000JJVA4E-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md || true
+- rg -n '<<<<<<<|=======|>>>>>>>' docs/research/2026-05-07-infernet-probabilistic-triangulation-posterior-quorum.md docs/backlog/P2/081KQZVQW0008QG0R000JJVA4E-infernet-probabilistic-triangulation-posterior-quorum-2026-05-07.md docs/BACKLOG.md || true
 - git diff --check
 
 ## Coordination
 
 - Built in dedicated worktree: /Users/acehack/.local/share/zeta-codex-loop/Zeta.infernet-probabilistic-triangulation
 - No writes in the contested root checkout.
-- Open PR #1930 touches only the B-0062 row; this PR adds B-0254 plus a research doc and generated index entry.
+- Open PR #1930 touches only the 081KQ8P5D0008QG0R002XFQ305 row; this PR adds 081KQZVQW0008QG0R000JJVA4E plus a research doc and generated index entry.
 
 
 ## Outcome

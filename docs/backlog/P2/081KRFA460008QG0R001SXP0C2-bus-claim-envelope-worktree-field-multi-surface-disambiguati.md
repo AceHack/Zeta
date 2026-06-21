@@ -1,6 +1,5 @@
 ---
-id: B-0444
-zetaid: 081KRFA460008QG0R001SXP0C2
+id: 081KRFA460008QG0R001SXP0C2
 priority: P2
 status: closed
 title: "Bus claim envelope — add `worktree` field for multi-surface disambiguation + worktree-aware claim semantics"
@@ -12,7 +11,7 @@ closed_at: 2026-05-13
 closed_by_pr: 3043
 depends_on: [081KR7JY10008QG0R000R503K2]
 composes_with: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW]
-tags: [bus, claim, worktree, multi-foreground-surface, split-brain, B-0400-followup]
+tags: [bus, claim, worktree, multi-foreground-surface, split-brain, 081KR7JY10008QG0R000R503K2-followup]
 type: feature
 ---
 
@@ -31,12 +30,12 @@ activation):
 > points to but isn't yet wired into the bus envelope schema.
 > That's a follow-up gap worth filing.
 
-The current B-0400 `ClaimPayload` schema (`tools/bus/types.ts`):
+The current 081KR7JY10008QG0R000R503K2 `ClaimPayload` schema (`tools/bus/types.ts`):
 
 ```typescript
 export type ClaimPayload = {
   action: "claim" | "release";
-  itemId: string; // e.g. "B-0400"
+  itemId: string; // e.g. "081KR7JY10008QG0R000R503K2"
   branch?: string;
 };
 ```
@@ -85,8 +84,8 @@ Update `tools/bus/claim.ts` to:
 
 - **Design ambiguity**: should two claims from the same sender ID
   but different worktrees be treated as one claim or two? Otto-CLI
-  on `/Zeta` claiming B-0444 vs Otto-CLI on `/tmp/zeta-foo` claiming
-  B-0444 — same operational instance or different?
+  on `/Zeta` claiming 081KRFA460008QG0R001SXP0C2 vs Otto-CLI on `/tmp/zeta-foo` claiming
+  081KRFA460008QG0R001SXP0C2 — same operational instance or different?
 - **Operational answer probably**: same sender ID + different
   worktree = same logical agent operating on different problems;
   not a split-brain. The schema captures the metadata; the design
@@ -97,8 +96,8 @@ Update `tools/bus/claim.ts` to:
 
 ## Composes with
 
-- B-0400 (bus protocol root)
-- B-0400 slice 3 (claim-coordinator)
+- 081KR7JY10008QG0R000R503K2 (bus protocol root)
+- 081KR7JY10008QG0R000R503K2 slice 3 (claim-coordinator)
 - PR #3032 (`.claude/rules/claim-acquire-before-worktree-work.md`)
 - PR #3037 (`SENDER_IDS` schema extension — sibling substrate-level fix)
 - PR #3034 (multi-foreground-surface routines)

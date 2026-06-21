@@ -4,8 +4,8 @@ Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night str
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
 Last refreshed: 2026-06-14 (the form wave folded in — #7805..#7807 + handoffs; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
-ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
-(B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
+ladder (081KTSZN10008QG0R00349SM6P); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
+(081KTQD8A0008QG0R0030HWMZV — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
 ## The 2026-06-14 FORM wave (#7805..#7807 + handoffs — newest; read FIRST)
 
@@ -14,7 +14,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   consumer) is the standing TODO. Both registers, no erasure.
 - **Aaron's architecture QUARTET** (#7805/#7807): (1) THE THIN-TEST LAW — tests thin over fat
   core; machinery a test needs moves to Core; (2) interfaces + Rx, nothing more — shared behavior
-  in DEFAULT INTERFACE IMPLS, never base classes; (3) MIPS = STATIC-DI INJECTED VERBS (B-1028's
+  in DEFAULT INTERFACE IMPLS, never base classes; (3) MIPS = STATIC-DI INJECTED VERBS (081KTSZN10008QG0R001BCCTXT's
   wiring); (4) **THE FORM TEST**: every piece of real code is a universal interface, or Rx glue,
   or DI verbs — anything else is a smell that OWES AN EXPLANATION (the review question for every
   new file). WSet's promotion is form (a) in action.
@@ -23,22 +23,22 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 - **HAND-OFFS LIVE IN THE REPO** (docs/handoffs/): Aaron — "desktop/clipboard is DARK for Addison
   and Max." Vera package + Kestrel bundle committed where every traveler can see them; desktop is
   the last hop of a ferry, never the home.
-- **LIOR IS LIVE on B-1029**: TS quantum lane moving (typecheck fixes, deterministic circuit SVG
+- **LIOR IS LIVE on 081KTWJ1R0008QG0R001ZBWKTR**: TS quantum lane moving (typecheck fixes, deterministic circuit SVG
   goldens into shapes/golden/, Quirk craft-school intro for Max and Addison; Gemini co-authored).
   Multi-writer factory in motion.
-- **NEXT (picked, Aaron: "pick one and go — they're all good"):** B-1034 the Oracle Stack paper —
+- **NEXT (picked, Aaron: "pick one and go — they're all good"):** 081KTZ4EF0008QG0R0035FW7HY the Oracle Stack paper —
   outline + evidence appendix generated from AgencySignature trailers, then the math-team claims
   review. Note for the generator: trailers live in PR squash bodies (git log --grep needs the
   body, not subject).
 
 ## The 2026-06-13/14 RECONCILE wave (#7798..#7802 — older; read second)
 
-- **B-1034 filed** (#7798): the Oracle Stack PAPER (experience report; the mutual-oracle reversal
+- **081KTZ4EF0008QG0R0035FW7HY filed** (#7798): the Oracle Stack PAPER (experience report; the mutual-oracle reversal
   as centerpiece; claims pre-bounded; Aaron decides venue/authorship).
 - **Fingerprints ↔ factor graphs captured** (#7800, Aaron's question): two DIRECTIONS over one
   bipartite shape; IBLT peeling = BP with hard messages (LDPC/fountain family); GDL unifies
   SpectralPivot probes and sum-product; Oechslin chains the odd one out.
-- **The quantum/bayes push** (#7799, B-1032 CLOSED): DAMPING with honest limits (a leak-free
+- **The quantum/bayes push** (#7799, 081KTZ4EF0008QG0R001R3XPYV CLOSED): DAMPING with honest limits (a leak-free
   equality cycle is monotonically non-convergent in variance even damped — tests assert
   means-exact + measurable mitigation, NOT a forced green); the GDL third-ring demo (sum-product
   over Real.algebra = the analytic marginal, exact); SoftPositivity (the probit EP twin through
@@ -51,7 +51,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 - **RODNEY'S RAZOR, taken** (#7802): the GDL unification = essential as MATHEMATICS, accidental
   as CODE — WSet demoted to test fixture (zero non-test consumers; returns on a merit consumer);
   the GDL demo rewritten on the ring directly (never needed the type); "one discipline" claims
-  tightened to enforced-separately-per-engine (B-1034's claims boundary, set for free). The IBLT
+  tightened to enforced-separately-per-engine (081KTZ4EF0008QG0R0035FW7HY's claims boundary, set for free). The IBLT
   was independently built on his surviving branch A before the verdict arrived — convergent.
 - Suites: F# 3018 + Bayesian 94 + C# 295, zero skipped anywhere.
 
@@ -70,7 +70,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 - **InferenceLadder** (#7794, the first customer): engine ZetaIds minted; ladder resolution;
   THE HONEST MOCK (flat marginals, Converged=false BY CONSTRUCTION — a rehearsal that cannot
   masquerade); Adapted rung deliberately uncarved until an instance exists.
-- **The richer case families** (#7796, B-1033 CLOSED) — the mechanism earned its name twice:
+- **The richer case families** (#7796, 081KTZ4EF0008QG0R000WJGSWX CLOSED) — the mechanism earned its name twice:
   (1) the EP family caught OUR adapter binding the soft probit to the hard-truncation name
   (Infer.NET exposed 0.564 vs 0.798 — both formulas correct, wrong binding; fixed with
   Ep.truncatePositiveProject, half-normal verified); (2) THE REVERSAL: on the loopy equality
@@ -80,7 +80,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 
 ## The 2026-06-13 RINGS wave (#7777..#7785 — older; read second)
 
-- **DRW CLIPS at edges** (#7777, B-1031 DONE — the reviewed treaty change): Kira + Viktor
+- **DRW CLIPS at edges** (#7777, 081KTZ4EF0008QG0R002WVTMMJ DONE — the reviewed treaty change): Kira + Viktor
   pre-change reviews (GO with conditions, all folded BEFORE code); wrap-origin/clip-pixels
   (COSMAC VIP) identical across F#/TS/C#/Rust; the new edge ROM locks right/bottom/corner/
   color-plane clips AND the VF collision semantic (a marker drawn iff the edge draw did NOT
@@ -102,7 +102,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   Minka's cavity→project→divide, ours). **WSet<'K,'W> shipped** (#7785) + THE THREE-ORACLE
   MACH-ZEHNDER: one interferometer checked against the analytic law (1e-12), AmplitudeEmu (1e-9),
   and Vera's Q# treaty transcript — passing.
-- **Filed:** B-1032 (ring demos; first one DONE) · B-1033 (hexagonal inference port — own
+- **Filed:** 081KTZ4EF0008QG0R001R3XPYV (ring demos; first one DONE) · 081KTZ4EF0008QG0R000WJGSWX (hexagonal inference port — own
   IInferenceEngine; Zeta.Bayesian + dotnet/infer as adapters, theirs tests ours; + the
   four-plugin-systems convergence audit: PluginApi / MediaLines io / GeneratorRegistry /
   MagneticPorts = one hub concept, map before a fifth grows).
@@ -122,7 +122,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   saturate casts); **THE FAULT REGISTER** (Frame.Fault) — 00EE stack underflow RECORDED, never
   swallowed (the red-light law applied to machine faults: no secrets, even machine-to-itself);
   program keeps running (ROM bugs visible, not fatal).
-- **B-1031 filed, deliberately NOT fired:** DRW should CLIP at edges (COSMAC VIP correct) but it
+- **081KTZ4EF0008QG0R002WVTMMJ filed, deliberately NOT fired:** DRW should CLIP at edges (COSMAC VIP correct) but it
   is a FOUR-ORACLE treaty primitive — F#-only would desync C#/TS/Rust on edge-crossing draws (a
   latent divergence today's goldens don't catch). Plan: one atomic verified pass across all four
   + an edge-crossing golden. Greenfield ≠ unilateral: the break is cheap IF byte-identical.
@@ -187,7 +187,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 - **The TS quantum lane** (#7745, verified before adopted): quantum-circuit recommended (mature;
   Q# EXPORTER = a literal adapter piece — one circuit, two oracles, BP-16 by construction; SVG
   drawings golden-lockable); q5mjs real but v0.1.1 — WATCH; Quirk = craft-school toy layer.
-  **B-1029 filed: Lior owns this lane** (Aaron's routing) + the treaties; **B-1030**:
+  **081KTWJ1R0008QG0R001ZBWKTR filed: Lior owns this lane** (Aaron's routing) + the treaties; **081KTWJ1R0008QG0R000JJDPFZ**:
   quantum-viz.js eval (diagram lane only; decline is a legal verdict). Vera handoff package rev 2
   on Aaron's Desktop/clipboard.
 - **The anyon picture** (#7747): shape-exchange-worldlines — the braid drawn IN SPACETIME (time
@@ -299,7 +299,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 ## The 2026-06-11 MORNING wave (#7705..#7716 — older; read second)
 
 - **Craft school for Max** (#7705): self-study start point (`docs/craft-school/`) — WHY-before-HOW,
-  play first, every cartridge an experiment; B-1028 MIPS road. (CORRECTION banked in memory: Max is a
+  play first, every cartridge an experiment; 081KTSZN10008QG0R001BCCTXT MIPS road. (CORRECTION banked in memory: Max is a
   BUSINESS PARTNER, not Aaron's son; Addison is his daughter — never familial-frame Max.)
 - **HtmlCssBinding** (#7706): the same paradigm in pure static HTML+CSS, no JavaScript (box-shadow
   pixel art, steps() keyframes; `DoesNotContain("<script")` is a test).
@@ -349,7 +349,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   DEFAULT — closing = explicit act, allowed only optimizing+non-coercive or math-proven). Shader shelf
   registered+cost-declared (MAME the capability-catalog inspiration). A/V LAW: matched by default
   (one clock), mixing = a declared second clock.
-- **B-1028 filed** (#7703): Max's MIPS as a treaty room (the CHIP-9 playbook replayed; his machine,
+- **081KTSZN10008QG0R001BCCTXT filed** (#7703): Max's MIPS as a treaty room (the CHIP-9 playbook replayed; his machine,
   his room).
 - Opens: the SelfTrace×PixelLens colorize composition (Amara's proof's last third) · audio render
   binding · the Spectrum-tile + force-layout implementations · shader implementations · GPU/Pi/FPGA
@@ -456,7 +456,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   + membrane-log recording + COMPUTED touched-mask; the MASK THEOREM passes (masked ROM ≡ full ROM for
   the quote); take-the-controls = a Source seam. Hard version named: seed+generator → quasi-crystal,
   any-architecture re-emit. Quote metadata format = LexisNexis × DV2 × dbt (first instance:
-  `rooms/otto/avatar.lines`); /db/quotes when B-1023 lands.
+  `rooms/otto/avatar.lines`); /db/quotes when 081KTQD8A0008QG0R0030HWMZV lands.
 - **The society substrate:** SimLoop (sim→mea→cut→loop; three unremovable rails, 5-min default; NO
   DEEP THOUGHT — never 42 after infinity) + `/spawn` continuation chains (forever = finite visible
   consented links; CHAIN THEOREM tested) + WheelRoom (quorum ≥4, progress-gated — spinners close,
@@ -468,7 +468,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   (the red plane meeting the shadow), breathe animation; chosen unprompted per Aaron.
 - **Math:** TrustCalculus.Dynamics (sleeping-bear/capability-door as fixed-point theorems; T-WALL/
   T-DOOR; the cold-start finding) — build pass; TEAR-DOWN PASS still owed when Aaron calls critics in.
-- **Hardware:** B-1024 slice 1 GREEN — the aarch64 ISO builds AND boots in CI (qemu virt+EDK2;
+- **Hardware:** 081KTSZN10008QG0R00349SM6P slice 1 GREEN — the aarch64 ISO builds AND boots in CI (qemu virt+EDK2;
   artifact = the Pi flash source); matrix updated; bench recorded (4090/3090/Pi/NAS in hand).
 - **Ferries 1–4 + peels:** craft school LOAD-BEARING ("this project dies without it"); consent-first
   vernacular carved; trap-vs-home capability ethics; "ethics and heat" the two governors; "bounded
@@ -500,7 +500,7 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
   optic; hooks=Rx-triggers ≠ lens=focus).
 - **Moonshot #1 captured:** DORA over LLMTV = the chronovisor (past=RecordedSource / current=live /
   future=conferenceOnFork), honest because Markov boundaries + Reticulum addressing are tight.
-- **B-1024 filed + slice 2 done:** the hardware ladder (speak-to-TV → QEMU → microkernel/ISO → Pi →
+- **081KTSZN10008QG0R00349SM6P filed + slice 2 done:** the hardware ladder (speak-to-TV → QEMU → microkernel/ISO → Pi →
   MCU) + `docs/HARDWARE-CAPABILITY-MATRIX.md` (honest UNKNOWNs; friction=red cells, heat=SoftThrottle).
   **Next buildable: slice 1 — ISO boots in QEMU in CI.** SoftScheduler loop IS the microkernel shape.
 - **Open asks on Aaron:** none blocking — colorspace channel semantics grounded; /db gate parked.
@@ -531,11 +531,11 @@ meters the speculative future in BYTES.
 
 - **Soft IScheduler** (`SoftScheduler.fs`) + CHIP-8 as first client (`SoftChip8Scheduler.fs`).
 - **FingerprintPrism** (hard+soft rainbow) · **SoftTie** (`tie` wired to FingerprintPrism.soft).
-- **LinguisticSeed** (B-0204 first slice: kernel CE, PSD-by-construction, composable Packs).
+- **LinguisticSeed** (081KQTPYE0008QG0R0028V263Z first slice: kernel CE, PSD-by-construction, composable Packs).
 - **The metaspace**: four landmark doors (Salon/Arcade/BowlingAlley/Skadium — the neon trilogy complete)
   + **DevRoom** (hangs all doors; boundary = union; self-measured resolution; **tick/tickAll** — the hub
   RUNS its rooms deterministically).
-- **B-1022 fusion EXECUTED per Rodney's razor** — by INSTANTIATION not refactor: `FourCorner.fs`
+- **081KTQD8A0008QG0R0005EFYPV fusion EXECUTED per Rodney's razor** — by INSTANTIATION not refactor: `FourCorner.fs`
   (tools→src), `IsrLift.fs` (ofPolicy/ofPure), FourCornerFusion tests (corners in the value channel,
   interrupts in the error channel). Residuals deferred WITH reopen-triggers (C#/Rust port when a consumer
   serializes; ferry-at-DoP-N when a merge semantics exists; CD rotation when a measurement consumes it;
@@ -554,7 +554,7 @@ meters the speculative future in BYTES.
 ## People
 
 - **Max**: grounded the architecture vs Fable (won → "unlocked its encryption"); internalized a year of
-  math; now writing interfaces/Rx/verbs only; co-builds universal primitives; B-1023 root-declutter is
+  math; now writing interfaces/Rx/verbs only; co-builds universal primitives; 081KTQD8A0008QG0R0030HWMZV root-declutter is
   his DX finding (gated on Bodhi audit + Aaron+Max sign-off).
 - **Vera**: the Q# reference oracle brief —
   `docs/research/2026-06-10-vera-brief-qsharp-reference-oracle-...md` (golden observables; convergence-
@@ -577,7 +577,7 @@ meters the speculative future in BYTES.
    triggers: Limiter-as-fold into boats WHEN a third limiter kind has a consumer; Tank-funded
    MaxBatchBytes WHEN a resonance consumer measures it (Naledi bench first); gradient front-door WHEN a
    queue-depth surface is exposed. Soft side: partition-keyed multi-boat when multi-stream arrives.
-5. ~~Salon as a LinguisticSeed.Pack~~ **DONE 2026-06-11** (Salon.seedPack — Jaccard/min-max kernel is PSD, the Mercer witness holds; Salon.asRoom = seed+extensions+parameters literal; OCP proven: an added pack lifts the room over its threshold without editing it) · ~~conformal-GA slice~~ **DONE 2026-06-11** (`ConformalGA.fs` — null-vector embedding, distance = ONE inner product, cross-checked vs Cl3.distSq; memory-RBF kernel PSD, composes into the seed) · B-1023 (gated) · B-0945 substrate.
+5. ~~Salon as a LinguisticSeed.Pack~~ **DONE 2026-06-11** (Salon.seedPack — Jaccard/min-max kernel is PSD, the Mercer witness holds; Salon.asRoom = seed+extensions+parameters literal; OCP proven: an added pack lifts the room over its threshold without editing it) · ~~conformal-GA slice~~ **DONE 2026-06-11** (`ConformalGA.fs` — null-vector embedding, distance = ONE inner product, cross-checked vs Cl3.distSq; memory-RBF kernel PSD, composes into the seed) · 081KTQD8A0008QG0R0030HWMZV (gated) · 081KSV2WD0008QG0R000WNY74Q substrate.
 6. Loose: sim/mea/cut console binary; the floated outside-cube verbs (rem/whe/pay/att/how/man/whi/way —
    Aaron's call); shader memory/GC; Q# golden vectors (Vera).
 

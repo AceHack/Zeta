@@ -1,11 +1,10 @@
 ---
-id: B-0068.2
-zetaid: 081KRA5AR0008QG0R002TPJ4NC
+id: 081KRA5AR0008QG0R002TPJ4NC
 priority: P2
 status: open
 title: Hardware resource audit + model-candidate shortlist (TS inventory tool, XS)
 parent: 081KQ8P5D0008QG0R002E1G72J
-ask: B-0068 decomposition — smallest atomic hardware-aware slice (TS prefer)
+ask: 081KQ8P5D0008QG0R002E1G72J decomposition — smallest atomic hardware-aware slice (TS prefer)
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
@@ -15,7 +14,7 @@ type: feature
 effort: XS
 ---
 
-# B-0068.2 — Hardware audit + model shortlist (XS, TS)
+# 081KRA5AR0008QG0R002TPJ4NC — Hardware audit + model shortlist (XS, TS)
 
 ## What this slice delivers
 
@@ -30,7 +29,7 @@ Per Rule 0 + "Prefer F#/TS code over docs": hardware audit is executable substra
 
 ## Dependency order
 
-Parallel root with B-0068.1. Unblocks model install child.
+Parallel root with 081KRA5AR0008QG0R001JVT5FX. Unblocks model install child.
 
 ## Pre-start checklist
 

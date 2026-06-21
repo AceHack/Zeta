@@ -1,6 +1,6 @@
 ---
 pr_number: 4085
-title: "feat(B-0170.4): seed convention-drift fixture + regression test"
+title: "feat(081KQNJ500008QG0R003SCWBDV.4): seed convention-drift fixture + regression test"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T14:01:15Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-17T14:28:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4085: feat(B-0170.4): seed convention-drift fixture + regression test
+# PR #4085: feat(081KQNJ500008QG0R003SCWBDV.4): seed convention-drift fixture + regression test
 
 ## PR description
 
@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 5th eval-set fixture for the substrate-claim-checker. Covers the **convention** sub-class of the 7-class verify-then-claim taxonomy via a self-contained fixture pair (current ADR + sibling predecessor ADR support file). Synthetic exemplar; anchor PR #2512 (the PR that shipped `check-convention.ts`).
 
-Continues the B-0170.4 eval-set thread:
+Continues the 081KQNJ500008QG0R003SCWBDV.4 eval-set thread:
 
 - PR #3611 — count-drift fixture
 - PR #3624 — existence-drift fixture
@@ -28,7 +28,7 @@ Continues the B-0170.4 eval-set thread:
 - PR #3749 — cross-surface-drift fixture
 - **this PR** — convention-drift fixture
 
-Remaining check-types for B-0170.4 thread completion: semantic-equivalence-drift, empirical-output-drift, self-recursive-drift (none yet shipped as checkers).
+Remaining check-types for 081KQNJ500008QG0R003SCWBDV.4 thread completion: semantic-equivalence-drift, empirical-output-drift, self-recursive-drift (none yet shipped as checkers).
 
 ## Files
 
@@ -57,9 +57,9 @@ Per PR #3611 review-thread discipline, the fixture's HTML-comment provenance int
 
 ## Composes with
 
-- B-0170 (parent backlog row)
+- 081KQNJ500008QG0R003SCWBDV (parent backlog row)
 - PR #2512 (anchor — check-convention.ts shipped)
-- PRs #3611 / #3624 / #3696 / #3749 (sibling B-0170.4 eval-set fixtures)
+- PRs #3611 / #3624 / #3696 / #3749 (sibling 081KQNJ500008QG0R003SCWBDV.4 eval-set fixtures)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

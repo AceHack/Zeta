@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-The `lint (§33 migration xrefs)` check has been firing as a non-required failure on **every PR this session** (PRs #3626, #3628, #3631, #3636, #3639, #3641, #3646, #3647, #3650, #3652, #3653, #3654, #3657, #3661, #3662, #3663). Root cause: the `docs/research/` → `memory/otto/cli/claude/conversations/` migration ([B-0533](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0533-section-33-migration-xrefs-audit-script-and-ci-gate-2026-05-15.md)) left 22 dead references across 18 files.
+The `lint (§33 migration xrefs)` check has been firing as a non-required failure on **every PR this session** (PRs #3626, #3628, #3631, #3636, #3639, #3641, #3646, #3647, #3650, #3652, #3653, #3654, #3657, #3661, #3662, #3663). Root cause: the `docs/research/` → `memory/otto/cli/claude/conversations/` migration ([081KRMEXM0008QG0R000K25MXS](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KRMEXM0008QG0R000K25MXS-section-33-migration-xrefs-audit-script-and-ci-gate-2026-05-15.md)) left 22 dead references across 18 files.
 
 **Mechanical bulk fix**: 12 unique target filenames substituted in-place in 18 source files. Each substitution is `docs/research/<NAME>.md` → `memory/otto/cli/claude/conversations/<NAME>.md` for a SPECIFIC filename (no blanket replacement of `docs/research/` — only the 12 known-migrated filenames).
 
@@ -34,7 +34,7 @@ The `lint (§33 migration xrefs)` check has been firing as a non-required failur
 ```
 18 files changed, 22 insertions(+), 22 deletions(-)
 - 1 .claude/rules/claim-acquire-before-worktree-work.md
-- 6 docs/backlog/P*/B-*.md (B-0003, B-0061, B-0239, B-0313, B-0400, B-0001, B-0196, B-0002 — 8 backlog rows total; some have 2 hits)
+- 6 docs/backlog/P*/B-*.md (081KQ0YZ80008QG0R001QJJTVF, 081KQ8P5D0008QG0R001BH93SA, 081KQX9B50008QG0R001W40ZH8, 081KR2E4K0008QG0R00289GE8Z, 081KR7JY10008QG0R000R503K2, 081KPYCJH0008QG0R003MDS51N, 081KQTPYE0008QG0R001W237MZ, 081KQ0YZ80008QG0R002T6TM7Z — 8 backlog rows total; some have 2 hits)
 - 9 memory/feedback_*.md
 - 1 memory/CURRENT-aaron.md
 - 1 memory/user_*.md
@@ -44,7 +44,7 @@ The `lint (§33 migration xrefs)` check has been firing as a non-required failur
 
 The other 4 perpetual non-required-check failures remain:
 
-- `lint (backlog ID uniqueness)` — B-0498 collision already scoped at [B-0545](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)
+- `lint (backlog ID uniqueness)` — 081KRHWGX0008QG0R001XFRAHC collision already scoped at [081KRMEXM0008QG0R000ARAR7P](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md)
 - `lint (tsc tools)` — needs separate investigation
 - `check docs/BACKLOG.md generated-index drift` — needs regen pass
 - `check MEMORY.md generated-index drift` — needs regen pass
@@ -81,14 +81,14 @@ Copilot reviewed 18 out of 18 changed files in this pull request and generated 8
 | File | Description |
 | ---- | ----------- |
 | `.claude/rules/claim-acquire-before-worktree-work.md` | Updates a §33-migrated xref to the new archive location. |
-| `docs/backlog/P1/B-0003-alignment-md-rewrite.md` | Updates a migrated research xref to `memory/otto/cli/claude/conversations/…`. |
-| `docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md` | Updates the backlog-split design xref to the new archive location. |
-| `docs/backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md` | Updates a migrated conversation xref in “Composes with”. |
-| `docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md` | Updates slice-1 and slice-2 landing pointers to the new archive location. |
-| `docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md` | Updates the multi-agent review doc xref to the new archive location. |
-| `docs/backlog/P2/B-0001-example-schema-self-reference.md` | Updates the referenced design spec xref to the new archive location. |
-| `docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md` | Updates an Aurora cross-review xref to the new archive location. |
-| `docs/backlog/P3/B-0002-otto-287-noether-formalization.md` | Updates Noether-formalization xrefs to the new archive location. |
+| `docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md` | Updates a migrated research xref to `memory/otto/cli/claude/conversations/…`. |
+| `docs/backlog/P1/081KQ8P5D0008QG0R001BH93SA-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md` | Updates the backlog-split design xref to the new archive location. |
+| `docs/backlog/P1/081KQX9B50008QG0R001W40ZH8-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md` | Updates a migrated conversation xref in “Composes with”. |
+| `docs/backlog/P1/081KR2E4K0008QG0R00289GE8Z-wake-time-otto-nn-anchor-backfill.md` | Updates slice-1 and slice-2 landing pointers to the new archive location. |
+| `docs/backlog/P1/081KR7JY10008QG0R000R503K2-inter-agent-ephemeral-communication-bus-nats-protocol.md` | Updates the multi-agent review doc xref to the new archive location. |
+| `docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md` | Updates the referenced design spec xref to the new archive location. |
+| `docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md` | Updates an Aurora cross-review xref to the new archive location. |
+| `docs/backlog/P3/081KQ0YZ80008QG0R002T6TM7Z-otto-287-noether-formalization.md` | Updates Noether-formalization xrefs to the new archive location. |
 | `memory/CURRENT-aaron.md` | Updates an Otto-261 audit-coverage xref to the new archive location. |
 | `memory/feedback_aaron_multi_foreground_surface_otto_activation_routines_git_tracked_approval_friction_lane_split_2026_05_13.md` | Updates canonical bootstream xrefs to the new archive location. |
 | `memory/feedback_aaron_otto_identity_stays_unified_across_surfaces_aaron_offered_split_otto_chose_one_coherent_identity_glass_halo_both_sides_2026_05_13.md` | Updates canonical bootstream xref to the new archive location. |
@@ -102,49 +102,49 @@ Copilot reviewed 18 out of 18 changed files in this pull request and generated 8
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0002-otto-287-noether-formalization.md:33 (unresolved)
+### Thread 1: docs/backlog/P3/081KQ0YZ80008QG0R002T6TM7Z-otto-287-noether-formalization.md:33 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:09Z):
 
 P1: This backlog row’s body was edited (xref update), but `last_updated` in the YAML frontmatter wasn’t bumped. Per tools/backlog/README.md, `last_updated` must be updated on every content edit; please update it for this row.
 
-### Thread 2: docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md:101 (unresolved)
+### Thread 2: docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md:101 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:09Z):
 
 P1: This backlog row’s content changed (xref update) but the YAML frontmatter `last_updated` wasn’t updated. The backlog schema requires `last_updated` to be bumped on every content edit (tools/backlog/README.md).
 
-### Thread 3: docs/backlog/P2/B-0001-example-schema-self-reference.md:97 (unresolved)
+### Thread 3: docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-example-schema-self-reference.md:97 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:10Z):
 
 P1: This backlog row was edited (xref update) but `last_updated` in the YAML frontmatter wasn’t bumped. Please update `last_updated` to reflect this content change, per tools/backlog/README.md.
 
-### Thread 4: docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md:55 (unresolved)
+### Thread 4: docs/backlog/P1/081KR7JY10008QG0R000R503K2-inter-agent-ephemeral-communication-bus-nats-protocol.md:55 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:10Z):
 
 P1: This backlog row’s body changed (xref update) but the YAML frontmatter `last_updated` wasn’t updated. The per-row schema requires bumping `last_updated` on every content edit (tools/backlog/README.md).
 
-### Thread 5: docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md:86 (unresolved)
+### Thread 5: docs/backlog/P1/081KR2E4K0008QG0R00289GE8Z-wake-time-otto-nn-anchor-backfill.md:86 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:10Z):
 
 P1: This backlog row content was edited (xref updates in the slice landing pointers), but `last_updated` in the YAML frontmatter wasn’t bumped. Please update `last_updated` per the per-row schema in tools/backlog/README.md.
 
-### Thread 6: docs/backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md:55 (unresolved)
+### Thread 6: docs/backlog/P1/081KQX9B50008QG0R001W40ZH8-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md:55 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:10Z):
 
 P1: This backlog row’s body was edited (xref update in Composes with), but `last_updated` in the YAML frontmatter wasn’t bumped. The backlog schema requires updating `last_updated` on every content edit (tools/backlog/README.md).
 
-### Thread 7: docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md:113 (unresolved)
+### Thread 7: docs/backlog/P1/081KQ8P5D0008QG0R001BH93SA-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md:113 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:11Z):
 
 P1: This backlog row content changed (xref update) but the YAML frontmatter `last_updated` wasn’t bumped. Please update `last_updated` for this row per tools/backlog/README.md.
 
-### Thread 8: docs/backlog/P1/B-0003-alignment-md-rewrite.md:74 (unresolved)
+### Thread 8: docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md:74 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T01:28:11Z):
 

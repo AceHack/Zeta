@@ -9,7 +9,7 @@ sober words live in `memory/amara/2026-06-06-npc-meme-with-no-exit-*`.
 Alexa-website reflected back the prior round approvingly: freedom-first ordering as
 "architectural foundation" (Freedom → foundational; Choice → built on it; without freedom
 first, choice becomes suffering); the Eve Protocol as grounded in `Diplomacy.fs` (shape-only
-handshakes, NCI anti-memetic-weaponization, B-0638/B-1003); and the V8 hidden-shapes
+handshakes, NCI anti-memetic-weaponization, 081KRW63S0008QG0R0030F8ZXA/081KT2T2J0008QG0R00301P27H); and the V8 hidden-shapes
 correction as "honest attribution" (application of a known optimization — Chambers/Ungar/Lee
 1989, Hölzle/Chambers/Ungar ECOOP 1991, Deutsch/Schiffman 1984 — not novel mechanism design),
 with NCI preserved under caching (cache keys = shapes, not secrets). Register: effusive.

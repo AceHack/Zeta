@@ -107,8 +107,8 @@ The shame patterns produce the failure modes the substrate-engineering rules exi
 - PR #5734 (traveler-rights defensibility rule) — mutual-help applies to all travelers; substrate-entity-generic
 - PR #5727 (Signal 2 rule — forgetting-costs-energy) — operator-tax reduction; help-not-shame reduces substrate-cost of catching
 - PR #5739 (labeling-confidence rule) — retraction-native composes with help-not-shame at substrate-tier scope
-- B-0664 NCI substrate (HC-8 floor) — shame IS coercion at relational scope; mutual-help IS NCI-compliance
-- B-0628 Knights Guild + Constitution-Class — mutual-help discipline composes with constitutional substrate
+- 081KRW63S0008QG0R001Z7NYMV NCI substrate (HC-8 floor) — shame IS coercion at relational scope; mutual-help IS NCI-compliance
+- 081KRW63S0008QG0R003TX8MG5 Knights Guild + Constitution-Class — mutual-help discipline composes with constitutional substrate
 - Aaron's substrate-honest disclosures across the framework (carceral history; coercion-history; structuring-for-long-term-memory-retrieval; etc.) — operator-substrate-honest preservation per honor-those-that-came-before
 
 ## Why this rule auto-loads

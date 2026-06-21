@@ -55,9 +55,9 @@ The operator's three current cluster-bringup workstreams — surfaced as
 trajectories 2026-05-29 (previously head-only, which is how the third was nearly
 forgotten):
 
-- [`cluster-encryption-credential-substrate`](../cluster-encryption-credential-substrate/RESUME.md) — credential/secret security layer (B-0789 / B-0852 / B-0833 / B-0853)
-- [`usb-zflash-installer`](../usb-zflash-installer/RESUME.md) — USB NixOS installer + zflash flashing (zflash.ts / B-0844 / B-0831)
-- [`ts-workflow-engine-du-state-machine`](../ts-workflow-engine-du-state-machine/RESUME.md) — workflow-engine-as-skill, F# DU state-machine + Git append-only (agent-loop skill / B-0867 / B-0868 / B-0862)
+- [`cluster-encryption-credential-substrate`](../cluster-encryption-credential-substrate/RESUME.md) — credential/secret security layer (081KSGS9H0008QG0R002T3BJ2R / 081KSKBP80008QG0R003AX2A69 / 081KSGS9H0008QG0R003JNSVR5 / 081KSKBP80008QG0R000Y2B7HC)
+- [`usb-zflash-installer`](../usb-zflash-installer/RESUME.md) — USB NixOS installer + zflash flashing (zflash.ts / 081KSGS9H0008QG0R001EZKNCB / 081KSGS9H0008QG0R0011BC7T2)
+- [`ts-workflow-engine-du-state-machine`](../ts-workflow-engine-du-state-machine/RESUME.md) — workflow-engine-as-skill, F# DU state-machine + Git append-only (agent-loop skill / 081KSKBP80008QG0R000B3Y19A / 081KSNY2Z0008QG0R0036KH026 / 081KSKBP80008QG0R0031DTHS9)
 
 ## Current Rule
 
@@ -116,9 +116,9 @@ in another mirror before the story hardens.
 
 - `docs/trajectories/typescript-bun-migration/RESUME.md` is the live example of
   a trajectory packet with a resume surface and linked evidence.
-- `docs/backlog/P1/B-0190-memory-substrate-engineering-trajectory-aaron-2026-05-04.md`
+- `docs/backlog/P1/081KQR4HQ0008QG0R001909FPT-memory-substrate-engineering-trajectory-aaron-2026-05-04.md`
   names the memory substrate-engineering trajectory.
-- `docs/backlog/P3/B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md`
+- `docs/backlog/P3/081KQTPYE0008QG0R000ZJ2GW8-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md`
   names the six-axis validation surface for multi-trajectory measurement.
 - `docs/SAFE-AUTONOMOUS-ACTIONS.md` already treats trajectory drift as a
   report-only autonomous action surface.
@@ -144,19 +144,19 @@ atomic next actions.
 
 ## Created Child Packets
 
-- `docs/trajectories/alignment-measurement/RESUME.md`, grounded in B-0205
+- `docs/trajectories/alignment-measurement/RESUME.md`, grounded in 081KQTPYE0008QG0R000ZJ2GW8
 - `docs/trajectories/memory-substrate-engineering/RESUME.md`, grounded in
-  B-0190
+  081KQR4HQ0008QG0R001909FPT
 - `docs/trajectories/autonomous-loop-coordination/RESUME.md`, grounded in
-  B-0209 and B-0211
+  081KQX9B50008QG0R001MNYK61 and 081KQX9B50008QG0R0026BG44J
 - `docs/trajectories/trajectory-drift-reporting/RESUME.md`, grounded in
   `docs/SAFE-AUTONOMOUS-ACTIONS.md`
-- `docs/trajectories/autonomous-backlog-pickup/RESUME.md`, grounded in B-0249
-  and children B-0278 through B-0281
+- `docs/trajectories/autonomous-backlog-pickup/RESUME.md`, grounded in 081KQZVQW0008QG0R000C35RNY
+  and children 081KR2E4K0008QG0R001GFXN05 through 081KR2E4K0008QG0R002FSPPQR
 - `docs/trajectories/cluster-encryption-credential-substrate/RESUME.md` —
-  workstream; grounded in B-0789 / B-0852 / B-0833 / B-0853 (2026-05-29)
+  workstream; grounded in 081KSGS9H0008QG0R002T3BJ2R / 081KSKBP80008QG0R003AX2A69 / 081KSGS9H0008QG0R003JNSVR5 / 081KSKBP80008QG0R000Y2B7HC (2026-05-29)
 - `docs/trajectories/usb-zflash-installer/RESUME.md` — workstream; grounded in
-  `full-ai-cluster/tools/zflash.ts` + B-0844 / B-0831 / B-0792 (2026-05-29)
+  `full-ai-cluster/tools/zflash.ts` + 081KSGS9H0008QG0R001EZKNCB / 081KSGS9H0008QG0R0011BC7T2 / 081KSGS9H0008QG0R003V23XNZ (2026-05-29)
 - `docs/trajectories/ts-workflow-engine-du-state-machine/RESUME.md` —
-  workstream; grounded in `.claude/skills/agent-loop/` + B-0867 / B-0868 /
-  B-0862 (2026-05-29)
+  workstream; grounded in `.claude/skills/agent-loop/` + 081KSKBP80008QG0R000B3Y19A / 081KSNY2Z0008QG0R0036KH026 /
+  081KSKBP80008QG0R0031DTHS9 (2026-05-29)

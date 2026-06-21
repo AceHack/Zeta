@@ -1,11 +1,11 @@
 ---
-name: B-0451 per-collision renumber procedure
-description: Procedure for resolving duplicate-row-ID collisions in docs/backlog/ surfaced by tools/bg/audit-duplicate-row-ids.ts. Captures the external-references-rule precedence, the connected-component batching pattern, and the worktree-isolation gotcha. Derived from PRs #3053 (B-0444, merged), #3057 (B-0068.1, merged), #3058 (B-0090.x batch, merged), and the in-flight PR #3065 (B-0370-0373 batch) at session 2026-05-13/14.
+name: 081KRFA460008QG0R00308W7FJ per-collision renumber procedure
+description: Procedure for resolving duplicate-row-ID collisions in docs/backlog/ surfaced by tools/bg/audit-duplicate-row-ids.ts. Captures the external-references-rule precedence, the connected-component batching pattern, and the worktree-isolation gotcha. Derived from PRs #3053 (081KRFA460008QG0R001SXP0C2, merged), #3057 (081KRA5AR0008QG0R001JVT5FX, merged), #3058 (081KQ8P5D0008QG0R0002TN22C.x batch, merged), and the in-flight PR #3065 (081KR2E4K0008QG0R000ARCH0X-0373 batch) at session 2026-05-13/14.
 type: feedback
 created: 2026-05-14
 ---
 
-# B-0451 per-collision renumber procedure
+# 081KRFA460008QG0R00308W7FJ per-collision renumber procedure
 
 ## Carved sentence
 
@@ -35,27 +35,27 @@ resolve per PR (or batch a connected component, see step 7).
 ### 2. Find external references to each row
 
 For each colliding row, grep for its bare ID. Use **fixed-string
-match** (`-F`) so dotted sub-row IDs like `B-0068.1` aren't treated
+match** (`-F`) so dotted sub-row IDs like `081KRA5AR0008QG0R001JVT5FX` aren't treated
 as regex (where `.` matches any character):
 
 ```bash
-# Whole-row ID like B-0444 (no dot)
+# Whole-row ID like 081KRFA460008QG0R001SXP0C2 (no dot)
 grep -rnF "B-0XXX" docs/ memory/ tools/ .claude/ \
   | grep -vE "docs/backlog/.*/B-0XXX-" \
   | grep -E "B-0XXX([^0-9.]|$)"   # word-boundary substitute (portable)
 
-# Sub-row ID like B-0068.1 — fixed-string for the literal, then
+# Sub-row ID like 081KRA5AR0008QG0R001JVT5FX — fixed-string for the literal, then
 # portable word-boundary filter (with escaped dot in the regex)
-# so a search for B-0068.1 doesn't also match B-0068.10 or B-0068.1.1.
-grep -rnF "B-0068.1" docs/ memory/ tools/ .claude/ \
-  | grep -vE "docs/backlog/.*/B-0068\\.1-" \
-  | grep -E "B-0068\\.1([^0-9.]|$)"   # word-boundary on the renumbered ID
+# so a search for 081KRA5AR0008QG0R001JVT5FX doesn't also match 081KQ8P5D0008QG0R002E1G72J.10 or 081KRA5AR0008QG0R001JVT5FX.1.
+grep -rnF "081KRA5AR0008QG0R001JVT5FX" docs/ memory/ tools/ .claude/ \
+  | grep -vE "docs/backlog/.*/081KQ8P5D0008QG0R002E1G72J\\.1-" \
+  | grep -E "081KQ8P5D0008QG0R002E1G72J\\.1([^0-9.]|$)"   # word-boundary on the renumbered ID
 ```
 
 (The `\b` word-boundary GNU-extension is not portable to BSD grep
 on macOS; the `[^0-9.]|$` filter is the portable equivalent. The
 trailing filter on the sub-row case prevents matching
-`B-0068.10` / `B-0068.1.1` when searching for `B-0068.1`. Codex /
+`081KQ8P5D0008QG0R002E1G72J.10` / `081KRA5AR0008QG0R001JVT5FX.1` when searching for `081KRA5AR0008QG0R001JVT5FX`. Codex /
 Copilot round-2 caught both issues in PR #3066 review.)
 
 Note where each row is referenced externally:
@@ -80,19 +80,19 @@ Note where each row is referenced externally:
 The external-references rule trumps first-merged-wins. PR #3057
 is the canonical example of this rule bending the temporal order:
 
-- PR #3057 (B-0068.1): kept Riven's LATER row because B-0068.2/
-  B-0068.3 sibling rows reference it; renumbered Aaron's EARLIER
+- PR #3057 (081KRA5AR0008QG0R001JVT5FX): kept Riven's LATER row because 081KRA5AR0008QG0R002TPJ4NC/
+  081KRA5AR0008QG0R001BTRYN0 sibling rows reference it; renumbered Aaron's EARLIER
   but orphan row. External-references actively overrode
   first-merged-wins here.
 
-PR #3065 (B-0370-0373) is a different case — both rules pointed
+PR #3065 (081KR2E4K0008QG0R000ARCH0X-0373) is a different case — both rules pointed
 the SAME direction (keep the P1 set):
 
 - First-merged-wins: P1 set was filed 2 days earlier (PR #2269
   on 2026-05-09 vs PR #2683 on 2026-05-11).
-- External-references: B-0370 + B-0373 (P1) are shipped, with
+- External-references: 081KR2E4K0008QG0R000ARCH0X + 081KR50HA0008QG0R001NNPEXC (P1) are shipped, with
   references in PR-history doc + memory file.
-- Status-precedence: B-0370 + B-0373 (P1) are `status: closed`
+- Status-precedence: 081KR2E4K0008QG0R000ARCH0X + 081KR50HA0008QG0R001NNPEXC (P1) are `status: closed`
   effectively.
 
 PR #3065 is therefore the re-check pattern (substrate-honest
@@ -117,8 +117,8 @@ gh pr list --state open --json title \
   | grep -oE "B-04[0-9]{2}"
 ```
 
-For sub-row collisions (`B-0090.M`), the new IDs are next-free
-within the parent's series (e.g., `B-0090.5..B-0090.8`).
+For sub-row collisions (`081KQ8P5D0008QG0R0002TN22C.M`), the new IDs are next-free
+within the parent's series (e.g., `081KDVJT3E008QG0R000SCFYN5..081KDVJT3E008QG0R001TDYYMD`).
 
 ### 5. Create isolated worktree (multi-Otto split-brain prevention)
 
@@ -146,14 +146,14 @@ Edit the renamed file's frontmatter to:
 - Update body H1 title (`# B-OLD —` → `# B-NEW — (renumbered from B-OLD)`)
 - Add `renumbered_from: B-OLD` field
 - Add `renumbered_reason: "..."` explaining the collision + which
-  row kept the original ID + reference to the B-0451 sweep
+  row kept the original ID + reference to the 081KRFA460008QG0R00308W7FJ sweep
 - Bump `last_updated:` to today
 - Add `renumbered` to `tags:`
 
 ### 7. Batch connected components
 
 If the renumbered rows have an internal `depends_on:` chain (e.g.,
-B-0090.2/.3/.4 all `depends_on: [B-0090.1]`), batch the WHOLE chain
+081KDVJT3E008QG0R00183ME0R/.3/.4 all `depends_on: [081KDVJT3E008QG0R003GV8BHV]`), batch the WHOLE chain
 in one PR:
 
 - Renumbering them serially would require either temporary chain
@@ -167,8 +167,8 @@ renumbered row to reflect new IDs.
 
 ### 8. Update parent row's body + regen index
 
-If the renumbered set is a parent's decomposition (e.g., B-0092 →
-B-0370..B-0373), update the parent body's `## Decomposition`
+If the renumbered set is a parent's decomposition (e.g., 081KQ8P5D0008QG0R003ZF64GG →
+081KR2E4K0008QG0R000ARCH0X..081KR50HA0008QG0R001NNPEXC), update the parent body's `## Decomposition`
 section to list the new IDs.
 
 Always regenerate `docs/BACKLOG.md`:
@@ -189,7 +189,7 @@ Commit message template (copy from PR #3065's body):
 ```
 fix(backlog): resolve B-0XXX ID collision — renumber <set> → B-NNNN
 
-Per the B-0451 sweep.
+Per the 081KRFA460008QG0R00308W7FJ sweep.
 
 ## The collisions
 | ID | Earlier filer | Later filer |
@@ -231,28 +231,28 @@ remain green; branch-update + auto-merge retry resolves.)
 
 ### Pitfall 2: Initial analysis can point wrong direction
 
-PR #3065's first read said "keep P2 set (described by B-0092
+PR #3065's first read said "keep P2 set (described by 081KQ8P5D0008QG0R003ZF64GG
 parent body)." Re-checking the timeline + status-precedence flipped
-to "keep P1 set (filed 2 days earlier, B-0370 + B-0373 shipped,
+to "keep P1 set (filed 2 days earlier, 081KR2E4K0008QG0R000ARCH0X + 081KR50HA0008QG0R001NNPEXC shipped,
 external references in PR-history + memory)." The substrate-honest
 discipline is: when external-references and first-merged-wins
 disagree, RE-EXAMINE both before committing.
 
 ### Pitfall 3: ID collisions hide in the substrate for weeks
 
-The B-0444 collision survived 9 PR landings before discovery
-(PR #3053). The B-0370..B-0373 collisions survived 4 days. The
+The 081KRFA460008QG0R001SXP0C2 collision survived 9 PR landings before discovery
+(PR #3053). The 081KR2E4K0008QG0R000ARCH0X..081KR50HA0008QG0R001NNPEXC collisions survived 4 days. The
 audit tool (PR #3056) breaks this recursion — run it BEFORE
 filing a new row, not AFTER reviewers catch the collision.
 
 ## Composes with
 
 - `tools/bg/audit-duplicate-row-ids.ts` (PR #3056) — the detector
-- `docs/backlog/P1/B-0451-...md` (PR #3056) — the sweep parent row
-- PR #3053 (B-0444 — first collision resolution, established precedent)
-- PR #3057 (B-0068.1 — first per-collision cleanup, simple case)
-- PR #3058 (B-0090.x — batched 4 collisions in one PR)
-- PR #3065 (B-0370-0373 — batched 4 collisions + parent body update)
+- `docs/backlog/P1/081KRFA460008QG0R00308W7FJ-...md` (PR #3056) — the sweep parent row
+- PR #3053 (081KRFA460008QG0R001SXP0C2 — first collision resolution, established precedent)
+- PR #3057 (081KRA5AR0008QG0R001JVT5FX — first per-collision cleanup, simple case)
+- PR #3058 (081KQ8P5D0008QG0R0002TN22C.x — batched 4 collisions in one PR)
+- PR #3065 (081KR2E4K0008QG0R000ARCH0X-0373 — batched 4 collisions + parent body update)
 - `.claude/rules/claim-acquire-before-worktree-work.md` — multi-Otto
   coordination discipline the audit tool addresses at the row layer
 - `.claude/rules/honor-those-that-came-before.md` — recovery rather
@@ -263,10 +263,10 @@ filing a new row, not AFTER reviewers catch the collision.
 After PRs #3058 + #3065 land, the audit tool will report **3
 remaining collision groups**:
 
-- `B-0409` (3-way: wallet-immune P1 vs amara-persona-bootstrap P2 vs
+- `081KRA5AR0008QG0R000Y6102S` (3-way: wallet-immune P1 vs amara-persona-bootstrap P2 vs
   peer-call-ts-audit P2 — all 2026-05-11)
-- `B-0410` (amara-ts-core P2 vs peer-call-persona-loader P2 — same date)
-- `B-0411` (amara-ts-readme-courier P2 vs grok-ts-persona-flag P2 — same date)
+- `081KRA5AR0008QG0R0035N4S6C` (amara-ts-core P2 vs peer-call-persona-loader P2 — same date)
+- `081KRA5AR0008QG0R000C3P8KP` (amara-ts-readme-courier P2 vs grok-ts-persona-flag P2 — same date)
 
 All three are 2026-05-11 within-priority decomposition races (pre-
 claim-acquire-rule). Each takes ~5-10 minutes following this

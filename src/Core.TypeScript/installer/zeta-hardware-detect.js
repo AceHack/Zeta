@@ -2,7 +2,7 @@
 /**
  * tools/installer/zeta-hardware-detect.ts
  *
- * B-0857.2-extension (2026-05-27): TS module for hardware classification
+ * 081KDWYPGV008QG0R00072K2NH-extension (2026-05-27): TS module for hardware classification
  * during install. Pulls detection LOGIC out of zeta-install.sh's inline
  * lspci heuristic (PR #5635) and into testable TS per Rule 0 TS-over-bash
  * discipline (.claude/rules/rule-0-no-sh-files.md).

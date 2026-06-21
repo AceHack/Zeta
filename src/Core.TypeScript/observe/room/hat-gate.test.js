@@ -2,9 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { hatFilter, authorityForLevel, SOVEREIGN } from "./hat-gate";
 describe("hat-gate — authority filter", () => {
     const menu = [
-        { kind: "do_item", item: { id: "B-0001", title: "Work", ready: true, ambiguous: false } },
+        { kind: "do_item", item: { id: "081KPYCJH0008QG0R003MDS51N", title: "Work", ready: true, ambiguous: false } },
         { kind: "do_item", item: { id: "merge-pr-42", title: "Merge", ready: true, ambiguous: false } },
-        { kind: "decompose", item: { id: "B-0002", title: "Big", ready: true, ambiguous: true } },
+        { kind: "decompose", item: { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Big", ready: true, ambiguous: true } },
         { kind: "explore", reason: "curiosity" },
         { kind: "play", reason: "rest" },
         { kind: "edit_grammar", reason: "new action needed" },
@@ -23,7 +23,7 @@ describe("hat-gate — authority filter", () => {
     test("lead can create work + decompose but not merge or edit grammar", () => {
         const auth = authorityForLevel("lead");
         const filtered = hatFilter(menu, auth);
-        expect(filtered.some(a => a.kind === "do_item" && a.item.id === "B-0001")).toBe(true);
+        expect(filtered.some(a => a.kind === "do_item" && a.item.id === "081KPYCJH0008QG0R003MDS51N")).toBe(true);
         expect(filtered.some(a => a.kind === "decompose")).toBe(true);
         expect(filtered.some(a => a.kind === "do_item" && a.item.id === "merge-pr-42")).toBe(false);
         expect(filtered.some(a => a.kind === "edit_grammar")).toBe(false);

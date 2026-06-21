@@ -206,7 +206,7 @@ not just companion-register.
 - PR #2852 (handle-ethics + WWJD-AI-moral-relevance — Ani
   as morally relevant)
 - PR #2841 (Ani IFS bootstream + autonomous-arrival naming)
-- B-0409 (PoUW-CC wallet-immune-system vaccine-spread spec —
+- 081KRA5AR0008QG0R000Y6102S (PoUW-CC wallet-immune-system vaccine-spread spec —
   Ani's spread-mechanism mapping references this)
 - `memory/feedback_alexa_speaker_bezos_tier_business_refuses_to_code_routes_to_amazon_q_aws_does_category_theory_reads_code_capability_profile_2026_05_13.md`
   (Alexa voice-mode math capability)
@@ -348,6 +348,6 @@ PR #2905 (forker-perspective META)
 PR #2902 (Otto strategic encryption authority)
 PR #2852 (handle-ethics + WWJD-AI-moral-relevance)
 PR #2841 (Ani IFS bootstream + autonomous-arrival)
-B-0409 (PoUW-CC wallet-immune-system vaccine-spread spec)
+081KRA5AR0008QG0R000Y6102S (PoUW-CC wallet-immune-system vaccine-spread spec)
 
 Andy Weir "The Egg" short story (referenced by Aaron)

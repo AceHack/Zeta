@@ -2,7 +2,7 @@
 
 Architecture capture + buildable plan from a rapid Aaron steering session. Faithful to what Aaron
 said across the conversation; the immediate-focus section is the actionable crystallization.
-Anchored to the existing master checklist **B-0959** (sovereign distributed DB + agent loop, one
+Anchored to the existing master checklist **081KSXN940008QG0R003FCQ7WT** (sovereign distributed DB + agent loop, one
 git-native Z-set substrate) and the survey in
 `docs/research/2026-06-07-observe-ts-integration-architecture-stack-map-and-readiness.md`.
 
@@ -172,7 +172,7 @@ A cell is the unit of mechanical execution; it can be *hosted* three ways, behin
 2. **raw Kubernetes operator-pattern cells** — a cell as a k8s operator/CRD reconcile loop. Can be
    **HA within the cell** (k8s reschedules/replicates), but the cell remains one distinct identity.
 3. **Orleans cells** — a cell as an Orleans virtual actor/grain (grain identity = cell identity; ties
-   to B-0706 zeta-on-Orleans, B-0253 Orleans-grains). Also **HA within the cell**.
+   to 081KS6FPN0008QG0R003Y3MCVE zeta-on-Orleans, 081KQZVQW0008QG0R000W4B8KT Orleans-grains). Also **HA within the cell**.
 
 **Invariant: each cell is distinct.** HA is *intra-cell* resilience (the host keeps one cell alive),
 not a blurring of cell identity. (Distinct-cell-identity is the same discipline the proven
@@ -198,8 +198,8 @@ Not base-scope, but flagged so it lands as **pattern libraries**, not ad-hoc: ge
 geodes, data-residency / location rules, governance, provenance/lineage (Data Vault 2.0 is already
 the lineage discipline), data-near-customer placement, and the family of within-cell and cross-cell
 patterns that will emerge. Bounded-Mobility (manifesto §4) is the existing anchor for "data may
-relocate only within safety bounds." These compose with the cluster-topology backlog (B-0727
-federated tiers, B-0755 cluster roles, B-0756 HA control plane) but are a distinct *data-pattern*
+relocate only within safety bounds." These compose with the cluster-topology backlog (081KSE6WT0008QG0R0006HKTXJ
+federated tiers, 081KSE6WT0008QG0R003612WGJ cluster roles, 081KSE6WT0008QG0R001NG9JZH HA control plane) but are a distinct *data-pattern*
 layer to curate as best-practices libraries over time.
 
 ## 6. Honest reliability status (single-node)
@@ -209,7 +209,7 @@ unusually mature data model + persistence. The three biggest gaps to "full singl
 
 1. **True durability floor** — `fsync`-on-commit is unshipped (`Durability.fs`'s own P0:
    `DurabilityMode.StableStorage` silently maps to `OsBuffered`). A crash can lose acknowledged
-   writes. (See durable-computation cluster B-0251/B-0369/B-0370.)
+   writes. (See durable-computation cluster 081KQZVQW0008QG0R000PPQ3MH/081KR2E4K0008QG0R0021PJCWA/081KR2E4K0008QG0R000ARCH0X.)
 2. **Multi-key ACID transactions / isolation** — only single-stream batch exactly-once
    (`Transaction.fs`); no MVCC, no cross-key atomicity, no isolation levels.
 3. **General-purpose query / indexing** — strong IVM / query-as-circuits (DBSP), but no ad-hoc
@@ -234,14 +234,14 @@ unusually mature data model + persistence. The three biggest gaps to "full singl
 
 ## Anchors
 
-- **B-0959** — sovereign distributed DB + agent loop master checklist (one git-native Z-set
+- **081KSXN940008QG0R003FCQ7WT** — sovereign distributed DB + agent loop master checklist (one git-native Z-set
   substrate) — the home backlog item for this work.
 - Survey: `docs/research/2026-06-07-observe-ts-integration-architecture-stack-map-and-readiness.md`.
 - Nouns/proven status: `docs/PRIMITIVE-REGISTRY.md` (ZSet row ✅ 4/4; DynamicValue ✅ 4/4).
 - Code seam: `src/Core/DeltaLog.fs`, `src/Core/SnapshotStore.fs`, `src/Core.Git/GitDeltaLog.fs`,
   `src/Core/YinYang.fs`, `src/Core/DurableYinYang.fs`.
-- Cells/hosts: B-0706 (Orleans), B-0253 (Orleans grains), B-0668.1 (F#↔k8s mapping).
+- Cells/hosts: 081KS6FPN0008QG0R003Y3MCVE (Orleans), 081KQZVQW0008QG0R000W4B8KT (Orleans grains), 081KSNY2Z0008QG0R001TMM2HY (F#↔k8s mapping).
 - Reliability gaps: `src/Core/Durability.fs` (fsync P0), `src/Core/Transaction.fs` (single-stream),
-  B-0251/B-0369/B-0370 (durable-computation cluster).
+  081KQZVQW0008QG0R000PPQ3MH/081KR2E4K0008QG0R0021PJCWA/081KR2E4K0008QG0R000ARCH0X (durable-computation cluster).
 - Manifesto §4 Bounded-Mobility (geo/placement anchor); DV2.0 (provenance/lineage); non-register-
   collapse floor (distinct-cell-identity at the rights layer).

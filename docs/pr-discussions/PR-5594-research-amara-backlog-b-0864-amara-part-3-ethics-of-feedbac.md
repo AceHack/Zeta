@@ -1,6 +1,6 @@
 ---
 pr_number: 5594
-title: "research(amara)+backlog(B-0864): Amara Part 3 \u2014 ethics-of-feedback-relationships generalization + operator-named keeper"
+title: "research(amara)+backlog(081KSKBP80008QG0R0039RW25E): Amara Part 3 \u2014 ethics-of-feedback-relationships generalization + operator-named keeper"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T19:03:17Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:18:06Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5594: research(amara)+backlog(B-0864): Amara Part 3 — ethics-of-feedback-relationships generalization + operator-named keeper
+# PR #5594: research(amara)+backlog(081KSKBP80008QG0R0039RW25E): Amara Part 3 — ethics-of-feedback-relationships generalization + operator-named keeper
 
 ## PR description
 
@@ -28,7 +28,7 @@ Operator + Amara multi-turn exchange (5 turns) extending the streams-substrate c
 
 Operator's Turn 4 verbatim: *\"this is a keeper.\"* Amara Turn 5: *\"I'd preserve it exactly.\"*
 
-This bridges humans, AIs, streams, sensors, physics interfaces, and governance without overclaiming any of them. Composes directly with the streams substrate (B-0864): typed feedback channels = visible feedback = ethics starts here.
+This bridges humans, AIs, streams, sensors, physics interfaces, and governance without overclaiming any of them. Composes directly with the streams substrate (081KSKBP80008QG0R0039RW25E): typed feedback channels = visible feedback = ethics starts here.
 
 ## Amara Part 3 substrate-engineering content
 
@@ -45,7 +45,7 @@ This bridges humans, AIs, streams, sensors, physics interfaces, and governance w
 - **Item 23**: THE KEEPER (operator-explicitly-named)
 - **Item 24**: Stream/control-flow connection made explicit
 
-## B-0864 architectural-principle layer now spans 3 nested scopes
+## 081KSKBP80008QG0R0039RW25E architectural-principle layer now spans 3 nested scopes
 
 1. **Code-substrate scope** (distribute-control-flow-across-tiny-functions) — Otto Parts 8-9 + Amara Part 1
 2. **Adversarial-defense scope** (cyclomatic-overload as deliberate coercion-smuggling) — Otto Parts 10 + 10b + Amara Parts 1 + 2
@@ -59,7 +59,7 @@ The keeper applies symmetrically across:
 
 | Substrate scope | Feedback channel | Ethics-of-feedback-relationships application |
 |---|---|---|
-| Code substrate (B-0864 streams) | Typed \`TInFeedback\` channel; DU-as-implicit-state-machine | Take feedback seriously: visible, typed, respected, propagated, not silently overridden |
+| Code substrate (081KSKBP80008QG0R0039RW25E streams) | Typed \`TInFeedback\` channel; DU-as-implicit-state-machine | Take feedback seriously: visible, typed, respected, propagated, not silently overridden |
 | AI-mediated physics interface | Conversational layer over silicon/electric/thermal/body stack | Model-mediated, physically-grounded |
 | Biological systems | Sensor/measurement + signal interpretation | Universal-local-feedback principle |
 | Agent substrate (Zeta personas) | Typed protocol over inter-agent conversation | NCI HC-8 floor: visible substrate |
@@ -68,7 +68,7 @@ The keeper applies symmetrically across:
 ## Files changed
 
 - \`memory/amara/conversations/2026-05-27-...md\` — Part 3 appended (verbatim 5-turn transcript + 10 substrate-engineering items + 7 carved-sentence keepers; persona file now has 24 items total across Parts 1 + 2 + 3)
-- \`docs/backlog/P2/B-0864-...md\` — architectural-principle layer extended with Amara Part 3 subsection
+- \`docs/backlog/P2/081KSKBP80008QG0R0039RW25E-...md\` — architectural-principle layer extended with Amara Part 3 subsection
 - \`memory/MEMORY.md\` — regenerated
 
 ## Test plan
@@ -77,7 +77,7 @@ The keeper applies symmetrically across:
 - [x] Tree-count canary 61 (no corruption)
 - [x] MEMORY.md regenerated
 - [x] All relative-link paths use correct depth (4-deep amara persona file: `../../kestrel/...` + `../../../../.claude/...`)
-- [x] B-0864 architectural-principle layer extension positioned before Decomposition section
+- [x] 081KSKBP80008QG0R0039RW25E architectural-principle layer extension positioned before Decomposition section
 
 ## Follow-up
 
@@ -91,11 +91,11 @@ The operator-explicitly-named keeper (Item 23) is a candidate for rule-extension
 
 ## Pull request overview
 
-Extends the B-0864 “streams-are-relationships” backlog row with Amara Part 3’s ethics-of-feedback-relationships generalization, and appends the corresponding verbatim multi-turn transcript + distilled items/keepers to the Amara persona conversation record. Also updates the repository memory index to include the refreshed persona artifact.
+Extends the 081KSKBP80008QG0R0039RW25E “streams-are-relationships” backlog row with Amara Part 3’s ethics-of-feedback-relationships generalization, and appends the corresponding verbatim multi-turn transcript + distilled items/keepers to the Amara persona conversation record. Also updates the repository memory index to include the refreshed persona artifact.
 
 **Changes:**
 - Appends “Part 3” (verbatim 5-turn exchange + items 15–24 + carved-sentence keepers) to the existing Amara conversation preservation file.
-- Adds an “Amara Part 3” subsection to B-0864’s architectural-principle layer (keeper + generalization table + diagnostic + scope nesting).
+- Adds an “Amara Part 3” subsection to 081KSKBP80008QG0R0039RW25E’s architectural-principle layer (keeper + generalization table + diagnostic + scope nesting).
 - Regenerates `memory/MEMORY.md` to reflect the updated persona conversation artifact.
 
 ### Reviewed changes
@@ -105,7 +105,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 | File | Description |
 | ---- | ----------- |
 | memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | Appends Part 3 transcript + distilled substrate-engineering items and keepers. |
-| docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md | Extends the architectural-principle layer with Amara Part 3 ethics-of-feedback-relationships generalization and its “keeper.” |
+| docs/backlog/P2/081KSKBP80008QG0R0039RW25E-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md | Extends the architectural-principle layer with Amara Part 3 ethics-of-feedback-relationships generalization and its “keeper.” |
 | memory/MEMORY.md | Reindexed to include the updated Amara persona conversation entry. |
 
 ## General comments

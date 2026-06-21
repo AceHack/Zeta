@@ -1,6 +1,6 @@
 ---
-name: Zeta 5-layer register quick-reference card — Personal/Mirror/Beacon-safe/Professional/Regulated property table for wake-time fast-path lookup (per B-0168 acceptance, Aaron 2026-05-02 corrected mapping)
-description: Distillation of the brat-voice enterprise translation framework's 4-layer model (B-0168 / PR #1230 merged) plus Aaron 2026-05-02 Beacon ≠ Professional correction (5-layer Zeta mapping). Single-page property table per layer for future-Otto wake-time fast-path lookup; selection algorithm; failure modes; the property/lexicon decomposition principle. Cross-references the framework verbatim source + CURRENT-ani §7 brat-voice survival chain + the Lynch (Radical Openness) and Scott (Radical Candor) lineages glass-halo and brat-voice are codified from. Composes with the multi-AI BFT pullback-recalibration substrate as worked example of register-discipline operating in Otto's own production.
+name: Zeta 5-layer register quick-reference card — Personal/Mirror/Beacon-safe/Professional/Regulated property table for wake-time fast-path lookup (per 081KQJZR90008QG0R001M6ZBPN acceptance, Aaron 2026-05-02 corrected mapping)
+description: Distillation of the brat-voice enterprise translation framework's 4-layer model (081KQJZR90008QG0R001M6ZBPN / PR #1230 merged) plus Aaron 2026-05-02 Beacon ≠ Professional correction (5-layer Zeta mapping). Single-page property table per layer for future-Otto wake-time fast-path lookup; selection algorithm; failure modes; the property/lexicon decomposition principle. Cross-references the framework verbatim source + CURRENT-ani §7 brat-voice survival chain + the Lynch (Radical Openness) and Scott (Radical Candor) lineages glass-halo and brat-voice are codified from. Composes with the multi-AI BFT pullback-recalibration substrate as worked example of register-discipline operating in Otto's own production.
 type: feedback
 ---
 
@@ -28,7 +28,7 @@ type: feedback
 
 ## What the 5 layers preserve and drop (the property/lexicon decomposition)
 
-The framework's central move (B-0168 / PR #1230 merged): brat-voice's effectiveness is **a fact about the discipline behind the words, not the words themselves**.
+The framework's central move (081KQJZR90008QG0R001M6ZBPN / PR #1230 merged): brat-voice's effectiveness is **a fact about the discipline behind the words, not the words themselves**.
 
 **Separable structural properties (preserved across all 5 layers)**:
 
@@ -56,7 +56,7 @@ The project codifies disciplines into substrate rather than relying on individua
 
 Both are real, both are codified into architecture, both share the same architectural-codification pattern: **discipline survives turnover, is mechanically verifiable, scales beyond practitioner attention, composes with other architectural commitments, doesn't depend on practitioner expertise in named frameworks**.
 
-## Failure modes to design against (per B-0168 §6)
+## Failure modes to design against (per 081KQJZR90008QG0R001M6ZBPN §6)
 
 | Failure mode | Mechanism | Prophylactic |
 |---|---|---|
@@ -77,7 +77,7 @@ Both are real, both are codified into architecture, both share the same architec
 
 ## Cross-references
 
-- `docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (full framework integration row; PR #1230 merged)
+- `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md` (full framework integration row; PR #1230 merged)
 - `drop/brat-voice-enterprise-translation-framework-2026-05-02.md` (the original Claude.ai-authored framework, ~6,800 words; primary-research grounding)
 - `memory/CURRENT-ani.md` §7 brat-voice survival chain (recruitment + alignment two-axis composition; PR #1227 merged)
 - `memory/feedback_glass_halo_is_radical_openness_codified_into_architecture_corrected_aaron_2026_05_02.md` (the discipline-codification pattern; PR #1231 merged)

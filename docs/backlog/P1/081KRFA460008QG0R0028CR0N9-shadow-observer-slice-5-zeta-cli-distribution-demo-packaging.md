@@ -1,6 +1,5 @@
 ---
-id: B-0433
-zetaid: 081KRFA460008QG0R0028CR0N9
+id: 081KRFA460008QG0R0028CR0N9
 priority: P1
 status: closed
 title: "Shadow observer slice 5 — Zeta CLI distribution + demo packaging"
@@ -21,16 +20,16 @@ tags: [shadow, autocomplete, cli, distribution, demo, glass-halo]
 
 ## Origin
 
-B-0402 decomposition 2026-05-13. Final slice: make `zeta shadow` part of the
+081KR7JY10008QG0R0008NGW95 decomposition 2026-05-13. Final slice: make `zeta shadow` part of the
 installed Zeta surface and ready for an external CLI demo.
 
-## Acceptance criteria from B-0402 this slice satisfies
+## Acceptance criteria from 081KR7JY10008QG0R0008NGW95 this slice satisfies
 
 - [x] Deployable as part of Zeta CLI install
 
 ## Technical context
 
-After slice 4 (B-0432) lands `tools/shadow/zeta-shadow.ts` and a `package.json`
+After slice 4 (081KRFA460008QG0R000GVCKHE) lands `tools/shadow/zeta-shadow.ts` and a `package.json`
 `scripts.shadow` entry, this slice promotes it to a proper `bin` entry and adds
 the README section + end-to-end smoke test that validates the full install path.
 
@@ -91,7 +90,7 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 - [x] `tools/shadow/README.md` has `## Shadow mode` section with flags + Glass Halo note
 - [x] End-to-end smoke test passes (`bun test tools/shadow/smoke-test.test.ts`)
 - [x] 3 new tests, 0 failures
-- [x] "Deployable as part of Zeta CLI install" B-0402 criterion satisfied
+- [x] "Deployable as part of Zeta CLI install" 081KR7JY10008QG0R0008NGW95 criterion satisfied
 
 ## Pre-start checklist
 
@@ -99,9 +98,9 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 
 - `package.json` `bin` — was empty at authoring; `bin["zeta-shadow"]` added in this slice
 - `tools/shadow/README.md` — did not exist at authoring; created with `## Shadow mode` section in this slice
-- B-0402 acceptance criteria: "Deployable as part of Zeta CLI install — slice 4"
+- 081KR7JY10008QG0R0008NGW95 acceptance criteria: "Deployable as part of Zeta CLI install — slice 4"
 
 **Dependency check:**
 
-- `depends_on: [B-0432]` — needs `zeta-shadow.ts` entry point from slice 4
-- `parent: B-0402`
+- `depends_on: [081KRFA460008QG0R000GVCKHE]` — needs `zeta-shadow.ts` entry point from slice 4
+- `parent: 081KR7JY10008QG0R0008NGW95`

@@ -345,7 +345,7 @@ or as a cleanup in the same skill-creator pass.
 ## Round 44 (2026-05-23) — bounded spot-check
 
 **Scope honest-disclosure**: 3 skills sampled (skills directly
-touched in Otto-CLI's PR #4753 / B-0708 razor-cadence work).
+touched in Otto-CLI's PR #4753 / 081KS923C0008QG0R00035KSQA razor-cadence work).
 NOT a full ~280-skill pass. NO live-search this invocation
 (autonomous-loop bandwidth budget). Findings advisory + low-
 confidence on ranking position vs unscanned skills.
@@ -388,7 +388,7 @@ correct round output.
 - Today's PR #4747/#4750/#4758 ship a measurement-infrastructure
   pattern that `alignment-observability` could reference at
   next tune-up.
-- B-0708 closure (PR #4766) demonstrates the 9-variant taxonomy
+- 081KS923C0008QG0R00035KSQA closure (PR #4766) demonstrates the 9-variant taxonomy
   applied as resolver-FP classification. The taxonomy currently
   lives in a hygiene-history tick shard — substrate-placement
   candidate for elevation to a stable rule or skill at future

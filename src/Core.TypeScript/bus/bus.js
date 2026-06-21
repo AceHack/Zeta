@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// bus.ts — Inter-agent ephemeral communication bus (B-0400 slice 1)
+// bus.ts — Inter-agent ephemeral communication bus (081KR7JY10008QG0R000R503K2 slice 1)
 //
 // Transport: /tmp/zeta-bus/ JSON files. Override with ZETA_BUS_DIR env var.
 // All subcommands accept --json for programmatic consumption.

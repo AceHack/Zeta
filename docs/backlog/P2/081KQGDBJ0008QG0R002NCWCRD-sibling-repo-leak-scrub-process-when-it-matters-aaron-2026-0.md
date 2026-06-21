@@ -1,6 +1,5 @@
 ---
-id: B-0127
-zetaid: 081KQGDBJ0008QG0R002NCWCRD
+id: 081KQGDBJ0008QG0R002NCWCRD
 priority: P2
 status: open
 title: Sibling-repo leak scrub-process — when scrubbing matters; future-defensive design
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0127 — Sibling-repo leak scrub-process: design + decision-criteria for when scrubbing matters
+# 081KQGDBJ0008QG0R002NCWCRD — Sibling-repo leak scrub-process: design + decision-criteria for when scrubbing matters
 
 **Priority:** P2 (future-defensive; not blocking critical-path; the parent rule already prevents most leaks at write-time, this row is for the *cleanup* path when prevention fails)
 
@@ -81,7 +80,7 @@ When this row is implemented:
   — the parent rule. This row is the cleanup-side companion.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — substrate must be reachable + indexed. The audit-trail-preservation requirement is the substrate-form of "you scrubbed something, but the scrub itself becomes substrate."
-- `docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R001JC9HCJ-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`
   (note: file may exist on the authoring branch only; landed on main via #1011 with the pre-rename filename) — the row whose drafting triggered this learning. The 4-layer pattern's Layer 3 (encode the class) is what filing this row is.
 - Task #318 (docs/ops taxonomy) — the implementation may live in `docs/ops/runbooks/` or `docs/ops/patterns/` once that taxonomy lands.
 

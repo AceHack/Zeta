@@ -31,7 +31,7 @@
 
 The real skill-store migration. (#6679 squash-merged only the *prototype* — the auto-merge fired before the migration commit landed, so this re-lands the full move.)
 
-- **261 former skills → 21 blueprint-pack categories.** Each `<cat>/SKILL.md` = router-facing carved-sentence `description` (all ≤120 chars, under the B-0347 150 cap) + blueprint index; `<cat>/blueprints/*.md` = former skill bodies near-verbatim.
+- **261 former skills → 21 blueprint-pack categories.** Each `<cat>/SKILL.md` = router-facing carved-sentence `description` (all ≤120 chars, under the 081KR50HA0008QG0R002ZNFQBZ 150 cap) + blueprint index; `<cat>/blueprints/*.md` = former skill bodies near-verbatim.
 - Originals preserved in `.claude/skills.bak/` (261, recoverable, not loaded).
 - **Coverage asserted**: every skill in exactly one category — zero orphans / duplicates / phantoms.
 - `audit-skill-description-length`: **0 errors, 0 warnings**.
@@ -162,7 +162,7 @@ Categories: storage-and-query-engines · data-modeling-and-ontology · streaming
 skills: trim blueprint-pack descriptions under the 150-char routing cap
 
 The 21 category SKILL.md descriptions from the migration (#6679) ran 163–261
-chars — over the B-0347 150-char cap, which DROPS them from the skill listing
+chars — over the 081KR50HA0008QG0R002ZNFQBZ 150-char cap, which DROPS them from the skill listing
 (invisible to cold-start agents, defeating the migration). Rewrote all 21 to
 the carved one-sentence form ≤120 chars. audit-skill-description-length: 0
 errors, 0 warnings.

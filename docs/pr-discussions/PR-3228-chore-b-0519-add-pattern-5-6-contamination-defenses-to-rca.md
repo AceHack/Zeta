@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Additive update to [B-0519 RCA](docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md) adding two contamination patterns surfaced today via field-test, plus the new cheap defenses that worked.
+Additive update to [081KRHWGX0008QG0R001HMWM1W RCA](docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md) adding two contamination patterns surfaced today via field-test, plus the new cheap defenses that worked.
 
 ## Patterns added
 
@@ -58,7 +58,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Pull request overview
 
-Additive documentation update to the B-0519 RCA row, appending two newly-observed multi-Otto branch-state contamination patterns and the zero-code defenses that worked in field-test.
+Additive documentation update to the 081KRHWGX0008QG0R001HMWM1W RCA row, appending two newly-observed multi-Otto branch-state contamination patterns and the zero-code defenses that worked in field-test.
 
 **Changes:**
 - Adds Pattern 5 (HEAD detached at `origin/main` between `git push` and `gh pr create`) and Pattern 6 (HEAD on another Otto's branch between recovery checkout and `gh pr create`).

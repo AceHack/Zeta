@@ -54,7 +54,7 @@ Preserve discussion from PR #5275.
 - **`Copilot` (bot)** at 2026-05-26T20:21:24Z on `docs/pr-discussions/PR-5275-feat-b-0824-the-compression-google-map-reduce-zeta-generate.md`:59 (association: NONE)
 
   <pre>
-  P1: The archived thread reference points at `docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md`, but there is no `B-0824` row anywhere under `docs/backlog/` in this branch. If this archive is meant to be navigable, please verify the PR/thread metadata and either regenerate the archive from GitHub or correct the referenced path so it matches the actual file that was reviewed.
+  P1: The archived thread reference points at `docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md`, but there is no `081KSGS9H0008QG0R0031PBNGA` row anywhere under `docs/backlog/` in this branch. If this archive is meant to be navigable, please verify the PR/thread metadata and either regenerate the archive from GitHub or correct the referenced path so it matches the actual file that was reviewed.
 
   </pre>
 

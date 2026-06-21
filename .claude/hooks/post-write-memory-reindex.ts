@@ -3,7 +3,7 @@
 // after any Write or Edit to a memory heap file.
 //
 // Wired via .claude/settings.json PostToolUse matcher "Write|Edit".
-// Part of B-0259 (MEMORY.md drift enforcement).
+// Part of 081KR2E4K0008QG0R000XCS9FT (MEMORY.md drift enforcement).
 //
 // Trigger conditions (mirrors the generator's own exclusion list in
 // src/Core.TypeScript/memory/reindex-memory-md.ts collectEntriesRecursive):

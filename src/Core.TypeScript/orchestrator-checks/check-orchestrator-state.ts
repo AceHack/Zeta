@@ -3,7 +3,7 @@
 // current branch, git status, and worktree list for orchestrator start-of-tick
 // health checks.
 //
-// Per docs/backlog/P1/B-0191-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md
+// Per docs/backlog/P1/081KQR4HQ0008QG0R002YNV361-orchestrator-branch-verify-mechanization-design-aaron-2026-05-04.md
 // (AC5 worktree status sub-row). Rule 0: TS not bash.
 //
 // Exit codes:

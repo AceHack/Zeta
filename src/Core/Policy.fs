@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// **Policy — the typed decision-with-feedback kernel (B-1017 #1).**
+/// **Policy — the typed decision-with-feedback kernel (081KT7YW00008QG0R003N6PF8A #1).**
 ///
 /// A `Policy<'input, 'decision, 'feedback>` is a total function
 /// `'input -> PolicyResult<'decision, 'feedback>`: it INSPECTS one value and

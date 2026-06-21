@@ -24,7 +24,7 @@ pointers resolve against.
 - **Zero-to-one entry.** The unified dep map (#6939) assumes *something* can resolve pointers; the one-liner is
   the **zero-dependency seed** that gets you to that something from a bare machine. `curl … | sh`-shaped, but
   declarative/content-addressed (a *register* of one-liners, not ad-hoc scripts).
-- **Self-bootstrapping (B-0863).** This is the B-0863 lane — "one-liner curl-install repository for fast-moving
+- **Self-bootstrapping (081KSKBP80008QG0R000F4311E).** This is the 081KSKBP80008QG0R000F4311E lane — "one-liner curl-install repository for fast-moving
   tools." Ace-installs-Ace and Ace-installs-the-PMs makes the whole external-state closure **self-installing**:
   the closure can reconstitute its own host from a single command.
 - **The host the virus needs, delivered.** 081KTHTPPCD: a ZetaId/closure only expresses given a host. The
@@ -36,7 +36,7 @@ pointers resolve against.
 
 ## Honest scope / peel
 
-- Design/in-flight (B-0863 + the Ace lane, otto-windows); the one-liner register is the documented intent, not
+- Design/in-flight (081KSKBP80008QG0R000F4311E + the Ace lane, otto-windows); the one-liner register is the documented intent, not
   fully built.
 - **Security bound (load-bearing):** a `curl | sh` bootstrap is a supply-chain/admission surface — it must be
   content-addressed + verified (signature/hash), respect source terms (#6926), and be consent/policy-gated
@@ -49,7 +49,7 @@ pointers resolve against.
 
 - **Ace external-state closure / one dep map (#6939) + pointers span all layers (#6941)** — this is the
   *bootstrap* that lays down the host those pointers resolve against.
-- **B-0863** (one-liner curl-install repository for fast-moving tools) — the lane this names.
+- **081KSKBP80008QG0R000F4311E** (one-liner curl-install repository for fast-moving tools) — the lane this names.
 - **Viruses-need-a-host (081KTHTPPCD)** — the one-liner is how the host gets installed; completes seed+host.
 - **Self-boot capability** (the `self-boot` skill / fresh-instance bootstrap) — the human/CLI analogue: bring up
   a working substrate from near-nothing.

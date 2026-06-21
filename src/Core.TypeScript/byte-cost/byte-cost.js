@@ -1,4 +1,4 @@
-// ByteCost — TS oracle of the context-window minimization meter (B-1016 slice 1).
+// ByteCost — TS oracle of the context-window minimization meter (081KT7YW00008QG0R002T1XNWT slice 1).
 // Grown FROM the shared seed (golden-vectors.json); the F# oracle is the
 // correctness peer (src/Core/ByteCost.fs). Byte-lock: every language reports
 // identical UTF-8 byte counts for the same surface text.

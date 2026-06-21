@@ -55,7 +55,7 @@ ESP **selection** picks the tiny FAT partition (GPT ESP GUID / MBR `0xEF` / `Sys
 
 Per the *automated-tests-are-the-shield* discipline, **all** decision logic is pure + exported. **+29 tests (51 total, all pass)** cover validation, resolution, ESP selection (GPT + MBR), free-letter pick, the diskpart/PowerShell builders, and the **whole `injectPubkeyIntoEsp` orchestration** via a fake runner — including the **corrupt-write → read-back-mismatch → `ok=false`** case (proves the fail-loud guard fires). Strict `tsc` clean; README updated.
 
-The only thing not coverable on a Mac is the literal `diskpart`/ESP-mount syscall — that's the thin fail-loud wrapper around the tested logic; it needs a Windows box / VM for an end-to-end run (tracked B-0739).
+The only thing not coverable on a Mac is the literal `diskpart`/ESP-mount syscall — that's the thin fail-loud wrapper around the tested logic; it needs a Windows box / VM for an end-to-end run (tracked 081KSE6WT0008QG0R0025170CV).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

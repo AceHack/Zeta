@@ -72,7 +72,7 @@ Next: writing-plans → subagent build (slice-4 flow).
   - **`AceHack` (human)** at 2026-06-01T07:19:43Z on `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.1-registry-exact-version-design.md`:159 (association: MEMBER)
 
     <pre>
-    Verified and fixed in d6c165f3b. You're correct — `tools/ace` has zero serde references and Ace slice-3 was authenticity/signature verification, not canonical-hashing-vs-serde_json. The real serde_json differential-test precedent is the Rust observe oracle (B-0867.27/.29, PRs #6255/#6257: `ZetaJsonParser` vs a `serde_json`-backed adapter), per the bcl-interface-boundary rule's empirical anchor. Rephrased to cite the correct precedent.
+    Verified and fixed in d6c165f3b. You're correct — `tools/ace` has zero serde references and Ace slice-3 was authenticity/signature verification, not canonical-hashing-vs-serde_json. The real serde_json differential-test precedent is the Rust observe oracle (081KSXN940008QG0R0033T2BQT/.29, PRs #6255/#6257: `ZetaJsonParser` vs a `serde_json`-backed adapter), per the bcl-interface-boundary rule's empirical anchor. Rephrased to cite the correct precedent.
     </pre>
 
 ## Fix commits (touching thread paths)
@@ -131,7 +131,7 @@ Copilot flagged spec drift: the doc cited 'slice 3 differential-tested
 our canonical hashing against serde_json'. Verified false — tools/ace has
 zero serde references and Ace slice-3 was authenticity/signature verify,
 not canonical-hashing-vs-serde_json. The real precedent is the Rust
-observe oracle (B-0867.27/.29, PRs #6255/#6257): ZetaJsonParser
+observe oracle (081KSXN940008QG0R0033T2BQT/.29, PRs #6255/#6257): ZetaJsonParser
 differential-tested against a serde_json-backed adapter behind the serde
 feature flag, per the bcl-interface-boundary rule's own empirical anchor.
 

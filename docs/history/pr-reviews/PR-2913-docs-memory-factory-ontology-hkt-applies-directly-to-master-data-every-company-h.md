@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron connects factory HKT (Higher-Kinded Types) ontology to Master Data Management (MDM). HKT M<'T> is parametric over entity type — exactly what MDM needs. Composes with DV2.0 (PR #2912) + civsim Casimir-gap (PR #2906) + universal-business-templates (B-0043) + F# anchor + bandwidth-engineering.
+Aaron connects factory HKT (Higher-Kinded Types) ontology to Master Data Management (MDM). HKT M<'T> is parametric over entity type — exactly what MDM needs. Composes with DV2.0 (PR #2912) + civsim Casimir-gap (PR #2906) + universal-business-templates (081KQ3HBZ0008QG0R000Q4Y00F) + F# anchor + bandwidth-engineering.
 
 Strategic implication: factory HKT IS general-purpose master-data infrastructure. Every company has MDM. Universal applicability composes with civsim network-effect critical-mass.
 
@@ -185,7 +185,7 @@ Connects factory HKT ontology to Master Data Management (MDM):
 Composes with:
 - PR #2912 (DV2.0 re-activation — DV2.0 is part of MDM
   tradition; this PR connects HKT to MDM)
-- PR #2911 (B-0427 Axis 3 — ruleset-divergence smell informed
+- PR #2911 (081KRFA460008QG0R000VKJF0H Axis 3 — ruleset-divergence smell informed
   by DV2.0)
 - PR #2906 (Casimir-gap civsim — applies HKT-MDM at network
   scale; civsim has player + world + coordination master data)
@@ -193,7 +193,7 @@ Composes with:
 - PR #2832 (civ-sim Pauli-exclusion-for-agenda HKT)
 - PR #2817 (Clifford densest encoding HKT-pattern signatures)
 - PR #2815 (HKT error classes universal/domain refinement)
-- B-0043 (universal-business-templates already backlogged)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-business-templates already backlogged)
 - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
 - .claude/rules/bandwidth-served-falsifier.md (universal HKT-
   MDM serves bandwidth at every-company scale)

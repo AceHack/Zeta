@@ -1,6 +1,5 @@
 ---
-id: B-0083.1
-zetaid: 081KSRGFP0008QG0R003ZH6DN3
+id: 081KSRGFP0008QG0R003ZH6DN3
 priority: P1
 status: open
 title: "ROM datfile-as-dependency — pin + fetch + SHA-256 verify + refresh"
@@ -14,11 +13,11 @@ type: friction-reducer
 tags: [roms, atari-2600, tosec, datfile, dep-pin, fetch-verify, otto-247]
 ---
 
-# B-0083.1 — ROM datfile-as-dependency
+# 081KSRGFP0008QG0R003ZH6DN3 — ROM datfile-as-dependency
 
-The third slice the parent B-0083 acceptance list named but neither closed
-sibling covered. B-0272 built `canonicalize.ts` (which *consumes*
-`--datfile <path>`) and B-0273 built `split-by-license.ts` + `roms-safe/`.
+The third slice the parent 081KQ8P5D0008QG0R001590WJ3 acceptance list named but neither closed
+sibling covered. 081KR2E4K0008QG0R001QZDAMQ built `canonicalize.ts` (which *consumes*
+`--datfile <path>`) and 081KR2E4K0008QG0R001JC6S3N built `split-by-license.ts` + `roms-safe/`.
 Neither built the mechanism that *produces* the pinned, verified datfile.
 
 This row operationalizes the parent's **"Datfile-as-dependency"** design
@@ -28,13 +27,13 @@ on update.
 
 ## Pre-start checklist
 
-- [x] Prior-art search: read parent B-0083 (algorithm + "Datfile-as-dependency"
-  + "Recommended approach"); both children B-0272 (closed) + B-0273 (closed);
+- [x] Prior-art search: read parent 081KQ8P5D0008QG0R001590WJ3 (algorithm + "Datfile-as-dependency"
+  + "Recommended approach"); both children 081KR2E4K0008QG0R001QZDAMQ (closed) + 081KR2E4K0008QG0R001JC6S3N (closed);
   `tools/roms/canonicalize.ts` (`--datfile` consumer) + `split-by-license.ts`;
   grepped `tools/` + `.github/workflows/` for any datfile fetch/pin/refresh
   tooling — none existed.
-- [x] Dependency walk: depends on B-0272 (the consumer of the fetched datfile,
-  already closed). Sibling B-0273 closed. No other deps.
+- [x] Dependency walk: depends on 081KR2E4K0008QG0R001QZDAMQ (the consumer of the fetched datfile,
+  already closed). Sibling 081KR2E4K0008QG0R001JC6S3N closed. No other deps.
 - [x] Otto-247 / dep-pin: WebSearch'd "TOSEC Atari 2600 datfile latest" —
   latest TOSEC release is **2025-03-13** (no 2026 release as of 2026-05).
   Sources: <https://www.tosecdev.org/news/releases/177-tosec-release-2025-03-13>,
@@ -64,21 +63,21 @@ on update.
   workflow). Out of scope for this slice; the parent marks it "scheduled cron
   optional". File a follow-up if/when a refresh cadence is wanted.
 
-## Why this is the smallest safe slice of B-0083
+## Why this is the smallest safe slice of 081KQ8P5D0008QG0R001590WJ3
 
-Both decomposed children (B-0272, B-0273) are closed. The parent's only
+Both decomposed children (081KR2E4K0008QG0R001QZDAMQ, 081KR2E4K0008QG0R001JC6S3N) are closed. The parent's only
 genuinely-unbuilt, repo-shippable acceptance criterion was the
 datfile-as-dependency mechanism (the "rename all 3461 ROMs" criterion is a
 local-data op on gitignored files, and the README cross-ref already landed in
-B-0273). This slice closes that gap with a bounded, tested tool that composes
+081KR2E4K0008QG0R001JC6S3N). This slice closes that gap with a bounded, tested tool that composes
 with the existing `canonicalize.ts --datfile` consumer.
 
 ## Composes with
 
-- `tools/roms/canonicalize.ts` (B-0272) — consumes the fetched + verified datfile.
-- `tools/roms/split-by-license.ts` (B-0273) — downstream of canonicalization.
+- `tools/roms/canonicalize.ts` (081KR2E4K0008QG0R001QZDAMQ) — consumes the fetched + verified datfile.
+- `tools/roms/split-by-license.ts` (081KR2E4K0008QG0R001JC6S3N) — downstream of canonicalization.
 - `.claude/rules/dep-pin-search-first-authority.md` — the fail-closed placeholder
   pattern + WebSearch-verified pin discipline.
 - `roms/.gitignore` — `roms/.datfiles/` cache is gitignored by the existing
   depth-limited rule (only READMEs tracked).
-- Parent B-0083 acceptance criterion #6 + "Datfile-as-dependency" design section.
+- Parent 081KQ8P5D0008QG0R001590WJ3 acceptance criterion #6 + "Datfile-as-dependency" design section.

@@ -26,7 +26,7 @@ scale, never take control, give freedom — self → … → cosmos → multiver
 **Compute / substrate axis (climbs from the silicon):** `gpus/fpga → raw hardware → microkernels → operating systems
 → package manager → … → multiverse`. This is the **install.sh push-down base / dep-closure** (#7185) made into a full
 ladder from the metal: close over host → compiler → os → hardware, all the way down to the **gpus/FPGAs** (the
-open-bitstream FPGAs, B-0725). Each rung is the substrate the rung above runs on.
+open-bitstream FPGAs, 081KSE6WT0008QG0R002T0BFN4). Each rung is the substrate the rung above runs on.
 
 ## They converge at the multiverse
 
@@ -65,7 +65,7 @@ compute) meeting in the middle; fix foundation-first / inner-first; self-similar
 
 ## Pointers
 
-- Compute axis: install.sh push-down base / dep-closure (#7185) · FPGA/gpu hardware (B-0725, `hardware-to-buy.md`) ·
+- Compute axis: install.sh push-down base / dep-closure (#7185) · FPGA/gpu hardware (081KSE6WT0008QG0R002T0BFN4, `hardware-to-buy.md`) ·
   microkernel/Seed (`docs/VISION.md` "Seed — the database BCL microkernel").
 - Social axis: the polite-virus telos world→cosmos→all-of-society (#7255/#7257) · society emergence
   (`SocietyEmergence.fs`, the tiny-model-v2 #7253) · self = shape A (#7215).

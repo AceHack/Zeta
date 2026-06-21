@@ -1,6 +1,6 @@
 ---
 pr_number: 5392
-title: "feat(B-0850 Phase 1): zeta-otto systemd unit NixOS module + control-plane enable \u2014 claude service auto-starts on reboot using persisted iter-5.5.0 device-code creds (Aaron 2026-05-27)"
+title: "feat(081KSKBP80008QG0R003Z4C0D0 Phase 1): zeta-otto systemd unit NixOS module + control-plane enable \u2014 claude service auto-starts on reboot using persisted iter-5.5.0 device-code creds (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T03:04:52Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5392: feat(B-0850 Phase 1): zeta-otto systemd unit NixOS module + control-plane enable — claude service auto-starts on reboot using persisted iter-5.5.0 device-code creds (Aaron 2026-05-27)
+# PR #5392: feat(081KSKBP80008QG0R003Z4C0D0 Phase 1): zeta-otto systemd unit NixOS module + control-plane enable — claude service auto-starts on reboot using persisted iter-5.5.0 device-code creds (Aaron 2026-05-27)
 
 ## PR description
 
@@ -49,7 +49,7 @@ systemctl disable zeta-otto     # stop auto-start (NCI HC-8 revocable)
 
 ## Composes with
 
-[B-0848](docs/backlog/P2/B-0848-...) (node-local Claude — this PR IS systemd deployment shape) · [B-0847](docs/backlog/P2/B-0847-...) (per-AI GitHub identity — Phase 4 aligns) · [B-0796](docs/backlog/P2/B-0796-...) (Twilio out-of-band sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence layer this consumes) · [B-0850](docs/backlog/P2/B-0850-...) (this PR is the row's Phase 1)
+[081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) (node-local Claude — this PR IS systemd deployment shape) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...) (per-AI GitHub identity — Phase 4 aligns) · [081KSGS9H0008QG0R002F04ECB](docs/backlog/P2/081KSGS9H0008QG0R002F04ECB-...) (Twilio out-of-band sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence layer this consumes) · [081KSKBP80008QG0R003Z4C0D0](docs/backlog/P2/081KSKBP80008QG0R003Z4C0D0-...) (this PR is the row's Phase 1)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

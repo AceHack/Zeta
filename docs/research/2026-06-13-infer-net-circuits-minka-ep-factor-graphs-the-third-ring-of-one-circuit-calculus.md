@@ -37,7 +37,7 @@ inference what Distinct is to DBSP and measurement is to quantum: the lossy step
 the boundary (EP literally alternates linear message products with a projection — and the
 α-divergence paper is the knob between them).
 
-## What we build (B-1032, the named slice — shared with the quantum one)
+## What we build (081KTZ4EF0008QG0R001R3XPYV, the named slice — shared with the quantum one)
 
 `WSet<'K,'W>` over any commutative semiring (we carry `Semiring`/`ProbabilitySemiring`/`IStarRing`
 already), then ONE demo per ring on the SAME circuit shape: (a) discrete sum-product on a 3-node
@@ -56,4 +56,4 @@ Aji & McEliece 2000 · Winn & Bishop 2005
 ## Pointers
 
 - `src/Bayesian/` (FactorGraph/Message/Ep — ours, already written) · `Circuit.RecursiveSignedDelta`
-  (the ℤ ring's newest law) · the quantum-bridge capture (2026-06-13) · B-1029 (Lior's lane)
+  (the ℤ ring's newest law) · the quantum-bridge capture (2026-06-13) · 081KTWJ1R0008QG0R001ZBWKTR (Lior's lane)

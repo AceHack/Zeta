@@ -35,7 +35,7 @@ Follow-up batch to [PR #3570](https://github.com/Lucent-Financial-Group/Zeta/pul
 
 | File | Line | Context |
 |---|---|---|
-| \`docs/GITHUB-SETTINGS.md\` | 260 | B-0155 Phase 1 audit attribution |
+| \`docs/GITHUB-SETTINGS.md\` | 260 | 081KQGDBJ0008QG0R0028YTDQ2 Phase 1 audit attribution |
 | \`docs/POST-SETUP-SCRIPT-STACK.md\` | 87 | bash-forever decision attribution |
 | \`docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md\` | 89 | "the point" attribution |
 
@@ -104,7 +104,7 @@ fix(otto-279): role-refs not persona-names in docs/ surfaces (3 hits)
 Follow-up to PR #3570 (.claude/ surfaces). Same Otto-279 fix pattern
 applied to next-batch docs/ files:
 
-- docs/GITHUB-SETTINGS.md:260 (B-0155 Phase 1 audit attribution)
+- docs/GITHUB-SETTINGS.md:260 (081KQGDBJ0008QG0R0028YTDQ2 Phase 1 audit attribution)
 - docs/POST-SETUP-SCRIPT-STACK.md:87 (bash-forever decision attribution)
 - docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md:89 ("the point" attribution)
 

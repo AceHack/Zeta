@@ -1,26 +1,25 @@
 ---
-id: B-0520
-zetaid: 081KRHWGX0008QG0R003N033PD
+id: 081KRHWGX0008QG0R003N033PD
 priority: P1
 status: open
 title: Mechanize new-surface audit for alignment-clause consistency
 tier: substrate-foundational-discipline
 effort: S
-ask: Peel off from B-0058 — "New-surface audit" into atomic slice.
+ask: Peel off from 081KQ3HBZ0008QG0R002S674CG — "New-surface audit" into atomic slice.
 created: 2026-05-14
 last_updated: 2026-05-14
-renumbered_from: "B-0329 (2026-05-14, ID collision with B-0329-claude-md-as-process-not-doctrine.md caught by Copilot review on PR #3247)"
+renumbered_from: "081KR2E4K0008QG0R001F0YB5S (2026-05-14, ID collision with 081KR2E4K0008QG0R001F0YB5S-claude-md-as-process-not-doctrine.md caught by Copilot review on PR #3247)"
 depends_on: [081KQ3HBZ0008QG0R002S674CG]
 composes_with: [docs/ALIGNMENT.md, docs/GLOSSARY.md]
-tags: [ai-ethics, alignment, new-surface-audit, decomposed, B-0058-slice]
+tags: [ai-ethics, alignment, new-surface-audit, decomposed, 081KQ3HBZ0008QG0R002S674CG-slice]
 type: friction-reducer
 ---
 
-# B-0520 — Mechanize new-surface audit for alignment-clause consistency
+# 081KRHWGX0008QG0R003N033PD — Mechanize new-surface audit for alignment-clause consistency
 
 ## Origin
 
-Decomposed from B-0058 item 2: "New-surface audit".
+Decomposed from 081KQ3HBZ0008QG0R002S674CG item 2: "New-surface audit".
 
 ## What this slice owns
 

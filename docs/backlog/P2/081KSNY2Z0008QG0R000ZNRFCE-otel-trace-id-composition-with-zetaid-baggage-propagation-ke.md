@@ -1,6 +1,5 @@
 ---
-id: B-0872
-zetaid: 081KSNY2Z0008QG0R000ZNRFCE
+id: 081KSNY2Z0008QG0R000ZNRFCE
 priority: P2
 status: open
 title: OTel trace-ID composition with ZetaID — baggage propagation alongside W3C Trace Context for agent-loop events
@@ -44,14 +43,14 @@ Wire OpenTelemetry trace-IDs through the agent-loop substrate so every state-mac
   - Creates/joins a W3C Trace Context for the current operation
   - Sets baggage entries linking `zetaId` → current trace
   - Runs `fn` within the trace scope
-- Every event emitted via `appendEvent` (B-0867.2) carries both `zeta_id` AND `trace_id` + `span_id`
+- Every event emitted via `appendEvent` (081KSNY2Z0008QG0R001K6HJ7Z) carries both `zeta_id` AND `trace_id` + `span_id`
 - `@opentelemetry/api` integrated as TS dependency; OTLP exporter configurable via env
 - Tests cover: baggage propagation across async boundaries; trace-ID extraction from agent-loop events; round-trip ZetaID ↔ trace-ID linkage
 - README documents the three options + why Option B was selected
 
 ## Scope
 
-This row is the OTEL WIRING ONLY. ZetaID generation lives in B-0893; event-sourcing in B-0867.2; observability backend selection is operator-decision.
+This row is the OTEL WIRING ONLY. ZetaID generation lives in 081KSNY2Z0008QG0R000V24M7E; event-sourcing in 081KSNY2Z0008QG0R001K6HJ7Z; observability backend selection is operator-decision.
 
 ## Substrate-honest framing
 

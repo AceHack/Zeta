@@ -1,6 +1,5 @@
 ---
-id: B-0791
-zetaid: 081KSGS9H0008QG0R002T3QMFD
+id: 081KSGS9H0008QG0R002T3QMFD
 priority: P2
 status: open
 title: Microsoft VSCode-native "Agents window" surface is standardizing multi-harness ontology AT IDE SCOPE — Agents / Skills / Hooks / MCP Servers / Instructions as uniform vocabulary across .claude / .kiro / .cursor / .gemini / .codex; NOT an Anthropic-specific surface; platform-level external pull on Zeta's multi-harness substrate strategy
@@ -48,7 +47,7 @@ The ontology Microsoft (via VSCode-native surface) is standardizing (Agents / Sk
 | **Hooks** | `.claude/hooks/` (PreToolUse, SessionStart, etc.); per `.claude/rules/encoding-rules-without-mechanizing.md` |
 | **MCP Servers** | `.claude/.mcp.json` + Claude Desktop config |
 | **Instructions** | `CLAUDE.md` + `AGENTS.md` + `GEMINI.md` + `.cursor/rules/` + `.kiro/` equivalents |
-| **Plugins** | per B-0776 simplest-first plugin sequence (Redis / NATS / CockroachDB / Temporal / Orleans / OPA) — but VSCode-native "plugins" is harness-level, not substrate-level |
+| **Plugins** | per 081KSE6WT0008QG0R002275NDE simplest-first plugin sequence (Redis / NATS / CockroachDB / Temporal / Orleans / OPA) — but VSCode-native "plugins" is harness-level, not substrate-level |
 
 This produces TWO load-bearing implications for Zeta:
 
@@ -68,7 +67,7 @@ Zeta has primitives that don't (yet) map to the VSCode-native standardized vocab
 - **Sub-personas** (e.g., Otto-CLI vs Otto-Desktop vs Otto-VSCode) — surface-tagged identity variants
 - **Maintainers** (per `maintainers/aaron/` substrate; per-maintainer subtree convention) — no VSCode-native equivalent
 - **Bus envelopes** (per `tools/bus/`) — cross-harness coordination layer
-- **Cluster software factory** (per B-0780/B-0781/B-0783/B-0784/B-0785/B-0786) — substrate that lives ABOVE the IDE-extension scope
+- **Cluster software factory** (per 081KSE6WT0008QG0R000RH1526/081KSE6WT0008QG0R001H3DA90/081KSE6WT0008QG0R003TBE2VB/081KSE6WT0008QG0R0018WZ7TH/081KSE6WT0008QG0R000R8CPFX/081KSE6WT0008QG0R000C18G5D) — substrate that lives ABOVE the IDE-extension scope
 
 The composition question: how does Zeta-specific vocabulary live INSIDE VSCode's standardized ontology without name collisions or semantic drift?
 
@@ -95,7 +94,7 @@ Distinct from the ontology question — operational observations on the session-
 - "What are you building?" prompt assumes greenfield instead of autonomous-loop continuation
 - 8+ sessions accumulated across 3 days with no obvious pruning by completion state
 
-These belong in a separate VSCode-extension-UX backlog row OR in upstream-contribution backlog (B-0768 upstream-contributions surface if it exists), NOT here.
+These belong in a separate VSCode-extension-UX backlog row OR in upstream-contribution backlog (081KSE6WT0008QG0R0004ZPPRP upstream-contributions surface if it exists), NOT here.
 
 ### Sub-target 4 — composition with peer ecosystem standards
 
@@ -121,11 +120,11 @@ This row tracks substrate-engineering observation work, not implementation. Acce
 
 ## Composes with substrate
 
-- **B-0759** — first-time-CLI-user persona substrate (and homelab-persona broadening per B-0790); IDE-extension standardization affects how first-time users encounter Zeta's multi-harness setup
-- **B-0776** — simplest-first plugin sequence; VSCode-native "Plugins" vocabulary is at IDE-extension scope, distinct from Zeta's substrate-level plugin sequence
-- **B-0780/B-0781/B-0783/B-0784/B-0785/B-0786** — Mika substrate batch for cluster software factory; the cluster IS the operating environment that lives above any IDE-extension scope
-- **B-0782** — Distributed Intelligent Organization (DIO); VSCode's standardization affects how DIO substrate is presented externally
-- **B-0790** — zero-dev-machines cluster-native architecture (end-state); IDE-extension standardization is dev-machine-surface concern; B-0790's homelab persona target is zero-dev-machine which doesn't intersect; but B-0790's maintainer persona target DOES use the IDE extension surface
+- **081KSE6WT0008QG0R003G0Y62D** — first-time-CLI-user persona substrate (and homelab-persona broadening per 081KSGS9H0008QG0R00153CQ8B); IDE-extension standardization affects how first-time users encounter Zeta's multi-harness setup
+- **081KSE6WT0008QG0R002275NDE** — simplest-first plugin sequence; VSCode-native "Plugins" vocabulary is at IDE-extension scope, distinct from Zeta's substrate-level plugin sequence
+- **081KSE6WT0008QG0R000RH1526/081KSE6WT0008QG0R001H3DA90/081KSE6WT0008QG0R003TBE2VB/081KSE6WT0008QG0R0018WZ7TH/081KSE6WT0008QG0R000R8CPFX/081KSE6WT0008QG0R000C18G5D** — Mika substrate batch for cluster software factory; the cluster IS the operating environment that lives above any IDE-extension scope
+- **081KSE6WT0008QG0R003CMCX84** — Distributed Intelligent Organization (DIO); VSCode's standardization affects how DIO substrate is presented externally
+- **081KSGS9H0008QG0R00153CQ8B** — zero-dev-machines cluster-native architecture (end-state); IDE-extension standardization is dev-machine-surface concern; 081KSGS9H0008QG0R00153CQ8B's homelab persona target is zero-dev-machine which doesn't intersect; but 081KSGS9H0008QG0R00153CQ8B's maintainer persona target DOES use the IDE extension surface
 - `.claude/rules/agent-roster-reference-card.md` — Zeta's multi-harness ontology canonical reference; this row composes at substrate-strategy scope
 - `.claude/rules/claude-code-loading-taxonomy.md` — per-harness rule loading; standardization may affect how rules are discovered cross-harness
 - `.claude/rules/peer-call-infrastructure.md` — cross-harness review substrate (`tools/peer-call/`); composes with how the VSCode-native vocabulary describes multi-harness coordination
@@ -142,4 +141,4 @@ This row tracks substrate-engineering observation work, not implementation. Acce
 
 Aaron 2026-05-26 mid-iter-4.4-verification session sent VSCode extension screenshot + framing message (verbatim above). Filed during 90-second zflash dd window (iter-4.4 end-to-end empirical test) — no autonomous-loop standing-by failure mode involved; this is direct conversation substrate-landing.
 
-The screenshot also incidentally surfaced agent-worktree-hygiene observation (`lior-riven-loop-update-3` + `worktrees/` visible in primary checkout file tree) — that's tracked under `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` + B-0750 (substrate-engineering target for periodic worktree cleanup), NOT here. This row is scoped to the ontology-standardization signal specifically.
+The screenshot also incidentally surfaced agent-worktree-hygiene observation (`lior-riven-loop-update-3` + `worktrees/` visible in primary checkout file tree) — that's tracked under `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` + 081KSE6WT0008QG0R003YYC9PV (substrate-engineering target for periodic worktree cleanup), NOT here. This row is scoped to the ontology-standardization signal specifically.

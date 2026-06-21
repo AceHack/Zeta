@@ -1,6 +1,5 @@
 ---
-id: B-0969
-zetaid: 081KT07NV0008QG0R001YDB73K
+id: 081KT07NV0008QG0R001YDB73K
 priority: P1
 status: closed
 title: Invariant-culture-everywhere + ConfigureAwait(false) as cross-cutting .NET defaults — never default to culture-sensitive (F# G-Set culture-sensitivity is the first concrete fix)
@@ -156,7 +155,7 @@ codepoint ≡ UTF-8 byte order) is the **collation treaty** all four conform to 
 
 The longer the 4-language surface grows, the more code is written against the culture-sensitive default and
 the more golden vectors bake in ASCII-masked parity — so the fix gets strictly more expensive over time.
-Treat B-0969 as **do-now**, ahead of net-new primitive surface. The collation choice (ordinal / codepoint ≡
+Treat 081KT07NV0008QG0R001YDB73K as **do-now**, ahead of net-new primitive surface. The collation choice (ordinal / codepoint ≡
 UTF-8 byte order) is the **treaty** every oracle + every golden vector must conform to; landing it early is
 what keeps the 4-oracle byte-consensus cheap. Gating decision (comparer strategy a-vs-b) is in action 1 —
 pin it first so the cross-language fix can proceed.
@@ -194,7 +193,7 @@ sites are ordinal-for-string already, left as-is). Status:
 | `Aggregate.fs` | 2 (`:264/:273`) | ✅ FIXED → `KeyComparerCache<'V>` (value min/max now ordinal) |
 
 **F# `src/Core` ordering audit COMPLETE** — every culture-sensitive ordering site is now binary/ordinal (or
-was already ordinal, per Bag). Remaining B-0969 work: (1) C#/Rust/TS oracle audit (the other three
+was already ordinal, per Bag). Remaining 081KT07NV0008QG0R001YDB73K work: (1) C#/Rust/TS oracle audit (the other three
 languages); (2) regenerate the 4-oracle golden vectors with **non-ASCII** keys so the byte-consensus
 actually exercises ordinal (un-mask the ASCII fixtures); (3) analyzer enforcement
 (`CA1304/1305/1307/1310/2007` at error level) so it can't regress; (4) the carry-as-identity collation
@@ -202,7 +201,7 @@ actually exercises ordinal (un-mask the ASCII fixtures); (3) analyzer enforcemen
 
 ## Composes with
 
-- **B-0959** (cross-language substrate master checklist) — the 4-oracle
+- **081KSXN940008QG0R003FCQ7WT** (cross-language substrate master checklist) — the 4-oracle
   byte-consensus this protects.
 - The algebra-ladder primitives (G-Set / Bag / Z-set) + the primitive registry —
   the comparator contract is the shared cross-language ordering this enforces.

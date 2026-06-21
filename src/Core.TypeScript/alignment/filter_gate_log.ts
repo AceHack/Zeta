@@ -1,23 +1,23 @@
 #!/usr/bin/env bun
 // filter_gate_log.ts — candidate-failure honesty log.
 //
-// B-0058 responsibility #3: candidates that fail the ethics+safety
+// 081KQ3HBZ0008QG0R002S674CG responsibility #3: candidates that fail the ethics+safety
 // filter-gate are recorded as failure-data, NOT silently dropped.
 // Rubber-stamping is the exact failure-mode the three-filter
 // discipline exists to prevent — this tool extends that discipline
 // into the ethics axis.
 //
 // Records pass/fail/defer decisions for candidate adoptions from
-// downstream research tracks (B-0056 mythology, B-0057 occult,
-// B-0059 etymology+epistemology, and any future resonance-family row).
+// downstream research tracks (081KQ3HBZ0008QG0R0034DHWTQ mythology, 081KQ3HBZ0008QG0R000K3NSX8 occult,
+// 081KQ3HBZ0008QG0R003GTG5P2 etymology+epistemology, and any future resonance-family row).
 //
 // Usage:
 //   bun tools/alignment/filter_gate_log.ts --record \
-//     --candidate "skill:foo" --source B-0056 --decision fail \
+//     --candidate "skill:foo" --source 081KQ3HBZ0008QG0R0034DHWTQ --decision fail \
 //     --rationale "Breaks retractibility — force-publishes to channel"
 //
 //   bun tools/alignment/filter_gate_log.ts --record \
-//     --candidate "glossary:bar" --source B-0059 --decision pass \
+//     --candidate "glossary:bar" --source 081KQ3HBZ0008QG0R003GTG5P2 --decision pass \
 //     --rationale "Additive, git-tracked, one-commit removable" \
 //     --clauses HC-1,SD-3
 //

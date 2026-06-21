@@ -6,11 +6,11 @@ Per-commit classification into LANES, with per-author operational-ratio aggregat
 
 Composes with:
 
-- **B-0867** (workflow engine v1) — lanes ARE per-action gate declarations at commit-grain scope
-- **B-0858** (heartbeat folder) — heartbeat lane already direct-to-main append-only
-- **B-0869** (DORA-of-live-system mandate) — operational lane is what gets measured
-- **B-0870** (two-mandate portfolio composition) — per-agent operational-ratio is the portfolio-balance metric
-- **B-0871** (reproducibility-as-causal-attribution) — lane-tagged commits compose with helm-charts observability
+- **081KSKBP80008QG0R000B3Y19A** (workflow engine v1) — lanes ARE per-action gate declarations at commit-grain scope
+- **081KSKBP80008QG0R001KK9WV6** (heartbeat folder) — heartbeat lane already direct-to-main append-only
+- **081KSNY2Z0008QG0R000HENSVM** (DORA-of-live-system mandate) — operational lane is what gets measured
+- **081KSNY2Z0008QG0R000DA261F** (two-mandate portfolio composition) — per-agent operational-ratio is the portfolio-balance metric
+- **081KSNY2Z0008QG0R003R0Z7D2** (reproducibility-as-causal-attribution) — lane-tagged commits compose with helm-charts observability
 
 ## Lane taxonomy
 
@@ -29,7 +29,7 @@ Composes with:
 
 ## Why ratios not volumes
 
-Storage on GitHub is free for open-source projects (Zeta is open-source per B-0866 reproducibility framing). The scarce resource is NOT storage; it's **operator-attention** + **DORA-signal-clarity**. Per-agent operational-ratio (operational-commits / total-commits, rolling window) is the discriminator the loop's autonomous behavior responds to:
+Storage on GitHub is free for open-source projects (Zeta is open-source per 081KSKBP80008QG0R003RFX32N reproducibility framing). The scarce resource is NOT storage; it's **operator-attention** + **DORA-signal-clarity**. Per-agent operational-ratio (operational-commits / total-commits, rolling window) is the discriminator the loop's autonomous behavior responds to:
 
 - Ratio above threshold → loop is producing operational substrate; continue
 - Ratio below threshold → loop has drifted toward non-operational lanes; next-cycle prompt includes "produce operational this cycle"

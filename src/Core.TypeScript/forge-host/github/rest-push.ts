@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // rest-push.ts — REST git-data API bypass for `git push` under saturation.
 //
-// When `git push` silently fails (exit 0, no remote update — see B-0615) under
+// When `git push` silently fails (exit 0, no remote update — see 081KRW63S0008QG0R000EAZ9K2) under
 // multi-agent saturation, this script lands a single-file change via the
 // GitHub REST git-data API instead. The REST endpoints (POST /git/blobs,
 // /git/trees, /git/commits, /git/refs) are served by different infrastructure
@@ -27,10 +27,10 @@
 //       --branch otto/b0XXXX-impl-2026-05-18 \
 //       --message "feat(B-XXXX): two-file change\n\n..."
 //
-//   # Rename a backlog row (B-0633 duplicate-ID resolution use case):
+//   # Rename a backlog row (081KRW63S0008QG0R000Y109W0 duplicate-ID resolution use case):
 //   bun tools/github/rest-push.ts \
-//       --rename docs/backlog/P3/B-0633-old-name.md:docs/backlog/P3/B-0649-new-name.md \
-//       --file docs/backlog/P1/B-0635-cross-ref-updated.md \
+//       --rename docs/backlog/P3/081KRW63S0008QG0R000Y109W0-old-name.md:docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-new-name.md \
+//       --file docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-cross-ref-updated.md \
 //       --branch otto/b0633-renumber-2026-05-18 \
 //       --message "rename(b0633→b0649): duplicate-ID resolution + cross-ref updates"
 //
@@ -49,7 +49,7 @@
 //
 // Composes with: PR #4145 (the rule documenting the discipline)
 //                PR #4146 (background-loop awareness)
-//                B-0615 (the open bug class this works around)
+//                081KRW63S0008QG0R000EAZ9K2 (the open bug class this works around)
 
 import { readFileSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";

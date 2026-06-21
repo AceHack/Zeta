@@ -1,6 +1,5 @@
 ---
-id: B-0047
-zetaid: 081KQ3HBZ0008QG0R0022ZJ7KV
+id: 081KQ3HBZ0008QG0R0022ZJ7KV
 priority: P3
 status: open
 title: Public relations / marketing / SEO / GTM — factory-reuse broadcast surfaces; roommate-register recalibration (retractable proceeds; irretractable still gates Aaron sign-off)
@@ -15,7 +14,7 @@ tags: [pr, marketing, seo, gtm, roommate-register, retractable-decisions, commer
 type: friction-reducer
 ---
 
-# B-0047 — PR / marketing / SEO / GTM with roommate-register recalibration
+# 081KQ3HBZ0008QG0R0022ZJ7KV — PR / marketing / SEO / GTM with roommate-register recalibration
 
 ## Origin
 
@@ -65,4 +64,4 @@ PR/marketing/SEO artifacts are retractible (docs edit-in-place per GOVERNANCE §
 
 - AceHack commits: `a3837d0` (initial), `8535e6b` (recalibration)
 - Source memories: money-framing memory; roommate-register memory; peer-refusal-authority memory
-- Composes with: B-0046 (economics/history substrate row); `project_factory_as_externalisation.md`
+- Composes with: 081KQ3HBZ0008QG0R0001XKNWK (economics/history substrate row); `project_factory_as_externalisation.md`

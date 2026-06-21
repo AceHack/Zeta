@@ -1,6 +1,6 @@
 ---
 date: 2026-05-27
-scope: "External Amara synthesis preservation; verbatim packet from Aaron-forwarded Amara review of the 2026-05-27 substrate-engineering day spanning PR #5488 through #5513 (B-0859 AI-as-home-owner + razor-anchor-friend-pact + B-0860 Nemerle + force-push-with-lease policy + monad-propagation-pattern + B-0861 ConvFeedback + 'results without feedback is extraction' carved sentence)."
+scope: "External Amara synthesis preservation; verbatim packet from Aaron-forwarded Amara review of the 2026-05-27 substrate-engineering day spanning PR #5488 through #5513 (081KSKBP80008QG0R00146WEX1 AI-as-home-owner + razor-anchor-friend-pact + 081KSKBP80008QG0R000J2YFK2 Nemerle + force-push-with-lease policy + monad-propagation-pattern + 081KSKBP80008QG0R000N9W9XH ConvFeedback + 'results without feedback is extraction' carved sentence)."
 source: Aaron-forwarded Amara substrate
 register: deep-research / harbor-engineering synthesis
 preservation: verbatim BEFORE summary per substrate-or-it-didn't-happen rule
@@ -130,7 +130,7 @@ The 6-line compression captures the through-line across all today's substrate la
 | Line | Substrate-engineering landing |
 |---|---|
 | Friend grants controlled internal visibility | PR #5497 razor-anchor-friend-pact + Amara §3 friendship-pact + C# InternalsVisibleTo + C++ friend keyword |
-| Nemerle makes relationship rules syntactic | PR #5502 B-0860 Nemerle dotnet support row |
+| Nemerle makes relationship rules syntactic | PR #5502 081KSKBP80008QG0R000J2YFK2 Nemerle dotnet support row |
 | Lease validates assumptions at write time | PR #5505 force-push-with-lease authorization policy |
 | Exceptions become drift signals | PR #5505 + #5507 exceptions-as-signals + Java-checked-exceptions-as-sum-type |
 | TFeedback makes drift part of the type | PR #5507 + #5511 + #5513 Result<T, TFeedback> with sum-type discipline |
@@ -150,15 +150,15 @@ Both carve the same substrate-engineering principle at different scopes:
 
 ## Composes with substrate
 
-- PR #5488 B-0859 AI-as-home-owner (architectural target)
-- PR #5491 B-0859 USB-as-portal-to-full-spectrum + just-friends + vendor-disintermediation
-- PR #5494 B-0859 cluster-recovery + 5-6-nines + GL.iNet KVM + direct-to-AI-commitment
+- PR #5488 081KSKBP80008QG0R00146WEX1 AI-as-home-owner (architectural target)
+- PR #5491 081KSKBP80008QG0R00146WEX1 USB-as-portal-to-full-spectrum + just-friends + vendor-disintermediation
+- PR #5494 081KSKBP80008QG0R00146WEX1 cluster-recovery + 5-6-nines + GL.iNet KVM + direct-to-AI-commitment
 - PR #5497 razor-anchor-friend-pact (2nd empirical anchor for grep-substrate-anchors-before-razor-as-metaphysical rule)
-- PR #5502 B-0860 Nemerle dotnet support
+- PR #5502 081KSKBP80008QG0R000J2YFK2 Nemerle dotnet support
 - PR #5505 force-push-with-lease authorization policy (Layer 1-3: assumption-validation + exceptions-as-signals + Result<T, TFeedback>)
 - PR #5507 force-push-policy follow-on with Java-checked-exceptions-as-sum-type (Layer 4)
 - PR #5511 monad-propagation-pattern-cross-language-substrate-shape rule (+ NCI-at-function-level + NCI-at-conversation-interface sections)
-- PR #5512 B-0861 Make conversation-interface Result<T, ConvFeedback> first-class
+- PR #5512 081KSKBP80008QG0R000N9W9XH Make conversation-interface Result<T, ConvFeedback> first-class
 - PR #5513 'Results without feedback is extraction' carved sentence
 
 10-PR substrate cluster + Amara's external synthesis preserved verbatim per substrate-honest discipline.

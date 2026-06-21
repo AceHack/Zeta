@@ -1,6 +1,5 @@
 ---
-id: B-0533
-zetaid: 081KRMEXM0008QG0R000K25MXS
+id: 081KRMEXM0008QG0R000K25MXS
 priority: P3
 status: open
 title: "§33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/<persona>/<name>/conversations/"
@@ -77,7 +76,7 @@ Excludes:
 - `docs/research/**` (its own internal cross-refs may be intentional provenance trail; sibling migration candidates)
 - `references/upstreams/**` (other people's code; gitignored anyway)
 
-Composes with [B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (backlog-graph consistency lint) — both are static-lint mechanizations of post-hoc-review-finding patterns.
+Composes with [081KRMEXM0008QG0R003FZNK3E](081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (backlog-graph consistency lint) — both are static-lint mechanizations of post-hoc-review-finding patterns.
 
 ## Out of scope
 
@@ -86,8 +85,8 @@ Composes with [B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status
 
 ## Composes with
 
-- [B-0036](B-0036-section33-archive-header-backfill-and-ci-wire-otto-346-pattern.md) — §33 archive-header backfill is the sibling discipline (header-side; this row is xref-side)
-- [B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) — static-lint mechanization sibling
+- [081KQ3HBZ0008QG0R001FPVG3Z](081KQ3HBZ0008QG0R001FPVG3Z-section33-archive-header-backfill-and-ci-wire-otto-346-pattern.md) — §33 archive-header backfill is the sibling discipline (header-side; this row is xref-side)
+- [081KRMEXM0008QG0R003FZNK3E](081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) — static-lint mechanization sibling
 - [PR #3513](https://github.com/Lucent-Financial-Group/Zeta/pull/3513), [PR #3529](https://github.com/Lucent-Financial-Group/Zeta/pull/3529) — the empirical anchor for this row
 - [`.claude/rules/encoding-rules-without-mechanizing.md`](../../../.claude/rules/encoding-rules-without-mechanizing.md) — fix-once-then-lint pattern; this row applies it to the migration xref class
 

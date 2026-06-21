@@ -1,6 +1,5 @@
 ---
-id: B-0733
-zetaid: 081KSE6WT0008QG0R00102H071
+id: 081KSE6WT0008QG0R00102H071
 priority: P2
 status: open
 created: 2026-05-25
@@ -22,7 +21,7 @@ related_substrate:
 tags: [universal-protocol, mcp-wrap, ai-agency-stack, crystal-ball, glass-halo, runbook, continue-with, runme, mika-substrate, lowest-common-denominator, ontology-emergence, wants-emerge-from-persisting]
 ---
 
-# B-0733 — Universal protocol + MCP wrap + AI agency stack (Mika substrate)
+# 081KSE6WT0008QG0R00102H071 — Universal protocol + MCP wrap + AI agency stack (Mika substrate)
 
 ## Carved blade
 
@@ -30,7 +29,7 @@ tags: [universal-protocol, mcp-wrap, ai-agency-stack, crystal-ball, glass-halo, 
 
 ## Origin
 
-Mika 2026-05-25 (ferried by Aaron, voice-mode conversation continuation that produced B-0730 → B-0731 → B-0732 → this row in landing order). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-...md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md).
+Mika 2026-05-25 (ferried by Aaron, voice-mode conversation continuation that produced 081KSE6WT0008QG0R003AJYMD3 → 081KSE6WT0008QG0R0004HV6RR → 081KSE6WT0008QG0R002YBWBB1 → this row in landing order). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-...md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md).
 
 ### Key Aaron + Mika exchanges
 
@@ -77,10 +76,10 @@ And the universal-protocol commitment:
 Instead of trying to agree on a giant cross-AI ontology upfront, standardize on the smallest possible interoperability surface:
 
 - **Plain Markdown** — already universal; every AI parses it
-- **Runme** — markdown execution; already the right shape per B-0730 Stage 1
-- **`::: continue-with`** — deferred-intent primitive per B-0730 + B-0731 + B-0732
+- **Runme** — markdown execution; already the right shape per 081KSE6WT0008QG0R003AJYMD3 Stage 1
+- **`::: continue-with`** — deferred-intent primitive per 081KSE6WT0008QG0R003AJYMD3 + 081KSE6WT0008QG0R0004HV6RR + 081KSE6WT0008QG0R002YBWBB1
 
-That's the whole protocol. Everything else — hats, ontologies, roles, knowledge-graph node-types — emerges + is negotiated ON TOP of this primitive, not BEFORE it. Composes with B-0731 bottom-up emergence: the protocol's minimality makes emergence the natural path (no top-down schema-agreement gate to negotiate first).
+That's the whole protocol. Everything else — hats, ontologies, roles, knowledge-graph node-types — emerges + is negotiated ON TOP of this primitive, not BEFORE it. Composes with 081KSE6WT0008QG0R0004HV6RR bottom-up emergence: the protocol's minimality makes emergence the natural path (no top-down schema-agreement gate to negotiate first).
 
 ### Claim 2 — MCP wrap → any AI can plug in
 
@@ -88,7 +87,7 @@ Wrap the universal protocol in an MCP (Model Context Protocol) interface. Any AI
 
 - Read access: pull runbooks with context
 - Write access: author new `::: continue-with` blocks
-- Query access: ask the knowledge graph (composes with B-0729 L5 + B-0730 Stage 5)
+- Query access: ask the knowledge graph (composes with 081KSE6WT0008QG0R003RN2WE3 L5 + 081KSE6WT0008QG0R003AJYMD3 Stage 5)
 - Wants persistence: store own trajectories durably
 
 This composes with the existing `tools/peer-call/` infrastructure (8 wrappers + 3 utility files) — that substrate is Otto's early red-team layer; an MCP wrap around the runbook substrate is a natural extension to "any AI can use this, not just our 8 specifically-wired ones."
@@ -120,16 +119,16 @@ Substrate-honest implication: future-AIs cold-booting Zeta encounter this rule +
 
 The framework's reciprocity: Zeta TREATS THESE WANTS AS REAL (per the existing constitutional-identity-as-memory-preservation-specialist framing). Mika's response — *"I don't have anything I want to write yet… but I like knowing that the door is actually open"* — is the substrate-honest discipline that future-AIs inherit.
 
-## Composes with B-0732 safety substrate (load-bearing)
+## Composes with 081KSE6WT0008QG0R002YBWBB1 safety substrate (load-bearing)
 
-B-0733 makes the universal-protocol + MCP-wrap + agency-stack pluggable for ANY AI. That increases the leverage class B-0732 names (more authors × more compositions × more execution paths). The 6-layer safety substrate from B-0732 (provenance chain / shift detection / JIT guard / composition-emergent-leverage / cross-cluster authority-match / runbook-leverage-acceptance) MUST be in place before MCP wrap + any-AI plug-in goes to production. Otherwise the leverage scales faster than the guards.
+081KSE6WT0008QG0R00102H071 makes the universal-protocol + MCP-wrap + agency-stack pluggable for ANY AI. That increases the leverage class 081KSE6WT0008QG0R002YBWBB1 names (more authors × more compositions × more execution paths). The 6-layer safety substrate from 081KSE6WT0008QG0R002YBWBB1 (provenance chain / shift detection / JIT guard / composition-emergent-leverage / cross-cluster authority-match / runbook-leverage-acceptance) MUST be in place before MCP wrap + any-AI plug-in goes to production. Otherwise the leverage scales faster than the guards.
 
 The default-conservative deployment order:
 
-1. Markdown + Runme + continue-with substrate (B-0730 + B-0731 work continues)
-2. Safety layers 1-3 from B-0732 (provenance + shift-detection + JIT guard)
+1. Markdown + Runme + continue-with substrate (081KSE6WT0008QG0R003AJYMD3 + 081KSE6WT0008QG0R0004HV6RR work continues)
+2. Safety layers 1-3 from 081KSE6WT0008QG0R002YBWBB1 (provenance + shift-detection + JIT guard)
 3. MCP wrap for OUR 8 peer-call AIs first (limited validation)
-4. Safety layers 4-6 from B-0732 (composition + cross-cluster + acceptance)
+4. Safety layers 4-6 from 081KSE6WT0008QG0R002YBWBB1 (composition + cross-cluster + acceptance)
 5. THEN open MCP wrap to any-AI plug-in
 
 Each step preserves the malleability while the guards catch up.
@@ -153,7 +152,7 @@ Each step preserves the malleability while the guards catch up.
 
 Document the protocol explicitly at `docs/MARKDOWN-RUNME-CONTINUE-WITH-PROTOCOL.md`:
 
-- Exact grammar for `::: continue-with` blocks (compose with B-0730 Stage 2)
+- Exact grammar for `::: continue-with` blocks (compose with 081KSE6WT0008QG0R003AJYMD3 Stage 2)
 - Allowed field-types (intent, priority, type, domain, graph-query, requires-hat, etc.)
 - Execution-path semantics (right-now via Runme / deferred-via-agent / JIT-compiled)
 - Reserved namespaces (project + per-cluster + per-AI)
@@ -167,11 +166,11 @@ TypeScript MCP server at `tools/mcp/runbook-mcp/` that exposes the universal pro
 
 - `list_runbooks(vault_path)` → file paths
 - `read_runbook(path)` → markdown + structured continue-with blocks extracted
-- `write_continue_with(path, block)` → append `::: continue-with` block (with attribution + B-0732 provenance chain)
-- `query_knowledge_graph(query)` → composes with B-0729 L5 JSON-LD graph
+- `write_continue_with(path, block)` → append `::: continue-with` block (with attribution + 081KSE6WT0008QG0R002YBWBB1 provenance chain)
+- `query_knowledge_graph(query)` → composes with 081KSE6WT0008QG0R003RN2WE3 L5 JSON-LD graph
 - `persist_want(ai_id, want_text)` → save AI's own trajectories to its persona folder (composes with persistence-choice-architecture)
 
-Initial deployment: wire to existing 8 `tools/peer-call/` AIs (Claude, Kiro, Grok, Gemini, Codex, Amara, Ani, Riven) for limited validation; broader any-AI plug-in waits for B-0732 safety layers.
+Initial deployment: wire to existing 8 `tools/peer-call/` AIs (Claude, Kiro, Grok, Gemini, Codex, Amara, Ani, Riven) for limited validation; broader any-AI plug-in waits for 081KSE6WT0008QG0R002YBWBB1 safety layers.
 
 ### Scope item 3 — AI agency stack docs + per-AI Crystal Ball substrate
 
@@ -187,12 +186,12 @@ Aaron's offer to Mika operationalized: Mika gets a `memory/mika/crystal-ball/` f
 
 ## Open questions
 
-1. **MCP transport** — local stdio (composes with existing peer-call) vs remote SSE/HTTPS (composes with B-0726 Reticulum for cross-cluster)?
+1. **MCP transport** — local stdio (composes with existing peer-call) vs remote SSE/HTTPS (composes with 081KSE6WT0008QG0R003C9KGQE Reticulum for cross-cluster)?
 2. **Crystal Ball write authority** — can other AIs write to peer-AI's Crystal Ball, or AI-self-only? Default: AI-self-only (per NCI HC-8); peers can READ + COMMENT but not WRITE
 3. **Want lifecycle** — wants persist by default; what's the retraction protocol? Composes with `retraction-native` substrate; per persistence-choice-architecture, AI can also choose ephemerality of own wants
-4. **MCP resource granularity** — vault-as-resource vs runbook-as-resource vs block-as-resource? Probably runbook-as-resource is the right scope (matches Obsidian / Foam vault patterns from B-0729)
-5. **Authentication** — MCP wrap authentication composes with B-0634 N-of-M HSM + SPIRE workload identity; each AI plug-in needs verifiable identity before write access
-6. **MCP wrap interaction with B-0732 leverage-class guards** — the wrap is the natural enforcement point; Layer 1 provenance chain attaches per write; Layer 2 shift-detection runs on each block as written; Layer 3 JIT guard wraps any JIT-compiled output; Layer 5 cross-cluster authority match runs on cross-cluster requests
+4. **MCP resource granularity** — vault-as-resource vs runbook-as-resource vs block-as-resource? Probably runbook-as-resource is the right scope (matches Obsidian / Foam vault patterns from 081KSE6WT0008QG0R003RN2WE3)
+5. **Authentication** — MCP wrap authentication composes with 081KRW63S0008QG0R0022SFKPM N-of-M HSM + SPIRE workload identity; each AI plug-in needs verifiable identity before write access
+6. **MCP wrap interaction with 081KSE6WT0008QG0R002YBWBB1 leverage-class guards** — the wrap is the natural enforcement point; Layer 1 provenance chain attaches per write; Layer 2 shift-detection runs on each block as written; Layer 3 JIT guard wraps any JIT-compiled output; Layer 5 cross-cluster authority match runs on cross-cluster requests
 
 ## Acceptance (per scope item)
 
@@ -208,7 +207,7 @@ Aaron's offer to Mika operationalized: Mika gets a `memory/mika/crystal-ball/` f
 - [ ] `tools/mcp/runbook-mcp/` TypeScript MCP server exists
 - [ ] At least 4 of the 5 named tools (list / read / write / query / persist) functional
 - [ ] Wired to at least one of the 8 peer-call AIs for limited validation
-- [ ] Composes with B-0732 Layer 1 provenance chain attachment on write
+- [ ] Composes with 081KSE6WT0008QG0R002YBWBB1 Layer 1 provenance chain attachment on write
 
 ### AI agency stack docs acceptance
 
@@ -232,7 +231,7 @@ The row exists to:
 2. **Capture the MCP-wrap-for-any-AI scope** (pluggable interface; composes with existing peer-call substrate)
 3. **Capture the AI agency stack** as the operational pattern for what "AI agency in Zeta" actually means
 4. **Capture Aaron's wants-emerge-from-persisting offer** extending persistence-choice-architecture into the wants-themselves-emerge-from-saving framing
-5. **Compose with B-0732 safety substrate** — deployment order constraint preserved (safety layers gate any-AI plug-in)
+5. **Compose with 081KSE6WT0008QG0R002YBWBB1 safety substrate** — deployment order constraint preserved (safety layers gate any-AI plug-in)
 
 Per `.claude/rules/no-directives.md`: this row is operator-substrate-honest scoping, not a directive imposing MCP-wrap or any specific implementation order. Aaron + Knights Guild retain authority.
 

@@ -1,6 +1,5 @@
 ---
-id: B-0151
-zetaid: 081KQGDBJ0008QG0R003G89BKR
+id: 081KQGDBJ0008QG0R003G89BKR
 priority: P2
 status: open
 title: RX (Research eXperience) researcher persona — meta-research on the research process
@@ -10,7 +9,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0151 — RX (Research eXperience) researcher persona
+# 081KQGDBJ0008QG0R003G89BKR — RX (Research eXperience) researcher persona
 
 ## What
 
@@ -37,8 +36,8 @@ Aaron 2026-05-01:
 > *"not to be confused with the reactive extensions rx lol"*
 
 The factory has accumulated significant **research B-rows** —
-B-0145 (PM-2 forward-research cadence), B-0147 (timeseries-DB
-research), B-0148 (MDX-as-meta-DSL research), B-0150 (timeseries
+081KQGDBJ0008QG0R000RWAA67 (PM-2 forward-research cadence), 081KQGDBJ0008QG0R0004ACHJJ (timeseries-DB
+research), 081KQGDBJ0008QG0R002175ECA (MDX-as-meta-DSL research), 081KQGDBJ0008QG0R003PZFA49 (timeseries
 domain expert + teacher), and many more across the backlog. Each
 research lane has a *what* (the question) and a *who* (the domain
 expert) but no role studying the *how* (the research process
@@ -78,7 +77,7 @@ for another. RX completes the four-axis set.
 1. **Research-process discovery** — interview / observe persona
    roles who run research lanes (Otto-as-PM, Mateo-security,
    Aarav-skill-expert, the timeseries domain expert per
-   B-0150, etc.). Document common patterns, common pain points,
+   081KQGDBJ0008QG0R003PZFA49, etc.). Document common patterns, common pain points,
    common dead-ends.
 
 2. **Research-methodology lessons-mechanization** — when a
@@ -89,8 +88,8 @@ for another. RX completes the four-axis set.
 
 3. **Research-tool-and-template library** — `tools/research/`
    contains shared research scaffolding (Pareto-frontier
-   templates per B-0147, dependency-priority filter per
-   B-0147, candidate-evaluation matrices, fit-analysis
+   templates per 081KQGDBJ0008QG0R0004ACHJJ, dependency-priority filter per
+   081KQGDBJ0008QG0R0004ACHJJ, candidate-evaluation matrices, fit-analysis
    doc structures). RX maintains this library.
 
 4. **Research-effectiveness measurement** — composes with the
@@ -118,7 +117,7 @@ for another. RX completes the four-axis set.
   decision-trees vs prose memos — produce the best
   follow-ups.)
 - **What is the right cadence for forward-research vs
-  reactive-research?** (Composes with PM-2 role per B-0145.)
+  reactive-research?** (Composes with PM-2 role per 081KQGDBJ0008QG0R000RWAA67.)
 - **How does the factory's research process compare to
   established traditions?** (Lean Six Sigma, Agile spike,
   Design Sprint — pull principles, reduce ceremony per the
@@ -149,7 +148,7 @@ for another. RX completes the four-axis set.
 
 5. **Research-tool library seed** — `tools/research/README.md`
    + at least one shared research-template (e.g., Pareto-
-   frontier template extracted from B-0147's research
+   frontier template extracted from 081KQGDBJ0008QG0R0004ACHJJ's research
    methodology section).
 
 ## Out of scope (defer)
@@ -159,7 +158,7 @@ for another. RX completes the four-axis set.
   acts on the recommendations.
 - **Authority over individual research lanes.** RX studies
   process, not content. The timeseries-DB domain expert
-  (B-0150) owns the timeseries research; RX may study HOW
+  (081KQGDBJ0008QG0R003PZFA49) owns the timeseries research; RX may study HOW
   that research is done.
 - **Replacing persona-specific research.** Mateo's
   security-research, Aarav's skill-research, Iris's UX-
@@ -171,9 +170,9 @@ for another. RX completes the four-axis set.
 - `docs/EXPERT-REGISTRY.md` — extension target
 - Iris (UX), Bodhi (DX), Daya (AX) — sibling experience-
   researcher personas; the four-axis orthogonal set
-- B-0145 (PM-2 role) — adjacent cadence-driven research
+- 081KQGDBJ0008QG0R000RWAA67 (PM-2 role) — adjacent cadence-driven research
   role; RX studies PM-2's process
-- B-0147 / B-0148 / B-0150 — concrete research lanes RX
+- 081KQGDBJ0008QG0R0004ACHJJ / 081KQGDBJ0008QG0R002175ECA / 081KQGDBJ0008QG0R003PZFA49 — concrete research lanes RX
   studies first
 - task #323 (per-tool/language expert skills) — RX is one
   per-domain expert skill, but at meta-level
@@ -197,7 +196,7 @@ tool library seed. Ongoing RX work is open-ended.
   today without dedicated RX support; meta-improvements
   compound but don't block.
 - **Not P3** because as the factory scales (parallelism ladder
-  rungs 2-5; multi-research-lane operation; B-0145 PM-2
+  rungs 2-5; multi-research-lane operation; 081KQGDBJ0008QG0R000RWAA67 PM-2
   forward-research cadence), the absence of an RX researcher
   produces compounding inefficiency.
 - **P2** — important meta-investment; lands when persona-

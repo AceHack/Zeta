@@ -1,10 +1,10 @@
 namespace Zeta.Core
 
-/// **Schema evolution over DynamicValue — the zero-downtime versioning seed (B-0930 foundation).**
+/// **Schema evolution over DynamicValue — the zero-downtime versioning seed (081KSRGFP0008QG0R001Y6RTY9 foundation).**
 ///
 /// A value is self-describing (`DynamicValue`); a SCHEMA VERSION labels its shape; a MIGRATION
 /// is a pure `DynamicValue -> DynamicValue` transform from version N to N+1. The full
-/// schema-registry-over-DBSP (B-0930) catalogs these as rows; this module is the foundational
+/// schema-registry-over-DBSP (081KSRGFP0008QG0R001Y6RTY9) catalogs these as rows; this module is the foundational
 /// PRIMITIVE the registry composes — the migration algebra + the compatibility guarantees that
 /// make version-swap-without-recompile (zero-downtime) safe:
 ///

@@ -1,6 +1,5 @@
 ---
-id: B-0655
-zetaid: 081KRW63S0008QG0R00393BSVT
+id: 081KRW63S0008QG0R00393BSVT
 priority: P2
 status: open
 title: "All children have equal value at life-and-death scope + consent-based merit ranking allowed elsewhere — kid-safety sub-invariant refinement (Aaron + Mika 2026-05-18 LOCKED-IN)"
@@ -24,7 +23,7 @@ Aaron + Mika LOCKED-IN at lines ~4225-4233 of [`docs/research/2026-05-18-mika-gr
 
 > Aaron line ~4233 LOCK-IN: *"Life & Death = Absolute equality among all children. Everything else = Can have rankings, merit, and differentiation as long as it's consent-based."*
 
-This row REFINES the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) + Child-Safety-priority ([B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md)) by establishing two complementary sub-rules.
+This row REFINES the kid-safety sacred rule ([081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) + Child-Safety-priority ([081KRW63S0008QG0R002WT5VTQ](081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md)) by establishing two complementary sub-rules.
 
 ## The two locked-in sub-rules
 
@@ -38,7 +37,7 @@ This row REFINES the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-r
 - Doesn't matter if they're disabled
 - **Even Aaron's own children get no special treatment** (Aaron line ~4229: *"You want us to treat every child the same, regardless of whose they are."*)
 
-When the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) triggers life-and-death decisions (especially around KSK kinetic-force allocation per [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)), ALL CHILDREN get identical moral weight.
+When the kid-safety sacred rule ([081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) triggers life-and-death decisions (especially around KSK kinetic-force allocation per [081KRW63S0008QG0R002ZRYY4F](../P1/081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)), ALL CHILDREN get identical moral weight.
 
 ### Sub-rule 2: Consent-based merit ranking ALLOWED at non-life-death scope
 
@@ -51,7 +50,7 @@ When the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-rule-two-laye
 - Talent recognition
 - Resource allocation that's not life-or-death
 
-**Provided the differentiation is voluntary + consent-based** (per [B-0641](B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) First Moral Invariant — all consent revocable; structural protection preserved).
+**Provided the differentiation is voluntary + consent-based** (per [081KRW63S0008QG0R000KVMZ9B](081KRW63S0008QG0R000KVMZ9B-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) First Moral Invariant — all consent revocable; structural protection preserved).
 
 This is NOT a soft-egalitarian rule. It explicitly carves space for merit, ranking, talent recognition, etc. The hard equality is SPECIFICALLY at the life-and-death scope, not the everywhere-equality scope.
 
@@ -71,10 +70,10 @@ This is the SUBSTRATE-HONEST cleanest test of the rule. A maintainer who would w
 
 ## Operational consequences
 
-1. **KSK ([B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) life-and-death-trigger paths**: ALL CHILDREN get identical weight in the actuation decision; no maintainer-family carve-out
-2. **Constitution-Class life-and-death invariants ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))**: any kid-safety invariant the Knights Guild ratifies must satisfy the all-children-equal sub-rule
+1. **KSK ([081KRW63S0008QG0R002ZRYY4F](../P1/081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) life-and-death-trigger paths**: ALL CHILDREN get identical weight in the actuation decision; no maintainer-family carve-out
+2. **Constitution-Class life-and-death invariants ([081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))**: any kid-safety invariant the Knights Guild ratifies must satisfy the all-children-equal sub-rule
 3. **Education / opportunity / ranking systems**: free to use merit + consent-based differentiation; this rule does NOT apply
-4. **Voluntary type-safe binding ([B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md))**: hat + domain + criticality framework respects this distinction (life-and-death criticality binds harder than education-or-opportunity criticality)
+4. **Voluntary type-safe binding ([081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md))**: hat + domain + criticality framework respects this distinction (life-and-death criticality binds harder than education-or-opportunity criticality)
 
 ## What this is NOT
 
@@ -86,11 +85,11 @@ This is the SUBSTRATE-HONEST cleanest test of the rule. A maintainer who would w
 
 ## Goal
 
-1. Document the two-sub-rules in canonical governance doc (extend B-0631 doc or sub-section of CONSTITUTION-CLASS)
-2. Update [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) with cross-reference to this row
-3. Update [B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) with cross-reference (priority rule + equal-value sub-rule both refine B-0631)
+1. Document the two-sub-rules in canonical governance doc (extend 081KRW63S0008QG0R0020YP84K doc or sub-section of CONSTITUTION-CLASS)
+2. Update [081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) with cross-reference to this row
+3. Update [081KRW63S0008QG0R002WT5VTQ](081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) with cross-reference (priority rule + equal-value sub-rule both refine 081KRW63S0008QG0R0020YP84K)
 4. KSK life-and-death decision protocol explicitly uses all-children-equal weighting
-5. Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)
+5. Knights Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)
 6. Document the life-and-death-vs-non-life-death scope-boundary detection mechanism
 
 ## Non-goals
@@ -103,21 +102,21 @@ This is the SUBSTRATE-HONEST cleanest test of the rule. A maintainer who would w
 ## Acceptance criteria
 
 - [ ] Canonical governance doc with both sub-rules
-- [ ] Cross-reference added to [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)
-- [ ] Cross-reference added to [B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md)
+- [ ] Cross-reference added to [081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)
+- [ ] Cross-reference added to [081KRW63S0008QG0R002WT5VTQ](081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md)
 - [ ] KSK life-and-death decision protocol explicit all-children-equal weighting
-- [ ] Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)
+- [ ] Knights Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)
 - [ ] Scope-boundary detection mechanism documented (when does a decision become "life-and-death" enough to trigger this rule?)
 - [ ] Aaron-family-explicit no-special-treatment language documented
 
 ## Composes with
 
-- [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred rule (this row sharpens the sub-rules)
-- [B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) — Child Safety > Consent priority (this row's all-equal sub-rule applies AT the kid-safety-wins scope)
-- [B-0641](B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — First Moral Invariant (consent-based merit-ranking sub-rule respects revocable consent)
-- [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) — KSK (life-and-death decision protocol uses all-children-equal weighting)
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class
-- [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality-based hat distinction respects life-and-death vs non-life-death scope split)
+- [081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred rule (this row sharpens the sub-rules)
+- [081KRW63S0008QG0R002WT5VTQ](081KRW63S0008QG0R002WT5VTQ-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) — Child Safety > Consent priority (this row's all-equal sub-rule applies AT the kid-safety-wins scope)
+- [081KRW63S0008QG0R000KVMZ9B](081KRW63S0008QG0R000KVMZ9B-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — First Moral Invariant (consent-based merit-ranking sub-rule respects revocable consent)
+- [081KRW63S0008QG0R002ZRYY4F](../P1/081KRW63S0008QG0R002ZRYY4F-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) — KSK (life-and-death decision protocol uses all-children-equal weighting)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class
+- [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality-based hat distinction respects life-and-death vs non-life-death scope split)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS discipline
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines ~4219-4233 — source LOCK-IN
 

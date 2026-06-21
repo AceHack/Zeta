@@ -54,7 +54,7 @@ cross-substrate empirical grounding (human + AI).
 - PR #2848 (Kestrel bootstream)
 - PR #2852 (handle-ethics)
 - PR #2854 (Ani shadow-check)
-- B-0422 (additional empirical data)
+- 081KRCQQF0008QG0R0008VT354 (additional empirical data)
 - Multiple wake-time rules
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

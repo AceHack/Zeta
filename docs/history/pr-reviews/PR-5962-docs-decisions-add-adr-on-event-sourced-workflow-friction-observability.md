@@ -29,7 +29,7 @@
 
 ## Summary
 
-This PR introduces a new Architectural Decision Record (ADR) detailing the Git-native, event-sourced telemetry logging for developer/review friction (B-0752).
+This PR introduces a new Architectural Decision Record (ADR) detailing the Git-native, event-sourced telemetry logging for developer/review friction (081KSE6WT0008QG0R000E05579).
 
 This establishes a first-class, durable telemetry data structure in tree. It allows the agent swarm to programmatically measure friction metrics (e.g. check failures, latency spikes, comment volume, and rate limits) and recursively refactor and optimize our tagged-union workflow DUs dynamically.
 
@@ -64,7 +64,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 - **`Copilot` (bot)** at 2026-05-29T09:02:17Z on `docs/DECISIONS/2026-05-29-event-sourced-observability.md`:5 (association: NONE)
 
   <pre>
-  The ADR cites `**Backlog:** B-0752`, but `B-0752` is already assigned to a different backlog row (`docs/backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md`), which covers past-self-vs-peer ownership classification — not observability/friction telemetry. Either the PR description's "B-0752" is wrong, or the ADR needs to reference the correct backlog ID (or a new one allocated for this work). As written, the ADR points readers to an unrelated backlog row.
+  The ADR cites `**Backlog:** 081KSE6WT0008QG0R000E05579`, but `081KSE6WT0008QG0R000E05579` is already assigned to a different backlog row (`docs/backlog/P2/081KSE6WT0008QG0R000E05579-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md`), which covers past-self-vs-peer ownership classification — not observability/friction telemetry. Either the PR description's "081KSE6WT0008QG0R000E05579" is wrong, or the ADR needs to reference the correct backlog ID (or a new one allocated for this work). As written, the ADR points readers to an unrelated backlog row.
   </pre>
 
 **Replies:**
@@ -72,7 +72,7 @@ Co-Authored-By: Gemini <noreply@google.com>
   - **`AceHack` (human)** at 2026-05-29T09:26:48Z on `docs/DECISIONS/2026-05-29-event-sourced-observability.md`:5 (association: MEMBER)
 
     <pre>
-    Fixed in 58228cf02 — B-0752 was a wrong ID (it is the past-self-vs-peer distinguisher row). Changed to '(none yet — ...)' per the streamlined MADR template convention, naming the related rows.
+    Fixed in 58228cf02 — 081KSE6WT0008QG0R000E05579 was a wrong ID (it is the past-self-vs-peer distinguisher row). Changed to '(none yet — ...)' per the streamlined MADR template convention, naming the related rows.
     </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -108,7 +108,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 - **`Copilot` (bot)** at 2026-05-29T09:02:18Z on `docs/DECISIONS/2026-05-29-event-sourced-observability.md`:37 (association: NONE)
 
   <pre>
-  The ADR's Decision Outcome commits to a `docs/observability/` event store and a visualizer in `demo/index.html`, but the surrounding substrate has overlapping in-flight work that this ADR doesn't reconcile: B-0149 already plans `tools/observability/` for Prometheus/promtool, B-0570 designs a scarcity/rate-limit tracker publishing to the bus, B-0867.2 specifies the append-only event-sourcing layer under `agent-state/.../events/YYYY/MM/DD/{zetaId}.json`, and B-0890.1 places folder-based fast-lane state under `docs/workflow-engine-state/` and `docs/agent-events/`. As written, the ADR risks being a third parallel event-sourcing scheme rather than a decision. Please call out the relationship to (or supersession of) these rows in Context/Out-of-Scope so readers know whether `docs/observability/` is a new sibling of `docs/agent-events/` or a layer on top of B-0867.2.
+  The ADR's Decision Outcome commits to a `docs/observability/` event store and a visualizer in `demo/index.html`, but the surrounding substrate has overlapping in-flight work that this ADR doesn't reconcile: 081KQGDBJ0008QG0R0035TQVBQ already plans `tools/observability/` for Prometheus/promtool, 081KRQ1AB0008QG0R002422Z9Q designs a scarcity/rate-limit tracker publishing to the bus, 081KSNY2Z0008QG0R001K6HJ7Z specifies the append-only event-sourcing layer under `agent-state/.../events/YYYY/MM/DD/{zetaId}.json`, and 081KSNY2Z0008QG0R000E5KTPX places folder-based fast-lane state under `docs/workflow-engine-state/` and `docs/agent-events/`. As written, the ADR risks being a third parallel event-sourcing scheme rather than a decision. Please call out the relationship to (or supersession of) these rows in Context/Out-of-Scope so readers know whether `docs/observability/` is a new sibling of `docs/agent-events/` or a layer on top of 081KSNY2Z0008QG0R001K6HJ7Z.
   </pre>
 
 **Replies:**
@@ -116,7 +116,7 @@ Co-Authored-By: Gemini <noreply@google.com>
   - **`AceHack` (human)** at 2026-05-29T09:26:52Z on `docs/DECISIONS/2026-05-29-event-sourced-observability.md`:37 (association: MEMBER)
 
     <pre>
-    Addressed in 58228cf02 — the Backlog line now names composes-with B-0149 (observability), B-0570 (scarcity tracker), B-0867 (workflow engine) so the overlap is reconciled in-line.
+    Addressed in 58228cf02 — the Backlog line now names composes-with 081KQGDBJ0008QG0R0035TQVBQ (observability), 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker), 081KSKBP80008QG0R000B3Y19A (workflow engine) so the overlap is reconciled in-line.
     </pre>
 
 ### Thread 4 -- resolved [collapsed]
@@ -160,7 +160,7 @@ Why: To introduce the architectural decision record (ADR) detailing the
 Git-native, event-sourced telemetry logging for developer/review
 friction. This enables the agent swarm to programmatically measure
 friction metrics and recursively refactor tagged-union workflow DUs
-(B-0752).
+(081KSE6WT0008QG0R000E05579).
 
 - docs/DECISIONS/2026-05-29-event-sourced-observability.md — Define context, decision, consequences, and follow-up metrics.
 
@@ -192,14 +192,14 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(decisions): correct B-0752 backlog typo + Status capitalization +…
+fix(decisions): correct 081KSE6WT0008QG0R000E05579 backlog typo + Status capitalization +…
 
 … overlap note (#5962)
 
 Addresses 3 Copilot review threads:
-- L5: B-0752 was a wrong ID (it's the past-self-vs-peer row); switch to
+- L5: 081KSE6WT0008QG0R000E05579 was a wrong ID (it's the past-self-vs-peer row); switch to
   '(none yet — ...)' per the streamlined MADR template convention, naming
-  composes-with B-0149/B-0570/B-0867 (also resolves the overlap thread).
+  composes-with 081KQGDBJ0008QG0R0035TQVBQ/081KRQ1AB0008QG0R002422Z9Q/081KSKBP80008QG0R000B3Y19A (also resolves the overlap thread).
 - L6: Status proposed → Accepted to match the streamlined MADR template
   (ADR landing = accepted decision).
 - The streamlined MADR template (PR #5961) is now canonical; Out Of Scope /

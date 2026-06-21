@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// audit-skill-descriptions.ts — B-0347 helper: audit skill description lengths
+// audit-skill-descriptions.ts — 081KR50HA0008QG0R002ZNFQBZ helper: audit skill description lengths
 // against routing budget. Reports long descriptions so carving batches can
 // be targeted. TS-native, no bash.
 //
@@ -53,7 +53,7 @@ function auditDescriptions() {
 }
 export function main() {
     const result = auditDescriptions();
-    console.log(`B-0347 audit: scanned ${result.total} skills, ${result.long} descriptions exceed 120-char routing budget.`);
+    console.log(`081KR50HA0008QG0R002ZNFQBZ audit: scanned ${result.total} skills, ${result.long} descriptions exceed 120-char routing budget.`);
     if (result.examples.length > 0) {
         console.log("\nLong descriptions (carve next batch from these):");
         for (const ex of result.examples.slice(0, 20)) {

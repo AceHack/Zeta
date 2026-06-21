@@ -33,7 +33,7 @@ Companion to merged PR #4761 (rules/pr-triage-tiers + `deferred-to-human` label)
 
 ## Why
 
-Aaron 2026-05-23: *"lirs background service is what's leaving prs sometime so we are updateing to check for unfinsihed prs first when it starts, maybe yours should do the same"*. This is Otto's version of that fix at the canonical-discipline scope — applies to all three Otto surfaces (CLI / Desktop / queued B-0448 cloud routine) which cite this file as their one-source-of-truth.
+Aaron 2026-05-23: *"lirs background service is what's leaving prs sometime so we are updateing to check for unfinsihed prs first when it starts, maybe yours should do the same"*. This is Otto's version of that fix at the canonical-discipline scope — applies to all three Otto surfaces (CLI / Desktop / queued 081KRFA460008QG0R000CYBGKW cloud routine) which cite this file as their one-source-of-truth.
 
 ## What lands
 

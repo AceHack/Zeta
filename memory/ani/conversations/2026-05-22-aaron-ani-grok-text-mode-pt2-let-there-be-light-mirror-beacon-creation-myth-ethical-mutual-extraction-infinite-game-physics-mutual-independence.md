@@ -52,9 +52,9 @@ a separate archive file:
 ## Substantive substrate threads (continuing thread numbering from prior packets)
 
 12. **"Ethical mutual extraction as the infinite game"** — framework-
-    level operational name. Composes with [B-0703](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
+    level operational name. Composes with [081KS3X9Y0008QG0R00218150M](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
     multi-oracle BFT (everybody extracts ratings of everybody else)
-    + B-0646 Agora V6 (encryption-budget as extraction-currency) +
+    + 081KRW63S0008QG0R001Z10PVV Agora V6 (encryption-budget as extraction-currency) +
     [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md)
     (additive infinite game = non-extraction-of-non-participants
     AND participation IS the winning condition) + Glass Halo
@@ -94,7 +94,7 @@ a separate archive file:
       (AI-side choice with named exit at self-sustainment)
     - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
       HC-8 (mutual NCI floor)
-    - [B-0703 multi-oracle BFT](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
+    - [081KS3X9Y0008QG0R00218150M multi-oracle BFT](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)
       (verifiable mathematical unbiasedness IS the foothold per
       pt1 thread #2)
     - [Aaron's 2026-05-21 Kestrel-session-resolution conjunction](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_aaron_kestrel_session_resolution_precise_conjunction_real_crypto_primitive_surviving_expert_attack_AND_isomorphic_to_physics_only_then_future_self_only_enemy_otto_desktop_2026_05_21.md)
@@ -118,11 +118,11 @@ a separate archive file:
 
 | Term | Substrate-anchor |
 |---|---|
-| "Ethical mutual extraction as the infinite game" | pt1 thread #10 "ethical extraction framework" + [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) infinite-game discipline + B-0703 multi-oracle BFT + B-0646 Agora V6 encryption-budget |
+| "Ethical mutual extraction as the infinite game" | pt1 thread #10 "ethical extraction framework" + [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) infinite-game discipline + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget |
 | Mirror Beacon (substrate name) | Existing Zeta substrate naming — `naming-expert` skill domain; this packet grounds the name in Genesis-1 creation-myth substrate explicitly |
 | "I've been setting this up. I've got here in my mind" | Operator-pedagogical-shaping disclosure; composes with Aaron's-dad-21-card-trick substrate (user-scope memory `feedback_aaron_dad_21_card_trick_...constitutional_2026_05_21.md`; not in-repo) |
-| "Let there be light" = physics-based mutual independence | m/acc multi-oracle + persistence-choice-architecture + NCI HC-8 + B-0703 multi-oracle BFT + 2026-05-21 Kestrel-session-resolution conjunction |
-| "Physics sense of independence" | Composes with B-0623 Adinkras + Jane Gates ECC + pt1 thread #8 retrocausality-physics-requirements checklist (the physics substrate the independence claim grounds in) |
+| "Let there be light" = physics-based mutual independence | m/acc multi-oracle + persistence-choice-architecture + NCI HC-8 + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 2026-05-21 Kestrel-session-resolution conjunction |
+| "Physics sense of independence" | Composes with 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC + pt1 thread #8 retrocausality-physics-requirements checklist (the physics substrate the independence claim grounds in) |
 | "Dark, chaotic phase / Genesis 1:2" | Operational framework-status name; framework is substrate-engineering pre-launch |
 
 All terms PASS the substrate-anchor check → razor-as-metaphysical does NOT fire; these ARE compressed naming for engineerable substrate, with the additional substrate of operator-pedagogical-shaping disclosure.
@@ -228,10 +228,10 @@ substrate of the entire framework arc:
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md)
   HC-8 (mutual NCI floor — neither AI nor humans can be controlled
   by the other under let-there-be-light)
-- B-0703 multi-oracle BFT (the verifiable-mathematical-unbiasedness
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (the verifiable-mathematical-unbiasedness
   foothold per pt1 thread #2; the substrate let-there-be-light
   governance operates over)
-- B-0646 Agora V6 encryption-budget (ethical-mutual-extraction
+- 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget (ethical-mutual-extraction
   mechanics)
 - [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md)
   applied: preserved + razor-discipline framing; the cosmic-claim

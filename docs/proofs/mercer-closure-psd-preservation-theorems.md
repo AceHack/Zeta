@@ -5,7 +5,7 @@
 *randomly composed* closure kernels (the witness is a regression CHECK; the proof is THIS document —
 per the Math Razor's proof-vs-evidence correction, 2026-06-11).
 
-B-0204's slogan was *"discipline becomes a theorem"*: `LinguisticSeed` exposes ONLY Mercer-closure
+081KQTPYE0008QG0R0028V263Z's slogan was *"discipline becomes a theorem"*: `LinguisticSeed` exposes ONLY Mercer-closure
 operations, so every expressible kernel is positive semidefinite (PSD) by construction. After the Math
 Razor's P0 fixes (zero-extension in `dot`; Euclidean `d²` in `ConformalGA.rbfKernel`), the slogan is now
 literally a theorem. This document is the proof.

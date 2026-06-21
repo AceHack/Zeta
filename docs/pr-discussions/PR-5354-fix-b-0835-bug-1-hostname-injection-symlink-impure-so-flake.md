@@ -1,6 +1,6 @@
 ---
 pr_number: 5354
-title: "fix(B-0835 Bug 1): hostname injection \u2014 symlink + --impure so flake eval reads cluster-node-id (same bug class as Bug 3b)"
+title: "fix(081KSGS9H0008QG0R00120EEHM Bug 1): hostname injection \u2014 symlink + --impure so flake eval reads cluster-node-id (same bug class as Bug 3b)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T23:29:57Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:30:26Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5354: fix(B-0835 Bug 1): hostname injection — symlink + --impure so flake eval reads cluster-node-id (same bug class as Bug 3b)
+# PR #5354: fix(081KSGS9H0008QG0R00120EEHM Bug 1): hostname injection — symlink + --impure so flake eval reads cluster-node-id (same bug class as Bug 3b)
 
 ## PR description
 
 ## Summary
 
-Fixes B-0835 Bug 1 — login banner showed \`control-plane login:\` instead of unique \`node-<6hex>\`. Same bug class as Bug 3b (build-time-eval vs install-time-write path mismatch).
+Fixes 081KSGS9H0008QG0R00120EEHM Bug 1 — login banner showed \`control-plane login:\` instead of unique \`node-<6hex>\`. Same bug class as Bug 3b (build-time-eval vs install-time-write path mismatch).
 
 ## Root cause
 
@@ -60,7 +60,7 @@ Subsequent rebuilds on installed system work without symlink (file IS on install
 
 ## Pull request overview
 
-Fixes B-0835 Bug 1 where the live-ISO `nixos-install --flake ...` evaluation couldn’t see the install-target’s generated `/mnt/etc/zeta/cluster-node-id`, causing the system to fall back to the flake default `networking.hostName` (e.g., `control-plane`) instead of the per-node `node-<6hex>`.
+Fixes 081KSGS9H0008QG0R00120EEHM Bug 1 where the live-ISO `nixos-install --flake ...` evaluation couldn’t see the install-target’s generated `/mnt/etc/zeta/cluster-node-id`, causing the system to fall back to the flake default `networking.hostName` (e.g., `control-plane`) instead of the per-node `node-<6hex>`.
 
 **Changes:**
 - Pre-stages a live-ISO `/etc/zeta/cluster-node-id` symlink pointing at `/mnt/etc/zeta/cluster-node-id` before running `nixos-install`.

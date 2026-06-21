@@ -31,7 +31,7 @@
 
 Refresh `docs/BACKLOG.md` from `tools/backlog/generate-index.ts` after PR #2367 left the generated index out of sync.
 
-The generator currently derives B-0357, B-0365, B-0365.5, and B-0373 as open (`[ ]`) from the per-row frontmatter, while main had those four rows checked (`[x]`). This PR restores the generated index to the canonical per-row source.
+The generator currently derives 081KR50HA0008QG0R0033TN4H9, 081KR50HA0008QG0R002R3NVGS, 081KR50HA0008QG0R0012TWWJR, and 081KR50HA0008QG0R001NNPEXC as open (`[ ]`) from the per-row frontmatter, while main had those four rows checked (`[x]`). This PR restores the generated index to the canonical per-row source.
 
 ## Coordination
 
@@ -73,7 +73,7 @@ The generator currently derives B-0357, B-0365, B-0365.5, and B-0373 as open (`[
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep completed backlog rows checked**
 
-  This edit marks `B-0357` as open (`[ ]`) even though the row file for the same commit has `status: done` (`docs/backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md`, line 4), and the same mismatch also appears for `B-0365` and `B-0373`. Since `docs/BACKLOG.md` is the generated status index, this introduces stale state that can mislead planning and any tooling that reads checklist completion from the index. Please preserve checked state for rows whose frontmatter is done.
+  This edit marks `081KR50HA0008QG0R0033TN4H9` as open (`[ ]`) even though the row file for the same commit has `status: done` (`docs/backlog/P1/081KR50HA0008QG0R0033TN4H9-replace-tautology-z3-agenda-proofs-with-real-verification.md`, line 4), and the same mismatch also appears for `081KR50HA0008QG0R002R3NVGS` and `081KR50HA0008QG0R001NNPEXC`. Since `docs/BACKLOG.md` is the generated status index, this introduces stale state that can mislead planning and any tooling that reads checklist completion from the index. Please preserve checked state for rows whose frontmatter is done.
 
   Useful? React with 👍 / 👎.
   </pre>

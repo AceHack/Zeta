@@ -20,9 +20,9 @@ Final substrate landing of the ~8h audit cycle session arc (cold-boot 09:28Z →
 
 ## Tally
 
-- **11 close-row PRs landed**: B-0037.1 (#3859), B-0443 (#3869), B-0049.2 (#3882), B-0037.2 (#3888), B-0037.3 (#3891), B-0197 (#3893), B-0462 (#3897), B-0457 (#3899), B-0458+B-0118 bundled (#3902), B-0122 (#3917)
+- **11 close-row PRs landed**: 081KR7JY10008QG0R0038AFS7T (#3859), 081KRFA460008QG0R000NVM36W (#3869), 081KR7JY10008QG0R003JSEMX7 (#3882), 081KR7JY10008QG0R002D6VNNJ (#3888), 081KR7JY10008QG0R000XPVJ0W (#3891), 081KQTPYE0008QG0R003DK06PA (#3893), 081KRA5AR0008QG0R0019Q33F7 (#3897), 081KRA5AR0008QG0R000KKJRVA (#3899), 081KRA5AR0008QG0R001X4T9W7+081KQDTYV0008QG0R0037YJPEX bundled (#3902), 081KQDTYV0008QG0R001HQSSAX (#3917)
 - **2 substrate memory files**: audit-subclass catalog + class-5 contamination
-- **2 multi-row cluster cascades closed**: B-0037 family + Amara cluster
+- **2 multi-row cluster cascades closed**: 081KQ3HBZ0008QG0R0002RB48Q family + Amara cluster
 - **5 multi-Otto contamination classes** catalogued with named mitigations
 - **3 counter-with-escalation forced-actions** producing higher-value substrate
 - **Aaron's 2026-04-30 silent-courier-debt constraint OPERATIONALLY CLEARED**
@@ -47,6 +47,6 @@ Final substrate landing of the ~8h audit cycle session arc (cold-boot 09:28Z →
 This PR adds a single new tick shard documenting the final-tally of an ~8-hour Otto-CLI audit session arc, including 11 close-row PR references, 2 new substrate memory files, and a catalog of 5 multi-Otto contamination classes. It's a pure history/hygiene-history surface addition with no code changes.
 
 **Changes:**
-- Adds a session-arc final-tally tick shard summarizing 11 landed close-row PRs and the B-0037 + Amara cluster cascades.
+- Adds a session-arc final-tally tick shard summarizing 11 landed close-row PRs and the 081KQ3HBZ0008QG0R0002RB48Q + Amara cluster cascades.
 - Documents 5 multi-Otto contamination recovery patterns and a sub-class catalog table.
 - Records remaining 22 audit candidates and notes for future-Otto cold-boot inheritance.

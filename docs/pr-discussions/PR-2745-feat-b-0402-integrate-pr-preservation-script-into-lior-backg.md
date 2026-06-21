@@ -1,6 +1,6 @@
 ---
 pr_number: 2745
-title: "feat(B-0402): integrate PR preservation script into Lior background loop"
+title: "feat(081KR7JY10008QG0R0008NGW95): integrate PR preservation script into Lior background loop"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-11T20:16:02Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-11T20:21:05Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #2745: feat(B-0402): integrate PR preservation script into Lior background loop
+# PR #2745: feat(081KR7JY10008QG0R0008NGW95): integrate PR preservation script into Lior background loop
 
 ## PR description
 

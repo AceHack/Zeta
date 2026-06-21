@@ -1,6 +1,5 @@
 ---
-id: B-0852
-zetaid: 081KSKBP80008QG0R003AX2A69
+id: 081KSKBP80008QG0R003AX2A69
 priority: P1
 status: open
 title: credential persistence on USB ESP + boot-sequence auth-method picker — encrypted blob bound to USB UUID + operator passphrase (Phase 1); removes gh-login-throttle on USB re-boot workflow (Aaron 2026-05-27)
@@ -39,7 +38,7 @@ Three composing sub-targets all land together as the smallest end-to-end working
 
 Per Aaron 2026-05-27: *"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."*
 
-The cred-persistence substrate operates over a DECLARATIVE MANIFEST of which credentials Zeta tracks — NOT an imperatively-hardcoded list. Composes with B-0854 (Ace migration) at the manifest-shape scope: same declarative discipline applies to cred-tracking as to install-step tracking.
+The cred-persistence substrate operates over a DECLARATIVE MANIFEST of which credentials Zeta tracks — NOT an imperatively-hardcoded list. Composes with 081KSKBP80008QG0R002VRN56K (Ace migration) at the manifest-shape scope: same declarative discipline applies to cred-tracking as to install-step tracking.
 
 Cred-manifest shape (Phase 1 schema candidate; subject to Ace schema convergence):
 
@@ -48,7 +47,7 @@ Cred-manifest shape (Phase 1 schema candidate; subject to Ace schema convergence
 credentials:
   - id: gh-cli
     paths: ["~/.config/gh/hosts.yml"]
-    persona-scoped: false  # one gh identity per host today; per-AI identity is B-0847 future
+    persona-scoped: false  # one gh identity per host today; per-AI identity is 081KSGS9H0008QG0R002T0XQ50 future
     required: true
   - id: claude
     paths: ["~/.config/claude/credentials.json"]
@@ -76,8 +75,8 @@ Operation:
 
 - Write `/esp/zeta-creds.enc` after successful auth (post-install service trigger)
 - Encryption: AES-256-GCM with key derived from `HKDF(USB-UUID || operator-passphrase, salt, info)`
-- Per-AI identity (per B-0847) — for `persona-scoped: true` credentials, the blob contains a map: `{ otto: {...}, lior: {...}, vera: {...} }` so each persona's creds round-trip independently
-- Contents driven BY THE MANIFEST — adding a new cred type is a manifest edit, NOT a code change (declarative; same shape as Ace package manifests per B-0854)
+- Per-AI identity (per 081KSGS9H0008QG0R002T0XQ50) — for `persona-scoped: true` credentials, the blob contains a map: `{ otto: {...}, lior: {...}, vera: {...} }` so each persona's creds round-trip independently
+- Contents driven BY THE MANIFEST — adding a new cred type is a manifest edit, NOT a code change (declarative; same shape as Ace package manifests per 081KSKBP80008QG0R002VRN56K)
 - Key derivation NEVER hits disk; passphrase typed at boot only
 
 The manifest IS the substrate-honest catalog of what creds Zeta needs. Future credentials get added as manifest entries; the persist/restore code reads the manifest + iterates. No imperative per-cred branches in TS/bash.
@@ -89,12 +88,12 @@ Current `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step layout (verif
 | Step | Owner | What it does |
 |---|---|---|
 | 6.5 | iter-4.2 | probe boot USB for operator SSH pubkey |
-| 6.55 | iter-5.3 (B-0792) | prompt-for-initial-password |
-| 6.6 | iter-5.2 (B-0792) | hostname injection |
-| 6.7 | iter-5.1 (B-0792) | wifi persistence |
+| 6.55 | iter-5.3 (081KSGS9H0008QG0R003V23XNZ) | prompt-for-initial-password |
+| 6.6 | iter-5.2 (081KSGS9H0008QG0R003V23XNZ) | hostname injection |
+| 6.7 | iter-5.1 (081KSGS9H0008QG0R003V23XNZ) | wifi persistence |
 | 6.8 | iter-5.4.0 | homelab gh-auth + operator pubkey copy |
-| 6.9 | iter-5.4.1 (B-0812) | self-registration commit+push |
-| 7 | iter-4 (B-0789) | print initial credentials |
+| 6.9 | iter-5.4.1 (081KSGS9H0008QG0R0037H3W4T) | self-registration commit+push |
+| 7 | iter-4 (081KSGS9H0008QG0R002T3BJ2R) | print initial credentials |
 
 **Critical architecture (per Copilot P0 review on PR #5403)**: the picker MUST run BEFORE Step 6.8 so that Step 6.8's `gh auth login` device-flow is CONDITIONAL on the picker's auth-method choice. If the picker runs after Step 6.8, the gh-quota burns BEFORE restore is offered — defeats the zero-device-flow-on-reboot acceptance criterion.
 
@@ -103,13 +102,13 @@ Correct layout (new sub-range BEFORE Step 6.8):
 | Step | Owner | What it does |
 |---|---|---|
 | 6.7 | iter-5.1 | wifi persistence (unchanged) |
-| **6.75** | **B-0852 (NEW)** | **cred-detection probe (USB blob? operator-passphrase derivable?)** |
-| **6.76** | **B-0852 (NEW)** | **5-second escape-hatch banner with countdown** |
-| **6.77** | **B-0852 (NEW)** | **auth-method picker — 4 options; captures choice** |
+| **6.75** | **081KSKBP80008QG0R003AX2A69 (NEW)** | **cred-detection probe (USB blob? operator-passphrase derivable?)** |
+| **6.76** | **081KSKBP80008QG0R003AX2A69 (NEW)** | **5-second escape-hatch banner with countdown** |
+| **6.77** | **081KSKBP80008QG0R003AX2A69 (NEW)** | **auth-method picker — 4 options; captures choice** |
 | 6.8 | iter-5.4.0 | gh-auth + pubkey copy — **NOW CONDITIONAL** on picker choice (runs only if option 2 fresh-login chosen OR no detected source AND operator picked fresh) |
-| **6.85** | **B-0852 (NEW)** | **persist cred-blob to ESP after successful auth (if option 1/2/3 chose persist-on)** |
-| 6.9 | iter-5.4.1 (B-0812) | self-registration (unchanged; runs after whichever auth path completed) |
-| 7 | iter-4 (B-0789) | print initial credentials (unchanged) |
+| **6.85** | **081KSKBP80008QG0R003AX2A69 (NEW)** | **persist cred-blob to ESP after successful auth (if option 1/2/3 chose persist-on)** |
+| 6.9 | iter-5.4.1 (081KSGS9H0008QG0R0037H3W4T) | self-registration (unchanged; runs after whichever auth path completed) |
+| 7 | iter-4 (081KSGS9H0008QG0R002T3BJ2R) | print initial credentials (unchanged) |
 
 Picker menu shape (Step 6.77):
 
@@ -173,19 +172,19 @@ This satisfies the acceptance criterion of ZERO device-flow calls on reboot when
 
 ## Composes with
 
-- **B-0850** (parent) — multi-vendor systemd substrate the auth flow serves
-- **B-0833** — installer interactive-login-vs-baked-in-keys CI test tension; this row resolves the tension WITHOUT shipping creds in the ISO (creds live on ESP, written post-install)
-- **B-0835** — installer config bugs including gh-auth-not-respected; this row addresses the gh-auth persistence half
-- **B-0831** — CI cascade 6 full-install + cluster-auto-join; auth-method picker (3) PAT path makes CI scriptable
-- **B-0847** — per-AI GitHub identity; this row's blob is the per-persona credential carrier
-- **B-0851** — persona-first scheduler; chooses which persona's creds to restore per active assignment
+- **081KSKBP80008QG0R003Z4C0D0** (parent) — multi-vendor systemd substrate the auth flow serves
+- **081KSGS9H0008QG0R003JNSVR5** — installer interactive-login-vs-baked-in-keys CI test tension; this row resolves the tension WITHOUT shipping creds in the ISO (creds live on ESP, written post-install)
+- **081KSGS9H0008QG0R00120EEHM** — installer config bugs including gh-auth-not-respected; this row addresses the gh-auth persistence half
+- **081KSGS9H0008QG0R0011BC7T2** — CI cascade 6 full-install + cluster-auto-join; auth-method picker (3) PAT path makes CI scriptable
+- **081KSGS9H0008QG0R002T0XQ50** — per-AI GitHub identity; this row's blob is the per-persona credential carrier
+- **081KSKBP80008QG0R00248VEWT** — persona-first scheduler; chooses which persona's creds to restore per active assignment
 - `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` — implementation work uses isolated worktrees off operator's primary
 
 ## Composes with prior substrate
 
 - iter-4.2 ESP SSH pubkey injection (bidirectional channel — pubkey write at flash, creds write at install)
 - iter-5.5.0 3-vendor systemd guard post substrate (the auth flow this serves)
-- iter-6.x distro-upgrade / current-version-audit substrate (B-0800-B-0805) — composes with the auto-upgrade path
+- iter-6.x distro-upgrade / current-version-audit substrate (081KSGS9H0008QG0R001EKTS5A-081KSGS9H0008QG0R002BC2ZR7) — composes with the auto-upgrade path
 
 ## Future phases (NOT this row's scope)
 
@@ -249,7 +248,7 @@ Composes value:
 - **Override safety**: the Esc escape hatch preserves operator agency per NCI HC-8; the default is recover but the choice is always preserved
 - **Cred persistence answers all**: passwords + secrets + hostname + cluster-name + ssh keys + gh tokens + claude/gemini/codex auths all in the encrypted blob
 
-Sub-target shift in implementation: B-0852.3 picker substrate becomes Steps 6.75 (detection) + 6.76 (5-second escape-hatch banner) + 6.77 (4-option picker if Esc OR no detected source) + Step 6.8 conditional gating + Step 6.85 persist. The crypto module + cred schema map (B-0852.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default + gates the existing Step 6.8.
+Sub-target shift in implementation: 081KSKBP80008QG0R003ETGS01 picker substrate becomes Steps 6.75 (detection) + 6.76 (5-second escape-hatch banner) + 6.77 (4-option picker if Esc OR no detected source) + Step 6.8 conditional gating + Step 6.85 persist. The crypto module + cred schema map (081KSKBP80008QG0R003AX2A69.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default + gates the existing Step 6.8.
 
 ## Phase-split: PAT at zflash time + interactive at setup time (Aaron 2026-05-27)
 
@@ -265,7 +264,7 @@ The right placement matches each auth method to the operator-UX phase that fits 
 
 - *(optional)* Inject GitHub PAT into ESP at flash time
   - Operator pastes PAT from `github.com/settings/tokens` (clipboard available)
-  - Operator types encryption passphrase (used by B-0852.1 crypto module via scrypt+HKDF+AES-GCM)
+  - Operator types encryption passphrase (used by 081KSKBP80008QG0R003AX2A69.1 crypto module via scrypt+HKDF+AES-GCM)
   - PAT + other available creds → encrypted blob written to USB ESP alongside SSH pubkey (iter-4.2 channel reuse)
   - Skip option: ship USB without baked PAT; boot-time will prompt
 
@@ -301,14 +300,14 @@ Operator-substrate-honest behavior to surface:
 - It's a FOOTGUN for per-machine-isolation workflows (operator should flash one USB per machine in that case)
 - Phase-split makes the trade-off explicit; operator picks at flash time which model fits
 
-Documentation discipline: zflash --agent prompt explicitly states this behavior so operator picks model deliberately. Sub-row B-0852.X (TBD when implementing) names the documentation surface.
+Documentation discipline: zflash --agent prompt explicitly states this behavior so operator picks model deliberately. Sub-row 081KSKBP80008QG0R003AX2A69.X (TBD when implementing) names the documentation surface.
 
-### Composition with B-0852.1 + B-0852.5
+### Composition with 081KSKBP80008QG0R003AX2A69.1 + 081KSKBP80008QG0R003AX2A69.5
 
 The phase-split changes WHERE encrypt fires (zflash time AND/OR install time AND/OR post-install), NOT the crypto primitive itself:
 
-- B-0852.1 crypto module (PR #5411 landed): `encrypt(plaintext, usbUuid, passphrase)` — same regardless of phase
-- B-0852.5 cred-manifest schema (in flight): same declarative entries; zflash-time write populates the `gh-cli` entry; boot-time can populate the rest if device-flow chosen
+- 081KSKBP80008QG0R003AX2A69.1 crypto module (PR #5411 landed): `encrypt(plaintext, usbUuid, passphrase)` — same regardless of phase
+- 081KSKBP80008QG0R003AX2A69.5 cred-manifest schema (in flight): same declarative entries; zflash-time write populates the `gh-cli` entry; boot-time can populate the rest if device-flow chosen
 
 ### Per-cred operator choice at zflash time — CLI override (Aaron 2026-05-27 sharpening)
 
@@ -346,7 +345,7 @@ Value-source syntax (per-cred type handler):
 
 ### Per-cred type handler discipline
 
-Each declared cred-type in B-0852.5 manifest has a per-type handler that knows:
+Each declared cred-type in 081KSKBP80008QG0R003AX2A69.5 manifest has a per-type handler that knows:
 
 - What VALUE SHAPE this cred expects (literal token / JSON blob / pubkey text / etc.)
 - What VALIDATION to apply at parse time (e.g., gh PAT format check; JSON parse for vendor creds)
@@ -384,17 +383,17 @@ Passphrase never echoed to shell history:
 
 The prompt loop framing was Otto's earlier intermediate. CLI override per Aaron's sharpening is the operationally-better fit; prompt loop deferred unless operator-UX-test reveals need.
 
-### Composition with B-0844 (zflash --agent) + skill surface
+### Composition with 081KSGS9H0008QG0R001EZKNCB (zflash --agent) + skill surface
 
-- `zflash --agent` flag (B-0844 landed) gets extended with repeatable `--bake-cred <id>=<value>` + `--bake-passphrase-file <path>` / `--bake-passphrase-env <VAR>`
+- `zflash --agent` flag (081KSGS9H0008QG0R001EZKNCB landed) gets extended with repeatable `--bake-cred <id>=<value>` + `--bake-passphrase-file <path>` / `--bake-passphrase-env <VAR>`
 - Optional skill `/zflash-creds` (in `.claude/skills/zflash-creds/SKILL.md`) generates the canonical `zflash --bake-cred ...` command for the operator's current declared creds; operator runs the generated command; skill IS Claude-Code-side coordination, NOT a wrapper around the runtime
 - Per-cred handler validates value-source syntax + matches manifest declarations
 
 ### Sub-row addition for this composition
 
-B-0852.9 (new): zflash-time `--bake-cred` CLI override reading B-0852.5 manifest + per-cred handlers + writing encrypted blob via B-0852.1. Owner: zflash side (extends `full-ai-cluster/tools/zflash.ts`). Composes with B-0844 (zflash --agent flag).
+081KSKBP80008QG0R003AX2A69.9 (new): zflash-time `--bake-cred` CLI override reading 081KSKBP80008QG0R003AX2A69.5 manifest + per-cred handlers + writing encrypted blob via 081KSKBP80008QG0R003AX2A69.1. Owner: zflash side (extends `full-ai-cluster/tools/zflash.ts`). Composes with 081KSGS9H0008QG0R001EZKNCB (zflash --agent flag).
 
-B-0852.10 (new): per-cred type handlers module (`tools/installer/zeta-cred-handlers.ts`) — one handler per cred type in manifest; each defines value-shape + validation + supported value-sources. Pure functions; unit-tested independently of zflash.
+081KSKBP80008QG0R003AX2A69.10 (new): per-cred type handlers module (`tools/installer/zeta-cred-handlers.ts`) — one handler per cred type in manifest; each defines value-shape + validation + supported value-sources. Pure functions; unit-tested independently of zflash.
 
 ## Why P1
 
@@ -402,18 +401,18 @@ B-0852.10 (new): per-cred type handlers module (`tools/installer/zeta-cred-handl
 - Removes immediate operational pain (gh-login throttle on multi-boot)
 - Bounded scope (Phase 1 is one ISO build + one boot test)
 - Unblocks fresh-USB queued for next-flash test workflow
-- Composes cleanly with existing iter-4.2 ESP-write channel + B-0847 per-AI identity (no new architectural primitives required)
+- Composes cleanly with existing iter-4.2 ESP-write channel + 081KSGS9H0008QG0R002T0XQ50 per-AI identity (no new architectural primitives required)
 
 ## Sub-rows to file when implementing
 
-- B-0852.1 — TS crypto module (key derivation + AES-GCM); pure functions; unit-tested first
-- B-0852.2 — TS persist/restore CLIs; round-trip test
-- B-0852.3 — zeta-install.sh Steps 6.75 + 6.76 + 6.77 (detection + banner + picker BEFORE Step 6.8) + Step 6.8 conditional gating; integration test
-- B-0852.4 — NixOS module wrapping persist service; post-install systemd unit
-- B-0852.5 — multi-vendor cred-schema map (per-vendor blob format)
-- B-0852.6 — wrong-passphrase + tamper fallthrough logic
-- B-0852.7 — empirical Phase 1 ISO build + fresh-USB flash + boot-test validation
-- B-0852.8 — composes-with check + memory file landing for cred-persistence-as-architectural-pattern
+- 081KSKBP80008QG0R003AX2A69.1 — TS crypto module (key derivation + AES-GCM); pure functions; unit-tested first
+- 081KSKBP80008QG0R003AX2A69.2 — TS persist/restore CLIs; round-trip test
+- 081KSKBP80008QG0R003ETGS01 — zeta-install.sh Steps 6.75 + 6.76 + 6.77 (detection + banner + picker BEFORE Step 6.8) + Step 6.8 conditional gating; integration test
+- 081KSKBP80008QG0R002XBRGN8 — NixOS module wrapping persist service; post-install systemd unit
+- 081KSKBP80008QG0R003AX2A69.5 — multi-vendor cred-schema map (per-vendor blob format)
+- 081KSKBP80008QG0R003AX2A69.6 — wrong-passphrase + tamper fallthrough logic
+- 081KSKBP80008QG0R003AX2A69.7 — empirical Phase 1 ISO build + fresh-USB flash + boot-test validation
+- 081KSKBP80008QG0R003AX2A69.8 — composes-with check + memory file landing for cred-persistence-as-architectural-pattern
 
 Order suggestion: 1 → 2 (foundational); 5 (schema before integration); 3 → 4 (integration); 6 → 7 (fallthroughs + validation); 8 (substrate landing).
 
@@ -423,7 +422,7 @@ This row addresses the IMMEDIATE operator pain (gh-login throttle on multi-boot 
 
 The Phase 1 scope is deliberately narrow: single passphrase + USB UUID binding. Hardware-bound keys (Phase 3) are the substrate-honest stronger answer; Phase 1 is the practical pre-substrate that unblocks Aaron's USB-multi-boot workflow today.
 
-Per `.claude/rules/non-coercion-invariant.md` HC-8 floor — operator authority over their own credentials remains absolute; the encrypted blob is operator-controllable + operator-removable; no creds are baked into the ISO image (per B-0833 + the no-credentials-on-ISO discipline).
+Per `.claude/rules/non-coercion-invariant.md` HC-8 floor — operator authority over their own credentials remains absolute; the encrypted blob is operator-controllable + operator-removable; no creds are baked into the ISO image (per 081KSGS9H0008QG0R003JNSVR5 + the no-credentials-on-ISO discipline).
 
 ## Full reasoning
 
@@ -444,5 +443,5 @@ Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-au
 
 - Topic: credential persistence / gh auth caching / encrypted blob / boot-sequence picker
 - Searched: docs/backlog/ (no prior B-NNNN for cred-persistence-on-USB-ESP); .claude/rules/ (no prior rule); memory/ (no prior memory)
-- Found: B-0833 (closest sibling — interactive-login-vs-baked-in-keys), B-0835 (gh-auth-not-respected), iter-4.2 ESP write channel (existing pattern)
+- Found: 081KSGS9H0008QG0R003JNSVR5 (closest sibling — interactive-login-vs-baked-in-keys), 081KSGS9H0008QG0R00120EEHM (gh-auth-not-respected), iter-4.2 ESP write channel (existing pattern)
 - Conclusion: no existing substrate covers Phase 1 scope; this row is new substrate composing with adjacent backlog

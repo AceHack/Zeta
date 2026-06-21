@@ -100,7 +100,7 @@ jobs:
     timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && 240 || 90 }}
     permissions:
       contents: read
-      # B-0853.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
+      # 081KSKBP80008QG0R000Y2B7HC.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
       # cert from the GitHub-issued OIDC token; Rekor transparency log records
       # the signature. No private key material is handled in this workflow.
       #
@@ -170,7 +170,7 @@ jobs:
       # Runs early (before the ~15-min ISO build) so a broken k3s fails
       # fast. Hermetic — no internet, so it does NOT assert node Ready /
       # pods Running (those need the Cilium CNI image); that is an online
-      # cluster-integration lane (B-0831 Slice 2+). ubuntu-24.04 runners
+      # cluster-integration lane (081KSGS9H0008QG0R0011BC7T2 Slice 2+). ubuntu-24.04 runners
       # expose /dev/kvm; the nixosTest driver falls back to TCG if absent.
       - name: NixOS test — k3s control-plane reaches active (token-deadlock regression)
         working-directory: full-ai-cluster
@@ -210,7 +210,7 @@ jobs:
           # error; explicit count check gives a clear workflow error.
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
+            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see 081KSGS9H0008QG0R00033DT02)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
@@ -262,23 +262,23 @@ jobs:
       - name: Install QEMU + zflash toolchain (apt)
         # qemu-system-x86 for cascade #5 boot smoke-test
         # qemu-utils for qemu-img (cascade #6 Slice 1 virtual hard disk)
-        # mtools for zflash file-backed ESP writes (B-0891 scenario 1 bake)
+        # mtools for zflash file-backed ESP writes (081KSNY2Z0008QG0R0008PN7RQ scenario 1 bake)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools ovmf
 
-      - name: B-0891 scenario 1 — initial format (audit + zflash --test + QEMU boot)
+      - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 1 — initial format (audit + zflash --test + QEMU boot)
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::B-0891 scenario 1: No installer ISO under result/iso/" >&2
+            echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 1: No installer ISO under result/iso/" >&2
             exit 1
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "B-0891 initial-format ISO: $iso_abs"
+          echo "081KSNY2Z0008QG0R0008PN7RQ initial-format ISO: $iso_abs"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario initial-format "$iso_abs"
 
-      # QEMU full-install test (cascade #6 Slice 1 — B-0831):
+      # QEMU full-install test (cascade #6 Slice 1 — 081KSGS9H0008QG0R0011BC7T2):
       # Extends boot-test by attaching virtual hard disk + NAT internet,
       # waits for `[iter-5.3]` marker in serial log to verify nixos-install
       # + iter-4.2 + iter-5.2 substrate completed.
@@ -289,9 +289,9 @@ jobs:
       #
       # Security: no github.event.* interpolation; ISO path comes from
       # prior workflow step's filesystem find.
-      # B-0891 phase-3: first-session serial markers on scenario 2 (push +
+      # 081KSNY2Z0008QG0R0008PN7RQ phase-3: first-session serial markers on scenario 2 (push +
       # workflow_dispatch). Society proof: run 27862943618 (2026-06-20).
-      - name: B-0891 scenario 2 — boot + install substrate (B-0831 Slice 1)
+      - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 2 — boot + install substrate (081KSGS9H0008QG0R0011BC7T2 Slice 1)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
@@ -302,15 +302,15 @@ jobs:
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::B-0891 scenario 2: No installer ISO under result/iso/" >&2
+            echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 2: No installer ISO under result/iso/" >&2
             exit 1
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "B-0891 boot-cluster-up ISO: $iso_abs"
+          echo "081KSNY2Z0008QG0R0008PN7RQ boot-cluster-up ISO: $iso_abs"
           echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario boot-cluster-up "$iso_abs"
 
-      - name: B-0891 scenario 3 — reformat with retention (workflow_dispatch only)
+      - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 3 — reformat with retention (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
@@ -321,16 +321,16 @@ jobs:
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::B-0891 scenario 3: No installer ISO under result/iso/" >&2
+            echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 3: No installer ISO under result/iso/" >&2
             exit 1
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "B-0891 retention ISO: $iso_abs"
+          echo "081KSNY2Z0008QG0R0008PN7RQ retention ISO: $iso_abs"
           echo "Retention run dir: $ZFLASH_QEMU_RETENTION_RUN_DIR"
           mkdir -p "$ZFLASH_QEMU_RETENTION_RUN_DIR"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
 
-      - name: B-0891 scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
+      - name: 081KSNY2Z0008QG0R0008PN7RQ scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
@@ -342,16 +342,16 @@ jobs:
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::B-0891 scenario 4: No installer ISO under result/iso/" >&2
+            echo "::error::081KSNY2Z0008QG0R0008PN7RQ scenario 4: No installer ISO under result/iso/" >&2
             exit 1
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
-          echo "B-0891 path-fork ISO: $iso_abs"
+          echo "081KSNY2Z0008QG0R0008PN7RQ path-fork ISO: $iso_abs"
           echo "Path-fork run dir: $ZFLASH_QEMU_PATH_FORK_RUN_DIR"
           mkdir -p "$ZFLASH_QEMU_PATH_FORK_RUN_DIR"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-from-scratch "$iso_abs"
 
-      - name: Upload B-0891 retention serial logs
+      - name: Upload 081KSNY2Z0008QG0R0008PN7RQ retention serial logs
         if: always() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -360,7 +360,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Upload B-0891 path-fork serial logs
+      - name: Upload 081KSNY2Z0008QG0R0008PN7RQ path-fork serial logs
         if: always() && github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -390,7 +390,7 @@ jobs:
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see 081KSGS9H0008QG0R00033DT02)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
@@ -424,8 +424,8 @@ jobs:
             echo "to flash the stick. (ISO is ~1.5–2 GiB.)"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # B-0853.1 — sigstore/cosign keyless OIDC signing of the ISO blob.
-      # Composes with B-0853 (sigstore artifact signing free-stuff substrate).
+      # 081KSKBP80008QG0R000Y2B7HC.1 — sigstore/cosign keyless OIDC signing of the ISO blob.
+      # Composes with 081KSKBP80008QG0R000Y2B7HC (sigstore artifact signing free-stuff substrate).
       #
       # Keyless model: GitHub OIDC token (from job-level id-token: write
       # permission above) is exchanged with Fulcio CA for a short-lived cert
@@ -513,7 +513,7 @@ jobs:
 
       - name: Upload cosign bundle as workflow artifact
         if: ${{ !cancelled() && steps.sign.outcome == 'success' }}   # run only after signing produced a bundle
-        # B-0853.1 sibling upload — bundle alongside the ISO for consumers.
+        # 081KSKBP80008QG0R000Y2B7HC.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
         # just the ISO do not pay the small extra cost; verifiers can grab it.
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -523,7 +523,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-  # ── B-1024 slice 1 (2026-06-11): the aarch64 ISO builds AND BOOTS in CI ──
+  # ── 081KTSZN10008QG0R00349SM6P slice 1 (2026-06-11): the aarch64 ISO builds AND BOOTS in CI ──
   # Native aarch64 end-to-end on the ubuntu-24.04-arm runner: build the
   # aarch64 installer ISO from the SAME configuration (one source of
   # truth; only `system` differs), then boot it in qemu-system-aarch64
@@ -567,7 +567,7 @@ jobs:
       - name: Install QEMU (aarch64 system emulator + EDK2 UEFI firmware)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64
 
-      - name: QEMU aarch64 boot smoke-test (B-1024 slice 1 floor)
+      - name: QEMU aarch64 boot smoke-test (081KTSZN10008QG0R00349SM6P slice 1 floor)
         working-directory: full-ai-cluster
         continue-on-error: true # advisory — build+flake are load-bearing; login prompt is flaky in CI
         run: |

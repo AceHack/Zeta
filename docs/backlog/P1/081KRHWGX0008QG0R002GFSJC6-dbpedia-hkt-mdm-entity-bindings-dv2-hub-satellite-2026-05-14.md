@@ -1,11 +1,10 @@
 ---
-id: B-0483
-zetaid: 081KRHWGX0008QG0R002GFSJC6
+id: 081KRHWGX0008QG0R002GFSJC6
 priority: P1
 status: open
-title: "DBpedia B-0428.4 — HKT-MDM entity bindings + DV2.0 hub-satellite types"
+title: "DBpedia 081KRFA460008QG0R0018SN61J.4 — HKT-MDM entity bindings + DV2.0 hub-satellite types"
 type: feature
-origin: B-0428 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R0018SN61J decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R0018SN61J
@@ -21,9 +20,9 @@ composes_with:
   - memory/feedback_aaron_clifford_hkt_ontology_vocabulary_axis_basis_rudders_rotors_steering_cartographer_navigator_edge_mapper_world_model_civsim_edge_runner_5_control_structures_or_4_plus_meta_2026_05_13.md
 ---
 
-# B-0483 — HKT-MDM entity bindings + DV2.0 hub-satellite types
+# 081KRHWGX0008QG0R002GFSJC6 — HKT-MDM entity bindings + DV2.0 hub-satellite types
 
-**Depends on B-0482 (SPARQL CE must exist).**
+**Depends on 081KRHWGX0008QG0R001VKR0TH (SPARQL CE must exist).**
 
 ## Purpose
 
@@ -100,7 +99,7 @@ module Event =
     let ofSparqlRow (hub: EventHub) (row: SparqlRow) : Result<EventSatellite, DbspError> = ...
 ```
 
-`SparqlRow` is the result row type returned by `Client.query` (defined in B-0481).
+`SparqlRow` is the result row type returned by `Client.query` (defined in 081KRHWGX0008QG0R003MTMBGR).
 
 ## Tests (`tests/DBpedia.Tests/EntityBindingTests.fs`)
 
@@ -110,7 +109,7 @@ All tests are pure (use fixture rows, not network). For each entity type:
 - Missing optional field → `None` (not an error)
 - Missing required field → `Error DbspError`
 - Hub URI round-trip: `PersonHub "http://dbpedia.org/resource/Alan_Turing"` renders
-  correctly in the SPARQL CE (compose with B-0482 query)
+  correctly in the SPARQL CE (compose with 081KRHWGX0008QG0R001VKR0TH query)
 
 At minimum 6 tests (2 per entity type).
 
@@ -143,11 +142,11 @@ dotnet test  Zeta.sln -c Release
 - [ ] All tests pure
 - [ ] `dotnet build -c Release` — 0 warnings 0 errors
 - [ ] `dotnet test Zeta.sln -c Release` — all tests green
-- [ ] B-0483 status set to `closed`
-- [ ] B-0484 can begin immediately after this merges
+- [ ] 081KRHWGX0008QG0R002GFSJC6 status set to `closed`
+- [ ] 081KRHWGX0008QG0R002TYF2NM can begin immediately after this merges
 
 ## Why P1
 
-Without the MDM binding layer the demo (B-0484) is just a raw SPARQL query
+Without the MDM binding layer the demo (081KRHWGX0008QG0R002TYF2NM) is just a raw SPARQL query
 result dump, not an HKT-MDM canonical demonstration. This row is what makes
-B-0428 a "canonical demo" rather than a connectivity spike.
+081KRFA460008QG0R0018SN61J a "canonical demo" rather than a connectivity spike.

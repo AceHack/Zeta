@@ -5,7 +5,7 @@ verbatim: true
 sources: chatgpt/external-research (per Aaron's forwarding)
 discipline: research substrate; preserves verbatim per substrate-or-it-didnt-happen; extends the kro/Crossplane spectrum research same-day
 substrate_landings:
-  - B-0748 (kro/Crossplane spectrum evaluation — this research extends the spectrum surface)
+  - 081KSE6WT0008QG0R002E6P098 (kro/Crossplane spectrum evaluation — this research extends the spectrum surface)
 prior_research: docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md
 tags: [radius, terraform-controller, pulumi-kubernetes-operator, kubevela-oam, crossplane-alternatives, application-centric-cnap, iac-inside-k8s, recipes, microsoft-radius, flux-terraform-controller]
 ---
@@ -81,14 +81,14 @@ The spectrum becomes more like a **competitive landscape** at the high-abstracti
 
 | Tool | Composition vector with Zeta |
 |---|---|
-| **Radius** | Microsoft-backed; recipes-as-abstraction matches Zeta's substrate-engineering posture (declarative + ontology-aware). Composes with B-0741 (Recipes COULD be the per-fork ontology declaration format). |
+| **Radius** | Microsoft-backed; recipes-as-abstraction matches Zeta's substrate-engineering posture (declarative + ontology-aware). Composes with 081KSE6WT0008QG0R002CC6314 (Recipes COULD be the per-fork ontology declaration format). |
 | **Terraform Controller** | Useful IF Zeta needs to wrap existing Terraform substrate (probably won't; Zeta is Nix + ArgoCD first; if forks bring Terraform investment, this composes). |
 | **Pulumi K8s Operator** | TS support is a Zeta substrate match (Rule 0; bun + TS first). Could compose if Zeta wants TS-defined k8s resources alongside YAML manifests. Substrate-honest concern: dual-encoding YAML + TS may add complexity vs single-source RGD. |
 | **KubeVela (OAM)** | Already evaluated in prior spectrum research; reframed here as Crossplane alternative. Substrate-honest stance unchanged: CUE adds another language; evaluate per scope. |
 
-### B-0748 scope extension
+### 081KSE6WT0008QG0R002E6P098 scope extension
 
-B-0748 (kro + Crossplane + middleware spectrum evaluation) extends to include:
+081KSE6WT0008QG0R002E6P098 (kro + Crossplane + middleware spectrum evaluation) extends to include:
 
 - **Scope item 7** (NEW): Radius evaluation — application-centric CNAP candidate
 - **Scope item 8** (NEW): Terraform Controller + Pulumi K8s Operator evaluation — IaC-inside-k8s candidates
@@ -106,6 +106,6 @@ For Radius specifically: Microsoft-backed + application-centric Recipes-based ap
 - **Microsoft** also backs Radius — Microsoft has multiple horses in the race (kro contribution + Radius standalone)
 - **Flux + Weaveworks** back Terraform Controller — established GitOps community alignment
 - **CNCF** governance for KubeVela + Crossplane — neutral foundation backing for both
-- **Determinate Systems** (separately, per B-0740) is the Nix substrate; not k8s composition layer
+- **Determinate Systems** (separately, per 081KSE6WT0008QG0R001BS3K7Y) is the Nix substrate; not k8s composition layer
 
 The competitive landscape is healthy — substrate-honest evaluation can pick per-scope without vendor lock-in concerns.

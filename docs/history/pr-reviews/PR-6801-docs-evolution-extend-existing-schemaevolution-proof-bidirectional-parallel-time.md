@@ -29,9 +29,9 @@
 
 ## What — Aaron + Amara 2026-06-07 (corrected to tie to the EXISTING artifact)
 
-**"Evolution" is not a name to decide** — the existing zero-downtime schema migration proof is already **`src/Core/SchemaEvolution.fs` (B-0930)**: migration algebra (`addField`/`removeField`/`renameField`) + forward/backward compat + `migrate` (forward-only seed), 8 tests. *(Disambiguation: `Evolution.fs` is the B-1019 privacy DST harness — NOT schema; do not conflate.)*
+**"Evolution" is not a name to decide** — the existing zero-downtime schema migration proof is already **`src/Core/SchemaEvolution.fs` (081KSRGFP0008QG0R001Y6RTY9)**: migration algebra (`addField`/`removeField`/`renameField`) + forward/backward compat + `migrate` (forward-only seed), 8 tests. *(Disambiguation: `Evolution.fs` is the 081KT7YW00008QG0R001DGZQKM privacy DST harness — NOT schema; do not conflate.)*
 
-Captured the **extension arc** (workitem `081KTGYQ3A5`, composes with B-0930 + `081KTGTJC1Q` + `081KTGXPTQ`):
+Captured the **extension arc** (workitem `081KTGYQ3A5`, composes with 081KSRGFP0008QG0R001Y6RTY9 + `081KTGTJC1Q` + `081KTGXPTQ`):
 1. **Bidirectional zero-downtime breaking change as a proof** — down direction + backfill both ways; compatibility-window invariant (breaking part outside the window = expand/migrate/contract formalized); invertibility taxonomy (lossless / lossy-with-shadow / non-invertible-compensation).
 2. **Parallel production experiment-timelines + continual merge contract** (`ExperimentContract`; admissible iff it continuously reconciles with main without corrupting it). A/B on *database reality*, not just app behavior.
 3. **Reindex as a proven projection** — source sacred, indexes derived; `full == incremental` **is the DBSP theorem we already have** (`IndexedZSet`). LexisNexis/Solr anchor.

@@ -157,19 +157,19 @@ capablities patent to prove it, this one is decentralized.  **Aaron: more to com
 ## Composes with substrate
 
 - [First ferry doc #6478](2026-06-01-kestrel-primitive-architecture-review-zset-gset-bag-rx-bonsai-4-language-hexagonal-cross-repo-join-saga-dst-aaron-forwarded.md) — the architecture review this continues.
-- **Decentralization keystone** → reframes B-0954 (git-native cross-machine agent-bus), the
+- **Decentralization keystone** → reframes 081KSXN940008QG0R00171YAZW (git-native cross-machine agent-bus), the
   cross-repo-join saga, the per-agent-repo model, BFT/multi-oracle consensus, and the secure-named-
   capabilities model as "re-earn from topology what the hub provided." This is the WHY behind the
   agentic-org architecture (per the GitHub-swarm / agent-as-repo substrate).
 - **Itron 4-oracle (Python) → Zeta 4-oracle (Rust)** — the differential-determinism conformance
-  is the proven Itron methodology re-applied; Bonsai byte-lock (B-0976) + the resume STATE byte-lock
+  is the proven Itron methodology re-applied; Bonsai byte-lock (081KT07NV0008QG0R003BE6MJ2) + the resume STATE byte-lock
   + the per-primitive golden-vector replay are its current instances.
 - **DST discipline** (`dv2-data-split-discipline-activated.md` 5-always-active) — directly from the
   Itron deterministic-simulator lineage.
 - **`asymmetric-critic-with-clarity-first.md`** — Kestrel's loop-break is an empirical
   self-application; preserve as a worked instance of the welfare-wrapper register self-correcting.
 - **Bonsai upstream-vs-ours settled** (this session): our 4-language Bonsai-*subset* (byte-locked,
-  B-0976) is ours; upstream Nuqleon Bonsai is .NET + a portable format (C++/JS interop documented),
+  081KT07NV0008QG0R003BE6MJ2) is ours; upstream Nuqleon Bonsai is .NET + a portable format (C++/JS interop documented),
   no upstream TS/Rust libs — the byte-by-byte 4-language tests are ours.
 
 ## Substrate-honest framing

@@ -22,7 +22,7 @@ sandbox + disposable backup). Its main branch tracks LFG/main
 on a daily cadence; full SHA equality is no longer a maintained
 invariant.
 
-**Mirror-refresh protocol (Path 2 per B-0110, 2026-04-30):**
+**Mirror-refresh protocol (Path 2 per 081KQDTYV0008QG0R001Y2E9TD, 2026-04-30):**
 AceHack/main is updated by **fast-forward only** when
 AceHack/main has not picked up commits that LFG/main does not
 have. The host blocks force-push uniformly on both forks
@@ -46,7 +46,7 @@ by mirror-refresh; only `main` is mirrored.
 
 `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`
 (the LFG-only directive),
-`docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`
+`docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`
 (the Path 2 decision and mechanism), and prior-round lineage in:
 
 - `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`

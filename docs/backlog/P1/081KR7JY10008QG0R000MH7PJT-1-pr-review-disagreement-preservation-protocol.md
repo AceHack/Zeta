@@ -1,6 +1,5 @@
 ---
-id: B-0164.1
-zetaid: 081KR7JY10008QG0R000MH7PJT
+id: 081KR7JY10008QG0R000MH7PJT
 priority: P1
 status: open
 title: "PR-review disagreement-preservation protocol (dual-loop AC #2)"
@@ -17,13 +16,13 @@ type: friction-reducer
 tags: [dual-loop, bft, pr-review, attribution, divergence-shard]
 ---
 
-# B-0164.1 — PR-review disagreement-preservation protocol
+# 081KR7JY10008QG0R000MH7PJT — PR-review disagreement-preservation protocol
 
 ## Context
 
-Extracted from B-0164 AC #2 during decomposition (2026-05-10).
+Extracted from 081KQJZR90008QG0R002GJAJ19 AC #2 during decomposition (2026-05-10).
 
-Parent row B-0164 (AC #4) already landed the divergence-shard schema
+Parent row 081KQJZR90008QG0R002GJAJ19 (AC #4) already landed the divergence-shard schema
 (`docs/hygiene-history/divergences/README.md`, PR #2475). That schema
 gives the format for preserving disagreements. This child row is the
 **protocol layer**: when two loops produce different conclusions on the
@@ -40,7 +39,7 @@ When both loops review the same PR thread and reach different conclusions:
    carry attribution.
 3. **A divergence shard is filed** at
    `docs/hygiene-history/divergences/YYYY/MM/DD/HHMMSSZ-<hash>.md` per
-   the schema in B-0164 AC #4. The shard captures:
+   the schema in 081KQJZR90008QG0R002GJAJ19 AC #4. The shard captures:
    - The PR number and thread being reviewed
    - Loop A's conclusion (with model-identifier)
    - Loop B's conclusion (with model-identifier)
@@ -65,11 +64,11 @@ glue needed to detect that two loops have reviewed the same thread.
 
 **Out of scope**: changing how PR reviews are submitted to GitHub (use
 existing `gh pr review` / `gh pr comment` surface); changing the divergence
-shard schema (already landed in B-0164 AC #4).
+shard schema (already landed in 081KQJZR90008QG0R002GJAJ19 AC #4).
 
 ## Current blocker
 
-The original B-0160 harness-side dependency is now closed, and the repo-native
+The original 081KQJZR90008QG0R000FTJ1TC harness-side dependency is now closed, and the repo-native
 detector/reader/writer pieces have landed. The remaining work is the live
 caller: a PR-review workflow path must capture two loop observations for the
 same GitHub review thread and invoke `fileReviewThreadDisagreement` when their
@@ -77,35 +76,35 @@ machine-comparable conclusions differ.
 
 Until that caller exists, AC #2 is not fully satisfied: a real dual-loop PR
 review can still produce differing conclusions without automatically filing a
-divergence shard. B-0164.3 remains separate; it decides tick cadence/topology
+divergence shard. 081KR7JY10008QG0R0035GWRQ0 remains separate; it decides tick cadence/topology
 after this row has an operational caller.
 
 ## Composes with
 
-- B-0164 (parent — divergence-shard schema, branch attribution, tick-shard attribution)
-- B-0160 (Claude Code harness integration prerequisite)
-- B-0164.3 (cron coordination — affects whether reviews arrive simultaneously or sequentially)
+- 081KQJZR90008QG0R002GJAJ19 (parent — divergence-shard schema, branch attribution, tick-shard attribution)
+- 081KQJZR90008QG0R000FTJ1TC (Claude Code harness integration prerequisite)
+- 081KR7JY10008QG0R0035GWRQ0 (cron coordination — affects whether reviews arrive simultaneously or sequentially)
 
 ## Pre-start checklist (gate completion — Riven 2026-05-10)
 
-**Prior-art-search** (surfaces: wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology B-0169, lost-files at `tools/hygiene/LOST-FILES-LOCATIONS.md`):
+**Prior-art-search** (surfaces: wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology 081KQJZR90008QG0R002D6XYHB, lost-files at `tools/hygiene/LOST-FILES-LOCATIONS.md`):
 
-- Grep for "divergence|disagreement|dual-loop|B-0164" surfaced PR #2475 (divergence-shard schema landed), B-0164 parent, ticks/README.md composition note, memory bivector convergence signals, no prior disagreement-preservation protocol impl.
-- Read canonical lost-files + AGENTS.md + BACKLOG.md + hygiene-history/divergences/README.md confirmed no conflicting substrate; all pointers point to B-0164 AC#4 as direct ancestor.
+- Grep for "divergence|disagreement|dual-loop|081KQJZR90008QG0R002GJAJ19" surfaced PR #2475 (divergence-shard schema landed), 081KQJZR90008QG0R002GJAJ19 parent, ticks/README.md composition note, memory bivector convergence signals, no prior disagreement-preservation protocol impl.
+- Read canonical lost-files + AGENTS.md + BACKLOG.md + hygiene-history/divergences/README.md confirmed no conflicting substrate; all pointers point to 081KQJZR90008QG0R002GJAJ19 AC#4 as direct ancestor.
 - Result: no duplicate work; protocol layer is novel but grounded in landed schema. (Full logs in round history if needed.)
 
 **Dependency-restructure**:
 
-- Walked depends_on: B-0160 (harness prereq, blocker confirmed).
-- Backfilled reciprocal `composes_with:` pointers on B-0164 row and B-0164.3.
-- Supersession history via decision-archaeology: extracted 2026-05-10 from B-0164; no broken pointers found.
+- Walked depends_on: 081KQJZR90008QG0R000FTJ1TC (harness prereq, blocker confirmed).
+- Backfilled reciprocal `composes_with:` pointers on 081KQJZR90008QG0R002GJAJ19 row and 081KR7JY10008QG0R0035GWRQ0.
+- Supersession history via decision-archaeology: extracted 2026-05-10 from 081KQJZR90008QG0R002GJAJ19; no broken pointers found.
 - Fixed: added explicit unblock path note.
 
 **Re-decomposition (assumed mistake in original "atomic" flag)**:
 
 - Item too broad (protocol def + tooling glue) + blocked on concurrent loops.
 - Split: this slice = gate + doc update only (safe, unblocked).
-- Follow-up child B-0164.1-impl (blocked) for dual-loop experiment harness once B-0160 lands.
+- Follow-up child 081KR7JY10008QG0R000MH7PJT-impl (blocked) for dual-loop experiment harness once 081KQJZR90008QG0R000FTJ1TC lands.
 - Status updated to "decomposed"; effort remains M for full but this slice S.
 
 **Focused checks run**:
@@ -121,7 +120,7 @@ after this row has an operational caller.
 - Prior "gate + doc update" decomposition contained error: the pre-start checklist + focused checks were already present in the row body, making a doc-edit step redundant.
 - True smallest safe slice: dedicated worktree + pushed claim branch + build-gate verification (0 warnings, 0 errors) + this PR (no substrate mutation required).
 - Re-decomp enforces "prefer F#/TS code over docs" + "one bounded step" + "substrate or it didn't happen".
-- No follow-up child needed for this slice; impl child B-0164.1-impl remains for when B-0160 unblocks dual execution.
+- No follow-up child needed for this slice; impl child 081KR7JY10008QG0R000MH7PJT-impl remains for when 081KQJZR90008QG0R000FTJ1TC unblocks dual execution.
 - This claim satisfies the start-gate and takes the single verifiable step without touching root checkout.
 
 ## Codex detector slice (2026-05-30)
@@ -151,7 +150,7 @@ after this row has an operational caller.
   stripped before the empty-check + keyword scan.
 - Pure (no GitHub, no concurrent-loop harness) → stays below the blocked
   end-to-end boundary. 11 focused tests (41 total in the file, 0 fail). Schema
-  unchanged (B-0164 AC #4 remains the source of truth; this slice only reads it).
+  unchanged (081KQJZR90008QG0R002GJAJ19 AC #4 remains the source of truth; this slice only reads it).
 - Natural next slice (still below the boundary): an I/O scanner over
   `docs/hygiene-history/divergences/**` that lists unreconciled shards by feeding
   each through `parseReconciliationStatus`. NOT in this slice (one bounded step).
@@ -204,7 +203,7 @@ Remaining slice:
   thread. A repo-wide search currently finds the detector/writer only in the
   hygiene module and tests, so no live path files the shard yet.
 
-B-0164.3 remains open for the dual-loop cron-topology decision and observation
+081KR7JY10008QG0R0035GWRQ0 remains open for the dual-loop cron-topology decision and observation
 window after this caller exists.
 
 ## Codex observation-recorder slice (2026-06-01)

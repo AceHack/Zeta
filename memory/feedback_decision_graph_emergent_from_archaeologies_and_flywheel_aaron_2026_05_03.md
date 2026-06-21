@@ -38,21 +38,21 @@ Each substrate convention encodes a specific typed edge:
 
 | Edge type | Where it lives | Typical example |
 |---|---|---|
-| `depends_on` | row frontmatter `depends_on: [...]` | B-0173 → B-0170 + B-0171 |
-| `composes_with` | row frontmatter `composes_with: [...]` + memo bodies | B-0169 ↔ B-0058 |
+| `depends_on` | row frontmatter `depends_on: [...]` | 081KQNJ500008QG0R003ZC6PK8 → 081KQNJ500008QG0R003SCWBDV + 081KQNJ500008QG0R001N94412 |
+| `composes_with` | row frontmatter `composes_with: [...]` + memo bodies | 081KQJZR90008QG0R002D6XYHB ↔ 081KQ3HBZ0008QG0R002S674CG |
 | `supersedes` (forward) + `superseded_by` (backward) | ADR `> **Superseded by** [link]` blockquote; CURRENT-*.md SUPERSEDE markers | router-coherence v2 → v1; CURRENT-aaron.md §4 → double-hop original |
 | `cites` (provenance) | decision-archaeology Layer 7-10 pointers; markdown links between memos | worked example #2 → Aarav notebook round 41 |
 | `verifies-against` | substrate-claim-checker output; CI log | "20 drift instances" claim → 20-row body table |
 | `attributes-to` | Layer 9 persona notebooks; Layer 2 git blame; Layer 3 commit signature | doctrine → maintainer commit signature |
-| `closes` | backlog row `status: closed` + `closed_by:` field; PR-merge SHA | B-0073 closure → "verified 0 open alerts on main" |
-| `composes_in_skill_domain_with` | future-skill-domain memo's canonical-starting-set tables | decision-archaeology + substrate-claim-checker (B-0170) — both in git-native-backlog-management domain |
+| `closes` | backlog row `status: closed` + `closed_by:` field; PR-merge SHA | 081KQ8P5D0008QG0R002RYXE89 closure → "verified 0 open alerts on main" |
+| `composes_in_skill_domain_with` | future-skill-domain memo's canonical-starting-set tables | decision-archaeology + substrate-claim-checker (081KQNJ500008QG0R003SCWBDV) — both in git-native-backlog-management domain |
 
 ## What the archaeologies + flywheel do to it
 
 | Mechanism | Graph operation |
 |---|---|
-| **decision-archaeology** (B-0169) | typed-edge **graph traversal** procedure (the 11-layer walk IS a typed-edge walk: blame→commit→log-S→shards→ADR→memos→notebook→research) |
-| **substrate-claim-checker** (B-0170) | graph **invariant checker** (count drift = node-property invariant; existence drift = node-existence invariant; semantic-equivalence drift = edge-equivalence invariant) |
+| **decision-archaeology** (081KQJZR90008QG0R002D6XYHB) | typed-edge **graph traversal** procedure (the 11-layer walk IS a typed-edge walk: blame→commit→log-S→shards→ADR→memos→notebook→research) |
+| **substrate-claim-checker** (081KQNJ500008QG0R003SCWBDV) | graph **invariant checker** (count drift = node-property invariant; existence drift = node-existence invariant; semantic-equivalence drift = edge-equivalence invariant) |
 | **at-creation/at-pickup discipline** (the depends_on backlog-search rule) | graph **edge-filling discipline** (forces depends_on edges to be filled at natural decision points instead of left empty by default) |
 | **Expansion flywheel** (the dual-loop consume + produce) | graph **growth function** (each row touched produces N≥0 new nodes/edges; flywheel condition E[N]>1 means graph grows even while nodes close) |
 | **Hub-satellite separation** (Aaron's skill-design rule 1) | graph **stratification** (hubs = stable nodes; satellites = time-evolved nodes pointing back to hubs; cross-skill references = links per DataVault 2.0) |
@@ -82,11 +82,11 @@ A **DataVault-2.0-shaped provenance graph** — PROV-O (W3C Provenance Ontology)
 
 ### Compositions with existing tools
 
-- **substrate-claim-checker (B-0170) v1+** — extends to graph-invariant checks (cycles in depends_on; broken `composes_with` references; orphan nodes)
-- **decision-archaeology (B-0169) skill** — its 11-layer walk becomes a TS-implementable graph traversal procedure (one TS file per sub-mode + layer)
-- **OpenSpec catch-up (B-0171)** — the catalogue of capabilities + their consequents IS a subgraph; OpenSpec backfill populates the spec→implementation edges
-- **Skill-domain plugin packaging (B-0172)** — plugins are sub-graph bundles; the canonical bundle format documents which nodes + edges to include
-- **Hook authoring (B-0173)** — pre-condition / post-condition contracts are edge-property checks (does this commit's PR# match the `closes:` field on the closing backlog row?)
+- **substrate-claim-checker (081KQNJ500008QG0R003SCWBDV) v1+** — extends to graph-invariant checks (cycles in depends_on; broken `composes_with` references; orphan nodes)
+- **decision-archaeology (081KQJZR90008QG0R002D6XYHB) skill** — its 11-layer walk becomes a TS-implementable graph traversal procedure (one TS file per sub-mode + layer)
+- **OpenSpec catch-up (081KQNJ500008QG0R001N94412)** — the catalogue of capabilities + their consequents IS a subgraph; OpenSpec backfill populates the spec→implementation edges
+- **Skill-domain plugin packaging (081KQNJ500008QG0R001VGMS5G)** — plugins are sub-graph bundles; the canonical bundle format documents which nodes + edges to include
+- **Hook authoring (081KQNJ500008QG0R003ZC6PK8)** — pre-condition / post-condition contracts are edge-property checks (does this commit's PR# match the `closes:` field on the closing backlog row?)
 
 ## Why this is the right shape
 
@@ -94,7 +94,7 @@ Per Aaron's skill-design rules + the verify-then-claim discipline:
 
 - **Hub-satellite recursion** (skill-design rule 1) maps directly to graph-vertex-stratification: hubs = stable substrate (skills, ADRs, BP rules), satellites = time-evolved substrate (memos, tick shards, research artifacts). The graph naturally has this two-tier structure.
 - **No-dynamic-commands** (skill-design rule 2) means edge-implementations are TS files; the graph's executable substrate is type-checked at extract-time.
-- **Spec-based development / OpenSpec source-of-truth** (skill-design rule 3 + B-0171) means specs are the most-canonical hub class; satellite nodes derive from / serve / reference specs.
+- **Spec-based development / OpenSpec source-of-truth** (skill-design rule 3 + 081KQNJ500008QG0R001N94412) means specs are the most-canonical hub class; satellite nodes derive from / serve / reference specs.
 - **The verify-then-claim discipline** + its mechanization (substrate-claim-checker) generalize naturally to graph-invariant checking: any claim about graph properties (node existence, edge count, cycle absence, supersession chain coherence) becomes a check-type the tool can verify.
 
 ## What this teaches operationally
@@ -112,11 +112,11 @@ Per Aaron's skill-design rules + the verify-then-claim discipline:
 - `memory/feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_aaron_2026_05_02.md` — the flywheel that grows the graph
 - `memory/feedback_git_native_backlog_management_long_arc_future_skill_domain_aaron_2026_05_02.md` — the future skill domain whose mechanization includes graph-tooling
 - `memory/feedback_multi_harness_alignment_convergence_design_future_skill_domain_aaron_2026_05_03.md` — multi-harness graph queries (the graph is harness-agnostic substrate)
-- `docs/backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md` — graph traversal procedure
-- `docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md` — graph invariant checker
-- `docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md` — populates spec→implementation edges
-- `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05-03.md` — sub-graph packaging
-- `docs/backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` — edge-property checks at commit / merge time
+- `docs/backlog/P1/081KQJZR90008QG0R002D6XYHB-decision-archaeology-skill-aaron-2026-05-02.md` — graph traversal procedure
+- `docs/backlog/P1/081KQNJ500008QG0R003SCWBDV-substrate-claim-checker-ts-tool-aaron-2026-05-03.md` — graph invariant checker
+- `docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md` — populates spec→implementation edges
+- `docs/backlog/P2/081KQNJ500008QG0R001VGMS5G-skill-domain-plugin-packaging-aaron-2026-05-03.md` — sub-graph packaging
+- `docs/backlog/P1/081KQNJ500008QG0R003ZC6PK8-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md` — edge-property checks at commit / merge time
 - 3 worked examples (`docs/research/2026-05-{02,03}-decision-archaeology-worked-example-{1,2,3}-*.md`) — the procedure walked across 3 sub-modes
 
 ## Carved sentence

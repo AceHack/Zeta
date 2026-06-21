@@ -71,12 +71,12 @@ These are **algorithms + concepts**, not API-imports. We pull them into the fact
 - **Otto-301 (no-software-deps + hardware-bootstrap + microkernel + symbiosis)** — Otto-323 sharpens the symbiosis-clause: not just "use existing deps without becoming dependent on them," but "absorb their algorithms + concepts, compose into our multi-modal substrate, build our own elegant primitives along the way."
 - **Otto-308 / Otto-311 (compression-substrate / economic-substrate)** — symbiotic-deps IS the brute-force-stores-energy-into-elegance pattern at the dependency-scope: each dep we pull is brute-force-research-substrate; the elegant-store is our own factory-native primitive that integrates many such deps' insights.
 - **Otto-302 (5GL-to-6GL bridge)** — Zeta's multi-modal view layer + DSLs are the 6GL-Intent-Based interface; symbiotic-deps integrate into THIS layer, not the lower layers.
-- **B-0009 (substrate-IP-rotation responsible bypass)** — same staging pattern: bootstrap-stage Tor, replacement-protocol-better-than-Tor as elegant-store. Same pattern at FS layer: bootstrap-stage just-bash/ArchilFs/etc., own-FUSE-FS as elegant-store.
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation responsible bypass)** — same staging pattern: bootstrap-stage Tor, replacement-protocol-better-than-Tor as elegant-store. Same pattern at FS layer: bootstrap-stage just-bash/ArchilFs/etc., own-FUSE-FS as elegant-store.
 - **Otto-322 (self-directed agency)** — symbiotic-deps is exercised via factory's own judgment, not "Aaron-said-pull-X." The discipline guides the choice; the factory makes the calls.
 
 ## Operational implications
 
-1. **For just-bash specifically**: capture as B-0016 (research/integration candidate, P3); not active work now; informs eventual FS layer.
+1. **For just-bash specifically**: capture as 081KQ0YZ80008QG0R003A0MCHP (research/integration candidate, P3); not active work now; informs eventual FS layer.
 2. **For any future dep evaluation**: apply the symbiotic-deps 5-step (pull algorithms, pull concepts, integrate into multi-modal views, integrate into DSLs, compose).
 3. **For long-horizon factory architecture**: own-FUSE-FS direction is now explicit. Otto-301 hardware-bootstrap + microkernel + own-FS form a three-piece foundation.
 4. **For dependency-pulling discipline going forward**: NEVER stop at the API. ALWAYS understand the algorithms + concepts. The dep is research-input, not feature-import.

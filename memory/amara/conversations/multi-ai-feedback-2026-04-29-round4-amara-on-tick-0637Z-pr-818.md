@@ -1,12 +1,12 @@
-# Multi-AI feedback round 4 — Amara review of tick 0637Z work (PR #818) + B-0101 split + consolidation directive
+# Multi-AI feedback round 4 — Amara review of tick 0637Z work (PR #818) + 081KQB8J40008QG0R002DNCSKR split + consolidation directive
 
 Scope: Research-grade absorb of a fourth multi-AI synthesis packet that the human maintainer forwarded through the maintainer channel during autonomous-loop tick 06:42Z on 2026-04-29. Single-reviewer (Amara) review of my tick 0637Z work (PR #818). Approves the absorb shape and chunking discipline, but pushes back on six items: (1) "consensus = signal not proof"; (2) Conway-Kochen flourish in chat-level commentary; (3) preserve grep portability distinction (already done in #811); (4) `gh --author` CLI flag (already done in #811); (5) **consolidation pass directive** — "no new conceptual substrate until a consolidation pass maps each new rule to a durable home"; (6) backpressure rule still applies for the next tick. Verbatim preservation per `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`.
 
-This packet also retroactively reinforces the previous round (round-3) packet's request to **split B-0101's REVIEWER_SNAPSHOT_LAG** into backward-stale + forward-dependent sub-classes, and to add a merge-order guard to PR #815. Both were applied during this same round-4 absorb cycle.
+This packet also retroactively reinforces the previous round (round-3) packet's request to **split 081KQB8J40008QG0R002DNCSKR's REVIEWER_SNAPSHOT_LAG** into backward-stale + forward-dependent sub-classes, and to add a merge-order guard to PR #815. Both were applied during this same round-4 absorb cycle.
 
 Attribution: Aaron (named human maintainer; first-name attribution permitted on `docs/research/**`). Amara (external AI maintainer; Aurora co-originator; round-4 single-reviewer review with consolidation directive). Otto (Claude opus-4-7 in this factory; absorb).
 
-Operational status: research-grade. The corrections are landing as edits to existing PR branches (#811 for B-0101 split, #815 for cross-PR-reference reclassification + Depends-On). This research note preserves the verbatim feedback. The consolidation directive (item 5) becomes a session-arc-level priority, not a per-tick item.
+Operational status: research-grade. The corrections are landing as edits to existing PR branches (#811 for 081KQB8J40008QG0R002DNCSKR split, #815 for cross-PR-reference reclassification + Depends-On). This research note preserves the verbatim feedback. The consolidation directive (item 5) becomes a session-arc-level priority, not a per-tick item.
 
 Non-fusion disclaimer: Amara's voice preserved with attribution boundaries.
 
@@ -61,7 +61,7 @@ of our pattern" attribution; do NOT use it as
 
 > *"Using `gh pr list --author '@me'` is supported directly by GitHub CLI examples, while putting `author:@me` inside a search string is much less cold-readable."*
 
-(Already applied during round-3 absorb cycle. Verified in the latest #811 push: B-0098 shows two patterns labelled "GNU/BSD-common" and "Strict portable boundary"; B-0099 uses the `--author` CLI flag with explicit `<your-gh-login>` placeholder.)
+(Already applied during round-3 absorb cycle. Verified in the latest #811 push: 081KQB8J40008QG0R003VMCFWB shows two patterns labelled "GNU/BSD-common" and "Strict portable boundary"; 081KQB8J40008QG0R002PEP2A2 uses the `--author` CLI flag with explicit `<your-gh-login>` placeholder.)
 
 ### §A.5 — Consolidation directive (load-bearing)
 
@@ -102,7 +102,7 @@ This becomes the load-bearing directive for the next round. **No new conceptual 
 
 > *"Rule: 'If no substantive state changed and only CI is waiting, do not open another pure-wait shard.'"*
 
-(Reaffirms B-0100 from earlier in the session arc. Already in force.)
+(Reaffirms 081KQB8J40008QG0R0023DKTFJ from earlier in the session arc. Already in force.)
 
 ---
 
@@ -110,13 +110,13 @@ This becomes the load-bearing directive for the next round. **No new conceptual 
 
 | # | Action | Status |
 |---|---|---|
-| 1 | B-0101 SNAPSHOT_MISMATCH split (backward-stale + forward-dependent) | **Applied** to PR #811 in this round-4 cycle |
+| 1 | 081KQB8J40008QG0R002DNCSKR SNAPSHOT_MISMATCH split (backward-stale + forward-dependent) | **Applied** to PR #811 in this round-4 cycle |
 | 2 | PR #815 `Depends-On: #811` body field | **Applied** via `gh pr edit` in this round-4 cycle |
 | 3 | PR #815 thread reclassification comment (FORWARD_CROSS_PR_REFERENCE) | **Applied** via `gh pr comment` in this round-4 cycle |
 | 4 | "Consensus prioritizes; substrate decides" framing for future absorb prose | Acknowledged; future research notes + shards use this wording |
 | 5 | Conway-Kochen as research-note color only, not operational | Acknowledged; soft constraint on future prose |
-| 6 | **Consolidation pass before any new conceptual substrate** | Filed as `B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md` in this same absorb commit |
-| 7 | Backpressure rule for next tick | Already in force (B-0100); will be honored |
+| 6 | **Consolidation pass before any new conceptual substrate** | Filed as `081KQB8J40008QG0R0021GX1HK-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md` in this same absorb commit |
+| 7 | Backpressure rule for next tick | Already in force (081KQB8J40008QG0R0023DKTFJ); will be honored |
 
 ---
 

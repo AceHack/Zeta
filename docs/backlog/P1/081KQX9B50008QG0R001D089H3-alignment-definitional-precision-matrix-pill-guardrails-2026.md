@@ -1,6 +1,5 @@
 ---
-id: B-0220
-zetaid: 081KQX9B50008QG0R001D089H3
+id: 081KQX9B50008QG0R001D089H3
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - definition precision and matrix-pill guardrails"
@@ -12,9 +11,9 @@ classification: buildable-after-rigor-floor
 type: friction-reducer
 ---
 
-# B-0220 - Definition precision and guardrails
+# 081KQX9B50008QG0R001D089H3 - Definition precision and guardrails
 
-Apply the definitional-precision discipline to the B-0003
+Apply the definitional-precision discipline to the 081KQ0YZ80008QG0R001QJJTVF
 rewrite and make the matrix-pill / poison-pill distinction
 operational.
 

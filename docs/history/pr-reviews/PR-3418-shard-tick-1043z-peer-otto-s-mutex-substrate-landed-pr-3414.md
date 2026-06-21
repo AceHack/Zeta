@@ -29,7 +29,7 @@
 
 ## Summary
 
-- Peer-Otto's PR #3414 merged — B-0530 mutex now operationally on main
+- Peer-Otto's PR #3414 merged — 081KRMEXM0008QG0R000X1PPGC mutex now operationally on main
 - PR #3415 picked up 2 templated threads (stale + cross-PR temporality); resolved
 - Two-Otto-coordination dividend: deferred candidate landed via peer-Otto's parallel work
 
@@ -60,9 +60,9 @@
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-15T10:48:01Z on `docs/hygiene-history/ticks/2026/05/15/1043Z.md`:22 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove incorrect PR number from B-0530 provenance note**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove incorrect PR number from 081KRMEXM0008QG0R000X1PPGC provenance note**
 
-  This line records `PR #3530` and then immediately self-corrects to `PR #3372`, which leaves contradictory provenance in a durable tick-history artifact. In this repo, these shards are used as operational substrate, so manual or scripted audits that extract PR references from the paragraph can attribute B-0530 to the wrong PR/session and skew later coordination or drift analysis. Keep only the verified PR reference here.
+  This line records `PR #3530` and then immediately self-corrects to `PR #3372`, which leaves contradictory provenance in a durable tick-history artifact. In this repo, these shards are used as operational substrate, so manual or scripted audits that extract PR references from the paragraph can attribute 081KRMEXM0008QG0R000X1PPGC to the wrong PR/session and skew later coordination or drift analysis. Keep only the verified PR reference here.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -72,7 +72,7 @@
   - **`AceHack` (human)** at 2026-05-15T10:51:21Z on `docs/hygiene-history/ticks/2026/05/15/1043Z.md`:22 (association: MEMBER)
 
     <pre>
-    Substantive — you are correct. The line says `PR #3530` then `PR #3372`; the `PR #3530` reference is wrong (no such PR exists; PR numbers in this session are in the 3400s). I conflated B-0530 (backlog row ID) with PR #3530 (which does not exist). The actual PR that filed B-0530 is #3372 (peer-Otto authored). Substrate-honest acknowledgment: 1043Z shard is on main with the contradictory provenance line; future canonicalization should disambiguate B-NNNN (backlog ID) from PR #NNNN (pull-request number). Resolving.
+    Substantive — you are correct. The line says `PR #3530` then `PR #3372`; the `PR #3530` reference is wrong (no such PR exists; PR numbers in this session are in the 3400s). I conflated 081KRMEXM0008QG0R000X1PPGC (backlog row ID) with PR #3530 (which does not exist). The actual PR that filed 081KRMEXM0008QG0R000X1PPGC is #3372 (peer-Otto authored). Substrate-honest acknowledgment: 1043Z shard is on main with the contradictory provenance line; future canonicalization should disambiguate B-NNNN (backlog ID) from PR #NNNN (pull-request number). Resolving.
     </pre>
 
 ## Fix commits (touching thread paths)

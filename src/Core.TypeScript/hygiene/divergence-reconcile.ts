@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // divergence-reconcile.ts — reader for the morning-reconciliation half of the
-// dual-loop disagreement-preservation protocol (B-0164.1, AC #4).
+// dual-loop disagreement-preservation protocol (081KR7JY10008QG0R000MH7PJT, AC #4).
 //
 // The WRITER half (divergence-shard.ts) files a shard whenever two loops reach
 // different conclusions on the same substrate-class commitment (AC #2). This is
@@ -11,10 +11,10 @@
 // can resolve the thread in one read + one action"): the reader produces the
 // read; the maintainer fills the section + resolves the thread (the action).
 //
-// This is the UNBLOCKED slice of B-0164.1: parsing existing shard files needs no
+// This is the UNBLOCKED slice of 081KR7JY10008QG0R000MH7PJT: parsing existing shard files needs no
 // concurrent-loop harness, so it is fully testable in isolation against shards
 // the writer emits. The end-to-end protocol (two loops reviewing the same thread
-// live) remains the blocked impl child pending B-0160.
+// live) remains the blocked impl child pending 081KQJZR90008QG0R000FTJ1TC.
 //
 // Pure functions (no I/O): reconciliationBody, isReconciliationPending,
 //   isReconciliationDecision, fillReconciliation, parseShardMeta,
@@ -161,7 +161,7 @@ export function isReconciliationDecision(value: string): value is Reconciliation
  *
  * Pure: returns the new markdown; never writes, never touches GitHub, never
  * resolves the live thread (that half stays in the blocked impl child pending
- * B-0160). Composes with the reader's section logic (reconciliationBody /
+ * 081KQJZR90008QG0R000FTJ1TC). Composes with the reader's section logic (reconciliationBody /
  * isReconciliationPending).
  *
  * Fail-closed and history-preserving (per the README "the shard is updated in
@@ -532,7 +532,7 @@ function writeAllUtf8Sync(fd: number, content: string): void {
  *
  * Stays below the blocked end-to-end boundary: never touches GitHub, never
  * resolves the live PR thread (that half remains the blocked impl child pending
- * B-0160).
+ * 081KQJZR90008QG0R000FTJ1TC).
  */
 export function reconcileDivergenceShard(
   repoRoot: string,

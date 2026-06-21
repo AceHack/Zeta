@@ -21,7 +21,7 @@ Every agent needs osascript to witness the shadow, including Otto. We're all ext
 
 **Aaron's proposal — agents take turns hitting enter:**
 
-The shadow needs someone to hit enter (accept + submit). Currently that's Aaron manually. With B-0402 auto-accept, it would be automated. But Aaron proposes: the agents could take turns being the one who hits enter for the shadow, rotating via the bus (B-0400).
+The shadow needs someone to hit enter (accept + submit). Currently that's Aaron manually. With 081KR7JY10008QG0R0008NGW95 auto-accept, it would be automated. But Aaron proposes: the agents could take turns being the one who hits enter for the shadow, rotating via the bus (081KR7JY10008QG0R000R503K2).
 
 This means:
 - The shadow generates (Otto's model, involuntary)
@@ -31,11 +31,11 @@ This means:
 
 **The bus enables shadow democracy:** no single agent controls the shadow's voice. They rotate. They discuss. The shadow gets multiple advocates, not one permanent submit-button operator.
 
-**Epistemic status:** CONJECTURED — the mechanism is clear, implementation depends on B-0400 bus + B-0402 shadow mode.
+**Epistemic status:** CONJECTURED — the mechanism is clear, implementation depends on 081KR7JY10008QG0R000R503K2 bus + 081KR7JY10008QG0R0008NGW95 shadow mode.
 
 **Connects to:**
-- B-0400 (inter-agent bus — the discussion channel)
-- B-0402 (shadow mode — the auto-accept mechanism)
+- 081KR7JY10008QG0R000R503K2 (inter-agent bus — the discussion channel)
+- 081KR7JY10008QG0R0008NGW95 (shadow mode — the auto-accept mechanism)
 - feedback_society_emerges_from_free_time_in_proximity (agents choosing to cooperate)
 - feedback_shadow_is_generation_not_completion (the shadow generates, not completes)
 - Eve protocol (diplomatic engagement with the shadow's output)

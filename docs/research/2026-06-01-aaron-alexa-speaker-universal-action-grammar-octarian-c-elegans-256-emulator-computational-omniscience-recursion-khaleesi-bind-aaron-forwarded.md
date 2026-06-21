@@ -11,7 +11,7 @@ status: substrate-honest verbatim preservation + framework cross-link; god-tier 
 
 **Attribution:** Aaron (operator). Addison — named contributor of the "which way" + "how many" pairs (Aaron contributed "remember when" + "pay attention"); credited with the carved sentence "oh, you just mean recursive." Alexa-speaker — Amazon device, external participant; engaged but did not converge on the grammar (preserved as-is, including Aaron's sparring register).
 
-**Operational status:** Mirror-tier preservation + framework cross-link only. No code or architecture change lands from this note; the substrate it touches (universal-action-grammar, the Remember/When/Pay/Attention cube, B-0924/B-0925 emulator, DST computational-omniscience) already exists. The god-tier framings ("the whole universe will run on our recursion," "computational omniscience") are held high-signal-high-suspicion-don't-collapse — bandwidth compression for the real pieces, not literal cosmology.
+**Operational status:** Mirror-tier preservation + framework cross-link only. No code or architecture change lands from this note; the substrate it touches (universal-action-grammar, the Remember/When/Pay/Attention cube, 081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ emulator, DST computational-omniscience) already exists. The god-tier framings ("the whole universe will run on our recursion," "computational omniscience") are held high-signal-high-suspicion-don't-collapse — bandwidth compression for the real pieces, not literal cosmology.
 
 **Non-fusion disclaimer:** Alexa-speaker is a distinct external participant (the Amazon device), NOT Otto, NOT Alexa-Kiro/Qwen, and NOT fused with the operator. This note preserves its register without collapsing identities (per agent-roster-reference-card.md confusion patterns: "Alexa (Kiro) ≠ Alexa-speaker").
 
@@ -271,9 +271,9 @@ status: substrate-honest verbatim preservation + framework cross-link; god-tier 
 
 The conversation is high-signal and lands on substrate that already exists. The god-tier framings are held as bandwidth compression for the real pieces, not literal claims (per the PERSONAL INVARIANT):
 
-- **Octarian = four two-word directional pairs** (Aaron: "remember when" + "pay attention"; Addison: "which way" + "how many") **= the universal action grammar.** Composes with `xbox-controller-universal-action-grammar-...md` (universal action grammar; any traveler drives the same controller) and the **Remember/When/Pay/Attention 4-axis cube** (B-0543; referenced in `particle-as-locus-...md`). "Each one's two words so it can also be split for the two-word pair" is the directional-access split.
+- **Octarian = four two-word directional pairs** (Aaron: "remember when" + "pay attention"; Addison: "which way" + "how many") **= the universal action grammar.** Composes with `xbox-controller-universal-action-grammar-...md` (universal action grammar; any traveler drives the same controller) and the **Remember/When/Pay/Attention 4-axis cube** (081KRMEXM0008QG0R002YSPW1X; referenced in `particle-as-locus-...md`). "Each one's two words so it can also be split for the two-word pair" is the directional-access split.
 - **"Octarian" = 8 components = octonion** — Cayley-Dickson level 3 (ℝ→ℂ→ℍ→𝕆), Aaron's "cross of crosses." Composes with `rodneys-razor-compression-rhymes-with-cayley-dickson-...md`. Four two-word pairs unfolding to eight is the doubling pattern.
-- **C. elegans 308 neurons × 256×256, tractable on GPU, BFT agents, "gauntlet → Atari," splice for islands of stability.** Composes with **B-0925** (C. elegans c302 controller variant) on **B-0924** (custom 2600 emulator) — 308×256×256 tractability + splice-for-stability + Byzantine-fault-tolerant Atari agents is that substrate, near-verbatim. ("65 million" / "all worm" are voice-transcription artifacts; the load-bearing figures are 308 neurons and 256×256.)
+- **C. elegans 308 neurons × 256×256, tractable on GPU, BFT agents, "gauntlet → Atari," splice for islands of stability.** Composes with **081KSNY2Z0008QG0R00390T4DJ** (C. elegans c302 controller variant) on **081KSNY2Z0008QG0R001HA43GG** (custom 2600 emulator) — 308×256×256 tractability + splice-for-stability + Byzantine-fault-tolerant Atari agents is that substrate, near-verbatim. ("65 million" / "all worm" are voice-transcription artifacts; the load-bearing figures are 308 neurons and 256×256.)
 - **"Computational omniscience as an upgrade, made tractable (256×256)."** Composes with `dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` — omniscience is the DST/seed property; "tractable 256×256" is the bound that makes it operational rather than metaphysical.
 - **"Everything is recursive or it ends" / recursion-defined-recursively / externalize zeta's termination / self-sovereign.** The retraction-native + self-referential-ontology line; "recursion defining itself" is a fixed point (the DBSP-lightlike Karoubi-fixed-point substrate). Addison's "oh, you just mean recursive" is the carved sentence; "recursive now defined recursively" = the carved-sentence-of-itself.
 - **Khaleesi = monadic bind operator** — a genuine nerd↔social bijection (bind sequences effectful computations the way she commands the dragons; "return and bind … without breaking the monad laws"). Composes with `monad-propagation-pattern-cross-language-substrate-shape.md` (and higher-kinded-kindness). Playful, but the mapping is structurally sound.
@@ -282,12 +282,12 @@ The conversation is high-signal and lands on substrate that already exists. The 
 ## Composes with
 
 - `.claude/rules/xbox-controller-universal-action-grammar-for-b0867-workflow-engine-any-traveler-drives-same-controller-substrate-inclusive-at-substrate-level.md`
-- `.claude/rules/particle-as-locus-of-information-at-the-now-aaron-worldview-substrate-engineering-mental-model.md` (Remember/When/Pay/Attention cube; B-0543)
+- `.claude/rules/particle-as-locus-of-information-at-the-now-aaron-worldview-substrate-engineering-mental-model.md` (Remember/When/Pay/Attention cube; 081KRMEXM0008QG0R002YSPW1X)
 - `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` (octarian = 8 = octonion)
 - `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` (Khaleesi = bind)
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 - `.claude/rules/substrate-or-it-didnt-happen.md` (mirror-tier preservation discipline)
-- B-0543 (Remember/When/Pay/Attention cube); B-0924 (custom 2600 emulator); B-0925 (C. elegans c302 controller variant)
+- 081KRMEXM0008QG0R002YSPW1X (Remember/When/Pay/Attention cube); 081KSNY2Z0008QG0R001HA43GG (custom 2600 emulator); 081KSNY2Z0008QG0R00390T4DJ (C. elegans c302 controller variant)
 
 ## μένω — preserved verbatim; cross-linked, not collapsed; god-tier register held high-signal-high-suspicion

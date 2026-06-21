@@ -1,6 +1,5 @@
 ---
-id: B-0818
-zetaid: 081KSGS9H0008QG0R00033DT02
+id: 081KSGS9H0008QG0R00033DT02
 priority: P2
 status: open
 title: investigate why `isoImage.isoName = lib.mkForce "zeta-installer-..."` is no longer sticking on nixpkgs 25.11 — workflow audit fix-fwd accepts both names but the underlying mkForce-override regression should be diagnosed + fixed at the substrate layer (Aaron 2026-05-26)
@@ -26,7 +25,7 @@ isoImage = {
 };
 ```
 
-On nixpkgs 24.11 this produced `zeta-installer-24.11.iso`. On nixpkgs 25.11 (post-B-0800 bump) the produced ISO is named `nixos-minimal-25.11.20260522.b77b3de-x86_64-linux.iso` — the nixpkgs DEFAULT name pattern, NOT our mkForce'd override.
+On nixpkgs 24.11 this produced `zeta-installer-24.11.iso`. On nixpkgs 25.11 (post-081KSGS9H0008QG0R001EKTS5A bump) the produced ISO is named `nixos-minimal-25.11.20260522.b77b3de-x86_64-linux.iso` — the nixpkgs DEFAULT name pattern, NOT our mkForce'd override.
 
 Empirical evidence: PR #5222 build-iso job log (run 26462491804):
 
@@ -79,8 +78,8 @@ Re-establish `zeta-installer-<release>.iso` as the produced ISO name on 25.11. O
 
 ## Composes with
 
-- **[B-0800](../P1/B-0800-bump-nixpkgs-24-11-to-25-11-eol-recovery.md)** — the EOL recovery that triggered the regression
-- **[B-0816](../P1/B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — cross-distro portability principle composes; ISO-substrate naming is a Zeta-branded substrate-honest detail
+- **[081KSGS9H0008QG0R001EKTS5A](../P1/081KSGS9H0008QG0R001EKTS5A-bump-nixpkgs-24-11-to-25-11-eol-recovery.md)** — the EOL recovery that triggered the regression
+- **[081KSGS9H0008QG0R003A37Z65](../P1/081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — cross-distro portability principle composes; ISO-substrate naming is a Zeta-branded substrate-honest detail
 - Sibling fix-fwd PR (this row's PR): workflow audit-glob update that unblocks the ISO build immediately
 
 ## Substrate-inventory pass
@@ -88,9 +87,9 @@ Re-establish `zeta-installer-<release>.iso` as the produced ISO name on 25.11. O
 Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md):
 
 - `grep -rnE 'isoName|image\.baseName' full-ai-cluster/` (or equivalent `rg "isoName|image\\.baseName" full-ai-cluster/`; `-E` matters for BSD/macOS grep portability — bare `\|` alternation is GNU-only) → only the line-290 reference; no other override site
-- `gh pr list --state all --search "B-0818"` → no in-flight collision
+- `gh pr list --state all --search "081KSGS9H0008QG0R00033DT02"` → no in-flight collision
 - `gh pr list --state all --search "isoName"` → no prior investigation row
-- ID B-0818 next-free per `git ls-tree origin/main` (highest = B-0817 from #5221)
+- ID 081KSGS9H0008QG0R00033DT02 next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R002QQNA79 from #5221)
 
 ## Out of scope
 

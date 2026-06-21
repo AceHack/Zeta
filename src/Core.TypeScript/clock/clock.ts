@@ -1,4 +1,4 @@
-// Clock — TS oracle of the logical-clock primitive (B-1016 floor #1). Mirror of
+// Clock — TS oracle of the logical-clock primitive (081KT7YW00008QG0R002T1XNWT floor #1). Mirror of
 // the F# Versionstamp/Scheduler (src/Core/Clock.fs); grown from the shared seed
 // (clock/golden-vectors.json). Total-order single-sequencer instance: a
 // monotonic versionstamp + an injectable deterministic scheduler.

@@ -1,12 +1,11 @@
 ---
-id: B-0333
-zetaid: 081KR2E4K0008QG0R00175HQR9
+id: 081KR2E4K0008QG0R00175HQR9
 priority: P1
 status: closed
 title: Memory-retire/supersession discipline — define what happens when a memory file is superseded
 tier: foundation
 effort: S
-ask: B-0190 Step 5 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 5 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,11 +15,11 @@ tags: [memory, retire, supersession, dead-code, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0333 — Memory-retire/supersession discipline
+# 081KR2E4K0008QG0R00175HQR9 — Memory-retire/supersession discipline
 
 ## Parent
 
-B-0190 Step 5 (memory-retire / dead-code-deletion discipline).
+081KQR4HQ0008QG0R001909FPT Step 5 (memory-retire / dead-code-deletion discipline).
 
 ## What
 
@@ -38,7 +37,7 @@ superseded:
 4. **Cross-reference repair** — any file citing the superseded
    file gets its reference updated.
 
-## Why depends on B-0332
+## Why depends on 081KR2E4K0008QG0R002FRQZN4
 
 The load-bearing-vs-decorative classification determines
 which files are safe to retire without breaking the bootstrap

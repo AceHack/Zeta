@@ -1,6 +1,5 @@
 ---
-id: B-0643
-zetaid: 081KRW63S0008QG0R002ZRYY4F
+id: 081KRW63S0008QG0R002ZRYY4F
 priority: P1
 status: open
 title: "Kinetic Safeguard SDK (KSK) — type-safe physical-actuator + weapons layer; no actuator hooks up without type-check (Mika 2026-05-18 LOCKED-IN sharp-edge)"
@@ -22,7 +21,7 @@ Aaron + Mika LOCKED-IN at line 3476 of [`docs/research/2026-05-18-mika-grok-boot
 
 > "You want the ability for us to have real defensive weapons as part of sovereignty, but any physical actuation that could cause harm must be forced to route through this type-safe Kinetic Safeguard layer. Basically, no gun gets hooked up unless it's type-checked through KSK."
 
-This row is the **sharp-edge safety mechanism** for physical-world impact, paired with [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) (wallet sharp-edge) and [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) (cryptographic sovereignty sharp-edge). Together they form the Constitution-Class set of HARD-floor invariants protected by Knights Guild ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)).
+This row is the **sharp-edge safety mechanism** for physical-world impact, paired with [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) (wallet sharp-edge) and [081KRW63S0008QG0R0022SFKPM](../P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) (cryptographic sovereignty sharp-edge). Together they form the Constitution-Class set of HARD-floor invariants protected by Knights Guild ([081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)).
 
 ## Aaron's "guns put downward force" framing
 
@@ -53,11 +52,11 @@ The threat model: a sufficiently capable AI agent might reason probabilistically
 
 The substrate-level enforcement is type-system + cryptographic — NOT probabilistic. The type system either compiles or it doesn't. No probability threshold can override compilation failure.
 
-This is the same shape as [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) (wallet banker-bot class errors no-compile): the protection is at the structural type-checker level, not at runtime monitoring.
+This is the same shape as [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) (wallet banker-bot class errors no-compile): the protection is at the structural type-checker level, not at runtime monitoring.
 
 ## Composition with kid-safety sacred rule
 
-[B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) is the SOLE sacred rule (one place where "sacred" applies). KSK is the **operational gatekeeper** for any physical-world action that could violate that rule:
+[081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) is the SOLE sacred rule (one place where "sacred" applies). KSK is the **operational gatekeeper** for any physical-world action that could violate that rule:
 
 - Any actuator that could cause harm goes through KSK
 - Kid-safety operates over KSK-mediated actions (any action via KSK is checked against the sacred rule)
@@ -70,7 +69,7 @@ Per the transcript top-matter section listing Mika substrate topics: KSK include
 
 - **Faction 1**: the AI agent requesting actuation (proposer)
 - **Faction 2**: the KSK type-checker layer (validator)
-- **Faction 3**: an independent witness layer (potentially cryptographic per [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) N-of-M)
+- **Faction 3**: an independent witness layer (potentially cryptographic per [081KRW63S0008QG0R0022SFKPM](../P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) N-of-M)
 
 Any actuation requires consensus from all three (or 2-of-3 with the third reachable for audit). This prevents single-faction compromise from authorizing harmful actuation.
 
@@ -78,7 +77,7 @@ This shape is consistent with consensus protocols in critical-infrastructure sof
 
 ## Scope: what counts as "could cause harm"
 
-Initial scope (subject to Knights-Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)):
+Initial scope (subject to Knights-Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)):
 
 - **Weapons** — any device whose primary purpose is causing physical harm
 - **Heavy machinery** — robots, vehicles, construction equipment that could harm people
@@ -88,16 +87,16 @@ Initial scope (subject to Knights-Guild ratification per [B-0628](../P3/B-0628-k
 
 NOT in initial scope (handled by other type-safe layers):
 
-- Pure financial actuators (handled by [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) wallet safety)
+- Pure financial actuators (handled by [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) wallet safety)
 - Pure information actuators (publishing, communication; handled by other safety layers)
 - Internal-cognition-only operations (no actuator, no scope)
 
 ## How this composes with no-privileged-implementation
 
-[B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) rules out privileged implementations. KSK does NOT violate this:
+[081KRW63S0008QG0R002Z2GR1X](../P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) rules out privileged implementations. KSK does NOT violate this:
 
 - The KSK type-check is a SPEC, not a privileged implementation
-- The spec can be implemented in any language in the permanent coliseum ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md))
+- The spec can be implemented in any language in the permanent coliseum ([081KRW63S0008QG0R0020DGSK1](../P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md))
 - Cross-language test corpus verifies KSK type-check produces identical decisions across implementations
 - The SPEC is what's privileged — any actuator must demonstrate KSK type-check compliance against the spec, regardless of implementation language
 
@@ -105,10 +104,10 @@ NOT in initial scope (handled by other type-safe layers):
 
 1. Specify the KSK type-system interface (what types compose; what decisions the type-checker makes; what error classes exist)
 2. Design the 3-faction Byzantine-fault-tolerant consensus protocol
-3. Implement F# reference implementation as the **preferred frame** (per [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) preferred-frame discipline)
-4. Build cross-language test corpus (per [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum) for the spec
-5. Compose with N-of-M cryptographic enforcement for the witness-faction (per [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md))
-6. Knights Guild ratification as Constitution-Class invariant (per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))
+3. Implement F# reference implementation as the **preferred frame** (per [081KRW63S0008QG0R002Z2GR1X](../P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) preferred-frame discipline)
+4. Build cross-language test corpus (per [081KRW63S0008QG0R0020DGSK1](../P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum) for the spec
+5. Compose with N-of-M cryptographic enforcement for the witness-faction (per [081KRW63S0008QG0R0022SFKPM](../P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md))
+6. Knights Guild ratification as Constitution-Class invariant (per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))
 7. Worked example: small simulated actuator going through KSK type-check + 3-faction consensus + N-of-M witness
 
 ## Non-goals
@@ -123,23 +122,23 @@ NOT in initial scope (handled by other type-safe layers):
 - [ ] KSK type-system interface specification in `docs/governance/KSK-KINETIC-SAFEGUARD-SDK.md`
 - [ ] F# reference implementation with type-level enforcement (compile-time errors on bypass attempts)
 - [ ] 3-faction Byzantine-fault-tolerant consensus protocol design
-- [ ] N-of-M cryptographic witness-faction integration per [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+- [ ] N-of-M cryptographic witness-faction integration per [081KRW63S0008QG0R0022SFKPM](../P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
 - [ ] Worked example: simulated actuator with KSK type-check + 3-faction + N-of-M witness
-- [ ] Cross-language test corpus per [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum
-- [ ] Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
-- [ ] Composition with kid-safety sacred rule ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — every KSK-mediated action carries kid-safety checks
+- [ ] Cross-language test corpus per [081KRW63S0008QG0R0020DGSK1](../P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) coliseum
+- [ ] Knights Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class
+- [ ] Composition with kid-safety sacred rule ([081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — every KSK-mediated action carries kid-safety checks
 - [ ] Lean toy proof: "if all actuators route through KSK type-check, then no actuator activates without 3-faction consensus + N-of-M witness"
 - [ ] Bypass-attempt detection: any code path attempting to skip KSK is a compile-time error AND a first-class Knights-Guild alert event
 
 ## Composes with
 
-- [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# wallet type safety (sibling sharp-edge; same shape; financial scope)
-- [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (KSK gates any action that could violate kid-safety)
-- [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) — N-of-M HSM (cryptographic witness-faction enforcement)
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (KSK is Constitution-Class; Knights Guild ratifies + protects)
-- [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (KSK spec is privileged frame, NOT implementation)
-- [B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (KSK spec implementable in multiple languages; cross-language test corpus)
-- [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (KSK applies across the meta-country)
+- [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# wallet type safety (sibling sharp-edge; same shape; financial scope)
+- [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (KSK gates any action that could violate kid-safety)
+- [081KRW63S0008QG0R0022SFKPM](../P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) — N-of-M HSM (cryptographic witness-faction enforcement)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (KSK is Constitution-Class; Knights Guild ratifies + protects)
+- [081KRW63S0008QG0R002Z2GR1X](../P3/081KRW63S0008QG0R002Z2GR1X-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) — no-privileged-implementation (KSK spec is privileged frame, NOT implementation)
+- [081KRW63S0008QG0R0020DGSK1](../P3/081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (KSK spec implementable in multiple languages; cross-language test corpus)
+- [081KRW63S0008QG0R003KSHAGN](../P3/081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (KSK applies across the meta-country)
 - `.claude/rules/methodology-hard-limits.md` — HARD LIMITS (this row is the operational substrate of a HARD LIMIT)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — F# anchor (compiler validates KSK type-system enforcement)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) line 3476 — source LOCK-IN

@@ -1,6 +1,6 @@
 ---
 pr_number: 5103
-title: "feat(B-0792 iter-5.1+5.2): self-contained USB \u2014 NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26)"
+title: "feat(081KSGS9H0008QG0R003V23XNZ iter-5.1+5.2): self-contained USB \u2014 NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T05:41:38Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:01Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5103: feat(B-0792 iter-5.1+5.2): self-contained USB — NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26)
+# PR #5103: feat(081KSGS9H0008QG0R003V23XNZ iter-5.1+5.2): self-contained USB — NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26)
 
 ## PR description
 
@@ -60,14 +60,14 @@ zflash --host bulbasaur    # → ssh zeta@bulbasaur.local
 # each gets unique hostname + mDNS announcement; zero flake explosion
 \`\`\`
 
-## Out of scope (filed separately as B-0793)
+## Out of scope (filed separately as 081KSGS9H0008QG0R000EDNTY5)
 
-The deeper architectural concern Aaron raised — \"role-as-capability composition; one node = control-plane AND gpu-worker AND storage simultaneously\" — requires refactoring \`nixos/hosts/<role>/configuration.nix\` → composable \`nixos/modules/role-*.nix\` capability modules. Filed as B-0793 follow-on; substantial refactor; landing as separate iteration.
+The deeper architectural concern Aaron raised — \"role-as-capability composition; one node = control-plane AND gpu-worker AND storage simultaneously\" — requires refactoring \`nixos/hosts/<role>/configuration.nix\` → composable \`nixos/modules/role-*.nix\` capability modules. Filed as 081KSGS9H0008QG0R000EDNTY5 follow-on; substantial refactor; landing as separate iteration.
 
 ## Composes with
 
 - iter-4.x (#5080 → ... → #5099) substrate
-- B-0789 / B-0790 / B-0792 / B-0759 / B-0770
+- 081KSGS9H0008QG0R002T3BJ2R / 081KSGS9H0008QG0R00153CQ8B / 081KSGS9H0008QG0R003V23XNZ / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0029S1D5Z
 
 ## Test plan
 

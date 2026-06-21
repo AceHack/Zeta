@@ -1,6 +1,6 @@
 ---
 pr_number: 3544
-title: "fix(rules): glass-halo-bidirectional \u2014 DeepSeek migration xref (B-0533 Slice A proof-of-concept)"
+title: "fix(rules): glass-halo-bidirectional \u2014 DeepSeek migration xref (081KRMEXM0008QG0R000K25MXS Slice A proof-of-concept)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-15T18:20:24Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-15T21:13:29Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3544: fix(rules): glass-halo-bidirectional — DeepSeek migration xref (B-0533 Slice A proof-of-concept)
+# PR #3544: fix(rules): glass-halo-bidirectional — DeepSeek migration xref (081KRMEXM0008QG0R000K25MXS Slice A proof-of-concept)
 
 ## PR description
 
 ## Summary
 
-First instance of [B-0533](https://github.com/Lucent-Financial-Group/Zeta/pull/3540) Slice A — per-persona PR batches updating dead xrefs to migrated §33 files.
+First instance of [081KRMEXM0008QG0R000K25MXS](https://github.com/Lucent-Financial-Group/Zeta/pull/3540) Slice A — per-persona PR batches updating dead xrefs to migrated §33 files.
 
 DeepSeek's archive was migrated via [PR #3507](https://github.com/Lucent-Financial-Group/Zeta/pull/3507) to \`memory/deepseek/conversations/\`; \`.claude/rules/glass-halo-bidirectional.md\` still cited the pre-migration \`docs/research/\` path.
 
@@ -51,7 +51,7 @@ Branch was named \`fix/b0533-slice-a-lior-dead-xrefs\` based on initial plan (Li
 
 ## Pull request overview
 
-Updates a stale cross-reference in the glass-halo bidirectional rule to point at the post-§33 DeepSeek conversation-archive location, aligning `.claude/rules/**` with the DeepSeek archive migration (per B-0533 Slice A POC).
+Updates a stale cross-reference in the glass-halo bidirectional rule to point at the post-§33 DeepSeek conversation-archive location, aligning `.claude/rules/**` with the DeepSeek archive migration (per 081KRMEXM0008QG0R000K25MXS Slice A POC).
 
 **Changes:**
 - Replaces the old `docs/research/...` citation with the migrated `memory/deepseek/conversations/...` path.

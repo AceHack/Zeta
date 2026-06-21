@@ -2,7 +2,7 @@
 
 **Status:** Accepted  
 **Author:** Otto (2026-05-14T1000Z)  
-**Closes:** B-0425, B-0468  
+**Closes:** 081KRFA460008QG0R003JQ46J4, 081KRHWGX0008QG0R000F6HE6D  
 **Companion to:** [2026-04-22 three-repo-split ADR](2026-04-22-three-repo-split-zeta-forge-ace.md)
 
 ---
@@ -14,14 +14,14 @@ The factory-infrastructure three-repo split (Zeta + Forge + ace) was decided in 
 Aaron 2026-05-13 articulated the dual-axis design:
 > *"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"* *(verbatim; typos preserved)*
 
-The design constraints cascade from four child rows of B-0425:
+The design constraints cascade from four child rows of 081KRFA460008QG0R003JQ46J4:
 
 | Row | Output | Merged / authored |
 |-----|--------|------------------|
-| B-0464 | `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` | PR #3122 (merged 2026-05-14) |
-| B-0465 | `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` | PR #3124 (merged 2026-05-14) |
-| B-0466 | `docs/research/2026-05-14-product-repo-naming-review-b0425.md` | Authored 2026-05-14 |
-| B-0467 | `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md` | Authored 2026-05-14 |
+| 081KRHWGX0008QG0R000BWAXNP | `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` | PR #3122 (merged 2026-05-14) |
+| 081KRHWGX0008QG0R002B2P0K0 | `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` | PR #3124 (merged 2026-05-14) |
+| 081KRHWGX0008QG0R003XHCEXT | `docs/research/2026-05-14-product-repo-naming-review-b0425.md` | Authored 2026-05-14 |
+| 081KRHWGX0008QG0R00394BM1G | `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md` | Authored 2026-05-14 |
 
 ---
 
@@ -84,7 +84,7 @@ Each product repo carries a lightweight `.claude/` configuration (product-scoped
 
 | Question | Status |
 |----------|--------|
-| When does ace ship? (Stage 3 trigger) | B-0424 Stage 3, multi-year |
+| When does ace ship? (Stage 3 trigger) | 081KRFA460008QG0R001H98EXJ Stage 3, multi-year |
 | Which products are ready for public-announce vs "public but not announced"? | Deferred to per-product launch rows |
 | Strategic-encryption scope: which product repos need gitcrypt? | KSK explicitly; civsim per PR #2902 authority already granted; others TBD per product |
 | Aurora Network scaffolding row | Needs dedicated B-04xx decomposition |
@@ -97,7 +97,7 @@ Each product repo carries a lightweight `.claude/` configuration (product-scoped
 
 **What:** Scaffold `Lucent-Financial-Group/civsim` public repo.
 
-**Scaffolding checklist (inherits from B-0424 by-default principle):**
+**Scaffolding checklist (inherits from 081KRFA460008QG0R001H98EXJ by-default principle):**
 
 - [ ] Repo created: `Lucent-Financial-Group/civsim`
 - [ ] Visibility: **public** (glass-halo)
@@ -108,7 +108,7 @@ Each product repo carries a lightweight `.claude/` configuration (product-scoped
 - [ ] `.claude/CLAUDE.md`: product-scoped bootstrap (references Forge for factory tools; cites `.zeta-version`)
 - [ ] Initial README: product carved sentence + honor-system license note
 - [ ] `repository_dispatch` subscription: wired to receive Zeta release-tag events from Forge CI
-- [ ] Claim released on bus: `bun tools/bus/claim.ts release --from otto --item B-0425`
+- [ ] Claim released on bus: `bun tools/bus/claim.ts release --from otto --item 081KRFA460008QG0R003JQ46J4`
 
 **Substrate to migrate from Zeta monorepo to civsim repo:**  
 Not a blocker for repo creation. Substrate migration follows in a dedicated B-04xx row once the repo exists and scaffolding is verified. Factory-substrate (PRs #2841, #2832, #2869) stays in Zeta until migration row.
@@ -117,7 +117,7 @@ Not a blocker for repo creation. Substrate migration follows in a dedicated B-04
 
 Each "later" product follows the same scaffolding checklist when it achieves `repo-ready now` status. Requires:
 
-1. Re-run B-0465-style substrate inventory check
+1. Re-run 081KRHWGX0008QG0R002B2P0K0-style substrate inventory check
 2. Re-review provisional slug (especially DIO)
 3. Apply honor-system license
 4. Apply glue mechanism (Option A → B/C as available)

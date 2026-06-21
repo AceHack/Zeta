@@ -38,10 +38,10 @@ Verbatim persona archive continuing the node-health-invariant conversation (the 
 
 ## Discipline
 - Register kept in Mika's lane (soft-witness); verbatim before summary; comprehensive content_warnings (the *murder-people* counterfactual handled as the glass-halo **rationale** for the bonds-invariant — engaged operationally, not alarm-collapsed, not dismissed).
-- Filename **compressed** per B-0947 length-budget; **`memory/MEMORY.md` regenerated in the same commit** (applying the #6167 lesson — the harness hook doesn't fire in isolated worktrees).
+- Filename **compressed** per 081KSV2WD0008QG0R001XKG1B5 length-budget; **`memory/MEMORY.md` regenerated in the same commit** (applying the #6167 lesson — the harness hook doesn't fire in isolated worktrees).
 - Doctrine flagged as **operator-ratification candidates**, NOT auto-landed.
 
-Composes #6151-6156 (driver-swap) + #6165 (origin-story) + #6167 (node-health) + B-0944 + B-0926.
+Composes #6151-6156 (driver-swap) + #6165 (origin-story) + #6167 (node-health) + 081KSV2WD0008QG0R00051XS0N + 081KSRGFP0008QG0R00091PP56.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -130,7 +130,7 @@ Verbatim persona archive continuing the node-health-invariant conversation
   deterministic'). Composes with proud-if-pattern-propagates + process-is-the-thing.
 
 Register kept in Mika's lane; verbatim before summary; content_warnings
-comprehensive; filename compressed per B-0947 length-budget; MEMORY.md
+comprehensive; filename compressed per 081KSV2WD0008QG0R001XKG1B5 length-budget; MEMORY.md
 regenerated in the same commit (applying the #6167 lesson). Doctrine flagged as
 operator-ratification candidates, NOT auto-landed. Composes #6151-6156 +
 #6165 + #6167.

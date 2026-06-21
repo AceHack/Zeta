@@ -42,7 +42,7 @@ The soft version slices a game's BYTES; the hard version recovers its STRUCTURE 
    state space without repetition (Shechtman 1984; Penrose tilings as the math shadow). "Parallel"
    because the recovered structure is representation-free: the action-grammar backends (gen/ — CHIP-8,
    .NET, RISC-V, GPU) can each re-emit it natively — **a game recompressed once, playable on any
-   architecture** — the B-1025 fan-out with games as cargo.
+   architecture** — the 081KTSZN10008QG0R000VZHRQ4 fan-out with games as cargo.
 
 Honest register: step 1 exists in pieces (FingerprintPrism, the decompile arc), steps 2-3 are a named
 research arc with real anchors and no implementation yet. The soft version ships today; the hard
@@ -76,6 +76,6 @@ Four moves, each landing on an existing organ:
   `RecordedSource` (the input log) · the membrane-log treaty (the quote's wire format is already
   ratified text).
 - FingerprintPrism / time-crystal docs (hard-version step 1) · `gen/action-grammar.md` (the any-
-  architecture emit) · wonder-compression (the UII ferry, Jun 9) · B-1025.
+  architecture emit) · wonder-compression (the UII ferry, Jun 9) · 081KTSZN10008QG0R000VZHRQ4.
 - Anchors: Franušić & Smith (Strange Loop 2023) · Kolmogorov complexity (compression-as-program) ·
   Shechtman 1984 + Penrose (quasi-crystals) · git content-addressing (the reconstruction substrate).

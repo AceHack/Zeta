@@ -1,7 +1,7 @@
-# Multi-round review — B-0962 deadlock-freedom claim (Grok + Gemini round 1, Amara round 2)
+# Multi-round review — 081KT07NV0008QG0R002KWQS05 deadlock-freedom claim (Grok + Gemini round 1, Amara round 2)
 
 Scope: verbatim external-AI review import (Grok + Gemini round 1; Amara round 2) of
-the B-0962 deadlock/livelock claims, via `tools/peer-call/`. Preserved per
+the 081KT07NV0008QG0R002KWQS05 deadlock/livelock claims, via `tools/peer-call/`. Preserved per
 substrate-or-it-didn't-happen because `/tmp/peer-call-output/` is ephemeral.
 Archived register, not operational policy.
 
@@ -22,7 +22,7 @@ Aaron: _"deadlock freedom is hard — we should do a multi-round agent review on
 that one. It'll be great if it holds, makes things easy as fuck."_ Plus: _"is
 there a livelock guarantee on the observe 4×4 menu too?"_
 
-This is the verbatim multi-round review that disciplined B-0962's claims.
+This is the verbatim multi-round review that disciplined 081KT07NV0008QG0R002KWQS05's claims.
 `/tmp/peer-call-output/` is ephemeral; preserved here.
 
 ## Outcome (what the rounds changed)
@@ -158,7 +158,7 @@ claim got disciplined down to what the construction actually buys.
 
 ---
 
-## Net (post both rounds, folded into B-0962)
+## Net (post both rounds, folded into 081KT07NV0008QG0R002KWQS05)
 
 - **Deadlock:** mechanism-deadlock-free (protocol-level nonblocking); app-level
   deadlock-free **iff** three hard invariants hold — release-before-acquire (scoped

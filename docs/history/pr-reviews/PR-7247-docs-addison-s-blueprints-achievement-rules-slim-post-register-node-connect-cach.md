@@ -27,7 +27,7 @@
 
 ## Description
 
-**ACHIEVEMENTS.md** — Blueprints, **Addison's idea + creation**: the skill-blueprints pattern (tiny description + on-demand blueprint bodies) that cut agent **cold-boot context ~90%** (Aaron's recollection; B-1021 lineage). The **same compression pattern was applied to the rules** (carved-sentences, #6676) — one compression family, two surfaces.
+**ACHIEVEMENTS.md** — Blueprints, **Addison's idea + creation**: the skill-blueprints pattern (tiny description + on-demand blueprint bodies) that cut agent **cold-boot context ~90%** (Aaron's recollection; 081KT7YW00008QG0R003JV9D4J lineage). The **same compression pattern was applied to the rules** (carved-sentences, #6676) — one compression family, two surfaces.
 
 **Design doc** — after a node self-registers: resolve IP (**ARP MAC→IP**, no scan — found node-ad1efd→192.168.4.152, node-b1e1b5→192.168.4.153), connect via the operator SSH key (trusted via the zflash ESP inject), **cache inventory + health to the repo** (self-registration gains `network.ip`), track health — as a **small skill routing to a blueprint** (Addison's pattern), reusable for Max. Overlay **closes over Tailscale ⊗ Headscale** (reinstall Tailscale in install.sh + add Headscale, support both).
 

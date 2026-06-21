@@ -1,6 +1,5 @@
 ---
-id: B-0960
-zetaid: 081KT07NV0008QG0R0016XR9J1
+id: 081KT07NV0008QG0R0016XR9J1
 priority: P2
 status: open
 title: "Ace slice 3.1 — pave the strict-by-default road (lower signature friction)"
@@ -14,7 +13,7 @@ owners: [developer-experience-engineer, security-researcher]
 type: feature
 ---
 
-# B-0960 — Ace slice 3.1: pave the strict-by-default road
+# 081KT07NV0008QG0R0016XR9J1 — Ace slice 3.1: pave the strict-by-default road
 
 Follow-on to Ace slice 3 (Ed25519 authenticity; signed-enforced install gate,
 `--allow-no-signature` opt-out). Operator-authorized deferred follow-on
@@ -80,7 +79,7 @@ operator resolved 2026-06-01: the install opt-out flag was RENAMED from `--allow
 
 ## Composes with
 
-- B-0288 (Ace CLI parent) · slice 3 build (Ed25519 authenticity) · the slice-3 design
+- 081KR2E4K0008QG0R002YE3MMD (Ace CLI parent) · slice 3 build (Ed25519 authenticity) · the slice-3 design
   `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice3-authenticity-signature-verify-design.md`
   §6 (gate) + §8 (threat model) + §10 (follow-ons).
 - `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` (the false-green

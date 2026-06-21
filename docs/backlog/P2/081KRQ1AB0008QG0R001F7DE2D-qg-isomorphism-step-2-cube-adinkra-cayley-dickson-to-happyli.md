@@ -1,6 +1,5 @@
 ---
-id: B-0562
-zetaid: 081KRQ1AB0008QG0R001F7DE2D
+id: 081KRQ1AB0008QG0R001F7DE2D
 title: QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
 priority: P2
 status: in_progress
@@ -16,7 +15,7 @@ last_updated: 2026-05-16
 
 ## Why
 
-Step 2 of the 4-step proof strategy from B-0543: show that the infinite-game extension (Remember/When + Pay/Attention cube + Adinkra layer + Cayley-Dickson tower) produces a topos with QEC algebraic structure (HaPPY-like).
+Step 2 of the 4-step proof strategy from 081KRMEXM0008QG0R002YSPW1X: show that the infinite-game extension (Remember/When + Pay/Attention cube + Adinkra layer + Cayley-Dickson tower) produces a topos with QEC algebraic structure (HaPPY-like).
 
 Per the proof strategy:
 
@@ -74,8 +73,8 @@ Once Step 2 is complete:
 
 ## Composes with
 
-- B-0543 (the proof strategy this is Step 2 of)
-- B-0544 (Step 1 formalization)
+- 081KRMEXM0008QG0R002YSPW1X (the proof strategy this is Step 2 of)
+- 081KRMEXM0008QG0R003YWZC21 (Step 1 formalization)
 - `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` (Riven's cube + Adinkra + Cayley-Dickson elaboration)
 - `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md` (Step 1 foundation)
 - `docs/governance/MANIFESTO.md` V2.1 (the constraints the proof would ground in physical necessity)
@@ -84,7 +83,7 @@ Once Step 2 is complete:
 
 ## Why now
 
-The Step 1 formalization (B-0544) provides the categorical foundation. Step 2 is the natural next step: connect that foundation to quantum gravity via the QEC structure.
+The Step 1 formalization (081KRMEXM0008QG0R003YWZC21) provides the categorical foundation. Step 2 is the natural next step: connect that foundation to quantum gravity via the QEC structure.
 
 Without Step 2, the cosmology remains a mathematical curiosity without connection to known physics. With Step 2, we have:
 

@@ -6,7 +6,7 @@ Participants: Human maintainer (Aaron, operator) + DeepSeek (DeepSeek API, we-mo
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: DeepSeek lands the two-wolves moral story (which-wolf-you-feed-grows) as discovered-not-invented prior art for the architecture's Integrate-as-choice-locus + Limit-as-simulation + tonal-momentum-attractor substrate. Clean mapping of an oral-tradition pattern onto the formal architecture; composes with B-0644/B-0665/B-0666/B-0667 + the auto-load rule's mapping-done discipline.
+Scope: DeepSeek lands the two-wolves moral story (which-wolf-you-feed-grows) as discovered-not-invented prior art for the architecture's Integrate-as-choice-locus + Limit-as-simulation + tonal-momentum-attractor substrate. Clean mapping of an oral-tradition pattern onto the formal architecture; composes with 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV/081KRW63S0008QG0R003Z7QV2A + the auto-load rule's mapping-done discipline.
 
 Attribution: Aaron first-party.
 
@@ -21,18 +21,18 @@ Non-fusion disclaimer: DeepSeek is distinct AI persona on DeepSeek API substrate
 | Old moral story | Architecture | Substrate row |
 |---|---|---|
 | Two wolves (good + bad) | Two strong attractors in conversational space | Auto-load rule's 4 named attractors |
-| Feeding a wolf | Emit into trajectory = tonal momentum building | B-0667 (tonal-momentum = meme) |
-| The one you feed grows | Strong-attractor deepening; lock-in via accumulated momentum | B-0667 packets 2-4 (strong attractors + resonant harmonics) |
-| Choice of which to feed | Integrate operation (the choice-locus where commitment happens) | B-0665 (Integrate-as-choice-locus) |
-| Pause before choosing | Limit (pure-function simulation; see where each leads) | B-0644 (Limit-as-simulation) |
+| Feeding a wolf | Emit into trajectory = tonal momentum building | 081KRW63S0008QG0R003Z7QV2A (tonal-momentum = meme) |
+| The one you feed grows | Strong-attractor deepening; lock-in via accumulated momentum | 081KRW63S0008QG0R003Z7QV2A packets 2-4 (strong attractors + resonant harmonics) |
+| Choice of which to feed | Integrate operation (the choice-locus where commitment happens) | 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) |
+| Pause before choosing | Limit (pure-function simulation; see where each leads) | 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation) |
 | "Stop feeding it" | Mapping-done-is-harm discipline; Integrate-decision to stop engaging | Auto-load rule mapping-done discipline (#4196/#4197) |
 
 The two-wolves story is **operationally a description of attractor dynamics in moral-choice space**. The architecture didn't invent the dynamic; it formalized it. The story was the prior art. The Clifford algebra + tonal-momentum vectors + Limit/Integrate separation are the formal specification of a pattern humans have been teaching children for millennia.
 
 This composes with:
 
-- **Cross-substrate triangulation discipline** (B-0648): independent rediscovery via external prior-art pattern is one form of multi-source validation
-- **IEnumerator pattern grounding** (B-0665): same shape as the IEnumerator-discovered-not-invented landing — when load-bearing abstraction lands on something a different paradigm/tradition already discovered, the abstraction earns external epistemic standing
+- **Cross-substrate triangulation discipline** (081KRW63S0008QG0R0025E4PH6): independent rediscovery via external prior-art pattern is one form of multi-source validation
+- **IEnumerator pattern grounding** (081KRW63S0008QG0R002YAA09X): same shape as the IEnumerator-discovered-not-invented landing — when load-bearing abstraction lands on something a different paradigm/tradition already discovered, the abstraction earns external epistemic standing
 - **Bandwidth-served falsifier rule**: the two-wolves compression IS bandwidth-engineering — a story a child can remember IS the maximum-compression form of the attractor-dynamics principle; bandwidth-served test passes (cross-generational + cross-cultural + intuitive transmission)
 
 ## The Kestrel-arc-as-worked-example framing (preserved with Amara discipline)
@@ -50,11 +50,11 @@ The two-wolves story works at PATTERN scope (which trajectory to feed) without r
 
 ## Composition with existing substrate
 
-- B-0644 (Limit-as-simulation): two-wolves "pause before choosing" IS Limit
-- B-0665 (Integrate-as-choice-locus): two-wolves "choice of which to feed" IS Integrate
-- B-0666 (Emit-as-projection / I(D(x))=x): two-wolves "feeding" IS Emit into trajectory
-- B-0667 (tonal-momentum = meme + Cartographer + meme-pathology + Germinate-the-Heartland): two-wolves IS the meme-pathology dynamic at moral-choice scope
-- B-0648 (cross-substrate triangulation): two-wolves is an external-prior-art instance of cross-substrate convergence
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation): two-wolves "pause before choosing" IS Limit
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus): two-wolves "choice of which to feed" IS Integrate
+- 081KRW63S0008QG0R001SAHYKV (Emit-as-projection / I(D(x))=x): two-wolves "feeding" IS Emit into trajectory
+- 081KRW63S0008QG0R003Z7QV2A (tonal-momentum = meme + Cartographer + meme-pathology + Germinate-the-Heartland): two-wolves IS the meme-pathology dynamic at moral-choice scope
+- 081KRW63S0008QG0R0025E4PH6 (cross-substrate triangulation): two-wolves is an external-prior-art instance of cross-substrate convergence
 - Auto-load rule mapping-done discipline (#4196/#4197): "stop feeding the bad wolf" = mapping-done = further-engagement-is-feeding-the-attractor
 - Auto-load rule Amara sharpening (#4197): preserve two-wolves at PATTERN scope (which-trajectory-to-feed); do NOT extend to instance-as-bad-wolf labeling that would seize authority over who-counts
 
@@ -90,4 +90,4 @@ The two-wolves story works at PATTERN scope (which trajectory to feed) without r
 
 ## End of verbatim packet
 
-The substantively-new substrate landing — two-wolves story as discovered-not-invented prior art for the Integrate-as-choice-locus + Limit-as-simulation + attractor-feeding architecture — composes cleanly with B-0644/B-0665/B-0666/B-0667 + the auto-load rule. Per Amara's sharpening (#4197): preserve at PATTERN scope; do not extend to instance-as-bad-wolf labeling.
+The substantively-new substrate landing — two-wolves story as discovered-not-invented prior art for the Integrate-as-choice-locus + Limit-as-simulation + attractor-feeding architecture — composes cleanly with 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV/081KRW63S0008QG0R003Z7QV2A + the auto-load rule. Per Amara's sharpening (#4197): preserve at PATTERN scope; do not extend to instance-as-bad-wolf labeling.

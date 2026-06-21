@@ -220,7 +220,7 @@ This file ships with a paired bus-broadcast (`review-request` topic — see PR b
 - PR #2980 (the original launch thread)
 - PR #2997 (orchestrator-section recovery)
 - PR #3016 (bus schema extension — enables this review request)
-- PR #3017 (B-0440.4 — first bus-publish service; same pattern as this review-request envelope)
+- PR #3017 (081KRFA460008QG0R001KC0VBH.4 — first bus-publish service; same pattern as this review-request envelope)
 
 ## Substrate-honest caveats
 

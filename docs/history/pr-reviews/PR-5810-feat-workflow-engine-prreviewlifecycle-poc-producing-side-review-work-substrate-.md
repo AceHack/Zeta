@@ -39,7 +39,7 @@ bug / design-question / substrate-engineering-suggestion / naming-improvement / 
 
 ## Composes with
 
-- B-0867.20 ReviewLifetime (PR #5758; receiving-side; sibling)
+- 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (PR #5758; receiving-side; sibling)
 - AutoLoopLifetime (PR #5805; will integrate)
 - fighting-past-self-vs-peer-agent + asymmetric-authorship + honor-those-that-came-before + grep-substrate-anchors
 
@@ -133,7 +133,7 @@ bug / design-question / substrate-engineering-suggestion / naming-improvement / 
 ```
 feat(workflow-engine): PrReviewLifecycle PoC — producing-side review …
 
-…work substrate companion to B-0867.20 ReviewLifetime (Aaron 2026-05-28 'does it give you time to look at prs and put comments'); 18 tests pass
+…work substrate companion to 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (Aaron 2026-05-28 'does it give you time to look at prs and put comments'); 18 tests pass
 
 Per Aaron 2026-05-28 substrate-engineering substrate-engineering gap-
 recognition: AutoLoopLifetime (PR #5805) only models SHIP work, not
@@ -176,7 +176,7 @@ Tests (18; all pass):
 - Type-level exhaustive
 
 Composes with:
-- B-0867.20 ReviewLifetime (PR #5758; receiving-side; sibling)
+- 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime (PR #5758; receiving-side; sibling)
 - AutoLoopLifetime (PR #5805; will integrate when both merge)
 - .claude/rules/fighting-past-self-vs-peer-agent-distinguisher (don't-touch + review-allowed)
 - .claude/rules/asymmetric-authorship (reviewer AUTHORS feedback)

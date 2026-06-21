@@ -9,7 +9,7 @@
 // for the substrate decision (filename retains the date-stamp slug per
 // memory/* convention; in-code references should use role-refs).
 // Behavior is preserved bit-for-bit against the Python source — see
-// the equivalence-check protocol in B-0086.
+// the equivalence-check protocol in 081KQ8P5D0008QG0R003BFZPRC.
 //
 // Why this exists (per maintainer 2026-04-26):
 //     "maybe this should be substraite built in instead of dynamic python"

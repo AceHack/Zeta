@@ -37,9 +37,9 @@ Key landings:
 - AIs themselves break if DORA goes bad (both-sides ecosystem framing)
 - Time-tested engineering tradition; framework isn't inventing, it's recognizing established practice generalizes
 
-Grounds pt11's self-detection requirement in OPERATIONALLY-ESTABLISHED engineering substrate. Existing framework substrate already partial-implements: alignment-auditor + Glass Halo + B-0703 multi-oracle BFT + B-0653 persistent integrator.
+Grounds pt11's self-detection requirement in OPERATIONALLY-ESTABLISHED engineering substrate. Existing framework substrate already partial-implements: alignment-auditor + Glass Halo + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R003ECWGJV persistent integrator.
 
-Composes back through the May 2026 'Plant DORA Dashboard' substrate trail (B-0394 Operational Resonance Dashboard + B-0402 shadow-mode CLI + the 2026-05-10 dora-tier-stratified research + the 2026-05-14 panopticon-lens / refraction-gradients memory).
+Composes back through the May 2026 'Plant DORA Dashboard' substrate trail (081KR50HA0008QG0R002NZENZJ Operational Resonance Dashboard + 081KR7JY10008QG0R0008NGW95 shadow-mode CLI + the 2026-05-10 dora-tier-stratified research + the 2026-05-14 panopticon-lens / refraction-gradients memory).
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 

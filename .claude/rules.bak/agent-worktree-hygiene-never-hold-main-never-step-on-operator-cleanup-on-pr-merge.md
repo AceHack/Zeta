@@ -15,8 +15,8 @@ Carved sentence:
 > Agents NEVER hold the `main` branch in any worktree (use detached
 > HEAD off `origin/main` instead). Agents REMOVE their own worktrees
 > after the work's PR merges (or substrate-honestly abandon).
-> Substrate-engineering target B-0750 mechanizes the cleanup;
-> B-0894 mechanized reboot-survival; B-0894.3 mechanizes the
+> Substrate-engineering target 081KSE6WT0008QG0R003YYC9PV mechanizes the cleanup;
+> 081KSNY2Z0008QG0R0032E7PCY mechanized reboot-survival; 081KSNY2Z0008QG0R001RWF499 mechanizes the
 > per-persona-outside-operator-repo discipline.
 
 ## Operational content
@@ -47,12 +47,12 @@ holding the branch reference.
 
 ### Rule 2 — Agent worktrees go in `~/.zeta/agents/<persona>/<stream-id>/`
 
-**Updated 2026-05-28 per B-0894.3 per-persona-outside-operator-repo
-discipline.** B-0894 (PR #5696) moved off `/private/tmp/` (reboot-
+**Updated 2026-05-28 per 081KSNY2Z0008QG0R001RWF499 per-persona-outside-operator-repo
+discipline.** 081KSNY2Z0008QG0R0032E7PCY (PR #5696) moved off `/private/tmp/` (reboot-
 survival) but placed the new default under `~/Documents/src/repos/Zeta/worktrees/`
 which is UNDER the operator's primary repo and STILL blocks operator's
 `git checkout <branch>` whenever an agent worktree holds that branch.
-B-0894.3 corrects the location to **outside the operator's primary
+081KSNY2Z0008QG0R001RWF499 corrects the location to **outside the operator's primary
 repo entirely**:
 
 ```bash
@@ -97,7 +97,7 @@ isolation per stream:
     lior/
       preserve-prs-20260527/
       ...
-  bus/                                       # future per B-0894.1
+  bus/                                       # future per 081KSNY2Z0008QG0R0032E7PCY.1
   config/                                    # future
 ```
 
@@ -105,10 +105,10 @@ Operator's primary checkout (`~/Documents/src/repos/Zeta/`) is now
 agent-free by construction — operator can `git checkout main`
 unblocked.
 
-Specifically forbidden agent worktree paths (UPDATED per B-0894.3):
+Specifically forbidden agent worktree paths (UPDATED per 081KSNY2Z0008QG0R001RWF499):
 
-- `/tmp/zeta-*` or `/private/tmp/zeta-*` — macOS-cleared on reboot; in-flight work loss + orphaned branch refs (per B-0894 empirical anchor 2026-05-28: 95 worktrees pruned in one restart)
-- **NEW per B-0894.3**: `~/Documents/src/repos/Zeta/**` — operator's primary repo; ANY agent worktree there can hold a branch ref and block operator's `git checkout`. The previously-recommended `~/Documents/src/repos/Zeta/worktrees/<surface>-*` location is now FORBIDDEN (was added in B-0894, removed in B-0894.3 after operator surfaced the residual blocking failure mode)
+- `/tmp/zeta-*` or `/private/tmp/zeta-*` — macOS-cleared on reboot; in-flight work loss + orphaned branch refs (per 081KSNY2Z0008QG0R0032E7PCY empirical anchor 2026-05-28: 95 worktrees pruned in one restart)
+- **NEW per 081KSNY2Z0008QG0R001RWF499**: `~/Documents/src/repos/Zeta/**` — operator's primary repo; ANY agent worktree there can hold a branch ref and block operator's `git checkout`. The previously-recommended `~/Documents/src/repos/Zeta/worktrees/<surface>-*` location is now FORBIDDEN (was added in 081KSNY2Z0008QG0R0032E7PCY, removed in 081KSNY2Z0008QG0R001RWF499 after operator surfaced the residual blocking failure mode)
 - Any path the operator might `cd` into for their own work
 
 The substrate-honest reasons (UPDATED):
@@ -144,7 +144,7 @@ Before starting a substrate-cascade (multiple-PRs-in-one-session)
 work pattern, agents audit their worktree state:
 
 ```bash
-# Inventory agent's own worktrees (UPDATED 2026-05-28 per B-0894.3 —
+# Inventory agent's own worktrees (UPDATED 2026-05-28 per 081KSNY2Z0008QG0R001RWF499 —
 # new canonical surface is ~/.zeta/agents/; legacy surfaces checked
 # too to catch + migrate any worktrees still at deprecated locations):
 git worktree list | grep -E "$HOME/.zeta/agents/|$HOME/Documents/src/repos/Zeta/worktrees/|/private/tmp/zeta-|/tmp/zeta-"
@@ -160,7 +160,7 @@ git -C <path> log --oneline -1
 # - in /tmp or /private/tmp → MIGRATE to ~/.zeta/agents/<persona>/<stream>/
 #   OR commit/push immediately (per Rule 5; transient location violates reboot-survival)
 # - in ~/Documents/src/repos/Zeta/ (anywhere) → MIGRATE to ~/.zeta/agents/<persona>/<stream>/
-#   (per B-0894.3; blocks operator's git checkout main when branch is held)
+#   (per 081KSNY2Z0008QG0R001RWF499; blocks operator's git checkout main when branch is held)
 ```
 
 Empirical anchor: 2026-05-25 session accumulated 37 stale agent
@@ -170,9 +170,9 @@ intervention ("we need to fix this mess yall always stepping on each
 other and me constantly"). The discipline this rule encodes would
 have prevented the accumulation.
 
-### Rule 5 — Reboot-survival + operator-primary-stays-agent-free are hard invariants (B-0894 + B-0894.3)
+### Rule 5 — Reboot-survival + operator-primary-stays-agent-free are hard invariants (081KSNY2Z0008QG0R0032E7PCY + 081KSNY2Z0008QG0R001RWF499)
 
-**TWO compounding invariants** (refined 2026-05-28 per B-0894.3):
+**TWO compounding invariants** (refined 2026-05-28 per 081KSNY2Z0008QG0R001RWF499):
 
 **(A) NEVER use `/tmp/` or `/private/tmp/` for git worktrees.** macOS
 clears these on reboot AND via `com.apple.periodic-daily` cleanup
@@ -197,7 +197,7 @@ Empirical anchor 2026-05-28T04:09Z–04:35Z (operator restart) +
 | `~/Documents/src/repos/Zeta/worktrees/<surface>-*` (multiple, Lior + PR #5696's worktree) | **All survived intact** | **YES — operator surfaced "sometimes locks up where i can't switch to main"** |
 | `~/Documents/src/repos/Zeta/<top-level>-*` (Lior 5 worktrees) | **All survived intact** | **YES — same blocking class** |
 | `~/.gemini/tmp/project/lior-*` (multiple) | **All survived intact** | NO (outside operator's primary) |
-| `~/.zeta/agents/<persona>/<stream>/` (this rule's authoring location) | **Survived intact** (born 2026-05-28T~04:55Z; restart-survivable by inheritance from user-home pattern) | NO (outside operator's primary) — **canonical post-B-0894.3** |
+| `~/.zeta/agents/<persona>/<stream>/` (this rule's authoring location) | **Survived intact** (born 2026-05-28T~04:55Z; restart-survivable by inheritance from user-home pattern) | NO (outside operator's primary) — **canonical post-081KSNY2Z0008QG0R001RWF499** |
 
 The 04:09Z autonomous-loop tick had a substantive tick-shard commit
 (`4f89af885`) sitting on branch
@@ -212,11 +212,11 @@ backgrounded-task output file at
 also cleared, so we couldn't even read whether the push had completed
 before restart.
 
-PR #5696 (B-0894) was authored from a persistent-location worktree at
+PR #5696 (081KSNY2Z0008QG0R0032E7PCY) was authored from a persistent-location worktree at
 `~/Documents/src/repos/Zeta/worktrees/otto-cli-reboot-survival-fix-0434z/`
 — survived the same restart cleanly (reboot-survival dogfooding-proof).
 **But** that location triggered operator's "sometimes locks up" critique
-because it lives under the primary repo. B-0894.3 (this row) corrects
+because it lives under the primary repo. 081KSNY2Z0008QG0R001RWF499 (this row) corrects
 the location to `~/.zeta/agents/<persona>/<stream-id>/` — authored from
 `~/.zeta/agents/otto-cli/b0894-3-per-persona-outside-repo-2026-05-28/`,
 the first instance of the new canonical pattern (both reboot-survivable
@@ -239,13 +239,13 @@ AND operator-non-blocking).
 - `.claude/rules/honor-those-that-came-before.md` — peer-agent worktrees with active iteration should NOT be force-removed; check for in-progress state first
 - `.claude/rules/glass-halo-bidirectional.md` — substrate-honest disclosure of worktree state to operator (this rule's audit step IS bidirectional observation)
 - `.claude/rules/non-coercion-invariant.md` HC-8 — operator's primary checkout is operator authority; agent worktrees don't coerce by blocking operator git operations
-- `.claude/rules/rule-0-no-sh-files.md` — cleanup tooling per B-0750 is TS-first
+- `.claude/rules/rule-0-no-sh-files.md` — cleanup tooling per 081KSE6WT0008QG0R003YYC9PV is TS-first
 - `.claude/rules/no-directives.md` — autonomy-first-class; this rule is operator-substrate-honest discipline self-imposed by agents, not directive imposed on agents
 
 ## Composes with substrate
 
-- **B-0750** (this row's backlog companion) — substrate-engineering target for periodic worktree cleanup tooling + agent-worktree-pool primitive (composes with B-0530 cron-sentinel-mutex)
-- **B-0530** (cron-sentinel mutex; existing) — multi-agent contention resolution; same problem class
+- **081KSE6WT0008QG0R003YYC9PV** (this row's backlog companion) — substrate-engineering target for periodic worktree cleanup tooling + agent-worktree-pool primitive (composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex)
+- **081KRMEXM0008QG0R000X1PPGC** (cron-sentinel mutex; existing) — multi-agent contention resolution; same problem class
 - **[PR #4530](https://github.com/Lucent-Financial-Group/Zeta/pull/4530)**
   plus saturation-ceiling sub-cases documented in
   [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md)
@@ -259,7 +259,7 @@ AND operator-non-blocking).
 ### Audit own agent worktrees
 
 ```bash
-# UPDATED 2026-05-28 per B-0894.3: ~/.zeta/agents/ is now the
+# UPDATED 2026-05-28 per 081KSNY2Z0008QG0R001RWF499: ~/.zeta/agents/ is now the
 # canonical surface; legacy paths checked too to catch + migrate
 # any remaining worktrees at deprecated locations.
 git worktree list --porcelain | awk '/^worktree /{print $2}' | \
@@ -300,7 +300,7 @@ of location. Zero matches is the happy path; the operator MAY have
 ```bash
 # Prints OK on success. If a worktree line prints, an agent worktree
 # is holding [main] and is the blocker for operator git operations.
-# UPDATED 2026-05-28 per B-0894.3: scans new canonical ~/.zeta/agents/
+# UPDATED 2026-05-28 per 081KSNY2Z0008QG0R001RWF499: scans new canonical ~/.zeta/agents/
 # surface + legacy paths (operator primary subdirs + /private/tmp + /tmp).
 git worktree list | grep -E "\[main\]" \
   | grep -E "$HOME/.zeta/agents/|$HOME/Documents/src/repos/Zeta/worktrees/|$HOME/Documents/src/repos/Zeta/[a-z]+-[0-9]|/private/tmp/zeta-|/tmp/zeta-" \
@@ -312,7 +312,7 @@ agent-worktree match if the final echo is omitted. A single operator
 primary line at `$HOME/Documents/src/repos/Zeta` (the bare repo root)
 is OK when the operator intentionally has `main` checked out. ANY
 agent worktree at any of the scanned surfaces holding `[main]` is a
-violation to fix (per B-0894.3 + Rule 1).
+violation to fix (per 081KSNY2Z0008QG0R001RWF499 + Rule 1).
 
 ## Substrate-honest framing
 
@@ -321,14 +321,14 @@ This rule does NOT:
 - Prevent worktree creation (creation is fine; cleanup is the discipline)
 - Mandate aggressive cleanup mid-iteration (in-progress work stays)
 - Override operator authority (operator can always force-remove anything)
-- Solve the underlying multi-agent contention class (B-0530 + B-0750 cover that at substrate level)
+- Solve the underlying multi-agent contention class (081KRMEXM0008QG0R000X1PPGC + 081KSE6WT0008QG0R003YYC9PV cover that at substrate level)
 
 This rule DOES:
 
 - Encode the agent-side discipline that prevents recurring blockage
 - Name the specific failure mode (37-worktree accumulation; main-held-by-agent)
 - Compose with existing worktree-related rules
-- Surface the substrate-engineering target (B-0750 mechanization)
+- Surface the substrate-engineering target (081KSE6WT0008QG0R003YYC9PV mechanization)
 
 ## Empirical anchor
 
@@ -340,7 +340,7 @@ worktree holding `[main]` at stale SHA.
 
 The `[main]`-holding worktree was THE blocker for the operator's
 `git checkout main` in the primary checkout. The exact operator quote
-is preserved on the B-0750 backlog/history surface; this current-state
+is preserved on the 081KSE6WT0008QG0R003YYC9PV backlog/history surface; this current-state
 rule keeps the operational lesson in role-reference form.
 
 Mass-cleanup (37 worktrees removed) plus this rule landing prevents
@@ -349,6 +349,6 @@ recurrence. Future agent surfaces inherit the discipline at cold-boot.
 ## Full reasoning
 
 Same 2026-05-25 session that produced today's substrate cascade
-(B-0728 through B-0750) generated the worktree accumulation. Without
-this rule + B-0750 mechanization, every future high-substrate-cascade
+(081KSE6WT0008QG0R0005XASX2 through 081KSE6WT0008QG0R003YYC9PV) generated the worktree accumulation. Without
+this rule + 081KSE6WT0008QG0R003YYC9PV mechanization, every future high-substrate-cascade
 day would recreate the same blockage.

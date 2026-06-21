@@ -1,6 +1,5 @@
 ---
-id: B-0293
-zetaid: 081KR2E4K0008QG0R003CPCM4V
+id: 081KR2E4K0008QG0R003CPCM4V
 priority: P1
 status: closed
 title: "Coherence AI — consent-first architecture design"
@@ -12,7 +11,7 @@ decomposition: atomic
 type: feature
 ---
 
-# B-0293 — Consent architecture
+# 081KR2E4K0008QG0R003CPCM4V — Consent architecture
 
 Design the consent-first architecture: every AI action
 requires explicit user consent before execution. KSK

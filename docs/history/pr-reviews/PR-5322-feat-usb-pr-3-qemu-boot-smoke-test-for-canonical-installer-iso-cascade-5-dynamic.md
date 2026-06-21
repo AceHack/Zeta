@@ -71,16 +71,16 @@ Estimated CI time impact: +3-5min per build (KVM keeps it fast vs TCG).
 - NOT a full integration test (doesn't login + run commands) — future B-NNNN follow-up
 - NOT a multi-arch test (x86_64 only) — separate build path if/when needed
 - NOT a hardware-specific test (UEFI variant; specific GPUs) — physical USB test on real Beelink fills that gap (Aaron's gate)
-- NOT a release-attach step (B-0830 follow-up filed in PR #5320)
+- NOT a release-attach step (081KSGS9H0008QG0R00126RHQR follow-up filed in PR #5320)
 
 This is the SIMPLEST viable boot test. Once it lands + runs across a few cycles + catches at least one real boot regression (or demonstrates none for N runs), Aaron's physical USB test gate fires.
 
 ## Composes with
 
 - PR #5311 (USB cleanup PR 1: root usb-nixos-installer/ deleted)
-- PR #5320 (USB cleanup PR 2: infra/installer + legacy workflow retired + B-0830 release-attach follow-up filed)
+- PR #5320 (USB cleanup PR 2: infra/installer + legacy workflow retired + 081KSGS9H0008QG0R00126RHQR release-attach follow-up filed)
 - \`.claude/rules/rule-0-no-sh-files.md\` (TS-over-bash discipline)
-- \`.claude/rules/refresh-world-model-poll-pr-gate.md\` (authored from fresh independent clone per B-0828)
+- \`.claude/rules/refresh-world-model-poll-pr-gate.md\` (authored from fresh independent clone per 081KSGS9H0008QG0R002H0ENQ1)
 - PR #5291 substrate-check-before-worry-deployment discipline (cascade hierarchy applies cleanly)
 
 ## Test plan

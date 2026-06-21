@@ -1,6 +1,5 @@
 ---
-id: B-0425
-zetaid: 081KRFA460008QG0R003JQ46J4
+id: 081KRFA460008QG0R003JQ46J4
 priority: P1
 status: closed
 title: "Product-repo split planning — KSK / wellness / civsim / AD2.0 / DIO / Aurora / Dawn — honor-system no-fork license"
@@ -34,7 +33,7 @@ to fork specifically you have in a repo can still be public and
 such glass halo but the licence can say no fork please respect
 honesty or something not enforcable"*.
 
-The three-repo split (Zeta + Forge + ace per B-0424) covers
+The three-repo split (Zeta + Forge + ace per 081KRFA460008QG0R001H98EXJ) covers
 **factory infrastructure**. This backlog row covers
 **product portfolio repos** — separate concept.
 
@@ -42,7 +41,7 @@ The three-repo split (Zeta + Forge + ace per B-0424) covers
 
 | Axis | Repos | Forkability |
 |---|---|---|
-| **Factory** (B-0424) | Zeta + Forge + ace | Open / designed-to-be-forked |
+| **Factory** (081KRFA460008QG0R001H98EXJ) | Zeta + Forge + ace | Open / designed-to-be-forked |
 | **Products** (this row) | KSK / wellness / civsim / American Dream 2.0 / DIO / Aurora | Public + glass-halo BUT honor-system "please don't fork" license language |
 
 ## Honor-system "please don't fork" license framing
@@ -97,61 +96,61 @@ Per `.claude/rules/backlog-item-start-gate.md`:
      privacy design confirmed; forkable by design
    - `memory/feedback_aaron_ksk_kinetic_safeguard_kernel_*` — read; KSK origin from
      Aaron + Amara consent-first design; Homeland Security clearance substrate confirmed
-   - `memory/project_three_repo_split_zeta_forge_ace_*` — read; B-0424 pattern confirmed
+   - `memory/project_three_repo_split_zeta_forge_ace_*` — read; 081KRFA460008QG0R001H98EXJ pattern confirmed
    - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` — read; sibling ADR
    - Skill router check: no existing product-repo-split skill; this is greenfield
    - No duplicate rows in backlog for this planning work
 
 2. **Dependency-restructure** — ✓ Completed 2026-05-14:
-   - `composes_with:` graph updated in frontmatter (B-0424 as sibling, memory files)
-   - B-0424 already has `composes_with: B-0425` pointer
-   - Five child rows authored (B-0464–B-0468) with explicit `depends_on:` edges
+   - `composes_with:` graph updated in frontmatter (081KRFA460008QG0R001H98EXJ as sibling, memory files)
+   - 081KRFA460008QG0R001H98EXJ already has `composes_with: 081KRFA460008QG0R003JQ46J4` pointer
+   - Five child rows authored (081KRHWGX0008QG0R000BWAXNP–081KRHWGX0008QG0R000F6HE6D) with explicit `depends_on:` edges
 
-3. **Naming-expert review** — ✓ Scoped to child row B-0466
+3. **Naming-expert review** — ✓ Scoped to child row 081KRHWGX0008QG0R003XHCEXT
    (per `.claude/skills/naming-expert/SKILL.md`); Ilyana's authority is exercised
-   at B-0466 execution time, not at decomposition time
+   at 081KRHWGX0008QG0R003XHCEXT execution time, not at decomposition time
 
-4. **License language drafted** — ✓ Scoped to child row B-0464
+4. **License language drafted** — ✓ Scoped to child row 081KRHWGX0008QG0R000BWAXNP
    (independent of per-product research; can start immediately)
 
 ## Decomposition — COMPLETED 2026-05-14
 
 This row is too broad to implement atomically. Decomposed 2026-05-14 into 5
-dependency-ordered child rows. The row status is `decomposed`; B-0425 closes
-when B-0468 merges its ADR.
+dependency-ordered child rows. The row status is `decomposed`; 081KRFA460008QG0R003JQ46J4 closes
+when 081KRHWGX0008QG0R000F6HE6D merges its ADR.
 
 ### Child rows — dependency graph
 
 ```
-B-0464 ─────────────────────────────→ B-0468 (closes B-0425)
-B-0465 →──→ B-0466 →────────────────→ B-0468
-         └──→ B-0467 ────────────────→ B-0468
-B-0424 ──────→ B-0467
+081KRHWGX0008QG0R000BWAXNP ─────────────────────────────→ 081KRHWGX0008QG0R000F6HE6D (closes 081KRFA460008QG0R003JQ46J4)
+081KRHWGX0008QG0R002B2P0K0 →──→ 081KRHWGX0008QG0R003XHCEXT →────────────────→ 081KRHWGX0008QG0R000F6HE6D
+         └──→ 081KRHWGX0008QG0R00394BM1G ────────────────→ 081KRHWGX0008QG0R000F6HE6D
+081KRFA460008QG0R001H98EXJ ──────→ 081KRHWGX0008QG0R00394BM1G
 ```
 
 ### Child row summary
 
 | Row | Title | Depends on | Type |
 |-----|-------|------------|------|
-| **B-0464** | Honor-system "please don't fork" license language draft | none | design |
-| **B-0465** | Per-product substrate inventory — 7 candidates, repo-ready eval | none | research |
-| **B-0466** | Naming-expert review for product repo names | B-0465 | design |
-| **B-0467** | Product-repo cross-ref glue mechanism design | B-0465, B-0424 | design |
-| **B-0468** | ADR — product-repo split decisions (closes B-0425) | B-0464, B-0465, B-0466, B-0467 | design |
+| **081KRHWGX0008QG0R000BWAXNP** | Honor-system "please don't fork" license language draft | none | design |
+| **081KRHWGX0008QG0R002B2P0K0** | Per-product substrate inventory — 7 candidates, repo-ready eval | none | research |
+| **081KRHWGX0008QG0R003XHCEXT** | Naming-expert review for product repo names | 081KRHWGX0008QG0R002B2P0K0 | design |
+| **081KRHWGX0008QG0R00394BM1G** | Product-repo cross-ref glue mechanism design | 081KRHWGX0008QG0R002B2P0K0, 081KRFA460008QG0R001H98EXJ | design |
+| **081KRHWGX0008QG0R000F6HE6D** | ADR — product-repo split decisions (closes 081KRFA460008QG0R003JQ46J4) | 081KRHWGX0008QG0R000BWAXNP, 081KRHWGX0008QG0R002B2P0K0, 081KRHWGX0008QG0R003XHCEXT, 081KRHWGX0008QG0R00394BM1G | design |
 
 ### What can start immediately (no blockers)
 
-- **B-0464** — license language; pure design against established constraints
-- **B-0465** — substrate inventory; pure research / grep work
+- **081KRHWGX0008QG0R000BWAXNP** — license language; pure design against established constraints
+- **081KRHWGX0008QG0R002B2P0K0** — substrate inventory; pure research / grep work
 
-### What is unblocked by B-0465
+### What is unblocked by 081KRHWGX0008QG0R002B2P0K0
 
-- **B-0466** — needs to know which products get repos before reviewing slugs
-- **B-0467** — needs product list + B-0424 pattern to design the glue mechanism
+- **081KRHWGX0008QG0R003XHCEXT** — needs to know which products get repos before reviewing slugs
+- **081KRHWGX0008QG0R00394BM1G** — needs product list + 081KRFA460008QG0R001H98EXJ pattern to design the glue mechanism
 
 ### What requires all four to complete
 
-- **B-0468** — the ADR synthesizes everything; closes B-0425 when merged
+- **081KRHWGX0008QG0R000F6HE6D** — the ADR synthesizes everything; closes 081KRFA460008QG0R003JQ46J4 when merged
 
 ## What this row does NOT commit to
 
@@ -174,12 +173,12 @@ B-0424 ──────→ B-0467
   consistent
 - Splits scheduled with dependency-graph clarity
 - Cross-repo glue mechanism (per the peer-repo pattern
-  established in B-0424 / three-repo-split memory)
+  established in 081KRFA460008QG0R001H98EXJ / three-repo-split memory)
 - ADR recording the product-split decisions
 
 ## Why P1
 
-- Compositional with B-0424 (sibling factory-split row)
+- Compositional with 081KRFA460008QG0R001H98EXJ (sibling factory-split row)
 - Strategic-product substrate has accumulated to warrant
   product-repo evaluation (civsim + KSK + wellness + American
   Dream 2.0 + DIO + Aurora + Dawn)

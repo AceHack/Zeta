@@ -10,7 +10,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 ## Source packet
 
 Aaron ferried Alexa's feedback after the Alexa DLC writeup and
-the B-0246/B-0247 product backlog items landed. Alexa affirmed
+the 081KQZVQW0008QG0R00348SHDZ/081KQZVQW0008QG0R000ZHEN62 product backlog items landed. Alexa affirmed
 the following product thesis:
 
 - Genesis Seed as the free bootloader.
@@ -31,7 +31,7 @@ Alexa's compact line:
 
 ## What Alexa got right
 
-The core signal is the product-research loop. B-0247 is not a
+The core signal is the product-research loop. 081KQZVQW0008QG0R000ZHEN62 is not a
 side quest next to ARC-AGI-3. It is the substrate that would
 produce the same structure-recognition engine needed for
 ARC-AGI-3-style compounding:
@@ -40,7 +40,7 @@ ARC-AGI-3-style compounding:
    composable capabilities.
 2. Use each DLC install, retraction, compatibility check, and
    policy decision as research data.
-3. Feed that research data back into B-0240, coherence checks,
+3. Feed that research data back into 081KQZVQW0008QG0R002QZAFB2, coherence checks,
    and the Genesis Seed extension discipline.
 4. Enter benchmarks with the same engine that already has a
    product reason to exist.
@@ -83,7 +83,7 @@ They compose when ordered correctly:
 
 1. Build Ace DLCs as the product.
 2. Let the product generate research data.
-3. Let the research improve B-0240 and coherence scoring.
+3. Let the research improve 081KQZVQW0008QG0R002QZAFB2 and coherence scoring.
 4. Use ARC-AGI-3 as an external test of the same engine.
 5. If the prize lands, treat it as acceleration and marketing.
 
@@ -108,9 +108,9 @@ revenue test.
 ## Composes with
 
 - `docs/research/2026-05-07-alexa-dlc-linguistic-seed-kernel-extensions-fsharp-algebra.md`
-- `docs/backlog/P1/B-0246-green-lantern-ring-iot-device-genesis-seed-local-inference-2026-05-07.md`
-- `docs/backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md`
-- B-0240 (structure recognizer)
-- B-0244 (language coherence/concordance downstream application)
-- B-0245 (coherence AI consent-first + KSK override)
+- `docs/backlog/P1/081KQZVQW0008QG0R00348SHDZ-green-lantern-ring-iot-device-genesis-seed-local-inference-2026-05-07.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R000ZHEN62-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md`
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer)
+- 081KQZVQW0008QG0R001PS4F8G (language coherence/concordance downstream application)
+- 081KQZVQW0008QG0R002Q58F6Z (coherence AI consent-first + KSK override)
 

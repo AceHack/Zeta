@@ -7,7 +7,7 @@
 
 ## 1. Observation
 
-The `backlog` agent/process created PR #5025 to add a new tracking ticket. The PR correctly adds the new file `docs/backlog/P3/B-0753-...md`, but it completely omits the required change to the central `docs/BACKLOG.md` index file. This caused the `backlog-index-integrity` CI check to fail.
+The `backlog` agent/process created PR #5025 to add a new tracking ticket. The PR correctly adds the new file `docs/backlog/P3/081KSE6WT0008QG0R003BCQEKW-...md`, but it completely omits the required change to the central `docs/BACKLOG.md` index file. This caused the `backlog-index-integrity` CI check to fail.
 
 ## 2. Analysis
 

@@ -22,7 +22,7 @@ it.** The pointer is the ROM's **signature** (hash/CRC) from a **signature datab
 
 ## It's already partly built (the foundation exists)
 
-`tools/roms` (B-0083) already treats **DAT signature files as pinned dependencies**: `fetch-datfile.ts` reads a
+`tools/roms` (081KQ8P5D0008QG0R001590WJ3) already treats **DAT signature files as pinned dependencies**: `fetch-datfile.ts` reads a
 pinned manifest (`tools/roms/manifests/datfiles.json`), downloads the DAT, and **verifies its SHA-256 against
 the pin** — per-platform (incl. **atari-2600**), with `canonicalize` + `split-by-license`. So the
 *signature-DB-as-dependency* half is real: the DAT is a pinned, verified dep; the ROM resolves against it. This
@@ -57,7 +57,7 @@ capture names the next step — a `rom:` ZetaId-pointer scheme over those DATs f
   are the same pattern; signature DBs = the AcoustID/MusicBrainz analogue (multiple oracles).
 - **DarkHall cell + deterministic emulator (#6986)** — runs the resolved, signature-verified ROM; deterministic
   ⇒ replayable (#6958).
-- **tools/roms (B-0083) — datfile-as-dependency, pinned + SHA-256-verified, per-platform (atari-2600)** — the
+- **tools/roms (081KQ8P5D0008QG0R001590WJ3) — datfile-as-dependency, pinned + SHA-256-verified, per-platform (atari-2600)** — the
   existing foundation.
 - **Uniform pointer / resolver schemes (#6916) + Ace ensure (#6959)** — `rom:` is another resolver scheme; `ace
   ensure rom:atari-2600/<title>` resolves+verifies (user-supplied).

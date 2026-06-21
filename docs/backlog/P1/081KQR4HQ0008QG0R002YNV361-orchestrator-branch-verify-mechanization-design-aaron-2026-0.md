@@ -1,6 +1,5 @@
 ---
-id: B-0191
-zetaid: 081KQR4HQ0008QG0R002YNV361
+id: 081KQR4HQ0008QG0R002YNV361
 priority: P1
 status: closed
 title: Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)
@@ -18,7 +17,7 @@ tags: [orchestrator, concurrency-hazard, mechanization, pre-commit-hook, worktre
 type: friction-reducer
 ---
 
-# B-0191 — Orchestrator branch-verify mechanization design
+# 081KQR4HQ0008QG0R002YNV361 — Orchestrator branch-verify mechanization design
 
 ## The naming
 
@@ -43,7 +42,7 @@ When parallel subagents run in worktrees that share the parent `.git` directory,
 5. Orchestrator commits.
 6. Commit lands on a SUBAGENT's branch instead of `new-feature-branch`.
 
-Empirically observed twice 2026-05-04 (B-0190 commit landed on tier-48 branch; B-0191/PR #1568 commit landed on openspec-audit branch).
+Empirically observed twice 2026-05-04 (081KQR4HQ0008QG0R001909FPT commit landed on tier-48 branch; 081KQR4HQ0008QG0R002YNV361/PR #1568 commit landed on openspec-audit branch).
 
 ## Mechanization candidates (in priority order)
 
@@ -145,9 +144,9 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 - `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md` (PR #1568) — manual discipline this row mechanizes.
 - `memory/feedback_parallel_subagent_concurrency_lessons_cluster_aaron_2026_05_04.md` (PR #1551) — Lesson 2 (orchestrator stays on main); same family.
 - `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md` -- the harness-hooks-suffice rule that drives the design correction in section 1 (TS over bash, harness hooks not git hooks, no symlink install path).
-- `B-0006` — memory work pattern that hits this most.
-- `B-0017` (folds B-0188) -- bulk-review / bulk-alignment UI for backlog rows; the systematic answer for catching cross-row inconsistencies like the original git-hooks-vs-harness-hooks contradiction (Aaron 2026-05-05: *"it's something we would have caught in the bulk alignment UI on the backlog"*).
-- `B-0162` — pre-commit hook for direct-name-attribution; similar mechanization approach (also worth revising to harness hook per same logic).
+- `081KQ0YZ80008QG0R001V0XCYZ` — memory work pattern that hits this most.
+- `081KQ0YZ80008QG0R0003GAYYN` (folds 081KQR4HQ0008QG0R002ZDREYC) -- bulk-review / bulk-alignment UI for backlog rows; the systematic answer for catching cross-row inconsistencies like the original git-hooks-vs-harness-hooks contradiction (Aaron 2026-05-05: *"it's something we would have caught in the bulk alignment UI on the backlog"*).
+- `081KQJZR90008QG0R000V16E1C` — pre-commit hook for direct-name-attribution; similar mechanization approach (also worth revising to harness hook per same logic).
 
 ## Pre-start checklist (2026-05-09)
 
@@ -161,7 +160,7 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 
 **Dependency restructure:**
 
-- No `depends_on:` entries. `composes_with: [B-0006, B-0140, B-0156, B-0162]` verified current.
+- No `depends_on:` entries. `composes_with: [081KQ0YZ80008QG0R001V0XCYZ, 081KQGDBJ0008QG0R0022EW5ZE, 081KQGDBJ0008QG0R000A4EZS5, 081KQJZR90008QG0R000V16E1C]` verified current.
 
 **Smallest safe slice (this PR):**
 
@@ -171,10 +170,10 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 
 **Remaining after AC3 PR (#2239):**
 
-- AC2 per-harness wiring doc for Codex/Cursor (currently documented in B-0191 body only) — deferred; core Claude Code wiring is sufficient for the mechanization goal.
+- AC2 per-harness wiring doc for Codex/Cursor (currently documented in 081KQR4HQ0008QG0R002YNV361 body only) — deferred; core Claude Code wiring is sufficient for the mechanization goal.
 - AC5 worktree status check script — landed: `tools/orchestrator-checks/check-orchestrator-state.ts` (this PR).
 
-**All primary ACs met; B-0191 closed 2026-05-09.**
+**All primary ACs met; 081KQR4HQ0008QG0R002YNV361 closed 2026-05-09.**
 
 ## The carved sentence
 

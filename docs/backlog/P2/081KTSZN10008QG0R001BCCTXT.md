@@ -1,7 +1,6 @@
 ---
-id: B-1028
-zetaid: 081KTSZN10008QG0R001BCCTXT
-title: MIPS emulator as a treaty room — like our CHIP-8, for Max (Hennessy lineage; the B-1025 fan-out's second machine)
+id: 081KTSZN10008QG0R001BCCTXT
+title: MIPS emulator as a treaty room — like our CHIP-8, for Max (Hennessy lineage; the 081KTSZN10008QG0R000VZHRQ4 fan-out's second machine)
 priority: P2
 status: open
 tier: hardware-substrate
@@ -10,12 +9,12 @@ created: 2026-06-11
 owner: Max (the machine is his home turf) / open for pairing
 ---
 
-# B-1028 — Max's MIPS, a treaty room like CHIP-8
+# 081KTSZN10008QG0R001BCCTXT — Max's MIPS, a treaty room like CHIP-8
 
 Aaron 2026-06-11: "Max wants a MIPS emulator like our chip8 too — on the list for backlog, as a
 TREATY ROOM."
 
-The CHIP-8/9 playbook, replayed on MIPS (Hennessy et al. 1981 — Max knows MIPS; the B-1025 fan-out
+The CHIP-8/9 playbook, replayed on MIPS (Hennessy et al. 1981 — Max knows MIPS; the 081KTSZN10008QG0R000VZHRQ4 fan-out
 named him): a small, exact, COW-friendly MIPS core (the classic 5-stage subset first — R/I/J formats,
 the teaching ISA) built as a ROOM — membrane crossings for IO, DST-replayable, golden vectors locked
 by the first oracle and ratified by the other three (the four-compilers-one-machine discipline), the
@@ -33,5 +32,5 @@ injection, never by fork).
 
 ## Relates
 
-B-1025 (the fan-out; MIPS = Max's rung) · the CHIP-9 treaty (the playbook) · gen/action-grammar.md
+081KTSZN10008QG0R000VZHRQ4 (the fan-out; MIPS = Max's rung) · the CHIP-9 treaty (the playbook) · gen/action-grammar.md
 (the grammar both machines bind) · Hennessy 1981 · MAME (capability-catalog inspiration).

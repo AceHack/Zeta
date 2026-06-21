@@ -31,7 +31,7 @@
 
 operator: *"build the real EventSink folder-direct-to-main adapter next."* The production impl of the `EventSink` port (`execute.ts`).
 
-`folderSink(opts)` writes the chosen action as a **ZetaId-named JSON file** into a git folder and commits it **direct to `main`, no-PR** (B-0890.1 folders-on-main; same mechanism as the agent-bus G-Set, B-0954). **Corporate batch-to-main (B-0890) = same envelope, different `commit` fn.**
+`folderSink(opts)` writes the chosen action as a **ZetaId-named JSON file** into a git folder and commits it **direct to `main`, no-PR** (081KSNY2Z0008QG0R000E5KTPX folders-on-main; same mechanism as the agent-bus G-Set, 081KSXN940008QG0R00171YAZW). **Corporate batch-to-main (081KSNY2Z0008QG0R0017JSTGD) = same envelope, different `commit` fn.**
 
 **Honors Amara's review:**
 - **#2 stable identity + idempotency** — `EventEnvelope = { id, at, by, action }` is the durable **fact** ("at t, actor X recorded this action"); `id` = `mintObserveEventIdHex` → **`Category.WorkItem`** ZetaId; the filename IS the id, so EEXIST is a no-op (G-Set CRDT).
@@ -39,7 +39,7 @@ operator: *"build the real EventSink folder-direct-to-main adapter next."* The p
 - **#5/#6 conflict discipline** — mirrors the bus `gitPushEnvelope`: on-main guard + fetch + 0-ahead check + add only this file + `--no-verify` + `push HEAD:main` with rebase-retry (disjoint ZetaId files → G-Set union, never a real conflict).
 - **never throws** — every failure → `AppendOutcome { ok:false; reason }` (the sink authors its outcome channel); `execute` surfaces it as feedback.
 
-I/O injectable (`mint`/`now`/`commit`) → fully testable, no real git, temp dir. **Composes with `execute()` end-to-end** (tested). The read side over this log = the eventually-consistent indexes ([B-0951](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)).
+I/O injectable (`mint`/`now`/`commit`) → fully testable, no real git, temp dir. **Composes with `execute()` end-to-end** (tested). The read side over this log = the eventually-consistent indexes ([081KSXN940008QG0R000R76H45](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KSXN940008QG0R000R76H45-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)).
 
 Verified: tsc 0, eslint clean, **8/8 tests pass**. Additive (new file; no change to `observe.ts`/`execute.ts`).
 
@@ -416,8 +416,8 @@ operator: "build the real EventSink folder-direct-to-main adapter next." Impleme
 EventSink port from execute.ts as the production sovereign transport.
 
 - folderSink(opts): writes the chosen action as a ZetaId-named JSON file into a git folder and
-  commits it DIRECT TO main, no-PR (B-0890.1 folders-on-main; same mechanism as the agent-bus
-  G-Set, B-0954). Corporate batch-to-main (B-0890) = same envelope, different commit fn.
+  commits it DIRECT TO main, no-PR (081KSNY2Z0008QG0R000E5KTPX folders-on-main; same mechanism as the agent-bus
+  G-Set, 081KSXN940008QG0R00171YAZW). Corporate batch-to-main (081KSNY2Z0008QG0R0017JSTGD) = same envelope, different commit fn.
 - EventEnvelope = { id, at, by, action } — the durable FACT (Amara: replay folds facts not
   commands), carrying a stable ZetaId identity (mintObserveEventIdHex → Category.WorkItem) so the
   log is idempotent (filename IS the id; EEXIST is a no-op = G-Set CRDT).

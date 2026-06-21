@@ -1,6 +1,6 @@
 ---
 pr_number: 5378
-title: "fix(B-0832): nmtui auto-relaunch loop on no-internet \u2014 Esc to refresh without breaking install (operator 2026-05-26)"
+title: "fix(081KSGS9H0008QG0R001Q2DH2H): nmtui auto-relaunch loop on no-internet \u2014 Esc to refresh without breaking install (operator 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T02:01:46Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5378: fix(B-0832): nmtui auto-relaunch loop on no-internet — Esc to refresh without breaking install (operator 2026-05-26)
+# PR #5378: fix(081KSGS9H0008QG0R001Q2DH2H): nmtui auto-relaunch loop on no-internet — Esc to refresh without breaking install (operator 2026-05-26)
 
 ## PR description
 
@@ -34,7 +34,7 @@ New behavior: loop nmtui until \`has_internet\` OR operator explicit 's' for she
 
 ## Composes with
 
-- B-0832 (nmtui WiFi rescan empirical anchor row)
+- 081KSGS9H0008QG0R001Q2DH2H (nmtui WiFi rescan empirical anchor row)
 - \`.claude/rules/non-coercion-invariant.md\` HC-8 (operator agency preserved via 's' escape-hatch)
 - \`.claude/rules/substrate-or-it-didnt-happen.md\` (substrate-honest UX matches operator's Esc-to-refresh expectation)
 

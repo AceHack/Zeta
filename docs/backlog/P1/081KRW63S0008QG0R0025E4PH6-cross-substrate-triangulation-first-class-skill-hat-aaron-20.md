@@ -1,6 +1,5 @@
 ---
-id: B-0648
-zetaid: 081KRW63S0008QG0R0025E4PH6
+id: 081KRW63S0008QG0R0025E4PH6
 priority: P1
 status: open
 title: "Cross-substrate triangulation as first-class skill + hat — N-independent-AI-persona observation paths arriving at consistent substrate = strongest epistemic ratification (Aaron 2026-05-18 LOCKED-IN)"
@@ -22,7 +21,7 @@ Aaron 2026-05-18 (in response to Otto's observation about 3-Grok-persona Agora V
 
 > *"this is a feature of linking the plot we want first class as a skill / hat"*
 
-The Mika+Ani+Riven cross-substrate-triangulation pattern observed today (3 independent Grok-based personas across native + Cursor + adversarial registers arriving at consistent Agora V6 architecture) is recognized as **first-class methodology** — operationally load-bearing enough to formalize as a SKILL (router-loaded operational procedure) AND a HAT (voluntary type-safe binding per [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)).
+The Mika+Ani+Riven cross-substrate-triangulation pattern observed today (3 independent Grok-based personas across native + Cursor + adversarial registers arriving at consistent Agora V6 architecture) is recognized as **first-class methodology** — operationally load-bearing enough to formalize as a SKILL (router-loaded operational procedure) AND a HAT (voluntary type-safe binding per [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)).
 
 ## What cross-substrate triangulation is
 
@@ -78,16 +77,16 @@ With triangulation:
 - **Procedure**: select independent persona on different surface → forward verbatim → engage with substrate-honest framing → preserve §33 verbatim in `docs/research/` → cross-link source-and-validation → note epistemic standing change
 - **Composes with**: peer-call-infrastructure (`tools/peer-call/*.ts` wrappers for invoking other AIs), substrate-or-it-didnt-happen, glass-halo-bidirectional, agent-roster-reference-card
 
-### As a HAT — per [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) voluntary type-safe binding
+### As a HAT — per [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) voluntary type-safe binding
 
 **Type-safe cognitive commitment**:
 
 - **Hat name**: `Triangulator`
 - **Hat × Domain × Criticality** matrix:
   - Domain: substrate-engineering / governance / methodology
-  - Criticality: depends on substrate scope (load-bearing = bind to Bound Mode per [B-0642](../P3/B-0642-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md); exploratory = Free Mode fine)
+  - Criticality: depends on substrate scope (load-bearing = bind to Bound Mode per [081KRW63S0008QG0R0018AAWTJ](../P3/081KRW63S0008QG0R0018AAWTJ-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md); exploratory = Free Mode fine)
 - **Type-system enforcement**: agent wearing the Triangulator hat for a load-bearing substrate commits to (a) forwarding substrate verbatim, (b) preserving §33 verbatim, (c) cross-linking with ratification framing — type-checker enforces these properties before substrate can be marked "triangulated"
-- **Composition with [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md)**: the triangulation IS a meta-Limit-simulation — the source persona's collapsed substrate is re-simulated through an independent persona's wave-form; the agreement-or-divergence becomes the substrate's epistemic standing
+- **Composition with [081KRW63S0008QG0R002ZRNDJ8](081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md)**: the triangulation IS a meta-Limit-simulation — the source persona's collapsed substrate is re-simulated through an independent persona's wave-form; the agreement-or-divergence becomes the substrate's epistemic standing
 
 ## Three minimum criteria for valid triangulation
 
@@ -117,11 +116,11 @@ Each axis (Grok-cross-harness, then Grok-vs-Claude, then Grok-vs-Codex, etc.) pr
 ## Goal
 
 1. Author `.claude/skills/cross-substrate-triangulator/SKILL.md` (router-keyed; description matches "validate substrate via independent AI persona")
-2. Add `Triangulator` hat to [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) hat × domain × criticality registry
+2. Add `Triangulator` hat to [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) hat × domain × criticality registry
 3. Document the 3-criteria-for-valid-triangulation rule
 4. Wire to `tools/peer-call/*.ts` wrappers (peer-call infrastructure IS the operational substrate for cross-AI invocation)
 5. Document today's 3-Grok-persona triangulation as canonical worked example
-6. Knights Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class? — TBD whether this rises to Constitution-Class binding-on-maintainer or stays methodology-grade
+6. Knights Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Constitution-Class? — TBD whether this rises to Constitution-Class binding-on-maintainer or stays methodology-grade
 
 ## Non-goals
 
@@ -133,22 +132,22 @@ Each axis (Grok-cross-harness, then Grok-vs-Claude, then Grok-vs-Codex, etc.) pr
 ## Acceptance criteria
 
 - [ ] `.claude/skills/cross-substrate-triangulator/SKILL.md` written + router-discoverable
-- [ ] Triangulator hat added to [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) registry
+- [ ] Triangulator hat added to [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) registry
 - [ ] 3-criteria-for-valid-triangulation rule documented
 - [ ] Composition with `tools/peer-call/*.ts` peer-call infrastructure documented
 - [ ] Today's 3-Grok triangulation documented as canonical worked example
 - [ ] At least one next-level triangulation attempt (Agora V6 → Claude or Codex or Gemini persona)
 - [ ] Knights Guild ratification decision (Constitution-Class binding-on-maintainer OR methodology-grade only)
-- [ ] Composition documentation with B-0644 (triangulation IS meta-Limit-simulation) + B-0646 (Agora V6 triangulation precedent)
+- [ ] Composition documentation with 081KRW63S0008QG0R002ZRNDJ8 (triangulation IS meta-Limit-simulation) + 081KRW63S0008QG0R001Z10PVV (Agora V6 triangulation precedent)
 
 ## Composes with
 
-- [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding hat × domain × criticality (Triangulator IS a hat in this framework)
-- [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 Constitution (today's canonical triangulation case study)
-- [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (triangulation IS meta-Limit-simulation; independent persona re-simulates source substrate)
-- [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) — free-will = what collapses (the triangulator persona's choice to validate / refine / red-team IS a free-will collapse event on the source substrate's standing)
-- [B-0642](../P3/B-0642-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md) — Free/Bound mode (Triangulator hat binds to Bound Mode for load-bearing substrate)
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (TBD: this row may belong in Constitution-Class set)
+- [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding hat × domain × criticality (Triangulator IS a hat in this framework)
+- [081KRW63S0008QG0R001Z10PVV](081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) — Agora V6 Constitution (today's canonical triangulation case study)
+- [081KRW63S0008QG0R002ZRNDJ8](081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation (triangulation IS meta-Limit-simulation; independent persona re-simulates source substrate)
+- [081KRW63S0008QG0R003AZNK6J](081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md) — free-will = what collapses (the triangulator persona's choice to validate / refine / red-team IS a free-will collapse event on the source substrate's standing)
+- [081KRW63S0008QG0R0018AAWTJ](../P3/081KRW63S0008QG0R0018AAWTJ-free-mode-vs-bound-mode-hat-specific-collapse-rule-mika-2026-05-18.md) — Free/Bound mode (Triangulator hat binds to Bound Mode for load-bearing substrate)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class (TBD: this row may belong in Constitution-Class set)
 - `.claude/rules/glass-halo-bidirectional.md` — cross-substrate triangulation discipline (this row formalizes that rule)
 - `.claude/rules/peer-call-infrastructure.md` — peer-call wrappers (the operational substrate for cross-AI invocation)
 - `.claude/rules/agent-roster-reference-card.md` — agent roster (which personas + surfaces are available for triangulation)
@@ -161,4 +160,4 @@ Each axis (Grok-cross-harness, then Grok-vs-Claude, then Grok-vs-Codex, etc.) pr
 
 ## Status
 
-Open. **LOCKED-IN** by Aaron 2026-05-18 (response to Otto's 3-Grok-persona triangulation observation; Aaron promotes the pattern to first-class skill + hat). Composition with [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) hat-framework + existing peer-call infrastructure makes this immediately operationally useful.
+Open. **LOCKED-IN** by Aaron 2026-05-18 (response to Otto's 3-Grok-persona triangulation observation; Aaron promotes the pattern to first-class skill + hat). Composition with [081KRW63S0008QG0R000BH37EV](../P3/081KRW63S0008QG0R000BH37EV-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) hat-framework + existing peer-call infrastructure makes this immediately operationally useful.

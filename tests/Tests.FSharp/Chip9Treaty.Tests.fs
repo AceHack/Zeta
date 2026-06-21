@@ -22,7 +22,7 @@ let private goldenPath =
 /// red row at (0,0); green row at (4,2) [V0=4,V1=2]; white row at (8,4); then clear R+G (mask 3) —
 /// leaving only the BLUE bits of the white row. Exercises select/draw/overlap/selective-clear.
 let private treatyRom =
-    // B-1031 edge-clip treaty ROM (sprite at 0x300 = a solid 8x8 block, FF x8). Exercises every
+    // 081KTZ4EF0008QG0R002WVTMMJ edge-clip treaty ROM (sprite at 0x300 = a solid 8x8 block, FF x8). Exercises every
     // clip case Kira's review required: RIGHT edge, BOTTOM edge, CORNER, a COLOR-PLANE edge draw,
     // the VF COLLISION branch (so clip-vs-wrap is locked on the FLAG, not just the display), and
     // a DXY0 (n=0) draw-nothing. Wrap-origin / clip-pixels = COSMAC VIP reference.

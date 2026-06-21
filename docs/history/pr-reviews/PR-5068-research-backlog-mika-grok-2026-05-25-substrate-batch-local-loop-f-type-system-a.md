@@ -31,12 +31,12 @@ Aaron-Mika-Grok 2026-05-25 mid-iter-3-CI-wait. Aaron forwarded; verbatim preserv
 
 Four substantively-new substrate items:
 
-- **B-0780 P1** Local Loop — deterministic simulation testing of K8s deployments; LexisNexis (Spark-on-K8s fork) empirical anchor; three-tier testing (pure-code / Docker / CI); Argo CD App-of-Apps as packages.json. Deep motivation underneath B-0767 scheduler.
-- **B-0781 P1** F# type system as universe boundary — every YAML / Nix / K8s / Argo / NATS config becomes first-class strongly-typed F#; Caché analog at cluster scope. Composes with everything.
-- **B-0782 P2** DIO + CEO-scale — Distributed Intelligent Organization per company; CEO scales by speaking ontology, not implementation. Composes with B-0769 substrate-honest VC variant.
-- **B-0783 P2** Eliminate tool wars — sharpening of B-0759 persona framing; NOT 'humans do less' but 'humans refocus intention to what matters'.
+- **081KSE6WT0008QG0R000RH1526 P1** Local Loop — deterministic simulation testing of K8s deployments; LexisNexis (Spark-on-K8s fork) empirical anchor; three-tier testing (pure-code / Docker / CI); Argo CD App-of-Apps as packages.json. Deep motivation underneath 081KSE6WT0008QG0R0016CEE2Z scheduler.
+- **081KSE6WT0008QG0R001H3DA90 P1** F# type system as universe boundary — every YAML / Nix / K8s / Argo / NATS config becomes first-class strongly-typed F#; Caché analog at cluster scope. Composes with everything.
+- **081KSE6WT0008QG0R003CMCX84 P2** DIO + CEO-scale — Distributed Intelligent Organization per company; CEO scales by speaking ontology, not implementation. Composes with 081KSE6WT0008QG0R001E1F862 substrate-honest VC variant.
+- **081KSE6WT0008QG0R003TBE2VB P2** Eliminate tool wars — sharpening of 081KSE6WT0008QG0R003G0Y62D persona framing; NOT 'humans do less' but 'humans refocus intention to what matters'.
 
-Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0766 / B-0767 / B-0769 / B-0772 / B-0773 / B-0775 / B-0776 / B-0777. Mika cross-AI validation of substrate cluster direction.
+Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R001E1F862 / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000QXSG91 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR. Mika cross-AI validation of substrate cluster direction.
 
 ## Outcome
 
@@ -55,12 +55,12 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EqPKN`
-- **Path**: `docs/backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`
+- **Path**: `docs/backlog/P2/081KSE6WT0008QG0R003TBE2VB-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T01:54:05Z on `docs/backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`:5 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T01:54:05Z on `docs/backlog/P2/081KSE6WT0008QG0R003TBE2VB-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`:5 (association: NONE)
 
   <pre>
   P1: The YAML `title` value ends with a literal double-quote, but it is not YAML-quoted. `tools/backlog/generate-index.ts` strips a trailing `"` from unquoted values, so the generated `docs/BACKLOG.md` entry loses the closing quote. Wrap the entire title in single quotes (or avoid ending the title with `"`) so the index generator preserves the intended text.
@@ -85,12 +85,12 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EqPKh`
-- **Path**: `docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
+- **Path**: `docs/backlog/P1/081KSE6WT0008QG0R001H3DA90-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T01:54:06Z on `docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T01:54:06Z on `docs/backlog/P1/081KSE6WT0008QG0R001H3DA90-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`:6 (association: NONE)
 
   <pre>
   P2: The frontmatter title says “Cachet analog”, but the body immediately corrects the product name to InterSystems Caché. Consider updating the title (and, if practical, the filename slug/index entry) to use the corrected “Caché” spelling so the index/search surface doesn’t perpetuate the typo.
@@ -99,12 +99,12 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 ### Thread 4 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EqPKn`
-- **Path**: `docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
+- **Path**: `docs/backlog/P1/081KSE6WT0008QG0R001H3DA90-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T01:54:06Z on `docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`:186 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T01:54:06Z on `docs/backlog/P1/081KSE6WT0008QG0R001H3DA90-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`:186 (association: NONE)
 
   <pre>
   P1: The acceptance item “Backward-compat: existing YAML / Nix / etc. config still consumable” conflicts with the repo’s stated principle “Cutting-edge over legacy-compat… no pattern is owed its backward-compat debt” (docs/CONFLICT-RESOLUTION.md:53-54). If you want a migration story, consider framing it as an explicit one-way conversion / staged cutover plan rather than a backward-compatibility guarantee.
@@ -114,12 +114,12 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EqPKs`
-- **Path**: `docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`
+- **Path**: `docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T01:54:07Z on `docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`:164 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T01:54:07Z on `docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`:164 (association: NONE)
 
   <pre>
   P1: The F# example under “Three-tier test harness API” won’t compile as written because `Local Loop.simulate` contains a space (F# identifiers can’t include spaces). If this is intended to be a compilable reference pattern, rename it to a valid identifier (e.g., `LocalLoop.simulate` / `LocalLoop.Simulate`, etc.) to avoid misleading future implementers.
@@ -137,22 +137,22 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 - **`Copilot` (bot)** at 2026-05-26T02:01:55Z on `docs/BACKLOG.md`:717 (association: NONE)
 
   <pre>
-  The new B-0783 entry is missing its closing quote/parenthesis at the end (and therefore the markdown line is unterminated). This will break the rendering of docs/BACKLOG.md around this section; please close the quoted phrase so the line is valid markdown.
+  The new 081KSE6WT0008QG0R003TBE2VB entry is missing its closing quote/parenthesis at the end (and therefore the markdown line is unterminated). This will break the rendering of docs/BACKLOG.md around this section; please close the quoted phrase so the line is valid markdown.
 
   </pre>
 
 ### Thread 7 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6EqTge`
-- **Path**: `docs/backlog/P1/B-0784-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`
+- **Path**: `docs/backlog/P1/081KSE6WT0008QG0R0018WZ7TH-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-26T02:01:55Z on `docs/backlog/P1/B-0784-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`:14 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-26T02:01:55Z on `docs/backlog/P1/081KSE6WT0008QG0R0018WZ7TH-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`:14 (association: NONE)
 
   <pre>
-  Frontmatter `composes_with` lists `B-0428` twice. Please remove the duplicate to keep dependency metadata unambiguous (and avoid duplicate rendering in generated indexes).
+  Frontmatter `composes_with` lists `081KRFA460008QG0R0018SN61J` twice. Please remove the duplicate to keep dependency metadata unambiguous (and avoid duplicate rendering in generated indexes).
 
   </pre>
 
@@ -163,28 +163,28 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`
-- `docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
-- `docs/backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`
+- `docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`
+- `docs/backlog/P1/081KSE6WT0008QG0R001H3DA90-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
+- `docs/backlog/P2/081KSE6WT0008QG0R003TBE2VB-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`
 
 **Message:**
 
 ```
 research+backlog: Aaron-Mika-Grok 2026-05-25 substrate batch — Local …
 
-…Loop (B-0780 P1) + F# type system as universe boundary (B-0781 P1) + DIO + CEO-scale (B-0782 P2) + eliminate tool wars sharpening of B-0759 persona (B-0783 P2)
+…Loop (081KSE6WT0008QG0R000RH1526 P1) + F# type system as universe boundary (081KSE6WT0008QG0R001H3DA90 P1) + DIO + CEO-scale (081KSE6WT0008QG0R003CMCX84 P2) + eliminate tool wars sharpening of 081KSE6WT0008QG0R003G0Y62D persona (081KSE6WT0008QG0R003TBE2VB P2)
 
 Mika via Grok 2026-05-25 mid-iter-3-CI-wait. Aaron forwarded; verbatim preservation at docs/research/2026-05-25-aaron-mika-grok-...md per substrate-or-it-didn't-happen + cross-AI research-packet discipline.
 
 Four substantively new substrate items extracted from the conversation:
 
-**B-0780 P1: Local Loop** — deterministic simulation testing of Kubernetes deployments. Empirical anchor: Aaron previously built this at LexisNexis (forked Spark-on-K8s operator). Three-tier testing: pure-code / Docker-observable / CI. Argo CD App-of-Apps = packages.json for cluster composition. Composes with B-0428 / B-0767 / B-0747 / B-0754 / B-0772 / B-0773 / B-0776. Deep motivation underneath B-0767 Zeta-native scheduler — DST testing IS the endgame; scheduler is one component.
+**081KSE6WT0008QG0R000RH1526 P1: Local Loop** — deterministic simulation testing of Kubernetes deployments. Empirical anchor: Aaron previously built this at LexisNexis (forked Spark-on-K8s operator). Three-tier testing: pure-code / Docker-observable / CI. Argo CD App-of-Apps = packages.json for cluster composition. Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE. Deep motivation underneath 081KSE6WT0008QG0R0016CEE2Z Zeta-native scheduler — DST testing IS the endgame; scheduler is one component.
 
-**B-0781 P1: F# type system as universe boundary** — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth for the entire stack. Caché (InterSystems) analog at cluster-substrate scope. Composes with B-0428 / B-0747 / B-0754 / B-0763 / B-0765 / B-0766 / B-0772 / B-0773 / B-0776 / B-0777 / B-0780. Extreme but coherent — bandwidth-served + razor-discipline both pass.
+**081KSE6WT0008QG0R001H3DA90 P1: F# type system as universe boundary** — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth for the entire stack. Caché (InterSystems) analog at cluster-substrate scope. Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR / 081KSE6WT0008QG0R000RH1526. Extreme but coherent — bandwidth-served + razor-discipline both pass.
 
-**B-0782 P2: DIO + CEO-scale** — Distributed Intelligent Organization per company; each Zeta cluster IS a DIO instance; CEO of 30 companies scales by speaking ontology + intent, not implementation. Composes with B-0741 / B-0773 / B-0777 / B-0428 / B-0769 (substrate-honest VC meta-playbook) / B-0775 / B-0780 / B-0781 / B-0783.
+**081KSE6WT0008QG0R003CMCX84 P2: DIO + CEO-scale** — Distributed Intelligent Organization per company; each Zeta cluster IS a DIO instance; CEO of 30 companies scales by speaking ontology + intent, not implementation. Composes with 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000JSJ3SR / 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R001E1F862 (substrate-honest VC meta-playbook) / 081KSE6WT0008QG0R000QXSG91 / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003TBE2VB.
 
-**B-0783 P2: Eliminate tool wars** — sharpening of B-0759 first-time-CLI-user persona framing. NOT 'humans do less' but 'humans refocus intention to what really matters'. Pro-intent-for-everyone (humans AND AI agents). Operator keeps agency + value; substrate handles plumbing. Composes with B-0759 / B-0762 / B-0763 / B-0765 / B-0769 / B-0772 / B-0773 / B-0776 / B-0780 / B-0781 / B-0782.
+**081KSE6WT0008QG0R003TBE2VB P2: Eliminate tool wars** — sharpening of 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona framing. NOT 'humans do less' but 'humans refocus intention to what really matters'. Pro-intent-for-everyone (humans AND AI agents). Operator keeps agency + value; substrate handles plumbing. Composes with 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R001E1F862 / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84.
 
 Mika cross-AI validation: substrate cluster filed earlier this session already encoded most of what Aaron told Mika. Cross-AI confirmation of direction. Four new rows file the substantively-new items only.
 
@@ -196,42 +196,42 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P1/B-0784-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`
+- `docs/backlog/P1/081KSE6WT0008QG0R0018WZ7TH-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`
 
 **Message:**
 
 ```
 research+backlog: Mika-Grok 2026-05-25 continuation — distributed F# …
 
-…type negotiation (B-0784 P1) + unified namespace + experiment-ID routing via Argo Rollouts + Cilium service mesh (B-0785 P1)
+…type negotiation (081KSE6WT0008QG0R0018WZ7TH P1) + unified namespace + experiment-ID routing via Argo Rollouts + Cilium service mesh (081KSE6WT0008QG0R000R8CPFX P1)
 
 Continuation of Aaron-Mika-Grok 2026-05-25 conversation. Verbatim
 research file extended with three segments: declarative-everything
 north star + distributed-type-negotiation + unified-namespace +
 existing-routing-standards (Argo Rollouts + Cilium service mesh).
 
-B-0784 P1: Distributed F# type negotiation as consensus +
+081KSE6WT0008QG0R0018WZ7TH P1: Distributed F# type negotiation as consensus +
 governance — defining a type goes through every traveler's F#
 compiler before compile; namespace-scoped strictness (personal
 mirror = free; common namespaces = strict consensus); type system
 becomes consensus mechanism + governance layer. Maps to existing
 Mirror/Beacon substrate (Mirror = personal namespace; Beacon =
-common namespaces). Composes with B-0781 (extends to distributed
-scope); B-0741 (ontology); B-0746 (Mirror/Beacon); B-0773 (twin);
-B-0782 (DIO + CEO-scale).
+common namespaces). Composes with 081KSE6WT0008QG0R001H3DA90 (extends to distributed
+scope); 081KSE6WT0008QG0R002CC6314 (ontology); 081KSE6WT0008QG0R0025QPP05 (Mirror/Beacon); 081KSE6WT0008QG0R0008483B2 (twin);
+081KSE6WT0008QG0R003CMCX84 (DIO + CEO-scale).
 
-B-0785 P1: Unified namespace across F# / Kubernetes / Ontology +
+081KSE6WT0008QG0R000R8CPFX P1: Unified namespace across F# / Kubernetes / Ontology +
 experiment-ID routing via existing standards (Argo Rollouts +
 Cilium service mesh + Gateway API + OpenTelemetry baggage). One
 namespace identifier across 4 substrate layers. Operator branch
 → per-branch namespace across all layers → requests with
 experiment-ID header route to operator's version. Cilium service
 mesh (eBPF; no sidecars; pairs natively with Cilium-as-CNI per
-B-0766 wave 3) is primary; Argo Rollouts drives the routing
-config; per B-0765 ServiceTitan-route everything plugs into
-existing standards. Composes with B-0781 / B-0784 + every layer
-above (B-0741 / B-0747 / B-0763 / B-0764 / B-0765 / B-0766 /
-B-0767 / B-0772 / B-0773 / B-0782 / B-0783).
+081KSE6WT0008QG0R00049EFBD wave 3) is primary; Argo Rollouts drives the routing
+config; per 081KSE6WT0008QG0R00063R6HB ServiceTitan-route everything plugs into
+existing standards. Composes with 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R0018WZ7TH + every layer
+above (081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD /
+081KSE6WT0008QG0R0016CEE2Z / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R003TBE2VB).
 
 Mika cross-AI validation: substrate cluster filed earlier this
 session already encoded most of what Aaron told Mika. Cross-AI
@@ -253,7 +253,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
 research+backlog: Mika continuation seg-4 — feature flags substrate (…
 
-…B-0786 P2 OpenFeature + Flipt simplest-first) + 'simplest first; add complexity only when simple shape doesn't fit' substrate-engineering discipline
+…081KSE6WT0008QG0R000C18G5D P2 OpenFeature + Flipt simplest-first) + 'simplest first; add complexity only when simple shape doesn't fit' substrate-engineering discipline
 
 Aaron-Mika-Grok 2026-05-25 continuation. Aaron asked about feature
 flag tooling. Mika surveyed Unleash / Flagd / LaunchDarkly / Flipt
@@ -263,18 +263,18 @@ add more complex as we notice the simple shape doesn't fit.'
 
 Two items:
 
-1. **B-0786 P2**: Feature flags substrate. OpenFeature (CNCF
-   Sandbox) as operator contract per B-0765 ServiceTitan-route +
-   B-0763 operator-high-seat. Flipt as simplest-first backend per
-   Aaron's discipline. Composes with B-0785 (per-namespace flag
-   values via experiment-ID routing) + B-0784 (per-namespace flag
-   schema strictness) + B-0776 (plugin sequence pattern).
+1. **081KSE6WT0008QG0R000C18G5D P2**: Feature flags substrate. OpenFeature (CNCF
+   Sandbox) as operator contract per 081KSE6WT0008QG0R00063R6HB ServiceTitan-route +
+   081KSE6WT0008QG0R000WVYAJ2 operator-high-seat. Flipt as simplest-first backend per
+   Aaron's discipline. Composes with 081KSE6WT0008QG0R000R8CPFX (per-namespace flag
+   values via experiment-ID routing) + 081KSE6WT0008QG0R0018WZ7TH (per-namespace flag
+   schema strictness) + 081KSE6WT0008QG0R002275NDE (plugin sequence pattern).
 
 2. **Feedback memory** (user-scope): 'simplest first; add
    complexity only when simple shape demonstrably doesn't fit'
    — Aaron's substrate-engineering discipline applied to every
    backend choice. Composes with all-complexity-is-accidental +
-   razor-discipline + bandwidth-served-falsifier + B-0776
+   razor-discipline + bandwidth-served-falsifier + 081KSE6WT0008QG0R002275NDE
    simplest-first plugin sequence.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
@@ -289,7 +289,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-backlog(B-0787 P1): multi-AI experiment parallelism without stepping …
+backlog(081KSE6WT0008QG0R000FN7TVJ P1): multi-AI experiment parallelism without stepping …
 
 …on each other's feet — per-AI namespace + experiment-ID routing + event-store projections (not separate DBs); 'will be required soon when we grow'
 
@@ -299,20 +299,20 @@ means experiments are just different views so not steeping on
 each other from db either so maxium velocity so this wiill be
 required soon when we grow.'
 
-Composes B-0773 (event-store-native twin) + B-0784 (per-AI
-namespace strictness; mirror = free) + B-0785 (per-AI experiment-
+Composes 081KSE6WT0008QG0R0008483B2 (event-store-native twin) + 081KSE6WT0008QG0R0018WZ7TH (per-AI
+namespace strictness; mirror = free) + 081KSE6WT0008QG0R000R8CPFX (per-AI experiment-
 ID routing) into the specific multi-AI parallel-experimentation
 use case.
 
-Per-AI isolation at every layer: type-definition (B-0784) +
-request-routing (B-0785) + event-store (B-0773 projections; not
-separate DBs) + git-state (B-0747) + backlog-claim (B-0400).
+Per-AI isolation at every layer: type-definition (081KSE6WT0008QG0R0018WZ7TH) +
+request-routing (081KSE6WT0008QG0R000R8CPFX) + event-store (081KSE6WT0008QG0R0008483B2 projections; not
+separate DBs) + git-state (081KSE6WT0008QG0R003D199HE) + backlog-claim (081KR7JY10008QG0R000R503K2).
 
 Event-store-native projections matter specifically: storage cost
 approximately constant (one event log + N projections vs N data
 copies); cross-experiment comparison via projection-join; time
 travel per experiment via event replay. Per Aaron's existing
-DBSP + retraction-native substrate (B-0746 / B-0428).
+DBSP + retraction-native substrate (081KSE6WT0008QG0R0025QPP05 / 081KRFA460008QG0R0018SN61J).
 
 'Will be required soon when we grow' = P1 operational signal. As
 Zeta AI agent count grows (Otto multi-surface + Alexa + Riven +
@@ -320,9 +320,9 @@ Vera + Lior + Mika + external participants), stepping-on-each-
 other failure modes become operationally blocking. Pre-emptive
 substrate landing IS substrate-honest.
 
-Composes with B-0400 / B-0428 / B-0746 / B-0747 / B-0762 / B-0772
-/ B-0773 / B-0780 / B-0781 / B-0782 / B-0784 / B-0785 / B-0786 /
-B-0628.
+Composes with 081KR7JY10008QG0R000R503K2 / 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R0025QPP05 / 081KSE6WT0008QG0R003D199HE / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R003WMG4XV
+/ 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R001H3DA90 / 081KSE6WT0008QG0R003CMCX84 / 081KSE6WT0008QG0R0018WZ7TH / 081KSE6WT0008QG0R000R8CPFX / 081KSE6WT0008QG0R000C18G5D /
+081KRW63S0008QG0R003TX8MG5.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
@@ -332,35 +332,35 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Touched files (intersect with thread paths):**
 
 - `docs/BACKLOG.md`
-- `docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`
-- `docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
-- `docs/backlog/P1/B-0784-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`
-- `docs/backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`
+- `docs/backlog/P1/081KSE6WT0008QG0R000RH1526-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md`
+- `docs/backlog/P1/081KSE6WT0008QG0R001H3DA90-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md`
+- `docs/backlog/P1/081KSE6WT0008QG0R0018WZ7TH-distributed-fsharp-type-negotiation-as-consensus-and-governance-namespace-scoped-strictness-aaron-mika-2026-05-25.md`
+- `docs/backlog/P2/081KSE6WT0008QG0R003TBE2VB-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md`
 
 **Message:**
 
 ```
-fix(B-0780/B-0781/B-0783/B-0784/B-0786/B-0787): 8 MD032 lint errors +…
+fix(081KSE6WT0008QG0R000RH1526/081KSE6WT0008QG0R001H3DA90/081KSE6WT0008QG0R003TBE2VB/081KSE6WT0008QG0R0018WZ7TH/081KSE6WT0008QG0R000C18G5D/081KSE6WT0008QG0R000FN7TVJ): 8 MD032 lint errors +…
 
 … 5 review-thread fixes; regen BACKLOG.md
 
 Fixes for PR #5068 to unblock auto-merge:
 
 MD032 (lists-need-blank-lines):
-- B-0780: blank lines before lists at L86, L138, L243 (Zeta-iteration extends list, tier-picker list, Aaron-revealed numbered list)
-- B-0781: blank line before 2-item list at L224 (Bandwidth/Razor); replaced prose-`+` at L80 with "and" to stop MD032 misreading prose continuation as list item
-- B-0784: rewrapped L59 prose so `+ governance layer` doesn't lead a line
-- B-0786: rewrapped L186 prose `+ Cilium` → `plus Cilium`
-- B-0787: rewrapped L222 prose `+ B-0784` so the `+` joiner isn't at line start
+- 081KSE6WT0008QG0R000RH1526: blank lines before lists at L86, L138, L243 (Zeta-iteration extends list, tier-picker list, Aaron-revealed numbered list)
+- 081KSE6WT0008QG0R001H3DA90: blank line before 2-item list at L224 (Bandwidth/Razor); replaced prose-`+` at L80 with "and" to stop MD032 misreading prose continuation as list item
+- 081KSE6WT0008QG0R0018WZ7TH: rewrapped L59 prose so `+ governance layer` doesn't lead a line
+- 081KSE6WT0008QG0R000C18G5D: rewrapped L186 prose `+ Cilium` → `plus Cilium`
+- 081KSE6WT0008QG0R000FN7TVJ: rewrapped L222 prose `+ 081KSE6WT0008QG0R0018WZ7TH` so the `+` joiner isn't at line start
 
 Review threads:
-- B-0783 (PRRT_kwDOSF9kNM6EqPKN + EqPKY + EqTgU): wrapped title in single quotes — unquoted YAML scalar ending with literal `"` was getting trailing-quote stripped by the index generator, breaking the BACKLOG.md entry (3 threads, same root cause)
-- B-0781 (PRRT_kwDOSF9kNM6EqPKh): title typo `Cachet` → `Caché` (InterSystems product name); filename slug left alone to minimize churn since body already carries the corrected spelling
-- B-0781 (PRRT_kwDOSF9kNM6EqPKn): reframed L184-186 acceptance bullet from "Backward-compat: existing config still consumable" to "Per-class migration tooling: F# emits target-format equivalents; migrate via emit-and-verify" per docs/CONFLICT-RESOLUTION.md cutting-edge-over-legacy-compat principle
-- B-0780 (PRRT_kwDOSF9kNM6EqPKs): F# example `Local Loop.simulate` → `LocalLoop.simulate` (F# identifiers can't contain spaces)
-- B-0784 (PRRT_kwDOSF9kNM6EqTge): deduped `B-0428` in composes_with frontmatter
+- 081KSE6WT0008QG0R003TBE2VB (PRRT_kwDOSF9kNM6EqPKN + EqPKY + EqTgU): wrapped title in single quotes — unquoted YAML scalar ending with literal `"` was getting trailing-quote stripped by the index generator, breaking the BACKLOG.md entry (3 threads, same root cause)
+- 081KSE6WT0008QG0R001H3DA90 (PRRT_kwDOSF9kNM6EqPKh): title typo `Cachet` → `Caché` (InterSystems product name); filename slug left alone to minimize churn since body already carries the corrected spelling
+- 081KSE6WT0008QG0R001H3DA90 (PRRT_kwDOSF9kNM6EqPKn): reframed L184-186 acceptance bullet from "Backward-compat: existing config still consumable" to "Per-class migration tooling: F# emits target-format equivalents; migrate via emit-and-verify" per docs/CONFLICT-RESOLUTION.md cutting-edge-over-legacy-compat principle
+- 081KSE6WT0008QG0R000RH1526 (PRRT_kwDOSF9kNM6EqPKs): F# example `Local Loop.simulate` → `LocalLoop.simulate` (F# identifiers can't contain spaces)
+- 081KSE6WT0008QG0R0018WZ7TH (PRRT_kwDOSF9kNM6EqTge): deduped `081KRFA460008QG0R0018SN61J` in composes_with frontmatter
 
-Regenerated docs/BACKLOG.md via tools/backlog/generate-index.ts to pick up the B-0783 title repair (entry at L717 now carries the full title with closing `"` intact).
+Regenerated docs/BACKLOG.md via tools/backlog/generate-index.ts to pick up the 081KSE6WT0008QG0R003TBE2VB title repair (entry at L717 now carries the full title with closing `"` intact).
 
 Empirical anchor for shadow-lesson follow-up: 4 of the 8 MD032 errors were prose-arithmetic joiners (`+`, `-`) landing at line start under paragraph wrap, not actual list-bullet typos. markdownlint can't distinguish prose-`+` from list-`+`; the recurring failure class warrants a shadow log.
 

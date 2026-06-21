@@ -1,8 +1,8 @@
-# B-0250 Loop-Run Receipt Source - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Loop-Run Receipt Source - 2026-05-30
 
 ## Scope
 
-This packet wires a third B-0250 factory event observation source into the
+This packet wires a third 081KQZVQW0008QG0R001FG05RZ factory event observation source into the
 coincidence detector. The source is the local Codex loop runner log when it is
 present on the machine running the factory health monitor.
 

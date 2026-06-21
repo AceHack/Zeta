@@ -63,11 +63,11 @@ local-LLM primitive was **non-functional on the primary OS** —
 `common/local-llm.sh` downloads the generic ollama binary (won't run
 on non-FHS NixOS), skips gracefully, install.sh runs clean, build
 passes. Green-by-skip on the OS that boots the real hardware. Tracked
-as **B-0941** (NixOS-native ollama — close the hole in the shield):
+as **081KSV2WD0008QG0R0004C8WV8** (NixOS-native ollama — close the hole in the shield):
 fix is (1) make it actually work (nixpkgs-native ollama) AND (2) make
 the test **assert** it works and fail if absent.
 
-> Note: the install.sh local-LLM matrix + B-0940/B-0941 are currently
+> Note: the install.sh local-LLM matrix + 081KSV2WD0008QG0R0028NY0MV/081KSV2WD0008QG0R0004C8WV8 are currently
 > off-leash on `accelerator/pr-less-git-monster` (pending harvest to
 > main); refs are plain-text, not links, until that substrate lands on
 > main. The *principle* this rule carries is general and stands alone.
@@ -96,7 +96,7 @@ When authoring or reviewing a test / monitor / control:
 - `.claude/rules/dep-pin-search-first-authority.md` — declarative
   manifests (e.g. `manifests/local-llm`) as the single cross-surface
   source of truth the matrix validates against
-- B-0940 (NixOS-primary / Ubuntu-value evaluation) + B-0941 (the
+- 081KSV2WD0008QG0R0028NY0MV (NixOS-primary / Ubuntu-value evaluation) + 081KSV2WD0008QG0R0004C8WV8 (the
   empirical hole this rule was carved from)
 - The Docker NixOS+Ubuntu install.sh test matrix (the shield itself)
 
@@ -112,7 +112,7 @@ write the skip-able test or trust the green-by-skip.
 
 Aaron 2026-05-30, over the install.sh cross-OS Docker test matrix:
 *"a shield with a hole is worse than a known gap, because it reads as
-covered."* Carved from the B-0941 empirical anchor (NixOS local-LLM
+covered."* Carved from the 081KSV2WD0008QG0R0004C8WV8 empirical anchor (NixOS local-LLM
 green-by-skip). install.sh is the entropy lever; the automated tests
 around it are the entropy shield; a test that skips-to-green is a hole
 in that shield.

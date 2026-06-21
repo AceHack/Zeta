@@ -1,6 +1,5 @@
 ---
-id: B-0836
-zetaid: 081KSGS9H0008QG0R001VVEZQ9
+id: 081KSGS9H0008QG0R001VVEZQ9
 priority: P1
 status: open
 title: hardware-inventory-vs-cluster reconciliation + gap-analysis → buying decisions (no more buying willy nilly) (Aaron 2026-05-26)
@@ -36,7 +35,7 @@ Two substrate-engineering targets composed:
    when the cluster is operational
 2. **Inventory-vs-cluster reconciliation substrate** (this row):
    diff the inventory against the actually-self-registered cluster
-   nodes (from B-0812 iter-5.4.1 git substrate) + surface gaps in
+   nodes (from 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 git substrate) + surface gaps in
    both directions
 
 ## Three operational questions the reconciliation answers
@@ -51,8 +50,8 @@ Two substrate-engineering targets composed:
 
 ```
 ┌──────────────────┐     ┌───────────────────┐     ┌────────────────────┐
-│ Addison's        │     │ B-0812 iter-5.4.1 │     │ Reconciliation     │
-│ hardware-        │     │ self-registration │     │ (this row B-0836)  │
+│ Addison's        │     │ 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 │     │ Reconciliation     │
+│ hardware-        │     │ self-registration │     │ (this row 081KSGS9H0008QG0R001VVEZQ9)  │
 │ inventory        │     │                   │     │                    │
 │ paper-audit →    │     │ Node boots →      │     │ Diff inventory     │
 │ scan → CSV →     │     │ install → opens   │     │ vs cluster-nodes/  │
@@ -92,7 +91,7 @@ Once Addison's paper-audit is scanned to CSV:
 
 ### Phase 3 — CockroachDB ingestion when cluster operational
 
-After cluster is up + CockroachDB deployed (post-B-0812 PRs merged + ArgoCD reconciled + storage backend ready):
+After cluster is up + CockroachDB deployed (post-081KSGS9H0008QG0R0037H3W4T PRs merged + ArgoCD reconciled + storage backend ready):
 
 - Materialize git source-of-truth into CockroachDB via ingestion job (`tools/cluster/sync-git-to-crdb.ts`)
 - Run on a schedule (per-hour OR per-PR-merge-webhook)
@@ -120,19 +119,19 @@ Phased acceptance:
 
 ## Composes with
 
-- **B-0812** iter-5.4.1 (this row's cluster-side data source; ships Step 6.9 of zeta-install.sh)
-- **B-0794** parent (full GitOps cluster bring-up; inventory-reconciliation is a downstream value-add)
-- **B-0782** cluster-IS-DIO (git is source of truth; CockroachDB is materialized view)
-- **B-0789** cluster-as-PR-author (reconciliation tool could also open PRs for inventory updates)
+- **081KSGS9H0008QG0R0037H3W4T** iter-5.4.1 (this row's cluster-side data source; ships Step 6.9 of zeta-install.sh)
+- **081KSGS9H0008QG0R0027HJZYH** parent (full GitOps cluster bring-up; inventory-reconciliation is a downstream value-add)
+- **081KSE6WT0008QG0R003CMCX84** cluster-IS-DIO (git is source of truth; CockroachDB is materialized view)
+- **081KSGS9H0008QG0R002T3BJ2R** cluster-as-PR-author (reconciliation tool could also open PRs for inventory updates)
 - Addison's hardware-inventory paper-audit work (Phase 1 ingestion target)
 - The 2026-05-26 substrate-engineering session (operator's git-source-of-truth + CockroachDB-repopulates-from-git architecture)
 
 ## Substrate-honest framing
 
-This row depends on B-0812 iter-5.4.1 LANDING + the cluster being
+This row depends on 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 LANDING + the cluster being
 operational (post-installs with self-registration). Phase 1 (Addison's
 inventory ingestion) can start IMMEDIATELY once her scan completes;
-Phase 2 (reconciliation) needs at least one B-0812 self-registration
+Phase 2 (reconciliation) needs at least one 081KSGS9H0008QG0R0037H3W4T self-registration
 PR merged so there's cluster-side state to diff against; Phases 3+4
 need the cluster operational (CockroachDB deployed).
 
@@ -145,7 +144,7 @@ substrate.
 ## Origin
 
 Two operator messages 2026-05-26 (during physical hardware-support
-test session that also produced B-0832/B-0833/B-0834/B-0835):
+test session that also produced 081KSGS9H0008QG0R001Q2DH2H/081KSGS9H0008QG0R003JNSVR5/081KSGS9H0008QG0R001RR3ZXQ/081KSGS9H0008QG0R00120EEHM):
 
 1. "git for source of truth and coackroach can be repopulated from"
 2. "we will also have an inventory for every machine and know if some

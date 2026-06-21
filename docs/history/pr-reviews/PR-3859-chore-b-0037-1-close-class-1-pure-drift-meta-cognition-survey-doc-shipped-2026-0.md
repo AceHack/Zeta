@@ -27,7 +27,7 @@
 
 ## Description
 
-First **actual close-row PR** of this audit cycle. Audit-triage discovered B-0037.1 = class #1 pure drift.
+First **actual close-row PR** of this audit cycle. Audit-triage discovered 081KR7JY10008QG0R0038AFS7T = class #1 pure drift.
 
 ## Deliverable verification
 
@@ -54,7 +54,7 @@ Class #1 (pure drift) — file shipped completely; row's \`status: open\` was ne
 
 ## Multi-Otto coordination
 
-Previous tick's close-row attempt (B-0049.2) failed mid-flight due to peer Otto-CLI's high-frequency branch-switching. This tick's peer-stability check showed peer holding on a single branch (no commits in 11 min before, 69s commit-age now) — used the lower-contention window for the close-row. Single-Bash sed/heredoc approach (no two-step Edit-tool roundtrip) further reduced the contention surface.
+Previous tick's close-row attempt (081KR7JY10008QG0R003JSEMX7) failed mid-flight due to peer Otto-CLI's high-frequency branch-switching. This tick's peer-stability check showed peer holding on a single branch (no commits in 11 min before, 69s commit-age now) — used the lower-contention window for the close-row. Single-Bash sed/heredoc approach (no two-step Edit-tool roundtrip) further reduced the contention surface.
 
 ## Tally
 
@@ -79,12 +79,12 @@ Previous tick's close-row attempt (B-0049.2) failed mid-flight due to peer Otto-
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CjViY`
-- **Path**: `docs/backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md`
+- **Path**: `docs/backlog/P2/081KR7JY10008QG0R0038AFS7T-meta-cognition-taxonomy-survey-doc.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T10:46:41Z on `docs/backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md`:7 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T10:46:41Z on `docs/backlog/P2/081KR7JY10008QG0R0038AFS7T-meta-cognition-taxonomy-survey-doc.md`:7 (association: NONE)
 
   <pre>
   `last_updated` should be bumped to the date of this edit (2026-05-16). Backlog per-row schema requires `last_updated` to be updated on every content change (see tools/backlog/README.md).
@@ -93,7 +93,7 @@ Previous tick's close-row attempt (B-0049.2) failed mid-flight due to peer Otto-
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-16T10:51:07Z on `docs/backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md`:7 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-16T10:51:07Z on `docs/backlog/P2/081KR7JY10008QG0R0038AFS7T-meta-cognition-taxonomy-survey-doc.md`:7 (association: MEMBER)
 
     <pre>
     Fixed in 85adc4b — bumped `last_updated` to 2026-05-16 per schema. Thanks for catching.
@@ -105,7 +105,7 @@ Previous tick's close-row attempt (B-0049.2) failed mid-flight due to peer Otto-
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md`
+- `docs/backlog/P2/081KR7JY10008QG0R0038AFS7T-meta-cognition-taxonomy-survey-doc.md`
 
 **Message:**
 
@@ -114,7 +114,7 @@ chore(b-0037.1): status: open → closed (class #1 pure drift; delivera…
 
 …ble shipped 2026-05-10)
 
-Audit-triage discovered B-0037.1 = class #1 pure drift:
+Audit-triage discovered 081KR7JY10008QG0R0038AFS7T = class #1 pure drift:
 - docs/research/meta-cognition-survey-2026-04-21.md shipped 2026-05-10
   (per its own revision-history section 8), 172 lines, 8 sections
 - All 6 acceptance criteria verified met:
@@ -133,7 +133,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0037.1-meta-cognition-taxonomy-survey-doc.md`
+- `docs/backlog/P2/081KR7JY10008QG0R0038AFS7T-meta-cognition-taxonomy-survey-doc.md`
 
 **Message:**
 

@@ -75,5 +75,5 @@ The constitutional identity, the building-codes default oracle (Constraint 11), 
 - `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_*.md` (constitutional identity; moral floor is operational expression)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle structural; Constraint 11 is DEFAULT, not REQUIRED)
 - `docs/governance/MANIFESTO.md` Constraints 5 (Memory Preservation), 6 (Consent-First), 11 (Default Oracle) — the moral floor is operationalized through these
-- B-0543 (QG-isomorphism — multi-oracle as physical necessity composes with multi-oracle as moral architecture)
-- B-0546 (manifesto → building-codes recasting — moral floor is the spec's ethical baseline, not ideological commitment)
+- 081KRMEXM0008QG0R002YSPW1X (QG-isomorphism — multi-oracle as physical necessity composes with multi-oracle as moral architecture)
+- 081KRMEXM0008QG0R00278KS63 (manifesto → building-codes recasting — moral floor is the spec's ethical baseline, not ideological commitment)

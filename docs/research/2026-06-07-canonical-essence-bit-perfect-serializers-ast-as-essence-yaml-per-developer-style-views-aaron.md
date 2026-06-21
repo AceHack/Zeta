@@ -11,7 +11,7 @@ same bytes ⇒ same hash ⇒ dedup / clean merge / confluence. Formatting noise 
 1. **Bit-perfect serializers — even the text-based ones.** *"This is why we want all our serializers, even
    the text-based ones, to be bit-perfect."* JSON/XML/YAML must be **canonical/byte-exact**, not just CBOR —
    else the same `DynamicValue` serializes to different bytes → different hash → breaks dedup/confluence
-   (ties B-0969 collation + the 4-oracle byte-lock golden vectors).
+   (ties 081KT07NV0008QG0R001YDB73K collation + the 4-oracle byte-lock golden vectors).
 2. **The code/doc problem.** Source text carries whitespace/formatting/style noise, so the *same logical
    code or doc* hashes differently → spurious diffs, merge conflicts, no dedup.
 3. **First answer — format/lint/auto-style on check-in** (*"docs… and code too"*): canonicalize the TEXT to

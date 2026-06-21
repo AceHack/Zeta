@@ -6,7 +6,7 @@
 // typed-element form makes every shape UNAMBIGUOUS — and makes never-collapse natural:
 // `<null/>`, empty `<arr></arr>`, empty `<obj></obj>`, empty `<str></str>`, empty
 // `<bytes></bytes>` are distinct element shapes, so empties never collapse to null
-// (the B-1016 invariant, free here by construction).
+// (the 081KT7YW00008QG0R002T1XNWT invariant, free here by construction).
 //
 // Canonical rules (minified, one rendering per value):
 //   null  -> <null/>

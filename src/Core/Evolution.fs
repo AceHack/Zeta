@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// **Evolution — the B-1019 DST harness for the privacy-as-anti-collapse claim.**
+/// **Evolution — the 081KT7YW00008QG0R001DGZQKM DST harness for the privacy-as-anti-collapse claim.**
 /// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B; the last open privacy item — an EXPERIMENT, not a
 /// theorem.)
 ///

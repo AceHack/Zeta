@@ -16,7 +16,7 @@ Aaron 2026-06-11 (extending the colorspace/BBS grounding):
 | **ZORK / text adventure** | the room graph SPOKEN: consistent directionality — NSEW + up/down/in/out — as the navigation contract | text, the CYOA's ancestor |
 
 These aren't nostalgia: each is a *binding* of `universal/color.md` at a real capability, and Lite-Brite
-is literally the Pi-with-LEDs rung of B-1024.
+is literally the Pi-with-LEDs rung of 081KTSZN10008QG0R00349SM6P.
 
 ## ZORK's directionality IS our four corners
 
@@ -24,7 +24,7 @@ Zork's compass (N/S/E/W + NE/NW/SE/SW + up/down/in/out — Infocom 1980) is a **
 algebra over a room graph** — exactly our substrate: rooms with doors (the metaspace), NSEW as the C₄
 rotation (the four-corner i-rotation), `enterAny`/doors as exits. A text adventure is a **room graph
 rendered in prose with a treaty-stable direction vocabulary**. The dev-room with its doors already IS a
-Zork map; speaking to the TV (B-1024 rung 6) in Zork grammar ("go north", "look", "open door") is the
+Zork map; speaking to the TV (081KTSZN10008QG0R00349SM6P rung 6) in Zork grammar ("go north", "look", "open door") is the
 conversational interface with 45 years of proven UX.
 
 ## "Support his format too" — the Z-machine

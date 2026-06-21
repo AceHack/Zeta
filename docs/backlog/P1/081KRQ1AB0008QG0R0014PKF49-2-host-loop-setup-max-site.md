@@ -1,9 +1,8 @@
 ---
-id: B-0248.2
-zetaid: 081KRQ1AB0008QG0R0014PKF49
+id: 081KRQ1AB0008QG0R0014PKF49
 priority: P1
 status: open
-title: Host-loop setup for Max's 24/7 site (slice of B-0248)
+title: Host-loop setup for Max's 24/7 site (slice of 081KQZVQW0008QG0R0032TPKT8)
 created: 2026-05-16
 last_updated: 2026-05-23
 parent: 081KQZVQW0008QG0R0032TPKT8
@@ -13,7 +12,7 @@ owners: [infrastructure-operator]
 type: feature
 ---
 
-# B-0248.2 — Host-loop setup for Max's 24/7 site
+# 081KRQ1AB0008QG0R0014PKF49 — Host-loop setup for Max's 24/7 site
 
 ## What
 

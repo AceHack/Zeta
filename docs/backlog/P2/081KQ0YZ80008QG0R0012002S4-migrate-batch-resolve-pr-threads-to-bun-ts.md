@@ -1,6 +1,5 @@
 ---
-id: B-0015
-zetaid: 081KQ0YZ80008QG0R0012002S4
+id: 081KQ0YZ80008QG0R0012002S4
 priority: P2
 status: closed
 title: Migrate tools/git/batch-resolve-pr-threads.sh to bun+TS once a sibling post-setup tool migrates first
@@ -41,7 +40,7 @@ When a sibling post-setup tool under `tools/` migrates to bun+TS, batch with it.
 - `docs/POST-SETUP-SCRIPT-STACK.md` — the post-setup script stack rationale and exception taxonomy.
 - Any future "first sibling bun+TS migration" decision row.
 - `tools/hygiene/*.py` and `tools/hygiene/*.sh` — sibling **POST-install** tools that should migrate to TS once a peer migrates first. Includes: `sort-tick-history-canonical.py`, `fix-markdown-md032-md026.py`, `check-tick-history-order.sh`, `check-no-conflict-markers.sh`. Scope expansion 2026-04-26.
-- `B-0027` — Otto-346 follow-up tool extraction; implementation target should be TypeScript not Python per this migration plan.
+- `081KQ3HBZ0008QG0R003WJ62HM` — Otto-346 follow-up tool extraction; implementation target should be TypeScript not Python per this migration plan.
 
 ## 2026-04-26 priority bump (P3 → P2)
 

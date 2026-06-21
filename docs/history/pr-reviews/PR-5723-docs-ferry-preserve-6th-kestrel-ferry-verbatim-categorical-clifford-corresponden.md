@@ -42,9 +42,9 @@ Verbatim preservation of operator-forwarded 6th Kestrel ferry (continuation of 5
 
 Names the **operationally-checkable implementation layer** the framework operates at TODAY:
 
-1. **Clifford** — geometric algebra (already substrate-engineered via B-0895/B-0896 + algebra-owner skill)
+1. **Clifford** — geometric algebra (already substrate-engineered via 081KSNY2Z0008QG0R002FX66H0/081KSNY2Z0008QG0R000YH2SPE + algebra-owner skill)
 2. **Category Theory for Programmers** — Bartosz Milewski's foundational text (functors / monads / natural transformations / Yoneda / etc. in code-first idiom)
-3. **F#** — implementation substrate (existing F# Core + planned HKT over Clifford per B-0428)
+3. **F#** — implementation substrate (existing F# Core + planned HKT over Clifford per 081KRFA460008QG0R0018SN61J)
 4. **Formal analysis tools** — F# compiler + FsCheck + Stryker.NET + TLA+ + Lean + Z3 + Roslyn analyzers + CodeQL + Semgrep per ``.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md``
 
 Q# / topological qubits is later-extension once the F# foundation matures.
@@ -52,11 +52,11 @@ Q# / topological qubits is later-extension once the F# foundation matures.
 ## Composes-with
 
 - 5th Kestrel ferry (2026-05-28) — direct continuation
-- B-0895 (Cl(1,3) + Cl(3,1) grade decomposition)
-- B-0896 (categorical-Clifford self-similarity)
-- B-0897 + B-0898 (Persist-as-bridge + Measure-as-bridge — four-corner ownership Kestrel cites as "worth-doing concrete piece")
-- B-0428 (F# fork for AI safety with HKT over Clifford)
-- B-0623 (Adinkras + Jim Gates SUSY-ECC physics-anchor)
+- 081KSNY2Z0008QG0R002FX66H0 (Cl(1,3) + Cl(3,1) grade decomposition)
+- 081KSNY2Z0008QG0R000YH2SPE (categorical-Clifford self-similarity)
+- 081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R003WCDQTC (Persist-as-bridge + Measure-as-bridge — four-corner ownership Kestrel cites as "worth-doing concrete piece")
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety with HKT over Clifford)
+- 081KRW63S0008QG0R000QJR08H (Adinkras + Jim Gates SUSY-ECC physics-anchor)
 - ``asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges`` rule
 - ``ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope`` rule
 - ``monad-propagation-pattern-cross-language-substrate-shape`` rule

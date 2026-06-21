@@ -155,7 +155,7 @@ check. The class signature:
   explicit citation-resolution before the PR can land.
 
 This is class 14 for the BP-NN-mechanizable-lint-classes
-consolidation (B-0153, proposed in PR #1120). The fix-pattern: every DST-exemption
+consolidation (081KQGDBJ0008QG0R000E10AAM, proposed in PR #1120). The fix-pattern: every DST-exemption
 ships with a citation; the class enforces the citation. The
 enforcement bites at merge-time, not just review-time —
 which is the stronger discipline shape Aaron is naming.
@@ -197,7 +197,7 @@ Three structural properties this composes:
 This is the multi-agent generalization of the amortized-
 keystone: not just "mechanize the check" but **"the agents
 that do the checking learn from the iterations and improve."**
-The 13 mechanizable lint-classes from B-0153 (proposed in PR #1120) + the DST-rule
+The 13 mechanizable lint-classes from 081KQGDBJ0008QG0R000E10AAM (proposed in PR #1120) + the DST-rule
 class 14 here all become meta-learning targets — each PR's
 iteration is one training-instance for the convergence loop.
 

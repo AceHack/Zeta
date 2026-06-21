@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/files.ts
  *
- * B-0883 v1 — file-level operations: keypair (de)serialization + file
+ * 081KSNY2Z0008QG0R002JKH50A v1 — file-level operations: keypair (de)serialization + file
  * encrypt/decrypt wrappers around `crypto.ts`. This is the layer that makes the
  * post-quantum substrate usable for "encrypt files in-repo" (the git-crypt
  * REPLACEMENT workflow — git-crypt itself was rejected long ago) WITHOUT a

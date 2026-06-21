@@ -11,7 +11,7 @@ open Zeta.Core
 
 
 // ═══════════════════════════════════════════════════════════════════
-// Residuated-Lattice IVM Property Tests (B-0711)
+// Residuated-Lattice IVM Property Tests (081KS923C0008QG0R0005VM4FB)
 // ═══════════════════════════════════════════════════════════════════
 
 // 1. Galois connection: a · x ≤ b ⇔ x ≤ a \ b

@@ -29,9 +29,9 @@
 
 Aaron 2026-06-03: *"any you think are good as stable rules land them ... we don't want to land rules built on sand so i'll trust your discriminator."*
 
-**Discriminator applied:** land as rules the **two grounded, recurring operational disciplines**; the designs-to-build went to **backlog (B-1012..B-1015, #6654)** to avoid rules-on-sand.
+**Discriminator applied:** land as rules the **two grounded, recurring operational disciplines**; the designs-to-build went to **backlog (081KT5CF90008QG0R00112FSD7..081KT5CF90008QG0R000KYNZGF, #6654)** to avoid rules-on-sand.
 
-- **responsible-disclosure** — the private window must *move toward sent* (never hoard); two clocks (minimize discovery→sent, follow coordinated sent→public); kid-floor exploits route to authorities/NCMEC on a predetermined legal human-routed path. Grounded in established practice; safety-load-bearing; composes B-0926 + methodology-hard-limits; genuinely recurs (security personas scout CVEs/audit). B-1012 is the gate *implementation*.
+- **responsible-disclosure** — the private window must *move toward sent* (never hoard); two clocks (minimize discovery→sent, follow coordinated sent→public); kid-floor exploits route to authorities/NCMEC on a predetermined legal human-routed path. Grounded in established practice; safety-load-bearing; composes 081KSRGFP0008QG0R00091PP56 + methodology-hard-limits; genuinely recurs (security personas scout CVEs/audit). 081KT5CF90008QG0R00112FSD7 is the gate *implementation*.
 - **open-source-asymmetric-advantage** — open-source the moats, license the craftsmanship; **moats-vs-craftsmanship** as the externally-checkable line, sanity-checked so "fair" doesn't drift into "what I want to monetize". Grounded in demonstrated practice; composes proud-if-pattern-propagates + additive-not-zero-sum + NCI.
 
 Why these two and not the others: the rest are *systems to build* (Nexus, OPA federation, conflict-engine, floor-governance, the DORA-gate impl) — landing them as rules would be rules-on-sand since the systems don't exist yet, so they're backlog. These two are *disciplines that apply now*.

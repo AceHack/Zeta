@@ -58,7 +58,7 @@ Every data-loss-critical decision is **pure, exported TypeScript**, so `bun test
 **Result: 22 tests pass; strict `tsc` (incl. `noUncheckedIndexedAccess`) clean.**
 
 ### What this can't prove on a Mac (honest scope)
-Opening the literal `\\.\PhysicalDriveN` handle, `Set-Disk -IsOffline`, and the UAC prompt are Windows-only — thin wrappers around the tested logic. An end-to-end run needs a Windows box, or a Windows VM with a virtual USB disk (verify the written disk's first bytes match the ISO). Tracked as a follow-up under **B-0739** along with a `zflash-windows.ts` wrapper + an `--agent` mode.
+Opening the literal `\\.\PhysicalDriveN` handle, `Set-Disk -IsOffline`, and the UAC prompt are Windows-only — thin wrappers around the tested logic. An end-to-end run needs a Windows box, or a Windows VM with a virtual USB disk (verify the written disk's first bytes match the ISO). Tracked as a follow-up under **081KSE6WT0008QG0R0025170CV** along with a `zflash-windows.ts` wrapper + an `--agent` mode.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

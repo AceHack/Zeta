@@ -1,6 +1,5 @@
 ---
-id: B-0324
-zetaid: 081KR2E4K0008QG0R000Q45WMQ
+id: 081KR2E4K0008QG0R000Q45WMQ
 priority: P1
 status: open
 title: "Org-level billing/usage page reader — extract Actions minutes and costs via UI"
@@ -33,8 +32,8 @@ read, closing a known data gap.
 
 - Implement a TS module that:
   1. Navigates to `github.com/organizations/<org>/settings/billing`
-     and related billing sub-pages via B-0317 auth +
-     B-0318 snapshot.
+     and related billing sub-pages via 081KR2E4K0008QG0R0031QR36N auth +
+     081KR2E4K0008QG0R003RVDX91 snapshot.
   2. Extracts structured data: Actions minutes used/limit,
      storage used/limit, Packages usage, Codespaces usage,
      Copilot seat count (if visible).

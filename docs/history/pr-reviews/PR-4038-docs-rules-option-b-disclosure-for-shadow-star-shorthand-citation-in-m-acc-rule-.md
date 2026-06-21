@@ -29,7 +29,7 @@
 
 ## Summary
 
-R2 re-land of [#4036](https://github.com/Lucent-Financial-Group/Zeta/pull/4036), which had branch-base contamination: `git diff origin/main..b/4036-HEAD` showed 7 files differing because my branch was cut from an older `origin/main` than I thought, and peer-Otto-CLI's updates to `B-0427/B-0476/B-0509/install.ts` landed on main between fork and PR-open. From GitHub's perspective the PR's NET effect was: add m-acc edit + REVERT 3 unrelated peer changes. That's why Copilot's 5 threads flagged scope mismatch + `last_updated` + broken-depends_on on the apparently-reverted files.
+R2 re-land of [#4036](https://github.com/Lucent-Financial-Group/Zeta/pull/4036), which had branch-base contamination: `git diff origin/main..b/4036-HEAD` showed 7 files differing because my branch was cut from an older `origin/main` than I thought, and peer-Otto-CLI's updates to `081KRFA460008QG0R000VKJF0H/081KRHWGX0008QG0R000BS8Y4R/081KRHWGX0008QG0R0014D2T5E/install.ts` landed on main between fork and PR-open. From GitHub's perspective the PR's NET effect was: add m-acc edit + REVERT 3 unrelated peer changes. That's why Copilot's 5 threads flagged scope mismatch + `last_updated` + broken-depends_on on the apparently-reverted files.
 
 Per [`blocked-green-ci-investigate-threads.md`](../blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) Pattern "Re-land via cherry-pick", this PR is the clean re-land:
 - Fresh branch off CURRENT `origin/main`

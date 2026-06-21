@@ -1,6 +1,5 @@
 ---
-id: B-0051
-zetaid: 081KQ3HBZ0008QG0R002SM3G49
+id: 081KQ3HBZ0008QG0R002SM3G49
 priority: P2
 status: open
 title: Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track
@@ -16,7 +15,7 @@ type: friction-reducer
 
 ---
 
-# B-0051 — Isomorphism / homomorphism catalog
+# 081KQ3HBZ0008QG0R002SM3G49 — Isomorphism / homomorphism catalog
 
 ## Origin
 
@@ -95,14 +94,14 @@ Every claim in the catalog is **retractibly-revisable** — if IF2 fails on coun
 - Promoting category-theory to kernel vocabulary until information-density-gravity warrants
 - Creating a new persona without first checking retired-persona memory folders and git-log for clean-room-safe unretire candidates
 
-## Pre-start checklist (2026-05-10, B-0051.1 slice)
+## Pre-start checklist (2026-05-10, 081KQ3HBZ0008QG0R002SM3G49.1 slice)
 
 **Prior-art search:**
 
 - Searched skill router: `category-theory-expert` skill exists (`.claude/skills/category-theory-expert/SKILL.md`), covers categorical surface. No existing isomorphism-catalog skill or file found.
 - Searched `docs/category-theory/README.md`: no catalog reference before this PR.
 - Searched `docs/GLOSSARY.md`: zero entries for isomorphism/homomorphism/functor/natural transformation.
-- Searched `docs/research/` for isomorphism-catalog: not found (file is being created in B-0051.1).
+- Searched `docs/research/` for isomorphism-catalog: not found (file is being created in 081KQ3HBZ0008QG0R002SM3G49.1).
 - Searched `docs/formal-claims/`: directory does not exist.
 - Ran `git log --diff-filter=D -- .claude/skills/` for retired category-theory persona: none found.
 - Found prior research: `docs/research/2026-05-01-claudeai-category-theory-lever-taxonomy-grounding-aaron-forwarded.md` — useful background on categorical framing; absorbed into catalog motivation.
@@ -114,26 +113,26 @@ Every claim in the catalog is **retractibly-revisable** — if IF2 fails on coun
 - Reciprocal pointer added: `docs/category-theory/README.md` now cross-references the catalog.
 
 **Re-decomposition (2026-05-11, Riven background worker — prior decomp assumed mistaken as too coarse):**
-B-0051 (L) re-decomposed into smallest dependency-ordered atomic child rows. TS code preferred over prose docs; md artifacts are generated from typed sources.
+081KQ3HBZ0008QG0R002SM3G49 (L) re-decomposed into smallest dependency-ordered atomic child rows. TS code preferred over prose docs; md artifacts are generated from typed sources.
 
 **Buildable now (root, zero deps):**
 
-- B-0051.1: minimal TS interfaces (IsomorphismClaim, HomomorphismClaim, IF1-IF4 FilterResult) in `tools/category-theory/claims.ts` (pure types, no side-effects)
+- 081KQ3HBZ0008QG0R002SM3G49.1: minimal TS interfaces (IsomorphismClaim, HomomorphismClaim, IF1-IF4 FilterResult) in `tools/category-theory/claims.ts` (pure types, no side-effects)
 
-**Blocked on B-0051.1:**
+**Blocked on 081KQ3HBZ0008QG0R002SM3G49.1:**
 
-- B-0051.2: TS/Bun inventory extractor script that walks memory/, docs/research/, .claude/skills/ and emits typed claim list (bounded fs scan)
-- B-0051.3: TS catalog renderer that consumes typed claims and emits `docs/research/isomorphism-catalog.md` (md is output, not hand-written source of truth)
+- 081KQ3HBZ0008QG0R002SM3G49.2: TS/Bun inventory extractor script that walks memory/, docs/research/, .claude/skills/ and emits typed claim list (bounded fs scan)
+- 081KQ3HBZ0008QG0R002SM3G49.3: TS catalog renderer that consumes typed claims and emits `docs/research/isomorphism-catalog.md` (md is output, not hand-written source of truth)
 
-**Blocked on B-0051.2:**
+**Blocked on 081KQ3HBZ0008QG0R002SM3G49.2:**
 
-- B-0051.4: IF3 counterexample-search harness (TS) for first three claims, producing dated search-log + downgrade blocks
-- B-0051.5: thin Lean4 interop wrapper (TS spawn to `elan run -- lean`) for formalization check of CAT-002 homomorphism
+- 081KQ3HBZ0008QG0R002SM3G49.4: IF3 counterexample-search harness (TS) for first three claims, producing dated search-log + downgrade blocks
+- 081KQ3HBZ0008QG0R002SM3G49.5: thin Lean4 interop wrapper (TS spawn to `elan run -- lean`) for formalization check of CAT-002 homomorphism
 
 This decomposition is the single bounded step; children are now atomic, dep-ordered, and route through TS substrate.
 
 ## Cross-reference
 
 - AceHack commit: `9c7f374`
-- Composes with: B-0050 (Lean reflection — IF4 filter depends on reflection competence), B-0048 (graph coloring — chromatic-polynomial homomorphism-density structure)
-- Source of truth: this row + `docs/research/isomorphism-catalog.md` (landed in B-0051.1, PR on `feat/B-0051.1-isomorphism-catalog-index`)
+- Composes with: 081KQ3HBZ0008QG0R000H8K8CC (Lean reflection — IF4 filter depends on reflection competence), 081KQ3HBZ0008QG0R003JCR6P8 (graph coloring — chromatic-polynomial homomorphism-density structure)
+- Source of truth: this row + `docs/research/isomorphism-catalog.md` (landed in 081KQ3HBZ0008QG0R002SM3G49.1, PR on `feat/081KQ3HBZ0008QG0R002SM3G49.1-isomorphism-catalog-index`)

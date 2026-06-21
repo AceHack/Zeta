@@ -1,6 +1,5 @@
 ---
-id: B-0288
-zetaid: 081KR2E4K0008QG0R002YE3MMD
+id: 081KR2E4K0008QG0R002YE3MMD
 priority: P1
 status: in-progress
 title: "Ace DLC — package manager CLI (install/verify/list)"
@@ -14,7 +13,7 @@ owners: [architect, public-api-designer]
 type: feature
 ---
 
-# B-0288 — DLC package manager CLI
+# 081KR2E4K0008QG0R002YE3MMD — DLC package manager CLI
 
 TS CLI tool: `ace install <pkg>`, `ace verify <pkg>`, `ace list`.
 Content-addressed, signed packages with guardian AI oversight.

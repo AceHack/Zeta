@@ -46,7 +46,7 @@ One-line semantic fix: change \`blobPath\` default from \`/esp/zeta-creds.enc\` 
 
 ## Why this matters
 
-This is the load-bearing piece for the entire B-0852 cascade (#5635 + #5637 + #5638 + #5639 + #5640 + #5641 + #5642). Without this fix, ALL the work to capture passphrase + write blob + arm restore service produces a system where the operator STILL has to re-enter creds on every reboot — exactly the pain point that started the cascade.
+This is the load-bearing piece for the entire 081KSKBP80008QG0R003AX2A69 cascade (#5635 + #5637 + #5638 + #5639 + #5640 + #5641 + #5642). Without this fix, ALL the work to capture passphrase + write blob + arm restore service produces a system where the operator STILL has to re-enter creds on every reboot — exactly the pain point that started the cascade.
 
 ## Test plan
 
@@ -58,7 +58,7 @@ This is the load-bearing piece for the entire B-0852 cascade (#5635 + #5637 + #5
 
 - #5640 (the row that introduced the mistake)
 - #5643 (passphrase-env supersede)
-- B-0852 cred-persistence cascade
+- 081KSKBP80008QG0R003AX2A69 cred-persistence cascade
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -140,7 +140,7 @@ The restore service runs POST-REBOOT, where the file is at
 - restore-from-cred-blob NEVER FIRES on any installed node
 - creds are never restored at boot
 - operator has to manually re-enter every credential each reboot —
-  which is exactly the pain point the whole B-0852 cascade was
+  which is exactly the pain point the whole 081KSKBP80008QG0R003AX2A69 cascade was
   designed to solve
 
 This commit changes the default to `/boot/zeta-creds.enc` so the
@@ -162,7 +162,7 @@ Validation:
   next maintainer who edits this module
 
 Composes with #5640 (the row that surfaced the issue), #5643
-(passphrase-env supersede), and the B-0852 cred-persistence cascade
+(passphrase-env supersede), and the 081KSKBP80008QG0R003AX2A69 cred-persistence cascade
 (#5635 + #5637 + #5638 + #5639 + #5640 + #5641 + #5642).
 
 Addresses CRITICAL Copilot finding on #5640.

@@ -24,8 +24,8 @@ An **Ace file** reads like a Dockerfile but is built from the pieces already in 
   - a changed step only invalidates *downstream* layers (Docker/BuildKit-style layer cache, but content-
     addressed and shared in the Zeta FS) → the efficiency gain Aaron names.
 - **Cross-OS patch sets from one file.** A single **universal** Ace file emits **per-OS patch sets** — the
-  OS-specific deltas (the holographic projection of the n-dimensional dependency space, B-0824, projected onto
-  each target OS, B-0806 cross-OS). Write once; Ace resolves the per-OS realization. "Patch sets applicable to
+  OS-specific deltas (the holographic projection of the n-dimensional dependency space, 081KSGS9H0008QG0R0031PBNGA, projected onto
+  each target OS, 081KSGS9H0008QG0R001Y9FB62 cross-OS). Write once; Ace resolves the per-OS realization. "Patch sets applicable to
   multiple OSes at once" = the same desired-state, materialized per OS, sharing every content-identical layer.
 - **"Ace OS for setup."** Ace is the **setup substrate** — the universal Docker-like file is how a machine (any
   OS, or Ace OS) is brought to a desired state. Ace-as-installer (the one-liner bootstrap #6942) lays down the
@@ -41,7 +41,7 @@ An **Ace file** reads like a Dockerfile but is built from the pieces already in 
 - **content-addressed layers = the substrate's own FS** (`ContentStore`/`DagFs`/BLAKE3) — not a bespoke layer
   cache; the *same* content-addressing that backs ZetaId/pointers backs the layer cache (dedup + DAG-FS copy-on-
   write).
-- **cross-OS = B-0824 holographic projection + B-0806 cross-OS** — one n-dimensional dep spec → per-OS patch
+- **cross-OS = 081KSGS9H0008QG0R0031PBNGA holographic projection + 081KSGS9H0008QG0R001Y9FB62 cross-OS** — one n-dimensional dep spec → per-OS patch
   sets.
 - **DST-able (#6958)** — because layers are idempotent + content-addressed, an Ace file build replays
   deterministically under the `test` seam (simulate the build; cache hits are deterministic).
@@ -49,7 +49,7 @@ An **Ace file** reads like a Dockerfile but is built from the pieces already in 
 ## Honest scope / peel
 
 - **Vision/design, not built.** Ace, the Ace file format, per-layer content-addressed caching wiring, the
-  cross-OS patch-set emitter, and "Ace OS" are the frontier (Ace lane B-0824/#6939/#6942; cross-OS B-0806). The
+  cross-OS patch-set emitter, and "Ace OS" are the frontier (Ace lane 081KSGS9H0008QG0R0031PBNGA/#6939/#6942; cross-OS 081KSGS9H0008QG0R001Y9FB62). The
   pieces (idempotent ensure, content store, DagFs, cross-OS) exist or are scoped; the Ace-file *format* + the
   per-OS projection are the new spec.
 - **Reproducibility is bounded by step honesty** — a step that reaches outside its declared deps (hidden global
@@ -66,7 +66,7 @@ An **Ace file** reads like a Dockerfile but is built from the pieces already in 
 - **Ace external-state closure / one dep map (#6939/#6941) + compile-time conflicts (#6940)** — the file is the
   closure written down.
 - **Content store / DagFs / BLAKE3 (#6925)** — content-addressed per-layer cache + dedup in the Zeta FS.
-- **n-dim dep / holographic projection (B-0824) + cross-OS (B-0806)** — one universal file → per-OS patch sets.
+- **n-dim dep / holographic projection (081KSGS9H0008QG0R0031PBNGA) + cross-OS (081KSGS9H0008QG0R001Y9FB62)** — one universal file → per-OS patch sets.
 - **One-liner bootstrap (#6942) / Ace OS** — Ace lays down the host; the file declares what it becomes.
 - **Test seam DST (#6958)** — idempotent+content-addressed ⇒ the build replays deterministically.
 - **Zeta IDL (#6955) / YinYang file (#6953)** — the Ace file is a spec-as-data document (DynamicValue).
@@ -80,5 +80,5 @@ An **Ace file** reads like a Dockerfile but is built from the pieces already in 
   **Cross-platform packaging / overlays** (patch-set/overlay per target). Honest novelty: none in the
   primitives; the contribution is the **union as one file format** — a Dockerfile-legible, **idempotent**
   (`ensure`-sequenced, reproducible), **content-addressed-per-layer-cached** (in the Zeta FS, deduped across
-  builds *and OSes*), **cross-OS** (one universal file → per-OS patch sets via B-0824 projection) Ace file, for
+  builds *and OSes*), **cross-OS** (one universal file → per-OS patch sets via 081KSGS9H0008QG0R0031PBNGA projection) Ace file, for
   setting up any host / Ace OS.

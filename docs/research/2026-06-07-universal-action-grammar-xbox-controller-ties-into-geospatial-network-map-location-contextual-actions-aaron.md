@@ -10,7 +10,7 @@ traveler frame)** is *orthogonal* to the frame:
 
 - **Frame (Layer-1) = WHERE / WHEN** — now the **`IGeospatial` locality topology** (#6889): memory hierarchy
   × network map × generator map × time/attention.
-- **Action grammar (Layer-2) = WHAT YOU CAN DO** — the **Xbox-controller 4×4 grid** (`ActionGrid`, B-0867):
+- **Action grammar (Layer-2) = WHAT YOU CAN DO** — the **Xbox-controller 4×4 grid** (`ActionGrid`, 081KSKBP80008QG0R000B3Y19A):
   the *button layout is fixed*, but *what each button does is per-context* — "the same way an Xbox
   controller's layout is fixed but what each button does is per-game."
 
@@ -37,10 +37,10 @@ universal controller.
 
 ## Honest scope
 
-Connective capture — it joins two existing surfaces (`ActionGrid`/B-0867 and the geospatial map #6889); no
+Connective capture — it joins two existing surfaces (`ActionGrid`/081KSKBP80008QG0R000B3Y19A and the geospatial map #6889); no
 build authorized. Buildable seed: an `ActionGrid` whose action-resolution takes an `IGeospatial` position so
 the 4×4 actions resolve per network location; gated behind the ray-traceable implementations + a network-map
-backing. Anchors: `ActionGrid.fs` (4×4 grammar), B-0867 workflow engine, the `xbox-controller-universal-
+backing. Anchors: `ActionGrid.fs` (4×4 grammar), 081KSKBP80008QG0R000B3Y19A workflow engine, the `xbox-controller-universal-
 action-grammar` rule (any-traveler-same-controller, inclusive), `IGeospatial` (#6889), the traveler-frame
 layer model (frame=where/when, action-grid=what), the firefly heartbeat field (#6891). Honest novelty: none in
 fixed-grammar/contextual-action controllers; the contribution is **binding the universal action grammar to the

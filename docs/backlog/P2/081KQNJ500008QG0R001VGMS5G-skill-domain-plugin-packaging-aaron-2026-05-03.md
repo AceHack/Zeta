@@ -1,6 +1,5 @@
 ---
-id: B-0172
-zetaid: 081KQNJ500008QG0R001VGMS5G
+id: 081KQNJ500008QG0R001VGMS5G
 priority: P2
 status: open
 title: Skill-domain plugin packaging — package mature skill domains as Claude Code plugins (Aaron 2026-05-03 rule 3a from skill-design memo)
@@ -29,10 +28,10 @@ This row is P2 not P1 because the promotion-trigger has not yet fired for ANY sk
 
 When promotion-trigger DOES fire on a skill domain, this row becomes the implementation work.
 
-## Why depends_on B-0171 + B-0173
+## Why depends_on 081KQNJ500008QG0R001N94412 + 081KQNJ500008QG0R003ZC6PK8
 
-- **B-0171** (OpenSpec catch-up): plugins package skill domains' contracts; contracts live in specs; specs need to be current first.
-- **B-0173** (hook authoring): the value of plugin packaging is that hooks ship inside the package; without hooks, packaging is bare-skill-grouping.
+- **081KQNJ500008QG0R001N94412** (OpenSpec catch-up): plugins package skill domains' contracts; contracts live in specs; specs need to be current first.
+- **081KQNJ500008QG0R003ZC6PK8** (hook authoring): the value of plugin packaging is that hooks ship inside the package; without hooks, packaging is bare-skill-grouping.
 
 ## Scope (when promotion-trigger fires)
 
@@ -42,9 +41,9 @@ Per Claude Code plugin convention (installed at `~/.claude/plugins/cache/<plugin
    - `.claude-plugin/plugin.json` — manifest with name + description + author (minimal fields per the upstream Claude Code spec)
    - `skills/<skill>/SKILL.md` files (the procedure-skills of the domain) under conventional subdirectories
    - `agents/<agent>.md` files (the named-persona-experts) under conventional subdirectories
-   - One or more hook configurations (per B-0173)
+   - One or more hook configurations (per 081KQNJ500008QG0R003ZC6PK8)
    - Tools under `tools/` (TS files per Aaron skill-design rule 2)
-   - References to OpenSpec capabilities the plugin contracts against (per B-0171)
+   - References to OpenSpec capabilities the plugin contracts against (per 081KQNJ500008QG0R001N94412)
 2. Codex equivalent uses `.codex-plugin/plugin.json` with richer fields (semver + interface block + URLs + category) per the cross-harness research at `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`
 3. Cross-harness portability documentation: how Codex / Cursor / Gemini-CLI consume the equivalent substrate (per Aaron 2026-05-02 *"skills are for everyone and even other agent harnesses"*)
 
@@ -68,10 +67,10 @@ This row closes when:
 
 ## Composes with
 
-- **B-0169** (decision-archaeology skill) — likely first skill packaged once mature
-- **B-0170** (substrate-claim-checker TS tool) — tool that lives inside the packaged skill domain
-- **B-0171** (OpenSpec catch-up) — plugin contracts reference OpenSpec capabilities
-- **B-0173** (hook authoring for skill-creation contracts) — hooks ship inside the plugin package
+- **081KQJZR90008QG0R002D6XYHB** (decision-archaeology skill) — likely first skill packaged once mature
+- **081KQNJ500008QG0R003SCWBDV** (substrate-claim-checker TS tool) — tool that lives inside the packaged skill domain
+- **081KQNJ500008QG0R001N94412** (OpenSpec catch-up) — plugin contracts reference OpenSpec capabilities
+- **081KQNJ500008QG0R003ZC6PK8** (hook authoring for skill-creation contracts) — hooks ship inside the plugin package
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — Rule 3a of the three skill-design rules
 - `memory/feedback_git_native_backlog_management_long_arc_future_skill_domain_aaron_2026_05_02.md` — first future-skill-domain memo
 - `memory/feedback_multi_harness_alignment_convergence_design_future_skill_domain_aaron_2026_05_03.md` — second future-skill-domain memo

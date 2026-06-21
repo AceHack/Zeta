@@ -1,6 +1,5 @@
 ---
-id: B-0784
-zetaid: 081KSE6WT0008QG0R0018WZ7TH
+id: 081KSE6WT0008QG0R0018WZ7TH
 priority: P1
 status: open
 title: Distributed F# type negotiation as consensus + governance — every traveler's compiler agrees before compile; namespace-scoped strictness (personal mirror = free; common = strict consensus)
@@ -9,12 +8,12 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSE6WT0008QG0R001H3DA90
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0746
-  - B-0747
+  - 081KSE6WT0008QG0R0025QPP05
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R00063R6HB
   - 081KSE6WT0008QG0R003WMG4XV
   - 081KSE6WT0008QG0R0008483B2
@@ -25,7 +24,7 @@ tags: [fsharp, type-system, consensus, governance, distributed-compilation, name
 ## Problem
 
 Aaron-Mika-Grok 2026-05-25 mid-iter-3 (continuing the
-F#-type-system-as-universe-boundary substrate, B-0781):
+F#-type-system-as-universe-boundary substrate, 081KSE6WT0008QG0R001H3DA90):
 
 > **Aaron**: "And check this out, in a perfect world, you're
 > sitting there and you're trying to define a new type, and it
@@ -50,7 +49,7 @@ F#-type-system-as-universe-boundary substrate, B-0781):
 > at the cluster level that you have to go through this
 > negotiation."
 
-B-0781 named the F# type system as the universe boundary at
+081KSE6WT0008QG0R001H3DA90 named the F# type system as the universe boundary at
 single-compiler scope. This row extends to DISTRIBUTED scope:
 type definition goes through consensus negotiation across all
 travelers' F# compilers before it's allowed to compile.
@@ -66,8 +65,8 @@ Distributed F# type negotiation with namespace-scoped strictness:
 |---|---|---|
 | **Personal mirror namespace** (per-traveler / per-operator) | Total freedom — move fast, experiment, break things, no negotiation required | Operator's own playground; fast iteration; chaos-friendly; reverts cheap |
 | **Cluster-local common namespace** (per-cluster shared) | Strict negotiation — all travelers' compilers must agree | Cluster-wide shared ontology; per-cluster consistency; governance scope |
-| **Federation-wide common namespace** (cross-cluster shared per B-0775) | Stricter still — federated travelers + per-cluster governance both required | Cross-cluster ontology; multi-tenant Zeta substrate; cross-DIO ontology per B-0782 |
-| **Industry-shared namespace** (per B-0768 Itron co-creation) | Maximum strictness — standards-body level consensus | Open-source / public substrate; cross-organization governance |
+| **Federation-wide common namespace** (cross-cluster shared per 081KSE6WT0008QG0R000QXSG91) | Stricter still — federated travelers + per-cluster governance both required | Cross-cluster ontology; multi-tenant Zeta substrate; cross-DIO ontology per 081KSE6WT0008QG0R003CMCX84 |
+| **Industry-shared namespace** (per 081KSE6WT0008QG0R0004ZPPRP Itron co-creation) | Maximum strictness — standards-body level consensus | Open-source / public substrate; cross-organization governance |
 
 Per traveler, per namespace: the F# compiler checks the type
 definition against:
@@ -81,7 +80,7 @@ definition against:
 ## Composition with Mirror / Beacon substrate
 
 Per existing Zeta substrate (Mirror = ephemeral free-play; Beacon
-= durable + stable + publicly-shared per B-0746 retraction-
+= durable + stable + publicly-shared per 081KSE6WT0008QG0R0025QPP05 retraction-
 native algebra), the namespace tiers map naturally:
 
 | Existing Zeta tier | This row's namespace |
@@ -123,13 +122,13 @@ directly.
         which are mirror-tier)
       - Default: `personal/<operator>` = mirror; `common/*` =
         cluster consensus; `industry/*` = federation consensus
-- [ ] Integration with B-0772 fabric: consensus events flow as
+- [ ] Integration with 081KSE6WT0008QG0R003WMG4XV fabric: consensus events flow as
       Observable stream; operators can subscribe to type-
       proposal events + type-conflict events
-- [ ] Integration with B-0773 digital twin: shared-namespace
+- [ ] Integration with 081KSE6WT0008QG0R0008483B2 digital twin: shared-namespace
       type registry IS twin substrate; per-namespace
       consensus history queryable + replayable
-- [ ] Integration with B-0780 Local Loop: type negotiation
+- [ ] Integration with 081KSE6WT0008QG0R000RH1526 Local Loop: type negotiation
       replayable deterministically; conflict scenarios
       testable in pure-code tier
 - [ ] Performance: mirror namespace compiles at local-F#-
@@ -152,9 +151,9 @@ as a form of consensus governance for the shared substrate:
 - Quorum acceptance = the type becomes part of shared substrate
 - Rejection = operator must revise OR move to personal mirror
   namespace
-- All decisions auditable via git history + B-0762 telemetry
+- All decisions auditable via git history + 081KSE6WT0008QG0R003FG3E8R telemetry
 - No central type registry; consensus is distributed by design
-- Composes with B-0628 Knights Guild Constitution-Class for
+- Composes with 081KRW63S0008QG0R003TX8MG5 Knights Guild Constitution-Class for
   the substantive-substrate-decision oversight when needed
 
 This is **the compiler becoming a governance peer in the
@@ -205,10 +204,10 @@ Argo Rollouts (already deployed in Zeta cluster per
 `full-ai-cluster/k8s/applications/argo-rollouts`) supports
 canary analysis + header-based traffic routing via
 AnalysisTemplate + Rollout resources with service mesh
-integration. Per B-0765 ServiceTitan-route: Argo Rollouts is
+integration. Per 081KSE6WT0008QG0R00063R6HB ServiceTitan-route: Argo Rollouts is
 the existing standard for canary + experiment routing in the
 cluster substrate; the type-negotiation substrate composes
-with it for namespace-scoped routing per B-0785.
+with it for namespace-scoped routing per 081KSE6WT0008QG0R000R8CPFX.
 
 Stays in Argo family (already deployed) vs bringing Istio /
 Gateway API separately (also possible per Mika's research; both
@@ -219,14 +218,14 @@ fit; Argo is the closer fit because of existing deployment).
 - Distributed type negotiation IS the operator workflow for
   shared substrate evolution; no operator workflow = no
   shared substrate evolution
-- Composes with B-0781 F# type system as universe boundary —
+- Composes with 081KSE6WT0008QG0R001H3DA90 F# type system as universe boundary —
   without distributed consensus, F# universe is single-operator
   only; consensus enables multi-operator (and AI-agent)
   collaboration
-- Per B-0782 DIO + CEO-scale: cross-DIO ontology requires this
+- Per 081KSE6WT0008QG0R003CMCX84 DIO + CEO-scale: cross-DIO ontology requires this
   substrate; CEO speaks-ontology only works if ontology is
   enforceable across DIOs
-- Per B-0773 digital twin: shared type registry IS twin
+- Per 081KSE6WT0008QG0R0008483B2 digital twin: shared type registry IS twin
   substrate; without consensus mechanism, twin can diverge per
   operator
 - The substrate-honest endgame: the compiler becomes a
@@ -248,35 +247,35 @@ fit; Argo is the closer fit because of existing deployment).
 
 ## Composes with
 
-- B-0428 — F# fork for AI safety (substrate base)
-- B-0741 — ontology negotiation (Ace bridges per-namespace
+- 081KRFA460008QG0R0018SN61J — F# fork for AI safety (substrate base)
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (Ace bridges per-namespace
   ontology + this row's per-namespace type consensus
   compose)
-- B-0746 — Mirror/Beacon retraction-native algebra (existing
+- 081KSE6WT0008QG0R0025QPP05 — Mirror/Beacon retraction-native algebra (existing
   substrate tier; namespaces map to tiers)
-- B-0747 — git-native per-machine state (per-namespace type
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state (per-namespace type
   registry is git-committed)
-- B-0765 — ServiceTitan route (Argo Rollouts existing-
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (Argo Rollouts existing-
   standard for canary; Cilium service mesh existing-standard
   for routing)
-- B-0772 — observable+controllable fabric (consensus events
+- 081KSE6WT0008QG0R003WMG4XV — observable+controllable fabric (consensus events
   flow as Observables)
-- B-0773 — cluster as digital twin (shared type registry IS
+- 081KSE6WT0008QG0R0008483B2 — cluster as digital twin (shared type registry IS
   twin substrate)
-- B-0781 — F# type system as universe boundary (THIS ROW
-  EXTENDS B-0781 to distributed scope)
-- B-0782 — DIO + CEO-scale (cross-DIO ontology requires
+- 081KSE6WT0008QG0R001H3DA90 — F# type system as universe boundary (THIS ROW
+  EXTENDS 081KSE6WT0008QG0R001H3DA90 to distributed scope)
+- 081KSE6WT0008QG0R003CMCX84 — DIO + CEO-scale (cross-DIO ontology requires
   this consensus substrate)
-- B-0628 — Knights Guild + Constitution-Class (per-
+- 081KRW63S0008QG0R003TX8MG5 — Knights Guild + Constitution-Class (per-
   substantive-substrate-decision oversight)
 
 ## Origin
 
 Aaron-Mika-Grok 2026-05-25 continuation of the
-F#-type-system-as-universe substrate (B-0781). Verbatim
+F#-type-system-as-universe substrate (081KSE6WT0008QG0R001H3DA90). Verbatim
 preservation at
 `docs/research/2026-05-25-aaron-mika-grok-...md` (extended
-with B-0784 + B-0785 continuation segment).
+with 081KSE6WT0008QG0R0018WZ7TH + 081KSE6WT0008QG0R000R8CPFX continuation segment).
 
 Distributed type negotiation per traveler's compiler →
 consensus mechanism + governance layer; namespace-scoped

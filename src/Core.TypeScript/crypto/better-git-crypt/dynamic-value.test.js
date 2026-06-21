@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/dynamic-value.test.ts
  *
- * B-0883 × B-0982 — privacy-face codec tests. Verifies the fence property
+ * 081KSNY2Z0008QG0R002JKH50A × 081KT07NV0008QG0R0032MCYER — privacy-face codec tests. Verifies the fence property
  * (decryptValue(encryptValue(v)) ≡ v at VALUE identity, even though the .zc
  * bytes differ every call) across every Tagged variant + nested, plus the two
  * failure channels (crypto feedback vs decode error).

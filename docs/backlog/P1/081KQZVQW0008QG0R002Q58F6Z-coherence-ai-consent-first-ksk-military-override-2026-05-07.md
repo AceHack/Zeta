@@ -1,6 +1,5 @@
 ---
-id: B-0245
-zetaid: 081KQZVQW0008QG0R002Q58F6Z
+id: 081KQZVQW0008QG0R002Q58F6Z
 priority: P1
 status: open
 title: "Coherence AI with consent-first design — KSK override for military/emergency use"
@@ -13,7 +12,7 @@ owners: [architect, security-researcher, threat-model-critic]
 type: feature
 ---
 
-# B-0245 — Coherence AI: consent-first default, KSK military override
+# 081KQZVQW0008QG0R002Q58F6Z — Coherence AI: consent-first default, KSK military override
 
 ## What
 
@@ -168,9 +167,9 @@ This backlog item ties together the 2026-05-07 convergence:
 
 ## Composes with
 
-- B-0240 (structure recognizer) — the coherence engine
-- B-0244 (concordance/coherence AI on GPUs) — the runtime
-- B-0241 (red team hole puncher) — test the override
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — the coherence engine
+- 081KQZVQW0008QG0R001PS4F8G (concordance/coherence AI on GPUs) — the runtime
+- 081KQZVQW0008QG0R001V420F0 (red team hole puncher) — test the override
 - `docs/STRUCTURE-CATALOG.md` — KSK primitive
 - `docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md` — three-node threshold and immune-system mirror
 - `docs/research/2026-05-07-convergence-hawkins-sakana-worm-towers-bft-superorganism-no-central-authority.md` — world-model clustering and superorganism convergence

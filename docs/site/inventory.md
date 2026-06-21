@@ -1,6 +1,6 @@
 # GitHub Pages Public Source Inventory
 
-This document defines the public source inventory for the Zeta GitHub Pages site, as specified in backlog item [B-0301](../backlog/P1/B-0301-pages-public-source-inventory-exclusion-boundary-2026-05-08.md). It serves as the canonical list of what content is part of the public-facing site and what is considered internal substrate.
+This document defines the public source inventory for the Zeta GitHub Pages site, as specified in backlog item [081KR2E4K0008QG0R0035QVX6S](../backlog/P1/081KR2E4K0008QG0R0035QVX6S-pages-public-source-inventory-exclusion-boundary-2026-05-08.md). It serves as the canonical list of what content is part of the public-facing site and what is considered internal substrate.
 
 ## Public Source Inventory
 
@@ -16,7 +16,7 @@ These files are the designated sources for the public GitHub Pages site. They ha
 
 ### Selected Research Sources
 
-These research documents are designated public sources because they explain the factory's methodology to outsiders and are already referenced from the public `docs/VISION.md` page (public-eligible by transitivity). The selection is intentionally conservative; later route work (B-0302) may extend it.
+These research documents are designated public sources because they explain the factory's methodology to outsiders and are already referenced from the public `docs/VISION.md` page (public-eligible by transitivity). The selection is intentionally conservative; later route work (081KR2E4K0008QG0R000WYVJAF) may extend it.
 
 | Source File | Public Purpose |
 |---|---|

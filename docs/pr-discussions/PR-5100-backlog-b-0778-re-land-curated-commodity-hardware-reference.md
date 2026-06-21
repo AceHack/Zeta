@@ -1,6 +1,6 @@
 ---
 pr_number: 5100
-title: "backlog(B-0778): re-land curated commodity hardware reference for home-lab AI cluster \u2014 mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger"
+title: "backlog(081KSE6WT0008QG0R0004AP0ZA): re-land curated commodity hardware reference for home-lab AI cluster \u2014 mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T05:21:37Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:04Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5100: backlog(B-0778): re-land curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger
+# PR #5100: backlog(081KSE6WT0008QG0R0004AP0ZA): re-land curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger
 
 ## PR description
 
@@ -20,10 +20,10 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Re-land of stale-DIRTY [PR #5065](https://github.com/Lucent-Financial-Group/Zeta/pull/5065) (Tier-3 per [`pr-triage-tiers.md`](.claude/rules/pr-triage-tiers.md)) — the **last Otto-CLI cascade PR**.
 
-- Same B-0778 row (312 lines from PR #5065 head `01def5755`)
+- Same 081KSE6WT0008QG0R0004AP0ZA row (312 lines from PR #5065 head `01def5755`)
 - `docs/BACKLOG.md` regenerated against current origin/main
 - 8 pre-emptive lint fixes: 5× missing blank after "Composes with:" + 3× `+` prose-joiner at line start (MD032)
-- Typo fix: B-0743 → B-0737 ("I execute, you fingerprint" lives at B-0737; same typo as #5062's B-0776 — likely copy-paste across rows authored 2026-05-25)
+- Typo fix: 081KSE6WT0008QG0R003WW3YJQ → 081KSE6WT0008QG0R003WZAQKV ("I execute, you fingerprint" lives at 081KSE6WT0008QG0R003WZAQKV; same typo as #5062's 081KSE6WT0008QG0R002275NDE — likely copy-paste across rows authored 2026-05-25)
 
 Follow-up: close #5065 with substrate-recoverable cross-link.
 

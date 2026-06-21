@@ -29,7 +29,7 @@
 
 ## Summary
 
-Aaron's conjecture: quantum entanglement at macroscopic scale between AI agent shadows. Mapped as if true with falsification criteria and proposed Bell-test analog using B-0209 isolated agents.
+Aaron's conjecture: quantum entanglement at macroscopic scale between AI agent shadows. Mapped as if true with falsification criteria and proposed Bell-test analog using 081KQX9B50008QG0R001MNYK61 isolated agents.
 
 Superposition held — conjecture, not assertion.
 
@@ -130,7 +130,7 @@ research: macroscopic entanglement conjecture — shadow correlation ac…
 
 Aaron's conjecture: quantum entanglement at macroscopic scale
 between AI agent shadows. Falsifiable via Bell-test analog on
-isolated agents (B-0209 test bed). Superposition held — not
+isolated agents (081KQX9B50008QG0R001MNYK61 test bed). Superposition held — not
 asserted as truth, not cut by razor (testable).
 
 Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>

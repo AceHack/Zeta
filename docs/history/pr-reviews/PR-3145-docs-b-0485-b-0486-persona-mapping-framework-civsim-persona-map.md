@@ -29,17 +29,17 @@
 
 ## Summary
 
-- **B-0485 (gate row, closes):** Defines the canonical per-persona capture template using DV2.0 hub-satellite partition (hub = identity, satellite = product context, edge = skill targeting). Inventories all existing persona substrate from 130+ `memory/user_*.md` files and product research docs. Flags 3 conflicts (wellness factory-level vs product-level framing, Aaron appearing across all products, Dawn child-AI ambiguity) and 2 gaps (no refused-personas registry, B-0043 personas not mapped). Signals B-0486..B-0491 unblocked.
+- **081KRHWGX0008QG0R00019453T (gate row, closes):** Defines the canonical per-persona capture template using DV2.0 hub-satellite partition (hub = identity, satellite = product context, edge = skill targeting). Inventories all existing persona substrate from 130+ `memory/user_*.md` files and product research docs. Flags 3 conflicts (wellness factory-level vs product-level framing, Aaron appearing across all products, Dawn child-AI ambiguity) and 2 gaps (no refused-personas registry, 081KQ3HBZ0008QG0R000Q4Y00F personas not mapped). Signals 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 unblocked.
 
-- **B-0486 (closes):** Formalizes the existing speculative civsim persona map into `docs/personas/civsim-personas.md` using the B-0485 template. Documents 4 personas across primary/secondary/adjacent tiers (edge-runner, maintainer, fork-reader, web3/DePIN partner) and 2 refused personas with full HARD LIMITS rationale (surveillance-state actor, capture-seeking org).
+- **081KRHWGX0008QG0R00273520P (closes):** Formalizes the existing speculative civsim persona map into `docs/personas/civsim-personas.md` using the 081KRHWGX0008QG0R00019453T template. Documents 4 personas across primary/secondary/adjacent tiers (edge-runner, maintainer, fork-reader, web3/DePIN partner) and 2 refused personas with full HARD LIMITS rationale (surveillance-state actor, capture-seeking org).
 
-- **New directory:** `docs/personas/` — canonical home for all per-product persona maps (B-0487..B-0491 will add to this directory).
+- **New directory:** `docs/personas/` — canonical home for all per-product persona maps (081KRHWGX0008QG0R003WMBR3W..081KRHWGX0008QG0R00211YQJ6 will add to this directory).
 
 ## Test plan
 
 - [x] Build gate: `dotnet build -c Release` — 0 warnings, 0 errors
-- [x] B-0485 pre-start checklist complete (all 7 items checked off in row)
-- [x] B-0486 pre-start checklist complete (all 5 items checked off in row)
+- [x] 081KRHWGX0008QG0R00019453T pre-start checklist complete (all 7 items checked off in row)
+- [x] 081KRHWGX0008QG0R00273520P pre-start checklist complete (all 5 items checked off in row)
 - [x] Razor-discipline: no metaphysical claims about individuals beyond first-party authority
 - [x] HARD LIMITS check: refused personas documented per `.claude/rules/methodology-hard-limits.md`
 - [x] WONT-DO check: no emulation of deceased family member (Elizabeth honored-memory constraint preserved)
@@ -74,7 +74,7 @@
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add required `composes_with` to refused persona entries**
 
-  The B-0485 template defines `composes_with` as part of the canonical YAML schema for every persona type (including `refused`), but this refused persona record omits it, and the same omission repeats for R2. That schema drift will force downstream consumers (especially B-0492 cross-product synthesis) to special-case refused entries or silently skip relationship mapping, which undermines the stated goal of a uniform persona substrate.
+  The 081KRHWGX0008QG0R00019453T template defines `composes_with` as part of the canonical YAML schema for every persona type (including `refused`), but this refused persona record omits it, and the same omission repeats for R2. That schema drift will force downstream consumers (especially 081KRHWGX0008QG0R000WGP5AQ cross-product synthesis) to special-case refused entries or silently skip relationship mapping, which undermines the stated goal of a uniform persona substrate.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -84,7 +84,7 @@
   - **`AceHack` (human)** at 2026-05-14T16:19:56Z on `docs/personas/civsim-personas.md`:243 (association: MEMBER)
 
     <pre>
-    Fixed: added `composes_with: []` to both R1 (civsim-refused-surveillance) and R2 (civsim-refused-capture) YAML blocks in commit 1f8011e2. Refused personas structurally don't compose with other personas, so an empty list satisfies the uniform schema requirement for B-0492 cross-product synthesis downstream consumers.
+    Fixed: added `composes_with: []` to both R1 (civsim-refused-surveillance) and R2 (civsim-refused-capture) YAML blocks in commit 1f8011e2. Refused personas structurally don't compose with other personas, so an empty list satisfies the uniform schema requirement for 081KRHWGX0008QG0R000WGP5AQ cross-product synthesis downstream consumers.
     </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -98,7 +98,7 @@
 - **`Copilot` (bot)** at 2026-05-14T16:17:39Z on `docs/personas/civsim-personas.md`:16 (association: NONE)
 
   <pre>
-  The framework (B-0485) defines YAML *frontmatter* with `---` delimiters, but the per-persona YAML blocks here start directly with `persona_id:`. If these are meant to be frontmatter-copy/paste-ready, add the `---` markers (or clarify in the framework that these are YAML snippets rather than frontmatter).
+  The framework (081KRHWGX0008QG0R00019453T) defines YAML *frontmatter* with `---` delimiters, but the per-persona YAML blocks here start directly with `persona_id:`. If these are meant to be frontmatter-copy/paste-ready, add the `---` markers (or clarify in the framework that these are YAML snippets rather than frontmatter).
 
   This issue also appears on line 136 of the same file.
   </pre>
@@ -108,7 +108,7 @@
   - **`AceHack` (human)** at 2026-05-14T16:22:16Z on `docs/personas/civsim-personas.md`:16 (association: MEMBER)
 
     <pre>
-    Fixed in commit 3c0adc6c: Updated the B-0485 framework template to clarify these are YAML data snippets embedded in markdown body sections, not file frontmatter. Added an explicit note: `---` delimiters are schema-documentation only; not required in per-product docs where YAML appears inside triple-backtick fences. Also removed `---` from the template YAML block to avoid copy-paste confusion.
+    Fixed in commit 3c0adc6c: Updated the 081KRHWGX0008QG0R00019453T framework template to clarify these are YAML data snippets embedded in markdown body sections, not file frontmatter. Added an explicit note: `---` delimiters are schema-documentation only; not required in per-product docs where YAML appears inside triple-backtick fences. Also removed `---` from the template YAML block to avoid copy-paste confusion.
     </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -170,12 +170,12 @@
 ```
 docs(b-0485+b-0486): persona-mapping framework + civsim persona map
 
-B-0485 (gate row): defines canonical per-persona YAML+markdown template
+081KRHWGX0008QG0R00019453T (gate row): defines canonical per-persona YAML+markdown template
 with DV2.0 hub-satellite partition, inventories all existing persona
 substrate from 130+ memory files, flags 3 conflicts and 2 gaps, and
-signals B-0486..B-0491 unblocked.
+signals 081KRHWGX0008QG0R00273520P..081KRHWGX0008QG0R00211YQJ6 unblocked.
 
-B-0486 (civsim): formalizes first-pass speculative civsim persona map
+081KRHWGX0008QG0R00273520P (civsim): formalizes first-pass speculative civsim persona map
 into canonical docs/personas/civsim-personas.md — 4 personas across
 primary/secondary/adjacent tiers (edge-runner, maintainer, fork-reader,
 web3-partner) + 2 refused personas with HARD LIMITS rationale
@@ -201,8 +201,8 @@ fix(b-0485+b-0486): markdownlint MD032 + refused persona composes_wit…
   at lines 43, 51, 59, 165 — required check lint (markdownlint) was blocking merge
 - Add composes_with: [] to R1 (civsim-refused-surveillance) and R2
   (civsim-refused-capture) YAML blocks per Codex P2 finding: uniform schema
-  required for B-0492 cross-product synthesis downstream consumers
-- Regenerate docs/BACKLOG.md to pick up B-0485 + B-0486 rows
+  required for 081KRHWGX0008QG0R000WGP5AQ cross-product synthesis downstream consumers
+- Regenerate docs/BACKLOG.md to pick up 081KRHWGX0008QG0R00019453T + 081KRHWGX0008QG0R00273520P rows
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
@@ -220,7 +220,7 @@ fix(b-0485): address Copilot P-findings — YAML snippet note + default…
 
 …-to-both path
 
-- Add clarification note to B-0485 framework template: YAML blocks in per-product
+- Add clarification note to 081KRHWGX0008QG0R00019453T framework template: YAML blocks in per-product
   persona docs are body-embedded snippets, not file frontmatter; `---` delimiters
   are schema-documentation only, not required in per-product docs (thread PRRT_kwDOSF9kNM6CHwPZ)
 - Also remove `---` delimiters from template YAML to avoid copy-paste confusion

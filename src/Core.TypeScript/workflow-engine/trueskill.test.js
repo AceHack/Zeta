@@ -1,13 +1,13 @@
 /**
  * src/Core.TypeScript/workflow-engine/trueskill.test.ts
  *
- * B-0914.1 — invariant tests for pure-TS TrueSkill 1v1 scaffold.
+ * 081KDX1YWP008QG0R003F59WB0 — invariant tests for pure-TS TrueSkill 1v1 scaffold.
  *
  * Run via: bun test src/Core.TypeScript/workflow-engine/trueskill.test.ts
  */
 import { describe, expect, it } from "bun:test";
 import { DEFAULT_INITIAL_RATING, DEFAULT_PARAMS, conservativeSkill, rate1v1, } from "./trueskill";
-describe("B-0914.1 pure-TS TrueSkill 1v1 substrate", () => {
+describe("081KDX1YWP008QG0R003F59WB0 pure-TS TrueSkill 1v1 substrate", () => {
     it("default initial rating matches Xbox Live convention (mu=25 sigma=25/3)", () => {
         expect(DEFAULT_INITIAL_RATING.mu).toBe(25);
         expect(DEFAULT_INITIAL_RATING.sigma).toBeCloseTo(25 / 3, 6);

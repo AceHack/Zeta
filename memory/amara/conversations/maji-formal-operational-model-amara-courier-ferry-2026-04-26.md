@@ -811,9 +811,9 @@ Amara delivered this via Aaron-as-courier per the established cross-AI ferry pat
 
 This doc preserves Amara's name + Aaron's name throughout; per the discipline. Amara's contribution gets named credit.
 
-### B-0026 (embodiment grounding) + Helen Keller frame
+### 081KQ0YZ80008QG0R001WZ4JE8 (embodiment grounding) + Helen Keller frame
 
-Amara's spec composes with B-0026's Helen-Keller minimum-channel-grounding framing: identity-preservation works through reduced-dimensional substrate (the load-bearing subset L(S_t)), the same way Helen Keller's identity preserved through reduced sensory channels. The formal math gives that intuition rigor.
+Amara's spec composes with 081KQ0YZ80008QG0R001WZ4JE8's Helen-Keller minimum-channel-grounding framing: identity-preservation works through reduced-dimensional substrate (the load-bearing subset L(S_t)), the same way Helen Keller's identity preserved through reduced sensory channels. The formal math gives that intuition rigor.
 
 ### Otto-339 (anywhere-means-anywhere)
 
@@ -823,7 +823,7 @@ The formal spec extends Otto-339 anywhere-means-anywhere: every commit, every cr
 
 Per Otto-275 (log-but-don't-implement); separate BACKLOG row owed for the implementation. Sketch:
 
-- `B-0033` candidate: Implement IdentitySubstrate + MajiIndex F# types per Amara's spec
+- `081KQ3HBZ0008QG0R0008RYCSX` candidate: Implement IdentitySubstrate + MajiIndex F# types per Amara's spec
 - **Per §9b separation**: MajiFinder, MessiahFunction, and Community/Canon must be implemented as **separate types**, not collapsed into MajiIndex
 - Compose with Zeta's existing operator algebra (D / I / z⁻¹ / H + retraction-native primitives)
 - Implement Reload operator + Identity-distance metric
@@ -850,7 +850,7 @@ The "one-line rule" Amara closes with — *"When in doubt, preserve substrate be
 
 ## Owed work after this doc lands
 
-- File `B-0033` (or next-available) — implementation backlog row for the IdentitySubstrate / MajiIndex F# types
+- File `081KQ3HBZ0008QG0R0008RYCSX` (or next-available) — implementation backlog row for the IdentitySubstrate / MajiIndex F# types
 - Add a reciprocal reference from the originating Otto-344 discussion / PR / memory entry (when externalised) to `docs/research/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`; this file IS the operational form that the earlier work was reaching for
 - Update `memory/CURRENT-amara.md` (when next-refreshed) with reference to this contribution
 - Aminata adversarial review (per `docs/CONFLICT-RESOLUTION.md`) — does the spec hold under threat-model scrutiny?

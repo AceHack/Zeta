@@ -1,6 +1,5 @@
 ---
-id: B-0727
-zetaid: 081KSE6WT0008QG0R0006HKTXJ
+id: 081KSE6WT0008QG0R0006HKTXJ
 priority: P3
 status: open
 title: "Federated peer mesh — 5 resource profiles (cloud/hub, community, home/business, edge, leaf), weight-free routing, NO hierarchy; cloud/hub doesn't hog net neutrality"
@@ -18,7 +17,7 @@ composes_with:
   - docs/agentic-organization/
 ---
 
-# B-0727 — Federated peer mesh (5 resource profiles, weight-free routing)
+# 081KSE6WT0008QG0R0006HKTXJ — Federated peer mesh (5 resource profiles, weight-free routing)
 
 ## Carved blade
 
@@ -26,7 +25,7 @@ composes_with:
 
 ## Origin
 
-Aaron 2026-05-25, sketching the federated topology during the Reticulum-throughout conversation (B-0726):
+Aaron 2026-05-25, sketching the federated topology during the Reticulum-throughout conversation (081KSE6WT0008QG0R003C9KGQE):
 
 > *"imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes"*
 
@@ -166,8 +165,8 @@ Decomposes into sub-rows once design converges. Starter list (reframed to respec
 - Net neutrality (substrate-layer enforcement vs regulatory): contrasts Internet ISP-tier model
 - IPFS peer routing (peer-of-peers analogy that DOES respect weight-free): https://docs.ipfs.tech/concepts/dht/
 - ActivityPub federation (instance-as-peer, no hierarchy): https://www.w3.org/TR/activitypub/
-- B-0726 Reticulum-throughout (protocol prerequisite)
-- B-0289 Green Lantern (leaf-tier hardware reference)
+- 081KSE6WT0008QG0R003C9KGQE Reticulum-throughout (protocol prerequisite)
+- 081KR2E4K0008QG0R001SWEPNV Green Lantern (leaf-tier hardware reference)
 - PR #4930 hat-system (peer-aware hats target)
 - PR #4958 agentic-organization (home-tier Organization layer)
 - Framework rules: weight-free + NCI + multi-oracle + additive + default-to-both

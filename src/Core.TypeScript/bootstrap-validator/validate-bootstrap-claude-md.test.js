@@ -174,7 +174,7 @@ describe("runValidation against the live repo root", () => {
         expect(report.checks.find((c) => c.id === "claude-md-exists")?.status).toBe("pass");
         expect(report.checks.find((c) => c.id === "six-step-process")?.status).toBe("pass");
         expect(report.checks.find((c) => c.id === "rules-auto-load")?.status).toBe("pass");
-        // B-0354.2 — every concrete pointer the live CLAUDE.md hands a fresh
+        // 081KDW1XG6008QG0R001D9AC3S — every concrete pointer the live CLAUDE.md hands a fresh
         // instance must resolve (no critical rule/doc lost in the extraction).
         expect(report.checks.find((c) => c.id === "referenced-pointers-resolve")?.status).toBe("pass");
     });

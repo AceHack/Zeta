@@ -8,7 +8,7 @@
  * three CRDT convergence laws (any two replicas that have seen the same
  * elements, in any order, converge to the same set with no coordination).
  *
- * This is the comms substrate of the git-native agent-bus (B-0954): an
+ * This is the comms substrate of the git-native agent-bus (081KSXN940008QG0R00171YAZW): an
  * append-only `docs/agent-bus/` folder of ZetaId-keyed messages IS a G-Set —
  * re-observing the same message id is `union` and a no-op (the same reason the
  * observe-loop's `folderSink` treats an EEXIST write as success). The F# twin

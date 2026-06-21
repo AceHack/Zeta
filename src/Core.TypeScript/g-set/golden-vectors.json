@@ -1,5 +1,5 @@
 {
-  "description": "G-Set CRDT cross-language conformance (the bottom rung of the algebra ladder; B-0954 bus comms substrate). Every impl starts from `initialSet`, replays `ops` in order with the canonical string comparator, and must value-match `expectedReplayStates[i]` after op i AND `expectedFinalState` at the end. Sets are serialized in canonical ascending order, so equality is array-equality. Oracle #1 = TS reference; F# casts oracle #2; C#/Rust join later per the meet-in-the-middle 4-oracle.",
+  "description": "G-Set CRDT cross-language conformance (the bottom rung of the algebra ladder; 081KSXN940008QG0R00171YAZW bus comms substrate). Every impl starts from `initialSet`, replays `ops` in order with the canonical string comparator, and must value-match `expectedReplayStates[i]` after op i AND `expectedFinalState` at the end. Sets are serialized in canonical ascending order, so equality is array-equality. Oracle #1 = TS reference; F# casts oracle #2; C#/Rust join later per the meet-in-the-middle 4-oracle.",
   "elementType": "string",
   "comparator": "ascending Unicode code-point order (matching UTF-8 byte order).",
   "initialSet": [

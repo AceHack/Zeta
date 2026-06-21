@@ -3,7 +3,7 @@ module Zeta.Tests.Formal.JaccardLawsTests
 open FsCheck
 open FsCheck.Xunit
 
-// B-1016 orthogonality proof leg — the overlap MEASURE behind the no-base-vector-
+// 081KT7YW00008QG0R002T1XNWT orthogonality proof leg — the overlap MEASURE behind the no-base-vector-
 // overlap check (tools/observe/orthogonality.ts) is sound. Jaccard similarity on
 // shingle-sets is what declares two context surfaces "orthogonal" (J=0) vs
 // "overlapping" (J→1); these properties prove the measure is well-formed AND that

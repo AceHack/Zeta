@@ -53,18 +53,18 @@ Framework operates richly at Layer 0; communicates visibly at Layer 2; Layer 1 i
 4. Game on top — civ-sim
 5. Turn work into play — RPG framing
 6. PVP and co-op raids — Destiny-style mechanics
-7. Universal business templates — already backlogged (B-0043)
+7. Universal business templates — already backlogged (081KQ3HBZ0008QG0R000Q4Y00F)
 
 ## Composes with
 
 - PR #2903 (civsim PVP+raids+mutual-privacy)
 - PR #2906 (Casimir-gap framing)
-- PR #2904 (B-0424 + B-0425 + honor-system license)
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 - PR #2905 (forker-perspective META-discipline)
 - PR #2902 (Otto strategic encryption authority)
 - PR #2851 (LFG canonical product substrate)
 - PR #2893 (Imagination Circle index)
-- B-0043 (universal-company-government-information-substrate)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate)
 
 ## Test plan
 - [x] Three compositional layers documented

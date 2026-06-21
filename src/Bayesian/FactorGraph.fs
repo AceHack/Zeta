@@ -1,6 +1,6 @@
 namespace Zeta.Bayesian
 
-/// # The factor graph (B-1000 slice 3)
+/// # The factor graph (081KT2T2J0008QG0R000S7GHQ8 slice 3)
 ///
 /// A **factor graph** is the bipartite structure inference runs on:
 /// *variable* nodes hold marginals, *factor* nodes connect variables and
@@ -191,7 +191,7 @@ module FactorGraph =
         current, rounds, converged
 
     /// One DAMPED message pass: each new factor→var message is blended with its previous value,
-    /// `blend alpha newMsg oldMsg` (alpha = 1 ⇒ undamped). THE LOOPY UPGRADE (B-1033's named
+    /// `blend alpha newMsg oldMsg` (alpha = 1 ⇒ undamped). THE LOOPY UPGRADE (081KTZ4EF0008QG0R000WJGSWX's named
     /// follow-up, landed 2026-06-13): on cyclic graphs raw BP can oscillate/overcount precision
     /// forever (Weiss & Freeman 2001); damping is the standard fix (Minka's EP papers use it
     /// routinely; Heskes 2002 analyzes it). Deterministic: same schedule, same blend, same run.

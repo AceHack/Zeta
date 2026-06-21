@@ -1,6 +1,5 @@
 ---
-id: B-0090
-zetaid: 081KQ8P5D0008QG0R0002TN22C
+id: 081KQ8P5D0008QG0R0002TN22C
 priority: P2
 status: decomposed
 title: Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
@@ -20,7 +19,7 @@ tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, conten
 type: friction-reducer
 ---
 
-# B-0090 — Cadenced lost-substrate recovery audit
+# 081KQ8P5D0008QG0R0002TN22C — Cadenced lost-substrate recovery audit
 
 ## Source
 
@@ -33,14 +32,14 @@ worktrees + the in-flight 19 LOST GitHub branches task (#264):
 
 ## 2026-05-11 Re-decomposition (Riven, one bounded step)
 
-B-0090 was too broad (M effort, trajectory-shaped, 4 surfaces + cadence + metric ladder). Per "always re-decompose during build — assume mistakes" rule, split into 4 smallest dependency-ordered atomic S-effort child rows:
+081KQ8P5D0008QG0R0002TN22C was too broad (M effort, trajectory-shaped, 4 surfaces + cadence + metric ladder). Per "always re-decompose during build — assume mistakes" rule, split into 4 smallest dependency-ordered atomic S-effort child rows:
 
 **Dependency order (buildable now):**
 
-1. **B-0090.1** — 3-bucket taxonomy (root, no deps) — defines ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE with decision tree.
-2. **B-0090.2** — worktree delta audit (depends 0090.1) — TS scanner for locked worktrees only.
-3. **B-0090.3** — closed-not-merged / orphan / aged-draft PR scan (depends 0090.1) — GitHub surface.
-4. **B-0090.4** — cadence hook + hygiene-history append (depends 0090.1+2+3) — wiring only.
+1. **081KDVJT3E008QG0R003GV8BHV** — 3-bucket taxonomy (root, no deps) — defines ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE with decision tree.
+2. **081KDVJT3E008QG0R00183ME0R** — worktree delta audit (depends 0090.1) — TS scanner for locked worktrees only.
+3. **081KDVJT3E008QG0R000P3YGTX** — closed-not-merged / orphan / aged-draft PR scan (depends 0090.1) — GitHub surface.
+4. **081KDVJT3E008QG0R002GGF22P** — cadence hook + hygiene-history append (depends 0090.1+2+3) — wiring only.
 
 Re-decomp assumption checked: taxonomy split first avoids label drift; scanners are pure classification (no recovery logic); cadence is hook, not full scheduler. All children are now claimable as single bounded slices. Parent effort reduced to "orchestration of children".
 

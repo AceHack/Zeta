@@ -23,8 +23,8 @@ Lands `.claude/rules/verify-existing-substrate-before-authoring.md` as the subst
 Empirically grounded in **3 same-root-cause failures from session 2026-05-26**:
 
 - **Anchor 1**: cascade #4 ISO audit asserted training-data-default `boot/grub/grub.cfg` path (NixOS actually uses isolinux + refind). Blocked 4 ISO builds. Fixed via PR #5125. Covered by `dep-pin-search-first-authority.md`.
-- **Anchor 2**: B-0806 Ace section authored without reading `docs/agendas/ace-package-manager/AGENDA.md` + project memory + 7+ related backlog rows. The maintainer 2026-05-26: *"that is what ace has been since we first talked about it you just keep forgetting we have substantial backlog around this"*. Fixed via PR #5130.
-- **Anchor 3**: B-0806 hat/fork-negotiation NOT integrated into architecture even after Anchor 2 correction. The maintainer 2026-05-26: *"i'm assuming you have the hat / fork negoation for ace too"*. Fixed via PR #5130 follow-on commit.
+- **Anchor 2**: 081KSGS9H0008QG0R001Y9FB62 Ace section authored without reading `docs/agendas/ace-package-manager/AGENDA.md` + project memory + 7+ related backlog rows. The maintainer 2026-05-26: *"that is what ace has been since we first talked about it you just keep forgetting we have substantial backlog around this"*. Fixed via PR #5130.
+- **Anchor 3**: 081KSGS9H0008QG0R001Y9FB62 hat/fork-negotiation NOT integrated into architecture even after Anchor 2 correction. The maintainer 2026-05-26: *"i'm assuming you have the hat / fork negoation for ace too"*. Fixed via PR #5130 follow-on commit.
 
 ## Same root cause class, different surface
 

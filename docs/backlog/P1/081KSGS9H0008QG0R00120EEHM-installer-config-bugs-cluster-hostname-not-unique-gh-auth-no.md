@@ -1,6 +1,5 @@
 ---
-id: B-0835
-zetaid: 081KSGS9H0008QG0R00120EEHM
+id: 081KSGS9H0008QG0R00120EEHM
 priority: P1
 status: open
 title: installer config-bugs cluster — hostname not unique (shows control-plane); gh login not respected; login banner shows password text (default OR custom) (empirical from 2026-05-26 physical hardware-support test) (Aaron 2026-05-26)
@@ -9,7 +8,7 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - 081KSGS9H0008QG0R0011BC7T2
   - 081KSGS9H0008QG0R001Q2DH2H
@@ -22,7 +21,7 @@ tags: [installer, first-boot, hostname, gh-auth, login-banner, password-disclosu
 
 Three install-config bugs surfaced in the same 2026-05-26 physical
 hardware-support test session (4th, 5th, 6th empirical anchors after
-B-0832 nmtui WiFi + B-0833 auth-tension + B-0834 log preservation).
+081KSGS9H0008QG0R001Q2DH2H nmtui WiFi + 081KSGS9H0008QG0R003JNSVR5 auth-tension + 081KSGS9H0008QG0R001RR3ZXQ log preservation).
 
 Operator framing across two messages:
 
@@ -60,7 +59,7 @@ priority is wrong.
 Operator: *"it does not appear to be using my login"*. Either:
 
 - `gh auth login` step didn't run (install failed before reaching it
-  — composes with B-0834 install-log preservation)
+  — composes with 081KSGS9H0008QG0R001RR3ZXQ install-log preservation)
 - `gh auth login` ran but auth flow didn't complete (no PAT obtained)
 - `gh auth login` completed but the PAT wasn't used downstream (git
   clone of cluster repo OR SSH key injection step)
@@ -87,7 +86,7 @@ Open this URL to continue in your web browser: https://github.com/login/device
 ■ Logged in as AceHack
 [iter-5.4.0]   gh auth login: SUCCESS
 ...
-[iter-5.4.1] ── self-registration commit+push (B-0812) ──
+[iter-5.4.1] ── self-registration commit+push (081KSGS9H0008QG0R0037H3W4T) ──
 [iter-5.4.1]   maintainer:  AceHack
 [iter-5.4.1]   node-name:   node-efe404
 Switched to a new branch 'register-node-efe404-20260527T0005332'
@@ -179,9 +178,9 @@ chain WITHOUT operator login**:
 3. Network comes up
 4. Auto-restore gh auth from install-time secret
 5. **Auto-self-register** to
-   `maintainers/<operator>/cluster-nodes/<hostname>/...` per B-0812
+   `maintainers/<operator>/cluster-nodes/<hostname>/...` per 081KSGS9H0008QG0R0037H3W4T
    iter-5.4.1
-6. ArgoCD pulls in + reconciles per B-0813 iter-5.4.2
+6. ArgoCD pulls in + reconciles per 081KSGS9H0008QG0R002K93MWX iter-5.4.2
 7. Node is fully operational as a cluster member
 
 Operator NEVER logs in. Console login is for diagnostics only. Bugs
@@ -238,7 +237,7 @@ ISO's path (no file there) not the install target's `/mnt/etc/zeta/`
 
 Verified via `gh api`: `maintainers/aaron/cluster-nodes/` does NOT
 exist on the repo (only `maintainers/aaron/legal-entities/`). The
-B-0812 iter-5.4.1 self-registration step did not commit + push the
+081KSGS9H0008QG0R0037H3W4T iter-5.4.1 self-registration step did not commit + push the
 new node's registration. Either:
 
 - Install failed before reaching the cluster-register step
@@ -278,7 +277,7 @@ hostnamectl                        # full hostname state
 Output determines fix:
 
 - If `/etc/zeta/cluster-node-id` missing → iter-5.2.2 code path didn't
-  fire (likely install failed before Step 6.6; composes with B-0834)
+  fire (likely install failed before Step 6.6; composes with 081KSGS9H0008QG0R001RR3ZXQ)
 - If `/etc/zeta/cluster-node-id` has `node-XXXXXX` but `/etc/hostname`
   shows `control-plane` → flake-priority override; fix `injected-
   hostname.nix` module priority OR change `control-plane.nix` flake
@@ -314,15 +313,15 @@ Phased acceptance:
 
 ## Composes with
 
-- B-0754 (zero-typing first-boot scope; this row is the bug-cluster
+- 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot scope; this row is the bug-cluster
   surfacing-from-real-hardware-test)
-- B-0831 (CI cascade #6 — would catch all 3 bugs in QEMU before
-  physical test; this row IS empirical validation that B-0831's
+- 081KSGS9H0008QG0R0011BC7T2 (CI cascade #6 — would catch all 3 bugs in QEMU before
+  physical test; this row IS empirical validation that 081KSGS9H0008QG0R0011BC7T2's
   reframing produces real targets)
-- B-0832 (sibling empirical anchor: nmtui WiFi rescan)
-- B-0833 (sibling empirical anchor: interactive-login vs baked-keys;
+- 081KSGS9H0008QG0R001Q2DH2H (sibling empirical anchor: nmtui WiFi rescan)
+- 081KSGS9H0008QG0R003JNSVR5 (sibling empirical anchor: interactive-login vs baked-keys;
   Bug 2 here is concrete instance of the auth tension)
-- B-0834 (sibling empirical anchor: install log preservation; would
+- 081KSGS9H0008QG0R001RR3ZXQ (sibling empirical anchor: install log preservation; would
   immediately diagnose Bugs 1 + 2)
 - `full-ai-cluster/usb-nixos-installer/zeta-install.sh` (Step 6.55
   iter-5.3 password substrate + Step 6.6 iter-5.2.2 hostname substrate)
@@ -330,17 +329,17 @@ Phased acceptance:
 - `full-ai-cluster/nixos/modules/login-banner.nix` (Bug 3 fix surface)
 - `full-ai-cluster/nixos/modules/injected-hostname.nix` (Bug 1 fix
   surface candidate)
-- B-0792 (iter-5.2 hostname injection substrate this row's Bug 1
+- 081KSGS9H0008QG0R003V23XNZ (iter-5.2 hostname injection substrate this row's Bug 1
   composes with)
 - The 2026-05-26 physical hardware-support test (4 empirical anchors
-  in one session: B-0832 + B-0833 + B-0834 + this row's 3 bugs =
+  in one session: 081KSGS9H0008QG0R001Q2DH2H + 081KSGS9H0008QG0R003JNSVR5 + 081KSGS9H0008QG0R001RR3ZXQ + this row's 3 bugs =
   6 substrate-engineering targets surfaced)
 
 ## Substrate-honest framing
 
 SIX empirical anchors in ONE physical hardware-support test session
-(B-0832 + B-0833 + B-0834 + B-0835 with 3 sub-bugs = 6 substrate-
-engineering targets) is OVERWHELMING validation of B-0831's reframing
+(081KSGS9H0008QG0R001Q2DH2H + 081KSGS9H0008QG0R003JNSVR5 + 081KSGS9H0008QG0R001RR3ZXQ + 081KSGS9H0008QG0R00120EEHM with 3 sub-bugs = 6 substrate-
+engineering targets) is OVERWHELMING validation of 081KSGS9H0008QG0R0011BC7T2's reframing
 that physical-test-becomes-the-hardware-support-test produces real
 substrate-engineering value.
 

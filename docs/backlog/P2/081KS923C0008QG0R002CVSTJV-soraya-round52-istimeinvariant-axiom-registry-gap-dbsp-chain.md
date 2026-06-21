@@ -1,6 +1,5 @@
 ---
-id: B-0715
-zetaid: 081KS923C0008QG0R002CVSTJV
+id: 081KS923C0008QG0R002CVSTJV
 priority: P2
 status: open
 title: "Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)"
@@ -18,11 +17,11 @@ composes_with:
   - docs/research/chain-rule-proof-log.md
 ---
 
-# B-0715 — Register `IsTimeInvariant` axiom (Soraya round-52 hand-off)
+# 081KS923C0008QG0R002CVSTJV — Register `IsTimeInvariant` axiom (Soraya round-52 hand-off)
 
 ## Origin
 
-Soraya's seventh autonomous routing tick (2026-05-23 — round 52, post-PR #4789 merge of B-0714). Distinct axis from B-0709 (portfolio coverage), B-0713 (Lean exploratory artifact), B-0714 (TLA+ runnability).
+Soraya's seventh autonomous routing tick (2026-05-23 — round 52, post-PR #4789 merge of 081KS923C0008QG0R000ECG5EC). Distinct axis from 081KS923C0008QG0R0032VJZPF (portfolio coverage), 081KS923C0008QG0R002RH3EH8 (Lean exploratory artifact), 081KS923C0008QG0R000ECG5EC (TLA+ runnability).
 
 ## Finding
 
@@ -39,9 +38,9 @@ The artifact's own header (lines 50-51, 201-203) carries **strikethrough revisio
 
 ## Distinct from prior session findings
 
-- B-0709 (round 42, expanded 49): TLA+/Alloy portfolio coverage — different tool stack
-- B-0713 (round 50): Lean ImaginaryStack/ToyModel exploratory artifact — different artifact, sorry-bearing
-- B-0714 (round 51): TLA+ `.cfg` runnability — different tool + axis (runnability vs registry)
+- 081KS923C0008QG0R0032VJZPF (round 42, expanded 49): TLA+/Alloy portfolio coverage — different tool stack
+- 081KS923C0008QG0R002RH3EH8 (round 50): Lean ImaginaryStack/ToyModel exploratory artifact — different artifact, sorry-bearing
+- 081KS923C0008QG0R000ECG5EC (round 51): TLA+ `.cfg` runnability — different tool + axis (runnability vs registry)
 
 This row: registered THEOREMS depend on an UNREGISTERED axiom in the same artifact. New axis.
 
@@ -76,9 +75,9 @@ S (one registry row + 2 back-pointer cross-references). Assignee: kenji.
 - [`tools/lean4/Lean4/DbspChainRule.lean`](../../../tools/lean4/Lean4/DbspChainRule.lean) — target artifact line 272
 - [`docs/research/verification-registry.md`](../../research/verification-registry.md) — substrate this row fills
 - [`docs/research/chain-rule-proof-log.md`](../../research/chain-rule-proof-log.md) — round-35 paper-drift audit trail (empirical anchor for why registry rows matter)
-- B-0709 (round 42, expanded 49) — different axis (portfolio coverage)
-- B-0713 (round 50) — different artifact (Lean ImaginaryStack/ToyModel)
-- B-0714 (round 51) — different tool (TLA+) + axis (runnability)
+- 081KS923C0008QG0R0032VJZPF (round 42, expanded 49) — different axis (portfolio coverage)
+- 081KS923C0008QG0R002RH3EH8 (round 50) — different artifact (Lean ImaginaryStack/ToyModel)
+- 081KS923C0008QG0R000ECG5EC (round 51) — different tool (TLA+) + axis (runnability)
 - `memory/soraya/NOTEBOOK.md` round-52 entry (pending append)
 
 ## Substrate-honest framing

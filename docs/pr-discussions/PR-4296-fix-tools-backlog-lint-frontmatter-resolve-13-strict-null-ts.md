@@ -46,7 +46,7 @@ Non-null is safe here because the regex literals have 1 or 2 explicit capture gr
 
 ## Landing path
 
-Landed via GitHub REST contents API (`PUT /repos/.../contents/tools/backlog/lint-frontmatter.ts`) from an Otto-CLI session under dotgit-saturation, bypassing the B-0615 push receive-pack stall (see [PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) for the rule documenting this pattern).
+Landed via GitHub REST contents API (`PUT /repos/.../contents/tools/backlog/lint-frontmatter.ts`) from an Otto-CLI session under dotgit-saturation, bypassing the 081KRW63S0008QG0R000EAZ9K2 push receive-pack stall (see [PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) for the rule documenting this pattern).
 
 ## Test plan
 

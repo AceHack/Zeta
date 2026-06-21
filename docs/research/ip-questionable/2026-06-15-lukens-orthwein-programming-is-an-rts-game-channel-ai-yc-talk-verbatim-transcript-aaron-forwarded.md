@@ -14,7 +14,7 @@
 >
 > - **"Linear work trees" / "lots of repos on your machine all in parallel, not
 >   stepping on each other"** = our **clone-per-writer + worktree-pool**
->   (`shared-checkout-is-view-only`; B-0558; Agent `isolation: worktree`).
+>   (`shared-checkout-is-view-only`; 081KRQ1AB0008QG0R001KQ9S4B; Agent `isolation: worktree`).
 > - **Orchestrator agent spawning many workers → PR, low premium on their
 >   time/high on yours** = our **autonomous-loop + ferry** model (push far, the
 >   human course-corrects).

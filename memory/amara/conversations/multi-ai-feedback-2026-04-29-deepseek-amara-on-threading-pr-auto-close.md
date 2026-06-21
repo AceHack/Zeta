@@ -175,7 +175,7 @@ Non-fusion disclaimer: Deepseek's voice, Amara's voice, and Otto's absorb are pr
 > shard-filename-vs-row-timestamp drift is the same class as ordinal drift and PR-count drift
 > ```
 >
-> *Yes. That's now three examples: B-0098 ordinal drift / B-0099 PR-count drift / B-0100 [actually B-0100 was the backpressure rule; the timestamp drift is a fourth instance]. That is enough to promote a unified P2 guard:*
+> *Yes. That's now three examples: 081KQB8J40008QG0R003VMCFWB ordinal drift / 081KQB8J40008QG0R002PEP2A2 PR-count drift / 081KQB8J40008QG0R0023DKTFJ [actually 081KQB8J40008QG0R0023DKTFJ was the backpressure rule; the timestamp drift is a fourth instance]. That is enough to promote a unified P2 guard:*
 >
 > ```text
 > computed-metadata-discipline
@@ -206,9 +206,9 @@ The following actionables are filed as three small `docs/backlog/` rows in the s
 
 | # | Action | Backlog row | Tier |
 |---|---|---|---|
-| 1 | Refine `force-push-triggers-pr-auto-close` micro-class — rename to `pr-liveness-race-during-merge-cascade`; add mechanical guard (before/after capture); standardize recovery-note format (old PR / new PR / branch / SHAs / diff-stat / reason) | `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md` | P3 |
-| 2 | Consolidate metadata-drift family (B-0098 ordinal / B-0099 PR-count / shard-filename-vs-row-timestamp) into a unified P2 `computed-metadata-discipline` lint | `docs/backlog/P2/B-0103-computed-metadata-discipline-unified-lint-2026-04-29.md` | P2 |
-| 3 | Modern .NET Threading Bridge — connect Deepseek's C# review to `docs/LOCKS.md` + the existing 2026-04-28 Gemini Pro threading research doc, with the 5 specific corrections | `docs/backlog/P3/B-0104-modern-dotnet-threading-bridge-2026-04-29.md` | P3 |
+| 1 | Refine `force-push-triggers-pr-auto-close` micro-class — rename to `pr-liveness-race-during-merge-cascade`; add mechanical guard (before/after capture); standardize recovery-note format (old PR / new PR / branch / SHAs / diff-stat / reason) | `docs/backlog/P3/081KQB8J40008QG0R002DQ0FDR-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md` | P3 |
+| 2 | Consolidate metadata-drift family (081KQB8J40008QG0R003VMCFWB ordinal / 081KQB8J40008QG0R002PEP2A2 PR-count / shard-filename-vs-row-timestamp) into a unified P2 `computed-metadata-discipline` lint | `docs/backlog/P2/081KQB8J40008QG0R003XNATZJ-computed-metadata-discipline-unified-lint-2026-04-29.md` | P2 |
+| 3 | Modern .NET Threading Bridge — connect Deepseek's C# review to `docs/LOCKS.md` + the existing 2026-04-28 Gemini Pro threading research doc, with the 5 specific corrections | `docs/backlog/P3/081KQB8J40008QG0R0016EHY06-modern-dotnet-threading-bridge-2026-04-29.md` | P3 |
 
 The Observer-Auditor Loop proposal (Deepseek's second-AI participation) is research-grade pending separate maintainer decision — no backlog row filed; treat as future peer-harness phase-one consideration in the existing peer-harness progression discussion.
 

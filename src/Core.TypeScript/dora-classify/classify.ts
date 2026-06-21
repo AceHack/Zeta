@@ -1,6 +1,6 @@
 // tools/dora-classify/classify.ts
 //
-// B-0867 + B-0869 + B-0870 Step 1 substrate: per-commit lane classification.
+// 081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R000HENSVM + 081KSNY2Z0008QG0R000DA261F Step 1 substrate: per-commit lane classification.
 //
 // Pure-logic classifier that assigns each commit to ONE LANE based on which
 // paths it touches. Lane taxonomy + bounded volume / ratio discriminator
@@ -8,14 +8,14 @@
 // landed in PR #5663 and the volume-vs-ratio discussion that followed).
 //
 // Composes with:
-//   - B-0867 (workflow engine v1 — per-action gate declaration; lanes ARE
+//   - 081KSKBP80008QG0R000B3Y19A (workflow engine v1 — per-action gate declaration; lanes ARE
 //     the gate declarations at commit-grain scope)
-//   - B-0858 (heartbeat folder — already a lane in this taxonomy)
-//   - B-0869 (DORA-of-live-system mandate — operational lane is what gets
+//   - 081KSKBP80008QG0R001KK9WV6 (heartbeat folder — already a lane in this taxonomy)
+//   - 081KSNY2Z0008QG0R000HENSVM (DORA-of-live-system mandate — operational lane is what gets
 //     measured)
-//   - B-0870 (two-mandate portfolio composition — per-agent operational-
+//   - 081KSNY2Z0008QG0R000DA261F (two-mandate portfolio composition — per-agent operational-
 //     ratio is the portfolio-balance metric)
-//   - B-0871 (reproducibility-as-causal-attribution — lane-tagged commits
+//   - 081KSNY2Z0008QG0R003R0Z7D2 (reproducibility-as-causal-attribution — lane-tagged commits
 //     compose with helm-charts observability for cross-replication)
 //
 // What this module is NOT:
@@ -42,7 +42,7 @@ export type Lane =
   | "operational"        // ships on USB / runs on cluster / changes live-system DORA
   | "verbatim-preservation" // memory/<persona>/<x>/conversations/** (Kestrel/Mika/Ani ferries)
   | "memory"             // memory/*.md (project memory; not persona-conversations)
-  | "heartbeat"          // docs/agent-heartbeats/** (B-0858)
+  | "heartbeat"          // docs/agent-heartbeats/** (081KSKBP80008QG0R001KK9WV6)
   | "backlog-row"        // docs/backlog/** (sub-rows + parent rows)
   | "shadow-work"        // docs/research/2026-*-shadow-lesson-log-*.md + docs/hygiene-history/ticks/**
   | "tooling-or-ci"      // tools/ci/** + tools/hygiene/** + .github/workflows/** + tools/lint/**
@@ -68,7 +68,7 @@ const PATH_RULES: readonly PathRule[] = [
   { prefix: "memory/<persona>/", lane: "verbatim-preservation" },
   // Memory next (project-scope memory; not persona-folder)
   { prefix: "memory/", lane: "memory" },
-  // Heartbeat folder (B-0858)
+  // Heartbeat folder (081KSKBP80008QG0R001KK9WV6)
   { prefix: "docs/agent-heartbeats/", lane: "heartbeat" },
   // Backlog rows
   { prefix: "docs/backlog/", lane: "backlog-row" },

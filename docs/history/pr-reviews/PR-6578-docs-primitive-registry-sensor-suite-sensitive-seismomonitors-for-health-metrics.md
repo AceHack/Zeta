@@ -29,9 +29,9 @@
 
 Aaron 2026-06-02: *"we need seismomonitors sensitive ones too as primitives 4×4 on wish list for health metrics too — it's a different kind of felt oscillations of uncertainty."*
 
-Registry wish-list bullet — **sensitive seismomonitors = the felt-oscillations-of-uncertainty sensor**: detect tremors / instability *before* a quake (failure/storm) — a *different measurement modality* from **radar** (ranging, B-0986) + **interferometers** (lightlike, B-0993). For **health metrics** (system-health observability; feeds the LGTM/Prometheus + Rainbow-Table-after-the-storms layer, B-0994). Each sensor a **4×4** (B-0982 bond). The broader **sensor suite** — radar=ranging · interferometer=lightlike · seismometer=felt-uncertainty-oscillation · weather/temperature=dynamic-state — = the smart-agent-city instrumentation (B-0993).
+Registry wish-list bullet — **sensitive seismomonitors = the felt-oscillations-of-uncertainty sensor**: detect tremors / instability *before* a quake (failure/storm) — a *different measurement modality* from **radar** (ranging, 081KT2T2J0008QG0R002Z46D8Q) + **interferometers** (lightlike, 081KT2T2J0008QG0R003C166K4). For **health metrics** (system-health observability; feeds the LGTM/Prometheus + Rainbow-Table-after-the-storms layer, 081KT2T2J0008QG0R0000H12VT). Each sensor a **4×4** (081KT07NV0008QG0R0032MCYER bond). The broader **sensor suite** — radar=ranging · interferometer=lightlike · seismometer=felt-uncertainty-oscillation · weather/temperature=dynamic-state — = the smart-agent-city instrumentation (081KT2T2J0008QG0R003C166K4).
 
-Registry-only (no backlog row, no index change). Composes B-0994 / B-0993 / B-0986; canary 67=67.
+Registry-only (no backlog row, no index change). Composes 081KT2T2J0008QG0R0000H12VT / 081KT2T2J0008QG0R003C166K4 / 081KT2T2J0008QG0R002Z46D8Q; canary 67=67.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -60,7 +60,7 @@ Registry-only (no backlog row, no index change). Composes B-0994 / B-0993 / B-09
 - **`Copilot` (bot)** at 2026-06-02T15:10:12Z on `docs/PRIMITIVE-REGISTRY.md`:107 (association: NONE)
 
   <pre>
-  P1: This entry references B-0994, but there is no corresponding backlog row/mention elsewhere in the repo, so the cross-reference is currently dangling. Also the sensor-suite shorthand mixes `seismomonitors` with `seismometer=...`; pick one term to avoid confusion.
+  P1: This entry references 081KT2T2J0008QG0R0000H12VT, but there is no corresponding backlog row/mention elsewhere in the repo, so the cross-reference is currently dangling. Also the sensor-suite shorthand mixes `seismomonitors` with `seismometer=...`; pick one term to avoid confusion.
   </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -74,7 +74,7 @@ Registry-only (no backlog row, no index change). Composes B-0994 / B-0993 / B-09
 - **`Copilot` (bot)** at 2026-06-02T15:13:52Z on `docs/PRIMITIVE-REGISTRY.md`:107 (association: NONE)
 
   <pre>
-  `B-0994` is referenced multiple times here, but there is no corresponding backlog row / mention anywhere else in the repo (including `docs/BACKLOG.md`). This leaves a dangling cross-reference that readers can’t follow; either add the missing `B-0994` row or drop the `B-0994` references in this registry entry.
+  `081KT2T2J0008QG0R0000H12VT` is referenced multiple times here, but there is no corresponding backlog row / mention anywhere else in the repo (including `docs/BACKLOG.md`). This leaves a dangling cross-reference that readers can’t follow; either add the missing `081KT2T2J0008QG0R0000H12VT` row or drop the `081KT2T2J0008QG0R0000H12VT` references in this registry entry.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -98,10 +98,10 @@ health metrics too — it's a different kind of felt oscillations of uncertainty
 Wish-list bullet: sensitive seismomonitors = the felt-oscillations-of-uncertainty
 sensor (detect tremors/instability before a quake — a different modality from
 radar=ranging and interferometers=lightlike); for health metrics (feeds the
-LGTM/Prometheus + Rainbow-Table-after-the-storms layer, B-0994); each sensor a 4×4;
+LGTM/Prometheus + Rainbow-Table-after-the-storms layer, 081KT2T2J0008QG0R0000H12VT); each sensor a 4×4;
 the sensor suite (radar/interferometer/seismometer/weather-temperature) = the
-smart-agent-city instrumentation (B-0993). Registry-only (no backlog row, no index
-change). Composes B-0994 / B-0993 / B-0986.
+smart-agent-city instrumentation (081KT2T2J0008QG0R003C166K4). Registry-only (no backlog row, no index
+change). Composes 081KT2T2J0008QG0R0000H12VT / 081KT2T2J0008QG0R003C166K4 / 081KT2T2J0008QG0R002Z46D8Q.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
@@ -124,8 +124,8 @@ before the tidal wave, not the wave itself — water retreats before a tsunami; 
 the anomalous early-warning, act before the wave. = tonal-momentum (recognize the
 strong-attractor trajectory before lock-in) + Limit-as-simulation (preview before
 Integrate commits) at sensor scope; the "before" complement to Rainbow-Table-
-metrics-after-the-storms (B-0994): seismomonitor=before · storm=event · Rainbow-Table=after.
-+B-0644/B-0667.
+metrics-after-the-storms (081KT2T2J0008QG0R0000H12VT): seismomonitor=before · storm=event · Rainbow-Table=after.
++081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R003Z7QV2A.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
@@ -156,7 +156,7 @@ docs(PRIMITIVE-REGISTRY): use consistent term "seismomonitor" in the …
 …sensor suite (Copilot #6578)
 
 seismometer=felt-uncertainty-oscillation -> seismomonitor=... (match the bullet
-header "seismomonitors"; Aaron's term). The B-0994 xref is real (in-flight on
+header "seismomonitors"; Aaron's term). The 081KT2T2J0008QG0R0000H12VT xref is real (in-flight on
 #6577), self-heals on that merge.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
@@ -178,11 +178,11 @@ docs(PRIMITIVE-REGISTRY): full sensor suite — acoustic/sonic/visual P…
 Sensor suite now: radar=ranging · interferometer=lightlike · seismomonitor=felt-
 uncertainty-oscillation · acoustic/sonic=failure-sound · visual=inspection/thermography
 · weather/temperature=dynamic-state. Acoustic/sonic/visual preventative maintenance
-(Itron concept-not-code) applied to memory+attention (seed pair, B-0985) — catch
-memory-rot/drift + attention-thrash/lock-in before failure (B-0994). "You can literally
+(Itron concept-not-code) applied to memory+attention (seed pair, 081KT2T2J0008QG0R0026MS6PV) — catch
+memory-rot/drift + attention-thrash/lock-in before failure (081KT2T2J0008QG0R0000H12VT). "You can literally
 hear hardware about to fail before it fails, high-confidence, with even old-school ML" —
-mature/cheap/LOCAL classical-ML problem (no frontier compute; one-laptop cluster B-0990;
-local-ML app-store B-0992).
+mature/cheap/LOCAL classical-ML problem (no frontier compute; one-laptop cluster 081KT2T2J0008QG0R002DFPSHX;
+local-ML app-store 081KT2T2J0008QG0R003872SGT).
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

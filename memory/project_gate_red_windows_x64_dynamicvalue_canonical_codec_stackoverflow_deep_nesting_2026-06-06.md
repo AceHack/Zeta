@@ -5,7 +5,7 @@ type: project
 created: 2026-06-06
 ---
 
-CI triage of the chronic `gate` red (2026-06-06). Two distinct failures, neither from the B-0956
+CI triage of the chronic `gate` red (2026-06-06). Two distinct failures, neither from the 081KSXN940008QG0R002FWR9B2
 backfill/lint work (backlog-index-integrity is green):
 
 1. **markdownlint** — `docs/BUGS.md:281` MD022/MD032: the deferred MerkleTree.LeafDiff P2 entry lost its

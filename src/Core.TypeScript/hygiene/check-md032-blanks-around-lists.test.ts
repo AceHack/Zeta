@@ -44,7 +44,7 @@ More prose.
     const content = `# Title
 
 Two PRs in flight, both auto-merge armed:
-- **#3043** B-0444 worktree-field
+- **#3043** 081KRFA460008QG0R001SXP0C2 worktree-field
 - **#3044** lost-row recovery
 `;
     const findings = findMd032Violations(content);

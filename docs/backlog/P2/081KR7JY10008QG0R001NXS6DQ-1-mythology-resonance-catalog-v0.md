@@ -1,13 +1,12 @@
 ---
-id: B-0056.1
-zetaid: 081KR7JY10008QG0R001NXS6DQ
+id: 081KR7JY10008QG0R001NXS6DQ
 priority: P2
 status: closed
 title: Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance)
 tier: operational-resonance-research
 effort: S
 parent: 081KQ3HBZ0008QG0R0034DHWTQ
-ask: B-0056 decomposition, 2026-05-10 — smallest safe slice of the mythology research track
+ask: 081KQ3HBZ0008QG0R0034DHWTQ decomposition, 2026-05-10 — smallest safe slice of the mythology research track
 created: 2026-05-10
 last_updated: 2026-05-10
 depends_on: []
@@ -16,13 +15,13 @@ tags: [mythology, heimdallr, hermes, mercury, loki, bridge-figures, anti-instanc
 type: feature
 ---
 
-# B-0056.1 — Mythology resonance catalog v0
+# 081KR7JY10008QG0R001NXS6DQ — Mythology resonance catalog v0
 
 ## What this slice delivers
 
 - **`tools/resonance/mythology-catalog-schema.ts`** — new TypeScript file implementing the
   three-filter discipline for world-mythology operational-resonance entries. Analogous to
-  `tools/resonance/media-catalog-schema.ts` (B-0054.1) but with `MythologyTradition` instead
+  `tools/resonance/media-catalog-schema.ts` (081KR2E4K0008QG0R0003J0FB8) but with `MythologyTradition` instead
   of `MediaMedium` and `MYT-NNN` entry IDs instead of `MR-NNN`.
 - **3 seed entries** with honest three-filter analysis:
   - `MYT-001` Heimdallr (Norse, candidate) — bridge-guardian of Bifröst; collection-index
@@ -33,8 +32,8 @@ type: feature
   - `MYT-003` Loki (Norse, **failed anti-instance**) — trickster-boundary-violator;
     demonstrates F2 bites on structural DIRECTION, not just surface shape; records the
     first mythology-track filter failure for the filter-failure-rate discipline
-- **B-0056.md updated** with pre-start checklist + decomposition table (5 sub-rows)
-- **B-0056.1 backlog row** (this file)
+- **081KQ3HBZ0008QG0R0034DHWTQ.md updated** with pre-start checklist + decomposition table (5 sub-rows)
+- **081KR7JY10008QG0R001NXS6DQ backlog row** (this file)
 
 ## Catalog validation
 
@@ -53,7 +52,7 @@ bun tools/resonance/mythology-catalog-schema.ts --validate
 - `anti-instance` — new sub-structure for entries that fail F2 because the structural
   direction is inverted; Loki is the first documented anti-instance in the mythology track
 - `triple-tradition-fusion` — reserved for Hermes Trismegistus (Greek+Egyptian+Renaissance)
-  in B-0056.5
+  in 081KQ3HBZ0008QG0R0034DHWTQ.5
 
 **Separate file vs extending media catalog**: mythology entries use `tradition` (Norse,
 Greek, Egyptian…) where media entries use `medium` (film, tv, game…). Keeping them
@@ -66,7 +65,7 @@ catalog. The status `"failed"` with F2 `"fail"` is exactly the honest-filter-app
 discipline the collection index calls for. The validation logic enforces that any `"failed"`
 entry must have at least one `"fail"` filter result.
 
-## Measurability snapshot (post-B-0056.1)
+## Measurability snapshot (post-081KR7JY10008QG0R001NXS6DQ)
 
 - **Mythology catalog total:** 3 (0 confirmed, 2 candidates, 1 failed)
 - **Bridge-figure candidates:** 2 (Heimdallr + Hermes; confirmed bridge-figure is
@@ -76,7 +75,7 @@ entry must have at least one `"fail"` filter result.
   true since no confirmed entries yet); this is the first mythology-track filter failure
   and demonstrates the discipline is applying honestly
 
-## What B-0056.2 should pick up
+## What 081KQ3HBZ0008QG0R0034DHWTQ.2 should pick up
 
 The next slice (Janus, Iris, Ratatoskr) covers the remaining Indo-European candidates.
 Janus is the highest-priority next entry: the backlog item notes "Janus IS the
@@ -85,8 +84,8 @@ confirmed instance rather than a candidate, adding the first confirmed mythology
 
 ## Cross-reference
 
-- Parent: `docs/backlog/P2/B-0056-mythology-research-track.md`
+- Parent: `docs/backlog/P2/081KQ3HBZ0008QG0R0034DHWTQ-mythology-research-track.md`
 - Schema: `tools/resonance/mythology-catalog-schema.ts`
-- Sibling media catalog: `tools/resonance/media-catalog-schema.ts` (B-0054.1)
+- Sibling media catalog: `tools/resonance/media-catalog-schema.ts` (081KR2E4K0008QG0R0003J0FB8)
 - Collection index: `memory/project_operational_resonance_instances_collection_index_2026_04_22.md`
   (instance #12 candidate Heimdallr → now MYT-001)

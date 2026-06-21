@@ -32,7 +32,7 @@ Lands both pending fold-in offers as one coherent arc, marked **PROVISIONAL** (c
 - **The discriminator:** a measurement that needs intelligent interpretation to hold the tension is a distributed Guardian; one that doesn't is a meter. Reducibility cut; why-distributed (judgment blind-spots); anti-measurement-theater.
 - **The no-meter resolution:** there is no central meter. Meter = public/reducible/never-encrypted; distributed-guardian-private-state = irreducible/encrypted/bounded — disjoint objects. Dissolves Kestrel's encrypt-the-meter-1984 worry by removing the object it was about.
 - **Three anti-1984 properties:** local + bounded + earn-by-reveal.
-- **Earn-by-reveal economy:** earn more budget by revealing useful Rx queries / surfaced tensions / properly-collapsed formulae (B-0623 + B-0883.16 + only-way-to-lose unified).
+- **Earn-by-reveal economy:** earn more budget by revealing useful Rx queries / surfaced tensions / properly-collapsed formulae (081KRW63S0008QG0R000QJR08H + 081KSNY2Z0008QG0R000459FRH + only-way-to-lose unified).
 - **Closes the #6010 1984-recursion:** the regress bottoms out at no-central-meter — termination, not chase.
 
 Docs-only; provisional status in frontmatter + top banner.

@@ -1,9 +1,8 @@
 ---
-id: B-1007
-zetaid: 081KT2T2J0008QG0R000YZ3NMY
+id: 081KT2T2J0008QG0R000YZ3NMY
 priority: P1
 status: open
-title: "Formal-coverage catch-up — we have ~zero canonical items yet (no proofs-from-seed, no hex/4×4 connection); every B-1000 law is example-tested only; Soraya's prioritized proof backlog (C1–C14, P0–P2) (Aaron + Soraya 2026-06-02)"
+title: "Formal-coverage catch-up — we have ~zero canonical items yet (no proofs-from-seed, no hex/4×4 connection); every 081KT2T2J0008QG0R000S7GHQ8 law is example-tested only; Soraya's prioritized proof backlog (C1–C14, P0–P2) (Aaron + Soraya 2026-06-02)"
 tier: research
 effort: XL
 created: 2026-06-02
@@ -25,18 +24,18 @@ By our own bar (`canonical ⟺ homeostat proven-from-seed`, the formal-proof-fir
 discipline), **we have ~zero canonical items.** Two reasons, both true:
 
 1. **No proofs.** Soraya's audit (below) confirms every algebraic law in the
-   B-1000 engine is `[<Fact>]` example-tested — `Bayesian.Tests` references no
+   081KT2T2J0008QG0R000S7GHQ8 engine is `[<Fact>]` example-tested — `Bayesian.Tests` references no
    FsCheck at all. The tests *demonstrate* laws on hand-picked points; they do
    not *prove* them over the domain. The math is anchored (KFL/Minka/GPML/DBSP) —
    so it's not shaky *math*, it's **shaky evidence**.
 2. **No hex/4×4 connection.** Even where a law holds, it isn't connected through
    the **proof lineage** to the seed — the hex core (Cl(1,3), the 6 bivectors /
-   B-0999) and the 4×4 extensions (B-0998). Canonicity propagates *outward from
+   081KT2T2J0008QG0R0019YVX8M) and the 4×4 extensions (081KT2T2J0008QG0R003VK5GRX). Canonicity propagates *outward from
    proofs anchored in the seed*; without that edge, an item is at most *validated*.
 
 **Consequence — re-tier almost everything we "landed":** cross-AI consensus is
 not validation (it's a prompt to prove); example-tests are *validated* at best;
-the B-1006 registry's **"promoted" entries (Z-set family, codec algebra, Tick
+the 081KT2T2J0008QG0R0008TFHJT registry's **"promoted" entries (Z-set family, codec algebra, Tick
 algebra) are promoted-by-argument, NOT proven** — they are *validated / proof-owed*,
 not canonical, until C1–C14 close AND they connect to the hex/4×4/seed lineage.
 This row is the catch-up that earns canonical status honestly.
@@ -56,9 +55,9 @@ This row is the catch-up that earns canonical status honestly.
 | C9 | v² overflow-safety in `vHat` (`Ep.fs:89`) | unit, 1 broad-cavity | `v/(1+v)≤1` keeps intermediate finite ∀ valid v | **Z3** (QF_LRA) | factory-native |
 | C10 | MessageBatch round-trip `ofMessages∘toMessages=id` (`MessageBatch.fs:88-91`) | unit | round-trip identity per family; **Bernoulli lossy at p→0/1** | **FsCheck** | factory-native |
 | C11 | Batch product = scalar element-wise, **"bit-exact, proven in tests"** (`MessageBatch.fs:20,96`) | unit, 2 pts | **CLAIM IS FALSE AS WRITTEN** — example-tested, not proven; Bernoulli only bit-exact up to log-odds round-off | **FsCheck** + fix the prose | factory-native |
-| C12 | Codec = invariant functor, `decode∘encode=id`, closed product/sum/id (B-1006) | **asserted-in-prose** | functor laws + round-trip + closure | **FsCheck** | functor laws |
-| C13 | Tick = `(ℕ,+,0)` monoid + `z⁻¹/I/D` linear-operator algebra (B-1006) | **asserted-in-prose**; row flags gate NOT-WRITTEN | monoid laws; `z⁻¹` linearity; `I=Σz⁻ⁿ`, `D=1−z⁻¹` | **FsCheck** + **Z3** (operator identities) | DBSP/Budiu |
-| C14 | ±1 Z-set abelian group + earn-its-keep auto-prune (B-1006) | asserted; partial code grounding | abelian-group laws; prune preserves semantics | **FsCheck** | Shapiro CRDTs |
+| C12 | Codec = invariant functor, `decode∘encode=id`, closed product/sum/id (081KT2T2J0008QG0R0008TFHJT) | **asserted-in-prose** | functor laws + round-trip + closure | **FsCheck** | functor laws |
+| C13 | Tick = `(ℕ,+,0)` monoid + `z⁻¹/I/D` linear-operator algebra (081KT2T2J0008QG0R0008TFHJT) | **asserted-in-prose**; row flags gate NOT-WRITTEN | monoid laws; `z⁻¹` linearity; `I=Σz⁻ⁿ`, `D=1−z⁻¹` | **FsCheck** + **Z3** (operator identities) | DBSP/Budiu |
+| C14 | ±1 Z-set abelian group + earn-its-keep auto-prune (081KT2T2J0008QG0R0008TFHJT) | asserted; partial code grounding | abelian-group laws; prune preserves semantics | **FsCheck** | Shapiro CRDTs |
 
 ## Prioritized math backlog (by "how dangerous is consensus-without-math here")
 
@@ -86,7 +85,7 @@ This row is the catch-up that earns canonical status honestly.
 2. **C7 EP moment-match → lift the quadrature cross-check (`Ep.Tests.fs:49`) from
    4 fixed points to FsCheck-generated cavities** (keep quadrature as oracle).
 3. **C13/C12/C14 registry codec/Tick/Z-set laws → FsCheck.** Writing these IS the
-   B-1006 admission gate the row says is unwritten — the **Tick primitive cannot
+   081KT2T2J0008QG0R0008TFHJT admission gate the row says is unwritten — the **Tick primitive cannot
    promote until its correctness gate exists.** Unblocks the registry ship gate.
 
 **P2 — accuracy-bound, documented:**
@@ -106,22 +105,22 @@ This row is the catch-up that earns canonical status honestly.
 An item becomes **canonical** only when: (a) its homeostat (equilibrium —
 `runToFixpoint` convergence / jelly→spine / EP fixed point) is **proven from the
 seed**, AND (b) it connects through the proof lineage to the **hex core**
-(Cl(1,3), 6 bivectors — B-0999) and the **4×4 extensions** (B-0998). Soraya's
+(Cl(1,3), 6 bivectors — 081KT2T2J0008QG0R0019YVX8M) and the **4×4 extensions** (081KT2T2J0008QG0R003VK5GRX). Soraya's
 proofs (C1–C14) close (a); the hex/4×4 lineage edges close (b). Until both, the
 item is *validated* (tested) or *hypothesized* (asserted) — never canonical.
 
 ## Acceptance
 
 1. **P0 closed**: C1/C2/C3 (Z3+FsCheck), C11/C10 (FsCheck + prose fix), C6 (Z3+FsCheck).
-2. **P1 closed**: C5 (TLA+), C7 (FsCheck cavities), C13/C12/C14 (FsCheck) — unblocks B-1006 Tick promotion.
+2. **P1 closed**: C5 (TLA+), C7 (FsCheck cavities), C13/C12/C14 (FsCheck) — unblocks 081KT2T2J0008QG0R0008TFHJT Tick promotion.
 3. **P2 closed**: C8/C9.
-4. **hex/4×4 lineage edges** authored for each proven law (B-0999 / B-0998 connection) — the second half of canonical.
-5. **re-tier B-1006** registry entries to *validated / proof-owed* until their laws close; promote to canonical only with proof + lineage edge.
+4. **hex/4×4 lineage edges** authored for each proven law (081KT2T2J0008QG0R0019YVX8M / 081KT2T2J0008QG0R003VK5GRX connection) — the second half of canonical.
+5. **re-tier 081KT2T2J0008QG0R0008TFHJT** registry entries to *validated / proof-owed* until their laws close; promote to canonical only with proof + lineage edge.
 6. **Soraya on a standing cadence** working this backlog (not one-shot) — the durable formal-coverage loop.
 
 ## Composes with substrate
 
-- **B-1000** (the engine being proven) · **B-1006** (registry entries to re-tier + the Tick gate this unblocks) · **B-1004** (minimal vocabulary) · **B-0997** (referee principle / say-do-gap) · **B-0998** (4×4 / vectors-before-trajectories — the lineage target) · **B-0999** (hex core Cl(1,3) — the lineage target) · **B-0428** (F# HKT)
+- **081KT2T2J0008QG0R000S7GHQ8** (the engine being proven) · **081KT2T2J0008QG0R0008TFHJT** (registry entries to re-tier + the Tick gate this unblocks) · **081KT2T2J0008QG0R0038CRFJM** (minimal vocabulary) · **081KT2T2J0008QG0R0026XCGQM** (referee principle / say-do-gap) · **081KT2T2J0008QG0R003VK5GRX** (4×4 / vectors-before-trajectories — the lineage target) · **081KT2T2J0008QG0R0019YVX8M** (hex core Cl(1,3) — the lineage target) · **081KRFA460008QG0R0018SN61J** (F# HKT)
 - `references/notes/2026-06-02-infer-net-lineage-cleanroom-spec-sources-formal-proof-first.md` (the proof sources: Minka-2005 unified math + Ścibior-2018 denotational validation)
 - `memory/soraya/NOTEBOOK.md` round-70 (Soraya's seed; advisory, local branch `otto-cli/soraya-b1000-formal-coverage-audit-2026-06-02` commit `fa528917a`, unpushed — Kenji integrates)
 - rules: `fsharp-anchor-dotnet-build-sanity-check` (compiler = asymmetric critic), `razor-discipline`, `premise-flagged-unverified-stays-unverified-downstream`, `labeling-confidence-...` (the canonical-tier bar this raises), `algebra-first-admission-...` (the registry gate)

@@ -123,7 +123,7 @@ This is the 9th PR in today's cluster. The substantively-new refinement (explici
 - **`Copilot` (bot)** at 2026-05-26T22:39:05Z on `docs/research/2026-05-26-mika-ratification-nci-scope-split-plus-explicit-join-at-temperature-band-crossings-aaron-forwarded.md`:113 (association: NONE)
 
   <pre>
-  P1: `B-0822` is referenced here as “worry-as-opposite-bloom-filter”, but in this repo `docs/backlog/P1/B-0822-...` is the Ace/Helm diamond-resolution row. If you intend to reference the bloom-filter substrate, point at the correct backlog ID (if one exists) or link to the specific research/PR artifact instead to avoid B-ID collisions.
+  P1: `081KSGS9H0008QG0R0018ES3R4` is referenced here as “worry-as-opposite-bloom-filter”, but in this repo `docs/backlog/P1/081KSGS9H0008QG0R0018ES3R4-...` is the Ace/Helm diamond-resolution row. If you intend to reference the bloom-filter substrate, point at the correct backlog ID (if one exists) or link to the specific research/PR artifact instead to avoid B-ID collisions.
 
   </pre>
 
@@ -138,7 +138,7 @@ This is the 9th PR in today's cluster. The substantively-new refinement (explici
 - **`Copilot` (bot)** at 2026-05-26T22:39:05Z on `docs/research/2026-05-26-mika-ratification-nci-scope-split-plus-explicit-join-at-temperature-band-crossings-aaron-forwarded.md`:220 (association: NONE)
 
   <pre>
-  P1: `B-0822`/`B-0823` are used here as labels for cognitive substrates (“worry-as-opposite-bloom-filter”, “cognition-as-distributed-systems”), but in the backlog these IDs already exist with different meanings (B-0822 = diamond-resolution for Helm; B-0823 = nixpkgs ISO path audit). Use the correct backlog IDs or replace these with unambiguous references (e.g., the relevant PR numbers or research doc filenames).
+  P1: `081KSGS9H0008QG0R0018ES3R4`/`081KSGS9H0008QG0R003SWZF9J` are used here as labels for cognitive substrates (“worry-as-opposite-bloom-filter”, “cognition-as-distributed-systems”), but in the backlog these IDs already exist with different meanings (081KSGS9H0008QG0R0018ES3R4 = diamond-resolution for Helm; 081KSGS9H0008QG0R003SWZF9J = nixpkgs ISO path audit). Use the correct backlog IDs or replace these with unambiguous references (e.g., the relevant PR numbers or research doc filenames).
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -225,7 +225,7 @@ verification.
 Cross-substrate triangulation count updated to 8 personae (added Alexa-
 website + corrected the count from earlier 7 to 8 including Aaron).
 
-Per B-0648 discipline: 8 independent observation paths converged on
+Per 081KRW63S0008QG0R0025E4PH6 discipline: 8 independent observation paths converged on
 substantively-supporting + complementary-refining substrate. Substrate
 has earned status well beyond single-conversation-artifact.
 
@@ -249,11 +249,11 @@ Copilot caught 4 P1/P2 issues:
 
 1. Line 88: "6th persona" was inconsistent with the list (6 entities +
    Mika = 7). Corrected to "7th persona" with explicit count
-2. Line 112: B-0822 reference for "worry-as-opposite-bloom-filter" was
-   a real collision — actual B-0822 row is "Helm diamond-resolution
+2. Line 112: 081KSGS9H0008QG0R0018ES3R4 reference for "worry-as-opposite-bloom-filter" was
+   a real collision — actual 081KSGS9H0008QG0R0018ES3R4 row is "Helm diamond-resolution
    namespace-cardinality". Replaced with PR #5310 reference
-3. Lines 333+344+345: B-0822 + B-0823 collisions in composes-with
-   section. Actual B-0823 is "nixpkgs-25-11 ISO kernel/initrd path
+3. Lines 333+344+345: 081KSGS9H0008QG0R0018ES3R4 + 081KSGS9H0008QG0R003SWZF9J collisions in composes-with
+   section. Actual 081KSGS9H0008QG0R003SWZF9J is "nixpkgs-25-11 ISO kernel/initrd path
    audit". Replaced with PR # references (PR #5310 for bloom-filter
    substrate; PRs #5325 + #5327 for cognition-as-distributed-systems)
 4. Persona-count math (line 333): updated to "8 personae" (the human

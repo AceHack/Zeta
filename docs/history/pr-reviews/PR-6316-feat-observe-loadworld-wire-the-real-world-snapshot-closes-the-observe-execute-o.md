@@ -73,7 +73,7 @@ Verified: tsc 0, eslint clean, **9/9 tests**. Additive (new file).
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Recurse into date-partitioned event directories**
 
-  When `eventDir` is the documented event root (`agent-state/{persona}/{trajectory}/events/YYYY/MM/DD/{zetaId}.json`, checked in `docs/backlog/P2/B-0867.2-git-append-only-state-persist-typescript-tool-event-sourcing-layer-kestrel-2026-05-28.md`), this only lists the immediate `YYYY` directory names and then skips them because they are not `.json` files. In that real layout, `loadWorld()` folds an empty log and never restores the persisted mode, so the observe→execute→observe loop does not close unless callers pass a single day leaf directory instead of the event root.
+  When `eventDir` is the documented event root (`agent-state/{persona}/{trajectory}/events/YYYY/MM/DD/{zetaId}.json`, checked in `docs/backlog/P2/081KSNY2Z0008QG0R001K6HJ7Z-git-append-only-state-persist-typescript-tool-event-sourcing-layer-kestrel-2026-05-28.md`), this only lists the immediate `YYYY` directory names and then skips them because they are not `.json` files. In that real layout, `loadWorld()` folds an empty log and never restores the persisted mode, so the observe→execute→observe loop does not close unless callers pass a single day leaf directory instead of the event root.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -167,7 +167,7 @@ fix(observe): recurse date-partitioned events + validate payload shap…
 …e (Codex #6316)
 
 Two Codex P2 fixes on the tolerant reader:
-- recurse: events live under YYYY/MM/DD/{id}.json (B-0867.2 / bus shape); flat readdir missed
+- recurse: events live under YYYY/MM/DD/{id}.json (081KSNY2Z0008QG0R001K6HJ7Z / bus shape); flat readdir missed
   them all. readEventActions now recursive readdir (works flat + partitioned). +test.
 - validate payload per kind: a corrupt {kind:"do_item"} with no item passed the kind check then
   fold→simulate dereferenced action.item.id and threw. hasValidPayload rejects ill-shaped payloads

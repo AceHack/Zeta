@@ -63,5 +63,5 @@ self-registration schema gains `network.ip` (+ optional `site`). No code shipped
 - Discovery: `maintainers/Addisons820/cluster-nodes/node-*/node.yaml` (the MACs) · this Mac's ARP table.
 - Patterns: skill-blueprints (`.claude/skills/skill-lifecycle/SKILL.md` + `blueprints/`) — Addison's Blueprints
   (ACHIEVEMENTS.md) · close-over thesis (#7229) · the hardware/internals-known/DNS-federation doc (#7245) ·
-  self-registration GitOps (B-0794, #7237/#7240) · B-1021 (cold-boot token minimization).
+  self-registration GitOps (081KSGS9H0008QG0R0027HJZYH, #7237/#7240) · 081KT7YW00008QG0R003JV9D4J (cold-boot token minimization).
 - Anchors: Tailscale / **Headscale** (self-hosted control server); ARP MAC→IP resolution; SSH TOFU.

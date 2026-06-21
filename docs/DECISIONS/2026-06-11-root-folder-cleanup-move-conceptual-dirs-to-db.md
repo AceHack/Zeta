@@ -10,7 +10,7 @@ reviewers-requested: [Max, Aaron, Otto, Lior]
 ## Context
 
 The repo root currently has ~90+ entries. A fresh contributor (or Max
-spinning up his 24/7 host-loop per B-0248.2) sees a wall of folders
+spinning up his 24/7 host-loop per 081KRQ1AB0008QG0R0014PKF49) sees a wall of folders
 with no obvious hierarchy. The signal-to-noise ratio at root is low.
 
 Today we moved the 26 single-letter dirs (a-z) and 24 Greek alphabet
@@ -85,7 +85,7 @@ samples/  skills/
    docs (`docs/`), tools (`tools/`), data (`db/`), infrastructure
    (`infra/`). Not 90 opaque single-word folders.
 
-2. **Host-loop clarity.** Max's 24/7 site (B-0248.2) clones this repo.
+2. **Host-loop clarity.** Max's 24/7 site (081KRQ1AB0008QG0R0014PKF49) clones this repo.
    A clean root means his launchd/cron scripts don't need to navigate
    a cluttered namespace to find what matters.
 
@@ -113,7 +113,7 @@ Max — if you're reading this at your 24/7 site: does this make your
 host-loop setup cleaner? Would you move anything differently? The
 "leave at root" list includes everything your launchd scripts touch.
 
-The three verbosity levels from B-0730 apply here:
+The three verbosity levels from 081KSE6WT0008QG0R003AJYMD3 apply here:
 
 - **5yo version:** "We're putting all the messy folders into one neat drawer labeled `db`"
 - **Addison/Max version:** This ADR (what you're reading)

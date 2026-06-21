@@ -18,7 +18,7 @@ This reconciles `ITravelerFrame` (#6889): a "traveler frame" is a self-propagati
 *exactly why* a trace from one proves things **across all self-propagating patterns including Zeta itself**
 (`IsDeterministic` = the DST property of the pattern that makes its trace replayable → a proof). The
 contract's doc is refined here to say so. (Anchor: `TravelerFrame.fs` Layer-0 — "no global frame, perspectival,
-local causal reference frame over DBSP"; B-0939 self-propagating-markdown — markdown as a traveler that
+local causal reference frame over DBSP"; 081KSV2WD0008QG0R0020P6ZH2 self-propagating-markdown — markdown as a traveler that
 propagates; the manifesto's recursive/self-similar specs.)
 
 ## 2. Legal jurisdiction = a separate META-frame OVERLAY (not the traveler frame)
@@ -90,7 +90,7 @@ ships with it); (2) is captured-as-Aaron's-framing with the legal treatment expl
   tree). · **Legal ontology / jurisdiction modelling** (LegalRuleML etc.) — the overlay's external substrate;
   **separation of mechanism from policy** (law as policy overlay on a mechanism substrate). · Ours:
   `TravelerFrame.fs` (Layer-0), `ITravelerFrame`/ray-traceable (#6889), cells-as-geodes, the persisted-YinYang
-  control plane, the geospatial workitem `081KTG5C91H02...`, B-0939 self-propagating-markdown, Aminata
+  control plane, the geospatial workitem `081KTG5C91H02...`, 081KSV2WD0008QG0R0020P6ZH2 self-propagating-markdown, Aminata
   (threat-model) for the legal layer. Honest novelty: none in replicators or legal-overlay separation; the
   contribution is the **clean stratification** — traveler = legally-unbound self-propagating pattern at the
   base; legal jurisdiction (AI/human/company/physical) as a separable meta-frame overlay; the triple-aspect

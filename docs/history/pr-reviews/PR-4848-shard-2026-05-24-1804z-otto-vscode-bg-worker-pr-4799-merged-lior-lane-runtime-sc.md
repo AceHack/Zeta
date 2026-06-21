@@ -183,7 +183,7 @@ Resolves 2 of 3 Copilot review threads on docs/hygiene-history/ticks/2026/05/24/
 
 The third thread (YAML frontmatter schema concern on line 1-6) is resolved no-op separately: sibling shards 1607Z.md + 1608Z.md merged on origin/main with identical YAML-frontmatter pattern; the schema check does not run as a required CI gate. The de-facto convention accepts this format.
 
-Pushed via REST git-data API bypass (B-0615 workaround) under 3-proc Lior activity.
+Pushed via REST git-data API bypass (081KRW63S0008QG0R000EAZ9K2 workaround) under 3-proc Lior activity.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 ```

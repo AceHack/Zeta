@@ -1,6 +1,5 @@
 ---
-id: B-0553
-zetaid: 081KRQ1AB0008QG0R000QYJFZE
+id: 081KRQ1AB0008QG0R000QYJFZE
 priority: P3
 status: open
 title: "Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped"
@@ -18,7 +17,7 @@ type: feature
 
 ## Origin
 
-2026-05-16T04:15Z–05:00Z Otto-CLI session manually caught 4 status-drift rows in a single 45-minute window (B-0506, B-0528, B-0530, B-0535 closed via PR #3733, #3743, #3737, #3742 respectively). Peer Otto-CLI surface independently caught the 4th (B-0535) using the same pattern. Empirical evidence captured in [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](../../../memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md).
+2026-05-16T04:15Z–05:00Z Otto-CLI session manually caught 4 status-drift rows in a single 45-minute window (081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000T0A28T, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R000HHAG77 closed via PR #3733, #3743, #3737, #3742 respectively). Peer Otto-CLI surface independently caught the 4th (081KRMEXM0008QG0R000HHAG77) using the same pattern. Empirical evidence captured in [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](../../../memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md).
 
 The "substrate-drift-catch pattern" memorialized in that file is currently a per-tick discipline applied manually. This row mechanizes the audit step.
 
@@ -67,10 +66,10 @@ The naive `grep -oE 'tools/[a-z0-9_/-]+\.ts'` over the whole body flagged 4 P3 r
 
 | Row | False match | True state |
 |---|---|---|
-| [B-0116](B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md) | `tools/github/poll-pr-gate.ts` (composes_with) | Primary artifact `tools/gh-jq-safe.sh` does NOT exist; row is genuinely open |
-| [B-0205](B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md) | `tools/github/poll-pr-gate-batch.ts` (composes_with) | Effort: L research+architecture row; multi-axis instrumentation in-progress |
-| [B-0422](B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) | `.claude/rules/backlog-item-start-gate.md` (rule citation) | Research row; Clifford engine in-progress |
-| [B-0537](B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md) | `tools/hygiene/audit-memory-index-entry-lengths.ts` (existing audit tool, but row's work is cleanup + CI gate which haven't shipped) | Genuinely open work (Slice A cleanup + Slice B CI gate pending) |
+| [081KQDTYV0008QG0R002C97QMC](081KQDTYV0008QG0R002C97QMC-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md) | `tools/github/poll-pr-gate.ts` (composes_with) | Primary artifact `tools/gh-jq-safe.sh` does NOT exist; row is genuinely open |
+| [081KQTPYE0008QG0R000ZJ2GW8](081KQTPYE0008QG0R000ZJ2GW8-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md) | `tools/github/poll-pr-gate-batch.ts` (composes_with) | Effort: L research+architecture row; multi-axis instrumentation in-progress |
+| [081KRCQQF0008QG0R0008VT354](081KRCQQF0008QG0R0008VT354-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) | `.claude/rules/backlog-item-start-gate.md` (rule citation) | Research row; Clifford engine in-progress |
+| [081KRMEXM0008QG0R0034SS319](081KRMEXM0008QG0R0034SS319-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md) | `tools/hygiene/audit-memory-index-entry-lengths.ts` (existing audit tool, but row's work is cleanup + CI gate which haven't shipped) | Genuinely open work (Slice A cleanup + Slice B CI gate pending) |
 
 These four cases drive the section-aware parsing requirement.
 
@@ -90,11 +89,11 @@ These four cases drive the section-aware parsing requirement.
 
 ## Composes with
 
-- [B-0506](B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md) (closed-row precedent — same pattern caught manually)
-- [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) (closed-row precedent — same pattern caught manually)
-- [B-0528](B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md) (closed-row precedent — same pattern caught manually)
-- [B-0535](B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md) (closed-row precedent — peer Otto-CLI catch)
-- [B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (parent-child status mismatch lint — similar audit-shape sibling)
+- [081KRHWGX0008QG0R002DPG02X](081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md) (closed-row precedent — same pattern caught manually)
+- [081KRMEXM0008QG0R000X1PPGC](081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) (closed-row precedent — same pattern caught manually)
+- [081KRMEXM0008QG0R000T0A28T](081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md) (closed-row precedent — same pattern caught manually)
+- [081KRMEXM0008QG0R000HHAG77](081KRMEXM0008QG0R000HHAG77-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md) (closed-row precedent — peer Otto-CLI catch)
+- [081KRMEXM0008QG0R003FZNK3E](081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md) (parent-child status mismatch lint — similar audit-shape sibling)
 - [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](../../../memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md) — the discipline this row mechanizes
 - [`.claude/rules/backlog-item-start-gate.md`](../../../.claude/rules/backlog-item-start-gate.md) — the start-gate this audit extends with the zero-th step
 - `tools/backlog/generate-index.ts` — the `BACKLOG_WRITE_FORCE=1` regen path used after status updates
@@ -104,7 +103,7 @@ These four cases drive the section-aware parsing requirement.
 
 - Detecting drift in `status: closed` rows (out of scope — those are already done)
 - Auto-merging close-row PRs (the `--open-close-pr` mode opens them but doesn't arm auto-merge; agent discretion)
-- Cross-row drift detection (e.g., B-0537 references `composes_with: B-0535` — out of scope; this is the realm of B-0532's parent-child status mismatch lint)
+- Cross-row drift detection (e.g., 081KRMEXM0008QG0R0034SS319 references `composes_with: 081KRMEXM0008QG0R000HHAG77` — out of scope; this is the realm of 081KRMEXM0008QG0R003FZNK3E's parent-child status mismatch lint)
 - Cleaning up the row file itself (Resolution section authoring is human/agent work; the tool only flags + optionally drafts a PR)
 
 ## Wire-up

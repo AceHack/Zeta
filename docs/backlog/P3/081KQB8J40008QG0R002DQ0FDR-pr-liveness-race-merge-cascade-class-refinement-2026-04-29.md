@@ -1,6 +1,5 @@
 ---
-id: B-0102
-zetaid: 081KQB8J40008QG0R002DQ0FDR
+id: 081KQB8J40008QG0R002DQ0FDR
 priority: P3
 status: open
 title: PR-liveness race during merge cascade — micro-class rename + mechanical guard + recovery-note format
@@ -187,7 +186,7 @@ clear AND the same trap recurs (composition signal).
 
 ## Composes with
 
-- B-0103 (computed-metadata-discipline) — same family of
+- 081KQB8J40008QG0R003XNATZJ (computed-metadata-discipline) — same family of
   agent-asserted-state vs derived-truth checks.
 - The auto-merge fix in PR #811 + #814 — the safer alternative
   to manual rebase + force-push during cascade.

@@ -43,6 +43,6 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 | docs/pr-discussions/PR-3104-*.md | Archive of PR #3104 (MEMORY.md cutover parity validation). |
 | docs/pr-discussions/PR-3098-*.md | Archive of PR #3098 (ordering/formatting contract docs). |
 | docs/pr-discussions/PR-3097-*.md | Archive of PR #3097 (MEMORY.md harness contract verification). |
-| docs/pr-discussions/PR-3096-*.md | Archive of PR #3096 (close B-0145 PM-2 role). |
+| docs/pr-discussions/PR-3096-*.md | Archive of PR #3096 (close 081KQGDBJ0008QG0R000RWAA67 PM-2 role). |
 | docs/pr-discussions/PR-3095-*.md | Archive of PR #3095 (bg-services launchd wiring status). |
 </details>

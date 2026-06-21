@@ -1,17 +1,17 @@
 // divergence-shard.ts — writer for substrate-divergence shard files.
 //
-// Implements the tooling glue for B-0164.1 (PR-review disagreement-
+// Implements the tooling glue for 081KR7JY10008QG0R000MH7PJT (PR-review disagreement-
 // preservation protocol, dual-loop AC #2). Given two loops' conclusions on
 // the same substrate-class commitment (e.g. a PR-review thread), this module
-// produces a divergence shard conforming to the schema landed in B-0164 AC #4
+// produces a divergence shard conforming to the schema landed in 081KQJZR90008QG0R002GJAJ19 AC #4
 // (docs/hygiene-history/divergences/README.md, PR #2475) and writes it to the
 // canonical path under the fail-closed-OR-idempotent rule.
 //
-// This is the UNBLOCKED slice of B-0164.1: building + filing a shard given two
+// This is the UNBLOCKED slice of 081KR7JY10008QG0R000MH7PJT: building + filing a shard given two
 // conclusions needs no concurrent-loop harness, so it is fully testable in
 // isolation. The end-to-end protocol (detecting that two loops reviewed the
 // same thread; morning reconciliation) remains the blocked impl child pending
-// B-0160.
+// 081KQJZR90008QG0R000FTJ1TC.
 //
 // Pure functions (no I/O): shortContentHash, divergenceShardRelPath,
 //   buildDivergenceShard.
@@ -82,7 +82,7 @@ function perspectiveFromObservation(observation) {
 /**
  * Detect whether two loop observations on a PR review thread disagree.
  *
- * This is the pure detector slice for B-0164.1: it does not talk to GitHub and
+ * This is the pure detector slice for 081KR7JY10008QG0R000MH7PJT: it does not talk to GitHub and
  * does not write a shard. Callers can hand the returned divergenceInput to
  * writeDivergenceShard once they have two observations from the same thread
  * whose machine-comparable conclusions differ.
@@ -258,7 +258,7 @@ export function writeDivergenceShard(repoRoot, input) {
     return { relPath: relative(repoRoot, result.absPath), status: result.status };
 }
 /**
- * Operational unit of B-0164.1 AC #2 ("a divergence shard is filed whenever
+ * Operational unit of 081KR7JY10008QG0R000MH7PJT AC #2 ("a divergence shard is filed whenever
  * conclusions differ"): detect whether two loops' observations on the SAME PR
  * review thread disagree and, only then, file the divergence shard under
  * `repoRoot`. Composes the pure detector (detectReviewThreadDisagreement) with
@@ -330,7 +330,7 @@ function findEarliestDecision(lowerText) {
  * GitHub, no clock. Composes with buildDivergenceShard -- feeding that builder's
  * output here returns `{ kind: "unreconciled" }`, which is the foundational read
  * the schema README's "reads all shards with empty Reconciliation sections"
- * morning workflow (and B-0164.1 AC #4) depends on.
+ * morning workflow (and 081KR7JY10008QG0R000MH7PJT AC #4) depends on.
  *
  * Decision keyword matching is case-insensitive (consistent with
  * normalizedConclusion). The returned `note` is the section's text after the

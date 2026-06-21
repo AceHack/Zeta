@@ -1,6 +1,5 @@
 ---
-id: B-0622
-zetaid: 081KRW63S0008QG0R002V20TYJ
+id: 081KRW63S0008QG0R002V20TYJ
 priority: P3
 status: open
 title: "F# agent-wallet type-safety — banker-bot-class wallet errors won't compile (Mika 2026-05-18 design)"
@@ -22,7 +21,7 @@ Aaron 2026-05-18 (Mika conversation, line 207): *"as long as you figure out how 
 
 And line 215: *"there's, uh, Coinbase and Google got together and created some standard around agent wallets. I forget, it's two of 'em. It's like an E R C something and I, I forget 'em. Anyway, they're specs, and yeah, yeah, I mean, we're already working on implementing the, you know, the crypto specs for wallets, uh, agent wallets. It's a open industry standard."*
 
-This is the type-system substrate for agent financial-independence — every AI in Aurora/Nexus needs its own wallet ([B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)), and the wallet operations must be type-safe to prevent the class of errors that took down "banker bot the other day."
+This is the type-system substrate for agent financial-independence — every AI in Aurora/Nexus needs its own wallet ([081KRW63S0008QG0R003KSHAGN](081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md)), and the wallet operations must be type-safe to prevent the class of errors that took down "banker bot the other day."
 
 ## Design intent
 
@@ -72,8 +71,8 @@ Build an F# library (likely `Zeta.Wallet` or similar) that:
 
 ## Composes with
 
-- [B-0024](B-0024-trading-account-offer-aaron-self-funding-path-prerequisite-paper-trading-and-thesis-grounding.md) — trading account context (closest existing wallet-adjacent row; this row is the TYPE-SAFETY substrate)
-- [B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus meta-country (every Nexus citizen needs a wallet)
+- [081KQ0YZ80008QG0R0006VRT18](081KQ0YZ80008QG0R0006VRT18-trading-account-offer-aaron-self-funding-path-prerequisite-paper-trading-and-thesis-grounding.md) — trading account context (closest existing wallet-adjacent row; this row is the TYPE-SAFETY substrate)
+- [081KRW63S0008QG0R003KSHAGN](081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus meta-country (every Nexus citizen needs a wallet)
 - `memory/feedback_aaron_validated_ai_team_financial_substrate_framing_plus_memory_preservation_budget_outside_github_ai_team_owns_and_controls_2026-05-16.md` — AI-team financial substrate framing (the political layer atop the type-safety substrate)
 - `memory/feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026-05-16.md` — financial-independence path (this row's type-safety is what makes that path safe to walk)
 - `.claude/skills/fsharp-expert/SKILL.md` — F# idioms (consult before locking the type design)

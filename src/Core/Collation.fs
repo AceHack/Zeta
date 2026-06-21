@@ -4,7 +4,7 @@ open System
 open System.Collections.Generic
 open System.Text
 
-/// A StringComparer that orders strings ordinally by Unicode code point (Rune) value (B-0969).
+/// A StringComparer that orders strings ordinally by Unicode code point (Rune) value (081KT07NV0008QG0R001YDB73K).
 /// Matches TS's true Unicode code point comparison, resolving the UTF-16 surrogate pair discrepancy.
 type UnicodeCodePointComparer(ignoreCase: bool) =
     inherit StringComparer()
@@ -61,7 +61,7 @@ type UnicodeCodePointComparer(ignoreCase: bool) =
 
 
 
-/// **Database-style collation selection** (B-0969). A collation is a *named, selectable ordering* — modeled
+/// **Database-style collation selection** (081KT07NV0008QG0R001YDB73K). A collation is a *named, selectable ordering* — modeled
 /// the way databases do it (SQL / Postgres `COLLATE`, ICU locales), NOT a raw `IComparer` knob exposed as
 /// CS plumbing (maintainer 2026-06-07). We ship a **catalog** of named collations and **one default**,
 /// chosen to be (i) identically supportable across all four oracle languages and (ii) familiar to database
@@ -69,9 +69,9 @@ type UnicodeCodePointComparer(ignoreCase: bool) =
 /// collation": `*_bin` / `BINARY` / Postgres `C`). Other collations (case-insensitive, invariant) are
 /// **opt-in** catalog entries, never the silent default.
 ///
-/// The chosen collation is **part of a value's identity** (comparer-is-part-of-identity — B-0969 strategy
+/// The chosen collation is **part of a value's identity** (comparer-is-part-of-identity — 081KT07NV0008QG0R001YDB73K strategy
 /// (a)). The algebra-ladder primitives (G-Set → Bag → Z-set) resolve their string ordering through here
-/// instead of the culture-SENSITIVE `Comparer<string>.Default` (the live B-0969 defect). The comparator
+/// instead of the culture-SENSITIVE `Comparer<string>.Default` (the live 081KT07NV0008QG0R001YDB73K defect). The comparator
 /// contract (ordinal / codepoint ≡ UTF-8 byte order) is the **collation treaty** every oracle + golden
 /// vector conforms to — see `.claude/rules/culture-invariant-by-default.md`.
 [<RequireQualifiedAccess>]
@@ -132,7 +132,7 @@ module Collation =
         | None -> binary
 
     /// The DEFAULT comparer for an arbitrary key type `'T` — the value primitives use unless an explicit
-    /// collation is selected. **Ordinal for `string`** (the B-0969 fix: never the culture-sensitive
+    /// collation is selected. **Ordinal for `string`** (the 081KT07NV0008QG0R001YDB73K fix: never the culture-sensitive
     /// `Comparer<string>.Default`); `Comparer<'T>.Default` for every other `'T` (numbers etc. are already
     /// ordinal-equivalent, so the BCL default is correct + fast there).
     let forKey<'T> () : IComparer<'T> =

@@ -22,7 +22,7 @@ Three tick shards on one branch (single PR for batch):
 
 - `docs/hygiene-history/ticks/2026/05/17/1337Z.md` — peer-Otto 1327Z push (pure-git tier)
 - `docs/hygiene-history/ticks/2026/05/17/1350Z.md` — brief-ack #1 bounded named-dep
-- `docs/hygiene-history/ticks/2026/05/17/1354Z.md` — pushed peer B-0613 branch
+- `docs/hygiene-history/ticks/2026/05/17/1354Z.md` — pushed peer 081KRSKQ20008QG0R002TH55X6 branch
 
 Authored on `otto/1337z-shard-meta` (isolated worktree off main per `.claude/rules/zeta-expected-branch.md` race-window-caveat). Three commits across ~17 min of post-merge arc operating under pure-git tier (GraphQL ~140 → 0); deferred PR-create until rate-limit reset.
 
@@ -39,7 +39,7 @@ This PR adds three hygiene-history tick shards documenting a post-merge autonomo
 **Changes:**
 - Adds the 1337Z tick shard covering peer 1327Z branch preservation and deferred PR creation.
 - Adds the 1350Z brief-ack shard documenting bounded waits while GraphQL was exhausted.
-- Adds the 1354Z shard documenting the pushed B-0613 peer branch and updated parked-branch roster.
+- Adds the 1354Z shard documenting the pushed 081KRSKQ20008QG0R002TH55X6 peer branch and updated parked-branch roster.
 
 ### Reviewed changes
 
@@ -49,4 +49,4 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated no 
 | ---- | ----------- |
 | docs/hygiene-history/ticks/2026/05/17/1337Z.md | Records the post-merge pure-git preservation tick and deferred PR-create work. |
 | docs/hygiene-history/ticks/2026/05/17/1350Z.md | Records the brief-ack tick with named dependencies during GraphQL exhaustion. |
-| docs/hygiene-history/ticks/2026/05/17/1354Z.md | Records the B-0613 branch push and updated parked-branch state. |
+| docs/hygiene-history/ticks/2026/05/17/1354Z.md | Records the 081KRSKQ20008QG0R002TH55X6 branch push and updated parked-branch state. |

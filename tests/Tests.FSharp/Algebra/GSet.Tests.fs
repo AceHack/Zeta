@@ -139,17 +139,17 @@ let private loadVector () : string list * GsOp list * string list list * string 
     let final = strList (root.GetProperty("expectedFinalState"))
     initial, ops, replay, final
 
-// ─── B-0969: string ordering is BINARY code-point order, not culture-sensitive ───
+// ─── 081KT07NV0008QG0R001YDB73K: string ordering is BINARY code-point order, not culture-sensitive ───
 // Default collation = Collation.binary. 'B'(0x42) < 'a'(0x61), so "B" sorts BEFORE "a";
 // a culture-sensitive sort (the old Comparer<string>.Default) would put "a" first.
 // This is the cross-language byte-consensus order the other three oracles produce.
 [<Fact>]
-let ``ofSeq sorts strings ordinally (B-0969 binary collation, not culture-sensitive)`` () =
+let ``ofSeq sorts strings ordinally (081KT07NV0008QG0R001YDB73K binary collation, not culture-sensitive)`` () =
     let g = GSet.ofSeq [ "a"; "B"; "C"; "b" ]
     Assert.Equal<string[]>([| "B"; "C"; "a"; "b" |], GSet.toArray g)
 
 [<Fact>]
-let ``union preserves ordinal order across operands (B-0969)`` () =
+let ``union preserves ordinal order across operands (081KT07NV0008QG0R001YDB73K)`` () =
     let g = GSet.union (GSet.ofSeq [ "a"; "Z" ]) (GSet.ofSeq [ "B"; "y" ])
     // ordinal: uppercase (Z=0x5A, B=0x42) precede lowercase (a=0x61, y=0x79)
     Assert.Equal<string[]>([| "B"; "Z"; "a"; "y" |], GSet.toArray g)

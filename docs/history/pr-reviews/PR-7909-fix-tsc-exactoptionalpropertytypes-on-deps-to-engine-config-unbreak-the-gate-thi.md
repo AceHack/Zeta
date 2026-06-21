@@ -27,7 +27,7 @@
 
 ## Description
 
-B-0821 acceptance merge landed tools/cluster/deps-to-engine-config.ts with the same exactOptionalPropertyTypes mismatch the last two fixes addressed; Args + emitEngineConfigs opts gain '| undefined'. tsc 0 errors; suites green.
+081KSGS9H0008QG0R00367G209 acceptance merge landed tools/cluster/deps-to-engine-config.ts with the same exactOptionalPropertyTypes mismatch the last two fixes addressed; Args + emitEngineConfigs opts gain '| undefined'. tsc 0 errors; suites green.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

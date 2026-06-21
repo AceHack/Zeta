@@ -218,9 +218,9 @@ NOT allowed during escrow:
 2. Confirm durable homes for already-named operational rules
    — IN FLIGHT:
      - session-closure rule in docs/AGENT-BEST-PRACTICES.md (PR #712)
-     - docs/CONTRIBUTOR-COMPLIANCE.md per B-0092 — NOT YET LANDED
+     - docs/CONTRIBUTOR-COMPLIANCE.md per 081KQ8P5D0008QG0R003ZF64GG — NOT YET LANDED
      - candidate-count Goodhart glossary entry — NOT YET LANDED
-     - trajectory-owners table — pending B-0093
+     - trajectory-owners table — pending 081KQ8P5D0008QG0R003MY8246
 
 3. Run the Candidate-count scanner self-destruct prototype.
 

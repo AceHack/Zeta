@@ -1,7 +1,7 @@
 /**
  * tools/crypto/better-git-crypt/crypto.test.ts
  *
- * B-0883 v1 Phase 2 — WIRING + tamper-detection tests.
+ * 081KSNY2Z0008QG0R002JKH50A v1 Phase 2 — WIRING + tamper-detection tests.
  *
  * SCOPE (do not overstate): these exercise the actual @noble post-quantum
  * primitives end-to-end and prove the API COMPOSES — encrypt→decrypt round
@@ -29,7 +29,7 @@ function ctxFor(plaintext, sender, recipients) {
         seedSource: "random-bytes",
     };
 }
-describe("B-0883 v1 Phase 2 — keygen", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 Phase 2 — keygen", () => {
     it("generates XWing + ML-DSA-65 keypair with expected public-key sizes", () => {
         const kp = generateRecipientKeyPair("sender@zeta");
         expect(kp.publicKey.identity).toBe("sender@zeta");
@@ -58,7 +58,7 @@ describe("B-0883 v1 Phase 2 — keygen", () => {
         expect(kp.publicKey.identity).toBe("x@zeta"); // no throw — keygen just proceeds
     });
 });
-describe("B-0883 v1 Phase 2 — encrypt/decrypt round-trip", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 Phase 2 — encrypt/decrypt round-trip", () => {
     it("single recipient (sender == recipient) round-trips", () => {
         const sender = generateRecipientKeyPair("sender@zeta");
         const pt = utf8("the secret is in the wavefunction");
@@ -116,7 +116,7 @@ describe("B-0883 v1 Phase 2 — encrypt/decrypt round-trip", () => {
             expect(Buffer.from(dec.plaintext).equals(Buffer.from(pt))).toBe(true);
     });
 });
-describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 Phase 2 — encrypt failure modes (authored TFeedback)", () => {
     it("EmptyRecipientSet", () => {
         const sender = generateRecipientKeyPair("sender@zeta");
         const enc = encrypt(ctxFor(utf8("x"), sender, []), sender.secretKeys);
@@ -270,7 +270,7 @@ describe("B-0883 v1 Phase 2 — encrypt failure modes (authored TFeedback)", () 
         }
     });
 });
-describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 Phase 2 — decrypt failure modes (tamper detection)", () => {
     it("wrong recipient (not in envelope) -> RecipientNotInEnvelope", () => {
         const sender = generateRecipientKeyPair("sender@zeta");
         const stranger = generateRecipientKeyPair("stranger@zeta");
@@ -353,7 +353,7 @@ describe("B-0883 v1 Phase 2 — decrypt failure modes (tamper detection)", () =>
             expect(dec.feedback.kind).toBe("ContextMismatch");
     });
 });
-describe("B-0883 v1 Phase 2 — on-disk envelope CBOR codec", () => {
+describe("081KSNY2Z0008QG0R002JKH50A v1 Phase 2 — on-disk envelope CBOR codec", () => {
     it("encode/decode round-trips and the decoded envelope still decrypts", () => {
         const sender = generateRecipientKeyPair("sender@zeta");
         const recipientA = generateRecipientKeyPair("recipient-a@zeta");

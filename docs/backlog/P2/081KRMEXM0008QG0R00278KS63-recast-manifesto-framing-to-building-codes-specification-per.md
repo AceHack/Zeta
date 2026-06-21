@@ -1,6 +1,5 @@
 ---
-id: B-0546
-zetaid: 081KRMEXM0008QG0R00278KS63
+id: 081KRMEXM0008QG0R00278KS63
 title: Recast docs/governance/MANIFESTO.md from "manifesto" framing to "building codes" framing per Aaron's correction + Kestrel's reframe — the document is best-practices-with-default-moral-oracle, not ideological commitment
 priority: P2
 status: open
@@ -88,7 +87,7 @@ The work is also a meta-pattern catch: AI-name-inflation is a recurring failure 
 - `.claude/rules/razor-discipline.md` (operational claims only; manifesto-shaped substrate has rhetorical weight beyond operational substance)
 - `.claude/rules/default-to-both.md` (Kestrel's both-and: short-capture for the framing AND backlog-row for the operational work)
 - `.claude/rules/honor-those-that-came-before.md` (the substantive substrate of the 11 constraints stays; only the framing changes)
-- B-0543 (composes — both rows are catches by Kestrel applying the asymmetric-critic role to substrate produced this week; B-0543 needs mirror-tier marking, B-0546 needs building-codes recasting)
+- 081KRMEXM0008QG0R002YSPW1X (composes — both rows are catches by Kestrel applying the asymmetric-critic role to substrate produced this week; 081KRMEXM0008QG0R002YSPW1X needs mirror-tier marking, 081KRMEXM0008QG0R00278KS63 needs building-codes recasting)
 - `docs/governance/MANIFESTO.md` (the document this row recasts)
 - `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` (the verbatim conversation that produced this row)
 - `.claude/skills/naming-expert/SKILL.md` (Ilyana review applies if the final name goes public-surface)

@@ -5,7 +5,7 @@ open FsUnit.Xunit
 open Zeta.Core
 open Zeta.Core.RetryPolicy
 
-// B-1017 #3 — the retry policy is the VALIDATING instance for the cross-junction kernel:
+// 081KT7YW00008QG0R003N6PF8A #3 — the retry policy is the VALIDATING instance for the cross-junction kernel:
 // the same Policy<input,decision,feedback> kernel that decides XML structure (μF) and
 // stream routing (νF) decides retry/backoff/circuit-break here (resilience junction).
 // Pure + total — decisions are tested without any clock or side effect (select-not-mutate).

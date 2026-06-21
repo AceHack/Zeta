@@ -1,6 +1,6 @@
 ---
 pr_number: 4975
-title: "backlog(B-0728): destructive-tool authoring contract (rails + permission-grants-invocation + runtime-acceptance gate)"
+title: "backlog(081KSE6WT0008QG0R0005XASX2): destructive-tool authoring contract (rails + permission-grants-invocation + runtime-acceptance gate)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T19:24:43Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-25T23:44:56Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4975: backlog(B-0728): destructive-tool authoring contract (rails + permission-grants-invocation + runtime-acceptance gate)
+# PR #4975: backlog(081KSE6WT0008QG0R0005XASX2): destructive-tool authoring contract (rails + permission-grants-invocation + runtime-acceptance gate)
 
 ## PR description
 
@@ -58,7 +58,7 @@ Single file (+ index regen) — docs only; no code in this PR.
 Codifies a repository convention for authoring destructive CLI tools by documenting a three-part “destructive-tool authoring contract” (safety rails, path-scoped agent invocation permission, and a runtime acceptance gate with a per-run nonce) using `flash-usb.ts` as the canonical reference.
 
 **Changes:**
-- Adds a new P2 backlog row (B-0728) documenting the destructive-tool contract, including a TypeScript skeleton/template.
+- Adds a new P2 backlog row (081KSE6WT0008QG0R0005XASX2) documenting the destructive-tool contract, including a TypeScript skeleton/template.
 - Regenerates `docs/BACKLOG.md` to include the new backlog entry.
 
 ### Reviewed changes
@@ -67,18 +67,18 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md | New backlog row that defines the destructive-tool authoring contract and provides a template. |
-| docs/BACKLOG.md | Index update to include B-0728 under P2. |
+| docs/backlog/P2/081KSE6WT0008QG0R0005XASX2-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md | New backlog row that defines the destructive-tool authoring contract and provides a template. |
+| docs/BACKLOG.md | Index update to include 081KSE6WT0008QG0R0005XASX2 under P2. |
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md:52 (unresolved)
+### Thread 1: docs/backlog/P2/081KSE6WT0008QG0R0005XASX2-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md:52 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:26:59Z):
 
 The exit-code contract here doesn’t match the “canonical reference” behavior in `full-ai-cluster/tools/flash-usb.ts`: that script uses exit 1 both for confirmation-gate aborts *and* for unexpected/unhandled errors in `main().catch(...)`. Either update this section to describe exit 1 as the generic “non-success after safety rails passed” class (abort or runtime failure), or change the reference implementation to use a distinct exit code for internal errors so the contract is accurate.
 
-### Thread 2: docs/backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md:141 (unresolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R0005XASX2-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md:141 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:26:59Z):
 

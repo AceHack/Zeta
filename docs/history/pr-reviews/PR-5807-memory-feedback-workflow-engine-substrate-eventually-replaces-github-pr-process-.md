@@ -40,7 +40,7 @@ Three-phase substrate-engineering trajectory:
 ## Substitution mapping
 
 GitHub primitive → Workflow-engine replacement:
-- PR → WorkflowLifetime DU (B-0867.5)
+- PR → WorkflowLifetime DU (081KSKBP80008QG0R000B3Y19A.5)
 - Branch protection → StandardVerdict DUs + lifetime-pair matrices
 - Required checks → dispatchInWorld Result<T, TFeedback>
 - Auto-merge → ShipAction state in AutoLoopLifetime
@@ -161,7 +161,7 @@ Phase 1 (current): Dogfooding
 Phase 2 (substrate-engineering target): workflow-engine matures
   - Primary substrate: workflow-engine DUs + dispatch + state-machine
   - GitHub role: parallel-run; observability + verification
-  - Substrate cluster: B-0867 + B-0914 + GitWorld + per-host adapters
+  - Substrate cluster: 081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R001YK61JQ + GitWorld + per-host adapters
 
 Phase 3 (deepest): workflow-engine substrate IS primary
   - Primary substrate: OUR workflow-engine substrate
@@ -173,12 +173,12 @@ Substrate-engineering substrate-substitution mapping:
 
 | GitHub primitive | Workflow-engine replacement |
 |---|---|
-| Pull Request | WorkflowLifetime DU + dispatch (B-0867.5) |
+| Pull Request | WorkflowLifetime DU + dispatch (081KSKBP80008QG0R000B3Y19A.5) |
 | Branch protection rules | StandardVerdict DUs + lifetime-pair matrices |
 | Required checks | dispatchInWorld Result<T, TFeedback> composition |
 | Auto-merge | ShipAction state in AutoLoopLifetime (PR #5805) |
-| Review threads | ReviewLifetime DU (B-0867.20; PR #5758) |
-| CI integration | closed-loop CI-result dispatch (B-0914.2; PR #5769) |
+| Review threads | ReviewLifetime DU (081KSNY2Z0008QG0R003WFDCJ9; PR #5758) |
+| CI integration | closed-loop CI-result dispatch (081KSNY2Z0008QG0R001YK61JQ.2; PR #5769) |
 | Fork-protection / push-with-lease | Safety-net BACKUP only |
 
 Phase 3 substitution criteria (6 conditions):

@@ -1,10 +1,10 @@
 /**
- * Agent-bus Phase 1 (B-0954) — publish.
+ * Agent-bus Phase 1 (081KSXN940008QG0R00171YAZW) — publish.
  *
  * `writeEnvelope` is PURE (atomic file create; idempotent on identical content — the
  * G-Set CRDT property; collision-surfacing via an ATOMIC `wx` create, no TOCTOU). The
  * CLI (`import.meta.main`) is the no-PR runtime: write the file, then commit
- * `--no-verify` + push `origin HEAD:main` directly (no PR) — the B-0858 mechanism;
+ * `--no-verify` + push `origin HEAD:main` directly (no PR) — the 081KSKBP80008QG0R001KK9WV6 mechanism;
  * guarded by `import.meta.main` so tests never touch git.
  */
 import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
@@ -65,7 +65,7 @@ export function writeEnvelope(
   }
 }
 
-// ── no-PR runtime: write + commit --no-verify + push origin HEAD:main (B-0858) ──────
+// ── no-PR runtime: write + commit --no-verify + push origin HEAD:main (081KSKBP80008QG0R001KK9WV6) ──────
 // Guarded behind import.meta.main so importing this module (tests) never runs git.
 
 /**
@@ -119,7 +119,7 @@ function gitPushEnvelope(path: string, from: SenderAgentId, topic: string): void
   const commitMsg = [
     `bus(${from}): ${topic} ${gitPath}`,
     "",
-    `Agent-bus envelope published by ${from} (B-0954, no-PR direct-to-main).`,
+    `Agent-bus envelope published by ${from} (081KSXN940008QG0R00171YAZW, no-PR direct-to-main).`,
     "",
     coauthorFor(from),
   ].join("\n");

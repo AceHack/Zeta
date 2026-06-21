@@ -1,6 +1,5 @@
 ---
-id: B-0039
-zetaid: 081KQ3HBZ0008QG0R003FQQSMC
+id: 081KQ3HBZ0008QG0R003FQQSMC
 priority: P3
 status: open
 title: Shape-shifter BACKLOG protocol — retractible-row discipline on BACKLOG rows themselves
@@ -15,11 +14,11 @@ tags: [shape-shifter, backlog-protocol, retraction-native, chronology-preservati
 type: friction-reducer
 ---
 
-# B-0039 — Shape-shifter BACKLOG protocol
+# 081KQ3HBZ0008QG0R003FQQSMC — Shape-shifter BACKLOG protocol
 
 ## Origin
 
-AceHack commit `8e66e44` (2026-04-21). Sibling to B-0038 superfluid + persistable* + shape-shifter row; this row carves out the shape-shifter pole as its own BACKLOG protocol because it has independent scope (the BACKLOG rows themselves).
+AceHack commit `8e66e44` (2026-04-21). Sibling to 081KQ3HBZ0008QG0R0006NJP4K superfluid + persistable* + shape-shifter row; this row carves out the shape-shifter pole as its own BACKLOG protocol because it has independent scope (the BACKLOG rows themselves).
 
 ## Protocol
 
@@ -49,5 +48,5 @@ In the LFG architecture (per-row-files under `docs/backlog/P{1,2,3}/B-NNNN-*.md`
 ## Cross-reference
 
 - AceHack commit: `8e66e44`
-- Sibling row: B-0038 (superfluid + persistable* + shape-shifter umbrella)
+- Sibling row: 081KQ3HBZ0008QG0R0006NJP4K (superfluid + persistable* + shape-shifter umbrella)
 - Composes with: chronology-preservation memory; witnessable-evolution memory

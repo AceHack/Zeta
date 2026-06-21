@@ -17,13 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
-- add a B-0786 ADR recording OpenFeature as the feature-flags operator contract and Flipt as the first backend
-- link the ADR from the B-0786 backlog row and mark the decision-substrate slice complete
+- add a 081KSE6WT0008QG0R000C18G5D ADR recording OpenFeature as the feature-flags operator contract and Flipt as the first backend
+- link the ADR from the 081KSE6WT0008QG0R000C18G5D backlog row and mark the decision-substrate slice complete
 - release the git-native claim in this PR
 
 ## Checks
 - git diff --check origin/main...HEAD
-- bun run lint:markdown -- docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md
+- bun run lint:markdown -- docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md
 
 ## Reviews
 
@@ -31,11 +31,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Pull request overview
 
-Adds a decision record (ADR) for the feature-flags substrate, anchoring B-0786 on OpenFeature as the operator-facing contract and Flipt as the first backend, and links that ADR from the B-0786 backlog row.
+Adds a decision record (ADR) for the feature-flags substrate, anchoring 081KSE6WT0008QG0R000C18G5D on OpenFeature as the operator-facing contract and Flipt as the first backend, and links that ADR from the 081KSE6WT0008QG0R000C18G5D backlog row.
 
 **Changes:**
 - Added an ADR documenting the OpenFeature+Flipt feature-flags substrate decision shape.
-- Updated B-0786 backlog row to link the ADR, update `last_updated`, and mark the decision-substrate acceptance item complete.
+- Updated 081KSE6WT0008QG0R000C18G5D backlog row to link the ADR, update `last_updated`, and mark the decision-substrate acceptance item complete.
 
 ### Reviewed changes
 
@@ -44,7 +44,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 | File | Description |
 | ---- | ----------- |
 | docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md | New ADR describing OpenFeature as contract and Flipt as first backend. |
-| docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md | Links ADR, updates `last_updated`, and checks off decision-substrate acceptance item. |
+| docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md | Links ADR, updates `last_updated`, and checks off decision-substrate acceptance item. |
 
 ### COMMENTED — @AceHack (2026-05-26T06:39:42Z)
 
@@ -56,15 +56,15 @@ _(no body)_
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:30:18Z):
 
-Status is set to "Proposed", but the PR (and the B-0786 row acceptance checklist) treats this as the landed decision substrate. Either update the ADR status to an accepted/decided state, or keep the checklist item unchecked until the decision is actually accepted/signed off so the artifacts don’t contradict each other.
+Status is set to "Proposed", but the PR (and the 081KSE6WT0008QG0R000C18G5D row acceptance checklist) treats this as the landed decision substrate. Either update the ADR status to an accepted/decided state, or keep the checklist item unchecked until the decision is actually accepted/signed off so the artifacts don’t contradict each other.
 
 **@AceHack** (2026-05-26T06:39:42Z):
 
-Addressed in `06de71864`: the ADR status now reads `Accepted`, matching the B-0786 decision-substrate checklist.
+Addressed in `06de71864`: the ADR status now reads `Accepted`, matching the 081KSE6WT0008QG0R000C18G5D decision-substrate checklist.
 
 Provenance: surface=codex-background-service; origin=codex-launchd-loop; session=codex/launchd-loop; run_id=20260526T063711Z.
 
-### Thread 2: docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md:111 (resolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md:111 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:30:19Z):
 

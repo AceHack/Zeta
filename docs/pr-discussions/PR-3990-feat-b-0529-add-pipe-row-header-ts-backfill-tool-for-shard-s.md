@@ -1,6 +1,6 @@
 ---
 pr_number: 3990
-title: "feat(B-0529): add-pipe-row-header.ts \u2014 backfill tool for shard schema"
+title: "feat(081KRMEXM0008QG0R002HBY56V): add-pipe-row-header.ts \u2014 backfill tool for shard schema"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T00:35:03Z"
@@ -12,17 +12,17 @@ archived_at: "2026-05-17T02:12:17Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3990: feat(B-0529): add-pipe-row-header.ts — backfill tool for shard schema
+# PR #3990: feat(081KRMEXM0008QG0R002HBY56V): add-pipe-row-header.ts — backfill tool for shard schema
 
 ## PR description
 
 ## Summary
 
-Implements [B-0529](docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md) Option 3 ("hybrid") via a one-shot TS tool: `tools/hygiene/add-pipe-row-header.ts`.
+Implements [081KRMEXM0008QG0R002HBY56V](docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md) Option 3 ("hybrid") via a one-shot TS tool: `tools/hygiene/add-pipe-row-header.ts`.
 
 The tick-shard validator at [`tools/hygiene/check-tick-history-shard-schema.ts`](tools/hygiene/check-tick-history-shard-schema.ts) requires a pipe-delimited first row matching the path/filename timestamp. Lived convention drifted to H1-first multi-section format. Full dry-run today: **946 shards scanned, 585 compliant, 359 would-prepend, 2 unparseable.**
 
-This PR ships the **script only**. Bulk retrofit (359 file changes) is a separate slice per B-0529's scope discipline — the blast radius warrants its own review.
+This PR ships the **script only**. Bulk retrofit (359 file changes) is a separate slice per 081KRMEXM0008QG0R002HBY56V's scope discipline — the blast radius warrants its own review.
 
 ## Behavior
 
@@ -40,7 +40,7 @@ The H1-rich body below is preserved unchanged — that's where the substantive c
 
 ## How it found the drift live
 
-Surfaced this tick via Copilot review on the just-merged [PR #3983](https://github.com/Lucent-Financial-Group/Zeta/pull/3983) tick shard. Copilot flagged that the shard's H1 first line violates the validator. Investigation matched B-0529's existing analysis exactly. Per [`skill-router-as-substrate-inventory.md`](.claude/rules/skill-router-as-substrate-inventory.md): inventory-before-authoring discipline — B-0529 already exists, this PR fulfills its Recommendation rather than creating a duplicate row.
+Surfaced this tick via Copilot review on the just-merged [PR #3983](https://github.com/Lucent-Financial-Group/Zeta/pull/3983) tick shard. Copilot flagged that the shard's H1 first line violates the validator. Investigation matched 081KRMEXM0008QG0R002HBY56V's existing analysis exactly. Per [`skill-router-as-substrate-inventory.md`](.claude/rules/skill-router-as-substrate-inventory.md): inventory-before-authoring discipline — 081KRMEXM0008QG0R002HBY56V already exists, this PR fulfills its Recommendation rather than creating a duplicate row.
 
 ## Test plan
 
@@ -53,7 +53,7 @@ Surfaced this tick via Copilot review on the just-merged [PR #3983](https://gith
 
 ## Composes with
 
-- [`docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`](docs/backlog/P2/B-0529-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)
+- [`docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md`](docs/backlog/P2/081KRMEXM0008QG0R002HBY56V-tick-shard-schema-validator-vs-practice-drift-2026-05-15.md)
 - [`tools/hygiene/check-tick-history-shard-schema.ts`](tools/hygiene/check-tick-history-shard-schema.ts) (the validator)
 - [`docs/hygiene-history/ticks/README.md`](docs/hygiene-history/ticks/README.md) (schema docs)
 - [`.claude/rules/rule-0-no-sh-files.md`](.claude/rules/rule-0-no-sh-files.md) (TS not bash)

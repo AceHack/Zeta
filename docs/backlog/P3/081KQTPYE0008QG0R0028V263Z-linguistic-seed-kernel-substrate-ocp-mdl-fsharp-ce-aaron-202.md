@@ -1,6 +1,5 @@
 ---
-id: B-0204
-zetaid: 081KQTPYE0008QG0R0028V263Z
+id: 081KQTPYE0008QG0R0028V263Z
 priority: P3
 status: open
 title: Linguistic seed kernel substrate -- OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# Computational Expressions implementation vehicle (Aaron 2026-05-05 4-claim synthesis collapse)
@@ -15,7 +14,7 @@ tags: [linguistic-seed, kernel-substrate, ocp, mercer-closed, carved-sentences, 
 type: feature
 ---
 
-# B-0204 -- Linguistic seed kernel substrate (4-claim synthesis collapse)
+# 081KQTPYE0008QG0R0028V263Z -- Linguistic seed kernel substrate (4-claim synthesis collapse)
 
 ## Source
 
@@ -61,7 +60,7 @@ Research+architecture-direction with bounded scope:
   or eventually internalized into the substrate. The synthesis lands as
   research direction, not delivery surface.
 - **The synthesis is beautiful and pulls toward elaboration before
-  validation.** This is exactly the failure mode B-0193 (bootstrap razor
+  validation.** This is exactly the failure mode 081KQTPYE0008QG0R00392KABJ (bootstrap razor
   + 23-hour recreation) is designed to catch. The 4-claim collapse
   earns elevation only if it survives a clean recreation test in a
   fresh repo with no carry-over from the originating conversation. The
@@ -78,7 +77,7 @@ Research+architecture-direction with bounded scope:
   ([`memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md`](../../../memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md)).
 
 If acceptance criteria (a) through (d) below land cleanly and the
-4-claim collapse survives bootstrap razor (B-0193), this row is a
+4-claim collapse survives bootstrap razor (081KQTPYE0008QG0R00392KABJ), this row is a
 candidate for P2-promotion via the renegotiation protocol -- not by
 default.
 
@@ -253,7 +252,7 @@ let composedKernel = kernel {
 Two structural fits worth naming:
 
 - **Type-level invariant tracking via F# units-of-measure.** Zeta
-  already has UoM declarations at `src/Core/Units.fs` (B-0190 lineage).
+  already has UoM declarations at `src/Core/Units.fs` (081KQR4HQ0008QG0R001909FPT lineage).
   Phantom-typing kernels with their invariant-class -- e.g.
   `Kernel<PSD, MercerClosed, FourPropertyHodl>` -- moves invariant
   checks from runtime to compile time. Don Syme's UoM design choices
@@ -305,11 +304,11 @@ These are operational disciplines that run *above* the substrate.
 They are not mechanizable into the kernel-composition layer; they
 require human (and well-aligned-AI) judgment.
 
-### (c) Bootstrap-razor caveat (B-0193)
+### (c) Bootstrap-razor caveat (081KQTPYE0008QG0R00392KABJ)
 
 This is the kind of beautiful framework that pulls hard toward
 elaboration before validation. The aesthetic-pull is real. The
-bootstrap-razor + 23-hour recreation test (B-0193) is the discipline
+bootstrap-razor + 23-hour recreation test (081KQTPYE0008QG0R00392KABJ) is the discipline
 calibrated for exactly this failure mode:
 
 - Specs + OpenSpec are the source of truth.
@@ -318,7 +317,7 @@ calibrated for exactly this failure mode:
 - Anything that survives a clean recreation in a fresh repo with no
   carry-over from the originating conversation earns elevation.
 
-If the 4-claim collapse survives B-0193's test -- if a fresh agent
+If the 4-claim collapse survives 081KQTPYE0008QG0R00392KABJ's test -- if a fresh agent
 in a fresh repo with only the OpenSpec specs as input can recreate
 the synthesis -- the substrate earns P2-promotion. If not, the
 synthesis is beautiful research preserved at PR #1614 and PR #1615;
@@ -457,7 +456,7 @@ the same object" claim takes a hit -- if the kernel-form and
 prose-form drift, they are not the same object.
 
 The point of (d) is to demonstrate **the meta-cognitive discipline
-running on Otto's own substrate, with bootstrap razor (B-0193) as
+running on Otto's own substrate, with bootstrap razor (081KQTPYE0008QG0R00392KABJ) as
 the seed-validity check above it**. Not the substrate verifying
 itself recursively (which is impossible per Gödel) -- the substrate
 mechanically checking its own kernel-extensions, with the bootstrap
@@ -479,7 +478,7 @@ Composes with the engagement-gate substantive-claim-level discipline
 ## Out of scope
 
 This row is bounded; the following are explicitly **out of scope**
-for B-0204 specifically:
+for 081KQTPYE0008QG0R0028V263Z specifically:
 
 - **Replacing existing F# DSL surfaces with the kernel-composition
   vehicle.** This is research-and-evaluation, not migration. Existing
@@ -492,7 +491,7 @@ for B-0204 specifically:
   kernel parameters from data via SGD or its variants.
 - **Building the meta-cognitive framework into agent runtime.** That
   is a separate downstream decision, gated on whether the substance-
-  tests above land cleanly + whether the bootstrap razor (B-0193)
+  tests above land cleanly + whether the bootstrap razor (081KQTPYE0008QG0R00392KABJ)
   validates the synthesis. If both pass, the agent-runtime
   integration is a follow-up row, not this one.
 - **Internalizing the worm-tower / meme / mom-skill exemplars as
@@ -502,8 +501,8 @@ for B-0204 specifically:
   use, not identity assertions to inhabit.
 - **Resolving whether kernel-composition substrate is the answer for
   Zeta.** Per Aaron's no-kill-paths discipline, kernel-composition
-  composes with tinygrad UOp (B-0202) + DeepSeek V4 CSA+HCA (B-0203)
-  + topological-quantum emulation (B-0152) + Coconut + CodeAct +
+  composes with tinygrad UOp (081KQTPYE0008QG0R002Y7X5KH) + DeepSeek V4 CSA+HCA (081KQTPYE0008QG0R003H4QRMK)
+  + topological-quantum emulation (081KQGDBJ0008QG0R00280ZEV2) + Coconut + CodeAct +
   GibberLink + Symbolica + LAPA. All paths stay alive as parallel
   candidates per Aaron's earlier *"all of it's good we don't want
   to abandon any paths"*. This row is one parallel evaluation lane
@@ -511,39 +510,39 @@ for B-0204 specifically:
 
 ## Composes with
 
-- **B-0152**
-  ([P2 row](../P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md))
+- **081KQGDBJ0008QG0R00280ZEV2**
+  ([P2 row](../P2/081KQGDBJ0008QG0R00280ZEV2-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md))
   -- *Topological-quantum emulation via Bayesian inference, Zeta
   seed executor*. The Infer.NET-based substrate kernel BP / kernel
   EP could run on. The "mirror + trampoline + beacon" three-layer
   stack is exactly the kind of substrate this kernel-composition
-  framework would compose with -- B-0152 owns the inference
-  architecture; B-0204 owns the kernel-extension language above it.
-- **B-0196**
-  ([P2 row](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md))
+  framework would compose with -- 081KQGDBJ0008QG0R00280ZEV2 owns the inference
+  architecture; 081KQTPYE0008QG0R0028V263Z owns the kernel-extension language above it.
+- **081KQTPYE0008QG0R001W237MZ**
+  ([P2 row](../P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md))
   -- *BigInt + BigNumber integration*. The numeric substrate the
   four-property hodl algebra depends on. The binding-acceptance-test
   for kernel composability (acceptance criterion (b) above) gates
   on the same hodl invariants; the numeric-substrate work gates on
   the same precision-floor question (especially under FP8 / arbitrary-
   precision boundary conditions).
-- **B-0193**
-  ([P1 row](../P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R00392KABJ**
+  ([P1 row](../P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md))
   -- *Bootstrap razor + 23-hour recreation test*. The seed-level
-  falsifiability check above the substrate. B-0193 catches seed-level
-  errors that within-system kernel verification cannot detect; B-0204
-  is the within-system kernel verification that B-0193 sits above.
+  falsifiability check above the substrate. 081KQTPYE0008QG0R00392KABJ catches seed-level
+  errors that within-system kernel verification cannot detect; 081KQTPYE0008QG0R0028V263Z
+  is the within-system kernel verification that 081KQTPYE0008QG0R00392KABJ sits above.
   The two compose load-bearingly: substrate verifies extensions;
   bootstrap razor verifies the seed.
-- **B-0202**
-  ([P3 row](./B-0202-tinygrad-uop-ir-kernel-layer-model-zeta-emulator-dispatch-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R002Y7X5KH**
+  ([P3 row](./081KQTPYE0008QG0R002Y7X5KH-tinygrad-uop-ir-kernel-layer-model-zeta-emulator-dispatch-aaron-2026-05-05.md))
   -- *Tinygrad UOp IR as kernel-layer model*. Companion kernel-layer
   engineering with one-IR-many-backends shape. UOp's universal-IR
   claim is structurally similar to the kernel-composition substrate's
   one-language-many-domains shape; both are bets on a single composable
   substrate underneath multiple specialized layers.
-- **B-0203**
-  ([P3 row](./B-0203-deepseek-v4-csa-hca-zset-algebra-composability-aaron-2026-05-05.md))
+- **081KQTPYE0008QG0R003H4QRMK**
+  ([P3 row](./081KQTPYE0008QG0R003H4QRMK-deepseek-v4-csa-hca-zset-algebra-composability-aaron-2026-05-05.md))
   -- *DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra*.
   Companion architecture; kernel-composition substrate runs at the
   algebra layer where CSA+HCA's sparse-selector + compressed-

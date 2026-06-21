@@ -1,6 +1,5 @@
 ---
-id: B-0247
-zetaid: 081KQZVQW0008QG0R000ZHEN62
+id: 081KQZVQW0008QG0R000ZHEN62
 priority: P1
 status: open
 title: "Ace DLC content packs — distributable kernel extensions via package manager"
@@ -13,7 +12,7 @@ owners: [architect, product-scrum-master, public-api-designer]
 type: feature
 ---
 
-# B-0247 — Ace DLC content packs
+# 081KQZVQW0008QG0R000ZHEN62 — Ace DLC content packs
 
 ## What
 
@@ -62,7 +61,7 @@ Considerations:
   Seed + kernel extensions = a platform, not a contest entry.
 
 They may not be mutually exclusive: the structure recognizer
-(B-0240) built for Ace DLCs IS the engine that would solve
+(081KQZVQW0008QG0R002QZAFB2) built for Ace DLCs IS the engine that would solve
 ARC-AGI-3. Building the product builds the benchmark solver.
 
 ## External review signal
@@ -76,9 +75,9 @@ validates the product, and the prize becomes marketing for both.
 
 ## Composes with
 
-- B-0240 (structure recognizer) — the engine DLCs compose on
-- B-0244 (concordance/coherence AI) — a DLC
-- B-0245 (consent-first + KSK) — DLC distribution governance
-- B-0246 (Green Lantern ring) — DLC consumer device
+- 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — the engine DLCs compose on
+- 081KQZVQW0008QG0R001PS4F8G (concordance/coherence AI) — a DLC
+- 081KQZVQW0008QG0R002Q58F6Z (consent-first + KSK) — DLC distribution governance
+- 081KQZVQW0008QG0R00348SHDZ (Green Lantern ring) — DLC consumer device
 - Genesis Seed — the bootloader DLCs extend
 - Ace package manager — the distribution surface

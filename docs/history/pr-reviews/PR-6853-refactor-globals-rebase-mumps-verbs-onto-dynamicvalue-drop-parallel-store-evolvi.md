@@ -29,7 +29,7 @@
 
 Aaron confirmed the Rodney's-Razor rebase: Globals no longer carries a parallel Map<Path,'V> that
 re-derived the ragged tree DynamicValue already is. The verbs (set/get/kill/data/$ORDER/$QUERY/children/
-count) now navigate DynamicValue directly — one ragged tree, ordinal collation (B-0969), leaf-xor-object
+count) now navigate DynamicValue directly — one ragged tree, ordinal collation (081KT07NV0008QG0R001YDB73K), leaf-xor-object
 semantics ($DATA 0/1/10). Leaf-agnostic, so DynamicValue-over-SoftValue leaves = soft sparse tensor for
 free, and a model state_dict is navigable as a global (human-readable model API).
 

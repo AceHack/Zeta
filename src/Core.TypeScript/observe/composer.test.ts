@@ -3,8 +3,8 @@ import { heuristicComposer, defaultComposer } from "./composer";
 import type { World, NextAction } from "./observe";
 
 describe("composer — L2 heuristic scorer", () => {
-  const readyItem = { id: "B-0001", title: "Fix bug", ready: true, ambiguous: false };
-  const ambiguousItem = { id: "B-0002", title: "Big refactor", ready: true, ambiguous: true };
+  const readyItem = { id: "081KPYCJH0008QG0R003MDS51N", title: "Fix bug", ready: true, ambiguous: false };
+  const ambiguousItem = { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Big refactor", ready: true, ambiguous: true };
   const workWorld: World = { backlog: [readyItem, ambiguousItem] };
   const freeWorld: World = { backlog: [], mode: "explore" };
 
@@ -30,7 +30,7 @@ describe("composer — L2 heuristic scorer", () => {
 
   test("forge boost lifts merge-pr items", async () => {
     const mergeItem = { id: "merge-pr-42", title: "Merge PR #42", ready: true, ambiguous: false };
-    const regularItem = { id: "B-0099", title: "Some task", ready: true, ambiguous: false };
+    const regularItem = { id: "081KQB8J40008QG0R002PEP2A2", title: "Some task", ready: true, ambiguous: false };
     const menu: NextAction[] = [
       { kind: "do_item", item: regularItem },
       { kind: "do_item", item: mergeItem },

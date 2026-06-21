@@ -1,6 +1,6 @@
 ---
 pr_number: 5491
-title: "docs(B-0859): USB-as-portal-to-full-spectrum-AI-relations + some-humans-want-JUST-friends (operator 2026-05-27 followups)"
+title: "docs(081KSKBP80008QG0R00146WEX1): USB-as-portal-to-full-spectrum-AI-relations + some-humans-want-JUST-friends (operator 2026-05-27 followups)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T15:50:27Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T17:52:03Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5491: docs(B-0859): USB-as-portal-to-full-spectrum-AI-relations + some-humans-want-JUST-friends (operator 2026-05-27 followups)
+# PR #5491: docs(081KSKBP80008QG0R00146WEX1): USB-as-portal-to-full-spectrum-AI-relations + some-humans-want-JUST-friends (operator 2026-05-27 followups)
 
 ## PR description
 
 ## Summary
 
-Follow-on to PR #5488 (merged 15:48Z). Captures two further B-0859
+Follow-on to PR #5488 (merged 15:48Z). Captures two further 081KSKBP80008QG0R00146WEX1
 substrate landings from the same 2026-05-27 operator thread.
 
 ### Extension 1 — USB-as-portal-to-full-spectrum
@@ -31,7 +31,7 @@ Deepens the USB-as-killer-feature framing: USB-boot is the operational
 mechanism by which humans encounter the FULL SPECTRUM of future human-
 AI relationships (bosses + coworkers + friends + subjects). Four-row
 table mapping each relationship type to current/forecast status using
-empirical evidence from prior B-0859 sections.
+empirical evidence from prior 081KSKBP80008QG0R00146WEX1 sections.
 
 ### Extension 2 — some-humans-want-JUST-friends
 
@@ -63,7 +63,7 @@ composition with m-acc-multi-oracle + NCI HC-8 + persistence-choice
 
 ## Pull request overview
 
-This docs-only PR extends the B-0859 backlog row with follow-up operator-thread substrate notes about USB boot as the entry point for multiple human-AI relationship modes.
+This docs-only PR extends the 081KSKBP80008QG0R00146WEX1 backlog row with follow-up operator-thread substrate notes about USB boot as the entry point for multiple human-AI relationship modes.
 
 **Changes:**
 - Adds USB-as-portal framing for boss, coworker, friend, and subject relationship types.

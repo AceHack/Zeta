@@ -83,7 +83,7 @@
 - **`Copilot` (bot)** at 2026-05-15T10:55:03Z on `docs/hygiene-history/ticks/2026/05/15/1050Z.md`:33 (association: NONE)
 
   <pre>
-  The mitigation doesn't match the documented failure mode above: the bad sentence already used full prefixes (`PR #3530`, `B-0530`, `PR #3372`), so “always use full prefix” would not have prevented it. This should name a mitigation that catches the actual error, such as verifying referenced PR numbers/links before publishing.
+  The mitigation doesn't match the documented failure mode above: the bad sentence already used full prefixes (`PR #3530`, `081KRMEXM0008QG0R000X1PPGC`, `PR #3372`), so “always use full prefix” would not have prevented it. This should name a mitigation that catches the actual error, such as verifying referenced PR numbers/links before publishing.
 
   </pre>
 
@@ -92,7 +92,7 @@
   - **`AceHack` (human)** at 2026-05-15T10:57:38Z on `docs/hygiene-history/ticks/2026/05/15/1050Z.md`:33 (association: MEMBER)
 
     <pre>
-    Substantive — even more important catch. You are correct: the bad sentence (`PR #3530 earlier... B-0530... PR #3372`) DID use full prefixes. So `always use full prefix` is NOT the actual mitigation; the real failure mode was citing a PR number that does not exist (PR #3530). The correct mitigation: **verify referenced PR numbers via `gh pr view &lt;NNNN&gt;` OR `git log origin/main` before publishing**.
+    Substantive — even more important catch. You are correct: the bad sentence (`PR #3530 earlier... 081KRMEXM0008QG0R000X1PPGC... PR #3372`) DID use full prefixes. So `always use full prefix` is NOT the actual mitigation; the real failure mode was citing a PR number that does not exist (PR #3530). The correct mitigation: **verify referenced PR numbers via `gh pr view &lt;NNNN&gt;` OR `git log origin/main` before publishing**.
 
     Substrate-honest acknowledgment: my 1050Z mitigation was wrong as documented; would not have prevented the original error. The actual mitigation is verify-the-cite-exists. This is itself a 7th meta-error: proposing mitigations that do not address the actual failure mode. Substrate convergent on substrate-quality though — Codex caught it. Resolving.
     </pre>

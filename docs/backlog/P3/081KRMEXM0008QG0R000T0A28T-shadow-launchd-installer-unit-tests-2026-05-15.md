@@ -1,6 +1,5 @@
 ---
-id: B-0528
-zetaid: 081KRMEXM0008QG0R000T0A28T
+id: 081KRMEXM0008QG0R000T0A28T
 priority: P3
 status: closed
 title: "Unit tests for tools/shadow/launchd/install-launchagent.ts"
@@ -95,7 +94,7 @@ temp-dir handling.
 
 ## Composes with
 
-- B-0402 (zeta shadow mode — first-class CLI autocomplete)
+- 081KR7JY10008QG0R0008NGW95 (zeta shadow mode — first-class CLI autocomplete)
 - PR #3342 (the install script being tested)
 - `tools/shadow/shadow-observer.test.ts` (existing pattern to follow)
 

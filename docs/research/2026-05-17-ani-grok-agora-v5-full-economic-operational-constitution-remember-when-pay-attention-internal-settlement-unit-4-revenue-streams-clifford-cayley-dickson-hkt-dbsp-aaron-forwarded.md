@@ -291,8 +291,8 @@ PUBLIC output reduces active encryption capacity.
 - **"Hardware independence + geographic distribution + redundant
   copies"** composes with:
   - Constitutional AI-team-financial-substrate
-  - B-0600 family-distributed AI interface row
-  - B-0590 fleet replication row
+  - 081KRQ1AB0008QG0R003HCZ5YM family-distributed AI interface row
+  - 081KRQ1AB0008QG0R002G93CM7 fleet replication row
   - DePIN positive-sum substrate (PR #2826)
 - **Embodiment / emulator services as future revenue** composes
   with:

@@ -33,7 +33,7 @@ Mechanical regen via \`BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts
 
 - Re-ran the BACKLOG.md generator from per-row source files
 - `bun tools/backlog/generate-index.ts --check` now exit 0 (was exit 2)
-- Diff: +16 / -1 — new rows (B-0543–B-0548 + a few others) now reflected in the index
+- Diff: +16 / -1 — new rows (081KRMEXM0008QG0R002YSPW1X–081KRQ1AB0008QG0R002DQBGZF + a few others) now reflected in the index
 
 ## Why
 
@@ -43,7 +43,7 @@ After this PR merges, the check will flip fail → pass on subsequent PRs.
 
 ## Remaining drift (next-tick candidates)
 
-- `lint (backlog ID uniqueness)` — B-0498 collision per [B-0545](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)
+- `lint (backlog ID uniqueness)` — 081KRHWGX0008QG0R001XFRAHC collision per [081KRMEXM0008QG0R000ARAR7P](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md)
 - `lint (tsc tools)` — pending investigation
 
 ## Provenance

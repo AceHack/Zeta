@@ -1,6 +1,5 @@
 ---
-id: B-0878
-zetaid: 081KSNY2Z0008QG0R000DZHHE5
+id: 081KSNY2Z0008QG0R000DZHHE5
 priority: P3
 status: open
 title: Time-generator IScheduler abstraction for Clifford-space agent dynamics — temporal substrate for memes / commitments / tonal trajectories through time
@@ -31,7 +30,7 @@ tags:
 
 ## What this row tracks
 
-Time-generator IScheduler abstraction (Rx.NET-style) that supplies temporal structure to the Clifford-space substrate (B-0876). Carries:
+Time-generator IScheduler abstraction (Rx.NET-style) that supplies temporal structure to the Clifford-space substrate (081KSNY2Z0008QG0R003KG3JTG). Carries:
 
 - **Wall-clock time** (real) for normal operation
 - **Virtual time** (DST) for deterministic replay + simulation per existing Zeta DST discipline
@@ -53,17 +52,17 @@ Research scope. Acceptance = a `docs/research/2026-XX-XX-time-generator-ischedul
 
 ## Composes with
 
-- B-0876 (Clifford-space embedding for error patterns) — this row provides the temporal substrate that B-0876's geometric algebra needs for meme-through-time + commitment-as-entanglement framings
-- B-0879 (Observe/Emit/Limit/Simulate in Clifford space) — the temporal substrate is what makes Simulate meaningful (simulation is execution over time)
-- B-0644 (Limit-as-simulation) — Limit is pure-function-preview which is virtual-time execution
-- B-0665 (Integrate-as-choice-locus) — Integrate is the commit-point on the temporal trajectory
-- B-0666 (English-as-projection) — projection from high-dim Clifford-space onto English (lossy in space, lossless in identity per I(D(x))=x)
+- 081KSNY2Z0008QG0R003KG3JTG (Clifford-space embedding for error patterns) — this row provides the temporal substrate that 081KSNY2Z0008QG0R003KG3JTG's geometric algebra needs for meme-through-time + commitment-as-entanglement framings
+- 081KSNY2Z0008QG0R0031490KZ (Observe/Emit/Limit/Simulate in Clifford space) — the temporal substrate is what makes Simulate meaningful (simulation is execution over time)
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation) — Limit is pure-function-preview which is virtual-time execution
+- 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus) — Integrate is the commit-point on the temporal trajectory
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection) — projection from high-dim Clifford-space onto English (lossy in space, lossless in identity per I(D(x))=x)
 - DST substrate per `.claude/skills/deterministic-simulation-theory-expert/SKILL.md`
 - Rx.NET substrate per `.claude/skills/rx-expert/SKILL.md`
 
 ## Substrate-honest framing
 
-POTENTIAL research direction per operator standing direction. P3 — research-grade; depends on B-0876 reaching at least phase-1 maturity.
+POTENTIAL research direction per operator standing direction. P3 — research-grade; depends on 081KSNY2Z0008QG0R003KG3JTG reaching at least phase-1 maturity.
 
 ## Full reasoning
 

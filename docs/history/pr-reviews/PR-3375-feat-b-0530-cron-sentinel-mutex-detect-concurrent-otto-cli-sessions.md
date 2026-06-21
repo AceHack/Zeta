@@ -29,7 +29,7 @@
 
 ## Summary
 
-Implements the cheap-effort mitigation from [B-0530](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) + the worktree-prune-race root-cause analysis landed in PR #3370. Closes the "narration-over-action drift" Lior flagged in PR #3373 by shipping the action-side parity proof for the documentation already on main.
+Implements the cheap-effort mitigation from [081KRMEXM0008QG0R000X1PPGC](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) + the worktree-prune-race root-cause analysis landed in PR #3370. Closes the "narration-over-action drift" Lior flagged in PR #3373 by shipping the action-side parity proof for the documentation already on main.
 
 ## What lands
 
@@ -159,11 +159,11 @@ Wire the mutex into the `<<autonomous-loop>>` substrate so the tick body invokes
 feat(b-0530): cron-sentinel-mutex — detect concurrent Otto-CLI sessions
 
 Implements the cheap-effort mitigation from
-docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md
+docs/backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md
 + the worktree-prune-race root-cause analysis landed in PR #3370.
 
-This is the action-side parity proof for the narration filed in B-0530
-and Pattern 8 of B-0519: Lior's antigravity check at 0220Z (PR #3373)
+This is the action-side parity proof for the narration filed in 081KRMEXM0008QG0R000X1PPGC
+and Pattern 8 of 081KRHWGX0008QG0R001HMWM1W: Lior's antigravity check at 0220Z (PR #3373)
 flagged "narration-over-action drift" — listing mitigations without
 implementing them. This commit closes that gap.
 
@@ -197,7 +197,7 @@ Verified:
 
 Next step (not in this PR): wire this into the autonomous-loop
 substrate so the <<autonomous-loop>> tick body invokes the mutex
-at the top and defers when peers are detected. Filed as B-0530
+at the top and defers when peers are detected. Filed as 081KRMEXM0008QG0R000X1PPGC
 follow-up; this PR ships the building block.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

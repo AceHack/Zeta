@@ -1,22 +1,22 @@
 ---
 pr_number: 5882
-title: "docs(research): Create OpenSpec catch-up Phase 1 audit (B-0171)"
+title: "docs(research): Create OpenSpec catch-up Phase 1 audit (081KQNJ500008QG0R001N94412)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T17:03:22Z"
 merged_at: "2026-05-28T19:00:17Z"
 closed_at: "2026-05-28T19:00:17Z"
-head_ref: "lior/B-0171-openspec-phase1-audit"
+head_ref: "lior/081KQNJ500008QG0R001N94412-openspec-phase1-audit"
 base_ref: "main"
 archived_at: "2026-05-28T19:39:58Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5882: docs(research): Create OpenSpec catch-up Phase 1 audit (B-0171)
+# PR #5882: docs(research): Create OpenSpec catch-up Phase 1 audit (081KQNJ500008QG0R001N94412)
 
 ## PR description
 
-This PR delivers the Phase 1 audit for the OpenSpec catch-up project (B-0171). It inventories existing specs, audits core capabilities, and proposes a sequencing for spec authoring in Phase 2.
+This PR delivers the Phase 1 audit for the OpenSpec catch-up project (081KQNJ500008QG0R001N94412). It inventories existing specs, audits core capabilities, and proposes a sequencing for spec authoring in Phase 2.
 
 ## Reviews
 
@@ -24,7 +24,7 @@ This PR delivers the Phase 1 audit for the OpenSpec catch-up project (B-0171). I
 
 ## Pull request overview
 
-Adds a new research write-up documenting the Phase 1 audit and proposed Phase 2 sequencing for the OpenSpec catch-up effort (B-0171), intended to guide formal spec authoring priorities.
+Adds a new research write-up documenting the Phase 1 audit and proposed Phase 2 sequencing for the OpenSpec catch-up effort (081KQNJ500008QG0R001N94412), intended to guide formal spec authoring priorities.
 
 **Changes:**
 - Introduces a Phase 1 audit of current OpenSpec specs and other formal artifacts (TLA+/Lean).

@@ -1,6 +1,5 @@
 ---
-id: B-0130
-zetaid: 081KQGDBJ0008QG0R002Y31XJ3
+id: 081KQGDBJ0008QG0R002Y31XJ3
 priority: P2
 status: open
 title: Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits (companion to task #350)
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0130 — Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits
+# 081KQGDBJ0008QG0R002Y31XJ3 — Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits
 
 **Priority:** P2 (research-grade; companion to task #350 Otto-357 mechanized auditor; emerged from session-level convergent drain pattern 2026-05-01)
 
@@ -30,7 +29,7 @@ In a single session, ~10 PRs were drained (#1031, #986, #1030, #1018, #1015, #10
 | #986 | "Six-message chain" in MEMORY.md index entry | Count claim | File body says "eight-message chain"; lists Layers 1-8 |
 | #986 | Multiple `latest-paired-edit:` markers in MEMORY.md | Slot-uniqueness claim ("supersedes prior markers") | Two markers existed simultaneously |
 | #1015 | Force-push "forbidden on main with sign-off; possible on feature branches with same caution" | Citation of CLAUDE.md | CLAUDE.md says host blocks force-push UNIFORMLY on both forks; no per-branch carve-out |
-| #1018 | B-0124/0125/0126 backlog rows lacking YAML frontmatter | Schema claim (filename pattern signals backlog row) | Files had markdown headers only, no YAML; index emitted empty entries |
+| #1018 | 081KQGDBJ0008QG0R0022C4ZXA/0125/0126 backlog rows lacking YAML frontmatter | Schema claim (filename pattern signals backlog row) | Files had markdown headers only, no YAML; index emitted empty entries |
 | #1025 | `feedback_otto_*_vendor_alignment_bias_*` and similar wildcards | Concrete-reference claim | Wildcards aren't valid filenames; broke xref integrity |
 | #1025 | "bot reviewers" wording | Conformance to AGENTS.md "Agents, not bots." (GOVERNANCE §3) | Wording violated the very rule about not using "bot" |
 | Multiple | `feedback_otto_NNN_*.md` wildcard refs | Concrete file existence | Wildcards used as placeholder for unknown filenames |
@@ -90,7 +89,7 @@ Each audit is a small lint that fires on the project pre-commit hook (via tracke
 
 ## Composes with
 
-- **Task #350** (`Otto-357 mechanized auditor — extend tools/lint/no-directives-otto-prose.sh scope`) — adjacent; this row is the queue of complementary audits in the same family. Consider whether to fold into task #350 or keep as separate B-0130 lane.
+- **Task #350** (`Otto-357 mechanized auditor — extend tools/lint/no-directives-otto-prose.sh scope`) — adjacent; this row is the queue of complementary audits in the same family. Consider whether to fold into task #350 or keep as separate 081KQGDBJ0008QG0R002Y31XJ3 lane.
 - **Task #316** (`Drain-Log Claim Verification Discipline — capture rule + lint candidate`) — similar shape; this row's audit #4 (citation-of-canonical-source) is the lint version of the discipline #316 captures.
 - **PR #1018** (backlog generator WARN) — first slice mechanized; proves the approach works.
 - **`memory/feedback_verify_target_exists_before_deferring.md`** — the parent class of which this row's audits are concrete instances.

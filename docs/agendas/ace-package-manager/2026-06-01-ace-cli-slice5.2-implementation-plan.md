@@ -70,7 +70,7 @@ describe("satisfies — exact / comparator / wildcard", () => {
 - [ ] **Step 3: Implement `tools/ace/semver.ts`:**
 
 ```ts
-// Pure semver subset for Ace slice 5.2 (no pre-release / build-metadata / unions / hyphen — see B-0970).
+// Pure semver subset for Ace slice 5.2 (no pre-release / build-metadata / unions / hyphen — see 081KT07NV0008QG0R002WK9064).
 export interface Version { readonly major: number; readonly minor: number; readonly patch: number }
 export type Comparator = { readonly op: ">=" | "<=" | ">" | "<" | "="; readonly v: Version };
 // A Range is a conjunction (AND) of comparators. `*` / `x` → empty conjunction (matches all).
@@ -361,7 +361,7 @@ Implementer: ensure the registry-edge concrete version (not the range string) is
 
 Add an optional `--print-resolution` flag to the install parse (mirror `--allow-no-signature`); carry `printResolution?: boolean` on the parsed install args. Confirm `solve` import + `loadRegistry` (already imported from slice 5.1).
 
-- [ ] **Step 4: SKILL.md** — add to `.claude/skills/ace/SKILL.md`: registry deps may use a semver range (`{kind:"registry", name, version:"^1.2.0"}`); `ace install` solves ranges → concrete versions over the registry (pragmatic subset: `^ ~ >= <= > < =`, exact, `*`, AND-ranges; advanced semver is B-0970); inline edges stay exact-pinned + are never registry-routed; `--print-resolution` prints the solved graph; an unsatisfiable graph refuses (exit 1, nothing installed). Watch MD032 (blank line around any list).
+- [ ] **Step 4: SKILL.md** — add to `.claude/skills/ace/SKILL.md`: registry deps may use a semver range (`{kind:"registry", name, version:"^1.2.0"}`); `ace install` solves ranges → concrete versions over the registry (pragmatic subset: `^ ~ >= <= > < =`, exact, `*`, AND-ranges; advanced semver is 081KT07NV0008QG0R002WK9064); inline edges stay exact-pinned + are never registry-routed; `--print-resolution` prints the solved graph; an unsatisfiable graph refuses (exit 1, nothing installed). Watch MD032 (blank line around any list).
 
 - [ ] **Step 5: Run** full `bun test tools/ace/` → PASS. `bunx tsc --noEmit 2>&1 | grep tools/ace` → clean. `bunx markdownlint-cli2 ".claude/skills/ace/SKILL.md"` → clean. `git ls-tree HEAD | wc -l` → 67.
 - [ ] **Step 6: Commit** `feat(ace): install runs solve→resolve; --print-resolution; SKILL docs (slice 5.2 task 6)`
@@ -375,7 +375,7 @@ After all 6 tasks + a final code-review subagent + a full `bunx tsc --noEmit` + 
 ```bash
 git push -u origin otto-windows/ace-slice5.2-impl-2026-06-01
 gh pr create --head otto-windows/ace-slice5.2-impl-2026-06-01 --base main \
-  --title "feat(ace): slice 5.2 — semver ranges + version solver (B-0288)" --body "<summary>"
+  --title "feat(ace): slice 5.2 — semver ranges + version solver (081KR2E4K0008QG0R002YE3MMD)" --body "<summary>"
 gh pr merge <N> --auto --squash
 ```
 

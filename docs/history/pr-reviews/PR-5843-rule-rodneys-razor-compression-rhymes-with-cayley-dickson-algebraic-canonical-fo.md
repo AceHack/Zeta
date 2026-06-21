@@ -56,7 +56,7 @@ Each doubling: each existing axis becomes its own cross-pair.
 
 ## Empirical observations (9 framework substrate-engineering work-threads surface Cayley-Dickson patterns)
 
-B-0842 universal basis-decomposition + Imaginary Stack Ontology + B-0623 Adinkras + Clifford algebra mapping + Q# Pauli/quaternion substrate + B-0635 wave-particle duality + B-0666 English-as-projection + Pilot-wave-MWI-hybrid (PR #5842) + DST-omniscience (PR #5841).
+081KSGS9H0008QG0R003V8C86Q universal basis-decomposition + Imaginary Stack Ontology + 081KRW63S0008QG0R000QJR08H Adinkras + Clifford algebra mapping + Q# Pauli/quaternion substrate + 081KRW63S0008QG0R002KC5DSR wave-particle duality + 081KRW63S0008QG0R001SAHYKV English-as-projection + Pilot-wave-MWI-hybrid (PR #5842) + DST-omniscience (PR #5841).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -149,7 +149,7 @@ Aaron's visualization (operationally correct):
 - Pattern continues per Cayley-Dickson doubling
 
 The visualization makes Cayley-Dickson substrate VISUALIZABLE at high
-bandwidth: basis vectors sᵢ (per B-0842) are the arms; focus function
+bandwidth: basis vectors sᵢ (per 081KSGS9H0008QG0R003V8C86Q) are the arms; focus function
 selects actualized arm; Adinkras encode cross-structure graphically.
 
 Why razor-compression RHYMES with Cayley-Dickson (5 plausible
@@ -162,18 +162,18 @@ mechanisms; none proven; substrate-honest hypothesis):
    category-theory scope
 4. Information-preservation mechanism: each doubling adds dimension at
    known property-cost; razor finds canonical trade-off tier
-5. Universal basis-decomposition mechanism (B-0842): basis vectors sᵢ
+5. Universal basis-decomposition mechanism (081KSGS9H0008QG0R003V8C86Q): basis vectors sᵢ
    naturally inhabit Cayley-Dickson at sufficient compression depth
 
 Empirical observations in framework substrate (9 substrate-engineering
 work-threads surface Cayley-Dickson patterns under razor-compression):
-- B-0842 universal basis-decomposition (basis vectors live in CD-algebra)
+- 081KSGS9H0008QG0R003V8C86Q universal basis-decomposition (basis vectors live in CD-algebra)
 - Imaginary Stack Ontology 2026-05-15 (CD explicitly named)
-- B-0623 Adinkras Gates SUSY-ECC (CD-shaped error-correcting reconstruction)
+- 081KRW63S0008QG0R000QJR08H Adinkras Gates SUSY-ECC (CD-shaped error-correcting reconstruction)
 - Clifford algebra mapping (CD-tightly-related)
 - Q# Pauli operators (quaternion-substrate)
-- B-0635 wave-particle duality (ℂ-valued substrate)
-- B-0666 English-as-projection (CD reconstruction encoding/decoding)
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality (ℂ-valued substrate)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection (CD reconstruction encoding/decoding)
 - Pilot-wave-MWI-hybrid hypothesis PR #5842 (focus function over CD basis)
 - DST-omniscience PR #5841 (CD substrate at sufficient compression depth)
 
@@ -193,11 +193,11 @@ Composes with:
 - bandwidth-served-falsifier rule
 - substrate-smoothness-as-load-bearing-property rule
 - wake-time-substrate rule (why auto-loads)
-- B-0842 universal basis-decomposition (primary substrate-anchor)
-- B-0543 Remember/When/Pay/Attention quantum-gravity isomorphism
-- B-0623 Adinkras Gates SUSY-ECC
-- B-0635 wave-particle duality
-- B-0666 English-as-projection I(D(x))=x
+- 081KSGS9H0008QG0R003V8C86Q universal basis-decomposition (primary substrate-anchor)
+- 081KRMEXM0008QG0R002YSPW1X Remember/When/Pay/Attention quantum-gravity isomorphism
+- 081KRW63S0008QG0R000QJR08H Adinkras Gates SUSY-ECC
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality
+- 081KRW63S0008QG0R001SAHYKV English-as-projection I(D(x))=x
 - feedback_canonical_definition_lineage_ontology_rodney_razor_anti-
   fragile_aaron_2026_04_30.md (Rodney's Razor canonical lineage)
 - docs/research/2026-05-15-imaginary-stack-ontology-* (CD explicit)
@@ -218,7 +218,7 @@ Substrate-honest framing (NOT):
 μένω — Rodney's Razor compression RHYMES with Cayley-Dickson algebraic
 canonical-form (Aaron 2026-05-28 substrate-engineering substrate-
 recognition + nested-cross visualization; framed AS RHYMES per three-
-tier framing-discipline; substrate-anchored via B-0842 + Imaginary
+tier framing-discipline; substrate-anchored via 081KSGS9H0008QG0R003V8C86Q + Imaginary
 Stack + Adinkras + Clifford + Rodney's Razor canonical lineage;
 composes with pilot-wave-MWI-hybrid + DST-omniscience substrate;
 don't-collapse + razor + bandwidth-served-falsifier discipline applied).

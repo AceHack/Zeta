@@ -29,7 +29,7 @@
 
 Aaron's design + sharp challenge. **Trust = repo-owners' live GitHub keys ∪ checked-in maintainer pubkeys.** Split: **ISO**=static (maintainer keys + resolution logic + encryption setup), **post-ISO**=per-USB secrets (wifi, github identity, encrypted creds), **boot**=dynamic (`<owner>.keys` fetch + unlock + restore). **Remembering on 2nd format: not automatic today** (`--bake-cred` explicit) → fix = persist wifi+identity as zeta-creds.
 
-**Honest answer to "why do we need humans / what is blocking you":** mostly nothing — the real human surface is narrow (physical Touch-ID, real WiFi, final prod acceptance). **The blocker was my wrong choice** — treating live nodes (.152/.153) as the test target instead of **QEMU**. The real gap: the B-0891 harness is PoC, not a booting-ISO-that-asserts. **Plan:** build owner-key fetch + remember-creds + encryption + grow the QEMU harness to boot-and-assert, on GitHub workflows, autonomously — closing the AI loop (#7229).
+**Honest answer to "why do we need humans / what is blocking you":** mostly nothing — the real human surface is narrow (physical Touch-ID, real WiFi, final prod acceptance). **The blocker was my wrong choice** — treating live nodes (.152/.153) as the test target instead of **QEMU**. The real gap: the 081KSNY2Z0008QG0R0008PN7RQ harness is PoC, not a booting-ISO-that-asserts. **Plan:** build owner-key fetch + remember-creds + encryption + grow the QEMU harness to boot-and-assert, on GitHub workflows, autonomously — closing the AI loop (#7229).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

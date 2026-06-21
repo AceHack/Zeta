@@ -129,7 +129,7 @@ Lean, Agile-Scrum — pull principle, reduce ceremony.
 
 ### PM-2 calibration metrics
 
-Per B-0145, PM-2 (Product Manager) is measured by lead-time%
+Per 081KQGDBJ0008QG0R000RWAA67, PM-2 (Product Manager) is measured by lead-time%
 and action-rate%. **These metrics are the fitness function for
 PM-2.** Without them, PM-2 is "research that feels useful"
 (unmeasurable); with them, PM-2 is iterable against a
@@ -343,7 +343,7 @@ might have missed (reconstructed):
   │  (functors, morphisms, natural transformations,         │
   │   composition laws, adjunctions, monads)                │
   │                                                         │
-  │  per B-0136 (category-theoretic compositional structure)│
+  │  per 081KQGDBJ0008QG0R0029JMJWE (category-theoretic compositional structure)│
   │  + Bartosz Milewski's "Category Theory for Programmers" │
   │  per the class-level rules orthogonality memory file    │
   └────────────────────────┬────────────────────────────────┘
@@ -354,12 +354,12 @@ might have missed (reconstructed):
   │  (orthogonality types, retractable types, modal types,  │
   │   sequent calculus, refinement types, dependent types)  │
   │                                                         │
-  │  per B-0134 (type-theoretic orthogonality)              │
-  │  + B-0133 (sequent calculus for retraction)             │
-  │  + B-0135 (modal logic for retractability)              │
-  │  + B-0137 (Tarski stratification proof)                 │
-  │  + B-0142 (Code Contracts revival)                      │
-  │  + B-0141 (pre/post pattern — Hoare logic)              │
+  │  per 081KQGDBJ0008QG0R0032X1MMC (type-theoretic orthogonality)              │
+  │  + 081KQGDBJ0008QG0R0035M1YRC (sequent calculus for retraction)             │
+  │  + 081KQGDBJ0008QG0R002X4AFA0 (modal logic for retractability)              │
+  │  + 081KQGDBJ0008QG0R003NDQTBM (Tarski stratification proof)                 │
+  │  + 081KQGDBJ0008QG0R002WY918J (Code Contracts revival)                      │
+  │  + 081KQGDBJ0008QG0R0015RNK3P (pre/post pattern — Hoare logic)              │
   └────────────────────────┬────────────────────────────────┘
                            │ instantiates
                            v
@@ -419,9 +419,9 @@ might have missed (reconstructed):
   collections of patterns with no structural grammar.
 - **Type theory / formal verification** — translates
   categorical concepts into machine-checkable invariants.
-  The factory's claim-retraction work (B-0133), orthogonality
-  discipline (B-0134), and modal-logic-for-retractability
-  (B-0135) are all type-theoretic instantiations of
+  The factory's claim-retraction work (081KQGDBJ0008QG0R0035M1YRC), orthogonality
+  discipline (081KQGDBJ0008QG0R0032X1MMC), and modal-logic-for-retractability
+  (081KQGDBJ0008QG0R002X4AFA0) are all type-theoretic instantiations of
   category-theoretic concepts.
 - **Class taxonomy** — populates the type-theoretic abstract
   types with concrete domain patterns. *"Phantom-blocker"* is
@@ -468,9 +468,9 @@ provably instantiate the layer above.
 
 ### What this composes with
 
-- **B-0136** (category-theoretic compositional structure) —
+- **081KQGDBJ0008QG0R0029JMJWE** (category-theoretic compositional structure) —
   the topmost layer of the ladder, made explicit
-- **B-0134, B-0133, B-0135, B-0137** (with B-0141 + B-0142
+- **081KQGDBJ0008QG0R0032X1MMC, 081KQGDBJ0008QG0R0035M1YRC, 081KQGDBJ0008QG0R002X4AFA0, 081KQGDBJ0008QG0R003NDQTBM** (with 081KQGDBJ0008QG0R0015RNK3P + 081KQGDBJ0008QG0R002WY918J
   to be filed in follow-up PRs) — the type-theory /
   formal-verification layer
 - **The v2 class catalog work** — the class-taxonomy layer
@@ -489,7 +489,7 @@ provably instantiate the layer above.
 
 The ladder makes the factory's formal architecture **legible**.
 Right now, the factory has B-rows for category-theoretic
-work (B-0136), type-theoretic work (B-0134), class-taxonomy
+work (081KQGDBJ0008QG0R0029JMJWE), type-theoretic work (081KQGDBJ0008QG0R0032X1MMC), class-taxonomy
 work (the v2 catalog), and metric-framework work (this
 memory file's SRE section) — but the **connection between
 them** has been implicit. Aaron's chain makes it explicit:
@@ -569,15 +569,15 @@ Difficulty is the trigger, not every task.
   — explore-then-canonize composes (don't build a fitness
   function during pure-exploration; build it once exploration
   identifies what to canonize)
-- B-0130 (verify-before-state-claim mechanized auditor) —
+- 081KQGDBJ0008QG0R002Y31XJ3 (verify-before-state-claim mechanized auditor) —
   example of the principle: harness for claim-verification
   first, then claim-quality measurable, then iteration on
   claim-quality
-- B-0144 (doc/code two-lane parallel split) — applying this
+- 081KQGDBJ0008QG0R0021E8YZV (doc/code two-lane parallel split) — applying this
   principle to the rung-2 work means: build the lane-
   allocator + measurement harness FIRST, then iterate on
   parallel-throughput against measurable quality
-- B-0145 (PM-2 role) — applying this principle: define
+- 081KQGDBJ0008QG0R000RWAA67 (PM-2 role) — applying this principle: define
   lead-time% + action-rate% (the fitness function) FIRST,
   then iterate PM-2's research-cadence against those metrics
 - task #355 (Poll-the-gate as executable script with

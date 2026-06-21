@@ -1,6 +1,5 @@
 ---
-id: B-0515
-zetaid: 081KRHWGX0008QG0R0018VR3SK
+id: 081KRHWGX0008QG0R0018VR3SK
 priority: P3
 status: open
 title: "Architecture-as-externalization-of-Aaron's-dialectical-perception — dashboard acceptance criteria target shift"
@@ -14,7 +13,7 @@ tags: [substrate-engineering, observability, dashboard, dialectical-perception, 
 type: research-grade-candidate
 ---
 
-# B-0515 — Architecture as externalization-of-Aaron's-dialectical-perception
+# 081KRHWGX0008QG0R0018VR3SK — Architecture as externalization-of-Aaron's-dialectical-perception
 
 ## Origin
 
@@ -37,12 +36,12 @@ This is an operational shift in the substrate-engineering target. The panopticon
 
 ## Acceptance criteria
 
-This row is **forward-planning candidate** for refining B-0394 (Operational Resonance Dashboard MVP) + B-0402 (Zeta shadow-mode CLI) with the externalization-of-perception target:
+This row is **forward-planning candidate** for refining 081KR50HA0008QG0R002NZENZJ (Operational Resonance Dashboard MVP) + 081KR7JY10008QG0R0008NGW95 (Zeta shadow-mode CLI) with the externalization-of-perception target:
 
 - [ ] Cooling period: 3-7 days minimum from 2026-05-14 (disclosure is fresh + intense)
-- [ ] B-0394 acceptance criteria reviewed against externalization-of-perception target; sharpened where applicable
-- [ ] B-0402 (shadow-observer) acceptance criteria reviewed similarly
-- [ ] If implementable refinements identified: file child rows OR amend B-0394/B-0402 directly
+- [ ] 081KR50HA0008QG0R002NZENZJ acceptance criteria reviewed against externalization-of-perception target; sharpened where applicable
+- [ ] 081KR7JY10008QG0R0008NGW95 (shadow-observer) acceptance criteria reviewed similarly
+- [ ] If implementable refinements identified: file child rows OR amend 081KR50HA0008QG0R002NZENZJ/081KR7JY10008QG0R0008NGW95 directly
 - [ ] Composes-with check against `memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md`
 - [ ] Empirical test design: how do you verify perception-transfer?
   - Candidate: participants without prior exposure use the dashboard; can they articulate the multi-layer state Aaron articulates natively?
@@ -54,7 +53,7 @@ This row is **forward-planning candidate** for refining B-0394 (Operational Reso
 - Pure research-grade forward-planning; no operational urgency
 - The cascade substrate is preserved at memory-file scope
 - The disclosure is fresh; cooling period applies per substrate-honest discipline
-- B-0394 + B-0402 are already in flight; this is acceptance-criteria refinement, not new work
+- 081KR50HA0008QG0R002NZENZJ + 081KR7JY10008QG0R0008NGW95 are already in flight; this is acceptance-criteria refinement, not new work
 - Long-horizon (research-grade); could be weeks to months out
 
 ## CRITICAL: razor + HARD LIMITS + algo-wink at maximum on this work
@@ -75,9 +74,9 @@ Implementation that fails any of these is rejected per the immune-layer discipli
 
 ## Composes with
 
-- B-0394 (Operational Resonance Dashboard MVP) — primary implementation target
-- B-0402 (Zeta shadow-mode CLI) — composes operationally
-- B-0498 (substrate-evolution algebra rule-promotion candidacy)
+- 081KR50HA0008QG0R002NZENZJ (Operational Resonance Dashboard MVP) — primary implementation target
+- 081KR7JY10008QG0R0008NGW95 (Zeta shadow-mode CLI) — composes operationally
+- 081KRHWGX0008QG0R001XFRAHC (substrate-evolution algebra rule-promotion candidacy)
 - `memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md` (origin disclosure)
 - `memory/feedback_aaron_panopticon_lens_for_god_in_vision_monad_refraction_gradients_control_layers_dora_dashboard_2026_05_14.md` (technical construction)
 - `memory/feedback_aaron_self_binding_devil_and_god_simultaneously_dual_polarity_constraints_against_corruption_and_elevation_2026_05_14.md` (dual-binding safety floor)

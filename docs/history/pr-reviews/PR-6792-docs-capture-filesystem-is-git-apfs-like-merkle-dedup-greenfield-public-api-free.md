@@ -29,9 +29,9 @@
 
 ## What — two maintainer steers (2026-06-07)
 
-1. **The fs backend and git backend are the same construction** — a content-addressed Merkle DAG. Our filesystem is **APFS-like** (copy-on-write) with **history + content-addressed dedup** like git; same file in multiple folders → **a Merkle tree for the fs too**, not just the git impl. The closure-table fs needs updates (content-hash node ids, multi-parent edges, the two edit modes); folds into **B-0946** (closure-table FUSE/benchmark perf enhancements, `src/Core/Hierarchy.fs`) + `081KTGTJC1Q`. The git-compatible-replacement backend and the APFS-like fs are **one build**.
+1. **The fs backend and git backend are the same construction** — a content-addressed Merkle DAG. Our filesystem is **APFS-like** (copy-on-write) with **history + content-addressed dedup** like git; same file in multiple folders → **a Merkle tree for the fs too**, not just the git impl. The closure-table fs needs updates (content-hash node ids, multi-parent edges, the two edit modes); folds into **081KSV2WD0008QG0R00030G6S9** (closure-table FUSE/benchmark perf enhancements, `src/Core/Hierarchy.fs`) + `081KTGTJC1Q`. The git-compatible-replacement backend and the APFS-like fs are **one build**.
 
-2. **Greenfield — change the public API when it's right.** No bound external consumers yet, so a better surface beats stability that protects no one. Relaxes the churn caveat on B-0969 strategy (a); Ilyana still reviews surface *quality*, but "it breaks the API" is not itself a blocker while greenfield.
+2. **Greenfield — change the public API when it's right.** No bound external consumers yet, so a better surface beats stability that protects no one. Relaxes the churn caveat on 081KT07NV0008QG0R001YDB73K strategy (a); Ilyana still reviews surface *quality*, but "it breaks the API" is not itself a blocker while greenfield.
 
 Docs only; no code/build impact.
 

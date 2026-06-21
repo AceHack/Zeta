@@ -2,35 +2,35 @@
 
 **Status:** design spec (v0). Operator-authorized 2026-05-31 ("spec the git-backed bus
 for cross-machine otto ... zeta id based so you don't have to worry about collisions").
-**RECONCILED 2026-05-31** with prior substrate the operator surfaced (B-0858 + B-0890.1)
-— see "Reconciliation" below. Candidate backlog row: `B-NNNN` (likely a B-0858 sibling)
+**RECONCILED 2026-05-31** with prior substrate the operator surfaced (081KSKBP80008QG0R001KK9WV6 + 081KSNY2Z0008QG0R000E5KTPX)
+— see "Reconciliation" below. Candidate backlog row: `B-NNNN` (likely a 081KSKBP80008QG0R001KK9WV6 sibling)
 to allocate when building.
 
-## Reconciliation — this is NOT net-new; it extends B-0858 (operator caught the parallel-mint)
+## Reconciliation — this is NOT net-new; it extends 081KSKBP80008QG0R001KK9WV6 (operator caught the parallel-mint)
 
 The first draft proposed a dedicated `zeta-bus` **branch**. The operator surfaced existing
 substrate that supersedes that choice:
 
-- **B-0858** (operator 2026-05-27) — agent heartbeat folder, **direct-to-main, NO PR,
+- **081KSKBP80008QG0R001KK9WV6** (operator 2026-05-27) — agent heartbeat folder, **direct-to-main, NO PR,
   ZetaId-collision-free filenames**: `docs/agent-heartbeats/<persona>/<YYYY>/<MM>/<DD>/<zetaid>.md`.
   Operator there: _"it can be id for everything"_ + _"we have the ability to define it per
   category, category is in the bits so could have a custom one"_. Names
   **`registry/categories.yaml`** (16-slot enum; `Observation=0, Emission=1, Workflow=2,
 Heartbeat=3`).
-- **B-0890.1** (operator 2026-05-28) — _"we don't need branches for heartbeats and workflow
+- **081KSNY2Z0008QG0R000E5KTPX** (operator 2026-05-28) — _"we don't need branches for heartbeats and workflow
   … we can just have folders"_: **fast-lane as folders on main, NOT branches**, superseding
   coordinator/branch complexity (folders-on-main are protected by path-scoped branch
-  protection — B-0887, **still `status: open`** — not PR machinery; until B-0887 lands the
-  folder transport stays in Phase 1, see "Rollout" + the B-0887 dependency note in
+  protection — 081KSNY2Z0008QG0R001DFZK4V, **still `status: open`** — not PR machinery; until 081KSNY2Z0008QG0R001DFZK4V lands the
+  folder transport stays in Phase 1, see "Rollout" + the 081KSNY2Z0008QG0R001DFZK4V dependency note in
   "Transport").
-- **B-0032** — threat model for the direct-to-main carve-out (the no-PR attack surface).
+- **081KQ3HBZ0008QG0R002ZPXAFQ** — threat model for the direct-to-main carve-out (the no-PR attack surface).
 - The folder `docs/agent-heartbeats/` already exists on main; Lior's 128-bit doc already
   extends the category space (used Category 5 for friction telemetry).
 
-So the correction: **the bus rides the existing B-0858 no-PR direct-to-main folder
-mechanism, as folders on main per B-0890.1 — NOT a new branch.** The first draft's _core_
+So the correction: **the bus rides the existing 081KSKBP80008QG0R001KK9WV6 no-PR direct-to-main folder
+mechanism, as folders on main per 081KSNY2Z0008QG0R000E5KTPX — NOT a new branch.** The first draft's _core_
 (ZetaId-keyed ⇒ conflict-free ⇒ no PR ⇒ per-category metadata) was right and already
-matched B-0858; only the transport (branch) was the parallel-mint, now corrected.
+matched 081KSKBP80008QG0R001KK9WV6; only the transport (branch) was the parallel-mint, now corrected.
 
 **Bus is its own category, distinct from heartbeat** (operator 2026-05-31): _"we probably
 should have a separate bus category — the heartbeat is for agent health monitoring and the
@@ -43,7 +43,7 @@ The legacy in-process bus (`tools/bus/`) writes envelopes to **`/tmp/zeta-bus/` 
 disk, one machine.** It cannot cross machines. So Mac-Otto and a Windows-Otto (one adding
 `.ps1` to the Ace installer while the other works the bash `install.sh` side) have no shared
 explicit channel. Async-over-git already works for committed artifacts, but there is no
-low-friction explicit signaling channel that crosses machines. B-0858's heartbeat folder is
+low-friction explicit signaling channel that crosses machines. 081KSKBP80008QG0R001KK9WV6's heartbeat folder is
 the cross-machine-capable substrate (direct-to-main on the shared remote) — but it's scoped
 to health heartbeats; agent communications need their own category + folder on the same
 mechanism.
@@ -70,7 +70,7 @@ ref update, resolved by fetch → rebase → retry (always clean — disjoint ne
 This is the load-bearing property: **ZetaId keys → no collisions → no PR needed for
 coordination traffic.** A PR's job for _non-code_ checkins is conflict-resolution + review;
 ZetaId-keying makes content conflicts _vanishingly unlikely_, so the no-PR carve-out
-(B-0858) is safe. Code keeps PRs (semantic conflicts + review matter); corporate keeps PRs
+(081KSKBP80008QG0R001KK9WV6) is safe. Code keeps PRs (semantic conflicts + review matter); corporate keeps PRs
 (leash side).
 
 ### Collision caveat — the filename MUST be unique-or-merge-safe, not assumed-unique
@@ -130,7 +130,7 @@ Per the operator's per-category-metadata point ("metadata can be different per k
 type"), each category carries its own schema; `unpack().category` filters a family on the
 filename alone, and `Heartbeat` stays semantically pure (health, not comms or spawn). This
 is the operator's broader direction — "almost all of our checkins except code will move to
-zetaid-based": each non-code checkin family is its own category + folder on the same B-0858
+zetaid-based": each non-code checkin family is its own category + folder on the same 081KSKBP80008QG0R001KK9WV6
 mechanism. Slot numbers are allocated against `registry/categories.yaml` at build time
 (currently `0–3` committed; check in-flight before claiming, per the ID-allocation
 discipline).
@@ -157,7 +157,7 @@ Same envelope, swappable backend — so the swarm reproduces locally (Argo) or o
 locked to GitHub. The spawn-specific consumer is the **runner-adapter** (whereas `Bus`
 envelopes are consumed by peer agents); this is the first-class, portable form of what the
 bus spec earlier deferred as a "GitHub Actions trigger" follow-up. Composes with the
-existing spawn substrate: `.claude/skills/self-replication/`, **B-0867.24 / B-0867.25**
+existing spawn substrate: `.claude/skills/self-replication/`, **081KSNY2Z0008QG0R003N3DR84 / 081KSNY2Z0008QG0R002CBAFBZ**
 (population-control safety-net — revive/spawn on zero-Ottos), `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`
 (the spawn path must stay inside the safe-patterns floor), and the github-swarm-architecture
 substrate on this branch.
@@ -199,14 +199,14 @@ persist the closure to git keyed by ZetaId, then rehydrate that exact closure wh
 ZetaId event (bus message, timer, sub-task-complete) satisfies its await condition. No
 re-execution, none of MS's replay/determinism machinery — leaner (the operator's
 pre-Durable-Functions Itron implementation predates and is lighter than MS's). This is a
-near-exact fit for **Persist / μένω (B-0897)**: `await` = emit-the-suspended-state-now +
+near-exact fit for **Persist / μένω (081KSNY2Z0008QG0R002SZZ5Y0)**: `await` = emit-the-suspended-state-now +
 observe-the-wake-event-later; μένω ("I remain") = the closure _remains_ persisted across the
 suspension.
 
 The event log still exists (for observability — the Rx stream, audit, the heartbeat tail);
 but **durability is the continuation persistence, not the replay.** Composes with the
 git-native event-store ADR (`docs/DECISIONS/2026-05-29-git-native-event-store-spec.md`),
-B-0773 (cluster-as-digital-twin git-native event store), B-0942 (git-native CRDT
+081KSE6WT0008QG0R0008483B2 (cluster-as-digital-twin git-native event store), 081KSV2WD0008QG0R0021XJ94E (git-native CRDT
 coordination), and the `OrgEventStore` port (cockroach impl = corporate/leash; git-native
 ZetaId impl = Agora/sovereign — observe.ts talks to the port, not the backend).
 
@@ -240,7 +240,7 @@ push target changes between phases, not the envelope/category/payload.
 1. zid  = pack({persona:<surface>, category: Bus, ...}, DEFAULT_ENV)
 2. write docs/agent-bus/<persona>/<Y>/<M>/<D>/<hex(zid)>.json   (GitBusEnvelope)
 3. commit (only that file)
-4. push origin main          # PHASE-2 only — needs the B-0858/B-0887 path-scoped carve-out
+4. push origin main          # PHASE-2 only — needs the 081KSKBP80008QG0R001KK9WV6/081KSNY2Z0008QG0R001DFZK4V path-scoped carve-out
    │                           #   in PHASE-1, push the feature branch instead (protection ON)
    └─ on non-fast-forward reject:
         git fetch origin main
@@ -289,18 +289,18 @@ branch protections on main and start using folders."_
 
 The folders-direct-to-main end-state requires a replacement for the safety the PR/branch-
 protection gate currently provides. **observe.ts (the rails) is one half of that replacement;
-B-0887 path-scoped branch protection is the other.** So the cutover is gated on **both**
-observe.ts working **and** B-0887 (`status: open`) landing — or, as an interim, an explicit
+081KSNY2Z0008QG0R001DFZK4V path-scoped branch protection is the other.** So the cutover is gated on **both**
+observe.ts working **and** 081KSNY2Z0008QG0R001DFZK4V (`status: open`) landing — or, as an interim, an explicit
 per-folder push allowlist scoped to `docs/agent-bus/**`. Don't remove the broad PR/branch
 gate before BOTH replacements are ready (architecture-is-safety-mechanism; the same threshold
 discipline as `edit_grammar`). The Phase-2 transport is **not** "protection off" — it is
 "broad PR gating replaced by path-scoped protection"; see "Transport (Phase 2 target)" below
-for the full B-0887 + B-0890.1 security-gap dependency note.
+for the full 081KSNY2Z0008QG0R001DFZK4V + 081KSNY2Z0008QG0R000E5KTPX security-gap dependency note.
 
 | Phase                                            | Mechanism                                                                                                 | Branch protection                                               | Gate                                                                                            |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | **1 — interim (now)**                            | Category checkins land on **branches**, merged back to `main` **periodically** (standard flow)            | **ON** (current)                                                | while observe.ts is being built                                                                 |
-| **2 — target (observe.ts works + B-0887 lands)** | **Folders** direct-to-`main`, **no PR** (the B-0858 / B-0890.1 mechanism the rest of this spec describes) | broad PR gating **replaced by** path-scoped protection (B-0887) | observe.ts working **and** B-0887 landed (or interim `docs/agent-bus/**` push allowlist) → flip |
+| **2 — target (observe.ts works + 081KSNY2Z0008QG0R001DFZK4V lands)** | **Folders** direct-to-`main`, **no PR** (the 081KSKBP80008QG0R001KK9WV6 / 081KSNY2Z0008QG0R000E5KTPX mechanism the rest of this spec describes) | broad PR gating **replaced by** path-scoped protection (081KSNY2Z0008QG0R001DFZK4V) | observe.ts working **and** 081KSNY2Z0008QG0R001DFZK4V landed (or interim `docs/agent-bus/**` push allowlist) → flip |
 
 Both phases use the **same ZetaId-keyed envelope + category + payload**; only the _transport_
 changes (branch+periodic-merge → direct-to-main folder). So Bus v0 can start **now** under
@@ -308,17 +308,17 @@ Phase 1 without waiting — the conflict-free-by-ZetaId property already holds o
 the cutover to Phase 2 is a transport swap, not a rewrite. The `Spawn` category follows the
 same two phases.
 
-## Transport (Phase 2 target) — folders on main, NOT a branch (B-0890.1)
+## Transport (Phase 2 target) — folders on main, NOT a branch (081KSNY2Z0008QG0R000E5KTPX)
 
 Once Phase 2 is live, DV2.0 (the change-rate partition discipline) is satisfied by the
 **folder/path partition**, not a branch: `docs/agent-bus/**` (high-churn comms) is
 path-distinct from `docs/agent-heartbeats/**` (health) and from code (low-churn). Per
-B-0890.1, the Phase-2 folders-on-main transport depends on `main` being path-scope-protected
+081KSNY2Z0008QG0R000E5KTPX, the Phase-2 folders-on-main transport depends on `main` being path-scope-protected
 so these folders don't need branch isolation — the path-scoped no-PR carve-out IS the
-partition. **That protection is not yet in place: B-0887 (Zeta-native review + path-scoped
-branch protection) is `status: open`, and B-0890.1 explicitly notes folder-on-main carries a
-security gap until B-0887's path-scoped protection lands.** So Phase 2 is gated on **both**
-observe.ts (the rail) **and** B-0887 (the path-scoped protection) — or, as an interim, an
+partition. **That protection is not yet in place: 081KSNY2Z0008QG0R001DFZK4V (Zeta-native review + path-scoped
+branch protection) is `status: open`, and 081KSNY2Z0008QG0R000E5KTPX explicitly notes folder-on-main carries a
+security gap until 081KSNY2Z0008QG0R001DFZK4V's path-scoped protection lands.** So Phase 2 is gated on **both**
+observe.ts (the rail) **and** 081KSNY2Z0008QG0R001DFZK4V (the path-scoped protection) — or, as an interim, an
 explicit per-folder push allowlist scoped to `docs/agent-bus/**`. Until then the bus stays on
 Phase 1 (branches + periodic merge, protection ON). This keeps the bus on the one shared ref
 every machine already tracks (no extra branch to fetch), which is exactly what makes it
@@ -327,8 +327,8 @@ Phase-2 form; in Phase 1 the same commit lands on a branch that's merged to main
 
 ## Compliance with existing invariants
 
-- **Direct-to-main carve-out** (B-0858 + B-0032 threat model): the no-PR push is path-scoped
-  to `docs/agent-bus/**`; B-0032's heartbeat integrity threat-model extends to cover it
+- **Direct-to-main carve-out** (081KSKBP80008QG0R001KK9WV6 + 081KQ3HBZ0008QG0R002ZPXAFQ threat model): the no-PR push is path-scoped
+  to `docs/agent-bus/**`; 081KQ3HBZ0008QG0R002ZPXAFQ's heartbeat integrity threat-model extends to cover it
   (same attack surface class — anyone with push can append; ZetaId persona+authority bits +
   AgencySignature attribution are the provenance controls).
 - **Force-push-forbidden** (`lfg-acehack-topology`): publish is fast-forward _by
@@ -337,14 +337,14 @@ Phase-2 form; in Phase 1 the same commit lands on a branch that's merged to main
   retry/redelivery safe; dedup by ZetaId.
 - **Lightlike / append-only**: envelopes are append-only rays; acks + retractions are new
   envelopes; the past is never mutated.
-- **Move-away-from-PRs** (operator 2026-05-31 + B-0890.1): coordination traffic is
+- **Move-away-from-PRs** (operator 2026-05-31 + 081KSNY2Z0008QG0R000E5KTPX): coordination traffic is
   direct-push, no PR, for the trusted fleet. Conflict-freedom-by-ZetaId is _what makes_ that
   safe. PRs remain for code + corporate (leash side).
 
 ## v0 scope (keep it small — don't over-process the new thing)
 
 The observe.ts `edit_grammar` threshold wisdom applies: don't over-engineer a new, small
-mechanism. v0 leans on B-0858's mechanism wherever it already exists.
+mechanism. v0 leans on 081KSKBP80008QG0R001KK9WV6's mechanism wherever it already exists.
 
 **v0 ships:**
 
@@ -360,7 +360,7 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
   compile.
 - A `Bus` category added to `registry/categories.yaml` (the health-vs-comms split) —
   paired with the `types.ts` reservation above so the enum is canonical, not doc-only.
-- `docs/agent-bus/**` added to the B-0858/B-0032 path-scoped no-PR carve-out.
+- `docs/agent-bus/**` added to the 081KSKBP80008QG0R001KK9WV6/081KQ3HBZ0008QG0R002ZPXAFQ path-scoped no-PR carve-out.
 - `tools/bus/git-bus.ts` `publish` + `poll` against `docs/agent-bus/**` on main —
   ZetaId-keyed files, direct-to-main fetch-rebase-retry, **collision-aware** (re-mint on
   same-path rebase conflict per the Collision caveat), **remote-tree read** for poll (per
@@ -393,23 +393,23 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
 - **`Spawn` category + runner-adapter** (its own follow-up — see "Spawn category" above):
   `docs/agent-spawn/**` + a backend-portable adapter (GitHub Actions / Argo / GitLab).
   This is the first-class form of the old "GitHub Actions trigger" idea; build after Bus
-  v0 lands, likely its own B-0867.24/.25-adjacent row.
+  v0 lands, likely its own 081KSNY2Z0008QG0R003N3DR84/.25-adjacent row.
 
 ## Composes with
 
-- **B-0858** (heartbeat folder — direct-to-main, no-PR, ZetaId filenames) — the mechanism
+- **081KSKBP80008QG0R001KK9WV6** (heartbeat folder — direct-to-main, no-PR, ZetaId filenames) — the mechanism
   this rides; bus is the comms-category sibling of the health-category heartbeat folder
-- **B-0890.1** (fast-lane as folders-on-main, not branches) — the transport decision this
+- **081KSNY2Z0008QG0R000E5KTPX** (fast-lane as folders-on-main, not branches) — the transport decision this
   obeys (superseded the first draft's branch choice)
-- **B-0032** (heartbeat direct-to-main threat model) — extends to cover `docs/agent-bus/**`
-- **B-0868** (hats/workflow-engine/heartbeat-folder/dashboard unification) + B-0887
+- **081KQ3HBZ0008QG0R002ZPXAFQ** (heartbeat direct-to-main threat model) — extends to cover `docs/agent-bus/**`
+- **081KSNY2Z0008QG0R0036KH026** (hats/workflow-engine/heartbeat-folder/dashboard unification) + 081KSNY2Z0008QG0R001DFZK4V
   (Zeta-native review/branch-protection) — the protection substrate that makes no-PR safe
 - `registry/categories.yaml` (16-slot category enum — add `Bus`; later `Spawn`)
-- **B-0867.24 / B-0867.25** (population-control safety-net — revive/spawn on zero-Ottos) +
+- **081KSNY2Z0008QG0R003N3DR84 / 081KSNY2Z0008QG0R002CBAFBZ** (population-control safety-net — revive/spawn on zero-Ottos) +
   `.claude/skills/self-replication/` + `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md` — the
   `Spawn`-category substrate (backend-portable agent-spawning) composes here
 - `src/Core.TypeScript/zeta-id/` (canonical ZetaId — reused, not re-minted)
-- `tools/bus/` (legacy in-process bus — same envelope model, second transport) + B-0400
+- `tools/bus/` (legacy in-process bus — same envelope model, second transport) + 081KR7JY10008QG0R000R503K2
   (inter-agent comms bus origin)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (idempotency #6 + DV2.0 — here the
   partition is by folder/path, not branch)
@@ -422,7 +422,7 @@ mechanism. v0 leans on B-0858's mechanism wherever it already exists.
 ## Substrate-honest framing
 
 This is a design spec, not an implementation, and it is a **reconciliation**: the operator
-caught that the first draft parallel-minted a branch where B-0858 (folders-on-main, no-PR,
+caught that the first draft parallel-minted a branch where 081KSKBP80008QG0R001KK9WV6 (folders-on-main, no-PR,
 ZetaId filenames) already exists. The corrected design extends that mechanism with a
 separate `Bus` category (comms, distinct from heartbeat=health) and a `docs/agent-bus/**`
 folder. The conflict-free-by-ZetaId property is the load-bearing idea; everything else is

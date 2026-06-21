@@ -112,7 +112,7 @@ Five distinct topologies, in order of approximately-when-they-emerge:
 ### 4. Forks with diverging trajectories
 
 - LFG and AceHack today are LFG-source / AceHack-mirror per
-  Path 2 (B-0110). Survival surfaces overlap; the rule applies.
+  Path 2 (081KQDTYV0008QG0R001Y2E9TD). Survival surfaces overlap; the rule applies.
 - Hypothetical futures:
   - AceHack remains a backup mirror — no divergence, rule holds.
   - AceHack becomes a sandbox where experimental work stays
@@ -231,7 +231,7 @@ the project's?
 ### LFG-as-source / AceHack-as-mirror
 
 `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`,
-`docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`
+`docs/backlog/P1/081KQDTYV0008QG0R001Y2E9TD-acehack-mirror-protocol-drift-2026-04-30.md`
 
 - Two-fork topology where one fork is canonical and one is
   backup.

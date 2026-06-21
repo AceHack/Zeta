@@ -1,6 +1,5 @@
 ---
-id: B-1013
-zetaid: 081KT5CF90008QG0R002C943SC
+id: 081KT5CF90008QG0R002C943SC
 priority: P2
 status: open
 title: "Floor-change governance — unamendable-by-you + correctable only through a hard external process; asymmetric (strengthen easier than weaken); genuinely-independent multi-stakeholder public-good steward (capture-resistance = stakeholder independence); federate into existing child-safety bodies (Aaron 2026-06-03)"
@@ -22,7 +21,7 @@ Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-so
 
 ## The problem
 
-An unamendable floor (B-0926) resists erosion but is **brittle against error** — it
+An unamendable floor (081KSRGFP0008QG0R00091PP56) resists erosion but is **brittle against error** — it
 locks in mistakes you didn't foresee, and rules can turn out harmful in unexpected ways.
 How do you fix/remove a floor rule without making the floor editable (which would defeat it)?
 
@@ -57,6 +56,6 @@ process is the correctability.
 
 ## Composes with
 
-- B-0926 (the floor this governs the changing of)
-- B-0628 (Knights Guild / Constitution-Class) — governance lineage
+- 081KSRGFP0008QG0R00091PP56 (the floor this governs the changing of)
+- 081KRW63S0008QG0R003TX8MG5 (Knights Guild / Constitution-Class) — governance lineage
 - `.claude/rules/must-paired-with-can-exit-pattern.md`, `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`

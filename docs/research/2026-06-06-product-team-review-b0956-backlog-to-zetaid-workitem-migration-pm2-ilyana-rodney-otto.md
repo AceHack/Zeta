@@ -1,6 +1,6 @@
-# Product-team review — B-0956 backlog → ZetaId WorkItem migration (PM-2 + Ilyana + Rodney, synthesised by Otto) — 2026-06-06
+# Product-team review — 081KSXN940008QG0R002FWR9B2 backlog → ZetaId WorkItem migration (PM-2 + Ilyana + Rodney, synthesised by Otto) — 2026-06-06
 
-Scope: the design memo B-0956 §"Substrate-honest framing" asks for ("file the design memo first; route the
+Scope: the design memo 081KSXN940008QG0R002FWR9B2 §"Substrate-honest framing" asks for ("file the design memo first; route the
 schema through product-team agreement **before any bulk migration**"). Aaron 2026-06-06: *"route to product
 team and get their input and make sure we are not forgetting anything before bulk migration; build what we
 need to; we don't have to rush."* Three advisory reviewers ran in parallel; this is the synthesis +
@@ -13,7 +13,7 @@ decisions + the buildable slice. Reviewers: **PM-2** (product discovery), **Ilya
    (new items). The 1116 legacy `B-NNNN` rows are *already* minted, collision-free, and stable slugs —
    rewriting them buys nothing (Rodney: accidental complexity), **orphans thousands of external `B-NNNN`
    references** in commits/PRs/memory/rules (PM-2), and risks a full **re-migration** if the id encoding
-   later changes (Ilyana). Hold the line at B-0956 §4; the risk is execution drifting toward the big-bang
+   later changes (Ilyana). Hold the line at 081KSXN940008QG0R002FWR9B2 §4; the risk is execution drifting toward the big-bang
    reading of "convert them all."
 
 2. **First buildable slice = tooling, with ZERO row changes:**
@@ -25,14 +25,14 @@ decisions + the buildable slice. Reviewers: **PM-2** (product discovery), **Ilya
 
 3. **Root cause of the chronic `backlog-index-integrity` red — FOUND (PM-2) + RESOLVED 2026-06-06.** FOUR
    rows had **no YAML frontmatter** (`generate-index.ts` `extractField` emitted empty `[]()` titles → real
-   rows invisible / descriptions lost on a naive regen): the P0 money-floor `B-1016`, the P1 canonical-YAML
-   `B-1016`, `B-1017`, `B-1018`, `B-1019`. There was also a **true duplicate id** — `B-1016` used by both
+   rows invisible / descriptions lost on a naive regen): the P0 money-floor `081KT7YW00008QG0R002T1XNWT`, the P1 canonical-YAML
+   `081KT7YW00008QG0R002T1XNWT`, `081KT7YW00008QG0R003N6PF8A`, `081KT7YW00008QG0R0019J8FSX`, `081KT7YW00008QG0R001DGZQKM`. There was also a **true duplicate id** — `081KT7YW00008QG0R002T1XNWT` used by both
    the P0 money-floor *and* the landed P1 canonical-YAML item. RESOLUTION (Aaron 2026-06-06, option B):
    frontmatter added to all four **preserving their committed descriptions** (titles), the dup resolved by
-   **renumbering the money-floor → `B-1021`** (the canonical-YAML keeps `B-1016` — it's referenced as
-   `B-1016` in all 4 YAML serializers' code, so renumbering *it* would churn code). `BACKLOG.md` regenerated
+   **renumbering the money-floor → `081KT7YW00008QG0R003JV9D4J`** (the canonical-YAML keeps `081KT7YW00008QG0R002T1XNWT` — it's referenced as
+   `081KT7YW00008QG0R002T1XNWT` in all 4 YAML serializers' code, so renumbering *it* would churn code). `BACKLOG.md` regenerated
    (`BACKLOG_WRITE_FORCE=1`) → `--check` green + duplicate-id audit clean; **no description lost** (verified
-   no dropped ids, no empty titles). (`B-0366.2` was already consistent — filename == frontmatter id.) The
+   no dropped ids, no empty titles). (`081KR50HA0008QG0R0002PGV1N` was already consistent — filename == frontmatter id.) The
    permanent fix going forward is a frontmatter-schema lint (step 1 below).
 
 ## The one genuine DIVERGENCE — filename / identity shape (Aaron's call; a one-way door)
@@ -49,15 +49,15 @@ collides at the FILENAME.** The ZetaId in frontmatter is collision-free (128-bit
 option B's filename is `P<n>/<slug>.md` and the **slug is title-derived — a shared human namespace**: two
 of 500 concurrent agents filing similar items generate the same slug → same path → **git merge conflict**.
 That is a *hidden consensus point on the slug* — the exact "incrementing-ids-are-a-hidden-consensus" pain
-B-0956 exists to remove, merely relocated from the number to the slug. **Option A (`workitems/<zetaid>.md`)
+081KSXN940008QG0R002FWR9B2 exists to remove, merely relocated from the number to the slug. **Option A (`workitems/<zetaid>.md`)
 makes the filename ITSELF the conflict-free key** → every agent writes its own **disjoint file** → no
-shared path, no merge conflict, at any N. This is exactly the proven **B-0954 agent-bus G-Set property**
+shared path, no merge conflict, at any N. This is exactly the proven **081KSXN940008QG0R00171YAZW agent-bus G-Set property**
 (disjoint ZetaId-keyed files, no-PR, conflict-free, cross-machine). My earlier "start with B" lean was
 WRONG for the at-scale concurrent-create case — it optimized churn/readability and missed that the slug
 filename is a consensus surface. **Filename = ZetaId.** Human-readability preserved via `slug` + `title`
 frontmatter + a generated **`slug → zetaid` index** (navigate by slug; canonical file is ZetaId-named).
 Cross-refs resolve by **ZetaId** (rename-proof; render to slug for humans); legacy `B-NNNN` refs stay
-frozen slugs. **Consequence:** the B-0682 blocker hardens — the ZetaId string is now the filename, so its
+frozen slugs. **Consequence:** the 081KS3X9Y0008QG0R000W00V73 blocker hardens — the ZetaId string is now the filename, so its
 encoding must be locked **and filename-safe** (case-fold-safe for APFS/NTFS; no `/`) before any mint.
 (Option C stays rejected — truncated ZetaId reintroduces the collision.)
 
@@ -72,7 +72,7 @@ identity — path stays resolvable (the proven Jekyll-post / ADR `NNNN-title.md`
 **State-as-folder-location (Aaron 2026-06-06): completed items move to `workitems/done/`.** The lifecycle
 state can be encoded by the file's FOLDER — active items in `workitems/`, completed ones moved under
 `workitems/done/` (the same folder-as-attribute pattern the repo already uses: `P0/P1/P2` priority folders,
-the agent-heartbeat folder, fast-lane-as-folders B-0890.1, pr-archive-on-merge). Benefits: the "backlog"
+the agent-heartbeat folder, fast-lane-as-folders 081KSNY2Z0008QG0R000E5KTPX, pr-archive-on-merge). Benefits: the "backlog"
 (open) view becomes a plain folder listing (no fold needed for the common open-vs-done split), and the
 active working set stays lean at 1116+ scale. **Still conflict-free** — a state transition is a git RENAME
 of a disjoint, ZetaId-prefixed file; each agent moves its OWN file, so no path collision even at 500 agents.
@@ -110,19 +110,19 @@ Conflict-freedom + identity-survives-move both still hold (disjoint per-file git
 or `done/**/<zetaid>-*.md`).
 
 **Third win for option A (Aaron 2026-06-06): free time-ordered lookup + ordering.** Because the ZetaId is
-time-prefixed (B-0893 targets the Snowflake/ULID family), a **lexicographic sort of the `workitems/<zetaid>.md`
+time-prefixed (081KSNY2Z0008QG0R000V24M7E targets the Snowflake/ULID family), a **lexicographic sort of the `workitems/<zetaid>.md`
 filenames = chronological creation order** — `ls` sorted is day-ordered, and "items from day D" is a
 filename **prefix range-scan**, no separate time index. This is a property only option A gives (slug
-filenames sort alphabetically, meaninglessly). **It adds a hard requirement on B-0682:** the canonical
+filenames sort alphabetically, meaninglessly). **It adds a hard requirement on 081KS3X9Y0008QG0R000W00V73:** the canonical
 string encoding must be **sort-preserving** — time in the high bits, big-endian, and a lexicographically-
 monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte/string sort == time sort.
 
 ## Lock-before-any-ZetaId-persists (one-way doors — Ilyana)
 
-1. **ZetaId canonical string encoding — HARD BLOCKER (B-0682, currently P2/open).** The impl
+1. **ZetaId canonical string encoding — HARD BLOCKER (081KS3X9Y0008QG0R000W00V73, currently P2/open).** The impl
    (`src/Core.TypeScript/zeta-id/zeta-id.ts`) has **no `format()`/`parse()`** — only an ad-hoc
    `toString(16).padStart(32,"0")` in `cross-verify.ts:117`. The moment a ZetaId is persisted as a string
-   (frontmatter `id`, a cross-ref, or a filename) **that encoding is frozen**. **Promote B-0682 P2→P1,
+   (frontmatter `id`, a cross-ref, or a filename) **that encoding is frozen**. **Promote 081KS3X9Y0008QG0R000W00V73 P2→P1,
    resolve it (case-fold-safe for filenames; endianness; base), and ship `format`/`parse` in the impl
    before the mint tool persists any ZetaId.** (Under option B this only needs to be stable for the
    frontmatter `id` string; under A it also freezes every path — another reason B is lower-risk now.)
@@ -136,7 +136,7 @@ monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte
 
 ## Don't-forget list (only bites post-migration)
 
-- **Sub-id parent/decomposition** (`B-0890.1`, `B-0366.2.1`) encodes umbrella→child structure a flat
+- **Sub-id parent/decomposition** (`081KSNY2Z0008QG0R000E5KTPX`, `081KRA5AR0008QG0R002X77BEB`) encodes umbrella→child structure a flat
   ZetaId throws away — model as a `parent:` field, don't lose it (PM-2).
 - **DORA folds need `created`/`done` timestamp discipline** — frontmatter dates are inconsistent; lint them
   (PM-2).
@@ -145,7 +145,7 @@ monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte
 - **Is the index-drift fix bundled or separate?** Rodney: **separate + smaller** (it's a governance flip —
   whether `BACKLOG.md` monolith or the generated index is authoritative; CI skips the equivalence check
   until "Phase 2" by design). PM-2: the migration should subsume the integrity check. **Reconciliation:**
-  fix the *data bugs* (B-1016 frontmatter, B-0366.2 id) + add the frontmatter lint NOW (small, separable);
+  fix the *data bugs* (081KT7YW00008QG0R002T1XNWT frontmatter, 081KR50HA0008QG0R0002PGV1N id) + add the frontmatter lint NOW (small, separable);
   defer the monolith-vs-generated authority flip as its own decision.
 - **Loop-ins when building:** Viktor (no behavioural spec for the alias-resolution rule or mint output —
   spec-before-code), Mateo (`parse(s)` is a new untrusted-string deserialization path: filenames/refs →
@@ -153,10 +153,10 @@ monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte
 
 ## Proposed buildable order (no rush; each step independently valuable, no row rewrites)
 
-1. Fix the two data bugs (B-1016 missing frontmatter, B-0366.2 id mismatch) + add a **frontmatter-schema
+1. Fix the two data bugs (081KT7YW00008QG0R002T1XNWT missing frontmatter, 081KR50HA0008QG0R0002PGV1N id mismatch) + add a **frontmatter-schema
    lint** → clears the chronic `backlog-index-integrity` red. (separable, small)
 2. Add a **referential-integrity lint**; run on the 1116, fix any dangling refs surfaced.
-3. Resolve **B-0682** (promote P1) + ship **filename-safe** `format()`/`parse()` in the ZetaId impl
+3. Resolve **081KS3X9Y0008QG0R000W00V73** (promote P1) + ship **filename-safe** `format()`/`parse()` in the ZetaId impl
    (case-fold-safe for APFS/NTFS; no `/`) — REQUIRED because the ZetaId string is now the filename (option A).
 4. Build **`tools/backlog/new-workitem.ts`** (local mint; writes **`workitems/<zetaid>-<description>.md`** —
    ZetaId prefix = the conflict-free + time-sortable key, description suffix = human-readable;
@@ -166,5 +166,5 @@ monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte
 5. (Deferred / optional) any bulk legacy rewrite of the 1116 → `workitems/<zetaid>-<description>.md` — only
    if it ever earns its way; not needed for the 500-agent conflict-free-create property (delivered at step 4).
 
-Pointer added from B-0956. Reviewers' full findings are in their agent outputs (this synthesis is the
+Pointer added from 081KSXN940008QG0R002FWR9B2. Reviewers' full findings are in their agent outputs (this synthesis is the
 durable artifact).

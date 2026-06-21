@@ -77,7 +77,7 @@ metered-runtime layer (§13) for side-effect safety he didn't preach.
 
 GOVERNANCE.md §23 upstream-contribution workflow +
 `.claude/skills/workflows/blueprints/fork-pr-workflow.md`. Precedent: **small-first,
-trust-building** (B-0952 — contribute-back DORA metrics). Start with a small,
+trust-building** (081KSXN940008QG0R002528JS9 — contribute-back DORA metrics). Start with a small,
 clearly-useful PR to one repo (CSLib is the most natural first — open governance,
 direct overlap), not a grand proposal.
 
@@ -93,6 +93,6 @@ and the Tegmark trust-anchor memory. The act of contact is Aaron's.
 
 The society-is-the-AGI / coworker thesis (§B row; `2026-06-15-coworker-not-control-...`);
 coupled/social empowerment (Salge & Polani 2017; Guckelsberger et al.); GOVERNANCE.md
-§23 + fork-pr-workflow; B-0952 (small-first contribute-back); ip-questionable
+§23 + fork-pr-workflow; 081KSXN940008QG0R002528JS9 (small-first contribute-back); ip-questionable
 transcripts (George, Orthwein); Tegmark trust-anchor (`user_aaron_max_tegmark_...`);
 prior-art entries (TorchLean, CSLib); `no-directives` (source ≠ authorization).

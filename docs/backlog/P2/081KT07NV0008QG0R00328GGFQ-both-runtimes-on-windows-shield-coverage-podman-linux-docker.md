@@ -1,6 +1,5 @@
 ---
-id: B-0968
-zetaid: 081KT07NV0008QG0R00328GGFQ
+id: 081KT07NV0008QG0R00328GGFQ
 priority: P2
 status: open
 title: "Both-runtimes-on-Windows shield coverage — podman (Linux-container path via WSL2) alongside docker (Windows-container install.ps1 shield)"
@@ -13,7 +12,7 @@ owners: [devops-engineer]
 type: chore
 ---
 
-# B-0968 — Both-runtimes-on-Windows shield coverage
+# 081KT07NV0008QG0R00328GGFQ — Both-runtimes-on-Windows shield coverage
 
 ## Origin (the operator 2026-06-01)
 
@@ -41,7 +40,7 @@ means **each runtime verified on Windows in its supported container mode**:
 
 - `docker-windows-install-ps1-test` — install.ps1 on Windows Server Core (a **Windows
   container**, Docker). Stays Docker-only by necessity (podman can't do Windows containers).
-- `wsl-install-sh-test` — install.sh in real WSL2 Ubuntu on a windows-2025 host (B-0857).
+- `wsl-install-sh-test` — install.sh in real WSL2 Ubuntu on a windows-2025 host (081KSKBP80008QG0R002J03WGA).
 - **Gap:** no shield verifies **podman functions on Windows** (its Linux-container path
   via WSL2). The runtime the manifest now installs (`RedHat.Podman`) is unshielded on
   Windows.
@@ -61,7 +60,7 @@ means **each runtime verified on Windows in its supported container mode**:
       rootless failed to bring up the user socket on a real Windows laptop 2026-06-01 —
       `ssh: rejected: connect failed`; rootful worked). Pin the chosen mode in the shield.
 - [ ] The existing `docker-windows-install-ps1-test` (Windows-container path) stays as-is
-      — Docker is the declared Windows default for Windows-container workloads (B-0964).
+      — Docker is the declared Windows default for Windows-container workloads (081KT07NV0008QG0R001CBQ2X2).
 - [ ] Optional follow-on (only once the executor's `ZETA_CONTAINER_RUNTIME → auto-detect
       [podman, docker]` selection code exists — not built yet): a test that auto-detect
       picks the right runtime on Windows. Out of scope until that code lands.
@@ -74,7 +73,7 @@ means **each runtime verified on Windows in its supported container mode**:
 `podman machine` in hosted-Windows CI is the risk. WSL2 IS available on `windows-2025`
 runners (the `wsl-install-sh-test` shield proves it), but `podman machine init` + a Linux
 container is heavier and may hit the rootless user-socket brittleness Gemini flagged in
-B-0964 ("Podman on Windows… brittle… an autonomous agent will hallucinate fixes until it
+081KT07NV0008QG0R001CBQ2X2 ("Podman on Windows… brittle… an autonomous agent will hallucinate fixes until it
 spirals"). The spike de-risks this before committing the shield. If hosted-runner podman
 machine proves unworkable, fall back to **podman-in-WSL2-directly** (install podman inside
 the WSL2 Ubuntu distro and run a Linux container there — no podman-machine layer), which
@@ -90,9 +89,9 @@ blocking (docker is the Windows default), so P2.
 
 ## Composes with
 
-- B-0964 (docker-vs-podman OCI-runtime decision; docker = Mac/Win default, podman preferred on Linux cluster)
-- B-0857 (Windows parity lane; `wsl-install-sh-test` is the windows-2025 + WSL2 template to mirror)
-- B-0965 (git-bash routing shield — sibling Windows shield-coverage gap)
+- 081KT07NV0008QG0R001CBQ2X2 (docker-vs-podman OCI-runtime decision; docker = Mac/Win default, podman preferred on Linux cluster)
+- 081KSKBP80008QG0R002J03WGA (Windows parity lane; `wsl-install-sh-test` is the windows-2025 + WSL2 template to mirror)
+- 081KT07NV0008QG0R002ZFN79J (git-bash routing shield — sibling Windows shield-coverage gap)
 - `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` (assert, don't skip-to-green)
 - `tools/setup/manifests/windows` (the `podman` entry + the Windows-container caveat note this row is cross-linked from)
 - `.github/workflows/wsl-install-sh-test.yml` + `.github/workflows/docker-windows-install-ps1-test.yml` (the two existing Windows shields)

@@ -1,9 +1,8 @@
 ---
-id: B-0650
-zetaid: 081KRW63S0008QG0R003377JG9
+id: 081KRW63S0008QG0R003377JG9
 priority: P3
 status: closed
-title: "rest-push.ts --delete + --rename extension — mechanizes ID-renumber pattern (closes the B-0633→B-0649 inline-gh-api workaround) (Otto-CLI 2026-05-18)"
+title: "rest-push.ts --delete + --rename extension — mechanizes ID-renumber pattern (closes the 081KRW63S0008QG0R000Y109W0→081KRW63S0008QG0R0020DGSK1 inline-gh-api workaround) (Otto-CLI 2026-05-18)"
 tier: tooling
 effort: S
 created: 2026-05-18
@@ -18,7 +17,7 @@ type: tooling
 
 ## Why
 
-During the 2026-05-18 Mika+Ani+Riven substrate cascade (8 PRs, 30+ rows), a B-0633 duplicate-ID was detected by CI (Mika permanent-coliseum row collided with an existing on-main aggregate-tier-counter row). Renumber to B-0649 required a delete+add+modify multi-file commit. `rest-push.ts` only supported add/modify, so the renumber needed an inline `gh api git/blobs|git/trees|git/commits|git/refs` sequence (~50 lines of bash) to land cleanly.
+During the 2026-05-18 Mika+Ani+Riven substrate cascade (8 PRs, 30+ rows), a 081KRW63S0008QG0R000Y109W0 duplicate-ID was detected by CI (Mika permanent-coliseum row collided with an existing on-main aggregate-tier-counter row). Renumber to 081KRW63S0008QG0R0020DGSK1 required a delete+add+modify multi-file commit. `rest-push.ts` only supported add/modify, so the renumber needed an inline `gh api git/blobs|git/trees|git/commits|git/refs` sequence (~50 lines of bash) to land cleanly.
 
 This row mechanizes that pattern into the existing tool so future renumbers / deletes / renames are a one-liner.
 
@@ -43,7 +42,7 @@ All three compose: a single REST commit can have any combination of adds + delet
 
 ## Worked example (the ID-renumber pattern this closes)
 
-Before this extension, B-0633→B-0649 renumber required inline gh api:
+Before this extension, 081KRW63S0008QG0R000Y109W0→081KRW63S0008QG0R0020DGSK1 renumber required inline gh api:
 
 ```bash
 # OLD WORKFLOW (now obsolete): ~50 lines of inline gh api calls
@@ -59,18 +58,18 @@ After this extension:
 ```bash
 # NEW WORKFLOW: single rest-push invocation
 bun tools/github/rest-push.ts --update \
-  --rename docs/backlog/P3/B-0633-old-name.md:docs/backlog/P3/B-0649-new-name.md \
-  --file docs/backlog/P1/B-0635-cross-ref-updated.md \
-  --file docs/backlog/P1/B-0636-cross-ref-updated.md \
-  --file docs/backlog/P3/B-0632-cross-ref-updated.md \
+  --rename docs/backlog/P3/081KRW63S0008QG0R000Y109W0-old-name.md:docs/backlog/P3/081KRW63S0008QG0R0020DGSK1-new-name.md \
+  --file docs/backlog/P1/081KRW63S0008QG0R002KC5DSR-cross-ref-updated.md \
+  --file docs/backlog/P1/081KRW63S0008QG0R00088FYE9-cross-ref-updated.md \
+  --file docs/backlog/P3/081KRW63S0008QG0R002Z2GR1X-cross-ref-updated.md \
   --branch otto-cli/b0633-renumber-2026-05-18 \
   --message "rename(b0633→b0649): duplicate-ID resolution + cross-ref updates"
 ```
 
 ## Composes with
 
-- [B-0615](B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) — push-hang failure mode (the reason rest-push.ts exists)
-- [B-0648](../P1/B-0648-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) — cross-substrate triangulation (B-0633 conflict was caught by Codex thread review on the renumber PR; example of triangulation operating in the small)
+- [081KRW63S0008QG0R000EAZ9K2](081KRW63S0008QG0R000EAZ9K2-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md) — push-hang failure mode (the reason rest-push.ts exists)
+- [081KRW63S0008QG0R0025E4PH6](../P1/081KRW63S0008QG0R0025E4PH6-cross-substrate-triangulation-first-class-skill-hat-aaron-2026-05-18.md) — cross-substrate triangulation (081KRW63S0008QG0R000Y109W0 conflict was caught by Codex thread review on the renumber PR; example of triangulation operating in the small)
 - `tools/github/rest-push.ts` — the tool extended
 - `tools/github/rest-ship.ts` — one-shot push+PR+arm helper (could compose with --delete/--rename in future)
 

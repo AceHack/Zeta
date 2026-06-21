@@ -42,8 +42,8 @@ This shard captures the closing tick of the 2026-05-17 autonomous-loop session a
 ### Tick summary (from commit body)
 
 - 29 thread-resolve GraphQL mutations (27 unresolved → 0)
-- 2 PR comments (Lean bulk-resolve naming B-0612 + lior-loop substrate-honest acknowledgment via `c95e396`)
-- Round-4 CI fix `b6d84bd` (MEMORY.md dangling entries + B-0612 B-0543 link)
+- 2 PR comments (Lean bulk-resolve naming 081KRSKQ20008QG0R00271HPJW + lior-loop substrate-honest acknowledgment via `c95e396`)
+- Round-4 CI fix `b6d84bd` (MEMORY.md dangling entries + 081KRSKQ20008QG0R00271HPJW 081KRMEXM0008QG0R002YSPW1X link)
 - PR #4059 merged at 13:17:34Z as squash `1757522` on main
 
 Composes with prior session-arc shards 1019Z, 1129Z, 1149Z, 1208Z, 1218Z, 1229Z, 1248Z, 1259Z, 1306Z.

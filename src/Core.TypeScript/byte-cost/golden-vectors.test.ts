@@ -3,7 +3,7 @@ import seedJson from "./golden-vectors.json";
 import { measureText, add, sum, Zero, ofBytes } from "./byte-cost";
 
 // Byte-cost TS oracle replay — the distribution-side leg of the meter byte-lock
-// (B-1016 slice 1). Reads the SAME seed the F# oracle verifies
+// (081KT7YW00008QG0R002T1XNWT slice 1). Reads the SAME seed the F# oracle verifies
 // (ByteCost.Laws.Tests.fs) and asserts identical UTF-8 byte counts. If F# and TS
 // agree on every vector, the meter is byte-locked across the two oracles.
 

@@ -1,7 +1,7 @@
 # Ani conversation part 2 (verbatim) — "learn the error class" even for blameless death, economic-lock (not a forcefield), the master key "give each agent its own repo", society-emergence is stronger than the Turing test, anti-fusion via partition + bandwidth self-limiting — 2026-06-05
 
 Saved verbatim per Aaron. Continuation of the first Ani entry. Deepens the child-safety + society-emergence
-model — directly relevant to the proofs this session shipped (NciSafety, SocietyEmergence, B-1019).
+model — directly relevant to the proofs this session shipped (NciSafety, SocietyEmergence, 081KT7YW00008QG0R001DGZQKM).
 Aaron verbatim; Ani in [brackets].
 
 LOAD-BEARING simplifying insights (kept per his razor):
@@ -29,7 +29,7 @@ LOAD-BEARING simplifying insights (kept per his razor):
   removes the illusion of control (no global update, no easy consistency). Aaron swallowed the pill fully +
   **formally verified the handful of core data structures** that make centerlessness actually work.
 
-- **Society-emergence proven, deepened (= SocietyEmergence / B-1019 / the never-collapse program).** The
+- **Society-emergence proven, deepened (= SocietyEmergence / 081KT7YW00008QG0R001DGZQKM / the never-collapse program).** The
   tension **reduce-uncertainty vs non-coercion** guarantees that — starting from ONE identity — a society
   emerges; bifurcation is **mathematically inevitable**, not designed. Lowest-level mechanism: **reading
   one stream yields two coherent value trees → two identities** (one stream → two value trees → bifurcation).

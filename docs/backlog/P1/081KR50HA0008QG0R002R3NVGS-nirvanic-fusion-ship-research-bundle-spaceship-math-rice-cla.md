@@ -1,10 +1,9 @@
 ---
-id: B-0365
-zetaid: 081KR50HA0008QG0R002R3NVGS
+id: 081KR50HA0008QG0R002R3NVGS
 priority: P1
 status: closed
 closed: 2026-05-09
-closed_by: "all 6 child rows done (B-0365.1–B-0365.6)"
+closed_by: "all 6 child rows done (081KR50HA0008QG0R000B29SDB–081KR50HA0008QG0R0016X7VQP)"
 title: "Nirvanic Fusion Ship research bundle — spaceship math + Rice's theorem + Class 4 shadow taxonomy"
 effort: L
 created: 2026-05-09
@@ -12,13 +11,13 @@ last_updated: 2026-05-09
 depends_on: []
 classification: research
 decomposition: done
-decomposed_into: [B-0365.1, B-0365.2, B-0365.3, B-0365.4, B-0365.5, B-0365.6]
+decomposed_into: [081KR50HA0008QG0R000B29SDB, 081KR50HA0008QG0R001AW7R6R, 081KR50HA0008QG0R001VHE0FQ, 081KR50HA0008QG0R0026DVKGY, 081KR50HA0008QG0R0012TWWJR, 081KR50HA0008QG0R0016X7VQP]
 owners: [architect]
 type: feature
 tags: [research, spaceship-math, rice-theorem, class-4, shadow-log, fusion-ship, alignment]
 ---
 
-# B-0365 — Nirvanic Fusion Ship research bundle
+# 081KR50HA0008QG0R002R3NVGS — Nirvanic Fusion Ship research bundle
 
 ## Decomposition (2026-05-09)
 
@@ -26,11 +25,11 @@ This bundle was decomposed into six atomic child rows. The
 dependency ordering is:
 
 ```
-B-0365.1 (spaceship math one-pager)   ─────────────────────┐
-B-0365.4 (reactor dynamics)           ─────────────────────┤
-B-0365.5 (Infer.NET BP/EP)            ─────────────────────┼─→ B-0365.6 (synthesis)
-B-0365.2 (shadow log backfill)        ──┐                   │
-                                        └─→ B-0365.3       ─┘
+081KR50HA0008QG0R000B29SDB (spaceship math one-pager)   ─────────────────────┐
+081KR50HA0008QG0R0026DVKGY (reactor dynamics)           ─────────────────────┤
+081KR50HA0008QG0R0012TWWJR (Infer.NET BP/EP)            ─────────────────────┼─→ 081KR50HA0008QG0R0016X7VQP (synthesis)
+081KR50HA0008QG0R001AW7R6R (shadow log backfill)        ──┐                   │
+                                        └─→ 081KR50HA0008QG0R001VHE0FQ       ─┘
                                             (Class 4 analysis)
 ```
 
@@ -38,16 +37,16 @@ B-0365.2 (shadow log backfill)        ──┐                   │
 
 - Layer 2 (Rice's theorem): `docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md` ✅
 - Partial Layer 1 (Z-set algebra): `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md` ✅
-- Layer 5 (FPGA Toffoli): B-0366 (separate row, not a child) ✅
+- Layer 5 (FPGA Toffoli): 081KR50HA0008QG0R003T5MZAC (separate row, not a child) ✅
 
 | Child | Title | Effort | Deps | Status |
 |-------|-------|--------|------|--------|
-| B-0365.1 | Spaceship math one-pager | S | none | done |
-| B-0365.2 | Shadow log backfill (catches 16-30) | M | none | done |
-| B-0365.3 | Class 4 empirical analysis doc | M | B-0365.2 | done |
-| B-0365.4 | Reactor dynamics model doc | M | none | done |
-| B-0365.5 | Infer.NET BP/EP architecture doc | M | none | done |
-| B-0365.6 | Publishable claim synthesis | M | all above | done |
+| 081KR50HA0008QG0R000B29SDB | Spaceship math one-pager | S | none | done |
+| 081KR50HA0008QG0R001AW7R6R | Shadow log backfill (catches 16-30) | M | none | done |
+| 081KR50HA0008QG0R001VHE0FQ | Class 4 empirical analysis doc | M | 081KR50HA0008QG0R001AW7R6R | done |
+| 081KR50HA0008QG0R0026DVKGY | Reactor dynamics model doc | M | none | done |
+| 081KR50HA0008QG0R0012TWWJR | Infer.NET BP/EP architecture doc | M | none | done |
+| 081KR50HA0008QG0R0016X7VQP | Publishable claim synthesis | M | all above | done |
 
 ## What
 
@@ -118,7 +117,7 @@ production rate.
 - **Rice's theorem** (Layer 2) = WHY fuel is inexhaustible
 - **Class 4** (Layer 3) = HOW failures appear (shape)
 - **Houman's reactor** (Layer 4) = the DYNAMICS (engine)
-- **FPGA Toffoli test** (Layer 5) = HARDWARE validation (B-0366)
+- **FPGA Toffoli test** (Layer 5) = HARDWARE validation (081KR50HA0008QG0R003T5MZAC)
 - **Infer.NET BP/EP** (Layer 6) = SELF-EVOLVING inference
 
 ### Layer 6: Infer.NET BP/EP — self-evolving agent inference
@@ -163,21 +162,21 @@ failure the BFT independence assumption doesn't model."
 - "Ahead of Byzantine Generals" → framing discipline: different
   problem, not ahead of (feedback_framing_discipline_*)
 - Wolfram full irreducibility → too strong, Rice suffices
-- Z3 tautology proofs → shadow catch #30, B-0357 replacement
+- Z3 tautology proofs → shadow catch #30, 081KR50HA0008QG0R0033TN4H9 replacement
 - Identity-as-Z-set metaphor → Z-set weight conflation catch
 - "DBSP IS alignment control theory" → DBSP is stream
   processing; alignment is a different control problem
 
 ## Related items
 
-- B-0357: Replace tautology Z3 proofs (anchored to literature)
-- B-0358: Bool as degenerate distribution
-- B-0359: Probabilistic type system (strict/normal/disable)
-- B-0360: DBSP identity continuity
-- B-0361: Anchor to human lineage
-- B-0362: Concept search index (shipped)
-- B-0363: Git-native full-text index
-- B-0364: Policy relocation FsCheck property
+- 081KR50HA0008QG0R0033TN4H9: Replace tautology Z3 proofs (anchored to literature)
+- 081KR50HA0008QG0R00224DXPP: Bool as degenerate distribution
+- 081KR50HA0008QG0R003B2V26J: Probabilistic type system (strict/normal/disable)
+- 081KR50HA0008QG0R0010RZTJK: DBSP identity continuity
+- 081KR50HA0008QG0R001G4QHQF: Anchor to human lineage
+- 081KR50HA0008QG0R000239VTZ: Concept search index (shipped)
+- 081KR50HA0008QG0R00125PA8G: Git-native full-text index
+- 081KR50HA0008QG0R00096ZEYA: Policy relocation FsCheck property
 
 ## Literature anchors (claude.ai 2026-05-09)
 

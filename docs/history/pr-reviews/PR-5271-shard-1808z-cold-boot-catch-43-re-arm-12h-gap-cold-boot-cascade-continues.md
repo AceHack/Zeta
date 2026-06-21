@@ -110,7 +110,7 @@ shard(1808Z): cold-boot, catch-43 re-arm, 12h-gap continues cold-boot…
 
 …-cascade pattern
 
-12h since 0608Z; 10+ PRs landed in window (B-0823 nixpkgs fix + B-0824 generator/
+12h since 0608Z; 10+ PRs landed in window (081KSGS9H0008QG0R003SWZF9J nixpkgs fix + 081KSGS9H0008QG0R0031PBNGA generator/
 time-source cascade + cluster-update iter-6 + dep-pin-search-first + fighting-past-
 self-recurrence rules); fresh session cold-boots with sentinel missing (catch-43);
 dotgit clean (0 stuck procs); GraphQL Normal; named bounded wait on peer Lior
@@ -135,7 +135,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 shard(1808Z): fix MD032 — replace leading-`+` with comma in prose line
 
 markdownlint MD032 treats `+` at line start as a list marker; the prose was
-"— B-0823 ... \n+ B-0824 ..." which violated blanks-around-lists. Replace
+"— 081KSGS9H0008QG0R003SWZF9J ... \n+ 081KSGS9H0008QG0R0031PBNGA ..." which violated blanks-around-lists. Replace
 leading `+` with `,` to keep prose flat.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

@@ -65,11 +65,11 @@ from the poll-the-gate rule. Named by a peer-AI review session
 2026-04-30 ("consider making the 8-step checklist executable"),
 reinforced by a second peer-review pass that named the
 deferred-skill anti-pattern (a noted "Backlog candidate" without
-a B-NNNN row is gap-by-omission), filed as B-0117.
+a B-NNNN row is gap-by-omission), filed as 081KQDTYV0008QG0R0015BFCBH.
 
 Per the Otto-279 history-surface carve-out, the per-reviewer named
 attribution detail lives on the history-surface preservation files
-(under `docs/research/`) and on the backlog row B-0117 itself. This
+(under `docs/research/`) and on the backlog row 081KQDTYV0008QG0R0015BFCBH itself. This
 doc lives on `tools/**` and uses role-refs accordingly.
 
 ## When to run
@@ -90,7 +90,7 @@ doc lives on `tools/**` and uses role-refs accordingly.
 - `CLAUDE.md` fast-path — top-of-file pointer to CURRENT-*.md
   files; this tool surfaces step 7 from the same fast-path
   discipline.
-- B-0117 (this row) closes the gap the peer-review pass named.
+- 081KQDTYV0008QG0R0015BFCBH (this row) closes the gap the peer-review pass named.
 
 ## Implementation notes
 
@@ -143,7 +143,7 @@ doc lives on `tools/**` and uses role-refs accordingly.
     closed, Otto's CURRENT-otto.md surfacing will be symmetric
     with the other five entities.
 
-## Acceptance criteria from B-0117
+## Acceptance criteria from 081KQDTYV0008QG0R0015BFCBH
 
 - [x] `bun tools/cold-start-check.ts` runs and prints all 8 steps with current values
 - [x] Output is terse (single screen, ~30-50 lines)

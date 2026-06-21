@@ -1,6 +1,6 @@
 module Zeta.Tests.BenTests
 
-// B-1039 slice 1: the exact meters + THE PREDICTION GRADER — dogfooded through ITestLoop (the
+// 081KTSZN10008QG0R001F0B5A6 slice 1: the exact meters + THE PREDICTION GRADER — dogfooded through ITestLoop (the
 // double-run check proves every meter deterministic for free; ben output never enters mea
 // equality because here ben output IS the measurement, exactly and replayably).
 
@@ -27,7 +27,7 @@ let ``BEN METER (chip8 ticks): exact, replayable, fault-aware — through the Te
                 else Ok()))
 
 [<Fact>]
-let ``THE GRADER confirms treemap tile growth at a 16x span — a grader-PIPELINE check on exact counts (cardinality, NOT the time column: the math team's tautology note stands in B-1039)`` () =
+let ``THE GRADER confirms treemap tile growth at a 16x span — a grader-PIPELINE check on exact counts (cardinality, NOT the time column: the math team's tautology note stands in 081KTSZN10008QG0R001F0B5A6)`` () =
     let cost n =
         LayoutEngine.treemap 0 0 60000 10 true [ for i in 1 .. n -> string i, 1 ]
         |> List.length |> int64
@@ -97,7 +97,7 @@ let ``BOTH AXES: time and space are independent budgets (hard-dft is space-cheap
     Assert.Contains(("spectral.hard-dft", "dft"), spaceCheap)
     Assert.False(Set.contains ("spectral.hard-dft", "dft") timeCheap)
 
-// ── B-1035 BUDGET METERING: the room refuses over-budget strategies, and the refusal re-plans ──
+// ── 081KTSZN10008QG0R002J0GE0Z BUDGET METERING: the room refuses over-budget strategies, and the refusal re-plans ──
 [<Fact>]
 let ``BUDGET REFUSAL: hard-dft is refused at linear time budget AND the refusal names the in-budget probe on the same artifact`` () =
     match ComplexityRegistry.budgetCheck "spectral.hard-dft" "dft" 1 1 with

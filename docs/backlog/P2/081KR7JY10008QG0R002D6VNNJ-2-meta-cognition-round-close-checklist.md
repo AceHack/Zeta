@@ -1,9 +1,8 @@
 ---
-id: B-0037.2
-zetaid: 081KR7JY10008QG0R002D6VNNJ
+id: 081KR7JY10008QG0R002D6VNNJ
 priority: P2
 status: closed
-title: "B-0037.2 — Per-round meta-check checklist in ROUND-HISTORY.md template"
+title: "081KR7JY10008QG0R002D6VNNJ — Per-round meta-check checklist in ROUND-HISTORY.md template"
 created: 2026-05-10
 last_updated: 2026-05-10
 depends_on: [081KR7JY10008QG0R0038AFS7T]
@@ -14,9 +13,9 @@ effort: S
 
 ---
 
-# B-0037.2 — Per-round meta-check checklist in ROUND-HISTORY.md template
+# 081KR7JY10008QG0R002D6VNNJ — Per-round meta-check checklist in ROUND-HISTORY.md template
 
-**Slice of:** [B-0037](B-0037-meta-cognition-first-class-factory-discipline.md)
+**Slice of:** [081KQ3HBZ0008QG0R0002RB48Q](081KQ3HBZ0008QG0R0002RB48Q-meta-cognition-first-class-factory-discipline.md)
 
 ## What
 
@@ -27,34 +26,34 @@ audit-disciplines decay because they weren't themselves audited.
 
 ## Why
 
-Depends on B-0037.1 (taxonomy names what the checklist should verify).
-Without B-0037.1's taxonomy doc, the checklist has no cross-reference anchor
+Depends on 081KR7JY10008QG0R0038AFS7T (taxonomy names what the checklist should verify).
+Without 081KR7JY10008QG0R0038AFS7T's taxonomy doc, the checklist has no cross-reference anchor
 and no vocabulary to use for the check items.
 
 ## Acceptance criteria
 
 1. `docs/ROUND-HISTORY.md` round-close template section contains an explicit
-   meta-check step with at least three checkboxes drawn from the B-0037.1
+   meta-check step with at least three checkboxes drawn from the 081KR7JY10008QG0R0038AFS7T
    taxonomy.
 2. At least one checkbox maps to each meta-cognitive order (first, second,
    third) from the taxonomy.
 3. `dotnet build -c Release` unaffected.
-4. PR body cites B-0037.1 as unblocked dependency.
+4. PR body cites 081KR7JY10008QG0R0038AFS7T as unblocked dependency.
 
 ## Out of scope
 
-- Measurables wiring (B-0037.3).
-- Distributed-vs-concentrated ADR (B-0037.4).
+- Measurables wiring (081KR7JY10008QG0R000XPVJ0W).
+- Distributed-vs-concentrated ADR (081KR7JY10008QG0R001J11M38).
 
 ## Resolution
 
 Closed 2026-05-16 via picking up the #2-Ready overlay (the
-`classification: blocked` field was stale because B-0037.1 merged
+`classification: blocked` field was stale because 081KR7JY10008QG0R0038AFS7T merged
 earlier this session via PR #3859).
 
 **Deliverable shipped this PR**:
 
-- `docs/ROUND-HISTORY.md` — appended `## Round-close meta-check template` section with 6 checkboxes drawn from B-0037.1 taxonomy:
+- `docs/ROUND-HISTORY.md` — appended `## Round-close meta-check template` section with 6 checkboxes drawn from 081KR7JY10008QG0R0038AFS7T taxonomy:
   - 2 First-order (overclaim* scan, verify-before-deferring)
   - 2 Second-order (capture-everything, yin-yang pair-audit)
   - 2 Third-order (F1/F2/F3 filters, witnessable-self-directed-evolution)
@@ -64,6 +63,6 @@ earlier this session via PR #3859).
 - ✅ Template section with ≥3 meta-check checkboxes (6 actually)
 - ✅ At least one checkbox per order (2 per order: First/Second/Third)
 - ✅ Pure doc addition — no build impact
-- ✅ Cites B-0037.1 (unblocked dependency)
+- ✅ Cites 081KR7JY10008QG0R0038AFS7T (unblocked dependency)
 
-**Composes with**: sibling B-0037.3 (measurables wiring into ALIGNMENT.md) remains open — also #2-Ready. Future-Otto can pick up; same pattern.
+**Composes with**: sibling 081KR7JY10008QG0R000XPVJ0W (measurables wiring into ALIGNMENT.md) remains open — also #2-Ready. Future-Otto can pick up; same pattern.

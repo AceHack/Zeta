@@ -1,6 +1,5 @@
 ---
-id: B-0308
-zetaid: 081KR2E4K0008QG0R002S3FDXN
+id: 081KR2E4K0008QG0R002S3FDXN
 priority: P0
 status: closed
 title: "Mechanical authorization check — autonomous-loop tick-start integration"
@@ -16,7 +15,7 @@ type: friction-reducer
 tags: [loop-integration, mechanical-check, authorization-source, typescript]
 ---
 
-# B-0308 — Autonomous-loop tick-start integration
+# 081KR2E4K0008QG0R002S3FDXN — Autonomous-loop tick-start integration
 
 ## What
 
@@ -27,13 +26,13 @@ in the chat/console output.
 
 ## Acceptance criteria
 
-1. At every tick start, runs: extractor (B-0306) → resolver
-   (B-0307) → prints operative authorization with timestamp +
+1. At every tick start, runs: extractor (081KR2E4K0008QG0R0007CFSZ7) → resolver
+   (081KR2E4K0008QG0R003CF4YHE) → prints operative authorization with timestamp +
    source + raw text.
 2. Output format matches the two-layer print DX rule: raw
    structured JSON first, then labeled interpretation.
 3. If `operative: null`, prints the never-idle default message
-   from B-0307's resolver output.
+   from 081KR2E4K0008QG0R003CF4YHE's resolver output.
 4. Does NOT gate work — the check surfaces information, it does
    not block or allow tick actions. The agent reads the output
    and applies it; the tool does not enforce.
@@ -51,19 +50,19 @@ in the chat/console output.
   `tools/authorization/` (found extractor + resolver landed);
   searched `tools/loop/` (no existing loop TS tools);
   grep for "check-authorization" across repo (no prior art)
-- [x] Dependency walk: B-0306 extractor at
+- [x] Dependency walk: 081KR2E4K0008QG0R0007CFSZ7 extractor at
   `tools/authorization/pace-extractor.ts` (landed PR #2085);
-  B-0307 resolver at `tools/authorization/resolve-authorization.ts`
+  081KR2E4K0008QG0R003CF4YHE resolver at `tools/authorization/resolve-authorization.ts`
   (landed PR #2091); both verified on `origin/main` at 4c8590fe
-- [x] Reciprocal pointers: B-0309 not yet created (future
-  tick-shard-template integration); B-0160 parent verified
+- [x] Reciprocal pointers: 081KR2E4K0008QG0R0024JZ0CR not yet created (future
+  tick-shard-template integration); 081KQJZR90008QG0R000FTJ1TC parent verified
 
 ## Composes with
 
-- B-0160 (parent umbrella)
-- B-0305 (skill body documents the integration contract)
-- B-0306 (extractor)
-- B-0307 (resolver)
+- 081KQJZR90008QG0R000FTJ1TC (parent umbrella)
+- 081KR2E4K0008QG0R00361ZCDR (skill body documents the integration contract)
+- 081KR2E4K0008QG0R0007CFSZ7 (extractor)
+- 081KR2E4K0008QG0R003CF4YHE (resolver)
 - `docs/AUTONOMOUS-LOOP.md` (tick-start sequence)
 - `memory/feedback_refresh_before_decide_invariant_two_layer_
   print_dx_claudeai_2026_05_01.md`

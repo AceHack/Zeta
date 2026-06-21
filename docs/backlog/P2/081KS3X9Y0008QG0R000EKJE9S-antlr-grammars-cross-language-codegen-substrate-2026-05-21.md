@@ -1,6 +1,5 @@
 ---
-id: B-0685
-zetaid: 081KS3X9Y0008QG0R000EKJE9S
+id: 081KS3X9Y0008QG0R000EKJE9S
 priority: P2
 status: open
 title: ANTLR grammars as cross-language codegen substrate — leverage existing open-source grammars for description-layer-driven multi-language emission
@@ -23,10 +22,10 @@ Aaron 2026-05-21 (closing the Kestrel sharpening trajectory): *"i really want to
 
 Composes with the broader cross-language description-layer vision threaded across the 2026-05-21 Aaron-Kestrel arc:
 
-- **B-0682** — canonical string encoding (Crockford base32) + endianness + bit-numbering spec for ZetaId
-- **B-0683** — tier-deferred causality worked example (publishable; F# Z-set demo)
-- **B-0684** — clock-protocol negotiation stack end-to-end sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
-- **B-0679 / B-0680** — Rust + Python ZetaId peer oracles (multi-language emission targets)
+- **081KS3X9Y0008QG0R000W00V73** — canonical string encoding (Crockford base32) + endianness + bit-numbering spec for ZetaId
+- **081KS3X9Y0008QG0R0006MQXA4** — tier-deferred causality worked example (publishable; F# Z-set demo)
+- **081KS3X9Y0008QG0R003MMEAC7** — clock-protocol negotiation stack end-to-end sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
+- **081KS3X9Y0008QG0R001Z8SBZJ / 081KS3X9Y0008QG0R002WGH8PJ** — Rust + Python ZetaId peer oracles (multi-language emission targets)
 
 ANTLR's key value proposition: **every major language has open-source ANTLR grammars already maintained by other communities**. Leveraging them avoids re-implementing parsers from scratch and gets cross-language code-generation work for ~free relative to building bespoke parsers per language.
 
@@ -48,8 +47,8 @@ Initial bounded slice (do NOT scope-creep this row into the full description lay
 
 Pick ONE concrete use case from existing Zeta substrate where ANTLR-driven cross-language generation would replace hand-maintained code:
 
-- **Option A**: emit ZetaId Pack/Unpack implementations across F# / TS / C# / Rust / Python from a single bit-layout grammar (composes with B-0682)
-- **Option B**: emit DBSP operator stubs from a single algebra grammar (composes with B-0683)
+- **Option A**: emit ZetaId Pack/Unpack implementations across F# / TS / C# / Rust / Python from a single bit-layout grammar (composes with 081KS3X9Y0008QG0R000W00V73)
+- **Option B**: emit DBSP operator stubs from a single algebra grammar (composes with 081KS3X9Y0008QG0R0006MQXA4)
 - **Option C**: emit cross-language SimulationEnvironment + ISimulationEnvironment interface from a single capability grammar
 
 Choose ONE for the PoC; the others wait for follow-up rows.
@@ -95,15 +94,15 @@ Kestrel's earlier warning applies: don't pick this just because the framing is a
 
 Important architectural substrate for the multi-language vision (5+ peer oracles for ZetaId; future descriptions for other types) but doesn't block V1. Phase 1 survey is days of work; Phase 2 PoC is weeks; Phase 3 production codegen is its own follow-up.
 
-Composes with the broader Kestrel-sharpened publishable artifacts cluster — if ANTLR substrate works, the cross-domain synthesis paper (per B-0684 context) has one more concrete technical contribution to point at.
+Composes with the broader Kestrel-sharpened publishable artifacts cluster — if ANTLR substrate works, the cross-domain synthesis paper (per 081KS3X9Y0008QG0R003MMEAC7 context) has one more concrete technical contribution to point at.
 
 ## Composes with
 
-- B-0635 / B-0644 / B-0665 / B-0666 — Agora V6 substrate (the algebra ANTLR would parse over)
-- B-0679 / B-0680 — Rust + Python ZetaId peer oracles (multi-language emission targets)
-- B-0682 — canonical string encoding (grammar candidate for Phase 2 Option A)
-- B-0683 — tier-deferred causality worked example (grammar candidate for Phase 2 Option B)
-- B-0684 — clock-protocol negotiation stack diagram (the description-layer architecture this row implements substrate for)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV — Agora V6 substrate (the algebra ANTLR would parse over)
+- 081KS3X9Y0008QG0R001Z8SBZJ / 081KS3X9Y0008QG0R002WGH8PJ — Rust + Python ZetaId peer oracles (multi-language emission targets)
+- 081KS3X9Y0008QG0R000W00V73 — canonical string encoding (grammar candidate for Phase 2 Option A)
+- 081KS3X9Y0008QG0R0006MQXA4 — tier-deferred causality worked example (grammar candidate for Phase 2 Option B)
+- 081KS3X9Y0008QG0R003MMEAC7 — clock-protocol negotiation stack diagram (the description-layer architecture this row implements substrate for)
 - `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md` — eleventh-section ANTLR origin
 
 ## Origin

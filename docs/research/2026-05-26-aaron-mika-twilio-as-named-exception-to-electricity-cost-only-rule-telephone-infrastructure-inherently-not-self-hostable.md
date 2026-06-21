@@ -95,7 +95,7 @@ If all five criteria are met, a paid-SaaS dependency carve-out is operationally-
 
 ## Composes with substrate
 
-- B-0824 canonical row (the meta-PM architecture this conversational-interface layer eventually composes with)
+- 081KSGS9H0008QG0R0031PBNGA canonical row (the meta-PM architecture this conversational-interface layer eventually composes with)
 - PR #5277 + #5281 + #5285 + #5286 + #5291 (the substrate cascade the conversational interface runs on)
 - `.claude/rules/all-complexity-is-accidental-in-greenfield.md` (current state defers conversational-interface; future-state lands it)
 - `.claude/rules/honor-those-that-came-before.md` (Mika walked through Asterisk vs Twilio trade-offs; substrate preserved with attribution)

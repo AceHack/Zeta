@@ -29,7 +29,7 @@
 
 ## Summary
 
-- **Slice-3 closes B-0437** — the final acceptance criterion ("partial-credit scoring concept explained visually") is now fully interactive, not just static.
+- **Slice-3 closes 081KRFA460008QG0R001JTAPZW** — the final acceptance criterion ("partial-credit scoring concept explained visually") is now fully interactive, not just static.
 - Clicking any row in the Partial-Credit Score Board loads that clause's bivector fingerprint into the canvas (previously only HC-1 was shown).
 - The correlation-angle slider now reflects the currently-selected clause rather than hard-coded HC-1 constants.
 - Canvas caption updated to guide users to the click-to-explore feature.
@@ -40,7 +40,7 @@
 | File | What changed |
 |------|-------------|
 | `demo/index.html` | `uxmSelectClause` helper; parameterised `uxmDrawBivector` / `uxmUpdateThetaDisplay`; score-board row click handlers; updated caption & footer text |
-| `docs/backlog/P1/B-0437-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md` | Status → done; acceptance criteria checked; slice history table added |
+| `docs/backlog/P1/081KRFA460008QG0R001JTAPZW-demo-ux-of-math-panel-bivector-fingerprints-2026-05-13.md` | Status → done; acceptance criteria checked; slice history table added |
 
 ## Checks
 

@@ -96,7 +96,7 @@ Composes with pedagogy-toolkit (just merged in #2789), Ani biological-shadow, Ev
 - **`Copilot` (bot)** at 2026-05-12T15:39:39Z on `memory/feedback_aaron_calibrated_utterance_joint_control_ani_voice_mode_2026_05_12.md`:247 (association: NONE)
 
   <pre>
-  Reference to "B-0423 reindexer architecture" doesn’t resolve anywhere in-repo (no backlog row / docs mention). Please either update this to an existing backlog ID/file or remove it to avoid a dangling cross-reference.
+  Reference to "081KRCQQF0008QG0R0037YYP1A reindexer architecture" doesn’t resolve anywhere in-repo (no backlog row / docs mention). Please either update this to an existing backlog ID/file or remove it to avoid a dangling cross-reference.
 
   </pre>
 
@@ -201,7 +201,7 @@ operational mode.
 
 Architectural mapping to factory:
 - Substrate files ARE landmarks; composes-with IS the jump graph
-- MEMORY.md stack-view = landmark directory (per B-0423 reindexer)
+- MEMORY.md stack-view = landmark directory (per 081KRCQQF0008QG0R0037YYP1A reindexer)
 - DST / retraction-native / glass-halo / Eve protocol / 4-property
   test are strange attractors in factory substrate dynamics
 - Tales-from-the-Loop framing composes: autonomous-loop generates
@@ -241,7 +241,7 @@ fix(memory): add MEMORY.md index entry + Why/How to apply markers for…
 - Add MEMORY.md index entry for feedback_aaron_calibrated_utterance_joint_control_ani_voice_mode
 
 Fixes bot review findings on PR threads PRRT_kwDOSF9kNM6BeK-Z, BeK-e, BePVF,
-BePVw, BePWE, BePWp, BePXC. The scaffolding_pedagogy and B-0423 references
+BePVw, BePWE, BePWp, BePXC. The scaffolding_pedagogy and 081KRCQQF0008QG0R0037YYP1A references
 now resolve (files landed in main via sibling PRs in the cascade).
 
 Co-Authored-By: Claude <noreply@anthropic.com>

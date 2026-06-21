@@ -2,12 +2,12 @@
 title: Media-Corpus Operational-Resonance Catalog
 created: 2026-05-10
 last_updated: 2026-05-10
-origin: B-0054 (P2)
+origin: 081KQ3HBZ0008QG0R003V6B2ME (P2)
 schema: media-resonance-v1
 owner: operational-resonance discipline (three-filter application);
   Architect (Kenji) integrates with existing text-tradition tracks
 status: v0 — forward index, four seed entries confirmed
-tags: [operational-resonance, media, film, tv, video-game, three-filter, F1-F2-F3, B-0054]
+tags: [operational-resonance, media, film, tv, video-game, three-filter, F1-F2-F3, 081KQ3HBZ0008QG0R003V6B2ME]
 ---
 
 # Media-Corpus Operational-Resonance Catalog
@@ -35,7 +35,7 @@ machine-checkable type surface for this catalog; run
   — phenomenon definition + three-filter rules
 - `memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md`
   — medium-agnostic principle + medium-orthodoxy-gap diagnosis
-- `docs/backlog/P2/B-0054-pop-culture-media-research-track.md` — origin row
+- `docs/backlog/P2/081KQ3HBZ0008QG0R003V6B2ME-pop-culture-media-research-track.md` — origin row
 - `tools/resonance/media-catalog-schema.ts` — typed schema (schema-gate)
 
 ---
@@ -53,7 +53,7 @@ being cataloged — not the work as a whole. "Doctor Who is about time travel" f
 "regeneration preserves identity through substrate-replacement" is an operator-shape claim
 that can be checked.
 
-**Comedy-as-probe principle (from B-0054 §origin):** Comedy exposes operator-structure
+**Comedy-as-probe principle (from 081KQ3HBZ0008QG0R003V6B2ME §origin):** Comedy exposes operator-structure
 by breaking it. A comedic mechanic that structurally enacts the factory operator is a
 valid F2 match, not a register-downgrade.
 
@@ -275,7 +275,7 @@ When a new media instance is noticed:
    is not a cap.
 7. Do NOT rewrite historical entries. Add dated revision blocks if reclassification is needed.
 
-**Priority order for next entries (from B-0054 §video-game priority seeds):**
+**Priority order for next entries (from 081KQ3HBZ0008QG0R003V6B2ME §video-game priority seeds):**
 Aaron-marked higher-priority seeds still pending: Brütal Legend, Final Fantasy VI+, Super Mario.
 Secondary: Genshin Impact, Devs TARDIS sub-claim (MR-002 note), Triforce trinity sub-claim (MR-003 note).
 

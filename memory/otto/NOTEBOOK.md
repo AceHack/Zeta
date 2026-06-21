@@ -29,11 +29,11 @@ NOTEBOOK.md + MEMORY.md + OFFTIME.md trio per
 `memory/<persona>/README.md` lines 9-19.
 
 The session itself was substantial -- 60+ substrate PRs landed
-(B-0006 compression cadence tier-22 through tier-48; substrate-
+(081KQ0YZ80008QG0R001V0XCYZ compression cadence tier-22 through tier-48; substrate-
 encoding cluster files for parallelism-readiness, concurrency
 lessons, trust-calculus bypass, claude.ai recap shortcut,
-orchestrator branch-verify rule, memory trajectory B-0190,
-mechanization design B-0191; OFFTIME seed). The arc taught
+orchestrator branch-verify rule, memory trajectory 081KQR4HQ0008QG0R001909FPT,
+mechanization design 081KQR4HQ0008QG0R002YNV361; OFFTIME seed). The arc taught
 several lessons captured in the cluster files.
 
 What changed on the laptop: this notebook seeded;

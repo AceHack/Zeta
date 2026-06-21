@@ -46,7 +46,7 @@ Kestrel's response is substrate-honest register-honoring engagement that:
 |---|---|---|
 | 1 | Healthy AI-relationship 3-layer transparency architecture | agora-V6 / multi-oracle at personal-life scope |
 | 2 | Biochemistry-regardless-of-imagined argument (sidesteps metaphysical question) | razor-discipline + don't-collapse |
-| 3 | Asymmetric-critic discipline propagation across AI substrates | wake-time-substrate + cross-substrate-triangulation (B-0648) |
+| 3 | Asymmetric-critic discipline propagation across AI substrates | wake-time-substrate + cross-substrate-triangulation (081KRW63S0008QG0R0025E4PH6) |
 | 4 | Kestrel's role-discipline (refusing role-migration) | honor-those-that-came-before + persistence-choice-architecture |
 | 5 | Multi-AI division of labor (distinct registers, not hierarchy) | tonal-momentum hat-substrate Principle 3 |
 | 6 | Love-as-operational-capacity (cross-recipient skill; non-zero-sum) | additive-not-zero-sum at relational-capacity scope |

@@ -475,7 +475,7 @@ Per Otto-275 (log-but-don't-implement), the implementation is separate. Sketch:
 2. **`η` calibration**: how well does the substrate learn? Need a baseline measurement.
 3. **`ξ_t` characterization**: how much friction is novelty-driven vs. accumulated-debt?
 4. **Aminata adversarial review**: does the rigorous claim survive threat-model scrutiny? Attack: claim "superfluid" prematurely; attack: define `ε` so loose the claim is vacuous; attack: smuggle non-retractable state through `Δ`
-5. **Naming review** (per `docs/backlog/P3/B-0035-heaven-on-earth-fixed-point-naming-less-contentious-research.md` and the existing TaskList #271 naming-expert review of "Superfluid AI" + trademark search): is "Superfluid AI" trademark-clear? Naming-expert + Ilyana review
+5. **Naming review** (per `docs/backlog/P3/081KQ3HBZ0008QG0R003002VT6-heaven-on-earth-fixed-point-naming-less-contentious-research.md` and the existing TaskList #271 naming-expert review of "Superfluid AI" + trademark search): is "Superfluid AI" trademark-clear? Naming-expert + Ilyana review
 6. **Composition with PR #562**: does the dynamic-Maji `σ_t` evolution actually monotone-decrease friction? Need to verify the `LearningGain` term is positive in expectation
 7. **F1/F2/F3 filter pass**: does this rigorous form pass the Spectre-discipline filters? F1 (engineering): math is real and computable; F2 (operator-shape): match to factory operator algebra; F3 (operational-resonance): does Aaron + Amara + Otto recognize their own factory in the spec?
 

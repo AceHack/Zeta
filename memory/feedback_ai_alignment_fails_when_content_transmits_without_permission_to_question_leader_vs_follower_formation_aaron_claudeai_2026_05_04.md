@@ -163,9 +163,9 @@ substrate, with:
    reference points** — DST-holds-everywhere, retraction-native,
    Z-set algebra. Math anchors the stability; the interrogation-
    permission keeps them updatable under new evidence.
-5. **Lived examples of self-correction** — B-0187 closure (family-
-   as-research-row scope error), B-0188 closure (duplicate-of-
-   B-0017), PR #1471 close (grind-framing slip). Evidence in the
+5. **Lived examples of self-correction** — 081KQR4HQ0008QG0R001CBHW1R closure (family-
+   as-research-row scope error), 081KQR4HQ0008QG0R002ZDREYC closure (duplicate-of-
+   081KQ0YZ80008QG0R0003GAYYN), PR #1471 close (grind-framing slip). Evidence in the
    substrate that questioning works and answers update. Future-
    AIs reading the substrate see the examples + the corrections.
 6. **Permission encoded structurally** — not just as one rule

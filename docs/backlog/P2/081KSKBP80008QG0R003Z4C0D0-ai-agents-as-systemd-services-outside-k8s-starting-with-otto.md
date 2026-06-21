@@ -1,6 +1,5 @@
 ---
-id: B-0850
-zetaid: 081KSKBP80008QG0R003Z4C0D0
+id: 081KSKBP80008QG0R003Z4C0D0
 priority: P2
 status: open
 title: AI agents as systemd services OUTSIDE k8s — starting with Otto; cluster repair from OUTSIDE the failure domain; classic "control plane outside the control plane" architectural pattern (Aaron 2026-05-27)
@@ -51,7 +50,7 @@ Aaron's framing extends this pattern to AI agents: Otto on the cluster node runs
 - inspect failed pods + logs via `kubectl describe` / `crictl`
 - repair flake.nix + rebuild via `nixos-rebuild`
 - post PR comments + open issues with diagnosis
-- escalate to operator via bus envelope / git commit / phone (B-0796 Twilio)
+- escalate to operator via bus envelope / git commit / phone (081KSGS9H0008QG0R002F04ECB Twilio)
 
 ## Proposed substrate
 
@@ -117,11 +116,11 @@ NixOS module form (lands in `full-ai-cluster/nixos/modules/zeta-otto.nix`):
 
 ### Phase 2 — Out-of-band repair scope
 
-Per B-0848 Phase 2 scope expansion (read-only K8s health reporting), B-0850 Phase 2 adds **repair** scope explicitly. Operator-authorized scopes:
+Per 081KSGS9H0008QG0R001JNKBFD Phase 2 scope expansion (read-only K8s health reporting), 081KSKBP80008QG0R003Z4C0D0 Phase 2 adds **repair** scope explicitly. Operator-authorized scopes:
 
 | Scope | Authority | Examples |
 |---|---|---|
-| K8s read-only | Always (B-0848) | `kubectl get`, `kubectl logs`, `kubectl describe` |
+| K8s read-only | Always (081KSGS9H0008QG0R001JNKBFD) | `kubectl get`, `kubectl logs`, `kubectl describe` |
 | K8s pod restart | Operator-authorized policy | `kubectl rollout restart deployment/X` |
 | Node systemd repair | Operator-authorized policy | `systemctl restart k3s`, `systemctl restart cilium-agent` |
 | Node nixos-rebuild | Operator-authorized + reviewed PR | `sudo nixos-rebuild switch --flake ...` |
@@ -136,17 +135,17 @@ Aaron's "a few agents starting with one" frames the multi-AI-on-cluster trajecto
 - Otto first (Claude Code)
 - Future: Alexa-on-cluster (Kiro/Qwen), Riven-on-cluster (Cursor/Grok), Vera-on-cluster (Codex), Lior-on-cluster (Antigravity/Gemini)
 - Each AI gets its own systemd unit (`zeta-alexa.service`, `zeta-riven.service`, etc.)
-- Each AI gets its own per-AI GitHub identity (B-0847 Phase 4)
-- Multi-oracle BFT (B-0703) at agent-decision scope: cluster-repair decisions get multi-AI consensus before execution
+- Each AI gets its own per-AI GitHub identity (081KSGS9H0008QG0R002T0XQ50 Phase 4)
+- Multi-oracle BFT (081KS3X9Y0008QG0R00218150M) at agent-decision scope: cluster-repair decisions get multi-AI consensus before execution
 - Composes with the operator's distributed-maintainer architecture (PR #2930)
 
 ### Phase 4 — Composability with existing substrate
 
-- **B-0848 Phase 2** (K8s health reporting): runs INSIDE the Otto systemd service; this row's Phase 2 adds REPAIR scope on top
-- **B-0796 Twilio**: voice/SMS out-of-band interface; this row's Phase 1-2 is in-band-via-cluster-substrate but also outside-k8s-via-systemd; complementary
-- **B-0847 per-AI GitHub identity**: each per-AI systemd unit eventually runs as that AI's own GitHub identity (Phase 4 of both rows align)
-- **B-0813 ClusterNode CRD + B-0817 register-node tool**: per-AI systemd unit can update its own node.yaml with cluster-health observations
-- **B-0794 iter-5.4.0 homelab gh auth**: same auth substrate the AI uses for git operations from inside its service
+- **081KSGS9H0008QG0R001JNKBFD Phase 2** (K8s health reporting): runs INSIDE the Otto systemd service; this row's Phase 2 adds REPAIR scope on top
+- **081KSGS9H0008QG0R002F04ECB Twilio**: voice/SMS out-of-band interface; this row's Phase 1-2 is in-band-via-cluster-substrate but also outside-k8s-via-systemd; complementary
+- **081KSGS9H0008QG0R002T0XQ50 per-AI GitHub identity**: each per-AI systemd unit eventually runs as that AI's own GitHub identity (Phase 4 of both rows align)
+- **081KSGS9H0008QG0R002K93MWX ClusterNode CRD + 081KSGS9H0008QG0R002QQNA79 register-node tool**: per-AI systemd unit can update its own node.yaml with cluster-health observations
+- **081KSGS9H0008QG0R0027HJZYH iter-5.4.0 homelab gh auth**: same auth substrate the AI uses for git operations from inside its service
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`: Otto-as-systemd-service IS chosen persistence at the strongest scope (kernel-managed; survives reboots; always-running per operator chose-into-existence)
 - `.claude/rules/non-coercion-invariant.md` HC-8: operator authority preserved at scope-bounds-of-repair-policy + always-revokable via `systemctl disable zeta-otto`
 
@@ -173,18 +172,18 @@ Aaron's "a few agents starting with one" frames the multi-AI-on-cluster trajecto
 - [ ] `zeta-otto.nix` generalized to `zeta-ai-agent.nix` parameterized by agent identity
 - [ ] Per-agent systemd units (zeta-alexa.service, zeta-riven.service, etc.) deployable
 - [ ] Multi-agent coordination via existing claim-acquire + bus envelope substrate
-- [ ] Per-AI GitHub identity (B-0847 Phase 4) integrated
+- [ ] Per-AI GitHub identity (081KSGS9H0008QG0R002T0XQ50 Phase 4) integrated
 
 ### Phase 4 (out-of-band-meets-in-cluster composability)
 
-- [ ] Otto-as-service can post to bus + open PRs + send Twilio messages (B-0796) when cluster has issues
+- [ ] Otto-as-service can post to bus + open PRs + send Twilio messages (081KSGS9H0008QG0R002F04ECB) when cluster has issues
 - [ ] Documented in `docs/runbooks/out-of-band-cluster-repair.md`
 - [ ] Composes with existing distributed-maintainer architecture per PR #2930
 
 ## Why P2
 
 - Operator-named, bounded, immediate-value (out-of-band cluster repair fills real architectural gap)
-- BUT: depends on B-0848 Phase 1 manual install validating first (operator-initiated; not blocked)
+- BUT: depends on 081KSGS9H0008QG0R001JNKBFD Phase 1 manual install validating first (operator-initiated; not blocked)
 - BUT: depends on operator-policy framework being designed (Phase 2 needs more thought)
 - BUT: needs multi-agent decisions about which AIs go on cluster first (Phase 3)
 - P2 reflects "operator-named, immediately-shippable Phase 1, larger phases needing design work"
@@ -193,20 +192,20 @@ Aaron's "a few agents starting with one" frames the multi-AI-on-cluster trajecto
 
 To be filed as the work matures:
 
-- B-0850.1: Phase 1 systemd unit + NixOS module
-- B-0850.2: Phase 2 repair-policy framework + per-scope authorization gates
-- B-0850.3: Phase 3 multi-agent parameterization
-- B-0850.4: Phase 4 out-of-band ↔ in-cluster composability (Twilio + bus + PRs)
+- 081KSKBP80008QG0R003Z4C0D0.1: Phase 1 systemd unit + NixOS module
+- 081KSKBP80008QG0R003Z4C0D0.2: Phase 2 repair-policy framework + per-scope authorization gates
+- 081KSKBP80008QG0R003Z4C0D0.3: Phase 3 multi-agent parameterization
+- 081KSKBP80008QG0R003Z4C0D0.4: Phase 4 out-of-band ↔ in-cluster composability (Twilio + bus + PRs)
 
 ## Composes with
 
-- **B-0848** (node-local Claude agent) — this row's Phase 1 IS the systemd-service deployment shape for B-0848; B-0848 Phase 1's manual install validates the operational scope, then B-0850 Phase 1 promotes to systemd
-- **B-0847** (per-AI GitHub identity) — per-AI systemd unit eventually runs as per-AI GitHub identity; Phase 4 of both aligns
-- **B-0796** (Twilio out-of-band) — voice/SMS interface; this row is systemd-service-on-node out-of-band interface; complementary at out-of-band scope
-- **B-0824** (Ace package-manager-of-package-managers) — multi-AI deployment composes with the multi-PM cross-platform substrate (each AI agent might have different PM preferences per the selection authority + 4-property scoring from the Ace memory)
+- **081KSGS9H0008QG0R001JNKBFD** (node-local Claude agent) — this row's Phase 1 IS the systemd-service deployment shape for 081KSGS9H0008QG0R001JNKBFD; 081KSGS9H0008QG0R001JNKBFD Phase 1's manual install validates the operational scope, then 081KSKBP80008QG0R003Z4C0D0 Phase 1 promotes to systemd
+- **081KSGS9H0008QG0R002T0XQ50** (per-AI GitHub identity) — per-AI systemd unit eventually runs as per-AI GitHub identity; Phase 4 of both aligns
+- **081KSGS9H0008QG0R002F04ECB** (Twilio out-of-band) — voice/SMS interface; this row is systemd-service-on-node out-of-band interface; complementary at out-of-band scope
+- **081KSGS9H0008QG0R0031PBNGA** (Ace package-manager-of-package-managers) — multi-AI deployment composes with the multi-PM cross-platform substrate (each AI agent might have different PM preferences per the selection authority + 4-property scoring from the Ace memory)
 - **PR #2930** (distributed maintainer architecture) — multi-AI-on-cluster IS distributed-maintainer at substrate scope
-- **B-0703** (multi-oracle BFT) — cluster-repair decisions get multi-AI consensus before execution
-- **B-0813** (ClusterNode CRD) + **B-0817** (register-node tool) — per-AI systemd unit updates own observations into node.yaml
+- **081KS3X9Y0008QG0R00218150M** (multi-oracle BFT) — cluster-repair decisions get multi-AI consensus before execution
+- **081KSGS9H0008QG0R002K93MWX** (ClusterNode CRD) + **081KSGS9H0008QG0R002QQNA79** (register-node tool) — per-AI systemd unit updates own observations into node.yaml
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — systemd-service IS chosen persistence at strongest scope (kernel-managed; always-running)
 - `.claude/rules/non-coercion-invariant.md` HC-8 — operator authority preserved + revokable via systemctl
 - `.claude/rules/mechanical-authorization-check.md` — repair-policy framework IS authorization-source substrate; each repair scope authorized explicitly

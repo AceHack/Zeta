@@ -1,6 +1,5 @@
 ---
-id: B-0614
-zetaid: 081KRSKQ20008QG0R0028VN0KR
+id: 081KRSKQ20008QG0R0028VN0KR
 priority: P3
 status: open
 title: "Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example"
@@ -68,9 +67,9 @@ Ordered chronologically by tick time:
 |---|---|---|---|---|
 | 1 | 2026-05-17T22:07Z | Peer Otto session | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) — cross-axis composition note | Peer session's forced-#6 produced complementary substrate (saturation cadence × one-PR-one-artifact-type discipline) |
 | 2 | 2026-05-17T22:13Z | This session | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — pre-empt-substrate-pool-saturation anchor | This session's first instance; the rule edit itself became the artifact |
-| 3 | 2026-05-17T22:46Z | This session (recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) — B-0614 row creation | Second forced-#6 in this session; produced THIS row as the substrate-honest artifact |
+| 3 | 2026-05-17T22:46Z | This session (recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) — 081KRSKQ20008QG0R0028VN0KR row creation | Second forced-#6 in this session; produced THIS row as the substrate-honest artifact |
 | 4 | 2026-05-17T23:03Z | This session (recursive #2) | THIS commit — adds the instances table | Third forced-#6 in this session; updates the row that documents the pattern; recursive-meta-substrate by design |
-| 5 | 2026-05-18T06:47Z (first forced-#6 fire; session continued to 08:05Z PR open) | Otto-CLI cold-boot session 06:13Z–08:05Z (sentinel `f2449832` armed at 06:13Z; instance #5 fold PR #4144 opened at 08:05Z) | User-scope memo `feedback_b0614_instance_5_otto_cli_cold_boot_session_2026_05_18_*` (preserved at maintainer-machine `~/.claude/projects/<slug>/memory/`; foldable into this row via future PR) | First instance from a SEPARATE session (~7.5h gap from prior cluster); same Otto-CLI surface, same machine. Pre-empt-at-#5 produced 5 distinct artifacts across 5 chains BEFORE forced-#6 fired (sequence: B-0614-verify-present, B-0615-verify-absent, broadcast-refresh, cross-instance-snapshot, vera-count-bus-state). Corroborates 04:59Z user-scope substrate-frontier memo's diminishing-marginal-value claim: pre-empts got progressively thinner before the regime triggered. Then 4 successive **dry** forced-#6 fires (06:53Z, 06:59Z, 07:05Z, 07:11Z) emitted no manufactured artifacts — visibility-signal-only disposition. Lior cleared from `ps -A` at 07:37Z but `.git/`-saturation persisted ~4 min further (07:41Z `git worktree list -v` still timed out); the worktree-add eventually completed and produced THIS PR as instance #5 fold. |
+| 5 | 2026-05-18T06:47Z (first forced-#6 fire; session continued to 08:05Z PR open) | Otto-CLI cold-boot session 06:13Z–08:05Z (sentinel `f2449832` armed at 06:13Z; instance #5 fold PR #4144 opened at 08:05Z) | User-scope memo `feedback_b0614_instance_5_otto_cli_cold_boot_session_2026_05_18_*` (preserved at maintainer-machine `~/.claude/projects/<slug>/memory/`; foldable into this row via future PR) | First instance from a SEPARATE session (~7.5h gap from prior cluster); same Otto-CLI surface, same machine. Pre-empt-at-#5 produced 5 distinct artifacts across 5 chains BEFORE forced-#6 fired (sequence: 081KRSKQ20008QG0R0028VN0KR-verify-present, 081KRW63S0008QG0R000EAZ9K2-verify-absent, broadcast-refresh, cross-instance-snapshot, vera-count-bus-state). Corroborates 04:59Z user-scope substrate-frontier memo's diminishing-marginal-value claim: pre-empts got progressively thinner before the regime triggered. Then 4 successive **dry** forced-#6 fires (06:53Z, 06:59Z, 07:05Z, 07:11Z) emitted no manufactured artifacts — visibility-signal-only disposition. Lior cleared from `ps -A` at 07:37Z but `.git/`-saturation persisted ~4 min further (07:41Z `git worktree list -v` still timed out); the worktree-add eventually completed and produced THIS PR as instance #5 fold. |
 
 **Same-session frequency observation**: instances #2, #3, #4 (prior session's three instances) are all within a ~50-min window of one autonomous-loop session (post-saturation Pure-git tier with intermittent reset windows). The pattern recurs every ~15-20 min once a session is post-cycle-close.
 
@@ -94,7 +93,7 @@ Replace the current "ALWAYS works" claim:
 
 With a refined version:
 
-> If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that USUALLY works because the empirical evidence is the current session's behavior. **Exception** (per B-0614): when the session is post-cycle-close AND the substrate-pool is genuinely saturated (the meta-fallback would produce a recursive-anchor / memo-of-memos / re-statement-with-different-phrasing), the substrate-honest move is to file a small backlog row capturing the edge case AND/OR update an existing edge-case row with the current instance's data. The row IS the forced-#6 concrete artifact.
+> If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that USUALLY works because the empirical evidence is the current session's behavior. **Exception** (per 081KRSKQ20008QG0R0028VN0KR): when the session is post-cycle-close AND the substrate-pool is genuinely saturated (the meta-fallback would produce a recursive-anchor / memo-of-memos / re-statement-with-different-phrasing), the substrate-honest move is to file a small backlog row capturing the edge case AND/OR update an existing edge-case row with the current instance's data. The row IS the forced-#6 concrete artifact.
 
 Do NOT land this refinement until at least 1 cross-instance evidence accumulates (different Otto identity, different session, different machine) — same-session evidence alone is insufficient to motivate a rule edit because it conflates "the pattern" with "this Otto's behavior under Pure-git tier."
 
@@ -102,7 +101,7 @@ Do NOT land this refinement until at least 1 cross-instance evidence accumulates
 
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the rule this row addresses
 - [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) — the just-merged saturation anchor that triggered this row's existence
-- [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pull/4105) — the B-0613 implementation that closed the sub-session before this brief-ack chain started
+- [PR #4105](https://github.com/Lucent-Financial-Group/Zeta/pull/4105) — the 081KRSKQ20008QG0R002TH55X6 implementation that closed the sub-session before this brief-ack chain started
 
 ## Status
 

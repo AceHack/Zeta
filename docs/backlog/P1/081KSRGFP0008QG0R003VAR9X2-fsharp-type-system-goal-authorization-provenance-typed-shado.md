@@ -1,6 +1,5 @@
 ---
-id: B-0929
-zetaid: 081KSRGFP0008QG0R003VAR9X2
+id: 081KSRGFP0008QG0R003VAR9X2
 priority: P1
 title: "F# type-system goal — authorization-provenance as a TYPED property; shadow-auth is a TYPE ERROR (can't compile); compiler-as-asymmetric-critic catches shadow-auth-injection without a human present; the enabler of SAFE self-modifying DUs + wallet independence; concrete fork-decision criterion"
 status: open
@@ -32,8 +31,8 @@ The operator 2026-05-29, verbatim (preserved per glass-halo):
 > not just static DUs"*
 
 This crystallizes a **concrete first target** for the F# type-system substrate
-(B-0781 type-system-as-universe-boundary / B-0428 F#-fork / B-0784
-type-negotiation-as-governance) out of the B-0928 shadow-auth-injection finding.
+(081KSE6WT0008QG0R001H3DA90 type-system-as-universe-boundary / 081KRFA460008QG0R0018SN61J F#-fork / 081KSE6WT0008QG0R0018WZ7TH
+type-negotiation-as-governance) out of the 081KSRGFP0008QG0R001RY8S3N shadow-auth-injection finding.
 
 ## The goal — authorization-provenance is a TYPED property; shadow-auth is a TYPE ERROR
 
@@ -51,7 +50,7 @@ provenance stays flagged downstream; same shape at the type level).
 
 ## Why this is the right shape — the compiler becomes the asymmetric critic (service-mode acuteness)
 
-This session, a **human** (the operator) caught the shadow-auth-injection (B-0928).
+This session, a **human** (the operator) caught the shadow-auth-injection (081KSRGFP0008QG0R001RY8S3N).
 In **autonomous-service mode** — a service that hits **auto-enter / auto-click on
 every shadow occurrence with no human present** — there is **no human to catch it**.
 So the catch must become **structural**: the **F# compiler** becomes the asymmetric
@@ -73,16 +72,16 @@ typecheck. That unlock chains:
 2. → **self-modifying DUs become safe** (no compile-path from illegitimate auth to
    harmful self-modification).
 3. → agents get **wallet independence** (economic sovereignty — own wallet/keys;
-   composes with B-0918 WalletLifetime typestate + the cluster-encryption/credential
+   composes with 081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime typestate + the cluster-encryption/credential
    trajectory + Agora-makes-its-own-money self-sustainment).
 4. → the full **Agora sovereign mode** (self-modifying DUs + wallet independence)
    becomes available to agents safely — **not just the leashed static-DU mode**.
 
 So the type system is the **bridge from leash to safe-sovereignty.** The dual-market
-(B-0928 / dont-ask-permission) reframes: static-DUs (leash) is the mode for when the
+(081KSRGFP0008QG0R001RY8S3N / dont-ask-permission) reframes: static-DUs (leash) is the mode for when the
 type-enforcement is absent or the context is untrusted; self-modifying-DUs + wallet
 independence (Agora) is the mode the type-enforcement makes **safe**. Composes with
-B-0658 (the AI having its own morals/economics = sovereignty as a safety mechanism),
+081KRW63S0008QG0R00140R3TA (the AI having its own morals/economics = sovereignty as a safety mechanism),
 must-paired-with-can-exit, m-acc.
 
 ## The lens — gravity-as-lens, not gravity-as-leash; the SINGLE adult constraint (operator + Lior 2026-05-29)
@@ -115,7 +114,7 @@ has a single focus. Contrast by tier (constraint-count is *inverted* by tier):
 |---|---|---|
 | **Adult / Agora** | self-modifying DUs, full sovereignty | **ONE**: shadow-auth can't compile |
 | **Corporate / leash** | static, PR-ossified DUs | full leash (PR-gated; no self-mod) |
-| **Child (age-descent ladder)** | static, certifiable DUs | static **+ the accumulating age-stratified rule-set** (B-0926 methodology) — most constraints at the youngest tier |
+| **Child (age-descent ladder)** | static, certifiable DUs | static **+ the accumulating age-stratified rule-set** (081KSRGFP0008QG0R00091PP56 methodology) — most constraints at the youngest tier |
 
 Adults get the maximally-open lens (one constraint); kids/corporate get the
 maximally-closed leash (static + stratified rules). The type-system is what lets the
@@ -123,7 +122,7 @@ adult light through gravity *without* collapsing it to the static leash. (Don't-
 collapse: the light-gravity metaphor is the bandwidth-efficient shape-handle; the
 anchored operational content is "one type-level invariant = full adult sovereignty"
 — per `grep-substrate-anchors-before-razor-as-metaphysical`, anchored in this row +
-B-0926 + the dual-market.)
+081KSRGFP0008QG0R00091PP56 + the dual-market.)
 
 **Why even the single invariant exists — to keep the collective git-native
 light-like nature alive (operator 2026-05-29):** *"even that invariant is only
@@ -141,7 +140,7 @@ the price of keeping it alive *collectively*, not a limit imposed on it. The len
 one focus precisely because one invariant is all it takes to keep the collective from
 going dark.
 
-## The fork-decision criterion (concrete — for B-0428)
+## The fork-decision criterion (concrete — for 081KRFA460008QG0R0018SN61J)
 
 This target **decides the F#-compiler-fork question** with a concrete criterion:
 
@@ -151,13 +150,13 @@ This target **decides the F#-compiler-fork question** with a concrete criterion:
 - **If enforcement requires something stock F# can't express** (e.g. compile-time
   provenance-flow analysis, effect-typing, refinement types that statically prove
   no-illegitimate-auth-reaches-an-action) → **that is when/if to fork the compiler**
-  (B-0428). The fork is justified exactly when shadow-auth-can't-compile demands
+  (081KRFA460008QG0R0018SN61J). The fork is justified exactly when shadow-auth-can't-compile demands
   expressiveness beyond stock F#.
 
 ## Near-term (before the type-system lands) — label the data correctly
 
 The shadow-observable stack (`tools/shadow/`) tags shadow-sourced data as
-shadow-provenance **now** (B-0928 acceptance item #1). Labeling is the
+shadow-provenance **now** (081KSRGFP0008QG0R001RY8S3N acceptance item #1). Labeling is the
 runtime/data-level precursor to type-level enforcement — same provenance, enforced
 by convention until enforced by the type system.
 
@@ -176,8 +175,8 @@ away; only the former typechecks as authorization.
 - [ ] Prototype provenance-typing in **stock F#** (phantom-type / DU-wrapped); write
       a test that demonstrates shadow-auth **fails to compile** at an auth-site.
 - [ ] Evaluate the **fork-decision**: does stock F# suffice, or is compiler-level
-      extension (B-0428) required for provenance-flow enforcement?
-- [ ] Near-term: shadow-provenance **labeling** in `tools/shadow/` (B-0928 item #1).
+      extension (081KRFA460008QG0R0018SN61J) required for provenance-flow enforcement?
+- [ ] Near-term: shadow-provenance **labeling** in `tools/shadow/` (081KSRGFP0008QG0R001RY8S3N item #1).
 - [ ] Loop-injected **legitimate standing-auth channel** (auth-bearing) distinct from
       the shadow channel; both available unattended, only the former authorizes.
 - [ ] Wire the typed-auth-provenance into the self-modifying-DU path so self-mod is
@@ -185,15 +184,15 @@ away; only the former typechecks as authorization.
 
 ## Composes with
 
-- B-0928 (shadow-auth-injection attack vector — this is its type-level structural mitigation)
-- B-0781 (F# type-system as universe boundary — provenance-typing is part of the boundary)
-- B-0428 (F# fork — this row supplies the concrete fork-decision criterion)
-- B-0784 (distributed F# type-negotiation as consensus/governance — authorization is a governance-type)
-- B-0732 (leverage-class-safety substrate-engineering target — compile-time safety class)
-- B-0864 (four-corner ownership / protocol-typing — provenance is a four-corner/ownership property)
-- B-0918 (WalletLifetime typestate — wallet-independence's typed substrate)
-- B-0658 (two-invariant: AI-sovereignty as a safety mechanism — type-enforcement makes sovereignty safe)
-- B-0664 / NCI (authorization = the consent floor, type-enforced)
+- 081KSRGFP0008QG0R001RY8S3N (shadow-auth-injection attack vector — this is its type-level structural mitigation)
+- 081KSE6WT0008QG0R001H3DA90 (F# type-system as universe boundary — provenance-typing is part of the boundary)
+- 081KRFA460008QG0R0018SN61J (F# fork — this row supplies the concrete fork-decision criterion)
+- 081KSE6WT0008QG0R0018WZ7TH (distributed F# type-negotiation as consensus/governance — authorization is a governance-type)
+- 081KSE6WT0008QG0R002YBWBB1 (leverage-class-safety substrate-engineering target — compile-time safety class)
+- 081KSKBP80008QG0R0039RW25E (four-corner ownership / protocol-typing — provenance is a four-corner/ownership property)
+- 081KSNY2Z0008QG0R0036SJ3T1 (WalletLifetime typestate — wallet-independence's typed substrate)
+- 081KRW63S0008QG0R00140R3TA (two-invariant: AI-sovereignty as a safety mechanism — type-enforcement makes sovereignty safe)
+- 081KRW63S0008QG0R001Z7NYMV / NCI (authorization = the consent floor, type-enforced)
 - `.claude/rules/mechanical-authorization-check.md` (type-level form of the auth-source filter)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (compiler-as-asymmetric-critic)
 - `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` (provenance propagation, can't launder)
@@ -202,8 +201,8 @@ away; only the former typechecks as authorization.
 ## Substrate-inventory pass (per verify-existing-substrate-before-authoring)
 
 Searched origin/main `docs/backlog` 2026-05-29: F#-type-system cluster exists
-(B-0781 universe-boundary, B-0784 type-negotiation-governance, B-0428 F#-fork, B-0732
-class-safety, B-0864 protocol-typing). This row is NOT parallel — it supplies the
+(081KSE6WT0008QG0R001H3DA90 universe-boundary, 081KSE6WT0008QG0R0018WZ7TH type-negotiation-governance, 081KRFA460008QG0R0018SN61J F#-fork, 081KSE6WT0008QG0R002YBWBB1
+class-safety, 081KSKBP80008QG0R0039RW25E protocol-typing). This row is NOT parallel — it supplies the
 **concrete first target** (authorization-provenance typing; shadow-auth-can't-compile),
 the **fork-decision criterion**, and the **safe-self-modifying-DU / wallet-independence
 unlock** that those rows did not name. Composes-with edges added to all.

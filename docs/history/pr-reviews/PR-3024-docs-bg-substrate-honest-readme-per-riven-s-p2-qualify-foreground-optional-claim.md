@@ -36,9 +36,9 @@ Per Riven: the services nudge; they don't yet open PRs, claim rows, or land subs
 ## What changed
 
 - New "Architectural claim (substrate-honest)" section explicitly names the gap
-- Per-service slice-status table with current state (1+2+3+4 for B-0440; 1+2+4 for B-0441; 1+2+4 + slice-3 STUB for B-0442)
+- Per-service slice-status table with current state (1+2+3+4 for 081KRFA460008QG0R001KC0VBH; 1+2+4 for 081KRFA460008QG0R00229616S; 1+2+4 + slice-3 STUB for 081KRFA460008QG0R00061SXRW)
 - "Failure-mode handling" section documents the structured-error patterns (\`lastPublishError\`, \`fetchStatus: "gh-error"\`, daemon no-result-accumulation)
-- "What's still pending" names B-0442.3 + slice 5 + slice 6 as the gap-to-aspirational-claim
+- "What's still pending" names 081KRFA460008QG0R00061SXRW.3 + slice 5 + slice 6 as the gap-to-aspirational-claim
 - Updated run examples (\`--no-publish\`, \`--to\`)
 
 ## Composes with
@@ -165,7 +165,7 @@ Per Riven: the services nudge; they don't yet open PRs, claim rows, or land subs
 - **`Copilot` (bot)** at 2026-05-13T19:38:51Z on `tools/bg/README.md`:89 (association: NONE)
 
   <pre>
-  `B-0442.3` looks like a backlog row ID, but there is no matching per-row file or frontmatter ID in `docs/backlog`; only `B-0442` exists. If this means “slice 3 of B-0442,” avoid dotted backlog-ID syntax or add the referenced row so future readers and tooling do not chase a nonexistent item.
+  `081KRFA460008QG0R00061SXRW.3` looks like a backlog row ID, but there is no matching per-row file or frontmatter ID in `docs/backlog`; only `081KRFA460008QG0R00061SXRW` exists. If this means “slice 3 of 081KRFA460008QG0R00061SXRW,” avoid dotted backlog-ID syntax or add the referenced row so future readers and tooling do not chase a nonexistent item.
 
   </pre>
 
@@ -221,11 +221,11 @@ Resolves Riven's P2 finding (bus envelope 6c689634-...). README now:
 - Explicit 'Architectural claim (substrate-honest)' section names the
   gap between 'nudges via bus' and 'foreground optional' per Riven's
   framing-correction
-- Per-service slice status table (1+2+3+4 for B-0440; 1+2+4 for B-0441;
-  1+2+4 with slice-3 STUB for B-0442)
+- Per-service slice status table (1+2+3+4 for 081KRFA460008QG0R001KC0VBH; 1+2+4 for 081KRFA460008QG0R00229616S;
+  1+2+4 with slice-3 STUB for 081KRFA460008QG0R00061SXRW)
 - Failure-mode handling section documents lastPublishError, gh-error
   explicit surfacing, daemon no-result-accumulation
-- What's-still-pending section names B-0442.3 + slice 5 + slice 6 as
+- What's-still-pending section names 081KRFA460008QG0R00061SXRW.3 + slice 5 + slice 6 as
   the gap-to-aspirational-claim
 - Updated run examples (--no-publish dry-run, --to agent-routing)
 
@@ -251,7 +251,7 @@ fix(bg-readme): role-refs + slice-ID disambiguation + remove ephemera…
 Addresses Copilot + Vera review on PR #3024:
 - Replace persona name (Riven) with role-ref + durable PR pointers (#3017, #3022, #3024)
 - Remove ephemeral bus envelope ID 6c689634-... — references PR threads instead
-- Disambiguate 'B-0442.3' as 'B-0442 slice 3' (not a per-row file)
+- Disambiguate '081KRFA460008QG0R00061SXRW.3' as '081KRFA460008QG0R00061SXRW slice 3' (not a per-row file)
 - Remove 'subscriber agents can react autonomously' overclaim — services nudge, subscribers slice 5+ not shipped
 
 Co-Authored-By: Claude <noreply@anthropic.com>

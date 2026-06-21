@@ -1,13 +1,13 @@
 /**
  * src/Core.TypeScript/zflash/test-harness/scenarios.test.ts
  *
- * B-0891 PoC — invariant tests for scenario definitions.
+ * 081KSNY2Z0008QG0R0008PN7RQ PoC — invariant tests for scenario definitions.
  *
  * Run via: bun test src/Core.TypeScript/zflash/test-harness/
  */
 import { describe, expect, it } from "bun:test";
 import { SCENARIOS, computeRunnableSet, determineRunnability, findScenario, validateScenarios, } from "./scenarios";
-describe("B-0891 scenarios.ts invariants", () => {
+describe("081KSNY2Z0008QG0R0008PN7RQ scenarios.ts invariants", () => {
     it("has exactly 5 scenarios per operator-named matrix", () => {
         expect(SCENARIOS.length).toBe(5);
     });
@@ -84,7 +84,7 @@ describe("B-0891 scenarios.ts invariants", () => {
         expect(() => validateScenarios(broken)).toThrow();
     });
 });
-describe("B-0891 determineRunnability discriminator", () => {
+describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => {
     // Substantive zflash-lane work per Aaron's 3-lane substrate-check
     // (Amara ferry §33.2 PR #5757) + standing PoC permission.
     // Structurally parallel to:

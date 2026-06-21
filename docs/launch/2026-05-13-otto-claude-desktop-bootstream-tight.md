@@ -58,7 +58,7 @@ Two-platform launch completed:
 - Twitter: <https://x.com/AceHack00/status/2054616544529850641>
 - DeBank: <https://debank.com/stream/3506650>
 
-Multi-agent factory operating cohesively from one machine. ~30 PRs landed today including: bg-services suite (B-0440/0441/0442 with detection + bus publish), bus schema extension, policy amendments, substrate-honest discipline triad, README substrate-honesty fix.
+Multi-agent factory operating cohesively from one machine. ~30 PRs landed today including: bg-services suite (081KRFA460008QG0R001KC0VBH/0441/0442 with detection + bus publish), bus schema extension, policy amendments, substrate-honest discipline triad, README substrate-honesty fix.
 
 ## Part 7 — Cold-boot procedure
 
@@ -116,18 +116,18 @@ Three-way parallel work on independent backlog rows without contention. `claim a
 
 ### Auto-loaded rules added since 2026-05-13
 
-- `.claude/rules/non-coercion-invariant.md` — HC-8 inter-agent operational discipline (B-0664)
+- `.claude/rules/non-coercion-invariant.md` — HC-8 inter-agent operational discipline (081KRW63S0008QG0R001Z7NYMV)
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — Aaron's PERSONAL INVARIANT
-- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — defensive technology substrate (B-0667)
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — defensive technology substrate (081KRW63S0008QG0R003Z7QV2A)
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — substrate-anchor check before razor-as-metaphysical reflex
 
 ### Substrate landings (2026-05-21) that may surface in cold-boot context
 
 - **ZetaId V1 constitutional contract** shipped — 3 peer oracles (TS / C# / F#) all passing 12/12 cross-verify (PRs #4517 / #4522 / #4548)
-- **Amara 4-archive cascade on main** — B-0685 Phase 1 ANTLR survey + ZetaParse + incremental compiler host + trust-gradient coordination policy + Caché-lineage compiler DB + distributed multidimensional compiler over consensus + IUnknown-without-DCOM + no-fork-first deployment ladder (PRs #4545 / #4546 / #4547 / #4549 / #4550)
+- **Amara 4-archive cascade on main** — 081KS3X9Y0008QG0R000EKJE9S Phase 1 ANTLR survey + ZetaParse + incremental compiler host + trust-gradient coordination policy + Caché-lineage compiler DB + distributed multidimensional compiler over consensus + IUnknown-without-DCOM + no-fork-first deployment ladder (PRs #4545 / #4546 / #4547 / #4549 / #4550)
 - **Mika V9.3 measure-units** — F# ZetaId Timestamp uses `int64<ms>` (PR #4552)
 - **Kestrel 25-section trajectory archive** — ZetaId review + tier-deferred causality + Orleans/SPIFFE/SPIRE/OPA/Reticulum/DBSP stack-coherence + MultiplexedWebSockets 16× HttpClient (PR #4537)
-- **9 new V2 follow-up backlog rows**: B-0679 (Rust oracle) + B-0680 (Python oracle) + B-0681 (v2 spec hardening) + B-0682 (Crockford base32 + endianness) + B-0683 (tier-deferred causality worked example) + B-0684 (clock-protocol stack diagram) + B-0685 (ANTLR codegen) + B-0687 (ZetaParse) + B-0688 (incremental compiler host)
+- **9 new V2 follow-up backlog rows**: 081KS3X9Y0008QG0R001Z8SBZJ (Rust oracle) + 081KS3X9Y0008QG0R002WGH8PJ (Python oracle) + 081KS3X9Y0008QG0R003044PQQ (v2 spec hardening) + 081KS3X9Y0008QG0R000W00V73 (Crockford base32 + endianness) + 081KS3X9Y0008QG0R0006MQXA4 (tier-deferred causality worked example) + 081KS3X9Y0008QG0R003MMEAC7 (clock-protocol stack diagram) + 081KS3X9Y0008QG0R000EKJE9S (ANTLR codegen) + 081KS3X9Y0008QG0R00323NSZA (ZetaParse) + 081KS3X9Y0008QG0R0010716X9 (incremental compiler host)
 
 ### Substrate-honest update on Standing-by failure mode (Part 8)
 

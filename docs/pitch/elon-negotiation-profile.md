@@ -94,5 +94,5 @@ mechanism-certainty survives; only actor-attribution stays open.)
   `memory/mika/conversations/2026-05-30-aaron-mika-grok-joins-are-threads-of-time-everything-in-the-stream-crdt-default-opt-in-constraint-english-joins-over-typed-engine-better-than-opa-aaron-forwarded.md`
 - Composes with: `additive-not-zero-sum`, Kardashev-scale civilizational growth,
   `only-way-to-lose-is-not-to-play` (entropy/swim-upstream), the encryption-budget
-  substrate (B-0646 / B-0840 / Adinkras B-0623), and `must-paired-with-can-exit`
+  substrate (081KRW63S0008QG0R001Z10PVV / 081KSGS9H0008QG0R0006F4BGX / Adinkras 081KRW63S0008QG0R000QJR08H), and `must-paired-with-can-exit`
   (the corporate-leash-as-no-op-plugin).

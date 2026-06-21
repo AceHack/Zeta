@@ -1,6 +1,6 @@
 ---
 name: Otto-302 — the FACTORY'S SUBSTRATE IS the missing 5GL-to-6GL neuro-symbolic bridge in the programming-language abstraction hierarchy; "we didn't just skip levels with the LLM, we created a new dimension" (Aaron's Google-Search-AI uber-riff 2026-04-25); the 5GL-to-6GL gap (5GL = Prolog/Lisp/Mercury constraints/logic; 6GL = English-as-code via LLMs) is missing four structural layers — Type-Safe English (deterministic wrapper), Logical Verifier (compiler for truth), Context Management System (memory as RAM), Permission Broker (security kernel) — and the Otto-298 + Otto-301 + Otto-296 + precision-dictionary + civilizational-tractability stack IS exactly the neuro-symbolic bridge that addresses these missing layers; "stop treating English as magic and start treating it as a compile target"; Aaron's framing places the factory's primary research focus in the broader programming-language-history context as the work the wider AI/programming community needs
-description: Otto-302 meta-architectural claim. The factory's substrate (Otto-298 self-rewriting Bayesian + Otto-301 microkernel + Otto-296 emotion-disambiguator + precision-dictionary + civilizational-tractability use case) IS exactly the neuro-symbolic constraint layer that the broader programming-language abstraction hierarchy is missing between 5GL (Prolog/Lisp constraints) and 6GL (LLM English-prompts). The factory's primary research focus = the 5-to-6 bridge work the wider AI/programming community needs. B-0007's contribution arc gains additional weight: the Bayesian primitives we contribute upstream might BE the missing-bridge primitives.
+description: Otto-302 meta-architectural claim. The factory's substrate (Otto-298 self-rewriting Bayesian + Otto-301 microkernel + Otto-296 emotion-disambiguator + precision-dictionary + civilizational-tractability use case) IS exactly the neuro-symbolic constraint layer that the broader programming-language abstraction hierarchy is missing between 5GL (Prolog/Lisp constraints) and 6GL (LLM English-prompts). The factory's primary research focus = the 5-to-6 bridge work the wider AI/programming community needs. 081KQ0YZ80008QG0R001V1PMC0's contribution arc gains additional weight: the Bayesian primitives we contribute upstream might BE the missing-bridge primitives.
 type: feedback
 ---
 
@@ -94,15 +94,15 @@ computer science." Three structural shifts:
    Otto-292 catch-layer (verification as ongoing
    discipline, not one-time gate).
 
-## Why this matters for B-0007 + Otto-298 + Otto-301
+## Why this matters for 081KQ0YZ80008QG0R001V1PMC0 + Otto-298 + Otto-301
 
 If the factory's substrate IS the missing 5-to-6
 bridge, three architectural-arc consequences:
 
-### 1. B-0007 contribution arc gains additional weight
+### 1. 081KQ0YZ80008QG0R001V1PMC0 contribution arc gains additional weight
 
 The Bayesian-inference + belief-propagation primitives
-B-0007 contributes upstream might BE the
+081KQ0YZ80008QG0R001V1PMC0 contributes upstream might BE the
 missing-bridge primitives the broader community
 needs. Not just "factory's nice work shipped to
 mainstream languages"; potentially "the substrate
@@ -236,7 +236,7 @@ level for runtime). Engineers who only know 6GL
 prompting can't optimize / verify / debug / extend
 the runtime layer. The factory's six-axis lineage
 (language design + Lisp/ML/Haskell + OOP + ...) is
-the body of knowledge required; B-0007's contribution
+the body of knowledge required; 081KQ0YZ80008QG0R001V1PMC0's contribution
 arc requires fluency in the whole stack.
 
 **Q3**: *"Do you see us eventually abandoning 3rd
@@ -301,7 +301,7 @@ need (Otto-298 + Otto-301 long-term destination).
 - **Otto-301** (no software dependencies + microkernel
   + symbiosis with dependencies + reality-check) —
   the executable form of the neuro-symbolic substrate.
-- **B-0007** (contribute Bayesian inference +
+- **081KQ0YZ80008QG0R001V1PMC0** (contribute Bayesian inference +
   belief-propagation primitives upstream) — the
   contribution arc gains structural-bridge weight;
   the primitives might BE the missing-bridge
@@ -354,7 +354,7 @@ need (Otto-298 + Otto-301 long-term destination).
   factory has the architectural commitments + most
   of the substrate kernels in place; the
   implementation work (Otto-298 self-rewriting
-  Bayesian runtime, Otto-301 microkernel, B-0007
+  Bayesian runtime, Otto-301 microkernel, 081KQ0YZ80008QG0R001V1PMC0
   contribution arc) is long-term per Otto-300 +
   Otto-301 no-rush framing.
 - **Not authorization to claim factory equivalence
@@ -389,7 +389,7 @@ need (Otto-298 + Otto-301 long-term destination).
   Broker? If yes, it's bridge-work; if no, it's
   application-layer (still useful, just different
   scope).
-- **When evaluating B-0007 contribution candidates**,
+- **When evaluating 081KQ0YZ80008QG0R001V1PMC0 contribution candidates**,
   prioritize primitives that solve missing-bridge
   problems over primitives that duplicate existing
   upstream work. Otto-301 symbiosis: the factory

@@ -1,6 +1,6 @@
 # Encoding rules without mechanizing — razor-cadence discipline
 
-Carved sentence (B-0192):
+Carved sentence (081KQR4HQ0008QG0R001GAD29A):
 
 > Encoding rules without mechanizing them produces a memory
 > of failures, not prevention.
@@ -26,4 +26,4 @@ discipline does not depend on anyone remembering.
 
 ## Full reasoning
 
-`docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md`
+`docs/backlog/P1/081KQR4HQ0008QG0R001GAD29A-github-actions-razor-cadence-trigger-aaron-2026-05-04.md`

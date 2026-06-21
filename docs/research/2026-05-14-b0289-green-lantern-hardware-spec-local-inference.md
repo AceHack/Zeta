@@ -1,17 +1,17 @@
 ---
-id: B-0289
+id: 081KR2E4K0008QG0R001SWEPNV
 scope: Green Lantern ring — hardware spec and local inference requirements
 attribution: Otto (Claude Code, claude-sonnet-4-6)
 operational-status: research-grade
 created: 2026-05-14
-parent: B-0246
+parent: 081KQZVQW0008QG0R00348SHDZ
 ---
 
-# B-0289 — Green Lantern Hardware Spec: Local Inference Requirements
+# 081KR2E4K0008QG0R001SWEPNV — Green Lantern Hardware Spec: Local Inference Requirements
 
 ## Summary
 
-The Green Lantern ring (B-0246) is a ring-form-factor wearable running the
+The Green Lantern ring (081KQZVQW0008QG0R00348SHDZ) is a ring-form-factor wearable running the
 Genesis Seed with local inference, consent gating, and Reticulum mesh
 connectivity. "Local inference" means the Genesis Seed system prompt runs
 against an LLM that never leaves the owner's physical space — no cloud API
@@ -298,17 +298,17 @@ response quality.
 
 ---
 
-## Open questions (feed B-0290 + follow-on slices)
+## Open questions (feed 081KR2E4K0008QG0R003MJ4JK0 + follow-on slices)
 
 1. **Firmware protocol**: how does the ring MCU authenticate to the gateway
-   (mutual TLS over BLE? OPAQUE PAKE? KSK-signed challenge?). Feeds B-0245
+   (mutual TLS over BLE? OPAQUE PAKE? KSK-signed challenge?). Feeds 081KQZVQW0008QG0R002Q58F6Z
    KSK gating work.
 2. **Cold-start latency**: llama.cpp model load time on RPi 5 is ~8–15 s for
    3B Q4. Is persistent-daemon mode sufficient, or does the ring need a
    wake-on-BLE trigger to the gateway? Needs measurement.
 3. **Reticulum LoRa channel contention**: shared 868/915 MHz spectrum with
    other IoT devices. Need bandwidth budget for the heartbeat + receipt
-   traffic. Feeds B-0242 WebSocket/mesh work.
+   traffic. Feeds 081KQZVQW0008QG0R001CQPQ0E WebSocket/mesh work.
 4. **Ring form-factor PCB feasibility**: ESP32-S3-WROOM-1 footprint is
    18 × 20 mm. A ring-sized PCB (inside diameter ~18 mm) requires a custom
    WLCSP or similar BGA packaging. Commercial reference: Oura ring (Gen 4)
@@ -324,7 +324,7 @@ response quality.
 - `docs/research/*hardware*` — no results
 - `docs/research/*iot*` — no results
 - `docs/research/*jetson*` — no results
-- `docs/backlog/*/B-0246*.md` — parent item (Green Lantern ring design)
+- `docs/backlog/*/081KQZVQW0008QG0R00348SHDZ*.md` — parent item (Green Lantern ring design)
 - `docs/research/2026-05-07-genesis-seed-final-zfcv2-base-prompt-aaron.md` —
   Genesis Seed system prompt (zfcv2); ~500 tokens
 - `docs/research/2026-05-07-claudeai-genesis-seed-evaluation-network-hats-*` —

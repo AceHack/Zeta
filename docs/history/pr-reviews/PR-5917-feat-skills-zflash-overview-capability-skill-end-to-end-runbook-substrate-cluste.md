@@ -27,7 +27,7 @@
 
 ## Description
 
-zflash lane Track C push per B-0892 three-lanes-concurrent operating discipline + operator authorization `feel free to push the three lanes forward` 2026-05-28.
+zflash lane Track C push per 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline + operator authorization `feel free to push the three lanes forward` 2026-05-28.
 
 ## What ships
 
@@ -37,13 +37,13 @@ zflash lane Track C push per B-0892 three-lanes-concurrent operating discipline 
 2. First-time setup (zflash-setup PAM Touch ID install)
 3. End-to-end runbook (flash → boot → install → first SSH; 11 steps)
 4. Substrate-cluster map (which row solves which problem):
-   - B-0844 (zflash agent-mode native implementation)
-   - B-0852 (USB-bound creds Track B)
-   - B-0852.3 (zeta-install.sh Step 6.77 cred-picker)
-   - B-0884 (PQ git-crypt + zflash integration)
-   - B-0891 (5-scenario QEMU test harness)
-   - B-0737 (Touch ID + PAM + short-challenge + ISO auto-discovery)
-   - B-0892 (three-lanes-concurrent operating discipline)
+   - 081KSGS9H0008QG0R001EZKNCB (zflash agent-mode native implementation)
+   - 081KSKBP80008QG0R003AX2A69 (USB-bound creds Track B)
+   - 081KSKBP80008QG0R003ETGS01 (zeta-install.sh Step 6.77 cred-picker)
+   - 081KSNY2Z0008QG0R0011XCT94 (PQ git-crypt + zflash integration)
+   - 081KSNY2Z0008QG0R0008PN7RQ (5-scenario QEMU test harness)
+   - 081KSE6WT0008QG0R003WZAQKV (Touch ID + PAM + short-challenge + ISO auto-discovery)
+   - 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
 5. Companion skills (zflash-creds + git-expert + dst-substrate-engineer)
 6. Substrate-anchors (canonical implementation files + test harness + next-steps plan)
 7. When-NOT-to-apply discipline
@@ -51,10 +51,10 @@ zflash lane Track C push per B-0892 three-lanes-concurrent operating discipline 
 ## Composes-with
 
 - Existing `zflash-creds` skill (placeholder for --bake-cred flag)
-- B-0892 three-lanes-concurrent operating discipline
-- B-0844 / B-0852 / B-0884 / B-0891 / B-0737 / B-0852.3 substrate-cluster
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
+- 081KSGS9H0008QG0R001EZKNCB / 081KSKBP80008QG0R003AX2A69 / 081KSNY2Z0008QG0R0011XCT94 / 081KSNY2Z0008QG0R0008PN7RQ / 081KSE6WT0008QG0R003WZAQKV / 081KSKBP80008QG0R003ETGS01 substrate-cluster
 - `full-ai-cluster/tools/zflash.ts` canonical implementation
-- `tools/zflash/test-harness/` (B-0891 5-scenario test harness)
+- `tools/zflash/test-harness/` (081KSNY2Z0008QG0R0008PN7RQ 5-scenario test harness)
 - `docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md`
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

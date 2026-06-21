@@ -1,6 +1,5 @@
 ---
-id: B-0093.4
-zetaid: 081KDVJZK7008QG0R0020PEAJG
+id: 081KDVJZK7008QG0R0020PEAJG
 priority: P2
 status: open
 title: TS trajectory owners + triggers + recording surfaces table
@@ -13,9 +12,9 @@ composes_with:
   - 081KQ8P5D0008QG0R003ZF64GG
 tags: [riven-2026-05-11, ts-prefer, trajectory-owners, recording-surface]
 ---
-# B-0093.4 — Atomic child: TS trajectory owners table + recorder
+# 081KDVJZK7008QG0R0020PEAJG — Atomic child: TS trajectory owners table + recorder
 
-Smallest slice of B-0093 enhancement #5: implement `tools/hygiene/audit-trajectory-owners.ts` that generates the owners/triggers/recording table (Continuous self-audit | Otto | before commit | commit notes, etc.) and injects into B-0092 or produces compliance audit log. Enforces "happens" not "should".
+Smallest slice of 081KQ8P5D0008QG0R003MY8246 enhancement #5: implement `tools/hygiene/audit-trajectory-owners.ts` that generates the owners/triggers/recording table (Continuous self-audit | Otto | before commit | commit notes, etc.) and injects into 081KQ8P5D0008QG0R003ZF64GG or produces compliance audit log. Enforces "happens" not "should".
 
 Depends on inference firewall. S effort, TS.
 

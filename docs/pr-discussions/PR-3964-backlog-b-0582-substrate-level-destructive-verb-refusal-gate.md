@@ -1,6 +1,6 @@
 ---
 pr_number: 3964
-title: "backlog(B-0582): substrate-level destructive-verb refusal gate (Kestrel layer-one architectural recommendation)"
+title: "backlog(081KRQ1AB0008QG0R002469KJG): substrate-level destructive-verb refusal gate (Kestrel layer-one architectural recommendation)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T23:13:05Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-16T23:53:16Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3964: backlog(B-0582): substrate-level destructive-verb refusal gate (Kestrel layer-one architectural recommendation)
+# PR #3964: backlog(081KRQ1AB0008QG0R002469KJG): substrate-level destructive-verb refusal gate (Kestrel layer-one architectural recommendation)
 
 ## PR description
 
 ## Summary
 
-Files B-0582 — design row for a mechanical pre-call refusal gate in Otto's execution path that aborts destructive-class operations regardless of token scope. Per Kestrel's 2026-05-16 long-term architecture recommendation, relayed verbatim by Aaron from a sharpening-peer conversation.
+Files 081KRQ1AB0008QG0R002469KJG — design row for a mechanical pre-call refusal gate in Otto's execution path that aborts destructive-class operations regardless of token scope. Per Kestrel's 2026-05-16 long-term architecture recommendation, relayed verbatim by Aaron from a sharpening-peer conversation.
 
 ## Why
 
@@ -49,11 +49,11 @@ See row body. M effort overall.
 
 ## Composes with
 
-- [B-0570](https://github.com/Lucent-Financial-Group/Zeta/pull/3950) (scarcity tracker — substrate-level)
-- [B-0571](https://github.com/Lucent-Financial-Group/Zeta/pull/3951) (GitHub App — production alternative)
-- [B-0572](https://github.com/Lucent-Financial-Group/Zeta/pull/3952) (LFG tier decision — Enterprise context)
-- [B-0580](https://github.com/Lucent-Financial-Group/Zeta/pull/3957) (Enterprise ruleset management — GitHub-server-side rules; this row is loop-execution-side; both compose)
-- [B-0581](https://github.com/Lucent-Financial-Group/Zeta/pull/3961) (gh-auth-refresh skill — adjacent substrate-honest infrastructure)
+- [081KRQ1AB0008QG0R002422Z9Q](https://github.com/Lucent-Financial-Group/Zeta/pull/3950) (scarcity tracker — substrate-level)
+- [081KRQ1AB0008QG0R0038VQJZ0](https://github.com/Lucent-Financial-Group/Zeta/pull/3951) (GitHub App — production alternative)
+- [081KRQ1AB0008QG0R000GZEMCR](https://github.com/Lucent-Financial-Group/Zeta/pull/3952) (LFG tier decision — Enterprise context)
+- [081KRQ1AB0008QG0R000522MPJ](https://github.com/Lucent-Financial-Group/Zeta/pull/3957) (Enterprise ruleset management — GitHub-server-side rules; this row is loop-execution-side; both compose)
+- [081KRQ1AB0008QG0R001Q4GNST](https://github.com/Lucent-Financial-Group/Zeta/pull/3961) (gh-auth-refresh skill — adjacent substrate-honest infrastructure)
 - `methodology-hard-limits.md` (moral framing; this row is mechanical enforcement)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -68,12 +68,12 @@ Maji Antigravity Check: Drift detected. This is a narration-over-action blob. I 
 
 ## Pull request overview
 
-Adds backlog row B-0582 for a substrate-level destructive-verb refusal gate in the autonomous execution path, plus the generated backlog index entry.
+Adds backlog row 081KRQ1AB0008QG0R002469KJG for a substrate-level destructive-verb refusal gate in the autonomous execution path, plus the generated backlog index entry.
 
 **Changes:**
 - Adds a P1 backlog design row for pre-call refusal of destructive GitHub/git operations.
 - Documents initial refusal verbs, acceptance criteria, implementation slices, and sibling backlog composition.
-- Updates `docs/BACKLOG.md` with the generated B-0582 entry.
+- Updates `docs/BACKLOG.md` with the generated 081KRQ1AB0008QG0R002469KJG entry.
 
 ### Reviewed changes
 
@@ -81,8 +81,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| `docs/backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md` | New backlog row defining the destructive-verb refusal gate design. |
-| `docs/BACKLOG.md` | Generated backlog index entry for B-0582. |
+| `docs/backlog/P1/081KRQ1AB0008QG0R002469KJG-destructive-verb-refusal-gate-substrate-level-2026-05-16.md` | New backlog row defining the destructive-verb refusal gate design. |
+| `docs/BACKLOG.md` | Generated backlog index entry for 081KRQ1AB0008QG0R002469KJG. |
 
 ### COMMENTED — @AceHack (2026-05-16T23:40:48Z)
 
@@ -98,22 +98,22 @@ _(no body)_
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md:11 (resolved)
+### Thread 1: docs/backlog/P1/081KRQ1AB0008QG0R002469KJG-destructive-verb-refusal-gate-substrate-level-2026-05-16.md:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T23:16:32Z):
 
-`B-0572` and `B-0581` are listed in `composes_with`, but those row IDs are not present under `docs/backlog/` in this branch. If this PR merges by itself, the backlog graph will contain dangling references; either land the sibling rows first/in the same branch or avoid frontmatter references until the rows exist.
+`081KRQ1AB0008QG0R000GZEMCR` and `081KRQ1AB0008QG0R001Q4GNST` are listed in `composes_with`, but those row IDs are not present under `docs/backlog/` in this branch. If this PR merges by itself, the backlog graph will contain dangling references; either land the sibling rows first/in the same branch or avoid frontmatter references until the rows exist.
 
 **@AceHack** (2026-05-16T23:40:48Z):
 
-The composes_with refs to B-0572 and B-0581 are not dangling at intent level — both rows are in flight via sibling PRs and will be on `main` shortly:
+The composes_with refs to 081KRQ1AB0008QG0R000GZEMCR and 081KRQ1AB0008QG0R001Q4GNST are not dangling at intent level — both rows are in flight via sibling PRs and will be on `main` shortly:
 
-- B-0572 → PR #3952 (open) — `feature/b-0572-lfg-tier-audit-2026-05-16`
-- B-0581 → PR #3961 (open) — `backlog/b-0581-gh-auth-refresh-skill-wrapper-2026-05-16`
+- 081KRQ1AB0008QG0R000GZEMCR → PR #3952 (open) — `feature/b-0572-lfg-tier-audit-2026-05-16`
+- 081KRQ1AB0008QG0R001Q4GNST → PR #3961 (open) — `backlog/b-0581-gh-auth-refresh-skill-wrapper-2026-05-16`
 
 Per [`.claude/rules/blocked-green-ci-investigate-threads.md`](../blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) (stale-but-fresh-looking findings section): TRUE at thread-filing time, self-healing once siblings merge. `composes_with` carries design relationships independent of merge ordering — leaving the refs preserves design intent the row was written to capture. Resolving as no-op fix; the underlying state moves once #3952 + #3961 land.
 
-### Thread 2: docs/backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md:67 (resolved)
+### Thread 2: docs/backlog/P1/081KRQ1AB0008QG0R002469KJG-destructive-verb-refusal-gate-substrate-level-2026-05-16.md:67 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T23:16:32Z):
 
@@ -123,7 +123,7 @@ Grammar: this should read “The Insight boxes ARE the inflation mechanism” (o
 
 Fixed in e0b95f406 — `The Insight boxes IS the inflation mechanism` → `The Insight boxes ARE the inflation mechanism`.
 
-### Thread 3: docs/backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md:55 (resolved)
+### Thread 3: docs/backlog/P1/081KRQ1AB0008QG0R002469KJG-destructive-verb-refusal-gate-substrate-level-2026-05-16.md:55 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T23:16:33Z):
 

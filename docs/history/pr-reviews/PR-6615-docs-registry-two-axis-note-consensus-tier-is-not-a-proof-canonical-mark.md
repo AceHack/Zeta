@@ -33,7 +33,7 @@ Aaron 2026-06-02: **"yes add the two-axis note to the registry."** Adds a note r
 
 The two orthogonal axes:
 - **✅/⚠️/❌ = consensus tier** (cross-language *agreement*: golden-vector byte-consensus / compiler-parity). Even **Tier-1 byte-consensus proves only that the four impls agree byte-for-byte, not that they are correct w.r.t. the seed** — four implementations can agree on the same wrong behavior (the consensus≠validation trap).
-- **canonical = the separate proof axis** — proof-lineage edge to the seed (homeostat proven) + hex (Cl(1,3))/4×4 connection — tracked by **B-1007** and the `formal-proof-first` rule (#6613).
+- **canonical = the separate proof axis** — proof-lineage edge to the seed (homeostat proven) + hex (Cl(1,3))/4×4 connection — tracked by **081KT2T2J0008QG0R000YZ3NMY** and the `formal-proof-first` rule (#6613).
 
 So a primitive can be **Tier-1 ✅ and non-canonical at once**: many primitives are validated; ~0 are proven. Read ✅ as "ships + agrees across langs," never "proven."
 

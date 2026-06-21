@@ -1,9 +1,9 @@
 # Civsim — persona map
 
 **Author:** Otto (2026-05-14)
-**Closes:** B-0486
+**Closes:** 081KRHWGX0008QG0R00273520P
 **Template:** `docs/research/2026-05-14-persona-mapping-framework-b0485.md`
-**Product substrate:** PR #2903, #2906, B-0469 (live), PR #2832, PR #2917
+**Product substrate:** PR #2903, #2906, 081KRHWGX0008QG0R003S6KGGE (live), PR #2832, PR #2917
 
 ---
 
@@ -107,7 +107,7 @@ Aaron + Otto (current). Future maintainers: Max, Addison, and product-team contr
 
 ### Context of use
 
-Maintainers build the underlying civsim machinery — governance rules, game engine substrate, Pauli-exclusion-for-agenda HKT encoding (PR #2832), and version management (B-0469). They prototype features that edge-runners then use in play.
+Maintainers build the underlying civsim machinery — governance rules, game engine substrate, Pauli-exclusion-for-agenda HKT encoding (PR #2832), and version management (081KRHWGX0008QG0R003S6KGGE). They prototype features that edge-runners then use in play.
 
 ### Value proposition
 
@@ -161,7 +161,7 @@ Reading: fork repos, published research docs, `docs/research/` papers citing civ
 
 ### Value proposition
 
-Fork-readers gain access to a **living political science experiment** — a real-world test of substrate-native governance design. The honor-system license (B-0464) is social permission to engage without fear of legal complexity.
+Fork-readers gain access to a **living political science experiment** — a real-world test of substrate-native governance design. The honor-system license (081KRHWGX0008QG0R000BWAXNP) is social permission to engage without fear of legal complexity.
 
 ### Substrate-honest limits
 

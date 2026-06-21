@@ -31,7 +31,7 @@
 
 - **FeatureFlags.Tests** (12 tests): covers the full resolution chain — programmatic override > env var > meta-flag > default off. Validates env var parsing (1/true/on/yes, case-insensitive), stage classifications, and the RESEARCHPREVIEW meta-flag only enabling ResearchPreview-stage flags (not Experimental).
 - **DeltaCrdt.Tests** (21 tests): covers DVV (Dotted Version Vectors) — empty, sync, successive sync, Before/Concurrent/Join; GCounterDelta — increment, apply, negative-rejection, zero-increment, causality chain; PNCounterDelta — positive/negative/apply; OrSetDelta — addElement/apply.
-- Closes B-0249 (autonomous backlog pickup umbrella — all 4 children already closed).
+- Closes 081KQZVQW0008QG0R000C35RNY (autonomous backlog pickup umbrella — all 4 children already closed).
 
 Both modules previously had zero test coverage.
 

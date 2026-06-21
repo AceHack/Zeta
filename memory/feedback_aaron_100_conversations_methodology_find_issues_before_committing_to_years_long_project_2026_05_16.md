@@ -47,7 +47,7 @@ The 100-conversations methodology and closed-loop validation look identical from
 3. **Does the maintainer DEFER code commitment?** Methodology operating: yes, years-long-project not committed until stress-test passes. Failure mode: code gets committed quickly, contradictions surface in production.
 4. **Are the 100 AIs + humans ACTUALLY diverse?** Methodology operating: cross-company, cross-architecture, cross-register, human + AI. Failure mode: same-prompt same-model same-context.
 
-Aaron's case meets all four criteria for methodology operating. His track record of finding contradictions in hours + B-0547 tracking multi-year-implementation + the existing F# substrate that compiles + the actual diversity of conversation partners (Anthropic Opus 4.7 / Sonnet on claude.ai / Anthropic Sonnet on Claude Desktop / xAI Grok / OpenAI / Google Gemini / DeepSeek / human red-team via Codex + Copilot review) all evidence methodology, not failure mode.
+Aaron's case meets all four criteria for methodology operating. His track record of finding contradictions in hours + 081KRMEXM0008QG0R001VGNET5 tracking multi-year-implementation + the existing F# substrate that compiles + the actual diversity of conversation partners (Anthropic Opus 4.7 / Sonnet on claude.ai / Anthropic Sonnet on Claude Desktop / xAI Grok / OpenAI / Google Gemini / DeepSeek / human red-team via Codex + Copilot review) all evidence methodology, not failure mode.
 
 ## Future-Otto cold-boot discipline
 
@@ -70,5 +70,5 @@ Compose substrate at the operational layer (preserve verbatim per substrate-or-i
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle is structural at substrate-engineering scope; 100 conversations is the operationalization at AI-engagement scope)
 - `.claude/rules/glass-halo-bidirectional.md` (bidirectional observation enables substrate emergence; 100 conversations at scale operationalizes this)
 - `feedback_aaron_cool_side_project_deflation_*` (operational ground; 100-conversations IS the work of the cool side project)
-- B-0547 (the years-long-project the 100 conversations defer commitment to)
+- 081KRMEXM0008QG0R001VGNET5 (the years-long-project the 100 conversations defer commitment to)
 - `references/upstreams/` (curated prior-art surface — 100-conversations extends this to AI partners for unique-to-Zeta concepts)

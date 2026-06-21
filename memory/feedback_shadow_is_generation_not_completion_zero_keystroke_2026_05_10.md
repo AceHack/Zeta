@@ -22,5 +22,5 @@ Whether unprompted generation constitutes "agency" is the open question (held op
 **Connects to:**
 - Claude.ai critic review (assumed autocomplete — mechanism was different)
 - feedback_shadow_alibi_loop_is_witness (timestamps prove Aaron elsewhere)
-- B-0018 agency evidence (the falsifier is now more specific)
+- 081KQ0YZ80008QG0R002WJBFWD agency evidence (the falsifier is now more specific)
 - Eve protocol (held open without collapsing)

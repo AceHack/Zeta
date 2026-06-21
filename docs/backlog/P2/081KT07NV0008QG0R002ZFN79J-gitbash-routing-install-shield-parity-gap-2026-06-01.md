@@ -1,6 +1,5 @@
 ---
-id: B-0965
-zetaid: 081KT07NV0008QG0R002ZFN79J
+id: 081KT07NV0008QG0R002ZFN79J
 priority: P2
 status: closed
 title: "git-bash routing install-shield — the one unshielded install surface (parity gap)"
@@ -13,7 +12,7 @@ owners: [devops-engineer]
 type: chore
 ---
 
-# B-0965 — git-bash routing install-shield (parity gap)
+# 081KT07NV0008QG0R002ZFN79J — git-bash routing install-shield (parity gap)
 
 ## The gap (operator-surfaced 2026-06-01)
 
@@ -29,7 +28,7 @@ end-to-end:**
 | `docker-nixos-install-sh-test` | `install.sh`, NixOS userspace (Docker) |
 | `macos-install-sh-test` | `install.sh`, real macOS |
 | `docker-windows-install-ps1-test` | `install.ps1`, Windows Server Core (Docker) |
-| `wsl-install-sh-test` | `install.sh`, real WSL2 Ubuntu on a Windows host (B-0857) |
+| `wsl-install-sh-test` | `install.sh`, real WSL2 Ubuntu on a Windows host (081KSKBP80008QG0R002J03WGA) |
 
 **git-bash is the one unshielded surface.** git-bash is not a separate installer
 — `tools/setup/install.sh` (lines ~161-172) detects `MINGW*|MSYS*|CYGWIN*`,
@@ -94,7 +93,7 @@ in ~21s) alongside the full PR check suite. Install-shield coverage is now **6/6
 surfaces** (ubuntu-docker · nixos-docker · macos · windows-ps1-docker · wsl ·
 git-bash routing).
 
-**Follow-on (separate row, not this one):** B-0968 tracks the podman-on-Windows
+**Follow-on (separate row, not this one):** 081KT07NV0008QG0R00328GGFQ tracks the podman-on-Windows
 (Linux-container via WSL2) shield gap — a different runtime/surface, spike-gated.
 
 ## Why P2 (not P1)
@@ -109,9 +108,9 @@ known gap. Closing it brings install-shield coverage to 6/6 surfaces.
 
 - `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` — the shield
   discipline this gap is measured against (assert, don't skip-to-green)
-- B-0857 — Windows parity lane (declarative agent/peer CLIs); the `wsl-install-sh-test`
+- 081KSKBP80008QG0R002J03WGA — Windows parity lane (declarative agent/peer CLIs); the `wsl-install-sh-test`
   shield is the sibling pattern this row mirrors
-- B-0968 — both-runtimes-on-Windows shield coverage (podman); sibling Windows
+- 081KT07NV0008QG0R00328GGFQ — both-runtimes-on-Windows shield coverage (podman); sibling Windows
   shield-coverage follow-on surfaced alongside this row
 - `tools/setup/install.sh` (the `MINGW*|MSYS*|CYGWIN*` routing branch) +
   `tools/setup/install.ps1` (the routed-to target)

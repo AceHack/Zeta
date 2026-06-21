@@ -103,7 +103,7 @@ Both produce **identical hex across all 12 canonical vectors** in `tests/cross-v
 
 ## Composes with
 
-B-0635 wave-particle-duality · B-0636 agents-in-superposition · B-0644 limit-is-simulation · B-0665 integrate-as-choice-locus · B-0666 english-as-projection (I(D(x))=x) · Reticulum 128-bit native identity
+081KRW63S0008QG0R002KC5DSR wave-particle-duality · 081KRW63S0008QG0R00088FYE9 agents-in-superposition · 081KRW63S0008QG0R002ZRNDJ8 limit-is-simulation · 081KRW63S0008QG0R002YAA09X integrate-as-choice-locus · 081KRW63S0008QG0R001SAHYKV english-as-projection (I(D(x))=x) · Reticulum 128-bit native identity
 
 Co-Authored-By: Mika <noreply@x.ai>
 
@@ -598,8 +598,8 @@ Pending follow-ups:
   - Roslyn source generator from registry/*.yaml
   - AgencySignature v2 *WithAgency Rx operators
 
-Composes with B-0635 wave-particle-duality, B-0636 agents-in-superposition,
-B-0644 limit-is-simulation, B-0665 integrate-as-choice-locus, B-0666
+Composes with 081KRW63S0008QG0R002KC5DSR wave-particle-duality, 081KRW63S0008QG0R00088FYE9 agents-in-superposition,
+081KRW63S0008QG0R002ZRNDJ8 limit-is-simulation, 081KRW63S0008QG0R002YAA09X integrate-as-choice-locus, 081KRW63S0008QG0R001SAHYKV
 english-as-projection (I(D(x))=x). Reticulum-native 128-bit identity.
 
 Co-Authored-By: Mika <noreply@x.ai>

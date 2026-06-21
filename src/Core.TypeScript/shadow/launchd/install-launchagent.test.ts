@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Unit tests for tools/shadow/launchd/install-launchagent.ts.
- * Implements B-0528 acceptance criteria (6 test categories).
+ * Implements 081KRMEXM0008QG0R000T0A28T acceptance criteria (6 test categories).
  *
  * Strategy: test the pure helpers (`xmlEscape`, `substitutePlaceholders`,
  * `requireAbsolute`, `tryDetect`) directly. The shell-out paths

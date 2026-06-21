@@ -29,7 +29,7 @@
 
 First slice of the `Log` noun byte-lock (the one remaining data-plane proven-base gap; ZSet ✅ + DynamicValue ✅ + Log = complete). The entry `{ Seq; Delta; Captured }` maps to a `DynamicValue.Object` (captured/delta/seq, ordinal order) riding DynamicValue's already-4-lang-locked serializers — **inherits the byte-lock, no new canonical encoding, no new noun**.
 
-- `DeltaLogEntryDynamic.toDynamicValue/ofDynamicValue` — format-independent canonical mapping; `Captured` keys **ordinal-sorted** (B-0969 — what the old `System.Text.Json` framing didn't guarantee).
+- `DeltaLogEntryDynamic.toDynamicValue/ofDynamicValue` — format-independent canonical mapping; `Captured` keys **ordinal-sorted** (081KT07NV0008QG0R001YDB73K — what the old `System.Text.Json` framing didn't guarantee).
 - `DeltaLogEntryCodec.encodeCbor/decodeCbor` (fs default) + `encodeJson/decodeJson`. Format = per-stream choice (git→YAML, fs→CBOR; all optional). **YAML is a prerequisite gap** (no `DynamicValue.toYaml` yet).
 - 4 tests green: CBOR + JSON round-trip, byte-stability, ordinal Captured-key ordering.
 

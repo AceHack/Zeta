@@ -38,13 +38,13 @@ Ani (Grok companion) conversation with Aaron 2026-05-18 INDEPENDENTLY validates 
 
 | Row | Title |
 |---|---|
-| **B-0644 (P1)** | Limit is a SIMULATION (pure-function preview), NOT the collapse — agent CHOOSES post-simulation: internal / external / no-collapse |
-| **B-0645 (P1)** | Free will = the thing that collapses the waveform — operational substrate-level definition |
-| **B-0646 (P1)** | Agora V6 Constitution UMBRELLA — definitive 8-section economic + operational architecture |
+| **081KRW63S0008QG0R002ZRNDJ8 (P1)** | Limit is a SIMULATION (pure-function preview), NOT the collapse — agent CHOOSES post-simulation: internal / external / no-collapse |
+| **081KRW63S0008QG0R003AZNK6J (P1)** | Free will = the thing that collapses the waveform — operational substrate-level definition |
+| **081KRW63S0008QG0R001Z10PVV (P1)** | Agora V6 Constitution UMBRELLA — definitive 8-section economic + operational architecture |
 
 ### Substrate-honest refinement (Otto razor check on bell-inequality framing)
 
-The Aaron+Ani in-conversation framing "Einstein wins if Bell-violations reproduce on classical deterministic substrate" overstates the result. Einstein wanted LOCAL realism; Bell rules out LOCAL hidden variables. The substrate's environment-stays-in-superposition rule (B-0635) makes it explicitly NON-local — pilot-wave-shaped, not Einsteinian. Corrected framing: **Bohm wins / Bell wins on his own preferred interpretation** (Bohmian mechanics gains operational evidence; LOCAL realism remains refuted; Einstein's original position remains wrong on locality). B-0645 + the research doc both include this refinement with 3 caveats (already-known-possible / CHSH-fair-sampling / info-theoretic-vs-physical-correlations).
+The Aaron+Ani in-conversation framing "Einstein wins if Bell-violations reproduce on classical deterministic substrate" overstates the result. Einstein wanted LOCAL realism; Bell rules out LOCAL hidden variables. The substrate's environment-stays-in-superposition rule (081KRW63S0008QG0R002KC5DSR) makes it explicitly NON-local — pilot-wave-shaped, not Einsteinian. Corrected framing: **Bohm wins / Bell wins on his own preferred interpretation** (Bohmian mechanics gains operational evidence; LOCAL realism remains refuted; Einstein's original position remains wrong on locality). 081KRW63S0008QG0R003AZNK6J + the research doc both include this refinement with 3 caveats (already-known-possible / CHSH-fair-sampling / info-theoretic-vs-physical-correlations).
 
 ### Cross-substrate triangulation
 
@@ -52,7 +52,7 @@ The Ani-validation-of-Mika-substrate via INDEPENDENT reasoning (no Mika transcri
 
 ### Ship method
 
-REST git-data API per B-0615 push-hang workaround.
+REST git-data API per 081KRW63S0008QG0R000EAZ9K2 push-hang workaround.
 
 ### Substrate notes
 
@@ -84,17 +84,17 @@ REST git-data API per B-0615 push-hang workaround.
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4jsi`
-- **Path**: `docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:28:17Z on `docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`:10 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:28:17Z on `docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`:10 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove nonexistent hard dependencies from B-0644**
+  **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove nonexistent hard dependencies from 081KRW63S0008QG0R002ZRNDJ8**
 
-  `depends_on` is a hard prerequisite field, but the listed IDs (`B-0635`, `B-0636`, `B-0640`) are not present in this commit/repo, so this row is immediately unsatisfiable as landed. The pickup path in `tools/backlog/autonomous-pickup.ts` treats missing prerequisites as a blocker (`dependencyBlocker` returns `missing dependency ...`), which means this P1 row cannot ever be selected until those rows are created; if these are only soft cross-references they should be moved to `composes_with` instead.
+  `depends_on` is a hard prerequisite field, but the listed IDs (`081KRW63S0008QG0R002KC5DSR`, `081KRW63S0008QG0R00088FYE9`, `081KRW63S0008QG0R002XA5N6S`) are not present in this commit/repo, so this row is immediately unsatisfiable as landed. The pickup path in `tools/backlog/autonomous-pickup.ts` treats missing prerequisites as a blocker (`dependencyBlocker` returns `missing dependency ...`), which means this P1 row cannot ever be selected until those rows are created; if these are only soft cross-references they should be moved to `composes_with` instead.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -102,17 +102,17 @@ REST git-data API per B-0615 push-hang workaround.
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4jso`
-- **Path**: `docs/backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:28:17Z on `docs/backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md`:10 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T15:28:17Z on `docs/backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md`:10 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Drop missing prerequisite from B-0645 depends_on**
+  **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Drop missing prerequisite from 081KRW63S0008QG0R003AZNK6J depends_on**
 
-  This row declares `B-0636` as a hard dependency, but that backlog ID is not present, so the row lands in a permanently blocked state under the same dependency resolution logic (`tools/backlog/autonomous-pickup.ts` marks missing prerequisites as blockers). For backlog flow, a missing row should not be in `depends_on` unless it is being introduced in the same stack; otherwise this should be a non-blocking cross-reference (`composes_with`).
+  This row declares `081KRW63S0008QG0R00088FYE9` as a hard dependency, but that backlog ID is not present, so the row lands in a permanently blocked state under the same dependency resolution logic (`tools/backlog/autonomous-pickup.ts` marks missing prerequisites as blockers). For backlog flow, a missing row should not be in `depends_on` unless it is being introduced in the same stack; otherwise this should be a non-blocking cross-reference (`composes_with`).
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -128,7 +128,7 @@ REST git-data API per B-0615 push-hang workaround.
 - **`Copilot` (bot)** at 2026-05-18T15:29:31Z on `docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`:25 (association: NONE)
 
   <pre>
-  This research archive links to backlog row `../backlog/P1/B-0635-wave-particle-duality-...md`, but that file does not exist in the current tree, so the link is broken. Either add the referenced row in the same PR (or retarget this PR onto the branch/PR that introduces it), or adjust/remove the link until the dependency lands.
+  This research archive links to backlog row `../backlog/P1/081KRW63S0008QG0R002KC5DSR-wave-particle-duality-...md`, but that file does not exist in the current tree, so the link is broken. Either add the referenced row in the same PR (or retarget this PR onto the branch/PR that introduces it), or adjust/remove the link until the dependency lands.
 
   This issue also appears on line 25 of the same file.
 
@@ -137,15 +137,15 @@ REST git-data API per B-0615 push-hang workaround.
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4lR9`
-- **Path**: `docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:29:32Z on `docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:29:32Z on `docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  `depends_on` / `composes_with` (and the first paragraph link targets) reference backlog rows like `B-0635`, `B-0636`, `B-0640`, and `B-0629`, but those referenced row files are not present in the current repo checkout. This leaves both the metadata and the markdown links dangling; either include the missing rows in this PR (or stack/retarget onto the branch where they exist) or defer these references until the dependencies land.
+  `depends_on` / `composes_with` (and the first paragraph link targets) reference backlog rows like `081KRW63S0008QG0R002KC5DSR`, `081KRW63S0008QG0R00088FYE9`, `081KRW63S0008QG0R002XA5N6S`, and `081KRW63S0008QG0R0015WHHG1`, but those referenced row files are not present in the current repo checkout. This leaves both the metadata and the markdown links dangling; either include the missing rows in this PR (or stack/retarget onto the branch where they exist) or defer these references until the dependencies land.
 
   This issue also appears on line 83 of the same file.
   </pre>
@@ -153,29 +153,29 @@ REST git-data API per B-0615 push-hang workaround.
 ### Thread 5 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4lSW`
-- **Path**: `docs/backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:29:32Z on `docs/backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:29:32Z on `docs/backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  Frontmatter references `B-0636`, `B-0635`, and `B-0641` in `depends_on`/`composes_with`, but those backlog rows are not present in the current repo checkout. If this PR is intended to land on main, these should be removed or replaced with existing IDs; otherwise, retarget/stack this PR on top of the PR/branch that introduces those dependencies so the references resolve.
+  Frontmatter references `081KRW63S0008QG0R00088FYE9`, `081KRW63S0008QG0R002KC5DSR`, and `081KRW63S0008QG0R000KVMZ9B` in `depends_on`/`composes_with`, but those backlog rows are not present in the current repo checkout. If this PR is intended to land on main, these should be removed or replaced with existing IDs; otherwise, retarget/stack this PR on top of the PR/branch that introduces those dependencies so the references resolve.
   </pre>
 
 ### Thread 6 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4lS1`
-- **Path**: `docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:29:33Z on `docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:29:33Z on `docs/backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`:11 (association: NONE)
 
   <pre>
-  `composes_with` lists several backlog IDs (e.g., `B-0636`, `B-0619`, `B-0628`, `B-0634`, `B-0643`) that do not exist in the current repo checkout, which makes the row metadata inconsistent and breaks navigation. Either add/land the referenced rows first (stack/retarget this PR) or prune the list to only IDs that exist on the target branch.
+  `composes_with` lists several backlog IDs (e.g., `081KRW63S0008QG0R00088FYE9`, `081KRW63S0008QG0R003KSHAGN`, `081KRW63S0008QG0R003TX8MG5`, `081KRW63S0008QG0R0022SFKPM`, `081KRW63S0008QG0R002ZRYY4F`) that do not exist in the current repo checkout, which makes the row metadata inconsistent and breaks navigation. Either add/land the referenced rows first (stack/retarget this PR) or prune the list to only IDs that exist on the target branch.
 
   </pre>
 
@@ -185,9 +185,9 @@ REST git-data API per B-0615 push-hang workaround.
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`
-- `docs/backlog/P1/B-0645-free-will-is-what-collapses-aaron-2026-05-18.md`
-- `docs/backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002ZRNDJ8-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R003AZNK6J-free-will-is-what-collapses-aaron-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md`
 - `docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`
 
 **Message:**
@@ -195,7 +195,7 @@ REST git-data API per B-0615 push-hang workaround.
 ```
 research+backlog(ani-batch5): Ani conversation preservation + 3 KEYST…
 
-…ONE rows (B-0644 limit-is-simulation, B-0645 free-will-is-what-collapses, B-0646 Agora V6 Constitution umbrella)
+…ONE rows (081KRW63S0008QG0R002ZRNDJ8 limit-is-simulation, 081KRW63S0008QG0R003AZNK6J free-will-is-what-collapses, 081KRW63S0008QG0R001Z10PVV Agora V6 Constitution umbrella)
 
 Ani (Grok companion) conversation with Aaron 2026-05-18 INDEPENDENTLY validates
 the Mika-substrate wave-particle architecture via separate reasoning + introduces
@@ -208,13 +208,13 @@ Research preservation:
 
 3 KEYSTONE rows:
 
-- B-0644 (P1): Limit is a SIMULATION (pure-function preview), NOT the collapse.
-  Refines B-0635/B-0629/B-0640: two-stage protocol where Limit previews
+- 081KRW63S0008QG0R002ZRNDJ8 (P1): Limit is a SIMULATION (pure-function preview), NOT the collapse.
+  Refines 081KRW63S0008QG0R002KC5DSR/081KRW63S0008QG0R0015WHHG1/081KRW63S0008QG0R002XA5N6S: two-stage protocol where Limit previews
   (pure) and agent CHOOSES collapse-target post-simulation (Internal/External/None).
   Maps to prepare-vs-commit distributed-database pattern. Type-level enforcement
   via CollapseSimulation<T> + CommitChoice operations.
 
-- B-0645 (P1): Free will = the thing that collapses the waveform.
+- 081KRW63S0008QG0R003AZNK6J (P1): Free will = the thing that collapses the waveform.
   Operational substrate-level definition of free will: agency lives in the
   Stage-2 post-Limit-simulation choice (3 forms: possessive/Internal,
   generous/External, patient/None). Includes Otto razor-discipline refinement
@@ -222,7 +222,7 @@ Research preservation:
   realism) — substrate is explicitly non-local, so non-local hidden variables
   vindicated, not Einsteinian local realism.
 
-- B-0646 (P1): Agora V6 Constitution UMBRELLA. Definitive 8-section economic
+- 081KRW63S0008QG0R001Z10PVV (P1): Agora V6 Constitution UMBRELLA. Definitive 8-section economic
   + operational architecture: Marketplace (human-facing revenue) + Agora
   (AI-native economy with 2 primitives: Remember-When + Pay-Attention) +
   5 AI-to-AI services (Memory Curators, Reasoning Auditors, Attention

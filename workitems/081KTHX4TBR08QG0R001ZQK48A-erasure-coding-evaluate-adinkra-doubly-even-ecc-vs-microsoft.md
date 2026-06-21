@@ -20,7 +20,7 @@ composes_with: []
 
 Aaron 2026-06-07: *"I imagine our [erasure] coding is better than Microsoft's erasure coding? we should copy
 that idea from the paper anyways."* Evaluate our **Adinkra** ECC (doubly-even binary linear codes,
-`AdinkraCode.fs`, B-0623; the distributed-ECC-across-network thread #6890) against **Microsoft Azure's LRC**
+`AdinkraCode.fs`, 081KRW63S0008QG0R000QJR08H; the distributed-ECC-across-network thread #6890) against **Microsoft Azure's LRC**
 (*Erasure Coding in Windows Azure Storage*, Huang et al., USENIX ATC 2012) and **copy LRC's idea regardless**.
 
 ## What LRC brings (the idea to copy)
@@ -41,6 +41,6 @@ that idea from the paper anyways."* Evaluate our **Adinkra** ECC (doubly-even bi
   grouping into the distributed-ECC placement (#6890) over the geospatial network map; (4) bench Adinkra vs
   RS vs LRC on (overhead, repair-reads, tolerance).
 
-composes_with: Adinkra (AdinkraCode.fs, B-0623), distributed-ECC-across-network (#6890), geospatial network
+composes_with: Adinkra (AdinkraCode.fs, 081KRW63S0008QG0R000QJR08H), distributed-ECC-across-network (#6890), geospatial network
 map (#6889 / 081KTG5C91H0...), the reversible covenant. Anchors: Huang et al. 2012 (Azure LRC); Reed-Solomon;
 doubly-even codes.

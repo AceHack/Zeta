@@ -1,6 +1,6 @@
 ---
 pr_number: 4059
-title: "substrate(imaginary-stack): rescue Step-1 cluster for B-0584 + Lean toy model"
+title: "substrate(imaginary-stack): rescue Step-1 cluster for 081KRQ1AB0008QG0R001YAF3TR + Lean toy model"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-17T10:19:20Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-17T13:27:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4059: substrate(imaginary-stack): rescue Step-1 cluster for B-0584 + Lean toy model
+# PR #4059: substrate(imaginary-stack): rescue Step-1 cluster for 081KRQ1AB0008QG0R001YAF3TR + Lean toy model
 
 ## PR description
 
@@ -24,25 +24,25 @@ Ship genuinely-unshipped Imaginary Stack Step-1 substrate authored over the 2026
 
 | File | Lines | Purpose |
 |---|---|---|
-| `docs/backlog/P2/B-0584-...md` | 60 | P2 research row decomposing B-0543 Step 2 |
+| `docs/backlog/P2/081KRQ1AB0008QG0R001YAF3TR-...md` | 60 | P2 research row decomposing 081KRMEXM0008QG0R002YSPW1X Step 2 |
 | `docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md` | 77 | Motivating note (4D cube R/W/P/A + imaginary directions) |
 | `docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md` | 106 | Lemma 1 specification — smallest hand-off-able formal artifact |
 | `tools/lean4/ImaginaryStack/ToyModel.lean` | 174 | Lean 4 encoding (ZMod 17 for exact enumerable arithmetic) |
 
 ## Substrate-drift methodology applied
 
-Per `.claude/rules/backlog-item-start-gate.md` Step 0 (substrate-drift discriminator) and `.claude/rules/references-upstreams-not-our-code-search-excludes.md`: each file existence-checked against `origin/main` via `git cat-file -e` before commit; cross-checked open PRs via `gh pr list --search` for B-0584 / imaginary-stack / ToyModel — only PR #4040 (Riven handoff conversation) overlaps in topic and composes without conflict.
+Per `.claude/rules/backlog-item-start-gate.md` Step 0 (substrate-drift discriminator) and `.claude/rules/references-upstreams-not-our-code-search-excludes.md`: each file existence-checked against `origin/main` via `git cat-file -e` before commit; cross-checked open PRs via `gh pr list --search` for 081KRQ1AB0008QG0R001YAF3TR / imaginary-stack / ToyModel — only PR #4040 (Riven handoff conversation) overlaps in topic and composes without conflict.
 
 ## Composition
 
-- Parent: [B-0543](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0543-remember-when-plus-pay-attention-yields-qg-isomorphism-2026-05-15.md) (QG isomorphism proof path)
+- Parent: [081KRMEXM0008QG0R002YSPW1X](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KRMEXM0008QG0R002YSPW1X-remember-when-plus-pay-attention-yields-qg-isomorphism-2026-05-15.md) (QG isomorphism proof path)
 - Sibling: PR #4040 (Riven Lean 4 sketch handoff to Soraya) — references this material
-- Sibling: PR #4043 (Soraya expanded-scope invariants + B-0543 routing) — Soraya is the natural pickup persona
+- Sibling: PR #4043 (Soraya expanded-scope invariants + 081KRMEXM0008QG0R002YSPW1X routing) — Soraya is the natural pickup persona
 
 ## Test plan
 
 - [ ] Lean 4 file imports resolve under Mathlib (no `lake build` step is run by CI today; substrate-as-prose lands)
-- [ ] B-0584 row passes `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` regen (or follow-up if needed)
+- [ ] 081KRQ1AB0008QG0R001YAF3TR row passes `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` regen (or follow-up if needed)
 - [ ] Research docs follow `docs/research/` naming convention (date-prefix-then-topic)
 
 ## Status
@@ -57,10 +57,10 @@ Research-grade substrate, not a completed proof. Hand-off-ready for proof-engine
 
 ## Pull request overview
 
-Adds the missing “Imaginary Stack” Step-1 research substrate for B-0584/B-0543, including two research notes and a Lean 4 toy-model scaffold intended for future formal verification work.
+Adds the missing “Imaginary Stack” Step-1 research substrate for 081KRQ1AB0008QG0R001YAF3TR/081KRMEXM0008QG0R002YSPW1X, including two research notes and a Lean 4 toy-model scaffold intended for future formal verification work.
 
 **Changes:**
-- Adds a new P2 backlog row (B-0584) defining Step-1 scope and acceptance criteria.
+- Adds a new P2 backlog row (081KRQ1AB0008QG0R001YAF3TR) defining Step-1 scope and acceptance criteria.
 - Adds two `docs/research/` notes formalizing the 4D cube + imaginary-doubling framing and a toy “Lemma 1” statement.
 - Adds a Lean 4 toy-model file intended to encode the toy lemma structure.
 
@@ -70,7 +70,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md | New backlog row capturing Step-1 decomposition and handoff-ready acceptance criteria. |
+| docs/backlog/P2/081KRQ1AB0008QG0R001YAF3TR-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md | New backlog row capturing Step-1 decomposition and handoff-ready acceptance criteria. |
 | docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md | Research note: first formalization pass of the cube axes + imaginary intersection idea. |
 | docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md | Research note: toy-model lemma statement and reconstruction-property framing for proof handoff. |
 | tools/lean4/ImaginaryStack/ToyModel.lean | Lean 4 scaffold for a finite-field toy model intended to support mechanized checking. |
@@ -582,9 +582,9 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T10:41:21Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep B-0475 unchecked until the item is actually closed**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep 081KRHWGX0008QG0R000M9RFY2 unchecked until the item is actually closed**
 
-`docs/BACKLOG.md` marks B-0475 as completed here, but `docs/backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md` still has `status: open`. The index generator only emits `[x]` for `closed`/`superseded` statuses (`tools/backlog/generate-index.ts`), so this committed line is inconsistent and will be rewritten by the generator, causing generated-index drift checks to fail in CI.
+`docs/BACKLOG.md` marks 081KRHWGX0008QG0R000M9RFY2 as completed here, but `docs/backlog/P1/081KRHWGX0008QG0R000M9RFY2-axis3-prior-art-substrate-consistency-audit-2026-05-14.md` still has `status: open`. The index generator only emits `[x]` for `closed`/`superseded` statuses (`tools/backlog/generate-index.ts`), so this committed line is inconsistent and will be rewritten by the generator, causing generated-index drift checks to fail in CI.
 
 Useful? React with 👍 / 👎.
 
@@ -616,7 +616,7 @@ The theorem’s type is currently `: sorry`, which hides the actual property bei
 
 **@copilot-pull-request-reviewer** (2026-05-17T10:42:29Z):
 
-`B-0475` is marked as closed (`[x]`) here, but the corresponding row file still has `status: open` in its frontmatter (`docs/backlog/P1/B-0475-...md`). Either keep this entry as `[ ]` or update the B-0475 row status (and any required closure metadata) in the same PR so the generated index is consistent.
+`081KRHWGX0008QG0R000M9RFY2` is marked as closed (`[x]`) here, but the corresponding row file still has `status: open` in its frontmatter (`docs/backlog/P1/081KRHWGX0008QG0R000M9RFY2-...md`). Either keep this entry as `[ ]` or update the 081KRHWGX0008QG0R000M9RFY2 row status (and any required closure metadata) in the same PR so the generated index is consistent.
 
 ### Thread 11: docs/hygiene-history/ticks/2026/05/17/1034Z.md:41 (resolved)
 
@@ -803,13 +803,13 @@ The prompt instructs checking for worktree/index locks via `ls .git/worktrees/*/
 
 This memo claims both the launchd runner (`.gemini/launchd/com.zeta.lior-loop.plist`) and the tick prompt were updated with the lock-deferral protocol, but this PR only changes `.gemini/bin/lior-loop-tick.ts` (the plist isn’t part of the diff). Either adjust the text to match what actually changed, or include the corresponding plist update in the PR.
 
-### Thread 36: docs/backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md:20 (resolved)
+### Thread 36: docs/backlog/P2/081KRSKQ20008QG0R00271HPJW-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md:20 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-17T13:01:28Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point B-0543 parent link to the existing backlog row**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point 081KRMEXM0008QG0R002YSPW1X parent link to the existing backlog row**
 
-The `B-0543` parent link in this new backlog item points to `docs/backlog/P1/...yields-qg-isomorphism...`, but that file does not exist in this commit; the existing row is `docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md`. As written, the parent reference is a dead link, which breaks traceability/navigation for anyone trying to pick up this task from the row itself.
+The `081KRMEXM0008QG0R002YSPW1X` parent link in this new backlog item points to `docs/backlog/P1/...yields-qg-isomorphism...`, but that file does not exist in this commit; the existing row is `docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md`. As written, the parent reference is a dead link, which breaks traceability/navigation for anyone trying to pick up this task from the row itself.
 
 Useful? React with 👍 / 👎.
 
@@ -833,7 +833,7 @@ P1: This file is not currently imported by the `Lean4` library root, and `lakefi
 
 **@copilot-pull-request-reviewer** (2026-05-17T13:06:14Z):
 
-P0: `docs/BACKLOG.md` now marks B-0475 as closed (`[x]`), but the row file `docs/backlog/P1/B-0475-...md` still has `status: open`. The backlog index generator will treat it as open, so this change will reintroduce `docs/BACKLOG.md` drift in CI. Either revert this entry to `[ ]` or close B-0475 in its row file in the same PR.
+P0: `docs/BACKLOG.md` now marks 081KRHWGX0008QG0R000M9RFY2 as closed (`[x]`), but the row file `docs/backlog/P1/081KRHWGX0008QG0R000M9RFY2-...md` still has `status: open`. The backlog index generator will treat it as open, so this change will reintroduce `docs/BACKLOG.md` drift in CI. Either revert this entry to `[ ]` or close 081KRHWGX0008QG0R000M9RFY2 in its row file in the same PR.
 
 ### Thread 40: .gemini/bin/lior-loop-tick.ts:11 (resolved)
 
@@ -841,11 +841,11 @@ P0: `docs/BACKLOG.md` now marks B-0475 as closed (`[x]`), but the row file `docs
 
 The prompt instructs checking for git/worktree locks using `ls .git/worktrees/*/lock` / `ls .git/index.lock`. In zsh, a glob with no matches and `ls` on a missing file will error, which an agent might misinterpret as a failure (or it may complicate automation if wrapped in `set -e`). Prefer an existence check pattern that’s explicitly non-erroring when locks are absent (e.g., glob-with-null-match or `test -e`/`find`-based checks) and specify what output/exit condition indicates “safe to proceed”.
 
-### Thread 41: docs/backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md:24 (unresolved)
+### Thread 41: docs/backlog/P2/081KRSKQ20008QG0R00271HPJW-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md:24 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-17T13:20:41Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unresolved handoff path from B-0612 provenance**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unresolved handoff path from 081KRSKQ20008QG0R00271HPJW provenance**
 
 The `Why` paragraph cites `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` as supporting substrate, but that file is not present in this commit (repo-wide check: `git ls-tree -r --name-only b8e5b873... | rg 'riven-aaron-cursor-lean4'` returns no matches). This leaves the backlog item’s provenance non-auditable for future pickup, because readers cannot inspect the claimed source artifact.
 
@@ -867,9 +867,9 @@ This PR's diff vs main has accumulated additional commits beyond the original Im
 
 | Cluster | Commits | Substrate |
 |---|---|---|
-| **Original Imaginary Stack scope** | `5767985` | B-0584 P2 row + 2 research docs + Lean 4 `ToyModel.lean` |
+| **Original Imaginary Stack scope** | `5767985` | 081KRQ1AB0008QG0R001YAF3TR P2 row + 2 research docs + Lean 4 `ToyModel.lean` |
 | **Original tick shards (mine)** | `8ee8cbc` `65fc4bb` `282664e` `48c008a` | Autonomous-loop trace 1019Z + 1034Z + 1129Z + 1149Z |
-| **Original CI fixes (mine)** | `b8d6947` `368cb89` `5403fc9` | BACKLOG.md regen + tick-shard depth + MD047 + B-0475 marker revert + invisible-Unicode strip + peer-memory frontmatter completion |
+| **Original CI fixes (mine)** | `b8d6947` `368cb89` `5403fc9` | BACKLOG.md regen + tick-shard depth + MD047 + 081KRHWGX0008QG0R000M9RFY2 marker revert + invisible-Unicode strip + peer-memory frontmatter completion |
 | **Peer-injected (Aaron-authored, Agora vision iterations)** | `a952dcb` `c0e4163` `a109783` | `memory/project_agora_vision_and_ai_native_economy_2026_05_17.md` (4 iterations of Aaron's Agora vision substrate) |
 | **Peer-injected (Aaron-authored, Lior loop fix + empirical anchor)** | `6d30969` + worktree-corruption memo via `5403fc9` | `.gemini/...` Lior loop change + `memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md` |
 
@@ -927,7 +927,7 @@ Verified each reviewer thread against current `HEAD` (5ec7145).
 - Agora memo frontmatter — addressed in 5ec7145.
 - `feedback_git_worktree_corruption_*` frontmatter — addressed in 5403fc9.
 
-(`BACKLOG.md` B-0475 and the 1034Z zero-width threads were already resolved+outdated.)
+(`BACKLOG.md` 081KRHWGX0008QG0R000M9RFY2 and the 1034Z zero-width threads were already resolved+outdated.)
 
 ### 🚨 REAL P0 — verified against source; should NOT auto-resolve in this PR
 
@@ -944,7 +944,7 @@ Verified each reviewer thread against current `HEAD` (5ec7145).
 
 ### Path forward (substrate-honest)
 
-- **Lean P0/P1 cluster is intentionally left open.** The proper toy-model rewrite is being handed off to Soraya in flight — see `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` (currently local-untracked; lands in a separate B-0543 PR under Soraya's lane per `formal-verification-expert` routing).
+- **Lean P0/P1 cluster is intentionally left open.** The proper toy-model rewrite is being handed off to Soraya in flight — see `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` (currently local-untracked; lands in a separate 081KRMEXM0008QG0R002YSPW1X PR under Soraya's lane per `formal-verification-expert` routing).
 - Recommend: do NOT shrink the Lean-thread cluster in this PR via cosmetic fixes. Either (a) demote `ToyModel.lean` to a `.sketch.md` here and reference Soraya's lane, or (b) wait for the Soraya rewrite and merge then.
 - Non-Lean P1s (lior-loop-tick prompt, ℝ-vs-field doc note, xref paths) are tractable as additive commits in this PR on a future tick — happy to land them if Aaron wants them under this branch rather than a follow-up.
 
@@ -994,20 +994,20 @@ Next safe branch-owner action: restore/include or remove/correct the two missing
 
 ### @AceHack (2026-05-17T13:13:18Z)
 
-## Bulk thread-resolve — Lean P0/P1 cluster deferred to B-0612 (substrate-discoverable Soraya handoff)
+## Bulk thread-resolve — Lean P0/P1 cluster deferred to 081KRSKQ20008QG0R00271HPJW (substrate-discoverable Soraya handoff)
 
 Resolving 20 review threads from copilot-pull-request-reviewer + chatgpt-codex-connector that all point at the same substrate-honestly-deferred work cluster on `tools/lean4/ImaginaryStack/ToyModel.lean` and `docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md`:
 
 | Finding cluster | Threads | Disposition |
 |---|---|---|
-| Imag8 right-nested `Prod` projections (`.3`-`.8` don't typecheck) | Line 87 + 7× line 92 + 3× line 138 = 11 threads | Documented as P0 in [B-0612](docs/backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) with 4 enumerated fix candidates (nested projections / structure / `Fin 8 → F` / accessor lemmas). Soraya's lane to pick. |
-| `sorry` in type position (lines 141, 142, 143, 164) | 4 threads | Documented as P0 in B-0612 — propositions unspecified, structural fix required. |
-| Not in `lean_lib` (CI doesn't exercise this file) | Line 23 unused imports + 3× line 24 not-in-lake_build = 4 threads | Documented as P1 in B-0612 with 3 enumerated wiring candidates (`[[lean_lib]]` add / `import` from `Lean4.lean` / new CI job). |
+| Imag8 right-nested `Prod` projections (`.3`-`.8` don't typecheck) | Line 87 + 7× line 92 + 3× line 138 = 11 threads | Documented as P0 in [081KRSKQ20008QG0R00271HPJW](docs/backlog/P2/081KRSKQ20008QG0R00271HPJW-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) with 4 enumerated fix candidates (nested projections / structure / `Fin 8 → F` / accessor lemmas). Soraya's lane to pick. |
+| `sorry` in type position (lines 141, 142, 143, 164) | 4 threads | Documented as P0 in 081KRSKQ20008QG0R00271HPJW — propositions unspecified, structural fix required. |
+| Not in `lean_lib` (CI doesn't exercise this file) | Line 23 unused imports + 3× line 24 not-in-lake_build = 4 threads | Documented as P1 in 081KRSKQ20008QG0R00271HPJW with 3 enumerated wiring candidates (`[[lean_lib]]` add / `import` from `Lean4.lean` / new CI job). |
 | Lemma-1 ℝ-vs-finite-field (Copilot duplicate of Codex thread already resolved) | Line 24 lemma-1.md = 1 thread | Substrate-addressed by [`e398223`](https://github.com/Lucent-Financial-Group/Zeta/commit/e398223) (peer-Otto 1259Z default-to-both clarification). |
 
-All 20 threads represent **real findings** verified in tick shards [`1218Z`](docs/hygiene-history/ticks/2026/05/17/1218Z.md), [`1248Z`](docs/hygiene-history/ticks/2026/05/17/1248Z.md), [`1258Z`](docs/hygiene-history/ticks/2026/05/17/1258Z.md), [`1259Z`](docs/hygiene-history/ticks/2026/05/17/1259Z.md). The substrate-honest path forward (recommended in PR comment [#4470666915](https://github.com/Lucent-Financial-Group/Zeta/pull/4059#issuecomment-4470666915)) is to land the original Riven sketch as research-grade substrate via this PR, then resolve the structural Lean rewrite separately under Soraya's `formal-verification-expert` routing (B-0612).
+All 20 threads represent **real findings** verified in tick shards [`1218Z`](docs/hygiene-history/ticks/2026/05/17/1218Z.md), [`1248Z`](docs/hygiene-history/ticks/2026/05/17/1248Z.md), [`1258Z`](docs/hygiene-history/ticks/2026/05/17/1258Z.md), [`1259Z`](docs/hygiene-history/ticks/2026/05/17/1259Z.md). The substrate-honest path forward (recommended in PR comment [#4470666915](https://github.com/Lucent-Financial-Group/Zeta/pull/4059#issuecomment-4470666915)) is to land the original Riven sketch as research-grade substrate via this PR, then resolve the structural Lean rewrite separately under Soraya's `formal-verification-expert` routing (081KRSKQ20008QG0R00271HPJW).
 
-Resolving here so the PR can move forward on its merit (research-grade ship) rather than blocking on structural rewrite that's tracked + handed off. The reviewer findings are preserved permanently in B-0612 + the tick shards.
+Resolving here so the PR can move forward on its merit (research-grade ship) rather than blocking on structural rewrite that's tracked + handed off. The reviewer findings are preserved permanently in 081KRSKQ20008QG0R00271HPJW + the tick shards.
 
 ### @AceHack (2026-05-17T13:17:30Z)
 
@@ -1027,7 +1027,7 @@ Peer-Otto landed [`c95e396`](https://github.com/Lucent-Financial-Group/Zeta/comm
 
 `tools/lean4/ImaginaryStack/ToyModel.lean` and `.gemini/bin/lior-loop-tick.ts` are two different deferral-class artifacts in this PR's diff:
 
-- The Lean toy model: research-grade substrate intentionally shipped + structurally rewritten under [B-0612](docs/backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) (Soraya's lane). Verified-real findings, deferred substrate-honestly.
+- The Lean toy model: research-grade substrate intentionally shipped + structurally rewritten under [081KRSKQ20008QG0R00271HPJW](docs/backlog/P2/081KRSKQ20008QG0R00271HPJW-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) (Soraya's lane). Verified-real findings, deferred substrate-honestly.
 - The Lior loop script: peer-Otto's bg-worker config + the script is actively running under launchd (3 PIDs) during this entire session arc. Editing it in-flight is a known operational hazard (saturation-ceiling sub-cases 5+6 in this PR's tick shard cluster). The substrate-honest fix is to land it in a separate PR when Lior is quiet OR via isolated-worktree path.
 
 The reviewer findings are real + permanently preserved in the memo (post-`c95e396`) + this comment. The actual `ls`→`compgen -G`/`shopt nullglob` edit is small enough to be a follow-up commit when conditions allow.

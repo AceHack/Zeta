@@ -25,7 +25,7 @@ open System.Threading.Tasks
 ///   - Reaqtor project: https://github.com/reaqtive/reaqtor
 ///   - De Smet blog series on reaqtive.net (2021).
 ///
-/// WHY THERE IS NO SUBSCRIPTION-LEAK DISCIPLINE HERE (B-1036 rung 3, verified in-tree
+/// WHY THERE IS NO SUBSCRIPTION-LEAK DISCIPLINE HERE (081KTSZN10008QG0R002R3RENG rung 3, verified in-tree
 /// 2026-06-12 — the answer to Aaron's "I forget why we don't need dispose or risk leaks"):
 ///   (a) Core's composition is PULL/fold-based — ReactiveSynth's trace is a replayable fold,
 ///       AnimFlow/SoftIsr observeWith fold generators; no observer REGISTRY exists anywhere in

@@ -1,12 +1,11 @@
 ---
-id: B-0178
-zetaid: 081KQNJ500008QG0R001THCSKV
+id: 081KQNJ500008QG0R001THCSKV
 priority: P2
 status: open
-title: Decision-graph traversal tool — `tools/decision-graph/` TS scripts that emit + query the substrate's implicit provenance graph (Aaron 2026-05-03 architectural observation; fourth B-0177 audit hit)
+title: Decision-graph traversal tool — `tools/decision-graph/` TS scripts that emit + query the substrate's implicit provenance graph (Aaron 2026-05-03 architectural observation; fourth 081KQNJ500008QG0R0035QCEX9 audit hit)
 tier: tooling
 effort: L
-ask: Aaron 2026-05-03 named the tool in the decision-graph memo (`memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`) — "Mechanization path (proposed, not yet built): `tools/decision-graph/` TS tool that would traverse substrate and emit the graph for queries." The memo specifies 4 sub-scripts (extract / query / check / render) but the tool was never filed as a backlog row. Caught by Otto 2026-05-03 audit pass post-B-0141 + post-B-0142 + post-B-0157 filings.
+ask: Aaron 2026-05-03 named the tool in the decision-graph memo (`memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md`) — "Mechanization path (proposed, not yet built): `tools/decision-graph/` TS tool that would traverse substrate and emit the graph for queries." The memo specifies 4 sub-scripts (extract / query / check / render) but the tool was never filed as a backlog row. Caught by Otto 2026-05-03 audit pass post-081KQGDBJ0008QG0R0015RNK3P + post-081KQGDBJ0008QG0R002WY918J + post-081KQGDBJ0008QG0R002DPGHV0 filings.
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
@@ -30,7 +29,7 @@ The memo specified 4 sub-scripts:
 3. **`tools/decision-graph/check.ts`** — graph-invariant checker (orphan nodes, dangling edges, cycles in `depends_on`, broken `composes_with`)
 4. **`tools/decision-graph/render.ts`** — emits Cytoscape / DOT / Mermaid for visualization
 
-Per B-0177's audit hypothesis: the tool was named with specific scope but never filed as a backlog row. Otto 2026-05-03 audit pass (post-B-0141 + post-B-0142 + post-B-0157 filings) found B-0178 as the fourth concrete hit.
+Per 081KQNJ500008QG0R0035QCEX9's audit hypothesis: the tool was named with specific scope but never filed as a backlog row. Otto 2026-05-03 audit pass (post-081KQGDBJ0008QG0R0015RNK3P + post-081KQGDBJ0008QG0R002WY918J + post-081KQGDBJ0008QG0R002DPGHV0 filings) found 081KQNJ500008QG0R001THCSKV as the fourth concrete hit.
 
 ## What the substrate already encodes
 
@@ -72,8 +71,8 @@ Edge types:
 
 Parameterised queries via CLI:
 
-- `--downstream-of B-0170` — what depends on B-0170?
-- `--upstream-of B-0175` — what does B-0175 depend on / compose with?
+- `--downstream-of 081KQNJ500008QG0R003SCWBDV` — what depends on 081KQNJ500008QG0R003SCWBDV?
+- `--upstream-of 081KQNJ500008QG0R00055XHBG` — what does 081KQNJ500008QG0R00055XHBG depend on / compose with?
 - `--supersession-chain ADR-0042` — full lineage of supersedes/superseded-by
 - `--citation-traversal memory/feedback_X.md` — which memos cite this one?
 - `--orphans` — nodes with zero incoming edges
@@ -83,7 +82,7 @@ Parameterised queries via CLI:
 
 Graph-invariant checker:
 
-- Orphan nodes (nodes referenced but file missing) — overlaps with B-0170/v0.6 existence-drift
+- Orphan nodes (nodes referenced but file missing) — overlaps with 081KQNJ500008QG0R003SCWBDV/v0.6 existence-drift
 - Dangling edges (B-0xxx referenced in `composes_with` but no row file)
 - Cycles in `depends_on` (deadlock detection)
 - Broken `composes_with` (B-0xxx in frontmatter that doesn't exist)
@@ -99,10 +98,10 @@ Visualization output:
 
 ## Composes with
 
-- **B-0141 (brittle-pointer auto-rewriter)**: rewriter PRESERVES graph edges across rename; this row's `extract.ts` reads those edges for the graph
-- **B-0170 (substrate-claim-checker)**: graph-invariant checker (`check.ts`) overlaps with substrate-claim-checker's existence-drift sub-class — likely composes by sharing the file-resolution layer
-- **B-0175 (substrate-retrieval-index)**: layer-4 active retrieval; the decision-graph IS one of the indexed substrates
-- **B-0177 (audit memos for misfiled backlog rows)**: this row's existence IS the fourth empirical hit for B-0177's audit hypothesis (B-0141, B-0142, B-0157, B-0178 all reserved/named in memos but never filed until 2026-05-03)
+- **081KQGDBJ0008QG0R0015RNK3P (brittle-pointer auto-rewriter)**: rewriter PRESERVES graph edges across rename; this row's `extract.ts` reads those edges for the graph
+- **081KQNJ500008QG0R003SCWBDV (substrate-claim-checker)**: graph-invariant checker (`check.ts`) overlaps with substrate-claim-checker's existence-drift sub-class — likely composes by sharing the file-resolution layer
+- **081KQNJ500008QG0R00055XHBG (substrate-retrieval-index)**: layer-4 active retrieval; the decision-graph IS one of the indexed substrates
+- **081KQNJ500008QG0R0035QCEX9 (audit memos for misfiled backlog rows)**: this row's existence IS the fourth empirical hit for 081KQNJ500008QG0R0035QCEX9's audit hypothesis (081KQGDBJ0008QG0R0015RNK3P, 081KQGDBJ0008QG0R002WY918J, 081KQGDBJ0008QG0R002DPGHV0, 081KQNJ500008QG0R001THCSKV all reserved/named in memos but never filed until 2026-05-03)
 - **memory/decision-graph memo (Aaron 2026-05-03)**: the originating substrate
 
 ## Why this is L-effort
@@ -110,7 +109,7 @@ Visualization output:
 - 4 sub-scripts, each non-trivial:
   - `extract.ts` — markdown-AST parsing + frontmatter parsing + regex-based body parsing for edges (~200-300 LOC)
   - `query.ts` — graph-traversal algorithms + CLI surface (~150-250 LOC)
-  - `check.ts` — invariant rules + integration with B-0170 (~100-200 LOC)
+  - `check.ts` — invariant rules + integration with 081KQNJ500008QG0R003SCWBDV (~100-200 LOC)
   - `render.ts` — multiple output formats + integration with viz libraries (~100-200 LOC)
 - Test fixtures need authoring across all 4 scripts
 - Composition with existing tools (substrate-claim-checker, BACKLOG.md generator)
@@ -123,7 +122,7 @@ Visualization output:
 2. **Edge-detection completeness**: every edge type from the memo, or staged subset?
 3. **Sacred-tier semantics**: how does `--sacred-tier-walk` enforce permissions? (CLAUDE.md / ALIGNMENT.md walk-discipline)
 4. **Visualization scale**: full graph rendering becomes unreadable at substrate-size; per-cluster subgraph render with drill-down?
-5. **Composition with B-0175**: should the decision-graph BE the layer-4 retrieval index (graph-traversal-as-retrieval) or a separate substrate?
+5. **Composition with 081KQNJ500008QG0R00055XHBG**: should the decision-graph BE the layer-4 retrieval index (graph-traversal-as-retrieval) or a separate substrate?
 
 ## Why this matters
 
@@ -133,4 +132,4 @@ Composes with the alignment-frontier framing: substrate-quality tooling that mak
 
 ## Carved sentence
 
-**"`tools/decision-graph/` is the mechanization path for the substrate's implicit provenance graph. 4 sub-scripts: extract.ts (emit graph JSON), query.ts (parameterised queries: downstream/upstream/supersession/citation), check.ts (invariant checker overlapping with B-0170), render.ts (Cytoscape/DOT/Mermaid). Composes with B-0141 (preserves graph edges), B-0170 (substrate-claim-checker), B-0175 (substrate-retrieval-index). Fourth concrete hit for B-0177's audit hypothesis: tool named in memo, never filed until 2026-05-03 audit pass."**
+**"`tools/decision-graph/` is the mechanization path for the substrate's implicit provenance graph. 4 sub-scripts: extract.ts (emit graph JSON), query.ts (parameterised queries: downstream/upstream/supersession/citation), check.ts (invariant checker overlapping with 081KQNJ500008QG0R003SCWBDV), render.ts (Cytoscape/DOT/Mermaid). Composes with 081KQGDBJ0008QG0R0015RNK3P (preserves graph edges), 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker), 081KQNJ500008QG0R00055XHBG (substrate-retrieval-index). Fourth concrete hit for 081KQNJ500008QG0R0035QCEX9's audit hypothesis: tool named in memo, never filed until 2026-05-03 audit pass."**

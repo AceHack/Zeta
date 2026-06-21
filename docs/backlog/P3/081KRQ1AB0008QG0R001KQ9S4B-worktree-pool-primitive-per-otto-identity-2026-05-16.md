@@ -1,6 +1,5 @@
 ---
-id: B-0558
-zetaid: 081KRQ1AB0008QG0R001KQ9S4B
+id: 081KRQ1AB0008QG0R001KQ9S4B
 priority: P3
 status: open
 title: "Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity"
@@ -24,7 +23,7 @@ Tick 06:43Z-07:18Z (2026-05-16): a fresh-cold-boot Otto-CLI session firing durin
 |---|---|---|
 | 1 | Existing-branch-name reuse → peer-WIP commit inheritance | ✓ uniquified name + git rev-parse pre-check |
 | 2 | Concurrent-WIP-blocked switch | ✓ wait for working-tree-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on `git worktree add` | ✗ NO MITIGATION — needs [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) mutex |
+| 3 | Pack-dir 081KRMEXM0008QG0R000X1PPGC race on `git worktree add` | ✗ NO MITIGATION — needs [081KRMEXM0008QG0R000X1PPGC](081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) mutex |
 | 4 | Pruned-sidetick race | ✗ NO MITIGATION — needs THIS ROW |
 
 Empirical anchors:
@@ -36,7 +35,7 @@ Empirical anchors:
 
 Sub-case 4 (pruned-sidetick race) blocks fresh-cold-boot Otto-CLI sessions from finding ANY clean workspace when:
 
-1. New `git worktree add` hits sub-case 3 (B-0530 race; hangs on pack-dir contention)
+1. New `git worktree add` hits sub-case 3 (081KRMEXM0008QG0R000X1PPGC race; hangs on pack-dir contention)
 2. Existing-sidetick fallback (per the borrow-on-existing rule) requires walking `git worktree list` and picking a sidetick listed there
 3. BUT — peer Otto sessions periodically prune stale sidetick directories. The directory disappears between the `git worktree list` snapshot and the borrow attempt
 4. Result: `git -C <sidetick>` returns "cannot change to ... No such file or directory" — fresh session has no fallback
@@ -66,9 +65,9 @@ Empirical: the canonical sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick` wa
 
 ### Composes with
 
-- [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — sub-case 3 mitigation; together they address all 4 sub-cases
-- [B-0519](B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md) — multi-Otto contamination RCA at branch-state scope; this row addresses worktree-path scope
-- [B-0506](B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md) — stale-worktree-prune-cadence mechanization (composes at worktree-cleanup scope)
+- [081KRMEXM0008QG0R000X1PPGC](081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) — sub-case 3 mitigation; together they address all 4 sub-cases
+- [081KRHWGX0008QG0R001HMWM1W](081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md) — multi-Otto contamination RCA at branch-state scope; this row addresses worktree-path scope
+- [081KRHWGX0008QG0R002DPG02X](081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md) — stale-worktree-prune-cadence mechanization (composes at worktree-cleanup scope)
 - [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md) — the rule that documents the saturation-ceiling sub-cases; this row's substrate operationalizes the mitigation for sub-case 4
 
 ## Acceptance
@@ -78,11 +77,11 @@ Empirical: the canonical sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick` wa
 - [ ] `.zeta-pool-owner` marker convention respected by peer-Otto pruning logic
 - [ ] Autonomous-loop SKILL.md updated to use pool API
 - [ ] Empirical validation: a fresh-cold-boot Otto-CLI session ships a shard during peer cascade without hitting any of the 4 sub-cases
-- [ ] Rule body in `.claude/rules/claim-acquire-before-worktree-work.md` updated to mark sub-cases 3+4 as MITIGATED when this row + B-0530 close
+- [ ] Rule body in `.claude/rules/claim-acquire-before-worktree-work.md` updated to mark sub-cases 3+4 as MITIGATED when this row + 081KRMEXM0008QG0R000X1PPGC close
 
 ## Scope-boundary flags
 
-- This row addresses worktree-path-scope contention. Does NOT address branch-state-scope contention (that's B-0519's domain).
+- This row addresses worktree-path-scope contention. Does NOT address branch-state-scope contention (that's 081KRHWGX0008QG0R001HMWM1W's domain).
 - Worktree-pool size > 3 per identity introduces resource overhead; cap at small N.
 - Peer-Otto-side respect for `.zeta-pool-owner` marker requires coordination across all Otto identities' pruning scripts; this may need a separate slice if pruning logic isn't yet centralized.
 
@@ -103,4 +102,4 @@ Filed 2026-05-16 from the fresh-cold-boot Otto-CLI session that empirically vali
 - #3812 = WHAT TO DO when observing it (operational mitigations for sub-cases 1+2)
 - This row = WHAT TO BUILD to prevent it (structural fix for sub-case 4)
 
-Sub-case 3's structural fix is B-0530 (already filed, closed status pending mutex implementation).
+Sub-case 3's structural fix is 081KRMEXM0008QG0R000X1PPGC (already filed, closed status pending mutex implementation).

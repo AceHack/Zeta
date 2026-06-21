@@ -1,11 +1,10 @@
 ---
-id: B-0481
-zetaid: 081KRHWGX0008QG0R003MTMBGR
+id: 081KRHWGX0008QG0R003MTMBGR
 priority: P1
 status: open
-title: "DBpedia B-0428.2 — F# project scaffold + NuGet add + connectivity smoke test"
+title: "DBpedia 081KRFA460008QG0R0018SN61J.2 — F# project scaffold + NuGet add + connectivity smoke test"
 type: feature
-origin: B-0428 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R0018SN61J decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R0018SN61J
@@ -19,21 +18,21 @@ composes_with:
   - 081KRHWGX0008QG0R002TYF2NM
 ---
 
-# B-0481 — F# project scaffold + NuGet add + connectivity smoke test
+# 081KRHWGX0008QG0R003MTMBGR — F# project scaffold + NuGet add + connectivity smoke test
 
-**Depends on B-0480 (library choice ADR must be closed first).**
+**Depends on 081KRHWGX0008QG0R00187PQGZ (library choice ADR must be closed first).**
 
 ## Purpose
 
 Create the `src/DBpedia/` F# project, wire it into `Zeta.sln`, add the chosen
-NuGet package (from B-0480's ADR), and prove the SPARQL endpoint is reachable
-with a minimal query. Everything in B-0482..B-0484 builds on this foundation.
+NuGet package (from 081KRHWGX0008QG0R00187PQGZ's ADR), and prove the SPARQL endpoint is reachable
+with a minimal query. Everything in 081KRHWGX0008QG0R001VKR0TH..081KRHWGX0008QG0R002TYF2NM builds on this foundation.
 
 ## Pre-start checklist
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Confirm B-0480 is `closed` and ADR is merged
+- [ ] Confirm 081KRHWGX0008QG0R00187PQGZ is `closed` and ADR is merged
 - [ ] Read ADR to confirm library name + version + CI strategy
 - [ ] Check existing project structure in `Zeta.sln`
 - [ ] Confirm `Directory.Packages.props` does not already have the package
@@ -44,7 +43,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ```
 src/DBpedia/
-  DBpedia.fsproj       ← references the library from B-0480 ADR
+  DBpedia.fsproj       ← references the library from 081KRHWGX0008QG0R00187PQGZ ADR
   Client.fs            ← minimal SPARQL client wrapper
 tests/DBpedia.Tests/
   DBpedia.Tests.fsproj
@@ -117,10 +116,10 @@ Both must pass before PR opens.
 - [ ] Connectivity smoke test passes (live or recorded per ADR)
 - [ ] `dotnet build -c Release` — 0 warnings 0 errors
 - [ ] `dotnet test Zeta.sln -c Release` — all tests green
-- [ ] B-0482 can begin immediately after this merges
-- [ ] B-0481 status set to `closed`
+- [ ] 081KRHWGX0008QG0R001VKR0TH can begin immediately after this merges
+- [ ] 081KRHWGX0008QG0R003MTMBGR status set to `closed`
 
 ## Why P1
 
-Foundation row: B-0482, B-0483, and B-0484 all add code on top of this project.
+Foundation row: 081KRHWGX0008QG0R001VKR0TH, 081KRHWGX0008QG0R002GFSJC6, and 081KRHWGX0008QG0R002TYF2NM all add code on top of this project.
 Establishing a green build with the library wired in de-risks all three.

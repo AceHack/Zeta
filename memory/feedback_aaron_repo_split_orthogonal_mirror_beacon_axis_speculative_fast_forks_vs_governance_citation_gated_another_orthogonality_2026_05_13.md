@@ -1,6 +1,6 @@
 ---
 name: aaron-repo-split-orthogonal-mirror-beacon-axis-speculative-fast-forks-vs-governance-citation-gated-another-orthogonality-2026-05-13
-description: Aaron 2026-05-13 immediately after PR #2909 civsim language mirror/beacon governance escalation — split repos on ANOTHER orthogonal axis (Mirror/Beacon) in addition to Factory/Product/Owner-only axis. Two axes compose. Mirror repos enable speculative-fast-fork-iteration; Beacon repos are governance-citation-gated. Composes with B-0424 + B-0425 + B-0426 + PR #2905 forker-perspective + PR #2909 governance discipline + Otto-356 register + orthogonal-axes-factory-hygiene existing substrate.
+description: Aaron 2026-05-13 immediately after PR #2909 civsim language mirror/beacon governance escalation — split repos on ANOTHER orthogonal axis (Mirror/Beacon) in addition to Factory/Product/Owner-only axis. Two axes compose. Mirror repos enable speculative-fast-fork-iteration; Beacon repos are governance-citation-gated. Composes with 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + 081KRFA460008QG0R0007RWSN1 + PR #2905 forker-perspective + PR #2909 governance discipline + Otto-356 register + orthogonal-axes-factory-hygiene existing substrate.
 type: feedback
 created: 2026-05-13
 ---
@@ -14,8 +14,8 @@ extends the discipline from language to REPO TOPOLOGY scope.
 
 **How to apply:** When designing repo splits, classify each
 repo on BOTH:
-- **Axis 1** — Factory / Product / Owner-only (per B-0424 +
-  B-0425 + PR #2905 forker-perspective META-discipline)
+- **Axis 1** — Factory / Product / Owner-only (per 081KRFA460008QG0R001H98EXJ +
+  081KRFA460008QG0R003JQ46J4 + PR #2905 forker-perspective META-discipline)
 - **Axis 2** — Mirror / Beacon (per PR #2909 governance
   discipline; NEW orthogonality)
 
@@ -95,22 +95,22 @@ This is **planning substrate**, not execution substrate:
 - The orthogonality is named
 - The two-axis matrix is illustrative
 - Per-repo classification is owed
-- Stage-1 factory split (B-0424) should be informed by this
+- Stage-1 factory split (081KRFA460008QG0R001H98EXJ) should be informed by this
   axis before execution
-- B-0425 product-repo split should be informed by this axis
+- 081KRFA460008QG0R003JQ46J4 product-repo split should be informed by this axis
 
-The substrate is now landing in B-0426 as the backlog row.
+The substrate is now landing in 081KRFA460008QG0R0007RWSN1 as the backlog row.
 
 ## Composes with
 
-- B-0424 (three-repo split Stage 1 — factory)
-- B-0425 (product-repo split planning)
-- B-0426 (THIS NEW row — orthogonal Mirror/Beacon axis)
+- 081KRFA460008QG0R001H98EXJ (three-repo split Stage 1 — factory)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning)
+- 081KRFA460008QG0R0007RWSN1 (THIS NEW row — orthogonal Mirror/Beacon axis)
 - PR #2909 (civsim language mirror/beacon governance
   discipline — escalates from register to governance)
 - PR #2905 (forker-perspective META-discipline — reveals
   third Factory/Product/Owner-only repo category)
-- PR #2904 (honor-system license + B-0424 + B-0425)
+- PR #2904 (honor-system license + 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4)
 - PR #2903 (civsim PVP+raids+mutual-privacy+forkable)
 - PR #2902 (Otto strategic encryption-decision authority)
 - `memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md`
@@ -162,7 +162,7 @@ When evaluating repo-split decisions:
 
 ## Full reasoning
 
-PR #2910 (this substrate + B-0426 backlog row landing
+PR #2910 (this substrate + 081KRFA460008QG0R0007RWSN1 backlog row landing
 together)
 
 PR #2909 (civsim language mirror/beacon governance discipline
@@ -171,7 +171,7 @@ PR #2909 (civsim language mirror/beacon governance discipline
 PR #2905 (forker-perspective META-discipline — reveals third
 Factory/Product/Owner-only repo category)
 
-PR #2904 (B-0424 + B-0425 + honor-system license)
+PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 
 `memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md`
 (Otto-356 register discipline)

@@ -1,6 +1,5 @@
 ---
-id: B-0327
-zetaid: 081KR2E4K0008QG0R002KNZ29V
+id: 081KR2E4K0008QG0R002KNZ29V
 priority: P1
 status: closed
 title: "Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing"
@@ -33,16 +32,16 @@ working-context bias — it catches substrate-decay, rule-drift,
 and broken-pointer regressions that in-session verification
 cannot (Otto-347 cross-CLI verify pattern).
 
-## Distinction from B-0121
+## Distinction from 081KQDTYV0008QG0R003VB4K1V
 
-B-0121 (P2) covers making Otto + Kenji *externally callable*
+081KQDTYV0008QG0R003VB4K1V (P2) covers making Otto + Kenji *externally callable*
 by other harnesses (reverse direction). This row covers Otto
 invoking *itself* for self-verification (forward direction,
 same harness). The scripts may share a CLI surface (`claude`
 CLI) but serve different purposes and carry different
 preambles.
 
-## Pre-start checklist (B-0065 gate)
+## Pre-start checklist (081KQ8P5D0008QG0R002M5A2M7 gate)
 
 - [x] Otto-364 search-first: verify `claude` CLI headless
       flags (`--print` / `-p`) via `claude --help` (2026-05-09):
@@ -50,7 +49,7 @@ preambles.
       trust dialog skipped automatically in --print mode;
       `--tools` limits available tools; `--no-session-persistence`
       disables session carry-over.
-- [x] Prior-art check: reviewed kiro.ts (most recent, added B-0326)
+- [x] Prior-art check: reviewed kiro.ts (most recent, added 081KR2E4K0008QG0R001HQF27C)
       and codex.ts as closest shapes. Followed kiro.ts structure
       verbatim; adapted CLI invocation and preamble for self-call.
 - [x] Subprocess mode produces true cold-boot: confirmed via live
@@ -66,7 +65,7 @@ preambles.
   from the repo — this is the cold-boot fidelity requirement.
   The parent session's context must NOT leak into the child.
 - Wire `CLAUDE_SUBSTANTIVE_TRIGGERS` from `_firewall.ts`
-  (landed by B-0325).
+  (landed by 081KR2E4K0008QG0R0005E727X).
 - AgencySignature preamble framing the call as self-test /
   cold-boot verification: *"You are a fresh Claude Code
   instance invoked by an in-session peer for cold-boot

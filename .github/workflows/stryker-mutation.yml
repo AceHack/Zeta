@@ -40,7 +40,7 @@ name: stryker-mutation
 #
 # F# coverage remains rich via other formal-verification tools: FsCheck
 # (property invariants), TLA+/TLC (concurrency + safety via src/Core.TLA/specs/
-# + Soraya loop B-0691), Lean 4 (theorem-grade), Z3 (constraint satisfaction),
+# + Soraya loop 081KS3X9Y0008QG0R001MD26NZ), Lean 4 (theorem-grade), Z3 (constraint satisfaction),
 # Alloy (relational model checking), CodeQL + Semgrep (security/SAST).
 #
 # Per the math-proofs honest assessment

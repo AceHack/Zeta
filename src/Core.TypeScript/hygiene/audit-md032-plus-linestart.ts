@@ -4,7 +4,7 @@
 // TypeScript+Bun port of audit-md032-plus-linestart.sh, per the
 // 2026-04-29 directive to canonicalize on TS+Bun for tooling.
 // See docs/trajectories/typescript-bun-migration/RESUME.md for the
-// trajectory; see B-0086 for the migration discipline.
+// trajectory; see 081KQ8P5D0008QG0R003BFZPRC for the migration discipline.
 //
 // Type discipline (typed boundaries, not noise):
 //   Findings flow as `readonly AuditFinding[]` of structured

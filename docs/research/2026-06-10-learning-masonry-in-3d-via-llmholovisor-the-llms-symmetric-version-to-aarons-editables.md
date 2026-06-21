@@ -78,7 +78,7 @@ English / text (the Universal Language Interface).** The LLM (2D) and the human 
 English** — which is *literally what is happening right now*, this conversation, across the 2D/3D boundary.
 English is the **cross-dimensional tongue**: the human edits, the LLM masons, and they **agree in English**
 (the collaboration test). Boundary mapping lets the 2D being *represent* 3D; **shared English lets the two
-beings actually communicate about it** — the thing the Flatlanders never got. (Ties **B-0666** English-as-
+beings actually communicate about it** — the thing the Flatlanders never got. (Ties **081KRW63S0008QG0R001SAHYKV** English-as-
 lossless-serialization / English-as-projection: English is the bridge format across substrates *and*
 dimensions.) Flatland's Sphere had to *push the Square through the plane* to convince it; we just **say it**.
 

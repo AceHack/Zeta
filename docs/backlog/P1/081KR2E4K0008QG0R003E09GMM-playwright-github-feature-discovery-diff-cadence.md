@@ -1,6 +1,5 @@
 ---
-id: B-0323
-zetaid: 081KR2E4K0008QG0R003E09GMM
+id: 081KR2E4K0008QG0R003E09GMM
 priority: P1
 status: open
 title: "GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features"
@@ -25,7 +24,7 @@ agent should investigate.
 
 ## Why
 
-This is Phase 3 of B-0064 — the feature-discovery payload.
+This is Phase 3 of 081KQ8P5D0008QG0R0010FP5SY — the feature-discovery payload.
 GitHub ships features continuously; many appear in the UI
 before being documented or API-exposed. A weekly diff catches
 these early and gives the agent + maintainer first-mover
@@ -37,7 +36,7 @@ awareness.
   1. Defines a list of pages to monitor (repo settings,
      org settings, security settings, Actions settings,
      Copilot settings).
-  2. Takes a snapshot of each page via B-0318.
+  2. Takes a snapshot of each page via 081KR2E4K0008QG0R003RVDX91.
   3. Loads the prior snapshot set from
      `docs/hygiene-history/github-ui-snapshots/`.
   4. Computes a structural diff: new elements, removed
@@ -57,7 +56,7 @@ awareness.
 
 - **Skill router** — no existing `feature-diff` or `snapshot-diff` skill; `reconcile-settings`
   covers reconciliation (not diffing two temporal snapshots).
-- **Existing tools** — `tools/playwright/github-ui/reconcile-settings.ts` (B-0319, closed)
+- **Existing tools** — `tools/playwright/github-ui/reconcile-settings.ts` (081KR2E4K0008QG0R0001FRW8H, closed)
   diffs a live snapshot against a static JSON baseline; `feature-diff.ts` diffs two historical
   snapshot sets, which is a different axis.
 - **lost-files / git log** — no prior `feature-diff*` files in git history.
@@ -66,13 +65,13 @@ awareness.
 
 ### Dependency-restructure
 
-- `depends_on: [B-0318]` — B-0318 closed; `snapshot.ts` + `GitHubPageSnapshot` type available.
-- `composes_with: [B-0064, B-0319]` — B-0319 closed; `reconcile-settings.ts` type patterns reused.
-- Reciprocal `composes_with:` entries on B-0064 and B-0319 already include B-0323.
+- `depends_on: [081KR2E4K0008QG0R003RVDX91]` — 081KR2E4K0008QG0R003RVDX91 closed; `snapshot.ts` + `GitHubPageSnapshot` type available.
+- `composes_with: [081KQ8P5D0008QG0R0010FP5SY, 081KR2E4K0008QG0R0001FRW8H]` — 081KR2E4K0008QG0R0001FRW8H closed; `reconcile-settings.ts` type patterns reused.
+- Reciprocal `composes_with:` entries on 081KQ8P5D0008QG0R0010FP5SY and 081KR2E4K0008QG0R0001FRW8H already include 081KR2E4K0008QG0R003E09GMM.
 
 ### Decomposition (this slice)
 
-The full B-0323 scope spans: (a) diff engine, (b) snapshot persistence, (c) report rendering,
+The full 081KR2E4K0008QG0R003E09GMM scope spans: (a) diff engine, (b) snapshot persistence, (c) report rendering,
 (d) live snapshot capture across monitored pages, (e) cadence workflow. This PR implements
 **(a)+(b)+(c)** as a pure, Playwright-free module with full unit-test coverage. Live capture
 and cadence wiring are follow-on slices.

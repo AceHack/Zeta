@@ -1,6 +1,5 @@
 ---
-id: B-0048
-zetaid: 081KQ3HBZ0008QG0R003JCR6P8
+id: 081KQ3HBZ0008QG0R003JCR6P8
 priority: P2
 status: open
 title: 3-color / 4-color theorem research track — graph coloring, computer-assisted proof, Gonthier Coq formalization, formal-verification routing
@@ -16,7 +15,7 @@ type: feature
 
 ---
 
-# B-0048 — 3-color / 4-color theorem research track
+# 081KQ3HBZ0008QG0R003JCR6P8 — 3-color / 4-color theorem research track
 
 ## Origin
 
@@ -38,7 +37,7 @@ Soraya's routing authority picks Alloy / TLA+ / Z3 / Lean / FsCheck per property
 
 ### 2. Computer-assisted-proof heritage
 
-Appel-Haken 1976 was the first major result where the community had to decide whether a computer-enumerated case analysis counts as a proof — the same epistemic question Zeta's measurable-alignment time-series poses. Gonthier's 2005 reformalization in Coq closed the loop: the 633 discharging configurations are mechanically checkable, the reducibility predicate is a small trusted kernel, the case-enumeration is reflective. This is the exact shape Zeta's Lean-reflection row (B-0050) is reaching for. **The four-color formalization is the canonical pedagogical target for proof-by-reflection.**
+Appel-Haken 1976 was the first major result where the community had to decide whether a computer-enumerated case analysis counts as a proof — the same epistemic question Zeta's measurable-alignment time-series poses. Gonthier's 2005 reformalization in Coq closed the loop: the 633 discharging configurations are mechanically checkable, the reducibility predicate is a small trusted kernel, the case-enumeration is reflective. This is the exact shape Zeta's Lean-reflection row (081KQ3HBZ0008QG0R000H8K8CC) is reaching for. **The four-color formalization is the canonical pedagogical target for proof-by-reflection.**
 
 ### 3. Constraint-satisfaction ↔ planner cost model
 
@@ -57,16 +56,16 @@ Graph coloring is the paradigmatic CSP. Imani's planner (operator-cost model) al
 **Dependency-restructure:**
 
 - `depends_on: []` — no blockers
-- `composes_with`: B-0050 (Lean reflection; Stage 3 depends on it), B-0051 (isomorphism catalog); pointers already present
+- `composes_with`: 081KQ3HBZ0008QG0R000H8K8CC (Lean reflection; Stage 3 depends on it), 081KQ3HBZ0008QG0R002SM3G49 (isomorphism catalog); pointers already present
 
-**Stage 1 landed:** `tools/alloy/specs/ThreeColoring.als` (3 commands: `run Find3Coloring`, `check NoMonochromaticEdge`, `check K4HasNo3Coloring`). Registered in `run-alloy.ts` CATALOGUE and `Alloy.Runner.Tests.fs`. PR feat/B-0048.1-alloy-3-coloring-stage1.
+**Stage 1 landed:** `tools/alloy/specs/ThreeColoring.als` (3 commands: `run Find3Coloring`, `check NoMonochromaticEdge`, `check K4HasNo3Coloring`). Registered in `run-alloy.ts` CATALOGUE and `Alloy.Runner.Tests.fs`. PR feat/081KQ3HBZ0008QG0R003JCR6P8.1-alloy-3-coloring-stage1.
 
 ## Scope (staged)
 
 - **Stage 1 — Alloy-scale finite 3-coloring probe:** `tools/alloy/specs/ThreeColoring.als` — 5-vertex scope, 3 commands (Find3Coloring run, NoMonochromaticEdge check, K4HasNo3Coloring check). Effort: S. **DONE 2026-05-10.**
 - **Stage 2 — Z3 chromatic-number upper-bound search:** `tools/z3/chromatic.smt2` encoding. Test on benchmark graphs (Petersen graph, Mycielski constructions). Effort: S.
 - **Stage 3 — Lean 4 + Mathlib chromatic-number reading group:** port a small exercise from `Mathlib.Combinatorics.SimpleGraph.Coloring` into `tools/lean4/Lean4/GraphColoring.lean`. Effort: M.
-- **Stage 4 — four-color case study (Gonthier-following):** read Gonthier's paper; trace how the reducibility predicate and discharging method factor through Coq reflection; produce `docs/research/gonthier-four-color-walkthrough-YYYY-MM-DD.md`. **Primary teaching target** — downstream of Stage 1+ of the Lean-reflection row (B-0050). Effort: L.
+- **Stage 4 — four-color case study (Gonthier-following):** read Gonthier's paper; trace how the reducibility predicate and discharging method factor through Coq reflection; produce `docs/research/gonthier-four-color-walkthrough-YYYY-MM-DD.md`. **Primary teaching target** — downstream of Stage 1+ of the Lean-reflection row (081KQ3HBZ0008QG0R000H8K8CC). Effort: L.
 - **Stage 5 (speculative) — retraction-native incremental coloring:** under graph-delta streams (edge/vertex +1/-1 Z-set weights), what is the cheapest coloring-preservation algorithm? Candidate paper: Bhattacharya-Chakrabarty-Henzinger-Nanongkai 2018 (dynamic graph coloring). Effort: L.
 
 ## Three filters
@@ -97,4 +96,4 @@ If Aaron meant something narrower (e.g., just the three-color problem, or just t
 ## Cross-reference
 
 - AceHack commit: `2eef721`
-- Composes with: B-0050 (Lean reflection), B-0051 (isomorphism catalog — chromatic-polynomial has homomorphism-density structure relevant to IF4 filter); chain-rule proof-log; teaching-discipline memory
+- Composes with: 081KQ3HBZ0008QG0R000H8K8CC (Lean reflection), 081KQ3HBZ0008QG0R002SM3G49 (isomorphism catalog — chromatic-polynomial has homomorphism-density structure relevant to IF4 filter); chain-rule proof-log; teaching-discipline memory

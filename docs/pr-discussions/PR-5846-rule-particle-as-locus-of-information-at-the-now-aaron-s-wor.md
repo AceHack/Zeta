@@ -32,7 +32,7 @@ The PARTICLE in pilot-wave theory IS the LOCUS of information AT the NOW. Sharpe
 
 ## Every framework substrate carries (wavefunction, particle-locus) pair
 
-11-row mapping table preserved in rule body covering: B-0917 IntrCtx + AutoLoopLifetime + B-0918 WalletLifetime + B-0919 MemoryBinding + B-0920 MemoryLifetime + DST omniscience (PR #5841) + Pilot-wave-MWI (PR #5842) + Cayley-Dickson nested-cross (PR #5843) + Parallelizability-test (PR #5845) + B-0703 multi-oracle BFT + B-0867 workflow-engine.
+11-row mapping table preserved in rule body covering: 081KSNY2Z0008QG0R002HB4AGT IntrCtx + AutoLoopLifetime + 081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime + 081KSNY2Z0008QG0R003518DNC MemoryBinding + 081KSNY2Z0008QG0R0017SRMHG MemoryLifetime + DST omniscience (PR #5841) + Pilot-wave-MWI (PR #5842) + Cayley-Dickson nested-cross (PR #5843) + Parallelizability-test (PR #5845) + 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KSKBP80008QG0R000B3Y19A workflow-engine.
 
 ## Why this matters
 

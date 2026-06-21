@@ -1,6 +1,6 @@
 ---
 pr_number: 5346
-title: "docs(backlog): B-0833 \u2014 installer interactive-login vs baked-in-keys CI-test tension (resolve without shipping credentials on ISO)"
+title: "docs(backlog): 081KSGS9H0008QG0R003JNSVR5 \u2014 installer interactive-login vs baked-in-keys CI-test tension (resolve without shipping credentials on ISO)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T23:01:21Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:30:33Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5346: docs(backlog): B-0833 — installer interactive-login vs baked-in-keys CI-test tension (resolve without shipping credentials on ISO)
+# PR #5346: docs(backlog): 081KSGS9H0008QG0R003JNSVR5 — installer interactive-login vs baked-in-keys CI-test tension (resolve without shipping credentials on ISO)
 
 ## PR description
 
@@ -24,7 +24,7 @@ Per operator 2026-05-26 from physical hardware-support test: \"in the automated 
 
 | Mode | Security | Testability |
 |---|---|---|
-| Interactive login (gh auth login device-code) | NO credentials on ISO; aligned with B-0794 homelab-mode | Hard to test in CI without human |
+| Interactive login (gh auth login device-code) | NO credentials on ISO; aligned with 081KSGS9H0008QG0R0027HJZYH homelab-mode | Hard to test in CI without human |
 | Baked-in keys | VIOLATES: ISO is publicly downloadable | Easy to test |
 
 ## 4-approach scoping
@@ -38,7 +38,7 @@ Per operator 2026-05-26 from physical hardware-support test: \"in the automated 
 
 Likely landing: C first + A or B follow-up + D as residual.
 
-## 5 HARD LIMITS (non-negotiable per methodology-hard-limits + B-0794)
+## 5 HARD LIMITS (non-negotiable per methodology-hard-limits + 081KSGS9H0008QG0R0027HJZYH)
 
 1. NO real GitHub PATs on ISO (publicly downloadable)
 2. NO operator SSH private keys on ISO (gh ssh-key list reads PUBLIC only)
@@ -50,7 +50,7 @@ Likely landing: C first + A or B follow-up + D as residual.
 
 - [x] markdownlint clean
 - [x] BACKLOG.md regenerated
-- [x] Composes_with cross-refs to B-0794 + B-0831 + B-0812 + B-0813 + methodology-hard-limits + classifier-bypass-research
+- [x] Composes_with cross-refs to 081KSGS9H0008QG0R0027HJZYH + 081KSGS9H0008QG0R0011BC7T2 + 081KSGS9H0008QG0R0037H3W4T + 081KSGS9H0008QG0R002K93MWX + methodology-hard-limits + classifier-bypass-research
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -60,11 +60,11 @@ Likely landing: C first + A or B follow-up + D as residual.
 
 ## Pull request overview
 
-Adds a new P1 backlog row (B-0833) documenting the security vs CI-testability tension for installer GitHub authentication (interactive device-code login vs baked-in credentials), and updates the generated backlog index to include the new row.
+Adds a new P1 backlog row (081KSGS9H0008QG0R003JNSVR5) documenting the security vs CI-testability tension for installer GitHub authentication (interactive device-code login vs baked-in credentials), and updates the generated backlog index to include the new row.
 
 **Changes:**
-- Added backlog row B-0833 describing four resolution approaches (mock endpoint, ephemeral GH App, layered tests with auth skip, and periodic manual auth testing) plus non-negotiable security limits.
-- Regenerated `docs/BACKLOG.md` to include B-0833 in the P1 section.
+- Added backlog row 081KSGS9H0008QG0R003JNSVR5 describing four resolution approaches (mock endpoint, ephemeral GH App, layered tests with auth skip, and periodic manual auth testing) plus non-negotiable security limits.
+- Regenerated `docs/BACKLOG.md` to include 081KSGS9H0008QG0R003JNSVR5 in the P1 section.
 
 ### Reviewed changes
 
@@ -72,5 +72,5 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P1/B-0833-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md | New backlog item capturing constraints and candidate approaches for CI-testing installer auth without shipping credentials. |
-| docs/BACKLOG.md | Index update to list the new B-0833 row under P1. |
+| docs/backlog/P1/081KSGS9H0008QG0R003JNSVR5-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md | New backlog item capturing constraints and candidate approaches for CI-testing installer auth without shipping credentials. |
+| docs/BACKLOG.md | Index update to list the new 081KSGS9H0008QG0R003JNSVR5 row under P1. |

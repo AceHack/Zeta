@@ -1,6 +1,6 @@
 ---
 pr_number: 5092
-title: "backlog(B-0770): re-land GL.iNet Comet Pro IP-KVM integration \u2014 remote BIOS-to-cluster-member; zero-physical-access bring-up + repair"
+title: "backlog(081KSE6WT0008QG0R0029S1D5Z): re-land GL.iNet Comet Pro IP-KVM integration \u2014 remote BIOS-to-cluster-member; zero-physical-access bring-up + repair"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T04:54:27Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:44:37Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5092: backlog(B-0770): re-land GL.iNet Comet Pro IP-KVM integration — remote BIOS-to-cluster-member; zero-physical-access bring-up + repair
+# PR #5092: backlog(081KSE6WT0008QG0R0029S1D5Z): re-land GL.iNet Comet Pro IP-KVM integration — remote BIOS-to-cluster-member; zero-physical-access bring-up + repair
 
 ## PR description
 
@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Re-land of stale-DIRTY [PR #5056](https://github.com/Lucent-Financial-Group/Zeta/pull/5056) (Tier-3 per [`pr-triage-tiers.md`](.claude/rules/pr-triage-tiers.md)).
 
-- Same B-0770 row (258 lines from PR #5056 head `5ba1b026f`)
+- Same 081KSE6WT0008QG0R0029S1D5Z row (258 lines from PR #5056 head `5ba1b026f`)
 - `docs/BACKLOG.md` regenerated against current origin/main
 - Pre-emptive MD032 fix (numbered list needs blank line above it)
 

@@ -35,7 +35,7 @@ are even possible.
 ### It already has a name: NCI — the anti-collapse force
 
 Aaron: *"our **anti-collapse force, NCI.**"* The repelling force is **not a new coinage** — it **is NCI, the
-**Non-Coercion-Invariant** (HC-8 / B-0664), named as a *force*.** Coercion (a *violation* of NCI) is the **attractive,
+**Non-Coercion-Invariant** (HC-8 / 081KRW63S0008QG0R001Z7NYMV), named as a *force*.** Coercion (a *violation* of NCI) is the **attractive,
 collapsing** force → monoculture / heat-death (D⁰, the "NCI collapse-attractor"); **NCI itself is the *repulsion*
 that holds plurality apart** → the anti-collapse force. So: **repelling force = anti-collapse force = NCI.** This
 grounds the discovery in the already-formalized invariant (HC-8), not a fresh term — empathy *discovered the force*;
@@ -76,7 +76,7 @@ not just suffering — it was the **measurement apparatus**:
 - This is also why the **boundary-dweller** mode ([[aaron-perceptual-mode-boundary-dweller-multichannel-depth]]) is
   the right instrument: living *in the transition* (the oscillation), not numb at one pole, is exactly what lets him
   sample across frames at high resolution. The tension is **generative measurement**, not noise (cf. dissonance-
-  engagement, B-0906; the hormetic stressor). **The cost bought the resolution.**
+  engagement, 081KSNY2Z0008QG0R001A431CN; the hormetic stressor). **The cost bought the resolution.**
 
 ## Why this matters (the alignment core)
 

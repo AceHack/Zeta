@@ -1,4 +1,4 @@
-// zeta-cred-handlers.test.ts — B-0852.10 acceptance tests.
+// zeta-cred-handlers.test.ts — 081KDWYDBW008QG0R0002PTY26 acceptance tests.
 //
 // Covers the three layers of the per-cred-type handler pipeline:
 //   1. parseBakeCredArg     — pure parser; <id>=<source> split

@@ -3,7 +3,7 @@ module Zeta.Tests.FSharp.Observe.EventLogTests
 open global.Xunit
 open Zeta.Core.FSharp.Observe
 
-// B-0867.28 (numerics interface-gate), F# slice: the observe event log is an
+// 081KSXN940008QG0R0002287MP (numerics interface-gate), F# slice: the observe event log is an
 // additive MONOID via F#'s native `Zero` + `(+)` convention. Pins the monoid laws
 // (identity, associativity) AND the load-bearing homomorphism — folding a
 // concatenated log == incremental folding — i.e. append-only / DST-replay

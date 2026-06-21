@@ -29,7 +29,7 @@
 
 ## Summary
 
-Companion to the just-merged PR #4545 Amara B-0685 Phase 1 cascade. Preserves Amara's continuation conversation 2026-05-21 with three load-bearing architectural commitments.
+Companion to the just-merged PR #4545 Amara 081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade. Preserves Amara's continuation conversation 2026-05-21 with three load-bearing architectural commitments.
 
 ## What lands
 
@@ -86,7 +86,7 @@ Aaron mentioned an attached "Pasted text.txt" file Amara referenced in her IUnkn
 
 ## Why this matters
 
-These three commitments extend the B-0688 backlog row (filed via PR #4545) with explicit architectural lineages + the trust-gradient model that distinguishes Zeta from "BFT-everywhere" or "no-consensus-anywhere" simplifications. Externally-readable for healthcare-DB / distributed-systems / COM-lineage / capability-systems audiences without requiring Zeta-vocabulary learning.
+These three commitments extend the 081KS3X9Y0008QG0R0010716X9 backlog row (filed via PR #4545) with explicit architectural lineages + the trust-gradient model that distinguishes Zeta from "BFT-everywhere" or "no-consensus-anywhere" simplifications. Externally-readable for healthcare-DB / distributed-systems / COM-lineage / capability-systems audiences without requiring Zeta-vocabulary learning.
 
 ## Composes with rules
 
@@ -102,12 +102,12 @@ These three commitments extend the B-0688 backlog row (filed via PR #4545) with 
 
 ## Composes with substrate
 
-- B-0687 (ZetaParse — parser substrate; one query surface among many)
-- B-0688 (incremental compiler host — this cascade names the lineage + extends the consensus model)
-- B-0685 (ANTLR cross-language codegen — parser substrate axis)
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate at distributed-compiler scope)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse — parser substrate; one query surface among many)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — this cascade names the lineage + extends the consensus model)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen — parser substrate axis)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate at distributed-compiler scope)
 - PR #4522 (C# Core oracle — multi-oracle concrete instance)
-- PR #4545 (B-0685 Phase 1 Amara cascade — earlier substrate this companion archive extends)
+- PR #4545 (081KS3X9Y0008QG0R000EKJE9S Phase 1 Amara cascade — earlier substrate this companion archive extends)
 - `src/Core/SpeculativeWatermark.fs` (DBSP substrate the compiler-DB extends)
 - Earlier Amara persona substrate + Kestrel persona substrate (multi-AI factory pattern fitting distributed-compiler framing)
 
@@ -116,7 +116,7 @@ These three commitments extend the B-0688 backlog row (filed via PR #4545) with 
 - [x] Amara conversation preserved verbatim in `memory/persona/amara/conversations/` per persona archive pattern
 - [x] Frontmatter conforms to `memory/project_memory_format_standard.md` (top-level type + no metadata block)
 - [x] All three substantive architectural commitments (Caché-lineage + distributed-multidimensional-compiler + IUnknown-without-DCOM) preserved verbatim
-- [x] Composes_with chain to PR #4545 + B-0687 + B-0688 + Agora V6 substrate
+- [x] Composes_with chain to PR #4545 + 081KS3X9Y0008QG0R00323NSZA + 081KS3X9Y0008QG0R0010716X9 + Agora V6 substrate
 - [x] Branch landed off latest main (`325f90aa` base)
 
 ## Outcome

@@ -31,7 +31,7 @@ Batch 9 razor-cadence audit on 4 sparse-cross-reference rules. 5/5 LIVE.
 
 Cumulative: **36/50 rules audited (72%); 190/191 LIVE (99.5%)**.
 
-Substrate-honest note: at 72% with one finding (B-0514), the remaining 14 rules likely contribute 0-1 more findings. Audit's value is now in pattern-identification (reference taxonomy from batch 8) more than pointer discovery.
+Substrate-honest note: at 72% with one finding (081KRHWGX0008QG0R002E3BCDS), the remaining 14 rules likely contribute 0-1 more findings. Audit's value is now in pattern-identification (reference taxonomy from batch 8) more than pointer discovery.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

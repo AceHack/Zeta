@@ -1,4 +1,4 @@
-# B-0507 — Cloud Routines API, Auth, and Registration Surface Research
+# 081KRHWGX0008QG0R000E8BHQ9 — Cloud Routines API, Auth, and Registration Surface Research
 
 ## 1. Is Cloud Routines GA or still research-preview?
 Cloud Routines is an active feature as of May 2026, operating with production-ready endpoints for automated coding workflows running on Anthropic's managed cloud infrastructure. While previously in research-preview, it is currently widely available to Pro, Max, Team, and Enterprise users.
@@ -35,8 +35,8 @@ The CLI `claude` instance indicates `Claude Enterprise` in its interactive heade
 Yes. It explicitly requires installing the **Claude GitHub App** on the repository to listen for webhook events (e.g., `pull_request.opened`). Running `/web-setup` locally is not sufficient for triggering Cloud Routines via GitHub events, as that only grants local clone access.
 
 ## Next Steps for Slices 2–5
-- **Schema Impact (B-0508):** `cloud-schedule.json` schema needs to model:
+- **Schema Impact (081KRHWGX0008QG0R002S107P7):** `cloud-schedule.json` schema needs to model:
   - `trigger: "api" | "github" | "scheduled"`
   - For API triggers: Needs a mechanism to securely inject the Bearer token (e.g., via environment variable reference).
   - For GitHub triggers: Needs to define the event type and filters.
-- **Registration Flow (B-0511):** The installer cannot automatically register Cloud Routines completely autonomously via CLI. It must guide the human/agent to `claude.ai/code/routines` to manually create the routine and configure the GitHub App or generate the API token.
+- **Registration Flow (081KRHWGX0008QG0R0013DSSZZ):** The installer cannot automatically register Cloud Routines completely autonomously via CLI. It must guide the human/agent to `claude.ai/code/routines` to manually create the routine and configure the GitHub App or generate the API token.

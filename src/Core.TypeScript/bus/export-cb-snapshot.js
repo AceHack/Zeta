@@ -14,7 +14,7 @@
  *
  * Run from any directory; paths resolve relative to this file's location.
  *
- * B-0494 slice-2.
+ * 081KRHWGX0008QG0R0029WA0HQ slice-2.
  */
 import { readdir, readFile, writeFile } from "fs/promises";
 import { join, resolve, dirname } from "path";

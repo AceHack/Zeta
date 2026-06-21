@@ -63,7 +63,7 @@ properties:
 
 - `docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md`
   (PR #1600) -- the verbatim preservation that names the mapping
-- `docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md`
+- `docs/backlog/P2/081KQTPYE0008QG0R001W237MZ-bigint-and-bignumber-integration-aaron-2026-05-05.md`
   -- the four-property hodl ("ZFCv2") binding-acceptance-test
   core that Hickey-style values + properties-from-representation
   composes toward

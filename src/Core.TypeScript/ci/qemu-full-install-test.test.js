@@ -49,10 +49,10 @@ describe("qemu-full-install-test serial log artifact merge", () => {
         expect(merged).toContain("node-abc123 login:");
     });
 });
-describe("qemu-full-install-test B-0835 hostname regression guard", () => {
+describe("qemu-full-install-test 081KSGS9H0008QG0R00120EEHM hostname regression guard", () => {
     it("fails when generated node identity was expected but control-plane login appears", () => {
         const reason = detectUnexpectedControlPlaneLogin("booting...\ncontrol-plane login:", "zeta-a1b2c3");
-        expect(reason).toContain("B-0835 Bug 1 regression");
+        expect(reason).toContain("081KSGS9H0008QG0R00120EEHM Bug 1 regression");
         expect(reason).toContain("zeta-a1b2c3");
     });
     it("allows control-plane when no generated hostname was expected", () => {

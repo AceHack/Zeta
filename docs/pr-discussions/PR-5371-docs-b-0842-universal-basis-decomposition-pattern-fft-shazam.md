@@ -1,6 +1,6 @@
 ---
 pr_number: 5371
-title: "docs(B-0842): universal basis-decomposition pattern (FFT + Shazam + Itron + reservoir + Zeta substrate)"
+title: "docs(081KSGS9H0008QG0R003V8C86Q): universal basis-decomposition pattern (FFT + Shazam + Itron + reservoir + Zeta substrate)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T01:27:01Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:28:54Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5371: docs(B-0842): universal basis-decomposition pattern (FFT + Shazam + Itron + reservoir + Zeta substrate)
+# PR #5371: docs(081KSGS9H0008QG0R003V8C86Q): universal basis-decomposition pattern (FFT + Shazam + Itron + reservoir + Zeta substrate)
 
 ## PR description
 
@@ -29,24 +29,24 @@ Names the universal basis-decomposition pattern \`Σ ωᵢ sᵢ(t) ≈ y(t)\` op
 | Fourier transform | sines/cosines | Fourier coefficients | arbitrary periodic signal |
 | Audio fingerprinting (Shazam-like) | spectral hash features | match-strength coefficients | song identification |
 | Itron energy disaggregation | per-device load signatures | per-device usage coefficients | total household power draw |
-| Reservoir computing (B-0839.3) | random reservoir neurons | learned readout weights | target signal (zebra finch song) |
+| Reservoir computing (081KSGS9H0008QG0R002F1G7ER.3) | random reservoir neurons | learned readout weights | target signal (zebra finch song) |
 | **Zeta substrate-engineering** | **substrate-row content** | **operator + agent 'this composes with X' tuning** | **substantive engineering output (PRs + ratified substrate)** |
 
 ## The substantively-new substrate-engineering claim
 
-Substrate-engineering work MUST produce **readout weights** (operator + agent tuning decisions), not just basis elements. Adding substrate-rows without making readout-weight-decisions produces **hoarding** per B-0840 alpha=1 failure mode.
+Substrate-engineering work MUST produce **readout weights** (operator + agent tuning decisions), not just basis elements. Adding substrate-rows without making readout-weight-decisions produces **hoarding** per 081KSGS9H0008QG0R0006F4BGX alpha=1 failure mode.
 
 This is why Aaron's "this composes with X" intuitions matter operationally — they ARE the readout-layer weights.
 
 ## Composes with
 
-- B-0839 Kirsanov parent (reservoir-computing IS the equation's origin)
-- B-0820 Itron mesh (Itron disaggregation IS this pattern at energy-monitoring scope)
-- B-0838 caustic-engineered bloom filters (same architectural archetype)
-- B-0840 thermal-forgetting (governs basis-pool retention)
-- B-0841 Shortform productization (deep-guide generation IS this pattern applied to source-content)
-- B-0648 cross-substrate-triangulation (multi-AI substrate is basis-decomposition at AI-cluster scope)
-- B-0703 multi-oracle BFT (consensus is basis-decomposition + readout)
+- 081KSGS9H0008QG0R002F1G7ER Kirsanov parent (reservoir-computing IS the equation's origin)
+- 081KSGS9H0008QG0R00352WW0V Itron mesh (Itron disaggregation IS this pattern at energy-monitoring scope)
+- 081KSGS9H0008QG0R002THJ2P1 caustic-engineered bloom filters (same architectural archetype)
+- 081KSGS9H0008QG0R0006F4BGX thermal-forgetting (governs basis-pool retention)
+- 081KSGS9H0008QG0R001876MP6 Shortform productization (deep-guide generation IS this pattern applied to source-content)
+- 081KRW63S0008QG0R0025E4PH6 cross-substrate-triangulation (multi-AI substrate is basis-decomposition at AI-cluster scope)
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT (consensus is basis-decomposition + readout)
 - F# fork for AI safety substrate (typed basis-decomposition primitives are natural F# target)
 
 ## Substrate-honest framing

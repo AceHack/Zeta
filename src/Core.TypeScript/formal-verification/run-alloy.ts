@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // run-alloy.ts — TS wrapper for Alloy model-checker invocation.
 //
-// Phase 1 of B-0183 (sibling of run-tlc.ts): replace
+// Phase 1 of 081KQNJ500008QG0R003EKJ8B5 (sibling of run-tlc.ts): replace
 // `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` with a direct
 // shell wrapper. Same shape as run-tlc.ts.
 //

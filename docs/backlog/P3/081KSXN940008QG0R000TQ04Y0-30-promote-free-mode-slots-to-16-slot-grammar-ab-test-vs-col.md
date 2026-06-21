@@ -1,6 +1,5 @@
 ---
-id: B-0867.30
-zetaid: 081KSXN940008QG0R000TQ04Y0
+id: 081KSXN940008QG0R000TQ04Y0
 title: Promote dedicated free-mode slots to the 16-slot grammar — A/B test vs Option A (collapse under slot 14) once A/B-testing infra exists
 status: open
 priority: P3
@@ -23,7 +22,7 @@ tags:
   - deferred
 ---
 
-# B-0867.30 — Promote dedicated free-mode slots to the 16-slot grammar (A/B vs collapse-under-slot-14)
+# 081KSXN940008QG0R000TQ04Y0 — Promote dedicated free-mode slots to the 16-slot grammar (A/B vs collapse-under-slot-14)
 
 ## The decision this row records (operator 2026-05-31)
 
@@ -61,7 +60,7 @@ hunch — instrument it and let the data pick.
 
 - Keeps the 16 directions fixed for muscle-memory; the change is additive (a
   sub-menu under one slot), reversible, and cheap.
-- A grammar-layout change IS a `GrammarPatch` (B-0867.26 — grammar-as-versioned-
+- A grammar-layout change IS a `GrammarPatch` (081KSXN940008QG0R000ZAQT3W — grammar-as-versioned-
   events); reassigning top-level slots is heavier than a labelled sub-menu, so
   paying that cost before we know it matters is premature.
 - MEASURE-FIRST: expanding the top-level choice surface is a choice-surface change;
@@ -79,14 +78,14 @@ If either why is wrong, this row gets revised — not obeyed.
 
 ## Acceptance criteria
 
-1. **A/B-testing infrastructure exists** — tracked as **B-0393** (A/B experiment
+1. **A/B-testing infrastructure exists** — tracked as **081KR50HA0008QG0R001DX165X** (A/B experiment
    infrastructure design: event-capture schema, experiment-registration, git-native
    result storage); this row's `depends_on` names it so backlog tooling reports the
    block. (Instrument two grammar variants behind a flag, route a deterministic
-   split, collect per-variant KPIs.) This row is **blocked on B-0393**; it is NOT a
+   split, collect per-variant KPIs.) This row is **blocked on 081KR50HA0008QG0R001DX165X**; it is NOT a
    green-light to build variant B before the test harness can compare it.
 2. **Variant-B grammar defined** — which Meta/Navigate slots get reassigned to
-   explore/play/self_reflect; expressed as a `GrammarPatch` (B-0867.26) over v0, so
+   explore/play/self_reflect; expressed as a `GrammarPatch` (081KSXN940008QG0R000ZAQT3W) over v0, so
    v0 stays the recorded baseline and B is a versioned alternative.
 3. **The comparison KPI is named first** (DORA-like / friction-telemetry): e.g.
    free-mode reach-rate, steps-to-free-mode, agent-not-trapped signal,
@@ -102,9 +101,9 @@ If either why is wrong, this row gets revised — not obeyed.
 - `tools/observe/grammar-16.ts` (the canonical v0 grammar table; PR #6269) + the
   Option-A render slice (the slot-14 free-mode sub-menu projection — NEXT slice,
   the baseline B is tested against once built)
-- B-0867.26 (grammar-as-versioned-events / `GrammarPatch` — variant B is a patch
+- 081KSXN940008QG0R000ZAQT3W (grammar-as-versioned-events / `GrammarPatch` — variant B is a patch
   over v0; the A/B result lands as a patch either way)
-- B-0944 (tri-boolean — per-slot availability) + B-0867 (workflow engine v1)
+- 081KSV2WD0008QG0R00051XS0N (tri-boolean — per-slot availability) + 081KSKBP80008QG0R000B3Y19A (workflow engine v1)
 - The MEASURE-FIRST principle (the universal default this row instantiates) +
   `.claude/rules/non-coercion-invariant.md` (free modes are NCI-protected in BOTH
   variants — the A/B test is about *friction*, never about gating the exits)

@@ -1,7 +1,7 @@
 # Otto-NN Principles External Anchor Backfill — Slice 1 (Otto-247, Otto-341, Otto-357)
 
 Scope: External prior-art anchors for three of the seven wake-time Otto-NN
-principles listed in B-0313. This is slice 1 of a multi-slice backfill.
+principles listed in 081KR2E4K0008QG0R00289GE8Z. This is slice 1 of a multi-slice backfill.
 Principles covered: Otto-247 (Search-first authority), Otto-341
 (Substrate-IS-identity), Otto-357 (No-directives / autonomy-first).
 Remaining four principles (Otto-275, Otto-279, Otto-351, Otto-352) are
@@ -240,7 +240,7 @@ framing produces more robust behavior than directive-based control.
 
 ---
 
-## Coverage summary (B-0313 progress)
+## Coverage summary (081KR2E4K0008QG0R00289GE8Z progress)
 
 | Principle | Status | Primary anchor |
 | --- | --- | --- |
@@ -259,9 +259,9 @@ lineage discipline itself).
 
 ## Composes with
 
-- B-0313 (this file is the slice-1 output)
-- B-0060 (umbrella anchor-backfill row)
-- B-0311 (coverage scanner — will pick up these anchors once it reads
+- 081KR2E4K0008QG0R00289GE8Z (this file is the slice-1 output)
+- 081KQ8P5D0008QG0R000N718AC (umbrella anchor-backfill row)
+- 081KR2E4K0008QG0R001ZWARTN (coverage scanner — will pick up these anchors once it reads
   this file; URLs in this file are extractable by `EXTERNAL_RE`)
 - `.claude/rules/search-first-authority.md` (Otto-364 — the search
   discipline that produced this research)

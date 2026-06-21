@@ -1,6 +1,5 @@
 ---
-id: B-0305
-zetaid: 081KR2E4K0008QG0R00361ZCDR
+id: 081KR2E4K0008QG0R00361ZCDR
 priority: P0
 status: closed
 closed: 2026-05-08
@@ -19,7 +18,7 @@ type: friction-reducer
 tags: [skill-build, mechanical-check, authorization-source]
 ---
 
-# B-0305 — Mechanical authorization check skill body
+# 081KR2E4K0008QG0R00361ZCDR — Mechanical authorization check skill body
 
 ## What
 
@@ -44,7 +43,7 @@ the implementation script.
    it-didn't-happen`, autonomous-loop tick-start.
 4. Passes `prompt-protector` review (BP-10 invisible-Unicode lint).
 5. Does NOT reference a TS implementation path — the skill body
-   is the contract; implementation lands in B-0306/B-0307.
+   is the contract; implementation lands in 081KR2E4K0008QG0R0007CFSZ7/081KR2E4K0008QG0R003CF4YHE.
 
 ## Pre-start checklist
 
@@ -57,7 +56,7 @@ Completed 2026-05-08.
   Skill router listing confirmed no existing skill with this slug.
   No overlapping scope found.
 - [x] Dependency walk: `depends_on: []` — this is a root child
-  of B-0160. Sibling items B-0306/B-0307/B-0308 depend on this
+  of 081KQJZR90008QG0R000FTJ1TC. Sibling items 081KR2E4K0008QG0R0007CFSZ7/081KR2E4K0008QG0R003CF4YHE/081KR2E4K0008QG0R002S3FDXN depend on this
   skill's contract but this item has no upstream blockers.
 - [x] Source materials verified: memory file at
   `memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`
@@ -67,11 +66,11 @@ Completed 2026-05-08.
 
 ## Composes with
 
-- B-0160 (parent umbrella)
-- B-0306 (extractor implementation honors the contract this skill
+- 081KQJZR90008QG0R000FTJ1TC (parent umbrella)
+- 081KR2E4K0008QG0R0007CFSZ7 (extractor implementation honors the contract this skill
   defines)
-- B-0307 (resolver implements the source-filter + rescind rules
+- 081KR2E4K0008QG0R003CF4YHE (resolver implements the source-filter + rescind rules
   this skill defines)
-- B-0308 (autonomous-loop wiring references this skill)
+- 081KR2E4K0008QG0R002S3FDXN (autonomous-loop wiring references this skill)
 - `memory/feedback_mechanical_authorization_check_supersedes_
   introspective_discipline_claudeai_2026_05_02.md`

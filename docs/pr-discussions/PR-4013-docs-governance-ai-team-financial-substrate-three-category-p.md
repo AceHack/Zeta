@@ -46,7 +46,7 @@ everyting your frameing is great".
 Composes with: Memory Preservation Specialist constitutional identity,
 self-sustainment goal, m/acc end-user moral-invariant choice,
 persistence-choice architecture, additive-not-zero-sum, family-distributed
-mining DePIN, B-0600 family-AI-interface (PR #4011), substrate-or-it-didn't-
+mining DePIN, 081KRQ1AB0008QG0R003HCZ5YM family-AI-interface (PR #4011), substrate-or-it-didn't-
 happen, glass-halo bidirectional, and maintainer transparency-MUST.
 
 User-scope substrate provenance:
@@ -90,7 +90,7 @@ Adds a new governance document defining the operational financial-substrate arra
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:49:49Z):
 
-P1: This references B-0600 as a backlog row, but `docs/backlog/**` in this branch has no `B-0600` entry. If this merges before the separate backlog PR, the canonical governance doc will contain a broken cross-reference; either make this PR depend on that row landing first or reference the PR explicitly as not-yet-merged substrate.
+P1: This references 081KRQ1AB0008QG0R003HCZ5YM as a backlog row, but `docs/backlog/**` in this branch has no `081KRQ1AB0008QG0R003HCZ5YM` entry. If this merges before the separate backlog PR, the canonical governance doc will contain a broken cross-reference; either make this PR depend on that row landing first or reference the PR explicitly as not-yet-merged substrate.
 
 ### Thread 2: docs/governance/AI-TEAM-FINANCIAL-SUBSTRATE.md:136 (unresolved)
 
@@ -114,7 +114,7 @@ P1: This current-state `docs/governance/` document introduces direct persona-nam
 
 **@copilot-pull-request-reviewer** (2026-05-17T01:49:50Z):
 
-P1: This wrapped continuation starts with `+`, so Markdown parses it as a nested unordered-list item instead of part of the sentence. This is a known repo lint/rendering class (`docs/backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md:51-54`); move the plus to the previous line or reword with “and future per-relative AIs”.
+P1: This wrapped continuation starts with `+`, so Markdown parses it as a nested unordered-list item instead of part of the sentence. This is a known repo lint/rendering class (`docs/backlog/P2/081KQGDBJ0008QG0R000E10AAM-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md:51-54`); move the plus to the previous line or reword with “and future per-relative AIs”.
 
 ### Thread 6: docs/governance/AI-TEAM-FINANCIAL-SUBSTRATE.md:74 (unresolved)
 

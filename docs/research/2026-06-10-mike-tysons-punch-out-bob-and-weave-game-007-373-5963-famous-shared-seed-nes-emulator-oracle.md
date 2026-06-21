@@ -122,7 +122,7 @@ cells/rooms/devices (route to Max — rooms; and the LLM-device observability la
 **bob-and-weave** = the 2×2 dual-observer weave / sonar (the prior captures) · **Punch-Out!! (NES, 1987)** —
 boxing/bob-and-weave gameplay · **007-373-5963** = the famous Tyson-fight password = a public reproducible
 shared seed (the public counterpart to the encrypted-null private seed) · **Chip-8 emulator-oracle / DST
-bit-perfect** (B-0924 family — NES joins as a richer superdeterministic target) · ray-tracing = local
+bit-perfect** (081KSNY2Z0008QG0R001HA43GG family — NES joins as a richer superdeterministic target) · ray-tracing = local
 superdeterminism (a deterministic emulator run) · **reference-not-copy** (copyrighted ROM: operator-
 supplied, never shipped). Routes to the emulator-DST owners (NES as an oracle target, ROM-provenance
 discipline) and Aaron (the playful-but-real anchor).

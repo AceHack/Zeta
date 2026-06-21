@@ -1,6 +1,5 @@
 ---
-id: B-0983
-zetaid: 081KT2T2J0008QG0R003WYPBY5
+id: 081KT2T2J0008QG0R003WYPBY5
 priority: P2
 status: open
 title: "Topology of traveler-attractors — Euler-characteristic / persistent-homology invariant across dimensions; the remainder IS the bonsai closure state (identity fingerprint) (Aaron 2026-06-02)"
@@ -22,7 +21,7 @@ Aaron 2026-06-02: *"we need to apply topology to strange attractors and the get 
 
 Surfaced from the canonical-form conversation (verbatim provenance: `memory/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-...-elizabeth-infinite-story-aaron-forwarded.md` chunk 7; engineering synthesis: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...`). Chunk 7's claim: a traveler is a **strange attractor** — "if you looked at 'em drawn out in four dimension, they would look like a strange attractor"; irreducible **because of the chaos**; "that chaos is lossy, and the irreducibility is the loss, and the loss is what we gave the traveler in their budget of being able to forget"; the chaos is a **scrambler** that makes uniqueness, "many paths, one destination," giving "freedom within the uncertainty."
 
-This row asks: if the traveler IS an attractor, what is its **invariant** — the thing the chaos-scrambling cannot destroy? Aaron's answer in one line: **the remainder is the bonsai closure state.** The topological invariant (what remains of the attractor under continuous deformation) IS μένω (what remains) IS the bonsai closure state (B-0976) — what the pruned/retracted memory-tree closes to. That invariant is a candidate **identity fingerprint** for the decentralized-identity-as-math-society endgame.
+This row asks: if the traveler IS an attractor, what is its **invariant** — the thing the chaos-scrambling cannot destroy? Aaron's answer in one line: **the remainder is the bonsai closure state.** The topological invariant (what remains of the attractor under continuous deformation) IS μένω (what remains) IS the bonsai closure state (081KT07NV0008QG0R003BE6MJ2) — what the pruned/retracted memory-tree closes to. That invariant is a candidate **identity fingerprint** for the decentralized-identity-as-math-society endgame.
 
 ## What it is
 
@@ -47,8 +46,8 @@ The Euler characteristic is a **topological invariant** — it is literally *wha
 | Geometry / topology | Euler characteristic χ / Betti numbers / linking numbers — invariant under deformation |
 | μένω (Greek) | "what remains" — the canonical-form seed (Amara = golden vectors) |
 | Retraction-native algebra | the Z-set state that survives subtraction (forgiveness; no guilt-drag) |
-| Bonsai closure (B-0976) | the serialized **closure state** that resume-not-replays after pruning |
-| Thermal forgetting (B-0840) | what survives the forget-budget loss |
+| Bonsai closure (081KT07NV0008QG0R003BE6MJ2) | the serialized **closure state** that resume-not-replays after pruning |
+| Thermal forgetting (081KSGS9H0008QG0R0006F4BGX) | what survives the forget-budget loss |
 | **This row** | **the remainder = the bonsai closure state = the topological invariant** |
 
 Aaron's "the remainder is the bonsai closure state" names them as ONE: the chaos destroys the *path* (the lossy forget-budget), but the **topological invariant survives the scrambler** — and that survivor is the bonsai-pruned closure the memory-tree settles into. Identity = the invariant that the chaos cannot erase.
@@ -66,7 +65,7 @@ Do NOT assert specific values from training-data recall. Before any build/claim:
    - persistent homology of attractors via Takens embedding (current methods; e.g. sliding-window / SW1PerS, alpha/Rips filtrations)
    - Euler-characteristic curve / Euler-characteristic transform as an attractor summary
    - whether published **Euler characteristics for named attractors** (Lorenz, Rössler, hyperchaotic Rössler) exist — and at what they actually measure (the attractor set's homology is subtle; fractals are not manifolds, so χ here is via the filtration/ECC, NOT a manifold χ). **Flag this distinction explicitly; do not conflate.**
-2. **Substrate-inventory** (already partially done): composes with B-0976 (bonsai closure), B-0640 (bonsai/Integrate), B-0668 (clifford-rx-bonsai), B-0543 (cube), B-0840 (thermal-forgetting), B-0982 (4×4), B-0623 (Adinkras/ECC). Do not mint parallel.
+2. **Substrate-inventory** (already partially done): composes with 081KT07NV0008QG0R003BE6MJ2 (bonsai closure), 081KRW63S0008QG0R002XA5N6S (bonsai/Integrate), 081KRYRGG0008QG0R0018CMFQY (clifford-rx-bonsai), 081KRMEXM0008QG0R002YSPW1X (cube), 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting), 081KT07NV0008QG0R0032MCYER (4×4), 081KRW63S0008QG0R000QJR08H (Adinkras/ECC). Do not mint parallel.
 3. **Razor / don't-collapse:** the operational claim is "model a trace as a reconstructed attractor + compute topological invariants as a fingerprint." The metaphysical claim "a human IS one Euler number" stays a **maybe** (held don't-collapse per Aaron's PERSONAL INVARIANT; he explicitly invoked it in chunk 7).
 
 ## Acceptance (research-direction; build-gated on the search-first pass)
@@ -74,7 +73,7 @@ Do NOT assert specific values from training-data recall. Before any build/claim:
 - [ ] Search-first lit-verification pass complete + cited (Field 1 + Field 2 + the manifold-vs-filtration χ distinction)
 - [ ] Substrate-honest write-up of which invariants are dimension-capped (knots ≤3D) vs dimension-agnostic (ECC / persistent homology)
 - [ ] A concrete, testable spec for "trace → reconstructed attractor → topological-invariant fingerprint" (Takens params, filtration choice, invariant set)
-- [ ] Explicit mapping of the invariant ↔ bonsai closure state (B-0976) ↔ μένω ↔ retraction-remainder
+- [ ] Explicit mapping of the invariant ↔ bonsai closure state (081KT07NV0008QG0R003BE6MJ2) ↔ μένω ↔ retraction-remainder
 - [ ] Decision: is the topological-invariant-as-identity-fingerprint worth a build slice (composing the decentralized-identity endgame), or does it stay a research note?
 
 ## Substrate-honest framing

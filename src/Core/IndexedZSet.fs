@@ -286,7 +286,7 @@ module IndexedZSet =
         if ga.IsEmpty || gb.IsEmpty then ZSet<'C>.Empty
         else
             // `join` is `inline`, so it can't touch the internal KeyComparerCache — resolve the default
-            // binary/ordinal collation via the public Collation.forKey (once per join; B-0969).
+            // binary/ordinal collation via the public Collation.forKey (once per join; 081KT07NV0008QG0R001YDB73K).
             let cmp = Collation.forKey<'K> ()
             // Accumulate cap in int64 to avoid 2^31 wrap on wide joins.
             let mutable cap64 = 0L

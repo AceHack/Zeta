@@ -1,6 +1,5 @@
 ---
-id: B-0942
-zetaid: 081KSV2WD0008QG0R0021XJ94E
+id: 081KSV2WD0008QG0R0021XJ94E
 priority: P2
 status: open
 title: Co-dominant git mirrors + git-native CRDT coordination — no host needed for coordination (local + GitHub + GitLab/Gitea/Forgejo + free-OSS git as co-dominant collaborating mirrors)
@@ -18,7 +17,7 @@ tags: [sovereignty, git, crdt, coordination, mirrors, anti-monoculture, gitops, 
 type: design
 ---
 
-# B-0942 — Co-dominant git mirrors + git-native CRDT coordination (no host needed)
+# 081KSV2WD0008QG0R0021XJ94E — Co-dominant git mirrors + git-native CRDT coordination (no host needed)
 
 ## Origin
 
@@ -49,7 +48,7 @@ source-of-truth/coordination-point). Here:
 |---|---|
 | **Coordination / consensus** | git-native — CRDT merge over the commit DAG; push/pull is the gossip/sync; convergence is the merge. **No host.** |
 | **Transport / durability / reach** | the hosts (mirrors) — local + GitHub + GitLab/Gitea/Forgejo + other free-OSS git |
-| **CI / workflows** | Argo Workflows (k3s) + GitHub Actions etc. — also host-agnostic; the agent's workflows/DUs are git-defined (B-0868) |
+| **CI / workflows** | Argo Workflows (k3s) + GitHub Actions etc. — also host-agnostic; the agent's workflows/DUs are git-defined (081KSNY2Z0008QG0R0036KH026) |
 
 Because coordination is git-native, **no single host can gatekeep coordination** —
 the agent coordinates via its own local git + push/pull to any/all mirrors. That
@@ -71,7 +70,7 @@ subordinate, none is the authority:
 
 This generalizes the existing **LFG↔AceHack 2-host mirror** topology
 ([`.claude/rules/lfg-acehack-topology.md`](../../../.claude/rules/lfg-acehack-topology.md))
-to **N co-dominant hosts**, and it is **B-0883.2's anti-monoculture hedge applied
+to **N co-dominant hosts**, and it is **081KSNY2Z0008QG0R002ZAVMEK's anti-monoculture hedge applied
 to git-hosting** — don't lock to one host (same shape as "don't lock to NIST
 lattices"): host-agility, not host-monoculture.
 
@@ -94,7 +93,7 @@ features, never a dependency.
    via the CRDT merge, not host-arbitration).
 3. **Confirm the git-native CRDT coordination** — document/verify that the
    framework's consensus (DBSP +1/-1 retraction algebra / Z-sets as CRDTs, per
-   B-0824's DBSP lineage + the `algebra-owner`/`crdt-expert` skills + the
+   081KSGS9H0008QG0R0031PBNGA's DBSP lineage + the `algebra-owner`/`crdt-expert` skills + the
    accelerator `event-store-schema.ts` git-native event store) requires only
    push/pull, no coordination-host.
 4. **Argo Workflows** for host-agnostic CI/workflow execution on the cluster.
@@ -111,15 +110,15 @@ features, never a dependency.
 
 - [`.claude/rules/lfg-acehack-topology.md`](../../../.claude/rules/lfg-acehack-topology.md)
   — the 2-host mirror this generalizes to N co-dominant hosts
-- [B-0424](B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)
+- [081KRFA460008QG0R001H98EXJ](081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md)
   — repo-split (forge/ace); the mirror set spans the split repos
-- [B-0883.2](../P2/B-0883.2-multi-cipher-pq-substrate-nist-plus-saber-ntru-prime-frodo-hedge-against-nist-monoculture-per-operator-2026-05-28.md)
+- [081KSNY2Z0008QG0R002ZAVMEK](../P2/081KSNY2Z0008QG0R002ZAVMEK-multi-cipher-pq-substrate-nist-plus-saber-ntru-prime-frodo-hedge-against-nist-monoculture-per-operator-2026-05-28.md)
   — anti-monoculture hedge pattern (this is that pattern at git-host scope)
 - `tools/accelerator/event-store-schema.ts` — git-native event store (the
   coordination substrate)
 - DBSP/CRDT substrate — `.claude/skills/algebra-owner/SKILL.md`,
-  `.claude/skills/crdt-expert/SKILL.md`, B-0824's DBSP +1/-1 lineage
-- The harvest (#6120 / B-0941) — local-LLM = the "thinks locally" half; this row
+  `.claude/skills/crdt-expert/SKILL.md`, 081KSGS9H0008QG0R0031PBNGA's DBSP +1/-1 lineage
+- The harvest (#6120 / 081KSV2WD0008QG0R0004C8WV8) — local-LLM = the "thinks locally" half; this row
   is the "git substrate the sovereign cluster coordinates over" half
 - full-ai-cluster k3s + Argo (the cluster the agent commands)
 
@@ -127,6 +126,6 @@ features, never a dependency.
 
 - `grep -rliE "co.dominant|multi.*git.*host|forgejo|gitea"` docs/backlog .claude/rules
   → no prior co-dominant-mirrors row; LFG↔AceHack 2-host mirror is the closest
-  precedent (this generalizes it); B-0424 is the repo-split (orthogonal)
-- ID B-0942: highest on origin/main is B-0939; B-0940/B-0941 are on the in-flight
-  harvest (#6120); B-0942 is next free, no in-flight collision
+  precedent (this generalizes it); 081KRFA460008QG0R001H98EXJ is the repo-split (orthogonal)
+- ID 081KSV2WD0008QG0R0021XJ94E: highest on origin/main is 081KSV2WD0008QG0R0020P6ZH2; 081KSV2WD0008QG0R0028NY0MV/081KSV2WD0008QG0R0004C8WV8 are on the in-flight
+  harvest (#6120); 081KSV2WD0008QG0R0021XJ94E is next free, no in-flight collision

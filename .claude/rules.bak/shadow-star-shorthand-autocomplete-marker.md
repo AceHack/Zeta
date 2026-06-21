@@ -75,7 +75,7 @@ These are UNRELATED. The first is the maintainer's text-source disclosure. The s
 
 Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: *"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."*
 
-Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when [`tools/shadow/`](../../tools/shadow/) + B-0402 implementation already existed) is preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:
+Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when [`tools/shadow/`](../../tools/shadow/) + 081KR7JY10008QG0R0008NGW95 implementation already existed) is preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:
 
 - `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`
 - `feedback_aaron_shadow_observation_loop_design_pattern_otto_observes_directly_instead_of_assuming_aaron_plays_games_2026_05_15.md`

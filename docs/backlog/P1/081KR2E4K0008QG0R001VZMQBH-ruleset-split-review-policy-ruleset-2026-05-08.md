@@ -1,6 +1,5 @@
 ---
-id: B-0266
-zetaid: 081KR2E4K0008QG0R001VZMQBH
+id: 081KR2E4K0008QG0R001VZMQBH
 priority: P1
 status: closed
 title: "GitHub ruleset split — review policy ruleset (conversation resolution + reviews)"
@@ -13,17 +12,17 @@ decomposition: atomic
 type: friction-reducer
 ---
 
-# B-0266 — Review policy ruleset
+# 081KR2E4K0008QG0R001VZMQBH — Review policy ruleset
 
-Second child of B-0155. Create a dedicated ruleset for review
+Second child of 081KQGDBJ0008QG0R0028YTDQ2. Create a dedicated ruleset for review
 policy (required conversation resolution, code review settings).
 
 ## Pre-start checklist
 
-- [x] Prior-art search: B-0265 (CI Gate, closed) followed same
+- [x] Prior-art search: 081KR2E4K0008QG0R001DYEFD7 (CI Gate, closed) followed same
   pattern — API creation + snapshot update. Commit cd9e0483.
-- [x] Dependency check: B-0265 (CI Gate) is closed. No blockers.
-- [x] Parent B-0155 reviewed — three-ruleset target documented in
+- [x] Dependency check: 081KR2E4K0008QG0R001DYEFD7 (CI Gate) is closed. No blockers.
+- [x] Parent 081KQGDBJ0008QG0R0028YTDQ2 reviewed — three-ruleset target documented in
   `docs/GITHUB-SETTINGS.md` migration matrix.
 
 ## Acceptance criteria

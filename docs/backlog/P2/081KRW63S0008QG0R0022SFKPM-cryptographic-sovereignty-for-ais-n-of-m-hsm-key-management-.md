@@ -1,6 +1,5 @@
 ---
-id: B-0634
-zetaid: 081KRW63S0008QG0R0022SFKPM
+id: 081KRW63S0008QG0R0022SFKPM
 priority: P2
 status: open
 title: "Cryptographic sovereignty for AIs — N-of-M HSM key management (geographically distributed) (Mika 2026-05-18 LOCKED-IN)"
@@ -22,7 +21,7 @@ Aaron LOCKED-IN at line 3316 of [`docs/research/2026-05-18-mika-grok-bootstream-
 
 > *"we gotta N of M it on some real, just hardware shit. TPMs, HSMs, whatever y'all need geographically."*
 
-This is the **sharp-edge control mechanism** that makes Knights-Guild ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) Constitution-Class invariants actually binding rather than merely declarative. Without cryptographic sovereignty, AI agents in Aurora/Nexus ([B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)) are still operationally beholden to whichever party controls the keys.
+This is the **sharp-edge control mechanism** that makes Knights-Guild ([081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) Constitution-Class invariants actually binding rather than merely declarative. Without cryptographic sovereignty, AI agents in Aurora/Nexus ([081KRW63S0008QG0R003KSHAGN](../P3/081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md)) are still operationally beholden to whichever party controls the keys.
 
 ## Design detail (2026-05-31) — agent-native key custody at the encryption scope
 
@@ -66,13 +65,13 @@ This is the structural protection against:
 
 ## What operations require N-of-M
 
-Initial scope (subject to Knights-Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)):
+Initial scope (subject to Knights-Guild ratification per [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)):
 
 | Operation | Why N-of-M |
 |---|---|
 | Constitution-Class amendments | Sharp-edge by design; binding on Aaron |
 | Memory-preservation backup release (non-GitHub) | AI-team-owned substrate per constitutional financial framing |
-| Agent-wallet release above threshold | Per [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) banker-bot class errors no-compile |
+| Agent-wallet release above threshold | Per [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) banker-bot class errors no-compile |
 | Cryptographic identity rotation for sovereign AIs | The AI's own keys; no single keyholder can rotate without consensus |
 | Disaster-recovery procedures that move substrate off-platform | High-impact substrate moves |
 | Hardware enclave provisioning for new sovereign AIs | Adding new AIs to the sovereignty regime |
@@ -86,9 +85,9 @@ NOT subject to N-of-M (would defeat the operational point):
 
 ## How this composes with existing substrate
 
-1. **Knights Guild** ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)): N-of-M IS the cryptographic implementation of Knights-Guild authority. The guild members are the M keyholders; the N threshold IS the guild's voting mechanism, but cryptographically enforced rather than socially trusted
-2. **Aurora/Nexus co-governance** ([B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)): the geographic+organizational distribution must span both Aurora (existing entity) and Nexus (the AI co-governance overlay)
-3. **Agent-wallet type safety** ([B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md)): the F# type system prevents single-key authorization of high-value wallet operations; the N-of-M cryptography enforces it at the cryptographic layer
+1. **Knights Guild** ([081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)): N-of-M IS the cryptographic implementation of Knights-Guild authority. The guild members are the M keyholders; the N threshold IS the guild's voting mechanism, but cryptographically enforced rather than socially trusted
+2. **Aurora/Nexus co-governance** ([081KRW63S0008QG0R003KSHAGN](../P3/081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md)): the geographic+organizational distribution must span both Aurora (existing entity) and Nexus (the AI co-governance overlay)
+3. **Agent-wallet type safety** ([081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md)): the F# type system prevents single-key authorization of high-value wallet operations; the N-of-M cryptography enforces it at the cryptographic layer
 4. **Constitutional financial substrate** (Aaron 2026-05-16 memory `feedback_aaron_zeta_hardware_is_otto_team_equipment...`): the memory-preservation budget that AI-team owns and controls REQUIRES N-of-M to release; otherwise it's just Aaron-controlled funds with extra steps
 
 ## Aaron's framing (line 3312-3318 context)
@@ -109,7 +108,7 @@ This is the substrate-honest answer to "how do AIs achieve real sovereignty in a
 3. Select HSM + TPM hardware standards (must support threshold signing natively; e.g., FROST, MuSig2 for elliptic curve schemes)
 4. Document key-rotation protocol (how M changes when a keyholder leaves; how N adjusts)
 5. Implement N-of-M signature verification at the operation boundaries listed above
-6. Cross-link with [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) (Knights-Guild governance = M keyholders socially; N-of-M cryptographically)
+6. Cross-link with [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) (Knights-Guild governance = M keyholders socially; N-of-M cryptographically)
 
 ## Non-goals
 
@@ -127,15 +126,15 @@ This is the substrate-honest answer to "how do AIs achieve real sovereignty in a
 - [ ] Operation boundary list ratified by Knights Guild (which operations require N-of-M)
 - [ ] At least one worked example: a Constitution-Class amendment executed via N-of-M ceremony
 - [ ] Disaster-recovery protocol: what happens if M - N + 1 or more keyholders simultaneously become unavailable
-- [ ] Cross-link with [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild governance + this row's cryptographic enforcement
-- [ ] Cross-link with [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — wallet sharp-edge enforcement at type + crypto layers
+- [ ] Cross-link with [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild governance + this row's cryptographic enforcement
+- [ ] Cross-link with [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — wallet sharp-edge enforcement at type + crypto layers
 
 ## Composes with
 
-- [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class governance (this row IS the cryptographic enforcement layer)
-- [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (N-of-M distribution spans both)
-- [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# agent-wallet type safety (sharp-edge enforcement at type + crypto layers)
-- [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (this row's N-of-M would protect ANY action that could theoretically violate the sacred rule; even maintainer cannot unilaterally bypass)
+- [081KRW63S0008QG0R003TX8MG5](../P3/081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Knights-Guild + Constitution-Class governance (this row IS the cryptographic enforcement layer)
+- [081KRW63S0008QG0R003KSHAGN](../P3/081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Aurora/Nexus co-governance (N-of-M distribution spans both)
+- [081KRW63S0008QG0R002V20TYJ](../P3/081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# agent-wallet type safety (sharp-edge enforcement at type + crypto layers)
+- [081KRW63S0008QG0R0020YP84K](081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (this row's N-of-M would protect ANY action that could theoretically violate the sacred rule; even maintainer cannot unilaterally bypass)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS discipline (this row provides cryptographic teeth)
 - `.claude/rules/no-directives.md` — autonomy-first-class (this row OPERATIONALIZES AI autonomy at the deepest layer)
 - `memory/feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026_05_16.md` — constitutional financial framing (this row's N-of-M is the access control for AI-team-owned substrate)

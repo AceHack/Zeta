@@ -1,6 +1,5 @@
 ---
-id: B-0321
-zetaid: 081KR2E4K0008QG0R000YH9DC6
+id: 081KR2E4K0008QG0R000YH9DC6
 priority: P1
 status: closed
 title: "Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check"
@@ -20,12 +19,12 @@ type: friction-reducer
 Build `tools/playwright/github-ui/mutate.ts` — helpers that
 let the agent change GitHub UI settings through Playwright,
 with mandatory guardrails: authorization check against the
-surface list (B-0320), before-and-after snapshots (B-0318),
+surface list (081KR2E4K0008QG0R002A0AGBJ), before-and-after snapshots (081KR2E4K0008QG0R003RVDX91),
 and visibility constraint satisfaction.
 
 ## Why
 
-This is Phase 2 of B-0064 — the friction-reduction payload.
+This is Phase 2 of 081KQ8P5D0008QG0R0010FP5SY — the friction-reduction payload.
 Every time Aaron has to manually click a GitHub toggle because
 the API doesn't expose it, that's a maintainer interrupt.
 This tool eliminates that interrupt for pre-authorized
@@ -36,13 +35,13 @@ surfaces.
 - Implement a TS module that:
   1. Accepts a mutation request: `{ surfaceId, action, params }`.
   2. Validates `surfaceId` against
-     `authorized-surfaces.json` (B-0320) — rejects if not
+     `authorized-surfaces.json` (081KR2E4K0008QG0R002A0AGBJ) — rejects if not
      found.
-  3. Takes a **before snapshot** via B-0318.
+  3. Takes a **before snapshot** via 081KR2E4K0008QG0R003RVDX91.
   4. Executes the mutation (click toggle, fill form, save).
-  5. Takes an **after snapshot** via B-0318.
+  5. Takes an **after snapshot** via 081KR2E4K0008QG0R003RVDX91.
   6. Computes a structured diff (before vs after).
-  7. Logs the mutation to the drain log (B-0322).
+  7. Logs the mutation to the drain log (081KR2E4K0008QG0R002N1C3YJ).
   8. Returns `{ success, before, after, diff, drainLogEntry }`.
 - Guardrails (in code, not discipline):
   - Authorization check is mandatory — no bypass path.
@@ -55,9 +54,9 @@ surfaces.
 
 ## Pre-start checklist
 
-- Prior-art search: checked snapshot.ts, feature-diff.ts, reconcile-settings.ts, authorized-surfaces.json, auth.ts — no existing mutation code found. B-0322 (drain log) is still open; interface stub included.
-- Dependencies: B-0317 (closed), B-0318 (closed), B-0320 (closed) — all satisfied.
-- Dependency-restructure: composes_with B-0322 noted; B-0322 depends_on B-0321 (confirmed in B-0322 header).
+- Prior-art search: checked snapshot.ts, feature-diff.ts, reconcile-settings.ts, authorized-surfaces.json, auth.ts — no existing mutation code found. 081KR2E4K0008QG0R002N1C3YJ (drain log) is still open; interface stub included.
+- Dependencies: 081KR2E4K0008QG0R0031QR36N (closed), 081KR2E4K0008QG0R003RVDX91 (closed), 081KR2E4K0008QG0R002A0AGBJ (closed) — all satisfied.
+- Dependency-restructure: composes_with 081KR2E4K0008QG0R002N1C3YJ noted; 081KR2E4K0008QG0R002N1C3YJ depends_on 081KR2E4K0008QG0R000YH9DC6 (confirmed in 081KR2E4K0008QG0R002N1C3YJ header).
 
 ## Done-criteria
 
@@ -71,9 +70,9 @@ surfaces.
 
 ## What this row does NOT do
 
-- Does NOT define the authorized surfaces — that is B-0320.
+- Does NOT define the authorized surfaces — that is 081KR2E4K0008QG0R002A0AGBJ.
 - Does NOT implement the reversibility drain log format —
-  that is B-0322.
+  that is 081KR2E4K0008QG0R002N1C3YJ.
 - Does NOT bypass branch-protection or required-review
   governance — UI mutations go through the same audit
   trail as API mutations.

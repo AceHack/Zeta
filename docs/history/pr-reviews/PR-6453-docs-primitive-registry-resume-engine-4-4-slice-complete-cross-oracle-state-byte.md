@@ -27,7 +27,7 @@
 
 ## Description
 
-Marks the **resume engine ✅ 4/4** in `PRIMITIVE-REGISTRY.md` — the four-oracle B-0976 resume slice is fully merged: TS (#6446) · F# (#6448) · C# (#6451) · Rust (#6452). Corrects the stale *"TS reference in flight 🚧 1/4, PR #6446 not yet on main"* status.
+Marks the **resume engine ✅ 4/4** in `PRIMITIVE-REGISTRY.md` — the four-oracle 081KT07NV0008QG0R003BE6MJ2 resume slice is fully merged: TS (#6446) · F# (#6448) · C# (#6451) · Rust (#6452). Corrects the stale *"TS reference in flight 🚧 1/4, PR #6446 not yet on main"* status.
 
 Also records, in **git-canonical substrate** (it lived only in #6451/#6452 PR bodies — host-durable, not canonical), the cross-oracle finding surfaced while building the family:
 

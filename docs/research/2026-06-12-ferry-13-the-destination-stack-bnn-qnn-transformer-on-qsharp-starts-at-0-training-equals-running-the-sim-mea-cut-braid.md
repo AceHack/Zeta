@@ -30,7 +30,7 @@ runtime.
 Two live expansions, both load-bearing here:
 
 - **Bayesian neural network** (the repo's native read: `src/Bayesian`, the Infer.NET
-  differential oracle, B-1033's hexagonal inference port): every weight is a posterior, not a
+  differential oracle, 081KTZ4EF0008QG0R000WJGSWX's hexagonal inference port): every weight is a posterior, not a
   point.
 - **Binarized/BitNet-style NN** (the 1-bit lane, BitNet b1.58): every weight starts at the
   minimum possible width.
@@ -72,7 +72,7 @@ uncertainty ledger), `cut` (the boundary act — byte-lock what survived, golden
   (prior + loop + ledger), where the prior is the architecture, the loop is sim·mea·cut, and
   the ledger is the braid.
 
-The TestLoop (B-1035, in-tree) is the same triple already shipped at test scale — the claim
+The TestLoop (081KTSZN10008QG0R002J0GE0Z, in-tree) is the same triple already shipped at test scale — the claim
 promotes it from test harness to **the training algorithm**. That promotion is the buildable
 content of this ferry.
 
@@ -94,7 +94,7 @@ not a default you assert* (`every-bug-has-economic-value.md`). A neuron that red
 uncertainty earns width; one that doesn't sheds bits. Backprop's global gradient is replaced by
 a **local economic settlement** — which is also exactly how the GGUF importance matrix
 allocates precision, except live and self-governed instead of calibration-time and
-author-flagged. Transport: **Reticulum** — already the named bus (B-1035's RETICULUM-ONLY IO
+author-flagged. Transport: **Reticulum** — already the named bus (081KTSZN10008QG0R002J0GE0Z's RETICULUM-ONLY IO
 clause; one door, metered crossings), so inter-neuron communication inherits noninterference
 (§13) by construction: influence between neurons only through the declared channel, every
 crossing booked. REPORT #2's LOCC caveat carries over: Reticulum moves classical bits; the
@@ -138,7 +138,7 @@ The Clifford location of beat 6 is not ornament — it is the **addressing schem
   *locality* question: the geospatial frame routes reads/writes through a hierarchy, near before
   far, exactly as a cache hierarchy routes by level.
 
-The hierarchy is named: **Sequoia** — a Stanford memory model — already on the books as **B-0669**
+The hierarchy is named: **Sequoia** — a Stanford memory model — already on the books as **081KRYRGG0008QG0R0031EYYE4**
 (V8 System Architecture; "Sequoia memory hierarchy," Aaron-authorized 2026-05-19 "land all of
 it"). Aaron's frame here is **"quantum braided memory hierarchy"**: the Sequoia levels are braid
 classes (dense vs sparse braiding = ferry 12's capacity axis; dense near, sparse far), addressed

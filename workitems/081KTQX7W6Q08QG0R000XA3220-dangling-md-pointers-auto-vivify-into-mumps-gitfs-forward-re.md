@@ -27,7 +27,7 @@ system **auto-instantiate that node** in the **MUMPS global tree** and **gitfs**
 reference. Link liberally → the target **auto-vivifies**; a pointer is never broken.
 
 The anchor is **MUMPS's native behaviour**: assigning/referencing a global subscript that doesn't exist
-**creates the whole path** (`SET ^X("a","b","c")=1` auto-creates `^X`,`"a"`,`"b"`,`"c"`). B-1022 applies
+**creates the whole path** (`SET ^X("a","b","c")=1` auto-creates `^X`,`"a"`,`"b"`,`"c"`). 081KTQD8A0008QG0R0005EFYPV applies
 that **auto-vivification** to **markdown pointers** so MD link ⇄ MUMPS global ⇄ gitfs path are **one
 auto-vivifying namespace**. Already the spirit of the `[[name]]` memory convention; this makes it automatic.
 
@@ -56,7 +56,7 @@ auto-vivifying namespace**. Already the spirit of the `[[name]]` memory conventi
 The **legacy B-number backlog causes uncontrollable LLM drift** (guessing the next number, collisions,
 inconsistency). The fix — and the reason this item is **ZetaId-keyed under `workitems/`** via
 `tools/backlog/new-workitem.ts` — is **governed, conflict-free, time-sortable identity** (no number to
-guess). B-1022 generalizes that same auto-vivifying, governed-identity discipline to **every** MD pointer.
+guess). 081KTQD8A0008QG0R0005EFYPV generalizes that same auto-vivifying, governed-identity discipline to **every** MD pointer.
 
 ## Ties / routing
 

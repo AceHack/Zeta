@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Agent-bus Phase 1 (B-0954) — clean expired envelopes.
+ * Agent-bus Phase 1 (081KSXN940008QG0R00171YAZW) — clean expired envelopes.
  *
  * Scans the agent-bus folder recursively, parses files to check their expiration
  * (expiresAt < now), deletes any expired files locally, stages them, commits,
@@ -63,7 +63,7 @@ function gitPushCleanup(paths: string[]): void {
   const commitMsg = [
     `bus(clean): prune ${String(gitPaths.length)} expired envelope(s)`,
     "",
-    "Pruned expired agent-bus envelopes (B-0954, no-PR direct-to-main).",
+    "Pruned expired agent-bus envelopes (081KSXN940008QG0R00171YAZW, no-PR direct-to-main).",
     "",
     coauthorFor(from),
   ].join("\n");

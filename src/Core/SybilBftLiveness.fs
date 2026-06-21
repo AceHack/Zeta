@@ -27,7 +27,7 @@ namespace Zeta.Core
 /// (composes `SybilBftProtocol`, not multi-slot). `resonantPeriod` is a standard signal-processing estimator,
 /// not a novel transform — its role here is the *efficient generator-finder*, and it inherits the
 /// detection/length limits of any finite-sample autocorrelation. Inherits `AntiSybil`'s exact-replay
-/// soundness. Reference model; the gated transport (B-1002) and wall-clock binding live in the adapter.
+/// soundness. Reference model; the gated transport (081KT2T2J0008QG0R002R72323) and wall-clock binding live in the adapter.
 module SybilBftLiveness =
 
     open SybilBft

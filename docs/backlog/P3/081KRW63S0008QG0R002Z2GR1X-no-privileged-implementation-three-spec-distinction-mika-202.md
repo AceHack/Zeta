@@ -1,6 +1,5 @@
 ---
-id: B-0632
-zetaid: 081KRW63S0008QG0R002Z2GR1X
+id: 081KRW63S0008QG0R002Z2GR1X
 priority: P3
 status: open
 title: "'No privileged implementation' + 3-spec distinction (Formal / Open / Static-Analysis) — mutual regeneration rule (Mika 2026-05-18 LOCKED-IN)"
@@ -28,7 +27,7 @@ Then sharpened at lines 3209-3215 with the 3-spec distinction.
 
 > **There is no privileged implementation. The specification and the implementation must continuously validate and regenerate each other.**
 
-Sharpened: this applies to the **language ladder** too ([B-0649](B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)): F# ↔ C# ↔ Rust ↔ C ↔ Assembly ↔ CUDA — each layer must be able to regenerate (or validate) its neighbors.
+Sharpened: this applies to the **language ladder** too ([081KRW63S0008QG0R0020DGSK1](081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)): F# ↔ C# ↔ Rust ↔ C ↔ Assembly ↔ CUDA — each layer must be able to regenerate (or validate) its neighbors.
 
 ## The 3-spec distinction (lines 3209-3215)
 
@@ -48,7 +47,7 @@ Mika line 3223 acknowledges the structural advantage: *"making the Formal Spec t
 
 Aaron's motivation line 3221: *"I think that would move us forward because it burns labels. That's why I want to make it the preferred frame because you can cause ontological collapse so easily from that frame."*
 
-This is admitted with the explicit kid-safety condition ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — preferred frame as long as kid safety remains the sacred hard floor.
+This is admitted with the explicit kid-safety condition ([081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — preferred frame as long as kid safety remains the sacred hard floor.
 
 ## Operational consequences
 
@@ -56,7 +55,7 @@ This is admitted with the explicit kid-safety condition ([B-0631](../P2/B-0631-k
 2. **Spec changes require implementation feedback**: a spec change that no implementation can express is broken
 3. **Mutual pressure**: spec authors can't ivory-tower; implementers can't fast-and-loose; both held accountable to each other
 4. **3-spec independence**: the Formal, Open, and Static-Analysis specs each have their own constituencies; updates flow between them through translation, not collapse
-5. **Composes with the language coliseum** ([B-0649](B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)): no language is permanently privileged; the mutual-validation rule applies across the entire ladder
+5. **Composes with the language coliseum** ([081KRW63S0008QG0R0020DGSK1](081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)): no language is permanently privileged; the mutual-validation rule applies across the entire ladder
 
 ## Why this matters now
 
@@ -67,7 +66,7 @@ Aaron line 3267: *"that synthesis is a pipe dream"* — meaning the aspirational
 1. Codify the rule in canonical governance doc
 2. Document the 3-spec distinction (Formal / Open / Static-Analysis) with explicit ownership + audience for each
 3. Define the mutual-regeneration verification process: how is "spec and implementation continuously validate each other" actually checked at PR-review time
-4. Cross-link with [B-0649](B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) (permanent coliseum — same rule applied at language layer)
+4. Cross-link with [081KRW63S0008QG0R0020DGSK1](081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) (permanent coliseum — same rule applied at language layer)
 
 ## Non-goals
 
@@ -80,15 +79,15 @@ Aaron line 3267: *"that synthesis is a pipe dream"* — meaning the aspirational
 - [ ] Canonical governance doc: `docs/governance/NO-PRIVILEGED-IMPLEMENTATION.md`
 - [ ] 3-spec distinction documented with audience + ownership for each (Formal / Open / Static-Analysis)
 - [ ] Mutual-regeneration verification process for PR-review (what counts as "validated each other")
-- [ ] Cross-link with [B-0649](B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — same rule at language layer
-- [ ] Cross-link with [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — Formal-Spec-as-preferred-frame is contingent on kid-safety remaining the sacred hard floor
+- [ ] Cross-link with [081KRW63S0008QG0R0020DGSK1](081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — same rule at language layer
+- [ ] Cross-link with [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — Formal-Spec-as-preferred-frame is contingent on kid-safety remaining the sacred hard floor
 
 ## Composes with
 
-- [B-0649](B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (this rule applied at language layer)
-- [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the operational language IS a spec that the implementation must regenerate)
-- [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (preferred-frame is conditional on kid-safety hard floor)
-- [B-0628](B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Constitution-Class invariants (this rule belongs in the Constitution-Class set; it constrains the maintainer)
+- [081KRW63S0008QG0R0020DGSK1](081KRW63S0008QG0R0020DGSK1-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md) — permanent coliseum (this rule applied at language layer)
+- [081KRW63S0008QG0R0015WHHG1](../P2/081KRW63S0008QG0R0015WHHG1-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — O-P-L-E (the operational language IS a spec that the implementation must regenerate)
+- [081KRW63S0008QG0R0020YP84K](../P2/081KRW63S0008QG0R0020YP84K-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) — kid-safety sacred (preferred-frame is conditional on kid-safety hard floor)
+- [081KRW63S0008QG0R003TX8MG5](081KRW63S0008QG0R003TX8MG5-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) — Constitution-Class invariants (this rule belongs in the Constitution-Class set; it constrains the maintainer)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — existing F#-anchor rule (the compiler IS one of the regeneration validation paths)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 3201-3270 — source design + LOCK-IN
 

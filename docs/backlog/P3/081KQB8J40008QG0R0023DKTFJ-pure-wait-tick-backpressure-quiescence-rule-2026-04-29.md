@@ -1,6 +1,5 @@
 ---
-id: B-0100
-zetaid: 081KQB8J40008QG0R0023DKTFJ
+id: 081KQB8J40008QG0R0023DKTFJ
 priority: P3
 status: open
 title: Pure-wait tick backpressure / quiescence rule for autonomous-loop tick shards
@@ -82,7 +81,7 @@ but still bounded. Promote when active drain is clear.
 
 ## Composes with
 
-- B-0098, B-0099, B-0101 — sibling actionables from the same
+- 081KQB8J40008QG0R003VMCFWB, 081KQB8J40008QG0R002PEP2A2, 081KQB8J40008QG0R002DNCSKR — sibling actionables from the same
   packet.
 - `docs/AUTONOMOUS-LOOP.md` — current per-minute cron contract.
 - `memory/feedback_never_idle_speculative_work_over_waiting.md`

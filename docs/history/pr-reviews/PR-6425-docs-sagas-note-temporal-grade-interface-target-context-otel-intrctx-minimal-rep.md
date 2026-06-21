@@ -32,8 +32,8 @@ Three operator-directed sharpenings (2026-06-01, "yeah you can write up somethin
 ## 1. Interface target = Temporal
 "Durable functs and **especially temporal** have the better interfaces than mine." Temporal = **durability-transparent** body (write normal code) + first-class **signals** (push into a running workflow) + **queries** (read state without advancing); DF = clean-but-explicit + Azure-coupled; the minimal spike = minimal-but-boilerplate. **Target Temporal-grade ergonomics; Temporal = interface conformance oracle** (own-our-interface, meet-or-beat per `bcl-interface-boundary`). Signals ↦ stream/move-next events; queries ↦ read the context-keyed Z-set at rest. Our **resume** model can offer the same transparent interface with **fewer footguns** (non-determinism in the body is fine).
 
-## 2. Context = OTel context = B-0917 IntrCtx
-"Context ends up being same as otel context, it passes though function calls mostly." Ambient propagation: `AsyncLocal`/`Activity.Current` in-proc; W3C `traceparent`+baggage cross-proc. Composes **B-0917** (Kleisli context-propagation — otel+log), **B-0957** (scope propagation via OTel-baggage), **B-0872** (ZetaID+trace-id), lightlike-observability (OTel=ray emission). Identity rides the context; the heavy serialized payload is keyed off it in the store.
+## 2. Context = OTel context = 081KSNY2Z0008QG0R002HB4AGT IntrCtx
+"Context ends up being same as otel context, it passes though function calls mostly." Ambient propagation: `AsyncLocal`/`Activity.Current` in-proc; W3C `traceparent`+baggage cross-proc. Composes **081KSNY2Z0008QG0R002HB4AGT** (Kleisli context-propagation — otel+log), **081KSXN940008QG0R001YABTHH** (scope propagation via OTel-baggage), **081KSNY2Z0008QG0R000ZNRFCE** (ZetaID+trace-id), lightlike-observability (OTel=ray emission). Identity rides the context; the heavy serialized payload is keyed off it in the store.
 
 ## 3. Minimal-replay reference
 Replay = **~5 primitives** (step-cursor + cached-results + break-exception + state-provider + context). Concept-not-code (the operator's spike is platform-coupled; the pattern is the public DTF model). Confirms replay is cheap to build; **resume is the superset** (looser body + self-evolution).
@@ -117,11 +117,11 @@ registry want-line ("yeah you can write up something"):
    move-next events; queries = read the context-keyed Z-set at rest. Resume model
    gives the same transparent interface with FEWER footguns (non-determinism OK).
 
-2. Context = OTel context = B-0917 IntrCtx (the maintainer: "context ends up
+2. Context = OTel context = 081KSNY2Z0008QG0R002HB4AGT IntrCtx (the maintainer: "context ends up
    being same as otel context, it passes though function calls mostly"). Ambient
    propagation: AsyncLocal/Activity.Current in-proc, W3C traceparent+baggage
-   cross-proc. Composes B-0917 (Kleisli context-propagation, otel+log), B-0957
-   (scope propagation via OTel-baggage), B-0872 (ZetaID+trace-id), lightlike-
+   cross-proc. Composes 081KSNY2Z0008QG0R002HB4AGT (Kleisli context-propagation, otel+log), 081KSXN940008QG0R001YABTHH
+   (scope propagation via OTel-baggage), 081KSNY2Z0008QG0R000ZNRFCE (ZetaID+trace-id), lightlike-
    observability (OTel=ray emission). Identity-on-context vs heavy-payload-in-
    store-keyed-by-context.
 
@@ -130,7 +130,7 @@ registry want-line ("yeah you can write up something"):
    operator's spike is platform-coupled; the pattern is the public DTF model).
    Confirms replay is cheap; resume is the superset (looser body + self-evolution).
 
-All cited backlog links (B-0917/B-0957/B-0872) verified resolvable; Temporal/Dapr
+All cited backlog links (081KSNY2Z0008QG0R002HB4AGT/081KSXN940008QG0R001YABTHH/081KSNY2Z0008QG0R000ZNRFCE) verified resolvable; Temporal/Dapr
 sources added; markdownlint clean.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

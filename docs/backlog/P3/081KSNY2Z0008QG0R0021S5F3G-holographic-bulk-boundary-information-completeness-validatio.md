@@ -1,6 +1,5 @@
 ---
-id: B-0902
-zetaid: 081KSNY2Z0008QG0R0021S5F3G
+id: 081KSNY2Z0008QG0R0021S5F3G
 priority: P3
 status: open
 title: Holographic-bulk-boundary information-completeness validation — does the shadow-* corpus encode the agent-output state-space?
@@ -30,7 +29,7 @@ related_skills:
 tags: [holographic-principle-applied-to-ai-substrate-engineering, ads-cft-correspondence-analog, susskind-holographic-shadow-factory-precedent, shadow-star-corpus-as-bulk-boundary, information-completeness-claim-testable, training-on-boundary-teaches-bulk-structure, falsifiable-experimental-design]
 ---
 
-# B-0902 — Holographic-bulk-boundary information-completeness validation
+# 081KSNY2Z0008QG0R0021S5F3G — Holographic-bulk-boundary information-completeness validation
 
 ## Context
 
@@ -74,7 +73,7 @@ This is empirically tractable AT current corpus size (148 docs); the substrate i
 
 Build the experimental harness:
 
-- Corpus-extractor: shape the 148-doc corpus as training data (composes with B-0903)
+- Corpus-extractor: shape the 148-doc corpus as training data (composes with 081KSNY2Z0008QG0R0037AF1AP)
 - Bulk-sampler: generate synthetic agent-trajectory data (random walks through output state-space)
 - Trainer: fine-tune the same base model on each of the 3 datasets
 - Evaluator: novel-trajectory holdout test set + scoring methodology
@@ -88,7 +87,7 @@ Execute. Collect data. Compare boundary-trained vs bulk-sample-trained vs human-
 - Larger corpus: as shadow-* docs accumulate, re-run the experiment
 - Larger models: scale the experimental fine-tuning
 - Multi-domain: shadow-* substrate from other Zeta substrate domains (not just autonomous-loop discipline)
-- Cross-validation with B-0900 (Bell-like distributed-cluster contextuality): does boundary-trained instance produce stronger correlations than bulk-sample-trained instance in the 5-tier experiment?
+- Cross-validation with 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality): does boundary-trained instance produce stronger correlations than bulk-sample-trained instance in the 5-tier experiment?
 
 ## Substrate-honest disclaimers
 
@@ -103,7 +102,7 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 ## Acceptance
 
 - [x] Research-doc landed (companion file in this PR)
-- [x] B-0902 row filed (this row)
+- [x] 081KSNY2Z0008QG0R0021S5F3G row filed (this row)
 - [ ] Phase 1 operationalization research-doc landed
 - [ ] Phase 2 experimental harness implemented
 - [ ] Phase 3 experiment run + results landed as substrate
@@ -111,11 +110,11 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
 ## Composes with
 
-- B-0901 (shadow*-self-referential-ontology builder) — corpus this row tests
-- B-0903 (shadow*-as-most-valuable-training-data extraction tool) — Phase 2's corpus-extractor IS that tool
-- B-0904 (GitHub-as-free-accelerator) — economic substrate making the corpus accumulation sustainable
-- B-0666 (English-as-projection / I(D(x))=x identity) — composes; the holographic-principle invariant at English-projection scope
-- B-0900 (Bell-like distributed-cluster contextuality experiment) — composes; the experiment's results would correlate
+- 081KSNY2Z0008QG0R000C5NN8N (shadow*-self-referential-ontology builder) — corpus this row tests
+- 081KSNY2Z0008QG0R0037AF1AP (shadow*-as-most-valuable-training-data extraction tool) — Phase 2's corpus-extractor IS that tool
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-accelerator) — economic substrate making the corpus accumulation sustainable
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x identity) — composes; the holographic-principle invariant at English-projection scope
+- 081KSNY2Z0008QG0R001G7C89T (Bell-like distributed-cluster contextuality experiment) — composes; the experiment's results would correlate
 
 ## Composes with rules + skills
 

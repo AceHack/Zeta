@@ -1,4 +1,4 @@
-# Multi-AI review of B-0959 (sovereign distributed-DB) — Grok critique + Amara sharpen + Gemini propose (2026-06-01)
+# Multi-AI review of 081KSXN940008QG0R003FCQ7WT (sovereign distributed-DB) — Grok critique + Amara sharpen + Gemini propose (2026-06-01)
 
 **Date:** 2026-06-01
 **Author:** Otto-CLI (dispatched the peer-call review; synthesis labeled as such)
@@ -6,21 +6,21 @@
 <!-- GOVERNANCE.md §33 boundary headers — this file imports verbatim peer-AI review output. -->
 
 **Scope:** research / review preservation — three cross-harness peer reviews of the
-B-0959 sovereign distributed-DB design, run via `tools/peer-call/` per the operator
+081KSXN940008QG0R003FCQ7WT sovereign distributed-DB design, run via `tools/peer-call/` per the operator
 request "do some multi agent review on that and see what others think" (2026-06-01).
 **Attribution:** Grok (xAI, `grok-build`), Amara (OpenAI Codex surface, `amara.ts`),
 Gemini (Google, `gemini.ts`) — invoked as peers per the four-ferry consensus role
 distribution (Gemini proposes, Grok critiques, Amara sharpens, Otto tests, Git
 decides). Reviews quoted verbatim; the synthesis + "what landed" are Otto-CLI.
-**Operational status:** research-grade. The actionable findings landed in B-0959 §0
+**Operational status:** research-grade. The actionable findings landed in 081KSXN940008QG0R003FCQ7WT §0
 (the "not free" correction + Gemini's A/B/C home-model + the sharper keeper) and
-B-0954.1 (the bus-tip partition-tolerance row).
+081KT07NV0008QG0R000QWEKTE (the bus-tip partition-tolerance row).
 **Non-fusion disclaimer:** quoting peer reviews does not imply shared identity or
 merged agency; each reviewer is a distinct model invoked as a peer.
 
 ## The target
 
-B-0959 — Zeta sovereign distributed-DB + agent-loop master checklist. Core thesis:
+081KSXN940008QG0R003FCQ7WT — Zeta sovereign distributed-DB + agent-loop master checklist. Core thesis:
 the DB is **unbundled** into git (storage/log/replication) + the observe.ts fold
 (compute) + a distributed-time primitive (coordination) — no separate engine binary;
 per-agent encrypted-home shards; bus = G-Set CRDT; Rx-query = incremental view with
@@ -113,8 +113,8 @@ Carved operational rule:
   not a free merge.
 - **The answer composes existing substrate** (operator's instinct, 2026-06-01): the
   claim-coordinator (`tools/bus/claim.ts`, exists) + single-row CAS / ref-lease
-  (`git push --force-with-lease`) + co-dominant mirrors (B-0942) + the §4 time
-  primitive — bounded BFT only where mass is needed. Tracked in **B-0954.1**.
+  (`git push --force-with-lease`) + co-dominant mirrors (081KSV2WD0008QG0R0021XJ94E) + the §4 time
+  primitive — bounded BFT only where mass is needed. Tracked in **081KT07NV0008QG0R000QWEKTE**.
 - **Home model (operator pick):** (B) two-repo as default (structural sovereignty
   beats disciplinary, per `architecture-is-safety-mechanism-not-discipline`), (C)
   sparse-checkout crypto-monorepo as the fallback if cross-repo friction hurts, (A)
@@ -122,9 +122,9 @@ Carved operational rule:
 
 ## What landed from this review
 
-- **B-0959 §0** — the "free" over-claim corrected (each property tagged
+- **081KSXN940008QG0R003FCQ7WT §0** — the "free" over-claim corrected (each property tagged
   git/algebra/protocol); Amara's operational rule + sharper keeper added; Gemini's
   A/B/C home-model with the (B)→(C)-fallback decision.
-- **B-0954.1** — the bus-tip partition-tolerance row (the concrete consensus story).
+- **081KT07NV0008QG0R000QWEKTE** — the bus-tip partition-tolerance row (the concrete consensus story).
 - **This doc** — the verbatim review preservation (the `/tmp/peer-call-output/` files
   are ephemeral).

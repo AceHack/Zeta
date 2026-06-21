@@ -53,14 +53,14 @@ changes at what rate; how should substrate be partitioned?**
 ### Repo-split decisions
 
 DV2.0 informs the orthogonal three-axis repo-split design
-(per B-0424 + B-0425 + B-0426 + B-0427):
+(per 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + 081KRFA460008QG0R0007RWSN1 + 081KRFA460008QG0R000VKJF0H):
 
 - **Code repos** = hubs (stable infrastructure)
 - **Cross-repo dependency manifests** = links (stable
   relationships)
 - **Memory files / research docs / philosophy substrate** =
   satellites (fast-changing English)
-- **Ruleset-divergence smell** (B-0427) IS DV2.0 applied to
+- **Ruleset-divergence smell** (081KRFA460008QG0R000VKJF0H) IS DV2.0 applied to
   repo topology
 
 ### Skill design
@@ -144,7 +144,7 @@ exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
   merge is idempotent **by construction** — re-merging the same event
   set changes nothing. The whole git-as-append-only-event-store
   rebuild-the-index model depends on idempotent fold.
-- **With the tri-boolean primitive (B-0944):** `cooperate` (the
+- **With the tri-boolean primitive (081KSV2WD0008QG0R00051XS0N):** `cooperate` (the
   wonder-compression op) is idempotent — engaging without collapsing,
   any number of times, leaves the cell unchanged; `measure` is the
   deliberate **non-idempotent** collapse (the one op that changes
@@ -212,10 +212,10 @@ Without wake-time landing:
 
 ## Composes with substrate
 
-- B-0424 (three-repo split Stage 1 — factory)
-- B-0425 (product-repo split planning)
-- B-0426 (Axis 2 — Mirror/Beacon)
-- B-0427 (Axis 3 — Code/English with ruleset-divergence smell;
+- 081KRFA460008QG0R001H98EXJ (three-repo split Stage 1 — factory)
+- 081KRFA460008QG0R003JQ46J4 (product-repo split planning)
+- 081KRFA460008QG0R0007RWSN1 (Axis 2 — Mirror/Beacon)
+- 081KRFA460008QG0R000VKJF0H (Axis 3 — Code/English with ruleset-divergence smell;
   DV2.0 INFORMS the smell test)
 - `memory/feedback_aaron_data_vault_2_is_source_of_repo_split_smell_intuitions_needs_reactivation_alongside_scale_free_lock_free_weight_free_dst_2026_05_13.md`
   (the re-activation memory; PR #2912)
@@ -229,7 +229,7 @@ Without wake-time landing:
   (HKT-MDM universality; PR #2913)
 - `memory/feedback_aaron_clifford_hkt_ontology_vocabulary_axis_basis_rudders_rotors_steering_cartographer_navigator_edge_mapper_world_model_civsim_edge_runner_5_control_structures_or_4_plus_meta_2026_05_13.md`
   (Clifford/HKT vocabulary; PR #2914)
-- B-0043 (universal-company-government-information-substrate —
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate —
   master-data ontology already backlogged)
 
 ## Operational rule for future-Otto
@@ -268,7 +268,7 @@ The sixth question (idempotency) catches:
 
 The fifth question (DV2.0) catches:
 
-- Ruleset-divergence smells in repo-split work (per B-0427)
+- Ruleset-divergence smells in repo-split work (per 081KRFA460008QG0R000VKJF0H)
 - Hub-satellite separations in skill design
 - Master-data partition shapes
 - Memory vs rule vs skill vs ADR vs agent placement decisions
@@ -281,7 +281,7 @@ The fifth question (DV2.0) catches:
 `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`
 (existing DV2.0 substrate at skill-design scope)
 
-PR #2911 (B-0427 Axis 3 — Code/English with ruleset-divergence
+PR #2911 (081KRFA460008QG0R000VKJF0H Axis 3 — Code/English with ruleset-divergence
 smell test; DV2.0 informs the smell)
 
 PR #2913 (HKT-MDM universality — DV2.0 hub-satellite is natural

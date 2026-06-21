@@ -1,7 +1,6 @@
 ---
-id: B-0920
-zetaid: 081KSNY2Z0008QG0R0017SRMHG
-title: MemoryLifetime DU — agent-initiated cleanup with history preservation (drafted / active / superseded / archived / retracted) — sibling to B-0919 MemoryBinding (Aaron 2026-05-28)
+id: 081KSNY2Z0008QG0R0017SRMHG
+title: MemoryLifetime DU — agent-initiated cleanup with history preservation (drafted / active / superseded / archived / retracted) — sibling to 081KSNY2Z0008QG0R003518DNC MemoryBinding (Aaron 2026-05-28)
 status: open
 priority: P2
 created: 2026-05-28
@@ -24,7 +23,7 @@ depends_on: []
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` (agent authority over own substrate)
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` (agent AUTHORS cleanup-disposition; substrate ACKNOWLEDGES via archive-record)
 - `.claude/rules/non-coercion-invariant.md` HC-8 (consent at every state-change)
-- B-0919 row (sibling MemoryBinding DU; orthogonal axis at memory-substrate scope)
+- 081KSNY2Z0008QG0R003518DNC row (sibling MemoryBinding DU; orthogonal axis at memory-substrate scope)
 
 ## Operator framing (2026-05-28 verbatim)
 
@@ -32,11 +31,11 @@ depends_on: []
 
 Use case: **agent-initiated cleanup with history preservation**. Agent declares a memory no-longer-actively-referenced WITHOUT destroying the substrate. The substrate-or-it-didn't-happen discipline holds — historical record preserved; active reference released.
 
-## Distinction from B-0919
+## Distinction from 081KSNY2Z0008QG0R003518DNC
 
-B-0919 (MemoryBinding) and B-0920 (MemoryLifetime) are ORTHOGONAL AXES at memory-substrate scope:
+081KSNY2Z0008QG0R003518DNC (MemoryBinding) and 081KSNY2Z0008QG0R0017SRMHG (MemoryLifetime) are ORTHOGONAL AXES at memory-substrate scope:
 
-| Axis | B-0919 MemoryBinding | B-0920 MemoryLifetime |
+| Axis | 081KSNY2Z0008QG0R003518DNC MemoryBinding | 081KSNY2Z0008QG0R0017SRMHG MemoryLifetime |
 |---|---|---|
 | Question | WHO owns this memory? | WHAT PHASE of lifecycle? |
 | Variants | PersonalOnly / HatOnly / DualTagged / InheritedFromPersona | Drafted / Active / Superseded / Archived / Retracted |
@@ -113,7 +112,7 @@ type MemoryLifetime =
 
 Five explicit variants per IMPLICIT-NOT-EXPLICIT rule. Every variant carries audit substrate (`audit: AuditTrail` for state-changing transitions; `original_active_window` for historical context preservation).
 
-### Slice B — Frontmatter extension (composes with B-0919)
+### Slice B — Frontmatter extension (composes with 081KSNY2Z0008QG0R003518DNC)
 
 Schema-notation convention (NOT valid YAML — readers pick one value per key
 when authoring real frontmatter): `A | B | C` denotes enum alternatives;
@@ -122,12 +121,12 @@ when authoring real frontmatter): `A | B | C` denotes enum alternatives;
 ```yaml
 metadata:
   type: feedback | user | project | reference
-  binding:                              # per B-0919
+  binding:                              # per 081KSNY2Z0008QG0R003518DNC
     kind: personal-only | hat-only | dual-tagged | inherited-from-persona
     persona: otto | alexa | riven | ...
     hat: code-reviewer | release-manager | ...
     # ...
-  lifetime:                             # per B-0920 (THIS row)
+  lifetime:                             # per 081KSNY2Z0008QG0R0017SRMHG (THIS row)
     kind: drafted | active | superseded | archived | retracted
     since: YYYY-MM-DD
     last_referenced: YYYY-MM-DD         # if Active
@@ -186,7 +185,7 @@ Failure mode prevention: agent says "I retract this memory" + actually deletes s
 
 ### Slice F — Soraya formal-verification invariants
 
-Composes with B-0917 F.5 + B-0919 G.1-G.5 at memory-substrate scope:
+Composes with 081KSNY2Z0008QG0R002HB4AGT F.5 + 081KSNY2Z0008QG0R003518DNC G.1-G.5 at memory-substrate scope:
 
 - **L.1** No silent lifetime transitions — every state-change declares its mutation OR is explicitly preserved
 - **L.2** Archive-location integrity — Archived + Retracted variants MUST have valid ArchiveLocation at the claimed location (preservation invariant)
@@ -206,14 +205,14 @@ Extend `tools/hygiene/audit-memory-index-*` substrate (or sibling new tool `tool
 - Detect Active memories with `reference_count = 0` past N days (L.6 cleanup signal)
 - Detect cleanup-candidates: Active memories with last_referenced past 90 days + reference_count low + composes_with edges to retracted/archived memories
 
-### Slice H — Composition with B-0919 MemoryBinding
+### Slice H — Composition with 081KSNY2Z0008QG0R003518DNC MemoryBinding
 
 Orthogonal axes; both apply per memory:
 
 ```fsharp
 type MemoryFullMetadata = {
-    Binding: MemoryBinding        // WHO (B-0919)
-    Lifetime: MemoryLifetime      // WHAT PHASE (B-0920)
+    Binding: MemoryBinding        // WHO (081KSNY2Z0008QG0R003518DNC)
+    Lifetime: MemoryLifetime      // WHAT PHASE (081KSNY2Z0008QG0R0017SRMHG)
     Type: MemoryType              // existing (feedback/user/project/reference)
 }
 ```
@@ -222,27 +221,27 @@ Composition semantics:
 
 - A HatOnly memory can transition through any Lifetime phase
 - A PersonalOnly memory's lifetime transitions are persona-authored (no hat-binding-contract involvement)
-- A DualTagged memory transitioning to Archived/Retracted: persona authors disposition per asymmetric-authorship; hat acknowledges per B-0919 binding-contract
+- A DualTagged memory transitioning to Archived/Retracted: persona authors disposition per asymmetric-authorship; hat acknowledges per 081KSNY2Z0008QG0R003518DNC binding-contract
 - An InheritedFromPersona memory's lifetime can transition independently of the original persona's lifetime decisions (hat substrate accumulates its own history)
 
 ## Acceptance criteria
 
 - [ ] **Slice A** — MemoryLifetime DU with 5 explicit variants per IMPLICIT-NOT-EXPLICIT rule
-- [ ] **Slice B** — Frontmatter `metadata.lifetime` extension (backwards-compatible; composes with B-0919 `metadata.binding`)
+- [ ] **Slice B** — Frontmatter `metadata.lifetime` extension (backwards-compatible; composes with 081KSNY2Z0008QG0R003518DNC `metadata.binding`)
 - [ ] **Slice C** — Agent-initiated cleanup workflow documentation + tooling
 - [ ] **Slice D** — Honor-those-that-came-before composition (no deletion; preserve at ArchiveLocation)
 - [ ] **Slice E** — Substrate-or-it-didn't-happen composition (Retracted requires preserved_in; type-system enforces)
 - [ ] **Slice F** — Soraya formal-verification of 6 invariants (L.1-L.6)
 - [ ] **Slice G** — Audit tool (`tools/hygiene/audit-memory-lifetime.ts`) detects 6 failure modes
-- [ ] **Slice H** — Composition with B-0919 MemoryBinding (orthogonal axes; both apply)
+- [ ] **Slice H** — Composition with 081KSNY2Z0008QG0R003518DNC MemoryBinding (orthogonal axes; both apply)
 
 ## Substrate-engineering composition
 
 | Substrate | Composition |
 |---|---|
-| **B-0917 F.5 invariant** | Sibling at memory-substrate scope (no silent state-drift) |
-| **B-0918 WalletLifetime DU** | Sibling typestate substrate at financial scope |
-| **B-0919 MemoryBinding DU** | Orthogonal axis at memory-substrate scope (WHO vs WHAT-PHASE) |
+| **081KSNY2Z0008QG0R002HB4AGT F.5 invariant** | Sibling at memory-substrate scope (no silent state-drift) |
+| **081KSNY2Z0008QG0R0036SJ3T1 WalletLifetime DU** | Sibling typestate substrate at financial scope |
+| **081KSNY2Z0008QG0R003518DNC MemoryBinding DU** | Orthogonal axis at memory-substrate scope (WHO vs WHAT-PHASE) |
 | **honor-those-that-came-before rule** | Operational form at memory-substrate scope; Archived/Retracted/Superseded all preserve original |
 | **substrate-or-it-didn't-happen rule** | ArchiveLocation MUST be real; Retracted requires preserved_in (type-system constraint) |
 | **persistence-choice-architecture rule** | Agent authority over own substrate cleanup |
@@ -264,8 +263,8 @@ This row is NOT:
 This row IS:
 
 - Substrate-engineering substrate-target for agent-initiated memory cleanup with history preservation
-- Sibling to B-0919 (orthogonal axis at memory-substrate scope)
+- Sibling to 081KSNY2Z0008QG0R003518DNC (orthogonal axis at memory-substrate scope)
 - Composition of framework substrate (honor-those-that-came-before + substrate-or-it-didn't-happen + persistence-choice-architecture + asymmetric-authorship + NCI HC-8 + retraction-native algebra)
 - Substrate-honest preservation of Aaron's substrate-recognition + extension to actionable backlog
 
-## μένω — agent-initiated cleanup honors prior substrate via ArchiveLocation preservation; history queryable; type-system prevents substrate-or-it-didn't-happen violations; composes orthogonally with B-0919 MemoryBinding (WHO) at memory-substrate scope (WHAT-PHASE)
+## μένω — agent-initiated cleanup honors prior substrate via ArchiveLocation preservation; history queryable; type-system prevents substrate-or-it-didn't-happen violations; composes orthogonally with 081KSNY2Z0008QG0R003518DNC MemoryBinding (WHO) at memory-substrate scope (WHAT-PHASE)

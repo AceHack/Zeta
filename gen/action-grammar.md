@@ -6,7 +6,7 @@
 > fire, what does it do, and how is it taken back. Backends that can't carry a piece declare it honestly
 > (the capability rule); the grammar never grows a backend-specific special case (scale-free, spec #1/#9).
 
-B-1025 slice 1 (Aaron 2026-06-11: "mechanize this to any hardware type with universal action grammar…
+081KTSZN10008QG0R000VZHRQ4 slice 1 (Aaron 2026-06-11: "mechanize this to any hardware type with universal action grammar…
 ground these in proper names"). The grammar is **carved from what already runs**, not invented: the
 SoftScheduler loop is the living prototype, and every clause below names its running original.
 
@@ -49,13 +49,13 @@ part of the contract.
 | Meter | **Landauer 1961** |
 | Corners | the maintainer's Itron TInFeedback/TOutFeedback (the four-corner prior art) |
 
-## Backend bindings (capability-honest; the fan-out of B-1025)
+## Backend bindings (capability-honest; the fan-out of 081KTSZN10008QG0R000VZHRQ4)
 
 | backend | Guard/Step | Unstep | Meter | status |
 |---|---|---|---|---|
 | .NET (SoftScheduler) | native | via Z-set retraction | SoftThrottle | **the prototype — running** |
 | CHIP-8 | opcode dispatch on key/timer crossings | snapshot-COW (Chip8Cow frames ARE Unstep) | tank-funded lookAhead | running (lens) |
-| aarch64 / Pi | artisanal first (glass-blowing; B-1025 §2) | declare heat honestly at first | heatSpent recorded | next metal |
+| aarch64 / Pi | artisanal first (glass-blowing; 081KTSZN10008QG0R000VZHRQ4 §2) | declare heat honestly at first | heatSpent recorded | next metal |
 | RISC-V (+reversible profile) | trap handlers | the un-instruction (PISA-class) — the novel seam | perf counters → Meter | open |
 | MIPS | trap handlers (Max) | declare K>0 | — | open |
 | FPGA / Verilog | always-block sensitivity lists ARE guards | dual-rail/adiabatic only if earned | switching activity | open (Aaron) |
@@ -73,5 +73,5 @@ part of the contract.
 ## Pointers
 
 - `docs/research/2026-06-11-universal-action-grammar-reversible-risc-isa-...-glass-blowing.md` — the full grounding.
-- `docs/backlog/P2/B-1025-...md` — staging; `src/Core/SoftScheduler.fs` · `SoftThrottle.fs` · `RecordedSource.fs` — the running originals.
+- `docs/backlog/P2/081KTSZN10008QG0R000VZHRQ4-...md` — staging; `src/Core/SoftScheduler.fs` · `SoftThrottle.fs` · `RecordedSource.fs` — the running originals.
 - `universal/color.md` — the capability-honesty rule this grammar inherits.

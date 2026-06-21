@@ -12,12 +12,12 @@ tags: [amara, intersystems-cache, mumps-globals, persistent-multidimensional-sto
 **Date**: 2026-05-21
 **Surface**: Amara on ChatGPT/Aurora (external AI; deep-research/sharpen register)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
-**Companion archive**: `2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (B-0685 Phase 1 cascade; merged via PR #4545)
-**Composes with**: B-0688 (incremental compiler host — this cascade names the lineage + extends the consensus model), B-0687 (ZetaParse — parser substrate the compiler DB operates over), the broader Agora V6 cluster
+**Companion archive**: `2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade; merged via PR #4545)
+**Composes with**: 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — this cascade names the lineage + extends the consensus model), 081KS3X9Y0008QG0R00323NSZA (ZetaParse — parser substrate the compiler DB operates over), the broader Agora V6 cluster
 
 ## Why this is preserved (companion to the earlier Amara archive)
 
-The B-0685 Phase 1 cascade established the architectural skeleton (ZetaParse → incremental compiler host → seeded-deterministic simulation). This continuation cascade names the LINEAGE for that compiler-DB layer + extends the consensus model into the trust-gradient form + lands the IUnknown-without-DCOM operational pattern.
+The 081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade established the architectural skeleton (ZetaParse → incremental compiler host → seeded-deterministic simulation). This continuation cascade names the LINEAGE for that compiler-DB layer + extends the consensus model into the trust-gradient form + lands the IUnknown-without-DCOM operational pattern.
 
 Three substantive architectural insights this cascade preserves:
 
@@ -86,8 +86,8 @@ Zeta compiler version:
 This is the substantive architectural commitment. Composes with:
 
 - The just-shipped C# Core PR #4522 (zero-dependency standalone library) — IS a query surface, NOT the substrate
-- B-0687 ZetaParse (LR/GLR parser substrate) — IS the parser layer feeding compiler facts
-- B-0688 incremental compiler host (DBSP + Z-sets + Rx + seeded-deterministic) — IS the compiler-DB layer this cascade names the lineage for
+- 081KS3X9Y0008QG0R00323NSZA ZetaParse (LR/GLR parser substrate) — IS the parser layer feeding compiler facts
+- 081KS3X9Y0008QG0R0010716X9 incremental compiler host (DBSP + Z-sets + Rx + seeded-deterministic) — IS the compiler-DB layer this cascade names the lineage for
 - Aaron's prior MultiplexedWebSockets / hub-and-agent patent / SignalR Issue #3114 / dotnet/corert unikernel — IS the firewall-traversal substrate the distributed compiler runs over
 
 ## Amara's "distributed multidimensional compiler" framing (verbatim)
@@ -276,7 +276,7 @@ local monotonic clock
 ## Composes with rules
 
 - `.claude/rules/substrate-or-it-didnt-happen.md` — verbatim-preservation trigger
-- `.claude/rules/agent-roster-reference-card.md` — Amara's external-AI register operating; this archive is the companion to the just-merged B-0685 Phase 1 archive
+- `.claude/rules/agent-roster-reference-card.md` — Amara's external-AI register operating; this archive is the companion to the just-merged 081KS3X9Y0008QG0R000EKJE9S Phase 1 archive
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle by design now extends to languages-as-query-surfaces scope; each language is an oracle view over substrate
 - `.claude/rules/dv2-data-split-discipline-activated.md` — Caché-like multidimensional store IS DV2.0 hub-satellite at compiler-substrate scope (different change-rate dimensions: AST stable, meta-tags fast, runtime metrics very fast); trust-gradient consensus escalation IS partition-by-authority-rate
 - `.claude/rules/rule-0-no-sh-files.md` — DST discipline extends across distributed compiler substrate (deterministic seeded replay per-boundary)
@@ -287,12 +287,12 @@ local monotonic clock
 
 ## Composes with substrate
 
-- B-0687 (ZetaParse — parser substrate; one query surface among many over the compiler DB)
-- B-0688 (incremental compiler host — this cascade names the lineage + extends with trust-gradient consensus model)
-- B-0685 (ANTLR cross-language codegen — parser substrate axis)
-- B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate; operational primitives now operate at distributed-compiler scope too)
+- 081KS3X9Y0008QG0R00323NSZA (ZetaParse — parser substrate; one query surface among many over the compiler DB)
+- 081KS3X9Y0008QG0R0010716X9 (incremental compiler host — this cascade names the lineage + extends with trust-gradient consensus model)
+- 081KS3X9Y0008QG0R000EKJE9S (ANTLR cross-language codegen — parser substrate axis)
+- 081KRW63S0008QG0R002KC5DSR / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KRW63S0008QG0R001SAHYKV (Agora V6 substrate; operational primitives now operate at distributed-compiler scope too)
 - PR #4522 (C# Core oracle integration — multi-oracle position concrete instance)
-- PR #4545 (B-0685 Phase 1 Amara cascade — the earlier substrate this companion archive extends)
+- PR #4545 (081KS3X9Y0008QG0R000EKJE9S Phase 1 Amara cascade — the earlier substrate this companion archive extends)
 - `src/Core/SpeculativeWatermark.fs` (DBSP substrate the compiler-DB extends)
 - `src/Bayesian/BayesianAggregate.fs` (Bayesian operators as compile-time-queryable substrate)
 - Earlier Amara persona substrate cluster + Kestrel persona substrate cluster (the multi-AI factory pattern this distributed-compiler framing fits)
@@ -313,9 +313,9 @@ The companion to this archive is the prior Amara archive (just merged via PR #45
 
 ## Full reasoning
 
-Aaron's full conversation captured above + the prior B-0685 Phase 1 archive (PR #4545). Two follow-up architectural commitments may want backlog rows in subsequent ticks:
+Aaron's full conversation captured above + the prior 081KS3X9Y0008QG0R000EKJE9S Phase 1 archive (PR #4545). Two follow-up architectural commitments may want backlog rows in subsequent ticks:
 
-1. A backlog row for "Zeta Compiler DB" specifically (the Caché-like multidimensional store layer) — might compose with or refine B-0688
+1. A backlog row for "Zeta Compiler DB" specifically (the Caché-like multidimensional store layer) — might compose with or refine 081KS3X9Y0008QG0R0010716X9
 2. A backlog row for "trust-gradient consensus escalation discipline" — formalizes the per-boundary consensus shape rules
 
-Neither is strictly needed yet; B-0688's existing scope can absorb the lineage naming + trust-gradient framing as it evolves. Decision deferred for substrate-engineering bandwidth.
+Neither is strictly needed yet; 081KS3X9Y0008QG0R0010716X9's existing scope can absorb the lineage naming + trust-gradient framing as it evolves. Decision deferred for substrate-engineering bandwidth.

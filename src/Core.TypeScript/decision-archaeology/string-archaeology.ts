@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // string-archaeology.ts — find which commits introduced (or removed) a string.
 //
-// Decision-archaeology tool (B-0169). Wraps `git log -w -S "<string>"` to
+// Decision-archaeology tool (081KQJZR90008QG0R002D6XYHB). Wraps `git log -w -S "<string>"` to
 // answer the "when was THIS introduced?" question in existence-mode
 // investigations. The `-w` flag suppresses whitespace-only false positives
 // (anti-pattern #3 in the decision-archaeology SKILL.md).

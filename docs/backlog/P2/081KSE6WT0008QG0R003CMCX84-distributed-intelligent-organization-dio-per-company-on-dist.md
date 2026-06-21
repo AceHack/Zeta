@@ -1,6 +1,5 @@
 ---
-id: B-0782
-zetaid: 081KSE6WT0008QG0R003CMCX84
+id: 081KSE6WT0008QG0R003CMCX84
 priority: P2
 status: open
 title: Distributed Intelligent Organization (DIO) per company — each Zeta cluster is a DIO on distributed intelligence database; CEO scales by speaking ontology, not implementation
@@ -9,12 +8,12 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0741
+  - 081KSE6WT0008QG0R002CC6314
   - 081KSE6WT0008QG0R0008483B2
   - 081KSE6WT0008QG0R000JSJ3SR
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0754
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R003G0Y62D
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
@@ -62,7 +61,7 @@ ultimate operator-scale framing:
 > think, remember, and act on its own, all standardized on the
 > same ontology and stack you define."
 
-B-0759 named the first-time-CLI-user persona at the
+081KSE6WT0008QG0R003G0Y62D named the first-time-CLI-user persona at the
 operator-onboarding scope. This row names the OPPOSITE scale —
 operator-as-CEO-of-N-companies, where each company is itself a
 **Distributed Intelligent Organization (DIO)** running on the
@@ -72,16 +71,16 @@ shared distributed-intelligence database substrate.
 
 A DIO is a company / organization / business unit that:
 
-- Runs on Zeta cluster substrate (per B-0754 + B-0761 + B-0773
+- Runs on Zeta cluster substrate (per 081KSGS9H0008QG0R002T3BJ2R + 081KSE6WT0008QG0R0015ZF2G6 + 081KSE6WT0008QG0R0008483B2
   digital twin)
 - Composes the full strategic substrate cluster (per
-  B-0763 / B-0765 / B-0766 / B-0772 / B-0773 / B-0776 / B-0777)
+  081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD / 081KSE6WT0008QG0R003WMG4XV / 081KSE6WT0008QG0R0008483B2 / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000JSJ3SR)
 - Operates AI agents + human contributors interchangeably (per
-  B-0759 persona spans human-driven + AI-driven workflows)
+  081KSE6WT0008QG0R003G0Y62D persona spans human-driven + AI-driven workflows)
 - Uses the shared Zeta ontology + standardized interfaces (per
-  B-0741 + B-0777)
-- Is independently intelligent: thinks, remembers (per B-0773
-  digital twin), acts (per B-0772 fabric), all standardized on
+  081KSE6WT0008QG0R002CC6314 + 081KSE6WT0008QG0R000JSJ3SR)
+- Is independently intelligent: thinks, remembers (per 081KSE6WT0008QG0R0008483B2
+  digital twin), acts (per 081KSE6WT0008QG0R003WMG4XV fabric), all standardized on
   the same vocabulary the CEO operates against
 
 **Each Zeta cluster IS a DIO instance.** A CEO running 30
@@ -98,11 +97,11 @@ implementation details. The substrate enables this via:
 |---|---|---|
 | **Strategic intent** | "Roll out X across all 30 companies" | Per-DIO Argo CD App-of-Apps + Local Loop sim + DIO-specific impl pickup |
 | **Standardization** | "Every DIO uses the Zeta substrate" | Per-DIO Nix flake bootstrap; auto-cluster; auto-discovery |
-| **Cloud-agnostic delivery** | "Implement this on AWS / GCP / Azure / bare metal" | Per-DIO B-0763 vendor-swap interfaces |
-| **Compliance + governance** | "Every DIO must pass these OPA policies" | Per-DIO B-0776 rank-7 OPA plugin |
-| **Telemetry rollup** | "Show me how all 30 DIOs are doing" | Per-DIO B-0762 telemetry aggregated |
+| **Cloud-agnostic delivery** | "Implement this on AWS / GCP / Azure / bare metal" | Per-DIO 081KSE6WT0008QG0R000WVYAJ2 vendor-swap interfaces |
+| **Compliance + governance** | "Every DIO must pass these OPA policies" | Per-DIO 081KSE6WT0008QG0R002275NDE rank-7 OPA plugin |
+| **Telemetry rollup** | "Show me how all 30 DIOs are doing" | Per-DIO 081KSE6WT0008QG0R003FG3E8R telemetry aggregated |
 | **Per-DIO customization** | "DIO #17 needs custom workflow X" | Per-DIO Argo CD override; substrate stays standardized |
-| **AI vs human staffing per DIO** | "DIO #17 is AI-run; DIO #21 is human-run" | Same touch points either way per B-0763 + B-0772 |
+| **AI vs human staffing per DIO** | "DIO #17 is AI-run; DIO #21 is human-run" | Same touch points either way per 081KSE6WT0008QG0R000WVYAJ2 + 081KSE6WT0008QG0R003WMG4XV |
 
 The CEO's mental model is the ONTOLOGY. The substrate handles
 everything below the ontology layer. Operator interactions
@@ -110,22 +109,22 @@ collapse from "manage 30 companies' day-to-day" to "speak
 ontology at high level; substrate ensures at-least-as-good-as-
 standard execution per DIO."
 
-## Composition with VC meta-playbook substrate-honest (B-0769)
+## Composition with VC meta-playbook substrate-honest (081KSE6WT0008QG0R001E1F862)
 
-B-0769 named the substrate-honest variant of the VC meta-
+081KSE6WT0008QG0R001E1F862 named the substrate-honest variant of the VC meta-
 playbook (control-structure injection around capital flow in
 verticals). This row extends the FRAMING:
 
-- B-0769: each VERTICAL (trades / restaurants / healthcare /
+- 081KSE6WT0008QG0R001E1F862: each VERTICAL (trades / restaurants / healthcare /
   etc.) is a control-structure injection scope
-- B-0782 (this row): each COMPANY within or across verticals
+- 081KSE6WT0008QG0R003CMCX84 (this row): each COMPANY within or across verticals
   is a DIO running on shared substrate; CEO of N DIOs has
   cross-DIO leverage WITHOUT cross-DIO complexity
 - Substrate-honest variant of CEO-of-N-companies: each DIO
-  keeps operator-in-the-negotiation-high-seat per B-0763;
+  keeps operator-in-the-negotiation-high-seat per 081KSE6WT0008QG0R000WVYAJ2;
   CEO doesn't extract from DIOs (substrate-honest); CEO
   contributes shared ontology + standardized stack; DIOs
-  contribute telemetry back per B-0762
+  contribute telemetry back per 081KSE6WT0008QG0R003FG3E8R
 
 Result: CEO accumulates leverage through ONTOLOGY contributions;
 each DIO benefits from shared substrate + remains operator-
@@ -136,25 +135,25 @@ controllable; not vendor-lock-in pattern.
 Aaron's framing implies a "distributed intelligence database"
 substrate that the DIOs run on. This composes with:
 
-- **B-0428 F# fork for AI safety** — F# substrate base
-- **B-0773 cluster as digital twin** — twin IS the per-DIO
+- **081KRFA460008QG0R0018SN61J F# fork for AI safety** — F# substrate base
+- **081KSE6WT0008QG0R0008483B2 cluster as digital twin** — twin IS the per-DIO
   distributed intelligence database; CEO's view aggregates
   N twins
-- **B-0772 observable+controllable fabric** — events flow
-  across DIOs via mesh (per B-0289 Reticulum + B-0775 NATS
+- **081KSE6WT0008QG0R003WMG4XV observable+controllable fabric** — events flow
+  across DIOs via mesh (per 081KR2E4K0008QG0R001SWEPNV Reticulum + 081KSE6WT0008QG0R000QXSG91 NATS
   super-cluster); CEO can subscribe to cross-DIO Observable
   streams
-- **B-0774 etcd-less options** — per-DIO control plane choice
+- **081KSE6WT0008QG0R001AZQA5Z etcd-less options** — per-DIO control plane choice
   (kine + NATS / CockroachDB / etc.) doesn't affect CEO-level
   ontology operations
-- **B-0781 F# type system as universe boundary** — CEO's
+- **081KSE6WT0008QG0R001H3DA90 F# type system as universe boundary** — CEO's
   ontology is F# typed code; cross-DIO governance flows
   through type system
 
 Each DIO is an instance; the "distributed intelligence
 database" IS the shared substrate AND the federated knowledge
 graph across DIOs (per per-DIO twin + cross-DIO federation per
-B-0775 Karmada / KubeStellar / etc.).
+081KSE6WT0008QG0R000QXSG91 Karmada / KubeStellar / etc.).
 
 ## Acceptance
 
@@ -169,7 +168,7 @@ B-0775 Karmada / KubeStellar / etc.).
       equivalent — aggregates view across N DIOs; per-DIO
       drill-down; cross-DIO substrate updates via ontology
       changes
-- [ ] Per-DIO governance: per-DIO B-0776 rank-7 OPA policy
+- [ ] Per-DIO governance: per-DIO 081KSE6WT0008QG0R002275NDE rank-7 OPA policy
       pack inherits from CEO-defined-policies; per-DIO
       override + per-DIO compliance reporting
 - [ ] Cross-DIO substrate updates: CEO commits ontology
@@ -180,7 +179,7 @@ B-0775 Karmada / KubeStellar / etc.).
 - [ ] AI-vs-human staffing per DIO: same touch points;
       operator (CEO) doesn't need to know which DIOs are
       AI-run vs human-run for cross-DIO operations
-- [ ] Substrate-honest accountability per DIO (per B-0743
+- [ ] Substrate-honest accountability per DIO (per 081KSE6WT0008QG0R003WW3YJQ
       named-human-attachment scaling): per-DIO operator
       accepts per-DIO legal/operational risk; CEO is shared
       contributor not single-point-of-accountability
@@ -200,40 +199,40 @@ B-0775 Karmada / KubeStellar / etc.).
 - BUT naming this NOW (per `.claude/rules/wake-time-substrate.md`)
   ensures future-Otto cold-booting multi-DIO work inherits the
   framing
-- Critical compose-with: B-0781 F# type system as universe
+- Critical compose-with: 081KSE6WT0008QG0R001H3DA90 F# type system as universe
   boundary — without strong typing, cross-DIO ontology
-  governance is impossible; this row depends on B-0781 landing
+  governance is impossible; this row depends on 081KSE6WT0008QG0R001H3DA90 landing
   to be substantively realized
 
 ## Composes with
 
-- B-0428 F# fork (the substrate language for typed ontology)
-- B-0741 ontology+category negotiation (Ace bridges per-DIO
+- 081KRFA460008QG0R0018SN61J F# fork (the substrate language for typed ontology)
+- 081KSE6WT0008QG0R002CC6314 ontology+category negotiation (Ace bridges per-DIO
   vocabulary variations)
-- B-0754 zero-typing first-boot (per-DIO bootstrap pattern)
-- B-0759 first-time-CLI-user persona (operator persona spans
+- 081KSGS9H0008QG0R002T3BJ2R zero-typing first-boot (per-DIO bootstrap pattern)
+- 081KSE6WT0008QG0R003G0Y62D first-time-CLI-user persona (operator persona spans
   human-driven + AI-driven DIOs)
-- B-0761 open AI-trainable reference architecture (multi-DIO
+- 081KSE6WT0008QG0R0015ZF2G6 open AI-trainable reference architecture (multi-DIO
   benchmarks become ARC-AGI scenarios)
-- B-0762 auto-submit-back telemetry (per-DIO telemetry feeds
+- 081KSE6WT0008QG0R003FG3E8R auto-submit-back telemetry (per-DIO telemetry feeds
   shared substrate)
-- B-0763 operator-in-the-negotiation-high-seat (per-DIO
+- 081KSE6WT0008QG0R000WVYAJ2 operator-in-the-negotiation-high-seat (per-DIO
   operator keeps high seat; CEO contributes substrate
   not extracts)
-- B-0769 VC meta-playbook substrate-honest (each DIO
+- 081KSE6WT0008QG0R001E1F862 VC meta-playbook substrate-honest (each DIO
   potentially a verticalized control-structure injection;
   substrate-honest variant preserved per-DIO)
-- B-0773 cluster as digital twin (per-DIO twin is the
+- 081KSE6WT0008QG0R0008483B2 cluster as digital twin (per-DIO twin is the
   distributed-intelligence-database instance)
-- B-0775 HA-that-scales (multi-DIO federation via Karmada /
+- 081KSE6WT0008QG0R000QXSG91 HA-that-scales (multi-DIO federation via Karmada /
   KubeStellar / NATS super-cluster)
-- B-0777 industry-sharp + per-persona ontology maps (per-DIO
+- 081KSE6WT0008QG0R000JSJ3SR industry-sharp + per-persona ontology maps (per-DIO
   per-persona maps preserved; CEO operates at meta-ontology
   scope)
-- B-0780 Local Loop (per-DIO deterministic simulation testing)
-- B-0781 F# type system as universe boundary (CEO ontology is
+- 081KSE6WT0008QG0R000RH1526 Local Loop (per-DIO deterministic simulation testing)
+- 081KSE6WT0008QG0R001H3DA90 F# type system as universe boundary (CEO ontology is
   F# typed; cross-DIO governance flows through type system)
-- B-0783 eliminate tool wars (CEO touch-point minimization IS
+- 081KSE6WT0008QG0R003TBE2VB eliminate tool wars (CEO touch-point minimization IS
   the tool-war-elimination at multi-company scale)
 
 ## Out of scope
@@ -249,22 +248,22 @@ B-0775 Karmada / KubeStellar / etc.).
   separate scope when N+1 DIOs exist
 - Compliance / audit reporting across DIOs at regulatory
   scale (SOC2, ISO27001, HIPAA per-DIO) — composes with
-  B-0776 rank-7 OPA but is its own scope sub-row
+  081KSE6WT0008QG0R002275NDE rank-7 OPA but is its own scope sub-row
 
 ## Origin
 
 Aaron-Mika-Grok 2026-05-25 mid-iter-3-CI-wait. Aaron named
 the CEO-of-30-companies scale + DIO substrate as the ultimate
 operator-scale framing. Each Zeta cluster IS a DIO; CEO scales
-by speaking ontology + intent (per B-0741 + B-0777 + B-0781);
+by speaking ontology + intent (per 081KSE6WT0008QG0R002CC6314 + 081KSE6WT0008QG0R000JSJ3SR + 081KSE6WT0008QG0R001H3DA90);
 substrate handles everything below ontology layer.
 
 Verbatim preservation at
 `docs/research/2026-05-25-aaron-mika-grok-nats-jetstream-deterministic-scheduler-local-loop-lexisnexis-fsharp-type-system-as-universe-dio-eliminate-tool-wars-aaron-forwarded.md`.
 
-Composes with B-0769 substrate-honest VC meta-playbook
+Composes with 081KSE6WT0008QG0R001E1F862 substrate-honest VC meta-playbook
 (extending control-structure injection at single-vertical
-scope to multi-DIO + cross-vertical CEO leverage); B-0781 F#
+scope to multi-DIO + cross-vertical CEO leverage); 081KSE6WT0008QG0R001H3DA90 F#
 type system as universe boundary (without strong typing,
-cross-DIO ontology governance is impossible); B-0780 Local
+cross-DIO ontology governance is impossible); 081KSE6WT0008QG0R000RH1526 Local
 Loop (per-DIO deterministic testing).

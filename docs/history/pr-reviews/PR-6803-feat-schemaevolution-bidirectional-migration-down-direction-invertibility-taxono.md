@@ -28,7 +28,7 @@
 ## Description
 
 ## What — first code slice of the Evolution extension (`081KTGYQ3A5`)
-Builds the **down direction** on the existing `SchemaEvolution` seed (B-0930) — the zero-downtime rollback path.
+Builds the **down direction** on the existing `SchemaEvolution` seed (081KSRGFP0008QG0R001Y6RTY9) — the zero-downtime rollback path.
 
 - **`Migration` gains `Down: (DynamicValue -> DynamicValue) option`** — `None` = **non-invertible** (rollback needs compensation, not an inverse).
 - **Smart constructors encode the invertibility taxonomy:**

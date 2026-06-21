@@ -35,7 +35,7 @@
 
 ## Test plan
 
-- [x] Shard file matches pipe-row-first schema per [PR #5884](https://github.com/Lucent-Financial-Group/Zeta/pull/5884) (B-0171.2 Tick-History Schema spec)
+- [x] Shard file matches pipe-row-first schema per [PR #5884](https://github.com/Lucent-Financial-Group/Zeta/pull/5884) (081KSNY2Z0008QG0R000XVGWA8 Tick-History Schema spec)
 - [x] Post-commit canary: `git ls-tree HEAD | wc -l` = `git ls-tree HEAD~1 | wc -l` = 62 (no commit-tree corruption)
 - [x] Branch-guard verified before commit (`git branch --show-current` matched expected, no peer HEAD-race)
 - [x] Worktree freshness guard passed at creation (tree-size 62, status 0 lines, no `index.lock`)

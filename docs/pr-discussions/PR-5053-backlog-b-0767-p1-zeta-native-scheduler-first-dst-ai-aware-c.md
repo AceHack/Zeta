@@ -1,6 +1,6 @@
 ---
 pr_number: 5053
-title: "backlog(B-0767 P1): Zeta-native scheduler first \u2014 DST + AI-aware cluster management"
+title: "backlog(081KSE6WT0008QG0R0016CEE2Z P1): Zeta-native scheduler first \u2014 DST + AI-aware cluster management"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T00:23:39Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:46:40Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5053: backlog(B-0767 P1): Zeta-native scheduler first — DST + AI-aware cluster management
+# PR #5053: backlog(081KSE6WT0008QG0R0016CEE2Z P1): Zeta-native scheduler first — DST + AI-aware cluster management
 
 ## PR description
 
-Aaron 2026-05-25 sequencing call on B-0766 wave order: scheduler is load-bearing enough on (1) DST grounding for the whole cluster + (2) AI-aware scheduling (GPU topology, model locality, workload class, energy cost) that it should be Wave 1, not Wave 2. Binary-compatible via Pod.spec.schedulerName: zeta-scheduler (per B-0765 ServiceTitan route). Sub-waves A-E from baseline through DBSP+Bayesian + multi-objective.
+Aaron 2026-05-25 sequencing call on 081KSE6WT0008QG0R00049EFBD wave order: scheduler is load-bearing enough on (1) DST grounding for the whole cluster + (2) AI-aware scheduling (GPU topology, model locality, workload class, energy cost) that it should be Wave 1, not Wave 2. Binary-compatible via Pod.spec.schedulerName: zeta-scheduler (per 081KSE6WT0008QG0R00063R6HB ServiceTitan route). Sub-waves A-E from baseline through DBSP+Bayesian + multi-objective.
 
-First concrete sub-row of B-0766. Composes with B-0428 (F# fork) + B-0741 / B-0747 / B-0754 / B-0761 / B-0762 / B-0763 / B-0764 / B-0765 / B-0766.
+First concrete sub-row of 081KSE6WT0008QG0R00049EFBD. Composes with 081KRFA460008QG0R0018SN61J (F# fork) + 081KSE6WT0008QG0R002CC6314 / 081KSE6WT0008QG0R003D199HE / 081KSGS9H0008QG0R002T3BJ2R / 081KSE6WT0008QG0R0015ZF2G6 / 081KSE6WT0008QG0R003FG3E8R / 081KSE6WT0008QG0R000WVYAJ2 / 081KSE6WT0008QG0R0009YYNP4 / 081KSE6WT0008QG0R00063R6HB / 081KSE6WT0008QG0R00049EFBD.
 
 ## General comments
 

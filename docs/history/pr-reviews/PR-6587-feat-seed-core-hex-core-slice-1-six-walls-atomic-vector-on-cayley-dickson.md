@@ -29,30 +29,30 @@
 
 ## Seed core — slice 1 (the first real F# build)
 
-Aaron 2026-06-02: *"ok let's actually start building the seed core in f#"* — pivot from documentation/backlog to **implementation**. This is the **most-inevitable-first** slice (B-0998: *"build up nouns from the most inevitable first … vectors before trajectories"*): the six reservoir walls + the atomic `Vector` noun, built **on** the existing Cayley–Dickson algebra (composition, not parallel-mint).
+Aaron 2026-06-02: *"ok let's actually start building the seed core in f#"* — pivot from documentation/backlog to **implementation**. This is the **most-inevitable-first** slice (081KT2T2J0008QG0R003VK5GRX: *"build up nouns from the most inevitable first … vectors before trajectories"*): the six reservoir walls + the atomic `Vector` noun, built **on** the existing Cayley–Dickson algebra (composition, not parallel-mint).
 
 ### What landed (`src/Core/HexCore.fs`, after `CayleyDickson.fs`)
 
-- **`Wall`** (`[<RequireQualifiedAccess>]`) — the six reservoir walls (B-0985): `RememberWhen` · `PayAttention` (Aaron's seed pair) · `WhichWay` · `HowMuch` (Addison's vector pair = direction + magnitude) · `RainbowTable` · `ObserveEmit`. `Wall.all` = the cube-of-space's **six faces**, canonical order (12 words = the hexahedron's 12 edges).
-- **`Vector`** — the atomic noun (B-0998): polar `{ WhichWay; HowMuch }`. It **is** the polar view of the existing ℂ (`Complex = Doubled<float>`): argument = Which Way, modulus = How Much. `Vector.toComplex` / `ofComplex` are the bridge; **`Vector.add` routes through `ImaginaryStack.complex.Add`** — the seed *composes* the Cayley–Dickson substrate.
+- **`Wall`** (`[<RequireQualifiedAccess>]`) — the six reservoir walls (081KT2T2J0008QG0R0026MS6PV): `RememberWhen` · `PayAttention` (Aaron's seed pair) · `WhichWay` · `HowMuch` (Addison's vector pair = direction + magnitude) · `RainbowTable` · `ObserveEmit`. `Wall.all` = the cube-of-space's **six faces**, canonical order (12 words = the hexahedron's 12 edges).
+- **`Vector`** — the atomic noun (081KT2T2J0008QG0R003VK5GRX): polar `{ WhichWay; HowMuch }`. It **is** the polar view of the existing ℂ (`Complex = Doubled<float>`): argument = Which Way, modulus = How Much. `Vector.toComplex` / `ofComplex` are the bridge; **`Vector.add` routes through `ImaginaryStack.complex.Add`** — the seed *composes* the Cayley–Dickson substrate.
 
 ### Tests (`tests/Tests.FSharp/Algebra/HexCore.Tests.fs` — 7/7 pass)
 
 six walls present + canonical-order + exactly-six · `Vector` ↔ ℂ bijection · `Vector.add` composes the ℂ algebra (east + north = √2 @ π/4) · negative magnitude normalizes · unit-east lands on the real axis. *"The compilers don't lie."*
 
-### Core math (B-0999, held don't-collapse)
+### Core math (081KT2T2J0008QG0R0019YVX8M, held don't-collapse)
 
 The 6 walls rhyme with the **6 bivectors of Cl(1,3) = the 6 Lorentz generators** (3 rot + 3 boost) / SE(3) 6-DOF / cube faces. Cross-domain rhymes are **refereed adapters on this core interface**, not a totalizing claim.
 
 ### Deferred to later slices
 
-The seed **computation-expression DSL** over a reduced Bayesian Infer.NET model; the reduced-Bayesian seam; **`Trajectory`** (a derived sequence of vectors); F# UOM angle/magnitude tags (B-0994 runtime-unit-tag).
+The seed **computation-expression DSL** over a reduced Bayesian Infer.NET model; the reduced-Bayesian seam; **`Trajectory`** (a derived sequence of vectors); F# UOM angle/magnitude tags (081KT2T2J0008QG0R0000H12VT runtime-unit-tag).
 
 ### Review note
 
 New public surface (`Wall`, `Vector`) — flagging for **public-api-designer (Ilyana)** review (advisory per GOVERNANCE §11; not gating). `dotnet build -c Release`: **0 warnings, 0 errors**. `dotnet test`: **7/7**.
 
-Refs B-0985, B-0998, B-0999.
+Refs 081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R003VK5GRX, 081KT2T2J0008QG0R0019YVX8M.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -96,7 +96,7 @@ Refs B-0985, B-0998, B-0999.
 - **`Copilot` (bot)** at 2026-06-02T15:59:22Z on `src/Core/HexCore.fs`:24 (association: NONE)
 
   <pre>
-  P1 (xref integrity): `B-0999` is referenced here, but there’s no corresponding backlog row under `docs/backlog/**` (so the reference is currently non-resolvable in-tree). Either add the `B-0999` row in the same PR or remove/replace this reference.
+  P1 (xref integrity): `081KT2T2J0008QG0R0019YVX8M` is referenced here, but there’s no corresponding backlog row under `docs/backlog/**` (so the reference is currently non-resolvable in-tree). Either add the `081KT2T2J0008QG0R0019YVX8M` row in the same PR or remove/replace this reference.
   </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -110,7 +110,7 @@ Refs B-0985, B-0998, B-0999.
 - **`Copilot` (bot)** at 2026-06-02T15:59:22Z on `src/Core/HexCore.fs`:29 (association: NONE)
 
   <pre>
-  P1 (xref integrity): This parenthetical references `B-0999`, but there’s no in-tree backlog row for `B-0999` under `docs/backlog/**`. Consider removing or replacing with an existing ID to keep doc comments self-consistent.
+  P1 (xref integrity): This parenthetical references `081KT2T2J0008QG0R0019YVX8M`, but there’s no in-tree backlog row for `081KT2T2J0008QG0R0019YVX8M` under `docs/backlog/**`. Consider removing or replacing with an existing ID to keep doc comments self-consistent.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -129,16 +129,16 @@ feat(seed-core): hex core slice 1 — six reservoir walls + atomic Vect…
 …or noun on Cayley-Dickson ℂ (Aaron 2026-06-02)
 
 First real F# slice of the seed core (Aaron: "let's actually start building
-the seed core in f#"). Most-inevitable-first per B-0998 (vectors before
+the seed core in f#"). Most-inevitable-first per 081KT2T2J0008QG0R003VK5GRX (vectors before
 trajectories): the six reservoir walls + the atomic Vector noun, composing
 the existing Cayley-Dickson algebra rather than re-deriving it.
 
 src/Core/HexCore.fs (compiled after CayleyDickson.fs):
-- `Wall` (RequireQualifiedAccess) — the six reservoir walls (B-0985):
+- `Wall` (RequireQualifiedAccess) — the six reservoir walls (081KT2T2J0008QG0R0026MS6PV):
   RememberWhen · PayAttention (Aaron's seed pair) · WhichWay · HowMuch
   (Addison's vector pair = direction + magnitude) · RainbowTable ·
   ObserveEmit. `Wall.all` = the cube-of-space's six faces, canonical order.
-- `Vector` — the atomic noun (B-0998): polar (WhichWay, HowMuch). It IS the
+- `Vector` — the atomic noun (081KT2T2J0008QG0R003VK5GRX): polar (WhichWay, HowMuch). It IS the
   polar view of the existing ℂ (`Complex = Doubled<float>`): argument =
   Which Way, modulus = How Much. `Vector.toComplex`/`ofComplex` are the
   bridge; `Vector.add` routes through `ImaginaryStack.complex.Add` — the
@@ -151,20 +151,20 @@ tests/Tests.FSharp/Algebra/HexCore.Tests.fs (7 tests, all pass):
 - negative magnitude normalizes to a non-negative modulus
 - unit-east lands on the real axis
 
-Core math (B-0999, held don't-collapse): the 6 walls rhyme with the 6
+Core math (081KT2T2J0008QG0R0019YVX8M, held don't-collapse): the 6 walls rhyme with the 6
 bivectors of Cl(1,3) = the 6 Lorentz generators / SE(3) 6-DOF / cube faces.
 Cross-domain rhymes are refereed adapters, not a totalizing claim.
 
 Deferred to later slices: the seed computation-expression DSL over a reduced
 Bayesian Infer.NET model; the reduced-Bayesian seam; `Trajectory` (a derived
-sequence of vectors); F# UOM angle/magnitude tags (B-0994 runtime-unit-tag).
+sequence of vectors); F# UOM angle/magnitude tags (081KT2T2J0008QG0R0000H12VT runtime-unit-tag).
 
 New public surface (Wall, Vector) — flag for public-api-designer (Ilyana)
 review (advisory per GOVERNANCE §11; not gating).
 
 dotnet build -c Release: 0 warnings, 0 errors. dotnet test: 7/7 pass.
 
-Refs B-0985, B-0998, B-0999.
+Refs 081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R003VK5GRX, 081KT2T2J0008QG0R0019YVX8M.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

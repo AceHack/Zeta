@@ -2,7 +2,7 @@
 // audit-backlog-status-drift.ts — detect `status: open` backlog rows whose
 // primary artifacts have all shipped, indicating substrate drift.
 //
-// Per docs/backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md
+// Per docs/backlog/P3/081KRQ1AB0008QG0R000QYJFZE-audit-backlog-status-drift-detection-2026-05-16.md
 // and memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md.
 //
 // What this does:
@@ -15,7 +15,7 @@
 //   - Existence-check every primary-artifact path on disk
 //   - Report rows where ALL primary-artifact paths exist (drift candidates)
 //
-// Section-aware parsing is the load-bearing detail per B-0553's empirical
+// Section-aware parsing is the load-bearing detail per 081KRQ1AB0008QG0R000QYJFZE's empirical
 // false-positive catalog: a naive `grep -oE 'tools/[a-z0-9_/-]+\.ts'` over the
 // whole body had a 4-of-4 false-positive rate because it matched composes_with
 // cross-refs as primary artifacts.
@@ -56,7 +56,7 @@ import { execFileSync } from "node:child_process";
  * root regardless of where the tool was invoked from — including from
  * outside any git repo.
  *
- * Per B-0557 slice 3 (initial via git rev-parse) + this fix (true
+ * Per 081KRQ1AB0008QG0R003DYANMC slice 3 (initial via git rev-parse) + this fix (true
  * cwd-independence via import.meta.dir fallback).
  */
 export function detectRepoRoot(): string {
@@ -104,7 +104,7 @@ const PATH_REGEX =
 
 // Inline cross-reference patterns. Even inside an Acceptance / Proposed
 // mechanization / Scope section, a line matching these patterns is a
-// cross-reference, not a deliverable. Discovered empirically in B-0518
+// cross-reference, not a deliverable. Discovered empirically in 081KRHWGX0008QG0R001BHXH0M
 // (Sharpening 4's "Composes with `.claude/rules/encoding-rules-without-
 // mechanizing.md`" bullet — a sibling reference inside a primary
 // sub-section, not a deliverable).
@@ -196,7 +196,7 @@ export function extractPrimaryArtifacts(body: string): string[] {
         const inPrimarySection = sectionMode === "primary";
         if (!inPrimarySection) continue;
 
-        // Mixed-bullet handling per B-0557 slice 4: extract paths from the
+        // Mixed-bullet handling per 081KRQ1AB0008QG0R003DYANMC slice 4: extract paths from the
         // segment BEFORE the first inline cross-reference keyword. Pure
         // cross-ref bullets ("Composes with X") naturally produce an empty
         // pre-cutoff segment; mixed bullets ("Add `tools/foo.ts` per [X]")
@@ -230,7 +230,7 @@ export function enumerateOpenRows(backlogDir: string = "docs/backlog"): BacklogR
         try {
             files = readdirSync(dir);
         } catch (err) {
-            // Per B-0557 slice 2 (Copilot P1 on PR #3758): don't let one
+            // Per 081KRQ1AB0008QG0R003DYANMC slice 2 (Copilot P1 on PR #3758): don't let one
             // unreadable directory abort the whole audit. Warn and continue.
             process.stderr.write(
                 `audit-backlog-status-drift: unable to read directory ${dir}: ${(err instanceof Error ? err.message : String(err))}\n`,
@@ -244,7 +244,7 @@ export function enumerateOpenRows(backlogDir: string = "docs/backlog"): BacklogR
             try {
                 body = readFileSync(path, "utf-8");
             } catch (err) {
-                // Per B-0557 slice 2: don't let one unreadable row file abort
+                // Per 081KRQ1AB0008QG0R003DYANMC slice 2: don't let one unreadable row file abort
                 // the whole audit. Warn and skip the row.
                 process.stderr.write(
                     `audit-backlog-status-drift: unable to read ${path}: ${(err instanceof Error ? err.message : String(err))}\n`,
@@ -305,7 +305,7 @@ function reportJson(candidates: readonly BacklogRow[]): void {
 
 function main(): number {
     // chdir to repo root so subsequent relative-path reads/existence-checks
-    // work regardless of invocation cwd. Per B-0557 slice 3.
+    // work regardless of invocation cwd. Per 081KRQ1AB0008QG0R003DYANMC slice 3.
     try {
         process.chdir(detectRepoRoot());
     } catch (err) {
@@ -350,7 +350,7 @@ function main(): number {
     }
 
     // --check mode: exit non-zero when any candidates found, so CI/cron jobs
-    // can fail the build and force human review. Per B-0557 finding 4.
+    // can fail the build and force human review. Per 081KRQ1AB0008QG0R003DYANMC finding 4.
     if (args.includes("--check") && candidates.length > 0) {
         return 65;
     }

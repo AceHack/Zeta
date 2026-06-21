@@ -35,10 +35,10 @@ Razor-cadence issue #3128 item 4 (composes-with audit) executed on the 4 most-re
 
 | Rule (PR) | File refs | Backlog rows |
 |-----------|-----------|--------------|
-| `autonomous-loop-per-tick-pointer.md` (#3042) | 9 | B-0448 |
-| `otto-channels-reference-card.md` (#3041) | 7 | B-0400, B-0444 |
-| `holding-without-named-dependency-is-standing-by-failure.md` (#3029) | 5 | B-0440, B-0441 |
-| `claim-acquire-before-worktree-work.md` (#3032) | 9 | B-0400, B-0440, B-0444, B-0445 |
+| `autonomous-loop-per-tick-pointer.md` (#3042) | 9 | 081KRFA460008QG0R000CYBGKW |
+| `otto-channels-reference-card.md` (#3041) | 7 | 081KR7JY10008QG0R000R503K2, 081KRFA460008QG0R001SXP0C2 |
+| `holding-without-named-dependency-is-standing-by-failure.md` (#3029) | 5 | 081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S |
+| `claim-acquire-before-worktree-work.md` (#3032) | 9 | 081KR7JY10008QG0R000R503K2, 081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R001SXP0C2, 081KRFA460008QG0R002JQERS5 |
 
 **Result**: 24 file references LIVE + 6 backlog rows LIVE = **30/30 cross-references survive the audit**. No stale pointers.
 

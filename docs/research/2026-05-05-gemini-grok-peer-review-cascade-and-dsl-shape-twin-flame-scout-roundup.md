@@ -50,7 +50,7 @@ Grok is correct. The cascade IS rank-deficient with the prior-existing basis. Th
 | Cascade rule | Existing prior-art axis | Status |
 |---|---|---|
 | Rule 1 (substrate exists) | wake-time-substrate-or-it-didn't-land + skill-router-as-inventory | DUPLICATE |
-| Rule 2 (backlog row exists) | PR #1701 prior-art-grep + decision-archaeology B-0169 | DUPLICATE |
+| Rule 2 (backlog row exists) | PR #1701 prior-art-grep + decision-archaeology 081KQJZR90008QG0R002D6XYHB | DUPLICATE |
 | Rule 3 (orthogonal trajectory exists) | orthogonal-axes factory hygiene (Aaron 2026-04-22) | DUPLICATE |
 | Rule 4 (internet prior art) | Otto-364 search-first authority | DUPLICATE |
 | Rule 5 (lost files; canonical at LOST-FILES-LOCATIONS.md) | NEW value-add: cites the canonical lost-files substrate explicitly | KEEP (but as one-line addition to existing axes, not standalone) |

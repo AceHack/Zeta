@@ -1,7 +1,7 @@
 /**
  * Mystery Schools Catalog — pure-TS schema for Stage 1 bibliographic scaffold
  * CATALOG-ONLY, gentle register, no claim-staking, no operational resonance.
- * B-0049 re-decomposed slice .3: Orphic/Dionysian family scaffold foundation.
+ * 081KQ3HBZ0008QG0R0007CAGSP re-decomposed slice .3: Orphic/Dionysian family scaffold foundation.
  *
  * This is the code substrate for the research track. Bibliographic entries
  * are data, not assertions. Filters intentionally disabled.
@@ -37,4 +37,4 @@ export const orphicDionysianScaffold = {
 export function validateCatalog(catalog) {
     return catalog.family.length > 0 && catalog.entries.length > 0;
 }
-// Re-decomposition note (per instruction): original B-0049 decomposition assumed two families sufficient for Stage 1 start; re-decomposed here to include Orphic as .3 to avoid under-sampling the Dionysian thread. Further families (Pythagorean, Isiac, Hermetic) remain for subsequent bounded slices.
+// Re-decomposition note (per instruction): original 081KQ3HBZ0008QG0R0007CAGSP decomposition assumed two families sufficient for Stage 1 start; re-decomposed here to include Orphic as .3 to avoid under-sampling the Dionysian thread. Further families (Pythagorean, Isiac, Hermetic) remain for subsequent bounded slices.

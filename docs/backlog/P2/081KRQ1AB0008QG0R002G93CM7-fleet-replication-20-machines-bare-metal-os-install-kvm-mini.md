@@ -1,6 +1,5 @@
 ---
-id: B-0590
-zetaid: 081KRQ1AB0008QG0R002G93CM7
+id: 081KRQ1AB0008QG0R002G93CM7
 priority: P2
 status: open
 title: "20-machine Otto fleet replication with bare-metal OS install — KVM-driven provisioning + Beelink-class mini-PC hardware preference"
@@ -122,8 +121,8 @@ For 20-machine Otto fleet specifically: **NixOS** likely wins — declarative co
 
 - Multiple machines = multiple Otto instances = real factory scale (currently single-machine Otto-CLI + peer Otto background worker + Lior on same box)
 - ServiceTitan SshdPinAuthLsa block demonstrated that corporate-managed hardware isn't a viable fleet target; Aaron's owned hardware (mini-PCs) is the right substrate
-- Cross-machine bus (B-0583) becomes operationally important at fleet scale
-- GitHub App auth (B-0571) is the right credential pattern for fleet (per-machine PATs don't scale)
+- Cross-machine bus (081KRQ1AB0008QG0R003DCGHJJ) becomes operationally important at fleet scale
+- GitHub App auth (081KRQ1AB0008QG0R0038VQJZ0) is the right credential pattern for fleet (per-machine PATs don't scale)
 
 ## Decomposition into implementation slices
 
@@ -144,11 +143,11 @@ Total: XL overall; iterative — slice 7 (pilot) is the gate to slice 8 (scale).
 
 ## Composes with
 
-- B-0570 (scarcity tracker — 20 Ottos × API calls = 20× the GraphQL pressure; tracker MUST be cross-machine; B-0583 is the substrate-location row for this)
-- B-0571 (GitHub App for factory automation — per-machine PATs don't scale; App is the right pattern for 20-machine fleet)
-- B-0580 (Enterprise ruleset management — fleet-wide governance via ruleset; per-machine deviation is risk)
-- B-0582 (substrate-level destructive-verb refusal gate — even more important at fleet scale; 20 machines = 20 potential blast radii)
-- B-0583 (cross-machine account-scoped scarcity bus — the bus IS what 20 fleet members coordinate over)
+- 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker — 20 Ottos × API calls = 20× the GraphQL pressure; tracker MUST be cross-machine; 081KRQ1AB0008QG0R003DCGHJJ is the substrate-location row for this)
+- 081KRQ1AB0008QG0R0038VQJZ0 (GitHub App for factory automation — per-machine PATs don't scale; App is the right pattern for 20-machine fleet)
+- 081KRQ1AB0008QG0R000522MPJ (Enterprise ruleset management — fleet-wide governance via ruleset; per-machine deviation is risk)
+- 081KRQ1AB0008QG0R002469KJG (substrate-level destructive-verb refusal gate — even more important at fleet scale; 20 machines = 20 potential blast radii)
+- 081KRQ1AB0008QG0R003DCGHJJ (cross-machine account-scoped scarcity bus — the bus IS what 20 fleet members coordinate over)
 - `.claude/skills/replicate/SKILL.md` (per-machine replication primitive; fleet orchestration sits above)
 - `.claude/skills/make-persistent/SKILL.md` (service registration; cloud-init drives this at scale)
 
@@ -177,7 +176,7 @@ Total: XL overall; iterative — slice 7 (pilot) is the gate to slice 8 (scale).
 - [x] Hardware research: preliminary done (Beelink / Minisforum / GMKtec / AMD Ryzen AI / Intel Core Ultra)
 - [x] KVM research: preliminary done (PiKVM / Comet / JetKVM / Tinypilot landscape sketched)
 - [x] Empirical motivation: ServiceTitan-hardware-blocked replication today showed owned-hardware is the right substrate
-- [x] Composes-with chain identified across the day's other rows (B-0570/0571/0580/0581/0582/0583)
+- [x] Composes-with chain identified across the day's other rows (081KRQ1AB0008QG0R002422Z9Q/0571/0580/0581/0582/0583)
 - [ ] Decision: KVM choice (Aaron call)
 - [ ] Decision: OS choice (Aaron call OR experiment)
 - [ ] Decision: hardware purchasing (Aaron call; budget bracket from funding context)

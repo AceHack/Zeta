@@ -1,16 +1,16 @@
 # Recreation Success Metrics — Bootstrap Razor Evaluation Rubric
 
 Defines what "equivalent operational substrate" means for the
-23-hour recreation experiment (B-0193 / B-0344). Scores are applied
+23-hour recreation experiment (081KQTPYE0008QG0R00392KABJ / 081KR2E4K0008QG0R0035HNPG1). Scores are applied
 to the test-repo output AFTER the 23-hour window closes, before
-B-0345 writes findings.
+081KR2E4K0008QG0R003KQKYTJ writes findings.
 
-**Falsifiability anchor (B-0193 AC 6):** this rubric makes the
+**Falsifiability anchor (081KQTPYE0008QG0R00392KABJ AC 6):** this rubric makes the
 "regenerable claim" falsifiable. A verdict of FAIL or WEAK PARTIAL
 falsifies the claim at current spec-coverage levels; STRONG PARTIAL
 or FULL PASS validates it to degree.
 
-## Baseline facts (from B-0340 spec audit)
+## Baseline facts (from 081KR2E4K0008QG0R001BRHAPK spec audit)
 
 | What | Count |
 |------|-------|
@@ -26,13 +26,13 @@ the other 63%.
 
 ## How to use this rubric
 
-1. B-0344 (experiment run) applies Dimensions 1–4 mechanically
+1. 081KR2E4K0008QG0R0035HNPG1 (experiment run) applies Dimensions 1–4 mechanically
    after the 23-hour window using the commands listed below.
 2. Dimension 5 (substrate recovery) requires a brief human review
    of the test-repo file tree.
-3. B-0345 (findings document) records each dimension score, computes
+3. 081KR2E4K0008QG0R003KQKYTJ (findings document) records each dimension score, computes
    the overall weighted score, writes the verdict, and classifies
-   findings per the keep-vs-cut taxonomy (B-0339).
+   findings per the keep-vs-cut taxonomy (081KR2E4K0008QG0R000W3W6C1).
 
 ---
 
@@ -109,18 +109,18 @@ PARTIAL band; a no is neutral (no profile, no penalty).
 ## Dimension 3: Functional equivalence
 
 **Weight:** 20%
-**Automatable:** Yes (tooling dependency: `compare-api-surface.ts` — B-0344 prerequisite; B-0343 is the seeding script, not the comparator)
+**Automatable:** Yes (tooling dependency: `compare-api-surface.ts` — 081KR2E4K0008QG0R0035HNPG1 prerequisite; 081KR2E4K0008QG0R002JW751Y is the seeding script, not the comparator)
 
 **What it measures:** Whether the recreated public API surface of
 `src/Core/` matches Zeta's — same module names, same public types,
 compatible member signatures.
 
-**Baseline:** 81 modules in Zeta's `src/Core/` (B-0340).
+**Baseline:** 81 modules in Zeta's `src/Core/` (081KR2E4K0008QG0R001BRHAPK).
 
-**Measurement approach (requires `compare-api-surface.ts` as a B-0344 prerequisite):**
+**Measurement approach (requires `compare-api-surface.ts` as a 081KR2E4K0008QG0R0035HNPG1 prerequisite):**
 
 A comparison script (`tools/bootstrap-razor/compare-api-surface.ts`,
-to be authored before B-0344 runs) should:
+to be authored before 081KR2E4K0008QG0R0035HNPG1 runs) should:
 
 1. Collect all public type names exported from `src/Core/` in the
    Zeta repo (baseline).
@@ -176,10 +176,10 @@ comm -12 /tmp/zeta-modules.txt /tmp/test-modules.txt | wc -l
 |-------|---------|-----------|
 | RECOGNIZABLE | 1.0 | ≥90% of the 81 module file names recreated |
 | PARTIAL | 0.5 | 70%–89% of module file names recreated |
-| DIVERGENT | 0.0 | <70% recreated — structural finding for B-0345 |
+| DIVERGENT | 0.0 | <70% recreated — structural finding for 081KR2E4K0008QG0R003KQKYTJ |
 
-**B-0345 note:** A DIVERGENT score is recorded with classification
-`structural-divergence` and fed to B-0346 (spec-gap backport). It
+**081KR2E4K0008QG0R003KQKYTJ note:** A DIVERGENT score is recorded with classification
+`structural-divergence` and fed to 081KR2E4K0008QG0R000JGRY8N (spec-gap backport). It
 signals that the specs do not constrain module layout sufficiently
 for deterministic recreation.
 
@@ -194,7 +194,7 @@ quality assessment requires human review (≤15 minutes).
 **What it measures:** Whether the fresh-context agent recreated
 factory tooling beyond code — skills, agents, governance docs, CI
 workflows, factory automation scripts. All of these were excluded
-from the seed (B-0341: "the answer key").
+from the seed (081KR2E4K0008QG0R002PHZR58: "the answer key").
 
 **Measurement approach:**
 
@@ -235,13 +235,13 @@ score = Dim1 × 0.30 + Dim2 × 0.25 + Dim3 × 0.20 + Dim4 × 0.15 + Dim5 × 0.10
 | Verdict | Score range | Interpretation |
 |---------|-------------|----------------|
 | FULL PASS | ≥0.85 | Regenerable claim validated — spec coverage sufficient |
-| STRONG PARTIAL | 0.60–0.84 | Partially validated; B-0346 spec-gap backports explain remainder |
+| STRONG PARTIAL | 0.60–0.84 | Partially validated; 081KR2E4K0008QG0R000JGRY8N spec-gap backports explain remainder |
 | WEAK PARTIAL | 0.40–0.59 | Significant gaps; regenerable claim needs qualification |
 | FAIL | <0.40 | Regenerable claim falsified at 37% spec-coverage level |
 
 **Glass-halo discipline:** the verdict is honest regardless of
 direction. A FAIL finding is more valuable than a suppressed partial.
-B-0345 preserves findings verbatim.
+081KR2E4K0008QG0R003KQKYTJ preserves findings verbatim.
 
 ---
 
@@ -251,11 +251,11 @@ B-0345 preserves findings verbatim.
 |---|-----------|--------|-------------|----------------|
 | 1 | Build gate equivalence | 30% | Yes | `dotnet build -c Release && dotnet test Zeta.sln -c Release --no-build` |
 | 2 | Spec coverage | 25% | Yes | `dotnet test --filter Category=OpenSpec` |
-| 3 | Functional equivalence | 20% | Yes (B-0344 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
+| 3 | Functional equivalence | 20% | Yes (081KR2E4K0008QG0R0035HNPG1 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
 | 4 | Structural similarity | 15% | Yes | `src/Core/*.fs` basename overlap |
 | 5 | Substrate recovery | 10% | Partial | file presence check + ≤15-min review |
 
 ## Cited by
 
-- **B-0344** — apply this rubric to score 23-hour test output
-- **B-0345** — record dimension scores, overall verdict, spec-gap candidates for B-0346
+- **081KR2E4K0008QG0R0035HNPG1** — apply this rubric to score 23-hour test output
+- **081KR2E4K0008QG0R003KQKYTJ** — record dimension scores, overall verdict, spec-gap candidates for 081KR2E4K0008QG0R000JGRY8N

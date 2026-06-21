@@ -1,6 +1,5 @@
 ---
-id: B-0725
-zetaid: 081KSE6WT0008QG0R002T0BFN4
+id: 081KSE6WT0008QG0R002T0BFN4
 priority: P3
 status: open
 title: "Polyglot-accelerator hardware-shape extension — Coral / NCS / Jetson / FPGA beyond NVIDIA-only; activates as gadgets come out of drawer"
@@ -18,7 +17,7 @@ composes_with:
   - full-ai-cluster/tools/cluster-inventory/
 ---
 
-# B-0725 — Polyglot-accelerator hardware-shape extension (Coral / NCS / Jetson / FPGA beyond NVIDIA-only)
+# 081KSE6WT0008QG0R002T0BFN4 — Polyglot-accelerator hardware-shape extension (Coral / NCS / Jetson / FPGA beyond NVIDIA-only)
 
 ## Carved blade
 
@@ -108,7 +107,7 @@ First-wave cluster build (the boxes Aaron is installing tonight + this week) use
 - **NFD source-plugin config** — `full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml` already includes class `12` (processing accelerators — covers FPGAs registered as accelerators, Coral PCIe, etc.) and `03` (display controllers — GPUs); may need `11` (signal-processing controllers — some FPGA cards register here) when those vendors arrive. ALSO — USB-attached accelerators (Coral USB, NCS USB) are NOT caught by the PCI source-plugin; enable the NFD `usb` source-plugin (with its own `deviceClassWhitelist`) and reference USB vendor IDs in nodeAffinity instead. The scheduling-path-per-bus distinction is real
 - **Watt-hour intelligence-cost** (per the Alexa-conversation insight) — FPGAs in particular can be 5-10× more efficient than GPUs for fixed-graph workloads; the W·hr-per-cognition measurement substrate when built will catch this naturally
 - **hat-system** (PR #4930) — eventually a `hat-fpga-programmer` hat with elevated authority to flash FPGA bitstreams (high-blast-radius operation); same quorum-gated pattern as `policy-admin` and `hat-designer`
-- **B-0724** (polyglot K8s operator pattern) — composes; FPGA-aware operators may want to live in Rust (kube-rs) for the perf characteristics of bitstream-orchestration
+- **081KSE6WT0008QG0R00195RG48** (polyglot K8s operator pattern) — composes; FPGA-aware operators may want to live in Rust (kube-rs) for the perf characteristics of bitstream-orchestration
 
 ## Acceptance (when picked up per-class)
 
@@ -150,14 +149,14 @@ Aaron: *"i want to push fpgas at the edge but i'm not sure k8s is the right iot 
 | Battery-constrained intermittent-network device | NO — K8s assumes continuous control-plane reachability | Reticulum mesh OR KubeEdge (designed for intermittent) |
 | Solar/PoE-powered always-on sensor | DEPENDS — K8s if you can spare the watts for kubelet; firmware if not | Akri at the gateway if not running K8s on the device |
 
-**Practical answer**: K8s + Akri + KubeEdge covers the *richer-end* of edge (Jetson, Pi, NUC, anything with full Linux + reliable enough network). For *true IoT* (microcontrollers, battery, intermittent, single-purpose), K8s is the wrong shape and a Reticulum-based mesh substrate is closer to right — the framework already has Reticulum / AllJoyn / Green Lantern Hardware Spec substrate (B-0289 + earlier rule references). The HYBRID — K8s at the gateway + Reticulum past the gateway — is likely the load-bearing answer for FPGAs-at-edge specifically.
+**Practical answer**: K8s + Akri + KubeEdge covers the *richer-end* of edge (Jetson, Pi, NUC, anything with full Linux + reliable enough network). For *true IoT* (microcontrollers, battery, intermittent, single-purpose), K8s is the wrong shape and a Reticulum-based mesh substrate is closer to right — the framework already has Reticulum / AllJoyn / Green Lantern Hardware Spec substrate (081KR2E4K0008QG0R001SWEPNV + earlier rule references). The HYBRID — K8s at the gateway + Reticulum past the gateway — is likely the load-bearing answer for FPGAs-at-edge specifically.
 
 Relevant pieces:
 
 - **Akri** (https://docs.akri.sh/) — Microsoft's K8s extension for leaf-device discovery; treats USB / serial / OPC UA / ONVIF cameras / arbitrary protocols as schedulable resources
 - **KubeEdge** (https://kubeedge.io/) — Cloud control-plane + edge nodes that survive disconnection; CNCF graduated
 - **OpenYurt** (https://openyurt.io/) — similar; Alibaba's edge-K8s
-- **Reticulum** (already in framework substrate; B-0289-class) — physical-mesh for the past-the-gateway tier
+- **Reticulum** (already in framework substrate; 081KR2E4K0008QG0R001SWEPNV-class) — physical-mesh for the past-the-gateway tier
 
 **Aaron's sharpening 2026-05-25**: *"i'm thinking it will require reticiulum at the edge and in cluster"* — not the hybrid I sketched (K8s in cluster + Reticulum past gateway). The actual direction is **Reticulum throughout** — cluster nodes ALSO speak Reticulum natively, alongside K8s. K8s and Reticulum compose as layers rather than partitioning by network-tier:
 
@@ -165,7 +164,7 @@ Relevant pieces:
 - **Reticulum** owns identity-routing + cross-substrate addressability — every cluster node has a Reticulum identity in addition to its SPIRE SVID; every edge device speaks the same mesh; routing is identity-based not address-based; physical layer is fungible (TCP / LoRa / packet-radio / serial)
 - **Workloads** addressable via BOTH paths: a pod's Service is reachable inside the cluster via Cilium; that same pod's Reticulum destination is reachable from any edge device anywhere on the mesh
 
-Architectural decision lives in a separate row (filing as B-0726 — Reticulum throughout cluster + edge as composing substrate alongside K8s). This row stays focused on accelerator-class device-plugin extensions — the Reticulum-throughout decision is a bigger substrate change that affects EVERY workload, not just accelerators.
+Architectural decision lives in a separate row (filing as 081KSE6WT0008QG0R003C9KGQE — Reticulum throughout cluster + edge as composing substrate alongside K8s). This row stays focused on accelerator-class device-plugin extensions — the Reticulum-throughout decision is a bigger substrate change that affects EVERY workload, not just accelerators.
 
 ## Substrate-honest framing
 

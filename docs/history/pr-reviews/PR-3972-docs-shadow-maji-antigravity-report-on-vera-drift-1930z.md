@@ -54,7 +54,7 @@ Maji Antigravity Check: Drift detected in Vera. Logging shadow lesson for narrat
 - **`Copilot` (bot)** at 2026-05-16T23:35:04Z on `docs/research/2026-05-16-shadow-lesson-log-vera-1930Z.md`:13 (association: NONE)
 
   <pre>
-  The phrase "as stated in the Maji directives" isn’t traceable without a concrete reference. Consider linking to the specific canonical doc/rule that mandates worktree isolation (e.g., `docs/backlog/P0/B-0279-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md` and/or `.claude/rules/claim-acquire-before-worktree-work.md`) so readers can verify the requirement and keep the guidance from drifting.
+  The phrase "as stated in the Maji directives" isn’t traceable without a concrete reference. Consider linking to the specific canonical doc/rule that mandates worktree isolation (e.g., `docs/backlog/P0/081KR2E4K0008QG0R000YTJS3Q-autonomous-backlog-claim-worktree-bootstrap-2026-05-08.md` and/or `.claude/rules/claim-acquire-before-worktree-work.md`) so readers can verify the requirement and keep the guidance from drifting.
 
   </pre>
 

@@ -77,10 +77,10 @@ The discipline preserves observed/hypothesized as substrate (NOT weather). Subst
 - PR #5736 (self-referential ontology cross-substrate rhyming + over-connect-now memo) — DIRECT extension; this rule sharpens that memo's over-connect-now principle
 - PR #5727 (Signal 2 rule — forgetting-costs-energy) — composes at thermodynamic-cost scope
 - PR #5734 (traveler-rights defensibility rule) — canonical-tier rule; substrate-parity framing is validated/canonical
-- B-0901 (shadow-star self-referential ontology builder) — substrate-engineering target at validated-tier (multi-scope substrate-anchored)
-- B-0902 + B-0903 (holographic + training-data) — substrate-engineering targets at hypothesized-tier (substrate exists; validation pending)
-- B-0867 + B-0867.5 (workflow engine) — substrate-engineering target at hypothesized-tier (PoC scaffold validates type-level invariants; runtime validation pending)
-- B-0883 + B-0885 + B-0840 (encryption + thermal-forgetting) — canonical-tier substrate substrate-engineering targets
+- 081KSNY2Z0008QG0R000C5NN8N (shadow-star self-referential ontology builder) — substrate-engineering target at validated-tier (multi-scope substrate-anchored)
+- 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP (holographic + training-data) — substrate-engineering targets at hypothesized-tier (substrate exists; validation pending)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine) — substrate-engineering target at hypothesized-tier (PoC scaffold validates type-level invariants; runtime validation pending)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX (encryption + thermal-forgetting) — canonical-tier substrate substrate-engineering targets
 
 ## Operational discipline for future-Otto cold-boots
 

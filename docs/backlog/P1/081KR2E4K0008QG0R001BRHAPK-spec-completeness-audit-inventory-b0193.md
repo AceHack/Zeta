@@ -1,12 +1,11 @@
 ---
-id: B-0340
-zetaid: 081KR2E4K0008QG0R001BRHAPK
+id: 081KR2E4K0008QG0R001BRHAPK
 priority: P1
 status: closed
 title: Spec completeness audit — run inventory.ts, document coverage gaps
 tier: foundation
 effort: S
-ask: B-0193 decomposition — informs minimal bootstrap seed (what specs cover, what's missing)
+ask: 081KQTPYE0008QG0R00392KABJ decomposition — informs minimal bootstrap seed (what specs cover, what's missing)
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQTPYE0008QG0R00392KABJ
@@ -16,15 +15,15 @@ tags: [bootstrap-razor, spec-completeness, openspec, inventory, audit, trajector
 type: friction-reducer
 ---
 
-# B-0340 — Spec completeness audit
+# 081KR2E4K0008QG0R001BRHAPK — Spec completeness audit
 
 ## Parent
 
-B-0193 (bootstrap razor + 23-hour recreation test).
+081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation test).
 
 ## What
 
-Run `bun tools/openspec/inventory.ts` (landed in B-0171,
+Run `bun tools/openspec/inventory.ts` (landed in 081KQNJ500008QG0R001N94412,
 PR #2147) against the current codebase and document:
 
 1. Which `src/` modules have matching specs under
@@ -34,7 +33,7 @@ PR #2147) against the current codebase and document:
    (spec-drift inventory).
 4. Coverage of `docs/*.tla` formal specs vs code modules.
 
-The output informs B-0341 (what to seed the test repo with)
+The output informs 081KR2E4K0008QG0R002PHZR58 (what to seed the test repo with)
 and validates the "specs as source of truth" claim — if
 large code areas lack specs, the 23-hour recreation test
 will fail there by design, revealing the gap.
@@ -45,7 +44,7 @@ will fail there by design, revealing the gap.
    is captured in `docs/bootstrap-razor/SPEC-AUDIT.md`.
 2. Each gap is classified: spec-missing, spec-stale,
    formal-spec-missing.
-3. Gap count is a numeric metric citeable by B-0341.
+3. Gap count is a numeric metric citeable by 081KR2E4K0008QG0R002PHZR58.
 
 ## Effort
 

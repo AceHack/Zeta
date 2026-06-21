@@ -33,7 +33,7 @@ Consolidating shard for late-session ticks (~35-48). Closes the per-tick-shard d
 
 Documents:
 
-- 4/4 Otto-CLI partial-vs-drift verifications (B-0440, B-0509, B-0512, B-0411)
+- 4/4 Otto-CLI partial-vs-drift verifications (081KRFA460008QG0R001KC0VBH, 081KRHWGX0008QG0R0014D2T5E, 081KRHWGX0008QG0R003WEP6E9, 081KRA5AR0008QG0R000C3P8KP)
 - Combined drift-rate estimate with peer Otto-Desktop (~0-25%)
 - Audit-tool closed-row filter behaviour validated (tick 46)
 - Empirical FP-rate memory file (PR companion to this shard)

@@ -1,6 +1,6 @@
 ---
 pr_number: 3749
-title: "feat(B-0170.4): seed cross-surface-drift fixture + regression test"
+title: "feat(081KQNJ500008QG0R003SCWBDV.4): seed cross-surface-drift fixture + regression test"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T05:00:50Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-16T05:20:54Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3749: feat(B-0170.4): seed cross-surface-drift fixture + regression test
+# PR #3749: feat(081KQNJ500008QG0R003SCWBDV.4): seed cross-surface-drift fixture + regression test
 
 ## PR description
 
 ## Summary
 
-Fourth eval-set fixture for substrate-claim-checker (B-0170.4 — fixture-tests + eval-set coverage). Reproduces verify-then-claim memo **instance #19** — YAML frontmatter `description:` claimed "9 drift instances" while the body table already held 15 rows; `check-cross-surface`'s any-table semantics fire when zero body tables match the claim.
+Fourth eval-set fixture for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV.4 — fixture-tests + eval-set coverage). Reproduces verify-then-claim memo **instance #19** — YAML frontmatter `description:` claimed "9 drift instances" while the body table already held 15 rows; `check-cross-surface`'s any-table semantics fire when zero body tables match the claim.
 
 This slice extends the eval-set from 3 → 4 fixtures, covering the only shipped check (`check-cross-surface.ts`) that lacked a regression fixture. Pure additive — no checker code changes.
 
@@ -38,8 +38,8 @@ PR #3611 discipline preserved: the fixture's HTML provenance comment intentional
 
 ## Composes with
 
-- B-0170 parent row (substrate-claim-checker TS tool mechanization)
-- B-0170.4 sibling slices: PR #3611 (count-drift fixture), PR #3624 (existence-drift fixture), PR #3696 (path-form-drift fixture)
+- 081KQNJ500008QG0R003SCWBDV parent row (substrate-claim-checker TS tool mechanization)
+- 081KQNJ500008QG0R003SCWBDV.4 sibling slices: PR #3611 (count-drift fixture), PR #3624 (existence-drift fixture), PR #3696 (path-form-drift fixture)
 - `tools/substrate-claim-checker/check-cross-surface.ts` (v0.8 — the checker this fixture regresses against)
 - verify-then-claim memo instance #19 (the empirical anchor)
 

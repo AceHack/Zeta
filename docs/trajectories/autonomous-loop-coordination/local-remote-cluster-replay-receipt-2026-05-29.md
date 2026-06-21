@@ -2,15 +2,15 @@
 
 Status: replay receipt
 Grounding backlog:
-`docs/backlog/P1/B-0211-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
+`docs/backlog/P1/081KQX9B50008QG0R0026BG44J-fractal-bft-n-maintainers-n-odd-nodes-local-remote-composition-2026-05-06.md`
 and
-`docs/backlog/P1/B-0211.1-fractal-bft-protocol-doc-2026-05-19.md`
+`docs/backlog/P1/081KRYRGG0008QG0R001JVJV0K-fractal-bft-protocol-doc-2026-05-19.md`
 Protocol:
 `docs/trajectories/autonomous-loop-coordination/local-remote-cluster-composition-protocol-2026-05-29.md`
 
 ## Purpose
 
-This receipt exercises the first B-0211 local/remote composition rule from a
+This receipt exercises the first 081KQX9B50008QG0R0026BG44J local/remote composition rule from a
 fresh clone. The replay asks whether a late participant can reconstruct active
 work and choose a disjoint target by reading only remote git refs, without
 using local broadcast files.
@@ -43,8 +43,8 @@ inside the 24-hour active-claim window:
 |---|---:|---|
 | `origin/claim/codex-loop-b0211-cluster-replay-receipt-20260529` | 142 seconds | `docs/claims/codex-loop-b0211-cluster-replay-receipt-20260529.md` |
 | `origin/claim/fix-memory-reference-drift-pr1801` | 80533 seconds | no diff paths against `origin/main` |
-| `origin/claim/task-autoloop-lifetime-tsc-20260528` | 80387 seconds | `docs/BACKLOG.md`, `docs/backlog/P2/B-0917-integrate-or-remove-unreferenced-cayleydickson.md`, `docs/backlog/P2/B-0918-integrate-or-remove-unreferenced-kskauthorization.md`, `docs/backlog/P3/B-0913-dup-id-triage-b0865-b0866-pre-existing-duplicates-on-origin-main-non-required-lint-failure-aaron-otto-2026-05-28.md`, `memory/MEMORY.md`, `tools/workflow-engine/auto-loop-lifetime.ts` |
-| `origin/claim/task-backlog-id-collision-b0865-b0866-20260528` | 83048 seconds | `docs/BACKLOG.md`, `docs/backlog/P2/B-0917-integrate-or-remove-unreferenced-cayleydickson.md`, `docs/backlog/P2/B-0918-integrate-or-remove-unreferenced-kskauthorization.md`, `docs/backlog/P3/B-0913-dup-id-triage-b0865-b0866-pre-existing-duplicates-on-origin-main-non-required-lint-failure-aaron-otto-2026-05-28.md` |
+| `origin/claim/task-autoloop-lifetime-tsc-20260528` | 80387 seconds | `docs/BACKLOG.md`, `docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-integrate-or-remove-unreferenced-cayleydickson.md`, `docs/backlog/P2/081KSNY2Z0008QG0R0036SJ3T1-integrate-or-remove-unreferenced-kskauthorization.md`, `docs/backlog/P3/081KSNY2Z0008QG0R003Q42FZY-dup-id-triage-b0865-b0866-pre-existing-duplicates-on-origin-main-non-required-lint-failure-aaron-otto-2026-05-28.md`, `memory/MEMORY.md`, `tools/workflow-engine/auto-loop-lifetime.ts` |
+| `origin/claim/task-backlog-id-collision-b0865-b0866-20260528` | 83048 seconds | `docs/BACKLOG.md`, `docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-integrate-or-remove-unreferenced-cayleydickson.md`, `docs/backlog/P2/081KSNY2Z0008QG0R0036SJ3T1-integrate-or-remove-unreferenced-kskauthorization.md`, `docs/backlog/P3/081KSNY2Z0008QG0R003Q42FZY-dup-id-triage-b0865-b0866-pre-existing-duplicates-on-origin-main-non-required-lint-failure-aaron-otto-2026-05-28.md` |
 
 The active replay claim file itself named the durable target:
 `docs/trajectories/autonomous-loop-coordination/local-remote-cluster-replay-receipt-2026-05-29.md`.

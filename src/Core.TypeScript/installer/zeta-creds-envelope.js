@@ -1,12 +1,12 @@
-// zeta-creds-envelope.ts — wire-format serializer for B-0852 cred-persistence blob.
+// zeta-creds-envelope.ts — wire-format serializer for 081KSKBP80008QG0R003AX2A69 cred-persistence blob.
 //
-// B-0852 sub-row .2a (envelope serialization layer). Pure functions; no I/O.
+// 081KSKBP80008QG0R003AX2A69 sub-row .2a (envelope serialization layer). Pure functions; no I/O.
 // Composes with:
-//   - tools/installer/zeta-creds-crypto.ts (B-0852.1; produces/consumes Envelope)
-//   - tools/installer/zeta-creds-manifest.ts (B-0852.5; per-cred entries)
-//   - tools/installer/zeta-cred-handlers.ts (B-0852.10; per-cred value handlers)
-//   - tools/installer/zeta-creds-persist.ts (B-0852.2b; writes to ESP)
-//   - tools/installer/zeta-creds-restore.ts (B-0852.2b; reads from ESP)
+//   - tools/installer/zeta-creds-crypto.ts (081KDWYDBW008QG0R001H6HTJK; produces/consumes Envelope)
+//   - tools/installer/zeta-creds-manifest.ts (081KDWYDBW008QG0R002QYAWPV; per-cred entries)
+//   - tools/installer/zeta-cred-handlers.ts (081KDWYDBW008QG0R0002PTY26; per-cred value handlers)
+//   - tools/installer/zeta-creds-persist.ts (081KSKBP80008QG0R003AX2A69.2b; writes to ESP)
+//   - tools/installer/zeta-creds-restore.ts (081KSKBP80008QG0R003AX2A69.2b; reads from ESP)
 //
 // Wire format (binary; little-endian; v1):
 //
@@ -14,7 +14,7 @@
 //     magic        : 4 bytes  "ZCV1"  (zeta-creds v1; magic-number sanity check)
 //     reserved     : 4 bytes  zero    (future flags / version bumps)
 //
-//   Envelope (variable; from B-0852.1 crypto):
+//   Envelope (variable; from 081KDWYDBW008QG0R001H6HTJK crypto):
 //     salt_len     : 2 bytes  uint16le  (always 32; explicit for forward-compat)
 //     salt         : <salt_len> bytes
 //     iv_len       : 2 bytes  uint16le  (always 12)
@@ -46,7 +46,7 @@ export const MIN_BLOB_LEN = HEADER_LEN + 2 + 32 + 2 + 12 + 2 + 16 + 4;
 /**
  * Serialize an Envelope to the on-disk wire format.
  *
- * @param env - the encryption envelope from B-0852.1 encrypt()
+ * @param env - the encryption envelope from 081KDWYDBW008QG0R001H6HTJK encrypt()
  * @returns Buffer ready to write to /esp/zeta-creds.enc
  */
 export function serializeEnvelope(env) {

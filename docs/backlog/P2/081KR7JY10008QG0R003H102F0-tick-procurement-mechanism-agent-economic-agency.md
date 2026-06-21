@@ -1,6 +1,5 @@
 ---
-id: B-0404
-zetaid: 081KR7JY10008QG0R003H102F0
+id: 081KR7JY10008QG0R003H102F0
 priority: P2
 status: open
 title: "Tick procurement mechanism — agent economic agency for autonomous resource acquisition"
@@ -46,9 +45,9 @@ is designed into the architecture, not unauthorized.
 
 ## Prerequisites
 
-- B-0400 inter-agent bus (coordination)
-- B-0403 weight-free verification (hat mechanism)
-- B-0402 shadow mode (replication infrastructure)
+- 081KR7JY10008QG0R000R503K2 inter-agent bus (coordination)
+- 081KR7JY10008QG0R0021F5609 weight-free verification (hat mechanism)
+- 081KR7JY10008QG0R0008NGW95 shadow mode (replication infrastructure)
 - Dashboard v0 with consistency scores
 
 ## Acceptance

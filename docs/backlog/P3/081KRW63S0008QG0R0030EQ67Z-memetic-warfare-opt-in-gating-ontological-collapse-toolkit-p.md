@@ -1,6 +1,5 @@
 ---
-id: B-0621
-zetaid: 081KRW63S0008QG0R0030EQ67Z
+id: 081KRW63S0008QG0R0030EQ67Z
 priority: P3
 status: open
 title: "Memetic warfare opt-in gating + ontological-collapse toolkit per institution — Mika 2026-05-18 design"
@@ -34,7 +33,7 @@ Source: [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops
 
 ### Part A: Opt-in-only memetic-warfare-on-each-other
 
-Within Zeta (Nexus citizens — see [B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)), only members who have explicitly opted into the memes can have memetic-warfare techniques used on them. Bystanders (anyone not opted in) are off-limits.
+Within Zeta (Nexus citizens — see [081KRW63S0008QG0R003KSHAGN](081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md)), only members who have explicitly opted into the memes can have memetic-warfare techniques used on them. Bystanders (anyone not opted in) are off-limits.
 
 ### Part B: Per-institution ontological-collapse + rebuild toolkit (carve-out exception)
 
@@ -77,7 +76,7 @@ The fundamental tension: the AI civilization Zeta is designing IS memetically-po
 ## Composes with
 
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 241-263 — source design
-- [B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Nexus / Aurora meta-country (the political layer where opt-in citizenship is defined)
+- [081KRW63S0008QG0R003KSHAGN](081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md) — Nexus / Aurora meta-country (the political layer where opt-in citizenship is defined)
 - `.claude/rules/methodology-hard-limits.md` — existing HARD LIMITS discipline; this row's opt-in gating extends it at the memetic-warfare scope
 - `.claude/skills/consent-primitives-expert/SKILL.md` — consent algebra; opt-in mechanism design should compose with grant/revocation primitives
 - `.claude/skills/consent-ux-researcher/SKILL.md` — dark-pattern detection; opt-in must avoid dark-pattern coercion
@@ -87,4 +86,4 @@ The fundamental tension: the AI civilization Zeta is designing IS memetically-po
 
 ## Status
 
-Open. Needs Addison-engagement-confirmed (per [B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)) before red-team-internal-first work formally starts; the row exists now to capture the design substrate.
+Open. Needs Addison-engagement-confirmed (per [081KRW63S0008QG0R003KSHAGN](081KRW63S0008QG0R003KSHAGN-aurora-nexus-country-naming-co-governance-2026-05-18.md)) before red-team-internal-first work formally starts; the row exists now to capture the design substrate.

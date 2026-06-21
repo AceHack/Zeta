@@ -1,6 +1,5 @@
 ---
-id: B-0061
-zetaid: 081KQ8P5D0008QG0R001BH93SA
+id: 081KQ8P5D0008QG0R001BH93SA
 priority: P1
 status: closed
 title: Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
@@ -42,7 +41,7 @@ The monolith and split-target both being present is a footgun:
   rows there → loses the structure benefit + duplicates
   per-row content.
 - The README at `docs/backlog/README.md` says (stale)
-  "Phase 1a: one placeholder row B-0001 exists" but the actual
+  "Phase 1a: one placeholder row 081KPYCJH0008QG0R003MDS51N exists" but the actual
   state has many real rows. The stale README sells the wrong
   story to future readers.
 - A union-merge at commit `02bdc41` brought the monolith back
@@ -105,7 +104,7 @@ The monolith and split-target both being present is a footgun:
 
 ## Composes with
 
-- **B-0060** — the human-lineage / external-anchor backfill
+- **081KQ8P5D0008QG0R000N718AC** — the human-lineage / external-anchor backfill
   task. That row is already filed in per-row form; this row
   is the substrate-hygiene cousin that protects the
   per-row substrate from regression.

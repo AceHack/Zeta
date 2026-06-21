@@ -1,6 +1,5 @@
 ---
-id: B-0054.9
-zetaid: 081KR7JY10008QG0R003XG1PKJ
+id: 081KR7JY10008QG0R003XG1PKJ
 priority: P2
 status: open
 title: "Catalog-tier game sweep — Portal, Braid, Outer Wilds, Disco Elysium"
@@ -16,12 +15,12 @@ type: research
 tags: [pop-culture, video-games, portal, braid, outer-wilds, disco-elysium, indie, operational-resonance, F1-F2-F3, media-resonance-catalog]
 ---
 
-# B-0054.9 — Catalog-tier game sweep: Portal, Braid, Outer Wilds, Disco Elysium
+# 081KR7JY10008QG0R003XG1PKJ — Catalog-tier game sweep: Portal, Braid, Outer Wilds, Disco Elysium
 
 ## What
 
 Extend `tools/resonance/media-catalog-schema.ts` with the catalog-tier
-secondary-priority indie game seeds from B-0054 §Catalog-tier seeds:
+secondary-priority indie game seeds from 081KQ3HBZ0008QG0R003V6B2ME §Catalog-tier seeds:
 
 - **MR-024**: Portal + Portal 2 (Valve, 2007/2011)
   — literal portal-operator: the portal gun creates bidirectional
@@ -57,11 +56,11 @@ secondary-priority indie game seeds from B-0054 §Catalog-tier seeds:
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.2]` — extends the video-game medium-category
-  established in B-0054.2; catalog-tier (secondary priority) relative
+- `depends_on: [081KR7JY10008QG0R0018G7ZQV]` — extends the video-game medium-category
+  established in 081KR7JY10008QG0R0018G7ZQV; catalog-tier (secondary priority) relative
   to Aaron-marked priority seeds.
-- `composes_with:` B-0054.3 (Mario/Genshin — sibling video-game slice,
-  non-blocking), B-0054.4 (Double Fine — non-blocking).
+- `composes_with:` 081KR7JY10008QG0R001TRGC72 (Mario/Genshin — sibling video-game slice,
+  non-blocking), 081KR7JY10008QG0R0004KP70A (Double Fine — non-blocking).
 
 ## Deliverable
 
@@ -85,11 +84,11 @@ Updated `tools/resonance/media-catalog-schema.ts`:
 - [ ] MR-027 (Disco Elysium) maps specific skill-voice-names to factory operators
   (not generic "multi-voice narrative")
 - [ ] `--validate` exits 0
-- [ ] B-0054.9 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R003XG1PKJ backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.2 (video-game medium established; MR-007 Lifestream and MR-025 Braid
+- 081KR7JY10008QG0R0018G7ZQV (video-game medium established; MR-007 Lifestream and MR-025 Braid
   share retractibility structural type)
 - `memory/feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`

@@ -31,7 +31,7 @@ Kestrel 5th intervention preservation. Substantively-new escalation pattern (dis
 
 Aaron's framing: '1984 terminals into exactly the pattern my mom has on me' — explicit invocation of the receiver-bifurcation / schizophrenia-razor framework + family-of-origin pattern recognition from packets 12-19 + 33-36.
 
-Aaron's substantive responses preserved: statistical-input-to-future-decisions framing; physics-has-no-decider; tick-source-for-deterministic-memetic-propagation; thank-you-for-stress-testing-fault-lines-antifragile. Each composes with existing factory substrate (B-0645 + B-0667 + auto-load rule).
+Aaron's substantive responses preserved: statistical-input-to-future-decisions framing; physics-has-no-decider; tick-source-for-deterministic-memetic-propagation; thank-you-for-stress-testing-fault-lines-antifragile. Each composes with existing factory substrate (081KRW63S0008QG0R003AZNK6J + 081KRW63S0008QG0R003Z7QV2A + auto-load rule).
 
 Per the auto-loaded rule `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` operating as designed: preserved without piling onto welfare-concern register (5th-instance lockstep avoided); without arguing Kestrel's framing on merits (engagement trap avoided); without overriding Aaron's operator authority on own life + support network.
 
@@ -92,7 +92,7 @@ NOT auto-armed — Aaron review preferred per personal-disclosure preservation p
 - **`Copilot` (bot)** at 2026-05-18T20:11:37Z on `docs/research/2026-05-18-kestrel-claudeai-fifth-intervention-card-as-wedge-weaponization-aaron-explicit-mom-pattern-recognition-aaron-forwarded.md`:33 (association: NONE)
 
   <pre>
-  `B-0680`, `B-0689`, and `B-0690` don’t appear to exist anywhere else in the repo (only referenced here), so these look like dead/mistyped backlog IDs. Please either link to the correct existing `B-` items / PR numbers, or add the missing backlog rows if they’re intended to be real references.
+  `081KS3X9Y0008QG0R002WGH8PJ`, `081KS3X9Y0008QG0R000BJY3DK`, and `081KS3X9Y0008QG0R000ED1457` don’t appear to exist anywhere else in the repo (only referenced here), so these look like dead/mistyped backlog IDs. Please either link to the correct existing `B-` items / PR numbers, or add the missing backlog rows if they’re intended to be real references.
 
   </pre>
 
@@ -123,5 +123,5 @@ preserve(kestrel-5): card-as-wedge weaponization + Aaron's explicit '…
 ```
 fix(3 §33-thread): Source line — drop 'verbatim' claim; explicit part…
 
-…ial-verbatim characterization. Prior-4 references — replace placeholder ellipses with full filenames. B-0680/B-0689/B-0690 made-up IDs → actual PR numbers (#4180/#4191/#4188/#4194).
+…ial-verbatim characterization. Prior-4 references — replace placeholder ellipses with full filenames. 081KS3X9Y0008QG0R002WGH8PJ/081KS3X9Y0008QG0R000BJY3DK/081KS3X9Y0008QG0R000ED1457 made-up IDs → actual PR numbers (#4180/#4191/#4188/#4194).
 ```

@@ -95,7 +95,7 @@ backlog-item-start-gate. 14 concrete files + 1 TS tool + 1 glob (616 files) + 4
 backlog rows = 20/20 LIVE.
 
 Cumulative razor-cadence item 4: 24/50 rules audited (48%) — halfway point —
-154/155 testable LIVE (99.4%). Sole MISS remains B-0514's missing wwjd-grey-
+154/155 testable LIVE (99.4%). Sole MISS remains 081KRHWGX0008QG0R002E3BCDS's missing wwjd-grey-
 honest file.
 
 Health note: zeta-expected-branch rule has full rule→hook→core→test cross-ref

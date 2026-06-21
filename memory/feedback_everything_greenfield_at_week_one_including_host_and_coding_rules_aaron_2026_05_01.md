@@ -37,7 +37,7 @@ moving."
 
 Aaron 2026-05-01 in chat (verbatim, immediately after Otto-treated
 the single severity:all CodeQL ruleset as a deliberate technical
-constraint in B-0125):
+constraint in 081KQGDBJ0008QG0R001MK4YPC):
 
 > *"this project is a week old assume everything is greenfield
 > expically our host setup beccasue it's not gitnative and i have
@@ -131,7 +131,7 @@ remains in force as a default. The *interpretation* shifts: the
 host configurations being mutated are themselves provisional, so
 "the host mutation breaks the original design" framing is often
 false because there wasn't an original design to break. Per-row
-Aaron sign-offs (like the one for B-0125 multi-ruleset
+Aaron sign-offs (like the one for 081KQGDBJ0008QG0R001MK4YPC multi-ruleset
 authorization) are the explicit mechanism for proceeding; absent
 that, the default still defers to Aaron because the failure modes
 from prior host mutations (Otto-342/343 cluster) remain real

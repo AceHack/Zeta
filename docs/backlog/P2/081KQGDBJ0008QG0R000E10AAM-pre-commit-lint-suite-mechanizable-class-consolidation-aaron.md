@@ -1,6 +1,5 @@
 ---
-id: B-0153
-zetaid: 081KQGDBJ0008QG0R000E10AAM
+id: 081KQGDBJ0008QG0R000E10AAM
 priority: P2
 status: open
 title: Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0153 — Pre-commit lint suite — mechanizable lint-class consolidation
+# 081KQGDBJ0008QG0R000E10AAM — Pre-commit lint suite — mechanizable lint-class consolidation
 
 ## What
 
@@ -54,7 +53,7 @@ implementation should use as stable class identifiers.
    blanks-around-lists rule. Fix-pattern: prose-reflow with
    connectives ("plus", "and", comma-list, "/"). Aaron-affirmed
    as *"very high quality decision"* (Aaron typed "decison").
-   **MECHANIZED 2026-05-14** via B-0456 →
+   **MECHANIZED 2026-05-14** via 081KRHWGX0008QG0R000JEBCWZ →
    `tools/hygiene/check-md032-blanks-around-lists.ts` plus the
    opt-in `.claude/hooks/check-md032-pretooluse.ts` PreToolUse
    harness hook (gated on `ZETA_MD032_PRECOMMIT=1`). 77 tests
@@ -65,7 +64,7 @@ implementation should use as stable class identifiers.
 2. **MD038 / no-space-in-code**: spaces inside inline-code spans
    trigger MD038. Fix: tighten code-span or replace with prose.
    **Empirical evidence accumulated 2026-05-14**: hit at least 3
-   times during the B-0456 PR cycle (PRs 3075, 3090, 3092) on
+   times during the 081KRHWGX0008QG0R000JEBCWZ PR cycle (PRs 3075, 3090, 3092) on
    tick-shard code spans containing a `>` marker plus spaces —
    the backtick-rich span ends at the first matching backtick
    rather than the intended close. Next-to-grind class after

@@ -1,12 +1,12 @@
-// zeta-cred-handlers.ts — per-cred-type value-source handlers for B-0852.
+// zeta-cred-handlers.ts — per-cred-type value-source handlers for 081KSKBP80008QG0R003AX2A69.
 //
-// B-0852 sub-row .10 (pure functions; unit-tested independently of zflash).
+// 081KSKBP80008QG0R003AX2A69 sub-row .10 (pure functions; unit-tested independently of zflash).
 // Composes with:
-//   - tools/installer/zeta-creds-manifest.ts (B-0852.5; declares cred types)
-//   - tools/installer/zeta-creds-crypto.ts (B-0852.1; cipher layer for blob)
-//   - src/Core.TypeScript/zflash/cli.ts (B-0852.9 future; consumes via --bake-cred)
+//   - tools/installer/zeta-creds-manifest.ts (081KSKBP80008QG0R003AX2A69.5; declares cred types)
+//   - tools/installer/zeta-creds-crypto.ts (081KSKBP80008QG0R003AX2A69.1; cipher layer for blob)
+//   - src/Core.TypeScript/zflash/cli.ts (081KSKBP80008QG0R003AX2A69.9 future; consumes via --bake-cred)
 //
-// CLI-override design (operator-named; substrate-anchor in B-0852 row body
+// CLI-override design (operator-named; substrate-anchor in 081KSKBP80008QG0R003AX2A69 row body
 // Phase-split section "CLI override > prompt loop"): `zflash --bake-cred
 // <id>=<value>` where <value> uses these conventions:
 //   - <literal>     : direct string value

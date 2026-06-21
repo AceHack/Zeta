@@ -3,7 +3,7 @@
 // pr-publication-plan.ts: writes the PR body file, pushes the branch,
 // opens the PR via gh, and arms auto-merge when the gate allows it.
 //
-// B-0280 final slice: the executor path that closes the row.
+// 081KR2E4K0008QG0R0022RVRCZ final slice: the executor path that closes the row.
 
 import { readFileSync } from "node:fs";
 import { spawnSync, type SpawnSyncReturns } from "node:child_process";

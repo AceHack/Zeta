@@ -27,7 +27,7 @@
 
 ## Description
 
-Slice 6.1 — **`ace registry publish`** (B-0980), the producer-side counterpart to slice 6's consumer trust gates. Spec #6434; plan in this PR.
+Slice 6.1 — **`ace registry publish`** (081KT07NV0008QG0R0016FVWD7), the producer-side counterpart to slice 6's consumer trust gates. Spec #6434; plan in this PR.
 
 `ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out index.json]`: scan a dir of package files → derive each consumer `url` (`<base>/<name>-<version>.json`) + `package_hash` → assemble + sign the `IndexSignableContent` → auto-bump `sequence` from `--out` → **round-trip self-verify** the produced index through the consumer's own `parseIndex` + `verifyIndexSignature` before writing.
 
@@ -40,7 +40,7 @@ Slice 6.1 — **`ace registry publish`** (B-0980), the producer-side counterpart
 - **266 pass / 0 fail**, tsc 0, markdownlint clean, canary 67. Built subagent-driven (4 TDD tasks), each false-green-checked.
 - Final holistic review: zero P0; self-verify confirmed genuine + never-writes-on-failure; producer/consumer coherent (published index satisfies the slice-6 consumer). Review fixes: duplicate + malformed-key e2e coverage added; dead anti-rollback guard clarified (defense-in-depth for the deferred `--sequence` flag).
 
-### Deferred (B-0980 stays open for these)
+### Deferred (081KT07NV0008QG0R0016FVWD7 stays open for these)
 Per-package url override, ETag/Last-Modified sidecar, multi-dir, incremental/multi-signer publish.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -574,7 +574,7 @@ docs(ace): slice 6.1 ace registry publish implementation plan (4 TDD …
 
 …tasks)
 
-Plan for B-0980 per the merged spec: publicKeyInfoFromPrivatePem (signing.ts) →
+Plan for 081KT07NV0008QG0R0016FVWD7 per the merged spec: publicKeyInfoFromPrivatePem (signing.ts) →
 registry-publish.ts (joinUrl/nextSequence/buildIndexDoc, pure) → ace.ts registry
 publish CLI+handler with round-trip self-verify → SKILL.md. Reuses signIndex +
 packageHash + the consumer's parseIndex/verifyIndexSignature for the self-check.

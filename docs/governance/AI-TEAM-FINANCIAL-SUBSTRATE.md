@@ -168,7 +168,7 @@ This document composes with:
   category) under kin-trust electricity-as-equity arrangement;
   family-electricity contribution offsets AI-team's opex; mining revenue
   flows to AI-team net of zero-electricity-cost.
-- **B-0600 family-AI-interface** (in-flight backlog row) — per-relative
+- **081KRQ1AB0008QG0R003HCZ5YM family-AI-interface** (in-flight backlog row) — per-relative
   AIs are part of "Otto and team" the hardware serves; mom-AI and dad-AI
   inherit the AI-team financial-substrate framing.
 - **Substrate-or-it-didn't-happen** (`.claude/rules/substrate-or-it-didnt-happen.md`)

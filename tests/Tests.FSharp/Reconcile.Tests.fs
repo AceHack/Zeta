@@ -10,7 +10,7 @@ module PS = Zeta.Core.ProbabilitySemiring
 module RC = Zeta.Core.Reconcile
 
 // ═══════════════════════════════════════════════════════════════════
-// Reconcile — the relative-observer reconciliation (B-1020's last rung, Aaron 2026-06-05). A 3-way merge
+// Reconcile — the relative-observer reconciliation (081KTAH8Q0008QG0R001YHSSA0's last rung, Aaron 2026-06-05). A 3-way merge
 // of two diverged beliefs over their Merkle shared-ancestor: reconciled = a·b/ancestor = ancestor·dA·dB.
 // The keystone is ORDER-INDEPENDENCE — all relative observers reach ONE common frame regardless of merge
 // order (rides the proven NCI boundary: pointwise multiplication commutes). Exact ℚ; positive ancestor.

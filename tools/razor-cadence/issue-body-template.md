@@ -24,7 +24,7 @@ For each load-bearing rule encoded since the last razor pass:
 3. **Mechanization audit**: is this rule mechanized (linter,
    pre-commit hook, scheduled workflow, validator) or does it
    depend on agent-remembering? If the latter, file a backlog
-   row for mechanization (per B-0192 itself; per
+   row for mechanization (per 081KQR4HQ0008QG0R001GAD29A itself; per
    `memory/feedback_orchestrator_pre_commit_verify_branch_rule_aaron_2026_05_04.md`
    the encoded-rule-alone failure mode).
 
@@ -39,7 +39,7 @@ For each load-bearing rule encoded since the last razor pass:
 ### Pointers
 
 - `docs/active-trajectory.md` -- current trajectory state.
-- `docs/backlog/P1/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04.md`
+- `docs/backlog/P1/081KQR4HQ0008QG0R001GAD29A-github-actions-razor-cadence-trigger-aaron-2026-05-04.md`
   -- this row.
 - `memory/feedback_dialectical_unfalsifiability_detection_razor_extension_holding_all_truths_failure_mode_aaron_2026_05_04.md`
   -- Test 2 razor extension.

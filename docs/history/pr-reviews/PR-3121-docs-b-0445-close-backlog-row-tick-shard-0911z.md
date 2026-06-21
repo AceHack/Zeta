@@ -29,13 +29,13 @@
 
 ## Summary
 
-- Marks B-0445 closed (merged via PR #3120 at 2026-05-14T09:10:08Z)
+- Marks 081KRFA460008QG0R002JQERS5 closed (merged via PR #3120 at 2026-05-14T09:10:08Z)
 - Adds tick shard `docs/hygiene-history/ticks/2026/05/14/0911Z.md`
 
 ## Test plan
 
 - [x] No code changes — docs only
-- [x] B-0445 status: open → closed, closed_by PR #3120
+- [x] 081KRFA460008QG0R002JQERS5 status: open → closed, closed_by PR #3120
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -56,12 +56,12 @@
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CA-5R`
-- **Path**: `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-14T09:14:39Z on `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`:11 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-14T09:14:39Z on `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`:11 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Quote `closed_by` value containing `#`**
@@ -74,15 +74,15 @@
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CBBT9`
-- **Path**: `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T09:16:56Z on `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T09:16:56Z on `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`:4 (association: NONE)
 
   <pre>
-  P1: Marking this row `closed` without regenerating `docs/BACKLOG.md` leaves the generated backlog index stale: the current index still renders B-0445 as `- [ ]`, while `tools/backlog/generate-index.ts` maps `status: closed` to `[x]` (lines 129-133). Regenerate and include the index update so the read surface matches this frontmatter change.
+  P1: Marking this row `closed` without regenerating `docs/BACKLOG.md` leaves the generated backlog index stale: the current index still renders 081KRFA460008QG0R002JQERS5 as `- [ ]`, while `tools/backlog/generate-index.ts` maps `status: closed` to `[x]` (lines 129-133). Regenerate and include the index update so the read surface matches this frontmatter change.
 
   This issue also appears on line 4 of the same file.
   </pre>
@@ -90,12 +90,12 @@
 ### Thread 3 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CBBUd`
-- **Path**: `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T09:16:56Z on `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T09:16:56Z on `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`:11 (association: NONE)
 
   <pre>
   P2: `#3120` is parsed as a YAML comment when this scalar is unquoted, so a frontmatter parser will read `closed_by` as just `PR` and lose the PR number. Quote the value, as other `closed_by: "PR #..."` backlog rows do, to preserve the reference.
@@ -105,15 +105,15 @@
 ### Thread 4 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CBGFh`
-- **Path**: `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`
+- **Path**: `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T09:21:22Z on `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`:4 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T09:21:22Z on `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`:4 (association: NONE)
 
   <pre>
-  P1: Marking B-0445 closed leaves this backlog row internally inconsistent: its acceptance checklist still has every item unchecked, including Window/sliding coverage and the C# sample rewrite, while the referenced PR #3120 summary only mentions Filter/Map/Distinct/Integrate/GroupBySum/Join/ToStream. Either update the row with the shipped evidence/checks or keep the status open/decompose the missing scope so the backlog does not drop unfinished work.
+  P1: Marking 081KRFA460008QG0R002JQERS5 closed leaves this backlog row internally inconsistent: its acceptance checklist still has every item unchecked, including Window/sliding coverage and the C# sample rewrite, while the referenced PR #3120 summary only mentions Filter/Map/Distinct/Integrate/GroupBySum/Join/ToStream. Either update the row with the shipped evidence/checks or keep the status open/decompose the missing scope so the backlog does not drop unfinished work.
   </pre>
 
 ### Thread 5 -- unresolved
@@ -127,7 +127,7 @@
 - **`Copilot` (bot)** at 2026-05-14T09:21:23Z on `docs/BACKLOG.md`:254 (association: NONE)
 
   <pre>
-  P1: This marks B-0445 complete in the generated backlog index even though the row still has all acceptance criteria unchecked and the referenced PR #3120 does not show the Window/sliding or sample-rewrite scope from that row. Keeping the index checked would hide remaining B-0445 work from backlog selection.
+  P1: This marks 081KRFA460008QG0R002JQERS5 complete in the generated backlog index even though the row still has all acceptance criteria unchecked and the referenced PR #3120 does not show the Window/sliding or sample-rewrite scope from that row. Keeping the index checked would hide remaining 081KRFA460008QG0R002JQERS5 work from backlog selection.
 
   </pre>
 
@@ -142,18 +142,18 @@
 - **`Copilot` (bot)** at 2026-05-14T09:21:23Z on `docs/hygiene-history/ticks/2026/05/14/0911Z.md`:20 (association: NONE)
 
   <pre>
-  P1: The tick records B-0445 as closed, but the backlog row still lists every acceptance criterion as unchecked and PR #3120’s summary does not include the Window/sliding or C# sample-rewrite scope. This shard will preserve an incorrect completion record unless the missing scope is either evidenced or split out before closure.
+  P1: The tick records 081KRFA460008QG0R002JQERS5 as closed, but the backlog row still lists every acceptance criterion as unchecked and PR #3120’s summary does not include the Window/sliding or C# sample-rewrite scope. This shard will preserve an incorrect completion record unless the missing scope is either evidenced or split out before closure.
   </pre>
 
 ### Thread 7 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CBGHa`
-- **Path**: `docs/backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md`
+- **Path**: `docs/backlog/P2/081KQ8P5D0008QG0R003BFZPRC-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T09:21:23Z on `docs/backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md`:10 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T09:21:23Z on `docs/backlog/P2/081KQ8P5D0008QG0R003BFZPRC-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md`:10 (association: NONE)
 
   <pre>
   P1: This edits the backlog row frontmatter but leaves `last_updated` at 2026-05-10. The per-row schema requires `last_updated` to be updated on every content edit (tools/backlog/README.md:69), so this should move to the PR date.
@@ -163,12 +163,12 @@
 ### Thread 8 -- unresolved
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CBGH5`
-- **Path**: `docs/backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md`
+- **Path**: `docs/backlog/P1/081KR7JY10008QG0R0021T5QTR-isemiring-iring-interface-split-interval-tropical-negate-axiom.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-14T09:21:24Z on `docs/backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md`:7 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-14T09:21:24Z on `docs/backlog/P1/081KR7JY10008QG0R0021T5QTR-isemiring-iring-interface-split-interval-tropical-negate-axiom.md`:7 (association: NONE)
 
   <pre>
   P1: This frontmatter edit should also update `last_updated`; the backlog schema says `last_updated` is updated on every content edit (tools/backlog/README.md:69). Leaving it at 2026-05-10 makes the row metadata stale.
@@ -181,7 +181,7 @@
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`
 - `docs/hygiene-history/ticks/2026/05/14/0911Z.md`
 
 **Message:**
@@ -189,7 +189,7 @@
 ```
 docs(b-0445): close backlog row + tick shard 0911Z
 
-B-0445 closed by PR #3120 (merged 2026-05-14T09:10:08Z).
+081KRFA460008QG0R002JQERS5 closed by PR #3120 (merged 2026-05-14T09:10:08Z).
 Tick shard 0911Z records session-start cron re-arm and merge verification.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
@@ -204,10 +204,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-docs: regenerate BACKLOG.md — mark B-0445 closed [x]
+docs: regenerate BACKLOG.md — mark 081KRFA460008QG0R002JQERS5 closed [x]
 
 BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts
-B-0445 status: open → closed (closed_by PR #3120).
+081KRFA460008QG0R002JQERS5 status: open → closed (closed_by PR #3120).
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -216,7 +216,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0445-csharp-fluent-operator-surface-pm2-2026-05-13.md`
+- `docs/backlog/P1/081KRFA460008QG0R002JQERS5-csharp-fluent-operator-surface-pm2-2026-05-13.md`
 
 **Message:**
 
@@ -234,8 +234,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0396-isemiring-iring-interface-split-interval-tropical-negate-axiom.md`
-- `docs/backlog/P2/B-0086-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md`
+- `docs/backlog/P1/081KR7JY10008QG0R0021T5QTR-isemiring-iring-interface-split-interval-tropical-negate-axiom.md`
+- `docs/backlog/P2/081KQ8P5D0008QG0R003BFZPRC-port-tools-hygiene-python-to-typescript-bun-aaron-2026-04-28.md`
 
 **Message:**
 
@@ -243,7 +243,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 fix(backlog): quote unquoted closed_by YAML values containing #
 
 YAML # starts an inline comment in unquoted scalars.
-B-0396 and B-0086 had bare `PR #NNNN` references that parsed incorrectly.
+081KR7JY10008QG0R0021T5QTR and 081KQ8P5D0008QG0R003BFZPRC had bare `PR #NNNN` references that parsed incorrectly.
 Quoted per the Copilot P2 pattern. Regenerated BACKLOG.md.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

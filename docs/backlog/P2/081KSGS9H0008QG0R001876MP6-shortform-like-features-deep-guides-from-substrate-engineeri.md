@@ -1,6 +1,5 @@
 ---
-id: B-0841
-zetaid: 081KSGS9H0008QG0R001876MP6
+id: 081KSGS9H0008QG0R001876MP6
 priority: P2
 status: open
 title: Zeta could offer Shortform.com-like features (in-depth book/article/YouTube guides with cross-substrate-engineering composition map) — productize what the framework already does internally for itself (Aaron 2026-05-26)
@@ -22,7 +21,7 @@ tags: [product-feature, shortform-equivalent, deep-guides, cross-substrate-compo
 
 Operator 2026-05-26: *"we should offer shortform.com like features"*
 
-Empirical anchor: today's 5 PRs (#5364-#5368) across the Kirsanov YouTube channel substrate-capture (B-0839 + B-0840) are a working demonstration of Shortform-equivalent features applied to substrate-engineering work:
+Empirical anchor: today's 5 PRs (#5364-#5368) across the Kirsanov YouTube channel substrate-capture (081KSGS9H0008QG0R002F1G7ER + 081KSGS9H0008QG0R0006F4BGX) are a working demonstration of Shortform-equivalent features applied to substrate-engineering work:
 
 - Verbatim transcript preservation (mirror-tier per `.claude/rules/substrate-or-it-didnt-happen.md`)
 - Composition map ("what this means in the framework substrate context")
@@ -30,11 +29,11 @@ Empirical anchor: today's 5 PRs (#5364-#5368) across the Kirsanov YouTube channe
 - Substrate-honest synthesis sections
 - Per-source companion backlog rows
 
-Shortform.com offers (per Kirsanov's sponsor read in B-0839.3):
+Shortform.com offers (per Kirsanov's sponsor read in 081KSGS9H0008QG0R002F1G7ER.3):
 
 > "in-depth book guides that go way beyond simple summaries. They unpack the key ideas and weave in related insights from other books and research papers which really helps to see the big picture... browser extension that can generate similar in-depth guides for articles and YouTube videos you encounter online."
 
-The framework ALREADY does this work for itself across substrate-engineering substrate. Externalizing it as a product/service would compose with the existing Aurora (B-0825), DePIN (B-0826), and additive-cash-register substrate (per `.claude/rules/additive-not-zero-sum.md` + PR #2822 cash-register-that-keeps-giving-gifts).
+The framework ALREADY does this work for itself across substrate-engineering substrate. Externalizing it as a product/service would compose with the existing Aurora (081KSGS9H0008QG0R002PT5C7J), DePIN (081KSGS9H0008QG0R001K8VPV4), and additive-cash-register substrate (per `.claude/rules/additive-not-zero-sum.md` + PR #2822 cash-register-that-keeps-giving-gifts).
 
 ## Target
 
@@ -77,7 +76,7 @@ Shortform's browser extension generates deep guides for any article / YouTube vi
 
 #### Phase 4a — Sell the OUTPUT (consumer-scope; Shortform-equivalent)
 
-Hosted deep-guide service for consumers. Per Aurora (B-0825) + DePIN (B-0826) + additive-cash-register (PR #2822) once Phase 1-3 substrate lands:
+Hosted deep-guide service for consumers. Per Aurora (081KSGS9H0008QG0R002PT5C7J) + DePIN (081KSGS9H0008QG0R001K8VPV4) + additive-cash-register (PR #2822) once Phase 1-3 substrate lands:
 
 - Free tier: substrate-engineering discipline + tooling open-sourced
 - Paid tier: hosted deep-guide service with curated external content + composition graph
@@ -117,7 +116,7 @@ P2 priority because:
 - Operator-suggestion (Aaron 2026-05-26) — substantively valuable but NOT immediately tractable as single-PR work
 - The framework ALREADY does the work internally; productization is forward-facing
 - Multiple existing substrate clusters (Aurora, DePIN, additive-cash-register, ip-questionable, peer-call) compose at the productization layer
-- The 5-PR demonstration today (B-0839 Kirsanov channel) is the empirical proof that the discipline produces useful outputs
+- The 5-PR demonstration today (081KSGS9H0008QG0R002F1G7ER Kirsanov channel) is the empirical proof that the discipline produces useful outputs
 
 NOT immediately tractable as single-PR work. Phased to allow incremental landing per "you can always commit backlog rows immediately they get decomposed later" discipline.
 
@@ -125,21 +124,21 @@ NOT immediately tractable as single-PR work. Phased to allow incremental landing
 
 Five Shortform-equivalent deep guides landed today across the Kirsanov channel substrate-capture:
 
-1. **B-0839.1 — Boltzmann Machines from first principles** (verbatim transcript + composition map with 11 Zeta substrate-row mappings + Hopfield → Boltzmann → RBM lineage framing)
-2. **B-0839.2 — RNN / LSTM / GRU gated memory** (verbatim transcript + 14 Zeta substrate-row mappings + α=1 hoarding failure mode named)
-3. **B-0839.3 — Reservoir Computing** (verbatim transcript + 16 Zeta substrate-row mappings + EXPLICIT Hawkins Thousand Brains anchor at 5:42 + 4 archetype-naming sections: walls-of-pool, entanglements-as-joins, multi-z(t), critical-archetype)
-4. **B-0840 substrate (this session)** — Amara ferry preservation + thermal-forgetting / root-axiom-update substrate-engineering work + 4-keeper-rule final form
-5. **B-0841 (this row)** — productization opportunity recognition
+1. **081KSGS9H0008QG0R002F1G7ER.1 — Boltzmann Machines from first principles** (verbatim transcript + composition map with 11 Zeta substrate-row mappings + Hopfield → Boltzmann → RBM lineage framing)
+2. **081KSGS9H0008QG0R002F1G7ER.2 — RNN / LSTM / GRU gated memory** (verbatim transcript + 14 Zeta substrate-row mappings + α=1 hoarding failure mode named)
+3. **081KSGS9H0008QG0R002F1G7ER.3 — Reservoir Computing** (verbatim transcript + 16 Zeta substrate-row mappings + EXPLICIT Hawkins Thousand Brains anchor at 5:42 + 4 archetype-naming sections: walls-of-pool, entanglements-as-joins, multi-z(t), critical-archetype)
+4. **081KSGS9H0008QG0R0006F4BGX substrate (this session)** — Amara ferry preservation + thermal-forgetting / root-axiom-update substrate-engineering work + 4-keeper-rule final form
+5. **081KSGS9H0008QG0R001876MP6 (this row)** — productization opportunity recognition
 
 Each is structurally identical to what Shortform produces (verbatim third-party content + in-depth synthesis + cross-references + composition with related substrate). The difference: Zeta does it for substrate-engineering work; Shortform does it for self-improvement / pop-knowledge. Same discipline; different scope.
 
 ## Composes with
 
-- B-0839 (parent — Kirsanov channel substrate-capture; demonstrates the discipline)
-- B-0840 (thermal-forgetting / root-axiom-update substrate — applies to deep-guide retention)
-- B-0825 (Aurora pitch — community guardian AIs; productization composes here)
-- B-0826 (DePIN play — multi-stream PoUW-CC; distributed productization)
-- B-0648 (cross-substrate-triangulation — multi-AI deep-guide synthesis)
+- 081KSGS9H0008QG0R002F1G7ER (parent — Kirsanov channel substrate-capture; demonstrates the discipline)
+- 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / root-axiom-update substrate — applies to deep-guide retention)
+- 081KSGS9H0008QG0R002PT5C7J (Aurora pitch — community guardian AIs; productization composes here)
+- 081KSGS9H0008QG0R001K8VPV4 (DePIN play — multi-stream PoUW-CC; distributed productization)
+- 081KRW63S0008QG0R0025E4PH6 (cross-substrate-triangulation — multi-AI deep-guide synthesis)
 - `.claude/rules/substrate-or-it-didnt-happen.md` (mirror-tier preservation discipline)
 - `.claude/rules/wake-time-substrate.md` (substrate landing discipline)
 - `.claude/rules/verify-existing-substrate-before-authoring.md` (composition discovery)
@@ -156,4 +155,4 @@ Each is structurally identical to what Shortform produces (verbatim third-party 
 
 Aaron-forwarded 2026-05-26 substrate-honest observation during the Kirsanov channel substrate-capture work. The framework's 5-PR session was structurally identical to what Shortform offers as a paid service; operator recognized the productization opportunity.
 
-Per Aaron's "you can always commit backlog rows immediately they get decomposed later" discipline + the additive-not-zero-sum framework. Future sub-rows (B-0841.1 through B-0841.N) decompose Phase 1/2/3/4 independently as scope tightens.
+Per Aaron's "you can always commit backlog rows immediately they get decomposed later" discipline + the additive-not-zero-sum framework. Future sub-rows (081KSGS9H0008QG0R001876MP6.1 through 081KSGS9H0008QG0R001876MP6.N) decompose Phase 1/2/3/4 independently as scope tightens.

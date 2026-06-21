@@ -1,9 +1,8 @@
 ---
-id: B-0497
-zetaid: 081KRHWGX0008QG0R003NT6DY9
+id: 081KRHWGX0008QG0R003NT6DY9
 priority: P1
 status: open
-title: "B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update"
+title: "081KRFA460008QG0R001KC0VBH slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update"
 tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
@@ -15,11 +14,11 @@ tags: [background-service, launchd, mechanization, anti-idle]
 type: chore
 ---
 
-# B-0440 slice 6 — launchd plist for standing-by-detector
+# 081KRFA460008QG0R001KC0VBH slice 6 — launchd plist for standing-by-detector
 
 ## Origin
 
-B-0440 acceptance criterion:
+081KRFA460008QG0R001KC0VBH acceptance criterion:
 > Service runs under existing launchd / cron infrastructure
 
 `tools/bg/standing-by-detector.ts` is fully functional (slices 1–4 shipped; commit-history + PR-activity
@@ -51,7 +50,7 @@ This slice closes that gap for the standing-by-detector specifically.
     generator is planned but not yet created)
 - [ ] `docs/AUTONOMOUS-LOOP.md` §"Related artifacts" updated: standing-by-detector listed as
       launchd-registered alongside missed-substrate-detector (remove from the "not yet wired" list)
-- [ ] B-0440 acceptance criterion #2 ("Service runs under existing launchd / cron infrastructure")
+- [ ] 081KRFA460008QG0R001KC0VBH acceptance criterion #2 ("Service runs under existing launchd / cron infrastructure")
       ticked on the parent row
 
 ## Reference pattern
@@ -97,19 +96,19 @@ This is a one-file copy-adapt of `.gemini/launchd/com.zeta.missed-substrate-dete
 
 Plus a two-line update in `docs/AUTONOMOUS-LOOP.md`.
 
-Does NOT depend on subscriber slices (B-0459, B-0449); can merge in any order.
+Does NOT depend on subscriber slices (081KRHWGX0008QG0R000TVGDGV, 081KRFA460008QG0R002DG8KPZ); can merge in any order.
 
 ## Dependency chain
 
 ```
-B-0440 (standing-by-detector slices 1–4 shipped — functional service)
-  └─ B-0497 (THIS ROW — launchd registration; closes slice 6 AC)
+081KRFA460008QG0R001KC0VBH (standing-by-detector slices 1–4 shipped — functional service)
+  └─ 081KRHWGX0008QG0R003NT6DY9 (THIS ROW — launchd registration; closes slice 6 AC)
 ```
 
 ## Composes with
 
-- B-0441 (backlog-ready-notifier — sibling slice 6 row, same launchd pattern)
-- B-0442 (missed-substrate-detector — already wired; this row matches its plist)
+- 081KRFA460008QG0R00229616S (backlog-ready-notifier — sibling slice 6 row, same launchd pattern)
+- 081KRFA460008QG0R00061SXRW (missed-substrate-detector — already wired; this row matches its plist)
 - `.gemini/launchd/com.zeta.missed-substrate-detector.plist` (reference implementation)
 - `docs/AUTONOMOUS-LOOP.md` (doc to update)
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-Fixed MD038 on PR #3087 and MD056 on PR #3088. PR #3075 (B-0456 helper) still CI-running, MERGEABLE, auto-armed.
+Fixed MD038 on PR #3087 and MD056 on PR #3088. PR #3075 (081KRHWGX0008QG0R000JEBCWZ helper) still CI-running, MERGEABLE, auto-armed.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -1,6 +1,6 @@
 /**
  * tools/agent-bus/g-set-view.ts — the agent-bus AS a first-class G-Set
- * (B-0954 on the G-Set foundation; the read-model the §3 math note describes).
+ * (081KSXN940008QG0R00171YAZW on the G-Set foundation; the read-model the §3 math note describes).
  *
  * The existing `subscribe.ts` reads ONE `origin/main` tree via an ordered
  * `(timestamp, id)` cursor — exactly right for "stream me what's new in MY clone."
@@ -9,7 +9,7 @@
  * idempotent / commutative / associative — the three CRDT convergence laws). This
  * module models that union explicitly, on the first-class `GSet` (`src/Core.TypeScript/g-set/`).
  *
- * This is the B-0959 §0 agent-partition recognition applied to the bus: each clone
+ * This is the 081KSXN940008QG0R003FCQ7WT §0 agent-partition recognition applied to the bus: each clone
  * is a shard; the global bus = the CRDT **merge** of shards; no coordinator is
  * needed because the merge is a pure G-Set union. It is monotone, so per CALM it is
  * coordination-free: reading + merging bus views across machines never needs to

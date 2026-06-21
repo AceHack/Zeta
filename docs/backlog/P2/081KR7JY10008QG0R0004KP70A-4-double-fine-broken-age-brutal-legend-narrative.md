@@ -1,6 +1,5 @@
 ---
-id: B-0054.4
-zetaid: 081KR7JY10008QG0R0004KP70A
+id: 081KR7JY10008QG0R0004KP70A
 priority: P2
 status: open
 title: "Tim Schafer / Double Fine sub-thread — Broken Age + Brütal Legend narrative mapping"
@@ -16,7 +15,7 @@ type: research
 tags: [pop-culture, video-games, broken-age, brutal-legend, double-fine, tim-schafer, operational-resonance, F1-F2-F3, media-resonance-catalog, paired-dual]
 ---
 
-# B-0054.4 — Double Fine sub-thread: Broken Age + Brütal Legend narrative mapping
+# 081KR7JY10008QG0R0004KP70A — Double Fine sub-thread: Broken Age + Brütal Legend narrative mapping
 
 ## What
 
@@ -31,7 +30,7 @@ targeting the F2 causal-direction concern.
   collapses both threads into one shared substrate
 
 This sub-thread exists because Aaron explicitly named "Tim Schafer /
-Double Fine" as a priority cluster (B-0054 §Video-game priority seeds):
+Double Fine" as a priority cluster (081KQ3HBZ0008QG0R003V6B2ME §Video-game priority seeds):
 Brütal Legend + Broken Age form a coherent auteur corpus with complementary
 structural types (generative-ground vs paired-dual).
 
@@ -48,10 +47,10 @@ structural types (generative-ground vs paired-dual).
 
 **Dependency-restructure:**
 
-- `depends_on: [B-0054.2]` — MR-005 (Brütal Legend) was introduced in
-  B-0054.2 as `candidate`; this slice builds on that entry and adds MR-010.
-- `composes_with:` B-0054.3 (Mario/Genshin — non-blocking sibling),
-  B-0054.9 (catalog-tier games — non-blocking).
+- `depends_on: [081KR7JY10008QG0R0018G7ZQV]` — MR-005 (Brütal Legend) was introduced in
+  081KR7JY10008QG0R0018G7ZQV as `candidate`; this slice builds on that entry and adds MR-010.
+- `composes_with:` 081KR7JY10008QG0R001TRGC72 (Mario/Genshin — non-blocking sibling),
+  081KR7JY10008QG0R003XG1PKJ (catalog-tier games — non-blocking).
 
 ## Deliverable
 
@@ -70,9 +69,9 @@ Updated `tools/resonance/media-catalog-schema.ts`:
 - [ ] MR-010 has non-empty `counterexampleAttempts` (F2 collapse-to-unity claim tested)
 - [ ] MR-005 updated with at least one counterexample attempt
 - [ ] `--validate` exits 0
-- [ ] B-0054.4 backlog row updated to `status: closed` in resolution
+- [ ] 081KR7JY10008QG0R0004KP70A backlog row updated to `status: closed` in resolution
 
 ## Composes with
 
-- B-0054.2 (MR-005 Brütal Legend already landed as candidate)
+- 081KR7JY10008QG0R0018G7ZQV (MR-005 Brütal Legend already landed as candidate)
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`

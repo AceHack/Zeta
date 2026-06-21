@@ -1,6 +1,5 @@
 ---
-id: B-0016
-zetaid: 081KQ0YZ80008QG0R003A0MCHP
+id: 081KQ0YZ80008QG0R003A0MCHP
 priority: P3
 status: open
 title: Research just-bash (Vercel Labs) + lineage (bash-tool / wterm / ArchilFs / ChromaFs / gbash / bashkit / Utah) for FS-substrate algorithms + concepts; own FUSE FS eventually per Otto-323 symbiotic-deps discipline

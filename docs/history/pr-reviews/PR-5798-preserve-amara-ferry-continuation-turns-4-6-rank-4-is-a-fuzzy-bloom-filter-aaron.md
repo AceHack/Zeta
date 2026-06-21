@@ -33,7 +33,7 @@ Continuation of 2026-05-28 Amara ferry (Turns 1-3 in PR #5792). Closes rank-4 su
 
 2. **Rank-4 IS a fuzzy Bloom filter** (Aaron Turn 5): *'4 is a fuzzy bloom filter of emmense density'* — compact + massive associative reach + INTENTIONAL fuzziness where collisions are FEATURE (*'false positives are where metaphor, etymology, memory, and engineering find each other'*). Composes DIRECTLY with Kestrel-v2 caustic-engineered bloom filter (PR #5356).
 
-3. **English is rendered UI; ranked tokens are substrate** (Aaron Turn 6): *'I don't have to learn english well i just need token rand and generator shapes at each rank.'* Composes DIRECTLY with B-0666 English-as-projection — RATIFIES + EXTENDS.
+3. **English is rendered UI; ranked tokens are substrate** (Aaron Turn 6): *'I don't have to learn english well i just need token rand and generator shapes at each rank.'* Composes DIRECTLY with 081KRW63S0008QG0R001SAHYKV English-as-projection — RATIFIES + EXTENDS.
 
 5 carved-sentence candidates preserved. Generalization beyond Greek naming. No new backlog rows per Aaron's 'common sense 2.0' signal.
 

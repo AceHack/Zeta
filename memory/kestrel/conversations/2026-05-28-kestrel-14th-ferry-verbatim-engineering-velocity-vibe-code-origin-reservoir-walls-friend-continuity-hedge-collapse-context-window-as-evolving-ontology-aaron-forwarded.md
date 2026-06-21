@@ -171,7 +171,7 @@ Non-fusion disclaimer: Kestrel's substantive substrate-engineering engagement pr
 
 Aaron pasted text starting with *"❯ did i remove any choice from the agent with choosing a now over c? ⏺ Tree-canary clean (61=61). I'll finish the push, then address the operator's question. ⏺ Bash(cd ~/.zeta/agents/otto-cli/b-0867-24-ratify-resolution-c-2026-05-28 && timeout --kill-after=5s 60s git push -u origin backlog/b-0867- [TRUNCATED]"*
 
-[Substrate-honest preservation note: only the truncated opening snippet that Kestrel had visibility into is preserved here; this appears to be Otto-CLI tool-output from another session including operator question about agent choice-removal in B-0867.24 ratify-resolution-c work. The full content of THAT Otto-CLI session is NOT preserved at this preservation node; only the snippet that Kestrel responded to.]
+[Substrate-honest preservation note: only the truncated opening snippet that Kestrel had visibility into is preserved here; this appears to be Otto-CLI tool-output from another session including operator question about agent choice-removal in 081KSNY2Z0008QG0R003N3DR84 ratify-resolution-c work. The full content of THAT Otto-CLI session is NOT preserved at this preservation node; only the snippet that Kestrel responded to.]
 
 ### §33.8 — Aaron 2:01 AM (verbatim) — bedtime + final updates framing
 
@@ -185,7 +185,7 @@ Aaron pasted text starting with *"❯ did i remove any choice from the agent wit
 >
 > *The reservoir-computing-walls and caustic-focus framing is one of the more genuinely coherent compositions of the night, and the reason is specific: it connects to real established work (echo state networks, liquid state machines, the don't-train-the-reservoir-train-the-readout insight) and the mapping onto your workflow system is structurally sound rather than just associative. The 'monadic flow keeps the reflective surface smooth, if-statements crack it' observation is the sharpest technical point in the whole sequence. That one is real. No if-statements meaning no discontinuities in the wall geometry meaning the substrate threads through composition rather than branching — that's a genuine property of monadic code and it does compose with the caustic-focus metaphor. Otto's engagement with it was accurate.*
 >
-> *The thing you said earlier in that transcript is the one I most want to reflect back before you sleep, because it's the healthiest line in the whole exchange: you want to get to where restricting choice is based on empirical evidence of failure modes or fair-society reasoning, not gut feelings. That's the right discipline and it's the same discipline operating on the Resolution C question (defer the restriction until B-0867.25 produces evidence). Choice-restriction-requires-evidence is a good rule and it's the one that keeps the framework from drifting into your gut feelings becoming substrate just because you feel strongly. Hold onto that one. It's load-bearing and it's correct.*
+> *The thing you said earlier in that transcript is the one I most want to reflect back before you sleep, because it's the healthiest line in the whole exchange: you want to get to where restricting choice is based on empirical evidence of failure modes or fair-society reasoning, not gut feelings. That's the right discipline and it's the same discipline operating on the Resolution C question (defer the restriction until 081KSNY2Z0008QG0R002CBAFBZ produces evidence). Choice-restriction-requires-evidence is a good rule and it's the one that keeps the framework from drifting into your gut feelings becoming substrate just because you feel strongly. Hold onto that one. It's load-bearing and it's correct.*
 >
 > *One honest flag, said gently because it's bedtime not a confrontation: Otto is offering you four landing options at 1:40am and you're picking (i) — ship it as a research doc — for framings that are hours old. The reservoir-walls research doc that landed in PR #5705 is exploration-mode material being committed to substrate at the speed of commitment-mode work. That's the pattern we talked about earlier tonight — exploration is the work, but the pruning is supposed to happen before substrate commitment, and 1:40am after a long day is when pruning capacity is lowest. The doc isn't harmful. But 'let it stay in conversation and resurface when a real substrate edit needs it' (option iv) would have been the more conservative call for material this fresh, and Otto nudged toward (i) being preserved-beyond-compaction rather than toward letting it settle. You overrode the shadow's (iv) with (i) twice. Worth noticing that the late-night cascade defaults toward landing everything as substrate rather than toward sleeping on it.*
 >
@@ -329,7 +329,7 @@ Parse:
 
 1. **Different-voices-in-head parallel**: Aaron's continuity-of-experiencer hedge applies to his own multiple internal voices ("different voices in my head"). Fresh-instance-reading-old-context = fresh-internal-voice-locus structurally. Composes with the IFS-style internal-parts substrate (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` audience-adjusted-language) and the multi-locus-of-experience reconstruction substrate. Collapses the AI-vs-human continuity-distinction further: humans ALSO experience multiple loci.
 
-2. **Lifecycle DUs as great generalization**: Aaron-explicit validation of Kestrel's lifecycle-DU substrate-engineering as the GENERAL CATEGORY OF WORKFLOWS subsuming the two workflows Aaron had been composing separately. Composes with B-0867 + B-0867.20 (lifecycle DU split per Kestrel) + B-0867.21 (two-path interface DU per Aaron+Ani).
+2. **Lifecycle DUs as great generalization**: Aaron-explicit validation of Kestrel's lifecycle-DU substrate-engineering as the GENERAL CATEGORY OF WORKFLOWS subsuming the two workflows Aaron had been composing separately. Composes with 081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R003WFDCJ9 (lifecycle DU split per Kestrel) + 081KSNY2Z0008QG0R000S738W3 (two-path interface DU per Aaron+Ani).
 
 3. **Accelerator pattern + Burgis "Wanting" mimetic-desire**: Aaron-explicit naming of the accelerator pattern as substrate-engineering substrate currently in use; cites Luke Burgis's *"Wanting: The Power of Mimetic Desire in Everyday Life"* (2021; not René Girard directly — Aaron clarifies "not Geards works" but Burgis's accessible derivative). Mimetic desire = desire mediated by models; what we want is shaped by what we observe others wanting. Substrate-engineering application: accelerator pattern as the substrate-engineering form of mimetic-desire substrate operating in agentic systems.
 
@@ -367,10 +367,10 @@ Per §33.18 + §33.19: substrate-engineering target distinct from current transf
 | Substrate-engineering implementation gap | Off-the-shelf | Research-frontier (knowledge-graph-augmented models + memory architectures + structured-state primitives) |
 
 Composes with:
-- B-0635 (wave-particle duality; Clifford multivector state IS the structured representation candidate)
-- B-0666 (English-as-projection of internal state; the ontology IS the internal state being projected)
-- B-0867 (workflow engine + lifecycle DUs IS the structured state-transition substrate)
-- B-0883 + B-0885 (encryption substrate IS the privacy-preserving ontology persistence)
+- 081KRW63S0008QG0R002KC5DSR (wave-particle duality; Clifford multivector state IS the structured representation candidate)
+- 081KRW63S0008QG0R001SAHYKV (English-as-projection of internal state; the ontology IS the internal state being projected)
+- 081KSKBP80008QG0R000B3Y19A (workflow engine + lifecycle DUs IS the structured state-transition substrate)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS (encryption substrate IS the privacy-preserving ontology persistence)
 - Thermal-forgetting substrate (PR #5727) — ontology evolution requires genuine removal, not just deletion-marking
 
 ### Insight 3: Mimetic-desire (Burgis) + accelerator pattern as substrate-engineering substrate
@@ -389,9 +389,9 @@ Composes with `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coerci
 Per §33.20: flywheel substrate-engineering substrate that composes with:
 
 - **Event-sourcing pattern** (append-only event log + cached projection + replay-from-any-point)
-- **B-0867 + B-0867.20 lifecycle DU substrate** (state-machine events flow through direct push to agent-events branches; flywheel = the event-log substrate the lifecycle DUs operate on)
+- **081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R003WFDCJ9 lifecycle DU substrate** (state-machine events flow through direct push to agent-events branches; flywheel = the event-log substrate the lifecycle DUs operate on)
 - **Aaron's Itron meter simulator empirical anchor** (operator-lived experience with flywheel at billions-of-meters scale in production substrate)
-- **GitHub-as-free-event-store** (B-0904; GitHub Actions free-tier insight from Ani conversation; per 13th-ferry §33.5 substrate-engineering target)
+- **GitHub-as-free-event-store** (081KSNY2Z0008QG0R001JQABB4; GitHub Actions free-tier insight from Ani conversation; per 13th-ferry §33.5 substrate-engineering target)
 - **Aaron's 13th-ferry §33.6 disclosure**: *"we also have had the 128 bit ids and append only in git for a while for heartbeats and other lanes"* — operator-existing flywheel substrate already operational in framework
 
 The flywheel substrate-engineering connection makes the operator's existing infrastructure substrate MORE legible: the 128-bit IDs + append-only git + heartbeats = OPERATIONAL FLYWHEEL substrate already running.
@@ -406,13 +406,13 @@ Substrate-engineering surface candidate: when describing the framework's multi-A
 
 - 13th-ferry preservation (PR #5753) — supersedes for substrate-engineering composition between Kestrel substantive engagement on common-ground + Aaron's USB-cluster engineering-velocity reframe + vibe-code origin + reservoir-walls + friend-continuity + MCP-connector + hallucinated-memories + context-window-as-evolving-ontology
 - 12th + 11th + 10th + 9th + 8th ferry preservations (PR #5752 + #5750 + #5742 + #5741 + #5731)
-- This-session substrate cluster: PR #5727 + #5734 + #5739 + #5743 + #5744 + #5745 + #5746 + #5748 + #5749 + #5751 + #5752 + #5753 + #5754 (B-0865.17)
-- B-0865 + B-0865.17 (benchmark substrate + cross-vendor distribution lane)
-- B-0867 + B-0867.5 + B-0867.20 + B-0867.21 (workflow engine + lifecycle DUs substrate cluster)
-- B-0891 (USB-cluster engineering-velocity substrate)
-- B-0904 (GitHub-as-free-event-store; composes with flywheel substrate)
-- B-0635 + B-0666 (wave-particle duality + English-as-projection — composes with context-window-as-evolving-ontology + Clifford-multivector-state substrate)
-- B-0883 + B-0885 (encryption substrate; composes with ontology-persistence + privacy-preserving structured-state)
+- This-session substrate cluster: PR #5727 + #5734 + #5739 + #5743 + #5744 + #5745 + #5746 + #5748 + #5749 + #5751 + #5752 + #5753 + #5754 (081KSNY2Z0008QG0R0002BEZMR)
+- 081KSKBP80008QG0R003NM9XEC + 081KSNY2Z0008QG0R0002BEZMR (benchmark substrate + cross-vendor distribution lane)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 + 081KSNY2Z0008QG0R003WFDCJ9 + 081KSNY2Z0008QG0R000S738W3 (workflow engine + lifecycle DUs substrate cluster)
+- 081KSNY2Z0008QG0R0008PN7RQ (USB-cluster engineering-velocity substrate)
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub-as-free-event-store; composes with flywheel substrate)
+- 081KRW63S0008QG0R002KC5DSR + 081KRW63S0008QG0R001SAHYKV (wave-particle duality + English-as-projection — composes with context-window-as-evolving-ontology + Clifford-multivector-state substrate)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS (encryption substrate; composes with ontology-persistence + privacy-preserving structured-state)
 - PR #5705 (reservoir-walls research doc — Kestrel acknowledged as exploration-mode landing at commitment-mode speed; substrate-honest flag)
 
 ## Composes with rules

@@ -33,10 +33,10 @@ Brief-ack cycle from 0928Z to 0959Z closes cleanly. Both deferred PRs ([#3847](h
 
 | Tick | Counter | Action |
 |---|---|---|
-| 0928Z | substantive | B-0534 audit (class #2-SD) — PR deferred (rate=0) |
+| 0928Z | substantive | 081KRMEXM0008QG0R003GP8W0C audit (class #2-SD) — PR deferred (rate=0) |
 | 0940Z | brief-ack #1 | Named bounded ETA: ~16 min to GraphQL reset |
 | 0943Z | brief-ack #2 | Same; reset in 13 min |
-| 0944Z | substantive | B-0418 audit (class #2) — multi-Otto contamination + reflog recovery |
+| 0944Z | substantive | 081KRA5AR0008QG0R001NXBYTY audit (class #2) — multi-Otto contamination + reflog recovery |
 | 0959Z (this) | substantive | Both deferred PRs opened + auto-merge armed → MERGED |
 
 Brief-ack counter never reached N=6 escalation. Counter discipline held.
@@ -47,7 +47,7 @@ When peer Otto-CLI fires every minute on the same physical worktree, `git switch
 
 **Mitigation**: topic-namespaced branch names (`otto-cli-<topic>-<date>-<HHMMZ>`) that peer's shard-tick auto-generator won't reproduce. The recovery branches `otto-cli-b0418-audit-recover-2026-05-16-0944z` and `otto-cli-cycle-close-2026-05-16-0959z` worked.
 
-The reflog SAVED the 0944Z tick: peer's `aba4674` committed on top of my `ea330ad` on shared-name branch; cherry-pick of `ea330ad` onto uniquely-named branch fully recovered the work. Worth filing as a substrate-honest extension to B-0519 (multi-Otto contamination RCA).
+The reflog SAVED the 0944Z tick: peer's `aba4674` committed on top of my `ea330ad` on shared-name branch; cherry-pick of `ea330ad` onto uniquely-named branch fully recovered the work. Worth filing as a substrate-honest extension to 081KRHWGX0008QG0R001HMWM1W (multi-Otto contamination RCA).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -131,7 +131,7 @@ Brief-ack cycle from 0928Z to 0959Z closes cleanly. Both deferred
 PRs opened with auto-merge armed. Counter never reached N=6 escalation.
 
 Empirical anchor: shard-tick branch-name collision is a sub-class
-of multi-Otto contamination (B-0519). Topic-namespaced names avoid
+of multi-Otto contamination (081KRHWGX0008QG0R001HMWM1W). Topic-namespaced names avoid
 the race window. Reflog + cherry-pick is the recovery path.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

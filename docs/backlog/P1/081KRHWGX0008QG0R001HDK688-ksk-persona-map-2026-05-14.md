@@ -1,12 +1,11 @@
 ---
-id: B-0488
-zetaid: 081KRHWGX0008QG0R001HDK688
+id: 081KRHWGX0008QG0R001HDK688
 priority: P1
 status: closed
 closed_by: "PR #3235 (2026-05-14)"
-title: "B-0429.4 — KSK (Kinetic Safeguard Kernel) persona map"
+title: "081KRFA460008QG0R002M05EY1.4 — KSK (Kinetic Safeguard Kernel) persona map"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -19,7 +18,7 @@ composes_with:
   - 081KRHWGX0008QG0R002XVHSG5
 ---
 
-# B-0488 — KSK persona map
+# 081KRHWGX0008QG0R001HDK688 — KSK persona map
 
 ## Purpose
 
@@ -32,7 +31,7 @@ given the product's attack-surface-adjacent nature.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] Template from B-0485 is closed and available
+- [ ] Template from 081KRHWGX0008QG0R00019453T is closed and available
 - [ ] Read PR #2892 (KSK substrate) for product description and intended scope
 - [ ] Read PR #2902 (Aaron's grey-hat security expert substrate) — Aaron's
       security persona is the seed for KSK primary persona
@@ -53,7 +52,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Output
 
-Per-product persona map using template from B-0485:
+Per-product persona map using template from 081KRHWGX0008QG0R00019453T:
 
 ```
 docs/personas/ksk-personas.md
@@ -67,12 +66,12 @@ With:
 
 ## Definition of done
 
-- [x] Template from B-0485 applied
+- [x] Template from 081KRHWGX0008QG0R00019453T applied
 - [x] Grey-hat / ethical researcher primary persona fully documented (folded into `ksk-security-engineer` per glossary's "small bit of code that gets disproportionate review" framing — engineering itself IS the ethical-research operating mode for this product)
 - [x] At least 2 refused personas with explicit HARD LIMITS rationale (R1 `ksk-refused-weapons-control` + R2 `ksk-refused-apt-operator`)
 - [x] Output doc committed at canonical path (`docs/personas/ksk-personas.md`)
-- [x] B-0492 `composes_with:` pointer backfilled (already present in B-0492 frontmatter — verified 2026-05-14)
-- [x] B-0488 status set to `closed` with PR link (PR #3235; this commit)
+- [x] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled (already present in 081KRHWGX0008QG0R000WGP5AQ frontmatter — verified 2026-05-14)
+- [x] 081KRHWGX0008QG0R001HDK688 status set to `closed` with PR link (PR #3235; this commit)
 
 ## Why P1
 

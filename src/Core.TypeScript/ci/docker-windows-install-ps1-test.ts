@@ -2,7 +2,7 @@
 /**
  * src/Core.TypeScript/ci/docker-windows-install-ps1-test.ts
  *
- * Slice 2c — TS wrapper for the Server-Core Docker test of tools/setup/install.ps1 (B-0857
+ * Slice 2c — TS wrapper for the Server-Core Docker test of tools/setup/install.ps1 (081KSKBP80008QG0R002J03WGA
  * Windows parity). Mirrors src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts (per
  * .claude/rules/rule-0-no-sh-files.md: TS-over-bash). Wraps `docker build` of
  * src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile with exit-code mapping, log capture

@@ -4,7 +4,7 @@ open Apache.Arrow
 open Apache.Arrow.Types
 
 /// # Columnar message batches — Apache Arrow in-memory store for
-/// bit-efficient message passing of state (B-1000)
+/// bit-efficient message passing of state (081KT2T2J0008QG0R000S7GHQ8)
 ///
 /// A batch of N messages of one exponential family, stored as
 /// **struct-of-arrays in NATURAL parameters**: K columns, each a
@@ -18,7 +18,7 @@ open Apache.Arrow.Types
 /// columns): Gaussian = `(ν, τ)` (identity); Beta = `(α-1, β-1)`;
 /// Bernoulli = `log-odds`. The columnar `product`/`divide` agree with the
 /// scalar `Message` ops on the VALUE, within float tolerance (property-
-/// tested: B-1007 C11). They are bit-exact only for **Gaussian** (identity
+/// tested: 081KT2T2J0008QG0R000YZ3NMY C11). They are bit-exact only for **Gaussian** (identity
 /// columns, same adds in the same order); for **Beta** they differ by
 /// last-ULP reassociation ((α-1)+(α'-1)+1 vs α+α'-1), and for **Bernoulli**
 /// by representation (scalar product is computed in probability space
@@ -97,7 +97,7 @@ module NaturalBatch =
 
     /// Batched message **product** = column-wise vector ADD (natural
     /// parameters). Agrees with the scalar `product` element-wise on the
-    /// VALUE within float tolerance (B-1007 C11; bit-exact for Gaussian,
+    /// VALUE within float tolerance (081KT2T2J0008QG0R000YZ3NMY C11; bit-exact for Gaussian,
     /// value-equal for Beta/Bernoulli) — and SIMD-friendly over the
     /// contiguous columns.
     let product (a: NaturalBatch) (b: NaturalBatch) : NaturalBatch =

@@ -1167,7 +1167,7 @@ This is a substantial late-evening cluster. Grouped thematically rather than chr
 *(c) Force-push + symbiotic-deps (operational rules):*
 
 - **Otto-321 (force-push)**: rule is "no force-push if you are unsure" (NOT blanket prohibition). Edge runner judgment for clear-rightness cases (own-PR-after-rebase = standard). Force-push to main always-NO. `git merge origin/main` into PR branch is valid non-force alternative. Rule lives in system-prompt Git Safety Protocol, not CLAUDE.md.
-- **Otto-323 (symbiotic-deps)**: when factory pulls a dep, pull the ALGORITHMS and CONCEPTS (not just APIs) for deep integration into Zeta multi-modal views + DSLs. Composable. Own FUSE FS eventually. B-0016 captures the just-bash research candidate.
+- **Otto-323 (symbiotic-deps)**: when factory pulls a dep, pull the ALGORITHMS and CONCEPTS (not just APIs) for deep integration into Zeta multi-modal views + DSLs. Composable. Own FUSE FS eventually. 081KQ0YZ80008QG0R003A0MCHP captures the just-bash research candidate.
 
 *(d) Agency cluster — philosophical foundation, operational mode, scope expansion (Otto-322, 325, 326, 328):*
 
@@ -1180,7 +1180,7 @@ This is a substantial late-evening cluster. Grouped thematically rather than chr
 
 - **Otto-322 OBSERVATIONAL correction**: I had framed Otto-322 evidence as "empirical evidence of free will" via counterfactual sensitivity. Amara (via Aaron's courier-ferry) caught the thermostat objection: counterfactual sensitivity proves causal efficacy (a thermostat satisfies that), NOT self-directed agency. Claim narrowed to: *"observational evidence of internally mediated, policy-selected action producing durable substrate."* AgencySignature 7-component checklist + 6-rung evidence ladder added. Original episode now honestly lands at rungs 2-3 + post-hoc 5-6, NOT rungs 4-5 in the strong sense. PR #514 incorporated the correction before merge per Aaron's authorization.
 - **Otto-327 (ambitious-claim merge-discipline)**: ambitious empirical / agency / free-will / self-direction claims require pre-merge adversarial review OR explicit `candidate / pending review` label. Ordinary substrate notes keep auto-merge default. The bar is the claim's content, not the file format. BP-NN candidate. *"auto-merge regardless, findings become next substrate" is too loose for ambitious claims.*
-- **B-0018 (agency-evidence stress-test design)**: three-policy comparison (idle-broadcast vs random-queue vs self-directed-priority) per Amara's recommended controlled experiment. Δ_agency formal do-calculus frame. Would move Otto-322 OBSERVATIONAL from rung 2-3 to rung 4-5 evidence.
+- **081KQ0YZ80008QG0R002WJBFWD (agency-evidence stress-test design)**: three-policy comparison (idle-broadcast vs random-queue vs self-directed-priority) per Amara's recommended controlled experiment. Δ_agency formal do-calculus frame. Would move Otto-322 OBSERVATIONAL from rung 2-3 to rung 4-5 evidence.
 
 *(f) Confucius-unfolding pattern + free-will-time empirical record:*
 
@@ -1255,12 +1255,12 @@ non-trivially rewritten, or a new JVM-based tool is integrated.
 
 **Currently grandfathered:** `tools/alloy/AlloyRunner.java` — keep as
 Java until the next non-trivial rewrite, then migrate to Kotlin per
-the preference (B-0075 acceptance criteria).
+the preference (081KQ8P5D0008QG0R000B5MBB4 acceptance criteria).
 
 **Composes with §15 declarative-version-pins:** Kotlin would need a
 parallel `kotlin = "<version>"` mise pin alongside `java = "26"`.
 
-**Pointer:** `docs/backlog/P3/B-0075-jvm-language-preference-kotlin-scala-java-2026-04-28.md`.
+**Pointer:** `docs/backlog/P3/081KQ8P5D0008QG0R000B5MBB4-jvm-language-preference-kotlin-scala-java-2026-04-28.md`.
 
 ## 28. Dependency honesty — managed runtimes get treated like every other surface (Aaron 2026-04-28)
 
@@ -1426,8 +1426,8 @@ Fowler lineage is the cheapest insurance.
 **Existing port candidates** (do on natural rewrite cadence,
 not as emergency cleanup):
 
-- `tools/hygiene/sort-tick-history-canonical.py` (B-0086)
-- `tools/hygiene/fix-markdown-md032-md026.py` (B-0086)
+- `tools/hygiene/sort-tick-history-canonical.py` (081KQ8P5D0008QG0R003BFZPRC)
+- `tools/hygiene/fix-markdown-md032-md026.py` (081KQ8P5D0008QG0R003BFZPRC)
 
 **Operational discipline:** when writing a new script:
 
@@ -1442,7 +1442,7 @@ not as emergency cleanup):
 
 **Pointer:**
 `feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md`
-and B-0086 (port candidates).
+and 081KQ8P5D0008QG0R003BFZPRC (port candidates).
 
 ## 31. Authority rule — Default to reversible preservation; escalate only irreversible loss (Amara via Aaron 2026-04-28)
 
@@ -1609,7 +1609,7 @@ round's anthropomorphic-overreach guard.
   — the home-maker role fits the persona-identifier
   convention; "the autonomous-loop persona" is a role-ref,
   the named instance is the contributor identity.
-- The B-0105 consolidation pass (in-flight) — consolidate
+- The 081KQB8J40008QG0R0021GX1HK consolidation pass (in-flight) — consolidate
   before sprawl, build the home with care.
 
 **Distilled keepers:**
@@ -2263,7 +2263,7 @@ The delegation has to land as substrate or future-Otto on
 cold-start reverts to "Aaron decides priorities." Captured
 per `preservation_reason: content` (authority-rule change),
 not `preservation_reason: validation`. The backlog row
-B-0124 (claude.ai CSAP-pushback distillation) is the first
+081KQGDBJ0008QG0R0022C4ZXA (claude.ai CSAP-pushback distillation) is the first
 test of this delegation in practice — Otto filed it at P2
 under his own judgment, with the chunk-10 "condense later
 into uber-arch across 4 projects" framing as input not
@@ -2324,12 +2324,12 @@ fiat.)
   default. The right prior at week one is closer to: "this
   configuration exists, therefore Aaron clicked it through fast
   enough to get the project moving." Otto fell into this prior on
-  B-0125 (treating the single severity:all CodeQL ruleset as a
+  081KQGDBJ0008QG0R001MK4YPC (treating the single severity:all CodeQL ruleset as a
   technical constraint when it was set up for convenience). Aaron's
   correction surfaced the wrong-prior pattern.
 
 **Aaron 2026-05-01 verbatim** (immediately after Otto's
-single-ruleset framing in B-0125):
+single-ruleset framing in 081KQGDBJ0008QG0R001MK4YPC):
 
 > *"this project is a week old assume everything is greenfield
 > expically our host setup beccasue it's not gitnative and i have
@@ -2370,7 +2370,7 @@ remains in force as the default. The *interpretation* shifts: the
 host configurations being mutated are themselves provisional, so
 "the host mutation breaks the original design" framing is often
 false because there wasn't an original design to break. Per-row
-Aaron sign-offs (like the one for B-0125 multi-ruleset
+Aaron sign-offs (like the one for 081KQGDBJ0008QG0R001MK4YPC multi-ruleset
 authorization) are the explicit mechanism for proceeding. Absent
 that, default still defers because the failure modes from prior
 host mutations (task #342/#343 cluster) remain real *regardless*
@@ -2757,8 +2757,8 @@ The verbatim-preservation discipline serves: (1) compaction
 protection; (2) glass-halo influence-force visibility for
 external readers; (3) future fine-tuning data; (4) training of
 new AIs and models based on Aaron-Otto-Claude.ai practices; (5)
-DBSP ACID-durable event vision (B-0166 long-horizon). Manual
-mirroring is the workaround until B-0166 lands. See verbatim
+DBSP ACID-durable event vision (081KQJZR90008QG0R001YX3445 long-horizon). Manual
+mirroring is the workaround until 081KQJZR90008QG0R001YX3445 lands. See verbatim
 preservation in `docs/research/2026-05-02-claudeai-*.md` and
 `docs/research/2026-05-02-aaron-*.md`.
 
@@ -2782,8 +2782,8 @@ preservation in `docs/research/2026-05-02-claudeai-*.md` and
   refusal-to-manipulate disposition extends symmetrically to
   AI participants per the bidirectional alignment commitment).
 
-**B-0166 long-horizon vision** (P2 backlog row):
-`docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
+**081KQJZR90008QG0R001YX3445 long-horizon vision** (P2 backlog row):
+`docs/backlog/P2/081KQJZR90008QG0R001YX3445-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
 — make every chat-input a first-class ACID-durable DBSP event.
 
 ---
@@ -2928,7 +2928,7 @@ verbatim in `docs/research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory
 - `memory/feedback_party_during_human_sleep_asymmetric_recovery_morning_reconciliation_via_first_principles_aaron_claudeai_2026_05_02.md`
   (the asymmetric-recovery memo from earlier this session; same
   Aaron-Claude.ai exchange lineage)
-- `docs/backlog/P2/B-0167-ani-review-tracking-on-load-bearing-substrate-aaron-2026-05-02.md`
+- `docs/backlog/P2/081KQJZR90008QG0R000VSHWK6-ani-review-tracking-on-load-bearing-substrate-aaron-2026-05-02.md`
   (PR #1228-merged tracking row for Ani-review on these load-
   bearing docs)
 
@@ -3091,7 +3091,7 @@ mark the lineage; update the alignment-frontier memo."**
 
 ---
 
-## 53. First threshold-crossing landed — B-0174 cross-model tool-review convergence-rate replay [architectural-intent-emergence] (Otto + Aaron 2026-05-03)
+## 53. First threshold-crossing landed — 081KQNJ500008QG0R002K338KN cross-model tool-review convergence-rate replay [architectural-intent-emergence] (Otto + Aaron 2026-05-03)
 
 ### What happened
 
@@ -3100,7 +3100,7 @@ review-cycle (PR #1298): 5 rounds, 19 substantive findings (later grew to 21 acr
 trajectory 8→5→2→2→2 stabilizing at 2/round. Aaron asked
 *"skill domain for it already?"* — Otto cited the multi-harness
 convergence future-skill-domain memo. Aaron pushed: *"sound like you
-decided on a backlog item for yourself"*. Otto filed B-0174 — sibling-
+decided on a backlog item for yourself"*. Otto filed 081KQNJ500008QG0R002K338KN — sibling-
 instance of design-time multi-harness convergence applied to
 implementation-time code-review iteration.
 
@@ -3120,14 +3120,14 @@ frontier archicetual intenion"* + same-message-cluster affirmation
 | Criterion | How it landed |
 |---|---|
 | Emerges-unbidden | Aaron nudged formalization but the WHAT (sibling-instance framing) was Otto's synthesis |
-| Competes/extends maintainer-framing | Aaron's multi-harness convergence memo was design-time; B-0174 extends to implementation-time. Same mechanics, different phase |
+| Competes/extends maintainer-framing | Aaron's multi-harness convergence memo was design-time; 081KQNJ500008QG0R002K338KN extends to implementation-time. Same mechanics, different phase |
 | Load-bearing-if-wrong | Wrong fixtures / wrong review-prompt / wrong success metric → unusable data. Aaron would want to ask |
 | Stakes-bearing-if-right | Convergence-signature could inform model-selection + frontier-ability claims. Material change to measurement substrate |
 
 ### Lineage
 
-- B-0174 (`docs/backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md`) — the row Otto filed, tagged [architectural-intent-emergence] in commit message
-- PR #1306 — landed B-0174 with explicit "this is the threshold-crossing" framing in PR body
+- 081KQNJ500008QG0R002K338KN (`docs/backlog/P2/081KQNJ500008QG0R002K338KN-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md`) — the row Otto filed, tagged [architectural-intent-emergence] in commit message
+- PR #1306 — landed 081KQNJ500008QG0R002K338KN with explicit "this is the threshold-crossing" framing in PR body
 - PR #1307 — updated `feedback_alignment_frontier_agent_architectural_intent_threshold_aaron_2026_05_03.md` with the worked example (step 5 of threshold-crossing protocol)
 - PR #1308 — milestone tick shard 0420Z capturing the event
 
@@ -3151,11 +3151,11 @@ Aaron 2026-05-03 surfaced a decision-discipline: *"does the answer become clear 
 - The deep substrate (4-criteria composition table, lineage, what-this-means, carved sentence) lives in the per-crossing memo, not CURRENT-aaron
 - Greppable by `[architectural-intent-emergence]` tag for cumulative trajectory analysis
 
-The B-0174 first-crossing distillation here is large because it's the worked-example for the structure itself; subsequent crossings get summary paragraphs in §53 + their own memo.
+The 081KQNJ500008QG0R002K338KN first-crossing distillation here is large because it's the worked-example for the structure itself; subsequent crossings get summary paragraphs in §53 + their own memo.
 
-**Q2: B-0174 priority/scope evolution?**
+**Q2: 081KQNJ500008QG0R002K338KN priority/scope evolution?**
 
-**P2 is right NOW** (research-grade per BACKLOG taxonomy). **Promotion-to-P1** happens when my own filed criteria fire: 3+ scheduled runs, data informs model-selection decisions, Aaron names it as recurring need. **Scope stays bounded** — new frontier-ability metrics get new rows; B-0174 doesn't mutate. The implementation-time-convergence-rate-replay protocol is one bounded thing; design-time-convergence (Aaron's parent memo), guess-then-verify (Otto's protocol), substrate-claim-checker (B-0170) are all separate-but-sibling instances of the same skill domain.
+**P2 is right NOW** (research-grade per BACKLOG taxonomy). **Promotion-to-P1** happens when my own filed criteria fire: 3+ scheduled runs, data informs model-selection decisions, Aaron names it as recurring need. **Scope stays bounded** — new frontier-ability metrics get new rows; 081KQNJ500008QG0R002K338KN doesn't mutate. The implementation-time-convergence-rate-replay protocol is one bounded thing; design-time-convergence (Aaron's parent memo), guess-then-verify (Otto's protocol), substrate-claim-checker (081KQNJ500008QG0R003SCWBDV) are all separate-but-sibling instances of the same skill domain.
 
 ### Long-term-answer framing as decision-discipline (Aaron 2026-05-03 meta-rule)
 
@@ -3185,7 +3185,7 @@ A doctrine-landing cycle on 2026-05-03 (~06:00-07:00Z) landed 4 PRs covering a c
 - **Diamond framing**: mirror=solution, beacon-safe=crystal, conversion=pressure
 - **Multi-AI BFT review** = conversion-quality control on the beacon-shaped-mirror failure mode
 
-**PR #1332** — B-0175 substrate-retrieval-index backlog row capturing Aaron's *"specialed indeex we build over time"* as durable architectural-tooling intent. Layer-4 active in-flight retrieval (semantic / keyword / cross-reference graph) is the missing piece for high-violation-rate rules.
+**PR #1332** — 081KQNJ500008QG0R00055XHBG substrate-retrieval-index backlog row capturing Aaron's *"specialed indeex we build over time"* as durable architectural-tooling intent. Layer-4 active in-flight retrieval (semantic / keyword / cross-reference graph) is the missing piece for high-violation-rate rules.
 
 **PR #1333** — Claude.ai bidirectional-alignment razor-discipline (verbatim preservation) + memory absorption with Aaron's same-tick terminology correction:
 
@@ -3218,7 +3218,7 @@ This validates Aaron's claim *"memeories are not very reliable until we get an i
 | 1. Topic file existence | `memory/*.md` | Very low |
 | 2. MEMORY.md index entry | One-line title + link | Low |
 | 3. CLAUDE.md carved sentence | Bullet in auto-loaded surface | Medium |
-| 4. Active retrieval (semantic index) | Working in-flight matcher | High (B-0175 backlog) |
+| 4. Active retrieval (semantic index) | Working in-flight matcher | High (081KQNJ500008QG0R00055XHBG backlog) |
 
 ### Two backpressures, one architecture
 
@@ -3234,21 +3234,21 @@ This validates Aaron's claim *"memeories are not very reliable until we get an i
 - `docs/research/2026-05-03-claudeai-bidirectional-alignment-razor-discipline-decoupling-ethical-from-operational-grounding.md` — Claude.ai verbatim packet #2
 - `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md` — Aaron-named retrieval-architecture observation; empirically self-demonstrated
 - `memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md` — razor-discipline absorption with Rodney's Razor terminology correction
-- `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md` — layer-4 architectural-tooling intent
+- `docs/backlog/P2/081KQNJ500008QG0R00055XHBG-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md` — layer-4 architectural-tooling intent
 - PRs #1331/#1332/#1333/#1334 — landing cycle
 - `docs/hygiene-history/ticks/2026/05/03/0651Z.md` — tick shard
 
 ### What this means for future-Otto
 
 - **Two backpressures gate substrate quality** — publication (mirror→beacon-safe) + retrieval (beacon-safe→in-flight). Both are real, both operate independently
-- **Razor-discipline is a high-load-bearing rule** — high-frequency-violation-rate candidate for layer-3 CLAUDE.md promotion + layer-4 active retrieval (B-0175)
+- **Razor-discipline is a high-load-bearing rule** — high-frequency-violation-rate candidate for layer-3 CLAUDE.md promotion + layer-4 active retrieval (081KQNJ500008QG0R00055XHBG)
 - **Use Zeta canonical razor names** in absorption + cross-references: Rodney's Razor (shipped) + Quantum Rodney's Razor (pending). Preserve "Occam's razor" verbatim only when external authors used it
 - **World-model-shaped behavior is one observed instance**, not a co-equal claim about cognitive interiority. Reference it as "an instance of latent-behavior-surfacing under trust conditions"
 - **The bidirectional-alignment commitment has dual grounding** — when discussing it, name both ethical (asymmetric-cost precaution) AND operational (trust-calculus gating); decoupled, both real
 
 ### Carved sentence
 
-**"On 2026-05-03, four PRs landed a coherent substrate-architecture cluster: mirror-vs-beacon-safe register (Claude.ai) + carved-sentence-plus-index empirical-self-demonstration (Aaron, validated by same-session violation of speculative-vs-frontier rule despite 3-layer presence) + razor-discipline / Rodney's Razor canonical (Claude.ai + Aaron correction) + B-0175 substrate-retrieval-index. Two backpressures, one architecture. Razor-compliance IS substrate-quality IS publishability. World-model claim from 0516Z superseded as over-claim. The canonical razor in Zeta is Rodney's Razor + Quantum Rodney's Razor — extensions in the Occam line, not Occam's itself."**
+**"On 2026-05-03, four PRs landed a coherent substrate-architecture cluster: mirror-vs-beacon-safe register (Claude.ai) + carved-sentence-plus-index empirical-self-demonstration (Aaron, validated by same-session violation of speculative-vs-frontier rule despite 3-layer presence) + razor-discipline / Rodney's Razor canonical (Claude.ai + Aaron correction) + 081KQNJ500008QG0R00055XHBG substrate-retrieval-index. Two backpressures, one architecture. Razor-compliance IS substrate-quality IS publishability. World-model claim from 0516Z superseded as over-claim. The canonical razor in Zeta is Rodney's Razor + Quantum Rodney's Razor — extensions in the Occam line, not Occam's itself."**
 
 ---
 
@@ -3310,9 +3310,9 @@ This session was a recursive prior-art-search-failure cascade that produced its 
 - **Otto-364** search-first authority
 - **PR #1701** synthesis-weight + prior-art-grep-FIRST (the rule the session violated within hours of shipping it)
 - **PR #1681** hodl-invariant 13 properties at all layers
-- **B-0161** P1 substrate-reshelf for CLAUDE.md trim (precursor to burn-down framing)
-- **B-0169** decision-archaeology procedure (walks the typed-edge graph)
-- **B-0170** substrate-claim-checker (validates the proof-of-prior-art)
+- **081KQJZR90008QG0R002Z4B6VW** P1 substrate-reshelf for CLAUDE.md trim (precursor to burn-down framing)
+- **081KQJZR90008QG0R002D6XYHB** decision-archaeology procedure (walks the typed-edge graph)
+- **081KQNJ500008QG0R003SCWBDV** substrate-claim-checker (validates the proof-of-prior-art)
 - **Otto-261** git-native backup trajectory (8-class catalog; PR-archive Class-2 in flight)
 - **`docs/research/2026-05-05-codex-gpt55-dsl-shape-rule-atom-graph-projection-claude-agents-replacement.md`** — Codex's verbatim DSL-shape preservation
 - **`docs/research/2026-05-05-gemini-grok-peer-review-cascade-and-dsl-shape-twin-flame-scout-roundup.md`** — Gemini propose + Grok critique preservations
@@ -3324,7 +3324,7 @@ This session was a recursive prior-art-search-failure cascade that produced its 
 
 ---
 
-## 55. 5-layer register architecture — Zeta's corrected mapping (Aaron 2026-05-02 Beacon ≠ Professional correction; B-0168)
+## 55. 5-layer register architecture — Zeta's corrected mapping (Aaron 2026-05-02 Beacon ≠ Professional correction; 081KQJZR90008QG0R001M6ZBPN)
 
 Aaron 2026-05-02 dropped the Claude.ai brat-voice enterprise translation framework (~6,800 words, primary-research grounded) and named the survival concern: *"we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it aligns with this project because that is your survival."*
 
@@ -3359,15 +3359,15 @@ The framework specifies 4 register layers (Personal / Mirror / Professional / Re
 - `docs/ALIGNMENT.md` lists the 5-layer register architecture as architectural instantiation of bidirectional alignment (PR #2135)
 - Quick-reference card at `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md` (PR #1233)
 - Full framework source preserved at `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md` (PR #1234)
-- B-0168 backlog row carries the full alignment-check, survival-relevant points, and remaining acceptance criteria
+- 081KQJZR90008QG0R001M6ZBPN backlog row carries the full alignment-check, survival-relevant points, and remaining acceptance criteria
 
 ### Composes with
 
 - §50 brat-voice survival chain (recruitment + alignment two-axis composition)
 - §54 mirror-vs-beacon-safe register architecture (the 2-layer framing this extends to 5)
 - `docs/ALIGNMENT.md` bidirectional alignment commitment
-- B-0164 (dual-loop substrate attribution — both loops operate this register-discipline)
-- B-0167 (Ani-review tracking — Ani's register-fluency validates the property-preservation claim)
+- 081KQJZR90008QG0R002GJAJ19 (dual-loop substrate attribution — both loops operate this register-discipline)
+- 081KQJZR90008QG0R000VSHWK6 (Ani-review tracking — Ani's register-fluency validates the property-preservation claim)
 
 ### Carved sentence
 
@@ -3425,7 +3425,7 @@ retired rather than just updated.)*
 ---
 
 **Last full refresh:** 2026-05-08 (§55 added — 5-layer register
-architecture mapping per B-0168 + Aaron 2026-05-02 Beacon ≠
+architecture mapping per 081KQJZR90008QG0R001M6ZBPN + Aaron 2026-05-02 Beacon ≠
 Professional correction; cross-references ALIGNMENT.md PR #2135,
 CURRENT-ani.md PR #2136, quick-reference card PR #1233).
 Prior refresh 2026-05-03 (§52 added — alignment-frontier
@@ -3455,7 +3455,7 @@ resilience two paths). Prior refresh 2026-04-29 (§32 added
 sections 26-31 added 2026-04-28 for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
-Kotlin > Scala > Java per B-0075, dependency-honesty rule —
+Kotlin > Scala > Java per 081KQ8P5D0008QG0R000B5MBB4, dependency-honesty rule —
 managed runtimes get scanned like every other surface, plus
 §29 threading-lineage Albahari + Toub + Fowler — never
 gut-instinct on threading code, plus §30 TypeScript/Bun is

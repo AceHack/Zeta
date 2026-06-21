@@ -11,7 +11,7 @@
 #      or interactive prompt; "auto" is the explicit default form)
 #   4. Confirm full wipe (typed confirmation required; bypass via
 #      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot / QEMU CI —
-#      also skips iter-5.3 password, B-0852.3b passphrase, gh-auth, vendor logins)
+#      also skips iter-5.3 password, 081KSKBP80008QG0R003AX2A69.3b passphrase, gh-auth, vendor logins)
 #   5. Wipe + partition:
 #        BOOT disk: ESP 1G + root (max — fills disk) + longhorn1 (1G tail);
 #        no fixed root cap; layout is chosen at install-time partition (Step 4)
@@ -28,7 +28,7 @@
 
 set -euo pipefail
 
-# ── B-0834 install log preservation ─────────────────────────────────
+# ── 081KSGS9H0008QG0R001RR3ZXQ install log preservation ─────────────────────────────────
 # Tee all output to a log file so operator can review post-failure
 # (failures + warnings scroll past faster than human read speed under
 # load — empirical from 2026-05-26 physical hardware-support test).
@@ -44,9 +44,9 @@ set -euo pipefail
 # another tty (Ctrl-Alt-F2) to scrollback in real-time.
 ZETA_INSTALL_LOG="${ZETA_INSTALL_LOG:-/tmp/zeta-install-$(date -u +%Y%m%dT%H%M%SZ).log}"
 exec > >(tee -a "$ZETA_INSTALL_LOG") 2>&1
-echo "[B-0834] install log → $ZETA_INSTALL_LOG"
-echo "[B-0834] tail -f $ZETA_INSTALL_LOG | less   # from another tty for scrollback"
-echo "[B-0834] cat $ZETA_INSTALL_LOG | less       # after script exits"
+echo "[081KSGS9H0008QG0R001RR3ZXQ] install log → $ZETA_INSTALL_LOG"
+echo "[081KSGS9H0008QG0R001RR3ZXQ] tail -f $ZETA_INSTALL_LOG | less   # from another tty for scrollback"
+echo "[081KSGS9H0008QG0R001RR3ZXQ] cat $ZETA_INSTALL_LOG | less       # after script exits"
 echo
 
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
@@ -59,7 +59,7 @@ bail() { echo "ERROR: $*" >&2; exit 1; }
 
 # Operator-facing prompts run only on an interactive console session.
 # ZETA_AUTO_CONFIRM=WIPE (first-boot / QEMU CI via zeta-first-boot.sh) and
-# non-TTY stdin both suppress them — iter-5.3 password, B-0852.3b passphrase,
+# non-TTY stdin both suppress them — iter-5.3 password, 081KSKBP80008QG0R003AX2A69.3b passphrase,
 # iter-5.4.0 gh-auth, iter-5.5.0 vendor logins.
 zeta_install_prompts_enabled() {
   [[ "${ZETA_AUTO_CONFIRM:-}" != "WIPE" ]] && [[ -t 0 ]]
@@ -201,7 +201,7 @@ echo
 # Non-interactive mode: ZETA_AUTO_CONFIRM=WIPE bypasses the typed-
 # confirmation prompt. Used by the first-boot systemd service when
 # the operator already accepted destructive intent at flash time
-# (per B-0754 zero-typing-USB-install design). Direct interactive
+# (per 081KSGS9H0008QG0R002T3BJ2R zero-typing-USB-install design). Direct interactive
 # use still requires the typed WIPE.
 if [[ "${ZETA_AUTO_CONFIRM:-}" == "WIPE" ]]; then
   echo "[ZETA_AUTO_CONFIRM=WIPE] non-interactive mode; proceeding without prompt"
@@ -243,7 +243,7 @@ done
 # the failure mode is the same regardless of letter). The booted
 # ISO has mounted partitions on that sdX device; partprobe rightfully
 # refuses to refresh those + returns non-zero; `set -euo pipefail`
-# then bails the whole install. Fix per B-0754 iter-3 empirical
+# then bails the whole install. Fix per 081KSGS9H0008QG0R002T3BJ2R iter-3 empirical
 # anchor: pass only the disks WE just partitioned, with an explicit
 # per-disk failure handler so the abort message names the offending
 # disk + suggests next steps (vs silent set -euo pipefail bail).
@@ -289,7 +289,7 @@ done
 
 # ── Step 6: clone + install ───────────────────────────────────────
 #
-# B-0857.X (cluster-type menu extension, 2026-05-27): replace the
+# 081KSKBP80008QG0R002J03WGA.X (cluster-type menu extension, 2026-05-27): replace the
 # bare free-text prompt with a numbered menu + hardware-detection
 # suggested default. Existing free-text override preserved as
 # "other" option for advanced cases (custom flake host attribute
@@ -302,12 +302,12 @@ done
 # Multi-role-on-single-host support (operator 2026-05-27: "letting
 # you select multiple or detecting based on hardware etc..."):
 # the current flake assigns one host attribute per node; multi-role
-# compose-on-single-host is a future B-0792-extension sub-row
+# compose-on-single-host is a future 081KSGS9H0008QG0R003V23XNZ-extension sub-row
 # (requires flake-shape refactor to support role-tagging). This
 # iteration ships the single-attribute menu; the multi-role
 # composition follows when the flake substrate supports it.
 if [[ -z "$HOST" ]]; then
-  # B-0857.2-wire (2026-05-27): hardware-detection now routed through
+  # 081KDWYPGV008QG0R00072K2NH-wire (2026-05-27): hardware-detection now routed through
   # the TS module at tools/installer/zeta-hardware-detect.ts (PR #5642).
   # Logic ported there per Rule 0 TS-over-bash discipline + extended
   # with storage-shape (≥4 disks + ≥64GB → worker-template) and
@@ -405,7 +405,7 @@ sudo git clone "$REPO_URL" /mnt/etc/zeta
 
 echo "Generating hardware-configuration.nix ..."
 sudo nixos-generate-config --root /mnt --force
-# B-0891 / B-0831: flake hosts import ./hardware-configuration.nix from the
+# 081KSNY2Z0008QG0R0008PN7RQ / 081KSGS9H0008QG0R0011BC7T2: flake hosts import ./hardware-configuration.nix from the
 # repo tree (stub until replaced). Without this copy, nixos-install bakes the
 # placeholder (no virtio_blk in initrd) and QEMU phase-2 UEFI boot hangs after
 # earlycon when root is on virtio (CI run 27598982580).
@@ -419,7 +419,7 @@ else
 fi
 
 # ── Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey ────
-# Per B-0789: zflash on macOS writes ~/.ssh/id_ed25519.pub to the
+# Per 081KSGS9H0008QG0R002T3BJ2R: zflash on macOS writes ~/.ssh/id_ed25519.pub to the
 # boot USB's FAT ESP as `zeta-authorized-keys.pub`. Find it + inject
 # into operator-ssh-keys.nix before nixos-install so the freshly-
 # installed system has SSH access on first boot. Diagnostics auto-run
@@ -511,8 +511,8 @@ if [ -n "$PUBKEY_FILE" ]; then
   } | sudo tee "$PUBKEY_DST" > /dev/null
   echo "[iter-4.2]   wrote $PUBKEY_LINE_COUNT pubkey line(s) to operator-ssh-keys.txt"
 
-  # ── B-0852.3a-prep: capture USB UUID for cred-blob binding ────
-  # The B-0852 cred-blob encryption derives its key from
+  # ── 081KSKBP80008QG0R003AX2A69.3a-prep: capture USB UUID for cred-blob binding ────
+  # The 081KSKBP80008QG0R003AX2A69 cred-blob encryption derives its key from
   # HKDF(USB-UUID || stretched-passphrase, salt, info) per
   # tools/installer/zeta-creds-crypto.ts deriveKey. The picker at
   # Step 6.95-picker reads /etc/zeta/usb-uuid to know which UUID to
@@ -558,36 +558,36 @@ if [ -n "$PUBKEY_FILE" ]; then
       echo "$USB_UUID_VAL" | sudo tee /etc/zeta/usb-uuid >/dev/null
       echo "$USB_UUID_VAL" | sudo tee /mnt/etc/zeta/usb-uuid >/dev/null
       sudo chmod 0644 /etc/zeta/usb-uuid /mnt/etc/zeta/usb-uuid
-      echo "[B-0852.3a-prep]   captured USB UUID: $USB_UUID_VAL (device: $USB_UUID_DEV)"
-      echo "[B-0852.3a-prep]   wrote /etc/zeta/usb-uuid + /mnt/etc/zeta/usb-uuid"
-      echo "[B-0852.3a-prep]   precondition #3 satisfied for Step 6.95-picker"
+      echo "[081KSKBP80008QG0R003AX2A69.3a-prep]   captured USB UUID: $USB_UUID_VAL (device: $USB_UUID_DEV)"
+      echo "[081KSKBP80008QG0R003AX2A69.3a-prep]   wrote /etc/zeta/usb-uuid + /mnt/etc/zeta/usb-uuid"
+      echo "[081KSKBP80008QG0R003AX2A69.3a-prep]   precondition #3 satisfied for Step 6.95-picker"
     else
-      echo "[B-0852.3a-prep]   WARN: blkid returned empty UUID for $USB_UUID_DEV;"
-      echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+      echo "[081KSKBP80008QG0R003AX2A69.3a-prep]   WARN: blkid returned empty UUID for $USB_UUID_DEV;"
+      echo "[081KSKBP80008QG0R003AX2A69.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
     fi
   else
-    echo "[B-0852.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
-    echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+    echo "[081KSKBP80008QG0R003AX2A69.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
+    echo "[081KSKBP80008QG0R003AX2A69.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
   fi
 
-  # ── B-0891/B-0852 retention preseed: carry zflash-baked creds forward ────
+  # ── 081KSNY2Z0008QG0R0008PN7RQ/081KSKBP80008QG0R003AX2A69 retention preseed: carry zflash-baked creds forward ────
   # zflash can bake the encrypted credential blob onto the boot USB ESP as
   # zeta-creds.enc. Copy that blob onto the target ESP before we unmount the
   # USB ESP so a reformat-with-retention keeps the operator answers/accounts
   # without re-running the interactive picker.
   BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"
   if sudo test -f "$BOOT_USB_CREDS_BLOB"; then
-    echo "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP"
+    echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP"
     if command -v mountpoint >/dev/null 2>&1 && mountpoint -q /mnt/boot; then
       sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc
       BOOT_USB_CREDS_PRESEEDED=1
-      echo "[B-0891-retention]   copied retained cred blob to /mnt/boot/zeta-creds.enc"
-      echo "[B-0891-retention]   Step 6.95-picker will skip account re-entry"
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   copied retained cred blob to /mnt/boot/zeta-creds.enc"
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   Step 6.95-picker will skip account re-entry"
     else
-      echo "[B-0891-retention]   WARN: /mnt/boot is not mounted; retained cred blob not copied"
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   WARN: /mnt/boot is not mounted; retained cred blob not copied"
     fi
   else
-    echo "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal"
+    echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal"
   fi
 
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
@@ -621,7 +621,7 @@ else
   echo "=============================="
 fi
 
-# ── Step 6.55: iter-5.3 prompt-for-initial-password (B-0792) ────
+# ── Step 6.55: iter-5.3 prompt-for-initial-password (081KSGS9H0008QG0R003V23XNZ) ────
 #
 # Per the maintainer 2026-05-26: "also on startup can it ask for
 # me to type a password instead of having a default" — replaces
@@ -693,7 +693,7 @@ else
 fi
 echo
 
-# ── Step 6.56: B-0852.3b cred-blob passphrase prompt ────────────
+# ── Step 6.56: 081KSKBP80008QG0R003AX2A69.3b cred-blob passphrase prompt ────────────
 #
 # Two-step lifecycle for the operator-entered passphrase, designed
 # to minimize /proc/<pid>/environ exposure window:
@@ -730,53 +730,53 @@ echo
 # "secrets shouldn't transit non-operator surfaces; operator-typed
 # at install time is the safest path").
 echo
-echo "[B-0852.3b] ── cred-blob passphrase prompt (B-0852 Phase 1) ──"
-echo "[B-0852.3b] Set a passphrase to encrypt your credentials onto"
-echo "[B-0852.3b] this USB. Future boots can RESTORE creds via the"
-echo "[B-0852.3b] same passphrase (no more re-entering gh login etc."
-echo "[B-0852.3b] on every reboot). Encryption: AES-256-GCM with key"
-echo "[B-0852.3b] derived via scrypt -> HKDF chain bound to this USB's"
-echo "[B-0852.3b] UUID (per tools/installer/zeta-creds-crypto.ts)."
-echo "[B-0852.3b]"
-echo "[B-0852.3b] Press Enter to SKIP (no cred-blob persistence;"
-echo "[B-0852.3b] keeps current per-reboot re-entry behavior)."
+echo "[081KSKBP80008QG0R003AX2A69.3b] ── cred-blob passphrase prompt (081KSKBP80008QG0R003AX2A69 Phase 1) ──"
+echo "[081KSKBP80008QG0R003AX2A69.3b] Set a passphrase to encrypt your credentials onto"
+echo "[081KSKBP80008QG0R003AX2A69.3b] this USB. Future boots can RESTORE creds via the"
+echo "[081KSKBP80008QG0R003AX2A69.3b] same passphrase (no more re-entering gh login etc."
+echo "[081KSKBP80008QG0R003AX2A69.3b] on every reboot). Encryption: AES-256-GCM with key"
+echo "[081KSKBP80008QG0R003AX2A69.3b] derived via scrypt -> HKDF chain bound to this USB's"
+echo "[081KSKBP80008QG0R003AX2A69.3b] UUID (per tools/installer/zeta-creds-crypto.ts)."
+echo "[081KSKBP80008QG0R003AX2A69.3b]"
+echo "[081KSKBP80008QG0R003AX2A69.3b] Press Enter to SKIP (no cred-blob persistence;"
+echo "[081KSKBP80008QG0R003AX2A69.3b] keeps current per-reboot re-entry behavior)."
 echo
 ZETA_CREDS_PASSPHRASE_INPUT=""
 ZETA_CREDS_PASSPHRASE_CONFIRM=""
 if zeta_install_prompts_enabled; then
   # -s = silent (hidden); -p = inline prompt
-  read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
+  read -r -s -p "[081KSKBP80008QG0R003AX2A69.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
   echo
   if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
-    read -r -s -p "[B-0852.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
+    read -r -s -p "[081KSKBP80008QG0R003AX2A69.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
     echo
     if [ "$ZETA_CREDS_PASSPHRASE_INPUT" != "$ZETA_CREDS_PASSPHRASE_CONFIRM" ]; then
-      echo "[B-0852.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
+      echo "[081KSKBP80008QG0R003AX2A69.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
       ZETA_CREDS_PASSPHRASE_INPUT=""
     fi
   fi
 else
-  echo "[B-0852.3b] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping cred-blob passphrase prompt"
+  echo "[081KSKBP80008QG0R003AX2A69.3b] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping cred-blob passphrase prompt"
 fi
 unset ZETA_CREDS_PASSPHRASE_CONFIRM
 # Initialize ZETA_CREDS_PASSPHRASE_VAL to empty unconditionally so the
 # Step 6.95-picker gate check works whether or not operator entered a
-# passphrase. Per B-0852.3b-supersede discipline: do NOT export — keep
+# passphrase. Per 081KSKBP80008QG0R003AX2A69.3b-supersede discipline: do NOT export — keep
 # in a non-exported shell variable to avoid /proc/<pid>/environ exposure.
 ZETA_CREDS_PASSPHRASE_VAL=""
 if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
   ZETA_CREDS_PASSPHRASE_VAL="$ZETA_CREDS_PASSPHRASE_INPUT"
   unset ZETA_CREDS_PASSPHRASE_INPUT
-  echo "[B-0852.3b]   passphrase captured + held in non-exported shell variable"
-  echo "[B-0852.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;"
-  echo "[B-0852.3b]    shell var unset in ALL branches after Step 6.95 picker block)"
+  echo "[081KSKBP80008QG0R003AX2A69.3b]   passphrase captured + held in non-exported shell variable"
+  echo "[081KSKBP80008QG0R003AX2A69.3b]   (NOT in /proc/self/environ; inline-set for sudo only at 6.95;"
+  echo "[081KSKBP80008QG0R003AX2A69.3b]    shell var unset in ALL branches after Step 6.95 picker block)"
 else
   unset ZETA_CREDS_PASSPHRASE_INPUT
-  echo "[B-0852.3b]   skipped — no cred-blob persistence this install"
+  echo "[081KSKBP80008QG0R003AX2A69.3b]   skipped — no cred-blob persistence this install"
 fi
 echo
 
-# ── Step 6.6: iter-5.2 hostname injection (B-0792) ──────────────
+# ── Step 6.6: iter-5.2 hostname injection (081KSGS9H0008QG0R003V23XNZ) ──────────────
 #
 # Per the maintainer 2026-05-26: "since our different roles are
 # multi install you can be control plane AND gpu node AND cpu
@@ -830,7 +830,7 @@ if [ -n "$HOSTNAME_FILE" ]; then
     echo "[iter-5.2]          falling back to flake default ($HOST)"
   fi
 else
-  # iter-5.2.2 fix (B-0792): when no operator-explicit hostname is
+  # iter-5.2.2 fix (081KSGS9H0008QG0R003V23XNZ): when no operator-explicit hostname is
   # on the ESP, generate a fresh random hostname ON THE NODE at
   # install time (NOT at flash time). This is the load-bearing fix
   # for the "same USB reused on second machine" multi-node case
@@ -863,7 +863,7 @@ else
 fi
 echo
 
-# ── Step 6.7: iter-5.1 wifi persistence (B-0792) ────────────────
+# ── Step 6.7: iter-5.1 wifi persistence (081KSGS9H0008QG0R003V23XNZ) ────────────────
 #
 # By the time this step runs, the live installer is already on the
 # network — either via ethernet auto-DHCP (no profile to copy; this
@@ -925,7 +925,7 @@ fi
 echo
 
 # ── Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy ──
-# B-0794 sub-target homelab-mode. The maintainer 2026-05-26: "i'll
+# 081KSGS9H0008QG0R0027HJZYH sub-target homelab-mode. The maintainer 2026-05-26: "i'll
 # wait till we have the install.sh and git native device registration
 # into github is ready before i run again". Per Mika 2026-05-26
 # homelab-first substrate: USB ships with NO embedded credentials;
@@ -981,7 +981,7 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
       echo
       echo "[iter-5.4.0]   gh auth login: SUCCESS"
 
-      # ── B-0835 Bug 2a fix: wire git to use gh token for HTTPS pushes ──
+      # ── 081KSGS9H0008QG0R00120EEHM Bug 2a fix: wire git to use gh token for HTTPS pushes ──
       # `gh auth login` stores the token but does NOT configure git's
       # credential helper. Without this step, subsequent `git push` to
       # https://github.com/... prompts for HTTPS basic-auth (username +
@@ -1008,7 +1008,7 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
       # (algo + base64-pubkey; no comment). Each gets a comment appended
       # so the operator can identify it later: "gh-key-<id>".
       #
-      # B-0835 Bug 2b fix: substrate-honest discrimination of failure modes.
+      # 081KSGS9H0008QG0R00120EEHM Bug 2b fix: substrate-honest discrimination of failure modes.
       # Capture stderr so we can distinguish (a) auth-scope error from
       # (b) empty key list from (c) jq/tee pipe break. Empirically 2026-05-26:
       # device-flow `gh auth login` only requests default scopes
@@ -1037,7 +1037,7 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
           else
             echo "[iter-5.4.0]   WARN: 'gh ssh-key list' returned no keys — operator has no SSH keys registered at GitHub"
             echo "[iter-5.4.0]   SSH-from-Mac fallback: add keys at https://github.com/settings/keys"
-            echo "[iter-5.4.0]   then on the installed system, re-run the gh ssh-key list step (see B-0835 Bug 2b)"
+            echo "[iter-5.4.0]   then on the installed system, re-run the gh ssh-key list step (see 081KSGS9H0008QG0R00120EEHM Bug 2b)"
           fi
         fi
       else
@@ -1059,8 +1059,8 @@ else
 fi
 echo
 
-# ── Step 6.9: iter-5.4.1 self-registration commit+push (B-0812) ──
-# B-0794 sub-target 3 full implementation. After iter-5.4.0 captures
+# ── Step 6.9: iter-5.4.1 self-registration commit+push (081KSGS9H0008QG0R0037H3W4T) ──
+# 081KSGS9H0008QG0R0027HJZYH sub-target 3 full implementation. After iter-5.4.0 captures
 # operator's gh-auth foothold + ssh pubkeys, this step:
 #   1. Probes hardware (CPU/RAM/cores/GPU/storage/network/MAC)
 #   2. Composes a ClusterNode YAML matching the provisional schema
@@ -1069,7 +1069,7 @@ echo
 #
 # Operator (or peer agent) merges the PR from anywhere (phone-merge OK).
 # ArgoCD then watches maintainers/*/cluster-nodes/** and reconciles
-# the node into the cluster (B-0813 iter-5.4.2; tracked separately).
+# the node into the cluster (081KSGS9H0008QG0R002K93MWX iter-5.4.2; tracked separately).
 #
 # Skip conditions (cascade with iter-5.4.0):
 #   - GH_AUTH_OK != 1 (gh auth login was skipped or failed)
@@ -1078,12 +1078,12 @@ echo
 # Empirical anchor: operator 2026-05-26 physical hardware-support test
 # verified self-registration did NOT happen — maintainers/<operator>/
 # cluster-nodes/ didn't exist on the repo. This Step 6.9 implements the
-# missing substrate to fix B-0835 Bug 4 (CRITICAL per operator's CORE
+# missing substrate to fix 081KSGS9H0008QG0R00120EEHM Bug 4 (CRITICAL per operator's CORE
 # REQUIREMENT of post-boot fully-operational chain without operator login).
 SELF_REG_OK=0
 SELF_REG_PR_URL=""
 
-# Shared hostname + ClusterNode YAML compose (B-0812 / B-0813 schema).
+# Shared hostname + ClusterNode YAML compose (081KSGS9H0008QG0R0037H3W4T / 081KSGS9H0008QG0R002K93MWX schema).
 zeta_self_reg_resolve_node_hostname() {
   if [ -f "$HOSTNAME_DST" ]; then
     NODE_HOSTNAME=$(cat "$HOSTNAME_DST" | tr -d '[:space:]')
@@ -1150,7 +1150,7 @@ $STORAGE_LINES"
 }
 
 if [ "$GH_AUTH_OK" = 1 ]; then
-  echo "[iter-5.4.1] ── self-registration commit+push (B-0812) ──"
+  echo "[iter-5.4.1] ── self-registration commit+push (081KSGS9H0008QG0R0037H3W4T) ──"
   echo "[iter-5.4.1] Composing ClusterNode YAML + opening registration PR..."
 
   # Resolve operator GH user (used for the per-maintainer subtree path).
@@ -1192,7 +1192,7 @@ if [ "$GH_AUTH_OK" = 1 ]; then
         git config user.name "$OP_NAME"
         git config user.email "$OP_EMAIL"
         git checkout -b "$REG_BRANCH" 2>&1 | tail -3
-        # B-0855-fix: the manifest MUST exist + be non-empty before we stage it.
+        # 081KSKBP80008QG0R000GPC0TB-fix: the manifest MUST exist + be non-empty before we stage it.
         # (A failed/empty write here was silently producing an empty commit.)
         if [ ! -s "$NODE_DIR/node.yaml" ]; then
           echo "[iter-5.4.1]   ERROR: node.yaml absent/empty at $NODE_DIR — not registering (nothing pushed)." >&2
@@ -1200,7 +1200,7 @@ if [ "$GH_AUTH_OK" = 1 ]; then
           exit 1
         fi
         git add "maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME/" 2>&1 | tail -3
-        # B-0855-fix: confirm something is actually staged BEFORE commit/push.
+        # 081KSKBP80008QG0R000GPC0TB-fix: confirm something is actually staged BEFORE commit/push.
         # The old code committed an empty tree and pushed the branch ANYWAY,
         # leaving an orphaned register-* branch + a failed PR with NO signal to
         # the operator — this is exactly what stranded node-09485d. Fail loud,
@@ -1218,13 +1218,13 @@ if [ "$GH_AUTH_OK" = 1 ]; then
 
 Auto-generated by zeta-install.sh Step 6.9 on the node during install.
 Registers ${NODE_HOSTNAME} under maintainers/${MAINTAINER}/cluster-nodes/.
-ArgoCD watches maintainers/*/cluster-nodes/** + reconciles per B-0813.
+ArgoCD watches maintainers/*/cluster-nodes/** + reconciles per 081KSGS9H0008QG0R002K93MWX.
 
 flake-host: ${HOST}
 flake-commit: ${FLAKE_COMMIT}
 registered-at: ${REG_TIMESTAMP}
 " 2>&1 | tail -3
-        # B-0855-fix: only push if a real commit now exists ahead of the clone
+        # 081KSKBP80008QG0R000GPC0TB-fix: only push if a real commit now exists ahead of the clone
         # base — defense-in-depth so an empty/HEAD-only branch is never pushed.
         if [ "$(git rev-list --count HEAD ^origin/main 2>/dev/null || echo 0)" -lt 1 ]; then
           echo "[iter-5.4.1]   ERROR: commit produced no new revision — not pushing an empty branch." >&2
@@ -1234,14 +1234,14 @@ registered-at: ${REG_TIMESTAMP}
           # gh pr create's output last line is the PR URL on success
           SELF_REG_PR_URL=$(gh pr create \
             --title "feat(node-register): $NODE_HOSTNAME self-registers via iter-5.4.1" \
-            --body "Self-registration PR opened by zeta-install.sh on the node during install. Composes with B-0812 iter-5.4.1 + B-0813 iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster." \
+            --body "Self-registration PR opened by zeta-install.sh on the node during install. Composes with 081KSGS9H0008QG0R0037H3W4T iter-5.4.1 + 081KSGS9H0008QG0R002K93MWX iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster." \
             --base main \
             --head "$REG_BRANCH" 2>&1 | tail -1)
           if [ -n "$SELF_REG_PR_URL" ] && [[ "$SELF_REG_PR_URL" == https://* ]]; then
             echo "$SELF_REG_PR_URL" > /tmp/zeta-self-reg-pr-url
           else
             echo "[iter-5.4.1]   WARN: gh pr create did not return a URL; output was: $SELF_REG_PR_URL" >&2
-            # B-0855-fix: PR creation failed after a successful push — delete the
+            # 081KSKBP80008QG0R000GPC0TB-fix: PR creation failed after a successful push — delete the
             # branch so we don't leave an orphan (the node-09485d failure mode).
             echo "[iter-5.4.1]          deleting the just-pushed branch to avoid an orphan: $REG_BRANCH" >&2
             git push origin --delete "$REG_BRANCH" 2>&1 | tail -2 || true
@@ -1255,7 +1255,7 @@ registered-at: ${REG_TIMESTAMP}
         SELF_REG_OK=1
         echo "[iter-5.4.1]   SUCCESS — registration PR opened: $SELF_REG_PR_URL"
         echo "[iter-5.4.1]   Operator merges from anywhere (phone-merge OK)."
-        echo "[iter-5.4.1]   ArgoCD reconciles after merge per B-0813 iter-5.4.2."
+        echo "[iter-5.4.1]   ArgoCD reconciles after merge per 081KSGS9H0008QG0R002K93MWX iter-5.4.2."
       else
         echo "[iter-5.4.1]   ====================================================================" >&2
         echo "[iter-5.4.1]   WARN: self-registration did NOT complete — this node is NOT registered." >&2
@@ -1275,7 +1275,7 @@ registered-at: ${REG_TIMESTAMP}
 else
   echo "[iter-5.4.1] skipped — iter-5.4.0 gh-auth was skipped or failed; no auth foothold for commit+push"
   echo "[iter-5.4.1] (operator can re-run manually post-install via tools/cluster/register-node.ts when that ships)"
-  # B-0831 slice 2: QEMU/CI dry-run — compose registration YAML without gh push.
+  # 081KSGS9H0008QG0R0011BC7T2 slice 2: QEMU/CI dry-run — compose registration YAML without gh push.
   if ! zeta_install_prompts_enabled && [ -f "$HOSTNAME_DST" ]; then
     MAINTAINER="qemu-ci"
     zeta_self_reg_resolve_node_hostname
@@ -1290,7 +1290,7 @@ else
 fi
 echo
 
-# ── B-0835 Bug 1 fix: pre-stage per-file symlinks so flake eval can ──
+# ── 081KSGS9H0008QG0R00120EEHM Bug 1 fix: pre-stage per-file symlinks so flake eval can ──
 # read /etc/zeta/* files at build time. Several NixOS modules in the
 # flake use `builtins.pathExists` + `builtins.readFile` on absolute
 # `/etc/zeta/*` paths at evaluation time (flake build-time). During
@@ -1301,11 +1301,11 @@ echo
 # Modules affected (same bug class):
 #   - injected-hostname.nix       → /etc/zeta/cluster-node-id (Bug 1)
 #   - operator-authorized-keys.nix → /etc/zeta/operator-authorized-keys
-#                                    (B-0835 sibling — same bug; operator
+#                                    (081KSGS9H0008QG0R00120EEHM sibling — same bug; operator
 #                                    SSH-from-Mac would silently lose
 #                                    iter-5.4.0 captured pubkeys at
 #                                    install-time eval without this fix)
-# NOT affected (uses activation-script instead, per B-0835 Bug 3b fix):
+# NOT affected (uses activation-script instead, per 081KSGS9H0008QG0R00120EEHM Bug 3b fix):
 #   - initial-password.nix → activation reads /etc/zeta/initial-hashedpassword
 #     at boot-time on installed system; doesn't need this symlink
 #
@@ -1319,7 +1319,7 @@ echo
 #
 # Empirical anchor: operator 2026-05-26 physical hardware-support test:
 # login banner showed "control-plane login:" instead of unique
-# node-<6hex>. Composes with the same path-mismatch class as B-0835
+# node-<6hex>. Composes with the same path-mismatch class as 081KSGS9H0008QG0R00120EEHM
 # Bug 3b (password) which was fixed via activation-script (different
 # fix because password CAN apply at activation; hostname CANNOT cleanly
 # change at activation because many services bake hostname at build).
@@ -1338,21 +1338,21 @@ maybe_symlink() {
   if [ -f "$src" ] && [ ! -e "$dst" ]; then
     sudo ln -sf "$src" "$dst"
     SYMLINKED_FILES+=("$dst")
-    echo "[B-0835 Bug 1 fix] symlinked $src → $dst (flake-eval visibility)"
+    echo "[081KSGS9H0008QG0R00120EEHM Bug 1 fix] symlinked $src → $dst (flake-eval visibility)"
   elif [ -e "$dst" ] && [ ! -L "$dst" ]; then
-    echo "[B-0835 Bug 1 fix]   $dst already exists as real file; not symlinking"
+    echo "[081KSGS9H0008QG0R00120EEHM Bug 1 fix]   $dst already exists as real file; not symlinking"
   fi
 }
 maybe_symlink "$HOSTNAME_DST" /etc/zeta/cluster-node-id
 maybe_symlink /mnt/etc/zeta/operator-authorized-keys /etc/zeta/operator-authorized-keys
 
-# B-0891 QEMU phase-3: non-interactive CI installs enable boot-time first-session
+# 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
 if [[ "${ZETA_AUTO_CONFIRM:-}" == "WIPE" ]]; then
   sudo mkdir -p /mnt/etc/zeta
   echo "qemu-ci-first-session" | sudo tee /mnt/etc/zeta/qemu-first-session-ci >/dev/null
   sudo chmod 0644 /mnt/etc/zeta/qemu-first-session-ci
-  echo "[B-0891]   wrote /mnt/etc/zeta/qemu-first-session-ci (QEMU phase-3 boot demo)"
+  echo "[081KSNY2Z0008QG0R0008PN7RQ]   wrote /mnt/etc/zeta/qemu-first-session-ci (QEMU phase-3 boot demo)"
 fi
 
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
@@ -1363,7 +1363,7 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # Safe here because:
 #   - Impure reads are operator-chosen hostname + operator's PUBLIC SSH
 #     pubkeys (NOT secrets — pubkeys are public by definition)
-#   - initial-password.nix does NOT use builtins.readFile (per B-0835
+#   - initial-password.nix does NOT use builtins.readFile (per 081KSGS9H0008QG0R00120EEHM
 #     Bug 3b fix uses activation-script instead); its hash file (which
 #     IS a secret) doesn't transit the impure-eval path
 #
@@ -1384,7 +1384,7 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # Slower for the few stalled derivations (local build vs cache download)
 # but UNBLOCKS the install instead of looping on the same 5 files.
 # Full reproducibility work (closure-baking, Cachix mirror, extra-substituters)
-# tracked at B-0846.
+# tracked at 081KSGS9H0008QG0R003X5Y2A5.
 sudo nixos-install \
   --impure \
   --option fallback true \
@@ -1399,18 +1399,18 @@ sudo nixos-install \
 cleanup_symlinks
 trap - EXIT
 
-# ── Step 6.94: B-0852.3a cred-picker stub ───────────────────────────
+# ── Step 6.94: 081KSKBP80008QG0R003AX2A69.3a cred-picker stub ───────────────────────────
 # The actual picker invocation lives at Step 6.95-picker (below) which
 # fires AFTER 6.95a-bootstrap clones the repo + installs bun. This
 # header reserves the step number for forward references; no work here.
 
-# ── Step 6.95: iter-5.5.0 — claude-code install + credential persistence (B-0848 Phase 2) ──
+# ── Step 6.95: iter-5.5.0 — claude-code install + credential persistence (081KSGS9H0008QG0R001JNKBFD Phase 2) ──
 # Aaron 2026-05-27 ask: "wanna make this automatic on boot before i even
 # login and have it save my claude code device login like gh, also make
 # sure they are all on path for me to play with when i log in?"
 #
 # This step mirrors iter-5.4.0's gh-auth pattern at install-time for the
-# node-local Claude Code agent (B-0848). Three parts:
+# node-local Claude Code agent (081KSGS9H0008QG0R001JNKBFD). Three parts:
 #
 #   1. INSTALL Claude Code via npm globally into a writable prefix
 #      under /mnt/home/zeta (so it survives reboot AND is in the zeta
@@ -1460,7 +1460,7 @@ else
 fi
 
 if [ -d "$ZETA_HOME" ]; then
-  echo "[iter-5.5.0] ── canonical runtime/agent CLI install + credential persistence (B-0848) ──"
+  echo "[iter-5.5.0] ── canonical runtime/agent CLI install + credential persistence (081KSGS9H0008QG0R001JNKBFD) ──"
 
   # 6.95a — bootstrap runtimes via mise (.mise.toml single source of
   # truth; operator 2026-05-27 ALIGNMENT catch) AND install peer/agent
@@ -1518,7 +1518,7 @@ if [ -d "$ZETA_HOME" ]; then
   sudo mkdir -p "$ZETA_HOME/.bun/bin"
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
 
-  # 6.95-picker — B-0852.3a cred-picker (operator interactive at setup time)
+  # 6.95-picker — 081KSKBP80008QG0R003AX2A69.3a cred-picker (operator interactive at setup time)
   # Operator 2026-05-27 framing: "human interactive at setup time" + "ask what declared
   # creds you want to bake in vs go through device flow".
   #
@@ -1526,10 +1526,10 @@ if [ -d "$ZETA_HOME" ]; then
   # logins so picker decides per-cred bake-vs-defer + the device-flow steps handle the
   # deferred subset.
   #
-  # Default behavior (B-0852.3c flip, 2026-05-27): AUTO-ENABLE when
+  # Default behavior (081KSKBP80008QG0R003AX2A69.3c flip, 2026-05-27): AUTO-ENABLE when
   # both /etc/zeta/usb-uuid (PR #5637 closes this) and the
   # ZETA_CREDS_PASSPHRASE_VAL shell variable (populated by Step 6.56
-  # prompt; held non-exported per B-0852.3b-supersede discipline) are
+  # prompt; held non-exported per 081KSKBP80008QG0R003AX2A69.3b-supersede discipline) are
   # present. Explicit opt-out via ZETA_CREDS_PICKER=0 (env or
   # /etc/zeta/no-picker marker file).
   #
@@ -1565,15 +1565,15 @@ if [ -d "$ZETA_HOME" ]; then
     PICKER_SKIP_REASON="/etc/zeta/no-picker marker present (file opt-out)"
   elif [ ! -f /etc/zeta/usb-uuid ]; then
     PICKER_OPT_OUT=1
-    PICKER_SKIP_REASON="/etc/zeta/usb-uuid missing (B-0852.3a-prep did not capture UUID)"
+    PICKER_SKIP_REASON="/etc/zeta/usb-uuid missing (081KSKBP80008QG0R003AX2A69.3a-prep did not capture UUID)"
   elif [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
     PICKER_OPT_OUT=1
     PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"
   fi
   if [ "$PICKER_OPT_OUT" = "0" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"
-    echo "[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (DEFAULT-ON per B-0852.3c) ──"
-    echo "[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from B-0852.3a-prep"
+    echo "[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──"
+    echo "[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from 081KSKBP80008QG0R003AX2A69.3a-prep"
     echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
     # mise activate inside bash -c matches sibling 6.95a-claude/gemini/codex
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
@@ -1600,7 +1600,7 @@ if [ -d "$ZETA_HOME" ]; then
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
   fi
-  # B-0852.3b-supersede discipline: unset ZETA_CREDS_PASSPHRASE_VAL
+  # 081KSKBP80008QG0R003AX2A69.3b-supersede discipline: unset ZETA_CREDS_PASSPHRASE_VAL
   # UNCONDITIONALLY after the picker block — fires in BOTH the
   # picker-ran branch AND the picker-skipped branch. Prior code only
   # unset inside the picker-ran branch, leaving the passphrase live
@@ -1647,7 +1647,7 @@ if [ -d "$ZETA_HOME" ]; then
   fi
 
 
-  # 6.95b-codex — interactive codex login (B-0850 Phase 3c Vera).
+  # 6.95b-codex — interactive codex login (081KSKBP80008QG0R003Z4C0D0 Phase 3c Vera).
   # 3rd vendor login — codex CLI has the most explicit device-flow
   # via `codex login --device-auth` (Anthropic claude device-flow
   # analog; works on headless / no-local-browser systems by
@@ -1657,7 +1657,7 @@ if [ -d "$ZETA_HOME" ]; then
   CODEX_BIN="$ZETA_HOME/.bun/bin/codex"
   if [ -x "$CODEX_BIN" ]; then
     echo
-    echo "[iter-5.5.0] Trigger Codex CLI interactive device-flow login NOW (B-0850 Phase 3c Vera)?"
+    echo "[iter-5.5.0] Trigger Codex CLI interactive device-flow login NOW (081KSKBP80008QG0R003Z4C0D0 Phase 3c Vera)?"
     echo "[iter-5.5.0]   - Uses 'codex login --device-auth' (clean device-flow shape)."
     echo "[iter-5.5.0]   - Prints URL + one-time code; visit on ANY browser on ANY device; paste code."
     echo "[iter-5.5.0]   - ChatGPT Plus/Pro/Business/Edu/Enterprise plans include Codex access."
@@ -1712,7 +1712,7 @@ else
 fi
 echo
 
-# ── Step 7: print initial credentials (iter-4 — per B-0789) ──────
+# ── Step 7: print initial credentials (iter-4 — per 081KSGS9H0008QG0R002T3BJ2R) ──────
 echo
 echo "================================================================"
 echo "  ZETA CLUSTER NODE INSTALL COMPLETE"
@@ -1741,10 +1741,10 @@ if [ "$GH_AUTH_OK" = 1 ] && [ "$GH_KEY_COUNT" != "0" ]; then
   echo "      ssh zeta@\$(hostname).local"
   echo
 
-  # B-0812 iter-5.4.1: surface the self-registration PR URL if Step 6.9
+  # 081KSGS9H0008QG0R0037H3W4T iter-5.4.1: surface the self-registration PR URL if Step 6.9
   # opened one. This is the operator's call-to-action — merge the PR
   # from anywhere (phone OK) to bring the node into the cluster via
-  # ArgoCD reconciliation (B-0813 iter-5.4.2).
+  # ArgoCD reconciliation (081KSGS9H0008QG0R002K93MWX iter-5.4.2).
   if [ "$SELF_REG_OK" = 1 ] && [ -n "$SELF_REG_PR_URL" ]; then
     echo "  iter-5.4.1 SELF-REGISTRATION: SUCCESS"
     echo "    Node-registration PR opened:"
@@ -1788,7 +1788,7 @@ echo
 echo "================================================================"
 echo
 
-# ── B-0834 install log preservation — copy to install target ────────
+# ── 081KSGS9H0008QG0R001RR3ZXQ install log preservation — copy to install target ────────
 # At end-of-script (success path), copy the live-ISO log to the
 # installed system at /mnt/var/log/zeta-install.log so it survives
 # the reboot. After first boot of the installed system, operator can
@@ -1800,7 +1800,7 @@ if [ -d "/mnt/var" ]; then
   sudo mkdir -p /mnt/var/log
   sudo cp "$ZETA_INSTALL_LOG" /mnt/var/log/zeta-install.log
   sudo chmod 0644 /mnt/var/log/zeta-install.log
-  echo "[B-0834] install log copied to /mnt/var/log/zeta-install.log"
-  echo "[B-0834] post-reboot: \`cat /var/log/zeta-install.log | less\`"
+  echo "[081KSGS9H0008QG0R001RR3ZXQ] install log copied to /mnt/var/log/zeta-install.log"
+  echo "[081KSGS9H0008QG0R001RR3ZXQ] post-reboot: \`cat /var/log/zeta-install.log | less\`"
 fi
-echo "[B-0834] live-ISO copy still available at $ZETA_INSTALL_LOG until reboot"
+echo "[081KSGS9H0008QG0R001RR3ZXQ] live-ISO copy still available at $ZETA_INSTALL_LOG until reboot"

@@ -5,7 +5,7 @@
 > valid. For future Aaron and future Otto — we both ramble and we're both forgetful, so this is the
 > durable capture. **Hub**; full reasoning in the **satellite**:
 > `docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-cells-control-plane-three-host-substrates-aaron-otto.md`.
-> Master checklist **B-0959**.
+> Master checklist **081KSXN940008QG0R003FCQ7WT**.
 
 ## North Star — the git-native database
 
@@ -176,7 +176,7 @@ using DynamicValue's byte-locked per-format serializer:
 8. **2nd executable — Ace package manager with a DI-injected Zeta cell** (after item #1; workitem
    `081KTGFG5M9`). A file-type plugin per supported package manager (npm/NuGet/Cargo/pip/…) handling its
    declarative dep files — the file-type plugin model applied to dependency manifests; the first real
-   *second application* on the substrate (forces a clean cell-injection API). Composes B-0824
+   *second application* on the substrate (forces a clean cell-injection API). Composes 081KSGS9H0008QG0R0031PBNGA
    (package-manager-of-package-managers) + the Ace seed `081KTFKQGZP`.
 9. **BFT Quorum Transition (Wallet Prerequisite)** — transition the BFT consensus from the fixed `Members`
    configuration to a rolling, window-based estimate of distinct sources derived dynamically from the stream
@@ -193,7 +193,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 ### Parked (scoped, ready when wanted)
 
 - **Craft school** — teaching companion per expert skill + RPG progression (levels + prerequisite DAG +
-  **exit-doors**) + ribosome catalog. Slice-1 scoped (extend `teaching-skill-pattern.md`); B-0646 §6.
+  **exit-doors**) + ribosome catalog. Slice-1 scoped (extend `teaching-skill-pattern.md`); 081KRW63S0008QG0R001Z10PVV §6.
 - The geo/governance pattern libraries (item 8).
 
 ---

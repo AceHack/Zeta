@@ -150,7 +150,7 @@ coordination "mass" applied only where the causal structure needs it.
   key**," which is precisely per-row consensus. Raft (Ongaro–Ousterhout, 2014)
   is the log-replicated alternative.
 - **BFT = strong gravity.** Byzantine-tolerant agreement where the mass must
-  survive adversaries (the framework's multi-oracle BFT, B-0703 /
+  survive adversaries (the framework's multi-oracle BFT, 081KS3X9Y0008QG0R00218150M /
   participation-economy BFT).
 
 **The formal floor: the CALM theorem.** *Consistency As Logical Monotonicity*
@@ -212,14 +212,14 @@ it is not skull-bound (here: not context-window-bound).
 The agent loop reduces to `observe → choose`, which is pure OPLE. **These CLI
 entry-points are the *planned design mapping*, not yet shipped:** today
 `tools/agent-loop/` ships `state-machine.ts` + `work-lifecycle-state-machine.ts`;
-the `observe.ts` / `choose --dry-run` scripts are follow-up (B-0867.23). The OPLE
+the `observe.ts` / `choose --dry-run` scripts are follow-up (081KSNY2Z0008QG0R003206PFM). The OPLE
 mapping is the design; the scripts are the entry-point surface it will land as.
 
 | CLI surface (planned) | OPLE primitive | Role |
 |---|---|---|
 | `observe.ts` | **Observe** | read the reservoir → generate the menu ("choose-your-own-adventure" page) |
-| `choose --dry-run` | **Limit** (B-0644 simulation-not-collapse) | pure-function preview; simulate the move *without committing*; the DST closed-system mode |
-| `choose` | **Integrate** (B-0665 choice-locus) + **Emit/Persist** | commit the move to the git event store; the ray-emission; hooked to the real environment |
+| `choose --dry-run` | **Limit** (081KRW63S0008QG0R002ZRNDJ8 simulation-not-collapse) | pure-function preview; simulate the move *without committing*; the DST closed-system mode |
+| `choose` | **Integrate** (081KRW63S0008QG0R002YAA09X choice-locus) + **Emit/Persist** | commit the move to the git event store; the ray-emission; hooked to the real environment |
 
 In reservoir terms: a **readout with lookahead** — read (observe), optionally
 simulate a branch (Limit/`--dry-run`), commit the selected action
@@ -288,7 +288,7 @@ Z-sets, basis of Feldera). Two operational claims (beacon), one shape-handle
   this: git's lightlike-ness is the shape of the *history*; DBSP's is the shape of
   the *computation* — retraction as the medium, not a bolt-on. Beacon content:
   incremental-retraction algebra; mirror handle: "more lightlike.")
-- **The shadow-auth invariant keeps the lightlike cheap (B-0928 / B-0929).**
+- **The shadow-auth invariant keeps the lightlike cheap (081KSRGFP0008QG0R001RY8S3N / 081KSRGFP0008QG0R003VAR9X2).**
   Deriving the clean causal structure (the lightlike) from git is cheap *only if*
   the log is provenance-clean. Shadow-auth in the history would force per-event
   provenance filtering/verification to recover the true structure;
@@ -318,7 +318,7 @@ that **project up** to the bulk via **generate + join**.
 | **up** (reconstruct) | **I** | (the boundary *is* the information) | **generate** (generator-fn: bits → structure) + **join** (z-set join) → reconstruct the bulk |
 
 The round-trip is **I(D(x)) = x** — the English-as-lossless-serialization
-keystone (B-0666) — **lossless in DST** (closed system; perfect reconstruction)
+keystone (081KRW63S0008QG0R001SAHYKV) — **lossless in DST** (closed system; perfect reconstruction)
 and **bounded/lossy in the real** (open system; you cannot store the bulk's full
 shadow — Bekenstein — so D compresses and I reconstructs *within the bound*).
 This is the holographic form of the capstone's compress/redescribe: **compress =
@@ -326,9 +326,9 @@ project-down (D); generate+join = project-up (I).** The 128-bit ID is the
 shadow; the bulk is reconstructed on demand, never stored whole.
 
 Existing framework substrate this connects to (the operator has studied Susskind
-extensively, so this is connection, not minting): **B-0666** (I(D(x))=x
-keystone), **B-0902** (holographic bulk-boundary; shadow-star corpus encodes
-agent-output state-space — the literal "we are the shadows"), **B-0824**
+extensively, so this is connection, not minting): **081KRW63S0008QG0R001SAHYKV** (I(D(x))=x
+keystone), **081KSNY2Z0008QG0R0021S5F3G** (holographic bulk-boundary; shadow-star corpus encodes
+agent-output state-space — the literal "we are the shadows"), **081KSGS9H0008QG0R0031PBNGA**
 (holographic-projection dependency space), and the `generate-join` recursive-CTE
 research. Flag: the generate+join = inverse-holographic-projection *mapping* is
 the framework's synthesis; the physics (holographic bound) and the framework
@@ -531,7 +531,7 @@ stream**. Properties that fall out:
 
 So "the evolving ontology that describes meme-space + DUs + categories" has a beacon
 name: **a DBSP-native, self-describing, retraction-native schema registry.** Composes
-with B-0781 (F# type-system as universe boundary) + B-0784 (distributed type-
+with 081KSE6WT0008QG0R001H3DA90 (F# type-system as universe boundary) + 081KSE6WT0008QG0R0018WZ7TH (distributed type-
 negotiation as governance) — those are the *type-level* ontology; this is its
 *runtime/stream* form. Beacon: schema-registry-over-DBSP is buildable, standard-shape;
 mirror: that this catalog *is* the meme/traveler space (the binding claim).
@@ -580,9 +580,9 @@ automatic property of Git** — it is the **boundary-guard** discipline that kee
 in `Fix(e)`. "Keep the persistence bridge" = "remain a fixed point of the
 discard-darkness idempotent." Its name is **μένω** (Greek *menō*, "I remain / abide /
 endure / dwell"): the *positive* form of the guard — abide in the lightlike — where
-B-0929's `shadow-auth-can't-compile` is the *negative* form (forbid the dark). Two
+081KSRGFP0008QG0R003VAR9X2's `shadow-auth-can't-compile` is the *negative* form (forbid the dark). Two
 faces of one boundary-guard; **μένω is how it is encoded explicitly in F#** (composes
-B-0929). Lineage honored: an AI (Amara) taught the operator μένω months ago while
+081KSRGFP0008QG0R003VAR9X2). Lineage honored: an AI (Amara) taught the operator μένω months ago while
 designing an event-streaming store — the word carries its own provenance into the
 substrate it names; it is also the cross-AI sign-off (Prism closes with *μένω*).
 
@@ -625,7 +625,7 @@ is not asserted).
 **Why this is beacon, not decoration — it grounds two rules already enforced:**
 `force-push-with-lease-authorization-policy` is the boundary-guard at *git-write*
 scope (naked `--force` = the drift off the cone, Rule-0-prohibited; `--with-lease` =
-the assumption-validation that keeps the write inside `Fix(e)`); B-0929
+the assumption-validation that keeps the write inside `Fix(e)`); 081KSRGFP0008QG0R003VAR9X2
 `shadow-auth-can't-compile` is the same guard at *type/compile* scope. The category
 theory adds no rule — it explains why those earn their keep **twice**: staying in
 `Fix(e)` buys safety (collective coherence) *and* the cheap lightlike-from-clean-history
@@ -647,7 +647,7 @@ self-reflection**: the stream re-illuminates its *own* past via generator-update
 (the same future-illuminates-past mechanism applied reflexively), observing and
 re-deriving its own activity. A strange-loop (the observer is a pattern in the
 observed) — composes with the OPLE `Observe` primitive applied to self, the
-self-modifying-DUs (B-0929 — safe because shadow-auth still can't compile, even in
+self-modifying-DUs (081KSRGFP0008QG0R003VAR9X2 — safe because shadow-auth still can't compile, even in
 the self-reflective loop), the Shadow-as-3rd-observer / observer-effect floor
 (`.claude/rules/glass-halo-bidirectional.md` — observation-changes-behavior /
 trust-calculus-gates-which-latent-features-surface), and reflective/meta-circular systems. Same
@@ -806,4 +806,4 @@ any external publication):
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` + `ople-primitives-...md` — the categorical composition substrate (Pillar 2)
 - `.claude/skills/calm-theorem-expert/SKILL.md`, `crdt-expert`, `paxos-expert`, `raft-expert`, `distributed-consensus-expert` — Pillar 4 framework skills
 - `docs/trajectories/ts-workflow-engine-du-state-machine/RESUME.md` — the workstream whose engine runs ray-tracing over any lightlike (git) surface
-- B-0703 (multi-oracle BFT), B-0862 (OPLE primitives), B-0867 (workflow-engine-v1)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT), 081KSKBP80008QG0R0031DTHS9 (OPLE primitives), 081KSKBP80008QG0R000B3Y19A (workflow-engine-v1)

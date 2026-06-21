@@ -12,7 +12,7 @@
 # All upstream-installer call sites (Homebrew, mise, elan)
 # now use the download-to-temp + verify + exec pattern via
 # curl_fetch. The former curl_fetch_stream function (streamed
-# pipe-to-shell, no retries) was removed by B-0063 — no call
+# pipe-to-shell, no retries) was removed by 081KQ8P5D0008QG0R001DMK8JD — no call
 # sites remain.
 #
 # WHY
@@ -33,7 +33,7 @@
 # *"sounds like a common helper would help too rather than
 # copy/paste."*
 #
-# DOWNLOAD-TO-TEMP PATTERN (B-0063)
+# DOWNLOAD-TO-TEMP PATTERN (081KQ8P5D0008QG0R001DMK8JD)
 # ==================================
 # All upstream-installer call sites now download to a temp
 # file via curl_fetch (with full retries), verify content
@@ -83,7 +83,7 @@
 # COMMAND-SUBSTITUTION + SET-E (historical note)
 # ===============================================
 # All installer call sites now use download-to-temp + exec
-# (B-0063), which sidesteps the command-substitution + set -e
+# (081KQ8P5D0008QG0R001DMK8JD), which sidesteps the command-substitution + set -e
 # interaction entirely. curl_fetch writes to a file; failure
 # is caught by curl's non-zero exit + set -euo pipefail; the
 # size check ([ -s "$TMP" ]) catches the edge case of an

@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// Braid — **the braid group made executable, so "topology is hairdressing" can be TESTED** (B-1027's
+/// Braid — **the braid group made executable, so "topology is hairdressing" can be TESTED** (081KTSZN10008QG0R001BW91GT's
 /// falsifiable item: do the Artin relations hold?).
 ///
 /// Representation: **Artin's action on the free group Fₙ** — faithful (Artin 1925), exact, integer-only

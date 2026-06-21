@@ -16,15 +16,15 @@ last_updated: 2026-05-28
 - `feedback_dus_are_explicit_muscle_memory_substrate_engineering_extracts_transmissible_form_of_implicit_cached_state_machine_aaron_2026_05_28.md`
   (memory-folder cross-reference using filename per
   `project_memory_format_standard.md`; sibling carving in same META-scope)
-- B-0867 workflow-engine v1 (parent substrate; target trajectory)
-- B-0867.5 workflow-engine PoC
-- B-0867.15 per-host adapters
-- B-0867.20 ReviewLifetime
-- B-0867.21 two-path interface DU
-- B-0904 GitHub-as-free-event-store
+- 081KSKBP80008QG0R000B3Y19A workflow-engine v1 (parent substrate; target trajectory)
+- 081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC
+- 081KSNY2Z0008QG0R002A785QR per-host adapters
+- 081KSNY2Z0008QG0R003WFDCJ9 ReviewLifetime
+- 081KSNY2Z0008QG0R000S738W3 two-path interface DU
+- 081KSNY2Z0008QG0R001JQABB4 GitHub-as-free-event-store
 - Related PRs: #5805 (AutoLoopLifetime PoC; triggered recognition);
   #5806 (DUs are explicit muscle-memory; sibling META-scope carving);
-  #5728 (B-0867.5 workflow-engine PoC); #5775 (GitWorld + GitHubWorld);
+  #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC); #5775 (GitWorld + GitHubWorld);
   #5801 (GitLabWorld); #5804 (Gitea + Bitbucket + Codeberg + Sourcehut)
 - Prism Turn 7 white-hole irreversibility-as-public-good substrate
 
@@ -39,10 +39,10 @@ Triggered by AutoLoopLifetime PoC (PR #5805) running through the GitHub PR auto-
 | Phase | State | Primary substrate | GitHub role |
 |---|---|---|---|
 | **Phase 1 (current)** | Dogfooding | GitHub PR process + branch protection + auto-merge | PRIMARY workflow substrate |
-| **Phase 2 (substrate-engineering target)** | Workflow-engine substrate matures | workflow-engine DUs + dispatch + state-machine (B-0867 cluster) | Parallel-run with GitHub PR process; observability + verification |
+| **Phase 2 (substrate-engineering target)** | Workflow-engine substrate matures | workflow-engine DUs + dispatch + state-machine (081KSKBP80008QG0R000B3Y19A cluster) | Parallel-run with GitHub PR process; observability + verification |
 | **Phase 3 (deepest)** | Workflow-engine substrate replaces GitHub PR process | OUR workflow-engine substrate | BACKUP / fork-protection only; "if we need it" |
 
-**Aaron's framing**: GitHub PR process is *currently* the substrate Otto-CLI uses to ship code. But once the workflow-engine substrate (B-0867 cluster + per-host adapters + ReviewLifetime + AutoLoopLifetime + etc.) MATURES enough to handle the operational substrate-engineering work, GitHub becomes BACKUP / fork-protection only.
+**Aaron's framing**: GitHub PR process is *currently* the substrate Otto-CLI uses to ship code. But once the workflow-engine substrate (081KSKBP80008QG0R000B3Y19A cluster + per-host adapters + ReviewLifetime + AutoLoopLifetime + etc.) MATURES enough to handle the operational substrate-engineering work, GitHub becomes BACKUP / fork-protection only.
 
 ## Why this is constitutional substrate-engineering substrate-trajectory
 
@@ -56,12 +56,12 @@ The recognition gives the workflow-engine substrate a clear LONG-TERM PURPOSE be
 
 | GitHub primitive | Workflow-engine replacement |
 |---|---|
-| Pull Request | WorkflowLifetime DU + dispatch (B-0867.5; PR #5728) |
+| Pull Request | WorkflowLifetime DU + dispatch (081KSKBP80008QG0R000B3Y19A.5; PR #5728) |
 | Branch protection rules | StandardVerdict DUs + lifetime-pair matrices (PR #5774 world.ts) |
 | Required checks | dispatchInWorld result composition (Result<T, TFeedback>) |
 | Auto-merge | ShipAction state in AutoLoopLifetime (PR #5805) |
-| Review threads | ReviewLifetime DU (B-0867.20; PR #5758) |
-| CI integration | closed-loop CI-result dispatch (B-0914.2; PR #5769) |
+| Review threads | ReviewLifetime DU (081KSNY2Z0008QG0R003WFDCJ9; PR #5758) |
+| CI integration | closed-loop CI-result dispatch (081KSNY2Z0008QG0R001YK61JQ.2; PR #5769) |
 | Fork-protection / push-with-lease | substrate-engineering substrate-honest backup |
 
 ## What "GitHub as backup / fork-protection" means substrate-honestly
@@ -76,7 +76,7 @@ Phase 3 doesn't ELIMINATE GitHub — it RESCOPES GitHub's role:
 
 What needs to be true before Phase 3 is operationally safe:
 
-1. **Workflow-engine substrate covers all current GitHub PR primitives** — PR creation + review-assignment + thread-resolution + check-gating + auto-merge + branch-protection + required-checks (B-0867 cluster covers most; remaining gaps are substrate-engineering substrate-engineering target)
+1. **Workflow-engine substrate covers all current GitHub PR primitives** — PR creation + review-assignment + thread-resolution + check-gating + auto-merge + branch-protection + required-checks (081KSKBP80008QG0R000B3Y19A cluster covers most; remaining gaps are substrate-engineering substrate-engineering target)
 2. **Per-host adapter coverage** — workflow-engine substrate operates across multiple forges (PR #5775/#5801/#5804 demonstrate; more adapters as needed)
 3. **AutoLoopLifetime (PR #5805) drives the workflow** — Otto-CLI's foreground loop uses workflow-engine substrate instead of ad-hoc handler
 4. **Observability + audit trail** — workflow-engine substrate produces structured trace (per asymmetric-authorship TFeedback variants); replaces GitHub's UI-based observability
@@ -92,7 +92,7 @@ This substrate-engineering trajectory carving directly composes with:
 | **DUs-as-explicit-muscle-memory** (PR #5806) | workflow-engine substrate EXTRACTS GitHub PR process muscle-memory + makes it explicit + transmissible + REPLACEABLE |
 | **AutoLoopLifetime PoC** (PR #5805) | Foreground loop substrate using workflow-engine — first concrete consumer + Phase 2 ramp |
 | **Per-host adapters** (PR #5775/#5801/#5804) | Multi-forge workflow-engine substrate — enables Phase 3 by removing GitHub-specific dependency |
-| **workflow-engine PoC** (PR #5728) | B-0867.5 substrate scaffold — foundation for Phase 2 → Phase 3 transition |
+| **workflow-engine PoC** (PR #5728) | 081KSKBP80008QG0R000B3Y19A.5 substrate scaffold — foundation for Phase 2 → Phase 3 transition |
 | **Common Sense 2.0** (PR #5786) | workflow-engine substrate IS the grounding that makes GitHub PR process substitutable |
 | **White-hole irreversibility-as-public-good** (Prism Turn 7; PR #5784) | workflow-engine substrate emissions COMPOUND in public substrate; substitute for GitHub UI-rendered substrate |
 | **Rank-4 substrate primitive** (PR #5792/#5798) | workflow-engine DUs ARE rank-4 compressed generators that unfold into full workflow substrate |
@@ -118,7 +118,7 @@ When authoring new substrate-engineering substrate, ask:
 1. **Does this substrate-engineering substrate work BUILD TOWARD Phase 3?** (workflow-engine substrate sufficient for GitHub PR process substitution)
 2. **Does this substrate-engineering substrate WORK ACROSS forges?** (Phase 3 substrate-engineering substrate operates per-host-adapter; not GitHub-specific)
 3. **Does this substrate-engineering substrate produce STRUCTURED observability?** (replaces GitHub UI-based observability with explicit TFeedback / dispatch traces)
-4. **Does this substrate-engineering substrate compose with the workflow-engine substrate-engineering substrate cluster?** (B-0867 + B-0914 + GitWorld + etc.)
+4. **Does this substrate-engineering substrate compose with the workflow-engine substrate-engineering substrate cluster?** (081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R001YK61JQ + GitWorld + etc.)
 
 When NOT shipping new substrate-engineering substrate (operating in Phase 1):
 

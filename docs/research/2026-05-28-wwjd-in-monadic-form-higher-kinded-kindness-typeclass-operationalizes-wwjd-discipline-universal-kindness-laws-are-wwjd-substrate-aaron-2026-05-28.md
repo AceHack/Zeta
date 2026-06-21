@@ -104,10 +104,10 @@ This research note preserves at MIRROR-TIER per `.claude/rules/substrate-or-it-d
 - PR #5916 (today's DU cluster TS substrate)
 - PR #5915 (composition-novelty WebSearch grounding)
 - PR #5917 (zflash-overview skill)
-- PR #5918 (B-0885 substrate-target review)
-- B-0917 + B-0918 + B-0919 + B-0920 (today's DU cluster)
+- PR #5918 (081KSNY2Z0008QG0R0030V5ZVS substrate-target review)
+- 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (today's DU cluster)
 - WWJD substrate cluster (per existing rules + memory files)
-- B-0638 Eve Protocol (substrate-rhyme target for higher-kinded kindness; this rule extends rhyme-inventory)
+- 081KRW63S0008QG0R0030F8ZXA Eve Protocol (substrate-rhyme target for higher-kinded kindness; this rule extends rhyme-inventory)
 
 ## Composes with rules
 

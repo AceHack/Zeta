@@ -49,7 +49,7 @@ THIS file IS the meta-decomposition move at forced #6 for this corner case — d
 |---|---|---|
 | #3808 | empirical evidence (tick shard) | CLOSED |
 | #3812 | rule edit (claim-acquire) | OPEN, BLOCKED on review |
-| #3817 | backlog row B-0558 | OPEN, DIRTY |
+| #3817 | backlog row 081KRQ1AB0008QG0R001KQ9S4B | OPEN, DIRTY |
 | #3818 | rule edit (holding-discipline + sub-case 5) | MERGED ✓ |
 | #3832 | mid-session saturation-ceiling memory | MERGED ✓ |
 | **this PR** | **end-state corner case memory** | **OPEN** |

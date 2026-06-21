@@ -153,7 +153,7 @@ describe("extractPaceInstructions", () => {
             "",
             "Aaron 2026-05-02:",
             "",
-            '> *"go hard on B-0160"*',
+            '> *"go hard on 081KQJZR90008QG0R000FTJ1TC"*',
             '> *"you can go hard, you don\'t have to do minimum action"*',
         ].join("\n"));
         const result = await extractPaceInstructions(root);
@@ -168,7 +168,7 @@ describe("extractPaceInstructions", () => {
         writeFileSync(join(root, "memory", "CURRENT-aaron.md"), [
             "# CURRENT-aaron.md",
             "",
-            'Aaron 2026-05-01: *"go hard on B-0160"*',
+            'Aaron 2026-05-01: *"go hard on 081KQJZR90008QG0R000FTJ1TC"*',
             'Aaron 2026-05-02: *"rest now, hold the line"*',
         ].join("\n"));
         const result = await extractPaceInstructions(root);
@@ -252,7 +252,7 @@ describe("extractPaceInstructions", () => {
         writeFileSync(join(root, "docs", "active-trajectory.md"), [
             "# Active trajectory",
             "",
-            'Aaron 2026-05-06: *"go hard on B-0160 decomposition"*',
+            'Aaron 2026-05-06: *"go hard on 081KQJZR90008QG0R000FTJ1TC decomposition"*',
         ].join("\n"));
         const result = await extractPaceInstructions(root);
         expect(result.length).toBe(1);

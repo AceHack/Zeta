@@ -1,6 +1,6 @@
 ---
 name: Class-level rules need orthogonality check before encoding — extend existing or create orthogonal; Rodney's Razor is the verification (Aaron 2026-05-01)
-description: Aaron 2026-05-01 — when encoding a class-level rule from a found problem (Layer 3 of the 4-layer meta-learning pattern), FIRST check existing classes for similarity; if the finding fits an existing class, extend it; if it's genuinely separate, create a new orthogonal class; Rodney's Razor verifies the orthogonality and catches overlap. This is the meta-meta-meta layer above B-0126's Layer 3 (encode the class). Without it, the class library accumulates redundant or overlapping rules and loses canonicalization discipline. Cross-project rule (Aaron mentioned applying it on "the other system" too); composes with orthogonal-axes-factory-hygiene + canonical-definition-machinery + uberbang.
+description: Aaron 2026-05-01 — when encoding a class-level rule from a found problem (Layer 3 of the 4-layer meta-learning pattern), FIRST check existing classes for similarity; if the finding fits an existing class, extend it; if it's genuinely separate, create a new orthogonal class; Rodney's Razor verifies the orthogonality and catches overlap. This is the meta-meta-meta layer above 081KQGDBJ0008QG0R001JC9HCJ's Layer 3 (encode the class). Without it, the class library accumulates redundant or overlapping rules and loses canonicalization discipline. Cross-project rule (Aaron mentioned applying it on "the other system" too); composes with orthogonal-axes-factory-hygiene + canonical-definition-machinery + uberbang.
 type: feedback
 ---
 
@@ -16,7 +16,7 @@ Aaron 2026-05-01 (verbatim, between drain-push and tick-close):
 
 ## The rule
 
-When applying Layer 3 of the 4-layer meta-learning pattern (B-0126
+When applying Layer 3 of the 4-layer meta-learning pattern (081KQGDBJ0008QG0R001JC9HCJ
 — encode the *class* of error, not the one-off instance), DO NOT
 just write the class as a new memory file. First:
 
@@ -156,8 +156,8 @@ file.
 
 ## Composes with
 
-- **`docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`**
-  — this rule is the meta-meta-meta layer above B-0126's
+- **`docs/backlog/P1/081KQGDBJ0008QG0R001JC9HCJ-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`**
+  — this rule is the meta-meta-meta layer above 081KQGDBJ0008QG0R001JC9HCJ's
   Layer 3 (encode the class). Layer 3 says encode the class;
   this rule says *check existing classes before encoding a
   new one*. Layer-stacking: Layer 1 (fix instance) → Layer 2
@@ -199,7 +199,7 @@ Aaron 2026-05-01 follow-up:
 > have the split"*
 
 This refines the explore/exploit split (named in chunk-11 of
-the CSAP-pushback import + tracked as B-0124 distill row).
+the CSAP-pushback import + tracked as 081KQGDBJ0008QG0R0022C4ZXA distill row).
 The split's load-bearing reason: the explore-side (Zeta) is
 where higher-order rule structures (rules-about-rules,
 meta-meta-rules, this orthogonality-discipline) are safe to
@@ -230,7 +230,7 @@ The math-precise framing for "rules-about-rules":
 - **First-order rules** = rules over instances (instance-level
   bug fixes, individual code patterns).
 - **Second-order rules** = rules over first-order rules (Layer
-  3 of B-0126: encode the class). Class-level rules are
+  3 of 081KQGDBJ0008QG0R001JC9HCJ: encode the class). Class-level rules are
   rules-parameterized-by-pattern.
 - **Third-order rules** = rules over class-level rules (THIS
   RULE: the orthogonality / extend-vs-create discipline). These
@@ -293,7 +293,7 @@ machine-graded version will encode this same discipline
 formally.
 
 Composes with `docs/research/aurora-immune-math-standardization-2026-04-26.md`
-+ the chunk-11 explore/exploit framing + B-0124 distill row.
++ the chunk-11 explore/exploit framing + 081KQGDBJ0008QG0R0022C4ZXA distill row.
 
 ## What this rule does NOT do
 

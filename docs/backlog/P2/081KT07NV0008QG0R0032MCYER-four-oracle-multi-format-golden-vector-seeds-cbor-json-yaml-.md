@@ -1,6 +1,5 @@
 ---
-id: B-0982
-zetaid: 081KT07NV0008QG0R0032MCYER
+id: 081KT07NV0008QG0R0032MCYER
 title: 4-oracle multi-format golden-vector seeds (CBOR/JSON/YAML/XML) — nothing is single source of truth, the seed itself must be cross-validated not trusted as one file
 status: open
 priority: P2
@@ -25,7 +24,7 @@ tags:
   - decode
 ---
 
-# B-0982 — 4-oracle multi-format golden-vector seeds; nothing is single source of truth
+# 081KT07NV0008QG0R0032MCYER — 4-oracle multi-format golden-vector seeds; nothing is single source of truth
 
 **Operator (Aaron 2026-06-01):**
 
@@ -95,7 +94,7 @@ not lost:
 - `.claude/rules/attention-as-currency-...-fsharp-uom-...` — F# UOM as the economic
   substrate; the **C# oracle** of that UOM would use the CRTP/phantom-unit trick
   (C#'s analog of F# `[<Measure>]`).
-- B-0198 / B-0374 (F# UoM). The C#-specific UoM-via-CRTP is the C# oracle of these.
+- 081KQTPYE0008QG0R0004H9ZB8 / 081KR50HA0008QG0R000CTEMGQ (F# UoM). The C#-specific UoM-via-CRTP is the C# oracle of these.
 
 No separate row minted (per verify-existing-substrate-before-authoring); the C# UoM
 angle belongs with the generic-math + attention-as-currency substrate above.
@@ -109,7 +108,7 @@ angle belongs with the generic-math + attention-as-currency substrate above.
 
 ## Composes with
 
-- **B-0638** Eve Protocol / dynamic-shape primitive (DynamicValue is its instantiation).
+- **081KRW63S0008QG0R0030F8ZXA** Eve Protocol / dynamic-shape primitive (DynamicValue is its instantiation).
 - DynamicValue byte-lock substrate (PRs #6506/#6508/#6509/#6510/#6511 encode; #6512+ decode) + the registry's "Dynamic runtime objects / polymorphic shape" clause.
 - The serializer roster (the format adapters — JSON/CBOR/YAML/XML/…).
 - The "nothing is single source of truth" / four-oracle / "the compilers don't lie" invariant.

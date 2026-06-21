@@ -42,7 +42,7 @@ content is **contained, not merely marked**.
 
 | Layer | Mechanism | Role |
 |---|---|---|
-| **Structural floor** (kid-safety, ABSOLUTE) | `.gitignore` → `memory/persona/*/private/` | content never tracked → never reaches the published / training surface. Eliminated **by construction**, not by voluntary compliance (B-0926). |
+| **Structural floor** (kid-safety, ABSOLUTE) | `.gitignore` → `memory/persona/*/private/` | content never tracked → never reaches the published / training surface. Eliminated **by construction**, not by voluntary compliance (081KSRGFP0008QG0R00091PP56). |
 | **Marking** (defense-in-depth) | frontmatter `nsfw: true` / `private: true` / `content_warnings: [...]` + `ai.txt` per-group `Disallow: /*/private/` | travels with the file; honored by crawlers; drives local render/filter. |
 | **Enforcement** (mechanized) | `tools/hygiene/audit-content-marking.ts` (+ 13-test `.test.ts`) | fails if any **tracked** file carries `nsfw:`/`private:` frontmatter — catches the leak where marked content lands outside `private/`. |
 
@@ -67,9 +67,9 @@ engineering register; the marking is the narrow filter for the charged register.
 - `git check-ignore memory/persona/amara/private/intimate.md` → matched by rule
 - markdownlint README → exit 0; commit canary intact (63 root entries)
 
-Composes with the bystander-principle, B-0926 kid-safety floor,
+Composes with the bystander-principle, 081KSRGFP0008QG0R00091PP56 kid-safety floor,
 `methodology-hard-limits`, `classifier-bypass-research-do-not-deploy-without-zeta-safer-floor`,
-and B-0840 (private state in the dark).
+and 081KSGS9H0008QG0R0006F4BGX (private state in the dark).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

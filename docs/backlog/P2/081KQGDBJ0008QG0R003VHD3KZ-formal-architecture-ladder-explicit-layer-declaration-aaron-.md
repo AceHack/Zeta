@@ -1,6 +1,5 @@
 ---
-id: B-0146
-zetaid: 081KQGDBJ0008QG0R003VHD3KZ
+id: 081KQGDBJ0008QG0R003VHD3KZ
 priority: P2
 status: open
 title: Formal architecture ladder — explicit-layer-declaration discipline for B-rows
@@ -10,7 +9,7 @@ depends_on: []
 type: friction-reducer
 ---
 
-# B-0146 — Formal architecture ladder — explicit-layer-declaration discipline
+# 081KQGDBJ0008QG0R003VHD3KZ — Formal architecture ladder — explicit-layer-declaration discipline
 
 ## What
 
@@ -70,19 +69,19 @@ that compounds across all future B-rows.
 
 3. **Existing-row layer backfill.** A one-time PR that adds
    `layer:` to the formal-foundations B-rows already filed:
-   - B-0136 (category-theoretic compositional structure) → Layer 1
-   - B-0134 (type-theoretic orthogonality) → Layer 2
-   - B-0133 (sequent calculus for retraction) → Layer 2
-   - B-0135 (modal logic for retractability) → Layer 2
-   - B-0137 (Tarski stratification proof) → Layer 2
-   - B-0142 (Code Contracts revival, when filed) → Layer 2
-   - B-0141 (pre/post pattern, when filed) → Layer 2 or 3
-   - B-0130 (verify-before-state-claim mechanized auditor) → Layer 5
-   - B-0144 (doc/code two-lane parallel split) → not formal-
+   - 081KQGDBJ0008QG0R0029JMJWE (category-theoretic compositional structure) → Layer 1
+   - 081KQGDBJ0008QG0R0032X1MMC (type-theoretic orthogonality) → Layer 2
+   - 081KQGDBJ0008QG0R0035M1YRC (sequent calculus for retraction) → Layer 2
+   - 081KQGDBJ0008QG0R002X4AFA0 (modal logic for retractability) → Layer 2
+   - 081KQGDBJ0008QG0R003NDQTBM (Tarski stratification proof) → Layer 2
+   - 081KQGDBJ0008QG0R002WY918J (Code Contracts revival, when filed) → Layer 2
+   - 081KQGDBJ0008QG0R0015RNK3P (pre/post pattern, when filed) → Layer 2 or 3
+   - 081KQGDBJ0008QG0R002Y31XJ3 (verify-before-state-claim mechanized auditor) → Layer 5
+   - 081KQGDBJ0008QG0R0021E8YZV (doc/code two-lane parallel split) → not formal-
      foundations (process row); skip layer assignment
-   - B-0145 (PM-2 role) → not formal-foundations (org row);
+   - 081KQGDBJ0008QG0R000RWAA67 (PM-2 role) → not formal-foundations (org row);
      skip layer assignment
-   - B-0146 (this row) → Layer 5 (mechanizes the discipline
+   - 081KQGDBJ0008QG0R003VHD3KZ (this row) → Layer 5 (mechanizes the discipline
      itself; it's a harness for the harness)
 
 4. **Gap detection (optional).** A simple report at
@@ -109,9 +108,9 @@ that compounds across all future B-rows.
   (PR #1116) — the substrate this row mechanizes
 - `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`
   (PR #1116) — rung-4 lessons-mechanization that compounds
-- B-0136 (category theory; Layer 1)
-- B-0134, B-0133, B-0135, B-0137 (type theory; Layer 2)
-- B-0130 (mechanized auditor; Layer 5)
+- 081KQGDBJ0008QG0R0029JMJWE (category theory; Layer 1)
+- 081KQGDBJ0008QG0R0032X1MMC, 081KQGDBJ0008QG0R0035M1YRC, 081KQGDBJ0008QG0R002X4AFA0, 081KQGDBJ0008QG0R003NDQTBM (type theory; Layer 2)
+- 081KQGDBJ0008QG0R002Y31XJ3 (mechanized auditor; Layer 5)
 - `tools/backlog/generate-index.sh` — the generator that
   needs the schema extension
 

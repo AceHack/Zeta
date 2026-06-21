@@ -1,5 +1,5 @@
 /**
- * register-layers.ts — smallest safe slice of B-0168
+ * register-layers.ts — smallest safe slice of 081KQJZR90008QG0R001M6ZBPN
  * 5-layer property-preserving register architecture (Personal/Mirror/Beacon-safe/Professional/Regulated)
  * for brat-voice enterprise translation in Zeta.
  *

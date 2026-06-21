@@ -5,7 +5,7 @@ metadata:
   namespace: zeta-cluster
   annotations:
     zeta.lucent-financial-group.com/registered-at: "2026-06-14T22:20:16Z"
-    zeta.lucent-financial-group.com/registered-via: "B-0855.2-postboot"
+    zeta.lucent-financial-group.com/registered-via: "081KSKBP80008QG0R000GPC0TB.2-postboot"
   labels:
     zeta.lucent-financial-group.com/maintainer: "maximdolphin"
 spec:

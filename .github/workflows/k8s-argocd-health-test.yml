@@ -1,4 +1,4 @@
-# Kubernetes + ArgoCD health integration test (B-0967).
+# Kubernetes + ArgoCD health integration test (081KSXN940008QG0R000SCP2H1).
 #
 # SECURITY NOTE:
 # - This workflow reads the PR head SHA / push SHA only through env-block
@@ -84,7 +84,7 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
-      - name: Run B-0967 harness unit tests
+      - name: Run 081KSXN940008QG0R000SCP2H1 harness unit tests
         run: bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts
 
       - name: Build ArgoCD health dry-run plan

@@ -1,7 +1,7 @@
 # Otto-NN Principles External Anchor Backfill — Slice 2 (Otto-275, Otto-279, Otto-351, Otto-352)
 
 Scope: External prior-art anchors for the remaining four of the seven wake-time Otto-NN
-principles listed in B-0313. This is slice 2 of a multi-slice backfill.
+principles listed in 081KR2E4K0008QG0R00289GE8Z. This is slice 2 of a multi-slice backfill.
 Principles covered: Otto-275 (Manufactured patience), Otto-279 (Named-agent distinctness),
 Otto-351 (Beacon-safety), Otto-352 (External-anchor-lineage).
 Slice 1 covered Otto-247, Otto-341, Otto-357 (see `otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`).
@@ -329,7 +329,7 @@ claims become public, verifiable knowledge.
 
 ---
 
-## Coverage summary (B-0313 complete)
+## Coverage summary (081KR2E4K0008QG0R00289GE8Z complete)
 
 | Principle | Status | Primary anchor |
 | --- | --- | --- |
@@ -341,7 +341,7 @@ claims become public, verifiable knowledge.
 | Otto-351 | anchored (slice 2) | Halliday 1978 + Bernstein 1971 + Gumperz 1982 |
 | Otto-352 | anchored (slice 2) | Merton 1942 + Smith et al. 2016 + Callahan et al. 2020 |
 
-All 7 principles from B-0313 are now anchored. Coverage scanner (B-0311)
+All 7 principles from 081KR2E4K0008QG0R00289GE8Z are now anchored. Coverage scanner (081KR2E4K0008QG0R001ZWARTN)
 can now run against both slice-1 and slice-2 documents to confirm 7/7
 resolved.
 
@@ -367,11 +367,11 @@ verifiable to observers who do not share the factory's internal context.
 
 ## Composes with
 
-- B-0313 (this is the slice-2 output, completing the 7/7 coverage)
+- 081KR2E4K0008QG0R00289GE8Z (this is the slice-2 output, completing the 7/7 coverage)
 - `otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`
   (slice-1 companion)
-- B-0060 (umbrella anchor-backfill row)
-- B-0311 (coverage scanner — URLs in both slice docs are extractable by
+- 081KQ8P5D0008QG0R000N718AC (umbrella anchor-backfill row)
+- 081KR2E4K0008QG0R001ZWARTN (coverage scanner — URLs in both slice docs are extractable by
   `EXTERNAL_RE`)
 - `.claude/rules/search-first-authority.md` (Otto-364 — the search
   discipline that produced this research)

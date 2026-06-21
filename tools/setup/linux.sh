@@ -40,7 +40,7 @@ SETUP_DIR="$REPO_ROOT/tools/setup"
 source "$SETUP_DIR/common/curl-fetch.sh"
 
 # ── Detect NixOS — skip apt step entirely, use systemPackages instead ──
-# iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+# iter-5.5.0 (081KSGS9H0008QG0R001JNKBFD Phase 2, operator 2026-05-27 ALIGNMENT catch):
 # NixOS provides system packages declaratively via common.nix
 # environment.systemPackages, NOT apt. The same install.sh entry-point
 # can still bootstrap a NixOS cluster node by skipping the apt step and
@@ -190,7 +190,7 @@ fi
 # MISE_VERSION + both MISE_SHA256_* values together — they form a
 # content-pin set.
 # Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
-# B-0849 docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
+# 081KSKBP80008QG0R000E3RKPK docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
 linux_sh_nixos_tarball_mise_allowed() {
   [ -f /.dockerenv ] \
     || [ -e /lib64/ld-linux-x86-64.so.2 ] \

@@ -85,9 +85,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-22T12:58:21Z on `memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md`:55 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix broken B-0703 backlog hyperlink**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix broken 081KS3X9Y0008QG0R00218150M backlog hyperlink**
 
-  The new conversation archive links `B-0703` to `docs/backlog/P1/B-0703-...md`, which does not exist in this repo (the tracked file is under `docs/backlog/P2/` with the full slug). This leaves readers with a dead reference in a file whose purpose is durable substrate traceability, and the same broken URL is repeated later in the document.
+  The new conversation archive links `081KS3X9Y0008QG0R00218150M` to `docs/backlog/P1/081KS3X9Y0008QG0R00218150M-...md`, which does not exist in this repo (the tracked file is under `docs/backlog/P2/` with the full slug). This leaves readers with a dead reference in a file whose purpose is durable substrate traceability, and the same broken URL is repeated later in the document.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -103,7 +103,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - **`Copilot` (bot)** at 2026-05-22T13:00:41Z on `memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md`:55 (association: NONE)
 
   <pre>
-  P1: This B-0703 hyperlink is broken (points to `docs/backlog/P1/B-0703-...md`, which doesn't exist) and uses an ellipsis placeholder. Update the URL to the actual B-0703 backlog row path (currently under `docs/backlog/P2/`) so readers can follow the reference.
+  P1: This 081KS3X9Y0008QG0R00218150M hyperlink is broken (points to `docs/backlog/P1/081KS3X9Y0008QG0R00218150M-...md`, which doesn't exist) and uses an ellipsis placeholder. Update the URL to the actual 081KS3X9Y0008QG0R00218150M backlog row path (currently under `docs/backlog/P2/`) so readers can follow the reference.
 
   This issue also appears on line 95 of the same file.
 
@@ -291,17 +291,17 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(pt2): correct B-0703 URL — file is at docs/backlog/P2/ with full …
+fix(pt2): correct 081KS3X9Y0008QG0R00218150M URL — file is at docs/backlog/P2/ with full …
 
 …slug, not P1/ placeholder (per Codex P2 review)
 
 Codex caught 2 broken hyperlinks (lines 55 + 97):
-  Wrong: docs/backlog/P1/B-0703-...md
-  Right: docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-
+  Wrong: docs/backlog/P1/081KS3X9Y0008QG0R00218150M-...md
+  Right: docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-
          inside-dst-agreement-across-trust-gradient-architecture-
          aaron-2026-05-21.md
 
-Verified via `find docs/backlog -name "B-0703*"`. Both URLs now
+Verified via `find docs/backlog -name "081KS3X9Y0008QG0R00218150M*"`. Both URLs now
 point at the actual tracked file.
 
 Co-Authored-By: Claude <noreply@anthropic.com>

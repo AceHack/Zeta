@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-16
 **Status:** Research seed (Otto-directed)
-**Related:** B-0543 (Remember-When + Pay-Attention → Quantum Gravity isomorphism proof path), B-0544 (Step 1 formalization)
+**Related:** 081KRMEXM0008QG0R002YSPW1X (Remember-When + Pay-Attention → Quantum Gravity isomorphism proof path), 081KRMEXM0008QG0R003YWZC21 (Step 1 formalization)
 
 ## The starting point
 

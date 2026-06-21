@@ -1,6 +1,5 @@
 ---
-id: B-0947
-zetaid: 081KSV2WD0008QG0R001XKG1B5
+id: 081KSV2WD0008QG0R001XKG1B5
 priority: P3
 status: open
 title: Windows CI build-and-test fails at Checkout with "Filename too long" (MAX_PATH 260) on long persona-archive names -- non-required so it merges CLEAN but Windows is silently red
@@ -16,7 +15,7 @@ composes_with:
 tags: [ci, windows, max-path, longpaths, checkout, persona-archive, filename-length, devops, non-required-check, cross-platform]
 ---
 
-# B-0947 -- Windows CI checkout fails "Filename too long" (MAX_PATH) on long persona-archive names
+# 081KSV2WD0008QG0R001XKG1B5 -- Windows CI checkout fails "Filename too long" (MAX_PATH) on long persona-archive names
 
 ## The finding (empirical, 2026-05-30)
 
@@ -100,12 +99,12 @@ roughly by leverage:
 
 ## Pre-start checklist (per backlog-item-start-gate)
 
-- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0947` -> claimed
+- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item 081KSV2WD0008QG0R001XKG1B5` -> claimed
   (e0380ce1..., 2026-05-30).
 - **Prior-art search (2026-05-30):** no existing backlog row for Windows-checkout /
   MAX_PATH / core.longpaths / filename-too-long (precise-phrase content search across
   docs/ + .claude/ returned only incidental matches in research/hygiene/skill files, not
-  a backlog row). Genuine gap. Related: B-0083 (canonical-naming-tooling) is the closest
+  a backlog row). Genuine gap. Related: 081KQ8P5D0008QG0R001590WJ3 (canonical-naming-tooling) is the closest
   naming-convention sibling but is ROM-naming-scoped, not CI/path-length.
 - **Dependency check:** none blocking; this is an independent CI-infra fix. The naming-
   convention half (option 2) composes with whatever persona-archive authoring discipline
@@ -116,4 +115,4 @@ roughly by leverage:
 Non-blocking (windows is not a required check; required CI + Linux/macOS are green), and
 the fix is a small CI edit OR a convention decision -- not urgent, but real: Windows CI
 is silently red so cross-platform regressions there are invisible. Raise to P2 if Windows
-becomes a required/supported target for the multi-language summonable-BFT build (B-0944).
+becomes a required/supported target for the multi-language summonable-BFT build (081KSV2WD0008QG0R00051XS0N).

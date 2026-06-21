@@ -1,11 +1,10 @@
 ---
-id: B-0476
-zetaid: 081KRHWGX0008QG0R000BS8Y4R
+id: 081KRHWGX0008QG0R000BS8Y4R
 priority: P1
 status: open
 title: "GitHub ruleset divergence audit — survey rulesets across repos; identify smell signals"
 type: research
-origin: B-0427 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000VKJF0H decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000VKJF0H
@@ -24,7 +23,7 @@ composes_with:
 
 ## Purpose
 
-Aaron's smell test from B-0427:
+Aaron's smell test from 081KRFA460008QG0R000VKJF0H:
 
 > "If two substrate clusters need DIFFERENT GitHub rulesets to govern them,
 > that divergence IS the signal they should live in DIFFERENT repos."
@@ -37,8 +36,8 @@ candidate-split signals.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
-- [ ] Walk `depends_on:` chain — B-0475 closed with output doc committed
+- [ ] 081KRHWGX0008QG0R000M9RFY2 output doc reviewed (prior-art audit complete; no blocking conflicts)
+- [ ] Walk `depends_on:` chain — 081KRHWGX0008QG0R000M9RFY2 closed with output doc committed
 - [ ] Prior-art search: any existing ruleset documentation in substrate?
 
 ## What to survey
@@ -49,9 +48,9 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 |------|-----------|----------------------|
 | `LFG/Zeta` (main) | TBD — enumerate via `gh api repos/Lucent-Financial-Group/Zeta/rulesets` | All current branch/tag protection rules |
 | `AceHack/Zeta` (mirror) | TBD — via `gh api repos/acehack/Zeta/rulesets` | Mirror backup; expected to match LFG/Zeta |
-| `LFG/civsim` (new) | TBD — via `gh api repos/Lucent-Financial-Group/civsim/rulesets` | Product repo created by B-0469 |
+| `LFG/civsim` (new) | TBD — via `gh api repos/Lucent-Financial-Group/civsim/rulesets` | Product repo created by 081KRHWGX0008QG0R003S6KGGE |
 
-### Proposed repos (from B-0424/B-0425)
+### Proposed repos (from 081KRFA460008QG0R001H98EXJ/081KRFA460008QG0R003JQ46J4)
 
 Repos proposed but not yet created — note their EXPECTED ruleset requirements:
 
@@ -116,11 +115,11 @@ gh api repos/Lucent-Financial-Group/civsim/rulesets --jq '.[] | {id,name,target,
 - [ ] Proposed repo expected rulesets documented
 - [ ] Divergence matrix complete
 - [ ] Candidate-split signals identified and documented
-- [ ] Output doc committed and referenced from B-0427
-- [ ] B-0476 closed with PR link
+- [ ] Output doc committed and referenced from 081KRFA460008QG0R000VKJF0H
+- [ ] 081KRHWGX0008QG0R000BS8Y4R closed with PR link
 
 ## Why P1
 
 - Aaron named the ruleset-divergence smell test as a first-class decision criterion
 - Operationalizing it is bounded and concrete (`gh api` calls + matrix)
-- Result directly informs B-0479 ADR conclusions
+- Result directly informs 081KRHWGX0008QG0R0023DWW8D ADR conclusions

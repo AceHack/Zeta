@@ -1,13 +1,12 @@
 ---
-id: B-0486
-zetaid: 081KRHWGX0008QG0R00273520P
+id: 081KRHWGX0008QG0R00273520P
 priority: P1
 status: closed
 closed: 2026-05-14
 closed_by: "docs/personas/civsim-personas.md"
-title: "B-0429.2 — Civsim persona map"
+title: "081KRFA460008QG0R002M05EY1.2 — Civsim persona map"
 type: planning
-origin: B-0429 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R002M05EY1 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R002M05EY1
@@ -21,22 +20,22 @@ composes_with:
   - docs/backlog/P1/081KRHWGX0008QG0R002NJP2BH-civsim-zeta-version-pin-bump-2026-05-14.md
 ---
 
-# B-0486 — Civsim persona map
+# 081KRHWGX0008QG0R00273520P — Civsim persona map
 
 ## Purpose
 
 Produce the canonical persona map for **Civsim** — the factory's highest-substrate-maturity
-product (PR #2903, #2906, B-0469 live). Civsim is first because existing substrate is
+product (PR #2903, #2906, 081KRHWGX0008QG0R003S6KGGE live). Civsim is first because existing substrate is
 richest, yielding the most grounded initial persona inventory.
 
 ## Pre-start checklist
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [x] Template from B-0485 is closed and available
+- [x] Template from 081KRHWGX0008QG0R00019453T is closed and available
 - [x] Read PR #2903 (Civsim repo scaffold) for product description
 - [x] Read PR #2906 (Civsim governance) for persona signals
-- [x] Read B-0469 (civsim --apply live) for usage context
+- [x] Read 081KRHWGX0008QG0R003S6KGGE (civsim --apply live) for usage context
 - [x] Walk `composes_with:` chain
 
 ## Persona hypotheses (to be validated)
@@ -51,7 +50,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Output
 
-Per-product persona map using template from B-0485:
+Per-product persona map using template from 081KRHWGX0008QG0R00019453T:
 
 ```
 docs/personas/civsim-personas.md
@@ -65,15 +64,15 @@ With:
 
 ## Definition of done
 
-- [x] Template from B-0485 applied
+- [x] Template from 081KRHWGX0008QG0R00019453T applied
 - [x] At least 2 primary personas documented with full template fields
 - [x] At least 1 refused persona documented with HARD LIMITS rationale
 - [x] Output doc committed at canonical path
-- [x] B-0492 `composes_with:` pointer backfilled (composition noted in doc)
-- [x] B-0486 status set to `closed` with PR link
+- [x] 081KRHWGX0008QG0R000WGP5AQ `composes_with:` pointer backfilled (composition noted in doc)
+- [x] 081KRHWGX0008QG0R00273520P status set to `closed` with PR link
 
 ## Why P1
 
-Civsim is the live product (B-0469 shipped). Persona clarity unblocks
+Civsim is the live product (081KRHWGX0008QG0R003S6KGGE shipped). Persona clarity unblocks
 skill authoring for Civsim (per PR #2933 ships-with-skills). Also provides
-the first worked example of the template from B-0485.
+the first worked example of the template from 081KRHWGX0008QG0R00019453T.

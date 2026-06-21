@@ -1,8 +1,8 @@
 namespace Zeta.Bayesian
 
-/// # The message algebra — the inference kernel (B-1000 slice 2)
+/// # The message algebra — the inference kernel (081KT2T2J0008QG0R000S7GHQ8 slice 2)
 ///
-/// The Zeta Infer.NET rewrite (B-1000) runs **message passing** over a
+/// The Zeta Infer.NET rewrite (081KT2T2J0008QG0R000S7GHQ8) runs **message passing** over a
 /// factor graph: variables and factors exchange *messages*, and the
 /// marginals are the products of incoming messages. This module is the
 /// kernel those later slices (factor graph → sum-product BP → EP) stack

@@ -2,7 +2,7 @@
 /**
  * src/Core.TypeScript/zflash/test-harness/run.ts
  *
- * B-0891 — zflash 5-scenario test-harness CLI dispatcher (PoC scaffold)
+ * 081KSNY2Z0008QG0R0008PN7RQ — zflash 5-scenario test-harness CLI dispatcher (PoC scaffold)
  *
  * Usage:
  *   bun src/Core.TypeScript/zflash/test-harness/run.ts --list
@@ -108,7 +108,7 @@ function parseArgs(argv) {
 }
 function emitListing() {
     console.log(JSON.stringify({
-        rowId: "B-0891",
+        rowId: "081KSNY2Z0008QG0R0008PN7RQ",
         scenarioCount: SCENARIOS.length,
         implDesignProgress: computeImplDesignProgress(),
         scenarios: SCENARIOS.map((s) => {
@@ -140,7 +140,7 @@ function emitDryRun(scenarioId) {
         return 2;
     }
     console.log(JSON.stringify({
-        rowId: "B-0891",
+        rowId: "081KSNY2Z0008QG0R0008PN7RQ",
         mode: "dry-run",
         targets: targets.map((s) => ({
             id: s.id,
@@ -656,7 +656,7 @@ function runScenario(scenarioId, isoPath) {
 }
 function emitResults(results) {
     console.log(JSON.stringify({
-        rowId: "B-0891",
+        rowId: "081KSNY2Z0008QG0R0008PN7RQ",
         summary: {
             total: results.length,
             passed: results.filter((r) => r.status === "passed").length,

@@ -1,5 +1,5 @@
 <!--
-Eval-set fixture for substrate-claim-checker (B-0170.4).
+Eval-set fixture for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV.4).
 
 Reproduces the convention-drift pattern check-convention.ts surfaces —
 a current ADR carries a "Supersedes ADR ..." claim but the predecessor
@@ -10,11 +10,11 @@ the repo.
 
 This is the fifth eval-set fixture (after count-drift-9-vs-15.md,
 existence-drift-missing-doc.md, path-form-drift-bare-vs-qualified.md,
-and cross-surface-drift-9-vs-15.md), extending B-0170.4 regression
+and cross-surface-drift-9-vs-15.md), extending 081KQNJ500008QG0R003SCWBDV.4 regression
 coverage to the convention sub-class of the 7-class verify-then-claim
 taxonomy.
 
-Anchor PR: #2512 (`feat(B-0170): add ADR supersession convention
+Anchor PR: #2512 (`feat(081KQNJ500008QG0R003SCWBDV): add ADR supersession convention
 checker`) — the PR that shipped the check-convention.ts checker.
 This fixture is a synthetic exemplar (no single historical drift
 instance anchors the sub-class), same shape as path-form-drift's

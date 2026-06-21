@@ -22,11 +22,11 @@ Single-file landing: `docs/hygiene-history/ticks/2026/05/17/1401Z.md`.
 
 Captures the post-reset PR-create burst tick. Rate-limit recovered from 0 → 4995 at 14:00Z; 3 parked branches landed:
 
-- [#4086](https://github.com/Lucent-Financial-Group/Zeta/pull/4086) — B-0613 row + 1356Z shard (peer-Otto authored, this Otto preserved+PR'd)
+- [#4086](https://github.com/Lucent-Financial-Group/Zeta/pull/4086) — 081KRSKQ20008QG0R002TH55X6 row + 1356Z shard (peer-Otto authored, this Otto preserved+PR'd)
 - [#4087](https://github.com/Lucent-Financial-Group/Zeta/pull/4087) — peer-Otto 1327Z merge-recap shard
 - [#4088](https://github.com/Lucent-Financial-Group/Zeta/pull/4088) — my 3-shard chain (1337Z + 1350Z + 1354Z)
 
-Session-arc 1218Z → 1401Z (~10 ticks, ~1h 43min): 7 PRs total. Lior-loop deferred-substrate cluster cleared via B-0613 row.
+Session-arc 1218Z → 1401Z (~10 ticks, ~1h 43min): 7 PRs total. Lior-loop deferred-substrate cluster cleared via 081KRSKQ20008QG0R002TH55X6 row.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

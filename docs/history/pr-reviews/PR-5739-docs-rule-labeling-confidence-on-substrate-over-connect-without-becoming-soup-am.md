@@ -75,8 +75,8 @@ Preserves the over-connect benefit (compression-cheap-later) WHILE addressing th
 - PR #5736 over-connect-now (DIRECT extension)
 - PR #5738 Amara substrate substrate-anchor
 - PR #5727 Signal 2 + PR #5734 traveler-rights-defensibility
-- B-0901 + B-0902 + B-0903 (shadow-star ontology cluster)
-- B-0867 + B-0867.5 + B-0883 + B-0885 + B-0840
+- 081KSNY2Z0008QG0R000C5NN8N + 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP (shadow-star ontology cluster)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 + 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX
 
 ## Substrate-honest framing
 

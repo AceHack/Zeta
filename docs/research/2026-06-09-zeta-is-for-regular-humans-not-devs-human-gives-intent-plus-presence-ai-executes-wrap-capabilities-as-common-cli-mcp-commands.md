@@ -76,6 +76,6 @@ skill-backed (#7229 + noun-verb-CLI gap). No new code; captures the operating mo
   `feedback_interfaces_are_the_value_not_implementations_aaron_2026_06_08.md`.
 - Minimal border: `user_aaron_minimal_sufficient_border_hates_borders_loves_safety_protocols_2026_06_09.md`.
 - Surfaces: `.claude/skills/flash-cluster-iso/SKILL.md` (the skill) · `full-ai-cluster/tools/zflash.ts` (`--agent`
-  mode, B-0844) · `src/Core/ZetaCli.fs` (the noun-verb CLI to extend) · the `mcp__zeta__*` MCP tools.
+  mode, 081KSGS9H0008QG0R001EZKNCB) · `src/Core/ZetaCli.fs` (the noun-verb CLI to extend) · the `mcp__zeta__*` MCP tools.
 - Audience anchor: Anthropic Claude Code (dev-targeted CLI) vs Zeta (regular-human-targeted intent+presence) — the
   AX/UX distinction (Daya / Iris lenses).

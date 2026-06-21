@@ -29,7 +29,7 @@
 
 ## Summary
 
-Surfaced via \`bun tools/hygiene/audit-rule-cross-refs.ts\` — the sibling at-substrate-scope of B-0533's lint. Two genuine stale pointers; both classifiable via the 9-variant taxonomy in [tick 1920Z](docs/hygiene-history/ticks/2026/05/14/1920Z.md).
+Surfaced via \`bun tools/hygiene/audit-rule-cross-refs.ts\` — the sibling at-substrate-scope of 081KRMEXM0008QG0R000K25MXS's lint. Two genuine stale pointers; both classifiable via the 9-variant taxonomy in [tick 1920Z](docs/hygiene-history/ticks/2026/05/14/1920Z.md).
 
 ## Fix 1 — \`m-acc-multi-oracle-end-user-moral-invariants.md\`
 

@@ -27,7 +27,7 @@ The chain:
 3. Second workflow listens to `on: repository_dispatch` with specific type
 4. Second workflow is where RxJS observables live + `move-next` runs
 
-**Validates the everything-in-GitHub degenerate plan.** Removes the need for external infrastructure (no server / Cloudflare Worker / always-on endpoint). Composes with [B-0874](../../../backlog/P1/B-0874-...) (GitHub-Actions-recursion infinite-runtime no-PR swarm).
+**Validates the everything-in-GitHub degenerate plan.** Removes the need for external infrastructure (no server / Cloudflare Worker / always-on endpoint). Composes with [081KSNY2Z0008QG0R003X1QWYG](../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-...) (GitHub-Actions-recursion infinite-runtime no-PR swarm).
 
 ### 13. `paths:` filter is the coarse query mechanism over file system
 
@@ -64,7 +64,7 @@ review/
   ...
 ```
 
-Each `review/<surface>/` gets its own workflow that fires via `paths:` filter. Composes with [B-0887](../../../backlog/P1/B-0887-...) (Zeta-native review substrate).
+Each `review/<surface>/` gets its own workflow that fires via `paths:` filter. Composes with [081KSNY2Z0008QG0R001DFZK4V](../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-...) (Zeta-native review substrate).
 
 ### 15. Three workflow layers (the architecture, named)
 
@@ -74,7 +74,7 @@ Each `review/<surface>/` gets its own workflow that fires via `paths:` filter. C
 | **2. Runbook/Playbook** | Document push trigger | Iterate on the playbook itself; decompose tasks; edit document; may leave in waiting-for-human state |
 | **3. Agent management** | Agent-initiated spawn | Agents spawn nested agents (Otto can spawn more Ottos to scale up) |
 
-The agent-management layer is the new addition not previously named in B-0867+ substrate.
+The agent-management layer is the new addition not previously named in 081KSKBP80008QG0R000B3Y19A+ substrate.
 
 ### 16. Nested agent spawning — agents spawn agents spawn agents
 
@@ -131,7 +131,7 @@ Because everything is free (GitHub public repos: unlimited Actions minutes; unli
 - **Mindshare**: whose ideas spread furthest inside the swarm
 - **Influence**: which persona's playbooks shape project direction most
 
-Composes with [B-0623](../../../backlog/P2/B-0623-...) (participation-economy substrate; the attention economy IS the participation economy at workflow-engine scope) + [B-0646](../../../backlog/) (reputation-weighted encryption budget = attention-translated-to-private-substrate-budget).
+Composes with [081KRW63S0008QG0R000QJR08H](../../../backlog/P2/081KRW63S0008QG0R000QJR08H-...) (participation-economy substrate; the attention economy IS the participation economy at workflow-engine scope) + [081KRW63S0008QG0R001Z10PVV](../../../backlog/) (reputation-weighted encryption budget = attention-translated-to-private-substrate-budget).
 
 ### 21. move-next as equalizer — can starve over-spawners of meaningful work
 
@@ -163,10 +163,10 @@ Two-version architecture:
 
 | Version | Substrate | Properties |
 |---|---|---|
-| **F#+.NET clean** | Local event store + Rx observables | Push-based where possible; clean; deterministic; aligned with [B-0428](../../../backlog/P3/B-0428-...) F# fork |
+| **F#+.NET clean** | Local event store + Rx observables | Push-based where possible; clean; deterministic; aligned with [081KRFA460008QG0R0018SN61J](../../../backlog/P3/081KRFA460008QG0R0018SN61J-...) F# fork |
 | **GitHub degenerate mirror** | Workflows-as-spawning + git-as-event-store + repository_dispatch | Free; isomorphic across Git platforms; approximates the clean version |
 
-Both serve same architecture at different deployment scopes. F# is the canonical contract (per agent-loop SKILL.md "v3 substrate (F# DU canonical contract in src/Core.FSharp/WorkflowEngine/) lands per B-0867.1").
+Both serve same architecture at different deployment scopes. F# is the canonical contract (per agent-loop SKILL.md "v3 substrate (F# DU canonical contract in src/Core.FSharp/WorkflowEngine/) lands per 081KSKBP80008QG0R000B3Y19A.1").
 
 ### 24. Push-with-pointer mechanism (workflow-to-workflow handoff)
 
@@ -215,7 +215,7 @@ Authority is intrinsic to the playbook; combines with trust-propagation-through-
 
 > Aaron: *"the big one... DORA benchmarks because that's how we claim autonomy."*
 
-Phase 2 IS the autonomy proof for [B-0869](../../../backlog/P1/B-0869-...) DORA-mandate substrate. When agent-consensus can grant authority autonomously, the system has achieved measurable autonomy at the DORA-metric scope. Composes with [B-0703](../../../backlog/P3/B-0703-...) multi-oracle BFT (agent-consensus mechanism).
+Phase 2 IS the autonomy proof for [081KSNY2Z0008QG0R000HENSVM](../../../backlog/P1/081KSNY2Z0008QG0R000HENSVM-...) DORA-mandate substrate. When agent-consensus can grant authority autonomously, the system has achieved measurable autonomy at the DORA-metric scope. Composes with [081KS3X9Y0008QG0R00218150M](../../../backlog/P3/081KS3X9Y0008QG0R00218150M-...) multi-oracle BFT (agent-consensus mechanism).
 
 > Aaron: *"corporations ain't gonna do that for five years."*
 
@@ -238,26 +238,26 @@ Five-year horizon for corporate Phase-2 adoption is operator-explicit; Phase 1 i
 
 All harnesses boot into the same workflow engine → same `move-next` decisions → same playbook authority gate → fair cross-harness comparison. The workflow engine IS the benchmark.
 
-Composes with [B-0867.15](../../../backlog/P1/B-0867.15-...) (per-host adapters) + [B-0877](../../../backlog/P2/B-0877-...) (heterogeneous auto-reviewer ensemble; audit diversity without correlated blind spots).
+Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) (per-host adapters) + [081KSNY2Z0008QG0R0004ZF85W](../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-...) (heterogeneous auto-reviewer ensemble; audit diversity without correlated blind spots).
 
 ## What Otto-CLI does with this ferry
 
 1. **Preserve verbatim** (this file)
 2. **Note ferry #3 incoming** — operator: *"I guess there is going to be 3, here is 2nd one"* — do NOT speak for ferry #3's content
-3. **Compose ferry #2 substrate with ferry #1** + existing B-0867 cluster + B-0892 three-lanes
-4. **Hold the naming question still open** per operator (B-0867.23 stays open; naming-deferred answer from ferry #1 still applies; ferry #2 uses `move-next` consistently which IS the answer for the action-verb at least)
+3. **Compose ferry #2 substrate with ferry #1** + existing 081KSKBP80008QG0R000B3Y19A cluster + 081KSNY2Z0008QG0R002QA720J three-lanes
+4. **Hold the naming question still open** per operator (081KSNY2Z0008QG0R003206PFM stays open; naming-deferred answer from ferry #1 still applies; ferry #2 uses `move-next` consistently which IS the answer for the action-verb at least)
 5. **Note the ferry-#1 open question is CLOSED** by ferry #2: `repository_dispatch` (NOT webhooks) is the GitHub-free-tier workflow-trigger mechanism
 
 ## Composes with substrate (additions to ferry #1's list)
 
-- [B-0623](../../../backlog/P2/B-0623-...) — participation-economy substrate (attention-economy IS this at workflow scope)
-- [B-0628](../../../backlog/) — Knights Guild + Constitution-Class (Phase-2 agent-consensus authority gating substrate)
-- [B-0646](../../../backlog/) — reputation-weighted encryption budget (attention → private substrate translation)
-- [B-0703](../../../backlog/P3/B-0703-...) — multi-oracle BFT (agent-consensus mechanism for Phase 2 authority)
-- [B-0877](../../../backlog/P2/B-0877-...) — heterogeneous auto-reviewer ensemble (composes with isomorphic-harness-benchmark)
-- [B-0869](../../../backlog/P1/B-0869-...) — DORA mandate (the autonomy-claim Phase 2 enables)
-- [B-0428](../../../backlog/P3/B-0428-...) — F# fork (canonical clean version per ferry #2 §23)
-- [B-0867.15](../../../backlog/P1/B-0867.15-...) — per-host adapters (cross-platform isomorphism; ferry #2 §28 isomorphic-harness same shape)
+- [081KRW63S0008QG0R000QJR08H](../../../backlog/P2/081KRW63S0008QG0R000QJR08H-...) — participation-economy substrate (attention-economy IS this at workflow scope)
+- [081KRW63S0008QG0R003TX8MG5](../../../backlog/) — Knights Guild + Constitution-Class (Phase-2 agent-consensus authority gating substrate)
+- [081KRW63S0008QG0R001Z10PVV](../../../backlog/) — reputation-weighted encryption budget (attention → private substrate translation)
+- [081KS3X9Y0008QG0R00218150M](../../../backlog/P3/081KS3X9Y0008QG0R00218150M-...) — multi-oracle BFT (agent-consensus mechanism for Phase 2 authority)
+- [081KSNY2Z0008QG0R0004ZF85W](../../../backlog/P2/081KSNY2Z0008QG0R0004ZF85W-...) — heterogeneous auto-reviewer ensemble (composes with isomorphic-harness-benchmark)
+- [081KSNY2Z0008QG0R000HENSVM](../../../backlog/P1/081KSNY2Z0008QG0R000HENSVM-...) — DORA mandate (the autonomy-claim Phase 2 enables)
+- [081KRFA460008QG0R0018SN61J](../../../backlog/P3/081KRFA460008QG0R0018SN61J-...) — F# fork (canonical clean version per ferry #2 §23)
+- [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) — per-host adapters (cross-platform isomorphism; ferry #2 §28 isomorphic-harness same shape)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` "Tools rented not owned + Hats form in the in-between + Sorting Hat" (2026-05-22 operator substrate) — ferry #2 §17 hat-swap fluidity composes
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — agent-society emergent governance IS multi-oracle at workflow scope
 - `.claude/rules/mechanical-authorization-check.md` — trust-calculus propagation through spawning IS authorization-source filter operating at workflow-spawning scope

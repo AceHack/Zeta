@@ -27,7 +27,7 @@ doing to them.) 26 files.
 Mix of file types in `conversations/`:
 
 - **Otto-authored research** (`*-otto-*.md`): Otto-261 git-native
-  backup audit, canonical bootstream, MCP surface map, B-0400
+  backup audit, canonical bootstream, MCP surface map, 081KR7JY10008QG0R000R503K2
   review, etc.
 - **Multi-AI conversation threads** where Otto is one of several
   voices (aaron-otto, aaron-codex-otto, claudeai-otto-mirror,

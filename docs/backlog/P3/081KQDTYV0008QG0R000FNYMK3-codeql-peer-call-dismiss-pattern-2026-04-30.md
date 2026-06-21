@@ -1,6 +1,5 @@
 ---
-id: B-0107
-zetaid: 081KQDTYV0008QG0R000FNYMK3
+id: 081KQDTYV0008QG0R000FNYMK3
 priority: P3
 status: open
 title: CodeQL `js/indirect-command-line-injection` dismissal pattern for peer-call siblings (gemini.ts, codex.ts)
@@ -81,7 +80,7 @@ removed in the same PR.
 
 ## Composes with
 
-- **B-0086** — TS+Bun migration trajectory.
+- **081KQ8P5D0008QG0R003BFZPRC** — TS+Bun migration trajectory.
 - **PR #896** — slice 15 (peer-call/grok) where the dismissal pattern
   first surfaced.
 

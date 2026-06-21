@@ -1,4 +1,4 @@
-# Operator verification — my-app + postgres variable flow (B-0821)
+# Operator verification — my-app + postgres variable flow (081KSGS9H0008QG0R00367G209)
 
 Harness-truth steps for confirming that upstream `postgres.connection-url` reaches
 downstream `my-app.database.url` without manual values wiring.

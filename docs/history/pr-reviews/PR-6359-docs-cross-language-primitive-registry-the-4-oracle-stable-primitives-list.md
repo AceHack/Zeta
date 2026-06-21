@@ -43,14 +43,14 @@ Adds `docs/PRIMITIVE-REGISTRY.md` — a living status view (companion to `docs/E
 
 | Primitive | Consensus |
 |---|---|
-| **ZetaId** | **Tier 1** — 12-vector byte-consensus across TS/F#/C#/Rust (B-0679 just landed) |
+| **ZetaId** | **Tier 1** — 12-vector byte-consensus across TS/F#/C#/Rust (081KS3X9Y0008QG0R001Z8SBZJ just landed) |
 | **Observe loop** | Tier 1/2 — shared `golden-vectors.json` |
-| **TriBoolean** | Tier 2 — compiler-parity + per-lang tests (B-0944) |
+| **TriBoolean** | Tier 2 — compiler-parity + per-lang tests (081KSV2WD0008QG0R00051XS0N) |
 | **TriBoolean middle-out float** | Tier 2 — per-lang tests; v0 spec |
 
 Plus an **in-progress** table tracking the gap sweep (G-Set / Bag / Z-set **ladder**, the git-native **bus**, and the **Rx-Observable = Z-set-delta-stream** reactive layer + **CALM** as the coordination-free law).
 
-Work is tracked by [B-0959](../blob/main/docs/backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md); this is the **status view** over it. Composes with the [four-language-compiler-BFT governance DECISIONS doc](../blob/main/docs/DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md). Docs-only.
+Work is tracked by [081KSXN940008QG0R003FCQ7WT](../blob/main/docs/backlog/P1/081KSXN940008QG0R003FCQ7WT-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md); this is the **status view** over it. Composes with the [four-language-compiler-BFT governance DECISIONS doc](../blob/main/docs/DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md). Docs-only.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -27,7 +27,7 @@
 
 ## Description
 
-Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
+Decomposes 081KQZVQW0008QG0R0032TPKT8 layer 3 into 081KRQ1AB0008QG0R0014PKF49 (Atomic)
 
 ## Outcome
 
@@ -46,12 +46,12 @@ Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CltCV`
-- **Path**: `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`
+- **Path**: `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T21:03:18Z on `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`:12 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T21:03:18Z on `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`:12 (association: NONE)
 
   <pre>
   P1: Per tools/backlog/README.md, per-row backlog files require `last_updated` and it should be set/updated on every content edit. This new row is missing `last_updated` in the YAML frontmatter; please add it (likely `2026-05-16`).
@@ -60,12 +60,12 @@ Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CltCb`
-- **Path**: `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- **Path**: `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T21:03:18Z on `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T21:03:18Z on `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:11 (association: NONE)
 
   <pre>
   P1: `last_updated` should be bumped whenever this row’s content/frontmatter changes (tools/backlog/README.md requires it). This PR adds a `children:` field but leaves `last_updated: 2026-05-14`, which no longer matches the edit date; please update it (likely `2026-05-16`).
@@ -74,17 +74,17 @@ Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
 ### Thread 3 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CltNs`
-- **Path**: `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`
+- **Path**: `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T21:03:47Z on `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`:7 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T21:03:47Z on `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`:7 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove parent row from child dependency list**
 
-  `depends_on: [B-0248]` makes this atomic child permanently blocked in automation while the parent remains open: `tools/backlog/autonomous-pickup.ts` treats any non-closed dependency as a blocker (`dependencyBlocker`, lines 360-367), and parent rows stay open during decomposition work. In practice this prevents `B-0248.2` from being selected for implementation until `B-0248` closes, which defeats the purpose of splitting the parent into executable child slices.
+  `depends_on: [081KQZVQW0008QG0R0032TPKT8]` makes this atomic child permanently blocked in automation while the parent remains open: `tools/backlog/autonomous-pickup.ts` treats any non-closed dependency as a blocker (`dependencyBlocker`, lines 360-367), and parent rows stay open during decomposition work. In practice this prevents `081KRQ1AB0008QG0R0014PKF49` from being selected for implementation until `081KQZVQW0008QG0R0032TPKT8` closes, which defeats the purpose of splitting the parent into executable child slices.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -92,17 +92,17 @@ Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
 ### Thread 4 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ESlY1`
-- **Path**: `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`
+- **Path**: `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T09:01:22Z on `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`:10 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-23T09:01:22Z on `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`:10 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add parent metadata to the new child backlog row**
 
-  This row is introduced as a slice of `B-0248`, but it does not declare `parent: B-0248` in frontmatter. Our backlog automation derives parent/child structure from each child’s `parent` field (see `openChildrenByParent` and `decomposedParentBlocker` in `tools/backlog/autonomous-pickup.ts`), so without that field this child is invisible to decomposition-aware gating/reporting and can drift from the parent’s decomposition state.
+  This row is introduced as a slice of `081KQZVQW0008QG0R0032TPKT8`, but it does not declare `parent: 081KQZVQW0008QG0R0032TPKT8` in frontmatter. Our backlog automation derives parent/child structure from each child’s `parent` field (see `openChildrenByParent` and `decomposedParentBlocker` in `tools/backlog/autonomous-pickup.ts`), so without that field this child is invisible to decomposition-aware gating/reporting and can drift from the parent’s decomposition state.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -110,21 +110,21 @@ Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
 ### Thread 5 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6ESzZx`
-- **Path**: `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- **Path**: `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
 - **Replies**: 1
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-23T10:11:42Z on `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:9 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-23T10:11:42Z on `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:9 (association: NONE)
 
   <pre>
-  P1: `decomposes_to` is a one-off frontmatter field name in this backlog row. Other decomposed/umbrella rows use `children: [...]` to list child backlog IDs (e.g., docs/backlog/P0/B-0249-… has `children:`). Consider renaming this field to `children` so the decomposition metadata is consistent and discoverable across the backlog files.
+  P1: `decomposes_to` is a one-off frontmatter field name in this backlog row. Other decomposed/umbrella rows use `children: [...]` to list child backlog IDs (e.g., docs/backlog/P0/081KQZVQW0008QG0R000C35RNY-… has `children:`). Consider renaming this field to `children` so the decomposition metadata is consistent and discoverable across the backlog files.
 
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-23T11:08:46Z on `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:9 (association: MEMBER)
+  - **`AceHack` (human)** at 2026-05-23T11:08:46Z on `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`:9 (association: MEMBER)
 
     <pre>
     Renamed `decomposes_to` → `children` in commit `9dbe33c` to match backlog convention. Verified via grep: 10+ rows use `children:`, 0 use `decomposes_to:`. Thanks for the catch.
@@ -136,8 +136,8 @@ Decomposes B-0248 layer 3 into B-0248.2 (Atomic)
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
-- `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`
 
 **Message:**
 
@@ -149,34 +149,34 @@ chore(b-0248): decompose layer 3 - host loop setup
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
-- `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`
 
 **Message:**
 
 ```
-fix(B-0248): fix backlog integrity and linting errors
+fix(081KQZVQW0008QG0R0032TPKT8): fix backlog integrity and linting errors
 ```
 
 ### `a501be8dca53945aacdcc44a8387460739ac204d` -- 2026-05-23T10:09:21Z -- `AceHack`
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
-- `docs/backlog/P1/B-0248.2-host-loop-setup-max-site.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- `docs/backlog/P1/081KRQ1AB0008QG0R0014PKF49-host-loop-setup-max-site.md`
 
 **Message:**
 
 ```
-fix(B-0248.2): add parent + last_updated; remove parent from depends_on
+fix(081KRQ1AB0008QG0R0014PKF49): add parent + last_updated; remove parent from depends_on
 
 Resolves 4 review threads on PR #3939:
-- B-0248.2: add last_updated (Copilot P1)
-- B-0248.2: add parent: B-0248 (Codex P2)
-- B-0248.2: depends_on [B-0248] → [] (Codex P1; was blocking autonomous-pickup)
-- B-0248 parent: bump last_updated 2026-05-14 → 2026-05-23 (Copilot P1)
+- 081KRQ1AB0008QG0R0014PKF49: add last_updated (Copilot P1)
+- 081KRQ1AB0008QG0R0014PKF49: add parent: 081KQZVQW0008QG0R0032TPKT8 (Codex P2)
+- 081KRQ1AB0008QG0R0014PKF49: depends_on [081KQZVQW0008QG0R0032TPKT8] → [] (Codex P1; was blocking autonomous-pickup)
+- 081KQZVQW0008QG0R0032TPKT8 parent: bump last_updated 2026-05-14 → 2026-05-23 (Copilot P1)
 
-Mirrors B-0248.1 sibling frontmatter shape on main.
+Mirrors 081KRHWGX0008QG0R000EE6VN5 sibling frontmatter shape on main.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -185,7 +185,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
+- `docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md`
 
 **Message:**
 

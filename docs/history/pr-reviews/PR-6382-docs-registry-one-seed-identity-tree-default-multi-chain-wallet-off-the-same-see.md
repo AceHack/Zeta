@@ -33,7 +33,7 @@ Your calls (2026-06-01): _"link a default wallet when we have one to the same se
 - But **share the seed**: one BIP39 mnemonic deterministically derives a distinct key per purpose —
   - Nostr (secp256k1, NIP-06 `m/44'/1237'/…`)
   - Reticulum Ed25519 identity (SLIP-0010)
-  - **a default wallet (B-0622 F# agent-wallet) with a BIP44 path per chain** (`m/44'/<coin>'/…` — secp256k1 for BTC/ETH-class, ed25519 for Solana-class; the per-chain curve picks the key type, same split as Nostr-vs-Reticulum).
+  - **a default wallet (081KRW63S0008QG0R002V20TYJ F# agent-wallet) with a BIP44 path per chain** (`m/44'/<coin>'/…` — secp256k1 for BTC/ETH-class, ed25519 for Solana-class; the per-chain curve picks the key type, same split as Nostr-vs-Reticulum).
 - Same seed, distinct key per purpose/chain (never reuse the identity key as a money key); cross-sign to link; the **ZetaId is the name** tying the whole tree together.
 
 Docs-only; prettier + markdownlint clean; BACKLOG.md untouched. Discovery line (region 41) — non-overlapping with #6379 (47-49+EOF).

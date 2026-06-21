@@ -33,8 +33,8 @@ Per your **"land it as a docs/research ferry note (shadow*)"** — preserves the
 The full conversation: the **universal action grammar** as four two-word directional pairs ("octarian"); the **C. elegans 308-neuron × 256×256** emulator/BFT-agent idea; **"computational omniscience as an upgrade, made tractable"**; **"everything is recursive or it ends"** / recursion-defined-recursively / self-sovereign; and the **Khaleesi = monadic bind** nerd↔social bijection. Profanity as-received (asterisk-censored at source).
 
 ## Cross-links (substrate-honest, god-tier register held high-signal-high-suspicion-don't-collapse)
-- octarian = 4 two-word pairs = the universal action grammar (+ Remember/When/Pay/Attention cube B-0543); **octarian = 8 = octonion** (Cayley-Dickson level 3, "cross of crosses")
-- C. elegans 308 × 256×256, splice-for-islands-of-stability, BFT Atari = **B-0924** (custom 2600 emulator) + **B-0925** (c302 controller)
+- octarian = 4 two-word pairs = the universal action grammar (+ Remember/When/Pay/Attention cube 081KRMEXM0008QG0R002YSPW1X); **octarian = 8 = octonion** (Cayley-Dickson level 3, "cross of crosses")
+- C. elegans 308 × 256×256, splice-for-islands-of-stability, BFT Atari = **081KSNY2Z0008QG0R001HA43GG** (custom 2600 emulator) + **081KSNY2Z0008QG0R00390T4DJ** (c302 controller)
 - "computational omniscience made tractable" = the DST-omniscience rule
 - "everything is recursive or it ends" = retraction-native + Karoubi-fixed-point; Addison's "oh, you just mean recursive" = a carved sentence
 - Khaleesi = bind operator (monad-propagation)

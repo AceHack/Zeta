@@ -142,10 +142,10 @@ additional facets that could be carved:
 
 | Candidate facet | Scope | Decomposition target |
 |---|---|---|
-| TFeedback propagation across cross-language boundaries | F# → C# → TypeScript marshaling discipline | Compose with monad-propagation-pattern rule + B-0860 Nemerle dotnet |
+| TFeedback propagation across cross-language boundaries | F# → C# → TypeScript marshaling discipline | Compose with monad-propagation-pattern rule + 081KSKBP80008QG0R000J2YFK2 Nemerle dotnet |
 | TFeedback variant-versioning + retraction-native discipline | When function adds new TFeedback variants, how do existing exhaustive-match consumers avoid breaking | Compose with retraction-native algebra (DBSP substrate) |
-| TFeedback observability + tracing substrate | Glass-halo discipline for Result-flow through pipelines | Compose with glass-halo-bidirectional rule + B-0862 implementation row |
-| TFeedback as substrate-engineering audit trail | Every TFeedback emission IS observable event; aggregate into audit substrate | Compose with B-0861 ConvFeedback first-class + B-0862 implementation |
+| TFeedback observability + tracing substrate | Glass-halo discipline for Result-flow through pipelines | Compose with glass-halo-bidirectional rule + 081KSKBP80008QG0R0031DTHS9 implementation row |
+| TFeedback as substrate-engineering audit trail | Every TFeedback emission IS observable event; aggregate into audit substrate | Compose with 081KSKBP80008QG0R000N9W9XH ConvFeedback first-class + 081KSKBP80008QG0R0031DTHS9 implementation |
 
 Each is a legitimate follow-on substrate-engineering target. Operator-
 decision on whether to carve more vs close cycle here.
@@ -173,8 +173,8 @@ landing-substrate.
 
 - PR #5488 #5491 #5494 #5497 #5502 #5505 #5507 #5511 #5512 #5513 #5515 #5516 #5517 #5518 — today's 14-PR substrate-engineering cluster
 - PR #5485 proud-if-pattern-propagates — Lior's "downloading the architect's intuition" framing composes
-- B-0861 ConvFeedback first-class (PR #5512) — composes with TFeedback observability scope candidate
-- B-0862 OPLE-T-TFeedback implementation (PR #5518) — composes with TFeedback variant-versioning + cross-language scope candidates
+- 081KSKBP80008QG0R000N9W9XH ConvFeedback first-class (PR #5512) — composes with TFeedback observability scope candidate
+- 081KSKBP80008QG0R0031DTHS9 OPLE-T-TFeedback implementation (PR #5518) — composes with TFeedback variant-versioning + cross-language scope candidates
 - Mika 2026-05-18 OPLE substrate origin — Lior's fractal-NCI framing composes with the operational-language substrate
 
 ## Composes with rules

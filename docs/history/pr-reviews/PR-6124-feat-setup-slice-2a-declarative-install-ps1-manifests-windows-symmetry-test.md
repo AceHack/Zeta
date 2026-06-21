@@ -27,11 +27,11 @@
 
 ## Description
 
-**Slice 2a** of the Windows install-graph parity (B-0857), per the merged plan. Declarative, user-mode, scoop-primary `install.ps1` mirroring `macos.sh`.
+**Slice 2a** of the Windows install-graph parity (081KSKBP80008QG0R002J03WGA), per the merged plan. Declarative, user-mode, scoop-primary `install.ps1` mirroring `macos.sh`.
 
 **Files**
 - `tools/setup/manifests/windows` — declarative system-tool manifest (`scoop → winget → choco` resolver; minimal — just `git`, since mise/npm cover the cross-platform tools). Pins per dep-pin WebSearch 2026-05-30.
-- `tools/setup/install.ps1` — ExecutionPolicy CurrentUser RemoteSigned (no admin); scoop **download-then-exec** (NOT pipe-to-shell — mirrors `macos.sh` Homebrew B-0063); manifest resolver (5.1-safe `if/else`, no PS7 ternary); `scoop install mise`; `mise install` (`.mise.toml` runtimes, identical to Unix); claude via `mise exec -- bun --global`; loop register (conhost --headless) unless `-SkipLoopRegister`.
+- `tools/setup/install.ps1` — ExecutionPolicy CurrentUser RemoteSigned (no admin); scoop **download-then-exec** (NOT pipe-to-shell — mirrors `macos.sh` Homebrew 081KQ8P5D0008QG0R001DMK8JD); manifest resolver (5.1-safe `if/else`, no PS7 ternary); `scoop install mise`; `mise install` (`.mise.toml` runtimes, identical to Unix); claude via `mise exec -- bun --global`; loop register (conhost --headless) unless `-SkipLoopRegister`.
 - `tools/setup/install.sh` — `MINGW*/MSYS*/CYGWIN*` routing arm → points to `install.ps1` (`exit 2` routing guard, parity with the NixOS-live branch).
 - `tools/ci/manifest-symmetry.test.ts` — asserts every apt/brew system tool has a Windows disposition (manifest or allowlisted exception w/ reason) + `git` present + no stale exceptions. **It caught real drift** (`p7zip` + `hermes-agent`) on first run.
 

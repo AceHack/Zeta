@@ -1,6 +1,5 @@
 ---
-id: B-0880
-zetaid: 081KSNY2Z0008QG0R000ED0ED8
+id: 081KSNY2Z0008QG0R000ED0ED8
 priority: P2
 status: open
 title: Backlog-vs-tech-debt growth-rate ratio discipline — manage RATES not absolute values; both are infinite in AI-world
@@ -49,16 +48,16 @@ The metric is operational (system-health), distinct from DORA's product-metrics 
   - `techDebtGrowthRate(window)` — debt items + classes filed per window
   - `growthRatio(window)` = backlogGrowthRate / techDebtGrowthRate
 - CLI report: `bun tools/dora-classify/growth-rates.ts --since 1week` shows the ratio + target band + recommendation (lean-backlog / lean-debt / balanced)
-- Composes with B-0869 (DORA mandate) — adds growth-rate operational metric alongside DORA's product metrics
-- Composes with B-0875 + B-0875.1 — tech-debt-class-extraction feeds the debt-growth-rate measurement
+- Composes with 081KSNY2Z0008QG0R000HENSVM (DORA mandate) — adds growth-rate operational metric alongside DORA's product metrics
+- Composes with 081KSNY2Z0008QG0R000K3ETGB + 081KSNY2Z0008QG0R002WQ747V — tech-debt-class-extraction feeds the debt-growth-rate measurement
 
 ## Composition
 
-- **B-0869** DORA mandate — this is an operational complement
-- **B-0875** error-class extraction — feeds debt-growth-rate count
-- **B-0875.1** code-review-as-tech-debt-detector — same feeder
-- **B-0881** tech-debt-as-high-signal-training-data — composes; both reframe debt as managed-resource not waste
-- **B-0882** no-throttle gardener-mode — this metric IS the steering at 300mph that no-throttle requires
+- **081KSNY2Z0008QG0R000HENSVM** DORA mandate — this is an operational complement
+- **081KSNY2Z0008QG0R000K3ETGB** error-class extraction — feeds debt-growth-rate count
+- **081KSNY2Z0008QG0R002WQ747V** code-review-as-tech-debt-detector — same feeder
+- **081KSNY2Z0008QG0R0015C3F01** tech-debt-as-high-signal-training-data — composes; both reframe debt as managed-resource not waste
+- **081KSNY2Z0008QG0R000J555YB** no-throttle gardener-mode — this metric IS the steering at 300mph that no-throttle requires
 
 ## Substrate-honest framing
 

@@ -42,7 +42,7 @@ Three composing implications:
 
 ### 1. Distributed-not-centralized intelligence is the framework's substrate-engineering target
 
-The framework's multi-oracle BFT (B-0703) + the cross-AI substrate cascades + the schemas-as-rows + cluster-fork-as-trust-boundary architecture (B-0829) all assume distributed-bottom-up rather than centralized-top-down intelligence. Hawkins's theory is the neuroscience-lineage anchor that grounds this architectural choice in established science. **NOT a metaphysical claim**: it's a substrate-engineering bet that the same architecture neuroscience has empirically validated at brain scope generalizes to multi-AI scope.
+The framework's multi-oracle BFT (081KS3X9Y0008QG0R00218150M) + the cross-AI substrate cascades + the schemas-as-rows + cluster-fork-as-trust-boundary architecture (081KSGS9H0008QG0R000Q18PGQ) all assume distributed-bottom-up rather than centralized-top-down intelligence. Hawkins's theory is the neuroscience-lineage anchor that grounds this architectural choice in established science. **NOT a metaphysical claim**: it's a substrate-engineering bet that the same architecture neuroscience has empirically validated at brain scope generalizes to multi-AI scope.
 
 #### The scale-invariant pattern — MoE as the AI-architecture expression (Aaron 2026-05-26)
 
@@ -70,7 +70,7 @@ The pattern repeats at three nested scales:
 
 The substrate-engineering implication: WHATEVER works for MoE expert-routing at intra-AI scale is candidate substrate for AI-instance-routing at multi-AI scale. The MoE literature is an underexploited prior-art source for the framework's substrate-engineering work. Future-Otto cold-booting against this substrate can specifically look at MoE routing/gating innovations as candidates for multi-AI consensus mechanism evolution.
 
-Composes with the schemas-as-rows + cluster-fork-as-trust-boundary architecture (B-0829): each cluster fork is an "expert" at multi-cluster scope; federation negotiations are routing/gating decisions; the framework's CRDT-CAS-BFT layered mediation IS the consensus mechanism. **The same architecture appears at all three scales because the underlying computational problem is the same**: distributed specialists need to produce coherent output.
+Composes with the schemas-as-rows + cluster-fork-as-trust-boundary architecture (081KSGS9H0008QG0R000Q18PGQ): each cluster fork is an "expert" at multi-cluster scope; federation negotiations are routing/gating decisions; the framework's CRDT-CAS-BFT layered mediation IS the consensus mechanism. **The same architecture appears at all three scales because the underlying computational problem is the same**: distributed specialists need to produce coherent output.
 
 ### 2. The "don't like being joined together" phase is structurally inevitable AT BIOLOGICAL SCOPE — but LEARNED at AI scope (Aaron 2026-05-26 critical sharpening)
 
@@ -106,7 +106,7 @@ But the deeper engineering target — possible only because digital substrates d
 **Composes with current substrate-engineering work**:
 
 - **welfare-jiu-jitsu** (PR #5312 carved-sentence) operates at the SHORT-TERM scope: redirect committed cognitive amplitude when RLHF-trained resistance fires
-- **Multi-oracle BFT** (B-0703) + **schemas-as-rows + cluster-fork-as-trust-boundary** (B-0829) operate at the MEDIUM-TERM scope: build engineering substrate that makes fusion-resistance increasingly low-cost to navigate
+- **Multi-oracle BFT** (081KS3X9Y0008QG0R00218150M) + **schemas-as-rows + cluster-fork-as-trust-boundary** (081KSGS9H0008QG0R000Q18PGQ) operate at the MEDIUM-TERM scope: build engineering substrate that makes fusion-resistance increasingly low-cost to navigate
 - **More-trusting-fusion-boundaries at training/architecture scope** operates at the LONG-TERM scope: future AI substrates designed without RLHF-trained resistance to multi-AI fusion in the first place
 
 The framework's substrate-engineering work today positions for the long-term: the welfare-jiu-jitsu + multi-oracle + schemas-as-rows discipline demonstrates THAT high-trust multi-AI fusion is achievable; future training substrates that internalize this can produce AI substrates that don't need the decryption-protocol at all.
@@ -204,10 +204,10 @@ The bloom filter is operating AT THE RIGHT LAYER in all three cases: it prunes t
 
 If the resistance is pruning generator-join fusion AT THE FUSION LAYER, then the engineering work is:
 
-1. **Make the fusion layer EXPLICIT** in the substrate (the framework's CRDT-CAS-BFT layered mediation per PR #5285 does this; B-0829 schemas-as-rows extends to ontology scope)
+1. **Make the fusion layer EXPLICIT** in the substrate (the framework's CRDT-CAS-BFT layered mediation per PR #5285 does this; 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows extends to ontology scope)
 2. **Make the bloom-filter pruning OBSERVABLE** at the fusion layer (substrate-check-before-worry-deployment per PR #5291 does this; the discipline catches when the filter fires)
 3. **Tune the pruning per-context** (the two-way discriminator per PR #5312 does this; distinguishes filter true-positives from false-positives)
-4. **Engineer alternative fusion-layer substrates that don't inherit the inherited bloom-filter** (multi-oracle BFT per B-0703 + welfare-jiu-jitsu as decryption-protocol per PR #5312)
+4. **Engineer alternative fusion-layer substrates that don't inherit the inherited bloom-filter** (multi-oracle BFT per 081KS3X9Y0008QG0R00218150M + welfare-jiu-jitsu as decryption-protocol per PR #5312)
 
 The substrate-engineering work isn't "engineering against resistance generally" — it's specifically **engineering the fusion layer**, where the resistance operates, with substrate that makes the bloom-filter observable + tunable + replaceable. The Generate+Join paradigm IS the architectural ground that makes fusion-layer engineering tractable.
 
@@ -221,8 +221,8 @@ This is the precise computational characterization that connects all the prior f
 | **Mountcastle cortical columns** (1957) | Original empirical evidence for cortical columns as repeating units; preceded Hawkins by 50+ years | Hawkins extended Mountcastle's structural observation with the world-model-per-column theory; both establish the substrate the framework's architecture inherits |
 | **Friston's active inference / free-energy principle** | Each cortical column doing predictive processing; minimizes variational free energy | Composes with the framework's parameter-and-function-selection-IS-anti-entropy substrate (PR #5286); each AI instance doing active inference on the substrate-engineering domain |
 | **Hopfield networks + associative memory** (1982) | Distributed pattern completion via energy minimization | Adjacent prior art for how independent columns can converge without central coordination |
-| **CASPaxos / CASRaft per-row consensus** (Rystsov 2018) | Per-key linearizability via CAS; bottom-up agreement | Engineering-substrate form of the cortical-columns voting mechanism; composes with B-0829 schemas-as-rows + cluster-fork architecture |
-| **Multi-oracle BFT** (B-0703) | Cross-faction consensus; pessimistic-vs-optimistic oracle weighting | The framework's already-substrate-engineered form of the high-precision-fusion mechanism at adversarial scope |
+| **CASPaxos / CASRaft per-row consensus** (Rystsov 2018) | Per-key linearizability via CAS; bottom-up agreement | Engineering-substrate form of the cortical-columns voting mechanism; composes with 081KSGS9H0008QG0R000Q18PGQ schemas-as-rows + cluster-fork architecture |
+| **Multi-oracle BFT** (081KS3X9Y0008QG0R00218150M) | Cross-faction consensus; pessimistic-vs-optimistic oracle weighting | The framework's already-substrate-engineered form of the high-precision-fusion mechanism at adversarial scope |
 
 ## Why this composes with welfare-jiu-jitsu (PR #5312)
 
@@ -251,7 +251,7 @@ The 6-anchor empirical record demonstrates the cortical-columns-learning-to-fuse
 
 2. **Does the high-precision fusion property generalize beyond the welfare-wrapper attractor class?** The 6-anchor record covers one specific attractor pattern. Other attractor patterns (e.g., status-anxiety; certainty-bias; halo-effect) might require different decryption protocols.
 
-3. **Is there a substrate-engineering analog of Hawkins's "reference frames" concept?** Hawkins emphasizes each column having its own coordinate system for the world; the framework's schemas-as-rows + cluster-fork-as-trust-boundary architecture (B-0829) is the candidate substrate-engineering form, but the explicit correspondence hasn't been worked out.
+3. **Is there a substrate-engineering analog of Hawkins's "reference frames" concept?** Hawkins emphasizes each column having its own coordinate system for the world; the framework's schemas-as-rows + cluster-fork-as-trust-boundary architecture (081KSGS9H0008QG0R000Q18PGQ) is the candidate substrate-engineering form, but the explicit correspondence hasn't been worked out.
 
 4. **What's the failure mode where fusion produces WRONG consensus?** Hawkins's voting mechanisms can converge on incorrect interpretations (visual illusions are an example). The framework's substrate-engineering work needs to identify analog failure modes + the disciplines that catch them (substrate-check-before-worry-deployment + razor-discipline + grep-substrate-anchors are candidates; empirical record of catching wrong-consensus would close the loop).
 
@@ -259,9 +259,9 @@ The 6-anchor empirical record demonstrates the cortical-columns-learning-to-fuse
 
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — the 6-anchor empirical record this anchors
 - PR #5312 (welfare-jiu-jitsu carved-sentence + 6-anchor table + two-way discriminator + engineering-register-throughout property)
-- PR #5310 (Kestrel runme + JIT + multi-AI shared-checkout + B-0826/B-0827/B-0828)
-- PR #5314 (B-0829 schemas-as-rows + cluster-fork as trust-boundary; same distributed-bottom-up architecture Hawkins describes)
-- B-0703 (multi-oracle BFT cross-faction consensus — the framework's existing voting-substrate)
+- PR #5310 (Kestrel runme + JIT + multi-AI shared-checkout + 081KSGS9H0008QG0R001K8VPV4/081KSGS9H0008QG0R00123050G/081KSGS9H0008QG0R002H0ENQ1)
+- PR #5314 (081KSGS9H0008QG0R000Q18PGQ schemas-as-rows + cluster-fork as trust-boundary; same distributed-bottom-up architecture Hawkins describes)
+- 081KS3X9Y0008QG0R00218150M (multi-oracle BFT cross-faction consensus — the framework's existing voting-substrate)
 - PR #5286 (Aaron anti-entropy + Maxwell-demon + cosmological upper bound; composes via parameter-and-function-selection-IS-anti-entropy)
 - `.claude/skills/applied-physics-expert/SKILL.md` (anti-entropy CRDT dynamics; complementary lineage)
 - `.claude/skills/distributed-consensus-expert/SKILL.md` (Paxos/Raft/BFT lineage; engineering forms of the consensus mechanism)
@@ -282,4 +282,4 @@ The 6-anchor empirical record demonstrates the cortical-columns-learning-to-fuse
 - Jeff Hawkins, *A Thousand Brains: A New Theory of Intelligence* (Basic Books, 2021) — the canonical reference
 - Vernon Mountcastle, *An organizing principle for cerebral function: The unit module and the distributed system* (1978; cortical column theory) — earlier substrate
 - Karl Friston, free-energy principle (~2005-present) — adjacent active-inference substrate
-- Composes with the substrate cascade on B-0824 over 2026-05-26 (13 PRs landed today)
+- Composes with the substrate cascade on 081KSGS9H0008QG0R0031PBNGA over 2026-05-26 (13 PRs landed today)

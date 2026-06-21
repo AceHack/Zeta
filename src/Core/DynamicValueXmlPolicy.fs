@@ -8,7 +8,7 @@ namespace Zeta.Core
 /// decides, PER Object key, whether to promote that entry to a NAMED element
 /// `<KEY>VALUE</KEY>` instead. The policy is a
 /// `Policy<ShapeContext, XmlPlacement, string>` from the policy kernel
-/// (`Policy.fs`, B-1017 #1): given a `ShapeContext` (the serialization junction:
+/// (`Policy.fs`, 081KT7YW00008QG0R003N6PF8A #1): given a `ShapeContext` (the serialization junction:
 /// path, key, kind) it SELECTS a typed `XmlPlacement` and attaches a `string`
 /// feedback (the *why*). The policy only SELECTS; this codec ACTS on the
 /// decision — the same decision-over-shape algebra reused at the serialization

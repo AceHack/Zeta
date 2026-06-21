@@ -18,7 +18,7 @@ Aaron 2026-04-25 evening, after I resolved the Pliny P0 + MEMORY.md long-entries
 
 When declining a Copilot/Codex review comment:
 - "Declining per Otto-300 stakes-reframing"
-- "Deferred to B-0006 atomic pass"
+- "Deferred to 081KQ0YZ80008QG0R001V0XCYZ atomic pass"
 
 These are operationally-sufficient (resolves the thread; cites the rule) but they're CHEAP — they assume the reviewer can decode our shorthand. They don't teach.
 

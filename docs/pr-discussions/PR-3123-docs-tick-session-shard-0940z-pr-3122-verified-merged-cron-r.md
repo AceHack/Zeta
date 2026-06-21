@@ -19,7 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary
 
 - Writes tick shard `docs/hygiene-history/ticks/2026/05/14/0940Z.md`
-- Documents that PR #3122 (B-0464 honor-system license) was already merged on session arrival
+- Documents that PR #3122 (081KRHWGX0008QG0R000BWAXNP honor-system license) was already merged on session arrival
 - Records cron re-arm (catch-43 pattern; no jobs found at session start)
 - Notes Two-Layer Print DX discipline confirmation (worldview lag vs direct gate poll)
 
@@ -95,7 +95,7 @@ Useful? React with 👍 / 👎.
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Recommend an unblocked next item**
 
-The note says to pick `B-0468` next, but immediately above it lists `B-0468` as depending on `B-0465`, `B-0466`, and `B-0467`, which are also marked as remaining. This dependency mismatch can send the next tick into blocked work; the next-step recommendation should point to an actually unblocked predecessor or explicitly state that those prerequisites are already done.
+The note says to pick `081KRHWGX0008QG0R000F6HE6D` next, but immediately above it lists `081KRHWGX0008QG0R000F6HE6D` as depending on `081KRHWGX0008QG0R002B2P0K0`, `081KRHWGX0008QG0R003XHCEXT`, and `081KRHWGX0008QG0R00394BM1G`, which are also marked as remaining. This dependency mismatch can send the next tick into blocked work; the next-step recommendation should point to an actually unblocked predecessor or explicitly state that those prerequisites are already done.
 
 Useful? React with 👍 / 👎.
 

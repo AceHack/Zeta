@@ -173,7 +173,7 @@ Tick-shard schema (docs/hygiene-history/ticks/README.md +
 tools/hygiene/check-tick-history-shard-schema.ts) requires the first
 non-empty line to be a 6-column pipe-row. File-head YAML frontmatter
 pushes `---` to first non-empty line and fails validator. Moved YAML
-to a B-0308-style optional metadata block below H1 per README §80-140
+to a 081KR2E4K0008QG0R002S3FDXN-style optional metadata block below H1 per README §80-140
 hybrid format guidance.
 
 Resolves copilot-pull-request-reviewer thread PRRT_kwDOSF9kNM6Ed4ZK on

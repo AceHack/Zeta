@@ -309,7 +309,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(B-2813): Codex review findings — verbatim-preservation + markdown…
+fix(081KE0EM27008QG0R001YP79BN): Codex review findings — verbatim-preservation + markdown…
 
 …lint + MEMORY.md reindex
 
@@ -325,7 +325,7 @@ Three review-thread fixes on PR #2813:
    docs/hygiene-history/ticks/2026/05/12/1728Z.md:64
    (markdownlint MD032/blanks-around-lists).
 
-3. Reindex MEMORY.md via B-0423 tools/memory/reindex-memory-md.ts
+3. Reindex MEMORY.md via 081KRCQQF0008QG0R0037YYP1A tools/memory/reindex-memory-md.ts
    to include the new Casimir-gap-modulation memory file in the
    indexed stack (paired-edit check).
 

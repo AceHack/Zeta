@@ -1,6 +1,5 @@
 ---
-id: B-0115
-zetaid: 081KQDTYV0008QG0R00136R90G
+id: 081KQDTYV0008QG0R00136R90G
 priority: P3
 status: open
 title: Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)
@@ -17,7 +16,7 @@ tags: [deepseek-2026-04-30, zsh, install-script, friction-reduction, peer-review
 type: friction-reducer
 ---
 
-# B-0115 — Shell aliases for `:wq` / `:q` (vim muscle-memory in zsh)
+# 081KQDTYV0008QG0R00136R90G — Shell aliases for `:wq` / `:q` (vim muscle-memory in zsh)
 
 ## Source
 

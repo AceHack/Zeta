@@ -1,6 +1,5 @@
 ---
-id: B-0002
-zetaid: 081KQ0YZ80008QG0R002T6TM7Z
+id: 081KQ0YZ80008QG0R002T6TM7Z
 priority: P3
 status: open
 title: Otto-287 Noether-style formalization — quantify cognitive Lagrangian + identify continuous symmetries + derive conserved currents

@@ -1,12 +1,11 @@
 ---
-id: B-0379
-zetaid: 081KR50HA0008QG0R003DJ093T
+id: 081KR50HA0008QG0R003DJ093T
 priority: P2
 status: open
 title: Execute the docs/aurora split — mkdir new dir, git mv history-import files, update all cross-refs in memory/** and ROUND-HISTORY
 tier: research-grade
 effort: M
-ask: decomposition of B-0005
+ask: decomposition of 081KQ0YZ80008QG0R003GMGDRH
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: [081KR50HA0008QG0R003C39GP0, 081KR50HA0008QG0R002HMCS5Y]
@@ -16,16 +15,16 @@ tags: [governance, directory-ontology, aurora, courier-ferry, cross-ai-imports, 
 type: friction-reducer
 ---
 
-# B-0379 — Execute the split: mkdir, git mv, cross-ref cleanup
+# 081KR50HA0008QG0R003DJ093T — Execute the split: mkdir, git mv, cross-ref cleanup
 
 ## What
 
 The mechanical execution atom. By this point:
 
-- B-0375 has produced the classification table (which files move where).
-- B-0376 has the ADR with the chosen directory name + Path A/B.
-- B-0377 has updated AGENT-BEST-PRACTICES + Otto-279.
-- B-0378 has updated GOVERNANCE §33 + copilot-instructions.
+- 081KR50HA0008QG0R003PAVRT8 has produced the classification table (which files move where).
+- 081KR50HA0008QG0R0038HWCDT has the ADR with the chosen directory name + Path A/B.
+- 081KR50HA0008QG0R003C39GP0 has updated AGENT-BEST-PRACTICES + Otto-279.
+- 081KR50HA0008QG0R002HMCS5Y has updated GOVERNANCE §33 + copilot-instructions.
 
 This atom performs the structural changes:
 
@@ -35,7 +34,7 @@ This atom performs the structural changes:
 mkdir -p docs/<chosen-name>
 ```
 
-(Replace `<chosen-name>` with the directory from B-0376 ADR.)
+(Replace `<chosen-name>` with the directory from 081KR50HA0008QG0R0038HWCDT ADR.)
 
 Copy or create a `README.md` for the new directory that:
 
@@ -45,7 +44,7 @@ Copy or create a `README.md` for the new directory that:
 
 ### Step 2 — git mv history-import files
 
-For every file classified as `history-import` in B-0375's output table:
+For every file classified as `history-import` in 081KR50HA0008QG0R003PAVRT8's output table:
 
 ```bash
 git mv docs/aurora/<file> docs/<chosen-name>/<file>
@@ -56,7 +55,7 @@ git mv docs/aurora/<file> docs/<chosen-name>/<file>
 - `docs/aurora/README.md` — stays (update to reflect that aurora is now
   current-state only).
 - `docs/aurora/collaborators.md` — this is meta; review classification
-  from B-0375 to decide. If classified `meta`, keep; if `history-import`,
+  from 081KR50HA0008QG0R003PAVRT8 to decide. If classified `meta`, keep; if `history-import`,
   move.
 - Any file classified `current-state`.
 
@@ -81,7 +80,7 @@ file, leave it.
 ### Step 5 — ROUND-HISTORY.md mention
 
 Add a one-line entry in `docs/ROUND-HISTORY.md` under the current round
-noting the split landed and referencing B-0005 + the chosen Path.
+noting the split landed and referencing 081KQ0YZ80008QG0R003GMGDRH + the chosen Path.
 
 ### Focused checks
 
@@ -128,7 +127,7 @@ history surface — ambiguity survives the PR.
 
 Rated M (not S) because:
 
-- The `memory/**` cross-ref sweep can touch 10+ files (B-0005 lists
+- The `memory/**` cross-ref sweep can touch 10+ files (081KQ0YZ80008QG0R003GMGDRH lists
   multiple memory files referencing `docs/aurora/**`).
 - The git-mv step itself is S, but the cross-ref cleanup scales with
   reference count.
@@ -142,17 +141,17 @@ Rated M (not S) because:
   no existing `docs/courier/**` or `docs/cross-ai-imports/**` directory;
   `tools/hygiene/LOST-FILES-LOCATIONS.md` checked — no orphaned aurora-split
   artifacts found.
-- [x] Dependency-restructure: `depends_on: [B-0377, B-0378]` — both schema
-  updates must land first. Also inherits the classification from B-0375
-  and the naming decision from B-0376 (transitively through B-0377/B-0378).
-- [x] Reciprocal pointer: B-0377 and B-0378 carry `composes_with: [B-0379]`.
+- [x] Dependency-restructure: `depends_on: [081KR50HA0008QG0R003C39GP0, 081KR50HA0008QG0R002HMCS5Y]` — both schema
+  updates must land first. Also inherits the classification from 081KR50HA0008QG0R003PAVRT8
+  and the naming decision from 081KR50HA0008QG0R0038HWCDT (transitively through 081KR50HA0008QG0R003C39GP0/081KR50HA0008QG0R002HMCS5Y).
+- [x] Reciprocal pointer: 081KR50HA0008QG0R003C39GP0 and 081KR50HA0008QG0R002HMCS5Y carry `composes_with: [081KR50HA0008QG0R003DJ093T]`.
 
 ## Composes with
 
-- B-0005 (parent): implements "Execute the split" acceptance signals
+- 081KQ0YZ80008QG0R003GMGDRH (parent): implements "Execute the split" acceptance signals
   including the cross-ref sweep and ROUND-HISTORY entry.
-- B-0377 (dep): schema docs must be updated first.
-- B-0378 (dep): GOVERNANCE §33 must be updated first.
-- B-0375 (transitive dep): the B-0375 classification table is this atom's
+- 081KR50HA0008QG0R003C39GP0 (dep): schema docs must be updated first.
+- 081KR50HA0008QG0R002HMCS5Y (dep): GOVERNANCE §33 must be updated first.
+- 081KR50HA0008QG0R003PAVRT8 (transitive dep): the 081KR50HA0008QG0R003PAVRT8 classification table is this atom's
   input manifest — the list of files to move.
-- B-0376 (transitive dep): the B-0376 ADR is this atom's path parameter.
+- 081KR50HA0008QG0R0038HWCDT (transitive dep): the 081KR50HA0008QG0R0038HWCDT ADR is this atom's path parameter.

@@ -55,7 +55,7 @@ typed policy carries the **required-validator + validation-status as part of its
 a Legal-kinded policy CANNOT be marked active without a counsel-signoff field populated;
 a Governance one not without human-review. **The type encodes the OBLIGATION, not the
 discharge** (router to the gate, not the gate). = the keystone compiled into the policy
-type. [Otto note: this is the B-1017 next step beyond the shipped select-not-mutate
+type. [Otto note: this is the 081KT7YW00008QG0R003N6PF8A next step beyond the shipped select-not-mutate
 Policy<i,d,f>.]
 
 ## 4. Formalize the gate/observable/cache/metric/alert/policy bundle per type

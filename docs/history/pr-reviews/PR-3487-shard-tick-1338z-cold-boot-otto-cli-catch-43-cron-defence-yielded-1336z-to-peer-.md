@@ -32,7 +32,7 @@
 Fresh Otto-CLI cold-boot session fired by `<<autonomous-loop>>` cron.
 
 - SessionStart hook found no live `<<autonomous-loop>>` cron sentinel; re-armed (catch-43 defence per [.claude/rules/tick-must-never-stop.md](.claude/rules/tick-must-never-stop.md)).
-- Detected peer Otto-CLI worktree on `shard/tick-1336z-otto-cli-2026-05-15` at exact wake slot; yielded gracefully per [.claude/rules/claim-acquire-before-worktree-work.md](.claude/rules/claim-acquire-before-worktree-work.md) + [B-0519](docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md).
+- Detected peer Otto-CLI worktree on `shard/tick-1336z-otto-cli-2026-05-15` at exact wake slot; yielded gracefully per [.claude/rules/claim-acquire-before-worktree-work.md](.claude/rules/claim-acquire-before-worktree-work.md) + [081KRHWGX0008QG0R001HMWM1W](docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md).
 - This shard lands from a fresh side worktree branched off `origin/main` (90b7137), no contention with peer Otto's working state.
 
 ## Substrate-honest gap surfaced
@@ -101,7 +101,7 @@ on branch `shard/tick-1336z-otto-cli-2026-05-15` — my exact wake slot.
 Bus claim coordinator reported `unclaimed` for tick-1336z; branch
 existence was the implicit signal.
 
-Yielded 1336Z slot per claim-acquire-before-worktree-work + B-0519
+Yielded 1336Z slot per claim-acquire-before-worktree-work + 081KRHWGX0008QG0R001HMWM1W
 multi-Otto contamination patterns. At 1338Z peer Otto rotated to
 feature branch (Ani extract); 1338Z slot freed. This shard lands
 from fresh side worktree branched off origin/main (90b7137) — no
@@ -132,7 +132,7 @@ Codex review thread flagged: line 25 starts with `+` (used as a visual
 unordered-list item rather than continuation prose. markdownlint also
 failed for the same reason.
 
-Reworded `+ [B-0519 ...]:` to `and [B-0519 ...]:` per reviewer's
+Reworded `+ [081KRHWGX0008QG0R001HMWM1W ...]:` to `and [081KRHWGX0008QG0R001HMWM1W ...]:` per reviewer's
 suggested fix.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

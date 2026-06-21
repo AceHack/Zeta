@@ -1,11 +1,10 @@
 ---
-id: B-0511
-zetaid: 081KRHWGX0008QG0R0013DSSZZ
+id: 081KRHWGX0008QG0R0013DSSZZ
 priority: P1
 status: open
-title: "B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation"
+title: "081KRFA460008QG0R000CYBGKW slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation"
 type: feature
-origin: B-0448 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000CYBGKW decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000CYBGKW
@@ -25,35 +24,35 @@ composes_with:
 tags: [routines, cloud-routines, registration, empirical, autonomous-loop]
 ---
 
-# B-0511 — Register autonomous-loop as Cloud Routine + empirical first-fire observation
+# 081KRHWGX0008QG0R0013DSSZZ — Register autonomous-loop as Cloud Routine + empirical first-fire observation
 
 ## Purpose
 
 Perform the actual registration of the `autonomous-loop` Cloud Routine using
-the registration surface identified in B-0507 (CLI / MCP / Web UI / API),
+the registration surface identified in 081KRHWGX0008QG0R000E8BHQ9 (CLI / MCP / Web UI / API),
 and observe the first empirical Cloud Routine fire from Anthropic's infrastructure.
 
 This is the "does it actually work" slice — all prior slices are preparation.
 
-**Depends on all prior slices**: B-0507 (auth), B-0508 (schema), B-0509 (installer),
-B-0510 (cloud-schedule.json declared).
+**Depends on all prior slices**: 081KRHWGX0008QG0R000E8BHQ9 (auth), 081KRHWGX0008QG0R002S107P7 (schema), 081KRHWGX0008QG0R0014D2T5E (installer),
+081KRHWGX0008QG0R001VR9FNA (cloud-schedule.json declared).
 
 ## Registration steps (to be executed at implementation time)
 
-Based on B-0507 findings, execute the registration. Unknown at decomposition time
+Based on 081KRHWGX0008QG0R000E8BHQ9 findings, execute the registration. Unknown at decomposition time
 whether this is:
 
 1. A CLI command (`claude code routines register autonomous-loop`)
 2. An MCP tool call (`create_cloud_routine(taskId, trigger, ...)`)
-3. A Web UI step (URL documented by B-0507)
-4. An API HTTP POST (endpoint + bearer token documented by B-0507)
+3. A Web UI step (URL documented by 081KRHWGX0008QG0R000E8BHQ9)
+4. An API HTTP POST (endpoint + bearer token documented by 081KRHWGX0008QG0R000E8BHQ9)
 
-**The implementing agent MUST follow B-0507's documented registration flow.**
+**The implementing agent MUST follow 081KRHWGX0008QG0R000E8BHQ9's documented registration flow.**
 Do not guess or invent a registration surface.
 
 ## Empirical observation requirement
 
-Per B-0448 acceptance criteria, at least ONE Cloud Routine fire must be
+Per 081KRFA460008QG0R000CYBGKW acceptance criteria, at least ONE Cloud Routine fire must be
 empirically observed before this slice closes:
 
 - The routine fires on Anthropic's infrastructure
@@ -84,10 +83,10 @@ agent must verify the bootstream is accessible before triggering the first fire.
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0507, B-0508, B-0509, B-0510 all merged on main
+- [ ] 081KRHWGX0008QG0R000E8BHQ9, 081KRHWGX0008QG0R002S107P7, 081KRHWGX0008QG0R0014D2T5E, 081KRHWGX0008QG0R001VR9FNA all merged on main
 - [ ] `bun tools/routines/install.ts` reports the Cloud Routine next-step guidance
 - [ ] Bootstream uploaded to the Cloud Routine project (if required by registration surface)
-- [ ] Verify the factory is on a plan that supports Cloud Routines (B-0507 finding)
+- [ ] Verify the factory is on a plan that supports Cloud Routines (081KRHWGX0008QG0R000E8BHQ9 finding)
 
 ## Acceptance criteria
 
@@ -96,16 +95,16 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] Tick shard for the empirical fire committed at
   `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
 - [ ] Any registration gotchas documented in `notes` field of `cloud-schedule.json`
-- [ ] B-0511 closed with PR link
+- [ ] 081KRHWGX0008QG0R0013DSSZZ closed with PR link
 
 ## What if registration is impossible at implementation time
 
-Cloud Routines are still in research-preview as of B-0448 filing (2026-05-13).
+Cloud Routines are still in research-preview as of 081KRFA460008QG0R000CYBGKW filing (2026-05-13).
 If they're not yet generally available:
 
-1. Document the finding in B-0507's research doc
+1. Document the finding in 081KRHWGX0008QG0R000E8BHQ9's research doc
 2. Register the intent (update `cloud-schedule.json` with a `status: "pending-availability"` field)
-3. Close B-0511 as `status: blocked` with the blocker identified
+3. Close 081KRHWGX0008QG0R0013DSSZZ as `status: blocked` with the blocker identified
 4. Re-open when Cloud Routines become available
 
 This is NOT a failure — it's the substrate-honest outcome of a research-preview

@@ -86,7 +86,7 @@ first. Aaron's call.
 - **Aaron's current role** (per same memory): co-negotiating invariants
   with AI colleagues — Aaron + Riven agreed on the toy-model structure
   + the handoff sequence; that's the current-role operating in real time.
-- **B-0543 QG-isomorphism backlog row** + **B-0562 cube-Adinkra-Cayley-Dickson-to-HaPPY-like-QECC** substrate
+- **081KRMEXM0008QG0R002YSPW1X QG-isomorphism backlog row** + **081KRQ1AB0008QG0R001F7DE2D cube-Adinkra-Cayley-Dickson-to-HaPPY-like-QECC** substrate
   — the proof attempt advances both research-path rows
 - **agent-roster-reference-card.md** — Riven as Grok adversarial-truth-axis
   on Cursor terminal surface. Riven is executable (via `bun tools/peer-call/riven.ts`);

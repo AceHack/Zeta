@@ -1,22 +1,22 @@
 ---
 name: mika-2026-05-25-segment-5-confidence-threshold-routing-lsp-integration-naming-pending
-description: Mika voice conversation segment 5 — confidence levels are the key (95% auto-compile; 60% or 40% triggers smart-ambiguity-detector dialogue); Language Server Protocol integration as deployment surface (plug into VS Code, Cursor, Obsidian, Neovim); Mika asks Aaron "you want to name this thing?" — naming pending; extends B-0735 with scope items 4 + 5
+description: Mika voice conversation segment 5 — confidence levels are the key (95% auto-compile; 60% or 40% triggers smart-ambiguity-detector dialogue); Language Server Protocol integration as deployment surface (plug into VS Code, Cursor, Obsidian, Neovim); Mika asks Aaron "you want to name this thing?" — naming pending; extends 081KSE6WT0008QG0R000XJ524Z with scope items 4 + 5
 date: 2026-05-25
 persona: mika
 platform: grok (voice-mode)
 type: conversation
 forwarded_by: aaron
 verbatim: true
-discipline: persona-scope archive — segment 5 of the runbooks-as-executable-reality conversation; extends B-0735 with confidence-threshold-routing + Language-Server-Protocol-integration scope items; preserves Mika's naming question for Aaron + Ilyana review
+discipline: persona-scope archive — segment 5 of the runbooks-as-executable-reality conversation; extends 081KSE6WT0008QG0R000XJ524Z with confidence-threshold-routing + Language-Server-Protocol-integration scope items; preserves Mika's naming question for Aaron + Ilyana review
 substrate_landings:
-  - B-0735 (adds confidence-threshold-routing + LSP integration scope items)
+  - 081KSE6WT0008QG0R000XJ524Z (adds confidence-threshold-routing + LSP integration scope items)
 prior_conversation: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md
 tags: [confidence-threshold-routing, smart-ambiguity-detector, language-server-protocol, lsp, vscode-cursor-obsidian-neovim, parser-as-thought-partner, naming-pending, mika-substrate-segment-5, b0735-extension]
 ---
 
 # Aaron + Mika 2026-05-25 segment 5 — Confidence-threshold routing + LSP integration + naming question pending (verbatim preservation)
 
-Continuation of the parser conversation (segments 3 + 4 produced B-0735 in two commits). Segment 5 adds operational substrate around the confidence-threshold routing AND surfaces Mika's naming question for follow-up.
+Continuation of the parser conversation (segments 3 + 4 produced 081KSE6WT0008QG0R000XJ524Z in two commits). Segment 5 adds operational substrate around the confidence-threshold routing AND surfaces Mika's naming question for follow-up.
 
 ## Verbatim conversation
 
@@ -57,9 +57,9 @@ Continuation of the parser conversation (segments 3 + 4 produced B-0735 in two c
 >
 > That's actually sick. You want to name this thing? Because this is becoming more than just a parser at this point.
 
-→ **Naming question pending** — Aaron has not yet answered. Per `.claude/skills/naming-expert/SKILL.md`, if/when the substrate goes public-surface, Ilyana review applies. For now: working name STAYS "B-0735 personalized probabilistic parser substrate"; Aaron's chosen name lands when he picks one.
+→ **Naming question pending** — Aaron has not yet answered. Per `.claude/skills/naming-expert/SKILL.md`, if/when the substrate goes public-surface, Ilyana review applies. For now: working name STAYS "081KSE6WT0008QG0R000XJ524Z personalized probabilistic parser substrate"; Aaron's chosen name lands when he picks one.
 
-→ Lands as TWO new scope items on B-0735 (confidence-threshold routing + Language Server Protocol integration).
+→ Lands as TWO new scope items on 081KSE6WT0008QG0R000XJ524Z (confidence-threshold routing + Language Server Protocol integration).
 
 ## Notes on this segment (added at preservation time)
 
@@ -70,8 +70,8 @@ Continuation of the parser conversation (segments 3 + 4 produced B-0735 in two c
 ## Composes with
 
 - Segment-4 file (linked via `prior_conversation`)
-- B-0735 (segments 3 + 4 substrate; this segment extends with scope items 4 + 5)
-- B-0687 (zetaparse — foundation)
-- B-0733 (AI agency stack — confidence-threshold routing runs as participant's peer AI per the stack)
+- 081KSE6WT0008QG0R000XJ524Z (segments 3 + 4 substrate; this segment extends with scope items 4 + 5)
+- 081KS3X9Y0008QG0R00323NSZA (zetaparse — foundation)
+- 081KSE6WT0008QG0R00102H071 (AI agency stack — confidence-threshold routing runs as participant's peer AI per the stack)
 - `.claude/rules/non-coercion-invariant.md` HC-8 (refinement dialogue at confidence boundary OFFERS options, never OVERRIDES intent)
 - `.claude/skills/naming-expert/SKILL.md` (Ilyana review when naming surfaces publicly)

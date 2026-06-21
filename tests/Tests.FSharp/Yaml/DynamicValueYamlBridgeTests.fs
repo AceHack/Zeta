@@ -9,14 +9,14 @@ open Zeta.Core
 open Zeta.Core.FSharp.Yaml.Dom
 open Zeta.Core.FSharp.Yaml.Encoder
 
-// B-1011 format-agreement matrix — the YAML EDGE. The matrix needs all formats to
+// 081KT5CF90008QG0R001P4CQ09 format-agreement matrix — the YAML EDGE. The matrix needs all formats to
 // agree on the COMMON value (DynamicValue). DynamicValue already round-trips through
 // JSON + CBOR; this adds the bridge to YamlValue and proves DynamicValue → YAML →
 // DynamicValue preserves (locked shapes). With JSON/CBOR/YAML all round-tripping the
 // SAME DynamicValue, the formats commute on it.
 //
 // Bytes is excluded: YAML's text subset has no native byte type (would need a
-// base64-string convention — deferred, like JSON's deferred Bytes/Float in B-1011).
+// base64-string convention — deferred, like JSON's deferred Bytes/Float in 081KT5CF90008QG0R001P4CQ09).
 
 let rec private dvToYaml (dv: DynamicValue) : YamlValue =
     match dv with
@@ -108,7 +108,7 @@ let ``format-agreement matrix: JSON + CBOR + YAML + XML + Arrow all commute on D
         arrowRoundtrips dv |> should equal true
 
 // ── PROPERTY-BASED matrix (FsCheck) — generalize the fixed cases above ──
-// The YAML leg is the storage of record (B-1011) but only had example-based tests
+// The YAML leg is the storage of record (081KT5CF90008QG0R001P4CQ09) but only had example-based tests
 // while JSON/CBOR have the universal round-trip law (DynamicValue.Canonical.Tests).
 // These close that gap: FsCheck generates arbitrary trees over the matrix's LOCKED
 // SUBSET — null/bool/int/string/array/object (the intersection all three share;
@@ -139,7 +139,7 @@ let private matrixLeaf =
           Gen.map DynamicValue.Int genInt64Y
           Gen.map DynamicValue.String genStrY ]
 
-// Collections are generated INCLUDING EMPTY (n ≥ 0): B-1016 landed flow `{}` / `[]`
+// Collections are generated INCLUDING EMPTY (n ≥ 0): 081KT7YW00008QG0R002T1XNWT landed flow `{}` / `[]`
 // across all four languages, so empty Object/Array now round-trip distinct from null
 // (never-collapse). The round-trip LAW therefore covers the full domain, empties
 // included; the explicit never-collapse fact below proves the empty case directly.
@@ -180,7 +180,7 @@ let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML
 // subset's generated strings (genStrY) contain only XML-1.0-representable chars (no
 // NUL / forbidden C0), so the law holds on the full subset INCLUDING empties — XML's
 // typed elements make empty {} <arr></arr> / <obj></obj> / null distinct by
-// construction (never-collapse free; B-1016's invariant, native to XML).
+// construction (never-collapse free; 081KT7YW00008QG0R002T1XNWT's invariant, native to XML).
 [<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
 let ``XML round-trip LAW: ∀ dv (locked subset) — fromCanonicalXml ∘ toCanonicalXml = id``
     (v: DynamicValue) =
@@ -200,7 +200,7 @@ let ``XML never-collapse: canonical encoding is INJECTIVE on the locked subset (
 // byte-lock is only a FAITHFUL identity if distinct values never share canonical
 // bytes. Formally a corollary of the round-trip LAW above (parse ∘ encode = id ⇒
 // encode injective), made explicit because never-collapse is the load-bearing
-// requirement (B-1016 is the empty-collection case that currently violates it; this
+// requirement (081KT7YW00008QG0R002T1XNWT is the empty-collection case that currently violates it; this
 // proves it holds on the non-empty locked subset).
 [<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
 let ``YAML never-collapse: canonical encoding is INJECTIVE on the locked subset (distinct values never share bytes)``
@@ -209,21 +209,21 @@ let ``YAML never-collapse: canonical encoding is INJECTIVE on the locked subset 
     // top-level BARE empty `{}` / `[]` both render to a bare document (the reader
     // rejects bare-scalar/bare-empty top-level documents — the same pre-existing
     // top-level-bare-document gap noted in EncoderRoundTripTests, orthogonal to
-    // B-1016 which is about empties as VALUES). Wrapping isolates injectivity to the
+    // 081KT7YW00008QG0R002T1XNWT which is about empties as VALUES). Wrapping isolates injectivity to the
     // real storage case, where empty `{}` / `[]` / null are three distinct bytes.
     let wa = DynamicValue.Object [ "v", a ]
     let wb = DynamicValue.Object [ "v", b ]
     (encode (dvToYaml wa) = encode (dvToYaml wb)) = (wa = wb)
 
-// never-collapse (B-1016, LANDED) — serialization must NEVER collapse two states
+// never-collapse (081KT7YW00008QG0R002T1XNWT, LANDED) — serialization must NEVER collapse two states
 // that are actually different (SQL-null-as-monad-propagator; tri-boolean everywhere;
 // `Some [] ≠ None`): empty `[]`, empty `{}`, and `null` are THREE distinct states and
 // round-trip distinctly — canonical encode is INJECTIVE (parity with CBOR; JSON+CBOR
-// goldens carry array-empty/object-empty). B-1016 landed canonical YAML flow `{}` /
+// goldens carry array-empty/object-empty). 081KT7YW00008QG0R002T1XNWT landed canonical YAML flow `{}` /
 // `[]` across all four oracles (TS reference + F#/Rust/C# ports + cross-verify), so
 // block YAML no longer collapses empties to a bare `"key":` → null. This proves it.
 [<Fact>]
-let ``never-collapse (B-1016): empty {} and [] round-trip DISTINCT from null and from each other`` () =
+let ``never-collapse (081KT7YW00008QG0R002T1XNWT): empty {} and [] round-trip DISTINCT from null and from each other`` () =
     let rt (dv: DynamicValue) =
         match parse (encode (dvToYaml dv)) with
         | Ok y -> Some(yamlToDv y)

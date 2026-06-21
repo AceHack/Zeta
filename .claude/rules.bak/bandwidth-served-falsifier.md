@@ -25,7 +25,7 @@ ALL serve bandwidth constraints.
 | Falsifier | Applies to | Tool |
 |---|---|---|
 | F# anchor (PR #2840) | Type-level structural claims | dotnet build |
-| External falsifiability | Beacon-tier physics/empirical claims | Empirical test (e.g., B-0422) |
+| External falsifiability | Beacon-tier physics/empirical claims | Empirical test (e.g., 081KRCQQF0008QG0R0008VT354) |
 | Bandwidth-served (THIS RULE) | Compression infrastructure | Identifiable bandwidth limit served |
 
 Real infrastructure passes the appropriate falsifier(s).

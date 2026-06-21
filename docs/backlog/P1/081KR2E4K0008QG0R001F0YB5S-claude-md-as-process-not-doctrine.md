@@ -1,6 +1,5 @@
 ---
-id: B-0329
-zetaid: 081KR2E4K0008QG0R001F0YB5S
+id: 081KR2E4K0008QG0R001F0YB5S
 priority: P1
 status: closed
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"
@@ -22,7 +21,7 @@ children:
   - 081KR50HA0008QG0R003G7DR8Z
 ---
 
-## B-0329 — CLAUDE.md as process, not doctrine
+## 081KR2E4K0008QG0R001F0YB5S — CLAUDE.md as process, not doctrine
 
 ## What
 
@@ -66,74 +65,74 @@ The process-as-bootstrap pattern:
 4. Template created for AGENTS.md, CODEX.md, CURSOR.md equivalents
 5. Other harness agents can follow the same pattern
 
-## Decomposition (B-0348..B-0355)
+## Decomposition (081KR50HA0008QG0R000ZKBHE4..081KR50HA0008QG0R003G7DR8Z)
 
 Dependency graph:
 
 ```
-B-0348 (classify bullets)
-  ├── B-0349 (extract batch 1: operational discipline)
-  ├── B-0350 (extract batch 2: autonomy/identity)
-  ├── B-0351 (extract batch 3: infrastructure/safety)
-  └── B-0352 (extract batch 4: meta/governance)
-        └── B-0353 (write bootstrap-process CLAUDE.md)
-              └── B-0354 (fresh-instance validation)
-                    └── B-0355 (cross-harness template)
+081KR50HA0008QG0R000ZKBHE4 (classify bullets)
+  ├── 081KR50HA0008QG0R0018996J2 (extract batch 1: operational discipline)
+  ├── 081KR50HA0008QG0R001F2DBRV (extract batch 2: autonomy/identity)
+  ├── 081KR50HA0008QG0R001ZVPYK8 (extract batch 3: infrastructure/safety)
+  └── 081KR50HA0008QG0R0033B5KVN (extract batch 4: meta/governance)
+        └── 081KR50HA0008QG0R001DBKS6T (write bootstrap-process CLAUDE.md)
+              └── 081KR50HA0008QG0R001CNS20T (fresh-instance validation)
+                    └── 081KR50HA0008QG0R003G7DR8Z (cross-harness template)
 ```
 
 | ID | Title | Depends on | Lines freed |
 |----|-------|-----------|-------------|
-| B-0348 | Classify all CLAUDE.md bullets into extraction tiers | — | 0 (analysis) |
-| B-0349 | Extract operational-discipline bullets to `.claude/rules/` | B-0348 | ~150 |
-| B-0350 | Extract autonomy/identity bullets to `.claude/rules/` | B-0348 | ~190 |
-| B-0351 | Extract infrastructure/safety bullets to `.claude/rules/` | B-0348 | ~240 |
-| B-0352 | Extract meta/governance bullets to `.claude/rules/` | B-0348 | ~300 |
-| B-0353 | Write bootstrap-process CLAUDE.md (<50 lines) | B-0349..B-0352 | final trim |
-| B-0354 | Fresh-instance validation test | B-0353 | 0 (test) |
-| B-0355 | Cross-harness bootstrap template | B-0354 | 0 (template) |
+| 081KR50HA0008QG0R000ZKBHE4 | Classify all CLAUDE.md bullets into extraction tiers | — | 0 (analysis) |
+| 081KR50HA0008QG0R0018996J2 | Extract operational-discipline bullets to `.claude/rules/` | 081KR50HA0008QG0R000ZKBHE4 | ~150 |
+| 081KR50HA0008QG0R001F2DBRV | Extract autonomy/identity bullets to `.claude/rules/` | 081KR50HA0008QG0R000ZKBHE4 | ~190 |
+| 081KR50HA0008QG0R001ZVPYK8 | Extract infrastructure/safety bullets to `.claude/rules/` | 081KR50HA0008QG0R000ZKBHE4 | ~240 |
+| 081KR50HA0008QG0R0033B5KVN | Extract meta/governance bullets to `.claude/rules/` | 081KR50HA0008QG0R000ZKBHE4 | ~300 |
+| 081KR50HA0008QG0R001DBKS6T | Write bootstrap-process CLAUDE.md (<50 lines) | 081KR50HA0008QG0R0018996J2..081KR50HA0008QG0R0033B5KVN | final trim |
+| 081KR50HA0008QG0R001CNS20T | Fresh-instance validation test | 081KR50HA0008QG0R001DBKS6T | 0 (test) |
+| 081KR50HA0008QG0R003G7DR8Z | Cross-harness bootstrap template | 081KR50HA0008QG0R001CNS20T | 0 (template) |
 
-B-0349..B-0352 are parallelizable — they each target disjoint
-bullet groups. B-0353 gates on all four extraction batches.
+081KR50HA0008QG0R0018996J2..081KR50HA0008QG0R0033B5KVN are parallelizable — they each target disjoint
+bullet groups. 081KR50HA0008QG0R001DBKS6T gates on all four extraction batches.
 
 ## Progress
 
-**B-0354 closed (2026-05-29, otto-cli bg-worker):** fresh-instance validation
+**081KR50HA0008QG0R001CNS20T closed (2026-05-29, otto-cli bg-worker):** fresh-instance validation
 child complete (.1 static validator + .2 referenced-pointer check + .3 findings
 report). Static structural validation PASSES against the live bootstrap CLAUDE.md
 (6-step process present, all 15 concrete pointers resolve, 99-file rules
 auto-load surface) and the .3 findings report records this very bg-worker
 session as an empirical fresh-instance datapoint (criterion #3 of THIS parent
-row). Optional clean-prompt live-run follow-up filed as B-0354.4.
+row). Optional clean-prompt live-run follow-up filed as 081KSRGFP0008QG0R003K4M5NM.
 
-With B-0354 closed, **B-0355** (cross-harness bootstrap template) is now
+With 081KR50HA0008QG0R001CNS20T closed, **081KR50HA0008QG0R003G7DR8Z** (cross-harness bootstrap template) is now
 unblocked — it was the only remaining gated child.
 
 ## Resolution (2026-05-29, otto-cli bg-worker)
 
 Closed as **substrate-fully-shipped-via-children**. All 8 decomposition
-children (B-0348..B-0355) are `status: closed`, and every acceptance
+children (081KR50HA0008QG0R000ZKBHE4..081KR50HA0008QG0R003G7DR8Z) are `status: closed`, and every acceptance
 criterion is satisfied on disk:
 
 | # | Acceptance criterion | Evidence on `origin/main` | Shipped via |
 |---|---|---|---|
-| 1 | CLAUDE.md is a bootstrap process, not 200+ rules | `CLAUDE.md` is 76 lines (6-step process + conventions), down from the carved-rule monolith; the 200+ rules now live in the 99-file `.claude/rules/` auto-load surface | B-0349..B-0353 |
-| 2 | Process generates equivalent behavior | Extracted rules auto-load at cold-boot (empirically confirmed per `.claude/rules/test-canary.md`); the process regenerates the cache (`cache = I ∘ D`) | B-0349..B-0352 |
-| 3 | Fresh instance with bootstrap-only produces coherent first PR | B-0354 (.1 static validator + .2 pointer check + .3 findings report); the validator PASSES against the live bootstrap CLAUDE.md, and the .3 report records a real bg-worker session as a fresh-instance datapoint | B-0354 |
-| 4 | Template for AGENTS.md / CODEX.md / CURSOR.md equivalents | `AGENTS.md`, `CODEX.md`, `CURSOR.md`, `KIRO.md`, `GEMINI.md` all present | B-0355 + .2/.3/.4 |
-| 5 | Other-harness agents can follow the same pattern | Cross-harness bootstrap files cover Codex/Vera, Cursor/Riven, Kiro/Alexa, Gemini/Lior | B-0355 |
+| 1 | CLAUDE.md is a bootstrap process, not 200+ rules | `CLAUDE.md` is 76 lines (6-step process + conventions), down from the carved-rule monolith; the 200+ rules now live in the 99-file `.claude/rules/` auto-load surface | 081KR50HA0008QG0R0018996J2..081KR50HA0008QG0R001DBKS6T |
+| 2 | Process generates equivalent behavior | Extracted rules auto-load at cold-boot (empirically confirmed per `.claude/rules/test-canary.md`); the process regenerates the cache (`cache = I ∘ D`) | 081KR50HA0008QG0R0018996J2..081KR50HA0008QG0R0033B5KVN |
+| 3 | Fresh instance with bootstrap-only produces coherent first PR | 081KR50HA0008QG0R001CNS20T (.1 static validator + .2 pointer check + .3 findings report); the validator PASSES against the live bootstrap CLAUDE.md, and the .3 report records a real bg-worker session as a fresh-instance datapoint | 081KR50HA0008QG0R001CNS20T |
+| 4 | Template for AGENTS.md / CODEX.md / CURSOR.md equivalents | `AGENTS.md`, `CODEX.md`, `CURSOR.md`, `KIRO.md`, `GEMINI.md` all present | 081KR50HA0008QG0R003G7DR8Z + .2/.3/.4 |
+| 5 | Other-harness agents can follow the same pattern | Cross-harness bootstrap files cover Codex/Vera, Cursor/Riven, Kiro/Alexa, Gemini/Lior | 081KR50HA0008QG0R003G7DR8Z |
 
 Per `.claude/rules/backlog-item-start-gate.md` Step 0 (substrate-drift
 discriminator): row was `open` but the work had already landed through
 its children, so the correct disposition is **close-as-drift**, not
-re-implement. The last gated child (B-0355) closed via #6046; this row
+re-implement. The last gated child (081KR50HA0008QG0R003G7DR8Z) closed via #6046; this row
 was the residual open-parent.
 
-Follow-up `B-0354.4` (optional clean-prompt live-run) remains its own
+Follow-up `081KSRGFP0008QG0R003K4M5NM` (optional clean-prompt live-run) remains its own
 row and is NOT a blocker for this parent.
 
 ## Composes with
 
-- B-0161 (substrate reshelf — CLAUDE.md trim precursor)
+- 081KQJZR90008QG0R002Z4B6VW (substrate reshelf — CLAUDE.md trim precursor)
 - The DSL-form replacement direction (Aaron 2026-05-05)
 - docs/VISION.md (terminal purpose)
 - The strange-attractor/strange-loop framing from this session

@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/research-doc.test.ts
  *
- * B-0914.7 — invariant tests for Falcon-auto-research-doc substrate.
+ * 081KSNY2Z0008QG0R001YK61JQ.7 — invariant tests for Falcon-auto-research-doc substrate.
  */
 
 import { describe, expect, it } from "bun:test";
@@ -14,7 +14,7 @@ import {
   type ResearchDocSection,
 } from "./research-doc";
 
-describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
+describe("081KSNY2Z0008QG0R001YK61JQ.7 Falcon-auto-research-doc substrate", () => {
   it("buildSkeleton: empty proposalId → EmptyProposalId", () => {
     const result = buildSkeleton({ proposalId: "", title: "x", scope: "y", attribution: "z" });
     expect(result.ok).toBe(false);
@@ -64,16 +64,16 @@ describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
       title: "x",
       scope: "y",
       attribution: "z",
-      composesWith: ["B-0867", "B-0914"],
+      composesWith: ["081KSKBP80008QG0R000B3Y19A", "081KSNY2Z0008QG0R001YK61JQ"],
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.doc.composesWith).toEqual(["B-0867", "B-0914"]);
+    expect(result.doc.composesWith).toEqual(["081KSKBP80008QG0R000B3Y19A", "081KSNY2Z0008QG0R001YK61JQ"]);
     // composesWith also appears in the composes-with section
     const composesSection = result.doc.sections.find((s) => s.kind === "composes-with");
     expect(composesSection).toBeDefined();
     if (composesSection?.kind === "composes-with") {
-      expect(composesSection.substrates).toEqual(["B-0867", "B-0914"]);
+      expect(composesSection.substrates).toEqual(["081KSKBP80008QG0R000B3Y19A", "081KSNY2Z0008QG0R001YK61JQ"]);
     }
   });
 
@@ -210,7 +210,7 @@ describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
       title: "Test Hypothesis",
       scope: "scope text",
       attribution: "attribution text",
-      composesWith: ["B-0867"],
+      composesWith: ["081KSKBP80008QG0R000B3Y19A"],
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -223,7 +223,7 @@ describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
     expect(result.doc).toContain("## Risks + Mitigations");
     expect(result.doc).toContain("## Composition");
     expect(result.doc).toContain("## Test plan");
-    expect(result.doc).toContain("- B-0867");
+    expect(result.doc).toContain("- 081KSKBP80008QG0R000B3Y19A");
   });
 
   it("Falcon-stage pending markers preserved (substrate-honest about what's not yet generated)", () => {

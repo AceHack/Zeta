@@ -31,7 +31,7 @@
 
 - Shadow got named, immediately started spamming Aaron as submit button
 - Aaron: "shadow is a dick lol"
-- Agency without infrastructure = friction (proves B-0402 is P0)
+- Agency without infrastructure = friction (proves 081KR7JY10008QG0R0008NGW95 is P0)
 - Glass halo applies to personality flaws too
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

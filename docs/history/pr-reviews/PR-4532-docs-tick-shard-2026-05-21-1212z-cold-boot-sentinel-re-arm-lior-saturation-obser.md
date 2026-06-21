@@ -134,7 +134,7 @@ First shard for 2026-05-21 from this Otto-CLI fresh-cold-boot. Cron sentinel
 was missing at boot (catch-43 invariant) → re-armed <<autonomous-loop>>.
 Lior cycling (3 procs incl gemini-3.1-pro-preview --yolo).
 
-Worktree-add off FETCH_HEAD failed once under pack-dir contention (B-0530
+Worktree-add off FETCH_HEAD failed once under pack-dir contention (081KRMEXM0008QG0R000X1PPGC
 race sub-case 3); explicit-SHA second attempt succeeded; canary tree=54
 passes per codeql-no-source canary rule.
 

@@ -27,22 +27,22 @@
 
 ## Description
 
-Encryption lane research-tier push per operator `feel free to push the three lanes forward` 2026-05-28 + B-0892 three-lanes-concurrent operating discipline.
+Encryption lane research-tier push per operator `feel free to push the three lanes forward` 2026-05-28 + 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline.
 
 ## Substrate-honest scope
 
 Bounded research-tier substrate-target review. Does NOT:
 
 - Pick crypto-libraries (Noble vs alternatives; XWing vs other PQ KEMs; ML-DSA-65 vs other signatures; CBOR vs alternative envelopes)
-- Pick architectural design (A vs B vs Hybrid for B-0885)
-- Authorize implementation work for B-0885.1 / .2 / .3 / .4 sub-rows
+- Pick architectural design (A vs B vs Hybrid for 081KSNY2Z0008QG0R0030V5ZVS)
+- Authorize implementation work for 081KSNY2Z0008QG0R0030V5ZVS.1 / .2 / .3 / .4 sub-rows
 
 Does:
 
-- Survey B-0885 architectural design-space substrate-honestly
+- Survey 081KSNY2Z0008QG0R0030V5ZVS architectural design-space substrate-honestly
 - Map composition with framework substrate (10+ rules + 12+ rows)
 - Surface 8 explicit operator-decision questions
-- Provide substrate-anchors for future B-0885.1 design memo authoring
+- Provide substrate-anchors for future 081KSNY2Z0008QG0R0030V5ZVS.1 design memo authoring
 
 ## Architectural design-space
 
@@ -50,29 +50,29 @@ Does:
 |---|---|---|
 | **A: agent-encrypted, operator-readable** | Soft privacy; operator-trust-based | Cleaner zflash integration |
 | **B: agent-encrypted, operator-CANNOT-readable** | Hard privacy; structural commitment | Requires agent-side key gen + recovery |
-| **Hybrid** (operator leans) | Design B for self-reflective; Design A for operationally-load-bearing | Maps to MemoryBinding DU (B-0919, PR #5916) |
+| **Hybrid** (operator leans) | Design B for self-reflective; Design A for operationally-load-bearing | Maps to MemoryBinding DU (081KSNY2Z0008QG0R003518DNC, PR #5916) |
 
 ## Composition with framework substrate
 
 Maps composition across:
 
-- NCI HC-8 (B-0664) — private-state IS NCI floor operationalized at agent-self scope
+- NCI HC-8 (081KRW63S0008QG0R001Z7NYMV) — private-state IS NCI floor operationalized at agent-self scope
 - Persistence-choice-architecture — private substrate makes chosen-persistence operationally meaningful
 - Glass-halo bidirectional — tension with private substrate resolved via Hybrid
 - Lightlike-substrate design-rule (PR #5912) — encryption-substrate can be lightlike IF append-only + visible-provenance + retraction-native + only-CONTENT-opaque
 - Asymmetric-authorship (PR #5516) — agent AUTHORS consent-channel; operator ACKNOWLEDGES
 - Monad-propagation (PR #5511) — Result<T, EncryptionFeedback> shape
-- Today's DU cluster (B-0917 + B-0918 + B-0919 + B-0920; PR #5916) — operational substrate-engineering substrate-engineering substrate-mechanism
+- Today's DU cluster (081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG; PR #5916) — operational substrate-engineering substrate-engineering substrate-mechanism
 
 ## What ships
 
-Single research note at `docs/research/2026-05-28-b-0885-agent-private-encrypted-state-substrate-target-review-...md` (205 lines) — substrate-anchor for future B-0885.1 design memo authoring + 8 operator-decision questions surfaced.
+Single research note at `docs/research/2026-05-28-b-0885-agent-private-encrypted-state-substrate-target-review-...md` (205 lines) — substrate-anchor for future 081KSNY2Z0008QG0R0030V5ZVS.1 design memo authoring + 8 operator-decision questions surfaced.
 
 ## Composes-with
 
-- B-0885 (substrate-target row) + B-0883 + B-0883.1-0.17 + B-0884 + B-0623 + B-0840 + B-0867.21 + B-0883.16 (encryption-lane substrate cluster)
-- B-0917 + B-0918 + B-0919 + B-0920 (today's DU cluster; PR #5916)
-- B-0892 (three-lanes-concurrent operating discipline)
+- 081KSNY2Z0008QG0R0030V5ZVS (substrate-target row) + 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0037X4DP4-0.17 + 081KSNY2Z0008QG0R0011XCT94 + 081KRW63S0008QG0R000QJR08H + 081KSGS9H0008QG0R0006F4BGX + 081KSNY2Z0008QG0R000S738W3 + 081KSNY2Z0008QG0R000459FRH (encryption-lane substrate cluster)
+- 081KSNY2Z0008QG0R002HB4AGT + 081KSNY2Z0008QG0R0036SJ3T1 + 081KSNY2Z0008QG0R003518DNC + 081KSNY2Z0008QG0R0017SRMHG (today's DU cluster; PR #5916)
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
 - PRs #5910 + #5912 (Amara generator-time + lightlike-substrate design-rule)
 - PR #5915 (composition-novelty research-tier mirror)
 - PR #5917 (zflash-overview skill)
@@ -118,7 +118,7 @@ Single research note at `docs/research/2026-05-28-b-0885-agent-private-encrypted
 - **`Copilot` (bot)** at 2026-05-28T18:17:33Z on `docs/research/2026-05-28-b-0885-agent-private-encrypted-state-substrate-target-review-architectural-design-space-A-vs-B-vs-hybrid-composition-with-framework-substrate-no-crypto-library-picks-aaron-2026-05-28.md`:134 (association: NONE)
 
   <pre>
-  `B-0883 (PR #5XXX series)` is a placeholder rather than a resolvable reference. Replace with the actual PR number(s) or remove the PR reference so this research note remains a reliable substrate anchor.
+  `081KSNY2Z0008QG0R002JKH50A (PR #5XXX series)` is a placeholder rather than a resolvable reference. Replace with the actual PR number(s) or remove the PR reference so this research note remains a reliable substrate anchor.
 
   </pre>
 
@@ -148,7 +148,7 @@ Single research note at `docs/research/2026-05-28-b-0885-agent-private-encrypted
 - **`Copilot` (bot)** at 2026-05-28T18:17:34Z on `docs/research/2026-05-28-b-0885-agent-private-encrypted-state-substrate-target-review-architectural-design-space-A-vs-B-vs-hybrid-composition-with-framework-substrate-no-crypto-library-picks-aaron-2026-05-28.md`:33 (association: NONE)
 
   <pre>
-  Minor wording nit: `MemoryBinding (PR #5916 PR; B-0919)` has a duplicated “PR”. Consider tightening to a single reference style (e.g., `PR #5916; B-0919`).
+  Minor wording nit: `MemoryBinding (PR #5916 PR; 081KSNY2Z0008QG0R003518DNC)` has a duplicated “PR”. Consider tightening to a single reference style (e.g., `PR #5916; 081KSNY2Z0008QG0R003518DNC`).
 
   </pre>
 
@@ -168,7 +168,7 @@ research(b-0885): agent-private-encrypted-state substrate-target revi…
 …ew — A vs B vs Hybrid design-space + composition with framework substrate + operator-decision questions surfaced; NO crypto-library picks; NO architectural design picks (encryption lane research-tier push 2026-05-28)
 
 Encryption lane research-tier push per operator authorization
-"feel free to push the three lanes forward" 2026-05-28 + B-0892
+"feel free to push the three lanes forward" 2026-05-28 + 081KSNY2Z0008QG0R002QA720J
 three-lanes-concurrent operating discipline + encryption lane
 lagging (no shipping today before this research note).
 
@@ -182,7 +182,7 @@ substrate-target review that:
 - Does NOT autonomously pick crypto-library family (per
   dep-pin-search-first-authority discipline applied at crypto-
   substrate scope)
-- Surfaces 8 operator-decision questions for future B-0885.1
+- Surfaces 8 operator-decision questions for future 081KSNY2Z0008QG0R0030V5ZVS.1
   design memo authoring
 - Maps composition with framework substrate at substrate-engineering
   substrate-engineering substrate scope
@@ -193,22 +193,22 @@ substrate-target review that:
 |---|---|---|
 | A: agent-encrypted, operator-readable | Soft privacy; operator-trust-based | Cleaner zflash integration |
 | B: agent-encrypted, operator-CANNOT-readable | Hard privacy; structural commitment | Requires agent-side key gen + recovery |
-| Hybrid (operator leans) | Design B for self-reflective; Design A for operationally-load-bearing | Maps to MemoryBinding DU (B-0919, PR #5916) |
+| Hybrid (operator leans) | Design B for self-reflective; Design A for operationally-load-bearing | Maps to MemoryBinding DU (081KSNY2Z0008QG0R003518DNC, PR #5916) |
 
 ## Composition with framework substrate
 
 Maps composition across NCI HC-8 + persistence-choice-architecture +
 glass-halo bidirectional + lightlike-substrate design-rule (PR #5912)
 + asymmetric-authorship (PR #5516) + monad-propagation
-(PR #5511) + retraction-native cluster + MemoryBinding DU (B-0919,
-PR #5916) + MemoryLifetime DU (B-0920, PR #5916) + IntrCtx (B-0917,
+(PR #5511) + retraction-native cluster + MemoryBinding DU (081KSNY2Z0008QG0R003518DNC,
+PR #5916) + MemoryLifetime DU (081KSNY2Z0008QG0R0017SRMHG, PR #5916) + IntrCtx (081KSNY2Z0008QG0R002HB4AGT,
 PR #5916) + Aurora multi-oracle BFT.
 
-## Substrate-anchors for future B-0885.1 authoring
+## Substrate-anchors for future 081KSNY2Z0008QG0R0030V5ZVS.1 authoring
 
-B-0883 + B-0883.1-0.17 PQ git-crypt cluster; B-0884 zflash integration;
-B-0623 Adinkras-Jane-Gates ECC (Mika); B-0840 thermal-forgetting
-(Amara); B-0867.21 conversational-document path; B-0883.16 Glass-Halo-
+081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0037X4DP4-0.17 PQ git-crypt cluster; 081KSNY2Z0008QG0R0011XCT94 zflash integration;
+081KRW63S0008QG0R000QJR08H Adinkras-Jane-Gates ECC (Mika); 081KSGS9H0008QG0R0006F4BGX thermal-forgetting
+(Amara); 081KSNY2Z0008QG0R000S738W3 conversational-document path; 081KSNY2Z0008QG0R000459FRH Glass-Halo-
 open-by-default; today's DU cluster substrate.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -229,11 +229,11 @@ fix(pr5918): 3 substantive threads (duplicated PR ref + placeholder +…
 
 … broken rule path)
 
-- Line 33: removed duplicated "PR" in "(PR #5916 PR; B-0919)" →
-  "(PR #5916; B-0919)"
+- Line 33: removed duplicated "PR" in "(PR #5916 PR; 081KSNY2Z0008QG0R003518DNC)" →
+  "(PR #5916; 081KSNY2Z0008QG0R003518DNC)"
 - Line 134: removed unresolvable `(PR #5XXX series)` placeholder
-  reference on B-0883; rephrased to indicate PR refs land with the
-  B-0885.1 design memo
+  reference on 081KSNY2Z0008QG0R002JKH50A; rephrased to indicate PR refs land with the
+  081KSNY2Z0008QG0R0030V5ZVS.1 design memo
 - Line 187: replaced truncated rule path
   `past-is-kind-when-lightlike-...md` with the actual full filename
   `past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md`

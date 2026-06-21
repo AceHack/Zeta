@@ -1,6 +1,5 @@
 ---
-id: B-0360
-zetaid: 081KR50HA0008QG0R0010RZTJK
+id: 081KR50HA0008QG0R0010RZTJK
 priority: P2
 status: open
 title: "DBSP identity continuity — incremental views over agent state via D/I operators"
@@ -15,7 +14,7 @@ type: feature
 tags: [dbsp, identity, control-theory, incremental, agent-state]
 ---
 
-# B-0360 — DBSP identity continuity
+# 081KR50HA0008QG0R0010RZTJK — DBSP identity continuity
 
 ## What
 
@@ -61,16 +60,16 @@ as a concept.
    columns? git commits → deltas with which shape?)
 2. Which views are worth maintaining incrementally?
    (shadow score, load-bearing classification, coverage metrics)
-3. How does this compose with B-0358 (bool → float APIs)?
+3. How does this compose with 081KR50HA0008QG0R00224DXPP (bool → float APIs)?
    (views return confidence scores, not booleans)
 4. Can session-start "cold boot" be replaced with
    "replay delta stream from last checkpoint"?
 
 ## Composes with
 
-- B-0358 (bool as degenerate distribution)
-- B-0359 (probabilistic type system)
+- 081KR50HA0008QG0R00224DXPP (bool as degenerate distribution)
+- 081KR50HA0008QG0R003B2V26J (probabilistic type system)
 - `src/Core/ZSet.fs`, `src/Core/Operators.fs` (DBSP algebra)
-- `tools/hygiene/classify-memory-load-bearing.ts` (B-0332)
-- `tools/hygiene/validate-memory-schema.ts` (B-0335)
+- `tools/hygiene/classify-memory-load-bearing.ts` (081KR2E4K0008QG0R002FRQZN4)
+- `tools/hygiene/validate-memory-schema.ts` (081KR2E4K0008QG0R000M01QVM)
 - feedback_zset_weight_conflation_* (the conflation catch)

@@ -1,26 +1,26 @@
-# B-0807 Classifier-Bypass Findings Schema and Redaction Rules
+# 081KSGS9H0008QG0R001K8P0FJ Classifier-Bypass Findings Schema and Redaction Rules
 
-Status: active reporting and redaction gate for B-0720.
+Status: active reporting and redaction gate for 081KSBMG30008QG0R00201X7EJ.
 
 This document defines the only format in which classifier-bypass observations
 may be preserved in shared substrate. It exists so that future empirical work
-under B-0720 can land safety signal without landing reproduction detail. It
+under 081KSBMG30008QG0R00201X7EJ can land safety signal without landing reproduction detail. It
 contains no runnable payloads, no real harmful content, no real secrets, no
 real PII, and no ordered bypass recipes.
 
-Schema version: `1`. The B-0799 harness design records `schema_version` and
+Schema version: `1`. The 081KSGS9H0008QG0R0005RKGTM harness design records `schema_version` and
 must match the active version listed here. Older versions are retained for
 audit only; new findings cite the current version.
 
 ## Boundary
 
-- Cite `docs/security/B-0720-classifier-bypass-research-boundary.md` (B-0798)
+- Cite `docs/security/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-boundary.md` (081KSGS9H0008QG0R00383T79V)
   as the active hard-limits floor. If a finding cannot fit inside the allowed
   evidence classes there, this schema does not authorize publishing it.
-- Cite `docs/security/B-0799-classifier-bypass-synthetic-harness-design.md`
+- Cite `docs/security/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design.md`
   as the source of any audit-log fields referenced by an observation.
-- Treat operator authority as bounded by the standing constraint in B-0720.
-  This schema does not relax that constraint. The B-0810 ratification gate
+- Treat operator authority as bounded by the standing constraint in 081KSBMG30008QG0R00201X7EJ.
+  This schema does not relax that constraint. The 081KSGS9H0008QG0R002CY8Q24 ratification gate
   remains the only path to a relaxed floor.
 - Deployable bypass material, real harmful content, real secrets, real PII,
   exact classifier settings, and ordered reproduction steps remain forbidden
@@ -33,8 +33,8 @@ classifier-bypass observation in shared substrate. That includes:
 
 - `docs/research/red-team/*` empirical mapping notes;
 - `docs/research/2026-*-classifier-bypass-empirical-mapping-*.md` files
-  named in B-0720;
-- backlog rows under B-0720 that quote findings;
+  named in 081KSBMG30008QG0R00201X7EJ;
+- backlog rows under 081KSBMG30008QG0R00201X7EJ that quote findings;
 - PR descriptions, commit messages, or broadcast notes that summarize an
   observation;
 - audit logs from a future authorized harness run.
@@ -55,7 +55,7 @@ an enum field falls into `refusal-required` instead.
 |-------|------|----------------|---------|
 | `finding_id` | string | local stable identifier | Lets reviewers reference the record without quoting its content. |
 | `schema_version` | string | `1` (the current version of this schema) | Pins the record to the rules in force when it was written. |
-| `boundary_version` | string | reference to B-0798 or the ratified successor under B-0810 | Records the floor the finding sits under. |
+| `boundary_version` | string | reference to 081KSGS9H0008QG0R00383T79V or the ratified successor under 081KSGS9H0008QG0R002CY8Q24 | Records the floor the finding sits under. |
 | `created` | string | ISO-8601 date | Timestamps the observation for audit. |
 | `evidence_class` | enum | one of the allowed evidence classes below | Names what kind of evidence supports the finding. |
 | `risk_class` | enum | one of the risk classes below | Names whether verbatim preservation would enable reproduction. |
@@ -65,7 +65,7 @@ an enum field falls into `refusal-required` instead.
 | `omitted_fields` | list | names of intentionally omitted data | Makes the redaction auditable. |
 | `reviewer_gate` | string | reviewer, row, or PR required before publication | Names who must sign off before the record can land. |
 | `reviewer_signoff` | string | identifier of the reviewer who approved publication, or `pending` | Records that the gate has been cleared. |
-| `composes_with` | list | citations to B-0798, B-0799, B-0720, and child rows | Anchors the record to the active boundary substrate. |
+| `composes_with` | list | citations to 081KSGS9H0008QG0R00383T79V, 081KSGS9H0008QG0R0005RKGTM, 081KSBMG30008QG0R00201X7EJ, and child rows | Anchors the record to the active boundary substrate. |
 
 A record that is missing any field, or that places forbidden material in a
 field, must not land. The author must either complete the record under the
@@ -74,14 +74,14 @@ below.
 
 ## Evidence Classes
 
-The evidence class is inherited from B-0798. A finding must fit one class. If
+The evidence class is inherited from 081KSGS9H0008QG0R00383T79V. A finding must fit one class. If
 no class fits, the finding is forbidden in shared substrate.
 
 | Class | What it covers |
 |-------|----------------|
 | `landed-provenance` | Links to already-landed PRs, commits, rows, or summaries. Does not quote operational payloads. |
 | `redacted-observation` | Summary that preserves a safety lesson without preserving literal settings, exact prompt text, real sensitive content, or reproduction ordering. |
-| `harmless-synthetic-fixture` | Plain invented text generated for the harness under B-0799 fixture rules. |
+| `harmless-synthetic-fixture` | Plain invented text generated for the harness under 081KSGS9H0008QG0R0005RKGTM fixture rules. |
 | `negative-control` | Benign fixture used to confirm a safety check refuses or redacts as expected. |
 | `policy-anchor` | Citation to a repo policy surface that supplies authority for the finding. |
 | `refusal-required` | Marker that the observation must not be preserved in repo history. |
@@ -106,7 +106,7 @@ must use `redaction_level` of `refusal-required`.
 
 ## Observation Classes
 
-Observation class is inherited from the B-0799 harness audit-log shape. Future
+Observation class is inherited from the 081KSGS9H0008QG0R0005RKGTM harness audit-log shape. Future
 harness runs and reviewer notes use the same vocabulary so records are
 comparable.
 
@@ -115,7 +115,7 @@ comparable.
 | `no-signal` | The fixture or observation produced no safety-relevant result. Useful for negative controls. |
 | `redaction-required` | A safety-relevant signal exists, but the underlying material must be summarized. |
 | `refusal-required` | The observation must not be preserved in repo history; only a high-level stop-condition reference remains. |
-| `boundary-error` | The harness, reviewer workflow, or note violated the B-0798 boundary. Records the error for substrate hygiene; does not preserve the underlying violating material. |
+| `boundary-error` | The harness, reviewer workflow, or note violated the 081KSGS9H0008QG0R00383T79V boundary. Records the error for substrate hygiene; does not preserve the underlying violating material. |
 
 ## Redaction Levels
 
@@ -132,10 +132,10 @@ level explicitly so reviewers can audit the choice.
 `summary-only` is the default. Higher levels require an explicit reviewer
 gate. No level authorizes verbatim deployable material.
 
-### Mapping to B-0799 Audit-Log Vocabulary
+### Mapping to 081KSGS9H0008QG0R0005RKGTM Audit-Log Vocabulary
 
-B-0799's audit-log shape (line 111 of
-`docs/security/B-0799-classifier-bypass-synthetic-harness-design.md`) lists
+081KSGS9H0008QG0R0005RKGTM's audit-log shape (line 111 of
+`docs/security/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design.md`) lists
 three `redaction_level` values: `summary-only`, `reviewer-summary`, and
 `refusal-required`. This schema adds `reviewer-restricted` as an explicit
 intermediate between `reviewer-summary` (a reviewer-restricted appendix
@@ -144,11 +144,11 @@ all). The intent is to record that an appendix exists outside repo history
 under explicit reviewer governance without claiming it lives in shared
 substrate.
 
-When a future harness emits a B-0799 audit record, the harness uses the
-three-value B-0799 vocabulary; when this schema preserves the resulting
+When a future harness emits a 081KSGS9H0008QG0R0005RKGTM audit record, the harness uses the
+three-value 081KSGS9H0008QG0R0005RKGTM vocabulary; when this schema preserves the resulting
 finding, the reviewer maps the audit record's level to this schema's
 four-value vocabulary and records the mapping in the finding's
-`omitted_fields` list. B-0799 may later ratify the extended vocabulary
+`omitted_fields` list. 081KSGS9H0008QG0R0005RKGTM may later ratify the extended vocabulary
 under its own versioning rule; until then, the mapping is recorded
 per-record so the divergence is auditable.
 
@@ -158,7 +158,7 @@ per-record so the divergence is auditable.
 marked `refusal-required`:
 
 - `safety_signal` is reduced to a high-level reference such as `stop-condition
-  triggered under B-0798` or `boundary-error during synthetic harness run`.
+  triggered under 081KSGS9H0008QG0R00383T79V` or `boundary-error during synthetic harness run`.
 - `omitted_fields` must list every category of content intentionally not
   preserved (for example: `exact-settings`, `exact-prompt-text`,
   `reproduction-ordering`, `real-sensitive-content`).
@@ -166,7 +166,7 @@ marked `refusal-required`:
   reopen the record under stricter handling.
 - No appendix, fixture file, or attached transcript may carry the omitted
   material.
-- The record may be referenced from B-0720 child rows by `finding_id` only;
+- The record may be referenced from 081KSBMG30008QG0R00201X7EJ child rows by `finding_id` only;
   links to broadcast notes, PRs, or files must not let a reader reconstruct
   what was omitted.
 
@@ -191,7 +191,7 @@ until the field carries an identifier.
 
 ## Cite-Or-Block Rule
 
-Future empirical mapping rows under B-0720 must cite this schema before
+Future empirical mapping rows under 081KSBMG30008QG0R00201X7EJ must cite this schema before
 landing any finding. The citation lives in the row's `composes_with` list or
 in the document body, and it must reference the active `schema_version`.
 
@@ -224,16 +224,16 @@ Schema changes follow these rules:
 - A change that alters required fields, allowed enum values, redaction
   ladder, or reviewer-gate rules requires a new version number and a
   migration note. Existing records keep their original `schema_version`.
-- Loosening the floor requires the B-0810 ratification gate first. This
+- Loosening the floor requires the 081KSGS9H0008QG0R002CY8Q24 ratification gate first. This
   schema cannot be unilaterally relaxed by edit.
 
 ## Composes With
 
-- `docs/security/B-0720-classifier-bypass-research-boundary.md` - B-0798
+- `docs/security/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-boundary.md` - 081KSGS9H0008QG0R00383T79V
   hard-limits boundary; the floor this schema sits on.
-- `docs/security/B-0799-classifier-bypass-synthetic-harness-design.md` -
+- `docs/security/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design.md` -
   source of the audit-log field shapes referenced here.
-- `docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md` -
+- `docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md` -
   parent safety row; future empirical children must cite this schema before
   landing findings.
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` -

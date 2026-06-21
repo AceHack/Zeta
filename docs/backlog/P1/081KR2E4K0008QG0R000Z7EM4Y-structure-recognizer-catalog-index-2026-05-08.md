@@ -1,6 +1,5 @@
 ---
-id: B-0277
-zetaid: 081KR2E4K0008QG0R000Z7EM4Y
+id: 081KR2E4K0008QG0R000Z7EM4Y
 priority: P1
 status: closed
 title: "Structure recognizer — shape-indexed catalog without labels"
@@ -15,7 +14,7 @@ owners: [architect, performance-engineer]
 type: feature
 ---
 
-# B-0277 — Shape-indexed catalog
+# 081KR2E4K0008QG0R000Z7EM4Y — Shape-indexed catalog
 
 Build a catalog that indexes code structures by
 fingerprint, not by name/label. Query by shape.

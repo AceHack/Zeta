@@ -1,6 +1,5 @@
 ---
-id: B-0917
-zetaid: 081KSNY2Z0008QG0R002HB4AGT
+id: 081KSNY2Z0008QG0R002HB4AGT
 title: interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (the human maintainer, 2026-05-28)
 status: open
 priority: P2
@@ -9,7 +8,7 @@ last_updated: 2026-05-28
 ask: operator 2026-05-28
 composes_with:
   - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 parent
-  - B-0867.5  # workflow-engine PoC
+  - 081KSKBP80008QG0R000B3Y19A.5  # workflow-engine PoC
   - 081KSNY2Z0008QG0R003WFDCJ9  # ReviewLifetime DU
   - 081KSNY2Z0008QG0R00075C7CH  # Lase-as-bridge (sibling primitive at error-class-discovery scope)
   - 081KSNY2Z0008QG0R002SZZ5Y0  # Persist-as-bridge (μένω substrate)
@@ -155,7 +154,7 @@ the human maintainer (2026-05-28): *"shit looks like ts has a library for that d
 
 - TS ecosystem ALREADY has Kleisli primitives (don't author parallel substrate at TS scope without reason)
 - Substrate-engineering work at TS scope should COMPOSE with one of these libraries OR verify they're unsuitable + author own with explicit reasoning
-- F# scope (where B-0917 primary substrate lives) already has Kleisli at framework-internal scope: `src/Core/Tracing.fs` `Arrow<'A, 'B>` + the planned BP/EP message-passing substrate per `monad-propagation-pattern-cross-language-substrate-shape.md`
+- F# scope (where 081KSNY2Z0008QG0R002HB4AGT primary substrate lives) already has Kleisli at framework-internal scope: `src/Core/Tracing.fs` `Arrow<'A, 'B>` + the planned BP/EP message-passing substrate per `monad-propagation-pattern-cross-language-substrate-shape.md`
 - At impl-time per `.claude/rules/dep-pin-search-first-authority.md`: WebSearch current versions / maintenance status / community adoption; cite sources inline; pick or skip with substrate-honest reasoning
 - This row's substrate-target is the SHAPE (interrupts in monad space + IntrCtx + ISR composition); the WHO (which TS lib if any) is decided at impl time
 

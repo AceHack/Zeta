@@ -5,7 +5,7 @@
 // memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md
 // and extended to media by
 // memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md
-// for the B-0054 pop-culture / media research track.
+// for the 081KQ3HBZ0008QG0R003V6B2ME pop-culture / media research track.
 //
 // This module is schema-only (no I/O). The markdown catalog at
 // docs/research/media-resonance-catalog.md is the human-readable index;
@@ -22,7 +22,7 @@
 
 /**
  * The six medium-categories tracked separately for filter-failure-rate-by-medium
- * measurability (from B-0054 §Measurable hooks).
+ * measurability (from 081KQ3HBZ0008QG0R003V6B2ME §Measurable hooks).
  */
 export type MediaMedium =
   | "film"
@@ -179,7 +179,7 @@ export interface MediaResonanceCatalog {
   readonly schema: "media-resonance-v1";
   readonly created: string;
   readonly lastUpdated: string;
-  readonly origin: "B-0054";
+  readonly origin: "081KQ3HBZ0008QG0R003V6B2ME";
   readonly entries: readonly MediaResonanceEntry[];
 }
 
@@ -293,8 +293,8 @@ export function summarizeCatalog(catalog: MediaResonanceCatalog): CatalogSummary
 const SEED_CATALOG: MediaResonanceCatalog = {
   schema: "media-resonance-v1",
   created: "2026-05-10",
-  lastUpdated: "2026-05-10", // updated by B-0054.2
-  origin: "B-0054",
+  lastUpdated: "2026-05-10", // updated by 081KR7JY10008QG0R0018G7ZQV
+  origin: "081KQ3HBZ0008QG0R003V6B2ME",
   entries: [
     {
       id: "MR-001",
@@ -508,7 +508,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
         "valuable — the comedic framing makes the structural property MORE visible, not less.",
     },
 
-    // ── B-0054.2: Video-game priority tier (Aaron-marked higher-than-rest) ─────
+    // ── 081KR7JY10008QG0R0018G7ZQV: Video-game priority tier (Aaron-marked higher-than-rest) ─────
 
     {
       id: "MR-005",
@@ -554,7 +554,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
       counterexampleAttempts: [],
       sourceMemory: "memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md",
       notes:
-        "Composes with B-0054.4 (Double Fine sub-thread — Broken Age + Brütal Legend). " +
+        "Composes with 081KR7JY10008QG0R0004KP70A (Double Fine sub-thread — Broken Age + Brütal Legend). " +
         "Broken Age's paired-dual structure (Vella / Shay) is a separate candidate MR entry. " +
         "F2 partial status makes this a candidate pending a counterexample search that either " +
         "tightens the operator-shape claim or reveals the causal-direction mismatch is disqualifying.",
@@ -634,7 +634,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
       ],
       sourceMemory: "memory/feedback_pop_culture_media_is_operational_resonance_corpus_multi_medium.md",
       notes:
-        "The 'and expand' in Aaron's seed (B-0054 §Video-game priority seeds) suggests " +
+        "The 'and expand' in Aaron's seed (081KQ3HBZ0008QG0R003V6B2ME §Video-game priority seeds) suggests " +
         "FFVII through FFXVI are additional expansion candidates; this entry covers only FFVI. " +
         "FFVII gets its own entry MR-007 (Lifestream generative-ground).",
     },
@@ -720,7 +720,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
       notes:
         "Three independent F2 grounds in one entry is unusual; each could be decomposed into " +
         "separate MR-NNN entries (MR-007a Lifestream, MR-007b Mako, MR-007c Cloud-memory) " +
-        "for cleaner single-mechanic discipline — deferred to B-0054.x future slice. " +
+        "for cleaner single-mechanic discipline — deferred to 081KQ3HBZ0008QG0R003V6B2ME.x future slice. " +
         "The FFVII Remake trilogy (2020–2024) introduces timeline-awareness mechanics that " +
         "may warrant their own entry under the retractibly-coexisting-histories structural type.",
     },

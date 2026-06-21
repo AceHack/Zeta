@@ -96,7 +96,7 @@ Also lands the **install.ps1 cross-edition test plan** (`docs/plans/…`): decla
   - **`AceHack` (human)** at 2026-05-30T14:30:22Z on `docs/plans/2026-05-30-windows-install-ps1-cross-edition-tests-plan.md`:112 (association: MEMBER)
 
     <pre>
-    Fixed in 4eeed40f3 — scoop install is now download-then-exec (temp .ps1 + verify non-empty + run the local file), mirroring macos.sh Homebrew B-0063. No pipe-to-shell.
+    Fixed in 4eeed40f3 — scoop install is now download-then-exec (temp .ps1 + verify non-empty + run the local file), mirroring macos.sh Homebrew 081KQ8P5D0008QG0R001DMK8JD. No pipe-to-shell.
     </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -217,7 +217,7 @@ fix(windows): address Copilot review on #6118 (pipe-to-shell P0, 5.1 …
 Plan install.ps1 skeleton:
 - P0: scoop install was Invoke-RestMethod | Invoke-Expression (pipe-to-shell from external
   URL). Switch to download-then-exec (temp .ps1 + verify non-empty + run local file), mirroring
-  macos.sh's Homebrew B-0063 pattern.
+  macos.sh's Homebrew 081KQ8P5D0008QG0R001DMK8JD pattern.
 - P1: resolver used the PS7+ ?: ternary under #Requires 5.1. Replace with if/else (5.1-safe).
 
 Test:

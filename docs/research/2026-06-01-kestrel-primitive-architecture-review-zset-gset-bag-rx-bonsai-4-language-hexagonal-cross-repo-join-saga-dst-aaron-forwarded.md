@@ -229,7 +229,7 @@ one sometimes good sometimes hot but we resolve in the end.
 - **Generic-math retrofit** (#6467–#6475, G-Set + Bag 4/4; Z-set/IndexedZSet pending) — the
   "each rung implements its generic-math interface" line; the conformance-law discipline Kestrel
   describes.
-- **Agent-bus / git-native cross-machine bus** (B-0954, ZetaId-keyed G-Set CRDT) — the git-bus
+- **Agent-bus / git-native cross-machine bus** (081KSXN940008QG0R00171YAZW, ZetaId-keyed G-Set CRDT) — the git-bus
   + 128-bit-key + per-agent-repo model; the "git-as-bus, be deliberate about durable-vs-live"
   note applies here.
 - **Cross-repo-join saga** — the distributed-commit correctness work; Kestrel's compensation-

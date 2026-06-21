@@ -1,6 +1,5 @@
 ---
-id: B-0046
-zetaid: 081KQ3HBZ0008QG0R0001XKNWK
+id: 081KQ3HBZ0008QG0R0001XKNWK
 priority: P2
 status: decomposed
 title: Economics + history factory need-to-know surface — substrate denominated in time/energy not money-extraction; Ammous Bitcoin-Standard candidate-probe gated by yin-yang
@@ -9,14 +8,14 @@ effort: M
 ask: Aaron 2026-04-21 — *"we do need to know economics and history pettty well though backlog"*
 created: 2026-04-26
 last_updated: 2026-05-10
-children: [081KR7JY10008QG0R0018VG28R, B-0046.2, B-0046.3, B-0046.4]
+children: [081KR7JY10008QG0R0018VG28R, 081KQ3HBZ0008QG0R0001XKNWK.2, 081KQ3HBZ0008QG0R0001XKNWK.3, 081KQ3HBZ0008QG0R0001XKNWK.4]
 depends_on: []
 composes_with: [081KQ3HBZ0008QG0R0012P9EBM, 081KQ3HBZ0008QG0R000Q4Y00F, 081KQ3HBZ0008QG0R0022ZJ7KV, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [economics, history, time-energy, ammous-bitcoin-standard, yin-yang, substrate-knowledge, retraction-log, three-filter, candidate-probe]
 type: feature
 ---
 
-# B-0046 — Economics + history factory need-to-know surface
+# 081KQ3HBZ0008QG0R0001XKNWK — Economics + history factory need-to-know surface
 
 ## Origin
 
@@ -77,4 +76,4 @@ Ideas-absorption, not commitment-to-any-economic-doctrine. Every admitted resona
 ## Cross-reference
 
 - AceHack commit: `a3837d0`
-- Composes with: B-0045 (all-schools-all-subjects parent), B-0043 (universal-company-government data-substrate companion), B-0047 (PR/marketing sibling on commercial-machinery axis); operational-resonance index (Melchizedek instance #10 — Ammous μένω claim docks here)
+- Composes with: 081KQ3HBZ0008QG0R0012P9EBM (all-schools-all-subjects parent), 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government data-substrate companion), 081KQ3HBZ0008QG0R0022ZJ7KV (PR/marketing sibling on commercial-machinery axis); operational-resonance index (Melchizedek instance #10 — Ammous μένω claim docks here)

@@ -57,7 +57,7 @@ type AutoLoopLifetime =
 
 - PR #5774 (world.ts + StandardVerdict + dispatchInWorld pattern)
 - PR #5775 + #5801 + #5804 (per-host adapters for PR scanning)
-- PR #5728 (B-0867.5 workflow-engine PoC scaffold)
+- PR #5728 (081KSKBP80008QG0R000B3Y19A.5 workflow-engine PoC scaffold)
 - Rules: holding-without-named-dependency + refresh-before-decide + verify-before-deferring + dont-ask-permission + asymmetric-authorship + monad-propagation + substrate-smoothness + NCI HC-8
 
 **23 tests pass / 0 fail / 42 expect() calls.**

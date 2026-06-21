@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 // audit-user-scope-memory-index.ts — detect bloat in the user-scope MEMORY.md.
 //
-// Mechanizes B-0517 Phase 2 (MEMORY.md index audit) — parallel in shape to
-// audit-rule-cross-refs.ts. See B-0517 for the empirical state that prompted
+// Mechanizes 081KRHWGX0008QG0R0029X10F4 Phase 2 (MEMORY.md index audit) — parallel in shape to
+// audit-rule-cross-refs.ts. See 081KRHWGX0008QG0R0029X10F4 for the empirical state that prompted
 // this tool: 242 lines / 66KB / 237 entries, ~15% past the cold-boot cutoff,
 // avg entry size 275 chars vs 200-char guidance.
 //
@@ -15,7 +15,7 @@
 //
 // Out of scope:
 //
-//   Bulk-trim execution — this tool is detect-only. B-0517 Phase 1 is the
+//   Bulk-trim execution — this tool is detect-only. 081KRHWGX0008QG0R0029X10F4 Phase 1 is the
 //   one-time bulk cleanup; this Phase 2 tool prevents recurrence by surfacing
 //   the bloat metrics for human / Otto triage.
 //
@@ -174,7 +174,7 @@ function renderReport(result: AuditResult, now: Date): string {
     lines.push("");
     lines.push("## Cleanup procedure");
     lines.push("");
-    lines.push("Per B-0517 Phase 1: for each over-limit entry,");
+    lines.push("Per 081KRHWGX0008QG0R0029X10F4 Phase 1: for each over-limit entry,");
     lines.push("");
     lines.push("1. Read the underlying topic file (`memory/<filename>`)");
     lines.push("2. Verify the topic file's body + frontmatter `description:` contain the full detail");

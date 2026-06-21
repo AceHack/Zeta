@@ -31,7 +31,7 @@
 
 Proposes moving 31+ conceptual single-word directories from repo root into db/ to reduce clutter from ~90 to ~50 entries.
 
-Tailored for Max's review context (B-0248.2 host-loop setup, 24/7 site, reads-fast preference from B-0730).
+Tailored for Max's review context (081KRQ1AB0008QG0R0014PKF49 host-loop setup, 24/7 site, reads-fast preference from 081KSE6WT0008QG0R003AJYMD3).
 
 Three batches:
 1. **31 conceptual/data dirs** → db/ (bounds, chutes, futures, shapes, etc.)

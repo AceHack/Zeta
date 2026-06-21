@@ -1,6 +1,6 @@
 ---
 pr_number: 3146
-title: "chore(backlog): B-0499 \u2014 Z[i]-weighted DBSP refinement candidate (P3 forward-planning)"
+title: "chore(backlog): 081KRHWGX0008QG0R0034E0N22 \u2014 Z[i]-weighted DBSP refinement candidate (P3 forward-planning)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T16:19:06Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-14T18:05:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3146: chore(backlog): B-0499 — Z[i]-weighted DBSP refinement candidate (P3 forward-planning)
+# PR #3146: chore(backlog): 081KRHWGX0008QG0R0034E0N22 — Z[i]-weighted DBSP refinement candidate (P3 forward-planning)
 
 ## PR description
 
@@ -31,7 +31,7 @@ The Cartesian-dualism mapping (pay-attention = real axis, remember-when = imagin
 
 ## Composes with
 
-- B-0498 (substrate-evolution algebra rule-promotion)
+- 081KRHWGX0008QG0R001XFRAHC (substrate-evolution algebra rule-promotion)
 - Memory file: \`feedback_aaron_ani_cartesian_dualism_two_axioms_complex_plane_pay_attention_real_axis_remember_when_imaginary_axis_2026_05_14.md\`
 - \`.claude/skills/algebra-owner/SKILL.md\`
 - PR #2817 (Clifford densest encoding)
@@ -40,7 +40,7 @@ The Cartesian-dualism mapping (pay-attention = real axis, remember-when = imagin
 ## Test plan
 
 - [x] Row format follows canonical backlog schema
-- [x] composes_with pointer chain correct (B-0498)
+- [x] composes_with pointer chain correct (081KRHWGX0008QG0R001XFRAHC)
 - [x] No premature implementation; pure forward-planning substrate
 - [x] Razor-discipline applied (research-grade, no operational promotion)
 
@@ -55,7 +55,7 @@ The Cartesian-dualism mapping (pay-attention = real axis, remember-when = imagin
 Adds a new P3 backlog row preserving the Z[i]-weighted DBSP refinement candidate from a research cascade as forward-planning substrate.
 
 **Changes:**
-- New backlog row file under `docs/backlog/P3/` with canonical frontmatter (id, priority, status, composes_with: [B-0498])
+- New backlog row file under `docs/backlog/P3/` with canonical frontmatter (id, priority, status, composes_with: [081KRHWGX0008QG0R001XFRAHC])
 - Documents the candidate's algebraic motivation, research-grade tests, acceptance criteria, and P3 rationale
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T16:21:29Z)
@@ -85,7 +85,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md:22 (unresolved)
+### Thread 1: docs/backlog/P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md:22 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-14T16:21:29Z):
 
@@ -95,7 +95,7 @@ This row stores provenance using a machine-local path under `~/.claude/projects/
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: docs/backlog/P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md:35 (unresolved)
+### Thread 2: docs/backlog/P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md:35 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-14T16:21:29Z):
 

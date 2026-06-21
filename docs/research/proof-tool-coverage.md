@@ -83,8 +83,8 @@ the test harness is already wired.
 CI runs nine specs via `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` —
 all `.cfg`-bearing specs are now wired (B1 → A in the math-proofs
 honest assessment). Counterexamples surfaced during the pass were
-fixed inline (B-0179 SpineAsyncProtocol CHECK_DEADLOCK FALSE,
-B-0180 CircuitRegistration Safety operator, B-0181 SpineMergeInvariants
+fixed inline (081KQNJ500008QG0R000S68KDE SpineAsyncProtocol CHECK_DEADLOCK FALSE,
+081KQNJ500008QG0R0001QHA1J CircuitRegistration Safety operator, 081KQNJ500008QG0R003DMVGZB SpineMergeInvariants
 Cascade downstream-room precondition + state constraint).
 
 **Code paths WITHOUT any TLA+ model:**

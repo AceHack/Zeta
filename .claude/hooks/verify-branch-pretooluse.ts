@@ -13,7 +13,7 @@
 // Wired via .claude/settings.json PreToolUse matcher:"Bash".
 // See .claude/hooks/README.md for configuration.
 //
-// Per B-0191 (PR #1571 design + PR #1585 implementation).
+// Per 081KQR4HQ0008QG0R002YNV361 (PR #1571 design + PR #1585 implementation).
 
 import { spawnSync } from "node:child_process";
 

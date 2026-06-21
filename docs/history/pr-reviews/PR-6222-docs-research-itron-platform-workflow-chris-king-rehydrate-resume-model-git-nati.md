@@ -38,7 +38,7 @@ Operator pointed me at `/Downloads/Itron` and asked for a writeup of the durable
 - Interface-first + type-safe `Add<>` generics = **the compile-time lint the hand-written XML lacked** (operator: 'devs hated it, XML without lint, no UI').
 - Pluggable `IWorkflowStateProvider` (Memory/Table/Blob) = the `OrgEventStore` port already present.
 
-**Git-native mapping** (the anchor): `IWorkflowState`→ZetaId git record; provider→git-native ZetaId impl; checkpoint/break→Persist/μένω (B-0897); wake→incoming `Bus`-category event; typed-DU authoring replaces XML.
+**Git-native mapping** (the anchor): `IWorkflowState`→ZetaId git record; provider→git-native ZetaId impl; checkpoint/break→Persist/μένω (081KSNY2Z0008QG0R002SZZ5Y0); wake→incoming `Bus`-category event; typed-DU authoring replaces XML.
 
 Unarmed for your review. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -121,7 +121,7 @@ workflow engine (predates MS Durable Functions). Key findings from reading the c
 - pluggable IWorkflowStateProvider (Memory/Table/Blob) = the OrgEventStore port already present
 
 Maps to the git-native Workflow-category durable backend: IWorkflowState -> ZetaId git record;
-IWorkflowStateProvider -> git-native ZetaId impl; checkpoint/break -> Persist/μένω (B-0897);
+IWorkflowStateProvider -> git-native ZetaId impl; checkpoint/break -> Persist/μένω (081KSNY2Z0008QG0R002SZZ5Y0);
 wake -> incoming Bus-category ZetaId event; typed-DU authoring replaces XML. Composes with the
 existing Chris King lineage doc + git-native-event-store ADR + #6219 + Checkpoint.fs.
 

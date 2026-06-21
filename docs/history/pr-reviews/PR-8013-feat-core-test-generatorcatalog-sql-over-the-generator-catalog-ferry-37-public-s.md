@@ -27,7 +27,7 @@
 
 ## Description
 
-Ferry 37's "we just need the SQL," built: the query side over the generator catalog. GeneratorRegistry.known read as a relation (Row per generator, Category projected from the dotted-name prefix); relational combinators rather than a SQL-string parser (parser = large permanent contract; combinators total/minimal/compose) — `rows` (FROM), `where` + `inCategory`/`nameContains`/`atVersion` (WHERE), projection via map (SELECT), `categories` (SELECT DISTINCT), `byCategory`/`zetaIdsInCategory`/`byName`. The `zetaIdsInCategory` path is the SELECT→unfold bridge (query a kind → get the ZetaIds a gen-line unfolds from). Ordinal comparison throughout (B-0969). 8/8 green, solution 0/0.
+Ferry 37's "we just need the SQL," built: the query side over the generator catalog. GeneratorRegistry.known read as a relation (Row per generator, Category projected from the dotted-name prefix); relational combinators rather than a SQL-string parser (parser = large permanent contract; combinators total/minimal/compose) — `rows` (FROM), `where` + `inCategory`/`nameContains`/`atVersion` (WHERE), projection via map (SELECT), `categories` (SELECT DISTINCT), `byCategory`/`zetaIdsInCategory`/`byName`. The `zetaIdsInCategory` path is the SELECT→unfold bridge (query a kind → get the ZetaIds a gen-line unfolds from). Ordinal comparison throughout (081KT07NV0008QG0R001YDB73K). 8/8 green, solution 0/0.
 
 **Public surface — routed to public-api-designer (Ilyana) for advisory review per Aaron's "SQL-over-catalog → Ilyana yes."** DBSP/incremental-circuit path noted as the future, not this MVP.
 

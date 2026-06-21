@@ -1,9 +1,8 @@
 ---
-id: B-0074.3
-zetaid: 081KRA5AR0008QG0R0027YDY5C
+id: 081KRA5AR0008QG0R0027YDY5C
 priority: P2
 status: open
-title: wallet-experiment-v0 §377 / §8.1 bond-ledger schema vs INTENTIONAL-DEBT.md alignment (B-0074 child 3, re-decomp)
+title: wallet-experiment-v0 §377 / §8.1 bond-ledger schema vs INTENTIONAL-DEBT.md alignment (081KQ8P5D0008QG0R0014HJFF5 child 3, re-decomp)
 effort: S
 ask: verify field names + semantics align between wallet spec and INTENTIONAL-DEBT contract
 created: 2026-05-11
@@ -13,13 +12,13 @@ tags: [wallet-spec, bond-ledger, intentional-debt, cross-doc, pr-72]
 type: friction-reducer
 ---
 
-# B-0074.3 — wallet-v0 bond-ledger vs INTENTIONAL-DEBT.md alignment
+# 081KRA5AR0008QG0R0027YDY5C — wallet-v0 bond-ledger vs INTENTIONAL-DEBT.md alignment
 
-## Why (atomic child of B-0074, re-decomp per "assume mistakes")
+## Why (atomic child of 081KQ8P5D0008QG0R0014HJFF5, re-decomp per "assume mistakes")
 
-B-0074 remaining open item 6: wallet-experiment-v0 spec L377 P2 requires bond-ledger schema to match the `docs/INTENTIONAL-DEBT.md` contract. Verify field names + semantics; reconcile or document divergence. Smallest atomic doc-alignment task. TS-preferring: schema can be codified in TS types or validated by future TS tool (aligns with Rule 0 TS preference over prose-only).
+081KQ8P5D0008QG0R0014HJFF5 remaining open item 6: wallet-experiment-v0 spec L377 P2 requires bond-ledger schema to match the `docs/INTENTIONAL-DEBT.md` contract. Verify field names + semantics; reconcile or document divergence. Smallest atomic doc-alignment task. TS-preferring: schema can be codified in TS types or validated by future TS tool (aligns with Rule 0 TS preference over prose-only).
 
-Independent of .2 (parallel); both unblock full B-0074 close.
+Independent of .2 (parallel); both unblock full 081KQ8P5D0008QG0R0014HJFF5 close.
 
 ## What (smallest atomic bounded scope)
 
@@ -34,10 +33,10 @@ Independent of .2 (parallel); both unblock full B-0074 close.
 ## Acceptance
 
 - [ ] bond-ledger schema fields + semantics verified or divergence explicitly documented
-- [ ] Edit includes reference to B-0074 / original codex cid SIvLus5-BMMb
+- [ ] Edit includes reference to 081KQ8P5D0008QG0R0014HJFF5 / original codex cid SIvLus5-BMMb
 
 ## Composes with
 
-- B-0074 (parent)
-- B-0062 / wallet-v0 work
+- 081KQ8P5D0008QG0R0014HJFF5 (parent)
+- 081KQ8P5D0008QG0R002XFQ305 / wallet-v0 work
 - INTENTIONAL-DEBT.md (the contract being aligned to)

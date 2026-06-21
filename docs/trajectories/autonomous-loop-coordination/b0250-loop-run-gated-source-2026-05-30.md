@@ -1,4 +1,4 @@
-# B-0250 Loop-Run Gated Source Receipt - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Loop-Run Gated Source Receipt - 2026-05-30
 
 ## Status
 
@@ -20,7 +20,7 @@ later claim-gate receipt narrows this again to claim-count transitions only.
 
 The first loop-run source was useful evidence that the Codex loop participated
 in a time window, but it also counted ordinary forward-gate completions. Those
-generic completions inflated B-0250 coincidence windows even when no visible
+generic completions inflated 081KQZVQW0008QG0R001FG05RZ coincidence windows even when no visible
 claim or PR publication changed.
 
 This packet keeps loop-run evidence in the join while narrowing it to a
@@ -35,5 +35,5 @@ false-positive coincidence noise before adding another event source.
 
 ## Next Slice
 
-Add a compact debug surface for the top coincidence windows so future B-0250
+Add a compact debug surface for the top coincidence windows so future 081KQZVQW0008QG0R001FG05RZ
 tuning can inspect the remaining sources without reading raw JSON manually.

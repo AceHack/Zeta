@@ -11,7 +11,7 @@ module RE = Zeta.Core.ReflectionEngine
 
 // ═══════════════════════════════════════════════════════════════════
 // ReflectionEngine — the yin-yang engine's two modes (Aaron, 2026-06-05): self-reflection (boundary fed
-// by a deterministic seed → update priors) vs moving-forward (same step, real I/O). On the proven B-1020
+// by a deterministic seed → update priors) vs moving-forward (same step, real I/O). On the proven 081KTAH8Q0008QG0R001YHSSA0
 // ProbabilitySemiring cell. Proven: the transition is Markov; self-reflection IS the proven observe-fold;
 // self-reflection over NON-COERCIVE evidence is order-independent (the NCI safety property at engine
 // level); forward ≡ step (the modes share one transition).
@@ -47,7 +47,7 @@ let ``decide is argmax with first-index-wins on ties`` () =
     Assert.Equal(1, RE.decide [| r 1L 4L; r 3L 4L |])
 
 [<Fact>]
-let ``self-reflection's final belief IS the proven observe-fold (engine = B-1020 cell)`` () =
+let ``self-reflection's final belief IS the proven observe-fold (engine = 081KTAH8Q0008QG0R001YHSSA0 cell)`` () =
     let b = [| r 1L 1L; r 1L 1L; r 1L 1L |]
     let seed = [ [| r 2L 1L; r 1L 1L; r 1L 1L |]; [| r 1L 1L; r 3L 1L; r 1L 1L |] ]
     let final, _ = RE.reflect b seed

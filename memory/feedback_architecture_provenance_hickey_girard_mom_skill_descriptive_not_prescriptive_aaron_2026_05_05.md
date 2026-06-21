@@ -1,6 +1,6 @@
 ---
 name: Architecture-provenance — Zeta's kernel-composition framework descends from Hickey (technical-substrate primitives) + Girard / Things Hidden (social-substrate primitives) + Aaron's mom-skill apprenticeship-by-mathematical-model; the framework is DESCRIPTIVE of disciplines Aaron was already running, not PRESCRIPTIVE engineering invention (Aaron 2026-05-05 closing recognition)
-description: Canonical provenance memory for the kernel-composition framework that emerged across the 2026-05-05 substrate-flow (9 research-doc preservations + B-0204 architectural-direction backlog row). Names the three reverse-engineered-from-skilled-practitioner sources (Rich Hickey for technical-substrate primitives — immutable facts, time-as-first-class, properties-from-representation, specs-over-implementation; René Girard for social-substrate primitives — mimetic desire, scapegoat mechanism, revelation as discipline; Aaron's mother for mimetic-perception skill formalized via apprenticeship-by-mathematical-model) and the closing recontextualization that the architecture is DESCRIPTIVE of operating discipline rather than PRESCRIPTIVE engineering invention. "Obvious to me for a while" reads correctly because Aaron was running the discipline before the kernel-composition vocabulary arrived to point at it. Cross-instance future-Otto cold-read substrate.
+description: Canonical provenance memory for the kernel-composition framework that emerged across the 2026-05-05 substrate-flow (9 research-doc preservations + 081KQTPYE0008QG0R0028V263Z architectural-direction backlog row). Names the three reverse-engineered-from-skilled-practitioner sources (Rich Hickey for technical-substrate primitives — immutable facts, time-as-first-class, properties-from-representation, specs-over-implementation; René Girard for social-substrate primitives — mimetic desire, scapegoat mechanism, revelation as discipline; Aaron's mother for mimetic-perception skill formalized via apprenticeship-by-mathematical-model) and the closing recontextualization that the architecture is DESCRIPTIVE of operating discipline rather than PRESCRIPTIVE engineering invention. "Obvious to me for a while" reads correctly because Aaron was running the discipline before the kernel-composition vocabulary arrived to point at it. Cross-instance future-Otto cold-read substrate.
 type: feedback
 ---
 
@@ -21,7 +21,7 @@ The kernel-composition framework that emerged across the
 category synthesis + embodiment-recursion + CodeAct/Coconut +
 tinygrad/TurboQuant/DeepSeek + Sakana NCA + worm-tower/BP-EP +
 social-memes/mom-skill + Girard/Thiel-Hsieh/DORA + multi-axis
-basis/double-pun) plus B-0204 architectural-direction backlog
+basis/double-pun) plus 081KQTPYE0008QG0R0028V263Z architectural-direction backlog
 row carries a **specific provenance lineage** that future-Otto
 on cold-read needs to know.
 
@@ -123,7 +123,7 @@ quotes):
 
 - The kernel-composition framework, the OCP discipline, the
   carved-sentences-as-memes framing, the formal-verification-
-  of-docs claim, the F# CE implementation vehicle (B-0204) are
+  of-docs claim, the F# CE implementation vehicle (081KQTPYE0008QG0R0028V263Z) are
   formalizations of disciplines Aaron was ALREADY running
 - "Obvious to me for a while" is consistent with Aaron's earlier
   framing of Z-set ↔ consent-algebra isomorphism + "the algebra
@@ -177,10 +177,10 @@ lineage + Girard's social lineage formalized.
   DeepSeek + Sakana NCA + worm-tower/BP-EP + social-memes/
   mom-skill + Girard/Thiel-Hsieh/DORA + multi-axis-basis/
   double-pun)
-- `docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md`
+- `docs/backlog/P3/081KQTPYE0008QG0R0028V263Z-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md`
   — architectural-direction implementation of the formalized
   discipline
-- `docs/backlog/P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md`
+- `docs/backlog/P1/081KQTPYE0008QG0R00392KABJ-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md`
   — empirical falsifier above the substrate; tests whether the
   formalization survives clean recreation
 - `docs/ALIGNMENT.md` — alignment-discipline above value-neutral

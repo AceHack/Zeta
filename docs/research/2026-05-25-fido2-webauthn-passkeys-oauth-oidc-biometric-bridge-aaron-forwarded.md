@@ -5,8 +5,8 @@ verbatim: true
 sources: chatgpt/external-research (per Aaron's forwarding)
 discipline: research substrate; preserves verbatim per substrate-or-it-didnt-happen
 substrate_landings:
-  - B-0744 (the row this research seeded — WebAuthn/FIDO2/OIDC bridge between B-0743 desktop-local biometric + server-side authorization)
-  - B-0743 (the desktop biometric consent pattern this bridges from)
+  - 081KSE6WT0008QG0R000SH6E0R (the row this research seeded — WebAuthn/FIDO2/OIDC bridge between 081KSE6WT0008QG0R003WW3YJQ desktop-local biometric + server-side authorization)
+  - 081KSE6WT0008QG0R003WW3YJQ (the desktop biometric consent pattern this bridges from)
 tags: [fido2, webauthn, passkeys, oauth2, oidc, biometric-bridge, w3c, fido-alliance, openid-foundation, auth0, okta]
 ---
 
@@ -54,17 +54,17 @@ To use fingerprint biometrics in your application alongside OAuth, you typically
 
 ### Why Aaron forwarded this (twice)
 
-Aaron 2026-05-25 first surfaced this in response to my B-0743 desktop admin consent pattern landing — pointed at the existing industry-standard substrate that BRIDGES desktop-local biometric to server-side authorization. Then re-emphasized 2026-05-25 in his kro research dump message: signal that the biometric/OIDC substrate is part of the "lots of research in this area" scope.
+Aaron 2026-05-25 first surfaced this in response to my 081KSE6WT0008QG0R003WW3YJQ desktop admin consent pattern landing — pointed at the existing industry-standard substrate that BRIDGES desktop-local biometric to server-side authorization. Then re-emphasized 2026-05-25 in his kro research dump message: signal that the biometric/OIDC substrate is part of the "lots of research in this area" scope.
 
 ### Composition with Zeta substrate
 
 | Standard | Role in Zeta substrate-engineering |
 |---|---|
-| **WebAuthn** (W3C+FIDO) | Client-side API at the operator's desktop; translates B-0737/B-0743 Touch ID into signed assertion |
+| **WebAuthn** (W3C+FIDO) | Client-side API at the operator's desktop; translates 081KSE6WT0008QG0R003WZAQKV/081KSE6WT0008QG0R003WW3YJQ Touch ID into signed assertion |
 | **FIDO2 / Passkeys** (FIDO Alliance) | Hardware-bound credential format; composes with macOS Secure Enclave + Windows TPM + Linux TitanM/fprintd |
 | **OAuth 2.0** (IETF) | Token-based authorization; bearer tokens for downstream service calls |
 | **OIDC** (OpenID Foundation) | Identity layer on OAuth 2.0; carries WHO across services; the load-bearing bridge protocol |
-| **Auth0 / Okta** (commercial OIDC issuers) | Reference implementations; Zeta could integrate as one of many; B-0744 leans toward Vault's OIDC provider (already in reference stack) |
+| **Auth0 / Okta** (commercial OIDC issuers) | Reference implementations; Zeta could integrate as one of many; 081KSE6WT0008QG0R000SH6E0R leans toward Vault's OIDC provider (already in reference stack) |
 
 ### The clean layered WHO composition (Aaron 2026-05-25 named this as load-bearing substrate)
 
@@ -78,23 +78,23 @@ Layer 3: OIDC ID token carries WHO across services (standards-compliant bearer)
 Layer 4: IAM/SPIFFE/RBAC enforces what-WHO-can-do at the receiver
 ```
 
-Aaron's framing 2026-05-25: *"we should save that new clean who composition you just found that's real good"* — the layered separation of identity-question at each layer is itself substrate-worth-preserving. Captured in B-0744 row + future scope item: dedicated rule extracting the WHO composition pattern.
+Aaron's framing 2026-05-25: *"we should save that new clean who composition you just found that's real good"* — the layered separation of identity-question at each layer is itself substrate-worth-preserving. Captured in 081KSE6WT0008QG0R000SH6E0R row + future scope item: dedicated rule extracting the WHO composition pattern.
 
 ### What this research informs
 
-- **B-0744** — the cross-cutting auth bridge row; this research is the seed
-- **B-0743 + B-0737** — desktop biometric pattern; this research grounds it in industry standards
-- **B-0741** — cross-cluster federation; OIDC federation IS the trust substrate (multiple OIDC issuers can federate)
-- **B-0742** — reference stack; will host an OIDC issuer (probably Vault's per substrate honesty)
-- **B-0747** — machine-state declared-state CAN include OIDC issuer config
+- **081KSE6WT0008QG0R000SH6E0R** — the cross-cutting auth bridge row; this research is the seed
+- **081KSE6WT0008QG0R003WW3YJQ + 081KSE6WT0008QG0R003WZAQKV** — desktop biometric pattern; this research grounds it in industry standards
+- **081KSE6WT0008QG0R002CC6314** — cross-cluster federation; OIDC federation IS the trust substrate (multiple OIDC issuers can federate)
+- **081KSE6WT0008QG0R000YYH3DY** — reference stack; will host an OIDC issuer (probably Vault's per substrate honesty)
+- **081KSE6WT0008QG0R003D199HE** — machine-state declared-state CAN include OIDC issuer config
 
 ### What this research does NOT decide
 
 The research is descriptive (standards exist; they compose as described). It does NOT decide:
 
-- Which OIDC issuer Zeta adopts (B-0744 Scope item 1 design pass)
+- Which OIDC issuer Zeta adopts (081KSE6WT0008QG0R000SH6E0R Scope item 1 design pass)
 - Implementation language for the WebAuthn server-side (TS via `@simplewebauthn/server` is the default per Zeta substrate; but design pass needed)
-- When to ship (B-0744 P2 priority; not blocking today's critical path)
+- When to ship (081KSE6WT0008QG0R000SH6E0R P2 priority; not blocking today's critical path)
 
 ### Industry adoption signals
 

@@ -2,7 +2,7 @@ namespace Zeta.Core
 
 open Zeta.Core.Abstractions
 
-/// InferenceLadder — `universal/port` implemented for the inference port (B-1033 follow-up; the
+/// InferenceLadder — `universal/port` implemented for the inference port (081KTZ4EF0008QG0R000WJGSWX follow-up; the
 /// FIRST CUSTOMER of the converged plug grammar). Name = engine ZetaIds on the shelf
 /// (engine.zeta-bayesian / engine.infer-net / engine.mock-flat); Ladder = Live → Injected → Mock
 /// (no Adapted rung yet — an engine-to-engine adapter piece has no instance; carve it when one

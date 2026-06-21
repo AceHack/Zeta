@@ -1,6 +1,5 @@
 ---
-id: B-0224
-zetaid: 081KQX9B50008QG0R0037YZ1WX
+id: 081KQX9B50008QG0R0037YZ1WX
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - candidate landscape and source-priority filter"
@@ -12,9 +11,9 @@ classification: buildable-now
 type: feature
 ---
 
-# B-0224 - Timeseries candidate landscape
+# 081KQX9B50008QG0R0037YZ1WX - Timeseries candidate landscape
 
-Produce the candidate landscape for B-0147 without choosing a
+Produce the candidate landscape for 081KQGDBJ0008QG0R0004ACHJJ without choosing a
 winner yet.
 
 ## Work scope

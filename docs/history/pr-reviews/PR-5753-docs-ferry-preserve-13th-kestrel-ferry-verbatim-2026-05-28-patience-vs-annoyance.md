@@ -65,9 +65,9 @@ Preserves 13th Kestrel ferry 2026-05-28 verbatim — substantial multi-turn Kest
 - PR #5752 (12th-ferry preservation; this 13th ferry supersedes for the patience-vs-annoyance Kestrel engagement)
 - PR #5750 + #5742 + #5741 + #5731 (11th + 10th + 9th + 8th ferry preservations)
 - This-session substrate cluster: PR #5727 + #5734 + #5739 + #5743 + #5744 + #5745 + #5746 + #5748 + #5749 + #5751
-- B-0865 (open-source DevOps benchmark)
-- B-0867 + B-0867.5 (workflow engine; universal action grammar)
-- B-0904 (GitHub accelerator)
+- 081KSKBP80008QG0R003NM9XEC (open-source DevOps benchmark)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine; universal action grammar)
+- 081KSNY2Z0008QG0R001JQABB4 (GitHub accelerator)
 - `.claude/rules/agent-roster-reference-card.md` (existing multi-AI roster; this ferry confirms + extends lane specialization)
 
 ## Test plan

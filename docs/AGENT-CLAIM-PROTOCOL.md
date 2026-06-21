@@ -294,7 +294,7 @@ the claim:
 
 - **`backlog-<N>[-<child>...]`** — claim on a numbered row in
   `docs/BACKLOG.md` (e.g. `backlog-42` or `backlog-0164-1`
-  for `B-0164.1`). Preferred when the work unit already has a
+  for `081KR7JY10008QG0R000MH7PJT`). Preferred when the work unit already has a
   durable row.
 - **`bug-<N>`** — claim on a numbered row in `docs/BUGS.md`.
 - **`issue-<N>`** — claim on a GitHub / Jira / Linear issue

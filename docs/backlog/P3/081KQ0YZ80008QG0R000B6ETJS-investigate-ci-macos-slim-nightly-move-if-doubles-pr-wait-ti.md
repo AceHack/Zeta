@@ -1,6 +1,5 @@
 ---
-id: B-0008
-zetaid: 081KQ0YZ80008QG0R000B6ETJS
+id: 081KQ0YZ80008QG0R000B6ETJS
 priority: P3
 status: open
 title: Investigate CI macos-26 + ubuntu-slim move to nightly job IF they more-than-double PR wait time

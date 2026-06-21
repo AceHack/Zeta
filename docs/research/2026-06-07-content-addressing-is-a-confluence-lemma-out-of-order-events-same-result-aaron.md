@@ -28,7 +28,7 @@ A content node's **identity is its hash — independent of arrival order AND of 
 2. **Content-addressing adds canonical idempotence** (above) — reordered/duplicated/foreign events collapse
    to the same nodes (`ContentStore`/`DagFs.merge` dedup; the **ancestry-free** cross-repo merge).
 3. **de Finetti exchangeability** — the belief/observation limit is order-independent for exchangeable
-   sequences (`BeliefConvergence.fs`; memory `project-de-finetti-...`, B-1020) — the probabilistic analogue
+   sequences (`BeliefConvergence.fs`; memory `project-de-finetti-...`, 081KTAH8Q0008QG0R001YHSSA0) — the probabilistic analogue
    of confluence (the homeostat reaches the same fixpoint regardless of observation order).
 
 Together: **algebraic confluence (1) + canonical idempotence (2) + exchangeable convergence (3)** discharge
@@ -69,7 +69,7 @@ associative + idempotent join + content-canonical idempotence). Filed for the fo
 
 - **Confluence / Church-Rosser** (term rewriting) · **Join-semilattice / lattice** convergence ·
   **CRDTs** (Shapiro et al. — strong eventual consistency = confluence) · **CALM** (Hellerstein —
-  monotonic ⇒ coordination-free) · **de Finetti exchangeability** (BeliefConvergence/B-1020) · **DBSP**
+  monotonic ⇒ coordination-free) · **de Finetti exchangeability** (BeliefConvergence/081KTAH8Q0008QG0R001YHSSA0) · **DBSP**
   (Z-set commutative merge) · **content-addressing as canonical form** (git/IPFS). Ties:
   `ContentStore.merge`/`DagFs.merge` (ancestry-free), the CRDT laws, the cells-as-geodes CommutativeView vs
   SerializedSaga split.

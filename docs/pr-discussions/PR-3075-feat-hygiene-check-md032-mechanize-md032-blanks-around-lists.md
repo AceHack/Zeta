@@ -1,6 +1,6 @@
 ---
 pr_number: 3075
-title: "feat(hygiene/check-md032): mechanize MD032 blanks-around-lists pre-check (B-0456)"
+title: "feat(hygiene/check-md032): mechanize MD032 blanks-around-lists pre-check (081KRHWGX0008QG0R000JEBCWZ)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T00:33:18Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-14T08:25:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3075: feat(hygiene/check-md032): mechanize MD032 blanks-around-lists pre-check (B-0456)
+# PR #3075: feat(hygiene/check-md032): mechanize MD032 blanks-around-lists pre-check (081KRHWGX0008QG0R000JEBCWZ)
 
 ## PR description
 
 ## Summary
 
-Implements [B-0456](docs/backlog/P2/B-0456-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md) — a TS helper that detects MD032 (blanks-around-lists) violations locally so they don't escape to CI. Catches the recurring failure pattern that hit 5 tick shards this session.
+Implements [081KRHWGX0008QG0R000JEBCWZ](docs/backlog/P2/081KRHWGX0008QG0R000JEBCWZ-mechanize-md032-blanks-around-lists-pre-commit-2026-05-14.md) — a TS helper that detects MD032 (blanks-around-lists) violations locally so they don't escape to CI. Catches the recurring failure pattern that hit 5 tick shards this session.
 
 ## What ships
 

@@ -68,7 +68,7 @@ implementation pending.
 
 - Full today's cascade (PRs #2813-#2847)
 - All today's wake-time substrate rules
-- B-0422 (Clifford-algebraic narrative engine target)
+- 081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine target)
 - agent-roster-reference-card (Kestrel addition pending)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

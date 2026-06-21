@@ -29,7 +29,7 @@
 
 ## Summary
 
-This PR introduces a new Architectural Decision Record (ADR) detailing the Git-native, event-sourced database architecture and the self-describing 128-bit `ZetaID` pointer anatomy (B-0751).
+This PR introduces a new Architectural Decision Record (ADR) detailing the Git-native, event-sourced database architecture and the self-describing 128-bit `ZetaID` pointer anatomy (081KSE6WT0008QG0R003YYC9PV).
 
 This establishes the formal specification for our lock-free, zero-coordination database graph, encoding timestamp, category concept index, and entropy directly inside the 128-bit ID space to bypass database server infrastructure.
 

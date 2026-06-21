@@ -1,6 +1,6 @@
 ---
 pr_number: 5229
-title: "fix(B-0820): land derivability-asymmetry finding + Helm-tricks-for-ArgoCD enrichment"
+title: "fix(081KSGS9H0008QG0R00352WW0V): land derivability-asymmetry finding + Helm-tricks-for-ArgoCD enrichment"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:12:42Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:37:37Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5229: fix(B-0820): land derivability-asymmetry finding + Helm-tricks-for-ArgoCD enrichment
+# PR #5229: fix(081KSGS9H0008QG0R00352WW0V): land derivability-asymmetry finding + Helm-tricks-for-ArgoCD enrichment
 
 ## PR description
 
 ## Summary
 
-Two related substrate landings from Aaron 2026-05-26 conversation that arrived after PR #5227 (B-0820 row file) merged:
+Two related substrate landings from Aaron 2026-05-26 conversation that arrived after PR #5227 (081KSGS9H0008QG0R00352WW0V row file) merged:
 
 1. **Derivability asymmetry** — Aaron: *"but depends on is the only reason i'm giving flux a chance cause they sync waves are derivable"*
 
@@ -36,12 +36,12 @@ Two related substrate landings from Aaron 2026-05-26 conversation that arrived a
    - **Approach B**: Build-time TS tool (\`tools/cluster/deps-to-engine-config.ts\`)
    - Recommendation: start with B (graph algorithms in TS are trivial); evaluate A as follow-on
 
-Composes with B-0816's Helm-as-convergence-point principle: push to the convergence point (here: named-dependency graph); wrap thinly per environment (Flux gets \`dependsOn\` directly; ArgoCD gets derived sync-waves).
+Composes with 081KSGS9H0008QG0R003A37Z65's Helm-as-convergence-point principle: push to the convergence point (here: named-dependency graph); wrap thinly per environment (Flux gets \`dependsOn\` directly; ArgoCD gets derived sync-waves).
 
 ## Test plan
 
 - [ ] Markdown lint clean
-- [ ] B-0820 row content extension only (no other rows touched)
+- [ ] 081KSGS9H0008QG0R00352WW0V row content extension only (no other rows touched)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

@@ -45,4 +45,4 @@ case we refuse by design rather than lack.
    (rom kind already carries hex; the loader is the missing piece).
 
 Ranking by pull: 9 (loader) unlocks everything; 1+2 are afternoon cartridges; 7's opcode is a
-treaty change (four oracles + a golden, B-1031 discipline).
+treaty change (four oracles + a golden, 081KTZ4EF0008QG0R002WVTMMJ discipline).

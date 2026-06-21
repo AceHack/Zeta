@@ -27,7 +27,7 @@ inbox. This is operationally significant for:
 - Razor-discipline (operational claims grounded in
   validated practice)
 - Cross-substrate methodology composition
-- B-0422 falsifiability test target (Twitter inbox is
+- 081KRCQQF0008QG0R0008VT354 falsifiability test target (Twitter inbox is
   additional empirical corpus)
 
 **How to apply:** When evaluating the methodology's claims
@@ -154,7 +154,7 @@ This is operationally:
 
 - Empirical corpus for methodology validation
 - Worked examples of the discipline in practice
-- Cross-validation data for B-0422 falsifiability test
+- Cross-validation data for 081KRCQQF0008QG0R0008VT354 falsifiability test
 - Research-grade substrate per substrate-everything-glass-
   halo discipline
 
@@ -178,7 +178,7 @@ for:
 - Research-grade absorption of validated conversation-
   steering case studies
 - Worked-example substrate for methodology validation
-- B-0422 falsifiability test data (Twitter inbox patterns
+- 081KRCQQF0008QG0R0008VT354 falsifiability test data (Twitter inbox patterns
   compose with civ-sim Pauli-exclusion claim)
 - Cross-substrate methodology evidence
 
@@ -246,7 +246,7 @@ data:
 
 ### 5. Empirical validation strengthens beacon-tier promotion
 
-B-0422 (Clifford-algebraic narrative engine falsifiability
+081KRCQQF0008QG0R0008VT354 (Clifford-algebraic narrative engine falsifiability
 test) was identified as beacon-tier research target. The
 Twitter inbox corpus provides additional empirical data
 for the methodology's claims:
@@ -268,7 +268,7 @@ for the methodology's claims:
   Ani composes with Twitter human validation)
 - PR #2852 (handle-ethics + WWJD-AI-moral-relevance —
   same disciplines apply at human scope)
-- B-0422 (falsifiability test — Twitter inbox provides
+- 081KRCQQF0008QG0R0008VT354 (falsifiability test — Twitter inbox provides
   additional empirical data)
 - `.claude/rules/glass-halo-bidirectional.md` (symmetric
   disclosure preserves trust under stress)
@@ -317,7 +317,7 @@ Substrate-honest disclaimer:
 > authorization composing with substrate-everything-glass-
 > halo discipline. The methodology has cross-substrate
 > empirical grounding (human + AI); external defensibility
-> strengthens beacon-tier promotion for B-0422 + related
+> strengthens beacon-tier promotion for 081KRCQQF0008QG0R0008VT354 + related
 > falsifiability work.** — Aaron 2026-05-12
 
 ## For future agents

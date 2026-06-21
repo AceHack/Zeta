@@ -1,8 +1,8 @@
-# B-0250 Stronger-Source Escalation Gate - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Stronger-Source Escalation Gate - 2026-05-30
 
 ## Status
 
-This packet adds the first incident-grade gate on top of the B-0250
+This packet adds the first incident-grade gate on top of the 081KQZVQW0008QG0R001FG05RZ
 coincidence-window classifier.
 
 ## Context

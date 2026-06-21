@@ -31,7 +31,7 @@ namespace Zeta.Core
 ///
 /// Pure module, deterministic (DST §7): "probabilistic" admission derives from `SplitMix64.mix (seed,
 /// tick)` — same seed, same decisions, replay-equal. Additive (FerryThrottler untouched — this is the
-/// knob it can consume; per the B-1022 razor, no rewrite).
+/// knob it can consume; per the 081KTQD8A0008QG0R0005EFYPV razor, no rewrite).
 [<RequireQualifiedAccess>]
 module SoftThrottle =
 
@@ -170,7 +170,7 @@ module SoftThrottle =
     /// (seed, tick)) AND the tank funds `cost`, then the inner ISR runs and the tank discharges;
     /// otherwise the arrival is *softly skipped* (inner state untouched, tank charges, the room keeps
     /// breathing). `pressure` reads the current pressure off the inner state. The SCHEDULER IS UNTOUCHED
-    /// — softness arrives by wrapping (the B-1022 razor: instantiation, not refactor).
+    /// — softness arrives by wrapping (the 081KTQD8A0008QG0R0005EFYPV razor: instantiation, not refactor).
     let wrapHandler
         (k: float)
         (seed: int64)

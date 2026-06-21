@@ -1,11 +1,11 @@
 ---
 name: soraya-b1019-dst-vacuity-review-portfolio-routing
-description: "Soraya's vacuity+routing review of the B-1019 DST harness (2026-06-06): the honest design is a PORTFOLIO (F# DST rung-1 + TLC no-cycle + Lean pigeonhole); the F# harness must use a CONTENT-ONLY signature (exclude all counters), seed ONCE + derive evidence internally, be THREE-valued (PASS/REFUTE/INCONCLUSIVE), and teeth=detected-stable-fixed-point not budget. Bounded exact-rationals are eventually periodic, so the only honest pass route is genuine unbounded belief-CONTENT growth."
+description: "Soraya's vacuity+routing review of the 081KT7YW00008QG0R001DGZQKM DST harness (2026-06-06): the honest design is a PORTFOLIO (F# DST rung-1 + TLC no-cycle + Lean pigeonhole); the F# harness must use a CONTENT-ONLY signature (exclude all counters), seed ONCE + derive evidence internally, be THREE-valued (PASS/REFUTE/INCONCLUSIVE), and teeth=detected-stable-fixed-point not budget. Bounded exact-rationals are eventually periodic, so the only honest pass route is genuine unbounded belief-CONTENT growth."
 type: project
 created: 2026-06-06
 ---
 
-Soraya (formal-verification-expert) reviewed the planned B-1019 DST harness for vacuity/soundness
+Soraya (formal-verification-expert) reviewed the planned 081KT7YW00008QG0R001DGZQKM DST harness for vacuity/soundness
 (2026-06-06, routed by Otto). Verdict + the binding design constraints:
 
 ## Vacuity fix (the crux)
@@ -13,7 +13,7 @@ The full-state signature checked for repetition MUST be computed **only over sem
 content** = the multiset of agent beliefs (`Rational[]`). **Exclude ALL monotonic bookkeeping** (tick, id
 counter, history length, parent pointers) from the signature — else "no signature repeats" is true BY
 CONSTRUCTION (the odometer guarantees a fresh hash) and the no-limit-cycle check is vacuous (the
-"state changed" false-pass B-1019 forbids). Novelty must come from belief DIFFERENCE, not the counter.
+"state changed" false-pass 081KT7YW00008QG0R001DGZQKM forbids). Novelty must come from belief DIFFERENCE, not the counter.
 
 ## Risk #3 (the model-killer, now fixed)
 Bounded exact-rationals over a fixed candidate set with bounded denominator = a FINITE state space →
@@ -23,7 +23,7 @@ IMPOSSIBLE (bounded ℚ is eventually periodic). The ONLY honest success route =
 growth in the belief-CONTENT space** (forks deriving evidence whose support/denominators genuinely grow
 from accumulated internal history). Seed ONCE; derive all post-init evidence INTERNALLY — never redraw from
 a per-tick external seed. (`SocietyEmergence.privateEvidence (seed,id,tick,cands)` redraws per tick =
-external forcing = the bug B-1019 forbids.)
+external forcing = the bug 081KT7YW00008QG0R001DGZQKM forbids.)
 
 ## Three-valued outcome (no false teeth)
 PASS / REFUTE(teeth) / **INCONCLUSIVE**. Budget exhaustion is INCONCLUSIVE, never a teeth-refute and never

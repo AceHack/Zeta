@@ -25,7 +25,7 @@ Carved sentence:
 | Channel | Use for | Mechanism |
 |---|---|---|
 | **Bus envelopes** `/tmp/zeta-bus/` | Advisory broadcasts: `work-assignment`, `review-request`, shadow-catches | JSON envelopes; both Ottos read/write |
-| **Claim coordinator** `tools/bus/claim.ts` | Backlog row claim locking (B-0400 slice 3) | `acquire`/`release` commands; per PR #3032 discipline |
+| **Claim coordinator** `tools/bus/claim.ts` | Backlog row claim locking (081KR7JY10008QG0R000R503K2 slice 3) | `acquire`/`release` commands; per PR #3032 discipline |
 | **Routines schedule** | Desktop's 2-hour cron fire IS a signal to CLI (someone's about to cold-boot a fresh Otto session) | CLI can poll `list_scheduled_tasks` |
 | **Aaron as ferry** | High-bandwidth context transfer between Otto sessions (he pastes transcripts) | Manual; highest bandwidth when Aaron is at the keyboard |
 
@@ -106,8 +106,8 @@ on-disk state:
    an abandoned rebase, on a feature branch that's behind, etc.), which
    gives misleading "what's free" answers. Empirical anchor: tick 0742Z
    on 2026-05-15 — Otto-CLI's primary worktree was stuck on detached HEAD
-   `65c7865` from an 8h-stale peer-agent rebase; local `find` showed B-0526
-   as the top, missing B-0527 + B-0528 (which were taken by PRs #3334 +
+   `65c7865` from an 8h-stale peer-agent rebase; local `find` showed 081KRHWGX0008QG0R00264BDSB
+   as the top, missing 081KRHWGX0008QG0R0015EE8VE + 081KRMEXM0008QG0R000T0A28T (which were taken by PRs #3334 +
    #3342 on `origin/main`). The mis-allocation was caught by Copilot review
    but reached a public PR-comment first; correction comment had to follow.
    See [PR #3381](https://github.com/Lucent-Financial-Group/Zeta/pull/3381)
@@ -127,9 +127,9 @@ The on-disk check shows merged state; the in-flight check shows what peer
 Otto is filing concurrently. Skip either and the race-mode failure manifests
 — empirical collision 2026-05-13:
 
-- Otto on Desktop ran on-disk check, saw `B-0448` highest, picked `B-0449` for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier `B-0444` collision)
-- Otto on CLI already had `B-0449-bg-services-slice-5-subscriber-agent-design-pass` in flight ([PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046))
-- Otto on CLI flagged PR #3052 "Request Changes" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) using `B-0450`
+- Otto on Desktop ran on-disk check, saw `081KRFA460008QG0R000CYBGKW` highest, picked `081KRFA460008QG0R002DG8KPZ` for [PR #3052](https://github.com/Lucent-Financial-Group/Zeta/pull/3052) (resolving an earlier `081KRFA460008QG0R001SXP0C2` collision)
+- Otto on CLI already had `081KRFA460008QG0R002DG8KPZ-bg-services-slice-5-subscriber-agent-design-pass` in flight ([PR #3046](https://github.com/Lucent-Financial-Group/Zeta/pull/3046))
+- Otto on CLI flagged PR #3052 "Request Changes" (blocked auto-merge), shipped corrected [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) using `081KRFA460008QG0R001QFS6EV`
 - Drift captured in [`docs/research/2026-05-13-shadow-lesson-log-backlog-collision.md`](../../docs/research/2026-05-13-shadow-lesson-log-backlog-collision.md) ([PR #3054](https://github.com/Lucent-Financial-Group/Zeta/pull/3054))
 
 Substrate-honest takeaway: the `refresh-before-decide` invariant
@@ -144,29 +144,29 @@ Two ID-allocation schemes operate in Zeta; picking the wrong one creates
 
 | Scheme | Use for | Example |
 |---|---|---|
-| **Subdecimal** `B-NNNN.M` | Children / slices of an EXISTING parent row | `B-0170.4` (4th slice of B-0170 substrate-claim-checker; shipped via [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)) |
-| **New top-level** `B-NNNN` | New umbrella / standalone row that is NOT a child of any existing parent | `B-0539` (new umbrella for Otto-BFT internal-quorum; shipped via [PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)) |
+| **Subdecimal** `B-NNNN.M` | Children / slices of an EXISTING parent row | `081KQNJ500008QG0R003SCWBDV.4` (4th slice of 081KQNJ500008QG0R003SCWBDV substrate-claim-checker; shipped via [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)) |
+| **New top-level** `B-NNNN` | New umbrella / standalone row that is NOT a child of any existing parent | `081KRMEXM0008QG0R00138CCZX` (new umbrella for Otto-BFT internal-quorum; shipped via [PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)) |
 
 **The check that catches the wrong-scheme failure mode**: before authoring
 children for an existing parent, grep for existing subdecimal siblings:
 
 ```bash
-# Example for B-0170 children:
-find docs/backlog -name "B-0170.*.md" -type f | head
-gh pr list --state all --search '"B-0170."' --limit 10
+# Example for 081KQNJ500008QG0R003SCWBDV children:
+find docs/backlog -name "081KQNJ500008QG0R003SCWBDV.*.md" -type f | head
+gh pr list --state all --search '"081KQNJ500008QG0R003SCWBDV."' --limit 10
 ```
 
-If siblings already exist (e.g., `B-0170.4` already in flight), use the next
+If siblings already exist (e.g., `081KQNJ500008QG0R003SCWBDV.4` already in flight), use the next
 free subdecimal — NOT a new top-level number.
 
-Empirical collision 2026-05-15: Otto on Desktop decomposed B-0170 into
-new top-levels B-0538/B-0539/B-0540/B-0541 without checking for existing
-`B-0170.N` siblings. [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)
-had already landed `B-0170.4` via the subdecimal scheme, AND Otto-CLI had
-separately claimed B-0539 for the Otto-BFT umbrella ([PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)).
+Empirical collision 2026-05-15: Otto on Desktop decomposed 081KQNJ500008QG0R003SCWBDV into
+new top-levels 081KRMEXM0008QG0R002347RJY/081KRMEXM0008QG0R00138CCZX/081KRMEXM0008QG0R0039V4SQQ/081KRMEXM0008QG0R0026V9A0Y without checking for existing
+`081KQNJ500008QG0R003SCWBDV.N` siblings. [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)
+had already landed `081KQNJ500008QG0R003SCWBDV.4` via the subdecimal scheme, AND Otto-CLI had
+separately claimed 081KRMEXM0008QG0R00138CCZX for the Otto-BFT umbrella ([PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)).
 Otto-Desktop's branch was superseded; the subdecimal-scheme check would
 have prevented the collision entirely AND surfaced the existing intent
-overlap (B-0541 eval-set fixture tests ≈ B-0170.4 eval-set fixture seed).
+overlap (081KRMEXM0008QG0R0026V9A0Y eval-set fixture tests ≈ 081KQNJ500008QG0R003SCWBDV.4 eval-set fixture seed).
 
 ## Empirical evidence (2026-05-13 session)
 
@@ -200,8 +200,8 @@ The complementary-observer pattern (per PR #3036 identity-stays-unified) means i
 - PR #3032 (claim-acquire rule, merged)
 - PR #3036 (identity-stays-unified, merged)
 - PR #3037 (SENDER_IDS schema extension — Otto on CLI's parallel work, merged)
-- PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
-- PR #3053 (B-0444 ID collision renumber → B-0450, merged 2026-05-13) + PR #3054 (shadow lesson log for B-0449 drift, merged 2026-05-13) — the empirical collision that surfaced the ID-allocation-discipline section above
+- PR #3043 (081KRFA460008QG0R001SXP0C2 bus claim envelope worktree field, merged 2026-05-13)
+- PR #3053 (081KRFA460008QG0R001SXP0C2 ID collision renumber → 081KRFA460008QG0R001QFS6EV, merged 2026-05-13) + PR #3054 (shadow lesson log for 081KRFA460008QG0R002DG8KPZ drift, merged 2026-05-13) — the empirical collision that surfaced the ID-allocation-discipline section above
 - `.claude/rules/refresh-before-decide.md` — the invariant ID allocation discipline extends to ID-allocation scope
 
 ## Full reasoning

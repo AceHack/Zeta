@@ -1,6 +1,5 @@
 ---
-id: B-0821
-zetaid: 081KSGS9H0008QG0R00367G209
+id: 081KSGS9H0008QG0R00367G209
 priority: P1
 status: closed
 closed: 2026-06-12
@@ -61,16 +60,16 @@ ALL of these use Maven AS the build tool to PRODUCE Helm charts. NONE provide Ma
 
 | Maven feature | Zeta-for-Helm equivalent |
 |---|---|
-| `<dependencies>` block | `dependsOn:` graph (per B-0820 + B-0821 sub-target 1) |
-| Transitive dependency resolution | Topo-sort over chart graph (B-0821 sub-target 2) |
-| `<properties>` inheritance / parent POM | Typed output → consumer input variable flow (B-0821 sub-targets 2-3) |
+| `<dependencies>` block | `dependsOn:` graph (per 081KSGS9H0008QG0R00352WW0V + 081KSGS9H0008QG0R00367G209 sub-target 1) |
+| Transitive dependency resolution | Topo-sort over chart graph (081KSGS9H0008QG0R00367G209 sub-target 2) |
+| `<properties>` inheritance / parent POM | Typed output → consumer input variable flow (081KSGS9H0008QG0R00367G209 sub-targets 2-3) |
 | Effective POM (`mvn help:effective-pom`) | Effective rendered values (post-graph resolution) |
 | Maven Central / Nexus | Helm Hub / Artifact Hub / private chart repos |
 | Maven version ranges | Helm chart version ranges (already exists at Chart.yaml level; extends to cross-chart graph) |
-| `<scope>` (compile / test / runtime / etc.) | Cross-cluster scope; multi-tenant scope; environment scope (multi-cluster substrate per B-0820) |
+| `<scope>` (compile / test / runtime / etc.) | Cross-cluster scope; multi-tenant scope; environment scope (multi-cluster substrate per 081KSGS9H0008QG0R00352WW0V) |
 | Bill of Materials (BOM) | Cluster-level dependency-graph manifest (cross-app coordination) |
 
-The Maven model is decades-battle-tested; Zeta inheriting the model at the K8s/Helm layer is substrate-engineering work that LEVERAGES (per B-0816 force-multiplier framing) Maven's prior-art rather than reinventing.
+The Maven model is decades-battle-tested; Zeta inheriting the model at the K8s/Helm layer is substrate-engineering work that LEVERAGES (per 081KSGS9H0008QG0R003A37Z65 force-multiplier framing) Maven's prior-art rather than reinventing.
 
 ## Problem
 
@@ -86,7 +85,7 @@ There is an empty architectural slot above today's Kubernetes substrate stack:
 | Container packaging | Dockerfile / OCI | Saturated |
 | App templating | Helm | Saturated |
 | Manifest overlay | Kustomize | Saturated |
-| Cluster sync engine | ArgoCD / Flux | Saturated (per [B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)) |
+| Cluster sync engine | ArgoCD / Flux | Saturated (per [081KSGS9H0008QG0R003A37Z65](081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)) |
 | **Dependency graph + auto-variable-passing on top of Helm** | **— EMPTY —** | **Open slot Zeta can claim** |
 | Progressive delivery | Argo Rollouts / Flagger | Saturated |
 | Cluster orchestration / multi-cluster | KubeFed / ClusterAPI / etc. | Saturated |
@@ -170,11 +169,11 @@ The C++ diamond is exactly the right framing: the structural problem IS multiple
 
 Three substrates already in flight that compose into the dependency-graph-on-Helm layer:
 
-1. **[B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md) Helm-as-convergence-point** — Zeta authors substrate as Helm charts; both engines (ArgoCD + Flux) consume the same charts. This positions Zeta to sit above Helm, regardless of which engine ships.
-2. **[B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) Derivability asymmetry** — `dependsOn` → sync-waves is computable; sync-waves → `dependsOn` is not. The named-dependency graph IS the source-of-truth shape; engine-specific outputs are derived projections. Zeta's `tools/cluster/deps-to-engine-config.ts` (B-0820 sub-target 4) is the first concrete substrate at this layer.
-3. **[B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) Ontology-based-not-tool-based** — AI runbooks describe ontology shapes; tools surface BECAUSE they fit the shape. A dependency-graph IS an ontology primitive; this layer IS Zeta's ontology layer applied to K8s substrate.
+1. **[081KSGS9H0008QG0R003A37Z65](081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md) Helm-as-convergence-point** — Zeta authors substrate as Helm charts; both engines (ArgoCD + Flux) consume the same charts. This positions Zeta to sit above Helm, regardless of which engine ships.
+2. **[081KSGS9H0008QG0R00352WW0V](../P2/081KSGS9H0008QG0R00352WW0V-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) Derivability asymmetry** — `dependsOn` → sync-waves is computable; sync-waves → `dependsOn` is not. The named-dependency graph IS the source-of-truth shape; engine-specific outputs are derived projections. Zeta's `tools/cluster/deps-to-engine-config.ts` (081KSGS9H0008QG0R00352WW0V sub-target 4) is the first concrete substrate at this layer.
+3. **[081KSGS9H0008QG0R0005P83AP](081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) Ontology-based-not-tool-based** — AI runbooks describe ontology shapes; tools surface BECAUSE they fit the shape. A dependency-graph IS an ontology primitive; this layer IS Zeta's ontology layer applied to K8s substrate.
 
-The three substrates compose: B-0816 puts Zeta at Helm's level; B-0820 establishes the source-of-truth shape (named-dependency graph); B-0819 makes the layer ontology-shaped rather than tool-shaped. This row formalizes the strategic claim: Zeta is the empty architectural slot's tenant.
+The three substrates compose: 081KSGS9H0008QG0R003A37Z65 puts Zeta at Helm's level; 081KSGS9H0008QG0R00352WW0V establishes the source-of-truth shape (named-dependency graph); 081KSGS9H0008QG0R0005P83AP makes the layer ontology-shaped rather than tool-shaped. This row formalizes the strategic claim: Zeta is the empty architectural slot's tenant.
 
 ## Target
 
@@ -212,9 +211,9 @@ spec:
 
 The graph is engine-agnostic (consumed by both ArgoCD and Flux wrappers via Sub-target 2).
 
-### Sub-target 2 — graph → engine-specific config emitter (`tools/cluster/deps-to-engine-config.ts` from B-0820)
+### Sub-target 2 — graph → engine-specific config emitter (`tools/cluster/deps-to-engine-config.ts` from 081KSGS9H0008QG0R00352WW0V)
 
-Same TS tool from B-0820 sub-target 4 + extended scope:
+Same TS tool from 081KSGS9H0008QG0R00352WW0V sub-target 4 + extended scope:
 
 - Input: the named-dependency-graph spec (Sub-target 1)
 - Output for Flux: `dependsOn: [name1, name2]` arrays + `valuesFrom:` references for variable flow
@@ -243,28 +242,28 @@ The dependency graph must be acyclic. Build-time validation:
 
 ### Sub-target 5 — multi-cluster + multi-tenant scope
 
-Cross-cluster variable flow (cluster-A produces something cluster-B consumes) is THE next-level shape. Per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster substrate, the dependency-graph can extend to cross-cluster outputs (federated state). Out of scope for initial implementation; substrate-design considerations should not preclude future extension.
+Cross-cluster variable flow (cluster-A produces something cluster-B consumes) is THE next-level shape. Per [081KSGS9H0008QG0R00352WW0V](../P2/081KSGS9H0008QG0R00352WW0V-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster substrate, the dependency-graph can extend to cross-cluster outputs (federated state). Out of scope for initial implementation; substrate-design considerations should not preclude future extension.
 
 ### Sub-target 6 — UX + DX (ontology-shaped operator surface)
 
-Per [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md): operators describe the ontology of what they want; the graph + tool materialize the engine-specific configs. The substrate IS ontology-shaped, not tool-shaped. AI agents (via Skill router + the three primitives `run` / `deferred run / continue with` / `auto JIT`) author runbooks that emit dependency-graph specs from natural-language operator intent.
+Per [081KSGS9H0008QG0R0005P83AP](081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md): operators describe the ontology of what they want; the graph + tool materialize the engine-specific configs. The substrate IS ontology-shaped, not tool-shaped. AI agents (via Skill router + the three primitives `run` / `deferred run / continue with` / `auto JIT`) author runbooks that emit dependency-graph specs from natural-language operator intent.
 
 ## Implementation home — Ace package manager (Aaron 2026-05-26 directive)
 
 Aaron 2026-05-26: *"that's another feature for ace package manager"*
 
-This row's substrate IS NOT a standalone tool — it's a FEATURE that lands in [Ace](B-0288-ace-dlc-package-manager-cli-2026-05-08.md), Zeta's package manager. Architectural reasoning:
+This row's substrate IS NOT a standalone tool — it's a FEATURE that lands in [Ace](081KR2E4K0008QG0R002YE3MMD-ace-dlc-package-manager-cli-2026-05-08.md), Zeta's package manager. Architectural reasoning:
 
-- **Ace is already positioned as Zeta's package-manager substrate** (per B-0247 / B-0288 / B-0742). Adding Maven-for-Helm dep-graph as another package-manager feature reuses Ace's existing operator-facing CLI + substrate-engineering primitives rather than minting a parallel tool.
-- **One package manager handling multiple substrate types is the unified-substrate framing** — Ace already manages native packages + content packs + kernel extensions per B-0247; extending to Helm chart dependency-graph + transitive variable-passing keeps the operator's mental model unified (one CLI; one ontology; one dependency-graph layer).
+- **Ace is already positioned as Zeta's package-manager substrate** (per 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R002YE3MMD / 081KSE6WT0008QG0R000YYH3DY). Adding Maven-for-Helm dep-graph as another package-manager feature reuses Ace's existing operator-facing CLI + substrate-engineering primitives rather than minting a parallel tool.
+- **One package manager handling multiple substrate types is the unified-substrate framing** — Ace already manages native packages + content packs + kernel extensions per 081KQZVQW0008QG0R000ZHEN62; extending to Helm chart dependency-graph + transitive variable-passing keeps the operator's mental model unified (one CLI; one ontology; one dependency-graph layer).
 - **The Maven analogy reinforces the home**: Maven is BOTH a package manager AND a build/dependency-graph tool. Ace already plays Maven's package-manager role for Zeta; absorbing Maven's dependency-graph role for Helm charts keeps the architectural symmetry.
 
 Practical implications for substrate-engineering:
 
 - **Sub-targets 1-6 below** (named-dep-graph spec + `tools/cluster/deps-to-engine-config.ts` + typed output resolution + cycle detection + multi-cluster scope + ontology-shaped DX) all land as Ace features rather than standalone tools
 - **CLI surface** uses Ace's existing command structure: e.g., `ace deps resolve` / `ace deps graph` / `ace helm install --resolve-deps`
-- **Storage**: dependency-graph specs live in Ace's existing content-pack / chart-repo substrate (B-0247 surface) rather than a parallel storage location
-- **Composes with B-0742** (Ace's distributable POC): Maven-for-Helm becomes part of what makes Ace distributable + load-bearing as the Zeta package manager
+- **Storage**: dependency-graph specs live in Ace's existing content-pack / chart-repo substrate (081KQZVQW0008QG0R000ZHEN62 surface) rather than a parallel storage location
+- **Composes with 081KSE6WT0008QG0R000YYH3DY** (Ace's distributable POC): Maven-for-Helm becomes part of what makes Ace distributable + load-bearing as the Zeta package manager
 
 The strategic-positioning claim from "Why Zeta is positioned to claim it" stays: Zeta claims the dependency-graph-on-Helm slot. The IMPLEMENTATION HOME for that claim IS Ace. These compose; both true.
 
@@ -279,11 +278,11 @@ The strategic-positioning claim from "Why Zeta is positioned to claim it" stays:
 
 ## Composes with
 
-- **[B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point (this row sits ON TOP of that convergence)
-- **[B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)** — ontology-based substrate (this row IS the ontology layer applied to K8s substrate)
-- **[B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)** — derivability-asymmetry + `tools/cluster/deps-to-engine-config.ts` (this row extends that tool with variable-passing scope)
-- **[B-0794](B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — cluster-bring-up substrate (the dependency-graph governs which charts deploy when)
-- **[B-0813](B-0813-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — ArgoCD reconciler (consumes graph-derived sync-wave annotations)
+- **[081KSGS9H0008QG0R003A37Z65](081KSGS9H0008QG0R003A37Z65-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)** — Helm-as-convergence-point (this row sits ON TOP of that convergence)
+- **[081KSGS9H0008QG0R0005P83AP](081KSGS9H0008QG0R0005P83AP-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)** — ontology-based substrate (this row IS the ontology layer applied to K8s substrate)
+- **[081KSGS9H0008QG0R00352WW0V](../P2/081KSGS9H0008QG0R00352WW0V-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)** — derivability-asymmetry + `tools/cluster/deps-to-engine-config.ts` (this row extends that tool with variable-passing scope)
+- **[081KSGS9H0008QG0R0027HJZYH](081KSGS9H0008QG0R0027HJZYH-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md)** — cluster-bring-up substrate (the dependency-graph governs which charts deploy when)
+- **[081KSGS9H0008QG0R002K93MWX](081KSGS9H0008QG0R002K93MWX-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md)** — ArgoCD reconciler (consumes graph-derived sync-wave annotations)
 
 ## Empirical verification — empty-slot claim confirmed (2026-05-26 search-pass)
 
@@ -325,7 +324,7 @@ Filed as P1 because:
 
 1. **Strategic-positioning slot** — empty architectural slots are rare; claiming this one positions Zeta as a unique substrate layer the K8s ecosystem doesn't yet have
 2. **Auto-variable-passing eliminates a recurring operator-pain class** (manual cross-chart wiring of connection strings, passwords, endpoints, secrets) — high-leverage substrate
-3. **Composes with already-in-flight B-0816 + B-0819 + B-0820** — substrate-engineering work consolidates rather than expanding the surface
+3. **Composes with already-in-flight 081KSGS9H0008QG0R003A37Z65 + 081KSGS9H0008QG0R0005P83AP + 081KSGS9H0008QG0R00352WW0V** — substrate-engineering work consolidates rather than expanding the surface
 4. **Differentiator from Helmfile / Terraform / Pulumi** — those tools touch parts of the slot but don't fill it GitOps-natively; Zeta's positioning is unique
 
 ## Substrate-inventory pass
@@ -334,6 +333,6 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 
 - `rg "dependency graph" docs/ memory/ .claude/` → no prior strategic-positioning row on this slot
 - `gh pr list --state all --search "dependency graph helm"` → no in-flight collision
-- `gh pr list --state all --search "B-0821"` → no in-flight collision
-- ID B-0821 next-free per `git ls-tree origin/main` (highest = B-0820 from #5227 just merged; B-0818/B-0819 already merged)
-- Composes with established substrate-engineering arc (B-0816 + B-0819 + B-0820); not parallel-shape
+- `gh pr list --state all --search "081KSGS9H0008QG0R00367G209"` → no in-flight collision
+- ID 081KSGS9H0008QG0R00367G209 next-free per `git ls-tree origin/main` (highest = 081KSGS9H0008QG0R00352WW0V from #5227 just merged; 081KSGS9H0008QG0R00033DT02/081KSGS9H0008QG0R0005P83AP already merged)
+- Composes with established substrate-engineering arc (081KSGS9H0008QG0R003A37Z65 + 081KSGS9H0008QG0R0005P83AP + 081KSGS9H0008QG0R00352WW0V); not parallel-shape

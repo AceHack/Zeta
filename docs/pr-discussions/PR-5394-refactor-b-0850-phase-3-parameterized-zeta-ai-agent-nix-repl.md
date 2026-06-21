@@ -1,6 +1,6 @@
 ---
 pr_number: 5394
-title: "refactor(B-0850 Phase 3): parameterized zeta-ai-agent.nix replaces zeta-otto.nix \u2014 multi-vendor scaffold for \u22653-systemd-agents-on-bootup (Aaron 2026-05-27)"
+title: "refactor(081KSKBP80008QG0R003Z4C0D0 Phase 3): parameterized zeta-ai-agent.nix replaces zeta-otto.nix \u2014 multi-vendor scaffold for \u22653-systemd-agents-on-bootup (Aaron 2026-05-27)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T03:18:35Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:27:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5394: refactor(B-0850 Phase 3): parameterized zeta-ai-agent.nix replaces zeta-otto.nix — multi-vendor scaffold for ≥3-systemd-agents-on-bootup (Aaron 2026-05-27)
+# PR #5394: refactor(081KSKBP80008QG0R003Z4C0D0 Phase 3): parameterized zeta-ai-agent.nix replaces zeta-otto.nix — multi-vendor scaffold for ≥3-systemd-agents-on-bootup (Aaron 2026-05-27)
 
 ## PR description
 
@@ -44,10 +44,10 @@ Parameterizes the Phase 1 zeta-otto.nix shape (PR #5392) into a multi-vendor mul
 | Persona | Vendor | Binary | Sub-row |
 |---|---|---|---|
 | otto | anthropic | claude | shipped this PR |
-| alexa | alibaba-qwen | kiro | B-0850.3a (pending) |
-| riven | xai-grok | grok | B-0850.3b (pending) |
-| vera | openai | codex | B-0850.3c (pending) |
-| lior | google-gemini | gemini | B-0850.3d (pending) |
+| alexa | alibaba-qwen | kiro | 081KSKBP80008QG0R003Z4C0D0.3a (pending) |
+| riven | xai-grok | grok | 081KSKBP80008QG0R003Z4C0D0.3b (pending) |
+| vera | openai | codex | 081KSKBP80008QG0R003Z4C0D0.3c (pending) |
+| lior | google-gemini | gemini | 081KSKBP80008QG0R003Z4C0D0.3d (pending) |
 
 Each persona enable lines pre-staged + commented in control-plane/configuration.nix with sub-row IDs.
 
@@ -57,7 +57,7 @@ Each persona enable lines pre-staged + commented in control-plane/configuration.
 2. **Self-modification safety** — when one AI's self-update breaks its boot script, OTHER AIs (different vendors) detect + repair
 3. **BFT margin** — f=1 fault tolerance requires 3 nodes (or 2f+1 generally)
 
-Both Spec 2 + Spec 4 from the B-0850 Phase 3 memory independently justify the ≥3 floor.
+Both Spec 2 + Spec 4 from the 081KSKBP80008QG0R003Z4C0D0 Phase 3 memory independently justify the ≥3 floor.
 
 ## Test plan
 
@@ -67,7 +67,7 @@ Both Spec 2 + Spec 4 from the B-0850 Phase 3 memory independently justify the �
 
 ## Composes with
 
-iter-5.5.0 substrate (PRs #5388 + #5389) · [B-0848](docs/backlog/P2/B-0848-...) · [B-0847](docs/backlog/P2/B-0847-...) · [B-0796](docs/backlog/P2/B-0796-...) · [B-0703](docs/backlog/P*/B-0703-...) · [B-0849](docs/backlog/P2/B-0849-...) · [B-0824](docs/backlog/P1/B-0824-...) · [B-0850 row](docs/backlog/P2/B-0850-...)
+iter-5.5.0 substrate (PRs #5388 + #5389) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...) · [081KSGS9H0008QG0R002F04ECB](docs/backlog/P2/081KSGS9H0008QG0R002F04ECB-...) · [081KS3X9Y0008QG0R00218150M](docs/backlog/P*/081KS3X9Y0008QG0R00218150M-...) · [081KSKBP80008QG0R000E3RKPK](docs/backlog/P2/081KSKBP80008QG0R000E3RKPK-...) · [081KSGS9H0008QG0R0031PBNGA](docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-...) · [081KSKBP80008QG0R003Z4C0D0 row](docs/backlog/P2/081KSKBP80008QG0R003Z4C0D0-...)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

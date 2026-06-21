@@ -29,7 +29,7 @@
 
 Adds a worked example sub-section under \"Verify-also-on-stale-but-fresh-looking findings\" in [\`blocked-green-ci-investigate-threads.md\`](.claude/rules/blocked-green-ci-investigate-threads.md).
 
-**Empirical anchor**: [PR #4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097) merged 2026-05-17T21:29Z at \`e1704a26\` after both Codex P2 + Copilot threads on the same B-0613 doc line 75 were resolved no-op.
+**Empirical anchor**: [PR #4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097) merged 2026-05-17T21:29Z at \`e1704a26\` after both Codex P2 + Copilot threads on the same 081KRSKQ20008QG0R002TH55X6 doc line 75 were resolved no-op.
 
 **Key operational lesson**: \`isOutdated=true\` is a strong signal that a thread is safely no-op-resolvable, but \`isOutdated=false\` is NOT a counter-signal — the thread may still be substantively stale when a subsequent commit on the same line addresses the finding (peer Otto's \`6f91e9c\` addressed both findings before tick-open without GitHub auto-outdating the threads). The verify-via-direct-inspection step (with \`awk -v N=<line>\`) is the load-bearing discriminator between \"fix needed\" and \"fix already landed, just resolve.\"
 

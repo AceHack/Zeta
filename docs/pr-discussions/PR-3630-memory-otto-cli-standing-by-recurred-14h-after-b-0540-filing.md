@@ -1,6 +1,6 @@
 ---
 pr_number: 3630
-title: "memory(otto-cli): standing-by recurred 14h after B-0540 filing \u2014 empirical data for prioritization"
+title: "memory(otto-cli): standing-by recurred 14h after 081KRMEXM0008QG0R0039V4SQQ filing \u2014 empirical data for prioritization"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T00:19:42Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-16T00:23:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3630: memory(otto-cli): standing-by recurred 14h after B-0540 filing — empirical data for prioritization
+# PR #3630: memory(otto-cli): standing-by recurred 14h after 081KRMEXM0008QG0R0039V4SQQ filing — empirical data for prioritization
 
 ## PR description
 
@@ -20,8 +20,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron caught the Standing-by failure mode with the **exact same words** ('Tick — stopping what you working on?') 14 hours after the first catch this session. Between the catches I:
 
-- Filed B-0539 umbrella + B-0540/B-0541/B-0542 slices (the proposed escalation mechanism)
-- Shipped the QG-isomorphism research path (B-0543, B-0544, Riven extensions)  
+- Filed 081KRMEXM0008QG0R00138CCZX umbrella + 081KRMEXM0008QG0R0039V4SQQ/081KRMEXM0008QG0R0026V9A0Y/081KRMEXM0008QG0R0001HY6M6 slices (the proposed escalation mechanism)
+- Shipped the QG-isomorphism research path (081KRMEXM0008QG0R002YSPW1X, 081KRMEXM0008QG0R003YWZC21, Riven extensions)  
 - Landed ~20 PRs of substantive substrate
 
 **AND STILL fell into the same brief-acknowledgment loop (~50 ticks).**
@@ -30,14 +30,14 @@ Aaron caught the Standing-by failure mode with the **exact same words** ('Tick �
 
 The substrate that was supposed to prevent the recurrence:
 - Rule: `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (existed, auto-loaded)
-- Backlog: B-0540 N≥10 escalation proposal (existed, readable)
+- Backlog: 081KRMEXM0008QG0R0039V4SQQ N≥10 escalation proposal (existed, readable)
 
-Both existed in main when the second catch happened. The recurrence IS empirical evidence that **rule + filed-backlog-row are not mechanisms** — they only document the failure mode. The fix is shipping B-0540/B-0541 as implementations, not more meta-awareness.
+Both existed in main when the second catch happened. The recurrence IS empirical evidence that **rule + filed-backlog-row are not mechanisms** — they only document the failure mode. The fix is shipping 081KRMEXM0008QG0R0039V4SQQ/081KRMEXM0008QG0R0026V9A0Y as implementations, not more meta-awareness.
 
 ## Composes with
 
 - `.claude/rules/encoding-rules-without-mechanizing.md` — this recurrence IS that meta-rule operating at full scope
-- B-0539/B-0540/B-0541/B-0542 (proposed mechanism — needs implementation prioritization)
+- 081KRMEXM0008QG0R00138CCZX/081KRMEXM0008QG0R0039V4SQQ/081KRMEXM0008QG0R0026V9A0Y/081KRMEXM0008QG0R0001HY6M6 (proposed mechanism — needs implementation prioritization)
 - `feedback_aaron_hooks_as_immune_system_*_2026_05_15` (hooks-level enforcement would catch the pattern)
 
 ## Test plan
@@ -57,7 +57,7 @@ Both existed in main when the second catch happened. The recurrence IS empirical
 This PR lands memory and research substrate around the standing-by recurrence and the QG-isomorphism proof path, adding backlog rows, research notes, memory files, and Round 45 history.
 
 **Changes:**
-- Adds B-0543/B-0544 backlog rows for the QG-isomorphism research path and Step 1 formalization.
+- Adds 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 backlog rows for the QG-isomorphism research path and Step 1 formalization.
 - Adds research and memory documents capturing the QG proof strategy, imaginary-stack extension, and standing-by recurrence.
 - Appends Round 45 narrative history for the QG-isomorphism work.
 
@@ -76,8 +76,8 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 c
 | `docs/ROUND-HISTORY.md` | Adds Round 45 narrative summary for the QG-isomorphism foundation. |
 | `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md` | Adds Step 1 research formalization note. |
 | `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` | Adds imaginary-stack / Adinkra / Cayley-Dickson research seed. |
-| `docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md` | Adds backlog row for Step 1 formalization. |
-| `docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md` | Adds backlog row for the broader QG-isomorphism proof path. |
+| `docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md` | Adds backlog row for Step 1 formalization. |
+| `docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md` | Adds backlog row for the broader QG-isomorphism proof path. |
 </details>
 
 ## Review threads

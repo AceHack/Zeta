@@ -22,10 +22,10 @@
  * Composes with:
  *   - src/Core.TypeScript/workflow-engine/world.ts (PR #5774) — base World substrate
  *   - src/Core.TypeScript/workflow-engine/composed-lifetime.ts (PR #5771) — dispatch
- *   - B-0867.15 per-host adapters (github/gitlab/gitea/bitbucket
+ *   - 081KSNY2Z0008QG0R002A785QR per-host adapters (github/gitlab/gitea/bitbucket
  *     isomorphic cross-host substrate)
- *   - B-0904 GitHub-as-free-event-store (specific GitHub optimization)
- *   - B-0865.17 cross-vendor benchmark (cross-vendor scoring; same
+ *   - 081KSNY2Z0008QG0R001JQABB4 GitHub-as-free-event-store (specific GitHub optimization)
+ *   - 081KSNY2Z0008QG0R0002BEZMR cross-vendor benchmark (cross-vendor scoring; same
  *     shape applies cross-forge)
  *   - .claude/rules/monad-propagation-pattern
  *   - .claude/rules/asymmetric-authorship

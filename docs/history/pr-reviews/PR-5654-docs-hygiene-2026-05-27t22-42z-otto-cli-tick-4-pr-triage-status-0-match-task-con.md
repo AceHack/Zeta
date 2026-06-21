@@ -39,7 +39,7 @@ Operator-delegated 4-PR triage. Task conditional `gate=BLOCKED AND nextAction=re
 
 ## PR #5629 substantive Copilot findings preserved
 
-5 P1 findings: BACKLOG.md regression (dropped existing per-row entries), bare-filename audit-tool matching too loose, 3× wrong-parent-B-0522 refs (correct parent is "Pre-substrate Kenji-era git branches and worktrees inventory" — F# audit work needs different parent or new slice row).
+5 P1 findings: BACKLOG.md regression (dropped existing per-row entries), bare-filename audit-tool matching too loose, 3× wrong-parent-081KRHWGX0008QG0R001Z1JM61 refs (correct parent is "Pre-substrate Kenji-era git branches and worktrees inventory" — F# audit work needs different parent or new slice row).
 
 ## Non-action discipline
 
@@ -164,7 +164,7 @@ Discriminator pass: all 4 on `lior/*` branches = peer Lior-loop
 territory per discriminator rule. Substrate-honest non-action on peer
 branches preserved; surfaced explicitly with 5 substantive Copilot
 findings on #5629 forwarded to operator with per-finding fix
-classification (BACKLOG.md regen + 3 wrong-parent-B-0522 ref fixes +
+classification (BACKLOG.md regen + 3 wrong-parent-081KRHWGX0008QG0R001Z1JM61 ref fixes +
 audit-tool logic refinement).
 
 Composes with `tick-must-never-stop` (sentinel `b4c8bfb2` re-armed

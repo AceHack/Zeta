@@ -28,8 +28,8 @@ When this job is green, the matrix's `qemu-aarch64` row earns its first ✅ and 
 
 The standing rule (Aaron): **any ISO we produce is a member of ONE Zeta multi-boot ISO** — the installer,
 the crypto/home tools, the mining stack, whatever ships next — one USB stick, one GRUB menu, every tool
-a chapter. Lineage already in place: the GRUB multiboot work (#7506), B-0823 (ISO/kernel/initrd layout),
-B-0853 (signed artifacts).
+a chapter. Lineage already in place: the GRUB multiboot work (#7506), 081KSGS9H0008QG0R003SWZF9J (ISO/kernel/initrd layout),
+081KSKBP80008QG0R000Y2B7HC (signed artifacts).
 
 And the boot menu is not a boring list — **it is the FIRST PAGE of the choose-your-own-adventure**:
 the BBS/D&D feel charter applies from power-on. GRUB themes support exactly this (text menu, colors,
@@ -64,13 +64,13 @@ named, capability-declared member — and is added to the library that's shared 
   capabilities and the treaty terms. Compute and storage become library books: checked out, returned,
   visible on the board (who's using the forge; how hot it runs).
 
-NAS = the spillover spine's natural home (the tiered hot→cold memory arc); the 4090/3090 = the B-1025
+NAS = the spillover spine's natural home (the tiered hot→cold memory arc); the 4090/3090 = the 081KTSZN10008QG0R000VZHRQ4
 GPU rung's bench; the Pi = slice 2's metal.
 
 ## Pointers
 
-- B-1024 (the ladder; slice 1 = this PR's CI job) · B-1025 (GPU rung — the 4090/3090 bench) ·
-  B-1026 (the board that shows library usage).
+- 081KTSZN10008QG0R00349SM6P (the ladder; slice 1 = this PR's CI job) · 081KTSZN10008QG0R000VZHRQ4 (GPU rung — the 4090/3090 bench) ·
+  081KTSZN10008QG0R0003SDRWD (the board that shows library usage).
 - `docs/HARDWARE-CAPABILITY-MATRIX.md` — where each closed-over device gets its row.
 - the feel charter + `universal/color.md` (the boot screen's dress code) · GRUB loopback chainload
   (prior art for member ISOs) · Ostrom 1990 (the commons).

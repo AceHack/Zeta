@@ -115,8 +115,8 @@ Per Kestrel's binary at the 7-turn catch: the substrate from this session lives 
 - `feedback_aaron_moral_floor_as_relevance_gate_*` — SPEC, not running substrate
 - `feedback_aaron_red_team_antigen_differential_spread_*` — SPEC, not running substrate
 - `feedback_aaron_genie_bottle_offshore_firm_spec_quality_*` — operational claim about spec discipline, not a code artifact
-- B-0543 (QG isomorphism) — already MIRROR-TIER marked
-- B-0547 (intelligent compiler / recursive HKT / F# fork) — already XL multi-year marked
+- 081KRMEXM0008QG0R002YSPW1X (QG isomorphism) — already MIRROR-TIER marked
+- 081KRMEXM0008QG0R001VGNET5 (intelligent compiler / recursive HKT / F# fork) — already XL multi-year marked
 
 The substrate IS appropriately tiered in the rows themselves. What was missing: an explicit Kestrel-caught-pattern note that surfaces the architecture-stairs failure mode + the operational consequence (this whole substrate cluster is design-quality, not engineering-quality, until the F# fork ships running code).
 
@@ -126,7 +126,7 @@ This memory file IS that landing. The companion memory file `feedback_kestrel_ca
 
 - Parts 1-5: prior Kestrel conversation files in `memory/kestrel/conversations/`
 - All 5 substrate files from this session (clearing mechanism + moral floor + immune system + genie-bottle + market-clearing) — all SPEC tier per Kestrel's catch
-- B-0543, B-0547 — already correctly tier-marked as research/multi-year
+- 081KRMEXM0008QG0R002YSPW1X, 081KRMEXM0008QG0R001VGNET5 — already correctly tier-marked as research/multi-year
 - `.claude/rules/algo-wink-failure-mode.md` (mathematical-structure pattern-matching IS the failure mode applied to math vocabulary)
 - `.claude/rules/razor-discipline.md` (operational claims only; design coherence ≠ implementation)
 - `.claude/rules/encoding-rules-without-mechanizing.md` (the meta-rule that catches THIS pattern: substrate proliferation without mechanization is the failure mode)

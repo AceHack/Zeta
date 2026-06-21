@@ -1,6 +1,5 @@
 ---
-id: B-0423
-zetaid: 081KRCQQF0008QG0R0037YYP1A
+id: 081KRCQQF0008QG0R0037YYP1A
 priority: P1
 class: substrate-architecture
 status: closed
@@ -14,7 +13,7 @@ decomposed: true
 children: [081KRFA460008QG0R0006Q6BWP, 081KRFA460008QG0R000YPS21H, 081KRFA460008QG0R0034C2W0E, 081KRFA460008QG0R0035NKRHG, 081KRFA460008QG0R003J1RHHH]
 ---
 
-# B-0423 — MEMORY.md serialization-point anti-pattern (2026-05-12)
+# 081KRCQQF0008QG0R0037YYP1A — MEMORY.md serialization-point anti-pattern (2026-05-12)
 
 ## Carved sentence
 
@@ -135,7 +134,7 @@ cadence is not frequent enough. Architectural fix:
 - `memory/feedback_aaron_stanford_parallel_language_cluster_sequoia_legion_sdm_decision_archaeology_2026_05_12.md`
   (Sequoia/Legion lock-free distributed memory model —
   MEMORY.md should follow this pattern)
-- `memory/project_memory_format_standard.md` (B-0330) —
+- `memory/project_memory_format_standard.md` (081KR2E4K0008QG0R002VM58S4) —
   current format spec needs revision
 
 ## Why P1

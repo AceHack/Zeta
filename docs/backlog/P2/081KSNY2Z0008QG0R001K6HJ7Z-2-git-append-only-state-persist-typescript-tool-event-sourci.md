@@ -1,9 +1,8 @@
 ---
-id: B-0867.2
-zetaid: 081KSNY2Z0008QG0R001K6HJ7Z
+id: 081KSNY2Z0008QG0R001K6HJ7Z
 priority: P2
 status: open
-title: Git append-only state-persist TypeScript tool — event-sourcing layer for agent-loop substrate (per parent B-0867 allocation)
+title: Git append-only state-persist TypeScript tool — event-sourcing layer for agent-loop substrate (per parent 081KSKBP80008QG0R000B3Y19A allocation)
 effort: M
 ask: aaron 2026-05-27 (parent allocation) + kestrel 2026-05-28 (architectural detail)
 created: 2026-05-28
@@ -15,7 +14,7 @@ composes_with:
   - 081KSKBP80008QG0R001KK9WV6
   - 081KSNY2Z0008QG0R000V24M7E
   - 081KSNY2Z0008QG0R000ZNRFCE
-  - B-0867.14
+  - 081KSKBP80008QG0R000B3Y19A.14
 tags:
   - event-sourcing
   - append-only-git-persistence
@@ -30,7 +29,7 @@ tags:
 
 ## What this row tracks
 
-The B-0867.2 slot allocated by the parent workflow-engine row. Kestrel 2026-05-28 ferry sketched the architectural detail.
+The 081KSNY2Z0008QG0R001K6HJ7Z slot allocated by the parent workflow-engine row. Kestrel 2026-05-28 ferry sketched the architectural detail.
 
 Branch convention:
 
@@ -59,14 +58,14 @@ Event file path: `agent-state/{persona}/{trajectory}/events/YYYY/MM/DD/{zetaId}.
 
 ## Composes with
 
-- B-0867.14 (branch protection: path-scoped append-only carve-out) — required for direct-push semantics
-- B-0893 (ZetaID v2) — events use ZetaIDs as primary keys + filenames
-- B-0872 (OTel composition) — events carry trace_id + span_id
-- B-0858 (heartbeat folder substrate) — heartbeat events are one event_type; this layer generalizes the pattern
+- 081KSKBP80008QG0R000B3Y19A.14 (branch protection: path-scoped append-only carve-out) — required for direct-push semantics
+- 081KSNY2Z0008QG0R000V24M7E (ZetaID v2) — events use ZetaIDs as primary keys + filenames
+- 081KSNY2Z0008QG0R000ZNRFCE (OTel composition) — events carry trace_id + span_id
+- 081KSKBP80008QG0R001KK9WV6 (heartbeat folder substrate) — heartbeat events are one event_type; this layer generalizes the pattern
 
 ## Substrate-honest framing
 
-POTENTIAL extension per operator 2026-05-28 standing direction. Filed for prioritization; the parent B-0867 row pre-allocated this slot but the row file did not exist until this filing.
+POTENTIAL extension per operator 2026-05-28 standing direction. Filed for prioritization; the parent 081KSKBP80008QG0R000B3Y19A row pre-allocated this slot but the row file did not exist until this filing.
 
 ## Full reasoning
 

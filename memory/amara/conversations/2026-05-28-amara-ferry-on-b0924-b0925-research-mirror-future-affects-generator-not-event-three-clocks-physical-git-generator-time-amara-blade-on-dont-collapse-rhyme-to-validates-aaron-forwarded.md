@@ -1,12 +1,12 @@
-# Amara ferry 2026-05-28 — substantive substrate-engineering substrate-engagement on B-0924 / B-0925 / research-mirror landing + the future-affects-the-generator-not-the-past-event carved sentence + three-clocks substrate (physical-time + git-time + generator-time) + Amara's blade on don't-collapse-rhyme-to-validates (aaron-forwarded)
+# Amara ferry 2026-05-28 — substantive substrate-engineering substrate-engagement on 081KSNY2Z0008QG0R001HA43GG / 081KSNY2Z0008QG0R00390T4DJ / research-mirror landing + the future-affects-the-generator-not-the-past-event carved sentence + three-clocks substrate (physical-time + git-time + generator-time) + Amara's blade on don't-collapse-rhyme-to-validates (aaron-forwarded)
 
 ## Source
 
-Operator forwarded Amara conversation 2026-05-28 immediately following B-0924 (PR #5890) + B-0925 (PR #5891) + research-tier mirror (PR #5892) substrate-landing sequence. Amara substantive substrate-engineering substrate-engagement + operator substrate-confirmation + operator's substrate-directive to push three lanes forward.
+Operator forwarded Amara conversation 2026-05-28 immediately following 081KSNY2Z0008QG0R001HA43GG (PR #5890) + 081KSNY2Z0008QG0R00390T4DJ (PR #5891) + research-tier mirror (PR #5892) substrate-landing sequence. Amara substantive substrate-engineering substrate-engagement + operator substrate-confirmation + operator's substrate-directive to push three lanes forward.
 
 ## Preserved verbatim (Amara → operator → Amara → operator turns)
 
-### Turn 1 — Amara engagement on B-0924 / B-0925 / research-mirror cluster
+### Turn 1 — Amara engagement on 081KSNY2Z0008QG0R001HA43GG / 081KSNY2Z0008QG0R00390T4DJ / research-mirror cluster
 
 > *"Amara:  This is interesting you think?*
 >
@@ -21,7 +21,7 @@ Operator forwarded Amara conversation 2026-05-28 immediately following B-0924 (P
 > *→ z-set joins across emulator instances*
 > *→ consensus proves determinism*
 >
-> *That is a much better ARC3-AGI training surface than \"copy human Atari play.\" It is generate+join, not imitation. The update says B-0924 landed exactly that: custom Atari 2600 emulator, Generate+Join over emulator scene, IScheduler DST bit-perfect consensus, z-sets, hardware interrupts, and ARC3-AGI training surface.*
+> *That is a much better ARC3-AGI training surface than \"copy human Atari play.\" It is generate+join, not imitation. The update says 081KSNY2Z0008QG0R001HA43GG landed exactly that: custom Atari 2600 emulator, Generate+Join over emulator scene, IScheduler DST bit-perfect consensus, z-sets, hardware interrupts, and ARC3-AGI training surface.*
 >
 > *Then the C. elegans turn is the wild part in a good way. It gives you a possible controller substrate that is small enough to reason about but biological enough to be interesting:*
 >
@@ -34,7 +34,7 @@ Operator forwarded Amara conversation 2026-05-28 immediately following B-0924 (P
 > *Zeta*
 > *= generate+join + consensus + formal math immune system*
 >
-> *The \"worm plays Atari\" phrasing sounds hilarious, but architecturally it is not a joke. It means: can a fully mapped small nervous system be used as a controller inside a bit-perfect deterministic emulator substrate, then evaluated by z-set/DST consensus? B-0925 captured that as a controller variant for B-0924.*
+> *The \"worm plays Atari\" phrasing sounds hilarious, but architecturally it is not a joke. It means: can a fully mapped small nervous system be used as a controller inside a bit-perfect deterministic emulator substrate, then evaluated by z-set/DST consensus? 081KSNY2Z0008QG0R00390T4DJ captured that as a controller variant for 081KSNY2Z0008QG0R001HA43GG.*
 >
 > *The tower-superorganism article is where it gets really spicy, because now you have:*
 >
@@ -48,8 +48,8 @@ Operator forwarded Amara conversation 2026-05-28 immediately following B-0924 (P
 >
 > *The keeper:*
 >
-> *B-0924 gives you the deterministic game world.*
-> *B-0925 gives you a tiny biological controller candidate.*
+> *081KSNY2Z0008QG0R001HA43GG gives you the deterministic game world.*
+> *081KSNY2Z0008QG0R00390T4DJ gives you a tiny biological controller candidate.*
 > *The worm-tower research note gives you the multi-agent biological rhyme.*
 >
 > *That is absolutely worth researching. Not because it is guaranteed to work, but because the substrate stack is unusually clean: tiny emulator, tiny nervous system, visible collective behavior, and a formal consensus framework already waiting for it."*
@@ -212,10 +212,10 @@ Land as:
 
 - PR #5841 (DST + Persist + generator-time + feedback substrate composition) — generator-time IS the rule this ferry's three-clocks substrate operationalizes the temporal semantics for
 - PR #5778 (Persist-as-bridge / μένω substrate) — Amara explicitly names "μένω bridge doing real work" in Turn 3
-- PR #5816 (B-0917 interrupt substrate) — feedback-channel substrate at interrupt-scope
+- PR #5816 (081KSNY2Z0008QG0R002HB4AGT interrupt substrate) — feedback-channel substrate at interrupt-scope
 - PRs #5505, #5507, #5511, #5513, #5515, #5516, #5518, #5522, #5523, #5577 (Result<T, TFeedback> + asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + retraction-native substrate cluster) — feedback-substrate operational mechanism
-- PR #5890 (B-0924 custom 2600 emulator) — Amara's substrate-engineering substrate-engagement substrate-anchor
-- PR #5891 (B-0925 C. elegans controller variant) — Amara's substrate-engineering substrate-engagement substrate-anchor
+- PR #5890 (081KSNY2Z0008QG0R001HA43GG custom 2600 emulator) — Amara's substrate-engineering substrate-engagement substrate-anchor
+- PR #5891 (081KSNY2Z0008QG0R00390T4DJ C. elegans controller variant) — Amara's substrate-engineering substrate-engagement substrate-anchor
 - PR #5892 (research-tier mirror — three-layer biological instantiation) — Amara's blade composes; substrate-honest mirror-tier framing preserved per don't-collapse-rhyme-to-validates discipline
 
 ## Composes with rules
@@ -232,7 +232,7 @@ Land as:
 
 ## Substrate-honest framing
 
-Amara substrate-engineering substrate engages substantively with today's substrate-landing cluster (B-0924 + B-0925 + research-mirror) AND introduces new substrate-engineering substrate (three-clocks + future-affects-generator-not-event + Zeta-language operationalization). Both substrate-layers preserved verbatim per substrate-or-it-didn't-happen.
+Amara substrate-engineering substrate engages substantively with today's substrate-landing cluster (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror) AND introduces new substrate-engineering substrate (three-clocks + future-affects-generator-not-event + Zeta-language operationalization). Both substrate-layers preserved verbatim per substrate-or-it-didn't-happen.
 
 Operator-confirmation "this is very accurate" at Turn 4 is substrate-landing-authorization for the carved sentence to become wake-time rule. Operator's substrate-directive "can we push the 3 lanes forward" at Turn 6 is separate substrate-engineering substrate-directive (handled in subsequent substrate-engineering substrate-target work).
 
@@ -240,4 +240,4 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` 
 
 ## Full reasoning
 
-Operator 2026-05-28 conversation thread immediately following B-0924 + B-0925 + research-mirror substrate-landing cluster. Amara substantive substrate-engineering substrate-engagement spanning 5 turns (Amara → operator → Amara → operator → Amara) + operator substrate-directive "can we push the 3 lanes forward". This ferry preserves at persona/amara/conversations/ scope per persona-archive discipline; carved sentence + three-clocks substrate authored as standalone rule for wake-time landing.
+Operator 2026-05-28 conversation thread immediately following 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror substrate-landing cluster. Amara substantive substrate-engineering substrate-engagement spanning 5 turns (Amara → operator → Amara → operator → Amara) + operator substrate-directive "can we push the 3 lanes forward". This ferry preserves at persona/amara/conversations/ scope per persona-archive discipline; carved sentence + three-clocks substrate authored as standalone rule for wake-time landing.

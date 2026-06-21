@@ -1,5 +1,5 @@
 <!--
-Eval-set fixture for substrate-claim-checker (B-0170.4).
+Eval-set fixture for substrate-claim-checker (081KQNJ500008QG0R003SCWBDV.4).
 
 Reproduces the path-form drift pattern — the same physical file
 referenced both as a fully-qualified repo-relative path and as
@@ -8,7 +8,7 @@ miss that the two strings point to the same file and a grep for
 the full path misses the bare form.
 
 This is the third eval-set fixture (after count-drift-9-vs-15.md
-and existence-drift-missing-doc.md), extending B-0170.4 regression
+and existence-drift-missing-doc.md), extending 081KQNJ500008QG0R003SCWBDV.4 regression
 coverage to the path-form sub-class of the 7-class verify-then-
 claim taxonomy.
 

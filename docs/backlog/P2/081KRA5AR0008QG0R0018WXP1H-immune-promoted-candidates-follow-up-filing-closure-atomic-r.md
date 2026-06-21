@@ -1,13 +1,12 @@
 ---
-id: B-0408
-zetaid: 081KRA5AR0008QG0R0018WXP1H
+id: 081KRA5AR0008QG0R0018WXP1H
 priority: P2
 status: open
-title: Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
+title: Promoted candidate follow-up row filing + 081KQDTYV0008QG0R003N15ZW2 research-absorb closure (atomic, child of 081KQDTYV0008QG0R003N15ZW2)
 parent: 081KQDTYV0008QG0R003N15ZW2
 tier: research-absorb
 effort: S
-ask: Riven 2026-05-11 (decomp of B-0108)
+ask: Riven 2026-05-11 (decomp of 081KQDTYV0008QG0R003N15ZW2)
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: [081KRA5AR0008QG0R003BSHKWV, 081KRA5AR0008QG0R000GZPV7N]
@@ -19,12 +18,12 @@ decomposition: atomic
 
 # Follow-up filing + closure (atomic)
 
-For any candidates promoted in B-0407, file the smallest follow-up backlog rows (P2/P3). Update B-0108 to closed with research note link and negative-result lineage for dismissed.
+For any candidates promoted in 081KRA5AR0008QG0R000GZPV7N, file the smallest follow-up backlog rows (P2/P3). Update 081KQDTYV0008QG0R003N15ZW2 to closed with research note link and negative-result lineage for dismissed.
 
 ## Acceptance
 
 - 0-N new child rows filed (or none if no promotions).
-- B-0108 status=closed, last note + links updated.
+- 081KQDTYV0008QG0R003N15ZW2 status=closed, last note + links updated.
 - Index clean.
 
 ## Out of scope
@@ -33,4 +32,4 @@ For any candidates promoted in B-0407, file the smallest follow-up backlog rows 
 
 ## Evidence
 
-- B-0108 + B-0406 + B-0407.
+- 081KQDTYV0008QG0R003N15ZW2 + 081KRA5AR0008QG0R003BSHKWV + 081KRA5AR0008QG0R000GZPV7N.

@@ -88,7 +88,7 @@ Each row is its own file `docs/backlog/P<tier>/<id>-<slug>.md`:
 
 ```markdown
 ---
-id: B-0042
+id: 081KQ3HBZ0008QG0R002GDRFS5
 priority: P2
 status: open
 title: Short-title-for-index
@@ -98,8 +98,8 @@ directive: Aaron Otto-180
 created: 2026-04-24
 last_updated: 2026-04-24
 composes_with:
-  - B-0031-frontier-rename
-  - B-0038-scientology-thematic
+  - 081KQ3HBZ0008QG0R003B2NAA2-frontier-rename
+  - 081KQ3HBZ0008QG0R0006NJP4K-scientology-thematic
 tags: [game-industry, sharding, multi-node]
 ---
 
@@ -123,10 +123,10 @@ tags: [game-industry, sharding, multi-node]
 
 ### 2.2 ID assignment
 
-- Sequential: `B-0001` through `B-NNNN`, zero-padded 4
+- Sequential: `081KPYCJH0008QG0R003MDS51N` through `B-NNNN`, zero-padded 4
   digits (room for 9999 rows; can expand to 5 later).
 - Assigned at PR-creation time by the author. Gap-filling
-  allowed: if B-0042 is retired, B-0042 slot stays empty;
+  allowed: if 081KQ3HBZ0008QG0R002GDRFS5 is retired, 081KQ3HBZ0008QG0R002GDRFS5 slot stays empty;
   next new row gets the next unused number.
 - Auto-generator lint flags duplicate IDs at PR time.
 
@@ -142,13 +142,13 @@ edit by hand — edit the per-row file and regenerate._
 
 ## P0 — critical
 
-- [ ] **[B-0003](backlog/P0/B-0003-secret-handoff.md)**
+- [ ] **[081KQ0YZ80008QG0R001QJJTVF](backlog/P0/081KQ0YZ80008QG0R001QJJTVF-secret-handoff.md)**
   Secret-handoff protocol — env-var default + password-manager CLI...
 - ...
 
 ## P1 — within 2-3 rounds
 
-- [ ] **[B-0007](backlog/P1/B-0007-hll-flakiness.md)**
+- [ ] **[081KQ0YZ80008QG0R001V1PMC0](backlog/P1/081KQ0YZ80008QG0R001V1PMC0-hll-flakiness.md)**
   HLL property-test flakiness — investigate before retry (DST discipline)...
 - ...
 ```

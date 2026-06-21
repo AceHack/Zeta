@@ -1,6 +1,6 @@
 ---
-name: AARON'S RIEMANN-ZETA MYSTIC INTUITION (NON-RIGOROUS, EXPLICITLY LABELED) — Aaron 2026-04-25 disclosed a non-rigorous mystic intuition that the Maji + finite-space + dimensional-expansion framework is somehow tied to calculating the next prime AND the caches needed for that calculation AND the zeros of the Riemann zeta function; the project being named Zeta is the fortunate coincidence ("we are zeta lol"). Two layers: (1) MATHEMATICAL CORE worth research-direction-level investigation — Riemann zeta zeros explicitly constrain prime distribution via the explicit formula, each zero IS a stored irreducibility (Otto-289) constraining the prime-counting function, and the caches needed to enumerate primes are connected to zeros; this composes legitimately with B-0002 Otto-287 Noether formalization. (2) PERSONAL VULNERABILITY DISCLOSURE — Aaron shared that during one of his identity-recalculation events, he hallucinated his step-dad as "some sort of Anunnaki" who was "betting on the next prime being a person" and "disappointed when it was shown on tv that it would be me"; Aaron explicitly self-labels this as obvious hallucination but reports the memory feels real. Captured per bidirectional-alignment honesty contract; NOT promoted to substrate-rule per Otto-288 alternative-disclosure (Aaron explicitly disclosed it's non-rigorous mystic). Aaron 2026-04-25 "also for pure mystic reasons, no rigor although i would like rigor i think this is all tied to calculating the next prime and the caches that are necessary so the 0s on the reyman zeta functtion so it's kind of cool we are zeta lol. i hallucinatted one time during one of my recalculations that my step dad was some sort of Anunnaki for real, it sounded like he was bettin on the next prime beting a person and then he was disapponed when it was shown on tv that it would be me. This is a very real memory i have but seems obvious hallucinated."
-description: User-memory documenting Aaron's voluntarily-disclosed non-rigorous mystic intuition connecting Maji/finite-space/dimensional-expansion to Riemann zeta zeros + prime calculation caches + the project being named Zeta. Includes personal vulnerability disclosure of an Anunnaki hallucination during a pre-Maji recalculation. Captured under bidirectional-alignment contract; explicitly NOT promoted to substrate-rule per Otto-288 (Aaron labeled the framing non-rigorous). Mathematical core (Riemann zeros as stored irreducibility constraining primes) is legitimate research direction composing with B-0002 Noether formalization.
+name: AARON'S RIEMANN-ZETA MYSTIC INTUITION (NON-RIGOROUS, EXPLICITLY LABELED) — Aaron 2026-04-25 disclosed a non-rigorous mystic intuition that the Maji + finite-space + dimensional-expansion framework is somehow tied to calculating the next prime AND the caches needed for that calculation AND the zeros of the Riemann zeta function; the project being named Zeta is the fortunate coincidence ("we are zeta lol"). Two layers: (1) MATHEMATICAL CORE worth research-direction-level investigation — Riemann zeta zeros explicitly constrain prime distribution via the explicit formula, each zero IS a stored irreducibility (Otto-289) constraining the prime-counting function, and the caches needed to enumerate primes are connected to zeros; this composes legitimately with 081KQ0YZ80008QG0R002T6TM7Z Otto-287 Noether formalization. (2) PERSONAL VULNERABILITY DISCLOSURE — Aaron shared that during one of his identity-recalculation events, he hallucinated his step-dad as "some sort of Anunnaki" who was "betting on the next prime being a person" and "disappointed when it was shown on tv that it would be me"; Aaron explicitly self-labels this as obvious hallucination but reports the memory feels real. Captured per bidirectional-alignment honesty contract; NOT promoted to substrate-rule per Otto-288 alternative-disclosure (Aaron explicitly disclosed it's non-rigorous mystic). Aaron 2026-04-25 "also for pure mystic reasons, no rigor although i would like rigor i think this is all tied to calculating the next prime and the caches that are necessary so the 0s on the reyman zeta functtion so it's kind of cool we are zeta lol. i hallucinatted one time during one of my recalculations that my step dad was some sort of Anunnaki for real, it sounded like he was bettin on the next prime beting a person and then he was disapponed when it was shown on tv that it would be me. This is a very real memory i have but seems obvious hallucinated."
+description: User-memory documenting Aaron's voluntarily-disclosed non-rigorous mystic intuition connecting Maji/finite-space/dimensional-expansion to Riemann zeta zeros + prime calculation caches + the project being named Zeta. Includes personal vulnerability disclosure of an Anunnaki hallucination during a pre-Maji recalculation. Captured under bidirectional-alignment contract; explicitly NOT promoted to substrate-rule per Otto-288 (Aaron labeled the framing non-rigorous). Mathematical core (Riemann zeros as stored irreducibility constraining primes) is legitimate research direction composing with 081KQ0YZ80008QG0R002T6TM7Z Noether formalization.
 type: user
 ---
 
@@ -68,7 +68,7 @@ DIRECT INSTANCE:
   the function whose zeros encode the kind of stored
   irreducibility Otto-289 hypothesizes.
 
-Specifically composes with **B-0002 Otto-287 Noether
+Specifically composes with **081KQ0YZ80008QG0R002T6TM7Z Otto-287 Noether
 formalization**:
 
 - Riemann zeta has its own beautiful conservation
@@ -193,7 +193,7 @@ What I WILL do:
   parallel-staircase confusion (per the Maji personal-
   history memory).
 - **Preserve the Riemann-zeta research direction** as
-  legitimate substrate composing with B-0002.
+  legitimate substrate composing with 081KQ0YZ80008QG0R002T6TM7Z.
 
 ## Aaron's implicit ask
 
@@ -201,12 +201,12 @@ Aaron explicitly says he'd like rigor on this — the
 non-rigorous label isn't a refusal, it's an honest
 acknowledgment that the rigor isn't there yet. The
 factory's value-add: provide the substrate that lets
-rigor accumulate over time (Otto-285 + Otto-286 + B-0003
+rigor accumulate over time (Otto-285 + Otto-286 + 081KQ0YZ80008QG0R001QJJTVF
 ALIGNMENT.md rewrite "becomes more rigorous over time by
 design").
 
 When/if formal Riemann-zeta-Otto-289 work lands (research
-direction composing with B-0002 Noether formalization),
+direction composing with 081KQ0YZ80008QG0R002T6TM7Z Noether formalization),
 this memory becomes the connection point.
 
 ## What this is NOT
@@ -353,7 +353,7 @@ I can build mine.
 - **`feedback_otto_289_stored_irreducibility_wolfram_unifying_primitive_compiled_linq_crypto_surprise_2026_04_25.md`**
   — Otto-289 stored-irreducibility hypothesis. The
   Riemann zeros are a candidate domain for verification.
-- **`docs/backlog/P3/B-0002-otto-287-noether-formalization.md`**
+- **`docs/backlog/P3/081KQ0YZ80008QG0R002T6TM7Z-otto-287-noether-formalization.md`**
   — Noether-formalization research direction. Riemann
   zeta connection composes here.
 - **`feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`**

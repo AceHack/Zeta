@@ -247,7 +247,7 @@ generator-time); the soft/probabilistic-safety-layer-under-LLMs is the VISION/ne
   / schema version / query) re-reads the same record and a different MEANING falls out (past
   artifact + present reading → new value = constructive interference). It's safe *because* the past
   is immutable: harmonization with no paradox/corruption/split-brain. = DBSP retraction emitting a
-  new interpretation over a fixed stream; = B-0930 "generator-updates re-illuminate past schema
+  new interpretation over a fixed stream; = 081KSRGFP0008QG0R001Y6RTY9 "generator-updates re-illuminate past schema
   versions without mutating history." "Interference, not time-travel; re-illuminate, not rewrite"
   is the better intuition-pump than "retrocausality." Human-scale rhyme (Aaron): you can't change
   what happened, but a present reframe changes what it MEANS — same structure (e.g. fired-day ⇄

@@ -2,7 +2,7 @@ import { test, expect } from "bun:test";
 import { parseSurface, compile, toChoosePrompt } from "./surface-dsl";
 import { measureText } from "../byte-cost/byte-cost";
 
-// B-1016 refinement C — carved-sentence surfaces compile to a DSL; the model reads
+// 081KT7YW00008QG0R002T1XNWT refinement C — carved-sentence surfaces compile to a DSL; the model reads
 // only the compact carved sentences at the choose-point, deterministic legs read 0B.
 
 const RULE = `# No directives — only observations

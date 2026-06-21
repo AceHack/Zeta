@@ -1,6 +1,6 @@
 ---
 pr_number: 3788
-title: "feat(B-0557 slice 2): try/catch readFileSync + readdirSync in audit tool"
+title: "feat(081KRQ1AB0008QG0R003DYANMC slice 2): try/catch readFileSync + readdirSync in audit tool"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T06:49:38Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-16T08:10:17Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3788: feat(B-0557 slice 2): try/catch readFileSync + readdirSync in audit tool
+# PR #3788: feat(081KRQ1AB0008QG0R003DYANMC slice 2): try/catch readFileSync + readdirSync in audit tool
 
 ## PR description
 
@@ -30,7 +30,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Composes with
 
-- [B-0557](docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md) — parent row (2 of 4 slices now in flight, plus PR #3783 for slice 1)
+- [081KRQ1AB0008QG0R003DYANMC](docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md) — parent row (2 of 4 slices now in flight, plus PR #3783 for slice 1)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

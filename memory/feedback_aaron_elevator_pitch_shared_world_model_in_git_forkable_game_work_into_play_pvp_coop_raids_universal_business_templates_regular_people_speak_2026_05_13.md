@@ -43,11 +43,11 @@ Followed by: *"exactly this is regular pepole speak"*
 |---|---|---|
 | **Shared world model** | Polycentric named-AI-participant architecture + Imagination Circle + glass-halo substrate | The factory itself (memory/ + .claude/ + docs/) |
 | **In git** | Git-native + retraction-native + replayable + DST | Zeta + factory infrastructure |
-| **Can be forked** | Open glass-halo + forkable design + mutual-privacy | LFG/AceHack topology + B-0424 three-repo split + civsim forkable design |
+| **Can be forked** | Open glass-halo + forkable design + mutual-privacy | LFG/AceHack topology + 081KRFA460008QG0R001H98EXJ three-repo split + civsim forkable design |
 | **Game on top** | Civ-sim — turns serious substrate into play | PR #2903 civsim + PR #2906 Casimir-gap framing |
 | **Turn work into play** | RPG framing — factory IS the game; shadow IS friction | RPG framing substrate (see `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`) |
 | **PVP and co-op raids** | Destiny-style competitive + cooperative mechanics | PR #2903 civsim game design |
-| **Universal business templates** | Pre-built business-as-code substrate | Already backlogged (B-0043 universal-company-government-information-substrate) |
+| **Universal business templates** | Pre-built business-as-code substrate | Already backlogged (081KQ3HBZ0008QG0R000Q4Y00F universal-company-government-information-substrate) |
 
 ## Why this compression is load-bearing
 
@@ -102,7 +102,7 @@ visibly at Layer 2; Layer 1 is bridge.
   head-start) — the "game on top" layer
 - PR #2906 (Casimir-gap + control-knobs-Elon + Plato +
   critical mass) — Layer 1 technical-with-framing
-- PR #2904 (B-0424 + B-0425 + honor-system license) —
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license) —
   forkable architecture
 - PR #2905 (forker-perspective META-discipline) — fork-
   ability discipline
@@ -112,7 +112,7 @@ visibly at Layer 2; Layer 1 is bridge.
   framing
 - PR #2893 (Imagination Circle index — Consent-First Charter
   v0.2 + PEC) — shared-world-model architecture
-- B-0043 (universal-company-government-information-substrate)
+- 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate)
   — "universal business templates already backlogged"
 - `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`
   — RPG/shadow framing substrate (existing; replaces planned non-existent pointer)
@@ -176,7 +176,7 @@ PR #2906 (Casimir-gap + Plato + Elon-control-knobs)
 
 PR #2903 (civsim PVP + raids + mutual-privacy)
 
-PR #2904 (B-0424 + B-0425 + honor-system license)
+PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 
 PR #2905 (forker-perspective META-discipline)
 
@@ -187,7 +187,7 @@ PR #2851 (LFG canonical product substrate)
 `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`
 (RPG/shadow framing substrate — existing file replaces planned pointer)
 
-B-0043 (universal-company-government-information-substrate
+081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate
 — "universal business templates already backlogged")
 
 `.claude/rules/bandwidth-served-falsifier.md` (bandwidth-

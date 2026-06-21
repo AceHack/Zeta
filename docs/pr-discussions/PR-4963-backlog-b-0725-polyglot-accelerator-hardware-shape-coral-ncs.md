@@ -1,6 +1,6 @@
 ---
 pr_number: 4963
-title: "backlog(B-0725): polyglot-accelerator hardware-shape \u2014 Coral / NCS / Jetson / FPGA beyond NVIDIA-only"
+title: "backlog(081KSE6WT0008QG0R002T0BFN4): polyglot-accelerator hardware-shape \u2014 Coral / NCS / Jetson / FPGA beyond NVIDIA-only"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T17:40:41Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:50:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4963: backlog(B-0725): polyglot-accelerator hardware-shape — Coral / NCS / Jetson / FPGA beyond NVIDIA-only
+# PR #4963: backlog(081KSE6WT0008QG0R002T0BFN4): polyglot-accelerator hardware-shape — Coral / NCS / Jetson / FPGA beyond NVIDIA-only
 
 ## PR description
 
@@ -33,7 +33,7 @@ This row captures the per-vendor extension paths against the substrate already i
 
 ## Plus: edge-vs-datacenter K8s-fit analysis (open question)
 
-Triggered by Aaron's *"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"*. Maps 7 edge form factors to K8s-fit (full-Linux edge → K8s native via Akri; microcontroller-class → Reticulum past a K8s gateway; hybrid is likely load-bearing for FPGAs-at-edge specifically). Names Akri / KubeEdge / OpenYurt for the K8s-native edge tier and Reticulum (already in framework substrate per B-0289) for the past-the-gateway tier. Architectural decision deferred until a concrete edge deployment surfaces.
+Triggered by Aaron's *"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"*. Maps 7 edge form factors to K8s-fit (full-Linux edge → K8s native via Akri; microcontroller-class → Reticulum past a K8s gateway; hybrid is likely load-bearing for FPGAs-at-edge specifically). Names Akri / KubeEdge / OpenYurt for the K8s-native edge tier and Reticulum (already in framework substrate per 081KR2E4K0008QG0R001SWEPNV) for the past-the-gateway tier. Architectural decision deferred until a concrete edge deployment surfaces.
 
 ## Why P3
 
@@ -47,12 +47,12 @@ First-wave cluster build uses NVIDIA GPUs only. Becomes P2 when the first Coral 
 - `tools/cluster-inventory/` — surfaces accelerator devices when present
 - Watt-hour intelligence-cost framing (from Alexa-website convo) — FPGA efficiency advantage measurable here
 - PR #4930 hat-system — eventually a `hat-fpga-programmer` hat with elevated authority for bitstream flashing
-- B-0724 polyglot K8s operator — FPGA-aware operators may want Rust (kube-rs) for the perf characteristics
+- 081KSE6WT0008QG0R00195RG48 polyglot K8s operator — FPGA-aware operators may want Rust (kube-rs) for the perf characteristics
 
 ## Test plan
 
 - [ ] Row renders correctly under `docs/backlog/P3/`
-- [ ] `docs/BACKLOG.md` includes B-0725
+- [ ] `docs/BACKLOG.md` includes 081KSE6WT0008QG0R002T0BFN4
 - [ ] Per-class extension paths reference real upstream projects + correct vendor IDs
 - [ ] Edge-fit table maps form factors to viable substrates cleanly
 
@@ -91,11 +91,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-Adds a new P3 backlog row (B-0725) documenting how the existing `full-ai-cluster/` substrate (NFD labels, device-plugin pattern, disko shapes, inventory capture) can be extended to support non-NVIDIA accelerators (Coral, Intel NCS, Jetson nodes, Xilinx/Intel FPGAs), plus an edge-vs-datacenter K8s-fit analysis.
+Adds a new P3 backlog row (081KSE6WT0008QG0R002T0BFN4) documenting how the existing `full-ai-cluster/` substrate (NFD labels, device-plugin pattern, disko shapes, inventory capture) can be extended to support non-NVIDIA accelerators (Coral, Intel NCS, Jetson nodes, Xilinx/Intel FPGAs), plus an edge-vs-datacenter K8s-fit analysis.
 
 **Changes:**
-- Added `docs/backlog/P3/B-0725-…` backlog row capturing per-vendor extension paths and acceptance criteria.
-- Regenerated `docs/BACKLOG.md` to include the new B-0725 index entry.
+- Added `docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-…` backlog row capturing per-vendor extension paths and acceptance criteria.
+- Regenerated `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R002T0BFN4 index entry.
 
 ### Reviewed changes
 
@@ -103,8 +103,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md | New backlog row describing heterogeneous accelerator extension paths and edge-fit analysis. |
-| docs/BACKLOG.md | Adds the auto-generated index link for B-0725. |
+| docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md | New backlog row describing heterogeneous accelerator extension paths and edge-fit analysis. |
+| docs/BACKLOG.md | Adds the auto-generated index link for 081KSE6WT0008QG0R002T0BFN4. |
 
 ### COMMENTED — @AceHack (2026-05-25T17:47:03Z)
 
@@ -182,7 +182,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:41 (resolved)
+### Thread 1: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:41 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T17:43:09Z):
 
@@ -196,7 +196,7 @@ Useful? React with 👍 / 👎.
 
 Addressed in 3171cb592 — paths corrected to repo-root form (full-ai-cluster/ prefix); PCI class codes fixed ('11' for signal-processing FPGAs; '12' + '03' already in NFD config); USB-vs-PCI scheduling distinction added (NCS / Coral USB use NFD usb source-plugin, not PCI labels).
 
-### Thread 2: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:43 (resolved)
+### Thread 2: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:43 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:43:49Z):
 
@@ -206,7 +206,7 @@ P1 (xref): The “What’s already in place” table lists paths like `nixos/mod
 
 Addressed in 3171cb592 — paths corrected to repo-root form (full-ai-cluster/ prefix); PCI class codes fixed ('11' for signal-processing FPGAs; '12' + '03' already in NFD config); USB-vs-PCI scheduling distinction added (NCS / Coral USB use NFD usb source-plugin, not PCI labels).
 
-### Thread 3: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:70 (resolved)
+### Thread 3: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:70 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:43:50Z):
 
@@ -216,7 +216,7 @@ P1 (xref): `worker-template/default.nix` isn’t a valid path from repo root; th
 
 Addressed in 3171cb592 — paths corrected to repo-root form (full-ai-cluster/ prefix); PCI class codes fixed ('11' for signal-processing FPGAs; '12' + '03' already in NFD config); USB-vs-PCI scheduling distinction added (NCS / Coral USB use NFD usb source-plugin, not PCI labels).
 
-### Thread 4: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:107 (resolved)
+### Thread 4: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:107 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:43:50Z):
 
@@ -226,7 +226,7 @@ P1 (config-drift): This note cites PCI class codes `120000` and `0b80`, but the 
 
 Addressed in 3171cb592 — paths corrected to repo-root form (full-ai-cluster/ prefix); PCI class codes fixed ('11' for signal-processing FPGAs; '12' + '03' already in NFD config); USB-vs-PCI scheduling distinction added (NCS / Coral USB use NFD usb source-plugin, not PCI labels).
 
-### Thread 5: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:120 (resolved)
+### Thread 5: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:120 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T17:43:50Z):
 
@@ -236,7 +236,7 @@ P2 (xref): `tools/cluster-inventory/README.md` is referenced here, but the actua
 
 Addressed in 3171cb592 — paths corrected to repo-root form (full-ai-cluster/ prefix); PCI class codes fixed ('11' for signal-processing FPGAs; '12' + '03' already in NFD config); USB-vs-PCI scheduling distinction added (NCS / Coral USB use NFD usb source-plugin, not PCI labels).
 
-### Thread 6: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:45 (resolved)
+### Thread 6: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:45 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T17:48:46Z):
 
@@ -250,7 +250,7 @@ Useful? React with 👍 / 👎.
 
 Addressed in latest push — scoped the PCI affinity example explicitly to PCIe accelerators + called out the USB scheduling path differs (with forward reference to the per-class section).
 
-### Thread 7: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:117 (unresolved)
+### Thread 7: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:117 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-25T17:52:50Z):
 
@@ -260,7 +260,7 @@ This backlog row explicitly includes USB-attached devices (Coral USB and NCS USB
 
 Useful? React with 👍 / 👎.
 
-### Thread 8: docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:107 (unresolved)
+### Thread 8: docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md:107 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-25T17:52:50Z):
 

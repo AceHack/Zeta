@@ -236,7 +236,7 @@ Both are within the limit.
 Tier 2 muscle-memory operates on substrate that doesn't
 require Aaron's conscious attention. Memory files,
 rules, skills can scale into the hundreds without
-violating the architecture. The reindexer (B-0423,
+violating the architecture. The reindexer (081KRCQQF0008QG0R0037YYP1A,
 PR #2787 merged) supports this scaling.
 
 ### 3. Add DeepSeek as a candidate peer-call agent

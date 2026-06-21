@@ -41,7 +41,7 @@ When framework writes substrate that ANY Aaron-engaged future-Otto will read:
 
 1. **Use full URLs in research notes** (`references/notes/*.md`), backlog rows (`docs/backlog/P*/B-*.md`), memory files (`memory/feedback_*.md` + `memory/<persona>/*/conversations/*.md`)
 2. **Cite courses/books/papers with instructor + year + institution** when known (per Rosenhouse Great Courses pattern landed 2026-05-28)
-3. **ArchiveLocation field** in B-0920 MemoryLifetime substrate composes with this rule — preserves LOCATION-POINTERS even when active reference released
+3. **ArchiveLocation field** in 081KSNY2Z0008QG0R0017SRMHG MemoryLifetime substrate composes with this rule — preserves LOCATION-POINTERS even when active reference released
 4. **Composes_with edges** in backlog rows operate as location-pointer-index at substrate-engineering scope
 5. **DUs with explicit variants** (per IMPLICIT-NOT-EXPLICIT rule) operate as location-pointer-index at type-system scope
 
@@ -70,10 +70,10 @@ This rule auto-loads at session start so every fresh Otto + Alexa + Riven + Vera
 | **`razor-discipline.md`** | Operational claims only; pointer-index integrity is operationally checkable (URL accessible? content matches summary?) |
 | **`asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`** | Source substrate-entity (course author, paper author, etc.) authored content at THAT location; mis-attribution violates asymmetric-authorship at cognitive-architecture scope |
 | **`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`** | Memes ARE shapes propagating across pointer-indices; THIS rule operationalizes the discipline at pointer-substrate scope |
-| **B-0920 MemoryLifetime** | ArchiveLocation field IS the pointer-index discipline at substrate-engineering scope |
-| **B-0919 MemoryBinding** | Hat-binding-contract substrate composes with location-pointer at memory-ownership scope |
-| **B-0917 AutoLoopLifetime IntrCtx** | Log + Otel context-components ARE location-pointer-index at observability scope |
-| **B-0703 Aurora multi-oracle BFT** | Trust-calculus operates over distributed pointer-index (each oracle's report is location-pointered) |
+| **081KSNY2Z0008QG0R0017SRMHG MemoryLifetime** | ArchiveLocation field IS the pointer-index discipline at substrate-engineering scope |
+| **081KSNY2Z0008QG0R003518DNC MemoryBinding** | Hat-binding-contract substrate composes with location-pointer at memory-ownership scope |
+| **081KSNY2Z0008QG0R002HB4AGT AutoLoopLifetime IntrCtx** | Log + Otel context-components ARE location-pointer-index at observability scope |
+| **081KS3X9Y0008QG0R00218150M Aurora multi-oracle BFT** | Trust-calculus operates over distributed pointer-index (each oracle's report is location-pointered) |
 | **Framework's references/notes/** | All research notes operate as location-pointer-index extensions; cite full URLs per this rule |
 | **MEMORY.md** | User-scope memory index IS pointer-index from local-memory to externalized-content |
 | **docs/BACKLOG.md** | Backlog index IS pointer-index from row-IDs to substrate-engineering substrate |

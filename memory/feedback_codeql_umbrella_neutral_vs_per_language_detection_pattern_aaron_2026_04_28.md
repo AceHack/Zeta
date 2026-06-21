@@ -113,7 +113,7 @@ mechanism, verbatim from the umbrella check's own details URL via
   `.github/codeql/codeql-config.yml` so the extractor actually scans
   AlloyRunner.java
 - Added `*.java` to path-gate's code-changed patterns (extension to Kotlin /
-  Scala deferred to B-0081)
+  Scala deferred to 081KQ8P5D0008QG0R0010CW1RN)
 
 The deeper structural cause: **runtime dependencies must be honestly
 declared on every surface that touches them**. Java was already managed via

@@ -174,7 +174,7 @@ Fault Tolerance is the correction term, proven.** The correspondence is exact, l
 Net: ferry 43 gives the cooperation-theory *why* (forgiveness binds, provocability secures);
 **SybilBft + Consensus.fs give the implemented *how* with the proven bound** (3f+1,
 equivocation-catch, distinct-source quorum); the ledger gives the *substrate* (recorded −1,
-DST-replayable). One structure at three layers. This anchors the open consensus threads — B-0211
+DST-replayable). One structure at three layers. This anchors the open consensus threads — 081KQX9B50008QG0R0026BG44J
 fractal BFT (local+remote composition), the three-faction BFT TLA+/Z3 proof, multi-oracle
 consensus inside DST — each is *the correction term, scaled or formalized*.
 
@@ -258,7 +258,7 @@ provocability budget spent on the one thing that must never be defected on.
   its own proof; calling `3f+1` the "minimum correction budget" is the §2 lens on that result, not
   an independent claim. The equivocation-catch = recorded-−1 correspondence, by contrast, is exact
   *in the implementation* (`SybilBft.fs` records `Equivocated`). SybilBft's own novelty/limits
-  (noisy-forgery detection tradeoff; open liveness proof B-0211) are scoped in its prior-art doc
+  (noisy-forgery detection tradeoff; open liveness proof 081KQX9B50008QG0R0026BG44J) are scoped in its prior-art doc
   (2026-06-08) and are not re-litigated here.
 - **The clarity term (§8): "boring" is a *partial* substitute for provocability, not a
   replacement.** Legibility defeats manipulation-by-provocation (no reaction to farm) and raises
@@ -291,7 +291,7 @@ provocability budget spent on the one thing that must never be defected on.
   `docs/research/2026-06-08-anti-sybil-first-BFT-quorum-over-distinct-sources-prior-art.md`
   (SybilBft prior-art + novelty scope) · `docs/research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md`
   (CALM — when consensus is required) · `docs/research/2026-06-09-the-default-strategy-stack-survival-then-uncertainty-reduction-then-tit-for-lesser-tat-teach-play-generous-forgiving-tft.md`
-  (generous-TFT default — the strategy this consensus runs under) · B-0211 / B-0211.1 (fractal BFT)
+  (generous-TFT default — the strategy this consensus runs under) · 081KQX9B50008QG0R0026BG44J / 081KRYRGG0008QG0R001JVJV0K (fractal BFT)
 - Anchors (Beacon): Axelrod & Hamilton 1981 (*Science*) · Axelrod 1984 (*The Evolution of
   Cooperation* — nice/provocable/forgiving/clear; ALLC invadable) · Trivers 1971 (reciprocal
   altruism) · Fehr & Gächter 2002 (*Nature* — altruistic/costly punishment sustains cooperation)

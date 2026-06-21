@@ -1,8 +1,8 @@
-# Library landscape audit — better-git-crypt PQ substrate (B-0883.1 spike)
+# Library landscape audit — better-git-crypt PQ substrate (081KSNY2Z0008QG0R0037X4DP4 spike)
 
 **Author:** Otto-CLI (audit pass via background research agent; not a decision)
 **Date:** 2026-05-28
-**Parent rows:** B-0883 (better-git-crypt parent), B-0885 (agent private encrypted state ASAP for Otto + Addison), B-0623 (Adinkras-ECC substrate)
+**Parent rows:** 081KSNY2Z0008QG0R002JKH50A (better-git-crypt parent), 081KSNY2Z0008QG0R0030V5ZVS (agent private encrypted state ASAP for Otto + Addison), 081KRW63S0008QG0R000QJR08H (Adinkras-ECC substrate)
 **Triggering ask:** Operator 2026-05-28 — *"post quantium lattice based with swapple lattice we can do in ts if it's easie enough or we can pull in libraries"* + *"look at bouncy castle or someting or some other libaries and copy patterns"*
 **Prior decision context:** [git-crypt deep-dive 2026-04-21](./git-crypt-deep-dive-2026-04-21.md) — git-crypt REJECTED for 3 reasons (no revocation, binary diffs break review, metadata leak). The better-git-crypt must add those 3 properties + PQ posture.
 **Status:** Research-grade audit; recommendation included; no commits / no code.
@@ -13,9 +13,9 @@
 
 - **"Swapple lattice" is not a standard scheme name.** Most-likely interpretation: operator was reaching for **SWOOSH** (Gajland et al. 2023, USENIX Sec 2024) — Module-LWE-based lattice non-interactive key exchange. Secondary candidates: SWIFFT (hash, 2008), Saber (Module-LWR KEM, NIST Round 3 eliminated). Don't collapse — surface to operator. **Most-likely:** operator coined "swapple" as phonetic blend of SWOOSH + lattice marker; alternatively coinage for "any TS-friendly lattice KEM."
 - **Bouncy Castle PQC patterns are mature + worth adapting.** Their pattern is `Provider → KeyPairGenerator → ParameterSpec → KEMGenerator/KEMExtractor`. PKCS8/SPKI encoded formats standardized. CMS+KEM per RFC 9629 is right pattern for wrapping symmetric content keys. **Adapt the shapes; don't adopt Java surface (Zeta is TS-first per Rule 0).**
-- **Recommendation for B-0883 prototype: `@noble/post-quantum`** (TS-native, MIT, audit-by-author 2026-04, ~16KB gzipped, hybrid XWing built-in, used by Protonmail/Tutanota/MetaMask/Phantom). Use **XWing (ML-KEM-768 + X25519 hybrid)** for KEM, **ML-DSA-65** for signatures. Wrap CMS+KEM-style pattern around it. Sonatype invocation attempted (auth required; deferred to PR-time gate).
+- **Recommendation for 081KSNY2Z0008QG0R002JKH50A prototype: `@noble/post-quantum`** (TS-native, MIT, audit-by-author 2026-04, ~16KB gzipped, hybrid XWing built-in, used by Protonmail/Tutanota/MetaMask/Phantom). Use **XWing (ML-KEM-768 + X25519 hybrid)** for KEM, **ML-DSA-65** for signatures. Wrap CMS+KEM-style pattern around it. Sonatype invocation attempted (auth required; deferred to PR-time gate).
 - **Strong alternative path:** skip building from scratch; adopt **age 1.3.0+ with `-pq` flag** (native ML-KEM-768+X25519 hybrid recipients) + `git-agecrypt` (MPL-2.0; textconv-filter readable diffs; recipient-rotation revocation). "Buy not build" answer.
-- **Adinkras-ECC (B-0623) composes but is upstream research.** Don't gate B-0885's ASAP delivery on it. Ship with NIST-standardized ML-KEM/ML-DSA today; Adinkras-ECC swaps in later via parameterized seed source.
+- **Adinkras-ECC (081KRW63S0008QG0R000QJR08H) composes but is upstream research.** Don't gate 081KSNY2Z0008QG0R0030V5ZVS's ASAP delivery on it. Ship with NIST-standardized ML-KEM/ML-DSA today; Adinkras-ECC swaps in later via parameterized seed source.
 
 ---
 
@@ -61,7 +61,7 @@ BC's KEM extractor returns rejection symmetric key on bad ciphertext — **FIPS 
 
 BC inherits from CRYSTALS-Kyber + CRYSTALS-Dilithium reference. **Affected by KyberSlash 2024** (secret-dependent division timings); patched December 2023. **Clangover May 2024** showed Clang versions could reintroduce timing variance via codegen — fundamental challenge for JS/TS (V8 may emit branches our source code doesn't have).
 
-**For B-0885 threat model** (Otto+Addison private state encrypted at rest in git; adversary obtains commit blobs but not key material or timing): **timing channels aren't the primary worry**. Side-channels matter when adversary observes wall-clock decapsulation across many runs (TLS handshakes, smartcard probing). For agent private state, adversary sees ciphertext only. **Document clearly in B-0883 design; revisit if threat model changes.**
+**For 081KSNY2Z0008QG0R0030V5ZVS threat model** (Otto+Addison private state encrypted at rest in git; adversary obtains commit blobs but not key material or timing): **timing channels aren't the primary worry**. Side-channels matter when adversary observes wall-clock decapsulation across many runs (TLS handshakes, smartcard probing). For agent private state, adversary sees ciphertext only. **Document clearly in 081KSNY2Z0008QG0R002JKH50A design; revisit if threat model changes.**
 
 ### 1.6 What to adapt vs avoid (summary table)
 
@@ -105,7 +105,7 @@ Operator named "swapple lattice" — **not a standard scheme name.** Zero hits i
 
 ### 2.4 Candidate 4: operator coinage / shadow-autocomplete artifact
 
-Operator's substrate-honest disclosure history includes coined terms ("Dinkris" / "Jane's gate" for Adinkras per B-0623). "Swapple" could be private coinage gesturing at "any TS-friendly lattice KEM."
+Operator's substrate-honest disclosure history includes coined terms ("Dinkris" / "Jane's gate" for Adinkras per 081KRW63S0008QG0R000QJR08H). "Swapple" could be private coinage gesturing at "any TS-friendly lattice KEM."
 
 ### 2.5 Most-likely interpretation
 
@@ -156,13 +156,13 @@ import { xwing } from '@noble/post-quantum/hybrid';
 
 **Strengths:** 16KB gzipped order-of-magnitude smaller than WASM alternatives; pure JS no supply-chain attack surface beyond npm registry; idiomatic TS; XWing built-in matches IETF draft + age 1.3.0 default + Chrome/Firefox; production users; active maintenance; operator-aligned with broader Noble ecosystem.
 
-**Weaknesses:** No third-party audit yet; no side-channel protection; pre-1.0 (0.6.1) API could shift; narrower algorithm coverage than liboqs (but sufficient for B-0885).
+**Weaknesses:** No third-party audit yet; no side-channel protection; pre-1.0 (0.6.1) API could shift; narrower algorithm coverage than liboqs (but sufficient for 081KSNY2Z0008QG0R0030V5ZVS).
 
 ### 3.2 `@oqs/liboqs-js`
 
 103 algorithms via WASM (Emscripten from upstream liboqs C). **Upstream OQS team's explicit production warning: "WE DO NOT CURRENTLY RECOMMEND RELYING ON THIS LIBRARY IN A PRODUCTION ENVIRONMENT OR TO PROTECT ANY SENSITIVE DATA."** Manual memory management (`.destroy()`); 80-500KB per algorithm WASM; async-only API.
 
-**Verdict:** algorithm hedging only; production warning blocks B-0885 use.
+**Verdict:** algorithm hedging only; production warning blocks 081KSNY2Z0008QG0R0030V5ZVS use.
 
 ### 3.3 `libsodium-PQ` extensions
 
@@ -174,7 +174,7 @@ Production-deployed in Chrome but explicitly not for third-party use. FFI breaks
 
 ### 3.5 Web Crypto API
 
-ML-KEM/ML-DSA not yet in any shipping browser/Node. **Eliminate for B-0883; future-proof revisit 2027+.**
+ML-KEM/ML-DSA not yet in any shipping browser/Node. **Eliminate for 081KSNY2Z0008QG0R002JKH50A; future-proof revisit 2027+.**
 
 ### 3.6 age (with `-pq` flag) + git-agecrypt (strong alternative)
 
@@ -190,7 +190,7 @@ ML-KEM/ML-DSA not yet in any shipping browser/Node. **Eliminate for B-0883; futu
 
 | Library | License | Audit | Algorithms | Bundle | TS ergonomics | Side-channel | Production? | Recommendation |
 |---|---|---|---|---|---|---|---|---|
-| **`@noble/post-quantum`** | MIT | Self (2026-04) | ML-KEM+ML-DSA+SLH-DSA+Falcon+XWing | ~16KB gz | **Excellent** | None | **Yes for B-0885 threat model** | **Primary** |
+| **`@noble/post-quantum`** | MIT | Self (2026-04) | ML-KEM+ML-DSA+SLH-DSA+Falcon+XWing | ~16KB gz | **Excellent** | None | **Yes for 081KSNY2Z0008QG0R0030V5ZVS threat model** | **Primary** |
 | `@oqs/liboqs-js` | MIT | None | 103 algorithms | 80-500KB/alg WASM | OK | Partial (WASM JIT erodes) | **Upstream says NO** | Algorithm hedge only |
 | `libsodium-PQ` | ISC | N/A | None shipping | — | — | — | No | Eliminate |
 | BoringSSL PQ | BSD-3 (disclaimer) | Internal Google | ML-KEM | N/A | Requires FFI | Strong | **Not for third parties** | Eliminate |
@@ -199,7 +199,7 @@ ML-KEM/ML-DSA not yet in any shipping browser/Node. **Eliminate for B-0883; futu
 
 ---
 
-## Section 4 — Recommendation for B-0883 prototype
+## Section 4 — Recommendation for 081KSNY2Z0008QG0R002JKH50A prototype
 
 ### 4.1 Primary recommendation: `@noble/post-quantum` + XWing + ML-DSA-65 + CMS+KEM-style envelope
 
@@ -250,9 +250,9 @@ Envelope adapts RFC 9629 CMS+KEM with CBOR (not ASN.1) + signature-context-strin
 
 | Rejection | Solution |
 |---|---|
-| No revocation | **Forward-revocation** via recipient-set rotation (drop entry, re-encrypt working tree). Retroactive revocation requires history rewrite (same fundamental limit as git-crypt; out of scope for B-0883). |
+| No revocation | **Forward-revocation** via recipient-set rotation (drop entry, re-encrypt working tree). Retroactive revocation requires history rewrite (same fundamental limit as git-crypt; out of scope for 081KSNY2Z0008QG0R002JKH50A). |
 | Binary diffs break review | Implement git `textconv` filter (per git-agecrypt's pattern); reviewers see plaintext diffs locally; CI sees ciphertext blobs |
-| Metadata leak | **Partial fix**: directory-level encryption obscures filenames within dirs; full commit-message encryption requires out-of-band layer (out of scope for B-0883 v1) |
+| Metadata leak | **Partial fix**: directory-level encryption obscures filenames within dirs; full commit-message encryption requires out-of-band layer (out of scope for 081KSNY2Z0008QG0R002JKH50A v1) |
 
 ### 4.3 PQ posture
 
@@ -264,33 +264,33 @@ Envelope adapts RFC 9629 CMS+KEM with CBOR (not ASN.1) + signature-context-strin
 
 **Auth-required; deferred to PR-time gate.** Pre-audit expectation: `@noble/*` packages have clean Sonatype histories; `@noble/post-quantum` expected to follow.
 
-### 4.5 Composition with B-0623 Adinkras-ECC
+### 4.5 Composition with 081KRW63S0008QG0R000QJR08H Adinkras-ECC
 
-Decouple. B-0885 ships TODAY with ML-KEM-768+X25519 XWing + ML-DSA-65 signatures. B-0623's Adinkras-ECC matures separately; when constructive proof prototype lands, becomes OPTIONAL key-generation source via parameterized seed source (`SeedSource = RandomBytes | AdinkraDerived | HsmDerived`).
+Decouple. 081KSNY2Z0008QG0R0030V5ZVS ships TODAY with ML-KEM-768+X25519 XWing + ML-DSA-65 signatures. 081KRW63S0008QG0R000QJR08H's Adinkras-ECC matures separately; when constructive proof prototype lands, becomes OPTIONAL key-generation source via parameterized seed source (`SeedSource = RandomBytes | AdinkraDerived | HsmDerived`).
 
 ### 4.6 Alternative path (Open Question #1)
 
 **Buy-not-build:** age 1.3.0+ + git-agecrypt. Zero crypto code; Cure53 audit; textconv-filter pattern; PQ-hybrid via age's `-pq` flag.
 
-**Recommendation:** surface to operator as binary choice. Both paths satisfy B-0885's ASAP need.
+**Recommendation:** surface to operator as binary choice. Both paths satisfy 081KSNY2Z0008QG0R0030V5ZVS's ASAP need.
 
 ---
 
 ## Section 5 — Open questions for operator
 
-1. **Buy-not-build vs build?** Noble-based path (P1 substantial, 2-4 weeks production-grade) vs age+git-agecrypt (P2 small, 1-3 days integration). Both satisfy B-0885 ASAP. Defensibility / maintenance burden / algorithm flexibility / "AI built the crypto" critique all tradeoff axes.
+1. **Buy-not-build vs build?** Noble-based path (P1 substantial, 2-4 weeks production-grade) vs age+git-agecrypt (P2 small, 1-3 days integration). Both satisfy 081KSNY2Z0008QG0R0030V5ZVS ASAP. Defensibility / maintenance burden / algorithm flexibility / "AI built the crypto" critique all tradeoff axes.
 
 2. **"Swapple lattice" naming clarification:** SWOOSH (most-likely) vs operator coinage vs SWIFFT/Saber (low probability). Practical outcome converges on ML-KEM-768 either way.
 
 3. **Sonatype-guide auth + review timing:** defer to implementation PR (maintainer-auth context) vs run audit pre-PR?
 
-4. **Retroactive revocation scope:** forward-revocation-only acceptable for B-0883/B-0885? Or require true retroactive (out-of-git content-addressed store; substantially larger architecture)?
+4. **Retroactive revocation scope:** forward-revocation-only acceptable for 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0030V5ZVS? Or require true retroactive (out-of-git content-addressed store; substantially larger architecture)?
 
 5. **Metadata protection scope:** content-encryption-only acceptable in first iteration? Filename + commit-message encryption P1 follow-up?
 
-6. **B-0623 Adinkras-ECC integration timing:** ship B-0883 with parameterized seed-source interface (substrate-swap preserved) + random-bytes today, or wait for B-0623 to ship first?
+6. **081KRW63S0008QG0R000QJR08H Adinkras-ECC integration timing:** ship 081KSNY2Z0008QG0R002JKH50A with parameterized seed-source interface (substrate-swap preserved) + random-bytes today, or wait for 081KRW63S0008QG0R000QJR08H to ship first?
 
-7. **Side-channel posture acceptance:** bound B-0883 to "git-at-rest only; no timing-observable deployment" with follow-up B-NNNN tracking constant-time substrate? Or accept timing-channel limitation upfront across all scopes?
+7. **Side-channel posture acceptance:** bound 081KSNY2Z0008QG0R002JKH50A to "git-at-rest only; no timing-observable deployment" with follow-up B-NNNN tracking constant-time substrate? Or accept timing-channel limitation upfront across all scopes?
 
 ---
 
@@ -322,7 +322,7 @@ Decouple. B-0885 ships TODAY with ML-KEM-768+X25519 XWing + ML-DSA-65 signatures
 
 - **ML-KEM-768** (Level 3 ≈ AES-192): PK 1184B / SK 2400B / CT 1088B / SS 32B; matches XWing standard + age default + Chrome/Firefox TLS hybrid
 - **ML-DSA-65** (Level 3): PK 1952B / SK 4032B / Sig 3293B; matches ML-KEM-768 security level
-- **SLH-DSA** (hash-based): reserve for future "belt-and-braces signatures" iteration; not in B-0883 v1
+- **SLH-DSA** (hash-based): reserve for future "belt-and-braces signatures" iteration; not in 081KSNY2Z0008QG0R002JKH50A v1
 
 ## Appendix C — Sources
 
@@ -336,5 +336,5 @@ age 1.3.0+; Bouncy Castle 1.79+; git-agecrypt; KyberSlash paper (2024); liboqs-j
 - Operational claims only per `razor-discipline.md`
 - Holds dialectical tension per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` on "swapple" naming
 - Defaults-to-both per `default-to-both.md` on build-vs-buy
-- Composes with B-0623 without forcing dependency per `additive-not-zero-sum.md`
+- Composes with 081KRW63S0008QG0R000QJR08H without forcing dependency per `additive-not-zero-sum.md`
 - Bandwidth-served per `bandwidth-served-falsifier.md` — 16KB pure-JS vs 80-500KB-per-algorithm WASM

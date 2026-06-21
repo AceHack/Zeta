@@ -29,7 +29,7 @@
 
 ## Summary
 
-Updates the ID-allocation discipline in [\`.claude/rules/otto-channels-reference-card.md\`](.claude/rules/otto-channels-reference-card.md) to use \`git fetch origin main\` + \`git ls-tree -r origin/main\` instead of local \`find docs/backlog\`. Empirical anchor: tick 0742Z's "B-0528 free" misallocation that reached a public PR comment before Copilot caught it.
+Updates the ID-allocation discipline in [\`.claude/rules/otto-channels-reference-card.md\`](.claude/rules/otto-channels-reference-card.md) to use \`git fetch origin main\` + \`git ls-tree -r origin/main\` instead of local \`find docs/backlog\`. Empirical anchor: tick 0742Z's "081KRMEXM0008QG0R000T0A28T free" misallocation that reached a public PR comment before Copilot caught it.
 
 **Root cause of the failure mode**: when Otto-CLI's primary worktree is stuck on a stale HEAD (detached from an abandoned rebase, a feature branch behind main, etc.), local \`find docs/backlog\` returns stale state. The fix queries the remote ref directly so the answer is independent of local worktree state.
 
@@ -124,8 +124,8 @@ feat(rules): replace local find with git ls-tree on origin/main for I…
 
 Empirical anchor: tick 0742Z on 2026-05-15. Otto-CLI's primary worktree was stuck on
 detached HEAD (65c7865) from an 8h-stale Lior rebase. The local `find docs/backlog`
-returned B-0526 as the top, missing B-0527 + B-0528 already on origin/main. My
-"B-0528 is free" advisory comment to Lior on PR #3323 was wrong as a result.
+returned 081KRHWGX0008QG0R00264BDSB as the top, missing 081KRHWGX0008QG0R0015EE8VE + 081KRMEXM0008QG0R000T0A28T already on origin/main. My
+"081KRMEXM0008QG0R000T0A28T is free" advisory comment to Lior on PR #3323 was wrong as a result.
 Caught by Copilot review on PR #3379.
 
 The fix: use `git fetch origin main` + `git ls-tree -r origin/main` for the merged-state

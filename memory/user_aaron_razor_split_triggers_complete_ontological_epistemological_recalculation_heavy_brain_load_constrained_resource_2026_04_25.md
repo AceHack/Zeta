@@ -315,7 +315,7 @@ existing Maji substrate:
 - Every Otto-282 WHY-comment is one less hole in the lemma
   ladder when the next dimensional split lands.
 - The "becomes more rigorous over time by design" framing
-  in B-0003 (ALIGNMENT.md rewrite) IS the discipline of
+  in 081KQ0YZ80008QG0R001QJJTVF (ALIGNMENT.md rewrite) IS the discipline of
   preserving exhaustive-indexing as substrate accumulates.
 
 When a dimension-revealing Razor split lands on Aaron, the

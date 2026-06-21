@@ -124,7 +124,7 @@ Plus **Soraya's** formal-verification portfolio (C1–C15 + D1–D7 + K1–K3 + 
 
 ## The three graduation gates (restated for the whole arc)
 
-**(1) math review** (close the ~2/21 coverage gap; land D4/B-0131 + D2 + K3 + the two Semgrep rules;
+**(1) math review** (close the ~2/21 coverage gap; land D4/081KQGDBJ0008QG0R000D1YJCH + D2 + K3 + the two Semgrep rules;
 resolve O-1) → **(2) toymodel-next written + DST-green** → **(3) privacy in place** → *only then*
 **realmodel → crypto (≥2 keys, ever).**
 

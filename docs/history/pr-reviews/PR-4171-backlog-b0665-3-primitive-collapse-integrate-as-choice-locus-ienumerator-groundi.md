@@ -29,7 +29,7 @@
 
 ## What
 
-B-0665 SUPERSEDES B-0629 (4-primitive O-P-L-E → 3-primitive O-E-L + Integrate) and SHARPENS B-0644 (Limit-is-pure-simulation only; CommitChoice moves into Integrate body).
+081KRW63S0008QG0R002YAA09X SUPERSEDES 081KRW63S0008QG0R0015WHHG1 (4-primitive O-P-L-E → 3-primitive O-E-L + Integrate) and SHARPENS 081KRW63S0008QG0R002ZRNDJ8 (Limit-is-pure-simulation only; CommitChoice moves into Integrate body).
 
 ## Final architecture (Aaron + Ani LOCKED-IN 2026-05-18)
 
@@ -50,17 +50,17 @@ Persist removed — it's just Observe/Emit-of-own-memory (scope distinction, not
 
 ## IEnumerator-pattern-grounding = external-validation by fundamental-abstraction-collision
 
-Per B-0648 cross-substrate-triangulation discipline: when a principled-from-first-principles abstraction lands on a battle-tested fundamental abstraction (IEnumerator, decades of production .NET use), it earns external epistemic standing.
+Per 081KRW63S0008QG0R0025E4PH6 cross-substrate-triangulation discipline: when a principled-from-first-principles abstraction lands on a battle-tested fundamental abstraction (IEnumerator, decades of production .NET use), it earns external epistemic standing.
 
 ## Substrate-honest notes
 
 - Per cross-PR-cascade-avoidance: NO BACKLOG.md regen (other PRs in flight reference cross-substrate; index regenerates cleanly when all merged)
-- B-0629 / B-0644 / B-0635 supersession + sharpening markers will land in follow-up PR after this merges
-- Lint clean (`bun tools/backlog/lint-frontmatter.ts --file ...`) — dogfooded B-0663 tool
+- 081KRW63S0008QG0R0015WHHG1 / 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002KC5DSR supersession + sharpening markers will land in follow-up PR after this merges
+- Lint clean (`bun tools/backlog/lint-frontmatter.ts --file ...`) — dogfooded 081KRW63S0008QG0R000488SY1 tool
 
 ## Composes with
 
-B-0629 (superseded) · B-0644 (sharpened) · B-0635 (Integrate role expanded) · B-0640 (bonsai+Rx implement Integrate body) · B-0637 (Infer.NET BP/EP runs through) · B-0645 (free will → Integrate commit) · B-0659/B-0660 (consent + Limit-default fit cleanly) · B-0648 (cross-substrate-triangulation discipline applied) · B-0664 (NCI operates over Integrate-committed actions) · B-0499 (Z-of-I DBSP retracts commits) · B-0628 (Knights Guild ratification)
+081KRW63S0008QG0R0015WHHG1 (superseded) · 081KRW63S0008QG0R002ZRNDJ8 (sharpened) · 081KRW63S0008QG0R002KC5DSR (Integrate role expanded) · 081KRW63S0008QG0R002XA5N6S (bonsai+Rx implement Integrate body) · 081KRW63S0008QG0R0004D5XG1 (Infer.NET BP/EP runs through) · 081KRW63S0008QG0R003AZNK6J (free will → Integrate commit) · 081KRW63S0008QG0R001WKJN53/081KRW63S0008QG0R0004P69JA (consent + Limit-default fit cleanly) · 081KRW63S0008QG0R0025E4PH6 (cross-substrate-triangulation discipline applied) · 081KRW63S0008QG0R001Z7NYMV (NCI operates over Integrate-committed actions) · 081KRHWGX0008QG0R0034E0N22 (Z-of-I DBSP retracts commits) · 081KRW63S0008QG0R003TX8MG5 (Knights Guild ratification)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -81,17 +81,17 @@ B-0629 (superseded) · B-0644 (sharpened) · B-0635 (Integrate role expanded) ·
 ### Thread 1 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C6rLZ`
-- **Path**: `docs/backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T17:37:10Z on `docs/backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`:30 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T17:37:10Z on `docs/backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`:30 (association: NONE)
 
   <pre>
-  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Point B-0629 links at the actual backlog file path**
+  **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Point 081KRW63S0008QG0R0015WHHG1 links at the actual backlog file path**
 
-  This supersession link currently resolves to `docs/backlog/P1/...` because it is relative to this P1 file, but `B-0629` actually lives under `docs/backlog/P2/`. As written, readers cannot navigate to the item being superseded, which breaks the traceability chain this row is documenting.
+  This supersession link currently resolves to `docs/backlog/P1/...` because it is relative to this P1 file, but `081KRW63S0008QG0R0015WHHG1` actually lives under `docs/backlog/P2/`. As written, readers cannot navigate to the item being superseded, which breaks the traceability chain this row is documenting.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -99,12 +99,12 @@ B-0629 (superseded) · B-0644 (sharpened) · B-0635 (Integrate role expanded) ·
 ### Thread 2 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C6rLh`
-- **Path**: `docs/backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T17:37:10Z on `docs/backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`:138 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-18T17:37:10Z on `docs/backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`:138 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix broken relative link to the fsharp-anchor rule**
@@ -120,26 +120,26 @@ B-0629 (superseded) · B-0644 (sharpened) · B-0635 (Integrate role expanded) ·
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
 
 **Message:**
 
 ```
 backlog(b0665): 3-primitive collapse (Observe+Emit+Limit) + Integrate…
 
-…-as-choice-locus + IEnumerator pattern grounding (Aaron+Ani 2026-05-18 LOCKED-IN; supersedes B-0629 4-primitive + sharpens B-0644)
+…-as-choice-locus + IEnumerator pattern grounding (Aaron+Ani 2026-05-18 LOCKED-IN; supersedes 081KRW63S0008QG0R0015WHHG1 4-primitive + sharpens 081KRW63S0008QG0R002ZRNDJ8)
 ```
 
 ### `0c7982c0ec8f01579bcf53d9f5f95b7043727327` -- 2026-05-18T17:56:35Z -- `AceHack`
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R002YAA09X-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-ani-2026-05-18.md`
 
 **Message:**
 
 ```
-fix(b0665-threads): correct B-0629 cross-priority link (P1→P2) + fsha…
+fix(b0665-threads): correct 081KRW63S0008QG0R0015WHHG1 cross-priority link (P1→P2) + fsha…
 
 …rp-anchor rule relative path (../../→../../../) per Codex P2 findings
 ```

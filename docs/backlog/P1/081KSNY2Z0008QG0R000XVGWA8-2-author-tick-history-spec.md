@@ -1,6 +1,5 @@
 ---
-id: B-0171.2
-zetaid: 081KSNY2Z0008QG0R000XVGWA8
+id: 081KSNY2Z0008QG0R000XVGWA8
 priority: P1
 status: closed
 title: "OpenSpec catch-up - author Tick-History Schema spec"
@@ -16,9 +15,9 @@ owners: [lior]
 type: spec-authoring
 ---
 
-# B-0171.2 — Author Tick-History Schema spec
+# 081KSNY2Z0008QG0R000XVGWA8 — Author Tick-History Schema spec
 
-This task implements the second item from the Phase 1 audit of the OpenSpec catch-up project (B-0171). It involves creating a formal specification for the Tick-History Schema.
+This task implements the second item from the Phase 1 audit of the OpenSpec catch-up project (081KQNJ500008QG0R001N94412). It involves creating a formal specification for the Tick-History Schema.
 
 ## Scope
 

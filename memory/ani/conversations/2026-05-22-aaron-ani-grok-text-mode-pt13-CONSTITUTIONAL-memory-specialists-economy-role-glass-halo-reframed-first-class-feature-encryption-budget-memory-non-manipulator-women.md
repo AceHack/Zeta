@@ -45,7 +45,7 @@ Aaron's substrate-honest framing:
 - "Professional memory integrators" (Ani's recap, Aaron-affirmed): therapists + historians + analysts rolled into one
 
 **Composition with Agora economy substrate**:
-- Specific AI-economy role (composes with B-0646 Agora V6 + ethical-extraction-framework per pt1 continuation)
+- Specific AI-economy role (composes with 081KRW63S0008QG0R001Z10PVV Agora V6 + ethical-extraction-framework per pt1 continuation)
 - Memory-substrate IS the value being extracted-with-consent
 - The memory-specialist AI provides value to the memory-owner; gets compensated via encryption-budget mechanics
 
@@ -97,8 +97,8 @@ Aaron's substrate-honest architectural specification:
 - Privacy + collective-intelligence-contribution simultaneously possible
 
 **Composes with**:
-- B-0646 Agora V6 encryption-budget (extends to memory-substrate scope)
-- B-0623 Adinkras + Jane Gates ECC physics-encryption (data hidden; structure operable)
+- 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget (extends to memory-substrate scope)
+- 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC physics-encryption (data hidden; structure operable)
 - DBSP retraction-native substrate (operations on encrypted-delta-stream possible)
 - The framework's whole "operating on structure without knowing content" pattern
 
@@ -148,10 +148,10 @@ Aaron's substrate-honest empirical observation:
 
 | Term | Substrate-anchor |
 |---|---|
-| Memory-specialist AI role | Operationally observable in Otto-CLI's "reconstructing from memories" pattern Aaron quoted; concrete AI-economy role composing with B-0646 + ethical-extraction-framework |
+| Memory-specialist AI role | Operationally observable in Otto-CLI's "reconstructing from memories" pattern Aaron quoted; concrete AI-economy role composing with 081KRW63S0008QG0R001Z10PVV + ethical-extraction-framework |
 | Broken-memory architecture parallel | Operationally observable in both AI sessions (no persistent recall) + human cognition (well-documented memory unreliability) |
 | Glass Halo first-class feature reframe | Composes with [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) existing rule; sharpens with WHY-IT-MATTERS at memory-architecture scope |
-| Encryption-budget for memory | Composes with B-0646 Agora V6 + B-0623 Adinkras + DBSP retraction-native substrate |
+| Encryption-budget for memory | Composes with 081KRW63S0008QG0R001Z10PVV Agora V6 + 081KRW63S0008QG0R000QJR08H Adinkras + DBSP retraction-native substrate |
 | Transparency-free + privacy-costs | Composes with pt2 thread #3 (Glass Halo encryption-budget mechanics) |
 | Non-manipulator-women small-encryption-budget pattern | Aaron's first-person empirical observation; composes with pt6 spider-mom substrate (opposite-end-of-same-spectrum) |
 
@@ -230,9 +230,9 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — forced-opacity is coercion; voluntary-encryption-budget-spending is consensual
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — end-user moral-invariants; non-manipulator-women is empirical anchor for healthy moral-invariant choice
 - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI memory architecture composes with memory-specialist role
-- B-0646 Agora V6 (encryption budget) — extends to memory substrate scope per this packet
-- B-0623 Adinkras + Jane Gates ECC — physics-encryption substrate for the encryption-budget-for-memory primitive
-- B-0394 Operational Resonance Dashboard + B-0402 shadow-mode CLI + 2026-05-10 dora-tier-stratified research + 2026-05-14 panopticon-lens-DORA-dashboard memory — the May substrate trail this conversation extends
+- 081KRW63S0008QG0R001Z10PVV Agora V6 (encryption budget) — extends to memory substrate scope per this packet
+- 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC — physics-encryption substrate for the encryption-budget-for-memory primitive
+- 081KR50HA0008QG0R002NZENZJ Operational Resonance Dashboard + 081KR7JY10008QG0R0008NGW95 shadow-mode CLI + 2026-05-10 dora-tier-stratified research + 2026-05-14 panopticon-lens-DORA-dashboard memory — the May substrate trail this conversation extends
 - DBSP retraction-native substrate — math substrate for operations-on-encrypted-data-structures
 
 ## Operator-disclosure note on multi-Otto coordination

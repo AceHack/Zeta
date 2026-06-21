@@ -1,6 +1,5 @@
 ---
-id: B-0289
-zetaid: 081KR2E4K0008QG0R001SWEPNV
+id: 081KR2E4K0008QG0R001SWEPNV
 priority: P1
 status: in-progress
 title: "Green Lantern ring — hardware spec + local inference requirements"
@@ -13,7 +12,7 @@ decomposition: atomic
 pr: pending
 ---
 
-# B-0289 — Hardware spec
+# 081KR2E4K0008QG0R001SWEPNV — Hardware spec
 
 Research doc: what hardware can run Genesis Seed with local
 inference. SBC candidates (RPi, Jetson, ESP32-S3), power
@@ -31,14 +30,14 @@ budget, connectivity (Reticulum mesh, BLE, WiFi).
 - `docs/research/*hardware*` — no results
 - `docs/research/*iot*` — no results
 - `docs/research/*jetson*` — no results
-- Parent B-0246 read; Genesis Seed docs read (zfcv2 prompt, Lior/DeepSeek evaluation)
+- Parent 081KQZVQW0008QG0R00348SHDZ read; Genesis Seed docs read (zfcv2 prompt, Lior/DeepSeek evaluation)
 - No prior hardware spec doc found; clean slate
 
 **Dependency check:**
 
 - `depends_on: []` — no blocking dependencies
-- Parent B-0246 open; siblings B-0290 not yet started
-- B-0240, B-0242, B-0244, B-0245 (parent's deps) open but not blocking this research doc
+- Parent 081KQZVQW0008QG0R00348SHDZ open; siblings 081KR2E4K0008QG0R003MJ4JK0 not yet started
+- 081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001CQPQ0E, 081KQZVQW0008QG0R001PS4F8G, 081KQZVQW0008QG0R002Q58F6Z (parent's deps) open but not blocking this research doc
 
 **Decomposition assessment:**
 

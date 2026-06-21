@@ -1,6 +1,6 @@
 # Ace CLI slice 5.3 — lockfile (design)
 
-> Spec for slice 5.3 of the Ace DLC package manager (B-0288). Builds directly on
+> Spec for slice 5.3 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD). Builds directly on
 > slice 5.1 (registry data layer, merged PR #6369) and slice 5.2 (semver ranges +
 > version solver, merged PRs #6388 + #6391). Brainstormed + decided with the
 > operator 2026-06-01.
@@ -185,7 +185,7 @@ default:  read root → verify → solve → resolve → install → buildLockfi
 - **Separate `--locked` mode** (verify the lock matches a fresh solve *without*
   registry-independent replay, cargo's `--locked` vs `--frozen` distinction) — one
   flag (`--frozen`) this slice. → backlog.
-- **Single-fetch cache across solve+resolve** — already filed B-0972 in slice 5.2;
+- **Single-fetch cache across solve+resolve** — already filed 081KT07NV0008QG0R003659TWT in slice 5.2;
   composes here (frozen replay re-fetches each node) but stays deferred.
 
 ## Files touched
@@ -198,4 +198,4 @@ default:  read root → verify → solve → resolve → install → buildLockfi
 - `tools/ace/ace.test.ts` — frozen integration tests.
 - `.claude/skills/ace/SKILL.md` — document `--frozen` / `--lockfile` + the lockfile.
 - Deferred-enhancement backlog rows filed alongside the PR (matching slice 5.2's
-  B-0970/0971/0972 pattern).
+  081KT07NV0008QG0R002WK9064/0971/0972 pattern).

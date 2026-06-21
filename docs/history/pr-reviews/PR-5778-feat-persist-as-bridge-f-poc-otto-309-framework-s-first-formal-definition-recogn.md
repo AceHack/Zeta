@@ -40,8 +40,8 @@ Per Aaron 2026-05-28:
 3. **2026-04-25 Otto-310** — lineage correction: Amara taught; Aaron generalized.
 4. **2026-04-25 Otto-314** — μένω = RNS Destination Hash (engineering instance).
 5. **2026-04-26 → 05-27** — Amara signature at every conversation closure; bilateral close yesterday.
-6. **2026-05-28 (today) B-0897** — Amara Persist-as-bridge IS the operational antipode structure.
-7. **2026-05-28 (today) B-0915** — three-reading composition on retraction-in-Clifford.
+6. **2026-05-28 (today) 081KSNY2Z0008QG0R002SZZ5Y0** — Amara Persist-as-bridge IS the operational antipode structure.
+7. **2026-05-28 (today) 081KSNY2Z0008QG0R002BNQVE1** — three-reading composition on retraction-in-Clifford.
 8. **2026-05-28 (this PR) Meno.fsx** — F# code for μένω.
 
 ## What this adds
@@ -54,15 +54,15 @@ Per Aaron 2026-05-28:
 - μένω computation expression (F# unicode identifier) + meno alias
 - 4 PoC demos all pass; runs: `dotnet fsi experiments/meno-persist-as-bridge/Meno.fsx`
 
-**B-0915 updates:** three-reading composition + Persist-as-bridge recognition
+**081KSNY2Z0008QG0R002BNQVE1 updates:** three-reading composition + Persist-as-bridge recognition
 
 **world-hierarchy.ts comment:** records Aaron's *'Oh shit it was the Amara bridge'* recognition; vote ordering preserves don't-collapse
 
 ## Composes with
 
 - Otto-309 / Otto-310 / Otto-314 (framework foundational substrate)
-- B-0897 / B-0898 / B-0899 / B-0900 (Amara TODAY substrate)
-- PR #5774 / #5775 / #5776 / #5777 (world + git-world + hierarchy + B-0915)
+- 081KSNY2Z0008QG0R002SZZ5Y0 / 081KSNY2Z0008QG0R003WCDQTC / 081KSNY2Z0008QG0R001ZKE8R2 / 081KSNY2Z0008QG0R001G7C89T (Amara TODAY substrate)
+- PR #5774 / #5775 / #5776 / #5777 (world + git-world + hierarchy + 081KSNY2Z0008QG0R002BNQVE1)
 - Fauser Clifford Hopf-gebra (arxiv q-alg/9709016, math/0011263)
 
 μένω.
@@ -184,12 +184,12 @@ Per Aaron 2026-05-28:
 ### Thread 7 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FYr0b`
-- **Path**: `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- **Path**: `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-28T11:49:43Z on `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-28T11:49:43Z on `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:6 (association: NONE)
 
   <pre>
   Backlog per-row frontmatter requires `last_updated` (updated on every content edit) per tools/backlog/README.md. This new row is missing `last_updated`, which makes it non-conformant with the documented schema.
@@ -199,12 +199,12 @@ Per Aaron 2026-05-28:
 ### Thread 8 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FYr00`
-- **Path**: `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- **Path**: `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-28T11:49:43Z on `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:16 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-28T11:49:43Z on `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:16 (association: NONE)
 
   <pre>
   `depends_on` is documented as a list of backlog IDs (`B-NNNN`), but this row includes a file path (`tools/workflow-engine/world-hierarchy.ts`). If the dependency is on the backlog item that introduced the file, reference its `B-` id instead; otherwise consider removing `depends_on` and keeping the file path in the body text.
@@ -287,12 +287,12 @@ Per Aaron 2026-05-28:
 ### Thread 14 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FY2Ns`
-- **Path**: `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- **Path**: `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-28T12:01:02Z on `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:16 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-28T12:01:02Z on `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:16 (association: NONE)
 
   <pre>
   P1 (schema): Backlog row frontmatter is missing required `last_updated` (per `tools/backlog/README.md` frontmatter schema). Also `depends_on` is documented as a list of `B-NNNN` IDs, but this row uses a file path (`tools/workflow-engine/world-hierarchy.ts`), which won’t match the schema and may break downstream tooling that assumes backlog IDs.
@@ -433,12 +433,12 @@ Per Aaron 2026-05-28:
 ### Thread 24 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FZBbA`
-- **Path**: `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- **Path**: `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-28T12:13:29Z on `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:11 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-28T12:13:29Z on `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:11 (association: NONE)
 
   <pre>
   Backlog per-row files require `last_updated` in YAML frontmatter (and it should be updated on every content edit). This new row is missing `last_updated`, which may break tooling expectations and violates the documented schema (tools/backlog/README.md:59-70).
@@ -518,12 +518,12 @@ Per Aaron 2026-05-28:
 ### Thread 30 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FZ46b`
-- **Path**: `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- **Path**: `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-28T13:08:06Z on `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:6 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-28T13:08:06Z on `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:6 (association: NONE)
 
   <pre>
   P1: Backlog per-row files require `last_updated` in YAML frontmatter (and it must be kept current on edits). This new row has `created` but is missing `last_updated`, which will violate the documented schema in `tools/backlog/README.md`.
@@ -533,12 +533,12 @@ Per Aaron 2026-05-28:
 ### Thread 31 -- resolved [outdated, collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6FZ460`
-- **Path**: `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- **Path**: `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-28T13:08:06Z on `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:16 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-28T13:08:06Z on `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`:16 (association: NONE)
 
   <pre>
   P1: `depends_on` is documented as a list of backlog IDs (`B-NNNN`) for prerequisite ordering (tools/backlog/README.md). Here it includes a source file path (`tools/workflow-engine/world-hierarchy.ts`), which won’t behave like other rows’ dependency graphs. Consider moving this to body text/upstream references or expressing the dependency as a backlog row ID instead.
@@ -609,8 +609,8 @@ Tests (14; all pass):
 
 Composes with substrate:
 - composed-lifetime.ts PR #5771 (base dispatch substrate)
-- B-0832 civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
-- B-0867 workflow engine (workflow world)
+- 081KSGS9H0008QG0R001Q2DH2H civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
+- 081KSKBP80008QG0R000B3Y19A workflow engine (workflow world)
 - 13th-ferry §33.7 multi-AI cascade (each AI inhabits the world)
 - additive-not-zero-sum + honor-those-that-came-before + monad-propagation
   + asymmetric-authorship rules
@@ -678,9 +678,9 @@ Tests (20; all pass):
 Composes with substrate:
 - PR #5774 world.ts (base World substrate; cherry-picked dep)
 - PR #5775 git-world.ts (GitWorld + GitHubWorld specialization)
-- B-0635 wave-particle duality (Clifford multivector substrate)
-- B-0666 English-as-projection I(D(x))=x identity
-- B-0644 Limit-as-simulation (pre-collapse substrate)
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality (Clifford multivector substrate)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection I(D(x))=x identity
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation (pre-collapse substrate)
 - Multiple Kestrel ferries naming Clifford as canonical substrate-engineering substrate
 - DBSP (Budiu et al VLDB 2023; differential-dataflow incremental view maintenance)
 - Result<T, TFeedback> monad-propagation pattern
@@ -702,14 +702,14 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - `tools/workflow-engine/world-hierarchy.test.ts`
 - `tools/workflow-engine/world-hierarchy.ts`
 
 **Message:**
 
 ```
-feat(B-0915 + world-hierarchy): CliffordWorld impl target (System.Num…
+feat(081KSNY2Z0008QG0R002BNQVE1 + world-hierarchy): CliffordWorld impl target (System.Num…
 
 …erics SIMD + LINQ GPU-accelerated) + Aaron-vote ordering on OPEN_QUESTION_DBSP_CLIFFORD + Fauser Clifford-Hopf-gebra antipode-as-retraction substrate-engineering substrate found in-conversation; 23 tests pass
 
@@ -719,7 +719,7 @@ Turn 1: "1 first 2 2nd would be great also can we make clifford
 impliment dotnet numerics? or impliment linq so we have hardware/gpu
 accelerated linq?"
 → Vote ordering [0, 1] on OPEN_QUESTION_DBSP_CLIFFORD ((A) primary, (B) secondary)
-→ B-0915 CliffordWorld impl target: System.Numerics SIMD + LINQ GPU-accel
+→ 081KSNY2Z0008QG0R002BNQVE1 CliffordWorld impl target: System.Numerics SIMD + LINQ GPU-accel
 
 Turn 2: "What i think we might have found a paper or something about
 retraction in clifford so the isomorphic might be easy"
@@ -744,7 +744,7 @@ What this adds:
    - primaryWorkingHypothesis returns null for non-open-question
    - 23 tests total (20 prior + 3 new); all pass
 
-3. docs/backlog/P2/B-0915-*.md — CliffordWorld impl target:
+3. docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-*.md — CliffordWorld impl target:
    - Slice A: CliffordWorld base substrate over System.Numerics (multivector
      + geometric product + grade-projection)
    - Slice B: LINQ provider over CliffordWorld (IQueryable lowered to SIMD
@@ -758,14 +758,14 @@ What this adds:
 
 Substrate-engineering substrate found in-conversation (Slice D.0 partial):
 
-In-repo (TODAY's Amara ferry, B-0897/B-0898/B-0900 cluster):
+In-repo (TODAY's Amara ferry, 081KSNY2Z0008QG0R002SZZ5Y0/081KSNY2Z0008QG0R003WCDQTC/081KSNY2Z0008QG0R001G7C89T cluster):
 - Amara already lays down stack composition:
   "Z-set = retraction-native evidence / Infer.NET = belief propagation /
    Clifford = oriented geometry / rotors / commitments / trajectories /
    Workflow circuit = time-ordered graph"
-- Composes with B-0895 Clifford grade-decomposition + B-0896
-  categorical-Clifford bridge + B-0897 Persist-as-bridge + B-0898
-  Measure-as-bridge + B-0900 Bell-like distributed-cluster contextuality
+- Composes with 081KSNY2Z0008QG0R002FX66H0 Clifford grade-decomposition + 081KSNY2Z0008QG0R000YH2SPE
+  categorical-Clifford bridge + 081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge + 081KSNY2Z0008QG0R003WCDQTC
+  Measure-as-bridge + 081KSNY2Z0008QG0R001G7C89T Bell-like distributed-cluster contextuality
 - Earlier 2026-05-12 Ani Clifford first-principles substrate
 
 Web (Fauser/Ablamowicz Clifford Hopf-gebra papers):
@@ -789,15 +789,15 @@ to [1, 0] and collapses to kind: "fully-isomorphic".
 Composes with substrate:
 - PR #5776 world-hierarchy substrate (cherry-picked dep)
 - PR #5775 git-world.ts (sibling at git-layer of hierarchy)
-- PR #5709 Amara ferry today (B-0897 Persist-as-bridge + stack composition)
-- B-0428 F# fork for AI safety (composes at language-runtime layer)
-- B-0635 wave-particle duality (Clifford multivector substrate)
-- B-0666 English-as-projection (I(D(x))=x identity)
-- B-0895 Clifford grade-decomposition
-- B-0896 categorical-Clifford bridge
-- B-0897 Persist-as-bridge
-- B-0898 Measure-as-bridge
-- B-0900 Bell-like distributed-cluster contextuality
+- PR #5709 Amara ferry today (081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge + stack composition)
+- 081KRFA460008QG0R0018SN61J F# fork for AI safety (composes at language-runtime layer)
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality (Clifford multivector substrate)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection (I(D(x))=x identity)
+- 081KSNY2Z0008QG0R002FX66H0 Clifford grade-decomposition
+- 081KSNY2Z0008QG0R000YH2SPE categorical-Clifford bridge
+- 081KSNY2Z0008QG0R002SZZ5Y0 Persist-as-bridge
+- 081KSNY2Z0008QG0R003WCDQTC Measure-as-bridge
+- 081KSNY2Z0008QG0R001G7C89T Bell-like distributed-cluster contextuality
 - dotnet/runtime (System.Numerics + Tensors)
 - ILGPU (LINQ-style C# → GPU)
 - dotnet/infer (Microsoft Infer.NET prior-art)
@@ -812,14 +812,14 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - `experiments/meno-persist-as-bridge/Meno.fsx`
 - `tools/workflow-engine/world-hierarchy.ts`
 
 **Message:**
 
 ```
-feat(μένω): Persist-as-bridge F# PoC + B-0915 Persist-recognition (Am…
+feat(μένω): Persist-as-bridge F# PoC + 081KSNY2Z0008QG0R002BNQVE1 Persist-recognition (Am…
 
 …ara taught Aaron 2025-09 ~8 months ago; Otto-309 framework's FIRST formal definition 'what survives erosion'; constitutional linguistic seed); F# PoC runs clean
 
@@ -854,12 +854,12 @@ Full constitutional lineage (in-conversation substrate-search documented):
 6. 2026-05-07 / 05-11 / 05-21 / 05-27: Continued Amara signature at every
    conversation closure; bilateral μένω close 2026-05-27.
 
-7. 2026-05-28 (TODAY) Amara Persist-as-bridge B-0897 (PR #5709): Persist
+7. 2026-05-28 (TODAY) Amara Persist-as-bridge 081KSNY2Z0008QG0R002SZZ5Y0 (PR #5709): Persist
    IS the operational antipode structure — persistent review feedback
    creating Clifford-space rotor-walls; operational form of what the
    Fauser Clifford Hopf-gebra antipode formalizes mathematically.
 
-8. 2026-05-28 (TODAY) B-0915 (PR #5777 prior): three-reading composition
+8. 2026-05-28 (TODAY) 081KSNY2Z0008QG0R002BNQVE1 (PR #5777 prior): three-reading composition
    on retraction-in-Clifford.
 
 9. 2026-05-28 (THIS PR) Meno.fsx: First F# code for μένω as Persist-as-
@@ -889,13 +889,13 @@ What this adds:
      d) insufficient evidence feedback (substrate-honest signal)
    - Runs via: dotnet fsi experiments/meno-persist-as-bridge/Meno.fsx
 
-2. docs/backlog/P2/B-0915-*.md updates:
+2. docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-*.md updates:
    - Added "Aaron 2026-05-28 recognition: Persist-as-bridge IS the
      paper-hint substrate" section
    - Three-reading composition table: (W) Web-formal Fauser Hopf antipode
      + (P) Persist-operational Amara TODAY substrate + (C) Composition
    - "Don't need to import" Fauser machinery — already have operational
-     antipode via B-0897 + B-0898 + B-0899 + B-0900
+     antipode via 081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R003WCDQTC + 081KSNY2Z0008QG0R001ZKE8R2 + 081KSNY2Z0008QG0R001G7C89T
    - Slice D.1 reformulated: prove Persist-as-bridge IS-AN-INSTANCE-OF
      Hopf antipode pattern
 
@@ -909,11 +909,11 @@ Composes with substrate (full constitutional lineage):
 - Otto-309 (framework FIRST formal definition; μένω as universal substrate-property)
 - Otto-310 (Amara taught Aaron; lineage attribution)
 - Otto-314 (RNS Destination Hash engineering instance)
-- B-0897 Amara Persist-as-bridge (operational antipode structure)
-- B-0898 Amara Measure-as-bridge (sibling derived bridge)
-- B-0899 Amara Casimir-like review-walls (pressure-difference test)
-- B-0900 Amara Bell-like distributed-cluster contextuality test
-- B-0915 (PR #5777) CliffordWorld impl + three-reading on retraction
+- 081KSNY2Z0008QG0R002SZZ5Y0 Amara Persist-as-bridge (operational antipode structure)
+- 081KSNY2Z0008QG0R003WCDQTC Amara Measure-as-bridge (sibling derived bridge)
+- 081KSNY2Z0008QG0R001ZKE8R2 Amara Casimir-like review-walls (pressure-difference test)
+- 081KSNY2Z0008QG0R001G7C89T Amara Bell-like distributed-cluster contextuality test
+- 081KSNY2Z0008QG0R002BNQVE1 (PR #5777) CliffordWorld impl + three-reading on retraction
 - PR #5776 world-hierarchy substrate
 - PR #5775 git-world substrate
 - PR #5774 world substrate
@@ -943,7 +943,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 
 **Message:**
 
@@ -956,7 +956,7 @@ Rephrase 'high-signal substrate-recognition + high-suspicion of premature
 collapse' to 'combined with high-suspicion' — the literal '+' at line-start
 was parsed by markdownlint MD032 as starting a new list item.
 
-Regen docs/BACKLOG.md to include B-0897 + B-0898 + B-0899 + B-0900 + B-0915
+Regen docs/BACKLOG.md to include 081KSNY2Z0008QG0R002SZZ5Y0 + 081KSNY2Z0008QG0R003WCDQTC + 081KSNY2Z0008QG0R001ZKE8R2 + 081KSNY2Z0008QG0R001G7C89T + 081KSNY2Z0008QG0R002BNQVE1
 that landed today (drift-check gate).
 
 Autonomous-loop tick maintenance per
@@ -1082,7 +1082,7 @@ E. Dupe threads resolved via merge-main (15 threads):
    - Persona attribution in world-hierarchy.ts + world.ts → my
      #5776 + #5774 fixes merged to main; pulled via merge-main
    - Root-parent feedback bug → my #5776 fix merged to main
-   - B-0915 last_updated + depends_on → my #5777 fix on its branch
+   - 081KSNY2Z0008QG0R002BNQVE1 last_updated + depends_on → my #5777 fix on its branch
      (will resolve when #5777 merges)
    - dispatchInWorld inline feedback union → my #5774 fix merged
    - EMPTY_WORLD mutable registry leak → marked outdated by Copilot
@@ -1100,7 +1100,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
+- `docs/backlog/P2/081KSNY2Z0008QG0R002BNQVE1-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md`
 - `experiments/meno-persist-as-bridge/Meno.fsx`
 
 **Message:**
@@ -1108,7 +1108,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 fix(PR #5778 follow-up): Z-set retract cancellation + CE value restri…
 
-…ction + role-refs + B-0915 frontmatter (6 Copilot threads)
+…ction + role-refs + 081KSNY2Z0008QG0R002BNQVE1 frontmatter (6 Copilot threads)
 
 After my earlier fixes, Copilot re-reviewed and filed 6 new threads:
 
@@ -1151,7 +1151,7 @@ D. (P2) Run-path comment — was `dotnet fsi Meno.fsx` (incorrect when run
    from repo root). Updated to
    `dotnet fsi experiments/meno-persist-as-bridge/Meno.fsx (from repo root)`.
 
-E. (P1) B-0915 row missing `last_updated` + `depends_on` using file path
+E. (P1) 081KSNY2Z0008QG0R002BNQVE1 row missing `last_updated` + `depends_on` using file path
    — same fixes as my closed #5777 PR which Aaron decomposed. Re-applied:
    - Added `last_updated: 2026-05-28`
    - Added `ask: operator 2026-05-28`

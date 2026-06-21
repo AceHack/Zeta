@@ -29,7 +29,7 @@
 
 ## Summary
 
-Foundational reframe Aaron surfaced after Otto treated the single severity:all CodeQL ruleset as a deliberate technical constraint in B-0125. The reframe + the WONT-DO clarification compose into a meta-rule about how to read the project at week one.
+Foundational reframe Aaron surfaced after Otto treated the single severity:all CodeQL ruleset as a deliberate technical constraint in 081KQGDBJ0008QG0R001MK4YPC. The reframe + the WONT-DO clarification compose into a meta-rule about how to read the project at week one.
 
 ## Aaron's words (verbatim)
 
@@ -125,7 +125,7 @@ This is doctrine-grade memory file #2 (after §45 backlog-prioritization delegat
   configurations being mutated are themselves provisional, so "the
   host mutation breaks the original design" framing is often false
   because there wasn't an original design to break. Per-row Aaron
-  sign-offs (like the one for B-0125) are the explicit mechanism
+  sign-offs (like the one for 081KQGDBJ0008QG0R001MK4YPC) are the explicit mechanism
   for proceeding. Absent that, default still defers because the
   failure modes from prior host mutations (task #342/#343 cluster)
   remain real *regardless* of whether the original config was
@@ -291,7 +291,7 @@ memory(framing): everything is greenfield at week one — including hos…
 …t setup + Otto's coding rules (Aaron 2026-05-01)
 
 Aaron 2026-05-01 in chat (after Otto treated single severity:all
-CodeQL ruleset as deliberate technical constraint in B-0125):
+CodeQL ruleset as deliberate technical constraint in 081KQGDBJ0008QG0R001MK4YPC):
 
   "this project is a week old assume everything is greenfield
   expically our host setup beccasue it's not gitnative and i have

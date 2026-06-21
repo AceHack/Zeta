@@ -1,12 +1,11 @@
 ---
-id: B-0181
-zetaid: 081KQNJ500008QG0R003DMVGZB
+id: 081KQNJ500008QG0R003DMVGZB
 priority: P1
 status: closed
 title: Fix SpineMergeInvariants.tla counterexample (closed — Cascade downstream-room precondition + state constraint; B1 → A CI registration landed)
 tier: formal-verification
 effort: M
-ask: Otto 2026-05-03 verify-then-claim sweep (#1397) — running TLC on `SpineMergeInvariants` produces a TTrace dump, indicating counterexample / invariant violation. Sibling failure to B-0179 SpineAsyncProtocol but at deeper depth.
+ask: Otto 2026-05-03 verify-then-claim sweep (#1397) — running TLC on `SpineMergeInvariants` produces a TTrace dump, indicating counterexample / invariant violation. Sibling failure to 081KQNJ500008QG0R000S68KDE SpineAsyncProtocol but at deeper depth.
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
@@ -42,7 +41,7 @@ The fix (below) adds the missing precondition so the spec correctly models Balan
 
 Failure class: **spec under-specification**, not real BalancedSpine.fs bug. The original `Cascade(i)` action checked only `levels[i] >= Cap(i)` — it could fire with no constraint on level i+1, even when level i+1 was already at the cap-overshoot boundary. Real LSM cascades chain synchronously: if level i+1 is full, level i+1 must drain first before level i can dump. The spec failed to model this constraint, allowing TLC to find a 16-step trace where Cascade(0) fires 5 times in a row, accumulating level 1 to 10 > 2*Cap(1) = 8.
 
-Promoted P2 → P1 because the same spec-pattern (under-specified action with insufficient preconditions) was found in B-0184 (Spine.als) — same author-time class, two-tool surface.
+Promoted P2 → P1 because the same spec-pattern (under-specified action with insufficient preconditions) was found in 081KQNJ500008QG0R001N1AAJ9 (Spine.als) — same author-time class, two-tool surface.
 
 ## What landed
 
@@ -65,7 +64,7 @@ java -cp ../tla2tools.jar tlc2.TLC SpineMergeInvariants
 
 ## Composes with
 
-- B-0179 (SpineAsyncProtocol counterexample — sibling B1 issue, closed via #1411 with CHECK_DEADLOCK FALSE fix)
-- B-0180 (CircuitRegistration config bug — sibling B1 issue, closed via #1401 with `Safety` operator addition)
-- B-0184 (Spine.als spec bug — same author-time pattern: under-specified action with insufficient preconditions; closed via #1415 with `fact` + `run` + bitwidth fix)
+- 081KQNJ500008QG0R000S68KDE (SpineAsyncProtocol counterexample — sibling B1 issue, closed via #1411 with CHECK_DEADLOCK FALSE fix)
+- 081KQNJ500008QG0R0001QHA1J (CircuitRegistration config bug — sibling B1 issue, closed via #1401 with `Safety` operator addition)
+- 081KQNJ500008QG0R001N1AAJ9 (Spine.als spec bug — same author-time pattern: under-specified action with insufficient preconditions; closed via #1415 with `fact` + `run` + bitwidth fix)
 - `src/Core/BalancedSpine.fs` — the production code this spec models; the synchronous-cascade behavior the spec now correctly captures

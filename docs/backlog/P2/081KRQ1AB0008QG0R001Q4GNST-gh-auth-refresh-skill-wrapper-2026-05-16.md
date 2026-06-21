@@ -1,6 +1,5 @@
 ---
-id: B-0581
-zetaid: 081KRQ1AB0008QG0R001Q4GNST
+id: 081KRQ1AB0008QG0R001Q4GNST
 priority: P2
 status: open
 title: "Skill — wrap `gh auth refresh` interactive flow + record scope-grant registry (per-machine, per-human-touch)"
@@ -64,7 +63,7 @@ A skill (`.claude/skills/gh-auth-refresh-wrapper/SKILL.md`) that wraps the `gh a
   - Polls `gh auth status` until target scopes appear (or timeout)
 - [ ] Registry written to `~/.local/share/zeta/scope-grants.jsonl` (or similar) — append-only JSON-lines log of: `{machineId, scopes[], grantedBy, grantedAt, command}`
 - [ ] Tests: helper-script unit tests with injected stdin/stdout streams covering: success path, Y/n refusal, OAuth timeout, code-capture regex
-- [ ] Documented in the skill's body + composes-with B-0570 (scarcity tracker — scope grant affects available API budget)
+- [ ] Documented in the skill's body + composes-with 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker — scope grant affects available API budget)
 
 ## Why now
 
@@ -72,9 +71,9 @@ The 2026-05-16 session demonstrated the exact failure mode: Otto fired the comma
 
 Composes with several recent landings:
 
-- B-0570 (scarcity tracker) — scope grants affect what API calls Otto can make + the budget categories it can monitor
-- B-0571 (GitHub App for factory automation) — the PRODUCTION-grade alternative to this human-laptop-OAuth flow; both can coexist
-- B-0580 (Enterprise ruleset mgmt) — uses enterprise-scope APIs that need scope grants this skill wraps
+- 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker) — scope grants affect what API calls Otto can make + the budget categories it can monitor
+- 081KRQ1AB0008QG0R0038VQJZ0 (GitHub App for factory automation) — the PRODUCTION-grade alternative to this human-laptop-OAuth flow; both can coexist
+- 081KRQ1AB0008QG0R000522MPJ (Enterprise ruleset mgmt) — uses enterprise-scope APIs that need scope grants this skill wraps
 
 Plus the canonical memory file: `feedback_aaron_fine_grained_pat_workflow_for_otto_human_maintainer_pattern_not_production_2026_05_16.md` (user-scope memory) — captures the full workflow + the empirical pattern this skill operationalizes.
 
@@ -108,9 +107,9 @@ So when this row gets picked up:
 
 ## Composes with
 
-- B-0570 (scarcity tracker — scope changes the API surface available)
-- B-0571 (GitHub App for factory automation — production alternative)
-- B-0580 (Enterprise ruleset management — uses scopes this skill grants)
+- 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker — scope changes the API surface available)
+- 081KRQ1AB0008QG0R0038VQJZ0 (GitHub App for factory automation — production alternative)
+- 081KRQ1AB0008QG0R000522MPJ (Enterprise ruleset management — uses scopes this skill grants)
 - `feedback_aaron_fine_grained_pat_workflow_for_otto_human_maintainer_pattern_not_production_2026_05_16.md` (user-scope memory — origin substrate)
 - `.claude/rules/methodology-hard-limits.md` (scope grants are budget-touching; the rule's least-privilege principle composes)
 - `.claude/rules/dont-ask-permission.md` (within authority — Otto requests scopes via this skill; human-in-loop approval is built into the flow itself)
@@ -118,7 +117,7 @@ So when this row gets picked up:
 
 ## Substrate-honest caveats
 
-- This skill targets the MAINTAINER-LAPTOP workflow, not production. Production should use GitHub App (B-0571).
+- This skill targets the MAINTAINER-LAPTOP workflow, not production. Production should use GitHub App (081KRQ1AB0008QG0R0038VQJZ0).
 - The registry (`~/.local/share/zeta/scope-grants.jsonl`) is per-machine local storage. Multi-machine visibility would need a separate aggregation step (probably out of scope for the first version).
 - The `pbcopy` + `osascript` notifications are macOS-only. Cross-platform support (Linux/Windows) is a future slice.
 - The polling for post-approval scope appearance has a timeout; if the human takes >timeout to approve, the skill should surface "approval still pending, run `gh auth status` later to verify" rather than hang or error.

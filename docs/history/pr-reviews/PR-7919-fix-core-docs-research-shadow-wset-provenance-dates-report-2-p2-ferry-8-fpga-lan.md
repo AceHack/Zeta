@@ -27,7 +27,7 @@
 
 ## Description
 
-**WSet.fs provenance** — header claimed 2026-06-13/14 for events that landed 2026-06-11 (razor demotion #7802, operator promotion #7805, the B-1032 ask #7785). Flagged as P2 by math REPORT #2 and re-flagged in REPORT #3's ASSUMPTION register. Comment-only change; Core builds 0/0.
+**WSet.fs provenance** — header claimed 2026-06-13/14 for events that landed 2026-06-11 (razor demotion #7802, operator promotion #7805, the 081KTZ4EF0008QG0R001R3XPYV ask #7785). Flagged as P2 by math REPORT #2 and re-flagged in REPORT #3's ASSUMPTION register. Comment-only change; Core builds 0/0.
 
 **Ferry 8** (verbatim capture) — Aaron's reply to REPORT #3's stop line: "agree that's where applied / experimentation with fpga and lauderlimit comes in." Peeled with anchors (Landauer 1961, Bennett 1973, Bérut 2012, Frank): braids are reversible so the process lane carries no Landauer floor; erasure is where heat is paid — the thermodynamic edition of "memory is derived"; ξ_t in Fusion.Equation.fs becomes joule-priceable; the budget algebra gains a hardware falsifier. Honest bound on FPGA distance from kT·ln 2 included.
 

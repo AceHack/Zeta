@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // tools/cluster/deps-to-engine-config.ts
 //
-// B-0820 sub-target 4 + B-0821 variable-passing scope.
+// 081KSGS9H0008QG0R00352WW0V sub-target 4 + 081KSGS9H0008QG0R00367G209 variable-passing scope.
 // Cluster-facing wrapper: one AppDependencyGraph → Flux + ArgoCD manifests.
 // Engine logic lives in src/Core.TypeScript/ace/deps.ts; ace deps resolve is the
 // operator CLI alias. This tool is the build-time path CI and GitOps pipelines call.

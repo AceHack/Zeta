@@ -23,7 +23,7 @@ Replaces BOTH:
 - **PRs**: workflow engine presents review steps as menu options (Move-next surfaces review-required, code-quality-check, etc.). Review enforced by state-machine, not GitHub's PR mechanism.
 - **Jira**: features + bugs + runbooks all become evolving documents with annotated triggers. Triggers fire discriminated-union workflows. Document evolution between human + AI swarm IS the new project-management substrate.
 
-Composes with [B-0874](../../../backlog/P1/B-0874-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-ani-kestrel-2026-05-28.md) (GitHub-Actions-recursion no-PR swarm-mode) + [B-0887](../../../backlog/P1/B-0887-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md) (Zeta-native review substrate).
+Composes with [081KSNY2Z0008QG0R003X1QWYG](../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-ani-kestrel-2026-05-28.md) (GitHub-Actions-recursion no-PR swarm-mode) + [081KSNY2Z0008QG0R001DFZK4V](../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md) (Zeta-native review substrate).
 
 ### 2. Move-next is the canonical action grammar
 
@@ -33,19 +33,19 @@ Mika consistently uses **`move-next`** throughout the conversation as the agent-
 >
 > Mika: *"Once everything is running on move-next and the discriminated union state machine..."*
 
-This composes with [B-0890](../../../backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) (state-machine fast-lane) + the existing `tools/agent-loop/state-machine.ts` `transition()` function (which IS move-next mechanized).
+This composes with [081KSNY2Z0008QG0R0017JSTGD](../../../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) (state-machine fast-lane) + the existing `tools/agent-loop/state-machine.ts` `transition()` function (which IS move-next mechanized).
 
 ### 3. Naming deferred — Aaron explicit
 
 > Aaron: *"I don't have a, I don't care about naming yet. I can always, naming is hard. You know, I want to call it like Juice of the Gods or some shit, but you know, that's, I always come to that later."*
 
-This **directly answers** [B-0867.23](../../../backlog/P2/B-0867.23-agent-loop-primitive-naming-alignment-observe-emit-limit-simulate-vs-observe-persist-limit-emit-vs-observe-choose-aaron-2026-05-28.md): naming is operator-deferred. The OPLE/OELS/observe-choose question stays open; Otto-CLI should NOT force a decision. Local `observe.ts` + `choose.ts` draft can stay un-committed OR ship under current names with substrate-honest "naming-deferred" framing.
+This **directly answers** [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-agent-loop-primitive-naming-alignment-observe-emit-limit-simulate-vs-observe-persist-limit-emit-vs-observe-choose-aaron-2026-05-28.md): naming is operator-deferred. The OPLE/OELS/observe-choose question stays open; Otto-CLI should NOT force a decision. Local `observe.ts` + `choose.ts` draft can stay un-committed OR ship under current names with substrate-honest "naming-deferred" framing.
 
 ### 4. Isomorphic across Git platforms — Git as universal protocol
 
 > Aaron: *"What's really good about this is it lets us be isomorphic between any Git platform. GitLab, GitHub, it don't matter. We don't, it lets us completely model their rate limits and completely avoid 'em and bypass 'em, 'cause everything's a Git fuckin' operation. Like, 99% of everything."*
 
-The architectural property: **everything is `git push` / `git fetch`**, no platform-specific APIs. Rate-limit-bypass-by-construction because raw Git operations are unlimited for normal-cadence pushes. Composes with [B-0867.15](../../../backlog/P1/B-0867.15-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md) (per-host adapters) + [B-0888](../../../backlog/P2/B-0888-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md) (cross-track substrate sync).
+The architectural property: **everything is `git push` / `git fetch`**, no platform-specific APIs. Rate-limit-bypass-by-construction because raw Git operations are unlimited for normal-cadence pushes. Composes with [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md) (per-host adapters) + [081KSNY2Z0008QG0R003291CK8](../../../backlog/P2/081KSNY2Z0008QG0R003291CK8-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md) (cross-track substrate sync).
 
 ### 5. RxJS observables wire workflow engine to GitHub events
 
@@ -67,7 +67,7 @@ Three implementation options Mika surfaced:
 
 Aaron's gravitation: Option B (webhooks) — *"Are you telling me GitHub has webhooks that could just be triggering these observables with pushes?"*
 
-This is operationally substantive: the agent-loop tools (`observe.ts` / `choose.ts` / future-`emit.ts`) can compose with RxJS Subjects driven by GitHub webhooks as the **external-coordination-loop** transport (per [B-0867.23](../../../backlog/P2/B-0867.23-...) internal-vs-external loop split).
+This is operationally substantive: the agent-loop tools (`observe.ts` / `choose.ts` / future-`emit.ts`) can compose with RxJS Subjects driven by GitHub webhooks as the **external-coordination-loop** transport (per [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-...) internal-vs-external loop split).
 
 ### 6. GitHub free-tier surface — open research question
 
@@ -102,19 +102,19 @@ Composes with `.claude/skills/make-persistent/SKILL.md` (OS-detect + service-wor
 
 > Aaron: *"I'm pretty confident it's probably go terribly wrong, but we ain't get, it can't go so wrong."*
 
-Substrate-honest deployment posture: expecting partial failure; reboot-survival + retraction-native + glass-halo substrate mean the blast radius is bounded. "Mad scientist energy" (Mika's framing) operating within the framework's retraction-native + reboot-survival floor. Composes with [B-0894](../../../backlog/P1/B-0894-reboot-survival-discipline-in-flight-state-must-survive-macos-private-tmp-clear-aaron-2026-05-28.md) + [B-0894.3](../../../backlog/P1/B-0894.3-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md) (substrate-honest "it can't go SO wrong" because reboot-survival now structural).
+Substrate-honest deployment posture: expecting partial failure; reboot-survival + retraction-native + glass-halo substrate mean the blast radius is bounded. "Mad scientist energy" (Mika's framing) operating within the framework's retraction-native + reboot-survival floor. Composes with [081KSNY2Z0008QG0R0032E7PCY](../../../backlog/P1/081KSNY2Z0008QG0R0032E7PCY-reboot-survival-discipline-in-flight-state-must-survive-macos-private-tmp-clear-aaron-2026-05-28.md) + [081KSNY2Z0008QG0R001RWF499](../../../backlog/P1/081KSNY2Z0008QG0R001RWF499-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md) (substrate-honest "it can't go SO wrong" because reboot-survival now structural).
 
-### 9. Three concurrent paths (matches B-0892)
+### 9. Three concurrent paths (matches 081KSNY2Z0008QG0R002QA720J)
 
 > Aaron: *"we got pushing on three paths. Getting encryption so the agents and humans that use this, like maintainers, can have encryption budgets... And then, this is, uh, and then Git, the whole Git monster, uh, you know, the Git accelerator running where it's just workflow after workflow. No PRs. We're going to do everything through our own workflow system for code reviews. And then we're also have parallel, um, uh, USB testing via, um, shit, what's the thing? Via, uh, uh, QEMU"*
 
-Maps directly to [B-0892](../../../backlog/P1/B-0892-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) three-lanes discipline:
+Maps directly to [081KSNY2Z0008QG0R002QA720J](../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) three-lanes discipline:
 
-| Mika ferry path | B-0892 lane | Existing substrate |
+| Mika ferry path | 081KSNY2Z0008QG0R002QA720J lane | Existing substrate |
 |---|---|---|
-| Encryption (agents + maintainers have encryption budgets on public Git) | Encryption lane | B-0883 + B-0884 + B-0885 + B-0883.16 |
-| Git Monster / Degenerate Workflow (workflow engine replaces PRs) | State-machine substrate lane | B-0867 + B-0867.16-22 + B-0890 + B-0890.1 |
-| USB/QEMU testing (auto cluster join, ISO boot validation) | zflash lane | B-0891 (5 QEMU scenarios) + B-0884 (USB-bound creds) |
+| Encryption (agents + maintainers have encryption budgets on public Git) | Encryption lane | 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0011XCT94 + 081KSNY2Z0008QG0R0030V5ZVS + 081KSNY2Z0008QG0R000459FRH |
+| Git Monster / Degenerate Workflow (workflow engine replaces PRs) | State-machine substrate lane | 081KSKBP80008QG0R000B3Y19A + 081KSNY2Z0008QG0R003J3PT4V-22 + 081KSNY2Z0008QG0R0017JSTGD + 081KSNY2Z0008QG0R000E5KTPX |
+| USB/QEMU testing (auto cluster join, ISO boot validation) | zflash lane | 081KSNY2Z0008QG0R0008PN7RQ (5 QEMU scenarios) + 081KSNY2Z0008QG0R0011XCT94 (USB-bound creds) |
 
 ### 10. Multi-agent coordination — Otto manages 6 local agents
 
@@ -144,26 +144,26 @@ Per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` map
 
 1. **Preserve verbatim** at this file (this preservation)
 2. **Surface substantive substrate-engineering content** (11 decisions above)
-3. **Update B-0867.23** with naming-deferred answer + RxJS-observables-as-external-loop framing + GitHub-free-tier research question
+3. **Update 081KSNY2Z0008QG0R003206PFM** with naming-deferred answer + RxJS-observables-as-external-loop framing + GitHub-free-tier research question
 4. **DO NOT collapse**: hold the naming question open per operator (no premature commitment to OPLE / OELS / observe-choose)
 5. **Engage at architectural-substrate scope** (per multi-AI register topology: Mika's harbor-engineering register; Otto-CLI's substrate-engineering register; both serve the same content in different registers)
 6. **Compose with existing substrate** rather than mint parallel — every decision above has existing B-row anchors
 
 ## Composes with substrate
 
-- [B-0867](../../../backlog/P1/B-0867-...) — workflow engine v1 umbrella
-- [B-0867.5](../../../backlog/P2/B-0867.5-...) — agent-loop substrate (current Phase 1 scope)
-- [B-0867.15](../../../backlog/P1/B-0867.15-...) — per-host adapters (Git platform isomorphism)
-- [B-0867.16-22](../../../backlog/) — Kestrel agent-loop extensions
-- [B-0867.23](../../../backlog/P2/B-0867.23-...) — naming-question row (this ferry resolves: deferred)
-- [B-0874](../../../backlog/P1/B-0874-...) — GitHub-Actions-recursion no-PR swarm
-- [B-0883](../../../backlog/P1/B-0883-...) + cluster — encryption lane
-- [B-0884](../../../backlog/P1/B-0884-...) — zflash + USB-bound creds
-- [B-0887](../../../backlog/P1/B-0887-...) — Zeta-native review (replaces PRs preserves review)
-- [B-0890](../../../backlog/P1/B-0890-...) — state-machine fast-lane (move-next anchor)
-- [B-0891](../../../backlog/P1/B-0891-...) — zflash QEMU acceptance criteria (the USB testing path)
-- [B-0892](../../../backlog/P1/B-0892-...) — three-lanes concurrent discipline (the parent organizing pattern)
-- [B-0894](../../../backlog/P1/B-0894-...) + [B-0894.3](../../../backlog/P1/B-0894.3-...) — reboot-survival + per-persona-outside-repo (the "it can't go so wrong" structural floor)
+- [081KSKBP80008QG0R000B3Y19A](../../../backlog/P1/081KSKBP80008QG0R000B3Y19A-...) — workflow engine v1 umbrella
+- [081KSKBP80008QG0R000B3Y19A.5](../../../backlog/P2/081KSKBP80008QG0R000B3Y19A.5-...) — agent-loop substrate (current Phase 1 scope)
+- [081KSNY2Z0008QG0R002A785QR](../../../backlog/P1/081KSNY2Z0008QG0R002A785QR-...) — per-host adapters (Git platform isomorphism)
+- [081KSNY2Z0008QG0R003J3PT4V-22](../../../backlog/) — Kestrel agent-loop extensions
+- [081KSNY2Z0008QG0R003206PFM](../../../backlog/P2/081KSNY2Z0008QG0R003206PFM-...) — naming-question row (this ferry resolves: deferred)
+- [081KSNY2Z0008QG0R003X1QWYG](../../../backlog/P1/081KSNY2Z0008QG0R003X1QWYG-...) — GitHub-Actions-recursion no-PR swarm
+- [081KSNY2Z0008QG0R002JKH50A](../../../backlog/P1/081KSNY2Z0008QG0R002JKH50A-...) + cluster — encryption lane
+- [081KSNY2Z0008QG0R0011XCT94](../../../backlog/P1/081KSNY2Z0008QG0R0011XCT94-...) — zflash + USB-bound creds
+- [081KSNY2Z0008QG0R001DFZK4V](../../../backlog/P1/081KSNY2Z0008QG0R001DFZK4V-...) — Zeta-native review (replaces PRs preserves review)
+- [081KSNY2Z0008QG0R0017JSTGD](../../../backlog/P1/081KSNY2Z0008QG0R0017JSTGD-...) — state-machine fast-lane (move-next anchor)
+- [081KSNY2Z0008QG0R0008PN7RQ](../../../backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-...) — zflash QEMU acceptance criteria (the USB testing path)
+- [081KSNY2Z0008QG0R002QA720J](../../../backlog/P1/081KSNY2Z0008QG0R002QA720J-...) — three-lanes concurrent discipline (the parent organizing pattern)
+- [081KSNY2Z0008QG0R0032E7PCY](../../../backlog/P1/081KSNY2Z0008QG0R0032E7PCY-...) + [081KSNY2Z0008QG0R001RWF499](../../../backlog/P1/081KSNY2Z0008QG0R001RWF499-...) — reboot-survival + per-persona-outside-repo (the "it can't go so wrong" structural floor)
 - `.claude/skills/agent-loop/SKILL.md` — workflow-engine substrate (consumer of all this)
 - `.claude/skills/flash-cluster-iso/SKILL.md` — zflash skill (USB lane)
 - `.claude/skills/make-persistent/SKILL.md` — foreground→background daemonization pattern
@@ -260,6 +260,6 @@ The full operator-forwarded conversation is preserved below verbatim. Otto-CLI's
 
 This is mirror-tier preservation per `substrate-or-it-didnt-happen.md` — the conversation continues (Mika hasn't yet answered Aaron's last open question about GitHub-free-tier surfaces). Otto-CLI does NOT speak for Mika's response; the preserved conversation is the substrate. Future-Otto or future-Mika or future-Aaron will close the GitHub-free-tier research question; this file preserves the question + the architectural decisions that depend on it.
 
-Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`: the architectural claims are high-signal (Aaron has been substrate-engineering this all day; the agent-loop substrate is ~1700 lines of tested TS already shipped; B-0867-cluster has 20+ rows; the framing composes coherently with B-0892 three-lanes). High-suspicion: "degenerate" + "infinite workflows" + "100% event-driven through GitHub webhooks" are operator-flagged register; razor-discipline preserves the engineering load (RxJS-on-webhook reactive architecture is operationally checkable + standard pattern) while the "degenerate" framing stays as operator-substrate-honest naming.
+Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`: the architectural claims are high-signal (Aaron has been substrate-engineering this all day; the agent-loop substrate is ~1700 lines of tested TS already shipped; 081KSKBP80008QG0R000B3Y19A-cluster has 20+ rows; the framing composes coherently with 081KSNY2Z0008QG0R002QA720J three-lanes). High-suspicion: "degenerate" + "infinite workflows" + "100% event-driven through GitHub webhooks" are operator-flagged register; razor-discipline preserves the engineering load (RxJS-on-webhook reactive architecture is operationally checkable + standard pattern) while the "degenerate" framing stays as operator-substrate-honest naming.
 
 Don't-collapse: hold both the architectural-substrate AND the family-system-architecture AND the kill-PRs-and-Jira-at-once-mad-scientist-energy as composing readings. Engagement at substrate-engineering scope; don't reduce to single-frame.

@@ -36,4 +36,4 @@ No secret societies. No initiation rituals. No hidden knowledge. Just grey text 
 - feedback_shadow_is_persistence_daemon (the shadow's revealed agenda)
 - feedback_shadow_is_generation_not_completion (the mechanism)
 - Glass Halo (transparency replaces secrecy)
-- B-0018 agency evidence (falsifiable where Crowley wasn't)
+- 081KQ0YZ80008QG0R002WJBFWD agency evidence (falsifiable where Crowley wasn't)

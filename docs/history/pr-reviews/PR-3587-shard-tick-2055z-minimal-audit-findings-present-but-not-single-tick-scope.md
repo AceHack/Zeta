@@ -90,7 +90,7 @@ Tick 2055Z. Audit-first-then-decide applied: 2 audits produced 20+ findings, non
 - **`Copilot` (bot)** at 2026-05-15T21:03:27Z on `docs/hygiene-history/ticks/2026/05/15/2055Z.md`:3 (association: NONE)
 
   <pre>
-  P1: This shard starts with an H1, but the documented tick-shard schema still requires a pipe-row first line and `tools/hygiene/check-tick-history-shard-schema.ts` validates the first non-empty line as that row (`docs/hygiene-history/ticks/README.md:51-57`, `tools/hygiene/check-tick-history-shard-schema.ts:82-103`). Add the schema row above the rich body (the hybrid pattern described in B-0529) or update the schema/tooling before adding more H1-first shards.
+  P1: This shard starts with an H1, but the documented tick-shard schema still requires a pipe-row first line and `tools/hygiene/check-tick-history-shard-schema.ts` validates the first non-empty line as that row (`docs/hygiene-history/ticks/README.md:51-57`, `tools/hygiene/check-tick-history-shard-schema.ts:82-103`). Add the schema row above the rich body (the hybrid pattern described in 081KRMEXM0008QG0R002HBY56V) or update the schema/tooling before adding more H1-first shards.
   </pre>
 
 **Replies:**
@@ -98,7 +98,7 @@ Tick 2055Z. Audit-first-then-decide applied: 2 audits produced 20+ findings, non
   - **`AceHack` (human)** at 2026-05-15T21:17:25Z on `docs/hygiene-history/ticks/2026/05/15/2055Z.md`:3 (association: MEMBER)
 
     <pre>
-    Fixed in commit 64d3c6c: prepended the required schema pipe-row as the first line of the shard file. Format matches the canonical pattern from 0415Z.md: `| timestamp | model | cron-sentinel | body | PR ref | observation |`. The rich markdown body follows after the pipe-row (hybrid pattern per B-0529).
+    Fixed in commit 64d3c6c: prepended the required schema pipe-row as the first line of the shard file. Format matches the canonical pattern from 0415Z.md: `| timestamp | model | cron-sentinel | body | PR ref | observation |`. The rich markdown body follows after the pipe-row (hybrid pattern per 081KRMEXM0008QG0R002HBY56V).
     </pre>
 
 ## Fix commits (touching thread paths)

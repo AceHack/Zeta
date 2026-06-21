@@ -1,6 +1,5 @@
 ---
-id: B-0249
-zetaid: 081KQZVQW0008QG0R000C35RNY
+id: 081KQZVQW0008QG0R000C35RNY
 priority: P0
 status: closed
 closed: 2026-05-09
@@ -15,7 +14,7 @@ owners: [architect]
 type: friction-reducer
 ---
 
-# B-0249 — Autonomous backlog pickup
+# 081KQZVQW0008QG0R000C35RNY — Autonomous backlog pickup
 
 ## What
 
@@ -58,11 +57,11 @@ sleeps.
 
 ## Decomposition
 
-- `B-0278` selects the next safe backlog item from committed
+- `081KR2E4K0008QG0R001GFXN05` selects the next safe backlog item from committed
   substrate.
-- `B-0279` creates the git-native claim and isolated worktree.
-- `B-0280` publishes the first autonomous PR and arms auto-merge.
-- `B-0281` wires the empty-queue pickup path into the Codex loop.
+- `081KR2E4K0008QG0R000YTJS3Q` creates the git-native claim and isolated worktree.
+- `081KR2E4K0008QG0R0022RVRCZ` publishes the first autonomous PR and arms auto-merge.
+- `081KR2E4K0008QG0R002FSPPQR` wires the empty-queue pickup path into the Codex loop.
 
 ## Composes with
 
@@ -70,4 +69,4 @@ sleeps.
 - `docs/AGENT-CLAIM-PROTOCOL.md` — claim before work
 - `docs/FOREGROUND-BACKGROUND-SPLIT.md` — background does work
 - `docs/ROTATION-PROTOCOL.md` — rotation if a node gets stuck
-- All B-0240..B-0248 items — the first items to be picked up
+- All 081KQZVQW0008QG0R002QZAFB2..081KQZVQW0008QG0R0032TPKT8 items — the first items to be picked up

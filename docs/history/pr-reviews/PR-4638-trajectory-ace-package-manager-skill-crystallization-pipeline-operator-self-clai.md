@@ -33,7 +33,7 @@ Distinct from multi-directional-guess agendas (e.g., fair-chance project traject
 
 DeepSeek substrate-engineering pipeline mapping (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) applied to Ace package manager. Solves operational gap: 'skills evolving faster than distribution cycles can capture.' Packages = bounded time-crystal houses; living skill keeps evolving (META-LOOP preserved); frame stays weight-free.
 
-Composes with existing B-0247 / B-0287 (closed) / B-0288 (in-progress) / B-0424 chain. B-0288 backlog row updated with the substrate-engineering pipeline framing.
+Composes with existing 081KQZVQW0008QG0R000ZHEN62 / 081KR2E4K0008QG0R0033WVCXE (closed) / 081KR2E4K0008QG0R002YE3MMD (in-progress) / 081KRFA460008QG0R001H98EXJ chain. 081KR2E4K0008QG0R002YE3MMD backlog row updated with the substrate-engineering pipeline framing.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 

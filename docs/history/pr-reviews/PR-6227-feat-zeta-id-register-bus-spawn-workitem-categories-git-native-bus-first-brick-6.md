@@ -78,7 +78,7 @@ Next bricks (not in this PR): a tiny `bus` writer/reader dropping ZetaId-keyed f
   - **`AceHack` (human)** at 2026-05-31T18:28:36Z on `registry/categories.yaml`:16 (association: MEMBER)
 
     <pre>
-    Verified against the ADR (line 47, accepted/chosen-option) — real collision. Fixed in cf44d2ae9: respected the reservation rather than superseding it. Re-allocated Bus=6, Spawn=7, WorkItem=8; left id 5 reserved for FrictionTelemetry (its owner registers it) and id 4 free (B-0890 Batch memo, not yet accepted). Also consistent with this PR's own #6219 spec, which already framed the bus as extending past Category 5. tsc + C#/F# builds clean.
+    Verified against the ADR (line 47, accepted/chosen-option) — real collision. Fixed in cf44d2ae9: respected the reservation rather than superseding it. Re-allocated Bus=6, Spawn=7, WorkItem=8; left id 5 reserved for FrictionTelemetry (its owner registers it) and id 4 free (081KSNY2Z0008QG0R0017JSTGD Batch memo, not yet accepted). Also consistent with this PR's own #6219 spec, which already framed the bus as extending past Category 5. tsc + C#/F# builds clean.
     </pre>
 
 ### Thread 2 -- unresolved
@@ -155,7 +155,7 @@ the bus "extends the category space (used Category 5 for friction telemetry)" �
 i.e. bus categories belong PAST 5.
 
 Re-allocated across all four parity surfaces:
-  - id 4 — left free (B-0890 batch-merge memo loosely eyes "Batch"; not accepted)
+  - id 4 — left free (081KSNY2Z0008QG0R0017JSTGD batch-merge memo loosely eyes "Batch"; not accepted)
   - id 5 — left reserved for FrictionTelemetry (ADR; its owner registers it)
   - Bus = 6, Spawn = 7, WorkItem = 8
 
@@ -183,8 +183,8 @@ don't have to implement yet"). Completes the accepted ADR's action item
 slot was paper-only until now. Registering the enum slot != implementing the
 telemetry feature.
 
-id 4 left free: B-0890 batch-merge coordinator (which proposed a "Batch"
-category) is superseded by B-0890.1 (folders-on-main), so that proposal is moot.
+id 4 left free: 081KSNY2Z0008QG0R0017JSTGD batch-merge coordinator (which proposed a "Batch"
+category) is superseded by 081KSNY2Z0008QG0R000E5KTPX (folders-on-main), so that proposal is moot.
 
 Final allocation: 0 Observation, 1 Emission, 2 Workflow, 3 Heartbeat,
 [4 free], 5 FrictionTelemetry, 6 Bus, 7 Spawn, 8 WorkItem. Four parity

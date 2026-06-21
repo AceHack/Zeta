@@ -1,6 +1,6 @@
 ---
 pr_number: 5118
-title: "feat(B-0792 iter-5.3): prompt-for-initial-password at install-time (not default zeta-change-me); injected-hashedpassword.nix substrate (Aaron 2026-05-26)"
+title: "feat(081KSGS9H0008QG0R003V23XNZ iter-5.3): prompt-for-initial-password at install-time (not default zeta-change-me); injected-hashedpassword.nix substrate (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T06:59:10Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:41:19Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5118: feat(B-0792 iter-5.3): prompt-for-initial-password at install-time (not default zeta-change-me); injected-hashedpassword.nix substrate (Aaron 2026-05-26)
+# PR #5118: feat(081KSGS9H0008QG0R003V23XNZ iter-5.3): prompt-for-initial-password at install-time (not default zeta-change-me); injected-hashedpassword.nix substrate (Aaron 2026-05-26)
 
 ## PR description
 

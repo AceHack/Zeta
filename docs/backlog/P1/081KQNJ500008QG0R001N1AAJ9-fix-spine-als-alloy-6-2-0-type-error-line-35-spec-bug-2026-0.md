@@ -1,12 +1,11 @@
 ---
-id: B-0184
-zetaid: 081KQNJ500008QG0R001N1AAJ9
+id: 081KQNJ500008QG0R001N1AAJ9
 priority: P1
 status: closed
 title: Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion
 tier: formal-verification
 effort: M
-ask: Otto 2026-05-03 — surfaced via B-0183 Phase 1 TS wrapper (#1413) after fixing AlloyRunner.java's stale A4Options.SatSolver API. Once Alloy actually compiles + runs against current alloy.jar v6.2.0, Spine.als had two bugs: (1) sum-comprehension parens missing (parse error); (2) check-command semantics was wrong (asked "does property hold for ALL instances?" when intent was "what instances are valid spines?"). Bumped to P1 because after #1413 lands the spec is on the active CI surface; leaving it broken would lose Spine.als coverage, not just defer it.
+ask: Otto 2026-05-03 — surfaced via 081KQNJ500008QG0R003EKJ8B5 Phase 1 TS wrapper (#1413) after fixing AlloyRunner.java's stale A4Options.SatSolver API. Once Alloy actually compiles + runs against current alloy.jar v6.2.0, Spine.als had two bugs: (1) sum-comprehension parens missing (parse error); (2) check-command semantics was wrong (asked "does property hold for ALL instances?" when intent was "what instances are valid spines?"). Bumped to P1 because after #1413 lands the spec is on the active CI surface; leaving it broken would lose Spine.als coverage, not just defer it.
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
@@ -91,8 +90,8 @@ chain.
 
 ## Composes with
 
-- B-0183 (TS wrapper migration; #1413 surfaced this)
-- B-0183 Phase 3 retirement of F# Alloy tests — Spine.als fix
+- 081KQNJ500008QG0R003EKJ8B5 (TS wrapper migration; #1413 surfaced this)
+- 081KQNJ500008QG0R003EKJ8B5 Phase 3 retirement of F# Alloy tests — Spine.als fix
   needs to land before retirement so the TS wrapper passes
 - math-proofs honest assessment B2 grade (currently A; this row is
   the honest follow-up to keep that grade defensible)

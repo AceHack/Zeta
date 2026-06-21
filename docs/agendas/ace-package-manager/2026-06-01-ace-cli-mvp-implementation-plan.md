@@ -216,7 +216,7 @@ Create `.claude/skills/ace/SKILL.md`:
 ---
 name: ace
 description: Ace DLC package manager — list (and, when built, install/verify) content-addressed packages from the local ~/.ace store. Run via bun; Node-floor portable.
-record_source: "B-0288 + ace-package-manager agenda; distribution per 2026-06-01 design"
+record_source: "081KR2E4K0008QG0R002YE3MMD + ace-package-manager agenda; distribution per 2026-06-01 design"
 load_datetime: "2026-06-01"
 last_updated: "2026-06-01"
 status: active
@@ -259,7 +259,7 @@ Exit codes: `0` ok · `64` usage error.
 
 - Distribution + DX design: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-distribution-dx-design.md`
 - Agenda: `docs/agendas/ace-package-manager/AGENDA.md`
-- The bus↔Ace one-substrate synthesis: PR #6284 (G-Set ⊂ bag ⊂ Z-set; shared B-0867.27 fold engine)
+- The bus↔Ace one-substrate synthesis: PR #6284 (G-Set ⊂ bag ⊂ Z-set; shared 081KSXN940008QG0R0033T2BQT fold engine)
 ````
 
 - [ ] **Step 2: Verify the skill is well-formed (frontmatter + markdownlint)**
@@ -683,7 +683,7 @@ git commit -m "docs(ace): skill — install/verify now live (integrity-only; aut
 - **Spec §2 channel A (skill)** → Task 4 + Task 8. ✓
 - **Spec §2 channel B (install.sh-sibling, human)** → Tasks 1–3 (bin + `bun link` Unix + Windows). ✓ (standalone `bunx`/bootstrap explicitly deferred per §8.)
 - **Spec §3 runtime (Node-floor portable)** → SKILL.md precondition (Task 4) names Node ≥22.5/bun + the Codex no-JS fallback; no bun-only API used. ✓
-- **Spec §4 verb grammar (small)** → `list`/`help` (slice 1) + `install`/`verify` (slice 2); `remove`/`inspect` stay stubbed; no B-0824 meta-PM verbs. ✓
+- **Spec §4 verb grammar (small)** → `list`/`help` (slice 1) + `install`/`verify` (slice 2); `remove`/`inspect` stay stubbed; no 081KSGS9H0008QG0R0031PBNGA meta-PM verbs. ✓
 - **Spec §5 provenance** → Task 6 verify-before-extract (integrity) + explicit "NOT authenticity-verified" line (no green-by-skip); authenticity carved to slice 3. ✓ (honest partial — the spec wanted signature-verify; this plan ships integrity + names the gap loudly rather than faking it.)
 - **Spec §6 one core** → all channels run the same `tools/ace/ace.ts`. ✓
 - **Spec §7 abstract layer (bus↔Ace one substrate)** → out of scope (MVP non-goal); SKILL.md points at #6284. ✓
@@ -691,4 +691,4 @@ git commit -m "docs(ace): skill — install/verify now live (integrity-only; aut
 
 **Type consistency:** `AcePackage`/`InstallResult`/`contentHash`/`installPackage` defined in Task 5–6 and consumed identically in Task 7; `ParsedArgs` union extended with `InstallArgs`/`VerifyArgs` used in `parseArgs` + `main`. ✓
 
-**Open follow-ons (NOT this plan):** slice 3 = authenticity/signature verify + key management; standalone `bunx`/bare-machine bootstrap; the manifest-driving layer; the bus↔Ace shared-fold-engine refactor (#6284 / B-0867.27, routes through product-team agreement).
+**Open follow-ons (NOT this plan):** slice 3 = authenticity/signature verify + key management; standalone `bunx`/bare-machine bootstrap; the manifest-driving layer; the bus↔Ace shared-fold-engine refactor (#6284 / 081KSXN940008QG0R0033T2BQT, routes through product-team agreement).

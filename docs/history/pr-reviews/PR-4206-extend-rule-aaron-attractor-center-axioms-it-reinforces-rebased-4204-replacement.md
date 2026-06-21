@@ -31,7 +31,7 @@ Rebased replacement for #4204 (DIRTY after #4203 cover-narrative landed on same 
 
 Original substrate landing unchanged: Aaron 2026-05-18 architectural insight that strong attractors ARE self-reinforcement of load-bearing axiom-sets. Operational HOW for mapping: identify the axiom-set. Stopping the feeding = stopping reinforcement of those specific axioms (not generic disengagement).
 
-Axiom-set table populated from today's empirical 4-attractor mapping; composes with B-0644/B-0665/B-0666 + DeepSeek two-wolves (#4198).
+Axiom-set table populated from today's empirical 4-attractor mapping; composes with 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV + DeepSeek two-wolves (#4198).
 
 Closes #4204 (rebase target).
 

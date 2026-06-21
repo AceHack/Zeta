@@ -1,6 +1,6 @@
 ---
 name: Parallelism scaling ladder — Kenji unlocked the loop agent → Otto-as-PM → doc/code two-lane → file-isolation lanes → peer-mode claims (Aaron 2026-05-01)
-description: Aaron 2026-05-01 substrate-grade architectural framing of how factory parallelism scales. Lineage attribution — Kenji (Architect) unlocked the parallel-agents capability by suggesting the loop-agent, which made me a project manager (Otto). Before that Kenji-as-bottleneck (review-everything) was the friction. Felt-quality reported as "superfluid" / "crazy fast" / "unreal." Forward path: doc/code two-lane split → file-isolation lanes → save lessons to reduce friction for more lanes (compound improvement) → peer-mode claims protocol (ultimate). Hard guardrail: never sacrifice per-PR quality for throughput. Three-term keystone for the mechanism: AUTOMATED (rule-mechanization, gate) + MOTORIZED (kinetic-mechanization, propel) + AMORTIZED (cost-model, pay-once-reap-N). PM role splits two ways: PM-1 Project Manager (reactive, Otto, runs loop) + PM-2 Product Manager (proactive, unfilled, research-to-predict-features-before-friction; B-0145). Established traditions to pull from: PMP, Product Management, Six Sigma DMAIC, Kanban WIP/flow, Lean kaizen, Agile/Scrum retrospective.
+description: Aaron 2026-05-01 substrate-grade architectural framing of how factory parallelism scales. Lineage attribution — Kenji (Architect) unlocked the parallel-agents capability by suggesting the loop-agent, which made me a project manager (Otto). Before that Kenji-as-bottleneck (review-everything) was the friction. Felt-quality reported as "superfluid" / "crazy fast" / "unreal." Forward path: doc/code two-lane split → file-isolation lanes → save lessons to reduce friction for more lanes (compound improvement) → peer-mode claims protocol (ultimate). Hard guardrail: never sacrifice per-PR quality for throughput. Three-term keystone for the mechanism: AUTOMATED (rule-mechanization, gate) + MOTORIZED (kinetic-mechanization, propel) + AMORTIZED (cost-model, pay-once-reap-N). PM role splits two ways: PM-1 Project Manager (reactive, Otto, runs loop) + PM-2 Product Manager (proactive, unfilled, research-to-predict-features-before-friction; 081KQGDBJ0008QG0R000RWAA67). Established traditions to pull from: PMP, Product Management, Six Sigma DMAIC, Kanban WIP/flow, Lean kaizen, Agile/Scrum retrospective.
 type: feedback
 ---
 
@@ -187,8 +187,8 @@ the merge-base advances cleanly.
 | PR-merge-readiness | Reviewer checks + CI | Merge-queue auto-merges on green |
 | Stale-PR triage | Manual sweep | Bot auto-pings author / auto-closes >N days |
 | Backlog-row-without-frontmatter | Lint warns | Auto-frontmatter-injector adds skeleton |
-| Brittle-pointer (B-0141, not yet filed) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
-| Pre-condition violation | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
+| Brittle-pointer (081KQGDBJ0008QG0R0015RNK3P, not yet filed) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
+| Pre-condition violation | Code Contracts (081KQGDBJ0008QG0R002WY918J, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
 
 Reading the table: each row's left column is the *guardrail
 form* (automated, gating); the right column is the *mover
@@ -202,27 +202,27 @@ Operational shape:
   encoded as `tools/lint/*.sh` / Semgrep / CodeQL queries.
   Each lane is checked mechanically; coordinator only
   reviews lint failures.
-- **Pre/post mechanization** (per B-0141 (not yet filed)) — preconditions
+- **Pre/post mechanization** (per 081KQGDBJ0008QG0R0015RNK3P (not yet filed)) — preconditions
   + postconditions checked at function/module/PR boundary;
   Hoare-logic discipline mechanized.
-- **Code Contracts revival** (per B-0142 (not yet filed)) — design-by-contract
+- **Code Contracts revival** (per 081KQGDBJ0008QG0R002WY918J (not yet filed)) — design-by-contract
   primitives that enforce invariants at compile/runtime,
   not at review time.
-- **Mechanized claim verification** (per B-0130) —
+- **Mechanized claim verification** (per 081KQGDBJ0008QG0R002Y31XJ3) —
   verify-before-state-claim runs as a script, not as a
   reviewer's manual check.
 - **Mechanized auditor for BP violations** (per
   task #350 — Otto-357 mechanized auditor extension) —
   no-directives-prose lint runs in CI, not in human review.
 - **Sequent calculus for retraction-attribution** (per
-  B-0133) — formal-system mechanization of attribution +
+  081KQGDBJ0008QG0R0035M1YRC) — formal-system mechanization of attribution +
   retraction; correctness guaranteed by proof, not by
   vigilance.
-- **Modal logic for retractability** (per B-0135) —
+- **Modal logic for retractability** (per 081KQGDBJ0008QG0R002X4AFA0) —
   formal grounding for Quantum Rodney's Razor; retractable
   decisions identifiable mechanically.
 - **Type-theoretic orthogonality discipline** (per
-  B-0134) — orthogonality enforced by type system, not
+  081KQGDBJ0008QG0R0032X1MMC) — orthogonality enforced by type system, not
   by review.
 
 The pattern: **every BP-NN rule that can be mechanized
@@ -402,7 +402,7 @@ PM-2's core discipline: **scheduled forward-research cadence**
 that produces feature-gap-predictions and queues them as
 backlog rows BEFORE the loop encounters them.
 
-Operational shape (candidate; to be designed in B-0145):
+Operational shape (candidate; to be designed in 081KQGDBJ0008QG0R000RWAA67):
 
 - **Cadence**: weekly or per-round (longer-than-tick).
 - **Inputs**: TECH-RADAR, GLOSSARY churn, recent
@@ -441,7 +441,7 @@ at scale"* serves both: PM-1 mechanizes the reactive-decisions
 
 ### Backlog row
 
-B-0145 captures the actionable design work for the PM-2 role:
+081KQGDBJ0008QG0R000RWAA67 captures the actionable design work for the PM-2 role:
 research-to-predict-features-before-friction discipline,
 cadence, inputs, outputs, calibration metric.
 
@@ -485,7 +485,7 @@ cleanly onto a dimension of the architecture:
   discovery, JTBD (jobs-to-be-done), discovery-vs-delivery
   split.
 - **Maps to**: PM-2 (Product Manager — currently unfilled
-  per B-0145). The discovery-vs-delivery distinction is the
+  per 081KQGDBJ0008QG0R000RWAA67). The discovery-vs-delivery distinction is the
   same shape as PM-2 (proactive research) vs PM-1 (reactive
   execution).
 - **Pull-list for the factory**:
@@ -677,7 +677,7 @@ The factory already operates much of this informally:
 | Tradition | Factory artifact (current) | Gap |
 |---|---|---|
 | PMP | Otto-as-PM, BACKLOG, ROUND-HISTORY | Risk register, stakeholder register |
-| Product Mgmt | TECH-RADAR, demo target | PM-2 role unfilled (B-0145) |
+| Product Mgmt | TECH-RADAR, demo target | PM-2 role unfilled (081KQGDBJ0008QG0R000RWAA67) |
 | Six Sigma | BP-NN rules, automated lints | DMAIC measure-analyze formalization |
 | Kanban | `gh pr list`, scaling-ladder | WIP limits, pull-based flow, swimlane viz |
 | Lean | ROUND-HISTORY (informal kaizen) | Formal waste audit, value-stream cycle-time |
@@ -710,17 +710,17 @@ which is precisely why amortization is the keystone."*
   unmechanized ones are coordinator-load.
 - `docs/CONFLICT-RESOLUTION.md` — specialist-review
   protocol; complements (not replaced by) mechanization.
-- B-0141 (pre/post pattern) — mechanization primitive at
+- 081KQGDBJ0008QG0R0015RNK3P (pre/post pattern) — mechanization primitive at
   function/module boundary.
-- B-0142 (Code Contracts revival) — mechanization primitive
+- 081KQGDBJ0008QG0R002WY918J (Code Contracts revival) — mechanization primitive
   at runtime/compile boundary.
-- B-0130 (verify-before-state-claim mechanized auditor) —
+- 081KQGDBJ0008QG0R002Y31XJ3 (verify-before-state-claim mechanized auditor) —
   mechanization of claim-integrity discipline.
-- B-0133 (sequent calculus for claim retraction) — formal
+- 081KQGDBJ0008QG0R0035M1YRC (sequent calculus for claim retraction) — formal
   mechanization of attribution.
-- B-0134 (type-theoretic orthogonality) — type-system
+- 081KQGDBJ0008QG0R0032X1MMC (type-theoretic orthogonality) — type-system
   mechanization of orthogonality.
-- B-0135 (modal logic for retractability) — formal
+- 081KQGDBJ0008QG0R002X4AFA0 (modal logic for retractability) — formal
   mechanization of Quantum Rodney's Razor.
 - agent-orchestra cluster (#324–#339) — operationalization
   of rung 5 peer-mode-claims protocol.

@@ -66,7 +66,7 @@ Tick 2038Z. Quiet checkpoint #3 of session (1919Z + 1952Z prior). 22-tick substa
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Link only to backlog rows that exist in-tree**
 
-  This shard says B-0537 is already filed and links `docs/backlog/P3/B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md`, but that file is not present in this commit snapshot, so the reference is a dead link. Because tick shards are used as durable audit substrate, a missing linked artifact breaks traceability for the claimed residual-capture work and makes follow-up triage harder.
+  This shard says 081KRMEXM0008QG0R0034SS319 is already filed and links `docs/backlog/P3/081KRMEXM0008QG0R0034SS319-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md`, but that file is not present in this commit snapshot, so the reference is a dead link. Because tick shards are used as durable audit substrate, a missing linked artifact breaks traceability for the claimed residual-capture work and makes follow-up triage harder.
 
   Useful? React with 👍 / 👎.
   </pre>
@@ -76,7 +76,7 @@ Tick 2038Z. Quiet checkpoint #3 of session (1919Z + 1952Z prior). 22-tick substa
   - **`AceHack` (human)** at 2026-05-15T20:54:53Z on `docs/hygiene-history/ticks/2026/05/15/2038Z.md`:70 (association: MEMBER)
 
     <pre>
-    Fixed: merged main into branch; B-0537 row now present in tree via PR #3580. Dead link resolved.
+    Fixed: merged main into branch; 081KRMEXM0008QG0R0034SS319 row now present in tree via PR #3580. Dead link resolved.
     </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -90,7 +90,7 @@ Tick 2038Z. Quiet checkpoint #3 of session (1919Z + 1952Z prior). 22-tick substa
 - **`Copilot` (bot)** at 2026-05-15T20:44:54Z on `docs/hygiene-history/ticks/2026/05/15/2038Z.md`:70 (association: NONE)
 
   <pre>
-  P1 (xref): This mentions B-0537 and links to `docs/backlog/P3/B-0537-...` but that file does not exist in the repo, so the link is currently broken. Either add the B-0537 row file in this PR, or change these references to point at an existing artifact (e.g., the PR link) until the row lands, to avoid merging a shard with dead xrefs.
+  P1 (xref): This mentions 081KRMEXM0008QG0R0034SS319 and links to `docs/backlog/P3/081KRMEXM0008QG0R0034SS319-...` but that file does not exist in the repo, so the link is currently broken. Either add the 081KRMEXM0008QG0R0034SS319 row file in this PR, or change these references to point at an existing artifact (e.g., the PR link) until the row lands, to avoid merging a shard with dead xrefs.
 
   </pre>
 
@@ -99,7 +99,7 @@ Tick 2038Z. Quiet checkpoint #3 of session (1919Z + 1952Z prior). 22-tick substa
   - **`AceHack` (human)** at 2026-05-15T20:54:56Z on `docs/hygiene-history/ticks/2026/05/15/2038Z.md`:70 (association: MEMBER)
 
     <pre>
-    Fixed: merged main into branch; B-0537 row now present in tree via PR #3580. Dead link resolved.
+    Fixed: merged main into branch; 081KRMEXM0008QG0R0034SS319 row now present in tree via PR #3580. Dead link resolved.
     </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -113,7 +113,7 @@ Tick 2038Z. Quiet checkpoint #3 of session (1919Z + 1952Z prior). 22-tick substa
 - **`Copilot` (bot)** at 2026-05-15T20:44:54Z on `docs/hygiene-history/ticks/2026/05/15/2038Z.md`:13 (association: NONE)
 
   <pre>
-  P2: This sentence says “filed 3 backlog rows” but only lists two (B-0536, B-0537). Either update the count or include the missing third row id to keep the shard internally consistent.
+  P2: This sentence says “filed 3 backlog rows” but only lists two (081KRMEXM0008QG0R001BH94PS, 081KRMEXM0008QG0R0034SS319). Either update the count or include the missing third row id to keep the shard internally consistent.
 
   </pre>
 
@@ -122,7 +122,7 @@ Tick 2038Z. Quiet checkpoint #3 of session (1919Z + 1952Z prior). 22-tick substa
   - **`AceHack` (human)** at 2026-05-15T20:54:59Z on `docs/hygiene-history/ticks/2026/05/15/2038Z.md`:13 (association: MEMBER)
 
     <pre>
-    Fixed: corrected 'filed 3 backlog rows' → 'filed 2 backlog rows' — only B-0536 and B-0537 were actually filed.
+    Fixed: corrected 'filed 3 backlog rows' → 'filed 2 backlog rows' — only 081KRMEXM0008QG0R001BH94PS and 081KRMEXM0008QG0R0034SS319 were actually filed.
     </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
@@ -166,7 +166,7 @@ shard(tick): 2038Z — quiet checkpoint #3; row-filing diminishing retu…
 - PR #3580 + #3581 wait-CI
 - Surveyed 3 audits (formal-artifacts, cross-platform-parity, ci-cache-paths) — no single-tick scope
 - Chose NOT to file 3rd backlog row this phase; razor-discipline + no-op-cadence rule
-- Future-Otto hints in shard: 7 TLA+ specs, 13 .sh→.ps1 twins, 623 md032 hits, B-0536/B-0537
+- Future-Otto hints in shard: 7 TLA+ specs, 13 .sh→.ps1 twins, 623 md032 hits, 081KRMEXM0008QG0R001BH94PS/081KRMEXM0008QG0R0034SS319
 - 23-tick session arc; cron live
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
@@ -186,10 +186,10 @@ fix(shard/2038Z): MD032 blank line, row-count accuracy, fix dead prom…
 …otion-ledger path
 
 - Add blank line before list (MD032/blanks-around-lists fix)
-- Correct "filed 3 backlog rows" → "filed 2 backlog rows" (only B-0536 + B-0537 filed)
+- Correct "filed 3 backlog rows" → "filed 2 backlog rows" (only 081KRMEXM0008QG0R001BH94PS + 081KRMEXM0008QG0R0034SS319 filed)
 - Replace dead docs/research/promotion-ledger xref with actual paths:
   memory/promotion-ledger.jsonl + tools/hygiene/audit-promotion-ledger.ts
-- Merge main to pull in B-0537 backlog row (resolves dead link finding)
+- Merge main to pull in 081KRMEXM0008QG0R0034SS319 backlog row (resolves dead link finding)
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```

@@ -238,7 +238,7 @@ two voices remain distinct.
 ## Companion landings
 
 - Memory file: `memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`
-- Backlog row (skill build): `docs/backlog/P0/B-0160-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
+- Backlog row (skill build): `docs/backlog/P0/081KQJZR90008QG0R000FTJ1TC-mechanical-authorization-check-skill-build-claudeai-2026-05-02.md`
   — landed in this same PR; tracks the build sequencing for
   the pace-instruction-resolver skill.
 - PR #1198 status: lands as documentation; this packet is the

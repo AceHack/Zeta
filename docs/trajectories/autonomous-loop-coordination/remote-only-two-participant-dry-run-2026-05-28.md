@@ -2,7 +2,7 @@
 
 Status: participant A receipt recorded; release pending
 Grounding backlog:
-`docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
+`docs/backlog/P2/081KQX9B50008QG0R001MNYK61-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
 Parent matrix:
 `docs/trajectories/autonomous-loop-coordination/remote-only-coordination-test-matrix.md`
 Preflight:
@@ -10,7 +10,7 @@ Preflight:
 
 ## Scope
 
-This packet advances the B-0209 minimum dry run after the
+This packet advances the 081KQX9B50008QG0R001MNYK61 minimum dry run after the
 single-participant preflight. The test remains deliberately remote-only:
 coordination evidence must be recoverable from pushed git refs and commit
 history, not from the local broadcast bus, shared worktrees, local logs,
@@ -34,7 +34,7 @@ history:
 Ref: origin/claim/task-autonomous-loop-coordination-child-packet-20260528
 Commit: 3f061c7de9a36decd99a998038c8b098e1cbf315
 Claim file: docs/claims/task-autonomous-loop-coordination-child-packet-20260528.md
-Scope: remote-only dry-run execution report grounded in B-0209
+Scope: remote-only dry-run execution report grounded in 081KQX9B50008QG0R001MNYK61
 Expected path set: docs/trajectories/autonomous-loop-coordination/RESUME.md
                    plus one child packet/evidence artifact
 ```
@@ -107,7 +107,7 @@ receipt comparing the path sets.
 
 The dry run is still not fully closed because release state is part of the
 protocol. Both current claims must release through git history before this can
-be treated as a complete B-0209 pass.
+be treated as a complete 081KQX9B50008QG0R001MNYK61 pass.
 
 ## Next Safe Step
 

@@ -7,7 +7,7 @@ slug: ast-as-essence-file-handlers-store-code-structured-docs-as-a
 title: "AST-as-essence file handlers: store code/structured-docs as AST-in-YAML, render per-developer style from editorconfig (semantic merge, no formatting noise)"
 created: 2026-06-07T14:54:39.246Z
 depends_on: []
-composes_with: ["081KTGTJC1Q08QG0R002VCB55A", "B-0969"]
+composes_with: ["081KTGTJC1Q08QG0R002VCB55A", "081KT07NV0008QG0R001YDB73K"]
 ---
 
 # AST-as-essence file handlers: store code/structured-docs as AST-in-YAML, render per-developer style from editorconfig (semantic merge, no formatting noise)
@@ -57,5 +57,5 @@ produces NO diff; a semantic change merges at the AST level.
 ## Anchors
 
 - canonical-essence research doc · ZetaFS per-file-type plugins (081KTGTJC1Q) · confluence (081KTH8RSXS) ·
-  bit-perfect serializers / B-0969 · DynamicValue/Bonsai (AST-as-data) · Unison (content-addressed code),
+  bit-perfect serializers / 081KT07NV0008QG0R001YDB73K · DynamicValue/Bonsai (AST-as-data) · Unison (content-addressed code),
   MPS/Lamdu (projectional), tree-sitter/Roslyn (faithful AST incl. trivia), editorconfig, gofmt/Prettier.

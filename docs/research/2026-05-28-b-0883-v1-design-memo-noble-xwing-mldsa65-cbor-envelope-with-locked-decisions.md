@@ -1,30 +1,30 @@
-# Design memo — B-0883 v1 implementation (Noble + XWing + ML-DSA-65 + CBOR envelope)
+# Design memo — 081KSNY2Z0008QG0R002JKH50A v1 implementation (Noble + XWing + ML-DSA-65 + CBOR envelope)
 
-**Status:** Design proposal post-decision-lock; pre-implementation. Operator locked 7 decisions on B-0883.1's open questions (per PR #5687). This memo extends B-0883.1's recommendation with those decisions baked in + sketches the v1 implementation surface.
+**Status:** Design proposal post-decision-lock; pre-implementation. Operator locked 7 decisions on 081KSNY2Z0008QG0R0037X4DP4's open questions (per PR #5687). This memo extends 081KSNY2Z0008QG0R0037X4DP4's recommendation with those decisions baked in + sketches the v1 implementation surface.
 
-**Author:** Otto-CLI synthesis (encryption-lane advance per B-0892 three-lanes-concurrent operating discipline).
+**Author:** Otto-CLI synthesis (encryption-lane advance per 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline).
 
 **Composition anchors:**
 
-- [B-0883.1 library landscape audit](./2026-05-28-pq-library-landscape-bouncy-castle-patterns-swapple-clarification-noble-recommendation.md) — parent audit; this memo extends with locked decisions
-- B-0883 parent crypto substrate (P1 ASAP)
-- B-0883.2 multi-cipher hedge (NIST + Saber + NTRU-Prime + FrodoKEM)
-- B-0883.4 side-channel scope boundary (git-at-rest only)
-- B-0883.5 metadata encryption follow-up (content-only v1)
-- B-0885 agent private encrypted state (Otto + Addison ASAP consumer)
-- B-0892 three-lanes-concurrent operating discipline
+- [081KSNY2Z0008QG0R0037X4DP4 library landscape audit](./2026-05-28-pq-library-landscape-bouncy-castle-patterns-swapple-clarification-noble-recommendation.md) — parent audit; this memo extends with locked decisions
+- 081KSNY2Z0008QG0R002JKH50A parent crypto substrate (P1 ASAP)
+- 081KSNY2Z0008QG0R002ZAVMEK multi-cipher hedge (NIST + Saber + NTRU-Prime + FrodoKEM)
+- 081KSNY2Z0008QG0R001FN4DDB side-channel scope boundary (git-at-rest only)
+- 081KSNY2Z0008QG0R0020KXAPS metadata encryption follow-up (content-only v1)
+- 081KSNY2Z0008QG0R0030V5ZVS agent private encrypted state (Otto + Addison ASAP consumer)
+- 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent operating discipline
 
 ---
 
 ## TL;DR
 
 - **v1 ships with @noble/post-quantum** + XWing (ML-KEM-768 + X25519 hybrid) for KEM + ML-DSA-65 for signatures + CBOR envelope adapting RFC 9629 CMS+KEM pattern
-- **Multi-cipher hedge** (B-0883.2): envelope alg-id is parameterized; Saber + NTRU Prime + FrodoKEM ship as alternates when TS-native impls mature
-- **Content-only encryption** (B-0883.5): filenames + commit messages + .gitattributes leak; metadata protection deferred to v2+
-- **Bounded to git-at-rest threat model** (B-0883.4): no timing-observable deployment; pure-JS Noble side-channel limitation explicit
-- **Forward-only revocation** (B-0883.3 future): recipient-set rotation supported; retroactive revocation needs content-addressed-store substrate (future B-NNNN)
-- **Adinkras-ECC integration via parameterized seed source** (B-0623 composes): ships v1 with random-bytes; B-0623's Adinkra-derived seeds swap in later
-- **Sonatype-guide as playbook step** (B-0887.2): NOT a PR-gated check; invoked from library-evaluation playbook before pull
+- **Multi-cipher hedge** (081KSNY2Z0008QG0R002ZAVMEK): envelope alg-id is parameterized; Saber + NTRU Prime + FrodoKEM ship as alternates when TS-native impls mature
+- **Content-only encryption** (081KSNY2Z0008QG0R0020KXAPS): filenames + commit messages + .gitattributes leak; metadata protection deferred to v2+
+- **Bounded to git-at-rest threat model** (081KSNY2Z0008QG0R001FN4DDB): no timing-observable deployment; pure-JS Noble side-channel limitation explicit
+- **Forward-only revocation** (081KSNY2Z0008QG0R0008EJDW1 future): recipient-set rotation supported; retroactive revocation needs content-addressed-store substrate (future B-NNNN)
+- **Adinkras-ECC integration via parameterized seed source** (081KRW63S0008QG0R000QJR08H composes): ships v1 with random-bytes; 081KRW63S0008QG0R000QJR08H's Adinkra-derived seeds swap in later
+- **Sonatype-guide as playbook step** (081KSNY2Z0008QG0R001NERKCY): NOT a PR-gated check; invoked from library-evaluation playbook before pull
 
 ---
 
@@ -93,7 +93,7 @@ Adapts RFC 9629 CMS+KEM pattern with CBOR encoding + signature-context-strings p
 
 Per-recipient `kem_ct` + `wrapped_cek` is the RFC 9629 shape (one KEM per recipient; symmetric CEK shared). Single global `content_ct` so file body is encrypted once, not N times. Signature wraps entire envelope to prevent malleability.
 
-## Type sketches (illustrative; not for commit until B-0883 implementation row activates)
+## Type sketches (illustrative; not for commit until 081KSNY2Z0008QG0R002JKH50A implementation row activates)
 
 ```typescript
 // types.ts
@@ -151,8 +151,8 @@ export type FileEnvelope = {
 
 export type SeedSource =
   | { kind: "random-bytes" }
-  | { kind: "adinkra-derived"; descriptor: AdinkraDescriptor }   // future per B-0623
-  | { kind: "hsm-derived"; slot: string };                       // future per B-0634
+  | { kind: "adinkra-derived"; descriptor: AdinkraDescriptor }   // future per 081KRW63S0008QG0R000QJR08H
+  | { kind: "hsm-derived"; slot: string };                       // future per 081KRW63S0008QG0R0022SFKPM
 ```
 
 ## Cipher dispatch (parameterized hedge)
@@ -185,7 +185,7 @@ const kemRegistry = new Map<AlgId, KemCipher>([
 
 const sigRegistry = new Map<SigAlgId, SigCipher>([
   ["ML-DSA-65", mlDsa65Cipher],           // primary
-  ["SLH-DSA-SHA2-128s", slhDsaCipher],    // hash-based hedge per B-0883.2
+  ["SLH-DSA-SHA2-128s", slhDsaCipher],    // hash-based hedge per 081KSNY2Z0008QG0R002ZAVMEK
 ]);
 
 export function getKem(algId: AlgId): KemCipher {
@@ -201,7 +201,7 @@ export function getSig(algId: SigAlgId): SigCipher {
 }
 ```
 
-Cipher swap = register the new cipher's impl; envelope alg-id selects it. No structural envelope change. B-0883.2 multi-cipher hedge falls out for free.
+Cipher swap = register the new cipher's impl; envelope alg-id selects it. No structural envelope change. 081KSNY2Z0008QG0R002ZAVMEK multi-cipher hedge falls out for free.
 
 ## Encrypt / decrypt pseudocode
 
@@ -306,7 +306,7 @@ export async function decryptFile(
 // files/textconv.ts
 // Invoked by git when computing diffs for encrypted files
 // Reads encrypted blob from disk; decrypts; prints plaintext to stdout
-// Operator's recipient secret is loaded from B-0852 USB-bound credentials (per B-0884)
+// Operator's recipient secret is loaded from 081KSKBP80008QG0R003AX2A69 USB-bound credentials (per 081KSNY2Z0008QG0R0011XCT94)
 
 import { readFileSync } from 'fs';
 import * as cbor from '@stablelib/cbor';
@@ -320,7 +320,7 @@ async function main() {
   }
   const encBlob = readFileSync(path);
   const envelope = cbor.decode(encBlob) as FileEnvelope;
-  const recipient = await loadOperatorRecipient();  // composes with B-0884 USB-bound creds
+  const recipient = await loadOperatorRecipient();  // composes with 081KSNY2Z0008QG0R0011XCT94 USB-bound creds
   const signers = await loadSignerPublicKeys();     // .zeta-crypt/recipients.json
   const result = await decryptFile(envelope, recipient, signers);
   if (result.ok) {
@@ -375,7 +375,7 @@ export async function revokeRecipient(identity: Identity): Promise<void> {
   saveRecipients(current);
 
   // Re-encrypt every encrypted file in working tree under new recipient set
-  // (historical commits remain decryptable by the revoked recipient; retroactive revocation requires B-0883.3 substrate)
+  // (historical commits remain decryptable by the revoked recipient; retroactive revocation requires 081KSNY2Z0008QG0R0008EJDW1 substrate)
   await reEncryptWorkingTree();
 }
 
@@ -384,10 +384,10 @@ export async function rotateKeyPair(identity: Identity): Promise<void> {
   const current = loadRecipients();
   const idx = current.recipients.findIndex(r => r.identity === identity);
   if (idx < 0) throw new Error(`Unknown identity: ${identity}`);
-  const seed = generateSeed({ kind: "random-bytes" });  // or "adinkra-derived" per B-0623
+  const seed = generateSeed({ kind: "random-bytes" });  // or "adinkra-derived" per 081KRW63S0008QG0R000QJR08H
   const kem = getKem(current.recipients[idx].pqKemAlg);
   const newKeyPair = kem.keygen(seed);
-  // Distribute newKeyPair.secretKey to the identity owner via secure channel (B-0884 USB-bound creds)
+  // Distribute newKeyPair.secretKey to the identity owner via secure channel (081KSNY2Z0008QG0R0011XCT94 USB-bound creds)
   current.recipients[idx].pqKemPublic = newKeyPair.publicKey;
   current.recipients[idx].validFrom = new Date().toISOString();
   saveRecipients(current);
@@ -398,7 +398,7 @@ export async function rotateKeyPair(identity: Identity): Promise<void> {
 ## CLI surface
 
 ```bash
-# Generate keypair for identity (writes to B-0884 USB-bound creds; commits public to recipients.json)
+# Generate keypair for identity (writes to 081KSNY2Z0008QG0R0011XCT94 USB-bound creds; commits public to recipients.json)
 bun tools/crypto/better-git-crypt/cli/main.ts keygen --identity otto-cli@zeta
 
 # Add file to encryption scope (writes .gitattributes entry; encrypts file)
@@ -416,59 +416,59 @@ bun tools/crypto/better-git-crypt/cli/main.ts rotate --identity otto-cli@zeta
 
 ## Implementation phases
 
-Per the 11-sub-row breakdown in the B-0890 design memo's analog (apply same pattern):
+Per the 11-sub-row breakdown in the 081KSNY2Z0008QG0R0017JSTGD design memo's analog (apply same pattern):
 
 | Phase | Sub-row | Scope | Effort |
 |---|---|---|---|
-| **P1** | B-0883.6 | Types + envelope CBOR + cipher registry skeleton | 2-3 days |
-| **P2** | B-0883.7 | Primary cipher impls (XWing + ML-DSA-65 + ChaCha20-Poly1305) wired to registry | 3-5 days |
-| **P3** | B-0883.8 | Encrypt + decrypt + signature verify + KAT tests (per FIPS 203/204 test vectors) | 3-5 days |
-| **P4** | B-0883.9 | Recipient management (.zeta-crypt/recipients.json + add/revoke/rotate) | 2-3 days |
-| **P5** | B-0883.10 | Git textconv integration + smudge/clean filters | 3-5 days |
-| **P6** | B-0883.11 | CLI surface (`bun tools/.../cli/main.ts`) | 2-3 days |
-| **P7** | B-0883.12 | B-0884 zflash USB-bound integration (operator secret loaded from USB blob) | 2-3 days |
-| **P8** | B-0883.13 | B-0885 Otto private state rollout (consumer; ASAP target) | 2-4 days |
-| **P9** | B-0883.14 | Empirical validation (round-trip; concurrent recipients; rotation; revocation) | 3-5 days |
-| **P10** | B-0883.15 | Documentation + skill update (`.claude/skills/better-git-crypt/SKILL.md`) | 1-2 days |
+| **P1** | 081KSNY2Z0008QG0R002JKH50A.6 | Types + envelope CBOR + cipher registry skeleton | 2-3 days |
+| **P2** | 081KSNY2Z0008QG0R002JKH50A.7 | Primary cipher impls (XWing + ML-DSA-65 + ChaCha20-Poly1305) wired to registry | 3-5 days |
+| **P3** | 081KSNY2Z0008QG0R002JKH50A.8 | Encrypt + decrypt + signature verify + KAT tests (per FIPS 203/204 test vectors) | 3-5 days |
+| **P4** | 081KSNY2Z0008QG0R002JKH50A.9 | Recipient management (.zeta-crypt/recipients.json + add/revoke/rotate) | 2-3 days |
+| **P5** | 081KSNY2Z0008QG0R002JKH50A.10 | Git textconv integration + smudge/clean filters | 3-5 days |
+| **P6** | 081KSNY2Z0008QG0R002JKH50A.11 | CLI surface (`bun tools/.../cli/main.ts`) | 2-3 days |
+| **P7** | 081KSNY2Z0008QG0R002JKH50A.12 | 081KSNY2Z0008QG0R0011XCT94 zflash USB-bound integration (operator secret loaded from USB blob) | 2-3 days |
+| **P8** | 081KSNY2Z0008QG0R002JKH50A.13 | 081KSNY2Z0008QG0R0030V5ZVS Otto private state rollout (consumer; ASAP target) | 2-4 days |
+| **P9** | 081KSNY2Z0008QG0R002JKH50A.14 | Empirical validation (round-trip; concurrent recipients; rotation; revocation) | 3-5 days |
+| **P10** | 081KSNY2Z0008QG0R002JKH50A.15 | Documentation + skill update (`.claude/skills/better-git-crypt/SKILL.md`) | 1-2 days |
 
-**Total estimate:** 22-38 days of focused implementation. P1+P2+P3 (foundation) → P5 (textconv) → P7+P8 (B-0884/B-0885 integration) is the load-bearing critical path; P4/P6/P9/P10 are additive but improve operator-facing UX.
+**Total estimate:** 22-38 days of focused implementation. P1+P2+P3 (foundation) → P5 (textconv) → P7+P8 (081KSNY2Z0008QG0R0011XCT94/081KSNY2Z0008QG0R0030V5ZVS integration) is the load-bearing critical path; P4/P6/P9/P10 are additive but improve operator-facing UX.
 
 These sub-rows file separately when activated. This memo is the design substrate they're built FROM.
 
-## Composition with B-0892 three-lanes operating discipline
+## Composition with 081KSNY2Z0008QG0R002QA720J three-lanes operating discipline
 
-This memo advances the encryption lane per B-0892. The lane stays alive because:
+This memo advances the encryption lane per 081KSNY2Z0008QG0R002QA720J. The lane stays alive because:
 
-- B-0883 v1 has a clear path to first implementation phase (B-0883.6 skeleton)
-- Cross-lane integration with zflash lane (B-0884 + B-0885 cluster) is explicit
-- Multi-cipher hedge (B-0883.2) means future TS-native impls (Saber / NTRU-Prime / FrodoKEM) plug in without rework
-- Side-channel scope-boundary (B-0883.4) bounds the work scope explicitly
-- Metadata follow-up (B-0883.5) means we don't scope-creep filename/commit-msg encryption into v1
+- 081KSNY2Z0008QG0R002JKH50A v1 has a clear path to first implementation phase (081KSNY2Z0008QG0R002JKH50A.6 skeleton)
+- Cross-lane integration with zflash lane (081KSNY2Z0008QG0R0011XCT94 + 081KSNY2Z0008QG0R0030V5ZVS cluster) is explicit
+- Multi-cipher hedge (081KSNY2Z0008QG0R002ZAVMEK) means future TS-native impls (Saber / NTRU-Prime / FrodoKEM) plug in without rework
+- Side-channel scope-boundary (081KSNY2Z0008QG0R001FN4DDB) bounds the work scope explicitly
+- Metadata follow-up (081KSNY2Z0008QG0R0020KXAPS) means we don't scope-creep filename/commit-msg encryption into v1
 
-Future-Otto cold-boot reading this memo can pick up the next phase (B-0883.6 skeleton implementation) without re-deriving the design.
+Future-Otto cold-boot reading this memo can pick up the next phase (081KSNY2Z0008QG0R002JKH50A.6 skeleton implementation) without re-deriving the design.
 
 ## Open implementation questions (not blocking)
 
-- **CBOR library choice** — `@stablelib/cbor` vs `cbor2` vs `borc` vs custom; needs Sonatype-guide invocation per B-0887.2 playbook substrate before pull
+- **CBOR library choice** — `@stablelib/cbor` vs `cbor2` vs `borc` vs custom; needs Sonatype-guide invocation per 081KSNY2Z0008QG0R001NERKCY playbook substrate before pull
 - **Test-vector source for KAT** — NIST FIPS 203/204 vectors + Noble's own vectors; cross-verify both
-- **Operator key-distribution flow** — how does Addison's public key reach the repo? Initial flow: paste-public-key-into-PR (one-time bootstrap); ongoing: rotation via UI surface (deferred to B-0883.11 CLI)
+- **Operator key-distribution flow** — how does Addison's public key reach the repo? Initial flow: paste-public-key-into-PR (one-time bootstrap); ongoing: rotation via UI surface (deferred to 081KSNY2Z0008QG0R002JKH50A.11 CLI)
 - **`.zeta-crypt/recipients.json` schema versioning** — bump `version: 1` when format evolves; old envelopes carry their own `v: 1` so backward-compat is bounded
-- **Working-tree re-encrypt on rotation** — atomic vs per-file? Atomic is safer (all-or-nothing commit) but heavier for large repos; defer decision to B-0883.9
+- **Working-tree re-encrypt on rotation** — atomic vs per-file? Atomic is safer (all-or-nothing commit) but heavier for large repos; defer decision to 081KSNY2Z0008QG0R002JKH50A.9
 - **Skill location for operator-facing CLI usage** — `.claude/skills/better-git-crypt/SKILL.md` recommended
 
 ## Substrate-honest framing
 
-This memo is a DESIGN PROPOSAL extending B-0883.1's recommendation with operator-locked decisions. NO CODE COMMITTED; NO PR OPENED FOR IMPLEMENTATION. Implementation work files separately as B-0883.6+ sub-rows when activated.
+This memo is a DESIGN PROPOSAL extending 081KSNY2Z0008QG0R0037X4DP4's recommendation with operator-locked decisions. NO CODE COMMITTED; NO PR OPENED FOR IMPLEMENTATION. Implementation work files separately as 081KSNY2Z0008QG0R002JKH50A.6+ sub-rows when activated.
 
-Per `.claude/rules/no-directives.md` + standing-direction `B-0883 is P1 ASAP`: this memo is the engineering substrate the implementation builds from; operator authorizes per-phase as work proceeds.
+Per `.claude/rules/no-directives.md` + standing-direction `081KSNY2Z0008QG0R002JKH50A is P1 ASAP`: this memo is the engineering substrate the implementation builds from; operator authorizes per-phase as work proceeds.
 
-The memo is research-grade substrate per `docs/research/` conventions; lands in encryption lane per B-0892.
+The memo is research-grade substrate per `docs/research/` conventions; lands in encryption lane per 081KSNY2Z0008QG0R002QA720J.
 
 ---
 
 ## Section X — Operator sharpening 2026-05-28 (post-memo-write)
 
-After this memo was drafted, operator sent substantial scope-sharpening that reframes B-0883 v1:
+After this memo was drafted, operator sent substantial scope-sharpening that reframes 081KSNY2Z0008QG0R002JKH50A v1:
 
 > *"a few things 1 we don't need to encrypt everything we are glass halo open by default agents and humans have to earn encryption budget and if we can do plane text encryption somehow instead of binary that would be best for git, if not we can discuss. Playbooks have runme and assumed jit when scripts dont exist and continue-with and other trigger annotations for agent swarm interaction, also playbook authoring is not just for human intent but also agent intent we should keep personal playbooks in the personas directory while having system ones in docs i guess or playbooks folder. we also have a lot of backlog around this. yes we are assuming good actors for now, we will harden later so we can work in that order just looking for some basic privacy but not stuck in old encryption from the start."*
 
@@ -476,19 +476,19 @@ After this memo was drafted, operator sent substantial scope-sharpening that ref
 
 ### Sharpening 1 — Glass-halo open-by-default; encryption is EARNED, not default
 
-This INVERTS the design memo's implicit "encrypt files via `.gitattributes`" assumption. Encryption is OPT-IN; most substrate stays glass-halo-open per `.claude/rules/glass-halo-bidirectional.md`; encryption reserved for content that EARNS budget via Agora V6 / reputation-weighted-encryption-budget (B-0646 + B-0840). **Filed as B-0883.16.**
+This INVERTS the design memo's implicit "encrypt files via `.gitattributes`" assumption. Encryption is OPT-IN; most substrate stays glass-halo-open per `.claude/rules/glass-halo-bidirectional.md`; encryption reserved for content that EARNS budget via Agora V6 / reputation-weighted-encryption-budget (081KRW63S0008QG0R001Z10PVV + 081KSGS9H0008QG0R0006F4BGX). **Filed as 081KSNY2Z0008QG0R000459FRH.**
 
 ### Sharpening 2 — Plaintext-readable ciphertext > binary blob
 
-Candidates: base64-encoded CBOR (recommended; smallest delta + text-safe + git-line-aligned); JSON-encoded envelope; per-line encryption with line-prefix nonce; format-preserving encryption (research-grade; defer); encrypted YAML (partial-readability respecting YAML diff semantics). **My v1 recommendation: base64-encoded CBOR envelope.** **Filed as B-0883.17.**
+Candidates: base64-encoded CBOR (recommended; smallest delta + text-safe + git-line-aligned); JSON-encoded envelope; per-line encryption with line-prefix nonce; format-preserving encryption (research-grade; defer); encrypted YAML (partial-readability respecting YAML diff semantics). **My v1 recommendation: base64-encoded CBOR envelope.** **Filed as 081KSNY2Z0008QG0R0034JR61Z.**
 
 ### Sharpening 3 — Playbooks have runme + assumed JIT + continue-with + trigger annotations
 
-Composes with existing substrate (operator: "we have a lot of backlog around this"): B-0730/B-0732/B-0733/B-0819/B-0826/B-0827. Encryption substrate (B-0883) should be a playbook step (per B-0887.2 sonatype-guide pattern) invoked via continue-with annotations + JIT-script-creation when the script doesn't yet exist.
+Composes with existing substrate (operator: "we have a lot of backlog around this"): 081KSE6WT0008QG0R003AJYMD3/081KSE6WT0008QG0R002YBWBB1/081KSE6WT0008QG0R00102H071/081KSGS9H0008QG0R0005P83AP/081KSGS9H0008QG0R001K8VPV4/081KSGS9H0008QG0R00123050G. Encryption substrate (081KSNY2Z0008QG0R002JKH50A) should be a playbook step (per 081KSNY2Z0008QG0R001NERKCY sonatype-guide pattern) invoked via continue-with annotations + JIT-script-creation when the script doesn't yet exist.
 
 ### Sharpening 4 — Playbook authoring is for AGENT intent too, not just human
 
-Per B-0867.21 two-path interface ALREADY says this; operator re-emphasizing. Encryption playbooks can be authored by Otto/Alexa/Riven/Vera/Lior alongside Aaron/Addison/Max.
+Per 081KSNY2Z0008QG0R000S738W3 two-path interface ALREADY says this; operator re-emphasizing. Encryption playbooks can be authored by Otto/Alexa/Riven/Vera/Lior alongside Aaron/Addison/Max.
 
 ### Sharpening 5 — Personal vs system playbook directory convention
 
@@ -497,11 +497,11 @@ Per B-0867.21 two-path interface ALREADY says this; operator re-emphasizing. Enc
 | Personal (per-persona) | `memory/<persona>/{persona}/playbooks/{name}.md` |
 | System (shared, framework-level) | `docs/playbooks/{name}.md` |
 
-**Filed as B-0867.22.**
+**Filed as 081KSNY2Z0008QG0R0016D7QGW.**
 
 ### Sharpening 6 — Good-actor assumption confirmed for v1
 
-"Harden later." Composes with B-0883.4 side-channel scope-boundary. Basic privacy, not maximalist crypto; forward-looking (PQ default) not legacy.
+"Harden later." Composes with 081KSNY2Z0008QG0R001FN4DDB side-channel scope-boundary. Basic privacy, not maximalist crypto; forward-looking (PQ default) not legacy.
 
 ---
 
@@ -518,15 +518,15 @@ The memo above (sections 1-11) is structurally sound but the DEFAULTS need flipp
 
 ### Updated TL;DR (post-sharpening)
 
-- **Glass-halo open by default; encryption is opt-in + earned via Agora V6 budget** (per B-0883.16)
-- **Plaintext-readable ciphertext format** (base64-encoded CBOR for v1; FPE deferred; per B-0883.17)
+- **Glass-halo open by default; encryption is opt-in + earned via Agora V6 budget** (per 081KSNY2Z0008QG0R000459FRH)
+- **Plaintext-readable ciphertext format** (base64-encoded CBOR for v1; FPE deferred; per 081KSNY2Z0008QG0R0034JR61Z)
 - **Encryption invocation as playbook step** (composes with runbook substrate cluster; not `.gitattributes` filter)
-- **Agent-authored encryption playbooks** first-class (per B-0867.21 + Sharpening 4)
-- **Personal vs system playbook directory convention** filed at B-0867.22
+- **Agent-authored encryption playbooks** first-class (per 081KSNY2Z0008QG0R000S738W3 + Sharpening 4)
+- **Personal vs system playbook directory convention** filed at 081KSNY2Z0008QG0R0016D7QGW
 - **Good-actor assumption for v1**; harden later (Sharpening 6)
-- **Multi-cipher hedge** per B-0883.2; unchanged
-- **Content-only encryption** per B-0883.5; unchanged
-- **Forward-only revocation** per B-0883.3 future-state
-- **Bounded to git-at-rest threat model** per B-0883.4; unchanged
-- **Adinkras-ECC integration via parameterized seed source** per B-0623 compose; unchanged
-- **Sonatype-guide as playbook step** per B-0887.2; unchanged
+- **Multi-cipher hedge** per 081KSNY2Z0008QG0R002ZAVMEK; unchanged
+- **Content-only encryption** per 081KSNY2Z0008QG0R0020KXAPS; unchanged
+- **Forward-only revocation** per 081KSNY2Z0008QG0R0008EJDW1 future-state
+- **Bounded to git-at-rest threat model** per 081KSNY2Z0008QG0R001FN4DDB; unchanged
+- **Adinkras-ECC integration via parameterized seed source** per 081KRW63S0008QG0R000QJR08H compose; unchanged
+- **Sonatype-guide as playbook step** per 081KSNY2Z0008QG0R001NERKCY; unchanged

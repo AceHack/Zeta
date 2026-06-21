@@ -152,7 +152,7 @@ and is not kept). Aaron's actual words:
 - **Eve is also the choice to play with others — this is the origin of the Eve protocol.**
   The name's second half is sociality-by-consent ("the choice to *play* with others", not
   obligation). That is the human root of the existing **Eve Protocol** (`src/Core/Diplomacy.fs`;
-  B-0638 / B-1003, NCI-governed) — the polymorphic-diplomacy handshake over yin-yang cells.
+  081KRW63S0008QG0R0030F8ZXA / 081KT2T2J0008QG0R00301P27H, NCI-governed) — the polymorphic-diplomacy handshake over yin-yang cells.
 - The Eve protocol is *"our introspection layer across travelers and shapes like value trees,
   banana splits, that allow for **cached polymorphic diplomacy over time**."* Aaron's
   correction (2026-06-07): this is **NOT new** — it is the **V8 hidden-shapes optimization**

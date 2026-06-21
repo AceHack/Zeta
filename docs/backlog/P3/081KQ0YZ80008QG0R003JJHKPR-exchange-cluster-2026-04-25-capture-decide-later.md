@@ -1,6 +1,5 @@
 ---
-id: B-0022
-zetaid: 081KQ0YZ80008QG0R003JJHKPR
+id: 081KQ0YZ80008QG0R003JJHKPR
 priority: P3
 status: open
 title: Exchange-cluster capture 2026-04-25 — substance-vs-throughput diagnostic + Aaron-as-convincer + AI-resolves-decade-old-issues pattern + DeepMind/Lean status + Microsoft AI for Science (MatterGen/MatterSim) + tele+port+leap taxonomic refinement; preserve, decide later
@@ -14,12 +13,12 @@ composes_with: [feedback_definitional_precision_changes_future_without_war_otto_
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
-#   - docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md (PR #523)
+#   - docs/backlog/P2/081KQ0YZ80008QG0R0026WN385-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md (PR #523)
 tags: [backlog, capture, decide-later, exchange-cluster, substance-not-throughput, aaron-convincer, ai-pattern, deepmind, microsoft-ai, mattergen, tele-port-leap, taxonomic-refinement]
 type: friction-reducer
 ---
 
-# B-0022 — Exchange-cluster capture 2026-04-25
+# 081KQ0YZ80008QG0R003JJHKPR — Exchange-cluster capture 2026-04-25
 
 Aaron 2026-04-25:
 
@@ -72,9 +71,9 @@ Empirical pattern: AI compressing previously-intractable problem timelines.
 - **MatterGen / MatterSim** (Microsoft Research, 2024): inorganic materials design via diffusion (see §6)
 - **Lean / Mathlib** community + ML-assisted theorem proving: formal-math acceleration
 
-**Soft cases (ideologically-loaded fields)**: AI can produce analytically-clean resolution but acceptance requires social-mechanism work. The Austrian-vs-Keynesian debate is one example (see §6 + B-0021); legitimacy follows clean analysis less reliably here.
+**Soft cases (ideologically-loaded fields)**: AI can produce analytically-clean resolution but acceptance requires social-mechanism work. The Austrian-vs-Keynesian debate is one example (see §6 + 081KQ0YZ80008QG0R0026WN385); legitimacy follows clean analysis less reliably here.
 
-**Composes with**: B-0021 (Aurora econ-foundation as test of pattern's generalization to ideologically-loaded fields), Otto-329 Phase 4+ (Aurora research direction), Otto-336 (growth via working on real problems).
+**Composes with**: 081KQ0YZ80008QG0R0026WN385 (Aurora econ-foundation as test of pattern's generalization to ideologically-loaded fields), Otto-329 Phase 4+ (Aurora research direction), Otto-336 (growth via working on real problems).
 
 **Decide-later question**: should Zeta explicitly position as a contributor to this pattern (see §5)? Currently positioned as consumer/observer.
 
@@ -210,11 +209,11 @@ All three would land cleanly. The taxonomy substrate is one-amendment-worth even
 
 > "if you want to understand scarcaty to the best of the ability of us humans, this guy knows his things, and gives real alternative history based on money that is not usually taught in schools, it's revolutionary if fully understoood https://saifedean.com/tbs"
 
-Aaron's recommendation as foundational reading for the substance-as-scarce framework. Composes with B-0021 (Aurora econ-foundation; Saifedean is mostly the Austrian-school + Bitcoin synthesis primary source).
+Aaron's recommendation as foundational reading for the substance-as-scarce framework. Composes with 081KQ0YZ80008QG0R0026WN385 (Aurora econ-foundation; Saifedean is mostly the Austrian-school + Bitcoin synthesis primary source).
 
 Honest positioning: Austrian-school + Bitcoin lineage (Mises Institute / Selgin / White / Saifedean's specific synthesis). Strong on monetary-history mechanism-teaching; weaker on cultural-effect causation claims. Worth reading as primary source when Aurora econ-foundation work activates.
 
-**Decide-later question**: actual reading + investigation per B-0021 methodology section (Otto-286 + Rodney's Razor on Saifedean's claims).
+**Decide-later question**: actual reading + investigation per 081KQ0YZ80008QG0R0026WN385 methodology section (Otto-286 + Rodney's Razor on Saifedean's claims).
 
 ---
 
@@ -239,7 +238,7 @@ The pattern: Aaron consults multiple AIs on substantive questions, surfaces the 
 - Does NOT pre-commit to action on any subtopic. Aaron's framing is "decide later."
 - Does NOT make the subtopics equally important. They're captured at the same level for findability, not because they're equal in load-bearing weight.
 - Does NOT replace the existing substrate references. Each subtopic points at where the load-bearing capture lives (or notes where capture is owed).
-- Does NOT capture topics already substantively covered elsewhere (e.g., Otto-338 SX, Otto-335 alignment, B-0021 econ-foundation). This row composes with those, doesn't duplicate.
+- Does NOT capture topics already substantively covered elsewhere (e.g., Otto-338 SX, Otto-335 alignment, 081KQ0YZ80008QG0R0026WN385 econ-foundation). This row composes with those, doesn't duplicate.
 
 ## Done when
 

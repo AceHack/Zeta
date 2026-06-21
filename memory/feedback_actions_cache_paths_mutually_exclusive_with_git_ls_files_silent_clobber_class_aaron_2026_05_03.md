@@ -45,7 +45,7 @@ of falsely-passing on stale state. Discovery-by-luck class.
 
 **Triggering case (2026-05-03):**
 
-CircuitRegistration `Safety` invariant fix (B-0180):
+CircuitRegistration `Safety` invariant fix (081KQNJ500008QG0R0001QHA1J):
 
 - Local: `Model checking completed. No error has been found.`
   3538 states / depth 14
@@ -125,6 +125,6 @@ audit's parser missed.
 
 **Reasoning lineage:** Aaron 2026-05-03 *"lucky catch how can you
 make it not lucky next time for same class or similar class"* —
-triggered after the CircuitRegistration B-0180 fix surfaced the
+triggered after the CircuitRegistration 081KQNJ500008QG0R0001QHA1J fix surfaced the
 silent-clobber bug. Substrate response: audit + lint gate + this
 memory file.

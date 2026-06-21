@@ -12,10 +12,10 @@ is wrong, the ADR changes.
 ## Context
 
 Zeta builds correctness-critical primitives in **four languages** — TypeScript, F#, C#,
-Rust — as a **non-Byzantine "compiler-BFT"** (B-0944, *"the compilers don't lie"*): the
+Rust — as a **non-Byzantine "compiler-BFT"** (081KSV2WD0008QG0R00051XS0N, *"the compilers don't lie"*): the
 same logic, each compiler an independent oracle, agreement = high confidence the logic is
-bit-perfect. Already shipped: the observe-algebra in all four (B-0867.27, PRs 6248 / 6251 /
-6253 / 6255) and the observe-fold additive monoid in C#+F# (B-0867.28, PR 6259). The
+bit-perfect. Already shipped: the observe-algebra in all four (081KSXN940008QG0R0033T2BQT, PRs 6248 / 6251 /
+6253 / 6255) and the observe-fold additive monoid in C#+F# (081KSXN940008QG0R0002287MP, PR 6259). The
 operator framed a per-language **role split** (voice, with Ani, 2026-05-31): F# =
 correctness core, TS = distribution core, C# = 2nd distribution core, Rust = low-level
 core — plus the **clean-room structure** (F# = the "dirty" spec informed by harvested
@@ -64,7 +64,7 @@ above the primitive layer:
 - **Default TypeScript** (distribution).
 - **+ F#** where correctness/proof is needed (the spec).
 - **+ C# behind a port/shim** when a *named* enterprise consumer can't take the shim — prefer
-  a pure-C# façade over the F# core (B-0445 already shipped this pattern, PR #3120) over a
+  a pure-C# façade over the F# core (081KRFA460008QG0R002JQERS5 already shipped this pattern, PR #3120) over a
   full re-implementation.
 - **+ Rust** only when a *named* WASM/systems customer exists.
 
@@ -73,7 +73,7 @@ above the primitive layer:
 
 **Why (challenge it):** four parallel impls is a 4× change-tax; spending it everywhere buys
 little and risks drift. Spending it on frozen kernel primitives — where bit-exact agreement
-is a real correctness signal (B-0949 caught a real bound bug via cross-language divergence) —
+is a real correctness signal (081KSV2WD0008QG0R002K85NP0 caught a real bound bug via cross-language divergence) —
 is where the BFT pays. *Newcomer pushback:* does the gate's "small+pure+total" exclude things
 that *should* be cross-checked (e.g. a stateful but security-critical component)? — then widen
 the gate for that named case + record why.
@@ -84,7 +84,7 @@ the gate for that named case + record why.
   **spec** the others implement from, but the *vectors* (not F#) are the authority no
   implementation can override. **No single implementation, including F#, self-certifies.**
 - **On cross-language divergence:** treat it as a **spec-ambiguity / real-bug ticket**, never
-  resolved by "ship whichever 3 agree" majority vote. Investigate (the B-0949 precedent:
+  resolved by "ship whichever 3 agree" majority vote. Investigate (the 081KSV2WD0008QG0R002K85NP0 precedent:
   divergence surfaced a genuine bug). F# (the spec) is authoritative for what the vectors
   *should be*; once the vectors are corrected, all four are fixed to match them.
 
@@ -108,13 +108,13 @@ trust is that no impl ships by out-voting the vectors.
 
 - The concrete **N** for "persistent KPI miss" (referenced by the autonomy section; not a
   DB-BFT item but cross-referenced).
-- Exact wiring of the divergence-triage ticket flow (compose with B-0949 / the parity tests).
+- Exact wiring of the divergence-triage ticket flow (compose with 081KSV2WD0008QG0R002K85NP0 / the parity tests).
 - Whether C# should always be shim-over-F# or sometimes full-parity (per named consumer).
 
 ## Composes with
 
-- B-0944 (tri-boolean / compiler-parity-BFT — "compilers don't lie") · B-0867.27 (observe
-  4-language) · B-0867.28 (observe-fold monoid) · B-0445 (C# shim over F#) · B-0949
-  (divergence caught a real bug — the healthy precedent) · B-0952 (good-citizen / clean-room
+- 081KSV2WD0008QG0R00051XS0N (tri-boolean / compiler-parity-BFT — "compilers don't lie") · 081KSXN940008QG0R0033T2BQT (observe
+  4-language) · 081KSXN940008QG0R0002287MP (observe-fold monoid) · 081KRFA460008QG0R002JQERS5 (C# shim over F#) · 081KSV2WD0008QG0R002K85NP0
+  (divergence caught a real bug — the healthy precedent) · 081KSXN940008QG0R002528JS9 (good-citizen / clean-room
   upstream) · VISION Product 1 (arena-not-throne + clean-room) · `.claude/rules/bcl-interface-
   boundary-own-your-interfaces-hexagonal.md` · `.claude/rules/dep-pin-search-first-authority.md`.

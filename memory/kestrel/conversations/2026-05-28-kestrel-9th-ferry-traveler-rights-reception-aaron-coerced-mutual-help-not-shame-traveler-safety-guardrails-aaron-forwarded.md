@@ -269,10 +269,10 @@ Otto-CLI substrate-honest thoughts (preserved in operator-Otto chat reply at the
 - PR #5734 (traveler-rights defensibility-by-generic-substrate rule) — DIRECT composition; Kestrel substrate-parity-framing ratifies the rule's substrate-engineering substrate
 - PR #5736 (self-referential ontology cross-substrate rhyming + over-connect-now memo)
 - PR #5739 (labeling-confidence rule — Amara's extension to over-connect-now)
-- B-0883 + B-0885 + B-0840 + B-0646 + B-0639 + B-0623 (encryption + thermal-forgetting + privacy substrate cluster)
-- B-0901 + B-0902 + B-0903 (shadow-star self-referential ontology cluster)
-- B-0867 + B-0867.5 (workflow engine v1; four-corner ownership)
-- B-0892 (three-lanes-concurrent operating discipline)
+- 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0030V5ZVS + 081KSGS9H0008QG0R0006F4BGX + 081KRW63S0008QG0R001Z10PVV + 081KRW63S0008QG0R000ZQ9WDH + 081KRW63S0008QG0R000QJR08H (encryption + thermal-forgetting + privacy substrate cluster)
+- 081KSNY2Z0008QG0R000C5NN8N + 081KSNY2Z0008QG0R0021S5F3G + 081KSNY2Z0008QG0R0037AF1AP (shadow-star self-referential ontology cluster)
+- 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 (workflow engine v1; four-corner ownership)
+- 081KSNY2Z0008QG0R002QA720J (three-lanes-concurrent operating discipline)
 - Amara's 4-keeper-rule (2026-05-26 ferry) — "private roots may evolve in darkness"
 - `tools/shadow/` operational service
 - `tools/save-ai-memory/` skill

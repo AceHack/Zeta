@@ -5,12 +5,12 @@ import { join } from "node:path";
 import { buildPrBody, buildPrTitle, buildPublicationPlan, decideAutoMerge, normalizeBranchRef, validatePublicationInput, writePrBodyFile, } from "./pr-publication-plan";
 function input(overrides = {}) {
     return {
-        backlogId: "B-0280",
+        backlogId: "081KR2E4K0008QG0R0022RVRCZ",
         backlogTitle: "Autonomous backlog pickup - PR publication and auto-merge",
-        backlogPath: "docs/backlog/P0/B-0280-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md",
+        backlogPath: "docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md",
         branch: "claim/task-b0280-pr-publication-plan",
         baseBranch: "main",
-        bodyFilePath: "tmp/pr-bodies/B-0280.md",
+        bodyFilePath: "tmp/pr-bodies/081KR2E4K0008QG0R0022RVRCZ.md",
         summary: [
             "adds a deterministic PR publication packet",
             "keeps auto-merge arming behind review-thread and required-check gates",
@@ -47,22 +47,22 @@ describe("decideAutoMerge", () => {
 describe("buildPublicationPlan", () => {
     test("builds title, markdown body, and argv command plan", () => {
         const plan = buildPublicationPlan(input());
-        expect(plan.prTitle).toBe("feat(backlog): advance B-0280 Autonomous backlog pickup - PR publication and auto-merge");
+        expect(plan.prTitle).toBe("feat(backlog): advance 081KR2E4K0008QG0R0022RVRCZ Autonomous backlog pickup - PR publication and auto-merge");
         expect(plan.prBody).toContain("## Backlog row");
-        expect(plan.prBody).toContain("B-0280");
+        expect(plan.prBody).toContain("081KR2E4K0008QG0R0022RVRCZ");
         expect(plan.prBody).toContain("Decision: arm auto-merge");
-        expect(plan.bodyFilePath).toBe("tmp/pr-bodies/B-0280.md");
+        expect(plan.bodyFilePath).toBe("tmp/pr-bodies/081KR2E4K0008QG0R0022RVRCZ.md");
         expect(plan.commands.commit).toEqual([
             "git",
             "commit",
             "-m",
-            "feat(backlog): advance B-0280 Autonomous backlog pickup - PR publication and auto-merge",
+            "feat(backlog): advance 081KR2E4K0008QG0R0022RVRCZ Autonomous backlog pickup - PR publication and auto-merge",
             "-m",
             "Co-Authored-By: Codex <noreply@openai.com>",
         ]);
         expect(plan.commands.push).toEqual(["git", "push", "-u", "origin", "claim/task-b0280-pr-publication-plan"]);
         expect(plan.commands.createPr).toContain("--body-file");
-        expect(plan.commands.createPr).toContain("tmp/pr-bodies/B-0280.md");
+        expect(plan.commands.createPr).toContain("tmp/pr-bodies/081KR2E4K0008QG0R0022RVRCZ.md");
         expect(plan.commands.armAutoMerge).toEqual([
             "gh",
             "pr",

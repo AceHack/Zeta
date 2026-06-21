@@ -1,6 +1,6 @@
 ---
 pr_number: 5099
-title: "fix(B-0789 iter-4.4 fixfwd): 0xEF MBR partition type + mount_msdos fallback (2 bugs surfaced by 2026-05-26 empirical zflash test)"
+title: "fix(081KSGS9H0008QG0R002T3BJ2R iter-4.4 fixfwd): 0xEF MBR partition type + mount_msdos fallback (2 bugs surfaced by 2026-05-26 empirical zflash test)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T05:18:34Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:04Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5099: fix(B-0789 iter-4.4 fixfwd): 0xEF MBR partition type + mount_msdos fallback (2 bugs surfaced by 2026-05-26 empirical zflash test)
+# PR #5099: fix(081KSGS9H0008QG0R002T3BJ2R iter-4.4 fixfwd): 0xEF MBR partition type + mount_msdos fallback (2 bugs surfaced by 2026-05-26 empirical zflash test)
 
 ## PR description
 
@@ -40,8 +40,8 @@ Manually ran \`sudo mount_msdos -o nodev,nosuid /dev/disk6s2 /tmp/zeta-esp-mount
 
 - #5091 iter-4.3 (stale-checkout detection + auto-download ISO)
 - #5093 iter-4.3 fixfwd (4 Copilot findings)
-- B-0789 parent (cluster credentials substrate)
-- B-0790 end-state (zero-typing SSH = load-bearing step toward zero-dev-machine homelab persona)
+- 081KSGS9H0008QG0R002T3BJ2R parent (cluster credentials substrate)
+- 081KSGS9H0008QG0R00153CQ8B end-state (zero-typing SSH = load-bearing step toward zero-dev-machine homelab persona)
 
 ## Test plan
 

@@ -48,7 +48,7 @@ The guess MUST be saved BEFORE any research that would reveal ground truth. This
 Three paths (matching the decision-archaeology skill's sub-modes):
 
 1. **Docs archaeology** — `docs/` folders carry the reasons why; ADRs / research artifacts / round-history shards / tick shards / persona notebooks
-2. **Decision-archaeology skill** — apply the 11-layer walk procedure (per B-0169)
+2. **Decision-archaeology skill** — apply the 11-layer walk procedure (per 081KQJZR90008QG0R002D6XYHB)
 3. **Ask Aaron** — first-party query, when archaeology can't recover the intent
 
 ### Step 4 — Compare guess to truth + record calibration delta
@@ -130,7 +130,7 @@ Per Aaron's skill-design rule 2 (no dynamic commands in skills), the eventual me
 - `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` — the discipline this protocol extends to inference-as-published-substrate
 - `memory/feedback_same_tick_update_recursion_substrate_cascade_otto_2026_05_03.md` — the cascade discipline that propagates guess + verification across substrate layers
 - `memory/feedback_multi_harness_alignment_convergence_design_future_skill_domain_aaron_2026_05_03.md` — the multi-harness framing the cross-model extension instantiates
-- `docs/backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md` — the skill that mechanizes step 3 (ground-truth recovery)
+- `docs/backlog/P1/081KQJZR90008QG0R002D6XYHB-decision-archaeology-skill-aaron-2026-05-02.md` — the skill that mechanizes step 3 (ground-truth recovery)
 - `docs/research/2026-05-03-decision-archaeology-worked-example-2-mathematics-expert-when-to-defer.md` — retroactive first calibration data point (the umbrella defer-block)
 - `docs/ALIGNMENT.md` — the bidirectional alignment commitment this protocol provides measurable evidence for
 - AGENTS.md "The vibe-coded hypothesis" — the experimental frame that makes architectural-intent inference accuracy a falsifiable claim about the factory

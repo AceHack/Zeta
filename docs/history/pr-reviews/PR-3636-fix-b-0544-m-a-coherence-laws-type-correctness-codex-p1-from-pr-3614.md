@@ -50,7 +50,7 @@ Addresses the deferred deep finding from [PR #3614](https://github.com/Lucent-Fi
 ```
 docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md  +57/-3
 memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md  +2/-1
-docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md  +1/-1
+docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md  +1/-1
 ```
 
 ## Test plan

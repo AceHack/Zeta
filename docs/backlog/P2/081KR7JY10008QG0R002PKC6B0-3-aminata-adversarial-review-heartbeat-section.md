@@ -1,9 +1,8 @@
 ---
-id: B-0032.3
-zetaid: 081KR7JY10008QG0R002PKC6B0
+id: 081KR7JY10008QG0R002PKC6B0
 priority: P2
 status: closed
-title: B-0032.3 — Aminata adversarial review of the heartbeat-file integrity section in THREAT-MODEL.md
+title: 081KR7JY10008QG0R002PKC6B0 — Aminata adversarial review of the heartbeat-file integrity section in THREAT-MODEL.md
 tier: security-research
 effort: S
 depends_on: [081KR7JY10008QG0R002DNV5WA]
@@ -15,22 +14,22 @@ created: 2026-05-10
 last_updated: 2026-05-10
 ---
 
-# B-0032.3 — Aminata adversarial review of heartbeat-file integrity section
+# 081KR7JY10008QG0R002PKC6B0 — Aminata adversarial review of heartbeat-file integrity section
 
 ## What this row tracks
 
 Aminata (`threat-model-critic`) adversarial review of the
 `## Agent substrate integrity (heartbeat-file poisoning)` section added by
-B-0032.2 (PR #2394). Ten findings (AH-1..AH-10) absorbed into
+081KR7JY10008QG0R002DNV5WA (PR #2394). Ten findings (AH-1..AH-10) absorbed into
 `docs/security/THREAT-MODEL.md` and `tools/security/heartbeat-attack-vectors.ts`.
 
 ## Pre-start checklist
 
-- **Prior-art search**: B-0032.2 merged at PR #2394; section at
+- **Prior-art search**: 081KR7JY10008QG0R002DNV5WA merged at PR #2394; section at
   `docs/security/THREAT-MODEL.md` line 431. No prior Aminata review of
   heartbeat surface found in commit history.
-- **Dependency-restructure**: B-0032.2 merged. Parent B-0032 row updated to
-  reflect B-0032.3 child. B-0032.4 (task #276 blocker note) remains open.
+- **Dependency-restructure**: 081KR7JY10008QG0R002DNV5WA merged. Parent 081KQ3HBZ0008QG0R002ZPXAFQ row updated to
+  reflect 081KR7JY10008QG0R002PKC6B0 child. 081KQ3HBZ0008QG0R002ZPXAFQ.4 (task #276 blocker note) remains open.
 
 ## Findings summary
 
@@ -62,4 +61,4 @@ B-0032.2 (PR #2394). Ten findings (AH-1..AH-10) absorbed into
 
 ## Owed after this lands
 
-- B-0032.4: Task #276 update with blocker note pointing at B-0032
+- 081KQ3HBZ0008QG0R002ZPXAFQ.4: Task #276 update with blocker note pointing at 081KQ3HBZ0008QG0R002ZPXAFQ

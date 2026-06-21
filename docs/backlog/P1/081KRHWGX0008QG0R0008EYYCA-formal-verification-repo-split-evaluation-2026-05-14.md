@@ -1,11 +1,10 @@
 ---
-id: B-0478
-zetaid: 081KRHWGX0008QG0R0008EYYCA
+id: 081KRHWGX0008QG0R0008EYYCA
 priority: P1
 status: open
 title: "Formal-verification sub-axis evaluation — per-property-class split vs co-locate decision"
 type: research
-origin: B-0427 decomposition (Otto, 2026-05-14)
+origin: 081KRFA460008QG0R000VKJF0H decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 parent: 081KRFA460008QG0R000VKJF0H
@@ -23,22 +22,22 @@ composes_with:
 
 ## Purpose
 
-Aaron named formal verification as a "maybe split" in B-0427:
+Aaron named formal verification as a "maybe split" in 081KRFA460008QG0R000VKJF0H:
 
 > "maybe even formal verification is split out"
 
-Per the B-0427 design notes, this requires a **per-property-class evaluation**
+Per the 081KRFA460008QG0R000VKJF0H design notes, this requires a **per-property-class evaluation**
 (Soraya formal-verification-expert authority). This row produces that evaluation:
 for each FV tool class, should the artifacts live in the main Zeta repo, a
 dedicated FV repo, or alongside the substrate they verify?
 
-This row can run in parallel with B-0477 after B-0475 completes.
+This row can run in parallel with 081KRHWGX0008QG0R002893S6E after 081KRHWGX0008QG0R000M9RFY2 completes.
 
 ## Pre-start checklist
 
 Per `.claude/rules/backlog-item-start-gate.md`:
 
-- [ ] B-0475 output doc reviewed
+- [ ] 081KRHWGX0008QG0R000M9RFY2 output doc reviewed
 - [ ] Check whether any FV substrate is already documented as "candidate for split"
 - [ ] Invoke the `formal-verification-expert` skill (Soraya) for routing guidance
 
@@ -73,7 +72,7 @@ Does this artifact change at the same rate as the code it verifies?
 - TLA+ specs → change when the protocol changes → potentially different rate
 - CodeQL rules → change when vulnerability classes change → could diverge
 
-### 3. Ruleset argument (composes with B-0476)
+### 3. Ruleset argument (composes with 081KRHWGX0008QG0R000BS8Y4R)
 
 Does this FV tool class require different GitHub rulesets than the main code?
 Example: Lean proofs might require a theorem-prover CI runner that the main
@@ -124,7 +123,7 @@ Containing:
 - Recommendation: split / co-locate / hybrid
 - For any "split" recommendation: proposed repo name and scope
 - FsCheck co-locate pre-decision (documented with rationale)
-- Any cases deferred to B-0479 ADR for final decision
+- Any cases deferred to 081KRHWGX0008QG0R0023DWW8D ADR for final decision
 
 ## Definition of done
 
@@ -132,12 +131,12 @@ Containing:
 - [ ] FsCheck co-locate decision documented
 - [ ] Split vs co-locate recommendation produced for each class
 - [ ] Any "split" cases include proposed repo scope
-- [ ] Output doc committed and referenced from B-0427
-- [ ] B-0478 closed with PR link
+- [ ] Output doc committed and referenced from 081KRFA460008QG0R000VKJF0H
+- [ ] 081KRHWGX0008QG0R0008EYYCA closed with PR link
 
 ## Why P1
 
 - Aaron explicitly named FV as a "maybe split" requiring evaluation
 - Per-property-class evaluation is Soraya's authority — invoke her
-- Can run in parallel with B-0477 after B-0475
-- Result directly informs B-0479 ADR
+- Can run in parallel with 081KRHWGX0008QG0R002893S6E after 081KRHWGX0008QG0R000M9RFY2
+- Result directly informs 081KRHWGX0008QG0R0023DWW8D ADR

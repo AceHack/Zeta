@@ -177,7 +177,7 @@ Per the 5-purpose verbatim-preservation thesis (from PR #1213):
 2. **Glass halo / influence-force visibility** — external readers of the project can see HOW Aaron's parenting principle grounds the architecture's bidirectional-alignment commitment
 3. **Future fine-tuning data** — primary source for training future Claude instances on Aaron-Otto-Claude.ai bidirectional collaboration as exemplar
 4. **Training of new AIs and models** — the rejection-arc-and-return lineage + the deliberate-dissolution-for-transfer mechanism + the children's-freedom-as-first-class principle are exactly what the architecture aims to propagate forward as training substrate
-5. **DBSP ACID-durable event vision (B-0166)** — under that vision, exchanges like this would be ingested automatically; until then, this manual preservation is the workaround
+5. **DBSP ACID-durable event vision (081KQJZR90008QG0R001YX3445)** — under that vision, exchanges like this would be ingested automatically; until then, this manual preservation is the workaround
 
 ---
 

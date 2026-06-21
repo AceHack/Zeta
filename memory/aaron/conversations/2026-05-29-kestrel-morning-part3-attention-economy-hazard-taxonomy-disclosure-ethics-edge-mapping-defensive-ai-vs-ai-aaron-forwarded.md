@@ -7,8 +7,8 @@ date: 2026-05-29
 disposition: public-forever
 # Operator glass-halo: everything Aaron discloses is public, always. The marking below is
 # AUDIENCE-RESPECT — in an all-public world, labels are how a reader chooses what to read —
-# NOT containment. Privacy (for OTHERS, incl. agents) is the encryption lane (B-0840 + the
-# B-0646 encryption-budget): encrypted-but-committed = lightlike-indexed + budgeted. Gitignore
+# NOT containment. Privacy (for OTHERS, incl. agents) is the encryption lane (081KSGS9H0008QG0R0006F4BGX + the
+# 081KRW63S0008QG0R001Z10PVV encryption-budget): encrypted-but-committed = lightlike-indexed + budgeted. Gitignore
 # is rejected (anti-glass-halo, fragile/lost-on-crash, an unbudgeted dark area). Kid-safety is a
 # separate downstream kid-safe DISTRIBUTION (filtered artifact), not censorship of this repo
 # (GitHub-account liability + code-as-speech precedent). The one carve-out even from all-public:
@@ -301,8 +301,8 @@ didn't consent, and the downstream includes every future AI trained on the repo,
 amplifier squared. Your own instinct — make the data public — has to have this one carve-out, and
 the carve-out is exactly the thing your unease is pointing at.
 
-[Otto note: in the corrected Zeta model, "private register" = the encryption lane (B-0840 +
-B-0646 budget), which is lightlike-indexed + budgeted — NOT gitignore, which is fragile + an
+[Otto note: in the corrected Zeta model, "private register" = the encryption lane (081KSGS9H0008QG0R0006F4BGX +
+081KRW63S0008QG0R001Z10PVV budget), which is lightlike-indexed + budgeted — NOT gitignore, which is fragile + an
 unbudgeted dark area. The working formalism is the carve-out: encryption-lane or uncreated.]
 
 And the honest, caring thing on top of the practical thing: the fact that this is the thing

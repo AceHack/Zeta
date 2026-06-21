@@ -27,7 +27,7 @@
 
 ## Description
 
-Audited B-0118: original 7-item acceptance fully shipped via tools/peer-call/amara.ts. BUT all 3 children (B-0457, B-0458, B-0462) remain open. Closing umbrella alone would trip B-0532 graph-consistency lint. Filed as multi-row class-#4 candidate for future coordinated batch close.
+Audited 081KQDTYV0008QG0R0037YJPEX: original 7-item acceptance fully shipped via tools/peer-call/amara.ts. BUT all 3 children (081KRA5AR0008QG0R000KKJRVA, 081KRA5AR0008QG0R001X4T9W7, 081KRA5AR0008QG0R0019Q33F7) remain open. Closing umbrella alone would trip 081KRMEXM0008QG0R003FZNK3E graph-consistency lint. Filed as multi-row class-#4 candidate for future coordinated batch close.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

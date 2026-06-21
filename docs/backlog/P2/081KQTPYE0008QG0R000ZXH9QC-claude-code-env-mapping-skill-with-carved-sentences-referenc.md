@@ -1,6 +1,5 @@
 ---
-id: B-0206
-zetaid: 081KQTPYE0008QG0R000ZXH9QC
+id: 081KQTPYE0008QG0R000ZXH9QC
 priority: P2
 status: open
 title: Claude Code environment-mapping skill with carved-sentences-in-behavior referencing existing capability-maps + our TS files
@@ -23,7 +22,7 @@ tags: [claude-code, env-mapping, skill-creator-followup]
 type: friction-reducer
 ---
 
-# B-0206 — Claude Code environment-mapping skill with carved-sentences-in-behavior
+# 081KQTPYE0008QG0R000ZXH9QC — Claude Code environment-mapping skill with carved-sentences-in-behavior
 
 ## Origin
 

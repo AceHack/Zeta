@@ -1,6 +1,6 @@
 ---
 pr_number: 5105
-title: "backlog(B-0793 P1): role-as-capability composition (NOT baked host) \u2014 single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ \u2192 nixos/modules/role-*.nix capability modules (Aaron 2026-05-26)"
+title: "backlog(081KSGS9H0008QG0R000EDNTY5 P1): role-as-capability composition (NOT baked host) \u2014 single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ \u2192 nixos/modules/role-*.nix capability modules (Aaron 2026-05-26)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T05:45:58Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5105: backlog(B-0793 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26)
+# PR #5105: backlog(081KSGS9H0008QG0R000EDNTY5 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26)
 
 ## PR description
 
@@ -22,7 +22,7 @@ Aaron 2026-05-26 architectural correction during iter-5.2 substrate-engineering:
 
 > *\"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very elegant and host names tied to them are not great either\"*
 
-iter-5.2 (B-0792 PR #5103) addressed the **hostname** side (decoupled via \`injected-hostname.nix\` + \`--host\` flag). This row captures the deeper **role-side** concern: role-stack-as-baked-host-config is the remaining architectural blocker for true multi-role nodes.
+iter-5.2 (081KSGS9H0008QG0R003V23XNZ PR #5103) addressed the **hostname** side (decoupled via \`injected-hostname.nix\` + \`--host\` flag). This row captures the deeper **role-side** concern: role-stack-as-baked-host-config is the remaining architectural blocker for true multi-role nodes.
 
 ## Refactor target
 
@@ -50,8 +50,8 @@ Default: \`--role control-plane\` (preserves zero-typing single-node UX).
 
 ## Composes with
 
-- B-0792 (depends_on; iter-5.2 hostname-side fix complete; this row picks up role-side)
-- B-0776 / B-0789 / B-0790 / B-0759 / B-0778
+- 081KSGS9H0008QG0R003V23XNZ (depends_on; iter-5.2 hostname-side fix complete; this row picks up role-side)
+- 081KSE6WT0008QG0R002275NDE / 081KSGS9H0008QG0R002T3BJ2R / 081KSGS9H0008QG0R00153CQ8B / 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R0004AP0ZA
 
 ## Test plan
 
@@ -67,11 +67,11 @@ Default: \`--role control-plane\` (preserves zero-typing single-node UX).
 
 ## Pull request overview
 
-Adds a new P1 backlog row (B-0793) describing the next architectural refactor for NixOS role configuration: moving from baked per-host role stacks to composable “role-*” capability modules to support multi-role nodes (e.g., control-plane + GPU + storage on a single machine).
+Adds a new P1 backlog row (081KSGS9H0008QG0R000EDNTY5) describing the next architectural refactor for NixOS role configuration: moving from baked per-host role stacks to composable “role-*” capability modules to support multi-role nodes (e.g., control-plane + GPU + storage on a single machine).
 
 **Changes:**
-- Adds `docs/backlog/P1/B-0793-...md` with the problem statement, target design, sub-targets, and acceptance criteria for role-as-capability composition.
-- Updates `docs/BACKLOG.md` to include the new B-0793 entry.
+- Adds `docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5-...md` with the problem statement, target design, sub-targets, and acceptance criteria for role-as-capability composition.
+- Updates `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R000EDNTY5 entry.
 
 ### Reviewed changes
 
@@ -79,8 +79,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P1/B-0793-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md | New backlog row defining the role-module composition refactor scope and acceptance criteria. |
-| docs/BACKLOG.md | Adds B-0793 to the generated backlog index. |
+| docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md | New backlog row defining the role-module composition refactor scope and acceptance criteria. |
+| docs/BACKLOG.md | Adds 081KSGS9H0008QG0R000EDNTY5 to the generated backlog index. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T05:53:08Z)
 
@@ -90,7 +90,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 ## Review threads
 
-### Thread 1: docs/backlog/P1/B-0793-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md:5 (resolved)
+### Thread 1: docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md:5 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T05:47:45Z):
 
@@ -102,13 +102,13 @@ The `<role>` placeholder in this title will be treated as an HTML tag when rende
 
 `nixos/hosts/<role>/configuration.nix` contains `<role>`, which markdown renders as an HTML tag (so the placeholder can disappear in the rendered BACKLOG). Escape the angle brackets (`&lt;role&gt;`) or use a different placeholder format so it displays correctly.
 
-### Thread 3: docs/backlog/P1/B-0793-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md:148 (resolved)
+### Thread 3: docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md:148 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T05:53:07Z):
 
 The same quoted sentence is transcribed with two different spellings: earlier it says “not very elegant”, but here it’s “not very eleglant”. Please make the transcription consistent (or mark the typo with “[sic]” if it’s intentional to preserve the original).
 
-### Thread 4: docs/backlog/P1/B-0793-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md:56 (resolved)
+### Thread 4: docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md:56 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T05:53:08Z):
 

@@ -64,9 +64,9 @@ GitHubWorld / GitLabWorld / GiteaWorld / ...
 
 - PR #5774 world.ts (base; cherry-picked)
 - PR #5775 git-world.ts (GitWorld + GitHubWorld)
-- B-0635 wave-particle duality (Clifford multivector)
-- B-0666 English-as-projection
-- B-0644 Limit-as-simulation
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality (Clifford multivector)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation
 - DBSP (Budiu et al VLDB 2023)
 - Multiple Kestrel ferries naming Clifford as canonical
 
@@ -308,8 +308,8 @@ Tests (14; all pass):
 
 Composes with substrate:
 - composed-lifetime.ts PR #5771 (base dispatch substrate)
-- B-0832 civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
-- B-0867 workflow engine (workflow world)
+- 081KSGS9H0008QG0R001Q2DH2H civ-sim substrate (game-world; Pauli-exclusion-for-agenda)
+- 081KSKBP80008QG0R000B3Y19A workflow engine (workflow world)
 - 13th-ferry §33.7 multi-AI cascade (each AI inhabits the world)
 - additive-not-zero-sum + honor-those-that-came-before + monad-propagation
   + asymmetric-authorship rules
@@ -376,9 +376,9 @@ Tests (20; all pass):
 Composes with substrate:
 - PR #5774 world.ts (base World substrate; cherry-picked dep)
 - PR #5775 git-world.ts (GitWorld + GitHubWorld specialization)
-- B-0635 wave-particle duality (Clifford multivector substrate)
-- B-0666 English-as-projection I(D(x))=x identity
-- B-0644 Limit-as-simulation (pre-collapse substrate)
+- 081KRW63S0008QG0R002KC5DSR wave-particle duality (Clifford multivector substrate)
+- 081KRW63S0008QG0R001SAHYKV English-as-projection I(D(x))=x identity
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation (pre-collapse substrate)
 - Multiple Kestrel ferries naming Clifford as canonical substrate-engineering substrate
 - DBSP (Budiu et al VLDB 2023; differential-dataflow incremental view maintenance)
 - Result<T, TFeedback> monad-propagation pattern

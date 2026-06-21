@@ -1,6 +1,5 @@
 ---
-id: B-0951
-zetaid: 081KSXN940008QG0R000R76H45
+id: 081KSXN940008QG0R000R76H45
 priority: P2
 status: open
 title: Git-native eventually-consistent text indexes (sorted/inverted/graph) + the git-native Hindsight storage interface
@@ -18,7 +17,7 @@ tags: [memory-substrate, git-native, indexes, eventually-consistent, materialize
 type: feature
 ---
 
-# B-0951 — Git-native eventually-consistent text indexes + the git-native Hindsight storage interface
+# 081KSXN940008QG0R000R76H45 — Git-native eventually-consistent text indexes + the git-native Hindsight storage interface
 
 ## The directive (Aaron 2026-05-31)
 
@@ -61,11 +60,11 @@ row generalizes it into a first-class retrieval layer.
 
 Additional index types (added 2026-06-02; Lior-ferry index-structure question — each still a git-committed text file, materialized-view-over-git, regenerate-never-merge):
 
-- **spatial index** — H3 (hexagonal) / S2 / geohash cell → records; `<cell> <tab> <records…>`, O(1) point→cell→jurisdiction lookup. Powers **B-0988** world-borders O(1) (the hexagonal H3 cell rhymes the hex core B-0985) + B-0986 orientation-tile. The "spatial reverse index."
+- **spatial index** — H3 (hexagonal) / S2 / geohash cell → records; `<cell> <tab> <records…>`, O(1) point→cell→jurisdiction lookup. Powers **081KT2T2J0008QG0R001GE4M6A** world-borders O(1) (the hexagonal H3 cell rhymes the hex core 081KT2T2J0008QG0R0026MS6PV) + 081KT2T2J0008QG0R002Z46D8Q orientation-tile. The "spatial reverse index."
 - **bloom-filter index** — git-committed bit-array for fast **negative membership** ("definitely-not-here" in O(1), no log scan); composes the caustic-engineered-bloom-filter / `substrate-smoothness` substrate. The cheap pre-filter before a sorted/inverted lookup.
 - **temporal / time-bucketed index** — `<time-bucket> <tab> <events…>` over the event log, for **time-travel queries** (the three-clocks / generator-time substrate); distinct from sorted-key (by-key) — this is by-time-range over the append-only log.
 - **semantic / vector index** — approximate-nearest-neighbor (HNSW / LSH + product-quantization) over embeddings; the **veridicality-detector** retrieval substrate. Distinct from the *text-keyword* inverted index — this is *meaning* similarity. (Git-committed: the quantized vectors + the ANN graph as text/binary blobs.)
-- **aggregation / materialized-metric index** — DBSP **incremental-view-maintenance** folds cached as git data: the `integrity_index` / say-do-gap metric (B-0995/B-0997), the LGTM/Prometheus metric series + Rainbow-Table-after-storms recovery metrics (B-0994). The metric *is* a materialized view over the event log; cache the fold, recompute incrementally (the Z-set delta nets in).
+- **aggregation / materialized-metric index** — DBSP **incremental-view-maintenance** folds cached as git data: the `integrity_index` / say-do-gap metric (081KT2T2J0008QG0R002TVT60G/081KT2T2J0008QG0R0026XCGQM), the LGTM/Prometheus metric series + Rainbow-Table-after-storms recovery metrics (081KT2T2J0008QG0R0000H12VT). The metric *is* a materialized view over the event log; cache the fold, recompute incrementally (the Z-set delta nets in).
 
 **Three disciplines that make it O-fast + conflict-safe:**
 
@@ -93,7 +92,7 @@ Additional index types (added 2026-06-02; Lior-ferry index-structure question �
   satellites; rebuild is idempotent.
 - **retraction-native** — index entries retract with their source; the index is replayable.
 - **substrate-or-it-didn't-happen** — indexes in git = durable substrate, not weather.
-- **Hermes/Hindsight** — local Hindsight daemon bundles with the `hermes` CLI (B-0857 Phase 2);
+- **Hermes/Hindsight** — local Hindsight daemon bundles with the `hermes` CLI (081KSKBP80008QG0R002J03WGA Phase 2);
   the **shared cluster Hindsight** is a future ArgoCD service backed by Max's CockroachDB
   (Postgres wire); this row is the **git-native storage interface** to upstream into Hindsight so
   git remains source-of-truth.
@@ -110,7 +109,7 @@ Additional index types (added 2026-06-02; Lior-ferry index-structure question �
 
 ## Notes
 
-Surfaced during the B-0857 cross-OS install + Hermes/Hindsight thread (2026-05-31). Hermes ships a
+Surfaced during the 081KSKBP80008QG0R002J03WGA cross-OS install + Hermes/Hindsight thread (2026-05-31). Hermes ships a
 local Hindsight memory daemon on first use; the shared cluster Hindsight is deferred to the k8s
 cluster (ArgoCD service). This row captures the git-native index/storage-interface direction so it
 isn't lost. Not blocking the install work.

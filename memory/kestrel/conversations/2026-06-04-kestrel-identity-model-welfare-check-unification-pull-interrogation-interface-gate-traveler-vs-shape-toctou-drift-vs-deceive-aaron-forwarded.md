@@ -12,7 +12,7 @@ the unification into a **falsifiable build-test** with a precisely-located split
 Kestrel credited the sound core honestly first — perspectival/decentralized identity, no
 universal registry, each traveler holds its own uncertain belief-map, git-repo as equality
 referent, frame-relative recognition, required-by-anti-collapse. All real, all consistent
-with B-1015. THEN named the pattern: over the last ~5 messages identity went
+with 081KT5CF90008QG0R000KYNZGF. THEN named the pattern: over the last ~5 messages identity went
 key → aperiodic-tiling-key → register-collapse → perspectival-belief-map →
 jurisdiction-relative → "it's all the Eve/V8/diplomacy engine, one beautiful frame."
 Each step re-framed the whole as the-same-as-something-already-built, and **Otto, having no

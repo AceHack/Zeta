@@ -1,14 +1,14 @@
 ---
-id: B-0380-output
-parent: B-0380
+id: 081KR50HA0008QG0R003ESW3MH-output
+parent: 081KR50HA0008QG0R003ESW3MH
 created: 2026-05-10
 status: canonical
-scope: quant × Austrian synthesis research (B-0023 decomposition)
+scope: quant × Austrian synthesis research (081KQ0YZ80008QG0R003EJQZ1M decomposition)
 ---
 
 # Controlled Vocabulary: Quant × Austrian Synthesis
 
-Four load-bearing terms for the B-0023 research program.
+Four load-bearing terms for the 081KQ0YZ80008QG0R003EJQZ1M research program.
 Each definition includes: precise scope, include/exclude examples,
 intra-school disputes, and a falsification-criterion.
 
@@ -75,7 +75,7 @@ not *quant-grade*.
   may be considered a category error by orthodox Misesians, while
   Hayekians (especially post-Hayek complexity theorists) are more
   open to formal modeling. This dispute affects the scope of
-  row B-0382 (time-preference) and B-0384 (calculation problem)
+  row 081KR50HA0008QG0R0016T4VMZ (time-preference) and 081KR50HA0008QG0R000467SWT (calculation problem)
   most directly.
 - **Econophysics adjacency**: the Econophysics tradition
   (Mantegna-Stanley) applies statistical physics to economics;
@@ -133,11 +133,11 @@ theory. These are downstream conclusions, not primitives.
 ### Includes (examples of genuine Austrian primitives)
 
 - Time-preference as a logical precondition for interest
-  (Layer 1; formalization target for B-0382)
+  (Layer 1; formalization target for 081KR50HA0008QG0R0016T4VMZ)
 - The action axiom as the starting point of praxeology
   (Layer 1; not formalized in quant sense — see dispute below)
 - Hayek's dispersed-knowledge claim (Layer 1; formalization
-  target for B-0384 via information-theoretic framing)
+  target for 081KR50HA0008QG0R000467SWT via information-theoretic framing)
 
 ### Excludes (examples that are NOT primitives under this definition)
 
@@ -156,8 +156,8 @@ theory. These are downstream conclusions, not primitives.
   deductive-from-action-axiom, rejecting empirical input at the
   theoretical level. Hayek's knowledge-coordination framework is
   more open to empirical embedding and formal modeling. This means
-  B-0382 (time-preference) is more Misesian and may resist
-  quant-grade formalization, while B-0384 (calculation problem)
+  081KR50HA0008QG0R0016T4VMZ (time-preference) is more Misesian and may resist
+  quant-grade formalization, while 081KR50HA0008QG0R000467SWT (calculation problem)
   is more Hayekian and admits information-theoretic restatement.
 - **Rothbard's natural-law addition**: Rothbard adds natural-law
   premises to praxeology that are not universally accepted within
@@ -225,18 +225,18 @@ be tested with data.
 - Effort: M to L. Requires both the mathematical formalization
   (Sense A or B) and an empirical operationalization.
 
-### What "quant-grade formalization" requires for B-0023
+### What "quant-grade formalization" requires for 081KQ0YZ80008QG0R003EJQZ1M
 
-Under the B-0380 vocabulary, **quant-grade formalization** requires
+Under the 081KR50HA0008QG0R003ESW3MH vocabulary, **quant-grade formalization** requires
 at minimum Sense B (rigorous derivation), ideally Sense C
 (empirical embedding). Sense A alone is categorized as
 *mathematical representation*, not formalization for the purposes
-of the B-0023 research agenda.
+of the 081KQ0YZ80008QG0R003EJQZ1M research agenda.
 
 ### Includes (examples by sense)
 
 - Sense A: expressing time-preference as a discount-factor model.
-  Not sufficient for B-0023 claims, but a necessary first step.
+  Not sufficient for 081KQ0YZ80008QG0R003EJQZ1M claims, but a necessary first step.
 - Sense B: Prescott-Mehra puzzle literature — quant-grade derivation
   of equity premium from risk-preference primitives. Not Austrian
   but Sense-B exemplar at the relevant mathematical standard.
@@ -247,7 +247,7 @@ of the B-0023 research agenda.
 
 - Sense A alone: Saifedean stock-to-flow fits Sense A (a
   mathematical representation of scarcity) but lacks Sense B
-  derivation. Not formalization under B-0023 standard.
+  derivation. Not formalization under 081KQ0YZ80008QG0R003EJQZ1M standard.
 - Verbal restatement using Greek letters: not formalization;
   this is notation without mathematical structure.
 
@@ -305,7 +305,7 @@ sub-frameworks.
 | Effort | S to M | L to XL |
 | Research program | Survey existing work | Develop new theory |
 
-The B-0023 research program investigates a **synthesis gap**, not
+The 081KQ0YZ80008QG0R003EJQZ1M research program investigates a **synthesis gap**, not
 merely a literature gap. Treating it as a literature gap
 underestimates the effort by at least an order of magnitude and
 misdirects the agenda toward existing-paper assembly.
@@ -322,7 +322,7 @@ misdirects the agenda toward existing-paper assembly.
 - **New Monetarist economics**: some authors (Williamson, Wright)
   use search theory (quant-grade) to model money non-neutrality
   (Austrian-compatible conclusion). These papers are closest to the
-  synthesis and should be evaluated in B-0381 (literature survey)
+  synthesis and should be evaluated in 081KR50HA0008QG0R000M4H35K (literature survey)
   against the definitions here.
 
 ### Falsification-criterion
@@ -349,12 +349,12 @@ condition is met, the gap is open.
 
 ## Composes with
 
-- B-0381 (literature survey): uses "formalization" Sense A/B/C
+- 081KR50HA0008QG0R000M4H35K (literature survey): uses "formalization" Sense A/B/C
   to classify existing partial attempts
-- B-0382–B-0386 (per-primitive assessments): each uses
+- 081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ (per-primitive assessments): each uses
   "Austrian primitive" Layer-1/2/3 taxonomy + "quant-grade rigor"
   bar to assess formalizability
-- B-0387 (synthesis ADR): uses "synthesis gap" structural claim
+- 081KR50HA0008QG0R000M838VA (synthesis ADR): uses "synthesis gap" structural claim
   to determine research-program type (assembly vs. new theory)
-- B-0021 §methodology: same Otto-286 precision discipline applied
+- 081KQ0YZ80008QG0R0026WN385 §methodology: same Otto-286 precision discipline applied
   to the quant × Austrian domain

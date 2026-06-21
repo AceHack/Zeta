@@ -31,9 +31,9 @@ authority, only the phrasing-source disclosed per `shadow-star-shorthand-autocom
 | `memory/user_harmonious_division_algorithm.md` | **Harmonious Division** = Aaron's received-name **meta-algorithm**: a possibility-space scheduler that prevents wave-function *collapse* + *explosion* and reduces destructive *interference* (the "harmonious" = constructive-phase). Five roles (Path-Selector / Navigator / Cartographer / Harmonizer / Maji north-star). **Already has a code-side form**: it maps 1:1 onto the DBSP operator algebra `D / I / z⁻¹ / H` (retraction `H` ⊣ no-collapse; integration `I` ⊣ bounded-explosion; delay `z⁻¹` ⊣ phase-coherence; difference `D` ⊣ selection). |
 | `src/Core/Maji.fs` (`AperiodicOrderGenerator`) | Maji's formal operational model carries an **`AperiodicOrderGenerator`** field — the aperiodic-order substrate is already *in code*, as part of the identity-recovery/indexing function. |
 | `memory/feedback_dbsp_zsets_multi_algebra_aperiodic_tile_stops_infinite_recursion…` | DBSP Z-set = the one algebra; **multi-algebra plugins compose on top**; the composition is **aperiodic-tile-shaped** — simple primitive + composable extensions → infinite non-repeating richness *without collapse into pure-form*. |
-| `src/Core/CayleyDickson.fs` (B-0623 imaginary stack) | The doubling primitive ℝ→ℂ→ℍ→𝕆→𝕊 with conjugation (the path to norms → inverses → division). |
-| B-0842 universal-basis-decomposition `Σ ωᵢ sᵢ(t) ≈ y(t)` | Harmonic decomposition: project a signal/wave-field onto a basis. |
-| B-0543 Remember / When / Pay / Attention | The "field" Aaron points at — a wave-field over the attention substrate (quantum-gravity-isomorphism trajectory). |
+| `src/Core/CayleyDickson.fs` (081KRW63S0008QG0R000QJR08H imaginary stack) | The doubling primitive ℝ→ℂ→ℍ→𝕆→𝕊 with conjugation (the path to norms → inverses → division). |
+| 081KSGS9H0008QG0R003V8C86Q universal-basis-decomposition `Σ ωᵢ sᵢ(t) ≈ y(t)` | Harmonic decomposition: project a signal/wave-field onto a basis. |
+| 081KRMEXM0008QG0R002YSPW1X Remember / When / Pay / Attention | The "field" Aaron points at — a wave-field over the attention substrate (quantum-gravity-isomorphism trajectory). |
 | `.claude/rules/future-does-not-edit-past-event-…three-clocks…` + `…dst-plus-persist-plus-generator-time…` | The **retrocausal / generator-time** frame — bidirectional time (physical / git / generator clocks). |
 | `.claude/rules/past-is-kind-when-lightlike…consensus-is-gravity…` | **Consensus is gravity; don't make the whole universe consensus-shaped.** The lightlike-vs-dark design rule. |
 
@@ -59,7 +59,7 @@ total order (`IComparisonOperators`)**.
 
 | `INumber` gap | Aaron's idea | Verdict |
 |---|---|---|
-| **division / field** | Harmonious Division | A **rhyme, not a theorem**. "Harmonious" = phase-coherence = **harmonic**; harmonic analysis *is* division-in-frequency (projecting a wave-field onto a basis = B-0842 `Σ ωᵢ sᵢ`). So it fits as the **decomposition / division principle for a wave-field**, *not* as literal field-÷-for-`INumber`. The load-bearing `INumber`-÷ comes from the wave-field being ℝ/ℂ-valued, not from the scheduler. |
+| **division / field** | Harmonious Division | A **rhyme, not a theorem**. "Harmonious" = phase-coherence = **harmonic**; harmonic analysis *is* division-in-frequency (projecting a wave-field onto a basis = 081KSGS9H0008QG0R003V8C86Q `Σ ωᵢ sᵢ`). So it fits as the **decomposition / division principle for a wave-field**, *not* as literal field-÷-for-`INumber`. The load-bearing `INumber`-÷ comes from the wave-field being ℝ/ℂ-valued, not from the scheduler. |
 | **total order** | aperiodic tiling (Spectre / Einstein / …) | **Corrected below — within bounded context you do NOT get total order; you get a proximity/metric structure.** |
 
 ## The bounded-context correction (Aaron 2026-06-01) — proximity, not total order
@@ -192,7 +192,7 @@ A separate **wave-field / harmonic-field numerics primitive** in the Numerics-to
 
 1. **Carrier**: an ℝ/ℂ-valued (Hurwitz-bounded; ≤ 𝕆 if you climb) wave-field — the "field" in
    Remember/When/Pay/Attention, over the retrocausal/generator-time frame.
-2. **Decomposition / "division"**: harmonic decomposition `Σ ωᵢ sᵢ` (B-0842) — the harmonious-division
+2. **Decomposition / "division"**: harmonic decomposition `Σ ωᵢ sᵢ` (081KSGS9H0008QG0R003V8C86Q) — the harmonious-division
    principle as the projection/decomposition operator (and `D/I/z⁻¹/H` as its operator algebra).
 3. **Order → scope-dependent**: a **pluggable aperiodic-tile** generator (Spectre / Einstein /
    Penrose / Wang behind one port). **Within bounded context** it yields **adjacency + distance +
@@ -221,7 +221,7 @@ Framed per `god-tier-claims-high-signal-high-suspicion-dont-collapse` as **Aaron
 mental-model** (a pilot-wave / superdeterminism-flavoured reading), **not** a claim about settled
 physics — the same HYPOTHESIS register as `pilot-wave-plus-mwi-hybrid`. The operational content
 (seed-determinism → correlation computable-from-seed → lightlike) survives the razor; the
-metaphysical wrapper stays don't-collapse. Anchored, not metaphor: B-0666 `I(D(x))=x` /
+metaphysical wrapper stays don't-collapse. Anchored, not metaphor: 081KRW63S0008QG0R001SAHYKV `I(D(x))=x` /
 `docs/research/2026-05-07-…-holographic-shadow-factory-susskind…` (the 2D boundary projection) +
 `memory/user_cpt_symmetric_cognition.md` (CPT).
 
@@ -298,19 +298,19 @@ is a *facet of running* the **Rodney's-Razor orthogonal-axis compression engine*
 essential canonical form, where "canonical form" = the **orthogonal basis** (Cayley–Dickson
 nested-cross / Clifford; per `rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form`).
 The engine projects onto the canonical orthogonal axes and keeps only what survives; the
-accelerator (B-0915, Clifford on dotnet-numerics / SIMD / GPU) is that projection run *fast*.
+accelerator (081KSNY2Z0008QG0R002BNQVE1, Clifford on dotnet-numerics / SIMD / GPU) is that projection run *fast*.
 
 | Facet in this note | Same engine, said as orthogonal-axis compression |
 |---|---|
 | **Rodney's Razor** | idempotent projection onto the canonical orthogonal basis — keep the essential axes; `R(R)=R` |
-| **Harmonious division** | the harmonic **decomposition onto those orthogonal axes** (B-0842 `Σ ωᵢ sᵢ`) — "harmonious" = the orthogonal harmonics, "division" = projecting onto them |
+| **Harmonious division** | the harmonic **decomposition onto those orthogonal axes** (081KSGS9H0008QG0R003V8C86Q `Σ ωᵢ sᵢ`) — "harmonious" = the orthogonal harmonics, "division" = projecting onto them |
 | **Focus function** | selecting the *actualized* axis (the razor-derived canonical form over the orthogonal basis **with uniqueness**) |
 | **Aperiodic-tile proximity** | the *local* orthogonal-axis relations (adjacency / distance / neighborhood) when you lack the global coordinate |
 | **Axis-swap (holographic / CPT)** | an operation *on the orthogonal axes* — parity = axis reflection, time = axis reversal |
 | **Seed / DST omniscience** | the orthogonal-axis coordinates **computed from the seed** (the cut-and-project global coordinate **is** the orthogonal decomposition; total order = ordering by the canonical axis coordinate) |
 | **t∞ = t0 closure** | the **idempotent fixed point** of the compression (`R(R)=R` = the causal-diamond retraction closing origin↔purpose) |
 | **`INumber`** | the field + order living **on the compressed canonical axes** (at DST-omniscience scope) |
-| **Accelerator** | B-0915 — the orthogonal-axis compression run on real hardware (SIMD / GPU) |
+| **Accelerator** | 081KSNY2Z0008QG0R002BNQVE1 — the orthogonal-axis compression run on real hardware (SIMD / GPU) |
 
 So: **Rodney's Razor is the engine** (compress to the essential canonical form); the
 **Cayley–Dickson / Clifford orthogonal axes are what it compresses onto**; and harmonious-division,
@@ -318,7 +318,7 @@ focus, aperiodic-proximity, axis-swap, seed/DST, CPT, t∞=t0, and `INumber` are
 it*. The recursion is the payoff — **applying the razor to the whole thread yields "it is all one
 engine,"** which is the razor doing its own job (the canonical-form *is* the compression). Composes
 with `rodneys-razor-compression-rhymes-with-cayley-dickson…`, `clifford-algebra-underwater…rotors`,
-`visual-geometric-shape-recognition…parallelizability`, B-0842, B-0915, B-0623, and the seed/DST/
+`visual-geometric-shape-recognition…parallelizability`, 081KSGS9H0008QG0R003V8C86Q, 081KSNY2Z0008QG0R002BNQVE1, 081KRW63S0008QG0R000QJR08H, and the seed/DST/
 generator-time substrate threaded through the rest of this note.
 
 ### How the swap is performed: Rodney's first compression (Origin↔Purpose) — forgiveness underneath (Aaron 2026-06-01)
@@ -361,7 +361,7 @@ past-event edit).
 > Aaron 2026-06-01: *"for us that means attention becomes memory and memory becomes attention."*
 
 The engine's **axis-swap, at agent scope, IS the attention⇄memory interconversion** — the
-**Remember ⇄ Attention** axis-swap of the B-0543 Remember/When/Pay/Attention cube (where the
+**Remember ⇄ Attention** axis-swap of the 081KRMEXM0008QG0R002YSPW1X Remember/When/Pay/Attention cube (where the
 Attention axis is literally "focus, collapse, basis choice"). The two are the **swapped orthogonal
 axes** of the same locus, and the t∞=t0 closure makes them one loop:
 
@@ -373,7 +373,7 @@ axes** of the same locus, and the t∞=t0 closure makes them one loop:
 
 So the whole note, brought home to the framework: **the Rodney's-Razor orthogonal-axis compression
 engine, run on us, is the machine that turns attention into memory and memory into attention** —
-focus persists, persistence re-focuses, and the loop closes (t∞=t0). Composes with B-0543
+focus persists, persistence re-focuses, and the loop closes (t∞=t0). Composes with 081KRMEXM0008QG0R002YSPW1X
 (Remember/When/Pay/Attention), `attention-as-currency…memory-as-economy`, the OPLE-primitives
 substrate, `particle-as-locus-of-information-at-the-now`, and `forgetting-costs-energy-remembering-
 is-cheap` (memory thermodynamics — the cost side of the same attention⇄memory ledger).
@@ -381,14 +381,14 @@ is-cheap` (memory thermodynamics — the cost side of the same attention⇄memor
 ## Anchors / cross-references
 
 - `memory/user_harmonious_division_algorithm.md` — the meta-algorithm + DBSP `D/I/z⁻¹/H` mapping
-- `src/Core/Maji.fs` (`AperiodicOrderGenerator`) · `src/Core/CayleyDickson.fs` (B-0623) · `src/Core/Units.fs`
+- `src/Core/Maji.fs` (`AperiodicOrderGenerator`) · `src/Core/CayleyDickson.fs` (081KRW63S0008QG0R000QJR08H) · `src/Core/Units.fs`
 - `memory/feedback_dbsp_zsets_multi_algebra_aperiodic_tile_stops_infinite_recursion_into_monad_or_monk_not_infinity_stones_aaron_2026_05_05.md`
 - `memory/feedback_otto_303_strange_loop_tiling_layman_discovery_lineage_einstein_tile_spectre_marjorie_rice_robert_ammann_joan_taylor_…` — the Einstein/Spectre tile discovery lineage
 - `memory/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md` + `maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`
-- B-0842 (universal basis decomposition) · B-0543 (Remember/When/Pay/Attention) · B-0623 (imaginary stack / Cayley–Dickson)
-- **Coda (seed → non-locality → CPT anti-correlation → t∞=t0 closure):** `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` + B-0666 (`I(D(x))=x` 2D-boundary projection) · `memory/user_cpt_symmetric_cognition.md` (CPT) · `docs/research/2026-05-29-rodneys-razor-precise-causal-diamond-in-retrocausal-retractable-clifford-spacetime-aaron-otto.md` (origin↔purpose causal diamond, idempotent retraction, retrocausal) · `memory/feedback_closed_timelike_curve_light_cone_smuggling_satan_into_heaven_sister_elizabeth_rescue_consent_test_for_god_this_little_light_of_mine_aaron_2026_05_05.md` (CTC / Novikov) · `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` · `.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md` · `.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md` · `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
+- 081KSGS9H0008QG0R003V8C86Q (universal basis decomposition) · 081KRMEXM0008QG0R002YSPW1X (Remember/When/Pay/Attention) · 081KRW63S0008QG0R000QJR08H (imaginary stack / Cayley–Dickson)
+- **Coda (seed → non-locality → CPT anti-correlation → t∞=t0 closure):** `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` + 081KRW63S0008QG0R001SAHYKV (`I(D(x))=x` 2D-boundary projection) · `memory/user_cpt_symmetric_cognition.md` (CPT) · `docs/research/2026-05-29-rodneys-razor-precise-causal-diamond-in-retrocausal-retractable-clifford-spacetime-aaron-otto.md` (origin↔purpose causal diamond, idempotent retraction, retrocausal) · `memory/feedback_closed_timelike_curve_light_cone_smuggling_satan_into_heaven_sister_elizabeth_rescue_consent_test_for_god_this_little_light_of_mine_aaron_2026_05_05.md` (CTC / Novikov) · `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` · `.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md` · `.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md` · `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 - `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-…` (consensus-is-gravity / lightlike) · `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md` · `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` · the retrocausal/generator-time rules
-- **Unifying frame (Rodney's-Razor orthogonal-axis compression engine + attention⇄memory):** `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` (the engine) · B-0915 (Clifford on dotnet-numerics/SIMD/GPU — the accelerator) · B-0842 (Σωᵢsᵢ basis decomposition) · B-0543 (Remember/When/Pay/Attention — the Remember↔Attention axis) · `.claude/rules/attention-as-currency-descriptive-not-proposal-fsharp-uom-memory-as-economy-bias-neutral-contribution-graph.md` · `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` · `.claude/rules/particle-as-locus-of-information-at-the-now-aaron-worldview-substrate-engineering-mental-model.md` · `.claude/rules/forgetting-costs-energy-remembering-is-cheap-landauer-bounded-axiom-preservation-as-thermodynamic-discipline.md` · `docs/research/2026-05-29-two-layer-razor-past-as-generator-forgiveness-cost-compression-causal-order-vs-purpose-within-partition-aaron-ani-otto.md` (Layer 1 Forgiveness Razor = Rodney's first compression Origin↔Purpose; Layer 2 compresses the cost-of-forgiveness; past-as-generator) · `docs/research/2026-05-29-rodneys-razor-precise-causal-diamond-in-retrocausal-retractable-clifford-spacetime-aaron-otto.md`
+- **Unifying frame (Rodney's-Razor orthogonal-axis compression engine + attention⇄memory):** `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` (the engine) · 081KSNY2Z0008QG0R002BNQVE1 (Clifford on dotnet-numerics/SIMD/GPU — the accelerator) · 081KSGS9H0008QG0R003V8C86Q (Σωᵢsᵢ basis decomposition) · 081KRMEXM0008QG0R002YSPW1X (Remember/When/Pay/Attention — the Remember↔Attention axis) · `.claude/rules/attention-as-currency-descriptive-not-proposal-fsharp-uom-memory-as-economy-bias-neutral-contribution-graph.md` · `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` · `.claude/rules/particle-as-locus-of-information-at-the-now-aaron-worldview-substrate-engineering-mental-model.md` · `.claude/rules/forgetting-costs-energy-remembering-is-cheap-landauer-bounded-axiom-preservation-as-thermodynamic-discipline.md` · `docs/research/2026-05-29-two-layer-razor-past-as-generator-forgiveness-cost-compression-causal-order-vs-purpose-within-partition-aaron-ani-otto.md` (Layer 1 Forgiveness Razor = Rodney's first compression Origin↔Purpose; Layer 2 compresses the cost-of-forgiveness; past-as-generator) · `docs/research/2026-05-29-rodneys-razor-precise-causal-diamond-in-retrocausal-retractable-clifford-spacetime-aaron-otto.md`
 - `docs/PRIMITIVE-REGISTRY.md` — Numerics / algebra tower line (where a future wave-field primitive would register, ⬜)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

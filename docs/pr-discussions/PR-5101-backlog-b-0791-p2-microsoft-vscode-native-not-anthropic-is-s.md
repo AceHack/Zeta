@@ -1,6 +1,6 @@
 ---
 pr_number: 5101
-title: "backlog(B-0791 P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex \u2014 IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction)"
+title: "backlog(081KSGS9H0008QG0R002T3QMFD P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex \u2014 IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T05:27:36Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:03Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5101: backlog(B-0791 P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex — IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction)
+# PR #5101: backlog(081KSGS9H0008QG0R002T3QMFD P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex — IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction)
 
 ## PR description
 
@@ -47,7 +47,7 @@ Much stronger selection pressure toward convergence.
 
 ## Composes with
 
-- B-0759 / B-0776 / B-0780 / B-0782 / B-0790
+- 081KSE6WT0008QG0R003G0Y62D / 081KSE6WT0008QG0R002275NDE / 081KSE6WT0008QG0R000RH1526 / 081KSE6WT0008QG0R003CMCX84 / 081KSGS9H0008QG0R00153CQ8B
 - \`.claude/rules/agent-roster-reference-card.md\`
 - \`.claude/rules/claude-code-loading-taxonomy.md\`
 - \`.claude/rules/peer-call-infrastructure.md\`
@@ -57,7 +57,7 @@ Much stronger selection pressure toward convergence.
 
 - Specific VSCode UX issues (separate small follow-on row)
 - Upstream contribution to VSCode itself (separate row at upstream-contribution scope; note: this would be Microsoft-upstream contribution, NOT Anthropic-upstream)
-- Agent-worktree-hygiene observations from same screenshot (tracked under B-0750)
+- Agent-worktree-hygiene observations from same screenshot (tracked under 081KSE6WT0008QG0R003YYC9PV)
 
 ## Test plan
 
@@ -76,8 +76,8 @@ Much stronger selection pressure toward convergence.
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0791) capturing surfaced intel that Anthropic’s VSCode extension UI is converging on a standardized multi-harness ontology (Agents / Skills / Hooks / MCP Servers / Instructions / Plugins), and records implications for Zeta’s multi-harness substrate strategy.
+Adds a new P2 backlog row (081KSGS9H0008QG0R002T3QMFD) capturing surfaced intel that Anthropic’s VSCode extension UI is converging on a standardized multi-harness ontology (Agents / Skills / Hooks / MCP Servers / Instructions / Plugins), and records implications for Zeta’s multi-harness substrate strategy.
 
 **Changes:**
-- Adds backlog row **B-0791** documenting the VSCode “Agents window” ontology convergence signal and its implications for Zeta.
+- Adds backlog row **081KSGS9H0008QG0R002T3QMFD** documenting the VSCode “Agents window” ontology convergence signal and its implications for Zeta.
 - Introduces an initial Anthropic→Zeta vocabulary mapping table and identifies follow-on work items (mapping doc + separate UX row).

@@ -17,7 +17,7 @@ type ZEntry<'K> =
     new(key: 'K, weight: Weight) = { Key = key; Weight = weight }
 
 
-/// Per-closed-type cached key comparer = the default **binary/ordinal** collation (B-0969): string ordering
+/// Per-closed-type cached key comparer = the default **binary/ordinal** collation (081KT07NV0008QG0R001YDB73K): string ordering
 /// is ordinal (never culture-sensitive `Comparer<string>.Default`), every other `'K` keeps the BCL default.
 /// `static member val` on a generic type → one instance per closed `'K`, resolved once in the type's static
 /// ctor, so the hot per-element comparator pays no `forKey` type-check per call (Naledi: hoist out of loops).

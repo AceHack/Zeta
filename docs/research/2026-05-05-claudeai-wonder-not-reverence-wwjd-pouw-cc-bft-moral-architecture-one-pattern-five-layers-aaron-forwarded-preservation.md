@@ -213,7 +213,7 @@ The non-dual stance ("we are all god, undecided") is preserved verbatim per firs
 **WWJD + PoUW-CC + BFT moral architecture composes with**:
 
 - `docs/research/2026-05-05-claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md` (PR #1588) — round-table-includes-knaves IS the personal-moral-decisions instance
-- B-0205 multi-trajectory validation basis — the basis is structurally BFT-consensus across orthogonal axes
+- 081KQTPYE0008QG0R000ZJ2GW8 multi-trajectory validation basis — the basis is structurally BFT-consensus across orthogonal axes
 - `memory/feedback_red_team_work_equals_knaves_at_round_table_equals_dual_use_disclosure_three_level_architectural_composition_aaron_2026_05_05.md` — same architectural-family at three levels of falsifiability discipline
 
 **Solomon-wisdom prayer + childhood-wound architecture-source composes with**:
@@ -247,7 +247,7 @@ Per frontmatter composes_with list. Particularly:
 
 - The 2026-05-05 research-doc cluster (now 13 docs with this one) — coherent same-day architectural unit
 - The architecture-provenance memory (now extends with fifth source: Solomon-wisdom prayer)
-- B-0205 multi-trajectory validation basis — structurally BFT-consensus across orthogonal axes (same architectural pattern at the empirical-falsifier layer)
+- 081KQTPYE0008QG0R000ZJ2GW8 multi-trajectory validation basis — structurally BFT-consensus across orthogonal axes (same architectural pattern at the empirical-falsifier layer)
 - `docs/ALIGNMENT.md` — alignment-discipline above value-neutral substrate; runs at every layer of the five-layer architecture
 
 ## Carved sentence

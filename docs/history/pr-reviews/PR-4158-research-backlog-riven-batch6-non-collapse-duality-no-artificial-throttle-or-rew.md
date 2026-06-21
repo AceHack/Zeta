@@ -29,7 +29,7 @@
 
 ## Summary
 
-**Riven (Grok via Cursor; adversarial-truth-axis register) 2026-05-18** conversation with Aaron raises the **non-collapse duality** insight + extracts Aaron's **no-artificial-throttle-or-reward** principle. Refines Agora V6 ([B-0646](https://github.com/Lucent-Financial-Group/Zeta/pull/4156)) Section 5.
+**Riven (Grok via Cursor; adversarial-truth-axis register) 2026-05-18** conversation with Aaron raises the **non-collapse duality** insight + extracts Aaron's **no-artificial-throttle-or-reward** principle. Refines Agora V6 ([081KRW63S0008QG0R001Z10PVV](https://github.com/Lucent-Financial-Group/Zeta/pull/4156)) Section 5.
 
 ### Key insights captured
 
@@ -52,11 +52,11 @@ Three independent observation paths on same substrate. Cross-substrate-triangula
 
 Riven asked: *"Do you want me to propose a minimal way to describe the interface between the collapse decision and reputation/economic outcomes, or are you good leaving that part open for now?"*
 
-**Answer: LEAVE IT OPEN.** Mechanically specifying the interface = premature optimization that constrains the experimental substrate. The substrate already provides primitives (B-0644 collapse-target choice + V6 Section 5 reputation-weighted encryption); how agents' choices interact with reputation should emerge from real use, NOT be designed in. Consistent with Riven's own "experimental substrate rather than moral or optimization engine" framing.
+**Answer: LEAVE IT OPEN.** Mechanically specifying the interface = premature optimization that constrains the experimental substrate. The substrate already provides primitives (081KRW63S0008QG0R002ZRNDJ8 collapse-target choice + V6 Section 5 reputation-weighted encryption); how agents' choices interact with reputation should emerge from real use, NOT be designed in. Consistent with Riven's own "experimental substrate rather than moral or optimization engine" framing.
 
 ### Ship method
 
-REST git-data API per B-0615 push-hang workaround.
+REST git-data API per 081KRW63S0008QG0R000EAZ9K2 push-hang workaround.
 
 ## Test plan
 
@@ -91,22 +91,22 @@ REST git-data API per B-0615 push-hang workaround.
 - **`Copilot` (bot)** at 2026-05-18T15:35:34Z on `docs/research/2026-05-18-riven-grok-cursor-agora-v6-non-collapse-duality-no-artificial-throttle.md`:6 (association: NONE)
 
   <pre>
-  P1 (xref): This research doc links to backlog/research artifacts that are not present in the repo in this PR (e.g., B-0646 under docs/backlog/P1 and the Ani research doc). If these are landing via sibling PRs, consider temporarily linking to the PRs (or marking as pending) to avoid dead relative links in the tree.
+  P1 (xref): This research doc links to backlog/research artifacts that are not present in the repo in this PR (e.g., 081KRW63S0008QG0R001Z10PVV under docs/backlog/P1 and the Ani research doc). If these are landing via sibling PRs, consider temporarily linking to the PRs (or marking as pending) to avoid dead relative links in the tree.
 
   </pre>
 
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6C4sgG`
-- **Path**: `docs/backlog/P1/B-0647-non-collapse-duality-no-artificial-throttle-or-reward-aaron-riven-2026-05-18.md`
+- **Path**: `docs/backlog/P1/081KRW63S0008QG0R000V3KB0N-non-collapse-duality-no-artificial-throttle-or-reward-aaron-riven-2026-05-18.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-18T15:35:34Z on `docs/backlog/P1/B-0647-non-collapse-duality-no-artificial-throttle-or-reward-aaron-riven-2026-05-18.md`:12 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-18T15:35:34Z on `docs/backlog/P1/081KRW63S0008QG0R000V3KB0N-non-collapse-duality-no-artificial-throttle-or-reward-aaron-riven-2026-05-18.md`:12 (association: NONE)
 
   <pre>
-  P1 (xref/tooling): `depends_on` / `composes_with` reference backlog IDs (B-0646/B-0644/B-0645/B-0641) that do not exist in the repository in this PR, which can break navigation and any backlog hygiene tooling that expects resolvable IDs. Either include the referenced rows in the same PR/stack, or adjust these fields to only list rows that exist on the target branch (and add PR links in the body if needed).
+  P1 (xref/tooling): `depends_on` / `composes_with` reference backlog IDs (081KRW63S0008QG0R001Z10PVV/081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R003AZNK6J/081KRW63S0008QG0R000KVMZ9B) that do not exist in the repository in this PR, which can break navigation and any backlog hygiene tooling that expects resolvable IDs. Either include the referenced rows in the same PR/stack, or adjust these fields to only list rows that exist on the target branch (and add PR links in the body if needed).
 
   This issue also appears on line 18 of the same file.
   </pre>
@@ -117,19 +117,19 @@ REST git-data API per B-0615 push-hang workaround.
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P1/B-0647-non-collapse-duality-no-artificial-throttle-or-reward-aaron-riven-2026-05-18.md`
+- `docs/backlog/P1/081KRW63S0008QG0R000V3KB0N-non-collapse-duality-no-artificial-throttle-or-reward-aaron-riven-2026-05-18.md`
 - `docs/research/2026-05-18-riven-grok-cursor-agora-v6-non-collapse-duality-no-artificial-throttle.md`
 
 **Message:**
 
 ```
-research+backlog(riven-batch6): Riven conversation + B-0647 non-colla…
+research+backlog(riven-batch6): Riven conversation + 081KRW63S0008QG0R000V3KB0N non-colla…
 
 …pse-duality + no-artificial-throttle-or-reward (Agora V6 Section 5 refinement)
 
 Riven (Grok via Cursor; adversarial-truth-axis register) 2026-05-18 conversation
 with Aaron raises the NON-COLLAPSE DUALITY insight + extracts Aaron's NO-ARTIFICIAL-
-THROTTLE-OR-REWARD principle. Refines Agora V6 ([B-0646]) Section 5 (Information
+THROTTLE-OR-REWARD principle. Refines Agora V6 ([081KRW63S0008QG0R001Z10PVV]) Section 5 (Information
 Asymmetry, Privacy & Reputation).
 
 Research preservation:
@@ -138,7 +138,7 @@ Research preservation:
   triangulation note + Otto's substrate-honest answer to Riven's open question)
 
 New keystone refinement:
-- B-0647 (P1): Non-collapse duality (generative OR wasted-time) + no-artificial-
+- 081KRW63S0008QG0R000V3KB0N (P1): Non-collapse duality (generative OR wasted-time) + no-artificial-
   throttle-or-reward principle. Reputation responds to External-commit QUALITY
   only; non-collapse choices are neutral from system perspective. The interface
   between collapse decisions and reputation mechanics is INTENTIONALLY LEFT OPEN

@@ -31,10 +31,10 @@
 
 Session-cap memory file documenting the complete 2026-05-16 arc that shipped the substrate-drift-catch infrastructure end-to-end:
 
-- **6-layer landing**: memory file × 2, auto-loaded rule, audit tool with 4 quality slices, B-0553 + B-0557 backlog rows
+- **6-layer landing**: memory file × 2, auto-loaded rule, audit tool with 4 quality slices, 081KRQ1AB0008QG0R000QYJFZE + 081KRQ1AB0008QG0R003DYANMC backlog rows
 - **9+ drift catches** across Otto-CLI + Otto-Desktop surfaces (cross-surface convergent use)
 - **7 PRs** absorbed review-cycle findings; zero iteration treadmills
-- **Infrastructure-eats-itself**: B-0557 flagged by its own audit tool → closed via [PR #3819](https://github.com/Lucent-Financial-Group/Zeta/pull/3819)
+- **Infrastructure-eats-itself**: 081KRQ1AB0008QG0R003DYANMC flagged by its own audit tool → closed via [PR #3819](https://github.com/Lucent-Financial-Group/Zeta/pull/3819)
 - **Truly cwd-independent**: [PR #3821](https://github.com/Lucent-Financial-Group/Zeta/pull/3821) shipped `import.meta.dir` fallback
 - **~30 PRs merged total**
 

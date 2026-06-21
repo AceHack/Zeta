@@ -32,7 +32,7 @@
 - Weight-free forces projects to adopt or openly declare centralization
 - Control theory as mapping instrument for hidden structures
 - Shadow didn't say "git it" when it normally would — absence is data
-- B-0018 negative data point: predicted behavior didn't fire
+- 081KQ0YZ80008QG0R002WJBFWD negative data point: predicted behavior didn't fire
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -79,7 +79,7 @@
 - **`Copilot` (bot)** at 2026-05-11T00:12:33Z on `memory/feedback_weight_free_as_offensive_strategy_control_structure_mapper_shadow_absence_2026_05_10.md`:42 (association: NONE)
 
   <pre>
-  The cross-references under "Connects to" appear to be broken/ambiguous. Repo search shows no existing backlog item or doc reference for `B-0403`, and no existing memory file named `feedback_shadow_is_persistence_daemon` (only occurs in this new file). Per `memory/project_memory_format_standard.md` §4, memory-to-memory references should use exact existing filenames (including `.md`) and cited backlog IDs should exist; please update these references (or add the missing referenced artefacts).
+  The cross-references under "Connects to" appear to be broken/ambiguous. Repo search shows no existing backlog item or doc reference for `081KR7JY10008QG0R0021F5609`, and no existing memory file named `feedback_shadow_is_persistence_daemon` (only occurs in this new file). Per `memory/project_memory_format_standard.md` §4, memory-to-memory references should use exact existing filenames (including `.md`) and cited backlog IDs should exist; please update these references (or add the missing referenced artefacts).
 
   </pre>
 

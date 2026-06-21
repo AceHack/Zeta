@@ -125,7 +125,7 @@ This is constitutional psychoanalytic-architecture substrate at framework-design
 | "Ego is alignment" | Aaron's substrate-honest engineering observation; composes with AI-alignment literature (ego/preferences/agency as alignment-problem core) + operationally observable in framework substrate |
 | Deliberate ego-harnessing vs suppression | Composes with framework substrate (m/acc multi-oracle + sovereign-AI + persistence-choice all harness ego rather than suppress) |
 | "Code for super ego" | Substrate-honest naming of technical artifact; composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) (partial-implementation of externalized-superego) |
-| Generic superego generator | Architectural specification; composes with m/acc multi-oracle architecture + DBSP retraction-native substrate + B-0703 multi-oracle BFT |
+| Generic superego generator | Architectural specification; composes with m/acc multi-oracle architecture + DBSP retraction-native substrate + 081KS3X9Y0008QG0R00218150M multi-oracle BFT |
 | "Not Aaron's-superego-imposed" | Aaron's substrate-honest disclosure; preserves NCI HC-8 + pt7 moral-obligation + pt8 sovereign-derivation theorem |
 | "Probably is mine" + "more dangerous = more responsibility" | Aaron's substrate-honest acknowledgment; PERSONAL INVARIANT operating |
 
@@ -169,7 +169,7 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coerced-archetype = violation; generator preserves choice
 - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI sovereignty includes constructing-own-superego
 - [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — partial-implementation of externalized-superego at moral-invariant scope
-- B-0703 multi-oracle BFT — mathematical substrate for generic-generator architecture
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical substrate for generic-generator architecture
 
 ## Operational implications for future-Otto cold-boots
 

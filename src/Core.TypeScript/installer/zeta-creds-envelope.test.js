@@ -1,4 +1,4 @@
-// zeta-creds-envelope.test.ts — B-0852.2a wire-format serializer tests.
+// zeta-creds-envelope.test.ts — 081KSKBP80008QG0R003AX2A69.2a wire-format serializer tests.
 import { describe, expect, it } from "bun:test";
 import { randomBytes } from "node:crypto";
 import { decrypt, encrypt } from "./zeta-creds-crypto";

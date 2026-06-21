@@ -4,7 +4,7 @@ open FsCheck
 open FsCheck.Xunit
 open Zeta.Core
 
-// B-0364 smallest safe slice (re-decomposed: atomic was mistake; start with
+// 081KR50HA0008QG0R00096ZEYA smallest safe slice (re-decomposed: atomic was mistake; start with
 // identity relocation as base for map/join/aggregate later slices).
 // Proves: for identity query Q, local(Q, S) == central(Q, S) after reintegration
 // (here reintegration is structural equality on ZSet delta).

@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron's recognition verbatim: the math-dispatch hygiene (standing verdicts handed over, failure authorized as outcome) is the Eve Protocol's carried treaty state + v8 hidden-shape inline caching at research scale. Re-litigation = a triggered deopt, never ambient (the Circle's named-moves rule on precedent); the failure clause = tryFuse, a decline carrying information. Accreted under deadline, recognized after — the falls-out pattern in the process dimension. Anchors: Deutsch-Schiffman 1984, stare decisis, B-0638.
+Aaron's recognition verbatim: the math-dispatch hygiene (standing verdicts handed over, failure authorized as outcome) is the Eve Protocol's carried treaty state + v8 hidden-shape inline caching at research scale. Re-litigation = a triggered deopt, never ambient (the Circle's named-moves rule on precedent); the failure clause = tryFuse, a decline carrying information. Accreted under deadline, recognized after — the falls-out pattern in the process dimension. Anchors: Deutsch-Schiffman 1984, stare decisis, 081KRW63S0008QG0R0030F8ZXA.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

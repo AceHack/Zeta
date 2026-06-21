@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/proximity.ts
  *
- * B-0914.6 — proximity agent substrate for substrate-engineering
+ * 081KDX1YWP008QG0R000B091D7 — proximity agent substrate for substrate-engineering
  * substrate de-duplication.
  *
  * Per Google co-scientist proximity agent (Nature 2026): maps ideas
@@ -20,13 +20,13 @@
  * casing, attribute ordering).
  *
  * Composes with:
- *   - B-0914 subtask .6 (parent row `B-0914-co-scientist-plus-robin-...`
- *     §"### B-0914.6 — Proximity-agent for substrate-engineering substrate
+ *   - 081KSNY2Z0008QG0R001YK61JQ subtask .6 (parent row `081KSNY2Z0008QG0R001YK61JQ-co-scientist-plus-robin-...`
+ *     §"### 081KDX1YWP008QG0R000B091D7 — Proximity-agent for substrate-engineering substrate
  *     de-duplication"; the seven .N subtasks are sections within the
- *     parent row, NOT separate B-0914.N row files)
- *   - B-0914 subtask .5 (PR #5767 evolution substrate — Survivor de-dup
+ *     parent row, NOT separate 081KSNY2Z0008QG0R001YK61JQ.N row files)
+ *   - 081KSNY2Z0008QG0R001YK61JQ subtask .5 (PR #5767 evolution substrate — Survivor de-dup
  *     before mash)
- *   - B-0914 subtask .2 (PR #5769 closed-loop — de-dup pre-CI-dispatch
+ *   - 081KSNY2Z0008QG0R001YK61JQ subtask .2 (PR #5769 closed-loop — de-dup pre-CI-dispatch
  *     saves cycles)
  *   - .claude/rules/verify-existing-substrate-before-authoring (proximity
  *     IS substrate-inventory at runtime scope)

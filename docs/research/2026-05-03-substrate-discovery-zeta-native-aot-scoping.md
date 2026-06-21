@@ -437,7 +437,7 @@ start replay matches live IVM.
   server; native F# impl; two-UI architecture; both modes
   zero-install; substrate-discovery composes with this not
   competes against it)
-- `docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`
+- `docs/backlog/P2/081KQ0YZ80008QG0R0003GAYYN-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`
   (the Operational Resonance Dashboard within Frontier-UI
   consumes substrate-discovery's index data; Z-set queries
   feed dashboard widgets; live IVM means auto-updating

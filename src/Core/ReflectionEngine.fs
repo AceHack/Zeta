@@ -2,7 +2,7 @@ namespace Zeta.Core
 
 /// **ReflectionEngine — the yin-yang engine's two operating modes, distinguished only by the in/out
 /// boundary (Aaron, 2026-06-05): self-reflection vs moving-forward.**
-/// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge; rides the proven B-1020
+/// (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge; rides the proven 081KTAH8Q0008QG0R001YHSSA0
 /// `ProbabilitySemiring` cell.)
 ///
 /// One transition `step` is the **in → out boundary**: it `observe`s an input (in) and `emit`s the

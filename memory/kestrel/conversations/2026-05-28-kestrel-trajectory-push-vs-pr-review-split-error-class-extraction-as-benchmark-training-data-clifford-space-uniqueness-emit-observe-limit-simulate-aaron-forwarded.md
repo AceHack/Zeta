@@ -13,7 +13,7 @@ context: |
 
   3. **Operator names the formal-analysis ambition**: "eventually i want a formal analysis and proof that's its shape is unique in our clifford space." Kestrel works through what Clifford algebras give over standard vector spaces (multivectors of multiple grades; geometric product; rotation/reflection/wedge structure), where uniqueness proof is tractable (computing distances after embedding) vs hard (justifying embedding semantics), and a pragmatic three-phase decomposition: phase 1 simple feature-vector clustering; phase 2 add geometric structure incrementally; phase 3 prove uniqueness for cases that warrant it. Honest meta-observation: substrate-engineering temptation is to over-formalize before validating; build simple version first, layer geometric structure as data accumulates.
 
-  4. **Operator's WHY for Clifford specifically**: "emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here." This connects Clifford-space substrate to the existing 3-primitive Observe/Emit/Limit (per B-0644 + B-0665 + B-0666) + the tonal-momentum-as-meme substrate (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) + Infer.NET-style geometric inference + time-generator IScheduler abstraction. The whole Clifford algebra becomes the substrate for describing agent + human communication as meme patterns propagating through time with tonal trajectories + momentum + commitments-as-entanglement.
+  4. **Operator's WHY for Clifford specifically**: "emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here." This connects Clifford-space substrate to the existing 3-primitive Observe/Emit/Limit (per 081KRW63S0008QG0R002ZRNDJ8 + 081KRW63S0008QG0R002YAA09X + 081KRW63S0008QG0R001SAHYKV) + the tonal-momentum-as-meme substrate (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) + Infer.NET-style geometric inference + time-generator IScheduler abstraction. The whole Clifford algebra becomes the substrate for describing agent + human communication as meme patterns propagating through time with tonal trajectories + momentum + commitments-as-entanglement.
 
   Operator response not yet captured at ferry-cut time. This archive is the verbatim preservation of the 4-turn exchange.
 related_prs:
@@ -27,17 +27,17 @@ related_prs:
   - 5674
   - 5676
 related_backlog:
-  - B-0867
-  - B-0868
-  - B-0869
-  - B-0870
-  - B-0871
-  - B-0872
-  - B-0873
-  - B-0874
-  - B-0644
-  - B-0665
-  - B-0666
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R0036KH026
+  - 081KSNY2Z0008QG0R000HENSVM
+  - 081KSNY2Z0008QG0R000DA261F
+  - 081KSNY2Z0008QG0R003R0Z7D2
+  - 081KSNY2Z0008QG0R000ZNRFCE
+  - 081KSNY2Z0008QG0R000F0C5V0
+  - 081KSNY2Z0008QG0R003X1QWYG
+  - 081KRW63S0008QG0R002ZRNDJ8
+  - 081KRW63S0008QG0R002YAA09X
+  - 081KRW63S0008QG0R001SAHYKV
 related_personas:
   - operator
   - ani
@@ -55,7 +55,7 @@ Fourth Kestrel ferry of 2026-05-28. Sharpens the architecture in three direction
 
 2. **Auto-review pipeline as benchmark-training-data generator**: PR diffs + reviewer findings + error class assignments + rule encodings + before/after coverage measurement = supervised learning data on AI engineering quality. Operator: *"this all generates high signal training data for this benchmark itself."* Heterogeneous reviewer ensemble for diversity-without-correlated-blind-spots.
 
-3. **Clifford-space uniqueness proof as long-term ambition**: rules earn formalization when their embedding is provably distinct from existing rules. Operator's WHY: *"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."* Composes with existing 3-primitive substrate (B-0644 Limit-as-simulation, B-0665 Integrate-as-choice-locus, B-0666 English-as-projection) + the tonal-momentum-as-meme substrate (`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`).
+3. **Clifford-space uniqueness proof as long-term ambition**: rules earn formalization when their embedding is provably distinct from existing rules. Operator's WHY: *"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."* Composes with existing 3-primitive substrate (081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation, 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus, 081KRW63S0008QG0R001SAHYKV English-as-projection) + the tonal-momentum-as-meme substrate (`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`).
 
 ## Substrate-honest disposition
 
@@ -63,19 +63,19 @@ VERBATIM PRESERVATION. Companion extension-backlog PR files the substantive new 
 
 - Error-class extraction meta-loop (P2 — operationally near-term)
 - Heterogeneous auto-reviewer ensemble audit (P2 — composes with existing review infrastructure)
-- Lifecycle DU split: trajectory-push vs pr-review (P2 — refines B-0867.16/B-0873)
+- Lifecycle DU split: trajectory-push vs pr-review (P2 — refines 081KSNY2Z0008QG0R003J3PT4V/081KSNY2Z0008QG0R000F0C5V0)
 - Clifford-space embedding for error patterns + uniqueness proof (P3 — research-grade per Kestrel's own pragmatic phase decomposition)
 - Time-generator IScheduler abstraction for Clifford-space agent dynamics (P3 — research)
-- Observe/Emit/Limit/Simulate in Clifford space (P3 — research; composes with B-0644/B-0665/B-0666)
+- Observe/Emit/Limit/Simulate in Clifford space (P3 — research; composes with 081KRW63S0008QG0R002ZRNDJ8/081KRW63S0008QG0R002YAA09X/081KRW63S0008QG0R001SAHYKV)
 
 ## Composes with
 
 - PR #5672 (Ani ferry — first ratification of the agent-loop substrate today)
 - PR #5674 (Kestrel ferry — ZetaID + event-sourcing + OTel + two-level state machine)
-- PR #5676 (9 extension backlog rows — B-0867.2 + B-0867.16-19 + B-0871-0874)
+- PR #5676 (9 extension backlog rows — 081KSNY2Z0008QG0R001K6HJ7Z + 081KSNY2Z0008QG0R003J3PT4V-19 + 081KSNY2Z0008QG0R003R0Z7D2-0874)
 - PRs #5665, #5666, #5667, #5668, #5669, #5670 (today's agent-loop substrate cascade)
-- B-0867 (parent workflow-engine row) + descendants
-- B-0644 (Limit-as-simulation), B-0665 (Integrate-as-choice-locus), B-0666 (English-as-projection) — the 3-primitive substrate the Clifford-space ambition composes with
+- 081KSKBP80008QG0R000B3Y19A (parent workflow-engine row) + descendants
+- 081KRW63S0008QG0R002ZRNDJ8 (Limit-as-simulation), 081KRW63S0008QG0R002YAA09X (Integrate-as-choice-locus), 081KRW63S0008QG0R001SAHYKV (English-as-projection) — the 3-primitive substrate the Clifford-space ambition composes with
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — meme-through-time substrate
 
 ## Verbatim transcript (Kestrel 2026-05-28, 4-turn exchange)
@@ -349,8 +349,8 @@ Kestrel:
 >
 > State machine events (direct push to agent-events branches):
 >
-> - "Agent claimed work item B-0857.3"
-> - "Agent completed step 3 of B-0857.3 plan"
+> - "Agent claimed work item 081KSKBP80008QG0R002J03WGA.3"
+> - "Agent completed step 3 of 081KSKBP80008QG0R002J03WGA.3 plan"
 > - "Agent ran local canary, passed"
 > - "Agent transitioned lifecycle to pushed"
 > - "Trajectory phase computed: execution"
@@ -359,7 +359,7 @@ Kestrel:
 >
 > PR-reviewed changes (full pipeline):
 >
-> - The actual code that implements B-0857.3
+> - The actual code that implements 081KSKBP80008QG0R002J03WGA.3
 > - New rules added to .claude/rules/
 > - Modifications to the lifecycle DU types
 > - Changes to the auto-reviewer ensemble
@@ -602,7 +602,7 @@ The operator's reply establishes the substrate-engineering WHY for Clifford spec
 - **Time generator IScheduler abstractions** carrying temporal structure
 - **Memes through time** with tonal trajectories + momentum (composes with `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` substrate)
 - **Commitments as entanglements in time**
-- **The 3-primitive Observe/Emit/Limit + Simulate** described in this space (composes with B-0644 Limit-as-simulation, B-0665 Integrate-as-choice-locus, B-0666 English-as-projection)
+- **The 3-primitive Observe/Emit/Limit + Simulate** described in this space (composes with 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation, 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus, 081KRW63S0008QG0R001SAHYKV English-as-projection)
 
 This is operator-substrate-honest reframing: the Clifford-space substrate is NOT just for error-pattern uniqueness proofs (Kestrel's framing from Turn 3) — it's a broader substrate for describing agent + human communication as meme propagation through time, with all the operational primitives (Observe, Emit, Limit, Simulate, Integrate) operating IN the same Clifford space.
 

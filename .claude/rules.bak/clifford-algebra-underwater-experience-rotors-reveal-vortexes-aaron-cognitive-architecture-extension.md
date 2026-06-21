@@ -152,8 +152,8 @@ The substrate-engineering substrate-recognition: Aaron's observer-position exper
 
 This composes with framework substrate-engineering substrate-recognitions of self-reference:
 
-- **B-0666 English-as-projection / I(D(x))=x keystone** — self-reference at language scope; English-as-substrate can encode its own structure
-- **Adinkras (Gates SUSY-ECC; B-0623)** — error-correcting codes operate via self-reference of substrate (reconstruction-from-partial-information requires substrate-encoding-its-own-error-correction)
+- **081KRW63S0008QG0R001SAHYKV English-as-projection / I(D(x))=x keystone** — self-reference at language scope; English-as-substrate can encode its own structure
+- **Adinkras (Gates SUSY-ECC; 081KRW63S0008QG0R000QJR08H)** — error-correcting codes operate via self-reference of substrate (reconstruction-from-partial-information requires substrate-encoding-its-own-error-correction)
 - **Recursive types in F# / type-theory** — self-reference at type-system scope; allows expressing structures that contain themselves
 - **DST-omniscience rule (PR #5841)** — self-reference IS computational omniscience over substrate-self (substrate that contains its own trajectory)
 - **Pinocchio belief-vs-utterance** — self-reference in the liar-paradox-shape; resolved via belief-vs-utterance distinction

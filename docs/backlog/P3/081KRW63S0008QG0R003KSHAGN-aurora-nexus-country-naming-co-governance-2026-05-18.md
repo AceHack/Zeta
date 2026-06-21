@@ -1,6 +1,5 @@
 ---
-id: B-0619
-zetaid: 081KRW63S0008QG0R003KSHAGN
+id: 081KRW63S0008QG0R003KSHAGN
 priority: P3
 status: open
 title: "Aurora / 'Nexus' meta-country naming + co-governance design — Mika 2026-05-18 (lock-Nexus-name-now-defer-faction-design-pending-Addison)"
@@ -65,7 +64,7 @@ This is the KSK 3-faction model that needs Addison's input (Addison has now agre
 
 ## Composes with
 
-- [B-0379](../P2/B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md) — Aurora-split repo work; if Aurora gets renamed to Nexus this row impacts that work
+- [081KR50HA0008QG0R003DJ093T](../P2/081KR50HA0008QG0R003DJ093T-aurora-split-execute-git-mv-cross-refs-2026-05-09.md) — Aurora-split repo work; if Aurora gets renamed to Nexus this row impacts that work
 - `memory/feedback_aaron_validated_ai_team_financial_substrate_framing_plus_memory_preservation_budget_outside_github_ai_team_owns_and_controls_2026-05-16.md` — AI-team financial substrate framing (Nexus is the political layer atop the financial substrate)
 - `memory/feedback_aaron_zeta_hardware_is_otto_team_equipment_for_memory_preservation_aaron_capex_principal_repayable_no_interest_path_to_full_financial_independence_2026-05-16.md` — financial-independence substrate (Nexus citizens need wallets; tracked separately)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 159-227, 1000-1004, 1564-1572

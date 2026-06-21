@@ -1,6 +1,6 @@
 ---
 pr_number: 3937
-title: "feat(routines): B-0507 and B-0508 cloud-schedule schema definition"
+title: "feat(routines): 081KRHWGX0008QG0R000E8BHQ9 and 081KRHWGX0008QG0R002S107P7 cloud-schedule schema definition"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T20:26:45Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-16T20:57:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3937: feat(routines): B-0507 and B-0508 cloud-schedule schema definition
+# PR #3937: feat(routines): 081KRHWGX0008QG0R000E8BHQ9 and 081KRHWGX0008QG0R002S107P7 cloud-schedule schema definition
 
 ## PR description
 
-Delivers slice 1 and 2 of B-0448 (Cloud Routines).
-- B-0507: Added research doc on cloud routines API, auth, and triggers.
-- B-0508: Added cloud-schedule.schema.json, updated install.ts with types, and updated tools/routines/README.md.
+Delivers slice 1 and 2 of 081KRFA460008QG0R000CYBGKW (Cloud Routines).
+- 081KRHWGX0008QG0R000E8BHQ9: Added research doc on cloud routines API, auth, and triggers.
+- 081KRHWGX0008QG0R002S107P7: Added cloud-schedule.schema.json, updated install.ts with types, and updated tools/routines/README.md.
 
 ## Reviews
 
@@ -26,12 +26,12 @@ Delivers slice 1 and 2 of B-0448 (Cloud Routines).
 
 ## Pull request overview
 
-Lands slices 1 and 2 of B-0448 (Cloud Routines): a research doc capturing the Anthropic Cloud Routines API/auth/trigger surface, plus a schema and TypeScript types laying the groundwork for `cloud-schedule.json` files alongside the existing Desktop `schedule.json`.
+Lands slices 1 and 2 of 081KRFA460008QG0R000CYBGKW (Cloud Routines): a research doc capturing the Anthropic Cloud Routines API/auth/trigger surface, plus a schema and TypeScript types laying the groundwork for `cloud-schedule.json` files alongside the existing Desktop `schedule.json`.
 
 **Changes:**
 - Adds `tools/routines/cloud-schedule.schema.json` (taskId + trigger oneOf: scheduled/github_event/api, plus repos/connectors/notes).
 - Exports `CloudTrigger` and `CloudScheduleResult` types from `tools/routines/install.ts` (no reader/consumer wired yet).
-- Adds research doc and closes B-0507/B-0508 backlog rows; updates `tools/routines/README.md` to document `cloud-schedule.json`.
+- Adds research doc and closes 081KRHWGX0008QG0R000E8BHQ9/081KRHWGX0008QG0R002S107P7 backlog rows; updates `tools/routines/README.md` to document `cloud-schedule.json`.
 
 ### Reviewed changes
 
@@ -45,9 +45,9 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 3 c
 | tools/routines/cloud-schedule.schema.json | New JSON Schema describing cloud routine config. |
 | tools/routines/install.ts | Adds exported `CloudTrigger`/`CloudScheduleResult` types (not yet consumed). |
 | tools/routines/README.md | Documents new `cloud-schedule.json` file. |
-| docs/research/2026-05-14-cloud-routines-api-auth-registration-surface-b0507.md | B-0507 research write-up. |
-| docs/backlog/P1/B-0507-...md | Marks B-0507 closed; acceptance criteria checked. |
-| docs/backlog/P1/B-0508-...md | Marks B-0508 closed; acceptance criteria checked. |
+| docs/research/2026-05-14-cloud-routines-api-auth-registration-surface-b0507.md | 081KRHWGX0008QG0R000E8BHQ9 research write-up. |
+| docs/backlog/P1/081KRHWGX0008QG0R000E8BHQ9-...md | Marks 081KRHWGX0008QG0R000E8BHQ9 closed; acceptance criteria checked. |
+| docs/backlog/P1/081KRHWGX0008QG0R002S107P7-...md | Marks 081KRHWGX0008QG0R002S107P7 closed; acceptance criteria checked. |
 </details>
 
 ### COMMENTED — @AceHack (2026-05-16T20:39:36Z)
@@ -72,7 +72,7 @@ This authored research doc uses a date-prefixed filename (`2026-05-14-...md`), w
 
 **@AceHack** (2026-05-16T20:39:36Z):
 
-Resolving no-op per markdownlint B-0078 policy. `docs/research/2026-*-*.md` is intentionally broad per `.markdownlint-cli2.jsonc:85-114`: a 2026-05-10 narrowing attempt was empirically wrong (CI revealed 82+ legitimate verbatim-ferry date-prefixed files). Theoretical concern about authored-content silently skipping lint is acknowledged in the policy comment and explicitly accepted as the cost of verbatim-preservation. This authored research doc lands under the broad pattern by design, not by accident.
+Resolving no-op per markdownlint 081KQ8P5D0008QG0R002SBGJXX policy. `docs/research/2026-*-*.md` is intentionally broad per `.markdownlint-cli2.jsonc:85-114`: a 2026-05-10 narrowing attempt was empirically wrong (CI revealed 82+ legitimate verbatim-ferry date-prefixed files). Theoretical concern about authored-content silently skipping lint is acknowledged in the policy comment and explicitly accepted as the cost of verbatim-preservation. This authored research doc lands under the broad pattern by design, not by accident.
 
 ### Thread 2: tools/routines/cloud-schedule.schema.json:62 (resolved)
 

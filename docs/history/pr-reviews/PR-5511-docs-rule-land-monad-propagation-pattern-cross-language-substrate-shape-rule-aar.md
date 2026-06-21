@@ -109,7 +109,7 @@ produced PR #5505 + #5507:
 - **`Copilot` (bot)** at 2026-05-27T16:55:14Z on `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`:155 (association: NONE)
 
   <pre>
-  This claims the new substrate was identified through grep, but the rule body does not include the required inline substrate-inventory audit trail from `verify-existing-substrate-before-authoring.md` (what was searched, top hits, and conclusion). Add that audit trail and include the existing SQL NULL/Maybe recursive-CTE substrate hits such as B-0824 and `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md`, which cover the same monad/recursive-CTE pattern.
+  This claims the new substrate was identified through grep, but the rule body does not include the required inline substrate-inventory audit trail from `verify-existing-substrate-before-authoring.md` (what was searched, top hits, and conclusion). Add that audit trail and include the existing SQL NULL/Maybe recursive-CTE substrate hits such as 081KSGS9H0008QG0R0031PBNGA and `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md`, which cover the same monad/recursive-CTE pattern.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -163,8 +163,8 @@ Rule body adds:
   feedback_type column flowing through CTE chains
 - Composition with 6 substrate elements (force-push-policy PR
   #5505 + #5507 / F# Result-over-exception / inversion-of-monad /
-  Itron smart-meter substrate / B-0428 F# fork / B-0860 Nemerle /
-  B-0829 cluster-fork)
+  Itron smart-meter substrate / 081KRFA460008QG0R0018SN61J F# fork / 081KSKBP80008QG0R000J2YFK2 Nemerle /
+  081KSGS9H0008QG0R000Q18PGQ cluster-fork)
 - Composition with 8 framework rules (grep-substrate-anchors /
   verify-existing-substrate / razor-discipline / bandwidth-served /
   default-to-both / edge-defining-work / wake-time-substrate /

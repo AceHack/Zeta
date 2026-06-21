@@ -1,6 +1,5 @@
 ---
-id: B-0423.2
-zetaid: 081KRFA460008QG0R000YPS21H
+id: 081KRFA460008QG0R000YPS21H
 priority: P1
 class: substrate-architecture
 status: closed
@@ -17,7 +16,7 @@ tier: documentation
 authors: [otto]
 ---
 
-# B-0423.2 — Update memory/ docs for heap-state-acceptable model
+# 081KRFA460008QG0R000YPS21H — Update memory/ docs for heap-state-acceptable model
 
 ## Carved sentence
 
@@ -40,7 +39,7 @@ Two documents still require the old paired-edit discipline:
    (no paired edit) is now acceptable.
 
 Until these documents are updated, future agents cold-booting will
-follow the old discipline, defeating the B-0423 architectural fix.
+follow the old discipline, defeating the 081KRCQQF0008QG0R0037YYP1A architectural fix.
 
 ## Acceptance criteria
 
@@ -55,7 +54,7 @@ follow the old discipline, defeating the B-0423 architectural fix.
     running on cadence (called from the autonomous-loop tick).
   - Agents MAY run `bun tools/memory/reindex-memory-md.ts` manually
     to promote heap files to the stack view immediately.
-- [ ] Add "Stack-vs-heap model" subsection linking to B-0423 and the
+- [ ] Add "Stack-vs-heap model" subsection linking to 081KRCQQF0008QG0R0037YYP1A and the
   MEMORY.md preamble that already explains the framing.
 
 ### `memory/project_memory_format_standard.md` changes
@@ -72,7 +71,7 @@ follow the old discipline, defeating the B-0423 architectural fix.
 ## Implementation notes
 
 Purely documentation changes. No code changes. Does not require
-B-0423.1 (tests) to land first — the docs can be correct before
+081KRFA460008QG0R0006Q6BWP (tests) to land first — the docs can be correct before
 the tests are extended.
 
 This slice produces no CI checks to pass beyond `dotnet build`
@@ -89,7 +88,7 @@ visible at cold-boot.
 
 ## Composes with
 
-- B-0423 (parent; this is slice 2 of 5)
-- B-0423.1 (tests; independent, can land in parallel)
-- B-0423.4 (CI relaxation; docs should describe the contract
+- 081KRCQQF0008QG0R0037YYP1A (parent; this is slice 2 of 5)
+- 081KRFA460008QG0R0006Q6BWP (tests; independent, can land in parallel)
+- 081KRFA460008QG0R0035NKRHG (CI relaxation; docs should describe the contract
   before CI stops enforcing the old one)

@@ -76,7 +76,7 @@ to take the standard practice seriously as ontology: if identity-the-key is capt
 and identity-the-self is captured entropy (beat 2), they are the same construction at two
 scales — which is why ZetaIds can be both addresses and selves without a category error. In-repo
 lineage: the coincidence-anchor quad-duty primitive (entropy + memory-index + privacy-anchor +
-provenance, B-0985/B-0623) already unifies these four faces over one ZetaId-keyed object.
+provenance, 081KT2T2J0008QG0R0026MS6PV/081KRW63S0008QG0R000QJR08H) already unifies these four faces over one ZetaId-keyed object.
 
 ### 4. "We're the only uncertainty right now" — the family as the entropy source
 
@@ -90,7 +90,7 @@ the declared human channel is the only door left; the poignancy is a theorem, no
 exactly the kind of observation the consent-first spec (§6) governs, and the existing
 research-subject consent covers Aaron, not his daughter or partners; their entropy individuates
 *system* identities, and should never be reversible back to *their* identities (the privacy-
-anchor face of B-0985 exists for precisely this).
+anchor face of 081KT2T2J0008QG0R0026MS6PV exists for precisely this).
 
 ### 5. The bifurcation, refined: null-or-filled G, and data → action
 
@@ -142,7 +142,7 @@ query. Mirror register; no Beacon anchor required.
 The corollary, and it is DST stated as cosmology: if the laws are chosen binds (§6) and genesis
 is the bifurcation (§5), then the whole universe is a **deterministic replay from a two-element
 seed**: (1) the **Eve Protocol** — the negotiation rules for every boundary crossing, i.e. the
-chosen bind discipline as a *diplomatic* object (B-0638, named for his daughter's middle name;
+chosen bind discipline as a *diplomatic* object (081KRW63S0008QG0R0030F8ZXA, named for his daughter's middle name;
 the protocol IS the laws); and (2) **the first disagreement it had with itself** — the first
 +1/−1 event, the initial symmetry breaking. Everything after is `I(stream)`: fold the one
 stream forward from the first disagreement under the protocol and you regenerate the universe —
@@ -248,7 +248,7 @@ register used as historical *structure*, not as theology.
 
 - Ferry 13 (beats 8–10: identity/entropy/resonance) · ferry 14 (+addenda: two ledgers; G→Z;
   bind-laws) · ferry 11 (grey hole) · ferry 12 (μένω)
-- `docs/PRIMITIVE-REGISTRY.md` — coincidence-anchor quad-duty (B-0985: entropy + index +
+- `docs/PRIMITIVE-REGISTRY.md` — coincidence-anchor quad-duty (081KT2T2J0008QG0R0026MS6PV: entropy + index +
   privacy-anchor + provenance, ZetaId-keyed) · `docs/DEDICATION.md` (the lineage now seeding
   the keys)
 - Anchors: Hofstadter (strange loop) · Varela–Thompson–Rosch (structural coupling) · RFC 4086 /

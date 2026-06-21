@@ -1,12 +1,11 @@
 ---
-id: B-0338
-zetaid: 081KR2E4K0008QG0R000N124VW
+id: 081KR2E4K0008QG0R000N124VW
 priority: P2
 status: open
 title: Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
 tier: foundation
 effort: M
-ask: B-0190 Step 9 decomposition
+ask: 081KQR4HQ0008QG0R001909FPT Step 9 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQR4HQ0008QG0R001909FPT
@@ -16,11 +15,11 @@ tags: [memory, graduation, meta-discipline, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0338 — Memory graduation ladder
+# 081KR2E4K0008QG0R000N124VW — Memory graduation ladder
 
 ## Parent
 
-B-0190 Step 9 (memory-as-substrate-engineering meta-discipline).
+081KQR4HQ0008QG0R001909FPT Step 9 (memory-as-substrate-engineering meta-discipline).
 
 ## What
 
@@ -38,12 +37,12 @@ Codify the graduation ladder for memory content:
    threshold: no longer wake-time-load-bearing (e.g., the lesson
    has been mechanized into a tool/hook).
 
-## Why depends on B-0330, B-0332, B-0333
+## Why depends on 081KR2E4K0008QG0R002VM58S4, 081KR2E4K0008QG0R002FRQZN4, 081KR2E4K0008QG0R00175HQR9
 
-- B-0330 (format) — the ladder references format conventions.
-- B-0332 (load-bearing classifier) — "load-bearing" is the
+- 081KR2E4K0008QG0R002VM58S4 (format) — the ladder references format conventions.
+- 081KR2E4K0008QG0R002FRQZN4 (load-bearing classifier) — "load-bearing" is the
   promotion criterion.
-- B-0333 (retire discipline) — demotion is the inverse of
+- 081KR2E4K0008QG0R00175HQR9 (retire discipline) — demotion is the inverse of
   retirement.
 
 ## Why P2

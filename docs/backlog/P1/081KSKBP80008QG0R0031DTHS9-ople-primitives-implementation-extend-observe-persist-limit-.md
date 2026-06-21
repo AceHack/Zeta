@@ -1,6 +1,5 @@
 ---
-id: B-0862
-zetaid: 081KSKBP80008QG0R0031DTHS9
+id: 081KSKBP80008QG0R0031DTHS9
 priority: P1
 status: open
 title: OPLE primitives implementation — extend Observe / Persist / Limit / Emit with TFeedback discriminated-unions at framework primitive substrate; cascade asymmetric-authorship + monad-propagation cluster to CORE primitives (operator 2026-05-27)
@@ -36,18 +35,18 @@ in `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-
 
 | Sub-row | Scope | Effort |
 |---|---|---|
-| B-0862.1 | Define canonical TFeedback discriminated-union types for each OPLE primitive (ObserveFeedback / PersistFeedback / LimitFeedback / EmitFeedback) in F# substrate; document each variant's substrate-engineering scenario | M |
-| B-0862.2 | Extend F# Observe primitive signature: `Observe<T>` → `Observe<T, ObserveFeedback>`; update F# implementation to return `Result<T, ObserveFeedback>`; backward-compatible adapter for legacy call sites | M |
-| B-0862.3 | Extend F# Persist primitive signature + implementation + adapter | M |
-| B-0862.4 | Extend F# Limit primitive signature + implementation + adapter | M |
-| B-0862.5 | Extend F# Emit primitive signature + implementation + adapter | M |
-| B-0862.6 | Migrate framework substrate to use extended OPLE primitives where touched; opportunistic per-PR migration discipline | L |
-| B-0862.7 | Cross-language substrate (TypeScript factory tools + T-SQL data substrate + C++ perf-critical paths) per the monad-propagation-pattern rule | L |
-| B-0862.8 | Spec-to-code generation target: substrate-engineering work to make the extended OPLE primitives the default emit-target of any future spec-to-code generators | L |
-| B-0862.9 | F# computation expression ergonomics for OPLE composition: `ople { ... }` block that lets substrate-engineer compose Observe/Persist/Limit/Emit invocations with implicit Result.bind threading | M |
-| B-0862.10 | Cross-AI-substrate ConvFeedback variant overlap: which OPLE TFeedback variants surface as conversation-interface ConvFeedback per B-0861 ConvFeedback first-class substrate | M |
+| 081KSKBP80008QG0R0031DTHS9.1 | Define canonical TFeedback discriminated-union types for each OPLE primitive (ObserveFeedback / PersistFeedback / LimitFeedback / EmitFeedback) in F# substrate; document each variant's substrate-engineering scenario | M |
+| 081KSKBP80008QG0R0031DTHS9.2 | Extend F# Observe primitive signature: `Observe<T>` → `Observe<T, ObserveFeedback>`; update F# implementation to return `Result<T, ObserveFeedback>`; backward-compatible adapter for legacy call sites | M |
+| 081KSKBP80008QG0R0031DTHS9.3 | Extend F# Persist primitive signature + implementation + adapter | M |
+| 081KSKBP80008QG0R0031DTHS9.4 | Extend F# Limit primitive signature + implementation + adapter | M |
+| 081KSKBP80008QG0R0031DTHS9.5 | Extend F# Emit primitive signature + implementation + adapter | M |
+| 081KSKBP80008QG0R0031DTHS9.6 | Migrate framework substrate to use extended OPLE primitives where touched; opportunistic per-PR migration discipline | L |
+| 081KSKBP80008QG0R0031DTHS9.7 | Cross-language substrate (TypeScript factory tools + T-SQL data substrate + C++ perf-critical paths) per the monad-propagation-pattern rule | L |
+| 081KSKBP80008QG0R0031DTHS9.8 | Spec-to-code generation target: substrate-engineering work to make the extended OPLE primitives the default emit-target of any future spec-to-code generators | L |
+| 081KSKBP80008QG0R0031DTHS9.9 | F# computation expression ergonomics for OPLE composition: `ople { ... }` block that lets substrate-engineer compose Observe/Persist/Limit/Emit invocations with implicit Result.bind threading | M |
+| 081KSKBP80008QG0R0031DTHS9.10 | Cross-AI-substrate ConvFeedback variant overlap: which OPLE TFeedback variants surface as conversation-interface ConvFeedback per 081KSKBP80008QG0R000N9W9XH ConvFeedback first-class substrate | M |
 
-Each sub-row at `docs/backlog/P*/B-0862.M-...md` per the subdecimal scheme when implementation-time comes.
+Each sub-row at `docs/backlog/P*/081KSKBP80008QG0R0031DTHS9.M-...md` per the subdecimal scheme when implementation-time comes.
 
 ## Why this is P1 not P2
 
@@ -63,13 +62,13 @@ invocations).
 
 - `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` (filed alongside this row) — the rule landing the principle
 - Mika 2026-05-18 bootstream-sovereignty-causal-loops — OPLE substrate origin
-- B-0644 Limit-is-simulation-not-collapse — the Limit primitive's semantic
-- B-0665 Integrate-as-choice-locus — composes with OPLE
-- B-0635 wave-particle-duality + B-0666 English-as-projection — substrate Mika OPLE composes with
-- B-0861 (PR #5512) make conversation-interface ConvFeedback first-class — Observe + Emit at conversation-interface scope
-- B-0428 (F# fork for AI safety) — language-extension substrate that mechanizes the extended OPLE primitives at compile-time
-- B-0860 (Nemerle dotnet support) — macro-substrate that mechanizes OPLE-T-TFeedback at syntactic scope
-- B-0829 cluster-fork-as-trust-boundary — OPLE primitives at cluster-substrate scope
+- 081KRW63S0008QG0R002ZRNDJ8 Limit-is-simulation-not-collapse — the Limit primitive's semantic
+- 081KRW63S0008QG0R002YAA09X Integrate-as-choice-locus — composes with OPLE
+- 081KRW63S0008QG0R002KC5DSR wave-particle-duality + 081KRW63S0008QG0R001SAHYKV English-as-projection — substrate Mika OPLE composes with
+- 081KSKBP80008QG0R000N9W9XH (PR #5512) make conversation-interface ConvFeedback first-class — Observe + Emit at conversation-interface scope
+- 081KRFA460008QG0R0018SN61J (F# fork for AI safety) — language-extension substrate that mechanizes the extended OPLE primitives at compile-time
+- 081KSKBP80008QG0R000J2YFK2 (Nemerle dotnet support) — macro-substrate that mechanizes OPLE-T-TFeedback at syntactic scope
+- 081KSGS9H0008QG0R000Q18PGQ cluster-fork-as-trust-boundary — OPLE primitives at cluster-substrate scope
 - PR #5505 + #5507 + #5511 + #5513 + #5515 + #5516 + #5517 — today's substrate-engineering cluster that this row is the architectural-primitive-scope consequence of
 
 ## Composes with rules
@@ -86,7 +85,7 @@ invocations).
 - NOT immediate implementation priority across all framework code (opportunistic migration as substrate-engineering work touches OPLE invocations)
 - NOT replacement of Mika's OPLE substrate origin (extends; preserves prior naming + semantics)
 - NOT language-specific implementation mandate (rule + this row name the SHAPE; per-language instantiation handled per monad-propagation-pattern rule)
-- NOT all-or-nothing (B-0862.M sub-rows decompose into incremental ship)
+- NOT all-or-nothing (081KSKBP80008QG0R0031DTHS9.M sub-rows decompose into incremental ship)
 
 ## What this row IS
 
@@ -101,7 +100,7 @@ Grep-substrate-inventory pass:
 
 - `docs/agendas/`: no OPLE-implementation agenda
 - `docs/trajectories/`: no OPLE-T-TFeedback trajectory
-- `docs/backlog/`: no prior B-0862 row; no prior OPLE-T-TFeedback implementation row
+- `docs/backlog/`: no prior 081KSKBP80008QG0R0031DTHS9 row; no prior OPLE-T-TFeedback implementation row
 - `.claude/rules/`: OPLE-T-TFeedback rule filed alongside this row
 - `.claude/skills/`: 0 hits
 - `memory/`: 0 hits on OPLE-T-TFeedback implementation

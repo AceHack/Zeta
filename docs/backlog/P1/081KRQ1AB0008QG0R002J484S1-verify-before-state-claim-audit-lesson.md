@@ -1,22 +1,21 @@
 ---
-id: B-0559
-zetaid: 081KRQ1AB0008QG0R002J484S1
+id: 081KRQ1AB0008QG0R002J484S1
 priority: P1
 status: open
-title: Class-level lesson encoded as a verify-before-state-claim audit (decomposed from B-0139)
+title: Class-level lesson encoded as a verify-before-state-claim audit (decomposed from 081KQGDBJ0008QG0R002S9SWH6)
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: [081KQGDBJ0008QG0R002S9SWH6]
 type: friction-reducer
 ---
 
-# B-0559 — Class-level lesson encoded as a verify-before-state-claim audit
+# 081KRQ1AB0008QG0R002J484S1 — Class-level lesson encoded as a verify-before-state-claim audit
 
-**Decomposed from:** B-0139 (Step 6)
+**Decomposed from:** 081KQGDBJ0008QG0R002S9SWH6 (Step 6)
 
 ## What
 
-Encode a class-level lesson as a verify-before-state-claim audit (composes with B-0130's audit-suite).
+Encode a class-level lesson as a verify-before-state-claim audit (composes with 081KQGDBJ0008QG0R002Y31XJ3's audit-suite).
 
 When filing a backlog row for new formalization / engineering work, the system must grep the codebase for existing implementations BEFORE asserting "TRACTABLE START" or similar clean-start framing. This prevents lineage-discontinuity failure modes where prior work is forgotten and redone.
 

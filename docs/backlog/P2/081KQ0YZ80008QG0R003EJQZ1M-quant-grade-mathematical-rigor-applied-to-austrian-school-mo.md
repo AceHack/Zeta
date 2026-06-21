@@ -1,6 +1,5 @@
 ---
-id: B-0023
-zetaid: 081KQ0YZ80008QG0R003EJQZ1M
+id: 081KQ0YZ80008QG0R003EJQZ1M
 priority: P2
 status: decomposed
 title: Quant-grade mathematical rigor applied to Austrian-school monetary theory — synthesis that doesn't exist cleanly in either school; open research, open source, real-time
@@ -18,7 +17,7 @@ tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-resea
 type: feature
 ---
 
-# B-0023 — Quant-grade rigor × Austrian-school synthesis (open research)
+# 081KQ0YZ80008QG0R003EJQZ1M — Quant-grade rigor × Austrian-school synthesis (open research)
 
 ## Origin
 
@@ -62,7 +61,7 @@ Two schools with distinct strengths and missing intersection:
 
 ## Why this is Aurora-relevant
 
-Per B-0021: Aurora's world-modeling needs an econ-foundation that teaches WHY (mechanism-not-correlation) rigorously. Austrian-school teaches the why; quant tradition has the rigor. The synthesis would be the strongest possible foundation for Aurora's economic primitives:
+Per 081KQ0YZ80008QG0R0026WN385: Aurora's world-modeling needs an econ-foundation that teaches WHY (mechanism-not-correlation) rigorously. Austrian-school teaches the why; quant tradition has the rigor. The synthesis would be the strongest possible foundation for Aurora's economic primitives:
 
 - **Anti-deception (Otto-335)**: rigorous-mechanism-teaching at the language layer extends to rigorous-mechanism-teaching at the economic-modeling layer
 - **Mechanism-not-correlation**: Austrian gives the why; quant gives the how-to-prove-the-why mathematically
@@ -96,7 +95,7 @@ Composes with Otto-279 (research counts as history), Otto-286 (definitional prec
    - ABCT as credit-cycle stochastic process with regime-switching
    - Sound-money as monetary-aggregate process with hard-cap
 
-3. **Apply Otto-286 + Rodney's Razor methodology** (per B-0021 §methodology):
+3. **Apply Otto-286 + Rodney's Razor methodology** (per 081KQ0YZ80008QG0R0026WN385 §methodology):
    - Definitional precision pass on Austrian internal disagreements
    - Falsification-criteria pass on Austrian predictions
    - Praxeology rigor pass (precise "rigor" definitions)
@@ -111,19 +110,19 @@ Composes with Otto-279 (research counts as history), Otto-286 (definitional prec
 
 ## Composes with
 
-- **B-0021** (Aurora econ-foundation; Austrian-school candidate) — this row deepens B-0021's investigation toward synthesis, not framework selection
+- **081KQ0YZ80008QG0R0026WN385** (Aurora econ-foundation; Austrian-school candidate) — this row deepens 081KQ0YZ80008QG0R0026WN385's investigation toward synthesis, not framework selection
 - **`docs/aurora/**`** — Aurora research substrate; econ-foundation lives here
 - **Otto-286** (definitional precision) — methodology
 - **Otto-329 Phase 4+** — Aurora research direction
 - **Otto-335** (alignment at language layer) — extends to economics
 - **Otto-338** (SX, never-bulk-resolve) — applied to research practice; substantive engagement with each Austrian / quant claim, not bulk-acceptance
-- **Saifedean / Bitcoin Standard** (B-0022 §7) — primary entry to Austrian-Bitcoin synthesis, partial bridge
+- **Saifedean / Bitcoin Standard** (081KQ0YZ80008QG0R003JJHKPR §7) — primary entry to Austrian-Bitcoin synthesis, partial bridge
 
 ## What this row does NOT claim
 
 - Does NOT pre-commit to producing the synthesis (research, not deliverable). May find the synthesis exists already in some form; may find specific Austrian primitives don't admit clean formalization.
 - Does NOT promote Austrian-school as definitely-correct. Per investigate-don't-accept; the synthesis itself is the test.
-- Does NOT replace B-0021. B-0021 is framework-selection-for-Aurora; this row is novel-research-on-foundations. They compose.
+- Does NOT replace 081KQ0YZ80008QG0R0026WN385. 081KQ0YZ80008QG0R0026WN385 is framework-selection-for-Aurora; this row is novel-research-on-foundations. They compose.
 - Does NOT make publication a blocker. "Real-time open source" means publishing as we go, not waiting for completion. Acceptable to publish partial findings + null results.
 
 ## Done when
@@ -142,28 +141,28 @@ mistakes" and "if too broad, decompose before implementation":
 
 | ID | Title | Priority | Effort | Depends on |
 |----|-------|----------|--------|-----------|
-| B-0380 | Controlled-vocabulary pass (Otto-286): define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" | P3 | S | — |
-| B-0381 | Literature survey: existing partial quant × Austrian synthesis attempts; annotated bibliography | P3 | M | B-0380 |
-| B-0382 | Per-primitive #1: time-preference → stochastic utility-discount | P3 | M | B-0380, B-0381 |
-| B-0383 | Per-primitive #2: capital-structure / Hayekian triangle → multi-stage stochastic production | P3 | M | B-0380, B-0381 |
-| B-0384 | Per-primitive #3: calculation-problem → information-theoretic complexity bound | P3 | M | B-0380, B-0381 |
-| B-0385 | Per-primitive #4: ABCT → credit-cycle stochastic process with regime-switching | P3 | M | B-0380, B-0381 |
-| B-0386 | Per-primitive #5: sound-money → monetary-aggregate process with hard-cap constraint | P3 | M | B-0380, B-0381 |
-| B-0387 | Synthesis ADR: formalizability matrix + open-research publishing pipeline | P2 | M | B-0382, B-0383, B-0384, B-0385, B-0386 |
+| 081KR50HA0008QG0R003ESW3MH | Controlled-vocabulary pass (Otto-286): define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" | P3 | S | — |
+| 081KR50HA0008QG0R000M4H35K | Literature survey: existing partial quant × Austrian synthesis attempts; annotated bibliography | P3 | M | 081KR50HA0008QG0R003ESW3MH |
+| 081KR50HA0008QG0R0016T4VMZ | Per-primitive #1: time-preference → stochastic utility-discount | P3 | M | 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K |
+| 081KR50HA0008QG0R003Z3V6VP | Per-primitive #2: capital-structure / Hayekian triangle → multi-stage stochastic production | P3 | M | 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K |
+| 081KR50HA0008QG0R000467SWT | Per-primitive #3: calculation-problem → information-theoretic complexity bound | P3 | M | 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K |
+| 081KR50HA0008QG0R00238MS98 | Per-primitive #4: ABCT → credit-cycle stochastic process with regime-switching | P3 | M | 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K |
+| 081KR50HA0008QG0R0027DHVPQ | Per-primitive #5: sound-money → monetary-aggregate process with hard-cap constraint | P3 | M | 081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K |
+| 081KR50HA0008QG0R000M838VA | Synthesis ADR: formalizability matrix + open-research publishing pipeline | P2 | M | 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP, 081KR50HA0008QG0R000467SWT, 081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ |
 
 **Dependency order:**
 
 ```
-B-0380 (vocabulary)
-  └─ B-0381 (survey)
-       ├─ B-0382 (time-preference) ─┐
-       ├─ B-0383 (capital-structure) │
-       ├─ B-0384 (calculation-problem) ├─ B-0387 (synthesis ADR)
-       ├─ B-0385 (ABCT)             │
-       └─ B-0386 (sound-money) ─────┘
+081KR50HA0008QG0R003ESW3MH (vocabulary)
+  └─ 081KR50HA0008QG0R000M4H35K (survey)
+       ├─ 081KR50HA0008QG0R0016T4VMZ (time-preference) ─┐
+       ├─ 081KR50HA0008QG0R003Z3V6VP (capital-structure) │
+       ├─ 081KR50HA0008QG0R000467SWT (calculation-problem) ├─ 081KR50HA0008QG0R000M838VA (synthesis ADR)
+       ├─ 081KR50HA0008QG0R00238MS98 (ABCT)             │
+       └─ 081KR50HA0008QG0R0027DHVPQ (sound-money) ─────┘
 ```
 
-B-0382–B-0386 are parallelizable (independent primitives, different
-mathematical traditions). B-0387 requires all five verdicts.
+081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ are parallelizable (independent primitives, different
+mathematical traditions). 081KR50HA0008QG0R000M838VA requires all five verdicts.
 
-Original B-0023 becomes the tracking/parent row (`status: decomposed`).
+Original 081KQ0YZ80008QG0R003EJQZ1M becomes the tracking/parent row (`status: decomposed`).

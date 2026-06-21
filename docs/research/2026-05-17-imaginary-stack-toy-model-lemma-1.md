@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-17
 **Status:** Research artifact (hand-off for proof engineer / Lean specialist)
-**Parent:** B-0584 + B-0543
+**Parent:** 081KRQ1AB0008QG0R001YAF3TR + 081KRMEXM0008QG0R002YSPW1X
 
 ## Goal
 

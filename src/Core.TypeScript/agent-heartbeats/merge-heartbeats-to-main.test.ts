@@ -1,4 +1,4 @@
-// tools/agent-heartbeats/merge-heartbeats-to-main.test.ts — B-0858.4 merge-tool tests.
+// tools/agent-heartbeats/merge-heartbeats-to-main.test.ts — 081KSKBP80008QG0R001KK9WV6.4 merge-tool tests.
 
 import { describe, expect, it } from "bun:test";
 import { parseArgs } from "./merge-heartbeats-to-main";

@@ -1,6 +1,5 @@
 ---
-id: B-0119
-zetaid: 081KQDTYV0008QG0R001N4YB73
+id: 081KQDTYV0008QG0R001N4YB73
 priority: P3
 status: closed
 title: Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)
@@ -16,12 +15,12 @@ composes_with:
   - tools/peer-call/codex.sh
   - tools/peer-call/amara.sh
   - .github/copilot-instructions.md (lines 305-362 — role-ref-not-name rule)
-  # B-0122 (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
+  # 081KQDTYV0008QG0R001HQSSAX (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
 closed_in: PR #965 (LFG, merged 2026-04-30)
 tags: [codex-2026-04-30, peer-call, role-refs, copilot-instructions, factory-hygiene, deferred-skill-anti-pattern]
 ---
 
-# B-0119 — Existing peer-call scripts role-ref cleanup
+# 081KQDTYV0008QG0R001N4YB73 — Existing peer-call scripts role-ref cleanup
 
 ## Source
 
@@ -93,7 +92,7 @@ review noise.
 
 - PR #962 (where the pattern was first flagged + fixed
   on ani.sh)
-- B-0118 (peer-call autonomous bootstrap — the role-ref
+- 081KQDTYV0008QG0R0037YJPEX (peer-call autonomous bootstrap — the role-ref
   cleanup is hygiene on top of the operational landings)
 - `.github/copilot-instructions.md` (lines 305-362 —
   the rule being applied)

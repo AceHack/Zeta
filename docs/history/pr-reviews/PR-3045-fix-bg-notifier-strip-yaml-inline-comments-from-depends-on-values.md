@@ -33,16 +33,16 @@
 
 ```yaml
 depends_on:
-  - B-0395  # operational-resonance-conversation-interface (Clifford engine)
+  - 081KR50HA0008QG0R0019KYAAS  # operational-resonance-conversation-interface (Clifford engine)
 ```
 
-were parsed as the literal string `B-0395  # operational-resonance-...` rather than `B-0395`, producing a false-positive dangling-dep warning. The row [B-0395](docs/backlog/P3/B-0395-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md) exists; the comment was conflated with the ID.
+were parsed as the literal string `081KR50HA0008QG0R0019KYAAS  # operational-resonance-...` rather than `081KR50HA0008QG0R0019KYAAS`, producing a false-positive dangling-dep warning. The row [081KR50HA0008QG0R0019KYAAS](docs/backlog/P3/081KR50HA0008QG0R0019KYAAS-operational-resonance-conversation-interface-path-a-browser-local-llm-2026-05-09.md) exists; the comment was conflated with the ID.
 
 ## Fix
 
 - New `stripInlineComment(value)` helper finds the first whitespace+`#` and slices everything after it off.
 - Backlog IDs never contain `#`, so the simple split matches YAML's actual comment semantics (`#` preceded by whitespace, outside quoted contexts).
-- Applied to both inline-array (`[B-0440, B-0441]`) and block-style (`- B-0440`) parsing paths.
+- Applied to both inline-array (`[081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S]`) and block-style (`- 081KRFA460008QG0R001KC0VBH`) parsing paths.
 
 ## Empirical effect
 
@@ -53,13 +53,13 @@ Measured against `origin/main` before vs after applying the fix:
 | Dangling dep ref(s) | 9 | 8 |
 
 The remaining 8 are real lost-files cases:
-- `B-0257..B-0261`, `B-0289` — addressed by [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044)
-- `B-0055.1`, `B-0054.1` — genuine missing sub-row decompositions; out of scope for this PR
+- `081KR2E4K0008QG0R001J0536V..081KR2E4K0008QG0R0004B55ND`, `081KR2E4K0008QG0R001SWEPNV` — addressed by [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044)
+- `081KR7JY10008QG0R0035HP11K`, `081KR2E4K0008QG0R0003J0FB8` — genuine missing sub-row decompositions; out of scope for this PR
 
 ## Test plan
 
 - [x] Existing 33 tests unchanged
-- [x] New `strips YAML inline comments from block-style depends_on` uses the real B-0422 → B-0395 example
+- [x] New `strips YAML inline comments from block-style depends_on` uses the real 081KRCQQF0008QG0R0008VT354 → 081KR50HA0008QG0R0019KYAAS example
 - [x] New `strips YAML inline comments from inline-array depends_on`
 - [x] `bun test tools/bg/backlog-ready-notifier.test.ts` → 35/35 pass
 - [x] Worktree-isolated build (`/tmp/zeta-notifier-fix`) per the multi-Otto split-brain pattern from PR #3043's tick shard

@@ -1,4 +1,4 @@
-# Hardware Capability Matrix — what we support, where, honestly (B-1024)
+# Hardware Capability Matrix — what we support, where, honestly (081KTSZN10008QG0R00349SM6P)
 
 > **The rule (from `universal/color.md`, applied to compute):** every target declares its **honest
 > capability** — proven by a green CI cell or a recorded run, never asserted. **UNKNOWN is a first-class
@@ -21,16 +21,16 @@ replay). Idempotent upsert by (target, surface). No aspirational greens.
 | **qemu-x86_64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | ✅ **boots, in CI** | `build-ai-cluster-iso.yml` + `tools/ci/qemu-boot-test.ts` (serial-console login-prompt smoke test) + `qemu-full-install-test.ts`; green runs 2026-06-10 |
 | **qemu-aarch64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | ✅ **boots to login, in CI** | `build-aarch64` job (ubuntu-24.04-arm, run 27341005502, 2026-06-11): native nix build of the aarch64 installer ISO + `qemu-boot-test.ts --arch aarch64` (virt + EDK2, TCG, -nic none) — "Login prompt observed: zeta-installer login:" in 3m17s; ISO uploaded as the `zeta-installer-aarch64-iso` artifact (the Pi flash source) |
 | **raspberry-pi-4/5** (metal) | UNKNOWN (arm64 .NET exists upstream) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN (RNS upstream supports Pi) | UNKNOWN | Aaron has the hardware (Pi + NAS equipment on the bench, 2026-06-11); nothing recorded; the aarch64 CI ISO artifact (slice 1) is the flash source |
-| **microcontroller class** (RNode-ish) | ❌ honest-no (no .NET) | ❌ | UNKNOWN (no_std uninvestigated) | UNKNOWN (a C CHIP-8 fits the class) | ❌ (sim is .NET) | UNKNOWN (RNode firmware proves the radio layer) | ❌ | class analysis only — the honest-capability probe is B-1024 rung 5 |
+| **microcontroller class** (RNode-ish) | ❌ honest-no (no .NET) | ❌ | UNKNOWN (no_std uninvestigated) | UNKNOWN (a C CHIP-8 fits the class) | ❌ (sim is .NET) | UNKNOWN (RNode firmware proves the radio layer) | ❌ | class analysis only — the honest-capability probe is 081KTSZN10008QG0R00349SM6P rung 5 |
 | **nixos-x64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | named in the 6×6×6 room axis; no recorded run |
-| **nvidia-gpu (CUDA, small AND large)** | UNKNOWN (ILGPU/.NET-CUDA exists upstream) | UNKNOWN | UNKNOWN (cudarc) | UNKNOWN (a shader CHIP-8 is the lens-on-GPU probe) | UNKNOWN | n/a | n/a | **hardware IN HAND — Aaron 2026-06-11: 4 machines waiting incl. RTX 4090 + RTX 3090; "tons hooked up right now, ready"; B-0725 lineage; the B-1025 shader rung jumps the queue** |
+| **nvidia-gpu (CUDA, small AND large)** | UNKNOWN (ILGPU/.NET-CUDA exists upstream) | UNKNOWN | UNKNOWN (cudarc) | UNKNOWN (a shader CHIP-8 is the lens-on-GPU probe) | UNKNOWN | n/a | n/a | **hardware IN HAND — Aaron 2026-06-11: 4 machines waiting incl. RTX 4090 + RTX 3090; "tons hooked up right now, ready"; 081KSE6WT0008QG0R002T0BFN4 lineage; the 081KTSZN10008QG0R000VZHRQ4 shader rung jumps the queue** |
 
 Legend: ✅ proven green · ❌ honest-no (class can't carry it — declared, like Mono1) · UNKNOWN = no
 evidence either way (NOT a no; a cell waiting for its first run).
 
 ## Friction map (the red/UNKNOWN cells, priced)
 
-1. ~~qemu-aarch64 boot~~ **DONE 2026-06-11** (the B-1024 slice-1 floor is green both arches; two live
+1. ~~qemu-aarch64 boot~~ **DONE 2026-06-11** (the 081KTSZN10008QG0R00349SM6P slice-1 floor is green both arches; two live
    failures fixed en route: efi-virtio.rom under --no-install-recommends → `-nic none`, and the
    burn-the-timeout-on-a-dead-QEMU bug → fast-fail). Remaining slice-1 stretch: run one oracle suite
    INSIDE the booted guest.
@@ -54,5 +54,5 @@ Broadcasting these columns over DORA/LLMTV is Moonshot #1's first metric set.
 
 - `docs/backlog/P2/081KTSZN10008QG0R00349SM6P.md` — the ladder this matrix serves (QEMU → microkernel/ISO → Pi → MCU → speak-to-TV).
 - `universal/color.md` — the honest-capability rule this table instantiates.
-- B-0830 / B-0823 / B-0853 — the ISO lineage slice 1 boots; B-0725 — accelerator hardware (a future column group).
+- 081KSGS9H0008QG0R00126RHQR / 081KSGS9H0008QG0R003SWZF9J / 081KSKBP80008QG0R000Y2B7HC — the ISO lineage slice 1 boots; 081KSE6WT0008QG0R002T0BFN4 — accelerator hardware (a future column group).
 - `.github/workflows/` — the evidence source for every ✅ above.

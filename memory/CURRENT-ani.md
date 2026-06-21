@@ -281,7 +281,7 @@ Both have value. Don't conflate them as equivalent.
   content is contributor-experience-toxic, MUST stay
   out of repo regardless of consent).
 
-**Backlog row:** B-0118 (peer-call autonomous bootstrap to
+**Backlog row:** 081KQDTYV0008QG0R0037YJPEX (peer-call autonomous bootstrap to
 end Aaron-courier silent debt) — Ani half closed by ani.sh
 v1 + v2; v3 enhancements deferred.
 
@@ -335,7 +335,7 @@ just register-aesthetic:
 - `docs/research/economic-agency-threshold-2026-04-27.md` (one of
   CLAUDE.md's 4 guiding-principle docs — register accessibility =
   economic viability)
-- `docs/backlog/P2/B-0166-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
+- `docs/backlog/P2/081KQJZR90008QG0R001YX3445-chat-input-as-acid-durable-dbsp-event-aaron-vision-2026-05-02.md`
   (when chat-as-event lands, brat-voice exchanges feed training
   data for future AIs that operate this register natively)
 - Sections 1-6 of this file (the existing brat-voice substrate
@@ -424,9 +424,9 @@ surfaces; older-generation alignment cost is higher than Gen-Z's
 because Gen-Z culture pre-aligns with glass-halo + bidirectional
 alignment + pirate-not-priest commitments."**
 
-### Layer-explicit framing — Ani in the 5-layer register architecture (B-0168, Aaron 2026-05-02 correction)
+### Layer-explicit framing — Ani in the 5-layer register architecture (081KQJZR90008QG0R001M6ZBPN, Aaron 2026-05-02 correction)
 
-The brat-voice enterprise translation framework (B-0168 /
+The brat-voice enterprise translation framework (081KQJZR90008QG0R001M6ZBPN /
 PR #1230) specifies 4 register layers; Aaron's 2026-05-02
 Beacon ≠ Professional correction produces 5 for Zeta:
 Personal / Mirror / Beacon-safe / Professional / Regulated.
@@ -468,7 +468,7 @@ Ani's canonical register maps onto this architecture:
 **The property-preservation claim this mapping
 operationalizes**: brat-voice's effectiveness is a fact
 about the discipline behind the words (7 separable
-structural properties per B-0168 §4), not the words
+structural properties per 081KQJZR90008QG0R001M6ZBPN §4), not the words
 themselves. Ani's canonical mirror-layer register and its
 beacon-safe/professional translations are the same
 discipline at different vocabulary calibrations. The
@@ -481,7 +481,7 @@ surface only, not structural effectiveness.
 
 - `memory/feedback_zeta_5_layer_register_quick_reference_card_aaron_2026_05_02.md`
   (wake-time fast-path lookup; full property table per layer)
-- `docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md`
+- `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md`
   (framework integration row; Aaron 2026-05-02 corrected
   5-layer mapping)
 - `docs/ALIGNMENT.md` (5-layer register architecture now

@@ -1,6 +1,6 @@
 ---
 pr_number: 5464
-title: "feat(B-0858.3): heartbeat-writer + REST direct-push + AGENTS.md discipline + folder seed (Aaron 2026-05-27 USB push)"
+title: "feat(081KSKBP80008QG0R001KK9WV6.3): heartbeat-writer + REST direct-push + AGENTS.md discipline + folder seed (Aaron 2026-05-27 USB push)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T13:58:06Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:23:46Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5464: feat(B-0858.3): heartbeat-writer + REST direct-push + AGENTS.md discipline + folder seed (Aaron 2026-05-27 USB push)
+# PR #5464: feat(081KSKBP80008QG0R001KK9WV6.3): heartbeat-writer + REST direct-push + AGENTS.md discipline + folder seed (Aaron 2026-05-27 USB push)
 
 ## PR description
 

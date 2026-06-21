@@ -1,6 +1,6 @@
 ---
 pr_number: 2743
-title: "feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard"
+title: "feat(081KR7JY10008QG0R001VP6JWG): Lior's WOW UI glassmorphism upgrade for dashboard"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-11T20:06:32Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-11T20:13:05Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #2743: feat(B-0401): Lior's WOW UI glassmorphism upgrade for dashboard
+# PR #2743: feat(081KR7JY10008QG0R001VP6JWG): Lior's WOW UI glassmorphism upgrade for dashboard
 
 ## PR description
 

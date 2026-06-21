@@ -247,18 +247,12 @@ function backlogRefs(content: string): string[] {
   const refs: string[] = [];
   const tokens = content.split(/[^A-Za-z0-9-]+/);
   for (const token of tokens) {
-    if (token.length === 6 && token.startsWith("B-")) {
-      const rawNumber = token.slice(2);
-      let onlyDigits = true;
-      for (const char of rawNumber) {
-        if (char < "0" || char > "9") {
-          onlyDigits = false;
-          break;
-        }
-      }
-      if (onlyDigits) {
-        refs.push(token);
-      }
+    if (/^081K[0-9A-Z]{10,}$/.test(token)) {
+      refs.push(token);
+      continue;
+    }
+    if (token.startsWith("B-") && /^B-[0-9]{4}(?:\.[0-9]+)*$/.test(token)) {
+      refs.push(token);
     }
   }
   return uniqueSorted(refs);

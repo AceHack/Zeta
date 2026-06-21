@@ -1,6 +1,5 @@
 ---
-id: B-0150
-zetaid: 081KQGDBJ0008QG0R003PZFA49
+id: 081KQGDBJ0008QG0R003PZFA49
 priority: P2
 status: open
 title: TimeSeries / observability domain expert + teacher persona
@@ -10,7 +9,7 @@ depends_on: []
 type: feature
 ---
 
-# B-0150 — TimeSeries / observability domain expert + teacher persona
+# 081KQGDBJ0008QG0R003PZFA49 — TimeSeries / observability domain expert + teacher persona
 
 ## What
 
@@ -28,7 +27,7 @@ Aaron 2026-05-01:
 > *"but the they do need small cardinailty , we need domain
 > expers and teacher too"*
 
-The B-0147 / B-0148 / B-0149 research lines (timeseries-DB
+The 081KQGDBJ0008QG0R0004ACHJJ / 081KQGDBJ0008QG0R002175ECA / 081KQGDBJ0008QG0R0035TQVBQ research lines (timeseries-DB
 candidate landscape, MDX-as-meta-DSL evaluation, Prometheus MCP
 integration) all need **deep domain expertise** to run well.
 The factory's persona roster has experts for many areas
@@ -55,7 +54,7 @@ skills (per task #323 + task #351).
    How to design metrics; how to instrument; what to query.
 
 3. **CRDT-for-timeseries expertise** — composes with the design
-   constraints in B-0147 (CRDT multi-mode is paramount). The
+   constraints in 081KQGDBJ0008QG0R0004ACHJJ (CRDT multi-mode is paramount). The
    expert tracks CRDT research applied to timeseries (counter,
    gauge, LWW-register patterns).
 
@@ -65,7 +64,7 @@ skills (per task #323 + task #351).
    designs that pay differently; when each design point fits.
 
 5. **PromQL / MDX / query-language shape expertise** —
-   composes with B-0148 (MDX-as-meta-DSL). The expert
+   composes with 081KQGDBJ0008QG0R002175ECA (MDX-as-meta-DSL). The expert
    advises on query-language design; teaches the factory why
    PromQL is MDX-shaped; informs the F# MDX DSL design.
 
@@ -120,11 +119,11 @@ The teacher capability produces:
 - task #323 (per-tool/language expert skills — the parent
   pattern this row instantiates)
 - task #351 (TS+Bun expert + teaching skill — sibling instance)
-- B-0147 (timeseries-DB research — this persona owns the
+- 081KQGDBJ0008QG0R0004ACHJJ (timeseries-DB research — this persona owns the
   research lane when it activates)
-- B-0148 (MDX-as-meta-DSL research — this persona contributes
+- 081KQGDBJ0008QG0R002175ECA (MDX-as-meta-DSL research — this persona contributes
   on the PromQL/query-language axis)
-- B-0149 (Prometheus MCP integration — this persona advises
+- 081KQGDBJ0008QG0R0035TQVBQ (Prometheus MCP integration — this persona advises
   on initial query catalog design)
 - `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
   (PR #1116) — SRE metric frameworks the persona teaches
@@ -144,11 +143,11 @@ domain-expertise + teaching contributions are open-ended.
 ## Why P2
 
 - **Not P0/P1** because the factory operates today without
-  a dedicated observability-domain-expert; B-0147/B-0148/B-0149
+  a dedicated observability-domain-expert; 081KQGDBJ0008QG0R0004ACHJJ/081KQGDBJ0008QG0R002175ECA/081KQGDBJ0008QG0R0035TQVBQ
   research can proceed with Otto wearing the hat informally.
 - **Not P3** because as the metrics-are-our-eyes work
-  operationalizes (B-0149 Prometheus + B-0147 long-term
-  research + B-0148 meta-DSL), the absence of a dedicated
+  operationalizes (081KQGDBJ0008QG0R0035TQVBQ Prometheus + 081KQGDBJ0008QG0R0004ACHJJ long-term
+  research + 081KQGDBJ0008QG0R002175ECA meta-DSL), the absence of a dedicated
   domain expert + teacher creates compounding gaps in
   *"who explains this to the next contributor?"* and
   *"who tracks the domain's evolution?"*

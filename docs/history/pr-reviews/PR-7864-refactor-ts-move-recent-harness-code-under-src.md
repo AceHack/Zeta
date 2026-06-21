@@ -32,7 +32,7 @@
 - Moved the recently touched bash-retirement inventory guard from `tools/hygiene/` to `src/Core.TypeScript/hygiene/`.
 - Moved the zflash QEMU test harness from `tools/zflash/test-harness/` to `src/Core.TypeScript/zflash/test-harness/`.
 - Updated package wiring, GitHub workflow commands/path filters, and live docs to call the source-owned paths.
-- Corrected the zflash workflow backlog path filter from the old legacy B-0891 filename to the current ZetaId workitem filename.
+- Corrected the zflash workflow backlog path filter from the old legacy 081KSNY2Z0008QG0R0008PN7RQ filename to the current ZetaId workitem filename.
 
 ## Why
 

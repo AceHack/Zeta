@@ -34,7 +34,7 @@ Tick shard for the post-#3390-merge state:
 - **PR [#3390](https://github.com/Lucent-Financial-Group/Zeta/pull/3390) MERGED** — cron-sentinel-mutex wired into `docs/AUTONOMOUS-LOOP-PER-TICK.md` Step 1
 - **Mutex empirically operational**: invoked from a main-sync'd worktree reports 6 concurrent peers, exit 7
 - **Primary worktree stuck on Lior's rebase >8h** (`.git/HEAD` at `65c7865` since 0230Z observation)
-- **Substrate-honest caveat documented**: the mutex bullet only works when the Otto-CLI tick body's cwd is sync'd to main; a detached primary worktree (B-0519 Pattern 7 state) means the mutex file isn't on disk to invoke
+- **Substrate-honest caveat documented**: the mutex bullet only works when the Otto-CLI tick body's cwd is sync'd to main; a detached primary worktree (081KRHWGX0008QG0R001HMWM1W Pattern 7 state) means the mutex file isn't on disk to invoke
 - **Peer-Otto refined the wiring docs post-merge** (added exit-code clarification + strengthened the 251-code branch)
 
 ## Test plan

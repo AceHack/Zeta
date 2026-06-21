@@ -241,9 +241,9 @@ Empirical totals across all 7 anchors:
   before classifying issues
 - `.claude/rules/refresh-before-decide.md` — raw `git ls-tree` output IS
   the refresh that catches this class
-- `B-0519` (multi-Otto contamination RCA) — this rule is the
+- `081KRHWGX0008QG0R001HMWM1W` (multi-Otto contamination RCA) — this rule is the
   commit-tree-corruption sub-class
-- `B-0530` (cron-sentinel mutex) — same multi-Otto-CLI race class
+- `081KRMEXM0008QG0R000X1PPGC` (cron-sentinel mutex) — same multi-Otto-CLI race class
 
 ## Full reasoning
 

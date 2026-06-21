@@ -1,6 +1,5 @@
 ---
-id: B-0977
-zetaid: 081KT07NV0008QG0R000K1X7NZ
+id: 081KT07NV0008QG0R000K1X7NZ
 priority: P3
 status: open
 title: Ace registry mirror/failover — multiple URLs per registry (deferred from slice 6)
@@ -16,7 +15,7 @@ tags: [ace, package-manager, registry, remote, mirror, failover, deferred-enhanc
 
 ## What this row proposes
 
-Slice 6 (B-0971, shipped via #6431) fetches each remote registry from a **single** index
+Slice 6 (081KT07NV0008QG0R000SJ34AK, shipped via #6431) fetches each remote registry from a **single** index
 URL: a `RemoteRegistryConfig` is `{ url, key_id, max_staleness_days? }`. If that URL is
 unreachable, slice 6 falls back to the local cache (or skips the remote with a warning).
 This row tracks **mirror/failover**: allow a registry to declare multiple equivalent index
@@ -44,5 +43,5 @@ slice off for further enhancements."*
 
 ## Composes with
 
-- B-0971 (Ace remote registry — the slice this defers from)
-- B-0288 (Ace DLC package manager CLI)
+- 081KT07NV0008QG0R000SJ34AK (Ace remote registry — the slice this defers from)
+- 081KR2E4K0008QG0R002YE3MMD (Ace DLC package manager CLI)

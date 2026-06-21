@@ -8,8 +8,8 @@
  * it makes no claim about completeness of the declared set.
  * New vectors are added as threat-model-critic review rounds surface them.
  *
- * v1 (B-0032.1, PR #2390): 5 vectors
- * v2 (B-0032.3, 2026-05-10): +content-injection (AH-2); STRIDE fixes (AH-7);
+ * v1 (081KDVFFX0008QG0R0021H9WYE, PR #2390): 5 vectors
+ * v2 (081KR7JY10008QG0R002PKC6B0, 2026-05-10): +content-injection (AH-2); STRIDE fixes (AH-7);
  *   BouncyCastle mitigation clarified (AH-6)
  */
 export const ALL_HEARTBEAT_ATTACK_VECTORS = [
@@ -41,7 +41,7 @@ export const ALL_HEARTBEAT_ATTACK_VECTORS = [
         kind: 'direct-to-main-bypass',
         surface: 'task-276-low-gate-without-threat-model',
         impact: 'review-gate-removal',
-        mitigation: 'this-row (B-0032) + Otto-346 sequencing',
+        mitigation: 'this-row (081KQ3HBZ0008QG0R002ZPXAFQ) + Otto-346 sequencing',
     },
     {
         kind: 'content-injection',

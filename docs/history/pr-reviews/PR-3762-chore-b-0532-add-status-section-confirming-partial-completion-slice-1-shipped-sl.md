@@ -27,7 +27,7 @@
 
 ## Description
 
-Per row-close gate triage (PR #3757 step-0 discriminator): B-0532 is partial-completion, not drift. Hard-error slice + gate.yml shipped via PR #3567; soft-warning + bidirectional + tests + docs pending. Row stays status: open until Slice 2 lands. Status section makes partial-state visible to any future discriminator pass.
+Per row-close gate triage (PR #3757 step-0 discriminator): 081KRMEXM0008QG0R003FZNK3E is partial-completion, not drift. Hard-error slice + gate.yml shipped via PR #3567; soft-warning + bidirectional + tests + docs pending. Row stays status: open until Slice 2 lands. Status section makes partial-state visible to any future discriminator pass.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -48,12 +48,12 @@ Per row-close gate triage (PR #3757 step-0 discriminator): B-0532 is partial-com
 ### Thread 1 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CiLiT`
-- **Path**: `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
+- **Path**: `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T06:02:13Z on `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`:84 (association: NONE)
+- **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-16T06:02:13Z on `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`:84 (association: NONE)
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Bump `last_updated` when editing backlog row content**
@@ -66,12 +66,12 @@ Per row-close gate triage (PR #3757 step-0 discriminator): B-0532 is partial-com
 ### Thread 2 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CiLyj`
-- **Path**: `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
+- **Path**: `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T06:03:09Z on `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`:86 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T06:03:09Z on `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`:86 (association: NONE)
 
   <pre>
   Frontmatter `last_updated` is still `2026-05-15`, but this row was edited on 2026-05-16 (Status section added). Per the backlog per-row file rules, please bump `last_updated` to reflect this edit so backlog tooling/readers can rely on it.
@@ -80,12 +80,12 @@ Per row-close gate triage (PR #3757 step-0 discriminator): B-0532 is partial-com
 ### Thread 3 -- resolved [collapsed]
 
 - **Thread ID**: `PRRT_kwDOSF9kNM6CiLyp`
-- **Path**: `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
+- **Path**: `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
 - **Replies**: 0
 
 **Initial comment:**
 
-- **`Copilot` (bot)** at 2026-05-16T06:03:09Z on `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`:99 (association: NONE)
+- **`Copilot` (bot)** at 2026-05-16T06:03:09Z on `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`:99 (association: NONE)
 
   <pre>
   The new Status section indicates Slice 1 shipped by extending `tools/hygiene/audit-backlog-items.ts` + adding the `lint-backlog-parent-child-status` gate job, but the earlier Acceptance criteria still specifies creating `tools/lint/backlog-graph-consistency.ts` and `tools/lint/backlog-graph-consistency.test.ts`. Please reconcile the Acceptance criteria (and any file paths referenced there) to the current implementation plan so future work doesn’t chase stale artifacts.
@@ -98,7 +98,7 @@ Per row-close gate triage (PR #3757 step-0 discriminator): B-0532 is partial-com
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
+- `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
 
 **Message:**
 
@@ -108,7 +108,7 @@ chore(b-0532): add Status section confirming partial-completion (Slic…
 …e 1 shipped, Slice 2 pending)
 
 Empirical audit at 2026-05-16T05:43Z via pure-git operations
-(rate-limit at 0/5000) confirms B-0532 is **partial completion**,
+(rate-limit at 0/5000) confirms 081KRMEXM0008QG0R003FZNK3E is **partial completion**,
 not drift, per the row-close gate triage in PR #3757's step-0 rule
 extension.
 
@@ -143,7 +143,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Touched files (intersect with thread paths):**
 
-- `docs/backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
+- `docs/backlog/P3/081KRMEXM0008QG0R003FZNK3E-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md`
 
 **Message:**
 

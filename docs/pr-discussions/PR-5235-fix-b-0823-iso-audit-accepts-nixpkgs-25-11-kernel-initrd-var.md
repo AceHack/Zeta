@@ -1,6 +1,6 @@
 ---
 pr_number: 5235
-title: "fix(B-0823): ISO audit accepts nixpkgs-25.11 kernel/initrd variant paths + diagnostic dump on failure"
+title: "fix(081KSGS9H0008QG0R003SWZF9J): ISO audit accepts nixpkgs-25.11 kernel/initrd variant paths + diagnostic dump on failure"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-26T17:28:31Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:37:34Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5235: fix(B-0823): ISO audit accepts nixpkgs-25.11 kernel/initrd variant paths + diagnostic dump on failure
+# PR #5235: fix(081KSGS9H0008QG0R003SWZF9J): ISO audit accepts nixpkgs-25.11 kernel/initrd variant paths + diagnostic dump on failure
 
 ## PR description
 
 ## Summary
 
-Cascade #4 ISO audit failed on commit 75eff94d (post-#5226 merge) with 2 missing-path assertions on \`boot/bzImage\` + \`boot/initrd\`. Same class as B-0818 — nixpkgs 25.11's image/images refactor changed kernel + initrd locations in the ISO.
+Cascade #4 ISO audit failed on commit 75eff94d (post-#5226 merge) with 2 missing-path assertions on \`boot/bzImage\` + \`boot/initrd\`. Same class as 081KSGS9H0008QG0R00033DT02 — nixpkgs 25.11's image/images refactor changed kernel + initrd locations in the ISO.
 
 ## Two-layer fix
 
@@ -27,9 +27,9 @@ Cascade #4 ISO audit failed on commit 75eff94d (post-#5226 merge) with 2 missing
 2. Candidate paths cover legacy (\`boot/bzImage\`) + per-arch (\`boot/x86_64-linux/bzImage\`) + generic-named (\`boot/kernel\`) + vmlinuz conventions
 3. Added \`dumpIsoEntriesForDiagnostic()\` helper — prints first 80 sorted ISO entries on audit failure so future regressions self-debug
 
-**B-0823 (substrate-layer follow-up)**:
+**081KSGS9H0008QG0R003SWZF9J (substrate-layer follow-up)**:
 - Investigate which 25.11 path actually drives kernel + initrd locations from the diagnostic dump
-- Optionally tighten the any-of families OR keep lenient as defense-in-depth (per B-0818 precedent)
+- Optionally tighten the any-of families OR keep lenient as defense-in-depth (per 081KSGS9H0008QG0R00033DT02 precedent)
 
 ## Test plan
 
@@ -50,7 +50,7 @@ Updates the installer ISO content audit to tolerate nixpkgs 25.11 kernel/initrd 
 **Changes:**
 - Replace strict `boot/bzImage` + `boot/initrd` requirements with kernel/initrd “any-of” path families.
 - Add an ISO entry diagnostic dump on audit failure (first 80 sorted entries).
-- Add backlog row B-0823 and index it in `docs/BACKLOG.md`.
+- Add backlog row 081KSGS9H0008QG0R003SWZF9J and index it in `docs/BACKLOG.md`.
 
 ### Reviewed changes
 
@@ -59,8 +59,8 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 | File | Description |
 | ---- | ----------- |
 | tools/ci/audit-installer-iso-content.ts | Switch kernel/initrd checks to any-of families and emit a diagnostic ISO entry listing on failure. |
-| docs/backlog/P2/B-0823-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md | New P2 backlog row documenting the regression, fix-fwd, and follow-up investigation plan. |
-| docs/BACKLOG.md | Adds B-0823 to the P2 index. |
+| docs/backlog/P2/081KSGS9H0008QG0R003SWZF9J-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md | New P2 backlog row documenting the regression, fix-fwd, and follow-up investigation plan. |
+| docs/BACKLOG.md | Adds 081KSGS9H0008QG0R003SWZF9J to the P2 index. |
 
 ## Review threads
 
@@ -76,7 +76,7 @@ P0: `dumpIsoEntriesForDiagnostic()` spawns `7z` without the `sonarjs/no-os-comma
 
 The diagnostic header hard-codes “first 80” while the function takes a `limit` parameter (default 80). If the limit ever changes, the log line will drift. Consider either passing an explicit `80` to the function and reusing that constant in the message, or deriving the message from the same value.
 
-### Thread 3: docs/backlog/P2/B-0823-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md:34 (unresolved)
+### Thread 3: docs/backlog/P2/081KSGS9H0008QG0R003SWZF9J-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md:34 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T17:33:20Z):
 

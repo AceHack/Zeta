@@ -1,8 +1,8 @@
-# B-0250 Trajectory Receipt Source - 2026-05-30
+# 081KQZVQW0008QG0R001FG05RZ Trajectory Receipt Source - 2026-05-30
 
 ## Scope
 
-This packet wires the second B-0250 factory event observation source into the
+This packet wires the second 081KQZVQW0008QG0R001FG05RZ factory event observation source into the
 coincidence detector. The source is recent commits touching
 `docs/trajectories/**`, which are the durable receipts for trajectory packet
 movement.

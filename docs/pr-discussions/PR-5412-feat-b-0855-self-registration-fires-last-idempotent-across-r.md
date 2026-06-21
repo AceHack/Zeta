@@ -1,6 +1,6 @@
 ---
 pr_number: 5412
-title: "feat(B-0855): self-registration fires LAST + idempotent across reboots + de-duped against in-flight PRs \u2014 Otto-pushes-across-finish-line (Aaron 2026-05-27 architectural fix to B-0812)"
+title: "feat(081KSKBP80008QG0R000GPC0TB): self-registration fires LAST + idempotent across reboots + de-duped against in-flight PRs \u2014 Otto-pushes-across-finish-line (Aaron 2026-05-27 architectural fix to 081KSGS9H0008QG0R0037H3W4T)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-27T06:56:33Z"
@@ -12,13 +12,13 @@ archived_at: "2026-05-27T19:25:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5412: feat(B-0855): self-registration fires LAST + idempotent across reboots + de-duped against in-flight PRs — Otto-pushes-across-finish-line (Aaron 2026-05-27 architectural fix to B-0812)
+# PR #5412: feat(081KSKBP80008QG0R000GPC0TB): self-registration fires LAST + idempotent across reboots + de-duped against in-flight PRs — Otto-pushes-across-finish-line (Aaron 2026-05-27 architectural fix to 081KSGS9H0008QG0R0037H3W4T)
 
 ## PR description
 
 ## Summary
 
-Architectural fix to B-0812 (iter-5.4.1 self-registration) per Aaron 2026-05-27 empirical anchor: PR #5408 auto-opened mid-install for `node-0fe6eb`; install then failed at nixos-install `--fallback` bug (PR #5410 fix-fwd); registration PR orphaned for a node-id that never came up.
+Architectural fix to 081KSGS9H0008QG0R0037H3W4T (iter-5.4.1 self-registration) per Aaron 2026-05-27 empirical anchor: PR #5408 auto-opened mid-install for `node-0fe6eb`; install then failed at nixos-install `--fallback` bug (PR #5410 fix-fwd); registration PR orphaned for a node-id that never came up.
 
 Operator: *"how did it register before it even rebooted? it should not register until the last step when everything comes up and if it reboots it should not register over and over... cluster should realize it's register or has a pr in flight for register and not duplicate."*
 
@@ -31,16 +31,16 @@ Operator: *"how did it register before it even rebooted? it should not register 
 
 ## Composes with
 
-- **B-0812** (parent ancestry) — REFINES (doesn't replace); fixes WHEN + HOW
-- **B-0813** — ArgoCD reconciliation; unchanged
-- **B-0835** — installer-config-bugs canonical bag (Bug 10)
-- **B-0850** — multi-vendor systemd substrate (Otto's tick runs as systemd)
-- **B-0851** — persona-first scheduler (Otto's PR-push is scheduled)
-- **B-0852** — cred persistence (restored creds are pre-condition for self-register service)
+- **081KSGS9H0008QG0R0037H3W4T** (parent ancestry) — REFINES (doesn't replace); fixes WHEN + HOW
+- **081KSGS9H0008QG0R002K93MWX** — ArgoCD reconciliation; unchanged
+- **081KSGS9H0008QG0R00120EEHM** — installer-config-bugs canonical bag (Bug 10)
+- **081KSKBP80008QG0R003Z4C0D0** — multi-vendor systemd substrate (Otto's tick runs as systemd)
+- **081KSKBP80008QG0R00248VEWT** — persona-first scheduler (Otto's PR-push is scheduled)
+- **081KSKBP80008QG0R003AX2A69** — cred persistence (restored creds are pre-condition for self-register service)
 
 ## 7 sub-rows enumerated
 
-B-0855.1 NixOS module → B-0855.2 TS module + marker → B-0855.4 marker schema → B-0855.5 remove Step 6.9 → B-0855.3 Otto integration → B-0855.6 empirical test → B-0855.7 substrate landing.
+081KSKBP80008QG0R000GPC0TB.1 NixOS module → 081KSKBP80008QG0R000GPC0TB.2 TS module + marker → 081KSKBP80008QG0R000GPC0TB.4 marker schema → 081KSKBP80008QG0R000GPC0TB.5 remove Step 6.9 → 081KSKBP80008QG0R000GPC0TB.3 Otto integration → 081KSKBP80008QG0R000GPC0TB.6 empirical test → 081KSKBP80008QG0R000GPC0TB.7 substrate landing.
 
 ## PR #5408 closed
 
@@ -61,11 +61,11 @@ Substrate-honestly with cross-link to this row.
 
 ## Pull request overview
 
-Adds a new P1 backlog row (B-0855) documenting an architectural fix for node self-registration so it fires on first boot (post-install), becomes idempotent across reboots, and avoids duplicate/in-flight registration PRs.
+Adds a new P1 backlog row (081KSKBP80008QG0R000GPC0TB) documenting an architectural fix for node self-registration so it fires on first boot (post-install), becomes idempotent across reboots, and avoids duplicate/in-flight registration PRs.
 
 **Changes:**
-- Added new per-row backlog doc for B-0855 describing the “registration fires last + idempotent + de-duped” architecture.
-- Updated the backlog index to include B-0855.
+- Added new per-row backlog doc for 081KSKBP80008QG0R000GPC0TB describing the “registration fires last + idempotent + de-duped” architecture.
+- Updated the backlog index to include 081KSKBP80008QG0R000GPC0TB.
 
 ### Reviewed changes
 
@@ -73,8 +73,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P1/B-0855-self-registration-fires-LAST-post-install-post-first-boot-idempotent-across-reboots-deduped-against-in-flight-registration-prs-aaron-2026-05-27.md | New backlog row capturing the B-0855 architectural fix scope, rationale, and acceptance criteria. |
-| docs/BACKLOG.md | Adds the B-0855 entry to the generated backlog index. |
+| docs/backlog/P1/081KSKBP80008QG0R000GPC0TB-self-registration-fires-LAST-post-install-post-first-boot-idempotent-across-reboots-deduped-against-in-flight-registration-prs-aaron-2026-05-27.md | New backlog row capturing the 081KSKBP80008QG0R000GPC0TB architectural fix scope, rationale, and acceptance criteria. |
+| docs/BACKLOG.md | Adds the 081KSKBP80008QG0R000GPC0TB entry to the generated backlog index. |
 
 ## Review threads
 
@@ -82,7 +82,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 **@copilot-pull-request-reviewer** (2026-05-27T06:58:39Z):
 
-`docs/BACKLOG.md` is marked as AUTO-GENERATED (“Do NOT edit this file directly”). To avoid index drift, update `docs/backlog/P1/B-0855-...md` and regenerate the index via `tools/backlog/generate-index.sh` (or `bun tools/backlog/generate-index.ts`) rather than hand-editing this file, then commit the regenerated output.
+`docs/BACKLOG.md` is marked as AUTO-GENERATED (“Do NOT edit this file directly”). To avoid index drift, update `docs/backlog/P1/081KSKBP80008QG0R000GPC0TB-...md` and regenerate the index via `tools/backlog/generate-index.sh` (or `bun tools/backlog/generate-index.ts`) rather than hand-editing this file, then commit the regenerated output.
 
 ## General comments
 

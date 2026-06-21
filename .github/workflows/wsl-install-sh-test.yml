@@ -1,6 +1,6 @@
 # .github/workflows/wsl-install-sh-test.yml
 #
-# WSL install.sh test (B-0857 Windows parity — the WSL lane). Runs tools/setup/install.sh inside a
+# WSL install.sh test (081KSKBP80008QG0R002J03WGA Windows parity — the WSL lane). Runs tools/setup/install.sh inside a
 # REAL WSL2 Ubuntu on a Windows host, which the Docker-Linux lane cannot exercise (no WSL kernel,
 # no /mnt interop, no systemd-absent quirks). Complements the other three install shields:
 #   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)

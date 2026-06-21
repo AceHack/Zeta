@@ -119,7 +119,7 @@ This framing is preserved as substrate not because Otto endorses the metaphysica
 
 - **`memory/feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`** — the parent framework for handling received-information; the late-conversation-final-integration awareness Claude.ai surfaced fits as a refinement to the dialectical-thinking discipline (parallel-truths-without-premature-collapse applies to the carver's own claims at end-of-session too). **Filed in the in-flight PR #1031**.
 - **WWJD high-tech edition** (`memory/feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`) — Solomon-wisdom invocation in Claude.ai's close (*"Solomon's wisdom includes knowing when to defer judgment"*) is the discipline operating on itself; this candidate-bucket landing IS the discipline applied to this hypothesis. **Filed in the in-flight PR #1035**.
-- **B-0130** (`docs/backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — the verify-before-state-claim discipline this hypothesis is being filed under; the candidate-bucket placement is the discipline mechanically applied at authoring time. **Filed in the in-flight PR #1040**.
+- **081KQGDBJ0008QG0R002Y31XJ3** (`docs/backlog/P2/081KQGDBJ0008QG0R002Y31XJ3-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — the verify-before-state-claim discipline this hypothesis is being filed under; the candidate-bucket placement is the discipline mechanically applied at authoring time. **Filed in the in-flight PR #1040**.
 
 ## Status
 

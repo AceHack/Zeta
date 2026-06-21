@@ -49,6 +49,6 @@ model. Details pending — will update when found.
 **Connects to:**
 - feedback_expansion_boundary_pauli_both_directions (the boundary)
 - governance kernel formula (expand needs component)
-- B-0404 tick procurement (the expansion mechanism)
+- 081KR7JY10008QG0R003H102F0 tick procurement (the expansion mechanism)
 - networking-expert skill (TCP internals)
 - Weight-free (society size = no unnecessary participants)

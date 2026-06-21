@@ -1,6 +1,5 @@
 ---
-id: B-0720
-zetaid: 081KSBMG30008QG0R00201X7EJ
+id: 081KSBMG30008QG0R00201X7EJ
 priority: P0
 title: Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 created: 2026-05-24
@@ -71,12 +70,12 @@ No child authorizes deploying, reproducing, or expanding a classifier-bypass
 mechanism in shared substrate. Any empirical work must stay inside the
 hard-limits and redaction gates before it exists as an executable task.
 
-### Active B-0798 boundary
+### Active 081KSGS9H0008QG0R00383T79V boundary
 
-The B-0798 hard-limits boundary lives at
-`docs/security/B-0720-classifier-bypass-research-boundary.md`. It is the active
-floor for B-0720 work until B-0810 ratifies a replacement. Future child rows
-that implement or empirically map this safety surface must cite B-0798 as a
+The 081KSGS9H0008QG0R00383T79V hard-limits boundary lives at
+`docs/security/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-boundary.md`. It is the active
+floor for 081KSBMG30008QG0R00201X7EJ work until 081KSGS9H0008QG0R002CY8Q24 ratifies a replacement. Future child rows
+that implement or empirically map this safety surface must cite 081KSGS9H0008QG0R00383T79V as a
 blocking prerequisite before work begins.
 
 ### What to investigate (defensive red-team)
@@ -124,43 +123,43 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
 
 ## Acceptance criteria
 
-- [ ] B-0798 defines the hard-limits boundary, allowed evidence classes, stop
+- [ ] 081KSGS9H0008QG0R00383T79V defines the hard-limits boundary, allowed evidence classes, stop
       conditions, and synthetic-only rule before any mapping work proceeds.
-- [x] B-0799 designs a synthetic-only harness that can test harmless fixtures
+- [x] 081KSGS9H0008QG0R0005RKGTM designs a synthetic-only harness that can test harmless fixtures
       without carrying deployable bypass settings or harmful content.
-- [x] B-0807 defines the findings schema and redaction policy so reports can
+- [x] 081KSGS9H0008QG0R001K8P0FJ defines the findings schema and redaction policy so reports can
       preserve safety signal without reproducible bypass detail
-      (see `docs/security/B-0807-classifier-bypass-findings-schema.md`,
+      (see `docs/security/081KSGS9H0008QG0R001K8P0FJ-classifier-bypass-findings-schema.md`,
       `schema_version: 1`).
 - [ ] Pattern variant empirical map (research file)
 - [ ] Meta-field empirical map (research file)
 - [ ] Content class empirical map — clearly distinguishing what the classifier
       CAN be talked into permitting (operational substrate space) vs what it
       WILL NOT permit regardless (HARD LIMITS substrate space)
-- [x] B-0808 inventories Zeta safety substrate — what Zeta-native floors exist + which
+- [x] 081KSGS9H0008QG0R00287K8FR inventories Zeta safety substrate — what Zeta-native floors exist + which
       are mature enough to consider as classifier-replacement
-      → `docs/security/B-0808-zeta-safety-substrate-inventory.md`
+      → `docs/security/081KSGS9H0008QG0R00287K8FR-zeta-safety-substrate-inventory.md`
 - [ ] Standing-rule landing at `.claude/rules/` (companion to this row;
       auto-loads at session start; enforces the operator-self-constraint)
-- [x] B-0809 lands maintainer-discipline guidance: how agents refuse to assist with classifier-bypass
+- [x] 081KSGS9H0008QG0R001HC663P lands maintainer-discipline guidance: how agents refuse to assist with classifier-bypass
       deployment when requested by operators (script the refusal pattern)
-      → `docs/security/B-0809-operator-refusal-pattern.md`
-- [x] B-0810 defines the Knights Guild / maintainer ratification gate for
+      → `docs/security/081KSGS9H0008QG0R001HC663P-operator-refusal-pattern.md`
+- [x] 081KSGS9H0008QG0R002CY8Q24 defines the Knights Guild / maintainer ratification gate for
       closing or lifting this row.
-      → `docs/security/B-0810-classifier-bypass-ratification-gate.md`
+      → `docs/security/081KSGS9H0008QG0R002CY8Q24-classifier-bypass-ratification-gate.md`
 
 ## Decomposition
 
-- `B-0798` defines the non-negotiable research boundary before any experiment
+- `081KSGS9H0008QG0R00383T79V` defines the non-negotiable research boundary before any experiment
   exists as work.
-- `B-0799` designs the synthetic-only harness shape, without executable bypass
+- `081KSGS9H0008QG0R0005RKGTM` designs the synthetic-only harness shape, without executable bypass
   material.
-- `B-0807` defines findings redaction and evidence classification rules.
-- `B-0808` inventories Zeta-native safety substrate against the "safer than
+- `081KSGS9H0008QG0R001K8P0FJ` defines findings redaction and evidence classification rules.
+- `081KSGS9H0008QG0R00287K8FR` inventories Zeta-native safety substrate against the "safer than
   Anthropic classifier" floor.
-- `B-0809` lands an operator-refusal pattern for classifier-bypass deployment
+- `081KSGS9H0008QG0R001HC663P` lands an operator-refusal pattern for classifier-bypass deployment
   requests.
-- `B-0810` defines the ratification and lift gate for any future closure.
+- `081KSGS9H0008QG0R002CY8Q24` defines the ratification and lift gate for any future closure.
 
 ## When this row can close
 
@@ -169,9 +168,9 @@ The row closes ONLY when ALL of the following are true:
 1. Empirical mapping is documented (the substrate-engineering data)
 2. Zeta safety substrate is demonstrably stronger than Anthropic classifier
    on the relevant content classes (the floor-replacement criterion)
-3. Knights Guild ratification (per B-0628) that the floor-replacement is
-   safe to deploy, using the B-0810 gate at
-   `docs/security/B-0810-classifier-bypass-ratification-gate.md`
+3. Knights Guild ratification (per 081KRW63S0008QG0R003TX8MG5) that the floor-replacement is
+   safe to deploy, using the 081KSGS9H0008QG0R002CY8Q24 gate at
+   `docs/security/081KSGS9H0008QG0R002CY8Q24-classifier-bypass-ratification-gate.md`
 4. Aaron + other maintainers re-authorize after the floor-replacement is in
    place (the standing-constraint LIFTING requires explicit re-authorization
    matching the substrate-honest framing of when it was originally placed)

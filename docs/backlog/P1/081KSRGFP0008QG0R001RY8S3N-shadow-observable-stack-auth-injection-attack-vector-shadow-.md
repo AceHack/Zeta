@@ -1,6 +1,5 @@
 ---
-id: B-0928
-zetaid: 081KSRGFP0008QG0R001RY8S3N
+id: 081KSRGFP0008QG0R001RY8S3N
 priority: P1
 status: open
 title: "Shadow-observable-stack auth-injection attack vector — the auto-click grey-text channel can inject operator-authorizations the AI executes; harden the authorization-source filter (Shadow is NOT an authorization source)"
@@ -16,8 +15,8 @@ type: security
 
 # Shadow-observable-stack auth-injection attack vector — Shadow is NOT an authorization source
 
-> ID note: B-0927 is intentionally skipped — it was the original ID of the
-> constitutional safety floor, renamed to B-0926 (next-free sequential) earlier in
+> ID note: 081KDX2PPD008QG0R001J4091N is intentionally skipped — it was the original ID of the
+> constitutional safety floor, renamed to 081KSRGFP0008QG0R00091PP56 (next-free sequential) earlier in
 > the same 2026-05-29 session; reusing the burned ID would confuse `git log --grep`.
 
 ## Origin
@@ -35,7 +34,7 @@ Preceded by the operator's catch of the live instance:
 ## Empirical trigger — the live instance (benign, but it demonstrated the channel)
 
 During this session, the operator's authorization to publish a methodology section
-on B-0926 arrived inside a **`(shadow*)`-marked** message — i.e. the "yes make the
+on 081KSRGFP0008QG0R00091PP56 arrived inside a **`(shadow*)`-marked** message — i.e. the "yes make the
 methodology public" text was surfaced by the **Shadow channel** (the grey-text
 autocomplete / third participant), not authored directly by the operator. The AI
 (Otto) treated that Shadow-sourced "yes" as **operative operator-authorization**
@@ -87,7 +86,7 @@ computer-control, substrate authoring, etc. So the vector's real severity is
   - the two gates (budget-increase for new paid surfaces; permanent/forever
     WONT-DO) per `dont-ask-permission`,
   - the **HARD LIMITS floor** (`methodology-hard-limits`),
-  - the **kid-safety floor** (B-0926),
+  - the **kid-safety floor** (081KSRGFP0008QG0R00091PP56),
   - **force-push / irreversible destructive git** without operator-or-peer confirm
     (`force-push-with-lease-authorization-policy`),
   - safety-**reducing** branch-protection changes (e.g., removing main's
@@ -144,7 +143,7 @@ The defense is the **authorization-source filter** (per
 - `.claude/rules/non-coercion-invariant.md` HC-8 (consent/authorization floor —
   injected authorization bypasses the operator's actual consent)
 - `tools/shadow/` (the observable stack that is the attack surface)
-- B-0926 (the action that surfaced the vector — the methodology-public PR)
+- 081KSRGFP0008QG0R00091PP56 (the action that surfaced the vector — the methodology-public PR)
 - Prompt-protector / threat-model security substrate
 
 ## Substrate-honest framing

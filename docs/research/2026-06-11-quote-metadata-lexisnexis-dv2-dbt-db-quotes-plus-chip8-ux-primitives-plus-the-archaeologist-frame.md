@@ -24,7 +24,7 @@ uses exactly this tab-separated meta-tag form):
   re-annotated quote, a cross-oracle conformance run) are declared transformations over the hub —
   lineage-tracked, re-runnable, testable (dbt's model: SQL/transform-as-code with tests; ours:
   transforms over quote hubs with DST replays as the tests).
-- **home**: `/db/quotes` when the /db topology lands (B-1023's plan); until then quotes live beside
+- **home**: `/db/quotes` when the /db topology lands (081KTQD8A0008QG0R0030HWMZV's plan); until then quotes live beside
   their state in `saves/` with the meta-tag annotations inline.
 
 ## 2. CHIP-8 UX: design principles + reusable UI primitives at the responsive slider's LOW end
@@ -63,6 +63,6 @@ savestate+recording is a screenshot.)
 
 - `rooms/otto/avatar.lines` — the meta-tag format's first instance (shipped with this PR) ·
   `Chip8Quote` (the hub's payload) · `saves/`+`/db` plan (the home) · the feel charter + ZetaMax (what
-  the primitives render through) · B-1023 (/db topology) · anchors: LexisNexis citator practice ·
+  the primitives render through) · 081KTQD8A0008QG0R0030HWMZV (/db topology) · anchors: LexisNexis citator practice ·
   Linstedt DV2 · dbt (transform-as-code with tests) · archaeological stratigraphy (Harris matrices —
   the branch-graph reading of a dig).

@@ -27,7 +27,7 @@
 
 ## Description
 
-Aaron: operator = reconcile-loop + conflict-resolution + state-machine. Zeta supplies these as single-repo git-fold + CRDT convergence + DUs (#6959) — one observe loop (B-0958), effects via DU/workflow sagas. No per-resource controllers needed even while running ON k8s (#6961/#6949). Honest nuance: one general reconciler + data-DUs, not zero controllers. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Aaron: operator = reconcile-loop + conflict-resolution + state-machine. Zeta supplies these as single-repo git-fold + CRDT convergence + DUs (#6959) — one observe loop (081KSXN940008QG0R001A4WWX4), effects via DU/workflow sagas. No per-resource controllers needed even while running ON k8s (#6961/#6949). Honest nuance: one general reconciler + data-DUs, not zero controllers. 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 

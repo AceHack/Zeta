@@ -1,5 +1,5 @@
-// Edge-claim catalog validator (B-0055.2 smallest safe slice)
-// Pure-TS, retractibility-native stub. Re-decomposed from broad B-0055 research track
+// Edge-claim catalog validator (081KR7JY10008QG0R001JW71CT smallest safe slice)
+// Pure-TS, retractibility-native stub. Re-decomposed from broad 081KQ3HBZ0008QG0R001K0EC2C research track
 // (assumes .1 docs-heavy decomposition had mistake by lacking executable check surface).
 // Minimal validator stub — future CTF round will extend with real checks against memory/ + ALIGNMENT.md
 export function validateEdgeClaimFlag(flag) {

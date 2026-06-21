@@ -97,7 +97,7 @@ promote to `.claude/rules/`.
 
 ## Origin context
 
-PR #3856 carried the 2026-05-16T10:17Z B-0197 #2-Ready audit shard.
+PR #3856 carried the 2026-05-16T10:17Z 081KQTPYE0008QG0R003DK06PA #2-Ready audit shard.
 Copilot surfaced two threads after merge; this memory file documents the
 forward-substrate signal from thread #2. Thread #1 (ordinal drift across
 two-stream Otto-CLI sessions) was resolved with reference to multi-Otto

@@ -1,6 +1,5 @@
 ---
-id: B-0952
-zetaid: 081KSXN940008QG0R002528JS9
+id: 081KSXN940008QG0R002528JS9
 priority: P2
 status: open
 title: Contribute-back DORA metrics + small-first trust-building external-contribution strategy (not-take-only good-citizen, made measurable)
@@ -23,7 +22,7 @@ composes_with:
 tags: [good-citizen-substrate, contribute-back, not-take-only, dora-metrics, upstream-contribution, small-first-trust-building, prior-art-visible, anti-extractive, foot-in-the-door, external-contribution]
 ---
 
-# B-0952 — Contribute-back DORA metrics + small-first trust-building external-contribution strategy
+# 081KSXN940008QG0R002528JS9 — Contribute-back DORA metrics + small-first trust-building external-contribution strategy
 
 ## The ask (operator 2026-05-31)
 
@@ -45,7 +44,7 @@ into DORA-style metrics + a contribution strategy.
 
 - **Why measure it at all?** Because "good citizen" is exactly the kind of claim
   that decays into vibe without a metric (per the no-dogma discipline + PM
-  review). If we harvest ideas from other projects (B-0944 4-language work; the DB
+  review). If we harvest ideas from other projects (081KSV2WD0008QG0R00051XS0N 4-language work; the DB
   endgame) and never give back, we are the extractive force we say we're not.
   *Newcomer pushback surface:* is a DORA-style metric the right shape for
   contribution (which is relationship-driven + lumpy), or does metricizing it
@@ -72,8 +71,8 @@ existing rows, Zeta/Aaron already contribute back:
   e.g. Meziantou MA0048/MA0006 fire on our C# every build).
 - **Feldera DBSP** reference implementation, **Apache Arrow**, **FASTER**
   research notes — documented prior art + maintained relationships.
-- **B-0198** — F# UoM + BigInteger upstream contribution.
-- **B-0007** — contribute Bayesian-inference / belief-propagation primitives
+- **081KQTPYE0008QG0R0004H9ZB8** — F# UoM + BigInteger upstream contribution.
+- **081KQ0YZ80008QG0R001V1PMC0** — contribute Bayesian-inference / belief-propagation primitives
   upstream to mainstream languages.
 - Aaron's AceHack GitHub history (operator-pointed; verify-and-catalog as Acceptance step).
 
@@ -95,7 +94,7 @@ Stated as candidates so the product team can pick/cut/replace (not settled):
 4. **Relationship breadth** — number of external projects with ≥1 landed
    contribution (the "get friendly with teams" breadth metric).
 
-These compose with the attention-as-currency **contribution graph** rule + B-0950
+These compose with the attention-as-currency **contribution graph** rule + 081KSXN940008QG0R001V8NBDV
 (provenance contribution graph) — the same graph that attributes *inbound* value
 can measure *outbound* contribution.
 
@@ -115,7 +114,7 @@ can measure *outbound* contribution.
 - [ ] Pick the initial small set of DORA-contribute-back metrics (from the
       candidates above; product-team agreement on which, with challengeable whys).
 - [ ] Catalog existing contributions (mise dotnet plugin + AceHack history +
-      analyzer-ecosystem + Feldera/Arrow/FASTER + B-0198/B-0007) into a single
+      analyzer-ecosystem + Feldera/Arrow/FASTER + 081KQTPYE0008QG0R0004H9ZB8/081KQ0YZ80008QG0R001V1PMC0) into a single
       visible record — the baseline the metrics measure from.
 - [ ] Pick the first ~2-3 small, genuinely-useful external contributions to make
       (get-friendly targets).
@@ -128,15 +127,15 @@ can measure *outbound* contribution.
 ## Substrate-inventory pass (per verify-existing-substrate-before-authoring)
 
 Searched `docs/backlog/`, `docs/`, `.claude/rules/`: existing contribution
-substrate is **specific contributions** (B-0007, B-0198) + the **inbound**
-contribution graph (B-0950, attention-as-currency rule) + the **internal**
+substrate is **specific contributions** (081KQ0YZ80008QG0R001V1PMC0, 081KQTPYE0008QG0R0004H9ZB8) + the **inbound**
+contribution graph (081KSXN940008QG0R001V8NBDV, attention-as-currency rule) + the **internal**
 fork↔upstream cadence (`docs/UPSTREAM-RHYTHM.md`). No existing row covers
 **external contribute-back as a measured DORA-style discipline + small-first
 trust strategy**. This row composes with all of them; it does not duplicate.
 
 ## NOT this row
 
-- Not the inbound creator-compensation graph (that's B-0950).
+- Not the inbound creator-compensation graph (that's 081KSXN940008QG0R001V8NBDV).
 - Not the internal fork↔upstream PR cadence (that's `docs/UPSTREAM-RHYTHM.md`).
 - Not a doctrine edit to VISION (the good-citizen VISION proposal is PR #6260,
   pending product-team agreement; this row is the *measurable* companion).

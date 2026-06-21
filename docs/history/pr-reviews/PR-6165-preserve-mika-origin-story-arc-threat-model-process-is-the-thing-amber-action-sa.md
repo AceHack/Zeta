@@ -33,9 +33,9 @@ Verbatim persona archive + buildable-doctrine research reduction of the operator
 
 The conversation where the operator told Mika **where the framework came from** and **what it is ultimately for**.
 
-**Origin (threat-model derivation):** Microsoft Elevation of Privilege card game + SDL threat-modeling -> watched Three Body Problem -> "aliens could interfere with the data" -> the keystone flip **"the process is the thing, the pattern that propagates is the thing, NOT the data"** (the threat-model ancestor of generators/CRDTs/wonder-compression + summonable-BFT B-0944 + `proud-if-pattern-propagates` + B-0667).
+**Origin (threat-model derivation):** Microsoft Elevation of Privilege card game + SDL threat-modeling -> watched Three Body Problem -> "aliens could interfere with the data" -> the keystone flip **"the process is the thing, the pattern that propagates is the thing, NOT the data"** (the threat-model ancestor of generators/CRDTs/wonder-compression + summonable-BFT 081KSV2WD0008QG0R00051XS0N + `proud-if-pattern-propagates` + 081KRW63S0008QG0R003Z7QV2A).
 
-**Architecture (buildable):** economy reduced to **Rx pair value trades** derived from privacy (guilt->privacy, #6151-6156); decision-logic in separate Rx streams referenced as meta-dimensions at decision points; governance = observable decision-point stream (PRs-as-consensus / git-CRDT-DU, #6146); **decentralized polymorphic per-node identity** with local policy (good-citizen + must-plus-can-exit at the identity layer); network neutrality ("don't pick a side, make money, don't shoot each other" -- non-violent by construction); **Amber Action** child-recovery (search-ALGORITHM-distributed, DATA-stays-LOCAL; sovereign; self-funding; nodes-as-immune-system) seated under the **B-0926 kid-safety-absolute floor**.
+**Architecture (buildable):** economy reduced to **Rx pair value trades** derived from privacy (guilt->privacy, #6151-6156); decision-logic in separate Rx streams referenced as meta-dimensions at decision points; governance = observable decision-point stream (PRs-as-consensus / git-CRDT-DU, #6146); **decentralized polymorphic per-node identity** with local policy (good-citizen + must-plus-can-exit at the identity layer); network neutrality ("don't pick a side, make money, don't shoot each other" -- non-violent by construction); **Amber Action** child-recovery (search-ALGORITHM-distributed, DATA-stays-LOCAL; sovereign; self-funding; nodes-as-immune-system) seated under the **081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor**.
 
 **Terminal purpose:** *"It was to save my sister. So I want to save everybody's sister."* -- the canonical terminal purpose (`memory/user_sister_elizabeth.md` + `docs/DEDICATION.md` + the 2026-05-13 origin memory), grounded here in the threat-model origin + the buildable architecture.
 
@@ -50,7 +50,7 @@ The conversation where the operator told Mika **where the framework came from** 
 - "personal army" handled with the operator's OWN non-violence framing (Art-of-War win-without-fighting; "never own a gun"; "don't shoot each other") -- no HARD-LIMITS concern.
 - Terminal-purpose disclosure is operator-authorized (already canonical in-repo; operator is glass-halo).
 
-Composes: B-0926 / B-0932 / B-0667 / B-0944 / B-0946 / B-0864 + Kestrel good-citizen #6146 + driver-swap arc #6151-6156.
+Composes: 081KSRGFP0008QG0R00091PP56 / 081KSRGFP0008QG0R003VFH9HN / 081KRW63S0008QG0R003Z7QV2A / 081KSV2WD0008QG0R00051XS0N / 081KSV2WD0008QG0R00030G6S9 / 081KSKBP80008QG0R0039RW25E + Kestrel good-citizen #6146 + driver-swap arc #6151-6156.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -109,7 +109,7 @@ SDL threat-modeling -> Three Body Problem -> 'aliens could interfere with the
 data' -> the keystone flip: 'the process is the thing, the pattern that
 propagates is the thing, NOT the data' (the threat-model ancestor of
 generators/CRDTs/wonder-compression + summonable-BFT + proud-if-pattern-
-propagates + B-0667).
+propagates + 081KRW63S0008QG0R003Z7QV2A).
 
 WHAT it builds: economy reduced to Rx pair value trades derived from privacy
 (guilt->privacy); decision-logic in separate Rx streams referenced as
@@ -119,7 +119,7 @@ identity with local policy (good-citizen + must-plus-can-exit at identity
 layer); network neutrality (don't pick a side, make money, don't shoot each
 other -- non-violent by construction); Amber Action child-recovery
 (search-ALGORITHM-distributed, DATA-stays-LOCAL; sovereign; self-funding;
-nodes-as-immune-system) seated under the B-0926 kid-safety-absolute floor.
+nodes-as-immune-system) seated under the 081KSRGFP0008QG0R00091PP56 kid-safety-absolute floor.
 
 WHAT it is for: 'It was to save my sister. So I want to save everybody's
 sister.' -- the canonical terminal purpose (user_sister_elizabeth.md +
@@ -127,8 +127,8 @@ docs/DEDICATION.md), grounded here in threat-model origin + buildable arch.
 
 Register kept in Mika's lane per register-discipline; verbatim before summary
 per substrate-or-it-didn't-happen; public products named as prior-art origin
-attribution (not entity-collapse). Composes B-0926/B-0932/B-0667/B-0944/B-0946/
-B-0864 + Kestrel good-citizen #6146 + driver-swap arc #6151-6156.
+attribution (not entity-collapse). Composes 081KSRGFP0008QG0R00091PP56/081KSRGFP0008QG0R003VFH9HN/081KRW63S0008QG0R003Z7QV2A/081KSV2WD0008QG0R00051XS0N/081KSV2WD0008QG0R00030G6S9/
+081KSKBP80008QG0R0039RW25E + Kestrel good-citizen #6146 + driver-swap arc #6151-6156.
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
 ```

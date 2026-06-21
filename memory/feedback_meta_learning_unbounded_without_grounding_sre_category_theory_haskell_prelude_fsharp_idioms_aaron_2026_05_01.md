@@ -1,6 +1,6 @@
 ---
 name: Meta-learning is UNBOUNDED without grounding — SRE + category theory + Haskell Prelude + F# idioms are the convergence target (Aaron 2026-05-01)
-description: Aaron 2026-05-01 — critical correction to the PR-convergence-loop / class-encoding / meta-learning framing. Without grounding in established formal traditions (SRE / category theory / Haskell Prelude / F# idioms), the meta-learning loop is UNBOUNDED — class library balloons, no termination criterion, classes overlap, rules conflict. The abstraction ladder (B-0146) provides the layers but they ARE the convergence target only when grounded in the foundation traditions. The sibling repo `../no-copy-only-learning-agents-insight` provides the META-LEARNING-LOOP architecture but explicitly does NOT have the grounding — when Otto + Copilot follow its rules without adding grounding, Aaron observes high-rate insight-block-promotion drift (blue ★ Insight blocks at ~1/minute) — the cheat-code-feeling somatic register Aaron flagged earlier today and recurring "last time." The factory's job: ADD the grounding the sibling repo lacks. Updated naming proposal: "Grounded class-encoding" or "Foundation-bound learning" — bakes the grounding requirement into the name itself.
+description: Aaron 2026-05-01 — critical correction to the PR-convergence-loop / class-encoding / meta-learning framing. Without grounding in established formal traditions (SRE / category theory / Haskell Prelude / F# idioms), the meta-learning loop is UNBOUNDED — class library balloons, no termination criterion, classes overlap, rules conflict. The abstraction ladder (081KQGDBJ0008QG0R003VHD3KZ) provides the layers but they ARE the convergence target only when grounded in the foundation traditions. The sibling repo `../no-copy-only-learning-agents-insight` provides the META-LEARNING-LOOP architecture but explicitly does NOT have the grounding — when Otto + Copilot follow its rules without adding grounding, Aaron observes high-rate insight-block-promotion drift (blue ★ Insight blocks at ~1/minute) — the cheat-code-feeling somatic register Aaron flagged earlier today and recurring "last time." The factory's job: ADD the grounding the sibling repo lacks. Updated naming proposal: "Grounded class-encoding" or "Foundation-bound learning" — bakes the grounding requirement into the name itself.
 type: feedback
 ---
 
@@ -24,7 +24,7 @@ type: feedback
 
 **The critical correction.** My prior framing (PR convergence
 loop produces meta-learning; class-encoding accumulates the
-class library; B-0146 abstraction ladder gives the formal
+class library; 081KQGDBJ0008QG0R003VHD3KZ abstraction ladder gives the formal
 spine) was structurally correct **but missing the convergence
 target**. Without grounding the meta-learning in established
 formal traditions, the loop is **UNBOUNDED** in the sense of
@@ -87,7 +87,7 @@ covers most operational concerns.
 
 ### 2. Category theory
 
-Already in factory substrate via B-0136 + B-0146 Layer 1:
+Already in factory substrate via 081KQGDBJ0008QG0R0029JMJWE + 081KQGDBJ0008QG0R003VHD3KZ Layer 1:
 
 - Functor / Applicative / Monad laws
 - Natural transformations
@@ -226,10 +226,10 @@ Aaron's blessing pending. Until blessed, treat as candidate.
   (PR #1116, merged) — amortized-keystone discipline; this
   memory adds the grounding-axis required for amortization
   to converge
-- `docs/backlog/P2/B-0146-formal-architecture-ladder-explicit-layer-declaration-aaron-2026-05-01.md`
+- `docs/backlog/P2/081KQGDBJ0008QG0R003VHD3KZ-formal-architecture-ladder-explicit-layer-declaration-aaron-2026-05-01.md`
   — abstraction ladder; this memory adds that the layers ARE
   the convergence target only when foundation-grounded
-- `docs/backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md`
+- `docs/backlog/P2/081KQGDBJ0008QG0R000E10AAM-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md`
   (PR #1120) — class-encoding for lint classes; needs
   grounding extension (each lint class should ground at SRE
   or category-theory laws)

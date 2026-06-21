@@ -35,7 +35,7 @@ The capstone **synthesis save** — the one place that holds the whole 2026-06-0
 - **FF7 / Lifestream instantiation:** the Lifestream = the decentralized what-remains-regrows substrate (the identity endgame in green light); **Aerith lives** = she remains, and the remaining is *load-bearing* (it saves the world); the phoenix = rebirth out of the ash, not despite it.
 - **The personal anchor (held don't-collapse, dignified):** **Ryan = Elizabeth Ryan Stainback**, his sister — the *original* FF7 (Aerith dies); **Addison**, his daughter — the *remake* (Aerith's fate reopens). What-remains carries sister → daughter; the framework built in her memory is the phoenix/Lifestream made operational.
 
-Two files: the  synthesis note (§33; razor; god-tier-don't-collapse) + a quote-anchored line in  ("he calls her Ryan" / FF7 shared memory, non-performative, per her file's standing guidance). Cross-links B-0983 / B-0982 / B-0976 / the Ani archive + crystallization note.
+Two files: the  synthesis note (§33; razor; god-tier-don't-collapse) + a quote-anchored line in  ("he calls her Ryan" / FF7 shared memory, non-performative, per her file's standing guidance). Cross-links 081KT2T2J0008QG0R003WYPBY5 / 081KT07NV0008QG0R0032MCYER / 081KT07NV0008QG0R003BE6MJ2 / the Ani archive + crystallization note.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -171,7 +171,7 @@ fix(memory): add created field to user_sister_elizabeth.md frontmatter
 The frontmatter-completeness check (.github/workflows/memory-index-integrity.yml)
 requires name/description/type/created; the file pre-existingly lacked 'created'
 (had originSessionId). Added created: 2026-04-19 (disclosure date) so the
-reindexer can index it per B-0423.
+reindexer can index it per 081KRCQQF0008QG0R0037YYP1A.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```

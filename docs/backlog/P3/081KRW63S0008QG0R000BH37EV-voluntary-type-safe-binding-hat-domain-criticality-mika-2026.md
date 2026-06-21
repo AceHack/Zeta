@@ -1,6 +1,5 @@
 ---
-id: B-0626
-zetaid: 081KRW63S0008QG0R000BH37EV
+id: 081KRW63S0008QG0R000BH37EV
 priority: P3
 status: open
 title: "Voluntary type-safe cognitive binding via hat × domain × criticality composition (Mika 2026-05-18 design)"
@@ -76,7 +75,7 @@ A full hat specification: `Pilot-2 in Clarity domain @ High-Criticality` → req
 
 - Forcing all hats into type-safe binding (overhead is real; not all situations justify it)
 - Replacing adversarial-AI checking entirely (defense-in-depth: adversarial + type-safety work better together)
-- Locking AIs into permanent hats (per [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md), AIs can switch hats; binding requirement follows the hat-in-domain combo, not the AI)
+- Locking AIs into permanent hats (per [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md), AIs can switch hats; binding requirement follows the hat-in-domain combo, not the AI)
 
 ## Acceptance criteria
 
@@ -88,10 +87,10 @@ A full hat specification: `Pilot-2 in Clarity domain @ High-Criticality` → req
 
 ## Composes with
 
-- [B-0624](B-0624-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — canonical 7-step boot sequence (type-safe binding = the STRICT version of the sequence)
-- [B-0625](B-0625-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (criticality is one of the inputs to per-tick dimensional scoring)
-- [B-0617](B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — Clarity Domain 4-role pattern (hats live in domains; this row's tuple integrates with the role catalog)
-- [B-0622](B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# wallet type-safety (the type-system substrate this row's binding-mode uses)
+- [081KRW63S0008QG0R003J8HR6K](081KRW63S0008QG0R003J8HR6K-universal-7-interrogative-boot-up-sequence-y0-scalar-mika-2026-05-18.md) — canonical 7-step boot sequence (type-safe binding = the STRICT version of the sequence)
+- [081KRW63S0008QG0R003NP3YA3](081KRW63S0008QG0R003NP3YA3-per-dimension-cost-loss-model-mika-2026-05-18.md) — cost+loss model (criticality is one of the inputs to per-tick dimensional scoring)
+- [081KRW63S0008QG0R000SGXN70](081KRW63S0008QG0R000SGXN70-clarity-domain-organizational-pattern-4-roles-2026-05-18.md) — Clarity Domain 4-role pattern (hats live in domains; this row's tuple integrates with the role catalog)
+- [081KRW63S0008QG0R002V20TYJ](081KRW63S0008QG0R002V20TYJ-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) — F# wallet type-safety (the type-system substrate this row's binding-mode uses)
 - `memory/feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md` — prior 90%-type-error claim verification
 - `.claude/skills/csharp-fsharp-fit-reviewer/SKILL.md` — F# fit review (type-safe binding choices have implementation-language implications)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2492-2520 — source design

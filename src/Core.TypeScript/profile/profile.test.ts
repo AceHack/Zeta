@@ -1,6 +1,6 @@
 // profile.test.ts — smoke tests for tools/profile.ts CLI dispatcher.
 //
-// B-0156 AC #2: each TS sibling of a ported .sh has at least one
+// 081KQGDBJ0008QG0R000A4EZS5 AC #2: each TS sibling of a ported .sh has at least one
 // `bun test` covering its primary entry path. profile.ts is the
 // last of the three Phase 3/4 ports lacking explicit test coverage
 // (amara.ts + ani.ts are covered by tools/peer-call/smoke.test.ts).
@@ -54,7 +54,7 @@ const DOCUMENTED_SUBCOMMANDS = [
   "coverage",
 ] as const;
 
-describe("tools/profile.ts (B-0156 AC #2)", () => {
+describe("tools/profile.ts (081KQGDBJ0008QG0R000A4EZS5 AC #2)", () => {
   test("exists at the canonical path", () => {
     expect(existsSync(PROFILE_PATH)).toBe(true);
   });

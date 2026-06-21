@@ -1,6 +1,5 @@
 ---
-id: B-0354
-zetaid: 081KR50HA0008QG0R001CNS20T
+id: 081KR50HA0008QG0R001CNS20T
 priority: P1
 status: closed
 title: "Fresh-instance validation test for bootstrap CLAUDE.md"
@@ -15,7 +14,7 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0354 — Fresh-instance validation test
+# 081KR50HA0008QG0R001CNS20T — Fresh-instance validation test
 
 ## What
 
@@ -51,28 +50,28 @@ S — 1-2 hours of testing + documentation.
 
 ## Pre-start checklist (backlog-item start gate)
 
-**Prior-art search (2026-05-11 Riven):** Searched `docs/backlog/**/B-03*.md`, `docs/BACKLOG.md`, `docs/trajectories/*/RESUME.md` for "bootstrap CLAUDE", "fresh-instance", "B-0329", "B-0353". Found related in B-0329 (parent), B-0353 (closed predecessor), B-0348 (extraction classify), B-0315 (trim context). No duplicate test harness exists. Surfaces: BACKLOG.md lines 187-188, B-0329 decomposition tree.
+**Prior-art search (2026-05-11 Riven):** Searched `docs/backlog/**/B-03*.md`, `docs/BACKLOG.md`, `docs/trajectories/*/RESUME.md` for "bootstrap CLAUDE", "fresh-instance", "081KR2E4K0008QG0R001F0YB5S", "081KR50HA0008QG0R001DBKS6T". Found related in 081KR2E4K0008QG0R001F0YB5S (parent), 081KR50HA0008QG0R001DBKS6T (closed predecessor), 081KR50HA0008QG0R000ZKBHE4 (extraction classify), 081KR2E4K0008QG0R000R3ZVGD (trim context). No duplicate test harness exists. Surfaces: BACKLOG.md lines 187-188, 081KR2E4K0008QG0R001F0YB5S decomposition tree.
 
-**Dependency-restructure:** B-0353 closed (2026-05-10). No broken pointers. Added reciprocal note to B-0329. Supersession via decision-archaeology on B-0329/B-0353 lineage complete (no B-0169 gaps).
+**Dependency-restructure:** 081KR50HA0008QG0R001DBKS6T closed (2026-05-10). No broken pointers. Added reciprocal note to 081KR2E4K0008QG0R001F0YB5S. Supersession via decision-archaeology on 081KR2E4K0008QG0R001F0YB5S/081KR50HA0008QG0R001DBKS6T lineage complete (no 081KQJZR90008QG0R002D6XYHB gaps).
 
 ## Re-decomposition (smallest safe slice, one bounded step)
 
 Re-decomp assumes prior "atomic" classification was mistaken (test protocol is inherently multi-phase). Split into 3 atomic children (TS-first where possible, per Rule 0):
 
-- B-0354.1: TS harness skeleton for fresh-instance bootstrap validator (script that checks CLAUDE.md length <50, .claude/rules/ presence, 6-step process)
-- B-0354.2: Execute minimal validation in isolated TS context + focused check (no real Claude spawn)
-- B-0354.3: Document findings + file any gap children; update parent B-0329
+- 081KR50HA0008QG0R001CNS20T.1: TS harness skeleton for fresh-instance bootstrap validator (script that checks CLAUDE.md length <50, .claude/rules/ presence, 6-step process)
+- 081KR50HA0008QG0R001CNS20T.2: Execute minimal validation in isolated TS context + focused check (no real Claude spawn)
+- 081KR50HA0008QG0R001CNS20T.3: Document findings + file any gap children; update parent 081KR2E4K0008QG0R001F0YB5S
 
 Each child: one PR, run `bun` checks + build gate, no broad test execution yet.
 
 ## Progress
 
-**B-0354.1 landed (2026-05-29, otto-cli bg-worker):** static structural-validation
+**081KR50HA0008QG0R001CNS20T.1 landed (2026-05-29, otto-cli bg-worker):** static structural-validation
 harness skeleton at `tools/bootstrap-validator/validate-bootstrap-claude-md.ts`
 (+ `.test.ts`, 15 tests pass). Checks: CLAUDE.md exists; 6-step bootstrap process
 present (`## 1.`..`## 6.`); `.claude/rules/` auto-load surface non-empty; conciseness
 (soft warn). CLI flags `--json` / `--root` / `--max-lines` / `--help`; exit codes
-0 pass / 1 usage / 3 fail. No Claude spawn (that is B-0354.2/.3).
+0 pass / 1 usage / 3 fail. No Claude spawn (that is 081KR50HA0008QG0R001CNS20T.2/.3).
 
 **Recalibration finding (assume-decomposition-has-mistakes):** the child sketch's
 "CLAUDE.md length <50" bound is empirically wrong — the live bootstrap CLAUDE.md is
@@ -80,7 +79,7 @@ present (`## 1.`..`## 6.`); `.claude/rules/` auto-load surface non-empty; concis
 file. Load-bearing invariant is structural (6-step process + rules auto-load surface),
 so conciseness is a SOFT `--max-lines` warn (default 150), not a hard fail.
 
-**B-0354.2 landed (2026-05-29, otto-cli bg-worker):** executed the validation
+**081KR50HA0008QG0R001CNS20T.2 landed (2026-05-29, otto-cli bg-worker):** executed the validation
 against the live repo + added structural check #4 — **referenced-pointer
 resolution**. `extractReferencedPointers` + `checkReferencedPointers` in
 `tools/bootstrap-validator/validate-bootstrap-claude-md.ts` (+ 8 new tests,
@@ -100,14 +99,14 @@ only proves the rule DIRECTORY is non-empty; it passes even when the SPECIFIC
 file CLAUDE.md points at is gone. Check #4 closes that gap — it proves the
 specific pointers survive, which is what "no critical rules lost" actually means.
 
-Remaining: **B-0354.3** (live model-in-the-loop run if desired; document findings;
-file gap children; update parent B-0329).
+Remaining: **081KR50HA0008QG0R001CNS20T.3** (live model-in-the-loop run if desired; document findings;
+file gap children; update parent 081KR2E4K0008QG0R001F0YB5S).
 
-**B-0354.3 landed (2026-05-29, otto-cli bg-worker):** findings report below;
-parent B-0329 updated; one optional follow-up child filed (B-0354.4). This row
+**081KR50HA0008QG0R001CNS20T.3 landed (2026-05-29, otto-cli bg-worker):** findings report below;
+parent 081KR2E4K0008QG0R001F0YB5S updated; one optional follow-up child filed (081KSRGFP0008QG0R003K4M5NM). This row
 closes.
 
-## B-0354.3 — Findings report (the test report acceptance criterion #3 asks for)
+## 081KR50HA0008QG0R001CNS20T.3 — Findings report (the test report acceptance criterion #3 asks for)
 
 ### Static structural validation (the surrogate gate)
 
@@ -122,7 +121,7 @@ live repo root — **PASS, exit 0**, all 5 checks green:
 | `conciseness` | ✓ 76 lines (≤ soft ceiling 150) |
 | `rules-auto-load` | ✓ `.claude/rules/` non-empty (**99** rule files) |
 
-Doc-drift note (substrate-honest): the B-0354.2 progress note recorded "11
+Doc-drift note (substrate-honest): the 081KR50HA0008QG0R001CNS20T.2 progress note recorded "11
 concrete pointers"; the validator now reports 15. The live CLAUDE.md grew since
 .2 landed (more orient/ship links + the Heartbeat-via-commit / AgencySignature
 additions). All 15 still resolve — this is doc-note drift, **not** a dangling
@@ -153,10 +152,10 @@ instance all survive) and #3 (this report) are met.
 ### Gap noted → follow-up filed (acceptance criterion #4)
 
 One limitation, recorded honestly: this session's task was **injected** (the
-bg-worker prompt named B-0354), not **self-selected** from an open prompt
+bg-worker prompt named 081KR50HA0008QG0R001CNS20T), not **self-selected** from an open prompt
 ("pick and complete the next open backlog item"). So the self-selection edge
 of the test protocol (step 2) is not yet exercised by a clean-prompt run.
-That is a minor gap, not a blocker — filed as optional follow-up **B-0354.4**
+That is a minor gap, not a blocker — filed as optional follow-up **081KSRGFP0008QG0R003K4M5NM**
 (clean-prompt live-model run) rather than holding this row open.
 
 ## Resolution (2026-05-29)
@@ -164,12 +163,12 @@ That is a minor gap, not a blocker — filed as optional follow-up **B-0354.4**
 Closed. Acceptance criteria status:
 
 1. Fresh instance completes a representative task — **met** (this bg-worker
-   session, task-injected path; clean-prompt self-selection deferred to B-0354.4).
+   session, task-injected path; clean-prompt self-selection deferred to 081KSRGFP0008QG0R003K4M5NM).
 2. No critical rules lost in extraction — **met** (validator
    `referenced-pointers-resolve` check proves all 15 concrete CLAUDE.md
    pointers + the 99-file `.claude/rules/` auto-load surface survive).
 3. Findings documented as a test report on this row — **met** (this section).
-4. Gaps → follow-up items filed — **met** (B-0354.4 for clean-prompt run).
+4. Gaps → follow-up items filed — **met** (081KSRGFP0008QG0R003K4M5NM for clean-prompt run).
 
-Parent **B-0329** updated; **B-0355** (cross-harness bootstrap template) is now
-unblocked (it depended on B-0354).
+Parent **081KR2E4K0008QG0R001F0YB5S** updated; **081KR50HA0008QG0R003G7DR8Z** (cross-harness bootstrap template) is now
+unblocked (it depended on 081KR50HA0008QG0R001CNS20T).

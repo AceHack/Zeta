@@ -1,6 +1,6 @@
 namespace Zeta.Core
 
-/// Chip9Board — **the chip9-board HOST for sim·mea·cut loops** (B-1035's last named slice): a
+/// Chip9Board — **the chip9-board HOST for sim·mea·cut loops** (081KTSZN10008QG0R002J0GE0Z's last named slice): a
 /// test loop hosted ON the machine that already has exact ticks, color planes, and the fault
 /// register. Sim loads the ROM into a fresh frame (the rom bytes are CONSTANTS — solid ground;
 /// the seed remains the replay tag the boundary requires); Mea runs the program and banks the

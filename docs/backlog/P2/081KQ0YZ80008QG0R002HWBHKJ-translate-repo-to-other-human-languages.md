@@ -1,6 +1,5 @@
 ---
-id: B-0004
-zetaid: 081KQ0YZ80008QG0R002HWBHKJ
+id: 081KQ0YZ80008QG0R002HWBHKJ
 priority: P2
 status: open
 title: Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
@@ -62,7 +61,7 @@ Aaron 2026-04-25 framing (verbatim):
    multi-language-precise, not just English-precise.
 
 4. **Composes with the matrix-pill ALIGNMENT.md rewrite
-   (B-0003)**: rigor-as-spread-mechanism is much more
+   (081KQ0YZ80008QG0R001QJJTVF)**: rigor-as-spread-mechanism is much more
    effective when the rigorous substrate is readable in
    the receiver's first language. Otto-286 definitional
    precision applies to translation: precise mappings
@@ -161,7 +160,7 @@ Before bulk translation:
 - **Glossary anchoring**: precision-dictionary terms
   must translate consistently across all files in a
   language. The precision-dictionary product vision
-  (B-0003-adjacent) is a precondition for high-quality
+  (081KQ0YZ80008QG0R001QJJTVF-adjacent) is a precondition for high-quality
   translations of substrate that uses precise vocabulary.
 
 ## Acceptance signals
@@ -206,7 +205,7 @@ artifact; specific translations age + get refreshed.
 - `memory/project_precision_dictionary_evidence_backed_context_compressor_2026_04_25.md`
   — precision-dictionary is precondition for
   consistent-vocabulary translation.
-- `docs/backlog/P1/B-0003-alignment-md-rewrite.md`
+- `docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md`
   — matrix-pill rewrite spreads via rigor; multi-language
   rigor compounds the spread.
 - `memory/feedback_otto_291_seed_linguistic_kernel_extension_deployment_discipline_consumer_maji_recalculation_2026_04_25.md`
@@ -229,15 +228,15 @@ artifact; specific translations age + get refreshed.
 
 - Skill router: no existing i18n/l10n/translation skill found.
 - `docs/WONT-DO.md`: no translation-related declined features.
-- `docs/backlog/P*`: no other i18n rows found (B-0004 is the root).
-- B-0003 (precision-dictionary product vision) is complementary, not overlapping — B-0003 is about defining terms rigorously; B-0004 is about translating them.
+- `docs/backlog/P*`: no other i18n rows found (081KQ0YZ80008QG0R002HWBHKJ is the root).
+- 081KQ0YZ80008QG0R001QJJTVF (precision-dictionary product vision) is complementary, not overlapping — 081KQ0YZ80008QG0R001QJJTVF is about defining terms rigorously; 081KQ0YZ80008QG0R002HWBHKJ is about translating them.
 - `tools/hygiene/LOST-FILES-LOCATIONS.md`: no orphaned translation artifacts found.
 - PR history: no closed/merged PRs for translation tooling found.
 
 **Dependency restructure:**
 
 - `depends_on: []` — no upstream dependencies; infrastructure work starts from scratch.
-- `composes_with: [B-0003]` reciprocal pointer confirmed (B-0003 body references precision-dictionary; B-0004 anchor work depends on it).
+- `composes_with: [081KQ0YZ80008QG0R001QJJTVF]` reciprocal pointer confirmed (081KQ0YZ80008QG0R001QJJTVF body references precision-dictionary; 081KQ0YZ80008QG0R002HWBHKJ anchor work depends on it).
 - Children decomposed in dependency order below.
 
 ## Decomposition (12 atomic children, 2026-05-10)
@@ -245,34 +244,34 @@ artifact; specific translations age + get refreshed.
 Dependency graph (→ means "depends on"):
 
 ```
-B-0004.1 (inventory scanner, no deps)
-  → B-0004.2 (anchor set)
-  → B-0004.3 (drift-detection lint)  [parallel to B-0004.2]
-  → B-0004.4 (xref validator)        [parallel to B-0004.2]
-    B-0004.2 → B-0004.5 (pipeline ADR, needs B-0004.3+B-0004.4 too)
-    B-0004.2 → B-0004.6 (language selection ADR)
-      B-0004.5 + B-0004.6 → B-0004.7 (P0 substrate pilot)
-        B-0004.7 → B-0004.8 (anchor translations — first language)
-        B-0004.7 → B-0004.9 (memory + skills — first language, needs B-0004.8)
-        B-0004.7 → B-0004.10 (folder structure + index)
-          B-0004.10 → B-0004.11 (external surfaces — first language)
-            B-0004.9 + B-0004.10 + B-0004.11 → B-0004.12 (second language pilot)
+081KR50HA0008QG0R000YTJE8Q (inventory scanner, no deps)
+  → 081KR50HA0008QG0R002TN3JX2 (anchor set)
+  → 081KR7JY10008QG0R000EGAPAN (drift-detection lint)  [parallel to 081KR50HA0008QG0R002TN3JX2]
+  → 081KR7JY10008QG0R000D7JTBB (xref validator)        [parallel to 081KR50HA0008QG0R002TN3JX2]
+    081KR50HA0008QG0R002TN3JX2 → 081KR7JY10008QG0R002YZBE5A (pipeline ADR, needs 081KR7JY10008QG0R000EGAPAN+081KR7JY10008QG0R000D7JTBB too)
+    081KR50HA0008QG0R002TN3JX2 → 081KR7JY10008QG0R003SATDK8 (language selection ADR)
+      081KR7JY10008QG0R002YZBE5A + 081KR7JY10008QG0R003SATDK8 → 081KR7JY10008QG0R0022YWDVZ (P0 substrate pilot)
+        081KR7JY10008QG0R0022YWDVZ → 081KR7JY10008QG0R0020PM4AH (anchor translations — first language)
+        081KR7JY10008QG0R0022YWDVZ → 081KR7JY10008QG0R003YPVJB1 (memory + skills — first language, needs 081KR7JY10008QG0R0020PM4AH)
+        081KR7JY10008QG0R0022YWDVZ → 081KR7JY10008QG0R001XQ6N71 (folder structure + index)
+          081KR7JY10008QG0R001XQ6N71 → 081KR7JY10008QG0R002VN6707 (external surfaces — first language)
+            081KR7JY10008QG0R003YPVJB1 + 081KR7JY10008QG0R001XQ6N71 + 081KR7JY10008QG0R002VN6707 → 081KR7JY10008QG0R00016GT9R (second language pilot)
 ```
 
 | Child | Title | Classification | Effort | Depends on |
 |-------|-------|----------------|--------|------------|
-| B-0004.1 | Substrate inventory scanner (TS) | buildable-now | S | — |
-| B-0004.2 | Precision anchor set extraction | research-now | S | B-0004.1 |
-| B-0004.3 | Drift-detection lint tool | buildable-now | S | B-0004.1 |
-| B-0004.4 | Cross-reference preservation validator | buildable-now | S | B-0004.1 |
-| B-0004.5 | Translation pipeline ADR + tooling selection | research-now | S | B-0004.2, B-0004.3, B-0004.4 |
-| B-0004.6 | First language selection ADR | research-now | XS | B-0004.2 |
-| B-0004.7 | P0 substrate translation pilot — first language | blocked | M | B-0004.5, B-0004.6 |
-| B-0004.8 | Precision anchor translations — first language | blocked | S | B-0004.7 |
-| B-0004.9 | Memory + skills translation — first language | blocked | M | B-0004.7, B-0004.8 |
-| B-0004.10 | Language folder structure + per-language index | blocked | XS | B-0004.7 |
-| B-0004.11 | External-facing surfaces translation — first language | blocked | XS | B-0004.10 |
-| B-0004.12 | Second language pilot | blocked | M | B-0004.9, B-0004.10, B-0004.11 |
+| 081KR50HA0008QG0R000YTJE8Q | Substrate inventory scanner (TS) | buildable-now | S | — |
+| 081KR50HA0008QG0R002TN3JX2 | Precision anchor set extraction | research-now | S | 081KR50HA0008QG0R000YTJE8Q |
+| 081KR7JY10008QG0R000EGAPAN | Drift-detection lint tool | buildable-now | S | 081KR50HA0008QG0R000YTJE8Q |
+| 081KR7JY10008QG0R000D7JTBB | Cross-reference preservation validator | buildable-now | S | 081KR50HA0008QG0R000YTJE8Q |
+| 081KR7JY10008QG0R002YZBE5A | Translation pipeline ADR + tooling selection | research-now | S | 081KR50HA0008QG0R002TN3JX2, 081KR7JY10008QG0R000EGAPAN, 081KR7JY10008QG0R000D7JTBB |
+| 081KR7JY10008QG0R003SATDK8 | First language selection ADR | research-now | XS | 081KR50HA0008QG0R002TN3JX2 |
+| 081KR7JY10008QG0R0022YWDVZ | P0 substrate translation pilot — first language | blocked | M | 081KR7JY10008QG0R002YZBE5A, 081KR7JY10008QG0R003SATDK8 |
+| 081KR7JY10008QG0R0020PM4AH | Precision anchor translations — first language | blocked | S | 081KR7JY10008QG0R0022YWDVZ |
+| 081KR7JY10008QG0R003YPVJB1 | Memory + skills translation — first language | blocked | M | 081KR7JY10008QG0R0022YWDVZ, 081KR7JY10008QG0R0020PM4AH |
+| 081KR7JY10008QG0R001XQ6N71 | Language folder structure + per-language index | blocked | XS | 081KR7JY10008QG0R0022YWDVZ |
+| 081KR7JY10008QG0R002VN6707 | External-facing surfaces translation — first language | blocked | XS | 081KR7JY10008QG0R001XQ6N71 |
+| 081KR7JY10008QG0R00016GT9R | Second language pilot | blocked | M | 081KR7JY10008QG0R003YPVJB1, 081KR7JY10008QG0R001XQ6N71, 081KR7JY10008QG0R002VN6707 |
 
-**Buildable now (no blockers):** B-0004.1, B-0004.2, B-0004.3, B-0004.4  
-**Buildable after B-0004.2:** B-0004.5, B-0004.6 (in parallel)  
+**Buildable now (no blockers):** 081KR50HA0008QG0R000YTJE8Q, 081KR50HA0008QG0R002TN3JX2, 081KR7JY10008QG0R000EGAPAN, 081KR7JY10008QG0R000D7JTBB  
+**Buildable after 081KR50HA0008QG0R002TN3JX2:** 081KR7JY10008QG0R002YZBE5A, 081KR7JY10008QG0R003SATDK8 (in parallel)  

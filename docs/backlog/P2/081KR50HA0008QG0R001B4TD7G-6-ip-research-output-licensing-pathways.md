@@ -1,9 +1,8 @@
 ---
-id: B-0029.6
-zetaid: 081KR50HA0008QG0R001B4TD7G
+id: 081KR50HA0008QG0R001B4TD7G
 priority: P2
 status: open
-title: "B-0029.6 — Survey: IP and research-output licensing pathways (academic grants, training-data licensing, course/book revenue)"
+title: "081KR50HA0008QG0R001B4TD7G — Survey: IP and research-output licensing pathways (academic grants, training-data licensing, course/book revenue)"
 created: 2026-05-09
 last_updated: 2026-05-09
 parent: 081KQ3HBZ0008QG0R000JRZAMM
@@ -14,13 +13,13 @@ effort: S
 decomposition: atomic
 ---
 
-# B-0029.6 — IP and research-output licensing pathways
+# 081KR50HA0008QG0R001B4TD7G — IP and research-output licensing pathways
 
-**Slice of:** [B-0029](B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md)
+**Slice of:** [081KQ3HBZ0008QG0R000JRZAMM](081KQ3HBZ0008QG0R000JRZAMM-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources.md)
 
 ## What
 
-Produce a research doc at `docs/research/B-0029.6-ip-licensing-pathways.md` that surveys the revenue paths available from Zeta's research-output artifacts:
+Produce a research doc at `docs/research/081KR50HA0008QG0R001B4TD7G-ip-licensing-pathways.md` that surveys the revenue paths available from Zeta's research-output artifacts:
 
 1. **Academic publishing revenue**: are there publication fees vs author payments for the venues where Zeta research (Bayesian, formal verification, AI-substrate) would land? Which venues pay?
 2. **Training-data licensing**: what precedents exist for OSS repositories licensing their content for AI training? Price ranges? Otto-279 history-surface attribution requirements apply — what licensing terms satisfy those?
@@ -30,7 +29,7 @@ Produce a research doc at `docs/research/B-0029.6-ip-licensing-pathways.md` that
 
 ## Acceptance criteria
 
-- [ ] `docs/research/B-0029.6-ip-licensing-pathways.md` committed
+- [ ] `docs/research/081KR50HA0008QG0R001B4TD7G-ip-licensing-pathways.md` committed
 - [ ] Each of the 5 revenue paths assessed with a "viable / not viable / too early" verdict
 - [ ] Training-data licensing section explicitly addresses Otto-279 attribution requirements (persona first-names, history surfaces)
 - [ ] At least 2 comparable AI-project licensing precedents cited for the training-data section
@@ -39,7 +38,7 @@ Produce a research doc at `docs/research/B-0029.6-ip-licensing-pathways.md` that
 ## Out of scope
 
 - Does NOT produce any publication, course, or licensing agreement
-- Does NOT evaluate open-source funding, grants, trading, or SaaS paths (other B-0029.* rows)
+- Does NOT evaluate open-source funding, grants, trading, or SaaS paths (other 081KQ3HBZ0008QG0R000JRZAMM.* rows)
 
 ## Research surfaces
 

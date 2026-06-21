@@ -1,7 +1,7 @@
-# MEMORY.md harness contract — observed-behavior verification (Phase 0 of B-0066)
+# MEMORY.md harness contract — observed-behavior verification (Phase 0 of 081KQ8P5D0008QG0R003KFRGJ0)
 
 **Date:** 2026-04-28
-**Status:** Phase 0 verification report; informs the Option A vs B vs C decision in B-0066.
+**Status:** Phase 0 verification report; informs the Option A vs B vs C decision in 081KQ8P5D0008QG0R003KFRGJ0.
 **Source basis:** Empirical observation of the Claude Code harness's session-start behavior, plus the harness's own warning messages it emits when the contract is violated. Findings are restated in our own words; no third-party source is vendored.
 **Triggering ask:** Aaron 2026-04-28 — *"do the research [if needed] to see if [Option A bare-marker] works."*
 
@@ -78,7 +78,7 @@ Project-level (in-repo) `MEMORY.md` is governed differently from per-user auto-m
 
 ## Recommendation: Option B with two operational changes
 
-Update B-0066 to specify:
+Update 081KQ8P5D0008QG0R003KFRGJ0 to specify:
 
 ### 1. Auto-generate the index
 
@@ -241,7 +241,7 @@ harness format contract is violated. *Do not run this destructively on
    curator.
 3. **AutoMemory writes are additive** — new memories append; they do not
    enforce index ordering or pruning. The factory's `reindex-memory-md.ts`
-   (B-0423) fills this gap: it re-sorts entries newest-first and enforces
+   (081KRCQQF0008QG0R0037YYP1A) fills this gap: it re-sorts entries newest-first and enforces
    the 100-entry stack cap on cadence.
 4. **The AutoDream marker line (`[AutoDream last run: <date>]`) must be
    preserved** — `reindex-memory-md.ts::main()` reads the existing marker
@@ -256,8 +256,8 @@ harness format contract is violated. *Do not run this destructively on
 
 - Does NOT vendor any third-party source. All findings are restated in our own words from observed behavior + the harness's own session-start warning messages. The Claude Code reference clone the maintainer keeps for self-fix research is read-only-no-vendoring per `feedback_search_internet_when_self_fixing_*`; this report respects that boundary.
 - Does NOT replace Anthropic's published Claude Code documentation. If published docs disagree with anything here, the docs win and this report should be updated.
-- Does NOT propose a timeline. B-0066's phasing covers that.
+- Does NOT propose a timeline. 081KQ8P5D0008QG0R003KFRGJ0's phasing covers that.
 
 ## Next step
 
-Update B-0066 with these findings. Recommend Option B as the canonical path. Phase 0 is now COMPLETE; B-0066 advances to Phase 1 (generator authoring).
+Update 081KQ8P5D0008QG0R003KFRGJ0 with these findings. Recommend Option B as the canonical path. Phase 0 is now COMPLETE; 081KQ8P5D0008QG0R003KFRGJ0 advances to Phase 1 (generator authoring).

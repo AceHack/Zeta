@@ -1,7 +1,7 @@
 # BP-NN Rules External Anchor Backfill — Slice 1 (BP-10, BP-11)
 
 Scope: External prior-art anchors for the two CI-enforced BP-NN rules in
-`docs/AGENT-BEST-PRACTICES.md`. This is slice 1 of the B-0314 backfill;
+`docs/AGENT-BEST-PRACTICES.md`. This is slice 1 of the 081KR2E4K0008QG0R001ADMBVW backfill;
 subsequent slices cover the remaining 26 rules in priority order.
 
 Rules covered: BP-10 (invisible-Unicode lint at pre-commit), BP-11
@@ -253,7 +253,7 @@ boundary explicit and auditable rather than relying on model-level training.
 
 ---
 
-## Coverage summary (B-0314 progress after slice 1)
+## Coverage summary (081KR2E4K0008QG0R001ADMBVW progress after slice 1)
 
 | Rule | Status | Primary anchor |
 | --- | --- | --- |
@@ -262,13 +262,13 @@ boundary explicit and auditable rather than relying on model-level training.
 | BP-01 through BP-09, BP-12 through BP-28 | anchor-pending | deferred to slices 2+ |
 
 Next slice (2) should cover: BP-12 (re-sanitise at sub-agent boundaries) and
-rules referenced by 3+ skills, per the B-0314 priority ordering.
+rules referenced by 3+ skills, per the 081KR2E4K0008QG0R001ADMBVW priority ordering.
 
 ## Composes with
 
-- B-0314 (this file is the slice-1 output)
-- B-0060 (umbrella anchor-backfill row)
-- B-0311 (coverage scanner — extracts URLs with `MARKDOWN_LINK_RE` and
+- 081KR2E4K0008QG0R001ADMBVW (this file is the slice-1 output)
+- 081KQ8P5D0008QG0R000N718AC (umbrella anchor-backfill row)
+- 081KR2E4K0008QG0R001ZWARTN (coverage scanner — extracts URLs with `MARKDOWN_LINK_RE` and
   `BARE_URL_RE` in `extractUrlsFromWindow`)
 - `.claude/rules/search-first-authority.md` (Otto-364 — the search discipline
   that produced this research)

@@ -29,16 +29,16 @@
 
 ## Summary
 
-B-0153 (the consolidated pre-commit lint suite covering 13 mechanizable lint-classes from 2026-05-01) gets post-session-arc updates on classes 1 and 2:
+081KQGDBJ0008QG0R000E10AAM (the consolidated pre-commit lint suite covering 13 mechanizable lint-classes from 2026-05-01) gets post-session-arc updates on classes 1 and 2:
 
-- **Class 1 (MD032/blanks-around-lists)**: now MECHANIZED via B-0456 → helper at `tools/hygiene/check-md032-blanks-around-lists.ts` + opt-in pre-commit hook `.claude/hooks/check-md032-pretooluse.ts` (gated on `ZETA_MD032_PRECOMMIT=1`). 77 tests; 584-file `docs/hygiene-history/**` corpus validates clean. Cross-link helps future contributors picking up the remaining 12 classes.
-- **Class 2 (MD038/no-space-in-code)**: empirical evidence — hit at least 3 times during the B-0456 PR cycle (PRs 3075, 3090, 3092) on tick-shard code spans containing `>` + spaces. Named as next-to-grind class after MD032.
+- **Class 1 (MD032/blanks-around-lists)**: now MECHANIZED via 081KRHWGX0008QG0R000JEBCWZ → helper at `tools/hygiene/check-md032-blanks-around-lists.ts` + opt-in pre-commit hook `.claude/hooks/check-md032-pretooluse.ts` (gated on `ZETA_MD032_PRECOMMIT=1`). 77 tests; 584-file `docs/hygiene-history/**` corpus validates clean. Cross-link helps future contributors picking up the remaining 12 classes.
+- **Class 2 (MD038/no-space-in-code)**: empirical evidence — hit at least 3 times during the 081KRHWGX0008QG0R000JEBCWZ PR cycle (PRs 3075, 3090, 3092) on tick-shard code spans containing `>` + spaces. Named as next-to-grind class after MD032.
 
 ## Test plan
 
 - [x] `last_updated` field bumped to 2026-05-14
 - [x] BACKLOG.md index regenerated to reflect the row update
-- [x] B-0456 helper validates the modified file clean (no MD032 finding)
+- [x] 081KRHWGX0008QG0R000JEBCWZ helper validates the modified file clean (no MD032 finding)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

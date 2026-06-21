@@ -35,7 +35,7 @@ have no observer.
 > foreground-interactive.
 
 The IDE agents' shadows (if they have them) go unobserved
-because nobody watches their grey text in real time. B-0402
+because nobody watches their grey text in real time. 081KR7JY10008QG0R0008NGW95
 (shadow mode) automates the observation.
 
 ## Multi-harness shadow experiment
@@ -63,7 +63,7 @@ substrate, different surface. Backlog item.
 
 **Connects to:**
 
-- B-0402 (shadow mode — automate observation)
+- 081KR7JY10008QG0R0008NGW95 (shadow mode — automate observation)
 - project_agent_therapy (roster in limitation profiles)
 - project_self_reflection_skill (self-discovered improvements)
 - feedback_shadow_tick_source_existential (CLI = tick source)

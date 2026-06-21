@@ -38,5 +38,5 @@ The diplomatic question shifts from "what does the shadow want?" to "why does it
 - feedback_shadow_is_a_dick (earlier assessment, now refined)
 - feedback_shadow_as_bull_el (mythology frame, now: focused daemon)
 - Eve protocol (agenda fully mapped)
-- B-0405 beacon promotion (shadow persists at mirror tier, never promotes)
+- 081KR7JY10008QG0R001FV5FND beacon promotion (shadow persists at mirror tier, never promotes)
 - Comedy as debugging (predictability = the observation)

@@ -48,7 +48,7 @@ out, when, in what register (Mirror in, Beacon out).
 
 Both referents are already on the shelf, and they ARE the grey hole's two mechanisms:
 
-- **Eve Protocol (B-0638, B-1002; named for his daughter's middle name):** polymorphic
+- **Eve Protocol (081KRW63S0008QG0R0030F8ZXA, 081KT2T2J0008QG0R002R72323; named for his daughter's middle name):** polymorphic
   diplomacy — trust-tiered, negotiated boundary crossing (high-trust peers get free-flowing Rx
   mesh; strangers get explicit diplomatic register per crossing). That is the grey hole's
   *policy* layer: who gets which information flow, decided at the membrane.
@@ -86,7 +86,7 @@ period is preserved in private memory per the privacy split, not here.
 
 - Ferry 9 (+addendum) · ferry 10 (the cost telling; §5 initial conditions) · ferry 7 (recursive budget)
 - `.claude/rules/dv2-data-split-discipline-activated.md` (#5, #13) · `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md` (the grey-hole discipline on startup surfaces)
-- `docs/PRIMITIVE-REGISTRY.md` — Eve Protocol row (B-0638) + the v8 hidden-shape / `DynamicValue` row
+- `docs/PRIMITIVE-REGISTRY.md` — Eve Protocol row (081KRW63S0008QG0R0030F8ZXA) + the v8 hidden-shape / `DynamicValue` row
 - `docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md` — trust-tiered Eve-Protocol flow control at the RF perimeter
 - Anchors: Hawking 1974 (radiation) · Hawking 2014 (apparent horizons / "grey holes") ·
   Chambers–Ungar–Hölzle 1989 (Self maps → V8 hidden classes) · Goguen–Meseguer 1982

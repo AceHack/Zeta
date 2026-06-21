@@ -1,6 +1,5 @@
 ---
-id: B-0405
-zetaid: 081KR7JY10008QG0R001FV5FND
+id: 081KR7JY10008QG0R001FV5FND
 priority: P1
 status: open
 title: "Beacon promotion gate — observable mirror→beacon pipeline with dashboard metrics"

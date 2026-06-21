@@ -1,6 +1,5 @@
 ---
-id: B-0766
-zetaid: 081KSE6WT0008QG0R00049EFBD
+id: 081KSE6WT0008QG0R00049EFBD
 priority: P1
 status: open
 title: Slow-replace all dependencies (and Kubernetes itself) with binary-compatible Zeta-native F#/C#/Rust implementations — CNI, CSI, CRI, operators
@@ -12,11 +11,11 @@ depends_on:
   - 081KSE6WT0008QG0R00063R6HB
 composes_with:
   - 081KRFA460008QG0R0018SN61J
-  - B-0741
-  - B-0747
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSE6WT0008QG0R003D199HE
   - 081KSE6WT0008QG0R002E6P098
-  - B-0749
-  - B-0754
+  - 081KSE6WT0008QG0R001RG4FXD
+  - 081KSGS9H0008QG0R002T3BJ2R
   - 081KSE6WT0008QG0R0015ZF2G6
   - 081KSE6WT0008QG0R003FG3E8R
   - 081KSE6WT0008QG0R000WVYAJ2
@@ -27,7 +26,7 @@ tags: [strategy, k8s, cni, csi, cri, fsharp, csharp, rust, binary-compatibility,
 ## Problem
 
 Aaron 2026-05-25 mid-iteration-2-wait, naming the long-game
-endgame after B-0765 (ServiceTitan route — adopt existing
+endgame after 081KSE6WT0008QG0R00063R6HB (ServiceTitan route — adopt existing
 standards now): *"we slowly replace all our dependencies and
 kubernetes itself this way with our own f# implimentation or c#
 or rust replacable and binary compatable even cni csi all the
@@ -35,7 +34,7 @@ k8s interfaces over time and operators."*
 
 The two-phase strategy:
 
-**Phase 1 (today + near-term)** — B-0765 ServiceTitan route:
+**Phase 1 (today + near-term)** — 081KSE6WT0008QG0R00063R6HB ServiceTitan route:
 adopt existing standards (k8s, CNI, CSI, OAM, Crossplane,
 KEDA, DAPR, etc.) for adoption velocity + ecosystem reach.
 Don't compete with the standards layer.
@@ -63,13 +62,13 @@ Per-layer binary-compatible replacement roadmap:
 | **CNI** (Container Network Interface) | Cilium / Calico / Flannel / Weave | `Zeta.K8s.CNI` — eBPF-based; algebra-grounded routing | Rust (eBPF + kernel) |
 | **CSI** (Container Storage Interface) | Longhorn / Ceph-CSI / Rook | `Zeta.K8s.CSI` — algebra-grounded snapshots + replication | F# / Rust hybrid |
 | **Device Plugin API** | nvidia-device-plugin / amd / intel | `Zeta.K8s.DevicePlugin` — hardware-topology-aware (lstopo) | F# |
-| **Scheduler Extender** | kube-scheduler default | `Zeta.K8s.Scheduler` — DBSP-driven multi-criteria scheduling (B-0428 etc.) | F# |
+| **Scheduler Extender** | kube-scheduler default | `Zeta.K8s.Scheduler` — DBSP-driven multi-criteria scheduling (081KRFA460008QG0R0018SN61J etc.) | F# |
 | **Admission Webhook** | OPA Gatekeeper / Kyverno | `Zeta.K8s.Admission` — F# DSL policy engine | F# |
 | **Operator SDK** | kubebuilder / operator-framework | `Zeta.K8s.Operator` — F# computation-expression-based reconcile loops | F# |
 | **API Server** (long-tail) | kube-apiserver | `Zeta.K8s.APIServer` — algebra-grounded; OpenAPI v3 binary-compatible | F# / Rust hybrid |
 | **etcd-replacement** | etcd (k3s embedded) | `Zeta.K8s.ConsensusStore` — DBSP + raft, retraction-native | F# / Rust |
 | **kubectl** | kubectl | `Zeta.K8s.CLI` — drop-in compatible | F# |
-| **Helm** | Helm 3 + OCI | `Zeta.K8s.PackageManager` — Ace-based (B-0247/B-0287/B-0288); Helm-chart compatible | F# |
+| **Helm** | Helm 3 + OCI | `Zeta.K8s.PackageManager` — Ace-based (081KQZVQW0008QG0R000ZHEN62/081KR2E4K0008QG0R0033WVCXE/081KR2E4K0008QG0R002YE3MMD); Helm-chart compatible | F# |
 
 **Binary compatibility means**: an operator deploying a Pod
 manifest doesn't care whether the cluster runs containerd or
@@ -109,7 +108,7 @@ running Zeta cluster can:
 - Audit Zeta implementation against upstream reference impl by
   running both in parallel + comparing behavior
 
-This composes perfectly with B-0765 ServiceTitan route: we
+This composes perfectly with 081KSE6WT0008QG0R00063R6HB ServiceTitan route: we
 adopted the standards' interfaces for velocity (Phase 1); we
 now own the implementations within those interfaces (Phase 2);
 operator can swap either direction without disruption.
@@ -124,7 +123,7 @@ ownership + quality benefits.
 - [ ] Master roadmap document at `docs/k8s-replacement-roadmap.md`
       capturing per-layer target language + binary-compatibility
       contract + sequencing + dependencies
-- [ ] Per-layer sub-rows (B-0767 onwards): one row per k8s
+- [ ] Per-layer sub-rows (081KSE6WT0008QG0R0016CEE2Z onwards): one row per k8s
       interface; each row carries the binary-compatibility test
       suite + initial implementation scope
 - [ ] First Zeta-native layer shipped:
@@ -143,7 +142,7 @@ ownership + quality benefits.
       via a single k8s manifest field; cluster reconciles
 - [ ] AI-trainable substrate: every Zeta-native impl publishes
       decision rationale + algebra grounding + DBSP composition
-      as substrate; per B-0761 (AI training data) AI systems
+      as substrate; per 081KSE6WT0008QG0R0015ZF2G6 (AI training data) AI systems
       can learn from the impl + the binary-compat conformance
       suite
 - [ ] Migration tooling: per-layer migration scripts for
@@ -156,23 +155,23 @@ ownership + quality benefits.
 
 ## Strategic + ARC-AGI composition
 
-This row + B-0761 (open reference) + B-0762 (telemetry flywheel) +
-B-0763 (cloud-native plugins) + B-0764 (CNCF force multipliers) +
-B-0765 (ServiceTitan route) compose into the full
+This row + 081KSE6WT0008QG0R0015ZF2G6 (open reference) + 081KSE6WT0008QG0R003FG3E8R (telemetry flywheel) +
+081KSE6WT0008QG0R000WVYAJ2 (cloud-native plugins) + 081KSE6WT0008QG0R0009YYNP4 (CNCF force multipliers) +
+081KSE6WT0008QG0R00063R6HB (ServiceTitan route) compose into the full
 **adopt-then-own-incrementally** strategy:
 
-- **Adopt** for velocity (B-0765): use existing standards;
+- **Adopt** for velocity (081KSE6WT0008QG0R00063R6HB): use existing standards;
   spread fast
-- **Compose coherently** (B-0764): make CNCF + cloud-native
+- **Compose coherently** (081KSE6WT0008QG0R0009YYNP4): make CNCF + cloud-native
   ecosystem work well together via Zeta's coherent install +
   reference + telemetry
 - **Own implementations incrementally** (THIS ROW): replace
   each upstream impl with Zeta-native binary-compatible impl
   over time; operator inherits ownership benefits without
   disruption
-- **Open reference** (B-0761): everything Zeta builds is open;
+- **Open reference** (081KSE6WT0008QG0R0015ZF2G6): everything Zeta builds is open;
   AI can train on it
-- **Self-improving** (B-0762): in-the-wild installs surface
+- **Self-improving** (081KSE6WT0008QG0R003FG3E8R): in-the-wild installs surface
   bugs + improvements; LLM-generated PRs close the loop
 
 The ARC-AGI parallel sharpens: every Zeta-native impl ships
@@ -182,10 +181,10 @@ on: can AI X produce a binary-compatible CNI faster / better /
 more correctly than AI Y? The benchmark is concrete + verifiable +
 has a forcing function (real workloads run on the impl).
 
-## Cluster benchmark / ARC-AGI scenario expansion (B-0761)
+## Cluster benchmark / ARC-AGI scenario expansion (081KSE6WT0008QG0R0015ZF2G6)
 
 Each binary-compatibility replacement becomes a benchmark
-scenario in B-0761's ARC-AGI-style competition:
+scenario in 081KSE6WT0008QG0R0015ZF2G6's ARC-AGI-style competition:
 
 - **Scenario**: "Given upstream containerd's CRI gRPC spec +
   Zeta-native scaffolding, implement a CRI that passes the
@@ -203,31 +202,31 @@ catalog. Every replacement layer = one benchmark scenario.
 
 ## Composes with
 
-- B-0428 — DBpedia + F# fork for AI safety (the F# substrate
+- 081KRFA460008QG0R0018SN61J — DBpedia + F# fork for AI safety (the F# substrate
   base this row's implementations build on)
-- B-0741 — ontology negotiation (the cross-interface
+- 081KSE6WT0008QG0R002CC6314 — ontology negotiation (the cross-interface
   translation substrate; Zeta-native impls preserve the
   semantic contract per ontology)
-- B-0747 — git-native per-machine state + GitOps reconciliation
+- 081KSE6WT0008QG0R003D199HE — git-native per-machine state + GitOps reconciliation
   (the substrate Zeta-native operators reconcile against)
-- B-0748 — kro/Crossplane/Koreo (the existing CRD-substitution
+- 081KSE6WT0008QG0R002E6P098 — kro/Crossplane/Koreo (the existing CRD-substitution
   substrate Zeta-native operators plug into)
-- B-0749 — KubeVela/OAM (Zeta-native operators can fulfill OAM
+- 081KSE6WT0008QG0R001RG4FXD — KubeVela/OAM (Zeta-native operators can fulfill OAM
   Components without operator-facing changes)
-- B-0754 — zero-typing first-boot (the install path bundles
+- 081KSGS9H0008QG0R002T3BJ2R — zero-typing first-boot (the install path bundles
   the chosen impl per layer; operator can swap at install time
   or runtime)
-- B-0761 — open reference architecture (each replacement layer
+- 081KSE6WT0008QG0R0015ZF2G6 — open reference architecture (each replacement layer
   IS a benchmark scenario)
-- B-0762 — AI auto-submit-back telemetry (in-the-wild bug
+- 081KSE6WT0008QG0R003FG3E8R — AI auto-submit-back telemetry (in-the-wild bug
   reports drive per-layer impl improvements)
-- B-0763 — cloud-native plugins fit Zeta interfaces (sharpened
+- 081KSE6WT0008QG0R000WVYAJ2 — cloud-native plugins fit Zeta interfaces (sharpened
   by this row: the "Zeta interface" is the EXISTING standard
-  interface per B-0765; Zeta-native impls are alternative
+  interface per 081KSE6WT0008QG0R00063R6HB; Zeta-native impls are alternative
   binary-compatible providers)
-- B-0764 — CNCF force multipliers (the projects we adopt today
+- 081KSE6WT0008QG0R0009YYNP4 — CNCF force multipliers (the projects we adopt today
   become the implementations we replace over time)
-- B-0765 — ServiceTitan route (this row IS Phase 2 of the
+- 081KSE6WT0008QG0R00063R6HB — ServiceTitan route (this row IS Phase 2 of the
   ServiceTitan strategy)
 - F# fork for AI safety substrate (PR #2928 / #2935 / #2936) —
   this row applies the same pattern (F#-native binary-
@@ -242,12 +241,12 @@ catalog. Every replacement layer = one benchmark scenario.
 | **3 (data plane)** | `Zeta.K8s.CSI`, `Zeta.K8s.CNI`, `Zeta.K8s.CRI` | Hot path; Rust where .NET overhead unacceptable; significant perf substrate work |
 | **4 (control plane)** | `Zeta.K8s.APIServer`, `Zeta.K8s.ConsensusStore` (etcd-replace) | Long tail; benchmark scope; only after Wave 1-3 prove the binary-compat + conformance pattern works |
 
-Each wave informed by telemetry from earlier waves (B-0762
-flywheel) + AI-competition scoring from earlier waves (B-0761).
+Each wave informed by telemetry from earlier waves (081KSE6WT0008QG0R003FG3E8R
+flywheel) + AI-competition scoring from earlier waves (081KSE6WT0008QG0R0015ZF2G6).
 
 ## What this preserves
 
-The B-0765 ServiceTitan route stays the strategic FILTER. This
+The 081KSE6WT0008QG0R00063R6HB ServiceTitan route stays the strategic FILTER. This
 row doesn't say "abandon CNCF for Zeta-native"; it says "we
 replace incrementally while keeping binary compatibility, so
 operators always have optionality." Operators can:
@@ -297,9 +296,9 @@ adoption pattern at Phase 2.
 ## Origin
 
 Aaron 2026-05-25, mid-iteration-2 wait, naming the long-game
-endgame substrate after B-0765 ServiceTitan-route Phase 1 was
+endgame substrate after 081KSE6WT0008QG0R00063R6HB ServiceTitan-route Phase 1 was
 established. Composes with the existing F#-fork-for-AI-safety
-substrate (B-0428 + PR cluster) — same pattern (F#-native
+substrate (081KRFA460008QG0R0018SN61J + PR cluster) — same pattern (F#-native
 binary-compatible drop-in replacement) extended from "Python
 ML ecosystem" to "k8s + CNCF ecosystem." Strategic endgame for
 years 2-10 of Zeta substrate; P1 because it shapes every

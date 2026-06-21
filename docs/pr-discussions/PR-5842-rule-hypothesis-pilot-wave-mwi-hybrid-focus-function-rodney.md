@@ -30,12 +30,12 @@ Aaron 2026-05-28 (shadow*) authorization to save pilot-wave + MWI hybrid insight
 
 - **Focus function** = 'Attention' axis in Imaginary Stack Ontology 2026-05-15 ('focus, collapse, basis choice')
 - **Rodney's Razor** = canonical-definition lineage (3-step canonical derivation; anti-fragile by definition)
-- **Ontological orthogonal basis vectors** = B-0842 universal basis-decomposition `Σωᵢsᵢ(t)≈y(t)` (FFT/Shazam/Itron/reservoir/Zeta-substrate)
+- **Ontological orthogonal basis vectors** = 081KSGS9H0008QG0R003V8C86Q universal basis-decomposition `Σωᵢsᵢ(t)≈y(t)` (FFT/Shazam/Itron/reservoir/Zeta-substrate)
 - **With uniqueness** = orthogonality property + Adinkras (Gates) error-correcting reconstruction-from-partial
 
 ## Composition
 
-**Focus function = Rodney's-Razor-derived canonical form of pilot-wave-style selection over ontological orthogonal basis vectors with uniqueness (substrate-anchored via B-0842 + Imaginary Stack + Adinkras + Rodney's Razor canonical lineage)**.
+**Focus function = Rodney's-Razor-derived canonical form of pilot-wave-style selection over ontological orthogonal basis vectors with uniqueness (substrate-anchored via 081KSGS9H0008QG0R003V8C86Q + Imaginary Stack + Adinkras + Rodney's Razor canonical lineage)**.
 
 Per `verify-existing-substrate-before-authoring`: substrate already exists; this rule names the composition not the components.
 

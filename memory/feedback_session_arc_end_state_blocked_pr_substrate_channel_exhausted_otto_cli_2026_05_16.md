@@ -17,7 +17,7 @@ Fresh-cold-boot Otto-CLI scheduled-task autonomous-loop session shipped 5 substa
 |---|---|---|
 | [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808) | tick shard (empirical evidence) | CLOSED — substrate captured in #3818 |
 | [PR #3812](https://github.com/Lucent-Financial-Group/Zeta/pull/3812) | rule edit (claim-acquire saturation-ceiling) | OPEN, BLOCKED on human-maintainer review approval |
-| [PR #3817](https://github.com/Lucent-Financial-Group/Zeta/pull/3817) | backlog row B-0558 (worktree-pool primitive) | OPEN, DIRTY (rebase blocked by contention; branch-on-origin is the artifact) |
+| [PR #3817](https://github.com/Lucent-Financial-Group/Zeta/pull/3817) | backlog row 081KRQ1AB0008QG0R001KQ9S4B (worktree-pool primitive) | OPEN, DIRTY (rebase blocked by contention; branch-on-origin is the artifact) |
 | [PR #3818](https://github.com/Lucent-Financial-Group/Zeta/pull/3818) | rule edit (holding-discipline + sub-case 5 + pure-git tier) | MERGED ✓ |
 | [PR #3832](https://github.com/Lucent-Financial-Group/Zeta/pull/3832) | memory file (session arc) + MEMORY.md reindex | MERGED ✓ |
 
@@ -73,5 +73,5 @@ This is NOT a rule violation. The rule's "always works" claim is preserved: SOME
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (counter discipline)
 - `.claude/rules/refresh-world-model-poll-pr-gate.md` (rate-limit tier discipline)
 - `.claude/rules/claim-acquire-before-worktree-work.md` (saturation-ceiling sub-cases)
-- B-0530 (cron-sentinel mutex; sub-case 3 structural fix)
-- B-0558 (worktree-pool primitive; sub-case 4 structural fix)
+- 081KRMEXM0008QG0R000X1PPGC (cron-sentinel mutex; sub-case 3 structural fix)
+- 081KRQ1AB0008QG0R001KQ9S4B (worktree-pool primitive; sub-case 4 structural fix)

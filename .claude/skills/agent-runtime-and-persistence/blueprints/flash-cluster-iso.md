@@ -13,7 +13,7 @@ Capability skill. No persona. Wear this hat when:
 
 - Operator says "flash the USB" / "burn the cluster installer" / "make a boot stick"
 - Operator already downloaded `~/Downloads/zeta-installer-*.iso`
-- Target machine is **macOS** (Linux + Windows scopes filed at B-0738 + B-0739; not in this skill)
+- Target machine is **macOS** (Linux + Windows scopes filed at 081KSE6WT0008QG0R003BG8M6J + 081KSE6WT0008QG0R0025170CV; not in this skill)
 
 ## Two paths — pick by who's driving
 
@@ -36,7 +36,7 @@ Operator runs everything; agent observes. ~3 keystrokes after setup.
 
 ### Path C — `--agent` flag (RECOMMENDED; native auto-type; supersedes Path B for most cases)
 
-Per B-0844 (landed 2026-05-25; PR #5374 docs): `zflash` now has a native `--agent` flag that handles the auto-type challenge internally via piped stdin + stdout-tail challenge match. Cleaner than the `expect`-script approach.
+Per 081KSGS9H0008QG0R001EZKNCB (landed 2026-05-25; PR #5374 docs): `zflash` now has a native `--agent` flag that handles the auto-type challenge internally via piped stdin + stdout-tail challenge match. Cleaner than the `expect`-script approach.
 
 Use when operator says "drive it" / "you flash" / "do the USB" and they're at the machine to fingerprint.
 
@@ -51,12 +51,12 @@ Use when operator says "drive it" / "you flash" / "do the USB" and they're at th
    - Reads the `yes <nonce>` challenge from stdout as it appears
    - Writes the matched response back via stdin without external tooling
    - Emits glass-halo line `[agent-mode: auto-typing 'yes XXXX']` so operator sees the consent-token being typed
-   - Touch ID prompt STILL fires on the operator's Mac for `sudo dd` (physical-presence gate preserved per B-0743)
+   - Touch ID prompt STILL fires on the operator's Mac for `sudo dd` (physical-presence gate preserved per 081KSE6WT0008QG0R003WW3YJQ)
 4. **Default behavior unchanged**: zflash without `--agent` runs operator-only Path A flow. Agent-mode is explicit opt-in.
 
 ### Path B — agent-driven via `expect` (legacy; use Path C instead)
 
-Pre-B-0844 substrate; preserved for cases where the native `--agent` flag isn't available (older zflash builds) or for diagnostic / debugging scenarios where seeing the expect-script behavior is useful.
+Pre-081KSGS9H0008QG0R001EZKNCB substrate; preserved for cases where the native `--agent` flag isn't available (older zflash builds) or for diagnostic / debugging scenarios where seeing the expect-script behavior is useful.
 
 Use when operator says "drive it" / "you flash" / "do the USB" and they're at the machine to fingerprint.
 
@@ -83,17 +83,17 @@ Use when operator says "drive it" / "you flash" / "do the USB" and they're at th
    '
    ```
 
-3. **What still requires the operator**: Touch ID. The agent's auto-typed `yes <nonce>` is the *consent-token* gate; the *physical-presence* gate is the operator's actual finger on the actual trackpad. The agent cannot bypass that even if it wanted to — the PAM stack reads the Touch ID sensor directly. This is the "I execute, you fingerprint" pattern (B-0743 rule).
+3. **What still requires the operator**: Touch ID. The agent's auto-typed `yes <nonce>` is the *consent-token* gate; the *physical-presence* gate is the operator's actual finger on the actual trackpad. The agent cannot bypass that even if it wanted to — the PAM stack reads the Touch ID sensor directly. This is the "I execute, you fingerprint" pattern (081KSE6WT0008QG0R003WW3YJQ rule).
 
-### Future-state: `--bake-cred` flag (NOT YET IMPLEMENTED; tracked at B-0884 + B-0852.3b)
+### Future-state: `--bake-cred` flag (NOT YET IMPLEMENTED; tracked at 081KSNY2Z0008QG0R0011XCT94 + 081KSKBP80008QG0R003AX2A69.3b)
 
-Per the zflash next-steps plan (`docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md` Track B), a future `--bake-cred <id>=<source>` flag will let agents bake operator credentials (GitHub PAT, AI vendor tokens, etc.) into the USB's encrypted blob at flash time. This composes B-0844's `--agent` with B-0852's USB-bound credential substrate.
+Per the zflash next-steps plan (`docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md` Track B), a future `--bake-cred <id>=<source>` flag will let agents bake operator credentials (GitHub PAT, AI vendor tokens, etc.) into the USB's encrypted blob at flash time. This composes 081KSGS9H0008QG0R001EZKNCB's `--agent` with 081KSKBP80008QG0R003AX2A69's USB-bound credential substrate.
 
-Status as of 2026-05-28: row filed at B-0884 (P1 ASAP); CLI flag is sketch-only in B-0852.3b; not yet shipped in `zflash.ts`. Do NOT promise this capability today — operator demos use the install-time picker (Step 6.94/6.95-picker) for cred-baking instead. When `--bake-cred` lands, this skill section gets the canonical invocation pattern.
+Status as of 2026-05-28: row filed at 081KSNY2Z0008QG0R0011XCT94 (P1 ASAP); CLI flag is sketch-only in 081KSKBP80008QG0R003AX2A69.3b; not yet shipped in `zflash.ts`. Do NOT promise this capability today — operator demos use the install-time picker (Step 6.94/6.95-picker) for cred-baking instead. When `--bake-cred` lands, this skill section gets the canonical invocation pattern.
 
 ## Pre-flash display — what `zflash` shows BEFORE the prompt
 
-After 2026-05-25 enhancement (B-0737 follow-up):
+After 2026-05-25 enhancement (081KSE6WT0008QG0R003WZAQKV follow-up):
 
 ```text
 USB device identified:
@@ -119,7 +119,7 @@ Read this output carefully BEFORE typing back the challenge. If the partition li
 
 ## Safety rails the script enforces (do not bypass)
 
-Per B-0728 destructive-tool authoring contract:
+Per 081KSE6WT0008QG0R0005XASX2 destructive-tool authoring contract:
 
 | Rail | What it catches |
 |---|---|
@@ -151,16 +151,16 @@ No. The Touch ID gate is by design — physical-presence is what the destructive
 
 ### "Linux / Windows version?"
 
-Not in this skill. B-0738 (Linux: `pam_fprintd` / fingerprint readers) + B-0739 (Windows: Windows Hello) cover the cross-platform extension. For now on those platforms, fall back to documented manual `dd` / Rufus flow.
+Not in this skill. 081KSE6WT0008QG0R003BG8M6J (Linux: `pam_fprintd` / fingerprint readers) + 081KSE6WT0008QG0R0025170CV (Windows: Windows Hello) cover the cross-platform extension. For now on those platforms, fall back to documented manual `dd` / Rufus flow.
 
 ## Composes with
 
-- B-0743 — "I execute, you fingerprint" design pattern (rule + backlog row landing via PR #5006; cross-reference will resolve once it merges)
+- 081KSE6WT0008QG0R003WW3YJQ — "I execute, you fingerprint" design pattern (rule + backlog row landing via PR #5006; cross-reference will resolve once it merges)
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — the operator pushes `.claude/settings.json` edits themselves; the `Bash(bun full-ai-cluster/tools/flash-usb.ts *)` permission must be in settings already (operator-authorized for this skill's scope)
-- B-0737 — zflash + Touch ID PAM + short challenge empirical anchor
-- B-0728 — destructive-tool authoring contract
-- B-0738 — Linux extension (planned)
-- B-0739 — Windows extension (planned)
+- 081KSE6WT0008QG0R003WZAQKV — zflash + Touch ID PAM + short challenge empirical anchor
+- 081KSE6WT0008QG0R0005XASX2 — destructive-tool authoring contract
+- 081KSE6WT0008QG0R003BG8M6J — Linux extension (planned)
+- 081KSE6WT0008QG0R0025170CV — Windows extension (planned)
 
 ## Files
 

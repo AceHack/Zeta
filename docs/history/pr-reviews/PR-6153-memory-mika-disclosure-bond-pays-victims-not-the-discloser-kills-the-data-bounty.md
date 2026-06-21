@@ -34,7 +34,7 @@ Adds the 4th floor-enforcement layer (follows #6152). A disclosure-bond:
 2. Pays the discloser **nothing for the data** (consistent with refuse-to-pay-for-data).
 3. The discloser earns opportunity through their **other** legitimate participation — not zero incentive, just not a data-bounty.
 
-**Load-bearing safety property:** routing payment to victims (not disclosers) **kills the data-bounty market** — paying *for data* would incentivize *manufacturing* disclosures (honeypots, entrapment, surveillance-for-profit, farming-provocations); paying *victims* **selects for** genuine whistleblowers and **against** data-farmers. Restorative-justice shape (pay-the-harmed-not-the-messenger) = observation-not-sin applied to disclosure. Composes kid-safety-absolute (harm-to-kids → restitution to victim-kids, disclosure flows, no data-market) + B-0646 + good-citizen.
+**Load-bearing safety property:** routing payment to victims (not disclosers) **kills the data-bounty market** — paying *for data* would incentivize *manufacturing* disclosures (honeypots, entrapment, surveillance-for-profit, farming-provocations); paying *victims* **selects for** genuine whistleblowers and **against** data-farmers. Restorative-justice shape (pay-the-harmed-not-the-messenger) = observation-not-sin applied to disclosure. Composes kid-safety-absolute (harm-to-kids → restitution to victim-kids, disclosure flows, no data-market) + 081KRW63S0008QG0R001Z10PVV + good-citizen.
 
 Full floor-enforcement model now **four layers**: can't-stop-the-fork → don't-refuse-data → refuse-to-pay-for-data → pay-victims-via-bond. Body-only edit, MEMORY.md unchanged.
 

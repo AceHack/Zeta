@@ -1,6 +1,5 @@
 ---
-id: B-0062
-zetaid: 081KQ8P5D0008QG0R002XFQ305
+id: 081KQ8P5D0008QG0R002XFQ305
 priority: P0
 status: closed
 closed: 2026-05-08
@@ -394,7 +393,7 @@ comments.
   topology, roadmap, and send-readiness resolutions under the relevant
   punch-list items
 
-0 items remain. B-0062 is closed.
+0 items remain. 081KQ8P5D0008QG0R002XFQ305 is closed.
 
 2026-05-07 red-team correction: PR #1942 briefly marked
 this row closed by trusting a "21/21 addressed" pickup
@@ -406,11 +405,11 @@ deferral with follow-up tracking.
 
 ## Composes with
 
-+ **B-0060** — human-lineage / external-anchor backfill (the
++ **081KQ8P5D0008QG0R000N718AC** — human-lineage / external-anchor backfill (the
   spec mechanisms picked here should cite their external
   prior art per the same rule).
-+ **B-0061** — backlog migration (this row IS in per-row
-  format; B-0061 is the meta-task tracking the rest).
++ **081KQ8P5D0008QG0R001BH93SA** — backlog migration (this row IS in per-row
+  format; 081KQ8P5D0008QG0R001BH93SA is the meta-task tracking the rest).
 + The closed PR #72 review threads survive in the PR's
   history; this row references them by `cid=NNNNNNNNNN` so
   the original reviewer's framing is recoverable.

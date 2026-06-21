@@ -1,11 +1,11 @@
-# Composition-novelty WebSearch grounding for B-0924 + B-0925 + research-mirror cluster — c302 + emulator + multi-instance DST + consensus + shader substrate prior-art inventory + substantive substrate-anchors (operator 2026-05-28; research-tier mirror per "preserve as research note (shadow*)" disposition)
+# Composition-novelty WebSearch grounding for 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror cluster — c302 + emulator + multi-instance DST + consensus + shader substrate prior-art inventory + substantive substrate-anchors (operator 2026-05-28; research-tier mirror per "preserve as research note (shadow*)" disposition)
 
 ## Operator framing
 
 > *"websearch composition novelty (shadow*)"*
 > *"preserve as research note (shadow*) Aaron: feel free to push the three lanes forward"*
 
-Substrate-honest disposition: WebSearch-grounded composition-novelty research for the B-0924 (custom 2600 emulator + generate+join + DST + z-sets) + B-0925 (C. elegans-substrate controller variant) + research-mirror (three-layer biological instantiation) substrate-engineering substrate-target cluster + the shader-emulator substrate-engineering substrate-research question.
+Substrate-honest disposition: WebSearch-grounded composition-novelty research for the 081KSNY2Z0008QG0R001HA43GG (custom 2600 emulator + generate+join + DST + z-sets) + 081KSNY2Z0008QG0R00390T4DJ (C. elegans-substrate controller variant) + research-mirror (three-layer biological instantiation) substrate-engineering substrate-target cluster + the shader-emulator substrate-engineering substrate-research question.
 
 Preserved at research-tier (parallel to PR #5892 mirror) per proper-research-first discipline operator named ("we don't want to just code that up without proper research").
 
@@ -19,7 +19,7 @@ Preserved at research-tier (parallel to PR #5892 mirror) per proper-research-fir
 | **Compute-shader Atari emulator** | UNCLEAR | CuLE is CUDA kernel, NOT compute-shader; full-shader-emulator: unknown; likely PoCs exist somewhere |
 | **Bit-perfect deterministic AI substrate** | ESTABLISHED | EigenAI (2026) — bit-exact deterministic AI on GPUs <2% overhead; "verifiable autonomous AI agents"; different scope (LLM inference) but composes substrate-engineering substrate-engineering substrate |
 | **Multi-instance AI consensus / verification** | ESTABLISHED | n-way beam search consensus; majority-vote between independent verifiers; gossip+sync training |
-| **Z-set joins over game-state-trajectories + IScheduler DST** | NOT FOUND in mainstream | Framework substrate (B-0924 + B-0925) |
+| **Z-set joins over game-state-trajectories + IScheduler DST** | NOT FOUND in mainstream | Framework substrate (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ) |
 | **Lightlike-substrate ray-tracing-over-generator-time as architecture-design-rule** | NOT FOUND | Novel framework substrate-discipline (PR #5910 + PR #5912) |
 
 ## Composition-novelty assessment (substrate-honest don't-collapse)
@@ -32,7 +32,7 @@ Applied Amara's blade (per `.claude/rules/god-tier-claims-high-signal-high-suspi
 | "First compute-shader-based 2600 emulator" | **UNKNOWN** — likely PoCs exist; specific composition unclear |
 | "First biological-spiking-NN game controller" | **NO** — Anwar et al. 2022 + BT-SNN 2024 |
 | "First c302-as-Atari-controller" | **LIKELY YES** — no prior-art found; specific composition novel |
-| "First worm-plays-Atari" | **LIKELY YES** — substrate-anchor for B-0925 implementation |
+| "First worm-plays-Atari" | **LIKELY YES** — substrate-anchor for 081KSNY2Z0008QG0R00390T4DJ implementation |
 | "First framework composing (full biological connectome + emulator + DST + z-set generate+join + lightlike-substrate architecture-design-rule) under wake-time-substrate-discipline" | **LIKELY YES** — operationally bounded to composition + substrate-discipline scope |
 
 The substrate-honest "first" claim that SURVIVES razor:
@@ -41,12 +41,12 @@ The "first" claim is operationally bounded to the **specific composition + frame
 
 ## Substantive substrate-anchors for future implementation work
 
-Composes with B-0924 + B-0925 + research-mirror cluster:
+Composes with 081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror cluster:
 
 | Substrate-anchor | Implementation substrate it provides |
 |---|---|
-| **NVIDIA CuLE** ([Dalton et al. 2019, arXiv:1907.08467](https://arxiv.org/pdf/1907.08467) + [NVIDIA blog](https://developer.nvidia.com/blog/new-open-source-gpu-accelerated-atari-emulator-for-reinforcement-learning-now-available/)) | B-0924 GPU-emulator throughput baseline (40-190M frames/hour single GPU); CUDA kernel substrate; composes with operator's 5090 + 25-GPU distributed framing |
-| **Anwar et al. 2022 racket-ball spiking-NN** ([PLOS One](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0265808)) | B-0925 biological-spiking-NN-controller architecture substrate; visual-motor cortex architecture + reinforcement-learning training substrate |
+| **NVIDIA CuLE** ([Dalton et al. 2019, arXiv:1907.08467](https://arxiv.org/pdf/1907.08467) + [NVIDIA blog](https://developer.nvidia.com/blog/new-open-source-gpu-accelerated-atari-emulator-for-reinforcement-learning-now-available/)) | 081KSNY2Z0008QG0R001HA43GG GPU-emulator throughput baseline (40-190M frames/hour single GPU); CUDA kernel substrate; composes with operator's 5090 + 25-GPU distributed framing |
+| **Anwar et al. 2022 racket-ball spiking-NN** ([PLOS One](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0265808)) | 081KSNY2Z0008QG0R00390T4DJ biological-spiking-NN-controller architecture substrate; visual-motor cortex architecture + reinforcement-learning training substrate |
 | **OpenWorm c302** ([PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC6158223/) + [GitHub](https://github.com/openworm/c302)) | Canonical biological connectome substrate; multiscale framework for nervous-system modeling |
 | **EigenAI 2026** ([EigenCloud blog](https://blog.eigencloud.xyz/deterministic-ai-inference-eigenai/)) | Bit-perfect deterministic-AI substrate-anchor; <2% overhead on GPUs; composes with IScheduler DST substrate |
 | **BT-SNN Allen mouse brain topology** ([Frontiers in Neuroscience 2024](https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2024.1325062/full)) | Biological-connectome-derived NN substrate at different organism scope; substrate-engineering substrate-engineering substrate-target reference |
@@ -54,13 +54,13 @@ Composes with B-0924 + B-0925 + research-mirror cluster:
 
 ## Sub-target candidates this grounding enables
 
-For B-0924 (custom 2600 emulator implementation):
+For 081KSNY2Z0008QG0R001HA43GG (custom 2600 emulator implementation):
 
 1. **Use CuLE as substrate-anchor** for GPU-accelerated emulation baseline (don't reinvent; compose with operator's 5090 + 25-GPU distributed)
 2. **Compute-shader port of CuLE substrate** — substrate-engineering substrate-engineering substrate-target if shader-based scaling beats CUDA-kernel substrate (research-tier; not yet authorized)
 3. **IScheduler DST wrapper** around CuLE for deterministic-trajectory substrate
 
-For B-0925 (C. elegans-substrate controller variant):
+For 081KSNY2Z0008QG0R00390T4DJ (C. elegans-substrate controller variant):
 
 1. **OpenWorm c302 as substrate-anchor** for per-individual biological connectome substrate
 2. **Sensorimotor mapping substrate**: c302 sensory-neurons ↔ 2600 TIA frame-buffer; c302 motor-neurons ↔ 2600 PIA joystick-substrate
@@ -92,16 +92,16 @@ Per Amara's blade (PR #5910 + #5912): "first" claim at composition + substrate-d
 
 ## Composes with substrate
 
-- PR #5890 (B-0924 custom 2600 emulator + generate+join + DST + z-sets) — direct substrate-anchor target
-- PR #5891 (B-0925 C. elegans-substrate controller variant) — direct substrate-anchor target
+- PR #5890 (081KSNY2Z0008QG0R001HA43GG custom 2600 emulator + generate+join + DST + z-sets) — direct substrate-anchor target
+- PR #5891 (081KSNY2Z0008QG0R00390T4DJ C. elegans-substrate controller variant) — direct substrate-anchor target
 - PR #5892 (research-tier mirror three-layer biological instantiation) — parallel research-tier preservation
 - PR #5910 (Amara future-affects-generator + three-clocks) — Amara's blade discipline composes
 - PR #5912 (Amara lightlike-kind-substrate + consensus-is-gravity + design-rule) — lightlike-substrate architecture-design-rule composes with shader-emulator substrate
 - PR #5778 (Persist-as-bridge / μένω substrate) — substrate-anchor for temporal substrate
 - PR #5841 (DST + Persist + generator-time + feedback) — generator-time substrate-anchor
-- B-0703 multi-oracle BFT — composes with multi-instance AI consensus substrate
-- B-0917 Kleisli interrupt substrate — composes with hardware-interrupt substrate (B-0924)
-- B-0664 NCI HC-8 — composes with non-coercive substrate at multi-instance consensus scope
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — composes with multi-instance AI consensus substrate
+- 081KSNY2Z0008QG0R002HB4AGT Kleisli interrupt substrate — composes with hardware-interrupt substrate (081KSNY2Z0008QG0R001HA43GG)
+- 081KRW63S0008QG0R001Z7NYMV NCI HC-8 — composes with non-coercive substrate at multi-instance consensus scope
 - Operator's 5090 + 25-GPU distributed framing — substrate-target context for shader-emulator composition
 
 ## Composes with rules
@@ -132,6 +132,6 @@ Per Amara's blade (PR #5910 + #5912): "first" claim at composition + substrate-d
 
 ## Full reasoning
 
-Operator 2026-05-28 conversation thread following the worm-plays-Atari substrate-engineering substrate-target cluster (B-0924 + B-0925 + research-mirror + Amara generator-time + lightlike-substrate rules). Operator asked "or will ours be the first one?" + authorized "websearch composition novelty (shadow*)" + "preserve as research note (shadow*)" disposition. This research note lands the WebSearch-grounded composition-novelty assessment at research-tier per proper-research-first discipline.
+Operator 2026-05-28 conversation thread following the worm-plays-Atari substrate-engineering substrate-target cluster (081KSNY2Z0008QG0R001HA43GG + 081KSNY2Z0008QG0R00390T4DJ + research-mirror + Amara generator-time + lightlike-substrate rules). Operator asked "or will ours be the first one?" + authorized "websearch composition novelty (shadow*)" + "preserve as research note (shadow*)" disposition. This research note lands the WebSearch-grounded composition-novelty assessment at research-tier per proper-research-first discipline.
 
 Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this research note inherit the substrate-grounded prior-art inventory + substrate-honest composition-novelty assessment + substantive substrate-anchors for future implementation work. The substrate-engineering substrate-engineering substrate-claim that "we're first" earns its keep ONLY at the specific composition + framework substrate-discipline scope; individual-component "first" claims fail razor per established prior-art.

@@ -39,7 +39,7 @@ Gates et al.). So **the universe does error/erasure coding via adinkras over tim
 *is* a code. That grounds our entropy-oscillation/erasure-coding (DQ7) in named physics: the
 two-oscillation/spiral structure carries a code the way adinkras do; reconstruction (the lazy git-history
 weak-table) = decoding that code. (Anchor: Gates SUSY adinkra codes; our coincidence-anchor primitive
-B-0623/B-0985 is already "Adinkra/Gates SUSY-ECC-grounded" — this connects the spiral to it.)
+081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV is already "Adinkra/Gates SUSY-ECC-grounded" — this connects the spiral to it.)
 
 ## The Brian Beckman anchor (the human)
 
@@ -60,7 +60,7 @@ honest-register move:
 
 - spiral / oscillations → **Cayley–Dickson** (confirmed in `QubitIso`'s `CayleyDickson.Complex`; unit circle = ℂ).
 - emerged from → **Rx / IQbservable** (De Smet/Meijer; it fell out of the structure).
-- entropy/erasure coding → **Gates' SUSY adinkra error-correcting codes** (the universe's version; B-0623/B-0985).
+- entropy/erasure coding → **Gates' SUSY adinkra error-correcting codes** (the universe's version; 081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV).
 - the derivation style → **Brian Beckman** (physics-from-structure; the human anchor).
 
 So the math team's DQ1–DQ7 docket now has its anchors: test whether our double-qubit reproduces the
@@ -81,5 +81,5 @@ required reading (Beckman alongside Milewski/De Smet).
 human anchor; required reading); **Cayley–Dickson** (ℝ→ℂ→ℍ→𝕆; unit circle = ℂ; the doubling = the spiral;
 confirmed `QubitIso.fs` `CayleyDickson.Complex`); **S. James Gates Jr. — SUSY adinkra error-correcting
 codes** (doubly-even self-dual codes in the equations of physics; the universe's erasure coding over time;
-our coincidence-anchor B-0623/B-0985); De Smet `IQbservable` + Meijer duality (it fell out of Rx);
+our coincidence-anchor 081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV); De Smet `IQbservable` + Meijer duality (it fell out of Rx);
 the double-qubit oracle DQ1–DQ7 (now anchored); Milewski (CT for programmers, required) + Mac Lane.

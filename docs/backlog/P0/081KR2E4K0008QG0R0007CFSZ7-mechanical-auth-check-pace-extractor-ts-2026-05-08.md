@@ -1,6 +1,5 @@
 ---
-id: B-0306
-zetaid: 081KR2E4K0008QG0R0007CFSZ7
+id: 081KR2E4K0008QG0R0007CFSZ7
 priority: P0
 status: closed
 closed: 2026-05-08
@@ -18,7 +17,7 @@ type: friction-reducer
 tags: [tool-build, mechanical-check, authorization-source, typescript]
 ---
 
-# B-0306 — Pace-instruction extractor + test fixtures
+# 081KR2E4K0008QG0R0007CFSZ7 — Pace-instruction extractor + test fixtures
 
 ## What
 
@@ -28,7 +27,7 @@ substrate surfaces (CLAUDE.md, `memory/feedback_*.md` files,
 `CURRENT-aaron.md`, `docs/active-trajectory.md`) and returns a
 typed list of raw pace-instruction candidate records with source
 attribution, timestamp, and raw text. The extractor does NOT
-determine rescind status — that is the resolver's job (B-0307).
+determine rescind status — that is the resolver's job (081KR2E4K0008QG0R003CF4YHE).
 
 Lands at `tools/authorization/pace-extractor.ts` with paired
 test at `tools/authorization/pace-extractor.test.ts`.
@@ -46,8 +45,8 @@ test at `tools/authorization/pace-extractor.test.ts`.
    - No pace instruction in substrate → empty array
    - Instruction containing explicit rescind language → extracted
      with raw text preserved (rescind-detection is resolver's
-     responsibility in B-0307)
-2. **Implementation** reads from (all surfaces listed in B-0160):
+     responsibility in 081KR2E4K0008QG0R003CF4YHE)
+2. **Implementation** reads from (all surfaces listed in 081KQJZR90008QG0R000FTJ1TC):
    - `CLAUDE.md` pace bullets (grep for pace-relevant patterns)
    - `memory/feedback_*.md` files (parse frontmatter + body for
      pace-instructions)
@@ -57,7 +56,7 @@ test at `tools/authorization/pace-extractor.test.ts`.
    `{ source: string; timestamp: string | null; raw: string;
      file: string }`.
    Note: no `rescinded` field — rescind-detection is a resolver
-   concern (B-0307), not an extraction concern. The extractor
+   concern (081KR2E4K0008QG0R003CF4YHE), not an extraction concern. The extractor
    returns ALL candidates; the resolver determines which are
    operative.
 4. Pure function on file content (no side effects) — accepts a
@@ -72,16 +71,16 @@ Completed 2026-05-08.
   across repo — 7 hits, all in backlog/skill/research docs, no
   existing TS implementation. `tools/authorization/` directory
   does not exist. Skill router has `mechanical-authorization-check`
-  skill (B-0305, landed PR #2082) — defines contract only, no
+  skill (081KR2E4K0008QG0R00361ZCDR, landed PR #2082) — defines contract only, no
   implementation. No other extraction substrate found.
-- [x] Dependency walk: B-0160 parent verified as `decomposed`
-  with `children: [B-0305, B-0306, B-0307, B-0308, B-0309]`.
-  B-0306 has `depends_on: []` — no blockers.
-- [x] Reciprocal pointers: B-0307 has `depends_on: [B-0305, B-0306]`
+- [x] Dependency walk: 081KQJZR90008QG0R000FTJ1TC parent verified as `decomposed`
+  with `children: [081KR2E4K0008QG0R00361ZCDR, 081KR2E4K0008QG0R0007CFSZ7, 081KR2E4K0008QG0R003CF4YHE, 081KR2E4K0008QG0R002S3FDXN, 081KR2E4K0008QG0R0024JZ0CR]`.
+  081KR2E4K0008QG0R0007CFSZ7 has `depends_on: []` — no blockers.
+- [x] Reciprocal pointers: 081KR2E4K0008QG0R003CF4YHE has `depends_on: [081KR2E4K0008QG0R00361ZCDR, 081KR2E4K0008QG0R0007CFSZ7]`
   — confirmed includes this row.
 
 ## Composes with
 
-- B-0160 (parent umbrella)
-- B-0305 (skill body defines the contract this tool implements)
-- B-0307 (resolver consumes this extractor's output)
+- 081KQJZR90008QG0R000FTJ1TC (parent umbrella)
+- 081KR2E4K0008QG0R00361ZCDR (skill body defines the contract this tool implements)
+- 081KR2E4K0008QG0R003CF4YHE (resolver consumes this extractor's output)

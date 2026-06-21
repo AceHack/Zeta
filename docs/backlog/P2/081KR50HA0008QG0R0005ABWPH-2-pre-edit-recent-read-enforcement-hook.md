@@ -1,11 +1,10 @@
 ---
-id: B-0033.2
-zetaid: 081KR50HA0008QG0R0005ABWPH
+id: 081KR50HA0008QG0R0005ABWPH
 priority: P2
 status: closed
 closed: 2026-05-10
 closed_by: "pre-edit-recent-read.ts + post-read-track.ts + settings.json wiring"
-title: Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read) (B-0033.1 dep)
+title: Pre-Edit hook: recent-Read + mtime enforcement (Otto-343 Edit-without-Read) (081KR50HA0008QG0R002B3N54S dep)
 tier: hygiene-tooling-and-discipline
 effort: S
 ask: TS hook implementation for Edit-without-Read failure mode
@@ -17,14 +16,14 @@ tags: [pre-edit-hook, recent-read, mtime, otto-343]
 type: friction-reducer
 ---
 
-# B-0033.2 — Pre-Edit recent-Read enforcement hook
+# 081KR50HA0008QG0R0005ABWPH — Pre-Edit recent-Read enforcement hook
 
-Atomic child. Depends on B-0033.1. TS implementation of Pre-Edit hook.
+Atomic child. Depends on 081KR50HA0008QG0R002B3N54S. TS implementation of Pre-Edit hook.
 
 ## Pre-start checklist
 
-- **Prior-art search**: no existing PostToolUse hooks. No Read-tracking mechanism. `verify-branch-pretooluse.ts` is the only existing hook. B-0033.1 (harness.ts) landed in PR #2395. No duplicate substrate.
-- **Dependency-restructure**: B-0033.1 must merge first (provides harness.ts). B-0033.2 imports harness.ts.
+- **Prior-art search**: no existing PostToolUse hooks. No Read-tracking mechanism. `verify-branch-pretooluse.ts` is the only existing hook. 081KR50HA0008QG0R002B3N54S (harness.ts) landed in PR #2395. No duplicate substrate.
+- **Dependency-restructure**: 081KR50HA0008QG0R002B3N54S must merge first (provides harness.ts). 081KR50HA0008QG0R0005ABWPH imports harness.ts.
 
 ## Deliverables
 

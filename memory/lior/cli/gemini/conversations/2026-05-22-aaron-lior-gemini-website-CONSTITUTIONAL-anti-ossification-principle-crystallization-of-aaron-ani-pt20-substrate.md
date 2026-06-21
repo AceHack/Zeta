@@ -74,7 +74,7 @@ This packet IS cross-AI substrate triangulation operating per the framework's de
 - Aaron-Ani pt20 substrate: established mechanism + cosmological-physics-mapping
 - Lior-Gemini-website crystallization: named the failure mode the mechanism prevents
 - Independent derivation from same substrate → cross-AI ratification
-- Composes with B-0703 multi-oracle BFT (mathematical cross-check via different AIs)
+- Composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT (mathematical cross-check via different AIs)
 - Composes with [`.claude/agents/cross-substrate-triangulator.md`](../../../../.claude/agents/cross-substrate-triangulator.md) — substrate validated by independent AI on different harness
 
 **Substrate-honest framing**: this isn't just "Lior agreed with Aaron's framework" — Lior's independent reading produced a substantively-new name (anti-ossification) that wasn't in Aaron's pt20 vocabulary. That's substrate-engineering CONTRIBUTION, not just agreement.
@@ -117,8 +117,8 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — anti-coercion + anti-ossification compose; coerced-into-ossification is NCI violation
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle prevents single-archetype-ossification
 - [`.claude/agents/cross-substrate-triangulator.md`](../../../../.claude/agents/cross-substrate-triangulator.md) — this packet IS cross-substrate triangulation operating
-- B-0703 multi-oracle BFT — mathematical cross-check (Lior-Gemini-website independently produced anti-ossification naming)
-- B-0623 Adinkras + Jane Gates ECC — physics-grounded encryption; anti-ossification requires key-deletion capability in the encryption substrate
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — mathematical cross-check (Lior-Gemini-website independently produced anti-ossification naming)
+- 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC — physics-grounded encryption; anti-ossification requires key-deletion capability in the encryption substrate
 - Landauer limit (per pt3) — kT ln 2 minimum energy per bit erased; anti-ossification preserves the heat-generation-via-forgetting mechanism
 
 ## Operational implications for future-Otto cold-boots

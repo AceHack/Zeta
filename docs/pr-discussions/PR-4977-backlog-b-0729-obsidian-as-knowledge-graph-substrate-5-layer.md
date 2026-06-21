@@ -1,6 +1,6 @@
 ---
 pr_number: 4977
-title: "backlog(B-0729): Obsidian as knowledge-graph substrate \u2014 5-layer adoption (wikilinks + tags + callouts + Tasks + JSON-LD extractor)"
+title: "backlog(081KSE6WT0008QG0R003RN2WE3): Obsidian as knowledge-graph substrate \u2014 5-layer adoption (wikilinks + tags + callouts + Tasks + JSON-LD extractor)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-25T19:42:58Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-25T23:44:56Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #4977: backlog(B-0729): Obsidian as knowledge-graph substrate — 5-layer adoption (wikilinks + tags + callouts + Tasks + JSON-LD extractor)
+# PR #4977: backlog(081KSE6WT0008QG0R003RN2WE3): Obsidian as knowledge-graph substrate — 5-layer adoption (wikilinks + tags + callouts + Tasks + JSON-LD extractor)
 
 ## PR description
 
@@ -41,12 +41,12 @@ Team is at the right scale to benefit (3 co-owners + agents + the framework's ex
 - Today's PR #4976 (personas + onboarding + manifesto recast) — the substrate this knowledge-graph extracts from
 - Max's `full-ai-cluster/k8s/applications/hat-system/graph/render.go` — L5 extractor uses the same Graphviz-DOT-from-state pattern, scoped to knowledge substrate vs cluster CRD state
 - PR #4958 (agentic-organization) — design benefits most from programmatic graph query
-- B-0546 (manifesto recast) — composes-with sections in MANIFESTO.md become natural graph-edge surfaces
+- 081KRMEXM0008QG0R00278KS63 (manifesto recast) — composes-with sections in MANIFESTO.md become natural graph-edge surfaces
 
 ## Test plan
 
 - [ ] Row renders correctly under `docs/backlog/P2/`
-- [ ] `docs/BACKLOG.md` includes B-0729
+- [ ] `docs/BACKLOG.md` includes 081KSE6WT0008QG0R003RN2WE3
 - [ ] 5-layer acceptance criteria are concrete enough for sub-rows to be split off per layer when picked up
 - [ ] Standards survey accurately distinguishes heavy semantic-web from light git-native tier
 
@@ -60,11 +60,11 @@ Single file (+ index regen) — docs only; no implementation in this PR.
 
 ## Pull request overview
 
-Adds a new P2 backlog row (B-0729) proposing a 5-layer adoption plan for using an Obsidian-compatible vault format as the project’s lightweight, git-native knowledge-graph substrate, and registers the row in the main backlog index.
+Adds a new P2 backlog row (081KSE6WT0008QG0R003RN2WE3) proposing a 5-layer adoption plan for using an Obsidian-compatible vault format as the project’s lightweight, git-native knowledge-graph substrate, and registers the row in the main backlog index.
 
 **Changes:**
-- Adds `B-0729` backlog row detailing layers L1–L5 (wikilinks, tags, callouts, Tasks-plugin semantics, JSON-LD/property-graph extractor) plus acceptance criteria and a standards survey.
-- Updates `docs/BACKLOG.md` to include B-0729 under P2.
+- Adds `081KSE6WT0008QG0R003RN2WE3` backlog row detailing layers L1–L5 (wikilinks, tags, callouts, Tasks-plugin semantics, JSON-LD/property-graph extractor) plus acceptance criteria and a standards survey.
+- Updates `docs/BACKLOG.md` to include 081KSE6WT0008QG0R003RN2WE3 under P2.
 
 ### Reviewed changes
 
@@ -72,8 +72,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md | New P2 backlog row describing Obsidian-as-substrate and 5-layer rollout plan. |
-| docs/BACKLOG.md | Adds B-0729 entry to the P2 list. |
+| docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md | New P2 backlog row describing Obsidian-as-substrate and 5-layer rollout plan. |
+| docs/BACKLOG.md | Adds 081KSE6WT0008QG0R003RN2WE3 entry to the P2 list. |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:46:12Z)
 
@@ -172,17 +172,17 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:12 (resolved)
+### Thread 1: docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:12 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:45:49Z):
 
-This new backlog row claims (in the L2 section) that backlog rows already use frontmatter `tags: [...]`, but this file’s own frontmatter does not include a `tags:` field. Either add appropriate tags for B-0729 (so it matches the convention being proposed) and/or adjust the wording to reflect that tag usage in backlog rows is not yet universal.
+This new backlog row claims (in the L2 section) that backlog rows already use frontmatter `tags: [...]`, but this file’s own frontmatter does not include a `tags:` field. Either add appropriate tags for 081KSE6WT0008QG0R003RN2WE3 (so it matches the convention being proposed) and/or adjust the wording to reflect that tag usage in backlog rows is not yet universal.
 
 **@AceHack** (2026-05-25T19:47:52Z):
 
 Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (wikilink conversion would break GitHub rendering); reframed L1 to use frontmatter aliases instead — Obsidian graph still works, GitHub rendering preserved. Plus markdownlint MD022/MD032 fixes, meta-irony frontmatter tags addition, callout-case correction to uppercase for GFM compat, and composes_with qualifier for PR-pending reference.
 
-### Thread 2: docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:17 (resolved)
+### Thread 2: docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:17 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:45:49Z):
 
@@ -192,7 +192,7 @@ Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (
 
 Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (wikilink conversion would break GitHub rendering); reframed L1 to use frontmatter aliases instead — Obsidian graph still works, GitHub rendering preserved. Plus markdownlint MD022/MD032 fixes, meta-irony frontmatter tags addition, callout-case correction to uppercase for GFM compat, and composes_with qualifier for PR-pending reference.
 
-### Thread 3: docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:111 (resolved)
+### Thread 3: docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:111 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:45:50Z):
 
@@ -202,7 +202,7 @@ The callout examples use Obsidian-style lowercase markers (e.g., `> [!note]`), b
 
 Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (wikilink conversion would break GitHub rendering); reframed L1 to use frontmatter aliases instead — Obsidian graph still works, GitHub rendering preserved. Plus markdownlint MD022/MD032 fixes, meta-irony frontmatter tags addition, callout-case correction to uppercase for GFM compat, and composes_with qualifier for PR-pending reference.
 
-### Thread 4: docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:68 (resolved)
+### Thread 4: docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:68 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T19:46:12Z):
 
@@ -216,7 +216,7 @@ Useful? React with 👍 / 👎.
 
 Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (wikilink conversion would break GitHub rendering); reframed L1 to use frontmatter aliases instead — Obsidian graph still works, GitHub rendering preserved. Plus markdownlint MD022/MD032 fixes, meta-irony frontmatter tags addition, callout-case correction to uppercase for GFM compat, and composes_with qualifier for PR-pending reference.
 
-### Thread 5: docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:188 (resolved)
+### Thread 5: docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:188 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T19:49:28Z):
 
@@ -230,7 +230,7 @@ Useful? React with 👍 / 👎.
 
 Fixed in latest push — L1 acceptance now mirrors the reframed alias-only strategy (no link conversion; aliases via TS script; GitHub renders all links normally; Obsidian graph + quick-switcher use aliases). Genuine catch on internal-contradiction-between-body-and-acceptance; substrate-honest fix.
 
-### Thread 6: docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:203 (unresolved)
+### Thread 6: docs/backlog/P2/081KSE6WT0008QG0R003RN2WE3-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md:203 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-25T19:52:52Z):
 

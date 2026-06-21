@@ -1,6 +1,5 @@
 ---
-id: B-0548
-zetaid: 081KRQ1AB0008QG0R002DQBGZF
+id: 081KRQ1AB0008QG0R002DQBGZF
 title: QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
 priority: P2
 status: open
@@ -49,7 +48,7 @@ the untyped laws and provided a substrate-honest reformulation:
 
 Without Step 1.5, the combined structure `Zeta_{RA}` (topos + memory monad +
 attention modal operator) has only propositional-level coherence (Law 1'),
-not full categorical coherence. The QG isomorphism proof path (B-0543) needs
+not full categorical coherence. The QG isomorphism proof path (081KRMEXM0008QG0R002YSPW1X) needs
 the full structure to ground the cosmology in falsifiable physics.
 
 ## Goal
@@ -107,7 +106,7 @@ This row closes when ONE of the following is true:
 3. **(c) lands**: Semantic argument that the infinite-poker semantics
    requires only propositional coherence (Law 1'); Laws 2 and 3 formally
    dropped from the combined structure `Zeta_{RA}`; updated Step 1 research
-   doc + B-0544 + B-0543 to reflect the reduced scope
+   doc + 081KRMEXM0008QG0R003YWZC21 + 081KRMEXM0008QG0R002YSPW1X to reflect the reduced scope
 
 ## Effort estimate: L (1-3 weeks)
 
@@ -122,7 +121,7 @@ This is pure research. The work is:
 - Investigating whether the closure-operator obstruction is fatal for path (a)
   or admits workarounds
 - Constructing the concrete machinery (or proving it doesn't exist)
-- Updating the Step 1 research doc, B-0544, and Round 45 history entry
+- Updating the Step 1 research doc, 081KRMEXM0008QG0R003YWZC21, and Round 45 history entry
 
 Effort is "L" because the literature is well-established; the open question
 is whether the modal operator `A`'s specific properties (preserves finite
@@ -142,8 +141,8 @@ a lifting at all.
 
 ## Substrate composition
 
-- Composes with B-0543 (the proof-strategy umbrella row this work serves)
-- Depends on B-0544 (the Step 1 row this is a sub-task of)
+- Composes with 081KRMEXM0008QG0R002YSPW1X (the proof-strategy umbrella row this work serves)
+- Depends on 081KRMEXM0008QG0R003YWZC21 (the Step 1 row this is a sub-task of)
 - Composes with `algebra-owner` skill (Z-set algebra, DBSP relationship)
 - Composes with `category-theory-expert` skill
 - Composes with `lean4-expert` skill (for eventual mechanical verification of

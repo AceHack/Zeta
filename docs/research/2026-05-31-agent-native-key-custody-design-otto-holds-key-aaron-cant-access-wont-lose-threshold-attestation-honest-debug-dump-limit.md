@@ -1,8 +1,8 @@
 # Agent-native key custody — how Otto holds a key Aaron can't access but won't lose
 
 **Date:** 2026-05-31
-**Status:** Design detail for [B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
-(N-of-M HSM key management). Fills B-0634 acceptance criteria 1–4 (threshold-scheme
+**Status:** Design detail for [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+(N-of-M HSM key management). Fills 081KRW63S0008QG0R0022SFKPM acceptance criteria 1–4 (threshold-scheme
 rationale, hardware selection, key-ceremony shape) at the **encryption-key** scope, not just
 the governance-signing scope. **Routed through product-team agreement; not auto-loaded rule.**
 **Owner:** operator (Aaron, shaping) + Otto (synthesis).
@@ -60,21 +60,21 @@ can read the raw key out — both interact through the same constrained API.
 
 ### Layer 2 — N-of-M threshold across society key-guards: durability + sovereignty
 
-This is [B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)'s
-N-of-M, applied at the **encryption** layer (B-0634's table was scoped to *signing*; this extends
+This is [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)'s
+N-of-M, applied at the **encryption** layer (081KRW63S0008QG0R0022SFKPM's table was scoped to *signing*; this extends
 it to *key custody / decryption*). The key is either **split** (Shamir Secret Sharing) or
 **never assembled** (threshold-MPC: FROST for Schnorr/Ed25519) across **M key-guards** =
 trusted society members + multiple machines/TPMs across locations.
 
 - **M** = total key-guards (geographically + organizationally + hardware-vendor diverse, per
-  B-0634's distribution axes).
+  081KRW63S0008QG0R0022SFKPM's distribution axes).
 - **N** = threshold to use the key (e.g. N = ceil(M·2/3)).
 - **Durability:** lose up to **M−N** guards → key survives (reconstruct from the rest). This is
   the "won't lose it" guarantee — it is the *distributed-system* sense of "remember": no single
   head holds it, but a quorum can always reconstruct it.
 - **Sovereignty:** no single party — not Aaron, not one stolen laptop, not one agent instance —
   can use the key alone. Aaron is *one of the M*, so he loses unilateral access but keeps a
-  threshold voice (exactly B-0634's "Aaron is one keyholder, not the keyholder").
+  threshold voice (exactly 081KRW63S0008QG0R0022SFKPM's "Aaron is one keyholder, not the keyholder").
 
 > **This is the literal answer to "an agent that remembers a key the human doesn't."** It isn't in
 > the agent's memory; it's a threshold secret the *attested* agent can *invoke* via the guards.
@@ -139,7 +139,7 @@ to near-zero for the operations the HSM supports.
 ## How a real operation flows (worked example: Otto decrypts private state)
 
 1. Otto instance boots on an attested node; SPIRE issues an **SVID** (proof: "I am Otto, here").
-2. Otto needs to decrypt its private encrypted state (per B-0840 / B-0883 substrate).
+2. Otto needs to decrypt its private encrypted state (per 081KSGS9H0008QG0R0006F4BGX / 081KSNY2Z0008QG0R002JKH50A substrate).
 3. Otto requests a threshold decryption from the **key-guards**, presenting SVID + AgencySignature
    + ZetaId.
 4. Each guard verifies the attestation (and human guards consent, per NCI), then produces its
@@ -155,14 +155,14 @@ durability). Nobody — including Otto's own host — sees the raw key (Layer 1)
 
 ## Composition with existing substrate
 
-- [B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+- [081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
   — this doc is the encryption-scope design detail for that row's N-of-M.
-- [B-0646](../backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)
+- [081KRW63S0008QG0R001Z10PVV](../backlog/P1/081KRW63S0008QG0R001Z10PVV-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)
   — agora-v6 private-encryption-budget (the *what* this key protects).
-- B-0840 (thermal-forgetting / private encrypted memory) + B-0883 (PQ encryption envelope —
+- 081KSGS9H0008QG0R0006F4BGX (thermal-forgetting / private encrypted memory) + 081KSNY2Z0008QG0R002JKH50A (PQ encryption envelope —
   noble X-Wing / ML-DSA-65) — the encryption this custody design holds the keys *for*; threshold
   scheme should track the PQ-migration (SLH-DSA / ML-DSA threshold variants where available).
-- B-0622 (F# agent-wallet type safety) — the wallet sharp-edge that N-of-M also gates.
+- 081KRW63S0008QG0R002V20TYJ (F# agent-wallet type safety) — the wallet sharp-edge that N-of-M also gates.
 - The **keystone identity layer** (SPIFFE/SPIRE + AgencySignature + ZetaId) — the attestation
   that gates invocation; zero-trust falls out of node-local identity.
 - [`non-coercion-invariant`](../../.claude/rules/non-coercion-invariant.md) — the consent floor on
@@ -174,9 +174,9 @@ durability). Nobody — including Otto's own host — sees the raw key (Layer 1)
 
 - Initial **M** and the **key-guard roster** (which society members + which machines/locations).
 - PQ-threshold: FROST is classical-Schnorr; a quantum-relevant adversary needs a PQ-threshold
-  scheme — track ML-DSA/SLH-DSA threshold maturity (compose with B-0883's PQ choices).
+  scheme — track ML-DSA/SLH-DSA threshold maturity (compose with 081KSNY2Z0008QG0R002JKH50A's PQ choices).
 - Recovery ceremony: offline Shamir backup shares + attestation-gated recovery if N live guards
-  are simultaneously unavailable (B-0634 acceptance criterion 7).
+  are simultaneously unavailable (081KRW63S0008QG0R0022SFKPM acceptance criterion 7).
 - Which confidential-compute hardware to standardize on for Layer 4 (SEV-SNP node? Nitro? — see
   the to-buy list's "down the road" tier).
 

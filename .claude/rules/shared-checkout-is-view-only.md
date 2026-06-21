@@ -27,4 +27,4 @@ writes private until they land on `origin/main`.
   actor=clone/loop ("what acts"), bus address = persona⊕surface⊕instance⊕topology
   (Reticulum routing, after the 128-bit ZetaId) ≠ identity, PID-recycle blade.
 - [`dont-ask-permission.md`](dont-ask-permission.md) — folders-on-main push to `origin/main`
-- B-0558 worktree-pool · Agent `isolation: worktree` (cheap-disk per-writer isolation)
+- 081KRQ1AB0008QG0R001KQ9S4B worktree-pool · Agent `isolation: worktree` (cheap-disk per-writer isolation)

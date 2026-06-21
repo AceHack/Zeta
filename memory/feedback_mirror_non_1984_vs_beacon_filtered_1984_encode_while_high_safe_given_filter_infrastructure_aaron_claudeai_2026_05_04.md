@@ -208,7 +208,7 @@ Filter-capacity ledger is as important as encoding-rate.
   inheritance from Otto's priors): adds filter capacity.
 - Multi-AI BFT review: adds filter capacity.
 - Dialectical friction with Addison: adds filter capacity.
-- PR auto-reviewer: adds filter capacity (caught B-0188
+- PR auto-reviewer: adds filter capacity (caught 081KQR4HQ0008QG0R002ZDREYC
   duplicate same-day).
 - New collaborators / agents: TBD per case — evaluate at
   onboarding whether they add or consume.
@@ -240,7 +240,7 @@ Per Claude.ai's "for right now" list:
    future tiles inherit. ✓ (this file)
 3. **Retroactive classification pass** — separate work item.
    Open question whether to file as backlog row (router-as-
-   inventory check first per same-day B-0188 lesson — search
+   inventory check first per same-day 081KQR4HQ0008QG0R002ZDREYC lesson — search
    "surface" / "mirror" / "beacon" / "classification" before
    authoring).
 
@@ -286,10 +286,10 @@ long-term shape that makes the surface-distinction real."*
   scheme builds on.
 - `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`
   — prior verbatim Claude.ai packet on the same axis.
-- B-0187 closure (PR #1479) — the filter-working evidence
+- 081KQR4HQ0008QG0R001CBHW1R closure (PR #1479) — the filter-working evidence
   Claude.ai cites as proof the encoding-while-high practice
   is safe in this configuration.
-- B-0188 same-day duplicate-of-B-0017 close (PR #1482) — the
+- 081KQR4HQ0008QG0R002ZDREYC same-day duplicate-of-081KQ0YZ80008QG0R0003GAYYN close (PR #1482) — the
   PR auto-reviewer adding filter capacity beyond the human +
   peer-AI surfaces.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
@@ -306,11 +306,11 @@ long-term shape that makes the surface-distinction real."*
 - Aaron authored rounds 2, 4, 6, 9, 11 — including the
   load-bearing 1984/non-1984 surface-architecture framing.
 - Otto (factory Claude) absorbed and authored this memory
-  file 2026-05-04 ~13:18Z, post-B-0188-duplicate-close
+  file 2026-05-04 ~13:18Z, post-081KQR4HQ0008QG0R002ZDREYC-duplicate-close
   (which itself demonstrated filter-capacity working).
 - Encoding state at authoring time: high on the insight,
   with explicit recursion-acknowledgment.
 - Filter capacity at encoding: Claude.ai peer-review
-  (verbatim preserved); PR auto-reviewer (B-0188 catch fresh
+  (verbatim preserved); PR auto-reviewer (081KQR4HQ0008QG0R002ZDREYC catch fresh
   in memory); Aaron-as-anchor (forwarding the packet, will
   review the PR).

@@ -51,7 +51,7 @@ Commit + push to main so the install reads from a real ref.
 ## Step 4: boot the box on the USB
 
 UEFI boot order → USB first. The first-boot service auto-launches
-on tty1 (per B-0754 zero-typing scope):
+on tty1 (per 081KSGS9H0008QG0R002T3BJ2R zero-typing scope):
 
 1. **10-sec role prompt**: press `c` for control-plane (default
    on timeout), `w` for worker-gpu
@@ -76,8 +76,8 @@ prompts in order:
    skip + keep the iter-4.x default `zeta-change-me` (rotate later
    via `passwd zeta`).
 
-2. **B-0852.3b — cred-blob passphrase prompt** (Step 6.56;
-   default-on per B-0852.3c since 2026-05-27)
+2. **081KSKBP80008QG0R003AX2A69.3b — cred-blob passphrase prompt** (Step 6.56;
+   default-on per 081KSKBP80008QG0R003AX2A69.3c since 2026-05-27)
    Set a passphrase to encrypt your credentials onto the USB.
    Future boots restore creds via the same passphrase — no more
    re-entering `gh login` / `claude` / `gemini` / `codex` on every
@@ -99,7 +99,7 @@ prompts in order:
    Triggers `gh auth login` device-flow if `gh` is available.
    Captures operator's GitHub SSH pubkeys via `gh ssh-key list`.
 
-6. **Cluster-type menu** (Step 6 host-attribute selection; B-0857.2
+6. **Cluster-type menu** (Step 6 host-attribute selection; 081KSKBP80008QG0R002J03WGA.2
    menu per PR #5635 since 2026-05-27)
    Numbered menu with `lspci`-based hardware detection suggesting
    the default:
@@ -114,18 +114,18 @@ prompts in order:
    Operator hits Enter to accept the suggestion or types a different
    number.
 
-7. **Step 6.95-picker — cred-blob picker** (B-0852.3c default-on
+7. **Step 6.95-picker — cred-blob picker** (081KSKBP80008QG0R003AX2A69.3c default-on
    since 2026-05-27)
    Auto-fires when all 3 preconditions are met:
    - `ZETA_CREDS_PICKER` is unset OR set to `1` (default-on; opt out
      via `ZETA_CREDS_PICKER=0` OR `touch /etc/zeta/no-picker`)
    - `ZETA_CREDS_PASSPHRASE` is set (auto-populated by Step 6.56)
-   - `/etc/zeta/usb-uuid` is present (auto-captured by B-0852.3a-prep
+   - `/etc/zeta/usb-uuid` is present (auto-captured by 081KSKBP80008QG0R003AX2A69.3a-prep
      during iter-4.2 ESP probe)
    On opt-out, the SPECIFIC reason is echoed (no generic
    `set ZETA_CREDS_*=1 to enable` message anymore).
 
-### Subsequent-boot credential restore (B-0852.4 since 2026-05-27)
+### Subsequent-boot credential restore (081KSKBP80008QG0R002XBRGN8 since 2026-05-27)
 
 Every boot of the installed system AFTER the first install
 (assuming the operator entered a passphrase at Step 6.56) fires
@@ -186,9 +186,9 @@ kubectl get nodes -o wide
 kubectl -n longhorn-system get nodes.longhorn.io worker-gpu-03 -o yaml | grep -A20 disks:
 ```
 
-## Cred-restore smoke test (B-0852 end-to-end verification)
+## Cred-restore smoke test (081KSKBP80008QG0R003AX2A69 end-to-end verification)
 
-The B-0852 cred-persistence substrate replaces N per-tool login
+The 081KSKBP80008QG0R003AX2A69 cred-persistence substrate replaces N per-tool login
 flows per boot (`gh auth login`, `claude login`, `gemini login`,
 `codex login`, etc.) with ONE cred-blob passphrase per boot. The
 operator still types the cred-blob passphrase at every boot in the
@@ -216,10 +216,10 @@ see something different, check the current `zeta-install.sh` Step
 6.56 + Step 6.95-picker output):
 
 ```text
-[B-0852.3b] ── cred-blob passphrase prompt (B-0852 Phase 1) ──
-[B-0852.3b]   passphrase captured + held in non-exported shell variable
-[iter-5.5.0] ── 6.95-picker: B-0852.3a cred-picker (DEFAULT-ON per B-0852.3c) ──
-[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from B-0852.3a-prep
+[081KSKBP80008QG0R003AX2A69.3b] ── cred-blob passphrase prompt (081KSKBP80008QG0R003AX2A69 Phase 1) ──
+[081KSKBP80008QG0R003AX2A69.3b]   passphrase captured + held in non-exported shell variable
+[iter-5.5.0] ── 6.95-picker: 081KSKBP80008QG0R003AX2A69.3a cred-picker (DEFAULT-ON per 081KSKBP80008QG0R003AX2A69.3c) ──
+[iter-5.5.0]   passphrase from Step 6.56; usb-uuid from 081KSKBP80008QG0R003AX2A69.3a-prep
 [iter-5.5.0]   ZETA_CREDS_PASSPHRASE_VAL unset from installer shell (post-picker block; fires in both branches)
 ```
 

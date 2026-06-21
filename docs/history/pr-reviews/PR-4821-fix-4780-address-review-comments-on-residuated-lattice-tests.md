@@ -172,7 +172,7 @@ This PR addresses the review comments on PR #4780, fixing the issues in the FsCh
 **Message:**
 
 ```
-feat(B-0711): add FsCheck property-based tests for Residuated lattice…
+feat(081KS923C0008QG0R0005VM4FB): add FsCheck property-based tests for Residuated lattice…
 
 … IVM laws
 

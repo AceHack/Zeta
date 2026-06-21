@@ -279,7 +279,7 @@ chain, vs ~3 minutes without rerere. Compounds across the
 - **NOT a substitute for the underlying conflict
   prevention.** If the same conflict keeps recurring, the
   upstream cause may need fixing (e.g., for MEMORY.md
-  contention, the structural fix is per B-0088 — make the
+  contention, the structural fix is per 081KQ8P5D0008QG0R002FSTGXP — make the
   paired-edit lint required, force serialization at the
   gate level).
 - **NOT a license for plain `--force`.** Rerere makes

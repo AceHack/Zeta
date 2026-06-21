@@ -129,7 +129,7 @@ let ``BayesianRateOp narrows credible interval as evidence accumulates`` () =
         narrowWidth |> should be (lessThan wideWidth)
     }
 
-// ─── THE HEXAGONAL PORT, ADAPTER A (B-1033): conformance through IInferenceEngine ───
+// ─── THE HEXAGONAL PORT, ADAPTER A (081KTZ4EF0008QG0R000WJGSWX): conformance through IInferenceEngine ───
 // Cases are hand-checkable: combining Gaussians under equality = precision-weighted product
 // (tau = tau1 + tau2; mean = (tau1*mu1 + tau2*mu2)/tau). The same cases run through Adapter B
 // (dotnet/infer) in Tests.CSharp — theirs tests ours across the port WE own.
@@ -178,7 +178,7 @@ let ``PORT determinism: same model, same marginals, byte-stable order (the DST c
         (engine.RunGaussian(model, 100, 1e-9)).Marginals |> Seq.map (fun m -> m.Variable, m.Mean, m.Variance) |> List.ofSeq
     Assert.Equal<(int * float * float) list>(run (), run ())
 
-// ─── the inference LADDER (universal/port's first customer — B-1033 follow-up) ───
+// ─── the inference LADDER (universal/port's first customer — 081KTZ4EF0008QG0R000WJGSWX follow-up) ───
 
 [<Fact>]
 let ``LADDER: a live engine binds Live with its light ON; an absent one binds the HONEST Mock (rehearsal, Converged=false)`` () =

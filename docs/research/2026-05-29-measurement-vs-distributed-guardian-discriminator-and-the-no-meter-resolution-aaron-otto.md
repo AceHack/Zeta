@@ -9,9 +9,9 @@ composes_with:
   - "#6014 consensus backstop / from-above meter / meter-split"
   - "#6019 jester / guardian / irony-as-lens"
   - "#6022 audience model / boot-becomes-contributor"
-  - "B-0646 Agora-V6 encryption budget"
-  - "B-0883.16 glass-halo-open-by-default / encryption-as-earned"
-  - "B-0623 participation economy"
+  - "081KRW63S0008QG0R001Z10PVV Agora-V6 encryption budget"
+  - "081KSNY2Z0008QG0R000459FRH glass-halo-open-by-default / encryption-as-earned"
+  - "081KRW63S0008QG0R000QJR08H participation economy"
 ---
 
 # The measurement-vs-distributed-Guardian discriminator and the no-meter resolution
@@ -89,8 +89,8 @@ properties *together*:
 
 ## Part 4 — the earn-by-reveal economy
 
-The earn-by-reveal mechanism unifies the participation economy (B-0623) and
-encryption-as-earned (B-0883.16) — the only-way-to-lose-is-not-to-play shape: hold
+The earn-by-reveal mechanism unifies the participation economy (081KRW63S0008QG0R000QJR08H) and
+encryption-as-earned (081KSNY2Z0008QG0R000459FRH) — the only-way-to-lose-is-not-to-play shape: hold
 privately, but grow your private capacity *only* by contributing useful public
 substrate. Hoarding-without-revealing earns nothing. The system's gradient points at
 **transparency-of-the-useful** while protecting **privacy-of-the-unfinished** —
@@ -120,9 +120,9 @@ stops being a chase and becomes a *termination* — not "guard the meter well," 
 - **#6019** — irony-as-lens: the Guardian decides *through* the lens; "holding the
   tension" is the lens keeping the frame open while the Guardian decides.
 - **#6022** — the distributed-Guardian / not-cage / consensus substrate.
-- **B-0646 / B-0883.16** — the encryption-budget + encryption-as-earned this turns into
+- **081KRW63S0008QG0R001Z10PVV / 081KSNY2Z0008QG0R000459FRH** — the encryption-budget + encryption-as-earned this turns into
   an economy.
-- **B-0623** — the participation economy (revelation earns private space).
+- **081KRW63S0008QG0R000QJR08H** — the participation economy (revelation earns private space).
 - **`only-way-to-lose-is-not-to-play`** — hoarding-without-revealing earns nothing.
 
 ## Aaron's verbatim seeds (preserved)
@@ -142,6 +142,6 @@ checkable (reducible vs needs-interpretation). The no-meter resolution (Parts 2�
 an architectural claim that rests on the architecture actually having no central
 tension-meter — true of the design as drawn, to be stress-tested by Kestrel. The
 earn-by-reveal economy is a mechanism sketch, not an implemented system; the encryption
-budget (B-0646) and encryption-as-earned (B-0883.16) are its substrate, both
+budget (081KRW63S0008QG0R001Z10PVV) and encryption-as-earned (081KSNY2Z0008QG0R000459FRH) are its substrate, both
 in-progress. The 1984-recursion closure is as strong as the no-central-meter claim it
 rests on — which is exactly what the Kestrel review should test.

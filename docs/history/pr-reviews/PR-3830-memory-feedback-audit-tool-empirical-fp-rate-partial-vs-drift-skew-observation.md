@@ -31,8 +31,8 @@
 
 Documents the empirical FP-rate finding from post-completion operational use of the substrate-drift-catch audit tool:
 
-- **Otto-CLI**: 4/4 manual checks in late ticks (B-0440 / B-0509 / B-0512 / B-0411) = partial-vs-drift, not genuine drift
-- **Peer Otto-Desktop**: ~25% FP rate per [PR #3826](https://github.com/Lucent-Financial-Group/Zeta/pull/3826) (`B-0173 = FP-3 (2nd example)`)
+- **Otto-CLI**: 4/4 manual checks in late ticks (081KRFA460008QG0R001KC0VBH / 081KRHWGX0008QG0R0014D2T5E / 081KRHWGX0008QG0R003WEP6E9 / 081KRA5AR0008QG0R000C3P8KP) = partial-vs-drift, not genuine drift
+- **Peer Otto-Desktop**: ~25% FP rate per [PR #3826](https://github.com/Lucent-Financial-Group/Zeta/pull/3826) (`081KQNJ500008QG0R003ZC6PK8 = FP-3 (2nd example)`)
 - **Combined estimate**: ~0-25% candidates genuine drift; ~75-100% partial-vs-drift requiring manual discriminator pass
 
 ## Pattern
@@ -70,7 +70,7 @@ Easy-mode drifts (where the row's entire scope IS the file) were taken in the ea
 - **`Copilot` (bot)** at 2026-05-16T08:58:52Z on `memory/feedback_audit_tool_partial_vs_drift_fp_rate_steady_state_otto_cli_2026_05_16.md`:30 (association: NONE)
 
   <pre>
-  The empirical summary here does not match the PR description or the tick shard added in this PR. The description says the late Otto-CLI sample was 4/4 partial (including B-0411) and estimates ~0–25% genuine drift, while this file records 3/3 and states ~25% genuine drift; the new 0833Z tick shard also records a different 21/38 distribution. Please reconcile the sample size and scope the percentage to either the full triaged set or the remaining-candidate subset so the memory preserves one consistent finding.
+  The empirical summary here does not match the PR description or the tick shard added in this PR. The description says the late Otto-CLI sample was 4/4 partial (including 081KRA5AR0008QG0R000C3P8KP) and estimates ~0–25% genuine drift, while this file records 3/3 and states ~25% genuine drift; the new 0833Z tick shard also records a different 21/38 distribution. Please reconcile the sample size and scope the percentage to either the full triaged set or the remaining-candidate subset so the memory preserves one consistent finding.
   </pre>
 
 ## Fix commits (touching thread paths)
@@ -121,12 +121,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **Message:**
 
 ```
-fix(PR-3830): Copilot — reconcile sample 3/3 → 4/4 (B-0411 added tick…
+fix(PR-3830): Copilot — reconcile sample 3/3 → 4/4 (081KRA5AR0008QG0R000C3P8KP added tick…
 
 … 45)
 
 Memory file captured only the tick-43 state (3 verifications);
-B-0411 verified tick 45 brought sample to 4/4 partial. PR
+081KRA5AR0008QG0R000C3P8KP verified tick 45 brought sample to 4/4 partial. PR
 description + sibling 0846Z shard say 4/4 / 0-25%; this update
 brings the memory file's claim row + summary into consistency.
 

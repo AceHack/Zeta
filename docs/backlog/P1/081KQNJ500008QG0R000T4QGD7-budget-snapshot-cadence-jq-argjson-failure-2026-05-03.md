@@ -1,11 +1,10 @@
 ---
-id: B-0186
-zetaid: 081KQNJ500008QG0R000T4QGD7
+id: 081KQNJ500008QG0R000T4QGD7
 priority: P1
 status: closed
 closed: 2026-05-07
 closed_by: "PR #1811"
-title: budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-B-0085-close (2026-05-03)
+title: budget-snapshot-cadence workflow jq --argjson failure on first natural-Sunday fire post-081KQ8P5D0008QG0R003JETMEV-close (2026-05-03)
 tier: factory-tooling
 effort: S
 ask: maintainer-gated diagnosis + defensive-fix landing (autonomous-loop investigated 2026-05-03T17:46Z but couldn't reproduce in CI environment)
@@ -16,12 +15,12 @@ composes_with: [081KQ8P5D0008QG0R003JETMEV]
 tags: [budget-snapshot, jq, argjson, ci-failure, cron-fire-2026-05-03, github-token-scopes]
 ---
 
-# B-0186 — budget-snapshot-cadence workflow `jq --argjson` failure on first natural-Sunday fire after B-0085 close
+# 081KQNJ500008QG0R000T4QGD7 — budget-snapshot-cadence workflow `jq --argjson` failure on first natural-Sunday fire after 081KQ8P5D0008QG0R003JETMEV close
 
 ## The failure
 
 Run `25285483579` (`.github/workflows/budget-snapshot-cadence.yml`,
-2026-05-03T17:11:12Z, the first natural Sunday fire after B-0085's
+2026-05-03T17:11:12Z, the first natural Sunday fire after 081KQ8P5D0008QG0R003JETMEV's
 2026-05-02 close) failed with:
 
 ```
@@ -128,9 +127,9 @@ copilot_raw="$(ensure_json "$copilot_raw" '{}')"
 
 ## Composes with
 
-- **B-0085** (closed 2026-05-02): the parent row that documented
+- **081KQ8P5D0008QG0R003JETMEV** (closed 2026-05-02): the parent row that documented
   the workflow's cron timing. This row is the next-failure-mode
-  in the same workflow surface, after B-0085's natural Sunday fire
+  in the same workflow surface, after 081KQ8P5D0008QG0R003JETMEV's natural Sunday fire
   restart actually happened.
 - `tools/budget/snapshot-burn.sh` lines 68, 79, 102, 111, 117-121,
   134-154 — the `--argjson` sites

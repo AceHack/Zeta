@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Date:** 2026-05-29
-**Backlog:** (none yet — observability substrate; composes with B-0149 (tools/observability Prometheus stack), B-0570 (scarcity/rate-limit tracker → bus), B-0867 (workflow engine). B-0752 reference was a typo — that ID is the past-self-vs-peer distinguisher row.)
+**Backlog:** (none yet — observability substrate; composes with 081KQGDBJ0008QG0R0035TQVBQ (tools/observability Prometheus stack), 081KRQ1AB0008QG0R002422Z9Q (scarcity/rate-limit tracker → bus), 081KSKBP80008QG0R000B3Y19A (workflow engine). 081KSE6WT0008QG0R000E05579 reference was a typo — that ID is the past-self-vs-peer distinguisher row.)
 
 ## Context & Problem Statement
 
@@ -39,7 +39,7 @@ To allow the agent swarm to recursively analyze friction bottlenecks and autonom
 ## Addendum (2026-05-31): the LGTM stack, git-native — metrics are a Bag-fold over the event G-Set
 
 Option 2 is not just "a cheaper Prometheus." Once telemetry is a ZetaId-keyed,
-append-only **event G-Set** (the same paradigm as the *in-flight* agent-bus — B-0954,
+append-only **event G-Set** (the same paradigm as the *in-flight* agent-bus — 081KSXN940008QG0R00171YAZW,
 Phase 1 landing in #6283, *targeted at* `docs/agent-bus/`; the friction log *planned at*
 `docs/observability/` — neither directory existed on `main` as of this 2026-05-31
 addendum), the entire Grafana
@@ -84,7 +84,7 @@ curvature meter"* becomes *"the Bag-fold is the curvature meter."*
 
 ### Composes with
 
-* the agent-bus (B-0954, Phase 1 landing in #6283) — the event G-Set this builds on; observability is the *count-fold* over the same machinery
+* the agent-bus (081KSXN940008QG0R00171YAZW, Phase 1 landing in #6283) — the event G-Set this builds on; observability is the *count-fold* over the same machinery
 * the G-Set / Bag / Z-set ladder ([bus↔Ace synthesis](../research/2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md)) — metric = the Bag rung
 * [`.claude/skills/lightlike-observability-discipline/SKILL.md`](../../.claude/skills/lightlike-observability-discipline/SKILL.md) — the OTel / K8s / Argo / Prometheus = lightlike mapping
 * [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md) — the friction-measurement decision this serves

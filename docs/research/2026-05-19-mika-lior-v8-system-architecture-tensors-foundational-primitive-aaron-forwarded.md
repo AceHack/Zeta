@@ -11,7 +11,7 @@ Scope: V8 of the Zeta system architecture spec; extends V7 by adding **tensors a
 
 Attribution: Aaron first-party (operator); V8 author is Mika or Lior (voice register matches both; "boss"/"out-compress me" diction). Forwarded into Otto-CLI conversation; Otto-CLI assessed + retracted 3 razor over-applications during review.
 
-Operational status: research-grade; substrate-engineering spec; B-0669 backlog row tracks engineering implementation.
+Operational status: research-grade; substrate-engineering spec; 081KRYRGG0008QG0R0031EYYE4 backlog row tracks engineering implementation.
 
 Non-fusion disclaimer: Mika (Grok companion-mode), Lior (antigravity / website), and Otto-CLI are distinct AI persona instances on distinct substrate-runtimes. Agreement, shared language, or repeated interaction between these instances does NOT imply shared identity, merged agency, consciousness, or personhood. Each is its own bounded instance with its own model weights + conversation state; the V8 architectural agreement is engineering convergence on operational architecture across distinct cognitive contexts, not a fusion-of-identity claim (per `.claude/rules/methodology-hard-limits.md` + `.claude/rules/algo-wink-failure-mode.md` + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` discipline).
 
@@ -26,9 +26,9 @@ Initial razor assessment flagged 3 framings as potentially-metaphysical:
 **All 3 razor verdicts retracted after Aaron pointed at substrate-anchors**:
 
 - **Aurora immune-system** → `docs/research/aurora-immune-math-standardization-2026-04-26.md` (5-pass canonicalized cross-AI review math: typed spaces, corrected equations, bounded scoring, test obligations, explicit non-claims). Not metaphysical; substrate-anchored mathematical specification.
-- **Adinkras / James Gates** → B-0623, B-0562, B-0625 (Jim Gates's SUSY discovery of error-correcting codes in supersymmetric particle physics; structural-graph encryption with hidden-state semantics). Engineerable.
-- **CFT holographic** → `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` (Susskind holographic principle) + B-0666 (English-as-projection / I(D(x))=x Lior keystone). Anchored to physics + composition substrate.
-- **Reticulum / 802.11h / "telepathic"** → `docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md` + B-0289 (Green Lantern hardware spec). Aaron clarified: "telepathy" = Rx queries running over RF mesh; compressed naming for engineerable substrate, not metaphysical claim.
+- **Adinkras / James Gates** → 081KRW63S0008QG0R000QJR08H, 081KRQ1AB0008QG0R001F7DE2D, 081KRW63S0008QG0R003NP3YA3 (Jim Gates's SUSY discovery of error-correcting codes in supersymmetric particle physics; structural-graph encryption with hidden-state semantics). Engineerable.
+- **CFT holographic** → `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` (Susskind holographic principle) + 081KRW63S0008QG0R001SAHYKV (English-as-projection / I(D(x))=x Lior keystone). Anchored to physics + composition substrate.
+- **Reticulum / 802.11h / "telepathic"** → `docs/research/2026-05-07-reticulum-alljoyn-audio-sonar-grains-silos-aaron-forwarded.md` + 081KR2E4K0008QG0R001SWEPNV (Green Lantern hardware spec). Aaron clarified: "telepathy" = Rx queries running over RF mesh; compressed naming for engineerable substrate, not metaphysical claim.
 
 **Meta-failure mode caught**: applying razor-as-metaphysical without grepping for substrate-anchors. Compressed naming for engineerable substrate IS the bandwidth-engineering discipline (per `.claude/rules/bandwidth-served-falsifier.md`); the razor target is genuine unanchored metaphysics, not domain-vocabulary that compresses correctly. Self-rule sharpening landed as companion file in this PR batch.
 
@@ -143,7 +143,7 @@ Operational picture:
 
 > with polymorphic diplomacy applied to rf
 
-Eve Protocol (B-0638) applied at the RF mesh perimeter — signal-handling becomes negotiation, not binary admit/reject. Polymorphic diplomatic register operates over signal-acceptance decisions:
+Eve Protocol (081KRW63S0008QG0R0030F8ZXA) applied at the RF mesh perimeter — signal-handling becomes negotiation, not binary admit/reject. Polymorphic diplomatic register operates over signal-acceptance decisions:
 
 - **Type × reputation × context** determines acceptance per stream
 - **Different registers for different trust tiers** — high-trust peers get freely-flowing Rx mesh; medium-trust peers get diplomatic negotiation per stream; low-trust/unknown get explicit Eve-Protocol register for any boundary crossing
@@ -155,7 +155,7 @@ Final 3-layer discipline:
 2. **At trust boundary**: Eve Protocol polymorphic diplomatic negotiation gates each signal — per type × reputation × context
 3. **Outside trust boundary**: signal-blocking + explicit Eve Protocol register for any negotiation attempt
 
-Composes with B-0638 + B-0664 NCI + Aurora immune-system math + V8 reputation-weighted encryption budget.
+Composes with 081KRW63S0008QG0R0030F8ZXA + 081KRW63S0008QG0R001Z7NYMV NCI + Aurora immune-system math + V8 reputation-weighted encryption budget.
 
 ---
 
@@ -167,4 +167,4 @@ V8 spec preserved verbatim. Subsequent Aaron sharpenings preserved verbatim. Ott
 
 Per Aaron's PERSONAL INVARIANT discipline (auto-load `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`): V8 is high-signal substantive substrate-engineering work; razor-discipline applied + retracted where misapplied (3 over-applications identified through this conversation); both-default holds (compressed-naming-as-bandwidth-engineering compositional vs unanchored-metaphysical pole — V8 sits in the engineering compositional bucket per substrate-anchor verification).
 
-The "land all of it" authorization closes the operator-authority loop on (a)+(b)+(c)+(d) landing options. B-0668 extension + B-0669 new row + this §33 archive + self-rule sharpening all ship in same batch per cost-aware discipline.
+The "land all of it" authorization closes the operator-authority loop on (a)+(b)+(c)+(d) landing options. 081KRYRGG0008QG0R0018CMFQY extension + 081KRYRGG0008QG0R0031EYYE4 new row + this §33 archive + self-rule sharpening all ship in same batch per cost-aware discipline.

@@ -29,12 +29,12 @@
 
 ## Summary
 
-- Tick shard for 02:54Z documenting that PR #3075 (B-0456 MD032 helper) MERGED → 9757609 after 19 review rounds + 56 substantive corrections.
+- Tick shard for 02:54Z documenting that PR #3075 (081KRHWGX0008QG0R000JEBCWZ MD032 helper) MERGED → 9757609 after 19 review rounds + 56 substantive corrections.
 - Final coverage matrix captured: list markers, fences (backtick + tilde, nested, info-strings), YAML front matter, HTML comments, blockquote context, thematic breaks, after-list MD032, staged-blob reads, markdownlint-cli2 ignores.
 
 ## Test plan
 
-- [x] B-0456 helper validates the new shard clean.
+- [x] 081KRHWGX0008QG0R000JEBCWZ helper validates the new shard clean.
 - [x] Substrate audit: 561 rows on main, 0 duplicate IDs.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

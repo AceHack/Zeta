@@ -1,12 +1,11 @@
 ---
-id: B-0341
-zetaid: 081KR2E4K0008QG0R002PHZR58
+id: 081KR2E4K0008QG0R002PHZR58
 priority: P1
 status: closed
 title: Minimal bootstrap seed manifest — exact file set for the recreation test repo
 tier: foundation
 effort: S
-ask: B-0193 decomposition — AC 1 (test repo seeded with minimal substrate hypothesis)
+ask: 081KQTPYE0008QG0R00392KABJ decomposition — AC 1 (test repo seeded with minimal substrate hypothesis)
 created: 2026-05-08
 last_updated: 2026-05-08
 parent: 081KQTPYE0008QG0R00392KABJ
@@ -16,16 +15,16 @@ tags: [bootstrap-razor, seed-manifest, minimal-substrate, trajectory-child]
 type: friction-reducer
 ---
 
-# B-0341 — Minimal bootstrap seed manifest
+# 081KR2E4K0008QG0R002PHZR58 — Minimal bootstrap seed manifest
 
 ## Parent
 
-B-0193 (bootstrap razor + 23-hour recreation test).
+081KQTPYE0008QG0R00392KABJ (bootstrap razor + 23-hour recreation test).
 
 ## What
 
 Define the exact file set that seeds the test repo.
-B-0193's experimental design names the hypothesis:
+081KQTPYE0008QG0R00392KABJ's experimental design names the hypothesis:
 
 > Seed with ONLY `openspec/specs/**` + `docs/*.tla` +
 > `proofs/lean/**` + the absolute-minimum bootstrap docs
@@ -34,9 +33,9 @@ B-0193's experimental design names the hypothesis:
 
 This row resolves the TBD. Informed by:
 
-- **B-0339** (keep-vs-cut criteria) — what categories are
+- **081KR2E4K0008QG0R000W3W6C1** (keep-vs-cut criteria) — what categories are
   exempt vs testable.
-- **B-0340** (spec audit) — what specs actually exist and
+- **081KR2E4K0008QG0R001BRHAPK** (spec audit) — what specs actually exist and
   what gaps are known going in.
 
 ## Decisions to make
@@ -56,7 +55,7 @@ This row resolves the TBD. Informed by:
 1. A `docs/bootstrap-razor/SEED-MANIFEST.md` file lists
    every included path glob with rationale (include/exclude
    + why).
-2. The manifest is machine-readable enough for B-0343
+2. The manifest is machine-readable enough for 081KR2E4K0008QG0R002JW751Y
    (seeding script) to consume.
 3. The bootstrap-docs decision is documented with reasoning.
 

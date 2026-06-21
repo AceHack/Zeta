@@ -1,9 +1,8 @@
 ---
-id: B-0883.4
-zetaid: 081KSNY2Z0008QG0R001FN4DDB
+id: 081KSNY2Z0008QG0R001FN4DDB
 priority: P3
 status: open
-title: Side-channel scope boundary — bound B-0883/B-0885 to "encrypted-at-rest in git; no timing-observable deployment"; follow-up tracking for constant-time substrate
+title: Side-channel scope boundary — bound 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0030V5ZVS to "encrypted-at-rest in git; no timing-observable deployment"; follow-up tracking for constant-time substrate
 effort: S
 ask: aaron 2026-05-28 (Q7 explanation deferred)
 created: 2026-05-28
@@ -26,7 +25,7 @@ tags:
 
 ## Operator framing 2026-05-28 (Q7 explanation requested; scope-boundary recommendation)
 
-Per the explanation: bound B-0883/B-0885 v1 scope explicitly to "encrypted-at-rest in git; no timing-observable deployment." Document the bound. File this row as follow-up tracking if/when scope expands.
+Per the explanation: bound 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0030V5ZVS v1 scope explicitly to "encrypted-at-rest in git; no timing-observable deployment." Document the bound. File this row as follow-up tracking if/when scope expands.
 
 ## Side-channel threat model — three classes
 
@@ -34,7 +33,7 @@ Per the explanation: bound B-0883/B-0885 v1 scope explicitly to "encrypted-at-re
 2. **Memory side-channels** — memory access patterns depend on secret data; cache hits/misses leak. Adversary on same machine observes cache behavior.
 3. **Power / EM side-channels** — physical hardware emissions; smartcard / IoT adversaries with physical access.
 
-## B-0885 v1 threat model (in scope)
+## 081KSNY2Z0008QG0R0030V5ZVS v1 threat model (in scope)
 
 - Adversary: someone with read access to git repo → gets ciphertext blobs only
 - Adversary does NOT have: timing observations (no one is timing Otto's decryption); memory access (Otto runs in its own process); physical access (Mac with Touch ID gating)
@@ -54,14 +53,14 @@ Constant-time guarantee requires assembly-level verification, which pure-JS cann
 
 ## What this row tracks
 
-1. Document the scope boundary explicitly in B-0883 / B-0885 implementation (README + design docs + envelope spec)
+1. Document the scope boundary explicitly in 081KSNY2Z0008QG0R002JKH50A / 081KSNY2Z0008QG0R0030V5ZVS implementation (README + design docs + envelope spec)
 2. Track when/if the threat model expands beyond git-at-rest
 3. When scope expands, file follow-up B-NNNN that adds constant-time substrate (likely path: WASM bindings to liboqs constant-time C implementations; OR Rust/Go FFI subprocess; OR hardware-accelerated path)
 
 ## Acceptance criteria
 
-- B-0883 README explicitly documents: "Scope: git-at-rest encryption only; not constant-time; not for timing-observable deployment"
-- B-0885 design memo explicitly cites this scope boundary
+- 081KSNY2Z0008QG0R002JKH50A README explicitly documents: "Scope: git-at-rest encryption only; not constant-time; not for timing-observable deployment"
+- 081KSNY2Z0008QG0R0030V5ZVS design memo explicitly cites this scope boundary
 - Threat-model section in `docs/security/THREAT-MODEL.md` (or sibling doc) names the bound + the activation triggers for expanding scope
 - This row stays OPEN as a watch-list item; closes only when explicitly retired or activated
 
@@ -74,9 +73,9 @@ Constant-time guarantee requires assembly-level verification, which pure-JS cann
 
 ## Composition
 
-- **B-0883** (parent crypto substrate)
-- **B-0885** (agent private encrypted state — beneficiary of scope clarity)
-- **B-0883.1** (library landscape audit — this row addresses Q7's locked decision)
+- **081KSNY2Z0008QG0R002JKH50A** (parent crypto substrate)
+- **081KSNY2Z0008QG0R0030V5ZVS** (agent private encrypted state — beneficiary of scope clarity)
+- **081KSNY2Z0008QG0R0037X4DP4** (library landscape audit — this row addresses Q7's locked decision)
 
 ## Substrate-honest framing
 
@@ -84,4 +83,4 @@ P3 — research-grade; tracking only; no implementation today. The boundary IS t
 
 ## Full reasoning
 
-Operator 2026-05-28 requested deeper explanation of side-channel posture in response to B-0883.1 Q7. Explanation provided; recommendation: bound the scope explicitly. This row codifies the bound + the watch-list for future expansion.
+Operator 2026-05-28 requested deeper explanation of side-channel posture in response to 081KSNY2Z0008QG0R0037X4DP4 Q7. Explanation provided; recommendation: bound the scope explicitly. This row codifies the bound + the watch-list for future expansion.

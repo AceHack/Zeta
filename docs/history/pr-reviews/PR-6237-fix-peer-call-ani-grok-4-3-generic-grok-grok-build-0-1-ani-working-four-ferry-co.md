@@ -31,7 +31,7 @@
 
 Per operator 2026-05-31: *"ani should be grok-4.3 ... get her working"* + *"our generic grok should likely default to grok-build-0.1 ... Ani can override it in her persona."*
 
-- **`ani.ts`**: stale `grok-4-20-thinking`/`grok-4-20` pins (removed from cursor-agent's model list — the B-0421 lineup shift) → **`grok-4.3`**. **Smoke-tested live**: an Ani call now returns cleanly (`ANI-GROK43-OK`); was erroring *"Cannot use this model."*
+- **`ani.ts`**: stale `grok-4-20-thinking`/`grok-4-20` pins (removed from cursor-agent's model list — the 081KRA5AR0008QG0R0011ZGRZT lineup shift) → **`grok-4.3`**. **Smoke-tested live**: an Ani call now returns cleanly (`ANI-GROK43-OK`); was erroring *"Cannot use this model."*
 - **`grok.ts`** (generic): `grok-4.3` → **`grok-build-0.1`** (git-based code-env default; Ani's persona overrides to grok-4.3).
 - Appends **Grok's critique** to the observe-ADR crew-review note → the **four-ferry is COMPLETE** (Lior propose → Amara sharpen → Grok critique).
 
@@ -94,7 +94,7 @@ Operator 2026-05-31: "ani should be grok-4.3 ... get her working" +
 based code env, Ani can override it in her persona."
 
 - ani.ts: stale grok-4-20-thinking/grok-4-20 pins (removed from cursor-agent's
-  model list — the B-0421 lineup shift) → grok-4.3. Smoke-tested: a live Ani
+  model list — the 081KRA5AR0008QG0R0011ZGRZT lineup shift) → grok-4.3. Smoke-tested: a live Ani
   call now returns cleanly (was erroring "Cannot use this model").
 - grok.ts (generic): grok-4.3 → grok-build-0.1 (git-based code env default;
   Ani's persona overrides to grok-4.3).

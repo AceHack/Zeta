@@ -1,6 +1,5 @@
 ---
-id: B-0350
-zetaid: 081KR50HA0008QG0R001F2DBRV
+id: 081KR50HA0008QG0R001F2DBRV
 priority: P1
 status: closed
 title: "Extract autonomy/identity bullets to .claude/rules/"
@@ -17,7 +16,7 @@ owners: [architect]
 parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
-# B-0350 — Extract autonomy/identity bullets to `.claude/rules/`
+# 081KR50HA0008QG0R001F2DBRV — Extract autonomy/identity bullets to `.claude/rules/`
 
 ## What
 

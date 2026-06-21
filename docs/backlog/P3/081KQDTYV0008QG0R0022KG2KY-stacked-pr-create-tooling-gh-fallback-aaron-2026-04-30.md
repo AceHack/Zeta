@@ -1,6 +1,5 @@
 ---
-id: B-0123
-zetaid: 081KQDTYV0008QG0R0022KG2KY
+id: 081KQDTYV0008QG0R0022KG2KY
 priority: P3
 status: open
 title: Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)
@@ -18,7 +17,7 @@ tags: [aaron-2026-04-30, factory-tooling, gh-cli, stacked-prs, dx-friction, upst
 type: friction-reducer
 ---
 
-# B-0123 — Stacked-PR creation tooling
+# 081KQDTYV0008QG0R0022KG2KY — Stacked-PR creation tooling
 
 ## Source
 
@@ -130,9 +129,9 @@ community; doesn't immediately help our workflow.
 2. **Path A** when stacked PRs become more frequent (the
    wrapper pays off after ~5 invocations)
 3. **Path C** as background work — file the issue, link from
-   B-0123, let the upstream cycle work in the background
-4. Promote to P2 if Otto/Kenji peer-call (B-0121) or the TS
-   migration (B-0122) creates more stacking demand
+   081KQDTYV0008QG0R0022KG2KY, let the upstream cycle work in the background
+4. Promote to P2 if Otto/Kenji peer-call (081KQDTYV0008QG0R003VB4K1V) or the TS
+   migration (081KQDTYV0008QG0R001HQSSAX) creates more stacking demand
 
 ## Why P3
 
@@ -163,6 +162,6 @@ Filing in the same tick the observation was made — not
   makes this row necessary in the first place
 - The non-durable-means-does-not-exist rule (Aaron
   2026-04-30) — the rule Aaron applied in his correction
-- B-0114 sub-item 1 (pre-push lint hook) — also wants a
+- 081KQDTYV0008QG0R003QD8YTE sub-item 1 (pre-push lint hook) — also wants a
   `tools/setup/install-git-hooks.{sh,ts}` script; same
   factory-tooling-around-git directory family

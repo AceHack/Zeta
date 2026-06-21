@@ -54,7 +54,7 @@ Mitigation candidate (not filed): cache \`mise\` tool installations in CI.
 |-------|----|-------|-----------|
 | 1 | #3152 | 4 | 30/30 |
 | 2 | #3161 | 4 | 37/37 |
-| 3 | #3174 | 4 | 17/18 (B-0514 captures MISS) |
+| 3 | #3174 | 4 | 17/18 (081KRHWGX0008QG0R002E3BCDS captures MISS) |
 | 4 | #3179 | 4 | 29/29 |
 | 5 | this PR | 4 | 22/22 + 3 cleared |
 | **Total** | — | **20** | **135/136 (99.3%)** |
@@ -69,7 +69,7 @@ Rules use brace-expansion globs (e.g., \`feedback_rule_number_{one..seven}_*\`) 
 
 - [x] 6 concrete file refs verified LIVE
 - [x] 9 glob patterns verified to resolve to ≥1 file
-- [x] 5 backlog rows verified LIVE (B-0161, B-0169, B-0170, B-0171, B-0173)
+- [x] 5 backlog rows verified LIVE (081KQJZR90008QG0R002Z4B6VW, 081KQJZR90008QG0R002D6XYHB, 081KQNJ500008QG0R003SCWBDV, 081KQNJ500008QG0R001N94412, 081KQNJ500008QG0R003ZC6PK8)
 - [x] 3 legacy .sh references verified as correctly-retired (not stale-pointer)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -158,7 +158,7 @@ replacement, all-complexity-is-accidental-in-greenfield.
 22/22 testable refs LIVE + 3 correctly-cleared legacy .sh references.
 
 Cumulative: 20/47 rules audited (~43%), 135/136 LIVE (99.3%). Sole MISS remains
-B-0514's missing wwjd-grey-honest file.
+081KRHWGX0008QG0R002E3BCDS's missing wwjd-grey-honest file.
 
 Lesson captured: brace-expansion globs need per-word iteration in zsh; raw
 'ls $pat' returns 0 even when matches exist. Future audits should iterate

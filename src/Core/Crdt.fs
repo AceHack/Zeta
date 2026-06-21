@@ -148,7 +148,7 @@ with
 /// **LWW-Map** — a last-writer-wins keyed map: each key independently holds an `LwwRegister`, merged
 /// per-key via `LwwRegister.Merge`. Inherits commutative + associative + idempotent merge ⇒ a CRDT (the
 /// common local-first keyed-document structure). Keys use F# structural comparison — **ordinal for `string`
-/// (B-0969-clean)**. Composes `LwwRegister` (no duplicate merge logic). Removal is LWW too: `Remove` writes
+/// (081KT07NV0008QG0R001YDB73K-clean)**. Composes `LwwRegister` (no duplicate merge logic). Removal is LWW too: `Remove` writes
 /// a tombstone register; readers skip tombstoned keys. (081KTH4Q782 — local-first CRDTs on the substrate.)
 [<NoComparison; NoEquality>]
 type LwwMap<'K, 'V when 'K: comparison> =
@@ -191,7 +191,7 @@ type LwwMap<'K, 'V when 'K: comparison> =
 
 /// A unique RGA element id: `(lamport, replica)` — Lamport clock for causal-ish ordering, replica for the
 /// deterministic tiebreak. F# struct-tuple comparison is structural (int64 then **ordinal** string —
-/// B-0969-clean).
+/// 081KT07NV0008QG0R001YDB73K-clean).
 type RgaId = (struct (int64 * string))
 
 [<NoComparison; NoEquality>]

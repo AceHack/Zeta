@@ -67,7 +67,7 @@ ancient one didn't.
 ## Useful framing for non-technical audiences
 
 For explaining the factory to people unfamiliar with the
-substrate (B-0003 ALIGNMENT.md rewrite audiences,
+substrate (081KQ0YZ80008QG0R001QJJTVF ALIGNMENT.md rewrite audiences,
 ServiceTitan demo audiences, future contributors):
 
 - **Library** = comprehensive knowledge collection
@@ -106,9 +106,9 @@ factory genuinely better than the ancient version.
   anti-fragile section — what Alexandria lacked.
 - **`project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`**
   — superfluid library = zero-viscosity knowledge flow.
-- **`docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`**
+- **`docs/backlog/P2/081KQ0YZ80008QG0R002HWBHKJ-translate-repo-to-other-human-languages.md`**
   — multi-language Library of Alexandria; broader reach.
-- **`docs/backlog/P1/B-0003-alignment-md-rewrite.md`**
+- **`docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md`**
   — matrix-pill ALIGNMENT.md is the Library's
   flagship indexed substrate.
 

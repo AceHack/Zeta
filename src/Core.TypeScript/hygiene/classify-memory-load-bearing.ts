@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// classify-memory-load-bearing.ts — B-0332
+// classify-memory-load-bearing.ts — 081KR2E4K0008QG0R002FRQZN4
 // Classifies memory files as load-bearing (reachable from bootstrap
 // surfaces via citation graph) or decorative (not reachable).
 

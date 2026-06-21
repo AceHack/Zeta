@@ -44,4 +44,4 @@ blocks (Zeta) / anything signed-or-exported must address by the full `ContentHas
 ## Anchors
 
 - Treaty doc (above) · `Core.Blake3.Blake3Hasher` (128-bit adapter) · `IContentHasher` port · ZetaId
-  ContentAddress category (Lior) · umbrella 081KTH323AK · B-0959 (4-oracle) · no-binary-in-proof-lineage.
+  ContentAddress category (Lior) · umbrella 081KTH323AK · 081KSXN940008QG0R003FCQ7WT (4-oracle) · no-binary-in-proof-lineage.

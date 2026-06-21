@@ -2,7 +2,7 @@ module Zeta.Tests.Algebra.CayleyDicksonTests
 #nowarn "0893"
 
 /// Tests for `CayleyDickson` — the structural primitive underlying
-/// the imaginary stack (B-0623 PR1). Property structure mirrors the
+/// the imaginary stack (081KRW63S0008QG0R000QJR08H PR1). Property structure mirrors the
 /// classical Cayley-Dickson loss pattern: each doubling step should
 /// preserve some algebraic invariants and lose specific others.
 ///

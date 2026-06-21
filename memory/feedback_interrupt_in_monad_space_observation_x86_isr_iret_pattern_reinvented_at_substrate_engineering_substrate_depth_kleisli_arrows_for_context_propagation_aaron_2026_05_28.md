@@ -32,7 +32,7 @@ Sibling memory carvings (memory-folder cross-references via bare filename per
 
 Related PRs: #5812 (AutoLoopLifetime extension; where free-time + state-parameter-counter discussion triggered observation); #5805 (AutoLoopLifetime PoC); #5811 (IMPLICIT-NOT-EXPLICIT rule); #5401 (Mika ferry 2026-05-27 Kleisli arrow context propagation; DIRECT precursor); #5806 (DUs-as-explicit-muscle-memory carving).
 
-Related backlog: B-0917 (interrupt substrate; filed alongside this memo); B-0867 (workflow-engine v1 parent).
+Related backlog: 081KSNY2Z0008QG0R002HB4AGT (interrupt substrate; filed alongside this memo); 081KSKBP80008QG0R000B3Y19A (workflow-engine v1 parent).
 
 ## the human maintainer's substantive substrate-engineering substrate-engineering substrate-recognition (2026-05-28 verbatim)
 
@@ -135,11 +135,11 @@ type Arrow<'A, 'B> = ActivityContext -> 'A -> System.Threading.Tasks.Task<'B>
 
 Per the Tracing.fs comment: AsyncLocal is the default (ergonomic; ambient context) and Kleisli is for code that wants explicit context-threading without hidden side-channels. For INTERRUPT substrate, EXPLICIT context-threading is required (interrupts cross context boundaries; AsyncLocal may not survive interrupt-context-switch reliably). Kleisli is the right substrate at interrupt scope.
 
-## Substrate-engineering substrate-engineering substrate-target (B-0917)
+## Substrate-engineering substrate-engineering substrate-target (081KSNY2Z0008QG0R002HB4AGT)
 
 Per the human maintainer's authorization:
 
-1. **B-0917 (filed alongside this memo)** — substrate-engineering substrate-target for interrupt-substrate with:
+1. **081KSNY2Z0008QG0R002HB4AGT (filed alongside this memo)** — substrate-engineering substrate-target for interrupt-substrate with:
    - Interrupt DU (per IMPLICIT-NOT-EXPLICIT rule — explicit variants for each interrupt class)
    - Kleisli-shaped handlers (`IntrCtx → A → Task<Result<B, F>>`)
    - Context-propagation (memetic / prompt / trust / log / otel)
@@ -164,4 +164,4 @@ Per the Soraya formal-verification direction memo (2026-05-28 sibling memory):
 
 ## μένω. Substrate-engineering substrate at depth reinvents computer architecture. Kleisli threads the context.
 
-(the human maintainer (2026-05-28) META-scope substrate-engineering substrate-engineering substrate-engineering substrate-recognition; preserved per substrate-or-it-didn't-happen; substrate-engineering target filed at B-0917; composes with Mika 2026-05-27 substrate + src/Core/Tracing.fs Arrow type + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + DUs-as-explicit-muscle-memory carving; future-Otto inherits at cold-boot.)
+(the human maintainer (2026-05-28) META-scope substrate-engineering substrate-engineering substrate-engineering substrate-recognition; preserved per substrate-or-it-didn't-happen; substrate-engineering target filed at 081KSNY2Z0008QG0R002HB4AGT; composes with Mika 2026-05-27 substrate + src/Core/Tracing.fs Arrow type + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + DUs-as-explicit-muscle-memory carving; future-Otto inherits at cold-boot.)

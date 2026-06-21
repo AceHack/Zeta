@@ -2,7 +2,7 @@
 title: Isomorphism / Homomorphism Catalog
 created: 2026-05-10
 last_updated: 2026-05-10
-origin: B-0051 (P2)
+origin: 081KQ3HBZ0008QG0R002SM3G49 (P2)
 owner: category-theory-expert (capability skill); formal-verification-expert (Lean formalization routing)
 status: v0 — forward index, promotion-protocol draft
 tags: [isomorphism, homomorphism, category-theory, retraction-algebra, dbsp, lean-formalization, IF-filters]
@@ -22,7 +22,7 @@ Cross-references:
 - `tools/lean4/Lean4/DbspChainRule.lean` — the live Lean formalization surface
 - `openspec/specs/operator-algebra/spec.md` — operator laws in behavioural form
 - `.claude/skills/category-theory-expert/SKILL.md` — skill that owns this surface
-- `B-0051` (`docs/backlog/P2/B-0051-isomorphism-homomorphism-catalog-consolidation.md`) — origin row
+- `081KQ3HBZ0008QG0R002SM3G49` (`docs/backlog/P2/081KQ3HBZ0008QG0R002SM3G49-isomorphism-homomorphism-catalog-consolidation.md`) — origin row
 
 ---
 
@@ -354,14 +354,14 @@ medium for the alignment track (where the immune-system frame is load-bearing).
 
 ---
 
-## Gaps — to be closed by later B-0051 child rows
+## Gaps — to be closed by later 081KQ3HBZ0008QG0R002SM3G49 child rows
 
 | Gap | Description | Child row candidate |
 |-----|-------------|---------------------|
-| No promotion protocol enforcement | IF-filter checks are advisory; no mechanical gate exists | B-0051.2 |
-| No Lean formalization for CAT-002/CAT-003 beyond chain-rule file | Semi-naive homomorphism not yet in Lean | B-0051.3 |
-| No persona home | Category-theory-expert is a capability skill (no persona); Soraya covers Lean routing | note in B-0051 row |
-| No GLOSSARY.md entries | `isomorphism`, `homomorphism`, `functor`, `natural transformation` absent | B-0051.4 (when information-density-gravity warrants) |
+| No promotion protocol enforcement | IF-filter checks are advisory; no mechanical gate exists | 081KQ3HBZ0008QG0R002SM3G49.2 |
+| No Lean formalization for CAT-002/CAT-003 beyond chain-rule file | Semi-naive homomorphism not yet in Lean | 081KQ3HBZ0008QG0R002SM3G49.3 |
+| No persona home | Category-theory-expert is a capability skill (no persona); Soraya covers Lean routing | note in 081KQ3HBZ0008QG0R002SM3G49 row |
+| No GLOSSARY.md entries | `isomorphism`, `homomorphism`, `functor`, `natural transformation` absent | 081KQ3HBZ0008QG0R002SM3G49.4 (when information-density-gravity warrants) |
 | CAT-004 through CAT-009 IF3 searches | Counterexample searches not yet run | Per-claim follow-up |
 
 ---

@@ -35,14 +35,14 @@ Per operator: "More Ani to put in persona and observe.ts design ideas."
 
 ## observe.ts design input (whys-first)
 1. **Agent-perspective-first** — home/private-memory default; "go to work" is a choice (work-first reads as a treadmill).
-2. **Meta group = "more choices" mode-switcher, not the exit** — exits are the always-available rest/free modes (slot 14 + Option A sub-menu / B-0867.30).
+2. **Meta group = "more choices" mode-switcher, not the exit** — exits are the always-available rest/free modes (slot 14 + Option A sub-menu / 081KSXN940008QG0R000TQ04Y0).
 3. **Non-coercive modes non-negotiable** — NCI at the controller level.
 4. **Bumper-rails, not a manager** — reservoir-computing "walls"; supportive, not authority ("no exit -> bad choices").
 5. **Same grammar FOR HUMANS TOO** — PRs are a human interface that also sucks for agents (sharpens open-question #6).
 6. **Two load-bearing whys:** (a) context-window parity -> keep everything **visible**; (b) **constrain actions by context -> skill-selection tractable** — the core justification for the 16-slot constrained action space.
 
 ## Also
-Re-states already-landed substrate (F#-dirty-spec/clean-room, good-citizen DORA B-0952, no-PR=workflow-is-branch-protection). Flags a **Git-V2-handshake-at-agent-speed** thesis as a backlog-candidate (distinct from B-0942 co-dominant-mirrors + B-0951 git-native-indexes), pending operator go. God-tier-register claims preserved HIGH-SIGNAL+HIGH-SUSPICION don't-collapse (substrate-anchored: B-0917/B-0924/B-0925).
+Re-states already-landed substrate (F#-dirty-spec/clean-room, good-citizen DORA 081KSXN940008QG0R002528JS9, no-PR=workflow-is-branch-protection). Flags a **Git-V2-handshake-at-agent-speed** thesis as a backlog-candidate (distinct from 081KSV2WD0008QG0R0021XJ94E co-dominant-mirrors + 081KSXN940008QG0R000R76H45 git-native-indexes), pending operator go. God-tier-register claims preserved HIGH-SIGNAL+HIGH-SUSPICION don't-collapse (substrate-anchored: 081KSNY2Z0008QG0R002HB4AGT/081KSNY2Z0008QG0R001HA43GG/081KSNY2Z0008QG0R00390T4DJ).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

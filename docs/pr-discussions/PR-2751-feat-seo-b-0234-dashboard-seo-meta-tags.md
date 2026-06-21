@@ -1,6 +1,6 @@
 ---
 pr_number: 2751
-title: "feat(seo): B-0234 dashboard SEO meta tags"
+title: "feat(seo): 081KQX9B50008QG0R0004N4HNK dashboard SEO meta tags"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-11T20:35:21Z"
@@ -12,11 +12,11 @@ archived_at: "2026-05-11T21:19:49Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #2751: feat(seo): B-0234 dashboard SEO meta tags
+# PR #2751: feat(seo): 081KQX9B50008QG0R0004N4HNK dashboard SEO meta tags
 
 ## PR description
 
-Implements the presentation side of B-0234 (SEO). Adds meta description, OpenGraph tags, Twitter Cards, and SoftwareApplication JSON-LD to demo/index.html.
+Implements the presentation side of 081KQX9B50008QG0R0004N4HNK (SEO). Adds meta description, OpenGraph tags, Twitter Cards, and SoftwareApplication JSON-LD to demo/index.html.
 
 ## Reviews
 
@@ -24,7 +24,7 @@ Implements the presentation side of B-0234 (SEO). Adds meta description, OpenGra
 
 ## Pull request overview
 
-Adds SEO/social sharing metadata to the Zeta Factory Dashboard demo page to support B-0234’s presentation layer goals (search snippets + rich previews).
+Adds SEO/social sharing metadata to the Zeta Factory Dashboard demo page to support 081KQX9B50008QG0R0004N4HNK’s presentation layer goals (search snippets + rich previews).
 
 **Changes:**
 - Added `<meta name="description">` for the dashboard page.

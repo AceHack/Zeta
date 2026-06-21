@@ -4,14 +4,14 @@ type: task
 state: done
 priority: P1
 slug: b-0969-cross-language-collation-c-rust-ts-ordinal-audit-non
-title: "B-0969 cross-language collation: C#/Rust/TS ordinal audit + non-ASCII golden-vector regen (un-mask the ASCII fixtures)"
+title: "081KT07NV0008QG0R001YDB73K cross-language collation: C#/Rust/TS ordinal audit + non-ASCII golden-vector regen (un-mask the ASCII fixtures)"
 created: 2026-06-07T11:53:23.034Z
 completed: 2026-06-14T02:55:11.663Z
 depends_on: []
-composes_with: ["B-0969"]
+composes_with: ["081KT07NV0008QG0R001YDB73K"]
 ---
 
-# B-0969 cross-language collation: C#/Rust/TS ordinal audit + non-ASCII golden-vector regen (un-mask the ASCII fixtures)
+# 081KT07NV0008QG0R001YDB73K cross-language collation: C#/Rust/TS ordinal audit + non-ASCII golden-vector regen (un-mask the ASCII fixtures)
 
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
@@ -19,7 +19,7 @@ composes_with: ["B-0969"]
 
 ## Purpose (suggested owner: LIOR)
 
-Bring the non-F# oracles into line with the F# binary/ordinal collation fix (B-0969) and un-mask the ASCII
+Bring the non-F# oracles into line with the F# binary/ordinal collation fix (081KT07NV0008QG0R001YDB73K) and un-mask the ASCII
 golden vectors. The F# `src/Core` ordering audit is COMPLETE (GSet/ZSet/IndexedZSet/Hierarchy/Residuated/
 Aggregate now ordinal; Bag already was). The other three languages + the shared vectors are the remaining
 legs.
@@ -44,5 +44,5 @@ gap" notes removed; C# globalization analyzers enforced (or a documented reason 
 
 ## Anchors
 
-- B-0969 (the standing rule + the completed F# fix) · `.claude/rules/culture-invariant-by-default.md` ·
-  `src/Core.TypeScript/{g-set,bag}/golden-vectors.json` (the masked fixtures) · B-0959 (4-oracle checklist).
+- 081KT07NV0008QG0R001YDB73K (the standing rule + the completed F# fix) · `.claude/rules/culture-invariant-by-default.md` ·
+  `src/Core.TypeScript/{g-set,bag}/golden-vectors.json` (the masked fixtures) · 081KSXN940008QG0R003FCQ7WT (4-oracle checklist).

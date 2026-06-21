@@ -69,7 +69,7 @@ import type { FourCornerOwnership } from "../workflow-engine/types";
 
 /** One backlog item, classified to just what the controller needs to decide. */
 export interface BacklogItem {
-  readonly id: string; // "B-0883"
+  readonly id: string; // "081KSNY2Z0008QG0R002JKH50A"
   readonly title: string;
   readonly ready: boolean; // deps met + unambiguous enough to execute now
   readonly ambiguous: boolean; // too big / unclear → decompose before doing
@@ -146,7 +146,7 @@ export interface World {
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
-  /** B-0891 slice 4: post-login cred adventure channel; absent when complete or unwired. */
+  /** 081KSNY2Z0008QG0R0008PN7RQ slice 4: post-login cred adventure channel; absent when complete or unwired. */
   readonly nodeSession?: NodeSessionState;
 }
 
@@ -262,7 +262,7 @@ export function observe(world: World): NextAction {
   if (op?.pendingFerry) return { kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON };
   if (op?.pendingMessage) return { kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON };
 
-  // First-session channel (B-0891 slice 4): outranks backlog until complete.
+  // First-session channel (081KSNY2Z0008QG0R0008PN7RQ slice 4): outranks backlog until complete.
   // NextAction union stays at nine kinds — cred adventure uses explore as the lead
   // rail; grammar-16 slot 4 carries the first-session sub-menu overlay.
   if (isFirstSessionPending(world)) {
@@ -575,7 +575,7 @@ export async function runLoop(
 // list of events; state is a projection of that log." Deterministic (DST): the
 // same log over the same initial world yields the same state, replayable. This is
 // the ledger/projection split (git-native events = ledger; everything else tails
-// it) at the in-memory layer — and the substrate GrammarPatch events (B-0867.26)
+// it) at the in-memory layer — and the substrate GrammarPatch events (081KSXN940008QG0R000ZAQT3W)
 // will live in.
 
 /** Project state from an event log: left-fold the actions over `simulate`.
@@ -604,30 +604,30 @@ if (import.meta.main) {
       label: "operator ferried verbatim → preserve_ferry beats everything",
       world: {
         operator: { pendingMessage: true, pendingFerry: true },
-        backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }],
+        backlog: [{ id: "081KSNY2Z0008QG0R002JKH50A", title: "encryption phase 2", ready: true, ambiguous: false }],
       },
     },
     {
       label: "operator spoke (no ferry) → respond_to_operator beats work",
       world: {
         operator: { pendingMessage: true, pendingFerry: false },
-        backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }],
+        backlog: [{ id: "081KSNY2Z0008QG0R002JKH50A", title: "encryption phase 2", ready: true, ambiguous: false }],
       },
     },
     {
       label: "ready work OFFERED as default (but free modes are in the menu)",
-      world: { backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }] },
+      world: { backlog: [{ id: "081KSNY2Z0008QG0R002JKH50A", title: "encryption phase 2", ready: true, ambiguous: false }] },
     },
     {
       label: "only ambiguous → decompose offered",
-      world: { backlog: [{ id: "B-0867", title: "workflow engine v1", ready: false, ambiguous: true }] },
+      world: { backlog: [{ id: "081KSKBP80008QG0R000B3Y19A", title: "workflow engine v1", ready: false, ambiguous: true }] },
     },
     {
       label: "grammar can't express it → edit_grammar (not trapped)",
       world: {
         backlog: [
           {
-            id: "B-0999",
+            id: "081KT2T2J0008QG0R0019YVX8M",
             title: "needs a 'merge duplicates' action",
             ready: false,
             ambiguous: false,
@@ -642,7 +642,7 @@ if (import.meta.main) {
     },
     {
       label: "backlog all blocked → explore (forward, not quiet) — rest still choosable",
-      world: { backlog: [{ id: "B-0500", title: "blocked on external dep", ready: false, ambiguous: false }] },
+      world: { backlog: [{ id: "081KRHWGX0008QG0R0025PX5SZ", title: "blocked on external dep", ready: false, ambiguous: false }] },
     },
   ];
 

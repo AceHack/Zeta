@@ -16,7 +16,7 @@ save "in either direction": nothing captured them. Per the subsystem's own disci
 *"declare each credential we need… adding a new credential type = manifest edit, NOT a code change"*),
 the fix is a manifest + handler entry, not new flow code.
 
-### Fixed (this PR, B-0852; TS, 92/92 installer tests green)
+### Fixed (this PR, 081KSKBP80008QG0R003AX2A69; TS, 92/92 installer tests green)
 
 - **`wifi`** — manifest entry `paths: ["/etc/NetworkManager/system-connections"]`, `personaScoped:false`,
   `required:false`. `WIFI_HANDLER` accepts JSON `{ssid, psk}` or `.nmconnection`/`wpa_supplicant` text;
@@ -115,5 +115,5 @@ OsInstalled → first-heartbeat-to-git → k8s up → ArgoCD up → charts recon
 - Idempotency / content-addressing — discipline #6, CAS/Merkle/BLAKE3 (don't-recompute).
 - Sagas — Garcia-Molina & Salem 1987 (`DurableSaga`; the fenced preserve→format→repersist flow).
 - Sneakernet / air-gapped update transport (USB ferries).
-- Internal: B-0852 (zflash cred substrate), B-0891 (QEMU 5-scenario matrix incl. reformat-with-retention
+- Internal: 081KSKBP80008QG0R003AX2A69 (zflash cred substrate), 081KSNY2Z0008QG0R0008PN7RQ (QEMU 5-scenario matrix incl. reformat-with-retention
   / reformat-from-scratch), #6996/#6998 (db + key noun-classes, one stream), #7000 (OS/USB/login events).

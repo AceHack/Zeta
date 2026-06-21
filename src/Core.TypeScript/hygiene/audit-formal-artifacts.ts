@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// audit-formal-artifacts.ts — B-0139 first slice: catalog formal verification
+// audit-formal-artifacts.ts — 081KQGDBJ0008QG0R002S9SWH6 first slice: catalog formal verification
 // artifacts and their substrate-status.
 //
 // Uses `git ls-files` (avoids worktree duplication) and a single-pass
@@ -119,7 +119,7 @@ function emitMarkdown(artifacts: FormalArtifact[]): void {
   console.log(`# Formal Artifact Catalog (${nowIso()})`);
   console.log("");
   console.log(
-    "B-0139 first-slice output. Scans Lean4, TLA+, Z3, Alloy files and",
+    "081KQGDBJ0008QG0R002S9SWH6 first-slice output. Scans Lean4, TLA+, Z3, Alloy files and",
   );
   console.log(
     "formal test harnesses. Cross-references against docs/ for substrate-status.",

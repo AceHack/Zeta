@@ -1,6 +1,6 @@
 ---
 pr_number: 3227
-title: "shard(tick): 2026Z \u2014 BACKLOG.md generated-index drift cleanup (B-0517/B-0518/B-0519)"
+title: "shard(tick): 2026Z \u2014 BACKLOG.md generated-index drift cleanup (081KRHWGX0008QG0R0029X10F4/081KRHWGX0008QG0R001BHXH0M/081KRHWGX0008QG0R001HMWM1W)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-14T20:29:52Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-14T20:45:34Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3227: shard(tick): 2026Z — BACKLOG.md generated-index drift cleanup (B-0517/B-0518/B-0519)
+# PR #3227: shard(tick): 2026Z — BACKLOG.md generated-index drift cleanup (081KRHWGX0008QG0R0029X10F4/081KRHWGX0008QG0R001BHXH0M/081KRHWGX0008QG0R001HMWM1W)
 
 ## PR description
 
@@ -22,12 +22,12 @@ Tick 2026-05-14T20:26Z shard. Substantive work in [#3226](https://github.com/Luc
 
 ## What landed
 
-- [#3226](https://github.com/Lucent-Financial-Group/Zeta/pull/3226) — regen of `docs/BACKLOG.md` adding B-0517/B-0518/B-0519 to the auto-generated index. Pure regen; no per-row file changes.
+- [#3226](https://github.com/Lucent-Financial-Group/Zeta/pull/3226) — regen of `docs/BACKLOG.md` adding 081KRHWGX0008QG0R0029X10F4/081KRHWGX0008QG0R001BHXH0M/081KRHWGX0008QG0R001HMWM1W to the auto-generated index. Pure regen; no per-row file changes.
 - This shard.
 
 ## Prior-tick PRs status
 
-- [#3221](https://github.com/Lucent-Financial-Group/Zeta/pull/3221) (chore(b-0502) launchd plist) — **MERGED** as `eb81404`. Closes B-0441 AC #2.
+- [#3221](https://github.com/Lucent-Financial-Group/Zeta/pull/3221) (chore(b-0502) launchd plist) — **MERGED** as `eb81404`. Closes 081KRFA460008QG0R00229616S AC #2.
 - [#3222](https://github.com/Lucent-Financial-Group/Zeta/pull/3222) (shard 2010Z) — still wait-ci, autoMerge armed.
 
 ## Branch-state contamination — 2 new incidents this tick
@@ -65,7 +65,7 @@ Tick shard file documenting the 2026-05-14T20:26Z autonomous-loop tick. Records 
 
 **Changes:**
 - Adds a new tick-history file under `docs/hygiene-history/ticks/2026/05/14/` per per-tick discipline
-- Documents the BACKLOG.md drift investigation that surfaced B-0517/B-0518/B-0519 missing from the generated index
+- Documents the BACKLOG.md drift investigation that surfaced 081KRHWGX0008QG0R0029X10F4/081KRHWGX0008QG0R001BHXH0M/081KRHWGX0008QG0R001HMWM1W missing from the generated index
 - Captures two new branch-contamination patterns and the `gh pr create --head` defense
 
 ## General comments

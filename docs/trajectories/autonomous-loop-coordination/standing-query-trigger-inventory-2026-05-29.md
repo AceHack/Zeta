@@ -4,7 +4,7 @@ Status: first-pass inventory; source wiring not started
 Claim:
 `docs/claims/codex-loop-standing-query-trigger-inventory-20260529.md`
 Grounding backlog:
-`docs/backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
+`docs/backlog/P1/081KQZVQW0008QG0R001FG05RZ-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md`
 
 ## Boundary
 
@@ -71,5 +71,5 @@ The next source patch should keep the same authority boundary:
 - Add claim-path collision signals from remote claim files first, with local
   worktree dirt used as secondary evidence.
 
-This keeps B-0250's detect-trigger-repair lane pointed at reusable health
+This keeps 081KQZVQW0008QG0R001FG05RZ's detect-trigger-repair lane pointed at reusable health
 signals rather than one-off heartbeat narration.

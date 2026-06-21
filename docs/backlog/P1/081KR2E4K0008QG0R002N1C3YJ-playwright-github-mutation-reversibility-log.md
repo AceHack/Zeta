@@ -1,6 +1,5 @@
 ---
-id: B-0322
-zetaid: 081KR2E4K0008QG0R002N1C3YJ
+id: 081KR2E4K0008QG0R002N1C3YJ
 priority: P1
 status: closed
 title: "Mutation reversibility drain log — inverse-action record for every UI mutation"
@@ -24,7 +23,7 @@ mechanical undo.
 
 ## Why
 
-B-0064 Phase 2 requires every mutation to have a documented
+081KQ8P5D0008QG0R0010FP5SY Phase 2 requires every mutation to have a documented
 inverse. This log is the substrate that makes reversibility
 auditable. Without it, the agent's UI mutations are
 fire-and-forget — a trust violation.
@@ -51,7 +50,7 @@ fire-and-forget — a trust violation.
      (JSONL format, one entry per line, append-only).
   3. Exports a `revert(entryId)` function that reads the
      inverse action and executes it via the mutation helper
-     (B-0321), then marks the entry as "reverted".
+     (081KR2E4K0008QG0R000YH9DC6), then marks the entry as "reverted".
   4. Exports a `listPending()` function that returns all
      entries with status "applied" (not yet reverted).
 - The default log path is under hygiene-history, so actual
@@ -61,20 +60,20 @@ fire-and-forget — a trust violation.
 ## Done-criteria
 
 - [x] `tools/playwright/github-ui/drain-log.ts` exists.
-- [x] Log entries are written on every mutation via B-0321.
+- [x] Log entries are written on every mutation via 081KR2E4K0008QG0R000YH9DC6.
 - [x] `revert()` function can mechanically undo a logged
       mutation.
 - [x] Default log path lives under `docs/hygiene-history/`;
       actual mutation entries are committed when produced.
 
-## Pre-start checklist (B-0322 prior-art + dependency check)
+## Pre-start checklist (081KR2E4K0008QG0R002N1C3YJ prior-art + dependency check)
 
-Prior-art surfaces searched: B-0321 PR #2502 (merged 2026-05-10), mutate.ts
+Prior-art surfaces searched: 081KR2E4K0008QG0R000YH9DC6 PR #2502 (merged 2026-05-10), mutate.ts
 drain-log entry shape already prototyped there. No competing implementation
-found. Depends-on B-0321 is fulfilled. Inverse-action mapping already in
+found. Depends-on 081KR2E4K0008QG0R000YH9DC6 is fulfilled. Inverse-action mapping already in
 mutate.ts.
 
 ## What this row does NOT do
 
-- Does NOT implement the mutation itself — that is B-0321.
+- Does NOT implement the mutation itself — that is 081KR2E4K0008QG0R000YH9DC6.
 - Does NOT auto-revert on failure — reversion is explicit.

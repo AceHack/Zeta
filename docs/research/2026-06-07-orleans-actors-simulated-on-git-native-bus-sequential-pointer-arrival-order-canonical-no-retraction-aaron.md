@@ -14,7 +14,7 @@ An Orleans **virtual actor (grain)** is, operationally, a **single-threaded mail
 at a time in arrival order.** That is *exactly*:
 
 ```
-git-native bus (B-0954)  =  the grain's mailbox        (an append-ordered ZetaId-keyed message stream)
+git-native bus (081KSXN940008QG0R00171YAZW)  =  the grain's mailbox        (an append-ordered ZetaId-keyed message stream)
 sequential read pointer  =  the grain's single-threaded turn loop (process message N, then N+1, …)
 arrival order            =  the CANONICAL total order of events for this actor
 no retraction            =  append-only; you don't undo a processed message — you emit a COMPENSATING
@@ -47,7 +47,7 @@ Picking the lane is the decision the cross-cell DU already declares (Commutative
 the transition order-independently, else SerializedSaga). **Orleans-on-the-bus is how the SerializedSaga arm
 is actually built** — and it stays **DST-replayable** (replay the log from the start through the pointer ⇒
 same actor state), so even the serialized side keeps determinism. It also realizes the **Loom** cross-cell
-saga layer's mechanism, and composes with **B-0976** (self-evolving saga / serialized deferred-execution
+saga layer's mechanism, and composes with **081KT07NV0008QG0R003BE6MJ2** (self-evolving saga / serialized deferred-execution
 Bonsai — resume-not-replay): the grain's behavior can be a Bonsai closure resumed at the pointer.
 
 ## Why this is the right shape (not just convenient)
@@ -83,7 +83,7 @@ new, e.g. expected content-hash → new content-hash on the content-addressed st
 mid-write simply **never commits** — the row stays at its prior value, and any reader/writer **retries via
 CAS**. No corruption, no need for single-activation, **lock-free** (manifesto §2 wait/lock-free). So for
 actors whose state is per-row CAS-able, *"maybe we don't need Orleans."* This is already our direction:
-**B-0962** (typed claim-lock coordination, **optimistic CAS, deadlock-free by construction**), **SlateDB**
+**081KT07NV0008QG0R002KWQS05** (typed claim-lock coordination, **optimistic CAS, deadlock-free by construction**), **SlateDB**
 (CAS-manifest + `writer_epoch` fencing — PRIOR-ART-LIST), and content-addressing itself (CAS = "swap iff the
 expected content hash still holds").
 
@@ -97,7 +97,7 @@ remains the simulation lens over both.
 ## Ties
 
 - `2026-06-07-cells-as-geodes-...-cross-cell-sagas-as-partitioned-orleans-actors` (the lane this builds) ·
-  **B-0954** (git-native cross-machine agent bus — the mailbox) · **B-0976** (self-evolving serialized saga
+  **081KSXN940008QG0R00171YAZW** (git-native cross-machine agent bus — the mailbox) · **081KT07NV0008QG0R003BE6MJ2** (self-evolving serialized saga
   / Bonsai deferred execution — the grain behavior) · Loom (cross-cell saga layer) · `GSet`/`LwwMap`/`Rga`
   (the CommutativeView complement) · DST (pointer + log ⇒ replayable state) · the AP-vs-CP / commutative-vs-
   serialized split. Backlogged: an actor-cursor over the bus (sequential pointer, arrival-canonical, compensation-only).

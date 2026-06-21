@@ -90,7 +90,7 @@ docs(registry): Bag → 4/4 (C# #6387 merged); Z-set TS reference in-fl…
 Accuracy bump reflecting merged reality on the algebra ladder:
 - Bag is now 4/4 (TS #6364 + Rust #6367 + F# #6385 + C# #6387) — was 3/4.
   Tier 1/2 per-lang golden-vector replay; F#/C# use ordinal string order
-  (fixes the G-Set Comparer.Default culture gap, B-0969).
+  (fixes the G-Set Comparer.Default culture gap, 081KT07NV0008QG0R001YDB73K).
 - Z-set TS cell ❌ → 🚧: TS reference + z-set/golden-vectors.json in-flight
   (#6389); F# engine ZSet.fs exists; C# binding + native Rust pending.
 

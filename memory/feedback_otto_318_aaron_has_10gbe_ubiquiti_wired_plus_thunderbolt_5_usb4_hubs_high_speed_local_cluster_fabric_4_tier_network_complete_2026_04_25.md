@@ -35,7 +35,7 @@ These speeds are **cluster-fabric class**. Approaching what data-center backbone
 - **Otto-301 (hardware-bootstrap)** — network FULLY hardware-complete across 4 tiers + multiple local-interconnect standards.
 - **Otto-314 / Otto-317** — network primitives, now extended with wired tier.
 - **Otto-316 (compute fleet + OCuLink)** — pairs naturally with TB5 fabric: distributed cluster + flexible GPU placement + high-speed coordination.
-- **B-0009 (substrate-IP-rotation)** — still moot under RNS+multi-tier deployment; identity is logical (Destination Hash) regardless of which physical tier carries packets.
+- **081KQ0YZ80008QG0R0000HSTWD (substrate-IP-rotation)** — still moot under RNS+multi-tier deployment; identity is logical (Destination Hash) regardless of which physical tier carries packets.
 
 ## Operational implications
 

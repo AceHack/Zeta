@@ -83,6 +83,6 @@ Sibling profile: `docs/pitch/elon-negotiation-profile.md`.
 - Economy substrate (full mechanism):
   `docs/research/2026-05-30-joins-are-threads-of-time-unified-stream-architecture-crdt-default-opt-in-constraint-english-joins-economy-reduction-mika-aaron.md`
 - Sibling pitch: `docs/pitch/elon-negotiation-profile.md`
-- Composes with: the encryption-budget substrate (B-0646 / B-0840 / Adinkras B-0623),
+- Composes with: the encryption-budget substrate (081KRW63S0008QG0R001Z10PVV / 081KSGS9H0008QG0R0006F4BGX / Adinkras 081KRW63S0008QG0R000QJR08H),
   `additive-not-zero-sum`, `only-way-to-lose-is-not-to-play`, and the
   alignment-or-attack-vector principle.

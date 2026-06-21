@@ -33,7 +33,7 @@ Per substrate-or-it-didn't-happen (multi-AI architecture review). Applied **asym
 
 **Sharpest keepers** — cross-repo-join saga correctness: incremental saga-state persistence; idempotent + resumable compensations; and the correct pushback that 128-bit unique IDs prevent *identity collision* not *commit failure* (the saga must be correct regardless of failure rate; the IDs' real role is idempotent-retry-via-identity-check, not a rarity guarantee). Aaron's answer — DUs-referenced-by-saga compensating workflows + DST seed-reproducible fault-injection — is the correctness gate.
 
-Composes with: resume 4-oracle byte-lock (#6446–#6464) · the algebra ladder + generic-math retrofit (#6467–#6475) · agent-bus B-0954 · the cross-repo-join saga work · DST discipline · the hexagonal + explicit-DU rules.
+Composes with: resume 4-oracle byte-lock (#6446–#6464) · the algebra ladder + generic-math retrofit (#6467–#6475) · agent-bus 081KSXN940008QG0R00171YAZW · the cross-repo-join saga work · DST discipline · the hexagonal + explicit-DU rules.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

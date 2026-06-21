@@ -1,16 +1,15 @@
 ---
-id: B-0380
-zetaid: 081KR50HA0008QG0R003ESW3MH
+id: 081KR50HA0008QG0R003ESW3MH
 priority: P3
 status: closed
 title: Controlled-vocabulary pass — define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" (Otto-286 precision before any research begins)
 tier: research-grade
 effort: S
-ask: decomposition of B-0023
+ask: decomposition of 081KQ0YZ80008QG0R003EJQZ1M
 created: 2026-05-09
 last_updated: 2026-05-10
 resolved: 2026-05-10
-resolved_by: "PR closes B-0380: docs/aurora/quant-austrian-vocabulary.md — four-term vocabulary with include/exclude/falsification-criterion per term"
+resolved_by: "PR closes 081KR50HA0008QG0R003ESW3MH: docs/aurora/quant-austrian-vocabulary.md — four-term vocabulary with include/exclude/falsification-criterion per term"
 depends_on: []
 composes_with: [081KQ0YZ80008QG0R003EJQZ1M, 081KR50HA0008QG0R000M4H35K, 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP, 081KR50HA0008QG0R000467SWT, 081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ, 081KR50HA0008QG0R000M838VA]
 parent: 081KQ0YZ80008QG0R003EJQZ1M
@@ -19,12 +18,12 @@ type: research
 
 ---
 
-# B-0380 — Controlled-vocabulary pass for quant × Austrian synthesis
+# 081KR50HA0008QG0R003ESW3MH — Controlled-vocabulary pass for quant × Austrian synthesis
 
 ## What
 
 Produce a committed glossary entry (or standalone doc) that defines
-the four load-bearing terms in B-0023 with Otto-286 precision:
+the four load-bearing terms in 081KQ0YZ80008QG0R003EJQZ1M with Otto-286 precision:
 
 1. **"Quant-grade mathematical rigor"** — what standard must a
    formalization meet? (Itô-calculus-level SDE? Measure-theoretic
@@ -61,13 +60,13 @@ the four load-bearing terms in B-0023 with Otto-286 precision:
 
 ## Why first
 
-Otto-286: without precise definitions, the survey (B-0381) will
+Otto-286: without precise definitions, the survey (081KR50HA0008QG0R000M4H35K) will
 miscategorize partial attempts (e.g., Saifedean stock-to-flow is
 empirical-embedding, not rigorous-proof; treating them as the same
 class inflates the "already done" count). The per-primitive
-assessments (B-0382–B-0386) cannot yield falsifiable claims without
+assessments (081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ) cannot yield falsifiable claims without
 a settled definition of what passes the formalization bar. The
-synthesis ADR (B-0387) depends on a uniform vocabulary to compare
+synthesis ADR (081KR50HA0008QG0R000M838VA) depends on a uniform vocabulary to compare
 across primitives.
 
 The synthesis gap's structural nature (foundations incompatibility
@@ -105,19 +104,19 @@ Expected: `quant-austrian-vocabulary.md` present.
 
 - [x] Prior-art search: no existing vocabulary doc found in
   `docs/aurora/`, skills, or memory files for this specific
-  quant × Austrian domain intersection. B-0021 carries a
+  quant × Austrian domain intersection. 081KQ0YZ80008QG0R0026WN385 carries a
   related methodology note (§methodology) but does not resolve
   these four definitions.
 - [x] Dependency-restructure: no `depends_on` — this is the root
-  atom for the B-0023 decomposition. Reciprocal `composes_with`
-  added to all child rows B-0381–B-0387.
+  atom for the 081KQ0YZ80008QG0R003EJQZ1M decomposition. Reciprocal `composes_with`
+  added to all child rows 081KR50HA0008QG0R000M4H35K–081KR50HA0008QG0R000M838VA.
 
 ## Composes with
 
-- B-0023 (parent): implements the "Otto-286 methodology" owed work item
-- B-0021 §methodology: the definitional-precision pass described there
+- 081KQ0YZ80008QG0R003EJQZ1M (parent): implements the "Otto-286 methodology" owed work item
+- 081KQ0YZ80008QG0R0026WN385 §methodology: the definitional-precision pass described there
   is the same discipline applied here to the quant × Austrian domain
-- B-0381 (downstream): survey classification depends on these definitions
-- B-0382–B-0386 (downstream): each formalizability assessment uses
+- 081KR50HA0008QG0R000M4H35K (downstream): survey classification depends on these definitions
+- 081KR50HA0008QG0R0016T4VMZ–081KR50HA0008QG0R0027DHVPQ (downstream): each formalizability assessment uses
   the "formalization" and "quant-grade rigor" definitions from this row
-- B-0387 (downstream): the synthesis ADR uses this vocabulary uniformly
+- 081KR50HA0008QG0R000M838VA (downstream): the synthesis ADR uses this vocabulary uniformly

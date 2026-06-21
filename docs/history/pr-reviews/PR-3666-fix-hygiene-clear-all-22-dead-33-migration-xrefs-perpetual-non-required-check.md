@@ -29,7 +29,7 @@
 
 ## Summary
 
-The `lint (§33 migration xrefs)` check has been firing as a non-required failure on **every PR this session** (PRs #3626, #3628, #3631, #3636, #3639, #3641, #3646, #3647, #3650, #3652, #3653, #3654, #3657, #3661, #3662, #3663). Root cause: the `docs/research/` → `memory/persona/otto/conversations/` migration ([B-0533](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0533-section-33-migration-xrefs-audit-script-and-ci-gate-2026-05-15.md)) left 22 dead references across 18 files.
+The `lint (§33 migration xrefs)` check has been firing as a non-required failure on **every PR this session** (PRs #3626, #3628, #3631, #3636, #3639, #3641, #3646, #3647, #3650, #3652, #3653, #3654, #3657, #3661, #3662, #3663). Root cause: the `docs/research/` → `memory/persona/otto/conversations/` migration ([081KRMEXM0008QG0R000K25MXS](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/081KRMEXM0008QG0R000K25MXS-section-33-migration-xrefs-audit-script-and-ci-gate-2026-05-15.md)) left 22 dead references across 18 files.
 
 **Mechanical bulk fix**: 12 unique target filenames substituted in-place in 18 source files. Each substitution is `docs/research/<NAME>.md` → `memory/persona/otto/conversations/<NAME>.md` for a SPECIFIC filename (no blanket replacement of `docs/research/` — only the 12 known-migrated filenames).
 
@@ -45,7 +45,7 @@ The `lint (§33 migration xrefs)` check has been firing as a non-required failur
 ```
 18 files changed, 22 insertions(+), 22 deletions(-)
 - 1 .claude/rules/claim-acquire-before-worktree-work.md
-- 6 docs/backlog/P*/B-*.md (B-0003, B-0061, B-0239, B-0313, B-0400, B-0001, B-0196, B-0002 — 8 backlog rows total; some have 2 hits)
+- 6 docs/backlog/P*/B-*.md (081KQ0YZ80008QG0R001QJJTVF, 081KQ8P5D0008QG0R001BH93SA, 081KQX9B50008QG0R001W40ZH8, 081KR2E4K0008QG0R00289GE8Z, 081KR7JY10008QG0R000R503K2, 081KPYCJH0008QG0R003MDS51N, 081KQTPYE0008QG0R001W237MZ, 081KQ0YZ80008QG0R002T6TM7Z — 8 backlog rows total; some have 2 hits)
 - 9 memory/feedback_*.md
 - 1 memory/CURRENT-aaron.md
 - 1 memory/user_*.md
@@ -55,7 +55,7 @@ The `lint (§33 migration xrefs)` check has been firing as a non-required failur
 
 The other 4 perpetual non-required-check failures remain:
 
-- `lint (backlog ID uniqueness)` — B-0498 collision already scoped at [B-0545](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)
+- `lint (backlog ID uniqueness)` — 081KRHWGX0008QG0R001XFRAHC collision already scoped at [081KRMEXM0008QG0R000ARAR7P](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md)
 - `lint (tsc tools)` — needs separate investigation
 - `check docs/BACKLOG.md generated-index drift` — needs regen pass
 - `check MEMORY.md generated-index drift` — needs regen pass

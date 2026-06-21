@@ -1,7 +1,7 @@
 /**
  * tools/github-accelerator-measurement/measure.test.ts
  *
- * Tests for B-0904 Phase 2 measurement substrate.
+ * Tests for 081KSNY2Z0008QG0R001JQABB4 Phase 2 measurement substrate.
  *
  * Tests parsing + computation + interpretation; gh CLI invocation
  * tested by integration (manual run + checking observable behavior).
@@ -185,7 +185,7 @@ describe("interpretMetrics", () => {
 });
 
 describe("formatResult", () => {
-  test("success result formats with rowId B-0904", () => {
+  test("success result formats with rowId 081KSNY2Z0008QG0R001JQABB4", () => {
     const formatted = formatResult({
       kind: "success",
       window: { humanReadable: "test", since: "2026-05-28T00:00:00Z", author: "any" },
@@ -201,7 +201,7 @@ describe("formatResult", () => {
       },
     });
     expect(formatted.exitCode).toBe(0);
-    expect(formatted.stdout).toContain("B-0904");
+    expect(formatted.stdout).toContain("081KSNY2Z0008QG0R001JQABB4");
     expect(formatted.stdout).toContain("Phase 2");
   });
 

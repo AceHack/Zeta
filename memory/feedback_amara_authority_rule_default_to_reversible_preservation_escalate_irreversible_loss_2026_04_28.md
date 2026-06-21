@@ -109,7 +109,7 @@ sampled 23 of the differing files and classified 19/23 as
 `ALREADY-COVERED`. That was calibration data, not proof. The
 post-Theme-A diff grew to 59 files; the sampling never covered
 gate.yml's PR #80 cache architecture nor codeql-config.yml's
-B-0073 obj/bin ignores. Both turned out to be unique
+081KQ8P5D0008QG0R002RYXE89 obj/bin ignores. Both turned out to be unique
 AceHack-side substrate.
 
 This extends the **Class-Count Validity Drift** family

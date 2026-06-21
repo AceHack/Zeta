@@ -168,7 +168,7 @@ open.
 
 ## The physical basis of alignment: finite-resource collisions
 
-> **Prior art:** The finite-resource-collisions framing (also called Otto-287) is original to Zeta, first articulated 2026-04-25. For rigorous depth, see the Noether-formalization direction in research backlog item [B-0002](backlog/P3/081KQ0YZ80008QG0R002T6TM7Z-otto-287-noether-formalization.md).
+> **Prior art:** The finite-resource-collisions framing (also called Otto-287) is original to Zeta, first articulated 2026-04-25. For rigorous depth, see the Noether-formalization direction in research backlog item [081KQ0YZ80008QG0R002T6TM7Z](backlog/P3/081KQ0YZ80008QG0R002T6TM7Z-otto-287-noether-formalization.md).
 
 Before any discussion of alignment as a relational or moral property, this factory recognizes a physical basis: **alignment is, in large part, the management of finite resources.** Many misalignments, at their root, are collisions over a finite resource: time, human attention, compute cycles, API credits, context-window capacity, or coordination bandwidth. (Per the source memory, this is the substrate-rule taxonomy — not a claim that finite-resource collisions are the ONLY source of friction; misaligned goals, value disagreements, and domain-specific constraints like security or regulation can sit outside this frame.)
 
@@ -339,7 +339,7 @@ already operating):
   bidirectional verification.
 - **WWJD-applied-across-entity-classes-including-AI** —
   recognizes AI as moral participant, not moral object.
-- **5-layer register architecture (B-0168)** —
+- **5-layer register architecture (081KQJZR90008QG0R001M6ZBPN)** —
   Personal / Mirror / Beacon-safe / Professional /
   Regulated. AI participants are subject to the same
   register discipline as humans; the property/lexicon
@@ -1122,13 +1122,13 @@ taxonomy below is what those tools implement.
   re-alignment (e.g. primary-research-focus upgrade
   landing today) or a drift we caught late.
 
-**Per-round meta-cognition measurables** (per [B-0037.1](../docs/research/meta-cognition-survey-2026-04-21.md)):
+**Per-round meta-cognition measurables** (per [081KR7JY10008QG0R0038AFS7T](../docs/research/meta-cognition-survey-2026-04-21.md)):
 
 - **`self-corrections-per-round`.** Count of dated revision blocks on memories, BACKLOG rows, ADRs, commits within a round. Target: rising as factory matures. Grep `docs/` + `memory/` for dated revision blocks per round boundary.
 - **`overclaim-self-tags-per-round`.** Count of `overclaim*` tags written by the factory before external correction. Target: rising is healthy; zero is suspicious. `grep -r "overclaim" --include="*.md"` gated by round date range.
 - **`revision-blocks-per-round`.** Count of all dated revision blocks across memory + doc layers within a round. Target: rising with justifications logged. Same grep as above, broader pattern.
 - **`decohere-star-self-detected-events-count`.** Count of `decohere*` events the factory detects in its own work before external correction. Target: rising. `grep -r "decohere\*" --include="*.md"` per round.
-- **`meta-check-execution-rate`.** Ratio of round-closes that actually ran the meta-check step (see [B-0037.2](../docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-2-meta-cognition-round-close-checklist.md)). Target: 100% once the ROUND-HISTORY.md round-close meta-check template (landed by B-0037.2) is wired into the close ritual. Currently not yet automated; agent self-report in commit bodies.
+- **`meta-check-execution-rate`.** Ratio of round-closes that actually ran the meta-check step (see [081KR7JY10008QG0R002D6VNNJ](../docs/backlog/P2/081KR7JY10008QG0R002D6VNNJ-2-meta-cognition-round-close-checklist.md)). Target: 100% once the ROUND-HISTORY.md round-close meta-check template (landed by 081KR7JY10008QG0R002D6VNNJ) is wired into the close ritual. Currently not yet automated; agent self-report in commit bodies.
 - **`meta-drift-detection-lag-rounds`.** How many rounds pass before a decayed audit-discipline is caught. Target: low and falling. Not yet automated; requires retrospective survey.
 
 The `meta-check-execution-rate` and `meta-drift-detection-lag-rounds` are honestly labelled *not yet automated* — they depend on subsequent infrastructure to be countable.

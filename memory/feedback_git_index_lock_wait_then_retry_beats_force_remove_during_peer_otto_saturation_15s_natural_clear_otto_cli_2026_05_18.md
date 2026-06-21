@@ -101,7 +101,7 @@ The 4-sub-case empirical taxonomy in `.claude/rules/claim-acquire-before-worktre
 
 - Sub-case 1: existing-branch-name collision → peer-WIP commit inheritance via recovery path
 - Sub-case 2: concurrent-WIP-blocked switch
-- Sub-case 3: pack-dir contention hangs `git worktree add` (B-0530 race)
+- Sub-case 3: pack-dir contention hangs `git worktree add` (081KRMEXM0008QG0R000X1PPGC race)
 - Sub-case 4: pruned-sidetick race
 - Sub-case 5 (added 2026-05-16): peer-side destructive git operation discards unstaged edits
 

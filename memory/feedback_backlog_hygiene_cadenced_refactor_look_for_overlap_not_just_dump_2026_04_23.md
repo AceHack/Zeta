@@ -282,14 +282,14 @@ trajectory* the schema unblocks. Authoring rows with
 tooling catches up; reading the field is the agent's
 discipline until then.
 
-Example: B-0150 (timeseries domain expert + teacher persona)
+Example: 081KQGDBJ0008QG0R003PZFA49 (timeseries domain expert + teacher persona)
 should `depends_on: ["Otto-task #323"]` (per-tool/language
-expert skills — which is the broader pattern B-0150
+expert skills — which is the broader pattern 081KQGDBJ0008QG0R003PZFA49
 instantiates; quotes required because of the `#`).
-B-0153 (pre-commit lint suite) should
-`depends_on: [B-0033, B-0086]` (sibling tooling concerns;
-B-NNNN values are unquoted-safe). B-0151 (RX researcher)
-should `depends_on: [B-0017]` (operational resonance
+081KQGDBJ0008QG0R000E10AAM (pre-commit lint suite) should
+`depends_on: [081KQ3HBZ0008QG0R0008RYCSX, 081KQ8P5D0008QG0R003BFZPRC]` (sibling tooling concerns;
+B-NNNN values are unquoted-safe). 081KQGDBJ0008QG0R003G89BKR (RX researcher)
+should `depends_on: [081KQ0YZ80008QG0R0003GAYYN]` (operational resonance
 dashboard with continuous UX research).
 
 The backlog becomes graph-shaped (a DAG once tooling lands)
@@ -301,19 +301,19 @@ implementation.
 ### 2026-05-01 audit — failure mode demonstrated
 
 This very session (2026-05-01), Otto filed 10 backlog rows
-(B-0144 through B-0153) WITHOUT running the pre-filing check.
+(081KQGDBJ0008QG0R0021E8YZV through 081KQGDBJ0008QG0R000E10AAM) WITHOUT running the pre-filing check.
 Quick post-hoc audit found:
 
-- **B-0150** (timeseries domain expert + teacher persona) +
-  **B-0151** (RX researcher persona) overlap with TaskList
+- **081KQGDBJ0008QG0R003PZFA49** (timeseries domain expert + teacher persona) +
+  **081KQGDBJ0008QG0R003G89BKR** (RX researcher persona) overlap with TaskList
   Otto-task #323 (per-tool/language expert skills) and
   Otto-task #351 (TS+Bun expert + teaching skill). Filed
   without checking the TaskList.
-- **B-0153** (pre-commit lint suite) overlaps with B-0033
+- **081KQGDBJ0008QG0R000E10AAM** (pre-commit lint suite) overlaps with 081KQ3HBZ0008QG0R0008RYCSX
   (otto discipline hooks system substrate as mechanism
-  claude-code-plugin) and B-0086 (port tools/hygiene python
+  claude-code-plugin) and 081KQ8P5D0008QG0R003BFZPRC (port tools/hygiene python
   to typescript/bun). Both existed; neither was integrated.
-- **B-0151** (RX researcher) overlaps with B-0017
+- **081KQGDBJ0008QG0R003G89BKR** (RX researcher) overlaps with 081KQ0YZ80008QG0R0003GAYYN
   (operational resonance dashboard with continuous UX
   research). Both existed; neither was integrated.
 
@@ -321,7 +321,7 @@ The audit IS the demonstration of the failure mode.
 
 ### Mechanization candidate
 
-Add as **class 14** in B-0153 (PR #1120) — "pre-filing
+Add as **class 14** in 081KQGDBJ0008QG0R000E10AAM (PR #1120) — "pre-filing
 similar-row grep check." Two viable mechanization shapes
 (the right git hook depends on whether the gate runs
 *before commit message authoring* or *during commit message
@@ -344,7 +344,7 @@ finalization*):
 
 Either shape works; the first (pre-commit + override
 flag) is simpler. Implementation choice deferred to
-B-0153's landing.
+081KQGDBJ0008QG0R000E10AAM's landing.
 
 The mechanization is straightforward; it's the discipline
 that's been missing, and the recurrence is the evidence.
@@ -449,7 +449,7 @@ free-text strings.
 
 #### Mechanization candidate
 
-Add as **class 15** in B-0153 — "memory-edge
+Add as **class 15** in 081KQGDBJ0008QG0R000E10AAM — "memory-edge
 target-existence lint." Sibling-shape to the existing
 `.github/workflows/memory-reference-existence-lint.yml`
 which currently validates that `memory/MEMORY.md` link

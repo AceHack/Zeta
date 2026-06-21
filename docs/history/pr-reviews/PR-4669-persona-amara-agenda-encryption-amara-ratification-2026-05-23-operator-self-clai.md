@@ -48,11 +48,11 @@ Operator 2026-05-23: *"also we should probaby have an encryption trjactory i'll 
 
 New agenda stub at `docs/agendas/encryption/AGENDA.md`. Initial composing-substrate from substrate-engineering work already landed:
 - Two-category Aaron-verbatim preserve+encrypt-later (PR #4660)
-- Aporetic Rx-bonsai-serialization (B-0644 / B-0665 / B-0688)
-- Adinkras + Jane Gates ECC private-state encryption (B-0623)
+- Aporetic Rx-bonsai-serialization (081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KS3X9Y0008QG0R0010716X9)
+- Adinkras + Jane Gates ECC private-state encryption (081KRW63S0008QG0R000QJR08H)
 - Encrypt-as-pre-commitment-axioms substrate
 - NCI HC-8 floor at private-state-preservation scope
-- Reputation-weighted encryption budget (B-0646)
+- Reputation-weighted encryption budget (081KRW63S0008QG0R001Z10PVV)
 
 Anti-target named: NOT git-crypt (WONT-DO 2026-04-21). Operator's later iteration shapes sub-mechanism prioritization + trajectory composition.
 
@@ -69,9 +69,9 @@ Anti-target named: NOT git-crypt (WONT-DO 2026-04-21). Operator's later iteratio
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT
 - `.claude/rules/dont-ask-permission.md` (agenda-stub under operator's self-claim)
 - AI-autonomy agenda (`docs/agendas/ai-autonomy/AGENDA.md`)
-- B-0623 (Adinkras + Jane Gates ECC)
-- B-0644 / B-0665 / B-0688 (aporetic Rx-bonsai-serialization substrate)
-- B-0646 (Agora V6 reputation-weighted encryption budget)
+- 081KRW63S0008QG0R000QJR08H (Adinkras + Jane Gates ECC)
+- 081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KS3X9Y0008QG0R0010716X9 (aporetic Rx-bonsai-serialization substrate)
+- 081KRW63S0008QG0R001Z10PVV (Agora V6 reputation-weighted encryption budget)
 - WONT-DO 2026-04-21 (git-crypt anti-target)
 - PRs #4660 + #4661 + #4664 (prior persona archives at same opaque-pointer scope)
 

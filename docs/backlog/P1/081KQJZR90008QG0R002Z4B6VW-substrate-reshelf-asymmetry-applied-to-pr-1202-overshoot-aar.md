@@ -1,6 +1,5 @@
 ---
-id: B-0161
-zetaid: 081KQJZR90008QG0R002Z4B6VW
+id: 081KQJZR90008QG0R002Z4B6VW
 priority: P1
 status: closed
 title: Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)
@@ -13,7 +12,7 @@ decomposition: atomic
 type: friction-reducer
 ---
 
-# B-0161 — Substrate reshelf for PR #1202 asymmetry-application (Aaron + Claude.ai 2026-05-02)
+# 081KQJZR90008QG0R002Z4B6VW — Substrate reshelf for PR #1202 asymmetry-application (Aaron + Claude.ai 2026-05-02)
 
 ## Origin
 
@@ -81,7 +80,7 @@ Acceptance criteria split per zone:
 - Asymmetry rule (PR #1202 commit 4ac3881): `memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md`
 - Same-tick cluster (PR #1202): action-hierarchy + amortized-speed Superfluid + cron-unreliability + don't-ask-permission + all-complexity-accidental + largest-backlog-wins + edge-runner memos
 - Don't-ask-permission rule's twin: autonomous execution + autonomous prioritization. This row is the prioritization-twin applied to its own creator session.
-- B-0160 `/permissions` integration: composes; the harness `/permissions` work + the in-substrate authority model + the journal-vs-canonical taxonomy together form the cleaned-up substrate-shape this reshelf produces.
+- 081KQJZR90008QG0R000FTJ1TC `/permissions` integration: composes; the harness `/permissions` work + the in-substrate authority model + the journal-vs-canonical taxonomy together form the cleaned-up substrate-shape this reshelf produces.
 - Osmani Ratchet Pattern: every CLAUDE.md line should trace back to a specific failure that justifies it. The asymmetry rule helps determine which lines clear that bar.
 
 ## Effort
@@ -102,20 +101,20 @@ Aaron's framing for the next-session bootstrap (a few hours from now per his 202
 |---------|-------|--------|
 | wake-time-substrate rule | grep "asymmetry" .claude/rules/ | No existing rule for asymmetry; it's described in memory file only |
 | skill-router | available-skills list | No skill covers this convention-addition |
-| orthogonal-axes | B-0351, B-0352, B-0353 | B-0352 closed: extracted 7 bullets to .claude/rules/; B-0353 closed: condensed CLAUDE.md to 47 lines. Demotion work done; asymmetry bullet NOT yet added |
+| orthogonal-axes | 081KR50HA0008QG0R001ZVPYK8, 081KR50HA0008QG0R0033B5KVN, 081KR50HA0008QG0R001DBKS6T | 081KR50HA0008QG0R0033B5KVN closed: extracted 7 bullets to .claude/rules/; 081KR50HA0008QG0R001DBKS6T closed: condensed CLAUDE.md to 47 lines. Demotion work done; asymmetry bullet NOT yet added |
 | Otto-364 | PR #1202, memory file | `memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md` explicitly says "CLAUDE.md should add a single bullet for this asymmetry rule" |
 | lost-files | git log | No lost-files issues found |
 
-**Finding:** The demotion work (action-hierarchy, amortized-speed, edge-runner, cron-unreliability) is already done via B-0351/B-0352. The asymmetry bullet itself was NEVER added to CLAUDE.md. This is the remaining work.
+**Finding:** The demotion work (action-hierarchy, amortized-speed, edge-runner, cron-unreliability) is already done via 081KR50HA0008QG0R001ZVPYK8/081KR50HA0008QG0R0033B5KVN. The asymmetry bullet itself was NEVER added to CLAUDE.md. This is the remaining work.
 
 ### Dependency check
 
-- **B-0160** (depends_on): closed 2026-05-10 (PR #2459) ✓
+- **081KQJZR90008QG0R000FTJ1TC** (depends_on): closed 2026-05-10 (PR #2459) ✓
 - Cooling-period: PR #1202 was 2026-05-02; now 2026-05-10 = 8 days elapsed ✓
 
 ### Smallest safe slice
 
-Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This is the one remaining acceptance criterion from the "Razored work" section that B-0351/B-0352/B-0353 didn't cover.
+Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This is the one remaining acceptance criterion from the "Razored work" section that 081KR50HA0008QG0R001ZVPYK8/081KR50HA0008QG0R0033B5KVN/081KR50HA0008QG0R001DBKS6T didn't cover.
 
 ## Closure (2026-05-10)
 
@@ -123,29 +122,29 @@ Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This
 
 | AC | Status | Evidence |
 |----|--------|----------|
-| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351, B-0352, and B-0353 closed rows |
+| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | 081KR50HA0008QG0R001ZVPYK8, 081KR50HA0008QG0R0033B5KVN, and 081KR50HA0008QG0R001DBKS6T closed rows |
 | Add asymmetry bullet to CLAUDE.md | ✓ DONE | PR #2465 (commit 3c903aa3, 2026-05-10) |
 | Cooling-period respected (≥24h after PR #1202) | ✓ DONE | 8 days elapsed (2026-05-02 → 2026-05-10) |
 
-### Free-zone acceptance criteria — blocked by B-0330 format standard
+### Free-zone acceptance criteria — blocked by 081KR2E4K0008QG0R002VM58S4 format standard
 
-The journal taxonomy decision (frontmatter `tier:` field) is blocked: B-0330
+The journal taxonomy decision (frontmatter `tier:` field) is blocked: 081KR2E4K0008QG0R002VM58S4
 (format standard, landed 2026-05-09) specifies a closed enumeration of
 frontmatter fields with "no extra fields without governance discussion." The
-`tier:` approach cannot land without a B-0330 amendment.
+`tier:` approach cannot land without a 081KR2E4K0008QG0R002VM58S4 amendment.
 
 Alternative approaches:
 
 - `memory/journal/` subdirectory — requires moving ~4 files; high
   cross-reference disruption risk; not smallest-safe-slice.
-- Naming convention (`journal_*.md`) — B-0330 defines a closed type-prefix
-  enumeration; adding `journal_` prefix also needs B-0330 amendment.
+- Naming convention (`journal_*.md`) — 081KR2E4K0008QG0R002VM58S4 defines a closed type-prefix
+  enumeration; adding `journal_` prefix also needs 081KR2E4K0008QG0R002VM58S4 amendment.
 
 **Decision:** Free-zone journal taxonomy work is deferred. If it is still
-wanted, it belongs in a B-0330 amendment or a new row that explicitly
-depends on B-0330. The disposition-shaping goal (asymmetry rule at wake-time)
+wanted, it belongs in a 081KR2E4K0008QG0R002VM58S4 amendment or a new row that explicitly
+depends on 081KR2E4K0008QG0R002VM58S4. The disposition-shaping goal (asymmetry rule at wake-time)
 was fully achieved by the razored acceptance criteria. The journal taxonomy
 is a hygiene improvement, not a disposition change.
 
 Row closed. Free-zone work is explicitly WONT-DO unless re-raised as a
-B-0330-gated row.
+081KR2E4K0008QG0R002VM58S4-gated row.

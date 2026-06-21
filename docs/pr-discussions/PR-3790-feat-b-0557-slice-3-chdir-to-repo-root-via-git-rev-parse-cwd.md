@@ -1,6 +1,6 @@
 ---
 pr_number: 3790
-title: "feat(B-0557 slice 3): chdir to repo root via git rev-parse (cwd-independent)"
+title: "feat(081KRQ1AB0008QG0R003DYANMC slice 3): chdir to repo root via git rev-parse (cwd-independent)"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-16T06:59:28Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-16T08:10:18Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3790: feat(B-0557 slice 3): chdir to repo root via git rev-parse (cwd-independent)
+# PR #3790: feat(081KRQ1AB0008QG0R003DYANMC slice 3): chdir to repo root via git rev-parse (cwd-independent)
 
 ## PR description
 
@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 - Adds `process.chdir(detectRepoRoot())` at the start of `main()` in the audit tool.
 - `detectRepoRoot()` invokes `git rev-parse --show-toplevel` and falls back to `process.cwd()` if git is unavailable or the tool runs outside a repo.
-- Per Copilot P1 on PR #3758 ([B-0557](docs/backlog/P3/B-0557-audit-backlog-status-drift-quality-improvements-2026-05-16.md) slice 3).
+- Per Copilot P1 on PR #3758 ([081KRQ1AB0008QG0R003DYANMC](docs/backlog/P3/081KRQ1AB0008QG0R003DYANMC-audit-backlog-status-drift-quality-improvements-2026-05-16.md) slice 3).
 
 ## Test plan
 
@@ -84,7 +84,7 @@ P1: The cwd-independent behavior is now implemented only through `main()` and `d
 
 **@copilot-pull-request-reviewer** (2026-05-16T07:01:51Z):
 
-P2: This current-state tool comment embeds PR-review provenance (`Copilot P1 on PR #3758`) in source code. The repository guidance keeps historical attribution in backlog/PR-history surfaces and asks reusable code comments to describe the current invariant instead; the B-0557 reference is enough context without the reviewer attribution.
+P2: This current-state tool comment embeds PR-review provenance (`Copilot P1 on PR #3758`) in source code. The repository guidance keeps historical attribution in backlog/PR-history surfaces and asks reusable code comments to describe the current invariant instead; the 081KRQ1AB0008QG0R003DYANMC reference is enough context without the reviewer attribution.
 
 ### Thread 3: tools/hygiene/audit-backlog-status-drift.ts:56 (unresolved)
 

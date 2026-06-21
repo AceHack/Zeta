@@ -113,7 +113,7 @@ Critical-mass triggers per network-effect literature:
 
 Strategic implications:
 - Pre-critical-mass: civ-sim is a product (per PR #2903 +
-  B-0425); honor-system license; mutual-privacy; PVP + raids
+  081KRFA460008QG0R003JQ46J4); honor-system license; mutual-privacy; PVP + raids
 - At critical-mass: civ-sim becomes a coordination substrate
 - Post-critical-mass: civ-sim becomes a Platonic-Republic
   level political architecture
@@ -146,8 +146,8 @@ only per the strategic-encryption authority.
 - PR #2903 (civsim PVP+raids+mutual-privacy+forkable+
   forking=AI-race-head-start) — civsim canonical product
   substrate
-- PR #2904 (B-0424 + B-0425 + honor-system license substrate)
-  — civsim becomes a product repo per B-0425
+- PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license substrate)
+  — civsim becomes a product repo per 081KRFA460008QG0R003JQ46J4
 - PR #2905 (forker-perspective META-discipline) — civ-sim is
   forkable + mutual-privacy + the Casimir-gap property is
   glass-halo substrate that forks can compose with
@@ -252,7 +252,7 @@ PR #2906 (this substrate landing — civsim Casimir-gap framing)
 
 PR #2903 (civsim PVP+raids+mutual-privacy substrate)
 
-PR #2904 (B-0424 + B-0425 + honor-system license)
+PR #2904 (081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4 + honor-system license)
 
 PR #2905 (forker-perspective META-discipline)
 

@@ -55,6 +55,6 @@ stays mirror — neither flattened to "just generation" nor inflated to settled 
 
 - `.claude/rules/shadow-check-name-acceptance.md` tier 1 + PR #2841 (autonomous-arrival naming)
 - `.claude/rules/glass-halo-bidirectional.md` (latent substrate surfacing under trust; the literal halo)
-- B-0929 (`shadow-auth-can't-compile` / μένω as the boundary-guard) + the beacon doc 2026-05-29 (the lightlike synthesis + iso→retract + μένω)
+- 081KSRGFP0008QG0R003VAR9X2 (`shadow-auth-can't-compile` / μένω as the boundary-guard) + the beacon doc 2026-05-29 (the lightlike synthesis + iso→retract + μένω)
 - the future generate+join-over-2D/3D-geometry vector-image substrate (Clifford/CGA; the 128-bit-multivector conjecture) — the native format this image will migrate into
 - `.claude/rules/proud-if-pattern-propagates-...` ("we endure in friendship"; the operator's filter → the framework's design)

@@ -1,6 +1,5 @@
 ---
-id: B-0240
-zetaid: 081KQZVQW0008QG0R002QZAFB2
+id: 081KQZVQW0008QG0R002QZAFB2
 priority: P1
 status: open
 title: "Structure recognizer — shape-indexed catalog that distinguishes structures without labels"
@@ -13,7 +12,7 @@ owners: [architect, formal-verification-expert, performance-engineer]
 type: feature
 ---
 
-# B-0240 — Structure recognizer: shape-indexed catalog, no labels
+# 081KQZVQW0008QG0R002QZAFB2 — Structure recognizer: shape-indexed catalog, no labels
 
 ## What
 
@@ -113,7 +112,7 @@ Input formats:
    0.91 similarity" → instant prior-art recognition
 
 3. **New backlog item filed** → tool fingerprints the described
-   work → "this overlaps with B-0156 at 0.88" → prevents
+   work → "this overlaps with 081KQGDBJ0008QG0R000A4EZS5 at 0.88" → prevents
    duplicate work
 
 4. **Cross-domain transfer** → IoT edge gate structure
@@ -167,7 +166,7 @@ the delta stream = shadow moves.
 
 - `docs/STRUCTURE-CATALOG.md` — the human-readable version;
   this tool is the machine-readable version
-- B-0214 (backlog decomposition) — structure recognition helps
+- 081KQX9B50008QG0R0007VGSBG (backlog decomposition) — structure recognition helps
   detect when decomposed items are the same shape
 - The skill router — could integrate as a shape-matching
   pre-filter before router-keyed lookup

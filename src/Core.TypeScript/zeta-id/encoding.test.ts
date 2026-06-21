@@ -53,7 +53,7 @@ test("format output is filename-safe (Crockford alphabet only; no I/L/O/U, no sl
   }
 });
 
-// THE load-bearing property for the B-0956 time-ordering decision:
+// THE load-bearing property for the 081KSXN940008QG0R002FWR9B2 time-ordering decision:
 // numeric ZetaId order === lexicographic string order of the canonical form.
 test("encoding is SORT-PRESERVING: numeric order === string order", () => {
   const ids = sampleIds(3000).slice().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
@@ -118,9 +118,9 @@ test("isCanonical: format output is canonical; lenient/lowercase forms are not",
   expect(isCanonical("short")).toBe(false);
 });
 
-// Canonical cross-language fixture vectors (B-0682 §4): real ZetaIds packed via
-// DETERMINISTIC_ENV, with their hex + Crockford base32. Rust (B-0679) / Python
-// (B-0680) must reproduce these exactly.
+// Canonical cross-language fixture vectors (081KS3X9Y0008QG0R000W00V73 §4): real ZetaIds packed via
+// DETERMINISTIC_ENV, with their hex + Crockford base32. Rust (081KS3X9Y0008QG0R001Z8SBZJ) / Python
+// (081KS3X9Y0008QG0R002WGH8PJ) must reproduce these exactly.
 test("canonical vectors: pack → hex + base32 are stable and consistent", () => {
   const vectors: { obs: ZetaObservation; note: string }[] = [
     {
@@ -132,7 +132,7 @@ test("canonical vectors: pack → hex + base32 are stable and consistent", () =>
       },
     },
     {
-      note: "v1 / meta-coherence / workitem / standard / normal (B-0956 WorkItem)",
+      note: "v1 / meta-coherence / workitem / standard / normal (081KSXN940008QG0R002FWR9B2 WorkItem)",
       obs: {
         version: 1, timestamp: 1749200000000 as any, chromosome: 0, category: 8,
         firefly: 1, authority: { type: "Standard" }, persona: 2,

@@ -1,7 +1,7 @@
 /**
  * src/Core.TypeScript/workflow-engine/pairing.test.ts
  *
- * B-0914.4 — invariant tests for pairing tracker.
+ * 081KSNY2Z0008QG0R001YK61JQ.4 — invariant tests for pairing tracker.
  */
 
 import { describe, expect, it } from "bun:test";
@@ -50,7 +50,7 @@ const verification = (emissionId: string, atMs: number, verdict: VerificationVer
   verifiedAtMs: atMs,
 });
 
-describe("B-0914.4 pairing tracker substrate", () => {
+describe("081KSNY2Z0008QG0R001YK61JQ.4 pairing tracker substrate", () => {
   it("records an emission to empty state", () => {
     const result = recordEmission(EMPTY_PAIRING_STATE, emission("e1", 1000));
     expect(result.ok).toBe(true);

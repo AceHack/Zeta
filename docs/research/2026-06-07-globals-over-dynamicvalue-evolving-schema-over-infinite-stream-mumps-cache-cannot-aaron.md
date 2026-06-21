@@ -7,7 +7,7 @@ Aaron named. Faithful capture; Beacon-anchored.
 
 `Globals` no longer carries a parallel `Map<Path,'V>` store (the Rodney's-Razor finding). The MUMPS verbs
 now navigate **`DynamicValue` directly**: `set`/`get`/`kill`/`data`/`nextChild`($ORDER)/`nextNode`($QUERY)/
-`children`/`count`, ordinal subscript collation (B-0969), leaf-xor-object semantics (DynamicValue's nature;
+`children`/`count`, ordinal subscript collation (081KT07NV0008QG0R001YDB73K), leaf-xor-object semantics (DynamicValue's nature;
 `$DATA` ∈ {0,1,10}, not 11 — see the module note). One ragged tree in the system, not two. Leaf-agnostic, so
 `DynamicValue`-over-`SoftValue` leaves = the soft (probabilistic) sparse tensor for free, and a model
 `state_dict` (dotted-path → tensor) is navigable as a global — the human-readable model API.

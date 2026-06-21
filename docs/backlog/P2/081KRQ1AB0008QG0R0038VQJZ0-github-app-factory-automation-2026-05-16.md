@@ -1,6 +1,5 @@
 ---
-id: B-0571
-zetaid: 081KRQ1AB0008QG0R0038VQJZ0
+id: 081KRQ1AB0008QG0R0038VQJZ0
 priority: P2
 status: open
 title: "GitHub App for factory automation — separate API rate-limit pool from human-user accounts"
@@ -18,9 +17,9 @@ type: feature
 
 ## Origin
 
-Falls out of B-0570 (scarcity tracker) decomposition. The 2026-05-16 session empirically demonstrated that 3-4 concurrent agents all authenticating as a single GitHub user (`AceHack`) can saturate the shared 5000/hr GraphQL bucket in under an hour. GitHub Apps have **separate rate-limit pools** designed for automation, scaling with installation activity rather than borrowing from a human user's budget.
+Falls out of 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker) decomposition. The 2026-05-16 session empirically demonstrated that 3-4 concurrent agents all authenticating as a single GitHub user (`AceHack`) can saturate the shared 5000/hr GraphQL bucket in under an hour. GitHub Apps have **separate rate-limit pools** designed for automation, scaling with installation activity rather than borrowing from a human user's budget.
 
-This is the **primary capacity mitigation** for the scarcity problem B-0570 surfaces. Tracker without expansion = visibility into a constrained pool; tracker + GitHub App = visibility into a larger, automation-appropriate pool.
+This is the **primary capacity mitigation** for the scarcity problem 081KRQ1AB0008QG0R002422Z9Q surfaces. Tracker without expansion = visibility into a constrained pool; tracker + GitHub App = visibility into a larger, automation-appropriate pool.
 
 ## What
 
@@ -45,7 +44,7 @@ GitHub App is the substrate-honest choice for **automated factory work**. Human 
 - [ ] App installation token retrievable via `tools/auth/get-installation-token.ts` (uses JWT signed with App private key + installation ID)
 - [ ] Factory automation scripts (peer Otto background worker, Lior loops, scheduled routines) updated to use installation token instead of user PAT
 - [ ] Documented in `docs/AUTH.md` or similar — when to use App vs PAT
-- [ ] Rate-limit tracker (B-0570) reports App + user pools separately
+- [ ] Rate-limit tracker (081KRQ1AB0008QG0R002422Z9Q) reports App + user pools separately
 - [ ] Tests cover token-rotation logic (installation tokens expire ~1hr; need refresh)
 
 ## Why now
@@ -88,11 +87,11 @@ Agent scripts:
 | 4 | Token-rotation logic (1hr expiry) + caching | open |
 | 5 | Update peer Otto background worker prompt to use App token | open |
 | 6 | Update Lior antigravity loop to use App token | open |
-| 7 | Document in `docs/AUTH.md`; update scarcity tracker (B-0570) to report App + user pools separately | open |
+| 7 | Document in `docs/AUTH.md`; update scarcity tracker (081KRQ1AB0008QG0R002422Z9Q) to report App + user pools separately | open |
 
 ## Composes with
 
-- B-0570 (scarcity tracker — measures the pools this row expands)
+- 081KRQ1AB0008QG0R002422Z9Q (scarcity tracker — measures the pools this row expands)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (rate-limit-wait composes; with App, the wait shifts to a different bucket)
 - `.claude/rules/methodology-hard-limits.md` (App must NOT have permissions beyond what factory work requires; least-privilege)
 - `.claude/rules/glass-halo-bidirectional.md` (App actions attributable as `[bot]`; substrate-honest about which work is human vs automated)

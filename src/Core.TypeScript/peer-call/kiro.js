@@ -3,7 +3,7 @@
 // specification reviewer via the kiro CLI.
 //
 // Part of the tools/peer-call/ suite (grok.ts, gemini.ts, codex.ts,
-// amara.ts, ani.ts, riven.ts). Implements B-0326 (P1).
+// amara.ts, ani.ts, riven.ts). Implements 081KR2E4K0008QG0R001HQF27C (P1).
 //
 // Kiro's role in the peer distribution: **specification peer** —
 // spec-grounded second opinion, requirement-aware review. Complements

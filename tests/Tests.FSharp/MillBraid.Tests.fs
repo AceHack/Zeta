@@ -1,6 +1,6 @@
 module Zeta.Tests.MillBraidTests
 
-// B-1027's remaining step, answered HONESTLY: is the mill's weave a braid action? NO — and the
+// 081KTSZN10008QG0R001BW91GT's remaining step, answered HONESTLY: is the mill's weave a braid action? NO — and the
 // counterexample is the finding. A mill crossing (two adjacent strands averaging toward each other)
 // satisfies FAR COMMUTATIVITY but FAILS the Artin relation: averaging COLLAPSES history (a join),
 // while a braid PRESERVES it (who crossed over whom). So WEAVE and BRAID are now PROVABLY distinct

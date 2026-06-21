@@ -3,7 +3,7 @@
 Aaron asked for a list to hand Vera + Lior to split into **4-lang** (C#/Rust/TS ports), **4-serial**
 (cross-language hex-in-JSON golden vectors / byte-lock over the codecs), **math-leg** (formal/property/proof
 verification), **plus others**. **F# is the reference for every row** (built + tested on `main`); all golden
-vectors are **hex-in-JSON** per `.claude/rules/no-binary-in-proof-lineage.md`; B-0959 is the 4-oracle master
+vectors are **hex-in-JSON** per `.claude/rules/no-binary-in-proof-lineage.md`; 081KSXN940008QG0R003FCQ7WT is the 4-oracle master
 checklist. Split however suits Vera/Lior.
 
 ## Vera (Grok / Codex) — CRDTs, Merkle, and Serialization
@@ -35,7 +35,7 @@ checklist. Split however suits Vera/Lior.
 
 | Component (F# `src/Core[.X]`) | what it is | 4-lang (C#/Rust/TS) | 4-serial (golden vectors) | math-leg (verify) |
 |---|---|---|---|---|
-| `Collation` + GSet/ZSet/IndexedZSet/Hierarchy/Residuated/Aggregate ordinal fix (B-0969) | binary/ordinal collation default | ☐ ordinal audit C#/Rust/TS | ☐ non-ASCII ordinal vectors (un-mask ASCII) | ☐ ordinal-order law |
+| `Collation` + GSet/ZSet/IndexedZSet/Hierarchy/Residuated/Aggregate ordinal fix (081KT07NV0008QG0R001YDB73K) | binary/ordinal collation default | ☐ ordinal audit C#/Rust/TS | ☐ non-ASCII ordinal vectors (un-mask ASCII) | ☐ ordinal-order law |
 | `DvKey` | content-addressed comparable DynamicValue row | ☐ port | ☐ canonical-CBOR key vectors | ☐ equal-value⇒equal-key |
 | `DynamicValueAlgebra` + `IMonoid`/`IGroup`/`ISemilattice` (Semiring.fs) | algebra ladder + DynamicValue LWW-register semilattice | ☐ port (interfaces + instance) | ☐ merge/fold convergence vectors | ☐ monoid identity+assoc; semilattice commut+idempotent; order-independence |
 
@@ -44,9 +44,9 @@ per-language family — the C#/Rust/TS siblings get `Core.<Lang>.Blake3` etc. In
 C#-neutral (`Zeta.Core.Abstractions`); see the naming-convention doc.)
 
 (Already-cross-lang CRDTs — `GCounter`/`PNCounter`/`OrSet`/`LwwRegister` — are F#-done; check parity status
-against B-0959, likely already covered.)
+against 081KSXN940008QG0R003FCQ7WT, likely already covered.)
 
-## Plus others (Lior's flagged B-0959 backlog)
+## Plus others (Lior's flagged 081KSXN940008QG0R003FCQ7WT backlog)
 
 - **Bag primitive** (multiset) — implement F# + TS first, matching G-Set/Z-set patterns.
 - **G-Set 4-oracle parity** — port G-Set to C# + Rust → Tier-1 in `PRIMITIVE-REGISTRY.md`.
@@ -64,5 +64,5 @@ example; every component above gets the analogous shared fixture.
 ## Anchors
 
 - Umbrella `081KTH323AK` (this expands it) · per-module items (`081KTGYWCT7` ZSetMerkle, `081KTGYWCTT`
-  collation, `081KTH0HFZ8` SchemaEvolution, `081KTH4Q782` CRDTs+PSI) · B-0959 (4-oracle master) · B-0969
+  collation, `081KTH0HFZ8` SchemaEvolution, `081KTH4Q782` CRDTs+PSI) · 081KSXN940008QG0R003FCQ7WT (4-oracle master) · 081KT07NV0008QG0R001YDB73K
   (collation) · the BLAKE3 treaty doc · no-binary-in-proof-lineage (hex-in-JSON).
