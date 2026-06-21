@@ -276,7 +276,9 @@
     <Compile Include="ZetaIrV2.fs" />
     <Compile Include="ZetaIrV3.fs" />
     <Compile Include="ZetaIrV4.fs" />
+    <Compile Include="SymbolicAlgebra.fs" />
     <Compile Include="ZetaIrNormalizer.fs" />
+    <Compile Include="ZetaIrCanonicalizer.fs" />
     <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />
