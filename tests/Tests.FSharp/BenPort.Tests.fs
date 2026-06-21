@@ -134,7 +134,11 @@ let ``ZETAID BENCHMARK CASES: discovered, run successfully, and verify exact hea
     Assert.Equal(pack.Sizes.Length, packSamples.Length)
     Assert.Equal(unpack.Sizes.Length, unpackSamples.Length)
     
-    // unpack returns a ZetaObservation record instance (reference type), which allocates exactly 80 bytes on net10.0!
-    Assert.Equal(80L, snd unpackSamples.[0])
+    // unpack returns a ZetaObservation record instance (reference type). Exact measured heap
+    // allocation on the pinned net10.0 SDK (10.0.203): 48 bytes. (Was 80; the record's field-type
+    // representation shrank — alloc DROPPED, an improvement, type unchanged + round-trip tests still
+    // pass. This is an exact-value benchmark guard, so it is intentionally runtime-layout-sensitive
+    // and must be re-measured when the SDK or a field type's layout changes.)
+    Assert.Equal(48L, snd unpackSamples.[0])
 
 
