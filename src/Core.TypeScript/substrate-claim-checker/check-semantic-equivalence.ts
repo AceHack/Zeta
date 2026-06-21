@@ -6,10 +6,10 @@ import fs from 'fs';
 import path from 'path';
 
 const CLAIM_REGEX = /`([^`]+)`\s+(is equivalent to|is an alias for|is the same as)\s+`([^`]+)`/gi;
-// `upstreams` excludes references/prior-art/ — 85+ full clones of external
+// `prior-art` excludes references/prior-art/ — 85+ full clones of external
 // projects; walking it takes minutes and returns mostly noise (per
 // .claude/rules/references-prior-art-not-our-code-search-excludes.md).
-const IGNORE_DIRS = ['node_modules', '.git', '.vscode', '.idea', 'dist', 'build', 'upstreams'];
+const IGNORE_DIRS = ['node_modules', '.git', '.vscode', '.idea', 'dist', 'build', 'prior-art'];
 const INCLUDE_EXTS = ['.md', '.mdx'];
 
 export interface Finding {

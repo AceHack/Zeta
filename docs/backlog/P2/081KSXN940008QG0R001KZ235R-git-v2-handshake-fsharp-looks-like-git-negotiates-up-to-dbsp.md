@@ -108,7 +108,7 @@ The vehicle is a **handshake**, not a fork:
 6. **Upstream-contribution path** — package the agent-speed primitives as proposals
    to git itself (composes B-0952 contribute-back DORA; start small, earn inroads).
 
-Each sub-row carries its own start-gate (prior-art search incl. `references/upstreams/git/`,
+Each sub-row carries its own start-gate (prior-art search incl. `references/prior-art/git/`,
 the git protocol v2 spec, jujutsu/jj + Pijul/Sapling as prior art for
 algebra/CRDT-shaped VCS, dependency check).
 

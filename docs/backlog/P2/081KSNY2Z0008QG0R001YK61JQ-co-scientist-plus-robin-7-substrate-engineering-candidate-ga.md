@@ -41,7 +41,7 @@ Substrate-honest reading: 2026-05-28 YouTube ferry preservation (PR #5762) named
 
 - B-0865 DORA-scored choose-your-own-adventure substrate
 - B-0865.17 cross-vendor benchmark on common ground (TrueSkill IS the cross-vendor scoring substrate)
-- `references/upstreams/microsoft-infer-net/` (added in this PR)
+- `references/prior-art/microsoft-infer-net/` (added in this PR)
 - Zeta.Bayesian published library + framework's existing BP/EP substrate per memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md
 
 ### B-0914.2 — Explicit closed-loop CI-result → next-hypothesis dispatch
@@ -179,6 +179,6 @@ Aaron 2026-05-28 explicit *"we should add coscientis and add it to our upstram r
 
 - This PR: adds SakanaAI/AI-Scientist + AI-Scientist-v2 + jataware/open-coscientist + llnl/open-ai-co-scientist + The-Swarm-Corporation/AI-CoScientist + Microsoft/Infer.NET to `references/reference-sources.json` + `docs/UPSTREAM-LIST.md`
 - This row: backlogs all 7 candidates as decomposition target
-- Operator may run `tools/setup/common/sync-upstreams.sh` to mirror the new repos into `references/upstreams/` per refresh discipline (operator-side; Otto-CLI does not auto-run sync per safety discipline)
+- Operator may run `tools/setup/common/sync-prior-art.sh` to mirror the new repos into `references/prior-art/` per refresh discipline (operator-side; Otto-CLI does not auto-run sync per safety discipline)
 
 Substrate-engineering arc: framework's 10× scope is positioned to operationalize what co-scientist + Robin demonstrated at biomedical scope; 7 candidate gaps are the substrate-engineering integration targets per Aaron's *"missing a few step"* framing.

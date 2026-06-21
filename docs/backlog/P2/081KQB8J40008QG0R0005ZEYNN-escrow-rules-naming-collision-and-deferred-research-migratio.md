@@ -69,13 +69,13 @@ Options:
   escrowed/` but add a top-level rule that this directory is
   for research-grade preservation, distinct from the software-
   engineering-vendoring sense. The vendoring-adjacent surface
-  in this repo is `references/upstreams/` (read-only clones
+  in this repo is `references/prior-art/` (read-only clones
   from sibling repos per the operational rule in
   `docs/AGENT-BEST-PRACTICES.md` "Operational standing rules"
   section); GOVERNANCE.md §23 separately governs upstream
   open-source contributions via sibling `../` clones, which
   is a related-but-distinct workflow (sibling clones live at
-  `../`, not under `references/upstreams/`).
+  `../`, not under `references/prior-art/`).
 - **Option C: Name both senses explicitly** in a glossary
   entry — research-escrow vs vendor-escrow vs dependency-
   escrow — and let the directory name stay if the glossary
@@ -185,7 +185,7 @@ input was one wrapper.
 - **GOVERNANCE.md §23** — upstream OSS contributions via
   sibling `../` clones; relevant context for sub-ask 1's
   vocabulary disambiguation but NOT the authority for
-  `references/upstreams/` being a vendoring home (the
+  `references/prior-art/` being a vendoring home (the
   operational rule for that surface lives in
   `docs/AGENT-BEST-PRACTICES.md` "Operational standing
   rules" section).

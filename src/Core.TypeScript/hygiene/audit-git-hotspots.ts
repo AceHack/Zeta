@@ -10,7 +10,7 @@
 //   Tallies (commit, file) touches via `git log --name-only`
 //   over a window (default 60 days), excluding by-design hot
 //   prefixes (hygiene-history fire logs, openspec staging,
-//   vendored upstreams). Renders a markdown ranking with
+//   prior-art mirrors). Renders a markdown ranking with
 //   touches / unique authors / PR count per top-N file. The
 //   action (split / freeze / archive / watch) is a judgment
 //   call, not an enforcement.

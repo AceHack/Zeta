@@ -1,11 +1,12 @@
 ---
 id: 081KV6D1B3T08QG0R000QCTMXN
 type: task
-state: backlog
+state: done
 priority: P3
 slug: sweep-remaining-stale-upstreams-prior-art-mirror-dir-misnome
 title: "Sweep remaining stale 'upstreams' -> 'prior-art' mirror-dir misnomer in active docs/backlog (keep legit OSS-upstream usage; leave dated historical snapshots)"
 created: 2026-06-15T19:44:48.250Z
+completed: 2026-06-21T05:07:41.404Z
 depends_on: []
 composes_with: []
 ---

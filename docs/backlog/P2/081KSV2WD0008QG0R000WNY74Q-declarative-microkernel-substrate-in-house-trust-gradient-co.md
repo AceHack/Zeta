@@ -15,7 +15,7 @@ composes_with:
   - docs/research/trust-gradient-coordination-policy-2026-05-21.md
   - docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md
   - full-ai-cluster/nixos/
-  - .claude/rules/references-upstreams-not-our-code-search-excludes.md
+  - .claude/rules.bak/references-prior-art-not-our-code-search-excludes.md
 tags: [microkernel, declarative, nixos, sequoia, memory-model, trust-gradient, compression-engine, capability-security, supply-chain, better-than-docker, substrate-deployment]
 type: feature
 ---
@@ -77,7 +77,7 @@ replace in-house over time); (b) it is a **monolithic-kernel** distro (not micro
 (c) it has **no Sequoia memory model**, **no trust-gradient**, **no native compression engine**.
 The in-house declarative microkernel keeps NixOS's good property (declarative reproducibility)
 and adds the three missing layers on a minimal capability-secure base. NixOS stays as **study
-prior-art** (references/upstreams discipline -- study, then rewrite in-house), and as the current
+prior-art** (references/prior-art discipline -- study, then rewrite in-house), and as the current
 declarative cluster substrate (full-ai-cluster/nixos/) until the in-house microkernel is ready.
 
 ## Prior art (search-first per Otto-364 before committing any design)
