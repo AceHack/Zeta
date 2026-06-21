@@ -52,8 +52,13 @@ Windows Hello press up front, then every sub-step runs under that single approva
   ```
 
   One approval covers: status → user-keyring check (instruction if missing) →
-  machine key → trust-resolve → **auto cert-sign if a CA is configured on this host**
-  (no `--sign-with-ca` flag; cleanly skipped when no CA is present).
+  machine key → trust-resolve → **realize a local CA if none exists, then auto cert-sign**
+  (no `--sign-with-ca` flag). If a CA is already configured it signs against it (idempotent —
+  the CA is never re-created); if **no local CA** exists, setup **realizes one** under the
+  _same_ approval (no second prompt) so a fresh host ends with CA + machine key + cert in one
+  step. Fail-closed: decline → nothing realized. _Deferred:_ if this host is **joining** an
+  existing cluster whose CA lives elsewhere, sign via the CA holder instead — the readout names
+  the realized local CA so you can re-home it.
 
 - **Stand up a new cluster's trust root (+ cross-cluster trust):**
   ```bash

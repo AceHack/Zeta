@@ -16,11 +16,16 @@
 //      replays that one approval to the rest of the sequence (NO re-prompts). FAIL-CLOSED: a
 //      declined approval poisons the session, so NOTHING runs.
 //
-//   2. AUTO-CERT — if a CA is configured on this host (the CA private key exists), it sets
-//      `signWithCa` so the freshly-registered machine key is signed into a cert (the user ×
-//      machine binding) with NO extra flag. No CA ⇒ the cert step is simply omitted (a clean
-//      skip, not an error) — exactly the normal case on a box joining a cluster whose CA lives
-//      elsewhere.
+//   2. AUTO-CERT + REALIZE-CA-WHEN-MISSING — if a CA is configured on this host (the CA private
+//      key exists), it sets `signWithCa` so the freshly-registered machine key is signed into a
+//      cert (the user × machine binding) with NO extra flag. If NO local CA exists, instead of
+//      skipping the cert, it REALIZES one (`ensureCa`, under the SAME session approval already in
+//      scope — NO second prompt) and then signs — so a fresh host ends with CA + machine key +
+//      cert under ONE fingerprint (the solo / first-node / CA-holder case). Idempotent: an
+//      existing CA is a no-op (ca.ts returns `exists`, no prompt). DEFERRED (do NOT build here):
+//      cluster-membership detection — "this host is JOINING a cluster whose CA lives elsewhere"
+//      ⇒ sign via the CA holder, do NOT realize a local one. For now, no local CA ⇒ realize one;
+//      the readout names this so the operator can re-home if they were joining.
 //
 // SECURITY INVARIANTS (security-class — honesty over green):
 //  - The session is ONE *human* approval, not zero: every sub-op still calls `requireBiometric`
@@ -42,6 +47,7 @@
 // FAIL-CLOSED rather than time-windowed.
 
 import { onboard, type OnboardEffects, type OnboardOptions, type OnboardResult } from "./onboard.ts";
+import { ensureCa, type CaResult } from "./ca.ts";
 import { requireBiometric, type BiometricResult, type SessionGate } from "./biometric.ts";
 
 /** Options for a one-fingerprint machine setup — the operator identity + repo root, plus the
@@ -59,7 +65,9 @@ export interface SetupMachineOptions {
   readonly keyType?: "authentication" | "signing";
   /** Validity window for the auto-signed device cert (OpenSSH `-V`); defaults in ca.ts. */
   readonly certValidity?: string;
-  /** True iff a CA private key is present on THIS host → auto-sign the device cert (no flag). */
+  /** True iff a CA private key is ALREADY present on THIS host. When true the device cert is
+   *  auto-signed against it (no flag). When false, setup REALIZES a new local CA (under the same
+   *  session approval) then signs — see SetupMachineResult.caRealized. */
   readonly caConfigured: boolean;
 }
 
@@ -72,8 +80,14 @@ export interface SetupMachineResult {
   readonly biometricApprovals: number;
   /** The single session decision (undefined if nothing gated ran — e.g. dry-run). No secret. */
   readonly approval?: BiometricResult;
-  /** True iff the auto-cert step was requested (CA configured + not dry-run pure-skip). */
+  /** True iff the auto-cert step was requested (a CA is now available — pre-existing or realized
+   *  — and not a dry-run pure-skip). */
   readonly certRequested: boolean;
+  /** The realize-CA-when-missing result, present ONLY when no local CA pre-existed so setup
+   *  realized one (or, on dry-run, WOULD realize one — `action: "would-generate"`). Absent when a
+   *  CA was already configured (nothing realized). ca.ts is idempotent: an existing CA never
+   *  reaches here. No secret — public CA fields only. */
+  readonly caRealized?: CaResult;
 }
 
 /**
@@ -94,19 +108,49 @@ export async function setupMachine(
   opts: SetupMachineOptions,
 ): Promise<SetupMachineResult> {
   const dryRun = opts.dryRun === true;
-  const certRequested = opts.caConfigured && !dryRun;
+  // REALIZE-CA-WHEN-MISSING: a cert can always be produced as long as a CA door is wired —
+  // either a CA is already configured, or we realize one below. So the cert is requested on any
+  // real run that has a CA door (`fx.ca`), not only when a CA pre-existed. (No `fx.ca` ⇒ cannot
+  // realize or sign ⇒ clean skip, the legacy behaviour.)
+  const canProvideCa = fx.ca !== undefined;
+  const willRealizeCa = canProvideCa && !opts.caConfigured && !dryRun;
+  const certRequested = canProvideCa && !dryRun;
 
   // ── ONE-FINGERPRINT APPROVAL (up front) ─────────────────────────────────────────────────
   // On a real run we trigger the SINGLE human approval here, through the session door. Every
-  // gated sub-op below is wired to the SAME session door, so it replays this one decision and
-  // never re-prompts. FAIL-CLOSED: if declined, the cached ok:false flows to every sub-op, so
-  // nothing runs. On --dry-run we do NOT prompt (onboard's dry-run skips every gated op anyway).
+  // gated sub-op below — machine keygen, the realize-CA `ensureCa`, AND cert-sign — is wired to
+  // the SAME session door, so it replays this one decision and never re-prompts. FAIL-CLOSED: if
+  // declined, the cached ok:false flows to every sub-op (incl. ensureCa), so NOTHING runs — no CA,
+  // no key, no cert. On --dry-run we do NOT prompt (every gated op skips on dry-run anyway).
   if (!dryRun) {
     await requireBiometric(
       session.door,
       `Approve Zeta machine setup for ${opts.user} (one approval covers: machine key` +
-        (certRequested ? " + cert-sign)" : ")"),
+        (willRealizeCa ? " + realize CA + cert-sign)" : certRequested ? " + cert-sign)" : ")"),
     );
+  }
+
+  // ── REALIZE-CA-WHEN-MISSING (under the SAME approval) ────────────────────────────────────
+  // No local CA on this host (the solo / first-node / CA-holder case) ⇒ realize one rather than
+  // skip the cert. ensureCa rides `session.door` (the one approval already decided above; FAIL-
+  // CLOSED if it was declined) and is IDEMPOTENT — if a CA somehow already exists it is a no-op
+  // (`exists`, no prompt). On --dry-run we still call it (dryRun:true) so the plan shows "would
+  // realize CA" while generating/prompting NOTHING. commitPub writes ONLY the CA PUBLIC key (the
+  // git-distributed trust root); the CA private key stays local (ca.ts, never committed here).
+  // TODO(deferred — do NOT build here): cluster-membership detection. If THIS host is joining an
+  // existing cluster whose CA lives elsewhere, it should sign via the CA holder, NOT realize a
+  // local CA. For now "no local CA ⇒ realize one"; the readout names this so the operator can
+  // re-home a mistakenly-realized CA when they were actually joining.
+  let caRealized: CaResult | undefined;
+  if (canProvideCa && !opts.caConfigured && fx.ca !== undefined) {
+    caRealized = await ensureCa(fx.ca, {
+      ca: opts.user, // the maintainers/<user>/ trust root the CA public key lands under
+      repoRoot: opts.repoRoot,
+      ...(opts.home !== undefined ? { home: opts.home } : {}),
+      commitPub: true,
+      dryRun,
+      biometricAuth: session.door,
+    });
   }
 
   const onboardOpts: OnboardOptions = {
@@ -121,10 +165,13 @@ export async function setupMachine(
     ...(opts.includeGpg !== undefined ? { includeGpg: opts.includeGpg } : {}),
     ...(opts.keyType !== undefined ? { keyType: opts.keyType } : {}),
     ...(opts.certValidity !== undefined ? { certValidity: opts.certValidity } : {}),
-    // AUTO-CERT: sign the device key when a CA is configured — no operator flag. onboard runs
-    // the cert step only when BOTH signWithCa is set AND fx.ca is provided (the CLI provides
-    // fx.ca only when the CA exists), so this is a clean skip when no CA is present.
-    ...(opts.caConfigured ? { signWithCa: true } : {}),
+    // AUTO-CERT: sign the device key whenever a CA door is available — no operator flag. The CA
+    // is either pre-configured OR realized above, so any host with a CA door ends with a cert.
+    // onboard runs the cert step only when BOTH signWithCa is set AND fx.ca is provided, and
+    // ca.ts is fail-closed: if the realize was declined (no CA private), signMachineCert returns
+    // a clean `no-ca`/`aborted-biometric` skip — never a spurious or partial sign. No CA door at
+    // all ⇒ signWithCa unset ⇒ the cert step is omitted entirely (the legacy clean skip).
+    ...(canProvideCa ? { signWithCa: true } : {}),
   };
 
   const res = await onboard(fx, onboardOpts);
@@ -135,6 +182,7 @@ export async function setupMachine(
     biometricApprovals: session.underlyingCalls(),
     ...(decision !== undefined ? { approval: decision } : {}),
     certRequested,
+    ...(caRealized !== undefined ? { caRealized } : {}),
   };
 }
 
@@ -152,6 +200,26 @@ export function formatSetupMachine(res: SetupMachineResult): string {
     for (const dl of s.detail.split("\n")) lines.push(`       ${dl}`);
   });
   lines.push("");
+  // REALIZE-CA-WHEN-MISSING readout: present only when no local CA pre-existed so setup realized
+  // (or, on dry-run, WOULD realize) one. Names the deferred join case so the operator can re-home.
+  if (res.caRealized !== undefined) {
+    const r = res.caRealized;
+    if (r.action === "would-generate") {
+      lines.push(`CA: [dry-run] would realize a new local CA at ${r.caPrivatePath} (NOTHING generated).`);
+    } else if (r.action === "generated") {
+      lines.push(`CA: realized a new local CA at ${r.caPrivatePath} (public key → ${r.caPublicPath}).`);
+    } else if (r.action === "exists") {
+      lines.push(`CA: local CA already present at ${r.caPrivatePath} — not re-created (idempotent).`);
+    } else if (r.action === "aborted-biometric") {
+      lines.push("CA: NOT realized — approval declined (fail-closed; no CA, no key, no cert).");
+    }
+    if (r.action === "would-generate" || r.action === "generated") {
+      lines.push(
+        "    Note: realized a NEW local CA (solo / first-node). If this host is JOINING an existing" +
+          " cluster, sign via the CA holder instead and remove this local CA.",
+      );
+    }
+  }
   lines.push(
     res.onboard.dryRun
       ? "Biometric: not invoked (dry-run). On a real run: ONE approval covers the whole sequence."

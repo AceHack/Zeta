@@ -6,9 +6,11 @@
 //   * It builds ONE `sessionBiometric` door over the real biometric gate, then weaves that
 //     SAME door into EVERY gated sub-effect (machine keygen, cert-sign) — so the operator
 //     presses Touch ID / Windows Hello exactly ONCE for the whole run.
-//   * It auto-detects a configured CA (the CA private key on THIS host) and wires the CA door
-//     ONLY then — so the device cert is auto-signed with no `--sign-with-ca` flag, and the
-//     cert step is cleanly omitted when no CA is present.
+//   * It ALWAYS wires the CA door. If a CA private key exists on THIS host the device cert is
+//     auto-signed against it (no `--sign-with-ca` flag); if NONE exists, setup-machine REALIZES a
+//     local CA (under the same one approval) then signs — so a fresh host ends with CA + machine
+//     key + cert under ONE fingerprint. (Deferred: the "joining a cluster whose CA is elsewhere"
+//     case — for now no local CA ⇒ realize one; the readout names it so the operator can re-home.)
 //   * `--dry-run` prompts NOTHING, writes NOTHING, generates NOTHING, fetches NOTHING.
 //
 // Usage:
@@ -62,7 +64,7 @@ function usage(): void {
       "[--type authentication|signing] [--trust <gh-user> ...] [--gpg] [--cert-validity +52w] " +
       "[--dry-run] [--repo-root <path>]\n" +
       "  ONE command, ONE fingerprint: status -> user-keyring(instruction) -> machine-key -> " +
-      "trust-resolve -> auto cert-sign (only if a CA is configured on this host).\n" +
+      "trust-resolve -> (realize a local CA if none) -> auto cert-sign.\n" +
       "  Reuse-only: all key/biometric/seed/CA logic is delegated. --dry-run does NOTHING.\n",
   );
 }
@@ -86,18 +88,20 @@ async function main(): Promise<number> {
   // approval to the rest. FAIL-CLOSED: a declined first approval poisons the session.
   const session = sessionBiometric(realBiometric());
 
-  // AUTO-CERT: a CA is "configured" on this host iff its private key exists. Probe via ca.ts's
-  // canonical path; wire the CA door ONLY then (so the cert step is omitted cleanly otherwise).
+  // AUTO-CERT + REALIZE-CA-WHEN-MISSING: a CA is "configured" on this host iff its private key
+  // exists. Probe via ca.ts's canonical path. We ALWAYS wire the CA door now: if a CA exists, the
+  // cert is signed against it; if NOT, setup-machine REALIZES a local CA (under the one session
+  // approval) then signs. The CA door is the ONLY channel for that realize+sign (noninterference).
   const caConfigured = existsSync(caPrivateKeyPath(home));
 
   const fx: OnboardEffects = {
     // machine keygen rides the session door (one approval).
     machine: realMachineEffects(),
     trust: realTrustEffects(),
-    // The SHARED gate for machine-keygen + cert-sign is the session door (the ONE approval).
+    // The SHARED gate for machine-keygen + realize-CA + cert-sign is the session door (ONE approval).
     biometricAuth: session.door,
-    // CA door only when a CA is configured (else the cert step is a clean skip).
-    ...(caConfigured ? { ca: realCaEffects() } : {}),
+    // CA door ALWAYS wired — used to sign against an existing CA OR to realize a missing one.
+    ca: realCaEffects(),
   };
 
   const opts: SetupMachineOptions = {
