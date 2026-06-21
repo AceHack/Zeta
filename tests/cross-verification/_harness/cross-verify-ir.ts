@@ -216,6 +216,64 @@ printf "{%s}" (String.concat "," pairs)`;
   }
 }
 
+function generateAndRunQSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
+  // Q# uses BigInt (L suffix) for arbitrary-precision arithmetic
+  // + explicit Wrap(x, width) for modular reduction (same as quantum circuits)
+  const body = ir.ops.map(op => {
+    if (op.op === "mul") {
+      const k = getK(op, ir.width);
+      return `        set z = Wrap(z * ${k}L, ${ir.width});`;
+    }
+    if (op.op === "xorshr") {
+      // XOR-shift doesn't overflow (it only reduces), but Wrap for consistency
+      return `        set z = (z ^^^ (z >>> ${op.s}));`;
+    }
+    return "";
+  }).join("\n");
+
+  const inputCases = inputs.map(([id, val]) =>
+    `    ("${id}", ${val})`
+  ).join(",\n");
+
+  const pyScript = `import qdk, json, sys
+ctx = qdk.Context()
+qs_code = """
+namespace Oracle {
+    function Wrap(x : BigInt, width : Int) : BigInt {
+        let modulus = 1L <<< width;
+        mutable r = x % modulus;
+        if r < 0L { set r = r + modulus; }
+        return r;
+    }
+    function Mix(x : BigInt) : BigInt {
+        mutable z = x;
+${body}
+        return z;
+    }
+}
+"""
+ctx.eval(qs_code)
+inputs = [
+${inputCases}
+]
+out = {}
+for (vid, val) in inputs:
+    result = ctx.eval(f"Oracle.Mix({val}L)")
+    out[vid] = str(result)
+sys.stdout.write(json.dumps(out))
+`;
+
+  const file = join(tmpDir, "oracle_qs.py");
+  writeFileSync(file, pyScript);
+  const venvPython = join(process.cwd(), "src/Core.Python/.venv/bin/python3");
+  try {
+    const stdout = execSync(`${venvPython} ${file}`, { encoding: "utf-8", timeout: 30000 });
+    return { language: "qsharp", outputs: JSON.parse(stdout) };
+  } catch (e: any) {
+    return { language: "qsharp", outputs: {}, error: `qdk not available: ${(e.message || "").slice(0, 100)}` };
+  }
+}
+
 export interface CrossVerifyResult {
   generator: string;
   languages: string[];
@@ -236,6 +294,7 @@ export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVeri
     generateAndRunCSharp(ir, inputs, tmpDir),
     generateAndRunRust(ir, inputs, tmpDir),
     generateAndRunFSharp(ir, inputs, tmpDir),
+    generateAndRunQSharp(ir, inputs, tmpDir),
   ];
 
   // Clean up
