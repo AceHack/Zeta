@@ -39,6 +39,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e"
 dependencies = [
  "serde_core",
+ "serde_derive",
 ]
 
 [[package]]
@@ -101,8 +102,10 @@ checksum = "927da81e25be1e1a2901d59b81b37dd2efd1fc9c9345a55007f09bf5a2d3ee03"
 name = "zeta-core-algebra"
 version = "0.1.0"
 dependencies = [
+ "serde",
  "serde_json",
  "zeta-core-merkle",
+ "zeta-core-sha256",
  "zeta-core-yaml",
 ]
 
@@ -112,6 +115,10 @@ version = "0.1.0"
 dependencies = [
  "xxhash-rust",
 ]
+
+[[package]]
+name = "zeta-core-sha256"
+version = "0.1.0"
 
 [[package]]
 name = "zeta-core-yaml"

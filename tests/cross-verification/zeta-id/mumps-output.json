@@ -1,0 +1,80 @@
+{
+  "authority-human-verified": {
+    "hex": "080cb77ed58d19c1f80b000800000000",
+    "crockford": "081JVQXNCD370ZG2R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "authority-trusted-agent": {
+    "hex": "080cb77ed58d19c1a00b000800000000",
+    "crockford": "081JVQXNCD370T02R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "authority-standard": {
+    "hex": "080cb77ed58d18017815001000000000",
+    "crockford": "081JVQXNCD300QG58020000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "authority-best-effort": {
+    "hex": "080cb77ed58d18074017000800000000",
+    "crockford": "081JVQXNCD303M05R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "authority-simulated": {
+    "hex": "080cb77ed58d18071817c00800000000",
+    "crockford": "081JVQXNCD303HG5Y010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "momentum-background": {
+    "hex": "080cb77ed58d19c1f809000800000000",
+    "crockford": "081JVQXNCD370ZG28010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "momentum-normal": {
+    "hex": "080cb77ed58d19c1f80b000800000000",
+    "crockford": "081JVQXNCD370ZG2R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "momentum-elevated": {
+    "hex": "080cb77ed58d19c1a00d000800000000",
+    "crockford": "081JVQXNCD370T038010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "momentum-high": {
+    "hex": "080cb77ed58d19c1f80f000800000000",
+    "crockford": "081JVQXNCD370ZG3R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "momentum-critical": {
+    "hex": "080cb77ed58d19c1f80fc00800000000",
+    "crockford": "081JVQXNCD370ZG3Y010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "authority-raw-0": {
+    "hex": "0800000000000001000b000800000000",
+    "crockford": "0800000000000G02R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "momentum-raw-255": {
+    "hex": "0ffffffffffff9c1f80ff80800000000",
+    "crockford": "0FZZZZZZZZZ70ZG3ZR10000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "workitem-v1-standard": {
+    "hex": "080cb77ed58d18117813000000000000",
+    "crockford": "081JVQXNCD308QG4R000000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  }
+}

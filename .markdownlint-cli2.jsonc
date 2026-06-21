@@ -8,6 +8,7 @@
 {
   "ignores": [
     ".git/**",
+    "db/**",
     "**/.claude/**",
     "**/.kiro/**",
     "**/.pytest_cache/**",

@@ -293,7 +293,7 @@ export function resolvePointer(cleanTarget: string, fromFile: string): ResolvedT
 }
 
 // Generate stub content based on type
-function getStubContent(resolved: ResolvedTarget, _cleanTarget: string): string {
+function getStubContent(resolved: ResolvedTarget): string {
   const name = basename(resolved.resolvedPath, ".md").replace(/^_-|-_$/g, "");
   const createdIso = new Date().toISOString();
 
@@ -446,7 +446,7 @@ export function processAll(checkOnly = false, customFiles?: string[]): { scanned
 
       // 2. Create the file (idempotent write)
       if (!existsSync(path)) {
-        const content = getStubContent(resolved, info.cleanTarget);
+        const content = getStubContent(resolved);
         writeFileSync(path, content, "utf8");
         processedCount++;
         console.log(`Auto-vivified: ${relative(REPO_ROOT, path)} (${resolved.type})`);
@@ -484,7 +484,7 @@ function main(): number {
       const dirPath = join(REPO_ROOT, surface);
       if (!isDir(dirPath)) continue;
 
-      watch(dirPath, { recursive: true }, (_event, filename) => {
+      watch(dirPath, { recursive: true }, (_, filename) => {
         if (filename && filename.endsWith(".md")) {
           console.log(`Change detected in ${surface}/${filename}. Running auto-vivifier...`);
           try {
